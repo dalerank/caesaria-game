@@ -26,6 +26,7 @@
 #include "objects/aqueduct.hpp"
 #include "core/logger.hpp"
 #include "city/city.hpp"
+#include "gfx/tilemap.hpp"
 
 using namespace gfx;
 
@@ -46,15 +47,16 @@ void RoadPropagator::canBuildRoad(const gfx::Tile* tile, bool& ret)
   }
 }
 
-RoadPropagator::RoadPropagator()
+bool __checkWalkables( const TilesArray& tiles )
 {
+  foreach( it, tiles )
+  {
+    if( !(*it)->isWalkable( true ) ||
+        is_kind_of<Building>( (*it)->overlay() ) )
+      return false;
+  }
 
-}
-
-RoadPropagator& RoadPropagator::instance()
-{
-  static RoadPropagator inst;
-  return inst;
+  return true;
 }
 
 TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePos stopPos,
@@ -62,7 +64,6 @@ TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePo
 {  
   Logger::warning( "RoadPropagator::getPath from (%d, %d) to (%d, %d)",
                     startPos.i(), startPos.j(), stopPos.i(), stopPos.j() );
-
   TilesArray ret;
   if( startPos == stopPos )
   {
@@ -85,7 +86,7 @@ TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePo
                 : TilePos( startPos.i(), stopPos.j() );
 
     if( yMoveFirst )
-    {
+    {      
       ret.append( tileMap.getRectangle( startPos, midlPos ) );
       ret.append( tileMap.getRectangle( midlPos, stopPos ) );
     }
@@ -95,14 +96,8 @@ TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePo
       ret.append( tileMap.getRectangle( midlPos, startPos ) );
     }
 
-    foreach( it, ret )
-    {
-      if( !(*it)->isWalkable( true ) )
-      {
-        ret.clear();
-        break;
-      }
-    }
+    if( !__checkWalkables( ret ) )
+      ret.clear();
   }
 
   if( ret.empty() )

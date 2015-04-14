@@ -25,6 +25,7 @@ using namespace gfx;
 
 namespace events
 {
+const int defaultReturnWorkersDistance = 40;
 
 GameEventPtr ReturnWorkers::create(TilePos center, unsigned int workers)
 {
@@ -39,11 +40,9 @@ GameEventPtr ReturnWorkers::create(TilePos center, unsigned int workers)
 void ReturnWorkers::_exec(Game& game, unsigned int time)
 {
   Tilemap& tilemap = game.city()->tilemap();
-  const int defaultFireWorkersDistance = 40;
-  for( int curRange=1; curRange < defaultFireWorkersDistance; curRange++ )
+  for( int curRange=1; curRange < defaultReturnWorkersDistance; curRange++ )
   {
-    HouseList hList;
-    hList << tilemap.getRectangle( curRange, _center ).overlays();
+    HouseList hList = tilemap.getRectangle( curRange, _center ).overlays().select<House>();
 
     foreach( it, hList )
     {

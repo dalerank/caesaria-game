@@ -32,7 +32,6 @@
 #include "core/priorities.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::romeChastenerElephant, ChastenerElephant)
@@ -102,7 +101,7 @@ ChastenerElephantPtr ChastenerElephant::create( PlayerCityPtr city)
   return ret;
 }
 
-int ChastenerElephant::agressive() const { return -2; }
+int ChastenerElephant::agressive() const { return 4; }
 
 bool ChastenerElephant::die()
 {

@@ -37,6 +37,8 @@ using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::aqueduct, Aqueduct)
 
+static const TilePos offsets[4] = { TilePos( -1, 0 ), TilePos( 0, 1), TilePos( 1, 0), TilePos( 0, -1) };
+
 Aqueduct::Aqueduct() : WaterSource( object::aqueduct, Size(1) )
 {
   setPicture( ResourceGroup::aqueduct, 133 ); // default picture for aqueduct
@@ -82,7 +84,6 @@ void Aqueduct::addWater(const WaterSource &source)
 {
   WaterSource::addWater( source );
 
-  const TilePos offsets[4] = { TilePos( -1, 0 ), TilePos( 0, 1), TilePos( 1, 0), TilePos( 0, -1) };
   _produceWater( offsets, 4 );
 }
 
@@ -94,7 +95,7 @@ void Aqueduct::destroy()
 
   if( _city().isValid() )
   {
-    TilesArray area = _city()->tilemap().getArea( pos() - TilePos( 2, 2 ), Size( 5 ) );
+    TilesArea area( _city()->tilemap(), pos() - TilePos( 2, 2 ), Size( 5 ) );
     foreach( tile, area )
     {
       AqueductPtr aq = ptr_cast<Aqueduct>( (*tile)->overlay() );

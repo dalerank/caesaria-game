@@ -33,7 +33,6 @@
 #include "city/city.hpp"
 #include "game/infoboxmanager.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -51,11 +50,11 @@ REGISTER_OBJECT_BASEINFOBOX(wine_workshop,AboutFactory)
 REGISTER_OBJECT_BASEINFOBOX(oil_workshop,AboutFactory)
 
 AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
-  : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 160, 510 - 16, 160 + 42) )
+  : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 160, 510 - 16, 160 + 52) )
 {
   setupUI( ":/gui/infoboxfactory.gui" );
 
-  FactoryPtr factory = ptr_cast<Factory>( tile.overlay() );
+  FactoryPtr factory = tile.overlay().as<Factory>();
   setBase( ptr_cast<Construction>( factory ) );
   _type = factory->type();
   std::string  title = MetaDataHolder::findPrettyName( factory->type() );
@@ -106,7 +105,7 @@ AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
 
   std::string workInfo = factory->workersProblemDesc();
   std::string cartInfo = factory->cartStateDesc();
-  setText( utils::format( 0xff, "%s\n%s", _(workInfo), _( cartInfo ) ) );
+  setText( utils::format( 0xff, "%s %s", _(workInfo), _( cartInfo ) ) );
 
   _updateWorkersLabel( Point( 32, 157 ), 542, factory->maximumWorkers(), factory->numberWorkers() );
 }

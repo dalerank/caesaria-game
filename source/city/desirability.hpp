@@ -23,15 +23,15 @@
 
 struct Desirability
 {
-enum { off=false, on=true };
+  enum { off=false, on=true };
 
- Desirability() : base( 0 ), range( 0 ), step( 0 ) {}
+  Desirability() : base( 0 ), range( 0 ), step( 0 ) {}
 
- int base;
- int range;
- int step;
+  int base;
+  int range;
+  int step;
 
- static void update( PlayerCityPtr r, OverlayPtr ov, bool on );
+  static void update( PlayerCityPtr r, OverlayPtr ov, bool on );
 };
 
 #endif //__CAESARIA_DESIRABILTY_H_INCLUDED__

@@ -37,11 +37,10 @@
 #include "core/foreach.hpp"
 #include "corpse.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace {
-static const Tile invalidTile( TilePos(-1,-1) );
+const Tile invalidTile( gfx::tilemap::invalidLocation() );
 }
 
 class Walker::Impl
@@ -97,7 +96,7 @@ Walker::Walker(PlayerCityPtr city) : _d( new Impl )
   _d->isDeleted = false;
   _d->centerReached = false;
   _d->waitInterval = 0;
-  _d->nation = world::unknownNation;
+  _d->nation = world::nation::unknown;
 
 #ifdef DEBUG
   WalkerDebugQueue::instance().add( this );
@@ -282,7 +281,9 @@ void Walker::_centerTile()
     // compute the direction to reach the destination
     _computeDirection();
     const Tile& tile = _nextTile();
-    if( tile.i() < 0 || !tile.isWalkable( true ) )
+    bool nextTileBlocked = !gfx::tilemap::isValidLocation( tile.epos() ) || !tile.isWalkable( true );
+
+    if( nextTileBlocked  )
     {
       _brokePathway( tile.pos() );
     }
@@ -348,7 +349,7 @@ void Walker::acceptAction(Walker::Action, TilePos){}
 void Walker::setName(const std::string &name) {  _d->name = name; }
 const std::string &Walker::name() const{  return _d->name; }
 void Walker::addAbility(AbilityPtr ability) {  _d->abilities.push_back( ability );}
-TilePos Walker::pos() const{ return _d->location ? _d->location->pos() : TilePos( -1, -1 ) ;}
+TilePos Walker::pos() const{ return _d->location ? _d->location->pos() : gfx::tilemap::invalidLocation() ;}
 void Walker::deleteLater(){ _d->isDeleted = true;}
 void Walker::setUniqueId( const UniqueId uid ) {  _d->uid = uid;}
 Walker::UniqueId Walker::uniqueId() const { return _d->uid; }
@@ -358,7 +359,7 @@ Animation& Walker::_animationRef() {  return _d->animation;}
 const Animation& Walker::_animationRef() const {  return _d->animation;}
 void Walker::_setDirection(Direction direction ){  _d->action.direction = direction; }
 void Walker::setThinks(std::string newThinks){  _d->thinks = newThinks;}
-TilePos Walker::places(Walker::Place type) const { return TilePos(-1,-1); }
+TilePos Walker::places(Walker::Place type) const { return gfx::tilemap::invalidLocation(); }
 void Walker::_setType(walker::Type type){  _d->type = type;}
 PlayerCityPtr Walker::_city() const{  return _d->city;}
 void Walker::_setHealth(double value){  _d->health = value;}
@@ -405,13 +406,13 @@ int Walker::agressive() const { return 0; }
 
 void Walker::attach()
 {
-  if( _city().isValid() )
+  if( _city().isValid() && !isDeleted() )
     _city()->addWalker( this );
 }
 
 std::string Walker::thoughts(Thought about) const
 {
-  if( thCurrent )
+  if( about == thCurrent )
   {
     if( _d->thinks.empty() )
     {
@@ -421,6 +422,7 @@ std::string Walker::thoughts(Thought about) const
     return _d->thinks;
   }
 
+  Logger::warning( "WARNING : no thougths for walker " + WalkerHelper::getPrettyTypename( type() ) );
   return "";
 }
 
@@ -469,7 +471,7 @@ void Walker::save( VariantMap& stream ) const
   VARIANT_SAVE_ANY_D( stream, _d, isDeleted )
   VARIANT_SAVE_ANY_D( stream, _d, action.action )
   VARIANT_SAVE_ANY_D( stream, _d, action.direction )
-  stream[ "location" ] = _d->location->pos();
+  stream[ "location" ] = _d->location ? _d->location->pos() : gfx::tilemap::invalidLocation();
   VARIANT_SAVE_ANY_D( stream, _d, tileSpeedKoeff )
   VARIANT_SAVE_ANY_D( stream, _d, wpos )
   VARIANT_SAVE_ANY_D( stream, _d, nextwpos )
@@ -564,7 +566,7 @@ void Walker::_updateThoughts()
   _d->thinks = WalkerThinks::check( this, _city() );
 }
 
-Point Walker::_wpos() const { return _d->wpos.toPoint(); }
+Point Walker::wpos() const { return _d->wpos.toPoint(); }
 
 void Walker::go( float speed )
 {
@@ -592,7 +594,7 @@ bool Walker::die()
   WalkerPtr corpse = Corpse::create( _city(), this );
   if( corpse.isValid() )
   {
-    _city()->addWalker( corpse );
+    corpse->attach();
   }
   return corpse.isValid();
 }

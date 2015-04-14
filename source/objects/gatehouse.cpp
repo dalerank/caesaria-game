@@ -169,7 +169,7 @@ bool Gatehouse::build( const city::AreaInfo& info )
   _update( info );
   _d->updateSprite();
 
-  TilesArray tiles = info.city->tilemap().getArea( info.pos, size() );
+  TilesArea tiles( info.city->tilemap(), info.pos, size() );
   foreach( it, tiles )
   {
     RoadPtr road = ptr_cast<Road>( (*it)->overlay() );

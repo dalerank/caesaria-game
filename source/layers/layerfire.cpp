@@ -20,12 +20,11 @@
 #include "objects/house_spec.hpp"
 #include "game/resourcegroup.hpp"
 #include "city/statistic.hpp"
-#include "layerconstants.hpp"
+#include "constants.hpp"
 #include "gfx/tilemap_camera.hpp"
 #include "core/event.hpp"
 #include "core/gettext.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace citylayer

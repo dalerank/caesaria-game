@@ -1,16 +1,17 @@
 {
  title : "##trade_and_industry##"
+ speech : "tutorial2_taxes"
  items : [ "##tax_tutorial##",
-            "@img=picture4_00006",
-		    "##nice_house_pay_more##",
-            "@img=picture4_00007",
-		    "##tt_advisors##",
-            "@img=picture4_00008",
-            "##adviser_panel##",
-            "@img=picture4_00009"
-            "##tt_industry##",
-            "@img=picture4_00010",
-            "##tt_build_pottery##",
-            "@img=picture4_00011"
+           "@img=picture4_00006",
+           "##nice_house_pay_more##",
+           "@img=picture4_00007",
+           "##tt_advisors##",
+           "@img=picture4_00008",
+           "##adviser_panel##",
+           "@img=picture4_00009"
+           "##tt_industry##",
+           "@img=picture4_00010",
+           "##tt_build_pottery##",
+           "@img=picture4_00011"
        ]
 }

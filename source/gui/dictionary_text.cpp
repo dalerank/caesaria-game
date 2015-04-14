@@ -24,12 +24,15 @@
 #include "gfx/pictureconverter.hpp"
 #include "core/color.hpp"
 #include "core/logger.hpp"
+#include "widget_factory.hpp"
 
 using namespace std;
 using namespace gfx;
 
 namespace gui
 {
+
+REGISTER_CLASS_IN_WIDGETFACTORY(DictionaryText)
 
 static const int DEFAULT_SCROLLBAR_SIZE = 39;
 
@@ -666,7 +669,7 @@ void DictionaryText::setupUI(const VariantMap& ui)
 {
   Widget::setupUI( ui );
 
-  setFont( Font::create( ui.get( "font", "FONT_2" ).toString() ) );
+  setFont( Font::create( ui.get( "font", std::string( "FONT_2" ) ).toString() ) );
   setBackgroundPicture( Picture::load( ui.get( "image" ).toString() ) );
 
   Variant vTextOffset = ui.get( "text.offset" );

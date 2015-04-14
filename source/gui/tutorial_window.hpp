@@ -20,6 +20,7 @@
 
 #include "window.hpp"
 #include "gameautopause.hpp"
+#include "sound/engine.hpp"
 
 namespace gui
 {
@@ -32,6 +33,8 @@ public:
 
 private:
   GameAutoPause _locker;
+  audio::Muter _muter;
+  audio::SampleDeleter _speechDel;
 };
 
 }//end namespace gui

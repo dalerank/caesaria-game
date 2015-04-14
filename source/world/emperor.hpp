@@ -24,6 +24,8 @@
 #include "core/signals.hpp"
 #include "vfs/path.hpp"
 
+class Gift;
+
 namespace world
 {
 
@@ -33,11 +35,11 @@ public:
   Emperor();
   virtual ~Emperor();
 
-  int relation( const std::string& cityname );
+  int relation( const std::string& cityname ) const;
   void updateRelation( const std::string& cityname, int value );
 
-  void sendGift( const std::string& cityname, unsigned int money );
-  DateTime lastGiftDate( const std::string& cityname );
+  void sendGift( const Gift& money );
+  DateTime lastGiftDate( const std::string& cityname ) const;
   void timeStep( unsigned int time );
 
   void remSoldiers(const std::string& cityname, int value);

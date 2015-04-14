@@ -61,8 +61,8 @@
 #include "game/infoboxmanager.hpp"
 #include "infobox_land.hpp"
 
-using namespace constants;
 using namespace gfx;
+using namespace gui::dialog;
 
 namespace gui
 {
@@ -73,9 +73,9 @@ namespace infobox
 class InfoboxHouseCreator : public InfoboxCreator
 {
 public:
-  Simple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
+  Infobox* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
-    HousePtr house = ptr_cast<House>( city->getOverlay( pos ) );
+    HousePtr house = city->getOverlay( pos ).as<House>();
     if( house.isValid() && house->habitants().count() > 0 )
     {
       return new AboutHouse( parent, city, city->tilemap().at( pos ) );
@@ -90,7 +90,7 @@ public:
 REGISTER_OBJECT_INFOBOX( house, new InfoboxHouseCreator() )
 
 AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
-  : Simple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )
+  : Infobox( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )
 {
   setupUI( ":/gui/infoboxhouse.gui" );
 
@@ -112,26 +112,34 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
     }
     else
     {
-      if( text == "##nearby_building_negative_effect_degrade##" ||
-          text == "##nearby_building_negative_effect##" )
+      if( text == "##nearby_building_negative_effect##" )
       {
-        object::Type objType;
-        TilePos pos;
-        std::string why;
-        _house->spec().checkHouse( _house, &why, &objType, &pos );
+        object::Type needBuilding;
+        TilePos rPos;
+        HouseSpecification spec = _house->spec().next();
+
+        int unwish = spec.findUnwishedBuildingNearby( _house, needBuilding, rPos );
+
+        if( !unwish )
+          spec.findLowLevelHouseNearby( _house, rPos );
 
         text = _(text);
-        OverlayPtr ov = city->getOverlay( pos );
-        std::string type;
-        if( ov->type() == object::house )
+        OverlayPtr overlay = city->getOverlay( rPos );
+        if( overlay.isValid() )
         {
+          std::string type;
+          if( overlay->type() == object::house )
+          {
+            HousePtr house = overlay.as<House>();
+            type = house.isValid() ? house->levelName() : "##unknown_house_type##";
+          }
+          else
+          {
+            type = overlay.isValid() ? MetaDataHolder::findPrettyName( overlay->type() ) : "";
+          }
 
+          text = utils::replace( text, "{0}", "( " + type + " )" );
         }
-        else
-        {
-          type = ov.isValid() ? ov->name() : "building";
-        }
-        text = utils::replace( text, "{0}", type );
       }
     }
 
@@ -148,7 +156,6 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
     CONNECT( btn, onClicked(), this, AboutHouse::_showHbtInfo )
 
     rect += Point( btn->width() + 5, 0 );
-    rect.rright() += 60;
     btn = new PushButton( this, rect, "Services", -1, false, PushButton::whiteBorderUp );
     CONNECT( btn, onClicked(), this, AboutHouse::_showSrvcInfo )
   }
@@ -276,7 +283,7 @@ bool AboutHouse::onEvent(const NEvent& event)
     }
   }
 
-  return Simple::onEvent( event );
+  return Infobox::onEvent( event );
 }
 
 void AboutHouse::_showHelp() { DictionaryWindow::show( this, "house" ); }
@@ -294,9 +301,9 @@ void AboutHouse::_showHbtInfo()
                                                   _house->habitants().mature_n(),
                                                   _house->habitants().aged_n() );
 
-  DialogBox* dialog = new DialogBox( ui()->rootWidget(), Rect( 0, 0, 400, 400 ), "Habitants", workerState, DialogBox::btnOk );
+  Dialog* dialog = new Dialog( ui(), Rect( 0, 0, 400, 400 ), "Habitants", workerState, Dialog::btnOk );
   dialog->setCenter( ui()->rootWidget()->center() );
-  CONNECT( dialog, onOk(), dialog, DialogBox::deleteLater )
+  CONNECT( dialog, onOk(), dialog, Dialog::deleteLater )
 }
 
 void AboutHouse::_showSrvcInfo()
@@ -304,9 +311,9 @@ void AboutHouse::_showSrvcInfo()
   std::string srvcState = utils::format( 0xff, "Health=%d",
                                                (int)_house->state( pr::health ));
 
-  DialogBox* dialog = new DialogBox( ui()->rootWidget(), Rect( 0, 0, 400, 400 ), "Services", srvcState, DialogBox::btnOk );
+  Dialog* dialog = new Dialog( ui(), Rect( 0, 0, 400, 400 ), "Services", srvcState, Dialog::btnOk );
   dialog->setCenter( ui()->rootWidget()->center() );
-  CONNECT( dialog, onOk(), dialog, DialogBox::deleteLater )
+  CONNECT( dialog, onOk(), dialog, Dialog::deleteLater )
 }
 
 }

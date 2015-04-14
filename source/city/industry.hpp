@@ -18,7 +18,6 @@
 #ifndef __CAESARIA_CITY_INDUSTRY_H_INCLUDE__
 #define __CAESARIA_CITY_INDUSTRY_H_INCLUDE__
 
-#include <vector>
 #include "objects/constants.hpp"
 #include "core/priorities.hpp"
 

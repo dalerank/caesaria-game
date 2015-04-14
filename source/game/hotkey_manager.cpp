@@ -43,25 +43,21 @@ public:
   }
 };
 
+typedef std::map<KeyCode, VariantMap> HotkeyScripts;
 class HotkeyManager::Impl
 {
 public:
-  typedef std::map<KeyCode, VariantMap> HotkeyScripts;
   HotkeyMapper hkMapper;
 
   HotkeyScripts scripts;
+
+public signals:
   Signal1<const VariantMap&> onHotkeySignal;
 };
 
-HotkeyManager& HotkeyManager::instance()
-{
-  static HotkeyManager inst;
-  return inst;
-}
-
 void HotkeyManager::execute( int keyCode )
 {
-  Impl::HotkeyScripts::iterator it = _d->scripts.find( (KeyCode)keyCode );
+  HotkeyScripts::iterator it = _d->scripts.find( (KeyCode)keyCode );
   if( it != _d->scripts.end() )
   {
     emit _d->onHotkeySignal( it->second );
@@ -82,7 +78,7 @@ void HotkeyManager::load(vfs::Path file)
       continue;
     }
 
-    Impl::HotkeyScripts::iterator presentIt = _d->scripts.find( hotkey );
+    HotkeyScripts::iterator presentIt = _d->scripts.find( hotkey );
     if( presentIt != _d->scripts.end() )
     {
       Logger::warning( "WARNING!!! HotkeyManager: duplicate hotkey for " + it->first );
@@ -94,6 +90,11 @@ void HotkeyManager::load(vfs::Path file)
 }
 
 HotkeyManager::HotkeyManager() : _d(new Impl) {}
+
+HotkeyManager::~HotkeyManager()
+{
+
+}
 
 } //end namespace game
 

@@ -108,14 +108,19 @@ void ListBoxItem::setTextColor(ListBoxItem::ColorType type, NColor color)
 
 void ListBoxItem::updateText(const Point &p, Font f, const Size &s)
 {
-  if( _d->textPic.isNull() || ( _d->textPic != 0 && _d->textPic->size() != s ) )
-  {
-    _d->textPic.reset( Picture::create( s, 0, true ) );
-  }
+  resetPicture( s );
 
   if( _d->textPic )
   {
     f.draw( *_d->textPic, _d->text, p );
+  }
+}
+
+void ListBoxItem::resetPicture( const Size& s )
+{
+  if( _d->textPic.isNull() || ( _d->textPic != 0 && _d->textPic->size() != s ) )
+  {
+    _d->textPic.reset( Picture::create( s, 0, true ) );
   }
 }
 

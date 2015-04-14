@@ -21,9 +21,6 @@
 #include "city/city.hpp"
 #include <map>
 
-using namespace constants;
-
-
 class WalkerManager::Impl
 {
 public:

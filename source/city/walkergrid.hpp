@@ -25,15 +25,16 @@
 namespace city
 {
 
-class WalkerGrid
+class WalkersGrid
 {
 public:
   void clear();
 
   void append( WalkerPtr a );
-  void resize(Size size );
+  void resize( Size size );
   const Size& size() const;
   void remove( WalkerPtr a );
+  void update( const WalkerList& walkers );
   void sort();
 
   const WalkerList& at(const TilePos &pos);

@@ -33,8 +33,9 @@
 #include "constants.hpp"
 #include "objects_factory.hpp"
 #include "game/gamedate.hpp"
+#include "gfx/tilearea.hpp"
+#include "gfx/helper.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::reservoir, Reservoir)
@@ -54,7 +55,7 @@ void Reservoir::_dropWater()
 {
   //now remove water flag from near tiles
   Tilemap& tmap = _city()->tilemap();
-  TilesArray reachedTiles = tmap.getArea( pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
+  TilesArea reachedTiles( tmap, pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
 
   foreach( tile, reachedTiles ) { (*tile)->setParam( Tile::pReservoirWater, 0 ); }
 }
@@ -67,6 +68,7 @@ void Reservoir::_waterStateChanged()
 void Reservoir::destroy()
 {
   _dropWater();
+  broke();
 
   // update adjacent aqueducts
   Construction::destroy();
@@ -87,6 +89,15 @@ void Reservoir::initialize(const MetaData& mdata)
   WaterSource::initialize( mdata );
 
   _d->fullOffset = mdata.getOption( "fullOffset" );
+}
+
+void Reservoir::broke()
+{
+  int saveWater = water();
+  _d->water = 100;
+  WaterSource::broke();
+
+  _d->water = saveWater;
 }
 
 Reservoir::Reservoir()
@@ -145,14 +156,14 @@ void Reservoir::timeStep(const unsigned long time)
   {
     _fgPicture( 0 ) = Picture::getInvalid();
     _dropWater();
+    broke();
     return;
   }
 
   //filled area, that reservoir present
   if( game::Date::isWeekChanged() )
   {
-    Tilemap& tmap = _city()->tilemap();
-    TilesArray reachedTiles = tmap.getArea( pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
+    TilesArea reachedTiles( _city()->tilemap(), pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
 
     foreach( tile, reachedTiles )
     {
@@ -243,7 +254,7 @@ void WaterSource::_produceWater(const TilePos* points, const int size)
     TilePos p = pos() + points[index];
     if( tilemap.isInside( p ) )
     {
-      SmartPtr< WaterSource > ws = ptr_cast<WaterSource>( tilemap.at( p ).overlay() );
+      SmartPtr<WaterSource> ws = ptr_cast<WaterSource>( tilemap.at( p ).overlay() );
     
       if( ws.isValid() )
       {
@@ -259,6 +270,25 @@ bool WaterSource::_isRoad() const { return _d->isRoad; }
 int WaterSource::water() const{ return _d->water; }
 std::string WaterSource::errorDesc() const{  return _d->errorStr;}
 void WaterSource::_setError(const std::string& error){  _d->errorStr = error;}
+
+void WaterSource::broke()
+{
+  Tilemap& tilemap = _city()->tilemap();
+  TilesArray tiles = tilemap.getRectangle( pos() - TilePos( 1, 1), size() + Size(2) );
+
+  int saveWater = water();
+  _d->water = 0;
+  foreach( it, tiles )
+  {
+    SmartPtr<WaterSource> ws = ptr_cast<WaterSource>( (*it)->overlay() );
+
+    if( ws.isValid() )
+    {
+      if( ws->water() > 0 && ws->water() < saveWater )
+          ws->broke();
+    }
+  }
+}
 
 void WaterSource::save(VariantMap &stream) const
 {
@@ -284,6 +314,6 @@ TilePos Reservoir::entry(Direction direction)
   case direction::east: return pos() + TilePos( 2, 1 );
   case direction::south: return pos() + TilePos( 1, 0 );
   case direction::west: return pos() + TilePos( 0, 1 );
-  default: return TilePos( -1, -1 );
+  default: return gfx::tilemap::invalidLocation();
   }
 }

@@ -28,11 +28,11 @@
 #include "gui/label.hpp"
 #include "gfx/helper.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace events
 {
+static const Size wdgSize( 450, 50 );
 
 static const int windowGamePausedId = Hash( "gamepause" );
 
@@ -67,7 +67,7 @@ void Pause::_exec(Game& game, unsigned int)
       if( !wdg )
       {
         Size scrSize = rootWidget->size();
-        wdg = new gui::Label( rootWidget, Rect( Point( (scrSize.width() - 450)/2, 40 ), Size( 450, 50 ) ),
+        wdg = new gui::Label( rootWidget, Rect( Point( (scrSize.width() - wdgSize.width())/2, 40 ), wdgSize ),
                               _("##game_is_paused##"), false, gui::Label::bgWhiteFrame, windowGamePausedId );
         wdg->setTextAlignment( align::center, align::center );
       }
@@ -133,7 +133,7 @@ void ChangeSpeed::_exec(Game& game, unsigned int)
 {
   game.changeTimeMultiplier( _value );  
 
-  GameEventPtr e = WarningMessage::create( _("##current_game_speed_is##") + utils::i2str( game.timeMultiplier() ) + "%" );
+  GameEventPtr e = WarningMessage::create( _("##current_game_speed_is##") + utils::i2str( game.timeMultiplier() ) + "%", 1 );
   e->dispatch();
 }
 

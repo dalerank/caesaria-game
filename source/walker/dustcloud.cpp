@@ -28,7 +28,6 @@
 #include "core/logger.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::dustCloud, DustCloud)
@@ -82,7 +81,7 @@ DustCloud::DustCloud(PlayerCityPtr city )
 {
   _setType( walker::dustCloud );
   _d->animation.load( ResourceGroup::sprites, 1, 8 );
-  _d->animation.setDelay( 9 );
+  _d->animation.setDelay( Animation::hugeSlow );
   //_d->animation.setOffset( Point( 5, 7 ) );
 
   setName( _("##dust##") );

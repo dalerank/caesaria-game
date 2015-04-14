@@ -39,7 +39,6 @@
 #include "core/logger.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::wine_workshop, Winery)
@@ -188,7 +187,7 @@ void Factory::timeStep(const unsigned long time)
         _d->lowWorkerWeeksNumber = std::max<int>( 0, _d->lowWorkerWeeksNumber-1 );
       }
 
-      if( math::random( (int)_d->lowWorkerWeeksNumber ) > _d->maxUnworkingWeeks )
+      if( math::random( (int)_d->lowWorkerWeeksNumber ) > (int)_d->maxUnworkingWeeks )
       {
         _reachUnworkingTreshold();
       }
@@ -375,10 +374,7 @@ void Factory::receiveGood()
     CartSupplierPtr walker = CartSupplier::create( _city() );
     walker->send2city( this, consumeGoodType(), qty );
 
-    if( !walker->isDeleted() )
-    {
-      addWalker( walker.object() );
-    }
+    addWalker( walker.object() );
   }
 }
 

@@ -29,8 +29,6 @@
 #include "thinks.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
-
 REGISTER_CLASS_IN_WALKERFACTORY(walker::marketKid, MarketKid)
 
 class MarketKid::Impl
@@ -66,7 +64,7 @@ MarketKid::MarketKid(PlayerCityPtr city )
 {
   _d->delay = 0;
   _d->birthTime = 0;
-  _d->basket.setCapacity( 100 );
+  _d->basket.setCapacity( defaultCapacity );
   _setType( walker::marketKid );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
@@ -81,7 +79,7 @@ void MarketKid::send2City( MarketPtr destination )
     _d->marketPos = destination->pos();
     _pathwayRef().move( Pathway::reverse );
     _centerTile();
-    _city()->addWalker( this );
+    attach();
   }
   else
   {

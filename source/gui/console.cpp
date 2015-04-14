@@ -39,7 +39,7 @@ void Console::SaveCommands_()																	//
 
   foreach( it, console_history_ )							//
   {
-    commands[ *it ] = "";
+    commands[ *it ] = Variant( "" );
   }
 
   config::save( commands, path );
@@ -112,11 +112,11 @@ void Console::draw( gfx::Engine& painter )
 {
   resizeMessages();
 
-    if( !_font.isValid() )
-    {
-        Widget::draw( painter );
-        return;
-    }
+  if( !_font.isValid() )
+  {
+    Widget::draw( painter );
+    return;
+  }
 
   if( visible() )															// render only if the console is visible
 	{

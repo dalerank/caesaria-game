@@ -23,17 +23,21 @@
 #include "statistic.hpp"
 #include "events/warningmessage.hpp"
 #include "cityservice_factory.hpp"
+#include "config.hpp"
 
-using namespace constants;
+using namespace config;
+using namespace events;
 
 namespace city
 {
 
 REGISTER_SERVICE_IN_FACTORY(HealthCare,healtCare)
 
-namespace {
-const int maxDescriptionLevel = 12;
-}
+static const std::string healthDescription[health::levelNumber]
+      = { "##advchief_health_terrible", "##advchief_health_lower", "##advchief_health_low", "##advchief_health_bad",
+          "##advchief_health_less", "##advchief_health_middle", "##advchief_health_simple",
+          "##advchief_health_high", "##advchief_health_good", "##advchief_health_verygood", "##advchief_health_awesome",
+          "##advchief_health_perfect" };
 
 class HealthCare::Impl
 {
@@ -77,7 +81,7 @@ void HealthCare::timeStep(const unsigned int time )
       if( (*house)->habitants().count() > 0 )
       {
         _d->value += hLvl;
-        if( hLvl < 40 )
+        if( hLvl < health::bad )
         {
           _d->avgMinHealth += hLvl;
           houseWithBadHealth++;
@@ -88,11 +92,11 @@ void HealthCare::timeStep(const unsigned int time )
     _d->value /= (houses.size()+1);
     _d->avgMinHealth /= (houseWithBadHealth+1);
 
-    if( _d->avgMinHealth < 40 )
+    if( _d->avgMinHealth < health::bad )
     {
-      events::GameEventPtr e = events::WarningMessage::create( _d->avgMinHealth < 20
-                                                                ? "##advchief_health_terrible##"
-                                                                : "##advchief_health_bad##" );
+      GameEventPtr e = WarningMessage::create( _d->avgMinHealth < health::terrible
+                                               ? "##advchief_health_terrible##"
+                                               : "##advchief_health_bad##", 2 );
       e->dispatch();
     }
   }
@@ -102,15 +106,9 @@ unsigned int HealthCare::value() const { return _d->value; }
 
 std::string HealthCare::reason() const
 {
-  StringArray reasons;
+  StringArray reasons;  
 
-  std::string healthDescription[maxDescriptionLevel]
-      = { "##advchief_health_terrible", "##advchief_health_lower", "##advchief_health_low", "##advchief_health_bad",
-          "##advchief_health_less", "##advchief_health_middle", "##advchief_health_simple",
-          "##advchief_health_high", "##advchief_health_good", "##advchief_health_verygood", "##advchief_health_awesome",
-          "##advchief_health_perfect" };
-
-  int lvl = math::clamp<int>( _d->value / (100/maxDescriptionLevel), 0, maxDescriptionLevel-1 );
+  int lvl = math::clamp<int>( _d->value / (health::maxValue/health::levelNumber), 0, health::levelNumber-1 );
   std::string mainReason = healthDescription[ lvl ];
 
   BuildingList clinics = city::statistic::findo<Building>( _city(), object::clinic );
@@ -118,7 +116,7 @@ std::string HealthCare::reason() const
   mainReason += clinics.size() > 0 ? "_clinic##" : "##";
 
   reasons << mainReason;
-  if( lvl > maxDescriptionLevel / 3 )
+  if( lvl > health::levelNumber / 3 )
   {
     object::Type avTypes[] = { object::barber, object::baths, object::clinic, object::hospital, object::unknown };
     std::string avReasons[] = { "##advchief_some_need_barber##", "##advchief_some_need_baths##",
@@ -130,8 +128,8 @@ std::string HealthCare::reason() const
       object::TypeSet availableTypes;
       availableTypes.insert( avTypes[ i ] );
 
-      HouseList houses = statistic::getEvolveHouseReadyBy( _city(), availableTypes );
-      if( houses.size() > 0 )
+      HouseList housesWantEvolve = statistic::getEvolveHouseReadyBy( _city(), availableTypes );
+      if( housesWantEvolve.size() > 0 )
       {
         reasons << avReasons[i];
       }

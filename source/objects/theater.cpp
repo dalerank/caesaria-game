@@ -23,7 +23,6 @@
 #include "walker/walker.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::theater, Theater)
@@ -58,7 +57,7 @@ void Theater::deliverService()
 
   if( _animationRef().isRunning() )
   {
-    _fgPicturesRef().front() = Picture::load( ResourceGroup::entertaiment, 35 );
+    _fgPicturesRef().front() = Picture::load( ResourceGroup::entertainment, 35 );
   }
   else
   {

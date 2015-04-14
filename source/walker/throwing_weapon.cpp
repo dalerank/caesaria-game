@@ -22,7 +22,6 @@
 #include "gfx/tilemap.hpp"
 #include "core/foreach.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 class ThrowingWeapon::Impl
@@ -53,7 +52,8 @@ void ThrowingWeapon::toThrow(TilePos src, TilePos dst)
 
   _setWpos( _d->srcPos );
 
-  _city()->addWalker( this );
+  attach();
+
   const Tile& tile = _city()->tilemap().at( src );
   OverlayPtr ov = tile.overlay();
   if( ov.isValid() )
@@ -73,7 +73,7 @@ void ThrowingWeapon::toThrow(TilePos src, TilePos dst)
 
 const Point& ThrowingWeapon::mappos() const
 {
-  const Point& p = _wpos();
+  const Point& p = wpos();
   _d->amappos = Point( 2*(p.x() + p.y()), p.x() - p.y() ) + Point( 0, _d->height );
   return _d->amappos;
 }

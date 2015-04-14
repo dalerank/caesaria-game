@@ -31,9 +31,9 @@
 #include "core/foreach.hpp"
 #include "game/gamedate.hpp"
 #include "animals.hpp"
+#include "gfx/helper.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_SOLDIER_IN_WALKERFACTORY( walker::legionary, walker::legionary, RomeSoldier, legionary )
@@ -59,7 +59,7 @@ RomeSoldier::RomeSoldier( PlayerCityPtr city, walker::Type type )
 {
   setName( NameGenerator::rand( NameGenerator::male ) );
 
-  _d->patrolPosition = TilePos( -1, -1 );
+  _d->patrolPosition = gfx::tilemap::invalidLocation();
 }
 
 RomeSoldierPtr RomeSoldier::create(PlayerCityPtr city, walker::Type type)
@@ -240,16 +240,13 @@ RomeSoldier::~RomeSoldier(){}
 
 WalkerList RomeSoldier::_findEnemiesInRange( unsigned int range )
 {
-  Tilemap& tmap = _city()->tilemap();
   WalkerList walkers;
-
-  TilePos offset( range, range );
-  TilesArray tiles = tmap.getArea( pos() - offset, pos() + offset );
+  TilesArea area( _city()->tilemap(), pos(), range );
 
   FortPtr fort = base();
   bool attackAnimals = fort.isValid() ? fort->isAttackAnimals() : false;
 
-  foreach( tile, tiles )
+  foreach( tile, area )
   {
     WalkerList tileWalkers = _city()->walkers( (*tile)->pos() );
 
@@ -326,7 +323,7 @@ void RomeSoldier::_back2base()
   FortPtr b = base();
   if( b.isValid() )
   {
-    Pathway way = PathwayHelper::create( pos(), b->freeSlot(), PathwayHelper::allTerrain );
+    Pathway way = PathwayHelper::create( pos(), b->freeSlot( this ), PathwayHelper::allTerrain );
 
     if( way.isValid() )
     {
@@ -404,7 +401,7 @@ void RomeSoldier::_brokePathway(TilePos p)
 {
   Soldier::_brokePathway( p );
 
-  if( _d->patrolPosition.i() >= 0 )
+  if( gfx::tilemap::isValidLocation( _d->patrolPosition ) )
   {
     Pathway way = PathwayHelper::create( pos(), _d->patrolPosition,
                                          PathwayHelper::allTerrain );
@@ -449,11 +446,7 @@ void RomeSoldier::send2city(FortPtr base, TilePos pos )
   setPos( pos );
   _d->basePos = base->pos();
   _back2base();
-
-  if( !isDeleted() )
-  {
-    _city()->addWalker( this );
-  }
+  attach();
 }
 
 void RomeSoldier::send2expedition(const std::string& name)

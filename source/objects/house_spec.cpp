@@ -37,7 +37,6 @@
 #include <list>
 
 using namespace gfx;
-using namespace constants;
 
 class HouseSpecification::Impl
 {
@@ -112,14 +111,6 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing,
   {
     ref = "##low_desirability##";
     needBuilding = object::garden;
-    return false;
-  }
-
-  value = findLowLevelHouseNearby( house, reason );
-  if( value > 0 )
-  {
-    ref = "##nearby_building_negative_effect##";
-    needBuilding = object::house;
     return false;
   }
 
@@ -257,10 +248,34 @@ unsigned int HouseSpecification::getServiceConsumptionInterval() const{  return 
 unsigned int HouseSpecification::foodConsumptionInterval() const{  return _d->foodInterval; }
 unsigned int HouseSpecification::getGoodConsumptionInterval() const{ return _d->goodInterval; }
 
-int HouseSpecification::findLowLevelHouseNearby(HousePtr house, std::string& oMissingRequirement) const
+int HouseSpecification::findUnwishedBuildingNearby(HousePtr house, object::Type& rType, TilePos& refPos ) const
 {
-  Size size = house->size();
-  TilePos offset( size.width(), size.height() );
+  int aresOffset = math::clamp<int>( house->spec().level() / 5, 1, 10 );
+  TilePos offset( aresOffset, aresOffset );
+  TilePos housePos = house->pos();
+  int houseDesrbl = house->desirability().base;
+  BuildingList buildings = city::statistic::findo<Building>( house->_city(), object::any, housePos - offset, housePos + offset );
+
+  int ret = 0;
+  foreach( it, buildings )
+  {
+    int desValue = (*it)->desirability().base;
+    if( desValue < 0 && houseDesrbl > desValue && abs( houseDesrbl - desValue ) > 1 )
+    {
+      ret = 1;
+      refPos = (*it)->pos();
+      rType = (*it)->type();
+      break;
+    }
+  }
+
+  return ret;
+}
+
+int HouseSpecification::findLowLevelHouseNearby(HousePtr house, TilePos& refPos ) const
+{
+  int aresOffset = math::clamp<int>( house->spec().level() / 5, 1, 10 );
+  TilePos offset( aresOffset, aresOffset );
   TilePos housePos = house->pos();
   HouseList houses = city::statistic::findo<House>( house->_city(), object::house, housePos - offset, housePos + offset );
 
@@ -272,7 +287,7 @@ int HouseSpecification::findLowLevelHouseNearby(HousePtr house, std::string& oMi
     if( pop > 0 && (_d->houseLevel - bLevel > 2) )
     {
       ret = 1;
-      oMissingRequirement = object::toString( (*it)->type() );
+      refPos = (*it)->pos();
       break;
     }
   }
@@ -611,17 +626,15 @@ int HouseSpecification::computeDesirabilityLevel(HousePtr house, std::string& oM
 {
   PlayerCityPtr city = house->_city();
 
-  TilesArray area = city->tilemap().getArea( house->pos() - TilePos( 2, 2 ), house->size() + Size( 4 ) );
+  TilesArea area( city->tilemap(), house->pos() - TilePos( 2, 2 ), house->size() + Size( 4 ) );
 
   float middleDesirbl = 0;;
 
   foreach( tile, area )
-  {
     middleDesirbl += (float)(*tile)->param( Tile::pDesirability );
-  }
 
   if( !area.empty() )
-   middleDesirbl /= area.size();
+    middleDesirbl /= area.size();
 
   return (int)middleDesirbl;
 }

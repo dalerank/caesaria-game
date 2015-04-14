@@ -112,7 +112,7 @@ void LoadMission::Impl::fillFiles()
     return;
   lbxFiles->clear();
 
-  vfs::Entries flist = vfs::Directory( directory ).getEntries();
+  vfs::Entries flist = vfs::Directory( directory ).entries();
   flist = flist.filter( vfs::Entries::file | vfs::Entries::extFilter, ".mission" );
 
   StringArray names;

@@ -20,16 +20,16 @@
 #define _CAESARIA_VIDEO_CONFIG_H_INCLUDE_
 
 #include "vfs/directory.hpp"
+#include "core/singleton.hpp"
 
 namespace movie
 {
 
-class Config
+class Config : public StaticSingleton<Config>
 {
+  friend class StaticSingleton;
 public:
-  static Config& instance();
-
-  void loadAlias(const vfs::Path& filename );
+  void loadAlias( vfs::Path filename );
   void addFolder( vfs::Directory dir );
   vfs::Path realPath( const std::string& movie ) const;
 

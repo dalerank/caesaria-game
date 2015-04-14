@@ -31,14 +31,19 @@
 #include "vfs/directory.hpp"
 #include "gameautopause.hpp"
 #include "core/gettext.hpp"
+#include "environment.hpp"
 #include "widgetescapecloser.hpp"
+#include "dialogbox.hpp"
 
 using namespace gfx;
 
 namespace gui
 {
 
-class SaveDialog::Impl
+namespace dialog
+{
+
+class SaveGame::Impl
 {
 public:
   GameAutoPause locker;
@@ -48,44 +53,31 @@ public:
   ListBox* lbxSaves;
   vfs::Directory directory;
   std::string extension;
+  vfs::Path realFilename;
+
+public:
+  void findFiles();
 
 signals public:
   Signal1<std::string> onFileSelectedSignal;
-
-public:
-  void resolveButtonOkClick()
-  {
-    vfs::Path filename( edFilename->text() );
-    if( filename.extension().empty() )
-      filename = filename + extension;
-
-    emit onFileSelectedSignal( (directory/filename).toString() );
-  }
-
-  void resolveListboxChange( std::string text )
-  {
-    edFilename->setText( text );
-  }
-
-  void findFiles();
 };
 
-void SaveDialog::Impl::findFiles()
+void SaveGame::Impl::findFiles()
 {
-  vfs::Entries flist = directory.getEntries();
+  vfs::Entries flist = directory.entries();
   StringArray names;
   names << flist.filter( vfs::Entries::file | vfs::Entries::extFilter, extension );
   std::sort( names.begin(), names.end() );
   if( lbxSaves ) lbxSaves->addItems( names );
 }
 
-SaveDialog::SaveDialog(Widget* parent, vfs::Directory dir, std::string fileExt, int id )
-: Window( parent, Rect( 0, 0, 512, 384 ), "", id ), _d( new Impl )
+SaveGame::SaveGame(Ui *ui, vfs::Directory dir, std::string fileExt, int id )
+: Window( ui->rootWidget(), Rect( 0, 0, 512, 384 ), "", id ), _d( new Impl )
 {
   _d->locker.activate();
   Widget::setupUI( ":/gui/savefile.gui" );
 
-  setCenter( parent->center() );
+  setCenter( parent()->center() );
 
   WidgetEscapeCloser::insertTo( this );
   
@@ -97,16 +89,55 @@ SaveDialog::SaveDialog(Widget* parent, vfs::Directory dir, std::string fileExt, 
   _d->directory = dir;
   _d->extension = fileExt;
 
-  CONNECT( _d->lbxSaves, onItemSelectedAgain(), _d.data(), Impl::resolveListboxChange );
-  CONNECT( _d->btnOk, onClicked(), _d.data(), Impl::resolveButtonOkClick );
-  CONNECT( _d->btnOk, onClicked(), this, SaveDialog::deleteLater );
-  CONNECT( _d->btnCancel, onClicked(), this, SaveDialog::deleteLater );
+  CONNECT( _d->lbxSaves,  onItemSelectedAgain(), this, SaveGame::_resolveDblListboxChange )
+  CONNECT( _d->lbxSaves,  onItemSelected(),      this, SaveGame::_resolveListboxChange )
+  CONNECT( _d->btnOk,     onClicked(),           this, SaveGame::_resolveOkClick )
+  CONNECT( _d->btnCancel, onClicked(),           this, SaveGame::deleteLater )
 
   _d->findFiles();
   setModal();
 }
 
-void SaveDialog::draw(gfx::Engine& painter )
+void SaveGame::_resolveOkClick()
+{
+  _d->realFilename = vfs::Path( _d->edFilename->text() );
+  if( _d->realFilename.extension().empty() )
+    _d->realFilename = _d->realFilename + _d->extension;
+
+  _d->realFilename = _d->directory/_d->realFilename;
+
+  if( _d->realFilename.exist() )
+  {
+    Dialog* dialog = Confirmation( ui(),
+                                   _("##warning##"),
+                                   _("##save_already_exist##") );
+
+    CONNECT( dialog, onOk(), this, SaveGame::_save )
+  }
+  else
+  {
+    _save();
+  }
+}
+
+void SaveGame::_resolveListboxChange( const ListBoxItem& item )
+{
+  _d->edFilename->setText( vfs::Path( item.text() ).baseName( false ).toString() );
+}
+
+void SaveGame::_resolveDblListboxChange( const ListBoxItem& item )
+{
+  _d->edFilename->setText( vfs::Path( item.text() ).baseName( false ).toString() );
+  _resolveOkClick();
+}
+
+void SaveGame::_save()
+{
+  emit _d->onFileSelectedSignal( _d->realFilename.toString() );
+  deleteLater();
+}
+
+void SaveGame::draw(gfx::Engine& painter )
 {
   if( !visible() )
     return;
@@ -114,6 +145,8 @@ void SaveDialog::draw(gfx::Engine& painter )
   Window::draw( painter );
 }
 
-Signal1<std::string>& SaveDialog::onFileSelected() {  return _d->onFileSelectedSignal; }
+Signal1<std::string>& SaveGame::onFileSelected() {  return _d->onFileSelectedSignal; }
+
+}//end namespace dialog
 
 }//end namespace gui

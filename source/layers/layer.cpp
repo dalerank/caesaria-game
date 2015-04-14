@@ -30,7 +30,7 @@
 #include "gfx/tilemap_camera.hpp"
 #include "city/city.hpp"
 #include "core/font.hpp"
-#include "layerconstants.hpp"
+#include "constants.hpp"
 #include "gfx/decorator.hpp"
 #include "core/utils.hpp"
 #include "gfx/walker_debuginfo.hpp"
@@ -38,7 +38,6 @@
 #include "core/logger.hpp"
 #include "gfx/animation_bank.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace citylayer
@@ -372,6 +371,7 @@ void Layer::drawTile(Engine& engine, Tile& tile, const Point& offset)
     if( tile.rov().isValid() )
     {
       registerTileForRendering( tile );     
+      drawPass( engine, tile, offset, Renderer::overlayGround );
       drawPass( engine, tile, offset, Renderer::overlay );
       drawPass( engine, tile, offset, Renderer::overlayAnimation );
     }

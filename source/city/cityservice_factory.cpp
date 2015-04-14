@@ -18,15 +18,17 @@
 #include "cityservice_factory.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
+#include "city/city.hpp"
 #include "cityservice_timers.hpp"
 
 namespace city
 {
 
+typedef std::vector< ServiceCreatorPtr > Creators;
+
 class ServiceFactory::Impl
 {
 public:
-  typedef std::vector< ServiceCreatorPtr > Creators;
   Creators creators;
 };
 

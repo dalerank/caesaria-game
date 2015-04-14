@@ -34,10 +34,12 @@
 #include "game/gamedate.hpp"
 #include "walker/workerhunter.hpp"
 #include "events/returnworkers.hpp"
+#include "gfx/tilearea.hpp"
 #include "objects_factory.hpp"
+#include "city/states.hpp"
 
-using namespace constants;
 using namespace gfx;
+using namespace events;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::fountain, Fountain)
 
@@ -93,8 +95,7 @@ void Fountain::timeStep(const unsigned long time)
 
     if( mayWork() )
     {
-      Tilemap& tmap = _city()->tilemap();
-      TilesArray reachedTiles = tmap.getArea( _d->fillDistance, pos() );
+      TilesArea reachedTiles( _city()->tilemap(), pos(), _d->fillDistance );
 
       foreach( tile, reachedTiles )
       {
@@ -168,7 +169,7 @@ bool Fountain::isNeedRoad() const { return false; }
 
 bool Fountain::haveReservoirAccess() const
 {
-  TilesArray reachedTiles = _city()->tilemap().getArea( 10, pos() );
+  TilesArea reachedTiles( _city()->tilemap(), pos(), 10 );
   foreach( tile, reachedTiles )
   {
     OverlayPtr overlay = (*tile)->overlay();
@@ -185,14 +186,14 @@ void Fountain::destroy()
 {
   ServiceBuilding::destroy();
 
-  Tilemap& tmap = _city()->tilemap();
-  TilesArray reachedTiles = tmap.getArea( _d->fillDistance, pos() );
+  TilesArea reachedTiles( _city()->tilemap(), pos(), _d->fillDistance );
 
-  foreach( tile, reachedTiles ) { (*tile)->setParam( Tile::pFountainWater, 0 ); }
+  foreach( tile, reachedTiles )
+    { (*tile)->setParam( Tile::pFountainWater, 0 ); }
 
   if( numberWorkers() > 0 )
   {
-    events::GameEventPtr e = events::ReturnWorkers::create( pos(), numberWorkers() );
+    GameEventPtr e = ReturnWorkers::create( pos(), numberWorkers() );
     e->dispatch();
   }
 }

@@ -17,7 +17,7 @@
 
 #include "updatecitysentiment.hpp"
 #include "game/game.hpp"
-#include "city/city.hpp"
+#include "city/statistic.hpp"
 #include "city/sentiment.hpp"
 
 namespace events
@@ -40,8 +40,7 @@ void UpdateCitySentiment::_exec(Game& game, unsigned int)
 {
   PlayerCityPtr city = game.city();
 
-  city::SentimentPtr srvc;
-  srvc << city->findService( city::Sentiment::defaultName() );
+  city::SentimentPtr srvc = city::statistic::finds<city::Sentiment>( city );
 
   if( srvc.isValid() )
   {

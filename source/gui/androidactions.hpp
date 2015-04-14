@@ -28,6 +28,7 @@ class AndroidActionsBar : public Window
 {
 public:
   virtual void beforeDraw( gfx::Engine& painter);
+  virtual bool onEvent(const NEvent &event);
   AndroidActionsBar( Widget* parent );
 
 public signals:
@@ -35,6 +36,7 @@ public signals:
   Signal0<>& onEscapeClicked();
   Signal0<>& onEnterClicked();
   Signal0<>& onRequestMenu();
+  Signal1<int>& onChangeZoom();
 
 private:
   class Impl;

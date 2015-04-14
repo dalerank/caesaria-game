@@ -19,6 +19,7 @@
 #define _CAESARIA_POSTPONEEVENT_H_INCLUDE_
 
 #include "event.hpp"
+#include "core/scopedptr.hpp"
 
 namespace events
 {

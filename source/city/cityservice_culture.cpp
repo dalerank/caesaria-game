@@ -31,61 +31,74 @@
 #include "objects/constants.hpp"
 #include "objects/theater.hpp"
 #include "cityservice_factory.hpp"
-
-using namespace constants;
+#include "city/states.hpp"
 
 namespace city
 {
 
 REGISTER_SERVICE_IN_FACTORY(CultureRating,culture)
 
-struct Coverage2Point{
+namespace coverage
+{
+enum { levelNumber = 6 };
+struct Point {
   double coverage;
   int points;
-} ;
+};
+typedef Point Points[ levelNumber ];
+static const Points religion =  { {1.0,30}, {0.86,22}, {0.71,14}, {0.51,9}, {0.31,3}, {0.0,0} };
+static const Points theatres =  { {1.0,25}, {0.86,18}, {0.71,12}, {0.51,8}, {0.31,3}, {0.0,0} };
+static const Points libraries = { {1.0,20}, {0.86,14}, {0.71,8},  {0.51,4}, {0.31,2}, {0.0,0} };
+static const Points schools =   { {1.0,15}, {0.86,10}, {0.71,6},  {0.51,4}, {0.31,1}, {0.0,0} };
+static const Points academies = { {1.0,10}, {0.86,7},  {0.71,4},  {0.51,2}, {0.31,1}, {0.0,0} };
 
-typedef Coverage2Point CoveragePoints[6];
-static const CoveragePoints religionPoints  = { {1.0, 30}, {0.86,22}, {0.71,14}, {0.51, 9}, {0.31, 3}, {0.0, 0} };
-static const CoveragePoints theatresPoints  = { {1.0, 25}, {0.86,18}, {0.71,12}, {0.51, 8}, {0.31, 3}, {0.0, 0} };
-static const CoveragePoints librariesPoints = { {1.0, 20}, {0.86,14}, {0.71,8 }, {0.51, 4}, {0.31, 2}, {0.0, 0} };
-static const CoveragePoints schoolsPoints   = { {1.0, 15}, {0.86,10}, {0.71,6 }, {0.51, 4}, {0.31, 1}, {0.0, 0} };
-static const CoveragePoints academiesPoints = { {1.0, 10}, {0.86,7 }, {0.71,4 }, {0.51, 2}, {0.31, 1}, {0.0, 0} };
+struct SubRating
+{
+  const Points& intervals;
+  int coverage;
+  int value;
+  int visitors;
+
+  SubRating( const Points& v) : intervals(v), coverage(0), value(0) {}
+
+  void update( double coverageValue )
+  {
+    value = 0;
+    coverageValue = std::min( coverageValue, 1.0 );
+    coverage = coverageValue * 100;
+    for( int i=0; i < coverage::levelNumber; i++ )
+    {
+      if( coverageValue >= intervals[ i ].coverage )
+      {
+        value = intervals[ i ].points * coverageValue;
+        break;
+      }
+    }
+  }
+};
+
+}//end namespace coverage
 
 class CultureRating::Impl
 {
 public:
   DateTime lastDate;
   int culture;
-  int parishionersCount;
-  int theaterVisitors;
-  int libraryVisitors;
-  int schoolVisitors;
-  int collegeVisitors;
-  float religionCoverage;
-  float theatersCoverage;
-  float libraryCoverage;
-  float schoolCoverage;
-  float collegeCoverage;
+  coverage::SubRating religion;
+  coverage::SubRating theaters;
+  coverage::SubRating libraries;
+  coverage::SubRating schools;
+  coverage::SubRating academies;
   float hippodromeCoverage;
-  int religionPoints;
-  int theatresPoints;
-  int libraryPoints;
-  int schoolPoints;
+
   int collegePoints;
 
-  int convCoverage2Points( const CoveragePoints& covp, double value )
-  {
-    value = std::min( value, 1.0 );
-    for( int i=0; i < 6; i++ )
-    {
-      if( value >= covp[ i ].coverage )
-      {
-        return (int)(covp[ i ].points * value);
-      }
-    }
-
-    return 0;
-  }
+  Impl() : religion(coverage::religion),
+           theaters(coverage::theatres),
+           libraries(coverage::libraries),
+           schools(coverage::schools),
+           academies(coverage::academies)
+           {}
 };
 
 SrvcPtr CultureRating::create( PlayerCityPtr city )
@@ -111,57 +124,54 @@ void CultureRating::timeStep(const unsigned int time )
   if( _d->lastDate.monthsTo( game::Date::current() ) > 0 )
   {
     _d->lastDate = game::Date::current();
-    _d->parishionersCount = 0;
-    _d->theaterVisitors = 0;
-    _d->libraryVisitors = 0;
-    _d->schoolVisitors = 0;
-    _d->collegeVisitors = 0;
-    int cityPopulation = _city()->population();
+    _d->religion.visitors = 0;
+    _d->theaters.visitors = 0;
+    _d->libraries.visitors = 0;
+    _d->schools.visitors = 0;
+    _d->academies.visitors = 0;
+    int cityPopulation = _city()->states().population;
 
     TempleList temples = city::statistic::findo<Temple>( _city(), object::group::religion );
-    foreach( temple, temples )
-    {
-      _d->parishionersCount += (*temple)->parishionerNumber();
-    }
-
-    _d->religionCoverage = _d->parishionersCount / (float)cityPopulation;
-    _d->religionPoints = _d->convCoverage2Points( religionPoints, _d->religionCoverage );
+    foreach( temple, temples ) { _d->religion.visitors += (*temple)->parishionerNumber(); }
+    _d->religion.update( _d->religion.visitors / (float)cityPopulation );
 
     TheaterList theaters = city::statistic::findo<Theater>( _city(), object::theater );
-    foreach( theater, theaters )
-    {
-      _d->theaterVisitors += (*theater)->currentVisitors();
-    }
-    _d->theatersCoverage = _d->theaterVisitors / (float)cityPopulation;
-    _d->theatresPoints = _d->convCoverage2Points( theatresPoints, _d->theatersCoverage );
+    foreach( theater, theaters ) { _d->theaters.visitors += (*theater)->currentVisitors(); }
+    _d->theaters.update( _d->theaters.visitors / (float)cityPopulation );
 
     LibraryList libraries = city::statistic::findo<Library>( _city(), object::library );
-    foreach( library, libraries )
-    {
-      _d->libraryVisitors += (*library)->getVisitorsNumber();
-    }
-    _d->libraryCoverage = _d->libraryVisitors / (float)cityPopulation;
-    _d->libraryPoints = _d->convCoverage2Points( librariesPoints, _d->libraryCoverage );
+    foreach( library, libraries ) { _d->libraries.visitors += (*library)->currentVisitors(); }
+    _d->libraries.update( _d->libraries.visitors / (float)cityPopulation );
 
     SchoolList schools = city::statistic::findo<School>( _city(), object::school );
-    foreach( school, schools )
-    {
-      _d->schoolVisitors += (*school)->getVisitorsNumber();
-    }
-    _d->schoolCoverage = _d->schoolVisitors / (float)cityPopulation;
-    _d->schoolPoints = _d->convCoverage2Points( schoolsPoints, _d->schoolCoverage );
+    foreach( school, schools ) { _d->schools.visitors += (*school)->currentVisitors(); }
+
+    _d->schools.update( _d->schools.visitors / (float)cityPopulation );
 
     AcademyList colleges = city::statistic::findo<Academy>( _city(), object::academy );
-    foreach( college, colleges )
-    {
-      _d->collegeVisitors += (*college)->getVisitorsNumber();
-    }
-    _d->collegeCoverage = _d->collegeVisitors / (float)cityPopulation;
-    _d->collegePoints = _d->convCoverage2Points( academiesPoints, _d->collegeCoverage );
+    foreach( college, colleges ) { _d->academies.visitors += (*college)->currentVisitors(); }
+    _d->academies.update( _d->academies.visitors / (float)cityPopulation );
 
-    _d->culture = ( _d->culture + _d->religionPoints + _d->theatresPoints + 
-                    _d->libraryPoints + _d->schoolPoints + _d->collegePoints ) / 2;    
-  }
+    _d->culture = ( _d->culture + _d->religion.value + _d->theaters.value +
+                    _d->libraries.value + _d->schools.value + _d->academies.value ) / 2;
+    }
+}
+
+VariantMap CultureRating::save() const
+{
+  VariantMap ret = Srvc::save();
+  VARIANT_SAVE_ANY_D( ret, _d, lastDate )
+  VARIANT_SAVE_ANY_D( ret, _d, culture  )
+
+  return ret;
+}
+
+void CultureRating::load(const VariantMap &stream)
+{
+  Srvc::load( stream );
+
+  VARIANT_LOAD_TIME_D( _d, lastDate, stream )
+  VARIANT_LOAD_ANY_D ( _d, culture,  stream )
 }
 
 int CultureRating::value() const {  return _d->culture; }
@@ -170,11 +180,11 @@ int CultureRating::coverage( Coverage type) const
 {
   switch( type )
   {
-  case covSchool: return _d->schoolCoverage * 100;
-  case covLibrary: return _d->libraryCoverage * 100;
-  case covAcademy: return _d->collegeCoverage * 100;
-  case covReligion: return _d->religionCoverage * 100;
-  case covTheatres: return _d->theatersCoverage * 100;
+  case covSchool: return _d->schools.coverage * 100;
+  case covLibrary: return _d->libraries.coverage * 100;
+  case covAcademy: return _d->academies.coverage * 100;
+  case covReligion: return _d->religion.coverage * 100;
+  case covTheatres: return _d->theaters.coverage * 100;
   default: return 0;
   }
 }

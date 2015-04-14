@@ -21,12 +21,12 @@
     finishDate : "70.01.01"
     favour : 40
     next : ":/missions/mission6.briefing"
-    title : "##win_procurator_title##"
+    title : "##consul##"
     win.text : "##lutetia_win_text##"
     may_continue : false
     maxHouseLevel : "big_villa"
-    caption : "##mediolanum_5_title##"
-    overview :  [ "##mediolanum_5_overview##" ]
+    caption : "##lutetia_title##"
+    overview :  [ "##lutetia_overview##" ]
   }
 	
   empire : {

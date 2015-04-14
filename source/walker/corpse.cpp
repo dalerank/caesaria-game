@@ -27,7 +27,6 @@
 #include "game/gamedate.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::corpse, Corpse)
@@ -87,7 +86,7 @@ WalkerPtr Corpse::create( PlayerCityPtr city, TilePos pos,
   {
     corpse->_animationRef().load( rcGroup, startIndex, stopIndex - startIndex );
     corpse->_animationRef().setLoop( false );
-    corpse->_animationRef().setDelay( 1 );
+    corpse->_animationRef().setDelay( Animation::fast );
     corpse->_d->lastFrameIndex = corpse->_animationRef().index();
   }
   else
@@ -97,8 +96,8 @@ WalkerPtr Corpse::create( PlayerCityPtr city, TilePos pos,
 
   WalkerPtr ret( corpse );
   ret->drop();
+  ret->attach();
 
-  city->addWalker( ret );
   return ret;
 }
 
@@ -145,21 +144,21 @@ void Corpse::save( VariantMap& stream ) const
   Walker::save( stream );
 
   stream[ "animation" ] = _animationRef().save();
-  stream[ "time" ] = _d->time;
-  stream[ "loop" ] = _d->loop;
+  VARIANT_SAVE_ANY_D( stream, _d, time )
+  VARIANT_SAVE_ANY_D( stream, _d, loop )
 }
 
 void Corpse::load( const VariantMap& stream )
 {
   Walker::load( stream );
 
-  _d->time = (int)stream.get( "time" );
-  _d->loop = stream.get( "loop" );
+  VARIANT_LOAD_ANY_D( _d, time, stream )
+  VARIANT_LOAD_ANY_D( _d, loop, stream )
 
   _animationRef().load( stream.get( "animation" ).toMap() );
   if( _animationRef().delay() == 0 )
   {
-    _animationRef().setDelay( 2 );
+    _animationRef().setDelay( Animation::middle );
     _animationRef().setLoop( false );
   }
 }

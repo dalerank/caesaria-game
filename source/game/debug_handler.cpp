@@ -20,7 +20,8 @@
 #include "core/logger.hpp"
 #include "religion/pantheon.hpp"
 #include "city/statistic.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
+#include "game/player.hpp"
 #include "events/random_animals.hpp"
 #include "walker/enemysoldier.hpp"
 #include "walker/walkers_factory.hpp"
@@ -28,10 +29,12 @@
 #include "gui/environment.hpp"
 #include "city/victoryconditions.hpp"
 #include "world/empire.hpp"
+#include "city/cityservice_festival.hpp"
 #include "world/romechastenerarmy.hpp"
 #include "world/barbarian.hpp"
 #include "core/saveadapter.hpp"
 #include "game/settings.hpp"
+#include "walker/romesoldier.hpp"
 #include "events/postpone.hpp"
 #include "layers/layer.hpp"
 #include "sound/engine.hpp"
@@ -48,12 +51,14 @@
 #include "events/random_damage.hpp"
 #include "events/changeemperor.hpp"
 #include "events/random_plague.hpp"
+#include "events/scribemessage.hpp"
 #include "world/emperor.hpp"
+#include "objects/warehouse.hpp"
 #include "vfs/archive.hpp"
 #include "vfs/filesystem.hpp"
 #include "game/resourceloader.hpp"
+#include "religion/config.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace citylayer;
 
@@ -96,7 +101,28 @@ enum {
   random_plague,
   reload_aqueducts,
   crash_favor,
-  run_script
+  add_scribe_messages,
+  send_venus_smallcurse,
+  send_mars_spirit,
+  run_script,
+  show_fest,
+  add_favor,
+  add_wheat_to_warehouse,
+  add_fish_to_warehouse,
+  add_olives_to_warehouse,
+  add_fruit_to_warehouse,
+  add_grape_to_warehouse,
+  add_vegetable_to_warehouse,
+  add_clay_to_warehouse,
+  add_timber_to_warehouse,
+  add_iron_to_warehouse,
+  add_marble_to_warehouse,
+  add_pottery_to_warehouse,
+  add_furniture_to_warehouse,
+  add_weapons_to_warehouse,
+  add_wine_to_warehouse,
+  add_oil_to_warehouse,
+  remove_favor
 };
 
 class DebugHandler::Impl
@@ -106,6 +132,7 @@ public:
 
   void handleEvent( int );
   EnemySoldierPtr makeEnemy( walker::Type type );
+  void addGoods2Wh( good::Product type );
   void runScript(std::string filename);
   gui::ContextMenu* debugMenu;
 
@@ -137,10 +164,28 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( "request", test_request )
 
   ADD_DEBUG_EVENT( "religion", send_mars_wrath )
+  ADD_DEBUG_EVENT( "religion", send_mars_spirit )
   ADD_DEBUG_EVENT( "religion", send_venus_wrath )
+  ADD_DEBUG_EVENT( "religion", send_venus_smallcurse )
 
   ADD_DEBUG_EVENT( "money", add_1000_dn )
   ADD_DEBUG_EVENT( "money", add_player_money )
+
+  ADD_DEBUG_EVENT( "goods", add_wheat_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_fish_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_olives_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_fruit_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_grape_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_vegetable_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_clay_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_timber_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_iron_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_marble_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_pottery_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_furniture_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_weapons_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_wine_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_oil_to_warehouse )
 
   ADD_DEBUG_EVENT( "other", send_player_army )
   ADD_DEBUG_EVENT( "other", screenshot )
@@ -158,7 +203,11 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( "city", add_city_border )
   ADD_DEBUG_EVENT( "city", send_exporter )
   ADD_DEBUG_EVENT( "city", crash_favor )
+  ADD_DEBUG_EVENT( "city", add_scribe_messages )
   ADD_DEBUG_EVENT( "city", run_script )
+  ADD_DEBUG_EVENT( "city", show_fest )
+  ADD_DEBUG_EVENT( "city", add_favor )
+  ADD_DEBUG_EVENT( "city", remove_favor )
 
   ADD_DEBUG_EVENT( "options", all_sound_off )
   ADD_DEBUG_EVENT( "options", reload_aqueducts )
@@ -185,14 +234,24 @@ DebugHandler::~DebugHandler() {}
 
 EnemySoldierPtr DebugHandler::Impl::makeEnemy( walker::Type type )
 {
-  WalkerPtr wlk = WalkerManager::instance().create( type, game->city() );
-  EnemySoldierPtr enemy = ptr_cast<EnemySoldier>( wlk );
+  EnemySoldierPtr enemy = WalkerManager::instance().create<EnemySoldier>( type, game->city() );
   if( enemy.isValid() )
   {
     enemy->send2City( game->city()->borderInfo().roadEntry );
   }
 
   return enemy;
+}
+
+void DebugHandler::Impl::addGoods2Wh(good::Product type)
+{
+  WarehouseList whList = city::statistic::findo<Warehouse>( game->city(), object::warehouse );
+  foreach( wh, whList)
+  {
+    WarehousePtr warehouse = *wh;
+    good::Stock stock(type, 400, 400 );
+    warehouse->store().store( stock, 400 );
+  }
 }
 
 void DebugHandler::Impl::runScript(std::string filename)
@@ -213,11 +272,11 @@ void DebugHandler::Impl::handleEvent(int event)
   switch( event )
   {
   case send_mars_wrath:
-    religion::rome::Pantheon::mars()->updateRelation( -101.f, game->city() );
+    religion::rome::Pantheon::mars()->updateRelation( religion::debug::doWrath, game->city() );
   break;
 
   case add_1000_dn:
-    game->city()->funds().resolveIssue(FundIssue(city::Funds::donation, 1000));
+    game->city()->treasury().resolveIssue(econ::Issue(econ::Issue::donation, 1000));
   break;
 
   case add_wolves:
@@ -241,6 +300,38 @@ void DebugHandler::Impl::handleEvent(int event)
   break;
 
   case add_player_money:    game->player()->appendMoney( 1000 );  break;
+
+  case add_favor:
+  case remove_favor:
+  {
+    std::string cityName = game->city()->name();
+    game->empire()->emperor().updateRelation( cityName, event == add_favor ? +10 : -10 );
+  }
+  break;
+
+  case show_fest:
+  {
+    city::FestivalPtr fest = city::statistic::finds<city::Festival>( game->city() );
+    if( fest.isValid() )
+      fest->now();
+  }
+  break;
+
+  case add_wheat_to_warehouse: addGoods2Wh( good::wheat ); break;
+  case add_fish_to_warehouse:  addGoods2Wh( good::fish  ); break;
+  case add_olives_to_warehouse: addGoods2Wh( good::olive); break;
+  case add_fruit_to_warehouse: addGoods2Wh( good::fruit ); break;
+  case add_grape_to_warehouse: addGoods2Wh( good::grape ); break;
+  case add_vegetable_to_warehouse:addGoods2Wh( good::vegetable); break;
+  case add_clay_to_warehouse:  addGoods2Wh( good::clay  ); break;
+  case add_timber_to_warehouse:addGoods2Wh( good::timber); break;
+  case add_iron_to_warehouse:  addGoods2Wh( good::iron  ); break;
+  case add_marble_to_warehouse:addGoods2Wh( good::marble); break;
+  case add_pottery_to_warehouse:addGoods2Wh( good::pottery); break;
+  case add_furniture_to_warehouse:addGoods2Wh( good::furniture); break;
+  case add_weapons_to_warehouse:addGoods2Wh( good::weapon ); break;
+  case add_wine_to_warehouse: addGoods2Wh( good::wine ); break;
+  case add_oil_to_warehouse: addGoods2Wh( good::oil ); break;
 
   case win_mission:
   case fail_mission:
@@ -283,12 +374,19 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
 
-  case add_city_border:   {    game->city()->tilemap().addBorder();  }  break;
+  case add_city_border:   {    game->city()->tilemap().addSvkBorder();  }  break;
 
   case toggle_experimental_options:
   {
     bool enable = SETTINGS_VALUE( experimental );
     SETTINGS_SET_VALUE( experimental, !enable );
+  }
+  break;
+
+  case add_scribe_messages:
+  {
+    events::GameEventPtr e = events::ScribeMessage::create( "test_message", "this is test message from yout scribes" );
+    e->dispatch();
   }
   break;
 
@@ -367,13 +465,21 @@ void DebugHandler::Impl::handleEvent(int event)
   break;
 
   case send_venus_wrath:
-    religion::rome::Pantheon::venus()->updateRelation( -101.f, game->city() );
+    religion::rome::Pantheon::venus()->updateRelation( religion::debug::doWrath, game->city() );
+  break;
+
+  case send_venus_smallcurse:
+    religion::rome::Pantheon::venus()->updateRelation( religion::debug::doSmallCurse, game->city() );
+  break;
+
+  case send_mars_spirit:
+    religion::rome::Pantheon::mars()->updateRelation( religion::debug::doBlessing, game->city() );
   break;
 
   case all_sound_off:
-    audio::Engine::instance().setVolume( audio::ambientSound, 0 );
-    audio::Engine::instance().setVolume( audio::themeSound, 0 );
-    audio::Engine::instance().setVolume( audio::gameSound, 0 );
+    audio::Engine::instance().setVolume( audio::ambient, 0 );
+    audio::Engine::instance().setVolume( audio::theme, 0 );
+    audio::Engine::instance().setVolume( audio::game, 0 );
   break;
 
   case run_script:
@@ -407,7 +513,14 @@ void DebugHandler::Impl::handleEvent(int event)
 
     foreach( it, forts )
     {
-      (*it)->setTraineeValue( walker::soldier, 100 );
+      int howMuchAdd = 16 - (*it)->walkers().size();
+      TilesArray tiles = (*it)->enterArea();
+      for( int i=0; i < howMuchAdd; i++ )
+      {
+        RomeSoldierPtr soldier = RomeSoldier::create( game->city(), walker::legionary );
+        soldier->send2city( *it, tiles.front()->pos() );
+        (*it)->addWalker( soldier.object() );
+      }
     }
   }
   break;

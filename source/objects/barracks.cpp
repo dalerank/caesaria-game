@@ -25,8 +25,6 @@
 #include "walker/cart_supplier.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
-
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::barracks, Barracks)
 
 class Barracks::Impl
@@ -54,10 +52,7 @@ void Barracks::deliverTrainee()
     CartSupplierPtr walker = CartSupplier::create( _city() );
     walker->send2city( this, good::weapon, 100 );
 
-    if( !walker->isDeleted() )
-    {
-      addWalker( walker.object() );
-    }
+    addWalker( walker.object() );
   }
 
   if( _d->store.qty( good::weapon ) >= 100 )

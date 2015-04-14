@@ -17,9 +17,7 @@
 #include "objects/objects_factory.hpp"
 #include "objects/building.hpp"
 #include "objects/constants.hpp"
-#include "layers/layerconstants.hpp"
-
-using namespace constants;
+#include "layers/constants.hpp"
 
 namespace gfx
 {

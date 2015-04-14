@@ -28,6 +28,7 @@ namespace gfx
 class Animation
 {
 public:
+  enum { nodelay=0, fast=1, middle=2, slow=3, verySlow=4, hugeSlow=8 };
   static const bool reverse = true;
   static const bool straight = false;
   static const bool loopAnimation = true;
@@ -74,8 +75,10 @@ public:
   void load( const std::string &prefix,
              const int start, const int number,
              bool reverse = false, const int step = 1);
-  VariantMap save() const;
+  void load( const std::string& alias );
   void load( const VariantMap& stream );
+
+  VariantMap save() const;
 
   bool isValid() const;
   void addFrame( const Picture& pic );

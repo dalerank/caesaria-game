@@ -29,7 +29,6 @@
 #include "events/warningmessage.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::road, Road)
@@ -79,7 +78,18 @@ bool Road::canBuild( const city::AreaInfo& areaInfo ) const
 
   OverlayPtr overlay  = areaInfo.city->tilemap().at( areaInfo.pos ).overlay();
 
-  Picture pic = picture( areaInfo );
+  Picture pic;
+  if( overlay.is<Aqueduct>() )
+  {
+    TilesArray tiles = areaInfo.aroundTiles;
+    tiles.push_back( &tile() );
+    city::AreaInfo advInfo = { areaInfo.city, areaInfo.pos, tiles };
+    pic = overlay.as<Aqueduct>()->picture( advInfo );
+  }
+  else
+  {
+    pic = picture( areaInfo );
+  }
   const_cast<Road*>( this )->setPicture( pic );
 
   return ( is_kind_of<Aqueduct>( overlay ) || is_kind_of<Road>( overlay ) );
@@ -266,7 +276,7 @@ Plaza::Plaza()
   // or we will run into big troubles
 
   setType(object::plaza);
-  setPicture( Picture::load( ResourceGroup::entertaiment, 102) ); // 102 ~ 107
+  setPicture( Picture::load( ResourceGroup::entertainment, 102) ); // 102 ~ 107
   setSize( Size( 1 ) );
 }
 
@@ -280,7 +290,7 @@ bool Plaza::canBuild(const city::AreaInfo& areaInfo) const
 
   bool is_constructible = true;
 
-  TilesArray area = tilemap.getArea( areaInfo.pos, size() ); // something very complex ???
+  TilesArea area( tilemap, areaInfo.pos, size() ); // something very complex ???
   foreach( tile, area )
   {
     is_constructible &= is_kind_of<Road>( (*tile)->overlay() );
@@ -357,12 +367,12 @@ const Picture& Plaza::picture() const
 {
   return tile().masterTile()
            ? Construction::picture()
-           : Picture::load( ResourceGroup::entertaiment, 102);
+           : Picture::load( ResourceGroup::entertainment, 102);
 }
 
 void Plaza::updatePicture()
 {
-  TilesArray nearTiles = _city()->tilemap().getArea( pos(), Size(2) );
+  TilesArea nearTiles( _city()->tilemap(), pos(), Size(2) );
 
   bool canGrow2squarePlaza = ( nearTiles.size() == 4 ); // be carefull on map edges
   foreach( tile, nearTiles )

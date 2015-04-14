@@ -30,7 +30,6 @@
 #include "game/gamedate.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::gladiatorSchool, GladiatorSchool)
@@ -101,8 +100,5 @@ void LionsNursery::deliverTrainee()
   LionTamerPtr tamer = LionTamer::create( _city() );
   tamer->send2City( this, true );
 
-  if( !tamer->isDeleted() )
-  {
-    addWalker( tamer.object() );
-  }
+  addWalker( tamer.object() );
 }

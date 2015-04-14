@@ -25,7 +25,6 @@
 #include "vfs/file.hpp"
 #include "vfs/archive.hpp"
 
-
 class ResourceLoader
 {
 public:

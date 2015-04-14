@@ -42,6 +42,7 @@ ScrollBar::ScrollBar(  Widget* parent, const Rect& rectangle,
 	_d->upButton = 0;
 	_d->downButton = 0;
 	_d->lastTimeChange = 0l;
+  _d->needRecalculateParams = true;
 
   _d->sliderPictureUp = Picture::load( ResourceGroup::panelBackground, 61 );
   _d->sliderPictureDown = Picture::load( ResourceGroup::panelBackground, 53 );

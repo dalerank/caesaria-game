@@ -23,6 +23,7 @@
 class Amphitheater : public EntertainmentBuilding
 {
 public:
+  typedef enum { theatrical=0, gladiatorBouts } PlayType;
   Amphitheater();
 
   virtual bool build( const city::AreaInfo& info );
@@ -34,15 +35,11 @@ public:
   virtual std::string workersStateDesc() const;
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
-
-  DateTime lastShowDate() const;
-  DateTime lastBoutsDate() const;
   virtual int maxVisitors() const;
 
-  bool isShowGladiatorBouts() const;
-  bool isActorsShow() const;
-
-  bool isNeed( constants::walker::Type type );
+  bool isShow( PlayType type ) const;
+  DateTime lastShow( PlayType type ) const;
+  bool isNeed( walker::Type type );
 
 protected:
   virtual WalkerList _specificWorkers() const;

@@ -27,8 +27,6 @@
 #include "infobox_land.hpp"
 #include <vector>
 
-using namespace constants;
-
 namespace gui
 {
 
@@ -49,7 +47,7 @@ template< class T >
 class CitizenInfoboxParser : public InfoboxCreator
 {
 public:
-  gui::infobox::Simple* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
+  gui::infobox::Infobox* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
     WalkerList walkers = city->walkers( pos );
     
@@ -72,7 +70,7 @@ template< class T >
 class SpecificCitizenInfoboxCreator : public Creator
 {
 public:
-  gui::infobox::Simple* create(  gui::Widget* parent, PlayerCityPtr city, const TilePos& pos )
+  Infobox* create(  gui::Widget* parent, PlayerCityPtr city, const TilePos& pos )
   {
     return new T( parent, city, pos );
   }
@@ -91,7 +89,7 @@ void PManager::loadInfoboxes()
 
 PManager::~PManager() {}
 
-void PManager::addCreator( constants::walker::Type type, CreatorPtr c)
+void PManager::addCreator( walker::Type type, CreatorPtr c)
 {
   Impl::Creators::iterator it = _d->creators.find( type );
   if( it != _d->creators.end() )
@@ -103,7 +101,7 @@ void PManager::addCreator( constants::walker::Type type, CreatorPtr c)
   _d->creators[ type ] = c;
 }
 
-Simple* PManager::show( gui::Widget* parent, PlayerCityPtr city, const TilePos& pos )
+Infobox* PManager::show( gui::Widget* parent, PlayerCityPtr city, const TilePos& pos )
 {
   WalkerList walkers = city->walkers( pos );
   Impl::Creators::iterator it = _d->creators.find( walkers.empty() ? walker::unknown : walkers.front()->type() );
@@ -121,8 +119,8 @@ PManager::PManager() : _d( new Impl )
 {
 }
 
-}
+}//end namespace citizen
 
-}
+}//end namespace infobox
 
-}
+}//end namespace gui

@@ -16,7 +16,7 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "layerdestroy.hpp"
-#include "layerconstants.hpp"
+#include "constants.hpp"
 #include "events/event.hpp"
 #include "walker/constants.hpp"
 #include "walker/walker.hpp"
@@ -29,14 +29,15 @@
 #include "core/utils.hpp"
 #include "objects/metadata.hpp"
 #include "events/fundissue.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "core/font.hpp"
+#include "gfx/tilearea.hpp"
 #include "build.hpp"
 #include "objects/tree.hpp"
 #include "game/settings.hpp"
 
-using namespace constants;
 using namespace gfx;
+using namespace events;
 
 namespace citylayer
 {
@@ -90,8 +91,6 @@ void Destroy::render( Engine& engine )
 
   _camera()->startFrame();
 
-  Tilemap& tmap = _city()->tilemap();
-
   std::set<int> hashDestroyArea;
   TilesArray destroyArea = _getSelectedArea( _d->startTilePos );
 
@@ -106,7 +105,7 @@ void Destroy::render( Engine& engine )
     OverlayPtr overlay = tile->overlay();
     if( overlay.isValid() )
     {
-      TilesArray overlayArea = tmap.getArea( overlay->tile().epos(), overlay->size() );
+      TilesArray overlayArea = overlay->area();
       foreach( ovelayTile, overlayArea )
       {
         hashDestroyArea.insert( tile::hash((*ovelayTile)->epos()));
@@ -273,7 +272,7 @@ void Destroy::init(Point cursor)
   _setLastCursorPos( cursor );
   _setStartCursorPos( cursor );
 
-  _d->startTilePos = TilePos( -1, -1 );
+  _d->startTilePos = gfx::tilemap::invalidLocation();
 
   LayerPtr layer = _d->renderer->currentLayer();
   if( layer.isValid() )
@@ -313,7 +312,7 @@ void Destroy::handleEvent(NEvent& event)
         _setStartCursorPos( _lastCursorPos() );
 
        Tile* tile = _camera()->at( _lastCursorPos(), true );
-        _d->startTilePos = tile ? tile->epos() : TilePos( -1, -1 );
+        _d->startTilePos = tile ? tile->epos() : gfx::tilemap::invalidLocation();
       }
     }
     break;
@@ -322,7 +321,7 @@ void Destroy::handleEvent(NEvent& event)
     {
       _clearAll();
       _setStartCursorPos( _lastCursorPos() );
-      events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::buildConstruction, -_d->money4destroy );
+      GameEventPtr e = Payment::create( econ::Issue::buildConstruction, -_d->money4destroy );
       e->dispatch();      
     }
     break;

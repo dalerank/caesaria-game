@@ -42,24 +42,30 @@ public:
   virtual ~Path();
 
   bool exist( SensType sens=nativeCase ) const;
+  bool empty() const;
   bool isFolder() const;
   bool isDirectoryEntry() const;
-
-  std::string extension() const;
 
   //Returns the suffix of the file.
   //The suffix consists of all characters in the file after (but not including) the last '.'.
   std::string suffix() const;
   
   Path addEndSlash() const;
-  Path removeBeginSlash() const;
   Path removeEndSlash() const;
+
+  Path removeBeginSlash() const;
+
   char lastChar() const;
   char firstChar() const;
  
   const std::string& toString() const;
+  const char* toCString() const;
+
+  std::string extension() const;
+  bool haveExtension() const;
   std::string removeExtension() const;
   Path changeExtension( const std::string& newExtension ) const;
+  bool isMyExtension( const std::string& ext, bool checkCase=true ) const;
 
   void splitToDirPathExt( Path* path, Path* filename=0, Path* extension=0 );
 
@@ -78,8 +84,6 @@ public:
   bool operator==(const std::string& other) const;
 
   char& operator[](const unsigned int index);
-
-  bool isMyExtension( const std::string& ext, bool checkCase=true ) const;
 
   //! Returns the base part of a filename, i.e. the name without the directory
   //! part. If no directory is prefixed, the full name is returned.

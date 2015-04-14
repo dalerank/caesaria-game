@@ -13,10 +13,11 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include <cstring>
 
+#include "core/color.hpp"
 #include "variant.hpp"
 #include "variant_map.hpp"
 #include "variantprivate.hpp"
@@ -24,113 +25,78 @@
 
 static Variant::Type staticNameToType( const char* name )
 {
-	if( !strcmp( name, typeid(bool).name() ) )
-		return Variant::Bool;
-	if( !strcmp( name, typeid(int).name() ) )
-		return Variant::Int;
-	if( !strcmp( name, typeid(bool).name() ) )
-		return Variant::Bool;
-	if( !strcmp( name, typeid(unsigned int).name() ) )
-		return Variant::UInt;
-	if( !strcmp( name, typeid(long long).name() ) )
-		return Variant::LongLong;
-	if( !strcmp( name, typeid(bool).name() ) )
-		return Variant::Bool;
-	if( !strcmp( name, typeid(double).name() ) )
-		return Variant::Double;
-	if( !strcmp( name, typeid(char).name() ) )
-		return Variant::Char;
-	if( !strcmp( name, typeid(VariantMap).name() ) )
-		return Variant::Map;
-	if( !strcmp( name, typeid(VariantList).name() ) )
-		return Variant::List;
-  if( !strcmp( name, typeid(std::string).name() ) )
-		return Variant::String;
-	if( !strcmp( name, typeid(StringArray).name() ) )
-		return Variant::NStringArray;
-	if( !strcmp( name, typeid(ByteArray).name() ) )
-		return Variant::NByteArray;
-	if( !strcmp( name, typeid(DateTime).name() ) )
-		return Variant::NDateTime;
-	if( !strcmp( name, typeid(bool).name() ) )
-		return Variant::Bool;
-	if( !strcmp( name, typeid(Rect).name() ) )
-		return Variant::NRectI;
-	//if( !strcmp( name, typeid(RectF).name() ) )
-	//	return Variant::NRectF;
-	if( !strcmp( name, typeid(Size).name() ) )
-		return Variant::NSize;
-	//if( !strcmp( name, typeid(NSizeF).name() ) )
-	//	return Variant::SizeF;
-// 	if( !strcmp( name, typeid(Line).name() ) )
-// 		return Variant::Line;
-// 	if( !strcmp( name, typeid(LineF).name() ) )
-// 		return Variant::LineF;
-	if( !strcmp( name, typeid(Point).name() ) )
-		return Variant::NPoint;
-  if( !strcmp( name, typeid(TilePos).name() ) )
-    return Variant::NTilePos;
-	if( !strcmp( name, typeid(PointF).name() ) )
-		return Variant::NPointF;
-	//if( !strcmp( name, typeid(Font).name() ) )
-	//	return Variant::Font;
-// 	if( !strcmp( name, typeid(Pixmap).name() ) )
-// 		return Variant::Pixmap;
+  if( !strcmp( name, typeid(bool).name() ) ) return Variant::Bool;
+  if( !strcmp( name, typeid(int).name() ) )  return Variant::Int;
+  if( !strcmp( name, typeid(bool).name() ) ) return Variant::Bool;
+  if( !strcmp( name, typeid(unsigned int).name() ) ) return Variant::UInt;
+  if( !strcmp( name, typeid(long long).name() ) ) return Variant::LongLong;
+  if( !strcmp( name, typeid(bool).name() ) )  return Variant::Bool;
+  if( !strcmp( name, typeid(double).name() ) ) return Variant::Double;
+  if( !strcmp( name, typeid(char).name() ) )  return Variant::Char;
+  if( !strcmp( name, typeid(VariantMap).name() ) ) return Variant::Map;
+  if( !strcmp( name, typeid(VariantList).name() ) ) return Variant::List;
+  if( !strcmp( name, typeid(std::string).name() ) ) return Variant::String;
+  if( !strcmp( name, typeid(StringArray).name() ) ) return Variant::NStringArray;
+  if( !strcmp( name, typeid(ByteArray).name() ) )   return Variant::NByteArray;
+  if( !strcmp( name, typeid(DateTime).name() ) )    return Variant::NDateTime;
+  if( !strcmp( name, typeid(bool).name() ) )        return Variant::Bool;
+  if( !strcmp( name, typeid(Rect).name() ) )        return Variant::NRectI;
+  if( !strcmp( name, typeid(RectF).name() ) )       return Variant::NRectF;
+  if( !strcmp( name, typeid(Size).name() ) )        return Variant::NSize;
+  if( !strcmp( name, typeid(SizeF).name() ) )       return Variant::NSizeF;
+  if( !strcmp( name, typeid(Point).name() ) )       return Variant::NPoint;
+  if( !strcmp( name, typeid(TilePos).name() ) )     return Variant::NTilePos;
+  if( !strcmp( name, typeid(PointF).name() ) )      return Variant::NPointF;
 // 	if( !strcmp( name, typeid(Color).name() ) )
 // 		return Variant::Color;
 // 	
-  if( !strcmp( name, typeid(unsigned char).name() ) )
-		return Variant::Uchar;
-	if( !strcmp( name, typeid(unsigned short).name() ) )
-		return Variant::Ushort;
-	if( !strcmp( name, typeid(unsigned long).name() ) )
-		return Variant::Ulong;
-	if( !strcmp( name, typeid(long).name() ) )
-		return Variant::Long;
-	if( !strcmp( name, typeid(float).name() ) )
-		return Variant::Float;
+  if( !strcmp( name, typeid(unsigned char).name() ) )  return Variant::Uchar;
+  if( !strcmp( name, typeid(unsigned short).name() ) ) return Variant::Ushort;
+  if( !strcmp( name, typeid(unsigned long).name() ) )  return Variant::Ulong;
+  if( !strcmp( name, typeid(long).name() ) )   	       return Variant::Long;
+  if( !strcmp( name, typeid(float).name() ) )          return Variant::Float;
 
-	return Variant::Invalid;
+  return Variant::Invalid;
 }
 
 static std::string staticTypeToName( Variant::Type t)
 {
-    switch( t )
-	{
-	case Variant::Invalid:	return "Invalid";
-	case Variant::Bool : return "Bool";
-	case Variant::Int : return "Int";
-	case Variant::UInt : return "UInt";
-	case Variant::LongLong : return "LongLong";
-	case Variant::ULongLong : return "ULongLong";
-	case Variant::Double : return "Double";
-	case Variant::Char : return "Char";
-	case Variant::Map : return "Map";
-	case Variant::List : return "List";
-	case Variant::String : return "String";
-	case Variant::NStringArray : return "NStringArray";
-	case Variant::NByteArray : return "NByteArray";
-	case Variant::NDateTime : return "DateTime";
-	case Variant::NRectI : return "NRectI";
-	case Variant::NRectF : return "NRectF";
-	case Variant::NSize : return "Size";
-	case Variant::NSizeF : return "SizeF";
-	case Variant::Line : return "Line";
-	case Variant::LineF : return "LineF";
-	case Variant::NPoint : return "Point";
+  switch( t )
+  {
+  case Variant::Invalid:	return "Invalid";
+  case Variant::Bool : return "Bool";
+  case Variant::Int : return "Int";
+  case Variant::UInt : return "UInt";
+  case Variant::LongLong : return "LongLong";
+  case Variant::ULongLong : return "ULongLong";
+  case Variant::Double : return "Double";
+  case Variant::Char : return "Char";
+  case Variant::Map : return "Map";
+  case Variant::List : return "List";
+  case Variant::String : return "String";
+  case Variant::NStringArray : return "NStringArray";
+  case Variant::NByteArray : return "NByteArray";
+  case Variant::NDateTime : return "DateTime";
+  case Variant::NRectI : return "NRectI";
+  case Variant::NRectF : return "NRectF";
+  case Variant::NSize : return "Size";
+  case Variant::NSizeF : return "SizeF";
+  case Variant::Line : return "Line";
+  case Variant::LineF : return "LineF";
+  case Variant::NPoint : return "Point";
   case Variant::NTilePos : return "TilePos";
-	case Variant::NPointF : return "PointF";
-	case Variant::Font : return "Font";
-	case Variant::Pixmap : return "Pixmap";
-	case Variant::Color : return "Color";
-	case Variant::Uchar : return "Uchar";
-	case Variant::Ushort : return "Ushort";
-	case Variant::Ulong : return "ULong";
-	case Variant::Long : return "Long";
-	case Variant::Float : return "Float";
-	case Variant::UserType : return "UserType";
-	default: return "";
-	}
+  case Variant::NPointF : return "PointF";
+  case Variant::Font : return "Font";
+  case Variant::Pixmap : return "Pixmap";
+  case Variant::Color : return "Color";
+  case Variant::Uchar : return "Uchar";
+  case Variant::Ushort : return "Ushort";
+  case Variant::Ulong : return "ULong";
+  case Variant::Long : return "Long";
+  case Variant::Float : return "Float";
+  case Variant::UserType : return "UserType";
+  default: return "";
+  }
 }
 
 typedef void (*f_construct)(Variant2Impl*, const void *);
@@ -161,76 +127,32 @@ static bool checkVariantNull( const Variant2Impl *x )
 
 static void constructNewVariant( Variant2Impl *x, const void *copy)
 {
-	switch (x->type) 
-	{
-	case Variant::String:
-    v_construct<std::string>(x, copy);
-		break;
-	case Variant::NStringArray:
-		v_construct<StringArray>(x, copy);
-		break;
-	case Variant::Map:
-		v_construct<VariantMap>(x, copy);
-		break;
-		/*    case Variant::Hash:
-		v_construct<VariantHash>(x, copy);
-		break;
-		*/
-	case Variant::List:
-		v_construct<VariantList>(x, copy);
-		break;
-		/*    case Variant::Date:
-		v_construct<Date>(x, copy);
-		break;
-		case Variant::Time:
-		v_construct<Time>(x, copy);
-		break;
-		*/
-	case Variant::NDateTime:
-		v_construct<DateTime>(x, copy);
-		break;
-	case Variant::NByteArray:
-		v_construct<ByteArray>(x, copy);
-		break;
-		/*    case Variant::BitArray:
-		v_construct<BitArray>(x, copy);
-		break;
-		*/
-	case Variant::NSize:
-		v_construct<Size>(x, copy);
-		break;
-	case Variant::NSizeF:
-		v_construct<SizeF>(x, copy);
-		break;
-	case Variant::NRectI:
-		v_construct<Rect>(x, copy);
-		break;
-// 	case Variant::LineF:
-// 		v_construct<LineF>(x, copy);
-// 		break;
-  case Variant::NRectF:
-    v_construct<RectF>(x, copy);
-    break;
-	case Variant::NPoint:
-		v_construct<Point>(x, copy);
-		break;
-  case Variant::NTilePos:
-    v_construct<TilePos>(x, copy);
-    break;
-	case Variant::NPointF:
-		v_construct<PointF>(x, copy);
-		break;
+  switch (x->type)
+  {
+    case Variant::String: v_construct<std::string>(x, copy); break;
+    case Variant::NStringArray: v_construct<StringArray>(x, copy); break;
+    case Variant::Map: v_construct<VariantMap>(x, copy); break;
+    case Variant::List: v_construct<VariantList>(x, copy); break;
+    case Variant::NDateTime: v_construct<DateTime>(x, copy); break;
+    case Variant::NByteArray: v_construct<ByteArray>(x, copy); break;
+    case Variant::NSize: v_construct<Size>(x, copy); break;
+    case Variant::NSizeF: v_construct<SizeF>(x, copy); break;
+    case Variant::NRectI: v_construct<Rect>(x, copy); break;
+    case Variant::NRectF: v_construct<RectF>(x, copy); break;
+    case Variant::NPoint: v_construct<Point>(x, copy); break;
+    case Variant::NTilePos: v_construct<TilePos>(x, copy); break;
+    case Variant::NPointF: v_construct<PointF>(x, copy); break;
 // 	case Variant::Color:
 // 		v_construct<Color>(x, copy);
 // 		break;
-	case Variant::Invalid:
-	case Variant::UserType:
-		break;
-	default:
-		_CAESARIA_DEBUG_BREAK_IF( true && "can't create variant" );
-		break;
-	}
-	x->is_null = !copy;
+    case Variant::Invalid:
+    case Variant::UserType:break;
+
+    default:
+        _CAESARIA_DEBUG_BREAK_IF( true && "can't create variant" );
+    break;
+  }
+  x->is_null = !copy;
 }
 
 static void clearVariant(Variant2Impl *d)
@@ -1114,65 +1036,27 @@ Variant::Variant(int typeOrUserType, const void *copy, unsigned int flags)
     }
 }
 
-Variant::Variant(int val)
-{ _d.is_null = false; _d.type = Int; _d.data.i = val; }
-
-Variant::Variant(unsigned int val)
-{ _d.is_null = false; _d.type = UInt; _d.data.u = val; }
-
-Variant::Variant(long long val)
-{ _d.is_null = false; _d.type = LongLong; _d.data.ll = val; }
-
-Variant::Variant(unsigned long long val)
-{ _d.is_null = false; _d.type = ULongLong; _d.data.ull = val; }
-
-Variant::Variant(bool val)
-{ _d.is_null = false; _d.type = Bool; _d.data.b = val; }
-
-Variant::Variant(double val)
-{ _d.is_null = false; _d.type = Double; _d.data.d = val; }
-
-Variant::Variant(const ByteArray& val)
-{ _d.is_null = false; _d.type = NByteArray; v_construct<ByteArray>(&_d, val); }
-
-Variant::Variant(const std::string& val)
-{ _d.is_null = false; _d.type = Variant::String; v_construct<std::string>(&_d, val);  }
-
-Variant::Variant(char val)
-{ _d.is_null = false; _d.type = Variant::Char; _d.data.c = val;  }
-
-Variant::Variant(const char* string)
-{
-  const std::string rstring( string );
-  _d.is_null = false; _d.type = Variant::String; v_construct<std::string>(&_d, rstring);
-}
-
-Variant::Variant(const DateTime &val)
-{ _d.is_null = false; _d.type = Variant::NDateTime; v_construct<DateTime>(&_d, val); }
-
-Variant::Variant(const StringArray &strArr)
-{ _d.is_null = false; _d.type = Variant::NStringArray; v_construct<StringArray>(&_d, strArr); }
-
-Variant::Variant(const VariantList& rlist)
-{ _d.is_null = false; _d.type = Variant::List; v_construct<VariantList>(&_d, rlist); }
-
-Variant::Variant(const VariantMap& rmap)
-{ _d.is_null = false; _d.type = Variant::Map; v_construct<VariantMap>(&_d, rmap); }
-// Variant::Variant(const Hash<String, Variant> &hash)
-// { _d.is_null = false; _d.type = Hash; v_construct<Variant2Hash>(&_d, hash); }
-
+Variant::Variant(int val){ _d.is_null = false; _d.type = Int; _d.data.i = val; }
+Variant::Variant(unsigned int val){ _d.is_null = false; _d.type = UInt; _d.data.u = val; }
+Variant::Variant(long long val){ _d.is_null = false; _d.type = LongLong; _d.data.ll = val; }
+Variant::Variant(unsigned long long val){ _d.is_null = false; _d.type = ULongLong; _d.data.ull = val; }
+Variant::Variant(bool val){ _d.is_null = false; _d.type = Bool; _d.data.b = val; }
+Variant::Variant(double val){ _d.is_null = false; _d.type = Double; _d.data.d = val; }
+Variant::Variant(const ByteArray& val) { _d.is_null = false; _d.type = NByteArray; v_construct<ByteArray>(&_d, val); }
+Variant::Variant(const std::string& val){ _d.is_null = false; _d.type = Variant::String; v_construct<std::string>(&_d, val);  }
+Variant::Variant(char val) { _d.is_null = false; _d.type = Variant::Char; _d.data.c = val;  }
+Variant::Variant(const DateTime &val) { _d.is_null = false; _d.type = Variant::NDateTime; v_construct<DateTime>(&_d, val); }
+Variant::Variant(const StringArray &strArr) { _d.is_null = false; _d.type = Variant::NStringArray; v_construct<StringArray>(&_d, strArr); }
+Variant::Variant(const VariantList& rlist) { _d.is_null = false; _d.type = Variant::List; v_construct<VariantList>(&_d, rlist); }
+Variant::Variant(const VariantMap& rmap) { _d.is_null = false; _d.type = Variant::Map; v_construct<VariantMap>(&_d, rmap); }
 Variant::Variant(const Point &pt) { _d.is_null = false; _d.type = Variant::NPoint; v_construct<Point>(&_d, pt); }
 Variant::Variant(const PointF &pt) { _d.is_null = false; _d.type = Variant::NPointF; v_construct<PointF>(&_d, pt); }
 Variant::Variant(const TilePos &pt) { _d.is_null = false; _d.type = Variant::NTilePos; v_construct<TilePos>(&_d, pt); }
 Variant::Variant(const RectF &r) { _d.is_null = false; _d.type = Variant::NRectF; v_construct<RectF>(&_d, r); }
-// Variant::Variant(const core::LineF &l) { _d.is_null = false; _d.type = Variant::LineF; v_construct<core::LineF>(&_d, l); }
-// Variant::Variant(const core::Line &l) { _d.is_null = false; _d.type = Variant::Line; v_construct<core::Line>(&_d, l); }
 Variant::Variant(const Rect &r) { _d.is_null = false; _d.type = Variant::NRectI; v_construct<Rect>(&_d, r); }
 Variant::Variant(const Size &s) { _d.is_null = false; _d.type = Variant::NSize; v_construct<Size>(&_d, s); }
 Variant::Variant(const SizeF &s) { _d.is_null = false; _d.type = Variant::NSizeF; v_construct<SizeF>(&_d, s); }
-
-//Variant::Variant(const Url &u) { _d.is_null = false; _d.type = Url; v_construct<Url>(&_d, u); }
-//Variant::Variant(const Color& color) { create( Variant::Color, &color); }
+Variant::Variant(const NColor& color) {  _d.is_null = false; _d.type = Variant::Color; v_construct<NColor>(&_d, color); }
 
 Variant::Type Variant::type() const
 {

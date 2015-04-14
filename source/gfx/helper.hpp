@@ -31,25 +31,30 @@ namespace imgid
 }
 
 namespace tile
-{
+{  
   int encode( const Tile& tt );
   int turnCoastTile(int imgid , Direction newDirection);
   unsigned int hash( const TilePos& pos );
   Point tilepos2screen( const TilePos& pos );
   TilePos screen2tilepos( const Point& point, int mapsize );
   void decode( Tile& tile, const int bitset);
-  Tile& getInvalid();
+  const Tile& getInvalid();
+  Tile& getInvalidSafe();
   void clear( Tile& tile );
   void fixPlateauFlags( Tile& tile );
 }//end namespace tile
 
 namespace tilemap
 {
+  enum { c3bldSize=5, c3CellWidth=30, caCellWidth=60, c3mapSize=162, c3mapSizeSq=c3mapSize*c3mapSize };
+
   Direction getDirection( const TilePos& b, const TilePos& e );
   void initTileBase( int width );
   const Point& cellCenter();
   const Size& cellPicSize();
   const Size& cellSize();
+  const TilePos& invalidLocation();
+  bool isValidLocation( const TilePos& pos );
 }
 
 }//end namespace gfx

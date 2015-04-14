@@ -20,10 +20,7 @@
 
 #include "widget.hpp"
 
-namespace gfx
-{
-  class Engine;
-}
+namespace gfx { class Engine; }
 
 namespace gui
 {
@@ -31,6 +28,7 @@ namespace gui
 class Ui : Widget
 {
 public:
+  typedef enum { showTooltips=0 } Flag;
   Ui( gfx::Engine& painter );
 
   virtual ~Ui();
@@ -39,7 +37,7 @@ public:
   virtual bool setFocus( Widget* element);
   virtual bool removeFocus( Widget* element);
 
-  Widget* rootWidget();								//  
+  Widget* rootWidget();
   Widget* getFocus() const;
   Point cursorPos() const;
 
@@ -58,6 +56,7 @@ public:
 
   Widget* createWidget( const std::string& type, Widget* parent );
 
+  void setFlag( Flag name, int value );
   void clear();
    
 private:    

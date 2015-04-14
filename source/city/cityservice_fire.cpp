@@ -28,12 +28,12 @@ namespace city
 class Fire::Impl
 {
 public:
-  Fire::Locations locations;
+  UqLocations locations;
 };
 
-city::SrvcPtr Fire::create( PlayerCityPtr city )
+SrvcPtr Fire::create( PlayerCityPtr city )
 {
-  city::SrvcPtr ret( new Fire( city ) );
+  SrvcPtr ret( new Fire( city ) );
   ret->drop();
 
   return ret;
@@ -42,7 +42,7 @@ city::SrvcPtr Fire::create( PlayerCityPtr city )
 std::string Fire::defaultName() { return CAESARIA_STR_EXT(Fire); }
 
 Fire::Fire( PlayerCityPtr city )
-  : city::Srvc( city, defaultName() ), _d( new Impl )
+  : Srvc( city, defaultName() ), _d( new Impl )
 {
 }
 
@@ -52,6 +52,6 @@ void Fire::timeStep( const unsigned int time )
 
 void Fire::addLocation(const TilePos& location) { _d->locations.insert( location ); }
 void Fire::rmLocation(const TilePos& location) { _d->locations.erase( location ); }
-const Fire::Locations&Fire::locations() const { return _d->locations;  }
+const UqLocations &Fire::locations() const { return _d->locations;  }
 
 }//end namespace city

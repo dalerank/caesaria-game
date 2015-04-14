@@ -41,9 +41,12 @@ public:
   int needPeace() const;
   const DateTime& finishDate() const;
   std::string shortDesc() const;
+  std::string missionTitle() const;
   std::string nextMission() const;
   std::string newTitle() const;
   std::string winText() const;
+  std::string beginSpeech() const;
+  std::string winSpeech() const;
   int needPopulation() const;
   int maxHouseLevel() const;
   const StringArray& overview() const;

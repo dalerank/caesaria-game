@@ -19,11 +19,12 @@
 #define __CAESARIA_CITYSERVICE_DISORDER_H_INCLUDED__
 
 #include "cityservice.hpp"
-#include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
 namespace city
 {
+
+PREDEFINE_CLASS_SMARTPOINTER(Disorder)
 
 class Disorder : public Srvc
 {
@@ -42,8 +43,6 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
-typedef SmartPtr<Disorder> DisorderPtr;
 
 }//end namespace city
 

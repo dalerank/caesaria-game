@@ -15,23 +15,23 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "layerdamage.hpp"
+#include "damage.hpp"
 #include "objects/constants.hpp"
 #include "objects/house.hpp"
 #include "objects/house_spec.hpp"
 #include "game/resourcegroup.hpp"
-#include "layerconstants.hpp"
+#include "constants.hpp"
 #include "city/statistic.hpp"
 #include "core/event.hpp"
 #include "gfx/tilemap_camera.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace citylayer
 {
 
-static const char* damageLevelName[] = {
+enum { maxDamageLevel=10, damageColumnIndex=15 };
+static const char* damageLevelName[maxDamageLevel] = {
                                          "##none_damage_risk##", "##some_defects_damage_risk##",
                                          "##very_low_damage_risk##", "##low_damage_risk##",
                                          "##little_damage_risk##",   "##some_damage_risk##",
@@ -122,7 +122,7 @@ void Damage::handleEvent(NEvent& event)
         ConstructionPtr construction = ptr_cast<Construction>( tile->overlay() );
         if( construction.isValid() )
         {
-          int damageLevel = math::clamp<int>( construction->state( pr::damage ) / 10, 0, 7 );
+          int damageLevel = math::clamp<int>( construction->state( pr::damage ) / maxDamageLevel, 0, maxDamageLevel-1 );
           text = damageLevelName[ damageLevel ];
         }
       }
@@ -139,10 +139,10 @@ void Damage::handleEvent(NEvent& event)
 }
 
 Damage::Damage( Camera& camera, PlayerCityPtr city)
-  : Info( camera, city, 15 )
+  : Info( camera, city, damageColumnIndex )
 {
   _addWalkerType( walker::engineer );
   _fillVisibleObjects( type() );
 }
 
-}//end namespace citylayer
+}//end namespace city

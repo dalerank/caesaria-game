@@ -277,7 +277,7 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
   {
   case direction::northWest:
     {
-      TilesArray tiles = tilemap.getArea( endPos, startPos );
+      TilesArea tiles( tilemap, endPos, startPos );
 
       tiles.pop_back();
       tiles.pop_back();
@@ -299,7 +299,7 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
 
   case direction::northEast:
     {
-      TilesArray tiles = tilemap.getArea( startPos, endPos );
+      TilesArea tiles( tilemap, startPos, endPos );
 
       tiles.pop_back();
       tiles.pop_back();
@@ -322,7 +322,7 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
 
   case direction::southEast:
     {
-      TilesArray tiles = tilemap.getArea( startPos, endPos );
+      TilesArea tiles( tilemap, startPos, endPos );
 
       tiles.pop_back();
       tiles.pop_back();
@@ -344,7 +344,7 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
 
   case direction::southWest:
     {
-      TilesArray tiles = tilemap.getArea( endPos, startPos );
+      TilesArea tiles( tilemap, endPos, startPos );
       
       tiles.pop_back();
       tiles.pop_back();
@@ -373,7 +373,7 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
 
 bool HighBridge::_checkOnlyWaterUnderBridge( PlayerCityPtr city, const TilePos& start, const TilePos& stop ) const
 {
-  TilesArray tiles = city->tilemap().getArea( start, stop );
+  TilesArea tiles( city->tilemap(), start, stop );
   if( tiles.size() > 2 )
   {
     bool onlyWater = true;
@@ -406,7 +406,7 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
     return;
 
   {
-    TilesArray tiles = tilemap.getArea( curPos - TilePos( 10, 0), curPos - TilePos(1, 0) );
+    TilesArea tiles( tilemap, curPos - TilePos( 10, 0), curPos - TilePos(1, 0) );
     for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
 
@@ -425,7 +425,7 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
 
   if( direction == direction::none )
   {
-    TilesArray tiles = tilemap.getArea( curPos + TilePos(1, 0), curPos + TilePos( 10, 0) );
+    TilesArea tiles( tilemap, curPos + TilePos(1, 0), curPos + TilePos( 10, 0) );
     foreach( it, tiles )
     {
       if( __isFlatCoastTile( **it ) )
@@ -443,8 +443,8 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
 
   if( direction == direction::none )
   {
-    TilesArray tiles = tilemap.getArea( curPos + TilePos(0, 1), curPos + TilePos( 0, 10) );
-    for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); ++it )
+    TilesArea tiles( tilemap, curPos + TilePos(0, 1), curPos + TilePos( 0, 10) );
+    foreach( it, tiles )
     {
       if( __isFlatCoastTile( **it ) )
       {
@@ -461,7 +461,7 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
 
   if( direction == direction::none )
   {
-    TilesArray tiles = tilemap.getArea( curPos - TilePos( 0, 10), curPos - TilePos(0, 1) );
+    TilesArea tiles( tilemap, curPos - TilePos( 0, 10), curPos - TilePos(0, 1) );
     for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
       if( __isFlatCoastTile( **it ) )
@@ -519,7 +519,7 @@ bool HighBridge::canDestroy() const
 {
   foreach( subtile, _d->subtiles )
   {
-    WalkerList walkers = city::statistic::findw<Walker>( _city(), constants::walker::any, pos() + (*subtile)->pos() );
+    WalkerList walkers = city::statistic::findw<Walker>( _city(), walker::any, pos() + (*subtile)->pos() );
     if( !walkers.empty() )
     {
       _d->error = "##cant_demolish_bridge_with_people##";

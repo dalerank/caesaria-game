@@ -19,6 +19,8 @@
 #define _CAESARIA_BUILD_EVENT_H_INCLUDE_
 
 #include "event.hpp"
+#include "objects/constants.hpp"
+#include "core/position.hpp"
 
 namespace events
 {

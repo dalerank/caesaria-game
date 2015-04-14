@@ -379,11 +379,14 @@ public:
     *  \return true if successfully found an element, false to continue searching/fail 
 	 */
   bool next( int startOrder, bool reverse, bool group,
-                      Widget*& first, Widget*& closest, bool includeInvisible=false) const;
+             Widget*& first, Widget*& closest, bool includeInvisible=false) const;
 
   void setParent( Widget* parent );
 
   void setRight(int newRight);
+
+  void addProperty(const std::string& name, const Variant &value );
+  const Variant& getProperty( const std::string& name ) const;
 
 protected:
 

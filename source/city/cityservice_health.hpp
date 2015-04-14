@@ -19,11 +19,12 @@
 #define __CAESARIA_CITYSERVICE_HEALH_H_INCLUDED__
 
 #include "cityservice.hpp"
-#include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
 namespace city
 {
+
+PREDEFINE_CLASS_SMARTPOINTER(HealthCare)
 
 class HealthCare : public city::Srvc
 {
@@ -41,8 +42,6 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
-typedef SmartPtr<HealthCare> HealthCarePtr;
 
 }//end namespace city
 

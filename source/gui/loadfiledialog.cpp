@@ -53,8 +53,7 @@ public:
   void fillFiles();
 
   void resolveItemSelected( const ListBoxItem& item );
-
-  void resolveItemDblClick( std::string fileName );
+  void resolveItemDblClick( const ListBoxItem& item );
 
   void deleteFile();
 
@@ -114,7 +113,7 @@ void LoadFileDialog::Impl::fillFiles()
     return;
   lbxFiles->clear();
 
-  vfs::Entries flist = vfs::Directory( directory ).getEntries();
+  vfs::Entries flist = vfs::Directory( directory ).entries();
   flist = flist.filter( vfs::Entries::file | vfs::Entries::extFilter, fileExtensions );
 
   StringArray names;
@@ -134,9 +133,9 @@ void LoadFileDialog::Impl::resolveItemSelected(const ListBoxItem& item)
   if( btnDelete ) btnDelete->setEnabled( !saveItemText.empty() );
 }
 
-void LoadFileDialog::Impl::resolveItemDblClick(std::string fileName)
+void LoadFileDialog::Impl::resolveItemDblClick(const ListBoxItem& item)
 {
-  saveItemText = fileName;
+  saveItemText = item.text();
   emitSelectFile();
 }
 

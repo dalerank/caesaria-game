@@ -27,184 +27,185 @@
 namespace object
 {
 
-DEFINE_NAMEDTYPE(Type,unknown)
-DEFINE_NAMEDTYPE(Group,unknownGroup)
-std::string toString( const Type& t);
-Type toType( const std::string& name);
-std::string toString( const Group& g );
-
 namespace group
 {
-#define REGISTER_GROUP(name,index) static const Group name = Group(index);
-
-REGISTER_GROUP(any,0)
-REGISTER_GROUP(unknown,0)
-REGISTER_GROUP(industry,1)
-REGISTER_GROUP(obtain,2)
-REGISTER_GROUP(food,3)
-REGISTER_GROUP(disaster,4)
-REGISTER_GROUP(religion,5)
-REGISTER_GROUP(military,6)
-REGISTER_GROUP(native,7)
-REGISTER_GROUP(water,8)
-REGISTER_GROUP(administration,9)
-REGISTER_GROUP(bridge,10)
-REGISTER_GROUP(engineering,11)
-REGISTER_GROUP(trade,12)
-REGISTER_GROUP(tower,13)
-REGISTER_GROUP(gate,14)
-REGISTER_GROUP(security,15)
-REGISTER_GROUP(education,16)
-REGISTER_GROUP(health,17)
-REGISTER_GROUP(sight,18)
-REGISTER_GROUP(garden,19)
-REGISTER_GROUP(road,20)
-REGISTER_GROUP(entertainment,21)
-REGISTER_GROUP(house,22)
-REGISTER_GROUP(wall,23)
+BEGIN_NAMEDTYPE(ID,unknownGroup)
+APPEND_NAMEDTYPE_ID(any,            0)
+APPEND_NAMEDTYPE_ID(unknown,        0)
+APPEND_NAMEDTYPE_ID(industry,       1)
+APPEND_NAMEDTYPE_ID(obtain,         2)
+APPEND_NAMEDTYPE_ID(food,           3)
+APPEND_NAMEDTYPE_ID(disaster,       4)
+APPEND_NAMEDTYPE_ID(religion,       5)
+APPEND_NAMEDTYPE_ID(military,       6)
+APPEND_NAMEDTYPE_ID(native,         7)
+APPEND_NAMEDTYPE_ID(water,          8)
+APPEND_NAMEDTYPE_ID(administration, 9)
+APPEND_NAMEDTYPE_ID(bridge,         10)
+APPEND_NAMEDTYPE_ID(engineering,    11)
+APPEND_NAMEDTYPE_ID(trade,          12)
+APPEND_NAMEDTYPE_ID(tower,          13)
+APPEND_NAMEDTYPE_ID(gate,           14)
+APPEND_NAMEDTYPE_ID(security,       15)
+APPEND_NAMEDTYPE_ID(education,      16)
+APPEND_NAMEDTYPE_ID(health,         17)
+APPEND_NAMEDTYPE_ID(sight,          18)
+APPEND_NAMEDTYPE_ID(garden,         19)
+APPEND_NAMEDTYPE_ID(road,           20)
+APPEND_NAMEDTYPE_ID(entertainment,  21)
+APPEND_NAMEDTYPE_ID(house,          22)
+APPEND_NAMEDTYPE_ID(wall,           23)
+END_NAMEDTYPE(ID)
 }
+
+typedef group::ID Group;
+std::string toString( const Group& g );
+
+BEGIN_NAMEDTYPE(Type,unknown)
+//stuff
+APPEND_NAMEDTYPE_ID(any,                  0)
+APPEND_NAMEDTYPE_ID(road,                 1)
+APPEND_NAMEDTYPE_ID(plaza,                2)
+APPEND_NAMEDTYPE_ID(garden,               3)
+
+// entertainment
+APPEND_NAMEDTYPE_ID(amphitheater,         4)
+APPEND_NAMEDTYPE_ID(theater,              5)
+APPEND_NAMEDTYPE_ID(hippodrome,           6)
+APPEND_NAMEDTYPE_ID(colloseum,            7)
+APPEND_NAMEDTYPE_ID(actorColony,          8)
+APPEND_NAMEDTYPE_ID(gladiatorSchool,      9)
+APPEND_NAMEDTYPE_ID(lionsNursery,         10)
+APPEND_NAMEDTYPE_ID(chariotSchool,        11)
+
+//watersupply
+APPEND_NAMEDTYPE_ID(reservoir,            12)
+APPEND_NAMEDTYPE_ID(aqueduct,             13)
+APPEND_NAMEDTYPE_ID(fountain,             14)
+APPEND_NAMEDTYPE_ID(well,                 15)
+
+// house
+APPEND_NAMEDTYPE_ID(house,                16)
+
+// administration
+APPEND_NAMEDTYPE_ID(senate,               17)
+APPEND_NAMEDTYPE_ID(forum,                18)
+APPEND_NAMEDTYPE_ID(governorHouse,        19)
+APPEND_NAMEDTYPE_ID(governorVilla,        20)
+APPEND_NAMEDTYPE_ID(governorPalace,       21)
+
+// security
+APPEND_NAMEDTYPE_ID(prefecture,           22)
+APPEND_NAMEDTYPE_ID(wall,                 23)
+APPEND_NAMEDTYPE_ID(fortification,        24)
+APPEND_NAMEDTYPE_ID(tower,                25)
+APPEND_NAMEDTYPE_ID(gatehouse,            26)
+APPEND_NAMEDTYPE_ID(fort_legionaries,     27)
+APPEND_NAMEDTYPE_ID(fort_javelin,         28)
+APPEND_NAMEDTYPE_ID(fort_horse,           29)
+APPEND_NAMEDTYPE_ID(military_academy,     30)
+APPEND_NAMEDTYPE_ID(barracks,             31)
+APPEND_NAMEDTYPE_ID(fortArea,             32)
+
+// commerce
+APPEND_NAMEDTYPE_ID(market,               33)
+APPEND_NAMEDTYPE_ID(granery,              34)
+APPEND_NAMEDTYPE_ID(warehouse,            35)
+
+// farms
+APPEND_NAMEDTYPE_ID(wheat_farm,           36)
+APPEND_NAMEDTYPE_ID(fig_farm,             37)
+APPEND_NAMEDTYPE_ID(vegetable_farm,       38)
+APPEND_NAMEDTYPE_ID(olive_farm,           39)
+APPEND_NAMEDTYPE_ID(vinard,               40)
+APPEND_NAMEDTYPE_ID(meat_farm,            41)
+
+// raw materials
+APPEND_NAMEDTYPE_ID(quarry,               42)
+APPEND_NAMEDTYPE_ID(iron_mine,            43)
+APPEND_NAMEDTYPE_ID(lumber_mill,          44)
+APPEND_NAMEDTYPE_ID(clay_pit,             45)
+
+// factories
+APPEND_NAMEDTYPE_ID(wine_workshop,        46)
+APPEND_NAMEDTYPE_ID(oil_workshop,         47)
+APPEND_NAMEDTYPE_ID(weapons_workshop,     48)
+APPEND_NAMEDTYPE_ID(furniture_workshop,   49)
+APPEND_NAMEDTYPE_ID(pottery_workshop,     50)
+
+// utility
+APPEND_NAMEDTYPE_ID(engineering_post,     51)
+APPEND_NAMEDTYPE_ID(statue_small,         52)
+APPEND_NAMEDTYPE_ID(statue_middle,        53)
+APPEND_NAMEDTYPE_ID(statue_big,           54)
+APPEND_NAMEDTYPE_ID(low_bridge,           55)
+APPEND_NAMEDTYPE_ID(high_bridge,          56)
+APPEND_NAMEDTYPE_ID(shipyard,             57)
+APPEND_NAMEDTYPE_ID(dock,                 58)
+APPEND_NAMEDTYPE_ID(wharf,                59)
+
+// health
+APPEND_NAMEDTYPE_ID(clinic,               60)
+APPEND_NAMEDTYPE_ID(hospital,             61)
+APPEND_NAMEDTYPE_ID(baths,                62)
+APPEND_NAMEDTYPE_ID(barber,               63)
+
+// education
+APPEND_NAMEDTYPE_ID(school,               64)
+APPEND_NAMEDTYPE_ID(academy,              65)
+APPEND_NAMEDTYPE_ID(library,              66)
+APPEND_NAMEDTYPE_ID(missionaryPost,       67)
+
+// religion: small temples
+APPEND_NAMEDTYPE_ID(small_ceres_temple,   68)
+APPEND_NAMEDTYPE_ID(small_mars_temple,    69)
+APPEND_NAMEDTYPE_ID(small_neptune_temple, 70)
+APPEND_NAMEDTYPE_ID(small_mercury_temple, 71)
+APPEND_NAMEDTYPE_ID(small_venus_temple,   72)
+
+// religion: big temples
+APPEND_NAMEDTYPE_ID(big_ceres_temple,     73)
+APPEND_NAMEDTYPE_ID(big_mars_temple,      74)
+APPEND_NAMEDTYPE_ID(big_neptune_temple,   75)
+APPEND_NAMEDTYPE_ID(big_mercury_temple,   76)
+APPEND_NAMEDTYPE_ID(big_venus_temple,     77)
+
+// religion: others
+APPEND_NAMEDTYPE_ID(oracle,               78)
+
+// building of natives
+APPEND_NAMEDTYPE_ID(native_hut,           79)
+APPEND_NAMEDTYPE_ID(native_center,        80)
+APPEND_NAMEDTYPE_ID(native_field,         81)
+
+//other
+APPEND_NAMEDTYPE_ID(triumphal_arch,       82)
+APPEND_NAMEDTYPE_ID(burning_ruins,        83)
+APPEND_NAMEDTYPE_ID(burned_ruins,         84)
+APPEND_NAMEDTYPE_ID(collapsed_ruins,      85)
+APPEND_NAMEDTYPE_ID(plague_ruins,         86)
+APPEND_NAMEDTYPE_ID(reserved_2,           87)
+APPEND_NAMEDTYPE_ID(reserved_3,           88)
+APPEND_NAMEDTYPE_ID(elevation,            89)
+APPEND_NAMEDTYPE_ID(rift,                 90)
+APPEND_NAMEDTYPE_ID(river,                91)
+APPEND_NAMEDTYPE_ID(tree,                 92)
+APPEND_NAMEDTYPE_ID(waymark,              93)
+APPEND_NAMEDTYPE_ID(terrain,              94)
+APPEND_NAMEDTYPE_ID(water,                95)
+APPEND_NAMEDTYPE_ID(meadow,               96)
+APPEND_NAMEDTYPE_ID(roadBlock,            97)
+APPEND_NAMEDTYPE_ID(farmtile,             98)
+
+END_NAMEDTYPE(Type)
+
 
 typedef std::set<Group> GroupSet;
 typedef std::vector<Group> Groups;
-typedef std::set<Type> TypeSet;
 typedef std::vector<Type> Types;
-
-//stuff
-#define REGISTER_ID_OBJECT_TYPE(type,a) static const Type type = Type(a);
-REGISTER_ID_OBJECT_TYPE(any,0)
-REGISTER_ID_OBJECT_TYPE(road,1)
-REGISTER_ID_OBJECT_TYPE(plaza,2)
-REGISTER_ID_OBJECT_TYPE(garden,3)
-
-// entertainment
-REGISTER_ID_OBJECT_TYPE(amphitheater,4)
-REGISTER_ID_OBJECT_TYPE(theater,5)
-REGISTER_ID_OBJECT_TYPE(hippodrome,6)
-REGISTER_ID_OBJECT_TYPE(colloseum,7)
-REGISTER_ID_OBJECT_TYPE(actorColony,8)
-REGISTER_ID_OBJECT_TYPE(gladiatorSchool,9)
-REGISTER_ID_OBJECT_TYPE(lionsNursery,10)
-REGISTER_ID_OBJECT_TYPE(chariotSchool,11)
-
-//watersupply
-REGISTER_ID_OBJECT_TYPE(reservoir,12)
-REGISTER_ID_OBJECT_TYPE(aqueduct,13)
-REGISTER_ID_OBJECT_TYPE(fountain,14)
-REGISTER_ID_OBJECT_TYPE(well,15)
-
-// house
-REGISTER_ID_OBJECT_TYPE(house,16)
-
-// administration
-REGISTER_ID_OBJECT_TYPE(senate,17)
-REGISTER_ID_OBJECT_TYPE(forum,18)
-REGISTER_ID_OBJECT_TYPE(governorHouse,19)
-REGISTER_ID_OBJECT_TYPE(governorVilla,20)
-REGISTER_ID_OBJECT_TYPE(governorPalace,21)
-
-// security
-REGISTER_ID_OBJECT_TYPE(prefecture,22)
-REGISTER_ID_OBJECT_TYPE(wall,23)
-REGISTER_ID_OBJECT_TYPE(fortification,24)
-REGISTER_ID_OBJECT_TYPE(tower,25)
-REGISTER_ID_OBJECT_TYPE(gatehouse,26)
-REGISTER_ID_OBJECT_TYPE(fort_legionaries,27)
-REGISTER_ID_OBJECT_TYPE(fort_javelin,28)
-REGISTER_ID_OBJECT_TYPE(fort_horse,29)
-REGISTER_ID_OBJECT_TYPE(military_academy,30)
-REGISTER_ID_OBJECT_TYPE(barracks,31)
-REGISTER_ID_OBJECT_TYPE(fortArea,32)
-
-// commerce
-REGISTER_ID_OBJECT_TYPE(market,33)
-REGISTER_ID_OBJECT_TYPE(granery,34)
-REGISTER_ID_OBJECT_TYPE(warehouse,35)
-
-// farms
-REGISTER_ID_OBJECT_TYPE(wheat_farm,36)
-REGISTER_ID_OBJECT_TYPE(fig_farm,37)
-REGISTER_ID_OBJECT_TYPE(vegetable_farm,38)
-REGISTER_ID_OBJECT_TYPE(olive_farm,39)
-REGISTER_ID_OBJECT_TYPE(vinard,40)
-REGISTER_ID_OBJECT_TYPE(meat_farm,41)
-
-// raw materials
-REGISTER_ID_OBJECT_TYPE(quarry,42)
-REGISTER_ID_OBJECT_TYPE(iron_mine,43)
-REGISTER_ID_OBJECT_TYPE(lumber_mill,44)
-REGISTER_ID_OBJECT_TYPE(clay_pit,45)
-
-// factories
-REGISTER_ID_OBJECT_TYPE(wine_workshop,46)
-REGISTER_ID_OBJECT_TYPE(oil_workshop,47)
-REGISTER_ID_OBJECT_TYPE(weapons_workshop,48)
-REGISTER_ID_OBJECT_TYPE(furniture_workshop,49)
-REGISTER_ID_OBJECT_TYPE(pottery_workshop,50)
-
-// utility
-REGISTER_ID_OBJECT_TYPE(engineering_post,51)
-REGISTER_ID_OBJECT_TYPE(statue_small,52)
-REGISTER_ID_OBJECT_TYPE(statue_middle,53)
-REGISTER_ID_OBJECT_TYPE(statue_big,54)
-REGISTER_ID_OBJECT_TYPE(low_bridge,55)
-REGISTER_ID_OBJECT_TYPE(high_bridge,56)
-REGISTER_ID_OBJECT_TYPE(shipyard,57)
-REGISTER_ID_OBJECT_TYPE(dock,58)
-REGISTER_ID_OBJECT_TYPE(wharf,59)
-
-// health
-REGISTER_ID_OBJECT_TYPE(clinic,60)
-REGISTER_ID_OBJECT_TYPE(hospital,61)
-REGISTER_ID_OBJECT_TYPE(baths,62)
-REGISTER_ID_OBJECT_TYPE(barber,63)
-
-// education
-REGISTER_ID_OBJECT_TYPE(school,64)
-REGISTER_ID_OBJECT_TYPE(academy,65)
-REGISTER_ID_OBJECT_TYPE(library,66)
-REGISTER_ID_OBJECT_TYPE(missionaryPost,67)
-
-// religion: small temples
-REGISTER_ID_OBJECT_TYPE(small_ceres_temple,68)
-REGISTER_ID_OBJECT_TYPE(small_mars_temple,69)
-REGISTER_ID_OBJECT_TYPE(small_neptune_temple,70)
-REGISTER_ID_OBJECT_TYPE(small_mercury_temple,71)
-REGISTER_ID_OBJECT_TYPE(small_venus_temple,72)
-
-// religion: big temples
-REGISTER_ID_OBJECT_TYPE(big_ceres_temple,73)
-REGISTER_ID_OBJECT_TYPE(big_mars_temple,74)
-REGISTER_ID_OBJECT_TYPE(big_neptune_temple,75)
-REGISTER_ID_OBJECT_TYPE(big_mercury_temple,76)
-REGISTER_ID_OBJECT_TYPE(big_venus_temple,77)
-
-// religion: others
-REGISTER_ID_OBJECT_TYPE(oracle,78)
-
-// building of natives
-REGISTER_ID_OBJECT_TYPE(native_hut,79)
-REGISTER_ID_OBJECT_TYPE(native_center,80)
-REGISTER_ID_OBJECT_TYPE(native_field,81)
-
-//other
-REGISTER_ID_OBJECT_TYPE(triumphal_arch,82)
-REGISTER_ID_OBJECT_TYPE(burning_ruins,83)
-REGISTER_ID_OBJECT_TYPE(burned_ruins,84)
-REGISTER_ID_OBJECT_TYPE(collapsed_ruins,85)
-REGISTER_ID_OBJECT_TYPE(plague_ruins,86)
-REGISTER_ID_OBJECT_TYPE(reserved_2,87)
-REGISTER_ID_OBJECT_TYPE(reserved_3,88)
-REGISTER_ID_OBJECT_TYPE(elevation,89)
-REGISTER_ID_OBJECT_TYPE(rift,91)
-REGISTER_ID_OBJECT_TYPE(river,92)
-REGISTER_ID_OBJECT_TYPE(tree,93)
-REGISTER_ID_OBJECT_TYPE(waymark,94)
-REGISTER_ID_OBJECT_TYPE(terrain,95)
-REGISTER_ID_OBJECT_TYPE(water,96)
-REGISTER_ID_OBJECT_TYPE(meadow,97)
-REGISTER_ID_OBJECT_TYPE(roadBlock,98)
-REGISTER_ID_OBJECT_TYPE(farmtile,99)
-
+typedef std::set<Type> TypeSet;
+std::string toString( const Type& t);
+Type toType( const std::string& name);
 
 class Helper : public EnumsHelper<Type>
 {
@@ -218,6 +219,6 @@ Type findType( const std::string& name );
 
 } //end namespace object
 
-#define REGISTER_CUSTOM_OBJECT_TYPE(type)
+#define REGISTER_CUSTOM_OBJECT_TYPE(name) static const object::Type name = object::Type(Hash(name));
 
 #endif  //_CAESARIA_OBJECTS_CONSTANTS_INCLUDE_H_

@@ -20,7 +20,7 @@
 #include "objects/house.hpp"
 #include "game/resourcegroup.hpp"
 #include "objects/house_spec.hpp"
-#include "layerconstants.hpp"
+#include "constants.hpp"
 #include "core/event.hpp"
 #include "gfx/tilemap_camera.hpp"
 #include "city/statistic.hpp"
@@ -28,7 +28,6 @@
 #include "core/gettext.hpp"
 #include "core/utils.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace citylayer

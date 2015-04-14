@@ -24,68 +24,66 @@
 #include "good/good.hpp"
 #include "predefinitions.hpp"
 
-struct FundIssue
+namespace econ
 {
-  int type;
+
+enum { maxDebt=-4900 };
+
+struct Issue
+{ 
+  enum Type { unknown=0, taxIncome=1,
+              exportGoods, donation,
+              importGoods, workersWages,
+              buildConstruction, creditPercents,
+              playerSalary, sundries, moneyStolen,
+              empireTax, debet, credit, cityProfit,
+              overduePayment, overdueEmpireTax,
+              balance, caesarsHelp,
+              issueTypeCount };
+  Type type;
   int money;
 
-  FundIssue() : type( 0 ), money( 0 ) {}
-  FundIssue( int t, int m ) : type( t ), money( m ) {}
+  Issue() : type( unknown ), money( 0 ) {}
+  Issue( Type t, int m ) : type( t ), money( m ) {}
 };
 
-namespace city
-{
-
-class Funds
+class Treasury
 {
 public:
-  enum IssueType { unknown=0, taxIncome=1, 
-                   exportGoods, donation, 
-                   importGoods, workersWages, 
-                   buildConstruction, creditPercents, 
-                   playerSalary, sundries, moneyStolen,
-                   empireTax, debet, credit, cityProfit,
-                   overduePayment, overdueEmpireTax,
-                   balance, caesarsHelp,
-                   issueTypeCount };
-  enum { thisYear=0, lastYear=1, twoYearAgo=2 };
+  enum { thisYear=0, lastYear=1, twoYearsAgo=2, defaultTaxPrcnt=7 };
+  enum { debtDisabled=0, debtEnabled=1  };
 
-  typedef std::map< city::Funds::IssueType, int > IssuesValue;
+  typedef std::map< Issue::Type, int > IssuesValue;
   typedef std::vector< IssuesValue > IssuesHistory;
 
-  Funds();
-  ~Funds();
-
-  void resolveIssue( FundIssue issue );
+  Treasury();
+  virtual ~Treasury();
+  virtual void resolveIssue( Issue issue );
 
   void updateHistory( const DateTime& date );
-
-  int getIssueValue( IssueType type, int age=thisYear ) const;
-
+  int getIssueValue( Issue::Type type, int age=thisYear ) const;
   int taxRate() const;
   void setTaxRate( const unsigned int value );
-
   int workerSalary() const;
   void setWorkerSalary( const unsigned int value );
-
-  int treasury() const;
+  int money() const;
   int profit() const;
 
-  bool haveMoneyForAction( unsigned int money );
+  bool haveMoneyForAction(unsigned int money , bool useDebt=debtEnabled);
 
   VariantMap save() const;
   void load( const VariantMap& stream );
 
 signals public:
   Signal1<int>& onChange();
-  Signal1<IssueType>& onNewIssue();
+  Signal1<Issue::Type>& onNewIssue();
 
 private:
   class Impl;
   ScopedPtr< Impl > _d;
-  void _updateCreditDebt(IssuesValue& step, FundIssue issue);
+  void _updateCreditDebt(IssuesValue& step, Issue issue);
 };
 
-}//end namespace city
+}//end namespace funds
 
 #endif //__CAESARIA_CITYFUNDS_H_INCLUDED__

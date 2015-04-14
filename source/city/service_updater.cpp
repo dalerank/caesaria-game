@@ -29,14 +29,10 @@
 #include "objects/house_level.hpp"
 #include "cityservice_factory.hpp"
 
-using namespace constants;
-
 namespace city
 {
 
 namespace {
-CAESARIA_LITERALCONST(endTime)
-CAESARIA_LITERALCONST(value)
 CAESARIA_LITERALCONST(service)
 }
 
@@ -80,17 +76,17 @@ bool ServiceUpdater::isDeleted() const {  return _d->isDeleted; }
 
 void ServiceUpdater::load(const VariantMap& stream)
 {
-  _d->endTime = stream.get( lc_endTime ).toDateTime();
-  _d->value = stream.get( lc_value );
-  _d->stype = (Service::Type)ServiceHelper::getType( stream.get( lc_service ).toString() );
+  VARIANT_LOAD_TIME_D( _d, endTime, stream )
+  VARIANT_LOAD_ANY_D(  _d, value,   stream )
+  _d->stype = (Service::Type)ServiceHelper::getType( stream.get( literals::service ).toString() );
 }
 
 VariantMap ServiceUpdater::save() const
 {
   VariantMap ret;
-  ret[ lc_endTime ] = _d->endTime;
-  ret[ lc_value   ] = _d->value;
-  ret[ lc_service    ] = Variant( ServiceHelper::getName( _d->stype ) );
+  VARIANT_SAVE_ANY_D( ret, _d, endTime )
+  VARIANT_SAVE_ANY_D( ret, _d, value )
+  ret[ literals::service    ] = ServiceHelper::getName( _d->stype );
 
   return ret;
 }

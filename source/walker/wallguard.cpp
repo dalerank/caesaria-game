@@ -33,9 +33,8 @@
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
 #include "walker/helper.hpp"
+#include "gfx/helper.hpp"
 
-
-using namespace constants;
 using namespace gfx;
 
 class WallGuard::Impl
@@ -52,7 +51,7 @@ WallGuard::WallGuard( PlayerCityPtr city, walker::Type type )
   setName( NameGenerator::rand( NameGenerator::male ) );
 
   setAttackDistance( 5 );
-  _d->patrolPosition = TilePos( -1, -1 );
+  _d->patrolPosition = gfx::tilemap::invalidLocation();
 }
 
 WallGuard::~WallGuard(){}
@@ -97,7 +96,8 @@ void WallGuard::timeStep(const unsigned long time)
     EnemySoldierList enemies;
     enemies << _findEnemiesInRange( attackDistance() );
 
-    if( !enemies.empty() )
+    bool haveEnemiesInRande = !enemies.empty();
+    if( haveEnemiesInRande )
     {
       if( _animationRef().atEnd() )
       {
@@ -159,10 +159,10 @@ void WallGuard::save(VariantMap& stream) const
 {
   Soldier::save( stream );
 
-  stream[ "base" ] = _d->base.isValid() ? _d->base->pos() : TilePos( -1, -1 );
-  stream[ "strikeForce" ] = _d->strikeForce;
-  stream[ "resistance" ] = _d->resistance;
-  stream[ "patrolPosition" ] = _d->patrolPosition;
+  stream[ "base" ] = _d->base.isValid() ? _d->base->pos() : gfx::tilemap::invalidLocation();
+  VARIANT_SAVE_ANY_D( stream, _d, strikeForce )
+  VARIANT_SAVE_ANY_D( stream, _d, resistance )
+  VARIANT_SAVE_ANY_D( stream, _d, patrolPosition )
   stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(WallGuard) ) );
 }
 
@@ -170,9 +170,9 @@ void WallGuard::load(const VariantMap& stream)
 {
   Soldier::load( stream );
 
-  _d->strikeForce = stream.get( "strikeForce" );
-  _d->resistance = stream.get( "resistance" );
-  _d->patrolPosition = stream.get( "patrolPosition" );
+  VARIANT_LOAD_ANY_D( _d, strikeForce, stream )
+  VARIANT_LOAD_ANY_D( _d, resistance, stream )
+  VARIANT_LOAD_ANY_D( _d, patrolPosition, stream )
 
   TilePos basePosition = stream.get( "base" );
   TowerPtr tower = ptr_cast<Tower>( _city()->getOverlay( basePosition ) );
@@ -217,7 +217,7 @@ TilePos WallGuard::places(Walker::Place type) const
 {
   switch( type )
   {
-  case plOrigin: return _d->base.isValid() ? _d->base->pos() : TilePos( -1, -1 );
+  case plOrigin: return _d->base.isValid() ? _d->base->pos() : gfx::tilemap::invalidLocation();
   case plDestination: return _d->patrolPosition;
   default: break;
   }
@@ -244,7 +244,7 @@ FortificationList WallGuard::_findNearestWalls( EnemySoldierPtr enemy )
 
     foreach( tile, tiles )
     {
-      FortificationPtr f = ptr_cast<Fortification>( (*tile)->overlay() );
+      FortificationPtr f = (*tile)->overlay().as<Fortification>();
       if( f.isValid() && f->mayPatrol() )
       {
         ret.push_back( f );
@@ -381,7 +381,7 @@ void WallGuard::_brokePathway(TilePos p)
     {
       _setSubAction( patrol );
       setPathway( Pathway() );
-      wait( game::Date::days2ticks( 7 ) );
+      wait( game::Date::days2ticks( DateTime::daysInWeek ) );
     }
   }
 }

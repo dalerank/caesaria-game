@@ -45,6 +45,7 @@ void Saver::save(const vfs::Path& filename, const Game& game )
   vm_scenario[ "events" ] = events::Dispatcher::instance().save();
   vm_scenario[ "translation" ] = SETTINGS_VALUE( lastTranslation );
   vm_scenario[ "climate" ] = (int)game.city()->climate();
+
   vm[ "scenario" ] = vm_scenario;
   vm[ SaverOptions::restartFile ] = Variant( _restartFile );
 

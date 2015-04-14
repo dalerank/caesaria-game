@@ -32,13 +32,15 @@
 #include "core/variant_map.hpp"
 #include "objects/constants.hpp"
 #include "game/gamedate.hpp"
+#include "gfx/helper.hpp"
 #include "walkers_factory.hpp"
 #include "city/trade_options.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::marketBuyer, MarketBuyer)
+
+enum {goodCapacity=300, foodCapacity=800, maxCapacity=800};
 
 class MarketBuyer::Impl
 {
@@ -56,18 +58,18 @@ MarketBuyer::MarketBuyer(PlayerCityPtr city )
 {
    _setType( walker::marketBuyer );
    _d->maxDistance = 25;
-   _d->basket.setCapacity(800);  // this is a big basket!
+   _d->basket.setCapacity(maxCapacity);  // this is a big basket!
 
-   _d->basket.setCapacity(good::wheat, 800);
-   _d->basket.setCapacity(good::fruit, 800);
-   _d->basket.setCapacity(good::vegetable, 800);
-   _d->basket.setCapacity(good::meat, 800);
-   _d->basket.setCapacity(good::fish, 800);
+   _d->basket.setCapacity(good::wheat, foodCapacity);
+   _d->basket.setCapacity(good::fruit, foodCapacity);
+   _d->basket.setCapacity(good::vegetable, foodCapacity);
+   _d->basket.setCapacity(good::meat, foodCapacity);
+   _d->basket.setCapacity(good::fish, foodCapacity);
 
-   _d->basket.setCapacity(good::pottery, 300);
-   _d->basket.setCapacity(good::furniture, 300);
-   _d->basket.setCapacity(good::oil, 300);
-   _d->basket.setCapacity(good::wine, 300);
+   _d->basket.setCapacity(good::pottery, goodCapacity);
+   _d->basket.setCapacity(good::furniture, goodCapacity);
+   _d->basket.setCapacity(good::oil, goodCapacity);
+   _d->basket.setCapacity(good::wine, goodCapacity);
 
    setName( NameGenerator::rand( NameGenerator::female ) );
 }
@@ -113,7 +115,7 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const object::Type ty
     return res->pos();
   }
 
-  return TilePos(-1, -1);
+  return gfx::tilemap::invalidLocation();
 }
 
 void MarketBuyer::computeWalkerDestination( MarketPtr market )
@@ -126,10 +128,10 @@ void MarketBuyer::computeWalkerDestination( MarketPtr market )
   foreach(goodType, marketGoods )
   {
     if( !_city()->tradeOptions().isStacking(*goodType) )
-      priorityGoods.push_back(*goodType);
+      priorityGoods.insert(*goodType);
   }
 
-  _d->destBuildingPos = TilePos( -1, -1 );  // no destination yet
+  _d->destBuildingPos = gfx::tilemap::invalidLocation();  // no destination yet
 
   if( priorityGoods.size() > 0 )
   {
@@ -154,7 +156,7 @@ void MarketBuyer::computeWalkerDestination( MarketPtr market )
         _d->destBuildingPos = getWalkerDestination2<Granary>( pathPropagator, object::granery, _d->market,
                                                               _d->basket, _d->priorityGood, pathWay, _d->reservationID );
 
-        if( _d->destBuildingPos.i() < 0 )
+        if( !gfx::tilemap::isValidLocation( _d->destBuildingPos ) )
         {
           _d->destBuildingPos = getWalkerDestination2<Warehouse>( pathPropagator, object::warehouse, _d->market,
                                                                 _d->basket, _d->priorityGood, pathWay, _d->reservationID );
@@ -167,7 +169,7 @@ void MarketBuyer::computeWalkerDestination( MarketPtr market )
                                                                 _d->basket, _d->priorityGood, pathWay, _d->reservationID );
       }
 
-      if( _d->destBuildingPos.i() >= 0 )
+      if( gfx::tilemap::isValidLocation( _d->destBuildingPos ) )
       {
         // we found a destination!
         setPos( pathWay.startPos() );
@@ -177,7 +179,7 @@ void MarketBuyer::computeWalkerDestination( MarketPtr market )
     }
   }
 
-  if( _d->destBuildingPos.i() < 0)
+  if( !gfx::tilemap::isValidLocation( _d->destBuildingPos ) )
   {
     // we have nothing to buy, or cannot find what we need to buy
     deleteLater();
@@ -211,7 +213,7 @@ TilePos MarketBuyer::places(Walker::Place type) const
 {
   switch( type )
   {
-  case plOrigin: return _d->market.isValid() ? _d->market->pos() : TilePos( -1, -1 );
+  case plOrigin: return _d->market.isValid() ? _d->market->pos() : gfx::tilemap::invalidLocation();
   case plDestination: return _d->destBuildingPos;
   default: break;
   }
@@ -296,7 +298,7 @@ void MarketBuyer::_reachedPathway()
 
       unsigned long delay = 20;
 
-      while( _d->basket.qty() > 100 )
+      while( _d->basket.qty() > MarketKid::defaultCapacity )
       {
         foreach( gtype, good::all() )
         {
@@ -306,8 +308,8 @@ void MarketBuyer::_reachedPathway()
             MarketKidPtr boy = MarketKid::create( _city(), this );
             good::Stock& boyBasket =  boy->getBasket();
             boyBasket.setType( *gtype );
-            boyBasket.setCapacity( 100 );
-            _d->basket.retrieve( boyBasket, math::clamp( currentStock.qty(), 0, 100 ) );
+            boyBasket.setCapacity( MarketKid::defaultCapacity );
+            _d->basket.retrieve( boyBasket, math::clamp<int>( currentStock.qty(), 0, MarketKid::defaultCapacity ) );
             boy->setDelay( delay );
             delay += 20;
             boy->send2City( _d->market );
@@ -326,11 +328,7 @@ void MarketBuyer::_reachedPathway()
 void MarketBuyer::send2City( MarketPtr market )
 {
   computeWalkerDestination( market );
-
-  if( !isDeleted() )
-  {
-    _city()->addWalker( WalkerPtr( this ) );
-  }
+  attach();
 }
 
 void MarketBuyer::save( VariantMap& stream ) const
@@ -338,7 +336,7 @@ void MarketBuyer::save( VariantMap& stream ) const
   Walker::save( stream );
   VARIANT_SAVE_ANY_D( stream, _d, destBuildingPos );
   stream[ "priorityGood" ] = _d->priorityGood;
-  stream[ "marketPos" ] = _d->market->pos();
+  stream[ "marketPos" ] = _d->market.isValid() ? _d->market->pos() : gfx::tilemap::invalidLocation();
 
   stream[ "basket" ] = _d->basket.save();
   VARIANT_SAVE_ANY_D( stream, _d, maxDistance );

@@ -15,19 +15,18 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "layercrime.hpp"
+#include "crime.hpp"
 #include "objects/overlay.hpp"
 #include "objects/constants.hpp"
 #include "objects/house.hpp"
 #include "objects/house_spec.hpp"
 #include "game/resourcegroup.hpp"
 #include "city/statistic.hpp"
-#include "layerconstants.hpp"
+#include "constants.hpp"
 #include "core/gettext.hpp"
 #include "core/event.hpp"
 #include "gfx/camera.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace citylayer

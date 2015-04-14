@@ -34,12 +34,14 @@ public:
   ChangePlayerName( Widget* parent );
   virtual ~ChangePlayerName();
 
-  virtual std::string text() const;
+  virtual std::string name() const;
+  virtual void setName(const std::string &text);
   virtual void setModal();
   virtual bool onEvent(const NEvent &event);
 
+  void setMayExit( bool value );
 public signals:
-  Signal0<>& onNewGame();
+  Signal0<>& onContinue();
   Signal0<>& onClose();
   Signal1<std::string>& onNameChange();
 

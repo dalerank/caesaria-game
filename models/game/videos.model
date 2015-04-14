@@ -1,7 +1,7 @@
 {
   population1 : "population1"
   population2 : "population2"
-  1st_glad    : "1st_glad"
+  first_glad    : "1st_glad"
   spy_barbarian : "spy_barbarian"
   emp_2nd_chance : "emp_2nd_chance"
   emp_displeased : "emp_displeased"

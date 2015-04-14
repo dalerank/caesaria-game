@@ -17,10 +17,11 @@
 
 #include "build_options.hpp"
 #include "objects/metadata.hpp"
-#include "core/foreach.hpp"
 #include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
 #include "objects/constants.hpp"
+#include "gfx/helper.hpp"
+#include "objects/overlay.hpp"
 
 using namespace gfx;
 
@@ -30,7 +31,10 @@ namespace city
 namespace development
 {
 
+CAESARIA_LITERALCONST(farm)
+
 static const char* disable_all = "disable_all";
+enum { maxLimit=999 };
 
 struct BuildingRule
 {
@@ -49,7 +53,7 @@ public:
   }
 
   typedef std::set<object::Type> Types;
-  typedef std::map<Branch, Types> Config;
+  typedef std::map<Branch,Types> Config;
   Config config;
 
   BranchHelper() : EnumsHelper<Branch>( unknown )
@@ -74,24 +78,59 @@ public:
   }  
 };
 
+class BuildingRules : public std::map< object::Type, BuildingRule >
+{
+public:
+  VariantMap saveRules() const
+  {
+    VariantMap ret;
+    foreach( it, *this )
+      ret[ object::toString( it->first ) ] = it->second.mayBuild;
+
+    return ret;
+  }
+
+  VariantMap saveQuotes() const
+  {
+    VariantMap ret;
+    foreach( it, *this )
+      ret[ object::toString( it->first ) ] = it->second.quotes;
+
+    return ret;
+  }
+
+  void loadRules( const VariantMap& stream )
+  {
+    foreach( item, stream )
+    {
+      object::Type btype = object::toType( item->first );
+      (*this)[ btype ].mayBuild = item->second.toBool();
+    }
+  }
+
+  void loadQuotes( const VariantMap& stream )
+  {
+    foreach( item, stream )
+    {
+      object::Type btype = object::toType( item->first );
+      (*this)[ btype ].quotes = item->second.toBool();
+    }
+  }
+};
+
 class Options::Impl
 {
 public:
-  typedef std::map< object::Type, BuildingRule > BuildingRules;
-  typedef std::vector< TilePos > MemPoints;
-
   BuildingRules rules;
-  MemPoints memPoints;
 
-  bool checkDesirability;
+  bool check_desirability;
   unsigned int maximumForts;
 };
 
 Options::Options() : _d( new Impl )
 {
-  _d->checkDesirability = true;
-  _d->maximumForts = 999;
-  _d->memPoints.resize( 10 );
+  _d->check_desirability = true;
+  _d->maximumForts = maxLimit;
 }
 
 Options::~Options() {}
@@ -101,22 +140,22 @@ void Options::setBuildingAvailble( const object::Type type, bool mayBuild )
   _d->rules[ type ].mayBuild = mayBuild;
 }
 
-void Options::setBuildingAvailble( const object::Type start, const object::Type stop, bool mayBuild )
+void Options::setBuildingAvailble( const Range& range, bool mayBuild )
 {
-  for( object::Type i=start; i <= stop; ++i )
-    _d->rules[ i ].mayBuild = mayBuild;
+  foreach( i, range )
+    _d->rules[ *i ].mayBuild = mayBuild;
 }
 
-bool Options::isBuildingsAvailble( const object::Type start, const object::Type stop ) const
+bool Options::isBuildingsAvailble(const Range& range) const
 {
   bool mayBuild = false;
-  for( object::Type i=start; i <= stop; ++i )
-    mayBuild |= _d->rules[ i ].mayBuild;
+  foreach( i, range )
+    mayBuild |= _d->rules[ *i ].mayBuild;
 
   return mayBuild;
 }
 
-bool Options::isCheckDesirability() const {  return _d->checkDesirability; }
+bool Options::isCheckDesirability() const {  return _d->check_desirability; }
 unsigned int Options::maximumForts() const { return _d->maximumForts; }
 
 void Options::setGroupAvailable( const development::Branch type, Variant vmb )
@@ -125,156 +164,73 @@ void Options::setGroupAvailable( const development::Branch type, Variant vmb )
     return;
 
   bool mayBuild = (vmb.toString() != disable_all);
-  switch( type )
-  {
-  case development::farm: setBuildingAvailble( object::wheat_farm, object::meat_farm, mayBuild ); break;
-  case development::water: setBuildingAvailble( object::reservoir, object::well, mayBuild ); break;
-  case development::health: setBuildingAvailble( object::clinic, object::barber, mayBuild ); break;
-  case development::raw_material: setBuildingAvailble( object::quarry, object::clay_pit, mayBuild ); break;
-  case development::religion: setBuildingAvailble( object::small_ceres_temple, object::oracle, mayBuild ); break;
-  case development::factory: setBuildingAvailble( object::wine_workshop, object::pottery_workshop, mayBuild ); break;
-  case development::education: setBuildingAvailble( object::school, object::library, mayBuild ); break;
-  case development::entertainment: setBuildingAvailble( object::amphitheater, object::chariotSchool, mayBuild ); break;
-  case development::administration: setBuildingAvailble( object::senate, object::governorPalace, mayBuild ); break;
-  case development::engineering:
-    setBuildingAvailble( object::engineering_post, object::wharf, mayBuild );
-    setBuildingAvailble( object::plaza, mayBuild );
-    setBuildingAvailble( object::garden, mayBuild );
-  break;
-  case development::security: setBuildingAvailble( object::prefecture, object::fortArea, mayBuild ); break;
-  case development::commerce: setBuildingAvailble( object::market, object::warehouse, mayBuild ); break;
-  case development::temple: setBuildingAvailble( object::small_ceres_temple, object::small_venus_temple, mayBuild ); break;
-  case development::big_temple: setBuildingAvailble( object::big_ceres_temple, object::big_venus_temple, mayBuild ); break;
-  case development::all:
-  {
-    MetaDataHolder::OverlayTypes types = MetaDataHolder::instance().availableTypes();
-    foreach( it, types )
-      setBuildingAvailble( *it, mayBuild );
-  }
+  Range range = Range::fromBranch( type );
 
-  default:
-  break;
-  }
+  foreach( i, range )
+    setBuildingAvailble( *i, mayBuild );
 }
 
 bool Options::isGroupAvailable(const Branch type) const
 {
-  switch( type )
-  {
-  case development::farm:         return isBuildingsAvailble( object::wheat_farm, object::meat_farm ); break;
-  case development::water:        return isBuildingsAvailble( object::reservoir, object::well ); break;
-  case development::health:       return isBuildingsAvailble( object::clinic, object::barber ); break;
-  case development::raw_material: return isBuildingsAvailble( object::quarry, object::clay_pit ); break;
-  case development::religion:     return isBuildingsAvailble( object::small_ceres_temple, object::oracle ); break;
-  case development::factory:      return isBuildingsAvailble( object::wine_workshop, object::pottery_workshop ); break;
-  case development::education:    return isBuildingsAvailble( object::school, object::library ); break;
-  case development::entertainment:return isBuildingsAvailble( object::amphitheater, object::chariotSchool ); break;
-  case development::administration:return isBuildingsAvailble(object::senate, object::governorPalace ); break;
-  case development::engineering:  return isBuildingsAvailble( object::engineering_post, object::wharf ); break;
-  case development::security:     return isBuildingsAvailble( object::prefecture, object::fortArea ); break;
-  case development::commerce:     return isBuildingsAvailble( object::market, object::warehouse ); break;
-  case development::temple:       return isBuildingsAvailble( object::small_ceres_temple, object::small_venus_temple ); break;
-  case development::big_temple:   return isBuildingsAvailble( object::big_ceres_temple, object::big_venus_temple ); break;
-  default:
-  break;
-  }
+  Range range = Range::fromBranch( type );
 
-  return false;
+  if( range.empty() )
+    return false;
+
+  return isBuildingsAvailble( range );
 }
 
 unsigned int Options::getBuildingsQuote(const object::Type type) const
 {
-  Impl::BuildingRules::const_iterator it = _d->rules.find( type );
-  return it != _d->rules.end() ? it->second.quotes : 999;
-}
-
-TilePos Options::memPoint(unsigned int index) const
-{
-  index = math::clamp<unsigned int>( index, 0, _d->memPoints.size()-1 );
-  return _d->memPoints[ index ];
-}
-
-void Options::setMemPoint(unsigned int index, TilePos point)
-{
-  index = math::clamp<unsigned int>( index, 0, _d->memPoints.size()-1 );
-  _d->memPoints[ index ] = point;
+  BuildingRules::const_iterator it = _d->rules.find( type );
+  return it != _d->rules.end() ? it->second.quotes : maxLimit;
 }
 
 void Options::clear() {  _d->rules.clear(); }
 
 void Options::load(const VariantMap& options)
 {
-  setGroupAvailable( development::farm, options.get( "farm" ) );
-  setGroupAvailable( development::raw_material, options.get( "raw_material" ) );
-  setGroupAvailable( development::factory, options.get( "factory" ) );
-  setGroupAvailable( development::water, options.get( "water" ) );
-  setGroupAvailable( development::health, options.get( "health" ) );
-  setGroupAvailable( development::religion, options.get( "religion" ) );
-  setGroupAvailable( development::education, options.get( "education" ) );
+  setGroupAvailable( development::farm,          options.get( literals::farm ) );
+  setGroupAvailable( development::raw_material,  options.get( "raw_material" ) );
+  setGroupAvailable( development::factory,       options.get( "factory" ) );
+  setGroupAvailable( development::water,         options.get( "water" ) );
+  setGroupAvailable( development::health,        options.get( "health" ) );
+  setGroupAvailable( development::religion,      options.get( "religion" ) );
+  setGroupAvailable( development::education,     options.get( "education" ) );
   setGroupAvailable( development::entertainment, options.get( "entertainment" ) );
-  setGroupAvailable( development::administration, options.get( "govt" ) );
-  setGroupAvailable( development::engineering, options.get( "engineering" ) );
-  setGroupAvailable( development::security, options.get( "security" ) );
-  setGroupAvailable( development::commerce, options.get( "commerce" ) );
+  setGroupAvailable( development::administration,options.get( "govt" ) );
+  setGroupAvailable( development::engineering,   options.get( "engineering" ) );
+  setGroupAvailable( development::security,      options.get( "security" ) );
+  setGroupAvailable( development::commerce,      options.get( "commerce" ) );
 
-  VariantMap buildings = options.get( "buildings" ).toMap();
-  foreach( item, buildings )
-  {
-    object::Type btype = object::toType( item->first );
-    setBuildingAvailble( btype, item->second.toBool() );
-  }
-
-  VariantList points = options.get("points").toList();
-  unsigned int index=0;
-  foreach( it, points )
-  {
-    setMemPoint( index, it->toTilePos() );
-    index++;
-  }
-
-  _d->checkDesirability = options.get( "check_desirability", _d->checkDesirability );
-  _d->maximumForts = options.get( "maximumForts", _d->maximumForts );
+  _d->rules.loadRules( options.get( "buildings" ).toMap() );
+  _d->rules.loadQuotes( options.get( "quotes" ).toMap() );
+  VARIANT_LOAD_ANYDEF_D( _d, check_desirability, _d->check_desirability, options )
+  VARIANT_LOAD_ANYDEF_D( _d, maximumForts, _d->maximumForts, options )
 }
 
 VariantMap Options::save() const
 {
-  VariantMap blds;
-  VariantMap quotes;
-  foreach( it, _d->rules )
-  {
-    std::string typeName = object::toString( it->first );
-    blds[ typeName ] = it->second.mayBuild;
-    quotes[ typeName ] = it->second.quotes;
-  }
-
-  VariantList points;
-  foreach( it, _d->memPoints )
-  {
-    points.push_back( *it );
-  }
-
   VariantMap ret;
-  ret[ "buildings" ] = blds;
-  ret[ "quotes" ] = quotes;
-  ret[ "maximumForts" ] = _d->maximumForts;
-  ret[ "check_desirability" ] = _d->checkDesirability;
-  ret[ "points" ] = points;
+  ret[ "buildings" ] = _d->rules.saveRules();
+  ret[ "quotes" ] = _d->rules.saveQuotes();
+  VARIANT_SAVE_ANY_D( ret, _d, maximumForts )
+  VARIANT_SAVE_ANY_D( ret, _d, check_desirability )
   return ret;
 }
 
 Options& Options::operator=(const development::Options& a)
 {
   _d->rules = a._d->rules;
-  _d->checkDesirability = a._d->checkDesirability;
+  _d->check_desirability = a._d->check_desirability;
   _d->maximumForts = a._d->maximumForts;
-  _d->memPoints = a._d->memPoints;
 
   return *this;
 }
 
 bool Options::isBuildingAvailble(const object::Type type ) const
 {
-  Impl::BuildingRules::iterator it = _d->rules.find( type );
+  BuildingRules::iterator it = _d->rules.find( type );
   return (it != _d->rules.end() ? (*it).second.mayBuild : true);
 }
 
@@ -303,6 +259,60 @@ void loadBranchOptions(const std::string &filename)
       }
     }
   }
+}
+
+Range Range::fromBranch(const Branch branch)
+{
+  Range ret;
+  switch( branch )
+  {
+  case development::farm: ret = Range::fromSequence( object::wheat_farm, object::meat_farm); break;
+  case development::water: ret = Range::fromSequence( object::reservoir, object::well); break;
+  case development::health: ret = Range::fromSequence( object::clinic, object::barber); break;
+  case development::raw_material: ret = Range::fromSequence( object::quarry, object::clay_pit); break;
+  case development::religion: ret = Range::fromSequence( object::small_ceres_temple, object::oracle); break;
+  case development::factory: ret = Range::fromSequence( object::wine_workshop, object::pottery_workshop); break;
+  case development::education: ret = Range::fromSequence( object::school, object::library ); break;
+  case development::entertainment: ret = Range::fromSequence( object::amphitheater, object::chariotSchool ); break;
+  case development::administration: ret = Range::fromSequence( object::senate, object::governorPalace ); break;
+
+  case development::engineering:
+    ret = Range::fromSequence( object::engineering_post, object::wharf);
+    ret << object::plaza;
+    ret << object::garden;
+  break;
+
+  case development::security: ret = Range::fromSequence( object::prefecture, object::fortArea ); break;
+  case development::commerce: ret = Range::fromSequence( object::market, object::warehouse ); break;
+  case development::temple: ret = Range::fromSequence( object::small_ceres_temple, object::small_venus_temple ); break;
+  case development::big_temple: ret = Range::fromSequence( object::big_ceres_temple, object::big_venus_temple ); break;
+  case development::all:
+  {
+    MetaDataHolder::OverlayTypes types = MetaDataHolder::instance().availableTypes();
+    foreach( it, types )
+      ret << *it;
+  }
+  break;
+
+  default: break;
+  }
+
+  return ret;
+}
+
+Range Range::fromSequence(const object::Type start, const object::Type stop)
+{
+  Range ret;
+  for( object::Type i=start; i <= stop; ++i )
+    ret << i;
+
+  return ret;
+}
+
+Range& Range::operator<<(const object::Type type)
+{
+  this->insert( type );
+  return *this;
 }
 
 }//end namespace development

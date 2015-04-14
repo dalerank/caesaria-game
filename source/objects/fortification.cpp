@@ -77,7 +77,7 @@ bool Fortification::build( const city::AreaInfo& info )
   Pathway way2border = PathwayHelper::create( info.pos, info.city->borderInfo().roadEntry, PathwayHelper::allTerrain );
   if( !way2border.isValid() )
   {
-    events::GameEventPtr event = events::WarningMessage::create( "##walls_need_a_gatehouse##" );
+    events::GameEventPtr event = events::WarningMessage::create( "##walls_need_a_gatehouse##", 1 );
     event->dispatch();
   }
 
@@ -100,7 +100,7 @@ void Fortification::destroy()
 
   if( _city().isValid() )
   {
-    TilesArray area = _city()->tilemap().getArea( pos() - TilePos( 2, 2), Size( 5 ) );
+    TilesArea area( _city()->tilemap(), pos() - TilePos( 2, 2), Size( 5 ) );
     foreach( tile, area )
     {
       FortificationPtr f = ptr_cast<Fortification>( (*tile)->overlay() );

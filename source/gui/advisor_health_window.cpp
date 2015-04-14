@@ -34,9 +34,9 @@
 #include "dictionary.hpp"
 #include "city/cityservice_health.hpp"
 #include "core/logger.hpp"
+#include "city/states.hpp"
 #include "widget_helper.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 struct HealthInfo
@@ -53,6 +53,10 @@ static HealthInfo infos[] = {
   { object::clinic, "##clinics##", "##peoples##" },
   { object::unknown, "", "" }
 };
+
+enum { idxBarber=1, idxDoctor=2, idxHospital=3, rowOffset=20, smallCityNormalhealthValue=85,
+       minPopullation4healthCalc=100, smallCityPopulation=300 };
+
 
 namespace gui
 {
@@ -94,12 +98,12 @@ public:
 
     PictureRef& texture = _textPictureRef();
     Font rfont = font();
-    std::string buildingStrT = utils::format( 0xff, "%d %s", _numberBuilding, _(info.building) );
+    std::string buildingStrT = utils::i2str( _numberBuilding ) + _(info.building);
     rfont.draw( *texture, buildingStrT, 0, 0 );
 
     rfont.draw( *texture, utils::i2str(_workingBuilding), 165, 0 );
 
-    std::string peoplesStrT = utils::format( 0xff, "%d %s", _peoplesCount, _(info.people) );
+    std::string peoplesStrT = utils::i2str( _peoplesCount ) + _(info.people);
     rfont.draw( *texture, peoplesStrT, 255, 0 );
   }
 
@@ -131,7 +135,6 @@ public:
   void updateAdvice( PlayerCityPtr city );
 };
 
-
 Health::Health(PlayerCityPtr city, Widget* parent, int id )
 : Window( parent, Rect( 0, 0, 640, 290 ), "", id ), _d( new Impl )
 {
@@ -149,16 +152,16 @@ Health::Health(PlayerCityPtr city, Widget* parent, int id )
                                              info.buildingWork, info.buildingCount, info.peoplesServed );
 
   info = _d->getInfo( city, object::barber );
-  _d->lbBarbersInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 20), labelSize), object::barber,
+  _d->lbBarbersInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, rowOffset * idxBarber ), labelSize), object::barber,
                                               info.buildingWork, info.buildingCount, info.peoplesServed );
 
   info = _d->getInfo( city, object::clinic );
-  _d->lbDoctorInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 40), labelSize), object::clinic,
+  _d->lbDoctorInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, rowOffset * idxDoctor ), labelSize), object::clinic,
                                           info.buildingWork, info.buildingCount, info.peoplesServed );
 
   info = _d->getInfo( city, object::hospital );
-  _d->lbDoctorInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, 60), labelSize), object::hospital,
-                                          info.buildingWork, info.buildingCount, info.peoplesServed );
+  _d->lbHospitalInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, rowOffset * idxHospital), labelSize), object::hospital,
+                                            info.buildingWork, info.buildingCount, info.peoplesServed );
 
   _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 
@@ -209,15 +212,15 @@ void Health::Impl::updateAdvice(PlayerCityPtr c)
 
   StringArray outText;
 
-  if( c->population() < 100 )
+  if( c->states().population < minPopullation4healthCalc )
   {
     outText << "##healthadv_not_need_health_service_now##";
   }
   else
   {
-    if( c->population() < 300 )
+    if( c->states().population < smallCityPopulation )
     {
-      if( hc.isValid() && hc->value() > 85 )
+      if( hc.isValid() && hc->value() > smallCityNormalhealthValue )
       {
         outText << "##healthadv_noproblem_small_city##";
       }

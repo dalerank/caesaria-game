@@ -25,7 +25,6 @@
 #include "game/gamedate.hpp"
 #include "objects/farm.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 class Locust::Impl
@@ -55,8 +54,7 @@ void Locust::create(PlayerCityPtr city, TilePos pos, int time)
 
   WalkerPtr ret( locust );
   ret->drop();
-
-  city->addWalker( ret );
+  ret->attach();
 }
 
 Locust::Locust( PlayerCityPtr city ) : Walker( city ), _d( new Impl )

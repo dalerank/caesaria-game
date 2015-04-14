@@ -30,10 +30,10 @@ public:
   MerchantPtr head();
 
   virtual void timeStep(const unsigned long time);
-
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
 
+  void updateHeadLocation( const TilePos& pos );
 private:
   MerchantCamel(PlayerCityPtr city);
 

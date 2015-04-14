@@ -20,7 +20,6 @@
 #include "city/city.hpp"
 #include "game/resourcegroup.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace citylayer
@@ -99,7 +98,7 @@ void Info::drawColumn( Engine& engine, const Point& pos, const int percent)
       engine.draw( _d->bodyColumn, pos - Point( -18, 8 + offsetY ) );
     }
 
-    engine.draw(_d->headerColumn, pos - Point(-6, 25 + rounded));
+    engine.draw(_d->headerColumn, pos - Point(-7, 25 + rounded));
   }
 }
 

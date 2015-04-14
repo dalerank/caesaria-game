@@ -18,14 +18,13 @@
 #include "game/resourcegroup.hpp"
 #include "objects/house.hpp"
 #include "objects/house_spec.hpp"
-#include "layerconstants.hpp"
+#include "constants.hpp"
 #include "gfx/tilemap_camera.hpp"
 #include "city/statistic.hpp"
 #include "core/priorities.hpp"
 #include "core/gettext.hpp"
 #include "core/event.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace citylayer
@@ -38,6 +37,7 @@ int Health::_getLevelValue( HousePtr house )
   switch(_type)
   {
   case citylayer::health: return (int) house->state( pr::health );
+  case citylayer::doctor: return (int) house->getServiceValue( Service::doctor );
   case citylayer::hospital: return (int) house->getServiceValue( Service::hospital );
   case citylayer::barber: return (int) house->getServiceValue( Service::barber );
   case citylayer::baths: return (int) house->getServiceValue( Service::baths );

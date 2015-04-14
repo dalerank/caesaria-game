@@ -49,7 +49,8 @@ public:
   virtual int scrollSpeed() const = 0;
   virtual Tile* centerTile() const = 0;
   virtual void startFrame() = 0;
-  virtual void setCenter( TilePos pos ) = 0;
+  virtual void setCenter( TilePos pos, bool checkCorner ) = 0;
+  virtual void setCenter( TilePos pos ) { setCenter( pos, true ); }
   virtual void refresh() = 0;
 
   virtual ~Camera() {}

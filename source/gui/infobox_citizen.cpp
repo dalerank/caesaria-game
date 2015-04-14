@@ -34,9 +34,8 @@
 #include "walker/seamerchant.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
+#include "gfx/helper.hpp"
 #include "events/movecamera.hpp"
-
-using namespace constants;
 
 namespace gui
 {
@@ -46,10 +45,6 @@ namespace infobox
 
 namespace citizen
 {
-
-namespace {
-static const char* sound_ext = ".ogg";
-}
 
 class CitizenScreenshot : public Label
 {
@@ -118,7 +113,7 @@ public:
 };
 
 AboutPeople::AboutPeople( Widget* parent, PlayerCityPtr city, const TilePos& pos )
-  : Simple( parent, Rect( 0, 0, 460, 350 ), Rect( 18, 40, 460 - 18, 350 - 120 ) ),
+  : Infobox( parent, Rect( 0, 0, 460, 350 ), Rect( 18, 40, 460 - 18, 350 - 120 ) ),
     _d( new Impl)
 {
   _d->walkers = city->walkers( pos );
@@ -175,7 +170,7 @@ void AboutPeople::_setWalker( WalkerPtr wlk )
   if( !thinks.empty() )
   {
     std::string sound = thinks.substr( 2, thinks.size() - 4 );
-    events::GameEventPtr e = events::PlaySound::create( sound + sound_ext, 100 );
+    events::GameEventPtr e = events::PlaySound::create( sound, 100 );
     e->dispatch();
   }
 
@@ -296,7 +291,7 @@ void AboutPeople::Impl::updateBaseBuilding( TilePos pos )
 
 void AboutPeople::Impl::moveCamera2base()
 {
-  if( baseBuildingPos != TilePos( -1, -1 ) )
+  if( baseBuildingPos != gfx::tilemap::invalidLocation() )
   {
     events::GameEventPtr e = events::MoveCamera::create( baseBuildingPos );
     e->dispatch();
@@ -305,7 +300,7 @@ void AboutPeople::Impl::moveCamera2base()
 
 void AboutPeople::Impl::moveCamera2dst()
 {
-  if( destinationPos != TilePos( -1, -1 ) )
+  if( destinationPos != gfx::tilemap::invalidLocation() )
   {
     events::GameEventPtr e = events::MoveCamera::create( destinationPos );
     e->dispatch();

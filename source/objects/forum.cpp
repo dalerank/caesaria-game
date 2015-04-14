@@ -22,7 +22,7 @@
 #include "city/city.hpp"
 #include "core/foreach.hpp"
 #include "constants.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "walker/constants.hpp"
 #include "senate.hpp"
 #include "core/logger.hpp"
@@ -30,7 +30,6 @@
 #include "city/statistic.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::forum, Forum)
 
 class Forum::Impl
@@ -54,10 +53,7 @@ void Forum::deliverService()
     TaxCollectorPtr walker = TaxCollector::create( _city() );
     walker->send2City( this, ServiceWalker::goLowerService|ServiceWalker::anywayWhenFailed );
 
-    if( !walker->isDeleted() )
-    {
-      addWalker( walker.object() );
-    }
+    addWalker( walker.object() );
   }
 }
 
@@ -118,7 +114,7 @@ void Forum::Impl::removeMoney(PlayerCityPtr city)
   if( !senates.empty() )
     senate = senates.front();
 
-  int maxMoney = city->funds().treasury();
+  int maxMoney = city->treasury().money();
   if( maxMoney > 0 )
   {
     ForumList forums;
@@ -129,7 +125,7 @@ void Forum::Impl::removeMoney(PlayerCityPtr city)
 
     maxMoney /= forums.size();
 
-    events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::moneyStolen, -maxMoney );
+    events::GameEventPtr e = events::Payment::create( econ::Issue::moneyStolen, -maxMoney );
     e->dispatch();
   }
 }

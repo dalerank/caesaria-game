@@ -19,6 +19,7 @@
 #define __CAESARIA_WELL_H_INCLUDED__
 
 #include "service.hpp"
+#include "gfx/tilearea.hpp"
 
 class Well : public ServiceBuilding
 {
@@ -30,7 +31,8 @@ public:
   virtual void burn();
   virtual bool build(const city::AreaInfo &info);
   virtual bool isDestructible() const;
-  gfx::TilesArray coverageArea() const;
+  virtual std::string sound() const;
+  gfx::TilesArea coverageArea() const;
 };
 
 #endif //__CAESARIA_WELL_H_INCLUDED__

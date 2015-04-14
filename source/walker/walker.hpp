@@ -42,7 +42,7 @@ class Walker : public Serializable, public ReferenceCounted
 public:
   typedef unsigned int UniqueId;
   typedef enum { acNone=0, acMove, acFight, acDie, acWork, acMax } Action;
-  typedef enum { showDebugInfo=1, vividly, showPath, userFlag=0x80, count=0xff } Flag;
+  typedef enum { infiniteWait=-1, showDebugInfo=1, vividly, showPath, userFlag=0x80, count=0xff } Flag;
   typedef enum { thCurrent, thAction, thCount } Thought;
   typedef enum { plOrigin, plDestination, pcCount } Place;
 
@@ -50,7 +50,7 @@ public:
   virtual ~Walker();
 
   virtual void timeStep(const unsigned long time);  // performs one simulation step
-  virtual constants::walker::Type type() const;
+  virtual walker::Type type() const;
 
   // position and movement
 
@@ -115,6 +115,7 @@ public:
   virtual world::Nation nation() const;
 
   void attach();
+  Point wpos() const;
 
 protected:
   void _walk();
@@ -142,12 +143,11 @@ protected:
   void _setDirection( Direction direction );
   void _setNation( world::Nation nation );
   void _setLocation( gfx::Tile* tile );
-  void _setType( constants::walker::Type type );
+  void _setType( walker::Type type );
   PlayerCityPtr _city() const;
   void _setHealth( double value );
   void _updateAnimation(const unsigned int time);
   void _setWpos(const Point &pos );
-  Point _wpos() const;
 
 private:
   class Impl;

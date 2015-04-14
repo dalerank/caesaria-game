@@ -33,8 +33,6 @@
 #include "core/utils.hpp"
 #include "widget_helper.hpp"
 
-using namespace constants;
-
 namespace gui
 {
 
@@ -63,7 +61,7 @@ public:
 };
 
 AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos  )
-  : Simple( parent, Rect( 0, 0, 460, 350 ), Rect() ), _d( new Impl )
+  : Infobox( parent, Rect( 0, 0, 460, 350 ), Rect() ), _d( new Impl )
 {  
   Widget::setupUI( ":/gui/legionopts.gui" );
 
@@ -87,14 +85,14 @@ AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos 
   {
     foreach( i, walkers )
     {
-      RomeSoldierPtr rs = ptr_cast<RomeSoldier>( *i);
+      RomeSoldierPtr rs = i->as<RomeSoldier>();
       if( rs.isValid() )
       {
         _d->fort = rs->base();
         break;
       }
 
-      PatrolPointPtr pp = ptr_cast<PatrolPoint>( *i);
+      PatrolPointPtr pp = i->as<PatrolPoint>();
       if( pp.isValid() )
       {
         _d->fort = pp->base();
@@ -267,7 +265,7 @@ bool AboutLegion::onEvent(const NEvent& event)
     }
   }
 
-  return Simple::onEvent( event );
+  return Infobox::onEvent( event );
 }
 
 void AboutLegion::_addFormationButton(int index, int id, int picId)

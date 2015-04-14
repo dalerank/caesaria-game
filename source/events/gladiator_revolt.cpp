@@ -28,15 +28,13 @@
 #include "core/variant_map.hpp"
 #include "core/gettext.hpp"
 #include "showinfobox.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "objects/training.hpp"
 #include "gui/film_widget.hpp"
 #include "world/empire.hpp"
 #include "game/gamedate.hpp"
 #include "fundissue.hpp"
 #include "factory.hpp"
-
-using namespace constants;
 
 namespace events
 {
@@ -97,7 +95,7 @@ void GladiatorRevolt::_exec(Game& game, unsigned int)
     for( int k=0; k < _d->count; k++ )
     {
       WalkerPtr wlk = WalkerManager::instance().create( walker::gladiatorRiot, game.city() );
-      EnemySoldierPtr enemy = ptr_cast<EnemySoldier>( wlk );
+      EnemySoldierPtr enemy = wlk.as<EnemySoldier>();
       if( enemy.isValid() )
       {
         enemy->send2City( location );

@@ -23,9 +23,9 @@
 #include "good/store.hpp"
 #include "objects/extension.hpp"
 #include "objects/factory.hpp"
+#include "city/statistic.hpp"
 #include "core/utils.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace religion
@@ -98,7 +98,7 @@ void Mercury::_doSmallCurse(PlayerCityPtr city)
 
   foreach( it, factories )
   {
-    FactoryProgressUpdater::assignTo( ptr_cast<Factory>( *it ), -5, 4 * 12 );
+    FactoryProgressUpdater::assignTo( *it, -5, 4 * 12 );
   }
 }
 

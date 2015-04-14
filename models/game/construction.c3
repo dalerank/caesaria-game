@@ -426,7 +426,7 @@
     employers : 5
     class : "food"
     image : [ "commerce", 1 ]
-    animation : { rc : "commerce", start : 2, count : 10, offset : [ 20, 54 ], delay : 4 }
+    animation : { rc : "commerce", start : 2, count : 10, delay : 4 }
     sound : [ "market", 1 ]
   }, 
 
@@ -506,6 +506,7 @@
     employers : 0
     class : "bridge"
     requestDestroy : true
+    subtileOffset : [ 10, -12 ]
   }, 
   
   high_bridge : {
@@ -522,6 +523,13 @@
     employers : 20
     class : "administration"
     sound : [ "senate", 1 ]
+
+    ratings : {
+      culture  :   { rc : "govt", index: 5, offset : [ 140, -30 ] }
+      prosperity : { rc : "govt", index: 6, offset : [ 170, -25 ] }
+      peace :      { rc : "govt", index: 7, offset : [ 200, -15 ] }
+      favour :     { rc : "govt", index: 8, offset : [ 230, -10 ] }
+    }
   }, 
    
   forum : {
@@ -802,6 +810,6 @@
     class : "industry"
     productRate : 4.8
     image : [ "commerce", 132 ]
-    animation : { rc : "commerce", start : 133, count : 7, delay : 3 }
+    animation : { rc : "commerce", start : 133, count : 7, offset : [ 65, 42 ], delay : 3 }
   }
 }

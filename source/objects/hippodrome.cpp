@@ -20,13 +20,14 @@
 #include "constants.hpp"
 #include "gfx/picture.hpp"
 #include "city/statistic.hpp"
+#include "core/logger.hpp"
 #include "events/event.hpp"
 #include "walker/walker.hpp"
 #include "events/clearland.hpp"
 #include "walker/circus_charioter.hpp"
+#include "gfx/helper.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::hippodrome, Hippodrome)
@@ -104,7 +105,7 @@ void HippodromeSection::destroy()
   {
     events::GameEventPtr e = events::ClearTile::create( _basepos );
     e->dispatch();
-    _basepos = TilePos( -1, -1 );
+    _basepos = gfx::tilemap::invalidLocation();
   }
 }
 
@@ -323,7 +324,8 @@ void Hippodrome::_init( bool onBuild )
   break;
 
   default:
-    _CAESARIA_DEBUG_BREAK_IF( true && "Hippodrome: Unknown direction");
+    Logger::warning( "Hippodrome: Unknown direction" );
+    //_CAESARIA_DEBUG_BREAK_IF( true && "Hippodrome: Unknown direction");
   }
 }
 

@@ -25,6 +25,8 @@
 namespace good
 {
 
+enum { noId=0 };
+
 class Store::Impl
 {
 public:  
@@ -59,7 +61,7 @@ int Store::getMaxRetrieve(const good::Product goodType)
 int Store::reserveStorage(good::Stock &stock, DateTime time)
 {
   if( getMaxStore(stock.type() ) < stock.qty() )   // current free capacity
-    return 0;
+    return noId;
 
   // the stock can be stored!
   return _d->storeReservations.push( stock, time );
@@ -75,7 +77,7 @@ int Store::reserveRetrieval(good::Stock &stock, DateTime time)
 {
   // current good quantity
   if( getMaxRetrieve(stock.type()) < stock.qty())
-    return 0;
+    return noId;
 
   return _d->retrieveReservations.push( stock, time );
 }
@@ -90,7 +92,7 @@ good::Stock Store::getStorageReservation(const int reservationID, const bool pop
 {
   ReserveInfo info = _d->storeReservations.get( reservationID );
 
-  if( info.id == 0 )
+  if( info.id == noId )
   {
     Logger::warning( "Unknown stock for reservationID" );
     return good::Stock();
@@ -109,7 +111,7 @@ good::Stock Store::getRetrieveReservation(const int reservationID, const bool po
 {
   ReserveInfo info = _d->retrieveReservations.get(reservationID);
 
-  if( info.id == 0 )
+  if( info.id == noId )
   {
     Logger::warning( "GoodStore::getRetrieveReservation unknown reservationID");
     return good::Stock();
@@ -150,7 +152,7 @@ void Store::store( good::Stock& stock, const int amount)
 
   long reservationID = reserveStorage( reservedStock, DateTime() );
 
-  if( reservationID > 0 )
+  if( reservationID > noId )
   {
     applyStorageReservation(stock, reservationID);
   }
@@ -169,7 +171,7 @@ void Store::retrieve(good::Stock &stock, int amount)
   reservedStock.setQty( amount );
 
   long reservationID = reserveRetrieval( reservedStock, DateTime() );
-  if( reservationID > 0 )
+  if( reservationID > noId )
   {
     applyRetrieveReservation(stock, reservationID);
   }
@@ -199,9 +201,9 @@ VariantMap Store::save() const
 {
   VariantMap stream;
 
-  stream[ "storeReservations" ] = _d->storeReservations.save();
-  stream[ "devastation" ] = _d->devastation;
-  stream[ "retrieveReservation" ] = _d->retrieveReservations.save();
+  VARIANT_SAVE_CLASS_D( stream, _d, storeReservations )
+  VARIANT_SAVE_ANY_D( stream, _d, devastation )
+  VARIANT_SAVE_CLASS_D( stream, _d, retrieveReservations )
 
   VariantList vm_orders;
   foreach( i, good::all() )
@@ -215,9 +217,15 @@ VariantMap Store::save() const
 
 void Store::load( const VariantMap& stream )
 {
-  _d->devastation = (bool)stream.get( "devastation" );
-  _d->storeReservations.load( stream.get( "storeReservations" ).toMap() );
-  _d->retrieveReservations.load( stream.get( "retrieveReservation" ).toMap() );
+  if( stream.empty() )
+  {
+    Logger::warning( "!!! WARNING: cant load store config from empty stream" );
+    return;
+  }
+
+  VARIANT_LOAD_ANY_D( _d, devastation, stream )
+  VARIANT_LOAD_CLASS_D( _d, storeReservations, stream )
+  VARIANT_LOAD_CLASS_D( _d, retrieveReservations, stream )
 
   VariantList vm_orders = stream.get( "orders" ).toList();
   int index = 0;
@@ -251,9 +259,9 @@ Reservations::Reservations(){  _idCounter = 1; }
 
 const ReserveInfo& Reservations::get(unsigned int id) const
 {
-  for( Reservations::const_iterator i=begin(); i != end(); ++i )
+  foreach( i, *this )
   {
-    if( (*i).id == id )
+    if( i->id == id )
       return *i;
   }
 
@@ -278,7 +286,7 @@ bool Reservations::pop(unsigned int id)
 {
   foreach( i, *this )
   {
-    if( (*i).id == id )
+    if( i->id == id )
     {
       erase( i );
       return true;
@@ -306,9 +314,9 @@ VariantMap Reservations::save() const
   VariantList vm_reservations;
   for( const_iterator i=begin(); i != end(); ++i )
   {
-    vm_reservations.push_back( (int)(*i).id );
-    vm_reservations.push_back( (*i).stock.save() );
-    vm_reservations.push_back( (*i).time );
+    vm_reservations.push_back( (int)i->id );
+    vm_reservations.push_back( i->stock.save() );
+    vm_reservations.push_back( i->time );
   }
   stream[ "items" ] = vm_reservations;
 

@@ -29,6 +29,7 @@
 #include "world/empire.hpp"
 #include "freeplay_finalizer.hpp"
 #include "steam.hpp"
+#include "config.hpp"
 
 using namespace scene;
 
@@ -96,7 +97,6 @@ MissionSelect::~MissionSelect()
     _CAESARIA_DEBUG_BREAK_IF( "Briefing: unexpected result event" );
   }
 }
-
 
 ShowMainMenu::ShowMainMenu(Game* game, gfx::Engine* engine):
   BaseState(game),
@@ -192,24 +192,23 @@ bool GameLoop::update(gfx::Engine* engine)
     return false;
   }
 
-  game::Date& cdate = game::Date::instance();
-
   _screen->update( *engine );
 
   if( _game->city()->tilemap().direction() == direction::north )
   {
     if( !_game->isPaused() )
     {
-      _timeX10 += _timeMultiplier / 10;
+      _timeX10 += _timeMultiplier / config::gamespeed::scale;
     }
     else if ( _manualTicksCounterX10 > 0 )
     {
-      unsigned int add = math::min( _timeMultiplier / 10, _manualTicksCounterX10 );
+      unsigned int add = math::min( _timeMultiplier / config::gamespeed::scale, _manualTicksCounterX10 );
       _timeX10 += add;
       _manualTicksCounterX10 -= add;
     }
 
-    while( _timeX10 > _saveTime * 10 + 1 )
+    game::Date& cdate = game::Date::instance();
+    while( _timeX10 > _saveTime * config::gamespeed::scale + 1 )
     {
       _saveTime++;
 

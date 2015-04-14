@@ -1,4 +1,62 @@
 {
+  /* missions */
+  tutorial_speech : "01b"
+  tutorial_win_speech : "01w"
+
+  /* buildings */
+
+  rome6                   : "rome1"
+  ampitheatre_00001             : "ampitheatre"
+  aqueduct_00001                : "aquaduct"
+  theatre_00001                 : "theatre"
+  barracks_00001                : "barracks"
+  colloseum_00001               : "colosseum"
+  gladiatorpit_00001            : "glad_pit"
+  artistpit_00001               : "art_pit"
+  charioterspit_00001           : "char_pit"
+  garden_00001                  : "garden"
+  fort_00001                    : "fort"
+  statue_00001                  : "statue"
+  clinic_00001                  : "clinic"
+  baths_00001                   : "baths"
+  barber_00001                  : "barber"
+  school_00001                  : "school"
+  academy_00001                 : "academy"
+  library_00001                 : "library"
+  templeceres_00001             : "temp_farm"
+  templeneptune_00001           : "temp_ship"
+  templemercury_00001           : "temo_comm"
+  templemars_00001              : "temp_war"
+  templevenus_00001             : "temp_love"
+  market_00001                  : "market"
+  lionpit_00001                 : "lion_pit"
+  granary_00001                 : "granary"
+  warehouse_00001               : "warehouse"
+  shipyard_00001                : "shipyard"
+  dock_00001                    : "dock"
+  wharf_00001                   : "wharf"
+  senate_00001                  : "senate"
+  forum_00001                   : "forum"
+  reservoir_00001               : "reservoir"
+  fountain_00001                : "fountain"
+  well_00001                    : "well"
+  burningruins_00001            : "burning_ruin"
+  wheatfarm_00001               : "wheat_farm"
+  vegetablefarm_00001           : "ver_farm"
+  olivesfarm_00001              : "olives_farm"
+  meatfarm_00001                : "meat_farm"
+  fig_farm_00001                : "fig_farm"
+  marblequarry_00001            : "quarry"
+  ironmine_00001                : "mine"
+  lumbermill_00001              : "lumber_mill"
+  military_academy_00001        : "military_acad"
+  claypit_00001                 : "clay_pit"
+  winery_00001                  : "wine_workshop"
+  creamery_00001                : "oil_workshop"
+  weapons_workshop_00001        : "weapons_workshop"
+  pottery_workshop_00001        : "pottery_workshop"
+  furniture_00001               : "furn_workshop"
+
   /*actor replics*/
   actor_average_life      : "ACTORS_GREAT1"
   actor_gods_angry        : "ACTORS_RELIG1"
@@ -96,10 +154,10 @@
   lionTamer_low_entairtenment   : "LIONTR_NOFUN1"
   lionTamer_need_workers        : "LIONTR_NEEDJOB1"
   lionTamer_so_hungry           : "LIONTR_STARV1"
-  lionTamer_normal_life
+/*  lionTamer_normal_life
   lionTamer_good_education
   lionTamer_find_ennemy
-
+*/
   marketBuyer_average_life      : "MARKET_GREAT1"
   marketBuyer_gods_angry        : "MARKET_RELIG1"
   marketBuyer_good_life         : "MARKET_GREAT2"

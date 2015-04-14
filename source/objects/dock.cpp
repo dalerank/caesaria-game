@@ -91,7 +91,7 @@ bool Dock::build( const city::AreaInfo& info )
 {
   _setDirection( _d->getDirection( info.city, info.pos, size() ) );
 
-  TilesArray area = info.city->tilemap().getArea( info.pos, size() );
+  TilesArea area(  info.city->tilemap(), info.pos, size() );
 
   foreach( tile, area ) { _d->saveTileInfo.push_back( tile::encode( *(*tile) ) ); }
 
@@ -175,7 +175,7 @@ std::string Dock::workersProblemDesc() const
 
 bool Dock::isBusy() const
 {
-  SeaMerchantList merchants = city::statistic::findw<SeaMerchant>( _city(), constants::walker::seaMerchant, landingTile().pos() );
+  SeaMerchantList merchants = city::statistic::findw<SeaMerchant>( _city(), walker::seaMerchant, landingTile().pos() );
 
   return !merchants.empty();
 }
@@ -200,7 +200,7 @@ const Tile& Dock::landingTile() const
 int Dock::queueSize() const
 {
   TilePos offset( 3, 3 );
-  SeaMerchantList merchants = city::statistic::findw<SeaMerchant>( _city(), constants::walker::seaMerchant,
+  SeaMerchantList merchants = city::statistic::findw<SeaMerchant>( _city(), walker::seaMerchant,
                                                                    pos() - offset, pos() + offset );
 
   for( SeaMerchantList::iterator it=merchants.begin(); it != merchants.end(); )
@@ -214,8 +214,7 @@ int Dock::queueSize() const
 
 const Tile& Dock::queueTile() const
 {
-  TilePos offset( 3, 3 );
-  TilesArray tiles = city::statistic::tiles( _city(), pos() - offset, pos() + offset );
+  TilesArea tiles( _city()->tilemap(), pos(), 3 );
 
   foreach( it, tiles )
   {
@@ -230,7 +229,7 @@ const Tile& Dock::queueTile() const
     }
   }
 
-  return _city()->tilemap().at( TilePos( -1, -1 ) );
+  return gfx::tile::getInvalid();
 }
 
 void Dock::requestGoods(good::Stock& stock)
@@ -246,7 +245,7 @@ void Dock::requestGoods(good::Stock& stock)
 
 int Dock::importingGoods( good::Stock& stock)
 {
-  const good::Store& cityOrders = _city()->importingGoods();
+  const good::Store& cityOrders = _city()->buys();
 
   //try sell goods
   int traderMaySell = std::min( stock.qty(), cityOrders.capacity( stock.type() ) );
@@ -258,7 +257,7 @@ int Dock::importingGoods( good::Stock& stock)
   {
     _d->importGoods.store( stock, traderMaySell );
 
-    events::GameEventPtr e = events::FundIssueEvent::import( stock.type(), traderMaySell );
+    events::GameEventPtr e = events::Payment::import( stock.type(), traderMaySell );
     e->dispatch();
 
     cost = good::Helper::importPrice( _city(), stock.type(), traderMaySell );
@@ -280,7 +279,7 @@ int Dock::exportingGoods( good::Stock& stock, int qty )
   int cost = 0;
   if( qty > 0 )
   {
-    events::GameEventPtr e = events::FundIssueEvent::exportg( stock.type(), qty );
+    events::GameEventPtr e = events::Payment::exportg( stock.type(), qty );
     e->dispatch();
 
     cost = good::Helper::exportPrice( _city(), stock.type(), qty );

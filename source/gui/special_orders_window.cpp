@@ -30,6 +30,7 @@
 #include "good/helper.hpp"
 #include "good/store.hpp"
 #include "good/orders.hpp"
+#include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"

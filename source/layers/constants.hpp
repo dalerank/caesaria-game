@@ -27,7 +27,7 @@ namespace citylayer
 
 typedef enum { simple=0, water, fire, damage, desirability,
        entertainments, entertainment, theater, amphitheater, colloseum, hippodrome,
-       health, doctor, hospital, barber, baths,
+       health, healthAll, doctor, hospital, barber, baths,
        food,
        religion,
        risks, crime, aborigen, troubles,

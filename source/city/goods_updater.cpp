@@ -30,8 +30,6 @@
 #include "objects/house_level.hpp"
 #include "cityservice_factory.hpp"
 
-using namespace constants;
-
 namespace city
 {
 
@@ -89,7 +87,7 @@ void GoodsUpdater::load(const VariantMap& stream)
   VARIANT_LOAD_TIME_D( _d, endTime, stream )
   VARIANT_LOAD_ANY_D( _d, value, stream )
 
-  _d->gtype = (good::Product)good::Helper::getType( stream.get( lc_good ).toString() );
+  _d->gtype = (good::Product)good::Helper::getType( stream.get( literals::good ).toString() );
 
   VariantList vl_buildings = stream.get( "buildings" ).toList();
   foreach( it, vl_buildings )
@@ -114,7 +112,7 @@ VariantMap GoodsUpdater::save() const
     vl_buildings.push_back( Variant( object::toString( *it ) ) );
   }
 
-  ret[ lc_good    ] = Variant( good::Helper::getTypeName( _d->gtype ) );
+  ret[ literals::good    ] = Variant( good::Helper::getTypeName( _d->gtype ) );
 
   return ret;
 }

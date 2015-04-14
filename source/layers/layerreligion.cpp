@@ -18,14 +18,13 @@
 #include "game/resourcegroup.hpp"
 #include "objects/house.hpp"
 #include "objects/house_spec.hpp"
-#include "layerconstants.hpp"
+#include "constants.hpp"
 #include "city/statistic.hpp"
 #include "core/utils.hpp"
 #include "core/event.hpp"
 #include "gfx/tilemap_camera.hpp"
 #include "core/gettext.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace citylayer

@@ -22,8 +22,6 @@
 #include "walkers_factory.hpp"
 #include "objects/building.hpp"
 
-using namespace constants;
-
 REGISTER_CLASS_IN_WALKERFACTORY(walker::lionTamer, LionTamer)
 
 class LionTamer::Impl
@@ -63,7 +61,7 @@ void LionTamer::send2City(BuildingPtr base, bool roadOnly)
     lion->go();
     _d->delay = 12;
 
-    _city()->addWalker( ptr_cast<Walker>( lion ) );
+    attach();
   }
 }
 

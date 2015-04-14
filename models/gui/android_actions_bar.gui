@@ -1,5 +1,5 @@
 {  
-  geometry : [ "pw-120", "ph-302", "pw-0", "ph-0" ]
+  geometry : [ 0, "ph-455", 120, "ph-0" ]
   bgtype : "none"
   static : true
 
@@ -11,8 +11,24 @@
     disabled : [ "paneling", 660 ]
   }
 
-  btnShowHelp#TexturedButton : {
+  btnZoomIn#TexturedButton : {
     geometry : [ 0, 75, 108, 147 ]
+    normal : [ "paneling", 665 ]
+    hovered : [ "paneling", 666 ]
+    pressed : [ "paneling", 667 ]
+    disabled : [ "paneling", 668 ]
+  }
+
+  btnZoomOut#TexturedButton : {
+    geometry : [ 0, 150, 108, 222 ]
+    normal : [ "paneling", 669 ]
+    hovered : [ "paneling", 670 ]
+    pressed : [ "paneling", 671 ]
+    disabled : [ "paneling", 672 ]
+  }
+
+  btnShowHelp#TexturedButton : {
+    geometry : [ 0, 225, 108, 299 ]
     normal : [ "paneling", 651 ]
     hovered : [ "paneling", 652 ]
     pressed : [ "paneling", 653 ]
@@ -20,7 +36,7 @@
   }
 
   btnEnter#TexturedButton : {
-    geometry : [ 0, 150, 108, 222 ]
+    geometry : [ 0, 302, 108, 374 ]
     normal : [ "paneling", 661 ]
     hovered : [ "paneling", 662 ]
     pressed : [ "paneling", 663 ]
@@ -28,7 +44,7 @@
   }
 
   btnExit#TexturedButton : {
-    geometry : [ 0, 225, 108, 299 ]
+    geometry : [ 0, 377, 108, 449 ]
     normal : [ "paneling", 654 ]
     hovered : [ "paneling", 655 ]
     pressed : [ "paneling", 656 ]

@@ -32,10 +32,13 @@
 #include "core/saveadapter.hpp"
 #include "cityservice_factory.hpp"
 #include "core/variant_map.hpp"
+#include "city/states.hpp"
+#include "config.hpp"
 
-using namespace constants;
 using namespace std;
 using namespace gfx;
+using namespace events;
+using namespace config;
 
 namespace city
 {
@@ -45,21 +48,19 @@ REGISTER_SERVICE_IN_FACTORY(WorkersHire,workers_hire)
 namespace {
 CAESARIA_LITERALCONST(priorities)
 CAESARIA_LITERALCONST(employers)
-const unsigned int defaultHireDistance = 36;
 }
 
 class WorkersHire::Impl
 {
 public:
-  typedef std::vector<object::Type> BuildingsType;
-  typedef std::map<object::Group, BuildingsType> GroupBuildings;
+  typedef std::map<object::Group, object::Types> GroupBuildings;
 
   WalkerList hrInCity;
   unsigned int distance;
   DateTime lastMessageDate;
   HirePriorities priorities;
   GroupBuildings industryBuildings;
-  std::set<object::Type> excludeTypes;
+  object::TypeSet excludeTypes;
 
 public:
   void fillIndustryMap();
@@ -83,9 +84,9 @@ WorkersHire::WorkersHire(PlayerCityPtr city)
   _d->lastMessageDate = game::Date::current();
   _d->excludeTypes.insert( object::fountain );
   _d->fillIndustryMap();
-  _d->distance = defaultHireDistance;
+  _d->distance = employements::hireDistance;
 
-  load( config::load( ":workershire.model" ) );
+  load( config::load( ":/workershire.model" ) );
 }
 
 void WorkersHire::Impl::fillIndustryMap()
@@ -97,7 +98,7 @@ void WorkersHire::Impl::fillIndustryMap()
   foreach(it, types)
   {
     const MetaData& info = MetaDataHolder::getData( *it );
-    int workersNeed = info.getOption( lc_employers );
+    int workersNeed = info.getOption( literals::employers );
     if( workersNeed > 0 )
     {
       industryBuildings[ info.group() ].push_back( info.type() );
@@ -112,7 +113,7 @@ bool WorkersHire::Impl::haveRecruter( WorkingBuildingPtr building )
     RecruterPtr hr = ptr_cast<Recruter>( *w );
     if( hr.isValid() )
     {
-      if( hr->base() == building.object() )
+      if( hr->baseLocation() == building->pos() )
         return true;
     }
   }
@@ -146,12 +147,12 @@ void WorkersHire::timeStep( const unsigned int time )
   if( !game::Date::isWeekChanged() )
     return;
 
-  if( _city()->population() == 0 )
+  if( _city()->states().population == 0 )
     return;
 
   _d->hrInCity = _city()->walkers( walker::recruter );
 
-  WorkingBuildingList buildings = city::statistic::findo< WorkingBuilding >( _city(), object::any );
+  WorkingBuildingList buildings = statistic::findo<WorkingBuilding>( _city(), object::any );
 
   if( !_d->priorities.empty() )
   {
@@ -184,10 +185,10 @@ void WorkersHire::timeStep( const unsigned int time )
     _d->lastMessageDate = game::Date::current();
 
     int workersNeed = statistic::getWorkersNeed( _city() );
-    if( workersNeed > 20 )
+    if( workersNeed > employements::needMoreWorkers )
     {
-      events::GameEventPtr e = events::ShowInfobox::create( _("##city_need_workers_title##"), _("##city_need_workers_text##"),
-                                                            events::ShowInfobox::send2scribe );
+      GameEventPtr e = ShowInfobox::create( _("##city_need_workers_title##"), _("##city_need_workers_text##"),
+                                            ShowInfobox::send2scribe );
       e->dispatch();
     }
   }
@@ -231,7 +232,7 @@ VariantMap WorkersHire::save() const
 {
   VariantMap ret;
   VARIANT_SAVE_ANY_D( ret, _d, distance );
-  ret[ lc_priorities ] = _d->priorities.toVariantList();
+  ret[ literals::priorities ] = _d->priorities.toVList();
 
   return ret;
 }
@@ -239,9 +240,9 @@ VariantMap WorkersHire::save() const
 void WorkersHire::load(const VariantMap& stream)
 {
   VARIANT_LOAD_ANY_D( _d, distance, stream );
-  if( _d->distance == 0 ) _d->distance = defaultHireDistance;
+  if( _d->distance == 0 ) _d->distance = employements::hireDistance;
 
-  VariantList priorVl = stream.get( lc_priorities ).toList();
+  VariantList priorVl = stream.get( literals::priorities ).toList();
 
   if( !priorVl.empty() )
   {

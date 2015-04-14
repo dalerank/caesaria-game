@@ -45,6 +45,8 @@ public:
                  lightgreyPanelBig,
                  lineBlackBorder,
                  lineWhiteBorder,
+                 greenPanelSmall,
+                 redPanelSmall,
                  pure,
                } Mode;
 

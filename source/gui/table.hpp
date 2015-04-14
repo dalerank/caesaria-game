@@ -1,4 +1,4 @@
-#ifndef __CAESRAIA_TABLE_INCLUDE__
+#ifndef __CAESARIA_TABLE_INCLUDE__
 #define __CAESARIA_TABLE_INCLUDE__
 
 #include "widget.hpp"

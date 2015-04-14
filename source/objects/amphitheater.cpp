@@ -31,7 +31,6 @@
 #include "walker/helper.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::amphitheater, Amphitheater)
@@ -102,7 +101,7 @@ void Amphitheater::deliverService()
 
   if( _animationRef().isRunning())
   {
-    _fgPicturesRef().front() = Picture::load( ResourceGroup::entertaiment, 12 );
+    _fgPicturesRef().front() = Picture::load( ResourceGroup::entertainment, 12 );
     int currentWalkerNumber = walkers().size();
     if( saveWalkesNumber != currentWalkerNumber )
     {
@@ -120,30 +119,48 @@ void Amphitheater::deliverService()
 void Amphitheater::save(VariantMap& stream) const
 {
   EntertainmentBuilding::save( stream );
-  stream[ "lastGdate" ] = _d->lastDateGl;
-  stream[ "lastSdate" ] = _d->lastDateShow;
+  VARIANT_SAVE_ANY_D( stream, _d, lastDateGl )
+  VARIANT_SAVE_ANY_D( stream, _d, lastDateShow )
 }
 
 void Amphitheater::load(const VariantMap& stream)
 {
   EntertainmentBuilding::load( stream );
-  _d->lastDateGl = stream.get( "lastGdate" ).toDateTime();
-  _d->lastDateShow = stream.get( "lastSdate" ).toDateTime();
+  VARIANT_LOAD_TIME_D( _d, lastDateGl, stream )
+  VARIANT_LOAD_TIME_D( _d, lastDateShow, stream )
 }
 
-DateTime Amphitheater::lastShowDate() const { return _d->lastDateShow; }
-DateTime Amphitheater::lastBoutsDate() const{ return _d->lastDateGl; }
 int Amphitheater::maxVisitors() const { return 800; }
+
+bool Amphitheater::isShow(Amphitheater::PlayType type) const
+{
+  switch( type )
+  {
+  case theatrical: return _getServiceManType() == Service::theater;
+  case gladiatorBouts: return _getServiceManType() == Service::amphitheater;
+  }
+
+  return false;
+}
+
+DateTime Amphitheater::lastShow(Amphitheater::PlayType type) const
+{
+  switch( type )
+  {
+  case theatrical: return _d->lastDateShow;
+  case gladiatorBouts: return  _d->lastDateGl;
+  }
+
+  return DateTime( -350, 1, 1 );
+}
 
 Service::Type Amphitheater::_getServiceManType() const
 {
   ServiceWalkerList servicemen;
   servicemen << walkers();
+
   return (!servicemen.empty() ? servicemen.front()->serviceType() : Service::srvCount);
 }
-
-bool Amphitheater::isShowGladiatorBouts() const { return _getServiceManType() == Service::amphitheater; }
-bool Amphitheater::isActorsShow() const { return _getServiceManType() == Service::theater; }
 
 bool Amphitheater::isNeed(walker::Type type)
 {

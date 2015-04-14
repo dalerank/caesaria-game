@@ -24,6 +24,7 @@
 #include "vfs/path.hpp"
 #include "core/variant.hpp"
 #include "constants.hpp"
+#include "config.hpp"
 
 namespace audio
 {
@@ -55,11 +56,31 @@ public:
   void stop( int channel );
 private:
   Engine();
-  bool _loadSound( const std::string& filename );
+  unsigned int _loadSound( const std::string& filename );
   void _updateSamplesVolume();
 
   class Impl;
   ScopedPtr< Impl > _d;
+};
+
+class Muter
+{
+public:
+  void activate( int value );
+  ~Muter();
+
+private:
+  std::map< SoundType, int > _states;
+};
+
+class SampleDeleter
+{
+public:
+  ~SampleDeleter();
+  void assign( const std::string& sampleName );
+
+private:
+  std::string _sample;
 };
 
 class Helper

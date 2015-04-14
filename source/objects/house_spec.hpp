@@ -31,6 +31,8 @@ class HouseSpecification
   friend class HouseSpecHelper;
 
 public:
+  enum { needTheater=1, needAmphitheater=2, needColosseum=3 };
+
   int level() const;
   int getMaxHabitantsByTile() const;
   int taxRate() const;
@@ -52,7 +54,8 @@ public:
   unsigned int foodConsumptionInterval() const;
   unsigned int getGoodConsumptionInterval() const;
 
-  int findLowLevelHouseNearby( HousePtr house, std::string &oMissingRequirement ) const;
+  int findLowLevelHouseNearby(HousePtr house, TilePos &refPos) const;
+  int findUnwishedBuildingNearby(HousePtr house, object::Type& rType, TilePos &refPos) const;
 
   HouseSpecification next() const;
 

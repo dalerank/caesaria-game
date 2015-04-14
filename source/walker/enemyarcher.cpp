@@ -21,6 +21,7 @@
 #include "pathway/path_finding.hpp"
 #include "gfx/tile.hpp"
 #include "gfx/tilemap.hpp"
+#include "objects/construction.hpp"
 #include "city/city.hpp"
 #include "name_generator.hpp"
 #include "core/utils.hpp"
@@ -37,8 +38,6 @@
 #include "core/foreach.hpp"
 #include "game/gamedate.hpp"
 #include "walkers_factory.hpp"
-
-using namespace constants;
 
 REGISTER_SOLDIER_IN_WALKERFACTORY( walker::etruscanArcher, walker::etruscanArcher, EnemyArcher, etruscanArcher )
 
@@ -118,7 +117,7 @@ void EnemyArcher::timeStep(const unsigned long time)
   } // end switch( _d->action )
 }
 
-EnemyArcherPtr EnemyArcher::create(PlayerCityPtr city, constants::walker::Type type )
+EnemyArcherPtr EnemyArcher::create(PlayerCityPtr city, walker::Type type )
 {
   EnemyArcherPtr ret( new EnemyArcher( city, type ) );
   ret->initialize( WalkerHelper::getOptions( type ) );

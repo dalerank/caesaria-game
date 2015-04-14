@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
-#include "layerconstants.hpp"
+#include "constants.hpp"
 #include "game/settings.hpp"
 #include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
@@ -67,6 +67,7 @@ Helper::Helper()
     __REG_LAYER(colloseum)
     __REG_LAYER(hippodrome)
     __REG_LAYER(health)
+    __REG_LAYER(healthAll)
     __REG_LAYER(doctor)
     __REG_LAYER(hospital)
     __REG_LAYER(barber)

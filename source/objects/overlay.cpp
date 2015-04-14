@@ -20,10 +20,10 @@
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/variant_map.hpp"
+#include "gfx/helper.hpp"
 #include "core/logger.hpp"
 
 using namespace gfx;
-using namespace constants;
 
 namespace {
 static Renderer::PassQueue defaultPassQueue=Renderer::PassQueue(1,Renderer::overlayAnimation);
@@ -119,7 +119,7 @@ Tile& Overlay::tile() const
   if( !_d->masterTile )
   {
     Logger::warning( "master tile must be exists" );
-    static Tile invalid( TilePos( -1, -1 ));
+    static Tile invalid( gfx::tilemap::invalidLocation() );
     return invalid;
   }
   return *_d->masterTile;
@@ -151,17 +151,17 @@ void Overlay::save( VariantMap& stream ) const
   stream[ "config" ] = config;
   stream[ "picture" ] = Variant( _d->picture.name() );
   stream[ "pictureOffset" ] = _d->picture.offset();
-  VARIANT_SAVE_ANY_D( stream, _d, size )
   stream[ "height" ] = tile().height();
+  VARIANT_SAVE_ANY_D( stream, _d, size )
   VARIANT_SAVE_ANY_D( stream, _d, isDeleted )
-  stream[ "name" ] = Variant( _d->name );
+  VARIANT_SAVE_STR_D( stream, _d, name )
 }
 
 void Overlay::load( const VariantMap& stream )
 {
-  _d->name = stream.get( "name" ).toString();
+  VARIANT_LOAD_STR_D( _d, name, stream )
   VARIANT_LOAD_ANY_D( _d, size, stream )
-  //_d->overlayType = (LandOverlayType)stream.get( "overlayType" ).toInt();
+
   std::string pictureName = stream.get( "picture" ).toString();
   _d->picture = Picture::load( pictureName );
   if( !_d->picture.isValid() )
@@ -170,7 +170,7 @@ void Overlay::load( const VariantMap& stream )
   }
   _d->picture.setOffset( stream.get( "pictureOffset" ).toPoint() );
   VARIANT_LOAD_ANYDEF_D( _d, isDeleted, false, stream )
-  tile().setHeight( stream.get( "height" ).toInt() );
+  tile().setHeight( stream.get( "height" ) );
 }
 
 void Overlay::initialize(const MetaData& mdata)
@@ -184,15 +184,16 @@ void Overlay::initialize(const MetaData& mdata)
 bool Overlay::isWalkable() const{  return false;}
 bool Overlay::isDestructible() const { return true; }
 bool Overlay::isFlat() const { return false;}
+void Overlay::debugLoadOld(int oldFormat, const VariantMap& stream) {}
 
 TilePos Overlay::pos() const
 {
   if( !_d->masterTile )
   {
     Logger::warning(  "master tile can't be null" );
-    return TilePos( -1, -1 );
+    return gfx::tilemap::invalidLocation();
   }
-  return _d->masterTile->pos();
+  return _d->masterTile->epos();
 }
 
 std::string Overlay::sound() const
@@ -209,6 +210,7 @@ Tile* Overlay::_masterTile(){  return _d->masterTile;}
 PlayerCityPtr Overlay::_city() const{ return _d->city;}
 gfx::Pictures& Overlay::_fgPicturesRef(){  return _d->fgPictures; }
 Picture& Overlay::_fgPicture( unsigned int index ){  return _d->fgPictures[index]; }
+const Picture& Overlay::_fgPicture( unsigned int index ) const {  return _d->fgPictures[index]; }
 Picture& Overlay::_pictureRef(){  return _d->picture;}
 object::Group Overlay::group() const{  return _d->overlayClass;}
 void Overlay::setPicture(const char* resource, const int index){  setPicture( Picture::load( resource, index ) );}

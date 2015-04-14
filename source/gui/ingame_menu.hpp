@@ -13,28 +13,35 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_LAYERDAMAGE_H_INCLUDED__
-#define __CAESARIA_LAYERDAMAGE_H_INCLUDED__
+#ifndef __CAESARIA_INGAME_MENU_H_INCLUDE__
+#define __CAESARIA_INGAME_MENU_H_INCLUDE__
 
-#include "layerinfo.hpp"
+#include "window.hpp"
 
-namespace citylayer
+namespace gui
 {
 
-class Damage : public Info
+class IngameMenu : public Window
 {
 public:
-  virtual int type() const;
-  virtual void drawTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
-  virtual void handleEvent(NEvent& event);
+  static IngameMenu* create( Ui* ui );
 
-  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
+public signals:
+  Signal0<>& onExit();
+  Signal0<>& onLoad();
+  Signal0<>& onSave();
+  Signal0<>& onRestart();
+  Signal0<>& onMenu();
 
 private:
-  Damage( gfx::Camera& camera, PlayerCityPtr city );
+  IngameMenu( Widget* parent );
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
-}//end namespace citylayer
-#endif //__CAESARIA_LAYERDAMAGE_H_INCLUDED__
+} //end namepsace gui
+
+#endif //__CAESARIA_INGAME_MENU_H_INCLUDE__

@@ -58,7 +58,6 @@ __REG_PROPERTY(soundThemesModel)
 __REG_PROPERTY(soundVolume )
 __REG_PROPERTY(ambientVolume)
 __REG_PROPERTY(musicVolume )
-__REG_PROPERTY(difficulty )
 __REG_PROPERTY(animationsModel )
 __REG_PROPERTY(walkerModel)
 __REG_PROPERTY(emblemsModel )
@@ -93,6 +92,11 @@ __REG_PROPERTY(mmb_moving)
 __REG_PROPERTY(lockInfobox)
 __REG_PROPERTY(soundAlias)
 __REG_PROPERTY(videoAlias)
+__REG_PROPERTY(playerName)
+__REG_PROPERTY(lastGame)
+__REG_PROPERTY(tooltipEnabled)
+__REG_PROPERTY(screenshotDir)
+__REG_PROPERTY(showTabletMenu)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -113,66 +117,71 @@ Settings& Settings::instance()
 
 Settings::Settings() : _d( new Impl )
 {
-  std::string application_path = vfs::Directory::getApplicationDir().toString();
+  std::string application_path = vfs::Directory::applicationDir().toString();
   setwdir( application_path );
 
-  _d->options[ pantheonModel       ] = Variant( std::string( "/pantheon.model" ) );
-  _d->options[ sg2model            ] = Variant( std::string( "/sg2.model" ) );
-  _d->options[ houseModel          ] = Variant( std::string( "/house.model" ) );
-  _d->options[ constructionModel   ] = Variant( std::string( "/construction.model" ) );
-  _d->options[ citiesModel         ] = Variant( std::string( "/cities.model" ) );
-  _d->options[ ctNamesModel        ] = Variant( std::string( "/locale/names." ) );
-  _d->options[ settingsPath        ] = Variant( std::string( "/settings.model" ) );
-  _d->options[ langModel           ] = Variant( std::string( "/language.model" ) );
-  _d->options[ archivesModel       ] = Variant( std::string( "/archives.model" ) );
-  _d->options[ soundThemesModel    ] = Variant( std::string( "/sound_themes.model" ) );
-  _d->options[ climateModel        ] = Variant( std::string( "/climate.model" ) );
-  _d->options[ language            ] = Variant( std::string( "en" ) );
-  _d->options[ fastsavePostfix     ] = Variant( std::string( "_fastsave") );
-  _d->options[ saveExt             ] = Variant( std::string( ".oc3save") );
-  _d->options[ walkerModel         ] = Variant( std::string( "/walker.model" ) );
-  _d->options[ animationsModel     ] = Variant( std::string( "/animations.model" ) );
-  _d->options[ empireObjectsModel  ] = Variant( std::string( "/empire_objects.model" ) );
-  _d->options[ emblemsModel        ] = Variant( std::string( "/emblems.model" ) );
-  _d->options[ remakeModel         ] = Variant( std::string( "/remake.model" ) );
-  _d->options[ ranksModel          ] = Variant( std::string( "/ranks.model" ) );
-  _d->options[ pic_offsets         ] = Variant( std::string( "/offsets.model" ) );
-  _d->options[ picsArchive         ] = Variant( std::string( "/gfx/pics.zip" ) );
-  _d->options[ opengl_opts         ] = Variant( std::string( "/opengl.model" ) );
-  _d->options[ freeplay_opts       ] = Variant( std::string( "/freeplay.model" ) );
-  _d->options[ walkerRelations     ] = Variant( std::string( "/relations.model" ) );
-  _d->options[ font                ] = Variant( std::string( "FreeSerif.ttf" ) );  
-  _d->options[ simpleAnimationModel] = Variant( std::string( "/basic_animations.model" ) );
-  _d->options[ hotkeysModel        ] = Variant( std::string( "/hotkeys.model" ) );
-  _d->options[ cartsModel          ] = Variant( std::string( "/carts.model" ) );
-  _d->options[ logoArchive         ] = Variant( std::string( "/gfx/pics_wait.zip" ) );
-  _d->options[ titleResource       ] = Variant( std::string( "titlerm" ) );
-  _d->options[ forbidenTile        ] = Variant( std::string( "oc3_land" ) );
-  _d->options[ layersOptsModel     ] = Variant( std::string( "layers_opts.model" ) );
-  _d->options[ buildMenuModel      ] = Variant( std::string( "build_menu.model" ) );
-  _d->options[ soundAlias          ] = Variant( std::string( "sounds.model" ) );
-  _d->options[ videoAlias          ] = Variant( std::string( "videos.model" ) );
+  _d->options[ pantheonModel       ] = std::string( "/pantheon.model" );
+  _d->options[ sg2model            ] = std::string( "/sg2.model" );
+  _d->options[ houseModel          ] = std::string( "/house.model" );
+  _d->options[ constructionModel   ] = std::string( "/construction.model" );
+  _d->options[ citiesModel         ] = std::string( "/cities.model" );
+  _d->options[ ctNamesModel        ] = std::string( "/locale/names." );
+  _d->options[ settingsPath        ] = std::string( "/settings.model" );
+  _d->options[ langModel           ] = std::string( "/language.model" );
+  _d->options[ archivesModel       ] = std::string( "/archives.model" );
+  _d->options[ soundThemesModel    ] = std::string( "/sound_themes.model" );
+  _d->options[ climateModel        ] = std::string( "/climate.model" );
+  _d->options[ language            ] = std::string( "" );
+  _d->options[ fastsavePostfix     ] = std::string( "_fastsave");
+  _d->options[ saveExt             ] = std::string( ".oc3save");
+  _d->options[ walkerModel         ] = std::string( "/walker.model" );
+  _d->options[ animationsModel     ] = std::string( "/animations.model" );
+  _d->options[ empireObjectsModel  ] = std::string( "/empire_objects.model" );
+  _d->options[ emblemsModel        ] = std::string( "/emblems.model" );
+  _d->options[ remakeModel         ] = std::string( "/remake.model" );
+  _d->options[ ranksModel          ] = std::string( "/ranks.model" );
+  _d->options[ pic_offsets         ] = std::string( "/offsets.model" );
+  _d->options[ picsArchive         ] = std::string( "/gfx/pics.zip" );
+  _d->options[ opengl_opts         ] = std::string( "/opengl.model" );
+  _d->options[ freeplay_opts       ] = std::string( "/freeplay.model" );
+  _d->options[ walkerRelations     ] = std::string( "/relations.model" );
+  _d->options[ font                ] = std::string( "FreeSerif.ttf" );
+  _d->options[ simpleAnimationModel] = std::string( "/basic_animations.model" );
+  _d->options[ hotkeysModel        ] = std::string( "/hotkeys.model" );
+  _d->options[ cartsModel          ] = std::string( "/carts.model" );
+  _d->options[ logoArchive         ] = std::string( "/gfx/pics_wait.zip" );
+  _d->options[ titleResource       ] = std::string( "titlerm" );
+  _d->options[ forbidenTile        ] = std::string( "oc3_land" );
+  _d->options[ layersOptsModel     ] = std::string( "layers_opts.model" );
+  _d->options[ buildMenuModel      ] = std::string( "build_menu.model" );
+  _d->options[ soundAlias          ] = std::string( "sounds.model" );
+  _d->options[ videoAlias          ] = std::string( "videos.model" );
+  _d->options[ screenshotDir       ] = vfs::Directory::userDir().toString();
   _d->options[ experimental        ] = false;
   _d->options[ needAcceptBuild     ] = false;
   _d->options[ borderMoving        ] = false;
-  _d->options[ render              ] = "sdl";
+  _d->options[ render              ] = std::string( "sdl" );
   _d->options[ scrollSpeed         ] = 30;
   _d->options[ mmb_moving          ] = false;
-  _d->options[ talksArchive        ] = Variant( std::string( "/audio/wavs_citizen_en.zip" ) );
+  _d->options[ tooltipEnabled      ] = true;
+  _d->options[ c3gfx               ] = std::string( "" );
+  _d->options[ c3video             ] = std::string( "" );
+  _d->options[ c3music             ] = std::string( "" );
+  _d->options[ talksArchive        ] = std::string( ":/audio/wavs_citizen_en.zip" );
   _d->options[ autosaveInterval    ] = 3;
   _d->options[ soundVolume         ] = 100;
   _d->options[ lockInfobox         ] = true;
   _d->options[ ambientVolume       ] = 50;
   _d->options[ cellw               ] = 60;
   _d->options[ musicVolume         ] = 25;
-  _d->options[ difficulty          ] = 3; // 0-4, Very Easy, Easy, Normal, Hard, Very Hard. Default: Hard
   _d->options[ resolution          ] = Size( 1024, 768 );
   _d->options[ fullscreen          ] = false;
-  _d->options[ worldModel          ] = Variant( std::string( "/worldmap.model" ) );
+  _d->options[ worldModel          ] = std::string( "/worldmap.model" );
   _d->options[ minMonthWithFood    ] = 3;
   _d->options[ worklessCitizenAway ] = 30;
   _d->options[ emigrantSalaryKoeff ] = 5.f;
   _d->options[ oldgfx              ] = 1;
+  _d->options[ showTabletMenu      ] = false;
 
 #ifdef CAESARIA_USE_STEAM
   _d->options[ oldgfx              ] = 0;
@@ -180,6 +189,7 @@ Settings::Settings() : _d( new Impl )
 
 #ifdef CAESARIA_PLATFORM_ANDROID
   _d->options[ needAcceptBuild     ] = true;
+  _d->options[ showTabletMenu      ] = true;
 #endif
 }
 
@@ -207,7 +217,7 @@ void Settings::setwdir( const std::string& wdirstr )
   vfs::Directory saveDir;
 #ifdef CAESARIA_PLATFORM_LINUX
   vfs::Path dirName = vfs::Path( ".caesaria/" ) + defaultSaveDir;
-  saveDir = vfs::Directory::getUserDir()/dirName;
+  saveDir = vfs::Directory::userDir()/dirName;
 #elif defined(CAESARIA_PLATFORM_WIN) || defined(CAESARIA_PLATFORM_HAIKU) || defined(CAESARIA_PLATFORM_MACOSX) || defined(CAESARIA_PLATFORM_ANDROID)
   saveDir = wdir/defaultSaveDir;
 #endif
@@ -282,12 +292,18 @@ void Settings::checkC3present()
     _d->options[ forbidenTile        ] = Variant( std::string( "org_land" ) );
     _d->options[ titleResource       ] = Variant( std::string( "title" ) );
     _d->options[ cellw ] = 30;
-  }
+    }
+}
+
+void Settings::changeSystemLang(const std::string& newLang)
+{
+  std::string lang = newLang.empty() ? "en" : newLang;
+  Settings::set( language, Variant( lang ) );
 }
 
 static vfs::Path __concatPath( vfs::Directory dir, vfs::Path fpath )
 {
-  Variant vr = game::Settings::get( fpath.toString() );
+  Variant vr = Settings::get( fpath.toString() );
   if( vr.isNull() )
   {
     return dir/fpath;

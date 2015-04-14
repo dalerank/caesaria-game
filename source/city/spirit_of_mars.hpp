@@ -19,8 +19,6 @@
 #define _CAESARIA_SPIRITOFMARS_H_INCLUDE_
 
 #include "cityservice.hpp"
-#include "predefinitions.hpp"
-#include "core/scopedptr.hpp"
 
 namespace city
 {
@@ -28,7 +26,7 @@ namespace city
 class SpiritOfMars : public Srvc
 {
 public:
-  static SrvcPtr create(PlayerCityPtr city , int month=3);
+  static SrvcPtr create(PlayerCityPtr city, int month=3);
   virtual void timeStep( const unsigned int time);
 
   static std::string defaultName();

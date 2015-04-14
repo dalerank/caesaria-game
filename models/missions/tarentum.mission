@@ -17,7 +17,7 @@
     favour : 40
     finishDate : "-300.01.01"
     next : ":/missions/mission4.briefing"
-    title : "##win_engineer_title##"
+    title : "##architect##"
     win.text : "##tarentum_win_text##"
     may_continue : false
     maxHouseLevel : "big_villa"
@@ -30,7 +30,7 @@
   empire :
   {
     enabled : true
-    maxBarbariansGroups : 1
+    maxBarbariansGroups : 0
 
     cities :
     {

@@ -29,6 +29,9 @@
 #include "gfx/camera.hpp"
 #include "walker/walker.hpp"
 #include "core/tilerect.hpp"
+#include "texturedbutton.hpp"
+#include "gfx/helper.hpp"
+#include "city/states.hpp"
 
 using namespace gfx;
 using namespace constants;
@@ -48,13 +51,17 @@ public:
 
   int lastTimeUpdate;
   Point center;
+  TexturedButton* btnZoomIn;
+  TexturedButton* btnZoomOut;
 
+public:
   void getTerrainColours(const Tile& tile, int &c1, int &c2);
   void getBuildingColours(const Tile& tile, int &c1, int &c2);
   void updateImage();
 
 public signals:
   Signal1<TilePos> onCenterChangeSignal;
+  Signal1<int> onZoomChangeSignal;
 };
 
 Minimap::Minimap(Widget* parent, Rect rect, PlayerCityPtr city, const gfx::Camera& camera)
@@ -64,7 +71,9 @@ Minimap::Minimap(Widget* parent, Rect rect, PlayerCityPtr city, const gfx::Camer
   _d->camera = &camera;
   _d->lastTimeUpdate = 0;
   _d->minimap.reset( Picture::create( Size( 144, 110 ), 0, true ) );
-  _d->colors = new minimap::Colors( (ClimateType)city->climate() );
+  _d->colors = new minimap::Colors( city->climate() );
+  _d->btnZoomIn = new TexturedButton( this, righttop() - Point( 28, -2), Size( 24 ), -1, 605 );
+  _d->btnZoomOut = new TexturedButton( this, righttop() - Point( 28, -26), Size( 24 ), -1, 601 );
   setTooltipText( _("##minimap_tooltip##") );
 }
 
@@ -73,7 +82,7 @@ void getBuildingColours( const Tile& tile, int &c1, int &c2 );
 
 void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
 {
-  if( tile.i() < 0 || tile.j() < 0 )
+  if( !gfx::tilemap::isValidLocation( tile.pos() ) )
   {
     c1 = c2 = 0xff000000;
     return;
@@ -257,18 +266,17 @@ void Minimap::Impl::updateImage()
 
     const WalkerList& walkers = city->walkers();
     TileRect trect( startPos, stopPos );
-    //TilePos leftBottomPos = TilePos(std::min(startPos.i(), stopPos.i()), std::min(startPos.j(), stopPos.j()));
-    //TilePos rightTopPos = TilePos(std::max(startPos.i(), stopPos.i()), std::max(startPos.j(), stopPos.j()));
-    foreach( mmapWithMinus1, walkers)
+
+    foreach( i, walkers)
     {
-      TilePos pos = (*mmapWithMinus1)->pos();
+      const TilePos& pos = (*i)->pos();
       if( trect.contain( pos ) )
       {
         NColor cl;
-        if ((*mmapWithMinus1)->agressive() != 0)
+        if ((*i)->agressive() != 0)
         {
 
-          if ((*mmapWithMinus1)->agressive() > 0)
+          if ((*i)->agressive() > 0)
           {
             cl = DefaultColors::red;
           }
@@ -358,11 +366,22 @@ bool Minimap::onEvent(const NEvent& event)
     tpos.setJ( -clickPosition.y() + tpos.i() + mapsize - 1 );
 
     emit _d->onCenterChangeSignal( tpos );
+    return true;
+  }
+  else if( sEventGui == event.EventType
+           && guiButtonClicked == event.gui.type )
+  {
+    if( event.gui.caller == _d->btnZoomIn )
+      emit _d->onZoomChangeSignal( -10 );
+    else if( event.gui.caller == _d->btnZoomOut )
+      emit _d->onZoomChangeSignal( +10 );
+    return true;
   }
 
   return Widget::onEvent( event );
 }
 
 Signal1<TilePos>& Minimap::onCenterChange(){  return _d->onCenterChangeSignal; }
+Signal1<int>& Minimap::onZoomChange(){  return _d->onZoomChangeSignal; }
 
 }//end namespace gui

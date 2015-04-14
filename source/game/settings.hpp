@@ -61,7 +61,6 @@ public:
   __GS_PROPERTY(soundVolume)
   __GS_PROPERTY(ambientVolume)
   __GS_PROPERTY(musicVolume)
-  __GS_PROPERTY(difficulty)
   __GS_PROPERTY(animationsModel)
   __GS_PROPERTY(walkerModel)
   __GS_PROPERTY(emblemsModel)
@@ -95,6 +94,11 @@ public:
   __GS_PROPERTY(lockInfobox)
   __GS_PROPERTY(soundAlias)
   __GS_PROPERTY(videoAlias)
+  __GS_PROPERTY(playerName)
+  __GS_PROPERTY(lastGame)
+  __GS_PROPERTY(tooltipEnabled)
+  __GS_PROPERTY(screenshotDir)
+  __GS_PROPERTY(showTabletMenu)
 #undef __GS_PROPERTY
 
   static Settings& instance();
@@ -112,6 +116,7 @@ public:
   void checkwdir( char* argv[], int argc );
   void checkCmdOptions( char* argv[], int argc );
   void checkC3present();
+  void changeSystemLang( const std::string& newLang );
 private:
   Settings();
 

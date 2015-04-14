@@ -46,6 +46,11 @@ class Font
   friend class FontCollection;
 
 public:
+  static const bool alphaDraw=true;
+  static const bool solidDraw=false;
+  static const bool updateTx=true;
+  static const bool ignoreTx=false;
+
   Font();
   static Font create( const std::string& family, const int size );
   static Font create( FontType type );

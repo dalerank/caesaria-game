@@ -20,7 +20,7 @@
 #include "game/resourcegroup.hpp"
 #include "objects/house.hpp"
 #include "objects/house_spec.hpp"
-#include "layerconstants.hpp"
+#include "constants.hpp"
 #include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/event.hpp"
@@ -30,7 +30,6 @@
 #include "core/font.hpp"
 #include "core/utils.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace citylayer
@@ -121,7 +120,7 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
   if( !needDrawAnimations && ( tile.isWalkable(true) || tile.getFlag( Tile::tlOverlay ) ) )
   {
     Tilemap& tilemap = _city()->tilemap();
-    TilesArray area = tilemap.getArea( tile.pos(), areaSize );
+    TilesArray area = tilemap.getArea( tile.epos(), areaSize );
 
     foreach( it, area )
     {

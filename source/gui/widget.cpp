@@ -29,9 +29,13 @@
 #include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "core/gettext.hpp"
+#include "rect_calc.hpp"
 
 namespace gui
 {
+
+static const Variant invalidVariant;
+CAESARIA_LITERALCONST(vars)
 
 void Widget::beforeDraw(gfx::Engine& painter )
 {
@@ -459,7 +463,7 @@ bool Widget::next( int startOrder, bool reverse, bool group, Widget*& first, Wid
     {
         // ignore invisible elements and their children
         if ( ( (*it)->visible() || includeInvisible ) &&
-            (group == true || (*it)->hasTabgroup() == false) )
+             (group == true || (*it)->hasTabgroup() == false) )
         {
             // only check tab stops and those with the same group status
             if ((*it)->isTabStop() && ((*it)->hasTabgroup() == group))
@@ -469,45 +473,44 @@ bool Widget::next( int startOrder, bool reverse, bool group, Widget*& first, Wid
                 // is this what we're looking for?
                 if (currentOrder == wanted)
                 {
-                    closest = *it;
-                    return true;
+                  closest = *it;
+                  return true;
                 }
 
                 // is it closer than the current closest?
                 if (closest)
                 {
-                    closestOrder = closest->tabOrder();
-                    if ( ( reverse && currentOrder > closestOrder && currentOrder < startOrder)
-                        ||(!reverse && currentOrder < closestOrder && currentOrder > startOrder))
-                    {
-                        closest = *it;
-                    }
+                  closestOrder = closest->tabOrder();
+                  if ( ( reverse && currentOrder > closestOrder && currentOrder < startOrder)
+                      ||(!reverse && currentOrder < closestOrder && currentOrder > startOrder))
+                  {
+                    closest = *it;
+                  }
+                }
+                else if ( (reverse && currentOrder < startOrder) || (!reverse && currentOrder > startOrder) )
+                {
+                  closest = *it;
+                }
+
+                // is it before the current first?
+                if (first)
+                {
+                  closestOrder = first->tabOrder();
+
+                  if ( (reverse && closestOrder < currentOrder) || (!reverse && closestOrder > currentOrder) )
+                  {
+                      first = *it;
+                  }
                 }
                 else
-                    if ( (reverse && currentOrder < startOrder) || (!reverse && currentOrder > startOrder) )
-                    {
-                        closest = *it;
-                    }
-
-                    // is it before the current first?
-                    if (first)
-                    {
-                        closestOrder = first->tabOrder();
-
-                        if ( (reverse && closestOrder < currentOrder) || (!reverse && closestOrder > currentOrder) )
-                        {
-                            first = *it;
-                        }
-                    }
-                    else
-                    {
-                        first = *it;
-                    }
+                {
+                  first = *it;
+                }
             }
             // search within children
             if ((*it)->next(startOrder, reverse, group, first, closest))
             {
-                return true;
+              return true;
             }
         }
         ++it;
@@ -517,44 +520,17 @@ bool Widget::next( int startOrder, bool reverse, bool group, Widget*& first, Wid
 
 void Widget::setParent(Widget* p) {  _dfunc()->parent = p; }
 
-static int __convStr2RelPos( Widget* w, std::string s )
+static int __convStr2RelPos( Widget* w, const VariantMap& vars, std::string s )
 {
   s = utils::trim( s );
-  std::string dd = s.substr( 0, 2 );
-  int lenght = 0;
-  if( dd == "pw" ) { lenght = w->parent()->width(); }
-  else if( dd == "ph" ) { lenght = w->parent()->height(); }
-  else dd = "";
 
-  if( !dd.empty() )
-  {
-    std::string opStr = s.substr( 2, 1 );
-    char operation = opStr.empty() ? 0 : opStr[ 0 ];
-    int value = utils::toFloat( s.substr( 3 ) );
-    switch( operation )
-    {
-    case '-':
-    case '+':
-      return lenght + (operation == '-' ? -1 : 1) * value;
-    break;
-
-    case '/': return lenght/value; break;
-    case '*': return lenght*value; break;
-    }
-
-    Logger::warning( "Widget::__convStr2RelPos unknown operation " + s );
-    return 20;
-  }
-  else
-  {
-    return utils::toInt( s );
-  }
+  WidgetCalc wcalc( *w, vars );
+  return wcalc.eval( s );
 }
 
 void Widget::setupUI( const VariantMap& options )
 {
   __D_IMPL(_d,Widget)
-  //setOpacity( in->getAttributeAsFloat( SerializeHelper::opacityProp ) );
   _d->internalName = options.get( "name" ).toString();
   align::Helper ahelper;
   VariantList textAlign = options.get( "textAlign" ).toList();
@@ -571,7 +547,7 @@ void Widget::setupUI( const VariantMap& options )
   }
 
   Variant tmp;
-  setID( (int)options.get( "id", -1 ) );
+  setID( (int)options.get( "id", _d->id ) );
   setText( _( options.get( "text" ).toString() ) );
   setTooltipText( options.get( "tooltip" ).toString() );
   setVisible( options.get( "visible", true ).toBool() );
@@ -581,20 +557,16 @@ void Widget::setupUI( const VariantMap& options )
   _d->tabOrder = options.get( "tabOrder", -1 ).toInt();
   setMaxSize( options.get( "maximumSize", Size( 0 ) ).toSize() );
   setMinSize( options.get( "minimumSize", Size( 1 ) ).toSize() );
-
-  /*setAlignment( ahelper.findType( ui.get( "leftAlign" ).toString() ),
-                ahelper.findType( ui.get( "rightAlign" ).toString() ),
-                ahelper.findType( ui.get( "topAlign" ).toString() ),
-                ahelper.findType( ui.get( "bottomAlign" ).toString() ));*/
+  VariantMap vars = options.get( literals::vars ).toMap();
 
   VariantList aRectList = options.get( "geometry" ).toList();
   if( !aRectList.empty() )
   {
     Rect cRect(
-       __convStr2RelPos( this, aRectList.get( 0 ).toString() ),
-       __convStr2RelPos( this, aRectList.get( 1 ).toString() ),
-       __convStr2RelPos( this, aRectList.get( 2 ).toString() ),
-       __convStr2RelPos( this, aRectList.get( 3 ).toString() ) );
+       __convStr2RelPos( this, vars, aRectList.get( 0 ).toString() ),
+       __convStr2RelPos( this, vars, aRectList.get( 1 ).toString() ),
+       __convStr2RelPos( this, vars, aRectList.get( 2 ).toString() ),
+       __convStr2RelPos( this, vars, aRectList.get( 3 ).toString() ) );
 
     setGeometry( cRect );
   }
@@ -613,14 +585,24 @@ void Widget::setupUI( const VariantMap& options )
     setGeometry( r );
   }
 
+  tmp = options.get( "size" );
+  if( tmp.isValid() )
+  {
+    Size s = tmp.toSize();
+    if( s.width() > 0 ) { setWidth( s.width()); }
+    if( s.height() > 0 ) { setHeight( s.height() ); }
+  }
+
   setNotClipped( options.get( "noclipped", false ).toBool() );
 
-  for( VariantMap::const_iterator it=options.begin(); it != options.end(); ++it )
+  foreach( it, options )
   {
     if( it->second.type() != Variant::Map )
       continue;
 
     VariantMap tmp = it->second.toMap();
+    tmp[ literals::vars ] = vars;
+
     std::string widgetName = it->first;
     std::string widgetType;
     std::string::size_type delimPos = widgetName.find( '#' );
@@ -647,6 +629,12 @@ void Widget::setupUI( const VariantMap& options )
       }
     }
   }
+
+  Variant positionV = options.get( "position" );
+  if( positionV.isValid() )
+    move( positionV.toPoint() );
+
+  _d->properties = options.get( "properties" ).toMap();
 }
 
 void Widget::setupUI(const vfs::Path& filename)
@@ -765,13 +753,12 @@ void Widget::_recalculateAbsolutePosition( bool recursive )
 
     if ( recursive )
     {
-        // update all children
-        ChildIterator it = _d->children.begin();
-        for (; it != _d->children.end(); ++it)
-        {
-            (*it)->_recalculateAbsolutePosition(recursive);
-        }
+      // update all children
+      foreach( it, _d->children )
+      {
+          (*it)->_recalculateAbsolutePosition(recursive);
       }
+    }
 }
 
 void Widget::animate( unsigned int timeMs )
@@ -893,6 +880,17 @@ void Widget::setRight( int newRight )
   Rect r = relativeRect();
   r.rright() = newRight;
   setGeometry( r );
+}
+
+void Widget::addProperty(const std::string& name, const Variant& value)
+{
+  _dfunc()->properties[ name ] = value;
+}
+
+const Variant& Widget::getProperty(const std::string& name) const
+{
+  VariantMap::const_iterator it = _dfunc()->properties.find( name );
+  return it != _dfunc()->properties.end() ? it->second : invalidVariant;
 }
 
 void Widget::installEventHandler( Widget* elementHandler )

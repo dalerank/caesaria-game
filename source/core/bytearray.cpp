@@ -131,6 +131,11 @@ ByteArray::ByteArray()
 {  
 }
 
+ByteArray::ByteArray(unsigned int cap)
+{
+  resize( cap );
+}
+
 static const std::string base64_chars =
              "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
              "abcdefghijklmnopqrstuvwxyz"

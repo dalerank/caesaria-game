@@ -23,13 +23,17 @@
 #include "core/variant_map.hpp"
 #include "gfx/picture.hpp"
 #include "core/time.hpp"
+#include "core/utils.hpp"
 #include "core/foreach.hpp"
 #include "gfx/decorator.hpp"
+#include "widget_factory.hpp"
 
 using namespace gfx;
 
 namespace gui
 {
+
+REGISTER_CLASS_IN_WIDGETFACTORY(EditBox)
 
 class EditBox::Impl
 {
@@ -97,21 +101,21 @@ signals public:
 
 std::string __ucs2utf8( const std::wstring& text )
 {
-	std::string ret;
-	foreach( i, text )
-	{
-		if( (unsigned short)*i < 0x80 )
-		{
-			ret.push_back( (char)(*i & 0xff ) );
-		}
-		else
-		{
-			ret.push_back( (char)( (*i >> 8) & 0xff) );
-			ret.push_back( (char)( *i & 0xff ) );
-		}
-	}
+  std::string ret;
+  foreach( i, text )
+  {
+    if( (unsigned short)*i < 0x80 )
+    {
+      ret.push_back( (char)(*i & 0xff ) );
+    }
+    else
+    {
+      ret.push_back( (char)( (*i >> 8) & 0xff) );
+      ret.push_back( (char)( *i & 0xff ) );
+    }
+  }
 
-	return ret;
+  return ret;
 }
 
 void EditBox::_init()
@@ -241,7 +245,7 @@ void EditBox::setupUI(const VariantMap& ui)
 {
 	Widget::setupUI( ui );
 
-	setFont( Font::create( ui.get( "font", "FONT_2" ).toString() ) );
+  setFont( Font::create( ui.get( "font", std::string( "FONT_2" ) ).toString() ) );
 
 	_d->textOffset = ui.get( "textOffset" ).toPoint();
 
@@ -1346,24 +1350,30 @@ int EditBox::_getLineFromPos(int pos)
 
 std::wstring __unic2utf8(unsigned short wc)
 {
- std::wstring ret;
+ ByteArray bytes;
+ if (wc < 0x80)
+   bytes.push_back( (wchar_t)wc );
 
- if( wc < 0x80 )
- {
-   ret += (wchar_t)wc;
- }
  else if (wc < 0x800)
  {
-   ret += (wchar_t)( ((0xC0 | wc>>6) << 8 ) + (0x80 | (wc & 0x3F)) );
+   bytes.push_back( 0xc0 | (wc >> 6) );
+   bytes.push_back( 0x80 | (wc & 0x3f) );
  }
- /*else if (wc < 0x10000)
+ else if (wc < 0x10000)
  {
-   unsigned char a = (0xe0 | ((wc >> 12)& 0x0f)) ;
-   unsigned char b = ( (0x80| ((wc >> 6) & 0x3f)) + (0x80| (wc & 0x3f)) );
-   ret += (a << 8) + b;
- }*/
- else
-   ret += '?';
+   bytes.push_back( 0xe0 | (wc >> 12) );
+   bytes.push_back( 0x80 | ((wc >> 6) & 0x3f) );
+   bytes.push_back( 0x80 | (wc & 0x3f) );
+ }
+ else if (wc <= 0x10ffff)
+ {
+   bytes.push_back( 0xf0 | (wc >> 18) );
+   bytes.push_back( 0x80 | ((wc >> 12) & 0x3f) );
+   bytes.push_back( 0x80 | ((wc >> 6) & 0x3f) );
+   bytes.push_back( 0x80 | (wc & 0x3f) );
+ }
+
+ std::wstring ret = utils::utf8toWString( bytes.data(), bytes.size() );
 
  return ret;
 }

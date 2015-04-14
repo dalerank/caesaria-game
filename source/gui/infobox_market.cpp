@@ -25,7 +25,6 @@
 #include "core/logger.hpp"
 #include "game/infoboxmanager.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -41,7 +40,7 @@ AboutMarket::AboutMarket(Widget* parent, PlayerCityPtr city, const Tile& tile )
 {
   setupUI( ":/gui/infoboxmarket.gui" );
 
-  MarketPtr market = ptr_cast<Market>( tile.overlay() );
+  MarketPtr market = tile.overlay().as<Market>();
 
   if( !market.isValid() )
   {
@@ -49,7 +48,7 @@ AboutMarket::AboutMarket(Widget* parent, PlayerCityPtr city, const Tile& tile )
     return;
   }
 
-  setBase( ptr_cast<Construction>( market ));
+  setBase( market );
   _setWorkingVisible( true );
 
   Label* lbAbout = new Label( this, Rect( 15, 30, width() - 15, 50) );

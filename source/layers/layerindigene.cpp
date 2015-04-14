@@ -19,13 +19,12 @@
 #include "objects/constants.hpp"
 #include "objects/native.hpp"
 #include "game/resourcegroup.hpp"
-#include "layerconstants.hpp"
+#include "constants.hpp"
 #include "city/statistic.hpp"
 #include "core/priorities.hpp"
 #include "core/event.hpp"
 #include "gfx/tilemap_camera.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace citylayer

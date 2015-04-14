@@ -25,6 +25,7 @@
 #include "core/position.hpp"
 #include "good/good.hpp"
 #include "gfx/picturesarray.hpp"
+#include "core/position_array.hpp"
 
 namespace world
 {
@@ -42,7 +43,7 @@ public:
 
   void update( unsigned int time );
   PointsArray points( bool reverse=false ) const;
-  bool containPoint( Point pos, int devianceDistance=10 );
+  bool containPoint(const Point &pos, int devianceDistance=10 );
   void setPoints(const PointsArray& points , bool seaRoute);
   const gfx::Pictures& pictures() const;
 
@@ -54,6 +55,8 @@ public:
 
   VariantMap save() const;
   void load( const VariantMap& stream );
+
+  static unsigned int getId( const std::string& begin, const std::string& end );
 
 signals public:
   Signal1<MerchantPtr>& onMerchantArrived();

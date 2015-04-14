@@ -17,7 +17,7 @@
 
 #include "random_animals.hpp"
 #include "game/game.hpp"
-#include "city/city.hpp"
+#include "city/statistic.hpp"
 #include "game/gamedate.hpp"
 #include "city/cityservice_animals.hpp"
 #include "objects/house.hpp"
@@ -30,7 +30,6 @@
 #include "gfx/tilemap.hpp"
 #include "factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace events
@@ -80,7 +79,7 @@ void RandomAnimals::_exec( Game& game, unsigned int time)
 
     for( unsigned int k=0; k < _d->count; k++ )
     {
-      AnimalPtr animal = ptr_cast<Animal>( WalkerManager::instance().create( _d->animalType, game.city() ) );
+      AnimalPtr animal = WalkerManager::instance().create<Animal>( _d->animalType, game.city() );
       if( animal.isValid() )
       {
         animal->send2City( randomTile->pos() );
@@ -93,8 +92,7 @@ void RandomAnimals::_exec( Game& game, unsigned int time)
 
   if( _d->maxAnimals >= 0 )
   {
-    city::AnimalsPtr srvc;
-    srvc << game.city()->findService( city::Animals::defaultName() );
+    city::AnimalsPtr srvc = city::statistic::finds<city::Animals>( game.city() );
 
     if( srvc.isValid() )
     {
@@ -126,9 +124,9 @@ VariantMap RandomAnimals::save() const
 {
   VariantMap ret;
 
-  VARIANT_SAVE_ANY_D( ret, _d, count );
-  VARIANT_SAVE_ANY_D( ret, _d, maxAnimals );
-  ret[ "animalType" ] = (int)_d->animalType;
+  VARIANT_SAVE_ANY_D( ret, _d, count )
+  VARIANT_SAVE_ANY_D( ret, _d, maxAnimals )
+  VARIANT_SAVE_ENUM_D( ret, _d, animalType )
   return ret;
 }
 

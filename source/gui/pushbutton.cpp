@@ -25,11 +25,14 @@
 #include "core/color.hpp"
 #include "core/logger.hpp"
 #include "gfx/picturesarray.hpp"
+#include "widget_factory.hpp"
 
 using namespace gfx;
 
 namespace gui
 {
+
+REGISTER_CLASS_IN_WIDGETFACTORY(PushButton)
 
 class BackgroundStyleHelper : public EnumsHelper<PushButton::BackgroundStyle>
 {
@@ -76,6 +79,7 @@ public:
 
 signals public:
   Signal0<> onClickedSignal;
+  Signal1<Widget*> onClickedExSignal;
 
 public:
 
@@ -420,9 +424,11 @@ void PushButton::_btnClicked()
   parent()->onEvent( NEvent::Gui( this, 0, guiButtonClicked ) );
 
   emit _dfunc()->onClickedSignal();
+  emit _dfunc()->onClickedExSignal( this );
 }
 
 Signal0<>& PushButton::onClicked() { return _dfunc()->onClickedSignal; }
+Signal1<Widget*>& PushButton::onClickedEx() { return _dfunc()->onClickedExSignal; }
 
 bool PushButton::_btnMouseUp( const NEvent& event )
 {

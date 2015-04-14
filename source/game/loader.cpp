@@ -40,7 +40,6 @@
 #include <vector>
 
 using namespace gfx;
-using namespace constants;
 
 namespace game
 {
@@ -62,10 +61,7 @@ public:
   void initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city );
   void initTilesAnimation( Tilemap& tmap );
   void finalize( Game& game );  
-  bool maySetSign( const Tile& tile )
-  {
-    return (tile.isWalkable( true ) && !tile.getFlag( Tile::tlRoad)) || tile.getFlag( Tile::tlTree );
-  }
+  bool maySetSign( const Tile& tile );
 
 public signals:
   Signal1<std::string> onUpdateSignal;
@@ -114,7 +110,7 @@ void Loader::Impl::initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city )
 
 void Loader::Impl::initTilesAnimation( Tilemap& tmap )
 {
-  TilesArray area = tmap.getArea( TilePos( 0, 0 ), Size( tmap.size() ) );
+  TilesArray area = tmap.allTiles();
 
   foreach( it, area )
   {
@@ -151,6 +147,11 @@ void Loader::Impl::finalize( Game& game )
   initEntryExitTile( border.roadExit,  game.city() );
 
   initTilesAnimation( tileMap );
+}
+
+bool Loader::Impl::maySetSign(const Tile &tile)
+{
+  return (tile.isWalkable( true ) && !tile.getFlag( Tile::tlRoad)) || tile.getFlag( Tile::tlTree );
 }
 
 void Loader::Impl::initLoaders()

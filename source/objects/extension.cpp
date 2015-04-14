@@ -22,6 +22,7 @@
 #include "core/logger.hpp"
 #include "objects/house.hpp"
 #include "walker/soldier.hpp"
+#include "core/stacktrace.hpp"
 #include "warehouse.hpp"
 
 void ConstructionExtension::save(VariantMap &stream) const
@@ -61,7 +62,40 @@ ConstructionExtensionPtr FactoryProgressUpdater::assignTo(FactoryPtr factory, fl
   ConstructionExtensionPtr ret( updater );
   ret->drop();
 
-  factory->addExtension( ret );
+  if( factory.isValid() ) { factory->addExtension( ret );  }
+  else
+  {
+    crashhandler::printstack();
+    Logger::warning( "WARNING!!! Factory not initialized" );
+  }
+
+  return ret;
+}
+
+ConstructionExtensionPtr FactoryProgressUpdater::uniqueTo(FactoryPtr factory, float value, int week2finish, const std::string& name)
+{
+  if( !factory.isValid() )
+  {
+    Logger::warning( "WARNING!!! Factory not initialized" );
+    crashhandler::printstack();
+    return ConstructionExtensionPtr();
+  }
+
+  if( name.empty() )
+  {
+    Logger::warning( "WARNING!!! Cant assigned named extension without name" );
+    return ConstructionExtensionPtr();
+  }
+
+  ConstructionExtensionList exts = factory->extensions();
+  foreach( it, exts )
+  {
+    if( (*it)->name() == name )
+      return ConstructionExtensionPtr();
+  }
+
+  ConstructionExtensionPtr ret = assignTo( factory, value, week2finish );
+  ret->setName( name );
 
   return ret;
 }

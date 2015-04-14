@@ -15,26 +15,25 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "city/funds.hpp"
+#include "funds.hpp"
 #include "objects/construction.hpp"
 #include "city/helper.hpp"
-#include "trade_options.hpp"
+#include "city/trade_options.hpp"
 #include "objects/house.hpp"
 #include "objects/constants.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
 
-using namespace constants;
-
-namespace city
+namespace econ
 {
 
 namespace {
 CAESARIA_LITERALCONST(history)
+enum { defaultSalary=30 };
 }
 
-class Funds::Impl
+class Treasury::Impl
 {
 public:
   int taxRate;
@@ -43,47 +42,47 @@ public:
   int lastYearUpdate;
   int maxDebt;
 
-  IssuesHistory history;
+  Treasury::IssuesHistory history;
 
 signals public:
   Signal1<int> onChangeSignal;
-  Signal1<IssueType> onNewIssueSignal;
+  Signal1<econ::Issue::Type> onNewIssueSignal;
 };
 
-Funds::Funds() : _d( new Impl )
+Treasury::Treasury() : _d( new Impl )
 {
   _d->money = 0;
-  _d->workerSalary = 30;
+  _d->workerSalary = defaultSalary;
   _d->lastYearUpdate = 0;
-  _d->maxDebt = -5000;
+  _d->maxDebt = econ::maxDebt - 100;
   _d->history.push_back( IssuesValue() );
 }
 
-void Funds::resolveIssue( FundIssue issue )
+void Treasury::resolveIssue( econ::Issue issue )
 {
   int saveMoney = _d->money;
   bool needUpdateTreasury = true;
   switch( issue.type )
   {
-  case unknown:
+  case econ::Issue::unknown:
     Logger::warning( "Funds: wrong issue type %d", issue.type );
     return;
   break;
 
-  case overduePayment:
-  case overdueEmpireTax:
+  case econ::Issue::overduePayment:
+  case econ::Issue::overdueEmpireTax:
     needUpdateTreasury = false;
   break;
 
   default:
   {
     IssuesValue& step = _d->history.front();
-    if( step.find( (IssueType)issue.type ) == step.end() )
+    if( step.count( (econ::Issue::Type)issue.type ) == 0 )
     {
-      step[ (IssueType)issue.type ] = 0;
+      step[ (econ::Issue::Type)issue.type ] = 0;
     }
 
-    step[ (IssueType)issue.type ] += abs( issue.money );
+    step[ (econ::Issue::Type)issue.type ] += abs( issue.money );
 
     _updateCreditDebt(step, issue);
 
@@ -95,7 +94,7 @@ void Funds::resolveIssue( FundIssue issue )
   break;
   }
 
-  emit _d->onNewIssueSignal( (IssueType)issue.type );
+  emit _d->onNewIssueSignal( (econ::Issue::Type)issue.type );
 
   if( saveMoney != _d->money )
   {
@@ -103,32 +102,35 @@ void Funds::resolveIssue( FundIssue issue )
   }
 }
 
-void Funds::_updateCreditDebt(IssuesValue& step, FundIssue issue){
-    if(issue.type == Funds::taxIncome || issue.type == Funds::exportGoods || issue.type == Funds::donation){
-    	 step[ Funds::debet ] += issue.money;
-    } else if (issue.type == Funds::importGoods || issue.type == Funds::workersWages || issue.type == Funds::buildConstruction
-    		|| issue.type == Funds::creditPercents || issue.type == Funds::playerSalary || issue.type == Funds::sundries
-			|| issue.type == Funds::empireTax) {
-    	 step[ Funds::credit ] += issue.money;
+void Treasury::_updateCreditDebt(IssuesValue& step, econ::Issue issue){
+    if(issue.type == econ::Issue::taxIncome || issue.type == econ::Issue::exportGoods || issue.type == econ::Issue::donation){
+         step[ econ::Issue::debet ] += issue.money;
+    } else if (issue.type == econ::Issue::importGoods || issue.type == econ::Issue::workersWages || issue.type == econ::Issue::buildConstruction
+                || issue.type == econ::Issue::creditPercents || issue.type == econ::Issue::playerSalary || issue.type == econ::Issue::sundries
+                        || issue.type == econ::Issue::empireTax) {
+         step[ econ::Issue::credit ] += issue.money;
     }
 
-    step[ Funds::cityProfit ] = step[ Funds::debet ] + step[ Funds::credit ];
+    step[ econ::Issue::cityProfit ] = step[ econ::Issue::debet ] + step[ econ::Issue::credit ];
 }
 
-int Funds::treasury() const { return _d->money; }
+int Treasury::money() const { return _d->money; }
 
-int Funds::profit() const
+int Treasury::profit() const
 {
-  int balanceLastYear = getIssueValue( city::Funds::balance, lastYear );
+  int balanceLastYear = getIssueValue( econ::Issue::balance, lastYear );
   return _d->money - balanceLastYear;
 }
 
-bool Funds::haveMoneyForAction(unsigned int money)
+bool Treasury::haveMoneyForAction(unsigned int money, bool useDebt)
 {
-  return (_d->money - (int)money > _d->maxDebt);
+  if( useDebt )
+    return (_d->money - (int)money > _d->maxDebt);
+  else
+    return (_d->money - (int)money >= 0);
 }
 
-void Funds::updateHistory( const DateTime& date )
+void Treasury::updateHistory( const DateTime& date )
 {
   if( _d->lastYearUpdate == date.year() )
   {
@@ -136,8 +138,8 @@ void Funds::updateHistory( const DateTime& date )
   }
 
   IssuesValue& step = _d->history.front();
-  step[ Funds::balance ] = _d->money;
-  step[ Funds::cityProfit ] = profit();
+  step[ econ::Issue::balance ] = _d->money;
+  step[ econ::Issue::cityProfit ] = profit();
 
   _d->lastYearUpdate = date.year();
   _d->history.insert( _d->history.begin(), IssuesValue() );
@@ -148,7 +150,7 @@ void Funds::updateHistory( const DateTime& date )
   }
 }
 
-int Funds::getIssueValue( IssueType type, int age ) const
+int Treasury::getIssueValue(econ::Issue::Type type, int age ) const
 {
   if( (unsigned int)age >= _d->history.size() )
     return 0;
@@ -159,12 +161,12 @@ int Funds::getIssueValue( IssueType type, int age ) const
   return ( it == step.end() ) ? 0 : it->second;
 }
 
-int Funds::taxRate() const{  return _d->taxRate;}
-void Funds::setTaxRate(const unsigned int value) {  _d->taxRate = value;}
-int Funds::workerSalary() const{  return _d->workerSalary;}
-void Funds::setWorkerSalary(const unsigned int value){  _d->workerSalary = value;}
+int Treasury::taxRate() const{  return _d->taxRate;}
+void Treasury::setTaxRate(const unsigned int value) {  _d->taxRate = value;}
+int Treasury::workerSalary() const{  return _d->workerSalary;}
+void Treasury::setWorkerSalary(const unsigned int value){  _d->workerSalary = value;}
 
-VariantMap Funds::save() const
+VariantMap Treasury::save() const
 {
   VariantMap ret;
 
@@ -185,19 +187,19 @@ VariantMap Funds::save() const
     history.push_back( stepHistory );
   }
 
-  ret[ lc_history ] = history;
+  ret[ literals::history ] = history;
 
   return ret;
 }
 
-void Funds::load( const VariantMap& stream )
+void Treasury::load( const VariantMap& stream )
 {
   VARIANT_LOAD_ANY_D( _d, money, stream )
   VARIANT_LOAD_ANYDEF_D( _d, taxRate, 7, stream )
-  VARIANT_LOAD_ANYDEF_D( _d, workerSalary, 30, stream )
+  VARIANT_LOAD_ANYDEF_D( _d, workerSalary, defaultSalary, stream )
   VARIANT_LOAD_ANY_D( _d, lastYearUpdate, stream )
 
-  VariantList history = stream.get( lc_history ).toList();
+  VariantList history = stream.get( literals::history ).toList();
   _d->history.clear();
   foreach( it, history )
   {
@@ -207,7 +209,7 @@ void Funds::load( const VariantMap& stream )
     VariantList::const_iterator stepIt=historyStep.begin(); 
     while( stepIt != historyStep.end() )
     {
-      IssueType type = (IssueType)stepIt->toInt(); ++stepIt;
+      econ::Issue::Type type = (econ::Issue::Type)stepIt->toInt(); ++stepIt;
       int value = stepIt->toInt(); ++stepIt;
       
       last[ type ] = value;
@@ -215,8 +217,8 @@ void Funds::load( const VariantMap& stream )
   }
 }
 
-Funds::~Funds(){}
-Signal1<int>& Funds::onChange(){  return _d->onChangeSignal; }
-Signal1<Funds::IssueType>&Funds::onNewIssue(){ return _d->onNewIssueSignal; }
+Treasury::~Treasury(){}
+Signal1<int>& Treasury::onChange(){  return _d->onChangeSignal; }
+Signal1<econ::Issue::Type>&Treasury::onNewIssue(){ return _d->onNewIssueSignal; }
 
-}//end namespace city
+}//end namespace funds

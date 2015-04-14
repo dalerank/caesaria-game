@@ -1,4 +1,4 @@
-// This file is part of CaesarIA.
+﻿// This file is part of CaesarIA.
 //
 // CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
 #include "core/utils.hpp"
 #include "objects/construction.hpp"
 #include "city/helper.hpp"
+#include "game/player.hpp"
 #include "gfx/picture.hpp"
 #include "gfx/gl_engine.hpp"
 #include "sound/engine.hpp"
@@ -63,14 +64,18 @@
 #include "objects/overlay.hpp"
 #include "gfx/helper.hpp"
 #include "gamestate.hpp"
+#include "infoboxmanager.hpp"
 #include "hotkey_manager.hpp"
 #include "addon_manager.hpp"
 #include "video_config.hpp"
+#include "config.hpp"
+#include "world/emperor.hpp"
 
 #include <list>
 
 using namespace gfx;
 using namespace scene;
+using namespace events;
 
 class Game::Impl
 {
@@ -117,10 +122,11 @@ void Game::Impl::initMovie()
   movie::Config& config = movie::Config::instance();
 
   config.loadAlias( SETTINGS_RC_PATH( videoAlias ) );
+  std::string c3videoFile = SETTINGS_VALUE( c3video ).toString();
 
-  if( !SETTINGS_VALUE( c3video ).toString().empty() )
+  if( !c3videoFile.empty() )
   {
-    config.addFolder( SETTINGS_VALUE( c3video ).toString() );
+    config.addFolder( c3videoFile );
   }
 }
 
@@ -162,18 +168,19 @@ void Game::Impl::initSound()
 
   ae.init();
   Logger::warning( "Game: load volumes" );
-  ae.setVolume( audio::ambientSound, SETTINGS_VALUE( ambientVolume ) );
-  ae.setVolume( audio::themeSound, SETTINGS_VALUE( musicVolume ) );
-  ae.setVolume( audio::gameSound, SETTINGS_VALUE( soundVolume ) );
+  ae.setVolume( audio::ambient, SETTINGS_VALUE( ambientVolume ) );
+  ae.setVolume( audio::theme, SETTINGS_VALUE( musicVolume ) );
+  ae.setVolume( audio::game, SETTINGS_VALUE( soundVolume ) );
   ae.loadAlias( SETTINGS_RC_PATH( soundAlias ) );
 
-  if( !SETTINGS_VALUE( c3music ).toString().empty() )
+  std::string c3musicFolder = SETTINGS_VALUE( c3music ).toString();
+  if( !c3musicFolder.empty() )
   {
-    ae.addFolder( SETTINGS_VALUE( c3music ).toString() );
+    ae.addFolder( c3musicFolder );
   }
 
   Logger::warning( "Game: load talks archive" );
-  audio::Helper::initTalksArchive( SETTINGS_RC_PATH( talksArchive ) );
+  audio::Helper::initTalksArchive( SETTINGS_VALUE( talksArchive ).toString() );
 }
 
 void Game::Impl::mountArchives(ResourceLoader &loader)
@@ -193,6 +200,8 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
       errorStr = "This game use resources files (.sg2, .map) from Caesar III(c), but "
                  "original game archive c3.sg2 not found in folder " + c3res +
                  "!!!.\nBe sure that you copy all .sg2, .map and .smk files placed to resource folder";
+      SETTINGS_SET_VALUE( c3gfx, std::string( "" ) );
+      game::Settings::save();
     }
 
     loader.loadFromModel( SETTINGS_RC_PATH( sg2model ), gfxDir );
@@ -239,6 +248,8 @@ void Game::Impl::initGuiEnvironment()
 {
   Logger::warning( "Game: initialize gui" );
   gui = new gui::Ui( *engine );
+
+  gui::infobox::Manager::instance().setBoxLock( SETTINGS_VALUE( lockInfobox ) );
 }
 
 void Game::Impl::initPantheon( vfs::Path filename)
@@ -281,7 +292,7 @@ gui::Ui* Game::gui() const { return _d->gui; }
 gfx::Engine* Game::engine() const { return _d->engine; }
 scene::Base* Game::scene() const { return _d->currentScreen->toBase(); }
 
-DateTime Game::date() const { return game::Date::current(); }
+const DateTime& Game::date() const { return game::Date::current(); }
 bool Game::isPaused() const { return _d->pauseCounter>0; }
 void Game::play() { setPaused( false ); }
 void Game::pause() { setPaused( true ); }
@@ -293,7 +304,7 @@ void Game::setPaused(bool value)
 
 void Game::step(unsigned int count)
 {
-  _d->manualTicksCounterX10 += count * 10;
+  _d->manualTicksCounterX10 += count * config::gamespeed::scale;
 }
 
 Game::Game() : _d( new Impl )
@@ -303,11 +314,13 @@ Game::Game() : _d( new Impl )
   _d->manualTicksCounterX10 = 0;
   _d->timeX10 = 0;
   _d->saveTime = 0;
-  _d->timeMultiplier = 70;
+  _d->timeMultiplier = config::gamespeed::defaultMutltiplier;
 }
 
 void Game::changeTimeMultiplier(int percent){  setTimeMultiplier( _d->timeMultiplier + percent );}
-void Game::setTimeMultiplier(int percent){  _d->timeMultiplier = math::clamp<unsigned int>( percent, 10, 300 );}
+void Game::setTimeMultiplier(int percent){  _d->timeMultiplier = math::clamp<unsigned int>( percent,
+                                                                                            config::gamespeed::minimum,
+                                                                                            config::gamespeed::maximux );}
 int Game::timeMultiplier() const{  return _d->timeMultiplier;}
 
 Game::~Game(){}
@@ -318,7 +331,9 @@ void Game::save(std::string filename) const
   saver.setRestartFile( _d->restartFile );
   saver.save( filename, *this );
 
-  events::GameEventPtr e = events::WarningMessage::create( "Game saved to " + vfs::Path( filename ).baseName().toString() );
+  SETTINGS_SET_VALUE( lastGame, Variant( filename ) );
+
+  GameEventPtr e = WarningMessage::create( "Game saved to " + vfs::Path( filename ).baseName().toString(), WarningMessage::neitral );
   e->dispatch();
 }
 
@@ -382,12 +397,13 @@ bool Game::load(std::string filename)
     Logger::warning( "INIT ERROR: can't initalize city %s in empire" + _d->city->name() );
     return false;
   }
+  _d->empire->emperor().checkCities();
 
   Logger::warning( "Game: calculate road access for buildings" );
   OverlayList& llo = _d->city->overlays();
   foreach( overlay, llo )
   {
-    ConstructionPtr construction = ptr_cast<Construction>( *overlay );
+    ConstructionPtr construction = overlay->as<Construction>();
     if( construction.isValid() )
     {
       construction->computeRoadside();
@@ -414,9 +430,9 @@ void Game::Impl::initArchiveLoaders()
 void Game::initialize()
 {
   int cellWidth = SETTINGS_VALUE( cellw );
-  if( cellWidth != 30 && cellWidth != 60 )
+  if( cellWidth != tilemap::c3CellWidth && cellWidth != tilemap::caCellWidth)
   {
-    cellWidth = 30;
+    cellWidth = tilemap::c3CellWidth;
   }    
 
   tilemap::initTileBase( cellWidth );
@@ -544,6 +560,7 @@ void Game::reset()
   _d->empire = world::Empire::create();
 
   _d->player = Player::create();
+  _d->player->setName( SETTINGS_VALUE( playerName ).toString() );
   _d->pauseCounter = 0;
   _d->timeX10 = 0;
   _d->saveTime = 0;
@@ -552,7 +569,9 @@ void Game::reset()
   WalkerRelations::instance().clear();
   WalkerRelations::instance().load( SETTINGS_RC_PATH( walkerRelations ) );
 
+  bool oldGameplay = SETTINGS_VALUE( oldgfx ) || !SETTINGS_VALUE( c3gfx ).toString().empty();
   _d->city = PlayerCity::create( _d->empire, _d->player );
+  _d->city->setOption( PlayerCity::c3gameplay, oldGameplay );
 }
 
 void Game::clear()

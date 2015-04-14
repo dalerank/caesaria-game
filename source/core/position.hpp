@@ -19,7 +19,6 @@
 #define __CAESARIA_POSITION_H_INCLUDED__
 
 #include <iostream>
-
 #include "vector2.hpp"
 
 class PointF;
@@ -61,7 +60,7 @@ public:
 
 inline PointF Point::toPointF() const
 { 
-    return PointF( (float)_x, (float)_y );
+  return PointF( (float)_x, (float)_y );
 }
 
 class TilePos : Vector2<int>

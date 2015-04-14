@@ -27,8 +27,6 @@
 #include "events/dispatcher.hpp"
 #include "cityservice_factory.hpp"
 
-using namespace constants;
-
 namespace city
 {
 
@@ -71,15 +69,15 @@ bool HealthUpdater::isDeleted() const {  return _d->isDeleted; }
 
 void HealthUpdater::load(const VariantMap& stream)
 {
-  _d->endTime = stream.get( "endTime" ).toDateTime();
-  _d->value = stream.get( "value" );
+  VARIANT_LOAD_TIME_D( _d, endTime, stream )
+  VARIANT_LOAD_ANY_D( _d, value, stream )
 }
 
 VariantMap HealthUpdater::save() const
 {
   VariantMap ret;
-  ret[ "endTime" ] = _d->endTime;
-  ret[ "value" ] = _d->value;
+  VARIANT_SAVE_ANY_D( ret, _d, endTime )
+  VARIANT_SAVE_ANY_D( ret, _d, value )
 
   return ret;
 }

@@ -37,9 +37,9 @@
 #include "pathway/pathway_helper.hpp"
 #include "walker/helper.hpp"
 #include "walkers_factory.hpp"
+#include "gfx/helper.hpp"
 #include "events/fireworkers.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::prefect, Prefect)
@@ -140,8 +140,18 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
 }
 
 void Prefect::_back2Prefecture()
-{ 
-  TilesArray area = base()->enterArea();
+{
+  PrefecturePtr base = ptr_cast<Prefecture>( _city()->getOverlay( baseLocation() ) );
+
+  if( base.isNull() )
+  {
+    Logger::warning( "!!! WARNING: Prefect lost base " );
+    deleteLater();
+    return;
+  }
+
+  TilesArray area = base->enterArea();
+
   if( area.contain( pos() ) )
   {
     _setAction( Walker::acNone );
@@ -149,7 +159,7 @@ void Prefect::_back2Prefecture()
     return;
   }
 
-  Pathway pathway = PathwayHelper::create( pos(), ptr_cast<Construction>( base() ),
+  Pathway pathway = PathwayHelper::create( pos(), ptr_cast<Construction>( base ),
                                            PathwayHelper::roadFirst );  
 
   if( pathway.isValid() )
@@ -163,7 +173,7 @@ void Prefect::_back2Prefecture()
   {
     deleteLater();
   }
- }
+}
 
 void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
 {
@@ -222,8 +232,8 @@ void Prefect::_setSubAction( const Prefect::SbAction action)
 
   switch( action )
   {
-  case fightFire: _animationRef().setDelay( 2 ); break;
-  default: _animationRef().setDelay( 1 ); break;
+  case fightFire: _animationRef().setDelay( Animation::middle ); break;
+  default: _animationRef().setDelay( Animation::fast ); break;
   }
 }
 
@@ -291,10 +301,15 @@ void Prefect::_brokePathway(TilePos p)
 
 void Prefect::_reachedPathway()
 {
+  TilesArray area;
+  BuildingPtr base = ptr_cast<Building>( _city()->getOverlay( baseLocation() ) );
+  if( base.isValid() )
+    area = base->enterArea();
+
   switch( _d->action )
   {
   case patrol:
-    if( base()->enterArea().contain( pos() )  )
+    if( area.contain( pos() )  )
     {
       deleteLater();
       _setSubAction( doNothing );
@@ -357,14 +372,11 @@ void Prefect::_centerTile()
       //on next deliverService
 
       //found fire, no water, go prefecture
-      if( base().isValid() )
-      {
-        PrefecturePtr ptr = ptr_cast<Prefecture>( base() );
-        if( ptr.isValid() )
-          ptr->fireDetect( firePos );
+      PrefecturePtr ptr = ptr_cast<Prefecture>( _city()->getOverlay( baseLocation() ) );
+      if( ptr.isValid() )
+        ptr->fireDetect( firePos );
 
-        _back2Prefecture();
-      }
+      _back2Prefecture();
     }
     else
     {
@@ -529,8 +541,7 @@ void Prefect::send2City(PrefecturePtr prefecture, Prefect::SbAction action, int 
   if( water > 0 )
   {
     setBase( prefecture.object() );
-
-    _city()->addWalker( this );
+    attach();
   }
   else
   {
@@ -617,7 +628,7 @@ TilePos Prefect::places(Walker::Place type) const
 
 void Prefect::load( const VariantMap& stream )
 {
-   ServiceWalker::load( stream );
+  ServiceWalker::load( stream );
  
   _setSubAction( (SbAction)stream.get( "prefectAction" ).toInt() );
   VARIANT_LOAD_ANY_D( _d, water, stream );
@@ -625,14 +636,13 @@ void Prefect::load( const VariantMap& stream )
 
   _setAction( _d->water > 0 ? acDragWater : acMove );
 
-  PrefecturePtr prefecture = ptr_cast<Prefecture>( base() );
+  PrefecturePtr prefecture = ptr_cast<Prefecture>( _city()->getOverlay( baseLocation() ) );
   if( prefecture.isValid() )
   {
-    prefecture->addWalker( WalkerPtr( this ) );
-    _city()->addWalker( WalkerPtr( this ) );
+    prefecture->addWalker( this );
+    attach();
   }
-  
-  if( prefecture.isNull() )
+  else
   {
     Logger::warning( "Not found prefecture on loading" );
     deleteLater();

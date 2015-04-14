@@ -42,6 +42,25 @@ public:
     return false;
   }
 
+  std::string valueOrEmpty( unsigned int index ) const
+  {
+    return (index < size()) ? at( index ) : "";
+  }
+
+  bool remove( const std::string& str )
+  {
+    foreach( it, *this )
+    {
+      if( *it == str )
+      {
+        erase( it );
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   inline StringArray& operator << ( const std::string& a )
   {
     push_back( a );

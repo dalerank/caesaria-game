@@ -22,7 +22,6 @@
 #include "objects/native.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::indigene, Indigene)
@@ -64,10 +63,7 @@ void Indigene::send2city(BuildingPtr base)
     deleteLater();
   }
 
-  if( !isDeleted() )
-  {
-    _city()->addWalker( this );
-  }
+  attach();
 }
 
 void Indigene::_reachedPathway()

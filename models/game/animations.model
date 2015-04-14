@@ -52,12 +52,12 @@
   }
 
   marketLady : {
-    move : { rc : "marketlady", start : 1, frames : 12, action : 1, step : 8 }
+    move : { rc : "marketlady", start : 1, frames : 12, action : 1, step : 8, delay : 2 }
     die : { rc : "marketlady", start : 97, frames : 1, action : 3, step : 8 }
   }
 
   marketBuyer : {
-    move : { rc : "marketlady", start : 1, frames : 12, action : 1, step : 8 }
+    move : { rc : "marketlady", start : 1, frames : 12, action : 1, step : 8, delay : 2 }
     die : { rc : "marketlady", start : 97, frames : 1, action : 3, step : 8 }
   }
 
@@ -143,14 +143,10 @@
   }
 
   soldier : {
-    move : { rc : "citizen03", start : 97, frames : 12, action : 1, step : 8 }
-  }
-
-  /*
-  javelineer : {
     move : { rc : "citizen03", start : 241, frames : 12, action : 1, step : 8 }
+    fight : { rc : "citizen04", start : 337, frames : 6, action : 2, step : 8 }
+    die : { rc : "citizen04", start : 385, frames : 8, action : 3, step : 0 }
   }
-  */
 
   romeHorseman : {
     move : { rc : "citizen04", start : 1, frames : 12, action : 1, step : 8 }
@@ -173,12 +169,12 @@
   */
 
   marketKid : {
-    move : { rc : "marketkid", start : 1, frames : 12, action : 1, step : 8 }
+    move : { rc : "marketkid", start : 1, frames : 12, action : 1, step : 8, delay : 2 }
     die : { rc : "marketkid", start : 97, frames : 1, action : 3, step : 8 }
   }
 
   sheep : {
-    move : { rc : "citizen04", start : 153, frames : 6, action : 1, step : 8, delay : 2 }
+    move : { rc : "sheep", start : 1, frames : 12, action : 1, step : 8, delay : 2 }
     sit : { rc : "citizen04", start : 249, frames : 1, action : 0, step : 8 }
     die : { rc : "citizen04", start : 257, frames : 8, action : 3, step : 0 }
   }
@@ -210,17 +206,18 @@
 
   britonSoldier : {
     move : { rc : "celts", start : 249, frames : 12, action : 1, step : 8 }
-    fight : { rc : "celts", start : 345, frames : 6, action : 3, step : 8 }
+    fight : { rc : "celts", start : 345, frames : 6, action : 2, step : 8 }
   }
 
   legionary : {
     move : { rc : "citizen03", start : 553, frames : 12, action : 1, step : 8 }
-    fight : { rc : "citizen03", start : 649, frames : 6, action : 3, step : 8 }
+    fight : { rc : "citizen03", start : 649, frames : 6, action : 2, step : 8 }
+    die : { rc : "citizen03", start : 705, frames : 1, action : 3, step : 0 }
   }
 
   romeGuard : {
     move : { rc : "citizen03", start : 97, frames : 12, action : 1, step : 8 }
-    fight : { rc : "citizen03", start : 192, frames : 6, action : 3, step : 8 }
+    fight : { rc : "citizen03", start : 192, frames : 6, action : 2, step : 8 }
     die : { rc : "citizen03", start : 232, frames : 1, action : 3, step : 0 }
   }
 

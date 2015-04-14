@@ -34,7 +34,6 @@
 #include "game/gamedate.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::mugger, Mugger)
@@ -190,11 +189,7 @@ void Mugger::send2City( HousePtr house )
 
   setPos( tiles.random()->pos() );
   _d->state = Impl::searchHouse;
-
-  if( !isDeleted() )
-  {
-    _city()->addWalker( WalkerPtr( this ));
-  }
+  attach();
 }
 
 bool Mugger::die()
@@ -214,14 +209,14 @@ void Mugger::save(VariantMap& stream) const
 {
   Walker::save( stream );
 
-  stream[ "state" ] = (int)_d->state;
+  VARIANT_SAVE_ENUM_D( stream, _d, state )
 }
 
 void Mugger::load(const VariantMap& stream)
 {
   Walker::load( stream );
 
-  _d->state = (Impl::State)stream.get( "state" ).toInt();
+  VARIANT_LOAD_ENUM_D( _d, state, stream )
 }
 
 int Mugger::agressive() const { return 1; }

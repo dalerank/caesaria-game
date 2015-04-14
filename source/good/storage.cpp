@@ -18,6 +18,7 @@
 #include "core/foreach.hpp"
 #include "core/variant_map.hpp"
 #include "core/utils.hpp"
+#include "good/productmap.hpp"
 #include "core/logger.hpp"
 
 namespace good
@@ -38,11 +39,11 @@ public:
   }
 };
 
+typedef std::vector<SmStock::Ptr> StockList;
 
 class Storage::Impl
 {
 public:
-  typedef std::vector<SmStock::Ptr> StockList;
   StockList stocks;
   int capacity;
 
@@ -77,6 +78,16 @@ int Storage::qty() const
 }
 
 good::Stock& Storage::getStock(const Product& goodType){  return *(_gsd->stocks[goodType].object());}
+
+ProductMap Storage::details() const
+{
+  ProductMap ret;
+  foreach( goodIt, _gsd->stocks )
+    ret[ (*goodIt)->type() ] += (*goodIt)->qty();
+
+  return ret;
+}
+
 int Storage::qty(const good::Product& goodType) const{  return _gsd->stocks[goodType]->qty();}
 int Storage::capacity(const good::Product& goodType) const{  return _gsd->stocks[goodType]->capacity();}
 
@@ -105,14 +116,18 @@ int Storage::getMaxStore(const good::Product goodType)
     int globalFreeRoom = capacity() - qty();
 
     // current free capacity
-    good::Stock& st = *_gsd->stocks[goodType].object();
-    freeRoom = math::clamp( st.freeQty(), 0, globalFreeRoom );
+    int goodFreeRoom = _gsd->stocks[goodType]->freeQty();
 
     // remove all storage reservations
     foreach( i, _getStoreReservations() )
     {
-      freeRoom -= i->stock.qty();
+      globalFreeRoom -= i->stock.qty();
+
+      if( i->stock.type() == goodType )
+        goodFreeRoom -= i->stock.qty();
     }
+
+    freeRoom = math::clamp( goodFreeRoom, 0, globalFreeRoom );
   }
 
   return freeRoom;

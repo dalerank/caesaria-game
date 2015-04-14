@@ -202,10 +202,10 @@ static LONG CALLBACK ExceptionHandler(LPEXCEPTION_POINTERS e)
 #endif
 
 /** Print a demangled stack backtrace of the caller function to FILE* out. */
-void print(unsigned int starting_frame, unsigned int max_frames)
+void printstack(unsigned int starting_frame, unsigned int max_frames)
 {
 #if !defined(CAESARIA_PLATFORM_WIN) && !defined(CAESARIA_PLATFORM_ANDROID)
-  std::string dir = vfs::Directory::getApplicationDir().toString();
+  std::string dir = vfs::Directory::applicationDir().toString();
   std::string msg = utils::format( 0xff,
                                    "CaesarIA has crashed.\n\n"
                                    "A stacktrace has been written to:\n"
@@ -308,7 +308,7 @@ void CrashHandler_handleCrash(int signum)
     case SIGFPE: Logger::warning("SIGFPE: Illegal floating point instruction (possibly division by zero)."); break;
   }
 
-  print(0, 63);
+  printstack(0, 63);
   exit(signum);
 }
 

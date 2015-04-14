@@ -23,8 +23,6 @@
 #include "core/gettext.hpp"
 #include "events/showtileinfo.hpp"
 
-using namespace constants;
-
 namespace gui
 {
 
@@ -32,7 +30,7 @@ namespace infobox
 {
 
 AboutConstruction::AboutConstruction( Widget* parent, Rect rect, Rect blackArea )
-  : Simple( parent, rect, blackArea )
+  : Infobox( parent, rect, blackArea )
 {
   setupUI( ":/gui/infoboxconstr.gui" );
   _btnToggleWorking = 0;
@@ -61,7 +59,7 @@ bool AboutConstruction::onEvent(const NEvent& event)
   default: break;
   }
 
-  return Simple::onEvent( event );
+  return Infobox::onEvent( event );
 }
 
 PushButton* AboutConstruction::_btnToggleWorkingRef() { return _btnToggleWorking; }
@@ -70,9 +68,9 @@ void AboutConstruction::_setWorkingVisible(bool show)
 {
   if( !_btnToggleWorking && _lbBlackFrameRef() )
   {
-     _btnToggleWorking = new PushButton( _lbBlackFrameRef(), Rect( 0, 0, 100, 25 ), "", -1, false, PushButton::blackBorderUp  );
+      Rect btnRect( Point( _lbBlackFrameRef()->width() - 110, (_lbBlackFrameRef()->height() - 25)/2 ), Size( 100, 25 ) );
+     _btnToggleWorking = new PushButton( _lbBlackFrameRef(), btnRect, "", -1, false, PushButton::blackBorderUp  );
      _btnToggleWorking->setFont( Font::create( FONT_1 ) );
-     _btnToggleWorking->setPosition( Point( _lbBlackFrameRef()->width() - 110, (_lbBlackFrameRef()->height() - 25)/2 ) );
      _updateWorkingText();
 
      CONNECT( _btnToggleWorking, onClicked(), this, AboutConstruction::_resolveToggleWorking );
@@ -92,7 +90,7 @@ void AboutConstruction::_setWorkingActive(bool working)
 
 void AboutConstruction::_updateWorkingText()
 {
-  WorkingBuildingPtr working = ptr_cast<WorkingBuilding>( base() );
+  WorkingBuildingPtr working = base().as<WorkingBuilding>();
   _setWorkingActive( working.isValid() ? working->isActive() : false );
 }
 
@@ -107,7 +105,6 @@ void AboutConstruction::_resolveToggleWorking()
 }
 
 ConstructionPtr AboutConstruction::base() const { return _construction; }
-void AboutConstruction::setBase(ConstructionPtr construction) { _construction = construction; }
 
 void AboutConstruction::_switch(int flag)
 {

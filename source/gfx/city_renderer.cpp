@@ -38,14 +38,14 @@
 #include "layers/layerfire.hpp"
 #include "layers/layerfood.hpp"
 #include "layers/layerhealth.hpp"
-#include "layers/layerconstants.hpp"
+#include "layers/constants.hpp"
 #include "layers/layerreligion.hpp"
 #include "layers/build.hpp"
-#include "layers/layerdamage.hpp"
-#include "layers/layerdesirability.hpp"
+#include "layers/damage.hpp"
+#include "layers/desirability.hpp"
 #include "layers/layerentertainment.hpp"
 #include "layers/layertax.hpp"
-#include "layers/layercrime.hpp"
+#include "layers/crime.hpp"
 #include "layers/layerdestroy.hpp"
 #include "layers/layertroubles.hpp"
 #include "layers/layerindigene.hpp"
@@ -58,11 +58,12 @@
 #include "core/timer.hpp"
 #include "pathway/pathway.hpp"
 
-using namespace constants;
 using namespace citylayer;
 
 namespace gfx
 {
+
+enum { zoomStep=10, minZoom=30, defaultZoom=100, maxZoom=300 };
 
 class CityRenderer::Impl
 {
@@ -107,7 +108,7 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   _d->guienv = guienv;
   _d->camera.init( *_d->tilemap, engine->virtualSize() );
   _d->engine = engine;
-  _d->zoom = 100;
+  _d->zoom = defaultZoom;
   _d->zoomChanged = false;
 
   _d->engine->initViewport( 0, _d->engine->screenSize() );
@@ -205,7 +206,7 @@ void CityRenderer::render()
   if( _d->zoomChanged )
   {
     _d->zoomChanged = false;
-    Size s = _d->engine->screenSize() * _d->zoom / 100;
+    Size s = _d->engine->screenSize() * _d->zoom / defaultZoom;
     _d->engine->initViewport( 0, s );
     _d->camera.setViewport( s );
   }
@@ -253,9 +254,7 @@ void CityRenderer::handleEvent( NEvent& event )
       {
         int zoomInvert = _d->city->getOption( PlayerCity::zoomInvert ) ? -1 : 1;
 
-        int lastZoom = _d->zoom;
-        _d->zoom = math::clamp<int>( _d->zoom + event.mouse.wheel * 10 * zoomInvert, 30, 300 );
-        _d->zoomChanged = (lastZoom != _d->zoom);
+        changeZoom( event.mouse.wheel * zoomStep * zoomInvert );
       }
     }
   }
@@ -273,7 +272,7 @@ void CityRenderer::setMode( Renderer::ModePtr command )
 {
   _d->changeCommand = command;
 
-  LayerModePtr ovCmd = ptr_cast<LayerMode>( _d->changeCommand );
+  LayerModePtr ovCmd = _d->changeCommand.as<LayerMode>();
   if( ovCmd.isValid() )
   {
     _d->setLayer( ovCmd->getType() );
@@ -314,6 +313,13 @@ void CityRenderer::setLayer(int layertype)
   _d->setLayer( layertype );
 }
 
+void CityRenderer::changeZoom(int delta)
+{
+  int lastZoom = _d->zoom;
+  _d->zoom = math::clamp<int>( _d->zoom + delta, minZoom, maxZoom );
+  _d->zoomChanged = (lastZoom != _d->zoom);
+}
+
 LayerPtr CityRenderer::getLayer(int type) const
 {
   foreach( it, _d->layers)
@@ -325,11 +331,12 @@ LayerPtr CityRenderer::getLayer(int type) const
   return LayerPtr();
 }
 
+TilePos CityRenderer::screen2tilepos(const Point& point ) const{  return _d->camera.at( point, true )->pos();}
+
 Camera* CityRenderer::camera() {  return &_d->camera; }
 Renderer::ModePtr CityRenderer::mode() const {  return _d->changeCommand;}
 void CityRenderer::addLayer( LayerPtr layer){  _d->layers.push_back( layer ); }
 LayerPtr CityRenderer::currentLayer() const { return _d->currentLayer; }
-TilePos CityRenderer::screen2tilepos( Point point ) const{  return _d->camera.at( point, true )->pos();}
 void CityRenderer::setViewport(const Size& size){ _d->camera.setViewport( size ); }
 Signal1<int>& CityRenderer::onLayerSwitch() { return _d->onLayerSwitchSignal; }
 

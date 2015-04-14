@@ -56,7 +56,7 @@ int WarehouseStore::qty(const good::Product &goodType) const
   return amount;
 }
 
-int WarehouseStore::qty() const {  return qty( good::any() ); }
+int WarehouseStore::qty() const { return qty( good::any() ); }
 
 int WarehouseStore::getMaxStore(const good::Product goodType)
 {
@@ -66,7 +66,7 @@ int WarehouseStore::getMaxStore(const good::Product goodType)
   }
 
   // compute the quantity of each goodType in the warehouse, taking in account all reservations
-  StockMap maxStore;
+  good::ProductMap maxStore;
 
   // init the map
   foreach( i, good::all() )
@@ -131,36 +131,29 @@ void WarehouseStore::applyStorageReservation( good::Stock &stock, const int rese
   // std::cout << "WarehouseStore, store qty=" << amount << " resID=" << reservationID << std::endl;
 
   // first we look at the half filled subTiles
-  foreach( room, _warehouse->rooms() )
+  if (amount > 0)
   {
-    if (amount == 0)
+    foreach( room, _warehouse->rooms() )
     {
-      break;
+      if( room->type() == stock.type() && room->freeQty() > 0 )
+      {
+        int tileAmount = std::min(amount, room->freeQty());
+        // std::cout << "put in half filled" << std::endl;
+        room->append(stock, tileAmount);
+        amount -= tileAmount;
+      }
     }
 
-    if( room->type() == stock.type() && room->freeQty() > 0 )
+    // then we look at the empty subTiles
+    foreach( room, _warehouse->rooms() )
     {
-      int tileAmount = std::min(amount, room->freeQty());
-      // std::cout << "put in half filled" << std::endl;
-      room->append(stock, tileAmount);
-      amount -= tileAmount;
-    }
-  }
-
-  // then we look at the empty subTiles
-  foreach( room, _warehouse->rooms() )
-  {
-    if (amount == 0)
-    {
-      break;
-    }
-
-    if( room->type() == good::none)
-    {
-      int tileAmount = std::min(amount, room->capacity() );
-      // std::cout << "put in empty tile" << std::endl;
-      room->append(stock, tileAmount);
-      amount -= tileAmount;
+      if( room->type() == good::none)
+      {
+        int tileAmount = std::min(amount, room->capacity() );
+        // std::cout << "put in empty tile" << std::endl;
+        room->append(stock, tileAmount);
+        amount -= tileAmount;
+      }
     }
   }
 
@@ -238,13 +231,7 @@ void WarehouseStore::retrieve(good::Stock& stock, const int amount)
 VariantMap WarehouseStore::save() const
 {
   VariantMap ret = Store::save();
-  VariantList vl;
-  foreach( k, good::all() )
-  {
-    StockMap::const_iterator it = _capacities.find( *k );
-    vl << (it != _capacities.end() ? it->second : 0);
-  }
-  ret[ "capacities" ] = vl;
+  ret[ "capacities" ] = _capacities.save();
 
   return ret;
 }
@@ -252,21 +239,29 @@ VariantMap WarehouseStore::save() const
 void WarehouseStore::load(const VariantMap &stream)
 {
   Store::load( stream );
-  VariantList vl = stream.get( "capacities" ).toList();
-
-  int index = 0;
   int maxCapacity = capacity();
-  foreach( it, vl )
-  {
-    int value = it->toInt();
-    _capacities[ (good::Product)index ] = (value == 0 ? maxCapacity : value);
-    index++;
-  }
+
+  _capacities.load( stream.get( "capacities" ).toList() );
+  foreach( it, _capacities )
+    if( it->second == 0 )
+      it->second = maxCapacity;
 }
 
 int WarehouseStore::capacity() const
 {
   return Warehouse::Room::basicCapacity * _warehouse->rooms().size();
+}
+
+good::ProductMap WarehouseStore::details() const
+{
+  good::ProductMap ret;
+
+  foreach( room, _warehouse->rooms() )
+  {
+    ret[ room->type() ] += room->qty();
+  }
+
+  return ret;
 }
 
 void WarehouseStore::setCapacity(const int) {}
