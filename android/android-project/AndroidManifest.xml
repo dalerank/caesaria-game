@@ -13,7 +13,8 @@
 
     <!-- Allow writing to external storage -->
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+  <permission android:name="com.qti.permission.PROFILER"/>
 	<uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <!-- Network and ads -->
