@@ -26,6 +26,8 @@
 namespace gui
 {
 
+class FileListBox;
+
 class LoadFileDialog : public Window
 {
 public:
@@ -52,6 +54,12 @@ signals public:
   Signal1<std::string>& onSelectFile();
 
 protected:
+  virtual void _fillFiles();
+
+  gui::FileListBox* _fileslbx() const;
+  const vfs::Directory& _directory() const;
+  const std::string& _extensions() const;
+
   class Impl;
   ScopedPtr< Impl > _d;
 };

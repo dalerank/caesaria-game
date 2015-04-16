@@ -15,44 +15,33 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_MINIMAP_WINDOW_H_INCLUDE_
-#define __CAESARIA_MINIMAP_WINDOW_H_INCLUDE_
+#ifndef __CAESARIA_LOADGAMEDIALOG_H_INCLUDED__
+#define __CAESARIA_LOADGAMEDIALOG_H_INCLUDED__
 
-#include "widget.hpp"
-#include "core/scopedptr.hpp"
-#include "gfx/picture.hpp"
-#include "core/signals.hpp"
-#include "city/predefinitions.hpp"
-
-namespace gfx
-{
-  class Tilemap;
-  class Camera;
-}
+#include "loadfiledialog.hpp"
+#include "gfx/picturesarray.hpp"
 
 namespace gui
 {
 
-class Minimap : public Widget
+namespace dialog
+{
+
+class LoadGame : public LoadFileDialog
 {
 public:
-  Minimap(Widget* parent, Rect rect, PlayerCityPtr tilemap, const gfx::Camera& camera );
+  LoadGame( Widget* parent, const Rect& rect,
+            const vfs::Directory& dir );
+  
+  virtual ~LoadGame();
 
-  void setCenter( Point pos );
+protected:
+  virtual void _fillFiles();
 
-  virtual void draw( gfx::Engine& painter);
-  virtual bool onEvent(const NEvent &event);
-
-  void saveImage( const std::string& filename ) const;
-
-public signals:
-  Signal1<TilePos>& onCenterChange();
-  Signal1<int>& onZoomChange();
-
-private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  gfx::Pictures _pictures;
 };
 
+}//end namespace dialog
+
 }//end namespace gui
-#endif //__CAESARIA_MINIMAP_WINDOW_H_INCLUDE_
+#endif //__CAESARIA_LOADGAMEDIALOG_H_INCLUDED__

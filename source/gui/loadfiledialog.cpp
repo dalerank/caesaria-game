@@ -50,8 +50,6 @@ public:
   std::string saveItemText;
   bool mayDelete;
 
-  void fillFiles();
-
   void resolveItemSelected( const ListBoxItem& item );
   void resolveItemDblClick( const ListBoxItem& item );
 
@@ -64,8 +62,8 @@ signals public:
 };
 
 LoadFileDialog::LoadFileDialog( Widget* parent, const Rect& rect,
-                              const vfs::Directory& dir, const std::string& ext,
-                              int id )
+                                const vfs::Directory& dir, const std::string& ext,
+                                int id )
   : Window( parent, rect, "", id ), _d( new Impl )
 {
   _d->btnLoad = 0;
@@ -86,9 +84,10 @@ LoadFileDialog::LoadFileDialog( Widget* parent, const Rect& rect,
   GET_DWIDGET_FROM_UI( _d, btnDelete )
   GET_DWIDGET_FROM_UI( _d, lbxFiles )
 
-  CONNECT( _d->btnExit, onClicked(), this, LoadFileDialog::deleteLater );
-  CONNECT( _d->btnLoad, onClicked(), _d.data(), Impl::emitSelectFile );
-  CONNECT( _d->btnDelete, onClicked(), _d.data(), Impl::deleteFile );
+  CONNECT( _d->btnExit,   onClicked(), this,      LoadFileDialog::deleteLater )
+  CONNECT( _d->btnLoad,   onClicked(), _d.data(), Impl::emitSelectFile )
+  CONNECT( _d->btnDelete, onClicked(), _d.data(), Impl::deleteFile )
+  CONNECT( _d->btnDelete, onClicked(), this,      LoadFileDialog::_fillFiles )
 
   if( _d->lbxFiles )
   {
@@ -99,7 +98,7 @@ LoadFileDialog::LoadFileDialog( Widget* parent, const Rect& rect,
 
   CONNECT( _d->lbxFiles, onItemSelected(), _d.data(), Impl::resolveItemSelected )
   CONNECT( _d->lbxFiles, onItemSelectedAgain(), _d.data(), Impl::resolveItemDblClick );
-  _d->fillFiles();
+  _fillFiles();
 
   setMayDelete( false );
   setCenter( parent->center() );
@@ -107,14 +106,14 @@ LoadFileDialog::LoadFileDialog( Widget* parent, const Rect& rect,
 
 LoadFileDialog::~LoadFileDialog(){}
 
-void LoadFileDialog::Impl::fillFiles()
+void LoadFileDialog::_fillFiles()
 {
-  if( !lbxFiles )
+  if( !_d->lbxFiles )
     return;
-  lbxFiles->clear();
+  _d->lbxFiles->clear();
 
-  vfs::Entries flist = vfs::Directory( directory ).entries();
-  flist = flist.filter( vfs::Entries::file | vfs::Entries::extFilter, fileExtensions );
+  vfs::Entries flist = vfs::Directory( _d->directory ).entries();
+  flist = flist.filter( vfs::Entries::file | vfs::Entries::extFilter, _d->fileExtensions );
 
   StringArray names;
   foreach( it, flist )
@@ -123,7 +122,7 @@ void LoadFileDialog::Impl::fillFiles()
   }
   std::sort( names.begin(), names.end() );
 
-  lbxFiles->addItems( names );
+  _d->lbxFiles->addItems( names );
 }
 
 void LoadFileDialog::Impl::resolveItemSelected(const ListBoxItem& item)
@@ -143,7 +142,6 @@ void LoadFileDialog::Impl::deleteFile()
 {
   vfs::Path path4delete( saveItemText );
   vfs::NFile::remove( directory/path4delete );
-  fillFiles();
 }
 
 void LoadFileDialog::Impl::emitSelectFile()
@@ -194,5 +192,8 @@ void LoadFileDialog::setTitle( const std::string& title ) { if( _d->lbTitle ) _d
 void LoadFileDialog::setText(const std::string &text) { if( _d->btnLoad ) _d->btnLoad->setText( text ); }
 bool LoadFileDialog::isMayDelete() const { return _d->mayDelete; }
 Signal1<std::string>& LoadFileDialog::onSelectFile() {  return _d->onSelecteFileSignal; }
+FileListBox* LoadFileDialog::_fileslbx() const { return _d->lbxFiles; }
+const vfs::Directory& LoadFileDialog::_directory() const { return _d->directory; }
+const std::string&LoadFileDialog::_extensions() const { return _d->fileExtensions; }
 
 }//end namespace gui

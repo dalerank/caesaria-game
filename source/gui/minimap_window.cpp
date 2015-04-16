@@ -31,6 +31,7 @@
 #include "core/tilerect.hpp"
 #include "texturedbutton.hpp"
 #include "gfx/helper.hpp"
+#include "gfx/IMG_savepng.h"
 #include "city/states.hpp"
 
 using namespace gfx;
@@ -61,23 +62,25 @@ public:
 
 public signals:
   Signal1<TilePos> onCenterChangeSignal;
-  Signal1<int> onZoomChangeSignal;
+  Signal1<int>     onZoomChangeSignal;
 };
 
 Minimap::Minimap(Widget* parent, Rect rect, PlayerCityPtr city, const gfx::Camera& camera)
-  : Widget( parent, -1, rect ), _d( new Impl )
+  : Widget( parent, Hash(CAESARIA_STR_A(Minimap)), rect ), _d( new Impl )
 {
+  setupUI( ":/gui/minimap.gui" );
+
   _d->city = city;
   _d->camera = &camera;
   _d->lastTimeUpdate = 0;
   _d->minimap.reset( Picture::create( Size( 144, 110 ), 0, true ) );
   _d->colors = new minimap::Colors( city->climate() );
-  _d->btnZoomIn = new TexturedButton( this, righttop() - Point( 28, -2), Size( 24 ), -1, 605 );
-  _d->btnZoomOut = new TexturedButton( this, righttop() - Point( 28, -26), Size( 24 ), -1, 601 );
+  _d->btnZoomIn =  new TexturedButton( this, righttop() - Point( 28, -2  ), Size( 24 ), -1, 605 );
+  _d->btnZoomOut = new TexturedButton( this, righttop() - Point( 28, -26 ), Size( 24 ), -1, 601 );
   setTooltipText( _("##minimap_tooltip##") );
 }
 
-Point getBitmapCoordinates(int x, int y, int mapsize ) {  return Point( x + y, x + mapsize - y - 1 ); }
+Point getBitmapCoordinates(int x, int y, int mapsize ) { return Point( x + y, x + mapsize - y - 1 ); }
 void getBuildingColours( const Tile& tile, int &c1, int &c2 );
 
 void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
@@ -169,17 +172,17 @@ void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
     switch (overlay->size().width())
     {
       case 1:
-        {
-          c1 = colors->colour(minimap::Colors::MAP_HOUSE, 0);
-          c2 = colors->colour(minimap::Colors::MAP_HOUSE, 1);
-        }
+      {
+        c1 = colors->colour(minimap::Colors::MAP_HOUSE, 0);
+        c2 = colors->colour(minimap::Colors::MAP_HOUSE, 1);
+      }
       break;
 
       default:
-        {
-          c1 = colors->colour(minimap::Colors::MAP_HOUSE, 2);
-          c2 = colors->colour(minimap::Colors::MAP_HOUSE, 0);
-        }
+      {
+        c1 = colors->colour(minimap::Colors::MAP_HOUSE, 2);
+        c2 = colors->colour(minimap::Colors::MAP_HOUSE, 0);
+      }
       break;
     }
   }
@@ -202,14 +205,15 @@ void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
       case 1:
       {
         c1 = colors->colour(minimap::Colors::MAP_BUILDING, 0);
-        c2 = colors->colour(minimap::Colors::MAP_BUILDING, 1);
-        break;
+        c2 = colors->colour(minimap::Colors::MAP_BUILDING, 1);       
       }
+      break;
       default:
       {
         c1 = colors->colour(minimap::Colors::MAP_BUILDING, 0);
         c2 = colors->colour(minimap::Colors::MAP_BUILDING, 2);
       }
+      break;
     }
   }
 
@@ -267,7 +271,7 @@ void Minimap::Impl::updateImage()
     const WalkerList& walkers = city->walkers();
     TileRect trect( startPos, stopPos );
 
-    foreach( i, walkers)
+    foreach( i, walkers )
     {
       const TilePos& pos = (*i)->pos();
       if( trect.contain( pos ) )
@@ -325,8 +329,8 @@ void Minimap::Impl::updateImage()
 }
 
 /* end of helper functions */
-
-namespace {
+namespace
+{
   static const int kWhite  = 0xFFFFFF;
   static const int kYellow = 0xFFFF00;
 }
@@ -381,7 +385,12 @@ bool Minimap::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-Signal1<TilePos>& Minimap::onCenterChange(){  return _d->onCenterChangeSignal; }
-Signal1<int>& Minimap::onZoomChange(){  return _d->onZoomChangeSignal; }
+void Minimap::saveImage( const std::string& filename ) const
+{
+  IMG_SavePNG( filename.c_str(), _d->minimap->surface(), -1 );
+}
+
+Signal1<TilePos>& Minimap::onCenterChange() { return _d->onCenterChangeSignal; }
+Signal1<int>& Minimap::onZoomChange() { return _d->onZoomChangeSignal; }
 
 }//end namespace gui
