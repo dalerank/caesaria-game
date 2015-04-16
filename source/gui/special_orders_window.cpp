@@ -27,6 +27,7 @@
 #include "core/event.hpp"
 #include "objects/granary.hpp"
 #include "objects/warehouse.hpp"
+#include "core/priorities.hpp"
 #include "good/helper.hpp"
 #include "good/store.hpp"
 #include "good/orders.hpp"
@@ -335,10 +336,16 @@ WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, cons
   setupUI( ":/gui/warehousespecial.gui");
   setTitle( _("##warehouse_orders##") );
 
+  std::set<good::Product> excludeGoods;
+  excludeGoods << good::none << good::denaries;
+
   d->warehouse = warehouse;
   int index=0;
   foreach( goodType, good::all() )
   {
+    if( excludeGoods.count( *goodType ) > 0 )
+      continue;
+
     const good::Orders::Order rule = d->warehouse->store().getOrder( *goodType );
 
     if( rule != good::Orders::none )
