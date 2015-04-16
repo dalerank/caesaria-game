@@ -70,7 +70,7 @@ void OSystem::openDir(const std::string& path)
 #ifdef CAESARIA_PLATFORM_LINUX
   result = "nautilus " + path + " &";
   ::system( result.c_str() );
-#elif defined(CAESARIA_PLATFORM_WINDOWS)
+#elif defined(CAESARIA_PLATFORM_WIN)
   ShellExecute(GetDesktopWindow(), "open", path.c_str(), NULL, NULL, SW_SHOWNORMAL);
 #elif defined(CAESARIA_PLATFORM_MACOSX)
   result = "open " + path + " &";
@@ -80,8 +80,15 @@ void OSystem::openDir(const std::string& path)
 
 int OSystem::gmtOffsetMs()
 {
+#if defined(CAESARIA_PLATFORM_LINUX) || defined(CAESARIA_PLATFORM_MACOSX)
   std::time_t current_time;
   std::time(&current_time);
   struct std::tm *timeinfo = std::localtime(&current_time);
   return timeinfo->tm_gmtoff;
+#elif defined(CAESARIA_PLATFORM_WIN)
+  time_t now = time(NULL);
+  struct tm lcl = *localtime(&now);
+  struct tm gmt = *gmtime(&now);
+  return (lcl.tm_hour - gmt.tm_hour);
+#endif
 }

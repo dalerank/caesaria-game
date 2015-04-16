@@ -262,27 +262,38 @@ bool BaseSpecialOrdersWindow::onEvent( const NEvent& event)
 
 void BaseSpecialOrdersWindow::setTitle( const std::string& text ){  _d->lbTitle->setText( text );}
 
-GranarySpecialOrdersWindow::GranarySpecialOrdersWindow( Widget* parent, const Point& pos, GranaryPtr granary )
-: BaseSpecialOrdersWindow( parent, pos, defaultHeight )
+class GranarySpecialOrdersWindow::Impl
 {
+public:
+  GranaryPtr granary;
+  PushButton* btnToggleDevastation;
+};
+
+GranarySpecialOrdersWindow::GranarySpecialOrdersWindow( Widget* parent, const Point& pos, GranaryPtr granary )
+: BaseSpecialOrdersWindow( parent, pos, defaultHeight ), __INIT_IMPL(GranarySpecialOrdersWindow)
+{
+  __D_IMPL(d, GranarySpecialOrdersWindow)
+
+  setupUI( ":/gui/granaryspecial.gui" );
+
   setTitle( _("##granary_orders##") );
   int index=0;
-  _granary = granary;
-  for( good::Product goodType=good::wheat; goodType <= good::vegetable; ++goodType )
+  d->granary = granary;
+  foreach( goodType, good::foods() )
   {
-    const good::Orders::Order rule = granary->store().getOrder( goodType );
+    const good::Orders::Order rule = granary->store().getOrder( *goodType );
     
     if( rule != good::Orders::none )
     {
-      addOrderWidget<GranaryPtr>( index, goodType, _ordersArea(), granary );
+      addOrderWidget<GranaryPtr>( index, *goodType, _ordersArea(), granary );
       index++;
     }
   }
 
-  _btnToggleDevastation = new PushButton( this, Rect( 80, height() - 45, width() - 80, height() - 25 ),
-                                          "", -1, false, PushButton::whiteBorderUp );
+  d->btnToggleDevastation = new PushButton( this, Rect( 80, height() - 45, width() - 80, height() - 25 ),
+                                             "", -1, false, PushButton::whiteBorderUp );
 
-  CONNECT( _btnToggleDevastation, onClicked(), this, GranarySpecialOrdersWindow::toggleDevastation );
+  CONNECT( d->btnToggleDevastation, onClicked(), this, GranarySpecialOrdersWindow::toggleDevastation );
   _updateBtnDevastation();
 }
 
@@ -290,13 +301,15 @@ GranarySpecialOrdersWindow::~GranarySpecialOrdersWindow() {}
 
 void GranarySpecialOrdersWindow::toggleDevastation()
 {
-  _granary->store().setDevastation( !_granary->store().isDevastation() );
+  __D_IMPL(d, GranarySpecialOrdersWindow)
+  d->granary->store().setDevastation( !d->granary->store().isDevastation() );
   _updateBtnDevastation();
 }
 
 void GranarySpecialOrdersWindow::_updateBtnDevastation()
 {
-  _btnToggleDevastation->setText( _granary->store().isDevastation() 
+  __D_IMPL(d, GranarySpecialOrdersWindow)
+  d->btnToggleDevastation->setText( d->granary->store().isDevastation()
                                     ? _("##stop_granary_devastation##")
                                     : _("##devastate_granary##") );
 }
@@ -307,6 +320,11 @@ public:
   WarehousePtr warehouse;
   PushButton* btnToggleDevastation;
   PushButton* btnTradeCenter;
+
+public:
+  void update();
+  void toggleTradeCenter();
+  void toggleDevastation();
 };
 
 WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, const Point& pos, WarehousePtr warehouse )
@@ -319,13 +337,13 @@ WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, cons
 
   d->warehouse = warehouse;
   int index=0;
-  for( good::Product goodType=good::wheat; goodType <= good::marble; ++goodType )
+  foreach( goodType, good::all() )
   {
-    const good::Orders::Order rule = d->warehouse->store().getOrder( goodType );
+    const good::Orders::Order rule = d->warehouse->store().getOrder( *goodType );
 
     if( rule != good::Orders::none )
     {
-      addOrderWidget<WarehousePtr>( index, goodType, _ordersArea(), d->warehouse );
+      addOrderWidget<WarehousePtr>( index, *goodType, _ordersArea(), d->warehouse );
       index++;
     }
   }
@@ -333,27 +351,37 @@ WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, cons
   GET_DWIDGET_FROM_UI( d, btnToggleDevastation )
   GET_DWIDGET_FROM_UI( d, btnTradeCenter )
 
-  CONNECT( d->btnToggleDevastation, onClicked(), this, WarehouseSpecialOrdersWindow::toggleDevastation );
-  _updateBtnDevastation();
+  CONNECT( d->btnToggleDevastation, onClicked(), d.data(), Impl::toggleDevastation );
+  CONNECT( d->btnTradeCenter,       onClicked(), d.data(), Impl::toggleTradeCenter );
+
+  d->update();
 }
 
 WarehouseSpecialOrdersWindow::~WarehouseSpecialOrdersWindow() {}
 
-void WarehouseSpecialOrdersWindow::toggleDevastation()
+void WarehouseSpecialOrdersWindow::Impl::toggleTradeCenter()
 {
-  __D_IMPL(d, WarehouseSpecialOrdersWindow)
-
-  d->warehouse->store().setDevastation( !d->warehouse->store().isDevastation() );
-  _updateBtnDevastation();
+  warehouse->setTradeCenter( !warehouse->isTradeCenter() );
+  update();
 }
 
-void WarehouseSpecialOrdersWindow::_updateBtnDevastation()
+void WarehouseSpecialOrdersWindow::Impl::toggleDevastation()
 {
-  __D_IMPL(d, WarehouseSpecialOrdersWindow)
+  warehouse->store().setDevastation( !warehouse->store().isDevastation() );
+  update();
+}
 
-  d->btnToggleDevastation->setText( d->warehouse->store().isDevastation()
-                                      ? _("##stop_warehouse_devastation##")
-                                      : _("##devastate_warehouse##") );
+void WarehouseSpecialOrdersWindow::Impl::update()
+{
+  if( btnToggleDevastation )
+    btnToggleDevastation->setText( warehouse->store().isDevastation()
+                                   ? _("##stop_warehouse_devastation##")
+                                   : _("##devastate_warehouse##") );
+
+  if( btnTradeCenter )
+    btnTradeCenter->setText( warehouse->isTradeCenter()
+                             ? _("##stop_warehouse_tradepost##")
+                             : _("##tradepost_warehouse##") );
 }
 
 }//end namespace gui
