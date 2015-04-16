@@ -18,6 +18,10 @@
 #include "loadgamedialog.hpp"
 #include "vfs/directory.hpp"
 #include "filelistbox.hpp"
+#include "gfx/loader.hpp"
+#include "widget_helper.hpp"
+#include "image.hpp"
+#include "core/logger.hpp"
 
 namespace gui
 {
@@ -25,11 +29,13 @@ namespace gui
 namespace dialog
 {
 
-LoadGame::LoadGame( Widget* parent, const Rect& rect,
-                    const vfs::Directory& dir )
-  : LoadFileDialog( parent, rect, dir, "oc3save", -1 )
+LoadGame::LoadGame(Widget* parent, const vfs::Directory& dir )
+  : LoadFile( parent, Rect(), dir, ".oc3save", -1 )
 {
   Widget::setupUI( ":/gui/loadgame.gui" );
+
+  CONNECT( _fileslbx(), onItemSelected(), this, LoadGame::_showPreview )
+  setCenter( parent->center() );
 }
 
 void LoadGame::_fillFiles()
@@ -51,12 +57,36 @@ void LoadGame::_fillFiles()
 
   foreach( it, names )
   {
+    ListBoxItem& item = lbxFiles->addItem( *it, Font(), DefaultColors::black.color );
     vfs::Path imgpath = vfs::Path( *it ).changeExtension( "png" );
-    lbxFiles->addItem( *it, Font(), DefaultColors::black.color );
+    item.setData( "image", imgpath.toString() );
   }
 }
 
-LoadGame::~LoadGame(){}
+void LoadGame::_showPreview(const ListBoxItem &item)
+{
+  vfs::Path imgpath = item.data( "image" ).toString();
+  gfx::Picture pic = PictureLoader::instance().load( vfs::NFile::open( imgpath ) );
+
+  INIT_WIDGET_FROM_UI( Image*, imgPreview )
+  if( imgPreview )
+  {
+    imgPreview->setPicture( pic );
+  }
+}
+
+LoadGame* LoadGame::create(Widget *parent, const vfs::Directory &dir)
+{
+  LoadGame* ret = new LoadGame( parent, dir );
+  ret->_fillFiles();
+
+  return ret;
+}
+
+LoadGame::~LoadGame()
+{
+  gfx::Picture::destroy( &_previewImg );
+}
 
 }//end namespace dialog
 

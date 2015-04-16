@@ -16,6 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "listboxitem.hpp"
+#include "core/variant_map.hpp"
 
 using namespace gfx;
 
@@ -27,7 +28,7 @@ class ListBoxItem::Impl
 public:
   PictureRef textPic;
   std::string text;
-  Variant data;
+  VariantMap data;
 	int tag;
   float currentHovered;
   Picture icon;
@@ -154,8 +155,8 @@ void ListBoxItem::setIconOffset(Point p) { _d->iconOffset = p; }
 const Picture &ListBoxItem::picture() const { return _d->textPic ? *_d->textPic : Picture::getInvalid(); }
 void ListBoxItem::setUrl(const std::string& url) { _d->url = url; }
 const std::string&ListBoxItem::url() const { return _d->url; }
-Variant ListBoxItem::data() const{ return _d->data; }
-void ListBoxItem::setData( const Variant& value ){ _d->data = value; }
+Variant ListBoxItem::data( const std::string &name) const{ return _d->data[ name ]; }
+void ListBoxItem::setData( const std::string &name, const Variant& value ){ _d->data[name] = value; }
 float ListBoxItem::currentHovered() const {   return _d->currentHovered;}
 void ListBoxItem::updateHovered( float delta ){    _d->currentHovered = math::clamp<float>( _d->currentHovered + delta, 0.f, 255.f );}
 Picture ListBoxItem::icon() { return _d->icon; }

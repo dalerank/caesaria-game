@@ -90,7 +90,7 @@ std::string Picture::name() const{  return _d->name;}
 Size Picture::size() const{  return _d->orect.size(); }
 unsigned int Picture::sizeInBytes() const { return size().area() * 4; }
 Picture& Picture::load( const std::string& group, const int id ){  return PictureBank::instance().getPicture( group, id );}
-Picture& Picture::load( const std::string& filename ){  return PictureBank::instance().getPicture( filename );}
+Picture& Picture::load(const std::string& filename ) { return PictureBank::instance().getPicture( filename ); }
 
 bool Picture::isValid() const
 {

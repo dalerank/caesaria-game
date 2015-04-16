@@ -28,14 +28,17 @@ namespace gui
 
 class FileListBox;
 
-class LoadFileDialog : public Window
+namespace dialog
+{
+
+class LoadFile : public Window
 {
 public:
-  LoadFileDialog( Widget* parent, const Rect& rect,
-                  const vfs::Directory& dir, const std::string& ext,
-                  int id );
-  
-  virtual ~LoadFileDialog();
+  static LoadFile* create( Widget* parent, const Rect& rect,
+                                 const vfs::Directory& dir, const std::string& ext,
+                                 int id  );
+
+  virtual ~LoadFile();
 
   virtual void draw( gfx::Engine& engine );  // draw on screen
 
@@ -54,6 +57,10 @@ signals public:
   Signal1<std::string>& onSelectFile();
 
 protected:
+  LoadFile( Widget* parent, const Rect& rect,
+                  const vfs::Directory& dir, const std::string& ext,
+                  int id );
+
   virtual void _fillFiles();
 
   gui::FileListBox* _fileslbx() const;
@@ -63,6 +70,8 @@ protected:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace dialog
 
 }//end namespace gui
 #endif //__CAESARIA_LOADFILEDIALOG_H_INCLUDED__

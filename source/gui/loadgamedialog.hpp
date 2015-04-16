@@ -24,21 +24,23 @@
 namespace gui
 {
 
+class ListBoxItem;
+
 namespace dialog
 {
 
-class LoadGame : public LoadFileDialog
+class LoadGame : public LoadFile
 {
 public:
-  LoadGame( Widget* parent, const Rect& rect,
-            const vfs::Directory& dir );
-  
+  static LoadGame* create( Widget* parent, const vfs::Directory& dir );
   virtual ~LoadGame();
 
 protected:
+  LoadGame( Widget* parent, const vfs::Directory& dir );
   virtual void _fillFiles();
+  void _showPreview( const ListBoxItem& item );
 
-  gfx::Pictures _pictures;
+  gfx::Picture _previewImg;
 };
 
 }//end namespace dialog
