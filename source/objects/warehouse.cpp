@@ -115,6 +115,7 @@ class Warehouse::Impl
 {
 public:
   Animation animFlag;  // the flag above the warehouse
+  bool isTradeCenter;
 
   Warehouse::Rooms rooms;
   WarehouseStore goodStore;
@@ -150,6 +151,7 @@ Warehouse::Warehouse() : WorkingBuilding( object::warehouse, Size( 3 )), _d( new
   _d->rooms.push_back( Room( TilePos( 2, 0 ) ));
 
   _d->goodStore.init(*this);
+  _d->isTradeCenter = false;
 
   computePictures();
 }
@@ -158,9 +160,9 @@ void Warehouse::timeStep(const unsigned long time)
 {
   if( numberWorkers() > 0 )
   {
-   _d->animFlag.update( time );
+    _d->animFlag.update( time );
 
-   _fgPicturesRef()[3] = _d->animFlag.currentFrame();
+    _fgPicturesRef()[3] = _d->animFlag.currentFrame();
   }
 
   if( game::Date::isWeekChanged() )
@@ -199,6 +201,8 @@ void Warehouse::save( VariantMap& stream ) const
   stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(Warehouse) ) );
   stream[ literals::goodStore ] = _d->goodStore.save();
 
+  VARIANT_SAVE_ANY_D( stream, _d, isTradeCenter)
+
   VariantList vm_tiles;
   foreach( room, _d->rooms ) { vm_tiles.push_back( room->save() ); }
 
@@ -219,10 +223,15 @@ void Warehouse::load( const VariantMap& stream )
     tileIndex++;
   }
 
+  VARIANT_LOAD_ANY_D( _d, isTradeCenter, stream )
+
   computePictures();
 }
 
 bool Warehouse::onlyDispatchGoods() const {  return numberWorkers() < maximumWorkers() / 3; }
+bool Warehouse::isTradeCenter() const { return _d->isTradeCenter; }
+void Warehouse::setTradeCenter(bool enabled) { _d->isTradeCenter = enabled; }
+Warehouse::Rooms& Warehouse::rooms() { return _d->rooms; }
 
 bool Warehouse::isGettingFull() const
 {
@@ -249,8 +258,6 @@ float Warehouse::tradeBuff(Warehouse::Buff type) const
 
   return res;
 }
-
-Warehouse::Rooms& Warehouse::rooms() { return _d->rooms; }
 
 std::string Warehouse::troubleDesc() const
 {

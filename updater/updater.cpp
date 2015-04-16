@@ -962,7 +962,7 @@ void SteamHelper::checkDepsAndStart()
 {
 #ifdef CAESARIA_PLATFORM_MACOSX
   vfs::Path sdl2relpath = "Library/Frameworks/SDL2.framework";
-  vfs::Path sdl2abspath = vfs::Directory::getUserDir()/sdl2relpath;
+  vfs::Path sdl2abspath = vfs::Directory::userDir()/sdl2relpath;
 
   if( !sdl2abspath.exist() )
   {
@@ -972,7 +972,7 @@ void SteamHelper::checkDepsAndStart()
     std::ofstream batch(tmp.toCString());
 
     // grayman - accomodate spaces in pathnames
-    tmp = vfs::Directory::getApplicationDir()/tmp;
+    tmp = vfs::Directory::applicationDir()/tmp;
 
     batch << "#!/usr/bin/env bash" << std::endl;
     batch << "SDLFR=~/Library/Frameworks/SDL2.framework" << std::endl;
@@ -1013,7 +1013,7 @@ void SteamHelper::checkDepsAndStart()
 
   siStartupInfo.cb = sizeof(siStartupInfo);
 
-  vfs::Directory parentPath = vfs::Directory::getApplicationDir();
+  vfs::Directory parentPath = vfs::Directory::applicationDir();
 
   Logger::warning( "Starting game in " + parentPath.toString() );
 
