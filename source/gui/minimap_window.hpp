@@ -42,6 +42,7 @@ public:
 
   virtual void draw( gfx::Engine& painter);
   virtual bool onEvent(const NEvent &event);
+  virtual void beforeDraw( gfx::Engine& painter );
 
   void saveImage( const std::string& filename ) const;
 

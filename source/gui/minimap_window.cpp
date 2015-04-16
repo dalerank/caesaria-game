@@ -340,12 +340,6 @@ void Minimap::draw(Engine& painter)
   if( !visible() )
     return;
 
-  if( DateTime::elapsedTime() - _d->lastTimeUpdate > 250 )
-  {
-    _d->updateImage();
-    _d->lastTimeUpdate = DateTime::elapsedTime();
-  }
-
   painter.draw( *_d->minimap, screenLeft(), screenTop() ); // 152, 145
 
   Widget::draw( painter );
@@ -383,6 +377,17 @@ bool Minimap::onEvent(const NEvent& event)
   }
 
   return Widget::onEvent( event );
+}
+
+void Minimap::beforeDraw(Engine& painter)
+{
+  Widget::beforeDraw( painter );
+
+  if( DateTime::elapsedTime() - _d->lastTimeUpdate > 250 )
+  {
+    _d->updateImage();
+    _d->lastTimeUpdate = DateTime::elapsedTime();
+  }
 }
 
 void Minimap::saveImage( const std::string& filename ) const

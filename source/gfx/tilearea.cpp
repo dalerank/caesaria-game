@@ -28,8 +28,7 @@ TilesArea::TilesArea(const Tilemap &tmap, const TilePos& leftup, const TilePos& 
 
 TilesArea::TilesArea(const Tilemap &tmap, const TilePos& center, int distance)
 {
-  TilePos offset( distance, distance );
-  append( tmap.getArea( center - offset, center + offset ) );
+  reset( tmap, center, distance );
 }
 
 TilesArea::TilesArea(const Tilemap &tmap, const TilePos& leftup, const Size& size)
@@ -37,10 +36,13 @@ TilesArea::TilesArea(const Tilemap &tmap, const TilePos& leftup, const Size& siz
   append( tmap.getArea( leftup, size ) );
 }
 
-TilesArea::TilesArea()
+void TilesArea::reset(const Tilemap& tmap, const TilePos& center, int distance)
 {
-
+  TilePos offset( distance, distance );
+  append( tmap.getArea( center - offset, center + offset ) );
 }
+
+TilesArea::TilesArea() {}
 
 } //end namespace gfx
 

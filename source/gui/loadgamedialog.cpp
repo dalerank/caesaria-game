@@ -52,7 +52,7 @@ void LoadGame::_fillFiles()
   foreach( it, names )
   {
     vfs::Path imgpath = vfs::Path( *it ).changeExtension( "png" );
-    lbxFiles->addItem( *it, Font(), DefaultColors::black );
+    lbxFiles->addItem( *it, Font(), DefaultColors::black.color );
   }
 }
 
