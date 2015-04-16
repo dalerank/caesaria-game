@@ -72,7 +72,6 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setRange(ResourceGroup::commerce, 55, 60, Point( 45, 18 ));  // iron
   _d->setRange(ResourceGroup::commerce, 62, 71, Point( 15, 32 ));  // clay
   _d->setRange(ResourceGroup::commerce, 73, 82, Point( 35, 6 ) );  // timber
-  _d->setRange(ResourceGroup::commerce, 87, 98, Point( 14, 36 ) );  // wine
   _d->setRange(ResourceGroup::commerce, 100, 107, Point( 0, 45 ) );  // oil
   _d->setRange(ResourceGroup::commerce, 109, 116, Point( 42, 36 ) );  // weapons
   _d->setRange(ResourceGroup::commerce, 118, 131, Point( 38, 39) );  // furniture

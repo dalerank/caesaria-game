@@ -83,17 +83,6 @@ protected:
   ScopedPtr< Impl > _d;
 };
 
-class Winery : public Factory
-{
-public:
-  Winery();
-  virtual bool canBuild(const city::AreaInfo& areaInfo) const;
-  virtual bool build(const city::AreaInfo &info);
-
-protected:
-  virtual void _storeChanged();
-};
-
 class Creamery : public Factory
 {
 public:

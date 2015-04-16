@@ -784,6 +784,7 @@
     class : "industry"
     sound : [ "winery", 1 ]
     inflammability : 0.7
+    animation : { rc : "commerce", start : 87, count : 12, offset : [ 140, 36 ], delay : 4 }
   },
 
   oil_workshop :
