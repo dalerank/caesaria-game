@@ -709,6 +709,7 @@
     output : "grape"
     productRate : 4.8
     sound : [ "grapefarm", 1 ]    
+    image : [ "wineyard", 1 ]
   },
 
   meat_farm : 
