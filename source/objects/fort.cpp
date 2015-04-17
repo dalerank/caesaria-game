@@ -341,7 +341,7 @@ void Fort::timeStep( const unsigned long time )
     bool canProduceNewSoldier = (traineeLevel > 100);
     bool haveRoom4newSoldier =  (walkers().size() < _d->maxSoldier);
     // all trainees are there for the create soldier!
-    if( canProduceNewSoldier && haveRoom4newSoldier)
+    if( canProduceNewSoldier && haveRoom4newSoldier )
     {
        _readyNewSoldier();
        setTraineeValue( walker::soldier, math::clamp<int>( traineeLevel - 100, 0, _d->maxSoldier * 100 ) );

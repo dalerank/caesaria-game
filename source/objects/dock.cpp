@@ -119,7 +119,7 @@ void Dock::destroy()
 
 void Dock::timeStep(const unsigned long time)
 {
-  if( time % 25 == 0 )
+  if( time % game::Date::days2ticks( 1 ) == 0 )
   {
     if( _d->dateSendGoods < game::Date::current() )
     {

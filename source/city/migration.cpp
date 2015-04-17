@@ -193,8 +193,7 @@ void Migration::timeStep( const unsigned int time )
     return;
   }
 
-  city::MilitaryPtr mil;
-  mil << _city()->findService( city::Military::defaultName() );
+  MilitaryPtr mil = statistic::finds<Military>( _city() );
 
   if( mil.isValid() )
   {

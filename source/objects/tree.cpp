@@ -28,6 +28,10 @@ using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::tree, Tree)
 
+namespace {
+CAESARIA_LITERALCONST(treeFlat)
+}
+
 Tree::Tree()
   : Overlay( object::tree, Size(1) )
 {
@@ -57,14 +61,14 @@ void Tree::save(VariantMap& stream) const
 {
   Overlay::save( stream );
 
-  stream[ "treeFlat" ] = _isFlat;
+  stream[ literals::treeFlat ] = _isFlat;
 }
 
 void Tree::load(const VariantMap& stream)
 {
   Overlay::load( stream );
 
-  _isFlat = stream.get( "treeFlat" );
+  _isFlat = stream.get( literals::treeFlat );
 }
 
 void Tree::destroy()

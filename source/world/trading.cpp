@@ -91,7 +91,7 @@ void Trading::timeStep( unsigned int time )
   {
     foreach( it,_d->routes )
     {
-      it->second->update( time );
+      it->second->timeStep( time );
     }
   }
 }
