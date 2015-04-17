@@ -103,6 +103,7 @@ public:
   void showLanguageOptions();
   void showPackageOptions();
   void changeLanguage(const gui::ListBoxItem&);
+  void changeFontCollection( vfs::Path resourcePath );
   void fitScreenResolution();
   void playMenuSoundTheme();
   void continuePlay();
@@ -254,11 +255,23 @@ void StartMenu::Impl::changeLanguage(const gui::ListBoxItem& item)
 
   SETTINGS_SET_VALUE( language, Variant( lang ) );
   SETTINGS_SET_VALUE( talksArchive, Variant( talksArchive ) );
+  if(!lang.compare("kr")) {
+  	 std::string font = "HANBatangB.ttf";
+  	 SETTINGS_SET_VALUE( font, Variant(font) );
+  } else {
+	 std::string font = "FreeSerif.ttf";
+	 SETTINGS_SET_VALUE( font, Variant(font) );
+  }
+  changeFontCollection( game::Settings::rcpath() );
   game::Settings::save();
 
   Locale::setLanguage( lang );
   NameGenerator::instance().setLanguage( lang );
   audio::Helper::initTalksArchive( SETTINGS_VALUE( talksArchive ).toString() );
+}
+
+void StartMenu::Impl::changeFontCollection( vfs::Path resourcePath ) {
+    FontCollection::instance().initialize( resourcePath.toString() );
 }
 
 void StartMenu::Impl::handleStartCareer()
