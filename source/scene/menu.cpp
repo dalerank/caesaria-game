@@ -330,6 +330,7 @@ void StartMenu::Impl::showCredits()
                          "Dmitry Plotnikov (main artist)",
                          "Jennifer Kin (empire map)",
                          "Andre Lisket (school, theater, baths and others)",
+                         "Il'ya Korchagin (grape farm tiles)",
                          " ",
                          _("##music##"),
                          " ",
