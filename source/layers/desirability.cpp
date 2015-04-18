@@ -38,7 +38,8 @@ public:
   std::vector<Picture*> debugText;
 };
 
-namespace {
+namespace
+{
   inline int __des2index( int desirability )
   {
     return desirability < 0

@@ -91,7 +91,7 @@ void Trading::timeStep( unsigned int time )
   {
     foreach( it,_d->routes )
     {
-      it->second->update( time );
+      it->second->timeStep( time );
     }
   }
 }
@@ -155,7 +155,7 @@ void Trading::sendMerchant(const std::string& begin, const std::string& end,
                             good::Store &sell, good::Store &buy )
 {
   TraderoutePtr route = findRoute( begin, end );
-  if( route.isValid() )
+  if( !route.isValid() )
   {
     Logger::warning( "Trade route no exist [%s to %s]", begin.c_str(), end.c_str() );
     return;
@@ -192,7 +192,7 @@ TraderoutePtr Trading::findRoute( unsigned int index )
 TraderoutePtr Trading::createRoute( const std::string& begin, const std::string& end )
 {
   TraderoutePtr route = findRoute( begin, end );
-  if( !route.isValid() )
+  if( route.isValid() )
   {
     Logger::warning( "!!!WARNING: Want create route, but it exist [%s to %s]", begin.c_str(), end.c_str() );
     return route;

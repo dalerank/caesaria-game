@@ -1959,4 +1959,10 @@
 "##no_working_dock##":"Los barcos de mercancías de todo el imperio atracan aquí para dejar importaciones y cargar exportaciones. No puedes viajar por mar sin muelles."
 "##trade_btn_export_text##":"Exportar por encima de"
 "##trade_btn_import_text##":"Importación"
+"##mainmenu_mcmxcviii##":"MCMXCVIII"
+"##mainmenu_dlc_articles##":"Artículos"
+"##mainmenu_dlc_concepts##":"Conceptos"
+"##mainmenu_dlc_main##":"¿Cómo construir Roma"
+"##mainmenu_dlc_wallpapers##":"Fondos de pantalla"
+"##mainmenu_dlc_soundtrack##":"Temas"
 }

@@ -25,6 +25,7 @@
 #include "widget_deleter.hpp"
 #include "dialogbox.hpp"
 #include "environment.hpp"
+#include "sound/engine.hpp"
 
 namespace gui
 {
@@ -36,13 +37,17 @@ class WinMission::Impl
 {
 public:
   GameAutoPause locker;
+  audio::Muter muter;
+  audio::SampleDeleter speechDel;
 
 public signals:
   Signal0<> nextMissionSignal;
   Signal1<int> continueRulesSignal;
 };
 
-WinMission::WinMission(Widget* p, const std::string& newTitle, const std::string& winText, bool mayContinue )
+WinMission::WinMission(Widget* p, const std::string& newTitle,
+                       const std::string& winText,
+                       const std::string& speech, bool mayContinue )
   : Window( p, Rect( 0, 0, 540, 240 ), "" ), _d( new Impl )
 {
   setupUI( ":/gui/winmission.gui" );
@@ -61,14 +66,16 @@ WinMission::WinMission(Widget* p, const std::string& newTitle, const std::string
   GET_WIDGET_FROM_UI( btnContinue5years )
 
   if( lbNewTitle ) lbNewTitle->setText( _( newTitle ) );
-
-  if( !winText.empty() )
-  {
-    Information( ui(), "",  _(winText) );
-  }
-
+  if( !winText.empty() )  dialog::Information( ui(), "",  _(winText) );
   if( btnContinue2years ) btnContinue2years->setVisible( mayContinue );
   if( btnContinue5years ) btnContinue5years->setVisible( mayContinue );
+
+  if( !speech.empty() )
+  {
+    _d->muter.activate(5);
+    _d->speechDel.assign( speech );
+    audio::Engine::instance().play( speech, 100, audio::speech );
+  }
 }
 
 WinMission::~WinMission(){}

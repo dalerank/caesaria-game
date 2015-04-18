@@ -40,7 +40,10 @@ void ConstructionExtension::load(const VariantMap &stream)
 
 void ConstructionExtension::timeStep(ConstructionPtr, unsigned int)
 {
-  _isDeleted = game::Date::current() > _finishDate;
+  if( game::Date::isDayChanged() )
+  {
+    _isDeleted = game::Date::current() > _finishDate;
+  }
 }
 
 ConstructionExtensionPtr FactoryProgressUpdater::create()
@@ -147,7 +150,7 @@ void FortCurseByMars::timeStep(ConstructionPtr parent, unsigned int time)
 {
   if( game::Date::isWeekChanged() )
   {
-    FortPtr base = ptr_cast<Fort>( parent );
+    FortPtr base = parent.as<Fort>();
     if( !base.isValid() )
     {
       Logger::warning( "FortCurseByMars::run base is null ");

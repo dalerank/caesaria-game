@@ -13,36 +13,23 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
+// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "tilearea.hpp"
-#include "tilemap.hpp"
+#ifndef _CAESARIA_WINERY_H_INCLUDE_
+#define _CAESARIA_WINERY_H_INCLUDE_
 
-namespace gfx
+#include "factory.hpp"
+
+class Winery : public Factory
 {
+public:
+  Winery();
+  virtual bool canBuild(const city::AreaInfo& areaInfo) const;
+  virtual bool build(const city::AreaInfo &info);
 
-TilesArea::TilesArea(const Tilemap &tmap, const TilePos& leftup, const TilePos& rightdown)
-{
-  append( tmap.getArea( leftup, rightdown ) );
-}
+protected:
+  virtual void _storeChanged();
+};
 
-TilesArea::TilesArea(const Tilemap &tmap, const TilePos& center, int distance)
-{
-  reset( tmap, center, distance );
-}
-
-TilesArea::TilesArea(const Tilemap &tmap, const TilePos& leftup, const Size& size)
-{
-  append( tmap.getArea( leftup, size ) );
-}
-
-void TilesArea::reset(const Tilemap& tmap, const TilePos& center, int distance)
-{
-  TilePos offset( distance, distance );
-  append( tmap.getArea( center - offset, center + offset ) );
-}
-
-TilesArea::TilesArea() {}
-
-} //end namespace gfx
-
+#endif //_CAESARIA_WINERY_H_INCLUDE_

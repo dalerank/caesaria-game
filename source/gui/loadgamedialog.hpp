@@ -15,34 +15,35 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "tilearea.hpp"
-#include "tilemap.hpp"
+#ifndef __CAESARIA_LOADGAMEDIALOG_H_INCLUDED__
+#define __CAESARIA_LOADGAMEDIALOG_H_INCLUDED__
 
-namespace gfx
+#include "loadfiledialog.hpp"
+#include "gfx/picturesarray.hpp"
+
+namespace gui
 {
 
-TilesArea::TilesArea(const Tilemap &tmap, const TilePos& leftup, const TilePos& rightdown)
+class ListBoxItem;
+
+namespace dialog
 {
-  append( tmap.getArea( leftup, rightdown ) );
-}
 
-TilesArea::TilesArea(const Tilemap &tmap, const TilePos& center, int distance)
+class LoadGame : public LoadFile
 {
-  reset( tmap, center, distance );
-}
+public:
+  static LoadGame* create( Widget* parent, const vfs::Directory& dir );
+  virtual ~LoadGame();
 
-TilesArea::TilesArea(const Tilemap &tmap, const TilePos& leftup, const Size& size)
-{
-  append( tmap.getArea( leftup, size ) );
-}
+protected:
+  LoadGame( Widget* parent, const vfs::Directory& dir );
+  virtual void _fillFiles();
+  void _showPreview( const ListBoxItem& item );
 
-void TilesArea::reset(const Tilemap& tmap, const TilePos& center, int distance)
-{
-  TilePos offset( distance, distance );
-  append( tmap.getArea( center - offset, center + offset ) );
-}
+  gfx::Picture _previewImg;
+};
 
-TilesArea::TilesArea() {}
+}//end namespace dialog
 
-} //end namespace gfx
-
+}//end namespace gui
+#endif //__CAESARIA_LOADGAMEDIALOG_H_INCLUDED__

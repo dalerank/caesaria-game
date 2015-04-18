@@ -124,6 +124,7 @@ public:
   HippodromeSectionPtr sectionMiddle, sectionEnd;
   Picture fullyPic;  
   WalkerList charioters;
+  Pictures charioterPictures;
 };
 
 Direction Hippodrome::direction() const { return _d->direction; }
@@ -136,13 +137,13 @@ void Hippodrome::timeStep(const unsigned long time)
   foreach( it, _d->charioters )
   {
     (*it)->timeStep( time );
-    Pictures rpics;
-    (*it)->getPictures( rpics );
-    _fgPicture( 2 + index ) = rpics[0];
-    _fgPicture( 2 + index + 1 ) = rpics[1];
-    const Point mp = (*it)->mappos();
+    _d->charioterPictures.clear();
+    (*it)->getPictures( _d->charioterPictures );
+    _fgPicture( 2 + index )     = _d->charioterPictures[0];
+    _fgPicture( 2 + index + 1 ) = _d->charioterPictures[1];
+    const Point& mp = (*it)->mappos();
     const Point& xp = tile().mappos();
-    _fgPicture( 2 + index ).addOffset( Point( mp.x() - xp.x() - 5, -mp.y() + xp.y() + 5 ) );
+    _fgPicture( 2 + index     ).addOffset( Point( mp.x() - xp.x() - 5, -mp.y() + xp.y() + 5 ) );
     _fgPicture( 2 + index + 1 ).addOffset( Point( mp.x() - xp.x() - 5, -mp.y() + xp.y() + 5 ) );
     index+=2;
   }
@@ -157,6 +158,7 @@ Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, object::hi
 {
   _fgPicturesRef().resize(5);
   _d->direction = direction::west;
+  _d->charioterPictures.reserve(3);
   _init();  
 
   _addNecessaryWalker( walker::charioteer );

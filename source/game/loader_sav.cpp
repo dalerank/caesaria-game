@@ -29,6 +29,7 @@
 #include "game/resourcegroup.hpp"
 #include "loaderhelper.hpp"
 #include "settings.hpp"
+#include "world/empire.hpp"
 
 #include <fstream>
 #include <climits>
@@ -177,6 +178,7 @@ bool C3Sav::load(const std::string& filename, Game& game)
   _d->loadCity(f, game );
 
   game.city()->setOption( PlayerCity::adviserEnabled, 1 );
+  game.empire()->setCitiesAvailable( true );
 
   f.close();
 

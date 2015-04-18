@@ -93,6 +93,7 @@ public:
 
 signals public:
   virtual Signal0<>& onClicked(); 
+  virtual Signal1<Widget*>& onClickedEx();
 
 protected:
   virtual void _resizeEvent();
@@ -107,12 +108,11 @@ protected:
   virtual void _btnClicked();
 
   virtual ElementState _state();
- 
   virtual void _updateBackground( ElementState state );
-  void _updateStyle();
   virtual void _updateTextPic();
 
   gfx::PictureRef& _textPictureRef();
+  void _updateStyle();
 private:
   __DECLARE_IMPL(PushButton)
 };

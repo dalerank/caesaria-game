@@ -32,7 +32,7 @@ class WinMission : public Window
 {
 public:
   WinMission(Widget* parent, const std::string& newTitle,
-                   const std::string& winText,
+                   const std::string& winText, const std::string &speech,
                    bool mayContinue);
   virtual ~WinMission();
   virtual bool onEvent(const NEvent &event);

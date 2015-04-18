@@ -91,10 +91,9 @@ void HousePlague::timeStep(const unsigned long time)
 
   _d->anim.update( time );
 
-  if( game::Date::isWeekChanged() )
+  if( game::Date::isDayChanged() )
   {
-    HousePtr house;
-    house << _city()->getOverlay( pos() );
+    HousePtr house = _city()->getOverlay( pos() ).as<House>();
     int health_value = house.isValid() ? house->state( pr::health ) : 100;
     if( health_value > 20 )
     {

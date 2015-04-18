@@ -117,7 +117,7 @@ Settings& Settings::instance()
 
 Settings::Settings() : _d( new Impl )
 {
-  std::string application_path = vfs::Directory::getApplicationDir().toString();
+  std::string application_path = vfs::Directory::applicationDir().toString();
   setwdir( application_path );
 
   _d->options[ pantheonModel       ] = std::string( "/pantheon.model" );
@@ -156,7 +156,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ buildMenuModel      ] = std::string( "build_menu.model" );
   _d->options[ soundAlias          ] = std::string( "sounds.model" );
   _d->options[ videoAlias          ] = std::string( "videos.model" );
-  _d->options[ screenshotDir       ] = vfs::Directory::getUserDir().toString();
+  _d->options[ screenshotDir       ] = vfs::Directory::userDir().toString();
   _d->options[ experimental        ] = false;
   _d->options[ needAcceptBuild     ] = false;
   _d->options[ borderMoving        ] = false;
@@ -217,7 +217,7 @@ void Settings::setwdir( const std::string& wdirstr )
   vfs::Directory saveDir;
 #ifdef CAESARIA_PLATFORM_LINUX
   vfs::Path dirName = vfs::Path( ".caesaria/" ) + defaultSaveDir;
-  saveDir = vfs::Directory::getUserDir()/dirName;
+  saveDir = vfs::Directory::userDir()/dirName;
 #elif defined(CAESARIA_PLATFORM_WIN) || defined(CAESARIA_PLATFORM_HAIKU) || defined(CAESARIA_PLATFORM_MACOSX) || defined(CAESARIA_PLATFORM_ANDROID)
   saveDir = wdir/defaultSaveDir;
 #endif

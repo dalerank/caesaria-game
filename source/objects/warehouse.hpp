@@ -55,6 +55,8 @@ public:
   bool isGettingFull() const;
   float tradeBuff( Buff type ) const;
 
+  bool isTradeCenter() const;
+  void setTradeCenter( bool enabled );
   Rooms& rooms();
 
   virtual std::string troubleDesc() const;
