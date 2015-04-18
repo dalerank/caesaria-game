@@ -29,13 +29,19 @@
                   "@img=picture2_00002" ]
   }
 	
-  empire : {
+  empire :
+  {
     enabled : true
+    cities :
+    {
+      all : "enabled"
+    }
   }
   		
   events :
   {
-    tutorial#random_collapse : {
+    tutorial#random_collapse :
+    {
       population : 60
       strong : 25
     }

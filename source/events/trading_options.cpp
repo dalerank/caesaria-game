@@ -55,7 +55,7 @@ void ChangeTradingOptions::_exec(Game& game, unsigned int)
         cityp->delayTrade( trade_delay );
       }
 
-      world::ComputerCityPtr ccity = ptr_cast<world::ComputerCity>( cityp );
+      world::ComputerCityPtr ccity = cityp.as<world::ComputerCity>();
       if( ccity.isValid() )
       {
         ccity->changeTradeOptions( it->second.toMap() );

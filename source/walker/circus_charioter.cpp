@@ -22,7 +22,6 @@
 #include "gfx/tilemap.hpp"
 #include "gfx/animation_bank.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 class CircusCharioter::Impl

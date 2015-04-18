@@ -32,7 +32,6 @@
 #include "objects_factory.hpp"
 #include "gfx/animation_bank.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::burned_ruins, BurnedRuins)

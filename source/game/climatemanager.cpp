@@ -43,8 +43,8 @@ void initialize(ClimateType climate)
 
   std::string optName;
   if( climate == central ) { optName = CAESARIA_STR_A(central); }
-  else if( climate == northen )  { optName = "north" || optName == CAESARIA_STR_A(northen); }
-  else if( climate == desert ) { optName = "south" || optName == CAESARIA_STR_A(desert); }
+  else if( climate == northen )  { optName = "north"; }
+  else if( climate == desert ) { optName = "south"; }
 
   StringArray archives = climateArchives.get( optName ).toStringArray();
 

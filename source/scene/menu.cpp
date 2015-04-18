@@ -19,7 +19,7 @@
 #include "menu.hpp"
 
 #include "core/gettext.hpp"
-#include "gui/loadfiledialog.hpp"
+#include "gui/loadgamedialog.hpp"
 #include "gfx/engine.hpp"
 #include "core/exception.hpp"
 #include "gui/startmenu.hpp"
@@ -55,6 +55,7 @@
 #include "core/utils.hpp"
 #include "walker/name_generator.hpp"
 #include "gui/image.hpp"
+#include "vfs/directory.hpp"
 #include "steam.hpp"
 
 using namespace gfx;
@@ -99,6 +100,7 @@ public:
   void showMapSelectDialog();
   void showSaveSelectDialog();
   void changePlayerName();
+  void showAdvancedMaterials();
   void handleStartCareer();
   void showLanguageOptions();
   void showPackageOptions();
@@ -109,17 +111,17 @@ public:
   void resolveSteamStats();
   void changePlayerNameIfNeed(bool force=false);
   void reload();
+  void openDlcDirectory(Widget* sender);
 };
 
 void StartMenu::Impl::showSaveSelectDialog()
 {
   Widget* parent = game->gui()->rootWidget();
 
-  vfs::Path savesPath = SETTINGS_VALUE( savedir ).toString();
-  std::string defaultExt = SETTINGS_VALUE( saveExt ).toString();
+  vfs::Path savesPath = SETTINGS_VALUE( savedir ).toString();  
 
   result = StartMenu::loadSavedGame;
-  gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent, Rect(), savesPath, defaultExt,-1 );
+  gui::dialog::LoadGame* wnd = gui::dialog::LoadGame::create( parent, savesPath );
   wnd->setShowExtension( false );
   wnd->setMayDelete( true );
 
@@ -192,6 +194,17 @@ void StartMenu::Impl::reload()
   isStopped = true;
 }
 
+void StartMenu::Impl::openDlcDirectory(Widget* sender)
+{
+  if( sender == 0 )
+    return;
+
+  vfs::Path path( sender->getProperty( "path" ).toString() );
+
+  if( path.exist() )
+    OSystem::openDir( path.toString() );
+}
+
 void StartMenu::Impl::showSoundOptions()
 {
   events::GameEventPtr e = events::SetSoundOptions::create();
@@ -227,7 +240,7 @@ void StartMenu::Impl::showLanguageOptions()
   lbx->setSelected( currentIndex );
 
   CONNECT( lbx, onItemSelected(), this, Impl::changeLanguage );
-  CONNECT( btn, onClicked(), this, Impl::reload );
+  CONNECT( btn, onClicked(),      this, Impl::reload );
 }
 
 void StartMenu::Impl::showPackageOptions()
@@ -271,8 +284,8 @@ void StartMenu::Impl::handleStartCareer()
   dlg->setName( playerName );
 
   CONNECT( dlg, onNameChange(), this, Impl::setPlayerName );
-  CONNECT( dlg, onContinue(), this, Impl::handleNewGame );
-  CONNECT( dlg, onClose(), this, Impl::showMainMenu );
+  CONNECT( dlg, onContinue(),   this, Impl::handleNewGame );
+  CONNECT( dlg, onClose(),      this, Impl::showMainMenu );
 }
 
 void StartMenu::Impl::handleNewGame()
@@ -316,7 +329,8 @@ void StartMenu::Impl::showCredits()
                          " ",
                          "Dmitry Plotnikov (main artist)",
                          "Jennifer Kin (empire map)",
-                         "Andre Lisket (school, theater, baths)",
+                         "Andre Lisket (school, theater, baths and others)",
+                         "Il'ya Korchagin (grape farm tiles)",
                          " ",
                          _("##music##"),
                          " ",
@@ -364,20 +378,16 @@ void StartMenu::Impl::showCredits()
   CONNECT( btn, onClicked(), this, Impl::playMenuSoundTheme );
 }
 
-#define ADD_MENU_BUTTON( text, slot) { PushButton* btn = menu->addButton( _(text),-1 ); CONNECT(btn, onClicked(), this, Impl::slot ); }
+#define ADD_MENU_BUTTON( text, slot) { PushButton* btn = menu->addButton( _(text),-1 ); CONNECT(btn, onClicked(), this, slot ); }
 
 void StartMenu::Impl::showLoadMenu()
 {
   menu->clear();
 
   ADD_MENU_BUTTON( "##mainmenu_playmission##", Impl::showMissionSelector )
-  ADD_MENU_BUTTON( "##mainmenu_loadgame##", Impl::showSaveSelectDialog )
-  ADD_MENU_BUTTON( "##mainmenu_loadmap##", Impl::showMapSelectDialog )
-
-  //btn = menu->addButton( _("##mainmenu_loadcampaign##"), -1 );
-  //CONNECT( btn, onClicked(), this, Impl::resolveShowLoadMapWnd );
-
-  ADD_MENU_BUTTON( "##cancel##", Impl::showMainMenu )
+  ADD_MENU_BUTTON( "##mainmenu_loadgame##",    Impl::showSaveSelectDialog )
+  ADD_MENU_BUTTON( "##mainmenu_loadmap##",     Impl::showMapSelectDialog )
+  ADD_MENU_BUTTON( "##cancel##",               Impl::showMainMenu )
 }
 
 void StartMenu::Impl::playRandomap()
@@ -392,11 +402,11 @@ void StartMenu::Impl::showOptionsMenu()
   menu->clear();
 
   ADD_MENU_BUTTON( "##mainmenu_language##", Impl::showLanguageOptions )
-  ADD_MENU_BUTTON( "##mainmenu_video##", Impl::showVideoOptions )
-  ADD_MENU_BUTTON( "##mainmenu_sound##", Impl::showSoundOptions )
-  ADD_MENU_BUTTON( "##mainmenu_package##", Impl::showPackageOptions )
-  ADD_MENU_BUTTON( "##mainmenu_plname##", Impl::changePlayerName )
-  ADD_MENU_BUTTON( "##cancel##", Impl::showMainMenu )
+  ADD_MENU_BUTTON( "##mainmenu_video##",    Impl::showVideoOptions )
+  ADD_MENU_BUTTON( "##mainmenu_sound##",    Impl::showSoundOptions )
+  ADD_MENU_BUTTON( "##mainmenu_package##",  Impl::showPackageOptions )
+  ADD_MENU_BUTTON( "##mainmenu_plname##",   Impl::changePlayerName )
+  ADD_MENU_BUTTON( "##cancel##",            Impl::showMainMenu )
 }
 
 void StartMenu::Impl::showNewGame()
@@ -404,8 +414,8 @@ void StartMenu::Impl::showNewGame()
   menu->clear();
 
   ADD_MENU_BUTTON( "##mainmenu_startcareer##", Impl::handleStartCareer )
-  ADD_MENU_BUTTON( "##mainmenu_randommap##", Impl::playRandomap )
-  ADD_MENU_BUTTON( "##cancel##", Impl::showMainMenu )
+  ADD_MENU_BUTTON( "##mainmenu_randommap##",   Impl::playRandomap )
+  ADD_MENU_BUTTON( "##cancel##",               Impl::showMainMenu )
 }
 
 void StartMenu::Impl::showMainMenu()
@@ -416,11 +426,43 @@ void StartMenu::Impl::showMainMenu()
   if( !lastGame.empty() )
     ADD_MENU_BUTTON( "##mainmenu_continueplay##", Impl::continuePlay )
 
-  ADD_MENU_BUTTON( "##mainmenu_newgame##", Impl::showNewGame )
-  ADD_MENU_BUTTON( "##mainmenu_load##", Impl::showLoadMenu )
-  ADD_MENU_BUTTON( "##mainmenu_options##", Impl::showOptionsMenu )
-  ADD_MENU_BUTTON( "##mainmenu_credits##", Impl::showCredits )
-  ADD_MENU_BUTTON( "##mainmenu_quit##", Impl::quitGame )
+  ADD_MENU_BUTTON( "##mainmenu_newgame##",        Impl::showNewGame )
+  ADD_MENU_BUTTON( "##mainmenu_load##",           Impl::showLoadMenu )
+  ADD_MENU_BUTTON( "##mainmenu_options##",        Impl::showOptionsMenu )
+  ADD_MENU_BUTTON( "##mainmenu_credits##",        Impl::showCredits )
+#ifdef CAESARIA_USE_STEAM
+  ADD_MENU_BUTTON( "##mainmenu_mcmxcviii##",  Impl::showAdvancedMaterials )
+#endif
+  ADD_MENU_BUTTON( "##mainmenu_quit##",           Impl::quitGame )
+}
+
+void StartMenu::Impl::showAdvancedMaterials()
+{
+  menu->clear();
+
+  vfs::Directory dir( std::string( ":/dlc" ) );
+  if( !dir.exist() )
+  {
+    dialog::Dialog* dlg = dialog::Information( menu->ui(), _("##no_dlc_found_title##"), _("##no_dlc_found_text##"));
+    dlg->show();
+    return;
+  }
+
+  vfs::Entries::Items entries = dir.entries().items();
+  foreach( it, entries )
+  {
+    if( it->isDirectory )
+    {
+      vfs::Path path2subdir = it->fullpath;
+      std::string locText = "##mainmenu_dlc_" + path2subdir.baseName().toString() + "##";
+
+      PushButton* btn = menu->addButton( _(locText), -1 );
+      btn->addProperty( "path", Variant( path2subdir.toString() ) );
+      CONNECT(btn, onClickedEx(), this, Impl::openDlcDirectory )
+    }
+  }
+
+  ADD_MENU_BUTTON( "##cancel##", Impl::showMainMenu )
 }
 
 void StartMenu::Impl::showVideoOptions()
@@ -453,10 +495,10 @@ void StartMenu::Impl::showMapSelectDialog()
 {
   Widget* parent = game->gui()->rootWidget();
 
-  LoadFileDialog* wnd = new gui::LoadFileDialog( parent,
-                                                 Rect(),
-                                                 vfs::Path( ":/maps/" ), ".map,.sav,.omap",
-                                                 -1 );
+  dialog::LoadFile* wnd = dialog::LoadFile::create( parent,
+                                                    Rect(),
+                                                    vfs::Path( ":/maps/" ), ".map,.sav,.omap",
+                                                    -1 );
   wnd->setMayDelete( false );
 
   result = StartMenu::loadMap;
@@ -533,11 +575,11 @@ void StartMenu::initialize()
   bool screenFitted = SETTINGS_VALUE( screenFitted );
   if( !screenFitted )
   {
-    gui::DialogBox* dialog = new gui::DialogBox( _d->game->gui()->rootWidget(),  Rect( 0, 0, 400, 150 ),
+    dialog::Dialog* dialog = new dialog::Dialog( _d->game->gui(),  Rect( 0, 0, 400, 150 ),
                                                  "Information", "Is need autofit screen resolution?",
-                                                 gui::DialogBox::btnOk | gui::DialogBox::btnCancel );
-    CONNECT(dialog, onOk(), dialog, gui::DialogBox::deleteLater );
-    CONNECT(dialog, onCancel(), dialog, gui::DialogBox::deleteLater );
+                                                 dialog::Dialog::btnOkCancel );
+    CONNECT(dialog, onOk(), dialog, dialog::Dialog::deleteLater );
+    CONNECT(dialog, onCancel(), dialog, dialog::Dialog::deleteLater );
     CONNECT(dialog, onOk(), _d.data(), Impl::fitScreenResolution );
     dialog->show();
   }

@@ -25,7 +25,6 @@
 #include "core/foreach.hpp"
 
 using namespace gfx;
-using namespace constants;
 
 namespace events
 {
@@ -54,11 +53,12 @@ void FireWorkers::_exec(Game& game, unsigned int)
 
   for( int curRange=1; curRange < defaultReturnWorkersDistance; curRange++ )
   {
-    TilesArray perimetr = tilemap.getRectangle( _center - TilePos( curRange, curRange ),
-                                                 _center + TilePos( curRange, curRange ) );
-    foreach( tile, perimetr )
+    TilePos range( curRange, curRange );
+    TilesArray perimetr = tilemap.getRectangle( _center - range,
+                                                _center + range );
+    foreach( it, perimetr )
     {
-      WorkingBuildingPtr wrkBuilding = ptr_cast<WorkingBuilding>( (*tile)->overlay() );
+      WorkingBuildingPtr wrkBuilding = (*it)->overlay().as<WorkingBuilding>();
       if( wrkBuilding.isValid() )
       {
         int removedFromWb = wrkBuilding->removeWorkers( _workers );

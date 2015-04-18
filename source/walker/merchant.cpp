@@ -44,12 +44,93 @@
 #include "gfx/helper.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace city;
 using namespace events;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::merchant, Merchant)
+
+namespace wh_picker
+{
+void checkForTradeCenters( DirectPRoutes& routes )
+{
+  DirectPRoutes tradecenterWayList;
+  foreach( it, routes )
+  {
+    WarehousePtr warehouse = it->first.as<Warehouse>();
+    if( warehouse->isTradeCenter() )
+      tradecenterWayList[ it->first ] = it->second;
+  }
+
+  //if we found trade centers in city, clear all other ways
+  if( !tradecenterWayList.empty() )
+    routes = tradecenterWayList;
+}
+
+DirectRoute get4Buys( Propagator &pathPropagator, good::Storage& basket, PlayerCityPtr city)
+{
+  DirectPRoutes routes = pathPropagator.getRoutes( object::warehouse );
+
+  //try found trade centers in city
+  checkForTradeCenters( routes );
+
+  std::map< int, DirectRoute > warehouseRating;
+
+  trade::Options& options = city->tradeOptions();
+
+  // select the warehouse with the max quantity of requested goods
+  DirectPRoutes::iterator routeIt = routes.begin();
+  while( routeIt != routes.end() )
+  {
+    // for every warehouse within range
+    WarehousePtr warehouse = routeIt->first.as<Warehouse>();
+    int rating = 0;
+    foreach( gtype, good::all() )
+    {
+      if (!options.isExporting(*gtype))
+      {
+        continue;
+      }
+      int qty = warehouse->store().getMaxRetrieve( *gtype );
+      int need = basket.freeQty( *gtype );
+      rating = need > 0 ? ( qty ) : 0;
+    }
+
+    rating = math::clamp<int>( rating - routeIt->second->length(), 0, 999 );
+    warehouseRating[ rating ] = DirectRoute( routeIt->first, *routeIt->second.object() );
+
+    ++routeIt;
+  }
+
+  //have only available warehouses, find nearest of it
+  return warehouseRating.size() > 0 ? warehouseRating.rbegin()->second : DirectRoute();
+}
+
+DirectRoute get4Sells( Propagator &pathPropagator, good::Storage& basket )
+{
+  DirectPRoutes pathWayList = pathPropagator.getRoutes( object::warehouse );
+
+  //try found trade centers in city
+  checkForTradeCenters( pathWayList );
+
+  // select the warehouse with the max quantity of requested goods
+  DirectPRoutes::iterator pathWayIt = pathWayList.begin();
+  while( pathWayIt != pathWayList.end() )
+  {
+    // for every warehouse within range
+    WarehousePtr warehouse = pathWayIt->first.as<Warehouse>();
+
+    if( warehouse->store().freeQty() == 0 ) { pathWayList.erase( pathWayIt++ );}
+    else { ++pathWayIt; }
+  }
+
+  //have only available warehouses, find nearest of it
+  DirectRoute shortest = pathPropagator.getShortestRoute( pathWayList );
+
+  return shortest;
+}
+
+}//end namespace wh_picker
 
 class Merchant::Impl
 {
@@ -93,64 +174,6 @@ Merchant::Merchant(PlayerCityPtr city )
 
 Merchant::~Merchant(){}
 
-DirectRoute getWarehouse4Buys( Propagator &pathPropagator, good::Storage& basket, PlayerCityPtr city)
-{
-  DirectPRoutes routes = pathPropagator.getRoutes( object::warehouse );
-
-  std::map< int, DirectRoute > warehouseRating;
-
-  trade::Options& options = city->tradeOptions();
-
-  // select the warehouse with the max quantity of requested goods
-  DirectPRoutes::iterator routeIt = routes.begin();
-  while( routeIt != routes.end() )
-  {
-    // for every warehouse within range
-    WarehousePtr warehouse = ptr_cast<Warehouse>( routeIt->first );
-    int rating = 0;
-    foreach( gtype, good::all() )
-    {
-      if (!options.isExporting(*gtype))
-      {
-        continue;
-      }
-      int qty = warehouse->store().getMaxRetrieve( *gtype );
-      int need = basket.freeQty( *gtype );
-      rating = need > 0 ? ( qty ) : 0;
-    }
-
-    rating = math::clamp<int>( rating - routeIt->second->length(), 0, 999 );
-    warehouseRating[ rating ] = DirectRoute( routeIt->first, *routeIt->second.object() );
-
-    ++routeIt;
-  }
-
-  //have only available warehouses, find nearest of it
-  return warehouseRating.size() > 0 ? warehouseRating.rbegin()->second : DirectRoute();
-}
-
-DirectRoute getWarehouse4Sells( Propagator &pathPropagator, good::Storage& basket )
-{
-  DirectPRoutes pathWayList = pathPropagator.getRoutes( object::warehouse );
-
-  // select the warehouse with the max quantity of requested goods
-  DirectPRoutes::iterator pathWayIt = pathWayList.begin();
-  while( pathWayIt != pathWayList.end() )
-  {
-    // for every warehouse within range
-    WarehousePtr warehouse;
-    warehouse << pathWayIt->first;
-
-    if( warehouse->store().freeQty() == 0 ) { pathWayList.erase( pathWayIt++ );}
-    else { ++pathWayIt; }
-  }
-
-  //have only available warehouses, find nearest of it
-  DirectRoute shortest = pathPropagator.getShortestRoute( pathWayList );
-
-  return shortest;
-}
-
 void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TilePos& position )
 {
   switch( nextState )
@@ -172,7 +195,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
       if( buyOrders.capacity() > 0 )
       {
-        route = getWarehouse4Sells( pathPropagator, sell );
+        route = wh_picker::get4Sells( pathPropagator, sell );
       }
 
       if( !route.first.isValid() )
@@ -214,7 +237,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       // try to find goods for city export 
       if( buy.capacity() > 0 )
       {
-        route = getWarehouse4Buys( pathPropagator, buy, city );
+        route = wh_picker::get4Buys( pathPropagator, buy, city );
       }
       
       if( route.first.isValid() )
@@ -236,8 +259,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
   case stBuyGoods:
     {
-      WarehousePtr warehouse;
-      warehouse << city->getOverlay( destBuildingPos );
+      WarehousePtr warehouse = city->getOverlay( destBuildingPos ).as<Warehouse>();
 
       if( warehouse.isValid() )
       {
@@ -321,8 +343,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
   case stSellGoods:
   {
-    WarehousePtr warehouse;
-    warehouse << city->getOverlay( destBuildingPos );
+    WarehousePtr warehouse = city->getOverlay( destBuildingPos ).as<Warehouse>();
 
     const good::Store& cityOrders = city->buys();
 

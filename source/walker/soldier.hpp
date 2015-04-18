@@ -61,10 +61,10 @@ public:
   virtual bool isFriendTo( WalkerPtr wlk ) const;
   virtual void setTarget( TilePos location );
   TilePos target() const;
-  void addFriend( constants::walker::Type friendType);
+  void addFriend( walker::Type friendType);
 
 protected:
-  Soldier(PlayerCityPtr city, constants::walker::Type type);
+  Soldier(PlayerCityPtr city, walker::Type type);
 
   SldrAction _subAction() const;
   void _setSubAction( SldrAction action );
@@ -82,8 +82,8 @@ class SoldierCreator : public WalkerCreator
 {
 public:
   WalkerPtr create( PlayerCityPtr city ) { return T::create( city, rtype ).object();  }
-  SoldierCreator( const constants::walker::Type type ) { rtype = type;  }
-  constants::walker::Type rtype;
+  SoldierCreator( const walker::Type type ) { rtype = type;  }
+  walker::Type rtype;
 };
 
 #define REGISTER_SOLDIER_IN_WALKERFACTORY(type,rtype,rclass,ctorname) \

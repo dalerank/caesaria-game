@@ -61,7 +61,6 @@
 #include "game/infoboxmanager.hpp"
 #include "infobox_land.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace gui::dialog;
 
@@ -76,7 +75,7 @@ class InfoboxHouseCreator : public InfoboxCreator
 public:
   Infobox* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
-    HousePtr house = ptr_cast<House>( city->getOverlay( pos ) );
+    HousePtr house = city->getOverlay( pos ).as<House>();
     if( house.isValid() && house->habitants().count() > 0 )
     {
       return new AboutHouse( parent, city, city->tilemap().at( pos ) );
@@ -125,18 +124,18 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
           spec.findLowLevelHouseNearby( _house, rPos );
 
         text = _(text);
-        OverlayPtr ov = city->getOverlay( rPos );
-        if( ov.isValid() )
+        OverlayPtr overlay = city->getOverlay( rPos );
+        if( overlay.isValid() )
         {
           std::string type;
-          if( ov->type() == object::house )
+          if( overlay->type() == object::house )
           {
-            HousePtr h = ptr_cast<House>( ov );
-            type = h.isValid() ? h->levelName() : "##unknown_house_type##";
+            HousePtr house = overlay.as<House>();
+            type = house.isValid() ? house->levelName() : "##unknown_house_type##";
           }
           else
           {
-            type = ov.isValid() ? MetaDataHolder::findPrettyName( ov->type() ) : "";
+            type = overlay.isValid() ? MetaDataHolder::findPrettyName( overlay->type() ) : "";
           }
 
           text = utils::replace( text, "{0}", "( " + type + " )" );

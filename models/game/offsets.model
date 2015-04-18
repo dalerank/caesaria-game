@@ -30,8 +30,9 @@
   circus_horses : { rc : "carts", start : 537, stop : 600, offset : [ -2, -2 ] }
   circus_charioter : { rc : "carts", start : 601, stop : 616, offset : [ -2, -2 ] }
   carthegenians : { start : 1, stop : 512, offset : [-2, -2] }
-  warehouse_base: { rc : "warehouse", start : 1, stop : 1, offset : [ 120, 98 ] }
-  waherhouse_roof : { rc : "warehouse", start : 18, stop : 18, offset : [ 118, 135 ] }
+  warehouse_base: { rc : "warehouse", start : 1, stop : 1, offset : [ -1, -1 ] }
+  tradecenter_base: { rc : "tradecenter", start : 1, stop : 1, offset : [ -1, -1 ] }
+  waherhouse_roof : { rc : "warehouse", start : 18, stop : 18, offset : [ -1, -1 ] }
   pretty_fountain : { rc : "utilitya", start : 3, stop : 9, offset : [ 9, 41 ] }
   simpleFountain : { rc : "utilitya", start : 11, stop : 17, offset : [ -1, -1 ] }
   awesomeFountain : { rc : "utilitya", start : 19, stop : 25, offset : [ 12, 24 ] }
@@ -40,6 +41,7 @@
   fruitfarm_ofs : { rc : "fruitfarm", start : 1, stop : 1, offset : [ -1, -1 ] }
   vegfarm_ofs : { rc : "vegfarm", start : 1, stop : 1, offset : [ -1, -1 ] }
   olivefarm_ofs : { rc : "olivefarm", start : 1, stop : 1, offset : [ -1, -1 ] }
+  wineyard_ofs : { rc : "wineyard", start : 1, stop : 1, offset : [ -1, -1 ] }
   market_poor_anim : { rc : "commerce", start : 2, stop : 10, offset : [ 62, 60 ] }
   our_city_flag : { rc : "empire_bits", start : 2, stop : 7, offset : [ 14, 8 ] }
   distant_city_flag : { rc : "empire_bits", start : 16, stop : 21, offset : [ 18, 8 ] }

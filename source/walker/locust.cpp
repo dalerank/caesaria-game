@@ -25,7 +25,6 @@
 #include "game/gamedate.hpp"
 #include "objects/farm.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 class Locust::Impl
@@ -78,8 +77,7 @@ void Locust::timeStep(const unsigned long time)
 
   if( game::Date::isWeekChanged() )
   {
-    FarmPtr farm;
-    farm << _city()->getOverlay( pos() );
+    FarmPtr farm = _city()->getOverlay( pos() ).as<Farm>();
     if( farm.isValid() && farm->type() != object::meat_farm )
     {
       farm->updateProgress( -50 );

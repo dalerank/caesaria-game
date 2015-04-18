@@ -30,7 +30,6 @@
 #include "core/stacktrace.hpp"
 #include <set>
 
-using namespace constants;
 using namespace events;
 
 namespace city

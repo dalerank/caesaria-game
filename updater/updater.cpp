@@ -38,26 +38,26 @@ Updater::Updater(const UpdaterOptions& options, vfs::Path executable) :
 	_executable( executable ), // convert that file to lower to be sure
 	_updatingUpdater(false)
 {
-	// Set up internet connectivity
-	HttpConnectionPtr http( new HttpConnection() );
-	http->drop();
-	_conn = http;
+  // Set up internet connectivity
+  HttpConnectionPtr http( new HttpConnection() );
+  http->drop();
+  _conn = http;
 
-	// Assign the proxy settings to the connection
-	_options.CheckProxy(_conn);
+  // Assign the proxy settings to the connection
+  _options.CheckProxy(_conn);
 
   _ignoreList.insert(STABLE_VERSION_FILE);
   _ignoreList.insert(UPDATE_VERSION_FILE);
   _ignoreList.insert(CAESARIA_MIRRORS_INFO);
 
-	MirrorDownload::InitRandomizer();
+  MirrorDownload::InitRandomizer();
 
 #ifdef CAESARIA_PLATFORM_WIN
-	if( _executable.extension().empty() )
-	{
-		Logger::warning( "Adding EXE extension to executable: " + _executable.toString() );
-		_executable = _executable.toString() + ".exe";
-	}
+  if( !_executable.haveExtension() )
+  {
+    Logger::warning( "Adding EXE extension to executable: " + _executable.toString() );
+    _executable.changeExtension(".exe");
+  }
 #endif
 }
 
@@ -94,24 +94,24 @@ void Updater::removeDownload(std::string itemname)
 void Updater::markFileAsExecutable(vfs::Path path)
 {
 #if defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
-	Logger::warning( "Marking file as executable: " + path.toString() );
+  Logger::warning( "Marking file as executable: " + path.toString() );
 
-	struct stat mask;
+  struct stat mask;
   stat(path.toCString(), &mask);
 
-	mask.st_mode |= S_IXUSR|S_IXGRP|S_IXOTH;
+  mask.st_mode |= S_IXUSR|S_IXGRP|S_IXOTH;
 
   if( chmod(path.toString().c_str(), mask.st_mode) == -1)
-	{
-		Logger::warning( "Could not mark file as executable: " + path.toString() );
-	}
+  {
+    Logger::warning( "Could not mark file as executable: " + path.toString() );
+  }
 #endif
 }
 
 void Updater::CleanupPreviousSession()
 {
-	// Remove batch file from previous run
-	vfs::NFile::remove( getTargetDir()/UPDATE_UPDATER_BATCH_FILE );
+  // Remove batch file from previous run
+  vfs::NFile::remove( getTargetDir()/UPDATE_UPDATER_BATCH_FILE );
 }
 
 bool Updater::isMirrorsNeedUpdate()
@@ -121,16 +121,16 @@ bool Updater::isMirrorsNeedUpdate()
 
   if( !mirrorPath.exist() )
   {
-        // No mirrors file
-        Logger::update( "No mirrors file present on this machine.");
-        return true;
+    // No mirrors file
+    Logger::update( "No mirrors file present on this machine.");
+    return true;
   }
 
   // File exists, check options
   if( _options.isSet("keep-mirrors") )
   {
-        Logger::update( "Skipping mirrors update (--keep-mirrors is set)." );
-        return false;
+    Logger::update( "Skipping mirrors update (--keep-mirrors is set)." );
+    return false;
   }
 
   // Update by default
@@ -153,12 +153,12 @@ void Updater::updateMirrors()
 
   if (request->GetStatus() == HttpRequest::OK)
   {
-          // Load the mirrors from the file
-          loadMirrors();
+    // Load the mirrors from the file
+    loadMirrors();
   }
   else
   {
-          Logger::warning( " Mirrors download failed: %s", request->GetErrorMessage().c_str() );
+    Logger::warning( " Mirrors download failed: %s", request->GetErrorMessage().c_str() );
   }
 }
 
@@ -191,7 +191,7 @@ void Updater::GetStableVersionFromServer()
 
   if (releaseIni == NULL)
   {
-        throw FailureException("Could not download current version info file from server.");
+    throw FailureException("Could not download current version info file from server.");
   }
 
   // Build the release file set
@@ -210,8 +210,8 @@ void Updater::GetVersionInfoFromServer()
 
   if (versionInfo == NULL)
   {
-        Logger::warning( "Cannot find downloaded version info file: %s", folder.getFilePath(UPDATE_VERSION_FILE).toCString() );
-        return;
+    Logger::warning( "Cannot find downloaded version info file: %s", folder.getFilePath(UPDATE_VERSION_FILE).toCString() );
+    return;
   }
 
   _releaseVersions.LoadFromIniFile( versionInfo );
@@ -222,12 +222,12 @@ void Updater::NotifyFileProgress(vfs::Path file, CurFileInfo::Operation op, doub
 {
   if (_fileProgressCallback != NULL)
   {
-        CurFileInfo info;
-        info.operation = op;
-        info.file = file;
-        info.progressFraction = fraction;
+    CurFileInfo info;
+    info.operation = op;
+    info.file = file;
+    info.progressFraction = fraction;
 
-        _fileProgressCallback->OnFileOperationProgress(info);
+    _fileProgressCallback->OnFileOperationProgress(info);
   }
 }
 
@@ -243,23 +243,23 @@ void Updater::DetermineLocalVersion()
   std::size_t totalItems = 0;
 
   // Get the total count of version information items, for calculating the progress
-  for (ReleaseVersions::const_iterator v = _releaseVersions.begin(); v != _releaseVersions.end(); ++v)
+  foreach( v, _releaseVersions )
   {
-        totalItems += v->second.size();
+    totalItems += v->second.size();
   }
 
   std::size_t curItem = 0;
 
-  for (ReleaseVersions::const_iterator v = _releaseVersions.begin(); v != _releaseVersions.end(); ++v)
+  foreach( v, _releaseVersions )
   {
-    Logger::warning( "Trying to match against version: %s", v->first.c_str() );
+    Logger::warning( "Trying to match against version: " + v->first );
 
     const ReleaseFileSet& set = v->second;
 
     // Will be true on first mismatching file
     bool mismatch = false;
 
-    for (ReleaseFileSet::const_iterator f = set.begin(); f != set.end(); ++f)
+    foreach( f, set )
     {
       NotifyFileProgress(f->second.file, CurFileInfo::Check, static_cast<double>(curItem) / totalItems);
 
@@ -268,7 +268,8 @@ void Updater::DetermineLocalVersion()
       vfs::Directory folder = getTargetDir();
       vfs::Path candidate = folder.getFilePath( f->second.file );
 
-      if( utils::isEquale( candidate.baseName().toString(), _executable.baseName().toString(), utils::equaleIgnoreCase ) )
+      bool filesEquale = utils::isEquale( candidate.baseName().toString(), _executable.baseName().toString(), utils::equaleIgnoreCase );
+      if( filesEquale )
       {
         Logger::warning( "IGNORE" );
         continue;
@@ -318,13 +319,13 @@ void Updater::DetermineLocalVersion()
     // All files passed the check?
     if (!mismatch)
     {
-        _pureLocalVersion = v->first;
-        Logger::warning( " Local installation matches version: " + _pureLocalVersion );
+      _pureLocalVersion = v->first;
+      Logger::warning( " Local installation matches version: " + _pureLocalVersion );
     }
   }
 
   // Sum up the totals for all files, each file has exactly one version
-  for (FileVersionMap::const_iterator i = _fileVersions.begin(); i != _fileVersions.end(); ++i)
+  foreach( i, _fileVersions )
   {
     // sum up the totals for this version
     const std::string& version = i->second;
@@ -348,7 +349,7 @@ void Updater::DetermineLocalVersion()
 
   if (!_localVersions.empty())
   {
-    for (LocalVersionBreakdown::const_iterator i = _localVersions.begin(); i != _localVersions.end(); ++i)
+    foreach( i, _localVersions )
     {
       const std::string& version = i->first;
 
@@ -463,7 +464,7 @@ vfs::Directory Updater::getTargetDir()
   }
 
   // Get the current path
-  vfs::Path targetPath = vfs::Directory::getCurrent();
+  vfs::Path targetPath = vfs::Directory::current();
 
   return targetPath;
 }
@@ -821,7 +822,7 @@ bool Updater::NewUpdaterAvailable()
 
   Logger::warning( "Looking for executable " + _executable.toString() + " in download queue.");
 
-  vfs::Path myPath = vfs::Directory::getApplicationDir()/_executable;
+  vfs::Path myPath = vfs::Directory::applicationDir()/_executable;
   ByteArray crcData = vfs::NFile::open( myPath ).readAll();
   unsigned int fileSize = vfs::NFile::size( myPath );
 
@@ -942,7 +943,7 @@ void Updater::RestartUpdater()
 void Updater::postUpdateCleanup()
 {
   vfs::Directory pdir =  getTargetDir();
-  vfs::Entries dir = pdir.getEntries();
+  vfs::Entries dir = pdir.entries();
   foreach( i, dir )
   {
     if( utils::startsWith( i->name.toString(), TEMP_FILE_PREFIX) )
@@ -961,7 +962,7 @@ void SteamHelper::checkDepsAndStart()
 {
 #ifdef CAESARIA_PLATFORM_MACOSX
   vfs::Path sdl2relpath = "Library/Frameworks/SDL2.framework";
-  vfs::Path sdl2abspath = vfs::Directory::getUserDir()/sdl2relpath;
+  vfs::Path sdl2abspath = vfs::Directory::userDir()/sdl2relpath;
 
   if( !sdl2abspath.exist() )
   {
@@ -971,7 +972,7 @@ void SteamHelper::checkDepsAndStart()
     std::ofstream batch(tmp.toCString());
 
     // grayman - accomodate spaces in pathnames
-    tmp = vfs::Directory::getApplicationDir()/tmp;
+    tmp = vfs::Directory::applicationDir()/tmp;
 
     batch << "#!/usr/bin/env bash" << std::endl;
     batch << "SDLFR=~/Library/Frameworks/SDL2.framework" << std::endl;
@@ -1012,7 +1013,7 @@ void SteamHelper::checkDepsAndStart()
 
   siStartupInfo.cb = sizeof(siStartupInfo);
 
-  vfs::Directory parentPath = vfs::Directory::getApplicationDir();
+  vfs::Directory parentPath = vfs::Directory::applicationDir();
 
   Logger::warning( "Starting game in " + parentPath.toString() );
 

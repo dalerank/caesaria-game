@@ -40,7 +40,6 @@
 #include "gfx/helper.hpp"
 #include "events/fireworkers.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::prefect, Prefect)
@@ -461,15 +460,14 @@ void Prefect::timeStep(const unsigned long time)
 
   case fightFire:
   {    
-    BuildingPtr building = ptr_cast<Building>( _nextTile().overlay() );
+    BuildingPtr building = _nextTile().overlay().as<Building>();
     bool inFire = (building.isValid() && building->type() == object::burning_ruins );
 
     if( inFire )
     {
-      ServiceWalkerPtr ptr( this );
-      const float beforeFight = building->evaluateService( ptr );
-      building->applyService( ptr );
-      const float afterFight = building->evaluateService( ptr );
+      const float beforeFight = building->evaluateService( this );
+      building->applyService( this );
+      const float afterFight = building->evaluateService( this );
       _d->water -= math::clamp( (int)(beforeFight - afterFight), 0, 100 );
 
       if( afterFight == 0)

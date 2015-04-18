@@ -21,7 +21,6 @@
 #include "widget.hpp"
 #include "core/color.hpp"
 #include "core/signals.hpp"
-#include <string>
 
 namespace gui
 {
@@ -170,6 +169,7 @@ protected:
 
   void _setText( const std::wstring& text );
 
+private:
   class Impl;
   ScopedPtr< Impl > _d;
 };

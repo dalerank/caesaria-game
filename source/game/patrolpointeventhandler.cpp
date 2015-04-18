@@ -24,7 +24,6 @@
 #include "objects/military.hpp"
 #include "walker/patrolpoint.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 class PatrolPointEventHandler::Impl

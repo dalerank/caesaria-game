@@ -24,7 +24,6 @@
 #include "objects_factory.hpp"
 #include "city/statistic.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY( object::weapons_workshop, WeaponsWorkshop)

@@ -38,7 +38,6 @@
 #include "dictionary.hpp"
 #include "widget_helper.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace city;
 

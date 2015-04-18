@@ -45,6 +45,7 @@ public:
   virtual bool mayWork() const;
 protected:
   bool _haveReservorWater;
+  gfx::TilesArray _myArea;
 };
 
 class Barber : public ServiceBuilding

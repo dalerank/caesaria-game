@@ -30,7 +30,6 @@
 #include "city/statistic.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::forum, Forum)
 
 class Forum::Impl

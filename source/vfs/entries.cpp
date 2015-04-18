@@ -97,7 +97,7 @@ Entries& Entries::operator=( const Entries& other )
 
 Entries::ConstItemIt Entries::begin() const {  return _d->files.begin(); }
 Entries::ConstItemIt Entries::end() const{  return _d->files.end(); }
-Entries::Items &Entries::_items(){  return _d->files; }
+Entries::Items& Entries::_items(){  return _d->files; }
 
 void Entries::_updateCache()
 {

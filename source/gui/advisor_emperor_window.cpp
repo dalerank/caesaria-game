@@ -55,6 +55,7 @@
 
 using namespace gfx;
 using namespace events;
+using namespace  city;
 
 namespace gui
 {
@@ -72,7 +73,7 @@ namespace {
 class RequestButton : public PushButton
 {
 public:
-  RequestButton( Widget* parent, const Point& pos, int index, city::request::RequestPtr request )
+  RequestButton( Widget* parent, const Point& pos, int index, request::RequestPtr request )
     : PushButton( parent, Rect( pos + requestButtonOffset * index, requestButtonSize), "", -1, false, PushButton::blackBorderUp )
   {
     _request = request;
@@ -89,7 +90,7 @@ public:
 
     Font font = Font::create( FONT_1_WHITE );
 
-    city::request::RqGoodPtr gr = ptr_cast<city::request::RqGood>(_request);
+    request::RqGoodPtr gr = _request.as<request::RqGood>();
     if( gr.isValid() )
     {
       font.draw( *pic, utils::format( 0xff, "%d", gr->qty() ), 2, 2 );
@@ -105,7 +106,7 @@ public:
   {
     PushButton::draw( painter );
 
-    city::request::RqGoodPtr gr = ptr_cast<city::request::RqGood>(_request);
+    request::RqGoodPtr gr = _request.as<request::RqGood>();
     if( gr.isValid() )
     {
       Picture goodPicture = good::Helper::picture( gr->goodType() );
@@ -114,7 +115,7 @@ public:
   }
 
 public signals:
-  Signal1<city::request::RequestPtr>& onExecRequest() { return _onExecRequestSignal; }
+  Signal1<request::RequestPtr>& onExecRequest() { return _onExecRequestSignal; }
 
 private:
   void _acceptRequest()  { emit _onExecRequestSignal( _request );  }
@@ -125,8 +126,8 @@ private:
     CONNECT( dialog, onOk(), this, RequestButton::_acceptRequest );
   }
 
-  Signal1<city::request::RequestPtr> _onExecRequestSignal;
-  city::request::RequestPtr _request;
+  Signal1<request::RequestPtr> _onExecRequestSignal;
+  request::RequestPtr _request;
 };
 
 class Emperor::Impl
@@ -146,7 +147,7 @@ public:
   void sendMoney( int money );
   void sendGift( int money );
   void changeSalary(int money );
-  void resolveRequest( city::request::RequestPtr request );
+  void resolveRequest( request::RequestPtr request );
 
   std::string getEmperorFavourStr()
   {
@@ -203,9 +204,8 @@ void Emperor::_updateRequests()
     (*btn)->deleteLater();
   }
 
-  city::request::RequestList reqs;
-  city::request::DispatcherPtr dispatcher;
-  dispatcher << _d->city->findService( city::request::Dispatcher::defaultName() );
+  request::RequestList reqs;
+  request::DispatcherPtr dispatcher = statistic::finds<request::Dispatcher>( _d->city );
 
   if( dispatcher.isValid() )
   {
@@ -225,7 +225,8 @@ void Emperor::_updateRequests()
       if( !(*request)->isDeleted() )
       {
         bool mayExec = (*request)->isReady( _d->city );
-        RequestButton* btn = new RequestButton( this, reqsRect.UpperLeftCorner + Point( 5, 5 ), std::distance( reqs.begin(), request ), *request );
+        RequestButton* btn = new RequestButton( this, reqsRect.UpperLeftCorner + Point( 5, 5 ),
+                                                std::distance( reqs.begin(), request ), *request );
         btn->setTooltipText( _("##request_btn_tooltip##") );
         btn->setEnabled( mayExec );
         CONNECT(btn, onExecRequest(), _d.data(), Impl::resolveRequest );
@@ -327,7 +328,7 @@ void Emperor::Impl::changeSalary( int money )
   }
 }
 
-void Emperor::Impl::resolveRequest(city::request::RequestPtr request)
+void Emperor::Impl::resolveRequest(request::RequestPtr request)
 {
   if( request.isValid() )
   {

@@ -29,8 +29,6 @@
 #include "statistic.hpp"
 #include "cityservice_factory.hpp"
 
-using namespace constants;
-
 namespace city
 {
 
@@ -92,8 +90,7 @@ void Military::timeStep(const unsigned int time )
   {
     _d->needUpdateMilitaryThreat = false;
 
-    EnemySoldierList enemiesInCity;
-    enemiesInCity << _city()->walkers();
+    EnemySoldierList enemiesInCity = _city()->walkers().select<EnemySoldier>();
 
     _d->threatValue = enemiesInCity.size() * enemySoldiertThreat;
   }  

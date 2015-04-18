@@ -28,7 +28,6 @@
 #include "city/states.hpp"
 #include "factory.hpp"
 
-using namespace constants;
 using namespace city;
 
 namespace events

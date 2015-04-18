@@ -36,7 +36,6 @@
 #include "gfx/cart_animation.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::emigrant, Emigrant)
@@ -457,7 +456,7 @@ void Emigrant::timeStep(const unsigned long time)
   switch( action() )
   {
   case Walker::acMove:
-    _d->stamina = math::clamp( _d->stamina-1, 0.f, 100.f );
+    _d->stamina = math::clamp( _d->stamina-0.5f, 0.f, 100.f );
     if( _d->stamina == 0 )
     {
       _setAction( Walker::acNone );

@@ -29,7 +29,6 @@
 #include "walkers_factory.hpp"
 #include "game/resourcegroup.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace city;
 
@@ -127,7 +126,7 @@ bool Immigrant::die()
 ImmigrantPtr Immigrant::create(PlayerCityPtr city )
 {
   ImmigrantPtr newEmigrant( new Immigrant( city ) );
-  newEmigrant->initialize( WalkerHelper::getOptions( constants::walker::immigrant ) );
+  newEmigrant->initialize( WalkerHelper::getOptions( walker::immigrant ) );
   newEmigrant->drop();
   return newEmigrant;
 }

@@ -501,6 +501,7 @@
     desirability : { base :-2,	range : 2,	step : 1 }
     employers : 5
     class : "engineer"
+    collapsibility : 0.5
     animation : { rc : "engineeringa", start : 1, count : 9, offset : [ 20, 54 ], delay : 2 }
     image.ext : {
       type_1 : { size:1, rc : "engineering", start : 1, count : 4 }
@@ -708,6 +709,7 @@
     output : "grape"
     productRate : 4.8
     sound : [ "grapefarm", 1 ]    
+    image : [ "wineyard", 1 ]
   },
 
   meat_farm : 
@@ -731,6 +733,7 @@
     productRate : 2.4
     sound : [ "marblequarry", 1 ]
     image : [ "commerce", 43 ]
+    collapsibility : 1.5
   },
 
   iron_mine :
@@ -742,6 +745,7 @@
     class : "rawmaterial"
     productRate : 2.4
     sound : [ "ironmine", 1 ]
+    collapsibility : 1.4
   },
   
   lumber_mill :
@@ -753,6 +757,7 @@
     class : "rawmaterial"
     productRate : 4.8
     sound : [ "lumbermill", 1 ]
+    inflammability : 1.3
   },
 
   clay_pit :
@@ -766,6 +771,7 @@
     class : "rawmaterial"
     animation : { rc : "commerce", start : 62, count : 10, offset : [ 0, 60 ], delay : 3 }
     sound : [ "claypit", 1 ]
+    collapsibility : 1.3
   },
   
   wine_workshop :
@@ -777,6 +783,8 @@
     output : "wine"
     class : "industry"
     sound : [ "winery", 1 ]
+    inflammability : 0.7
+    animation : { rc : "commerce", start : 87, count : 12, offset : [ 140, 36 ], delay : 4 }
   },
 
   oil_workshop :
@@ -788,6 +796,7 @@
     class : "industry"
     productRate : 4.8
     sound : [ "creamery", 1 ]
+    inflammability : 1.2
   },
   
   weapons_workshop :
@@ -799,6 +808,7 @@
     output : "weapon"
     class : "industry"
     sound : [ "weapons_workshop", 1 ]
+    inflammability : 2
     animation : { rc : "commerce", start : 109, count : 8, offset : [ 60, 127 ], delay : 4 }
   },
   
@@ -812,6 +822,7 @@
     output : "furniture"
     sound : [ "furniture", 1 ]
     image : [ "commerce", 117 ]
+    inflammability : 1.3
     animation : { rc : "commerce", start : 118, count : 14, delay : 4 }
   },
   
@@ -823,6 +834,7 @@
     output : "pottery"
     class : "industry"
     productRate : 4.8
+    inflammability : 1.4
     image : [ "commerce", 132 ]
     animation : { rc : "commerce", start : 133, count : 7, offset : [ 168, 137 ], delay : 3 }
   }

@@ -33,7 +33,6 @@
 #include "walker/romearcher.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::fort_javelin, FortJaveline)

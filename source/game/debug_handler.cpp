@@ -59,9 +59,9 @@
 #include "game/resourceloader.hpp"
 #include "religion/config.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace citylayer;
+using namespace gui;
 
 enum {
   add_enemy_archers=0,
@@ -235,8 +235,7 @@ DebugHandler::~DebugHandler() {}
 
 EnemySoldierPtr DebugHandler::Impl::makeEnemy( walker::Type type )
 {
-  WalkerPtr wlk = WalkerManager::instance().create( type, game->city() );
-  EnemySoldierPtr enemy = ptr_cast<EnemySoldier>( wlk );
+  EnemySoldierPtr enemy = WalkerManager::instance().create<EnemySoldier>( type, game->city() );
   if( enemy.isValid() )
   {
     enemy->send2City( game->city()->borderInfo().roadEntry );
@@ -251,8 +250,8 @@ void DebugHandler::Impl::addGoods2Wh(good::Product type)
   foreach( wh, whList)
   {
     WarehousePtr warehouse = *wh;
-    good::Stock stock(type, 500, 500 );
-    warehouse->store().store( stock, 500 );
+    good::Stock stock(type, 400, 400 );
+    warehouse->store().store( stock, 400 );
   }
 }
 
@@ -486,11 +485,11 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case run_script:
   {
-    gui::Widget* parent = game->gui()->rootWidget();
-    gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent,
-                                                        Rect(),
-                                                        vfs::Path( ":/scripts/" ), ".model",
-                                                        -1 );
+    Widget* parent = game->gui()->rootWidget();
+    dialog::LoadFile* wnd = dialog::LoadFile::create( parent,
+                                                      Rect(),
+                                                      vfs::Path( ":/scripts/" ), ".model",
+                                                      -1 );
     wnd->setCenter( parent->center() );
 
     CONNECT( wnd, onSelectFile(), this, Impl::runScript );

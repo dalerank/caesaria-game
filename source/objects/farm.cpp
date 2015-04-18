@@ -42,11 +42,11 @@
 
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(object::fig_farm, FarmFruit)
-REGISTER_CLASS_IN_OVERLAYFACTORY(object::wheat_farm, FarmWheat)
-REGISTER_CLASS_IN_OVERLAYFACTORY(object::vinard, FarmGrape)
-REGISTER_CLASS_IN_OVERLAYFACTORY(object::meat_farm, FarmMeat)
-REGISTER_CLASS_IN_OVERLAYFACTORY(object::olive_farm, FarmOlive)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::fig_farm,       FarmFruit    )
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::wheat_farm,     FarmWheat    )
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::vinard,         FarmGrape    )
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::meat_farm,      FarmMeat     )
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::olive_farm,     FarmOlive    )
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::vegetable_farm, FarmVegetable)
 
 class FarmTile : public Construction
@@ -83,12 +83,12 @@ Picture FarmTile::computePicture( const good::Product outGood, const int percent
   int sequenceSize = 5;
 
   std::map<good::Product, int> good2pics;
-  good2pics[ good::wheat ] = 13;
+  good2pics[ good::wheat     ] = 13;
   good2pics[ good::vegetable ] = 18;
-  good2pics[ good::fruit ] = 23;
-  good2pics[ good::olive ] = 28;
-  good2pics[ good::grape ] = 33;
-  good2pics[ good::meat ] = 38;
+  good2pics[ good::fruit     ] = 23;
+  good2pics[ good::olive     ] = 28;
+  good2pics[ good::grape     ] = 33;
+  good2pics[ good::meat      ] = 38;
 
   std::map<good::Product, int>::iterator rIt = good2pics.find( outGood );
   if( rIt != good2pics.end() )
@@ -134,8 +134,8 @@ Farm::Farm(const good::Product outGood, const object::Type farmType )
   outStockRef().setCapacity( 100 );
 
   _d->lastProgress = 0;
-  _d->sublocs << TilePos( 0, 0) << TilePos( 1, 0)
-              << TilePos( 2, 0) << TilePos( 2, 1) << TilePos( 2, 2);
+  _d->sublocs << TilePos( 0, 0) << TilePos( 2, 2)
+              << TilePos( 2, 1) << TilePos( 1, 0) << TilePos( 2, 0);
 
   Picture mainPic = _getMainPicture();
   mainPic.addOffset( tile::tilepos2screen( TilePos( 0, 1) ) );
@@ -324,7 +324,7 @@ FarmWheat::FarmWheat() : Farm(good::wheat, object::wheat_farm)
 
 std::string FarmWheat::troubleDesc() const
 {
-  LocustList lc = city::statistic::findw<Locust>( _city(), constants::walker::locust, pos() );
+  LocustList lc = city::statistic::findw<Locust>( _city(), walker::locust, pos() );
   if( !lc.empty() )
   {
     return "##trouble_farm_was_blighted_by_locust##";

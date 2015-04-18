@@ -25,8 +25,6 @@
 #include "helper.hpp"
 #include "game/gamedate.hpp"
 
-using namespace constants;
-
 namespace gfx
 {
 

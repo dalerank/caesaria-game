@@ -119,7 +119,7 @@ void Dock::destroy()
 
 void Dock::timeStep(const unsigned long time)
 {
-  if( time % 25 == 0 )
+  if( time % game::Date::days2ticks( 1 ) == 0 )
   {
     if( _d->dateSendGoods < game::Date::current() )
     {
@@ -175,7 +175,7 @@ std::string Dock::workersProblemDesc() const
 
 bool Dock::isBusy() const
 {
-  SeaMerchantList merchants = city::statistic::findw<SeaMerchant>( _city(), constants::walker::seaMerchant, landingTile().pos() );
+  SeaMerchantList merchants = city::statistic::findw<SeaMerchant>( _city(), walker::seaMerchant, landingTile().pos() );
 
   return !merchants.empty();
 }
@@ -200,7 +200,7 @@ const Tile& Dock::landingTile() const
 int Dock::queueSize() const
 {
   TilePos offset( 3, 3 );
-  SeaMerchantList merchants = city::statistic::findw<SeaMerchant>( _city(), constants::walker::seaMerchant,
+  SeaMerchantList merchants = city::statistic::findw<SeaMerchant>( _city(), walker::seaMerchant,
                                                                    pos() - offset, pos() + offset );
 
   for( SeaMerchantList::iterator it=merchants.begin(); it != merchants.end(); )
@@ -229,7 +229,7 @@ const Tile& Dock::queueTile() const
     }
   }
 
-  return _city()->tilemap().at( TilePos( -1, -1 ) );
+  return gfx::tile::getInvalid();
 }
 
 void Dock::requestGoods(good::Stock& stock)

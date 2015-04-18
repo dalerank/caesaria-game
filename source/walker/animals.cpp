@@ -29,7 +29,6 @@
 #include "ability.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::sheep, Sheep)
@@ -129,7 +128,7 @@ void Herbivorous::_reachedPathway()
   _findNewWay( pos() );
 }
 
-void Herbivorous::_brokePathway(TilePos p){  _findNewWay( pos() );}
+void Herbivorous::_brokePathway(TilePos p) {  _findNewWay( pos() );}
 
 void Herbivorous::_noWay()
 {

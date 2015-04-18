@@ -33,8 +33,6 @@
 #include "core/utils.hpp"
 #include "widget_helper.hpp"
 
-using namespace constants;
-
 namespace gui
 {
 
@@ -87,14 +85,14 @@ AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos 
   {
     foreach( i, walkers )
     {
-      RomeSoldierPtr rs = ptr_cast<RomeSoldier>( *i);
+      RomeSoldierPtr rs = i->as<RomeSoldier>();
       if( rs.isValid() )
       {
         _d->fort = rs->base();
         break;
       }
 
-      PatrolPointPtr pp = ptr_cast<PatrolPoint>( *i);
+      PatrolPointPtr pp = i->as<PatrolPoint>();
       if( pp.isValid() )
       {
         _d->fort = pp->base();

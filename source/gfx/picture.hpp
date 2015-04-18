@@ -37,6 +37,7 @@ namespace gfx
 class Picture
 {
 public:
+  typedef enum { preloaded, filesystem } LoadMode;
   Picture();
   ~Picture();
 
@@ -68,11 +69,6 @@ public:
   int height() const;
   int pitch() const;
 
-  /*void draw( const Picture& srcpic, int x, int y, bool useAlpha=true );
-  void draw( const Picture& srcpic, const Point& pos, bool useAlpha=true );
-  void draw( const Picture& srcpic, const Rect& srcrect, const Point& pos, bool useAlpha=true );
-  void draw( const Picture& srcpic, const Rect& srcrect, const Rect& dstrect, bool useAlpha=true );*/
-
   void fill(const NColor& color, Rect rect=Rect() );
 
   unsigned int* lock();
@@ -84,8 +80,7 @@ public:
   bool isValid() const;
 
   static Picture& load( const std::string& group, const int id );
-  static Picture& load( const std::string& filename );     
-
+  static Picture& load( const std::string& filename );
   static Picture* create( const Size& size, unsigned char* data=0, bool mayChange=false );
 
   static const Picture& getInvalid();

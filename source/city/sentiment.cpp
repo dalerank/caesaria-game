@@ -22,8 +22,8 @@
 #include "core/variant_map.hpp"
 #include "core/gettext.hpp"
 #include "config.hpp"
+#include "city/statistic.hpp"
 
-using namespace constants;
 using namespace config;
 
 namespace city
@@ -142,8 +142,7 @@ void Sentiment::timeStep(const unsigned int time )
       }
     }
 
-    HouseList houses;
-    houses << _city()->overlays();
+    HouseList houses = statistic::findh( _city() );
 
     unsigned int houseNumber = 0;
     _d->finishValue = 0;

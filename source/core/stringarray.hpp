@@ -42,7 +42,7 @@ public:
     return false;
   }
 
-  std::string atSafe( unsigned int index ) const
+  std::string valueOrEmpty( unsigned int index ) const
   {
     return (index < size()) ? at( index ) : "";
   }

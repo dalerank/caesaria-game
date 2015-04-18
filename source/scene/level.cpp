@@ -91,7 +91,6 @@
 #include "gui/ingame_menu.hpp"
 
 using namespace gui;
-using namespace constants;
 using namespace events;
 using namespace gfx;
 using namespace city;
@@ -656,7 +655,7 @@ void Level::Impl::checkWinMission( Level* lvl, bool force )
   {
     dialog::WinMission* wnd = new dialog::WinMission( game->gui()->rootWidget(),
                                                       wt.newTitle(), wt.winText(),
-                                                      wt.mayContinue() );
+                                                      wt.winSpeech(), wt.mayContinue() );
 
     mapToLoad = wt.nextMission();
 
@@ -853,7 +852,7 @@ void Level::_showLoadDialog()
 
   vfs::Path savesPath = SETTINGS_VALUE( savedir ).toString();
   std::string defaultExt = SETTINGS_VALUE( saveExt ).toString();
-  LoadFileDialog* wnd = new LoadFileDialog( parent, Rect(), savesPath, defaultExt,-1 );
+  dialog::LoadFile* wnd = dialog::LoadFile::create( parent, Rect(), savesPath, defaultExt,-1 );
 
   CONNECT( wnd, onSelectFile(), this, Level::_resolveLoadGame );
   wnd->setTitle( _("##mainmenu_loadgame##") );

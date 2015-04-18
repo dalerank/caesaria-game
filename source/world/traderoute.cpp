@@ -79,7 +79,7 @@ CityPtr Traderoute::partner(const std::string& name) const
   return _d->empire->findCity( _d->begin == name ? _d->end : _d->begin );
 }
 
-void Traderoute::update( unsigned int time )
+void Traderoute::timeStep( unsigned int time )
 {
   MerchantList::iterator it=_d->merchants.begin();
   while( it != _d->merchants.end() )
@@ -157,7 +157,8 @@ Traderoute::~Traderoute() {}
 
 MerchantPtr Traderoute::merchant( unsigned int index )
 {
-  if( index >= _d->merchants.size() )
+  bool invalidIndex = index >= _d->merchants.size();
+  if( invalidIndex )
     return MerchantPtr();
 
   MerchantList::iterator it = _d->merchants.begin();
@@ -206,6 +207,11 @@ void Traderoute::load(const VariantMap& stream)
   }
 
   VARIANT_LOAD_ANY_D( _d, seaRoute, stream )
+}
+
+unsigned int Traderoute::getId(const std::string& begin, const std::string& end)
+{
+  return Hash( begin ) + Hash( end );
 }
 
 Signal1<MerchantPtr>& Traderoute::onMerchantArrived()

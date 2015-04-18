@@ -38,7 +38,7 @@ public:
   __RCG_NAME road;
   __RCG_NAME land1a;
   __RCG_NAME meadow;
-  __RCG_NAME entertaiment;
+  __RCG_NAME entertainment;
   __RCG_NAME warehouse;
   __RCG_NAME housing;
   __RCG_NAME govt;
@@ -60,6 +60,7 @@ public:
   __RCG_NAME hippodrome;
   __RCG_NAME celts;
   __RCG_NAME roadBlock;
+  __RCG_NAME tradecenter;
 };
 
 class ResourceMenu

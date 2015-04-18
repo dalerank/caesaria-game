@@ -21,12 +21,15 @@
 #include "core/variant_map.hpp"
 #include "gfx/pictureconverter.hpp"
 #include "core/color.hpp"
+#include "widget_factory.hpp"
 
 using namespace std;
 using namespace gfx;
 
 namespace gui
 {
+
+REGISTER_CLASS_IN_WIDGETFACTORY(Image)
 
 class Image::Impl
 {
@@ -60,7 +63,7 @@ Image::Image(Widget* parent, Rect rectangle, const Picture& pic, Mode mode, int 
 	}
 
   _d->bgPicture = pic;
-  #ifdef _DEBUG
+#ifdef _DEBUG
     setDebugName( "Image");
 #endif
 }

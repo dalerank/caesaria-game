@@ -39,10 +39,8 @@
 #include "core/logger.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(object::wine_workshop, Winery)
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::oil_workshop, Creamery)
 
 class FactoryStore : public good::Storage
@@ -382,37 +380,6 @@ void Factory::receiveGood()
 bool Factory::isActive() const {  return _d->isActive; }
 void Factory::setActive( bool active ) {   _d->isActive = active;}
 bool Factory::standIdle() const{  return !mayWork(); }
-
-Winery::Winery() : Factory(good::grape, good::wine, object::wine_workshop, Size(2) )
-{
-  setPicture( ResourceGroup::commerce, 86 );
-
-  _animationRef().load(ResourceGroup::commerce, 87, 12);
-  _animationRef().setDelay( 4 );
-  _fgPicturesRef().resize(3);
-}
-
-bool Winery::canBuild( const city::AreaInfo& areaInfo ) const
-{
-  return Factory::canBuild( areaInfo );
-}
-
-bool Winery::build( const city::AreaInfo& info )
-{
-  Factory::build( info );
-
-  bool haveVinegrad = !city::statistic::findo<Building>( info.city, object::vinard ).empty();
-
-  _setError( haveVinegrad ? "" : "##need_grape##" );
-
-  return true;
-}
-
-void Winery::_storeChanged()
-{
-  _fgPicturesRef()[1] = inStockRef().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 153 );
-  _fgPicturesRef()[1].setOffset( 40, -10 );
-}
 
 Creamery::Creamery() : Factory(good::olive, good::oil, object::oil_workshop, Size(2) )
 {

@@ -221,7 +221,7 @@ void AnimationBank::Impl::loadStage( unsigned int type, const std::string& stage
       VARIANT_LOAD_ANYDEF( offset, stageInfo, offset );
       pib.setOffset( rc, start, frames * (step == 0 ? 1 : step), offset );
 
-      std::string typeName = WalkerHelper::getTypename( (constants::walker::Type)type );
+      std::string typeName = WalkerHelper::getTypename( (walker::Type)type );
       Logger::warning( "AnimationBank: load animations for " + typeName + ":" + stageName );
       loadStage( objects, type, rc, start, frames, (Walker::Action)action, step, delay );
     }
@@ -264,7 +264,7 @@ const AnimationBank::MovementAnimation& AnimationBank::Impl::tryLoadAnimations( 
   if( it == objects.end() )
   {
     Logger::warning( "!!! WARNING: AnimationBank can't find config for type %d", wtype );
-    const AnimationBank::MovementAnimation& elMuleta = objects[ constants::walker::unknown ].actions;
+    const AnimationBank::MovementAnimation& elMuleta = objects[ walker::unknown ].actions;
     objects[ wtype ].ownerType = wtype;
     objects[ wtype ].actions = elMuleta;
     return elMuleta;
@@ -301,8 +301,8 @@ void AnimationBank::loadAnimation(vfs::Path model, vfs::Path basic)
 
   foreach( i, items )
   {
-    constants::walker::Type wtype = WalkerHelper::getType( i->first );
-    if( wtype != constants::walker::unknown )
+    walker::Type wtype = WalkerHelper::getType( i->first );
+    if( wtype != walker::unknown )
     {
       Logger::warning( "Load config animations for " + i->first );
       _d->animConfigs[ wtype ] = i->second.toMap();

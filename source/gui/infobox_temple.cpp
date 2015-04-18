@@ -24,7 +24,6 @@
 #include "core/utils.hpp"
 #include "game/infoboxmanager.hpp"
 
-using namespace constants;
 using namespace religion;
 using namespace gfx;
 

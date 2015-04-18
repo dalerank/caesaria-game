@@ -26,7 +26,6 @@
 #include "core/utils.hpp"
 #include "constants.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace citylayer
@@ -39,7 +38,8 @@ public:
   std::vector<Picture*> debugText;
 };
 
-namespace {
+namespace
+{
   inline int __des2index( int desirability )
   {
     return desirability < 0

@@ -29,7 +29,6 @@
 #include "objects/extension.hpp"
 #include "gfx/tilearea.hpp"
 
-using namespace constants;
 using namespace religion;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::small_ceres_temple, TempleCeres)

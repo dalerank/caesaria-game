@@ -41,7 +41,6 @@
 #include "config.hpp"
 #include "city/states.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace config;
 
@@ -194,8 +193,7 @@ void Migration::timeStep( const unsigned int time )
     return;
   }
 
-  city::MilitaryPtr mil;
-  mil << _city()->findService( city::Military::defaultName() );
+  MilitaryPtr mil = statistic::finds<Military>( _city() );
 
   if( mil.isValid() )
   {

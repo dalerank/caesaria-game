@@ -37,7 +37,6 @@
 #include "city/states.hpp"
 #include "widget_helper.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 struct HealthInfo

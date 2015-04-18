@@ -120,7 +120,7 @@ Manager::~Manager() {}
 
 void Manager::load(vfs::Directory folder)
 {
-  vfs::Entries flist = folder.getEntries();
+  vfs::Entries flist = folder.entries();
   std::string addonExtension = ".unk";
 #if defined(CAESARIA_PLATFORM_WIN)
   addonExtension = ".win";

@@ -30,7 +30,6 @@
 #include "core/json.hpp"
 
 using namespace gfx;
-using namespace constants;
 
 class Construction::Impl
 {

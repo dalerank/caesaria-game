@@ -26,7 +26,6 @@
 #include "core/logger.hpp"
 #include "warningmessage.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace city;
 

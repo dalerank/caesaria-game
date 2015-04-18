@@ -33,8 +33,6 @@
 #include "cityservice_factory.hpp"
 #include "city/states.hpp"
 
-using namespace constants;
-
 namespace city
 {
 
@@ -156,7 +154,7 @@ void CultureRating::timeStep(const unsigned int time )
 
     _d->culture = ( _d->culture + _d->religion.value + _d->theaters.value +
                     _d->libraries.value + _d->schools.value + _d->academies.value ) / 2;
-    }
+  }
 }
 
 VariantMap CultureRating::save() const

@@ -1966,4 +1966,10 @@
 "##no_working_dock##":"Handelsschiffe aus dem ganzen Imperium legen hier an, um Importwaren zu löschen und Exportwaren aufzunehmen. Sie können ohne Docks keinen Überseehandel treiben."
 "##trade_btn_export_text##":"Exportiert Güter über"
 "##trade_btn_import_text##":"Importiert"
+"##mainmenu_mcmxcviii##":"MCMXCVIII"
+"##mainmenu_dlc_articles##":"Artikel"
+"##mainmenu_dlc_concepts##":"Konzepte"
+"##mainmenu_dlc_main##":"Wie nach Rom zu bauen"
+"##mainmenu_dlc_wallpapers##":"Hintergründe"
+"##mainmenu_dlc_soundtrack##":"Tonspur"
 }
