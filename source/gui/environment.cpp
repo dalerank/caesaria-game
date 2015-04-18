@@ -93,7 +93,7 @@ bool Ui::hasFocus( const Widget* element) const
 
 Ui::~Ui() {}
 
-Widget* Ui::rootWidget() {	return this; }
+Widget* Ui::rootWidget() { return this; }
 
 void Ui::Impl::threatDeletionQueue()
 {
