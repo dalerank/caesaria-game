@@ -431,7 +431,10 @@ void StartMenu::Impl::showMainMenu()
   ADD_MENU_BUTTON( "##mainmenu_options##",        Impl::showOptionsMenu )
   ADD_MENU_BUTTON( "##mainmenu_credits##",        Impl::showCredits )
 #ifdef CAESARIA_USE_STEAM
-  ADD_MENU_BUTTON( "##mainmenu_mcmxcviii##",  Impl::showAdvancedMaterials )
+  if( vfs::Path( ":/dlc" ).exist() )
+  {
+    ADD_MENU_BUTTON( "##mainmenu_mcmxcviii##",    Impl::showAdvancedMaterials )
+  }
 #endif
   ADD_MENU_BUTTON( "##mainmenu_quit##",           Impl::quitGame )
 }
@@ -445,6 +448,7 @@ void StartMenu::Impl::showAdvancedMaterials()
   {
     dialog::Dialog* dlg = dialog::Information( menu->ui(), _("##no_dlc_found_title##"), _("##no_dlc_found_text##"));
     dlg->show();
+    showMainMenu();
     return;
   }
 
