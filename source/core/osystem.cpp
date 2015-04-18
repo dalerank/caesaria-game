@@ -33,6 +33,8 @@ const char* getDialogCommand()
   }
   return NULL;
 }
+#elif defined(CAESARIA_PLATFORM_MACOSX)
+  #include <cstdlib>
 #elif defined(CAESARIA_PLATFORM_WIN)
   #include <windows.h>
 #endif
