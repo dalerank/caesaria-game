@@ -202,6 +202,8 @@ void Warehouse::timeStep(const unsigned long time)
 void Warehouse::computePictures()
 {
   int index = 4;
+  std::string rc = _d->isTradeCenter ? ResourceGroup::tradecenter : ResourceGroup::warehouse;
+  _fgPicturesRef()[ fgpic::idxMainPic ] = strafePic( rc, 1, 0, 2);
   foreach( room, _d->rooms )
   {
      room->computePicture();
@@ -249,8 +251,13 @@ void Warehouse::load( const VariantMap& stream )
 
 bool Warehouse::onlyDispatchGoods() const {  return numberWorkers() < maximumWorkers() / 3; }
 bool Warehouse::isTradeCenter() const { return _d->isTradeCenter; }
-void Warehouse::setTradeCenter(bool enabled) { _d->isTradeCenter = enabled; }
 Warehouse::Rooms& Warehouse::rooms() { return _d->rooms; }
+
+void Warehouse::setTradeCenter(bool enabled)
+{
+  _d->isTradeCenter = enabled;
+  computePictures();
+}
 
 bool Warehouse::isGettingFull() const
 {
