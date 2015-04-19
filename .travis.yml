@@ -24,7 +24,7 @@ before_script:
 - wget --quiet --continue https://www.dropbox.com/s/fw4mrhzo733xtdm/caesaria_latest_resources.zip
 - mkdir $TRAVIS_BUILD_DIR/../caesaria-test
 - unzip -n caesaria_latest_resources.zip -d $TRAVIS_BUILD_DIR/../caesaria-test
-script:
+script: 
 # Build CaesarIA
 - make -j4
 after_success:
