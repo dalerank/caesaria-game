@@ -26,7 +26,7 @@
 namespace city
 {
 
-void Services::update(PlayerCityPtr city, unsigned int time)
+void Services::timeStep(PlayerCityPtr city, unsigned int time)
 {
   iterator serviceIt = begin();
   while( serviceIt != end() )

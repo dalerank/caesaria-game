@@ -26,12 +26,15 @@
 namespace city
 {
 
+/** Helper class for player city */
 class Services : public city::SrvcList
 {
 public:
-  void update( PlayerCityPtr city, unsigned int time);
+  /** Call every frame */
+  void timeStep( PlayerCityPtr city, unsigned int time);
 };
 
+/**  */
 class Overlays : public FlowList<Overlay>
 {
 public:

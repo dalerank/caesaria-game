@@ -241,7 +241,7 @@ void PlayerCity::timeStep(unsigned int time)
   //update walkers access map
   _d->walkers.update( this, time );
   _d->overlays.update( this, time );
-  _d->services.update( this, time );
+  _d->services.timeStep( this, time );
   city::Timers::instance().update( time );
 
   if( getOption( updateRoads ) > 0 )
