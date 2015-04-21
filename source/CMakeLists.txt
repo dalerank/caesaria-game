@@ -60,6 +60,9 @@ target_link_libraries(${PROJECT_NAME}
 include_directories(${ZLIB_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARY})
 
+include_directories(${BOOSTER_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} ${BOOSTER_LIBRARY})
+
 include_directories(${AES_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${AES_LIBRARY})
 
