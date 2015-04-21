@@ -52,10 +52,10 @@ add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST}
                ${MISSIONS_LIST} ${TUTORIAL_MODELS_LIST} ${SCENES_LIST} ${RELIGION_LIST} ${SHADERS_LIST}
                ${STEAM_SOURCES_LIST} ${HELP_LIST} ${LAYERS_LIST} )
 
-target_link_libraries(${PROJECT_NAME}
-  ${SDL2_LIBRARY}
-  ${SDL2_MIXER_LIBRARY}
-)
+target_link_libraries(${PROJECT_NAME} ${BOOSTER_LIBRARY})
+
+include_directories(${MIXER_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} ${MIXER_LIBRARY})
 
 include_directories(${ZLIB_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARY})

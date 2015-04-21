@@ -84,6 +84,10 @@ if( BUILD_BOOSTER )
   set(BOOSTER_NAME "booster")
   set(BOOSTER_HOME "${DEP_SOURCE_DIR}/${BOOSTER_NAME}" )
   add_subdirectory(${BOOSTER_HOME})
+
+  set(MIXER_NAME "mixer")
+  set(MIXER_HOME "${DEP_SOURCE_DIR}/${MIXER_NAME}" )
+  add_subdirectory(${MIXER_HOME})
 endif()
 
 if( BUILD_SMK )

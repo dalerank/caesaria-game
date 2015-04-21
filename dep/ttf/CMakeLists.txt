@@ -8,7 +8,7 @@ file(GLOB TTF_HEADERS_LIST "*.h")
 file(GLOB TTF_SOURCES_LIST "*.c")
 
 include_directories(
-  ${SDL2_INCLUDE_DIR}
+  ${BOOSTER_INCLUDE_DIR}
   ${LIBPNG_INCLUDE_DIR}
   ${FREETYPE_INCLUDE_DIR}
 )
