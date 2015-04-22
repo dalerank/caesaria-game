@@ -29,7 +29,6 @@ file(GLOB RENDER_OPENGL_SOURCES_LIST "src/render/opengl/*.c")
 file(GLOB CPUINFO_SOURCES_LIST "src/cpuinfo/*.c")
 
 if(UNIX AND NOT APPLE)
-
   file(GLOB TIMER_UNIX_SOURCES_LIST "src/timer/unix/*.c")
   file(GLOB VIDEO_X11_SOURCES_LIST "src/video/x11/*.c")
   file(GLOB PTHREAD_SOURCES_LIST "src/thread/pthread/*.c")
@@ -73,6 +72,57 @@ if(UNIX AND NOT APPLE)
                         PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
   target_link_libraries( ${PROJECT_NAME} pthread Xext X11 GL GLU)
+endif()
+
+if(APPLE)
+  find_library(COCOA_LIBRARY Cocoa)
+  find_library(IOKIT_LIBRARY IOKit)
+  find_library(CARBON_LIBRARY Carbon)
+  find_library(COREAUDIO_LIBRARY CoreAudio)
+  find_library(AUDIOUNIT_LIBRARY AudioUnit)
+
+  file(GLOB DLOPEN_SOURCES_LIST "src/loadso/dlopen/*.c")
+  file(GLOB TIMER_UNIX_SOURCES_LIST "src/timer/unix/*.c")
+  file(GLOB COCOA_SOURCES_LIST "src/video/cocoa/*.m")
+  file(GLOB COCOA_FS_SOURCES_LIST "src/filesystem/cocoa/*.m")
+  file(GLOB COCOA_FILE_SOURCES_LIST "src/file/cocoa/*.m")
+  file(GLOB AUDIO_CORE_SOURCES_LIST "src/audio/coreaudio/*.c")
+  file(GLOB PTHREAD_SOURCES_LIST "src/thread/pthread/*.c")
+  file(GLOB THREAD_GENERIC_SOURCES_LIST "src/thread/generic/*.c")
+
+  add_definitions(-DSDL_FRAMEWORK_COCOA=1)
+  add_definitions(-DVIDEO_COCOA=1)
+  add_definitions(-DSDL_FRAMEWORK_COREVIDEO=1)
+  add_definitions(-DUNIX_SYS=0)
+  add_definitions(-DSDL_THREAD_PTHREAD=1)
+
+  add_library(  ${PROJECT_NAME} STATIC
+                ${BOOSTER_SOURCES_LIST}
+                ${VIDEO_SOURCES_LIST}
+                ${COCOA_SOURCES_LIST}
+                ${COCOA_FS_SOURCES_LIST}
+                ${COCOA_FILE_SOURCES_LIST}
+                ${RENDER_SOURCES_LIST}
+                ${RENDER_SW_SOURCES_LIST}
+                ${VIDEO_DUMMY_SOURCES_LIST}
+                ${AUDIO_DUMMY_SOURCES_LIST}
+                ${FILE_SOURCES_LIST}
+                ${ATOMIC_SOURCES_LIST}
+                ${AUDIO_SOURCES_LIST}
+                ${STDLIB_SOURCES_LIST}
+                ${EVENTS_SOURCES_LIST}
+                ${CPUINFO_SOURCES_LIST}
+                ${AUDIO_CORE_SOURCES_LIST}
+                ${RENDER_OPENGL_SOURCES_LIST}
+                ${PTHREAD_SOURCES_LIST}
+                ${THREAD_SOURCES_LIST}
+                ${TIMER_SOURCES_LIST}
+                ${TIMER_UNIX_SOURCES_LIST}
+                ${THREAD_GENERIC_SOURCES_LIST}
+                ${DLOPEN_SOURCES_LIST}
+             )
+
+  target_link_libraries( ${PROJECT_NAME} ${COCOA_LIBRARY} ${IOKIT_LIBRARY} ${CARBON_LIBRARY} ${COREAUDIO_LIBRARY} ${AUDIOUNIT_LIBRARY})
 endif()
 
 if(WIN32)

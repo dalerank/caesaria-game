@@ -1,6 +1,18 @@
 project(mixer)
 
-file(GLOB MIXER_SOURCES_LIST "*.c")
+set( MIXER_SOURCES_LIST
+      mixer.c
+      dynamic_ogg.c
+      playmus.c
+      playwave.c
+      wavestream.c
+      load_aiff.c
+      load_ogg.c
+      music.c
+      load_voc.c
+      music_ogg.c
+      effects_internal.c
+      effect_position.c )
 
 # Enable this if you want to support loading OGG Vorbis music via Tremor
 # The library path should be a relative path to this directory.
@@ -11,7 +23,7 @@ include_directories(${OGG_LIBRARY_PATH}/include)
 include_directories(${VORBIS_LIBRARY_PATH})
 include_directories(${BOOSTER_INCLUDE_DIR})
 
-if(WIN32)
+if(WIN32 OR APPLE)
 include_directories(${DEP_SOURCE_DIR}/xcompile)
 endif()
 
@@ -25,7 +37,7 @@ set( VORBIS_SRC
         ${VORBIS_LIBRARY_PATH}/block.c 
         ${VORBIS_LIBRARY_PATH}/window.c 
         ${VORBIS_LIBRARY_PATH}/synthesis.c 
-        ${VORBIS_LIBRARY_PATH}/info.c 
+        ${VORBIS_LIBRARY_PATH}/info.c
         ${VORBIS_LIBRARY_PATH}/floor1.c 
         ${VORBIS_LIBRARY_PATH}/floor0.c 
         ${VORBIS_LIBRARY_PATH}/vorbisfile.c 

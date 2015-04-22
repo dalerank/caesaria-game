@@ -107,12 +107,12 @@
 
 /* Enable various audio drivers */
 #define SDL_AUDIO_DRIVER_COREAUDIO  1
-#define SDL_AUDIO_DRIVER_DISK   1
+#define SDL_AUDIO_DRIVER_DISK   0
 #define SDL_AUDIO_DRIVER_DUMMY  1
 
 /* Enable various input drivers */
-#define SDL_JOYSTICK_IOKIT  1
-#define SDL_HAPTIC_IOKIT    1
+#define SDL_JOYSTICK_IOKIT  0
+#define SDL_HAPTIC_IOKIT    0
 
 /* Enable various shared object loading systems */
 #define SDL_LOADSO_DLOPEN   1
