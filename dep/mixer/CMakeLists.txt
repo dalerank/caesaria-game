@@ -11,6 +11,10 @@ include_directories(${OGG_LIBRARY_PATH}/include)
 include_directories(${VORBIS_LIBRARY_PATH})
 include_directories(${BOOSTER_INCLUDE_DIR})
 
+if(WIN32)
+include_directories(${DEP_SOURCE_DIR}/xcompile)
+endif()
+
 file(GLOB VORBIS_SOURCES_LIST ${VORBIS_LIBRARY_PATH}/*.c)
 
 add_definitions(-DOGG_MUSIC)

@@ -27,8 +27,13 @@
 #include "SDL_revision.h"
 #include "SDL_assert_c.h"
 #include "events/SDL_events_c.h"
+#if !SDL_HAPTIC_DISABLED
 #include "haptic/SDL_haptic_c.h"
+#endif
+
+#if !SDL_JOYSTICK_DISABLED
 #include "joystick/SDL_joystick_c.h"
+#endif
 
 /* Initialization/Cleanup routines */
 #if !SDL_TIMERS_DISABLED
