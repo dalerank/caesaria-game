@@ -1080,3 +1080,9 @@ Engine::Modes GlEngine::modes() const
 }
 
 #endif
+
+
+void gfx::GlEngine::draw(const gfx::Picture& pic, const Rects& srcRects, const Rects& dstRects, Rect* clipRect)
+{
+
+}

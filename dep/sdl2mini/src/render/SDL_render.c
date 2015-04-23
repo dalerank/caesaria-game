@@ -1572,6 +1572,26 @@ SDL_RenderCopy(SDL_Renderer * renderer, SDL_Texture * texture,
     return renderer->RenderCopy(renderer, texture, &real_srcrect, &frect);
 }
 
+int
+SDL_RenderBatch(SDL_Renderer * renderer, SDL_Texture * texture,
+                const SDL_Rect * srcrect, const SDL_Rect * dstrect, unsigned int size)
+{
+    CHECK_RENDERER_MAGIC(renderer, -1);
+    CHECK_TEXTURE_MAGIC(texture, -1);
+
+    if (renderer != texture->renderer) {
+        return SDL_SetError("Texture was not created with this renderer");
+    }
+
+    /* Don't draw while we're hidden */
+    if (renderer->hidden) {
+        return 0;
+    }
+
+    return renderer->RenderBatch(renderer, texture, srcrect, dstrect, size);
+}
+
+
 
 int
 SDL_RenderCopyEx(SDL_Renderer * renderer, SDL_Texture * texture,

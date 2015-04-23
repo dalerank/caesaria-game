@@ -488,6 +488,40 @@ void SdlEngine::draw(const Picture& pic, const Rect& srcRect, const Rect& dstRec
   drawTime += DateTime::elapsedTime() - t;
 }
 
+static std::vector<SDL_Rect> native_srcrects;
+static std::vector<SDL_Rect> native_dstrects;
+void SdlEngine::draw(const Picture& pic, const Rects& srcRects, const Rects& dstRects, Rect* clipRect)
+{
+  const int saveSrcsLength = native_srcrects.size();
+  const int saveDstsLength = native_dstrects.size();
+
+  native_dstrects.resize( srcRects.size() );
+  native_srcrects.resize( srcRects.size() );
+  for( int i=0; i < srcRects.size(); i++ )
+  {
+    const Rect& r1 = srcRects[ i ];
+    SDL_Rect& r = native_srcrects[ i ];
+    r.x = r1.left();
+    r.y = r1.top();
+    r.h = r1.height();
+    r.w = r1.width();
+
+    const SDL_Rect& r2 = dstRects[ i ];
+    SDL_Rect& t = native_dstrects[ i ];
+    t.x = r2.left();
+    t.y = r2.top();
+    t.h = r2.height();
+    t.w = r2.width();
+  }
+
+  SDL_RenderBatch( _d->renderer, pic.texture(), native_srcrects.data(), native_dstrects.data(), native_srcrects.size() );
+
+  if( native_dstrects.size() > saveDstsLength )
+      native_dstrects.reserve( native_dstrects.size() + 1 );
+  if( saveSrcsLength.size() > saveSrcsLength )
+      saveSrcsLength.reserve( saveSrcsLength.size() + 1 );
+}
+
 void SdlEngine::drawLine(const NColor &color, const Point &p1, const Point &p2)
 {
   SDL_SetRenderDrawColor( _d->renderer, color.red(), color.green(), color.blue(), color.alpha() );

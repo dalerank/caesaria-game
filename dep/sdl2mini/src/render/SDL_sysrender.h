@@ -104,6 +104,10 @@ struct SDL_Renderer
                             int count);
     int (*RenderCopy) (SDL_Renderer * renderer, SDL_Texture * texture,
                        const SDL_Rect * srcrect, const SDL_FRect * dstrect);
+
+    int (*RenderBatch) (SDL_Renderer * renderer, SDL_Texture * texture,
+                       const SDL_Rect * srcrect, const SDL_FRect * dstrect, unsigned int size);
+
     int (*RenderCopyEx) (SDL_Renderer * renderer, SDL_Texture * texture,
                        const SDL_Rect * srcquad, const SDL_FRect * dstrect,
                        const double angle, const SDL_FPoint *center, const SDL_RendererFlip flip);

@@ -748,6 +748,25 @@ extern DECLSPEC int SDLCALL SDL_RenderCopy(SDL_Renderer * renderer,
                                            const SDL_Rect * dstrect);
 
 /**
+ *  \brief Copy a portions of the texture to the current rendering target.
+ *
+ *  \param renderer The renderer which should copy parts of a texture.
+ *  \param texture The source texture.
+ *  \param srcrect   A pointer to the source rectangle, or NULL for the entire
+ *                   texture.
+ *  \param dstrect   A pointer to the destination rectangle, or NULL for the
+ *                   entire rendering target.
+ *  \param size    size of source and destination rects
+ *
+ *  \return 0 on success, or -1 on error
+ */
+extern DECLSPEC int SDLCALL SDL_RenderBatch(SDL_Renderer * renderer,
+                                            SDL_Texture * texture,
+                                            const SDL_Rect * srcrect,
+                                            const SDL_Rect * dstrect,
+                                            unsigned int size);
+
+/**
  *  \brief Copy a portion of the source texture to the current rendering target, rotating it by angle around the given center
  *
  *  \param renderer The renderer which should copy parts of a texture.
