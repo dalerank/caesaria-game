@@ -1,4 +1,4 @@
-project(booster)
+project(sdl2mini)
 
 add_definitions(-DSDL_LOADSO_DLOPEN)
 add_definitions(-DSDL_VIDEO_OPENGL=1)
@@ -10,8 +10,8 @@ add_definitions(-DSDL_HAPTIC_DISABLED=1)
 add_definitions(-DSDL_JOYSTICK_DISABLED=1)
 
 include_directories(include)
-file(GLOB BOOSTER_HEADERS_LIST "include/*.h")
-file(GLOB BOOSTER_SOURCES_LIST "src/*.c")
+file(GLOB SDL2MINI_HEADERS_LIST "include/*.h")
+file(GLOB SDL2MINI_SOURCES_LIST "src/*.c")
 file(GLOB VIDEO_SOURCES_LIST "src/video/*.c")
 file(GLOB TIMER_SOURCES_LIST "src/timer/*.c")
 file(GLOB EVENTS_SOURCES_LIST "src/events/*.c")
@@ -43,7 +43,7 @@ if(UNIX AND NOT APPLE)
   add_definitions(-DSDL_THREAD_PTHREAD=1)
 
   add_library(  ${PROJECT_NAME} STATIC
-                ${BOOSTER_SOURCES_LIST}
+                ${SDL2MINI_SOURCES_LIST}
                 ${TIMER_SOURCES_LIST}
                 ${VIDEO_SOURCES_LIST}
                 ${TIMER_UNIX_SOURCES_LIST}
@@ -97,7 +97,7 @@ if(APPLE)
   add_definitions(-DSDL_THREAD_PTHREAD=1)
 
   add_library(  ${PROJECT_NAME} STATIC
-                ${BOOSTER_SOURCES_LIST}
+                ${SDL2MINI_SOURCES_LIST}
                 ${VIDEO_SOURCES_LIST}
                 ${COCOA_SOURCES_LIST}
                 ${COCOA_FS_SOURCES_LIST}
@@ -134,7 +134,7 @@ if(WIN32)
   file(GLOB THREAD_WIN_SOURCES_LIST "src/thread/windows/*.c")
 
   add_library(  ${PROJECT_NAME} STATIC
-                ${BOOSTER_SOURCES_LIST}
+                ${SDL2MINI_SOURCES_LIST}
                 ${VIDEO_SOURCES_LIST}
                 ${TIMER_SOURCES_LIST}
                 ${TIMER_WIN_SOURCES_LIST}
@@ -162,8 +162,8 @@ if(WIN32)
 endif()
 
 # Expose public includes to other through cache variable.
-set(BOOSTER_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include
+set(SDL2MINI_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include
     CACHE INTERNAL "${PROJECT_NAME}: Include Directories" FORCE)
 
-set(BOOSTER_LIBRARY ${PROJECT_NAME}
+set(SDL2MINI_LIBRARY ${PROJECT_NAME}
     CACHE INTERNAL "${PROJECT_NAME}: Library Name" FORCE)

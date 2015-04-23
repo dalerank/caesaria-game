@@ -21,7 +21,7 @@ set(VORBIS_LIBRARY_PATH ${PROJECT_SOURCE_DIR}/external/libvorbisidec-1.2.1)
 
 include_directories(${OGG_LIBRARY_PATH}/include)
 include_directories(${VORBIS_LIBRARY_PATH})
-include_directories(${BOOSTER_INCLUDE_DIR})
+include_directories(${SDL2MINI_INCLUDE_DIR})
 
 if(WIN32 OR APPLE)
 include_directories(${DEP_SOURCE_DIR}/xcompile)
