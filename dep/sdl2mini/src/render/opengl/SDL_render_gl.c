@@ -20,7 +20,7 @@
 */
 #include "SDL_config.h"
 
-#if SDL_VIDEO_RENDER_OGL && !SDL_RENDER_DISABLED
+//#if SDL_VIDEO_RENDER_OGL && !SDL_RENDER_DISABLED
 
 #include "SDL_hints.h"
 #include "SDL_log.h"
@@ -105,6 +105,11 @@ typedef struct
 
     SDL_bool debug_enabled;
     SDL_bool GL_ARB_debug_output_supported;
+    GLfloat* Vertices;
+    GLfloat* TexCoord;
+    GLushort* indices;
+    int size;
+
     int errors;
     char **error_messages;
     GLDEBUGPROCARB next_error_callback;
@@ -426,6 +431,10 @@ GL_CreateRenderer(SDL_Window * window, Uint32 flags)
     renderer->driverdata = data;
     renderer->window = window;
 
+    data->Vertices = 0;
+    data->TexCoord = 0;
+    data->size = 0;
+    data->indices = 0;
     data->context = SDL_GL_CreateContext(window);
     if (!data->context) {
         GL_DestroyRenderer(renderer);
@@ -1142,57 +1151,97 @@ GL_RenderBatch(SDL_Renderer * renderer, SDL_Texture * texture,
       GL_SetShader(data, SHADER_RGB);
   }
 
-  data->glBegin(GL_TRIANGLE_STRIP);
-  for( ; iTx < size; iTx++ )
+  if( size > data->size )
   {
-    tmp_srcrect = srcrect[ iTx ];
-    tmp_dstrect = dstrect[ iTx ];
-    if (tmp_srcrect.h>0 || tmp_srcrect.y>0)
+    if( data->Vertices != 0)
+        SDL_free( data->Vertices );
+
+    if( data->TexCoord != 0 )
+        SDL_free( data->TexCoord );
+
+    if( data->indices != 0 )
+        SDL_free( data->indices );
+
+
+    data->Vertices = SDL_malloc( sizeof(GLfloat) * 2 * 6 * size );
+    data->TexCoord = SDL_malloc( sizeof(GLfloat) * 2 * 4 * size );
+    data->indices = SDL_malloc( sizeof(GLushort) * 2 * 3 * size );
+
+    data->size = size;
+
+    for( ; iTx < size; iTx++ )
     {
-        if (!SDL_IntersectRect(&tmp_srcrect, &textureRect, &tmp_srcrect))
-        {
-            continue;
-        }
+      tmp_srcrect = srcrect[ iTx ];
+      tmp_dstrect = dstrect[ iTx ];
+      /*if (tmp_srcrect.h>0 || tmp_srcrect.y>0)
+      {
+          if (!SDL_IntersectRect(&tmp_srcrect, &textureRect, &tmp_srcrect))
+          {
+              continue;
+          }
+      }
+
+      if (tmp_dstrect.h>0 || tmp_dstrect.w>0)
+      {
+          if (!SDL_HasIntersection(&renderingRect, &tmp_dstrect))
+          {
+              continue;
+          }
+      }*/
+
+      frect.x = tmp_dstrect.x * renderer->scale.x;
+      frect.y = tmp_dstrect.y * renderer->scale.y;
+      frect.w = tmp_dstrect.w * renderer->scale.x;
+      frect.h = tmp_dstrect.h * renderer->scale.y;
+
+      minx = frect.x;
+      miny = frect.y;
+      maxx = frect.x + frect.w;
+      maxy = frect.y + frect.h;
+
+      minu = (GLfloat) tmp_srcrect.x / texture->w;
+      minu *= texturedata->texw;
+      maxu = (GLfloat) (tmp_srcrect.x + tmp_srcrect.w) / texture->w;
+      maxu *= texturedata->texw;
+      minv = (GLfloat) tmp_srcrect.y / texture->h;
+      minv *= texturedata->texh;
+      maxv = (GLfloat) (tmp_srcrect.y + tmp_srcrect.h) / texture->h;
+      maxv *= texturedata->texh;
+
+      const int i = iTx;
+      data->TexCoord[ i * 8 + 0 ] = minu; data->TexCoord[ i * 8 + 1 ] = minv;
+      data->TexCoord[ i * 8 + 2 ] = maxu; data->TexCoord[ i * 8 + 3 ] = minv;
+      data->TexCoord[ i * 8 + 4 ] = maxu; data->TexCoord[ i * 8 + 5 ] = maxv;
+      data->TexCoord[ i * 8 + 6 ] = minu; data->TexCoord[ i * 8 + 7 ] = maxv;
+
+      data->Vertices[ i * 12 + 0 ] = minx; data->Vertices[ i * 12 + 1 ] = miny; data->Vertices[ i * 12 + 2 ] = 0;
+      data->Vertices[ i * 12 + 3 ] = maxx; data->Vertices[ i * 12 + 4 ] = miny; data->Vertices[ i * 12 + 5 ] = 0;
+      data->Vertices[ i * 12 + 6 ] = maxx; data->Vertices[ i * 12 + 7 ] = maxy; data->Vertices[ i * 12 + 8 ] = 0;
+      data->Vertices[ i * 12 + 9 ] = minx; data->Vertices[ i * 12 + 10 ] = maxy; data->Vertices[ i * 12 + 11 ] = 0;
+      //data->glTexCoord2f(minu, minv);
+      //data->glVertex2f(minx, miny);
+      //data->glTexCoord2f(maxu, minv);
+      //data->glVertex2f(maxx, miny);
+      //data->glTexCoord2f(minu, maxv);
+      //data->glVertex2f(minx, maxy);
+      //data->glTexCoord2f(maxu, maxv);
+      //data->glVertex2f(maxx, maxy);
+
+      data->indices[ i * 6 + 0 ] = i * 6; data->indices[ i * 6 + 1 ] = i * 6 + 1; data->indices[ i * 6 + 2 ] = i * 6 + 2;
+      data->indices[ i * 6 + 3 ] = i * 6; data->indices[ i * 6 + 4 ] = i * 6 + 2; data->indices[ i * 6 + 5 ] = i * 6 + 3;
     }
-
-    if (tmp_dstrect.h>0 || tmp_dstrect.w>0)
-    {
-        if (!SDL_HasIntersection(&renderingRect, &tmp_dstrect))
-        {
-            continue;
-        }
-    }
-
-    frect.x = tmp_dstrect.x * renderer->scale.x;
-    frect.y = tmp_dstrect.y * renderer->scale.y;
-    frect.w = tmp_dstrect.w * renderer->scale.x;
-    frect.h = tmp_dstrect.h * renderer->scale.y;
-
-    minx = frect.x;
-    miny = frect.y;
-    maxx = frect.x + frect.w;
-    maxy = frect.y + frect.h;
-
-    minu = (GLfloat) tmp_srcrect.x / texture->w;
-    minu *= texturedata->texw;
-    maxu = (GLfloat) (tmp_srcrect.x + tmp_srcrect.w) / texture->w;
-    maxu *= texturedata->texw;
-    minv = (GLfloat) tmp_srcrect.y / texture->h;
-    minv *= texturedata->texh;
-    maxv = (GLfloat) (tmp_srcrect.y + tmp_srcrect.h) / texture->h;
-    maxv *= texturedata->texh;
-
-    data->glTexCoord2f(minu, minv);
-    data->glVertex2f(minx, miny);
-    data->glTexCoord2f(maxu, minv);
-    data->glVertex2f(maxx, miny);
-    data->glTexCoord2f(minu, maxv);
-    data->glVertex2f(minx, maxy);
-    data->glTexCoord2f(maxu, maxv);
-    data->glVertex2f(maxx, maxy);
-
   }
-  data->glEnd();
+
+  data->glEnableClientState(GL_VERTEX_ARRAY);
+  data->glVertexPointer(3, GL_FLOAT, 0, data->Vertices);
+
+  data->glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+  data->glTexCoordPointer(2, GL_FLOAT, 0, data->TexCoord);
+
+  data->glDrawElements(GL_TRIANGLES, 3 * data->size, GL_UNSIGNED_SHORT, data->indices);
+
+  data->glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+  data->glDisableClientState(GL_VERTEX_ARRAY);
 
   data->glDisable(texturedata->type);
 
@@ -1527,6 +1576,6 @@ GL_UnbindTexture (SDL_Renderer * renderer, SDL_Texture *texture)
     return 0;
 }
 
-#endif /* SDL_VIDEO_RENDER_OGL && !SDL_RENDER_DISABLED */
+//#endif /* SDL_VIDEO_RENDER_OGL && !SDL_RENDER_DISABLED */
 
 /* vi: set ts=4 sw=4 expandtab: */
