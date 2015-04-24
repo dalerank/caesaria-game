@@ -323,8 +323,10 @@ void SdlEngine::endRenderFrame()
       _d->fpsText->fill( 0, Rect() );
       _d->debugFont.draw( *_d->fpsText, debugText, Point( 0, 0 ) );
       timeCount = DebugTimer::ticks();
+      Logger::warning( "FPS: %d", _d->fps );
     }
     draw( *_d->fpsText, Point( _d->screen.width() / 2, 2 ) );
+
   }
 
   //Refresh the screen
@@ -343,8 +345,6 @@ void SdlEngine::endRenderFrame()
   }
 
   _d->drawCall = 0;
-
-  //Logger::warning( "dt=%d  dtb=%d", drawTime, drawTimeBatch );
 }
 
 void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* clipRect )
@@ -492,12 +492,12 @@ static std::vector<SDL_Rect> native_srcrects;
 static std::vector<SDL_Rect> native_dstrects;
 void SdlEngine::draw(const Picture& pic, const Rects& srcRects, const Rects& dstRects, Rect* clipRect)
 {
-  const int saveSrcsLength = native_srcrects.size();
-  const int saveDstsLength = native_dstrects.size();
+  const size_t saveSrcsLength = native_srcrects.size();
+  const size_t saveDstsLength = native_dstrects.size();
 
   native_dstrects.resize( srcRects.size() );
   native_srcrects.resize( srcRects.size() );
-  for( int i=0; i < srcRects.size(); i++ )
+  for( size_t i=0; i < srcRects.size(); i++ )
   {
     const Rect& r1 = srcRects[ i ];
     SDL_Rect& r = native_srcrects[ i ];
@@ -506,7 +506,7 @@ void SdlEngine::draw(const Picture& pic, const Rects& srcRects, const Rects& dst
     r.h = r1.height();
     r.w = r1.width();
 
-    const SDL_Rect& r2 = dstRects[ i ];
+    const Rect& r2 = dstRects[ i ];
     SDL_Rect& t = native_dstrects[ i ];
     t.x = r2.left();
     t.y = r2.top();
@@ -518,8 +518,8 @@ void SdlEngine::draw(const Picture& pic, const Rects& srcRects, const Rects& dst
 
   if( native_dstrects.size() > saveDstsLength )
       native_dstrects.reserve( native_dstrects.size() + 1 );
-  if( saveSrcsLength.size() > saveSrcsLength )
-      saveSrcsLength.reserve( saveSrcsLength.size() + 1 );
+  if( native_srcrects.size() > saveSrcsLength )
+      native_srcrects.reserve( native_srcrects.size() + 1 );
 }
 
 void SdlEngine::drawLine(const NColor &color, const Point &p1, const Point &p2)
