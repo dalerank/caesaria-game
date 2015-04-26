@@ -61,7 +61,7 @@ public:
     : PushButton( parent, Rect( pos + legionButtonOffset * index, legionButtonSize), "", -1, false, PushButton::blackBorderUp )
   {
     _fort = fort;
-    _resizeEvent();
+    _finalizeResize();
 
     PushButton* gotoLegion    = new PushButton( this, Rect( Point( gotoLegionX, 5), btnSize ), "", -1, false, PushButton::blackBorderUp );
     gotoLegion->setIcon( ResourceGroup::panelBackground, 563 );

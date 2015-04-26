@@ -77,7 +77,7 @@ public:
     : PushButton( parent, Rect( pos + requestButtonOffset * index, requestButtonSize), "", -1, false, PushButton::blackBorderUp )
   {
     _request = request;
-    _resizeEvent();
+    _finalizeResize();
 
     CONNECT( this, onClicked(), this, RequestButton::_executeRequest );
   }

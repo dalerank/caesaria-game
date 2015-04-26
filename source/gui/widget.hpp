@@ -396,7 +396,8 @@ protected:
    * When _resizeEvent() is called, the widget already has its new
    * geometry.
    */
-  virtual void _resizeEvent();
+  virtual void _finalizeResize();
+  virtual void _finalizeMove();
 
   Widgets& _getChildren();
 

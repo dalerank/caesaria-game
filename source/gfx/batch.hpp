@@ -21,6 +21,7 @@
 struct SDL_Batch;
 class Rects;
 class Rect;
+class Point;
 
 namespace gfx
 {
@@ -36,8 +37,9 @@ public:
   SDL_Batch* native() const { return _batch; }
   bool valid() const { return _batch != 0; }
   void init( SDL_Batch* batch ) { _batch = batch; }
-
-  static Batch fromPictures(const Pictures& pics, const Rects &dstrects);
+  void destroy();
+  void load(const Pictures& pics, const Rects& dstrects);
+  void load(const Pictures& pics, const Point& pos );
 private:
 
   SDL_Batch* _batch;

@@ -156,7 +156,7 @@ signals public:
 
 protected:
   //! Update the position and size of the listbox, and update the scrollbar
-  virtual void _resizeEvent();
+  virtual void _finalizeResize();
   virtual void _drawItemIcon(gfx::Engine& painter, ListBoxItem& item, const Point& pos, Rect* clipRect);
   virtual void _drawItemText(gfx::Engine& painter, ListBoxItem& item, const Point& pos, Rect* clipRect);
   virtual void _updateItemText(gfx::Engine& painter, ListBoxItem& item, const Rect& textRect, Font font, const Rect& frameRect );

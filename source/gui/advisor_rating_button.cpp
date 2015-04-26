@@ -67,19 +67,18 @@ void RatingButton::_updateTextPic()
 void RatingButton::setValue(const int value)
 {
   _value = value;
-  _resizeEvent();
+  _finalizeResize();
 }
 
 void RatingButton::setTarget(const int value)
 {
   _target = value;
-  _resizeEvent();
+  _finalizeResize();
 }
 
 void advisorwnd::RatingButton::setupUI(const VariantMap &ui)
 {
   PushButton::setupUI( ui );
-
 }
 
 }

@@ -36,35 +36,54 @@ Batch& Batch::operator=(const Batch& other)
   return *this;
 }
 
-Batch Batch::fromPictures(const Pictures &pics, const Rects& dstrects )
+void Batch::destroy()
+{
+  Engine::instance().unloadBatch( *this );
+  _batch = 0;
+}
+
+void Batch::load(const Pictures &pics, const Rects& dstrects )
 {
   if( pics.empty() )
   {
     Logger::warning( "!!! WARNING: Cant create batch from pictures, because those are empty" );
-    return Batch();
+    return;
   }
 
   if( dstrects.size() != pics.size() )
   {
     Logger::warning( "!!! WARNING: Cant create batch from pictures because length not equale dstrects" );
-    return Batch();
+    return;
   }
 
   SDL_Texture* tx = pics.at( 0 ).texture();
   Rects srcrects;
   foreach( it, pics )
   {
+    if( (*it).texture() == 0 )
+      continue;
+
     if( (*it).texture() != tx )
     {
-      Logger::warning( "!!! WARNING: Cant create batch from pictures" + (*it).name() );
-      return Batch();
+      Logger::warning( "!!! WARNING: Cant create batch from pictures " + pics.at( 0 ).name() + " to " + (*it).name() );
+      return;
     }
 
     srcrects.push_back( (*it).originRect() );
   }
 
-  Batch ret = Engine::instance().loadBatch( pics.at( 0 ), srcrects, dstrects, 0);
-  return ret;
+  *this = Engine::instance().loadBatch( pics.at( 0 ), srcrects, dstrects, 0);
+}
+
+void Batch::load(const Pictures& pics, const Point& pos )
+{
+  Rects rects;
+  foreach( it, pics )
+  {
+    rects.push_back( Rect( pos + (*it).offset(), (*it).size() ) );
+  }
+
+  load( pics, rects );
 }
 
 Batch::Batch()

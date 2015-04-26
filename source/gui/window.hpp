@@ -82,7 +82,7 @@ public:
 protected:
   void _createSystemButton( ButtonName btnName, const std::string& tooltip, bool visible );
   void _init();
-  virtual void _resizeEvent();
+  virtual void _finalizeResize();
 
 private:
   class Impl;

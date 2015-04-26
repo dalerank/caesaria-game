@@ -126,9 +126,9 @@ void Window::_init()
   _d->title->setAlignment( align::upperLeft, align::lowerRight, align::upperLeft, align::upperLeft );
 }
 
-void Window::_resizeEvent()
+void Window::_finalizeResize()
 {
-  Widget::_resizeEvent();
+  Widget::_finalizeResize();
   if( _d->backgroundType != bgNone  )
   {
     setBackground( _d->backgroundType );

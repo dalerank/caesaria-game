@@ -522,7 +522,7 @@ void ListBox::_selectNew(int ypos)
 }
 
 //! Update the position and size of the listbox, and update the scrollbar
-void ListBox::_resizeEvent()
+void ListBox::_finalizeResize()
 {
   _d->totalItemHeight = 0;
   _recalculateItemHeight( _d->font, height() );

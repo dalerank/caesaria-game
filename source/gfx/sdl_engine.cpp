@@ -554,7 +554,19 @@ void SdlEngine::draw(const Picture& pic, const Rects& srcRects, const Rects& dst
 void SdlEngine::draw(const Batch& batch, Rect *clipRect)
 {
   _d->fps++;
+
+  if( clipRect != 0 )
+  {
+    SDL_Rect r = { clipRect->left(), clipRect->top(), clipRect->width(), clipRect->height() };
+    SDL_RenderSetClipRect( _d->renderer, &r );
+  }
+
   SDL_RenderBatch( _d->renderer, batch.native() );
+
+  if( clipRect != 0 )
+  {
+    SDL_RenderSetClipRect( _d->renderer, 0 );
+  }
 }
 
 void SdlEngine::drawLine(const NColor &color, const Point &p1, const Point &p2)

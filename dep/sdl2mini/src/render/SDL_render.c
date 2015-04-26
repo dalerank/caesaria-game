@@ -1575,6 +1575,9 @@ SDL_RenderCopy(SDL_Renderer * renderer, SDL_Texture * texture,
 int
 SDL_RenderBatch(SDL_Renderer * renderer, SDL_Batch * batch )
 {
+    if( !batch )
+      return -1;
+
     CHECK_RENDERER_MAGIC(renderer, -1);
 
     SDL_Texture* texture = batch->texture;

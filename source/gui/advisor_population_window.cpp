@@ -329,7 +329,7 @@ CityChartLegend::CityChartLegend(Widget *parent, const Rect &rectangle, bool hor
 void CityChartLegend::setMaxValue(int value)
 {
   _maxValue = value;
-  _resizeEvent();
+  _finalizeResize();
 }
 
 void CityChartLegend::_updateTexture(Engine &painter)
@@ -463,7 +463,7 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
     else { _picIndex = verryThickLineIndex; }
   }
 
-  _resizeEvent();
+  _finalizeResize();
 }
 
 void CityChart::draw(Engine &painter)
