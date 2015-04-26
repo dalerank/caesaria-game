@@ -148,7 +148,7 @@ void TopMenu::Impl::initBackground( const Size& size )
     i++;
   }
 
-  background = Batch::fromPictures( pics, dstrects );
+  background.load( pics, dstrects );
 }
 
 void TopMenu::Impl::showAboutInfo()

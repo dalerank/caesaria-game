@@ -69,7 +69,7 @@ public:
   Point textOffset, iconOffset;
   Picture bgPicture;
   Picture icon;
-  Pictures background;
+  Batch background;
   PictureRef textPicture;
   unsigned int opaque;
 
@@ -198,8 +198,9 @@ void Label::_updateTexture(gfx::Engine& painter )
 void Label::_updateBackground(Engine& painter, bool& useAlpha4Text )
 {
   Rect r( Point( 0, 0 ), size() );
-  _d->background.clear();
+  _d->background.destroy();
 
+  Pictures pics;
   switch( _d->backgroundMode )
   {
   case bgSimpleWhite:
@@ -214,15 +215,17 @@ void Label::_updateBackground(Engine& painter, bool& useAlpha4Text )
     Decorator::draw( *_d->textPicture, r, Decorator::lineWhiteBorder );
   break;
 
-  case bgWhite: Decorator::draw( _d->background, r, Decorator::whiteArea); break;
-  case bgBlack: Decorator::draw( _d->background, r, Decorator::blackArea ); break;
-  case bgBrown: Decorator::draw( _d->background, r, Decorator::brownBorder );  break;
-  case bgSmBrown: Decorator::draw( _d->background, r, Decorator::brownPanelSmall ); break;
-  case bgWhiteFrame: Decorator::draw( _d->background, r, Decorator::whiteFrame ); break;
-  case bgBlackFrame: Decorator::draw( _d->background, r, Decorator::blackFrame ); break;
+  case bgWhite: Decorator::draw( pics, r, Decorator::whiteArea, Decorator::normalY ); break;
+  case bgBlack: Decorator::draw( pics, r, Decorator::blackArea, Decorator::normalY  ); break;
+  case bgBrown: Decorator::draw( pics, r, Decorator::brownBorder, Decorator::normalY  );  break;
+  case bgSmBrown: Decorator::draw( pics, r, Decorator::brownPanelSmall, Decorator::normalY  ); break;
+  case bgWhiteFrame: Decorator::draw( pics, r, Decorator::whiteFrame, Decorator::normalY  ); break;
+  case bgBlackFrame: Decorator::draw( pics, r, Decorator::blackFrame, Decorator::normalY  ); break;
   case bgNone:  break;
-  case bgWhiteBorderA: Decorator::draw( _d->background, r, Decorator::whiteBorderA ); break;
+  case bgWhiteBorderA: Decorator::draw( pics, r, Decorator::whiteBorderA, Decorator::normalY  ); break;
   }
+
+  _d->background.load( pics, absoluteRect().lefttop() );
 }
 
 void Label::_handleClick()
@@ -246,7 +249,7 @@ void Label::draw(gfx::Engine& painter )
   }
   else
   {
-    painter.draw( _d->background, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+    painter.draw( _d->background, &absoluteClippingRectRef() );
   }
 
   if( _d->icon.isValid() )
@@ -668,7 +671,7 @@ void Label::setTextAlignment( Alignment horizontal, Alignment vertical )
   _d->needUpdatePicture = true;
 }
 
-void Label::_resizeEvent() {  _d->needUpdatePicture = true; }
+void Label::_finalizeResize() {  _d->needUpdatePicture = true; }
 
 void Label::setLineIntervalOffset( const int offset )
 {
@@ -701,7 +704,7 @@ void Label::setupUI(const VariantMap& ui)
 }
 
 void Label::setTextOffset(Point offset) {  _d->textOffset = offset;}
-PictureRef& Label::_textPictureRef(){  return _d->textPicture; }
-gfx::Pictures&Label::_backgroundRef(){ return _d->background; }
+PictureRef& Label::_textPictureRef() { return _d->textPicture; }
+Batch& Label::_background() { return _d->background; }
 
 }//end namespace gui

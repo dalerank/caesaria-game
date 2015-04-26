@@ -61,7 +61,7 @@ public:
 	unsigned int max;
 	std::string holderText;
   Picture bgPicture;
-  Pictures background;
+  Batch background;
   PictureRef textPicture;
 
 	bool wordWrapEnabled, multiLine, autoScrollEnabled, isPasswordBox;
@@ -212,7 +212,7 @@ void EditBox::setWordWrap(bool enable)
 	_breakText();
 }
 
-void EditBox::_resizeEvent()
+void EditBox::_finalizeResize()
 {
   _breakText();
   _calculateScrollPos();
@@ -787,7 +787,11 @@ void EditBox::beforeDraw(Engine& painter)
 
     if( !_d->bgPicture.isValid() )
     {
-      Decorator::draw( _d->background, Rect( 0, 0, width(), height() ), Decorator::blackFrame );
+      _d->background.destroy();
+
+      Pictures pics;
+      Decorator::draw( pics, Rect( 0, 0, width(), height() ), Decorator::blackFrame, Decorator::normalY );
+      _d->background.load( pics, absoluteRect().lefttop() );
     }
 
     Rect localClipRect = absoluteRect();
@@ -977,7 +981,7 @@ void EditBox::draw( Engine& painter )
   }
   else
   {
-    painter.draw( _d->background, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+    painter.draw( _d->background, &absoluteClippingRectRef() );
   }
 
   if( _d->textPicture )

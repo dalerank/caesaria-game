@@ -570,7 +570,7 @@ void PushButton::setFont( const Font& font )
 PictureRef& PushButton::_textPictureRef() {  return _dfunc()->textPicture;}
 Font PushButton::font( ElementState state ) {  return _dfunc()->buttonStates[ state ].font;}
 
-void PushButton::_resizeEvent()
+void PushButton::_finalizeResize()
 {
   _updateStyle();
   _dfunc()->needUpdateTextPic = true;
