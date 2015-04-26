@@ -66,8 +66,12 @@ static int GL_RenderFillRects(SDL_Renderer * renderer,
                               const SDL_FRect * rects, int count);
 static int GL_RenderCopy(SDL_Renderer * renderer, SDL_Texture * texture,
                          const SDL_Rect * srcrect, const SDL_FRect * dstrect);
-static int GL_RenderBatch(SDL_Renderer * renderer, SDL_Texture * texture,
-                          const SDL_Rect * srcrect, const SDL_Rect* dstrect, unsigned int size);
+
+static int GL_CreateBatch(SDL_Renderer * renderer, SDL_Batch* batch, SDL_Texture * texture,
+                                 const SDL_Rect * srcrect, const SDL_Rect* dstrect, unsigned int size);
+static int GL_RenderBatch(SDL_Renderer * renderer, SDL_Batch * batch);
+static int GL_DestroyBatch(SDL_Renderer * renderer, SDL_Batch * batch);
+
 static int GL_RenderCopyEx(SDL_Renderer * renderer, SDL_Texture * texture,
                          const SDL_Rect * srcrect, const SDL_FRect * dstrect,
                          const double angle, const SDL_FPoint *center, const SDL_RendererFlip flip);
@@ -105,10 +109,6 @@ typedef struct
 
     SDL_bool debug_enabled;
     SDL_bool GL_ARB_debug_output_supported;
-    GLfloat* Vertices;
-    GLfloat* TexCoord;
-    GLushort* indices;
-    int size;
 
     int errors;
     char **error_messages;
@@ -419,6 +419,8 @@ GL_CreateRenderer(SDL_Window * window, Uint32 flags)
     renderer->RenderFillRects = GL_RenderFillRects;
     renderer->RenderCopy = GL_RenderCopy;
     renderer->RenderBatch = GL_RenderBatch;
+    renderer->CreateBatch = GL_CreateBatch;
+    renderer->DestroyBatch = GL_DestroyBatch;
     renderer->RenderCopyEx = GL_RenderCopyEx;
     renderer->RenderReadPixels = GL_RenderReadPixels;
     renderer->RenderPresent = GL_RenderPresent;
@@ -431,10 +433,6 @@ GL_CreateRenderer(SDL_Window * window, Uint32 flags)
     renderer->driverdata = data;
     renderer->window = window;
 
-    data->Vertices = 0;
-    data->TexCoord = 0;
-    data->size = 0;
-    data->indices = 0;
     data->context = SDL_GL_CreateContext(window);
     if (!data->context) {
         GL_DestroyRenderer(renderer);
@@ -1089,17 +1087,24 @@ GL_RenderFillRects(SDL_Renderer * renderer, const SDL_FRect * rects, int count)
 }
 
 static int
-GL_RenderBatch(SDL_Renderer * renderer, SDL_Texture * texture,
-               const SDL_Rect * srcrect, const SDL_Rect * dstrect, unsigned int size)
+GL_CreateBatch(SDL_Renderer * renderer, SDL_Batch* batch, SDL_Texture * texture,
+            const SDL_Rect * srcrect, const SDL_Rect * dstrect, unsigned int size)
 {
   SDL_Rect textureRect = { 0, 0, 0, 0 };
   SDL_Rect renderingRect = { 0, 0, 0, 0 };
   SDL_Rect tmp_srcrect = { 0, 0, 0, 0 };
   SDL_Rect tmp_dstrect = { 0, 0, 0, 0 };
+  int i = 0;
+  GLfloat* TexCoord = 0;
+  GLfloat* vertices = 0;
+  GLushort* indices = 0;
   SDL_FRect frect;
   unsigned int iTx = 0;
+  unsigned int iRtx= 0;
 
-  GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
+  if( batch == 0 )
+    return -1;
+
   GL_TextureData *texturedata = (GL_TextureData *) texture->driverdata;
   GLfloat minx, miny, maxx, maxy;
   GLfloat minu, maxu, minv, maxv;
@@ -1113,7 +1118,111 @@ GL_RenderBatch(SDL_Renderer * renderer, SDL_Texture * texture,
   renderingRect.x = 0;
   renderingRect.y = 0;
 
+  batch->texture     = texture;
   if (texture->native)
+  {
+      texture = texture->native;
+  }
+
+  batch->vertices    = SDL_malloc( sizeof(GLfloat) * 4 * 3 * size );
+  batch->coordinates = SDL_malloc( sizeof(GLfloat) * 4 * 2 * size );
+  batch->indices     = SDL_malloc( sizeof(GLushort) * 2 * 3 * size );
+  batch->size = size;
+
+  TexCoord = (GLfloat*)batch->coordinates;
+  vertices = (GLfloat*)batch->vertices;
+  indices = (GLushort*)batch->indices;
+
+  for( ; iTx < size; iTx++ )
+  {
+    tmp_srcrect = srcrect[ iTx ];
+    tmp_dstrect = dstrect[ iTx ];
+    if (tmp_srcrect.h>0 || tmp_srcrect.y>0)
+    {
+        if (!SDL_IntersectRect(&tmp_srcrect, &textureRect, &tmp_srcrect))
+        {
+            continue;
+        }
+    }
+
+    if (tmp_dstrect.h>0 || tmp_dstrect.w>0)
+    {
+        if (!SDL_HasIntersection(&renderingRect, &tmp_dstrect))
+        {
+            continue;
+        }
+    }
+
+    frect.x = tmp_dstrect.x * renderer->scale.x;
+    frect.y = tmp_dstrect.y * renderer->scale.y;
+    frect.w = tmp_dstrect.w * renderer->scale.x;
+    frect.h = tmp_dstrect.h * renderer->scale.y;
+
+    minx = frect.x;
+    miny = frect.y;
+    maxx = frect.x + frect.w;
+    maxy = frect.y + frect.h;
+
+    minu = (GLfloat) tmp_srcrect.x / texture->w;
+    minu *= texturedata->texw;
+    maxu = (GLfloat) (tmp_srcrect.x + tmp_srcrect.w) / texture->w;
+    maxu *= texturedata->texw;
+    minv = (GLfloat) tmp_srcrect.y / texture->h;
+    minv *= texturedata->texh;
+    maxv = (GLfloat) (tmp_srcrect.y + tmp_srcrect.h) / texture->h;
+    maxv *= texturedata->texh;
+
+    i = iRtx;
+    TexCoord[ i * 8 + 0 ] = minu; TexCoord[ i * 8 + 1 ] = minv;
+    TexCoord[ i * 8 + 2 ] = maxu; TexCoord[ i * 8 + 3 ] = minv;
+    TexCoord[ i * 8 + 4 ] = maxu; TexCoord[ i * 8 + 5 ] = maxv;
+    TexCoord[ i * 8 + 6 ] = minu; TexCoord[ i * 8 + 7 ] = maxv;
+
+    vertices[ i * 12 + 0 ] = minx; vertices[ i * 12 + 1 ] = miny;  vertices[ i * 12 + 2 ] = 0;
+    vertices[ i * 12 + 3 ] = maxx; vertices[ i * 12 + 4 ] = miny;  vertices[ i * 12 + 5 ] = 0;
+    vertices[ i * 12 + 6 ] = maxx; vertices[ i * 12 + 7 ] = maxy;  vertices[ i * 12 + 8 ] = 0;
+    vertices[ i * 12 + 9 ] = minx; vertices[ i * 12 + 10 ] = maxy; vertices[ i * 12 + 11 ] = 0;
+
+    indices[ i * 6 + 0 ] = i * 4; indices[ i * 6 + 1 ] = i * 4 + 1; indices[ i * 6 + 2 ] = i * 4 + 2;
+    indices[ i * 6 + 3 ] = i * 4; indices[ i * 6 + 4 ] = i * 4 + 2; indices[ i * 6 + 5 ] = i * 4 + 3;
+    iRtx++;
+  }
+
+  return 0;
+}
+
+static int
+GL_DestroyBatch(SDL_Renderer *renderer, SDL_Batch *batch)
+{
+  if( batch == 0 )
+    return -1;
+
+  if( batch->vertices != 0)
+      SDL_free( batch->vertices );
+
+  if( batch->coordinates != 0 )
+      SDL_free( batch->coordinates );
+
+  if( batch->indices != 0 )
+      SDL_free( batch->indices );
+
+  return 0;
+}
+
+static int
+GL_RenderBatch(SDL_Renderer * renderer, SDL_Batch * batch)
+{
+  if( batch == 0 )
+    return -1;
+
+  if( batch->size == 0 || batch->texture == 0 )
+    return -1;
+
+  GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
+  GL_TextureData *texturedata = (GL_TextureData *) batch->texture->driverdata;
+  SDL_Texture* texture = batch->texture;
+
+  if ( texture->native)
   {
       texture = texture->native;
   }
@@ -1151,94 +1260,13 @@ GL_RenderBatch(SDL_Renderer * renderer, SDL_Texture * texture,
       GL_SetShader(data, SHADER_RGB);
   }
 
-  if( size > data->size )
-  {
-    if( data->Vertices != 0)
-        SDL_free( data->Vertices );
-
-    if( data->TexCoord != 0 )
-        SDL_free( data->TexCoord );
-
-    if( data->indices != 0 )
-        SDL_free( data->indices );
-
-
-    data->Vertices = SDL_malloc( sizeof(GLfloat) * 2 * 6 * size );
-    data->TexCoord = SDL_malloc( sizeof(GLfloat) * 2 * 4 * size );
-    data->indices = SDL_malloc( sizeof(GLushort) * 2 * 3 * size );
-
-    data->size = size;
-
-    for( ; iTx < size; iTx++ )
-    {
-      tmp_srcrect = srcrect[ iTx ];
-      tmp_dstrect = dstrect[ iTx ];
-      /*if (tmp_srcrect.h>0 || tmp_srcrect.y>0)
-      {
-          if (!SDL_IntersectRect(&tmp_srcrect, &textureRect, &tmp_srcrect))
-          {
-              continue;
-          }
-      }
-
-      if (tmp_dstrect.h>0 || tmp_dstrect.w>0)
-      {
-          if (!SDL_HasIntersection(&renderingRect, &tmp_dstrect))
-          {
-              continue;
-          }
-      }*/
-
-      frect.x = tmp_dstrect.x * renderer->scale.x;
-      frect.y = tmp_dstrect.y * renderer->scale.y;
-      frect.w = tmp_dstrect.w * renderer->scale.x;
-      frect.h = tmp_dstrect.h * renderer->scale.y;
-
-      minx = frect.x;
-      miny = frect.y;
-      maxx = frect.x + frect.w;
-      maxy = frect.y + frect.h;
-
-      minu = (GLfloat) tmp_srcrect.x / texture->w;
-      minu *= texturedata->texw;
-      maxu = (GLfloat) (tmp_srcrect.x + tmp_srcrect.w) / texture->w;
-      maxu *= texturedata->texw;
-      minv = (GLfloat) tmp_srcrect.y / texture->h;
-      minv *= texturedata->texh;
-      maxv = (GLfloat) (tmp_srcrect.y + tmp_srcrect.h) / texture->h;
-      maxv *= texturedata->texh;
-
-      const int i = iTx;
-      data->TexCoord[ i * 8 + 0 ] = minu; data->TexCoord[ i * 8 + 1 ] = minv;
-      data->TexCoord[ i * 8 + 2 ] = maxu; data->TexCoord[ i * 8 + 3 ] = minv;
-      data->TexCoord[ i * 8 + 4 ] = maxu; data->TexCoord[ i * 8 + 5 ] = maxv;
-      data->TexCoord[ i * 8 + 6 ] = minu; data->TexCoord[ i * 8 + 7 ] = maxv;
-
-      data->Vertices[ i * 12 + 0 ] = minx; data->Vertices[ i * 12 + 1 ] = miny; data->Vertices[ i * 12 + 2 ] = 0;
-      data->Vertices[ i * 12 + 3 ] = maxx; data->Vertices[ i * 12 + 4 ] = miny; data->Vertices[ i * 12 + 5 ] = 0;
-      data->Vertices[ i * 12 + 6 ] = maxx; data->Vertices[ i * 12 + 7 ] = maxy; data->Vertices[ i * 12 + 8 ] = 0;
-      data->Vertices[ i * 12 + 9 ] = minx; data->Vertices[ i * 12 + 10 ] = maxy; data->Vertices[ i * 12 + 11 ] = 0;
-      //data->glTexCoord2f(minu, minv);
-      //data->glVertex2f(minx, miny);
-      //data->glTexCoord2f(maxu, minv);
-      //data->glVertex2f(maxx, miny);
-      //data->glTexCoord2f(minu, maxv);
-      //data->glVertex2f(minx, maxy);
-      //data->glTexCoord2f(maxu, maxv);
-      //data->glVertex2f(maxx, maxy);
-
-      data->indices[ i * 6 + 0 ] = i * 6; data->indices[ i * 6 + 1 ] = i * 6 + 1; data->indices[ i * 6 + 2 ] = i * 6 + 2;
-      data->indices[ i * 6 + 3 ] = i * 6; data->indices[ i * 6 + 4 ] = i * 6 + 2; data->indices[ i * 6 + 5 ] = i * 6 + 3;
-    }
-  }
-
   data->glEnableClientState(GL_VERTEX_ARRAY);
-  data->glVertexPointer(3, GL_FLOAT, 0, data->Vertices);
+  data->glVertexPointer(3, GL_FLOAT, 0, batch->vertices);
 
   data->glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-  data->glTexCoordPointer(2, GL_FLOAT, 0, data->TexCoord);
+  data->glTexCoordPointer(2, GL_FLOAT, 0, batch->coordinates);
 
-  data->glDrawElements(GL_TRIANGLES, 3 * data->size, GL_UNSIGNED_SHORT, data->indices);
+  data->glDrawElements(GL_TRIANGLES, 6 * batch->size, GL_UNSIGNED_SHORT, batch->indices);
 
   data->glDisableClientState(GL_TEXTURE_COORD_ARRAY);
   data->glDisableClientState(GL_VERTEX_ARRAY);

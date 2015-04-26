@@ -102,6 +102,59 @@ void SdlEngine::deletePicture( Picture* pic )
     unloadPicture( *pic );
 }
 
+SDL_Batch* __createBatch( SDL_Renderer* render, const Picture& pic, const Rects& srcRects, const Rects& dstRects, Rect* clipRect)
+{
+  static std::vector<SDL_Rect> native_srcrects;
+  static std::vector<SDL_Rect> native_dstrects;
+
+  const size_t saveSrcsLength = native_srcrects.size();
+  const size_t saveDstsLength = native_dstrects.size();
+
+  native_dstrects.resize( srcRects.size() );
+  native_srcrects.resize( srcRects.size() );
+  for( size_t i=0; i < srcRects.size(); i++ )
+  {
+    const Rect& r1 = srcRects[ i ];
+    SDL_Rect& r = native_srcrects[ i ];
+    r.x = r1.left();
+    r.y = r1.top();
+    r.h = r1.height();
+    r.w = r1.width();
+
+    const Rect& r2 = dstRects[ i ];
+    SDL_Rect& t = native_dstrects[ i ];
+    t.x = r2.left();
+    t.y = r2.top();
+    t.h = r2.height();
+    t.w = r2.width();
+  }
+
+  SDL_Batch* ret = SDL_CreateBatch(render,pic.texture(),
+                                   native_srcrects.data(),native_dstrects.data(),
+                                   native_srcrects.size());
+
+  if( native_dstrects.size() > saveDstsLength )
+      native_dstrects.reserve( native_dstrects.size() + 1 );
+  if( native_srcrects.size() > saveSrcsLength )
+      native_srcrects.reserve( native_srcrects.size() + 1 );
+
+  return ret;
+}
+
+Batch SdlEngine::loadBatch(const Picture &pic, const Rects &srcRects, const Rects &dstRects, Rect *clipRect)
+{
+  Batch ret;
+  SDL_Batch* batch = __createBatch( _d->renderer, pic, srcRects, dstRects, clipRect );
+  ret.init( batch );
+
+  return ret;
+}
+
+void SdlEngine::unloadBatch(const Batch& batch)
+{
+  SDL_DestroyBatch( _d->renderer, batch.native() );
+}
+
 unsigned int SdlEngine::format() const
 {
   return SDL_GetWindowPixelFormat(_d->window);
@@ -323,16 +376,14 @@ void SdlEngine::endRenderFrame()
       _d->fpsText->fill( 0, Rect() );
       _d->debugFont.draw( *_d->fpsText, debugText, Point( 0, 0 ) );
       timeCount = DebugTimer::ticks();
+#ifdef SHOW_FPS_IN_LOG
       Logger::warning( "FPS: %d", _d->fps );
+#endif
     }
     draw( *_d->fpsText, Point( _d->screen.width() / 2, 2 ) );
 
   }
 
-  //Refresh the screen
-  //SDL_SetRenderTarget( _d->renderer, NULL );
-
-  //SDL_RenderCopyEx(_d->renderer, _d->screen.texture(), 0, 0, 0, 0, SDL_FLIP_HORIZONTAL );
   SDL_RenderPresent(_d->renderer);
 
   _d->fps++;
@@ -402,7 +453,7 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
       return;
 
   int t = DateTime::elapsedTime();
-  _d->drawCall++;
+  _d->drawCall+=pictures.size();
 
   if( clipRect != 0 )
   {
@@ -488,38 +539,22 @@ void SdlEngine::draw(const Picture& pic, const Rect& srcRect, const Rect& dstRec
   drawTime += DateTime::elapsedTime() - t;
 }
 
-static std::vector<SDL_Rect> native_srcrects;
-static std::vector<SDL_Rect> native_dstrects;
 void SdlEngine::draw(const Picture& pic, const Rects& srcRects, const Rects& dstRects, Rect* clipRect)
 {
-  const size_t saveSrcsLength = native_srcrects.size();
-  const size_t saveDstsLength = native_dstrects.size();
+  SDL_Batch* batch = __createBatch( _d->renderer, pic, srcRects, dstRects, clipRect );
+  _d->fps++;
 
-  native_dstrects.resize( srcRects.size() );
-  native_srcrects.resize( srcRects.size() );
-  for( size_t i=0; i < srcRects.size(); i++ )
+  if( batch )
   {
-    const Rect& r1 = srcRects[ i ];
-    SDL_Rect& r = native_srcrects[ i ];
-    r.x = r1.left();
-    r.y = r1.top();
-    r.h = r1.height();
-    r.w = r1.width();
-
-    const Rect& r2 = dstRects[ i ];
-    SDL_Rect& t = native_dstrects[ i ];
-    t.x = r2.left();
-    t.y = r2.top();
-    t.h = r2.height();
-    t.w = r2.width();
+    SDL_RenderBatch( _d->renderer, batch );
+    SDL_DestroyBatch( _d->renderer, batch );
   }
+}
 
-  SDL_RenderBatch( _d->renderer, pic.texture(), native_srcrects.data(), native_dstrects.data(), native_srcrects.size() );
-
-  if( native_dstrects.size() > saveDstsLength )
-      native_dstrects.reserve( native_dstrects.size() + 1 );
-  if( native_srcrects.size() > saveSrcsLength )
-      native_srcrects.reserve( native_srcrects.size() + 1 );
+void SdlEngine::draw(const Batch& batch, Rect *clipRect)
+{
+  _d->fps++;
+  SDL_RenderBatch( _d->renderer, batch.native() );
 }
 
 void SdlEngine::drawLine(const NColor &color, const Point &p1, const Point &p2)

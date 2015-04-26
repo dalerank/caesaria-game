@@ -22,6 +22,7 @@
 #include "picturesarray.hpp"
 #include "core/size.hpp"
 #include "core/rect_array.hpp"
+#include "batch.hpp"
 #include <map>
 
 struct NEvent;
@@ -58,6 +59,9 @@ public:
   virtual void loadPicture( Picture& ioPicture, bool streaming ) = 0;
   virtual void unloadPicture( Picture& ioPicture) = 0;
 
+  virtual Batch loadBatch(const Picture& pic, const Rects& srcRects, const Rects& dstRects, Rect* clipRect=0) = 0;
+  virtual void unloadBatch( const Batch& batch ) = 0;
+
   virtual void initViewport( int, Size s) = 0;
   virtual void setViewport( int, bool render) = 0;
   virtual void drawViewport( int, Rect r) = 0;
@@ -70,6 +74,8 @@ public:
   virtual void draw(const Picture& pic, const Rect& srcRect, const Rect& dstRect, Rect* clipRect=0 ) = 0;
   virtual void draw(const Pictures& pic, const Point& pos, Rect* clipRect=0 ) = 0;
   virtual void draw(const Picture& pic, const Rects& srcRects, const Rects& dstRects, Rect* clipRect=0 ) = 0;
+  virtual void draw(const Batch& batch, Rect* clipRect=0 ) = 0;
+
   virtual void drawLine( const NColor& color, const Point& p1, const Point& p2 ) = 0;
 
   virtual void setColorMask( int rmask, int gmask, int bmask, int amask ) = 0;

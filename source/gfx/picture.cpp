@@ -110,48 +110,6 @@ void Picture::setAlpha(unsigned char value)
   }
 }
 
-/*void Picture::draw(const Picture &srcpic, const Rect& srcrect, const Point& pos, bool useAlpha )
-{
-  draw( srcpic, srcrect, Rect( pos, srcrect.size() ), useAlpha );
-}
-
-void Picture::draw(const Picture &srcpic, const Rect& srcrect, const Rect& dstrect, bool useAlpha )
-{
-  SDL_Surface* srcimg = srcpic.surface();
-
-  if( !(srcimg && _d->texture) )
-  {
-    Logger::warning("Picture does not have surface or srcimg is null");
-    return;
-  }
-
-  SDL_Rect srcRect, dstRect;
-
-  srcRect.x = srcrect.left();
-  srcRect.y = srcrect.top();
-  srcRect.w = srcrect.width();
-  srcRect.h = srcrect.height();
-  dstRect.x = dstrect.left();
-  dstRect.y = dstrect.top();
-  dstRect.w = dstrect.width();
-  dstRect.h = dstrect.height();
-
-  SDL_BlitSurface( srcimg, &srcRect, _d->surface, &dstRect );
-}
-
-void Picture::draw(const Picture &srcpic, const Point& pos, bool useAlpha )
-{
-  const Point& offset = srcpic._d->offset;
-  draw( srcpic, Rect( Point( 0, 0 ), srcpic.size() ), 
-                Rect( pos + Point( offset.x(), -offset.y() ), srcpic.size() ), useAlpha );
-
-}
-
-void Picture::draw(const Picture &srcpic, int x, int y, bool useAlpha )
-{
-  draw( srcpic, Point( x, y ), useAlpha );
-} */
-
 unsigned int* Picture::lock()
 {
   /*if( _d->texture )

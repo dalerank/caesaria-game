@@ -528,18 +528,7 @@ void StartMenu::draw()
 {
   _d->game->gui()->beforeDraw();
 
-  static Rects src, dst;
-  Rect srcr( 0, 0, _d->bgPicture.width(), _d->bgPicture.height() );
-  if( src.empty() )
-  {
-    for( int i=0; i < 1000; i++ )
-    {
-      src.push_back( srcr );
-      dst.push_back( srcr + Point( _d->bgPicture.width() / 2 + math::random(20), math::random(20)));
-    }
-  }
-
-  _d->engine->draw(_d->bgPicture,src,dst);
+  _d->engine->draw(_d->bgPicture,0,0);
 
   _d->game->gui()->draw();
 

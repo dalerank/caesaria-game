@@ -72,6 +72,15 @@ struct SDL_Texture
     SDL_Texture *next;
 };
 
+struct SDL_Batch
+{
+    SDL_Texture* texture;
+    void* vertices;
+    void* coordinates;
+    void* indices;
+    unsigned int size;
+};
+
 /* Define the SDL renderer structure */
 struct SDL_Renderer
 {
@@ -105,8 +114,10 @@ struct SDL_Renderer
     int (*RenderCopy) (SDL_Renderer * renderer, SDL_Texture * texture,
                        const SDL_Rect * srcrect, const SDL_FRect * dstrect);
 
-    int (*RenderBatch) (SDL_Renderer * renderer, SDL_Texture * texture,
-                       const SDL_Rect * srcrect, const SDL_FRect * dstrect, unsigned int size);
+    int (*RenderBatch) (SDL_Renderer * renderer, SDL_Batch * batch);
+    int (*CreateBatch) (SDL_Renderer * renderer, SDL_Batch*,  SDL_Texture * texture,
+                        const SDL_Rect * srcrect, const SDL_Rect * dstrect, unsigned int size);
+    int (*DestroyBatch) (SDL_Renderer * renderer, SDL_Batch* batch);
 
     int (*RenderCopyEx) (SDL_Renderer * renderer, SDL_Texture * texture,
                        const SDL_Rect * srcquad, const SDL_FRect * dstrect,
