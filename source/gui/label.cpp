@@ -152,7 +152,7 @@ void Label::_updateTexture(gfx::Engine& painter )
     Rect frameRect( Point( 0, 0 ), size() );
     string rText = _d->prefix + text();
 
-    if( rText.size() && _d->font.isValid() )
+    if( rText.size() )
     {
       //eColor = GetResultColor( eColor );
       if( !_d->isWordwrap )

@@ -232,7 +232,7 @@ void Layer::drawPass( Engine& engine, Tile& tile, const Point& offset, Renderer:
   }
 }
 
-void Layer::drawWalkers( const Tile& tile, const Point& camOffset )
+void Layer::drawWalkers( Engine& engine, const Tile& tile, const Point& camOffset )
 {
   Pictures pics;
   const WalkerList& walkers = _city()->walkers( tile.pos() );
@@ -240,13 +240,17 @@ void Layer::drawWalkers( const Tile& tile, const Point& camOffset )
 
   bool viewAll = vWalkers.count( walker::all );
   DrawBatcher& batcher = DrawBatcher::instance();
+
   foreach( w, walkers )
   {
     if( viewAll || vWalkers.count( (*w)->type() ) > 0 )
     {
       pics.clear();
       (*w)->getPictures( pics );
-      batcher.append( pics, (*w)->mappos() + camOffset );
+      if( batcher.active() )
+        batcher.append( pics, (*w)->mappos() + camOffset );
+      else
+        engine.draw( pics, (*w)->mappos() + camOffset );
     }
   }
 }
@@ -295,7 +299,7 @@ void Layer::render( Engine& engine)
     int z = tile->epos().z();
 
     drawProminentTile( engine, *tile, camOffset, z, false );
-    drawWalkers( *tile, camOffset );
+    drawWalkers( engine, *tile, camOffset );
     drawWalkerOverlap( engine, *tile, camOffset, z );
   }
 
@@ -342,7 +346,7 @@ const Layer::WalkerTypes& Layer::visibleTypes() const
   return _dfunc()->vwalkers;
 }
 
-void Layer::drawProminentTile( Tile& tile, const Point& offset, const int depth, bool force)
+void Layer::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, const int depth, bool force)
 {
   if( tile.isFlat() && !force )
   {
@@ -353,7 +357,7 @@ void Layer::drawProminentTile( Tile& tile, const Point& offset, const int depth,
 
   if( 0 == master )    // single-tile
   {
-    drawTile( tile, offset );
+    drawTile( engine, tile, offset );
     return;
   }
 
@@ -361,7 +365,7 @@ void Layer::drawProminentTile( Tile& tile, const Point& offset, const int depth,
   // and it is time to draw the master tile
   if( !master->rwd() && master == &tile )
   {
-    drawTile( *master, offset );
+    drawTile( engine, *master, offset );
   }
 }
 
@@ -403,8 +407,11 @@ void Layer::drawArea(Engine& engine, const TilesArray& area, const Point &offset
     Tile* tile = *it;
     int tileBorders = ( tile->i() == leftBorderAtI ? 0 : OverlayPic::skipLeftBorder )
                       + ( tile->j() == rightBorderAtJ ? 0 : OverlayPic::skipRightBorder );
-    Picture *pic = &Picture::load(resourceGroup, tileBorders + tileId);
-    batcher.append( *pic, tile->mappos() + offset );
+    const Picture& pic = Picture::load(resourceGroup, tileBorders + tileId);
+    if( batcher.active() )
+      batcher.append( pic, tile->mappos() + offset );
+    else
+      engine.draw( pic, tile->mappos() + offset );
   }
 }
 
@@ -415,22 +422,14 @@ void Layer::drawLands( Engine& engine, Camera* camera )
   const Picture& terrainPic = _dfunc()->terraintPic;
   Point camOffset = camera->offset();
 
-  __D_IMPL(_d,Layer)
-  _d->batchLands( flatTiles );
-
-  foreach( it, _d->flatBatches )
-  {
-    engine.draw( *it, 0 );
-  }
-
   // FIRST PART: draw all flat land (walkable/boatable)
-  /*foreach( it, flatTiles )
+  foreach( it, flatTiles )
   {
     drawPass( engine, **it, camOffset, Renderer::ground );
     drawPass( engine, **it, camOffset, Renderer::groundAnimation );
 
     drawTile( engine, **it, camOffset );
-  }*/
+  }
 
   if( DrawOptions::instance().isFlag( DrawOptions::oldGraphics ) )
     return;
@@ -751,7 +750,7 @@ void DrawBatcher::append(const Picture& pic, const Point& pos)
     Batch batch;
     batch.load( _currentTx, _currentSrcRects, _currentDstRects );
 
-    Logger::warning( "!!! WARNING: cant batch " + ptx->picture().name() + " to " + (*it)->picture().name() + " : Swith to next state" );
+    Logger::warning( "!!! WARNING: cant batch " + _currentTx.name() + " to " + pic.name() + " : Swith to next state" );
 
     _currentTx = pic;
     _states.push_back( batch );
@@ -762,6 +761,12 @@ void DrawBatcher::append(const Picture& pic, const Point& pos)
 
   _currentSrcRects.push_back( pic.originRect() );
   _currentDstRects.push_back( Rect( pos + pic.offset(), pic.size() ) );
+}
+
+void DrawBatcher::append(const Pictures& pics, const Point& pos)
+{
+  foreach( it, pics )
+    append( *it, pos );
 }
 
 void DrawBatcher::begin()

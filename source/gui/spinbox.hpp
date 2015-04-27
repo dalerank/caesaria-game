@@ -13,52 +13,45 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_WINDOW_SOUND_OPTIONS_H_INCLUDE_
-#define _CAESARIA_WINDOW_SOUND_OPTIONS_H_INCLUDE_
+#ifndef __CAESARIA_GUISPINBOX_H_INCLUDE_
+#define __CAESARIA_GUISPINBOX_H_INCLUDE_
 
-#include "window.hpp"
-#include "core/signals.hpp"
-#include "gfx/engine.hpp"
-#include "sound/constants.hpp"
+#include "label.hpp"
 
 namespace gui
 {
 
-namespace dialog
-{
-
-class SoundController
+class SpinBox : public Label
 {
 public:
+  //! constructor
+  SpinBox(Widget* parent );
 
-};
+  SpinBox(Widget* parent, const Rect& rectangle, const std::string& text="", const std::string& postfix="", int id=-1);
 
-class SoundOptions : public Window
-{
-public:
-  SoundOptions( Widget* parent,
-                int gameSound, int ambientSound, int themeSound );
+  //! destructor
+  virtual ~SpinBox();
 
-  //! Destructor
-  virtual ~SoundOptions(void);
+  //! draws the element and its children
+  virtual void draw( gfx::Engine& painter );
 
-  virtual bool onEvent(const NEvent &event);
-
-public signals:
-  Signal2<audio::SoundType, int >& onSoundChange();
-  Signal0<>& onClose();
+  virtual void setupUI( const VariantMap& ui );
+    
+signals public:
+  virtual Signal1<int>& onChange();
 
 private:
+  void _updateTexture(gfx::Engine &painter);
+  void _increase();
+  void _decrease();
   void _update();
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-}//end namespace dialog
+}//end namespace gui
 
-} //end namespace gui
-
-#endif //_CAESARIA_WINDOW_SOUND_OPTIONS_H_INCLUDE_
+#endif //__CAESARIA_GUISPINBOX_H_INCLUDE_
