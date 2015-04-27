@@ -657,14 +657,14 @@ void ListBox::beforeDraw(gfx::Engine& painter)
 void ListBox::refresh() {  _d->needItemsRepackTextures = true; }
 
 //! draws the element and its children
-void ListBox::draw(gfx::Engine& painter )
+void ListBox::draw( gfx::Engine& painter )
 {
   if ( !visible() )
 		return;
 
   if( isFlag( drawBackground ) )
   {
-    painter.draw( _d->background, 0 );
+    painter.draw( _d->background, &absoluteClippingRectRef() );
   }
 
   Point scrollBarOffset( 0, -_d->scrollBar->value() );

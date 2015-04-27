@@ -43,21 +43,17 @@ using namespace gfx;
 namespace citylayer
 {
 
-typedef std::vector<Batch> Batches;
-
 class Layer::Impl
 {
 public:
   typedef std::set<object::Type> AlwaysDrawObjects;
 
-  Batches flatBatches;
   Point lastCursorPos;
   Point startCursorPos;
   Camera* camera;
   Tile* currentTile;
   PlayerCityPtr city;
   PictureRef outline;
-  bool needUpdateOutline;
   PictureRef tooltipPic;
   int nextLayer;
   std::string tooltipText;
@@ -68,9 +64,6 @@ public:
   AlwaysDrawObjects drObjects;
 
   int posMode;
-public:
-  void updateOutlineTexture( Tile* tile );
-  void batchLands( const TilesArray& tiles );
 };
 
 void Layer::registerTileForRendering(Tile& tile)
@@ -111,7 +104,6 @@ void Layer::handleEvent(NEvent& event)
       }
 
       Tile* selectedTile = _d->camera->at( _d->lastCursorPos, true );
-      _d->needUpdateOutline = (selectedTile != _d->currentTile);
       _d->currentTile = selectedTile;
     }
     break;
@@ -202,55 +194,59 @@ TilesArray Layer::_getSelectedArea( TilePos startPos )
 }
 
 void Layer::drawPass( Engine& engine, Tile& tile, const Point& offset, Renderer::Pass pass)
-{
-  Point screenPos = tile.mappos() + offset;
+{ 
+  Picture refPic;
   switch( pass )
   {
-  case Renderer::ground: engine.draw( tile.picture(), screenPos ); break;
-
+  case Renderer::ground: refPic = tile.picture(); break;
   case Renderer::groundAnimation:
-  {
     if( tile.animation().isValid() )
-    {
-      engine.draw( tile.animation().currentFrame(), screenPos );
-    }
-  }
+      refPic = tile.animation().currentFrame();
   break;
 
   case Renderer::overlay:
-  {
     if( tile.rov().isNull() )
-      return;
-
-    engine.draw( tile.rov()->picture(), screenPos );
-  }
+      refPic = tile.rov()->picture();
   break;
 
-  default:
-  {
-    if( tile.rov().isNull() )
-      return;
-
-    engine.draw( tile.rov()->pictures( pass ), screenPos );
-  }
+  default:    
   break;
+  }
+
+  DrawBatcher& batcher = DrawBatcher::instance();
+  Point screenPos = tile.mappos() + offset;
+  if( refPic.isValid() )
+  {
+    if( batcher.active() )
+      batcher.append( refPic, screenPos );
+    else
+      engine.draw( refPic, screenPos );
+  }
+  else if( tile.rov().isValid() )
+  {
+    const Pictures& pics = tile.rov()->pictures( pass );
+    if( batcher.active() )
+      batcher.append( pics, screenPos );
+    else
+      engine.draw( pics, screenPos );
   }
 }
 
-void Layer::drawWalkers( Engine& engine, const Tile& tile, const Point& camOffset )
+void Layer::drawWalkers( const Tile& tile, const Point& camOffset )
 {
   Pictures pics;
   const WalkerList& walkers = _city()->walkers( tile.pos() );
   const Layer::WalkerTypes& vWalkers = visibleTypes();
 
   bool viewAll = vWalkers.count( walker::all );
+  DrawBatcher& batcher = DrawBatcher::instance();
   foreach( w, walkers )
   {
     if( viewAll || vWalkers.count( (*w)->type() ) > 0 )
     {
       pics.clear();
       (*w)->getPictures( pics );
-      engine.draw( pics, (*w)->mappos() + camOffset );
+      batcher.append( pics, (*w)->mappos() + camOffset );
     }
   }
 }
@@ -299,10 +295,11 @@ void Layer::render( Engine& engine)
     int z = tile->epos().z();
 
     drawProminentTile( engine, *tile, camOffset, z, false );
-    drawWalkers( engine, *tile, camOffset );
+    drawWalkers( *tile, camOffset );
     drawWalkerOverlap( engine, *tile, camOffset, z );
   }
 
+  DrawBatcher::instance().draw( engine );
   engine.resetColorMask();
 
   if( opts.isFlag( DrawOptions::showPath ) )
@@ -345,7 +342,7 @@ const Layer::WalkerTypes& Layer::visibleTypes() const
   return _dfunc()->vwalkers;
 }
 
-void Layer::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, const int depth, bool force)
+void Layer::drawProminentTile( Tile& tile, const Point& offset, const int depth, bool force)
 {
   if( tile.isFlat() && !force )
   {
@@ -356,7 +353,7 @@ void Layer::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, 
 
   if( 0 == master )    // single-tile
   {
-    drawTile( engine, tile, offset );
+    drawTile( tile, offset );
     return;
   }
 
@@ -364,7 +361,7 @@ void Layer::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, 
   // and it is time to draw the master tile
   if( !master->rwd() && master == &tile )
   {
-    drawTile( engine, *master, offset );
+    drawTile( *master, offset );
   }
 }
 
@@ -400,13 +397,14 @@ void Layer::drawArea(Engine& engine, const TilesArray& area, const Point &offset
   int rightBorderAtJ = overlay.isValid()
                           ? overlay->size().height() - 1 + baseTile->j()
                           : baseTile->j();
+  DrawBatcher& batcher = DrawBatcher::instance();
   foreach( it, area )
   {
     Tile* tile = *it;
     int tileBorders = ( tile->i() == leftBorderAtI ? 0 : OverlayPic::skipLeftBorder )
                       + ( tile->j() == rightBorderAtJ ? 0 : OverlayPic::skipRightBorder );
     Picture *pic = &Picture::load(resourceGroup, tileBorders + tileId);
-    engine.draw( *pic, tile->mappos() + offset );
+    batcher.append( *pic, tile->mappos() + offset );
   }
 }
 
@@ -722,83 +720,57 @@ bool Layer::_isMovingButtonPressed(NEvent &event) const
             : event.mouse.isLeftPressed();
 }
 
-
-void Layer::Impl::updateOutlineTexture( Tile* tile )
-{
-  if( !needUpdateOutline )
-    return;
-
- /* if( tile && tile->overlay().isValid() )
-  {
-    const Picture& pic = tile->overlay()->picture();
-
-    outline.reset( Picture::create( pic.size(), 0, true ) );
-
-  } */
-}
-
-void __batchTiles( const TilesArray& tiles, const Point& offset, Batch& batch )
-{
-  Rects rects;
-  Pictures pics;
-  foreach( tl, tiles )
-  {
-    const Tile& tile = **tl;
-    const Picture& bpic = (*tl)->picture();
-    Rect rect( tile.mappos() + offset, bpic.size() );
-    pics.push_back( bpic );
-    rects.push_back( rect );
-
-    if( tile.animation().isValid() )
-    {
-      pics.push_back( tile.animation().currentFrame() );
-      rects.push_back( rect );
-    }
-  }
-
-  batch.load( pics, rects );
-}
-
-void Layer::Impl::batchLands(const TilesArray& tiles)
-{
-  foreach( it, flatBatches ) it->destroy();
-
-  flatBatches.clear();
-
-  if( tiles.empty() )
-    return;
-
-  Tile* ptx = tiles.at( 0 );
-  TilesArray batchedTiles;
-  Point offset = camera->offset();
-  foreach( it, tiles )
-  {
-    if( ptx->picture().texture() != (*it)->picture().texture() )
-    {
-      Batch batch;
-      __batchTiles(batchedTiles, offset, batch);
-
-      Logger::warning( "!!! WARNING: cant batch " + ptx->picture().name() + " to " + (*it)->picture().name() + " : Swith to next state" );
-      ptx = *it;
-      batchedTiles.clear();
-      flatBatches.push_back( batch );
-    }
-
-    batchedTiles.push_back( *it );
-  }
-
-  if( !batchedTiles.empty() )
-  {
-    Batch batch;
-    __batchTiles( batchedTiles, offset, batch );
-    flatBatches.push_back( batch );
-  }
-}
-
 DrawOptions& DrawOptions::instance()
 {
   static DrawOptions inst;
   return inst;
+}
+
+DrawBatcher& DrawBatcher::instance()
+{
+  static DrawBatcher inst;
+  return inst;
+}
+
+void DrawBatcher::draw(Engine& engine)
+{
+  foreach( it, _states )
+    engine.draw( *it, 0 );
+}
+
+void DrawBatcher::append(const Picture& pic, const Point& pos)
+{
+  if( !_currentTx.isValid() )
+    _currentTx = pic;
+
+  if( !pic.isValid() )
+    return;
+
+  if( _currentTx.texture() != pic.texture() )
+  {
+    Batch batch;
+    batch.load( _currentTx, _currentSrcRects, _currentDstRects );
+
+    Logger::warning( "!!! WARNING: cant batch " + ptx->picture().name() + " to " + (*it)->picture().name() + " : Swith to next state" );
+
+    _currentTx = pic;
+    _states.push_back( batch );
+
+    _currentDstRects.clear();
+    _currentSrcRects.clear();
+  }
+
+  _currentSrcRects.push_back( pic.originRect() );
+  _currentDstRects.push_back( Rect( pos + pic.offset(), pic.size() ) );
+}
+
+void DrawBatcher::begin()
+{
+  foreach( it, _states ) it->destroy();
+  _states.clear();
+
+  _currentSrcRects.clear();
+  _currentDstRects.clear();
 }
 
 }//end namespace gfx

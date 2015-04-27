@@ -40,6 +40,7 @@ public:
   void destroy();
   void load(const Pictures& pics, const Rects& dstrects);
   void load(const Pictures& pics, const Point& pos );
+  void load(const Picture& pics, const Rects& srcrects, const Rects& dstrects );
 private:
 
   SDL_Batch* _batch;

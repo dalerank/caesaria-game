@@ -47,6 +47,31 @@ private:
   DrawOptions() {}
 };
 
+class DrawBatcher
+{
+public:
+  typedef std::vector<gfx::Batch> States;
+
+  static DrawBatcher& instance();
+
+  void draw( gfx::Engine& engine );
+
+  void append( const gfx::Picture& pic, const Point& pos );
+
+  void begin();
+  void finish();
+
+  bool active() const { return _active; }
+  void setActive( bool value ) { _active = value; }
+
+private:
+  bool _active;
+  States _states;
+  gfx::Picture _currentTx;
+  Rects  _currentSrcRects;
+  Rects  _currentDstRects;
+};
+
 class Layer : public ReferenceCounted
 {
 public:

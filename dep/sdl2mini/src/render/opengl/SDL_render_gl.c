@@ -1126,8 +1126,7 @@ GL_CreateBatch(SDL_Renderer * renderer, SDL_Batch* batch, SDL_Texture * texture,
 
   batch->vertices    = SDL_malloc( sizeof(GLfloat) * 4 * 3 * size );
   batch->coordinates = SDL_malloc( sizeof(GLfloat) * 4 * 2 * size );
-  batch->indices     = SDL_malloc( sizeof(GLushort) * 2 * 3 * size );
-  batch->size = size;
+  batch->indices     = SDL_malloc( sizeof(GLushort) * 2 * 3 * size ); 
 
   TexCoord = (GLfloat*)batch->coordinates;
   vertices = (GLfloat*)batch->vertices;
@@ -1187,6 +1186,8 @@ GL_CreateBatch(SDL_Renderer * renderer, SDL_Batch* batch, SDL_Texture * texture,
     indices[ i * 6 + 3 ] = i * 4; indices[ i * 6 + 4 ] = i * 4 + 2; indices[ i * 6 + 5 ] = i * 4 + 3;
     iRtx++;
   }
+
+   batch->size = iRtx;
 
   return 0;
 }
