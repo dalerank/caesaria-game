@@ -43,11 +43,14 @@ using namespace gfx;
 namespace citylayer
 {
 
+typedef std::vector<Batch> Batches;
+
 class Layer::Impl
 {
 public:
   typedef std::set<object::Type> AlwaysDrawObjects;
 
+  Batches flatBatches;
   Point lastCursorPos;
   Point startCursorPos;
   Camera* camera;
@@ -67,6 +70,7 @@ public:
   int posMode;
 public:
   void updateOutlineTexture( Tile* tile );
+  void batchLands( const TilesArray& tiles );
 };
 
 void Layer::registerTileForRendering(Tile& tile)
@@ -413,14 +417,22 @@ void Layer::drawLands( Engine& engine, Camera* camera )
   const Picture& terrainPic = _dfunc()->terraintPic;
   Point camOffset = camera->offset();
 
+  __D_IMPL(_d,Layer)
+  _d->batchLands( flatTiles );
+
+  foreach( it, _d->flatBatches )
+  {
+    engine.draw( *it, 0 );
+  }
+
   // FIRST PART: draw all flat land (walkable/boatable)
-  foreach( it, flatTiles )
+  /*foreach( it, flatTiles )
   {
     drawPass( engine, **it, camOffset, Renderer::ground );
     drawPass( engine, **it, camOffset, Renderer::groundAnimation );
 
     drawTile( engine, **it, camOffset );
-  }
+  }*/
 
   if( DrawOptions::instance().isFlag( DrawOptions::oldGraphics ) )
     return;
@@ -723,6 +735,64 @@ void Layer::Impl::updateOutlineTexture( Tile* tile )
     outline.reset( Picture::create( pic.size(), 0, true ) );
 
   } */
+}
+
+void __batchTiles( const TilesArray& tiles, const Point& offset, Batch& batch )
+{
+  Rects rects;
+  Pictures pics;
+  foreach( tl, tiles )
+  {
+    const Tile& tile = **tl;
+    const Picture& bpic = (*tl)->picture();
+    Rect rect( tile.mappos() + offset, bpic.size() );
+    pics.push_back( bpic );
+    rects.push_back( rect );
+
+    if( tile.animation().isValid() )
+    {
+      pics.push_back( tile.animation().currentFrame() );
+      rects.push_back( rect );
+    }
+  }
+
+  batch.load( pics, rects );
+}
+
+void Layer::Impl::batchLands(const TilesArray& tiles)
+{
+  foreach( it, flatBatches ) it->destroy();
+
+  flatBatches.clear();
+
+  if( tiles.empty() )
+    return;
+
+  Tile* ptx = tiles.at( 0 );
+  TilesArray batchedTiles;
+  Point offset = camera->offset();
+  foreach( it, tiles )
+  {
+    if( ptx->picture().texture() != (*it)->picture().texture() )
+    {
+      Batch batch;
+      __batchTiles(batchedTiles, offset, batch);
+
+      Logger::warning( "!!! WARNING: cant batch " + ptx->picture().name() + " to " + (*it)->picture().name() + " : Swith to next state" );
+      ptx = *it;
+      batchedTiles.clear();
+      flatBatches.push_back( batch );
+    }
+
+    batchedTiles.push_back( *it );
+  }
+
+  if( !batchedTiles.empty() )
+  {
+    Batch batch;
+    __batchTiles( batchedTiles, offset, batch );
+    flatBatches.push_back( batch );
+  }
 }
 
 DrawOptions& DrawOptions::instance()

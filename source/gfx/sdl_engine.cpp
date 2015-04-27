@@ -542,7 +542,7 @@ void SdlEngine::draw(const Picture& pic, const Rect& srcRect, const Rect& dstRec
 void SdlEngine::draw(const Picture& pic, const Rects& srcRects, const Rects& dstRects, Rect* clipRect)
 {
   SDL_Batch* batch = __createBatch( _d->renderer, pic, srcRects, dstRects, clipRect );
-  _d->fps++;
+  _d->drawCall++;
 
   if( batch )
   {
@@ -553,7 +553,7 @@ void SdlEngine::draw(const Picture& pic, const Rects& srcRects, const Rects& dst
 
 void SdlEngine::draw(const Batch& batch, Rect *clipRect)
 {
-  _d->fps++;
+  _d->drawCall++;
 
   if( clipRect != 0 )
   {

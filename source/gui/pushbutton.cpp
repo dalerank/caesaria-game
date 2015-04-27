@@ -53,7 +53,7 @@ public:
 struct ButtonState
 {
   Picture background;
-  Pictures style;
+  Batch style;
   Picture icon;
   Point iconOffset;
   Font font;
@@ -89,7 +89,7 @@ public:
   {
     for( int i=0; i < StateCount; i++)
     {
-      buttonStates[ ElementState(i) ].style.clear();
+      buttonStates[ ElementState(i) ].style.destroy();
       buttonStates[ ElementState(i) ].icon = Picture::getInvalid();
       buttonStates[ ElementState(i) ].background = Picture::getInvalid();
       buttonStates[ ElementState(i) ].font = Font::create( FONT_2 );
@@ -169,14 +169,15 @@ void PushButton::_updateTextPic()
 void PushButton::_updateBackground( ElementState state )
 {
   __D_IMPL(_d,PushButton)     
-  Pictures& drawStack = _d->buttonStates[ state ].style;
+  Batch& drawStack = _d->buttonStates[ state ].style;
 
-  drawStack.clear();
+  drawStack.destroy();
 
   // draw button background
   Decorator::Mode mode = Decorator::pure;
+  Pictures pics;
   if( !_d->buttonStates[ state ].background.isValid() )
-  {
+  {    
     switch( _d->bgStyle )
     {
     case greyBorderLineSmall:
@@ -205,24 +206,26 @@ void PushButton::_updateBackground( ElementState state )
 
     case whiteBorderUp:
     {
-      Decorator::draw( drawStack, Rect( Point( 0, 0 ), size() ), Decorator::whiteArea );
-      Decorator::draw( drawStack, Rect( Point( 0, 0 ), size() ),
-                       ( state == stHovered || state == stPressed ) ? Decorator::brownBorder : Decorator::whiteBorderA );
+      Decorator::draw( pics, Rect( Point( 0, 0 ), size() ), Decorator::whiteArea, Decorator::normalY );
+      Decorator::draw( pics, Rect( Point( 0, 0 ), size() ),
+                       ( state == stHovered || state == stPressed ) ? Decorator::brownBorder : Decorator::whiteBorderA,
+                       Decorator::normalY );
     }
     break;
 
     case flatBorderLine:
     {
-      Decorator::draw( drawStack, Rect( Point( 0, 0 ), size() ), (state == stHovered || state == stPressed)
-                                                                       ? Decorator::blackArea : Decorator::whiteArea );
+      Decorator::draw( pics, Rect( Point( 0, 0 ), size() ), (state == stHovered || state == stPressed)
+                                                                       ? Decorator::blackArea : Decorator::whiteArea,
+                       Decorator::normalY );
     }
     break;
 
     case blackBorderUp:
     {
-      Decorator::draw( drawStack, Rect( Point( 0, 0 ), size() ), Decorator::blackArea );
-      Decorator::draw( drawStack, Rect( Point( 0, 0 ), size() ),
-                       state == stHovered ? Decorator::brownBorder : Decorator::whiteBorderA );
+      Decorator::draw( pics, Rect( Point( 0, 0 ), size() ), Decorator::blackArea, Decorator::normalY );
+      Decorator::draw( pics, Rect( Point( 0, 0 ), size() ),
+                       state == stHovered ? Decorator::brownBorder : Decorator::whiteBorderA, Decorator::normalY );
     }
     break;
 
@@ -230,7 +233,9 @@ void PushButton::_updateBackground( ElementState state )
     }
   }
 
-  Decorator::draw( drawStack, Rect( Point( 0, 0 ), size() ), mode );
+  Decorator::draw( pics, Rect( Point( 0, 0 ), size() ), mode, Decorator::normalY );
+
+  drawStack.load( pics, absoluteRect().lefttop() );
 }
 
 void PushButton::_updateStyle()
@@ -518,7 +523,7 @@ void PushButton::draw( gfx::Engine& painter )
     if( state.background.isValid() )
       painter.draw( state.background, absoluteRect().lefttop(), &absoluteClippingRectRef() );
     else
-      painter.draw( state.style, absoluteRect().lefttop(), &absoluteClippingRectRef());
+      painter.draw( state.style, &absoluteClippingRectRef());
 	}
 
   if( _d->textPicture )

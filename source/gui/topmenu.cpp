@@ -128,13 +128,8 @@ void TopMenu::Impl::showShortKeyInfo()
 
 void TopMenu::Impl::initBackground( const Size& size )
 {
-  Pictures p_marble;
-  for (int i = 1; i<=12; ++i)
-  {
-    p_marble.push_back( Picture::load( ResourceGroup::panelBackground, i));
-  }
-
-  Pictures pics;
+  Pictures p_marble, pics;
+  p_marble.load( ResourceGroup::panelBackground, 1,12 );
 
   unsigned int i = 0;
   int x = 0;
