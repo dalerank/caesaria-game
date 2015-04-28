@@ -46,6 +46,7 @@ public:
 
 public signals:
   Signal1<int> onChangeSignal;
+  Signal2<SpinBox*,int> onChangeASignal;
 };
 
 //! constructor
@@ -81,7 +82,14 @@ void SpinBox::draw(gfx::Engine& painter )
   Label::draw( painter );
 }
 
-Signal1<int>& SpinBox::onChange(){  return _d->onChangeSignal;}
+void SpinBox::setValue(int value)
+{
+  _d->value = math::clamp( _d->value - _d->step, _d->minv, _d->maxv );
+  _update();
+}
+
+Signal1<int>& SpinBox::onChange(){ return _d->onChangeSignal;}
+Signal2<SpinBox*,int>& SpinBox::onChangeA(){ return _d->onChangeASignal; }
 
 void gui::SpinBox::_updateTexture(Engine& painter)
 {
@@ -91,16 +99,16 @@ void gui::SpinBox::_updateTexture(Engine& painter)
 
 void SpinBox::_increase()
 {
-  _d->value = math::clamp( _d->value + _d->step, _d->minv, _d->maxv );
+  setValue( _d->value + _d->step );
   emit _d->onChangeSignal( _d->value );
-  _update();
+  emit _d->onChangeASignal( this, _d->value );
 }
 
 void SpinBox::_decrease()
 {
-  _d->value = math::clamp( _d->value - _d->step, _d->minv, _d->maxv );
+  setValue( _d->value - _d->step );
   emit _d->onChangeSignal( _d->value );
-  _update();
+  emit _d->onChangeASignal( this, _d->value );
 }
 
 void SpinBox::_update()

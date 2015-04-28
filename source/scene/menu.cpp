@@ -207,7 +207,7 @@ void StartMenu::Impl::openDlcDirectory(Widget* sender)
 
 void StartMenu::Impl::showSoundOptions()
 {
-  events::GameEventPtr e = events::SetSoundOptions::create();
+  events::GameEventPtr e = events::ChangeSoundOptions::create();
   e->dispatch();
 }
 

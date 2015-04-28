@@ -36,14 +36,15 @@ public:
 
   //! draws the element and its children
   virtual void draw( gfx::Engine& painter );
-
+  virtual void setValue( int value );
   virtual void setupUI( const VariantMap& ui );
     
 signals public:
   virtual Signal1<int>& onChange();
+  virtual Signal2<SpinBox*,int>& onChangeA();
 
 private:
-  void _updateTexture(gfx::Engine &painter);
+  void _updateTexture(gfx::Engine& painter);
   void _increase();
   void _decrease();
   void _update();

@@ -333,7 +333,7 @@ void Level::Impl::saveCameraPos(Point p)
 
 void Level::Impl::showSoundOptionsWindow()
 {
-  GameEventPtr e = SetSoundOptions::create();
+  GameEventPtr e = ChangeSoundOptions::create();
   e->dispatch();
 }
 

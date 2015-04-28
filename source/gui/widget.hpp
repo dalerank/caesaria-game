@@ -56,13 +56,16 @@ public:
   void setInternalName( const std::string& name );
 
   template< class T >
-  List< T > findChildren()
+  List< T > findChildren( bool indepth=false )
   {
     List< T > ret;
     foreach( it, children() )
     {
       if( T elm = safety_cast< T >( *it ) )
           ret.push_back( elm );
+
+      if( indepth )
+        ret.append( (*it)->findChildren<T>( indepth ) );
     }
 
     return ret;
