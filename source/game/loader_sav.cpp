@@ -330,15 +330,15 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
 
         int index = gfx::tilemap::c3mapSize * (border_size + itA) + border_size + itB;
 
-        Tile& tile = oTilemap.at(i, j);
+        Tile& currentTile = oTilemap.at(i, j);
 
         unsigned int imgId = graphicGrid[index];
         Picture pic = imgid::toPicture( imgId );
 
         if( pic.isValid() )
         {
-          tile.setPicture( pic );
-          tile.setOriginalImgId( imgId );
+          currentTile.setPicture( pic );
+          currentTile.setOriginalImgId( imgId );
         }
         else
         {
@@ -356,22 +356,22 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
                  imgId == 0x208 || imgId == 0x1ea )
              {
                Picture pic = MetaDataHolder::randomPicture( oldgfx ? object::meadow : object::terrain, Size(1) );
-               tile.setPicture( pic );
-               tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
-               tile.setFlag( Tile::clearAll, true );
-               tile.setFlag( Tile::tlMeadow, true );
+               currentTile.setPicture( pic );
+               currentTile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+               currentTile.setFlag( Tile::clearAll, true );
+               currentTile.setFlag( Tile::tlMeadow, true );
              }
           }
 
-          baseBuildings[ tile.pos() ] = imgId;
+          baseBuildings[ currentTile.pos() ] = imgId;
           pic = Picture::load( ResourceGroup::land1a, 230 + math::random( 57 ) );
-          tile.setPicture( pic );
-          tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+          currentTile.setPicture( pic );
+          currentTile.setOriginalImgId( imgid::fromResource( pic.name() ) );
         }
 
         edgeData[ i ][ j ] = edgeGrid[index];
-        tile::decode( tile, terrainGrid[index] );
-        tile::fixPlateauFlags( tile );
+        tile::decode( currentTile, terrainGrid[index] );
+        tile::fixPlateauFlags( currentTile );
       }
     }
 

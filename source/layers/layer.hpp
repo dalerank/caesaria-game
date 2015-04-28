@@ -66,6 +66,8 @@ public:
   void setActive( bool value ) { _active = value; }
 
 private:
+  DrawBatcher();
+
   bool _active;
   States _states;
   gfx::Picture _currentTx;

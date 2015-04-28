@@ -1,3 +1,4 @@
+//end namespace gfx
 // This file is part of CaesarIA.
 //
 // CaesarIA is free software: you can redistribute it and/or modify
@@ -194,22 +195,33 @@ TilesArray Layer::_getSelectedArea( TilePos startPos )
 }
 
 void Layer::drawPass( Engine& engine, Tile& tile, const Point& offset, Renderer::Pass pass)
-{ 
+{
   Picture refPic;
+  bool find = false;
   switch( pass )
   {
-  case Renderer::ground: refPic = tile.picture(); break;
+  case Renderer::ground:
+    refPic = tile.picture();
+    find = true;
+  break;
+
   case Renderer::groundAnimation:
     if( tile.animation().isValid() )
+    {
       refPic = tile.animation().currentFrame();
+      find = true;
+    }
   break;
 
   case Renderer::overlay:
-    if( tile.rov().isNull() )
+    if( tile.rov().isValid() )
+    {
+      find = true;
       refPic = tile.rov()->picture();
+    }
   break;
 
-  default:    
+  default:
   break;
   }
 
@@ -222,7 +234,8 @@ void Layer::drawPass( Engine& engine, Tile& tile, const Point& offset, Renderer:
     else
       engine.draw( refPic, screenPos );
   }
-  else if( tile.rov().isValid() )
+
+  if( !find && tile.rov().isValid() )
   {
     const Pictures& pics = tile.rov()->pictures( pass );
     if( batcher.active() )
@@ -283,10 +296,12 @@ void Layer::render( Engine& engine)
   Point camOffset = _d->camera->offset();
 
   _camera()->startFrame();
+  DrawOptions& opts = DrawOptions::instance();
+  DrawBatcher& batcher = DrawBatcher::instance();
+  batcher.setActive( true );
   //FIRST PART: draw lands
   drawLands( engine, _d->camera );
 
-  DrawOptions& opts = DrawOptions::instance();
   if( opts.isFlag( DrawOptions::shadowOverlay ) )
   {
     engine.setColorMask( 0x00ff0000, 0x0000ff00, 0x000000ff, 0xc0000000 );
@@ -303,7 +318,9 @@ void Layer::render( Engine& engine)
     drawWalkerOverlap( engine, *tile, camOffset, z );
   }
 
-  DrawBatcher::instance().draw( engine );
+  batcher.finish();
+  batcher.draw( engine );
+
   engine.resetColorMask();
 
   if( opts.isFlag( DrawOptions::showPath ) )
@@ -372,10 +389,10 @@ void Layer::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, 
 void Layer::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   if( !tile.rwd() )
-  {   
+  {
     if( tile.rov().isValid() )
     {
-      registerTileForRendering( tile );     
+      registerTileForRendering( tile );
       drawPass( engine, tile, offset, Renderer::overlayGround );
       drawPass( engine, tile, offset, Renderer::overlay );
       drawPass( engine, tile, offset, Renderer::overlayAnimation );
@@ -450,11 +467,6 @@ void Layer::drawLands( Engine& engine, Camera* camera )
         {
           t.setFlag( Tile::tlRock, true);
         }
-        /*if( !master->rwd() && master == &t )
-        {            
-          drawPass( engine, *master, camOffset, Renderer::ground );
-          drawPass( engine, *master, camOffset, Renderer::groundAnimation );
-        }*/
       }
       else
       {
@@ -494,7 +506,10 @@ void Layer::init( Point cursor )
   _d->nextLayer = type();
 }
 
-void Layer::beforeRender(Engine&) {}
+void Layer::beforeRender(Engine&)
+{
+  DrawBatcher::instance().begin();
+}
 
 void Layer::afterRender( Engine& engine)
 {
@@ -526,7 +541,7 @@ void Layer::afterRender( Engine& engine)
 
   if( opts.isFlag( DrawOptions::drawGrid ) )
   {
-    Tilemap& tmap = _d->city->tilemap();    
+    Tilemap& tmap = _d->city->tilemap();
     int size = tmap.size();
     //Picture& screen = engine.screen();
     for( int k=0; k < size; k++ )
@@ -739,11 +754,11 @@ void DrawBatcher::draw(Engine& engine)
 
 void DrawBatcher::append(const Picture& pic, const Point& pos)
 {
-  if( !_currentTx.isValid() )
-    _currentTx = pic;
-
   if( !pic.isValid() )
     return;
+
+  if( !_currentTx.isValid() )
+    _currentTx = pic;
 
   if( _currentTx.texture() != pic.texture() )
   {
@@ -760,7 +775,7 @@ void DrawBatcher::append(const Picture& pic, const Point& pos)
   }
 
   _currentSrcRects.push_back( pic.originRect() );
-  _currentDstRects.push_back( Rect( pos + pic.offset(), pic.size() ) );
+  _currentDstRects.push_back( Rect( pos + Point( pic.offset().x(), -pic.offset().y() ), pic.size() ) );
 }
 
 void DrawBatcher::append(const Pictures& pics, const Point& pos)
@@ -776,6 +791,22 @@ void DrawBatcher::begin()
 
   _currentSrcRects.clear();
   _currentDstRects.clear();
+}
+
+void DrawBatcher::finish()
+{
+  if( _currentSrcRects.empty() )
+    return;
+
+  Batch batch;
+  batch.load( _currentTx, _currentSrcRects, _currentDstRects );
+
+  _states.push_back( batch );
+}
+
+DrawBatcher::DrawBatcher()
+{
+  _active = true;
 }
 
 }//end namespace gfx
