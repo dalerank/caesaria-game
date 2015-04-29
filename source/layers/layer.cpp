@@ -442,10 +442,12 @@ void Layer::drawLands( Engine& engine, Camera* camera )
   // FIRST PART: draw all flat land (walkable/boatable)
   foreach( it, flatTiles )
   {
-    drawPass( engine, **it, camOffset, Renderer::ground );
-    drawPass( engine, **it, camOffset, Renderer::groundAnimation );
+    Tile& tile = **it;
+    drawPass( engine, tile, camOffset, Renderer::ground );
+    drawPass( engine, tile, camOffset, Renderer::groundAnimation );
 
-    drawTile( engine, **it, camOffset );
+    if( tile.rov().isValid() )
+      drawTile( engine, tile, camOffset );
   }
 
   if( DrawOptions::instance().isFlag( DrawOptions::oldGraphics ) )

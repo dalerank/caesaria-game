@@ -273,9 +273,11 @@ void SdlEngine::init()
     Logger::warning( "SDLGraficEngine: availabe render %s ", info.name );
   }
 
-  SDL_GetRendererInfo( renderer, &info );
+  SDL_GetRendererInfo( renderer, &info );  
+  int gl_version;
+  SDL_GL_GetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, &gl_version );
   Logger::warning( "SDLGraficEngine: init render %s ", info.name );
-
+  Logger::warning( "SDLGraficEngine: using OpenGL %d ", gl_version );
 
   SDL_Texture *screenTexture = SDL_CreateTexture(renderer,
                                                  SDL_PIXELFORMAT_ARGB8888,
@@ -681,9 +683,12 @@ void SdlEngine::setFlag( int flag, int value )
 {
   Engine::setFlag( flag, value );
 
-  if( flag == debugInfo )
+  switch( flag )
   {
-    _d->debugFont = Font::create( FONT_2 );
+  case debugInfo: _d->debugFont = Font::create( FONT_2 ); break;
+  case batching: _d->batcher.setActive( value ); break;
+
+  default: break;
   }
 }
 

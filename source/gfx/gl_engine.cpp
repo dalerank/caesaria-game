@@ -1087,17 +1087,15 @@ Engine::Modes GlEngine::modes() const
   return ret;
 }
 
+void GlEngine::draw(const gfx::Picture& pic, const Rects& srcRects, const Rects& dstRects, Rect* clipRect)
+{
+
 }
 
+void GlEngine::draw(const gfx::Batch &pic, Rect *clipRect)
+{
+
+}
+
+}
 #endif
-
-
-void gfx::GlEngine::draw(const gfx::Picture& pic, const Rects& srcRects, const Rects& dstRects, Rect* clipRect)
-{
-
-}
-
-void gfx::GlEngine::draw(const gfx::Batch &pic, Rect *clipRect)
-{
-
-}

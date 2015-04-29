@@ -72,12 +72,12 @@ void Picture::init(SDL_Texture *texture, SDL_Surface* srf, unsigned int ogltx)
 void Picture::setOffset(const Point &offset ) { _d->offset = offset; }
 void Picture::setOffset(int x, int y) { _d->offset = Point( x, y ); }
 void Picture::setOriginRect(const Rect& rect) { _d->orect = rect; }
-const Rect&Picture::originRect() const { return _d->orect; }
+const Rect& Picture::originRect() const { return _d->orect; }
 void Picture::addOffset( const Point& offset ) { _d->offset += offset; }
 void Picture::addOffset( int x, int y ) { _d->offset += Point( x, y ); }
 
 SDL_Texture* Picture::texture() const{  return _d->texture;}
-SDL_Surface*Picture::surface() const { return _d->surface;  }
+SDL_Surface* Picture::surface() const { return _d->surface;  }
 unsigned int Picture::textureID() const { return _d->opengltx; }
 unsigned int& Picture::textureID() { return _d->opengltx; }
 const Point& Picture::offset() const{  return _d->offset;}
