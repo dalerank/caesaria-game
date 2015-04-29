@@ -58,7 +58,7 @@ public:
   virtual void timeStep(unsigned int time);  // performs one simulation step
 
   /** Return array of walkers with current type */
-  WalkerList walkers(walker::Type type );
+  const WalkerList& walkers(walker::Type type );
 
   /** Return array of walkers in current tile */
   const WalkerList& walkers(const TilePos& pos);
