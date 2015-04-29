@@ -225,23 +225,16 @@ void Layer::drawPass( Engine& engine, Tile& tile, const Point& offset, Renderer:
   break;
   }
 
-  DrawBatcher& batcher = DrawBatcher::instance();
   Point screenPos = tile.mappos() + offset;
   if( refPic.isValid() )
   {
-    if( batcher.active() )
-      batcher.append( refPic, screenPos );
-    else
-      engine.draw( refPic, screenPos );
+    engine.draw( refPic, screenPos );
   }
 
   if( !find && tile.rov().isValid() )
   {
     const Pictures& pics = tile.rov()->pictures( pass );
-    if( batcher.active() )
-      batcher.append( pics, screenPos );
-    else
-      engine.draw( pics, screenPos );
+    engine.draw( pics, screenPos );
   }
 }
 
@@ -252,7 +245,6 @@ void Layer::drawWalkers( Engine& engine, const Tile& tile, const Point& camOffse
   const Layer::WalkerTypes& vWalkers = visibleTypes();
 
   bool viewAll = vWalkers.count( walker::all );
-  DrawBatcher& batcher = DrawBatcher::instance();
 
   foreach( w, walkers )
   {
@@ -260,10 +252,7 @@ void Layer::drawWalkers( Engine& engine, const Tile& tile, const Point& camOffse
     {
       pics.clear();
       (*w)->getPictures( pics );
-      if( batcher.active() )
-        batcher.append( pics, (*w)->mappos() + camOffset );
-      else
-        engine.draw( pics, (*w)->mappos() + camOffset );
+      engine.draw( pics, (*w)->mappos() + camOffset );
     }
   }
 }
@@ -297,8 +286,7 @@ void Layer::render( Engine& engine)
 
   _camera()->startFrame();
   DrawOptions& opts = DrawOptions::instance();
-  DrawBatcher& batcher = DrawBatcher::instance();
-  batcher.setActive( true );
+  engine.setFlag( Engine::batching, opts.isFlag( DrawOptions::batchTextures ) );
   //FIRST PART: draw lands
   drawLands( engine, _d->camera );
 
@@ -318,8 +306,7 @@ void Layer::render( Engine& engine)
     drawWalkerOverlap( engine, *tile, camOffset, z );
   }
 
-  batcher.finish();
-  batcher.draw( engine );
+  engine.setFlag( Engine::batching, false );
 
   engine.resetColorMask();
 
@@ -418,17 +405,13 @@ void Layer::drawArea(Engine& engine, const TilesArray& area, const Point &offset
   int rightBorderAtJ = overlay.isValid()
                           ? overlay->size().height() - 1 + baseTile->j()
                           : baseTile->j();
-  DrawBatcher& batcher = DrawBatcher::instance();
   foreach( it, area )
   {
     Tile* tile = *it;
     int tileBorders = ( tile->i() == leftBorderAtI ? 0 : OverlayPic::skipLeftBorder )
                       + ( tile->j() == rightBorderAtJ ? 0 : OverlayPic::skipRightBorder );
     const Picture& pic = Picture::load(resourceGroup, tileBorders + tileId);
-    if( batcher.active() )
-      batcher.append( pic, tile->mappos() + offset );
-    else
-      engine.draw( pic, tile->mappos() + offset );
+    engine.draw( pic, tile->mappos() + offset );
   }
 }
 
@@ -510,7 +493,6 @@ void Layer::init( Point cursor )
 
 void Layer::beforeRender(Engine&)
 {
-  DrawBatcher::instance().begin();
 }
 
 void Layer::afterRender( Engine& engine)
@@ -740,75 +722,6 @@ DrawOptions& DrawOptions::instance()
 {
   static DrawOptions inst;
   return inst;
-}
-
-DrawBatcher& DrawBatcher::instance()
-{
-  static DrawBatcher inst;
-  return inst;
-}
-
-void DrawBatcher::draw(Engine& engine)
-{
-  foreach( it, _states )
-    engine.draw( *it, 0 );
-}
-
-void DrawBatcher::append(const Picture& pic, const Point& pos)
-{
-  if( !pic.isValid() )
-    return;
-
-  if( !_currentTx.isValid() )
-    _currentTx = pic;
-
-  if( _currentTx.texture() != pic.texture() )
-  {
-    Batch batch;
-    batch.load( _currentTx, _currentSrcRects, _currentDstRects );
-
-    Logger::warning( "!!! WARNING: cant batch " + _currentTx.name() + " to " + pic.name() + " : Swith to next state" );
-
-    _currentTx = pic;
-    _states.push_back( batch );
-
-    _currentDstRects.clear();
-    _currentSrcRects.clear();
-  }
-
-  _currentSrcRects.push_back( pic.originRect() );
-  _currentDstRects.push_back( Rect( pos + Point( pic.offset().x(), -pic.offset().y() ), pic.size() ) );
-}
-
-void DrawBatcher::append(const Pictures& pics, const Point& pos)
-{
-  foreach( it, pics )
-    append( *it, pos );
-}
-
-void DrawBatcher::begin()
-{
-  foreach( it, _states ) it->destroy();
-  _states.clear();
-
-  _currentSrcRects.clear();
-  _currentDstRects.clear();
-}
-
-void DrawBatcher::finish()
-{
-  if( _currentSrcRects.empty() )
-    return;
-
-  Batch batch;
-  batch.load( _currentTx, _currentSrcRects, _currentDstRects );
-
-  _states.push_back( batch );
-}
-
-DrawBatcher::DrawBatcher()
-{
-  _active = true;
 }
 
 }//end namespace gfx
