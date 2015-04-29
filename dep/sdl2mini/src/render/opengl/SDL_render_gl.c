@@ -20,7 +20,7 @@
 */
 #include "SDL_config.h"
 
-//#if SDL_VIDEO_RENDER_OGL && !SDL_RENDER_DISABLED
+#if SDL_VIDEO_RENDER_OGL && !SDL_RENDER_DISABLED
 
 #include "SDL_hints.h"
 #include "SDL_log.h"
@@ -1605,6 +1605,6 @@ GL_UnbindTexture (SDL_Renderer * renderer, SDL_Texture *texture)
     return 0;
 }
 
-//#endif /* SDL_VIDEO_RENDER_OGL && !SDL_RENDER_DISABLED */
+#endif /* SDL_VIDEO_RENDER_OGL && !SDL_RENDER_DISABLED */
 
 /* vi: set ts=4 sw=4 expandtab: */

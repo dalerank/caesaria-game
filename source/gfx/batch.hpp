@@ -32,6 +32,7 @@ class Batch
 {
 public:
   Batch();
+  explicit Batch( SDL_Batch* batch );
   Batch( const Batch& other );
   Batch& operator=(const Batch& other);
   SDL_Batch* native() const { return _batch; }

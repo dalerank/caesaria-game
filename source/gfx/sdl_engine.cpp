@@ -41,6 +41,7 @@
 #include "gfx/decorator.hpp"
 #include "game/settings.hpp"
 #include "core/timer.hpp"
+#include "sdl_batcher.hpp"
 
 #ifdef CAESARIA_PLATFORM_MACOSX
 #include <dlfcn.h>
@@ -73,6 +74,7 @@ public:
 
   SDL_Window *window;
   SDL_Renderer *renderer;
+  SdlBatcher batcher;
 
   std::map< int, SDL_Texture* > renderTargets;
 
@@ -273,9 +275,11 @@ void SdlEngine::init()
     Logger::warning( "SDLGraficEngine: availabe render %s ", info.name );
   }
 
-  SDL_GetRendererInfo( renderer, &info );
+  SDL_GetRendererInfo( renderer, &info );  
+  int gl_version;
+  SDL_GL_GetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, &gl_version );
   Logger::warning( "SDLGraficEngine: init render %s ", info.name );
-
+  Logger::warning( "SDLGraficEngine: using OpenGL %d ", gl_version );
 
   SDL_Texture *screenTexture = SDL_CreateTexture(renderer,
                                                  SDL_PIXELFORMAT_ARGB8888,
@@ -399,9 +403,15 @@ void SdlEngine::endRenderFrame()
 }
 
 void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* clipRect )
-{
+{    
   if( !picture.isValid() )
       return;
+
+  if( getFlag( Engine::batching ) )
+  {
+    _d->batcher.append( picture, Point(dx, dy) );
+    return;
+  }
 
   int t = DateTime::elapsedTime();
   _d->drawCall++;
@@ -452,6 +462,12 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
   if( pictures.empty() )
       return;
 
+  if( getFlag( Engine::batching ) )
+  {
+    _d->batcher.append( pictures, pos );
+    return;
+  }
+
   int t = DateTime::elapsedTime();
   _d->drawCall+=pictures.size();
 
@@ -500,6 +516,12 @@ void SdlEngine::draw(const Picture& pic, const Rect& srcRect, const Rect& dstRec
   if( !pic.isValid() )
       return;
 
+  if( getFlag( Engine::batching ) )
+  {
+    _d->batcher.append( pic, srcRect, dstRect );
+    return;
+  }
+
   int t = DateTime::elapsedTime();
 
   _d->drawCall++;
@@ -546,8 +568,15 @@ void SdlEngine::draw(const Picture& pic, const Rects& srcRects, const Rects& dst
 
   if( batch )
   {
-    SDL_RenderBatch( _d->renderer, batch );
-    SDL_DestroyBatch( _d->renderer, batch );
+    if( getFlag( Engine::batching ) )
+    {
+      _d->batcher.append( Batch( batch ) );
+    }
+    else
+    {
+      SDL_RenderBatch( _d->renderer, batch );
+      SDL_DestroyBatch( _d->renderer, batch );
+    }
   }
 }
 
@@ -681,9 +710,21 @@ void SdlEngine::setFlag( int flag, int value )
 {
   Engine::setFlag( flag, value );
 
-  if( flag == debugInfo )
+  switch( flag )
   {
-    _d->debugFont = Font::create( FONT_2 );
+  case debugInfo: _d->debugFont = Font::create( FONT_2 ); break;
+  case batching:
+    _d->batcher.setActive( value );
+    if( value )
+      _d->batcher.begin();
+    else
+    {
+      _d->batcher.finish();
+      _d->batcher.draw( *this );
+    }
+  break;
+
+  default: break;
   }
 }
 

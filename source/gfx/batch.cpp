@@ -100,4 +100,9 @@ Batch::Batch()
   _batch = 0;
 }
 
+Batch::Batch(SDL_Batch *batch)
+{
+  _batch = batch;
+}
+
 }//end namespace gfx

@@ -40,39 +40,13 @@ class DrawOptions : public FlagHolder<int>
 public:
   typedef enum { drawGrid=0x1, shadowOverlay=0x2, showPath=0x4, windowActive=0x8, showRoads=0x10,
                  showObjectArea=0x20, showWalkableTiles=0x40, showLockedTiles=0x80, showFlatTiles=0x100,
-                 borderMoving=0x200, mayChangeLayer=0x400, oldGraphics=0x800, mmbMoving=0x1000 } Flags;
+                 borderMoving=0x200, mayChangeLayer=0x400, oldGraphics=0x800, mmbMoving=0x1000,
+                 batchTextures=0x2000
+               } Flags;
   static DrawOptions& instance();
 
 private:
   DrawOptions() {}
-};
-
-class DrawBatcher
-{
-public:
-  typedef std::vector<gfx::Batch> States;
-
-  static DrawBatcher& instance();
-
-  void draw( gfx::Engine& engine );
-
-  void append( const gfx::Picture& pic, const Point& pos );
-  void append( const gfx::Pictures& pics, const Point& pos );
-
-  void begin();
-  void finish();
-
-  bool active() const { return _active; }
-  void setActive( bool value ) { _active = value; }
-
-private:
-  DrawBatcher();
-
-  bool _active;
-  States _states;
-  gfx::Picture _currentTx;
-  Rects  _currentSrcRects;
-  Rects  _currentDstRects;
 };
 
 class Layer : public ReferenceCounted
