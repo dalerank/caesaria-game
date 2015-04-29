@@ -10,7 +10,8 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := SDL2
 
-LOCAL_C_INCLUDES := $(LOCAL_PATH)/include
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/include \
+                c:/android-ndk-r9/platforms/android-18/arch-arm/usr/include
 
 LOCAL_EXPORT_C_INCLUDES := $(LOCAL_C_INCLUDES)
 
