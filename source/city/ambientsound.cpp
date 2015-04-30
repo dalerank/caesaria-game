@@ -88,6 +88,7 @@ struct SoundEmitter
 };
 
 typedef std::set< SoundEmitter > Emitters;
+typedef std::set< int >  HashSet;
 
 class AmbientSound::Impl
 {
@@ -95,6 +96,9 @@ public:
   Camera* camera;
   TilePos cameraPos;
   Emitters emitters;
+
+  TilesArea emmitersArea;
+  HashSet processedSounds;
 };
 
 SrvcPtr AmbientSound::create( PlayerCityPtr city, gfx::Camera* camera )
@@ -111,6 +115,7 @@ AmbientSound::AmbientSound( PlayerCityPtr city, gfx::Camera* camera )
 : Srvc( city, defaultName() ), _d( new Impl )
 {
   _d->camera = camera;
+  _d->emmitersArea.reserve( ambientsnd::maxDistance * ambientsnd::maxDistance + 1 );
 }
 
 void AmbientSound::timeStep( const unsigned int time )
@@ -131,9 +136,10 @@ void AmbientSound::timeStep( const unsigned int time )
   audio::Engine& ae = audio::Engine::instance();
 
   //add new emitters
-  TilesArea emmitersArea( _city()->tilemap(), _d->cameraPos, ambientsnd::maxDistance );
+  _d->emmitersArea.clear();
+  _d->emmitersArea.reset( _city()->tilemap(), _d->cameraPos, ambientsnd::maxDistance );
 
-  foreach( tile, emmitersArea ) { _d->emitters.insert( SoundEmitter( *tile, _d->cameraPos ) ); }
+  foreach( tile, _d->emmitersArea ) { _d->emitters.insert( SoundEmitter( *tile, _d->cameraPos ) ); }
 
   //remove so far emitters
   for( Emitters::iterator i=_d->emitters.begin(); i != _d->emitters.end(); )
@@ -152,20 +158,21 @@ void AmbientSound::timeStep( const unsigned int time )
   }
 
   //create emitters map
-  std::set< std::string > processedSounds;
-  for( Emitters::reverse_iterator i=_d->emitters.rbegin();
-       i != _d->emitters.rend(); ++i )
+  _d->processedSounds.clear();
+
+  for( Emitters::reverse_iterator i=_d->emitters.rbegin(); i != _d->emitters.rend(); ++i )
   {
     std::string resourceName = i->sound();
 
     if( resourceName.empty() )
       continue;
 
-    std::set< std::string >::const_iterator tIt = processedSounds.find( resourceName );
+    unsigned int hash = Hash(resourceName);
+    bool alsoResolved = _d->processedSounds.count( hash ) > 0;
 
-    if( tIt == processedSounds.end() )
+    if( !alsoResolved )
     {
-      processedSounds.insert( resourceName );
+      _d->processedSounds.insert( hash );
 
       ae.play( resourceName, sound::maxLevel / (ambientsnd::maxDistance *(i->distance( _d->cameraPos )+1)), audio::ambient  );
     }

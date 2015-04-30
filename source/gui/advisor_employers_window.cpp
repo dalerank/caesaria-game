@@ -81,7 +81,7 @@ public:
   void setPriority( int priority )
   {
     _priority = priority;
-    _resizeEvent();
+    _finalizeResize();
   }
 
 signals public:

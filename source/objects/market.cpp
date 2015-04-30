@@ -144,10 +144,9 @@ void Market::load( const VariantMap& stream)
 
 void Market::timeStep(const unsigned long time)
 {
-  if( game::Date::isWeekChanged() )
+  if( game::Date::isDayChanged() )
   {
-    ServiceWalkerList servicemen;
-    servicemen << walkers();
+    ServiceWalkerList servicemen = walkers().select<ServiceWalker>();
     if( servicemen.size() > 0 && _d->goodStore.qty() == 0 )
     {
       servicemen.front()->return2Base();

@@ -96,7 +96,7 @@ signals public:
   virtual Signal1<Widget*>& onClickedEx();
 
 protected:
-  virtual void _resizeEvent();
+  virtual void _finalizeResize();
 
   //! when left mouse button pressed down
   virtual bool _leftMouseBtnPressed( const NEvent& event );

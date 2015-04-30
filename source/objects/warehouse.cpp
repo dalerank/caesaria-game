@@ -51,9 +51,20 @@ using namespace config;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::warehouse, Warehouse)
 
-namespace {
+namespace
+{
 CAESARIA_LITERALCONST(tiles)
 CAESARIA_LITERALCONST(goodStore)
+}
+
+namespace config
+{
+
+namespace fgpic
+{
+  enum { idxWhRoof=1, idxAnimWork, idxAnimFlag };
+}
+
 }
 
 Warehouse::Room::Room(const TilePos &pos)
@@ -121,10 +132,18 @@ public:
   WarehouseStore goodStore;
 };
 
+static Picture strafePic(const std::string& rc, int index, int i, int j )
+{
+  Picture ret = Picture::load( rc, index );
+  ret.addOffset( tile::tilepos2screen( TilePos( i, j ) ) );
+
+  return ret;
+}
+
 Warehouse::Warehouse() : WorkingBuilding( object::warehouse, Size( 3 )), _d( new Impl )
 {
-   // _name = _("Entrepot");
-  setPicture( ResourceGroup::warehouse, 19 );
+  setPicture( strafePic( ResourceGroup::warehouse, 19, 0, 2 ) );
+
   _fgPicturesRef().resize(12+1);  // 8 tiles + 4 + 1 animation slot
 
   _animationRef().load( ResourceGroup::warehouse, 2, 16 );
@@ -134,10 +153,10 @@ Warehouse::Warehouse() : WorkingBuilding( object::warehouse, Size( 3 )), _d( new
 
   _setClearAnimationOnStop( false );
 
-  _fgPicturesRef()[ fgpic::idxMainPic ] = Picture::load(ResourceGroup::warehouse, 1);
-  _fgPicturesRef()[ 1 ] = Picture::load(ResourceGroup::warehouse, 18);
-  _fgPicturesRef()[ 2 ] = _animationRef().currentFrame();
-  _fgPicturesRef()[ 3 ] = _d->animFlag.currentFrame();
+  _fgPicturesRef()[ fgpic::idxMainPic ] = strafePic( ResourceGroup::warehouse, 1,  0, 2);
+  _fgPicturesRef()[ fgpic::idxWhRoof  ] = strafePic( ResourceGroup::warehouse, 18, 0, 2);
+  _fgPicturesRef()[ fgpic::idxAnimWork] = _animationRef().currentFrame();
+  _fgPicturesRef()[ fgpic::idxAnimFlag] = _d->animFlag.currentFrame();
 
   // add subTiles in Z-order (from far to near)
   _d->rooms.clear();
@@ -183,6 +202,8 @@ void Warehouse::timeStep(const unsigned long time)
 void Warehouse::computePictures()
 {
   int index = 4;
+  std::string rc = _d->isTradeCenter ? ResourceGroup::tradecenter : ResourceGroup::warehouse;
+  _fgPicturesRef()[ fgpic::idxMainPic ] = strafePic( rc, 1, 0, 2);
   foreach( room, _d->rooms )
   {
      room->computePicture();
@@ -230,8 +251,13 @@ void Warehouse::load( const VariantMap& stream )
 
 bool Warehouse::onlyDispatchGoods() const {  return numberWorkers() < maximumWorkers() / 3; }
 bool Warehouse::isTradeCenter() const { return _d->isTradeCenter; }
-void Warehouse::setTradeCenter(bool enabled) { _d->isTradeCenter = enabled; }
 Warehouse::Rooms& Warehouse::rooms() { return _d->rooms; }
+
+void Warehouse::setTradeCenter(bool enabled)
+{
+  _d->isTradeCenter = enabled;
+  computePictures();
+}
 
 bool Warehouse::isGettingFull() const
 {
@@ -246,8 +272,7 @@ bool Warehouse::isGettingFull() const
 
 float Warehouse::tradeBuff(Warehouse::Buff type) const
 {
-  SmartList<WarehouseBuff> buffs;
-  buffs << extensions();
+  SmartList<WarehouseBuff> buffs = extensions().select<WarehouseBuff>();
 
   float res = 0;
   foreach( it, buffs )

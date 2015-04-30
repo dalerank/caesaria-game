@@ -57,6 +57,7 @@ public:
   PushButton* btnBarbarianMayAttack;
   PushButton* btnLegionMayAttack;
   PushButton* btnAnroidBarEnabled;
+  PushButton* btnToggleBatching;
   Label* lbFireRisk;
   TexturedButton* btnIncreaseFireRisk;
   TexturedButton* btnDecreaseFireRisk;
@@ -90,6 +91,7 @@ public:
   void toggleShowTooltips();
   void toggleLegionAttack();
   void toggleAndroidBarEnabled();
+  void toggleUseBatching();
   void toggleCityOption( PlayerCity::OptionType option );
   void changeCityOption(PlayerCity::OptionType option, int delta);
 };
@@ -124,6 +126,7 @@ CityOptions::CityOptions(Widget* parent, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, btnShowTooltips )
   GET_DWIDGET_FROM_UI( _d, btnDifficulty )
   GET_DWIDGET_FROM_UI( _d, btnAnroidBarEnabled )
+  GET_DWIDGET_FROM_UI( _d, btnToggleBatching )
 
   CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods )
   CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings )
@@ -142,6 +145,7 @@ CityOptions::CityOptions(Widget* parent, PlayerCityPtr city )
   CONNECT( _d->btnAnroidBarEnabled, onClicked(), _d.data(), Impl::toggleAndroidBarEnabled )
   CONNECT( _d->btnIncreaseCollapseRisk, onClicked(), _d.data(), Impl::increaseCollapseRisk )
   CONNECT( _d->btnDecreaseCollapseRisk, onClicked(), _d.data(), Impl::decreaseCollapseRisk )
+  CONNECT( _d->btnToggleBatching, onClicked(), _d.data(), Impl::toggleUseBatching )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptions::deleteLater );
@@ -233,6 +237,13 @@ void CityOptions::Impl::toggleLeftMiddleMouse()
 {
   bool value = DrawOptions::instance().isFlag( DrawOptions::mmbMoving );
   DrawOptions::instance().setFlag( DrawOptions::mmbMoving, !value );
+  update();
+}
+
+void CityOptions::Impl::toggleUseBatching()
+{
+  bool value = DrawOptions::instance().isFlag( DrawOptions::batchTextures );
+  DrawOptions::instance().setFlag( DrawOptions::batchTextures, !value );
   update();
 }
 
@@ -362,6 +373,14 @@ void CityOptions::Impl::update()
     btnAnroidBarEnabled->setText( value
                                     ? _("##city_androidbar_on##")
                                     : _("##city_androidbar_off##")  );
+  }
+
+  if( btnToggleBatching )
+  {
+    bool value = DrawOptions::instance().isFlag( DrawOptions::batchTextures ) > 0;
+    btnToggleBatching->setText( value
+                                    ? _("##city_batching_on##")
+                                    : _("##city_batching_off##")  );
   }
 }
 

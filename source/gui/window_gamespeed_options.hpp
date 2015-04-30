@@ -30,10 +30,10 @@ namespace dialog
 class SpeedOptions : public Window
 {
 public:
-  SpeedOptions(Widget* parent,
-                         int gameSpeed,
-                         int scrollSpeed,
-                         int autosaveInterval);
+  SpeedOptions( Widget* parent,
+                int gameSpeed,
+                int scrollSpeed,
+                int autosaveInterval);
 
   //! Деструктор
   virtual ~SpeedOptions(void);

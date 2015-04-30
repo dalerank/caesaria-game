@@ -60,6 +60,11 @@ class Cities : public CityList
 public:
   std::string playerCity;
 
+  void setAvailable( bool value )
+  {
+    foreach( it, *this ) { (*it)->setAvailable( value ); }
+  }
+
   void update( unsigned int time )
   {
     foreach( it, *this )
@@ -107,6 +112,12 @@ public:
 
   void load( const VariantMap& stream )
   {
+    std::string allCities = stream.get( "all" ).toString();
+    if( !allCities.empty() )
+    {
+      setAvailable( allCities == "enabled" );
+    }
+
     foreach( item, stream )
     {
       CityPtr city = find( item->first );
@@ -341,18 +352,14 @@ void Empire::load( const VariantMap& stream )
   VARIANT_LOAD_ANYDEF_D( _d, maxBarbariansGroups, _d->maxBarbariansGroups,  stream )
   VARIANT_LOAD_ANYDEF_D( _d, economy.workerSalary,_d->economy.workerSalary, stream )
   VARIANT_LOAD_ANYDEF_D( _d, economy.rateInterest,_d->economy.rateInterest, stream )
-  VARIANT_LOAD_ANY_D   ( _d, economy.treasury,                              stream )
+  VARIANT_LOAD_ANYDEF_D( _d, economy.treasury,    _d->economy.treasury,     stream )
   VARIANT_LOAD_CLASS_D ( _d, trading,                                       stream )
   VARIANT_LOAD_CLASS_D ( _d, cities,                                        stream )
   VARIANT_LOAD_CLASS_D ( _d, emperor,                                       stream ) //patch from keeeeper
   _d->objects.load( stream.get( "objects" ).toMap(), this );
 }
 
-void Empire::setCitiesAvailable(bool value)
-{
-  foreach( city, _d->cities ) { (*city)->setAvailable( value ); }
-}
-
+void Empire::setCitiesAvailable(bool value){ _d->cities.setAvailable( value ); }
 unsigned int Empire::workerSalary() const {  return _d->economy.workerSalary; }
 void Empire::setWorkerSalary(unsigned int value){ _d->economy.workerSalary = math::clamp<unsigned int>( value, minRomeSalary, maxRomeSalary ); }
 bool Empire::isAvailable() const{  return _d->enabled; }

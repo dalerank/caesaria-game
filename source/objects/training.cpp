@@ -48,7 +48,7 @@ void TrainingBuilding::timeStep(const unsigned long time)
    if( _lastSendDate.daysTo( game::Date::current() ) > _trainingDelay )
    {
      _lastSendDate = game::Date::current();
-      deliverTrainee();
+     deliverTrainee();
    }
 }
 

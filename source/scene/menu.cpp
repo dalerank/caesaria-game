@@ -1,4 +1,4 @@
-// This file is part of CaesarIA.
+ // This file is part of CaesarIA.
 //
 // CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 #include "menu.hpp"
 
 #include "core/gettext.hpp"
-#include "gui/loadfiledialog.hpp"
+#include "gui/loadgamedialog.hpp"
 #include "gfx/engine.hpp"
 #include "core/exception.hpp"
 #include "gui/startmenu.hpp"
@@ -118,11 +118,10 @@ void StartMenu::Impl::showSaveSelectDialog()
 {
   Widget* parent = game->gui()->rootWidget();
 
-  vfs::Path savesPath = SETTINGS_VALUE( savedir ).toString();
-  std::string defaultExt = SETTINGS_VALUE( saveExt ).toString();
+  vfs::Path savesPath = SETTINGS_VALUE( savedir ).toString();  
 
   result = StartMenu::loadSavedGame;
-  gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent, Rect(), savesPath, defaultExt,-1 );
+  gui::dialog::LoadGame* wnd = gui::dialog::LoadGame::create( parent, savesPath );
   wnd->setShowExtension( false );
   wnd->setMayDelete( true );
 
@@ -208,7 +207,7 @@ void StartMenu::Impl::openDlcDirectory(Widget* sender)
 
 void StartMenu::Impl::showSoundOptions()
 {
-  events::GameEventPtr e = events::SetSoundOptions::create();
+  events::GameEventPtr e = events::ChangeSoundOptions::create();
   e->dispatch();
 }
 
@@ -331,6 +330,7 @@ void StartMenu::Impl::showCredits()
                          "Dmitry Plotnikov (main artist)",
                          "Jennifer Kin (empire map)",
                          "Andre Lisket (school, theater, baths and others)",
+                         "Il'ya Korchagin (grape farm tiles)",
                          " ",
                          _("##music##"),
                          " ",
@@ -431,7 +431,10 @@ void StartMenu::Impl::showMainMenu()
   ADD_MENU_BUTTON( "##mainmenu_options##",        Impl::showOptionsMenu )
   ADD_MENU_BUTTON( "##mainmenu_credits##",        Impl::showCredits )
 #ifdef CAESARIA_USE_STEAM
-  ADD_MENU_BUTTON( "##mainmenu_mcmxcviii##",  Impl::showAdvancedMaterials )
+  if( vfs::Path( ":/dlc" ).exist() )
+  {
+    ADD_MENU_BUTTON( "##mainmenu_mcmxcviii##",    Impl::showAdvancedMaterials )
+  }
 #endif
   ADD_MENU_BUTTON( "##mainmenu_quit##",           Impl::quitGame )
 }
@@ -445,6 +448,7 @@ void StartMenu::Impl::showAdvancedMaterials()
   {
     dialog::Dialog* dlg = dialog::Information( menu->ui(), _("##no_dlc_found_title##"), _("##no_dlc_found_text##"));
     dlg->show();
+    showMainMenu();
     return;
   }
 
@@ -495,10 +499,10 @@ void StartMenu::Impl::showMapSelectDialog()
 {
   Widget* parent = game->gui()->rootWidget();
 
-  LoadFileDialog* wnd = new gui::LoadFileDialog( parent,
-                                                 Rect(),
-                                                 vfs::Path( ":/maps/" ), ".map,.sav,.omap",
-                                                 -1 );
+  dialog::LoadFile* wnd = dialog::LoadFile::create( parent,
+                                                    Rect(),
+                                                    vfs::Path( ":/maps/" ), ".map,.sav,.omap",
+                                                    -1 );
   wnd->setMayDelete( false );
 
   result = StartMenu::loadMap;
@@ -524,7 +528,7 @@ void StartMenu::draw()
 {
   _d->game->gui()->beforeDraw();
 
-  _d->engine->draw(_d->bgPicture, 0, 0);
+  _d->engine->draw(_d->bgPicture,0,0);
 
   _d->game->gui()->draw();
 

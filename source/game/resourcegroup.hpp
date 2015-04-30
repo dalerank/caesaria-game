@@ -60,6 +60,7 @@ public:
   __RCG_NAME hippodrome;
   __RCG_NAME celts;
   __RCG_NAME roadBlock;
+  __RCG_NAME tradecenter;
 };
 
 class ResourceMenu

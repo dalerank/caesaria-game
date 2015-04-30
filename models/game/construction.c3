@@ -764,6 +764,7 @@
     productRate : 4.8
     class : "industry"
     sound : [ "winery", 1 ]
+    animation : { rc : "commerce", start : 87, count : 12, offset : [ 14, 36 ], delay : 4 }
   },
 
   oil_workshop :

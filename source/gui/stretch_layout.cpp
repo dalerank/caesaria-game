@@ -109,11 +109,11 @@ void Layout::setupUI(const VariantMap &stream)
   Widget::setupUI( stream );
 }
 
-void Layout::_resizeEvent()
+void Layout::_finalizeResize()
 {
   _needUpdate = true;
 
-  Widget::_resizeEvent();
+  Widget::_finalizeResize();
 }
 
 Layout::Layout(Widget *parent)

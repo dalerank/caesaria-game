@@ -135,6 +135,16 @@ public:
 
   int sentiment;
 
+  struct
+  {
+    WalkerList walkers;
+
+    void clear()
+    {
+      walkers.clear();
+    }
+  } cached;
+
 public:
   // collect taxes from all houses
   void monthStep( PlayerCityPtr city, const DateTime& time );
@@ -162,25 +172,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->sentiment = city::Sentiment::defaultValue;
   _d->empMapPicture = Picture::load( ResourceGroup::empirebits, 1 );
 
-  addService( city::Migration::create( this ) );
-  addService( city::WorkersHire::create( this ) );
-  addService( city::ProsperityRating::create( this ) );
-  addService( city::Shoreline::create( this ) );
-  addService( city::Info::create( this ) );
-  addService( city::CultureRating::create( this ) );
-  addService( city::Animals::create( this ) );
-  addService( city::Religion::create( this ) );
-  addService( city::Festival::create( this ) );
-  addService( city::Roads::create( this ) );
-  addService( city::Fishery::create( this ) );
-  addService( city::Disorder::create( this ) );
-  addService( city::request::Dispatcher::create( this ) );
-  addService( city::Military::create( this ) );
-  addService( audio::Player::create( this ) );
-  addService( city::HealthCare::create( this ));
-  addService( city::Peace::create( this ) );
-  addService( city::Sentiment::create( this ) );
-  addService( city::Fire::create( this ) );
+  _d->services.initialize( this, ":/services.model" );
 
   setPicture( Picture::load( ResourceGroup::empirebits, 1 ) );
   _initAnimation();
@@ -239,9 +231,11 @@ void PlayerCity::timeStep(unsigned int time)
   }
 
   //update walkers access map
+  _d->cached.clear();
+
   _d->walkers.update( this, time );
   _d->overlays.update( this, time );
-  _d->services.update( this, time );
+  _d->services.timeStep( this, time );
   city::Timers::instance().update( time );
 
   if( getOption( updateRoads ) > 0 )
@@ -268,23 +262,23 @@ void PlayerCity::Impl::monthStep( PlayerCityPtr city, const DateTime& time )
   economy.updateHistory( game::Date::current() );
 }
 
-WalkerList PlayerCity::walkers( walker::Type rtype )
+const WalkerList& PlayerCity::walkers( walker::Type rtype )
 {
   if( rtype == walker::all )
   {
     return _d->walkers;
   }
 
-  WalkerList res;
+  _d->cached.walkers.clear();
   foreach( w, _d->walkers )
   {
     if( (*w)->type() == rtype  )
     {
-      res.push_back( *w );
+      _d->cached.walkers.push_back( *w );
     }
   }
 
-  return res;
+  return _d->cached.walkers;
 }
 
 const WalkerList& PlayerCity::walkers(const TilePos& pos) { return _d->walkers.at( pos ); }

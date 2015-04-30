@@ -271,13 +271,15 @@ void clear(Tile& tile)
 
 void fixPlateauFlags(Tile& tile)
 {
-  if( tile.originalImgId() > 200 && tile.originalImgId() < 245 )
+  int imgId = tile.originalImgId();
+  bool plateau = (imgId > 200 && imgId < 245);
+  bool l3aRocks = (imgId > 848 && imgId < 863);
+  if( plateau || l3aRocks )
   {
     tile.setFlag( Tile::clearAll, true );
-    Picture pic = imgid::toPicture( tile.originalImgId() );
-    int size = (pic.width() + 2) / tilemap::x_tileBase;
-    bool flat = pic.height() <= tilemap::y_tileBase * size;
-    tile.setFlag( Tile::tlRock, !flat );
+    const Picture& pic = tile.picture();
+    bool flat = (pic.height() <= pic.width() / 2);
+    tile.setFlag( Tile::tlRock, !flat || l3aRocks );
   }
 }
 

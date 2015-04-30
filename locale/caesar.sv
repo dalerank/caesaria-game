@@ -1986,4 +1986,10 @@
 "##trade_btn_export_text##":"Exportera vara över"
 "##export##":"Export"
 "##trade_btn_import_text##":"Importerar"
+"##mainmenu_mcmxcviii##":"MCMXCVIII"
+"##mainmenu_dlc_articles##":"Artiklar"
+"##mainmenu_dlc_concepts##":"Begrepp"
+"##mainmenu_dlc_main##":"Hur man bygger Rom"
+"##mainmenu_dlc_wallpapers##":"Bakgrundsbilder"
+"##mainmenu_dlc_soundtrack##":"Teman"
 }

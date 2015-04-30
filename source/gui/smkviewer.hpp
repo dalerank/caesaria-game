@@ -47,7 +47,7 @@ public signals:
   Signal0<>& onFinish();
 
 protected:
-  void _resizeEvent();
+  void _finalizeResize();
 
 private:
   class Impl;

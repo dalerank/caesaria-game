@@ -41,6 +41,7 @@
 #include "gfx/decorator.hpp"
 #include "game/settings.hpp"
 #include "core/timer.hpp"
+#include "sdl_batcher.hpp"
 
 #ifdef CAESARIA_PLATFORM_MACOSX
 #include <dlfcn.h>
@@ -73,6 +74,7 @@ public:
 
   SDL_Window *window;
   SDL_Renderer *renderer;
+  SdlBatcher batcher;
 
   std::map< int, SDL_Texture* > renderTargets;
 
@@ -100,6 +102,59 @@ void SdlEngine::deletePicture( Picture* pic )
 {
   if( pic )
     unloadPicture( *pic );
+}
+
+SDL_Batch* __createBatch( SDL_Renderer* render, const Picture& pic, const Rects& srcRects, const Rects& dstRects, Rect* clipRect)
+{
+  static std::vector<SDL_Rect> native_srcrects;
+  static std::vector<SDL_Rect> native_dstrects;
+
+  const size_t saveSrcsLength = native_srcrects.size();
+  const size_t saveDstsLength = native_dstrects.size();
+
+  native_dstrects.resize( srcRects.size() );
+  native_srcrects.resize( srcRects.size() );
+  for( size_t i=0; i < srcRects.size(); i++ )
+  {
+    const Rect& r1 = srcRects[ i ];
+    SDL_Rect& r = native_srcrects[ i ];
+    r.x = r1.left();
+    r.y = r1.top();
+    r.h = r1.height();
+    r.w = r1.width();
+
+    const Rect& r2 = dstRects[ i ];
+    SDL_Rect& t = native_dstrects[ i ];
+    t.x = r2.left();
+    t.y = r2.top();
+    t.h = r2.height();
+    t.w = r2.width();
+  }
+
+  SDL_Batch* ret = SDL_CreateBatch(render,pic.texture(),
+                                   native_srcrects.data(),native_dstrects.data(),
+                                   native_srcrects.size());
+
+  if( native_dstrects.size() > saveDstsLength )
+      native_dstrects.reserve( native_dstrects.size() + 1 );
+  if( native_srcrects.size() > saveSrcsLength )
+      native_srcrects.reserve( native_srcrects.size() + 1 );
+
+  return ret;
+}
+
+Batch SdlEngine::loadBatch(const Picture &pic, const Rects &srcRects, const Rects &dstRects, Rect *clipRect)
+{
+  Batch ret;
+  SDL_Batch* batch = __createBatch( _d->renderer, pic, srcRects, dstRects, clipRect );
+  ret.init( batch );
+
+  return ret;
+}
+
+void SdlEngine::unloadBatch(const Batch& batch)
+{
+  SDL_DestroyBatch( _d->renderer, batch.native() );
 }
 
 unsigned int SdlEngine::format() const
@@ -220,9 +275,11 @@ void SdlEngine::init()
     Logger::warning( "SDLGraficEngine: availabe render %s ", info.name );
   }
 
-  SDL_GetRendererInfo( renderer, &info );
+  SDL_GetRendererInfo( renderer, &info );  
+  int gl_version;
+  SDL_GL_GetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, &gl_version );
   Logger::warning( "SDLGraficEngine: init render %s ", info.name );
-
+  Logger::warning( "SDLGraficEngine: using OpenGL %d ", gl_version );
 
   SDL_Texture *screenTexture = SDL_CreateTexture(renderer,
                                                  SDL_PIXELFORMAT_ARGB8888,
@@ -323,14 +380,14 @@ void SdlEngine::endRenderFrame()
       _d->fpsText->fill( 0, Rect() );
       _d->debugFont.draw( *_d->fpsText, debugText, Point( 0, 0 ) );
       timeCount = DebugTimer::ticks();
+#ifdef SHOW_FPS_IN_LOG
+      Logger::warning( "FPS: %d", _d->fps );
+#endif
     }
     draw( *_d->fpsText, Point( _d->screen.width() / 2, 2 ) );
+
   }
 
-  //Refresh the screen
-  //SDL_SetRenderTarget( _d->renderer, NULL );
-
-  //SDL_RenderCopyEx(_d->renderer, _d->screen.texture(), 0, 0, 0, 0, SDL_FLIP_HORIZONTAL );
   SDL_RenderPresent(_d->renderer);
 
   _d->fps++;
@@ -343,14 +400,18 @@ void SdlEngine::endRenderFrame()
   }
 
   _d->drawCall = 0;
-
-  //Logger::warning( "dt=%d  dtb=%d", drawTime, drawTimeBatch );
 }
 
 void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* clipRect )
-{
+{    
   if( !picture.isValid() )
       return;
+
+  if( getFlag( Engine::batching ) )
+  {
+    _d->batcher.append( picture, Point(dx, dy) );
+    return;
+  }
 
   int t = DateTime::elapsedTime();
   _d->drawCall++;
@@ -401,8 +462,14 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
   if( pictures.empty() )
       return;
 
+  if( getFlag( Engine::batching ) )
+  {
+    _d->batcher.append( pictures, pos );
+    return;
+  }
+
   int t = DateTime::elapsedTime();
-  _d->drawCall++;
+  _d->drawCall+=pictures.size();
 
   if( clipRect != 0 )
   {
@@ -449,6 +516,12 @@ void SdlEngine::draw(const Picture& pic, const Rect& srcRect, const Rect& dstRec
   if( !pic.isValid() )
       return;
 
+  if( getFlag( Engine::batching ) )
+  {
+    _d->batcher.append( pic, srcRect, dstRect );
+    return;
+  }
+
   int t = DateTime::elapsedTime();
 
   _d->drawCall++;
@@ -488,8 +561,47 @@ void SdlEngine::draw(const Picture& pic, const Rect& srcRect, const Rect& dstRec
   drawTime += DateTime::elapsedTime() - t;
 }
 
+void SdlEngine::draw(const Picture& pic, const Rects& srcRects, const Rects& dstRects, Rect* clipRect)
+{
+  SDL_Batch* batch = __createBatch( _d->renderer, pic, srcRects, dstRects, clipRect );
+  _d->drawCall++;
+
+  if( batch )
+  {
+    if( getFlag( Engine::batching ) )
+    {
+      _d->batcher.append( Batch( batch ) );
+    }
+    else
+    {
+      SDL_RenderBatch( _d->renderer, batch );
+      SDL_DestroyBatch( _d->renderer, batch );
+    }
+  }
+}
+
+void SdlEngine::draw(const Batch& batch, Rect *clipRect)
+{
+  _d->drawCall++;
+
+  if( clipRect != 0 )
+  {
+    SDL_Rect r = { clipRect->left(), clipRect->top(), clipRect->width(), clipRect->height() };
+    SDL_RenderSetClipRect( _d->renderer, &r );
+  }
+
+  SDL_RenderBatch( _d->renderer, batch.native() );
+
+  if( clipRect != 0 )
+  {
+    SDL_RenderSetClipRect( _d->renderer, 0 );
+  }
+}
+
 void SdlEngine::drawLine(const NColor &color, const Point &p1, const Point &p2)
 {
+  _d->drawCall++;
+
   SDL_SetRenderDrawColor( _d->renderer, color.red(), color.green(), color.blue(), color.alpha() );
   SDL_RenderDrawLine( _d->renderer, p1.x(), p1.y(), p2.x(), p2.y() );
 
@@ -598,9 +710,21 @@ void SdlEngine::setFlag( int flag, int value )
 {
   Engine::setFlag( flag, value );
 
-  if( flag == debugInfo )
+  switch( flag )
   {
-    _d->debugFont = Font::create( FONT_2 );
+  case debugInfo: _d->debugFont = Font::create( FONT_2 ); break;
+  case batching:
+    _d->batcher.setActive( value );
+    if( value )
+      _d->batcher.begin();
+    else
+    {
+      _d->batcher.finish();
+      _d->batcher.draw( *this );
+    }
+  break;
+
+  default: break;
   }
 }
 

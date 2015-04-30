@@ -86,7 +86,7 @@ signals public:
   Signal1<std::string>& onWordClick();
 
 protected:
-  virtual void _resizeEvent();
+  virtual void _finalizeResize();
   virtual void _updateTexture( gfx::Engine& painter );
   virtual void _handleClick(const Point& p);
 

@@ -176,7 +176,8 @@ void Animation::stop(){ _dfunc()->index = -1; }
 Animation& Animation::operator=( const Animation& other )
 {
   __D_IMPL(_d,Animation)
-  _pictures = other._pictures;
+  _pictures.clear();
+  _pictures.append( other._pictures );
   _dfunc()->index = other._dfunc()->index;  // index of the current frame
   _d->delay = other.delay();
   _d->lastTimeUpdate = other._dfunc()->lastTimeUpdate;

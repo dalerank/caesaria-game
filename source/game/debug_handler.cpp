@@ -61,6 +61,7 @@
 
 using namespace gfx;
 using namespace citylayer;
+using namespace gui;
 
 enum {
   add_enemy_archers=0,
@@ -484,11 +485,11 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case run_script:
   {
-    gui::Widget* parent = game->gui()->rootWidget();
-    gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent,
-                                                        Rect(),
-                                                        vfs::Path( ":/scripts/" ), ".model",
-                                                        -1 );
+    Widget* parent = game->gui()->rootWidget();
+    dialog::LoadFile* wnd = dialog::LoadFile::create( parent,
+                                                      Rect(),
+                                                      vfs::Path( ":/scripts/" ), ".model",
+                                                      -1 );
     wnd->setCenter( parent->center() );
 
     CONNECT( wnd, onSelectFile(), this, Impl::runScript );

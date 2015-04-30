@@ -2004,4 +2004,10 @@
 "##trade_btn_export_text##":"Экспорт свыше"
 "##export##":"Экспорт"
 "##trade_btn_import_text##":"Импорт"
+"##mainmenu_mcmxcviii##":"MCMXCVIII"
+"##mainmenu_dlc_articles##":"Записки об игре"
+"##mainmenu_dlc_concepts##":"Концепты"
+"##mainmenu_dlc_main##":"Как построить Рим"
+"##mainmenu_dlc_wallpapers##":"Обои "
+"##mainmenu_dlc_soundtrack##":"Музыка из игры"
 }

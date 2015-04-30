@@ -706,6 +706,16 @@ void GlEngine::unloadPicture(Picture& ioPicture)
   ioPicture = Picture();
 }
 
+Batch GlEngine::loadBatch(const Picture &pic, const Rects &srcRects, const Rects &dstRects, Rect *clipRect)
+{
+
+}
+
+void GlEngine::unloadBatch(const Batch &batch)
+{
+
+}
+
 /*static int power_of_2(int input)
 {
     int value = 1;
@@ -1077,6 +1087,15 @@ Engine::Modes GlEngine::modes() const
   return ret;
 }
 
+void GlEngine::draw(const gfx::Picture& pic, const Rects& srcRects, const Rects& dstRects, Rect* clipRect)
+{
+
 }
 
+void GlEngine::draw(const gfx::Batch &pic, Rect *clipRect)
+{
+
+}
+
+}
 #endif

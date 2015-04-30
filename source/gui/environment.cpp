@@ -93,7 +93,7 @@ bool Ui::hasFocus( const Widget* element) const
 
 Ui::~Ui() {}
 
-Widget* Ui::rootWidget() {	return this; }
+Widget* Ui::rootWidget() { return this; }
 
 void Ui::Impl::threatDeletionQueue()
 {
@@ -125,15 +125,17 @@ bool Ui::isHovered() const { return false; }
 
 void Ui::draw()
 {
+  //_d->engine->setFlag( Engine::batching, true );
   if( !_d->preRenderFunctionCalled )
   {
-    Logger::warning( "Call beforeDraw() function needed" );
+    Logger::warning( "!!! WARNING: Call beforeDraw() function needed" );
     return;
   }
 
   Widget::draw( *_d->engine );
 
   _drawTooltip( DateTime::elapsedTime() );
+  //_d->engine->setFlag( Engine::batching, false );
   _d->preRenderFunctionCalled = false;
 }
 

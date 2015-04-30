@@ -55,7 +55,7 @@ ListBoxItem& FileListBox::addItem(const std::string& text, Font font, const int 
                                               (time.hour() + gmtOffset)%24, time.minutes(), time.seconds() );
   ListBoxItem& item = ListBox::addItem( vfs::Path( text ).baseName().toString(), font, color );
 
-  item.setData( Variant( timeStr ) );
+  item.setData( "time", Variant( timeStr ) );
   return item;
 }
 
@@ -77,7 +77,7 @@ void FileListBox::_updateItemText(gfx::Engine& painter, ListBoxItem& item, const
   {
     Font f = Font::create( FONT_1 );
 
-    std::string timeStr = item.data().toString();
+    std::string timeStr = item.data( "time" ).toString();
     Rect finalRect = f.getTextRect( timeStr, Rect( Point(), frameRect.size() ), align::lowerRight, align::center );
 
     item.draw( timeStr, f, finalRect.lefttop() - Point( 10, 0)  );

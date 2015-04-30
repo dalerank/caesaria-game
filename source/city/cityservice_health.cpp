@@ -54,10 +54,7 @@ city::SrvcPtr HealthCare::create( PlayerCityPtr city )
   return ret;
 }
 
-std::string HealthCare::defaultName()
-{
-  return CAESARIA_STR_EXT(HealthCare);
-}
+std::string HealthCare::defaultName() { return CAESARIA_STR_EXT(HealthCare); }
 
 HealthCare::HealthCare( PlayerCityPtr city )
   : Srvc( city, HealthCare::defaultName() ), _d( new Impl )

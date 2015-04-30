@@ -259,8 +259,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
   case stBuyGoods:
     {
-      WarehousePtr warehouse;
-      warehouse << city->getOverlay( destBuildingPos );
+      WarehousePtr warehouse = city->getOverlay( destBuildingPos ).as<Warehouse>();
 
       if( warehouse.isValid() )
       {
@@ -344,8 +343,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
   case stSellGoods:
   {
-    WarehousePtr warehouse;
-    warehouse << city->getOverlay( destBuildingPos );
+    WarehousePtr warehouse = city->getOverlay( destBuildingPos ).as<Warehouse>();
 
     const good::Store& cityOrders = city->buys();
 

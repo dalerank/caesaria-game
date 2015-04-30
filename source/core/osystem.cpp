@@ -33,6 +33,8 @@ const char* getDialogCommand()
   }
   return NULL;
 }
+#elif defined(CAESARIA_PLATFORM_MACOSX)
+  #include <cstdlib>
 #elif defined(CAESARIA_PLATFORM_WIN)
   #include <windows.h>
 #endif
@@ -73,7 +75,7 @@ void OSystem::openDir(const std::string& path)
 #elif defined(CAESARIA_PLATFORM_WIN)
   ShellExecute(GetDesktopWindow(), "open", path.c_str(), NULL, NULL, SW_SHOWNORMAL);
 #elif defined(CAESARIA_PLATFORM_MACOSX)
-  result = "open " + path + " &";
+  result = "open \"" + path + "\" &";
   ::system( result.c_str() );
 #endif
 }

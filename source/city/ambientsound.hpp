@@ -25,13 +25,20 @@ namespace gfx { class Camera; }
 namespace city
 {
 
+/*
+ * Service which observe camerpa position and play sound
+ * for objects around
+ */
 class AmbientSound : public Srvc
 {
 public:
   static SrvcPtr create( PlayerCityPtr city, gfx::Camera* camera );
   virtual ~AmbientSound();
 
+  /** Call every frame */
   virtual void timeStep( const unsigned int time );
+
+  /** Call before destructor */
   virtual void destroy();
 
   static std::string defaultName();
