@@ -20,6 +20,7 @@
 #include "desirability.hpp"
 #include "objects/overlay.hpp"
 #include "core/saveadapter.hpp"
+#include "core/variant_map.hpp"
 #include "walker/walker.hpp"
 #include "cityservice_factory.hpp"
 #include "city.hpp"
@@ -51,7 +52,7 @@ void Services::initialize(PlayerCityPtr city, const std::string& model)
 
   foreach( it, services )
   {
-    SrvcPtr service = ServiceFactory::instance().create( city, it->first.toString() );
+    SrvcPtr service = ServiceFactory::instance().create( city, it->first );
     if( service.isValid() )
       city->addService( service );
     else
@@ -67,16 +68,16 @@ void Overlays::update(PlayerCityPtr city, unsigned int time)
     (*overlayIt)->timeStep( time );
 
     if( (*overlayIt)->isDeleted() )
-      {
-        onDestroyOverlay( city, *overlayIt );
-        // remove the overlay from the overlay list
-        (*overlayIt)->destroy();
-        overlayIt = erase(overlayIt);
-      }
+    {
+      onDestroyOverlay( city, *overlayIt );
+      // remove the overlay from the overlay list
+      (*overlayIt)->destroy();
+      overlayIt = erase(overlayIt);
+    }
     else
-      {
-        ++overlayIt;
-      }
+    {
+      ++overlayIt;
+    }
   }
 
   merge();
