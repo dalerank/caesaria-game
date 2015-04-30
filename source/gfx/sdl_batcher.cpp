@@ -52,7 +52,7 @@ void SdlBatcher::append(const Picture& pic, const Point& pos)
     Batch batch;
     batch.load( _d->currentTx, _d->currentSrcRects, _d->currentDstRects );
 
-    Logger::warning( "!!! WARNING: cant batch " + _d->currentTx.name() + " to " + pic.name() + " : Swith to next state" );
+    //Logger::warning( "!!! WARNING: cant batch " + _d->currentTx.name() + " to " + pic.name() + " : Swith to next state" );
 
     _d->currentTx = pic;
     _d->states.push_back( batch );
