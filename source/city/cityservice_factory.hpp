@@ -48,7 +48,7 @@ public:
 class ServiceFactory
 {
 public:
-  static SrvcPtr create( PlayerCityPtr city, const std::string& name);
+  static SrvcPtr create( PlayerCityPtr city, const std::string& name );
   static ServiceFactory& instance();
   void addCreator( ServiceCreatorPtr creator );
 

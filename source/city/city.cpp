@@ -20,26 +20,11 @@
 #include "objects/construction.hpp"
 #include "gfx/tile.hpp"
 #include "pathway/path_finding.hpp"
-#include "core/exception.hpp"
 #include "core/position.hpp"
 #include "objects/objects_factory.hpp"
 #include "pathway/astarpathfinding.hpp"
 #include "core/safetycast.hpp"
-#include "city/migration.hpp"
 #include "core/variant_map.hpp"
-#include "cityservice_workershire.hpp"
-#include "cityservice_timers.hpp"
-#include "cityservice_prosperity.hpp"
-#include "cityservice_religion.hpp"
-#include "cityservice_festival.hpp"
-#include "cityservice_roads.hpp"
-#include "cityservice_fishplace.hpp"
-#include "cityservice_shoreline.hpp"
-#include "cityservice_info.hpp"
-#include "requestdispatcher.hpp"
-#include "cityservice_disorder.hpp"
-#include "cityservice_animals.hpp"
-#include "cityservice_culture.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects/road.hpp"
 #include "core/time.hpp"
@@ -70,15 +55,10 @@
 #include "world/empiremap.hpp"
 #include "walker/seamerchant.hpp"
 #include "cityservice_factory.hpp"
-#include "sound/player.hpp"
 #include "world/emperor.hpp"
-#include "cityservice_health.hpp"
-#include "cityservice_military.hpp"
-#include "cityservice_peace.hpp"
 #include "game/resourcegroup.hpp"
 #include "world/romechastenerarmy.hpp"
 #include "walker/chastener_elephant.hpp"
-#include "sentiment.hpp"
 #include "walker/chastener.hpp"
 #include "world/barbarian.hpp"
 #include "objects/fort.hpp"
@@ -89,7 +69,6 @@
 #include "gfx/helper.hpp"
 #include "game/difficulty.hpp"
 #include "active_points.hpp"
-#include "cityservice_fire.hpp"
 #include "game/player.hpp"
 #include "scribes.hpp"
 #include "statistic.hpp"
@@ -98,6 +77,13 @@
 #include "core/flowlist.hpp"
 #include "economy.hpp"
 #include "city_impl.hpp"
+#include "sentiment.hpp"
+#include "cityservice_timers.hpp"
+#include "cityservice_military.hpp"
+#include "core/requirements.hpp"
+#include "cityservice_prosperity.hpp"
+#include "cityservice_culture.hpp"
+#include "cityservice_peace.hpp"
 
 #include <set>
 
@@ -172,25 +158,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->sentiment = city::Sentiment::defaultValue;
   _d->empMapPicture = Picture::load( ResourceGroup::empirebits, 1 );
 
-  addService( city::Migration::create( this ) );
-  addService( city::WorkersHire::create( this ) );
-  addService( city::ProsperityRating::create( this ) );
-  addService( city::Shoreline::create( this ) );
-  addService( city::Info::create( this ) );
-  addService( city::CultureRating::create( this ) );
-  addService( city::Animals::create( this ) );
-  addService( city::Religion::create( this ) );
-  addService( city::Festival::create( this ) );
-  addService( city::Roads::create( this ) );
-  addService( city::Fishery::create( this ) );
-  addService( city::Disorder::create( this ) );
-  addService( city::request::Dispatcher::create( this ) );
-  addService( city::Military::create( this ) );
-  addService( audio::Player::create( this ) );
-  addService( city::HealthCare::create( this ));
-  addService( city::Peace::create( this ) );
-  addService( city::Sentiment::create( this ) );
-  addService( city::Fire::create( this ) );
+  _d->services.initialize( this, ":/services.model" );
 
   setPicture( Picture::load( ResourceGroup::empirebits, 1 ) );
   _initAnimation();
