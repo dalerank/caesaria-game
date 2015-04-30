@@ -19,8 +19,11 @@
 #include "cityservice.hpp"
 #include "desirability.hpp"
 #include "objects/overlay.hpp"
+#include "core/saveadapter.hpp"
 #include "walker/walker.hpp"
+#include "cityservice_factory.hpp"
 #include "city.hpp"
+#include "core/logger.hpp"
 #include "game/difficulty.hpp"
 
 namespace city
@@ -39,6 +42,20 @@ void Services::timeStep(PlayerCityPtr city, unsigned int time)
       serviceIt = erase(serviceIt);
     }
     else { ++serviceIt; }
+    }
+}
+
+void Services::initialize(PlayerCityPtr city, const std::string& model)
+{
+  VariantMap services = config::load( model );
+
+  foreach( it, services )
+  {
+    SrvcPtr service = ServiceFactory::instance().create( city, it->first.toString() );
+    if( service.isValid() )
+      city->addService( service );
+    else
+      Logger::warning( "!!! WARNING: Cant initialize service on city create" );
   }
 }
 

@@ -172,25 +172,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->sentiment = city::Sentiment::defaultValue;
   _d->empMapPicture = Picture::load( ResourceGroup::empirebits, 1 );
 
-  addService( city::Migration::create( this ) );
-  addService( city::WorkersHire::create( this ) );
-  addService( city::ProsperityRating::create( this ) );
-  addService( city::Shoreline::create( this ) );
-  addService( city::Info::create( this ) );
-  addService( city::CultureRating::create( this ) );
-  addService( city::Animals::create( this ) );
-  addService( city::Religion::create( this ) );
-  addService( city::Festival::create( this ) );
-  addService( city::Roads::create( this ) );
-  addService( city::Fishery::create( this ) );
-  addService( city::Disorder::create( this ) );
-  addService( city::request::Dispatcher::create( this ) );
-  addService( city::Military::create( this ) );
-  addService( audio::Player::create( this ) );
-  addService( city::HealthCare::create( this ));
-  addService( city::Peace::create( this ) );
-  addService( city::Sentiment::create( this ) );
-  addService( city::Fire::create( this ) );
+  _d->services.initialize( this, ":/services.model" );
 
   setPicture( Picture::load( ResourceGroup::empirebits, 1 ) );
   _initAnimation();
