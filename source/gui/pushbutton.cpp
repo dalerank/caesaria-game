@@ -206,26 +206,24 @@ void PushButton::_updateBackground( ElementState state )
 
     case whiteBorderUp:
     {
-      Decorator::draw( pics, Rect( Point( 0, 0 ), size() ), Decorator::whiteArea, Decorator::normalY );
+      Decorator::draw( pics, Rect( Point( 0, 0 ), size() ), Decorator::whiteArea);
       Decorator::draw( pics, Rect( Point( 0, 0 ), size() ),
-                       ( state == stHovered || state == stPressed ) ? Decorator::brownBorder : Decorator::whiteBorderA,
-                       Decorator::normalY );
+                       ( state == stHovered || state == stPressed ) ? Decorator::brownBorder : Decorator::whiteBorderA );
     }
     break;
 
     case flatBorderLine:
     {
       Decorator::draw( pics, Rect( Point( 0, 0 ), size() ), (state == stHovered || state == stPressed)
-                                                                       ? Decorator::blackArea : Decorator::whiteArea,
-                       Decorator::normalY );
+                                                                       ? Decorator::blackArea : Decorator::whiteArea );
     }
     break;
 
     case blackBorderUp:
     {
-      Decorator::draw( pics, Rect( Point( 0, 0 ), size() ), Decorator::blackArea, Decorator::normalY );
+      Decorator::draw( pics, Rect( Point( 0, 0 ), size() ), Decorator::blackArea );
       Decorator::draw( pics, Rect( Point( 0, 0 ), size() ),
-                       state == stHovered ? Decorator::brownBorder : Decorator::whiteBorderA, Decorator::normalY );
+                       state == stHovered ? Decorator::brownBorder : Decorator::whiteBorderA );
     }
     break;
 

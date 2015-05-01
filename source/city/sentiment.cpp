@@ -23,11 +23,14 @@
 #include "core/gettext.hpp"
 #include "config.hpp"
 #include "city/statistic.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace config;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Sentiment,sentiment)
 
 struct BuffInfo
 {

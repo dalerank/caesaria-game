@@ -19,11 +19,14 @@
 #include "city.hpp"
 #include "gfx/tilemap.hpp"
 #include "game/gamedate.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace gfx;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Fire,fire)
 
 class Fire::Impl
 {

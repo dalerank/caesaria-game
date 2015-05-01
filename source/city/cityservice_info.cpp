@@ -197,9 +197,10 @@ void Info::timeStep(const unsigned int time )
       }
     }
 
-    SentimentPtr st = statistic::finds<Sentiment>( _city() );
+    SentimentPtr sentimentSrvc = statistic::finds<Sentiment>( _city() );
 
-    last[ sentiment ] = st->value();
+    if( sentimentSrvc.isValid())
+      last[ sentiment ] = sentimentSrvc->value();
 
     for( int k=0; k < paramsCount; k++ )
     {

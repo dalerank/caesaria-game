@@ -84,6 +84,7 @@
 #include "cityservice_prosperity.hpp"
 #include "cityservice_culture.hpp"
 #include "cityservice_peace.hpp"
+#include "ambientsound.hpp"
 
 #include <set>
 
