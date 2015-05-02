@@ -97,6 +97,7 @@ __REG_PROPERTY(lastGame)
 __REG_PROPERTY(tooltipEnabled)
 __REG_PROPERTY(screenshotDir)
 __REG_PROPERTY(showTabletMenu)
+__REG_PROPERTY(batchTextures)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -157,6 +158,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ soundAlias          ] = std::string( "sounds.model" );
   _d->options[ videoAlias          ] = std::string( "videos.model" );
   _d->options[ screenshotDir       ] = vfs::Directory::userDir().toString();
+  _d->options[ batchTextures       ] = true;
   _d->options[ experimental        ] = false;
   _d->options[ needAcceptBuild     ] = false;
   _d->options[ borderMoving        ] = false;

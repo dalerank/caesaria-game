@@ -60,7 +60,7 @@ MenuRigthPanel* MenuRigthPanel::create( Widget* parent, const Rect& rectangle, P
     y += tilePic.height();
   }
 
-  ret->_d->background.load( pics, rectangle.lefttop() );
+  ret->_d->background.load( pics, rectangle.lefttop(), ret->absoluteClippingRectRef() );
 
   return ret;
 }

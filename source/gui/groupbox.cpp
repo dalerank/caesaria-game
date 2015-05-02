@@ -117,7 +117,7 @@ void GroupBox::beforeDraw(gfx::Engine& painter )
       Decorator::draw( pics, Rect( Point( 0, 0 ), size() ),
                        Decorator::Mode( styles[ math::clamp<int>( _d->style, 0, count ) ] ), Decorator::normalY );
 
-      _d->background.load( pics, absoluteRect().lefttop() );
+      _d->background.load( pics, absoluteRect().lefttop(), absoluteClippingRectRef() );
     }
   }
 

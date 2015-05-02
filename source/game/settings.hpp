@@ -99,6 +99,7 @@ public:
   __GS_PROPERTY(tooltipEnabled)
   __GS_PROPERTY(screenshotDir)
   __GS_PROPERTY(showTabletMenu)
+  __GS_PROPERTY(batchTextures)
 #undef __GS_PROPERTY
 
   static Settings& instance();

@@ -143,7 +143,7 @@ void TopMenu::Impl::initBackground( const Size& size )
     i++;
   }
 
-  background.load( pics, dstrects );
+  background.load( pics, dstrects, Rect( 0, 0, size.width(), size.height() ) );
 }
 
 void TopMenu::Impl::showAboutInfo()

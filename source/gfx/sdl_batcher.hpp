@@ -26,13 +26,15 @@ namespace gfx
 class SdlBatcher
 {
 public:
+  typedef std::vector<gfx::Batch> States;
+
   SdlBatcher();
   ~SdlBatcher();
 
-  void draw( Engine& engine );
+  const States& states() const;
 
   void append( const Picture& pic, const Point& pos );
-  void append( const Picture& pic, const Rect& srcRect, const Rect& dstrect );
+  void append(const Picture& pic, const Rect& srcRect, const Rect& dstrect, const Rect &clip);
   void append( const Batch& batch );
   void append( const Pictures& pics, const Point& pos );
 

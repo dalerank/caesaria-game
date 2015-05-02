@@ -20,24 +20,17 @@
 
 namespace gfx
 {
-typedef std::vector<gfx::Batch> States;
+
 
 class SdlBatcher::Impl
 {
 public:
   bool active;
-  States states;
+  SdlBatcher::States states;
   gfx::Picture currentTx;
   Rects  currentSrcRects;
   Rects  currentDstRects;
 };
-
-
-void SdlBatcher::draw(Engine& engine)
-{
-  foreach( it, _d->states )
-    engine.draw( *it, 0 );
-}
 
 void SdlBatcher::append(const Picture& pic, const Point& pos)
 {
@@ -50,9 +43,10 @@ void SdlBatcher::append(const Picture& pic, const Point& pos)
   if( _d->currentTx.texture() != pic.texture() )
   {
     Batch batch;
-    batch.load( _d->currentTx, _d->currentSrcRects, _d->currentDstRects );
+    batch.setOnce( true );
+    batch.load( _d->currentTx, _d->currentSrcRects, _d->currentDstRects, Rect() );
 
-    Logger::warning( "!!! WARNING: cant batch " + _d->currentTx.name() + " to " + pic.name() + " : Swith to next state" );
+    //Logger::warning( "!!! WARNING: cant batch " + _d->currentTx.name() + " to " + pic.name() + " : Swith to next state" );
 
     _d->currentTx = pic;
     _d->states.push_back( batch );
@@ -65,7 +59,7 @@ void SdlBatcher::append(const Picture& pic, const Point& pos)
   _d->currentDstRects.push_back( Rect( pos + Point( pic.offset().x(), -pic.offset().y() ), pic.size() ) );
 }
 
-void SdlBatcher::append(const Picture &pic, const Rect &srcRect, const Rect &dstRect)
+void SdlBatcher::append(const Picture &pic, const Rect &srcRect, const Rect &dstRect, const Rect& clip )
 {
   if( !pic.isValid() )
     return;
@@ -76,7 +70,8 @@ void SdlBatcher::append(const Picture &pic, const Rect &srcRect, const Rect &dst
   if( _d->currentTx.texture() != pic.texture() )
   {
     Batch batch;
-    batch.load( _d->currentTx, _d->currentSrcRects, _d->currentDstRects );
+    batch.setOnce( true );
+    batch.load( _d->currentTx, _d->currentSrcRects, _d->currentDstRects, clip );
 
     Logger::warning( "!!! WARNING: cant batch " + _d->currentTx.name() + " to " + pic.name() + " : Swith to next state" );
 
@@ -93,6 +88,7 @@ void SdlBatcher::append(const Picture &pic, const Rect &srcRect, const Rect &dst
 
 void SdlBatcher::append(const Batch &batch)
 {
+  finish();
   _d->states.push_back( batch );
 }
 
@@ -105,9 +101,13 @@ void SdlBatcher::append(const Pictures& pics, const Point& pos)
 void SdlBatcher::begin()
 {
   foreach( it, _d->states )
-    it->destroy();
+  {
+    if( it->once() )
+      it->destroy();
+  }
 
   _d->states.clear();
+  _d->currentTx = Picture();
 
   _d->currentSrcRects.clear();
   _d->currentDstRects.clear();
@@ -119,7 +119,11 @@ void SdlBatcher::finish()
     return;
 
   Batch batch;
-  batch.load( _d->currentTx, _d->currentSrcRects, _d->currentDstRects );
+  batch.load( _d->currentTx, _d->currentSrcRects, _d->currentDstRects, Rect() );
+
+  _d->currentSrcRects.clear();
+  _d->currentDstRects.clear();
+  _d->currentTx = Picture();
 
   _d->states.push_back( batch );
 }
@@ -136,6 +140,11 @@ SdlBatcher::SdlBatcher() : _d(new Impl)
 SdlBatcher::~SdlBatcher()
 {
 
+}
+
+const SdlBatcher::States& SdlBatcher::states() const
+{
+  return _d->states;
 }
 
 }//end namespace gfx

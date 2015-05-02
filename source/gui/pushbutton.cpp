@@ -169,9 +169,6 @@ void PushButton::_updateTextPic()
 void PushButton::_updateBackground( ElementState state )
 {
   __D_IMPL(_d,PushButton)     
-  Batch& drawStack = _d->buttonStates[ state ].style;
-
-  drawStack.destroy();
 
   // draw button background
   Decorator::Mode mode = Decorator::pure;
@@ -233,7 +230,9 @@ void PushButton::_updateBackground( ElementState state )
 
   Decorator::draw( pics, Rect( Point( 0, 0 ), size() ), mode, Decorator::normalY );
 
-  drawStack.load( pics, absoluteRect().lefttop() );
+  _d->buttonStates[ state ].style.destroy();
+  _d->buttonStates[ state ].style.load( pics, absoluteRect().lefttop(), absoluteClippingRectRef() );
+  _d->buttonStates[ state ].style.setOnce( false );
 }
 
 void PushButton::_updateStyle()

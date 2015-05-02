@@ -1105,7 +1105,18 @@ GL_CreateBatch(SDL_Renderer * renderer, SDL_Batch* batch, SDL_Texture * texture,
   if( batch == 0 )
     return -1;
 
+  batch->vertices    = 0;
+  batch->coordinates = 0;
+  batch->indices     = 0;
+  batch->texture     = 0;
+
   GL_TextureData *texturedata = (GL_TextureData *) texture->driverdata;
+
+  if( texturedata == 0 )
+  {
+    return -1;
+  }
+
   GLfloat minx, miny, maxx, maxy;
   GLfloat minu, maxu, minv, maxv;
 
@@ -1286,6 +1297,9 @@ GL_RenderCopy(SDL_Renderer * renderer, SDL_Texture * texture,
     GL_TextureData *texturedata = (GL_TextureData *) texture->driverdata;
     GLfloat minx, miny, maxx, maxy;
     GLfloat minu, maxu, minv, maxv;
+    GLfloat vertices[8];
+    GLfloat texCoords[8];
+    GLushort indices[6] = { 0,1,2, 0,2,3 };
 
     GL_ActivateRenderer(renderer);
 
@@ -1315,7 +1329,7 @@ GL_RenderCopy(SDL_Renderer * renderer, SDL_Texture * texture,
         GL_SetShader(data, SHADER_RGB);
     }
 
-    minx = dstrect->x;
+   /* minx = dstrect->x;
     miny = dstrect->y;
     maxx = dstrect->x + dstrect->w;
     maxy = dstrect->y + dstrect->h;
@@ -1338,7 +1352,34 @@ GL_RenderCopy(SDL_Renderer * renderer, SDL_Texture * texture,
     data->glVertex2f(minx, maxy);
     data->glTexCoord2f(maxu, maxv);
     data->glVertex2f(maxx, maxy);
-    data->glEnd();
+    data->glEnd(); */
+
+    vertices[0] = dstrect->x;
+    vertices[1] = dstrect->y;
+    vertices[2] = (dstrect->x + dstrect->w);
+    vertices[3] = dstrect->y;
+    vertices[4] = dstrect->x;
+    vertices[5] = (dstrect->y + dstrect->h);
+    vertices[6] = (dstrect->x + dstrect->w);
+    vertices[7] = (dstrect->y + dstrect->h);
+    texCoords[0] = srcrect->x / (GLfloat)texture->w;
+    texCoords[1] = srcrect->y / (GLfloat)texture->h;
+    texCoords[2] = (srcrect->x + srcrect->w) / (GLfloat)texture->w;
+    texCoords[3] = srcrect->y / (GLfloat)texture->h;
+    texCoords[4] = srcrect->x / (GLfloat)texture->w;
+    texCoords[5] = (srcrect->y + srcrect->h) / (GLfloat)texture->h;
+    texCoords[6] = (srcrect->x + srcrect->w) / (GLfloat)texture->w;
+    texCoords[7] = (srcrect->y + srcrect->h) / (GLfloat)texture->h;
+
+    data->glEnableClientState(GL_VERTEX_ARRAY);
+    data->glVertexPointer(2, GL_FLOAT, 0, vertices);
+    data->glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    data->glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
+
+    data->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
+
+    data->glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+    data->glDisableClientState(GL_VERTEX_ARRAY);
 
     data->glDisable(texturedata->type);
 

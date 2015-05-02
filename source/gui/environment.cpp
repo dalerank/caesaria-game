@@ -125,7 +125,6 @@ bool Ui::isHovered() const { return false; }
 
 void Ui::draw()
 {
-  //_d->engine->setFlag( Engine::batching, true );
   if( !_d->preRenderFunctionCalled )
   {
     Logger::warning( "!!! WARNING: Call beforeDraw() function needed" );
@@ -135,7 +134,6 @@ void Ui::draw()
   Widget::draw( *_d->engine );
 
   _drawTooltip( DateTime::elapsedTime() );
-  //_d->engine->setFlag( Engine::batching, false );
   _d->preRenderFunctionCalled = false;
 }
 

@@ -706,7 +706,7 @@ void GlEngine::unloadPicture(Picture& ioPicture)
   ioPicture = Picture();
 }
 
-Batch GlEngine::loadBatch(const Picture &pic, const Rects &srcRects, const Rects &dstRects, Rect *clipRect)
+Batch GlEngine::loadBatch(const Picture &pic, const Rects &srcRects, const Rects &dstRects, const Rect *clipRect)
 {
 
 }

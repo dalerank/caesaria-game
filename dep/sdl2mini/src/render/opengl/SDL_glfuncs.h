@@ -90,7 +90,7 @@ SDL_PROC_UNUSED(void, glDepthMask, (GLboolean flag))
 SDL_PROC_UNUSED(void, glDepthRange, (GLclampd zNear, GLclampd zFar))
 SDL_PROC(void, glDisable, (GLenum cap))
 SDL_PROC(void, glDisableClientState, (GLenum array))
-SDL_PROC_UNUSED(void, glDrawArrays, (GLenum mode, GLint first, GLsizei count))
+SDL_PROC(void, glDrawArrays, (GLenum mode, GLint first, GLsizei count))
 SDL_PROC_UNUSED(void, glDrawBuffer, (GLenum mode))
 SDL_PROC(void, glDrawElements,
                 (GLenum mode, GLsizei count, GLenum type,

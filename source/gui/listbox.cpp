@@ -128,7 +128,7 @@ void ListBox::_recalculateItemHeight( const Font& defaulFont, int h )
   Decorator::draw( pics, Rect( 0, 0, width() - scrollbarWidth, height() ), Decorator::blackFrame );
   Decorator::draw( pics, Rect( width() - scrollbarWidth, 0, width(), height() ), Decorator::whiteArea, Decorator::normalY  );
 
-  _d->background.load( pics, absoluteRect().lefttop() );
+  _d->background.load( pics, absoluteRect().lefttop(), absoluteClippingRectRef() );
 }
 
 //! destructor

@@ -791,7 +791,7 @@ void EditBox::beforeDraw(Engine& painter)
 
       Pictures pics;
       Decorator::draw( pics, Rect( 0, 0, width(), height() ), Decorator::blackFrame, Decorator::normalY );
-      _d->background.load( pics, absoluteRect().lefttop() );
+      _d->background.load( pics, absoluteRect().lefttop(), absoluteClippingRectRef() );
     }
 
     Rect localClipRect = absoluteRect();

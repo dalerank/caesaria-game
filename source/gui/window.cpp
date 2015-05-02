@@ -299,7 +299,7 @@ void Window::setBackground(Window::BackgroundType type)
     Pictures pics;
     Decorator::draw( pics, Rect( 0, 0, width(), height()), Decorator::whiteFrame, Decorator::normalY );
 
-    _d->bgStyle.load( pics, absoluteRect().lefttop() );
+    _d->bgStyle.load( pics, absoluteRect().lefttop(), absoluteClippingRectRef() );
   }
   break;
 

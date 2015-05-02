@@ -104,7 +104,7 @@ void SdlEngine::deletePicture( Picture* pic )
     unloadPicture( *pic );
 }
 
-SDL_Batch* __createBatch( SDL_Renderer* render, const Picture& pic, const Rects& srcRects, const Rects& dstRects, Rect* clipRect)
+SDL_Batch* __createBatch( SDL_Renderer* render, const Picture& pic, const Rects& srcRects, const Rects& dstRects, const Rect* clipRect)
 {
   static std::vector<SDL_Rect> native_srcrects;
   static std::vector<SDL_Rect> native_dstrects;
@@ -143,8 +143,11 @@ SDL_Batch* __createBatch( SDL_Renderer* render, const Picture& pic, const Rects&
   return ret;
 }
 
-Batch SdlEngine::loadBatch(const Picture &pic, const Rects &srcRects, const Rects &dstRects, Rect *clipRect)
+Batch SdlEngine::loadBatch(const Picture &pic, const Rects &srcRects, const Rects &dstRects, const Rect *clipRect)
 {
+  if( !pic.isValid() )
+    return Batch();
+
   Batch ret;
   SDL_Batch* batch = __createBatch( _d->renderer, pic, srcRects, dstRects, clipRect );
   ret.init( batch );
@@ -366,12 +369,16 @@ void SdlEngine::startRenderFrame()
   drawTime =0;
   drawTimeBatch = 0;
   SDL_RenderClear(_d->renderer);  // black background for a complete redraw
+  _d->batcher.begin();
 }
 
 void SdlEngine::endRenderFrame()
 {
   if( getFlag( Engine::debugInfo ) )
   {
+    if( _d->batcher.active() )
+      _d->drawCall += _d->batcher.states().size();
+
     static int timeCount = 0;
 
     if( DebugTimer::ticks() - timeCount > 500 )
@@ -385,7 +392,27 @@ void SdlEngine::endRenderFrame()
 #endif
     }
     draw( *_d->fpsText, Point( _d->screen.width() / 2, 2 ) );
+  }
 
+  if( _d->batcher.active() )
+  {
+    _d->batcher.finish();
+    foreach( it, _d->batcher.states() )
+    {
+      const Rect& clip = it->clip();
+      if( clip.width() > 0 )
+      {
+        SDL_Rect r = { clip.left(), clip.top(), clip.width(), clip.height() };
+        SDL_RenderSetClipRect( _d->renderer, &r );
+      }
+
+      SDL_RenderBatch( _d->renderer, it->native() );
+
+      if( clip.width() > 0 )
+      {
+        SDL_RenderSetClipRect( _d->renderer, 0 );
+      }
+    }
   }
 
   SDL_RenderPresent(_d->renderer);
@@ -511,21 +538,20 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
   drawTimeBatch += DateTime::elapsedTime() - t;
 }
 
-void SdlEngine::draw(const Picture& pic, const Rect& srcRect, const Rect& dstRect, Rect* clipRect)
+void SdlEngine::draw(const Picture& pic, const Rect& srcRect, const Rect& dstRect, Rect *clipRect)
 {
   if( !pic.isValid() )
       return;
 
   if( getFlag( Engine::batching ) )
   {
-    _d->batcher.append( pic, srcRect, dstRect );
+    _d->batcher.append( pic, srcRect, dstRect, clipRect ? *clipRect : Rect() );
     return;
   }
 
   int t = DateTime::elapsedTime();
-
-  _d->drawCall++;
   SDL_Texture* ptx = pic.texture();
+  _d->drawCall++;
 
   if( clipRect != 0 )
   {
@@ -564,7 +590,6 @@ void SdlEngine::draw(const Picture& pic, const Rect& srcRect, const Rect& dstRec
 void SdlEngine::draw(const Picture& pic, const Rects& srcRects, const Rects& dstRects, Rect* clipRect)
 {
   SDL_Batch* batch = __createBatch( _d->renderer, pic, srcRects, dstRects, clipRect );
-  _d->drawCall++;
 
   if( batch )
   {
@@ -574,27 +599,36 @@ void SdlEngine::draw(const Picture& pic, const Rects& srcRects, const Rects& dst
     }
     else
     {
+      _d->drawCall++;
       SDL_RenderBatch( _d->renderer, batch );
       SDL_DestroyBatch( _d->renderer, batch );
     }
   }
 }
 
-void SdlEngine::draw(const Batch& batch, Rect *clipRect)
+void SdlEngine::draw(const Batch &batch, Rect *clipRect)
 {
-  _d->drawCall++;
-
-  if( clipRect != 0 )
+  if( _d->batcher.active() )
   {
-    SDL_Rect r = { clipRect->left(), clipRect->top(), clipRect->width(), clipRect->height() };
-    SDL_RenderSetClipRect( _d->renderer, &r );
+    Batch b = batch;
+    b.setClip( clipRect ? *clipRect : Rect() );
+    _d->batcher.append( b );
   }
-
-  SDL_RenderBatch( _d->renderer, batch.native() );
-
-  if( clipRect != 0 )
+  else
   {
-    SDL_RenderSetClipRect( _d->renderer, 0 );
+    _d->drawCall++;
+    if( clipRect != 0 )
+    {
+      SDL_Rect r = { clipRect->left(), clipRect->top(), clipRect->width(), clipRect->height() };
+      SDL_RenderSetClipRect( _d->renderer, &r );
+    }
+
+    SDL_RenderBatch( _d->renderer, batch.native() );
+
+    if( clipRect != 0 )
+    {
+      SDL_RenderSetClipRect( _d->renderer, 0 );
+    }
   }
 }
 
@@ -713,17 +747,7 @@ void SdlEngine::setFlag( int flag, int value )
   switch( flag )
   {
   case debugInfo: _d->debugFont = Font::create( FONT_2 ); break;
-  case batching:
-    _d->batcher.setActive( value );
-    if( value )
-      _d->batcher.begin();
-    else
-    {
-      _d->batcher.finish();
-      _d->batcher.draw( *this );
-    }
-  break;
-
+  case batching:  _d->batcher.setActive( value );  break;
   default: break;
   }
 }

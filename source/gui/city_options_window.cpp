@@ -242,8 +242,8 @@ void CityOptions::Impl::toggleLeftMiddleMouse()
 
 void CityOptions::Impl::toggleUseBatching()
 {
-  bool value = DrawOptions::instance().isFlag( DrawOptions::batchTextures );
-  DrawOptions::instance().setFlag( DrawOptions::batchTextures, !value );
+  bool value = gfx::Engine::instance().getFlag( gfx::Engine::batching ) > 0;
+  gfx::Engine::instance().setFlag( gfx::Engine::batching, !value );
   update();
 }
 
@@ -377,7 +377,7 @@ void CityOptions::Impl::update()
 
   if( btnToggleBatching )
   {
-    bool value = DrawOptions::instance().isFlag( DrawOptions::batchTextures ) > 0;
+    bool value = gfx::Engine::instance().getFlag( gfx::Engine::batching ) > 0;
     btnToggleBatching->setText( value
                                     ? _("##city_batching_on##")
                                     : _("##city_batching_off##")  );
