@@ -69,6 +69,7 @@ public:
   Rect textRect;
   Rect iconRect;
   int clickTime;
+  bool drawText;
   PictureRef textPicture;
   Point textOffset;
   PushButton::BackgroundStyle bgStyle;
@@ -105,6 +106,7 @@ PushButton::PushButton(Widget* parent )
   _d->currentButtonState = stNormal;
   _d->lastButtonState = StateCount;
   _d->pressed = false;
+  _d->drawText = true;
   _d->bgStyle = greyBorderLine;
   setTextAlignment( align::center, align::center );
 }
@@ -123,6 +125,7 @@ PushButton::PushButton( Widget* parent,
   _d->pressed = false;
   _d->currentButtonState = stNormal;
   _d->lastButtonState = StateCount;
+  _d->drawText = true;
   setBackgroundStyle( bgStyle );
   setTextAlignment( align::center, align::center );
 
@@ -231,8 +234,7 @@ void PushButton::_updateBackground( ElementState state )
   Decorator::draw( pics, Rect( Point( 0, 0 ), size() ), mode, Decorator::normalY );
 
   _d->buttonStates[ state ].style.destroy();
-  _d->buttonStates[ state ].style.load( pics, absoluteRect().lefttop(), absoluteClippingRectRef() );
-  _d->buttonStates[ state ].style.setOnce( false );
+  _d->buttonStates[ state ].style.load( pics, absoluteRect().lefttop() );
 }
 
 void PushButton::_updateStyle()
@@ -503,6 +505,8 @@ void PushButton::beforeDraw( gfx::Engine& painter )
 }
 
 bool PushButton::isBodyVisible() const { return _dfunc()->drawBody; }
+bool gui::PushButton::isTextVisible() const { return _dfunc()->drawText; }
+void gui::PushButton::setTextVisible(bool value) { _dfunc()->drawText = value; }
 
 //! draws the element and its children
 void PushButton::draw( gfx::Engine& painter )
@@ -523,7 +527,7 @@ void PushButton::draw( gfx::Engine& painter )
       painter.draw( state.style, &absoluteClippingRectRef());
 	}
 
-  if( _d->textPicture )
+  if( _d->drawText && _d->textPicture )
   {
     painter.draw( *_d->textPicture, screenLeft(), screenTop(), &absoluteClippingRectRef() );
   }

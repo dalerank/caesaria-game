@@ -72,15 +72,6 @@ struct SDL_Texture
     SDL_Texture *next;
 };
 
-struct SDL_Batch
-{
-    SDL_Texture* texture;
-    void* vertices;
-    void* coordinates;
-    void* indices;
-    unsigned int size;
-};
-
 /* Define the SDL renderer structure */
 struct SDL_Renderer
 {

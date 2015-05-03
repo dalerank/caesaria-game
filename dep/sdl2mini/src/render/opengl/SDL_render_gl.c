@@ -1198,7 +1198,7 @@ GL_CreateBatch(SDL_Renderer * renderer, SDL_Batch* batch, SDL_Texture * texture,
     iRtx++;
   }
 
-   batch->size = iRtx;
+  batch->size = iRtx;
 
   return 0;
 }
@@ -1329,7 +1329,7 @@ GL_RenderCopy(SDL_Renderer * renderer, SDL_Texture * texture,
         GL_SetShader(data, SHADER_RGB);
     }
 
-   /* minx = dstrect->x;
+    minx = dstrect->x;
     miny = dstrect->y;
     maxx = dstrect->x + dstrect->w;
     maxy = dstrect->y + dstrect->h;
@@ -1352,9 +1352,9 @@ GL_RenderCopy(SDL_Renderer * renderer, SDL_Texture * texture,
     data->glVertex2f(minx, maxy);
     data->glTexCoord2f(maxu, maxv);
     data->glVertex2f(maxx, maxy);
-    data->glEnd(); */
+    data->glEnd();
 
-    vertices[0] = dstrect->x;
+    /*vertices[0] = dstrect->x;
     vertices[1] = dstrect->y;
     vertices[2] = (dstrect->x + dstrect->w);
     vertices[3] = dstrect->y;
@@ -1379,7 +1379,7 @@ GL_RenderCopy(SDL_Renderer * renderer, SDL_Texture * texture,
     data->glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, indices);
 
     data->glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    data->glDisableClientState(GL_VERTEX_ARRAY);
+    data->glDisableClientState(GL_VERTEX_ARRAY);*/
 
     data->glDisable(texturedata->type);
 

@@ -67,6 +67,7 @@ public:
     bool enabled;
 
     void reset() { red = green = blue = alpha = 0; enabled = false; }
+    bool equals( int r, int g, int b, int a ) { return (r==red && g == green && b == blue && a == alpha); }
   }MaskInfo;
 
   Picture screen;
@@ -83,6 +84,11 @@ public:
   unsigned int lastUpdateFps;
   unsigned int drawCall;
   Font debugFont;
+
+public:
+  void renderState(const Batch &batch, const Rect *clip);
+  void renderState();
+  void renderOnce(const Picture& picture, int dx, int dy, const Rect *clipRect, bool useTxOffset);
 };
 
 
@@ -104,13 +110,13 @@ void SdlEngine::deletePicture( Picture* pic )
     unloadPicture( *pic );
 }
 
-SDL_Batch* __createBatch( SDL_Renderer* render, const Picture& pic, const Rects& srcRects, const Rects& dstRects, const Rect* clipRect)
+SDL_Batch* __createBatch( SDL_Renderer* render, const Picture& pic, const Rects& srcRects, const Rects& dstRects)
 {
   static std::vector<SDL_Rect> native_srcrects;
   static std::vector<SDL_Rect> native_dstrects;
 
-  const size_t saveSrcsLength = native_srcrects.size();
-  const size_t saveDstsLength = native_dstrects.size();
+  const size_t saveSrcsCapacity = native_srcrects.capacity();
+  const size_t saveDstsCapacity = native_dstrects.capacity();
 
   native_dstrects.resize( srcRects.size() );
   native_srcrects.resize( srcRects.size() );
@@ -135,9 +141,9 @@ SDL_Batch* __createBatch( SDL_Renderer* render, const Picture& pic, const Rects&
                                    native_srcrects.data(),native_dstrects.data(),
                                    native_srcrects.size());
 
-  if( native_dstrects.size() > saveDstsLength )
+  if( native_dstrects.size() > saveDstsCapacity )
       native_dstrects.reserve( native_dstrects.size() + 1 );
-  if( native_srcrects.size() > saveSrcsLength )
+  if( native_srcrects.size() > saveSrcsCapacity )
       native_srcrects.reserve( native_srcrects.size() + 1 );
 
   return ret;
@@ -149,7 +155,7 @@ Batch SdlEngine::loadBatch(const Picture &pic, const Rects &srcRects, const Rect
     return Batch();
 
   Batch ret;
-  SDL_Batch* batch = __createBatch( _d->renderer, pic, srcRects, dstRects, clipRect );
+  SDL_Batch* batch = __createBatch( _d->renderer, pic, srcRects, dstRects );
   ret.init( batch );
 
   return ret;
@@ -369,16 +375,13 @@ void SdlEngine::startRenderFrame()
   drawTime =0;
   drawTimeBatch = 0;
   SDL_RenderClear(_d->renderer);  // black background for a complete redraw
-  _d->batcher.begin();
+  _d->batcher.reset();
 }
 
 void SdlEngine::endRenderFrame()
 {
   if( getFlag( Engine::debugInfo ) )
   {
-    if( _d->batcher.active() )
-      _d->drawCall += _d->batcher.states().size();
-
     static int timeCount = 0;
 
     if( DebugTimer::ticks() - timeCount > 500 )
@@ -391,29 +394,12 @@ void SdlEngine::endRenderFrame()
       Logger::warning( "FPS: %d", _d->fps );
 #endif
     }
-    draw( *_d->fpsText, Point( _d->screen.width() / 2, 2 ) );
+    draw( *_d->fpsText, Point( _d->screen.width() / 2, 2 ), 0 );
   }
 
-  if( _d->batcher.active() )
-  {
-    _d->batcher.finish();
-    foreach( it, _d->batcher.states() )
-    {
-      const Rect& clip = it->clip();
-      if( clip.width() > 0 )
-      {
-        SDL_Rect r = { clip.left(), clip.top(), clip.width(), clip.height() };
-        SDL_RenderSetClipRect( _d->renderer, &r );
-      }
-
-      SDL_RenderBatch( _d->renderer, it->native() );
-
-      if( clip.width() > 0 )
-      {
-        SDL_RenderSetClipRect( _d->renderer, 0 );
-      }
-    }
-  }
+  bool needDraw = _d->batcher.finish();
+  if( needDraw )
+    _d->renderState();
 
   SDL_RenderPresent(_d->renderer);
 
@@ -436,47 +422,14 @@ void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* c
 
   if( getFlag( Engine::batching ) )
   {
-    _d->batcher.append( picture, Point(dx, dy) );
-    return;
+    bool batched = _d->batcher.append( picture, Point(dx, dy), clipRect );
+    if( !batched )
+      _d->renderState();
   }
-
-  int t = DateTime::elapsedTime();
-  _d->drawCall++;
-
-  if( clipRect != 0 )
+  else
   {
-    SDL_Rect r = { clipRect->left(), clipRect->top(), clipRect->width(), clipRect->height() };
-    SDL_RenderSetClipRect( _d->renderer, &r );
+    _d->renderOnce( picture, dx, dy, clipRect, true );
   }
-
-  const Impl::MaskInfo& mask = _d->mask;
-  SDL_Texture* ptx = picture.texture();
-  const Rect& orect = picture.originRect();
-  Size picSize = orect.size();
-  const Point& offset = picture.offset();
-
-  if( mask.enabled )
-  {
-    SDL_SetTextureColorMod( ptx, mask.red >> 16, mask.green >> 8, mask.blue );
-    SDL_SetTextureAlphaMod( ptx, mask.alpha >> 24 );
-  }
-
-  SDL_Rect srcRect = { orect.left(), orect.top(), picSize.width(), picSize.height() };
-  SDL_Rect dstRect = { dx+offset.x(), dy-offset.y(), picSize.width(), picSize.height() };
-
-  SDL_RenderCopy( _d->renderer, ptx, &srcRect, &dstRect );
-
-  if( mask.enabled )
-  {
-    SDL_SetTextureColorMod( ptx, 0xff, 0xff, 0xff );
-    SDL_SetTextureAlphaMod( ptx, 0xff );
-  }
-
-  if( clipRect != 0 )
-  {
-    SDL_RenderSetClipRect( _d->renderer, 0 );
-  }
-  drawTime += DateTime::elapsedTime() - t;
 }
 
 void SdlEngine::draw( const Picture& picture, const Point& pos, Rect* clipRect )
@@ -491,51 +444,57 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
 
   if( getFlag( Engine::batching ) )
   {
-    _d->batcher.append( pictures, pos );
-    return;
-  }
-
-  int t = DateTime::elapsedTime();
-  _d->drawCall+=pictures.size();
-
-  if( clipRect != 0 )
-  {
-    SDL_Rect r = { clipRect->left(), clipRect->top(), clipRect->width(), clipRect->height() };
-    SDL_RenderSetClipRect( _d->renderer, &r );
-  }
-
-  const Impl::MaskInfo& mask = _d->mask;
-  foreach( it, pictures )
-  {
-    const Picture& picture = *it;
-    SDL_Texture* ptx = picture.texture();
-    const Rect& orect = picture.originRect();
-    Size size = orect.size();
-    const Point& offset = picture.offset();
-
-    if( mask.enabled )
+    foreach( it, pictures )
     {
-      SDL_SetTextureColorMod( ptx, mask.red >> 16, mask.green >> 8, mask.blue );
-      SDL_SetTextureAlphaMod( ptx, mask.alpha >> 24 );
-    }
-
-    SDL_Rect srcRect = { orect.left(), orect.top(), size.width(), size.height() };
-    SDL_Rect dstRect = { pos.x() + offset.x(), pos.y() - offset.y(), size.width(), size.height() };
-
-    SDL_RenderCopy( _d->renderer, ptx, &srcRect, &dstRect );
-
-    if( mask.enabled )
-    {
-      SDL_SetTextureColorMod( ptx, 0xff, 0xff, 0xff );
-      SDL_SetTextureAlphaMod( ptx, 0xff );
+      bool batched = _d->batcher.append( *it, pos, clipRect );
+      if( !batched )
+        _d->renderState();
     }
   }
-
-  if( clipRect != 0 )
+  else
   {
-    SDL_RenderSetClipRect( _d->renderer, 0 );
+    int t = DateTime::elapsedTime();
+    _d->drawCall+=pictures.size();
+
+    if( clipRect != 0 )
+    {
+      SDL_Rect r = { clipRect->left(), clipRect->top(), clipRect->width(), clipRect->height() };
+      SDL_RenderSetClipRect( _d->renderer, &r );
+    }
+
+    const Impl::MaskInfo& mask = _d->mask;
+    foreach( it, pictures )
+    {
+      const Picture& picture = *it;
+      SDL_Texture* ptx = picture.texture();
+      const Rect& orect = picture.originRect();
+      Size size = orect.size();
+      const Point& offset = picture.offset();
+
+      if( mask.enabled )
+      {
+        SDL_SetTextureColorMod( ptx, mask.red >> 16, mask.green >> 8, mask.blue );
+        SDL_SetTextureAlphaMod( ptx, mask.alpha >> 24 );
+      }
+
+      SDL_Rect srcRect = { orect.left(), orect.top(), size.width(), size.height() };
+      SDL_Rect dstRect = { pos.x() + offset.x(), pos.y() - offset.y(), size.width(), size.height() };
+
+      SDL_RenderCopy( _d->renderer, ptx, &srcRect, &dstRect );
+
+      if( mask.enabled )
+      {
+        SDL_SetTextureColorMod( ptx, 0xff, 0xff, 0xff );
+        SDL_SetTextureAlphaMod( ptx, 0xff );
+      }
+    }
+
+    if( clipRect != 0 )
+    {
+      SDL_RenderSetClipRect( _d->renderer, 0 );
+    }
+    drawTimeBatch += DateTime::elapsedTime() - t;
   }
-  drawTimeBatch += DateTime::elapsedTime() - t;
 }
 
 void SdlEngine::draw(const Picture& pic, const Rect& srcRect, const Rect& dstRect, Rect *clipRect)
@@ -545,64 +504,68 @@ void SdlEngine::draw(const Picture& pic, const Rect& srcRect, const Rect& dstRec
 
   if( getFlag( Engine::batching ) )
   {
-    _d->batcher.append( pic, srcRect, dstRect, clipRect ? *clipRect : Rect() );
-    return;
+    bool batched = _d->batcher.append( pic, srcRect, dstRect, clipRect );
+    if( !batched )
+      _d->renderState();
   }
-
-  int t = DateTime::elapsedTime();
-  SDL_Texture* ptx = pic.texture();
-  _d->drawCall++;
-
-  if( clipRect != 0 )
+  else
   {
-    SDL_Rect r = { clipRect->left(), clipRect->top(), clipRect->width(), clipRect->height() };
-    SDL_RenderSetClipRect( _d->renderer, &r );
+    int t = DateTime::elapsedTime();
+    SDL_Texture* ptx = pic.texture();
+    _d->drawCall++;
+
+    if( clipRect != 0 )
+    {
+      SDL_Rect r = { clipRect->left(), clipRect->top(), clipRect->width(), clipRect->height() };
+      SDL_RenderSetClipRect( _d->renderer, &r );
+    }
+
+    const Impl::MaskInfo& mask = _d->mask;
+    if( mask.enabled )
+    {
+      SDL_SetTextureColorMod( ptx, mask.red >> 16, mask.green >> 8, mask.blue );
+      SDL_SetTextureAlphaMod( ptx, mask.alpha >> 24 );
+    }
+
+    const Point& offset = pic.offset();
+
+    SDL_Rect srcr = { srcRect.left(), srcRect.top(), srcRect.width(), srcRect.height() };
+    SDL_Rect dstr = { dstRect.left()+offset.x(), dstRect.top()-offset.y(), dstRect.width(), dstRect.height() };
+
+    SDL_RenderCopy( _d->renderer, ptx, &srcr, &dstr );
+
+    if( mask.enabled )
+    {
+      SDL_SetTextureColorMod( ptx, 0xff, 0xff, 0xff );
+      SDL_SetTextureAlphaMod( ptx, 0xff );
+    }
+
+    if( clipRect != 0 )
+    {
+      SDL_RenderSetClipRect( _d->renderer, 0 );
+    }
+
+    drawTime += DateTime::elapsedTime() - t;
   }
-
-  const Impl::MaskInfo& mask = _d->mask;
-  if( mask.enabled )
-  {
-    SDL_SetTextureColorMod( ptx, mask.red >> 16, mask.green >> 8, mask.blue );
-    SDL_SetTextureAlphaMod( ptx, mask.alpha >> 24 );
-  }
-
-  const Point& offset = pic.offset();
-
-  SDL_Rect srcr = { srcRect.left(), srcRect.top(), srcRect.width(), srcRect.height() };
-  SDL_Rect dstr = { dstRect.left()+offset.x(), dstRect.top()-offset.y(), dstRect.width(), dstRect.height() };
-
-  SDL_RenderCopy( _d->renderer, ptx, &srcr, &dstr );
-
-  if( mask.enabled )
-  {
-    SDL_SetTextureColorMod( ptx, 0xff, 0xff, 0xff );
-    SDL_SetTextureAlphaMod( ptx, 0xff );
-  }
-
-  if( clipRect != 0 )
-  {
-    SDL_RenderSetClipRect( _d->renderer, 0 );
-  }
-
-  drawTime += DateTime::elapsedTime() - t;
 }
 
 void SdlEngine::draw(const Picture& pic, const Rects& srcRects, const Rects& dstRects, Rect* clipRect)
 {
-  SDL_Batch* batch = __createBatch( _d->renderer, pic, srcRects, dstRects, clipRect );
-
-  if( batch )
+  if( getFlag( Engine::batching ) )
   {
-    if( getFlag( Engine::batching ) )
+    bool batched = _d->batcher.append( pic, srcRects, dstRects, clipRect );
+    if( !batched )
     {
-      _d->batcher.append( Batch( batch ) );
+       _d->renderState();
     }
-    else
-    {
-      _d->drawCall++;
-      SDL_RenderBatch( _d->renderer, batch );
-      SDL_DestroyBatch( _d->renderer, batch );
-    }
+  }
+  else
+  {
+    _d->drawCall++;
+    SDL_Batch* batch = __createBatch( _d->renderer, pic, srcRects, dstRects );
+    _d->renderState( Batch( batch ), clipRect );
+
+    SDL_DestroyBatch( _d->renderer, batch );
   }
 }
 
@@ -610,9 +573,12 @@ void SdlEngine::draw(const Batch &batch, Rect *clipRect)
 {
   if( _d->batcher.active() )
   {
-    Batch b = batch;
-    b.setClip( clipRect ? *clipRect : Rect() );
-    _d->batcher.append( b );
+    bool needDraw = _d->batcher.finish();
+    if( needDraw )
+    {
+      _d->renderState();
+    }
+    _d->renderState( batch, clipRect );
   }
   else
   {
@@ -634,6 +600,7 @@ void SdlEngine::draw(const Batch &batch, Rect *clipRect)
 
 void SdlEngine::drawLine(const NColor &color, const Point &p1, const Point &p2)
 {
+  _d->renderState();
   _d->drawCall++;
 
   SDL_SetRenderDrawColor( _d->renderer, color.red(), color.green(), color.blue(), color.alpha() );
@@ -643,8 +610,16 @@ void SdlEngine::drawLine(const NColor &color, const Point &p1, const Point &p2)
 }
 
 void SdlEngine::setColorMask( int rmask, int gmask, int bmask, int amask )
-{
+{  
   Impl::MaskInfo& mask = _d->mask;
+
+  if( !mask.equals( rmask, gmask, bmask, amask ) )
+  {
+    bool needDraw = _d->batcher.finish();
+    if( needDraw )
+      _d->renderState();
+  }
+
   mask.red = rmask;
   mask.green = gmask;
   mask.blue = bmask;
@@ -652,7 +627,17 @@ void SdlEngine::setColorMask( int rmask, int gmask, int bmask, int amask )
   mask.enabled = true;
 }
 
-void SdlEngine::resetColorMask() { _d->mask.reset(); }
+void SdlEngine::resetColorMask()
+{
+  if( _d->mask.enabled )
+  {
+    bool needDraw = _d->batcher.finish();
+    if( needDraw )
+      _d->renderState();
+  }
+
+  _d->mask.reset();
+}
 
 void SdlEngine::initViewport(int index, Size s)
 {
@@ -765,6 +750,97 @@ bool SdlEngine::haveEvent( NEvent& event )
   }
 
   return false;
+}
+
+void SdlEngine::Impl::renderState( const Batch& batch, const Rect* clip )
+{
+  if(!batch.valid())
+    return;
+
+  drawCall++;
+  bool clipped = ( clip && clip->width() > 0 );
+  if( clipped )
+  {
+    SDL_Rect r = { clip->left(), clip->top(), clip->width(), clip->height() };
+    SDL_RenderSetClipRect( renderer, &r );
+  }
+
+  SDL_Texture* ptx = batch.native()->texture;
+  if( mask.enabled )
+  {
+    SDL_SetTextureColorMod( ptx, mask.red >> 16, mask.green >> 8, mask.blue );
+    SDL_SetTextureAlphaMod( ptx, mask.alpha >> 24 );
+  }
+
+  SDL_RenderBatch( renderer, batch.native() );
+
+  if( mask.enabled )
+  {
+    SDL_SetTextureColorMod( ptx, 0xff, 0xff, 0xff );
+    SDL_SetTextureAlphaMod( ptx, 0xff );
+  }
+
+  if( clipped )
+  {
+    SDL_RenderSetClipRect( renderer, 0 );
+  }
+}
+
+void SdlEngine::Impl::renderState()
+{
+  const SdlBatcher::State& state = batcher.current();
+
+  if( state.srcrects.size() > 1 )
+  {
+    SDL_Batch* batch = __createBatch( renderer, state.texture, state.srcrects, state.dstrects );
+    renderState( Batch( batch ), &state.clip );
+    SDL_DestroyBatch( renderer, batch );
+  }
+  else
+  {
+    const Point& p = state.dstrects.front().lefttop();
+    renderOnce( state.texture, p.x(), p.y(), state.clip.width() ? &state.clip : 0, false );
+  }
+}
+
+void SdlEngine::Impl::renderOnce(const Picture &picture, int dx, int dy, const Rect *clipRect, bool useTxOffset )
+{
+  int t = DateTime::elapsedTime();
+  drawCall++;
+
+  if( clipRect != 0 )
+  {
+    SDL_Rect r = { clipRect->left(), clipRect->top(), clipRect->width(), clipRect->height() };
+    SDL_RenderSetClipRect( renderer, &r );
+  }
+
+  SDL_Texture* ptx = picture.texture();
+  const Rect& orect = picture.originRect();
+  Size picSize = orect.size();
+  const Point& offset = useTxOffset ? picture.offset() : Point();
+
+  if( mask.enabled )
+  {
+    SDL_SetTextureColorMod( ptx, mask.red >> 16, mask.green >> 8, mask.blue );
+    SDL_SetTextureAlphaMod( ptx, mask.alpha >> 24 );
+  }
+
+  SDL_Rect srcRect = { orect.left(), orect.top(), picSize.width(), picSize.height() };
+  SDL_Rect dstRect = { dx+offset.x(), dy-offset.y(), picSize.width(), picSize.height() };
+
+  SDL_RenderCopy( renderer, ptx, &srcRect, &dstRect );
+
+  if( mask.enabled )
+  {
+    SDL_SetTextureColorMod( ptx, 0xff, 0xff, 0xff );
+    SDL_SetTextureAlphaMod( ptx, 0xff );
+  }
+
+  if( clipRect != 0 )
+  {
+    SDL_RenderSetClipRect( renderer, 0 );
+  }
+  drawTime += DateTime::elapsedTime() - t;
 }
 
 }//end namespace gfx

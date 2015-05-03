@@ -57,7 +57,7 @@ protected:
     pics.append( emlbPic, Point( 4, 2 ) );
     pics.append( emlbPic, Point( width() - emlbPic.width()-4, 2 ) );
 
-    _background().load( pics, absoluteRect().lefttop(), absoluteClippingRectRef() );
+    _background().load( pics, absoluteRect().lefttop() );
   }
 };
 

@@ -33,8 +33,6 @@ Batch::Batch(const Batch &other)
 Batch& Batch::operator=(const Batch& other)
 {
   _batch = other._batch;
-  _clip = other._clip;
-  _once = other._once;
   return *this;
 }
 
@@ -44,7 +42,7 @@ void Batch::destroy()
   _batch = 0;
 }
 
-void Batch::load(const Pictures &pics, const Rects& dstrects , const Rect &clip)
+void Batch::load(const Pictures &pics, const Rects& dstrects)
 {
   if( pics.empty() )
   {
@@ -78,11 +76,10 @@ void Batch::load(const Pictures &pics, const Rects& dstrects , const Rect &clip)
     srcrects.push_back( it->originRect() );
   }
 
-  _clip = clip;
-  *this = Engine::instance().loadBatch( pics.at( 0 ), srcrects, dstrects, &clip);
+  *this = Engine::instance().loadBatch( pics.at( 0 ), srcrects, dstrects);
 }
 
-void Batch::load(const Pictures& pics, const Point& pos, const Rect &clip)
+void Batch::load(const Pictures& pics, const Point& pos)
 {
   Rects rects;
   foreach( it, pics )
@@ -90,25 +87,22 @@ void Batch::load(const Pictures& pics, const Point& pos, const Rect &clip)
     rects.push_back( Rect( pos + (*it).offset(), (*it).size() ) );
   }
 
-  load( pics, rects, clip );
+  load( pics, rects );
 }
 
-void Batch::load(const Picture& pic, const Rects& srcrects, const Rects& dstrects, const Rect &clip)
+void Batch::load(const Picture& pic, const Rects& srcrects, const Rects& dstrects)
 {
-  _clip = clip;
-  *this = Engine::instance().loadBatch( pic, srcrects, dstrects, &clip );
+  *this = Engine::instance().loadBatch( pic, srcrects, dstrects );
 }
 
 Batch::Batch()
 {
   _batch = 0;
-  _once = false;
 }
 
 Batch::Batch(SDL_Batch *batch)
 {
   _batch = batch;
-  _once = false;
 }
 
 }//end namespace gfx

@@ -37,20 +37,14 @@ public:
   Batch& operator=(const Batch& other);
   inline SDL_Batch* native() const { return _batch; }
   inline bool valid() const { return _batch != 0; }
-  inline const Rect& clip() const { return _clip; }
-  inline void setClip( const Rect& r ) { _clip = r; }
   inline void init( SDL_Batch* batch ) { _batch = batch; }
   void destroy();
-  inline bool once() const { return _once; }
-  inline void setOnce( bool value ) { _once = value; }
-  void load(const Pictures& pics, const Rects& dstrects, const Rect& clip );
-  void load(const Pictures& pics, const Point& pos, const Rect& clip );
-  void load(const Picture& pics, const Rects& srcrects, const Rects& dstrects, const Rect& clip );
+  void load(const Pictures& pics, const Rects& dstrects);
+  void load(const Pictures& pics, const Point& pos);
+  void load(const Picture& pics, const Rects& srcrects, const Rects& dstrects);
 private:
 
   SDL_Batch* _batch;
-  Rect _clip;
-  bool _once;
 };
 
 }//end namespace gfx

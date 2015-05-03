@@ -225,7 +225,7 @@ void Label::_updateBackground(Engine& painter, bool& useAlpha4Text )
   case bgWhiteBorderA: Decorator::draw( pics, r, Decorator::whiteBorderA, Decorator::normalY  ); break;
   }
 
-  _d->background.load( pics, absoluteRect().lefttop(), absoluteClippingRectRef() );
+  _d->background.load( pics, absoluteRect().lefttop() );
 }
 
 void Label::_handleClick()

@@ -65,6 +65,8 @@ public:
   virtual bool isPressed() const;
 
   virtual bool isBodyVisible() const;
+  virtual bool isTextVisible() const;
+  virtual void setTextVisible( bool value );
 
   virtual void drawIcon( gfx::Engine& painter );
 

@@ -127,7 +127,14 @@ typedef struct SDL_Renderer SDL_Renderer;
 struct SDL_Texture;
 typedef struct SDL_Texture SDL_Texture;
 
-struct SDL_Batch;
+struct SDL_Batch
+{
+    SDL_Texture* texture;
+    void* vertices;
+    void* coordinates;
+    void* indices;
+    unsigned int size;
+};
 typedef struct SDL_Batch SDL_Batch;
 
 /* Function prototypes */
