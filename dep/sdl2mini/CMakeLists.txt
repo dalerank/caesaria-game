@@ -164,7 +164,7 @@ if(WIN32)
                 ${CPUINFO_SOURCES_LIST}
               )
 
-   target_link_libraries( ${PROJECT_NAME} Imm32 opengl32 Version)
+   target_link_libraries( ${PROJECT_NAME} imm32 opengl32 version)
 endif()
 
 # Expose public includes to other through cache variable.
