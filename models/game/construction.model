@@ -745,6 +745,8 @@
     output : "iron"
     class : "rawmaterial"
     productRate : 2.4
+    image : [ "commerce", 54 ]
+    animation : { rc : "ironminea", start : 1, count : 34, offset : [ 75, 30 ], delay : 3 }
     sound : [ "ironmine", 1 ]
     collapsibility : 1.4
   },

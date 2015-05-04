@@ -737,7 +737,6 @@
       oil_workshop : true
       wine_workshop : true
 
-      forum : false
       garden : true
       low_bridge : false
       high_bridge : false

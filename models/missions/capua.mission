@@ -212,7 +212,7 @@
     { 
       engineering_post : true
       plaza : true
-      forum : false
+      forum : true
       garden : true
       low_bridge : true
       high_bridge : true
