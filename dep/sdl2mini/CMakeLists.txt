@@ -34,6 +34,7 @@ if(UNIX AND NOT APPLE)
   file(GLOB PTHREAD_SOURCES_LIST "src/thread/pthread/*.c")
   file(GLOB DLOPEN_SOURCES_LIST "src/loadso/dlopen/*.c")
   file(GLOB AUDIO_ALSA_SOURCES_LIST "src/audio/alsa/*.c")
+  file(GLOB AUDIO_PULSE_SOURCES_LIST "src/audio/pulseaudio/*.c")
   file(GLOB FILESYSTEM_SOURCES_LIST "src/filesystem/unix/*.c")
 
   add_definitions(-DSDL_TIMER_UNIX)
@@ -41,6 +42,10 @@ if(UNIX AND NOT APPLE)
   add_definitions(-DSDL_VIDEO_DRIVER_X11_SUPPORTS_GENERIC_EVENTS)
   add_definitions(-DSDL_VIDEO_OPENGL_GLX=1)
   add_definitions(-DSDL_THREAD_PTHREAD=1)
+  #add_definitions(-DSDL_AUDIO_DRIVER_PULSEAUDIO=1)
+  #add_definitions(-DSDL_AUDIO_DRIVER_PULSEAUDIO_DYNAMIC=1)
+  add_definitions(-DSDL_AUDIO_DRIVER_ALSA=1)
+  #add_definitions(-DSDL_AUDIO_DRIVER_ALSA_DYNAMIC=1)
 
   add_library(  ${PROJECT_NAME} STATIC
                 ${SDL2MINI_SOURCES_LIST}
@@ -65,13 +70,14 @@ if(UNIX AND NOT APPLE)
                 ${RENDER_SW_SOURCES_LIST}
                 ${VIDEO_X11_SOURCES_LIST}
                 ${DLOPEN_SOURCES_LIST}
+                ${AUDIO_PULSE_SOURCES_LIST}
               )
 
   # Required on Unix OS family to be able to be linked into shared libraries.
   set_target_properties(${PROJECT_NAME}
                         PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
-  target_link_libraries( ${PROJECT_NAME} pthread Xext X11 GL GLU)
+  target_link_libraries( ${PROJECT_NAME} pthread Xext X11 GL GLU asound)
 endif()
 
 if(APPLE)
