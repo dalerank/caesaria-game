@@ -88,7 +88,8 @@ public:
 public:
   void renderState(const Batch &batch, const Rect *clip);
   void renderState();
-  void renderOnce(const Picture& picture, int dx, int dy, const Rect *clipRect, bool useTxOffset);
+  void renderOnce(const Picture& pic, const Rect& src, const Rect& dstRect,
+                  const Rect *clipRect, bool useTxOffset);
 };
 
 
@@ -428,7 +429,43 @@ void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* c
   }
   else
   {
-    _d->renderOnce( picture, dx, dy, clipRect, true );
+    int t = DateTime::elapsedTime();
+    _d->drawCall++;
+
+    if( clipRect != 0 )
+    {
+      SDL_Rect r = { clipRect->left(), clipRect->top(), clipRect->width(), clipRect->height() };
+      SDL_RenderSetClipRect( _d->renderer, &r );
+    }
+
+    const Impl::MaskInfo& mask = _d->mask;
+    SDL_Texture* ptx = picture.texture();
+    const Rect& orect = picture.originRect();
+    Size picSize = orect.size();
+    const Point& offset = picture.offset();
+
+    if( mask.enabled )
+    {
+      SDL_SetTextureColorMod( ptx, mask.red >> 16, mask.green >> 8, mask.blue );
+      SDL_SetTextureAlphaMod( ptx, mask.alpha >> 24 );
+    }
+
+    SDL_Rect srcRect = { orect.left(), orect.top(), picSize.width(), picSize.height() };
+    SDL_Rect dstRect = { dx+offset.x(), dy-offset.y(), picSize.width(), picSize.height() };
+
+    SDL_RenderCopy( _d->renderer, ptx, &srcRect, &dstRect );
+
+    if( mask.enabled )
+    {
+      SDL_SetTextureColorMod( ptx, 0xff, 0xff, 0xff );
+      SDL_SetTextureAlphaMod( ptx, 0xff );
+    }
+
+    if( clipRect != 0 )
+    {
+      SDL_RenderSetClipRect( _d->renderer, 0 );
+    }
+    drawTime += DateTime::elapsedTime() - t;
   }
 }
 
@@ -510,42 +547,7 @@ void SdlEngine::draw(const Picture& pic, const Rect& srcRect, const Rect& dstRec
   }
   else
   {
-    int t = DateTime::elapsedTime();
-    SDL_Texture* ptx = pic.texture();
-    _d->drawCall++;
-
-    if( clipRect != 0 )
-    {
-      SDL_Rect r = { clipRect->left(), clipRect->top(), clipRect->width(), clipRect->height() };
-      SDL_RenderSetClipRect( _d->renderer, &r );
-    }
-
-    const Impl::MaskInfo& mask = _d->mask;
-    if( mask.enabled )
-    {
-      SDL_SetTextureColorMod( ptx, mask.red >> 16, mask.green >> 8, mask.blue );
-      SDL_SetTextureAlphaMod( ptx, mask.alpha >> 24 );
-    }
-
-    const Point& offset = pic.offset();
-
-    SDL_Rect srcr = { srcRect.left(), srcRect.top(), srcRect.width(), srcRect.height() };
-    SDL_Rect dstr = { dstRect.left()+offset.x(), dstRect.top()-offset.y(), dstRect.width(), dstRect.height() };
-
-    SDL_RenderCopy( _d->renderer, ptx, &srcr, &dstr );
-
-    if( mask.enabled )
-    {
-      SDL_SetTextureColorMod( ptx, 0xff, 0xff, 0xff );
-      SDL_SetTextureAlphaMod( ptx, 0xff );
-    }
-
-    if( clipRect != 0 )
-    {
-      SDL_RenderSetClipRect( _d->renderer, 0 );
-    }
-
-    drawTime += DateTime::elapsedTime() - t;
+    _d->renderOnce( pic, srcRect, dstRect, clipRect, true );
   }
 }
 
@@ -658,6 +660,11 @@ void SdlEngine::initViewport(int index, Size s)
 void SdlEngine::setViewport(int index, bool render)
 {
   SDL_Texture* target = _d->renderTargets.at( index );
+
+  bool needDraw = _d->batcher.finish();
+  if( needDraw )
+    _d->renderState();
+
   if( target )
   {
     SDL_SetRenderTarget( _d->renderer, render ? target : 0 );
@@ -798,14 +805,15 @@ void SdlEngine::Impl::renderState()
   }
   else
   {
-    const Point& p = state.dstrects.front().lefttop();
-    renderOnce( state.texture, p.x(), p.y(), state.clip.width() ? &state.clip : 0, false );
+    renderOnce( state.texture, state.srcrects.front(), state.dstrects.front(), state.clip.width() ? &state.clip : 0, false );
   }
 }
 
-void SdlEngine::Impl::renderOnce(const Picture &picture, int dx, int dy, const Rect *clipRect, bool useTxOffset )
+void SdlEngine::Impl::renderOnce(const Picture &pic, const Rect& srcRect, const Rect& dstRect,
+                                 const Rect *clipRect, bool useTxOffset )
 {
   int t = DateTime::elapsedTime();
+  SDL_Texture* ptx = pic.texture();
   drawCall++;
 
   if( clipRect != 0 )
@@ -814,21 +822,18 @@ void SdlEngine::Impl::renderOnce(const Picture &picture, int dx, int dy, const R
     SDL_RenderSetClipRect( renderer, &r );
   }
 
-  SDL_Texture* ptx = picture.texture();
-  const Rect& orect = picture.originRect();
-  Size picSize = orect.size();
-  const Point& offset = useTxOffset ? picture.offset() : Point();
-
   if( mask.enabled )
   {
     SDL_SetTextureColorMod( ptx, mask.red >> 16, mask.green >> 8, mask.blue );
     SDL_SetTextureAlphaMod( ptx, mask.alpha >> 24 );
   }
 
-  SDL_Rect srcRect = { orect.left(), orect.top(), picSize.width(), picSize.height() };
-  SDL_Rect dstRect = { dx+offset.x(), dy-offset.y(), picSize.width(), picSize.height() };
+  const Point& offset = useTxOffset ? pic.offset() : Point();
 
-  SDL_RenderCopy( renderer, ptx, &srcRect, &dstRect );
+  SDL_Rect srcr = { srcRect.left(), srcRect.top(), srcRect.width(), srcRect.height() };
+  SDL_Rect dstr = { dstRect.left()+offset.x(), dstRect.top()-offset.y(), dstRect.width(), dstRect.height() };
+
+  SDL_RenderCopy( renderer, ptx, &srcr, &dstr );
 
   if( mask.enabled )
   {
@@ -840,6 +845,7 @@ void SdlEngine::Impl::renderOnce(const Picture &picture, int dx, int dy, const R
   {
     SDL_RenderSetClipRect( renderer, 0 );
   }
+
   drawTime += DateTime::elapsedTime() - t;
 }
 
