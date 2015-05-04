@@ -720,6 +720,7 @@
     class : "food"
     output : "meat"
     productRate : 4.8
+    image : [ "meatfarm", 1 ]
     sound : [ "meatfarm", 1 ]
   },
 
