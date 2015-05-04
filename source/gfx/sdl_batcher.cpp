@@ -52,6 +52,7 @@ bool SdlBatcher::append(const Picture& pic, const Point& pos, Rect* clip )
 
     reset();
     _d->onwork->texture = pic;
+    _d->onwork->clip = rclip;
     batched = false;
   }
 
@@ -82,6 +83,7 @@ bool SdlBatcher::append(const Picture& pic, const Rect& srcrect, const Rect& dst
 
     reset();
     _d->onwork->texture = pic;
+    _d->onwork->clip = rclip;
     batched = false;
   }
 
@@ -113,6 +115,7 @@ bool SdlBatcher::append(const Picture &pic, const Rects &srcrects, const Rects &
 
     reset();
     _d->onwork->texture = pic;
+    _d->onwork->clip = rclip;
     batched = false;
   }
 
