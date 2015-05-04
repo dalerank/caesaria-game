@@ -60,7 +60,7 @@ void Batch::load(const Pictures &pics, const Rects& dstrects)
   Rects srcrects;
   foreach( it, pics )
   {
-    if( it->texture() == 0 )
+    if( it->texture() == 0 || it->width() == 0 || it->height() == 0 )
     {
       srcrects.push_back( Rect( Point( 0, 0), it->size() ) );
       continue;
