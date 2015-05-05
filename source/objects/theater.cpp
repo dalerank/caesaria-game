@@ -38,7 +38,7 @@ bool Theater::build( const city::AreaInfo& info )
 {
   ServiceBuilding::build( info );
 
-  ActorColonyList actors = city::statistic::findo<ActorColony>( info.city, object::actorColony );
+  ActorColonyList actors = city::statistic::getObjects<ActorColony>( info.city, object::actorColony );
 
   if( actors.empty() )
   {
@@ -57,7 +57,7 @@ void Theater::deliverService()
 
   if( _animationRef().isRunning() )
   {
-    _fgPicturesRef().front() = Picture::load( ResourceGroup::entertaiment, 35 );
+    _fgPicturesRef().front() = Picture::load( ResourceGroup::entertainment, 35 );
   }
   else
   {

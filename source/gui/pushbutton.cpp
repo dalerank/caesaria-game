@@ -53,7 +53,7 @@ public:
 struct ButtonState
 {
   Picture background;
-  Pictures style;
+  Batch style;
   Picture icon;
   Point iconOffset;
   Font font;
@@ -69,6 +69,7 @@ public:
   Rect textRect;
   Rect iconRect;
   int clickTime;
+  bool drawText;
   PictureRef textPicture;
   Point textOffset;
   PushButton::BackgroundStyle bgStyle;
@@ -79,6 +80,7 @@ public:
 
 signals public:
   Signal0<> onClickedSignal;
+  Signal1<Widget*> onClickedExSignal;
 
 public:
 
@@ -88,7 +90,7 @@ public:
   {
     for( int i=0; i < StateCount; i++)
     {
-      buttonStates[ ElementState(i) ].style.clear();
+      buttonStates[ ElementState(i) ].style.destroy();
       buttonStates[ ElementState(i) ].icon = Picture::getInvalid();
       buttonStates[ ElementState(i) ].background = Picture::getInvalid();
       buttonStates[ ElementState(i) ].font = Font::create( FONT_2 );
@@ -104,6 +106,7 @@ PushButton::PushButton(Widget* parent )
   _d->currentButtonState = stNormal;
   _d->lastButtonState = StateCount;
   _d->pressed = false;
+  _d->drawText = true;
   _d->bgStyle = greyBorderLine;
   setTextAlignment( align::center, align::center );
 }
@@ -122,6 +125,7 @@ PushButton::PushButton( Widget* parent,
   _d->pressed = false;
   _d->currentButtonState = stNormal;
   _d->lastButtonState = StateCount;
+  _d->drawText = true;
   setBackgroundStyle( bgStyle );
   setTextAlignment( align::center, align::center );
 
@@ -168,14 +172,12 @@ void PushButton::_updateTextPic()
 void PushButton::_updateBackground( ElementState state )
 {
   __D_IMPL(_d,PushButton)     
-  Pictures& drawStack = _d->buttonStates[ state ].style;
-
-  drawStack.clear();
 
   // draw button background
   Decorator::Mode mode = Decorator::pure;
+  Pictures pics;
   if( !_d->buttonStates[ state ].background.isValid() )
-  {
+  {    
     switch( _d->bgStyle )
     {
     case greyBorderLineSmall:
@@ -204,23 +206,23 @@ void PushButton::_updateBackground( ElementState state )
 
     case whiteBorderUp:
     {
-      Decorator::draw( drawStack, Rect( Point( 0, 0 ), size() ), Decorator::whiteArea );
-      Decorator::draw( drawStack, Rect( Point( 0, 0 ), size() ),
+      Decorator::draw( pics, Rect( Point( 0, 0 ), size() ), Decorator::whiteArea);
+      Decorator::draw( pics, Rect( Point( 0, 0 ), size() ),
                        ( state == stHovered || state == stPressed ) ? Decorator::brownBorder : Decorator::whiteBorderA );
     }
     break;
 
     case flatBorderLine:
     {
-      Decorator::draw( drawStack, Rect( Point( 0, 0 ), size() ), (state == stHovered || state == stPressed)
+      Decorator::draw( pics, Rect( Point( 0, 0 ), size() ), (state == stHovered || state == stPressed)
                                                                        ? Decorator::blackArea : Decorator::whiteArea );
     }
     break;
 
     case blackBorderUp:
     {
-      Decorator::draw( drawStack, Rect( Point( 0, 0 ), size() ), Decorator::blackArea );
-      Decorator::draw( drawStack, Rect( Point( 0, 0 ), size() ),
+      Decorator::draw( pics, Rect( Point( 0, 0 ), size() ), Decorator::blackArea );
+      Decorator::draw( pics, Rect( Point( 0, 0 ), size() ),
                        state == stHovered ? Decorator::brownBorder : Decorator::whiteBorderA );
     }
     break;
@@ -229,7 +231,10 @@ void PushButton::_updateBackground( ElementState state )
     }
   }
 
-  Decorator::draw( drawStack, Rect( Point( 0, 0 ), size() ), mode );
+  Decorator::draw( pics, Rect( Point( 0, 0 ), size() ), mode, Decorator::normalY );
+
+  _d->buttonStates[ state ].style.destroy();
+  _d->buttonStates[ state ].style.load( pics, absoluteRect().lefttop() );
 }
 
 void PushButton::_updateStyle()
@@ -423,9 +428,11 @@ void PushButton::_btnClicked()
   parent()->onEvent( NEvent::Gui( this, 0, guiButtonClicked ) );
 
   emit _dfunc()->onClickedSignal();
+  emit _dfunc()->onClickedExSignal( this );
 }
 
 Signal0<>& PushButton::onClicked() { return _dfunc()->onClickedSignal; }
+Signal1<Widget*>& PushButton::onClickedEx() { return _dfunc()->onClickedExSignal; }
 
 bool PushButton::_btnMouseUp( const NEvent& event )
 {
@@ -498,6 +505,8 @@ void PushButton::beforeDraw( gfx::Engine& painter )
 }
 
 bool PushButton::isBodyVisible() const { return _dfunc()->drawBody; }
+bool gui::PushButton::isTextVisible() const { return _dfunc()->drawText; }
+void gui::PushButton::setTextVisible(bool value) { _dfunc()->drawText = value; }
 
 //! draws the element and its children
 void PushButton::draw( gfx::Engine& painter )
@@ -515,10 +524,10 @@ void PushButton::draw( gfx::Engine& painter )
     if( state.background.isValid() )
       painter.draw( state.background, absoluteRect().lefttop(), &absoluteClippingRectRef() );
     else
-      painter.draw( state.style, absoluteRect().lefttop(), &absoluteClippingRectRef());
+      painter.draw( state.style, &absoluteClippingRectRef());
 	}
 
-  if( _d->textPicture )
+  if( _d->drawText && _d->textPicture )
   {
     painter.draw( *_d->textPicture, screenLeft(), screenTop(), &absoluteClippingRectRef() );
   }
@@ -567,7 +576,7 @@ void PushButton::setFont( const Font& font )
 PictureRef& PushButton::_textPictureRef() {  return _dfunc()->textPicture;}
 Font PushButton::font( ElementState state ) {  return _dfunc()->buttonStates[ state ].font;}
 
-void PushButton::_resizeEvent()
+void PushButton::_finalizeResize()
 {
   _updateStyle();
   _dfunc()->needUpdateTextPic = true;

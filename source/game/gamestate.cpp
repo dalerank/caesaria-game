@@ -72,7 +72,6 @@ ScreenType BaseState::getScreenType()
 
 scene::Base* BaseState::toBase() {  return _screen; }
 
-
 MissionSelect::MissionSelect(Game* game, gfx::Engine* engine, const std::string& file):
   BaseState(game),
   _briefing(new scene::Briefing( *game, *engine, file ))

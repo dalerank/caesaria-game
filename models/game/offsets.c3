@@ -42,5 +42,5 @@
   granary_animation : { rc : "commerce", start : 146, stop : 152, offset : [ 78, 69 ] }
   market_poor_anim : { rc : "commerce", start : 2, stop : 11, offset : [ 42, 34 ] }
   our_city_flag : { rc : "empire_bits", start : 2, stop : 7, offset : [ 17, 24 ] }
-  theater_work : { rc : "entertaiment", start : 35, stop : 35, offset : [ 34, 37 ] }
+  theater_work : { rc : "entertainment", start : 35, stop : 35, offset : [ 34, 37 ] }
 }

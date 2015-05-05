@@ -95,14 +95,14 @@ public:
 
   void update()
   {
-    _resizeEvent();
+    _finalizeResize();
   }
 
   void setTradeState( trade::Order o, int qty )
   {
     order = o;
     goodsQty = qty;
-    _resizeEvent();
+    _finalizeResize();
   }
 
   trade::Order order;

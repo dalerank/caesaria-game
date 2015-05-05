@@ -1,5 +1,6 @@
 { 
  title : "##trade_title##"
+ speech : "tutorial2_trade"
  items : [ "##trade_enabled_tt##",
             "@img=picture5_00001",
 	    "##open_traderoute_tutorial##",

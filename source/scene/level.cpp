@@ -203,8 +203,10 @@ void Level::initialize()
   _d->rightPanel->bringToFront();
   _d->renderer.setViewport( engine.screenSize() );
   _d->renderer.camera()->setScrollSpeed( SETTINGS_VALUE( scrollSpeed ) );
-  _d->game->city()->addService( AmbientSound::create( _d->game->city(), _d->renderer.camera() ) );
 
+  SmartPtr<city::AmbientSound> sound = statistic::getService<city::AmbientSound>( _d->game->city() );
+  if( sound.isValid() )
+    sound->setCamera( _d->renderer.camera() );
 
   //specific tablet actions bar
   {
@@ -333,7 +335,7 @@ void Level::Impl::saveCameraPos(Point p)
 
 void Level::Impl::showSoundOptionsWindow()
 {
-  GameEventPtr e = SetSoundOptions::create();
+  GameEventPtr e = ChangeSoundOptions::create();
   e->dispatch();
 }
 
@@ -607,8 +609,8 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
   PlayerCityPtr pcity = game->city();
 
   const city::VictoryConditions& vc = pcity->victoryConditions();
-  MilitaryPtr mil = statistic::finds<city::Military>( pcity );
-  InfoPtr info = statistic::finds<city::Info>( pcity );
+  MilitaryPtr mil = statistic::getService<city::Military>( pcity );
+  InfoPtr info = statistic::getService<city::Info>( pcity );
 
   if( mil.isValid() && info.isValid()  )
   {
@@ -655,7 +657,7 @@ void Level::Impl::checkWinMission( Level* lvl, bool force )
   {
     dialog::WinMission* wnd = new dialog::WinMission( game->gui()->rootWidget(),
                                                       wt.newTitle(), wt.winText(),
-                                                      wt.mayContinue() );
+                                                      wt.winSpeech(), wt.mayContinue() );
 
     mapToLoad = wt.nextMission();
 
@@ -852,7 +854,7 @@ void Level::_showLoadDialog()
 
   vfs::Path savesPath = SETTINGS_VALUE( savedir ).toString();
   std::string defaultExt = SETTINGS_VALUE( saveExt ).toString();
-  LoadFileDialog* wnd = new LoadFileDialog( parent, Rect(), savesPath, defaultExt,-1 );
+  dialog::LoadFile* wnd = dialog::LoadFile::create( parent, Rect(), savesPath, defaultExt,-1 );
 
   CONNECT( wnd, onSelectFile(), this, Level::_resolveLoadGame );
   wnd->setTitle( _("##mainmenu_loadgame##") );

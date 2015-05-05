@@ -77,7 +77,7 @@ public:
     }
   }
 
-  void _resizeEvent()
+  void _finalizeResize()
   {
     for( int i=0; i < StateCount; i++ )
         _updateBackground( ElementState(i) );

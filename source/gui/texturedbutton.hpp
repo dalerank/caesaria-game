@@ -31,8 +31,7 @@ public:
                   const char* resourceGroup,
                   int normalTxIndex, int hovTxIndex=-1, int prsTxIndex=-1, int dsbTxIndex=-1 );
 
-  TexturedButton( Widget* parent ) : PushButton( parent )
-  {}
+  TexturedButton( Widget* parent );
 };
 
 }//end namespace gui

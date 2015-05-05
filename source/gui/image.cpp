@@ -63,7 +63,7 @@ Image::Image(Widget* parent, Rect rectangle, const Picture& pic, Mode mode, int 
 	}
 
   _d->bgPicture = pic;
-  #ifdef _DEBUG
+#ifdef _DEBUG
     setDebugName( "Image");
 #endif
 }

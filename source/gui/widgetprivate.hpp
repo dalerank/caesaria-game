@@ -16,11 +16,15 @@
 #ifndef __CAESARIA_WIDGET_PRIVATE_H_INCLUDE_
 #define __CAESARIA_WIDGET_PRIVATE_H_INCLUDE_
 
-#include "widget.hpp"
+#include "core/variant_map.hpp"
+#include "core/alignment.hpp"
+#include "core/list.hpp"
 #include <set>
 
 namespace gui
 {
+
+class Widget;
 
 class Widget::Impl
 {
@@ -39,7 +43,7 @@ public:
   Widget* parent;
 
 	//! List of all children of this element
-	Widget::Widgets children;
+  List<Widget*> children;
 
 	//! relative rect of element
 	Rect relativeRect;
@@ -94,6 +98,9 @@ public:
 
   //! tab groups are containers like windows, use ctrl+tab to navigate
   bool isTabGroup;
+
+  //
+  VariantMap properties;
 };
 
 }//end namespace gui

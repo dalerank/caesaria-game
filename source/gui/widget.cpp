@@ -34,6 +34,7 @@
 namespace gui
 {
 
+static const Variant invalidVariant;
 CAESARIA_LITERALCONST(vars)
 
 void Widget::beforeDraw(gfx::Engine& painter )
@@ -137,7 +138,8 @@ void Widget::setGeometry( const Rect& r, GeometryType mode )
   updateAbsolutePosition();
 }
 
-void Widget::_resizeEvent(){}
+void Widget::_finalizeResize() {}
+void Widget::_finalizeMove() {}
 
 Widget::Widgets& Widget::_getChildren() {  return _dfunc()->children;}
 
@@ -238,7 +240,7 @@ void Widget::updateAbsolutePosition()
 
   if( oldRect.size() != _d->absoluteRect.size() )
   {
-    _resizeEvent();
+    _finalizeResize();
   }
 
   // update all children
@@ -632,6 +634,8 @@ void Widget::setupUI( const VariantMap& options )
   Variant positionV = options.get( "position" );
   if( positionV.isValid() )
     move( positionV.toPoint() );
+
+  _d->properties = options.get( "properties" ).toMap();
 }
 
 void Widget::setupUI(const vfs::Path& filename)
@@ -756,6 +760,8 @@ void Widget::_recalculateAbsolutePosition( bool recursive )
           (*it)->_recalculateAbsolutePosition(recursive);
       }
     }
+
+    _finalizeResize();
 }
 
 void Widget::animate( unsigned int timeMs )
@@ -877,6 +883,17 @@ void Widget::setRight( int newRight )
   Rect r = relativeRect();
   r.rright() = newRight;
   setGeometry( r );
+}
+
+void Widget::addProperty(const std::string& name, const Variant& value)
+{
+  _dfunc()->properties[ name ] = value;
+}
+
+const Variant& Widget::getProperty(const std::string& name) const
+{
+  VariantMap::const_iterator it = _dfunc()->properties.find( name );
+  return it != _dfunc()->properties.end() ? it->second : invalidVariant;
 }
 
 void Widget::installEventHandler( Widget* elementHandler )

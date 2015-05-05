@@ -245,7 +245,7 @@ std::string Sg2ArchiveReader::_findFilenameCaseInsensitive( const std::string& d
   Directory directory( dir );
   filename = utils::localeLower( filename );
 
-  Entries::Items files = directory.getEntries().items();
+  Entries::Items files = directory.entries().items();
   foreach( i, files )
   {
     if( i->name.canonical() == filename )

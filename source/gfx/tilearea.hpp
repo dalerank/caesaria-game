@@ -32,6 +32,8 @@ public:
   TilesArea( const Tilemap& tmap, const TilePos& leftup, const TilePos& rightdown );
   TilesArea( const Tilemap& tmap, const TilePos& center, int distance );
   TilesArea( const Tilemap& tmap, const TilePos& leftup, const Size& size );
+
+  void reset(const Tilemap& tmap, const TilePos& center, int distance );
 };
 
 } //end namespace gfx

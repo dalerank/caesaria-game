@@ -88,7 +88,7 @@ bool Prefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& 
 WalkerPtr Prefect::_looks4Enemy( const int range )
 {
   TilePos offset( range, range );
-  WalkerList walkers = city::statistic::findw<Walker>( _city(), walker::any, pos() - offset, pos() + offset );
+  WalkerList walkers = city::statistic::getWalkers<Walker>( _city(), walker::any, pos() - offset, pos() + offset );
 
   for( WalkerList::iterator it = walkers.begin(); it != walkers.end(); )
   {
@@ -460,15 +460,14 @@ void Prefect::timeStep(const unsigned long time)
 
   case fightFire:
   {    
-    BuildingPtr building = ptr_cast<Building>( _nextTile().overlay() );
+    BuildingPtr building = _nextTile().overlay().as<Building>();
     bool inFire = (building.isValid() && building->type() == object::burning_ruins );
 
     if( inFire )
     {
-      ServiceWalkerPtr ptr( this );
-      const float beforeFight = building->evaluateService( ptr );
-      building->applyService( ptr );
-      const float afterFight = building->evaluateService( ptr );
+      const float beforeFight = building->evaluateService( this );
+      building->applyService( this );
+      const float afterFight = building->evaluateService( this );
       _d->water -= math::clamp( (int)(beforeFight - afterFight), 0, 100 );
 
       if( afterFight == 0)

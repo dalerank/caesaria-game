@@ -72,7 +72,7 @@ void WalkersGrid::remove( WalkerPtr a)
         return;
       }
     }
-    }
+  }
 }
 
 void WalkersGrid::update(const WalkerList& walkers)

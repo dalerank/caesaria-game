@@ -26,7 +26,10 @@
 #include "game.hpp"
 #include "religion/pantheon.hpp"
 #include "settings.hpp"
+#include "gui/environment.hpp"
 #include "events/dispatcher.hpp"
+#include "gui/minimap_window.hpp"
+#include "gui/widget_helper.hpp"
 
 namespace game
 {
@@ -64,6 +67,13 @@ void Saver::save(const vfs::Path& filename, const Game& game )
   VariantMap vm_pantheon;
   religion::rome::Pantheon::instance().save( vm_pantheon );
   vm[ "pantheon" ] = vm_pantheon;
+
+  gui::Minimap* minimap = gui::findChildA<gui::Minimap*>( true, game.gui()->rootWidget() );
+  if( minimap )
+  {
+    vfs::Path imgPath = filename.changeExtension( "png" );
+    minimap->saveImage( imgPath.toString() );
+  }
 
   config::save( vm, filename );
 }

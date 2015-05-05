@@ -55,8 +55,11 @@ Baths::Baths() : ServiceBuilding(Service::baths, object::baths, Size(2) )
 unsigned int Baths::walkerDistance() const {  return 35;}
 
 bool Baths::build( const city::AreaInfo& info )
-{
-  return ServiceBuilding::build( info );
+{ 
+  bool result = ServiceBuilding::build( info );
+  _myArea = area();
+
+  return result;
 }
 
 bool Baths::mayWork() const {  return ServiceBuilding::mayWork() && _haveReservorWater; }
@@ -66,8 +69,10 @@ void Baths::timeStep(const unsigned long time)
   if( game::Date::isWeekChanged() )
   {
     bool haveWater = false;
-    TilesArray tiles = area();
-    foreach( tile, tiles ) { haveWater |= (*tile)->param( Tile::pReservoirWater ) > 0; }
+    foreach( tile, _myArea )
+    {
+      haveWater |= (*tile)->param( Tile::pReservoirWater ) > 0;
+    }
     _haveReservorWater = (haveWater && numberWorkers() > 0);
   }
 

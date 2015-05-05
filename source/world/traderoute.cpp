@@ -79,7 +79,7 @@ CityPtr Traderoute::partner(const std::string& name) const
   return _d->empire->findCity( _d->begin == name ? _d->end : _d->begin );
 }
 
-void Traderoute::update( unsigned int time )
+void Traderoute::timeStep( unsigned int time )
 {
   MerchantList::iterator it=_d->merchants.begin();
   while( it != _d->merchants.end() )

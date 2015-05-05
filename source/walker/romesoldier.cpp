@@ -176,14 +176,14 @@ std::string RomeSoldier::thoughts(Thought th) const
   if( th == thCurrent )
   {
     TilePos offset( 10, 10 );
-    EnemySoldierList enemies = city::statistic::findw<EnemySoldier>( _city(), walker::any, pos() - offset, pos() + offset );
+    EnemySoldierList enemies = city::statistic::getWalkers<EnemySoldier>( _city(), walker::any, pos() - offset, pos() + offset );
     if( enemies.empty() )
     {
       return Soldier::thoughts( th );
     }
     else
     {
-      RomeSoldierList ourSoldiers = city::statistic::findw<RomeSoldier>( _city(), walker::any, pos() - offset, pos() + offset );
+      RomeSoldierList ourSoldiers = city::statistic::getWalkers<RomeSoldier>( _city(), walker::any, pos() - offset, pos() + offset );
       int enemyStrength = 0;
       int ourStrength = 0;
 
@@ -372,7 +372,7 @@ void RomeSoldier::_reachedPathway()
 
   case go2position:
   {
-    WalkerList walkersOnTile = city::statistic::findw<Walker>( _city(), type(), pos() );
+    WalkerList walkersOnTile = city::statistic::getWalkers<Walker>( _city(), type(), pos() );
     walkersOnTile.remove( this );
 
     if( walkersOnTile.size() > 0 ) //only me in this tile

@@ -55,7 +55,7 @@ void Water::timeStep( const unsigned int time )
 
       value = tile->param( Tile::pWellWater );
       if( value > 0 )
-       tile->setParam( Tile::pWellWater, math::max( 0, value-1) );
+        tile->setParam( Tile::pWellWater, math::max( 0, value-1) );
     }
   }
 }

@@ -61,6 +61,7 @@
 
 using namespace gfx;
 using namespace citylayer;
+using namespace gui;
 
 enum {
   add_enemy_archers=0,
@@ -245,7 +246,7 @@ EnemySoldierPtr DebugHandler::Impl::makeEnemy( walker::Type type )
 
 void DebugHandler::Impl::addGoods2Wh(good::Product type)
 {
-  WarehouseList whList = city::statistic::findo<Warehouse>( game->city(), object::warehouse );
+  WarehouseList whList = city::statistic::getObjects<Warehouse>( game->city(), object::warehouse );
   foreach( wh, whList)
   {
     WarehousePtr warehouse = *wh;
@@ -311,7 +312,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case show_fest:
   {
-    city::FestivalPtr fest = city::statistic::finds<city::Festival>( game->city() );
+    city::FestivalPtr fest = city::statistic::getService<city::Festival>( game->city() );
     if( fest.isValid() )
       fest->now();
   }
@@ -367,7 +368,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case kill_all_enemies:
   {
-     EnemySoldierList enemies = city::statistic::findw<EnemySoldier>( game->city(), walker::any, TilePos(-1, -1) );
+     EnemySoldierList enemies = city::statistic::getWalkers<EnemySoldier>( game->city(), walker::any, gfx::tilemap::invalidLocation() );
 
      foreach( it, enemies )
        (*it)->die();
@@ -484,11 +485,11 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case run_script:
   {
-    gui::Widget* parent = game->gui()->rootWidget();
-    gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent,
-                                                        Rect(),
-                                                        vfs::Path( ":/scripts/" ), ".model",
-                                                        -1 );
+    Widget* parent = game->gui()->rootWidget();
+    dialog::LoadFile* wnd = dialog::LoadFile::create( parent,
+                                                      Rect(),
+                                                      vfs::Path( ":/scripts/" ), ".model",
+                                                      -1 );
     wnd->setCenter( parent->center() );
 
     CONNECT( wnd, onSelectFile(), this, Impl::runScript );
@@ -508,8 +509,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case add_soldiers_in_fort:
   {
-    FortList forts;
-    forts << game->city()->overlays();
+    FortList forts = city::statistic::getObjects<Fort>( game->city() );
 
     foreach( it, forts )
     {

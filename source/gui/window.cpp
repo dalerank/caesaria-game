@@ -51,7 +51,7 @@ public:
 	Label* title;
 
 	Picture backgroundImage;
-	Pictures bgStyle;
+  Batch bgStyle;
 	Point dragStartPosition;
 	Window::BackgroundType backgroundType;
 	bool dragging;
@@ -126,9 +126,9 @@ void Window::_init()
   _d->title->setAlignment( align::upperLeft, align::lowerRight, align::upperLeft, align::upperLeft );
 }
 
-void Window::_resizeEvent()
+void Window::_finalizeResize()
 {
-  Widget::_resizeEvent();
+  Widget::_finalizeResize();
   if( _d->backgroundType != bgNone  )
   {
     setBackground( _d->backgroundType );
@@ -246,7 +246,7 @@ void Window::draw( Engine& painter )
 			}
 			else
 			{
-				painter.draw( _d->bgStyle, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+        painter.draw( _d->bgStyle, &absoluteClippingRectRef() );
 			}
 		}
 	}
@@ -284,17 +284,25 @@ void Window::setBackground( Picture texture )
 {
   _d->backgroundImage = texture;
   _d->backgroundType = bgNone;
-  _d->bgStyle.clear();
+  _d->bgStyle.destroy();
 }
 
 void Window::setBackground(Window::BackgroundType type)
 {
   _d->backgroundImage = Picture::getInvalid();
   _d->backgroundType = type;
-  _d->bgStyle.clear();
+  _d->bgStyle.destroy();
   switch( type )
   {
-  case bgWhiteFrame: Decorator::draw( _d->bgStyle, Rect( 0, 0, width(), height()), Decorator::whiteFrame ); break;
+  case bgWhiteFrame:
+  {
+    Pictures pics;
+    Decorator::draw( pics, Rect( 0, 0, width(), height()), Decorator::whiteFrame, Decorator::normalY );
+
+    _d->bgStyle.load( pics, absoluteRect().lefttop() );
+  }
+  break;
+
   default: break;
   }
 }

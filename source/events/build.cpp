@@ -65,7 +65,7 @@ void BuildAny::_exec( Game& game, unsigned int )
   }
 
   TilePos offset(10, 10);
-  EnemySoldierList enemies = city::statistic::findw<EnemySoldier>( game.city(), walker::any, _pos - offset, _pos + offset );
+  EnemySoldierList enemies = city::statistic::getWalkers<EnemySoldier>( game.city(), walker::any, _pos - offset, _pos + offset );
   if( !enemies.empty() && _overlay->group() != object::group::disaster)
   {
     GameEventPtr e = WarningMessage::create( "##too_close_to_enemy_troops##", 2 );
@@ -113,7 +113,7 @@ void BuildAny::_exec( Game& game, unsigned int )
         e->dispatch();
       }
 
-      WorkingBuildingPtr wb = ptr_cast<WorkingBuilding>( construction );
+      WorkingBuildingPtr wb = construction.as<WorkingBuilding>();
       if( wb.isValid() && wb->maximumWorkers() > 0 )
       {
         unsigned int worklessCount = statistic::getWorklessNumber( game.city() );
@@ -134,7 +134,7 @@ void BuildAny::_exec( Game& game, unsigned int )
   }
   else
   {
-    ConstructionPtr construction = ptr_cast<Construction>( _overlay );
+    ConstructionPtr construction = _overlay.as<Construction>();
     if( construction.isValid() )
     {
       GameEventPtr e = WarningMessage::create( construction->errorDesc(), 1 );

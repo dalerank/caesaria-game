@@ -52,6 +52,8 @@ public:
   Picture* createPicture(const Size& size);
   virtual void loadPicture(Picture &ioPicture, bool streamed);
   virtual void unloadPicture(Picture &ioPicture);
+  virtual Batch loadBatch(const Picture& pic, const Rects& srcRects, const Rects& dstRects, const Rect* clipRect=0);
+  virtual void unloadBatch( const Batch& batch );
   void deletePicture(Picture* pic);
 
   virtual void startRenderFrame();
@@ -65,6 +67,8 @@ public:
   void draw(const Picture &picture, const Point& pos, Rect* clipRect=0 );
   void draw(const Picture &picture, const Rect& src, const Rect& dst, Rect* clipRect=0 );
   void draw(const Pictures& pictures, const Point& pos, Rect* clipRect);
+  void draw(const Picture& pic, const Rects& srcRects, const Rects& dstRects, Rect* clipRect=0 );
+  void draw(const Batch& pic, Rect* clipRect=0 );
   void drawLine(const NColor &color, const Point &p1, const Point &p2);
 
   void setColorMask( int rmask, int gmask, int bmask, int amask );

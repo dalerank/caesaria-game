@@ -26,12 +26,16 @@
 namespace city
 {
 
+/** Helper class for player city */
 class Services : public city::SrvcList
 {
 public:
-  void update( PlayerCityPtr city, unsigned int time);
+  /** Call every frame */
+  void timeStep( PlayerCityPtr city, unsigned int time);
+  void initialize( PlayerCityPtr city, const std::string& model );
 };
 
+/**  */
 class Overlays : public FlowList<Overlay>
 {
 public:

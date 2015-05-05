@@ -92,7 +92,7 @@ void TempleCeres::_updateBuffs()
   if( _lastBuff().month() != game::Date::current().month() )
   {
     TilePos offset( 5, 5 );
-    FarmList farms = city::statistic::findo<Farm>( _city(), object::any,
+    FarmList farms = city::statistic::getObjects<Farm>( _city(), object::any,
                                                    pos() - offset, pos() + offset + TilePos( size().width(), size().width() ) );
     foreach( it, farms )
     {

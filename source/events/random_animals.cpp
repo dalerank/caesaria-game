@@ -31,6 +31,7 @@
 #include "factory.hpp"
 
 using namespace gfx;
+using namespace city;
 
 namespace events
 {
@@ -92,7 +93,7 @@ void RandomAnimals::_exec( Game& game, unsigned int time)
 
   if( _d->maxAnimals >= 0 )
   {
-    city::AnimalsPtr srvc = city::statistic::finds<city::Animals>( game.city() );
+    AnimalsPtr srvc = statistic::getService<Animals>( game.city() );
 
     if( srvc.isValid() )
     {

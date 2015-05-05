@@ -122,7 +122,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   BuildingList buildings;
   foreach( buildingType, _d->necBuildings )
   {
-    BuildingList tmpBuildings = city::statistic::findo<Building>( _city(), *buildingType );
+    BuildingList tmpBuildings = city::statistic::getObjects<Building>( _city(), *buildingType );
     buildings.insert( buildings.end(), tmpBuildings.begin(), tmpBuildings.end() );
   }
 

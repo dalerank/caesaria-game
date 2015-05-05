@@ -135,7 +135,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-	"emperor_request_vines2#city_request" : {
+    "emperor_request_vines2#city_request" : {
       date : "-345.06.01"
       reqtype : "good_request"
       month : 12
@@ -144,7 +144,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-	"emperor_request_vines3#city_request" : {
+    "emperor_request_vines3#city_request" : {
       date : "-342.04.01"
       reqtype : "good_request"
       month : 12
@@ -153,7 +153,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-	"emperor_request_vines4#city_request" : {
+    "emperor_request_vines4#city_request" : {
       date : "-339.08.01"
       reqtype : "good_request"
       month : 12
@@ -162,7 +162,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-	"emperor_request_vines5#city_request" : {
+    "emperor_request_vines5#city_request" : {
       date : "-336.08.01"
       reqtype : "good_request"
       month : 12
@@ -171,7 +171,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-	"emperor_request_vines6#city_request" : {
+    "emperor_request_vines6#city_request" : {
       date : "-333.05.01"
       reqtype : "good_request"
       month : 12
@@ -180,7 +180,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-	"emperor_request_vines7#city_request" : {
+    "emperor_request_vines7#city_request" : {
       date : "-329.05.01"
       reqtype : "good_request"
       month : 12
@@ -189,7 +189,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-	"emperor_request_vines8#city_request" : {
+    "emperor_request_vines8#city_request" : {
       date : "-326.05.01"
       reqtype : "good_request"
       month : 12
@@ -216,7 +216,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-	"emperor_request_vines11#city_request" : {
+    "emperor_request_vines11#city_request" : {
       date : "-317.05.01"
       reqtype : "good_request"
       month : 12
@@ -243,7 +243,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-	"emperor_request_vines14#city_request" : {
+    "emperor_request_vines14#city_request" : {
       date : "-308.05.01"
       reqtype : "good_request"
       month : 12
@@ -307,10 +307,10 @@
       }
     }
 
-	"barbarian_invasion2#enemy_attack" : {
+    "barbarian_invasion2#enemy_attack" : {
       date : "-342.07.01"
       type : "enemy_attack"
-	  target : "best_building"
+      target : "best_building"
       items : {
         troop_soldiers : {
           type : "etruscanSoldier"
@@ -326,7 +326,7 @@
       }
 
       exec : {
-		barbarian_attack#messagebox : {
+      barbarian_attack#messagebox : {
 		  title : "##barbarian_attack_title##"
 		  text : "##barbarian_attack_text##"
       video : "spy_barbarian"
@@ -353,12 +353,13 @@
       }
 
       exec : {
-		barbarian_attack#messagebox : {
-		  title : "##barbarian_attack_title##"
-		  text : "##barbarian_attack_text##"
-      video : "spy_barbarian"
-		}
-	  }
+        barbarian_attack#messagebox :
+        {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "spy_barbarian"
+        }
+      }
     }
 
     barbarian_invasion1#enemy_attack :
@@ -449,7 +450,6 @@
     { 
       engineering_post : true
       plaza : true
-      forum : false
       garden : true
       low_bridge : true
       gatehouse : true

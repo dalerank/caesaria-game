@@ -4,13 +4,12 @@ project(ttf)
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules" ${CMAKE_MODULE_PATH})
 
 message("FREETYPE_DIR is" ${FREETYPELIB_HOME})
-find_package(SDL2 REQUIRED)
 
 file(GLOB TTF_HEADERS_LIST "*.h")
 file(GLOB TTF_SOURCES_LIST "*.c")
 
 include_directories(
-  ${SDL2_INCLUDE_DIR}
+  ${SDL2MINI_INCLUDE_DIR}
   ${LIBPNG_INCLUDE_DIR}
   ${FREETYPE_INCLUDE_DIR}
 )

@@ -56,7 +56,7 @@ protected:
   virtual bool _canTakeFocus(Widget* target) const;
 
   //! Updates the absolute position.
-  virtual void _resizeEvent();
+  virtual void _finalizeResize();
 
 private:        
   unsigned int _mouseDownTime;

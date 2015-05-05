@@ -587,7 +587,7 @@ static void __createRivers(Game& game )
 
         city::AreaInfo info = { oCity, (*it)->pos(), TilesArray() };
         overlay->build( info );
-        oCity->overlays().push_back( overlay );
+        oCity->addOverlay( overlay );
 
         if( isWater )
           break;
@@ -667,7 +667,7 @@ static void __createRoad(Game& game )
 
       city::AreaInfo info = { oCity, (*it)->pos(), TilesArray() };
       overlay->build( info );
-      oCity->overlays().push_back( overlay );
+      oCity->addOverlay( overlay );
     }
 
     borderInfo.roadEntry = way.startPos();
@@ -836,7 +836,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
         {
           city::AreaInfo info = { oCity, tile.pos(), TilesArray() };
           overlay->build( info );
-          oCity->overlays().push_back( overlay );
+          oCity->addOverlay( overlay );
         }
       }
       break;

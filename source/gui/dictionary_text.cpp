@@ -657,7 +657,7 @@ void DictionaryText::setTextAlignment( Alignment horizontal, Alignment vertical 
   _d->needUpdatePicture = true;
 }
 
-void DictionaryText::_resizeEvent() {  _d->needUpdatePicture = true; }
+void DictionaryText::_finalizeResize() {  _d->needUpdatePicture = true; }
 
 void DictionaryText::setLineIntervalOffset( const int offset )
 {

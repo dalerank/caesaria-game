@@ -121,9 +121,14 @@ void ListBox::_recalculateItemHeight( const Font& defaulFont, int h )
   }
 
   int scrollbarWidth = _d->scrollBar->visible() ? _d->scrollBar->width() : 0;
-  _d->background.clear();
-  Decorator::draw( _d->background, Rect( 0, 0, width() - scrollbarWidth, height() ), Decorator::blackFrame );
-  Decorator::draw( _d->background, Rect( width() - scrollbarWidth, 0, width(), height() ), Decorator::whiteArea  );
+  _d->background.destroy();
+
+  Pictures pics;
+
+  Decorator::draw( pics, Rect( 0, 0, width() - scrollbarWidth, height() ), Decorator::blackFrame );
+  Decorator::draw( pics, Rect( width() - scrollbarWidth, 0, width(), height() ), Decorator::whiteArea, Decorator::normalY  );
+
+  _d->background.load( pics, absoluteRect().lefttop() );
 }
 
 //! destructor
@@ -522,7 +527,7 @@ void ListBox::_selectNew(int ypos)
 }
 
 //! Update the position and size of the listbox, and update the scrollbar
-void ListBox::_resizeEvent()
+void ListBox::_finalizeResize()
 {
   _d->totalItemHeight = 0;
   _recalculateItemHeight( _d->font, height() );
@@ -652,14 +657,14 @@ void ListBox::beforeDraw(gfx::Engine& painter)
 void ListBox::refresh() {  _d->needItemsRepackTextures = true; }
 
 //! draws the element and its children
-void ListBox::draw(gfx::Engine& painter )
+void ListBox::draw( gfx::Engine& painter )
 {
   if ( !visible() )
 		return;
 
   if( isFlag( drawBackground ) )
   {
-    painter.draw( _d->background, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+    painter.draw( _d->background, &absoluteClippingRectRef() );
   }
 
   Point scrollBarOffset( 0, -_d->scrollBar->value() );

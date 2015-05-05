@@ -102,8 +102,11 @@ void Shoreline::timeStep( const unsigned int time )
     for( int k=0; k < 20; k++ )
     {
       Tile* t = _d->dwTiles.random();
-      RiverWavePtr rw = RiverWave::create( _city() );
-      rw->send2City( t->pos() );
+      if( t )
+      {
+        RiverWavePtr rw = RiverWave::create( _city() );
+        rw->send2City( t->pos() );
+      }
     }
   }
 

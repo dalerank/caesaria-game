@@ -181,7 +181,7 @@ Education::Education(PlayerCityPtr city, Widget* parent, int id )
 
   int sumScholars = 0;
   int sumStudents = 0;
-  HouseList houses = city::statistic::findh( city );
+  HouseList houses = city::statistic::getHouses( city );
   foreach( house, houses )
   {
     sumScholars += (*house)->habitants().scholar_n();
@@ -224,7 +224,7 @@ InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Ty
   ret.nextLevel = 0;
   ret.coverage = 0;
 
-  ServiceBuildingList servBuildings = statistic::findo<ServiceBuilding>( city, bType );
+  ServiceBuildingList servBuildings = statistic::getObjects<ServiceBuilding>( city, bType );
 
   ret.buildingCount = servBuildings.size();
   SrvcInfo info = findInfo( bType );
@@ -243,7 +243,7 @@ InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Ty
     }
   }
 
-  HouseList houses = statistic::findh( city );
+  HouseList houses = statistic::getHouses( city );
   int minAccessLevel = awesomeAccessValue;
   foreach( it, houses )
   {

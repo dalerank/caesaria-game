@@ -51,9 +51,20 @@ using namespace config;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::warehouse, Warehouse)
 
-namespace {
+namespace
+{
 CAESARIA_LITERALCONST(tiles)
 CAESARIA_LITERALCONST(goodStore)
+}
+
+namespace config
+{
+
+namespace fgpic
+{
+  enum { idxWhRoof=1, idxAnimWork, idxAnimFlag };
+}
+
 }
 
 Warehouse::Room::Room(const TilePos &pos)
@@ -115,15 +126,24 @@ class Warehouse::Impl
 {
 public:
   Animation animFlag;  // the flag above the warehouse
+  bool isTradeCenter;
 
   Warehouse::Rooms rooms;
   WarehouseStore goodStore;
 };
 
+static Picture strafePic(const std::string& rc, int index, int i, int j )
+{
+  Picture ret = Picture::load( rc, index );
+  ret.addOffset( tile::tilepos2screen( TilePos( i, j ) ) );
+
+  return ret;
+}
+
 Warehouse::Warehouse() : WorkingBuilding( object::warehouse, Size( 3 )), _d( new Impl )
 {
-   // _name = _("Entrepot");
-  setPicture( ResourceGroup::warehouse, 19 );
+  setPicture( strafePic( ResourceGroup::warehouse, 19, 0, 2 ) );
+
   _fgPicturesRef().resize(12+1);  // 8 tiles + 4 + 1 animation slot
 
   _animationRef().load( ResourceGroup::warehouse, 2, 16 );
@@ -133,10 +153,10 @@ Warehouse::Warehouse() : WorkingBuilding( object::warehouse, Size( 3 )), _d( new
 
   _setClearAnimationOnStop( false );
 
-  _fgPicturesRef()[ fgpic::idxMainPic ] = Picture::load(ResourceGroup::warehouse, 1);
-  _fgPicturesRef()[ 1 ] = Picture::load(ResourceGroup::warehouse, 18);
-  _fgPicturesRef()[ 2 ] = _animationRef().currentFrame();
-  _fgPicturesRef()[ 3 ] = _d->animFlag.currentFrame();
+  _fgPicturesRef()[ fgpic::idxMainPic ] = strafePic( ResourceGroup::warehouse, 1,  0, 2);
+  _fgPicturesRef()[ fgpic::idxWhRoof  ] = strafePic( ResourceGroup::warehouse, 18, 0, 2);
+  _fgPicturesRef()[ fgpic::idxAnimWork] = _animationRef().currentFrame();
+  _fgPicturesRef()[ fgpic::idxAnimFlag] = _d->animFlag.currentFrame();
 
   // add subTiles in Z-order (from far to near)
   _d->rooms.clear();
@@ -150,6 +170,7 @@ Warehouse::Warehouse() : WorkingBuilding( object::warehouse, Size( 3 )), _d( new
   _d->rooms.push_back( Room( TilePos( 2, 0 ) ));
 
   _d->goodStore.init(*this);
+  _d->isTradeCenter = false;
 
   computePictures();
 }
@@ -158,9 +179,9 @@ void Warehouse::timeStep(const unsigned long time)
 {
   if( numberWorkers() > 0 )
   {
-   _d->animFlag.update( time );
+    _d->animFlag.update( time );
 
-   _fgPicturesRef()[3] = _d->animFlag.currentFrame();
+    _fgPicturesRef()[3] = _d->animFlag.currentFrame();
   }
 
   if( game::Date::isWeekChanged() )
@@ -181,6 +202,8 @@ void Warehouse::timeStep(const unsigned long time)
 void Warehouse::computePictures()
 {
   int index = 4;
+  std::string rc = _d->isTradeCenter ? ResourceGroup::tradecenter : ResourceGroup::warehouse;
+  _fgPicturesRef()[ fgpic::idxMainPic ] = strafePic( rc, 1, 0, 2);
   foreach( room, _d->rooms )
   {
      room->computePicture();
@@ -198,6 +221,8 @@ void Warehouse::save( VariantMap& stream ) const
 
   stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(Warehouse) ) );
   stream[ literals::goodStore ] = _d->goodStore.save();
+
+  VARIANT_SAVE_ANY_D( stream, _d, isTradeCenter)
 
   VariantList vm_tiles;
   foreach( room, _d->rooms ) { vm_tiles.push_back( room->save() ); }
@@ -219,10 +244,20 @@ void Warehouse::load( const VariantMap& stream )
     tileIndex++;
   }
 
+  VARIANT_LOAD_ANY_D( _d, isTradeCenter, stream )
+
   computePictures();
 }
 
 bool Warehouse::onlyDispatchGoods() const {  return numberWorkers() < maximumWorkers() / 3; }
+bool Warehouse::isTradeCenter() const { return _d->isTradeCenter; }
+Warehouse::Rooms& Warehouse::rooms() { return _d->rooms; }
+
+void Warehouse::setTradeCenter(bool enabled)
+{
+  _d->isTradeCenter = enabled;
+  computePictures();
+}
 
 bool Warehouse::isGettingFull() const
 {
@@ -237,8 +272,7 @@ bool Warehouse::isGettingFull() const
 
 float Warehouse::tradeBuff(Warehouse::Buff type) const
 {
-  SmartList<WarehouseBuff> buffs;
-  buffs << extensions();
+  SmartList<WarehouseBuff> buffs = extensions().select<WarehouseBuff>();
 
   float res = 0;
   foreach( it, buffs )
@@ -249,8 +283,6 @@ float Warehouse::tradeBuff(Warehouse::Buff type) const
 
   return res;
 }
-
-Warehouse::Rooms& Warehouse::rooms() { return _d->rooms; }
 
 std::string Warehouse::troubleDesc() const
 {
