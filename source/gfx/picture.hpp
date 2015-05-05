@@ -21,11 +21,9 @@
 
 #include <vector>
 #include <string>
-#include "core/size.hpp"
-#include "core/scopedptr.hpp"
-#include "core/position.hpp"
 #include "core/rectangle.hpp"
 #include "core/color.hpp"
+#include "core/smartptr.hpp"
 
 struct SDL_Texture;
 struct SDL_Surface;
@@ -89,7 +87,9 @@ public:
   void update();
 private:
   class Impl;
-  ScopedPtr< Impl > _d;
+  SmartPtr<Impl> _d;
+
+  Point _offset;  // the image is shifted when displayed
 };
 
 struct PictureRefDeleter
