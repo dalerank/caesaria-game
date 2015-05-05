@@ -39,6 +39,7 @@
 #include "environment.hpp"
 
 using namespace gfx;
+using namespace city;
 
 namespace gui
 {
@@ -227,7 +228,7 @@ void Legion::_showHelp()
 
 void Legion::Impl::updateAlarms(PlayerCityPtr city)
 {
-  city::MilitaryPtr mil = city::statistic::finds<city::Military>( city );
+  MilitaryPtr mil = statistic::getService<Military>( city );
 
   WalkerList chasteners = city->walkers( walker::romeChastenerSoldier );
   WalkerList elephants = city->walkers( walker::romeChastenerElephant );

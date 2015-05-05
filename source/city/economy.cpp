@@ -43,7 +43,7 @@ void Economy::payWages(PlayerCityPtr city)
 
   if( haveMoneyForAction( wages ) )
   {
-    HouseList houses = statistic::findh( city );
+    HouseList houses = statistic::getHouses( city );
 
     float salary = statistic::getMonthlyOneWorkerWages( city );
     float wages = 0;
@@ -66,10 +66,10 @@ void Economy::collectTaxes(PlayerCityPtr city)
 {
   float lastMonthTax = 0;
 
-  ForumList forums = statistic::findo<Forum>( city, object::forum );
+  ForumList forums = statistic::getObjects<Forum>( city, object::forum );
   foreach( forum, forums ) { lastMonthTax += (*forum)->collectTaxes(); }
 
-  SenateList senates = statistic::findo<Senate>( city, object::senate );
+  SenateList senates = statistic::getObjects<Senate>( city, object::senate );
   foreach( senate, senates ) { lastMonthTax += (*senate)->collectTaxes(); }
 
   resolveIssue( econ::Issue( econ::Issue::taxIncome, lastMonthTax ) );

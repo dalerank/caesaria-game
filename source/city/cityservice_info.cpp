@@ -168,19 +168,19 @@ void Info::timeStep(const unsigned int time )
     last[ blackHouses ] = statistic::blackHouses( _city() );
     last[ peace       ] = 0;
 
-    PeacePtr peaceSrvc = statistic::finds<Peace>( _city() );
+    PeacePtr peaceSrvc = statistic::getService<Peace>( _city() );
     if( peaceSrvc.isValid() )
     {
       last[ peace ] = peaceSrvc->value();
     }
 
-    MilitaryPtr mil = statistic::finds<Military>( _city() );
+    MilitaryPtr mil = statistic::getService<Military>( _city() );
     if( mil.isValid() )
     {
       last[ Info::milthreat ] = mil->threatValue();
     }
 
-    HouseList houses = city::statistic::findh( _city() );
+    HouseList houses = city::statistic::getHouses( _city() );
 
     last[ houseNumber ] = 0;
     last[ shackNumber ] = 0;
@@ -197,7 +197,7 @@ void Info::timeStep(const unsigned int time )
       }
     }
 
-    SentimentPtr sentimentSrvc = statistic::finds<Sentiment>( _city() );
+    SentimentPtr sentimentSrvc = statistic::getService<Sentiment>( _city() );
 
     if( sentimentSrvc.isValid())
       last[ sentiment ] = sentimentSrvc->value();
@@ -214,7 +214,7 @@ void Info::timeStep(const unsigned int time )
   }
 }
 
-Info::Parameters Info::lastParams() const {  return _d->lastYearHistory.empty() ? Parameters() : _d->lastYearHistory.back(); }
+Info::Parameters Info::lastParams() const { return _d->lastYearHistory.empty() ? Parameters() : _d->lastYearHistory.back(); }
 
 Info::Parameters Info::params(unsigned int monthAgo) const
 {

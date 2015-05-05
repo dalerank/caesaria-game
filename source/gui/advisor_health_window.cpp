@@ -192,7 +192,7 @@ Health::Impl::InfrastructureInfo Health::Impl::getInfo(PlayerCityPtr city, const
   ret.peoplesServed = 0;
   ret.buildingCount = 0;
 
-  ServiceBuildingList srvBuildings = city::statistic::findo<ServiceBuilding>( city, service );
+  ServiceBuildingList srvBuildings = city::statistic::getObjects<ServiceBuilding>( city, service );
   foreach( b, srvBuildings )
   {
     ret.buildingWork += (*b)->numberWorkers() > 0 ? 1 : 0;
@@ -227,7 +227,7 @@ void Health::Impl::updateAdvice(PlayerCityPtr c)
     }
     else
     {
-      HouseList houses =  city::statistic::findo<House>( c, object::house );
+      HouseList houses =  city::statistic::getHouses( c );
 
       unsigned int needBath = 0;
       unsigned int needBarbers = 0;

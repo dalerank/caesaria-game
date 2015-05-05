@@ -77,13 +77,13 @@ bool Amphitheater::build( const city::AreaInfo& info)
 {
   EntertainmentBuilding::build( info );
 
-  ActorColonyList actors = city::statistic::findo<ActorColony>( info.city, object::actorColony );
+  ActorColonyList actors = city::statistic::getObjects<ActorColony>( info.city, object::actorColony );
   if( actors.empty() )
   {
     _setError( "##need_actor_colony##" );
   }
 
-  GladiatorSchoolList gladiators = city::statistic::findo<GladiatorSchool>( info.city, object::gladiatorSchool );
+  GladiatorSchoolList gladiators = city::statistic::getObjects<GladiatorSchool>( info.city, object::gladiatorSchool );
   if( gladiators.empty() )
   {
     _setError( "##colloseum_haveno_gladiatorpit##" );

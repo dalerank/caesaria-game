@@ -283,19 +283,20 @@ void PlayerCity::setBorderInfo(const BorderInfo& info)
   _d->borderInfo.boatExit = info.boatExit.fit( start, stop );
 }
 
-OverlayList&  PlayerCity::overlays()              { return _d->overlays; }
-city::ActivePoints& PlayerCity::activePoints()    { return _d->activePoints; }
-city::Scribes &PlayerCity::scribes()              { return _d->scribes; }
-const BorderInfo& PlayerCity::borderInfo() const  { return _d->borderInfo; }
-Picture PlayerCity::picture() const               { return _d->empMapPicture; }
-bool PlayerCity::isPaysTaxes() const              { return _d->economy.getIssueValue( econ::Issue::empireTax, econ::Treasury::lastYear ) > 0; }
-bool PlayerCity::haveOverduePayment() const       { return _d->economy.getIssueValue( econ::Issue::overduePayment, econ::Treasury::thisYear ) > 0; }
-Tilemap&          PlayerCity::tilemap()           { return _d->tilemap; }
-econ::Treasury& PlayerCity::treasury()            { return _d->economy;   }
+OverlayList&  PlayerCity::overlays()             { return _d->overlays; }
+const OverlayList&PlayerCity::overlays() const   { return _d->overlays; }
+city::ActivePoints& PlayerCity::activePoints()   { return _d->activePoints; }
+city::Scribes &PlayerCity::scribes()             { return _d->scribes; }
+const BorderInfo& PlayerCity::borderInfo() const { return _d->borderInfo; }
+Picture PlayerCity::picture() const              { return _d->empMapPicture; }
+bool PlayerCity::isPaysTaxes() const             { return _d->economy.getIssueValue( econ::Issue::empireTax, econ::Treasury::lastYear ) > 0; }
+bool PlayerCity::haveOverduePayment() const      { return _d->economy.getIssueValue( econ::Issue::overduePayment, econ::Treasury::thisYear ) > 0; }
+Tilemap& PlayerCity::tilemap()                   { return _d->tilemap; }
+econ::Treasury& PlayerCity::treasury()           { return _d->economy;   }
 
 int PlayerCity::strength() const
 {
-  FortList forts = city::statistic::findo<Fort>( const_cast<PlayerCity*>( this ), object::any );
+  FortList forts = city::statistic::getObjects<Fort>( const_cast<PlayerCity*>( this ) );
 
   int ret = 0;
   foreach( i, forts )
@@ -317,7 +318,7 @@ DateTime PlayerCity::lastAttack() const
 void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
 {
   unsigned int pop = 0;
-  HouseList houseList = city::statistic::findh( city );
+  HouseList houseList = city::statistic::getHouses( city );
 
   foreach( house, houseList)
     pop += (*house)->habitants().count();
@@ -640,11 +641,7 @@ int PlayerCity::peace() const
   return p.isValid() ? p->value() : 0;
 }
 
-int PlayerCity::sentiment() const
-{
-  return _d->sentiment;
-}
-
+int PlayerCity::sentiment() const {  return _d->sentiment; }
 int PlayerCity::favour() const { return empire()->emperor().relation( name() ); }
 
 void PlayerCity::addObject( world::ObjectPtr object )

@@ -211,7 +211,7 @@ void Employer::Impl::changeSalary(int relative)
 
 void Employer::Impl::showPriorityWindow( industry::Type industry )
 {
-  WorkersHirePtr wh = statistic::finds<WorkersHire>( city );
+  WorkersHirePtr wh = statistic::getService<WorkersHire>( city );
 
   int priority = wh->getPriority( industry );
   dialog::HirePriority* wnd = new dialog::HirePriority( lbSalaries->ui()->rootWidget(), industry, priority );
@@ -220,7 +220,7 @@ void Employer::Impl::showPriorityWindow( industry::Type industry )
 
 void Employer::Impl::setIndustryPriority( industry::Type industry, int priority)
 {
-  WorkersHirePtr wh = statistic::finds<WorkersHire>( city );
+  WorkersHirePtr wh = statistic::getService<WorkersHire>( city );
 
   if( wh.isValid() )
   {
@@ -233,7 +233,7 @@ void Employer::Impl::setIndustryPriority( industry::Type industry, int priority)
 
 void Employer::Impl::update()
 {
-  WorkersHirePtr wh = statistic::finds<WorkersHire>( city );
+  WorkersHirePtr wh = statistic::getService<WorkersHire>( city );
 
   if( wh.isNull() )
     return;
@@ -266,7 +266,7 @@ Employer::Impl::EmployersInfo Employer::Impl::getEmployersInfo(industry::Type ty
   WorkingBuildingList buildings;
   foreach( buildingsGroup, bldGroups )
   {
-    WorkingBuildingList sectorBuildings = statistic::findo<WorkingBuilding>( city, *buildingsGroup );
+    WorkingBuildingList sectorBuildings = statistic::getObjects<WorkingBuilding>( city, *buildingsGroup );
     buildings.insert( buildings.begin(), sectorBuildings.begin(), sectorBuildings.end() );
   }
 

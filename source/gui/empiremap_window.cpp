@@ -389,7 +389,7 @@ void EmpireMapWindow::Impl::createTradeRoute()
       GameEventPtr e = Payment::create( econ::Issue::sundries, -(int)cost );
       e->dispatch();
 
-      DockList docks = city::statistic::findo<Dock>( city, object::dock );
+      DockList docks = city::statistic::getObjects<Dock>( city, object::dock );
       if( docks.empty() )
       {
         GameEventPtr e = ShowInfobox::create( _("##no_working_dock##" ), _( "##no_dock_for_sea_trade_routes##" ) );

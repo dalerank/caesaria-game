@@ -404,7 +404,7 @@ void Chief::Impl::drawMilitary()
 
   if( reasons.empty() )
   {
-    BarracksList barracks = statistic::findo<Barracks>( city, object::barracks );
+    BarracksList barracks = statistic::getObjects<Barracks>( city, object::barracks );
 
     bool needWeapons = false;
     foreach( it, barracks )
@@ -434,7 +434,7 @@ void Chief::Impl::drawCrime()
 {
   std::string text;
 
-  DisorderPtr ds = statistic::finds<Disorder>( city );
+  DisorderPtr ds = statistic::getService<Disorder>( city );
   if( ds.isValid() )
   {
     text = ds->reason();
@@ -449,7 +449,7 @@ void Chief::Impl::drawHealth()
 {
   std::string text;
 
-  HealthCarePtr cityHealth = statistic::finds<HealthCare>( city );
+  HealthCarePtr cityHealth = statistic::getService<HealthCare>( city );
   if( cityHealth.isValid() )
   {
     text = cityHealth->reason();
@@ -496,7 +496,7 @@ void Chief::Impl::drawEntertainment()
 {
   StringArray reasons;
 
-  FestivalPtr srvc = statistic::finds<Festival>( city );
+  FestivalPtr srvc = statistic::getService<Festival>( city );
   if( srvc.isValid() )
   {
     int monthFromLastFestival = srvc->lastFestival().monthsTo( game::Date::current() );
@@ -506,7 +506,7 @@ void Chief::Impl::drawEntertainment()
     }
   }
 
-  CultureRatingPtr cltr = statistic::finds<CultureRating>( city );
+  CultureRatingPtr cltr = statistic::getService<CultureRating>( city );
   if( cltr.isValid() )
   {
     int theaterCoverage = cltr->coverage( CultureRating::covTheatres );
@@ -527,7 +527,7 @@ void Chief::Impl::drawEntertainment()
 
 void Chief::Impl::drawSentiment()
 {
-  SentimentPtr sentiment = statistic::finds<Sentiment>( city );
+  SentimentPtr sentiment = statistic::getService<Sentiment>( city );
 
   std::string text = sentiment.isValid()
                      ? sentiment->reason()

@@ -205,7 +205,7 @@ void Emperor::_updateRequests()
   }
 
   request::RequestList reqs;
-  request::DispatcherPtr dispatcher = statistic::finds<request::Dispatcher>( _d->city );
+  request::DispatcherPtr dispatcher = statistic::getService<request::Dispatcher>( _d->city );
 
   if( dispatcher.isValid() )
   {

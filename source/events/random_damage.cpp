@@ -61,28 +61,20 @@ void RandomDamage::_exec( Game& game, unsigned int time )
     Logger::warning( "Execute random collapse event" );
     _d->isDeleted = true;
 
-    Priorities<object::Group> exclude;
-    exclude << object::group::water
-            << object::group::road
-            << object::group::disaster;
-
-    ConstructionList ctrs = statistic::findo<Construction>( game.city(), object::any );
+    ConstructionList ctrs;
 
     if( _d->priority != object::group::unknown )
     {
-      for( ConstructionList::iterator it=ctrs.begin(); it != ctrs.end(); )
-      {
-        if( (*it)->group() != _d->priority ) { it = ctrs.erase( it ); }
-        else { ++it; }
-      }
+      ctrs = statistic::getObjects<Construction>( game.city(), _d->priority );
     }
     else
     {
-      for( ConstructionList::iterator it=ctrs.begin(); it != ctrs.end(); )
-      {
-        if( exclude.count( (*it)->group() ) ) { it = ctrs.erase( it ); }
-        else { ++it; }
-      }
+      std::set<object::Group> exclude;
+      exclude << object::group::water
+              << object::group::road
+              << object::group::disaster;
+
+      ctrs = statistic::getObjectsNotIs<Construction>( game.city(), exclude );
     }
 
     unsigned int number4burn = math::clamp<unsigned int>( (ctrs.size() * _d->strong / 100), 1u, 100u );

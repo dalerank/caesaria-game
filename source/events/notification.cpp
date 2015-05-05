@@ -64,7 +64,7 @@ void Notify::_exec(Game& game, unsigned int)
   if( is_kind_of<PlayerCity>( pCity ) )
   {
     PlayerCityPtr plrCity = ptr_cast<PlayerCity>( pCity );
-    MilitaryPtr mil = statistic::finds<Military>( plrCity );
+    MilitaryPtr mil = statistic::getService<Military>( plrCity );
 
     if( mil.isValid() )
     {

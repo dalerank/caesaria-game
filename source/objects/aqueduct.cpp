@@ -74,7 +74,7 @@ bool Aqueduct::build( const city::AreaInfo& info )
   WaterSource::build( info );
 
   TilePos offset( 2, 2 );
-  AqueductList aqueducts = city::statistic::findo<Aqueduct>( _city(), object::aqueduct, info.pos - offset, info.pos + offset );
+  AqueductList aqueducts = city::statistic::getObjects<Aqueduct>( _city(), object::aqueduct, info.pos - offset, info.pos + offset );
 
   foreach( aqueduct, aqueducts ) { (*aqueduct)->updatePicture( info.city ); }
   return true;

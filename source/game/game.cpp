@@ -401,7 +401,7 @@ bool Game::load(std::string filename)
   _d->empire->emperor().checkCities();
 
   Logger::warning( "Game: calculate road access for buildings" );
-  OverlayList& llo = _d->city->overlays();
+  const OverlayList& llo = _d->city->overlays();
   foreach( overlay, llo )
   {
     ConstructionPtr construction = overlay->as<Construction>();

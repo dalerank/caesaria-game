@@ -108,9 +108,9 @@ void Disorder::timeStep( const unsigned int time )
   if( !game::Date::isWeekChanged() )
     return;
 
-  HouseList houses = city::statistic::findh( _city() );
+  HouseList houses = city::statistic::getHouses( _city() );
 
-  WalkerList walkers = _city()->walkers( walker::protestor );
+  const WalkerList& walkers = _city()->walkers( walker::protestor );
 
   HouseList criminalizedHouse;
   _d->crimeLvl.current = 0;
@@ -243,7 +243,7 @@ void Disorder::Impl::generateRioter(PlayerCityPtr city, HousePtr house)
   RioterPtr protestor = Rioter::create( city );
   protestor->send2City( ptr_cast<Building>( house ) );
 
-  HouseList houses = statistic::findh( city );
+  HouseList houses = statistic::getHouses( city );
 
   foreach( it, houses )
   {
