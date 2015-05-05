@@ -704,7 +704,7 @@ void Label::setupUI(const VariantMap& ui)
 }
 
 void Label::setTextOffset(Point offset) {  _d->textOffset = offset;}
-PictureRef& Label::_textPictureRef() { return _d->textPicture; }
+Picture& Label::_textPictureRef() { return _d->textPicture; }
 Batch& Label::_background() { return _d->background; }
 
 }//end namespace gui

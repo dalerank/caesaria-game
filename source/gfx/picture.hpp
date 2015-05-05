@@ -79,7 +79,7 @@ public:
 
   static Picture& load( const std::string& group, const int id );
   static Picture& load( const std::string& filename );
-  static Picture* create( const Size& size, unsigned char* data=0, bool mayChange=false );
+  static Picture create( const Size& size, unsigned char* data=0, bool mayChange=false );
 
   static const Picture& getInvalid();
   static void destroy( Picture* ptr );
@@ -90,28 +90,6 @@ private:
   SmartPtr<Impl> _d;
 
   Point _offset;  // the image is shifted when displayed
-};
-
-struct PictureRefDeleter
-{
-  static inline void cleanup( Picture* pic )
-  {
-    // Enforce a complete type.
-    // If you get a compile error here, you need add destructor in class-container
-    typedef char IsIncompleteType[ sizeof(Picture) ? 1 : -1 ];
-    (void) sizeof(IsIncompleteType);
-
-    Picture::destroy( pic );
-  }
-};
-
-class PictureRef : public ScopedPtr< Picture, PictureRefDeleter >
-{
-public:
-  void init( const Size& size )
-  {
-    reset( Picture::create( size, 0, true ) );
-  }
 };
 
 }//end namespace gfx

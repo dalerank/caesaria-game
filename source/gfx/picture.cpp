@@ -43,12 +43,21 @@ public:
   std::string name; // for game save
   unsigned int opengltx;
   Rect orect;
+
+  Impl& operator=(const Impl& other)
+  {
+    surface = other.surface;
+    texture = other.texture;
+    name = other.name;
+    opengltx = other.opengltx;
+    orect = other.orect;
+  }
 };
 
 static const Picture _invalidPicture = Picture();
 
 Picture::Picture() : _d( new Impl )
-{
+{  
   _d->texture = NULL;
   _d->name = "";
   _d->surface = 0;
@@ -198,31 +207,31 @@ void Picture::fill( const NColor& color, Rect rect )
   }
 }
 
-Picture* Picture::create(const Size& size, unsigned char* data, bool mayChange)
+Picture Picture::create(const Size& size, unsigned char* data, bool mayChange)
 {
-  Picture *pic = new Picture();
+  Picture ret;
+  pic._d->orect = Rect( 0, 0, size.width(), size.height() );
 
-  pic->_d->orect = Rect( 0, 0, size.width(), size.height() );
   if( data )
   {
-    pic->_d->surface = SDL_CreateRGBSurfaceFrom( data, size.width(), size.height(), 32, size.width() * 4,
+    pic._d->surface = SDL_CreateRGBSurfaceFrom( data, size.width(), size.height(), 32, size.width() * 4,
                                                  0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
   }
   else
   {
-    pic->_d->surface = SDL_CreateRGBSurface( 0, size.width(), size.height(), 32,
+    pic._d->surface = SDL_CreateRGBSurface( 0, size.width(), size.height(), 32,
                                              0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
-    SDL_FillRect( pic->_d->surface, 0, 0 );
+    SDL_FillRect( pic._d->surface, 0, 0 );
   }
 
-  Engine::instance().loadPicture( *pic, mayChange );
+  Engine::instance().loadPicture( ret, mayChange );
   if( !mayChange )
   {
-    SDL_FreeSurface( pic->_d->surface );
-    pic->_d->surface = 0;
+    SDL_FreeSurface( ret._d->surface );
+    ret._d->surface = 0;
   }
 
-  return pic;
+  return ret;
 }
 
 const Picture& Picture::getInvalid() {  return _invalidPicture; }
