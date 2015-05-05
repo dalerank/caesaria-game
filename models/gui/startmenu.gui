@@ -3,6 +3,6 @@
 
   buttonSize : [ 200, 25 ]
   buttonFont : "FONT_2"
-  buttonStyle : "greyBorderLine"
+  buttonStyle : "grayBorderLine"
   buttonOffset : 40
 }

@@ -1,4 +1,4 @@
-// This file is part of CaesarIA.
+ // This file is part of CaesarIA.
 //
 // CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -207,7 +207,7 @@ void StartMenu::Impl::openDlcDirectory(Widget* sender)
 
 void StartMenu::Impl::showSoundOptions()
 {
-  events::GameEventPtr e = events::SetSoundOptions::create();
+  events::GameEventPtr e = events::ChangeSoundOptions::create();
   e->dispatch();
 }
 
@@ -528,7 +528,7 @@ void StartMenu::draw()
 {
   _d->game->gui()->beforeDraw();
 
-  _d->engine->draw(_d->bgPicture, 0, 0);
+  _d->engine->draw(_d->bgPicture,0,0);
 
   _d->game->gui()->draw();
 

@@ -26,6 +26,8 @@
 #include "objects_factory.hpp"
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::school, School)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::library, Library)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::academy, Academy)
 
 class School::Impl
 {

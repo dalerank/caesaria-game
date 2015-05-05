@@ -59,7 +59,7 @@ void RandomPlague::_exec( Game& game, unsigned int time)
     Logger::warning( "Execute random plague event" );
     _d->isDeleted = true;
 
-    HouseList houses = statistic::findh( game.city() );
+    HouseList houses = statistic::getHouses( game.city() );
 
     unsigned int number4burn = math::clamp<unsigned int>( (houses.size() * _d->strong / 100), 1u, 100u );
 

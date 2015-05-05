@@ -134,6 +134,10 @@ void Briefing::initialize()
   {
     Picture pic = Picture::load( "mapback", 1 );
     gui::Image* mapback = new gui::Image( _d->game->gui()->rootWidget(), Point(), pic );
+    if( !pic.isValid() )
+    {
+      mapback->setGeometry( Rect( 0, 0, 640, 480 ) );
+    }
     mapback->setCenter( _d->game->gui()->rootWidget()->center() );
 
     std::string mapToLoad = vm[ "image" ].toString();

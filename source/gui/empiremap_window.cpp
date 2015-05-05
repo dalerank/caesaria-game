@@ -70,6 +70,22 @@ struct Dragging
   Point last;
 };
 
+struct Line
+{
+  Point p1, p2;
+  NColor color;
+};
+
+class Lines : public std::vector<Line>
+{
+public:
+  void add( const NColor& color, const Point& p1, const Point& p2 )
+  {
+    Line a = { p1, p2, color };
+    push_back( a );
+  }
+};
+
 class EmpireMapWindow::Impl
 {
 public:
@@ -77,7 +93,8 @@ public:
 
   GameAutoPause autopause;
   Dragging drag;
-  Pictures border;
+  Pictures borderPics;
+  Batch border;
   Picture empireMap;
   world::CityPtr currentCity;
   Point offset;
@@ -86,6 +103,7 @@ public:
   PushButton* btnExit;
   PushButton* btnTrade;
   Label* lbTitle;
+  Lines lines;
   Widget* gbox;
   PlayerCityPtr city;
   unsigned int bottonMargin;
@@ -104,6 +122,7 @@ public:
   void drawMovable( Engine& painter );
   void showTradeAdvisorWindow();
   void initBorder(Widget* p);
+  void drawLines( Engine& painter );
   void drawCell(Engine& e, Point start, int side , NColor color);
   world::ObjectPtr findObject( Point pos );
 };
@@ -199,7 +218,7 @@ void EmpireMapWindow::Impl::drawTradeRoutes(Engine& painter)
     {
       Point pos1 = offset + points[ index-1 ];
       Point pos2 = offset + points[ index ];
-      painter.drawLine( DefaultColors::blue, pos1, pos2 );
+      lines.add( DefaultColors::blue, pos1, pos2 );
       drawCell( painter, pos1 - Point( 10, 10 ), 20, DefaultColors::green );
     }
 #endif
@@ -244,7 +263,7 @@ void EmpireMapWindow::Impl::drawMovable(Engine& painter)
           Point curPos( distance * sin( math::DEGTORAD * (math::DEGREE360 * i / 16)),
                         distance * cos( math::DEGTORAD * (math::DEGREE360 * i / 16)) );
 
-          painter.drawLine( DefaultColors::blue, offset + mappos + lastPos, offset + mappos + curPos );
+          lines.add( DefaultColors::blue, offset + mappos + lastPos, offset + mappos + curPos );
           lastPos = curPos;
         }
       }
@@ -255,7 +274,7 @@ void EmpireMapWindow::Impl::drawMovable(Engine& painter)
         Point lastPos = way[ way.step ];
         for( world::Route::size_type k = way.step+1; k < way.size(); k++ )
         {
-          painter.drawLine( DefaultColors::aliceBlue, offset + lastPos, offset + way[ k ] );
+          lines.add( DefaultColors::aliceBlue, offset + lastPos, offset + way[ k ] );
           lastPos = way[ k ];
         }
       }
@@ -274,57 +293,79 @@ void EmpireMapWindow::Impl::initBorder( Widget* p )
 {
   bottonMargin = 120;
   Picture backgr = Picture::load( ResourceGroup::empirepnls, 4 );
+  Pictures pics;
   for( unsigned int y=p->height() - bottonMargin; y < p->height(); y+=backgr.height() )
   {
     for( unsigned int x=0; x < p->width(); x += backgr.width() )
     {
-      border.append( backgr, Point( x, -y ) );
+      pics.append( backgr, Point( x, -y ) );
     }
   }
 
   Picture lrBorderPic = Picture::load( ResourceGroup::empirepnls, 1 );
   for( unsigned int y = 0; y < p->height(); y += lrBorderPic.height() )
   {
-    border.append( lrBorderPic, Point( 0, -y ) );
-    border.append( lrBorderPic, Point( p->width() - lrBorderPic.width(), -y ) );
+    pics.append( lrBorderPic, Point( 0, -y ) );
+    pics.append( lrBorderPic, Point( p->width() - lrBorderPic.width(), -y ) );
   }
 
   Picture tdBorderPic = Picture::load( ResourceGroup::empirepnls, 2 );
   for( unsigned int x = 0; x < p->width(); x += tdBorderPic.width() )
   {
-    border.append( tdBorderPic, Point( x, 0 ) );
-    border.append( tdBorderPic, Point( x, -p->height() + tdBorderPic.height() ) );
-    border.append( tdBorderPic, Point( x, -p->height() + bottonMargin ) );
+    pics.append( tdBorderPic, Point( x, 0 ) );
+    pics.append( tdBorderPic, Point( x, -p->height() + tdBorderPic.height() ) );
+    pics.append( tdBorderPic, Point( x, -p->height() + bottonMargin ) );
   }
 
   Picture corner = Picture::load( ResourceGroup::empirepnls, 3 );
-  border.append( corner, Point( 0, 0 ) );    //left top
-  border.append( corner, Point( 0, -p->height() + corner.height() ) ); //top right
-  border.append( corner, Point( p->width() - corner.width(), 0 ) ); //left bottom
-  border.append( corner, Point( p->width() - corner.width(), -p->height() + corner.height() ) ); //bottom right
-  border.append( corner, Point( 0, -p->height() + bottonMargin ) ); //left middle
-  border.append( corner, Point( p->width() - corner.width(), -p->height() + bottonMargin ) ); //right middle
+  pics.append( corner, Point( 0, 0 ) );    //left top
+  pics.append( corner, Point( 0, -p->height() + corner.height() ) ); //top right
+  pics.append( corner, Point( p->width() - corner.width(), 0 ) ); //left bottom
+  pics.append( corner, Point( p->width() - corner.width(), -p->height() + corner.height() ) ); //bottom right
+  pics.append( corner, Point( 0, -p->height() + bottonMargin ) ); //left middle
+  pics.append( corner, Point( p->width() - corner.width(), -p->height() + bottonMargin ) ); //right middle
 
   Picture leftEagle = Picture::load( ResourceGroup::empirepnls, 7 );
   Picture rightEagle = Picture::load( ResourceGroup::empirepnls, 8 );
   Picture centerPicture = Picture::load( ResourceGroup::empirepnls, 9 );
   Size eagleOffset = corner.size();
 
-  border.append( leftEagle, Point( eagleOffset.width(), -p->height() + (bottonMargin - eagleOffset.height() + leftEagle.height() + 10) ) );
-  border.append( rightEagle, Point( p->width() - eagleOffset.width() - rightEagle.width(),
+  pics.append( leftEagle, Point( eagleOffset.width(), -p->height() + (bottonMargin - eagleOffset.height() + leftEagle.height() + 10) ) );
+  pics.append( rightEagle, Point( p->width() - eagleOffset.width() - rightEagle.width(),
                                     -p->height() + (bottonMargin - eagleOffset.height() + rightEagle.height() + 10) ) );
 
-  border.append( centerPicture, Point( (p->width() - centerPicture.width()) / 2,
-                                       -p->height() + (bottonMargin + centerPicture.height() - 20)) );
+  pics.append( centerPicture, Point( (p->width() - centerPicture.width()) / 2,
+                                      -p->height() + (bottonMargin + centerPicture.height() - 20)) );
+
+  if( centerPicture.texture() == corner.texture() )
+  {
+    foreach( it, pics )
+    {
+      Point offset = it->offset();
+      it->setOffset( offset.x(), -offset.y() );
+    }
+
+    border.load( pics, Point( 0, 0) );
+  }
+  else
+    borderPics = pics;
+}
+
+void EmpireMapWindow::Impl::drawLines(Engine &painter)
+{
+  foreach( it, lines )
+  {
+    painter.drawLine( it->color, it->p1, it->p2 );
+  }
 }
 
 void EmpireMapWindow::Impl::drawCell(Engine& e, Point start, int side, NColor color)
 {
 #ifdef DEBUG
-  e.drawLine( color, start, start + Point( side, 0 ) );
-  e.drawLine( color, start + Point( side, 0 ), start + Point( side, side ) );
-  e.drawLine( color, start + Point( side, side ), start + Point( 0, side ) );
-  e.drawLine( color, start + Point( 0, side ), start );
+  lines.add( color, start, start + Point( side, 0 ) );
+  lines.add( color, start + Point( side, 0 ), start + Point( side, side ) );
+  lines.add( color, start + Point( side, side ), start + Point( 0, side ) );
+  lines.add( color, start + Point( 0, side ), start );
 #endif
 }
 
@@ -348,7 +389,7 @@ void EmpireMapWindow::Impl::createTradeRoute()
       GameEventPtr e = Payment::create( econ::Issue::sundries, -(int)cost );
       e->dispatch();
 
-      DockList docks = city::statistic::findo<Dock>( city, object::dock );
+      DockList docks = city::statistic::getObjects<Dock>( city, object::dock );
       if( docks.empty() )
       {
         GameEventPtr e = ShowInfobox::create( _("##no_working_dock##" ), _( "##no_dock_for_sea_trade_routes##" ) );
@@ -540,13 +581,18 @@ void EmpireMapWindow::draw(gfx::Engine& engine )
   //draw movable objects
   _d->drawMovable( engine );
 
-  engine.draw( _d->border, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+  _d->drawLines( engine );
+
+  _d->border.valid()
+    ? engine.draw( _d->border, &absoluteClippingRectRef() )
+    : engine.draw( _d->borderPics, Point(), &absoluteClippingRectRef() );
 
   Widget::draw( engine );
 }
 
 void EmpireMapWindow::beforeDraw(Engine& painter)
 {
+  _d->lines.clear();
   Widget::beforeDraw( painter );
 }
 

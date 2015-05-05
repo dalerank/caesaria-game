@@ -24,6 +24,7 @@
 #include "objects/overlay.hpp"
 #include "core/foreach.hpp"
 #include "config.hpp"
+#include "cityservice_factory.hpp"
 
 #include <set>
 
@@ -32,6 +33,8 @@ using namespace config;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(AmbientSound,ambient_sound)
 
 struct SoundEmitter
 {  
@@ -101,9 +104,9 @@ public:
   HashSet processedSounds;
 };
 
-SrvcPtr AmbientSound::create( PlayerCityPtr city, gfx::Camera* camera )
+SrvcPtr AmbientSound::create(PlayerCityPtr city)
 {
-  SrvcPtr p( new AmbientSound( city, camera ) );
+  SrvcPtr p( new AmbientSound( city ) );
   p->drop();
 
   return p;
@@ -111,10 +114,10 @@ SrvcPtr AmbientSound::create( PlayerCityPtr city, gfx::Camera* camera )
 
 AmbientSound::~AmbientSound() {}
 
-AmbientSound::AmbientSound( PlayerCityPtr city, gfx::Camera* camera )
+AmbientSound::AmbientSound(PlayerCityPtr city)
 : Srvc( city, defaultName() ), _d( new Impl )
 {
-  _d->camera = camera;
+  _d->camera = 0;
   _d->emmitersArea.reserve( ambientsnd::maxDistance * ambientsnd::maxDistance + 1 );
 }
 
@@ -139,7 +142,8 @@ void AmbientSound::timeStep( const unsigned int time )
   _d->emmitersArea.clear();
   _d->emmitersArea.reset( _city()->tilemap(), _d->cameraPos, ambientsnd::maxDistance );
 
-  foreach( tile, _d->emmitersArea ) { _d->emitters.insert( SoundEmitter( *tile, _d->cameraPos ) ); }
+  foreach( tile, _d->emmitersArea )
+    _d->emitters.insert( SoundEmitter( *tile, _d->cameraPos ) );
 
   //remove so far emitters
   for( Emitters::iterator i=_d->emitters.begin(); i != _d->emitters.end(); )
@@ -183,6 +187,11 @@ void AmbientSound::destroy()
 {
   _d->emitters.clear();
   _d->camera = 0;
+}
+
+void city::AmbientSound::setCamera(Camera *camera)
+{
+  _d->camera = camera;
 }
 
 std::string AmbientSound::defaultName() { return CAESARIA_STR_EXT(AmbientSound); }

@@ -14,6 +14,7 @@
   "##tt_advisors##" : "Advisors."
   "##tt2_short##" : "Immediate Goals: Build a granary and fill it with wheat"
   "##tt2_caption##" : "Continue learning"
+  "##tt2_win_text##" : "Caesar knows that some provinces are more dangerous than others, and your choice of assignments provides for more peaceful or more dangerous provinces. Whichever path you choose, eventually you will need to govern a province where at least a little enemy activity is likely. The key to success in the face of such danger is to prepare well."
   "##tutorial_markets_text##" : "Your priorities should be security, housing, food, and water, in that order. Without housing and food, new immigrants will not move in to your city.\nRome now wishes your city to grow food. Build a farm on fertile land - look for the yellow tufts that indicate this. Connect it to housing with a path. If the housing is too far away, farm will not get access to labor."
   "##tutorial_granary_text##" : "Build a granary next to the farm, and make sure that it, too, has access to labor."
   "##tutorial_granary_text2##" : "When the wheat is ripe, a cart will carry it to the granary. Gradually the granary will fill up. The fewer empty windows you can see, the fuller the granary is."

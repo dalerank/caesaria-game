@@ -160,6 +160,12 @@ void Decorator::drawBorder(Pictures& stack, const Rect& rectangle, const int off
   const int sh = topborder.height();
   const Picture& bottomBorder = Picture::load( ResourceGroup::panelBackground, offset+5);
 
+  if( !sw || !sh )
+  {
+    Logger::warning( "!!! WARNING: Cant draw border for sw=%d, sh=%d", sw, sh );
+    return;
+  }
+
   // draws horizontal borders
   for (int i = 0; i<(rectangle.width()/sw-1); ++i)
   {
@@ -215,23 +221,6 @@ void Decorator::drawPanel( Pictures& stack, const Rect& rectangle, int picId )
              rectangle.UpperLeftCorner + Point( rectangle.width()-16, 0) );
 }
 
-/*void Decorator::drawPanel( Picture &dstpic, const Rect& rectangle, int picId, bool useAlpha )
-{
-  // left side
-  dstpic.draw( Picture::load( ResourceGroup::panelBackground, picId), rectangle.UpperLeftCorner );
-
-  // draws the inside
-  const Picture& centerPic = Picture::load( ResourceGroup::panelBackground, picId+1);
-  for (int i = 0; i<(rectangle.width()/16-1); ++i)
-  {
-    dstpic.draw( centerPic, rectangle.UpperLeftCorner + Point( 16+16*i, 0 ), useAlpha );
-  }
-
-  // right side
-  dstpic.draw( Picture::load( ResourceGroup::panelBackground, picId+2), 
-               rectangle.UpperLeftCorner + Point( rectangle.width()-16, 0) );
-}*/
-
 void Decorator::draw( Picture& dstpic, const Rect& rectangle, Mode mode, bool useAlpha, bool updateTexture )
 {
   if( updateTexture )
@@ -284,7 +273,7 @@ void Decorator::draw( Picture& dstpic, const Rect& rectangle, Mode mode, bool us
     dstpic.unlock();
 }
 
-void Decorator::draw( Pictures& stack, const Rect& rectangle, Decorator::Mode mode)
+void Decorator::draw( Pictures& stack, const Rect& rectangle, Decorator::Mode mode, bool negY )
 {
   switch( mode )
   {
@@ -320,42 +309,18 @@ void Decorator::draw( Pictures& stack, const Rect& rectangle, Decorator::Mode mo
   case pure: break;
   default: break;
   }
+
+  if( !negY )
+  {
+    foreach( it, stack )
+      it->setOffset( Point( it->offset().x(), -it->offset().y() ) );
+  }
 }
 
-/*void Decorator::drawBorder( Picture &dstpic, const Rect& rectangle,
-                                   int tp, int bp, int lp, int rp, 
-                                   int pCount, int hCount,
-                                   int ltc, int lbc, int rtc, int rbc, bool useAlpha )
-{
-  // draws horizontal borders
-  Size size = Picture::load( ResourceGroup::panelBackground, tp ).size();
-  const int sw = size.width();
-  const int sh = size.height();
-  for (int i = 0; i<(rectangle.width()/size.width()-1); ++i)
-  {
-    Point offset = rectangle.UpperLeftCorner + Point( sw+sw*i, 0 );
-    dstpic.draw( Picture::load( ResourceGroup::panelBackground, tp+i%pCount), offset, useAlpha );      // top border
-    dstpic.draw( Picture::load( ResourceGroup::panelBackground, bp+i%pCount), offset + Point( 0, rectangle.height()-sh ), useAlpha );      // bottom border
-  }
-
-  // draws vertical borders
-  for (int i = 0; i<(rectangle.height()/size.height()-1); ++i)
-  {
-    Point offset = rectangle.UpperLeftCorner + Point( 0, sh+sh*i );
-    dstpic.draw( Picture::load( ResourceGroup::panelBackground, lp+hCount*(i%pCount)), offset, useAlpha );      // left border
-    dstpic.draw( Picture::load( ResourceGroup::panelBackground, rp+hCount*(i%pCount)), offset + Point( rectangle.width()-sw, 0 ), useAlpha );      // right border
-  }
-
-  dstpic.draw( Picture::load( ResourceGroup::panelBackground, ltc), rectangle.UpperLeftCorner );    // left-top corner
-  dstpic.draw( Picture::load( ResourceGroup::panelBackground, lbc), Point( rectangle.left(), rectangle.bottom()-sh ), useAlpha );    // left-bottom corner
-  dstpic.draw( Picture::load( ResourceGroup::panelBackground, rtc ), Point( rectangle.right() - sw, rectangle.top() ), useAlpha );     // right-top corner
-  dstpic.draw( Picture::load( ResourceGroup::panelBackground, rbc), rectangle.LowerRightCorner - Point( sw, sh ), useAlpha );    // right-bottom corner
-}*/
-
 void Decorator::drawBorder( Pictures& stack, const Rect& rectangle,
-                                   int tp, int bp, int lp, int rp,
-                                   int pCount, int hCount,
-                                   int ltc, int lbc, int rtc, int rbc )
+                            int tp, int bp, int lp, int rp,
+                            int pCount, int hCount,
+                            int ltc, int lbc, int rtc, int rbc )
 {
   // draws horizontal borders
   Size size = Picture::load( ResourceGroup::panelBackground, tp ).size();

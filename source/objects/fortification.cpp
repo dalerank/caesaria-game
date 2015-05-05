@@ -82,11 +82,11 @@ bool Fortification::build( const city::AreaInfo& info )
   }
 
   Building::build( info );
-  FortificationList fortifications = city::statistic::findo<Fortification>( info.city, object::fortification );
+  FortificationList fortifications = city::statistic::getObjects<Fortification>( info.city, object::fortification );
 
   foreach( frt, fortifications ) { (*frt)->updatePicture( info.city ); }
 
-  TowerList towers = city::statistic::findo<Tower>( info.city, object::tower );
+  TowerList towers = city::statistic::getObjects<Tower>( info.city, object::tower );
   foreach( tower, towers ) { (*tower)->resetPatroling(); }
 
   updatePicture( info.city );

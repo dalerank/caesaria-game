@@ -193,7 +193,7 @@ void Migration::timeStep( const unsigned int time )
     return;
   }
 
-  MilitaryPtr mil = statistic::finds<Military>( _city() );
+  MilitaryPtr mil = statistic::getService<Military>( _city() );
 
   if( mil.isValid() )
   {
@@ -353,7 +353,7 @@ void Migration::citizenLeaveCity(WalkerPtr walker)
 unsigned int Migration::Impl::calcVacantHouse( PlayerCityPtr city )
 {
   unsigned int vh = 0;
-  HouseList houses = city::statistic::findh(city);
+  HouseList houses = city::statistic::getHouses(city);
   foreach( house, houses )
   {
     if( (*house)->roadside().size() > 0 && (*house)->state( pr::settleLock ) == 0 )
@@ -397,7 +397,7 @@ void Migration::Impl::createMigrationToCity( PlayerCityPtr city )
     return;
   }
 
-  EmigrantList migrants;
+  EmigrantList migrants =
   migrants << city->walkers();
 
   if( vh <= migrants.size() * 5 )
@@ -421,7 +421,7 @@ void Migration::Impl::createMigrationToCity( PlayerCityPtr city )
 
 void Migration::Impl::createMigrationFromCity( PlayerCityPtr city )
 {
-  HouseList houses = city::statistic::findh( city );
+  HouseList houses = city::statistic::getHouses( city );
   const int minWorkersNumber = 4;
   for( HouseList::iterator i=houses.begin(); i != houses.end(); )
   {

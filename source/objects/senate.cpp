@@ -83,7 +83,7 @@ bool Senate::canBuild( const city::AreaInfo& areaInfo ) const
 
   if( mayBuild )
   {
-    bool isSenatePresent = !statistic::findo<Building>( areaInfo.city, object::senate).empty();
+    bool isSenatePresent = !statistic::getObjects<Building>( areaInfo.city, object::senate).empty();
     _d->errorStr = isSenatePresent ? _("##can_build_only_one_of_building##") : "";
     mayBuild &= !isSenatePresent;
   }

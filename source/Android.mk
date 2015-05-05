@@ -4,12 +4,12 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE := application
 
-SDL_PATH       := ../../libs/SDL
-SDL_MIXER_PATH := ../../libs/SDL_mixer
-SDL_NET_PATH   := ../../libs/SDL_net
 STEAM_PATH     := ../steam
 GAME_PATH := $(LOCAL_PATH)
 DEP_PATH := ../dep
+SDL_PATH := $(DEP_PATH)/sdl2mini
+SDL_MIXER_PATH := $(DEP_PATH)/mixer
+SDL_NET_PATH := $(DEP_PATH)/SDL_net
 
 LOCAL_C_INCLUDES := \
   $(LOCAL_PATH)/$(SDL_PATH)/include \

@@ -21,6 +21,7 @@
 #include "scrollbar.hpp"
 #include "core/color.hpp"
 #include "gfx/picturesarray.hpp"
+#include "gfx/batch.hpp"
 #include <vector>
 
 namespace gui
@@ -29,7 +30,7 @@ namespace gui
 class ListBox::Impl
 {
 public:
-  gfx::Pictures background;
+  gfx::Batch background;
   std::vector< ListBoxItem > items;
   NColor itemDefaultColorText;
   NColor itemDefaultColorTextHighlight;

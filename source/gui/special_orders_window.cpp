@@ -53,9 +53,9 @@ public:
           : PushButton( parent, rectangle )
   {
     float prc = roomCap / (float)warehouseCap;
-    if( prc < 0.50 ) { _step = 1; }
-    else if( prc < 0.75 ) { _step = 2; }
-    else if( prc < 1 ) { _step = 3; }
+    if( prc <= 0.25 ) { _step = 1; }
+    else if( prc <= 0.50 ) { _step = 2; }
+    else if( prc <= 0.75 ) { _step = 3; }
     else _step =0;
 
     _icon = Picture::load( "whblock", 1 );
@@ -81,7 +81,7 @@ protected:
 
   void _updateText()
   {
-    _step = (_step+1) % 4;
+    _step = _step % 4;
     setText( _step == 0 ? "Any" : utils::format( 0xff, "%d/4", _step ) );
   }
 
@@ -90,6 +90,7 @@ protected:
   {
     PushButton::_btnClicked();
 
+    _step = (_step+1) % 4;
     _updateText();
     emit _onChangeSignal( _step / 4.f );
   }

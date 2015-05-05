@@ -39,6 +39,7 @@
 #include "environment.hpp"
 
 using namespace gfx;
+using namespace city;
 
 namespace gui
 {
@@ -61,7 +62,7 @@ public:
     : PushButton( parent, Rect( pos + legionButtonOffset * index, legionButtonSize), "", -1, false, PushButton::blackBorderUp )
   {
     _fort = fort;
-    _resizeEvent();
+    _finalizeResize();
 
     PushButton* gotoLegion    = new PushButton( this, Rect( Point( gotoLegionX, 5), btnSize ), "", -1, false, PushButton::blackBorderUp );
     gotoLegion->setIcon( ResourceGroup::panelBackground, 563 );
@@ -227,7 +228,7 @@ void Legion::_showHelp()
 
 void Legion::Impl::updateAlarms(PlayerCityPtr city)
 {
-  city::MilitaryPtr mil = city::statistic::finds<city::Military>( city );
+  MilitaryPtr mil = statistic::getService<Military>( city );
 
   WalkerList chasteners = city->walkers( walker::romeChastenerSoldier );
   WalkerList elephants = city->walkers( walker::romeChastenerElephant );

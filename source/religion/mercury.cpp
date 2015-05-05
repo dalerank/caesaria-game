@@ -63,8 +63,7 @@ void __filchGoods( const std::string& title, PlayerCityPtr city, bool showMessag
     event->dispatch();
   }
 
-  SmartList<T> buildings;
-  buildings << city->overlays();
+  SmartList<T> buildings = city::statistic::getObjects<T>( city );
 
   foreach( it, buildings )
   {
@@ -93,8 +92,7 @@ void Mercury::_doSmallCurse(PlayerCityPtr city)
                                                             _("##smallcurse_of_mercury_description##") );
   event->dispatch();
 
-  FactoryList factories;
-  factories << city->overlays();
+  FactoryList factories = city::statistic::getObjects<Factory>( city );
 
   foreach( it, factories )
   {

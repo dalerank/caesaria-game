@@ -51,19 +51,17 @@ void _decreaseHousesHealth( object::Type btype, PlayerCityPtr city, int value )
 {
   TilePos offset( 2, 2 );
 
-  OverlayList buildings = city->overlays();
+  const OverlayList& buildings = city->overlays();
 
   foreach( itB, buildings )
   {
     if( (*itB)->type() != btype )
         continue;
 
-    HouseList houses = city::statistic::findo<House>( city, object::house, (*itB)->pos() - offset, (*itB)->pos() + offset );
+    HouseList houses = city::statistic::getObjects<House>( city, object::house, (*itB)->pos() - offset, (*itB)->pos() + offset );
 
     foreach( itHouse, houses )
     {
-      //HouseList::iterator it = houses.begin();
-      //std::advance( it, math::random( houses.size() ) );
       (*itHouse)->updateState( pr::health, value );
     }
   }

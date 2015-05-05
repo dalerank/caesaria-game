@@ -1,0 +1,21 @@
+{
+  Animals : {}
+  Migration : {}
+  WorkersHire : {}
+  ProsperityRating : {}
+  Shoreline : {}
+  Info : {}
+  CultureRating : {}
+  Religion : {}
+  Festival : {}
+  Roads : {}
+  Fishery : {}
+  Disorder : {}
+  requests : {}
+  Military : {}
+  audio_player : {}
+  HealthCare : {}
+  Peace : {}
+  Sentiment : {}
+  Fire : {}
+}

@@ -249,6 +249,6 @@ void SmkViewer::draw(gfx::Engine& painter )
   Widget::draw( painter );
 }
 
-void SmkViewer::_resizeEvent() {  _d->needUpdateTexture = true;}
+void SmkViewer::_finalizeResize() { _d->needUpdateTexture = true;}
 
 }//end namespace gui

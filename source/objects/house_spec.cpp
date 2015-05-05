@@ -254,7 +254,7 @@ int HouseSpecification::findUnwishedBuildingNearby(HousePtr house, object::Type&
   TilePos offset( aresOffset, aresOffset );
   TilePos housePos = house->pos();
   int houseDesrbl = house->desirability().base;
-  BuildingList buildings = city::statistic::findo<Building>( house->_city(), object::any, housePos - offset, housePos + offset );
+  BuildingList buildings = city::statistic::getObjects<Building>( house->_city(), object::any, housePos - offset, housePos + offset );
 
   int ret = 0;
   foreach( it, buildings )
@@ -277,7 +277,7 @@ int HouseSpecification::findLowLevelHouseNearby(HousePtr house, TilePos& refPos 
   int aresOffset = math::clamp<int>( house->spec().level() / 5, 1, 10 );
   TilePos offset( aresOffset, aresOffset );
   TilePos housePos = house->pos();
-  HouseList houses = city::statistic::findo<House>( house->_city(), object::house, housePos - offset, housePos + offset );
+  HouseList houses = city::statistic::getObjects<House>( house->_city(), object::house, housePos - offset, housePos + offset );
 
   int ret = 0;
   foreach( it, houses )

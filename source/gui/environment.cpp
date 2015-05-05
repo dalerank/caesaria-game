@@ -127,7 +127,7 @@ void Ui::draw()
 {
   if( !_d->preRenderFunctionCalled )
   {
-    Logger::warning( "Call beforeDraw() function needed" );
+    Logger::warning( "!!! WARNING: Call beforeDraw() function needed" );
     return;
   }
 

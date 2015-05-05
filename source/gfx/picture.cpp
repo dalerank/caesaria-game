@@ -72,12 +72,12 @@ void Picture::init(SDL_Texture *texture, SDL_Surface* srf, unsigned int ogltx)
 void Picture::setOffset(const Point &offset ) { _d->offset = offset; }
 void Picture::setOffset(int x, int y) { _d->offset = Point( x, y ); }
 void Picture::setOriginRect(const Rect& rect) { _d->orect = rect; }
-const Rect&Picture::originRect() const { return _d->orect; }
+const Rect& Picture::originRect() const { return _d->orect; }
 void Picture::addOffset( const Point& offset ) { _d->offset += offset; }
 void Picture::addOffset( int x, int y ) { _d->offset += Point( x, y ); }
 
 SDL_Texture* Picture::texture() const{  return _d->texture;}
-SDL_Surface*Picture::surface() const { return _d->surface;  }
+SDL_Surface* Picture::surface() const { return _d->surface;  }
 unsigned int Picture::textureID() const { return _d->opengltx; }
 unsigned int& Picture::textureID() { return _d->opengltx; }
 const Point& Picture::offset() const{  return _d->offset;}
@@ -109,48 +109,6 @@ void Picture::setAlpha(unsigned char value)
     SDL_SetSurfaceAlphaMod( _d->surface, value );
   }
 }
-
-/*void Picture::draw(const Picture &srcpic, const Rect& srcrect, const Point& pos, bool useAlpha )
-{
-  draw( srcpic, srcrect, Rect( pos, srcrect.size() ), useAlpha );
-}
-
-void Picture::draw(const Picture &srcpic, const Rect& srcrect, const Rect& dstrect, bool useAlpha )
-{
-  SDL_Surface* srcimg = srcpic.surface();
-
-  if( !(srcimg && _d->texture) )
-  {
-    Logger::warning("Picture does not have surface or srcimg is null");
-    return;
-  }
-
-  SDL_Rect srcRect, dstRect;
-
-  srcRect.x = srcrect.left();
-  srcRect.y = srcrect.top();
-  srcRect.w = srcrect.width();
-  srcRect.h = srcrect.height();
-  dstRect.x = dstrect.left();
-  dstRect.y = dstrect.top();
-  dstRect.w = dstrect.width();
-  dstRect.h = dstrect.height();
-
-  SDL_BlitSurface( srcimg, &srcRect, _d->surface, &dstRect );
-}
-
-void Picture::draw(const Picture &srcpic, const Point& pos, bool useAlpha )
-{
-  const Point& offset = srcpic._d->offset;
-  draw( srcpic, Rect( Point( 0, 0 ), srcpic.size() ), 
-                Rect( pos + Point( offset.x(), -offset.y() ), srcpic.size() ), useAlpha );
-
-}
-
-void Picture::draw(const Picture &srcpic, int x, int y, bool useAlpha )
-{
-  draw( srcpic, Point( x, y ), useAlpha );
-} */
 
 unsigned int* Picture::lock()
 {

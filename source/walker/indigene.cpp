@@ -82,7 +82,7 @@ void Indigene::_updateState()
     _d->tryCount++;
 
     TilePos offset( 1, 1 );
-    NativeFieldList fields = city::statistic::findo<NativeField>( _city(), object::native_field, pos() - offset, pos() + offset );
+    NativeFieldList fields = city::statistic::getObjects<NativeField>( _city(), object::native_field, pos() - offset, pos() + offset );
     foreach( i, fields )
     {
       _d->wheatQty += (*i)->catchCrops();
@@ -115,7 +115,7 @@ void Indigene::_updateState()
   case Impl::go2center:
   {
     TilePos offset( 1, 1 );
-    NativeCenterList centerList = city::statistic::findo<NativeCenter>( _city(),
+    NativeCenterList centerList = city::statistic::getObjects<NativeCenter>( _city(),
                                                                         object::native_center,
                                                                         pos() - offset, pos() + offset );
     if( !centerList.empty() )
@@ -157,7 +157,7 @@ void Indigene::_updateState()
   case Impl::back2base:
   {
     TilePos offset( 1, 1 );
-    BuildingList huts = city::statistic::findo<Building>( _city(), object::native_hut, pos() - offset, pos() + offset );
+    BuildingList huts = city::statistic::getObjects<Building>( _city(), object::native_hut, pos() - offset, pos() + offset );
 
     Pathway way;
     if( huts.empty() )
@@ -195,7 +195,7 @@ Indigene::Indigene(PlayerCityPtr city)
 Pathway Indigene::Impl::findWay2bestField(PlayerCityPtr city, TilePos pos)
 {
   TilePos offset( 5, 5 );
-  NativeFieldList fields = city::statistic::findo<NativeField>( city, object::native_field, pos - offset, pos + offset );
+  NativeFieldList fields = city::statistic::getObjects<NativeField>( city, object::native_field, pos - offset, pos + offset );
 
   Pathway way;
   if( !fields.empty() )

@@ -484,6 +484,7 @@ public:
 namespace DefaultColors
 {
 #define __REG_COLOR(a,b) const NColor a(b);
+__REG_COLOR( clear, 0x00000000 )
 __REG_COLOR( red, 0xffff0000 )
 __REG_COLOR( caesarRed, 0xffA00000 )
 __REG_COLOR( blue, 0xff0000ff )

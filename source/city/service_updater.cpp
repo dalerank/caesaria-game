@@ -62,7 +62,7 @@ void ServiceUpdater::timeStep( const unsigned int time)
     _d->isDeleted = (_d->endTime < game::Date::current());
 
     Logger::warning( "ServiceUpdater: execute service" );
-    HouseList houses = statistic::findh( _city() );
+    HouseList houses = statistic::getHouses( _city() );
 
     foreach( it, houses )
     {

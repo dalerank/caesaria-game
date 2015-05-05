@@ -22,6 +22,8 @@
 #include "gfx/picturesarray.hpp"
 #include "core/signals.hpp"
 
+namespace gfx { class Batch; }
+
 namespace gui
 {
 
@@ -120,13 +122,13 @@ signals public:
   virtual Signal0<>& onClicked();
 
 protected:
-  virtual void _resizeEvent();
+  virtual void _finalizeResize();
   virtual void _updateTexture( gfx::Engine& painter );
   virtual void _updateBackground(gfx::Engine& painter , bool& useAlpha4Text);
   virtual void _handleClick();
 
   gfx::PictureRef& _textPictureRef();
-  gfx::Pictures& _backgroundRef();
+  gfx::Batch& _background();
 
 private:
 

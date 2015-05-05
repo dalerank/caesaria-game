@@ -54,7 +54,7 @@ public:
   Label* lbFunds;
   Label* lbDate;
   ContextMenu* langSelect;
-  Pictures background;
+  Batch background;
 
 slots public:
   void resolveSave();
@@ -85,7 +85,7 @@ void TopMenu::draw(gfx::Engine& engine )
 
   _d->updateDate();
 
-  engine.draw( _d->background, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+  engine.draw( _d->background, &absoluteClippingRectRef() );
 
   MainMenu::draw( engine );
 }
@@ -128,23 +128,22 @@ void TopMenu::Impl::showShortKeyInfo()
 
 void TopMenu::Impl::initBackground( const Size& size )
 {
-  Pictures p_marble;
-  for (int i = 1; i<=12; ++i)
-  {
-    p_marble.push_back( Picture::load( ResourceGroup::panelBackground, i));
-  }
-
-  background.clear();
+  Pictures p_marble, pics;
+  p_marble.load( ResourceGroup::panelBackground, 1,12 );
 
   unsigned int i = 0;
   int x = 0;
 
-  while( x < size.width())
+  Rects dstrects;
+  while( x < size.width() )
   {
-    background.append( p_marble[i%12], Point( x, 0 ) );
+    pics.append( p_marble[i%12], Point() );
+    dstrects.push_back( Rect( x, 0, x + p_marble[i%12].width(), p_marble[i%12].height() ) );
     x += p_marble[i%12].width();
     i++;
   }
+
+  background.load( pics, dstrects );
 }
 
 void TopMenu::Impl::showAboutInfo()

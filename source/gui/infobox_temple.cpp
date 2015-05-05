@@ -51,26 +51,41 @@ AboutTemple::AboutTemple(Widget* parent, PlayerCityPtr city, const Tile& tile )
   setupUI( ":/gui/infoboxtemple.gui" );
 
   TemplePtr temple = ptr_cast<Temple>( tile.overlay() );
-  DivinityPtr divn = temple->divinity();
+  setBase( temple );
 
-  setBase( ptr_cast<Construction>( temple ) );
+  std::string shortDesc;
+  std::string text, longDescr;
+  if( temple.is<TempleOracle>() )
+  {
+     text = _( "##oracle##" );
+     setText( _( "##oracle_info##" ) );
+  }
+  else
+  {
 
-  bool bigTemple = temple->size().width() > 2;
-  std::string desc = _( divn->shortDescription() );
-  std::string text = _( utils::format( 0xff, "##%s_%s_temple##",
-                                             bigTemple ? "big" : "small",
-                                             divn->debugName().c_str() ) );
-  setTitle( text + " ( " + desc + " )" );
+     DivinityPtr divn = temple->divinity();
+     bool bigTemple = temple->size().width() > 2;
+     shortDesc =  _( divn->shortDescription() );
+     text = _( utils::format( 0xff, "##%s_%s_temple##",
+                              bigTemple ? "big" : "small",
+                              divn->debugName().c_str() ) );
 
-  _updateWorkersLabel( Point( 32, 56 + 12), 542, temple->maximumWorkers(), temple->numberWorkers() );
+     bool goodRelation = divn->relation() >= 50;
 
-  Image* img = new Image( this, Point( 192, 140 ), divn->picture() );
-  bool goodRelation = divn->relation() >= 50;
+     longDescr = utils::format(0xff, "##%s_%s_info##",
+                                             divn->internalName().c_str(),
+                                             goodRelation ? "goodmood" : "badmood" );
 
-  std::string descr = utils::format(0xff, "##%s_%s_info##",
-                                          divn->internalName().c_str(),
-                                          goodRelation ? "goodmood" : "badmood" );
-  img->setTooltipText( _(descr) );
+     Image* img = new Image( this, Point( 192, 140 ), divn->picture() );
+     img->setTooltipText( _(longDescr) );
+  }
+
+  if( !shortDesc.empty() )
+    shortDesc = " ( " + shortDesc + " )";
+
+  setTitle( text + shortDesc );
+
+  _updateWorkersLabel( Point( 32, 56 + 12), 542, temple->maximumWorkers(), temple->numberWorkers() );  
 }
 
 AboutTemple::~AboutTemple()
