@@ -18,9 +18,9 @@
 #ifndef __CAESARIA_BATCH_H_INCLUDED__
 #define __CAESARIA_BATCH_H_INCLUDED__
 
+#include "core/rect_array.hpp"
+
 struct SDL_Batch;
-class Rects;
-class Rect;
 class Point;
 
 namespace gfx
@@ -35,13 +35,13 @@ public:
   explicit Batch( SDL_Batch* batch );
   Batch( const Batch& other );
   Batch& operator=(const Batch& other);
-  SDL_Batch* native() const { return _batch; }
-  bool valid() const { return _batch != 0; }
-  void init( SDL_Batch* batch ) { _batch = batch; }
+  inline SDL_Batch* native() const { return _batch; }
+  inline bool valid() const { return _batch != 0; }
+  inline void init( SDL_Batch* batch ) { _batch = batch; }
   void destroy();
   void load(const Pictures& pics, const Rects& dstrects);
-  void load(const Pictures& pics, const Point& pos );
-  void load(const Picture& pics, const Rects& srcrects, const Rects& dstrects );
+  void load(const Pictures& pics, const Point& pos);
+  void load(const Picture& pics, const Rects& srcrects, const Rects& dstrects);
 private:
 
   SDL_Batch* _batch;

@@ -56,7 +56,7 @@ void Services::initialize(PlayerCityPtr city, const std::string& model)
     if( service.isValid() )
       city->addService( service );
     else
-      Logger::warning( "!!! WARNING: Cant initialize service on city create" );
+      Logger::warning( "!!! WARNING: Cant initialize service %s on city create", it->first.c_str() );
   }
 }
 

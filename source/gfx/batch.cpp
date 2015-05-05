@@ -42,7 +42,7 @@ void Batch::destroy()
   _batch = 0;
 }
 
-void Batch::load(const Pictures &pics, const Rects& dstrects )
+void Batch::load(const Pictures &pics, const Rects& dstrects)
 {
   if( pics.empty() )
   {
@@ -60,7 +60,7 @@ void Batch::load(const Pictures &pics, const Rects& dstrects )
   Rects srcrects;
   foreach( it, pics )
   {
-    if( it->texture() == 0 )
+    if( it->texture() == 0 || it->width() == 0 || it->height() == 0 )
     {
       srcrects.push_back( Rect( Point( 0, 0), it->size() ) );
       continue;
@@ -76,7 +76,7 @@ void Batch::load(const Pictures &pics, const Rects& dstrects )
     srcrects.push_back( it->originRect() );
   }
 
-  *this = Engine::instance().loadBatch( pics.at( 0 ), srcrects, dstrects, 0);
+  *this = Engine::instance().loadBatch( pics.at( 0 ), srcrects, dstrects);
 }
 
 void Batch::load(const Pictures& pics, const Point& pos)
@@ -92,7 +92,7 @@ void Batch::load(const Pictures& pics, const Point& pos)
 
 void Batch::load(const Picture& pic, const Rects& srcrects, const Rects& dstrects)
 {
-  *this = Engine::instance().loadBatch( pic, srcrects, dstrects, 0);
+  *this = Engine::instance().loadBatch( pic, srcrects, dstrects );
 }
 
 Batch::Batch()

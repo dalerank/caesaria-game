@@ -160,6 +160,12 @@ void Decorator::drawBorder(Pictures& stack, const Rect& rectangle, const int off
   const int sh = topborder.height();
   const Picture& bottomBorder = Picture::load( ResourceGroup::panelBackground, offset+5);
 
+  if( !sw || !sh )
+  {
+    Logger::warning( "!!! WARNING: Cant draw border for sw=%d, sh=%d", sw, sh );
+    return;
+  }
+
   // draws horizontal borders
   for (int i = 0; i<(rectangle.width()/sw-1); ++i)
   {

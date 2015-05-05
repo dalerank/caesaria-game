@@ -286,7 +286,6 @@ void Layer::render( Engine& engine)
 
   _camera()->startFrame();
   DrawOptions& opts = DrawOptions::instance();
-  engine.setFlag( Engine::batching, opts.isFlag( DrawOptions::batchTextures ) );
   //FIRST PART: draw lands
   drawLands( engine, _d->camera );
 
@@ -305,8 +304,6 @@ void Layer::render( Engine& engine)
     drawWalkers( engine, *tile, camOffset );
     drawWalkerOverlap( engine, *tile, camOffset, z );
   }
-
-  engine.setFlag( Engine::batching, false );
 
   engine.resetColorMask();
 

@@ -203,8 +203,10 @@ void Level::initialize()
   _d->rightPanel->bringToFront();
   _d->renderer.setViewport( engine.screenSize() );
   _d->renderer.camera()->setScrollSpeed( SETTINGS_VALUE( scrollSpeed ) );
-  _d->game->city()->addService( AmbientSound::create( _d->game->city(), _d->renderer.camera() ) );
 
+  SmartPtr<city::AmbientSound> sound = statistic::finds<city::AmbientSound>( _d->game->city() );
+  if( sound.isValid() )
+    sound->setCamera( _d->renderer.camera() );
 
   //specific tablet actions bar
   {

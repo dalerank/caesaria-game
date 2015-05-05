@@ -144,18 +144,19 @@ void Game::Impl::initVideo()
 {
   Logger::warning( "GraficEngine: create" );
 
-  //std::string render = GameSettings::get( GameSettings::render ).toString();
+  bool batchTexures = SETTINGS_VALUE( batchTextures );
 
-  engine = new gfx::SdlEngine();
+  engine = new SdlEngine();
 
   Logger::warning( "GraficEngine: set size" );
   engine->setScreenSize( SETTINGS_VALUE( resolution ).toSize() );
+  engine->setFlag( Engine::batching, batchTexures ? 1 : 0 );
 
   bool fullscreen = SETTINGS_VALUE( fullscreen );
   if( fullscreen )
   {
     Logger::warning( "GraficEngine: try set fullscreen mode" );
-    engine->setFlag( gfx::Engine::fullscreen, fullscreen ? 1 : 0 );
+    engine->setFlag( Engine::fullscreen, fullscreen ? 1 : 0 );
   }
 
   engine->init();

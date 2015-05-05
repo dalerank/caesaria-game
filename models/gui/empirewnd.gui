@@ -13,7 +13,7 @@
     normal : [ "paneling", 292 ]
     hovered : [ "paneling", 293 ]
     pressed : [ "paneling", 294 ]
-    disabled : [ "paneling", 295 ]
+    disabled : [ "paneling", 294 ]
     tooltip : "##to_trade_advisor##"
   }
 

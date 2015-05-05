@@ -265,9 +265,10 @@ good::ProductMap WarehouseStore::details() const
 }
 
 void WarehouseStore::setCapacity(const int) {}
-void WarehouseStore::setCapacity(const good::Product &goodType, const int maxQty)
-{
-  _capacities[ goodType ] = maxQty;
-}
+void WarehouseStore::setCapacity(const good::Product &goodType, const int maxQty) {  _capacities[ goodType ] = maxQty; }
 
-int WarehouseStore::capacity( const good::Product& goodType ) const{  return capacity();}
+int WarehouseStore::capacity( const good::Product& goodType ) const
+{
+  good::ProductMap::const_iterator it = _capacities.find( goodType );
+  return it != _capacities.end() ? it->second : 0;
+}

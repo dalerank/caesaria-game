@@ -526,7 +526,6 @@
       granery : true
       warehouse : true
       senate : true
-      forum : false
       garden : true
 
       prefecture : true
