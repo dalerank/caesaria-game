@@ -96,6 +96,11 @@ void ChangeSoundOptions::_exec(Game& game, unsigned int)
   CONNECT( dialog, onClose(),  model,  Model::restore )
   CONNECT( model,  onChange,   dialog, SoundOptions::update )
 
+  Engine& ae = Engine::instance();
+  dialog->update( audio::ambient, ae.volume( audio::ambient ) );
+  dialog->update( audio::theme, ae.volume( audio::theme ) );
+  dialog->update( audio::game, ae.volume( audio::game ) );
+
   dialog->show();
 }
 

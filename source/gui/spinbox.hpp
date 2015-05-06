@@ -48,6 +48,8 @@ private:
   void _increase();
   void _decrease();
   void _update();
+  void _initButtons();
+  virtual void _finalizeResize();
 
   class Impl;
   ScopedPtr< Impl > _d;

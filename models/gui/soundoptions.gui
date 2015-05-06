@@ -17,24 +17,27 @@
     postfix : " %"
     textAlign : [ "center", "center" ]
     font : "FONT_2"
+    properties : { soundType : 1 }
   }
          
   spinAmbientSound#SpinBox :
   {
-    geometry : [ 28, 96, 200, 120 ]
+    geometry : [ 28, 96, "pw-28", 120 ]
     text : "##gmsndwnd_ambient_sound##"
     postfix : " %"
     textAlign : [ "center", "center" ]
     font : "FONT_2"
+    properties : { soundType : 2 }
   }
     
   spinThemeSound#SpinBox :
   {
-    geometry : [ 28, 132, 200, 156 ]
+    geometry : [ 28, 132, "pw-28", 156 ]
     text : "##gmsndwnd_theme_sound##"
     postfix : " %"
     textAlign : [ "center", "center" ]
     font : "FONT_2"
+    properties : { soundType : 3 }
   }
 
   btnOk#PushButton :

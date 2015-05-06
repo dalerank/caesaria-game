@@ -53,6 +53,24 @@ public signals:
 SpinBox::SpinBox( Widget* parent )
     : Label( parent, Rect( 0, 0, 1, 1) ), _d( new Impl )
 {
+  _initButtons();
+}
+
+void SpinBox::_initButtons()
+{
+  _d->btnDecrease = new TexturedButton( this, Point( width() * 0.6, 2 ), Size( 24, 24), -1, 601 );
+  _d->btnIncrease = new TexturedButton( this, Point( width() * 0.6 + 26, 2), Size( 24, 24 ), -1, 605 );
+
+  CONNECT( _d->btnDecrease, onClicked(), this, SpinBox::_decrease );
+  CONNECT( _d->btnIncrease, onClicked(), this, SpinBox::_increase );
+}
+
+void SpinBox::_finalizeResize()
+{
+  Label::_finalizeResize();
+  if( _d->btnDecrease ) _d->btnDecrease->setPosition( Point( width() * 0.6, 2 ) );
+  if( _d->btnIncrease ) _d->btnIncrease->setPosition( Point( width() * 0.6 + 26, 2 ) );
+  _update();
 }
 
 SpinBox::SpinBox(Widget* parent, const Rect& rectangle, const std::string& text, const std::string& postfix, int id)
@@ -60,13 +78,9 @@ SpinBox::SpinBox(Widget* parent, const Rect& rectangle, const std::string& text,
 	_d( new Impl )
 { 
   _d->postfix = postfix;
-  _d->btnDecrease = new TexturedButton( this, Point( width() / 2, 2 ), Size( 24, 24), -1, 601 );
-  _d->btnIncrease = new TexturedButton( this, Point( width() / 2 + 28, 2), Size( 24, 24 ), -1, 605 );
-
-  CONNECT( _d->btnDecrease, onClicked(), this, SpinBox::_decrease );
-  CONNECT( _d->btnIncrease, onClicked(), this, SpinBox::_increase );
+  _initButtons();
 #ifdef _DEBUG
-    setDebugName( CAESARIA_STR_A(SpinBox) );
+   setDebugName( CAESARIA_STR_A(SpinBox) );
 #endif
 }
 
@@ -84,7 +98,7 @@ void SpinBox::draw(gfx::Engine& painter )
 
 void SpinBox::setValue(int value)
 {
-  _d->value = math::clamp( _d->value - _d->step, _d->minv, _d->maxv );
+  _d->value = math::clamp( value, _d->minv, _d->maxv );
   _update();
 }
 
@@ -114,9 +128,17 @@ void SpinBox::_decrease()
 void SpinBox::_update()
 {
   Font f = font();
-  if( f.isValid() )
+  if( f.isValid() && !_textPictureRef().isNull() )
   {
-    Rect frameRect( Point( _d->btnIncrease->right() + 5, 0 ), rightbottom() );
+    Rect frameRect( Point( 0, 0 ), _d->btnDecrease->leftbottom()  );
+    _textPictureRef()->fill( DefaultColors::clear, Rect() );
+    if( !text().empty() )
+    {
+      Rect textRect = f.getTextRect( text(), frameRect, horizontalTextAlign(), verticalTextAlign() );
+      f.draw( *_textPictureRef(), text(), textRect.lefttop(), true, false );
+    }
+
+    frameRect = Rect( _d->btnIncrease->right() + 5, 0, width(), height() );
     string valueText = utils::format( 0xff, "%d %s", _d->value, _d->postfix.c_str() );
     _textPictureRef()->fill( DefaultColors::clear, frameRect );
 
