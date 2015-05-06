@@ -231,7 +231,7 @@ void Population::Impl::showNextChart() { switch2nextChart( 1 ); }
 
 void Population::Impl::updateStates()
 {
-  InfoPtr info = statistic::finds<Info>( city );
+  InfoPtr info = statistic::getService<Info>( city );
   int currentPop = city->states().population;
 
   if( lbMigrationValue )
@@ -255,7 +255,7 @@ void Population::Impl::updateStates()
     }
     else
     {
-      MigrationPtr migration = statistic::finds<Migration>( city );
+      MigrationPtr migration = statistic::getService<Migration>( city );
 
       if( migration.isValid() )
       {
@@ -296,7 +296,7 @@ void Population::Impl::updateStates()
   {
     int maxHabitants = 0;
     int currentHabitants = 0;
-    HouseList houses = city::statistic::findh( city );
+    HouseList houses = city::statistic::getHouses( city );
     foreach( it, houses )
     {
       HousePtr house = *it;
@@ -414,7 +414,7 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
 
   case dm_society:
     {
-      HouseList houses = city::statistic::findh( city );
+      HouseList houses = city::statistic::getHouses( city );
 
       _values.clear();
       _maxValue = 5;

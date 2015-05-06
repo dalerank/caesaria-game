@@ -197,7 +197,7 @@ void AboutPeople::_updateNeighbors()
   Point lbOffset( 60, 0 );
   foreach( itTile, tiles )
   {
-    WalkerList tileWalkers = _d->city->walkers( (*itTile)->pos() );
+    const WalkerList& tileWalkers = _d->city->walkers( (*itTile)->pos() );
     if( !tileWalkers.empty() )
     {
       //mini screenshot from citizen pos need here

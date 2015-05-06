@@ -86,7 +86,7 @@ GladiatorRevolt::GladiatorRevolt() : _d( new Impl )
 
 void GladiatorRevolt::_exec(Game& game, unsigned int)
 {
-  GladiatorSchoolList gladSchool = city::statistic::findo<GladiatorSchool>( game.city(), object::gladiatorSchool );
+  GladiatorSchoolList gladSchool = city::statistic::getObjects<GladiatorSchool>( game.city(), object::gladiatorSchool );
 
   if( !gladSchool.empty() )
   {

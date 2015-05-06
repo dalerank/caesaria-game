@@ -100,7 +100,7 @@ void Peace::timeStep(const unsigned int time )
   if( !game::Date::isYearChanged() )
     return;
 
-  MilitaryPtr ml = statistic::finds<Military>( _city() );
+  MilitaryPtr ml = statistic::getService<Military>( _city() );
   if( ml.isNull() )
   {
     Logger::warning( "!!! WARNING: not found military service" );

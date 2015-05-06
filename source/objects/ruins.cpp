@@ -64,7 +64,7 @@ void BurningRuins::timeStep(const unsigned long time)
   if( game::Date::isDayChanged() )
   {
     TilePos offset( 2, 2 );
-    BuildingList buildings = city::statistic::findo<Building>( _city(), object::any, pos() - offset, pos() + offset );
+    BuildingList buildings = city::statistic::getObjects<Building>( _city(), object::any, pos() - offset, pos() + offset );
 
     foreach( it, buildings)
     {

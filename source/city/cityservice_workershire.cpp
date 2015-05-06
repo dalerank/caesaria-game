@@ -152,7 +152,7 @@ void WorkersHire::timeStep( const unsigned int time )
 
   _d->hrInCity = _city()->walkers( walker::recruter );
 
-  WorkingBuildingList buildings = statistic::findo<WorkingBuilding>( _city(), object::any );
+  WorkingBuildingList buildings = statistic::getObjects<WorkingBuilding>( _city(), object::any );
 
   if( !_d->priorities.empty() )
   {

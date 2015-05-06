@@ -61,7 +61,7 @@ void MerchantCamel::timeStep(const unsigned long time)
 {
   if( !_d->inCaravan )
   {
-    MerchantPtr head = city::statistic::findw<Merchant>( _city(), walker::merchant, _d->headId );
+    MerchantPtr head = city::statistic::getWalker<Merchant>( _city(), walker::merchant, _d->headId );
     if( !head.isValid() )
     {
       die();

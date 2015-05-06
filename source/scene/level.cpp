@@ -204,7 +204,7 @@ void Level::initialize()
   _d->renderer.setViewport( engine.screenSize() );
   _d->renderer.camera()->setScrollSpeed( SETTINGS_VALUE( scrollSpeed ) );
 
-  SmartPtr<city::AmbientSound> sound = statistic::finds<city::AmbientSound>( _d->game->city() );
+  SmartPtr<city::AmbientSound> sound = statistic::getService<city::AmbientSound>( _d->game->city() );
   if( sound.isValid() )
     sound->setCamera( _d->renderer.camera() );
 
@@ -609,8 +609,8 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
   PlayerCityPtr pcity = game->city();
 
   const city::VictoryConditions& vc = pcity->victoryConditions();
-  MilitaryPtr mil = statistic::finds<city::Military>( pcity );
-  InfoPtr info = statistic::finds<city::Info>( pcity );
+  MilitaryPtr mil = statistic::getService<city::Military>( pcity );
+  InfoPtr info = statistic::getService<city::Info>( pcity );
 
   if( mil.isValid() && info.isValid()  )
   {

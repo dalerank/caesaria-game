@@ -195,7 +195,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
 
     city::AreaInfo info = { city, oTile.pos(), TilesArray() };
     overlay->build( info );
-    city->overlays().push_back( overlay );
+    city->addOverlay( overlay );
   }
 
   if( changeId > 0 )

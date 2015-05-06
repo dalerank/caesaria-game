@@ -43,7 +43,7 @@ void Services::timeStep(PlayerCityPtr city, unsigned int time)
       serviceIt = erase(serviceIt);
     }
     else { ++serviceIt; }
-    }
+  }
 }
 
 void Services::initialize(PlayerCityPtr city, const std::string& model)

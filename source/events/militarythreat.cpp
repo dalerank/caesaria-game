@@ -47,7 +47,7 @@ MilitaryThreat::MilitaryThreat( int value ) : _d( new Impl )
 
 void MilitaryThreat::_exec(Game& game, unsigned int)
 {
-  city::MilitaryPtr ml = city::statistic::finds<city::Military>( game.city() );
+  city::MilitaryPtr ml = city::statistic::getService<city::Military>( game.city() );
 
   if( ml.isValid() )
   {

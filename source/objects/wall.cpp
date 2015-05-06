@@ -52,7 +52,7 @@ bool Wall::build( const city::AreaInfo& info )
 
   Construction::build( info );
 
-  WallList walls = city::statistic::findo<Wall>( info.city, object::wall );
+  WallList walls = city::statistic::getObjects<Wall>( info.city, object::wall );
 
   foreach( wall, walls ) { (*wall)->updatePicture( info.city ); }
 

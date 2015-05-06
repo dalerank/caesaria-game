@@ -72,7 +72,7 @@ void FireWorkers::_exec(Game& game, unsigned int)
 
   if( _workers > 0 )
   {
-    WorkingBuildingList wb = city::statistic::findo<WorkingBuilding>( game.city(), object::any );
+    WorkingBuildingList wb = city::statistic::getObjects<WorkingBuilding>( game.city(), object::any );
     foreach( it, wb )
     {
       int removedFromWb = (*it)->removeWorkers( _workers );

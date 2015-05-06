@@ -40,7 +40,7 @@ void UpdateCitySentiment::_exec(Game& game, unsigned int)
 {
   PlayerCityPtr city = game.city();
 
-  city::SentimentPtr srvc = city::statistic::finds<city::Sentiment>( city );
+  city::SentimentPtr srvc = city::statistic::getService<city::Sentiment>( city );
 
   if( srvc.isValid() )
   {

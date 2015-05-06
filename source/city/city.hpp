@@ -115,6 +115,7 @@ public:
 
   /** Get all static objects in city */
   OverlayList& overlays();
+  const OverlayList& overlays() const;
 
   city::ActivePoints& activePoints();
   city::Scribes& scribes();

@@ -36,7 +36,7 @@ TilesArray Helper::getAroundTiles(OverlayPtr overlay)
 
 HirePriorities Helper::getHirePriorities() const
 {
-  WorkersHirePtr wh = city::statistic::finds<WorkersHire>( _city );
+  WorkersHirePtr wh = city::statistic::getService<WorkersHire>( _city );
   return wh.isValid() ? wh->priorities() : HirePriorities();
 }
 
