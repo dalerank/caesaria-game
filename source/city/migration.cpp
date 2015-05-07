@@ -397,7 +397,7 @@ void Migration::Impl::createMigrationToCity( PlayerCityPtr city )
     return;
   }
 
-  EmigrantList migrants =
+  EmigrantList migrants;
   migrants << city->walkers();
 
   if( vh <= migrants.size() * 5 )
