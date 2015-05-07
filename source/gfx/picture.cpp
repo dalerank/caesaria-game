@@ -28,6 +28,7 @@
 #include "core/logger.hpp"
 #include "core/time.hpp"
 #include "core/timer.hpp"
+#include "pictureimpl.hpp"
 #include <SDL.h>
 
 // Picture class functions
@@ -35,36 +36,9 @@
 namespace gfx
 {
 
-class Impl : public ReferenceCounted
-{
-public:
-  SDL_Surface* surface;
-  SDL_Texture* texture;  // for SDL surface
-  std::string name; // for game save
-  unsigned int opengltx;
-  Rect orect;
-
-  Impl& operator=(const Impl& other)
-  {
-    surface = other.surface;
-    texture = other.texture;
-    name = other.name;
-    opengltx = other.opengltx;
-    orect = other.orect;
-  }
-
-  ~Impl()
-  {
-    if( surface ) SDL_FreeSurface( surface );
-    if( texture ) SDL_DestroyTexture( texture );
-    surface = 0;
-    texture = 0;
-  }
-};
-
 static const Picture _invalidPicture = Picture();
 
-Picture::Picture() : _d( new Impl )
+Picture::Picture() : _d( new PictureImpl )
 {  
   _d->texture = NULL;
   _d->name = "";
@@ -73,7 +47,7 @@ Picture::Picture() : _d( new Impl )
   _offset = Point( 0, 0 );
 }
 
-Picture::Picture( const Picture& other ) : _d( new Impl )
+Picture::Picture( const Picture& other ) : _d( new PictureImpl )
 {
   *this = other;
 }

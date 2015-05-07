@@ -496,7 +496,7 @@ public:
   EffectManager effects;
 #endif
 
-  PictureRef fpsText;
+  Picture fpsText;
   Font debugFont;
 
 public:

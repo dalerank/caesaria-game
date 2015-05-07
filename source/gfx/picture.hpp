@@ -30,6 +30,8 @@ struct SDL_Surface;
 
 namespace gfx
 {
+
+class PictureImpl;
   
 // an image with offset, this is the basic rendered object
 class Picture
@@ -85,8 +87,7 @@ public:
 
   void update();
 private:
-  class Impl;
-  SmartPtr<Impl> _d;
+  SmartPtr<PictureImpl> _d;
 
   Point _offset;  // the image is shifted when displayed
 };

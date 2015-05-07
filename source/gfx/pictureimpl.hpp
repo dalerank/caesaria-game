@@ -13,84 +13,45 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_PICTURE_HPP_INCLUDE_
-#define _CAESARIA_PICTURE_HPP_INCLUDE_
+#ifndef _CAESARIA_PICTUREIMPL_HPP_INCLUDE_
+#define _CAESARIA_PICTUREIMPL_HPP_INCLUDE_
 
-#include <vector>
-#include <string>
+#include "core/referencecounted.hpp"
 #include "core/rectangle.hpp"
-#include "core/color.hpp"
-#include "core/smartptr.hpp"
-
-struct SDL_Texture;
-struct SDL_Surface;
+#include <SDL.h>
 
 namespace gfx
 {
   
-// an image with offset, this is the basic rendered object
-class Picture
+class PictureImpl : public ReferenceCounted
 {
 public:
-  typedef enum { preloaded, filesystem } LoadMode;
-  Picture();
-  ~Picture();
+  SDL_Surface* surface;
+  SDL_Texture* texture;  // for SDL surface
+  std::string name; // for game save
+  unsigned int opengltx;
+  Rect orect;
 
-  Picture( const Picture& other );
-  Picture& operator=(const Picture& other);
-  
-  void setOffset( const Point& offset );
-  void setOffset( int x, int y );
+  PictureImpl& operator=(const Impl& other)
+  {
+    surface = other.surface;
+    texture = other.texture;
+    name = other.name;
+    opengltx = other.opengltx;
+    orect = other.orect;
+  }
 
-  void setOriginRect( const Rect& rect );
-  const Rect& originRect() const;
-
-  void addOffset(const Point &offset );
-  void addOffset(int x, int y);
-  const Point& offset() const;
-
-  void setName(const std::string &name);  // for save game
-  std::string name() const;
-  void setAlpha( unsigned char value );
-
-  void init( SDL_Texture* tx, SDL_Surface* srf, unsigned int ogltx );
-
-  SDL_Texture* texture() const;  
-  SDL_Surface* surface() const;
-  unsigned int& textureID();
-  unsigned int textureID() const;
-
-  int width() const;
-  int height() const;
-  int pitch() const;
-
-  void fill(const NColor& color, Rect rect=Rect() );
-
-  unsigned int* lock();
-  void unlock();
-
-  Size size() const;
-  unsigned int sizeInBytes() const;
-
-  bool isValid() const;
-
-  static Picture& load( const std::string& group, const int id );
-  static Picture& load( const std::string& filename );
-  static Picture create( const Size& size, unsigned char* data=0, bool mayChange=false );
-
-  static const Picture& getInvalid();
-
-  void update();
-private:
-  class Impl;
-  SmartPtr<Impl> _d;
-
-  Point _offset;  // the image is shifted when displayed
+  ~PictureImpl()
+  {
+    if( surface ) SDL_FreeSurface( surface );
+    if( texture ) SDL_DestroyTexture( texture );
+    surface = 0;
+    texture = 0;
+  }
 };
 
 }//end namespace gfx
 
-#endif //_CAESARIA_PICTURE_HPP_INCLUDE_
+#endif //_CAESARIA_PICTUREIMPL_HPP_INCLUDE_
