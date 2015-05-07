@@ -70,7 +70,7 @@ public:
   Rect iconRect;
   int clickTime;
   bool drawText;
-  PictureRef textPicture;
+  Picture textPicture;
   Point textOffset;
   PushButton::BackgroundStyle bgStyle;
   bool needUpdateTextPic;
@@ -137,36 +137,36 @@ void PushButton::_updateTextPic()
 {
   __D_IMPL(_d,PushButton)
   ElementState state = _state();
-  PictureRef& textTxs = _d->textPicture;
+  Picture& textTxs = _d->textPicture;
 
-  if( textTxs.isNull() )
+  if( textTxs.isValid() )
   {
-    textTxs.reset( Picture::create( size(), 0, true ) );
+    textTxs = Picture::create( size(), 0, true );
   }
 
-  if( textTxs->size() != size() )
+  if( textTxs.size() != size() )
   {
-    textTxs.reset( Picture::create( size(), 0, true ) );
+    textTxs = Picture::create( size(), 0, true );
   }
 
   Font stFont = _d->buttonStates[ state ].font;
-  if( textTxs && stFont.isValid() )
+  if( textTxs.isValid() && stFont.isValid() )
   {
     Rect textRect = stFont.getTextRect( text(), Rect( 0, 0, width(), height() ),
                                               horizontalTextAlign(), verticalTextAlign() );
-    textTxs->fill( 0x00ffffff, Rect( 0, 0, 0, 0 ) );
-    stFont.draw( *textTxs, text(), textRect.UpperLeftCorner + _d->textOffset, true, false );
+    textTxs.fill( 0x00ffffff, Rect( 0, 0, 0, 0 ) );
+    stFont.draw( textTxs, text(), textRect.UpperLeftCorner + _d->textOffset, true, false );
   }
 
   if( _d->bgStyle == flatBorderLine )
   {
-    Decorator::drawLine( *textTxs, Point( 0, 0), Point( width(), 0), DefaultColors::black );
-    Decorator::drawLine( *textTxs, Point( width()-1, 0), Point( width()-1, height() ), DefaultColors::black );
-    Decorator::drawLine( *textTxs, Point( width(), height()-1), Point( 0, height()-1), DefaultColors::black );
-    Decorator::drawLine( *textTxs, Point( 0, height() ), Point( 0, 0), DefaultColors::black );
+    Decorator::drawLine( textTxs, Point( 0, 0), Point( width(), 0), DefaultColors::black );
+    Decorator::drawLine( textTxs, Point( width()-1, 0), Point( width()-1, height() ), DefaultColors::black );
+    Decorator::drawLine( textTxs, Point( width(), height()-1), Point( 0, height()-1), DefaultColors::black );
+    Decorator::drawLine( textTxs, Point( 0, height() ), Point( 0, 0), DefaultColors::black );
   }
 
-  textTxs->update();
+  textTxs.update();
 }
 
 void PushButton::_updateBackground( ElementState state )
@@ -527,9 +527,9 @@ void PushButton::draw( gfx::Engine& painter )
       painter.draw( state.style, &absoluteClippingRectRef());
 	}
 
-  if( _d->drawText && _d->textPicture )
+  if( _d->drawText && _d->textPicture.isValid() )
   {
-    painter.draw( *_d->textPicture, screenLeft(), screenTop(), &absoluteClippingRectRef() );
+    painter.draw( _d->textPicture, screenLeft(), screenTop(), &absoluteClippingRectRef() );
   }
 
   drawIcon( painter );
@@ -573,7 +573,7 @@ void PushButton::setFont( const Font& font )
   _dfunc()->needUpdateTextPic = true;
 }
 
-PictureRef& PushButton::_textPictureRef() {  return _dfunc()->textPicture;}
+Picture& PushButton::_textPicture() { return _dfunc()->textPicture; }
 Font PushButton::font( ElementState state ) {  return _dfunc()->buttonStates[ state ].font;}
 
 void PushButton::_finalizeResize()

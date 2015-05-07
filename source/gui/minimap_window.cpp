@@ -43,7 +43,7 @@ namespace gui
 class Minimap::Impl
 {
 public:
-  PictureRef minimap;
+  Picture minimap;
 
   PlayerCityPtr city;
   Camera const* camera;
@@ -73,7 +73,7 @@ Minimap::Minimap(Widget* parent, Rect rect, PlayerCityPtr city, const gfx::Camer
   _d->city = city;
   _d->camera = &camera;
   _d->lastTimeUpdate = 0;
-  _d->minimap.reset( Picture::create( Size( 144, 110 ), 0, true ) );
+  _d->minimap = Picture::create( Size( 144, 110 ), 0, true );
   _d->colors = new minimap::Colors( city->climate() );
   _d->btnZoomIn =  new TexturedButton( this, righttop() - Point( 28, -2  ), Size( 24 ), -1, 605 );
   _d->btnZoomOut = new TexturedButton( this, righttop() - Point( 28, -26 ), Size( 24 ), -1, 601 );
@@ -238,16 +238,16 @@ void Minimap::Impl::updateImage()
   TilePos startPos = tpos - offset;
   TilePos stopPos = tpos + offset;
 
-  int mmapWithMinus1 = minimap->width()-1;
-  int mmapWidth = minimap->width();
-  int mmapHeight = minimap->height();
-  unsigned int* pixels = minimap->lock();
+  int mmapWithMinus1 = minimap.width()-1;
+  int mmapWidth = minimap.width();
+  int mmapHeight = minimap.height();
+  unsigned int* pixels = minimap.lock();
 
   if( pixels != 0)
   {
     int c1, c2;
     Point pnt;
-    minimap->fill( 0xff000000, Rect() );
+    minimap.fill( 0xff000000, Rect() );
     for( int i = startPos.i(); i < stopPos.i(); i++)
     {
       for (int j = startPos.j(); j < stopPos.j(); j++)
@@ -292,15 +292,15 @@ void Minimap::Impl::updateImage()
           if (cl.color != 0)
           {
             Point pnt = getBitmapCoordinates(pos.i() - startPos.i() - 40, pos.j() - startPos.j() - 60, mapsize);
-            minimap->fill(cl, Rect(pnt, Size(2)));
+            minimap.fill(cl, Rect(pnt, Size(2)));
           }
         }        
       }
     }
   }
 
-  minimap->unlock();
-  minimap->update();
+  minimap.unlock();
+  minimap.update();
 
   // show center of screen on minimap
   // Exit out of image size on small carts... please fix it
@@ -340,7 +340,7 @@ void Minimap::draw(Engine& painter)
   if( !visible() )
     return;
 
-  painter.draw( *_d->minimap, screenLeft(), screenTop() ); // 152, 145
+  painter.draw( _d->minimap, screenLeft(), screenTop() ); // 152, 145
 
   Widget::draw( painter );
 }
@@ -355,7 +355,7 @@ bool Minimap::onEvent(const NEvent& event)
     Point clickPosition = screenToLocal( event.mouse.pos() );
 
     int mapsize = _d->city->tilemap().size();
-    Size minimapSize = _d->minimap->size();
+    Size minimapSize = _d->minimap.size();
 
     Point offset( minimapSize.width()/2 - _d->center.x(), minimapSize.height()/2 + _d->center.y() - mapsize*2 );
     clickPosition -= offset;
@@ -392,7 +392,7 @@ void Minimap::beforeDraw(Engine& painter)
 
 void Minimap::saveImage( const std::string& filename ) const
 {
-  IMG_SavePNG( filename.c_str(), _d->minimap->surface(), -1 );
+  IMG_SavePNG( filename.c_str(), _d->minimap.surface(), -1 );
 }
 
 Signal1<TilePos>& Minimap::onCenterChange() { return _d->onCenterChangeSignal; }

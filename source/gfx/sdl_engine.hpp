@@ -51,9 +51,6 @@ public:
   virtual void setViewport( int, bool render);
   virtual void drawViewport( int, Rect r);
 
-  // deletes a picture (deallocate memory)
-  virtual void deletePicture(Picture* pic);
-
   virtual Batch loadBatch(const Picture& pic, const Rects& srcRects, const Rects& dstRects, const Rect* clipRect);
   virtual void unloadBatch( const Batch& batch );
 

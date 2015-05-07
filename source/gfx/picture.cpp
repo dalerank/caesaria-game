@@ -52,6 +52,14 @@ public:
     opengltx = other.opengltx;
     orect = other.orect;
   }
+
+  ~Impl()
+  {
+    if( surface ) SDL_FreeSurface( surface );
+    if( texture ) SDL_DestroyTexture( texture );
+    surface = 0;
+    texture = 0;
+  }
 };
 
 static const Picture _invalidPicture = Picture();
@@ -174,11 +182,6 @@ Picture& Picture::operator=( const Picture& other )
 }
 
 Picture::~Picture(){}
-
-void Picture::destroy( Picture* ptr )
-{
-  Engine::instance().deletePicture( ptr );
-}
 
 void Picture::update()
 {

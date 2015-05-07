@@ -54,7 +54,6 @@ public:
   virtual void unloadPicture(Picture &ioPicture);
   virtual Batch loadBatch(const Picture& pic, const Rects& srcRects, const Rects& dstRects, const Rect* clipRect=0);
   virtual void unloadBatch( const Batch& batch );
-  void deletePicture(Picture* pic);
 
   virtual void startRenderFrame();
   virtual void endRenderFrame();

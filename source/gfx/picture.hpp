@@ -82,7 +82,6 @@ public:
   static Picture create( const Size& size, unsigned char* data=0, bool mayChange=false );
 
   static const Picture& getInvalid();
-  static void destroy( Picture* ptr );
 
   void update();
 private:

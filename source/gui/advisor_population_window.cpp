@@ -336,10 +336,10 @@ void CityChartLegend::_updateTexture(Engine &painter)
 {
   Label::_updateTexture( painter );
 
-  if( !_textPictureRef() )
+  if( !_textPicture().isValid() )
     return;
 
-  Picture pic = *_textPictureRef();
+  Picture& pic = _textPicture();
 
   pic.fill( 0, Rect() );
   for( int k=0; k < _stepCount+1; k++ )
@@ -468,10 +468,10 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
 
 void CityChart::draw(Engine &painter)
 {  
-  if( !_textPictureRef() || _maxValue == 0 )
+  if( !_textPicture().isValid() || _maxValue == 0 )
     return;
 
-  Picture& pic = *_textPictureRef();
+  Picture& pic = _textPicture();
   Picture& rpic = Picture::load( ResourceGroup::panelBackground, _picIndex );
 
   pic.fill( 0, Rect() );

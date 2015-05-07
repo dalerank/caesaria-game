@@ -80,8 +80,6 @@ public:
 
   virtual void setColorMask( int rmask, int gmask, int bmask, int amask ) = 0;
   virtual void resetColorMask() = 0;
-  
-  virtual void deletePicture( Picture* pic ) = 0;
 
   virtual void createScreenshot( const std::string& filename ) = 0;
   virtual unsigned int fps() const = 0;

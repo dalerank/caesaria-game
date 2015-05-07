@@ -517,9 +517,8 @@ NFile Sg2ArchiveReader::createAndOpenFile(const Path& filename)
   {
     SgImageRecord& sir = it->second.sr;
 
-    PictureRef result;
-    result.init( Size( sir.width, sir.height ) );
-    result->fill( 0, Rect() ); // Transparent black
+    Picture result = Picture::create( Size( sir.width, sir.height ) );
+    result.fill( 0, Rect() ); // Transparent black
 
     switch(sir.type)
     {
@@ -529,13 +528,13 @@ NFile Sg2ArchiveReader::createAndOpenFile(const Path& filename)
       case 12:
       case 13:
         //Logger::warning( "Find plain image " + filename.toString() );
-        _loadPlainImage( *result, it->second );
+        _loadPlainImage( result, it->second );
         //PictureConverter::save( *result, "base/" + filename.removeExtension() + ".png" );
         break;
 
       case 30:
         //Logger::warning( "Find isometric image " + filename.toString() );
-        _loadIsometricImage( *result, it->second );
+        _loadIsometricImage( result, it->second );
         //PictureConverter::save( *result, "base/" + filename.removeExtension() + ".png" );
       break;
 
@@ -543,7 +542,7 @@ NFile Sg2ArchiveReader::createAndOpenFile(const Path& filename)
       case 257:
       case 276:
         //Logger::warning( "Find sprite image " + filename.toString() );
-        _loadSpriteImage( *result, it->second );
+        _loadSpriteImage( result, it->second );
         //PictureConverter::save( *result, "base/" + filename.removeExtension() + ".png" );
       break;
 
@@ -552,7 +551,7 @@ NFile Sg2ArchiveReader::createAndOpenFile(const Path& filename)
       break;
     }
 
-    ByteArray data = PictureConverter::save( *result, "PNG" );
+    ByteArray data = PictureConverter::save( result, "PNG" );
     NFile memfile = MemoryFile::create( data, filename );
     return memfile;
 

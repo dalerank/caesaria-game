@@ -130,10 +130,10 @@ public:
 
     std::string goodName = _( "##" + good::Helper::getTypeName( _type ) + "##" );
 
-    if( _textPictureRef() )
+    if( _textPicture().isValid() )
     {
       Font rfont = font();
-      rfont.draw( *_textPictureRef(), goodName, 55, 0 );
+      rfont.draw( _textPicture(), goodName, 55, 0 );
     }
   }
 

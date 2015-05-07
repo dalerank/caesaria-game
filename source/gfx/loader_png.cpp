@@ -225,7 +225,7 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   png_destroy_read_struct( &png_ptr, &info_ptr, 0 ); // Clean up memory
 
   // Create the image structure to be filled by png data
-  Picture* pic;
+  Picture pic;
   if( ColorType==PNG_COLOR_TYPE_RGB_ALPHA )
   {
     pic = Picture::create( Size( Width, Height ), bytes.data() );
@@ -245,5 +245,5 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
 
     pic = Picture::create( Size( Width, Height ), b4.data() );
   }
-  return *pic;
+  return pic;
 }

@@ -657,12 +657,6 @@ void GlEngine::exit()
    SDL_Quit();
 }
 
-void GlEngine::deletePicture( Picture* pic )
-{
-  if( pic )
-    unloadPicture( *pic );
-}
-
 void GlEngine::setFlag( int flag, int value )
 {
   Engine::setFlag( flag, value );

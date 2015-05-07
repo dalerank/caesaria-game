@@ -128,24 +128,24 @@ void SpinBox::_decrease()
 void SpinBox::_update()
 {
   Font f = font();
-  if( f.isValid() && !_textPictureRef().isNull() )
+  if( f.isValid() && _textPicture().isValid() )
   {
     Rect frameRect( Point( 0, 0 ), _d->btnDecrease->leftbottom()  );
-    _textPictureRef()->fill( DefaultColors::clear, Rect() );
+    _textPicture().fill( DefaultColors::clear, Rect() );
     if( !text().empty() )
     {
       Rect textRect = f.getTextRect( text(), frameRect, horizontalTextAlign(), verticalTextAlign() );
-      f.draw( *_textPictureRef(), text(), textRect.lefttop(), true, false );
+      f.draw( _textPicture(), text(), textRect.lefttop(), true, false );
     }
 
     frameRect = Rect( _d->btnIncrease->right() + 5, 0, width(), height() );
     string valueText = utils::format( 0xff, "%d %s", _d->value, _d->postfix.c_str() );
-    _textPictureRef()->fill( DefaultColors::clear, frameRect );
+    _textPicture().fill( DefaultColors::clear, frameRect );
 
     if( !valueText.empty() )
     {
       Rect textRect = f.getTextRect( valueText, frameRect, horizontalTextAlign(), verticalTextAlign() );
-      f.draw( *_textPictureRef(), valueText, textRect.lefttop(), true, true );
+      f.draw( _textPicture(), valueText, textRect.lefttop(), true, true );
     }
   }
 }

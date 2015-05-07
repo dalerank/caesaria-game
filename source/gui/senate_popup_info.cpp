@@ -38,21 +38,21 @@ public:
   Point offset;
   Font font;
   gfx::Renderer* cityRenderer;
-  PictureRef background;  
+  Picture background;
   int lastUpdateTime;
 
   void updateRatings( SenatePtr senate )
   {
     lastUpdateTime = DateTime::elapsedTime();
 
-    background->fill( 0xffffffff, Rect( ratingStartPos.x(), ratingStartPos.y(), background->width()-2, background->height()-2 ) );
-    font.draw( *background, utils::format( 0xff, "%d %%", senate->status( Senate::workless ) ), ratingStartPos, false, false );
-    font.draw( *background, utils::format( 0xff, "%d", senate->status( Senate::culture ) ), ratingStartPos + offset, false, false );
-    font.draw( *background, utils::format( 0xff, "%d", senate->status( Senate::prosperity ) ), ratingStartPos + offset * 2, false, false );
-    font.draw( *background, utils::format( 0xff, "%d", senate->status( Senate::peace ) ), ratingStartPos + offset * 3, false, false );
-    font.draw( *background, utils::format( 0xff, "%d", senate->status( Senate::favour ) ), ratingStartPos + offset * 4, false, false );
+    background.fill( 0xffffffff, Rect( ratingStartPos.x(), ratingStartPos.y(), background.width()-2, background.height()-2 ) );
+    font.draw( background, utils::format( 0xff, "%d %%", senate->status( Senate::workless ) ), ratingStartPos, false, false );
+    font.draw( background, utils::format( 0xff, "%d", senate->status( Senate::culture ) ), ratingStartPos + offset, false, false );
+    font.draw( background, utils::format( 0xff, "%d", senate->status( Senate::prosperity ) ), ratingStartPos + offset * 2, false, false );
+    font.draw( background, utils::format( 0xff, "%d", senate->status( Senate::peace ) ), ratingStartPos + offset * 3, false, false );
+    font.draw( background, utils::format( 0xff, "%d", senate->status( Senate::favour ) ), ratingStartPos + offset * 4, false, false );
 
-    background->update();
+    background.update();
   }
 };
 
@@ -62,20 +62,20 @@ SenatePopupInfo::SenatePopupInfo() : _d( new Impl )
   _d->ratingStartPos = Point( 186, 6 );
   _d->offset = Point( 0, 14 );
   _d->lastUpdateTime = 0;
-  _d->background.reset( Picture::create( Size( 240, 80 ), 0, true ) );
+  _d->background = Picture::create( Size( 240, 80 ), 0, true );
 
-  _d->background->fill( 0xff000000, Rect( Point( 0, 0 ), _d->background->size() ) );
-  _d->background->fill( 0xffffffff, Rect( Point( 1, 1 ), _d->background->size() - Size( 2, 2 ) ) );
+  _d->background.fill( 0xff000000, Rect( Point( 0, 0 ), _d->background.size() ) );
+  _d->background.fill( 0xffffffff, Rect( Point( 1, 1 ), _d->background.size() - Size( 2, 2 ) ) );
   
   _d->font = Font::create( FONT_1 );
 
-  _d->font.draw( *_d->background, _("##senatepp_unemployment##"), _d->startPos, false, false );
-  _d->font.draw( *_d->background, _("##senatepp_clt_rating##"), _d->startPos + _d->offset, false, false );
-  _d->font.draw( *_d->background, _("##senatepp_prsp_rating##"), _d->startPos + _d->offset * 2, false, false );
-  _d->font.draw( *_d->background, _("##senatepp_peace_rating##"), _d->startPos + _d->offset * 3, false, false );
-  _d->font.draw( *_d->background, _("##senatepp_favour_rating##"), _d->startPos + _d->offset * 4, false, false );
+  _d->font.draw( _d->background, _("##senatepp_unemployment##"), _d->startPos, false, false );
+  _d->font.draw( _d->background, _("##senatepp_clt_rating##"), _d->startPos + _d->offset, false, false );
+  _d->font.draw( _d->background, _("##senatepp_prsp_rating##"), _d->startPos + _d->offset * 2, false, false );
+  _d->font.draw( _d->background, _("##senatepp_peace_rating##"), _d->startPos + _d->offset * 3, false, false );
+  _d->font.draw( _d->background, _("##senatepp_favour_rating##"), _d->startPos + _d->offset * 4, false, false );
 
-  _d->background->update();
+  _d->background.update();
 }
 
 void SenatePopupInfo::draw( const Point& cursorPos, gfx::Engine& painter, SenatePtr senate )
@@ -86,7 +86,7 @@ void SenatePopupInfo::draw( const Point& cursorPos, gfx::Engine& painter, Senate
     {
       _d->updateRatings( senate );
     }
-    painter.draw( *_d->background, cursorPos );
+    painter.draw( _d->background, cursorPos );
   }
 }
 

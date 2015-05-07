@@ -64,16 +64,16 @@ Picture PictureLoaderBmp::load(vfs::NFile file) const
     return Picture::getInvalid();
   }
 
-  Picture* pic = Picture::create( Size( temp->w, temp->h), (unsigned char*)temp->pixels );
+  Picture pic = Picture::create( Size( temp->w, temp->h), (unsigned char*)temp->pixels );
 
-  if( pic->size().area() == 0 )
+  if( pic.size().area() == 0 )
   {
     Logger::warning( "LOAD BMP: Internal create image struct failure " + file.path().toString() );
     return Picture::getInvalid();
   }
 
 	//Return our loaded image
-  return *pic;
+  return pic;
 }
 
 

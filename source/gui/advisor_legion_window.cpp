@@ -85,21 +85,21 @@ public:
   {
     PushButton::_updateTextPic();
 
-    PictureRef& pic = _textPictureRef();
+    Picture& pic = _textPicture();
 
     Font fontW = Font::create( FONT_1_WHITE );
     Font fontB = Font::create( FONT_1 );
 
     if( _fort.isValid() )
     {
-      fontW.draw( *pic, _( _fort->legionName() ), 70, 4 );
+      fontW.draw( pic, _( _fort->legionName() ), 70, 4 );
 
       std::string qtyStr = utils::i2str( _fort->soldiers().size() ) +  _("##soldiers##");
-      fontB.draw( *pic, qtyStr, 70, 22 );
+      fontB.draw( pic, qtyStr, 70, 22 );
 
       int moraleValue = _fort->legionMorale() / 10;
       std::string moraleStr = utils::format( 0xff, "##legion_morale_%d##", moraleValue );
-      fontB.draw( *pic, _( moraleStr ), 180, 15 );
+      fontB.draw( pic, _( moraleStr ), 180, 15 );
     }    
   }
 

@@ -93,26 +93,26 @@ protected:
   {
     PushButton::_updateTextPic();
 
-    PictureRef& pic = _textPictureRef();
+    Picture& pic = _textPicture();
 
     Font font = Font::create( FONT_1_WHITE );
-    font.draw( *pic, _title, ofBranchName, 2, Font::alphaDraw, Font::ignoreTx );
-    font.draw( *pic, utils::i2str( _needWorkers ), ofNeedWorkers, 2, Font::alphaDraw, Font::ignoreTx );
+    font.draw( pic, _title, ofBranchName, 2, Font::alphaDraw, Font::ignoreTx );
+    font.draw( pic, utils::i2str( _needWorkers ), ofNeedWorkers, 2, Font::alphaDraw, Font::ignoreTx );
 
     if( _haveWorkers < _needWorkers )
     {
       font = Font::create( FONT_1_RED );
     }
 
-    font.draw( *pic, utils::i2str( _haveWorkers ), ofHaveWorkers, 2, Font::alphaDraw, Font::ignoreTx );
+    font.draw( pic, utils::i2str( _haveWorkers ), ofHaveWorkers, 2, Font::alphaDraw, Font::ignoreTx );
 
     if( _priority > 0 )
     {
       font.setColor( DefaultColors::black );
-      font.draw( *pic, utils::i2str( _priority ), Point( ofPriority, 3 ), Font::alphaDraw, Font::ignoreTx );
+      font.draw( pic, utils::i2str( _priority ), Point( ofPriority, 3 ), Font::alphaDraw, Font::ignoreTx );
     }
 
-    pic->update();
+    pic.update();
   }
 
   virtual void draw(Engine &painter)

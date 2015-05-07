@@ -108,7 +108,7 @@ public:
     Label::_updateTexture( painter );
 
     Font font = Font::create( FONT_2_WHITE );
-    font.draw( _textPictureRef(), _(_title), Point( 20, 0), true );
+    font.draw( _textPicture(), _(_title), Point( 20, 0), true );
   }
 
   std::string _title;

@@ -19,6 +19,7 @@
 #define __CAESARIA_GFX_SDL_BATCHER_H_INCLUDED__
 
 #include "engine.hpp"
+#include "core/scopedptr.hpp"
 
 namespace gfx
 {

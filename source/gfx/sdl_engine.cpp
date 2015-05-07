@@ -71,7 +71,7 @@ public:
   }MaskInfo;
 
   Picture screen;
-  PictureRef fpsText;
+  Picture fpsText;
 
   SDL_Window *window;
   SDL_Renderer *renderer;
@@ -104,12 +104,6 @@ SdlEngine::SdlEngine() : Engine(), _d( new Impl )
 }
 
 SdlEngine::~SdlEngine(){}
-
-void SdlEngine::deletePicture( Picture* pic )
-{
-  if( pic )
-    unloadPicture( *pic );
-}
 
 SDL_Batch* __createBatch( SDL_Renderer* render, const Picture& pic, const Rects& srcRects, const Rects& dstRects)
 {
@@ -313,7 +307,7 @@ void SdlEngine::init()
   _d->window = window;
   _d->renderer = renderer;
 
-  _d->fpsText.reset( Picture::create( Size( 200, 20 ), 0, true ));
+  _d->fpsText = Picture::create( Size( 200, 20 ), 0, true );
 }
 
 void SdlEngine::exit()

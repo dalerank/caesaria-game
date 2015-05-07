@@ -127,7 +127,7 @@ protected:
   virtual void _updateBackground(gfx::Engine& painter , bool& useAlpha4Text);
   virtual void _handleClick();
 
-  gfx::Picture& _textPictureRef();
+  gfx::Picture& _textPicture();
   gfx::Batch& _background();
 
 private:
