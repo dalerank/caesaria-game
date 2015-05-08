@@ -156,7 +156,7 @@ void SmkViewer::Impl::updateTexture( gfx::Engine& painter, const Size& size )
 
   if( !background.isValid() )
   {
-    background = Picture::create( imageSize, 0, true );
+    background = Picture( imageSize, 0, true );
   }
 
   unsigned int* pixels = background.lock();

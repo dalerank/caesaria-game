@@ -39,6 +39,9 @@ class Picture
 public:
   typedef enum { preloaded, filesystem } LoadMode;
   Picture();
+  Picture( const Size& size, unsigned char* data=0, bool mayChange=false );
+  Picture( const std::string& group, const int id );
+  Picture( const std::string& filename );
   ~Picture();
 
   Picture( const Picture& other );
@@ -65,6 +68,9 @@ public:
   unsigned int& textureID();
   unsigned int textureID() const;
 
+  void load( const std::string& group, const int id );
+  void load( const std::string& filename );
+
   int width() const;
   int height() const;
   int pitch() const;
@@ -77,11 +83,7 @@ public:
   Size size() const;
   unsigned int sizeInBytes() const;
 
-  bool isValid() const;
-
-  static Picture& load( const std::string& group, const int id );
-  static Picture& load( const std::string& filename );
-  static Picture create( const Size& size, unsigned char* data=0, bool mayChange=false );
+  bool isValid() const;  
 
   static const Picture& getInvalid();
 

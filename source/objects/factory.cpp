@@ -383,11 +383,11 @@ bool Factory::standIdle() const{  return !mayWork(); }
 
 Creamery::Creamery() : Factory(good::olive, good::oil, object::oil_workshop, Size(2) )
 {
-  setPicture( ResourceGroup::commerce, 99 );
+  _picture().load( ResourceGroup::commerce, 99 );
 
   _animationRef().load(ResourceGroup::commerce, 100, 8);
   _animationRef().setDelay( 4 );
-  _fgPicturesRef().resize( 3 );
+  _fgPictures().resize( 3 );
 }
 
 bool Creamery::canBuild( const city::AreaInfo& areaInof ) const
@@ -408,6 +408,6 @@ bool Creamery::build( const city::AreaInfo& info )
 
 void Creamery::_storeChanged()
 {
-  _fgPicturesRef()[1] = inStockRef().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 154 );
-  _fgPicturesRef()[1].setOffset( 40, -5 );
+  _fgPicture(1) = inStockRef().empty() ? Picture() : Picture( ResourceGroup::commerce, 154 );
+  _fgPicture(1).setOffset( 40, -5 );
 }

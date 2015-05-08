@@ -404,8 +404,7 @@ void ComputerCity::_initTextures()
   if( _d->distantCity ) { index = PicID::distantCity; }
   else if( _d->states.romeCity ) { index = PicID::romeCity; }
 
-  Picture pic = Picture::load( ResourceGroup::empirebits, index );
-  setPicture( pic );
+  _picture().load( ResourceGroup::empirebits, index );
   _animation().load( ResourceGroup::empirebits, index+1, 6 );
   _animation().setLoop( true );
   _animation().setDelay( 2 );

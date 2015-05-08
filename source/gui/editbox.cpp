@@ -781,7 +781,7 @@ void EditBox::beforeDraw(Engine& painter)
 
     if( !_d->textPicture.isValid() || ( size() != _d->textPicture.size() ) )
     {
-      _d->textPicture = Picture::create( size(), 0, true );
+      _d->textPicture = Picture( size(), 0, true );
       _d->textPicture.fill( 0x00000000, Rect( 0, 0, 0, 0) );
     }
 

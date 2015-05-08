@@ -58,7 +58,7 @@ public:
     else if( prc <= 0.75 ) { _step = 3; }
     else _step =0;
 
-    _icon = Picture::load( "whblock", 1 );
+    _icon.load( "whblock", 1 );
     setBackgroundStyle( PushButton::blackBorderUp );
     setFont( Font::create( FONT_2_WHITE ) );
     _updateText();

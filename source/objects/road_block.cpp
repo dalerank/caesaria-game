@@ -34,7 +34,7 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(object::roadBlock, RoadBlock)
 RoadBlock::RoadBlock()
 {
   setType(object::roadBlock);
-  setPicture( ResourceGroup::roadBlock, 1 );
+  _picture().load( ResourceGroup::roadBlock, 1 );
 }
 
 // Blocks can be built ONLY on top of existing roads
@@ -109,12 +109,12 @@ void RoadBlock::load(const VariantMap& stream)
     Construction::build( info );
   }
 
-  setPicture( Picture::load( stream.get( "picture" ).toString() ) );
+  _picture().load( stream.get( "picture" ).toString() );
 }
 
 const Picture& RoadBlock::picture() const
 {
   return tile().masterTile()
            ? Construction::picture()
-           : Picture::load( ResourceGroup::roadBlock, 1);
+           : Picture( ResourceGroup::roadBlock, 1);
 }

@@ -383,11 +383,11 @@ Destroy::Destroy( Renderer& renderer, PlayerCityPtr city)
   : Layer( renderer.camera(), city ), _d( new Impl )
 {
   _d->renderer = &renderer;
-  _d->shovelPic = Picture::load( "shovel", 1 );
+  _d->shovelPic.load( "shovel", 1 );
   std::string rcLand = SETTINGS_VALUE( forbidenTile ).toString();
-  _d->clearPic = Picture::load( rcLand, 2 );
+  _d->clearPic.load( rcLand, 2 );
   _d->textFont = Font::create( FONT_5 );
-  _d->textPic = Picture::create( Size( 100, 30 ), 0, true );
+  _d->textPic = Picture( Size( 100, 30 ), 0, true );
   _addWalkerType( walker::all );
 }
 

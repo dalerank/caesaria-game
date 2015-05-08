@@ -66,7 +66,7 @@ public:
     _needWorkers = need;
     _haveWorkers = have;
     _priority = 0;
-    _lockPick = Picture::load( ResourceGroup::panelBackground, 238 );
+    _lockPick.load( ResourceGroup::panelBackground, 238 );
 
     int percentage = math::percentage( have, need );
     std::string tooltip;

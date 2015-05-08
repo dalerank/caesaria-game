@@ -121,7 +121,7 @@ void ListBoxItem::resetPicture( const Size& s )
 {
   if( _d->textPic.isValid() || _d->textPic.size() != s )
   {
-    _d->textPic = Picture::create( s, 0, true );
+    _d->textPic = Picture( s, 0, true );
   }
 }
 

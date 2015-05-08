@@ -14,7 +14,7 @@
   requests : {}
   Military : {}
   audio_player : {}
-  ambient_sound : {}
+  AmbientSound : {}
   HealthCare : {}
   Peace : {}
   Sentiment : {}

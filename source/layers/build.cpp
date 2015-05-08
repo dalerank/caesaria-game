@@ -154,8 +154,8 @@ void Build::_checkPreviewBuild(TilePos pos)
   else
   {
     //bldCommand->setCanBuild(false);
-    const Picture& grnPicture = Picture::load( d->resForbiden, 1);
-    const Picture& redPicture = Picture::load( d->resForbiden, 2);
+    Picture grnPicture( d->resForbiden, 1);
+    Picture redPicture( d->resForbiden, 2);
 
     //TilemapArea area = til
     Tilemap& tmap = _city()->tilemap();
@@ -630,7 +630,7 @@ Build::Build( Renderer& renderer, PlayerCityPtr city)
   d->resForbiden = SETTINGS_VALUE( forbidenTile ).toString();
   d->startTilePos = gfx::tilemap::invalidLocation();
   d->textFont = Font::create( FONT_5 );
-  d->textPic = Picture::create( Size( 100, 30 ), 0, true );
+  d->textPic = Picture( Size( 100, 30 ), 0, true );
   _addWalkerType( walker::all );
 }
 

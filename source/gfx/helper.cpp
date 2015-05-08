@@ -143,10 +143,10 @@ int fromResource( const std::string& pic_name )
   return res_id;
 }
 
-Picture& toPicture(const unsigned int imgId)
+Picture toPicture(const unsigned int imgId)
 {
   std::string picname = toResource( imgId );
-  return Picture::load( picname );
+  return Picture( picname );
 }
 
 }
@@ -264,7 +264,7 @@ void clear(Tile& tile)
   int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
   int imgId = math::random( 58 );
 
-  Picture pic = Picture::load( ResourceGroup::land1a, startOffset + imgId );
+  Picture pic( ResourceGroup::land1a, startOffset + imgId );
   tile.setPicture( ResourceGroup::land1a, startOffset + imgId );
   tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
 }

@@ -61,6 +61,7 @@ public:
 protected:
   Object(EmpirePtr empire );
   gfx::Animation& _animation();
+  gfx::Picture&  _picture();
   gfx::Pictures& _pictures();
 
 private:

@@ -228,7 +228,7 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   Picture pic;
   if( ColorType==PNG_COLOR_TYPE_RGB_ALPHA )
   {
-    pic = Picture::create( Size( Width, Height ), bytes.data() );
+    pic = Picture( Size( Width, Height ), bytes.data() );
   }
   else
   {
@@ -238,12 +238,12 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
     for( unsigned int index=0; index < Width * Height; index++ )
     {
       b4[ index*4+3 ] = 0xff;
-      b4[ index*4+0] = bytes[index*3+2];
-      b4[ index*4+1] = bytes[index*3+1];
-      b4[ index*4+2] = bytes[index*3+0];
+      b4[ index*4+0 ] = bytes[index*3+2];
+      b4[ index*4+1 ] = bytes[index*3+1];
+      b4[ index*4+2 ] = bytes[index*3+0];
     }
 
-    pic = Picture::create( Size( Width, Height ), b4.data() );
+    pic = Picture( Size( Width, Height ), b4.data() );
   }
   return pic;
 }

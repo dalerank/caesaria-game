@@ -42,7 +42,7 @@ public:
   //! draws the element and its children
   virtual void draw( gfx::Engine& painter );
 
-  virtual void setPicture( gfx::Picture picture );
+  virtual void setPicture(const gfx::Picture& picture );
 
   virtual void setupUI( const VariantMap& ui );
     

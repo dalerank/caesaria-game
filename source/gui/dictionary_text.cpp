@@ -144,12 +144,12 @@ void DictionaryText::_updateTexture( gfx::Engine& painter )
 {
   if( _d->textPicture.isValid() && _d->textPicture.size() != size() )
   {
-    _d->textPicture = Picture::create( size(), 0, true );
+    _d->textPicture = Picture( size(), 0, true );
   }
 
   if( !_d->textPicture.isValid() )
   {
-    _d->textPicture = Picture::create( size(), 0, true );
+    _d->textPicture = Picture( size(), 0, true );
   }
 
   if( _d->textPicture.isValid() )
@@ -670,7 +670,7 @@ void DictionaryText::setupUI(const VariantMap& ui)
   Widget::setupUI( ui );
 
   setFont( Font::create( ui.get( "font", std::string( "FONT_2" ) ).toString() ) );
-  setBackgroundPicture( Picture::load( ui.get( "image" ).toString() ) );
+  setBackgroundPicture( Picture( ui.get( "image" ).toString() ) );
 
   Variant vTextOffset = ui.get( "text.offset" );
   if( vTextOffset.isValid() ){ setTextOffset( vTextOffset.toPoint() ); }

@@ -117,7 +117,7 @@ void Image::draw(gfx::Engine& painter )
 
 Signal0<>& Image::onClicked(){  return _d->onClickedSignal;}
 
-void Image::setPicture( Picture picture )
+void Image::setPicture( const Picture& picture )
 {
   _d->bgPicture = picture;
 
@@ -132,7 +132,7 @@ void Image::setupUI(const VariantMap& ui)
 {
   Widget::setupUI( ui );
 
-  setPicture( Picture::load( ui.get( "image" ).toString() ) );
+  setPicture( Picture( ui.get( "image" ).toString() ) );
   std::string mode = ui.get( "mode" ).toString();
   if( mode == "fit" ) { _d->mode = Image::fit; }
   else if( mode == "image" ) { _d->mode = Image::image; }

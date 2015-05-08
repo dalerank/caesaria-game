@@ -62,7 +62,7 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
     if( tile.getFlag( Tile::isConstructible ) && desirability != 0 )
     {
       int desIndex = __des2index( desirability );
-      Picture& pic = Picture::load( ResourceGroup::land2a, 37 + desIndex );
+      Picture pic( ResourceGroup::land2a, 37 + desIndex );
 
       engine.draw( pic, screenPos );
     }
@@ -86,7 +86,7 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
     {
       //other buildings
       int picOffset = __des2index( desirability );
-      Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
+      Picture pic( ResourceGroup::land2a, 37 + picOffset );
 
       TilesArray tiles4clear = overlay->area();
 

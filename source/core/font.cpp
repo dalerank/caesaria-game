@@ -231,7 +231,7 @@ void Font::draw(Picture &dstpic, const std::string &text, const Point& pos, bool
 Picture Font::once(const std::string &text, bool mayChange)
 {
   SDL_Surface* textSurface = TTF_RenderUTF8_Blended( _d->ttfFont, text.c_str(), _d->color );
-  Picture ret = Picture::create( Size( textSurface->w, textSurface->h ), (unsigned char*)textSurface->pixels, mayChange );
+  Picture ret( Size( textSurface->w, textSurface->h ), (unsigned char*)textSurface->pixels, mayChange );
   SDL_FreeSurface( textSurface );
   ret.update();
 
@@ -251,7 +251,6 @@ Font Font::create(FontType type)
 {
   return FontCollection::instance().getFont_( type );
 }
-
 
 Font Font::create(FontType type, NColor color)
 {

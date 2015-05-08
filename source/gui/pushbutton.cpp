@@ -141,12 +141,12 @@ void PushButton::_updateTextPic()
 
   if( textTxs.isValid() )
   {
-    textTxs = Picture::create( size(), 0, true );
+    textTxs = Picture( size(), 0, true );
   }
 
   if( textTxs.size() != size() )
   {
-    textTxs = Picture::create( size(), 0, true );
+    textTxs = Picture( size(), 0, true );
   }
 
   Font stFont = _d->buttonStates[ state ].font;
@@ -300,12 +300,12 @@ void PushButton::setPicture(Picture picture, ElementState state )
 
 void PushButton::setPicture(const std::string& rcname, int index, ElementState state)
 {
-  setPicture( Picture::load( rcname, index ), state );
+  setPicture( Picture( rcname, index ), state );
 }
 
 void PushButton::setIcon( const std::string& rcname, int index, ElementState state)
 {
-  _dfunc()->buttonStates[ state ].icon = Picture::load( rcname, index );
+  _dfunc()->buttonStates[ state ].icon.load( rcname, index );
 }
 
 void PushButton::setIconOffset(Point offset)
@@ -320,7 +320,7 @@ void PushButton::setIconOffset(Point offset)
 void PushButton::setIcon(const std::string& rcname, int index)
 {
   __D_IMPL(_d,PushButton);
-  Picture pic = Picture::load( rcname, index );
+  Picture pic( rcname, index );
   for( int i=stNormal; i < StateCount; i++ )
   {
     _d->buttonStates[ i ].icon = pic;
@@ -329,7 +329,7 @@ void PushButton::setIcon(const std::string& rcname, int index)
 
 void PushButton::setPicture( const std::string& rcname, int index )
 {
-  Picture pic = Picture::load( rcname, index );
+  Picture pic( rcname, index );
   for( int i=stNormal; i < StateCount; i++ )
   {
     setPicture( pic, (ElementState)i );

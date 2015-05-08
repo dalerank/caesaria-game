@@ -75,7 +75,7 @@ LegionEmblem LegionEmblem::findFree( PlayerCityPtr city )
     LegionEmblem newEmblem;
 
     newEmblem.name = vm_emblem[ literals::name ].toString();
-    newEmblem.pic = Picture::load( vm_emblem[ literals::img ].toString() );
+    newEmblem.pic.load( vm_emblem[ literals::img ].toString() );
 
     if( !newEmblem.name.empty() && newEmblem.pic.isValid() )
     {
@@ -300,13 +300,13 @@ FortPtr FortArea::base() const
 Fort::Fort(object::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) ),
   _d( new Impl )
 {
-  Picture logo = Picture::load(ResourceGroup::security, picIdLogo );
+  Picture logo(ResourceGroup::security, picIdLogo );
   logo.setOffset( Point( 80, 10 ) );
 
-  Picture area = Picture::load(ResourceGroup::security, 13 );
+  Picture area(ResourceGroup::security, 13 );
   area.setOffset( Tile( TilePos(3,0) ).mappos() + Point(0,-30) );
 
-  _fgPicturesRef().resize(2);
+  _fgPictures().resize(2);
   _fgPicture( 0 ) = logo;
   _fgPicture( 1 ) = area;
 
@@ -597,7 +597,7 @@ bool Fort::build( const city::AreaInfo& info )
 
   info.city->addOverlay( _d->area.object() );
 
-  _fgPicturesRef().resize(1);
+  _fgPictures().resize(1);
 
   BarracksList barracks = statistic::getObjects<Barracks>( info.city, object::barracks );
 

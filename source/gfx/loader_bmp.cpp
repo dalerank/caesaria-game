@@ -64,7 +64,7 @@ Picture PictureLoaderBmp::load(vfs::NFile file) const
     return Picture::getInvalid();
   }
 
-  Picture pic = Picture::create( Size( temp->w, temp->h), (unsigned char*)temp->pixels );
+  Picture pic = Picture( Size( temp->w, temp->h), (unsigned char*)temp->pixels );
 
   if( pic.size().area() == 0 )
   {

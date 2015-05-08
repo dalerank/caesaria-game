@@ -429,7 +429,7 @@ gfx::Picture getSteamImage( int id )
           rImg[ y * uAvatarWidth + x ] = cl.abgr();
         }
 
-      return gfx::Picture::create( newSize, avatarRGBA.data() );
+      return gfx::Picture( newSize, avatarRGBA.data() );
     }
   }
 

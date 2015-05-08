@@ -53,7 +53,7 @@ protected:
     Pictures pics;
     Decorator::draw( pics, Rect( Point(), size() ),  style );
 
-    Picture& emlbPic = Picture::load( ResourceGroup::panelBackground, PicID::empireStamp );
+    Picture emlbPic( ResourceGroup::panelBackground, PicID::empireStamp );
     pics.append( emlbPic, Point( 4, 2 ) );
     pics.append( emlbPic, Point( width() - emlbPic.width()-4, 2 ) );
 

@@ -472,7 +472,7 @@ void CityChart::draw(Engine &painter)
     return;
 
   Picture& pic = _textPicture();
-  Picture& rpic = Picture::load( ResourceGroup::panelBackground, _picIndex );
+  Picture rpic( ResourceGroup::panelBackground, _picIndex );
 
   pic.fill( 0, Rect() );
   int index=0;

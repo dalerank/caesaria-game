@@ -59,7 +59,7 @@ public:
     _mood = 0;
     _xWrathOffset = 400;
 
-    _wrathPic = Picture::load( ResourceGroup::panelBackground, 334 );
+    _wrathPic.load( ResourceGroup::panelBackground, 334 );
     setFont( Font::create( FONT_1_WHITE ) );
   }
 

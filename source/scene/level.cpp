@@ -171,7 +171,7 @@ void Level::initialize()
   _d->renderer.initialize( city, _d->engine, &ui, oldGraphics );
   ui.clear();
 
-  Picture rPanelPic = Picture::load( ResourceGroup::panelBackground, PicID::rightPanelTx );
+  Picture rPanelPic( ResourceGroup::panelBackground, PicID::rightPanelTx );
 
   Engine& engine = Engine::instance();
 
@@ -404,7 +404,7 @@ void Level::Impl::makeFullScreenshot()
     }
   }
 
-  Picture fullPic = Picture::create( fullPicSize, 0, true );
+  Picture fullPic = Picture( fullPicSize, 0, true );
   Point doffset( 0, fullPicSize.height() / 2 );
   foreach( tile, ret )
   {

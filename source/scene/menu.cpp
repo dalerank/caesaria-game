@@ -552,7 +552,7 @@ void StartMenu::initialize()
   events::Dispatcher::instance().reset();
   Logger::warning( "ScreenMenu: initialize start");
   std::string resName = SETTINGS_VALUE( titleResource ).toString();
-  _d->bgPicture = Picture::load( resName, 1);
+  _d->bgPicture.load( resName, 1);
 
   // center the bgPicture on the screen
   Size tmpSize = (_d->engine->virtualSize() - _d->bgPicture.size())/2;

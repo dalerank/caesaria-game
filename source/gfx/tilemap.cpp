@@ -377,7 +377,7 @@ void Tilemap::load( const VariantMap& stream )
     int imgId = imgIdAr[index];
     if( !tile->masterTile() && imgId != 0 )
     {
-      Picture& pic = imgid::toPicture( imgId );
+      Picture pic = imgid::toPicture( imgId );
 
       tile->setOriginalImgId( imgId );
 

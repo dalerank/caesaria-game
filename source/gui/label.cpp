@@ -127,12 +127,12 @@ void Label::_updateTexture(gfx::Engine& painter )
 {
   if( _d->textPicture.isValid() && _d->textPicture.size() != size() )
   {
-    _d->textPicture = Picture::create( size(), 0, true );
+    _d->textPicture = Picture( size(), 0, true );
   }
 
   if( !_d->textPicture.isValid() )
   {
-    _d->textPicture = Picture::create( size(), 0, true );
+    _d->textPicture = Picture( size(), 0, true );
   }
 
   if( _d->textPicture.isValid() )
@@ -684,7 +684,7 @@ void Label::setupUI(const VariantMap& ui)
   Widget::setupUI( ui );
 
   setFont( Font::create( ui.get( "font", std::string( "FONT_2" ) ).toString() ) );
-  setBackgroundPicture( Picture::load( ui.get( "image" ).toString() ) );
+  setBackgroundPicture( Picture( ui.get( "image" ).toString() ) );
   setWordwrap( (bool)ui.get( "multiline", false ) );
 
   Variant vTextOffset = ui.get( "text.offset" );
@@ -694,7 +694,7 @@ void Label::setupUI(const VariantMap& ui)
   if( vIcon.isValid() )
   {
     Point iconOffset = ui.get( "icon.offset" ).toPoint();
-    setIcon( Picture::load( vIcon.toString() ), iconOffset );
+    setIcon( Picture( vIcon.toString() ), iconOffset );
   }
 
   LabelBackgroundHelper helper;

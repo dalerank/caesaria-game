@@ -97,7 +97,9 @@ public:
   {
     _title = title;
 
-    setIcon( Picture::load( ResourceGroup::panelBackground, 48 ), Point( 5, 5 ) );
+    Picture pic;
+    pic.load( ResourceGroup::panelBackground, 48 ), Point( 5, 5 );
+    setIcon( pic );
     setFont( Font::create( FONT_2 ) );
 
     setTextOffset( Point( 255, 0) );

@@ -268,7 +268,7 @@ void Layer::_setTooltipText(const std::string& text)
 
     if( _d->tooltipPic.isValid() || (_d->tooltipPic.size() != size) )
     {
-      _d->tooltipPic = Picture::create( size, 0, true );
+      _d->tooltipPic = Picture( size, 0, true );
     }
 
     _d->tooltipPic.fill( 0x00000000, Rect( Point( 0, 0 ), _d->tooltipPic.size() ) );
@@ -407,7 +407,7 @@ void Layer::drawArea(Engine& engine, const TilesArray& area, const Point &offset
     Tile* tile = *it;
     int tileBorders = ( tile->i() == leftBorderAtI ? 0 : OverlayPic::skipLeftBorder )
                       + ( tile->j() == rightBorderAtJ ? 0 : OverlayPic::skipRightBorder );
-    const Picture& pic = Picture::load(resourceGroup, tileBorders + tileId);
+    Picture pic(resourceGroup, tileBorders + tileId);
     engine.draw( pic, tile->mappos() + offset );
   }
 }
@@ -558,7 +558,7 @@ void Layer::afterRender( Engine& engine)
 
   if( opts.isFlag( DrawOptions::showRoads ) )
   {
-    const Picture& grnPicture = Picture::load( "oc3_land", 1);
+    Picture grnPicture( "oc3_land", 1);
 
     TilesArray tiles = _d->city->tilemap().allTiles();
     foreach( it, tiles )
@@ -570,7 +570,7 @@ void Layer::afterRender( Engine& engine)
 
   if( opts.isFlag( DrawOptions::showWalkableTiles ) )
   {
-    const Picture& grnPicture = Picture::load( "oc3_land", 1);
+    Picture grnPicture( "oc3_land", 1);
 
     TilesArray tiles = _d->city->tilemap().allTiles();
     foreach( it, tiles )
@@ -582,7 +582,7 @@ void Layer::afterRender( Engine& engine)
 
   if( opts.isFlag( DrawOptions::showFlatTiles ) )
   {
-    const Picture& grnPicture = Picture::load( "oc3_land", 1);
+    Picture grnPicture( "oc3_land", 1);
 
     TilesArray tiles = _d->city->tilemap().allTiles();
     foreach( it, tiles )
@@ -594,7 +594,7 @@ void Layer::afterRender( Engine& engine)
 
   if( opts.isFlag( DrawOptions::showLockedTiles ) )
   {
-    const Picture& grnPicture = Picture::load( "oc3_land", 2);
+    Picture grnPicture( "oc3_land", 2);
 
     TilesArray tiles = _d->city->tilemap().allTiles();
     foreach( it, tiles )
@@ -650,7 +650,7 @@ Layer::Layer( Camera* camera, PlayerCityPtr city )
 
   _d->posMode = 0;
   _d->terraintPic = MetaDataHolder::randomPicture( object::terrain, 1 );
-  _d->tilePosText = Picture::create( Size( 240, 80 ), 0, true );
+  _d->tilePosText = Picture( Size( 240, 80 ), 0, true );
 }
 
 void Layer::_addWalkerType(walker::Type wtype)

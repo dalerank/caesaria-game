@@ -52,8 +52,8 @@ public:
   CitizenScreenshot( Widget* parent, Rect rectangle, WalkerPtr wlk )
     : Label( parent, rectangle, "", false, Label::bgBlackFrame )
   {
-    _wlkPicture = gfx::Picture::create( rectangle.size() - Size( 6 ) );
-    _wlkPicture.fill( DefaultColors::green, Rect() );
+    _wlkPicture = gfx::Picture( rectangle.size() - Size( 6 ), 0, true );
+    _wlkPicture.fill( DefaultColors::clear, Rect() );
     _walker = wlk;
   }
 

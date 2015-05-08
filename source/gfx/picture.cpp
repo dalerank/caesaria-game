@@ -77,9 +77,17 @@ void Picture::setName(const std::string &name){ _name = name;}
 const std::string& Picture::name() const      { return _name;}
 Size Picture::size() const                    { return _orect.size(); }
 unsigned int Picture::sizeInBytes() const     { return size().area() * 4; }
-Picture& Picture::load( const std::string& group, const int id ){  return PictureBank::instance().getPicture( group, id );}
-Picture& Picture::load(const std::string& filename ) { return PictureBank::instance().getPicture( filename ); }
 bool Picture::isValid() const                 { return (_d->texture || _d->opengltx); }
+
+void Picture::load( const std::string& group, const int id )
+{
+  *this = PictureBank::instance().getPicture( group, id );
+}
+
+void Picture::load(const std::string& filename )
+{
+  *this = PictureBank::instance().getPicture( filename );
+}
 
 void Picture::setAlpha(unsigned char value)
 {
@@ -150,7 +158,7 @@ void Picture::unlock()
 Picture& Picture::operator=( const Picture& other )
 {
   _d = other._d;
-  _name = other.name;
+  _name = other._name;
   _orect = other._orect;
   _offset = other._offset;
 
@@ -182,35 +190,45 @@ void Picture::fill( const NColor& color, Rect rect )
   }
   else
   {
-    Logger::warning( "Picture: surface not loading " + _d->name );
+    Logger::warning( "Picture: surface not loading " + _name );
   }
 }
 
-Picture Picture::create(const Size& size, unsigned char* data, bool mayChange)
+Picture::Picture(const Size& size, unsigned char* data, bool mayChange) : _d( new PictureImpl )
 {
-  Picture pic;
-  pic._orect = Rect( 0, 0, size.width(), size.height() );
+  _d->drop();
+  _orect = Rect( 0, 0, size.width(), size.height() );
 
   if( data )
   {
-    pic._d->surface = SDL_CreateRGBSurfaceFrom( data, size.width(), size.height(), 32, size.width() * 4,
-                                                 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
+    _d->surface = SDL_CreateRGBSurfaceFrom( data, size.width(), size.height(), 32, size.width() * 4,
+                                            0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
   }
   else
   {
-    pic._d->surface = SDL_CreateRGBSurface( 0, size.width(), size.height(), 32,
-                                             0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
-    SDL_FillRect( pic._d->surface, 0, 0 );
+    _d->surface = SDL_CreateRGBSurface( 0, size.width(), size.height(), 32,
+                                       0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
+    SDL_FillRect( _d->surface, 0, 0 );
   }
 
-  Engine::instance().loadPicture( pic, mayChange );
+  Engine::instance().loadPicture( *this, mayChange );
   if( !mayChange )
   {
-    SDL_FreeSurface( pic._d->surface );
-    pic._d->surface = 0;
-  }
+    SDL_FreeSurface( _d->surface );
+    _d->surface = 0;
+    }
+}
 
-  return pic;
+Picture::Picture(const std::string& group, const int id) : _d( new PictureImpl )
+{
+  _d->drop();
+  load( group, id );
+}
+
+Picture::Picture(const std::string& filename )  : _d( new PictureImpl )
+{
+   _d->drop();
+  load( filename );
 }
 
 const Picture& Picture::getInvalid() {  return _invalidPicture; }

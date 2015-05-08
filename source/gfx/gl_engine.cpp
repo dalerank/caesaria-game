@@ -648,7 +648,7 @@ void GlEngine::init()
   }
 #endif
 
-  _d->fpsText = Picture::create( Size( 200, 20 ), 0, true );
+  _d->fpsText = Picture( Size( 200, 20 ), 0, true );
 }
 
 void GlEngine::exit()

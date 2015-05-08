@@ -147,7 +147,11 @@ const Picture& Fortification::picture(const city::AreaInfo& areaInfo) const
   const TilePos tile_pos = (areaInfo.aroundTiles.empty()) ? pos() : areaInfo.pos;
 
   if (!tmap.isInside(tile_pos))
-    return Picture::load( ResourceGroup::aqueduct, 121 );
+  {
+    static Picture ret;
+    ret.load( ResourceGroup::aqueduct, 121 );
+    return ret;
+  }
 
   TilePos tile_pos_d[direction::count];
   bool is_border[direction::count] = { 0 };
@@ -231,7 +235,7 @@ const Picture& Fortification::picture(const city::AreaInfo& areaInfo) const
   const_cast< Fortification* >( this )->_d->direction = directionFlags;
   Fortification& th = *const_cast< Fortification* >( this );
   th._d->offset =  Point( 0, 0 );
-  th._fgPicturesRef().clear();
+  th._fgPictures().clear();
   int index;
   switch( directionFlags )
   {  
@@ -441,7 +445,7 @@ const Picture& Fortification::picture(const city::AreaInfo& areaInfo) const
   _d->index = index;
   th._d->mayPatrol = (_d->offset.y() > 0);
 
-  th._d->tmpPicture = Picture::load( ResourceGroup::wall, index );
+  th._d->tmpPicture.load( ResourceGroup::wall, index );
   th._d->tmpPicture.addOffset( _d->offset );
   return _d->tmpPicture;
 }
