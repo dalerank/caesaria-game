@@ -382,14 +382,14 @@ void SdlEngine::endRenderFrame()
     if( DebugTimer::ticks() - timeCount > 500 )
     {
       std::string debugText = utils::format( 0xff, "fps:%d dc:%d", _d->lastFps, _d->drawCall );
-      _d->fpsText->fill( 0, Rect() );
-      _d->debugFont.draw( *_d->fpsText, debugText, Point( 0, 0 ) );
+      _d->fpsText.fill( 0, Rect() );
+      _d->debugFont.draw( _d->fpsText, debugText, Point( 0, 0 ) );
       timeCount = DebugTimer::ticks();
 #ifdef SHOW_FPS_IN_LOG
       Logger::warning( "FPS: %d", _d->fps );
 #endif
     }
-    draw( *_d->fpsText, Point( _d->screen.width() / 2, 2 ), 0 );
+    draw( _d->fpsText, Point( _d->screen.width() / 2, 2 ), 0 );
   }
 
   bool needDraw = _d->batcher.finish();

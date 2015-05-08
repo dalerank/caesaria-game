@@ -35,7 +35,7 @@ class Desirability::Impl
 {
 public:
   Font debugFont;
-  std::vector<Picture*> debugText;
+  std::vector<Picture> debugText;
 };
 
 namespace
@@ -99,10 +99,10 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
 
   if( desirability != 0 )
   {
-    Picture* tx = _d->debugFont.once( utils::i2str( desirability ) );
+    Picture tx = _d->debugFont.once( utils::i2str( desirability ) );
     _d->debugText.push_back( tx );
 
-    _addPicture( tile.mappos() + Point( 20, -15 ), *tx );
+    _addPicture( tile.mappos() + Point( 20, -15 ), tx );
   }
 
   tile.setWasDrawn();
@@ -110,7 +110,6 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
 
 void Desirability::beforeRender( Engine& engine )
 {
-  foreach( it, _d->debugText ) { Picture::destroy( *it ); }
   _d->debugText.clear();
 
   Info::beforeRender( engine );

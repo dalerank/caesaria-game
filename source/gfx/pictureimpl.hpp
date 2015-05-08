@@ -30,17 +30,21 @@ class PictureImpl : public ReferenceCounted
 public:
   SDL_Surface* surface;
   SDL_Texture* texture;  // for SDL surface
-  std::string name; // for game save
   unsigned int opengltx;
-  Rect orect;
 
-  PictureImpl& operator=(const Impl& other)
+  PictureImpl()
+  {
+    surface = 0;
+    texture = 0;
+  }
+
+  PictureImpl& operator=(const PictureImpl& other)
   {
     surface = other.surface;
     texture = other.texture;
-    name = other.name;
     opengltx = other.opengltx;
-    orect = other.orect;
+
+    return *this;
   }
 
   ~PictureImpl()

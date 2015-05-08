@@ -49,7 +49,7 @@ public:
   void exit();
   void delay( const unsigned int msec );
 
-  Picture* createPicture(const Size& size);
+  Picture createPicture(const Size& size);
   virtual void loadPicture(Picture &ioPicture, bool streamed);
   virtual void unloadPicture(Picture &ioPicture);
   virtual Batch loadBatch(const Picture& pic, const Rects& srcRects, const Rects& dstRects, const Rect* clipRect=0);

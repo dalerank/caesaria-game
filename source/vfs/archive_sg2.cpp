@@ -517,7 +517,7 @@ NFile Sg2ArchiveReader::createAndOpenFile(const Path& filename)
   {
     SgImageRecord& sir = it->second.sr;
 
-    Picture result = Picture::create( Size( sir.width, sir.height ) );
+    Picture result = Picture::create( Size( sir.width, sir.height ), 0, true );
     result.fill( 0, Rect() ); // Transparent black
 
     switch(sir.type)

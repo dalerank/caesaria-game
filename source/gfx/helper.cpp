@@ -137,7 +137,7 @@ int fromResource( const std::string& pic_name )
   else
   {
     Logger::warning( "TileHelper: unknown image " + pic_name );
-    crashhandler::printstack();
+    res_id = 0;
   }
 
   return res_id;

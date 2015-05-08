@@ -16,6 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "hash.hpp"
+static const unsigned int hash_seed = 1315423911;
 
 Hash::Hash( const std::string& text )
 {
@@ -23,8 +24,14 @@ Hash::Hash( const std::string& text )
   const char* key = text.c_str();
   if( key )
   {
+    nHash = hash_seed;
     while(*key)
-      nHash = (nHash<<5) + nHash + *key++;
+    {
+      nHash ^= ((nHash << 5) + *key + (nHash >> 2));
+      key++;
+    }
+
+    nHash &= 0x7FFFFFFF;
   }
 
   _value = nHash;

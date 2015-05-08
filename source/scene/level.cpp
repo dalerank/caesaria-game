@@ -404,8 +404,7 @@ void Level::Impl::makeFullScreenshot()
     }
   }
 
-  PictureRef fullPic;
-  fullPic.init( fullPicSize );
+  Picture fullPic = Picture::create( fullPicSize, 0, true );
   Point doffset( 0, fullPicSize.height() / 2 );
   foreach( tile, ret )
   {
@@ -422,7 +421,7 @@ void Level::Impl::makeFullScreenshot()
   }
 
   std::string filename = getScreenshotName();
-  PictureConverter::save( *fullPic, filename, "PNG" );
+  PictureConverter::save( fullPic, filename, "PNG" );
 }
 
 void Level::Impl::extendReign(int years)

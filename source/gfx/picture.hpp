@@ -55,7 +55,7 @@ public:
   const Point& offset() const;
 
   void setName(const std::string &name);  // for save game
-  std::string name() const;
+  const std::string& name() const;
   void setAlpha( unsigned char value );
 
   void init( SDL_Texture* tx, SDL_Surface* srf, unsigned int ogltx );
@@ -90,6 +90,8 @@ private:
   SmartPtr<PictureImpl> _d;
 
   Point _offset;  // the image is shifted when displayed
+  Rect _orect;
+  std::string _name; // for game save
 };
 
 }//end namespace gfx

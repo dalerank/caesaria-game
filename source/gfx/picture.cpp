@@ -29,10 +29,8 @@
 #include "core/time.hpp"
 #include "core/timer.hpp"
 #include "pictureimpl.hpp"
-#include <SDL.h>
 
 // Picture class functions
-
 namespace gfx
 {
 
@@ -40,15 +38,17 @@ static const Picture _invalidPicture = Picture();
 
 Picture::Picture() : _d( new PictureImpl )
 {  
+  _d->drop();
   _d->texture = NULL;
-  _d->name = "";
   _d->surface = 0;
   _d->opengltx = 0;
+  _name = "";
   _offset = Point( 0, 0 );
 }
 
 Picture::Picture( const Picture& other ) : _d( new PictureImpl )
 {
+  _d->drop();
   *this = other;
 }
 
@@ -61,21 +61,21 @@ void Picture::init(SDL_Texture *texture, SDL_Surface* srf, unsigned int ogltx)
 
 void Picture::setOffset(const Point &offset ) { _offset = offset; }
 void Picture::setOffset(int x, int y)         { _offset = Point( x, y ); }
-void Picture::setOriginRect(const Rect& rect) { _d->orect = rect; }
+void Picture::setOriginRect(const Rect& rect) { _orect = rect; }
 void Picture::addOffset( const Point& offset ){ _offset += offset; }
 void Picture::addOffset( int x, int y )       { _offset += Point( x, y ); }
-const Rect& Picture::originRect() const       { return _d->orect; }
+const Rect& Picture::originRect() const       { return _orect; }
 SDL_Texture* Picture::texture() const         { return _d->texture;}
 SDL_Surface* Picture::surface() const         { return _d->surface;  }
 unsigned int Picture::textureID() const       { return _d->opengltx; }
 unsigned int& Picture::textureID()            { return _d->opengltx; }
 const Point& Picture::offset() const          { return _offset;}
-int Picture::width() const                    { return _d->orect.width();}
-int Picture::height() const                   { return _d->orect.height();}
+int Picture::width() const                    { return _orect.width();}
+int Picture::height() const                   { return _orect.height();}
 int Picture::pitch() const                    { return width() * 4; }
-void Picture::setName(const std::string &name){ _d->name = name;}
-std::string Picture::name() const             { return _d->name;}
-Size Picture::size() const                    { return _d->orect.size(); }
+void Picture::setName(const std::string &name){ _name = name;}
+const std::string& Picture::name() const      { return _name;}
+Size Picture::size() const                    { return _orect.size(); }
 unsigned int Picture::sizeInBytes() const     { return size().area() * 4; }
 Picture& Picture::load( const std::string& group, const int id ){  return PictureBank::instance().getPicture( group, id );}
 Picture& Picture::load(const std::string& filename ) { return PictureBank::instance().getPicture( filename ); }
@@ -150,6 +150,8 @@ void Picture::unlock()
 Picture& Picture::operator=( const Picture& other )
 {
   _d = other._d;
+  _name = other.name;
+  _orect = other._orect;
   _offset = other._offset;
 
   return *this;
@@ -186,8 +188,8 @@ void Picture::fill( const NColor& color, Rect rect )
 
 Picture Picture::create(const Size& size, unsigned char* data, bool mayChange)
 {
-  Picture ret;
-  pic._d->orect = Rect( 0, 0, size.width(), size.height() );
+  Picture pic;
+  pic._orect = Rect( 0, 0, size.width(), size.height() );
 
   if( data )
   {
@@ -201,14 +203,14 @@ Picture Picture::create(const Size& size, unsigned char* data, bool mayChange)
     SDL_FillRect( pic._d->surface, 0, 0 );
   }
 
-  Engine::instance().loadPicture( ret, mayChange );
+  Engine::instance().loadPicture( pic, mayChange );
   if( !mayChange )
   {
-    SDL_FreeSurface( ret._d->surface );
-    ret._d->surface = 0;
+    SDL_FreeSurface( pic._d->surface );
+    pic._d->surface = 0;
   }
 
-  return ret;
+  return pic;
 }
 
 const Picture& Picture::getInvalid() {  return _invalidPicture; }
