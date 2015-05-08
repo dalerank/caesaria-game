@@ -87,6 +87,28 @@ public:
   }
 };
 
+struct BuildingInfo
+{
+  object::Type type;
+  int maxWorkersNumber;
+  int workersNumber;
+  good::Stock ingoods, outgoods;
+
+  void updateGoods( CcStorage& storage )
+  {
+    if( outgoods.type() != good::none && outgoods.qty() > 0 )
+    {
+      storage.store( good::Stock( outgoods.type(), 1, 1 ), 1 );
+    }
+
+  }
+};
+
+class Buildings : public std::vector<BuildingInfo> 
+{
+public:
+};
+
 namespace world
 {
 
@@ -97,12 +119,15 @@ public:
   bool distantCity;
   bool available;
   int strength;
+  Buildings buildings;
+  CitizenGroup peoples;
   city::States states;
   unsigned int tradeDelay;
 
   CcStorage sells;
   good::Storage realSells;
   CcStorage buys;
+  CcStorage internalGoods;
 
   DateTime lastTimeUpdate;
   DateTime lastTimeMerchantSend;
@@ -110,7 +135,37 @@ public:
 
   unsigned int merchantsNumber;
   econ::Treasury funds;
+
+public:
+  void initPeoples();
+  void calculateMonthState();
 };
+
+void ComputerCity::Impl::calculateMonthState()
+{
+  foreach( it, buildings )
+  {
+    BuildingInfo& info = *it;
+    if( info.type == object::wheatFarm )
+    {
+      info.updateGoods( internalGoods );
+    }
+  }
+}
+
+void ComputerCity::Impl::initPeoples()
+{
+  int peoplesDelta = states.population - peoples.count();
+  CitizenGroup appendGroup;
+  appendGroup.add( CitizenGroup::child, floor( peoplesDelta * 0.1 ) );
+  appendGroup.add( CitizenGroup::student, floor( peoplesDelta * 0.2 ) );
+  appendGroup.add( CitizenGroup::mature, floor( peoplesDelta * 0.5 ) );
+  appendGroup.add( CitizenGroup::aged, floor( peoplesDelta * 0.2 ) );
+
+  appendGroup.add( CitizenGroup::mature, peoplesDelta - appendGroup.count() );
+
+  peoples.add( appendGroup );
+}
 
 ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
   : City( empire ), _d( new Impl )
@@ -145,10 +200,13 @@ SmartPtr<Player> ComputerCity::mayor() const { return 0; }
 void ComputerCity::save( VariantMap& options ) const
 {
   City::save( options );
+  _d->states.population = _d->peoples.count();
 
   VARIANT_SAVE_CLASS_D( options, _d, sells )
   VARIANT_SAVE_CLASS_D( options, _d, buys )
   VARIANT_SAVE_CLASS_D( options, _d, realSells )
+  VARIANT_SAVE_CLASS_D( options, _d, peoples )
+  VARIANT_SAVE_CLASS_D( options, _d, buildings )
 
   options[ "sea" ] = (_d->tradeType & EmpireMap::sea ? true : false);
   options[ "land" ] = (_d->tradeType & EmpireMap::land ? true : false);
@@ -161,7 +219,7 @@ void ComputerCity::save( VariantMap& options ) const
   VARIANT_SAVE_ANY_D( options, _d, distantCity )
   VARIANT_SAVE_ANY_D( options, _d, states.romeCity )
   VARIANT_SAVE_ANY_D( options, _d, tradeDelay )
-  VARIANT_SAVE_ANY_D( options, _d, lastAttack )
+  VARIANT_SAVE_ANY_D( options, _d, lastAttack )  
   VARIANT_SAVE_ANY_D( options, _d, states.population )
   VARIANT_SAVE_ANY_D( options, _d, strength )
 }
@@ -193,6 +251,8 @@ void ComputerCity::load( const VariantMap& options )
   VARIANT_LOAD_CLASS_D( _d, sells, options )
   VARIANT_LOAD_CLASS_D( _d, buys, options )
   VARIANT_LOAD_CLASS_D( _d, realSells, options )
+  VARIANT_LOAD_CLASS_D( _d, peoples, options )
+  VARIANT_LOAD_CLASS_D( _d, buildings, options )
 
   if( _d->realSells.empty() )
   {
@@ -200,6 +260,11 @@ void ComputerCity::load( const VariantMap& options )
     {
       _d->realSells.setCapacity( *it, _d->sells.capacity( *it ) );
     }
+  }
+
+  if( _d->peoples.count() != _d->states.population )
+  {
+      _d->initPeoples();
   }
 
   _d->tradeType = (options.get( "sea" ).toBool() ? EmpireMap::sea : EmpireMap::unknown)
@@ -288,10 +353,12 @@ void ComputerCity::timeStep( unsigned int time )
   if( game::Date::isMonthChanged() )
   {
     _d->tradeDelay = math::clamp<int>( _d->tradeDelay-1, 0, 99 );
+    _d->calculateMonthState();
   }
 
   if( game::Date::isWeekChanged() )
   {
+    _d->states.population = _d->peoples.count();
     _d->strength = math::clamp<int>( _d->strength+1, 0, _d->states.population / 100 );
   }
 
