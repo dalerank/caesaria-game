@@ -53,6 +53,7 @@ public:
   Label* lbPopulation;
   Label* lbFunds;
   Label* lbDate;
+  bool useIcon;
   ContextMenu* langSelect;
   Batch background;
 
@@ -93,13 +94,13 @@ void TopMenu::draw(gfx::Engine& engine )
 void TopMenu::setPopulation( int value )
 {
   if( _d->lbPopulation )
-    _d->lbPopulation->setText( utils::format( 0xff, "%s %d", _("##pop##"), value ) );
+    _d->lbPopulation->setText( utils::format( 0xff, "%s %d", _d->useIcon ? "" : _("##pop##"), value ) );
 }
 
 void TopMenu::setFunds( int value )
 {
   if( _d->lbFunds )
-    _d->lbFunds->setText( utils::format( 0xff, "%.2s %d", _("##denarii_short##"), value) );
+    _d->lbFunds->setText( utils::format( 0xff, "%.2s %d", _d->useIcon ? "" : _("##denarii_short##"), value) );
 }
 
 void TopMenu::Impl::updateDate()
@@ -159,7 +160,7 @@ void TopMenu::Impl::showAboutInfo()
   CONNECT( btnExit, onClicked(), bg, Label::deleteLater );
 }
 
-TopMenu::TopMenu( Widget* parent, const int height ) 
+TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
 : MainMenu( parent, Rect( 0, 0, parent->width(), height ) ),
   _d( new Impl )
 {
@@ -167,16 +168,23 @@ TopMenu::TopMenu( Widget* parent, const int height )
   setGeometry( Rect( 0, 0, parent->width(), height ) );
 
   _d->initBackground( size() );
+  _d->useIcon = useIcon;
 
   GET_DWIDGET_FROM_UI( _d, lbPopulation )
   GET_DWIDGET_FROM_UI( _d, lbFunds )
   GET_DWIDGET_FROM_UI( _d, lbDate )
 
   if( _d->lbPopulation )
+  {
     _d->lbPopulation->setPosition( Point( width() - populationLabelOffset, 0 ) );
+    _d->lbPopulation->setIcon( useIcon ? Picture( "population", 1 ) : Picture() );
+  }
 
   if( _d->lbFunds )
+  {
     _d->lbFunds->setPosition(  Point( width() - fundLabelOffset, 0) );
+    _d->lbFunds->setIcon( useIcon ? Picture( "paneling", 332 ) : Picture() );
+  }
 
   if( _d->lbDate )
     _d->lbDate->setPosition( Point( width() - dateLabelOffset, 0) );

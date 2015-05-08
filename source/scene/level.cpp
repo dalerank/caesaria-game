@@ -182,7 +182,7 @@ void Level::initialize()
 
   _d->rightPanel = MenuRigthPanel::create( ui.rootWidget(), rPanelRect, rPanelPic);
 
-  _d->topMenu = new TopMenu( ui.rootWidget(), topMenuHeight );
+  _d->topMenu = new TopMenu( ui.rootWidget(), topMenuHeight, !city->getOption( PlayerCity::c3gameplay ) );
   _d->topMenu->setPopulation( _d->game->city()->states().population );
   _d->topMenu->setFunds( _d->game->city()->treasury().money() );
 

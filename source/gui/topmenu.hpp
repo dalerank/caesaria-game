@@ -30,7 +30,7 @@ namespace gui
 class TopMenu : public MainMenu
 {
 public:
-  TopMenu( Widget* parent, const int height );
+  TopMenu( Widget* parent, const int height, bool useIcon );
 
   // draw on screen
   void draw( gfx::Engine& engine );
