@@ -20,6 +20,7 @@
 #define _CAESARIA_GOOD_H_INCLUDE_
 
 #include "core/namedtype.hpp"
+#include "core/foreach.hpp"
 #include <set>
 #include <map>
 
@@ -55,6 +56,14 @@ public:
     insert( a );
     return *this;
   }
+
+  inline Products& operator<<(const Products& a)
+  {
+    foreach( it, a )
+      this->insert( *it );
+
+    return *this;
+  }
 };
 
 const Product& any();
@@ -62,6 +71,7 @@ const Products& foods();
 inline bool isFood( const Product& p ) { return foods().count( p ) > 0; }
 const Products& materials();
 const Products& all();
+const Product& getMaterial( const Product& pr );
 
 class Stock;
 class ProductMap;

@@ -901,7 +901,21 @@ void ListBox::fitText(const std::string& text)
 
 void ListBox::addItems(const StringArray& strings)
 {
-  foreach( it, strings ) { addItem( *it ); }
+  foreach( it, strings )
+  {
+    const std::string& line = *it;
+
+    if( line.find( "\tc" ) != std::string::npos )
+    {
+      std::string nLine = utils::replace( line, "\tc", "" );
+      ListBoxItem& item = addItem( nLine );
+      item.setTextAlignment( align::center, align::center );
+    }
+    else
+    {
+      addItem( line );
+    }
+  }
 }
 
 Font ListBox::font() const{  return _d->font;}
