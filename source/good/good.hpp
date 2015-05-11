@@ -71,7 +71,7 @@ const Products& foods();
 inline bool isFood( const Product& p ) { return foods().count( p ) > 0; }
 const Products& materials();
 const Products& all();
-const Product& getMaterial( const Product& pr );
+Product getMaterial( const Product& pr );
 
 class Stock;
 class ProductMap;

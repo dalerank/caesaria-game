@@ -54,7 +54,7 @@ const Products& all() { return stage.all; }
 const Products& materials() { return stage.materials; }
 const Products& foods() { return stage.foods; }
 
-const Product &getMaterial(const Product &pr)
+Product getMaterial(const Product &pr)
 {
   switch( pr )
   {

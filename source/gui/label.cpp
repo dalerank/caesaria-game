@@ -256,7 +256,10 @@ void Label::draw(gfx::Engine& painter )
   }
   else
   {
-    painter.draw( _d->background, &absoluteClippingRectRef() );
+    if( _d->background.valid() )
+      painter.draw( _d->background, &absoluteClippingRectRef() );
+    else
+      painter.draw( _d->backgroundNb, absoluteRect().lefttop(), &absoluteClippingRectRef() );
   }
 
   if( _d->icon.isValid() )

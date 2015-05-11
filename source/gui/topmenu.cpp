@@ -32,6 +32,7 @@
 #include "texturedbutton.hpp"
 #include "game/advisor.hpp"
 #include "widgetescapecloser.hpp"
+#include "gfx/decorator.hpp"
 #include "listbox.hpp"
 
 using namespace gfx;
@@ -56,6 +57,7 @@ public:
   bool useIcon;
   ContextMenu* langSelect;
   Batch background;
+  Pictures backgroundNb;
 
 slots public:
   void resolveSave();
@@ -86,7 +88,10 @@ void TopMenu::draw(gfx::Engine& engine )
 
   _d->updateDate();
 
-  engine.draw( _d->background, &absoluteClippingRectRef() );
+  if( _d->background.valid() )
+    engine.draw( _d->background, &absoluteClippingRectRef() );
+  else
+    engine.draw( _d->backgroundNb, absoluteRect().lefttop(), &absoluteClippingRectRef() );
 
   MainMenu::draw( engine );
 }
@@ -135,16 +140,21 @@ void TopMenu::Impl::initBackground( const Size& size )
   unsigned int i = 0;
   int x = 0;
 
-  Rects dstrects;
   while( x < size.width() )
   {
     pics.append( p_marble[i%12], Point() );
-    dstrects.push_back( Rect( x, 0, x + p_marble[i%12].width(), p_marble[i%12].height() ) );
+    pics.back().setOffset( x, 0 );
     x += p_marble[i%12].width();
     i++;
   }
 
-  background.load( pics, dstrects );
+  bool batchOk = background.load( pics, Point() );
+  if( !batchOk )
+  {
+    background.destroy();
+    Decorator::reverseYoffset( pics );
+    backgroundNb = pics;
+  }
 }
 
 void TopMenu::Impl::showAboutInfo()
