@@ -142,6 +142,23 @@ public:
   }
 };
 
+struct PriceInfo
+{
+  good::Product product;
+  int buy;
+  int sell;
+
+  bool operator<(const PriceInfo& a)
+  {
+    return product < a.product;
+  }
+};
+
+class Prices : public std::set<PriceInfo>
+{
+public:
+};
+
 struct BuildingInfo
 {
   object::Type type;
@@ -232,11 +249,12 @@ public:
   bool distantCity;
   bool available;
   int strength;
-  bool useAI;
+  City::AiMode useAI;
   int sentiment;
   Buildings buildings;
   CitizenGroup peoples;
   CcTargets targets;
+  Prices prices;
 
   city::States states;
   unsigned int tradeDelay;
@@ -266,7 +284,7 @@ public:
 
 void ComputerCity::Impl::calculateMonthState()
 {
-  if( !useAI )
+  if( useAI == City::inactive )
     return;
 
   updateWorkersInBuildings();
@@ -630,7 +648,7 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
   _d->distantCity = false;
   _d->merchantsNumber = 0;
   _d->available = true;
-  _d->useAI = false;
+  _d->useAI = City::inactive;
   _d->states.population = 0;
   _d->states.nation = world::nation::unknown;
   _d->sells.setCapacity( 99999 );
@@ -647,6 +665,7 @@ bool ComputerCity::_mayTrade() const { return _d->tradeDelay <= 0; }
 econ::Treasury& ComputerCity::treasury() { return _d->funds; }
 bool ComputerCity::isPaysTaxes() const { return true; }
 bool ComputerCity::haveOverduePayment() const { return false; }
+void ComputerCity::setAiMode(City::AiMode mode) { _d->useAI = mode; }
 bool ComputerCity::isDistantCity() const{  return _d->distantCity;}
 bool ComputerCity::isAvailable() const{  return _d->available;}
 void ComputerCity::setAvailable(bool value){  _d->available = value;}
@@ -668,7 +687,7 @@ void ComputerCity::save( VariantMap& options ) const
   options[ "sea" ] = (_d->tradeType & EmpireMap::sea ? true : false);
   options[ "land" ] = (_d->tradeType & EmpireMap::land ? true : false);
 
-  VARIANT_SAVE_ANY_D( options, _d, useAI )
+  VARIANT_SAVE_ENUM_D( options, _d, useAI )
   VARIANT_SAVE_ANY_D( options, _d, lastTimeMerchantSend )
   VARIANT_SAVE_ANY_D( options, _d, lastTimeUpdate )
   VARIANT_SAVE_ANY_D( options, _d, states.age )
@@ -698,7 +717,7 @@ void ComputerCity::load( const VariantMap& options )
   VARIANT_LOAD_ANY_D   ( _d, tradeDelay,            options )
   VARIANT_LOAD_TIME_D  ( _d, lastAttack,            options )
   VARIANT_LOAD_ANY_D   ( _d, strength,              options )
-  VARIANT_LOAD_ANY_D   ( _d, useAI,                 options )
+  VARIANT_LOAD_ENUM_D  ( _d, useAI,                 options )
   VARIANT_LOAD_ANYDEF_D( _d, sentiment,         50, options )
   VARIANT_LOAD_ANYDEF_D( _d, states.population, _d->states.population, options )
 
