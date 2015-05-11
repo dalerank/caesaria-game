@@ -324,7 +324,7 @@ const Tile& Walker::_nextTile() const
   case direction::southWest: p += TilePos( -1, -1 ); break;
   case direction::west: p += TilePos( -1, 0 ); break;
   case direction::northWest: p += TilePos( -1, 1 ); break;
-  default: Logger::warning( "Unknown direction: %d", _d->action.direction); break;
+  default: /*Logger::warning( "Unknown direction: %d", _d->action.direction);*/ break;
   }
 
   return _d->city->tilemap().at( p );

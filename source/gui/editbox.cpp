@@ -62,6 +62,7 @@ public:
 	std::string holderText;
   Picture bgPicture;
   Batch background;
+  Pictures backgroundNb;
   Picture textPicture;
 
 	bool wordWrapEnabled, multiLine, autoScrollEnabled, isPasswordBox;
@@ -791,7 +792,13 @@ void EditBox::beforeDraw(Engine& painter)
 
       Pictures pics;
       Decorator::draw( pics, Rect( 0, 0, width(), height() ), Decorator::blackFrame, Decorator::normalY );
-      _d->background.load( pics, absoluteRect().lefttop() );
+      bool batchOk = _d->background.load( pics, absoluteRect().lefttop() );
+      if( !batchOk )
+      {
+        _d->background.destroy();
+        Decorator::reverseYoffset( pics );
+        _d->backgroundNb = pics;
+      }
     }
 
     Rect localClipRect = absoluteRect();
@@ -981,7 +988,10 @@ void EditBox::draw( Engine& painter )
   }
   else
   {
-    painter.draw( _d->background, &absoluteClippingRectRef() );
+    if( _d->background.valid() )
+      painter.draw( _d->background, &absoluteClippingRectRef() );
+    else
+      painter.draw( _d->backgroundNb, absoluteRect().lefttop(), &absoluteClippingRectRef() );
   }
 
   if( _d->textPicture.isValid() )

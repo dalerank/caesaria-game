@@ -83,6 +83,7 @@ protected:
   void _createSystemButton( ButtonName btnName, const std::string& tooltip, bool visible );
   void _init();
   virtual void _finalizeResize();
+  virtual void _updateBackground();
 
 private:
   class Impl;

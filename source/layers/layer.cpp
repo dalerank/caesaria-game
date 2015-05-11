@@ -423,11 +423,12 @@ void Layer::drawLands( Engine& engine, Camera* camera )
   foreach( it, flatTiles )
   {
     Tile& tile = **it;
-    drawPass( engine, tile, camOffset, Renderer::ground );
-    drawPass( engine, tile, camOffset, Renderer::groundAnimation );
+    drawPass( engine, tile, camOffset, Renderer::ground );   
 
     if( tile.rov().isValid() )
       drawTile( engine, tile, camOffset );
+    else
+      drawPass( engine, tile, camOffset, Renderer::groundAnimation );
   }
 
   if( DrawOptions::instance().isFlag( DrawOptions::oldGraphics ) )

@@ -70,6 +70,7 @@ public:
   Picture bgPicture;
   Picture icon;
   Batch background;
+  Pictures backgroundNb;
   Picture textPicture;
   unsigned int opaque;
 
@@ -225,7 +226,13 @@ void Label::_updateBackground(Engine& painter, bool& useAlpha4Text )
   case bgWhiteBorderA: Decorator::draw( pics, r, Decorator::whiteBorderA, Decorator::normalY  ); break;
   }
 
-  _d->background.load( pics, absoluteRect().lefttop() );
+  bool batchOk = _d->background.load( pics, absoluteRect().lefttop() );
+  if( !batchOk )
+  {
+    _d->background.destroy();
+    Decorator::reverseYoffset( pics );
+    _d->backgroundNb = pics;
+  }
 }
 
 void Label::_handleClick()
