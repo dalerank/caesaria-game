@@ -178,7 +178,7 @@ void Walker::setSpeedMultiplier(float koeff) { _d->speedMultiplier = koeff; }
 void Walker::_walk()
 {
   if( direction::none == _d->action.direction
-      || !_pathwayRef().isValid() )
+      || !_pathway().isValid() )
   {
     // nothing to do
     _noWay();
@@ -353,7 +353,7 @@ TilePos Walker::pos() const{ return _d->location ? _d->location->pos() : gfx::ti
 void Walker::deleteLater(){ _d->isDeleted = true;}
 void Walker::setUniqueId( const UniqueId uid ) {  _d->uid = uid;}
 Walker::UniqueId Walker::uniqueId() const { return _d->uid; }
-Pathway& Walker::_pathwayRef() {  return _d->pathway; }
+Pathway& Walker::_pathway() { return _d->pathway; }
 const Pathway& Walker::pathway() const {  return _d->pathway; }
 Animation& Walker::_animationRef() {  return _d->animation;}
 const Animation& Walker::_animationRef() const {  return _d->animation;}
