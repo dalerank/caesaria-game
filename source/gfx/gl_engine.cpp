@@ -819,11 +819,12 @@ void GlEngine::endRenderFrame()
   _drawCall = 0;
 }
 
-void GlEngine::initViewport(int index, Size s)
+bool GlEngine::initViewport(int index, Size s)
 {
 #ifdef CAESARIA_USE_FRAMEBUFFER
   _d->viewportSize = s;
 #endif
+  return false;
 }
 
 void GlEngine::setViewport(int, bool render)
