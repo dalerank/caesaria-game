@@ -716,5 +716,6 @@ void Label::setupUI(const VariantMap& ui)
 void Label::setTextOffset(Point offset) {  _d->textOffset = offset;}
 Picture& Label::_textPicture() { return _d->textPicture; }
 Batch& Label::_background() { return _d->background; }
+Pictures& Label::_backgroundNb() { return _d->backgroundNb; }
 
 }//end namespace gui

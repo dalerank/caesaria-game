@@ -179,6 +179,10 @@ void Decorator::reverseYoffset(Pictures& stack)
 void Decorator::drawPanel( Pictures& stack, const Rect& rectangle, int picId )
 {
   // left side
+  Picture pic( ResourceGroup::panelBackground, picId);
+  if( !pic.isValid() )
+    picId = 68;
+
   stack.append( Picture( ResourceGroup::panelBackground, picId), rectangle.UpperLeftCorner );
 
   // draws the inside

@@ -51,13 +51,19 @@ protected:
     _background().destroy();
 
     Pictures pics;
-    Decorator::draw( pics, Rect( Point(), size() ),  style );
+    Decorator::draw( pics, Rect( Point(), size() ), style );
 
     Picture emlbPic( ResourceGroup::panelBackground, PicID::empireStamp );
     pics.append( emlbPic, Point( 4, 2 ) );
     pics.append( emlbPic, Point( width() - emlbPic.width()-4, 2 ) );
 
-    _background().load( pics, absoluteRect().lefttop() );
+    bool batchOk = _background().load( pics, absoluteRect().lefttop() );
+    if( !batchOk )
+    {
+      _background().destroy();
+      Decorator::reverseYoffset( pics );
+      _backgroundNb() = pics;
+    }
   }
 };
 
