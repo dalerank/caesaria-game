@@ -76,6 +76,7 @@ class Colors {
 		* @return int representing a colour
 		*/
     inline int colour(int type, int number) const {	return map[type][number];}
+    inline int colourA(int type, bool second) const {	return type & ( second ? 0xfffbffffff : 0xfff7ffff ) ;}
 };
 
 }//end namespace minimap

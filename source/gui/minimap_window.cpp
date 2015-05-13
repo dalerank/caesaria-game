@@ -91,10 +91,6 @@ void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
     return;
   }
 
-  object::Type ovType = object::unknown;
-  if( tile.rov().isValid() )
-    ovType = tile.rov()->type();
-
   int rndData = tile.originalImgId();
   int num3 = rndData & 0x3;
   int num7 = rndData & 0x7;
@@ -134,12 +130,7 @@ void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
     c1 = colors->colour(minimap::Colors::MAP_WALL, 0);
     c2 = colors->colour(minimap::Colors::MAP_WALL, 1);
   }
-  else if( ovType == object::aqueduct  )
-  {
-    c1 = colors->colour(minimap::Colors::MAP_AQUA, 0);
-    c2 = colors->colour(minimap::Colors::MAP_AQUA, 1);
-  }
-  else if (tile.getFlag( Tile::tlOverlay ))
+  else if( tile.getFlag( Tile::tlOverlay ) )
   {
     getBuildingColours(tile, c1, c2);
   }
@@ -165,8 +156,9 @@ void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
   if (overlay == NULL)
     return;
 
-  object::Type type = overlay->type();
+  object::Type type = overlay->type();  
 
+  bool colorFound = false;
   if(type == object::house)
   {
     switch (overlay->size().width())
@@ -185,20 +177,41 @@ void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
       }
       break;
     }
+    colorFound = true;
   }
-  else if(type == object::reservoir)
+  else if(type == object::reservoir || type == object::aqueduct )
   {
      c1 = colors->colour(minimap::Colors::MAP_AQUA, 1);
      c2 = colors->colour(minimap::Colors::MAP_AQUA, 0);
+     colorFound = true;
   }
-  else if(type == object::fort_javelin ||
-          type == object::fort_legionaries ||
-          type == object::fort_horse )
+
+  if( !colorFound )
   {
-    c1 = colors->colour(minimap::Colors::MAP_SPRITES, 1);
-    c2 = colors->colour(minimap::Colors::MAP_SPRITES, 1);
+    object::Group group = overlay->group();
+    switch( group )
+    {
+      case object::group::military:
+      {
+        c1 = colors->colourA(DefaultColors::indianRed,1);
+        c2 = colors->colourA(DefaultColors::indianRed,0);
+        colorFound = true;
+      }
+      break;
+
+      case object::group::food:
+      {
+        c1 = colors->colourA(DefaultColors::paleGreen,1);
+        c2 = colors->colourA(DefaultColors::paleGreen,0);
+        colorFound = true;
+      }
+      break;
+
+      default: break;
+    }
   }
-  else
+
+  if( !colorFound )
   {
     switch (overlay->size().width())
     {
