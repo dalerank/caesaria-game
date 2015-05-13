@@ -58,7 +58,7 @@ public:
   virtual void startRenderFrame();
   virtual void endRenderFrame();
 
-  virtual void initViewport(int index, Size s);
+  virtual bool initViewport(int index, Size s);
   virtual void setViewport( int, bool render);
   virtual void drawViewport( int, Rect r);
 

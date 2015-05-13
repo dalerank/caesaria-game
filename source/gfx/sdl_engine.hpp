@@ -47,7 +47,7 @@ public:
   virtual void setColorMask( int rmask, int gmask, int bmask, int amask );
   virtual void resetColorMask();
 
-  virtual void initViewport( int, Size s);
+  virtual bool initViewport( int, Size s);
   virtual void setViewport( int, bool render);
   virtual void drawViewport( int, Rect r);
 

@@ -207,8 +207,9 @@ void CityRenderer::render()
   {
     _d->zoomChanged = false;
     Size s = _d->engine->screenSize() * _d->zoom / defaultZoom;
-    _d->engine->initViewport( 0, s );
-    _d->camera.setViewport( s );
+    bool zoomOk = _d->engine->initViewport( 0, s );
+    if( zoomOk )
+      _d->camera.setViewport( s );
   }
 
   if( _d->city->getOption( PlayerCity::updateTiles ) > 0 )

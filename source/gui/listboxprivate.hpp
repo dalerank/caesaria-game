@@ -31,6 +31,8 @@ class ListBox::Impl
 {
 public:
   gfx::Batch background;
+  gfx::Pictures backgroundNb;
+
   std::vector< ListBoxItem > items;
   NColor itemDefaultColorText;
   NColor itemDefaultColorTextHighlight;

@@ -37,11 +37,13 @@ struct PriceInfo;
 class City : public Object
 {
 public:
+  typedef enum { inactive=0, indifferent, agressive, friendly, aiCount } AiMode;
   City( EmpirePtr empire );
 
   // performs one simulation step
   virtual bool isAvailable() const { return true; }
   virtual void setAvailable( bool value ) {}
+  virtual void setAiMode( AiMode mode ) {}
 
   virtual unsigned int tradeType() const = 0;
   virtual econ::Treasury& treasury() = 0;

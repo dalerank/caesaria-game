@@ -136,7 +136,7 @@ protected:
   virtual Point& _rndOffset();
   virtual void _updateThoughts();
 
-  Pathway& _pathwayRef();
+  Pathway& _pathway();
 
   gfx::Animation& _animationRef();
   const gfx::Animation &_animationRef() const;

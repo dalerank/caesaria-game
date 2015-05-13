@@ -319,7 +319,7 @@ void WallGuard::_back2base()
       go();
     }
 
-    if( !_pathwayRef().isValid() )
+    if( !_pathway().isValid() )
     {
       deleteLater();
     }

@@ -133,9 +133,9 @@ void Recruter::_centerTile()
   }
   else
   {    
-    if( !_pathwayRef().isReverse() ) //return2Base();
+    if( !_pathway().isReverse() ) //return2Base();
     {
-      _pathwayRef().toggleDirection();
+      _pathway().toggleDirection();
     }
   }
 }

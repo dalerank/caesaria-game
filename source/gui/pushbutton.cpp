@@ -53,6 +53,7 @@ public:
 struct ButtonState
 {
   Picture background;
+  Pictures styleNb;
   Batch style;
   Picture icon;
   Point iconOffset;
@@ -74,6 +75,7 @@ public:
   Point textOffset;
   PushButton::BackgroundStyle bgStyle;
   bool needUpdateTextPic;
+  bool needUpdateBackground;
 
   ElementState currentButtonState, lastButtonState;
   ButtonState buttonStates[ StateCount ];
@@ -232,9 +234,15 @@ void PushButton::_updateBackground( ElementState state )
   }
 
   Decorator::draw( pics, Rect( Point( 0, 0 ), size() ), mode, Decorator::normalY );
-
   _d->buttonStates[ state ].style.destroy();
-  _d->buttonStates[ state ].style.load( pics, absoluteRect().lefttop() );
+  bool batchOk = _d->buttonStates[ state ].style.load( pics, absoluteRect().lefttop() );
+
+  if( !batchOk )
+  {
+    _d->buttonStates[ state ].style.destroy();
+    Decorator::reverseYoffset( pics );
+    _d->buttonStates[ state ].styleNb = pics;
+  }
 }
 
 void PushButton::_updateStyle()
@@ -495,8 +503,14 @@ void PushButton::beforeDraw( gfx::Engine& painter )
   __D_IMPL(_d,PushButton);
 
 	_d->currentButtonState = _state();
+  if( _d->needUpdateBackground )
+  {
+    _updateStyle();
+    _d->needUpdateBackground = false;
+  }
+
 	if( _d->needUpdateTextPic )
-	{
+	{    
 		_updateTextPic();
 		_d->needUpdateTextPic = false;
 	}
@@ -524,7 +538,12 @@ void PushButton::draw( gfx::Engine& painter )
     if( state.background.isValid() )
       painter.draw( state.background, absoluteRect().lefttop(), &absoluteClippingRectRef() );
     else
-      painter.draw( state.style, &absoluteClippingRectRef());
+    {
+      if( state.style.valid() )
+        painter.draw( state.style, &absoluteClippingRectRef());
+      else
+        painter.draw( state.styleNb, absoluteRect().lefttop(), &absoluteClippingRectRef());
+    }
 	}
 
   if( _d->drawText && _d->textPicture.isValid() )
@@ -585,7 +604,7 @@ void PushButton::_finalizeResize()
 void PushButton::setBackgroundStyle( const BackgroundStyle style )
 {
   _dfunc()->bgStyle = style;
-  _updateStyle();
+  _dfunc()->needUpdateBackground = true;
 }
 
 void PushButton::setBackgroundStyle(const std::string &strStyle)

@@ -70,6 +70,7 @@ public:
   Picture bgPicture;
   Picture icon;
   Batch background;
+  Pictures backgroundNb;
   Picture textPicture;
   unsigned int opaque;
 
@@ -225,7 +226,13 @@ void Label::_updateBackground(Engine& painter, bool& useAlpha4Text )
   case bgWhiteBorderA: Decorator::draw( pics, r, Decorator::whiteBorderA, Decorator::normalY  ); break;
   }
 
-  _d->background.load( pics, absoluteRect().lefttop() );
+  bool batchOk = _d->background.load( pics, absoluteRect().lefttop() );
+  if( !batchOk )
+  {
+    _d->background.destroy();
+    Decorator::reverseYoffset( pics );
+    _d->backgroundNb = pics;
+  }
 }
 
 void Label::_handleClick()
@@ -249,7 +256,10 @@ void Label::draw(gfx::Engine& painter )
   }
   else
   {
-    painter.draw( _d->background, &absoluteClippingRectRef() );
+    if( _d->background.valid() )
+      painter.draw( _d->background, &absoluteClippingRectRef() );
+    else
+      painter.draw( _d->backgroundNb, absoluteRect().lefttop(), &absoluteClippingRectRef() );
   }
 
   if( _d->icon.isValid() )
@@ -706,5 +716,6 @@ void Label::setupUI(const VariantMap& ui)
 void Label::setTextOffset(Point offset) {  _d->textOffset = offset;}
 Picture& Label::_textPicture() { return _d->textPicture; }
 Batch& Label::_background() { return _d->background; }
+Pictures& Label::_backgroundNb() { return _d->backgroundNb; }
 
 }//end namespace gui

@@ -59,7 +59,7 @@ unsigned int CitizenGroup::count(unsigned int beginAge, unsigned int endAge) con
   return ret;
 }
 
-CitizenGroup CitizenGroup::retrieve(unsigned int rcount)
+CitizenGroup CitizenGroup::retrieve( unsigned int rcount)
 {
   CitizenGroup ret;
 
@@ -234,4 +234,20 @@ CitizenGroup::CitizenGroup(CitizenGroup::Age age, int value)
   _peoples.resize( longliver+1 );
   _peoples.reserve( longliver+2 );
   _peoples[ age ] = value;
+}
+
+CitizenGroup CitizenGroup::random(int value)
+{
+  CitizenGroup ret;
+
+  while( value > 0 )
+  {
+    int ageGroup = math::random( 100 );
+    int rValue = math::random( value ) + 1;
+    ret[ ageGroup ] += rValue;
+
+    value -= rValue;
+  }
+
+  return ret;
 }

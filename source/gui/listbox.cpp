@@ -120,15 +120,12 @@ void ListBox::_recalculateItemHeight( const Font& defaulFont, int h )
     _d->scrollBar->setVisible( !( _d->totalItemHeight <= h ) );
   }
 
+  int saveScrollBarWidth = _d->scrollBar->width();
   int scrollbarWidth = _d->scrollBar->visible() ? _d->scrollBar->width() : 0;
-  _d->background.destroy();
-
-  Pictures pics;
-
-  Decorator::draw( pics, Rect( 0, 0, width() - scrollbarWidth, height() ), Decorator::blackFrame );
-  Decorator::draw( pics, Rect( width() - scrollbarWidth, 0, width(), height() ), Decorator::whiteArea, Decorator::normalY  );
-
-  _d->background.load( pics, absoluteRect().lefttop() );
+  if( saveScrollBarWidth != scrollbarWidth )
+  {
+    _updateBackground( scrollbarWidth );
+  }
 }
 
 //! destructor
@@ -664,7 +661,10 @@ void ListBox::draw( gfx::Engine& painter )
 
   if( isFlag( drawBackground ) )
   {
-    painter.draw( _d->background, &absoluteClippingRectRef() );
+    if( _d->background.valid() )
+      painter.draw( _d->background, &absoluteClippingRectRef() );
+    else
+      painter.draw( _d->backgroundNb, absoluteRect().lefttop(), &absoluteClippingRectRef() );
   }
 
   Point scrollBarOffset( 0, -_d->scrollBar->value() );
@@ -729,6 +729,24 @@ void ListBox::_recalculateScrollPos()
 	else if (selPos > (int)height() - _d->itemHeight)
 	{
     _d->scrollBar->setValue( _d->scrollBar->value() + selPos - height() + _d->itemHeight );
+  }
+}
+
+void ListBox::_updateBackground( int scrollbarWidth)
+{
+  _d->background.destroy();
+
+  Pictures pics;
+
+  Decorator::draw( pics, Rect( 0, 0, width() - scrollbarWidth, height() ), Decorator::blackFrame );
+  Decorator::draw( pics, Rect( width() - scrollbarWidth, 0, width(), height() ), Decorator::whiteArea, Decorator::normalY  );
+
+  bool batchOk = _d->background.load( pics, absoluteRect().lefttop() );
+  if( !batchOk )
+  {
+    _d->background.destroy();
+    Decorator::reverseYoffset( pics );
+    _d->backgroundNb = pics;
   }
 }
 
@@ -901,7 +919,21 @@ void ListBox::fitText(const std::string& text)
 
 void ListBox::addItems(const StringArray& strings)
 {
-  foreach( it, strings ) { addItem( *it ); }
+  foreach( it, strings )
+  {
+    const std::string& line = *it;
+
+    if( line.find( "\tc" ) != std::string::npos )
+    {
+      std::string nLine = utils::replace( line, "\tc", "" );
+      ListBoxItem& item = addItem( nLine );
+      item.setTextAlignment( align::center, align::center );
+    }
+    else
+    {
+      addItem( line );
+    }
+  }
 }
 
 Font ListBox::font() const{  return _d->font;}

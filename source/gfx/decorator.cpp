@@ -170,9 +170,19 @@ void Decorator::basicText(Picture& dstpic, const Point& pos, const std::string& 
   dstpic.update();
 }
 
+void Decorator::reverseYoffset(Pictures& stack)
+{
+  foreach( it, stack )
+    it->setOffset( Point( it->offset().x(), -it->offset().y() ) );
+}
+
 void Decorator::drawPanel( Pictures& stack, const Rect& rectangle, int picId )
 {
   // left side
+  Picture pic( ResourceGroup::panelBackground, picId);
+  if( !pic.isValid() )
+    picId = 68;
+
   stack.append( Picture( ResourceGroup::panelBackground, picId), rectangle.UpperLeftCorner );
 
   // draws the inside
@@ -277,10 +287,7 @@ void Decorator::draw( Pictures& stack, const Rect& rectangle, Decorator::Mode mo
   }
 
   if( !negY )
-  {
-    foreach( it, stack )
-      it->setOffset( Point( it->offset().x(), -it->offset().y() ) );
-  }
+    reverseYoffset( stack );
 }
 
 void Decorator::drawBorder( Pictures& stack, const Rect& rectangle,

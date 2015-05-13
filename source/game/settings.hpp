@@ -100,6 +100,7 @@ public:
   __GS_PROPERTY(screenshotDir)
   __GS_PROPERTY(showTabletMenu)
   __GS_PROPERTY(batchTextures)
+  __GS_PROPERTY(ccUseAI)
 #undef __GS_PROPERTY
 
   static Settings& instance();

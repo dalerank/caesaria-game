@@ -93,8 +93,8 @@ public:
 
   GameAutoPause autopause;
   Dragging drag;
-  Pictures borderPics;
   Batch border;
+  Pictures borderNb;
   Picture empireMap;
   world::CityPtr currentCity;
   Point offset;
@@ -348,7 +348,7 @@ void EmpireMapWindow::Impl::initBorder( Widget* p )
     border.load( pics, Point( 0, 0) );
   }
   else
-    borderPics = pics;
+    borderNb = pics;
 }
 
 void EmpireMapWindow::Impl::drawLines(Engine &painter)
@@ -585,7 +585,7 @@ void EmpireMapWindow::draw(gfx::Engine& engine )
 
   _d->border.valid()
     ? engine.draw( _d->border, &absoluteClippingRectRef() )
-    : engine.draw( _d->borderPics, Point(), &absoluteClippingRectRef() );
+    : engine.draw( _d->borderNb, Point(), &absoluteClippingRectRef() );
 
   Widget::draw( engine );
 }

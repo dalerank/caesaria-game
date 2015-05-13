@@ -283,7 +283,7 @@ void Prefect::_brokePathway(TilePos p)
   }
   else if( _d->water > 0 )
   {
-    TilePos destination = _pathwayRef().stopPos();
+    TilePos destination = _pathway().stopPos();
 
     Pathway pathway = PathwayHelper::create( pos(), destination, PathwayHelper::allTerrain );
     if( pathway.isValid() )
@@ -547,9 +547,9 @@ void Prefect::send2City(PrefecturePtr prefecture, Prefect::SbAction action, int 
     ServiceWalker::send2City( prefecture.object() );
   }
 
-  if( _pathwayRef().isValid() )
+  if( _pathway().isValid() )
   {
-    _d->endPatrolPoint = _pathwayRef().stopPos();
+    _d->endPatrolPoint = _pathway().stopPos();
   }
 }
 

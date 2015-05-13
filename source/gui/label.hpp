@@ -129,6 +129,7 @@ protected:
 
   gfx::Picture& _textPicture();
   gfx::Batch& _background();
+  gfx::Pictures& _backgroundNb();
 
 private:
 
