@@ -258,6 +258,7 @@ class FortArea::Impl
 {
 public:
   TilePos basePos;
+  bool isFlat;
 };
 
 FortArea::FortArea() : Building( object::fortArea, Size(4) ),
@@ -265,13 +266,15 @@ FortArea::FortArea() : Building( object::fortArea, Size(4) ),
 {
   setPicture( ResourceGroup::security, 13 );
 
+  _d->isFlat = picture().height() <= picture().width() / 2;
+
   setState( pr::inflammability, 0 );
   setState( pr::collapsibility, 0 );
 }
 
 FortArea::~FortArea() {}
 
-bool FortArea::isFlat() const { return true; }
+bool FortArea::isFlat() const { return _d->isFlat; }
 bool FortArea::isWalkable() const{ return true;}
 
 void FortArea::destroy()
@@ -304,7 +307,7 @@ Fort::Fort(object::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) ),
   logo.setOffset( Point( 80, 10 ) );
 
   Picture area(ResourceGroup::security, 13 );
-  area.setOffset( Tile( TilePos(3,0) ).mappos() + Point(0,-30) );
+  area.addOffset( tile::tilepos2screen( TilePos( 3, 0) ) );
 
   _fgPictures().resize(2);
   _fgPicture( 0 ) = logo;

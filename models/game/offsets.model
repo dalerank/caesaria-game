@@ -50,4 +50,7 @@
   illhouse_anim : { rc : "illhouse", start : 1, stop : 42, offset : [ -2, -2 ] }
   theater_work : { rc : "entertaiment", start : 35, stop : 35, offset : [ -1, -1 ] }
   house_ground : { rc : "housng1g", start : 1, stop : 2, offset : [ -1, -1 ] }
+  fortlg : { rc : "fortlegioner", start : 1, stop : 1, offset : [ -1, -1 ] }
+  fortmt : { rc : "fortmount", start : 1, stop : 1, offset : [ -1, -1 ] }
+  fortsp : { rc : "fortspear", start : 1, stop : 1, offset : [ -1, -1 ] }
 }

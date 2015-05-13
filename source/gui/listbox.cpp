@@ -107,6 +107,7 @@ void ListBox::_recalculateItemHeight( const Font& defaulFont, int h )
   }
 
   int newLength = _d->itemHeight * _d->items.size();
+  bool scrollBarVisible = _d->scrollBar->visible();
 
   if( newLength != _d->totalItemHeight )
   {
@@ -120,11 +121,9 @@ void ListBox::_recalculateItemHeight( const Font& defaulFont, int h )
     _d->scrollBar->setVisible( !( _d->totalItemHeight <= h ) );
   }
 
-  int saveScrollBarWidth = _d->scrollBar->width();
-  int scrollbarWidth = _d->scrollBar->visible() ? _d->scrollBar->width() : 0;
-  if( saveScrollBarWidth != scrollbarWidth )
+  if( scrollBarVisible != _d->scrollBar->visible() )
   {
-    _updateBackground( scrollbarWidth );
+    _updateBackground( _d->scrollBar->visible() ? _d->scrollBar->width() : 0 );
   }
 }
 
@@ -528,6 +527,7 @@ void ListBox::_finalizeResize()
 {
   _d->totalItemHeight = 0;
   _recalculateItemHeight( _d->font, height() );
+  _updateBackground( _d->scrollBar->visible() ? _d->scrollBar->width() : 0 );
 }
 
 ElementState ListBox::_getCurrentItemState( unsigned int index, bool hl )
