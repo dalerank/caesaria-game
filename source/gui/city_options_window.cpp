@@ -157,6 +157,7 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   if( btnClose ) btnClose->setFocus();
 
   _d->update();
+  setModal();
 }
 
 CityOptions::~CityOptions() {}

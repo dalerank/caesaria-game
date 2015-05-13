@@ -95,49 +95,52 @@ void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
   int num3 = rndData & 0x3;
   int num7 = rndData & 0x7;
 
-  if (tile.getFlag( Tile::tlTree ))
-  {
-    c1 = colors->colour(minimap::Colors::MAP_TREE1, num3);
-    c2 = colors->colour(minimap::Colors::MAP_TREE2, num7);
-  }
-  else if (tile.getFlag( Tile::tlRock ))
-  {
-    c1 = colors->colour(minimap::Colors::MAP_ROCK1, num3);
-    c2 = colors->colour(minimap::Colors::MAP_ROCK2, num3);
-  }
-  else if(tile.getFlag( Tile::tlDeepWater) )
-  {
-    c1 = colors->colour(minimap::Colors::MAP_WATER1, num3);
-    c2 = colors->colour(minimap::Colors::MAP_WATER2, num3);
-  }
-  else if(tile.getFlag( Tile::tlWater ))
-  {
-    c1 = colors->colour(minimap::Colors::MAP_WATER1, num3);
-    c2 = colors->colour(minimap::Colors::MAP_WATER2, num7);
-  }
-  else if (tile.getFlag( Tile::tlRoad ))
-  {
-    c1 = colors->colour(minimap::Colors::MAP_ROAD, 0);
-    c2 = colors->colour(minimap::Colors::MAP_ROAD, 1);
-  }
-  else if (tile.getFlag( Tile::tlMeadow ))
-  {
-    c1 = colors->colour(minimap::Colors::MAP_FERTILE1, num3);
-    c2 = colors->colour(minimap::Colors::MAP_FERTILE2, num7);
-  }
-  else if (tile.getFlag( Tile::tlWall ))
-  {
-    c1 = colors->colour(minimap::Colors::MAP_WALL, 0);
-    c2 = colors->colour(minimap::Colors::MAP_WALL, 1);
-  }
-  else if( tile.getFlag( Tile::tlOverlay ) )
+  if( tile.getFlag( Tile::tlOverlay ) )
   {
     getBuildingColours(tile, c1, c2);
   }
-  else // plain terrain
+  else
   {
-    c1 = colors->colour(minimap::Colors::MAP_EMPTY1, num3);
-    c2 = colors->colour(minimap::Colors::MAP_EMPTY2, num7);
+    if (tile.getFlag( Tile::tlTree ))
+    {
+      c1 = colors->colour(minimap::Colors::MAP_TREE1, num3);
+      c2 = colors->colour(minimap::Colors::MAP_TREE2, num7);
+    }
+    else if (tile.getFlag( Tile::tlRock ))
+    {
+      c1 = colors->colour(minimap::Colors::MAP_ROCK1, num3);
+      c2 = colors->colour(minimap::Colors::MAP_ROCK2, num3);
+    }
+    else if(tile.getFlag( Tile::tlDeepWater) )
+    {
+      c1 = colors->colour(minimap::Colors::MAP_WATER1, num3);
+      c2 = colors->colour(minimap::Colors::MAP_WATER2, num3);
+    }
+    else if(tile.getFlag( Tile::tlWater ))
+    {
+      c1 = colors->colour(minimap::Colors::MAP_WATER1, num3);
+      c2 = colors->colour(minimap::Colors::MAP_WATER2, num7);
+    }
+    else if (tile.getFlag( Tile::tlRoad ))
+    {
+      c1 = colors->colour(minimap::Colors::MAP_ROAD, 0);
+      c2 = colors->colour(minimap::Colors::MAP_ROAD, 1);
+    }
+    else if (tile.getFlag( Tile::tlMeadow ))
+    {
+      c1 = colors->colour(minimap::Colors::MAP_FERTILE1, num3);
+      c2 = colors->colour(minimap::Colors::MAP_FERTILE2, num7);
+    }
+    else if (tile.getFlag( Tile::tlWall ))
+    {
+      c1 = colors->colour(minimap::Colors::MAP_WALL, 0);
+      c2 = colors->colour(minimap::Colors::MAP_WALL, 1);
+    }
+    else // plain terrain
+    {
+      c1 = colors->colour(minimap::Colors::MAP_EMPTY1, num3);
+      c2 = colors->colour(minimap::Colors::MAP_EMPTY2, num7);
+    }
   }
 
   c1 |= 0xff000000;
@@ -159,7 +162,9 @@ void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
   object::Type type = overlay->type();  
 
   bool colorFound = false;
-  if(type == object::house)
+  switch(type)
+  {
+  case object::house:
   {
     switch (overlay->size().width())
     {
@@ -179,11 +184,25 @@ void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
     }
     colorFound = true;
   }
-  else if(type == object::reservoir || type == object::aqueduct )
+  break;
+  case object::reservoir:
+  case object::aqueduct:
   {
-     c1 = colors->colour(minimap::Colors::MAP_AQUA, 1);
-     c2 = colors->colour(minimap::Colors::MAP_AQUA, 0);
-     colorFound = true;
+    c1 = colors->colour(minimap::Colors::MAP_AQUA, tile.originalImgId() & 0x3);
+    c2 = colors->colour(minimap::Colors::MAP_AQUA, tile.originalImgId() & 0x7);
+    colorFound = true;
+  }
+  break;
+
+  case object::tree:
+  {
+    c1 = colors->colour(minimap::Colors::MAP_TREE1, 1);
+    c2 = colors->colour(minimap::Colors::MAP_TREE2, 0);
+    colorFound = true;
+  }
+  break;
+
+  default: break;
   }
 
   if( !colorFound )
@@ -193,22 +212,51 @@ void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
     {
       case object::group::military:
       {
-        c1 = colors->colourA(DefaultColors::indianRed,1);
-        c2 = colors->colourA(DefaultColors::indianRed,0);
+        c1 = colors->colourA(DefaultColors::indianRed.color,1);
+        c2 = colors->colourA(DefaultColors::indianRed.color,0);
         colorFound = true;
       }
       break;
 
       case object::group::food:
       {
-        c1 = colors->colourA(DefaultColors::paleGreen,1);
-        c2 = colors->colourA(DefaultColors::paleGreen,0);
+        c1 = colors->colourA(DefaultColors::green.color,1);
+        c2 = colors->colourA(DefaultColors::green.color,0);
+        colorFound = true;
+      }
+      break;
+
+      case object::group::industry:
+      {
+        c1 = colors->colourA(DefaultColors::brown.color,1);
+        c2 = colors->colourA(DefaultColors::brown.color,0);
+        colorFound = true;
+      }
+      break;
+
+      case object::group::obtain:
+      {
+        c1 = colors->colourA(DefaultColors::sandyBrown.color,1);
+        c2 = colors->colourA(DefaultColors::sandyBrown.color,0);
+        colorFound = true;
+      }
+      break;
+
+      case object::group::religion:
+      {
+        c1 = colors->colourA(DefaultColors::snow.color,1);
+        c2 = colors->colourA(DefaultColors::snow.color,0);
         colorFound = true;
       }
       break;
 
       default: break;
     }
+  }
+
+  if( !colorFound )
+  {
+
   }
 
   if( !colorFound )
