@@ -7,7 +7,7 @@ before_install:
 - sudo apt-add-repository --yes ppa:zoogie/sdl2-snapshots #libsdl2
 - sudo apt-get -qq update
 #- sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch
-- sudo apt-get install -qq cmake build-essential libsdl2-dev libsdl2-mixer-dev
+- sudo apt-get install -qq cmake build-essential libasound2-dev
 #- sudo apt-get install -qq gcc-multilib g++-multilib
 install:
 # Create unix makefiles
