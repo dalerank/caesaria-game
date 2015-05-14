@@ -43,6 +43,7 @@ namespace gui
 class Minimap::Impl
 {
 public:
+  Picture landRockWaterMap;
   Picture minimap;
 
   PlayerCityPtr city;
@@ -56,9 +57,11 @@ public:
   TexturedButton* btnZoomOut;
 
 public:
-  void getTerrainColours(const Tile& tile, int &c1, int &c2);
+  void getTileColours(const Tile& tile, int &c1, int &c2);
+  void getTerrainColours(const Tile& tile, bool staticTiles, int& c1, int& c2 );
   void getBuildingColours(const Tile& tile, int &c1, int &c2);
   void updateImage();
+  void initStaticMmap();
 
 public signals:
   Signal1<TilePos> onCenterChangeSignal;
@@ -77,13 +80,65 @@ Minimap::Minimap(Widget* parent, Rect rect, PlayerCityPtr city, const gfx::Camer
   _d->colors = new minimap::Colors( city->climate() );
   _d->btnZoomIn =  new TexturedButton( this, righttop() - Point( 28, -2  ), Size( 24 ), -1, 605 );
   _d->btnZoomOut = new TexturedButton( this, righttop() - Point( 28, -26 ), Size( 24 ), -1, 601 );
+  _d->initStaticMmap();
   setTooltipText( _("##minimap_tooltip##") );
 }
 
 Point getBitmapCoordinates(int x, int y, int mapsize ) { return Point( x + y, x + mapsize - y - 1 ); }
 void getBuildingColours( const Tile& tile, int &c1, int &c2 );
 
-void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
+void Minimap::Impl::getTerrainColours( const Tile& tile, bool staticTiles, int& c1, int& c2 )
+{
+  int rndData = tile.originalImgId();
+  int num3 = rndData & 0x3;
+  int num7 = rndData & 0x7;
+
+  if( !staticTiles && tile.getFlag( Tile::tlTree ) )
+  {
+    c1 = colors->colour(minimap::Colors::MAP_TREE1, num3);
+    c2 = colors->colour(minimap::Colors::MAP_TREE2, num7);
+  }
+  else if (tile.getFlag( Tile::tlRock ))
+  {
+    c1 = colors->colour(minimap::Colors::MAP_ROCK1, num3);
+    c2 = colors->colour(minimap::Colors::MAP_ROCK2, num3);
+  }
+  else if(tile.getFlag( Tile::tlDeepWater) )
+  {
+    c1 = colors->colour(minimap::Colors::MAP_WATER1, num3);
+    c2 = colors->colour(minimap::Colors::MAP_WATER2, num3);
+  }
+  else if(tile.getFlag( Tile::tlWater ))
+  {
+    c1 = colors->colour(minimap::Colors::MAP_WATER1, num3);
+    c2 = colors->colour(minimap::Colors::MAP_WATER2, num7);
+  }
+  else if ( !staticTiles && tile.getFlag( Tile::tlRoad ))
+  {
+    c1 = colors->colour(minimap::Colors::MAP_ROAD, 0);
+    c2 = colors->colour(minimap::Colors::MAP_ROAD, 1);
+  }
+  else if (tile.getFlag( Tile::tlMeadow ))
+  {
+    c1 = colors->colour(minimap::Colors::MAP_FERTILE1, num3);
+    c2 = colors->colour(minimap::Colors::MAP_FERTILE2, num7);
+  }
+  else if ( !staticTiles && tile.getFlag( Tile::tlWall ))
+  {
+    c1 = colors->colour(minimap::Colors::MAP_WALL, 0);
+    c2 = colors->colour(minimap::Colors::MAP_WALL, 1);
+  }
+  else // plain terrain
+  {
+    c1 = colors->colour(minimap::Colors::MAP_EMPTY1, num3);
+    c2 = colors->colour(minimap::Colors::MAP_EMPTY2, num7);
+  }
+
+  c1 |= 0xff000000;
+  c2 |= 0xff000000;
+}
+
+void Minimap::Impl::getTileColours(const Tile& tile, int &c1, int &c2)
 {
   if( !gfx::tilemap::isValidLocation( tile.pos() ) )
   {
@@ -91,56 +146,13 @@ void Minimap::Impl::getTerrainColours(const Tile& tile, int &c1, int &c2)
     return;
   }
 
-  int rndData = tile.originalImgId();
-  int num3 = rndData & 0x3;
-  int num7 = rndData & 0x7;
-
   if( tile.getFlag( Tile::tlOverlay ) )
   {
     getBuildingColours(tile, c1, c2);
   }
   else
   {
-    if (tile.getFlag( Tile::tlTree ))
-    {
-      c1 = colors->colour(minimap::Colors::MAP_TREE1, num3);
-      c2 = colors->colour(minimap::Colors::MAP_TREE2, num7);
-    }
-    else if (tile.getFlag( Tile::tlRock ))
-    {
-      c1 = colors->colour(minimap::Colors::MAP_ROCK1, num3);
-      c2 = colors->colour(minimap::Colors::MAP_ROCK2, num3);
-    }
-    else if(tile.getFlag( Tile::tlDeepWater) )
-    {
-      c1 = colors->colour(minimap::Colors::MAP_WATER1, num3);
-      c2 = colors->colour(minimap::Colors::MAP_WATER2, num3);
-    }
-    else if(tile.getFlag( Tile::tlWater ))
-    {
-      c1 = colors->colour(minimap::Colors::MAP_WATER1, num3);
-      c2 = colors->colour(minimap::Colors::MAP_WATER2, num7);
-    }
-    else if (tile.getFlag( Tile::tlRoad ))
-    {
-      c1 = colors->colour(minimap::Colors::MAP_ROAD, 0);
-      c2 = colors->colour(minimap::Colors::MAP_ROAD, 1);
-    }
-    else if (tile.getFlag( Tile::tlMeadow ))
-    {
-      c1 = colors->colour(minimap::Colors::MAP_FERTILE1, num3);
-      c2 = colors->colour(minimap::Colors::MAP_FERTILE2, num7);
-    }
-    else if (tile.getFlag( Tile::tlWall ))
-    {
-      c1 = colors->colour(minimap::Colors::MAP_WALL, 0);
-      c2 = colors->colour(minimap::Colors::MAP_WALL, 1);
-    }
-    else // plain terrain
-    {
-      c1 = colors->colour(minimap::Colors::MAP_EMPTY1, num3);
-      c2 = colors->colour(minimap::Colors::MAP_EMPTY2, num7);
-    }
+    getTerrainColours(tile, false, c1, c2);
   }
 
   c1 |= 0xff000000;
@@ -316,7 +328,7 @@ void Minimap::Impl::updateImage()
         const Tile& tile = tilemap.at(i, j);
 
         pnt = getBitmapCoordinates(i-startPos.i() - 40, j-startPos.j()-60, mapsize);
-        getTerrainColours( tile, c1, c2);
+        getTileColours( tile, c1, c2);
 
         if( pnt.y() < 0 || pnt.x() < 0 || pnt.x() >= mmapWithMinus1 || pnt.y() >= mmapHeight )
           continue;
@@ -389,6 +401,46 @@ void Minimap::Impl::updateImage()
   // this is window where minimap is displayed
 }
 
+void Minimap::Impl::initStaticMmap()
+{
+  Size size;
+  Tilemap& tmap = city->tilemap();
+  int mapSize = tmap.size();
+
+  size.setWidth( getBitmapCoordinates( mapSize-1, mapSize-1, mapSize ).x() );
+  size.setHeight( getBitmapCoordinates( mapSize-1, 0, mapSize ).y() );
+
+  landRockWaterMap = Picture( size, 0, true );
+  landRockWaterMap.fill( 0xff000000, Rect() );
+
+  int c1, c2;
+  int mmapWidth = landRockWaterMap.width();
+  int mmapHeight = landRockWaterMap.height();
+  unsigned int* pixels = landRockWaterMap.lock();
+
+  for( int i = 0; i < mapSize; i++)
+  {
+    for (int j = 0; j < mapSize; j++)
+    {
+      const Tile& tile = tmap.at(i, j);
+
+      Point pnt = getBitmapCoordinates(i, j, mapSize);
+      getTerrainColours( tile, true, c1, c2);
+
+      if( pnt.y() < 0 || pnt.x() < 0 || pnt.x() > mmapWidth || pnt.y() > mmapHeight )
+        continue;
+
+      unsigned int* bufp32;
+      bufp32 = pixels + pnt.y() * mmapWidth + pnt.x();
+      *bufp32 = c1;
+      *(bufp32+1) = c2;
+    }
+  }
+
+  landRockWaterMap.unlock();
+  landRockWaterMap.update();
+}
+
 /* end of helper functions */
 namespace
 {
@@ -401,7 +453,7 @@ void Minimap::draw(Engine& painter)
   if( !visible() )
     return;
 
-  painter.draw( _d->minimap, screenLeft(), screenTop() ); // 152, 145
+  painter.draw( _d->landRockWaterMap, screenLeft(), screenTop() ); // 152, 145
 
   Widget::draw( painter );
 }
