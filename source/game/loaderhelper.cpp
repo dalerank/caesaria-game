@@ -184,7 +184,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   if( ovType == object::elevation )
   {
     std::string elevationPicName = imgid::toResource( oTile.originalImgId() );
-    overlay->setPicture( Picture::load( elevationPicName ) );
+    overlay->setPicture( Picture( elevationPicName ) );
   }
 
   if( overlay != NULL )

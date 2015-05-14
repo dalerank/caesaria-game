@@ -221,7 +221,7 @@ void AboutHouse::drawHabitants( HousePtr house )
   // citizen or patrician picture
   int picId = house->spec().isPatrician() ? 541 : 542;
    
-  Picture& citPic = Picture::load( ResourceGroup::panelBackground, picId );
+  Picture citPic( ResourceGroup::panelBackground, picId );
   _lbBlackFrameRef()->setIcon( citPic, Point( 15, 5 ) );
 
   // number of habitants

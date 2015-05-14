@@ -113,13 +113,13 @@ void Patrician::_findNewWay( const TilePos& start )
 
 void Patrician::_reachedPathway()
 {
-  if( _pathwayRef().isReverse() )
+  if( _pathway().isReverse() )
   {
     deleteLater();
   }
   else
   {
-    _pathwayRef().toggleDirection();
+    _pathway().toggleDirection();
     go();
   }
 }

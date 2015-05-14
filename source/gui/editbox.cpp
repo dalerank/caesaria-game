@@ -62,7 +62,8 @@ public:
 	std::string holderText;
   Picture bgPicture;
   Batch background;
-  PictureRef textPicture;
+  Pictures backgroundNb;
+  Picture textPicture;
 
 	bool wordWrapEnabled, multiLine, autoScrollEnabled, isPasswordBox;
 	char passwordChar;
@@ -765,7 +766,7 @@ void EditBox::_drawHolderText( Font font, Rect* clip )
 
     if( holderFont.isValid() )
     {
-        holderFont.draw( *_d->textPicture, _d->holderText, 0, 0 );
+        holderFont.draw( _d->textPicture, _d->holderText, 0, 0 );
     }
   }
 }
@@ -779,10 +780,10 @@ void EditBox::beforeDraw(Engine& painter)
   {
     _d->needUpdateTexture = false;
 
-    if( !_d->textPicture || ( _d->textPicture && size() != _d->textPicture->size()) )
+    if( !_d->textPicture.isValid() || ( size() != _d->textPicture.size() ) )
     {
-      _d->textPicture.reset( Picture::create( size(), 0, true ) );
-      _d->textPicture->fill( 0x00000000, Rect( 0, 0, 0, 0) );
+      _d->textPicture = Picture( size(), 0, true );
+      _d->textPicture.fill( 0x00000000, Rect( 0, 0, 0, 0) );
     }
 
     if( !_d->bgPicture.isValid() )
@@ -791,7 +792,13 @@ void EditBox::beforeDraw(Engine& painter)
 
       Pictures pics;
       Decorator::draw( pics, Rect( 0, 0, width(), height() ), Decorator::blackFrame, Decorator::normalY );
-      _d->background.load( pics, absoluteRect().lefttop() );
+      bool batchOk = _d->background.load( pics, absoluteRect().lefttop() );
+      if( !batchOk )
+      {
+        _d->background.destroy();
+        Decorator::reverseYoffset( pics );
+        _d->backgroundNb = pics;
+      }
     }
 
     Rect localClipRect = absoluteRect();
@@ -820,7 +827,7 @@ void EditBox::beforeDraw(Engine& painter)
       const int hlineCount = ml ? _getLineFromPos(realmend) - hlineStart + 1 : 1;
       const int lineCount = ml ? _d->brokenText.size() : 1;
 
-      _d->textPicture->fill( 0x00000000, Rect(0, 0, 0, 0) );
+      _d->textPicture.fill( 0x00000000, Rect(0, 0, 0, 0) );
       if( !_d->text.empty() )
       {
         for (int i=0; i < lineCount; ++i)
@@ -865,7 +872,7 @@ void EditBox::beforeDraw(Engine& painter)
            curTextureRect = _d->lastBreakFont.getTextRect( rText, curTextureRect, horizontalTextAlign(), verticalTextAlign() );
            curTextureRect += (_d->currentTextRect.UpperLeftCorner - absoluteRect().UpperLeftCorner );
 
-           _d->lastBreakFont.draw( *_d->textPicture, rText, curTextureRect.UpperLeftCorner );
+           _d->lastBreakFont.draw( _d->textPicture, rText, curTextureRect.UpperLeftCorner );
 
            // draw mark and marked text
            if( isFocused() && _d->markBegin != _d->markEnd && i >= hlineStart && i < hlineStart + hlineCount)
@@ -981,12 +988,15 @@ void EditBox::draw( Engine& painter )
   }
   else
   {
-    painter.draw( _d->background, &absoluteClippingRectRef() );
+    if( _d->background.valid() )
+      painter.draw( _d->background, &absoluteClippingRectRef() );
+    else
+      painter.draw( _d->backgroundNb, absoluteRect().lefttop(), &absoluteClippingRectRef() );
   }
 
-  if( _d->textPicture )
+  if( _d->textPicture.isValid() )
   {
-    painter.draw( *_d->textPicture, _d->textOffset + absoluteRect().UpperLeftCorner );
+    painter.draw( _d->textPicture, _d->textOffset + absoluteRect().UpperLeftCorner );
   }
 
   if( focus )

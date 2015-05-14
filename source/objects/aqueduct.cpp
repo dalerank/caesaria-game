@@ -41,7 +41,7 @@ static const TilePos offsets[4] = { TilePos( -1, 0 ), TilePos( 0, 1), TilePos( 1
 
 Aqueduct::Aqueduct() : WaterSource( object::aqueduct, Size(1) )
 {
-  setPicture( ResourceGroup::aqueduct, 133 ); // default picture for aqueduct
+  _picture().load( ResourceGroup::aqueduct, 133 ); // default picture for aqueduct
   _setIsRoad( false );
   // land2a 119 120         - aqueduct over road
   // land2a 121 122         - aqueduct over plain ground
@@ -196,7 +196,11 @@ const Picture& Aqueduct::picture( const city::AreaInfo& info ) const
   const TilePos tile_pos = (info.aroundTiles.empty()) ? tile().epos() : info.pos;
 
   if (!tmap.isInside(tile_pos))
-    return Picture::load( ResourceGroup::aqueduct, 121 );
+  {
+    static Picture ret;
+    ret.load( ResourceGroup::aqueduct, 121 );
+    return ret;
+  }
 
   TilePos tile_pos_d[direction::count];
   bool is_border[direction::count];
@@ -359,8 +363,9 @@ const Picture& Aqueduct::picture( const city::AreaInfo& info ) const
     index = 121; // it's impossible, but ...
   }
 
-  const Picture& pic = Picture::load( ResourceGroup::aqueduct, index + (water() == 0 ? 15 : 0) );
-  return pic;
+  static Picture ret;
+  ret.load( ResourceGroup::aqueduct, index + (water() == 0 ? 15 : 0) );
+  return ret;
 }
 
 void Aqueduct::updatePicture(PlayerCityPtr city)

@@ -85,7 +85,7 @@ LoadGame* LoadGame::create(Widget *parent, const vfs::Directory &dir)
 
 LoadGame::~LoadGame()
 {
-  gfx::Picture::destroy( &_previewImg );
+  _previewImg = gfx::Picture();
 }
 
 }//end namespace dialog

@@ -56,7 +56,7 @@ private:
   int _index;
   int _info;
   int _imgId;
-  gfx::Picture _picture;
+  gfx::Picture _rpicture;
   LowBridge* _parent;
 };
 

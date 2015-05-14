@@ -225,7 +225,7 @@ TilePos MarketBuyer::places(Walker::Place type) const
 void MarketBuyer::_reachedPathway()
 {
    Walker::_reachedPathway();
-   if( _pathwayRef().isReverse() )
+   if( _pathway().isReverse() )
    {
      // walker is back in the market
      deleteLater();
@@ -319,7 +319,7 @@ void MarketBuyer::_reachedPathway()
       }
 
       // walker is near the granary/warehouse
-      _pathwayRef().move( Pathway::reverse );
+      _pathway().move( Pathway::reverse );
       _centerTile();
       go();
    }

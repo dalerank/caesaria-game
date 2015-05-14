@@ -43,12 +43,12 @@ public:
 
 Colosseum::Colosseum() : EntertainmentBuilding(Service::colloseum, object::colloseum, Size(5) ), _d( new Impl )
 {
-  setPicture( Picture::load( ResourceGroup::entertainment, 36));
+  _picture().load( ResourceGroup::entertainment, 36 );
 
   _animationRef().load( ResourceGroup::entertainment, 37, 13);
   _animationRef().setOffset( Point( 122, 81 ) );
 
-  _fgPicturesRef().resize(2);
+  _fgPictures().resize(2);
 
   _addNecessaryWalker( walker::gladiator );
   _addNecessaryWalker( walker::lionTamer );
@@ -63,7 +63,7 @@ void Colosseum::deliverService()
 
   if( _animationRef().isRunning() )
   {
-    _fgPicturesRef().front() = Picture::load( ResourceGroup::entertainment, 50 );
+    _fgPictures().front().load( ResourceGroup::entertainment, 50 );
     int currentWalkerNumber = walkers().size();
     if( saveWalkesNumber != currentWalkerNumber )
     {
@@ -73,8 +73,8 @@ void Colosseum::deliverService()
   }
   else
   {
-    _fgPicturesRef().front() = Picture::getInvalid();
-    _fgPicturesRef().back() = Picture::getInvalid();
+    _fgPictures().front() = Picture::getInvalid();
+    _fgPictures().back() = Picture::getInvalid();
   }
 }
 

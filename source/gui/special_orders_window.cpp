@@ -58,7 +58,7 @@ public:
     else if( prc <= 0.75 ) { _step = 3; }
     else _step =0;
 
-    _icon = Picture::load( "whblock", 1 );
+    _icon.load( "whblock", 1 );
     setBackgroundStyle( PushButton::blackBorderUp );
     setFont( Font::create( FONT_2_WHITE ) );
     _updateText();
@@ -130,10 +130,10 @@ public:
 
     std::string goodName = _( "##" + good::Helper::getTypeName( _type ) + "##" );
 
-    if( _textPictureRef() )
+    if( _textPicture().isValid() )
     {
       Font rfont = font();
-      rfont.draw( *_textPictureRef(), goodName, 55, 0 );
+      rfont.draw( _textPicture(), goodName, 55, 0 );
     }
   }
 

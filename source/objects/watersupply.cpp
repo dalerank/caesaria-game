@@ -104,7 +104,7 @@ Reservoir::Reservoir()
     : WaterSource( object::reservoir, Size( 3 ) )
 {  
   _isWaterSource = false;
-  setPicture( ResourceGroup::utilitya, 34 );
+  _picture().load( ResourceGroup::utilitya, 34 );
   
   // utilitya 34      - empty reservoir
   // utilitya 35 ~ 42 - full reservoir animation
@@ -114,7 +114,7 @@ Reservoir::Reservoir()
   _animationRef().setDelay( 11 );
   //_animationRef().setOffset( Point( 47, 63 ) );
 
-  _fgPicturesRef().resize(1);
+  _fgPictures().resize(1);
 }
 
 Reservoir::~Reservoir(){}
@@ -190,11 +190,11 @@ bool Reservoir::canBuild( const city::AreaInfo& areaInfo ) const
 
   bool nearWater = _isNearWater( areaInfo.city, areaInfo.pos );
   Reservoir* thisp = const_cast< Reservoir* >( this );
-  thisp->_fgPicturesRef().clear();
+  thisp->_fgPictures().clear();
   if( nearWater )
   {
-    thisp->_fgPicturesRef().push_back( Picture::load( ResourceGroup::utilitya, 35 )  );
-    thisp->_fgPicturesRef().back().setOffset( _d->fullOffset + Point( 0, picture().offset().y() ) );
+    thisp->_fgPictures().push_back( Picture( ResourceGroup::utilitya, 35 )  );
+    thisp->_fgPictures().back().setOffset( _d->fullOffset + Point( 0, picture().offset().y() ) );
   }
   return ret;
 }

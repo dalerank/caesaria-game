@@ -62,7 +62,7 @@ public:
   virtual Batch loadBatch(const Picture& pic, const Rects& srcRects, const Rects& dstRects, const Rect* clipRect=0) = 0;
   virtual void unloadBatch( const Batch& batch ) = 0;
 
-  virtual void initViewport( int, Size s) = 0;
+  virtual bool initViewport( int, Size s) = 0;
   virtual void setViewport( int, bool render) = 0;
   virtual void drawViewport( int, Rect r) = 0;
 
@@ -80,8 +80,6 @@ public:
 
   virtual void setColorMask( int rmask, int gmask, int bmask, int amask ) = 0;
   virtual void resetColorMask() = 0;
-  
-  virtual void deletePicture( Picture* pic ) = 0;
 
   virtual void createScreenshot( const std::string& filename ) = 0;
   virtual unsigned int fps() const = 0;

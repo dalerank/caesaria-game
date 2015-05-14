@@ -60,20 +60,20 @@ public:
       return;
 
     statusConfigs[ status ].offset = stream.get( "offset" );
-    statusConfigs[ status ].flag = Picture::load( stream.get( "rc"), stream.get( "index") );
+    statusConfigs[ status ].flag.load( stream.get( "rc"), stream.get( "index") );
   }
 };
 
 Senate::Senate() : ServiceBuilding( Service::senate, object::senate, Size(5) ), _d( new Impl )
 {
-  setPicture( ResourceGroup::govt, 4 );
+  _picture().load( ResourceGroup::govt, 4 );
   _d->taxValue = 0;
 
-  _fgPicturesRef().resize( 8 );
-  _d->setStatusConfig( culture,    Picture::load( ResourceGroup::govt, 5 ), Point( 140, -30 ) );
-  _d->setStatusConfig( prosperity, Picture::load( ResourceGroup::govt, 6 ), Point( 170, -25 ) );
-  _d->setStatusConfig( peace,      Picture::load( ResourceGroup::govt, 7 ), Point( 200, -15 ) );
-  _d->setStatusConfig( favour,     Picture::load( ResourceGroup::govt, 8 ), Point( 230, -10 ) );
+  _fgPictures().resize( 8 );
+  _d->setStatusConfig( culture,    Picture( ResourceGroup::govt, 5 ), Point( 140, -30 ) );
+  _d->setStatusConfig( prosperity, Picture( ResourceGroup::govt, 6 ), Point( 170, -25 ) );
+  _d->setStatusConfig( peace,      Picture( ResourceGroup::govt, 7 ), Point( 200, -15 ) );
+  _d->setStatusConfig( favour,     Picture( ResourceGroup::govt, 8 ), Point( 230, -10 ) );
 }
 
 bool Senate::canBuild( const city::AreaInfo& areaInfo ) const
@@ -198,10 +198,10 @@ void Senate::_updateUnemployers()
     Picture pic;
     if( k * 5 < workless )
     {
-      pic = Picture::load( ResourceGroup::transport, 87 );
+      pic.load( ResourceGroup::transport, 87 );
       pic.setOffset( offsets[ k ] );
     }
-    _fgPicturesRef()[ 4 + k ] = pic;
+    _fgPicture(4 + k) = pic;
   }
 }
 

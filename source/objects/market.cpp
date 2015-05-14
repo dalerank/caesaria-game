@@ -66,7 +66,7 @@ public:
 Market::Market() : ServiceBuilding(Service::market, object::market, Size(2) ),
   _d( new Impl )
 {
-  _fgPicturesRef().resize(1);  // animation
+  _fgPictures().resize(1);  // animation
   _d->initStore();
 }
 

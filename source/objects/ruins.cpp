@@ -46,12 +46,9 @@ BurningRuins::BurningRuins()
   setState( pr::inflammability, 0 );
   setState( pr::collapsibility, 0 );
 
-  setPicture( ResourceGroup::land2a, 187 );
+  _picture().load( ResourceGroup::land2a, 187 );
   _animationRef() = AnimationBank::instance().simple( AnimationBank::animFire+2 );
-  //_animationRef().load( ResourceGroup::land2a, 188, 8 );
-  //_animationRef().setOffset( Point( 14, 26 ) );
-  _fgPicturesRef().resize(1);
-  //_animationRef().setDelay( math::random( 6 ) );
+  _fgPictures().resize(1);
 }
 
 void BurningRuins::timeStep(const unsigned long time)
@@ -59,7 +56,7 @@ void BurningRuins::timeStep(const unsigned long time)
   Building::timeStep(time);
 
   _animationRef().update( time );
-  _fgPicturesRef().back() = _animationRef().currentFrame();
+  _fgPictures().back() = _animationRef().currentFrame();
 
   if( game::Date::isDayChanged() )
   {
@@ -79,7 +76,7 @@ void BurningRuins::timeStep(const unsigned long time)
       updateState( pr::fire, -1 );
       if( state( pr::fire ) == 50 )
       {
-        setPicture( ResourceGroup::land2a, 214 );
+        _picture().load( ResourceGroup::land2a, 214 );
         _animationRef() = AnimationBank::instance().simple( AnimationBank::animFire + 1 );
         //_animationRef().clear();
         //_animationRef().load( ResourceGroup::land2a, 215, 8);
@@ -87,7 +84,7 @@ void BurningRuins::timeStep(const unsigned long time)
       }
       else if( state( pr::fire ) == 25 )
       {
-        setPicture( ResourceGroup::land2a, 223 );
+        _picture().load( ResourceGroup::land2a, 223 );
         _animationRef() = AnimationBank::instance().simple( AnimationBank::animFire + 0 );
         //_animationRef().clear();
         //_animationRef().load(ResourceGroup::land2a, 224, 8);
@@ -98,7 +95,7 @@ void BurningRuins::timeStep(const unsigned long time)
     {
       deleteLater();
       _animationRef().clear();
-      _fgPicturesRef().clear();
+      _fgPictures().clear();
     }
   }
 
@@ -180,7 +177,7 @@ void BurnedRuins::timeStep( const unsigned long ){}
 
 BurnedRuins::BurnedRuins() : Ruins( object::burned_ruins )
 {
-  setPicture( ResourceGroup::land2a, 111 + rand() % 8 );
+  _picture().load( ResourceGroup::land2a, 111 + rand() % 8 );
 }
 
 bool BurnedRuins::build( const city::AreaInfo& info )
@@ -206,7 +203,7 @@ CollapsedRuins::CollapsedRuins() : Ruins(object::collapsed_ruins)
   _animationRef().setOffset( Point( 14, 26 ) );
   _animationRef().setDelay( 4 );
   _animationRef().setLoop( false );
-  _fgPicturesRef().resize(1);
+  _fgPictures().resize(1);
 }
 
 void CollapsedRuins::burn() {}
@@ -217,7 +214,7 @@ bool CollapsedRuins::build( const city::AreaInfo& info )
 
   tile().setFlag( Tile::tlTree, false );
   tile().setFlag( Tile::tlRoad, false );
-  setPicture( ResourceGroup::land2a, 111 + math::random( 8 ) );
+  _picture().load( ResourceGroup::land2a, 111 + math::random( 8 ) );
 
   if( !_alsoBuilt )
   {
@@ -237,20 +234,20 @@ PlagueRuins::PlagueRuins() : Ruins( object::plague_ruins )
   setState( pr::fire, 99 );
   setState( pr::collapsibility, 0 );
 
-  setPicture( ResourceGroup::land2a, 187 );
+  _picture().load( ResourceGroup::land2a, 187 );
   _animationRef() = AnimationBank::instance().simple( AnimationBank::animFire + 2 );
 
   //_animationRef().load( ResourceGroup::land2a, 188, 8 );
   //_animationRef().setOffset( Point( 14, 26 ) );
-  _fgPicturesRef().resize(2);
-  _fgPicturesRef()[ 1 ] = Picture::load( ResourceGroup::sprites, 218 );
-  _fgPicturesRef()[ 1 ].setOffset( Point( 20, 35 ) );
+  _fgPictures().resize(2);
+  _fgPicture(1).load( ResourceGroup::sprites, 218 );
+  _fgPicture(1).setOffset( Point( 20, 35 ) );
 }
 
 void PlagueRuins::timeStep(const unsigned long time)
 {
   _animationRef().update( time );
-  _fgPicturesRef()[ 0 ] = _animationRef().currentFrame();
+  _fgPictures()[ 0 ] = _animationRef().currentFrame();
 
   if( game::Date::isDayChanged() )
   {
@@ -259,7 +256,7 @@ void PlagueRuins::timeStep(const unsigned long time)
       updateState( pr::fire, -1 );
       if( state( pr::fire ) == 50 )
       {
-        setPicture( ResourceGroup::land2a, 214 );
+        _picture().load( ResourceGroup::land2a, 214 );
         _animationRef() = AnimationBank::instance().simple( AnimationBank::animFire + 1 );
 
         //_animationRef().clear();
@@ -268,7 +265,7 @@ void PlagueRuins::timeStep(const unsigned long time)
       }
       else if( state( pr::fire ) == 25 )
       {
-        setPicture( ResourceGroup::land2a, 223 );
+        _picture().load( ResourceGroup::land2a, 223 );
         _animationRef() = AnimationBank::instance().simple( AnimationBank::animFire + 0 );
 
         //_animationRef().clear();
@@ -280,7 +277,7 @@ void PlagueRuins::timeStep(const unsigned long time)
     {
       deleteLater();
       _animationRef().clear();
-      _fgPicturesRef().clear();
+      _fgPictures().clear();
     }
   }
 }

@@ -165,6 +165,7 @@ protected:
 private:
   void _selectNew(int ypos);
   void _recalculateScrollPos();
+  void _updateBackground(int scrollbarWidth);
   void _recalculateItemHeight( const Font& defaulFont, int height );
   void _indexChanged( unsigned int eventType );
   ElementState _getCurrentItemState( unsigned int index, bool hl );

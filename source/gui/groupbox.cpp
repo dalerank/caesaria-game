@@ -33,6 +33,7 @@ class GroupBox::Impl
 {
 public:
   Batch background;
+  Pictures backgroundNb;
   Picture backgroundImage;
 	bool scaleImage;
   GroupBox::Style style;
@@ -79,7 +80,10 @@ void GroupBox::draw(gfx::Engine& painter )
   }
   else
   {
-    painter.draw( _d->background, &absoluteClippingRectRef() );
+    if( _d->background.valid() )
+      painter.draw( _d->background, &absoluteClippingRectRef() );
+    else
+      painter.draw( _d->backgroundNb, absoluteRect().lefttop(), &absoluteClippingRectRef() );
   }
 
   Widget::draw( painter );
@@ -117,7 +121,13 @@ void GroupBox::beforeDraw(gfx::Engine& painter )
       Decorator::draw( pics, Rect( Point( 0, 0 ), size() ),
                        Decorator::Mode( styles[ math::clamp<int>( _d->style, 0, count ) ] ), Decorator::normalY );
 
-      _d->background.load( pics, absoluteRect().lefttop() );
+      bool batchOk = _d->background.load( pics, absoluteRect().lefttop() );
+      if( !batchOk )
+      {
+        _d->background.destroy();
+        Decorator::reverseYoffset( pics );
+        _d->backgroundNb = pics;
+      }
     }
   }
 

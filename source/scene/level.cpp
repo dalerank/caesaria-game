@@ -171,7 +171,7 @@ void Level::initialize()
   _d->renderer.initialize( city, _d->engine, &ui, oldGraphics );
   ui.clear();
 
-  Picture rPanelPic = Picture::load( ResourceGroup::panelBackground, PicID::rightPanelTx );
+  Picture rPanelPic( ResourceGroup::panelBackground, PicID::rightPanelTx );
 
   Engine& engine = Engine::instance();
 
@@ -182,7 +182,7 @@ void Level::initialize()
 
   _d->rightPanel = MenuRigthPanel::create( ui.rootWidget(), rPanelRect, rPanelPic);
 
-  _d->topMenu = new TopMenu( ui.rootWidget(), topMenuHeight );
+  _d->topMenu = new TopMenu( ui.rootWidget(), topMenuHeight, !city->getOption( PlayerCity::c3gameplay ) );
   _d->topMenu->setPopulation( _d->game->city()->states().population );
   _d->topMenu->setFunds( _d->game->city()->treasury().money() );
 
@@ -404,8 +404,7 @@ void Level::Impl::makeFullScreenshot()
     }
   }
 
-  PictureRef fullPic;
-  fullPic.init( fullPicSize );
+  Picture fullPic = Picture( fullPicSize, 0, true );
   Point doffset( 0, fullPicSize.height() / 2 );
   foreach( tile, ret )
   {
@@ -422,7 +421,7 @@ void Level::Impl::makeFullScreenshot()
   }
 
   std::string filename = getScreenshotName();
-  PictureConverter::save( *fullPic, filename, "PNG" );
+  PictureConverter::save( fullPic, filename, "PNG" );
 }
 
 void Level::Impl::extendReign(int years)

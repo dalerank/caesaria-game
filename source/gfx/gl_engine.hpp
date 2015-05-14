@@ -49,17 +49,16 @@ public:
   void exit();
   void delay( const unsigned int msec );
 
-  Picture* createPicture(const Size& size);
+  Picture createPicture(const Size& size);
   virtual void loadPicture(Picture &ioPicture, bool streamed);
   virtual void unloadPicture(Picture &ioPicture);
   virtual Batch loadBatch(const Picture& pic, const Rects& srcRects, const Rects& dstRects, const Rect* clipRect=0);
   virtual void unloadBatch( const Batch& batch );
-  void deletePicture(Picture* pic);
 
   virtual void startRenderFrame();
   virtual void endRenderFrame();
 
-  virtual void initViewport(int index, Size s);
+  virtual bool initViewport(int index, Size s);
   virtual void setViewport( int, bool render);
   virtual void drawViewport( int, Rect r);
 

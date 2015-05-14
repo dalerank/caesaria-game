@@ -59,6 +59,7 @@ protected:
   virtual gfx::Animation& getCartPicture();
   virtual void _changeDirection();
   virtual void _reachedPathway();
+  virtual void _changeTile();
   virtual void _brokePathway(TilePos pos);
 
   void _computeWalkerDestination();

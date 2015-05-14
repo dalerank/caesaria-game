@@ -79,7 +79,7 @@ void EnemyArcher::timeStep(const unsigned long time)
       WalkerPtr p = enemies.front();
       turn( p->pos() );
 
-      if( _animationRef().atEnd() )
+      if( _animation().atEnd() )
       {
         _fire( p->pos() );
         _updateAnimation( time+1 );
@@ -101,7 +101,7 @@ void EnemyArcher::timeStep(const unsigned long time)
       ConstructionPtr b = constructions.front();
       turn( b->pos() );
 
-      if( _animationRef().atEnd() )
+      if( _animation().atEnd() )
       {
         _fire( b->pos() );
         _updateAnimation( time+1 );

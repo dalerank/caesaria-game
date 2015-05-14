@@ -364,7 +364,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
           }
 
           baseBuildings[ currentTile.pos() ] = imgId;
-          pic = Picture::load( ResourceGroup::land1a, 230 + math::random( 57 ) );
+          pic.load( ResourceGroup::land1a, 230 + math::random( 57 ) );
           currentTile.setPicture( pic );
           currentTile.setOriginalImgId( imgid::fromResource( pic.name() ) );
         }

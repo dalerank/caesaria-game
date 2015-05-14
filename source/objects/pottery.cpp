@@ -30,7 +30,7 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(object::pottery_workshop, Pottery)
 
 Pottery::Pottery() : Factory(good::clay, good::pottery, object::pottery_workshop, Size(2))
 {
-  _fgPicturesRef().resize( 3 );
+  _fgPictures().resize( 3 );
 }
 
 bool Pottery::canBuild( const city::AreaInfo& areaInfo ) const
@@ -61,6 +61,6 @@ void Pottery::deliverGood()
 
 void Pottery::_storeChanged()
 {
-  _fgPicturesRef()[1] = inStockRef().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 157 );
-  _fgPicturesRef()[1].setOffset( 45, -10 );
+  _fgPicture(1) = inStockRef().empty() ? Picture() : Picture( ResourceGroup::commerce, 157 );
+  _fgPicture(1).setOffset( 45, -10 );
 }

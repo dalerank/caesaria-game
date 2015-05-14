@@ -71,9 +71,9 @@ FilmWidget::FilmWidget(Widget* parent, const std::string& movieName )
   }
   else
   {
-    gfx::Picture pic = gfx::Picture::load( movieName, 1 );
+    gfx::Picture pic( movieName, 1 );
     if( !pic.isValid() )
-      pic = gfx::Picture::load( "freska", 1 );
+      pic.load( "freska", 1 );
 
     new Image( this, Rect( 12, 12, width() - 12, 12 + 292 ), pic, Image::fit );
   }

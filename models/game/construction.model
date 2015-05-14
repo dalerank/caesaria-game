@@ -183,6 +183,7 @@
     employers : 16
     class : "military"
     sound : [ "fort", 1 ]
+    image : [ "fortlegioner", 1 ]
     requestDestroy : true
   },
 
@@ -219,6 +220,7 @@
     desirability : { base :-20,	range : 10,	step : 2 }
     employers : 16
     class : "military"
+    image : [ "fortspear", 1 ]
     requestDestroy : true
   }, 
 
@@ -227,6 +229,7 @@
     desirability : { base :-20,	range : 10,	step : 2 }
     employers : 16
     class : "military"
+    image : [ "fortmount", 1 ]
     requestDestroy : true
   }, 
 

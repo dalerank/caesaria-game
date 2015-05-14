@@ -167,7 +167,7 @@ void MissionTargets::setCity(PlayerCityPtr city)
       std::string text = *it;
       if( text.substr( 0, 5 ) == "@img=" )
       {
-        Picture pic = Picture::load( text.substr( 5 ) );
+        Picture pic( text.substr( 5 ) );
         ListBoxItem& item = _d->lbxHelp->addItem( pic );
         item.setTextAlignment( align::center, align::upperLeft );
         int lineCount = pic.height() / _d->lbxHelp->itemHeight();

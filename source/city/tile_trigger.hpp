@@ -15,45 +15,37 @@
 //
 // Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_TOPMENU_H_INCLUDE_
-#define __CAESARIA_TOPMENU_H_INCLUDE_
+#ifndef __CAESARIA_TILETRIGGER_H_INCLUDED__
+#define __CAESARIA_TILETRIGGER_H_INCLUDED__
 
-#include "gui/mainmenu.hpp"
-#include "core/scopedptr.hpp"
-#include "game/advisor.hpp"
+#include "walker/walker.hpp"
+#include "core/predefinitions.hpp"
 
-class DateTime;
-
-namespace gui
-{
-
-class TopMenu : public MainMenu
+/** This is an immigrant coming with his stuff */
+class TileTrigger : public Walker
 {
 public:
-  TopMenu( Widget* parent, const int height, bool useIcon );
+  static WalkerPtr create( PlayerCityPtr city ); //need for walker manager
 
-  // draw on screen
-  void draw( gfx::Engine& engine );
+  virtual ~TileTrigger();
 
-  void setFunds( int value );
-  void setPopulation( int value );
+  virtual void timeStep(const unsigned long time);
 
-signals public:
-  Signal0<>& onExit();
-  Signal0<>& onSave();
-  Signal0<>& onEnd();
-  Signal0<>& onLoad();
-  Signal0<>& onRestart();
-  Signal0<>& onShowVideoOptions();
-  Signal0<>& onShowSoundOptions();
-  Signal0<>& onShowGameSpeedOptions();
-  Signal0<>& onShowCityOptions();
-  Signal1<Advisor>& onRequestAdvisor();
+  virtual void save(VariantMap& stream) const;
+  virtual void load(const VariantMap& stream);  
+
+  virtual const gfx::Picture& getMainPicture();
+
+protected:
+  TileTrigger( PlayerCityPtr city );
+
+  virtual bool _checkExeCondition();
+  virtual void _updateAnimation( unsigned int time );
+  virtual void _exec();
 
 private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-}//end namespace gui
-#endif //__CAESARIA_TOPMENU_H_INCLUDE_
+#endif //__CAESARIA_TILETRIGGER_H_INCLUDED__

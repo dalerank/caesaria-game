@@ -38,7 +38,7 @@ Barracks::Barracks() : TrainingBuilding( object::barracks, Size( 3 ) ),
   _d( new Impl )
 {
   setMaximumWorkers(5);
-  setPicture( ResourceGroup::security, 17 );
+  _picture().load( ResourceGroup::security, 17 );
 
   _d->store.setCapacity( 1000 );
   _d->store.setCapacity( good::weapon, 1000 );

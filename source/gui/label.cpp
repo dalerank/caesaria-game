@@ -70,7 +70,8 @@ public:
   Picture bgPicture;
   Picture icon;
   Batch background;
-  PictureRef textPicture;
+  Pictures backgroundNb;
+  Picture textPicture;
   unsigned int opaque;
 
   Impl() : textMargin( Rect( 0, 0, 0, 0) ),
@@ -87,7 +88,7 @@ public:
 
   ~Impl()
   {
-    textPicture.reset();
+    textPicture = Picture();
   }
 
   void breakText( const std::string& text, const Size& size );
@@ -125,19 +126,19 @@ Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool bor
 
 void Label::_updateTexture(gfx::Engine& painter )
 {
-  if( _d->textPicture && _d->textPicture->size() != size() )
+  if( _d->textPicture.isValid() && _d->textPicture.size() != size() )
   {
-    _d->textPicture.reset( Picture::create( size(), 0, true ) );
+    _d->textPicture = Picture( size(), 0, true );
   }
 
-  if( !_d->textPicture )
+  if( !_d->textPicture.isValid() )
   {
-    _d->textPicture.reset( Picture::create( size(), 0, true ) );
+    _d->textPicture = Picture( size(), 0, true );
   }
 
-  if( _d->textPicture )
+  if( _d->textPicture.isValid() )
   {
-    _d->textPicture->fill( 0x00ffffff, Rect( 0, 0, 0, 0) );
+    _d->textPicture.fill( 0x00ffffff, Rect( 0, 0, 0, 0) );
   }
 
   // draw button background
@@ -160,7 +161,7 @@ void Label::_updateTexture(gfx::Engine& painter )
         Rect textRect = _d->font.getTextRect( rText, frameRect, horizontalTextAlign(), verticalTextAlign() );
 
         textRect += _d->textOffset;
-        _d->font.draw( *_d->textPicture, text(), textRect.lefttop(), useAlpha4Text, false );
+        _d->font.draw( _d->textPicture, text(), textRect.lefttop(), useAlpha4Text, false );
       }
       else
       {
@@ -181,17 +182,17 @@ void Label::_updateTexture(gfx::Engine& painter )
         {
           Rect textRect = _d->font.getTextRect( *it, r, horizontalTextAlign(), verticalTextAlign() );
           textRect += _d->textOffset;
-          _d->font.draw( *_d->textPicture, *it, textRect.lefttop(), useAlpha4Text, false );
+          _d->font.draw( _d->textPicture, *it, textRect.lefttop(), useAlpha4Text, false );
           r += Point( 0, height + _d->lineIntervalOffset );
         }        
       }
     }
   }
 
-  if( _d->textPicture )
+  if( _d->textPicture.isValid() )
   {
-    _d->textPicture->setAlpha( _d->opaque );
-    _d->textPicture->update();
+    _d->textPicture.setAlpha( _d->opaque );
+    _d->textPicture.update();
   }
 }
 
@@ -204,15 +205,15 @@ void Label::_updateBackground(Engine& painter, bool& useAlpha4Text )
   switch( _d->backgroundMode )
   {
   case bgSimpleWhite:
-    _d->textPicture->fill( 0xffffffff, Rect( 0, 0, 0, 0) );
+    _d->textPicture.fill( 0xffffffff, Rect( 0, 0, 0, 0) );
     useAlpha4Text = false;
-    Decorator::draw( *_d->textPicture, r, Decorator::lineBlackBorder );
+    Decorator::draw( _d->textPicture, r, Decorator::lineBlackBorder );
   break;
 
   case bgSimpleBlack:
-    _d->textPicture->fill( 0xff000000, Rect( 0, 0, 0, 0) );
+    _d->textPicture.fill( 0xff000000, Rect( 0, 0, 0, 0) );
     useAlpha4Text = false;
-    Decorator::draw( *_d->textPicture, r, Decorator::lineWhiteBorder );
+    Decorator::draw( _d->textPicture, r, Decorator::lineWhiteBorder );
   break;
 
   case bgWhite: Decorator::draw( pics, r, Decorator::whiteArea, Decorator::normalY ); break;
@@ -225,7 +226,13 @@ void Label::_updateBackground(Engine& painter, bool& useAlpha4Text )
   case bgWhiteBorderA: Decorator::draw( pics, r, Decorator::whiteBorderA, Decorator::normalY  ); break;
   }
 
-  _d->background.load( pics, absoluteRect().lefttop() );
+  bool batchOk = _d->background.load( pics, absoluteRect().lefttop() );
+  if( !batchOk )
+  {
+    _d->background.destroy();
+    Decorator::reverseYoffset( pics );
+    _d->backgroundNb = pics;
+  }
 }
 
 void Label::_handleClick()
@@ -249,7 +256,10 @@ void Label::draw(gfx::Engine& painter )
   }
   else
   {
-    painter.draw( _d->background, &absoluteClippingRectRef() );
+    if( _d->background.valid() )
+      painter.draw( _d->background, &absoluteClippingRectRef() );
+    else
+      painter.draw( _d->backgroundNb, absoluteRect().lefttop(), &absoluteClippingRectRef() );
   }
 
   if( _d->icon.isValid() )
@@ -257,9 +267,9 @@ void Label::draw(gfx::Engine& painter )
     painter.draw( _d->icon, absoluteRect().UpperLeftCorner + _d->iconOffset, &absoluteClippingRectRef() );
   }
 
-  if( _d->textPicture )
+  if( _d->textPicture.isValid() )
   {
-    painter.draw( *_d->textPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+    painter.draw( _d->textPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
   }
 
   Widget::draw( painter );
@@ -684,7 +694,7 @@ void Label::setupUI(const VariantMap& ui)
   Widget::setupUI( ui );
 
   setFont( Font::create( ui.get( "font", std::string( "FONT_2" ) ).toString() ) );
-  setBackgroundPicture( Picture::load( ui.get( "image" ).toString() ) );
+  setBackgroundPicture( Picture( ui.get( "image" ).toString() ) );
   setWordwrap( (bool)ui.get( "multiline", false ) );
 
   Variant vTextOffset = ui.get( "text.offset" );
@@ -694,7 +704,7 @@ void Label::setupUI(const VariantMap& ui)
   if( vIcon.isValid() )
   {
     Point iconOffset = ui.get( "icon.offset" ).toPoint();
-    setIcon( Picture::load( vIcon.toString() ), iconOffset );
+    setIcon( Picture( vIcon.toString() ), iconOffset );
   }
 
   LabelBackgroundHelper helper;
@@ -704,7 +714,8 @@ void Label::setupUI(const VariantMap& ui)
 }
 
 void Label::setTextOffset(Point offset) {  _d->textOffset = offset;}
-PictureRef& Label::_textPictureRef() { return _d->textPicture; }
+Picture& Label::_textPicture() { return _d->textPicture; }
 Batch& Label::_background() { return _d->background; }
+Pictures& Label::_backgroundNb() { return _d->backgroundNb; }
 
 }//end namespace gui
