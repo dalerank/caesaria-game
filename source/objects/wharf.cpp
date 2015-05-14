@@ -26,8 +26,6 @@
 #include "constants.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
-
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::wharf, Wharf)
 
 class Wharf::Impl
@@ -40,7 +38,7 @@ public:
 Wharf::Wharf() : CoastalFactory(good::none, good::fish, object::wharf, Size(2)), _d( new Impl )
 {
   // transport 52 53 54 55
-  setPicture( ResourceGroup::wharf, Impl::northPic );
+  _picture().load( ResourceGroup::wharf, Impl::northPic );
 }
 
 void Wharf::destroy()

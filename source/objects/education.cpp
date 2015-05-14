@@ -25,9 +25,9 @@
 #include "game/gamedate.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
-
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::school, School)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::library, Library)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::academy, Academy)
 
 class School::Impl
 {
@@ -40,7 +40,7 @@ public:
 
 School::School() : ServiceBuilding(Service::school, object::school, Size(2)), _d( new Impl )
 {
-  setPicture( ResourceGroup::commerce, 83 );
+  _picture().load( ResourceGroup::commerce, 83 );
   _d->maxMonthVisitors = 75;
 }
 
@@ -98,14 +98,14 @@ int School::_getWalkerOrders() const
 
 Library::Library() : ServiceBuilding(Service::library, object::library, Size(2))
 {
-  setPicture( ResourceGroup::commerce, 84 );
+  _picture().load( ResourceGroup::commerce, 84 );
 }
 
 int Library::currentVisitors() const {  return 800; }
 
 Academy::Academy() : ServiceBuilding(Service::academy, object::academy, Size(3))
 {
-  setPicture( ResourceGroup::commerce, 85 );
+  _picture().load( ResourceGroup::commerce, 85 );
 }
 
 int Academy::currentVisitors() const {  return 100; }

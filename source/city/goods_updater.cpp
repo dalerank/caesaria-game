@@ -30,8 +30,6 @@
 #include "objects/house_level.hpp"
 #include "cityservice_factory.hpp"
 
-using namespace constants;
-
 namespace city
 {
 
@@ -72,7 +70,7 @@ void GoodsUpdater::timeStep(const unsigned int time)
 
     foreach( bldType, _d->supportBuildings )
     {
-      BuildingList buildings = city::statistic::findo<Building>( _city(), *bldType );
+      BuildingList buildings = city::statistic::getObjects<Building>( _city(), *bldType );
       foreach( it, buildings )
       {
         good::Stock stock( _d->gtype, _d->value, _d->value );

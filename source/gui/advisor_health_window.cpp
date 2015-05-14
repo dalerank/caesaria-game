@@ -37,7 +37,6 @@
 #include "city/states.hpp"
 #include "widget_helper.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 struct HealthInfo
@@ -97,15 +96,15 @@ public:
 
     HealthInfo info = findInfo( _service );
 
-    PictureRef& texture = _textPictureRef();
+    Picture& texture = _textPicture();
     Font rfont = font();
     std::string buildingStrT = utils::i2str( _numberBuilding ) + _(info.building);
-    rfont.draw( *texture, buildingStrT, 0, 0 );
+    rfont.draw( texture, buildingStrT, 0, 0 );
 
-    rfont.draw( *texture, utils::i2str(_workingBuilding), 165, 0 );
+    rfont.draw( texture, utils::i2str(_workingBuilding), 165, 0 );
 
     std::string peoplesStrT = utils::i2str( _peoplesCount ) + _(info.people);
-    rfont.draw( *texture, peoplesStrT, 255, 0 );
+    rfont.draw( texture, peoplesStrT, 255, 0 );
   }
 
 private:
@@ -193,7 +192,7 @@ Health::Impl::InfrastructureInfo Health::Impl::getInfo(PlayerCityPtr city, const
   ret.peoplesServed = 0;
   ret.buildingCount = 0;
 
-  ServiceBuildingList srvBuildings = city::statistic::findo<ServiceBuilding>( city, service );
+  ServiceBuildingList srvBuildings = city::statistic::getObjects<ServiceBuilding>( city, service );
   foreach( b, srvBuildings )
   {
     ret.buildingWork += (*b)->numberWorkers() > 0 ? 1 : 0;
@@ -228,7 +227,7 @@ void Health::Impl::updateAdvice(PlayerCityPtr c)
     }
     else
     {
-      HouseList houses =  city::statistic::findo<House>( c, object::house );
+      HouseList houses =  city::statistic::getHouses( c );
 
       unsigned int needBath = 0;
       unsigned int needBarbers = 0;

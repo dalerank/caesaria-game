@@ -23,7 +23,7 @@ typedef std::vector<vfs::Path> FilePathList;
 
 static void __gartherFiles( vfs::Directory basedir, vfs::Directory dir, FilePathList& files )
 {
-  vfs::Entries entries = dir.getEntries();
+  vfs::Entries entries = dir.entries();
   foreach( i, entries )
   {
     if( i->name.isDirectoryEntry() )
@@ -35,7 +35,7 @@ static void __gartherFiles( vfs::Directory basedir, vfs::Directory dir, FilePath
     }
     else
     {
-      files.push_back( basedir.getRelativePathTo( i->fullpath ) );
+      files.push_back( basedir.relativePathTo( i->fullpath ) );
     }
   }
 }
@@ -56,8 +56,8 @@ void Packager::createUpdate( bool release )
 {
   FilePathList allFiles;
 
-  vfs::Directory::changeCurrentDir( _baseset );
-  vfs::Directory dir = vfs::Directory::getCurrent();
+  vfs::Directory::switchTo( _baseset );
+  vfs::Directory dir = vfs::Directory::current();
 
   __gartherFiles( dir, dir, allFiles );
 

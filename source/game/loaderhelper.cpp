@@ -25,7 +25,6 @@
 #include "gfx/tilesarray.hpp"
 #include "game/settings.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 std::string LoaderHelper::getDefaultCityName(unsigned int location)
@@ -185,7 +184,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   if( ovType == object::elevation )
   {
     std::string elevationPicName = imgid::toResource( oTile.originalImgId() );
-    overlay->setPicture( Picture::load( elevationPicName ) );
+    overlay->setPicture( Picture( elevationPicName ) );
   }
 
   if( overlay != NULL )
@@ -196,7 +195,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
 
     city::AreaInfo info = { city, oTile.pos(), TilesArray() };
     overlay->build( info );
-    city->overlays().push_back( overlay );
+    city->addOverlay( overlay );
   }
 
   if( changeId > 0 )

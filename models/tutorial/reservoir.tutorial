@@ -1,5 +1,6 @@
 {
  title : "##reservoir_title##"
+ speech : "tutorial2_reservoir"
  items : [ "##reservoir_header##",
 		   "@img=picture3_00007",
 		   "##reservoir_build_fountain##", 	

@@ -20,7 +20,6 @@
 #include "city/city.hpp"
 #include "game/resourcegroup.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace citylayer
@@ -57,9 +56,9 @@ void Info::render(Engine& engine)
 
 void Info::_loadColumnPicture(int picId)
 {
-  _d->footColumn = Picture::load( ResourceGroup::sprites, picId + 2 );
-  _d->bodyColumn = Picture::load( ResourceGroup::sprites, picId + 1 );
-  _d->headerColumn = Picture::load( ResourceGroup::sprites, picId );
+  _d->footColumn.load( ResourceGroup::sprites, picId + 2 );
+  _d->bodyColumn.load( ResourceGroup::sprites, picId + 1 );
+  _d->headerColumn.load( ResourceGroup::sprites, picId );
 }
 
 void Info::drawColumn( Engine& engine, const Point& pos, const int percent)

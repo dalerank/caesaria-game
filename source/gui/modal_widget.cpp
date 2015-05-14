@@ -218,7 +218,7 @@ void ModalScreen::addChild(Widget* child)
 }
 
 
-void ModalScreen::_resizeEvent()
+void ModalScreen::_finalizeResize()
 {
   //setGeometry( RectF( 0, 0, 1, 1 ) );
 }

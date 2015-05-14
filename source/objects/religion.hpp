@@ -30,11 +30,13 @@ public:
 
   virtual unsigned int parishionerNumber() const = 0;
   virtual void deliverService();
+  virtual unsigned int walkerDistance() const;
 
 protected:
   Temple( religion::DivinityPtr divinity, object::Type type, int imgId, const Size& size );
 
-  virtual unsigned int walkerDistance() const;
+  virtual void _updateBuffs();
+  DateTime _lastBuff() const;
 
 private:
   class Impl;
@@ -61,6 +63,13 @@ class TempleCeres : public SmallTemple
 {
 public:
   TempleCeres();
+
+protected:
+  virtual void _updateBuffs();
+  virtual void initialize(const MetaData &mdata);
+
+private:
+  int _buffValue;
 };
 
 class TempleNeptune : public SmallTemple

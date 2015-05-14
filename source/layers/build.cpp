@@ -36,11 +36,12 @@
 #include "game/funds.hpp"
 #include "game/settings.hpp"
 #include "walker/walker.hpp"
+#include "gfx/tilearea.hpp"
 #include "gfx/city_renderer.hpp"
 #include "gfx/helper.hpp"
 #include "layerdestroy.hpp"
+#include "gfx/tilemap.hpp"
 
-using namespace constants;
 using namespace gui;
 using namespace gfx;
 using namespace events;
@@ -68,7 +69,7 @@ public:
   LayerPtr lastLayer;
   std::string resForbiden;
   Font textFont;
-  PictureRef textPic;
+  Picture textPic;
   TilesArray buildTiles;  // these tiles have draw over "normal" tilemap tiles!
 };
 
@@ -110,7 +111,7 @@ void Build::_checkPreviewBuild(TilePos pos)
   bool walkersOnTile = false;
   if( bldCommand->isCheckWalkers() )
   {
-    TilesArray tiles = _city()->tilemap().getArea( pos, pos + TilePos( size.width()-1, size.height()-1 )  );
+    TilesArray tiles = overlay->area();
     foreach( t, tiles )
     {
       const WalkerList& walkers = _city()->walkers( (*t)->pos() );
@@ -153,8 +154,8 @@ void Build::_checkPreviewBuild(TilePos pos)
   else
   {
     //bldCommand->setCanBuild(false);
-    const Picture& grnPicture = Picture::load( d->resForbiden, 1);
-    const Picture& redPicture = Picture::load( d->resForbiden, 2);
+    Picture grnPicture( d->resForbiden, 1);
+    Picture redPicture( d->resForbiden, 2);
 
     //TilemapArea area = til
     Tilemap& tmap = _city()->tilemap();
@@ -277,9 +278,9 @@ void Build::_updatePreviewTiles( bool force )
 
   std::sort( d->buildTiles.begin(), d->buildTiles.end(), compare_tile );
 
-  d->textPic->fill( 0x0, Rect() );
+  d->textPic.fill( 0x0, Rect() );
   d->textFont.setColor( 0xffff0000 );
-  d->textFont.draw( *d->textPic, utils::i2str( d->money4Construction ) + " Dn", Point() );
+  d->textFont.draw( d->textPic, utils::i2str( d->money4Construction ) + " Dn", Point() );
 }
 
 void Build::_buildAll()
@@ -583,7 +584,7 @@ const Layer::WalkerTypes& Build::visibleTypes() const
 void Build::renderUi(Engine &engine)
 {
   Layer::renderUi( engine );
-  engine.draw( *_dfunc()->textPic, engine.cursorPos() + Point( 10, 10 ));
+  engine.draw( _dfunc()->textPic, engine.cursorPos() + Point( 10, 10 ));
 }
 
 void Build::changeLayer(int layer)
@@ -627,9 +628,9 @@ Build::Build( Renderer& renderer, PlayerCityPtr city)
   d->frameCount = 0;
   d->needUpdateTiles = false;
   d->resForbiden = SETTINGS_VALUE( forbidenTile ).toString();
-  d->startTilePos = TilePos( -1, -1 );
+  d->startTilePos = gfx::tilemap::invalidLocation();
   d->textFont = Font::create( FONT_5 );
-  d->textPic.init( Size( 100, 30 ) );
+  d->textPic = Picture( Size( 100, 30 ), 0, true );
   _addWalkerType( walker::all );
 }
 

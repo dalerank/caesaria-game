@@ -36,7 +36,7 @@
 #include "core/saveadapter.hpp"
 #include "game/settings.hpp"
 
-using namespace constants;
+//using namespace constants;
 using namespace gfx;
 using namespace city;
 
@@ -72,12 +72,12 @@ public:
       char buffer[32];
       sprintf( buffer, "%d", _cost );
       Rect textRect = f.getTextRect( buffer, Rect( 5, 0, width()-10, height() ),
-                                             align::lowerRight, verticalTextAlign() );
-      f.draw( *_textPictureRef(), buffer, textRect.left(), textRect.top() );
+                                     align::lowerRight, verticalTextAlign() );
+      f.draw( _textPicture(), buffer, textRect.left(), textRect.top() );
     }
   }
 
-  void _resizeEvent()
+  void _finalizeResize()
   {
     for( int i=0; i < StateCount; i++ )
         _updateBackground( ElementState(i) );

@@ -33,7 +33,7 @@ enum Value
   east,
   northEast,
   count
-} ;
+};
 
 class Helper : public EnumsHelper<Value>
 {

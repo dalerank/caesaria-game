@@ -25,7 +25,6 @@
 #include "cityservice_factory.hpp"
 #include "config.hpp"
 
-using namespace constants;
 using namespace config;
 using namespace events;
 
@@ -55,10 +54,7 @@ city::SrvcPtr HealthCare::create( PlayerCityPtr city )
   return ret;
 }
 
-std::string HealthCare::defaultName()
-{
-  return CAESARIA_STR_EXT(HealthCare);
-}
+std::string HealthCare::defaultName() { return CAESARIA_STR_EXT(HealthCare); }
 
 HealthCare::HealthCare( PlayerCityPtr city )
   : Srvc( city, HealthCare::defaultName() ), _d( new Impl )
@@ -71,7 +67,7 @@ void HealthCare::timeStep(const unsigned int time )
 {
   if( game::Date::isMonthChanged() )
   {
-    HouseList houses = city::statistic::findh( _city() );
+    HouseList houses = city::statistic::getHouses( _city() );
 
     _d->value = 0;
     _d->avgMinHealth = 100;
@@ -112,7 +108,7 @@ std::string HealthCare::reason() const
   int lvl = math::clamp<int>( _d->value / (health::maxValue/health::levelNumber), 0, health::levelNumber-1 );
   std::string mainReason = healthDescription[ lvl ];
 
-  BuildingList clinics = city::statistic::findo<Building>( _city(), object::clinic );
+  BuildingList clinics = city::statistic::getObjects<Building>( _city(), object::clinic );
 
   mainReason += clinics.size() > 0 ? "_clinic##" : "##";
 

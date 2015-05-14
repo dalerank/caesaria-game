@@ -56,7 +56,7 @@ int WarehouseStore::qty(const good::Product &goodType) const
   return amount;
 }
 
-int WarehouseStore::qty() const {  return qty( good::any() ); }
+int WarehouseStore::qty() const { return qty( good::any() ); }
 
 int WarehouseStore::getMaxStore(const good::Product goodType)
 {
@@ -131,36 +131,29 @@ void WarehouseStore::applyStorageReservation( good::Stock &stock, const int rese
   // std::cout << "WarehouseStore, store qty=" << amount << " resID=" << reservationID << std::endl;
 
   // first we look at the half filled subTiles
-  foreach( room, _warehouse->rooms() )
+  if (amount > 0)
   {
-    if (amount == 0)
+    foreach( room, _warehouse->rooms() )
     {
-      break;
+      if( room->type() == stock.type() && room->freeQty() > 0 )
+      {
+        int tileAmount = std::min(amount, room->freeQty());
+        // std::cout << "put in half filled" << std::endl;
+        room->append(stock, tileAmount);
+        amount -= tileAmount;
+      }
     }
 
-    if( room->type() == stock.type() && room->freeQty() > 0 )
+    // then we look at the empty subTiles
+    foreach( room, _warehouse->rooms() )
     {
-      int tileAmount = std::min(amount, room->freeQty());
-      // std::cout << "put in half filled" << std::endl;
-      room->append(stock, tileAmount);
-      amount -= tileAmount;
-    }
-  }
-
-  // then we look at the empty subTiles
-  foreach( room, _warehouse->rooms() )
-  {
-    if (amount == 0)
-    {
-      break;
-    }
-
-    if( room->type() == good::none)
-    {
-      int tileAmount = std::min(amount, room->capacity() );
-      // std::cout << "put in empty tile" << std::endl;
-      room->append(stock, tileAmount);
-      amount -= tileAmount;
+      if( room->type() == good::none)
+      {
+        int tileAmount = std::min(amount, room->capacity() );
+        // std::cout << "put in empty tile" << std::endl;
+        room->append(stock, tileAmount);
+        amount -= tileAmount;
+      }
     }
   }
 
@@ -272,9 +265,10 @@ good::ProductMap WarehouseStore::details() const
 }
 
 void WarehouseStore::setCapacity(const int) {}
-void WarehouseStore::setCapacity(const good::Product &goodType, const int maxQty)
-{
-  _capacities[ goodType ] = maxQty;
-}
+void WarehouseStore::setCapacity(const good::Product &goodType, const int maxQty) {  _capacities[ goodType ] = maxQty; }
 
-int WarehouseStore::capacity( const good::Product& goodType ) const{  return capacity();}
+int WarehouseStore::capacity( const good::Product& goodType ) const
+{
+  good::ProductMap::const_iterator it = _capacities.find( goodType );
+  return it != _capacities.end() ? it->second : 0;
+}

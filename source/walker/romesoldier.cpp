@@ -34,7 +34,6 @@
 #include "gfx/helper.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_SOLDIER_IN_WALKERFACTORY( walker::legionary, walker::legionary, RomeSoldier, legionary )
@@ -177,14 +176,14 @@ std::string RomeSoldier::thoughts(Thought th) const
   if( th == thCurrent )
   {
     TilePos offset( 10, 10 );
-    EnemySoldierList enemies = city::statistic::findw<EnemySoldier>( _city(), walker::any, pos() - offset, pos() + offset );
+    EnemySoldierList enemies = city::statistic::getWalkers<EnemySoldier>( _city(), walker::any, pos() - offset, pos() + offset );
     if( enemies.empty() )
     {
       return Soldier::thoughts( th );
     }
     else
     {
-      RomeSoldierList ourSoldiers = city::statistic::findw<RomeSoldier>( _city(), walker::any, pos() - offset, pos() + offset );
+      RomeSoldierList ourSoldiers = city::statistic::getWalkers<RomeSoldier>( _city(), walker::any, pos() - offset, pos() + offset );
       int enemyStrength = 0;
       int ourStrength = 0;
 
@@ -241,16 +240,13 @@ RomeSoldier::~RomeSoldier(){}
 
 WalkerList RomeSoldier::_findEnemiesInRange( unsigned int range )
 {
-  Tilemap& tmap = _city()->tilemap();
   WalkerList walkers;
-
-  TilePos offset( range, range );
-  TilesArray tiles = tmap.getArea( pos() - offset, pos() + offset );
+  TilesArea area( _city()->tilemap(), pos(), range );
 
   FortPtr fort = base();
   bool attackAnimals = fort.isValid() ? fort->isAttackAnimals() : false;
 
-  foreach( tile, tiles )
+  foreach( tile, area )
   {
     WalkerList tileWalkers = _city()->walkers( (*tile)->pos() );
 
@@ -327,7 +323,7 @@ void RomeSoldier::_back2base()
   FortPtr b = base();
   if( b.isValid() )
   {
-    Pathway way = PathwayHelper::create( pos(), b->freeSlot(), PathwayHelper::allTerrain );
+    Pathway way = PathwayHelper::create( pos(), b->freeSlot( this ), PathwayHelper::allTerrain );
 
     if( way.isValid() )
     {
@@ -376,7 +372,7 @@ void RomeSoldier::_reachedPathway()
 
   case go2position:
   {
-    WalkerList walkersOnTile = city::statistic::findw<Walker>( _city(), type(), pos() );
+    WalkerList walkersOnTile = city::statistic::getWalkers<Walker>( _city(), type(), pos() );
     walkersOnTile.remove( this );
 
     if( walkersOnTile.size() > 0 ) //only me in this tile

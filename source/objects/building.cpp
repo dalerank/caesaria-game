@@ -35,7 +35,6 @@
 #include "game/gamedate.hpp"
 #include "city/states.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace city;
 
@@ -43,10 +42,18 @@ namespace {
 static Renderer::PassQueue buildingPassQueue=Renderer::PassQueue(1,Renderer::overlayAnimation);
 }
 
+struct CityKoeffs
+{
+  float fireRisk;
+  float collapseRisk;
+
+  CityKoeffs() : fireRisk( 1.f), collapseRisk( 1.f ) {}
+};
+
 class Building::Impl
 {
 public:
-  typedef std::map<constants::walker::Type,int> TraineeMap;
+  typedef std::map<walker::Type,int> TraineeMap;
   typedef std::set<walker::Type> WalkerTypeSet;
   typedef std::set<Service::Type> ServiceSet;
 
@@ -55,7 +62,7 @@ public:
   ServiceSet reservedServices;  // a serviceWalker is on the way
 
   int stateDecreaseInterval;
-  float cachedPopkoef;
+  CityKoeffs cityKoeffs;
 };
 
 Building::Building(const object::Type type, const Size& size )
@@ -63,7 +70,6 @@ Building::Building(const object::Type type, const Size& size )
 {
   setState( pr::inflammability, 1 );
   setState( pr::collapsibility, 1 );
-  _d->cachedPopkoef = 1;
   _d->stateDecreaseInterval = game::Date::days2ticks( 1 );
 }
 
@@ -80,8 +86,8 @@ void Building::timeStep(const unsigned long time)
 
   if( time % _d->stateDecreaseInterval == 1 )
   {
-    updateState( pr::damage, _d->cachedPopkoef * state( pr::collapsibility ) );
-    updateState( pr::fire, _d->cachedPopkoef * state( pr::inflammability ) );
+    updateState( pr::fire,   _d->cityKoeffs.fireRisk     * state( pr::inflammability ) );
+    updateState( pr::damage, _d->cityKoeffs.collapseRisk * state( pr::collapsibility ) );
   }
 
   Construction::timeStep(time);
@@ -189,6 +195,17 @@ void Building::setTraineeValue(walker::Type type, int value)
   _d->traineeMap[ type ] = value;
 }
 
+void Building::initialize(const MetaData &mdata)
+{
+  Construction::initialize( mdata );
+
+  Variant inflammabilityV = mdata.getOption( "inflammability" );
+  if( inflammabilityV.isValid() ) setState( pr::inflammability, inflammabilityV.toDouble() );
+
+  Variant collapsibilityV = mdata.getOption( "collapsibility" );
+  if( collapsibilityV.isValid() ) setState( pr::collapsibility, collapsibilityV.toDouble() );
+}
+
 int Building::traineeValue(walker::Type traineeType) const
 {
   Impl::TraineeMap::iterator i = _d->traineeMap.find( traineeType );
@@ -199,6 +216,19 @@ Renderer::PassQueue Building::passQueue() const {  return buildingPassQueue;}
 
 void Building::_updateBalanceKoeffs()
 {
-  _d->cachedPopkoef = std::max<float>( statistic::getBalanceKoeff( _city() ), 0.1f );
-  _d->cachedPopkoef *= _city()->getOption( PlayerCity::fireKoeff ) / 100.f;
+  if( !_city().isValid() )
+    return;
+
+  float balance = std::max<float>( statistic::getBalanceKoeff( _city() ), 0.1f );
+
+  float fireKoeff = balance * _city()->getOption( PlayerCity::fireKoeff ) / 100.f;
+  if( !_city()->getOption(PlayerCity::c3gameplay) )
+  {
+    int anyWater = tile().param( Tile::pWellWater ) + tile().param( Tile::pFountainWater ) + tile().param( Tile::pReservoirWater );
+    if( anyWater > 0 )
+      fireKoeff -= 0.3f;
+  }
+
+  _d->cityKoeffs.fireRisk = math::clamp( fireKoeff, 0.f, 9.f );
+  _d->cityKoeffs.collapseRisk = balance * _city()->getOption( PlayerCity::collapseKoeff ) / 100.f;
 }

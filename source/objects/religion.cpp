@@ -23,8 +23,12 @@
 #include "constants.hpp"
 #include "city/statistic.hpp"
 #include "objects_factory.hpp"
+#include "gfx/tilearea.hpp"
+#include "game/gamedate.hpp"
+#include "objects/farm.hpp"
+#include "objects/extension.hpp"
+#include "gfx/tilearea.hpp"
 
-using namespace constants;
 using namespace religion;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::small_ceres_temple, TempleCeres)
@@ -43,6 +47,7 @@ class Temple::Impl
 {
 public:
   DivinityPtr divinity;
+  DateTime lastBuff;
 };
 
 Temple::Temple( DivinityPtr divinity, object::Type type, int imgId, const Size& size )
@@ -51,9 +56,12 @@ Temple::Temple( DivinityPtr divinity, object::Type type, int imgId, const Size& 
                     : Service::srvCount, type, size ), _td( new Impl )
 {
   _td->divinity = divinity;
-  setPicture( ResourceGroup::security, imgId );
-  _fgPicturesRef().resize( 1 );
+  _picture().load( ResourceGroup::security, imgId );
+  _fgPictures().resize( 1 );
 }
+
+void Temple::_updateBuffs() {  _td->lastBuff = game::Date::current(); }
+DateTime Temple::_lastBuff() const { return _td->lastBuff; }
 
 DivinityPtr Temple::divinity() const {  return _td->divinity; }
 
@@ -62,6 +70,7 @@ void Temple::deliverService()
   if( walkers().empty() && numberWorkers() > 0 )
   {
     ServiceBuilding::deliverService();
+    _updateBuffs();
   }
 }
 
@@ -71,7 +80,33 @@ Temple::~Temple(){}
 
 TempleCeres::TempleCeres() : SmallTemple( rome::Pantheon::ceres(), object::small_ceres_temple, 45 )
 {
+  _buffValue = 3;
 }
+
+void TempleCeres::_updateBuffs()
+{
+  if( !_city()->getOption( PlayerCity::godEnabled ) ||
+      _city()->getOption( PlayerCity::c3gameplay ) )
+    return;
+
+  if( _lastBuff().month() != game::Date::current().month() )
+  {
+    TilePos offset( 5, 5 );
+    FarmList farms = city::statistic::getObjects<Farm>( _city(), object::any,
+                                                   pos() - offset, pos() + offset + TilePos( size().width(), size().width() ) );
+    foreach( it, farms )
+    {
+      FactoryProgressUpdater::uniqueTo( ptr_cast<Factory>( *it ), _buffValue, 4, CAESARIA_STR_A(TempleCeres) );
+    }
+  }
+}
+
+void TempleCeres::initialize(const MetaData &mdata)
+{
+  Temple::initialize( mdata );
+  _buffValue = mdata.getOption( "buffValue", _buffValue );
+}
+
 
 BigTempleCeres::BigTempleCeres() : BigTemple( rome::Pantheon::ceres(), object::big_ceres_temple, 46 )
 {
@@ -114,10 +149,10 @@ TempleOracle::TempleOracle() : BigTemple( DivinityPtr(), object::oracle, 55 )
   setSize( Size( 2 ) );
   _animationRef().load( ResourceGroup::security, 56, 6);
   _animationRef().setOffset( Point( 9, 30 ) );
-  _fgPicturesRef().resize(1);
+  _fgPictures().resize(1);
 }
 
-unsigned int TempleOracle::parishionerNumber() const {  return 500; }
+unsigned int TempleOracle::parishionerNumber() const { return 500; }
 
 bool TempleOracle::build( const city::AreaInfo& info )
 {
@@ -138,7 +173,7 @@ SmallTemple::SmallTemple( DivinityPtr divinity, object::Type type, int imgId )
   setMaximumWorkers( 2 );
 }
 
-unsigned int SmallTemple::parishionerNumber() const {  return 750; }
+unsigned int SmallTemple::parishionerNumber() const { return 750; }
 
 BigTemple::BigTemple( DivinityPtr divinity, object::Type type, int imgId )
   : Temple( divinity, type, imgId, Size(3) )
@@ -146,7 +181,7 @@ BigTemple::BigTemple( DivinityPtr divinity, object::Type type, int imgId )
   setMaximumWorkers( 8 );
 }
 
-unsigned int BigTemple::parishionerNumber() const {  return 1500; }
+unsigned int BigTemple::parishionerNumber() const { return 1500; }
 
 bool BigTemple::build( const city::AreaInfo& info )
 {  

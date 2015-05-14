@@ -40,7 +40,10 @@ void ConstructionExtension::load(const VariantMap &stream)
 
 void ConstructionExtension::timeStep(ConstructionPtr, unsigned int)
 {
-  _isDeleted = game::Date::current() > _finishDate;
+  if( game::Date::isDayChanged() )
+  {
+    _isDeleted = game::Date::current() > _finishDate;
+  }
 }
 
 ConstructionExtensionPtr FactoryProgressUpdater::create()
@@ -68,6 +71,34 @@ ConstructionExtensionPtr FactoryProgressUpdater::assignTo(FactoryPtr factory, fl
     crashhandler::printstack();
     Logger::warning( "WARNING!!! Factory not initialized" );
   }
+
+  return ret;
+}
+
+ConstructionExtensionPtr FactoryProgressUpdater::uniqueTo(FactoryPtr factory, float value, int week2finish, const std::string& name)
+{
+  if( !factory.isValid() )
+  {
+    Logger::warning( "WARNING!!! Factory not initialized" );
+    crashhandler::printstack();
+    return ConstructionExtensionPtr();
+  }
+
+  if( name.empty() )
+  {
+    Logger::warning( "WARNING!!! Cant assigned named extension without name" );
+    return ConstructionExtensionPtr();
+  }
+
+  ConstructionExtensionList exts = factory->extensions();
+  foreach( it, exts )
+  {
+    if( (*it)->name() == name )
+      return ConstructionExtensionPtr();
+  }
+
+  ConstructionExtensionPtr ret = assignTo( factory, value, week2finish );
+  ret->setName( name );
 
   return ret;
 }
@@ -119,7 +150,7 @@ void FortCurseByMars::timeStep(ConstructionPtr parent, unsigned int time)
 {
   if( game::Date::isWeekChanged() )
   {
-    FortPtr base = ptr_cast<Fort>( parent );
+    FortPtr base = parent.as<Fort>();
     if( !base.isValid() )
     {
       Logger::warning( "FortCurseByMars::run base is null ");

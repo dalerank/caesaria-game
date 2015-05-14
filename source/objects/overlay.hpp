@@ -89,14 +89,17 @@ public:
 
   virtual void initialize( const MetaData& mdata );
 
+  virtual void debugLoadOld( int oldFormat, const VariantMap& stream );
+
 protected:
   void setType(const object::Type type);
   gfx::Animation& _animationRef();
   gfx::Tile* _masterTile();
   PlayerCityPtr _city() const;
-  gfx::Pictures& _fgPicturesRef();
-  gfx::Picture&_fgPicture(unsigned int index);
-  gfx::Picture& _pictureRef();
+  gfx::Pictures& _fgPictures();
+  gfx::Picture& _fgPicture(unsigned int index);
+  const gfx::Picture &_fgPicture(unsigned int index) const;
+  gfx::Picture& _picture();
 
 private:
   class Impl;

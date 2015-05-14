@@ -28,7 +28,6 @@
 #include "city/states.hpp"
 #include "core/priorities.hpp"
 
-using namespace constants;
 using namespace city;
 
 namespace events
@@ -64,7 +63,7 @@ void UpdateHouseService::_exec( Game& game, unsigned int time )
     Logger::warning( "Execute update house service event" + ServiceHelper::getName( _d->type ) );
     _d->isDeleted = true;
 
-    HouseList houses = statistic::findh( game.city() );
+    HouseList houses = statistic::getHouses( game.city() );
 
     foreach( it, houses  )
       (*it)->appendServiceValue( _d->type, _d->value );

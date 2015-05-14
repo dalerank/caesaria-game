@@ -33,9 +33,9 @@
 #include "core/foreach.hpp"
 #include "gfx/helper.hpp"
 #include "city/states.hpp"
+#include "gfx/tilearea.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_SERVICEMAN_IN_WALKERFACTORY( walker::priest,   Service::religionCeres, priest )
@@ -122,7 +122,8 @@ void ServiceWalker::_init(const Service::Type service)
   break;
   }
 
-  setName( NameGenerator::rand( nameType ));
+  if( name().empty() )
+    setName( NameGenerator::rand( nameType ));
 }
 
 const TilePos &ServiceWalker::baseLocation() const { return _d->basePos; }
@@ -215,9 +216,9 @@ void ServiceWalker::setReachDistance(unsigned int value) { _d->reachDistance = v
 
 void ServiceWalker::return2Base()
 {
-  if( !_pathwayRef().isReverse() )
+  if( !_pathway().isReverse() )
   {
-    _pathwayRef().toggleDirection();
+    _pathway().toggleDirection();
   }
 }
 
@@ -225,8 +226,7 @@ ServiceWalker::ReachedBuildings ServiceWalker::getReachedBuildings(const TilePos
 {
   ReachedBuildings res;
 
-  TilePos offset( reachDistance(), reachDistance() );
-  TilesArray reachedTiles = _city()->tilemap().getArea( pos - offset, pos + offset );
+  TilesArea reachedTiles( _city()->tilemap(), pos, reachDistance() );
   foreach( it, reachedTiles )
   {
     BuildingPtr building = ptr_cast<Building>( (*it)->overlay() );
@@ -351,7 +351,7 @@ void ServiceWalker::_centerTile()
 void ServiceWalker::_reachedPathway()
 {
   Walker::_reachedPathway();
-  if( _pathwayRef().isReverse())
+  if( _pathway().isReverse())
   {
     // walker is back in the market
     deleteLater();
@@ -359,7 +359,7 @@ void ServiceWalker::_reachedPathway()
   else
   {
     // walker finished service => get back to service building    
-    _pathwayRef().move( Pathway::reverse );
+    _pathway().move( Pathway::reverse );
     _computeDirection();
     go();
   }

@@ -32,8 +32,6 @@
 #include <game/settings.hpp>
 #include "walkers_factory.hpp"
 
-using namespace constants;
-
 REGISTER_CLASS_IN_WALKERFACTORY(walker::taxCollector, TaxCollector)
 
 class TaxCollector::Impl
@@ -71,7 +69,7 @@ std::string TaxCollector::thoughts(Thought th) const
   if( th == thCurrent )
   {
     TilePos offset( 2, 2 );
-    HouseList houses = city::statistic::findo<House>( _city(), object::house, pos() - offset, pos() + offset );
+    HouseList houses = city::statistic::getObjects<House>( _city(), object::house, pos() - offset, pos() + offset );
     unsigned int poorHouseCounter=0;
     unsigned int richHouseCounter=0;
 

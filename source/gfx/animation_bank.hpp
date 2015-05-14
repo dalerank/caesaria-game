@@ -24,14 +24,16 @@
 #include "good/good.hpp"
 #include "core/direction.hpp"
 #include "vfs/path.hpp"
+#include "core/singleton.hpp"
 
 #include <map>
 
 namespace gfx
 {
 
-class AnimationBank
+class AnimationBank : public StaticSingleton<AnimationBank>
 {
+  friend class StaticSingleton;
 public:
   typedef enum {
     animUnknown      =0,
@@ -49,8 +51,6 @@ public:
 
   typedef std::map< DirectedAction, Animation > MovementAnimation;
 
-  static AnimationBank& instance();
-
   // loads all cart graphics
   void loadCarts( vfs::Path model );
   void loadAnimation(vfs::Path model, vfs::Path basic);
@@ -59,6 +59,8 @@ public:
   static const Animation& simple( unsigned int type );
   static const Animation& simple( const std::string& name );
   static const MovementAnimation& find(unsigned int type );
+
+  ~AnimationBank();
 private:
   AnimationBank();
 

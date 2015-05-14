@@ -29,7 +29,6 @@
 #include "game/infoboxmanager.hpp"
 
 using namespace gfx;
-using namespace constants;
 
 namespace gui
 {

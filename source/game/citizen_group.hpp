@@ -30,23 +30,24 @@ public:
   unsigned int count( Age group ) const;
   unsigned int count( unsigned int beginAge, unsigned int endAge ) const;
 
-  CitizenGroup retrieve( unsigned int count );
+  CitizenGroup retrieve(unsigned int count );
   CitizenGroup retrieve( Age group, unsigned int count );
   CitizenGroup& include( CitizenGroup& b );
   void exclude( CitizenGroup& group );
 
-  unsigned int &operator []( unsigned int age);
+  unsigned int& operator [] ( unsigned int age);
   CitizenGroup& operator += ( const CitizenGroup& b );
-  CitizenGroup operator-( const CitizenGroup& b) const;
-  CitizenGroup operator+( const CitizenGroup& b ) const;
+  CitizenGroup  operator  -  ( const CitizenGroup& b ) const;
+  CitizenGroup  operator  +  ( const CitizenGroup& b ) const;
 
   bool empty() const;
   void clear();
+  void set( const CitizenGroup& b );
   void makeOld();
 
-  unsigned int child_n() const;
-  unsigned int mature_n() const;
-  unsigned int aged_n() const;
+  unsigned int child_n()   const;
+  unsigned int mature_n()  const;
+  unsigned int aged_n()    const;
   unsigned int scholar_n() const;
   unsigned int student_n() const;
 
@@ -55,7 +56,8 @@ public:
 
   CitizenGroup();
   CitizenGroup( Age age, int value );
-private:
+  static CitizenGroup random( int value );
+protected:
   typedef std::vector< unsigned int > Peoples;
   Peoples _peoples;
 };

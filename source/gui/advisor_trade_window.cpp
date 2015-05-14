@@ -44,7 +44,6 @@
 #include "city/statistic.hpp"
 #include "dictionary.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace city;
 
@@ -58,14 +57,15 @@ class TradeGoodInfo : public PushButton
 {
 public:
   TradeGoodInfo( Widget* parent, const Rect& rect, good::Product good, int qty, bool enable,
-                 trade::Order trade, int tradeQty )
+                 trade::Order trade, int exportQty, int importQty )
     : PushButton( parent, rect, "", -1, false, PushButton::noBackground )
   {
     _type = good;
     _qty = qty;
     _enable = enable;
     _tradeOrder = trade;
-    _tradeQty = tradeQty;
+    _exportQty = exportQty;
+    _importQty = importQty;
     _goodPicture = good::Helper::picture( _type );
     _goodName = good::Helper::name( _type );
     Decorator::draw( _border, Rect( 50, 0, width() - 50, height() ), Decorator::brownBorder );
@@ -88,13 +88,13 @@ public:
   {
     PushButton::_updateTextPic();
 
-    if( _textPictureRef() != 0 )
+    if( _textPicture().isValid() )
     {
       Font f = font( _state() );
-      PictureRef& textPic = _textPictureRef();
-      f.draw( *textPic, _( _goodName ), 55, 0, true, false );
-      f.draw( *textPic, utils::format( 0xff, "%d", _qty / 100), 190, 0, true, false );
-      f.draw( *textPic, _enable ? "" : _("##disable##"), 260, 0, true, false );
+      Picture& textPic = _textPicture();
+      f.draw( textPic, _( _goodName ), 55, 0, true, false );
+      f.draw( textPic, utils::format( 0xff, "%d", _qty / 100), 190, 0, true, false );
+      f.draw( textPic, _enable ? "" : _("##disable##"), 260, 0, true, false );
 
       std::string ruleName[] = { "##import##", "", "##export##", "##stacking##" };
       std::string tradeStateText = ruleName[ _tradeOrder ];
@@ -103,17 +103,23 @@ public:
       case trade::noTrade:
       case trade::stacking:
       case trade::importing:
-        tradeStateText = _( ruleName[ _tradeOrder ] );
+        if( _importQty == 0 )
+          tradeStateText = _( ruleName[ _tradeOrder ] );
+        else
+          tradeStateText = utils::format( 0xff, "%s %d", _( ruleName[ _tradeOrder ] ), _importQty );
       break;
 
       case trade::exporting:
-        tradeStateText = utils::format( 0xff, "%s %d", _( ruleName[ _tradeOrder ] ), _tradeQty );
+        if( _exportQty == 0)
+          tradeStateText = _( ruleName[ _tradeOrder ] );
+        else
+          tradeStateText = utils::format( 0xff, "%s %d", _( ruleName[ _tradeOrder ] ), _exportQty );
       break;
 
       default: break;
       }
-      f.draw( *textPic, tradeStateText, 340, 0, true, false );
-      textPic->update();
+      f.draw( textPic, tradeStateText, 340, 0, true, false );
+      textPic.update();
     }
   }
 
@@ -131,7 +137,7 @@ private:
   int _qty;
   bool _enable;
   trade::Order _tradeOrder;
-  int _tradeQty;
+  int _exportQty, _importQty;
   good::Product _type;
   std::string _goodName;
   Picture _goodPicture;
@@ -178,10 +184,11 @@ void Trade::Impl::updateGoodsInfo()
     }
 
     bool workState = getWorkState( *gtype );
-    int tradeQty = copt.tradeLimit( trade::exporting, *gtype ).ivalue();
+    int exportQty = copt.tradeLimit( trade::exporting, *gtype ).ivalue();
+    int importQty = copt.tradeLimit( trade::importing, *gtype ).ivalue();
     
     TradeGoodInfo* btn = new TradeGoodInfo( gbInfo, Rect( startDraw + Point( 0, btnSize.height()) * indexOffset, btnSize ),
-                                            *gtype, allgoods[ *gtype ], workState, tradeState, tradeQty );
+                                            *gtype, allgoods[ *gtype ], workState, tradeState, exportQty, importQty );
     indexOffset++;
     CONNECT( btn, onClickedA(), this, Impl::showGoodOrderManageWindow );
   } 

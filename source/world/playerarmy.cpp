@@ -281,7 +281,7 @@ void PlayerArmy::_reachedWay()
       foreach( it, _d->soldiersInfo )
       {
         int type = (*it).save[ "type" ];
-        WalkerPtr walker = WalkerManager::instance().create( (constants::walker::Type)type, pCity );
+        WalkerPtr walker = WalkerManager::instance().create( (walker::Type)type, pCity );
         walker->load( (*it).save );
         walker->attach();
       }
@@ -337,7 +337,7 @@ PlayerArmy::PlayerArmy( EmpirePtr empire )
   _d->mode = PlayerArmy::wait;
   setSpeed( 4.f );
 
-  Picture pic = Picture::load( ResourceGroup::empirebits, 37 );
+  Picture pic( ResourceGroup::empirebits, 37 );
   Size size = pic.size();
   pic.setOffset( Point( -size.width() / 2, size.height() / 2 ) );
   setPicture( pic );

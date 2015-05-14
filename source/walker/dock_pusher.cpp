@@ -21,8 +21,6 @@
 #include "good/stock.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
-
 REGISTER_CLASS_IN_WALKERFACTORY(walker::docker, Docker)
 
 Docker::Docker( PlayerCityPtr city )

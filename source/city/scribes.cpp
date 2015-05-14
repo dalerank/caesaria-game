@@ -36,8 +36,6 @@
 #include "cityservice_military.hpp"
 #include "cityservice_factory.hpp"
 
-using namespace constants;
-
 namespace city
 {
 
@@ -60,13 +58,13 @@ const Scribes::Messages& Scribes::messages() const { return _d->messages; }
 VariantMap Scribes::save() const
 {
   VariantMap ret;
-  ret[ "messages" ] = _d->messages.save();
+  VARIANT_SAVE_CLASS_D( ret, _d, messages );
   return ret;
 }
 
 void Scribes::load(const VariantMap& stream)
 {
-  _d->messages.load( stream.get( "messages" ).toMap() );
+  VARIANT_LOAD_CLASS_D( _d, messages, stream );
 }
 
 const Scribes::Message& Scribes::getMessage(unsigned int index) const
@@ -131,7 +129,7 @@ void Scribes::Message::load(const VariantMap& stream)
   VARIANT_LOAD_ANY( type, stream )
   VARIANT_LOAD_TIME( date, stream )
   VARIANT_LOAD_ANY( opened, stream )
-      ext = stream.get( literals::ext );
+  ext = stream.get( literals::ext );
 }
 
 VariantMap Scribes::Messages::save() const

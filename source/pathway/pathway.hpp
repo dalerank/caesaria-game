@@ -56,6 +56,7 @@ public:
 
   void setNextDirection(const gfx::Tilemap& tmap, Direction direction );
   void setNextTile( const gfx::Tile& tile);
+  void append( const Pathway& other );
   bool contains(const gfx::Tile &tile);
   const gfx::TilesArray& allTiles() const;
 

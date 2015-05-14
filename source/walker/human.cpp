@@ -19,8 +19,6 @@
 #include "city/states.hpp"
 #include "city/city.hpp"
 
-using namespace constants;
-
 Human::Human(PlayerCityPtr city)
   : Walker( city )
 {

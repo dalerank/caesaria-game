@@ -47,28 +47,28 @@ class DynamicSingleton
 public:
   static T* instance()
   {
-          _CAESARIA_DEBUG_BREAK_IF( !m_instance );
-          return m_instance;
+    _CAESARIA_DEBUG_BREAK_IF( !_instance );
+    return _instance;
   }
 
   DynamicSingleton()
   {
-          _CAESARIA_DEBUG_BREAK_IF( m_instance );
-          m_instance = static_cast<T*>(this);
+    _CAESARIA_DEBUG_BREAK_IF( _instance );
+    _instance = static_cast<T*>(this);
   }
 
   virtual ~DynamicSingleton()
   {
-          m_instance = 0;
+    _instance = 0;
   }
 
 private:
-  static T* m_instance;
+  static T* _instance;
 
   DynamicSingleton(const DynamicSingleton<T>&) {}
   DynamicSingleton<T&> operator=(const DynamicSingleton<T>&) {}
 };
 
-template <typename T> T* DynamicSingleton<T>::m_instance = 0;
+template <typename T> T* DynamicSingleton<T>::_instance = 0;
 
 #endif //_CAESARIA_SINGLETON_H_INCLUDE_

@@ -19,6 +19,8 @@
 #include "core/variant.hpp"
 #include "vfs/file.hpp"
 
+namespace vfs{ class Path; class NFile; }
+
 namespace config
 {
 VariantMap load( const vfs::Path& fileName );

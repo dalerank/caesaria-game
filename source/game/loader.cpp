@@ -40,7 +40,6 @@
 #include <vector>
 
 using namespace gfx;
-using namespace constants;
 
 namespace game
 {
@@ -111,7 +110,7 @@ void Loader::Impl::initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city )
 
 void Loader::Impl::initTilesAnimation( Tilemap& tmap )
 {
-  TilesArray area = tmap.getArea( TilePos( 0, 0 ), Size( tmap.size() ) );
+  TilesArray area = tmap.allTiles();
 
   foreach( it, area )
   {

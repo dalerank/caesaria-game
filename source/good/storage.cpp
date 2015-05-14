@@ -116,14 +116,18 @@ int Storage::getMaxStore(const good::Product goodType)
     int globalFreeRoom = capacity() - qty();
 
     // current free capacity
-    good::Stock& st = *_gsd->stocks[goodType].object();
-    freeRoom = math::clamp( st.freeQty(), 0, globalFreeRoom );
+    int goodFreeRoom = _gsd->stocks[goodType]->freeQty();
 
     // remove all storage reservations
     foreach( i, _getStoreReservations() )
     {
-      freeRoom -= i->stock.qty();
+      globalFreeRoom -= i->stock.qty();
+
+      if( i->stock.type() == goodType )
+        goodFreeRoom -= i->stock.qty();
     }
+
+    freeRoom = math::clamp( goodFreeRoom, 0, globalFreeRoom );
   }
 
   return freeRoom;

@@ -44,10 +44,10 @@ void ShowTileInfo::_exec(Game& game, unsigned int time)
   case next:
   case prew:
   {
-    ConstructionPtr c =  ptr_cast<Construction>( game.city()->getOverlay( _pos ) );
+    ConstructionPtr c =  game.city()->getOverlay( _pos ).as<Construction>();
     c = (_mode == next
-                ? city::statistic::nexto( game.city(), c )
-                : city::statistic::prewo( game.city(), c ));
+                ? city::statistic::nextObject( game.city(), c )
+                : city::statistic::prewObject( game.city(), c ));
 
     if( c.isValid() )
     {

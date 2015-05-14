@@ -24,12 +24,15 @@
 #include "gfx/pictureconverter.hpp"
 #include "core/color.hpp"
 #include "core/logger.hpp"
+#include "widget_factory.hpp"
 
 using namespace std;
 using namespace gfx;
 
 namespace gui
 {
+
+REGISTER_CLASS_IN_WIDGETFACTORY(DictionaryText)
 
 static const int DEFAULT_SCROLLBAR_SIZE = 39;
 
@@ -82,7 +85,7 @@ public:
   int lineIntervalOffset;
   Point textOffset;
   Picture bgPicture;
-  PictureRef textPicture;
+  Picture textPicture;
   unsigned int opaque;
   int yoffset;
 
@@ -100,7 +103,7 @@ public:
 
   ~Impl()
   {
-    textPicture.reset();
+    textPicture = Picture();
   }
 
   void breakText( const std::string& text, const Size& size );
@@ -139,19 +142,19 @@ DictionaryText::DictionaryText(Widget* parent, const Rect& rectangle, const stri
 
 void DictionaryText::_updateTexture( gfx::Engine& painter )
 {
-  if( _d->textPicture && _d->textPicture->size() != size() )
+  if( _d->textPicture.isValid() && _d->textPicture.size() != size() )
   {
-    _d->textPicture.reset( Picture::create( size(), 0, true ) );
+    _d->textPicture = Picture( size(), 0, true );
   }
 
-  if( !_d->textPicture )
+  if( !_d->textPicture.isValid() )
   {
-    _d->textPicture.reset( Picture::create( size(), 0, true ) );
+    _d->textPicture = Picture( size(), 0, true );
   }
 
-  if( _d->textPicture )
+  if( _d->textPicture.isValid() )
   {
-    _d->textPicture->fill( 0x00ffffff, Rect( 0, 0, 0, 0) );
+    _d->textPicture.fill( 0x00ffffff, Rect( 0, 0, 0, 0) );
   }
 
   // draw button background
@@ -189,7 +192,7 @@ void DictionaryText::_updateTexture( gfx::Engine& painter )
         int offset = 0;
         foreach( chunk, dline )
         {
-          chunk->font.draw( *_d->textPicture, chunk->text,
+          chunk->font.draw( _d->textPicture, chunk->text,
                             textRect.lefttop() + Point( offset + chunk->offset, 0 ),
                             useAlpha4Text, false );
           offset += chunk->offset;
@@ -200,10 +203,10 @@ void DictionaryText::_updateTexture( gfx::Engine& painter )
     }
   }
 
-  if( _d->textPicture )
+  if( _d->textPicture.isValid() )
   {
-    _d->textPicture->setAlpha( _d->opaque );
-    _d->textPicture->update();
+    _d->textPicture.setAlpha( _d->opaque );
+    _d->textPicture.update();
   }
 }
 
@@ -263,9 +266,9 @@ void DictionaryText::draw(gfx::Engine& painter )
     painter.draw( _d->bgPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
   }
 
-  if( _d->textPicture )
+  if( _d->textPicture.isValid() )
   {
-    painter.draw( *_d->textPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+    painter.draw( _d->textPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
   }
 
   Widget::draw( painter );
@@ -654,7 +657,7 @@ void DictionaryText::setTextAlignment( Alignment horizontal, Alignment vertical 
   _d->needUpdatePicture = true;
 }
 
-void DictionaryText::_resizeEvent() {  _d->needUpdatePicture = true; }
+void DictionaryText::_finalizeResize() {  _d->needUpdatePicture = true; }
 
 void DictionaryText::setLineIntervalOffset( const int offset )
 {
@@ -666,15 +669,15 @@ void DictionaryText::setupUI(const VariantMap& ui)
 {
   Widget::setupUI( ui );
 
-  setFont( Font::create( ui.get( "font", "FONT_2" ).toString() ) );
-  setBackgroundPicture( Picture::load( ui.get( "image" ).toString() ) );
+  setFont( Font::create( ui.get( "font", std::string( "FONT_2" ) ).toString() ) );
+  setBackgroundPicture( Picture( ui.get( "image" ).toString() ) );
 
   Variant vTextOffset = ui.get( "text.offset" );
   if( vTextOffset.isValid() ){ setTextOffset( vTextOffset.toPoint() ); }
 }
 
 void DictionaryText::setTextOffset(Point offset) {  _d->textOffset = offset;}
-PictureRef& DictionaryText::_textPictureRef(){  return _d->textPicture; }
+Picture& DictionaryText::_textPicture(){  return _d->textPicture; }
 
 void DictionaryText::_init()
 {

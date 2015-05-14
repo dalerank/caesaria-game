@@ -48,7 +48,8 @@ void GoodCaravan::sendTo(ObjectPtr obj)
 {
   _d->destination = "";
 
-  if( _d->base.isValid() && obj.isValid() )
+  bool baseAndDestinationCorrect = _d->base.isValid() && obj.isValid();
+  if( baseAndDestinationCorrect )
   {
     _d->destination = obj->name();
     _findWay( _d->base->location(), obj->location() );
@@ -122,7 +123,7 @@ GoodCaravan::GoodCaravan( CityPtr city )
 
   setSpeed( deafaultSpeed );
 
-  setPicture( gfx::Picture::load( ResourceGroup::panelBackground, 108 ) );
+  _picture().load( ResourceGroup::panelBackground, 108 );
 }
 
 }

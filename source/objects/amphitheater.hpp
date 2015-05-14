@@ -39,7 +39,7 @@ public:
 
   bool isShow( PlayType type ) const;
   DateTime lastShow( PlayType type ) const;
-  bool isNeed( constants::walker::Type type );
+  bool isNeed( walker::Type type );
 
 protected:
   virtual WalkerList _specificWorkers() const;

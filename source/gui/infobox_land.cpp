@@ -26,7 +26,6 @@
 #include "dictionary.hpp"
 #include "game/infoboxmanager.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -38,7 +37,7 @@ namespace infobox
 REGISTER_OBJECT_BASEINFOBOX(tree,AboutLand)
 
 AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
-  : Simple( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 60, 510 - 16, 60 + 180) )
+  : Infobox( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 60, 510 - 16, 60 + 180) )
 { 
   Label* lbText = new Label( this, Rect( 38, 60, 470, 60+180 ), "", true, Label::bgNone, lbTextId );
   lbText->setFont( Font::create( FONT_2 ) );
@@ -151,7 +150,7 @@ AboutFreeHouse::AboutFreeHouse( Widget* parent, PlayerCityPtr city, const Tile& 
 {
   setTitle( _("##freehouse_caption##") );
 
-  ConstructionPtr cnst = ptr_cast<Construction>( tile.overlay() );
+  ConstructionPtr cnst = tile.overlay().as<Construction>();
   if( cnst.isValid() )
   {
       setText( cnst->roadside().size() == 0

@@ -39,7 +39,6 @@
 #include "city/cityservice_workershire.hpp"
 #include "widget_helper.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace city;
 
@@ -67,7 +66,7 @@ public:
     _needWorkers = need;
     _haveWorkers = have;
     _priority = 0;
-    _lockPick = Picture::load( ResourceGroup::panelBackground, 238 );
+    _lockPick.load( ResourceGroup::panelBackground, 238 );
 
     int percentage = math::percentage( have, need );
     std::string tooltip;
@@ -82,7 +81,7 @@ public:
   void setPriority( int priority )
   {
     _priority = priority;
-    _resizeEvent();
+    _finalizeResize();
   }
 
 signals public:
@@ -94,26 +93,26 @@ protected:
   {
     PushButton::_updateTextPic();
 
-    PictureRef& pic = _textPictureRef();
+    Picture& pic = _textPicture();
 
     Font font = Font::create( FONT_1_WHITE );
-    font.draw( *pic, _title, ofBranchName, 2, Font::alphaDraw, Font::ignoreTx );
-    font.draw( *pic, utils::i2str( _needWorkers ), ofNeedWorkers, 2, Font::alphaDraw, Font::ignoreTx );
+    font.draw( pic, _title, ofBranchName, 2, Font::alphaDraw, Font::ignoreTx );
+    font.draw( pic, utils::i2str( _needWorkers ), ofNeedWorkers, 2, Font::alphaDraw, Font::ignoreTx );
 
     if( _haveWorkers < _needWorkers )
     {
       font = Font::create( FONT_1_RED );
     }
 
-    font.draw( *pic, utils::i2str( _haveWorkers ), ofHaveWorkers, 2, Font::alphaDraw, Font::ignoreTx );
+    font.draw( pic, utils::i2str( _haveWorkers ), ofHaveWorkers, 2, Font::alphaDraw, Font::ignoreTx );
 
     if( _priority > 0 )
     {
       font.setColor( DefaultColors::black );
-      font.draw( *pic, utils::i2str( _priority ), Point( ofPriority, 3 ), Font::alphaDraw, Font::ignoreTx );
+      font.draw( pic, utils::i2str( _priority ), Point( ofPriority, 3 ), Font::alphaDraw, Font::ignoreTx );
     }
 
-    pic->update();
+    pic.update();
   }
 
   virtual void draw(Engine &painter)
@@ -143,7 +142,6 @@ private:
 class Employer::Impl
 {
 public:
-  typedef std::vector< object::Type > BldTypes;
   typedef std::vector< EmployerButton* > EmployerButtons;
 
   gui::Label* lbSalaries;
@@ -213,8 +211,7 @@ void Employer::Impl::changeSalary(int relative)
 
 void Employer::Impl::showPriorityWindow( industry::Type industry )
 {
-  city::WorkersHirePtr wh;
-  wh << city->findService( city::WorkersHire::defaultName() );
+  WorkersHirePtr wh = statistic::getService<WorkersHire>( city );
 
   int priority = wh->getPriority( industry );
   dialog::HirePriority* wnd = new dialog::HirePriority( lbSalaries->ui()->rootWidget(), industry, priority );
@@ -223,8 +220,7 @@ void Employer::Impl::showPriorityWindow( industry::Type industry )
 
 void Employer::Impl::setIndustryPriority( industry::Type industry, int priority)
 {
-  city::WorkersHirePtr wh;
-  wh << city->findService( city::WorkersHire::defaultName() );
+  WorkersHirePtr wh = statistic::getService<WorkersHire>( city );
 
   if( wh.isValid() )
   {
@@ -237,8 +233,7 @@ void Employer::Impl::setIndustryPriority( industry::Type industry, int priority)
 
 void Employer::Impl::update()
 {
-  city::WorkersHirePtr wh;
-  wh << city->findService( city::WorkersHire::defaultName() );
+  WorkersHirePtr wh = statistic::getService<WorkersHire>( city );
 
   if( wh.isNull() )
     return;
@@ -266,12 +261,12 @@ void Employer::Impl::updateSalaryLabel()
 
 Employer::Impl::EmployersInfo Employer::Impl::getEmployersInfo(industry::Type type )
 {
-  object::Groups bldGroups = city::industry::toGroups( type );
+  object::Groups bldGroups = industry::toGroups( type );
 
   WorkingBuildingList buildings;
   foreach( buildingsGroup, bldGroups )
   {
-    WorkingBuildingList sectorBuildings = city::statistic::findo<WorkingBuilding>( city, *buildingsGroup );
+    WorkingBuildingList sectorBuildings = statistic::getObjects<WorkingBuilding>( city, *buildingsGroup );
     buildings.insert( buildings.begin(), sectorBuildings.begin(), sectorBuildings.end() );
   }
 

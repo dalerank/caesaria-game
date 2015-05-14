@@ -27,7 +27,6 @@
 #include "walker/indigene.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::native_hut, NativeHut)
@@ -65,7 +64,7 @@ bool NativeBuilding::canDestroy() const { return false; }
 
 NativeHut::NativeHut() : NativeBuilding( object::native_hut, Size(1) )
 {
-  setPicture( ResourceGroup::housing, 49 );
+  _picture().load( ResourceGroup::housing, 49 );
   _discontent = 0;
   _day2look = math::random( 90 );
 }
@@ -130,7 +129,7 @@ float NativeHut::discontent() const { return _discontent; }
 
 NativeCenter::NativeCenter() : NativeBuilding( object::native_center, Size(2) )
 {
-  setPicture( ResourceGroup::housing, 51 );
+  _picture().load( ResourceGroup::housing, 51 );
 }
 
 void NativeCenter::save( VariantMap&stream) const 
@@ -148,7 +147,7 @@ void NativeCenter::store(unsigned int qty)
 NativeField::NativeField() : NativeBuilding( object::native_field, Size(1) )
 {
   _progress = 0;
-  setPicture( ResourceGroup::commerce, 13 );
+  _picture().load( ResourceGroup::commerce, 13 );
 }
 
 void NativeField::save( VariantMap&stream) const 
@@ -186,5 +185,5 @@ unsigned int NativeField::catchCrops()
 
 void NativeField::_updatePicture()
 {
-  setPicture( ResourceGroup::commerce, 13 + _progress / 20 );
+  _picture().load( ResourceGroup::commerce, 13 + _progress / 20 );
 }

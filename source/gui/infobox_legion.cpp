@@ -33,8 +33,6 @@
 #include "core/utils.hpp"
 #include "widget_helper.hpp"
 
-using namespace constants;
-
 namespace gui
 {
 
@@ -63,7 +61,7 @@ public:
 };
 
 AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos  )
-  : Simple( parent, Rect( 0, 0, 460, 350 ), Rect() ), _d( new Impl )
+  : Infobox( parent, Rect( 0, 0, 460, 350 ), Rect() ), _d( new Impl )
 {  
   Widget::setupUI( ":/gui/legionopts.gui" );
 
@@ -87,14 +85,14 @@ AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos 
   {
     foreach( i, walkers )
     {
-      RomeSoldierPtr rs = ptr_cast<RomeSoldier>( *i);
+      RomeSoldierPtr rs = i->as<RomeSoldier>();
       if( rs.isValid() )
       {
         _d->fort = rs->base();
         break;
       }
 
-      PatrolPointPtr pp = ptr_cast<PatrolPoint>( *i);
+      PatrolPointPtr pp = i->as<PatrolPoint>();
       if( pp.isValid() )
       {
         _d->fort = pp->base();
@@ -115,7 +113,7 @@ AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos 
       //_d->gbLegionParams2->hide();
       _d->btnReturn->hide();
 
-      BuildingList barracks = city::statistic::findo<Building>( city, object::barracks );
+      BuildingList barracks = city::statistic::getObjects<Building>( city, object::barracks );
 
       std::string text = barracks.empty()
                           ? "##legion_haveho_soldiers_and_barracks##"
@@ -183,7 +181,7 @@ void AboutLegion::_update()
 
   if( _d->lbFlag )
   {
-    gfx::Picture pic = gfx::Picture::load( ResourceGroup::sprites, _d->fort->flagIndex() );
+    gfx::Picture pic( ResourceGroup::sprites, _d->fort->flagIndex() );
     pic.setOffset( 0, 0 );
     _d->lbFlag->setIcon( pic );
   }
@@ -191,7 +189,7 @@ void AboutLegion::_update()
   if( _d->lbMoraleStandart )
   {
     int mIndex = 20 - math::clamp<int>( _d->fort->legionMorale() / 5, 0, 20 );
-    gfx::Picture pic = gfx::Picture::load( ResourceGroup::sprites, mIndex+ 48 );
+    gfx::Picture pic( ResourceGroup::sprites, mIndex+ 48 );
     pic.setOffset( 0, 0 );
     _d->lbMoraleStandart->setIcon( pic );
   }
@@ -267,7 +265,7 @@ bool AboutLegion::onEvent(const NEvent& event)
     }
   }
 
-  return Simple::onEvent( event );
+  return Infobox::onEvent( event );
 }
 
 void AboutLegion::_addFormationButton(int index, int id, int picId)

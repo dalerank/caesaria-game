@@ -30,7 +30,6 @@
 #include "pathway/pathway_helper.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_TRAINEEMAN_IN_WALKERFACTORY(walker::trainee, 0, trainee)
@@ -79,6 +78,8 @@ void TraineeWalker::_init(walker::Type traineeType)
 void TraineeWalker::_cancelPath()
 {
   BuildingPtr destination = receiver();
+  Logger::warningIf( destination.isNull(), "!!! WARNING: Trainee _cancelPath destination is null" );
+
   if( destination.isValid() )
   {
     destination->cancelTrainee( type() );
@@ -99,9 +100,9 @@ BuildingPtr TraineeWalker::receiver() const
 
 void TraineeWalker::_computeWalkerPath( bool roadOnly )
 {
-  if( gfx::tilemap::isValidLocation( _d->baseLocation ) )
+  if( !gfx::tilemap::isValidLocation( _d->baseLocation ) )
   {
-    Logger::warning( "!!! WARNING: trainee walker baselocation is unaccessible" );
+    Logger::warning( "!!! WARNING: trainee walker baselocation is unaccessible at [%d,%d]", _d->baseLocation.i(), _d->baseLocation.j() );
     deleteLater();
     return;
   }
@@ -109,7 +110,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   BuildingPtr base = ptr_cast<Building>( _city()->getOverlay( _d->baseLocation ) );
   if( !base.isValid() )
   {
-    Logger::warning( "!!! WARNING: trainee walker base is null" );
+    Logger::warning( "!!! WARNING: trainee walker base is null at [%d,%d]", _d->baseLocation.i(), _d->baseLocation.j() );
     deleteLater();
     return;
   }
@@ -121,7 +122,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   BuildingList buildings;
   foreach( buildingType, _d->necBuildings )
   {
-    BuildingList tmpBuildings = city::statistic::findo<Building>( _city(), *buildingType );
+    BuildingList tmpBuildings = city::statistic::getObjects<Building>( _city(), *buildingType );
     buildings.insert( buildings.end(), tmpBuildings.begin(), tmpBuildings.end() );
   }
 
@@ -135,8 +136,8 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   foreach( it, buildings )
   {
     BuildingPtr bld = *it;
-    float curNeed = bld->evaluateTrainee( type() );
-    if( curNeed > 0 )
+    float howMuchNeedMyService = bld->evaluateTrainee( type() );
+    if( howMuchNeedMyService > 0 )
     {
       isNeedTrainee = true;
       break;
@@ -150,12 +151,21 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
     return;
   }
 
+  std::set<BuildingPtr> checkedBuilding;
+
   foreach( itile, startArea )
   {
     TilePos startPos = (*itile)->pos();
+
     foreach( it, buildings )
     {
       BuildingPtr bld = *it;
+
+      bool buildingAlsoServicing = checkedBuilding.count( *it ) > 0;
+      if( buildingAlsoServicing )
+        continue;
+
+      checkedBuilding.insert( bld );
 
       float curNeed = bld->evaluateTrainee( type() );
       if( _d->maxNeed < curNeed )
@@ -222,7 +232,7 @@ void TraineeWalker::send2City(BuildingPtr base, bool roadOnly )
   _d->baseLocation = base->pos();
   _computeWalkerPath( roadOnly );
 
-  if( !isDeleted() && !gfx::tilemap::isValidLocation( _d->destLocation ) )
+  if( !isDeleted() && gfx::tilemap::isValidLocation( _d->destLocation ) )
   {
     BuildingPtr dest = receiver();
     dest->reserveTrainee( type() );

@@ -28,7 +28,6 @@
 #include "cityservice_factory.hpp"
 #include "config.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace city
@@ -40,6 +39,8 @@ class Animals::Impl
 {
 public:
   std::map< walker::Type, unsigned int > maxAnimal;
+  TilesArray cityBorder;
+  TilesArray border;
 };
 
 SrvcPtr Animals::create( PlayerCityPtr city )
@@ -65,8 +66,14 @@ void Animals::timeStep(const unsigned int time)
     _d->maxAnimal[ currentTerrainAnimal ] = config::animals::defaultNumber;
   }
 
-  TilesArray border = _city()->tilemap().border();
-  border = border.walkables( true );
+  //lazy initialize city border and cache border array
+  if( _d->cityBorder.empty() )
+  {
+    _d->cityBorder = _city()->tilemap().border();
+    _d->border.reserve( _d->cityBorder.size() / 2 );
+  }
+
+  _d->border = _d->cityBorder.walkables( true );
 
   foreach( winfo, _d->maxAnimal )
   {
@@ -75,13 +82,13 @@ void Animals::timeStep(const unsigned int time)
 
     if( maxAnimalInCity > 0 )
     {
-      WalkerList animals = _city()->walkers( walkerType );
+      const WalkerList& animals = _city()->walkers( walkerType );
       if( animals.size() < maxAnimalInCity )
       {
         AnimalPtr animal = WalkerManager::instance().create<Animal>( walkerType, _city() );
         if( animal.isValid() )
         {
-          Tile* rndTile = border.random();
+          Tile* rndTile = _d->border.random();
           animal->send2City( rndTile->epos() );
         }
       }
@@ -89,7 +96,7 @@ void Animals::timeStep(const unsigned int time)
   }
 }
 
-void Animals::setAnimalsNumber( constants::walker::Type animal_type, unsigned int number)
+void Animals::setAnimalsNumber( walker::Type animal_type, unsigned int number)
 {
   _d->maxAnimal[ animal_type ] = number;
 }

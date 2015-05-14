@@ -31,11 +31,11 @@
 #include "events/fundissue.hpp"
 #include "game/funds.hpp"
 #include "core/font.hpp"
+#include "gfx/tilearea.hpp"
 #include "build.hpp"
 #include "objects/tree.hpp"
 #include "game/settings.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace events;
 
@@ -47,7 +47,7 @@ class Destroy::Impl
 public:
   Picture shovelPic;
   Picture clearPic;
-  PictureRef textPic;
+  Picture textPic;
   unsigned int savesum, money4destroy;
   TilePos startTilePos;
   LayerPtr lastLayer;
@@ -91,8 +91,6 @@ void Destroy::render( Engine& engine )
 
   _camera()->startFrame();
 
-  Tilemap& tmap = _city()->tilemap();
-
   std::set<int> hashDestroyArea;
   TilesArray destroyArea = _getSelectedArea( _d->startTilePos );
 
@@ -107,7 +105,7 @@ void Destroy::render( Engine& engine )
     OverlayPtr overlay = tile->overlay();
     if( overlay.isValid() )
     {
-      TilesArray overlayArea = tmap.getArea( overlay->tile().epos(), overlay->size() );
+      TilesArray overlayArea = overlay->area();
       foreach( ovelayTile, overlayArea )
       {
         hashDestroyArea.insert( tile::hash((*ovelayTile)->epos()));
@@ -225,13 +223,13 @@ void Destroy::renderUi(Engine &engine)
 {
   if( _d->savesum != _d->money4destroy )
   {
-    _d->textPic->fill( 0x0, Rect() );
+    _d->textPic.fill( 0x0, Rect() );
     _d->textFont.setColor( 0xffff0000 );
-    _d->textFont.draw( *_d->textPic, utils::i2str( _d->money4destroy ) + " Dn", Point() );
+    _d->textFont.draw( _d->textPic, utils::i2str( _d->money4destroy ) + " Dn", Point() );
   }
 
   engine.draw( _d->shovelPic, engine.cursorPos() - Point( 5, _d->shovelPic.height() ) );
-  engine.draw( *_d->textPic, engine.cursorPos() + Point( 10, 10 ));
+  engine.draw( _d->textPic, engine.cursorPos() + Point( 10, 10 ));
 }
 
 void Destroy::changeLayer(int layer)
@@ -274,7 +272,7 @@ void Destroy::init(Point cursor)
   _setLastCursorPos( cursor );
   _setStartCursorPos( cursor );
 
-  _d->startTilePos = TilePos( -1, -1 );
+  _d->startTilePos = gfx::tilemap::invalidLocation();
 
   LayerPtr layer = _d->renderer->currentLayer();
   if( layer.isValid() )
@@ -314,7 +312,7 @@ void Destroy::handleEvent(NEvent& event)
         _setStartCursorPos( _lastCursorPos() );
 
        Tile* tile = _camera()->at( _lastCursorPos(), true );
-        _d->startTilePos = tile ? tile->epos() : TilePos( -1, -1 );
+        _d->startTilePos = tile ? tile->epos() : gfx::tilemap::invalidLocation();
       }
     }
     break;
@@ -385,11 +383,11 @@ Destroy::Destroy( Renderer& renderer, PlayerCityPtr city)
   : Layer( renderer.camera(), city ), _d( new Impl )
 {
   _d->renderer = &renderer;
-  _d->shovelPic = Picture::load( "shovel", 1 );
+  _d->shovelPic.load( "shovel", 1 );
   std::string rcLand = SETTINGS_VALUE( forbidenTile ).toString();
-  _d->clearPic = Picture::load( rcLand, 2 );
+  _d->clearPic.load( rcLand, 2 );
   _d->textFont = Font::create( FONT_5 );
-  _d->textPic.init( Size( 100, 30 ) );
+  _d->textPic = Picture( Size( 100, 30 ), 0, true );
   _addWalkerType( walker::all );
 }
 

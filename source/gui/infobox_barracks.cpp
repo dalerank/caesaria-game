@@ -24,7 +24,6 @@
 #include "core/utils.hpp"
 #include "game/infoboxmanager.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -46,7 +45,7 @@ AboutBarracks::AboutBarracks(Widget* parent, PlayerCityPtr city, const Tile& til
 {
   setupUI( ":/gui/barracsopts.gui" );
 
-  BarracksPtr barracks = ptr_cast<Barracks>( tile.overlay() );
+  BarracksPtr barracks = tile.overlay().as<Barracks>();
 
   if( !barracks.isValid() )
   {

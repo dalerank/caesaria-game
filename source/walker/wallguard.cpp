@@ -35,7 +35,6 @@
 #include "walker/helper.hpp"
 #include "gfx/helper.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 class WallGuard::Impl
@@ -97,9 +96,10 @@ void WallGuard::timeStep(const unsigned long time)
     EnemySoldierList enemies;
     enemies << _findEnemiesInRange( attackDistance() );
 
-    if( !enemies.empty() )
+    bool haveEnemiesInRande = !enemies.empty();
+    if( haveEnemiesInRande )
     {
-      if( _animationRef().atEnd() )
+      if( _animation().atEnd() )
       {
         EnemySoldierPtr p = _findNearbyEnemy( enemies );
         turn( p->pos() );
@@ -195,7 +195,7 @@ std::string WallGuard::thoughts(Thought th) const
   case thCurrent:
   {
     TilePos offset( 10, 10 );
-    EnemySoldierList enemies = city::statistic::findw<EnemySoldier>( _city(), walker::any, pos() - offset, pos() + offset );
+    EnemySoldierList enemies = city::statistic::getWalkers<EnemySoldier>( _city(), walker::any, pos() - offset, pos() + offset );
     if( enemies.empty() )
     {
       return Soldier::thoughts(th);
@@ -244,7 +244,7 @@ FortificationList WallGuard::_findNearestWalls( EnemySoldierPtr enemy )
 
     foreach( tile, tiles )
     {
-      FortificationPtr f = ptr_cast<Fortification>( (*tile)->overlay() );
+      FortificationPtr f = (*tile)->overlay().as<Fortification>();
       if( f.isValid() && f->mayPatrol() )
       {
         ret.push_back( f );
@@ -319,7 +319,7 @@ void WallGuard::_back2base()
       go();
     }
 
-    if( !_pathwayRef().isValid() )
+    if( !_pathway().isValid() )
     {
       deleteLater();
     }

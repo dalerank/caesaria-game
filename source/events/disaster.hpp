@@ -17,6 +17,9 @@
 #define _CAESARIA_DISASTER_EVENT_H_INCLUDE_
 
 #include "event.hpp"
+#include "core/scopedptr.hpp"
+
+namespace gfx{ class Tile; }
 
 namespace events
 {
@@ -36,9 +39,9 @@ protected:
 
 private:
   Disaster();
-  TilePos _pos;
-  Type _type;
-  int _infoType;
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 } //end namespace events

@@ -24,7 +24,6 @@
 #include "objects_factory.hpp"
 
 using namespace gfx;
-using namespace constants;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::quarry, MarbleQuarry)
 
@@ -33,7 +32,7 @@ MarbleQuarry::MarbleQuarry()
 {
   _animationRef().load( ResourceGroup::commerce, 44, 10);
   _animationRef().setDelay( 4 );
-  _fgPicturesRef().resize(2);
+  _fgPictures().resize(2);
 
   _setClearAnimationOnStop( false );
 }

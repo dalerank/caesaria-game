@@ -70,6 +70,7 @@ const double DEGTORAD64 = PI64 / 180.0;
 
 //! 64bit constant for converting from radians to degrees
 const double RADTODEG64 = 180.0 / PI64;
+const double DEGREE360 = 360.0;
 
 //! Utility function to convert a radian value to degrees
 /** Provided as it can be clearer to write radToDeg(X) than RADTODEG * X
@@ -107,7 +108,7 @@ template <class T>
 inline const T& min( const T& a, const T& b) { return a < b ? a : b; }
 
 template< class T >
-inline T clamp(const T& value, const T& low, const T& high)
+inline T clamp(const T value, const T low, const T high)
 {
   const T& mx = math::max<T>( value, low);
   return math::min<T>( mx, high);

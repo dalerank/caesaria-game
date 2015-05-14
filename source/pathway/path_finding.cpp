@@ -29,7 +29,6 @@
 #include "objects/building.hpp"
 
 using namespace gfx;
-using namespace constants;
 
 class Propagator::Impl
 {
@@ -182,7 +181,7 @@ DirectPRoutes Propagator::getRoutes(const object::Type buildingType)
 {
   DirectPRoutes ret;
   // init the building list
-  ConstructionList constructionList = city::statistic::findo<Construction>( _d->city, buildingType );
+  ConstructionList constructionList = city::statistic::getObjects<Construction>( _d->city, buildingType );
 
   // for each destination building
   foreach( it, constructionList )

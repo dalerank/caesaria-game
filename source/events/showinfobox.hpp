@@ -19,6 +19,8 @@
 #define _CAESARIA_INFOBOX_EVENT_H_INCLUDE_
 
 #include "event.hpp"
+#include "good/good.hpp"
+#include "core/scopedptr.hpp"
 
 namespace events
 {

@@ -15,8 +15,7 @@
 //
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#include <string>
-#include <map>
+#include "core/variant_map.hpp"
 
 namespace gui
 {
@@ -35,7 +34,7 @@ class Widget;
 class WidgetCalc
 {
 public:
-  WidgetCalc(Widget &parent );
+  WidgetCalc(Widget &parent, const VariantMap& vars);
   double eval( const std::string& str );
 
 private:

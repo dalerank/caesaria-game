@@ -23,9 +23,9 @@
 #include "core/gettext.hpp"
 #include "gfx/helper.hpp"
 #include "requestdestroy.hpp"
+#include "objects/construction.hpp"
 #include "game/resourcegroup.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace events
@@ -59,7 +59,7 @@ void ClearTile::_exec( Game& game, unsigned int )
 
     bool deleteRoad = cursorTile.getFlag( Tile::tlRoad );
 
-    ConstructionPtr constr = ptr_cast<Construction>(overlay);
+    ConstructionPtr constr = overlay.as<Construction>();
     if( constr.isValid() && !constr->canDestroy() )
     {
       GameEventPtr e = WarningMessage::create( _( constr->errorDesc() ), WarningMessage::neitral );
@@ -111,8 +111,9 @@ void ClearTile::_exec( Game& game, unsigned int )
         int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
         int imgId = math::random( 58 );
 
-        Picture pic = Picture::load( ResourceGroup::land1a, startOffset + imgId );
-        tile->setPicture( ResourceGroup::land1a, startOffset + imgId );
+        Picture pic;
+        pic.load( ResourceGroup::land1a, startOffset + imgId );
+        tile->setPicture( pic );
         tile->setOriginalImgId( imgid::fromResource( pic.name() ) );
       }
     }

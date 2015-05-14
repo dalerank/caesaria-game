@@ -19,6 +19,7 @@
 #define _CAESARIA_UPDATEHOUSESERVICE_EVENT_H_INCLUDE_
 
 #include "ranged.hpp"
+#include "game/service.hpp"
 
 namespace events
 {

@@ -27,9 +27,9 @@
 #include "widget_helper.hpp"
 #include "core/logger.hpp"
 #include "core/utils.hpp"
+#include "core/event.hpp"
 #include "widgetescapecloser.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace city;
 
@@ -68,7 +68,7 @@ public:
         Font f = font( _state() );
         std::string text = _("##trade_btn_notrade_text##");
         Rect textRect = f.getTextRect( text, Rect( Point( 0, 0), size() ), horizontalTextAlign(), verticalTextAlign() );
-        f.draw( *_textPictureRef(), text, textRect.UpperLeftCorner );
+        f.draw( _textPicture(), text, textRect.UpperLeftCorner );
       }
       break;
 
@@ -81,11 +81,11 @@ public:
         Font f = font( _state() );
         std::string text = (order == trade::importing ? "##trade_btn_import_text##" : "##trade_btn_export_text##");
         Rect textRect = f.getTextRect( _(text), Rect( 0, 0, width() / 2, height() ), horizontalTextAlign(), verticalTextAlign() );
-        f.draw( *_textPictureRef(), _(text), textRect.UpperLeftCorner, true );
+        f.draw( _textPicture(), _(text), textRect.UpperLeftCorner, true );
 
         text = utils::format( 0xff, "%d %s", goodsQty, _("##trade_btn_qty##") );
         textRect = f.getTextRect( text, Rect( width() / 2 + 24 * 2, 0, width(), height() ), horizontalTextAlign(), verticalTextAlign() );
-        f.draw( *_textPictureRef(), text, textRect.UpperLeftCorner, true );
+        f.draw( _textPicture(), text, textRect.UpperLeftCorner, true );
       }
       break;
 
@@ -95,14 +95,14 @@ public:
 
   void update()
   {
-    _resizeEvent();
+    _finalizeResize();
   }
 
   void setTradeState( trade::Order o, int qty )
   {
     order = o;
     goodsQty = qty;
-    _resizeEvent();
+    _finalizeResize();
   }
 
   trade::Order order;
@@ -155,11 +155,11 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
   }
 
   _d->btnTradeState = new TradeStateButton( this, Rect( 50, 90, width() - 60, 90 + 30), -1 );
-  if( gmode == gmUnknown )
+  /*if( gmode == gmUnknown )
   {
     _d->btnTradeState->setTradeState( trade::noTrade, 0 );
     _d->btnTradeState->setEnabled( false );
-  }
+  }*/
 
   updateTradeState();
   updateIndustryState();
@@ -183,6 +183,17 @@ void GoodOrderManageWindow::draw(Engine &painter)
   Window::draw( painter );
 
   painter.draw( _d->icon, absoluteRect().lefttop() + Point( 10, 10 ) );
+}
+
+bool GoodOrderManageWindow::onEvent(const NEvent& event)
+{
+  if( event.EventType == sEventMouse && event.mouse.isRightPressed() )
+  {
+    deleteLater();
+    return true;
+  }
+
+  return Window::onEvent( event );
 }
 
 void GoodOrderManageWindow::increaseQty() { _changeTradeLimit( +1 ); }
@@ -313,6 +324,7 @@ void GoodOrderManageWindow::_changeTradeLimit(int value)
     ctrade.setTradeLimit( state, _d->type, metric::Unit::fromValue( limit ) );
   }
   updateTradeState();
+  emit _d->onOrderChangedSignal();
 }
 
 }

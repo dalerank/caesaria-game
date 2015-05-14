@@ -20,8 +20,8 @@
 #include "cityservice_workershire.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
+#include "city/statistic.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace city
@@ -36,8 +36,7 @@ TilesArray Helper::getAroundTiles(OverlayPtr overlay)
 
 HirePriorities Helper::getHirePriorities() const
 {
-  WorkersHirePtr wh;
-  wh << _city->findService( WorkersHire::defaultName() );
+  WorkersHirePtr wh = city::statistic::getService<WorkersHire>( _city );
   return wh.isValid() ? wh->priorities() : HirePriorities();
 }
 
@@ -46,7 +45,7 @@ void Helper::updateTilePics()
   TilesArray tiles = _city->tilemap().getArea( TilePos( 0, 0 ), Size( _city->tilemap().size() ) );
   foreach( it, tiles)
   {
-    (*it)->setPicture( Picture::load( (*it)->picture().name() ) );
+    (*it)->setPicture( Picture( (*it)->picture().name() ) );
   }
 }
 

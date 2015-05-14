@@ -26,8 +26,8 @@
 #include "objects/fort.hpp"
 #include "objects/extension.hpp"
 #include "city/spirit_of_mars.hpp"
+#include "city/statistic.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace religion
@@ -65,8 +65,7 @@ void Mars::_doWrath(PlayerCityPtr city)
 
 void Mars::_doSmallCurse(PlayerCityPtr city)
 {  
-  FortList forts;
-  forts << city->overlays();
+  FortList forts = city::statistic::getObjects<Fort>( city );
 
   std::string text, title;
   if( !forts.empty() )

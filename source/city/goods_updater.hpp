@@ -19,8 +19,6 @@
 #define _CAESARIA_GOODS_UPDATER_H_INCLUDE_
 
 #include "cityservice.hpp"
-#include "predefinitions.hpp"
-#include "core/scopedptr.hpp"
 #include "good/good.hpp"
 
 namespace city

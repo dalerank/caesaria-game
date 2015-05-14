@@ -172,7 +172,7 @@ bool NFile::remove( Path filename )
   BOOL result = DeleteFileA( filename.toString().c_str() );
   if( !result )
   {
-    int error = GetLastError();
+    /*int error = */GetLastError();
     //Logger::warning( "Error[%d] on removed file %s", error, filename.toString().c_str() );
   }
   return result;
@@ -189,7 +189,7 @@ bool NFile::rename(Path oldpath, Path newpath)
 
   if( !result )
   {
-    int error = GetLastError();
+    /*int error = */GetLastError();
     //Logger::warning( "Error[%d] on renamed file %s to %s", error, oldpath.toString().c_str(), newpath.toString().c_str() );
   }
   return result;

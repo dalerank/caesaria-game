@@ -22,7 +22,6 @@
 #include "gfx/tilemap.hpp"
 #include "core/foreach.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 class ThrowingWeapon::Impl
@@ -141,7 +140,7 @@ void ThrowingWeapon::turn(TilePos p)
   //if( angle > 13 ) { index = rcStartIndex() + (angle - 14); }
   //else  { index = rcStartIndex() + 2 + angle; }
 
-  _d->pic = Picture::load( rcGroup(), index );
+  _d->pic.load( rcGroup(), index );
   _d->pic.setOffset( _d->offset );
 }
 

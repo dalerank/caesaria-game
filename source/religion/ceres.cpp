@@ -24,7 +24,6 @@
 #include "city/statistic.hpp"
 #include "core/gettext.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace religion
@@ -55,7 +54,7 @@ void Ceres::_doWrath( PlayerCityPtr city )
                                                             "god_ceres");
   event->dispatch();
 
-  FarmList farms = city::statistic::findfarms( city );
+  FarmList farms = city::statistic::getFarms( city );
 
   foreach( farm, farms )
   {
@@ -69,8 +68,7 @@ void Ceres::_doBlessing(PlayerCityPtr city)
                                                             _("##blessing_of_ceres_description##") );
   event->dispatch();
 
-  FarmList farms;
-  farms << city->overlays();
+  FarmList farms = city::statistic::getObjects<Farm>( city );
 
   foreach(farm, farms )
   {
@@ -85,7 +83,7 @@ void Ceres::_doSmallCurse(PlayerCityPtr city)
                                                             _("##smallcurse_of_ceres_description##") );
   event->dispatch();
 
-  FarmList farms = city::statistic::findfarms( city );
+  FarmList farms = city::statistic::getFarms( city );
 
   foreach( farm, farms )
   {

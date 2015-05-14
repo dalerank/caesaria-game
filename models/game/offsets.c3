@@ -21,6 +21,7 @@
   roadBlock : { start : 1, stop : 1, offset : [ -1, -1 ] }
   etruscan : { start : 1, stop : 600, offset : [ -2, -2 ] }
   citizen : { start : 1, stop : 200, offset : [ -2, -2 ] }
+  low_bridge_sw : { rc : "transport", start : 72, stop : 72, offset : [ 0, 44 ] }
   circus_horses : { rc : "carts", start : 537, stop : 600, offset : [ -2, -2 ] }
   circus_charioter : { rc : "carts", start : 601, stop : 616, offset : [ -2, -2 ] }
   carthegenians : { start : 1, stop : 512, offset : [-2, -2] }
@@ -41,5 +42,5 @@
   granary_animation : { rc : "commerce", start : 146, stop : 152, offset : [ 78, 69 ] }
   market_poor_anim : { rc : "commerce", start : 2, stop : 11, offset : [ 42, 34 ] }
   our_city_flag : { rc : "empire_bits", start : 2, stop : 7, offset : [ 17, 24 ] }
-  theater_work : { rc : "entertaiment", start : 35, stop : 35, offset : [ 34, 37 ] }
+  theater_work : { rc : "entertainment", start : 35, stop : 35, offset : [ 34, 37 ] }
 }

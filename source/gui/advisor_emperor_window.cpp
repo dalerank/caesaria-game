@@ -55,6 +55,7 @@
 
 using namespace gfx;
 using namespace events;
+using namespace  city;
 
 namespace gui
 {
@@ -72,11 +73,11 @@ namespace {
 class RequestButton : public PushButton
 {
 public:
-  RequestButton( Widget* parent, const Point& pos, int index, city::request::RequestPtr request )
+  RequestButton( Widget* parent, const Point& pos, int index, request::RequestPtr request )
     : PushButton( parent, Rect( pos + requestButtonOffset * index, requestButtonSize), "", -1, false, PushButton::blackBorderUp )
   {
     _request = request;
-    _resizeEvent();
+    _finalizeResize();
 
     CONNECT( this, onClicked(), this, RequestButton::_executeRequest );
   }
@@ -85,19 +86,19 @@ public:
   {
     PushButton::_updateTextPic();
 
-    PictureRef& pic = _textPictureRef();
+    Picture& pic = _textPicture();
 
     Font font = Font::create( FONT_1_WHITE );
 
-    city::request::RqGoodPtr gr = ptr_cast<city::request::RqGood>(_request);
+    request::RqGoodPtr gr = _request.as<request::RqGood>();
     if( gr.isValid() )
     {
-      font.draw( *pic, utils::format( 0xff, "%d", gr->qty() ), 2, 2 );
-      font.draw( *pic, good::Helper::getTypeName( gr->goodType() ), 60, 2 );
+      font.draw( pic, utils::format( 0xff, "%d", gr->qty() ), 2, 2 );
+      font.draw( pic, good::Helper::getTypeName( gr->goodType() ), 60, 2 );
 
       int month2comply = game::Date::current().monthsTo( gr->finishedDate() );
-      font.draw( *pic, utils::format( 0xff, "%d %s", month2comply, _( "##rqst_month_2_comply##") ), 250, 2 );
-      font.draw( *pic, gr->description(), 5, pic->height() - 20 );
+      font.draw( pic, utils::format( 0xff, "%d %s", month2comply, _( "##rqst_month_2_comply##") ), 250, 2 );
+      font.draw( pic, gr->description(), 5, pic.height() - 20 );
     }
   }
 
@@ -105,7 +106,7 @@ public:
   {
     PushButton::draw( painter );
 
-    city::request::RqGoodPtr gr = ptr_cast<city::request::RqGood>(_request);
+    request::RqGoodPtr gr = _request.as<request::RqGood>();
     if( gr.isValid() )
     {
       Picture goodPicture = good::Helper::picture( gr->goodType() );
@@ -114,19 +115,19 @@ public:
   }
 
 public signals:
-  Signal1<city::request::RequestPtr>& onExecRequest() { return _onExecRequestSignal; }
+  Signal1<request::RequestPtr>& onExecRequest() { return _onExecRequestSignal; }
 
 private:
   void _acceptRequest()  { emit _onExecRequestSignal( _request );  }
 
   void _executeRequest()
   {
-    DialogBox* dialog = DialogBox::confirmation( ui()->rootWidget(),  "", "##dispatch_emperor_request_question##" );
+    dialog::Dialog* dialog = dialog::Confirmation( ui(),  "", "##dispatch_emperor_request_question##" );
     CONNECT( dialog, onOk(), this, RequestButton::_acceptRequest );
   }
 
-  Signal1<city::request::RequestPtr> _onExecRequestSignal;
-  city::request::RequestPtr _request;
+  Signal1<request::RequestPtr> _onExecRequestSignal;
+  request::RequestPtr _request;
 };
 
 class Emperor::Impl
@@ -146,7 +147,7 @@ public:
   void sendMoney( int money );
   void sendGift( int money );
   void changeSalary(int money );
-  void resolveRequest( city::request::RequestPtr request );
+  void resolveRequest( request::RequestPtr request );
 
   std::string getEmperorFavourStr()
   {
@@ -158,7 +159,7 @@ void Emperor::_showChangeSalaryWindow()
 {
   if( game::Date::current() > _d->city->victoryConditions().finishDate() )
   {
-    DialogBox::information( this, "", _("##disabled_draw_salary_for_free_reign##") );
+    dialog::Information( ui(), "", _("##disabled_draw_salary_for_free_reign##") );
     return;
   }
 
@@ -203,9 +204,8 @@ void Emperor::_updateRequests()
     (*btn)->deleteLater();
   }
 
-  city::request::RequestList reqs;
-  city::request::DispatcherPtr dispatcher;
-  dispatcher << _d->city->findService( city::request::Dispatcher::defaultName() );
+  request::RequestList reqs;
+  request::DispatcherPtr dispatcher = statistic::getService<request::Dispatcher>( _d->city );
 
   if( dispatcher.isValid() )
   {
@@ -225,7 +225,8 @@ void Emperor::_updateRequests()
       if( !(*request)->isDeleted() )
       {
         bool mayExec = (*request)->isReady( _d->city );
-        RequestButton* btn = new RequestButton( this, reqsRect.UpperLeftCorner + Point( 5, 5 ), std::distance( reqs.begin(), request ), *request );
+        RequestButton* btn = new RequestButton( this, reqsRect.UpperLeftCorner + Point( 5, 5 ),
+                                                std::distance( reqs.begin(), request ), *request );
         btn->setTooltipText( _("##request_btn_tooltip##") );
         btn->setEnabled( mayExec );
         CONNECT(btn, onExecRequest(), _d.data(), Impl::resolveRequest );
@@ -303,9 +304,9 @@ void Emperor::Impl::sendGift(int money)
 {
   if( money > city->mayor()->money() )
   {
-    DialogBox::information( lbEmperorFavour->ui()->rootWidget(),
-                            _("##nomoney_for_gift_title##"),
-                            _("##nomoney_for_gift_text##") );
+    dialog::Information( lbEmperorFavour->ui(),
+                         _("##nomoney_for_gift_title##"),
+                         _("##nomoney_for_gift_text##") );
     return;
   }
 
@@ -321,13 +322,13 @@ void Emperor::Impl::changeSalary( int money )
   float salKoeff = world::EmpireHelper::governorSalaryKoeff( ptr_cast<world::City>( city ) );
   if( salKoeff > 1.f )
   {
-    DialogBox::information( lbEmperorFavour->ui()->rootWidget(),
-                            _("##changesalary_warning##"),
-                            _("##changesalary_greater_salary##") );
+    dialog::Information( lbEmperorFavour->ui(),
+                         _("##changesalary_warning##"),
+                         _("##changesalary_greater_salary##") );
   }
 }
 
-void Emperor::Impl::resolveRequest(city::request::RequestPtr request)
+void Emperor::Impl::resolveRequest(request::RequestPtr request)
 {
   if( request.isValid() )
   {

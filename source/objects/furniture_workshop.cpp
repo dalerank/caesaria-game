@@ -25,7 +25,6 @@
 #include "good/stock.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY( object::furniture_workshop, FurnitureWorkshop)
@@ -39,7 +38,7 @@ bool FurnitureWorkshop::build( const city::AreaInfo& info )
 {
   Factory::build( info );
 
-  bool haveTimberLogger = !city::statistic::findo<TimberLogger>( info.city, object::lumber_mill ).empty();
+  bool haveTimberLogger = !city::statistic::getObjects<TimberLogger>( info.city, object::lumber_mill ).empty();
 
   _setError( haveTimberLogger ? "" : _("##need_timber_for_work##") );
 
@@ -48,12 +47,12 @@ bool FurnitureWorkshop::build( const city::AreaInfo& info )
 
 FurnitureWorkshop::FurnitureWorkshop() : Factory(good::timber, good::furniture, object::furniture_workshop, Size(2) )
 {
-  setPicture( ResourceGroup::commerce, 117 );
-  _fgPicturesRef().resize( 3 );
+  _picture().load( ResourceGroup::commerce, 117 );
+  _fgPictures().resize( 3 );
 }
 
 void FurnitureWorkshop::_storeChanged()
 {
-  _fgPicturesRef()[1] = inStockRef().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 155 );
-  _fgPicturesRef()[1].setOffset( 47, 0 );
+  _fgPictures()[1] = inStockRef().empty() ? Picture() : Picture( ResourceGroup::commerce, 155 );
+  _fgPictures()[1].setOffset( 47, 0 );
 }

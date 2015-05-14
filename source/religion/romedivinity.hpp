@@ -37,6 +37,12 @@ typedef enum
   romeDivCount=0xff
 } RomeDivinityType;
 
+struct RomeDinName
+{
+  RomeDivinityType type;
+  std::string name;
+};
+
 const char* const baseDivinityNames[] =
 {
   "ceres",

@@ -30,7 +30,6 @@
 #include "core/font.hpp"
 #include "core/utils.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace citylayer
@@ -121,7 +120,7 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
   if( !needDrawAnimations && ( tile.isWalkable(true) || tile.getFlag( Tile::tlOverlay ) ) )
   {
     Tilemap& tilemap = _city()->tilemap();
-    TilesArray area = tilemap.getArea( tile.pos(), areaSize );
+    TilesArray area = tilemap.getArea( tile.epos(), areaSize );
 
     foreach( it, area )
     {
@@ -134,7 +133,7 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
         int picIndex = reservoirWater ? OverlayPic::reservoirRange : 0;
         picIndex |= fontainWater > 0 ? OverlayPic::haveWater : 0;
         picIndex |= OverlayPic::skipLeftBorder | OverlayPic::skipRightBorder;
-        engine.draw( Picture::load( ResourceGroup::waterOverlay, picIndex + OverlayPic::base ), rtile->mappos() + offset );
+        engine.draw( Picture( ResourceGroup::waterOverlay, picIndex + OverlayPic::base ), rtile->mappos() + offset );
       }
     }
   }

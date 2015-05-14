@@ -39,7 +39,6 @@
 #include "city/trade_options.hpp"
 #include "config.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace config;
 
@@ -57,6 +56,7 @@ public:
   good::Stock stock;
   BuildingPtr producerBuilding;
   BuildingPtr consumerBuilding;
+  int brokePathCounter;
   CartAnimation anim;
   int maxDistance;
   long reservationID;
@@ -74,6 +74,7 @@ CartPusher::CartPusher(PlayerCityPtr city )
   _d->producerBuilding = NULL;
   _d->consumerBuilding = NULL;
   _d->cantUnloadGoods = false;
+  _d->brokePathCounter = 0;
   _d->maxDistance = distance::maxDeliver;
   _d->stock.setCapacity( simpleCart );
 
@@ -106,9 +107,9 @@ void CartPusher::_reachedPathway()
     }    
   }
   //
-  if( !_pathwayRef().isReverse() )
+  if( !_pathway().isReverse() )
   {
-    _pathwayRef().toggleDirection();
+    _pathway().toggleDirection();
     _centerTile();
     go();
     _d->consumerBuilding = NULL;
@@ -119,11 +120,18 @@ void CartPusher::_reachedPathway()
   }
 }
 
+void CartPusher::_changeTile()
+{
+  _d->brokePathCounter = 0;
+  Human::_changeTile();
+}
+
 void CartPusher::_brokePathway(TilePos pos)
 {
-  if( _pathwayRef().isValid() )
+  _d->brokePathCounter++;
+  if( _pathway().isValid() && _d->brokePathCounter < 5 )
   {
-    Pathway way = PathwayHelper::create( pos, _pathwayRef().stopPos(), PathwayHelper::roadFirst );
+    Pathway way = PathwayHelper::create( pos, _pathway().stopPos(), PathwayHelper::roadFirst );
     if( way.isValid() )
     {
       setPathway( way );
@@ -132,23 +140,23 @@ void CartPusher::_brokePathway(TilePos pos)
     }
   }
 
-  Logger::warning( "CartPusher::_brokePathway now destination point [%d,%d]", pos.i(), pos.j() );
+  Logger::warning( "CartPusher::_brokePathway not destination point [%d,%d]", pos.i(), pos.j() );
   deleteLater();
 }
 
-good::Stock &CartPusher::stock() {   return _d->stock;}
+good::Stock& CartPusher::stock() {   return _d->stock;}
 void CartPusher::setProducerBuilding(BuildingPtr building){   _d->producerBuilding = building;}
 void CartPusher::setConsumerBuilding(BuildingPtr building){   _d->consumerBuilding = building;}
 
 BuildingPtr CartPusher::producerBuilding()
 {
-   Logger::warningIf( _d->producerBuilding.isNull(), "ProducerBuilding is not initialized");
+   Logger::warningIf( _d->producerBuilding.isNull(), "!!! WARNING: ProducerBuilding is not initialized");
    return _d->producerBuilding;
 }
 
 BuildingPtr CartPusher::consumerBuilding()
 {
-   Logger::warningIf( _d->consumerBuilding.isNull(), "ConsumerBuilding is not initialized");
+   Logger::warningIf( _d->consumerBuilding.isNull(), "!!! WARNING: ConsumerBuilding is not initialized");
    
    return _d->consumerBuilding;
 }
@@ -239,25 +247,25 @@ void CartPusher::_computeWalkerDestination()
       destBuilding = _d->getWalkerDestination_warehouse( pathPropagator, pathWay );
    }
 
-   if (destBuilding == NULL)
+   if(destBuilding == NULL)
    {
       // try send that good to a factory
       destBuilding = _d->getWalkerDestination_factory(pathPropagator, pathWay);
    }
 
-   if (destBuilding == NULL)
+   if(destBuilding == NULL)
    {
       // try send that good to a granary
       destBuilding = _d->getWalkerDestination_granary(pathPropagator, pathWay);
    }
 
-   if (destBuilding == NULL)
+   if(destBuilding == NULL)
    {
       // try send that good to a warehouse
       destBuilding = _d->getWalkerDestination_warehouse( pathPropagator, pathWay );
    }
 
-   if( destBuilding != NULL)
+   if(destBuilding != NULL)
    {
       //_isDeleted = true;  // no destination!
      setConsumerBuilding( destBuilding );
@@ -295,7 +303,7 @@ BuildingPtr reserveShortestPath( const object::Type buildingType,
   while( pathWayIt != pathWayList.end() )
   {
     // for every factory within range
-    SmartPtr<T> building = ptr_cast<T>( pathWayIt->first );
+    SmartPtr<T> building = pathWayIt->first.as<T>();
 
     if( stock.qty() > building->store().getMaxStore( stock.type() ) )
     {
@@ -316,13 +324,13 @@ BuildingPtr reserveShortestPath( const object::Type buildingType,
     {
       shortestPath = pathIt->second;
       maxLength = pathIt->second->length();
-      res = ptr_cast<Building>( pathIt->first );
+      res = pathIt->first.as<Building>();
     }
   }
 
   if( res.isValid() )
   {
-    SmartPtr<T> ptr = ptr_cast<T>( res );
+    SmartPtr<T> ptr = res.as<T>();
     reservationID = ptr->store().reserveStorage( stock, game::Date::current() );
     if (reservationID != 0)
     {
@@ -392,7 +400,7 @@ void CartPusher::send2city(BuildingPtr building, good::Stock &carry )
 void CartPusher::timeStep( const unsigned long time )
 {
   _d->anim.update( time );
-  if( game::Date::isWeekChanged() && !_pathwayRef().isValid() )
+  if( game::Date::isWeekChanged() && !_pathway().isValid() )
   {
     _computeWalkerDestination();
   }

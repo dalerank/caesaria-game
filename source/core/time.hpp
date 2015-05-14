@@ -24,7 +24,7 @@ class DateTime
 {
 public:
     typedef enum { dateLess=-1, dateEquale=0, dateMore=1 } DATE_EQUALE_FEEL;
-    enum { weekInMonth = 4, daysInWeek = 7, monthsInYear = 12 };
+    enum { weekInMonth = 4, daysInWeek = 7, monthsInYear = 12, secondsInHour=3600 };
 
     static const DateTime invalid;
 

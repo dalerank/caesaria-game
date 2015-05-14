@@ -76,7 +76,7 @@ public:
 
 void PictureBank::Impl::setPicture( const std::string &name, const Picture& pic )
 {
-  int dot_pos = name.find('.');
+  int dot_pos = name.find_last_of('.');
   std::string rcname = name.substr(0, dot_pos);
 
   // first: we deallocate the current picture, if any
@@ -143,12 +143,6 @@ void PictureBank::Impl::destroyUnusableTextures()
   }
 }
 
-PictureBank& PictureBank::instance()
-{
-  static PictureBank inst; 
-  return inst;
-}
-
 void PictureBank::reset()
 {
 
@@ -194,7 +188,7 @@ Picture& PictureBank::getPicture(const std::string &name)
   if( it == _d->resources.end() )
   {
     //can't find image in valid resources, try load from hdd
-    const Picture& pic = _d->tryLoadPicture( name );
+    Picture pic = _d->tryLoadPicture( name );
 
     if( pic.isValid() ) { setPicture( name, pic );  }
     else{ _d->resources[ hash ] = pic; }
@@ -312,9 +306,7 @@ void PictureBank::Impl::loadAtlas(const vfs::Path& filePath)
       Point start( rInfo.get( 0 ).toInt(), rInfo.get( 1 ).toInt() );
       Size size( rInfo.get( 2 ).toInt(), rInfo.get( 3 ).toInt() );
 
-      Rect orect( start, size );
-      pic.setOriginRect( orect );
-      //pic.setOriginRectf( );
+      pic.setOriginRect( Rect( start, size ) );
       setPicture( i->first, pic );
     }
   }

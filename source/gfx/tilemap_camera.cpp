@@ -180,7 +180,7 @@ void TilemapCamera::_setCenter(Point pos, bool checkBorder)
 TilePos TilemapCamera::center() const
 {
   Tile* tile = centerTile();
-  return tile ? tile->pos() : TilePos( -1, -1 );
+  return tile ? tile->pos() : gfx::tilemap::invalidLocation();
 }
 
 int TilemapCamera::centerX() const  {   return _d->centerMapXZ.x();   }
@@ -316,11 +316,11 @@ void TilemapCamera::Impl::cacheFlatTiles()
 
   resetDrawn();
   foreach( it, tiles )
-    {
-      int z = (*it)->epos().z();
-      tile = (*it)->masterTile();
-      if( !tile )
-        tile = *it;
+  {
+    int z = (*it)->epos().z();
+    tile = (*it)->masterTile();
+    if( !tile )
+      tile = *it;
 
     if( tile->isFlat() && tile->epos().z() == z && !tile->rwd() )
     {

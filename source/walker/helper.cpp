@@ -24,7 +24,6 @@
 #include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 class TypeEnums : public EnumsHelper<walker::Type>
@@ -271,7 +270,7 @@ Picture WalkerHelper::getBigPicture(walker::Type type)
   break;
   }
 
-  return index >= 0 ? Picture::load( "bigpeople", index ) : Picture::getInvalid();
+  return index >= 0 ? Picture( "bigpeople", index ) : Picture::getInvalid();
 }
 
 WalkerHelper::~WalkerHelper(){}

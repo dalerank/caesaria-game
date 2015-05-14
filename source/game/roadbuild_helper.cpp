@@ -26,6 +26,7 @@
 #include "objects/aqueduct.hpp"
 #include "core/logger.hpp"
 #include "city/city.hpp"
+#include "gfx/tilemap.hpp"
 
 using namespace gfx;
 
@@ -38,7 +39,7 @@ void RoadPropagator::canBuildRoad(const gfx::Tile* tile, bool& ret)
   }
   else
   {
-    if( is_kind_of<Aqueduct>( tile->overlay() ) )
+    if( tile->overlay().is<Aqueduct>() )
     {
       AqueductPtr aq = ptr_cast<Aqueduct>( tile->overlay() );
       ret = aq->canAddRoad( PlayerCityPtr(), tile->pos() );
@@ -46,23 +47,11 @@ void RoadPropagator::canBuildRoad(const gfx::Tile* tile, bool& ret)
   }
 }
 
-RoadPropagator::RoadPropagator()
-{
-
-}
-
-RoadPropagator& RoadPropagator::instance()
-{
-  static RoadPropagator inst;
-  return inst;
-}
-
 bool __checkWalkables( const TilesArray& tiles )
 {
   foreach( it, tiles )
   {
-    if( !(*it)->isWalkable( true ) ||
-        is_kind_of<Building>( (*it)->overlay() ) )
+    if( !(*it)->isWalkable( true ) || (*it)->overlay().is<Building>() )
       return false;
   }
 

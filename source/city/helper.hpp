@@ -79,7 +79,7 @@ public:
     OverlayPtr overlay = _city->getOverlay( pos );
     if( overlay.isValid() && (overlay->type() == type || type == object::any) )
     {
-      return ptr_cast< T >( overlay );
+      return overlay.as<T>();
     }
 
     return SmartPtr<T>();
@@ -109,7 +109,7 @@ SmartList<T> Helper::findProducers(const good::Product goodtype )
   const OverlayList& overlays = _city->overlays();
   foreach( item, overlays )
   {
-    SmartPtr< T > b = ptr_cast<T>( *item );
+    SmartPtr< T > b = item->as<T>();
     if( b.isValid() && b->produceGoodType() == goodtype )
     {
       ret.push_back( b );

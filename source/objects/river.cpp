@@ -24,7 +24,6 @@
 #include "core/foreach.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::river, River)
@@ -128,7 +127,7 @@ Picture River::computePicture()
     }
   }
 
-  return Picture::load( ResourceGroup::land1a, index);
+  return Picture( ResourceGroup::land1a, index);
 }
 
 bool River::isWalkable() const{ return false;}

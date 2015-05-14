@@ -21,8 +21,6 @@
 #include "constants.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
-
 REGISTER_CLASS_IN_OVERLAYFACTORY( object::missionaryPost, MissionaryPost)
 
 MissionaryPost::MissionaryPost()
@@ -30,7 +28,7 @@ MissionaryPost::MissionaryPost()
 {
   setMaximumWorkers(20);
   setWorkers( 0 );
-  setPicture( ResourceGroup::transport, 93 );
+  _picture().load( ResourceGroup::transport, 93 );
 
   setState( pr::inflammability, 0 );
   setState( pr::collapsibility, 0 );

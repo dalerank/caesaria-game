@@ -1,5 +1,6 @@
 {
  title : "##gardens_title##"
+ speech : "tutorial2_gardens"
  items : [ "##can_build_gardens##",
             "@img=picture4_00002",
 	    "##gardens_get_desirable##",

@@ -82,11 +82,11 @@ bool Fortification::build( const city::AreaInfo& info )
   }
 
   Building::build( info );
-  FortificationList fortifications = city::statistic::findo<Fortification>( info.city, object::fortification );
+  FortificationList fortifications = city::statistic::getObjects<Fortification>( info.city, object::fortification );
 
   foreach( frt, fortifications ) { (*frt)->updatePicture( info.city ); }
 
-  TowerList towers = city::statistic::findo<Tower>( info.city, object::tower );
+  TowerList towers = city::statistic::getObjects<Tower>( info.city, object::tower );
   foreach( tower, towers ) { (*tower)->resetPatroling(); }
 
   updatePicture( info.city );
@@ -100,7 +100,7 @@ void Fortification::destroy()
 
   if( _city().isValid() )
   {
-    TilesArray area = _city()->tilemap().getArea( pos() - TilePos( 2, 2), Size( 5 ) );
+    TilesArea area( _city()->tilemap(), pos() - TilePos( 2, 2), Size( 5 ) );
     foreach( tile, area )
     {
       FortificationPtr f = ptr_cast<Fortification>( (*tile)->overlay() );
@@ -147,7 +147,11 @@ const Picture& Fortification::picture(const city::AreaInfo& areaInfo) const
   const TilePos tile_pos = (areaInfo.aroundTiles.empty()) ? pos() : areaInfo.pos;
 
   if (!tmap.isInside(tile_pos))
-    return Picture::load( ResourceGroup::aqueduct, 121 );
+  {
+    static Picture ret;
+    ret.load( ResourceGroup::aqueduct, 121 );
+    return ret;
+  }
 
   TilePos tile_pos_d[direction::count];
   bool is_border[direction::count] = { 0 };
@@ -231,7 +235,7 @@ const Picture& Fortification::picture(const city::AreaInfo& areaInfo) const
   const_cast< Fortification* >( this )->_d->direction = directionFlags;
   Fortification& th = *const_cast< Fortification* >( this );
   th._d->offset =  Point( 0, 0 );
-  th._fgPicturesRef().clear();
+  th._fgPictures().clear();
   int index;
   switch( directionFlags )
   {  
@@ -441,7 +445,7 @@ const Picture& Fortification::picture(const city::AreaInfo& areaInfo) const
   _d->index = index;
   th._d->mayPatrol = (_d->offset.y() > 0);
 
-  th._d->tmpPicture = Picture::load( ResourceGroup::wall, index );
+  th._d->tmpPicture.load( ResourceGroup::wall, index );
   th._d->tmpPicture.addOffset( _d->offset );
   return _d->tmpPicture;
 }

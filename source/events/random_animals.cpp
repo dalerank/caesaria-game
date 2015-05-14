@@ -30,8 +30,8 @@
 #include "gfx/tilemap.hpp"
 #include "factory.hpp"
 
-using namespace constants;
 using namespace gfx;
+using namespace city;
 
 namespace events
 {
@@ -80,7 +80,7 @@ void RandomAnimals::_exec( Game& game, unsigned int time)
 
     for( unsigned int k=0; k < _d->count; k++ )
     {
-      AnimalPtr animal = ptr_cast<Animal>( WalkerManager::instance().create( _d->animalType, game.city() ) );
+      AnimalPtr animal = WalkerManager::instance().create<Animal>( _d->animalType, game.city() );
       if( animal.isValid() )
       {
         animal->send2City( randomTile->pos() );
@@ -93,7 +93,7 @@ void RandomAnimals::_exec( Game& game, unsigned int time)
 
   if( _d->maxAnimals >= 0 )
   {
-    city::AnimalsPtr srvc = city::statistic::finds<city::Animals>( game.city() );
+    AnimalsPtr srvc = statistic::getService<Animals>( game.city() );
 
     if( srvc.isValid() )
     {

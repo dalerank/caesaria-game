@@ -30,7 +30,6 @@
 #include "walker/helper.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::colloseum, Colosseum)
@@ -44,12 +43,12 @@ public:
 
 Colosseum::Colosseum() : EntertainmentBuilding(Service::colloseum, object::colloseum, Size(5) ), _d( new Impl )
 {
-  setPicture( Picture::load( ResourceGroup::entertaiment, 36));
+  _picture().load( ResourceGroup::entertainment, 36 );
 
-  _animationRef().load( ResourceGroup::entertaiment, 37, 13);
+  _animationRef().load( ResourceGroup::entertainment, 37, 13);
   _animationRef().setOffset( Point( 122, 81 ) );
 
-  _fgPicturesRef().resize(2);
+  _fgPictures().resize(2);
 
   _addNecessaryWalker( walker::gladiator );
   _addNecessaryWalker( walker::lionTamer );
@@ -64,7 +63,7 @@ void Colosseum::deliverService()
 
   if( _animationRef().isRunning() )
   {
-    _fgPicturesRef().front() = Picture::load( ResourceGroup::entertaiment, 50 );
+    _fgPictures().front().load( ResourceGroup::entertainment, 50 );
     int currentWalkerNumber = walkers().size();
     if( saveWalkesNumber != currentWalkerNumber )
     {
@@ -74,8 +73,8 @@ void Colosseum::deliverService()
   }
   else
   {
-    _fgPicturesRef().front() = Picture::getInvalid();
-    _fgPicturesRef().back() = Picture::getInvalid();
+    _fgPictures().front() = Picture::getInvalid();
+    _fgPictures().back() = Picture::getInvalid();
   }
 }
 
@@ -89,8 +88,8 @@ bool Colosseum::build( const city::AreaInfo& info )
 {
   ServiceBuilding::build( info );
 
-  GladiatorSchoolList glSchools = city::statistic::findo<GladiatorSchool>( info.city, object::gladiatorSchool );
-  LionsNurseryList lionsNs = city::statistic::findo<LionsNursery>( info.city, object::lionsNursery );
+  GladiatorSchoolList glSchools = city::statistic::getObjects<GladiatorSchool>( info.city, object::gladiatorSchool );
+  LionsNurseryList lionsNs = city::statistic::getObjects<LionsNursery>( info.city, object::lionsNursery );
 
   _d->lastDateGl = game::Date::current();
   _d->lastDateLion = game::Date::current();
@@ -129,7 +128,7 @@ std::string Colosseum::troubleDesc() const
 
 bool Colosseum::isNeedGladiators() const
 {
-  GladiatorSchoolList colloseums = city::statistic::findo<GladiatorSchool>( _city(), object::gladiatorSchool );
+  GladiatorSchoolList colloseums = city::statistic::getObjects<GladiatorSchool>( _city(), object::gladiatorSchool );
 
   return colloseums.empty();
 }

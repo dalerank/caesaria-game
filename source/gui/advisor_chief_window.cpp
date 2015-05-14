@@ -51,7 +51,6 @@
 #include "core/logger.hpp"
 #include "city/states.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace city;
 
@@ -98,7 +97,9 @@ public:
   {
     _title = title;
 
-    setIcon( Picture::load( ResourceGroup::panelBackground, 48 ), Point( 5, 5 ) );
+    Picture pic;
+    pic.load( ResourceGroup::panelBackground, 48 ), Point( 5, 5 );
+    setIcon( pic );
     setFont( Font::create( FONT_2 ) );
 
     setTextOffset( Point( 255, 0) );
@@ -109,7 +110,7 @@ public:
     Label::_updateTexture( painter );
 
     Font font = Font::create( FONT_2_WHITE );
-    font.draw( *_textPictureRef(), _(_title), Point( 20, 0), true );
+    font.draw( _textPicture(), _(_title), Point( 20, 0), true );
   }
 
   std::string _title;
@@ -405,7 +406,7 @@ void Chief::Impl::drawMilitary()
 
   if( reasons.empty() )
   {
-    BarracksList barracks = statistic::findo<Barracks>( city, object::barracks );
+    BarracksList barracks = statistic::getObjects<Barracks>( city, object::barracks );
 
     bool needWeapons = false;
     foreach( it, barracks )
@@ -435,9 +436,7 @@ void Chief::Impl::drawCrime()
 {
   std::string text;
 
-  DisorderPtr ds;
-  ds << city->findService( Disorder::defaultName() );
-
+  DisorderPtr ds = statistic::getService<Disorder>( city );
   if( ds.isValid() )
   {
     text = ds->reason();
@@ -452,8 +451,7 @@ void Chief::Impl::drawHealth()
 {
   std::string text;
 
-  city::HealthCarePtr cityHealth;
-  cityHealth << city->findService( city::HealthCare::defaultName() );
+  HealthCarePtr cityHealth = statistic::getService<HealthCare>( city );
   if( cityHealth.isValid() )
   {
     text = cityHealth->reason();
@@ -500,7 +498,7 @@ void Chief::Impl::drawEntertainment()
 {
   StringArray reasons;
 
-  FestivalPtr srvc = statistic::finds<Festival>( city );
+  FestivalPtr srvc = statistic::getService<Festival>( city );
   if( srvc.isValid() )
   {
     int monthFromLastFestival = srvc->lastFestival().monthsTo( game::Date::current() );
@@ -510,7 +508,7 @@ void Chief::Impl::drawEntertainment()
     }
   }
 
-  CultureRatingPtr cltr = statistic::finds<CultureRating>( city );
+  CultureRatingPtr cltr = statistic::getService<CultureRating>( city );
   if( cltr.isValid() )
   {
     int theaterCoverage = cltr->coverage( CultureRating::covTheatres );
@@ -531,7 +529,7 @@ void Chief::Impl::drawEntertainment()
 
 void Chief::Impl::drawSentiment()
 {
-  SentimentPtr sentiment = statistic::finds<Sentiment>( city );
+  SentimentPtr sentiment = statistic::getService<Sentiment>( city );
 
   std::string text = sentiment.isValid()
                      ? sentiment->reason()

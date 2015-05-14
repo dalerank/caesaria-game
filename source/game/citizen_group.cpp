@@ -59,7 +59,7 @@ unsigned int CitizenGroup::count(unsigned int beginAge, unsigned int endAge) con
   return ret;
 }
 
-CitizenGroup CitizenGroup::retrieve(unsigned int rcount)
+CitizenGroup CitizenGroup::retrieve( unsigned int rcount)
 {
   CitizenGroup ret;
 
@@ -177,11 +177,8 @@ CitizenGroup CitizenGroup::operator+(const CitizenGroup &b) const
 }
 
 bool CitizenGroup::empty() const {  return (_peoples.empty() || (0 == count())); }
-
-void CitizenGroup::clear()
-{
-  foreach( t,_peoples ) { (*t) = 0; }
-}
+void CitizenGroup::clear() { foreach( t,_peoples ) (*t) = 0; }
+void CitizenGroup::set(const CitizenGroup& b) { _peoples = b._peoples; }
 
 void CitizenGroup::makeOld()
 {
@@ -189,10 +186,10 @@ void CitizenGroup::makeOld()
   _peoples.insert( _peoples.begin(), 1, 0 );
 }
 
-unsigned int CitizenGroup::child_n() const { return count( child ); }
-unsigned int CitizenGroup::mature_n() const { return count( mature ); }
-unsigned int CitizenGroup::aged_n() const { return count( aged ); }
-unsigned int CitizenGroup::scholar_n() const { return count( scholar); }
+unsigned int CitizenGroup::child_n()   const { return count( child   ); }
+unsigned int CitizenGroup::mature_n()  const { return count( mature  ); }
+unsigned int CitizenGroup::aged_n()    const { return count( aged    ); }
+unsigned int CitizenGroup::scholar_n() const { return count( scholar ); }
 unsigned int CitizenGroup::student_n() const { return count( student ); }
 
 VariantList CitizenGroup::save() const
@@ -237,4 +234,20 @@ CitizenGroup::CitizenGroup(CitizenGroup::Age age, int value)
   _peoples.resize( longliver+1 );
   _peoples.reserve( longliver+2 );
   _peoples[ age ] = value;
+}
+
+CitizenGroup CitizenGroup::random(int value)
+{
+  CitizenGroup ret;
+
+  while( value > 0 )
+  {
+    int ageGroup = math::random( 100 );
+    int rValue = math::random( value ) + 1;
+    ret[ ageGroup ] += rValue;
+
+    value -= rValue;
+  }
+
+  return ret;
 }

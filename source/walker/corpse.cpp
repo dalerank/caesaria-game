@@ -27,7 +27,6 @@
 #include "game/gamedate.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::corpse, Corpse)
@@ -61,9 +60,9 @@ WalkerPtr Corpse::create( PlayerCityPtr city, WalkerPtr wlk )
   {
     Corpse* corpse = new Corpse( city );
     corpse->setPos( wlk->pos() );
-    corpse->_animationRef() = animation;
-    corpse->_animationRef().setDelay( 1 );
-    corpse->_animationRef().setLoop( false );
+    corpse->_animation() = animation;
+    corpse->_animation().setDelay( 1 );
+    corpse->_animation().setLoop( false );
 
     WalkerPtr ret( corpse );
     ret->drop();
@@ -85,10 +84,10 @@ WalkerPtr Corpse::create( PlayerCityPtr city, TilePos pos,
 
   if( !rcGroup.empty() )
   {
-    corpse->_animationRef().load( rcGroup, startIndex, stopIndex - startIndex );
-    corpse->_animationRef().setLoop( false );
-    corpse->_animationRef().setDelay( Animation::fast );
-    corpse->_d->lastFrameIndex = corpse->_animationRef().index();
+    corpse->_animation().load( rcGroup, startIndex, stopIndex - startIndex );
+    corpse->_animation().setLoop( false );
+    corpse->_animation().setDelay( Animation::fast );
+    corpse->_d->lastFrameIndex = corpse->_animation().index();
   }
   else
   {
@@ -120,11 +119,11 @@ Corpse::~Corpse(){}
 
 void Corpse::timeStep(const unsigned long time)
 {
-  _animationRef().update( time );
-  if( !_animationRef().isLoop() && _d->time >= _animationRef().delay() )
+  _animation().update( time );
+  if( !_animation().isLoop() && _d->time >= _animation().delay() )
   {
     _d->time = 0;
-    _animationRef().setDelay( _animationRef().delay() * 2 );
+    _animation().setDelay( _animation().delay() * 2 );
   }
 
   _d->time++;
@@ -144,7 +143,7 @@ void Corpse::save( VariantMap& stream ) const
 {
   Walker::save( stream );
 
-  stream[ "animation" ] = _animationRef().save();
+  stream[ "animation" ] = _animation().save();
   VARIANT_SAVE_ANY_D( stream, _d, time )
   VARIANT_SAVE_ANY_D( stream, _d, loop )
 }
@@ -156,15 +155,15 @@ void Corpse::load( const VariantMap& stream )
   VARIANT_LOAD_ANY_D( _d, time, stream )
   VARIANT_LOAD_ANY_D( _d, loop, stream )
 
-  _animationRef().load( stream.get( "animation" ).toMap() );
-  if( _animationRef().delay() == 0 )
+  _animation().load( stream.get( "animation" ).toMap() );
+  if( _animation().delay() == 0 )
   {
-    _animationRef().setDelay( Animation::middle );
-    _animationRef().setLoop( false );
+    _animation().setDelay( Animation::middle );
+    _animation().setLoop( false );
   }
 }
 
 const Picture& Corpse::getMainPicture()
 {
-  return _animationRef().currentFrame();
+  return _animation().currentFrame();
 }

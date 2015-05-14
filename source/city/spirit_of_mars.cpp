@@ -27,8 +27,7 @@
 #include "core/logger.hpp"
 #include "events/dispatcher.hpp"
 #include "cityservice_factory.hpp"
-
-using namespace constants;
+#include "statistic.hpp"
 
 namespace city
 {
@@ -63,8 +62,7 @@ void SpiritOfMars::timeStep( const unsigned int time)
 
     Logger::warning( "SpiritOfMars: execute service" );
 
-    EnemySoldierList enemies;
-    enemies << _city()->walkers( walker::any );
+    EnemySoldierList enemies = statistic::getWalkers<EnemySoldier>( _city() );
 
     if( enemies.size() > 0 )
     {

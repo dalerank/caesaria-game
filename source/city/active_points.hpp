@@ -23,15 +23,21 @@
 namespace city
 {  
 
+/*
+ * Points for camera, which user can set
+ */
 class ActivePoints : TilePosArray
 {
   enum { maxPoints = 10 };
 public:
   ActivePoints();
 
-  TilePos get(unsigned int index ) const;
-  void set(unsigned int index, const TilePos& pos );
+  TilePos get( unsigned int index ) const;
+  void    set( unsigned int index, const TilePos& pos );
 
+  /*
+   * Serialize section
+   */
   VariantList save() const;
   void load(const VariantList& stream );
 };

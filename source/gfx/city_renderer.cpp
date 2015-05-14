@@ -58,7 +58,6 @@
 #include "core/timer.hpp"
 #include "pathway/pathway.hpp"
 
-using namespace constants;
 using namespace citylayer;
 
 namespace gfx
@@ -208,8 +207,9 @@ void CityRenderer::render()
   {
     _d->zoomChanged = false;
     Size s = _d->engine->screenSize() * _d->zoom / defaultZoom;
-    _d->engine->initViewport( 0, s );
-    _d->camera.setViewport( s );
+    bool zoomOk = _d->engine->initViewport( 0, s );
+    if( zoomOk )
+      _d->camera.setViewport( s );
   }
 
   if( _d->city->getOption( PlayerCity::updateTiles ) > 0 )
@@ -273,7 +273,7 @@ void CityRenderer::setMode( Renderer::ModePtr command )
 {
   _d->changeCommand = command;
 
-  LayerModePtr ovCmd = ptr_cast<LayerMode>( _d->changeCommand );
+  LayerModePtr ovCmd = _d->changeCommand.as<LayerMode>();
   if( ovCmd.isValid() )
   {
     _d->setLayer( ovCmd->getType() );

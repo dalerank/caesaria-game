@@ -22,6 +22,7 @@
 #include "core/utils.hpp"
 #include "objects/construction.hpp"
 #include "city/helper.hpp"
+#include "game/player.hpp"
 #include "gfx/picture.hpp"
 #include "gfx/gl_engine.hpp"
 #include "sound/engine.hpp"
@@ -63,10 +64,12 @@
 #include "objects/overlay.hpp"
 #include "gfx/helper.hpp"
 #include "gamestate.hpp"
+#include "infoboxmanager.hpp"
 #include "hotkey_manager.hpp"
 #include "addon_manager.hpp"
 #include "video_config.hpp"
 #include "config.hpp"
+#include "world/emperor.hpp"
 
 #include <list>
 
@@ -141,18 +144,19 @@ void Game::Impl::initVideo()
 {
   Logger::warning( "GraficEngine: create" );
 
-  //std::string render = GameSettings::get( GameSettings::render ).toString();
+  bool batchTexures = SETTINGS_VALUE( batchTextures );
 
-  engine = new gfx::SdlEngine();
+  engine = new SdlEngine();
 
   Logger::warning( "GraficEngine: set size" );
   engine->setScreenSize( SETTINGS_VALUE( resolution ).toSize() );
+  engine->setFlag( Engine::batching, batchTexures ? 1 : 0 );
 
   bool fullscreen = SETTINGS_VALUE( fullscreen );
   if( fullscreen )
   {
     Logger::warning( "GraficEngine: try set fullscreen mode" );
-    engine->setFlag( gfx::Engine::fullscreen, fullscreen ? 1 : 0 );
+    engine->setFlag( Engine::fullscreen, fullscreen ? 1 : 0 );
   }
 
   engine->init();
@@ -165,9 +169,9 @@ void Game::Impl::initSound()
 
   ae.init();
   Logger::warning( "Game: load volumes" );
-  ae.setVolume( audio::ambientSound, SETTINGS_VALUE( ambientVolume ) );
-  ae.setVolume( audio::themeSound, SETTINGS_VALUE( musicVolume ) );
-  ae.setVolume( audio::gameSound, SETTINGS_VALUE( soundVolume ) );
+  ae.setVolume( audio::ambient, SETTINGS_VALUE( ambientVolume ) );
+  ae.setVolume( audio::theme, SETTINGS_VALUE( musicVolume ) );
+  ae.setVolume( audio::game, SETTINGS_VALUE( soundVolume ) );
   ae.loadAlias( SETTINGS_RC_PATH( soundAlias ) );
 
   std::string c3musicFolder = SETTINGS_VALUE( c3music ).toString();
@@ -187,7 +191,7 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
   std::string errorStr;
   std::string c3res = SETTINGS_VALUE( c3gfx ).toString();
   if( !c3res.empty() )
-  {
+  {    
     vfs::Directory gfxDir( c3res );
     vfs::Path c3sg2( "c3.sg2" );
     vfs::Path c3path = gfxDir/c3sg2;
@@ -197,9 +201,12 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
       errorStr = "This game use resources files (.sg2, .map) from Caesar III(c), but "
                  "original game archive c3.sg2 not found in folder " + c3res +
                  "!!!.\nBe sure that you copy all .sg2, .map and .smk files placed to resource folder";
+      SETTINGS_SET_VALUE( c3gfx, std::string( "" ) );
+      game::Settings::save();
     }
 
     loader.loadFromModel( SETTINGS_RC_PATH( sg2model ), gfxDir );
+    engine->setFlag( Engine::batching, false );
   }
   else
   {
@@ -243,6 +250,8 @@ void Game::Impl::initGuiEnvironment()
 {
   Logger::warning( "Game: initialize gui" );
   gui = new gui::Ui( *engine );
+
+  gui::infobox::Manager::instance().setBoxLock( SETTINGS_VALUE( lockInfobox ) );
 }
 
 void Game::Impl::initPantheon( vfs::Path filename)
@@ -285,7 +294,7 @@ gui::Ui* Game::gui() const { return _d->gui; }
 gfx::Engine* Game::engine() const { return _d->engine; }
 scene::Base* Game::scene() const { return _d->currentScreen->toBase(); }
 
-DateTime Game::date() const { return game::Date::current(); }
+const DateTime& Game::date() const { return game::Date::current(); }
 bool Game::isPaused() const { return _d->pauseCounter>0; }
 void Game::play() { setPaused( false ); }
 void Game::pause() { setPaused( true ); }
@@ -390,12 +399,13 @@ bool Game::load(std::string filename)
     Logger::warning( "INIT ERROR: can't initalize city %s in empire" + _d->city->name() );
     return false;
   }
+  _d->empire->emperor().checkCities();
 
   Logger::warning( "Game: calculate road access for buildings" );
-  OverlayList& llo = _d->city->overlays();
+  const OverlayList& llo = _d->city->overlays();
   foreach( overlay, llo )
   {
-    ConstructionPtr construction = ptr_cast<Construction>( *overlay );
+    ConstructionPtr construction = overlay->as<Construction>();
     if( construction.isValid() )
     {
       construction->computeRoadside();

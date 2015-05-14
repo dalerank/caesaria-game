@@ -103,7 +103,7 @@ void Object::load(const VariantMap& stream)
 
   Logger::warningIf( _d->name.empty(), "Object: name is null" );
 
-  setPicture( Picture::load( stream.get( "picture" ).toString() ) );
+  setPicture( Picture( stream.get( "picture" ).toString() ) );
   VARIANT_LOAD_CLASS_D( _d, animation, stream )
   VARIANT_LOAD_ANY_D( _d, isDeleted, stream )
 }
@@ -127,6 +127,7 @@ Object::Object( EmpirePtr empire) : _d( new Impl )
 }
 
 Animation& Object::_animation() { return _d->animation; }
+Picture&Object::_picture(){ return _d->pic; }
 Pictures &Object::_pictures() { return _d->pictures; }
 
 }

@@ -38,11 +38,13 @@ class Minimap : public Widget
 public:
   Minimap(Widget* parent, Rect rect, PlayerCityPtr tilemap, const gfx::Camera& camera );
 
-  virtual void draw( gfx::Engine& painter);
-
   void setCenter( Point pos );
 
+  virtual void draw( gfx::Engine& painter);
   virtual bool onEvent(const NEvent &event);
+  virtual void beforeDraw( gfx::Engine& painter );
+
+  void saveImage( const std::string& filename ) const;
 
 public signals:
   Signal1<TilePos>& onCenterChange();

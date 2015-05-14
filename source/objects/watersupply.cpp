@@ -33,8 +33,9 @@
 #include "constants.hpp"
 #include "objects_factory.hpp"
 #include "game/gamedate.hpp"
+#include "gfx/tilearea.hpp"
+#include "gfx/helper.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::reservoir, Reservoir)
@@ -54,7 +55,7 @@ void Reservoir::_dropWater()
 {
   //now remove water flag from near tiles
   Tilemap& tmap = _city()->tilemap();
-  TilesArray reachedTiles = tmap.getArea( pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
+  TilesArea reachedTiles( tmap, pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
 
   foreach( tile, reachedTiles ) { (*tile)->setParam( Tile::pReservoirWater, 0 ); }
 }
@@ -103,7 +104,7 @@ Reservoir::Reservoir()
     : WaterSource( object::reservoir, Size( 3 ) )
 {  
   _isWaterSource = false;
-  setPicture( ResourceGroup::utilitya, 34 );
+  _picture().load( ResourceGroup::utilitya, 34 );
   
   // utilitya 34      - empty reservoir
   // utilitya 35 ~ 42 - full reservoir animation
@@ -113,7 +114,7 @@ Reservoir::Reservoir()
   _animationRef().setDelay( 11 );
   //_animationRef().setOffset( Point( 47, 63 ) );
 
-  _fgPicturesRef().resize(1);
+  _fgPictures().resize(1);
 }
 
 Reservoir::~Reservoir(){}
@@ -162,8 +163,7 @@ void Reservoir::timeStep(const unsigned long time)
   //filled area, that reservoir present
   if( game::Date::isWeekChanged() )
   {
-    Tilemap& tmap = _city()->tilemap();
-    TilesArray reachedTiles = tmap.getArea( pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
+    TilesArea reachedTiles( _city()->tilemap(), pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
 
     foreach( tile, reachedTiles )
     {
@@ -190,11 +190,11 @@ bool Reservoir::canBuild( const city::AreaInfo& areaInfo ) const
 
   bool nearWater = _isNearWater( areaInfo.city, areaInfo.pos );
   Reservoir* thisp = const_cast< Reservoir* >( this );
-  thisp->_fgPicturesRef().clear();
+  thisp->_fgPictures().clear();
   if( nearWater )
   {
-    thisp->_fgPicturesRef().push_back( Picture::load( ResourceGroup::utilitya, 35 )  );
-    thisp->_fgPicturesRef().back().setOffset( _d->fullOffset + Point( 0, picture().offset().y() ) );
+    thisp->_fgPictures().push_back( Picture( ResourceGroup::utilitya, 35 )  );
+    thisp->_fgPictures().back().setOffset( _d->fullOffset + Point( 0, picture().offset().y() ) );
   }
   return ret;
 }
@@ -314,6 +314,6 @@ TilePos Reservoir::entry(Direction direction)
   case direction::east: return pos() + TilePos( 2, 1 );
   case direction::south: return pos() + TilePos( 1, 0 );
   case direction::west: return pos() + TilePos( 0, 1 );
-  default: return TilePos( -1, -1 );
+  default: return gfx::tilemap::invalidLocation();
   }
 }

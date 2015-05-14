@@ -18,6 +18,7 @@
 #include "city_options_window.hpp"
 #include "pushbutton.hpp"
 #include "core/event.hpp"
+#include "world/empire.hpp"
 #include "listbox.hpp"
 #include "core/utils.hpp"
 #include "dialogbox.hpp"
@@ -29,6 +30,7 @@
 #include "widget_helper.hpp"
 #include "widgetescapecloser.hpp"
 #include "contextmenuitem.hpp"
+#include "game/infoboxmanager.hpp"
 #include "layers/layer.hpp"
 #include "game/settings.hpp"
 #include "texturedbutton.hpp"
@@ -55,9 +57,17 @@ public:
   PushButton* btnMmbMoving;
   PushButton* btnBarbarianMayAttack;
   PushButton* btnLegionMayAttack;
+  PushButton* btnAnroidBarEnabled;
+  PushButton* btnToggleBatching;
   Label* lbFireRisk;
   TexturedButton* btnIncreaseFireRisk;
   TexturedButton* btnDecreaseFireRisk;
+  PushButton* btnToggleCcUseAI;
+
+  Label* lbCollapseRisk;
+  TexturedButton* btnIncreaseCollapseRisk;
+  TexturedButton* btnDecreaseCollapseRisk;
+
   PushButton* btnLockInfobox;
   PushButton* btnC3Gameplay;
   PushButton* btnShowTooltips;
@@ -75,15 +85,21 @@ public:
   Widget* findDebugMenu(Ui *ui);
   void increaseFireRisk();
   void decreaseFireRisk();
+  void increaseCollapseRisk();
+  void decreaseCollapseRisk();
   void toggleBarbarianAttack();
   void toggleC3Gameplay();
   void toggleDifficulty();
   void toggleShowTooltips();
   void toggleLegionAttack();
+  void toggleAndroidBarEnabled();
+  void toggleUseBatching();
+  void toggleCcUseAI();
   void toggleCityOption( PlayerCity::OptionType option );
+  void changeCityOption( PlayerCity::OptionType option, int delta);
 };
 
-CityOptions::CityOptions(Widget* parent, PlayerCityPtr city )
+CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
   _d->city = city;
@@ -104,11 +120,17 @@ CityOptions::CityOptions(Widget* parent, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, lbFireRisk )
   GET_DWIDGET_FROM_UI( _d, btnIncreaseFireRisk )
   GET_DWIDGET_FROM_UI( _d, btnDecreaseFireRisk )
+  GET_DWIDGET_FROM_UI( _d, lbCollapseRisk )
+  GET_DWIDGET_FROM_UI( _d, btnIncreaseCollapseRisk )
+  GET_DWIDGET_FROM_UI( _d, btnDecreaseCollapseRisk )
   GET_DWIDGET_FROM_UI( _d, btnBarbarianMayAttack )
   GET_DWIDGET_FROM_UI( _d, btnLegionMayAttack )
   GET_DWIDGET_FROM_UI( _d, btnC3Gameplay)
   GET_DWIDGET_FROM_UI( _d, btnShowTooltips )
   GET_DWIDGET_FROM_UI( _d, btnDifficulty )
+  GET_DWIDGET_FROM_UI( _d, btnAnroidBarEnabled )
+  GET_DWIDGET_FROM_UI( _d, btnToggleBatching )
+  GET_DWIDGET_FROM_UI( _d, btnToggleCcUseAI )
 
   CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods )
   CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings )
@@ -124,12 +146,18 @@ CityOptions::CityOptions(Widget* parent, PlayerCityPtr city )
   CONNECT( _d->btnC3Gameplay, onClicked(), _d.data(), Impl::toggleC3Gameplay )
   CONNECT( _d->btnShowTooltips, onClicked(), _d.data(), Impl::toggleShowTooltips )
   CONNECT( _d->btnDifficulty, onClicked(), _d.data(), Impl::toggleDifficulty )
+  CONNECT( _d->btnAnroidBarEnabled, onClicked(), _d.data(), Impl::toggleAndroidBarEnabled )
+  CONNECT( _d->btnIncreaseCollapseRisk, onClicked(), _d.data(), Impl::increaseCollapseRisk )
+  CONNECT( _d->btnDecreaseCollapseRisk, onClicked(), _d.data(), Impl::decreaseCollapseRisk )
+  CONNECT( _d->btnToggleBatching, onClicked(), _d.data(), Impl::toggleUseBatching )
+  CONNECT( _d->btnToggleCcUseAI, onClicked(), _d.data(), Impl::toggleCcUseAI )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptions::deleteLater );
   if( btnClose ) btnClose->setFocus();
 
   _d->update();
+  setModal();
 }
 
 CityOptions::~CityOptions() {}
@@ -145,19 +173,17 @@ void CityOptions::Impl::toggleDebug()
   update();
 }
 
-void CityOptions::Impl::increaseFireRisk()
+void CityOptions::Impl::changeCityOption( PlayerCity::OptionType option, int delta )
 {
-  int value = city->getOption( PlayerCity::fireKoeff );
-  city->setOption( PlayerCity::fireKoeff, math::clamp<int>( value + 10, 0, 9999 ) );
+  int value = city->getOption( option );
+  city->setOption( option, math::clamp<int>( value + delta, 0, 9999 ) );
   update();
 }
 
-void CityOptions::Impl::decreaseFireRisk()
-{
-  int value = city->getOption( PlayerCity::fireKoeff );
-  city->setOption( PlayerCity::fireKoeff, math::clamp<int>( value - 10, 0, 9999) );
-  update();
-}
+void CityOptions::Impl::increaseFireRisk() { changeCityOption( PlayerCity::fireKoeff, +10 ); }
+void CityOptions::Impl::decreaseFireRisk() { changeCityOption( PlayerCity::fireKoeff, -10 ); }
+void CityOptions::Impl::increaseCollapseRisk() { changeCityOption( PlayerCity::collapseKoeff, +10 ); }
+void CityOptions::Impl::decreaseCollapseRisk() { changeCityOption( PlayerCity::collapseKoeff, -10 ); }
 
 void CityOptions::Impl::toggleCityOption(PlayerCity::OptionType option)
 {
@@ -168,8 +194,9 @@ void CityOptions::Impl::toggleCityOption(PlayerCity::OptionType option)
 
 void CityOptions::Impl::toggleLockInfobox()
 {
-  bool value = SETTINGS_VALUE( lockInfobox );
+  bool value = SETTINGS_VALUE( lockInfobox );  
   SETTINGS_SET_VALUE( lockInfobox, !value );
+  infobox::Manager::instance().setBoxLock( !value );
   update();
 }
 
@@ -178,6 +205,18 @@ void CityOptions::Impl::toggleDifficulty()
   int value = city->getOption( PlayerCity::difficulty );
   value = (value+1)%game::difficulty::count;
   city->setOption( PlayerCity::difficulty, value );
+  update();
+}
+
+void CityOptions::Impl::toggleAndroidBarEnabled()
+{
+  bool value = SETTINGS_VALUE( showTabletMenu );
+  SETTINGS_SET_VALUE( showTabletMenu, !value );
+
+  Widget* widget = btnAnroidBarEnabled->ui()->findWidget( Hash( "AndroidActionsBar" ) );
+  if( widget )
+    widget->setVisible( !value );
+
   update();
 }
 
@@ -204,6 +243,29 @@ void CityOptions::Impl::toggleLeftMiddleMouse()
 {
   bool value = DrawOptions::instance().isFlag( DrawOptions::mmbMoving );
   DrawOptions::instance().setFlag( DrawOptions::mmbMoving, !value );
+  update();
+}
+
+void CityOptions::Impl::toggleUseBatching()
+{
+  bool value = gfx::Engine::instance().getFlag( gfx::Engine::batching ) > 0;
+  gfx::Engine::instance().setFlag( gfx::Engine::batching, !value );
+  update();
+}
+
+void CityOptions::Impl::toggleCcUseAI()
+{
+  bool value = SETTINGS_VALUE( ccUseAI );
+  SETTINGS_SET_VALUE( ccUseAI, !value );
+
+  world::EmpirePtr empire = city->empire();
+  world::CityList cities = empire->cities();
+
+  foreach( it, cities )
+  {
+    (*it)->setAiMode( !value ? world::City::indifferent : world::City::inactive );
+  }
+
   update();
 }
 
@@ -282,6 +344,12 @@ void CityOptions::Impl::update()
     lbFireRisk->setText( utils::format( 0xff, "%s %d %%", "Fire risk", value ) );
   }
 
+  if( lbCollapseRisk )
+  {
+    int value = city->getOption( PlayerCity::collapseKoeff );
+    lbCollapseRisk->setText( utils::format( 0xff, "%s %d %%", "Collapse risk", value ) );
+  }
+
   if( btnBarbarianMayAttack )
   {
     int value = city->getOption( PlayerCity::barbarianAttack );
@@ -319,6 +387,30 @@ void CityOptions::Impl::update()
     btnLegionMayAttack->setText( value
                                     ? _("##city_chastener_on##")
                                     : _("##city_chastener_off##")  );
+  }
+
+  if( btnAnroidBarEnabled )
+  {
+    bool value = SETTINGS_VALUE( showTabletMenu );
+    btnAnroidBarEnabled->setText( value
+                                    ? _("##city_androidbar_on##")
+                                    : _("##city_androidbar_off##")  );
+  }
+
+  if( btnToggleBatching )
+  {
+    bool value = gfx::Engine::instance().getFlag( gfx::Engine::batching ) > 0;
+    btnToggleBatching->setText( value
+                                    ? _("##city_batching_on##")
+                                    : _("##city_batching_off##")  );
+  }
+
+  if( btnToggleCcUseAI )
+  {
+    bool value = SETTINGS_VALUE( ccUseAI );
+    btnToggleCcUseAI->setText( value
+                                    ? _("##city_ccuseai_on##")
+                                    : _("##city_ccuseai_off##")  );
   }
 }
 

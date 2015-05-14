@@ -102,9 +102,8 @@ void MovableObject::save(VariantMap& stream) const
   __D_IMPL_CONST(d,MovableObject)
   VARIANT_SAVE_ANY_D( stream, d, start )
   VARIANT_SAVE_ANY_D( stream, d, stop )
-
-  stream[ "points" ] =  d->way.toVList();
   VARIANT_SAVE_ANY_D( stream, d, way.step )
+  stream[ "points" ] =  d->way.toVList();
 }
 
 void MovableObject::load(const VariantMap& stream)
@@ -115,9 +114,8 @@ void MovableObject::load(const VariantMap& stream)
   d->options = stream;
   VARIANT_LOAD_ANY_D( d, start, stream )
   VARIANT_LOAD_ANY_D( d, stop, stream )
-
   VARIANT_LOAD_ANY_D( d, way.step, stream )
-  d->way.fromVList(  stream.get( "points" ).toList() );
+  d->way.fromVList( stream.get( "points" ).toList() );
 }
 
 bool MovableObject::_findWay( Point p1, Point p2 )
@@ -161,7 +159,7 @@ void Messenger::now( EmpirePtr empire,
   ObjectPtr obj( m );
   obj->drop();
 
-  CityPtr pcity = empire->findCity(cityname );
+  CityPtr pcity = empire->findCity( cityname );
   if( pcity.isValid() )
     pcity->addObject( obj );
 }
@@ -173,6 +171,12 @@ Messenger::Messenger(EmpirePtr empire)
  : MovableObject( empire ), __INIT_IMPL(Messenger)
 {
 
+}
+
+void Route::reset()
+{
+  clear();
+  step = 0;
 }
 
 }

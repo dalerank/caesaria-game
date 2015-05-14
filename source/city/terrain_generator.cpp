@@ -27,6 +27,7 @@
 #include "core/direction.hpp"
 #include "objects/objects_factory.hpp"
 #include "pathway/astarpathfinding.hpp"
+#include "gfx/tilearea.hpp"
 #include <fstream>
 #include <cfloat>
 
@@ -391,7 +392,7 @@ static void __finalizeMap(Game& game, int pass )
         {
         case 0:
         {
-          Picture pic = Picture::load( ResourceGroup::land1a, 62 + math::random( 57 ) );
+          Picture pic( ResourceGroup::land1a, 62 + math::random( 57 ) );
           wtile.setPicture( pic );
           //wtile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
           wtile.setOriginalImgId( direction );
@@ -412,7 +413,7 @@ static void __finalizeMap(Game& game, int pass )
 
         wtile.setFlag( Tile::tlWater, true );
         wtile.setFlag( Tile::tlCoast, true );
-        Picture pic = Picture::load( ResourceGroup::land1a, start + rnd );
+        Picture pic( ResourceGroup::land1a, start + rnd );
         wtile.setPicture( pic );
         wtile.setOriginalImgId( imgid::fromResource( pic.name() ) );
       }
@@ -533,7 +534,7 @@ static void __createRivers(Game& game )
   Pathfinder& pathfinder = Pathfinder::instance();
   pathfinder.setCondition( makeDelegate( &tgHelper, &TerrainGeneratorHelper::canBuildRiver ) );
 
-  TilesArray terrainTiles = oTilemap.getArea( TilePos(0,0), Size( oTilemap.size() ) );
+  TilesArray terrainTiles = oTilemap.allTiles();
   for( TilesArray::iterator it=terrainTiles.begin(); it != terrainTiles.end(); )
   {
     Tile* tile = *it;
@@ -586,7 +587,7 @@ static void __createRivers(Game& game )
 
         city::AreaInfo info = { oCity, (*it)->pos(), TilesArray() };
         overlay->build( info );
-        oCity->overlays().push_back( overlay );
+        oCity->addOverlay( overlay );
 
         if( isWater )
           break;
@@ -628,7 +629,7 @@ static void __createRoad(Game& game )
   {
     TilesArray eterrain = borderTiles.terrains();
     TilesArray sterrain;
-    for( int k=eterrain.size()/2; k < eterrain.size(); k++ )
+    for( unsigned int k=eterrain.size()/2; k < eterrain.size(); k++ )
       sterrain.push_back( eterrain[ k ] );
 
     eterrain.resize( eterrain.size() / 2 );
@@ -660,13 +661,13 @@ static void __createRoad(Game& game )
     {
       OverlayPtr overlay = TileOverlayFactory::instance().create( object::road );
 
-      Picture pic = Picture::load( ResourceGroup::land1a, PicID::grassPic + math::random( PicID::grassPicsNumber ) );
+      Picture pic( ResourceGroup::land1a, PicID::grassPic + math::random( PicID::grassPicsNumber ) );
       (*it)->setPicture( pic );
       (*it)->setOriginalImgId( imgid::fromResource( pic.name() ) );
 
       city::AreaInfo info = { oCity, (*it)->pos(), TilesArray() };
       overlay->build( info );
-      oCity->overlays().push_back( overlay );
+      oCity->addOverlay( overlay );
     }
 
     borderInfo.roadEntry = way.startPos();
@@ -757,7 +758,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
       {
         color = NColor( 255, 255, 0, 255);
         tile.setFlag( Tile::tlDeepWater, true );
-        Picture pic = Picture::load( ResourceGroup::land1a, 120 );
+        Picture pic( ResourceGroup::land1a, 120 );
         tile.setPicture( pic );
         tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
       }
@@ -767,7 +768,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
       {
         color = NColor( 255, 7, 93, 192);
         tile.setFlag( Tile::tlDeepWater, true );
-        Picture pic = Picture::load( ResourceGroup::land1a, 120 );
+        Picture pic( ResourceGroup::land1a, 120 );
         tile.setPicture( pic );
         tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
       }
@@ -777,7 +778,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
       {
         color = NColor( 255, 74, 157, 251);
         tile.setFlag( Tile::tlWater, true );
-        Picture pic = Picture::load( ResourceGroup::land1a, 120 );
+        Picture pic( ResourceGroup::land1a, 120 );
         tile.setPicture( pic );
         tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
       }
@@ -791,14 +792,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
       case MidpointDisplacement::grass:
       {
         color = NColor( 255, 7, 192, 53);
-        Picture pic;
-        /*int rnd3 = math::random( 1 );
-        switch( rnd3 )
-        {
-        case 0: pic = ;
-        case 1:
-        }*/
-        pic = Picture::load( ResourceGroup::land1a, 62 + math::random( 57 ) );
+        Picture pic( ResourceGroup::land1a, 62 + math::random( 57 ) );
         tile.setPicture( pic );
         tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
       }
@@ -827,7 +821,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
         Picture land = MetaDataHolder::randomPicture( object::terrain, Size(1) );
         tile.setPicture( land );
 
-        Picture tree = Picture::load( ResourceGroup::land1a, start + math::random( rnd ) );
+        Picture tree( ResourceGroup::land1a, start + math::random( rnd ) );
         tile.setOriginalImgId( imgid::fromResource( tree.name() ) );
 
         OverlayPtr overlay = TileOverlayFactory::instance().create( object::tree );
@@ -835,14 +829,14 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
         {
           city::AreaInfo info = { oCity, tile.pos(), TilesArray() };
           overlay->build( info );
-          oCity->overlays().push_back( overlay );
+          oCity->addOverlay( overlay );
         }
       }
       break;
 
       case MidpointDisplacement::shallowMountain: {
         color = NColor( 255, 147, 188, 157 );
-        Picture pic = Picture::load( ResourceGroup::land1a, 290 + math::random( 7 ) );
+        Picture pic( ResourceGroup::land1a, 290 + math::random( 7 ) );
         tile.setFlag( Tile::tlRock, true );
         tile.setPicture( pic );
         tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
@@ -851,7 +845,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
 
       case MidpointDisplacement::highMountain: {
         color = NColor( 255, 129, 141, 132);
-        Picture pic = Picture::load( ResourceGroup::land1a, 62 + math::random( 57 ) );
+        Picture pic( ResourceGroup::land1a, 62 + math::random( 57 ) );
         //Picture::load( ResourceGroup::land1a, 230 + math::random( 59 ) );
         //tile.setFlag( Tile::tlRock, true );
         tile.setPicture( pic );

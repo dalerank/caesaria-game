@@ -245,7 +245,7 @@ std::string Sg2ArchiveReader::_findFilenameCaseInsensitive( const std::string& d
   Directory directory( dir );
   filename = utils::localeLower( filename );
 
-  Entries::Items files = directory.getEntries().items();
+  Entries::Items files = directory.entries().items();
   foreach( i, files )
   {
     if( i->name.canonical() == filename )
@@ -517,9 +517,8 @@ NFile Sg2ArchiveReader::createAndOpenFile(const Path& filename)
   {
     SgImageRecord& sir = it->second.sr;
 
-    PictureRef result;
-    result.init( Size( sir.width, sir.height ) );
-    result->fill( 0, Rect() ); // Transparent black
+    Picture result( Size( sir.width, sir.height ), 0, true );
+    result.fill( 0, Rect() ); // Transparent black
 
     switch(sir.type)
     {
@@ -528,23 +527,17 @@ NFile Sg2ArchiveReader::createAndOpenFile(const Path& filename)
       case 10:
       case 12:
       case 13:
-        //Logger::warning( "Find plain image " + filename.toString() );
-        _loadPlainImage( *result, it->second );
-        //PictureConverter::save( *result, "base/" + filename.removeExtension() + ".png" );
+        _loadPlainImage( result, it->second );
         break;
 
       case 30:
-        //Logger::warning( "Find isometric image " + filename.toString() );
-        _loadIsometricImage( *result, it->second );
-        //PictureConverter::save( *result, "base/" + filename.removeExtension() + ".png" );
+        _loadIsometricImage( result, it->second );
       break;
 
       case 256:
       case 257:
       case 276:
-        //Logger::warning( "Find sprite image " + filename.toString() );
-        _loadSpriteImage( *result, it->second );
-        //PictureConverter::save( *result, "base/" + filename.removeExtension() + ".png" );
+        _loadSpriteImage( result, it->second );
       break;
 
       default:
@@ -552,7 +545,7 @@ NFile Sg2ArchiveReader::createAndOpenFile(const Path& filename)
       break;
     }
 
-    ByteArray data = PictureConverter::save( *result, "PNG" );
+    ByteArray data = PictureConverter::save( result, "PNG" );
     NFile memfile = MemoryFile::create( data, filename );
     return memfile;
 

@@ -28,7 +28,6 @@
 #include "core/logger.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::dustCloud, DustCloud)
@@ -115,8 +114,8 @@ void DustCloud::send2City(const TilePos &start, const TilePos& stop )
   attach();
 
   Tilemap& tmap = _city()->tilemap();
-  _pathwayRef().init( tmap.at( _d->from ) );
-  _pathwayRef().setNextTile( tmap.at( _d->from.nextStep( _d->dst ) ));
+  _pathway().init( tmap.at( _d->from ) );
+  _pathway().setNextTile( tmap.at( _d->from.nextStep( _d->dst ) ));
 }
 
 void DustCloud::timeStep(const unsigned long time)

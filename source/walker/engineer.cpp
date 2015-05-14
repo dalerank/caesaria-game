@@ -20,8 +20,6 @@
 #include "objects/construction.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
-
 REGISTER_CLASS_IN_WALKERFACTORY(walker::engineer, Engineer)
 
 class Engineer::Impl
@@ -66,7 +64,7 @@ std::string Engineer::thoughts(Thought th) const
 void Engineer::_centerTile()
 {
   TilePos offset( reachDistance(), reachDistance() );
-  ConstructionList buildings = city::statistic::findo<Construction>( _city(), object::any, pos() - offset, pos() + offset );
+  ConstructionList buildings = city::statistic::getObjects<Construction>( _city(), object::any, pos() - offset, pos() + offset );
   foreach( b, buildings )
   {
     if( !_d->_reachedBuildings.count( *b ) )

@@ -25,7 +25,6 @@
 #include "core/event.hpp"
 #include "gfx/tilemap_camera.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace citylayer

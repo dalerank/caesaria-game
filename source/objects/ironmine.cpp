@@ -27,18 +27,17 @@
 #include "objects_factory.hpp"
 
 using namespace gfx;
-using namespace constants;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::iron_mine, IronMine)
 
 IronMine::IronMine()
   : Factory(good::none, good::iron, object::iron_mine, Size(2) )
 {
-  setPicture( ResourceGroup::commerce, 54 );
+  _picture().load( ResourceGroup::commerce, 54 );
 
   _animationRef().load( ResourceGroup::commerce, 55, 6 );
   _animationRef().setDelay( 5 );
-  _fgPicturesRef().resize( 2 );
+  _fgPictures().resize( 2 );
 
   _setUnworkingInterval( 12 );
 }

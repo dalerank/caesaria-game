@@ -38,7 +38,6 @@
 #include "dictionary.hpp"
 #include "widget_helper.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace city;
 
@@ -56,15 +55,8 @@ namespace {
 class Finance::Impl
 {
 public:
-  PlayerCityPtr city;
-
   gui::Label* lbTaxRateNow;
   TexturedButton* btnHelp;
-
-  void updateTaxRateNowLabel();
-  void decreaseTax();
-  void increaseTax();
-  int calculateTaxValue();
 };
 
 enum { rowDonation=2, rowDebt=3, rowImports=4, rowWages=5,
@@ -73,18 +65,15 @@ enum { rowDonation=2, rowDebt=3, rowImports=4, rowWages=5,
        rowProfit=12, rowBalance=13 };
 
 Finance::Finance(PlayerCityPtr city, Widget* parent, int id )
-: Window( parent, Rect( 0, 0, 640, 420 ), "", id ), _d( new Impl )
+: Base( parent, city, id ), _d( new Impl )
 {
-  _d->city = city;
   setupUI( ":/gui/financeadv.gui" );
-
-  setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
   INIT_WIDGET_FROM_UI( Label*, lbCityHave )
   if( lbCityHave ) lbCityHave->setText( utils::format( 0xff, "%s %d %s", _("##city_have##"), city->treasury().money(), _("##denaries##") ) );
 
   GET_DWIDGET_FROM_UI( _d, lbTaxRateNow )
-  _d->updateTaxRateNowLabel();
+  _updateTaxRateNowLabel();
 
   unsigned int regTaxPayers = statistic::getTaxPayersPercent( city );
   std::string strRegPaeyrs = utils::format( 0xff, "%d%% %s", regTaxPayers, _("##population_registered_as_taxpayers##") );
@@ -92,34 +81,35 @@ Finance::Finance(PlayerCityPtr city, Widget* parent, int id )
   if( lbRegPayers ) lbRegPayers->setText( strRegPaeyrs );
 
   Point sp = startPoint;
-  _drawReportRow( sp, _("##taxes##"), econ::Issue::taxIncome );
-  _drawReportRow( sp + offset, _("##trade##"), econ::Issue::exportGoods );
-  _drawReportRow( sp + offset * rowDonation, _("##donations##"), econ::Issue::donation );
-  _drawReportRow( sp + offset * rowDebt, _("##debet##"), econ::Issue::debet );
+  _drawReportRow( sp,                             _("##taxes##"),     econ::Issue::taxIncome );
+  _drawReportRow( sp + offset,                    _("##trade##"),     econ::Issue::exportGoods );
+  _drawReportRow( sp + offset * rowDonation,      _("##donations##"), econ::Issue::donation );
+  _drawReportRow( sp + offset * rowDebt,          _("##debet##"),     econ::Issue::debet );
   
   sp += Point( 0, 6 );
-  _drawReportRow( sp + offset * rowImports, _("##import_fn##"), econ::Issue::importGoods );
-  _drawReportRow( sp + offset * rowWages, _("##wages##"), econ::Issue::workersWages );
+  _drawReportRow( sp + offset * rowImports,       _("##import_fn##"), econ::Issue::importGoods );
+  _drawReportRow( sp + offset * rowWages,         _("##wages##"),     econ::Issue::workersWages );
   _drawReportRow( sp + offset * rowConstructions, _("##buildings##"), econ::Issue::buildConstruction );
-  _drawReportRow( sp + offset * rowCredit, _("##percents##"), econ::Issue::creditPercents );
-  _drawReportRow( sp + offset * rowSalary, _("##pn_salary##"), econ::Issue::playerSalary );
-  _drawReportRow( sp + offset * rowSundries, _("##other##"), econ::Issue::sundries );
-  _drawReportRow( sp + offset * rowEmpireTax, _("##empire_tax##"), econ::Issue::empireTax );
-  _drawReportRow( sp + offset * rowExpensive, _("##credit##"), econ::Issue::credit );
+  _drawReportRow( sp + offset * rowCredit,        _("##percents##"),  econ::Issue::creditPercents );
+  _drawReportRow( sp + offset * rowSalary,        _("##pn_salary##"), econ::Issue::playerSalary );
+  _drawReportRow( sp + offset * rowSundries,      _("##other##"),     econ::Issue::sundries );
+  _drawReportRow( sp + offset * rowEmpireTax,     _("##empire_tax##"),econ::Issue::empireTax );
+  _drawReportRow( sp + offset * rowExpensive,     _("##credit##"),    econ::Issue::credit );
 
   sp += Point( 0, 6 );
-  _drawReportRow( sp + offset * rowProfit, _("##profit##"), econ::Issue::cityProfit );
+  _drawReportRow( sp + offset * rowProfit,        _("##profit##"),    econ::Issue::cityProfit );
   
   sp += Point( 0, 6 );
-  _drawReportRow( sp + offset * rowBalance, _("##balance##"), econ::Issue::balance );
+  _drawReportRow( sp + offset * rowBalance,       _("##balance##"),   econ::Issue::balance );
 
   _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 
   TexturedButton* btnDecreaseTax = new TexturedButton( this, Point( 185, 73 ), Size( 24 ), -1, 601 );
   TexturedButton* btnIncreaseTax = new TexturedButton( this, Point( 185+24, 73 ), Size( 24 ), -1, 605 );
-  CONNECT( btnDecreaseTax, onClicked(), _d.data(), Impl::decreaseTax );
-  CONNECT( btnIncreaseTax, onClicked(), _d.data(), Impl::increaseTax );
-  CONNECT( _d->btnHelp, onClicked(), this, Finance::_showHelp );
+
+  CONNECT( btnDecreaseTax, onClicked(), this, Finance::_decreaseTax );
+  CONNECT( btnIncreaseTax, onClicked(), this, Finance::_increaseTax );
+  CONNECT( _d->btnHelp,    onClicked(), this, Finance::_showHelp );
 }
 
 void Finance::draw(gfx::Engine& painter )
@@ -151,8 +141,8 @@ void Finance::_drawReportRow(const Point& pos, const std::string& title, int typ
 {
   Font font = Font::create( FONT_1 );
 
-  int lyvalue = _d->city->treasury().getIssueValue( (econ::Issue::Type)type, econ::Treasury::lastYear );
-  int tyvalue = _d->city->treasury().getIssueValue( (econ::Issue::Type)type, econ::Treasury::thisYear );
+  int lyvalue = _city->treasury().getIssueValue( (econ::Issue::Type)type, econ::Treasury::lastYear );
+  int tyvalue = _city->treasury().getIssueValue( (econ::Issue::Type)type, econ::Treasury::thisYear );
 
   Size size( 100, 20 );
   Label* lb = new Label( this, Rect( pos, size), title );
@@ -165,28 +155,28 @@ void Finance::_drawReportRow(const Point& pos, const std::string& title, int typ
   lb->setFont( font );
 }
 
-void Finance::Impl::updateTaxRateNowLabel()
+void Finance::_updateTaxRateNowLabel()
 {
-  if( !lbTaxRateNow )
+  if( !_d->lbTaxRateNow )
     return;
 
-  int taxValue = statistic::getTaxValue( city );
+  int taxValue = statistic::getTaxValue( _city );
   std::string strCurretnTax = utils::format( 0xff, "%d%% %s %d %s",
-                                                    city->treasury().taxRate(), _("##may_collect_about##"),
+                                                    _city->treasury().taxRate(), _("##may_collect_about##"),
                                                     taxValue, _("##denaries##") );
-  lbTaxRateNow->setText( strCurretnTax );
+  _d->lbTaxRateNow->setText( strCurretnTax );
 }
 
-void Finance::Impl::decreaseTax()
+void Finance::_decreaseTax()
 {
-  city->treasury().setTaxRate( city->treasury().taxRate() - 1 );
-  updateTaxRateNowLabel();
+  _city->treasury().setTaxRate( _city->treasury().taxRate() - 1 );
+  _updateTaxRateNowLabel();
 }
 
-void Finance::Impl::increaseTax()
+void Finance::_increaseTax()
 {
-  city->treasury().setTaxRate( city->treasury().taxRate() + 1 );
-  updateTaxRateNowLabel();
+  _city->treasury().setTaxRate( _city->treasury().taxRate() + 1 );
+  _updateTaxRateNowLabel();
 }
 
 }//end namespace advisorwnd

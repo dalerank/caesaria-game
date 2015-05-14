@@ -27,6 +27,7 @@
 #include "game/video_config.hpp"
 #include "smkviewer.hpp"
 #include "widget_helper.hpp"
+#include "image.hpp"
 
 namespace gui
 {
@@ -56,8 +57,6 @@ FilmWidget::FilmWidget(Widget* parent, const std::string& movieName )
   setupUI( ":/gui/filmwidget.gui" );
   setCenter( parent->center() );
 
-  _d->smkViewer = new SmkViewer( this, Rect( 10, 10, width() - 10, 10 + 292 ) );
-
   GET_DWIDGET_FROM_UI( _d, lbTitle )
   GET_DWIDGET_FROM_UI( _d, btnExit )
   GET_DWIDGET_FROM_UI( _d, lbTime )
@@ -65,8 +64,19 @@ FilmWidget::FilmWidget(Widget* parent, const std::string& movieName )
   GET_DWIDGET_FROM_UI( _d, lbMessage )
 
   _d->videoFile = movie::Config::instance().realPath( movieName ); //"/smk/Emmigrate.smk"
+  if( _d->videoFile.exist() )
+  {
+    _d->smkViewer = new SmkViewer( this, Rect( 12, 12, width() - 12, 12 + 292 ) );
+    _d->smkViewer->setFilename( _d->videoFile );
+  }
+  else
+  {
+    gfx::Picture pic( movieName, 1 );
+    if( !pic.isValid() )
+      pic.load( "freska", 1 );
 
-  _d->smkViewer->setFilename( _d->videoFile );
+    new Image( this, Rect( 12, 12, width() - 12, 12 + 292 ), pic, Image::fit );
+  }
 
   CONNECT( _d->btnExit, onClicked(), &_d->onCloseSignal, Signal0<>::_emit );
   CONNECT( _d->btnExit, onClicked(), this, FilmWidget::deleteLater );

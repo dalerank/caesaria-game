@@ -33,7 +33,6 @@
 #include "city/states.hpp"
 #include "config.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace religion
@@ -53,7 +52,7 @@ void RomeDivinity::load(const VariantMap& vm)
 
   _name = vm.get( literals::name ).toString();
   _service = ServiceHelper::getType( vm.get( "service" ).toString() );
-  _pic = Picture::load( vm.get( "image" ).toString() );
+  _pic.load( vm.get( "image" ).toString() );
   _relation = (float)vm.get( "relation", 100.f );
   _lastFestival = vm.get( "lastFestivalDate", game::Date::current() ).toDateTime() ;
 

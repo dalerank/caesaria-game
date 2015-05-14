@@ -41,7 +41,7 @@ public:
   CityPtr partner( const std::string& name ) const;
   std::string getName() const;
 
-  void update( unsigned int time );
+  void timeStep( unsigned int time );
   PointsArray points( bool reverse=false ) const;
   bool containPoint(const Point &pos, int devianceDistance=10 );
   void setPoints(const PointsArray& points , bool seaRoute);
@@ -55,6 +55,8 @@ public:
 
   VariantMap save() const;
   void load( const VariantMap& stream );
+
+  static unsigned int getId( const std::string& begin, const std::string& end );
 
 signals public:
   Signal1<MerchantPtr>& onMerchantArrived();

@@ -106,7 +106,7 @@ void Dispatcher::load(const VariantMap& stream)
   }
 }
 
-void Dispatcher::load(vfs::Path filename, const std::string& section)
+void Dispatcher::load( const vfs::Path& filename, const std::string& section)
 {
   VariantMap vm = config::load( filename );
 

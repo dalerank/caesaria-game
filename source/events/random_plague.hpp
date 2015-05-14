@@ -19,7 +19,6 @@
 #define _CAESARIA_RANDOMPLAGUE_EVENT_H_INCLUDE_
 
 #include "ranged.hpp"
-#include "predefinitions.hpp"
 #include "core/scopedptr.hpp"
 
 namespace events

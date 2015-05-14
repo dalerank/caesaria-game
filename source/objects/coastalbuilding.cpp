@@ -66,9 +66,10 @@ bool CoastalFactory::build( const city::AreaInfo& info )
 {
   _setDirection( _d->getDirection( info.city, info.pos ) );
 
-  TilesArray area = info.city->tilemap().getArea( info.pos, size() );
+  TilesArea area( info.city->tilemap(), info.pos, size() );
 
-  foreach( tile, area ) { _d->saveTileInfo.push_back( tile::encode( *(*tile) ) ); }
+  foreach( tile, area )
+    _d->saveTileInfo.push_back( tile::encode( *(*tile) ) );
 
   return Factory::build( info );
 }

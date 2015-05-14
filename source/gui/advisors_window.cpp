@@ -54,8 +54,8 @@
 #include "advisor_population_window.hpp"
 #include "widget_helper.hpp"
 #include "world/empire.hpp"
+#include "city/statistic.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace events;
 
@@ -83,7 +83,7 @@ PushButton* Parlor::addButton( Advisor adv, const int picId, std::string tooltip
 {
   Point tabButtonPos( (width() - 636) / 2 + 10, height() / 2 + 192 + 10);
 
-  PushButton* btn = new TexturedButton( this, tabButtonPos + Point( 48, 0 ) * adv, Size( 40 ),
+  PushButton* btn = new TexturedButton( this, tabButtonPos + Point( 48, 0 ) * (adv-1), Size( 40 ),
                                         adv, picId, picId, picId + 13 );
   btn->setIsPushButton( true );
   btn->setTooltipText( tooltip );
@@ -148,8 +148,7 @@ void Parlor::showAdvisor(const Advisor type )
   if( type == advisor::employers )  { _d->advisorPanel = new advisorwnd::Employer( _d->city, this, advisor::employers );  }
   else if( type == advisor::military )
   {
-    FortList forts;
-    forts << _d->city->overlays();
+    FortList forts = city::statistic::getObjects<Fort>( _d->city );
     _d->advisorPanel = new advisorwnd::Legion( this, advisor::military, _d->city, forts );
   }
   else if( type == advisor::population ) { _d->advisorPanel = new advisorwnd::Population( _d->city, this, advisor::population ); }

@@ -21,8 +21,6 @@
 #include "core/variant_map.hpp"
 #include "game/game.hpp"
 
-using namespace constants;
-
 namespace events
 {
 
@@ -45,7 +43,7 @@ void _removeGoodFrom( PlayerCityPtr city, object::Type btype, good::Product what
 #ifdef CAESARIA_PLATFORM_HAIKU
   bList << city->overlays();
 #else
-  bList = city::statistic::findo<T>( city, btype );
+  bList = city::statistic::getObjects<T>( city, btype );
 #endif
   foreach( it, bList )
   {

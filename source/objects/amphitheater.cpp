@@ -31,7 +31,6 @@
 #include "walker/helper.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::amphitheater, Amphitheater)
@@ -45,7 +44,7 @@ public:
 Amphitheater::Amphitheater()
   : EntertainmentBuilding(Service::amphitheater, object::amphitheater, Size(3)), _d( new Impl )
 {
-  _fgPicturesRef().resize(2);
+  _fgPictures().resize(2);
 
   _addNecessaryWalker( walker::actor );
   _addNecessaryWalker( walker::gladiator );
@@ -78,13 +77,13 @@ bool Amphitheater::build( const city::AreaInfo& info)
 {
   EntertainmentBuilding::build( info );
 
-  ActorColonyList actors = city::statistic::findo<ActorColony>( info.city, object::actorColony );
+  ActorColonyList actors = city::statistic::getObjects<ActorColony>( info.city, object::actorColony );
   if( actors.empty() )
   {
     _setError( "##need_actor_colony##" );
   }
 
-  GladiatorSchoolList gladiators = city::statistic::findo<GladiatorSchool>( info.city, object::gladiatorSchool );
+  GladiatorSchoolList gladiators = city::statistic::getObjects<GladiatorSchool>( info.city, object::gladiatorSchool );
   if( gladiators.empty() )
   {
     _setError( "##colloseum_haveno_gladiatorpit##" );
@@ -102,7 +101,7 @@ void Amphitheater::deliverService()
 
   if( _animationRef().isRunning())
   {
-    _fgPicturesRef().front() = Picture::load( ResourceGroup::entertaiment, 12 );
+    _fgPictures().front().load( ResourceGroup::entertainment, 12 );
     int currentWalkerNumber = walkers().size();
     if( saveWalkesNumber != currentWalkerNumber )
     {
@@ -112,8 +111,8 @@ void Amphitheater::deliverService()
   }
   else
   {
-    _fgPicturesRef().front() = Picture::getInvalid();
-    _fgPicturesRef().back() = Picture::getInvalid();
+    _fgPictures().front() = Picture::getInvalid();
+    _fgPictures().back() = Picture::getInvalid();
   }
 }
 

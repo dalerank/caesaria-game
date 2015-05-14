@@ -26,10 +26,15 @@
 namespace gui
 {
 
-class SaveDialog : public Window
+class ListBoxItem;
+
+namespace dialog
+{
+
+class SaveGame : public Window
 {
 public:
-  SaveDialog(Widget* parent, vfs::Directory dir, std::string fileExt, int id );
+  SaveGame( Ui* ui, vfs::Directory dir, std::string fileExt, int id );
 
   virtual void draw( gfx::Engine& painter );
 
@@ -37,9 +42,16 @@ signals public:
   Signal1<std::string>& onFileSelected();
 
 private:
+  void _resolveListboxChange(const ListBoxItem &item);
+  void _resolveOkClick();
+  void _resolveDblListboxChange(const ListBoxItem &item);
+  void _save();
+
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace dialog
 
 }//end namespace gui
 #endif //__CAESARIA_SAVE_DIALOG_H_INCLUDED__

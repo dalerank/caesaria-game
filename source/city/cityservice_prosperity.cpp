@@ -36,7 +36,6 @@
 #include "city/states.hpp"
 #include "config.hpp"
 
-using namespace  constants;
 using namespace config;
 
 namespace city
@@ -101,7 +100,7 @@ void ProsperityRating::timeStep(const unsigned int time )
       return;
     }
 
-    HouseList houses = statistic::findh( _city() );
+    HouseList houses = statistic::getHouses( _city() );
 
     int prosperityCap = 0;
     int patricianCount = 0;
@@ -136,7 +135,7 @@ void ProsperityRating::timeStep(const unsigned int time )
     _d->percentPlebs = math::percentage( plebsCount, _city()->states().population );
     _d->prosperityExtend += (_d->percentPlebs < prosperity::normalPlebsInCityPercent ? prosperity::award : 0);
 
-    bool haveHippodrome = !statistic::findo<Hippodrome>( _city(), object::hippodrome ).empty();
+    bool haveHippodrome = !statistic::getObjects<Hippodrome>( _city(), object::hippodrome ).empty();
     _d->prosperityExtend += (haveHippodrome ? prosperity::award : 0);
 
     _d->worklessPercent = statistic::getWorklessPercent( _city() );
@@ -161,7 +160,7 @@ void ProsperityRating::timeStep(const unsigned int time )
   }
 }
 
-int ProsperityRating::value() const {  return _d->prosperity + _d->prosperityExtend; }
+int ProsperityRating::value() const {  return math::clamp<int>( _d->prosperity + _d->prosperityExtend, 0, 100 ); }
 
 int ProsperityRating::getMark(ProsperityRating::Mark type) const
 {

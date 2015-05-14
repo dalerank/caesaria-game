@@ -22,19 +22,19 @@
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
 #include "core/variant_map.hpp"
+#include "gfx/tilearea.hpp"
 #include "core/utils.hpp"
 #include "events/warningmessage.hpp"
 #include "objects_factory.hpp"
 
 using namespace gfx;
-using namespace constants;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::roadBlock, RoadBlock)
 
 RoadBlock::RoadBlock()
 {
   setType(object::roadBlock);
-  setPicture( ResourceGroup::roadBlock, 1 );
+  _picture().load( ResourceGroup::roadBlock, 1 );
 }
 
 // Blocks can be built ONLY on top of existing roads
@@ -51,7 +51,7 @@ bool RoadBlock::canBuild(const city::AreaInfo& areaInfo) const
 
   bool is_constructible = true;
 
-  TilesArray area = tilemap.getArea( areaInfo.pos, size() ); // something very complex ???
+  TilesArea area( tilemap, areaInfo.pos, size() ); // something very complex ???
   foreach( tile, area )
   {
     is_constructible &= is_kind_of<Road>( (*tile)->overlay() );
@@ -109,12 +109,12 @@ void RoadBlock::load(const VariantMap& stream)
     Construction::build( info );
   }
 
-  setPicture( Picture::load( stream.get( "picture" ).toString() ) );
+  _picture().load( stream.get( "picture" ).toString() );
 }
 
 const Picture& RoadBlock::picture() const
 {
   return tile().masterTile()
            ? Construction::picture()
-           : Picture::load( ResourceGroup::roadBlock, 1);
+           : Picture( ResourceGroup::roadBlock, 1);
 }

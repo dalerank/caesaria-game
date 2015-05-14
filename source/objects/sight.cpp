@@ -33,7 +33,6 @@
 #include "game/gamedate.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::statue_small, SmallStatue)
@@ -56,7 +55,7 @@ SmallStatue::SmallStatue() : Building( object::statue_small, Size(1) )
   setState( pr::inflammability, 0 );
   setState( pr::collapsibility, 0 );
 
-  setPicture( ResourceGroup::govt, 1 );
+  _picture().load( ResourceGroup::govt, 1 );
 }
 
 bool SmallStatue::isNeedRoad() const {  return false; }
@@ -66,7 +65,7 @@ MediumStatue::MediumStatue() : Building( object::statue_middle, Size(2) )
   setState( pr::inflammability, 0 );
   setState( pr::collapsibility, 0 );
 
-  setPicture( ResourceGroup::govt, 2);
+  _picture().load( ResourceGroup::govt, 2);
 }
 
 bool MediumStatue::isNeedRoad() const {  return false; }
@@ -76,7 +75,7 @@ BigStatue::BigStatue() : Building( object::statue_big, Size(3))
   setState( pr::inflammability, 0 );
   setState( pr::collapsibility, 0 );
 
-  setPicture( ResourceGroup::govt, 3 );
+  _picture().load( ResourceGroup::govt, 3 );
 }
 
 bool BigStatue::isNeedRoad() const {  return false;}
@@ -84,9 +83,9 @@ bool BigStatue::isNeedRoad() const {  return false;}
 // second arch pictures is land3a 45 + 46	
 TriumphalArch::TriumphalArch() : Building( object::triumphal_arch, Size(3) )
 {
-  setPicture( ResourceGroup::land3a, 43 );
+  _picture().load( ResourceGroup::land3a, 43 );
   _animationRef().load("land3a", 44, 1);
   _animationRef().setOffset( Point( 63, 97 ) );
-  _fgPicturesRef().resize(1);
-  _fgPicturesRef()[0] = _animationRef().currentFrame();
+  _fgPictures().resize(1);
+  _fgPicture(0) = _animationRef().currentFrame();
 }

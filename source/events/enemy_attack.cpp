@@ -30,7 +30,6 @@
 #include "city/states.hpp"
 #include "factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace events
@@ -121,7 +120,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
     for( int k=0; k < soldierNumber; k++ )
     {
       WalkerPtr wlk = WalkerManager::instance().create( wtype, game.city() );
-      EnemySoldierPtr enemy = ptr_cast<EnemySoldier>( wlk );
+      EnemySoldierPtr enemy = wlk.as<EnemySoldier>();
       if( enemy.isValid() )
       {
         enemy->send2City( location );

@@ -24,14 +24,13 @@
 #include "good/store.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::pottery_workshop, Pottery)
 
 Pottery::Pottery() : Factory(good::clay, good::pottery, object::pottery_workshop, Size(2))
 {
-  _fgPicturesRef().resize( 3 );
+  _fgPictures().resize( 3 );
 }
 
 bool Pottery::canBuild( const city::AreaInfo& areaInfo ) const
@@ -43,7 +42,7 @@ bool Pottery::canBuild( const city::AreaInfo& areaInfo ) const
 bool Pottery::build( const city::AreaInfo& info )
 {
   Factory::build( info );
-  bool haveClaypit = !city::statistic::findo<Building>( info.city, object::clay_pit ).empty();
+  bool haveClaypit = !city::statistic::getObjects<Building>( info.city, object::clay_pit ).empty();
 
   _setError( haveClaypit ? "" : "##need_clay_pit##" );
 
@@ -62,6 +61,6 @@ void Pottery::deliverGood()
 
 void Pottery::_storeChanged()
 {
-  _fgPicturesRef()[1] = inStockRef().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 157 );
-  _fgPicturesRef()[1].setOffset( 45, -10 );
+  _fgPicture(1) = inStockRef().empty() ? Picture() : Picture( ResourceGroup::commerce, 157 );
+  _fgPicture(1).setOffset( 45, -10 );
 }

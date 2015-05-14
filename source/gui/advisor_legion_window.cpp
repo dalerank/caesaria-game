@@ -35,10 +35,11 @@
 #include "world/playerarmy.hpp"
 #include "dialogbox.hpp"
 #include "dictionary.hpp"
+#include "city/statistic.hpp"
 #include "environment.hpp"
 
 using namespace gfx;
-using namespace constants;
+using namespace city;
 
 namespace gui
 {
@@ -61,7 +62,7 @@ public:
     : PushButton( parent, Rect( pos + legionButtonOffset * index, legionButtonSize), "", -1, false, PushButton::blackBorderUp )
   {
     _fort = fort;
-    _resizeEvent();
+    _finalizeResize();
 
     PushButton* gotoLegion    = new PushButton( this, Rect( Point( gotoLegionX, 5), btnSize ), "", -1, false, PushButton::blackBorderUp );
     gotoLegion->setIcon( ResourceGroup::panelBackground, 563 );
@@ -84,21 +85,21 @@ public:
   {
     PushButton::_updateTextPic();
 
-    PictureRef& pic = _textPictureRef();
+    Picture& pic = _textPicture();
 
     Font fontW = Font::create( FONT_1_WHITE );
     Font fontB = Font::create( FONT_1 );
 
     if( _fort.isValid() )
     {
-      fontW.draw( *pic, _( _fort->legionName() ), 70, 4 );
+      fontW.draw( pic, _( _fort->legionName() ), 70, 4 );
 
       std::string qtyStr = utils::i2str( _fort->soldiers().size() ) +  _("##soldiers##");
-      fontB.draw( *pic, qtyStr, 70, 22 );
+      fontB.draw( pic, qtyStr, 70, 22 );
 
       int moraleValue = _fort->legionMorale() / 10;
       std::string moraleStr = utils::format( 0xff, "##legion_morale_%d##", moraleValue );
-      fontB.draw( *pic, _( moraleStr ), 180, 15 );
+      fontB.draw( pic, _( moraleStr ), 180, 15 );
     }    
   }
 
@@ -210,7 +211,7 @@ void Legion::_handleServiceEmpire(FortPtr fort)
 
   if( !maySendExpedition )
   {
-    DialogBox::information( this, "", _(reasonFailed) );
+    dialog::Information( ui(), "", _(reasonFailed) );
     return;
   }
 
@@ -227,8 +228,7 @@ void Legion::_showHelp()
 
 void Legion::Impl::updateAlarms(PlayerCityPtr city)
 {
-  city::MilitaryPtr mil;
-  mil << city->findService( city::Military::defaultName() );
+  MilitaryPtr mil = statistic::getService<Military>( city );
 
   WalkerList chasteners = city->walkers( walker::romeChastenerSoldier );
   WalkerList elephants = city->walkers( walker::romeChastenerElephant );

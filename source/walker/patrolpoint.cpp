@@ -21,7 +21,6 @@
 #include "city/city.hpp"
 #include "game/gamedate.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace {
@@ -104,6 +103,6 @@ void PatrolPoint::acceptPosition()
 void PatrolPoint::updateMorale(int morale)
 {
   int mIndex = 20 - math::clamp( morale / 5, 0, 20);
-  _d->standart = Picture::load( ResourceGroup::sprites, 48 + mIndex );
+  _d->standart.load( ResourceGroup::sprites, 48 + mIndex );
   _d->standart.addOffset( extOffset.x(), extOffset.y() );
 }

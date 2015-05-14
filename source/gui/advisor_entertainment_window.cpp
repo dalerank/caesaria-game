@@ -114,12 +114,12 @@ public:
 
     EntertInfo info = findInfo( _service );
 
-    PictureRef& texture = _textPictureRef();
+    Picture& texture = _textPicture();
     Font rfont = font();
-    rfont.draw( *texture, utils::i2str( _info.buildingCount ) + _( info.building ), ofNumberInCity, 0 );
-    rfont.draw( *texture, utils::i2str( _info.buildingWork ), ofWorkInCity, 0 );
-    rfont.draw( *texture, utils::i2str( _info.buildingShow ), ofHaveShow, 0 );
-    rfont.draw( *texture, utils::i2str( _info.peoplesServed ) + _(info.people), ofHowmuchServed, 0 );
+    rfont.draw( texture, utils::i2str( _info.buildingCount ) + _( info.building ), ofNumberInCity, 0 );
+    rfont.draw( texture, utils::i2str( _info.buildingWork ), ofWorkInCity, 0 );
+    rfont.draw( texture, utils::i2str( _info.buildingShow ), ofHaveShow, 0 );
+    rfont.draw( texture, utils::i2str( _info.peoplesServed ) + _(info.people), ofHowmuchServed, 0 );
   }
 
 private:
@@ -154,7 +154,7 @@ Entertainment::Entertainment(PlayerCityPtr city, Widget* parent, int id )
 : Base( parent, city, id ), _d( new Impl )
 {
   _d->city = city;
-  FestivalPtr fest = statistic::finds<Festival>( city );
+  FestivalPtr fest = statistic::getService<Festival>( city );
 
   setupUI( ":/gui/entertainmentadv.gui" );
   _d->monthFromLastFestival = fest->lastFestival().monthsTo( game::Date::current() );
@@ -211,7 +211,7 @@ InfrastructureInfo Entertainment::Impl::getInfo( const object::Type service)
   ret.buildingCount = 0;
   ret.partlyWork = 0;
 
-  EntertainmentBuildingList servBuildings = statistic::findo<EntertainmentBuilding>( city, service );
+  EntertainmentBuildingList servBuildings = statistic::getObjects<EntertainmentBuilding>( city, service );
   foreach( b, servBuildings )
   {
     if( (*b)->numberWorkers() > 0 )
@@ -229,7 +229,7 @@ InfrastructureInfo Entertainment::Impl::getInfo( const object::Type service)
 
 void Entertainment::_assignFestival( int divinityType, int festSize)
 {
-  FestivalPtr fest = statistic::finds<Festival>( _d->city );
+  FestivalPtr fest = statistic::getService<Festival>( _d->city );
   if( fest.isValid() )
   {
     fest->assign( (religion::RomeDivinityType)divinityType, festSize );
@@ -256,7 +256,7 @@ void Entertainment::Impl::updateInfo()
   int nextLevelColloseum = 0;
   int maxHouseLevel = 0;
 
-  HouseList houses = statistic::findh( city );
+  HouseList houses = statistic::getHouses( city );
   foreach( it, houses )
   {
     HousePtr house = *it;
@@ -324,10 +324,10 @@ void Entertainment::Impl::updateInfo()
   if( amthInfo.buildingCount == 0 ) { troubles << "##blood_sports_add_spice_to_life##"; }
   if( clsInfo.partlyWork > 0 ){ troubles << "##small_colloseum_show##"; }
 
-  HippodromeList hippodromes = statistic::findo<Hippodrome>( city, object::hippodrome );
+  HippodromeList hippodromes = statistic::getObjects<Hippodrome>( city, object::hippodrome );
   foreach( h, hippodromes )
   {
-    if( (*h)->evaluateTrainee( constants::walker::charioteer ) == 100 ) { troubles << "##no_chariots##"; }
+    if( (*h)->evaluateTrainee( walker::charioteer ) == 100 ) { troubles << "##no_chariots##"; }
   }
 
   if( nextLevelMin > 0 )  { troubles << "##entertainment_need_for_upgrade##";  }
@@ -353,7 +353,7 @@ void Entertainment::Impl::updateFestivalInfo()
   if( !lbInfoAboutLastFestival )
     return;
 
-  FestivalPtr fest = statistic::finds<Festival>( city );
+  FestivalPtr fest = statistic::getService<Festival>( city );
   if( fest.isValid() )
   {    
     std::string text = utils::i2str( monthFromLastFestival ) +  _("##month_from_last_festival##");

@@ -15,9 +15,9 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "city.hpp"
 #include "requestdispatcher.hpp"
 #include "request.hpp"
+#include "city/city.hpp"
 #include "game/gamedate.hpp"
 #include "events/showrequestwindow.hpp"
 #include "core/variant_map.hpp"

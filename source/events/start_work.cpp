@@ -24,8 +24,6 @@
 #include "postpone.hpp"
 #include "factory.hpp"
 
-using namespace constants;
-
 namespace events
 {
 
@@ -75,7 +73,7 @@ bool StartWork::_mayExec(Game& game, unsigned int ) const
 
     foreach( i, _bldTypes )
     {
-      WorkingBuildingList bld = city::statistic::findo<WorkingBuilding>( game.city(), *i );
+      WorkingBuildingList bld = city::statistic::getObjects<WorkingBuilding>( game.city(), *i );
 
       ret = !bld.empty();
 

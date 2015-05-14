@@ -21,11 +21,12 @@
 namespace events
 {
 
-GameEventPtr PlaySound::create( std::string rc, int index, int volume )
+GameEventPtr PlaySound::create( std::string rc, int index, int volume, audio::SoundType type  )
 {
   PlaySound* e = new PlaySound();
   e->_sound = utils::format( 0xff, "%s_%05d", rc.c_str(), index );
   e->_volume = volume;
+  e->_type = type;
 
   GameEventPtr ret( e );
   ret->drop();
@@ -33,12 +34,12 @@ GameEventPtr PlaySound::create( std::string rc, int index, int volume )
   return ret;
 }
 
-GameEventPtr PlaySound::create(std::string filename, int volume, bool theme)
+GameEventPtr PlaySound::create(std::string filename, int volume, audio::SoundType type )
 {
   PlaySound* e = new PlaySound();
   e->_sound = filename;
   e->_volume = volume;
-  e->_theme = theme;
+  e->_type = type;
 
   GameEventPtr ret( e );
   ret->drop();
@@ -48,12 +49,12 @@ GameEventPtr PlaySound::create(std::string filename, int volume, bool theme)
 
 void PlaySound::_exec(Game&, unsigned int)
 {
-  audio::Engine::instance().play( _sound, _volume, _theme ? audio::themeSound : audio::ambientSound );
+  audio::Engine::instance().play( _sound, _volume, _type );
 }
 
 bool PlaySound::_mayExec(Game&, unsigned int) const{  return true; }
 
-PlaySound::PlaySound() : _sound( ""), _volume( 0 ), _theme( false )
+PlaySound::PlaySound() : _sound( ""), _volume( 0 ), _type( audio::ambient )
 {}
 
 }

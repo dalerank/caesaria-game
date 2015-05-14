@@ -20,7 +20,6 @@
 #include "constants.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 REGISTER_CLASS_IN_OVERLAYFACTORY( object::governorHouse, GovernorsHouse)
 REGISTER_CLASS_IN_OVERLAYFACTORY( object::governorVilla, GovernorsVilla)
 REGISTER_CLASS_IN_OVERLAYFACTORY( object::governorPalace, GovernorsPalace)
@@ -32,19 +31,19 @@ REGISTER_CLASS_IN_OVERLAYFACTORY( object::governorPalace, GovernorsPalace)
 GovernorsHouse::GovernorsHouse() : WorkingBuilding( object::governorHouse, Size(3) )
 {
   setMaximumWorkers(5);
-  setPicture( ResourceGroup::housing, 46 );
+  _picture().load( ResourceGroup::housing, 46 );
 }
 
 GovernorsVilla::GovernorsVilla() : WorkingBuilding( object::governorVilla, Size(4) )
 {
   setMaximumWorkers(10);
   setWorkers(0);    
-  setPicture( ResourceGroup::housing, 47 );
+  _picture().load( ResourceGroup::housing, 47 );
 }
 
 GovernorsPalace::GovernorsPalace() : WorkingBuilding( object::governorPalace, Size( 5 ) )
 {
   setMaximumWorkers(15);
   setWorkers(0);  
-  setPicture( ResourceGroup::housing, 48 );
+  _picture().load( ResourceGroup::housing, 48 );
 }

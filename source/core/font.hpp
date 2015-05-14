@@ -30,7 +30,6 @@
 namespace gfx
 {
  class Picture;
- class PictureRef;
 }
 
 enum FontType { FONT_0, FONT_1, FONT_1_WHITE, FONT_1_RED, 
@@ -77,7 +76,7 @@ public:
   void draw(gfx::Picture& dstpic, const std::string &text, const int dx, const int dy, bool useAlpha=true, bool updatextTx=true);
   void draw(gfx::Picture& dstpic, const std::string &text, const Point& pos, bool useAlpha=true, bool updateTx=true );
 
-  gfx::Picture* once(const std::string &text, bool mayChange=false);
+  gfx::Picture once(const std::string& text, bool mayChange=false);
 
   unsigned int getWidthFromCharacter( unsigned int c ) const;
   int getCharacterFromPos(const std::wstring& text, int pixel_x) const;

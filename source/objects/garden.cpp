@@ -79,7 +79,7 @@ void Garden::load(const VariantMap& stream)
     Construction::build( info );
   }
 
-  setPicture( Picture::load( stream.get( "picture" ).toString() ) );
+  _picture().load( stream.get( "picture" ).toString() );
 }
 
 void Garden::save(VariantMap& stream) const
@@ -118,7 +118,7 @@ void Garden::setPicture(Picture picture)
 
 void Garden::update()
 {
-  TilesArray nearTiles = _city()->tilemap().getArea( pos(), Size(2) );
+  TilesArea nearTiles( _city()->tilemap(), pos(), Size(2) );
 
   bool canGrow2squareGarden = ( nearTiles.size() == 4 ); // be carefull on map edges
   foreach( tile, nearTiles )

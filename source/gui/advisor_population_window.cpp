@@ -34,7 +34,6 @@
 #include "core/utils.hpp"
 #include "city/states.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace city;
 
@@ -232,7 +231,7 @@ void Population::Impl::showNextChart() { switch2nextChart( 1 ); }
 
 void Population::Impl::updateStates()
 {
-  InfoPtr info = statistic::finds<Info>( city );
+  InfoPtr info = statistic::getService<Info>( city );
   int currentPop = city->states().population;
 
   if( lbMigrationValue )
@@ -256,7 +255,7 @@ void Population::Impl::updateStates()
     }
     else
     {
-      MigrationPtr migration = statistic::finds<Migration>( city );
+      MigrationPtr migration = statistic::getService<Migration>( city );
 
       if( migration.isValid() )
       {
@@ -297,7 +296,7 @@ void Population::Impl::updateStates()
   {
     int maxHabitants = 0;
     int currentHabitants = 0;
-    HouseList houses = city::statistic::findh( city );
+    HouseList houses = city::statistic::getHouses( city );
     foreach( it, houses )
     {
       HousePtr house = *it;
@@ -330,17 +329,17 @@ CityChartLegend::CityChartLegend(Widget *parent, const Rect &rectangle, bool hor
 void CityChartLegend::setMaxValue(int value)
 {
   _maxValue = value;
-  _resizeEvent();
+  _finalizeResize();
 }
 
 void CityChartLegend::_updateTexture(Engine &painter)
 {
   Label::_updateTexture( painter );
 
-  if( !_textPictureRef() )
+  if( !_textPicture().isValid() )
     return;
 
-  Picture pic = *_textPictureRef();
+  Picture& pic = _textPicture();
 
   pic.fill( 0, Rect() );
   for( int k=0; k < _stepCount+1; k++ )
@@ -415,7 +414,7 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
 
   case dm_society:
     {
-      HouseList houses = city::statistic::findh( city );
+      HouseList houses = city::statistic::getHouses( city );
 
       _values.clear();
       _maxValue = 5;
@@ -464,16 +463,16 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
     else { _picIndex = verryThickLineIndex; }
   }
 
-  _resizeEvent();
+  _finalizeResize();
 }
 
 void CityChart::draw(Engine &painter)
 {  
-  if( !_textPictureRef() || _maxValue == 0 )
+  if( !_textPicture().isValid() || _maxValue == 0 )
     return;
 
-  Picture& pic = *_textPictureRef();
-  Picture& rpic = Picture::load( ResourceGroup::panelBackground, _picIndex );
+  Picture& pic = _textPicture();
+  Picture rpic( ResourceGroup::panelBackground, _picIndex );
 
   pic.fill( 0, Rect() );
   int index=0;

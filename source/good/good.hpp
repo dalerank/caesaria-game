@@ -20,41 +20,58 @@
 #define _CAESARIA_GOOD_H_INCLUDE_
 
 #include "core/namedtype.hpp"
-#include <list>
+#include "core/foreach.hpp"
+#include <set>
 #include <map>
 
 namespace good
 {
 
-#define REGISTER_PRODUCT(name,index) static const Product name = Product(index);
+BEGIN_NAMEDTYPE(Product,none)
+APPEND_NAMEDTYPE_ID(wheat,      1 )
+APPEND_NAMEDTYPE_ID(fish,       2 )
+APPEND_NAMEDTYPE_ID(meat,       3 )
+APPEND_NAMEDTYPE_ID(fruit,      4 )
+APPEND_NAMEDTYPE_ID(vegetable,  5 )
+APPEND_NAMEDTYPE_ID(olive,      6 )
+APPEND_NAMEDTYPE_ID(oil,        7 )
+APPEND_NAMEDTYPE_ID(grape,      8 )
+APPEND_NAMEDTYPE_ID(wine,       9 )
+APPEND_NAMEDTYPE_ID(timber,     10)
+APPEND_NAMEDTYPE_ID(furniture,  11)
+APPEND_NAMEDTYPE_ID(clay,       12)
+APPEND_NAMEDTYPE_ID(pottery,    13)
+APPEND_NAMEDTYPE_ID(iron,       14)
+APPEND_NAMEDTYPE_ID(weapon,     15)
+APPEND_NAMEDTYPE_ID(marble,     16)
+APPEND_NAMEDTYPE_ID(denaries,   17)
+APPEND_NAMEDTYPE_ID(prettyWine, 18)
+END_NAMEDTYPE(Product)
 
-DEFINE_NAMEDTYPE(Product,none)
+class Products : public std::set<Product>
+{
+public:
+  inline Products& operator<<(const Product& a)
+  {
+    insert( a );
+    return *this;
+  }
 
-REGISTER_PRODUCT(wheat,1)
-REGISTER_PRODUCT(fish,2)
-REGISTER_PRODUCT(meat,3)
-REGISTER_PRODUCT(fruit,4 )
-REGISTER_PRODUCT(vegetable,5 )
-REGISTER_PRODUCT(olive,6 )
-REGISTER_PRODUCT(oil,7 )
-REGISTER_PRODUCT(grape,8 )
-REGISTER_PRODUCT(wine,9 )
-REGISTER_PRODUCT(timber,10 )
-REGISTER_PRODUCT(furniture,11 )
-REGISTER_PRODUCT(clay,12 )
-REGISTER_PRODUCT(pottery,13 )
-REGISTER_PRODUCT(iron,14 )
-REGISTER_PRODUCT(weapon,15 )
-REGISTER_PRODUCT(marble,16 )
-REGISTER_PRODUCT(denaries,17 )
-REGISTER_PRODUCT(prettyWine,18 )
+  inline Products& operator<<(const Products& a)
+  {
+    foreach( it, a )
+      this->insert( *it );
 
-typedef std::list<Product> Products;
+    return *this;
+  }
+};
 
 const Product& any();
 const Products& foods();
+inline bool isFood( const Product& p ) { return foods().count( p ) > 0; }
 const Products& materials();
 const Products& all();
+Product getMaterial( const Product& pr );
 
 class Stock;
 class ProductMap;

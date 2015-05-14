@@ -606,7 +606,6 @@
       weapons_workshop : true
       oil_workshop : true
       furniture_workshop : true
-      forum : false
       garden : true
       low_bridge : true
       high_bridge : true

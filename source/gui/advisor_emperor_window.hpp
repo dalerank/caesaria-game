@@ -19,11 +19,6 @@
 #define __CAESARIA_ADVISOR_EMPEROR_WINDOW_H_INCLUDED__
 
 #include "advisor_base_window.hpp"
-#include "core/predefinitions.hpp"
-#include "core/scopedptr.hpp"
-#include "core/signals.hpp"
-#include "core/event.hpp"
-#include "city/predefinitions.hpp"
 
 namespace gui
 {

@@ -47,7 +47,7 @@ public:
 
 Gatehouse::Gatehouse() : Building( object::gatehouse, Size( 2 ) ), _d( new Impl )
 {
-  setPicture( ResourceGroup::land2a, 150 );
+  _picture().load( ResourceGroup::land2a, 150 );
   _d->gatehouseSprite.resize( 1 );
 
   setState( pr::inflammability, 0 );
@@ -91,7 +91,7 @@ bool Gatehouse::_update( const city::AreaInfo& areaInfo )
     index = 151;
   }
 
-  setPicture( ResourceGroup::land2a, index );
+  _picture().load( ResourceGroup::land2a, index );
 
   bool mayConstruct = ((rmap[ direction::none ] || freemap[ direction::none ]) &&
                        (rmap[ north ] || freemap[ north ]) &&
@@ -169,7 +169,7 @@ bool Gatehouse::build( const city::AreaInfo& info )
   _update( info );
   _d->updateSprite();
 
-  TilesArray tiles = info.city->tilemap().getArea( info.pos, size() );
+  TilesArea tiles( info.city->tilemap(), info.pos, size() );
   foreach( it, tiles )
   {
     RoadPtr road = ptr_cast<Road>( (*it)->overlay() );
@@ -192,7 +192,7 @@ void Gatehouse::Impl::updateSprite()
 {
   if( direction != direction::none )
   {
-    gatehouseSprite[ 0 ] = Picture::load( ResourceGroup::sprites, direction == north ? 224 : 225 );
+    gatehouseSprite[ 0 ].load( ResourceGroup::sprites, direction == north ? 224 : 225 );
     gatehouseSprite[ 0 ].setOffset( direction == north ? Point( 8, 80 ) : Point( 12, 80 ) );
   }
   else

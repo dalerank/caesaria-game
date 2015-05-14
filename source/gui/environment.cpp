@@ -57,7 +57,6 @@ public:
 
   gfx::Engine* engine;
   Point cursorPos;
-  WidgetFactory factory;
   Flags flags;
 
 public:
@@ -94,7 +93,7 @@ bool Ui::hasFocus( const Widget* element) const
 
 Ui::~Ui() {}
 
-Widget* Ui::rootWidget() {	return this; }
+Widget* Ui::rootWidget() { return this; }
 
 void Ui::Impl::threatDeletionQueue()
 {
@@ -128,7 +127,7 @@ void Ui::draw()
 {
   if( !_d->preRenderFunctionCalled )
   {
-    Logger::warning( "Call beforeDraw() function needed" );
+    Logger::warning( "!!! WARNING: Call beforeDraw() function needed" );
     return;
   }
 
@@ -230,7 +229,7 @@ void Ui::deleteLater( Widget* ptrElement )
 
 Widget* Ui::createWidget(const std::string& type, Widget* parent)
 {
-  return _d->factory.create( type, parent );
+  return WidgetFactory::instance().create( type, parent );
 }
 
 void Ui::setFlag(Ui::Flag name, int value)

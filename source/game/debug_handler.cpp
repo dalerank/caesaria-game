@@ -21,6 +21,7 @@
 #include "religion/pantheon.hpp"
 #include "city/statistic.hpp"
 #include "game/funds.hpp"
+#include "game/player.hpp"
 #include "events/random_animals.hpp"
 #include "walker/enemysoldier.hpp"
 #include "walker/walkers_factory.hpp"
@@ -58,9 +59,9 @@
 #include "game/resourceloader.hpp"
 #include "religion/config.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace citylayer;
+using namespace gui;
 
 enum {
   add_enemy_archers=0,
@@ -121,6 +122,7 @@ enum {
   add_furniture_to_warehouse,
   add_weapons_to_warehouse,
   add_wine_to_warehouse,
+  add_oil_to_warehouse,
   remove_favor
 };
 
@@ -184,6 +186,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( "goods", add_furniture_to_warehouse )
   ADD_DEBUG_EVENT( "goods", add_weapons_to_warehouse )
   ADD_DEBUG_EVENT( "goods", add_wine_to_warehouse )
+  ADD_DEBUG_EVENT( "goods", add_oil_to_warehouse )
 
   ADD_DEBUG_EVENT( "other", send_player_army )
   ADD_DEBUG_EVENT( "other", screenshot )
@@ -232,8 +235,7 @@ DebugHandler::~DebugHandler() {}
 
 EnemySoldierPtr DebugHandler::Impl::makeEnemy( walker::Type type )
 {
-  WalkerPtr wlk = WalkerManager::instance().create( type, game->city() );
-  EnemySoldierPtr enemy = ptr_cast<EnemySoldier>( wlk );
+  EnemySoldierPtr enemy = WalkerManager::instance().create<EnemySoldier>( type, game->city() );
   if( enemy.isValid() )
   {
     enemy->send2City( game->city()->borderInfo().roadEntry );
@@ -244,12 +246,12 @@ EnemySoldierPtr DebugHandler::Impl::makeEnemy( walker::Type type )
 
 void DebugHandler::Impl::addGoods2Wh(good::Product type)
 {
-  WarehouseList whList = city::statistic::findo<Warehouse>( game->city(), object::warehouse );
+  WarehouseList whList = city::statistic::getObjects<Warehouse>( game->city(), object::warehouse );
   foreach( wh, whList)
   {
     WarehousePtr warehouse = *wh;
-    good::Stock stock(type, 500, 500 );
-    warehouse->store().store( stock, 500 );
+    good::Stock stock(type, 400, 400 );
+    warehouse->store().store( stock, 400 );
   }
 }
 
@@ -310,7 +312,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case show_fest:
   {
-    city::FestivalPtr fest = city::statistic::finds<city::Festival>( game->city() );
+    city::FestivalPtr fest = city::statistic::getService<city::Festival>( game->city() );
     if( fest.isValid() )
       fest->now();
   }
@@ -330,6 +332,7 @@ void DebugHandler::Impl::handleEvent(int event)
   case add_furniture_to_warehouse:addGoods2Wh( good::furniture); break;
   case add_weapons_to_warehouse:addGoods2Wh( good::weapon ); break;
   case add_wine_to_warehouse: addGoods2Wh( good::wine ); break;
+  case add_oil_to_warehouse: addGoods2Wh( good::oil ); break;
 
   case win_mission:
   case fail_mission:
@@ -365,7 +368,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case kill_all_enemies:
   {
-     EnemySoldierList enemies = city::statistic::findw<EnemySoldier>( game->city(), walker::any, TilePos(-1, -1) );
+     EnemySoldierList enemies = city::statistic::getWalkers<EnemySoldier>( game->city(), walker::any, gfx::tilemap::invalidLocation() );
 
      foreach( it, enemies )
        (*it)->die();
@@ -475,18 +478,18 @@ void DebugHandler::Impl::handleEvent(int event)
   break;
 
   case all_sound_off:
-    audio::Engine::instance().setVolume( audio::ambientSound, 0 );
-    audio::Engine::instance().setVolume( audio::themeSound, 0 );
-    audio::Engine::instance().setVolume( audio::gameSound, 0 );
+    audio::Engine::instance().setVolume( audio::ambient, 0 );
+    audio::Engine::instance().setVolume( audio::theme, 0 );
+    audio::Engine::instance().setVolume( audio::game, 0 );
   break;
 
   case run_script:
   {
-    gui::Widget* parent = game->gui()->rootWidget();
-    gui::LoadFileDialog* wnd = new gui::LoadFileDialog( parent,
-                                                        Rect(),
-                                                        vfs::Path( ":/scripts/" ), ".model",
-                                                        -1 );
+    Widget* parent = game->gui()->rootWidget();
+    dialog::LoadFile* wnd = dialog::LoadFile::create( parent,
+                                                      Rect(),
+                                                      vfs::Path( ":/scripts/" ), ".model",
+                                                      -1 );
     wnd->setCenter( parent->center() );
 
     CONNECT( wnd, onSelectFile(), this, Impl::runScript );
@@ -506,8 +509,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case add_soldiers_in_fort:
   {
-    FortList forts;
-    forts << game->city()->overlays();
+    FortList forts = city::statistic::getObjects<Fort>( game->city() );
 
     foreach( it, forts )
     {
