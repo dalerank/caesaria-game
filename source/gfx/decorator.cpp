@@ -25,54 +25,9 @@
 #include "primitives.hpp"
 #include "core/color.hpp"
 #include "core/logger.hpp"
-#include "primitives.hpp"
 
 namespace gfx
 {
-
-/*void Decorator::drawFrame(Picture &dstpic, const Rect& rectangle, const int picId, bool useAlpha )
-{
-   // pics are: 0TopLeft, 1Top, 2TopRight, 3Left, 4Center, 5Right, 6BottomLeft, 7Bottom, 8BottomRight
-
-   // draws the inside of the box
-  const Picture& bg = Picture::load( ResourceGroup::panelBackground, picId+4);
-  const int sw = bg.width();
-  const int sh = bg.height();
-  for (int j = 0; j<(rectangle.height()/sh-1); ++j)
-  {
-     for (int i = 0; i<(rectangle.width()/sw-1); ++i)
-     {
-        dstpic.draw( bg, rectangle.UpperLeftCorner + Point( sw+sw*i, sh+sh*j ), useAlpha );
-     }
-  }
-
-  // draws horizontal borders
-  const Picture& topBorder = Picture::load( ResourceGroup::panelBackground, picId+1);
-  const Picture& bottomBorder = Picture::load( ResourceGroup::panelBackground, picId+7);
-  for (int i = 0; i<(rectangle.width()/sw-1); ++i)
-  {
-     dstpic.draw( topBorder, rectangle.UpperLeftCorner + Point( sw+sw*i, 0 ), useAlpha);
-     dstpic.draw( bottomBorder, rectangle.UpperLeftCorner + Point( sw+sw*i, rectangle.height()-sh ), useAlpha );
-  }
-
-  // draws vertical borders
-  const Picture& leftBorder = Picture::load( ResourceGroup::panelBackground, picId+3);
-  const Picture& rightBorder = Picture::load( ResourceGroup::panelBackground, picId+5);
-  for (int i = 0; i<(rectangle.height()/sh-1); ++i)
-  {
-     dstpic.draw( leftBorder, rectangle.UpperLeftCorner + Point( 0, sh+sh*i ), useAlpha );
-     dstpic.draw( rightBorder, rectangle.UpperLeftCorner + Point( rectangle.width()-sw, sh+sh*i ), useAlpha );
-  }
-
-  // topLeft corner
-  dstpic.draw(Picture::load( ResourceGroup::panelBackground, picId+0), rectangle.UpperLeftCorner, useAlpha );
-  // topRight corner
-  dstpic.draw(Picture::load( ResourceGroup::panelBackground, picId+2), Point( rectangle.right()-sh, rectangle.top() ), useAlpha );
-  // bottomLeft corner
-  dstpic.draw(Picture::load( ResourceGroup::panelBackground, picId+6), Point( rectangle.left(), rectangle.bottom() - sh ), useAlpha );
-  // bottomRight corner
-  dstpic.draw(Picture::load( ResourceGroup::panelBackground, picId+8), rectangle.LowerRightCorner - Point( 16, 16 ), useAlpha );
-}*/
 
 void Decorator::drawFrame(Pictures& stack, const Rect& rectangle, const int picId )
 {

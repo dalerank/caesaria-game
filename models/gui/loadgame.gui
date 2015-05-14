@@ -4,6 +4,6 @@
   imgPreview#Image :
   {
     geometry : [ "pw-164", 80, "pw-20", 190 ]
-    mode : "fit"
+    mode : "best"
   }
 }

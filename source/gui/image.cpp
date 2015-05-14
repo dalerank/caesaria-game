@@ -109,6 +109,37 @@ void Image::draw(gfx::Engine& painter )
                                           height() - _d->bgPicture.height() ) / 2, &absoluteClippingRectRef() );
     break;
 
+    case Image::best:
+    {
+       Size rSize;
+       Size ItemSize = _d->bgPicture.size();
+       const Size& rectSize = size();
+       if (ItemSize.height()<=rectSize.height() && ItemSize.width()<=rectSize.width())
+       {
+         rSize = ItemSize;
+       }
+
+       // анализ высоты
+       if (ItemSize.height()>rectSize.height()) {
+           // обнаружено превышение, применяем сдвиг
+           float dh = ItemSize.width() / ItemSize.height();
+           ItemSize.setHeight( rectSize.height() );
+           ItemSize.setWidth( rectSize.height() * dh );
+       }
+
+       // анализ ширины
+       if (ItemSize.width()>rectSize.width()) {
+           // обнаружено превышение, применяем сдвиг
+           float dw = ItemSize.height() / ItemSize.width();
+           ItemSize.setWidth( rectSize.width() );
+           ItemSize.setHeight( rectSize.width() * dw );
+       }
+
+       painter.draw( _d->bgPicture, Rect( Point(), _d->bgPicture.size() ),
+                     Rect( Point(), ItemSize ) + absoluteRect().lefttop(),
+                     &absoluteClippingRectRef() );
+    }
+    break;
     }
   }
 
@@ -138,6 +169,7 @@ void Image::setupUI(const VariantMap& ui)
   else if( mode == "image" ) { _d->mode = Image::image; }
   else if( mode == "native" ) { _d->mode = Image::native; }
   else if( mode == "center" ) { _d->mode = Image::center; }
+  else if( mode == "best" ) { _d->mode = Image::best; }
   else { _d->mode = Image::image; }
 
   if( _d->mode == Image::image )

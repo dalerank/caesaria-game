@@ -32,6 +32,7 @@
 #include "texturedbutton.hpp"
 #include "gfx/helper.hpp"
 #include "gfx/IMG_savepng.h"
+#include "gfx/decorator.hpp"
 #include "city/states.hpp"
 
 using namespace gfx;
@@ -44,12 +45,15 @@ class Minimap::Impl
 {
 public:
   Picture landRockWaterMap;
-  Picture minimap;
+  Picture objectsMap;
+  Picture walkersMap;
+  Picture background;
 
   PlayerCityPtr city;
   Camera const* camera;
 
-  minimap::Colors* colors;
+  unsigned int lastObjectsCount;
+  ScopedPtr<minimap::Colors> colors;
 
   int lastTimeUpdate;
   Point center;
@@ -59,9 +63,12 @@ public:
 public:
   void getTileColours(const Tile& tile, int &c1, int &c2);
   void getTerrainColours(const Tile& tile, bool staticTiles, int& c1, int& c2 );
-  void getBuildingColours(const Tile& tile, int &c1, int &c2);
+  void getObjectColours(const Tile& tile, int &c1, int &c2);
   void updateImage();
   void initStaticMmap();
+  void drawStaticMmap(Picture& canvas , bool clear);
+  void drawObjectsMmap(Picture& canvas, bool clear, bool force);
+  void drawWalkersMmap(Picture& canvas, bool clear);
 
 public signals:
   Signal1<TilePos> onCenterChangeSignal;
@@ -76,11 +83,13 @@ Minimap::Minimap(Widget* parent, Rect rect, PlayerCityPtr city, const gfx::Camer
   _d->city = city;
   _d->camera = &camera;
   _d->lastTimeUpdate = 0;
-  _d->minimap = Picture( Size( 144, 110 ), 0, true );
-  _d->colors = new minimap::Colors( city->climate() );
+  _d->lastObjectsCount = 0;
+  _d->background = Picture( Size( 144, 110 ), 0, true );
+  _d->colors.reset( new minimap::Colors( city->climate() ) );
   _d->btnZoomIn =  new TexturedButton( this, righttop() - Point( 28, -2  ), Size( 24 ), -1, 605 );
   _d->btnZoomOut = new TexturedButton( this, righttop() - Point( 28, -26 ), Size( 24 ), -1, 601 );
   _d->initStaticMmap();
+  _d->drawStaticMmap( _d->landRockWaterMap, true );
   setTooltipText( _("##minimap_tooltip##") );
 }
 
@@ -148,7 +157,7 @@ void Minimap::Impl::getTileColours(const Tile& tile, int &c1, int &c2)
 
   if( tile.getFlag( Tile::tlOverlay ) )
   {
-    getBuildingColours(tile, c1, c2);
+    getObjectColours(tile, c1, c2);
   }
   else
   {
@@ -164,7 +173,7 @@ void Minimap::Impl::getTileColours(const Tile& tile, int &c1, int &c2)
 #endif
 }
 
-void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
+void Minimap::Impl::getObjectColours(const Tile& tile, int &c1, int &c2)
 {
   OverlayPtr overlay = tile.overlay();
 
@@ -278,7 +287,7 @@ void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
       case 1:
       {
         c1 = colors->colour(minimap::Colors::MAP_BUILDING, 0);
-        c2 = colors->colour(minimap::Colors::MAP_BUILDING, 1);       
+        c2 = colors->colour(minimap::Colors::MAP_BUILDING, 1);
       }
       break;
       default:
@@ -299,7 +308,54 @@ void Minimap::Impl::getBuildingColours(const Tile& tile, int &c1, int &c2)
 #endif
 }
 
-void Minimap::Impl::updateImage()
+void Minimap::Impl::drawObjectsMmap( Picture& canvas, bool clear, bool force )
+{
+  Tilemap& tilemap = city->tilemap();
+  int mapsize = tilemap.size();
+
+  int c1, c2;
+  const OverlayList& ovs = city->overlays();
+  int mmapWidth = objectsMap.width();
+  int mmapHeight = objectsMap.height();
+  unsigned int* pixelsObjects = canvas.lock();
+
+  if( lastObjectsCount != ovs.size() || force )
+  {
+    if( clear )
+      canvas.fill( DefaultColors::clear );
+    lastObjectsCount = ovs.size();
+
+    foreach( it, ovs )
+    {
+      OverlayPtr overlay = *it;
+      const Tile& tile = overlay->tile();
+
+      getObjectColours( tile, c1, c2);
+
+      TilePos pos = overlay->pos();
+      const Size& size = overlay->size();
+      for( int i=0; i < size.width(); i++ )
+      {
+        for( int j=0; j < size.height(); j++ )
+        {
+          Point pnt = getBitmapCoordinates( pos.i() + i, pos.j() + j, mapsize);
+          if( pnt.y() < 0 || pnt.x() < 0 || pnt.x() > mmapWidth || pnt.y() > mmapHeight )
+            continue;
+
+          unsigned int* bufp32;
+          bufp32 = pixelsObjects + pnt.y() * mmapWidth + pnt.x();
+          *bufp32 = c1;
+          *(bufp32+1) = c2;
+        }
+      }
+    }
+
+    canvas.unlock();
+    canvas.update();
+  }
+}
+
+void Minimap::Impl::drawWalkersMmap( Picture& canvas, bool clear )
 {
   Tilemap& tilemap = city->tilemap();
   int mapsize = tilemap.size();
@@ -307,73 +363,50 @@ void Minimap::Impl::updateImage()
   // here we can draw anything
   mapsize = std::min( mapsize, 42 );
   TilePos tpos = camera->center();
-  TilePos offset = TilePos( 80, 80 );
+  TilePos offset = TilePos( mapsize/2, mapsize/2 );
   TilePos startPos = tpos - offset;
   TilePos stopPos = tpos + offset;
 
-  int mmapWithMinus1 = minimap.width()-1;
-  int mmapWidth = minimap.width();
-  int mmapHeight = minimap.height();
-  unsigned int* pixels = minimap.lock();
+  const WalkerList& walkers = city->walkers();
+  TileRect trect( startPos, stopPos );
+  if( clear )
+    canvas.fill( DefaultColors::clear );
 
-  if( pixels != 0)
+  foreach( i, walkers )
   {
-    int c1, c2;
-    Point pnt;
-    minimap.fill( 0xff000000, Rect() );
-    for( int i = startPos.i(); i < stopPos.i(); i++)
+    const TilePos& pos = (*i)->pos();
+    if( trect.contain( pos ) )
     {
-      for (int j = startPos.j(); j < stopPos.j(); j++)
+      NColor cl;
+      if ((*i)->agressive() != 0)
       {
-        const Tile& tile = tilemap.at(i, j);
 
-        pnt = getBitmapCoordinates(i-startPos.i() - 40, j-startPos.j()-60, mapsize);
-        getTileColours( tile, c1, c2);
-
-        if( pnt.y() < 0 || pnt.x() < 0 || pnt.x() >= mmapWithMinus1 || pnt.y() >= mmapHeight )
-          continue;
-
-        unsigned int* bufp32;
-        bufp32 = pixels + pnt.y() * mmapWidth + pnt.x();
-        *bufp32 = c1;
-        *(bufp32+1) = c2;
-      }
-    }
-
-
-    const WalkerList& walkers = city->walkers();
-    TileRect trect( startPos, stopPos );
-
-    foreach( i, walkers )
-    {
-      const TilePos& pos = (*i)->pos();
-      if( trect.contain( pos ) )
-      {
-        NColor cl;
-        if ((*i)->agressive() != 0)
+        if ((*i)->agressive() > 0)
         {
+          cl = DefaultColors::red;
+        }
+        else
+        {
+          cl = DefaultColors::blue;
+        }
 
-          if ((*i)->agressive() > 0)
-          {
-            cl = DefaultColors::red;
-          }
-          else
-          {
-            cl = DefaultColors::blue;
-          }
-
-          if (cl.color != 0)
-          {
-            Point pnt = getBitmapCoordinates(pos.i() - startPos.i() - 40, pos.j() - startPos.j() - 60, mapsize);
-            minimap.fill(cl, Rect(pnt, Size(2)));
-          }
-        }        
+        if (cl.color != 0)
+        {
+          Point pnt = getBitmapCoordinates(pos.i(), pos.j(), mapsize);
+          canvas.fill(cl, Rect(pnt, Size(2)));
+        }
       }
     }
   }
 
-  minimap.unlock();
-  minimap.update();
+  canvas.unlock();
+  canvas.update();
+}
+
+void Minimap::Impl::updateImage()
+{
+  drawObjectsMmap( objectsMap, true, false );
+  drawWalkersMmap( walkersMap, true );
 
   // show center of screen on minimap
   // Exit out of image size on small carts... please fix it
@@ -407,16 +440,29 @@ void Minimap::Impl::initStaticMmap()
   Tilemap& tmap = city->tilemap();
   int mapSize = tmap.size();
 
+  background.fill( 0xff000000, Rect() );
+  background.update();
+
   size.setWidth( getBitmapCoordinates( mapSize-1, mapSize-1, mapSize ).x() );
   size.setHeight( getBitmapCoordinates( mapSize-1, 0, mapSize ).y() );
 
   landRockWaterMap = Picture( size, 0, true );
-  landRockWaterMap.fill( 0xff000000, Rect() );
+  objectsMap = Picture( size, 0, true );
+  walkersMap = Picture( size, 0, true );
+}
+
+void Minimap::Impl::drawStaticMmap(Picture& canvas, bool clear)
+{
+  Tilemap& tmap = city->tilemap();
+  int mapSize = tmap.size();
+
+  if( clear )
+    canvas.fill( 0xff000000, Rect() );
 
   int c1, c2;
-  int mmapWidth = landRockWaterMap.width();
-  int mmapHeight = landRockWaterMap.height();
-  unsigned int* pixels = landRockWaterMap.lock();
+  int mmapWidth = canvas.width();
+  int mmapHeight = canvas.height();
+  unsigned int* pixels = canvas.lock();
 
   for( int i = 0; i < mapSize; i++)
   {
@@ -437,8 +483,8 @@ void Minimap::Impl::initStaticMmap()
     }
   }
 
-  landRockWaterMap.unlock();
-  landRockWaterMap.update();
+  canvas.unlock();
+  canvas.update();
 }
 
 /* end of helper functions */
@@ -453,7 +499,19 @@ void Minimap::draw(Engine& painter)
   if( !visible() )
     return;
 
-  painter.draw( _d->landRockWaterMap, screenLeft(), screenTop() ); // 152, 145
+  Tilemap& tilemap = _d->city->tilemap();
+  int mapsize = tilemap.size();
+
+  TilePos tpos = _d->camera->center();
+  TilePos startPos = tpos;
+
+  Point p = getBitmapCoordinates(startPos.i(), startPos.j(), mapsize);
+  Point myCenter(width()/2,height()/2);
+
+  painter.draw( _d->background, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+  painter.draw( _d->landRockWaterMap, absoluteRect().lefttop() + myCenter - p, &absoluteClippingRectRef() );
+  painter.draw( _d->objectsMap, absoluteRect().lefttop() + myCenter - p, &absoluteClippingRectRef() );
+  painter.draw( _d->walkersMap, absoluteRect().lefttop() + myCenter - p, &absoluteClippingRectRef() );
 
   Widget::draw( painter );
 }
@@ -468,7 +526,7 @@ bool Minimap::onEvent(const NEvent& event)
     Point clickPosition = screenToLocal( event.mouse.pos() );
 
     int mapsize = _d->city->tilemap().size();
-    Size minimapSize = _d->minimap.size();
+    Size minimapSize = _d->background.size();
 
     Point offset( minimapSize.width()/2 - _d->center.x(), minimapSize.height()/2 + _d->center.y() - mapsize*2 );
     clickPosition -= offset;
@@ -505,7 +563,11 @@ void Minimap::beforeDraw(Engine& painter)
 
 void Minimap::saveImage( const std::string& filename ) const
 {
-  IMG_SavePNG( filename.c_str(), _d->minimap.surface(), -1 );
+  Picture savePic( _d->landRockWaterMap.size(), 0, true );
+  _d->drawStaticMmap( savePic, true );
+  _d->drawObjectsMmap( savePic, false, true );
+  _d->drawWalkersMmap( savePic, false );
+  IMG_SavePNG( filename.c_str(), savePic.surface(), -1 );
 }
 
 Signal1<TilePos>& Minimap::onCenterChange() { return _d->onCenterChangeSignal; }

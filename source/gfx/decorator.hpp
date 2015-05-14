@@ -63,7 +63,7 @@ public:
   static void drawFrame(Pictures& stack, const Rect& rectangle, const int picId );
 
   // draws a rectangular perimeter
-  static void drawBorder(Pictures& stack, const Rect& rectangle, const int picId );
+  static void drawBorder( Pictures& stack, const Rect& rectangle, const int picId );
   static void drawBorder( Pictures& stack, const Rect& rectangle, int tp, int bp, int lp, int rp,
                           int pCount, int hCount, int ltc, int lbc, int rtc, int rbc );
   static void drawLine( Picture &dstpic, const Point& p1, const Point& p2, NColor color );

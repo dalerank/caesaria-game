@@ -29,7 +29,7 @@ namespace gui
 class Image : public Widget
 {
 public:
-  typedef enum { native=0, fit, image, center } Mode;
+  typedef enum { native=0, fit, image, center, best } Mode;
   //! constructor
   Image(Widget* parent );
 
