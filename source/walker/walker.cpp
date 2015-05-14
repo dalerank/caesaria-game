@@ -355,8 +355,8 @@ void Walker::setUniqueId( const UniqueId uid ) {  _d->uid = uid;}
 Walker::UniqueId Walker::uniqueId() const { return _d->uid; }
 Pathway& Walker::_pathway() { return _d->pathway; }
 const Pathway& Walker::pathway() const {  return _d->pathway; }
-Animation& Walker::_animationRef() {  return _d->animation;}
-const Animation& Walker::_animationRef() const {  return _d->animation;}
+Animation& Walker::_animation() {  return _d->animation;}
+const Animation& Walker::_animation() const {  return _d->animation;}
 void Walker::_setDirection(Direction direction ){  _d->action.direction = direction; }
 void Walker::setThinks(std::string newThinks){  _d->thinks = newThinks;}
 TilePos Walker::places(Walker::Place type) const { return gfx::tilemap::invalidLocation(); }
@@ -382,7 +382,7 @@ void Walker::_setAction( Walker::Action action )
 {
   if( _d->action.action != action  )
   {
-    _animationRef().clear();
+    _animation().clear();
   }
   _d->action.action = action;
 }
@@ -533,7 +533,7 @@ void Walker::turn(TilePos p )
   if( _d->action.direction != direction )
   {
     _d->action.direction = direction;
-    _animationRef().clear();
+    _animation().clear();
   }
 }
 

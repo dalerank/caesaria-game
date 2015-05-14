@@ -99,7 +99,7 @@ void WallGuard::timeStep(const unsigned long time)
     bool haveEnemiesInRande = !enemies.empty();
     if( haveEnemiesInRande )
     {
-      if( _animationRef().atEnd() )
+      if( _animation().atEnd() )
       {
         EnemySoldierPtr p = _findNearbyEnemy( enemies );
         turn( p->pos() );

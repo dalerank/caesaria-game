@@ -232,8 +232,8 @@ void Prefect::_setSubAction( const Prefect::SbAction action)
 
   switch( action )
   {
-  case fightFire: _animationRef().setDelay( Animation::middle ); break;
-  default: _animationRef().setDelay( Animation::fast ); break;
+  case fightFire: _animation().setDelay( Animation::middle ); break;
+  default: _animation().setDelay( Animation::fast ); break;
   }
 }
 
