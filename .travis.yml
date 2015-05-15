@@ -18,4 +18,4 @@ script:
 notifications:
   slack:
     rooms:
-      - caesariagame:$SLACK_KEY#general
+      - $SLACK_NOTIFICATION
