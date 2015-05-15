@@ -79,7 +79,7 @@ void Garden::load(const VariantMap& stream)
     Construction::build( info );
   }
 
-  setPicture( Picture::load( stream.get( "picture" ).toString() ) );
+  _picture().load( stream.get( "picture" ).toString() );
 }
 
 void Garden::save(VariantMap& stream) const

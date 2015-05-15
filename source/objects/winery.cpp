@@ -30,9 +30,9 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(object::wine_workshop, Winery)
 
 Winery::Winery() : Factory(good::grape, good::wine, object::wine_workshop, Size(2) )
 {
-  setPicture( ResourceGroup::commerce, 86 );
+  _picture().load( ResourceGroup::commerce, 86 );
 
-  _fgPicturesRef().resize(3);
+  _fgPictures().resize(3);
 }
 
 bool Winery::canBuild( const city::AreaInfo& areaInfo ) const
@@ -44,7 +44,7 @@ bool Winery::build( const city::AreaInfo& info )
 {
   Factory::build( info );
 
-  bool haveVinegrad = !city::statistic::findo<Building>( info.city, object::vinard ).empty();
+  bool haveVinegrad = !city::statistic::getObjects<Building>( info.city, object::vinard ).empty();
 
   _setError( haveVinegrad ? "" : "##need_grape##" );
 
@@ -53,6 +53,6 @@ bool Winery::build( const city::AreaInfo& info )
 
 void Winery::_storeChanged()
 {
-  _fgPicturesRef()[1] = inStockRef().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 153 );
-  _fgPicturesRef()[1].setOffset( 40, -10 );
+  _fgPicture(1) = inStockRef().empty() ? Picture() : Picture( ResourceGroup::commerce, 153 );
+  _fgPicture(1).setOffset( 40, -10 );
 }

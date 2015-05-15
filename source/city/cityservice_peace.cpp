@@ -28,12 +28,15 @@
 #include "core/variant_map.hpp"
 #include "statistic.hpp"
 #include "core/stacktrace.hpp"
+#include "cityservice_factory.hpp"
 #include <set>
 
 using namespace events;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Peace,peace)
 
 enum { minCh=1, middleCh=2, maxCh=5};
 static const int longTimeWithoutWar = 2;
@@ -97,7 +100,7 @@ void Peace::timeStep(const unsigned int time )
   if( !game::Date::isYearChanged() )
     return;
 
-  MilitaryPtr ml = statistic::finds<Military>( _city() );
+  MilitaryPtr ml = statistic::getService<Military>( _city() );
   if( ml.isNull() )
   {
     Logger::warning( "!!! WARNING: not found military service" );

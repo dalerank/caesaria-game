@@ -31,7 +31,7 @@
 
   lbBlackFrame#Label :
   {
-    geometry : [ 10, 310, 405, 400 ]
+    geometry : [ 12, 310, 403, 400 ]
     bgtype : "blackFrame"    
 
     lbTime#Label : {

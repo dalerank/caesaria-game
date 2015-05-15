@@ -144,18 +144,19 @@ void Game::Impl::initVideo()
 {
   Logger::warning( "GraficEngine: create" );
 
-  //std::string render = GameSettings::get( GameSettings::render ).toString();
+  bool batchTexures = SETTINGS_VALUE( batchTextures );
 
-  engine = new gfx::SdlEngine();
+  engine = new SdlEngine();
 
   Logger::warning( "GraficEngine: set size" );
   engine->setScreenSize( SETTINGS_VALUE( resolution ).toSize() );
+  engine->setFlag( Engine::batching, batchTexures ? 1 : 0 );
 
   bool fullscreen = SETTINGS_VALUE( fullscreen );
   if( fullscreen )
   {
     Logger::warning( "GraficEngine: try set fullscreen mode" );
-    engine->setFlag( gfx::Engine::fullscreen, fullscreen ? 1 : 0 );
+    engine->setFlag( Engine::fullscreen, fullscreen ? 1 : 0 );
   }
 
   engine->init();
@@ -190,7 +191,7 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
   std::string errorStr;
   std::string c3res = SETTINGS_VALUE( c3gfx ).toString();
   if( !c3res.empty() )
-  {
+  {    
     vfs::Directory gfxDir( c3res );
     vfs::Path c3sg2( "c3.sg2" );
     vfs::Path c3path = gfxDir/c3sg2;
@@ -205,6 +206,7 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
     }
 
     loader.loadFromModel( SETTINGS_RC_PATH( sg2model ), gfxDir );
+    engine->setFlag( Engine::batching, false );
   }
   else
   {
@@ -400,7 +402,7 @@ bool Game::load(std::string filename)
   _d->empire->emperor().checkCities();
 
   Logger::warning( "Game: calculate road access for buildings" );
-  OverlayList& llo = _d->city->overlays();
+  const OverlayList& llo = _d->city->overlays();
   foreach( overlay, llo )
   {
     ConstructionPtr construction = overlay->as<Construction>();

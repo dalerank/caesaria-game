@@ -67,11 +67,11 @@ Dock::Dock(): WorkingBuilding( object::dock, Size(3) ), _d( new Impl )
   // transport 17       animation = 18~28
   // transport 29       animation = 30~40
   // transport 41       animation = 42~51
-  setPicture( ResourceGroup::transport, 5);
+  _picture().load( ResourceGroup::transport, 5 );
 
   _d->initStores();
 
-  _fgPicturesRef().resize(1);
+  _fgPictures().resize(1);
   _animationRef().setDelay( 5 );
   _setClearAnimationOnStop( false );
 }
@@ -175,7 +175,7 @@ std::string Dock::workersProblemDesc() const
 
 bool Dock::isBusy() const
 {
-  SeaMerchantList merchants = city::statistic::findw<SeaMerchant>( _city(), walker::seaMerchant, landingTile().pos() );
+  SeaMerchantList merchants = city::statistic::getWalkers<SeaMerchant>( _city(), walker::seaMerchant, landingTile().pos() );
 
   return !merchants.empty();
 }
@@ -200,8 +200,8 @@ const Tile& Dock::landingTile() const
 int Dock::queueSize() const
 {
   TilePos offset( 3, 3 );
-  SeaMerchantList merchants = city::statistic::findw<SeaMerchant>( _city(), walker::seaMerchant,
-                                                                   pos() - offset, pos() + offset );
+  SeaMerchantList merchants = city::statistic::getWalkers<SeaMerchant>( _city(), walker::seaMerchant,
+                                                                           pos() - offset, pos() + offset );
 
   for( SeaMerchantList::iterator it=merchants.begin(); it != merchants.end(); )
   {
@@ -304,7 +304,7 @@ void Dock::_updatePicture(Direction direction)
   default: break;
   }
 
-  setPicture( ResourceGroup::transport, index );
+  _picture().load( ResourceGroup::transport, index );
   _animationRef().clear();
   _animationRef().load( ResourceGroup::transport, index+1, 10 );
 

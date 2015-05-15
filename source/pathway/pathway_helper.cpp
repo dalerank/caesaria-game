@@ -111,7 +111,7 @@ Pathway PathwayHelper::create(TilePos startPos, TilePos stopPos, const TilePossi
 DirectRoute PathwayHelper::shortWay(PlayerCityPtr city, TilePos startPos, object::Type buildingType, PathwayHelper::WayType type)
 {
   DirectRoute ret;
-  ConstructionList constructions = city::statistic::findo<Construction>( city, buildingType );
+  ConstructionList constructions = city::statistic::getObjects<Construction>( city, buildingType );
 
   foreach( it, constructions )
   {

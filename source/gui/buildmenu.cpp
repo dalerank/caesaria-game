@@ -73,11 +73,11 @@ public:
       sprintf( buffer, "%d", _cost );
       Rect textRect = f.getTextRect( buffer, Rect( 5, 0, width()-10, height() ),
                                      align::lowerRight, verticalTextAlign() );
-      f.draw( *_textPictureRef(), buffer, textRect.left(), textRect.top() );
+      f.draw( _textPicture(), buffer, textRect.left(), textRect.top() );
     }
   }
 
-  void _resizeEvent()
+  void _finalizeResize()
   {
     for( int i=0; i < StateCount; i++ )
         _updateBackground( ElementState(i) );

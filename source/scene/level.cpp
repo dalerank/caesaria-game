@@ -171,7 +171,7 @@ void Level::initialize()
   _d->renderer.initialize( city, _d->engine, &ui, oldGraphics );
   ui.clear();
 
-  Picture rPanelPic = Picture::load( ResourceGroup::panelBackground, PicID::rightPanelTx );
+  Picture rPanelPic( ResourceGroup::panelBackground, PicID::rightPanelTx );
 
   Engine& engine = Engine::instance();
 
@@ -182,7 +182,7 @@ void Level::initialize()
 
   _d->rightPanel = MenuRigthPanel::create( ui.rootWidget(), rPanelRect, rPanelPic);
 
-  _d->topMenu = new TopMenu( ui.rootWidget(), topMenuHeight );
+  _d->topMenu = new TopMenu( ui.rootWidget(), topMenuHeight, !city->getOption( PlayerCity::c3gameplay ) );
   _d->topMenu->setPopulation( _d->game->city()->states().population );
   _d->topMenu->setFunds( _d->game->city()->treasury().money() );
 
@@ -203,8 +203,10 @@ void Level::initialize()
   _d->rightPanel->bringToFront();
   _d->renderer.setViewport( engine.screenSize() );
   _d->renderer.camera()->setScrollSpeed( SETTINGS_VALUE( scrollSpeed ) );
-  _d->game->city()->addService( AmbientSound::create( _d->game->city(), _d->renderer.camera() ) );
 
+  SmartPtr<city::AmbientSound> sound = statistic::getService<city::AmbientSound>( _d->game->city() );
+  if( sound.isValid() )
+    sound->setCamera( _d->renderer.camera() );
 
   //specific tablet actions bar
   {
@@ -333,7 +335,7 @@ void Level::Impl::saveCameraPos(Point p)
 
 void Level::Impl::showSoundOptionsWindow()
 {
-  GameEventPtr e = SetSoundOptions::create();
+  GameEventPtr e = ChangeSoundOptions::create();
   e->dispatch();
 }
 
@@ -402,8 +404,7 @@ void Level::Impl::makeFullScreenshot()
     }
   }
 
-  PictureRef fullPic;
-  fullPic.init( fullPicSize );
+  Picture fullPic = Picture( fullPicSize, 0, true );
   Point doffset( 0, fullPicSize.height() / 2 );
   foreach( tile, ret )
   {
@@ -420,7 +421,7 @@ void Level::Impl::makeFullScreenshot()
   }
 
   std::string filename = getScreenshotName();
-  PictureConverter::save( *fullPic, filename, "PNG" );
+  PictureConverter::save( fullPic, filename, "PNG" );
 }
 
 void Level::Impl::extendReign(int years)
@@ -607,8 +608,8 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
   PlayerCityPtr pcity = game->city();
 
   const city::VictoryConditions& vc = pcity->victoryConditions();
-  MilitaryPtr mil = statistic::finds<city::Military>( pcity );
-  InfoPtr info = statistic::finds<city::Info>( pcity );
+  MilitaryPtr mil = statistic::getService<city::Military>( pcity );
+  InfoPtr info = statistic::getService<city::Info>( pcity );
 
   if( mil.isValid() && info.isValid()  )
   {

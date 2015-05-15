@@ -450,7 +450,6 @@
     { 
       engineering_post : true
       plaza : true
-      forum : false
       garden : true
       low_bridge : true
       gatehouse : true

@@ -17,9 +17,9 @@
   {
     geometry : [ 15, 45, "pw-15", "ph-40" ]
 
-    title#HLayout :
+    resources#HLayout :
     {
-      id : 100
+      id : 200
       maximumSize : [ 0, 24 ]
       lbResourcesPath#Label :
       {
@@ -40,9 +40,9 @@
       }
     }
 
-    resources#HLayout :
+    c3path#HLayout :
     {
-      id : 200
+      id : 300
       maximumSize : [ 0, 24 ]
       lbCaesar3Path#Label :
       {
@@ -60,29 +60,6 @@
         text : ""
         text.offset : [ 10, 0 ]
         id : 202
-      }
-    }
-
-    c3path#HLayout :
-    {
-      id : 300
-      maximumSize : [ 0, 24 ]
-      lbCaesar3Music#Label :
-      {
-        maximumSize : [ 100, 0 ]
-        font : "FONT_1"
-        text : "C3 snd: "
-        text.align : [ "upperLeft", "center" ]
-        id : 301
-      }
-
-      edCaesar3Music#EditBox :
-      {
-        textAlign : [ "upperLeft", "center" ]
-        font : "FONT_1"
-        text : ""
-        text.offset : [ 10, 0 ]
-        id :302
       }
     }
 

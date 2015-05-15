@@ -111,8 +111,9 @@ void ClearTile::_exec( Game& game, unsigned int )
         int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
         int imgId = math::random( 58 );
 
-        Picture pic = Picture::load( ResourceGroup::land1a, startOffset + imgId );
-        tile->setPicture( ResourceGroup::land1a, startOffset + imgId );
+        Picture pic;
+        pic.load( ResourceGroup::land1a, startOffset + imgId );
+        tile->setPicture( pic );
         tile->setOriginalImgId( imgid::fromResource( pic.name() ) );
       }
     }

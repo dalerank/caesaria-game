@@ -32,7 +32,7 @@ public:
 
   Point operator+(const Point& other) const { return Point( _x + other._x, _y + other._y ); }
   Point operator-(const Point& other) const { return Point( _x - other._x, _y - other._y ); }
-  Point operator -() const { return Point( -_x, -_y); }
+  Point operator-() const { return Point( -_x, -_y); }
   Point operator*(float mul) const{ return Point( _x*mul, _y*mul ); }
 
   void setX( const int nx ) { _x = nx; }

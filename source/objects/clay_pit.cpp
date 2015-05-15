@@ -33,7 +33,7 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(object::clay_pit, ClayPit)
 ClayPit::ClayPit()
   : Factory( good::none, good::clay, object::clay_pit, Size(2) )
 {
-  _fgPicturesRef().resize(2);
+  _fgPictures().resize(2);
 
   _setUnworkingInterval( 12 );
 }

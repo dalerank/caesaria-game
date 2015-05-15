@@ -133,7 +133,7 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
         int picIndex = reservoirWater ? OverlayPic::reservoirRange : 0;
         picIndex |= fontainWater > 0 ? OverlayPic::haveWater : 0;
         picIndex |= OverlayPic::skipLeftBorder | OverlayPic::skipRightBorder;
-        engine.draw( Picture::load( ResourceGroup::waterOverlay, picIndex + OverlayPic::base ), rtile->mappos() + offset );
+        engine.draw( Picture( ResourceGroup::waterOverlay, picIndex + OverlayPic::base ), rtile->mappos() + offset );
       }
     }
   }

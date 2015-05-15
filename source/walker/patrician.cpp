@@ -77,7 +77,7 @@ void Patrician::_findNewWay( const TilePos& start )
 
   foreach( it, bTypes )
   {
-    buildings << city::statistic::findo<Construction>( _city(), *it );
+    buildings << city::statistic::getObjects<Construction>( _city(), *it );
   }
 
   Pathway pathway;
@@ -113,13 +113,13 @@ void Patrician::_findNewWay( const TilePos& start )
 
 void Patrician::_reachedPathway()
 {
-  if( _pathwayRef().isReverse() )
+  if( _pathway().isReverse() )
   {
     deleteLater();
   }
   else
   {
-    _pathwayRef().toggleDirection();
+    _pathway().toggleDirection();
     go();
   }
 }

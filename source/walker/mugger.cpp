@@ -61,9 +61,9 @@ void Mugger::_reachedPathway()
   switch( _d->state )
   {
   case Impl::go2destination:
-    _animationRef().clear();
-    _animationRef().load( ResourceGroup::citizen2, 455, 8 );
-    _animationRef().load( ResourceGroup::citizen2, 462, 8, Animation::reverse );
+    _animation().clear();
+    _animation().load( ResourceGroup::citizen2, 455, 8 );
+    _animation().load( ResourceGroup::citizen2, 462, 8, Animation::reverse );
     _setAction( acWork );
     _d->state = Impl::robHouse;
   break;
@@ -90,7 +90,7 @@ void Mugger::timeStep(const unsigned long time)
   {
     TilePos offset(10, 10);
 
-    HouseList houses = city::statistic::findo<House>( _city(), object::house, pos() - offset, pos() + offset );
+    HouseList houses = city::statistic::getObjects<House>( _city(), object::house, pos() - offset, pos() + offset );
     std::map< int, HouseList > houseEpxens;
     foreach( it, houses )
     {
@@ -149,7 +149,7 @@ void Mugger::timeStep(const unsigned long time)
   {
     if( game::Date::isDayChanged() )
     {
-      HouseList houses = city::statistic::findo<House>( _city(), object::house, pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
+      HouseList houses = city::statistic::getObjects<House>( _city(), object::house, pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
 
       foreach( it, houses )
       {
@@ -161,7 +161,7 @@ void Mugger::timeStep(const unsigned long time)
         }
       }
 
-      _animationRef().clear();
+      _animation().clear();
       _setAction( acMove );
       _d->state = Impl::searchHouse;
     }

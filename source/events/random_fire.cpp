@@ -59,18 +59,12 @@ void RandomFire::_exec( Game& game, unsigned int time)
     Logger::warning( "Execute random fire event" );
     _d->isDeleted = true;
 
-    Priorities<object::Group> exclude;
+    std::set<object::Group> exclude;
     exclude << object::group::water
             << object::group::road
             << object::group::disaster;
 
-    ConstructionList ctrs = statistic::findo<Construction>( game.city(), object::any );
-
-    for( ConstructionList::iterator it=ctrs.begin(); it != ctrs.end(); )
-    {
-      if( exclude.count( (*it)->group() ) ) { it = ctrs.erase( it ); }
-      else { ++it; }
-    }
+    ConstructionList ctrs = statistic::getObjectsNotIs<Construction>( game.city(), exclude );
 
     unsigned int number4burn = math::clamp<unsigned int>( (ctrs.size() * _d->strong / 100), 1u, 100u );
 

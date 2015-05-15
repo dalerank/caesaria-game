@@ -84,9 +84,9 @@ public:
 void Ratings::Impl::updateColumn( const Point& center, const int value )
 {
   int columnStartY = 275;
-  const Picture& footer = Picture::load( ResourceGroup::panelBackground, 544 );
-  const Picture& header = Picture::load( ResourceGroup::panelBackground, 546 );
-  const Picture& body = Picture::load( ResourceGroup::panelBackground, 545 );
+  Picture footer( ResourceGroup::panelBackground, 544 );
+  Picture header( ResourceGroup::panelBackground, 546 );
+  Picture body( ResourceGroup::panelBackground, 545 );
 
   for( int i=0; i < value; i++ )
   {
@@ -102,7 +102,7 @@ void Ratings::Impl::updateColumn( const Point& center, const int value )
 
 void Ratings::Impl::checkCultureRating()
 {
-  CultureRatingPtr culture = statistic::finds<CultureRating>( city );
+  CultureRatingPtr culture = statistic::getService<CultureRating>( city );
 
   if( culture.isValid() )
   {
@@ -130,7 +130,7 @@ void Ratings::Impl::checkCultureRating()
 
 void Ratings::Impl::checkProsperityRating()
 {
-  ProsperityRatingPtr prosperity = statistic::finds<ProsperityRating>( city );
+  ProsperityRatingPtr prosperity = statistic::getService<ProsperityRating>( city );
 
   std::string text;
   if( prosperity != 0 )
@@ -143,7 +143,7 @@ void Ratings::Impl::checkProsperityRating()
       return;
     }
 
-    InfoPtr info = statistic::finds<Info>( city );
+    InfoPtr info = statistic::getService<Info>( city );
 
     city::Info::Parameters current = info->lastParams();
     city::Info::Parameters lastYear = info->yearParams( 0 );
@@ -188,8 +188,8 @@ void Ratings::Impl::checkProsperityRating()
 void Ratings::Impl::checkPeaceRating()
 {
   StringArray advices;
-  MilitaryPtr ml = statistic::finds<Military>( city );
-  PeacePtr peaceRt = statistic::finds<Peace>( city );
+  MilitaryPtr ml = statistic::getService<Military>( city );
+  PeacePtr peaceRt = statistic::getService<Peace>( city );
 
   if( ml.isNull() || peaceRt.isNull() || !lbRatingInfo )
   {
@@ -234,8 +234,8 @@ void Ratings::Impl::checkPeaceRating()
 void Ratings::Impl::checkFavourRating()
 {
   StringArray problems;
-  request::DispatcherPtr rd = statistic::finds<request::Dispatcher>( city );
-  InfoPtr info = statistic::finds<Info>( city );
+  request::DispatcherPtr rd = statistic::getService<request::Dispatcher>( city );
+  InfoPtr info = statistic::getService<Info>( city );
 
   Info::Parameters current = info->lastParams();
   Info::Parameters lastYear = info->yearParams( 0 );

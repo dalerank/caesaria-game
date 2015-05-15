@@ -138,7 +138,8 @@ void Widget::setGeometry( const Rect& r, GeometryType mode )
   updateAbsolutePosition();
 }
 
-void Widget::_resizeEvent(){}
+void Widget::_finalizeResize() {}
+void Widget::_finalizeMove() {}
 
 Widget::Widgets& Widget::_getChildren() {  return _dfunc()->children;}
 
@@ -239,7 +240,7 @@ void Widget::updateAbsolutePosition()
 
   if( oldRect.size() != _d->absoluteRect.size() )
   {
-    _resizeEvent();
+    _finalizeResize();
   }
 
   // update all children
@@ -759,6 +760,8 @@ void Widget::_recalculateAbsolutePosition( bool recursive )
           (*it)->_recalculateAbsolutePosition(recursive);
       }
     }
+
+    _finalizeResize();
 }
 
 void Widget::animate( unsigned int timeMs )

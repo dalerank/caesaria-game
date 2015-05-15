@@ -1,3 +1,4 @@
+//end namespace gfx
 // This file is part of CaesarIA.
 //
 // CaesarIA is free software: you can redistribute it and/or modify
@@ -53,20 +54,17 @@ public:
   Camera* camera;
   Tile* currentTile;
   PlayerCityPtr city;
-  PictureRef outline;
-  bool needUpdateOutline;
-  PictureRef tooltipPic;
+  Picture outline;
+  Picture tooltipPic;
   int nextLayer;
   std::string tooltipText;
   Picture terraintPic;
   Layer::WalkerTypes vwalkers;
-  PictureRef tilePosText;
+  Picture tilePosText;
   Font debugFont;
   AlwaysDrawObjects drObjects;
 
   int posMode;
-public:
-  void updateOutlineTexture( Tile* tile );
 };
 
 void Layer::registerTileForRendering(Tile& tile)
@@ -78,7 +76,7 @@ void Layer::renderUi(Engine& engine)
   __D_IMPL(_d,Layer)
   if( !_d->tooltipText.empty() )
   {
-    engine.draw( *_d->tooltipPic, _d->lastCursorPos );
+    engine.draw( _d->tooltipPic, _d->lastCursorPos );
   }
 }
 
@@ -107,7 +105,6 @@ void Layer::handleEvent(NEvent& event)
       }
 
       Tile* selectedTile = _d->camera->at( _d->lastCursorPos, true );
-      _d->needUpdateOutline = (selectedTile != _d->currentTile);
       _d->currentTile = selectedTile;
     }
     break;
@@ -199,37 +196,45 @@ TilesArray Layer::_getSelectedArea( TilePos startPos )
 
 void Layer::drawPass( Engine& engine, Tile& tile, const Point& offset, Renderer::Pass pass)
 {
-  Point screenPos = tile.mappos() + offset;
+  Picture refPic;
+  bool find = false;
   switch( pass )
   {
-  case Renderer::ground: engine.draw( tile.picture(), screenPos ); break;
+  case Renderer::ground:
+    refPic = tile.picture();
+    find = true;
+  break;
 
   case Renderer::groundAnimation:
-  {
     if( tile.animation().isValid() )
     {
-      engine.draw( tile.animation().currentFrame(), screenPos );
+      refPic = tile.animation().currentFrame();
+      find = true;
     }
-  }
   break;
 
   case Renderer::overlay:
-  {
-    if( tile.rov().isNull() )
-      return;
-
-    engine.draw( tile.rov()->picture(), screenPos );
-  }
+    if( tile.rov().isValid() )
+    {
+      find = true;
+      refPic = tile.rov()->picture();
+    }
   break;
 
   default:
-  {
-    if( tile.rov().isNull() )
-      return;
-
-    engine.draw( tile.rov()->pictures( pass ), screenPos );
-  }
   break;
+  }
+
+  Point screenPos = tile.mappos() + offset;
+  if( refPic.isValid() )
+  {
+    engine.draw( refPic, screenPos );
+  }
+
+  if( !find && tile.rov().isValid() )
+  {
+    const Pictures& pics = tile.rov()->pictures( pass );
+    engine.draw( pics, screenPos );
   }
 }
 
@@ -240,6 +245,7 @@ void Layer::drawWalkers( Engine& engine, const Tile& tile, const Point& camOffse
   const Layer::WalkerTypes& vWalkers = visibleTypes();
 
   bool viewAll = vWalkers.count( walker::all );
+
   foreach( w, walkers )
   {
     if( viewAll || vWalkers.count( (*w)->type() ) > 0 )
@@ -260,15 +266,15 @@ void Layer::_setTooltipText(const std::string& text)
     _d->tooltipText = text;
     Size size = font.getTextSize( text );
 
-    if( _d->tooltipPic.isNull() || (_d->tooltipPic->size() != size) )
+    if( _d->tooltipPic.isValid() || (_d->tooltipPic.size() != size) )
     {
-      _d->tooltipPic.reset( Picture::create( size, 0, true ) );
+      _d->tooltipPic = Picture( size, 0, true );
     }
 
-    _d->tooltipPic->fill( 0x00000000, Rect( Point( 0, 0 ), _d->tooltipPic->size() ) );
-    _d->tooltipPic->fill( 0xff000000, Rect( Point( 0, 0 ), size ) );
-    _d->tooltipPic->fill( 0xffffffff, Rect( Point( 1, 1 ), size - Size( 2, 2 ) ) );
-    font.draw( *_d->tooltipPic, text, Point(), false );
+    _d->tooltipPic.fill( 0x00000000, Rect( Point( 0, 0 ), _d->tooltipPic.size() ) );
+    _d->tooltipPic.fill( 0xff000000, Rect( Point( 0, 0 ), size ) );
+    _d->tooltipPic.fill( 0xffffffff, Rect( Point( 1, 1 ), size - Size( 2, 2 ) ) );
+    font.draw( _d->tooltipPic, text, Point(), false );
   }
 }
 
@@ -279,10 +285,10 @@ void Layer::render( Engine& engine)
   Point camOffset = _d->camera->offset();
 
   _camera()->startFrame();
+  DrawOptions& opts = DrawOptions::instance();
   //FIRST PART: draw lands
   drawLands( engine, _d->camera );
 
-  DrawOptions& opts = DrawOptions::instance();
   if( opts.isFlag( DrawOptions::shadowOverlay ) )
   {
     engine.setColorMask( 0x00ff0000, 0x0000ff00, 0x000000ff, 0xc0000000 );
@@ -367,10 +373,10 @@ void Layer::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, 
 void Layer::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   if( !tile.rwd() )
-  {   
+  {
     if( tile.rov().isValid() )
     {
-      registerTileForRendering( tile );     
+      registerTileForRendering( tile );
       drawPass( engine, tile, offset, Renderer::overlayGround );
       drawPass( engine, tile, offset, Renderer::overlay );
       drawPass( engine, tile, offset, Renderer::overlayAnimation );
@@ -401,8 +407,8 @@ void Layer::drawArea(Engine& engine, const TilesArray& area, const Point &offset
     Tile* tile = *it;
     int tileBorders = ( tile->i() == leftBorderAtI ? 0 : OverlayPic::skipLeftBorder )
                       + ( tile->j() == rightBorderAtJ ? 0 : OverlayPic::skipRightBorder );
-    Picture *pic = &Picture::load(resourceGroup, tileBorders + tileId);
-    engine.draw( *pic, tile->mappos() + offset );
+    Picture pic(resourceGroup, tileBorders + tileId);
+    engine.draw( pic, tile->mappos() + offset );
   }
 }
 
@@ -416,10 +422,13 @@ void Layer::drawLands( Engine& engine, Camera* camera )
   // FIRST PART: draw all flat land (walkable/boatable)
   foreach( it, flatTiles )
   {
-    drawPass( engine, **it, camOffset, Renderer::ground );
-    drawPass( engine, **it, camOffset, Renderer::groundAnimation );
+    Tile& tile = **it;
+    drawPass( engine, tile, camOffset, Renderer::ground );   
 
-    drawTile( engine, **it, camOffset );
+    if( tile.rov().isValid() )
+      drawTile( engine, tile, camOffset );
+    else
+      drawPass( engine, tile, camOffset, Renderer::groundAnimation );
   }
 
   if( DrawOptions::instance().isFlag( DrawOptions::oldGraphics ) )
@@ -441,11 +450,6 @@ void Layer::drawLands( Engine& engine, Camera* camera )
         {
           t.setFlag( Tile::tlRock, true);
         }
-        /*if( !master->rwd() && master == &t )
-        {            
-          drawPass( engine, *master, camOffset, Renderer::ground );
-          drawPass( engine, *master, camOffset, Renderer::groundAnimation );
-        }*/
       }
       else
       {
@@ -485,7 +489,9 @@ void Layer::init( Point cursor )
   _d->nextLayer = type();
 }
 
-void Layer::beforeRender(Engine&) {}
+void Layer::beforeRender(Engine&)
+{
+}
 
 void Layer::afterRender( Engine& engine)
 {
@@ -517,7 +523,7 @@ void Layer::afterRender( Engine& engine)
 
   if( opts.isFlag( DrawOptions::drawGrid ) )
   {
-    Tilemap& tmap = _d->city->tilemap();    
+    Tilemap& tmap = _d->city->tilemap();
     int size = tmap.size();
     //Picture& screen = engine.screen();
     for( int k=0; k < size; k++ )
@@ -553,7 +559,7 @@ void Layer::afterRender( Engine& engine)
 
   if( opts.isFlag( DrawOptions::showRoads ) )
   {
-    const Picture& grnPicture = Picture::load( "oc3_land", 1);
+    Picture grnPicture( "oc3_land", 1);
 
     TilesArray tiles = _d->city->tilemap().allTiles();
     foreach( it, tiles )
@@ -565,7 +571,7 @@ void Layer::afterRender( Engine& engine)
 
   if( opts.isFlag( DrawOptions::showWalkableTiles ) )
   {
-    const Picture& grnPicture = Picture::load( "oc3_land", 1);
+    Picture grnPicture( "oc3_land", 1);
 
     TilesArray tiles = _d->city->tilemap().allTiles();
     foreach( it, tiles )
@@ -577,7 +583,7 @@ void Layer::afterRender( Engine& engine)
 
   if( opts.isFlag( DrawOptions::showFlatTiles ) )
   {
-    const Picture& grnPicture = Picture::load( "oc3_land", 1);
+    Picture grnPicture( "oc3_land", 1);
 
     TilesArray tiles = _d->city->tilemap().allTiles();
     foreach( it, tiles )
@@ -589,7 +595,7 @@ void Layer::afterRender( Engine& engine)
 
   if( opts.isFlag( DrawOptions::showLockedTiles ) )
   {
-    const Picture& grnPicture = Picture::load( "oc3_land", 2);
+    Picture grnPicture( "oc3_land", 2);
 
     TilesArray tiles = _d->city->tilemap().allTiles();
     foreach( it, tiles )
@@ -607,10 +613,10 @@ void Layer::afterRender( Engine& engine)
     int halfRWidth = rwidth / 2;
     Size size( math::clamp<int>( (tile->picture().width() + 2) / rwidth, 1, 10 ) );
 
-    if( _d->tilePosText->isValid() )
+    if( _d->tilePosText.isValid() )
     {
-      _d->tilePosText->fill( 0x0 );
-      _d->debugFont.draw( *_d->tilePosText, utils::format( 0xff, "%d,%d", tile->i(), tile->j() ), false, true );
+      _d->tilePosText.fill( 0x0 );
+      _d->debugFont.draw( _d->tilePosText, utils::format( 0xff, "%d,%d", tile->i(), tile->j() ), false, true );
     }
 
     OverlayPtr ov = tile->overlay();
@@ -618,8 +624,6 @@ void Layer::afterRender( Engine& engine)
     {
       size = ov->size();
       pos = ov->tile().mappos();
-
-
     }
     else if( tile->masterTile() != 0 )
     {
@@ -632,7 +636,7 @@ void Layer::afterRender( Engine& engine)
     engine.drawLine( DefaultColors::red, pos + Point( halfRWidth, halfRWidth/2 ) * size.width(), pos + Point( rwidth, 0) * size.height() );
     engine.drawLine( DefaultColors::red, pos + Point( rwidth, 0) * size.width(), pos + Point( halfRWidth, -halfRWidth/2 ) * size.height() );
     engine.drawLine( DefaultColors::red, pos + Point( halfRWidth, -halfRWidth/2 ) * size.width(), pos );
-    engine.draw( *_d->tilePosText, pos );
+    engine.draw( _d->tilePosText, pos );
   }
 }
 
@@ -647,7 +651,7 @@ Layer::Layer( Camera* camera, PlayerCityPtr city )
 
   _d->posMode = 0;
   _d->terraintPic = MetaDataHolder::randomPicture( object::terrain, 1 );
-  _d->tilePosText.init( Size( 240, 80 ) );
+  _d->tilePosText = Picture( Size( 240, 80 ), 0, true );
 }
 
 void Layer::_addWalkerType(walker::Type wtype)
@@ -708,21 +712,6 @@ bool Layer::_isMovingButtonPressed(NEvent &event) const
   return DrawOptions::instance().isFlag( DrawOptions::mmbMoving )
             ? event.mouse.isMiddlePressed()
             : event.mouse.isLeftPressed();
-}
-
-
-void Layer::Impl::updateOutlineTexture( Tile* tile )
-{
-  if( !needUpdateOutline )
-    return;
-
- /* if( tile && tile->overlay().isValid() )
-  {
-    const Picture& pic = tile->overlay()->picture();
-
-    outline.reset( Picture::create( pic.size(), 0, true ) );
-
-  } */
 }
 
 DrawOptions& DrawOptions::instance()

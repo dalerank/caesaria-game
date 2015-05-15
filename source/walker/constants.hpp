@@ -91,6 +91,7 @@ BEGIN_NAMEDTYPE(Type,unknown)
   gladiatorRiot,
   merchantCamel,
   house_plague,
+  trigger,
   all = 0xff,
   any = all
 END_NAMEDTYPE(Type)

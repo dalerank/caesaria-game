@@ -83,8 +83,7 @@ void Neptune::_doSmallCurse(PlayerCityPtr city)
                                                             events::ShowInfobox::send2scribe );
   event->dispatch();
 
-  DockList docks;
-  docks << city->overlays();
+  DockList docks = city::statistic::getObjects<Dock>( city );
 
   DockPtr dock = docks.random();
   if( dock.isValid() )
@@ -95,7 +94,7 @@ void Neptune::_doSmallCurse(PlayerCityPtr city)
 
 void Neptune::_doBlessing(PlayerCityPtr city)
 {
-  FishingBoatList boats = city::statistic::findw<FishingBoat>( city, walker::fishingBoat, TilePos(-1, -1));
+  FishingBoatList boats = city::statistic::getWalkers<FishingBoat>( city, walker::fishingBoat, TilePos(-1, -1));
 
   FishingBoatPtr boat = boats.random();
   foreach( it, boats )

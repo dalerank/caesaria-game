@@ -19,6 +19,7 @@
 #include "events/showinfobox.hpp"
 #include "objects/extension.hpp"
 #include "core/gettext.hpp"
+#include "city/statistic.hpp"
 #include "objects/house.hpp"
 #include "city/sentiment.hpp"
 #include "city/wrath_of_venus.hpp"
@@ -71,8 +72,7 @@ void Venus::_doBlessing(PlayerCityPtr city)
                                                             _("##blessing_of_venus_description##") );
   event->dispatch();
 
-  HouseList houses;
-  houses << city->overlays();
+  HouseList houses = city::statistic::getHouses( city );
 
   int rndCount = math::random( houses.size() / 5 );
   for( int i=0; i < rndCount; i++ )
@@ -110,15 +110,13 @@ void Venus::_doSmallCurse(PlayerCityPtr city)
                                      _("##smcurse2_of_venus_description##"),
                                      events::ShowInfobox::send2scribe );
 
-    HouseList houses;
-    houses << city->overlays();
+    HouseList houses = city::statistic::getHouses( city );
 
     int rndCount = math::random( houses.size() / 5 );
     for( int i=0; i < rndCount; i++ )
     {
-      ConstructionPtr house;
-      house << houses.random();
-      ConstructionParamUpdater::assignTo( house, pr::healthBuff, true, -8, DateTime::weekInMonth * 5 );
+      HousePtr house = houses.random();
+      ConstructionParamUpdater::assignTo( house.as<Construction>(), pr::healthBuff, true, -8, DateTime::weekInMonth * 5 );
     }
   }
   break;

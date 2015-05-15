@@ -132,15 +132,19 @@ void Briefing::initialize()
 
   if( Impl::currentVesion == vm[ "version" ].toInt() )
   {
-    Picture pic = Picture::load( "mapback", 1 );
+    Picture pic( "mapback", 1 );
     gui::Image* mapback = new gui::Image( _d->game->gui()->rootWidget(), Point(), pic );
+    if( !pic.isValid() )
+    {
+      mapback->setGeometry( Rect( 0, 0, 640, 480 ) );
+    }
     mapback->setCenter( _d->game->gui()->rootWidget()->center() );
 
     std::string mapToLoad = vm[ "image" ].toString();
-    pic = Picture::load( mapToLoad );
+    pic.load( mapToLoad );
     if( !pic.isValid() )
     {
-      pic = Picture::load( "europe01", 2 );
+      pic.load( "europe01", 2 );
     }
 
     Point startImgPos( 192, 144 );

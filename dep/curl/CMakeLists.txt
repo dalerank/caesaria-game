@@ -3,15 +3,11 @@ project(curl-static)
 set(CURL_SOURCES_LIST
     base64.c
     connect.c
-    content_encoding.c
     cookie.c
     curl_addrinfo.c
     curl_fnmatch.c
     curl_memrchr.c
-    curl_rand.c
-    curl_rtmp.c
-    curl_sspi.c
-    curl_threads.c
+    curl_rand.c        
     dict.c
     easy.c
     escape.c
@@ -21,67 +17,52 @@ set(CURL_SOURCES_LIST
     ftp.c
     ftplistparser.c
     getenv.c
-    getinfo.c
-    gtls.c
+    getinfo.c    
     hash.c
-    hmac.c
-     hostares.c
-     hostasyn.c
+    hmac.c     
      hostip.c
-     hostip4.c
-     hostip6.c
-     hostsyn.c
-     hostthre.c
+     hostip4.c     
+     hostsyn.c     
      http.c
      http_chunks.c
-     http_digest.c
-     http_negotiate.c
-     http_ntlm.c
+     http_digest.c          
      if2ip.c
      imap.c
      inet_ntop.c
      inet_pton.c
-     krb4.c
-     krb5.c
-     ldap.c
      llist.c
-     md5.c
-     memdebug.c
+     md5.c     
      mprintf.c
      multi.c
      netrc.c
      nonblock.c
-     nss.c
-     nwlib.c
-     nwos.c
-     openldap.c
+
      parsedate.c
      pingpong.c
-     polarssl.c
+
      pop3.c
      progress.c
-     qssl.c
+
      rawstr.c
      rtsp.c
-     security.c
+
      select.c
      sendf.c
      share.c
      slist.c
      smtp.c
      socks.c
-     socks_gssapi.c
-     socks_sspi.c
+
      speedcheck.c
      splay.c
-     ssh.c
+
      sslgen.c
-     ssluse.c
+
      strdup.c
      strequal.c
      strerror.c
      strtok.c
-     strtoofft.c
+
      telnet.c
      tftp.c
      timeval.c
@@ -92,6 +73,38 @@ set(CURL_SOURCES_LIST
      wildcard.c
     setup_once.h
 )
+
+if( NOT APPLE)
+  set( CURL_SOURCES_LIST ${CURL_SOURCES_LIST}
+              content_encoding.c
+              curl_rtmp.c
+              curl_sspi.c
+              curl_threads.c
+              gtls.c
+              hostares.c
+              hostasyn.c
+              hostip6.c
+hostthre.c
+http_negotiate.c
+http_ntlm.c
+     krb4.c
+     krb5.c
+     ldap.c
+memdebug.c
+     nss.c
+     nwlib.c
+     nwos.c
+     openldap.c
+     polarssl.c
+     qssl.c
+     security.c
+     socks_gssapi.c
+     socks_sspi.c
+     ssh.c
+     ssluse.c
+     strtoofft.c
+     )
+endif()
 
 set(OPERATING_SYSTEM "${CMAKE_SYSTEM_NAME}")
 add_definitions("-DOS=\"${CMAKE_SYSTEM_NAME}\"")

@@ -30,6 +30,7 @@ TexturedButton::TexturedButton(Widget *parent, const Point &pos, const Size &siz
   setPicture( ResourceGroup::panelBackground, (hovTxIndex == -1) ? normalTxIndex+1 : hovTxIndex , stHovered );
   setPicture( ResourceGroup::panelBackground, (prsTxIndex == -1) ? normalTxIndex+2 : prsTxIndex , stPressed );
   setPicture( ResourceGroup::panelBackground, (dsbTxIndex == -1) ? normalTxIndex+3 : dsbTxIndex , stDisabled );
+  setTextVisible( false );
 }
 
 TexturedButton::TexturedButton(Widget *parent, const Point &pos, const Size &size, int id, const char *resourceGroup, int normalTxIndex, int hovTxIndex, int prsTxIndex, int dsbTxIndex)
@@ -39,6 +40,12 @@ TexturedButton::TexturedButton(Widget *parent, const Point &pos, const Size &siz
   setPicture( resourceGroup, (hovTxIndex == -1) ? normalTxIndex+1 : hovTxIndex, stHovered );
   setPicture( resourceGroup, (prsTxIndex == -1) ? normalTxIndex+2 : prsTxIndex, stPressed );
   setPicture( resourceGroup, (dsbTxIndex == -1) ? normalTxIndex+3 : dsbTxIndex, stDisabled );
+  setTextVisible( false );
+}
+
+gui::TexturedButton::TexturedButton(gui::Widget *parent) : PushButton( parent )
+{
+  setTextVisible( false );
 }
 
 }//end namespace gui

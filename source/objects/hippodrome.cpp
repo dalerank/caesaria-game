@@ -56,7 +56,7 @@ HippodromeSection::HippodromeSection( Hippodrome& base, Direction direction, Typ
   setState( pr::inflammability, 0 );
   setState( pr::collapsibility, 0 );
 
-  _fgPicturesRef().resize( 1 );
+  _fgPictures().resize( 1 );
 
   _basepos = base.pos();
   _direction = direction;
@@ -85,9 +85,8 @@ HippodromeSection::HippodromeSection( Hippodrome& base, Direction direction, Typ
   break;
   }
 
-  Picture pic = Picture::load( ResourceGroup::hippodrome, pictureIndex );
-  pic.setOffset( Point( 0, pic.height() / 2) + hippodromeSectionOffset[ pictureIndex ] );
-  setPicture( pic );
+  _picture().load( ResourceGroup::hippodrome, pictureIndex );
+  _picture().setOffset( Point( 0, _picture().height() / 2 ) + hippodromeSectionOffset[ pictureIndex ] );
 
   _animationRef().addFrame( ResourceGroup::hippodrome, animIndex );
   _animationRef().setOffset( hippodromeSectionOffset[ animIndex ]);
@@ -156,7 +155,7 @@ const Pictures& Hippodrome::pictures(Renderer::Pass pass) const
 
 Hippodrome::Hippodrome() : EntertainmentBuilding(Service::hippodrome, object::hippodrome, Size(15,5) ), _d( new Impl )
 {
-  _fgPicturesRef().resize(5);
+  _fgPictures().resize(5);
   _d->direction = direction::west;
   _d->charioterPictures.reserve(3);
   _init();  
@@ -184,7 +183,7 @@ bool Hippodrome::canBuild( const city::AreaInfo& areaInfo ) const
     const_cast<Hippodrome*>( this )->_init();
   }
 
-  HippodromeList hpList = city::statistic::findo<Hippodrome>( areaInfo.city, object::hippodrome );
+  HippodromeList hpList = city::statistic::getObjects<Hippodrome>( areaInfo.city, object::hippodrome );
   if( !hpList.empty() )
   {
     const_cast<Hippodrome*>( this )->_setError( "##may_build_only_once_hippodrome##");
@@ -294,14 +293,14 @@ void Hippodrome::_init( bool onBuild )
   {
   case direction::north:
   {
-    setPicture( ResourceGroup::hippodrome, 5 );
-    _d->fullyPic = Picture::load( ResourceGroup::hippodrome, 9 );
+    _picture().load( ResourceGroup::hippodrome, 5 );
+    _d->fullyPic.load( ResourceGroup::hippodrome, 9 );
     _d->fullyPic.setOffset( hippodromeSectionOffset[ 9 ] );
     if( !onBuild )
     {
-      _fgPicture( 0 ) = Picture::load( ResourceGroup::hippodrome, 3);
+      _fgPicture( 0 ).load( ResourceGroup::hippodrome, 3);
       _fgPicture( 0 ).setOffset( 150, 181 );
-      _fgPicture( 1 ) = Picture::load( ResourceGroup::hippodrome, 1);
+      _fgPicture( 1 ).load( ResourceGroup::hippodrome, 1);
       _fgPicture( 1 ).setOffset( 300, 310 );
     }
   }
@@ -309,17 +308,17 @@ void Hippodrome::_init( bool onBuild )
 
   case direction::west:
   {
-    _d->fullyPic = Picture::load( ResourceGroup::hippodrome, 16 );
+    _d->fullyPic.load( ResourceGroup::hippodrome, 16 );
     _d->fullyPic.setOffset( hippodromeSectionOffset[ 16 ] );
-    Picture pic = Picture::load( ResourceGroup::hippodrome, 10 );
+    Picture pic( ResourceGroup::hippodrome, 10 );
     pic.setOffset( 0, pic.height() / 2 + 42 );
     setPicture( pic );
 
     if( !onBuild )
     {
-      _fgPicture( 0 ) = Picture::load( ResourceGroup::hippodrome, 12);
+      _fgPicture( 0 ).load( ResourceGroup::hippodrome, 12);
       _fgPicture( 0 ).setOffset( 150, 31 );
-      _fgPicture( 1 ) = Picture::load( ResourceGroup::hippodrome, 14 );
+      _fgPicture( 1 ).load( ResourceGroup::hippodrome, 14 );
       _fgPicture( 1 ).setOffset( 300, -43 );
     }
   }

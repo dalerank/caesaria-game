@@ -143,7 +143,7 @@ signals public:
 
 protected:
   //! Updates the position, splits text if required
-  virtual void _resizeEvent();
+  virtual void _finalizeResize();
 
   //! Breaks the single text line.
   void _breakText();

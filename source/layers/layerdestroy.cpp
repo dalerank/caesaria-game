@@ -47,7 +47,7 @@ class Destroy::Impl
 public:
   Picture shovelPic;
   Picture clearPic;
-  PictureRef textPic;
+  Picture textPic;
   unsigned int savesum, money4destroy;
   TilePos startTilePos;
   LayerPtr lastLayer;
@@ -223,13 +223,13 @@ void Destroy::renderUi(Engine &engine)
 {
   if( _d->savesum != _d->money4destroy )
   {
-    _d->textPic->fill( 0x0, Rect() );
+    _d->textPic.fill( 0x0, Rect() );
     _d->textFont.setColor( 0xffff0000 );
-    _d->textFont.draw( *_d->textPic, utils::i2str( _d->money4destroy ) + " Dn", Point() );
+    _d->textFont.draw( _d->textPic, utils::i2str( _d->money4destroy ) + " Dn", Point() );
   }
 
   engine.draw( _d->shovelPic, engine.cursorPos() - Point( 5, _d->shovelPic.height() ) );
-  engine.draw( *_d->textPic, engine.cursorPos() + Point( 10, 10 ));
+  engine.draw( _d->textPic, engine.cursorPos() + Point( 10, 10 ));
 }
 
 void Destroy::changeLayer(int layer)
@@ -383,11 +383,11 @@ Destroy::Destroy( Renderer& renderer, PlayerCityPtr city)
   : Layer( renderer.camera(), city ), _d( new Impl )
 {
   _d->renderer = &renderer;
-  _d->shovelPic = Picture::load( "shovel", 1 );
+  _d->shovelPic.load( "shovel", 1 );
   std::string rcLand = SETTINGS_VALUE( forbidenTile ).toString();
-  _d->clearPic = Picture::load( rcLand, 2 );
+  _d->clearPic.load( rcLand, 2 );
   _d->textFont = Font::create( FONT_5 );
-  _d->textPic.init( Size( 100, 30 ) );
+  _d->textPic = Picture( Size( 100, 30 ), 0, true );
   _addWalkerType( walker::all );
 }
 

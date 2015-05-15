@@ -18,6 +18,7 @@
 #include "city_options_window.hpp"
 #include "pushbutton.hpp"
 #include "core/event.hpp"
+#include "world/empire.hpp"
 #include "listbox.hpp"
 #include "core/utils.hpp"
 #include "dialogbox.hpp"
@@ -57,9 +58,11 @@ public:
   PushButton* btnBarbarianMayAttack;
   PushButton* btnLegionMayAttack;
   PushButton* btnAnroidBarEnabled;
+  PushButton* btnToggleBatching;
   Label* lbFireRisk;
   TexturedButton* btnIncreaseFireRisk;
   TexturedButton* btnDecreaseFireRisk;
+  PushButton* btnToggleCcUseAI;
 
   Label* lbCollapseRisk;
   TexturedButton* btnIncreaseCollapseRisk;
@@ -90,11 +93,13 @@ public:
   void toggleShowTooltips();
   void toggleLegionAttack();
   void toggleAndroidBarEnabled();
+  void toggleUseBatching();
+  void toggleCcUseAI();
   void toggleCityOption( PlayerCity::OptionType option );
-  void changeCityOption(PlayerCity::OptionType option, int delta);
+  void changeCityOption( PlayerCity::OptionType option, int delta);
 };
 
-CityOptions::CityOptions(Widget* parent, PlayerCityPtr city )
+CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
   _d->city = city;
@@ -124,6 +129,8 @@ CityOptions::CityOptions(Widget* parent, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, btnShowTooltips )
   GET_DWIDGET_FROM_UI( _d, btnDifficulty )
   GET_DWIDGET_FROM_UI( _d, btnAnroidBarEnabled )
+  GET_DWIDGET_FROM_UI( _d, btnToggleBatching )
+  GET_DWIDGET_FROM_UI( _d, btnToggleCcUseAI )
 
   CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods )
   CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings )
@@ -142,12 +149,15 @@ CityOptions::CityOptions(Widget* parent, PlayerCityPtr city )
   CONNECT( _d->btnAnroidBarEnabled, onClicked(), _d.data(), Impl::toggleAndroidBarEnabled )
   CONNECT( _d->btnIncreaseCollapseRisk, onClicked(), _d.data(), Impl::increaseCollapseRisk )
   CONNECT( _d->btnDecreaseCollapseRisk, onClicked(), _d.data(), Impl::decreaseCollapseRisk )
+  CONNECT( _d->btnToggleBatching, onClicked(), _d.data(), Impl::toggleUseBatching )
+  CONNECT( _d->btnToggleCcUseAI, onClicked(), _d.data(), Impl::toggleCcUseAI )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptions::deleteLater );
   if( btnClose ) btnClose->setFocus();
 
   _d->update();
+  setModal();
 }
 
 CityOptions::~CityOptions() {}
@@ -233,6 +243,29 @@ void CityOptions::Impl::toggleLeftMiddleMouse()
 {
   bool value = DrawOptions::instance().isFlag( DrawOptions::mmbMoving );
   DrawOptions::instance().setFlag( DrawOptions::mmbMoving, !value );
+  update();
+}
+
+void CityOptions::Impl::toggleUseBatching()
+{
+  bool value = gfx::Engine::instance().getFlag( gfx::Engine::batching ) > 0;
+  gfx::Engine::instance().setFlag( gfx::Engine::batching, !value );
+  update();
+}
+
+void CityOptions::Impl::toggleCcUseAI()
+{
+  bool value = SETTINGS_VALUE( ccUseAI );
+  SETTINGS_SET_VALUE( ccUseAI, !value );
+
+  world::EmpirePtr empire = city->empire();
+  world::CityList cities = empire->cities();
+
+  foreach( it, cities )
+  {
+    (*it)->setAiMode( !value ? world::City::indifferent : world::City::inactive );
+  }
+
   update();
 }
 
@@ -362,6 +395,22 @@ void CityOptions::Impl::update()
     btnAnroidBarEnabled->setText( value
                                     ? _("##city_androidbar_on##")
                                     : _("##city_androidbar_off##")  );
+  }
+
+  if( btnToggleBatching )
+  {
+    bool value = gfx::Engine::instance().getFlag( gfx::Engine::batching ) > 0;
+    btnToggleBatching->setText( value
+                                    ? _("##city_batching_on##")
+                                    : _("##city_batching_off##")  );
+  }
+
+  if( btnToggleCcUseAI )
+  {
+    bool value = SETTINGS_VALUE( ccUseAI );
+    btnToggleCcUseAI->setText( value
+                                    ? _("##city_ccuseai_on##")
+                                    : _("##city_ccuseai_off##")  );
   }
 }
 

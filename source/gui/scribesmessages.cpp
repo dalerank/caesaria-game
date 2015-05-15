@@ -69,7 +69,7 @@ public:
     item.OverrideColors[ ListBoxItem::hovered ].Use = true;
     item.OverrideColors[ ListBoxItem::hovered ].color = 0xffff0000;
 
-    item.setIcon( Picture::load( ResourceGroup::panelBackground, 111 ));
+    item.setIcon( Picture( ResourceGroup::panelBackground, 111 ));
 
     return item;
   }
@@ -84,7 +84,7 @@ protected:
     bool opened = item.data( literals::opened );
     bool critical = item.data( literals::critical );
     int imgIndex = (critical ? 113 : 111) + (opened ? 1 : 0);
-    painter.draw( Picture::load( ResourceGroup::panelBackground, imgIndex ), pos + Point( 2, 2) );
+    painter.draw( Picture( ResourceGroup::panelBackground, imgIndex ), pos + Point( 2, 2) );
   }
 
   virtual void _updateItemText(Engine& painter, ListBoxItem& item, const Rect& textRect, Font font, const Rect& frameRect)

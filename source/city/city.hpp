@@ -54,22 +54,33 @@ public:
   static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr mayor );
   virtual ~PlayerCity();
 
+  /** Call every step */
   virtual void timeStep(unsigned int time);  // performs one simulation step
 
-  WalkerList walkers(walker::Type type );
+  /** Return array of walkers with current type */
+  const WalkerList& walkers(walker::Type type );
+
+  /** Return array of walkers in current tile */
   const WalkerList& walkers(const TilePos& pos);
+
+  /** Return all walkers in city */
   const WalkerList& walkers() const;
 
+  /** Add walker to city */
   void addWalker( WalkerPtr walker );
 
+  /** Add service to city */
   void addService( city::SrvcPtr service );
   city::SrvcPtr findService( const std::string& name ) const;
 
+  /** Return all services in city */
   const city::SrvcList& services() const;
 
+  /** Set road/river enter/exit points for city */
   void setBorderInfo( const BorderInfo& info );
   const BorderInfo& borderInfo() const;
 
+  /** Return city's icon for empire map */
   virtual gfx::Picture picture() const;
   virtual bool isPaysTaxes() const;
   virtual bool haveOverduePayment() const;
@@ -77,6 +88,7 @@ public:
 
   PlayerPtr mayor() const;
   
+  /** Set/get current camera position last frame */
   void setCameraPos(const TilePos pos);
   TilePos cameraPos() const;
      
@@ -89,15 +101,21 @@ public:
   int sentiment() const;
   int favour() const;
 
+  /** Return city's objects map */
   gfx::Tilemap& tilemap();
 
   virtual void save( VariantMap& stream ) const;
   virtual void load( const VariantMap& stream );
 
-  // add overlay
+  /** Add static object to city */
   void addOverlay( OverlayPtr overlay);
+
+  /** Get static object from current position */
   OverlayPtr getOverlay( const TilePos& pos ) const;
+
+  /** Get all static objects in city */
   OverlayList& overlays();
+  const OverlayList& overlays() const;
 
   city::ActivePoints& activePoints();
   city::Scribes& scribes();
@@ -105,6 +123,7 @@ public:
   const city::development::Options& buildOptions() const;
   void setBuildOptions( const city::development::Options& options );
 
+  /** Return current information about city */
   virtual const city::States& states() const;
 
   const city::VictoryConditions& victoryConditions() const;
@@ -116,15 +135,26 @@ public:
   virtual void addObject( world::ObjectPtr object );
   virtual void empirePricesChanged( good::Product gtype, const world::PriceInfo& prices );
   virtual std::string about(Object::AboutType type);
+
+  /** What city sells */
   virtual const good::Store& sells() const;
+
+  /** What city buys */
   virtual const good::Store& buys() const;
   virtual ClimateType climate() const;
+
+  /** Return city's trade type land,sea or both */
   virtual unsigned int tradeType() const;
 
+  /** Set dynamic property for city */
   void setOption( OptionType opt, int value );
+
+  /** Return dynamic property by name */
   int getOption( OptionType opt ) const;
 
   void clean();
+
+  /** Change tile map in city */
   void resize(unsigned int size );
    
 signals public:

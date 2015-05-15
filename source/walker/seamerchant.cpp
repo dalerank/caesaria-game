@@ -103,7 +103,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     // get the list of buildings within reach   
     if( tryDockCount < maxTryDockCount )
     {
-      DockList docks = city::statistic::findo<Dock>( city, object::dock );
+      DockList docks = city::statistic::getObjects<Dock>( city, object::dock );
 
       if( !docks.empty() )
       {
@@ -387,7 +387,7 @@ void SeaMerchant::Impl::goAwayFromCity( PlayerCityPtr city, WalkerPtr walker )
 
 DockPtr SeaMerchant::Impl::findLandingDock(PlayerCityPtr city, WalkerPtr walker)
 {
-  DockList docks = city::statistic::findo<Dock>( city, object::dock, walker->pos() - TilePos( 1, 1), walker->pos() + TilePos( 1, 1 ) );
+  DockList docks = city::statistic::getObjects<Dock>( city, object::dock, walker->pos() - TilePos( 1, 1), walker->pos() + TilePos( 1, 1 ) );
   foreach( dock, docks )
   {
     if( (*dock)->landingTile().pos() == walker->pos() )
