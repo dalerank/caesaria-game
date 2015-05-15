@@ -90,7 +90,7 @@ protected:
   virtual void _updateTexture( gfx::Engine& painter );
   virtual void _handleClick(const Point& p);
 
-  gfx::PictureRef& _textPictureRef();
+  gfx::Picture& _textPicture();
   gfx::Pictures& _backgroundRef();
 
 private:

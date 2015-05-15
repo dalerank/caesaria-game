@@ -93,8 +93,8 @@ public:
 
   GameAutoPause autopause;
   Dragging drag;
-  Pictures borderPics;
   Batch border;
+  Pictures borderNb;
   Picture empireMap;
   world::CityPtr currentCity;
   Point offset;
@@ -292,7 +292,7 @@ void EmpireMapWindow::Impl::showTradeAdvisorWindow()
 void EmpireMapWindow::Impl::initBorder( Widget* p )
 {
   bottonMargin = 120;
-  Picture backgr = Picture::load( ResourceGroup::empirepnls, 4 );
+  Picture backgr( ResourceGroup::empirepnls, 4 );
   Pictures pics;
   for( unsigned int y=p->height() - bottonMargin; y < p->height(); y+=backgr.height() )
   {
@@ -302,14 +302,14 @@ void EmpireMapWindow::Impl::initBorder( Widget* p )
     }
   }
 
-  Picture lrBorderPic = Picture::load( ResourceGroup::empirepnls, 1 );
+  Picture lrBorderPic( ResourceGroup::empirepnls, 1 );
   for( unsigned int y = 0; y < p->height(); y += lrBorderPic.height() )
   {
     pics.append( lrBorderPic, Point( 0, -y ) );
     pics.append( lrBorderPic, Point( p->width() - lrBorderPic.width(), -y ) );
   }
 
-  Picture tdBorderPic = Picture::load( ResourceGroup::empirepnls, 2 );
+  Picture tdBorderPic( ResourceGroup::empirepnls, 2 );
   for( unsigned int x = 0; x < p->width(); x += tdBorderPic.width() )
   {
     pics.append( tdBorderPic, Point( x, 0 ) );
@@ -317,7 +317,7 @@ void EmpireMapWindow::Impl::initBorder( Widget* p )
     pics.append( tdBorderPic, Point( x, -p->height() + bottonMargin ) );
   }
 
-  Picture corner = Picture::load( ResourceGroup::empirepnls, 3 );
+  Picture corner( ResourceGroup::empirepnls, 3 );
   pics.append( corner, Point( 0, 0 ) );    //left top
   pics.append( corner, Point( 0, -p->height() + corner.height() ) ); //top right
   pics.append( corner, Point( p->width() - corner.width(), 0 ) ); //left bottom
@@ -325,9 +325,9 @@ void EmpireMapWindow::Impl::initBorder( Widget* p )
   pics.append( corner, Point( 0, -p->height() + bottonMargin ) ); //left middle
   pics.append( corner, Point( p->width() - corner.width(), -p->height() + bottonMargin ) ); //right middle
 
-  Picture leftEagle = Picture::load( ResourceGroup::empirepnls, 7 );
-  Picture rightEagle = Picture::load( ResourceGroup::empirepnls, 8 );
-  Picture centerPicture = Picture::load( ResourceGroup::empirepnls, 9 );
+  Picture leftEagle( ResourceGroup::empirepnls, 7 );
+  Picture rightEagle( ResourceGroup::empirepnls, 8 );
+  Picture centerPicture( ResourceGroup::empirepnls, 9 );
   Size eagleOffset = corner.size();
 
   pics.append( leftEagle, Point( eagleOffset.width(), -p->height() + (bottonMargin - eagleOffset.height() + leftEagle.height() + 10) ) );
@@ -348,7 +348,7 @@ void EmpireMapWindow::Impl::initBorder( Widget* p )
     border.load( pics, Point( 0, 0) );
   }
   else
-    borderPics = pics;
+    borderNb = pics;
 }
 
 void EmpireMapWindow::Impl::drawLines(Engine &painter)
@@ -539,7 +539,7 @@ EmpireMapWindow::EmpireMapWindow(Widget* parent, int id, PlayerCityPtr city )
   _d->city = city;
   _d->tooltipLabel = 0;
   _d->autopause.activate();
-  _d->empireMap = Picture::load( "the_empire", 1 );
+  _d->empireMap.load( "the_empire", 1 );
   _d->drag.active = false;
   GET_DWIDGET_FROM_UI( _d, lbTitle )
 
@@ -585,7 +585,7 @@ void EmpireMapWindow::draw(gfx::Engine& engine )
 
   _d->border.valid()
     ? engine.draw( _d->border, &absoluteClippingRectRef() )
-    : engine.draw( _d->borderPics, Point(), &absoluteClippingRectRef() );
+    : engine.draw( _d->borderNb, Point(), &absoluteClippingRectRef() );
 
   Widget::draw( engine );
 }

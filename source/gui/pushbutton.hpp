@@ -113,7 +113,7 @@ protected:
   virtual void _updateBackground( ElementState state );
   virtual void _updateTextPic();
 
-  gfx::PictureRef& _textPictureRef();
+  gfx::Picture& _textPicture();
   void _updateStyle();
 private:
   __DECLARE_IMPL(PushButton)

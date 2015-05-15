@@ -117,21 +117,21 @@ public:
 
     SrvcInfo info = findInfo( _service );
 
-    PictureRef& texture = _textPictureRef();
+    Picture& texture = _textPicture();
     Font rfont = font();
     std::string buildingStrT = utils::format( 0xff, "%d %s", _info.buildingCount, _(info.building) );
-    rfont.draw( *texture, buildingStrT, 0, 0 );
+    rfont.draw( texture, buildingStrT, 0, 0 );
 
     std::string buildingWorkT = utils::i2str( _info.buildingWork );
-    rfont.draw( *texture, buildingWorkT, 165, 0 );
+    rfont.draw( texture, buildingWorkT, 165, 0 );
 
     std::string peoplesStrT = utils::format( 0xff, "%d %s", _info.peoplesStuding, _(info.people) );
-    rfont.draw( *texture, peoplesStrT, 255, 0 );
+    rfont.draw( texture, peoplesStrT, 255, 0 );
 
     const char* coverageStr = _info.coverage > 0
                                   ? coverageDescriptions[ math::clamp( _info.coverage / maxDescriptionNumber, 0, maxDescriptionNumber-1 ) ]
                                   : "##non_cvrg##";
-    rfont.draw( *texture, _( coverageStr ), 440, 0 );
+    rfont.draw( texture, _( coverageStr ), 440, 0 );
   }
 
 private:

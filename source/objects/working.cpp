@@ -184,9 +184,9 @@ void WorkingBuilding::_updateAnimation(const unsigned long time )
     {
       if( _animationRef().isRunning() )
       {
-        if( _d->clearAnimationOnStop && !_fgPicturesRef().empty() )
+        if( _d->clearAnimationOnStop && !_fgPictures().empty() )
         {
-          _fgPicturesRef().back() = Picture::getInvalid();
+          _fgPictures().back() = Picture::getInvalid();
         }
 
         _animationRef().stop();
@@ -196,9 +196,9 @@ void WorkingBuilding::_updateAnimation(const unsigned long time )
 
   _animationRef().update( time );
   const Picture& pic = _animationRef().currentFrame();
-  if( pic.isValid() && !_fgPicturesRef().empty() )
+  if( pic.isValid() && !_fgPictures().empty() )
   {
-    _fgPicturesRef().back() = _animationRef().currentFrame();
+    _fgPictures().back() = _animationRef().currentFrame();
   }
 }
 

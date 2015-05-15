@@ -134,7 +134,7 @@ void Console::draw( gfx::Engine& painter )
 			}
 		}
 
-    painter.draw( *_bgpic, absoluteRect().lefttop() );	//draw the bg as per configured color
+    painter.draw( _bgpic, absoluteRect().lefttop() );	//draw the bg as per configured color
 		
     Rect textRect,shellRect;										//we calculate where the message log shall be printed and where the prompt shall be printed
     calculatePrintRects(textRect,shellRect);
@@ -147,9 +147,9 @@ void Console::draw( gfx::Engine& painter )
 		}
 		
     Rect lineRect( textRect.UpperLeftCorner.x(),						//calculate the line rectangle
-                textRect.UpperLeftCorner.y(),
-                textRect.LowerRightCorner.x(),
-                textRect.UpperLeftCorner.y() + lineHeight);
+                   textRect.UpperLeftCorner.y(),
+                   textRect.LowerRightCorner.x(),
+                   textRect.UpperLeftCorner.y() + lineHeight);
 
     NColor fontcolor = DefaultColors::white;
 

@@ -379,7 +379,7 @@ void unlockAchievement(AchievementType achivId)
   }
 }
 
-const gfx::Picture& achievementImage(AchievementType achivId)
+gfx::Picture achievementImage(AchievementType achivId)
 {
   if( achivId >=0 && achivId < achievementNumber )
   {
@@ -404,7 +404,7 @@ std::string userName()
   return playerName;
 }
 
-const gfx::Picture& getSteamImage( int id )
+gfx::Picture getSteamImage( int id )
 {
   if ( id != -1 )
   {
@@ -429,7 +429,7 @@ const gfx::Picture& getSteamImage( int id )
           rImg[ y * uAvatarWidth + x ] = cl.abgr();
         }
 
-      return *gfx::Picture::create( newSize, avatarRGBA.data() );
+      return gfx::Picture( newSize, avatarRGBA.data() );
     }
   }
 

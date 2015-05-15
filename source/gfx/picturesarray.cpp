@@ -24,7 +24,7 @@ void Pictures::load(const std::string& rc, int startIndex, int number, int multi
 {
   for( int i = 0; i < number; ++i)
   {
-    this->push_back( Picture::load(rc, startIndex + i*multiplier) );
+    this->push_back( Picture(rc, startIndex + i*multiplier) );
   }
 }
 

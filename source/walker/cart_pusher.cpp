@@ -56,6 +56,7 @@ public:
   good::Stock stock;
   BuildingPtr producerBuilding;
   BuildingPtr consumerBuilding;
+  int brokePathCounter;
   CartAnimation anim;
   int maxDistance;
   long reservationID;
@@ -73,6 +74,7 @@ CartPusher::CartPusher(PlayerCityPtr city )
   _d->producerBuilding = NULL;
   _d->consumerBuilding = NULL;
   _d->cantUnloadGoods = false;
+  _d->brokePathCounter = 0;
   _d->maxDistance = distance::maxDeliver;
   _d->stock.setCapacity( simpleCart );
 
@@ -105,9 +107,9 @@ void CartPusher::_reachedPathway()
     }    
   }
   //
-  if( !_pathwayRef().isReverse() )
+  if( !_pathway().isReverse() )
   {
-    _pathwayRef().toggleDirection();
+    _pathway().toggleDirection();
     _centerTile();
     go();
     _d->consumerBuilding = NULL;
@@ -118,11 +120,18 @@ void CartPusher::_reachedPathway()
   }
 }
 
+void CartPusher::_changeTile()
+{
+  _d->brokePathCounter = 0;
+  Human::_changeTile();
+}
+
 void CartPusher::_brokePathway(TilePos pos)
 {
-  if( _pathwayRef().isValid() )
+  _d->brokePathCounter++;
+  if( _pathway().isValid() && _d->brokePathCounter < 5 )
   {
-    Pathway way = PathwayHelper::create( pos, _pathwayRef().stopPos(), PathwayHelper::roadFirst );
+    Pathway way = PathwayHelper::create( pos, _pathway().stopPos(), PathwayHelper::roadFirst );
     if( way.isValid() )
     {
       setPathway( way );
@@ -131,11 +140,11 @@ void CartPusher::_brokePathway(TilePos pos)
     }
   }
 
-  Logger::warning( "CartPusher::_brokePathway now destination point [%d,%d]", pos.i(), pos.j() );
+  Logger::warning( "CartPusher::_brokePathway not destination point [%d,%d]", pos.i(), pos.j() );
   deleteLater();
 }
 
-good::Stock &CartPusher::stock() {   return _d->stock;}
+good::Stock& CartPusher::stock() {   return _d->stock;}
 void CartPusher::setProducerBuilding(BuildingPtr building){   _d->producerBuilding = building;}
 void CartPusher::setConsumerBuilding(BuildingPtr building){   _d->consumerBuilding = building;}
 
@@ -391,7 +400,7 @@ void CartPusher::send2city(BuildingPtr building, good::Stock &carry )
 void CartPusher::timeStep( const unsigned long time )
 {
   _d->anim.update( time );
-  if( game::Date::isWeekChanged() && !_pathwayRef().isValid() )
+  if( game::Date::isWeekChanged() && !_pathway().isValid() )
   {
     _computeWalkerDestination();
   }

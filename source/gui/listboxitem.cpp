@@ -26,7 +26,7 @@ namespace gui
 class ListBoxItem::Impl
 {
 public:
-  PictureRef textPic;
+  Picture textPic;
   std::string text;
   VariantMap data;
 	int tag;
@@ -111,33 +111,33 @@ void ListBoxItem::updateText(const Point &p, Font f, const Size &s)
 {
   resetPicture( s );
 
-  if( _d->textPic )
+  if( _d->textPic.isValid() )
   {
-    f.draw( *_d->textPic, _d->text, p );
+    f.draw( _d->textPic, _d->text, p );
   }
 }
 
 void ListBoxItem::resetPicture( const Size& s )
 {
-  if( _d->textPic.isNull() || ( _d->textPic != 0 && _d->textPic->size() != s ) )
+  if( _d->textPic.isValid() || _d->textPic.size() != s )
   {
-    _d->textPic.reset( Picture::create( s, 0, true ) );
+    _d->textPic = Picture( s, 0, true );
   }
 }
 
 void ListBoxItem::draw(const std::string& text, Font f, const Point& p )
 {
-  if( _d->textPic )
+  if( _d->textPic.isValid() )
   {
-    f.draw( *_d->textPic, text, p );
+    f.draw( _d->textPic, text, p );
   }
 }
 
 void ListBoxItem::clear()
 {
-  if( !_d->textPic.isNull() )
+  if( _d->textPic.isValid() )
   {
-    _d->textPic->fill( 0x0 );
+    _d->textPic.fill( 0x0 );
   }
 }
 
@@ -152,7 +152,7 @@ Point ListBoxItem::textOffset() const{  return _d->offset;}
 void ListBoxItem::setTextOffset(Point p){  _d->offset = p;}
 Point ListBoxItem::iconOffset() const{ return _d->iconOffset; }
 void ListBoxItem::setIconOffset(Point p) { _d->iconOffset = p; }
-const Picture &ListBoxItem::picture() const { return _d->textPic ? *_d->textPic : Picture::getInvalid(); }
+const Picture& ListBoxItem::picture() const { return _d->textPic; }
 void ListBoxItem::setUrl(const std::string& url) { _d->url = url; }
 const std::string&ListBoxItem::url() const { return _d->url; }
 Variant ListBoxItem::data( const std::string &name) const{ return _d->data[ name ]; }

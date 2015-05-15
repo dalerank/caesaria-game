@@ -84,9 +84,9 @@ public:
 void Ratings::Impl::updateColumn( const Point& center, const int value )
 {
   int columnStartY = 275;
-  const Picture& footer = Picture::load( ResourceGroup::panelBackground, 544 );
-  const Picture& header = Picture::load( ResourceGroup::panelBackground, 546 );
-  const Picture& body = Picture::load( ResourceGroup::panelBackground, 545 );
+  Picture footer( ResourceGroup::panelBackground, 544 );
+  Picture header( ResourceGroup::panelBackground, 546 );
+  Picture body( ResourceGroup::panelBackground, 545 );
 
   for( int i=0; i < value; i++ )
   {

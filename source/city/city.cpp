@@ -157,11 +157,11 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->states.age = 0;
   _d->walkers.idCount = 1;
   _d->sentiment = city::Sentiment::defaultValue;
-  _d->empMapPicture = Picture::load( ResourceGroup::empirebits, 1 );
+  _d->empMapPicture.load( ResourceGroup::empirebits, 1 );
 
   _d->services.initialize( this, ":/services.model" );
 
-  setPicture( Picture::load( ResourceGroup::empirebits, 1 ) );
+  _picture().load( ResourceGroup::empirebits, 1 );
   _initAnimation();
 
   setOption( updateRoads, 0 );

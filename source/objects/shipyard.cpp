@@ -47,7 +47,7 @@ Shipyard::Shipyard() : CoastalFactory(good::timber, good::none, object::shipyard
   _d( new Impl )
 {
   // transport 1 2 3 4
-  setPicture( ResourceGroup::shipyard, Impl::northPic );
+  _picture().load( ResourceGroup::shipyard, Impl::northPic );
 
   inStockRef().setCapacity( 1200 );
   store().setCapacity( 1200 );

@@ -33,7 +33,7 @@ class Simple::Impl
 {
 public:
   SenatePopupInfo senateInfo;
-  PictureRef selectedBuildingPic;
+  Picture selectedBuildingPic;
   OverlayPtr lastOverlay;
 };
 

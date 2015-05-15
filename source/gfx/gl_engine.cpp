@@ -495,7 +495,7 @@ public:
   EffectManager effects;
 #endif
 
-  PictureRef fpsText;
+  Picture fpsText;
   Font debugFont;
 
 public:
@@ -647,19 +647,13 @@ void GlEngine::init()
   }
 #endif
 
-  _d->fpsText.reset( Picture::create( Size( 200, 20 ), 0, true ));
+  _d->fpsText = Picture( Size( 200, 20 ), 0, true );
 }
 
 void GlEngine::exit()
 {
    TTF_Quit();
    SDL_Quit();
-}
-
-void GlEngine::deletePicture( Picture* pic )
-{
-  if( pic )
-    unloadPicture( *pic );
 }
 
 void GlEngine::setFlag( int flag, int value )
@@ -672,15 +666,15 @@ void GlEngine::setFlag( int flag, int value )
   }
 }
 
-Picture* GlEngine::createPicture( const Size& size )
+Picture GlEngine::createPicture( const Size& size )
 {
   SDL_Surface* img = SDL_CreateRGBSurface( 0, size.width(), size.height(), 32,
                                            0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
 
   Logger::warningIf( NULL == img, utils::format( 0xff, "GlEngine:: can't make surface, size=%dx%d", size.width(), size.height() ) );
 
-  Picture *pic = new Picture();
-  pic->init( 0, img, 0 );  // no offset
+  Picture pic;
+  pic.init( 0, img, 0 );  // no offset
 
   return pic;
 }
@@ -707,7 +701,7 @@ void GlEngine::unloadPicture(Picture& ioPicture)
 
 Batch GlEngine::loadBatch(const Picture &pic, const Rects &srcRects, const Rects &dstRects, const Rect *clipRect)
 {
-
+  return Batch();
 }
 
 void GlEngine::unloadBatch(const Batch &batch)
@@ -715,27 +709,11 @@ void GlEngine::unloadBatch(const Batch &batch)
 
 }
 
-/*static int power_of_2(int input)
-{
-    int value = 1;
-
-    while (value < input)
-    {
-        value <<= 1;
-    }
-    return value;
-}*/
-
 void GlEngine::loadPicture(Picture& ioPicture, bool streamed)
 {
   GLuint& texture( ioPicture.textureID() );
 
   SDL_Surface* surface = ioPicture.surface(); //SDL_DisplayFormatAlpha( ioPicture.surface() );
-  //SDL_SetAlpha( surface, 0, 0 );
-
-  //SDL_FreeSurface( ioPicture.surface() );
-
-  //ioPicture.init( 0, ioPicture.surface(),  );
 
   GLenum texture_format;
   GLint nOfColors;
@@ -814,9 +792,9 @@ void GlEngine::endRenderFrame()
   if( getFlag( Engine::debugInfo ) )
   {
     std::string debugText = utils::format( 0xff, "fps:%d call:%d", _lastFps, _drawCall );
-    _d->fpsText->fill( 0, Rect() );
-    _d->debugFont.draw( *_d->fpsText, debugText, Point( 0, 0 ) );
-    draw( *_d->fpsText, Point( _srcSize.width() / 2, 2 ) );
+    _d->fpsText.fill( 0, Rect() );
+    _d->debugFont.draw( _d->fpsText, debugText, Point( 0, 0 ) );
+    draw( _d->fpsText, Point( _srcSize.width() / 2, 2 ) );
   }
 
 #ifdef CAESARIA_USE_FRAMEBUFFER
@@ -840,11 +818,12 @@ void GlEngine::endRenderFrame()
   _drawCall = 0;
 }
 
-void GlEngine::initViewport(int index, Size s)
+bool GlEngine::initViewport(int index, Size s)
 {
 #ifdef CAESARIA_USE_FRAMEBUFFER
   _d->viewportSize = s;
 #endif
+  return false;
 }
 
 void GlEngine::setViewport(int, bool render)
@@ -1032,19 +1011,16 @@ void GlEngine::resetColorMask()
 
 void GlEngine::createScreenshot( const std::string& filename )
 {
-  Picture* screen = createPicture( screenSize() );
+  Picture screen = createPicture( screenSize() );
 #ifdef USE_GLES
   glReadPixels( 0, 0, screenSize().width(), screenSize().height(), GL_RGBA, GL_UNSIGNED_BYTE, screen->surface()->pixels);
 #else
-  glReadPixels( 0, 0, screenSize().width(), screenSize().height(), GL_BGRA, GL_UNSIGNED_BYTE, screen->surface()->pixels);
+  glReadPixels( 0, 0, screenSize().width(), screenSize().height(), GL_BGRA, GL_UNSIGNED_BYTE, screen.surface()->pixels);
 #endif
 
-  PictureConverter::flipVertical( *screen );
+  PictureConverter::flipVertical( screen );
 
-  IMG_SavePNG( filename.c_str(), screen->surface(), -1 );
-
-  deletePicture( screen );
-  delete screen;
+  IMG_SavePNG( filename.c_str(), screen.surface(), -1 );
 }
 
 unsigned int GlEngine::fps() const {  return _fps; }

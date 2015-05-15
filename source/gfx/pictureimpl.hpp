@@ -15,35 +15,47 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_MENURIGTHPANEL_H_INCLUDE_
-#define __CAESARIA_MENURIGTHPANEL_H_INCLUDE_
+#ifndef _CAESARIA_PICTUREIMPL_HPP_INCLUDE_
+#define _CAESARIA_PICTUREIMPL_HPP_INCLUDE_
 
-#include "widget.hpp"
-#include "core/scopedptr.hpp"
+#include "core/referencecounted.hpp"
+#include "core/rectangle.hpp"
+#include <SDL.h>
 
 namespace gfx
 {
-  class Picture;
-}
-
-namespace gui
-{
-
-class MenuRigthPanel : public Widget
+  
+class PictureImpl : public ReferenceCounted
 {
 public:
-  static MenuRigthPanel* create(Widget* parent, const Rect& rectangle, const gfx::Picture &tilePic );
-        
-  virtual void draw( gfx::Engine& engine );
-private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  SDL_Surface* surface;
+  SDL_Texture* texture;  // for SDL surface
+  unsigned int opengltx;
 
-  MenuRigthPanel( Widget* parent );
+  PictureImpl()
+  {
+    surface = 0;
+    texture = 0;
+  }
 
-  void _initBackground( const gfx::Picture &tilePic );
+  PictureImpl& operator=(const PictureImpl& other)
+  {
+    surface = other.surface;
+    texture = other.texture;
+    opengltx = other.opengltx;
+
+    return *this;
+  }
+
+  ~PictureImpl()
+  {
+    if( surface ) SDL_FreeSurface( surface );
+    if( texture ) SDL_DestroyTexture( texture );
+    surface = 0;
+    texture = 0;
+  }
 };
 
-}//end namespace gui
+}//end namespace gfx
 
-#endif //__CAESARIA_MENURIGTHPANEL_H_INCLUDE_
+#endif //_CAESARIA_PICTUREIMPL_HPP_INCLUDE_

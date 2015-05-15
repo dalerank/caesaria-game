@@ -44,8 +44,8 @@ ScrollBar::ScrollBar(  Widget* parent, const Rect& rectangle,
 	_d->lastTimeChange = 0l;
   _d->needRecalculateParams = true;
 
-  _d->sliderPictureUp = Picture::load( ResourceGroup::panelBackground, 61 );
-  _d->sliderPictureDown = Picture::load( ResourceGroup::panelBackground, 53 );
+  _d->sliderPictureUp.load( ResourceGroup::panelBackground, 61 );
+  _d->sliderPictureDown.load( ResourceGroup::panelBackground, 53 );
 
 #ifdef _DEBUG
    setDebugName("ScrollBar");
@@ -466,17 +466,17 @@ PushButton* ScrollBar::_createButton( const Rect& rectangle,
     switch( type )
     {
     case 0: 
-      btn->setPicture( Picture::load( ResourceGroup::panelBackground, 247 ), stNormal );
-      btn->setPicture( Picture::load( ResourceGroup::panelBackground, 248 ), stHovered );
-      btn->setPicture( Picture::load( ResourceGroup::panelBackground, 249 ), stPressed );
-      btn->setPicture( Picture::load( ResourceGroup::panelBackground, 250 ), stDisabled );
+      btn->setPicture( ResourceGroup::panelBackground, 247, stNormal );
+      btn->setPicture( ResourceGroup::panelBackground, 248, stHovered );
+      btn->setPicture( ResourceGroup::panelBackground, 249, stPressed );
+      btn->setPicture( ResourceGroup::panelBackground, 250, stDisabled );
     break;
 
     case 1: 
-      btn->setPicture( Picture::load( ResourceGroup::panelBackground, 251 ), stNormal );
-      btn->setPicture( Picture::load( ResourceGroup::panelBackground, 252 ), stHovered );
-      btn->setPicture( Picture::load( ResourceGroup::panelBackground, 253 ), stPressed );
-      btn->setPicture( Picture::load( ResourceGroup::panelBackground, 254 ), stDisabled );
+      btn->setPicture( ResourceGroup::panelBackground, 251, stNormal );
+      btn->setPicture( ResourceGroup::panelBackground, 252, stHovered );
+      btn->setPicture( ResourceGroup::panelBackground, 253, stPressed );
+      btn->setPicture( ResourceGroup::panelBackground, 254, stDisabled );
     break;
     }
 

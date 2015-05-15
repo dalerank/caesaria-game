@@ -216,9 +216,9 @@ void ServiceWalker::setReachDistance(unsigned int value) { _d->reachDistance = v
 
 void ServiceWalker::return2Base()
 {
-  if( !_pathwayRef().isReverse() )
+  if( !_pathway().isReverse() )
   {
-    _pathwayRef().toggleDirection();
+    _pathway().toggleDirection();
   }
 }
 
@@ -351,7 +351,7 @@ void ServiceWalker::_centerTile()
 void ServiceWalker::_reachedPathway()
 {
   Walker::_reachedPathway();
-  if( _pathwayRef().isReverse())
+  if( _pathway().isReverse())
   {
     // walker is back in the market
     deleteLater();
@@ -359,7 +359,7 @@ void ServiceWalker::_reachedPathway()
   else
   {
     // walker finished service => get back to service building    
-    _pathwayRef().move( Pathway::reverse );
+    _pathway().move( Pathway::reverse );
     _computeDirection();
     go();
   }

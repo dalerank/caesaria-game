@@ -49,7 +49,7 @@ Hospital::Hospital() : ServiceBuilding(Service::hospital, object::hospital, Size
 Baths::Baths() : ServiceBuilding(Service::baths, object::baths, Size(2) )
 {
   _haveReservorWater = false;
-  _fgPicturesRef().resize(1);
+  _fgPictures().resize(1);
 }
 
 unsigned int Baths::walkerDistance() const {  return 35;}

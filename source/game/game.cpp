@@ -191,7 +191,7 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
   std::string errorStr;
   std::string c3res = SETTINGS_VALUE( c3gfx ).toString();
   if( !c3res.empty() )
-  {
+  {    
     vfs::Directory gfxDir( c3res );
     vfs::Path c3sg2( "c3.sg2" );
     vfs::Path c3path = gfxDir/c3sg2;
@@ -206,6 +206,7 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
     }
 
     loader.loadFromModel( SETTINGS_RC_PATH( sg2model ), gfxDir );
+    engine->setFlag( Engine::batching, false );
   }
   else
   {

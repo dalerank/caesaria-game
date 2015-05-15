@@ -43,7 +43,7 @@ public:
 Forum::Forum() : ServiceBuilding(Service::forum, object::forum, Size(2)), _d( new Impl )
 {
   _d->taxValue = 0;
-  setPicture( ResourceGroup::govt, 10 );
+  _picture().load( ResourceGroup::govt, 10 );
 }
 
 void Forum::deliverService()

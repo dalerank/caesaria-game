@@ -278,7 +278,7 @@ void Traderoute::Impl::updatePictures()
     case 1: picIndex = 89; offset = Point( 0, 15); break;
     }
 
-    Picture pic = Picture::load( ResourceGroup::empirebits, picIndex + (seaRoute ? 8 : 0) );
+    Picture pic( ResourceGroup::empirebits, picIndex + (seaRoute ? 8 : 0) );
     pic.setOffset( offset );
     pictures.push_back( pic );
   }

@@ -50,7 +50,7 @@ Prefecture::Prefecture()
   _d->fireDetect = gfx::tilemap::invalidLocation();
 
   setPicture( MetaDataHolder::randomPicture( type(), size() ) );
-  _fgPicturesRef().resize(1);
+  _fgPictures().resize(1);
 }
 
 Prefecture::~Prefecture() {}

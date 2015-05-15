@@ -20,6 +20,7 @@
 
 #include "picturesarray.hpp"
 #include "core/variant.hpp"
+#include "core/scopedptr.hpp"
 
 // several frames for a basic visual animation
 namespace gfx

@@ -85,7 +85,7 @@ bool Well::build( const city::AreaInfo& info )
 
   Picture rpic = MetaDataHolder::randomPicture( type(), size() );
   if( !rpic.isValid() )
-    rpic = Picture::load( ResourceGroup::utilitya, 1 );
+    rpic.load( ResourceGroup::utilitya, 1 );
 
   setPicture( rpic );
 

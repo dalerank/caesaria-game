@@ -181,7 +181,7 @@ void AboutLegion::_update()
 
   if( _d->lbFlag )
   {
-    gfx::Picture pic = gfx::Picture::load( ResourceGroup::sprites, _d->fort->flagIndex() );
+    gfx::Picture pic( ResourceGroup::sprites, _d->fort->flagIndex() );
     pic.setOffset( 0, 0 );
     _d->lbFlag->setIcon( pic );
   }
@@ -189,7 +189,7 @@ void AboutLegion::_update()
   if( _d->lbMoraleStandart )
   {
     int mIndex = 20 - math::clamp<int>( _d->fort->legionMorale() / 5, 0, 20 );
-    gfx::Picture pic = gfx::Picture::load( ResourceGroup::sprites, mIndex+ 48 );
+    gfx::Picture pic( ResourceGroup::sprites, mIndex+ 48 );
     pic.setOffset( 0, 0 );
     _d->lbMoraleStandart->setIcon( pic );
   }
