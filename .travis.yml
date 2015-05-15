@@ -16,5 +16,4 @@ script:
 # Build CaesarIA
 - make -j4
 notifications:
-  slack:
     slack: '$SLACK_NOTIFICATION'
