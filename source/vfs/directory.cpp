@@ -72,7 +72,7 @@ bool Directory::create( std::string dir )
 
 bool Directory::createByPath( Directory dir )
 {
-  Path saveDir = getCurrent();
+  Path saveDir = current();
   bool result=true;
 
   StringArray path = utils::split( dir.toString(), "/" );
@@ -80,7 +80,7 @@ bool Directory::createByPath( Directory dir )
   try
   {
 #if  defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
-    changeCurrentDir( "/" );
+    switchTo( "/" );
 #endif
 
     foreach( iter, path )
@@ -111,7 +111,7 @@ bool Directory::createByPath( Directory dir )
 
   }
 
-  changeCurrentDir( saveDir );
+  switchTo( saveDir );
 
   return result;
 }
@@ -124,7 +124,7 @@ Path Directory::find(const Path& fileName, SensType sens) const
     return "";
   }
 
-  Entries files = getEntries();
+  Entries files = entries();
   files.setSensType( sens );
   int index = files.findFile( fileName.baseName() );
   if( index >= 0 )
@@ -135,7 +135,7 @@ Path Directory::find(const Path& fileName, SensType sens) const
   return "";
 }
 
-Entries Directory::getEntries() const
+Entries Directory::entries() const
 {
   FileSystem& fs = FileSystem::instance();
   Directory saveDir( fs.workingDirectory() );
@@ -181,10 +181,10 @@ Path Directory::operator/(const Path& filename) const
   return Path( dr + fn );
 }
 
-bool Directory::changeCurrentDir( const Path& dirName ){  return FileSystem::instance().changeWorkingDirectoryTo( dirName );}
-Directory Directory::getCurrent(){  return FileSystem::instance().workingDirectory();}
+bool Directory::switchTo( const Path& dirName ){  return FileSystem::instance().changeWorkingDirectoryTo( dirName );}
+Directory Directory::current(){  return FileSystem::instance().workingDirectory();}
 
-Directory Directory::getApplicationDir()
+Directory Directory::applicationDir()
 {
 #ifdef CAESARIA_PLATFORM_WIN
   unsigned int pathSize=512;
@@ -220,7 +220,7 @@ Directory Directory::getApplicationDir()
   return Path( "." );
 }
 
-Directory Directory::getUserDir()
+Directory Directory::userDir()
 {
   std::string mHomePath;
 #ifdef CAESARIA_PLATFORM_MACOSX
@@ -307,7 +307,7 @@ Directory Directory::up() const
   return Directory();
 }
 
-Path Directory::getRelativePathTo(Path path) const
+Path Directory::relativePathTo(Path path) const
 {
   if ( toString().empty() || path.toString().empty() )
     return *this;

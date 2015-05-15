@@ -426,7 +426,7 @@
     employers : 5
     class : "food"
     image : [ "commerce", 1 ]
-    animation : { rc : "commerce", start : 2, count : 10, offset : [ 20, 54 ], delay : 4 }
+    animation : { rc : "commerce", start : 2, count : 10, delay : 4 }
     sound : [ "market", 1 ]
   }, 
 
@@ -764,6 +764,7 @@
     productRate : 4.8
     class : "industry"
     sound : [ "winery", 1 ]
+    animation : { rc : "commerce", start : 87, count : 12, offset : [ 14, 36 ], delay : 4 }
   },
 
   oil_workshop :

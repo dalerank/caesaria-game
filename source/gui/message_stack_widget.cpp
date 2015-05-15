@@ -46,14 +46,24 @@ public:
   }
 
 protected:
-  virtual void _updateBackground(gfx::Engine& painter , bool& useAlpha4Text)
+  virtual void _updateBackground(gfx::Engine&, bool&)
   {
-    _backgroundRef().clear();
-    Decorator::draw( _backgroundRef(), Rect( Point(), size() ),  style );
+    _background().destroy();
 
-    Picture& emlbPic = Picture::load( ResourceGroup::panelBackground, PicID::empireStamp );
-    _backgroundRef().append( emlbPic, Point( 4, -2 ) );
-    _backgroundRef().append( emlbPic, Point( width() - emlbPic.width()-4, -2 ) );
+    Pictures pics;
+    Decorator::draw( pics, Rect( Point(), size() ), style );
+
+    Picture emlbPic( ResourceGroup::panelBackground, PicID::empireStamp );
+    pics.append( emlbPic, Point( 4, 2 ) );
+    pics.append( emlbPic, Point( width() - emlbPic.width()-4, 2 ) );
+
+    bool batchOk = _background().load( pics, absoluteRect().lefttop() );
+    if( !batchOk )
+    {
+      _background().destroy();
+      Decorator::reverseYoffset( pics );
+      _backgroundNb() = pics;
+    }
   }
 };
 

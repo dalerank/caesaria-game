@@ -27,6 +27,7 @@
 #include "core/logger.hpp"
 #include "cityservice_factory.hpp"
 #include "events/dispatcher.hpp"
+#include "statistic.hpp"
 
 namespace city
 {
@@ -61,8 +62,7 @@ void WrathOfVenus::timeStep( const unsigned int time)
 
     Logger::warning( "WrathOfVenus: execute service" );
 
-    HumanList citizens;
-    citizens << _city()->walkers();
+    HumanList citizens = statistic::getWalkers<Human>( _city() );
 
     for( int i=0; i < _d->strong; i++ )
     {

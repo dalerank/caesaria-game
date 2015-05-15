@@ -26,7 +26,7 @@
 namespace audio
 {
 
-typedef enum { ambient=0, theme, game, speech, count } SoundType;
+typedef enum { unknown=0, ambient, theme, game, speech, count } SoundType;
 
 } //end namespace audio
 

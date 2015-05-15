@@ -22,11 +22,15 @@
 #include "core/variant_map.hpp"
 #include "core/gettext.hpp"
 #include "config.hpp"
+#include "city/statistic.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace config;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Sentiment,sentiment)
 
 struct BuffInfo
 {
@@ -141,8 +145,7 @@ void Sentiment::timeStep(const unsigned int time )
       }
     }
 
-    HouseList houses;
-    houses << _city()->overlays();
+    HouseList houses = statistic::getHouses( _city() );
 
     unsigned int houseNumber = 0;
     _d->finishValue = 0;
@@ -194,7 +197,7 @@ VariantMap Sentiment::save() const
   VARIANT_SAVE_ANY_D( ret, _d, value )
   VARIANT_SAVE_ANY_D( ret, _d, finishValue )
   VARIANT_SAVE_ANY_D( ret, _d, affect )
-  ret[ "buffs" ] = _d->buffs.save();
+  VARIANT_SAVE_CLASS_D( ret, _d, buffs )
   return ret;
 }
 
@@ -203,8 +206,8 @@ void Sentiment::load(const VariantMap& stream)
   Srvc::load( stream );
   VARIANT_LOAD_ANY_D( _d, value, stream )
   VARIANT_LOAD_ANY_D( _d, finishValue, stream )
-  VARIANT_LOAD_ANY_D( _d, affect, stream );
-  _d->buffs.load( stream.get( "buffs" ).toList() );
+  VARIANT_LOAD_ANY_D( _d, affect, stream )
+  VARIANT_LOAD_CLASS_D_LIST( _d, buffs, stream )
 }
 
 void Sentiment::addBuff(int value, bool relative, int month2finish)

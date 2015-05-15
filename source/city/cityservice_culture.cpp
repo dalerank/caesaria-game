@@ -131,30 +131,30 @@ void CultureRating::timeStep(const unsigned int time )
     _d->academies.visitors = 0;
     int cityPopulation = _city()->states().population;
 
-    TempleList temples = city::statistic::findo<Temple>( _city(), object::group::religion );
+    TempleList temples = city::statistic::getObjects<Temple>( _city(), object::group::religion );
     foreach( temple, temples ) { _d->religion.visitors += (*temple)->parishionerNumber(); }
     _d->religion.update( _d->religion.visitors / (float)cityPopulation );
 
-    TheaterList theaters = city::statistic::findo<Theater>( _city(), object::theater );
+    TheaterList theaters = city::statistic::getObjects<Theater>( _city(), object::theater );
     foreach( theater, theaters ) { _d->theaters.visitors += (*theater)->currentVisitors(); }
     _d->theaters.update( _d->theaters.visitors / (float)cityPopulation );
 
-    LibraryList libraries = city::statistic::findo<Library>( _city(), object::library );
+    LibraryList libraries = city::statistic::getObjects<Library>( _city(), object::library );
     foreach( library, libraries ) { _d->libraries.visitors += (*library)->currentVisitors(); }
     _d->libraries.update( _d->libraries.visitors / (float)cityPopulation );
 
-    SchoolList schools = city::statistic::findo<School>( _city(), object::school );
+    SchoolList schools = city::statistic::getObjects<School>( _city(), object::school );
     foreach( school, schools ) { _d->schools.visitors += (*school)->currentVisitors(); }
 
     _d->schools.update( _d->schools.visitors / (float)cityPopulation );
 
-    AcademyList colleges = city::statistic::findo<Academy>( _city(), object::academy );
+    AcademyList colleges = city::statistic::getObjects<Academy>( _city(), object::academy );
     foreach( college, colleges ) { _d->academies.visitors += (*college)->currentVisitors(); }
     _d->academies.update( _d->academies.visitors / (float)cityPopulation );
 
     _d->culture = ( _d->culture + _d->religion.value + _d->theaters.value +
                     _d->libraries.value + _d->schools.value + _d->academies.value ) / 2;
-    }
+  }
 }
 
 VariantMap CultureRating::save() const

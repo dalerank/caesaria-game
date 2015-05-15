@@ -43,7 +43,7 @@ public:
 Forum::Forum() : ServiceBuilding(Service::forum, object::forum, Size(2)), _d( new Impl )
 {
   _d->taxValue = 0;
-  setPicture( ResourceGroup::govt, 10 );
+  _picture().load( ResourceGroup::govt, 10 );
 }
 
 void Forum::deliverService()
@@ -110,15 +110,14 @@ float Forum::collectTaxes()
 void Forum::Impl::removeMoney(PlayerCityPtr city)
 {
   SenatePtr senate;
-  SenateList senates = city::statistic::findo<Senate>( city, object::senate );
+  SenateList senates = city::statistic::getObjects<Senate>( city, object::senate );
   if( !senates.empty() )
     senate = senates.front();
 
   int maxMoney = city->treasury().money();
   if( maxMoney > 0 )
   {
-    ForumList forums;
-    forums << city->overlays();
+    ForumList forums = city::statistic::getObjects<Forum>( city );
 
     if( senate.isValid() )
       maxMoney /= 2;

@@ -77,7 +77,7 @@ void CartSupplier::_reachedPathway()
   Walker::_reachedPathway();
   city::Helper helper( _city() );
 
-  if( _pathwayRef().isReverse() )
+  if( _pathway().isReverse() )
   {
     // walker is back in the market
     deleteLater();
@@ -130,7 +130,7 @@ void CartSupplier::_reachedPathway()
     wait( _d->stock.qty() );
 
     // walker is near the granary/warehouse
-    _pathwayRef().move( Pathway::reverse );
+    _pathway().move( Pathway::reverse );
     _centerTile();
     go();
   }

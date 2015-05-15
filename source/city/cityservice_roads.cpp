@@ -87,7 +87,7 @@ void Roads::timeStep( const unsigned int time )
   Impl::Updates positions;
   foreach( it, _d->btypes )
   {
-    BuildingList tmp = statistic::findo<Building>( _city(), it->first );
+    BuildingList tmp = statistic::getObjects<Building>( _city(), it->first );
 
     foreach( b, tmp )
     {
@@ -95,7 +95,7 @@ void Roads::timeStep( const unsigned int time )
     }
   }
 
-  HouseList houses = city::statistic::findh( _city() );
+  HouseList houses = city::statistic::getHouses( _city() );
   foreach( house, houses )
   {
     if( (*house)->spec().level() >= HouseLevel::bigMansion )
@@ -112,7 +112,7 @@ void Roads::timeStep( const unsigned int time )
 
   if( _d->lastTimeUpdate.month() % 3 == 1 )
   {
-    RoadList roads = statistic::findo<Road>( _city(), object::road );
+    RoadList roads = statistic::getObjects<Road>( _city(), object::road );
     foreach( road, roads )
     {
       (*road)->appendPaved( _d->defaultDecreasePaved );

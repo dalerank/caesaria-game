@@ -40,7 +40,7 @@ public:
   virtual void setupUI( const VariantMap& stream );
 
 protected:
-  virtual void _resizeEvent();
+  virtual void _finalizeResize();
 
   bool _vertical;
   bool _needUpdate;

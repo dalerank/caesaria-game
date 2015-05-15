@@ -70,8 +70,8 @@ Tile::Tile( const TilePos& pos) //: _terrain( 0, 0, 0, 0, 0, 0 )
 }
 
 void Tile::setPicture(const Picture& picture) {  _picture = picture; }
-void Tile::setPicture(const char* rc, const int index){ setPicture( Picture::load( rc, index ) );}
-void Tile::setPicture(const std::string& name){ setPicture( Picture::load( name ) );}
+void Tile::setPicture(const char* rc, const int index){ _picture.load( rc, index );}
+void Tile::setPicture(const std::string& name){ _picture.load( name );}
 void Tile::setMasterTile(Tile* master){  _master = master; }
 
 bool Tile::isFlat() const
@@ -122,7 +122,7 @@ void Tile::animate(unsigned int time)
   }
 }
 
-const Animation& Tile::animation() const{  return _overlay.isValid() ? invalidAnimation : _animation; }
+const Animation& Tile::animation() const{ return _animation; }
 void Tile::setAnimation(const Animation& animation){ _animation = animation;}
 
 bool Tile::isWalkable( bool alllands ) const

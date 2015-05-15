@@ -136,10 +136,10 @@ protected:
   virtual Point& _rndOffset();
   virtual void _updateThoughts();
 
-  Pathway& _pathwayRef();
+  Pathway& _pathway();
 
-  gfx::Animation& _animationRef();
-  const gfx::Animation &_animationRef() const;
+  gfx::Animation& _animation();
+  const gfx::Animation &_animation() const;
   void _setDirection( Direction direction );
   void _setNation( world::Nation nation );
   void _setLocation( gfx::Tile* tile );

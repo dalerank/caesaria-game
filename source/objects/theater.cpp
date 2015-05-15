@@ -29,7 +29,7 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(object::theater, Theater)
 
 Theater::Theater() : EntertainmentBuilding(Service::theater, object::theater, Size(2))
 {
-  _fgPicturesRef().resize(2);
+  _fgPictures().resize(2);
 
   _addNecessaryWalker( walker::actor );
 }
@@ -38,7 +38,7 @@ bool Theater::build( const city::AreaInfo& info )
 {
   ServiceBuilding::build( info );
 
-  ActorColonyList actors = city::statistic::findo<ActorColony>( info.city, object::actorColony );
+  ActorColonyList actors = city::statistic::getObjects<ActorColony>( info.city, object::actorColony );
 
   if( actors.empty() )
   {
@@ -57,12 +57,12 @@ void Theater::deliverService()
 
   if( _animationRef().isRunning() )
   {
-    _fgPicturesRef().front() = Picture::load( ResourceGroup::entertaiment, 35 );
+    _fgPictures().front().load( ResourceGroup::entertainment, 35 );
   }
   else
   {
-    _fgPicturesRef().front() = Picture::getInvalid();
-    _fgPicturesRef().back() = Picture::getInvalid();
+    _fgPictures().front() = Picture::getInvalid();
+    _fgPictures().back() = Picture::getInvalid();
   }
 }
 

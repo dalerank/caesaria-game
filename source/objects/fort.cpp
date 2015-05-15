@@ -65,7 +65,7 @@ CAESARIA_LITERALCONST(img)
 
 LegionEmblem LegionEmblem::findFree( PlayerCityPtr city )
 {
-  FortList forts = statistic::findo<Fort>( city, object::any );
+  FortList forts = statistic::getObjects<Fort>( city, object::any );
   std::vector<LegionEmblem> availableEmblems;
 
   VariantMap emblemsModel = config::load( SETTINGS_RC_PATH( emblemsModel ) );
@@ -75,7 +75,7 @@ LegionEmblem LegionEmblem::findFree( PlayerCityPtr city )
     LegionEmblem newEmblem;
 
     newEmblem.name = vm_emblem[ literals::name ].toString();
-    newEmblem.pic = Picture::load( vm_emblem[ literals::img ].toString() );
+    newEmblem.pic.load( vm_emblem[ literals::img ].toString() );
 
     if( !newEmblem.name.empty() && newEmblem.pic.isValid() )
     {
@@ -258,6 +258,7 @@ class FortArea::Impl
 {
 public:
   TilePos basePos;
+  bool isFlat;
 };
 
 FortArea::FortArea() : Building( object::fortArea, Size(4) ),
@@ -265,13 +266,15 @@ FortArea::FortArea() : Building( object::fortArea, Size(4) ),
 {
   setPicture( ResourceGroup::security, 13 );
 
+  _d->isFlat = picture().height() <= picture().width() / 2;
+
   setState( pr::inflammability, 0 );
   setState( pr::collapsibility, 0 );
 }
 
 FortArea::~FortArea() {}
 
-bool FortArea::isFlat() const { return true; }
+bool FortArea::isFlat() const { return _d->isFlat; }
 bool FortArea::isWalkable() const{ return true;}
 
 void FortArea::destroy()
@@ -300,13 +303,13 @@ FortPtr FortArea::base() const
 Fort::Fort(object::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) ),
   _d( new Impl )
 {
-  Picture logo = Picture::load(ResourceGroup::security, picIdLogo );
+  Picture logo(ResourceGroup::security, picIdLogo );
   logo.setOffset( Point( 80, 10 ) );
 
-  Picture area = Picture::load(ResourceGroup::security, 13 );
-  area.setOffset( Tile( TilePos(3,0) ).mappos() + Point(0,-30) );
+  Picture area(ResourceGroup::security, 13 );
+  area.addOffset( tile::tilepos2screen( TilePos( 3, 0) ) );
 
-  _fgPicturesRef().resize(2);
+  _fgPictures().resize(2);
   _fgPicture( 0 ) = logo;
   _fgPicture( 1 ) = area;
 
@@ -341,7 +344,7 @@ void Fort::timeStep( const unsigned long time )
     bool canProduceNewSoldier = (traineeLevel > 100);
     bool haveRoom4newSoldier =  (walkers().size() < _d->maxSoldier);
     // all trainees are there for the create soldier!
-    if( canProduceNewSoldier && haveRoom4newSoldier)
+    if( canProduceNewSoldier && haveRoom4newSoldier )
     {
        _readyNewSoldier();
        setTraineeValue( walker::soldier, math::clamp<int>( traineeLevel - 100, 0, _d->maxSoldier * 100 ) );
@@ -577,7 +580,7 @@ bool Fort::canBuild( const city::AreaInfo& areaInfo ) const
 
 bool Fort::build( const city::AreaInfo& info )
 {
-  FortList forts = statistic::findo<Fort>( info.city, object::any );
+  FortList forts = statistic::getObjects<Fort>( info.city, object::any );
 
   const city::development::Options& bOpts = info.city->buildOptions();
   if( forts.size() >= bOpts.maximumForts() )
@@ -597,9 +600,9 @@ bool Fort::build( const city::AreaInfo& info )
 
   info.city->addOverlay( _d->area.object() );
 
-  _fgPicturesRef().resize(1);
+  _fgPictures().resize(1);
 
-  BarracksList barracks = statistic::findo<Barracks>( info.city, object::barracks );
+  BarracksList barracks = statistic::getObjects<Barracks>( info.city, object::barracks );
 
   if( barracks.empty() )
   {

@@ -122,11 +122,11 @@ void Religion::timeStep( const unsigned int time )
     _d->templesCoverity.clear( divinities );
 
     //update temples info
-    TempleList temples = statistic::findo<Temple>( _city(), object::group::religion );
+    TempleList temples = statistic::getObjects<Temple>( _city(), object::group::religion );
     foreach( it, temples )
       _d->templesCoverity.update( *it );
 
-    TempleOracleList oracles = statistic::findo<TempleOracle>( _city(), object::oracle );
+    TempleOracleList oracles = statistic::getObjects<TempleOracle>( _city(), object::oracle );
 
     //add parishioners to all divinities by oracles
     int oraclesParishionerNumber = 0;
@@ -239,7 +239,7 @@ void Religion::load(const VariantMap& stream)
 
 void Religion::Impl::updateRelation( PlayerCityPtr city, DivinityPtr divn )
 {
-  if( divn.isValid() )
+  if( !divn.isValid() )
   {
     Logger::warning( "!!! WARNING: Cant update relation for null god" );
     return;

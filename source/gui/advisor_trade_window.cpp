@@ -88,13 +88,13 @@ public:
   {
     PushButton::_updateTextPic();
 
-    if( _textPictureRef() != 0 )
+    if( _textPicture().isValid() )
     {
       Font f = font( _state() );
-      PictureRef& textPic = _textPictureRef();
-      f.draw( *textPic, _( _goodName ), 55, 0, true, false );
-      f.draw( *textPic, utils::format( 0xff, "%d", _qty / 100), 190, 0, true, false );
-      f.draw( *textPic, _enable ? "" : _("##disable##"), 260, 0, true, false );
+      Picture& textPic = _textPicture();
+      f.draw( textPic, _( _goodName ), 55, 0, true, false );
+      f.draw( textPic, utils::format( 0xff, "%d", _qty / 100), 190, 0, true, false );
+      f.draw( textPic, _enable ? "" : _("##disable##"), 260, 0, true, false );
 
       std::string ruleName[] = { "##import##", "", "##export##", "##stacking##" };
       std::string tradeStateText = ruleName[ _tradeOrder ];
@@ -118,8 +118,8 @@ public:
 
       default: break;
       }
-      f.draw( *textPic, tradeStateText, 340, 0, true, false );
-      textPic->update();
+      f.draw( textPic, tradeStateText, 340, 0, true, false );
+      textPic.update();
     }
   }
 

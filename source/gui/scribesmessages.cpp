@@ -69,7 +69,7 @@ public:
     item.OverrideColors[ ListBoxItem::hovered ].Use = true;
     item.OverrideColors[ ListBoxItem::hovered ].color = 0xffff0000;
 
-    item.setIcon( Picture::load( ResourceGroup::panelBackground, 111 ));
+    item.setIcon( Picture( ResourceGroup::panelBackground, 111 ));
 
     return item;
   }
@@ -81,17 +81,15 @@ public signals:
 protected:
   virtual void _drawItemIcon(gfx::Engine& painter, ListBoxItem& item, const Point& pos, Rect* clipRect)
   {
-    VariantMap options = item.data().toMap();
-    bool opened = options.get( literals::opened, false );
-    bool critical = options.get( literals::critical, false );
+    bool opened = item.data( literals::opened );
+    bool critical = item.data( literals::critical );
     int imgIndex = (critical ? 113 : 111) + (opened ? 1 : 0);
-    painter.draw( Picture::load( ResourceGroup::panelBackground, imgIndex ), pos + Point( 2, 2) );
+    painter.draw( Picture( ResourceGroup::panelBackground, imgIndex ), pos + Point( 2, 2) );
   }
 
   virtual void _updateItemText(Engine& painter, ListBoxItem& item, const Rect& textRect, Font font, const Rect& frameRect)
   {
-    VariantMap options = item.data().toMap();
-    DateTime time = options[ literals::date ].toDateTime();
+    DateTime time = item.data( literals::date ).toDateTime();
 
     item.resetPicture( frameRect.size() );
 
@@ -118,8 +116,7 @@ protected:
         {
           ListBoxItem& itemUnderMouse = item( index );
 
-          VariantMap options = itemUnderMouse.data().toMap();
-          bool opened = options.get( literals::opened, false );
+          bool opened = itemUnderMouse.data( literals::opened );
 
           //std::string text = opened ? "" : _("##scribemessages_unread##");
           //setTooltipText( text );
@@ -193,12 +190,9 @@ void ScribesMessages::_fillMessages()
   {
     const city::Scribes::Message& mt = *it;
     ListBoxItem& item = _d->lbxMessages->addItem( mt.title, Font::create( FONT_1 ) );
-    VariantMap options;
-    options[ literals::opened ] = mt.opened;
-    options[ literals::date   ] = mt.date;
-    options[ literals::ext    ] = mt.ext;
-
-    item.setData( options );
+    item.setData( literals::opened, mt.opened );
+    item.setData( literals::date, mt.date );
+    item.setData( literals::ext, mt.ext );
   }
 
   if( _d->lbInfo && !haveMessages )

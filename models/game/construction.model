@@ -183,6 +183,7 @@
     employers : 16
     class : "military"
     sound : [ "fort", 1 ]
+    image : [ "fortlegioner", 1 ]
     requestDestroy : true
   },
 
@@ -219,6 +220,7 @@
     desirability : { base :-20,	range : 10,	step : 2 }
     employers : 16
     class : "military"
+    image : [ "fortspear", 1 ]
     requestDestroy : true
   }, 
 
@@ -227,6 +229,7 @@
     desirability : { base :-20,	range : 10,	step : 2 }
     employers : 16
     class : "military"
+    image : [ "fortmount", 1 ]
     requestDestroy : true
   }, 
 
@@ -709,6 +712,7 @@
     output : "grape"
     productRate : 4.8
     sound : [ "grapefarm", 1 ]    
+    image : [ "wineyard", 1 ]
   },
 
   meat_farm : 
@@ -719,6 +723,7 @@
     class : "food"
     output : "meat"
     productRate : 4.8
+    image : [ "meatfarm", 1 ]
     sound : [ "meatfarm", 1 ]
   },
 
@@ -743,6 +748,8 @@
     output : "iron"
     class : "rawmaterial"
     productRate : 2.4
+    image : [ "commerce", 54 ]
+    animation : { rc : "ironminea", start : 1, count : 34, offset : [ 75, 30 ], delay : 3 }
     sound : [ "ironmine", 1 ]
     collapsibility : 1.4
   },
@@ -783,6 +790,7 @@
     class : "industry"
     sound : [ "winery", 1 ]
     inflammability : 0.7
+    animation : { rc : "commerce", start : 87, count : 12, offset : [ 140, 36 ], delay : 4 }
   },
 
   oil_workshop :

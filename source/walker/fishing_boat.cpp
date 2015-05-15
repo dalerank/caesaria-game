@@ -85,7 +85,7 @@ void FishingBoat::timeStep(const unsigned long time)
     {
     case ready2Catch:
     {
-      _animationRef().clear();
+      _animation().clear();
       Pathway way = _d->findFishingPlace( _city(), pos() );
       if( way.isValid() )
       {
@@ -99,10 +99,10 @@ void FishingBoat::timeStep(const unsigned long time)
 
     case catchFish:
     {
-      _animationRef().clear();
+      _animation().clear();
       _setAction( acWork );
 
-      FishPlaceList places = city::statistic::findw<FishPlace>( _city(), walker::fishPlace, pos() );
+      FishPlaceList places = city::statistic::getWalkers<FishPlace>( _city(), walker::fishPlace, pos() );
 
       if( !places.empty() )
       {
@@ -178,8 +178,8 @@ bool FishingBoat::die()
 {
   _d->mode = wait;
   _d->base = 0;
-  _animationRef().load( ResourceGroup::carts, 265, 8 );
-  _animationRef().setDelay( gfx::Animation::slow );
+  _animation().load( ResourceGroup::carts, 265, 8 );
+  _animation().setDelay( gfx::Animation::slow );
 
   bool created = Ship::die();
   return created;
@@ -216,7 +216,7 @@ void FishingBoat::_reachedPathway()
 
 Pathway FishingBoat::Impl::findFishingPlace(PlayerCityPtr city, TilePos pos )
 {
-  FishPlaceList places = city::statistic::findw<FishPlace>( city, walker::fishPlace, gfx::tilemap::invalidLocation() );
+  FishPlaceList places = city::statistic::getWalkers<FishPlace>( city, walker::fishPlace, gfx::tilemap::invalidLocation() );
 
   int minDistance = 999;
   FishPlacePtr nearest;

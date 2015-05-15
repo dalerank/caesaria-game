@@ -72,20 +72,11 @@ int getLaborAccessValue( PlayerCityPtr city, WorkingBuildingPtr wb );
 int getEntertainmentCoverage(PlayerCityPtr city, Service::Type service );
 bool canImport( PlayerCityPtr city, good::Product type );
 bool canProduce( PlayerCityPtr city, good::Product type );
-template< class T > SmartList< T > findo( PlayerCityPtr r, object::Type type );
-template< class T > SmartList< T > findo( PlayerCityPtr r, std::set<object::Type> which );
-template< class T > SmartPtr< T > nexto( PlayerCityPtr r, SmartPtr< T > current );
-template< class T > SmartPtr< T > prewo( PlayerCityPtr r, SmartPtr< T > current );
-template< class T > SmartPtr< T > finds( PlayerCityPtr r );
-template< class T > SmartList< T > findo( PlayerCityPtr r, object::Group group );
-template<class T> bool isTileBusy( PlayerCityPtr r, TilePos p, WalkerPtr caller, bool& needMeMove );
-template< class T > SmartList< T > findw( PlayerCityPtr r, walker::Type type,
-                                          TilePos start, TilePos stop=TilePos(-1, -1) );
-HouseList findh( PlayerCityPtr r, std::set<int> levels=std::set<int>() );
-FarmList findfarms(PlayerCityPtr r, std::set<object::Type> which=std::set<object::Type>() );
+HouseList getHouses( PlayerCityPtr r, std::set<int> levels=std::set<int>() );
+FarmList getFarms(PlayerCityPtr r, std::set<object::Type> which=std::set<object::Type>() );
 
 template< class T >
-SmartList< T > findo( PlayerCityPtr r, object::Type type )
+SmartList< T > getObjects( PlayerCityPtr r, object::Type type )
 {
   if( r.isNull() )
     return SmartList<T>();
@@ -117,8 +108,9 @@ bool isTileBusy( PlayerCityPtr r, TilePos p, WalkerPtr caller, bool& needMeMove 
 }
 
 template< class T >
-SmartList< T > findw( PlayerCityPtr r, walker::Type type,
-                      TilePos start, TilePos stop )
+SmartList< T > getWalkers( PlayerCityPtr r, walker::Type type,
+                           TilePos start=gfx::tilemap::invalidLocation(),
+                           TilePos stop=gfx::tilemap::invalidLocation() )
 {
   WalkerList walkersInArea;
 
@@ -155,7 +147,20 @@ SmartList< T > findw( PlayerCityPtr r, walker::Type type,
 }
 
 template< class T >
-SmartPtr<T> findw( PlayerCityPtr r, walker::Type type, Walker::UniqueId id )
+SmartList< T > getWalkers( PlayerCityPtr r )
+{
+  const WalkerList& walkers = r->walkers();
+
+  SmartList< T > result;
+  foreach( w, walkers )
+    result.addIfValid( w->as<T>() );
+
+  return result;
+}
+
+
+template< class T >
+SmartPtr<T> getWalker( PlayerCityPtr r, walker::Type type, Walker::UniqueId id )
 {
   const WalkerList& all = r->walkers();
 
@@ -180,14 +185,14 @@ SmartPtr<T> findw( PlayerCityPtr r, walker::Type type, Walker::UniqueId id )
 }
 
 template< class T >
-SmartList< T > findo( PlayerCityPtr r, std::set<object::Type> which )
+SmartList< T > getObjects( PlayerCityPtr r, std::set<object::Type> which )
 {
-  OverlayList ret;
-  SmartList<T> ovs = r->overlays();
+  SmartList< T > ret;
+  const OverlayList& ovs = r->overlays();
 
   foreach( it, ovs )
   {
-    if( which.count( (*it)->type ) > 0 )
+    if( which.count( (*it)->type() ) > 0 )
     {
       ret << *it;
     }
@@ -197,12 +202,12 @@ SmartList< T > findo( PlayerCityPtr r, std::set<object::Type> which )
 }
 
 template< class T >
-SmartPtr< T > nexto( PlayerCityPtr r, SmartPtr< T > current )
+SmartPtr< T > nextObject( PlayerCityPtr r, SmartPtr< T > current )
 {
   if( r.isNull() || current.isNull() )
     return SmartPtr<T>();
 
-  SmartList< T > objects = findo<T>( r, current->type() );
+  SmartList< T > objects = getObjects<T>( r, current->type() );
   foreach( obj, objects )
   {
     if( current == *obj )
@@ -217,12 +222,12 @@ SmartPtr< T > nexto( PlayerCityPtr r, SmartPtr< T > current )
 }
 
 template<class T>
-SmartPtr<T> prewo( PlayerCityPtr r, SmartPtr<T> current)
+SmartPtr<T> prewObject( PlayerCityPtr r, SmartPtr<T> current)
 {
   if(  r.isNull() || current.isNull() )
     return SmartPtr<T>();
 
-  SmartList< T > objects = findo<T>( r, current->type() );
+  SmartList< T > objects = getObjects<T>( r, current->type() );
   foreach( obj, objects )
   {
     if( current == *obj )
@@ -240,7 +245,7 @@ SmartPtr<T> prewo( PlayerCityPtr r, SmartPtr<T> current)
 }
 
 template<class T>
-SmartPtr<T> finds( PlayerCityPtr r)
+SmartPtr<T> getService( PlayerCityPtr r)
 {
   if( r.isNull() )
     return 0;
@@ -250,7 +255,7 @@ SmartPtr<T> finds( PlayerCityPtr r)
 }
 
 template< class T >
-SmartList< T > findo( PlayerCityPtr r, const object::Type type, TilePos start, TilePos stop )
+SmartList< T > getObjects( PlayerCityPtr r, const object::Type type, TilePos start, TilePos stop )
 {
   SmartList< T > ret;
 
@@ -268,7 +273,7 @@ SmartList< T > findo( PlayerCityPtr r, const object::Type type, TilePos start, T
 }
 
 template< class T >
-SmartList< T > find( PlayerCityPtr r, object::Group group, const TilePos& start, const TilePos& stop )
+SmartList< T > getObjects( PlayerCityPtr r, object::Group group, const TilePos& start, const TilePos& stop )
 {
   SmartList< T > ret;
 
@@ -287,10 +292,10 @@ SmartList< T > find( PlayerCityPtr r, object::Group group, const TilePos& start,
 }
 
 template< class T >
-SmartList<T> findo( PlayerCityPtr r, object::Group group )
+SmartList<T> getObjects( PlayerCityPtr r, object::Group group )
 {
   SmartList<T> ret;
-  OverlayList& buildings = r->overlays();
+  const OverlayList& buildings = r->overlays();
   foreach( item, buildings )
   {
     SmartPtr<T> b = item->as<T>();
@@ -304,23 +309,53 @@ SmartList<T> findo( PlayerCityPtr r, object::Group group )
 }
 
 template< class T >
-SmartList< T > findoex( PlayerCityPtr r, std::set<object::Type> which )
+SmartList<T> getObjects( PlayerCityPtr r )
 {
-  OverlayList ret;
-  SmartList<T> ovs = r->overlays();
+  SmartList<T> ret;
+  const OverlayList& buildings = r->overlays();
+  foreach( item, buildings )
+  {
+    ret.addIfValid( item->as<T>() );
+  }
+
+  return ret;
+}
+
+template< class T >
+SmartList< T > getObjectsNotIs( PlayerCityPtr r, const std::set<object::Type>& which )
+{
+  SmartList< T > ret;
+  const OverlayList& ovs = r->overlays();
 
   foreach( it, ovs )
   {
-    if( which.count( (*it)->type ) == 0 )
+    if( which.count( (*it)->type() ) == 0 )
     {
-      ret << *it;
+      ret.addIfValid( (*it).as<T>() );
     }
   }
 
   return ret;
 }
 
+template< class T >
+SmartList< T > getObjectsNotIs( PlayerCityPtr r, const std::set<object::Group>& which )
+{
+  SmartList< T > ret;
+  const OverlayList& ovs = r->overlays();
+
+  foreach( it, ovs )
+  {
+    if( which.count( (*it)->group() ) == 0 )
+    {
+      ret.addIfValid( (*it).as<T>() );
+    }
+  }
+
+  return ret;
 }
+
+}//end namespace statistic
 
 }//end namespace city
 

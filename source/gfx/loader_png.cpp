@@ -225,10 +225,10 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   png_destroy_read_struct( &png_ptr, &info_ptr, 0 ); // Clean up memory
 
   // Create the image structure to be filled by png data
-  Picture* pic;
+  Picture pic;
   if( ColorType==PNG_COLOR_TYPE_RGB_ALPHA )
   {
-    pic = Picture::create( Size( Width, Height ), bytes.data() );
+    pic = Picture( Size( Width, Height ), bytes.data() );
   }
   else
   {
@@ -238,12 +238,12 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
     for( unsigned int index=0; index < Width * Height; index++ )
     {
       b4[ index*4+3 ] = 0xff;
-      b4[ index*4+0] = bytes[index*3+2];
-      b4[ index*4+1] = bytes[index*3+1];
-      b4[ index*4+2] = bytes[index*3+0];
+      b4[ index*4+0 ] = bytes[index*3+2];
+      b4[ index*4+1 ] = bytes[index*3+1];
+      b4[ index*4+2 ] = bytes[index*3+0];
     }
 
-    pic = Picture::create( Size( Width, Height ), b4.data() );
+    pic = Picture( Size( Width, Height ), b4.data() );
   }
-  return *pic;
+  return pic;
 }

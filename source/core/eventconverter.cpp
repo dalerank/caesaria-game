@@ -19,6 +19,7 @@
 #include <SDL_events.h>
 #include "logger.hpp"
 #include <map>
+#include <cstring>
 
 struct SMouseMultiClicks
 {

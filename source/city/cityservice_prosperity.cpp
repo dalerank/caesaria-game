@@ -100,7 +100,7 @@ void ProsperityRating::timeStep(const unsigned int time )
       return;
     }
 
-    HouseList houses = statistic::findh( _city() );
+    HouseList houses = statistic::getHouses( _city() );
 
     int prosperityCap = 0;
     int patricianCount = 0;
@@ -135,7 +135,7 @@ void ProsperityRating::timeStep(const unsigned int time )
     _d->percentPlebs = math::percentage( plebsCount, _city()->states().population );
     _d->prosperityExtend += (_d->percentPlebs < prosperity::normalPlebsInCityPercent ? prosperity::award : 0);
 
-    bool haveHippodrome = !statistic::findo<Hippodrome>( _city(), object::hippodrome ).empty();
+    bool haveHippodrome = !statistic::getObjects<Hippodrome>( _city(), object::hippodrome ).empty();
     _d->prosperityExtend += (haveHippodrome ? prosperity::award : 0);
 
     _d->worklessPercent = statistic::getWorklessPercent( _city() );

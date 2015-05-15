@@ -37,7 +37,7 @@ class SmkViewer::Impl
 {
 public:
   SmkViewer::Mode mode;
-  PictureRef background;
+  Picture background;
   bool needUpdateTexture;
   unsigned int lastFrameTime;
   smk smkfile;
@@ -149,21 +149,21 @@ void SmkViewer::Impl::updateTexture( gfx::Engine& painter, const Size& size )
 {
   Size imageSize = size;
 
-  if( background && background->size() != imageSize )
+  if( background.isValid() && background.size() != imageSize )
   {
-    background.reset();
+    background = Picture();
   }
 
-  if( background.isNull() )
+  if( !background.isValid() )
   {
-    background.reset( Picture::create( imageSize, 0, true ) );
+    background = Picture( imageSize, 0, true );
   }
 
-  unsigned int* pixels = background->lock();
-  unsigned int bw = background->width();
+  unsigned int* pixels = background.lock();
+  unsigned int bw = background.width();
 
-  Size safe( math::min<unsigned int>( background->width(), smkfileWidth ),
-                 math::min<unsigned int>( background->height(), smkfileHeight ) );
+  Size safe( math::min<unsigned int>( background.width(), smkfileWidth ),
+             math::min<unsigned int>( background.height(), smkfileHeight ) );
   if( smkfile )
   {
     for( int i = safe.height() - 1; i >= 0; i--)
@@ -177,8 +177,8 @@ void SmkViewer::Impl::updateTexture( gfx::Engine& painter, const Size& size )
       }
     }
   }
-  background->unlock();
-  background->update();
+  background.unlock();
+  background.update();
 }
 
 void SmkViewer::Impl::updatePallete()
@@ -241,14 +241,14 @@ void SmkViewer::draw(gfx::Engine& painter )
     return;
 
   // draw background
-  if( _d->background )
+  if( _d->background.isValid() )
   {
-    painter.draw( *_d->background, _d->background->originRect(), absoluteRect(), &absoluteClippingRectRef() );
+    painter.draw( _d->background, _d->background.originRect(), absoluteRect(), &absoluteClippingRectRef() );
   }
 
   Widget::draw( painter );
 }
 
-void SmkViewer::_resizeEvent() {  _d->needUpdateTexture = true;}
+void SmkViewer::_finalizeResize() { _d->needUpdateTexture = true;}
 
 }//end namespace gui

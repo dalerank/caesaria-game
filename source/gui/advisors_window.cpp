@@ -54,6 +54,7 @@
 #include "advisor_population_window.hpp"
 #include "widget_helper.hpp"
 #include "world/empire.hpp"
+#include "city/statistic.hpp"
 
 using namespace gfx;
 using namespace events;
@@ -147,8 +148,7 @@ void Parlor::showAdvisor(const Advisor type )
   if( type == advisor::employers )  { _d->advisorPanel = new advisorwnd::Employer( _d->city, this, advisor::employers );  }
   else if( type == advisor::military )
   {
-    FortList forts;
-    forts << _d->city->overlays();
+    FortList forts = city::statistic::getObjects<Fort>( _d->city );
     _d->advisorPanel = new advisorwnd::Legion( this, advisor::military, _d->city, forts );
   }
   else if( type == advisor::population ) { _d->advisorPanel = new advisorwnd::Population( _d->city, this, advisor::population ); }

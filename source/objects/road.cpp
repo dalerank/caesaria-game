@@ -78,7 +78,18 @@ bool Road::canBuild( const city::AreaInfo& areaInfo ) const
 
   OverlayPtr overlay  = areaInfo.city->tilemap().at( areaInfo.pos ).overlay();
 
-  Picture pic = picture( areaInfo );
+  Picture pic;
+  if( overlay.is<Aqueduct>() )
+  {
+    TilesArray tiles = areaInfo.aroundTiles;
+    tiles.push_back( &tile() );
+    city::AreaInfo advInfo = { areaInfo.city, areaInfo.pos, tiles };
+    pic = overlay.as<Aqueduct>()->picture( advInfo );
+  }
+  else
+  {
+    pic = picture( areaInfo );
+  }
   const_cast<Road*>( this )->setPicture( pic );
 
   return ( is_kind_of<Aqueduct>( overlay ) || is_kind_of<Road>( overlay ) );
@@ -186,7 +197,10 @@ const gfx::Picture& Road::picture( const city::AreaInfo& areaInfo) const
     }
   }
 
-  return Picture::load( ResourceGroup::road, index);
+  static Picture ret;
+  ret.load( ResourceGroup::road, index);
+
+  return ret;
 }
 
 bool Road::isWalkable() const {  return true;}
@@ -265,7 +279,7 @@ Plaza::Plaza()
   // or we will run into big troubles
 
   setType(object::plaza);
-  setPicture( Picture::load( ResourceGroup::entertaiment, 102) ); // 102 ~ 107
+  _picture().load( ResourceGroup::entertainment, 102 ); // 102 ~ 107
   setSize( Size( 1 ) );
 }
 
@@ -349,14 +363,14 @@ void Plaza::load(const VariantMap& stream)
     Construction::build( info );
   }
 
-  setPicture( Picture::load( stream.get( "picture" ).toString() ) );
+  _picture().load( stream.get( "picture" ).toString() );
 }
 
 const Picture& Plaza::picture() const
 {
   return tile().masterTile()
            ? Construction::picture()
-           : Picture::load( ResourceGroup::entertaiment, 102);
+           : Picture( ResourceGroup::entertainment, 102);
 }
 
 void Plaza::updatePicture()

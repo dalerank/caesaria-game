@@ -6,14 +6,6 @@ before_install:
 - brew install cmake
 - brew install wget
 - brew install https://raw.github.com/eugeneoden/homebrew/eca9de1/Library/Formula/sshpass.rb
-- LIBDIR=~/Library/Frameworks/
-- wget https://www.libsdl.org/release/SDL2-2.0.3.dmg
-- wget http://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.0.dmg
-- hdiutil mount SDL2_mixer-2.0.0.dmg
-- hdiutil mount SDL2-2.0.3.dmg
-- mkdir -p $LIBDIR
-- cp -r /Volumes/SDL2/SDL2.framework $LIBDIR
-- cp -r /Volumes/SDL2_mixer/SDL2_mixer.framework $LIBDIR
 install:
 - cd $TRAVIS_BUILD_DIR
 # Create unix makefiles

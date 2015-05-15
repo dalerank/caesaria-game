@@ -65,6 +65,8 @@ public:
   virtual bool isPressed() const;
 
   virtual bool isBodyVisible() const;
+  virtual bool isTextVisible() const;
+  virtual void setTextVisible( bool value );
 
   virtual void drawIcon( gfx::Engine& painter );
 
@@ -93,9 +95,10 @@ public:
 
 signals public:
   virtual Signal0<>& onClicked(); 
+  virtual Signal1<Widget*>& onClickedEx();
 
 protected:
-  virtual void _resizeEvent();
+  virtual void _finalizeResize();
 
   //! when left mouse button pressed down
   virtual bool _leftMouseBtnPressed( const NEvent& event );
@@ -107,12 +110,11 @@ protected:
   virtual void _btnClicked();
 
   virtual ElementState _state();
- 
   virtual void _updateBackground( ElementState state );
-  void _updateStyle();
   virtual void _updateTextPic();
 
-  gfx::PictureRef& _textPictureRef();
+  gfx::Picture& _textPicture();
+  void _updateStyle();
 private:
   __DECLARE_IMPL(PushButton)
 };

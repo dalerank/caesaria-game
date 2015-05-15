@@ -56,7 +56,7 @@ Tower::Tower()
 {
   _d->noEntry = false;
   setMaximumWorkers( 6 );
-  setPicture( ResourceGroup::land2a, 149 );
+  _picture().load( ResourceGroup::land2a, 149 );
 
   setState( pr::inflammability, 0 );
   setState( pr::collapsibility, 0 );

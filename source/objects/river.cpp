@@ -127,7 +127,7 @@ Picture River::computePicture()
     }
   }
 
-  return Picture::load( ResourceGroup::land1a, index);
+  return Picture( ResourceGroup::land1a, index);
 }
 
 bool River::isWalkable() const{ return false;}

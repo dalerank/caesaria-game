@@ -50,7 +50,7 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setOne  ( ResourceGroup::transport, 74, 0, 68 ); //span high bridge se
   _d->setOne  ( ResourceGroup::transport, 77, 0, 53 ); //span high bridge sw
   _d->setRange( ResourceGroup::security, 1, 61, offset);
-  _d->setRange( ResourceGroup::entertaiment, 1, 116, offset);
+  _d->setRange( ResourceGroup::entertainment, 1, 116, offset);
   _d->setRange( ResourceGroup::housing, 1, 51, offset);
   _d->setRange( ResourceGroup::warehouse, 19, 83, offset);
   _d->setRange( ResourceGroup::utilitya, 1, 42, offset);
@@ -64,15 +64,14 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setRange( ResourceGroup::waterOverlay, 11, 12, offset ); //wateroverlay houses 1x1
   _d->setRange( ResourceGroup::waterOverlay, 21, 22, offset ); //wateroverlay reservoir area 1x1
 
-  _d->setOne( ResourceGroup::entertaiment, 12, 37, 62); // amphitheater
-  _d->setOne( ResourceGroup::entertaiment, 50, 70, 105);  // collosseum
+  _d->setOne( ResourceGroup::entertainment, 12, 37, 62); // amphitheater
+  _d->setOne( ResourceGroup::entertainment, 50, 70, 105);  // collosseum
 
   // animations
   _d->setRange(ResourceGroup::commerce, 44, 53, Point( 66, 44 ));  // marble
   _d->setRange(ResourceGroup::commerce, 55, 60, Point( 45, 18 ));  // iron
   _d->setRange(ResourceGroup::commerce, 62, 71, Point( 15, 32 ));  // clay
   _d->setRange(ResourceGroup::commerce, 73, 82, Point( 35, 6 ) );  // timber
-  _d->setRange(ResourceGroup::commerce, 87, 98, Point( 14, 36 ) );  // wine
   _d->setRange(ResourceGroup::commerce, 100, 107, Point( 0, 45 ) );  // oil
   _d->setRange(ResourceGroup::commerce, 109, 116, Point( 42, 36 ) );  // weapons
   _d->setRange(ResourceGroup::commerce, 118, 131, Point( 38, 39) );  // furniture

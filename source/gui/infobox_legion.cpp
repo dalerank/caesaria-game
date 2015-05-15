@@ -113,7 +113,7 @@ AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos 
       //_d->gbLegionParams2->hide();
       _d->btnReturn->hide();
 
-      BuildingList barracks = city::statistic::findo<Building>( city, object::barracks );
+      BuildingList barracks = city::statistic::getObjects<Building>( city, object::barracks );
 
       std::string text = barracks.empty()
                           ? "##legion_haveho_soldiers_and_barracks##"
@@ -181,7 +181,7 @@ void AboutLegion::_update()
 
   if( _d->lbFlag )
   {
-    gfx::Picture pic = gfx::Picture::load( ResourceGroup::sprites, _d->fort->flagIndex() );
+    gfx::Picture pic( ResourceGroup::sprites, _d->fort->flagIndex() );
     pic.setOffset( 0, 0 );
     _d->lbFlag->setIcon( pic );
   }
@@ -189,7 +189,7 @@ void AboutLegion::_update()
   if( _d->lbMoraleStandart )
   {
     int mIndex = 20 - math::clamp<int>( _d->fort->legionMorale() / 5, 0, 20 );
-    gfx::Picture pic = gfx::Picture::load( ResourceGroup::sprites, mIndex+ 48 );
+    gfx::Picture pic( ResourceGroup::sprites, mIndex+ 48 );
     pic.setOffset( 0, 0 );
     _d->lbMoraleStandart->setIcon( pic );
   }

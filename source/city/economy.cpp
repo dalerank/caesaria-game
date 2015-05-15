@@ -39,37 +39,37 @@ Economy::~Economy() {}
 
 void Economy::payWages(PlayerCityPtr city)
 {
-  int wages = city::statistic::getMonthlyWorkersWages( city );
+  int wages = statistic::getMonthlyWorkersWages( city );
 
   if( haveMoneyForAction( wages ) )
-    {
-      HouseList houses = city::statistic::findh( city );
+  {
+    HouseList houses = statistic::getHouses( city );
 
-      float salary = city::statistic::getMonthlyOneWorkerWages( city );
-      float wages = 0;
-      foreach( it, houses )
-        {
-          int workers = (*it)->hired();
-          float house_wages = salary * workers;
-          (*it)->appendMoney( house_wages );
-          wages += house_wages;
-        }
-      resolveIssue( econ::Issue( econ::Issue::workersWages, ceil( -wages ) ) );
-    }
-  else
+    float salary = statistic::getMonthlyOneWorkerWages( city );
+    float wages = 0;
+    foreach( it, houses )
     {
-      // TODO affect citizen sentiment for no payment and request money to caesar.
+      int workers = (*it)->hired();
+      float house_wages = salary * workers;
+      (*it)->appendMoney( house_wages );
+      wages += house_wages;
     }
+    resolveIssue( econ::Issue( econ::Issue::workersWages, ceil( -wages ) ) );
+  }
+  else
+  {
+    // TODO affect citizen sentiment for no payment and request money to caesar.
+  }
 }
 
 void Economy::collectTaxes(PlayerCityPtr city)
 {
   float lastMonthTax = 0;
 
-  ForumList forums = city::statistic::findo<Forum>( city, object::forum );
+  ForumList forums = statistic::getObjects<Forum>( city, object::forum );
   foreach( forum, forums ) { lastMonthTax += (*forum)->collectTaxes(); }
 
-  SenateList senates = city::statistic::findo<Senate>( city, object::senate );
+  SenateList senates = statistic::getObjects<Senate>( city, object::senate );
   foreach( senate, senates ) { lastMonthTax += (*senate)->collectTaxes(); }
 
   resolveIssue( econ::Issue( econ::Issue::taxIncome, lastMonthTax ) );
@@ -94,22 +94,22 @@ void Economy::resolveIssue(econ::Issue issue)
 void Economy::checkIssue(econ::Issue::Type type)
 {
   switch( type )
+  {
+  case econ::Issue::overdueEmpireTax:
     {
-    case econ::Issue::overdueEmpireTax:
-      {
-        int lastYearBrokenTribute = getIssueValue( econ::Issue::overdueEmpireTax, econ::Treasury::lastYear );
-        std::string text = lastYearBrokenTribute > 0
-            ? "##for_second_year_broke_tribute##"
-            : "##current_year_notpay_tribute_warning##";
-        GameEventPtr e = ShowInfobox::create( "##tribute_broken_title##", text );
-        e->dispatch();
-      }
-      break;
-
-    default:
-      break;
-
+      int lastYearBrokenTribute = getIssueValue( econ::Issue::overdueEmpireTax, econ::Treasury::lastYear );
+      std::string text = lastYearBrokenTribute > 0
+          ? "##for_second_year_broke_tribute##"
+          : "##current_year_notpay_tribute_warning##";
+      GameEventPtr e = ShowInfobox::create( "##tribute_broken_title##", text );
+      e->dispatch();
     }
+  break;
+
+  default:
+  break;
+
+  }
 }
 
 }

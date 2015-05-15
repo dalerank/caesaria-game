@@ -52,7 +52,7 @@ MarketKidPtr MarketKid::create(PlayerCityPtr city, MarketBuyerPtr lady )
 {
   MarketKidPtr ret( new MarketKid( city ) );
   ret->setPos( lady->pos() );
-  ret->_pathwayRef() = lady->pathway();
+  ret->_pathway() = lady->pathway();
 
   ret->drop();
 
@@ -77,7 +77,7 @@ void MarketKid::send2City( MarketPtr destination )
   if( destination.isValid() )
   {
     _d->marketPos = destination->pos();
-    _pathwayRef().move( Pathway::reverse );
+    _pathway().move( Pathway::reverse );
     _centerTile();
     attach();
   }

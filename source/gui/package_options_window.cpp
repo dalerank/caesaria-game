@@ -141,7 +141,7 @@ void PackageOptions::_updateC3paths()
 {
   if( _d->edCaesar3Music )
   {
-    _d->edCaesar3Music->setText( SETTINGS_VALUE( c3music).toString() );
+    _d->edCaesar3Music->setText( SETTINGS_VALUE( c3music ).toString() );
   }
 
   if( _d->edCaesar3Video )

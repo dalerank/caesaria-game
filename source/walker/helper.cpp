@@ -270,7 +270,7 @@ Picture WalkerHelper::getBigPicture(walker::Type type)
   break;
   }
 
-  return index >= 0 ? Picture::load( "bigpeople", index ) : Picture::getInvalid();
+  return index >= 0 ? Picture( "bigpeople", index ) : Picture::getInvalid();
 }
 
 WalkerHelper::~WalkerHelper(){}

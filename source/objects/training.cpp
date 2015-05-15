@@ -48,7 +48,7 @@ void TrainingBuilding::timeStep(const unsigned long time)
    if( _lastSendDate.daysTo( game::Date::current() ) > _trainingDelay )
    {
      _lastSendDate = game::Date::current();
-      deliverTrainee();
+     deliverTrainee();
    }
 }
 
@@ -69,7 +69,7 @@ void TrainingBuilding::load( const VariantMap& stream )
 
 GladiatorSchool::GladiatorSchool() : TrainingBuilding( object::gladiatorSchool, Size(3))
 {
-  _fgPicturesRef().resize(1);
+  _fgPictures().resize(1);
 }
 
 void GladiatorSchool::deliverTrainee()
@@ -86,7 +86,7 @@ void GladiatorSchool::timeStep(const unsigned long time)
 
 LionsNursery::LionsNursery() : TrainingBuilding( object::lionsNursery, Size(3) )
 {
-   _fgPicturesRef().resize(1);
+   _fgPictures().resize(1);
 }
 
 void LionsNursery::timeStep(const unsigned long time)

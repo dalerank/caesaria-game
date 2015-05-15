@@ -77,7 +77,7 @@ void LoadMission::Impl::resolveItemSelected(const ListBoxItem& item)
   std::string title = vm.get( "preview.title" ).toString();
 
   if( lbDescription ) lbDescription->setText( _(text) );
-  if( imgPreview ) imgPreview->setPicture( Picture::load( previewImg ) );
+  if( imgPreview ) imgPreview->setPicture( Picture( previewImg ) );
   if( btnLoad ) btnLoad->setEnabled( !saveItemText.empty() );
   if( lbTitle ) lbTitle->setText( _( title ) );
 }
@@ -112,7 +112,7 @@ void LoadMission::Impl::fillFiles()
     return;
   lbxFiles->clear();
 
-  vfs::Entries flist = vfs::Directory( directory ).getEntries();
+  vfs::Entries flist = vfs::Directory( directory ).entries();
   flist = flist.filter( vfs::Entries::file | vfs::Entries::extFilter, ".mission" );
 
   StringArray names;

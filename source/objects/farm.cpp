@@ -42,11 +42,11 @@
 
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(object::fig_farm, FarmFruit)
-REGISTER_CLASS_IN_OVERLAYFACTORY(object::wheat_farm, FarmWheat)
-REGISTER_CLASS_IN_OVERLAYFACTORY(object::vinard, FarmGrape)
-REGISTER_CLASS_IN_OVERLAYFACTORY(object::meat_farm, FarmMeat)
-REGISTER_CLASS_IN_OVERLAYFACTORY(object::olive_farm, FarmOlive)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::fig_farm,       FarmFruit    )
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::wheat_farm,     FarmWheat    )
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::vinard,         FarmGrape    )
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::meat_farm,      FarmMeat     )
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::olive_farm,     FarmOlive    )
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::vegetable_farm, FarmVegetable)
 
 class FarmTile : public Construction
@@ -83,12 +83,12 @@ Picture FarmTile::computePicture( const good::Product outGood, const int percent
   int sequenceSize = 5;
 
   std::map<good::Product, int> good2pics;
-  good2pics[ good::wheat ] = 13;
+  good2pics[ good::wheat     ] = 13;
   good2pics[ good::vegetable ] = 18;
-  good2pics[ good::fruit ] = 23;
-  good2pics[ good::olive ] = 28;
-  good2pics[ good::grape ] = 33;
-  good2pics[ good::meat ] = 38;
+  good2pics[ good::fruit     ] = 23;
+  good2pics[ good::olive     ] = 28;
+  good2pics[ good::grape     ] = 33;
+  good2pics[ good::meat      ] = 38;
 
   std::map<good::Product, int>::iterator rIt = good2pics.find( outGood );
   if( rIt != good2pics.end() )
@@ -101,7 +101,7 @@ Picture FarmTile::computePicture( const good::Product outGood, const int percent
   }
 
   picIdx += math::clamp<int>( (percent * sequenceSize) / 100, 0, sequenceSize-1);
-  return Picture::load( ResourceGroup::commerce, picIdx );
+  return Picture( ResourceGroup::commerce, picIdx );
 }
 
 bool FarmTile::build(const city::AreaInfo &info)
@@ -134,18 +134,18 @@ Farm::Farm(const good::Product outGood, const object::Type farmType )
   outStockRef().setCapacity( 100 );
 
   _d->lastProgress = 0;
-  _d->sublocs << TilePos( 0, 0) << TilePos( 1, 0)
-              << TilePos( 2, 0) << TilePos( 2, 1) << TilePos( 2, 2);
+  _d->sublocs << TilePos( 0, 0) << TilePos( 2, 2)
+              << TilePos( 2, 1) << TilePos( 1, 0) << TilePos( 2, 0);
 
   Picture mainPic = _getMainPicture();
   mainPic.addOffset( tile::tilepos2screen( TilePos( 0, 1) ) );
-  _fgPicturesRef().push_back( mainPic );  // farm building
+  _fgPictures().push_back( mainPic );  // farm building
 
   foreach( it, _d->sublocs )
   {
     Picture tPic = FarmTile::computePicture( outGood, 0 );
     tPic.addOffset( tile::tilepos2screen( *it ) );
-    _fgPicturesRef().push_back( tPic );
+    _fgPictures().push_back( tPic );
   }
   setPicture( Picture::getInvalid() );
 
@@ -200,7 +200,7 @@ void Farm::computeRoadside()
 
 void Farm::init()
 {
-  _fgPicturesRef().resize(5+1);
+  _fgPictures().resize(5+1);
   computePictures();
 }
 
@@ -258,7 +258,7 @@ bool Farm::build( const city::AreaInfo& info )
     _buildFarmTiles( info, upInfo.pos );
   }
 
-  _fgPicturesRef().resize( 0 );
+  _fgPictures().resize( 0 );
   Factory::build( upInfo );
 
   setPicture( _getMainPicture() );
@@ -311,7 +311,7 @@ Picture Farm::_getMainPicture()
   const MetaData& md = MetaDataHolder::getData( type() );
   Picture ret = md.picture();
   if( !ret.isValid() )
-    ret = Picture::load(ResourceGroup::commerce, 12);
+    ret.load(ResourceGroup::commerce, 12);
 
   return ret;
 }
@@ -324,7 +324,7 @@ FarmWheat::FarmWheat() : Farm(good::wheat, object::wheat_farm)
 
 std::string FarmWheat::troubleDesc() const
 {
-  LocustList lc = city::statistic::findw<Locust>( _city(), walker::locust, pos() );
+  LocustList lc = city::statistic::getWalkers<Locust>( _city(), walker::locust, pos() );
   if( !lc.empty() )
   {
     return "##trouble_farm_was_blighted_by_locust##";

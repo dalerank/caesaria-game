@@ -77,7 +77,7 @@ public:
     : PushButton( parent, Rect( pos + requestButtonOffset * index, requestButtonSize), "", -1, false, PushButton::blackBorderUp )
   {
     _request = request;
-    _resizeEvent();
+    _finalizeResize();
 
     CONNECT( this, onClicked(), this, RequestButton::_executeRequest );
   }
@@ -86,19 +86,19 @@ public:
   {
     PushButton::_updateTextPic();
 
-    PictureRef& pic = _textPictureRef();
+    Picture& pic = _textPicture();
 
     Font font = Font::create( FONT_1_WHITE );
 
     request::RqGoodPtr gr = _request.as<request::RqGood>();
     if( gr.isValid() )
     {
-      font.draw( *pic, utils::format( 0xff, "%d", gr->qty() ), 2, 2 );
-      font.draw( *pic, good::Helper::getTypeName( gr->goodType() ), 60, 2 );
+      font.draw( pic, utils::format( 0xff, "%d", gr->qty() ), 2, 2 );
+      font.draw( pic, good::Helper::getTypeName( gr->goodType() ), 60, 2 );
 
       int month2comply = game::Date::current().monthsTo( gr->finishedDate() );
-      font.draw( *pic, utils::format( 0xff, "%d %s", month2comply, _( "##rqst_month_2_comply##") ), 250, 2 );
-      font.draw( *pic, gr->description(), 5, pic->height() - 20 );
+      font.draw( pic, utils::format( 0xff, "%d %s", month2comply, _( "##rqst_month_2_comply##") ), 250, 2 );
+      font.draw( pic, gr->description(), 5, pic.height() - 20 );
     }
   }
 
@@ -205,7 +205,7 @@ void Emperor::_updateRequests()
   }
 
   request::RequestList reqs;
-  request::DispatcherPtr dispatcher = statistic::finds<request::Dispatcher>( _d->city );
+  request::DispatcherPtr dispatcher = statistic::getService<request::Dispatcher>( _d->city );
 
   if( dispatcher.isValid() )
   {

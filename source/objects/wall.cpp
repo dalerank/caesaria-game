@@ -35,7 +35,7 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(object::wall, Wall)
 Wall::Wall()
   : Building( object::wall, Size(1) )
 {
-  setPicture( ResourceGroup::wall, 178 ); // default picture for wall
+  _picture().load( ResourceGroup::wall, 178 ); // default picture for wall
 }
 
 bool Wall::build( const city::AreaInfo& info )
@@ -52,7 +52,7 @@ bool Wall::build( const city::AreaInfo& info )
 
   Construction::build( info );
 
-  WallList walls = city::statistic::findo<Wall>( info.city, object::wall );
+  WallList walls = city::statistic::getObjects<Wall>( info.city, object::wall );
 
   foreach( wall, walls ) { (*wall)->updatePicture( info.city ); }
 
@@ -112,7 +112,11 @@ const Picture& Wall::picture(const city::AreaInfo& areaInfo) const
   const TilePos tile_pos = (areaInfo.aroundTiles.empty()) ? pos() : areaInfo.pos;
 
   if (!tmap.isInside(tile_pos))
-    return Picture::load( ResourceGroup::wall, 178 );
+  {
+    static Picture ret;
+    ret.load(ResourceGroup::wall, 178 );
+    return ret;
+  }
 
   TilePos tile_pos_d[direction::count];
   bool is_border[direction::count] = { 0 };
@@ -189,7 +193,7 @@ const Picture& Wall::picture(const city::AreaInfo& areaInfo) const
   }
 
   Wall& th = *const_cast< Wall* >( this );
-  th._fgPicturesRef().clear();
+  th._fgPictures().clear();
   int index;
   switch( directionFlags & 0xf )
   {  
@@ -211,8 +215,8 @@ const Picture& Wall::picture(const city::AreaInfo& areaInfo) const
   {
     if( (directionFlags & 0x20) == 0 )
     {
-      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 183 ) );
-      th._fgPicturesRef().back().addOffset( -15, -8 );
+      th._fgPictures().push_back( Picture( ResourceGroup::wall, 183 ) );
+      th._fgPictures().back().addOffset( -15, -8 );
     }
   }
   break;
@@ -225,8 +229,8 @@ const Picture& Wall::picture(const city::AreaInfo& areaInfo) const
     index = 178;
     if( (directionFlags & 0x20) == 0 )
     {
-      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 183 ) );
-      th._fgPicturesRef().back().addOffset( -15, -8 );
+      th._fgPictures().push_back( Picture( ResourceGroup::wall, 183 ) );
+      th._fgPictures().back().addOffset( -15, -8 );
     }
   break; // N + S + E + W (crossing)
 
@@ -235,7 +239,9 @@ const Picture& Wall::picture(const city::AreaInfo& areaInfo) const
     Logger::warning( "Impossible direction on wall building [%d,%d]", areaInfo.pos.i(), areaInfo.pos.j() );
   }
 
-  return Picture::load( ResourceGroup::wall, index );
+  static Picture ret;
+  ret.load( ResourceGroup::wall, index );
+  return ret;
 }
 
 void Wall::updatePicture(PlayerCityPtr city)

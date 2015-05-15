@@ -20,26 +20,11 @@
 #include "objects/construction.hpp"
 #include "gfx/tile.hpp"
 #include "pathway/path_finding.hpp"
-#include "core/exception.hpp"
 #include "core/position.hpp"
 #include "objects/objects_factory.hpp"
 #include "pathway/astarpathfinding.hpp"
 #include "core/safetycast.hpp"
-#include "city/migration.hpp"
 #include "core/variant_map.hpp"
-#include "cityservice_workershire.hpp"
-#include "cityservice_timers.hpp"
-#include "cityservice_prosperity.hpp"
-#include "cityservice_religion.hpp"
-#include "cityservice_festival.hpp"
-#include "cityservice_roads.hpp"
-#include "cityservice_fishplace.hpp"
-#include "cityservice_shoreline.hpp"
-#include "cityservice_info.hpp"
-#include "requestdispatcher.hpp"
-#include "cityservice_disorder.hpp"
-#include "cityservice_animals.hpp"
-#include "cityservice_culture.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects/road.hpp"
 #include "core/time.hpp"
@@ -70,15 +55,10 @@
 #include "world/empiremap.hpp"
 #include "walker/seamerchant.hpp"
 #include "cityservice_factory.hpp"
-#include "sound/player.hpp"
 #include "world/emperor.hpp"
-#include "cityservice_health.hpp"
-#include "cityservice_military.hpp"
-#include "cityservice_peace.hpp"
 #include "game/resourcegroup.hpp"
 #include "world/romechastenerarmy.hpp"
 #include "walker/chastener_elephant.hpp"
-#include "sentiment.hpp"
 #include "walker/chastener.hpp"
 #include "world/barbarian.hpp"
 #include "objects/fort.hpp"
@@ -89,7 +69,6 @@
 #include "gfx/helper.hpp"
 #include "game/difficulty.hpp"
 #include "active_points.hpp"
-#include "cityservice_fire.hpp"
 #include "game/player.hpp"
 #include "scribes.hpp"
 #include "statistic.hpp"
@@ -98,6 +77,14 @@
 #include "core/flowlist.hpp"
 #include "economy.hpp"
 #include "city_impl.hpp"
+#include "sentiment.hpp"
+#include "cityservice_timers.hpp"
+#include "cityservice_military.hpp"
+#include "core/requirements.hpp"
+#include "cityservice_prosperity.hpp"
+#include "cityservice_culture.hpp"
+#include "cityservice_peace.hpp"
+#include "ambientsound.hpp"
 
 #include <set>
 
@@ -135,6 +122,16 @@ public:
 
   int sentiment;
 
+  struct
+  {
+    WalkerList walkers;
+
+    void clear()
+    {
+      walkers.clear();
+    }
+  } cached;
+
 public:
   // collect taxes from all houses
   void monthStep( PlayerCityPtr city, const DateTime& time );
@@ -160,29 +157,11 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->states.age = 0;
   _d->walkers.idCount = 1;
   _d->sentiment = city::Sentiment::defaultValue;
-  _d->empMapPicture = Picture::load( ResourceGroup::empirebits, 1 );
+  _d->empMapPicture.load( ResourceGroup::empirebits, 1 );
 
-  addService( city::Migration::create( this ) );
-  addService( city::WorkersHire::create( this ) );
-  addService( city::ProsperityRating::create( this ) );
-  addService( city::Shoreline::create( this ) );
-  addService( city::Info::create( this ) );
-  addService( city::CultureRating::create( this ) );
-  addService( city::Animals::create( this ) );
-  addService( city::Religion::create( this ) );
-  addService( city::Festival::create( this ) );
-  addService( city::Roads::create( this ) );
-  addService( city::Fishery::create( this ) );
-  addService( city::Disorder::create( this ) );
-  addService( city::request::Dispatcher::create( this ) );
-  addService( city::Military::create( this ) );
-  addService( audio::Player::create( this ) );
-  addService( city::HealthCare::create( this ));
-  addService( city::Peace::create( this ) );
-  addService( city::Sentiment::create( this ) );
-  addService( city::Fire::create( this ) );
+  _d->services.initialize( this, ":/services.model" );
 
-  setPicture( Picture::load( ResourceGroup::empirebits, 1 ) );
+  _picture().load( ResourceGroup::empirebits, 1 );
   _initAnimation();
 
   setOption( updateRoads, 0 );
@@ -239,9 +218,11 @@ void PlayerCity::timeStep(unsigned int time)
   }
 
   //update walkers access map
+  _d->cached.clear();
+
   _d->walkers.update( this, time );
   _d->overlays.update( this, time );
-  _d->services.update( this, time );
+  _d->services.timeStep( this, time );
   city::Timers::instance().update( time );
 
   if( getOption( updateRoads ) > 0 )
@@ -268,23 +249,23 @@ void PlayerCity::Impl::monthStep( PlayerCityPtr city, const DateTime& time )
   economy.updateHistory( game::Date::current() );
 }
 
-WalkerList PlayerCity::walkers( walker::Type rtype )
+const WalkerList& PlayerCity::walkers( walker::Type rtype )
 {
   if( rtype == walker::all )
   {
     return _d->walkers;
   }
 
-  WalkerList res;
+  _d->cached.walkers.clear();
   foreach( w, _d->walkers )
   {
     if( (*w)->type() == rtype  )
     {
-      res.push_back( *w );
+      _d->cached.walkers.push_back( *w );
     }
   }
 
-  return res;
+  return _d->cached.walkers;
 }
 
 const WalkerList& PlayerCity::walkers(const TilePos& pos) { return _d->walkers.at( pos ); }
@@ -302,19 +283,20 @@ void PlayerCity::setBorderInfo(const BorderInfo& info)
   _d->borderInfo.boatExit = info.boatExit.fit( start, stop );
 }
 
-OverlayList&  PlayerCity::overlays()              { return _d->overlays; }
-city::ActivePoints& PlayerCity::activePoints()    { return _d->activePoints; }
-city::Scribes &PlayerCity::scribes()              { return _d->scribes; }
-const BorderInfo& PlayerCity::borderInfo() const  { return _d->borderInfo; }
-Picture PlayerCity::picture() const               { return _d->empMapPicture; }
-bool PlayerCity::isPaysTaxes() const              { return _d->economy.getIssueValue( econ::Issue::empireTax, econ::Treasury::lastYear ) > 0; }
-bool PlayerCity::haveOverduePayment() const       { return _d->economy.getIssueValue( econ::Issue::overduePayment, econ::Treasury::thisYear ) > 0; }
-Tilemap&          PlayerCity::tilemap()           { return _d->tilemap; }
-econ::Treasury& PlayerCity::treasury()            { return _d->economy;   }
+OverlayList&  PlayerCity::overlays()             { return _d->overlays; }
+const OverlayList&PlayerCity::overlays() const   { return _d->overlays; }
+city::ActivePoints& PlayerCity::activePoints()   { return _d->activePoints; }
+city::Scribes &PlayerCity::scribes()             { return _d->scribes; }
+const BorderInfo& PlayerCity::borderInfo() const { return _d->borderInfo; }
+Picture PlayerCity::picture() const              { return _d->empMapPicture; }
+bool PlayerCity::isPaysTaxes() const             { return _d->economy.getIssueValue( econ::Issue::empireTax, econ::Treasury::lastYear ) > 0; }
+bool PlayerCity::haveOverduePayment() const      { return _d->economy.getIssueValue( econ::Issue::overduePayment, econ::Treasury::thisYear ) > 0; }
+Tilemap& PlayerCity::tilemap()                   { return _d->tilemap; }
+econ::Treasury& PlayerCity::treasury()           { return _d->economy;   }
 
 int PlayerCity::strength() const
 {
-  FortList forts = city::statistic::findo<Fort>( const_cast<PlayerCity*>( this ), object::any );
+  FortList forts = city::statistic::getObjects<Fort>( const_cast<PlayerCity*>( this ) );
 
   int ret = 0;
   foreach( i, forts )
@@ -336,7 +318,7 @@ DateTime PlayerCity::lastAttack() const
 void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
 {
   unsigned int pop = 0;
-  HouseList houseList = city::statistic::findh( city );
+  HouseList houseList = city::statistic::getHouses( city );
 
   foreach( house, houseList)
     pop += (*house)->habitants().count();
@@ -659,11 +641,7 @@ int PlayerCity::peace() const
   return p.isValid() ? p->value() : 0;
 }
 
-int PlayerCity::sentiment() const
-{
-  return _d->sentiment;
-}
-
+int PlayerCity::sentiment() const {  return _d->sentiment; }
 int PlayerCity::favour() const { return empire()->emperor().relation( name() ); }
 
 void PlayerCity::addObject( world::ObjectPtr object )

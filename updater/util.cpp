@@ -143,7 +143,7 @@ namespace
 bool Util::caesariaIsRunning()
 {
   // Traverse the /proc folder, this sets the flag to TRUE if the process was found
-  vfs::Entries procs = vfs::Directory(systemProcFolder).getEntries();
+  vfs::Entries procs = vfs::Directory(systemProcFolder).entries();
 
   foreach( i, procs )
   {

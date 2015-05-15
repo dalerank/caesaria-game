@@ -99,7 +99,7 @@ void WallGuard::timeStep(const unsigned long time)
     bool haveEnemiesInRande = !enemies.empty();
     if( haveEnemiesInRande )
     {
-      if( _animationRef().atEnd() )
+      if( _animation().atEnd() )
       {
         EnemySoldierPtr p = _findNearbyEnemy( enemies );
         turn( p->pos() );
@@ -195,7 +195,7 @@ std::string WallGuard::thoughts(Thought th) const
   case thCurrent:
   {
     TilePos offset( 10, 10 );
-    EnemySoldierList enemies = city::statistic::findw<EnemySoldier>( _city(), walker::any, pos() - offset, pos() + offset );
+    EnemySoldierList enemies = city::statistic::getWalkers<EnemySoldier>( _city(), walker::any, pos() - offset, pos() + offset );
     if( enemies.empty() )
     {
       return Soldier::thoughts(th);
@@ -319,7 +319,7 @@ void WallGuard::_back2base()
       go();
     }
 
-    if( !_pathwayRef().isValid() )
+    if( !_pathway().isValid() )
     {
       deleteLater();
     }

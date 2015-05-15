@@ -69,9 +69,9 @@ void Rioter::_reachedPathway()
   switch( _d->state )
   {
   case Impl::go2destination:
-    _animationRef().clear();
-    _animationRef().load( ResourceGroup::citizen2, 455, 8 );
-    _animationRef().load( ResourceGroup::citizen2, 462, 8, Animation::reverse );
+    _animation().clear();
+    _animation().load( ResourceGroup::citizen2, 455, 8 );
+    _animation().load( ResourceGroup::citizen2, 462, 8, Animation::reverse );
     _setAction( acFight );
     _d->state = Impl::destroyConstruction;
   break;
@@ -96,7 +96,7 @@ void Rioter::timeStep(const unsigned long time)
   {
   case Impl::searchHouse:
   {
-    ConstructionList constructions = city::statistic::findo<Construction>( _city(), object::house );
+    ConstructionList constructions = city::statistic::getObjects<Construction>( _city(), object::house );
     for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
     {
       HousePtr h = ptr_cast<House>( *it );
@@ -122,7 +122,7 @@ void Rioter::timeStep(const unsigned long time)
 
   case Impl::searchAnyBuilding:
   {
-    ConstructionList constructions = city::statistic::findo<Construction>( _city(), object::house );
+    ConstructionList constructions = city::statistic::getObjects<Construction>( _city(), object::house );
 
     for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
     {
@@ -174,7 +174,7 @@ void Rioter::timeStep(const unsigned long time)
   {
     if( game::Date::isDayChanged() )
     {
-      ConstructionList constructions = city::statistic::findo<Construction>( _city(),
+      ConstructionList constructions = city::statistic::getObjects<Construction>( _city(),
                                                                              object::any,
                                                                              pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
 
@@ -187,7 +187,7 @@ void Rioter::timeStep(const unsigned long time)
 
        if( constructions.empty() )
       {
-        _animationRef().clear();
+        _animation().clear();
         _setAction( acMove );
         _d->state = Impl::searchHouse;
       }

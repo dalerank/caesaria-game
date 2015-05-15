@@ -216,7 +216,19 @@ Renderer::PassQueue Building::passQueue() const {  return buildingPassQueue;}
 
 void Building::_updateBalanceKoeffs()
 {
+  if( !_city().isValid() )
+    return;
+
   float balance = std::max<float>( statistic::getBalanceKoeff( _city() ), 0.1f );
-  _d->cityKoeffs.fireRisk = balance * _city()->getOption( PlayerCity::fireKoeff ) / 100.f;
+
+  float fireKoeff = balance * _city()->getOption( PlayerCity::fireKoeff ) / 100.f;
+  if( !_city()->getOption(PlayerCity::c3gameplay) )
+  {
+    int anyWater = tile().param( Tile::pWellWater ) + tile().param( Tile::pFountainWater ) + tile().param( Tile::pReservoirWater );
+    if( anyWater > 0 )
+      fireKoeff -= 0.3f;
+  }
+
+  _d->cityKoeffs.fireRisk = math::clamp( fireKoeff, 0.f, 9.f );
   _d->cityKoeffs.collapseRisk = balance * _city()->getOption( PlayerCity::collapseKoeff ) / 100.f;
 }

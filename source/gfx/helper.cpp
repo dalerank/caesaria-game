@@ -137,16 +137,16 @@ int fromResource( const std::string& pic_name )
   else
   {
     Logger::warning( "TileHelper: unknown image " + pic_name );
-    crashhandler::printstack();
+    res_id = 0;
   }
 
   return res_id;
 }
 
-Picture& toPicture(const unsigned int imgId)
+Picture toPicture(const unsigned int imgId)
 {
   std::string picname = toResource( imgId );
-  return Picture::load( picname );
+  return Picture( picname );
 }
 
 }
@@ -264,20 +264,22 @@ void clear(Tile& tile)
   int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
   int imgId = math::random( 58 );
 
-  Picture pic = Picture::load( ResourceGroup::land1a, startOffset + imgId );
+  Picture pic( ResourceGroup::land1a, startOffset + imgId );
   tile.setPicture( ResourceGroup::land1a, startOffset + imgId );
   tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
 }
 
 void fixPlateauFlags(Tile& tile)
 {
-  if( tile.originalImgId() > 200 && tile.originalImgId() < 245 )
+  int imgId = tile.originalImgId();
+  bool plateau = (imgId > 200 && imgId < 245);
+  bool l3aRocks = (imgId > 848 && imgId < 863);
+  if( plateau || l3aRocks )
   {
     tile.setFlag( Tile::clearAll, true );
-    Picture pic = imgid::toPicture( tile.originalImgId() );
-    int size = (pic.width() + 2) / tilemap::x_tileBase;
-    bool flat = pic.height() <= tilemap::y_tileBase * size;
-    tile.setFlag( Tile::tlRock, !flat );
+    const Picture& pic = tile.picture();
+    bool flat = (pic.height() <= pic.width() / 2);
+    tile.setFlag( Tile::tlRock, !flat || l3aRocks );
   }
 }
 

@@ -52,34 +52,33 @@ void RatingButton::_updateTextPic()
   PushButton::_updateTextPic();
 
   Font digitFont = Font::create( FONT_4 );
-  PictureRef& pic = _textPictureRef();
-  if( pic )
+  Picture& pic = _textPicture();
+  if( pic.isValid() )
   {
-    digitFont.draw( *pic, utils::i2str( _value ), width() / 2 - 10, 17, true, false );
+    digitFont.draw( pic, utils::i2str( _value ), width() / 2 - 10, 17, true, false );
 
     Font targetFont = Font::create( FONT_1 );
-    targetFont.draw( *pic, utils::format( 0xff, "%d %s", _target, _("##wndrt_need##") ), 10, height() - 20, true, false );
+    targetFont.draw( pic, utils::format( 0xff, "%d %s", _target, _("##wndrt_need##") ), 10, height() - 20, true, false );
 
-    pic->update();
+    pic.update();
   }
 }
 
 void RatingButton::setValue(const int value)
 {
   _value = value;
-  _resizeEvent();
+  _finalizeResize();
 }
 
 void RatingButton::setTarget(const int value)
 {
   _target = value;
-  _resizeEvent();
+  _finalizeResize();
 }
 
 void advisorwnd::RatingButton::setupUI(const VariantMap &ui)
 {
   PushButton::setupUI( ui );
-
 }
 
 }

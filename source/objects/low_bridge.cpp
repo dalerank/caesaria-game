@@ -65,7 +65,7 @@ bool LowBridge::canBuild( const city::AreaInfo& areaInfo ) const
   {
     _d->subtiles.clear();
     LowBridge* thisp = const_cast< LowBridge* >( this );
-    thisp->_fgPicturesRef().clear();
+    thisp->_fgPictures().clear();
 
     _checkParams( areaInfo.city, _d->direction, startPos, endPos, areaInfo.pos );
 
@@ -173,7 +173,7 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
 
   foreach( it, _d->subtiles )
   {
-    _fgPicturesRef().push_back( (*it)->_picture );
+    _fgPictures().push_back( (*it)->_rpicture );
   }
 }
 
@@ -277,7 +277,7 @@ bool LowBridge::build( const city::AreaInfo& info )
   Construction::build( info );
 
   _d->subtiles.clear();
-  _fgPicturesRef().clear();
+  _fgPictures().clear();
 
   Tilemap& tilemap = info.city->tilemap();
 
@@ -338,7 +338,7 @@ bool LowBridge::canDestroy() const
 {
   foreach( subtile, _d->subtiles )
   {
-    WalkerList walkers = city::statistic::findw<Walker>( _city(), walker::any, pos() + (*subtile)->pos() );
+    WalkerList walkers = city::statistic::getWalkers<Walker>( _city(), walker::any, pos() + (*subtile)->pos() );
     if( !walkers.empty() )
     {
       _d->error = "##cant_demolish_bridge_with_people##";
@@ -411,8 +411,8 @@ LowBridgeSubTile::LowBridgeSubTile(const TilePos &pos, int index)
   _pos = pos;
   _index = index;
   _parent = 0;
-  _picture = Picture::load( ResourceGroup::transport, index );
-  _picture.addOffset( tile::tilepos2screen( _pos ) );
+  _rpicture.load( ResourceGroup::transport, index );
+  _rpicture.addOffset( tile::tilepos2screen( _pos ) );
 }
 
 LowBridgeSubTile::~LowBridgeSubTile() {}
@@ -426,13 +426,13 @@ bool LowBridgeSubTile::isNeedRoad() const { return false; }
 bool LowBridgeSubTile::build(const city::AreaInfo &info)
 {
   Construction::build( info );
-  _fgPicturesRef().clear();
+  _fgPictures().clear();
   _pos = info.pos;
-  _picture = Picture::load( ResourceGroup::transport, _index );
   const MetaData& md = MetaDataHolder::getData( type() );
   Point sbOffset = md.getOption( "subtileOffset" );
-  _picture.addOffset( sbOffset );
-  _fgPicturesRef().push_back( _picture );
+  _rpicture.load( ResourceGroup::transport, _index );
+  _rpicture.addOffset( sbOffset );
+  _fgPictures().push_back( _rpicture );
 
   return true;
 }
@@ -447,8 +447,8 @@ void LowBridgeSubTile::setState(Param name, double value)
 
 void LowBridgeSubTile::hide()
 {
-  _picture = Picture::getInvalid();
-  _fgPicturesRef().clear();
+  _rpicture = Picture::getInvalid();
+  _fgPictures().clear();
 }
 
 void LowBridgeSubTile::initTerrain(Tile &terrain)

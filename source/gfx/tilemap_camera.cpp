@@ -316,11 +316,11 @@ void TilemapCamera::Impl::cacheFlatTiles()
 
   resetDrawn();
   foreach( it, tiles )
-    {
-      int z = (*it)->epos().z();
-      tile = (*it)->masterTile();
-      if( !tile )
-        tile = *it;
+  {
+    int z = (*it)->epos().z();
+    tile = (*it)->masterTile();
+    if( !tile )
+      tile = *it;
 
     if( tile->isFlat() && tile->epos().z() == z && !tile->rwd() )
     {

@@ -32,6 +32,7 @@
 #include "texturedbutton.hpp"
 #include "game/advisor.hpp"
 #include "widgetescapecloser.hpp"
+#include "gfx/decorator.hpp"
 #include "listbox.hpp"
 
 using namespace gfx;
@@ -53,8 +54,10 @@ public:
   Label* lbPopulation;
   Label* lbFunds;
   Label* lbDate;
+  bool useIcon;
   ContextMenu* langSelect;
-  Pictures background;
+  Batch background;
+  Pictures backgroundNb;
 
 slots public:
   void resolveSave();
@@ -85,7 +88,10 @@ void TopMenu::draw(gfx::Engine& engine )
 
   _d->updateDate();
 
-  engine.draw( _d->background, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+  if( _d->background.valid() )
+    engine.draw( _d->background, &absoluteClippingRectRef() );
+  else
+    engine.draw( _d->backgroundNb, absoluteRect().lefttop(), &absoluteClippingRectRef() );
 
   MainMenu::draw( engine );
 }
@@ -93,13 +99,13 @@ void TopMenu::draw(gfx::Engine& engine )
 void TopMenu::setPopulation( int value )
 {
   if( _d->lbPopulation )
-    _d->lbPopulation->setText( utils::format( 0xff, "%s %d", _("##pop##"), value ) );
+    _d->lbPopulation->setText( utils::format( 0xff, "%s %d", _d->useIcon ? "" : _("##pop##"), value ) );
 }
 
 void TopMenu::setFunds( int value )
 {
   if( _d->lbFunds )
-    _d->lbFunds->setText( utils::format( 0xff, "%.2s %d", _("##denarii_short##"), value) );
+    _d->lbFunds->setText( utils::format( 0xff, "%.2s %d", _d->useIcon ? "" : _("##denarii_short##"), value) );
 }
 
 void TopMenu::Impl::updateDate()
@@ -128,22 +134,26 @@ void TopMenu::Impl::showShortKeyInfo()
 
 void TopMenu::Impl::initBackground( const Size& size )
 {
-  Pictures p_marble;
-  for (int i = 1; i<=12; ++i)
-  {
-    p_marble.push_back( Picture::load( ResourceGroup::panelBackground, i));
-  }
-
-  background.clear();
+  Pictures p_marble, pics;
+  p_marble.load( ResourceGroup::panelBackground, 1,12 );
 
   unsigned int i = 0;
   int x = 0;
 
-  while( x < size.width())
+  while( x < size.width() )
   {
-    background.append( p_marble[i%12], Point( x, 0 ) );
+    pics.append( p_marble[i%12], Point() );
+    pics.back().setOffset( x, 0 );
     x += p_marble[i%12].width();
     i++;
+  }
+
+  bool batchOk = background.load( pics, Point() );
+  if( !batchOk )
+  {
+    background.destroy();
+    Decorator::reverseYoffset( pics );
+    backgroundNb = pics;
   }
 }
 
@@ -160,7 +170,7 @@ void TopMenu::Impl::showAboutInfo()
   CONNECT( btnExit, onClicked(), bg, Label::deleteLater );
 }
 
-TopMenu::TopMenu( Widget* parent, const int height ) 
+TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
 : MainMenu( parent, Rect( 0, 0, parent->width(), height ) ),
   _d( new Impl )
 {
@@ -168,16 +178,23 @@ TopMenu::TopMenu( Widget* parent, const int height )
   setGeometry( Rect( 0, 0, parent->width(), height ) );
 
   _d->initBackground( size() );
+  _d->useIcon = useIcon;
 
   GET_DWIDGET_FROM_UI( _d, lbPopulation )
   GET_DWIDGET_FROM_UI( _d, lbFunds )
   GET_DWIDGET_FROM_UI( _d, lbDate )
 
   if( _d->lbPopulation )
+  {
     _d->lbPopulation->setPosition( Point( width() - populationLabelOffset, 0 ) );
+    _d->lbPopulation->setIcon( useIcon ? Picture( "population", 1 ) : Picture() );
+  }
 
   if( _d->lbFunds )
+  {
     _d->lbFunds->setPosition(  Point( width() - fundLabelOffset, 0) );
+    _d->lbFunds->setIcon( useIcon ? Picture( "paneling", 332 ) : Picture() );
+  }
 
   if( _d->lbDate )
     _d->lbDate->setPosition( Point( width() - dateLabelOffset, 0) );

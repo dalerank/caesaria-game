@@ -66,7 +66,7 @@ public:
     _needWorkers = need;
     _haveWorkers = have;
     _priority = 0;
-    _lockPick = Picture::load( ResourceGroup::panelBackground, 238 );
+    _lockPick.load( ResourceGroup::panelBackground, 238 );
 
     int percentage = math::percentage( have, need );
     std::string tooltip;
@@ -81,7 +81,7 @@ public:
   void setPriority( int priority )
   {
     _priority = priority;
-    _resizeEvent();
+    _finalizeResize();
   }
 
 signals public:
@@ -93,26 +93,26 @@ protected:
   {
     PushButton::_updateTextPic();
 
-    PictureRef& pic = _textPictureRef();
+    Picture& pic = _textPicture();
 
     Font font = Font::create( FONT_1_WHITE );
-    font.draw( *pic, _title, ofBranchName, 2, Font::alphaDraw, Font::ignoreTx );
-    font.draw( *pic, utils::i2str( _needWorkers ), ofNeedWorkers, 2, Font::alphaDraw, Font::ignoreTx );
+    font.draw( pic, _title, ofBranchName, 2, Font::alphaDraw, Font::ignoreTx );
+    font.draw( pic, utils::i2str( _needWorkers ), ofNeedWorkers, 2, Font::alphaDraw, Font::ignoreTx );
 
     if( _haveWorkers < _needWorkers )
     {
       font = Font::create( FONT_1_RED );
     }
 
-    font.draw( *pic, utils::i2str( _haveWorkers ), ofHaveWorkers, 2, Font::alphaDraw, Font::ignoreTx );
+    font.draw( pic, utils::i2str( _haveWorkers ), ofHaveWorkers, 2, Font::alphaDraw, Font::ignoreTx );
 
     if( _priority > 0 )
     {
       font.setColor( DefaultColors::black );
-      font.draw( *pic, utils::i2str( _priority ), Point( ofPriority, 3 ), Font::alphaDraw, Font::ignoreTx );
+      font.draw( pic, utils::i2str( _priority ), Point( ofPriority, 3 ), Font::alphaDraw, Font::ignoreTx );
     }
 
-    pic->update();
+    pic.update();
   }
 
   virtual void draw(Engine &painter)
@@ -211,7 +211,7 @@ void Employer::Impl::changeSalary(int relative)
 
 void Employer::Impl::showPriorityWindow( industry::Type industry )
 {
-  WorkersHirePtr wh = statistic::finds<WorkersHire>( city );
+  WorkersHirePtr wh = statistic::getService<WorkersHire>( city );
 
   int priority = wh->getPriority( industry );
   dialog::HirePriority* wnd = new dialog::HirePriority( lbSalaries->ui()->rootWidget(), industry, priority );
@@ -220,7 +220,7 @@ void Employer::Impl::showPriorityWindow( industry::Type industry )
 
 void Employer::Impl::setIndustryPriority( industry::Type industry, int priority)
 {
-  WorkersHirePtr wh = statistic::finds<WorkersHire>( city );
+  WorkersHirePtr wh = statistic::getService<WorkersHire>( city );
 
   if( wh.isValid() )
   {
@@ -233,7 +233,7 @@ void Employer::Impl::setIndustryPriority( industry::Type industry, int priority)
 
 void Employer::Impl::update()
 {
-  WorkersHirePtr wh = statistic::finds<WorkersHire>( city );
+  WorkersHirePtr wh = statistic::getService<WorkersHire>( city );
 
   if( wh.isNull() )
     return;
@@ -266,7 +266,7 @@ Employer::Impl::EmployersInfo Employer::Impl::getEmployersInfo(industry::Type ty
   WorkingBuildingList buildings;
   foreach( buildingsGroup, bldGroups )
   {
-    WorkingBuildingList sectorBuildings = statistic::findo<WorkingBuilding>( city, *buildingsGroup );
+    WorkingBuildingList sectorBuildings = statistic::getObjects<WorkingBuilding>( city, *buildingsGroup );
     buildings.insert( buildings.begin(), sectorBuildings.begin(), sectorBuildings.end() );
   }
 

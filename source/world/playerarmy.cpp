@@ -337,7 +337,7 @@ PlayerArmy::PlayerArmy( EmpirePtr empire )
   _d->mode = PlayerArmy::wait;
   setSpeed( 4.f );
 
-  Picture pic = Picture::load( ResourceGroup::empirebits, 37 );
+  Picture pic( ResourceGroup::empirebits, 37 );
   Size size = pic.size();
   pic.setOffset( Point( -size.width() / 2, size.height() / 2 ) );
   setPicture( pic );

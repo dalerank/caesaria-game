@@ -26,10 +26,11 @@
     maxHouseLevel : "big_villa"
     caption : "##capua_title##"
     overview :  [ "##capua_overview##",
-				  "@img=picture5_00002",
+                  "@img=picture5_00006",
                   "##capua_overview2##",
-                  "@img=picture6_00002",
-                  "##capua_overview3##"]
+                  "@img=picture5_00002",
+                  "##capua_overview3##",
+                  "@img=picture6_00002" ]
   }
 	
   empire : {
@@ -211,7 +212,7 @@
     { 
       engineering_post : true
       plaza : true
-      forum : false
+      forum : true
       garden : true
       low_bridge : true
       high_bridge : true

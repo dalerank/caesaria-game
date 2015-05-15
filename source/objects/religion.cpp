@@ -56,8 +56,8 @@ Temple::Temple( DivinityPtr divinity, object::Type type, int imgId, const Size& 
                     : Service::srvCount, type, size ), _td( new Impl )
 {
   _td->divinity = divinity;
-  setPicture( ResourceGroup::security, imgId );
-  _fgPicturesRef().resize( 1 );
+  _picture().load( ResourceGroup::security, imgId );
+  _fgPictures().resize( 1 );
 }
 
 void Temple::_updateBuffs() {  _td->lastBuff = game::Date::current(); }
@@ -92,7 +92,7 @@ void TempleCeres::_updateBuffs()
   if( _lastBuff().month() != game::Date::current().month() )
   {
     TilePos offset( 5, 5 );
-    FarmList farms = city::statistic::findo<Farm>( _city(), object::any,
+    FarmList farms = city::statistic::getObjects<Farm>( _city(), object::any,
                                                    pos() - offset, pos() + offset + TilePos( size().width(), size().width() ) );
     foreach( it, farms )
     {
@@ -149,7 +149,7 @@ TempleOracle::TempleOracle() : BigTemple( DivinityPtr(), object::oracle, 55 )
   setSize( Size( 2 ) );
   _animationRef().load( ResourceGroup::security, 56, 6);
   _animationRef().setOffset( Point( 9, 30 ) );
-  _fgPicturesRef().resize(1);
+  _fgPictures().resize(1);
 }
 
 unsigned int TempleOracle::parishionerNumber() const { return 500; }

@@ -93,7 +93,7 @@ bool Ui::hasFocus( const Widget* element) const
 
 Ui::~Ui() {}
 
-Widget* Ui::rootWidget() {	return this; }
+Widget* Ui::rootWidget() { return this; }
 
 void Ui::Impl::threatDeletionQueue()
 {
@@ -127,7 +127,7 @@ void Ui::draw()
 {
   if( !_d->preRenderFunctionCalled )
   {
-    Logger::warning( "Call beforeDraw() function needed" );
+    Logger::warning( "!!! WARNING: Call beforeDraw() function needed" );
     return;
   }
 

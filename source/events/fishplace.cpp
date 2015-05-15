@@ -51,7 +51,7 @@ GameEventPtr ChangeFishery::create( TilePos pos, Mode mode )
 
 void ChangeFishery::_exec( Game& game, unsigned int time)
 {
-  city::FisheryPtr fishery = city::statistic::finds<city::Fishery>( game.city() );
+  city::FisheryPtr fishery = city::statistic::getService<city::Fishery>( game.city() );
 
   if( fishery.isValid() )
   {
