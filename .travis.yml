@@ -17,4 +17,4 @@ script:
 - make -j4
 notifications:
   slack:
-    slack: caesariagame:m3lwdYPWqeCOn0zWs0rjX5KY
+    slack: '$SLACK_NOTIFICATION'
