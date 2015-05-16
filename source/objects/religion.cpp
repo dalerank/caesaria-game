@@ -28,6 +28,8 @@
 #include "objects/farm.hpp"
 #include "objects/extension.hpp"
 #include "gfx/tilearea.hpp"
+#include "gfx/animation_bank.hpp"
+#include "core/position_array.hpp"
 
 using namespace religion;
 
@@ -48,6 +50,8 @@ class Temple::Impl
 public:
   DivinityPtr divinity;
   DateTime lastBuff;
+  gfx::Animation fireAnimation;
+  PointsArray fires;
 };
 
 Temple::Temple( DivinityPtr divinity, object::Type type, int imgId, const Size& size )
@@ -57,11 +61,26 @@ Temple::Temple( DivinityPtr divinity, object::Type type, int imgId, const Size& 
 {
   _td->divinity = divinity;
   _picture().load( ResourceGroup::security, imgId );
-  _fgPictures().resize( 1 );
+  _fgPictures().resize( 3 );
+  _td->fireAnimation = gfx::AnimationBank::instance().simple( "temple_fire" );
 }
 
 void Temple::_updateBuffs() {  _td->lastBuff = game::Date::current(); }
 DateTime Temple::_lastBuff() const { return _td->lastBuff; }
+
+void Temple::_updateAnimation(const unsigned long time)
+{
+  ServiceBuilding::_updateAnimation( time );
+
+  _td->fireAnimation.update( time );
+  int index = 0;
+  foreach( it, _td->fires )
+  {
+    _fgPicture( 1 + index ) = _td->fireAnimation.currentFrame();
+    _fgPicture( 1 + index ).setOffset( *it );
+    index++;
+  }
+}
 
 DivinityPtr Temple::divinity() const {  return _td->divinity; }
 
@@ -75,6 +94,13 @@ void Temple::deliverService()
 }
 
 unsigned int Temple::walkerDistance() const { return 26;}
+
+void Temple::initialize(const MetaData &mdata)
+{
+  ServiceBuilding::initialize( mdata );
+
+  _td->fires.fromVList( mdata.getOption( "fires" ).toList() );
+}
 
 Temple::~Temple(){}
 

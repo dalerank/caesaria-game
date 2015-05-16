@@ -31,12 +31,14 @@ public:
   virtual unsigned int parishionerNumber() const = 0;
   virtual void deliverService();
   virtual unsigned int walkerDistance() const;
+  virtual void initialize(const MetaData &mdata);
 
 protected:
   Temple( religion::DivinityPtr divinity, object::Type type, int imgId, const Size& size );
 
   virtual void _updateBuffs();
   DateTime _lastBuff() const;
+  virtual void _updateAnimation( const unsigned long time );
 
 private:
   class Impl;
