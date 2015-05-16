@@ -15,3 +15,5 @@ install:
 script:
 # Build CaesarIA
 - make -j4
+notifications:
+    slack: caesariagame:m3lwdYPWqeCOn0zWs0rjX5KY
