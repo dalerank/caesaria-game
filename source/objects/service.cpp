@@ -150,5 +150,5 @@ std::string ServiceBuilding::workersStateDesc() const
 
 int ServiceBuilding::_getWalkerOrders() const
 {
-  return ServiceWalker::goLowerService|ServiceWalker::anywayWhenFailed;
+  return ServiceWalker::goServiceMaximum|ServiceWalker::anywayWhenFailed;
 }
