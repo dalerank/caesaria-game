@@ -659,16 +659,16 @@ void Layer::_addWalkerType(walker::Type wtype)
   _dfunc()->vwalkers.insert( wtype );
 }
 
-void Layer::_fillVisibleObjects(int ltype)
+void Layer::_initialize()
 {
-  const VariantMap& vm = citylayer::Helper::getConfig( (citylayer::Type)ltype );
+  const VariantMap& vm = citylayer::Helper::getConfig( (citylayer::Type)type() );
   VariantList vl = vm.get( "visibleObjects" ).toList();
   foreach( it, vl )
   {
     object::Type ovType = object::toType( it->toString() );
     if( ovType != object::unknown )
       _dfunc()->drObjects.insert( ovType );
-  }
+  }  
 }
 
 bool Layer::_moveCamera(NEvent &event)

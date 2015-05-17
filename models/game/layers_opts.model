@@ -16,13 +16,53 @@
 
   education : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge",
-                       "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark" ]
+                       "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark", "school",
+                       "library", "academy" ]
+  }
 
+  school : {
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge",
+                       "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark", "school" ]
+  }
+
+  library : {
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge",
+                       "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark", "library" ]
+  }
+
+  academy : {
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge",
+                       "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark", "academy" ]
   }
 
   entertainment : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge",
-                       "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark" ]
+                       "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark", "tree",
+                       "theater", "amphitheater", "colloseum", "hippodrome" ]
+  }
+
+  theater : {
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge",
+                       "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark",
+                       "theater" ]
+  }
+
+  amphitheater : {
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge",
+                       "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark",
+                       "amphitheater" ]
+  }
+
+  colloseum : {
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge",
+                       "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark",
+                       "colloseum" ]
+  }
+
+  hippodrome : {
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge",
+                       "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark",
+                       , "hippodrome" ]
   }
 
   fire : {
@@ -37,7 +77,28 @@
 
   health : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
-                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "waymark" ]
+                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "waymark", "doctor",
+                       "hospital", "barber", "baths" ]
+  }
+
+  doctor : {
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
+                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "waymark", "doctor" ]
+  }
+
+  hospital : {
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
+                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "waymark", "hospital" ]
+  }
+
+  barber : {
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
+                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "waymark", "barber" ]
+  }
+
+  baths : {
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
+                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "waymark", "baths" ]
   }
 
   aborigen : {
@@ -56,6 +117,7 @@
   tax : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
                        "high_bridge", "elevation", "rift", "tree", "burning_ruins", "seante", "forum", "waymark" ]
+    column : { rc : "taxcolumn", foot : 124, body : 125,  }
   }
 
   troubles : {
