@@ -47,7 +47,7 @@ public:
   std::string name() const;
   void setName( const std::string& name );
 
-  void cityTax( const std::string& cityname, unsigned int money );
+  void citySentTax( const std::string& cityname, unsigned int money );
   void resetRelations( const StringArray& cities );
   void checkCities();
 
