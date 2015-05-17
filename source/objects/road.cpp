@@ -368,9 +368,7 @@ void Plaza::load(const VariantMap& stream)
 
 const Picture& Plaza::picture() const
 {
-  return tile().masterTile()
-           ? Construction::picture()
-           : Picture( ResourceGroup::entertainment, 102);
+  return Construction::picture();
 }
 
 void Plaza::updatePicture()

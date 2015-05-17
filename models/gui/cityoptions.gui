@@ -72,6 +72,7 @@
       btnLockInfobox#PushButton     : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_lockinfo_mode##"    }
       btnAnroidBarEnabled#PushButton: { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_androidbar_mode##"  }
       btnToggleBatching#PushButton  : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_batching_mode##"    }
+      btnToggleCcUseAI#PushButton   : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_batching_mode##"    }
     }
   }
 

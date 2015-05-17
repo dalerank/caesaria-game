@@ -361,7 +361,7 @@ void CityOptions::Impl::update()
   if( btnC3Gameplay )
   {
     bool value = city->getOption( PlayerCity::c3gameplay ) > 0;
-    btnBarbarianMayAttack->setText( value
+    btnC3Gameplay->setText( value
                                     ? _("##city_c3rules_on##")
                                     : _("##city_c3rules_off##")  );
   }
