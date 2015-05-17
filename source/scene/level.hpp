@@ -49,6 +49,7 @@ public:
   virtual bool installEventHandler(EventHandlerPtr);
 
   void setCameraPos( TilePos pos );
+  void switch2layer( int layer );
 
 private slots:
   void _exitToMainMenu();

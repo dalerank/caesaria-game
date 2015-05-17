@@ -681,6 +681,7 @@ void Level::Impl::showTradeAdvisorWindow(){  showAdvisorsWindow( advisor::tradin
 void Level::_exitToMainMenu() {  _d->result = Level::mainMenu;  stop();}
 void Level::_restartMission() { _d->result = Level::restart;  stop();}
 void Level::setCameraPos(TilePos pos) {  _d->renderer.camera()->setCenter( pos ); }
+void Level::switch2layer(int layer) { _d->renderer.setLayer( layer ); }
 void Level::_exitGame(){ _d->result = Level::quitGame;  stop();}
 void Level::Impl::saveScrollSpeed(int speed) { SETTINGS_SET_VALUE( scrollSpeed, speed ); }
 
@@ -709,12 +710,6 @@ bool Level::_tryExecHotkey(NEvent &event)
       }
       break;
 
-      case KEY_KEY_F: _d->renderer.setLayer( citylayer::fire ); break;
-      case KEY_KEY_D: _d->renderer.setLayer( citylayer::damage ); break;
-      case KEY_KEY_C: _d->renderer.setLayer( citylayer::crime ); break;
-      case KEY_KEY_T: _d->renderer.setLayer( citylayer::troubles ); break;
-      case KEY_KEY_W: _d->renderer.setLayer( citylayer::water ); break;
-      case KEY_KEY_G: _d->renderer.setLayer( citylayer::desirability); break;
       case KEY_KEY_E:
       {
           TilePos center = _d->renderer.camera()->center();
