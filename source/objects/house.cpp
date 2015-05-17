@@ -99,14 +99,6 @@ public:
   }
 };
 
-class Economy
-{
-public:
-  float money, tax;
-  unsigned int taxesThisYear;
-  DateTime lastTaxationDate;
-};
-
 class Services : public std::map< Service::Type, Service >
 {
 public:
@@ -118,7 +110,13 @@ public:
   int houseLevel;
   int poverity;
 
-  Economy economy;
+  struct
+  {
+    float money, tax;
+    float taxesThisYear;
+    DateTime lastTaxationDate;
+  } economy;
+
   HouseSpecification spec;  // characteristics of the current house level
   Desirability desirability;
   good::Storage goodStore;
@@ -1186,6 +1184,7 @@ void House::save( VariantMap& stream ) const
   VARIANT_SAVE_ANY_D(stream, _d, houseLevel )
   VARIANT_SAVE_ANY_D(stream, _d, changeCondition )
   VARIANT_SAVE_ANY_D(stream, _d, economy.taxesThisYear)
+  VARIANT_SAVE_ANY_D(stream, _d, economy.lastTaxationDate)
   VARIANT_SAVE_ANY_D(stream, _d, poverity)
   VARIANT_SAVE_ANY_D(stream, _d, economy.money)
   VARIANT_SAVE_ANY_D(stream, _d, economy.tax)
@@ -1224,6 +1223,7 @@ void House::load( const VariantMap& stream )
   VARIANT_LOAD_ANY_D(_d, changeCondition,   stream )
   VARIANT_LOAD_ANY_D(_d, poverity,          stream )
   VARIANT_LOAD_ANY_D(_d, economy.money,     stream )
+  VARIANT_LOAD_TIME_D(_d, economy.lastTaxationDate, stream )
   VARIANT_LOAD_ANY_D(_d, economy.tax,       stream )
 
   _d->goodStore.load( stream.get( "goodstore" ).toMap() );
