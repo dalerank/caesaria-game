@@ -22,19 +22,19 @@
 class PointsArray : public std::vector<Point>
 {
 public:
-  VariantList toVList() const
+  VariantList save() const
   {
     VariantList ret;
     foreach( i, *this ) ret << *i;
     return ret;
   }
 
-  Point atSafe( unsigned int index ) const
+  Point valueOrEmpty( unsigned int index ) const
   {
     return index < size() ? at( index ) : Point();
   }
 
-  PointsArray& fromVList( const VariantList& vl )
+  PointsArray& load( const VariantList& vl )
   {
     foreach( i, vl ) { push_back( *i ); }
     return *this;

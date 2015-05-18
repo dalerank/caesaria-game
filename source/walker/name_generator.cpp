@@ -76,9 +76,9 @@ void NameGenerator::setLanguage(const std::string& language)
   _d->surname.clear();
 
   VariantMap ctNames = names.get( "citizens" ).toMap();
-  _d->male << ctNames.get( "male" ).toList();
-  _d->female << ctNames.get( "female" ).toList();
-  _d->surname << ctNames.get( "surname" ).toList();
+  _d->male = ctNames.get( "male" ).toStringArray();
+  _d->female = ctNames.get( "female" ).toStringArray();
+  _d->surname = ctNames.get( "surname" ).toStringArray();
 }
 
 NameGenerator::NameGenerator() : _d( new Impl ) {}

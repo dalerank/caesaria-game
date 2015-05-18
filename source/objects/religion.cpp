@@ -99,7 +99,7 @@ void Temple::initialize(const MetaData &mdata)
 {
   ServiceBuilding::initialize( mdata );
 
-  _td->fires.fromVList( mdata.getOption( "fires" ).toList() );
+  _td->fires.load( mdata.getOption( "fires" ).toList() );
 }
 
 Temple::~Temple(){}

@@ -29,12 +29,13 @@ class Pictures : public std::vector<Picture>
 {
 public:
   void load( const std::string& rc, int startIndex, int number, int multiplier=1 );
+  void load( const StringArray& names );
 
   Pictures& operator << ( const Picture& pic );
   Pictures& append( const Pictures& pics );
 
   void append( const gfx::Picture& pic, const Point& offset );
-  const Picture& atSafe(unsigned int index ) const;
+  const Picture& valueOrEmpty(unsigned int index ) const;
 
   StringArray names() const;
 };
