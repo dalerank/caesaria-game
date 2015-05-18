@@ -51,7 +51,7 @@ void RemoveCitizens::_exec(Game& game, unsigned int time)
     {
       if( (*itHouse).isValid() )
       {
-        (*itHouse)->remHabitants( _group );
+        (*itHouse)->removeHabitants( _group );
         if( _group.empty() )
           break;
       }

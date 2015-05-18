@@ -32,13 +32,13 @@ struct Row
 
 	void erase( int index )
 	{
-		std::vector<Cell*>::iterator r = Items.begin();
+    std::vector<Cell*>::iterator r = items.begin();
 		std::advance( r, index );
 		(*r)->deleteLater();
-		Items.erase( r );
+    items.erase( r );
 	}
 
-	std::vector<Cell*> Items;
+  std::vector<Cell*> items;
 };
 
 class HidingElement : public Label
@@ -102,6 +102,9 @@ public:
     std::advance( it, index );
     rows.erase(it);
   }
+
+public signals:
+  Signal2<int,int> onCellClickSignal;
 };
 
 //! constructor
@@ -180,7 +183,7 @@ void Table::addColumn(const std::string& caption, unsigned int  columnIndex)
 		RowIterator it = _d->rows.begin();
 		for ( ; it != _d->rows.end(); ++it )
 		{
-			(*it).Items.push_back( new Cell( _d->itemsArea, Rect( 0, 0, 1, 1 ) ) );
+      it->items.push_back( new Cell( _d->itemsArea, Rect( 0, 0, 1, 1 ) ) );
 		}
 	}
 	else
@@ -191,9 +194,9 @@ void Table::addColumn(const std::string& caption, unsigned int  columnIndex)
 		RowIterator it = _d->rows.begin();
 		for( ; it != _d->rows.end(); ++it )
 		{
-			std::vector<Cell*>::iterator addIt = (*it).Items.begin();
+      std::vector<Cell*>::iterator addIt = it->items.begin();
 			std::advance( addIt, columnIndex );
-			(*it).Items.insert( addIt, new Cell( _d->itemsArea, Rect( 0, 0, 1, 1 ) ));
+      it->items.insert( addIt, new Cell( _d->itemsArea, Rect( 0, 0, 1, 1 ) ));
 		}
 	}
 
@@ -227,7 +230,7 @@ void Table::removeColumn(unsigned int  columnIndex)
 	recalculateColumnsWidth_();
 }
 
-int Table::getColumnCount() const {	return _d->columns.size();}
+int Table::columnCount() const {	return _d->columns.size();}
 int Table::getRowCount() const {	return _d->rows.size();}
 
 bool Table::setActiveColumn(int idx, bool doOrder )
@@ -353,13 +356,13 @@ unsigned int  Table::addRow(unsigned int  rowIndex)
 	else
 		_d->insertRow( row, rowIndex );
 
-  _d->rows[rowIndex].Items.resize( _d->columns.size() );
+  _d->rows[rowIndex].items.resize( _d->columns.size() );
 
   for ( unsigned int  i = 0 ; i < _d->columns.size() ; ++i )
-    _d->rows[rowIndex].Items[ i ] = NULL;
+    _d->rows[rowIndex].items[ i ] = NULL;
 
 	for ( unsigned int  i = 0 ; i < _d->columns.size() ; ++i )
-		_d->rows[rowIndex].Items[ i ] = new Cell( _d->itemsArea, Rect( 0, 0, 1, 1 ) );
+    _d->rows[rowIndex].items[ i ] = new Cell( _d->itemsArea, Rect( 0, 0, 1, 1 ) );
 
   recalculateHeights();
   recalculateCells_();
@@ -390,7 +393,7 @@ void Table::setCellText(unsigned int  rowIndex, unsigned int  columnIndex, const
 {
 	if ( rowIndex < _d->rows.size() && columnIndex < _d->columns.size() )
 	{
-		_d->rows[rowIndex].Items[columnIndex]->setText( text );
+    _d->rows[rowIndex].items[columnIndex]->setText( text );
 	}
 }
 
@@ -398,8 +401,8 @@ void Table::setCellText(unsigned int  rowIndex, unsigned int  columnIndex, const
 {
 	if ( rowIndex < _d->rows.size() && columnIndex < _d->columns.size() )
 	{
-		_d->rows[rowIndex].Items[columnIndex]->setText( text );
-				_d->rows[rowIndex].Items[columnIndex]->setColor( color );
+    _d->rows[rowIndex].items[columnIndex]->setText( text );
+        _d->rows[rowIndex].items[columnIndex]->setColor( color );
 	}
 }
 
@@ -408,7 +411,7 @@ void Table::setCellTextColor(unsigned int  rowIndex, unsigned int  columnIndex, 
 {
 	if ( rowIndex < _d->rows.size() && columnIndex < _d->columns.size() )
 	{
-		_d->rows[rowIndex].Items[columnIndex]->setColor( color );
+    _d->rows[rowIndex].items[columnIndex]->setColor( color );
 	}
 }
 
@@ -417,7 +420,7 @@ void Table::setCellData(unsigned int  rowIndex, unsigned int  columnIndex, void 
 {
 	if ( rowIndex < _d->rows.size() && columnIndex < _d->columns.size() )
 	{
-		_d->rows[rowIndex].Items[columnIndex]->Data = data;
+    _d->rows[rowIndex].items[columnIndex]->Data = data;
 	}
 }
 
@@ -426,7 +429,7 @@ std::string Table::getCellText(unsigned int  rowIndex, unsigned int  columnIndex
 {
 	if ( rowIndex < _d->rows.size() && columnIndex < _d->columns.size() )
 	{
-		return _d->rows[rowIndex].Items[columnIndex]->text();
+    return _d->rows[rowIndex].items[columnIndex]->text();
 	}
 
 	return std::string();
@@ -437,7 +440,7 @@ void* Table::getCellData(unsigned int  rowIndex, unsigned int  columnIndex ) con
 {
 	if ( rowIndex < _d->rows.size() && columnIndex < _d->columns.size() )
 	{
-		return _d->rows[rowIndex].Items[columnIndex]->Data;
+    return _d->rows[rowIndex].items[columnIndex]->Data;
 	}
 
 	return 0;
@@ -638,8 +641,8 @@ void Table::recalculateCells_()
 				for( int index=0; cit != _d->columns.end(); cit++, index++ )
 				{
 						Rect rectangle( (*cit)->left() + xPos, yPos, (*cit)->right() + xPos, yPos + ItemHeight );
-						(*rit).Items[ index ]->setGeometry( rectangle );
-			(*rit).Items[ index ]->sendToBack();
+            rit->items[ index ]->setGeometry( rectangle );
+            rit->items[ index ]->sendToBack();
 				}
 
         yPos += ItemHeight;
@@ -896,7 +899,7 @@ void Table::orderRows(int columnIndex, TableRowOrderingMode mode)
 		{
 			for ( int j = 0 ; j < int(_d->rows.size()) - i - 1 ; ++j )
 			{
-				if ( _d->rows[j+1].Items[columnIndex]->text() < _d->rows[j].Items[columnIndex]->text() )
+        if ( _d->rows[j+1].items[columnIndex]->text() < _d->rows[j].items[columnIndex]->text() )
 				{
 					swap = _d->rows[j];
 					_d->rows[j] = _d->rows[j+1];
@@ -916,7 +919,7 @@ void Table::orderRows(int columnIndex, TableRowOrderingMode mode)
 		{
 			for ( int j = 0 ; j < int(_d->rows.size()) - i - 1 ; ++j )
 			{
-				if ( _d->rows[j].Items[columnIndex]->text() < _d->rows[j+1].Items[columnIndex]->text() )
+        if ( _d->rows[j].items[columnIndex]->text() < _d->rows[j+1].items[columnIndex]->text() )
 				{
 					swap = _d->rows[j];
 					_d->rows[j] = _d->rows[j+1];
@@ -1012,7 +1015,7 @@ void Table::draw( gfx::Engine& painter )
 
         if( _d->isFlag( drawRows ) )
         {
-            Rect lineRect( _d->rows[ i ].Items[ 0 ]->absoluteRect() );
+            Rect lineRect( _d->rows[ i ].items[ 0 ]->absoluteRect() );
             lineRect.UpperLeftCorner.ry() = lineRect.LowerRightCorner.y() - 1;
             lineRect.LowerRightCorner.rx() = screenRight();
             painter.drawLine( 0xffc0c0c0, lineRect.lefttop(), lineRect.rightbottom() );
@@ -1068,7 +1071,7 @@ void Table::removeChild( Widget* child)
     for ( unsigned int  rowIndex = 0 ; rowIndex < _d->rows.size() ; ++rowIndex )
         for ( unsigned int  columnIndex = 0 ; columnIndex < _d->columns.size() ; ++columnIndex )
         {
-            Cell* cell = _d->rows[rowIndex].Items[columnIndex];
+            Cell* cell = _d->rows[rowIndex].items[columnIndex];
             if( cell && cell->element == child )
             {
                 cell->element = NULL;
@@ -1083,9 +1086,9 @@ void Table::setCellElement( unsigned int  rowIndex, unsigned int  columnIndex, W
 {
     if ( rowIndex < _d->rows.size() && columnIndex < _d->columns.size() )
     {
-        Cell* cell = _d->rows[rowIndex].Items[columnIndex];
+        Cell* cell = _d->rows[rowIndex].items[columnIndex];
 
-		if( elm != getCellElement( rowIndex, columnIndex ) )
+    if( elm != element( rowIndex, columnIndex ) )
 		{
 			removeCellElement( rowIndex, columnIndex );
 
@@ -1103,30 +1106,28 @@ void Table::setCellElement( unsigned int  rowIndex, unsigned int  columnIndex, W
 
 void Table::removeCellElement( unsigned int  rowIndex, unsigned int  columnIndex )
 {
-    if ( rowIndex < _d->rows.size() && columnIndex < _d->columns.size() )
-    {
-        Cell* cell = _d->rows[rowIndex].Items[columnIndex];
+  if ( rowIndex < _d->rows.size() && columnIndex < _d->columns.size() )
+  {
+    Cell* cell = _d->rows[rowIndex].items[columnIndex];
 
-        if( cell->element )
-            cell->element->remove();
+    if( cell->element )
+        cell->element->remove();
 
-        cell->element = 0;
-    }
+    cell->element = 0;
+  }
 }
 
-Widget* Table::getCellElement( unsigned int  rowIndex, unsigned int  columnIndex ) const
+Widget* Table::element( unsigned int  rowIndex, unsigned int  columnIndex ) const
 {
-    if ( rowIndex < _d->rows.size() && columnIndex < _d->columns.size() )
-    {
-        return _d->rows[rowIndex].Items[columnIndex]->element;
-    }
+  if ( rowIndex < _d->rows.size() && columnIndex < _d->columns.size() )
+  {
+    return _d->rows[rowIndex].items[columnIndex]->element;
+  }
 
-    return NULL;
+  return NULL;
 }
 
-ScrollBar* Table::getVerticalScrolBar()
-{
-    return _d->verticalScrollBar;
-}
+ScrollBar* Table::getVerticalScrolBar() { return _d->verticalScrollBar; }
+Signal2<int,int>& Table::onCellClick() { return _d->onCellClickSignal; }
 
 }//end namespace gui

@@ -2,6 +2,7 @@
 #define __CAESARIA_TABLE_INCLUDE__
 
 #include "widget.hpp"
+#include "core/signals.hpp"
 
 namespace gui
 {
@@ -95,7 +96,7 @@ public:
 	virtual void removeColumn(unsigned int columnIndex);
 
 	//! Returns the number of columns in the table control
-	virtual int getColumnCount() const;
+	virtual int columnCount() const;
 
 	//! Makes a column active. This will trigger an ordering process.
 	/** \param idx: The id of the column to make active.
@@ -177,7 +178,7 @@ public:
   virtual void removeCellElement(unsigned int rowIndex, unsigned int columnIndex);
 
   //! Get element from cell
-  virtual Widget* getCellElement(unsigned int rowIndex, unsigned int columnIndex) const;
+  virtual Widget* element(unsigned int rowIndex, unsigned int columnIndex) const;
 
 	//! Set the text of a cell, and set a color of this cell.
 	virtual void setCellText(unsigned int rowIndex, unsigned int columnIndex, const std::string& text, NColor color);
@@ -220,6 +221,9 @@ public:
   virtual void beforeDraw( gfx::Engine& painter );
 
   virtual void removeChild(Widget* child);
+
+public signals:
+  Signal2<int,int>& onCellClick();
 
 protected:
 	virtual void refreshControls();
