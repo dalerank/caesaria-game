@@ -79,4 +79,9 @@ DlcFolderViewer::DlcFolderViewer(Widget* parent, vfs::Directory folder )
   //OSystem::openDir( path.toString() );
 }
 
+gui::DlcFolderViewer::~DlcFolderViewer()
+{
+
+}
+
 }//end namespace gui
