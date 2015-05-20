@@ -68,6 +68,8 @@ const std::string TableOrderingModeNames[] =
   ""
 };
 
+class Cell;
+
 class Table : public Widget
 {
 public:
@@ -78,6 +80,7 @@ public:
 		drawActiveRow = (1 << 2),
 		drawRowBackground = (1 << 3),
 		drawBorder = ( 1 << 4 ),
+    drawActiveCell = ( 1 << 5 ),
 		drawCount
 	} DrawFlag;
 	//! constructor
@@ -134,12 +137,12 @@ public:
 	//! set wich row is currently selected
 	virtual void setSelected( int index );
 
-		virtual ScrollBar* getVerticalScrolBar();
+  virtual ScrollBar* getVerticalScrolBar();
 
-		virtual int getSelectedColumn() const;
+  virtual int getSelectedColumn() const;
 
 	//! Returns amount of rows in the tabcontrol
-	virtual int getRowCount() const;
+	virtual int rowCount() const;
 
 	//! adds a row to the table
 	/** \param rowIndex: zero based index of rows. The row will be
@@ -185,7 +188,7 @@ public:
 
 	//! Set the data of a cell
 	//! data will not be serialized.
-	virtual void setCellData(unsigned int rowIndex, unsigned int columnIndex, void *data);
+  virtual void setCellData(unsigned int rowIndex, unsigned int columnIndex, const std::string& name, Variant data );
 
 	//! Set the color of a cell text
 	virtual void setCellTextColor(unsigned int rowIndex, unsigned int columnIndex, NColor color);
@@ -194,7 +197,7 @@ public:
 	virtual std::string getCellText(unsigned int rowIndex, unsigned int columnIndex ) const;
 
 	//! Get the data of a cell
-	virtual void* getCellData(unsigned int rowIndex, unsigned int columnIndex ) const;
+  virtual Variant getCellData(unsigned int rowIndex, unsigned int columnIndex, const std::string& name ) const;
 
 	//! clears the table, deletes all items in the table
 	virtual void clear();
@@ -215,7 +218,7 @@ public:
 	virtual bool isFlag( DrawFlag flag ) const;
 
 	//!
-	virtual void setItemHeight( int height );
+	virtual void setRowHeight( int height );
 
   //!
   virtual void beforeDraw( gfx::Engine& painter );
@@ -236,6 +239,7 @@ private:
 	bool dragColumnUpdate(int xpos);
 	void recalculateHeights();
 	void recalculateColumnsWidth_();
+  Cell* _getCell( int row, int column);
 
   int getCurrentColumn_( int xpos, int ypos );
   void recalculateCells_();
@@ -259,7 +263,7 @@ private:
 	TableRowOrderingMode CurrentOrdering;
 
 	class Impl;
-	Impl* _d;
+  ScopedPtr<Impl> _d;
 };
 
 } //end namespace gui

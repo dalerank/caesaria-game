@@ -17,12 +17,10 @@ class Cell : public Label
 public:
   Cell( Widget* parent, const Rect& rectangle) : Label( parent, rectangle )
   {
-      element = 0;
-      Data = 0;
+    element = 0;
   }
 
 	Widget* element;
-	void *Data;
 };
 
 
@@ -122,10 +120,10 @@ Table::Table( Widget* parent,
 	#ifdef _DEBUG
 			setDebugName( L"NrpTable" );
 	#endif
-		setDrawFlag( drawBorder );
-		setDrawFlag( drawRows );
-		setDrawFlag( drawColumns );
-		setDrawFlag( drawActiveRow );
+  setDrawFlag( drawBorder );
+  setDrawFlag( drawRows );
+  setDrawFlag( drawColumns );
+  setDrawFlag( drawActiveRow );
 
   _d->cellLastTimeClick = 0;
   _d->header = new HidingElement( this, Rect( 0, 0, width(), DEFAULT_SCROLLBAR_SIZE ) );
@@ -161,10 +159,7 @@ Table::Table( Widget* parent,
 }
 
 //! destructor
-Table::~Table()
-{
-  delete _d;
-}
+Table::~Table() {}
 
 void Table::addColumn(const std::string& caption, unsigned int  columnIndex)
 {
@@ -172,27 +167,24 @@ void Table::addColumn(const std::string& caption, unsigned int  columnIndex)
   columnHeader->setSubElement( true );
   columnHeader->setText( caption );
   columnHeader->setGeometry( Rect( 0, 0,
-                                      font_.getTextSize(caption).width() + (CellWidthPadding * 2) + ARROW_PAD,
-                                      _d->header->height() ) );
+                                   font_.getTextSize(caption).width() + (CellWidthPadding * 2) + ARROW_PAD,
+                                   _d->header->height() ) );
 
   columnHeader->OrderingMode = columnOrderingNone;
 
 	if ( columnIndex >= _d->columns.size() )
 	{
 		_d->columns.push_back( columnHeader );
-		RowIterator it = _d->rows.begin();
-		for ( ; it != _d->rows.end(); ++it )
-		{
+    foreach( it, _d->rows )
       it->items.push_back( new Cell( _d->itemsArea, Rect( 0, 0, 1, 1 ) ) );
-		}
 	}
 	else
 	{
 		ColumnIterator ci = _d->columns.begin();
 		std::advance( ci, columnIndex );
 		_d->columns.insert( ci, columnHeader);
-		RowIterator it = _d->rows.begin();
-		for( ; it != _d->rows.end(); ++it )
+
+    foreach( it, _d->rows  )
 		{
       std::vector<Cell*>::iterator addIt = it->items.begin();
 			std::advance( addIt, columnIndex );
@@ -217,11 +209,8 @@ void Table::removeColumn(unsigned int  columnIndex)
 		std::advance( cIt, columnIndex );
 		_d->columns.erase( cIt );
 
-		RowIterator it = _d->rows.begin();
-		for( ; it != _d->rows.end(); ++it )
-		{
-			(*it).erase( columnIndex );
-		}
+    foreach( it, _d->rows )
+      it->erase( columnIndex );
 	}
 
 	if ( (int)columnIndex <= ActiveTab )
@@ -231,7 +220,7 @@ void Table::removeColumn(unsigned int  columnIndex)
 }
 
 int Table::columnCount() const {	return _d->columns.size();}
-int Table::getRowCount() const {	return _d->rows.size();}
+int Table::rowCount() const {	return _d->rows.size();}
 
 bool Table::setActiveColumn(int idx, bool doOrder )
 {
@@ -297,18 +286,15 @@ bool Table::setActiveColumn(int idx, bool doOrder )
 	return true;
 }
 
-
 int Table::getActiveColumn() const
 {
 	return ActiveTab;
 }
 
-
 TableRowOrderingMode Table::getActiveColumnOrdering() const
 {
 	return CurrentOrdering;
 }
-
 
 void Table::setColumnWidth(unsigned int  columnIndex, unsigned int  width)
 {
@@ -344,7 +330,7 @@ bool Table::hasResizableColumns() const
 	return ResizableColumns;
 }
 
-unsigned int  Table::addRow(unsigned int  rowIndex)
+unsigned int Table::addRow(unsigned int  rowIndex)
 {
 	if ( rowIndex > _d->rows.size() )
 		rowIndex = _d->rows.size();
@@ -369,7 +355,6 @@ unsigned int  Table::addRow(unsigned int  rowIndex)
   recalculateScrollBars_();
   return rowIndex;
 }
-
 
 void Table::removeRow(unsigned int  rowIndex)
 {
@@ -402,7 +387,7 @@ void Table::setCellText(unsigned int  rowIndex, unsigned int  columnIndex, const
 	if ( rowIndex < _d->rows.size() && columnIndex < _d->columns.size() )
 	{
     _d->rows[rowIndex].items[columnIndex]->setText( text );
-        _d->rows[rowIndex].items[columnIndex]->setColor( color );
+    _d->rows[rowIndex].items[columnIndex]->setColor( color );
 	}
 }
 
@@ -416,11 +401,12 @@ void Table::setCellTextColor(unsigned int  rowIndex, unsigned int  columnIndex, 
 }
 
 
-void Table::setCellData(unsigned int  rowIndex, unsigned int  columnIndex, void *data)
+void Table::setCellData(unsigned int rowIndex, unsigned int  columnIndex,
+                        const std::string& name, Variant data)
 {
 	if ( rowIndex < _d->rows.size() && columnIndex < _d->columns.size() )
 	{
-    _d->rows[rowIndex].items[columnIndex]->Data = data;
+    _d->rows[rowIndex].items[columnIndex]->addProperty( name, data );
 	}
 }
 
@@ -435,17 +421,15 @@ std::string Table::getCellText(unsigned int  rowIndex, unsigned int  columnIndex
 	return std::string();
 }
 
-
-void* Table::getCellData(unsigned int  rowIndex, unsigned int  columnIndex ) const
+Variant Table::getCellData(unsigned int  rowIndex, unsigned int  columnIndex, const std::string& name ) const
 {
 	if ( rowIndex < _d->rows.size() && columnIndex < _d->columns.size() )
 	{
-    return _d->rows[rowIndex].items[columnIndex]->Data;
+    return _d->rows[rowIndex].items[columnIndex]->getProperty( name );
 	}
 
 	return 0;
 }
-
 
 //! clears the list
 void Table::clear()
@@ -521,6 +505,16 @@ void Table::recalculateColumnsWidth_()
         (*it)->setLeft( TotalItemWidth );
     TotalItemWidth += (*it)->width();
     }
+}
+
+Cell* Table::_getCell(int row, int column)
+{
+  if ( row < _d->rows.size() && column < _d->columns.size() )
+  {
+    return _d->rows[row].items[column];
+  }
+
+  return 0;
 }
 
 
@@ -997,7 +991,7 @@ void Table::draw( gfx::Engine& painter )
 	if ( !visible() )
 		return;
 
-	for ( unsigned int  i = 0 ; i < _d->rows.size() ; ++i )
+  foreach( itRow, _d->rows )
 	{
 		// draw row seperator
 		if( _d->isFlag( drawRowBackground ) )
@@ -1013,28 +1007,33 @@ void Table::draw( gfx::Engine& painter )
 			skin->drawElement( this, myStyle.Checked(), lineRect, &_d->itemsArea->getAbsoluteClippingRectRef() );
 		}*/
 
-        if( _d->isFlag( drawRows ) )
-        {
-            Rect lineRect( _d->rows[ i ].items[ 0 ]->absoluteRect() );
-            lineRect.UpperLeftCorner.ry() = lineRect.LowerRightCorner.y() - 1;
-            lineRect.LowerRightCorner.rx() = screenRight();
-            painter.drawLine( 0xffc0c0c0, lineRect.lefttop(), lineRect.rightbottom() );
-        }
+    if( _d->isFlag( drawRows ) )
+    {
+      Rect lineRect( itRow->items[ 0 ]->absoluteRect() );
+      lineRect.UpperLeftCorner.ry() = lineRect.LowerRightCorner.y() - 1;
+      lineRect.LowerRightCorner.rx() = screenRight();
+      painter.drawLine( 0xffc0c0c0, lineRect.lefttop(), lineRect.rightbottom() );
+    }
   }
 
-    //NColor lineColor = getResultColor( 0xffc0c0c0 );
-    if ( _d->isFlag( drawColumns ) )
+  //NColor lineColor = getResultColor( 0xffc0c0c0 );
+  if( _d->isFlag( drawColumns ) )
+  {
+    foreach( itCol, _d->columns )
     {
-        ColumnIterator it = _d->columns.begin();
-        for( ; it != _d->columns.end() ; ++it )
-        {
-            Rect columnSeparator( Point( (*it)->screenRight(), screenTop() + 1 ),
-                                  Size( 1, height() - 2 ) );
+      Rect columnSeparator( Point( (*itCol)->screenRight(), screenTop() + 1 ),
+                            Size( 1, height() - 2 ) );
 
-            // draw column seperator
-            painter.drawLine( 0xffc0c0c0, columnSeparator.lefttop(), columnSeparator.rightbottom() );
-        }
+      // draw column seperator
+      painter.drawLine( 0xffc0c0c0, columnSeparator.lefttop(), columnSeparator.rightbottom() );
     }
+  }
+
+  if( _d->isFlag( drawActiveCell ) )
+  {
+
+    Rect cellRect = _d->rows[ _selectedRow ] _selectedColumn
+  }
 
   Widget::draw( painter );
 
@@ -1055,7 +1054,7 @@ bool Table::isFlag( DrawFlag flag ) const
 	return _d->isFlag( flag );
 }
 
-void Table::setItemHeight( int height )
+void Table::setRowHeight( int height )
 {
 	overItemHeight_ = height;
 	ItemHeight = overItemHeight_ == 0 ? font_.getTextSize("A").height() + (CellHeightPadding * 2) : overItemHeight_;

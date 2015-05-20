@@ -203,7 +203,7 @@ void StartMenu::Impl::openDlcDirectory(Widget* sender)
   vfs::Path path( sender->getProperty( "path" ).toString() );
 
   Widget* parent = game->gui()->rootWidget();
-  /*DlcFolderViewer* viewer = */new DlcFolderViewer( parent, path.directory() );
+  /*DlcFolderViewer* viewer = */new DlcFolderViewer( parent, path );
 }
 
 void StartMenu::Impl::showSoundOptions()
