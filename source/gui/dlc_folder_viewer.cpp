@@ -19,7 +19,12 @@
 #include "core/osystem.hpp"
 #include "widget_factory.hpp"
 #include "gfx/picture.hpp"
+#include "gfx/engine.hpp"
+#include "image.hpp"
+#include "core/variant_map.hpp"
 #include "table.hpp"
+#include "gfx/loader.hpp"
+#include "core/saveadapter.hpp"
 
 using namespace gfx;
 
@@ -37,7 +42,8 @@ public:
   void init( const Size& size )
   {
     background = Picture( size, 0, true );
-    background.fill( DefaultColors::clear.color & 0x88ffffff );
+    background.fill( DefaultColors::black.color & 0xaaffffff );
+    background.update();
   }
 };
 
@@ -50,38 +56,73 @@ DlcFolderViewer::DlcFolderViewer(Widget* parent)
 DlcFolderViewer::DlcFolderViewer(Widget* parent, vfs::Directory folder )
   : Window( parent, Rect( Point(), parent->size() ), "", -1, bgNone ), _d( new Impl )
 {
+  if( !folder.exist() )
+    return;
+
   _d->init( size() );
 
+  vfs::Path configFile = folder/".info";
   std::vector<vfs::Path> items;
-  if( folder.exist() )
+
+  if( configFile.exist() )
+  {
+    VariantList list = config::load( configFile.toString() ).get( "items" ).toList();
+    foreach( it, list )
+    {
+      items.push_back( folder/vfs::Path(it->toString()) );
+    }
+  }
+  else
   {
     vfs::Entries::Items entries = folder.entries().items();
     foreach( it, entries )
     {
-      if( !it->name.isMyExtension( ".info" ) )
-        items.push_back( it->name );
+      if( !it->name.isMyExtension( ".desc" ) )
+        items.push_back( it->fullpath );
     }
   }
 
+  Table* table = new Table( this, -1, Rect( 50, 50, width() - 50, height() - 50 ) );
+  table->setDrawFlag( Table::drawColumns, false );
+  table->setDrawFlag( Table::drawRows, false );
+  table->setDrawFlag( Table::drawActiveCell, true );
   unsigned int columnCount = width() / 150;
-  Table* table = new Table( this, -1, Rect( Point(), size() ) );
-  for( int k=0; k < columnCount; k++ )
+  table->setRowHeight( 150 );
+  for( unsigned int k=0; k < columnCount; k++ )
+  {
     table->addColumn( "" );
+    table->setColumnWidth( table->columnCount()-1, 150 );
+  }
 
   for( unsigned int k=0; k < items.size(); k++ )
   {
-    unsigned int rowNumber = k / columnCount;
-    if( rowNumber >= table->columnCount() )
+    int rowNumber = k / columnCount;
+    int columnNumber = k % columnCount;
+    if( rowNumber >= table->rowCount() )
+    {
       table->addRow( rowNumber );
+    }
 
-    table->setCellText( rowNumber, k % columnCount, items[ k ].baseName().toString() );
+    Picture pic = PictureLoader::instance().load( vfs::NFile::open( items[ k ] ) );
+    Image* image = new Image( this, Rect( 0, 0, 140, 140 ), pic, Image::best );
+    table->addElementToCell( rowNumber, columnNumber, image );
+    table->setCellData( rowNumber, columnNumber, "path", items[ k ].toString() );
   }
   //OSystem::openDir( path.toString() );
 }
 
 gui::DlcFolderViewer::~DlcFolderViewer()
 {
+}
 
+void DlcFolderViewer::draw(Engine& painter)
+{
+  if( !visible() )
+    return;
+
+  painter.draw( _d->background, lefttop() );
+
+  Window::draw( painter );
 }
 
 }//end namespace gui

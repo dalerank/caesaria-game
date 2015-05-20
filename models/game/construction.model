@@ -767,6 +767,8 @@
     output : "timber"
     class : "rawmaterial"
     productRate : 4.8
+    image : [ "lumbermill", 1 ]
+    animation : { rc : "lmbmill_anim", start : 1, count : 12, offset : [ 80, 2 ], delay : 3 }
     sound : [ "lumbermill", 1 ]
     inflammability : 1.3
   },

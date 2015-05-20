@@ -31,7 +31,8 @@ public:
   DlcFolderViewer( Widget* parent );
   DlcFolderViewer( Widget* parent, vfs::Directory folder );
 
-  ~DlcFolderViewer();
+  virtual ~DlcFolderViewer();
+  virtual void draw(gfx::Engine &painter);
 
 private:
   class Impl;
