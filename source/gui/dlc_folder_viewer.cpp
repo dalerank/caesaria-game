@@ -21,10 +21,13 @@
 #include "gfx/picture.hpp"
 #include "gfx/engine.hpp"
 #include "image.hpp"
+#include "core/locale.hpp"
 #include "core/variant_map.hpp"
 #include "table.hpp"
 #include "gfx/loader.hpp"
 #include "core/saveadapter.hpp"
+#include "gui/widget_helper.hpp"
+#include "core/logger.hpp"
 
 using namespace gfx;
 
@@ -37,8 +40,36 @@ class DlcFolderViewer::Impl
 {
 public:
   Picture background;
+  Table* table;
+  vfs::Directory folder;
 
 public:
+  void fillTable( const std::vector<vfs::Path>& items )
+  {
+    unsigned int columnCount = table->width() / 150;
+    table->setRowHeight( 150 );
+    for( unsigned int k=0; k < columnCount; k++ )
+    {
+      table->addColumn( "" );
+      table->setColumnWidth( table->columnCount()-1, 150 );
+    }
+
+    for( unsigned int k=0; k < items.size(); k++ )
+    {
+      int rowNumber = k / columnCount;
+      int columnNumber = k % columnCount;
+      if( rowNumber >= table->rowCount() )
+      {
+        table->addRow( rowNumber );
+      }
+
+      Picture pic = PictureLoader::instance().load( vfs::NFile::open( items[ k ] ) );
+      Image* image = new Image( table, Rect( 0, 0, 140, 140 ), pic, Image::best );
+      table->addElementToCell( rowNumber, columnNumber, image );
+      table->setCellData( rowNumber, columnNumber, "path", items[ k ].toString() );
+    }
+  }
+
   void init( const Size& size )
   {
     background = Picture( size, 0, true );
@@ -60,6 +91,7 @@ DlcFolderViewer::DlcFolderViewer(Widget* parent, vfs::Directory folder )
     return;
 
   _d->init( size() );
+  _d->folder = folder;
 
   vfs::Path configFile = folder/".info";
   std::vector<vfs::Path> items;
@@ -82,37 +114,23 @@ DlcFolderViewer::DlcFolderViewer(Widget* parent, vfs::Directory folder )
     }
   }
 
-  Table* table = new Table( this, -1, Rect( 50, 50, width() - 50, height() - 50 ) );
-  table->setDrawFlag( Table::drawColumns, false );
-  table->setDrawFlag( Table::drawRows, false );
-  table->setDrawFlag( Table::drawActiveCell, true );
-  unsigned int columnCount = width() / 150;
-  table->setRowHeight( 150 );
-  for( unsigned int k=0; k < columnCount; k++ )
-  {
-    table->addColumn( "" );
-    table->setColumnWidth( table->columnCount()-1, 150 );
-  }
+  _d->table = new Table( this, -1, Rect( 50, 50, width() - 50, height() - 50 ) );
+  _d->table->setDrawFlag( Table::drawColumns, false );
+  _d->table->setDrawFlag( Table::drawRows, false );
+  _d->table->setDrawFlag( Table::drawActiveCell, true );
 
-  for( unsigned int k=0; k < items.size(); k++ )
-  {
-    int rowNumber = k / columnCount;
-    int columnNumber = k % columnCount;
-    if( rowNumber >= table->rowCount() )
-    {
-      table->addRow( rowNumber );
-    }
+  _d->fillTable( items );
+  CONNECT( _d->table, onCellClick(), this, DlcFolderViewer::_resolveCellClick )
 
-    Picture pic = PictureLoader::instance().load( vfs::NFile::open( items[ k ] ) );
-    Image* image = new Image( this, Rect( 0, 0, 140, 140 ), pic, Image::best );
-    table->addElementToCell( rowNumber, columnNumber, image );
-    table->setCellData( rowNumber, columnNumber, "path", items[ k ].toString() );
-  }
-  //OSystem::openDir( path.toString() );
+  PushButton* btn = new PushButton( this, Rect( Point( width() / 2 - 50, height() - 40 ), Size( 100, 20 ) ), "Open folder" );
+  CONNECT( btn, onClicked(), this, DlcFolderViewer::_openFolder )
 }
 
-gui::DlcFolderViewer::~DlcFolderViewer()
+DlcFolderViewer::~DlcFolderViewer() {}
+
+void DlcFolderViewer::_openFolder()
 {
+  OSystem::openDir( _d->folder.toString() );
 }
 
 void DlcFolderViewer::draw(Engine& painter)
@@ -123,6 +141,34 @@ void DlcFolderViewer::draw(Engine& painter)
   painter.draw( _d->background, lefttop() );
 
   Window::draw( painter );
+}
+
+void DlcFolderViewer::_loadDesc(vfs::Path path)
+{
+  Window* window = new Window( this, _d->table->relativeRect(), "" );
+  window->setupUI( path );
+
+  PushButton* btnClose = findChildA<PushButton*>( "btnClose", true, window );
+  CONNECT( btnClose, onClicked(), window, Window::deleteLater )
+}
+
+void DlcFolderViewer::_resolveCellClick(int row, int column)
+{
+  if( _d->table )
+  {
+    vfs::Path path = _d->table->getCellData( row, column, "path" ).toString();
+    path = path.changeExtension( Locale::current() );
+
+    if( !path.exist() )
+    {
+      path.changeExtension( "en" );
+    }
+
+    if( path.exist() )
+    {
+      _loadDesc( path );
+    }
+  }
 }
 
 }//end namespace gui

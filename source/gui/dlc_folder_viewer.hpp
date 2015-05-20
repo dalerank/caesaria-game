@@ -35,6 +35,10 @@ public:
   virtual void draw(gfx::Engine &painter);
 
 private:
+  void _resolveCellClick( int row, int column );
+  void _openFolder();
+  void _loadDesc( vfs::Path path );
+
   class Impl;
   ScopedPtr<Impl> _d;
 };

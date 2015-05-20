@@ -651,8 +651,9 @@ bool Table::onEvent(const NEvent &event)
 			default:
 				break;
 			}
-			break;
-		case sEventMouse:
+    break;
+
+    case sEventMouse:
 			{
 				Point p = event.mouse.pos();
 
@@ -663,7 +664,6 @@ bool Table::onEvent(const NEvent &event)
 					return true;
 
 				case mouseLbtnPressed:
-
 					if ( isFocused() &&
 						_d->verticalScrollBar->visible() &&
 						_d->verticalScrollBar->absoluteRect().isPointInside(p) &&
@@ -688,6 +688,7 @@ bool Table::onEvent(const NEvent &event)
           _selecting = true;
 					setFocus();
 					return true;
+        break;
 
 				case mouseLbtnRelease:
           _currentResizedColumn = -1;
@@ -715,31 +716,28 @@ bool Table::onEvent(const NEvent &event)
 
           _selectNew( event.mouse.x, event.mouse.y, true );
 					return true;
+        break;
 
 				case mouseMoved:
-          if ( _currentResizedColumn >= 0 )
+          if ( _currentResizedColumn >= 0 && _dragColumnUpdate(event.mouse.x) )
 					{
-            if ( _dragColumnUpdate(event.mouse.x) )
-						{
-							return true;
-						}
+            return true;
 					}
-          if (_selecting || _moveOverSelect)
+          if ( (_selecting || _moveOverSelect) && absoluteRect().isPointInside(p) )
 					{
-						if (absoluteRect().isPointInside(p))
-						{
-              _selectNew(event.mouse.x, event.mouse.y, false );
-							return true;
-						}
+            _selectNew(event.mouse.x, event.mouse.y, false );
+            return true;
 					}
-					break;
-				default:
-					break;
+        break;
+
+        default:
+        break;
 				}
 			}
-			break;
-		default:
-			break;
+    break;
+
+    default:
+    break;
 		}
 	}
 
@@ -913,7 +911,7 @@ void Table::orderRows(int columnIndex, TableRowOrderingMode mode)
 void Table::_selectNew( int xpos, int ypos, bool lmb, bool onlyHover)
 {
   int oldSelectedRow = _selectedRow;
-    int oldSelectedColumn = _selectedColumn;
+  int oldSelectedColumn = _selectedColumn;
 
   if ( ypos < ( screenTop() + _d->itemHeight ) )
 		return;
@@ -948,10 +946,10 @@ void Table::_selectNew( int xpos, int ypos, bool lmb, bool onlyHover)
 			parent()->onEvent( event );
 		}
 		_d->cellLastTimeClick = DateTime::elapsedTime();
-				//CallScriptFunction( GUI_EVENT + event.GuiEvent.EventType, this );
+    emit _d->onCellClickSignal(_selectedRow,_selectedColumn);
 
-        if( _selectedRow < 0 || _selectedColumn < 0 )
-            return;
+    if( _selectedRow < 0 || _selectedColumn < 0 )
+      return;
   }
 }
 
