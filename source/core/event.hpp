@@ -238,6 +238,9 @@ enum GuiEventType
 	guiTableCellChange,
 	guiTableCellSelected,
 	guiTableCellDblclick,
+  guiTreeviewNodeExpand,
+  guiTreeviewNodeCollapse,
+  guiTreeviewNodeSelect,
 
 	//! No real event. Just for convenience to get number of events
 	guiEventCount
