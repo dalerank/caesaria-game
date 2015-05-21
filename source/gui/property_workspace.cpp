@@ -1,8 +1,15 @@
 #include "property_workspace.hpp"
 #include "core/hash.hpp"
 #include "treeview_item.hpp"
+#include "property_attribute.hpp"
 #include "core/utils.hpp"
 #include "core/event.hpp"
+#include "gfx/camera.hpp"
+#include "gfx/tile.hpp"
+#include "objects/overlay.hpp"
+#include "scene/level.hpp"
+
+using namespace gfx;
 
 namespace gui
 {
@@ -10,21 +17,53 @@ namespace gui
 const unsigned int EGUIEDCE_ENV_EDITOR = Hash( "EGUIEDCE_ENV_EDITOR" );
 const unsigned int EGUIEDCE_ATTRIB_EDITOR = Hash( "EGUIEDCE_ATTRIB_EDITOR" );
 
+class WorkspaceEventHandler : public scene::EventHandler
+{
+public:
+  PropertyWorkspace& _parent;
+  scene::Level* _scene;
+  bool _finished;
+  WorkspaceEventHandler( PropertyWorkspace& parent, scene::Base* scene ) : _parent( parent )
+  {
+    _finished = false;
+    _scene = safety_cast<scene::Level*>( scene );
+  }
+
+  void handleEvent(NEvent& event)
+  {
+    if( !_scene )
+      return;
+
+    if( event.EventType == sEventMouse && event.mouse.type == mouseLbtDblClick )
+    {
+      Camera* camera = _scene->camera();
+      Tile* tile = camera->at( event.mouse.pos(), false );
+
+      if( tile != 0 && tile->overlay() != 0 )
+      {
+        _parent.setSelectedElement( tile->overlay() );
+      }
+    }
+  }
+
+  bool finished() const { return _finished; }
+};
+
 //! constructor
-PropertyWorkspace::PropertyWorkspace( Widget* _parent, const Rect& rectangle )
+PropertyWorkspace::PropertyWorkspace( Widget* _parent, scene::Base* scene, const Rect& rectangle )
     : Window( _parent, rectangle, "", -1 ),
-		  Dragging(false), IsDraggable(true), Resizing(false), _selectedElement(0),
-		  _attribEditor(0)
+      _dragging(false), _isDraggable(true), _resizing(false), _selectedElement(0),
+      _attribEditor(0)
 {
 	#ifdef _DEBUG
-      setDebugName( "EditorWindow");
+      setDebugName( "PropertyWorkspace");
 	#endif
 
 	// we can't tab out of this window
   setTabgroup(true);
 
-    setDraggable( false );
-    setSubElement( true );
+  setDraggable( false );
+  setSubElement( true );
 	// we can ctrl+tab to it
 	setTabStop(true);
 	// the tab order number is auto-assigned
@@ -34,36 +73,38 @@ PropertyWorkspace::PropertyWorkspace( Widget* _parent, const Rect& rectangle )
   setText("");
   button( buttonClose )->setVisible( false );
 
-  setMinSize( Size(200,200));
+  setMinSize( Size(200,200) );
 
   _windowLayout = new VLayout( this, Rect( 0, 0, width(), height()), -1 );
-  //_windowLayout->setDrawBorder( false );
   _windowLayout->setAlignment( align::upperLeft, align::lowerRight, align::upperLeft, align::lowerRight );
 
-  createElementsTreeView_();
-  createTabControl_();
+  _eventHandler = new WorkspaceEventHandler( *this, scene );
+
+  _createElementsTreeView();
+  _createTabControl();
 }
 
-void PropertyWorkspace::createElementsTreeView_()
+void PropertyWorkspace::_createElementsTreeView()
 {
-    _treeView = new TreeView( _windowLayout, Rect(0,0,100,100), -1, true, true, true );
-    _treeView->setSubElement( true );
-    _treeView->setAlignment( align::upperLeft, align::lowerRight, align::upperLeft, align::lowerRight);
+  _treeView = new TreeView( _windowLayout, Rect(0,0,100,100), -1, true, true, true );
+  _treeView->setSubElement( true );
+  _treeView->setAlignment( align::upperLeft, align::lowerRight, align::upperLeft, align::lowerRight);
 }
 
-void PropertyWorkspace::createTabControl_()
+void PropertyWorkspace::_createTabControl()
 {
-    _attribEditor = new PropertyBrowser( _windowLayout );
-    _attribEditor->setID( EGUIEDCE_ATTRIB_EDITOR );
-    _attribEditor->setGeometry(RectF(0.0f, 0.0f, 1.0f, 1.0f));
-    _attribEditor->setAlignment(align::upperLeft, align::lowerRight, align::upperLeft, align::lowerRight);
+  _attribEditor = new PropertyBrowser( _windowLayout );
+  _attribEditor->setID( EGUIEDCE_ATTRIB_EDITOR );
+  _attribEditor->setGeometry(RectF(0.0f, 0.0f, 1.0f, 1.0f));
+  _attribEditor->setAlignment(align::upperLeft, align::lowerRight, align::upperLeft, align::lowerRight);
 }
-
 
 //! destructor
 PropertyWorkspace::~PropertyWorkspace()
 {
 	// drop everything
+  if( _eventHandler )
+    _eventHandler->_finished = true;
 }
 
 TreeView* PropertyWorkspace::getTreeView() const
@@ -73,20 +114,25 @@ TreeView* PropertyWorkspace::getTreeView() const
 
 PropertyBrowser* PropertyWorkspace::getAttributeEditor() const
 {
-	return _attribEditor;
+  return _attribEditor;
 }
 
-TreeViewItem* PropertyWorkspace::_GetTreeNode(Overlay* element, TreeViewItem* searchnode)
+scene::EventHandlerPtr PropertyWorkspace::handler() const
+{
+  return _eventHandler;
+}
+
+TreeViewItem* PropertyWorkspace::_getTreeNode(OverlayPtr element, TreeViewItem* searchnode)
 {
 	TreeViewItem* child = searchnode->getFirstChild();
 	while (child)
 	{
-    if (((Overlay*) child->getData()) == element)
+    if (((Overlay*)child->getData()) == element.object() )
 			return child;
 
 		if (child->hasChildren())
 		{
-			TreeViewItem* foundnode = _GetTreeNode(element, child);
+      TreeViewItem* foundnode = _getTreeNode(element, child);
 			if (foundnode)
 				return foundnode;
 		}
@@ -95,7 +141,7 @@ TreeViewItem* PropertyWorkspace::_GetTreeNode(Overlay* element, TreeViewItem* se
 	return 0;
 }
 
-void PropertyWorkspace::addChildrenToTree_( Widget* _parentElement, TreeViewItem* treenode)
+void PropertyWorkspace::_addChildrenToTree( Widget* _parentElement, TreeViewItem* treenode)
 {
   std::string name = utils::format( 0xff, "[id=%d,%s]", _parentElement->ID(), _parentElement->internalName().c_str() );
 
@@ -103,25 +149,25 @@ void PropertyWorkspace::addChildrenToTree_( Widget* _parentElement, TreeViewItem
 	newnode->setData((void*)_parentElement);
   const Widget::Widgets& children = _parentElement->children();
 
-  for (ConstChildIterator i = children.begin(); i != children.end(); i++ )
+  foreach( i, children )
 	{
 		if( !(*i)->isSubElement())
-			addChildrenToTree_(*i, newnode);
+      _addChildrenToTree(*i, newnode);
 	}
 }
 
 void PropertyWorkspace::updateTree( Widget* elm )
 {
 	_treeView->getRoot()->clearChildren();
-	addChildrenToTree_(elm, _treeView->getRoot());
-	_treeView->getRoot()->getFirstChild()->setExpanded(true);
+  _addChildrenToTree(elm, _treeView->getRoot());
+  _treeView->getRoot()->getFirstChild()->setExpanded(true);
 }
 
-void PropertyWorkspace::setSelectedElement(Overlay *sel)
+void PropertyWorkspace::setSelectedElement(OverlayPtr sel)
 {
 	// save changes
 	_attribEditor->updateAttribs();
-	TreeViewItem* elementTreeNode = _GetTreeNode(sel, _treeView->getRoot());
+  TreeViewItem* elementTreeNode = _getTreeNode(sel, _treeView->getRoot());
 
 	if (elementTreeNode)
 	{
@@ -135,7 +181,7 @@ void PropertyWorkspace::setSelectedElement(Overlay *sel)
 
   VariantMap Attribs = _attribEditor->getAttribs();
 
-	if (_selectedElement && sel != _selectedElement)
+  if (_selectedElement.isValid() && sel != _selectedElement)
 	{
 		// deserialize attributes
 		_selectedElement->load(Attribs);
@@ -145,7 +191,7 @@ void PropertyWorkspace::setSelectedElement(Overlay *sel)
 	_selectedElement = sel;
 
 	// get the new attributes
-	if (_selectedElement)
+  if (_selectedElement.isValid())
 		_selectedElement->save(Attribs);
 
 	_attribEditor->refreshAttribs();
@@ -174,14 +220,14 @@ void PropertyWorkspace::draw( gfx::Engine& painter )
 bool PropertyWorkspace::onEvent(const NEvent &event)
 {
     if( event.EventType == AbstractAttribute::ATTRIBEDIT_ATTRIB_CHANGED
-        && event.UserEvent.UserData1 == EGUIEDCE_ATTRIB_EDITOR )
+        && event.user.data2 == EGUIEDCE_ATTRIB_EDITOR )
     {
         // update selected items attributes
-        if( _editWorkspace && _editWorkspace->GetSelectedElement() )
+        /*if( _editWorkspace && _editWorkspace->GetSelectedElement() )
         {
-            core::VariantArray* attr = getAttributeEditor()->getAttribs();
+            const VariantMap& attr = getAttributeEditor()->getAttribs();
 
-            s32 index = attr->Find( L"InternalName" );
+            int index = attr->Find( L"InternalName" );
             if( index >= 0 )
             {
                 core::String elmName = attr->getAttributeAsString( L"InternalName" );
@@ -192,123 +238,115 @@ bool PropertyWorkspace::onEvent(const NEvent &event)
             _editWorkspace->GetSelectedElement()->load( attr );
             _editWorkspace->UpdateTree();
             _editWorkspace->Update();
-        }
+        }*/
         return true;
      }
 
     switch(event.EventType)
 	{    
-	case NRP_GUI_EVENT:
-		switch(event.GuiEvent.EventType)
+  case sEventGui:
+    switch(event.gui.type)
 		{
-		case NRP_ELEMENT_FOCUS_LOST:
-		    if (event.GuiEvent.Caller == this)
+    case guiElementFocusLost:
+        if (event.gui.caller == this)
 		    {
-			    Dragging = false;
-			    Resizing = false;
+          _dragging = false;
+          _resizing = false;
 		    }
 		break;
 
-        case NRP_TREEVIEW_NODE_SELECT:
+    case guiTreeviewNodeSelect:
+    {
+        TreeViewItem* eventnode = ((TreeView*)event.gui.caller)->getLastEventNode();
+        if(!eventnode->isRoot())
         {
-            TreeViewItem* eventnode = ((TreeView*)event.GuiEvent.Caller)->getLastEventNode();
-            if(!eventnode->isRoot())
-            {   
-                Widget* elm = (Widget*)eventnode->getData();
-                //setSelectedElement( elm );
-                if( elm != _editWorkspace )
-                    _editWorkspace->setSelectedElement( elm );
-            }
-            break;
+            Overlay* elm = (Overlay*)eventnode->getData();
+            setSelectedElement( elm );
         }
         break;
+    }
+    break;
 
 		default:
 			break;
 		}
 
 		break;
-	case NRP_MOUSE_EVENT:
-		switch(event.MouseEvent.Event)
+  case sEventMouse:
+    switch(event.mouse.type)
 		{
-		case NRP_LMOUSE_PRESSED_DOWN:
+    case mouseLbtnPressed:
 		{
-			DragStart.X = event.MouseEvent.X;
-			DragStart.Y = event.MouseEvent.Y;
+      _dragStart = event.mouse.pos();
 
-			Widget* clickedElement = getElementFromPoint(DragStart);
+      Widget* clickedElement = getElementFromPoint(_dragStart);
 
 			if (clickedElement == this)
 			{
-				Dragging = IsDraggable;
+        _dragging = _isDraggable;
 				//Environment->setFocus(this);
 				bringToFront();
 				return true;
 			}
 			break;
 		}
-		case NRP_LMOUSE_LEFT_UP:
-			if (Dragging || Resizing)
+    case mouseLbtnRelease:
+      if (_dragging || _resizing)
 			{
-				Dragging = false;
-				Resizing = false;
+        _dragging = false;
+        _resizing = false;
 				return true;
 			}
 			break;
-		case NRP_MOUSE_MOVED:
-			if (Dragging || Resizing)
+    case mouseMoved:
+      if (_dragging || _resizing)
 			{
 				// gui window should not be dragged outside of its _parent
-				RectI absRect = getParent()->getAbsoluteRect();
+        Rect absRect = parent()->absoluteRect();
 
-				if( event.MouseEvent.X < absRect.getLeft() + 1 
-					|| event.MouseEvent.Y < absRect.getTop() + 1 
-					|| event.MouseEvent.X > absRect.getRight() - 1 
-					|| event.MouseEvent.Y > absRect.getBottom() - 1 )
+        if( event.mouse.x < absRect.left() + 1
+          || event.mouse.y < absRect.top() + 1
+          || event.mouse.x > absRect.right() - 1
+          || event.mouse.y > absRect.bottom() - 1 )
 						return true;
 
-				Point diff( event.MouseEvent.getPosition() - DragStart );
-				if (Dragging)
+        Point diff( event.mouse.pos() - _dragStart );
+        if (_dragging)
 				{
 					setPosition( diff );
-					DragStart = event.MouseEvent.getPosition();
+          _dragStart = event.mouse.pos();
 				}
-				else if (Resizing)
+        else if (_resizing)
 				{
-					core::Point dp = getUpperLeftPointA() + diff;
-					setGeometry( core::RectI( getUpperLeftPointA(), dp));
-					DragStart += dp - getRelativeRect().LowerRightCorner + diff;
+          Point dp = lefttop() + diff;
+          setGeometry( Rect( lefttop(), dp ));
+          _dragStart += dp - relativeRect().LowerRightCorner + diff;
 				}
 
 				return true;
 			}
 			break;
 		default:
-			break;
+    break;
 		}
 	default:
-		break;
+  break;
 	}
 
-	return getParent()->onEvent(event);
+  return parent()->onEvent(event);
 }
 
 bool PropertyWorkspace::isDraggable() const
 {
-	return IsDraggable;
+  return _isDraggable;
 }
 
 void PropertyWorkspace::setDraggable(bool draggable)
 {
-	IsDraggable = draggable;
+  _isDraggable = draggable;
 
-	if (Dragging && !IsDraggable)
-		Dragging = false;
-}
-
-void PropertyWorkspace::SetEditWorkspace( EditWorkspace* editWorkspace )
-{
-    _editWorkspace = editWorkspace;
+  if (_dragging && !_isDraggable)
+    _dragging = false;
 }
 
 }

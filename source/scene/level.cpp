@@ -682,6 +682,7 @@ void Level::_exitToMainMenu() {  _d->result = Level::mainMenu;  stop();}
 void Level::_restartMission() { _d->result = Level::restart;  stop();}
 void Level::setCameraPos(TilePos pos) {  _d->renderer.camera()->setCenter( pos ); }
 void Level::switch2layer(int layer) { _d->renderer.setLayer( layer ); }
+Camera* Level::camera() const { return _d->renderer.camera(); }
 void Level::_exitGame(){ _d->result = Level::quitGame;  stop();}
 void Level::Impl::saveScrollSpeed(int speed) { SETTINGS_SET_VALUE( scrollSpeed, speed ); }
 

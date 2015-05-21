@@ -58,6 +58,7 @@
 #include "vfs/filesystem.hpp"
 #include "game/resourceloader.hpp"
 #include "religion/config.hpp"
+#include "gui/property_workspace.hpp"
 
 using namespace gfx;
 using namespace citylayer;
@@ -123,7 +124,8 @@ enum {
   add_weapons_to_warehouse,
   add_wine_to_warehouse,
   add_oil_to_warehouse,
-  remove_favor
+  remove_favor,
+  property_browser
 };
 
 class DebugHandler::Impl
@@ -199,6 +201,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( "game", win_mission )
   ADD_DEBUG_EVENT( "game", fail_mission )
   ADD_DEBUG_EVENT( "game", change_emperor )
+  ADD_DEBUG_EVENT( "game", property_browser )
 
   ADD_DEBUG_EVENT( "city", add_soldiers_in_fort )
   ADD_DEBUG_EVENT( "city", add_city_border )
@@ -297,6 +300,18 @@ void DebugHandler::Impl::handleEvent(int event)
     good::Stock stock( good::Helper::random(), 1000, 1000 );
     caravan->store().store( stock, stock.qty() );
     caravan->sendTo( game->empire()->rome() );
+  }
+  break;
+
+  case property_browser:
+  {
+    int hash = Hash( CAESARIA_STR_A(PropertyWorkspace) );
+    PropertyWorkspace* browser = safety_cast<PropertyWorkspace*>( game->gui()->findWidget( hash ) );
+    if( !browser )
+    {
+      browser = new PropertyWorkspace( game->gui()->rootWidget(), game->scene(), Rect( 0, 0, 300, 500 ) );
+      game->scene()->installEventHandler( browser->handler() );
+    }
   }
   break;
 

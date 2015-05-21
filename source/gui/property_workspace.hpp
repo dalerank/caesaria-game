@@ -6,16 +6,19 @@
 #include "stretch_layout.hpp"
 #include "treeview.hpp"
 #include "objects/overlay.hpp"
+#include "scene/base.hpp"
 
 namespace gui
 {
+
+class WorkspaceEventHandler;
 
 class PropertyWorkspace : public Window
 {
 public:
 
 	//! constructor
-  PropertyWorkspace( Widget* parent, const Rect& rectangle );
+  PropertyWorkspace( Widget* parent, scene::Base* scene, const Rect& rectangle );
 
 	//! destructor
   ~PropertyWorkspace();
@@ -26,7 +29,7 @@ public:
   virtual bool onEvent(const NEvent &event);
 
 	//! change selection
-  virtual void setSelectedElement(Overlay *sel);
+  virtual void setSelectedElement(OverlayPtr sel);
 
 	//! get draggable
 	virtual bool isDraggable() const;
@@ -36,27 +39,29 @@ public:
 
   TreeView* getTreeView() const;
   PropertyBrowser* getAttributeEditor() const;
+  scene::EventHandlerPtr handler() const;
 
   void updateTree( Widget* elm );
 private:
 
-  void addChildrenToTree_(Widget* parentElement, TreeViewItem* treenode);
-  TreeViewItem* _GetTreeNode(Overlay *element, TreeViewItem* searchnode);
-  void createElementsTreeView_();
-  void createTabControl_();
+  void _addChildrenToTree(Widget* parentElement, TreeViewItem* treenode);
+  TreeViewItem* _getTreeNode(OverlayPtr element, TreeViewItem* searchnode);
+  void _createElementsTreeView();
+  void _createTabControl();
 
 
   // for dragging the window
-	bool                    Dragging;
-	bool                    IsDraggable;
-	bool                    Resizing;
-  Point                   DragStart;
+  bool                    _dragging;
+  bool                    _isDraggable;
+  bool                    _resizing;
+  Point                   _dragStart;
 
-  Overlay*             _selectedElement; // current selected element
-  Layout*             _windowLayout;
+  OverlayPtr              _selectedElement; // current selected element
+  Layout*                 _windowLayout;
+  WorkspaceEventHandler*  _eventHandler;
 
-  PropertyBrowser*    _attribEditor;	// edits the current attribute
-  TreeView*          _treeView;       // tree view of all elements in scene
+  PropertyBrowser*        _attribEditor;	// edits the current attribute
+  TreeView*               _treeView;       // tree view of all elements in scene
 };
 
 }
