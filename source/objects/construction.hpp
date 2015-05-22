@@ -60,7 +60,9 @@ public:
   virtual void load(const VariantMap& stream);
 
   virtual void addExtension( ConstructionExtensionPtr ext );
-  virtual const ConstructionExtensionList& extensions() const;
+  ConstructionExtensionPtr getExtension( const std::string& name );
+  virtual const ConstructionExtensionList& extensions() const;  
+
   virtual void initialize(const MetaData &mdata);
 protected:
   Construction( const object::Type type, const Size& size );

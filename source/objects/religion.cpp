@@ -30,6 +30,8 @@
 #include "gfx/tilearea.hpp"
 #include "gfx/animation_bank.hpp"
 #include "core/position_array.hpp"
+#include "warehouse.hpp"
+#include "core/logger.hpp"
 
 using namespace religion;
 
@@ -51,6 +53,7 @@ public:
   DivinityPtr divinity;
   DateTime lastBuff;
   gfx::Animation fireAnimation;
+  float buffValue;
   PointsArray fires;
 };
 
@@ -60,13 +63,31 @@ Temple::Temple( DivinityPtr divinity, object::Type type, int imgId, const Size& 
                     : Service::srvCount, type, size ), _td( new Impl )
 {
   _td->divinity = divinity;
+  _td->buffValue = 0;
   _picture().load( ResourceGroup::security, imgId );
   _fgPictures().resize( 3 );
   _td->fireAnimation = gfx::AnimationBank::instance().simple( "temple_fire" );
 }
 
 void Temple::_updateBuffs() {  _td->lastBuff = game::Date::current(); }
-DateTime Temple::_lastBuff() const { return _td->lastBuff; }
+
+int Temple::_relationMultiplier() const
+{
+  if( !divinity().isValid() )
+    return 1;
+
+  int multiplier = 1;
+  if( divinity()->wrathPoints() > 0 )
+    multiplier = -1;
+  else if( divinity()->relation() < 40 )
+    multiplier = 0;
+
+  return multiplier;
+}
+
+void Temple::_setBuffValue(float value) { _td->buffValue = value; }
+float Temple::_buffValue() const { return _td->buffValue; }
+DateTime Temple::_lastBuffDate() const { return _td->lastBuff; }
 
 void Temple::_updateAnimation(const unsigned long time)
 {
@@ -84,12 +105,23 @@ void Temple::_updateAnimation(const unsigned long time)
 
 DivinityPtr Temple::divinity() const {  return _td->divinity; }
 
+unsigned int Temple::parishionerNumber() const
+{
+  Logger::warning( "!!! WARNING: Basic temple shouldn't return parishionerNumber" );
+  return 0;
+}
+
 void Temple::deliverService()
 {
   if( walkers().empty() && numberWorkers() > 0 )
   {
     ServiceBuilding::deliverService();
-    _updateBuffs();
+
+    if( _city()->getOption( PlayerCity::godEnabled ) &&
+        !_city()->getOption( PlayerCity::c3gameplay ) )
+    {
+      _updateBuffs();
+    }
   }
 }
 
@@ -100,39 +132,39 @@ void Temple::initialize(const MetaData &mdata)
   ServiceBuilding::initialize( mdata );
 
   _td->fires.load( mdata.getOption( "fires" ).toList() );
+  _td->buffValue = mdata.getOption( "buffValue", _td->buffValue );
 }
 
 Temple::~Temple(){}
 
 TempleCeres::TempleCeres() : SmallTemple( rome::Pantheon::ceres(), object::small_ceres_temple, 45 )
 {
-  _buffValue = 3;
+  _setBuffValue( 3 );
 }
 
 void TempleCeres::_updateBuffs()
 {
-  if( !_city()->getOption( PlayerCity::godEnabled ) ||
-      _city()->getOption( PlayerCity::c3gameplay ) )
-    return;
-
-  if( _lastBuff().month() != game::Date::current().month() )
+  if( _lastBuffDate().month() != game::Date::current().month() )
   {
     TilePos offset( 5, 5 );
     FarmList farms = city::statistic::getObjects<Farm>( _city(), object::any,
-                                                   pos() - offset, pos() + offset + TilePos( size().width(), size().width() ) );
+                                                        pos() - offset, pos() + offset + TilePos( size().width(), size().width() ) );
+
+    int multiplier = _relationMultiplier();
+
     foreach( it, farms )
     {
-      FactoryProgressUpdater::uniqueTo( ptr_cast<Factory>( *it ), _buffValue, 4, CAESARIA_STR_A(TempleCeres) );
+      FactoryProgressUpdater::uniqueTo( ptr_cast<Factory>( *it ), _buffValue() * multiplier, 4, CAESARIA_STR_A(TempleCeres) );
     }
+
+    SmallTemple::_updateBuffs();
   }
 }
 
 void TempleCeres::initialize(const MetaData &mdata)
 {
-  Temple::initialize( mdata );
-  _buffValue = mdata.getOption( "buffValue", _buffValue );
+  Temple::initialize( mdata );  
 }
-
 
 BigTempleCeres::BigTempleCeres() : BigTemple( rome::Pantheon::ceres(), object::big_ceres_temple, 46 )
 {
@@ -162,8 +194,29 @@ BigTempleVenus::BigTempleVenus() : BigTemple( rome::Pantheon::venus(), object::b
 {
 }
 
+void TempleMercury::_updateBuffs()
+{
+  if( _lastBuffDate().month() != game::Date::current().month() )
+  {
+    TilePos offset( 5, 5 );
+    WarehouseList warehouses = city::statistic::getObjects<Warehouse>( _city(), object::any,
+                                                                       pos() - offset, pos() + offset + TilePos( size().width(), size().width() ) );
+
+    int multiplier = _relationMultiplier();
+
+    foreach( it, warehouses )
+    {
+      WarehouseBuff::uniqueTo( *it, Warehouse::sellGoodsBuff, _buffValue() * multiplier,  4, CAESARIA_STR_A(TempleMercury) );
+      WarehouseBuff::uniqueTo( *it, Warehouse::buyGoodsBuff, -_buffValue() * multiplier,  4, CAESARIA_STR_A(TempleMercury) );
+    }
+
+    SmallTemple::_updateBuffs();
+  }
+}
+
 TempleMercury::TempleMercury() : SmallTemple( rome::Pantheon::mercury(), object::small_mercury_temple, 49 )
 {
+  _setBuffValue( 0.1 );
 }
 
 BigTempleMercury::BigTempleMercury() : BigTemple( rome::Pantheon::mercury(), object::big_mercury_temple, 50 )
