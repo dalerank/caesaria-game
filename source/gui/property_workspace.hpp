@@ -31,15 +31,11 @@ public:
 	//! change selection
   virtual void setSelectedElement(OverlayPtr sel);
 
-	//! get draggable
-	virtual bool isDraggable() const;
-
-	//! get draggable
-	virtual void setDraggable(bool draggable);
-
   TreeView* getTreeView() const;
   PropertyBrowser* getAttributeEditor() const;
   scene::EventHandlerPtr handler() const;
+
+  void setCity( PlayerCityPtr city );
 
   void updateTree( Widget* elm );
 private:
@@ -51,13 +47,11 @@ private:
 
 
   // for dragging the window
-  bool                    _dragging;
-  bool                    _isDraggable;
   bool                    _resizing;
-  Point                   _dragStart;
 
   OverlayPtr              _selectedElement; // current selected element
-  Layout*                 _windowLayout;
+  PlayerCityPtr           _city;
+  unsigned int            _lastUpdateTime;
   WorkspaceEventHandler*  _eventHandler;
 
   PropertyBrowser*        _attribEditor;	// edits the current attribute

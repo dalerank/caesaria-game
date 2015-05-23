@@ -272,7 +272,7 @@ bool Table::setActiveColumn(int idx, bool doOrder )
         _currentOrdering = rowOrderingNone;
 		}
 
-    orderRows( getActiveColumn(), _currentOrdering );
+    orderRows( activeColumn(), _currentOrdering );
 	}
 
 	if( changed )
@@ -288,7 +288,7 @@ bool Table::setActiveColumn(int idx, bool doOrder )
 	return true;
 }
 
-int Table::getActiveColumn() const {  return _activeTab; }
+int Table::activeColumn() const {  return _activeTab; }
 TableRowOrderingMode Table::getActiveColumnOrdering() const {  return _currentOrdering; }
 
 void Table::setColumnWidth(unsigned int  columnIndex, unsigned int  width)
@@ -307,7 +307,7 @@ void Table::setColumnWidth(unsigned int  columnIndex, unsigned int  width)
 }
 
 //! Get the width of a column
-unsigned int  Table::getColumnWidth(unsigned int  columnIndex) const
+unsigned int  Table::columnWidth(unsigned int  columnIndex) const
 {
 	if ( columnIndex >= _d->columns.size() )
 		return 0;
@@ -468,10 +468,10 @@ void Table::clearRows()
 
 /*!
 */
-int Table::getSelected() const {return _selectedRow; }
+int Table::selectedRow() const {return _selectedRow; }
 
 //! set wich row is currently selected
-void Table::setSelected( int index )
+void Table::setSelectedRow( int index )
 {
 	_selectedRow = -1;
 	if ( index >= 0 && index < (int) _d->rows.size() )
@@ -502,7 +502,7 @@ Cell* Table::_getCell( unsigned int row, unsigned int column) const
 void Table::_recalculateHeights()
 {
   _totalItemHeight = 0;
-  Font curFont = Font::create( FONT_2 );
+  Font curFont = _font.isValid() ? _font : Font::create( FONT_2 );
   if( _font != curFont )
   {
     _font = curFont;
@@ -862,7 +862,7 @@ void Table::orderRows(int columnIndex, TableRowOrderingMode mode)
 	Row swap;
 
 	if ( columnIndex == -1 )
-		columnIndex = getActiveColumn();
+    columnIndex = activeColumn();
 	if ( columnIndex < 0 )
 		return;
 
@@ -1043,7 +1043,7 @@ void Table::setRowHeight( int height )
   _d->itemHeight = _overItemHeight == 0 ? _font.getTextSize("A").height() + (_cellHeightPadding * 2) : _overItemHeight;
 }
 
-int Table::getSelectedColumn() const { return _selectedColumn; }
+int Table::selectedColumn() const { return _selectedColumn; }
 
 void Table::removeChild( Widget* child)
 {
@@ -1061,6 +1061,11 @@ void Table::removeChild( Widget* child)
   }
 
   Widget::removeChild( child );
+}
+
+void Table::setItemFont(Font font)
+{
+  _font = font;
 }
 
 void Table::addElementToCell( unsigned int row, unsigned int column, Widget* elm )

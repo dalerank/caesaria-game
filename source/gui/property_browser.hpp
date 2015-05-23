@@ -38,12 +38,10 @@ public:
   ~PropertyBrowser();
 
   // gets the current attributes list
-  virtual const VariantMap &getAttribs();
+  const VariantMap& getAttribs();
+  void setAttribs( const VariantMap& attribs );
 
   void SetColumnWidth( float nameColWidth, float valColWidth );
-
-  // update the attribute list after making a change
-  void refreshAttribs();
 
   // save the attributes
   void updateAttribs();
@@ -53,11 +51,11 @@ public signals:
   Signal0<>& onAttributeChanged();
 
 protected:
-  void resizeEvent_();
+  virtual void _finalizeResize();
 
 private:
-  void _ClearAttributesList();
-  void createTable_();
+  void _clearAttributesList();
+  void _createTable();
   void updateTable_();
   AbstractAttribute* createAttributElm_( std::string typeStr, const std::string& attrName );
   void addAttribute2Table_( AbstractAttribute* n, const std::string& offset="" );

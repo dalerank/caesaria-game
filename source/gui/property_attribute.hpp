@@ -26,10 +26,12 @@ public:
   virtual AbstractAttribute* GetChildAttribute( unsigned int index );
 
   //! sets the attribute to use
-  virtual void setAttrib(Variant& attribs, const std::string& name);
+  virtual void setAttrib(const Variant &attribs, const std::string& name);
 
   //! sets the parent ID, for identifying where events came from
   void setParentID(int parentID);
+
+  virtual void setFont( Font font );
 
   //! save the attribute and possibly post the event to its parent
   virtual bool updateAttrib(bool sendEvent=true);
@@ -42,7 +44,7 @@ public:
 
   static const unsigned int ATTRIBEDIT_ATTRIB_CHANGED;
 protected:
-  Variant*	_attribs;
+  Variant	_attribs;
   Widget* _parentEvent;
   bool _expanded, _isNeedUpdate;
   std::string _name;

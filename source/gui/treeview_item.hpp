@@ -178,7 +178,7 @@ public:
 	virtual bool isRoot() const;
 
 	//! Returns the level of this node.
-  virtual int getLevel() const;
+  virtual int level() const;
 
 	//! Returns true if this node is visible (all parents are expanded).
 	virtual bool isVisible() const;

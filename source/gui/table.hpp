@@ -89,7 +89,7 @@ public:
 			 bool drawBack=false, bool moveOverSelect=true);
 
 	//! destructor
-	~Table();
+  virtual ~Table();
 
 	//! Adds a column
 	//! If columnIndex is outside the current range, do push new colum at the end
@@ -107,7 +107,7 @@ public:
 	virtual bool setActiveColumn(int columnIndex, bool doOrder=false);
 
 	//! Returns which header is currently active
-	virtual int getActiveColumn() const;
+  virtual int activeColumn() const;
 
 	//! Returns the ordering used by the currently active column
 	virtual TableRowOrderingMode getActiveColumnOrdering() const;
@@ -115,8 +115,8 @@ public:
 	//! set a column width
 	virtual void setColumnWidth(unsigned int columnIndex, unsigned int width);
 
-    //! returns column width
-    virtual unsigned int getColumnWidth(unsigned int columnIndex) const;
+  //! returns column width
+  virtual unsigned int columnWidth(unsigned int columnIndex) const;
 
 	//! columns can be resized by drag 'n drop
 	virtual void setResizableColumns(bool resizable);
@@ -132,14 +132,14 @@ public:
 	virtual void setColumnOrdering(unsigned int columnIndex, TableColumnOrderingMode mode);
 
 	//! Returns which row is currently selected
-	virtual int getSelected() const;
+  virtual int selectedRow() const;
 
 	//! set wich row is currently selected
-	virtual void setSelected( int index );
+  virtual void setSelectedRow( int index );
 
   virtual ScrollBar* getVerticalScrolBar();
 
-  virtual int getSelectedColumn() const;
+  virtual int selectedColumn() const;
 
 	//! Returns amount of rows in the tabcontrol
 	virtual int rowCount() const;
@@ -169,7 +169,6 @@ public:
 	//! of ordering when adding a lot of rows.
 	//! \param columnIndex: When set to -1 the active column is used.
 	virtual void orderRows(int columnIndex=-1, TableRowOrderingMode mode=rowOrderingNone);
-
 
 	//! Set the text of a cell
   virtual void setCellText(unsigned int row, unsigned int column, const std::string& text);
@@ -224,6 +223,8 @@ public:
   virtual void beforeDraw( gfx::Engine& painter );
 
   virtual void removeChild(Widget* child);
+
+  virtual void setItemFont( Font font );
 
 public signals:
   Signal2<int,int>& onCellClick();

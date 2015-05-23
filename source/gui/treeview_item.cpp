@@ -90,10 +90,12 @@ TreeViewItem* TreeViewItem::addChildBack(
 
 	_d->Children.push_back( newChild );
 	newChild->setText( text );
-	newChild->Icon = icon;
+  newChild->Icon = icon ? icon : "";
 	newChild->ImageIndex = imageIndex;
 	newChild->SelectedImageIndex = selectedImageIndex;
 	newChild->Data = data;
+  if( owner_ )
+    owner_->updateItems();
 	
 	return newChild;
 }
@@ -113,6 +115,9 @@ TreeViewItem* TreeViewItem::addChildFront(
 	newChild->ImageIndex = imageIndex;
 	newChild->SelectedImageIndex = selectedImageIndex;
 	newChild->Data = data;
+  if( owner_ )
+    owner_->updateItems();
+
 	return newChild;
 }
 
@@ -141,6 +146,9 @@ TreeViewItem* TreeViewItem::insertChildAfter(
 			break;
 		}
 	}
+  if( owner_ )
+    owner_->updateItems();
+
 	return newChild;
 }
 
@@ -169,6 +177,9 @@ TreeViewItem* TreeViewItem::insertChildBefore(
 			break;
 		}
 	}
+  if( owner_ )
+    owner_->updateItems();
+
 	return newChild;
 }
 
@@ -340,7 +351,7 @@ bool TreeViewItem::moveChildDown( TreeViewItem* child )
 
 void TreeViewItem::setExpanded( bool expanded )
 {
-    isExpanded_ = expanded;
+  isExpanded_ = expanded;
 	if( owner_ )
 		owner_->updateItems();
 }
@@ -351,13 +362,13 @@ void TreeViewItem::setSelected( bool selected )
 	{
 		if( selected )
 		{
-            owner_->Selected = this;
+            owner_->_selected = this;
 		}
 		else
 		{
-            if( owner_->Selected == this )
+            if( owner_->_selected == this )
 			{
-                owner_->Selected = 0;
+                owner_->_selected = 0;
 			}
 		}
 	}
@@ -367,7 +378,7 @@ bool TreeViewItem::getSelected() const
 {
     if( owner_ )
 	{
-        return owner_->Selected == this;
+        return owner_->_selected == this;
 	}
 	else
 	{
@@ -377,14 +388,14 @@ bool TreeViewItem::getSelected() const
 
 bool TreeViewItem::isRoot() const
 {
-    return ( owner_ && ( this == owner_->Root ) );
+    return ( owner_ && ( this == owner_->_root ) );
 }
 
-int TreeViewItem::getLevel() const
+int TreeViewItem::level() const
 {
     if( itemParent_ )
 	{
-        return itemParent_->getLevel() + 1;
+        return itemParent_->level() + 1;
 	}
 	else
 	{
@@ -426,7 +437,7 @@ void TreeViewItem::draw( gfx::Engine& painter)
 
   //drawText_( absoluteRect(), &owner_->absoluteClippingRectRef(), painter );
 
-  Widget::draw( painter );
+  Label::draw( painter );
 }
 
 }

@@ -20,6 +20,7 @@
 #include "scrollbar.hpp"
 #include "property_attribute.hpp"
 #include "widget_factory.hpp"
+#include "property_string.hpp"
 
 namespace gui
 {
@@ -35,14 +36,13 @@ PropertyBrowser::PropertyBrowser( Widget* parent, int id ) :
   // create attributes
   _attribTable = new Table( this, -1, Rect( 0, 0, 100, 100 ), false, false, false );
   _attribTable->setGeometry( RectF(0.0f, 0.0f, 1.0f, 1.0f));
-  _attribTable->setAlignment( align::upperLeft, align::lowerRight, align::upperLeft, align::lowerRight);
   _attribTable->addColumn( "attribute", 0 );
   _attribTable->addColumn( "value", 1 );
+  _attribTable->setItemFont( Font::create(FONT_1) );
   _attribTable->setSubElement( true );
 
   // refresh attrib list
   updateAbsolutePosition();
-  refreshAttribs();
 }
 
 Signal0<>& PropertyBrowser::onAttributeChanged() { return _attributeChanged; }
@@ -63,7 +63,7 @@ bool PropertyBrowser::onEvent(const NEvent &event)
     && event.gui.caller == _attribTable
     && event.gui.type == guiTableCellDblclick )
     {
-        AbstractAttribute* attr = safety_cast< AbstractAttribute* >( _attribTable->element( _attribTable->getSelected(), 1 ) );
+        AbstractAttribute* attr = safety_cast< AbstractAttribute* >( _attribTable->element( _attribTable->selectedRow(), 1 ) );
         if( attr )
         {
             attr->SetExpanded( !attr->IsExpanded() );
@@ -79,27 +79,22 @@ const VariantMap& PropertyBrowser::getAttribs()
   return _attribs;
 }
 
-void PropertyBrowser::_ClearAttributesList()
+void PropertyBrowser::setAttribs(const VariantMap &attribs)
 {
-    // clear the attribute list
-    unsigned int i;
-    for (i=0; i<_attribList.size(); ++i)
-    {
-        if( _attribList[ i ] )
-            _attribList[ i ]->deleteLater();
-    }
-    _attribList.clear();
+  _attribs = attribs;
+  _createTable();
 }
 
-void PropertyBrowser::refreshAttribs()
+void PropertyBrowser::_clearAttributesList()
 {
-    _ClearAttributesList();
-
-    _nameColumnWidth = _attribTable->getColumnWidth( 0 ) / float( _attribTable->width() );
-    _valueColumnWidth = _attribTable->getColumnWidth( 1 ) / float( _attribTable->width() );
-  // add attribute elements
-
-  createTable_();
+  // clear the attribute list
+  unsigned int i;
+  for (i=0; i<_attribList.size(); ++i)
+  {
+      if( _attribList[ i ] )
+          _attribList[ i ]->deleteLater();
+  }
+  _attribList.clear();
 }
 
 void PropertyBrowser::updateTable_()
@@ -127,65 +122,66 @@ AbstractAttribute* PropertyBrowser::createAttributElm_(std::string typeStr, cons
 
     // if this doesn't exist, use a string editor
     if (!attr)
-        attr = (AbstractAttribute*)wmgr.create( "string_attribute", _attribTable);
+        attr = (AbstractAttribute*)wmgr.create( CAESARIA_STR_A(AttributeString), _attribTable);
 
     attr->setAttributeName( attrName );
     return attr;
 }
 
-void PropertyBrowser::createTable_()
+void PropertyBrowser::_createTable()
 {
-    _attribTable->clearRows();
+  _attribTable->clearRows();
+  foreach( it, _attribList )
+    (*it)->deleteLater();
 
-    for( unsigned int i=0; i < _attribs.size(); ++i )
-    {
-        // try to create attribute
-        /*AbstractAttribute* n = NULL;
+  _attribList.clear();
 
-        std::string startSection = _attribs->getAttributeName(i);
-        if( startSection == SerializeHelper::subSectionStartProp )
-        {
-             n = new SubSectionAttribute( _attribTable, -1 );
-             //n->drop();
+  foreach( it, _attribs )
+  {
+      // try to create attribute
+      /*if( startSection == SerializeHelper::subSectionStartProp )
+      {
+           n = new SubSectionAttribute( _attribTable, -1 );
+           //n->drop();
 
-             _attribList.push_back(n);
-             n->setAttributeName( _attribs->getAttributeAsString(i) );
+           _attribList.push_back(n);
+           n->setAttributeName( _attribs->getAttributeAsString(i) );
 
-             _attribList[i]->setSubElement( true );
-             _attribList[i]->setAttrib(_attribs, i);
+           _attribList[i]->setSubElement( true );
+           _attribList[i]->setAttrib(_attribs, i);
 
-             while( true )
-             {
-                 String endSection = _attribs->getAttributeName(++i);
-                 if( endSection == SerializeHelper::subSectionEndProp )
-                 {
-                     _attribList.push_back( NULL );
-                     break;
-                 }
+           while( true )
+           {
+               String endSection = _attribs->getAttributeName(++i);
+               if( endSection == SerializeHelper::subSectionEndProp )
+               {
+                   _attribList.push_back( NULL );
+                   break;
+               }
 
-                 AbstractAttribute* subAttr = createAttributElm_( _attribs->getPropertyTypeString(i),
-                                                                  _attribs->getAttributeName(i) );
+               AbstractAttribute* subAttr = createAttributElm_( _attribs->getPropertyTypeString(i),
+                                                                _attribs->getAttributeName(i) );
 
-                 n->addChild( subAttr );
-                 subAttr->setAttrib( _attribs, i );
-                 subAttr->setVisible( false );
-                 subAttr->setParentID( getID() );
-                 _attribList.push_back( NULL );
-             }
-        }
-        else
-        {
-            n = createAttributElm_( _attribs->getPropertyTypeString(i), _attribs->getAttributeName(i) );
+               n->addChild( subAttr );
+               subAttr->setAttrib( _attribs, i );
+               subAttr->setVisible( false );
+               subAttr->setParentID( getID() );
+               _attribList.push_back( NULL );
+           }
+      }
+      else*/
+      {
+        AbstractAttribute* n = createAttributElm_( it->second.typeName(), it->first );
 
-            _attribList.push_back(n);
+        _attribList.push_back(n);
+        n->setFont( Font::create( FONT_1 ) );
 
-            _attribList[i]->setSubElement( true );
-            _attribList[i]->setAttrib( _attribs, i );
-        }*/
-    }
+        _attribList.back()->setSubElement( true );
+      }
+  }
 
-  for( unsigned int i=0; i < _attribList.size(); i++ )
-        addAttribute2Table_( _attribList[ i ] );
+  foreach( it, _attribList )
+    addAttribute2Table_( *it );
 }
 
 void PropertyBrowser::addAttribute2Table_(AbstractAttribute* n, const std::string &offset )
@@ -222,19 +218,20 @@ void PropertyBrowser::updateAttribs()
 {
   for (unsigned int i=0; i<_attribList.size(); ++i)
         if( _attribList[i] )
-  _attribList[i]->updateAttrib(false);
+          _attribList[i]->updateAttrib(false);
 }
 
-void PropertyBrowser::resizeEvent_()
+void PropertyBrowser::_finalizeResize()
 {
+  _attribTable->setGeometry( RectF( 0, 0, 1, 1 ));
   _attribTable->setColumnWidth( 0, _nameColumnWidth * width() );
   _attribTable->setColumnWidth( 1, _valueColumnWidth * width() );
 }
 
 void PropertyBrowser::SetColumnWidth(float nameColWidth, float valColWidth )
 {
-    _nameColumnWidth = nameColWidth;
-    _valueColumnWidth = valColWidth;
+  _nameColumnWidth = nameColWidth;
+  _valueColumnWidth = valColWidth;
 }
 
 }//end namespace gui

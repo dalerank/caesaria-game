@@ -20,33 +20,32 @@ public:
 //! constructor
 TreeView::TreeView( Widget* parent,
   const Rect& rectangle, int id, bool clip,
-	bool drawBack,bool scrollBarVertical, bool scrollBarHorizontal)
+  bool drawBack, bool scrollBarVertical, bool scrollBarHorizontal)
   : Widget( parent, id, rectangle ),
-	Root(0), Selected(0),
-	itemHeight_( 0 ),
-	IndentWidth( 0 ),
+  _root(0), _selected(0),
+  _itemHeight( 0 ),
+  _indentWidth( 0 ),
 	ScrollBarH( 0 ),
 	ScrollBarV( 0 ),
-	LastEventNode( 0 ),
-	LinesVisible( true ),
-	Selecting( false ),
-	Clip( clip ),
-	DrawBack( drawBack ),
-	ImageLeftOfIcon( true ),
-    _currentDrawState( stNormal ),
+  _lastEventNode( 0 ),
+  _linesVisible( true ),
+  _selecting( false ),
+  _clip( clip ),
+  _drawBack( drawBack ),
+  _imageLeftOfIcon( true ),
+  _currentDrawState( stNormal ),
 	_d( new TreeViewPrivate )
 {
 #ifdef _DEBUG
   setDebugName( "TreeView" );
 #endif
 
-	//IGUISkin* skin = Environment->getSkin();
   int s = DEFAULT_SCROLLBAR_SIZE;//skin->getSize( EGDS_SCROLLBAR_SIZE );
 
 	if ( scrollBarVertical )
 	{
-        Rect r( width() - s,  0, width(),
-                height() - (scrollBarHorizontal ? s : 0 ) );
+    Rect r( width() - s,  0, width(),
+            height() - (scrollBarHorizontal ? s : 0 ) );
 		ScrollBarV = new ScrollBar( this, r, ScrollBar::Vertical );
 
 		ScrollBarV->setSubElement(true);
@@ -63,49 +62,47 @@ TreeView::TreeView( Widget* parent,
 		ScrollBarH->grab();
 	}
 
-	Root = new TreeViewItem( this );
-    Root->isExpanded_ = true;
+  _root = new TreeViewItem( this );
+  _root->isExpanded_ = true;
 
 	recalculateItemsRectangle();
 }
 
 //! destructor
 TreeView::~TreeView()
-{
-	delete _d;
-}
+{}
 
 void TreeView::recalculateItemsRectangle()
 {
-  Font curFont = Font::create( FONT_3 );
+  Font curFont = Font::create( FONT_1 );
 	TreeViewItem*	node;
 
 	if( _d->font != curFont )
 	{
 		_d->font = curFont;
-		itemHeight_ = 0;
+    _itemHeight = 0;
 
     if( _d->font.isValid() )
-      itemHeight_ = _d->font.getTextSize( "A" ).height() + 4;
+      _itemHeight = _d->font.getTextSize( "A" ).height() + 2;
 	}
 
-  IndentWidth = math::clamp<int>( itemHeight_, 9, 15) - 1;
+  _indentWidth = math::clamp<int>( _itemHeight, 9, 15) - 1;
 
   _d->totalItemSize = Size( 0, 0 );
-	node = Root->getFirstChild();
+  node = _root->getFirstChild();
 	while( node )
 	{
-    _d->totalItemSize += Size( 0, itemHeight_ );
-    _d->totalItemSize.setWidth( math::max( _d->totalItemSize.width(), node->screenRight() - Root->screenLeft() ) );
+    _d->totalItemSize += Size( 0, _itemHeight );
+    _d->totalItemSize.setWidth( math::max( _d->totalItemSize.width(), node->screenRight() - _root->screenLeft() ) );
 		node = node->getNextVisible();
 	}
 
 	//сделаем скролбары видимыми если элементы выходят за границы отображения по вертикали
-  ScrollBarV->setMaxValue( math::max<int>(0, _d->totalItemSize.height() - height() + itemHeight_) );
-  ScrollBarV->setVisible( _d->totalItemSize.height() > height() );
+  ScrollBarV->setVisible( _d->totalItemSize.height() > (int)height() );
+  ScrollBarV->setMaxValue( math::max<int>(0, _d->totalItemSize.height() - height() + _itemHeight) );
 
 	//сделаем скролбары видимыми если элементы выходят за границы отображения по горизонтали
-  ScrollBarH->setVisible( _d->totalItemSize.width() > width() );
+  ScrollBarH->setVisible( _d->totalItemSize.width() > (int)width() );
   ScrollBarH->setMaxValue( math::max<int>(0, _d->totalItemSize.width() - width()) );
 }
 
@@ -126,15 +123,15 @@ bool TreeView::onEvent( const NEvent &event )
 					updateItems();
 					return true;
 				}
-				break;
+      break;
       case guiElementFocusLost:
 				{
-					Selecting = false;
+          _selecting = false;
 					return false;
 				}
-				break;
+      break;
 			default:
-				break;
+      break;
 			}
 			break;
     case sEventMouse:
@@ -147,7 +144,7 @@ bool TreeView::onEvent( const NEvent &event )
 					if ( ScrollBarV )
             ScrollBarV->setValue( ScrollBarV->value() + (event.mouse.wheel < 0 ? -1 : 1) * -10 );
 					return true;
-					break;
+        break;
 
         case mouseLbtnPressed:
 
@@ -158,18 +155,19 @@ bool TreeView::onEvent( const NEvent &event )
 					}
 
 					if( isFocused() &&
-            (	( ScrollBarV && ScrollBarV->absoluteRect().isPointInside( p ) && ScrollBarV->onEvent( event ) ) ||
-            ( ScrollBarH && ScrollBarH->absoluteRect().isPointInside( p ) &&	ScrollBarH->onEvent( event ) )
-						)
+              (
+                ( ScrollBarV && ScrollBarV->absoluteRect().isPointInside( p ) && ScrollBarV->onEvent( event ) ) ||
+                ( ScrollBarH && ScrollBarH->absoluteRect().isPointInside( p ) &&	ScrollBarH->onEvent( event ) )
+              )
 						)
 					{
 						return true;
 					}
 
-					Selecting = true;
+          _selecting = true;
 					setFocus();
 					return true;
-					break;
+        break;
 
         case mouseLbtnRelease:
 					if( isFocused() &&
@@ -181,14 +179,14 @@ bool TreeView::onEvent( const NEvent &event )
 						return true;
 					}
 
-					Selecting = false;
+          _selecting = false;
 					removeFocus();
           mouseAction( event.mouse.x, event.mouse.y );
 					return true;
-					break;
+        break;
 
         case mouseMoved:
-					if( Selecting )
+          if( _selecting )
 					{
             if( absoluteRect().isPointInside( p ) )
 						{
@@ -196,14 +194,15 @@ bool TreeView::onEvent( const NEvent &event )
 							return true;
 						}
 					}
-					break;
+        break;
 				default:
-					break;
+        break;
 				}
 			}
-			break;
-		default:
-			break;
+    break;
+
+    default:
+    break;
 		}
 	}
 
@@ -214,7 +213,7 @@ bool TreeView::onEvent( const NEvent &event )
 */
 void TreeView::mouseAction( int xpos, int ypos, bool onlyHover /*= false*/ )
 {
-	TreeViewItem*		oldSelected = Selected;
+  TreeViewItem*		oldSelected = _selected;
 	TreeViewItem*		hitNode = 0;
   int						selIdx;
   int						n;
@@ -229,13 +228,13 @@ void TreeView::mouseAction( int xpos, int ypos, bool onlyHover /*= false*/ )
   ypos -= screenTop();//_absoluteRect.UpperLeftCorner.Y;
 
 	// find new selected item.
-	if( itemHeight_ != 0 && ScrollBarV )
+  if( _itemHeight != 0 && ScrollBarV )
 	{
-    selIdx = ( ( ypos - 1 ) + ScrollBarV->value() ) / itemHeight_;
+    selIdx = ( ( ypos - 1 ) + ScrollBarV->value() ) / _itemHeight;
 	}
 
 	hitNode = 0;
-	node = Root->getFirstChild();
+  node = _root->getFirstChild();
 	n = 0;
 	while( node )
 	{
@@ -248,20 +247,20 @@ void TreeView::mouseAction( int xpos, int ypos, bool onlyHover /*= false*/ )
 		++n;
 	}
 
-	if( hitNode && xpos > hitNode->getLevel() * IndentWidth )
+  if( hitNode && xpos > hitNode->level() * _indentWidth )
 	{
-		Selected = hitNode;
+    _selected = hitNode;
 	}
 
 	if( hitNode && !onlyHover
-		&& xpos < hitNode->getLevel() * IndentWidth
-		&& xpos > ( hitNode->getLevel() - 1 ) * IndentWidth
+    && xpos < hitNode->level() * _indentWidth
+    && xpos > ( hitNode->level() - 1 ) * _indentWidth
 		&& hitNode->hasChildren() )
 	{
         hitNode->setExpanded( !hitNode->isExpanded() );
 
 		// post expand/collaps news
-        if( hitNode->isExpanded() )
+    if( hitNode->isExpanded() )
 		{
       event.gui.type = guiTreeviewNodeExpand;
 		}
@@ -269,33 +268,33 @@ void TreeView::mouseAction( int xpos, int ypos, bool onlyHover /*= false*/ )
 		{
       event.gui.type = guiTreeviewNodeCollapse;
 		}
-		LastEventNode = hitNode;
+    _lastEventNode = hitNode;
     parent()->onEvent( event );
-		LastEventNode = 0;
+    _lastEventNode = 0;
 	}
 
-	if( Selected && !Selected->isVisible() )
+  if( _selected && !_selected->isVisible() )
 	{
-		Selected = 0;
+    _selected = 0;
 	}
 
 	// post selection news
 
-	if( !onlyHover && Selected != oldSelected )
+  if( !onlyHover && _selected != oldSelected )
 	{
 		if( oldSelected )
 		{
       event.gui.type = guiTreeviewNodeSelect;
-			LastEventNode = oldSelected;
+      _lastEventNode = oldSelected;
       parent()->onEvent( event );
-			LastEventNode = 0;
+      _lastEventNode = 0;
 		}
-		if( Selected )
+    if( _selected )
 		{
       event.gui.type = guiTreeviewNodeSelect;
-			LastEventNode = Selected;
+      _lastEventNode = _selected;
       parent()->onEvent( event );
-			LastEventNode = 0;
+      _lastEventNode = 0;
 		}
 	}
 }
@@ -305,15 +304,13 @@ void TreeView::updateItems()
 	_d->needUpdateItems = true;
 }
 
-NColor TreeView::_GetCurrentNodeColor( TreeViewItem* node )
+NColor TreeView::_getCurrentNodeColor( TreeViewItem* node )
 {
     NColor textCol = 0xffc0c0c0;
-    ElementState state = stDisabled;
 
     if ( enabled() )
     {
-        textCol = ( node == Selected ) ? 0xffffffff : 0xff000000;
-        state = ( node == Selected ) ? stPressed : stNormal;
+        textCol = ( node == _selected ) ? 0xffffffff : 0xff000000;
     }
 
     return textCol;
@@ -323,7 +320,7 @@ Font TreeView::getCurrentNodeFont_( TreeViewItem* node )
 {
   Font font;
   if ( enabled() )
-      font = Font::create( node == Selected ? FONT_2_WHITE : FONT_2 );
+      font = Font::create( node == _selected ? FONT_1_WHITE : FONT_1 );
 
   if( font.isValid() )
   {
@@ -333,7 +330,7 @@ Font TreeView::getCurrentNodeFont_( TreeViewItem* node )
       return font;
   }
 
-  return Font::create( FONT_2 );
+  return Font::create( FONT_1 );
 }
 
 void TreeView::beforeDraw( gfx::Engine& painter )
@@ -348,7 +345,7 @@ void TreeView::beforeDraw( gfx::Engine& painter )
 		recalculateItemsRectangle(); // if the font changed
 
     Rect* clipRect = 0;
-		if( Clip )
+    if( _clip )
 		{
       clipRect = &absoluteClippingRectRef();
 		}
@@ -376,18 +373,16 @@ void TreeView::beforeDraw( gfx::Engine& painter )
 		{
       frameRect = absoluteRect();
 		}
-		//frameRect.LowerRightCorner.X = getScreenRight() - DEFAULT_SCROLLBAR_SIZE;
-		//frameRect.LowerRightCorner.Y = getScreenTop() + ItemHeight;
 
     frameRect -= Point( ScrollBarH->value(), ScrollBarV->value() );
 
     Rect startRect = frameRect;
-		TreeViewItem* node = Root->getFirstChild();
+    TreeViewItem* node = _root->getFirstChild();
 
 		while( node )
 		{
-			frameRect = startRect + Point( 1 + node->getLevel() * IndentWidth, 0 );
-			startRect += Point( 0, itemHeight_ );
+      frameRect = startRect + Point( 1 + node->level() * _indentWidth, 0 );
+      startRect += Point( 0, _itemHeight );
 			
 			Point offset( 0, 0 );
 			TreeViewItem* itemOffset = node->getParentItem();
@@ -400,10 +395,10 @@ void TreeView::beforeDraw( gfx::Engine& painter )
       Rect nodeRect = frameRect - absoluteRect().lefttop() - offset;
       Font fontNode = node->font();
       if( !fontNode.isValid() )
-        fontNode = Font::create( FONT_2 );
+        fontNode = Font::create( FONT_1 );
 
 			nodeRect.LowerRightCorner = nodeRect.UpperLeftCorner 
-        + Point( fontNode.getTextSize( node->text() ).width() + IndentWidth, itemHeight_ );
+        + Point( fontNode.getTextSize( node->text() ).width() + _indentWidth, _itemHeight );
 			node->setGeometry( nodeRect );		
 
 			node = node->getNextVisible();
@@ -430,13 +425,13 @@ void TreeView::draw( gfx::Engine& painter )
 		return;
 
   Rect* clipRect = 0;
-	if( Clip )
+  if( _clip )
 	{
     clipRect = &absoluteClippingRectRef();
 	}
 
 	// draw background
-	if( DrawBack )
+  if( _drawBack )
 	{
     drawRect( absoluteRect(), 0xffffffff, painter, 0 );
 	}
@@ -455,9 +450,11 @@ void TreeView::draw( gfx::Engine& painter )
 	if( clipRect )
 		clientClip.clipAgainst( *clipRect );
 
-	TreeViewItem* node = Root->getFirstChild();
-    //ElementStyle& itemStyle = myStyle.getSubStyle( NES_ITEM );
+  TreeViewItem* node = _root->getFirstChild();
+
   Rect frameRect;
+  bool isFirst = true;
+  Point prevPoint;
 	while( node )
 	{
     frameRect = node->absoluteRect();
@@ -465,8 +462,8 @@ void TreeView::draw( gfx::Engine& painter )
 		if( node->hasChildren() )
 		{
 			//рамка для плюса
-      Rect expanderRect( frameRect.UpperLeftCorner + Point( -IndentWidth + 2, ( IndentWidth - 4 ) / 2 ),
-                         Size( IndentWidth - 4, IndentWidth - 4 ) );
+      Rect expanderRect( frameRect.UpperLeftCorner + Point( -_indentWidth + 2, ( _indentWidth - 4 ) / 2 ),
+                         Size( _indentWidth - 4, _indentWidth - 4 ) );
 
       drawRect( expanderRect, 0xffc0c0c0, painter, clipRect );
 
@@ -487,24 +484,34 @@ void TreeView::draw( gfx::Engine& painter )
 			}
 		}			
 
-  		// draw the lines if neccessary
-		if( LinesVisible )
+    drawRect( frameRect, DefaultColors::blue, painter, 0);
+    // draw the lines if neccessary
+    if( _linesVisible )
 		{
       Rect rc;
 
 			// horizontal line
-      rc.UpperLeftCorner = frameRect.UpperLeftCorner + Point( -( IndentWidth * 3 / 2 ) - 1, itemHeight_ / 2 );
-			
-      rc.LowerRightCorner.rx() = frameRect.UpperLeftCorner.rx() + (node->hasChildren() ? -IndentWidth + 2 : -2);
-      rc.LowerRightCorner.ry() = rc.UpperLeftCorner.ry() + 1;
+      Point lp = frameRect.UpperLeftCorner + Point( -(_indentWidth) + 1, _itemHeight / 2 );
+      Point rp = lp + Point( (node->hasChildren() ? 2 : _indentWidth - 3), 0 );
 
-      drawRect( rc, 0xffc0c0c0, painter, clipRect );
+      painter.drawLine( DefaultColors::red, lp, rp );
 
-			if( node->getParentItem() != Root )
+      if( isFirst )
+      {
+        isFirst = false;
+        prevPoint = lp;
+      }
+      else
+      {
+        rp = Point( lp.x(), prevPoint.y() );
+        painter.drawLine( DefaultColors::red, lp, rp );
+      }
+
+      if( node->getParentItem() != _root )
 			{
 				// vertical line
-        int offsetY = ( node == node->getParentItem()->getFirstChild() ? IndentWidth : 0 );
-        rc.UpperLeftCorner.ry() = frameRect.UpperLeftCorner.y() - ( itemHeight_ - offsetY ) / 2;
+        int offsetY = ( node == node->getParentItem()->getFirstChild() ? _indentWidth : 0 );
+        rc.UpperLeftCorner.ry() = frameRect.UpperLeftCorner.y() - ( _itemHeight - offsetY ) / 2;
 
         rc.LowerRightCorner.rx() = rc.UpperLeftCorner.rx() + 1;
         drawRect( rc, 0xffc0c0c0, painter, clipRect );
@@ -513,9 +520,9 @@ void TreeView::draw( gfx::Engine& painter )
 				TreeViewItem* nodeTmp = node->getParentItem();
         rc.UpperLeftCorner.ry() = frameRect.UpperLeftCorner.y();
 
-        for( int n = 0; n < node->getLevel() - 2; ++n )
+        for( int n = 0; n < node->level() - 2; ++n )
 				{
-          rc -= Point( IndentWidth, 0 );
+          rc -= Point( _indentWidth, 0 );
 
 					if( nodeTmp != nodeTmp->getParentItem()->getLastChild() )
 					{
@@ -537,17 +544,17 @@ void TreeView::draw( gfx::Engine& painter )
 
 void TreeView::setImageLeftOfIcon( bool bLeftOf )
 {
-    ImageLeftOfIcon = bLeftOf;
+    _imageLeftOfIcon = bLeftOf;
 }
 
 bool TreeView::getImageLeftOfIcon() const
 {
-    return ImageLeftOfIcon;
+    return _imageLeftOfIcon;
 }
 
 TreeViewItem* TreeView::getLastEventNode() const
 {
-    return LastEventNode;
+    return _lastEventNode;
 }
 
 }

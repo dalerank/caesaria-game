@@ -29,19 +29,19 @@ public:
 
     //! returns the root node (not visible) from the tree.
     virtual TreeViewItem* getRoot() const
-    { return Root; }
+    { return _root; }
 
     //! returns the selected node of the tree or 0 if none is selected
     virtual TreeViewItem* getSelected() const
-    { return Selected; }
+    { return _selected; }
 
     //! returns true if the tree lines are visible
     virtual bool getLinesVisible() const
-    { return LinesVisible; }
+    { return _linesVisible; }
 
     //! sets if the tree lines are visible
     virtual void setLinesVisible( bool visible )
-    { LinesVisible = visible; }
+    { _linesVisible = visible; }
 
     //! called if an event happened.
     virtual bool onEvent( const NEvent &event );
@@ -64,35 +64,36 @@ public:
 	virtual void updateItems(); 
 
 private:
-    //! calculates the heigth of an node and of all visible nodes.
-    void recalculateItemsRectangle();
+  //! calculates the heigth of an node and of all visible nodes.
+  void recalculateItemsRectangle();
 
-    //! executes an mouse action (like selectNew of CGUIListBox)
-    void mouseAction( int xpos, int ypos, bool onlyHover = false );
-    NColor _GetCurrentNodeColor( TreeViewItem* node);
-    Font getCurrentNodeFont_( TreeViewItem* node);
+  //! executes an mouse action (like selectNew of CGUIListBox)
+  void mouseAction( int xpos, int ypos, bool onlyHover = false );
+  NColor _getCurrentNodeColor( TreeViewItem* node);
+  Font getCurrentNodeFont_( TreeViewItem* node);
 
-	TreeViewItem*	Root;
-    TreeViewItem*	Selected;
-    TreeViewItem*	_hoverNode;
-    int			itemHeight_;
-    int			IndentWidth;
+  TreeViewItem*	_root;
+  TreeViewItem*	_selected;
+  TreeViewItem*	_hoverNode;
+  int			_itemHeight;
+  int			_indentWidth;
 
 	ScrollBar*		ScrollBarH;
-    ScrollBar*		ScrollBarV;
+  ScrollBar*		ScrollBarV;
 
-    TreeViewItem*	LastEventNode;
-    bool			LinesVisible;
-    bool			Selecting;
-    bool			Clip;
-    bool			DrawBack;
-    bool			ImageLeftOfIcon;
+  TreeViewItem*	_lastEventNode;
+  bool			_linesVisible;
+  bool			_selecting;
+  bool			_clip;
+  bool			_drawBack;
+  bool			_imageLeftOfIcon;
 
-    ElementState _currentDrawState;
+  ElementState _currentDrawState;
 
-	TreeViewPrivate* _d;
+  ScopedPtr<TreeViewPrivate> _d;
 };
 
 }
-#endif
+
+#endif //__NRP_TREE_VIEW_H_INCLUDED__
 

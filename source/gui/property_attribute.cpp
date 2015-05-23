@@ -69,9 +69,9 @@ bool AbstractAttribute::onEvent(const NEvent &e)
 
 AbstractAttribute *AbstractAttribute::GetChildAttribute(unsigned int index) { return NULL; }
 
-void AbstractAttribute::setAttrib(Variant& attribs, const std::string& name)
+void AbstractAttribute::setAttrib( const Variant& attribs, const std::string& name)
 {
-  _attribs = &attribs;
+  _attribs = attribs;
 
   std::string rname = name + " (" + attribs.typeName() +  ")";
   setText( rname );
@@ -92,6 +92,8 @@ void AbstractAttribute::setParentID(int parentID)
 {
   _myParentID = parentID;
 }
+
+void AbstractAttribute::setFont(Font font) {}
 
 bool AbstractAttribute::updateAttrib(bool sendEvent)
 {

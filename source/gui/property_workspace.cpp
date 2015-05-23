@@ -6,8 +6,12 @@
 #include "core/event.hpp"
 #include "gfx/camera.hpp"
 #include "gfx/tile.hpp"
+#include "city/city.hpp"
 #include "objects/overlay.hpp"
 #include "scene/level.hpp"
+#include "environment.hpp"
+#include "core/timer.hpp"
+#include "core/logger.hpp"
 
 using namespace gfx;
 
@@ -32,12 +36,15 @@ public:
   void handleEvent(NEvent& event)
   {
     if( !_scene )
-      return;
+      return;   
 
     if( event.EventType == sEventMouse && event.mouse.type == mouseLbtDblClick )
     {
       Camera* camera = _scene->camera();
       Tile* tile = camera->at( event.mouse.pos(), false );
+
+      if( _parent.ui()->hovered() != _parent.ui()->rootWidget() )
+        return;
 
       if( tile != 0 && tile->overlay() != 0 )
       {
@@ -52,7 +59,7 @@ public:
 //! constructor
 PropertyWorkspace::PropertyWorkspace( Widget* _parent, scene::Base* scene, const Rect& rectangle )
     : Window( _parent, rectangle, "", -1 ),
-      _dragging(false), _isDraggable(true), _resizing(false), _selectedElement(0),
+      _resizing(false), _selectedElement(0),
       _attribEditor(0)
 {
 	#ifdef _DEBUG
@@ -62,8 +69,7 @@ PropertyWorkspace::PropertyWorkspace( Widget* _parent, scene::Base* scene, const
 	// we can't tab out of this window
   setTabgroup(true);
 
-  setDraggable( false );
-  setSubElement( true );
+  setWindowFlag( fdraggable, true );
 	// we can ctrl+tab to it
 	setTabStop(true);
 	// the tab order number is auto-assigned
@@ -73,30 +79,27 @@ PropertyWorkspace::PropertyWorkspace( Widget* _parent, scene::Base* scene, const
   setText("");
   button( buttonClose )->setVisible( false );
 
-  setMinSize( Size(200,200) );
-
-  _windowLayout = new VLayout( this, Rect( 0, 0, width(), height()), -1 );
-  _windowLayout->setAlignment( align::upperLeft, align::lowerRight, align::upperLeft, align::lowerRight );
-
   _eventHandler = new WorkspaceEventHandler( *this, scene );
 
   _createElementsTreeView();
   _createTabControl();
+  _lastUpdateTime = 0;
+
+  PushButton* btnClose = new PushButton( this, Rect( width() - 20, 0, width(), 20 ), "X" );
+  CONNECT( btnClose, onClicked(), this, PropertyWorkspace::deleteLater )
 }
 
 void PropertyWorkspace::_createElementsTreeView()
 {
-  _treeView = new TreeView( _windowLayout, Rect(0,0,100,100), -1, true, true, true );
-  _treeView->setSubElement( true );
-  _treeView->setAlignment( align::upperLeft, align::lowerRight, align::upperLeft, align::lowerRight);
+  _treeView = new TreeView( this, Rect(0,0,100,100), -1, true, true, true );
+  _treeView->setGeometry( Rect(12, 12, width()/2, height()-12));
 }
 
 void PropertyWorkspace::_createTabControl()
 {
-  _attribEditor = new PropertyBrowser( _windowLayout );
-  _attribEditor->setID( EGUIEDCE_ATTRIB_EDITOR );
-  _attribEditor->setGeometry(RectF(0.0f, 0.0f, 1.0f, 1.0f));
-  _attribEditor->setAlignment(align::upperLeft, align::lowerRight, align::upperLeft, align::lowerRight);
+  _attribEditor = new PropertyBrowser( this );
+  _attribEditor->setID( EGUIEDCE_ATTRIB_EDITOR );  
+  _attribEditor->setGeometry( Rect(width()/2, 12, width()-12, height()-12) );
 }
 
 //! destructor
@@ -107,20 +110,10 @@ PropertyWorkspace::~PropertyWorkspace()
     _eventHandler->_finished = true;
 }
 
-TreeView* PropertyWorkspace::getTreeView() const
-{
-	return _treeView;
-}
-
-PropertyBrowser* PropertyWorkspace::getAttributeEditor() const
-{
-  return _attribEditor;
-}
-
-scene::EventHandlerPtr PropertyWorkspace::handler() const
-{
-  return _eventHandler;
-}
+TreeView* PropertyWorkspace::getTreeView() const{	return _treeView;}
+PropertyBrowser* PropertyWorkspace::getAttributeEditor() const{  return _attribEditor;}
+scene::EventHandlerPtr PropertyWorkspace::handler() const{  return _eventHandler;}
+void PropertyWorkspace::setCity(PlayerCityPtr city){  _city = city;}
 
 TreeViewItem* PropertyWorkspace::_getTreeNode(OverlayPtr element, TreeViewItem* searchnode)
 {
@@ -179,22 +172,23 @@ void PropertyWorkspace::setSelectedElement(OverlayPtr sel)
 		}
 	}
 
-  VariantMap Attribs = _attribEditor->getAttribs();
+  VariantMap attribs = _attribEditor->getAttribs();
 
-  if (_selectedElement.isValid() && sel != _selectedElement)
+  /*if (_selectedElement.isValid() && sel != _selectedElement)
 	{
 		// deserialize attributes
 		_selectedElement->load(Attribs);
-	}
+  }*/
 	// clear the attributes list
-  Attribs.clear();
+  attribs.clear();
 	_selectedElement = sel;
 
 	// get the new attributes
   if (_selectedElement.isValid())
-		_selectedElement->save(Attribs);
+    _selectedElement->save(attribs);
 
-	_attribEditor->refreshAttribs();
+  _attribEditor->setAttribs( attribs );
+  _treeView->getRoot()->addChildBack( sel->name(), 0, -1, -1, (void*)sel.object() );
 }
 
 //! draws the element and its children.
@@ -204,7 +198,11 @@ void PropertyWorkspace::draw( gfx::Engine& painter )
   if (!visible())
 		return;
 
-  /*Rect rect = absoluteRect();
+  /*if( DebugTimer::ticks() - _lastUpdateTime > 10000 )
+  {
+    const OverlayList& ovs = _city->
+  }
+  Rect rect = absoluteRect();
 
   if( text().length() )
 	{
@@ -212,7 +210,7 @@ void PropertyWorkspace::draw( gfx::Engine& painter )
     font.Draw( text(), rect, 0xff000000, false, true, &absoluteClippingRectRef() );
   }*/
 
-  Widget::draw( painter );
+  Window::draw( painter );
 }
 
 
@@ -247,23 +245,15 @@ bool PropertyWorkspace::onEvent(const NEvent &event)
   case sEventGui:
     switch(event.gui.type)
 		{
-    case guiElementFocusLost:
-        if (event.gui.caller == this)
-		    {
-          _dragging = false;
-          _resizing = false;
-		    }
-		break;
-
     case guiTreeviewNodeSelect:
     {
-        TreeViewItem* eventnode = ((TreeView*)event.gui.caller)->getLastEventNode();
+        /*TreeViewItem* eventnode = ((TreeView*)event.gui.caller)->getLastEventNode();
         if(!eventnode->isRoot())
         {
             Overlay* elm = (Overlay*)eventnode->getData();
             setSelectedElement( elm );
         }
-        break;
+        break;*/
     }
     break;
 
@@ -271,82 +261,13 @@ bool PropertyWorkspace::onEvent(const NEvent &event)
 			break;
 		}
 
-		break;
-  case sEventMouse:
-    switch(event.mouse.type)
-		{
-    case mouseLbtnPressed:
-		{
-      _dragStart = event.mouse.pos();
+  break;
 
-      Widget* clickedElement = getElementFromPoint(_dragStart);
-
-			if (clickedElement == this)
-			{
-        _dragging = _isDraggable;
-				//Environment->setFocus(this);
-				bringToFront();
-				return true;
-			}
-			break;
-		}
-    case mouseLbtnRelease:
-      if (_dragging || _resizing)
-			{
-        _dragging = false;
-        _resizing = false;
-				return true;
-			}
-			break;
-    case mouseMoved:
-      if (_dragging || _resizing)
-			{
-				// gui window should not be dragged outside of its _parent
-        Rect absRect = parent()->absoluteRect();
-
-        if( event.mouse.x < absRect.left() + 1
-          || event.mouse.y < absRect.top() + 1
-          || event.mouse.x > absRect.right() - 1
-          || event.mouse.y > absRect.bottom() - 1 )
-						return true;
-
-        Point diff( event.mouse.pos() - _dragStart );
-        if (_dragging)
-				{
-					setPosition( diff );
-          _dragStart = event.mouse.pos();
-				}
-        else if (_resizing)
-				{
-          Point dp = lefttop() + diff;
-          setGeometry( Rect( lefttop(), dp ));
-          _dragStart += dp - relativeRect().LowerRightCorner + diff;
-				}
-
-				return true;
-			}
-			break;
-		default:
-    break;
-		}
-	default:
+      default:
   break;
 	}
 
-  return parent()->onEvent(event);
-}
-
-bool PropertyWorkspace::isDraggable() const
-{
-  return _isDraggable;
-}
-
-void PropertyWorkspace::setDraggable(bool draggable)
-{
-  _isDraggable = draggable;
-
-  if (_dragging && !_isDraggable)
-    _dragging = false;
+  return Window::onEvent(event);
 }
 
 }
