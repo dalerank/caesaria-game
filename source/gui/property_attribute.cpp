@@ -103,7 +103,7 @@ bool AbstractAttribute::updateAttrib(bool sendEvent)
     NEvent event;
     event.EventType = (SysEventType)ATTRIBEDIT_ATTRIB_CHANGED;
     event.user.data1 = _myParentID;
-    event.user.data2 = (int)( (void*)this );
+    event.user.data2 = reinterpret_cast<unsigned int>( (void*)this );
     return parent() ? parent()->onEvent(event) : false;
   }
 
