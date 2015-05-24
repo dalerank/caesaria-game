@@ -35,6 +35,7 @@ public:
   bool may_continue;
   bool success;
   int reignYears;
+  std::string name;
   StringArray overview;
   DateTime finishDate;
 
@@ -95,17 +96,18 @@ void VictoryConditions::load( const VariantMap& stream )
   if( _d->maxHouseLevel == HouseLevel::vacantLot )
     _d->maxHouseLevel = HouseLevel::greatPalace;
 
-  VARIANT_LOAD_ANY_D( _d, success, stream )
-  VARIANT_LOAD_ANY_D( _d, population, stream )
-  VARIANT_LOAD_ANY_D( _d, culture, stream )
-  VARIANT_LOAD_ANY_D( _d, prosperity, stream )
-  VARIANT_LOAD_ANY_D( _d, favour, stream )
-  VARIANT_LOAD_ANY_D( _d, peace, stream )
-  VARIANT_LOAD_TIME_D( _d, finishDate, stream )
-  VARIANT_LOAD_ANY_D( _d, reignYears, stream )
-  VARIANT_LOAD_ANY_D( _d, may_continue, stream )
+  VARIANT_LOAD_ANY_D( _d, success,        stream )
+  VARIANT_LOAD_ANY_D( _d, population,     stream )
+  VARIANT_LOAD_ANY_D( _d, culture,        stream )
+  VARIANT_LOAD_ANY_D( _d, prosperity,     stream )
+  VARIANT_LOAD_ANY_D( _d, favour,         stream )
+  VARIANT_LOAD_ANY_D( _d, peace,          stream )
+  VARIANT_LOAD_STR_D( _d, name,           stream )
+  VARIANT_LOAD_TIME_D(_d, finishDate,     stream )
+  VARIANT_LOAD_ANY_D( _d, reignYears,     stream )
+  VARIANT_LOAD_ANY_D( _d, may_continue,   stream )
   VARIANT_LOAD_STR_D( _d, sound.overview, stream )
-  VARIANT_LOAD_STR_D( _d, sound.win, stream )
+  VARIANT_LOAD_STR_D( _d, sound.win,      stream )
 
   if( _d->finishDate.year() < -9000 )
   {
@@ -114,10 +116,10 @@ void VictoryConditions::load( const VariantMap& stream )
 
   _d->overview = stream.get( "overview" ).toStringArray();
   _d->shortDesc = stream.get( "short" ).toString();
-  VARIANT_LOAD_STR_D( _d, win.text, stream );
-  VARIANT_LOAD_STR_D( _d, caption, stream )
-  VARIANT_LOAD_STR_D( _d, next, stream )
-  VARIANT_LOAD_STR_D( _d, title, stream )
+  VARIANT_LOAD_STR_D( _d, win.text, stream )
+  VARIANT_LOAD_STR_D( _d, caption,  stream )
+  VARIANT_LOAD_STR_D( _d, next,     stream )
+  VARIANT_LOAD_STR_D( _d, title,    stream )
 }
 
 VariantMap VictoryConditions::save() const
@@ -136,6 +138,7 @@ VariantMap VictoryConditions::save() const
   ret[ "short"      ] = Variant( _d->shortDesc );
   VARIANT_SAVE_STR_D( ret, _d, win.text );
   VARIANT_SAVE_STR_D( ret, _d, caption )
+  VARIANT_SAVE_STR_D( ret, _d, name )
   VARIANT_SAVE_ANY_D( ret, _d, sound.overview )
   VARIANT_SAVE_ANY_D( ret, _d, sound.win )
   VARIANT_SAVE_STR_D( ret, _d, may_continue )
@@ -162,6 +165,7 @@ VictoryConditions& VictoryConditions::operator=(const VictoryConditions& a)
   _d->win.text = a._d->win.text;
   _d->reignYears = a._d->reignYears;
   _d->sound = a._d->sound;
+  _d->name = a._d->name;
 
   return *this;
 }
@@ -170,6 +174,7 @@ int VictoryConditions::needCulture() const{  return _d->culture;}
 int VictoryConditions::needProsperity() const{  return _d->prosperity;}
 int VictoryConditions::needFavour() const{  return _d->favour;}
 int VictoryConditions::needPeace() const{  return _d->peace;}
+std::string VictoryConditions::name() const { return _d->name; }
 const DateTime &VictoryConditions::finishDate() const { return _d->finishDate; }
 std::string VictoryConditions::shortDesc() const {  return _d->shortDesc;}
 std::string VictoryConditions::missionTitle() const { return _d->caption; }

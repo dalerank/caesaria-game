@@ -168,11 +168,11 @@ void StartMenu::Impl::continuePlay()
   selectFile( SETTINGS_VALUE( lastGame ).toString() );
 }
 
-void scene::StartMenu::Impl::resolveSteamStats()
+void StartMenu::Impl::resolveSteamStats()
 {
 #ifdef CAESARIA_USE_STEAM
   int offset = 0;
-  for( int k=0; k < steamapi::achievementNumber; k++ )
+  for( int k=0; k < steamapi::achv_count; k++ )
   {
     steamapi::AchievementType achivId = steamapi::AchievementType(k);
     if( steamapi::isAchievementReached( achivId ) )
