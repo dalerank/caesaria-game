@@ -41,7 +41,7 @@ public:
   std::string nextFilename() const;
 
   virtual void handleEvent( NEvent& event );
-  virtual void draw();
+  virtual void draw();  
   virtual void animate( unsigned int time );
   virtual void afterFrame();
   virtual int result() const;
@@ -49,6 +49,8 @@ public:
   virtual bool installEventHandler(EventHandlerPtr);
 
   void setCameraPos( TilePos pos );
+  void switch2layer( int layer );
+  gfx::Camera* camera() const;
 
 private slots:
   void _exitToMainMenu();

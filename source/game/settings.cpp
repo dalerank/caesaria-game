@@ -22,6 +22,7 @@
 #include "core/variant_map.hpp"
 #include "core/utils.hpp"
 #include "core/foreach.hpp"
+#include "core/metric.hpp"
 
 namespace game
 {
@@ -99,6 +100,7 @@ __REG_PROPERTY(screenshotDir)
 __REG_PROPERTY(showTabletMenu)
 __REG_PROPERTY(batchTextures)
 __REG_PROPERTY(ccUseAI)
+__REG_PROPERTY(metricSystem)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -175,6 +177,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ autosaveInterval    ] = 3;
   _d->options[ soundVolume         ] = 100;
   _d->options[ lockInfobox         ] = true;
+  _d->options[ metricSystem        ] = metric::Measure::native;
   _d->options[ ambientVolume       ] = 50;
   _d->options[ cellw               ] = 60;
   _d->options[ musicVolume         ] = 25;

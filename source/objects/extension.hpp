@@ -50,7 +50,8 @@ class WarehouseBuff : public ConstructionExtension
 {
 public:
   static ConstructionExtensionPtr create();
-  static ConstructionExtensionPtr assignTo(WarehousePtr warehouse, int type, float value, int week2finish );
+  static ConstructionExtensionPtr assignTo(WarehousePtr warehouse, int group, float value, int week2finish );
+  static ConstructionExtensionPtr uniqueTo(WarehousePtr warehouse, int group, float value, int week2finish, const std::string& name );
 
   virtual void timeStep( ConstructionPtr parent, unsigned int time );
   virtual std::string type() const;

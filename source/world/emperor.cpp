@@ -230,7 +230,7 @@ void Emperor::addSoldiers(const std::string& name, int value)
 std::string Emperor::name() const { return _dfunc()->name; }
 void Emperor::setName(const std::string& name){ _dfunc()->name = name; }
 
-void Emperor::cityTax(const std::string &cityname, unsigned int money)
+void Emperor::citySentTax(const std::string &cityname, unsigned int money)
 {
   __D_IMPL(d,Emperor)
   d->relations[ cityname ].lastTaxDate = game::Date::current();

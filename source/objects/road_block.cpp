@@ -70,7 +70,6 @@ std::string RoadBlock::errorDesc() const
   return "";
 }
 
-
 const Picture& RoadBlock::picture(const city::AreaInfo& areaInfo) const
 {
   return picture();
@@ -114,7 +113,5 @@ void RoadBlock::load(const VariantMap& stream)
 
 const Picture& RoadBlock::picture() const
 {
-  return tile().masterTile()
-           ? Construction::picture()
-           : Picture( ResourceGroup::roadBlock, 1);
+  return Construction::picture();
 }

@@ -99,6 +99,76 @@
     }
   }
 
+  KEY_KEY_H :
+  {
+    layer#switch2layer :
+    {
+      show : true
+      layer : "health"
+      checkInterval : 0
+    }
+  }
+
+  KEY_KEY_F :
+  {
+    layer#switch2layer :
+    {
+      show : true
+      layer : "fire"
+      checkInterval : 0
+    }
+  }
+
+  KEY_KEY_D :
+  {
+    layer#switch2layer :
+    {
+      show : true
+      layer : "damage"
+      checkInterval : 0
+    }
+  }
+
+  KEY_KEY_C :
+  {
+    layer#switch2layer :
+    {
+      show : true
+      layer : "crime"
+      checkInterval : 0
+    }
+  }
+
+  KEY_KEY_T :
+  {
+    layer#switch2layer :
+    {
+      show : true
+      layer : "troubles"
+      checkInterval : 0
+    }
+  }
+
+  KEY_KEY_W :
+  {
+    layer#switch2layer :
+    {
+      show : true
+      layer : "water"
+      checkInterval : 0
+    }
+  }
+
+  KEY_KEY_G :
+  {
+    layer#switch2layer :
+    {
+      show : true
+      layer : "desirability"
+      checkInterval : 0
+    }
+  }
+
   KEY_KEY_00 :
   {
     finance#advisor_window :

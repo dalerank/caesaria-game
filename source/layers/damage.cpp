@@ -142,7 +142,7 @@ Damage::Damage( Camera& camera, PlayerCityPtr city)
   : Info( camera, city, damageColumnIndex )
 {
   _addWalkerType( walker::engineer );
-  _fillVisibleObjects( type() );
+  _initialize();
 }
 
 }//end namespace city

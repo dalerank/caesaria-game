@@ -56,6 +56,7 @@
 #include "walker/name_generator.hpp"
 #include "gui/image.hpp"
 #include "vfs/directory.hpp"
+#include "gui/dlc_folder_viewer.hpp"
 #include "steam.hpp"
 
 using namespace gfx;
@@ -201,8 +202,8 @@ void StartMenu::Impl::openDlcDirectory(Widget* sender)
 
   vfs::Path path( sender->getProperty( "path" ).toString() );
 
-  if( path.exist() )
-    OSystem::openDir( path.toString() );
+  Widget* parent = game->gui()->rootWidget();
+  /*DlcFolderViewer* viewer = */new DlcFolderViewer( parent, path );
 }
 
 void StartMenu::Impl::showSoundOptions()

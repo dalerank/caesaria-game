@@ -38,7 +38,7 @@ public:
   virtual void save( VariantMap& stream ) const;
 
   virtual void send2City( PrefecturePtr prefecture, Prefect::SbAction, int water=0 );
-  virtual void send2City( BuildingPtr base, int orders=goLowerService );
+  virtual void send2City( BuildingPtr base, int orders=goServiceMaximum );
   virtual void acceptAction(Action action, TilePos pos);
   virtual bool die();
   virtual void initialize(const VariantMap &options);

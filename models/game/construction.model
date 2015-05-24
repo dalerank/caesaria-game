@@ -339,6 +339,7 @@
     desirability : { base :4,	range : 4,	step : -1 }
     animation : { rc : "smlceres", start : 2, count : 6, offset : [ 41, 27 ], delay : 3 }
     employers : 2
+    fires : [ [112, 5], [153, 26] ]
     class : "religion"
     image : [ "smlceres", 1 ]    
     sound : [ "templeceres", 1 ]
@@ -349,6 +350,7 @@
     desirability : { base :4,	range : 4,	step : -1 }
     employers : 2
     class : "religion"
+    fires : [ [93, 15], [127, 33] ]
     sound : [ "templeneptune", 1 ]
     image : [ "smlneptune", 1 ]
     animation : { rc : "smlneptune", start : 2, count : 6, offset : [ 35, 34 ], delay : 3 }
@@ -360,6 +362,7 @@
     desirability : { base : 4, 	range : 4,	step : -1 }
     employers : 2
     class : "religion"
+    fires : [ [42, 21], [95, -6] ]
     image : [ "smlmercury", 1 ]
     image.offset : [-1, -1]
     animation : { rc : "smlmercury", start : 2, count : 6, offset : [ 38, 32 ], delay : 3 }
@@ -371,6 +374,7 @@
     desirability : { base : 4,	range : 4,	step : -1 }
     employers : 2
     class : "religion"
+    fires : [ [89, -1] ]
     image : [ "smlmars", 1 ]
     image.offset : [-1, -1]
     animation : { rc : "smlmars", start : 2, count : 6, offset : [ 45, 30 ], delay : 3 }
@@ -382,6 +386,7 @@
     desirability : { base : 4,	range : 4,	step : -1 }
     employers : 2
     class : "religion"
+    fires : [ [41, 34], [97, 5] ]
     image : [ "smlvenus", 1 ]
     image.offset : [-1, -1]
     animation : { rc : "smlvenus", start : 2, count : 6, offset : [ 45, 30 ], delay : 3 }
@@ -762,6 +767,8 @@
     output : "timber"
     class : "rawmaterial"
     productRate : 4.8
+    image : [ "lumbermill", 1 ]
+    animation : { rc : "lmbmill_anim", start : 1, count : 12, offset : [ 80, 2 ], delay : 3 }
     sound : [ "lumbermill", 1 ]
     inflammability : 1.3
   },

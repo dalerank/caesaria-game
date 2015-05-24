@@ -201,7 +201,7 @@ Health::Health(Camera& camera, PlayerCityPtr city, int type)
   break;
   }
 
-  _fillVisibleObjects( citylayer::health );
+  _initialize();
 }
 
 }//end namespace citylayer
