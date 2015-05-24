@@ -16,6 +16,7 @@
   {
     population : 7000
     culture : 40
+    name : "n2_mediolanum"
     prosperity : 25
     peace : 40
     favour : 30

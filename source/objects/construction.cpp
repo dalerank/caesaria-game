@@ -89,8 +89,8 @@ std::string Construction::troubleDesc() const
   }
 
   int lvlTrouble = 0;
-  int damage = state( pr::fire );
-  int fire = state( pr::damage );
+  int damage = state( pr::damage );
+  int fire = state( pr::fire );
 
   if( fire > 50 || damage > 50 )
   {
@@ -240,7 +240,17 @@ void Construction::load( const VariantMap& stream )
 }
 
 void Construction::addExtension(ConstructionExtensionPtr ext) {  _d->newExtensions.push_back( ext ); }
-const ConstructionExtensionList&Construction::extensions() const { return _d->extensions; }
+
+ConstructionExtensionPtr Construction::getExtension(const std::string& name)
+{
+  foreach( it, _d->extensions )
+    if( (*it)->name() == name )
+      return *it;
+
+  return ConstructionExtensionPtr();
+}
+
+const ConstructionExtensionList& Construction::extensions() const { return _d->extensions; }
 
 void Construction::initialize(const MetaData& mdata)
 {

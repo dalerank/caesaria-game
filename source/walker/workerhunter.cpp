@@ -140,6 +140,11 @@ void Recruter::_centerTile()
   }
 }
 
+void Recruter::_noWay()
+{
+
+}
+
 RecruterPtr Recruter::create(PlayerCityPtr city )
 { 
   RecruterPtr ret( new Recruter( city ) );
@@ -152,7 +157,7 @@ RecruterPtr Recruter::create(PlayerCityPtr city )
 void Recruter::send2City( WorkingBuildingPtr building, const int workersNeeded )
 {
   _d->needWorkers = workersNeeded;
-  ServiceWalker::send2City( building.object(), ServiceWalker::goLowerService | ServiceWalker::anywayWhenFailed );
+  ServiceWalker::send2City( building.object(), ServiceWalker::goServiceMaximum | ServiceWalker::anywayWhenFailed );
 }
 
 void Recruter::send2City(BuildingPtr base, int orders)

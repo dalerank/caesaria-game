@@ -11,6 +11,7 @@
   win :
   {
     population : 4000
+    name : "n2_syracusae"
     culture : 40
     prosperity : 20
     peace : 25

@@ -40,6 +40,9 @@ public:
   std::string errorStr;
   bool clearAnimationOnStop;
   float laborAccessKoeff;
+
+public signals:
+  Signal1<bool> onActiveChangeSignal;
 };
 
 WorkingBuilding::WorkingBuilding(const object::Type type, const Size& size)
@@ -135,6 +138,7 @@ const WalkerList& WorkingBuilding::walkers() const {  return _d->walkerList; }
 bool WorkingBuilding::haveWalkers() const { return !_d->walkerList.empty(); }
 std::string WorkingBuilding::errorDesc() const { return _d->errorStr;}
 void WorkingBuilding::_setError(const std::string& err) { _d->errorStr = err;}
+Signal1<bool>& WorkingBuilding::onActiveChange() { return _d->onActiveChangeSignal; }
 
 unsigned int WorkingBuilding::addWorkers(const unsigned int workers )
 {

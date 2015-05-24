@@ -85,6 +85,8 @@ public:
   virtual ~Layer();
 
 protected:
+  virtual void _initialize();
+
   void _setLastCursorPos( Point pos );
   Point _lastCursorPos() const;
   void _setStartCursorPos( Point pos );
@@ -93,7 +95,6 @@ protected:
   bool _isMovingButtonPressed( NEvent& event ) const;
   void _setTooltipText( const std::string& text );
   void _addWalkerType( walker::Type wtype );
-  void _fillVisibleObjects( int ltype );
   WalkerTypes& _visibleWalkers();
   bool _isVisibleObject( object::Type ovType );
   bool _moveCamera( NEvent& event );

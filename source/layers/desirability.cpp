@@ -157,7 +157,7 @@ Desirability::Desirability( Camera& camera, PlayerCityPtr city)
   : Info( camera, city, 0 ), _d( new Impl )
 {
   _d->debugFont = Font::create( "FONT_1" );
-  _fillVisibleObjects( type() );
+  _initialize();
 }
 
 }//end namespace citylayer
