@@ -97,7 +97,7 @@ void AbstractAttribute::setFont(Font font) {}
 
 bool AbstractAttribute::updateAttrib(bool sendEvent)
 {
-  if (_attribs && enabled() && sendEvent)
+  if(enabled() && sendEvent)
   {
     // build event and pass to parent
     NEvent event;

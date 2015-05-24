@@ -29,10 +29,10 @@ namespace steamapi
 
 enum AchievementType
 {
-  achievementNewVillage = 0,
-  achievementNewGraphics = 1,
-  achievementFirstWin = 2,
-  achievementNumber
+  achv_new_village = 0,
+  achv_new_graphics = 1,
+  achv_first_win = 2,
+  achv_count
 };
 
 bool checkSteamRunning();
@@ -41,8 +41,8 @@ void close();
 void update();
 void init();
 
-void unlockAchievement( AchievementType achivId );
-void missionWin();
+void evaluateAchievement( AchievementType achivId );
+void missionWin(const std::string& name);
 bool isAchievementReached( AchievementType achivId );
 bool isStatsReceived();
 gfx::Picture achievementImage( AchievementType achivId );

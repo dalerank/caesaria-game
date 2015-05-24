@@ -666,7 +666,7 @@ void Level::Impl::checkWinMission( Level* lvl, bool force )
 
   if( success )
   {
-    GameEventPtr e = MissionWin::create();
+    GameEventPtr e = MissionWin::create( wt.name() );
     e->dispatch();
   }
 }

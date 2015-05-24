@@ -15,6 +15,7 @@
   win :
   {
     population : 7000
+    name : "n2_lugdunum"
     culture : 40
     prosperity : 25
     peace : 40
