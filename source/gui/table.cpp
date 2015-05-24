@@ -588,7 +588,7 @@ void Table::_recalculateScrollBars()
 
 	_d->itemsArea->setWidth( width() - ( _d->verticalScrollBar->visible() ? 1 : 0 ) * _d->verticalScrollBar->width() );
 	_d->itemsArea->setHeight( height() - _d->header->height()
-								- ( _d->horizontalScrollBar->visible() ? 1 : 0 ) * _d->horizontalScrollBar->height() );
+                            - ( _d->horizontalScrollBar->visible() ? 1 : 0 ) * _d->horizontalScrollBar->height() );
 
   _d->verticalScrollBar->bringToFront();
   _d->horizontalScrollBar->bringToFront();
@@ -913,12 +913,12 @@ void Table::_selectNew( int xpos, int ypos, bool lmb, bool onlyHover)
   int oldSelectedRow = _selectedRow;
   int oldSelectedColumn = _selectedColumn;
 
-  if ( ypos < ( screenTop() + _d->itemHeight ) )
+  if ( ypos < screenTop() )
 		return;
 
 	// find new selected item.
   if (_d->itemHeight!=0)
-    _selectedRow = ((ypos - screenTop() - _d->itemHeight - 1) + _d->verticalScrollBar->value()) / _d->itemHeight;
+    _selectedRow = ((ypos - screenTop() /*-_d->itemHeight - 1*/) + _d->verticalScrollBar->value()) / _d->itemHeight;
 
   _selectedColumn = _getCurrentColumn( xpos, ypos );
 

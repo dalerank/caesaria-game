@@ -36,6 +36,7 @@
 #include "texturedbutton.hpp"
 #include "topmenu.hpp"
 #include "game/difficulty.hpp"
+#include "core/metric.hpp"
 
 using namespace citylayer;
 
@@ -72,6 +73,7 @@ public:
   PushButton* btnC3Gameplay;
   PushButton* btnShowTooltips;
   PushButton* btnDifficulty;
+  PushButton* btnMetrics;
   PlayerCityPtr city;
 
   void update();
@@ -95,6 +97,7 @@ public:
   void toggleAndroidBarEnabled();
   void toggleUseBatching();
   void toggleCcUseAI();
+  void toggleMetrics();
   void toggleCityOption( PlayerCity::OptionType option );
   void changeCityOption( PlayerCity::OptionType option, int delta);
 };
@@ -131,6 +134,7 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, btnAnroidBarEnabled )
   GET_DWIDGET_FROM_UI( _d, btnToggleBatching )
   GET_DWIDGET_FROM_UI( _d, btnToggleCcUseAI )
+  GET_DWIDGET_FROM_UI( _d, btnMetrics )
 
   CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods )
   CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings )
@@ -151,6 +155,7 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   CONNECT( _d->btnDecreaseCollapseRisk, onClicked(), _d.data(), Impl::decreaseCollapseRisk )
   CONNECT( _d->btnToggleBatching, onClicked(), _d.data(), Impl::toggleUseBatching )
   CONNECT( _d->btnToggleCcUseAI, onClicked(), _d.data(), Impl::toggleCcUseAI )
+  CONNECT( _d->btnMetrics, onClicked(), _d.data(), Impl::toggleMetrics )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptions::deleteLater );
@@ -205,6 +210,15 @@ void CityOptions::Impl::toggleDifficulty()
   int value = city->getOption( PlayerCity::difficulty );
   value = (value+1)%game::difficulty::count;
   city->setOption( PlayerCity::difficulty, value );
+  update();
+}
+
+void CityOptions::Impl::toggleMetrics()
+{
+  int value = SETTINGS_VALUE( metricSystem );
+  value = (value+1)%metric::Measure::count;
+  metric::Measure::setMode( (metric::Measure::Mode)value );
+  SETTINGS_SET_VALUE( metricSystem, value );
   update();
 }
 
@@ -379,6 +393,12 @@ void CityOptions::Impl::update()
     int value = city->getOption( PlayerCity::difficulty );
     std::string text = utils::format( 0xff, "##city_df_%s##", game::difficulty::name[ value ] );
     btnDifficulty->setText( _(text) );
+  }
+
+  if( btnMetrics )
+  {
+    std::string text = utils::format( 0xff, "%s: %s" , _("##city_metric##"), _(metric::Measure::measureType()) );
+    btnMetrics->setText( text );
   }
 
   if( btnLegionMayAttack )
