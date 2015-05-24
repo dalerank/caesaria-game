@@ -11,11 +11,11 @@
   preview.text : "##carthago_preview_mission##"
   preview.title : "##carthago_preview_title##"
   preview.image : ""
-
 	
   win :
   {
     population : 6000
+    name : "n2_carthago"
     culture : 45
     prosperity : 30
     peace : 40

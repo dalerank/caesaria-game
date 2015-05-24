@@ -208,7 +208,7 @@ Water::Water( Camera& camera, PlayerCityPtr city)
   : Layer( &camera, city )
 {
   _showWaterValue = false;
-  _fillVisibleObjects( citylayer::water );
+  _initialize();
 }
 
 }//end namespace citylayer

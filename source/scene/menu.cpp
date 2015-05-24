@@ -56,6 +56,7 @@
 #include "walker/name_generator.hpp"
 #include "gui/image.hpp"
 #include "vfs/directory.hpp"
+#include "gui/dlc_folder_viewer.hpp"
 #include "steam.hpp"
 
 using namespace gfx;
@@ -167,11 +168,11 @@ void StartMenu::Impl::continuePlay()
   selectFile( SETTINGS_VALUE( lastGame ).toString() );
 }
 
-void scene::StartMenu::Impl::resolveSteamStats()
+void StartMenu::Impl::resolveSteamStats()
 {
 #ifdef CAESARIA_USE_STEAM
   int offset = 0;
-  for( int k=0; k < steamapi::achievementNumber; k++ )
+  for( int k=0; k < steamapi::achv_count; k++ )
   {
     steamapi::AchievementType achivId = steamapi::AchievementType(k);
     if( steamapi::isAchievementReached( achivId ) )
@@ -201,8 +202,8 @@ void StartMenu::Impl::openDlcDirectory(Widget* sender)
 
   vfs::Path path( sender->getProperty( "path" ).toString() );
 
-  if( path.exist() )
-    OSystem::openDir( path.toString() );
+  Widget* parent = game->gui()->rootWidget();
+  /*DlcFolderViewer* viewer = */new DlcFolderViewer( parent, path );
 }
 
 void StartMenu::Impl::showSoundOptions()

@@ -60,6 +60,57 @@ private:
   float _value;
 };
 
+class Measure
+{
+public:
+  typedef enum { native=0, metric, roman, count } Mode;
+
+  static const char* measureType()
+  {
+    switch( instance()._mode )
+    {
+    case native: return "##quantity##";
+    case metric: return "##kilogram##";
+    case roman:  return "##modius##";
+    default: return "unknown";
+    }
+  }
+
+  static const char* measureShort()
+  {
+    switch( instance()._mode )
+    {
+    case native: return "##qty##";
+    case metric: return "##kg##";
+    case roman:  return "##md##";
+    default: return "unknown";
+    }
+  }
+
+  static void setMode( Mode mode ) { instance()._mode = mode; }
+  static int convQty( int qty )
+  {
+    switch( instance()._mode )
+    {
+    case native: return qty;
+    case metric: return qty / 2;
+    case roman: return qty / 7;
+    default: return qty;
+    }
+  }
+
+  static Measure& instance()
+  {
+    static Measure inst;
+    return inst;
+  }
+
+private:
+  Measure() : _mode( native ) {}
+
+  Mode _mode;
+};
+
 inline Unit Qty::toUnits() const { return Unit::fromQty( _value ); }
 
 }

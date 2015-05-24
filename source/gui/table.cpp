@@ -17,12 +17,10 @@ class Cell : public Label
 public:
   Cell( Widget* parent, const Rect& rectangle) : Label( parent, rectangle )
   {
-      element = 0;
-      Data = 0;
+    element = 0;
   }
 
 	Widget* element;
-	void *Data;
 };
 
 
@@ -32,13 +30,13 @@ struct Row
 
 	void erase( int index )
 	{
-		std::vector<Cell*>::iterator r = Items.begin();
+    std::vector<Cell*>::iterator r = items.begin();
 		std::advance( r, index );
 		(*r)->deleteLater();
-		Items.erase( r );
+    items.erase( r );
 	}
 
-	std::vector<Cell*> Items;
+  std::vector<Cell*> items;
 };
 
 class HidingElement : public Label
@@ -82,6 +80,7 @@ public:
 	Columns columns;
 	Rows rows;
 
+  int itemHeight;
   Widget* header;
   Widget* itemsArea;
   ScrollBar* verticalScrollBar;
@@ -102,6 +101,9 @@ public:
     std::advance( it, index );
     rows.erase(it);
   }
+
+public signals:
+  Signal2<int,int> onCellClickSignal;
 };
 
 //! constructor
@@ -109,22 +111,23 @@ Table::Table( Widget* parent,
 								int id, const Rect& rectangle, bool clip,
 								bool drawBack, bool moveOverSelect)
 : Widget( parent, id, rectangle ),
-	Clip(clip), MoveOverSelect(moveOverSelect),
-	Selecting(false), CurrentResizedColumn(-1), ResizeStart(0), ResizableColumns(true),
-	ItemHeight(0), overItemHeight_(0), TotalItemHeight(0), TotalItemWidth(0), _selectedRow(-1), _selectedColumn(-1),
-	CellHeightPadding(2), CellWidthPadding(5), ActiveTab(-1),
-	CurrentOrdering( rowOrderingNone ),
+  _clip(clip), _moveOverSelect(moveOverSelect),
+  _selecting(false), _currentResizedColumn(-1), _resizeStart(0), _resizableColumns(true),
+  _overItemHeight(0), _totalItemHeight(0), _totalItemWidth(0), _selectedRow(-1), _selectedColumn(-1),
+  _cellHeightPadding(2), _cellWidthPadding(5), _activeTab(-1),
+  _currentOrdering( rowOrderingNone ),
 	_d( new Impl )
 {
 	#ifdef _DEBUG
 			setDebugName( L"NrpTable" );
 	#endif
-		setDrawFlag( drawBorder );
-		setDrawFlag( drawRows );
-		setDrawFlag( drawColumns );
-		setDrawFlag( drawActiveRow );
+  setDrawFlag( drawBorder );
+  setDrawFlag( drawRows );
+  setDrawFlag( drawColumns );
+  setDrawFlag( drawActiveRow );
 
   _d->cellLastTimeClick = 0;
+  _d->itemHeight = 0;
   _d->header = new HidingElement( this, Rect( 0, 0, width(), DEFAULT_SCROLLBAR_SIZE ) );
   _d->header->setAlignment( align::upperLeft, align::lowerRight, align::upperLeft, align::upperLeft );
   _d->header->setSubElement( true );
@@ -153,15 +156,12 @@ Table::Table( Widget* parent,
 	_d->horizontalScrollBar->setVisibleFilledArea( false );
 	_d->horizontalScrollBar->setAlignment( align::upperLeft, align::lowerRight, align::lowerRight, align::lowerRight );
 
-	recalculateHeights();
+  _recalculateHeights();
 	refreshControls();
 }
 
 //! destructor
-Table::~Table()
-{
-  delete _d;
-}
+Table::~Table() {}
 
 void Table::addColumn(const std::string& caption, unsigned int  columnIndex)
 {
@@ -169,40 +169,37 @@ void Table::addColumn(const std::string& caption, unsigned int  columnIndex)
   columnHeader->setSubElement( true );
   columnHeader->setText( caption );
   columnHeader->setGeometry( Rect( 0, 0,
-                                      font_.getTextSize(caption).width() + (CellWidthPadding * 2) + ARROW_PAD,
-                                      _d->header->height() ) );
+                                   _font.getTextSize(caption).width() + (_cellWidthPadding * 2) + ARROW_PAD,
+                                   _d->header->height() ) );
 
   columnHeader->OrderingMode = columnOrderingNone;
 
 	if ( columnIndex >= _d->columns.size() )
 	{
 		_d->columns.push_back( columnHeader );
-		RowIterator it = _d->rows.begin();
-		for ( ; it != _d->rows.end(); ++it )
-		{
-			(*it).Items.push_back( new Cell( _d->itemsArea, Rect( 0, 0, 1, 1 ) ) );
-		}
+    foreach( it, _d->rows )
+      it->items.push_back( new Cell( _d->itemsArea, Rect( 0, 0, 1, 1 ) ) );
 	}
 	else
 	{
 		ColumnIterator ci = _d->columns.begin();
 		std::advance( ci, columnIndex );
 		_d->columns.insert( ci, columnHeader);
-		RowIterator it = _d->rows.begin();
-		for( ; it != _d->rows.end(); ++it )
+
+    foreach( it, _d->rows  )
 		{
-			std::vector<Cell*>::iterator addIt = (*it).Items.begin();
+      std::vector<Cell*>::iterator addIt = it->items.begin();
 			std::advance( addIt, columnIndex );
-			(*it).Items.insert( addIt, new Cell( _d->itemsArea, Rect( 0, 0, 1, 1 ) ));
+      it->items.insert( addIt, new Cell( _d->itemsArea, Rect( 0, 0, 1, 1 ) ));
 		}
 	}
 
-	if (ActiveTab == -1)
-		ActiveTab = 0;
+  if (_activeTab == -1)
+    _activeTab = 0;
 
-  recalculateColumnsWidth_();
-  recalculateCells_();
-  recalculateScrollBars_();
+  _recalculateColumnsWidth();
+  _recalculateCells();
+  _recalculateScrollBars();
 }
 
 //! remove a column from the table
@@ -214,31 +211,28 @@ void Table::removeColumn(unsigned int  columnIndex)
 		std::advance( cIt, columnIndex );
 		_d->columns.erase( cIt );
 
-		RowIterator it = _d->rows.begin();
-		for( ; it != _d->rows.end(); ++it )
-		{
-			(*it).erase( columnIndex );
-		}
+    foreach( it, _d->rows )
+      it->erase( columnIndex );
 	}
 
-	if ( (int)columnIndex <= ActiveTab )
-		ActiveTab = _d->columns.size() ? 0 : -1;
+  if ( (int)columnIndex <= _activeTab )
+    _activeTab = _d->columns.size() ? 0 : -1;
 
-	recalculateColumnsWidth_();
+  _recalculateColumnsWidth();
 }
 
-int Table::getColumnCount() const {	return _d->columns.size();}
-int Table::getRowCount() const {	return _d->rows.size();}
+int Table::columnCount() const {	return _d->columns.size();}
+int Table::rowCount() const {	return _d->rows.size();}
 
 bool Table::setActiveColumn(int idx, bool doOrder )
 {
 	if (idx < 0 || idx >= (int)_d->columns.size())
 		return false;
 
-	bool changed = (ActiveTab != idx);
+  bool changed = (_activeTab != idx);
 
-	ActiveTab = idx;
-	if ( ActiveTab < 0 )
+  _activeTab = idx;
+  if ( _activeTab < 0 )
 		return false;
 
 	if ( doOrder )
@@ -246,12 +240,12 @@ bool Table::setActiveColumn(int idx, bool doOrder )
 		switch ( _d->columns[idx]->OrderingMode )
 		{
 			case columnOrderingNone:
-				CurrentOrdering = rowOrderingNone;
+        _currentOrdering = rowOrderingNone;
 				break;
 
 			case columnOrderingCustom:
 			{
-				CurrentOrdering = rowOrderingNone;
+        _currentOrdering = rowOrderingNone;
 
 				NEvent event;
 				event.EventType = sEventGui;
@@ -263,22 +257,22 @@ bool Table::setActiveColumn(int idx, bool doOrder )
 			break;
 
 			case columnOrderingAscending:
-				CurrentOrdering = rowOrderingAscending;
+        _currentOrdering = rowOrderingAscending;
 				break;
 
 			case columnOrderingDescending:
-				CurrentOrdering = rowOrderingDescending;
+        _currentOrdering = rowOrderingDescending;
 				break;
 
 			case columnOrderingAscendingDescending:
-				CurrentOrdering = (rowOrderingAscending == CurrentOrdering ? rowOrderingDescending : rowOrderingAscending);
+        _currentOrdering = (rowOrderingAscending == _currentOrdering ? rowOrderingDescending : rowOrderingAscending);
 				break;
 
 			default:
-				CurrentOrdering = rowOrderingNone;
+        _currentOrdering = rowOrderingNone;
 		}
 
-		orderRows( getActiveColumn(), CurrentOrdering );
+    orderRows( activeColumn(), _currentOrdering );
 	}
 
 	if( changed )
@@ -294,36 +288,26 @@ bool Table::setActiveColumn(int idx, bool doOrder )
 	return true;
 }
 
-
-int Table::getActiveColumn() const
-{
-	return ActiveTab;
-}
-
-
-TableRowOrderingMode Table::getActiveColumnOrdering() const
-{
-	return CurrentOrdering;
-}
-
+int Table::activeColumn() const {  return _activeTab; }
+TableRowOrderingMode Table::getActiveColumnOrdering() const {  return _currentOrdering; }
 
 void Table::setColumnWidth(unsigned int  columnIndex, unsigned int  width)
 {
 	if ( columnIndex < _d->columns.size() )
 	{
-		const unsigned int  MIN_WIDTH = font_.getTextSize(_d->columns[columnIndex]->text() ).width() + (CellWidthPadding * 2);
+    const unsigned int  MIN_WIDTH = _font.getTextSize(_d->columns[columnIndex]->text() ).width() + (_cellWidthPadding * 2);
 		if ( width < MIN_WIDTH )
 			width = MIN_WIDTH;
 
 		_d->columns[ columnIndex ]->setWidth( width );
 	}
 
-	recalculateColumnsWidth_();
-	recalculateCells_();
+  _recalculateColumnsWidth();
+  _recalculateCells();
 }
 
 //! Get the width of a column
-unsigned int  Table::getColumnWidth(unsigned int  columnIndex) const
+unsigned int  Table::columnWidth(unsigned int  columnIndex) const
 {
 	if ( columnIndex >= _d->columns.size() )
 		return 0;
@@ -331,17 +315,14 @@ unsigned int  Table::getColumnWidth(unsigned int  columnIndex) const
 	return _d->columns[columnIndex]->width();
 }
 
-void Table::setResizableColumns(bool resizable)
-{
-	ResizableColumns = resizable;
-}
+void Table::setResizableColumns(bool resizable){	_resizableColumns = resizable; }
 
 bool Table::hasResizableColumns() const
 {
-	return ResizableColumns;
+  return _resizableColumns;
 }
 
-unsigned int  Table::addRow(unsigned int  rowIndex)
+unsigned int Table::addRow(unsigned int  rowIndex)
 {
 	if ( rowIndex > _d->rows.size() )
 		rowIndex = _d->rows.size();
@@ -353,136 +334,128 @@ unsigned int  Table::addRow(unsigned int  rowIndex)
 	else
 		_d->insertRow( row, rowIndex );
 
-  _d->rows[rowIndex].Items.resize( _d->columns.size() );
+  _d->rows[rowIndex].items.resize( _d->columns.size() );
 
-  for ( unsigned int  i = 0 ; i < _d->columns.size() ; ++i )
-    _d->rows[rowIndex].Items[ i ] = NULL;
+  for( unsigned int  i = 0 ; i < _d->columns.size() ; ++i )
+    _d->rows[rowIndex].items[ i ] = NULL;
 
-	for ( unsigned int  i = 0 ; i < _d->columns.size() ; ++i )
-		_d->rows[rowIndex].Items[ i ] = new Cell( _d->itemsArea, Rect( 0, 0, 1, 1 ) );
+  for( unsigned int  i = 0 ; i < _d->columns.size() ; ++i )
+    _d->rows[rowIndex].items[ i ] = new Cell( _d->itemsArea, Rect( 0, 0, 1, 1 ) );
 
-  recalculateHeights();
-  recalculateCells_();
-  recalculateScrollBars_();
+  _recalculateHeights();
+  _recalculateCells();
+  _recalculateScrollBars();
   return rowIndex;
 }
-
 
 void Table::removeRow(unsigned int  rowIndex)
 {
 	if ( rowIndex > _d->rows.size() )
 		return;
 
-    for( unsigned int  colNum=0; colNum < _d->columns.size(); colNum++ )
-        removeCellElement( rowIndex, colNum );
+  for( unsigned int  colNum=0; colNum < _d->columns.size(); colNum++ )
+    removeElementFromCell( rowIndex, colNum );
 
   _d->eraseRow( rowIndex );
 
 	if ( !(_selectedRow < int(_d->rows.size())) )
 		_selectedRow = _d->rows.size() - 1;
 
-	recalculateHeights();
-	recalculateScrollBars_();
+  _recalculateHeights();
+  _recalculateScrollBars();
 }
 
 //! adds an list item, returns id of item
-void Table::setCellText(unsigned int  rowIndex, unsigned int  columnIndex, const std::string& text)
+void Table::setCellText(unsigned int  row, unsigned int  column, const std::string& text)
 {
-	if ( rowIndex < _d->rows.size() && columnIndex < _d->columns.size() )
-	{
-		_d->rows[rowIndex].Items[columnIndex]->setText( text );
+  Cell* cell = _getCell( row, column );
+  if( cell )
+    cell->setText( text );
+}
+
+void Table::setCellText(unsigned int  row, unsigned int  column, const std::string& text, NColor color)
+{
+  Cell* cell = _getCell( row, column );
+  if( cell )
+  {
+    cell->setText( text );
+    cell->setColor( color );
 	}
 }
 
-void Table::setCellText(unsigned int  rowIndex, unsigned int  columnIndex, const std::string& text, NColor color)
+void Table::setCellTextColor(unsigned int row, unsigned int column, NColor color)
 {
-	if ( rowIndex < _d->rows.size() && columnIndex < _d->columns.size() )
-	{
-		_d->rows[rowIndex].Items[columnIndex]->setText( text );
-				_d->rows[rowIndex].Items[columnIndex]->setColor( color );
-	}
+  Cell* cell = _getCell( row, column );
+  if( cell )
+    cell->setColor( color );
 }
 
 
-void Table::setCellTextColor(unsigned int  rowIndex, unsigned int  columnIndex, NColor color)
+void Table::setCellData(unsigned int row, unsigned int column,
+                        const std::string& name, Variant data)
 {
-	if ( rowIndex < _d->rows.size() && columnIndex < _d->columns.size() )
-	{
-		_d->rows[rowIndex].Items[columnIndex]->setColor( color );
-	}
+  Cell* cell = _getCell( row, column );
+  if( cell )
+    cell->addProperty( name, data );
 }
 
 
-void Table::setCellData(unsigned int  rowIndex, unsigned int  columnIndex, void *data)
+std::string Table::getCellText(unsigned int row, unsigned int column ) const
 {
-	if ( rowIndex < _d->rows.size() && columnIndex < _d->columns.size() )
-	{
-		_d->rows[rowIndex].Items[columnIndex]->Data = data;
-	}
-}
-
-
-std::string Table::getCellText(unsigned int  rowIndex, unsigned int  columnIndex ) const
-{
-	if ( rowIndex < _d->rows.size() && columnIndex < _d->columns.size() )
-	{
-		return _d->rows[rowIndex].Items[columnIndex]->text();
-	}
+  Cell* cell = _getCell( row, column );
+  if( cell )
+    return cell->text();
 
 	return std::string();
 }
 
-
-void* Table::getCellData(unsigned int  rowIndex, unsigned int  columnIndex ) const
+Variant Table::getCellData(unsigned int row, unsigned int column, const std::string& name ) const
 {
-	if ( rowIndex < _d->rows.size() && columnIndex < _d->columns.size() )
-	{
-		return _d->rows[rowIndex].Items[columnIndex]->Data;
-	}
+  Cell* cell = _getCell( row, column );
+  if( cell )
+    return cell->getProperty( name );
 
-	return 0;
+  return Variant();
 }
-
 
 //! clears the list
 void Table::clear()
 {
-    _selectedRow = -1;
+  _selectedRow = -1;
 
-    clearRows();
+  clearRows();
 
-    ColumnIterator cit = _d->columns.begin();
-    for( ; cit != _d->columns.end(); cit++ )
-        (*cit)->deleteLater();
+  foreach( cit, _d->columns )
+    (*cit)->deleteLater();
 
 	_d->rows.clear();
 	_d->columns.clear();
 
 	if (_d->verticalScrollBar)
 		_d->verticalScrollBar->setValue(0);
+
 	if ( _d->horizontalScrollBar )
 		_d->horizontalScrollBar->setValue(0);
 
-	recalculateHeights();
-	recalculateColumnsWidth_();
+  _recalculateHeights();
+  _recalculateColumnsWidth();
 }
 
 void Table::clearContent()
 {
-    for( unsigned int  rowNum=0; rowNum < _d->rows.size(); rowNum++ )
-        for( unsigned int  colNum=0; colNum < _d->columns.size(); colNum++ )
-            removeCellElement( rowNum, colNum );
+  for( unsigned int  rowNum=0; rowNum < _d->rows.size(); rowNum++ )
+      for( unsigned int  colNum=0; colNum < _d->columns.size(); colNum++ )
+          removeElementFromCell( rowNum, colNum );
 
-    recalculateCells_();
+  _recalculateCells();
 }
 
 void Table::clearRows()
 {
-		_selectedRow = -1;
+  _selectedRow = -1;
 
 	const Widgets& tableAreaChilds = _d->itemsArea->children();
-	ConstChildIterator wit = tableAreaChilds.begin();
-	for( ; wit != tableAreaChilds.end(); wit++ )
+  foreach( wit, tableAreaChilds )
 		(*wit)->deleteLater();
 
 	_d->rows.clear();
@@ -490,56 +463,61 @@ void Table::clearRows()
 	if (_d->verticalScrollBar)
 		_d->verticalScrollBar->setValue(0);
 
-	recalculateHeights();
+  _recalculateHeights();
 }
 
 /*!
 */
-int Table::getSelected() const
-{
-	return _selectedRow;
-}
+int Table::selectedRow() const {return _selectedRow; }
 
 //! set wich row is currently selected
-void Table::setSelected( int index )
+void Table::setSelectedRow( int index )
 {
 	_selectedRow = -1;
 	if ( index >= 0 && index < (int) _d->rows.size() )
 		_selectedRow = index;
 }
 
-
-void Table::recalculateColumnsWidth_()
+void Table::_recalculateColumnsWidth()
 {
-  TotalItemWidth=0;
-    ColumnIterator it = _d->columns.begin();
-  for ( ; it != _d->columns.end(); ++it )
-    {
-        (*it)->setLeft( TotalItemWidth );
-    TotalItemWidth += (*it)->width();
-    }
+  _totalItemWidth=0;
+  foreach( it, _d->columns )
+  {
+    (*it)->setLeft( _totalItemWidth );
+    _totalItemWidth += (*it)->width();
+  }
+}
+
+Cell* Table::_getCell( unsigned int row, unsigned int column) const
+{
+  if ( row < _d->rows.size() && column < _d->columns.size() )
+  {
+    return _d->rows[row].items[column];
+  }
+
+  return 0;
 }
 
 
-void Table::recalculateHeights()
+void Table::_recalculateHeights()
 {
-  TotalItemHeight = 0;
-  Font curFont = Font::create( FONT_2 );
-  if( font_ != curFont )
+  _totalItemHeight = 0;
+  Font curFont = _font.isValid() ? _font : Font::create( FONT_2 );
+  if( _font != curFont )
   {
-    font_ = curFont;
-    ItemHeight = 0;
+    _font = curFont;
+    _d->itemHeight = 0;
 
-		if( font_.isValid() )
-			ItemHeight = overItemHeight_ == 0 ? font_.getTextSize("A").height() + (CellHeightPadding * 2) : overItemHeight_;
+    if( _font.isValid() )
+      _d->itemHeight = _overItemHeight == 0 ? _font.getTextSize("A").height() + (_cellHeightPadding * 2) : _overItemHeight;
 	}
 
-	TotalItemHeight = ItemHeight * _d->rows.size();		//  header is not counted, because we only want items
+  _totalItemHeight = _d->itemHeight * _d->rows.size();		//  header is not counted, because we only want items
 }
 
 
 // automatic enabled/disabling and resizing of scrollbars
-void Table::recalculateScrollBars_()
+void Table::_recalculateScrollBars()
 {
 	if ( !_d->horizontalScrollBar || !_d->verticalScrollBar )
 		return;
@@ -554,28 +532,28 @@ void Table::recalculateScrollBars_()
 	Rect tableRect( _d->itemsArea->relativeRect() );
 
 	// needs horizontal scroll be visible?
-	if( TotalItemWidth > tableRect.width() )
+  if( _totalItemWidth > tableRect.width() )
 	{
 		tableRect.LowerRightCorner.ry() -= _d->horizontalScrollBar->height();
 		_d->horizontalScrollBar->setVisible( true );
-		_d->horizontalScrollBar->setMaxValue( math::max<int>(0,TotalItemWidth - tableRect.width() ) );
+    _d->horizontalScrollBar->setMaxValue( math::max<int>(0,_totalItemWidth - tableRect.width() ) );
 	}
 
 	// needs vertical scroll be visible?
-	if( TotalItemHeight > tableRect.height() )
+  if( _totalItemHeight > tableRect.height() )
 	{
 		tableRect.LowerRightCorner.rx() -= _d->verticalScrollBar->width();
 		_d->verticalScrollBar->setVisible( true );
-		_d->verticalScrollBar->setMaxValue( math::max<int>(0,TotalItemHeight - tableRect.height() + 2 * _d->verticalScrollBar->absoluteRect().width()));
+    _d->verticalScrollBar->setMaxValue( math::max<int>(0,_totalItemHeight - tableRect.height() + 2 * _d->verticalScrollBar->absoluteRect().width()));
 
 		// check horizontal again because we have now smaller clientClip
 		if ( !_d->horizontalScrollBar->visible() )
 		{
-			if( TotalItemWidth > tableRect.width() )
+      if( _totalItemWidth > tableRect.width() )
 			{
 				tableRect.LowerRightCorner.ry() -= _d->horizontalScrollBar->height();
 				_d->horizontalScrollBar->setVisible(true);
-				_d->horizontalScrollBar->setMaxValue( math::max<int>(0,TotalItemWidth - tableRect.width() ) );
+        _d->horizontalScrollBar->setMaxValue( math::max<int>(0,_totalItemWidth - tableRect.width() ) );
 			}
 		}
 	}
@@ -610,7 +588,7 @@ void Table::recalculateScrollBars_()
 
 	_d->itemsArea->setWidth( width() - ( _d->verticalScrollBar->visible() ? 1 : 0 ) * _d->verticalScrollBar->width() );
 	_d->itemsArea->setHeight( height() - _d->header->height()
-								- ( _d->horizontalScrollBar->visible() ? 1 : 0 ) * _d->horizontalScrollBar->height() );
+                            - ( _d->horizontalScrollBar->visible() ? 1 : 0 ) * _d->horizontalScrollBar->height() );
 
   _d->verticalScrollBar->bringToFront();
   _d->horizontalScrollBar->bringToFront();
@@ -621,13 +599,13 @@ void Table::refreshControls()
 {
   updateAbsolutePosition();
 
-		recalculateColumnsWidth_();
-	recalculateHeights();
-		recalculateScrollBars_();
-		recalculateCells_();
+    _recalculateColumnsWidth();
+  _recalculateHeights();
+    _recalculateScrollBars();
+    _recalculateCells();
 }
 
-void Table::recalculateCells_()
+void Table::_recalculateCells()
 {
 		int yPos = -_d->verticalScrollBar->value();
 	int xPos = -_d->horizontalScrollBar->value();
@@ -637,12 +615,12 @@ void Table::recalculateCells_()
 				ColumnIterator cit = _d->columns.begin();
 				for( int index=0; cit != _d->columns.end(); cit++, index++ )
 				{
-						Rect rectangle( (*cit)->left() + xPos, yPos, (*cit)->right() + xPos, yPos + ItemHeight );
-						(*rit).Items[ index ]->setGeometry( rectangle );
-			(*rit).Items[ index ]->sendToBack();
+            Rect rectangle( (*cit)->left() + xPos, yPos, (*cit)->right() + xPos, yPos + _d->itemHeight );
+            rit->items[ index ]->setGeometry( rectangle );
+            rit->items[ index ]->sendToBack();
 				}
 
-        yPos += ItemHeight;
+        yPos += _d->itemHeight;
     }
 }
 
@@ -666,15 +644,16 @@ bool Table::onEvent(const NEvent &event)
 				break;
 			case guiElementFocusLost:
 				{
-					CurrentResizedColumn = -1;
-					Selecting = false;
+          _currentResizedColumn = -1;
+          _selecting = false;
 				}
 				break;
 			default:
 				break;
 			}
-			break;
-		case sEventMouse:
+    break;
+
+    case sEventMouse:
 			{
 				Point p = event.mouse.pos();
 
@@ -685,7 +664,6 @@ bool Table::onEvent(const NEvent &event)
 					return true;
 
 				case mouseLbtnPressed:
-
 					if ( isFocused() &&
 						_d->verticalScrollBar->visible() &&
 						_d->verticalScrollBar->absoluteRect().isPointInside(p) &&
@@ -698,22 +676,23 @@ bool Table::onEvent(const NEvent &event)
 						_d->horizontalScrollBar->onEvent(event))
 						return true;
 
-					if( dragColumnStart( event.mouse.x, event.mouse.y ) )
+          if( _dragColumnStart( event.mouse.x, event.mouse.y ) )
 					{
 						setFocus();
 						return true;
 					}
 
-					if ( selectColumnHeader( event.mouse.x, event.mouse.y ) )
+          if ( _selectColumnHeader( event.mouse.x, event.mouse.y ) )
 						return true;
 
-					Selecting = true;
+          _selecting = true;
 					setFocus();
 					return true;
+        break;
 
 				case mouseLbtnRelease:
-					CurrentResizedColumn = -1;
-					Selecting = false;
+          _currentResizedColumn = -1;
+          _selecting = false;
 					if (!absoluteRect().isPointInside(p))
 					{
 						removeFocus();
@@ -735,33 +714,30 @@ bool Table::onEvent(const NEvent &event)
 						return true;
 					}
 
-					selectNew( event.mouse.x, event.mouse.y, true );
+          _selectNew( event.mouse.x, event.mouse.y, true );
 					return true;
+        break;
 
 				case mouseMoved:
-					if ( CurrentResizedColumn >= 0 )
+          if ( _currentResizedColumn >= 0 && _dragColumnUpdate(event.mouse.x) )
 					{
-						if ( dragColumnUpdate(event.mouse.x) )
-						{
-							return true;
-						}
+            return true;
 					}
-					if (Selecting || MoveOverSelect)
+          if ( (_selecting || _moveOverSelect) && absoluteRect().isPointInside(p) )
 					{
-						if (absoluteRect().isPointInside(p))
-						{
-							selectNew(event.mouse.x, event.mouse.y, false );
-							return true;
-						}
+            _selectNew(event.mouse.x, event.mouse.y, false );
+            return true;
 					}
-					break;
-				default:
-					break;
+        break;
+
+        default:
+        break;
 				}
 			}
-			break;
-		default:
-			break;
+    break;
+
+    default:
+    break;
 		}
 	}
 
@@ -793,12 +769,12 @@ void Table::swapRows(unsigned int  rowIndexA, unsigned int  rowIndexB)
 
 }
 
-bool Table::dragColumnStart(int xpos, int ypos)
+bool Table::_dragColumnStart(int xpos, int ypos)
 {
-	if ( !ResizableColumns )
+  if ( !_resizableColumns )
 		return false;
 
-	if ( ypos > ( screenTop() + ItemHeight ) )
+  if ( ypos > ( screenTop() + _d->itemHeight ) )
 		return false;
 
 	const int CLICK_AREA = 12;	// to left and right of line which can be dragged
@@ -807,7 +783,7 @@ bool Table::dragColumnStart(int xpos, int ypos)
 	if ( _d->horizontalScrollBar && _d->horizontalScrollBar->visible() )
 		pos -= _d->horizontalScrollBar->value();
 
-	pos += TotalItemWidth;
+  pos += _totalItemWidth;
 
 	// have to search from the right as otherwise lines could no longer be resized when a column width is 0
 	for ( int i = (int)_d->columns.size()-1; i >= 0 ; --i )
@@ -816,8 +792,8 @@ bool Table::dragColumnStart(int xpos, int ypos)
 
 		if ( xpos >= (pos - CLICK_AREA) && xpos < ( pos + CLICK_AREA ) )
 		{
-			CurrentResizedColumn = i;
-			ResizeStart = xpos;
+      _currentResizedColumn = i;
+      _resizeStart = xpos;
 			return true;
 		}
 
@@ -827,56 +803,56 @@ bool Table::dragColumnStart(int xpos, int ypos)
 	return false;
 }
 
-bool Table::dragColumnUpdate(int xpos)
+bool Table::_dragColumnUpdate(int xpos)
 {
-	if ( !ResizableColumns || CurrentResizedColumn < 0 || CurrentResizedColumn >= int(_d->columns.size()) )
+  if ( !_resizableColumns || _currentResizedColumn < 0 || _currentResizedColumn >= int(_d->columns.size()) )
 	{
-		CurrentResizedColumn = -1;
+    _currentResizedColumn = -1;
 		return false;
 	}
 
-	int w = int(_d->columns[CurrentResizedColumn]->width()) + (xpos-ResizeStart);
+  int w = int(_d->columns[_currentResizedColumn]->width()) + (xpos-_resizeStart);
 	if ( w < 0 )
 		w = 0;
 
-	setColumnWidth(CurrentResizedColumn, w );
-	ResizeStart = xpos;
+  setColumnWidth(_currentResizedColumn, w );
+  _resizeStart = xpos;
 
-		recalculateCells_();
+  _recalculateCells();
 	return false;
 }
 
-int Table::getCurrentColumn_( int xpos, int ypos )
+int Table::_getCurrentColumn( int xpos, int ypos )
 {
-    int pos = screenLeft() + 1;
+  int pos = screenLeft() + 1;
 
-    if ( _d->horizontalScrollBar && _d->horizontalScrollBar->visible() )
-        pos -= _d->horizontalScrollBar->value();
+  if ( _d->horizontalScrollBar && _d->horizontalScrollBar->visible() )
+      pos -= _d->horizontalScrollBar->value();
 
-    for ( unsigned int  i = 0 ; i < _d->columns.size() ; ++i )
-    {
-        unsigned int  colWidth = _d->columns[i]->width();
+  for ( unsigned int  i = 0 ; i < _d->columns.size() ; ++i )
+  {
+      unsigned int  colWidth = _d->columns[i]->width();
 
-        if ( xpos >= pos && xpos < ( pos + int(colWidth) ) )
-            return i;
+      if ( xpos >= pos && xpos < ( pos + int(colWidth) ) )
+          return i;
 
-        pos += colWidth;
-    }
+      pos += colWidth;
+  }
 
-    return -1;
+  return -1;
 }
 
-bool Table::selectColumnHeader(int xpos, int ypos)
+bool Table::_selectColumnHeader(int xpos, int ypos)
 {
-	if ( ypos > ( screenTop() + ItemHeight ) )
+  if ( ypos > ( screenTop() + _d->itemHeight ) )
 		return false;
 
-    _selectedColumn = getCurrentColumn_( xpos, ypos );
-    if( _selectedColumn >= 0 )
-    {
-        setActiveColumn( _selectedColumn, true );
-        return true;
-    }
+  _selectedColumn = _getCurrentColumn( xpos, ypos );
+  if( _selectedColumn >= 0 )
+  {
+    setActiveColumn( _selectedColumn, true );
+    return true;
+  }
 
   return false;
 }
@@ -886,7 +862,7 @@ void Table::orderRows(int columnIndex, TableRowOrderingMode mode)
 	Row swap;
 
 	if ( columnIndex == -1 )
-		columnIndex = getActiveColumn();
+    columnIndex = activeColumn();
 	if ( columnIndex < 0 )
 		return;
 
@@ -896,7 +872,7 @@ void Table::orderRows(int columnIndex, TableRowOrderingMode mode)
 		{
 			for ( int j = 0 ; j < int(_d->rows.size()) - i - 1 ; ++j )
 			{
-				if ( _d->rows[j+1].Items[columnIndex]->text() < _d->rows[j].Items[columnIndex]->text() )
+        if ( _d->rows[j+1].items[columnIndex]->text() < _d->rows[j].items[columnIndex]->text() )
 				{
 					swap = _d->rows[j];
 					_d->rows[j] = _d->rows[j+1];
@@ -916,7 +892,7 @@ void Table::orderRows(int columnIndex, TableRowOrderingMode mode)
 		{
 			for ( int j = 0 ; j < int(_d->rows.size()) - i - 1 ; ++j )
 			{
-				if ( _d->rows[j].Items[columnIndex]->text() < _d->rows[j+1].Items[columnIndex]->text() )
+        if ( _d->rows[j].items[columnIndex]->text() < _d->rows[j+1].items[columnIndex]->text() )
 				{
 					swap = _d->rows[j];
 					_d->rows[j] = _d->rows[j+1];
@@ -932,19 +908,19 @@ void Table::orderRows(int columnIndex, TableRowOrderingMode mode)
 	}
 }
 
-void Table::selectNew( int xpos, int ypos, bool lmb, bool onlyHover)
+void Table::_selectNew( int xpos, int ypos, bool lmb, bool onlyHover)
 {
   int oldSelectedRow = _selectedRow;
-    int oldSelectedColumn = _selectedColumn;
+  int oldSelectedColumn = _selectedColumn;
 
-	if ( ypos < ( screenTop() + ItemHeight ) )
+  if ( ypos < screenTop() )
 		return;
 
 	// find new selected item.
-	if (ItemHeight!=0)
-		_selectedRow = ((ypos - screenTop() - ItemHeight - 1) + _d->verticalScrollBar->value()) / ItemHeight;
+  if (_d->itemHeight!=0)
+    _selectedRow = ((ypos - screenTop() /*-_d->itemHeight - 1*/) + _d->verticalScrollBar->value()) / _d->itemHeight;
 
-		_selectedColumn = getCurrentColumn_( xpos, ypos );
+  _selectedColumn = _getCurrentColumn( xpos, ypos );
 
 	if (_selectedRow >= (int)_d->rows.size())
 		_selectedRow = _d->rows.size() - 1;
@@ -970,10 +946,10 @@ void Table::selectNew( int xpos, int ypos, bool lmb, bool onlyHover)
 			parent()->onEvent( event );
 		}
 		_d->cellLastTimeClick = DateTime::elapsedTime();
-				//CallScriptFunction( GUI_EVENT + event.GuiEvent.EventType, this );
+    emit _d->onCellClickSignal(_selectedRow,_selectedColumn);
 
-        if( _selectedRow < 0 || _selectedColumn < 0 )
-            return;
+    if( _selectedRow < 0 || _selectedColumn < 0 )
+      return;
   }
 }
 
@@ -981,11 +957,11 @@ void Table::beforeDraw(gfx::Engine &painter)
 {
 	if( _d->needRefreshCellsGeometry )
 	{
-		recalculateCells_();
+    _recalculateCells();
 		_d->needRefreshCellsGeometry = false;
 	}
 
-		Widget::beforeDraw( painter );
+  Widget::beforeDraw( painter );
 }
 
 //! draws the element and its children
@@ -994,7 +970,7 @@ void Table::draw( gfx::Engine& painter )
 	if ( !visible() )
 		return;
 
-	for ( unsigned int  i = 0 ; i < _d->rows.size() ; ++i )
+  foreach( itRow, _d->rows )
 	{
 		// draw row seperator
 		if( _d->isFlag( drawRowBackground ) )
@@ -1010,28 +986,40 @@ void Table::draw( gfx::Engine& painter )
 			skin->drawElement( this, myStyle.Checked(), lineRect, &_d->itemsArea->getAbsoluteClippingRectRef() );
 		}*/
 
-        if( _d->isFlag( drawRows ) )
-        {
-            Rect lineRect( _d->rows[ i ].Items[ 0 ]->absoluteRect() );
-            lineRect.UpperLeftCorner.ry() = lineRect.LowerRightCorner.y() - 1;
-            lineRect.LowerRightCorner.rx() = screenRight();
-            painter.drawLine( 0xffc0c0c0, lineRect.lefttop(), lineRect.rightbottom() );
-        }
+    if( _d->isFlag( drawRows ) )
+    {
+      Rect lineRect( itRow->items[ 0 ]->absoluteRect() );
+      lineRect.UpperLeftCorner.ry() = lineRect.LowerRightCorner.y() - 1;
+      lineRect.LowerRightCorner.rx() = screenRight();
+      painter.drawLine( 0xffc0c0c0, lineRect.lefttop(), lineRect.rightbottom() );
+    }
   }
 
-    //NColor lineColor = getResultColor( 0xffc0c0c0 );
-    if ( _d->isFlag( drawColumns ) )
+  //NColor lineColor = getResultColor( 0xffc0c0c0 );
+  if( _d->isFlag( drawColumns ) )
+  {
+    foreach( itCol, _d->columns )
     {
-        ColumnIterator it = _d->columns.begin();
-        for( ; it != _d->columns.end() ; ++it )
-        {
-            Rect columnSeparator( Point( (*it)->screenRight(), screenTop() + 1 ),
-                                  Size( 1, height() - 2 ) );
+      Rect columnSeparator( Point( (*itCol)->screenRight(), screenTop() + 1 ),
+                            Size( 1, height() - 2 ) );
 
-            // draw column seperator
-            painter.drawLine( 0xffc0c0c0, columnSeparator.lefttop(), columnSeparator.rightbottom() );
-        }
+      // draw column seperator
+      painter.drawLine( 0xffc0c0c0, columnSeparator.lefttop(), columnSeparator.rightbottom() );
     }
+  }
+
+  if( _d->isFlag( drawActiveCell ) )
+  {
+    Cell* cell = _getCell( _selectedRow, _selectedColumn );
+    if( cell )
+    {
+      Rect cellRect = cell->absoluteRect();
+      painter.drawLine( DefaultColors::red, cellRect.lefttop(), cellRect.righttop() );
+      painter.drawLine( DefaultColors::red, cellRect.lefttop(), cellRect.leftbottom() );
+      painter.drawLine( DefaultColors::red, cellRect.leftbottom(), cellRect.rightbottom() );
+      painter.drawLine( DefaultColors::red, cellRect.rightbottom(), cellRect.righttop() );
+    }
+  }
 
   Widget::draw( painter );
 
@@ -1047,47 +1035,47 @@ void Table::setDrawFlag( DrawFlag flag, bool enabled )
 }
 
 //! Get the flags which influence the layout of the table
-bool Table::isFlag( DrawFlag flag ) const
+bool Table::isFlag( DrawFlag flag ) const {	return _d->isFlag( flag ); }
+
+void Table::setRowHeight( int height )
 {
-	return _d->isFlag( flag );
+  _overItemHeight = height;
+  _d->itemHeight = _overItemHeight == 0 ? _font.getTextSize("A").height() + (_cellHeightPadding * 2) : _overItemHeight;
 }
 
-void Table::setItemHeight( int height )
-{
-	overItemHeight_ = height;
-	ItemHeight = overItemHeight_ == 0 ? font_.getTextSize("A").height() + (CellHeightPadding * 2) : overItemHeight_;
-}
-
-int Table::getSelectedColumn() const
-{
-    return _selectedColumn;
-}
+int Table::selectedColumn() const { return _selectedColumn; }
 
 void Table::removeChild( Widget* child)
 {
-    for ( unsigned int  rowIndex = 0 ; rowIndex < _d->rows.size() ; ++rowIndex )
-        for ( unsigned int  columnIndex = 0 ; columnIndex < _d->columns.size() ; ++columnIndex )
-        {
-            Cell* cell = _d->rows[rowIndex].Items[columnIndex];
-            if( cell && cell->element == child )
-            {
-                cell->element = NULL;
-                break;
-            }
-        }
+  for( unsigned int  row = 0 ; row < _d->rows.size() ; ++row )
+  {
+    for ( unsigned int  column = 0 ; column < _d->columns.size() ; ++column )
+    {
+      Cell* cell = _getCell( row, column );
+      if( cell && cell->element == child )
+      {
+        cell->element = NULL;
+        break;
+      }
+    }
+  }
 
-    Widget::removeChild( child );
+  Widget::removeChild( child );
 }
 
-void Table::setCellElement( unsigned int  rowIndex, unsigned int  columnIndex, Widget* elm )
+void Table::setItemFont(Font font)
 {
-    if ( rowIndex < _d->rows.size() && columnIndex < _d->columns.size() )
-    {
-        Cell* cell = _d->rows[rowIndex].Items[columnIndex];
+  _font = font;
+}
 
-		if( elm != getCellElement( rowIndex, columnIndex ) )
+void Table::addElementToCell( unsigned int row, unsigned int column, Widget* elm )
+{
+  Cell* cell = _getCell( row, column );
+  if( cell )
+  {
+    if( elm != element( row, column ) )
 		{
-			removeCellElement( rowIndex, columnIndex );
+      removeElementFromCell( row, column );
 
 			if( elm )
 			{
@@ -1095,38 +1083,34 @@ void Table::setCellElement( unsigned int  rowIndex, unsigned int  columnIndex, W
 				cell->element = elm;
 			}
 		}
-		}
+  }
 
-    _d->verticalScrollBar->bringToFront();
-    _d->horizontalScrollBar->bringToFront();
+  _d->verticalScrollBar->bringToFront();
+  _d->horizontalScrollBar->bringToFront();
 }
 
-void Table::removeCellElement( unsigned int  rowIndex, unsigned int  columnIndex )
+void Table::removeElementFromCell( unsigned int row, unsigned int column )
+{  
+  Cell* cell = _getCell( row, column );
+  if ( cell )
+  {
+    if( cell->element )
+        cell->element->remove();
+
+    cell->element = 0;
+  }
+}
+
+Widget* Table::element( unsigned int row, unsigned int column) const
 {
-    if ( rowIndex < _d->rows.size() && columnIndex < _d->columns.size() )
-    {
-        Cell* cell = _d->rows[rowIndex].Items[columnIndex];
+  Cell* cell = _getCell( row, column );
+  if( cell )
+    return cell->element;
 
-        if( cell->element )
-            cell->element->remove();
-
-        cell->element = 0;
-    }
+  return NULL;
 }
 
-Widget* Table::getCellElement( unsigned int  rowIndex, unsigned int  columnIndex ) const
-{
-    if ( rowIndex < _d->rows.size() && columnIndex < _d->columns.size() )
-    {
-        return _d->rows[rowIndex].Items[columnIndex]->element;
-    }
-
-    return NULL;
-}
-
-ScrollBar* Table::getVerticalScrolBar()
-{
-    return _d->verticalScrollBar;
-}
+ScrollBar* Table::getVerticalScrolBar() { return _d->verticalScrollBar; }
+Signal2<int,int>& Table::onCellClick() { return _d->onCellClickSignal; }
 
 }//end namespace gui

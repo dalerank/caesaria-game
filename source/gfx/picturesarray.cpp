@@ -28,6 +28,12 @@ void Pictures::load(const std::string& rc, int startIndex, int number, int multi
   }
 }
 
+void Pictures::load(const StringArray& names)
+{
+  foreach( it, names )
+    this->push_back( Picture( *it ) );
+}
+
 Pictures& Pictures::operator<<(const Picture& pic)
 {
   this->push_back( pic );
@@ -46,7 +52,7 @@ void Pictures::append(const Picture &pic, const Point &offset)
   this->back().setOffset( offset );
 }
 
-const Picture& Pictures::atSafe(unsigned int index) const
+const Picture& Pictures::valueOrEmpty(unsigned int index) const
 {
   return index < size()
               ? (*this)[index]

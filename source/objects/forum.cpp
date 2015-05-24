@@ -51,7 +51,7 @@ void Forum::deliverService()
   if( numberWorkers() > 0 && walkers().size() == 0 )
   {
     TaxCollectorPtr walker = TaxCollector::create( _city() );
-    walker->send2City( this, ServiceWalker::goLowerService|ServiceWalker::anywayWhenFailed );
+    walker->send2City( this, ServiceWalker::goServiceMaximum|ServiceWalker::anywayWhenFailed );
 
     addWalker( walker.object() );
   }

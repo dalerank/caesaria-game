@@ -216,7 +216,7 @@ void CitizenGroup::load(const VariantList& stream)
 {
   foreach( g, stream )
   {
-    VariantList gv = (*g).toList();
+    VariantList gv = g->toList();
     unsigned int age = gv.get( 0, 0u );
     unsigned int count = gv.get( 1, 0u );
     _peoples[ age ] = count;

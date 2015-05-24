@@ -39,6 +39,7 @@ public:
   int needProsperity() const;
   int needFavour() const;
   int needPeace() const;
+  std::string name() const;
   const DateTime& finishDate() const;
   std::string shortDesc() const;
   std::string missionTitle() const;

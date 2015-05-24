@@ -171,7 +171,7 @@ Food::Food( Camera& camera, PlayerCityPtr city)
                     << walker::fishingBoat << walker::marketBuyer
                     << walker::cartPusher;
 
-  _fillVisibleObjects( type() );
+  _initialize();
 }
 
 }//end namespace citylayer

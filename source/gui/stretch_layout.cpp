@@ -126,6 +126,7 @@ Layout::Layout( Widget* parent, const Rect& rectangle, bool vertical, int id )
 : Widget( parent, id, rectangle ), _vertical( vertical )
 {
    _lastElementNumber = 0;
+   _offset = 0;
    _needUpdate = false;
 }
 

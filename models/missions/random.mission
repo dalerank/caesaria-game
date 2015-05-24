@@ -14,6 +14,7 @@
   win :
   {
     population : 0
+    name : "n1_random"
     culture : 0
     prosperity : 0
     peace : 0

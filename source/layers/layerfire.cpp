@@ -39,7 +39,7 @@ static const char* fireLevelName[] = {
                                      };
 
 
-int Fire::type() const {  return citylayer::fire; }
+int Fire::type() const { return citylayer::fire; }
 
 void Fire::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
@@ -138,7 +138,7 @@ Fire::Fire( Camera& camera, PlayerCityPtr city)
   : Info( camera, city, 18 )
 {
   _addWalkerType( walker::prefect );
-  _fillVisibleObjects( citylayer::fire );
+  _initialize();
 }
 
 }//end namespace citylayer

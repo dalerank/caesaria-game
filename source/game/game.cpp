@@ -70,6 +70,7 @@
 #include "video_config.hpp"
 #include "config.hpp"
 #include "world/emperor.hpp"
+#include "core/metric.hpp"
 
 #include <list>
 
@@ -105,6 +106,7 @@ public:
   void initAddons();
   void initHotkeys();
   void initMovie();
+  void initMetrics();
   void initGuiEnvironment();
   void initArchiveLoaders();
   void initPantheon( vfs::Path filename );
@@ -128,6 +130,12 @@ void Game::Impl::initMovie()
   {
     config.addFolder( c3videoFile );
   }
+}
+
+void Game::Impl::initMetrics()
+{
+  int value = SETTINGS_VALUE( metricSystem );
+  metric::Measure::setMode( (metric::Measure::Mode)value );
 }
 
 void Game::Impl::initLocale( std::string localePath )
@@ -442,6 +450,7 @@ void Game::initialize()
   Logger::warning( "Game: set resource folder" );
   vfs::FileSystem::instance().setRcFolder( game::Settings::rcpath() );
 
+  _d->initMetrics();
   _d->initAddons();
   _d->initArchiveLoaders();
   _d->initLocale( SETTINGS_VALUE( localePath ).toString() );

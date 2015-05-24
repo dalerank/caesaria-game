@@ -38,6 +38,7 @@ public:
   virtual ~Animation();
 
   Animation( const Animation& other );
+  Animation( const std::string& alias );
   Animation& operator=(const Animation& other);
 
   void start(bool loop=true);

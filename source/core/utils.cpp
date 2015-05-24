@@ -410,4 +410,9 @@ float eventProbability(float probability, int k, int n)
   return res;*/
 }
 
+std::string trim(const std::string &str, const std::string &tr)
+{
+  return replace( str, tr, "" );
+}
+
 }//end namespace utils

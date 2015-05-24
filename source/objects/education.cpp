@@ -93,7 +93,7 @@ void School::buildingsServed(const std::set<BuildingPtr>& buildings, ServiceWalk
 
 int School::_getWalkerOrders() const
 {
-  return ServiceWalker::goLowerService|ServiceWalker::anywayWhenFailed|ServiceWalker::enterLastHouse;
+  return ServiceWalker::goServiceMaximum|ServiceWalker::anywayWhenFailed|ServiceWalker::enterLastHouse;
 }
 
 Library::Library() : ServiceBuilding(Service::library, object::library, Size(2))

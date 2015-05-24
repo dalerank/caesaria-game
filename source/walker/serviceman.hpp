@@ -29,7 +29,7 @@
 class ServiceWalker : public Human
 {
 public:
-  typedef enum { noOrders=0, goLowerService=0x1, anywayWhenFailed=0x2, enterLastHouse=0x4 } Order;
+  typedef enum { noOrders=0, goServiceMaximum=0x1, anywayWhenFailed=0x2, enterLastHouse=0x4, goServiceMinimum=0x8 } Order;
   typedef std::set<BuildingPtr> ReachedBuildings;
 
   static ServiceWalkerPtr create( PlayerCityPtr city, const Service::Type service );
@@ -39,7 +39,7 @@ public:
 
   void setBase( BuildingPtr base );
 
-  virtual void send2City( BuildingPtr base, int orders=goLowerService );
+  virtual void send2City( BuildingPtr base, int orders=goServiceMaximum );
   virtual float serviceValue() const;
   virtual TilePos places(Place type) const;
 

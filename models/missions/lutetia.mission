@@ -15,6 +15,7 @@
   win :
   {
     population : 10000
+    name : "n2_lutetia"
     culture : 45
     prosperity : 50
     peace : 50

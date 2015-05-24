@@ -22,6 +22,7 @@
 #include "core/gettext.hpp"
 #include "good/helper.hpp"
 #include "core/utils.hpp"
+#include "core/metric.hpp"
 #include "core/logger.hpp"
 #include "game/infoboxmanager.hpp"
 
@@ -109,8 +110,9 @@ void AboutMarket::drawGood( MarketPtr market, const good::Product &goodType, int
   int startOffset = 25;
 
   int offset = ( width() - startOffset * 2 ) / 5;
-  std::string goodName = good::Helper::name( goodType );
-  std::string outText = utils::format( 0xff, "%d", market->goodStore().qty( goodType ) );
+  //std::string goodName = good::Helper::name( goodType );
+  int qty = market->goodStore().qty( goodType );
+  std::string outText = utils::format( 0xff, "%d", metric::Measure::convQty( qty ) );
 
   // pictures of goods
   Picture pic = good::Helper::picture( goodType );

@@ -177,7 +177,7 @@ VariantMap Traderoute::save() const
 
 
   VARIANT_SAVE_CLASS_D( ret, _d,  merchants)
-  ret[ "points" ] = _d->points.toVList();
+  ret[ "points" ] = _d->points.save();
 
   VARIANT_SAVE_ANY_D( ret, _d, seaRoute )
 
@@ -186,7 +186,7 @@ VariantMap Traderoute::save() const
 
 void Traderoute::load(const VariantMap& stream)
 {
-  _d->points.fromVList( stream.get( "points" ).toList() );
+  _d->points.load( stream.get( "points" ).toList() );
   _d->updateBoundingBox();
   _d->updatePictures();
 
