@@ -48,8 +48,8 @@ public:
   {
     if( status >= pics.size() )
     {
-      pics.resize( status );
-      offsets.resize( status );
+      pics.resize( status+1 );
+      offsets.resize( status+1 );
     }
 
     offsets[ status ] = offset;
