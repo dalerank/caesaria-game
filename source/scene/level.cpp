@@ -443,7 +443,7 @@ void Level::Impl::handleDirectionChange(Direction direction)
 
 std::string Level::Impl::getScreenshotName()
 {
-  DateTime time = DateTime::getCurrenTime();
+  DateTime time = DateTime::currenTime();
   vfs::Path filename = utils::format( 0xff, "oc3_[%04d_%02d_%02d_%02d_%02d_%02d].png",
                                       time.year(), time.month(), time.day(),
                                       time.hour(), time.minutes(), time.seconds() );

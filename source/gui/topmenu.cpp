@@ -34,6 +34,7 @@
 #include "widgetescapecloser.hpp"
 #include "gfx/decorator.hpp"
 #include "listbox.hpp"
+#include "core/metric.hpp"
 
 using namespace gfx;
 
@@ -116,7 +117,18 @@ void TopMenu::Impl::updateDate()
   if( !game::Date::isDayChanged() )
     return;
 
-  lbDate->setText( util::date2str( game::Date::current(), true ) );
+  std::string text;
+  if( metric::Measure::mode() == metric::Measure::roman )
+  {
+    RomanDate rDate( game::Date::current() );
+    text = util::date2str( rDate, true );
+  }
+  else
+  {
+    text = util::date2str( game::Date::current(), true );
+  }
+
+  lbDate->setText( text );
 }
 
 void TopMenu::Impl::showShortKeyInfo()
