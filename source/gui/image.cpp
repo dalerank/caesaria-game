@@ -122,7 +122,7 @@ void Image::draw(gfx::Engine& painter )
        // анализ высоты
        if (ItemSize.height()>rectSize.height()) {
            // обнаружено превышение, применяем сдвиг
-           float dh = ItemSize.width() / ItemSize.height();
+           float dh = ItemSize.width() / (float)ItemSize.height();
            ItemSize.setHeight( rectSize.height() );
            ItemSize.setWidth( rectSize.height() * dh );
        }
@@ -130,7 +130,7 @@ void Image::draw(gfx::Engine& painter )
        // анализ ширины
        if (ItemSize.width()>rectSize.width()) {
            // обнаружено превышение, применяем сдвиг
-           float dw = ItemSize.height() / ItemSize.width();
+           float dw = ItemSize.height() / (float)ItemSize.width();
            ItemSize.setWidth( rectSize.width() );
            ItemSize.setHeight( rectSize.width() * dw );
        }

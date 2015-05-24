@@ -103,7 +103,7 @@ void MovableObject::save(VariantMap& stream) const
   VARIANT_SAVE_ANY_D( stream, d, start )
   VARIANT_SAVE_ANY_D( stream, d, stop )
   VARIANT_SAVE_ANY_D( stream, d, way.step )
-  stream[ "points" ] =  d->way.toVList();
+  VARIANT_SAVE_CLASS_D( stream, d, way )
 }
 
 void MovableObject::load(const VariantMap& stream)
@@ -115,7 +115,7 @@ void MovableObject::load(const VariantMap& stream)
   VARIANT_LOAD_ANY_D( d, start, stream )
   VARIANT_LOAD_ANY_D( d, stop, stream )
   VARIANT_LOAD_ANY_D( d, way.step, stream )
-  d->way.fromVList( stream.get( "points" ).toList() );
+  VARIANT_LOAD_CLASS_D_LIST( d, way, stream )
 }
 
 bool MovableObject::_findWay( Point p1, Point p2 )

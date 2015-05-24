@@ -74,8 +74,8 @@ public:
 
   unsigned int maxHabitants();
   void addHabitants( CitizenGroup& habitants );
-  CitizenGroup remHabitants( int paramCount );
-  void remHabitants( CitizenGroup& group );
+  CitizenGroup removeHabitants( int paramCount );
+  void removeHabitants( CitizenGroup& group );
   const CitizenGroup& habitants() const;
 
   float collectTaxes();

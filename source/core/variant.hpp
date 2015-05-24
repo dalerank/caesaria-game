@@ -64,6 +64,8 @@ class NColor;
 
 #define VARIANT_SAVE_CLASS_D(vm, d, param) vm[ #param ] = d->param.save();
 #define VARIANT_LOAD_CLASS_D(d, param, vm) d->param.load( vm.get( #param ).toMap() );
+
+#define VARIANT_LOAD_CLASS_LIST(param, vm) param.load( vm.get( #param ).toList() );
 #define VARIANT_LOAD_CLASS_D_LIST(d, param, vm) d->param.load( vm.get( #param ).toList() );
 
 template <typename T>

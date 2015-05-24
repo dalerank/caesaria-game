@@ -11,6 +11,7 @@
   win :
   {
     population : 2500
+    name : "n2_tarraco"
     culture : 45
     prosperity : 25
     peace : 30

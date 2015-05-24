@@ -23,10 +23,10 @@ namespace align
 
 Helper::Helper() : EnumsHelper<Type>( automatic )
 {
-  append( upperLeft, "upperLeft" );
-  append( lowerRight, "lowerRight" );
-  append( center, "center" );
-  append( scale, "scale" );
+  append( upperLeft,  CAESARIA_STR_A(upperLeft) );
+  append( lowerRight, CAESARIA_STR_A(lowerRight) );
+  append( center,     CAESARIA_STR_A(center) );
+  append( scale,      CAESARIA_STR_A(scale) );
   append( automatic, "auto" );
 }
 

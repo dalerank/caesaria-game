@@ -225,7 +225,7 @@ Entertainment::Entertainment( Camera& camera, PlayerCityPtr city, int type )
   default: break;
   }
 
-  _fillVisibleObjects( citylayer::entertainment );
+  _initialize();
 }
 
 }//end namespace citylayer

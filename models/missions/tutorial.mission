@@ -12,6 +12,7 @@
   win :
   {
     population : 150
+    name : "n2_nvillage"
     culture : 0
     prosperity : 0
     peace : 0

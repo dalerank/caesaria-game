@@ -205,7 +205,7 @@ void Treasury::load( const VariantMap& stream )
   {
     _d->history.push_back( IssuesValue() );
     IssuesValue& last = _d->history.back();
-    const VariantList& historyStep = (*it).toList();
+    const VariantList& historyStep = it->toList();
     VariantList::const_iterator stepIt=historyStep.begin(); 
     while( stepIt != historyStep.end() )
     {

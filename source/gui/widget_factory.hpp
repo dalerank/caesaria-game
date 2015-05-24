@@ -67,5 +67,12 @@ struct Registrator_##a { Registrator_##a() { WidgetFactory::instance().addCreato
 static Registrator_##a rtor_##a; \
 }
 
+#define REGISTER_CLASSNAME_IN_WIDGETFACTORY(a, name) \
+namespace { \
+struct Registrator_##a { Registrator_##a() { WidgetFactory::instance().addCreator( name, new BaseWidgetCreator<a>() ); }}; \
+static Registrator_##a rtor_##a; \
+}
+
+
 }//end namespace gui
 #endif //_CAESARIA_WIDGET_FACTORY_H_INCLUDE_

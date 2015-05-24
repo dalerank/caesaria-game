@@ -69,6 +69,7 @@ namespace utils
   std::string replace(std::string text, const std::string& from, const std::string& to);
 
   StringArray split( std::string str, std::string spl );
+  std::string trim( const std::string& str, const std::string& tr );
 
   bool isEqualen(const std::string& str1, const std::string& str2, unsigned int n);
 
@@ -92,7 +93,7 @@ namespace utils
     return items;
   }
 
-  float eventProbability(float probability, int k, int n);
+  float eventProbability(float probability, int k, int n);  
   std::wstring utf8toWString(const char* src, int size);
 }
 
