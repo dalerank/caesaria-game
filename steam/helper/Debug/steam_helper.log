@@ -1,0 +1,21 @@
+﻿Build started 2/2/2015 12:50:13 PM.
+     1>Project "C:\projects\caesaria\steam\helper\steam_helper.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I../public/steam /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _LIB /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"C:\projects\caesaria\steam\helper\Debug\\" /Fd"C:\projects\caesaria\steam\helper\Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt helper.cpp
+         helper.cpp
+     1>c:\projects\caesaria\steam\public\steam\matchmakingtypes.h(45): warning C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(195) : see declaration of 'strncpy'
+     1>c:\projects\caesaria\steam\public\steam\matchmakingtypes.h(47): warning C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(195) : see declaration of 'strncpy'
+     1>c:\projects\caesaria\steam\public\steam\matchmakingtypes.h(159): warning C4996: '_snprintf': This function or variable may be unsafe. Consider using _snprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\stdio.h(346) : see declaration of '_snprintf'
+     1>c:\projects\caesaria\steam\public\steam\matchmakingtypes.h(244): warning C4996: 'strncpy': This function or variable may be unsafe. Consider using strncpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(195) : see declaration of 'strncpy'
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:"C:\projects\caesaria\steam\helper\steam_helper.lib" /NOLOGO C:\projects\caesaria\steam\helper\Debug\helper.obj
+         steam_helper.vcxproj -> C:\projects\caesaria\steam\helper\steam_helper.lib
+     1>Done Building Project "C:\projects\caesaria\steam\helper\steam_helper.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.40

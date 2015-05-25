@@ -36,6 +36,7 @@ SHELPER_API void __cdecl   sth_getAchievementAttribute(const  char* achName, con
 SHELPER_API int __cdecl    sth_getAchievementIcon(const char* achName);
 SHELPER_API int __cdecl    sth_getStat(const char* statName);
 SHELPER_API bool __cdecl   sth_setAchievement(const char* achName);
+SHELPER_API bool __cdecl   sth_isDlcInstalled(uint64 appid);
 SHELPER_API bool __cdecl   sth_clearAchievement(const char* achName);
 SHELPER_API void __cdecl   sth_SetStat(const char* statName, int value);
 SHELPER_API bool __cdecl   sth_StoreStats();

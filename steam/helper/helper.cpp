@@ -132,6 +132,11 @@ SHELPER_API int __cdecl sth_getMediumFriendAvatar(uint64 id)
   return SteamFriends()->GetMediumFriendAvatar(steamId);
 }
 
+SHELPER_API bool __cdecl sth_isDlcInstalled(uint64 id)
+{
+  return SteamApps()->BIsDlcInstalled((AppId_t)id);
+}
+
 SHELPER_API void __cdecl sth_runCallbacks()
 {
   SteamAPI_RunCallbacks();
