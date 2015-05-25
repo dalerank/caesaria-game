@@ -222,31 +222,32 @@ void Level::initialize()
   }
 
   //connect elements
-  CONNECT( _d->topMenu, onSave(),                 _d.data(),         Impl::showSaveDialog );
-  CONNECT( _d->topMenu, onExit(),                 this,              Level::_requestExitGame );
-  CONNECT( _d->topMenu, onLoad(),                 this,              Level::_showLoadDialog );
-  CONNECT( _d->topMenu, onEnd(),                  this,              Level::_exitToMainMenu );
-  CONNECT( _d->topMenu, onRestart(),              this,              Level::_restartMission );
-  CONNECT( _d->topMenu, onRequestAdvisor(),       _d.data(),         Impl::showAdvisorsWindow );
-  CONNECT( _d->topMenu, onShowVideoOptions(),     _d.data(),         Impl::setVideoOptions );
-  CONNECT( _d->topMenu, onShowSoundOptions(),     _d.data(),         Impl::showSoundOptionsWindow );
-  CONNECT( _d->topMenu, onShowGameSpeedOptions(), _d.data(),         Impl::showGameSpeedOptionsDialog );
-  CONNECT( _d->topMenu, onShowCityOptions(),      _d.data(),         Impl::showCityOptionsDialog );
+  CONNECT( _d->topMenu, onSave(),                 _d.data(),         Impl::showSaveDialog )
+  CONNECT( _d->topMenu, onExit(),                 this,              Level::_requestExitGame )
+  CONNECT( _d->topMenu, onLoad(),                 this,              Level::_showLoadDialog )
+  CONNECT( _d->topMenu, onEnd(),                  this,              Level::_exitToMainMenu )
+  CONNECT( _d->topMenu, onRestart(),              this,              Level::_restartMission )
+  CONNECT( _d->topMenu, onRequestAdvisor(),       _d.data(),         Impl::showAdvisorsWindow )
+  CONNECT( _d->topMenu, onShowVideoOptions(),     _d.data(),         Impl::setVideoOptions )
+  CONNECT( _d->topMenu, onShowSoundOptions(),     _d.data(),         Impl::showSoundOptionsWindow )
+  CONNECT( _d->topMenu, onShowGameSpeedOptions(), _d.data(),         Impl::showGameSpeedOptionsDialog )
+  CONNECT( _d->topMenu, onShowCityOptions(),      _d.data(),         Impl::showCityOptionsDialog )
+  CONNECT( _d->topMenu, onShowExtentInfo(),       _d->extMenu,       ExtentMenu::showInfo )
 
-  CONNECT( city, onPopulationChanged(),           _d->topMenu,       TopMenu::setPopulation );
-  CONNECT( city, onFundsChanged(),                _d->topMenu,       TopMenu::setFunds );
-  CONNECT( city, onWarningMessage(),              _d.data(),         Impl::resolveWarningMessage );
+  CONNECT( city, onPopulationChanged(),           _d->topMenu,       TopMenu::setPopulation )
+  CONNECT( city, onFundsChanged(),                _d->topMenu,       TopMenu::setFunds )
+  CONNECT( city, onWarningMessage(),              _d.data(),         Impl::resolveWarningMessage )
 
-  CONNECT( _d->menu, onCreateConstruction(),      _d.data(),         Impl::resolveCreateConstruction );
-  CONNECT( _d->menu, onRemoveTool(),              _d.data(),         Impl::resolveRemoveTool );
-  CONNECT( _d->menu, onHide(),                    _d->extMenu,       ExtentMenu::maximize );
+  CONNECT( _d->menu, onCreateConstruction(),      _d.data(),         Impl::resolveCreateConstruction )
+  CONNECT( _d->menu, onRemoveTool(),              _d.data(),         Impl::resolveRemoveTool )
+  CONNECT( _d->menu, onHide(),                    _d->extMenu,       ExtentMenu::maximize )
 
-  CONNECT( _d->extMenu, onHide(),                 _d->menu,          Menu::maximize );
-  CONNECT( _d->extMenu, onCreateConstruction(),   _d.data(),         Impl::resolveCreateConstruction );
-  CONNECT( _d->extMenu, onRemoveTool(),           _d.data(),         Impl::resolveRemoveTool );
-  CONNECT( _d->extMenu, onRotateRight(),          &_d->renderer,     CityRenderer::rotateRight );
-  CONNECT( _d->extMenu, onRotateLeft(),           &_d->renderer,     CityRenderer::rotateLeft );
-  CONNECT( _d->extMenu, onSelectOverlayType(),    _d.data(),         Impl::resolveSelectLayer );
+  CONNECT( _d->extMenu, onHide(),                 _d->menu,          Menu::maximize )
+  CONNECT( _d->extMenu, onCreateConstruction(),   _d.data(),         Impl::resolveCreateConstruction )
+  CONNECT( _d->extMenu, onRemoveTool(),           _d.data(),         Impl::resolveRemoveTool )
+  CONNECT( _d->extMenu, onRotateRight(),          &_d->renderer,     CityRenderer::rotateRight )
+  CONNECT( _d->extMenu, onRotateLeft(),           &_d->renderer,     CityRenderer::rotateLeft
+  CONNECT( _d->extMenu, onSelectOverlayType(),    _d.data(),         Impl::resolveSelectLayer )
   CONNECT( _d->extMenu, onEmpireMapShow(),        _d.data(),         Impl::showEmpireMapWindow )
   CONNECT( _d->extMenu, onAdvisorsWindowShow(),   _d.data(),         Impl::showAdvisorsWindow )
   CONNECT( _d->extMenu, onMissionTargetsWindowShow(), _d.data(),     Impl::showMissionTaretsWindow )
