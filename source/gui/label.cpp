@@ -95,6 +95,7 @@ public:
 
 public signals:
   Signal0<> onClickedSignal;
+  Signal1<Widget*> onClickedSignalA;
 };
 
 //! constructor
@@ -235,7 +236,11 @@ void Label::_updateBackground(Engine& painter, bool& useAlpha4Text )
   }
 }
 
-void Label::_handleClick() { emit _d->onClickedSignal(); }
+void Label::_handleClick()
+{
+  emit _d->onClickedSignal();
+  emit _d->onClickedSignalA( this );
+}
 
 //! destructor
 Label::~Label() {}
@@ -549,7 +554,8 @@ void Label::setText(const string& newText)
   _d->needUpdatePicture = true;
 }
 
-Signal0<>& Label::onClicked() {  return _d->onClickedSignal; }
+Signal0<>& Label::onClicked() { return _d->onClickedSignal; }
+Signal1<Widget*>& Label::onClickedA() { return _d->onClickedSignalA; }
 
 //! Returns the height of the text in pixels when it is drawn.
 int Label::textHeight() const

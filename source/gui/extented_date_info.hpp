@@ -15,6 +15,9 @@ public:
   virtual ~ExtentedDateInfo();
 
   virtual bool onEvent(const NEvent& e);
+  virtual void draw(gfx::Engine &painter);
+protected:
+  void _update();
 };
 
 }//end namespace gui

@@ -280,9 +280,11 @@ void UserStats::storeStatsIfNecessary()
     // already set any achievements in UnlockAchievement
 
     // set stats
-    sth_SetStat( literals::stat_num_games, totalGamesPlayed );
-    sth_SetStat( literals::stat_num_wins, totalNumWins );
-    sth_SetStat( "NumLosses", totalNumLosses );
+    for( int i=0; i < stat_count; i++ )
+    {
+      StatInfo& stat = stats[ i ];
+      sth_SetStat( stat.name.c_str(), stat.count );
+    }
     // Update average feet / second stat
     //m_pSteamUserStats->UpdateAvgRateStat( "AverageSpeed", m_flGameFeetTraveled, m_flGameDurationSeconds );
     // The averaged result is calculated for us
@@ -642,7 +644,7 @@ void UserStats::receivedUserStats()
     statsValid = true;
 
     // load achievements
-    for( int iAch = 0; iAch < achievementNumber; ++iAch )
+    for( int iAch = 0; iAch < achv_count; ++iAch )
     {
       Achievement &ach = glbAchievements[iAch];
       ach.reached = sth_getAchievementReached( ach.uniqueName );
@@ -654,8 +656,18 @@ void UserStats::receivedUserStats()
     }
 
     // load stats
-    totalGamesPlayed = sth_getStat( literals::stat_num_games );
-    totalNumWins = sth_getStat( literals::stat_num_wins );
+    for( int index=0; index < nx_count; index++ )
+    {
+      MissionInfo& mission = missions[ index ];
+      mission.count = sth_getStat( mission.name.c_str() );
+    }
+
+    // load stats
+    for( int index=0; index < stat_count; index++ )
+    {
+      StatInfo& stat = stats[ index ];
+      stat.count = sth_getStat( stat.name.c_str() );
+    }
   }
 }
 #else

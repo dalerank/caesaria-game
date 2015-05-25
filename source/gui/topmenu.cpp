@@ -226,7 +226,7 @@ TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
   {
     _d->lbDate->setPosition( Point( width() - dateLabelOffset, 0) );
     _d->lbDate->addProperty( CAESARIA_STR_A(ExtentInfo), extentinfo::celebrates );
-    CONNECT( _d->lbDate, onClicked(), _d.data(), Impl::resolveExtentInfo )
+    CONNECT( _d->lbDate, onClickedA(), _d.data(), Impl::resolveExtentInfo )
   }
 
   ContextMenuItem* tmp = addItem( _("##gmenu_file##"), -1, true, true, false, false );
