@@ -340,7 +340,7 @@ void FontCollection::addFont(const int key, const std::string& name, vfs::Path p
   setFont( key, name, font0);
 }
 
-void FontCollection::initialize(const std::string &resourcePath)
+void FontCollection::initialize(const std::string& resourcePath)
 {
   vfs::Directory resDir( resourcePath );
   vfs::Path fontFilename = SETTINGS_VALUE( font ).toString();

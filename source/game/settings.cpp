@@ -101,6 +101,7 @@ __REG_PROPERTY(showTabletMenu)
 __REG_PROPERTY(batchTextures)
 __REG_PROPERTY(ccUseAI)
 __REG_PROPERTY(metricSystem)
+__REG_PROPERTY(defaultFont)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -150,6 +151,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ freeplay_opts       ] = std::string( "/freeplay.model" );
   _d->options[ walkerRelations     ] = std::string( "/relations.model" );
   _d->options[ font                ] = std::string( "FreeSerif.ttf" );
+  _d->options[ defaultFont         ] = std::string( "FreeSerif.ttf" );
   _d->options[ simpleAnimationModel] = std::string( "/basic_animations.model" );
   _d->options[ hotkeysModel        ] = std::string( "/hotkeys.model" );
   _d->options[ cartsModel          ] = std::string( "/carts.model" );

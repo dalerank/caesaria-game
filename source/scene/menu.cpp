@@ -67,6 +67,7 @@ namespace scene
 
 CAESARIA_LITERALCONST(ext)
 CAESARIA_LITERALCONST(talks)
+CAESARIA_LITERALCONST(font)
 
 class StartMenu::Impl
 {
@@ -254,25 +255,41 @@ void StartMenu::Impl::changeLanguage(const gui::ListBoxItem& item)
 {
   std::string lang;
   std::string talksArchive;
+  std::string newFont;
+
+  std::string currentFont = SETTINGS_VALUE( font ).toString();
+
   VariantMap languages = config::load( SETTINGS_RC_PATH( langModel ) );
   foreach( it, languages )
   {
     if( item.text() == it->first )
     {
       VariantMap vm = it->second.toMap();
-      lang = vm[ literals::ext ].toString();
-      talksArchive = vm[ literals::talks ].toString();
+      lang = vm.get( literals::ext ).toString();
+      talksArchive = vm.get( literals::talks ).toString();
+      newFont  = vm.get( literals::font ).toString();
+
+      if( newFont.empty() )
+        newFont = SETTINGS_VALUE( defaultFont ).toString();
+
       break;
     }
   }
 
   SETTINGS_SET_VALUE( language, Variant( lang ) );
   SETTINGS_SET_VALUE( talksArchive, Variant( talksArchive ) );
+
+  if( currentFont != newFont )
+  {
+    SETTINGS_SET_VALUE( font, newFont );
+    FontCollection::instance().initialize( game::Settings::rcpath().toString() );
+  }
+
   game::Settings::save();
 
   Locale::setLanguage( lang );
   NameGenerator::instance().setLanguage( lang );
-  audio::Helper::initTalksArchive( SETTINGS_VALUE( talksArchive ).toString() );
+  audio::Helper::initTalksArchive( talksArchive );
 }
 
 void StartMenu::Impl::handleStartCareer()
