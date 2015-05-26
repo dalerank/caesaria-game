@@ -42,27 +42,32 @@ using namespace metric;
 class CcTargets
 {
 public:
+
   int population;
-  int needWheatFishFarm;
-  int needVegetableFarm;
-  int needPotteryWorkshop;
-  int needMeatFarm;
-  int needFruitFarm;
-  int needFurnitureWorkshop;
-  int needOilWorkshop;
-  int needWineWorkshop;
+  struct {
+    int wheatFishFarm;
+    int vegetableFarm;
+    int potteryWorkshop;
+    int meatFarm;
+    int fruitFarm;
+    int furnitureWorkshop;
+    int oilWorkshop;
+    int wineWorkshop;
+    int school;
+  } need;
 
   CcTargets()
   {
     population = 0;
-    needVegetableFarm = 0;
-    needWheatFishFarm = 0;
-    needPotteryWorkshop = 0;
-    needMeatFarm = 0;
-    needFruitFarm = 0;
-    needOilWorkshop = 0;
-    needWineWorkshop = 0;
-    needFurnitureWorkshop = 0;
+    need.vegetableFarm = 0;
+    need.wheatFishFarm = 0;
+    need.potteryWorkshop = 0;
+    need.meatFarm = 0;
+    need.fruitFarm = 0;
+    need.oilWorkshop = 0;
+    need.wineWorkshop = 0;
+    need.furnitureWorkshop = 0;
+    need.school = 0;
   }
 
   VariantMap save() const
@@ -165,6 +170,7 @@ struct BuildingInfo
   int maxWorkersNumber;
   int workersNumber;
   int progress, productively;
+  int maxService;
   bool producing;
   good::Stock ingoods, outgoods;
 
@@ -172,6 +178,7 @@ struct BuildingInfo
   {
     type = object::unknown;
     progress = 0;
+    maxService = 0;
     producing = false;
     productively = 50;
   }
@@ -279,6 +286,7 @@ public:
   void placeNewBuildings();
   void updateWorkersInBuildings();
   void placeNewBuilding( object::Type type );
+  void citizensConsumeServices();
   void updateWorkingWarehouse();
 };
 
@@ -290,6 +298,7 @@ void ComputerCity::Impl::calculateMonthState()
   updateWorkersInBuildings();
   updateWorkingWarehouse();
   citizensConsumeGoods();
+  citizensConsumeServices();
 
   int idleBuildings = 0;
   foreach( it, buildings )
@@ -341,11 +350,33 @@ void ComputerCity::Impl::placeNewBuilding(object::Type type)
   info.outgoods.setType( output );
   info.ingoods.setType( good::getMaterial( output ) );
   info.maxWorkersNumber = md.getOption( "employers" );
+  info.maxService = md.getOption( "maxServe" );
   info.workersNumber = 0;
   info.progress = 0;
   info.productively = md.getOption( "productRate" ).toFloat() / 12.f;
 
   buildings.push_back( info );
+}
+
+void ComputerCity::Impl::citizensConsumeServices()
+{
+  unsigned int schoolMayServe = 0;
+  bool haveIdleBuildings = false;
+  foreach( it, buildings )
+  {
+    BuildingInfo& info = *it;
+    haveIdleBuildings &= (info.workersNumber < info.maxWorkersNumber);
+    if( info.type == object::school )
+    {
+      schoolMayServe += (info.workersNumber / (float)info.maxWorkersNumber) * info.maxService;
+    }
+  }
+
+  bool needYetSchool = peoples.count( CitizenGroup::scholar ) > schoolMayServe;
+  if( !haveIdleBuildings && needYetSchool )
+  {
+    targets.need.school+=4;
+  }
 }
 
 void ComputerCity::Impl::updateWorkingWarehouse()
@@ -392,13 +423,13 @@ void ComputerCity::Impl::updateWorkingWarehouse()
 
 void ComputerCity::Impl::placeNewBuildings()
 {
-  if( targets.needVegetableFarm > 8 )
+  if( targets.need.vegetableFarm > 8 )
   {
     placeNewBuilding( object::vegetable_farm );
-    targets.needVegetableFarm = 0;
+    targets.need.vegetableFarm = 0;
   }
 
-  if( targets.needWheatFishFarm > 8 )
+  if( targets.need.wheatFishFarm > 8 )
   {
     object::Type type = object::wheat_farm;
     int wheatFarmNumber = buildings.count( object::wheat_farm );
@@ -407,37 +438,37 @@ void ComputerCity::Impl::placeNewBuildings()
       type = object::wharf;
 
     placeNewBuilding( type );
-    targets.needWheatFishFarm = 0;
+    targets.need.wheatFishFarm = 0;
   }
 
-  if( targets.needPotteryWorkshop > 8 )
+  if( targets.need.potteryWorkshop > 8 )
   {
     placeNewBuilding( object::pottery_workshop );
-    targets.needPotteryWorkshop = 0;
+    targets.need.potteryWorkshop = 0;
   }
 
-  if( targets.needMeatFarm > 8 )
+  if( targets.need.meatFarm > 8 )
   {
     placeNewBuilding( object::meat_farm );
-    targets.needMeatFarm = 0;
+    targets.need.meatFarm = 0;
   }
 
-  if( targets.needFruitFarm > 8 )
+  if( targets.need.fruitFarm > 8 )
   {
     placeNewBuilding( object::fig_farm );
-    targets.needFruitFarm = 0;
+    targets.need.fruitFarm = 0;
   }
 
-  if( targets.needOilWorkshop > 8 )
+  if( targets.need.oilWorkshop > 8 )
   {
     placeNewBuilding( object::oil_workshop );
-    targets.needOilWorkshop = 0;
+    targets.need.oilWorkshop = 0;
   }
 
-  if( targets.needWineWorkshop > 8 )
+  if( targets.need.wineWorkshop > 8 )
   {
     placeNewBuilding( object::wine_workshop );
-    targets.needWineWorkshop = 0;
+    targets.need.wineWorkshop = 0;
   }
 
   if( internalGoods.needExpand > 8 )
@@ -446,10 +477,16 @@ void ComputerCity::Impl::placeNewBuildings()
     internalGoods.needExpand = 0;
   }
 
-  if( targets.needFurnitureWorkshop > 8 )
+  if( targets.need.furnitureWorkshop > 8 )
   {
     placeNewBuilding( object::furniture_workshop );
-    targets.needFurnitureWorkshop = 0;
+    targets.need.furnitureWorkshop = 0;
+  }
+
+  if( targets.need.school > 8 )
+  {
+    placeNewBuilding( object::school );
+    targets.need.school = 0;
   }
 }
 
@@ -515,7 +552,7 @@ void ComputerCity::Impl::citizensConsumeGoods()
     targetSentiment += 40 * ((fishWheat2Consume.need - anyHungry) / (float)fishWheat2Consume.need);
 
     if( anyHungry )
-      targets.needWheatFishFarm++;
+      targets.need.wheatFishFarm++;
   }
 
   if( fishWheat2Consume.have > fishWheat2Consume.need )
@@ -542,7 +579,7 @@ void ComputerCity::Impl::citizensConsumeGoods()
     targetSentiment += 10 * ((vegetable2Consume.need - anyHungry) / (float)vegetable2Consume.need);
 
     if( anyHungry )
-      targets.needVegetableFarm++;
+      targets.need.vegetableFarm++;
   }
 
   if( mayContinue && pottery2Consume.need > 0 )
@@ -555,7 +592,7 @@ void ComputerCity::Impl::citizensConsumeGoods()
     targetSentiment += 10 * ((pottery2Consume.need - anyBroken) / (float)pottery2Consume.need);
 
     if( anyBroken )
-      targets.needPotteryWorkshop++;
+      targets.need.potteryWorkshop++;
   }
 
   if( mayContinue && meat2Consume.need > 0 )
@@ -568,7 +605,7 @@ void ComputerCity::Impl::citizensConsumeGoods()
     targetSentiment += 10 * ((meat2Consume.need - anyHungry) / (float)meat2Consume.need);
 
     if( anyHungry )
-      targets.needMeatFarm++;
+      targets.need.meatFarm++;
   }
 
   if( mayContinue && fruit2Consume.need > 0 )
@@ -581,7 +618,7 @@ void ComputerCity::Impl::citizensConsumeGoods()
     targetSentiment += 10 * ((fruit2Consume.need - anyHungry) / (float)fruit2Consume.need);
 
     if( anyHungry )
-      targets.needFruitFarm++;
+      targets.need.fruitFarm++;
   }
 
   if( mayContinue && furniture2Consume.need > 0 )
@@ -594,7 +631,7 @@ void ComputerCity::Impl::citizensConsumeGoods()
     targetSentiment += 10 * ((furniture2Consume.need - anyBroken) / (float)furniture2Consume.need);
 
     if( anyBroken )
-      targets.needFurnitureWorkshop++;
+      targets.need.furnitureWorkshop++;
   }
 
   if( mayContinue && oil2Consume.need > 0 )
@@ -607,7 +644,7 @@ void ComputerCity::Impl::citizensConsumeGoods()
     targetSentiment += 5 * ((oil2Consume.need - anyHungry) / (float)oil2Consume.need);
 
     if( anyHungry )
-      targets.needOilWorkshop++;
+      targets.need.oilWorkshop++;
   }
 
   if( mayContinue && wine2Consume.need > 0 )
@@ -620,7 +657,7 @@ void ComputerCity::Impl::citizensConsumeGoods()
     targetSentiment += 5 * ((wine2Consume.need - anyHungry) / (float)wine2Consume.need);
 
     if( anyHungry )
-      targets.needWineWorkshop++;
+      targets.need.wineWorkshop++;
   }
 
   int delta = math::clamp( targetSentiment - sentiment, -2, 2);
@@ -840,7 +877,7 @@ void ComputerCity::timeStep( unsigned int time )
   if( game::Date::isMonthChanged() )
   {
     _d->tradeDelay = math::clamp<int>( _d->tradeDelay-1, 0, 99 );
-    _d->calculateMonthState();
+    _d->calculateMonthState();    
   }
 
   if( game::Date::isYearChanged() )

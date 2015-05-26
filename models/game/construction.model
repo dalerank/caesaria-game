@@ -277,6 +277,7 @@
     cost : 50,
     desirability : { base :-2,	range : 2,	step : 1 }
     employers : 10
+    maxServe : 75
     class : "education"
     image : [ "commerce", 83 ]
     sound : [ "school", 1 ]
@@ -286,6 +287,7 @@
     cost : 100,
     desirability : { base :4,	range : 4,	step : -1 }
     employers : 30
+    maxServe : 100
     class : "education"
     image : [ "commerce", 85 ]
     sound : [ "academy", 1 ]
@@ -295,6 +297,7 @@
     cost : 75,
     desirability : { base : 4,	range : 4,	step : -1 }
     employers : 20
+    maxServe : 800
     class : "education"
     image : [ "commerce", 84 ]
     sound : [ "library", 1 ]
