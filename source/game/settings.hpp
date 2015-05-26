@@ -102,6 +102,7 @@ public:
   __GS_PROPERTY(batchTextures)
   __GS_PROPERTY(ccUseAI)
   __GS_PROPERTY(metricSystem)
+  __GS_PROPERTY(defaultFont)
 #undef __GS_PROPERTY
 
   static Settings& instance();
