@@ -93,6 +93,7 @@ protected:
   int _year;
 
   long _toJd() const;
+  void _set( const DateTime& t );
 
   int _getMonthToDate( const long end ) const;
 

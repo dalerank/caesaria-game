@@ -36,20 +36,15 @@
   vinalia : { month : 1, day : 23, name : "Vinalia Priora for the previous year's wine" }
   robigalia : { month : 1, day : 25, name : "An agricultural festival involving dog sacrifice" }
   ludi_florales : { month : 1, day : 27, name : "Ludi Florales in honour of Flora" }
-
-Maius
-
-The feriae conceptivae of this month was the Ambarvalia.
-
-    1 (Kalends): Games of Flora continue; sacrifice to Maia; anniversary of the Temple of Bona Dea on the Aventine; rites for the Lares Praestites, tutelaries of the city of Rome
-    3: in the Imperial period, a last celebration for Flora, or the anniversary of one of her temples
-    9, 11, 13: Lemuria, a festival of the dead with both public and household rites, possibly with a sacrifice to Mania on the 11th
-    14: anniversary of the Temple of Mars Invictus (Mars the Unconquered); a second procession of the Argei[11]
-    15 (Ides): Mercuralia, in honor of Mercury; Feriae of Jove
-    21: one of four Agonalia, probably a third festival for Vediovis
-    23: a second Tubilustrium; Feriae for Volcanus (Vulcan)
-    24: QRCF, following Tubilustrium as in March
-    25: anniversary of the Temple of Fortuna Primigenia
+  mai_kalends : { month : 2, day : 1, name : "Anniversary of the Temple of Bona Dea on the Aventine" }
+  mai_floralie : { month : 2, day : 3, name : "last celebration for Flora" }
+  mai_lemuria : { month : 2, day : 9, name : "Festival of the dead with both public and household rites" }
+  mai_invictus : { month : 2, day : 14, name : "Anniversary of the Temple of Mars Invictus" }
+  mai_mercuralia : { month : 2, day : 14, name : "In honor of Mercury; Feriae of Jove" }
+  mai_agonalia : { month : 2, day : 21, name : "One of four Agonalia, probably a third festival for Vediovis" }
+  mai_tubilustrium : { month : 2, day : 23, name : "A second Tubilustrium; Feriae for Volcanus (Vulcan)" }
+  mai_qrfc: { month : 2, day : 24, name : "QRCF, following Tubilustrium as in March" }
+  mai_qrfc: { month : 2, day : 25, name : "Anniversary of the Temple of Fortuna Primigenia" }
 
 Iunius
 

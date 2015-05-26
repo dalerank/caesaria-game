@@ -16,8 +16,9 @@ const std::string romDatePostfix = "##";
 ExtentedDateInfo::ExtentedDateInfo(Widget *parent, const Rect& rect, int id)
   : Label( parent, rect, "", false, bgSimpleWhite, id )
 {
-  setGeometry( Rect( parent->width() - 50, 24, parent->width(), 100) );
+  setGeometry( Rect( 0, 0, parent->width(), parent->height()) );
   setWordwrap( true );
+  setFont( Font::create( FONT_1 ));
 }
 
 ExtentedDateInfo::~ExtentedDateInfo() {}
@@ -49,7 +50,7 @@ void ExtentedDateInfo::_update()
 {
   RomanDate date( game::Date::current() );
   std::string dayStr   = romDatePrefix + RomanDate::dayName( date.dayOfWeek() ) + romDatePostfix;
-  std::string monthStr = romDatePrefix + RomanDate::monthName( date.month()   ) + romDatePostfix;
+  std::string monthStr = romDatePrefix + RomanDate::monthName( date.month()-1 ) + romDatePostfix;
   std::string dayDescription = game::Celebrates::instance().getDescription( date.day(), date.month() );
 
   std::string text = utils::format( 0xff, "%s %s %d\n %s",

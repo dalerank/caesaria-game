@@ -236,12 +236,7 @@ DateTime& DateTime::operator= ( time_t t)
 
 DateTime& DateTime::operator=( const DateTime& val )
 { 
-  _seconds = val._seconds;
-  _minutes = val._minutes;
-  _hour = val._hour;
-  _day = val._day;
-  _month = val._month;
-  _year = val._year;
+  _set( val );
 
   return *this;
 }
@@ -297,6 +292,15 @@ long DateTime::_toJd() const
   return jul_day;
 }
 
+void DateTime::_set(const DateTime& val )
+{
+  _seconds = val._seconds;
+  _minutes = val._minutes;
+  _hour = val._hour;
+  _day = val._day;
+  _month = val._month;
+  _year = val._year;
+}
 
 const char* RomanDate::age() const { return age_uc; }
 const char* RomanDate::dayName(unsigned char d) { return romanDayNames[ math::clamp<int>( d, 0, 6 ) ]; }
@@ -305,7 +309,7 @@ const char* RomanDate::shortMonthName(unsigned char d) { return shortMonthNames[
 
 RomanDate::RomanDate(const DateTime& date)
 {
-  *this = date;
+  _set( date );
   _year += abUrbeCondita;
 }
 

@@ -103,6 +103,7 @@ public:
   __GS_PROPERTY(ccUseAI)
   __GS_PROPERTY(metricSystem)
   __GS_PROPERTY(defaultFont)
+  __GS_PROPERTY(celebratesConfig)
 #undef __GS_PROPERTY
 
   static Settings& instance();
