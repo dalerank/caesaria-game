@@ -29,14 +29,13 @@
   apr_kalends: { month : 1, day : 1, name : "Veneralia in honour of Venus" }
   megalesia: { month : 1, day : 4, name : "Ludi Megalenses or Megalesia" }
   foruna_publica: { month : 1, day : 5, name : "Anniversary of the Temple of Fortuna Publica" }
-
-    12–19: Cerialia or Ludi Cereri, festival and games for Ceres, established by 202 BC
-    13 (Ides): anniversary of the Temple of Jupiter Victor
-    15: Fordicidia, offering of a pregnant cow to Tellus ("Earth")
-    21: Parilia, rustic festival in honour of Pales, and the dies natalis of Rome
-    23: the first of two wine festivals (Vinalia), the Vinalia Priora for the previous year's wine, held originally for Jupiter and later Venus
-    25: Robigalia, an agricultural festival involving dog sacrifice
-    27 (28 in the Julian calendar) to May 1: Ludi Florales in honour of Flora, extended to May 3 under the Empire
+  ludi_cereri : { month : 1, day : 12, name : "Ludi Cereri" }
+  aprel_ides : { month : 1, day : 15, name : "Anniversary of the Temple of Jupiter Victor" }
+  fordicidia : { month : 1, day : 16, name : "Offering of a pregnant cow to Tellus" }
+  parilia : { month : 1, day : 21, name : "Festival in honour of Pales" }
+  vinalia : { month : 1, day : 23, name : "Vinalia Priora for the previous year's wine" }
+  robigalia : { month : 1, day : 25, name : "An agricultural festival involving dog sacrifice" }
+  ludi_florales : { month : 1, day : 27, name : "Ludi Florales in honour of Flora" }
 
 Maius
 
