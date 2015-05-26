@@ -14,4 +14,5 @@
   Suomi      : { ext : "fn", talks : ":/audio/wavs_citizen_en.zip" }
   Português  : { ext : "pr", talks : ":/audio/wavs_citizen_en.zip" }
   Cрпски     : { ext : "sb", talks : ":/audio/wavs_citizen_en.zip" }
+  Korean     : { ext : "kr", talks : ":/audio/wavs_citizen_en.zip" }
 }

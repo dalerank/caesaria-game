@@ -342,6 +342,7 @@ void FontCollection::addFont(const int key, const std::string& name, vfs::Path p
 
 void FontCollection::initialize(const std::string &resourcePath)
 {
+  _d->collection = std::map<int, Font>();
   vfs::Directory resDir( resourcePath );
   vfs::Path fontFilename = SETTINGS_VALUE( font ).toString();
   vfs::Path absolutFontfilename = resDir/fontFilename;
