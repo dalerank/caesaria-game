@@ -20,6 +20,7 @@
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/variant_map.hpp"
+#include "core/variant_list.hpp"
 #include "gfx/helper.hpp"
 #include "core/logger.hpp"
 

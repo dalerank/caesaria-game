@@ -24,6 +24,7 @@
 #include "environment.hpp"
 #include "core/event.hpp"
 #include "core/variant_map.hpp"
+#include "core/variant_list.hpp"
 #include "core/foreach.hpp"
 #include "core/saveadapter.hpp"
 #include "core/utils.hpp"

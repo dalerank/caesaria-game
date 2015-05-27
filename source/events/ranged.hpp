@@ -20,7 +20,7 @@
 
 #include "event.hpp"
 #include "core/scopedptr.hpp"
-#include "core/variant.hpp"
+#include "core/variant_list.hpp"
 
 namespace events
 {

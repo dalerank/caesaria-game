@@ -17,7 +17,8 @@
 
 #include "json.hpp"
 #include "utils.hpp"
-#include "core/variant_map.hpp"
+#include "variant_map.hpp"
+#include "variant_list.hpp"
 
 static std::string lastParsedObjectName;
 static std::string sanitizeString(std::string str)

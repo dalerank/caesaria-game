@@ -17,6 +17,7 @@
 
 #include "active_points.hpp"
 #include "gfx/helper.hpp"
+#include "core/variant_list.hpp"
 
 using namespace gfx;
 
@@ -39,11 +40,11 @@ void ActivePoints::set( unsigned int index, const TilePos& pos)
     (*this)[index] = pos;
 }
 
-VariantList ActivePoints::save() const {  return toVList(); }
+VariantList ActivePoints::save() const {  return save(); }
 
 void ActivePoints::load( const VariantList &stream)
 {
-  fromVList( stream );
+  load( stream );
   resize( maxPoints );
 }
 

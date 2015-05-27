@@ -36,7 +36,9 @@ enum { defaultNumber=10 };
 
 namespace crime
 {
-enum { maxLevel=10, rioterCost=20, level4protestor = 50, level4mugger = 70, defaultValue = 75, level4rioter = 90, maxValue=100 };
+enum { maxLevel=10, protestorCost=15, rioterCost=20,
+       level4protestor = 50, level4mugger = 70,
+       defaultValue = 75, level4rioter = 90, maxValue=100 };
 }
 
 namespace festival

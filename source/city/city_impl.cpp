@@ -21,6 +21,7 @@
 #include "objects/overlay.hpp"
 #include "core/saveadapter.hpp"
 #include "core/variant_map.hpp"
+#include "core/variant_list.hpp"
 #include "walker/walker.hpp"
 #include "cityservice_factory.hpp"
 #include "city.hpp"

@@ -33,6 +33,7 @@
 #include "corpse.hpp"
 #include "city/states.hpp"
 #include "core/variant_map.hpp"
+#include "core/variant_list.hpp"
 #include "gfx/cart_animation.hpp"
 #include "walkers_factory.hpp"
 

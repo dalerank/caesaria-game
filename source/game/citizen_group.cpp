@@ -16,6 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "citizen_group.hpp"
+#include "core/variant_list.hpp"
 
 unsigned int CitizenGroup::count() const
 {

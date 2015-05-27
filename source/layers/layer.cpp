@@ -662,10 +662,10 @@ void Layer::_addWalkerType(walker::Type wtype)
 void Layer::_initialize()
 {
   const VariantMap& vm = citylayer::Helper::getConfig( (citylayer::Type)type() );
-  VariantList vl = vm.get( "visibleObjects" ).toList();
+  StringArray vl = vm.get( "visibleObjects" ).toStringArray();
   foreach( it, vl )
   {
-    object::Type ovType = object::toType( it->toString() );
+    object::Type ovType = object::toType( *it );
     if( ovType != object::unknown )
       _dfunc()->drObjects.insert( ovType );
   }  

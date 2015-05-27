@@ -20,6 +20,7 @@
 #include "core/color.hpp"
 #include "variant.hpp"
 #include "variant_map.hpp"
+#include "variant_list.hpp"
 #include "variantprivate.hpp"
 #include "utils.hpp"
 
@@ -47,9 +48,6 @@ static Variant::Type staticNameToType( const char* name )
   if( !strcmp( name, typeid(Point).name() ) )       return Variant::NPoint;
   if( !strcmp( name, typeid(TilePos).name() ) )     return Variant::NTilePos;
   if( !strcmp( name, typeid(PointF).name() ) )      return Variant::NPointF;
-// 	if( !strcmp( name, typeid(Color).name() ) )
-// 		return Variant::Color;
-// 	
   if( !strcmp( name, typeid(unsigned char).name() ) )  return Variant::Uchar;
   if( !strcmp( name, typeid(unsigned short).name() ) ) return Variant::Ushort;
   if( !strcmp( name, typeid(unsigned long).name() ) )  return Variant::Ulong;

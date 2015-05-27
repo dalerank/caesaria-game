@@ -35,6 +35,7 @@
 #include "core/logger.hpp"
 #include "core/saveadapter.hpp"
 #include "game/settings.hpp"
+#include "core/variant_list.hpp"
 
 //using namespace constants;
 using namespace gfx;
