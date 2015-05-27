@@ -104,6 +104,7 @@ class Level::Impl
 {
 public:
   EventHandlers eventHandlers;
+  Minimap* mmap;
   gui::MenuRigthPanel* rightPanel;
   gui::TopMenu* topMenu;
   gui::Menu* menu;
@@ -148,6 +149,11 @@ public:
   void saveScrollSpeed( int speed );
   void changeZoom( int delta );
   void handleDirectionChange( Direction direction );
+  void initRender();
+  void initMainUI();
+  void installHandlers( Base* scene);
+  void initSound();
+  void initTabletUI(Level* scene);
 
   std::string getScreenshotName();
   vfs::Path createFastSaveName( const std::string& type="", const std::string& postfix="");
@@ -162,64 +168,91 @@ Level::Level(Game& game, gfx::Engine& engine ) : _d( new Impl )
 
 Level::~Level() {}
 
+void Level::Impl::initRender()
+{
+  bool oldGraphics = SETTINGS_VALUE( oldgfx ).toBool() || !SETTINGS_VALUE( c3gfx ).toString().empty();
+  renderer.initialize( game->city(), engine, game->gui(), oldGraphics );
+  renderer.setViewport( engine->screenSize() );
+  renderer.camera()->setScrollSpeed( SETTINGS_VALUE( scrollSpeed ) );
+}
+
+void Level::Impl::initMainUI()
+{
+  PlayerCityPtr city = game->city();
+  gui::Ui& ui = *game->gui();
+
+  Picture rPanelPic( ResourceGroup::panelBackground, PicID::rightPanelTx );
+  Engine& engine = Engine::instance();
+
+  Rect rPanelRect( engine.virtualSize().width() - rPanelPic.width(), topMenuHeight,
+                   engine.virtualSize().width(), engine.virtualSize().height() );
+
+  rightPanel = MenuRigthPanel::create( ui.rootWidget(), rPanelRect, rPanelPic);
+
+  topMenu = new TopMenu( ui.rootWidget(), topMenuHeight, !city->getOption( PlayerCity::c3gameplay ) );
+  topMenu->setPopulation( game->city()->states().population );
+  topMenu->setFunds( game->city()->treasury().money() );
+
+  menu = Menu::create( ui.rootWidget(), -1, city );
+  menu->setPosition( Point( engine.virtualSize().width() - rightPanel->width(),
+                                topMenu->height() ) );
+
+  extMenu = ExtentMenu::create( ui.rootWidget(), -1, city );
+  extMenu->setPosition( Point( engine.virtualSize().width() - extMenu->width() - rightPanel->width(),
+                               topMenu->height() ) );
+
+  mmap = new Minimap( extMenu, Rect( Point( 8, 35), Size( 144, 110 ) ),
+                      city,
+                      *renderer.camera() );
+
+  WindowMessageStack::create( ui.rootWidget() );
+
+  rightPanel->bringToFront();
+}
+
+void Level::Impl::installHandlers( Base* scene )
+{
+  scene->installEventHandler( PatrolPointEventHandler::create( *game, renderer ) );
+}
+
+void Level::Impl::initSound()
+{
+  SmartPtr<city::AmbientSound> sound = statistic::getService<city::AmbientSound>( game->city() );
+  if( sound.isValid() )
+    sound->setCamera( renderer.camera() );
+}
+
+class TabletActionsHandler : public Widget
+{
+public:
+
+};
+
+void Level::Impl::initTabletUI( Level* scene )
+{
+  //specific tablet actions bar
+  AndroidActionsBar* androidBar = new AndroidActionsBar( game->gui()->rootWidget() );
+  //TabletActionsHandler::assigned( androidBar,  );
+
+  CONNECT( androidBar, onRequestTileHelp(), this,      Impl::showTileHelp            )
+  CONNECT( androidBar, onEscapeClicked(),   scene,     Level::_resolveEscapeButton   )
+  CONNECT( androidBar, onEnterClicked(),    scene,     Level::_resolveEnterButton    )
+  CONNECT( androidBar, onRequestMenu(),     scene,     Level::_showIngameMenu        )
+  CONNECT( androidBar, onChangeZoom(),      &renderer, gfx::CityRenderer::changeZoom )
+
+  androidBar->setVisible( SETTINGS_VALUE(showTabletMenu) );
+}
+
 void Level::initialize()
 {
   PlayerCityPtr city = _d->game->city();
   gui::Ui& ui = *_d->game->gui();
 
-  bool oldGraphics = SETTINGS_VALUE( oldgfx ).toBool() || !SETTINGS_VALUE( c3gfx ).toString().empty();
-  _d->renderer.initialize( city, _d->engine, &ui, oldGraphics );
-  ui.clear();
-
-  Picture rPanelPic( ResourceGroup::panelBackground, PicID::rightPanelTx );
-
-  Engine& engine = Engine::instance();
-
-  installEventHandler( PatrolPointEventHandler::create( *_d->game, _d->renderer ) );
-
-  Rect rPanelRect( engine.virtualSize().width() - rPanelPic.width(), topMenuHeight,
-                   engine.virtualSize().width(), engine.virtualSize().height() );
-
-  _d->rightPanel = MenuRigthPanel::create( ui.rootWidget(), rPanelRect, rPanelPic);
-
-  _d->topMenu = new TopMenu( ui.rootWidget(), topMenuHeight, !city->getOption( PlayerCity::c3gameplay ) );
-  _d->topMenu->setPopulation( _d->game->city()->states().population );
-  _d->topMenu->setFunds( _d->game->city()->treasury().money() );
-
-  _d->menu = Menu::create( ui.rootWidget(), -1, city );
-  _d->menu->setPosition( Point( engine.virtualSize().width() - _d->rightPanel->width(),
-                                _d->topMenu->height() ) );
-
-  _d->extMenu = ExtentMenu::create( ui.rootWidget(), -1, city );
-  _d->extMenu->setPosition( Point( engine.virtualSize().width() - _d->extMenu->width() - _d->rightPanel->width(),
-                                     _d->topMenu->height() ) );
-
-  Minimap* mmap = new Minimap( _d->extMenu, Rect( Point( 8, 35), Size( 144, 110 ) ),
-                               city,
-                               *_d->renderer.camera() );
-
-  WindowMessageStack::create( ui.rootWidget() );
-
-  _d->rightPanel->bringToFront();
-  _d->renderer.setViewport( engine.screenSize() );
-  _d->renderer.camera()->setScrollSpeed( SETTINGS_VALUE( scrollSpeed ) );
-
-  SmartPtr<city::AmbientSound> sound = statistic::getService<city::AmbientSound>( _d->game->city() );
-  if( sound.isValid() )
-    sound->setCamera( _d->renderer.camera() );
-
-  //specific tablet actions bar
-  {
-    AndroidActionsBar* androidBar = new AndroidActionsBar( _d->game->gui()->rootWidget() );
-
-    CONNECT( androidBar, onRequestTileHelp(), _d.data(),     Impl::showTileHelp            );
-    CONNECT( androidBar, onEscapeClicked(),   this,          Level::_resolveEscapeButton   );
-    CONNECT( androidBar, onEnterClicked(),    this,          Level::_resolveEnterButton    );
-    CONNECT( androidBar, onRequestMenu(),     this,          Level::_showIngameMenu        );
-    CONNECT( androidBar, onChangeZoom(),      &_d->renderer, gfx::CityRenderer::changeZoom );
-
-    androidBar->setVisible( SETTINGS_VALUE(showTabletMenu) );
-  }
+  _d->initRender();
+  _d->initMainUI();
+  _d->installHandlers( this );
+  _d->initSound();
+  _d->initTabletUI( this );
 
   //connect elements
   CONNECT( _d->topMenu, onSave(),                 _d.data(),         Impl::showSaveDialog )
@@ -258,11 +291,11 @@ void Level::initialize()
   CONNECT( &_d->alarmsHolder, onMoveToAlarm(),    _d->renderer.camera(), Camera::setCenter )
   CONNECT( &_d->alarmsHolder, onAlarmChange(),    _d->extMenu,       ExtentMenu::setAlarmEnabled )
 
-  CONNECT( _d->renderer.camera(), onPositionChanged(), mmap,         Minimap::setCenter )
+  CONNECT( _d->renderer.camera(), onPositionChanged(), _d->mmap,     Minimap::setCenter )
   CONNECT( _d->renderer.camera(), onPositionChanged(), _d.data(),    Impl::saveCameraPos )
   CONNECT( _d->renderer.camera(), onDirectionChanged(), _d.data(),   Impl::handleDirectionChange )
-  CONNECT( mmap, onCenterChange(), _d->renderer.camera(),            Camera::setCenter )
-  CONNECT( mmap, onZoomChange(), &_d->renderer,                      gfx::CityRenderer::changeZoom )
+  CONNECT( _d->mmap, onCenterChange(), _d->renderer.camera(),        Camera::setCenter )
+  CONNECT( _d->mmap, onZoomChange(), &_d->renderer,                  gfx::CityRenderer::changeZoom )
   CONNECT( &_d->renderer, onLayerSwitch(), _d->extMenu,              ExtentMenu::changeOverlay )
   CONNECT( &_d->renderer, onLayerSwitch(), _d.data(),                Impl::layerChanged )
 
@@ -684,7 +717,7 @@ void Level::_restartMission() { _d->result = Level::restart;  stop();}
 void Level::setCameraPos(TilePos pos) {  _d->renderer.camera()->setCenter( pos ); }
 void Level::switch2layer(int layer) { _d->renderer.setLayer( layer ); }
 Camera* Level::camera() const { return _d->renderer.camera(); }
-void Level::_exitGame(){ _d->result = Level::quitGame;  stop();}
+void Level::_exitGame(){ _d->result = Level::quitGame; stop();}
 void Level::Impl::saveScrollSpeed(int speed) { SETTINGS_SET_VALUE( scrollSpeed, speed ); }
 
 void Level::_requestExitGame()

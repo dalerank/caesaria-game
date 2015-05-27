@@ -209,7 +209,7 @@ Pathway Indigene::Impl::findWay2bestField(PlayerCityPtr city, TilePos pos)
       }
     }
 
-    way = PathwayHelper::create( pos, ptr_cast<Construction>( field ), PathwayHelper::allTerrain );
+    way = PathwayHelper::create( pos, field, PathwayHelper::allTerrain );
   }
 
   return way;

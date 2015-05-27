@@ -50,7 +50,7 @@ public:
   State state;
 
 public:
-  Pathway findTarget( PlayerCityPtr city, ConstructionList constructions, TilePos pos );
+  Pathway findHouse(PlayerCityPtr city, HouseList constructions, TilePos pos );
 };
 
 Protestor::Protestor(PlayerCityPtr city) : Human( city ), _d( new Impl )
@@ -94,15 +94,14 @@ void Protestor::timeStep(const unsigned long time)
   {
   case Impl::searchHouse:
   {
-    ConstructionList constructions = city::statistic::getObjects<Construction>( _city(), object::house );
-    for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
+    HouseList houses = city::statistic::getHouses( _city() );
+    for( HouseList::iterator it=houses.begin(); it != houses.end(); )
     {
-      HousePtr h = (*it).is<House>();
-      if( h->spec().level() <= _d->houseLevel ) { it=constructions.erase( it ); }
+      if( (*it)->spec().level() <= _d->houseLevel ) { it=houses.erase( it ); }
       else { ++it; }
     }
 
-    Pathway pathway = _d->findTarget( _city(), constructions, pos() );
+    Pathway pathway = _d->findHouse( _city(), houses, pos() );
     //find more expensive house, fire this!!!
     if( pathway.isValid() )
     {
@@ -120,18 +119,9 @@ void Protestor::timeStep(const unsigned long time)
 
   case Impl::searchAnyBuilding:
   {
-    ConstructionList constructions = city::statistic::getObjects<Construction>( _city(), object::house );
+    HouseList houses = city::statistic::getHouses( _city() );
 
-    for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
-    {
-      object::Type type = (*it)->type();
-      object::Group group = (*it)->group();
-      if( type == object::house || type == object::road || _d->excludeGroups.count( group ) > 0 )
-      { it=constructions.erase( it ); }
-      else { it++; }
-    }
-
-    Pathway pathway = _d->findTarget( _city(), constructions, pos() );
+    Pathway pathway = _d->findHouse( _city(), houses, pos() );
     if( pathway.isValid() )
     {
       setPos( pathway.startPos() );
@@ -172,18 +162,11 @@ void Protestor::timeStep(const unsigned long time)
   {
     if( game::Date::isDayChanged() )
     {
-      ConstructionList constructions = city::statistic::getObjects<Construction>( _city(),
-                                                                             object::any,
-                                                                             pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
+      HouseList constructions = city::statistic::getObjects<House>( _city(),
+                                                                    object::house,
+                                                                    pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
 
-      for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
-      {
-        if( (*it)->type() == object::road || _d->excludeGroups.count( (*it)->group() ) > 0  )
-        { it=constructions.erase( it ); }
-        else { ++it; }
-      }
-
-       if( constructions.empty() )
+      if( constructions.empty() )
       {
         _animation().clear();
         _setAction( acMove );
@@ -269,17 +252,16 @@ void Protestor::load(const VariantMap& stream)
 
 int Protestor::agressive() const { return 1; }
 
-Pathway Protestor::Impl::findTarget(PlayerCityPtr city, ConstructionList constructions, TilePos pos )
+Pathway Protestor::Impl::findHouse(PlayerCityPtr city, HouseList constructions, TilePos pos )
 {  
   if( !constructions.empty() )
   {
     Pathway pathway;
     for( int i=0; i<10; i++)
     {
-      ConstructionList::iterator it = constructions.begin();
-      std::advance( it, rand() % constructions.size() );
+      HousePtr house = constructions.random();
 
-      pathway = PathwayHelper::create( pos, *it, PathwayHelper::allTerrain );
+      pathway = PathwayHelper::create( pos, house, PathwayHelper::allTerrain );
       if( pathway.isValid() )
       {
         return pathway;
