@@ -34,6 +34,7 @@
 #include "city/states.hpp"
 #include "objects/constants.hpp"
 #include "game/citizen_group.hpp"
+#include "core/priorities.hpp"
 #include "config.hpp"
 
 using namespace gfx;
@@ -52,9 +53,10 @@ public:
     int fruitFarm;
     int furnitureWorkshop;
     int oilWorkshop;
-    int wineWorkshop;
-    int school;
+    unsigned int building[ object::userType ];
   } need;
+
+  unsigned int idle[ object::userType ];
 
   CcTargets()
   {
@@ -65,9 +67,9 @@ public:
     need.meatFarm = 0;
     need.fruitFarm = 0;
     need.oilWorkshop = 0;
-    need.wineWorkshop = 0;
     need.furnitureWorkshop = 0;
-    need.school = 0;
+    int dd = sizeof( need.building );
+    memset( need.building, 0, sizeof( need.building ) );
   }
 
   VariantMap save() const
@@ -358,24 +360,59 @@ void ComputerCity::Impl::placeNewBuilding(object::Type type)
   buildings.push_back( info );
 }
 
+struct ServiceInfo
+{
+  unsigned int type[object::userType];
+
+  ServiceInfo() { memset( this, 0, sizeof(ServiceInfo) ); }
+};
+
+int isNeedNewBuilding( unsigned int idle, unsigned int have, unsigned int served, int multiplier )
+{
+  if( idle > 0 )
+     return 0;
+
+  return (served > have ? 0 : 1) * multiplier;
+}
+
+struct CheckType
+{
+  object::Type building;
+  CitizenGroup::Age age;
+  int multiplier;
+
+  CheckType( object::Type b, CitizenGroup::Age a, int m ) :
+     building( b ), age( a ), multiplier( m ) {}
+
+  bool operator<( const CheckType& a) const { return building < a.building; }
+};
+
 void ComputerCity::Impl::citizensConsumeServices()
 {
-  unsigned int schoolMayServe = 0;
-  bool haveIdleBuildings = false;
+  ServiceInfo mayServe;
+  ServiceInfo idle;
+
   foreach( it, buildings )
   {
     BuildingInfo& info = *it;
-    haveIdleBuildings &= (info.workersNumber < info.maxWorkersNumber);
-    if( info.type == object::school )
+    idle.type[info.type] &= (info.workersNumber < info.maxWorkersNumber);
+    if( info.maxWorkersNumber > 0 )
     {
-      schoolMayServe += (info.workersNumber / (float)info.maxWorkersNumber) * info.maxService;
+      mayServe.type[ info.type ] += (info.workersNumber / (float)info.maxWorkersNumber) * info.maxService;
     }
   }
 
-  bool needYetSchool = peoples.count( CitizenGroup::scholar ) > schoolMayServe;
-  if( !haveIdleBuildings && needYetSchool )
+  std::set<CheckType> checkTypes;
+  checkTypes << CheckType( object::school, CitizenGroup::scholar, 4 )
+             << CheckType( object::small_ceres_temple, CitizenGroup::any, 4 );
+
+  foreach( it, checkTypes )
   {
-    targets.need.school+=4;
+    const CheckType& check = *it;
+    targets.need.building[ check.building ] += isNeedNewBuilding( idle.type[ check.building ],
+                                                                  peoples.count( check.age ),
+                                                                  mayServe.type[ check.building ], check.multiplier );
+    targets.idle[ check.building ] = idle.type[ check.building ];
   }
 }
 
@@ -465,10 +502,10 @@ void ComputerCity::Impl::placeNewBuildings()
     targets.need.oilWorkshop = 0;
   }
 
-  if( targets.need.wineWorkshop > 8 )
+  if( targets.need.building[ object::wine_workshop ] > 8 )
   {
     placeNewBuilding( object::wine_workshop );
-    targets.need.wineWorkshop = 0;
+    targets.need.building[ object::wine_workshop ] = 0;
   }
 
   if( internalGoods.needExpand > 8 )
@@ -483,10 +520,10 @@ void ComputerCity::Impl::placeNewBuildings()
     targets.need.furnitureWorkshop = 0;
   }
 
-  if( targets.need.school > 8 )
+  if( targets.need.building[ object::school ] > 8 )
   {
     placeNewBuilding( object::school );
-    targets.need.school = 0;
+    targets.need.building[ object::school ] = 0;
   }
 }
 
@@ -657,7 +694,7 @@ void ComputerCity::Impl::citizensConsumeGoods()
     targetSentiment += 5 * ((wine2Consume.need - anyHungry) / (float)wine2Consume.need);
 
     if( anyHungry )
-      targets.need.wineWorkshop++;
+      targets.need.building[ object::wine_workshop ]++;
   }
 
   int delta = math::clamp( targetSentiment - sentiment, -2, 2);

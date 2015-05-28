@@ -178,7 +178,7 @@ void DlcFolderViewer::_resolveCellClick(int row, int column)
 
     if( !path.exist() )
     {
-      path.changeExtension( "en" );
+      path.changeExtension( "ru" );
     }
 
     if( path.exist() )

@@ -197,6 +197,8 @@ APPEND_NAMEDTYPE_ID(meadow,               96)
 APPEND_NAMEDTYPE_ID(roadBlock,            97)
 APPEND_NAMEDTYPE_ID(farmtile,             98)
 
+APPEND_NAMEDTYPE(userType)
+
 END_NAMEDTYPE(Type)
 
 
