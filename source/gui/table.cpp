@@ -692,11 +692,11 @@ bool Table::onEvent(const NEvent &event)
 						return true;
 					}
 
+          _getCellUnderMouse( event.mouse.x, event.mouse.y, _lastColumnIndex, _lastRowIndex );
           if ( _selectColumnHeader( event.mouse.x, event.mouse.y ) )
 						return true;
 
           _selecting = true;
-          _getCellUnderMouse( event.mouse.x, event.mouse.y, _lastColumnIndex, _lastRowIndex );
 					setFocus();
 					return true;
         break;
@@ -991,13 +991,6 @@ void Table::draw( gfx::Engine& painter )
 			//skin->DrawElement( this, cellStyle.Normal(), rowRect, &clientClip, 0 ) ;
 		}
 
-		// draw selected row background highlighted
-		/*if ((int)i == _selectedRow && _d->isFlag( drawActiveRow ) )
-		{
-			Rect lineRect( _d->rows[ i ].Items[ 0 ]->absoluteRect() );
-			lineRect.LowerRightCorner.X = screenRight();
-			skin->drawElement( this, myStyle.Checked(), lineRect, &_d->itemsArea->getAbsoluteClippingRectRef() );
-		}*/
 
     if( _d->isFlag( drawRows ) )
     {

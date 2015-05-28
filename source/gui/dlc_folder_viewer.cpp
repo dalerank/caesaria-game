@@ -80,7 +80,7 @@ public:
   void init( const Size& size )
   {
     background = Picture( size, 0, true );
-    background.fill( DefaultColors::black.color & 0xaaffffff );
+    background.fill( DefaultColors::black.color & 0xccffffff );
     background.update();
   }
 };
@@ -98,6 +98,7 @@ DlcFolderViewer::DlcFolderViewer(Widget* parent, Directory folder )
     return;
 
   Window::setupUI( ":/gui/dlcviewer.gui" );
+  setWindowFlag( Window::fdraggable, false );
 
   _d->init( size() );
   _d->folder = folder;
@@ -123,7 +124,7 @@ DlcFolderViewer::DlcFolderViewer(Widget* parent, Directory folder )
     }
   }
 
-  _d->table = new Table( this, -1, Rect( 80, 50, width() - 50, height() - 50 ) );
+  _d->table = new Table( this, -1, Rect( 50, 50, width() - 50, height() - 50 ) );
   _d->table->setDrawFlag( Table::drawColumns, false );
   _d->table->setDrawFlag( Table::drawRows, false );
   _d->table->setDrawFlag( Table::drawActiveCell, true );
@@ -162,10 +163,15 @@ void DlcFolderViewer::setupUI(const VariantMap& ui)
 
 void DlcFolderViewer::_loadDesc(Path path)
 {
-  Window* window = new Window( this, _d->table->relativeRect(), "" );
+  Rect rect = _d->table->relativeRect();
+  rect.rleft() += 100;
+  rect.rright() -= 100;
+  Window* window = new Window( this, rect, "" );
   window->setupUI( path );
+  window->setModal();
+  window->setWindowFlag( Window::fdraggable, false );
 
-  PushButton* btnClose = findChildA<PushButton*>( "btnClose", true, window );
+  PushButton* btnClose = new PushButton( window, Rect( window->width() - 40, 12, window->width() - 16, 12 + 24), "X");
   CONNECT( btnClose, onClicked(), window, Window::deleteLater )
 }
 
@@ -178,7 +184,7 @@ void DlcFolderViewer::_resolveCellClick(int row, int column)
 
     if( !path.exist() )
     {
-      path.changeExtension( "ru" );
+      path = path.changeExtension( "ru" );
     }
 
     if( path.exist() )
