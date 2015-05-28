@@ -63,7 +63,7 @@ using namespace citylayer;
 namespace gfx
 {
 
-enum { zoomStep=10, minZoom=30, defaultZoom=100, maxZoom=300 };
+enum { defaultZoomStep=10 };
 
 class CityRenderer::Impl
 {
@@ -77,9 +77,7 @@ public:
   TilemapCamera camera;  // visible map area
   Layers layers;
   Point currentCursorPos;
-  int zoom;
-  bool zoomChanged;
-
+  int lastZoom;
   Renderer::ModePtr changeCommand;
 
 public:
@@ -108,9 +106,7 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   _d->guienv = guienv;
   _d->camera.init( *_d->tilemap, engine->virtualSize() );
   _d->engine = engine;
-  _d->zoom = defaultZoom;
-  _d->zoomChanged = false;
-
+  _d->lastZoom = _d->camera.zoom();
   _d->engine->initViewport( 0, _d->engine->screenSize() );
 
   addLayer( Simple::create( _d->camera, city ) );
@@ -202,11 +198,13 @@ void CityRenderer::Impl::setLayer(int type)
 }
 
 void CityRenderer::render()
-{
-  if( _d->zoomChanged )
+{  
+  bool zoomChanged = _d->lastZoom != _d->camera.zoom();
+  if( zoomChanged )
   {
-    _d->zoomChanged = false;
-    Size s = _d->engine->screenSize() * _d->zoom / defaultZoom;
+    _d->lastZoom = _d->camera.zoom();
+
+    Size s = _d->engine->screenSize() * _d->lastZoom / _d->camera.maxZoom();
     bool zoomOk = _d->engine->initViewport( 0, s );
     if( zoomOk )
       _d->camera.setViewport( s );
@@ -255,7 +253,7 @@ void CityRenderer::handleEvent( NEvent& event )
       {
         int zoomInvert = _d->city->getOption( PlayerCity::zoomInvert ) ? -1 : 1;
 
-        changeZoom( event.mouse.wheel * zoomStep * zoomInvert );
+        _d->camera.changeZoom( event.mouse.wheel * defaultZoomStep * zoomInvert );
       }
     }
   }
@@ -312,13 +310,6 @@ void CityRenderer::setLayer(int layertype)
     layertype = citylayer::simple;
 
   _d->setLayer( layertype );
-}
-
-void CityRenderer::changeZoom(int delta)
-{
-  int lastZoom = _d->zoom;
-  _d->zoom = math::clamp<int>( _d->zoom + delta, minZoom, maxZoom );
-  _d->zoomChanged = (lastZoom != _d->zoom);
 }
 
 LayerPtr CityRenderer::getLayer(int type) const

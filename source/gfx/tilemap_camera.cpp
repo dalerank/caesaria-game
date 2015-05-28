@@ -41,6 +41,8 @@ struct MovableOrders
   bool any() { return left || right || up || down; }
 };
 
+enum { zoomStep=10, zoomMiniminal=30, zoomDefault=100, zoomMaximum=300 };
+
 class TilemapCamera::Impl
 {
 public:
@@ -50,6 +52,7 @@ public:
   Size borderSize;
   Point offset;
   int scrollSpeed;
+  int zoom;
 
   Tilemap* tmap;   // tile map to display
   PointF centerMapXZ; // center of the view(in tiles)
@@ -81,6 +84,7 @@ TilemapCamera::TilemapCamera() : _d( new Impl )
   _d->centerMapXZ = PointF( 0, 0 );
   _d->borderSize = Size( gfx::tilemap::cellSize().width() * 4 );
   _d->tiles.reserve( 2000 );
+  _d->zoom = 100;
 }
 
 TilemapCamera::~TilemapCamera() {}
@@ -183,6 +187,10 @@ TilePos TilemapCamera::center() const
   return tile ? tile->pos() : gfx::tilemap::invalidLocation();
 }
 
+void TilemapCamera::setZoom(int value) { _d->zoom = value; }
+int TilemapCamera::zoom() const{ return _d->zoom; }
+void TilemapCamera::changeZoom(int delta) { _d->zoom = math::clamp<int>( _d->zoom + delta, zoomMiniminal, zoomMaximum ); }
+int TilemapCamera::maxZoom() const { return zoomMaximum; }
 int TilemapCamera::centerX() const  {   return _d->centerMapXZ.x();   }
 int TilemapCamera::centerZ() const  {   return _d->centerMapXZ.y();   }
 void TilemapCamera::setScrollSpeed(int speed){  _d->scrollSpeed = speed; }

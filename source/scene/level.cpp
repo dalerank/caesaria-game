@@ -238,7 +238,7 @@ void Level::Impl::initTabletUI( Level* scene )
   CONNECT( androidBar, onEscapeClicked(),   scene,     Level::_resolveEscapeButton   )
   CONNECT( androidBar, onEnterClicked(),    scene,     Level::_resolveEnterButton    )
   CONNECT( androidBar, onRequestMenu(),     scene,     Level::_showIngameMenu        )
-  CONNECT( androidBar, onChangeZoom(),      &renderer, gfx::CityRenderer::changeZoom )
+  CONNECT( androidBar, onChangeZoom(),      renderer.camera(), gfx::Camera::changeZoom )
 
   androidBar->setVisible( SETTINGS_VALUE(showTabletMenu) );
 }
@@ -295,7 +295,7 @@ void Level::initialize()
   CONNECT( _d->renderer.camera(), onPositionChanged(), _d.data(),    Impl::saveCameraPos )
   CONNECT( _d->renderer.camera(), onDirectionChanged(), _d.data(),   Impl::handleDirectionChange )
   CONNECT( _d->mmap, onCenterChange(), _d->renderer.camera(),        Camera::setCenter )
-  CONNECT( _d->mmap, onZoomChange(), &_d->renderer,                  gfx::CityRenderer::changeZoom )
+  CONNECT( _d->mmap, onZoomChange(), _d->renderer.camera(),          gfx::Camera::changeZoom )
   CONNECT( &_d->renderer, onLayerSwitch(), _d->extMenu,              ExtentMenu::changeOverlay )
   CONNECT( &_d->renderer, onLayerSwitch(), _d.data(),                Impl::layerChanged )
 
