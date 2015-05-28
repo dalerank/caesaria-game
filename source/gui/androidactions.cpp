@@ -19,16 +19,27 @@
 #include "core/event.hpp"
 #include "environment.hpp"
 #include "texturedbutton.hpp"
+#include "scene/level.hpp"
+#include "gfx/camera.hpp"
 #include "widget_helper.hpp"
+#include "events/showtileinfo.hpp"
+#include "events/savegame.hpp"
+#include "events/loadgame.hpp"
 #include "core/logger.hpp"
+#include "gfx/tile.hpp"
+#include "gui/ingame_menu.hpp"
 #include "core/hash.hpp"
 
 using namespace gfx;
+using namespace events;
 
 namespace gui
 {
 
-class AndroidActionsBar::Impl
+namespace tablet
+{
+
+class ActionsBar::Impl
 {
 public:
   TexturedButton* btnShowHelp;
@@ -42,7 +53,7 @@ public signals:
   Signal1<int> onChangeZoomSignal;
 };
 
-AndroidActionsBar::AndroidActionsBar( Widget* parent)
+ActionsBar::ActionsBar( Widget* parent)
   : Window( parent, Rect( 0, 0, 1, 1 ), "", Hash(CAESARIA_STR_A(AndroidActionsBar)), bgNone ), _d( new Impl )
 {
   setupUI( ":/gui/android_actions_bar.gui" );
@@ -55,13 +66,13 @@ AndroidActionsBar::AndroidActionsBar( Widget* parent)
   GET_DWIDGET_FROM_UI( _d, btnZoomOut  )
 }
 
-Signal0<>& AndroidActionsBar::onRequestTileHelp() { return _d->btnShowHelp->onClicked(); }
-Signal0<>& AndroidActionsBar::onEscapeClicked()   { return _d->btnExit->onClicked(); }
-Signal0<>& AndroidActionsBar::onEnterClicked()    { return _d->btnEnter->onClicked(); }
-Signal0<>& AndroidActionsBar::onRequestMenu()     { return _d->btnMenu->onClicked(); }
-Signal1<int>& AndroidActionsBar::onChangeZoom()     { return _d->onChangeZoomSignal; }
+Signal0<>& ActionsBar::onRequestTileHelp() { return _d->btnShowHelp->onClicked(); }
+Signal0<>& ActionsBar::onEscapeClicked()   { return _d->btnExit->onClicked(); }
+Signal0<>& ActionsBar::onEnterClicked()    { return _d->btnEnter->onClicked(); }
+Signal0<>& ActionsBar::onRequestMenu()     { return _d->btnMenu->onClicked(); }
+Signal1<int>& ActionsBar::onChangeZoom()     { return _d->onChangeZoomSignal; }
 
-void AndroidActionsBar::beforeDraw(gfx::Engine& painter)
+void ActionsBar::beforeDraw(gfx::Engine& painter)
 {
   if( parent()->children().back() != this )
   {
@@ -71,7 +82,7 @@ void AndroidActionsBar::beforeDraw(gfx::Engine& painter)
   Window::beforeDraw( painter );
 }
 
-bool AndroidActionsBar::onEvent(const NEvent &event)
+bool ActionsBar::onEvent(const NEvent &event)
 {
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
@@ -84,5 +95,101 @@ bool AndroidActionsBar::onEvent(const NEvent &event)
 
   return Window::onEvent( event );
 }
+
+void ActionsHandler::assignTo(ActionsBar* parent, scene::Base* scene )
+{
+  ActionsBar* androidBar = safety_cast<ActionsBar*>( parent );
+  if( androidBar && scene )
+  {
+    ActionsHandler* handler = new ActionsHandler( androidBar, scene );
+    CONNECT( androidBar, onRequestTileHelp(), handler,      ActionsHandler::_showTileHelp )
+    CONNECT( androidBar, onEscapeClicked(),   handler,      ActionsHandler::_resolveEscapeButton )
+    CONNECT( androidBar, onEnterClicked(),    handler,     ActionsHandler::_resolveEnterButton  )
+    CONNECT( androidBar, onRequestMenu(),     handler,     ActionsHandler::_showIngameMenu      )
+    CONNECT( androidBar, onChangeZoom(),      scene->camera(), gfx::Camera::changeZoom )
+  }
+}
+
+ActionsHandler::ActionsHandler(Widget* parent, scene::Base* scene)
+  : Widget( parent, -1, Rect() )
+{
+   _scene = scene;
+}
+
+void ActionsHandler::_resolveEnterButton() { _sendKeyboardEvent( KEY_RETURN ); }
+void ActionsHandler::_resolveEscapeButton() { _sendKeyboardEvent( KEY_ESCAPE ); }
+
+void ActionsHandler::_resolveExitGame()
+{
+  if( !_scene )
+    return;
+
+  NEvent e;
+  e.EventType = sEventQuit;
+
+  _scene->handleEvent( e );
+}
+
+void ActionsHandler::_sendKeyboardEvent(int key, bool ctrl)
+{
+  if( !_scene )
+    return;
+
+  NEvent e;
+
+  e.EventType = sEventKeyboard;
+  e.keyboard.key = (KeyCode)key;
+  e.keyboard.pressed = false;
+  e.keyboard.shift = false;
+  e.keyboard.control = ctrl;
+  e.keyboard.symbol = 0;
+
+  _scene->handleEvent( e );
+}
+
+void ActionsHandler::_showIngameMenu()
+{
+  IngameMenu* menu = IngameMenu::create( ui() );
+  if( menu )
+  {
+    CONNECT( menu, onExit(),    this, ActionsHandler::_resolveExitGame )
+    CONNECT( menu, onLoad(),    this, ActionsHandler::_showLoadDialog  )
+    CONNECT( menu, onSave(),    this, ActionsHandler::_showSaveDialog  )
+    CONNECT( menu, onRestart(), this, ActionsHandler::_restartGame     )
+    CONNECT( menu, onMenu(),    this, ActionsHandler::_exitToMainMenu  )
+  }
+}
+
+void ActionsHandler::_showSaveDialog() { ShowSaveDialog::create()->dispatch(); }
+void ActionsHandler::_showLoadDialog() { ShowLoadDialog::create()->dispatch(); }
+
+void ActionsHandler::_restartGame()
+{
+  scene::Level* level = safety_cast<scene::Level*>( _scene );
+  if( level )
+    level->restart();
+}
+
+void ActionsHandler::_exitToMainMenu()
+{
+  scene::Level* level = safety_cast<scene::Level*>( _scene );
+  if( level )
+    level->exit();
+}
+
+void ActionsHandler::_showTileHelp()
+{
+  if( !_scene )
+    return;
+
+  Tile* tile = _scene->camera()->at( ui()->cursorPos(), true );  // tile under the cursor (or NULL)
+  if( tile )
+  {
+    GameEventPtr e = ShowTileInfo::create( tile->pos() );
+    e->dispatch();
+  }
+}
+
+}//end namespace tabletS
 
 }//end namespace gui

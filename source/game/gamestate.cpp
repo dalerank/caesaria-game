@@ -229,10 +229,10 @@ GameLoop::~GameLoop()
   _nextFilename = _level->nextFilename();
   switch( _screen->result() )
   {
-  case scene::Level::mainMenu: _game->setNextScreen( SCREEN_MENU );  break;
-  case scene::Level::loadGame: _game->setNextScreen( SCREEN_GAME );  _game->load( _level->nextFilename() ); break;
+  case scene::Level::res_menu: _game->setNextScreen( SCREEN_MENU );  break;
+  case scene::Level::res_load: _game->setNextScreen( SCREEN_GAME );  _game->load( _level->nextFilename() ); break;
 
-  case scene::Level::restart:
+  case scene::Level::res_restart:
   {
     Logger::warning( "ScreenGame: restart game " + _restartFilename );
     bool loadOk = _game->load( _restartFilename );
@@ -253,8 +253,8 @@ GameLoop::~GameLoop()
   }
   break;
 
-  case scene::Level::loadBriefing: _game->setNextScreen( SCREEN_BRIEFING ); break;
-  case scene::Level::quitGame: _game->setNextScreen( SCREEN_QUIT );  break;
+  case scene::Level::res_briefing: _game->setNextScreen( SCREEN_BRIEFING ); break;
+  case scene::Level::res_quit: _game->setNextScreen( SCREEN_QUIT );  break;
   default: _game->setNextScreen( SCREEN_QUIT ); break;
   }
 }

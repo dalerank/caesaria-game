@@ -87,8 +87,8 @@
 #include "core/tilerect.hpp"
 #include "city/active_points.hpp"
 #include "city/statistic.hpp"
+#include "events/loadgame.hpp"
 #include "city/states.hpp"
-#include "gui/ingame_menu.hpp"
 
 using namespace gui;
 using namespace events;
@@ -231,16 +231,10 @@ public:
 void Level::Impl::initTabletUI( Level* scene )
 {
   //specific tablet actions bar
-  AndroidActionsBar* androidBar = new AndroidActionsBar( game->gui()->rootWidget() );
-  //TabletActionsHandler::assigned( androidBar,  );
+  tablet::ActionsBar* tabletUi = new tablet::ActionsBar( game->gui()->rootWidget() );
+  tablet::ActionsHandler::assignTo( tabletUi, scene );
 
-  CONNECT( androidBar, onRequestTileHelp(), this,      Impl::showTileHelp            )
-  CONNECT( androidBar, onEscapeClicked(),   scene,     Level::_resolveEscapeButton   )
-  CONNECT( androidBar, onEnterClicked(),    scene,     Level::_resolveEnterButton    )
-  CONNECT( androidBar, onRequestMenu(),     scene,     Level::_showIngameMenu        )
-  CONNECT( androidBar, onChangeZoom(),      renderer.camera(), gfx::Camera::changeZoom )
-
-  androidBar->setVisible( SETTINGS_VALUE(showTabletMenu) );
+  tabletUi->setVisible( SETTINGS_VALUE(showTabletMenu) );
 }
 
 void Level::initialize()
@@ -258,8 +252,8 @@ void Level::initialize()
   CONNECT( _d->topMenu, onSave(),                 _d.data(),         Impl::showSaveDialog )
   CONNECT( _d->topMenu, onExit(),                 this,              Level::_requestExitGame )
   CONNECT( _d->topMenu, onLoad(),                 this,              Level::_showLoadDialog )
-  CONNECT( _d->topMenu, onEnd(),                  this,              Level::_exitToMainMenu )
-  CONNECT( _d->topMenu, onRestart(),              this,              Level::_restartMission )
+  CONNECT( _d->topMenu, onEnd(),                  this,              Level::exit )
+  CONNECT( _d->topMenu, onRestart(),              this,              Level::restart )
   CONNECT( _d->topMenu, onRequestAdvisor(),       _d.data(),         Impl::showAdvisorsWindow )
   CONNECT( _d->topMenu, onShowVideoOptions(),     _d.data(),         Impl::setVideoOptions )
   CONNECT( _d->topMenu, onShowSoundOptions(),     _d.data(),         Impl::showSoundOptionsWindow )
@@ -318,17 +312,8 @@ void Level::initialize()
 
 std::string Level::nextFilename() const{  return _d->mapToLoad;}
 
-void Level::Impl::showSaveDialog()
-{
-  GameEventPtr e = ShowSaveDialog::create();
-  e->dispatch();
-}
-
-void Level::Impl::setVideoOptions()
-{
-  GameEventPtr event = SetVideoSettings::create();
-  event->dispatch();
-}
+void Level::Impl::showSaveDialog() {  GameEventPtr e = ShowSaveDialog::create();   e->dispatch(); }
+void Level::Impl::setVideoOptions(){  GameEventPtr e = SetVideoSettings::create(); e->dispatch(); }
 
 void Level::Impl::showGameSpeedOptionsDialog()
 {
@@ -374,13 +359,6 @@ void Level::Impl::showSoundOptionsWindow()
 }
 
 void Level::Impl::makeFastSave() { game->save( createFastSaveName().toString() ); }
-
-void Level::Impl::showTileHelp()
-{
-  const Tile& tile = game->city()->tilemap().at( selectedTilePos );  // tile under the cursor (or NULL)
-  GameEventPtr e = ShowTileInfo::create( tile.pos() );
-  e->dispatch();
-}
 
 void Level::Impl::showMessagesWindow()
 {
@@ -485,54 +463,12 @@ std::string Level::Impl::getScreenshotName()
   return (screenDir/filename).toString();
 }
 
-void Level::_resolveLoadGame( std::string filename )
+void Level::loadStage( std::string filename )
 {
   _d->mapToLoad = filename.empty()
                       ? _d->createFastSaveName().toString()
                       : filename;
   _resolveSwitchMap();
-}
-
-void Level::_resolveEscapeButton()
-{
-  NEvent e;
-
-  e.EventType = sEventKeyboard;
-  e.keyboard.key = KEY_ESCAPE;
-  e.keyboard.pressed = false;
-  e.keyboard.shift = false;
-  e.keyboard.control = false;
-  e.keyboard.symbol = 0;
-
-  handleEvent( e );
-}
-
-void Level::_resolveEnterButton()
-{
-  NEvent e;
-
-  e.EventType = sEventKeyboard;
-  e.keyboard.key = KEY_RETURN;
-  e.keyboard.pressed = false;
-  e.keyboard.shift = false;
-  e.keyboard.control = false;
-  e.keyboard.symbol = 0;
-
-  handleEvent( e );
-}
-
-
-void Level::_showIngameMenu()
-{
-  IngameMenu* menu = IngameMenu::create( _d->game->gui() );
-  if( menu )
-  {
-    CONNECT( menu, onExit(), this, Level::_requestExitGame );
-    CONNECT( menu, onLoad(), this, Level::_showLoadDialog );
-    CONNECT( menu, onSave(), _d.data(), Impl::showSaveDialog  );
-    CONNECT( menu, onRestart(), this, Level::_restartMission );
-    CONNECT( menu, onMenu(), this, Level::_exitToMainMenu );
-  }
 }
 
 vfs::Path Level::Impl::createFastSaveName(const std::string& type, const std::string& postfix )
@@ -551,7 +487,7 @@ vfs::Path Level::Impl::createFastSaveName(const std::string& type, const std::st
 void Level::_resolveSwitchMap()
 {
   bool isNextBriefing = vfs::Path( _d->mapToLoad ).isMyExtension( ".briefing" );
-  _d->result = isNextBriefing ? Level::loadBriefing : Level::loadGame;
+  _d->result = isNextBriefing ? Level::res_briefing : Level::res_load;
   stop();
 }
 
@@ -668,8 +604,8 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
       wnd->setCenter( game->gui()->rootWidget()->center() );
       wnd->setModal();
 
-      CONNECT( btnRestart, onClicked(), lvl, Level::_restartMission );
-      CONNECT( btnMenu, onClicked(), lvl, Level::_exitToMainMenu );
+      CONNECT( btnRestart, onClicked(), lvl, Level::restart );
+      CONNECT( btnMenu, onClicked(), lvl, Level::exit );
     }
   }
 }
@@ -705,25 +641,26 @@ void Level::Impl::checkWinMission( Level* lvl, bool force )
   }
 }
 
-int Level::result() const {  return _d->result; }
 bool Level::installEventHandler(EventHandlerPtr handler) { _d->eventHandlers.push_back( handler ); return true; }
 void Level::Impl::resolveCreateConstruction( int type ){  renderer.setMode( BuildMode::create( object::Type( type ) ) );}
 void Level::Impl::resolveRemoveTool(){  renderer.setMode( DestroyMode::create() );}
 void Level::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerMode::create( type ) );}
 void Level::Impl::showAdvisorsWindow(){  showAdvisorsWindow( advisor::employers ); }
 void Level::Impl::showTradeAdvisorWindow(){  showAdvisorsWindow( advisor::trading ); }
-void Level::_exitToMainMenu() {  _d->result = Level::mainMenu;  stop();}
-void Level::_restartMission() { _d->result = Level::restart;  stop();}
 void Level::setCameraPos(TilePos pos) {  _d->renderer.camera()->setCenter( pos ); }
 void Level::switch2layer(int layer) { _d->renderer.setLayer( layer ); }
 Camera* Level::camera() const { return _d->renderer.camera(); }
-void Level::_exitGame(){ _d->result = Level::quitGame; stop();}
 void Level::Impl::saveScrollSpeed(int speed) { SETTINGS_SET_VALUE( scrollSpeed, speed ); }
+
+void Level::_quit(){ _d->result = Level::res_quit; stop(); }
+void Level::restart() { _d->result = Level::res_restart; stop();}
+int  Level::result() const {  return _d->result; }
+void Level::exit() { _d->result = Level::res_menu; stop(); }
 
 void Level::_requestExitGame()
 {
   dialog::Dialog* dlg = dialog::Confirmation( _d->game->gui(), "", _("##exit_without_saving_question##") );
-  CONNECT( dlg, onOk(), this, Level::_exitGame );
+  CONNECT( dlg, onOk(), this, Level::_quit );
 }
 
 bool Level::_tryExecHotkey(NEvent &event)
@@ -747,11 +684,11 @@ bool Level::_tryExecHotkey(NEvent &event)
 
       case KEY_KEY_E:
       {
-          TilePos center = _d->renderer.camera()->center();
-          TileRect trect( center-TilePos(1,1), center +TilePos(1,1));
-          const BorderInfo& binfo = _d->game->city()->borderInfo();
-          center = (trect.contain(binfo.roadEntry) ? binfo.roadExit : binfo.roadEntry);
-          _d->renderer.camera()->setCenter( center, false );
+        TilePos center = _d->renderer.camera()->center();
+        TileRect trect( center-TilePos(1,1), center+TilePos(1,1));
+        const BorderInfo& binfo = _d->game->city()->borderInfo();
+        center = (trect.contain(binfo.roadEntry) ? binfo.roadExit : binfo.roadEntry);
+        _d->renderer.camera()->setCenter( center, false );
       }
       break;
 
@@ -802,7 +739,7 @@ bool Level::_tryExecHotkey(NEvent &event)
     break;
 
     case KEY_F9:
-      _resolveLoadGame( "" );
+      loadStage( "" );
       handled = true;
     break;
 
@@ -871,22 +808,7 @@ void Level::Impl::showMissionTaretsWindow()
   }
 }
 
-void Level::Impl::showAdvisorsWindow( const advisor::Type advType )
-{  
-  GameEventPtr e = ShowAdvisorWindow::create( true, advType );
-  e->dispatch();
-}
-
-void Level::_showLoadDialog()
-{
-  Widget* parent = _d->game->gui()->rootWidget();
-
-  vfs::Path savesPath = SETTINGS_VALUE( savedir ).toString();
-  std::string defaultExt = SETTINGS_VALUE( saveExt ).toString();
-  dialog::LoadFile* wnd = dialog::LoadFile::create( parent, Rect(), savesPath, defaultExt,-1 );
-
-  CONNECT( wnd, onSelectFile(), this, Level::_resolveLoadGame );
-  wnd->setTitle( _("##mainmenu_loadgame##") );
-}
+void Level::Impl::showAdvisorsWindow( const advisor::Type advType ) { ShowAdvisorWindow::create( true, advType )->dispatch(); }
+void Level::_showLoadDialog() { ShowLoadDialog::create()->dispatch(); }
 
 }//end namespace scene

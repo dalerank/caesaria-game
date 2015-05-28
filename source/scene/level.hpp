@@ -33,7 +33,7 @@ namespace scene
 class Level: public Base
 {
 public:
-  typedef enum {mainMenu=0, loadGame, restart, loadBriefing, quitGame} ResultType;
+  typedef enum { res_menu=0, res_load, res_restart, res_briefing, res_quit} ResultType;
   Level( Game& game, gfx::Engine& engine );
   virtual ~Level();
 
@@ -50,19 +50,19 @@ public:
 
   void setCameraPos( TilePos pos );
   void switch2layer( int layer );
-  gfx::Camera* camera() const;
+  virtual gfx::Camera* camera() const;
+
+public slots:
+  void loadStage(std::string filename);
+  void restart();
+  void exit();
 
 private slots:
-  void _exitToMainMenu();
-  void _exitGame();
+  void _quit();
   void _resolveSwitchMap();
-  void _restartMission();
   void _showLoadDialog();
-  void _resolveLoadGame(std::string filename);
   void _resolveLoad();
-  void _resolveEscapeButton();
   void _resolveEnterButton();
-  void _showIngameMenu();
   void _requestExitGame();
   bool _tryExecHotkey( NEvent& event );
   void _handleDebugEvent( int event );
