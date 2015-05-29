@@ -45,31 +45,17 @@ class CcTargets
 public:
 
   int population;
-  struct {
-    int wheatFishFarm;
-    int vegetableFarm;
-    int potteryWorkshop;
-    int meatFarm;
-    int fruitFarm;
-    int furnitureWorkshop;
-    int oilWorkshop;
-    unsigned int building[ object::userType ];
-  } need;
-
+  unsigned int need[ object::userType ];
   unsigned int idle[ object::userType ];
+  unsigned int coverage[ object::userType ];
 
   CcTargets()
   {
     population = 0;
-    need.vegetableFarm = 0;
-    need.wheatFishFarm = 0;
-    need.potteryWorkshop = 0;
-    need.meatFarm = 0;
-    need.fruitFarm = 0;
-    need.oilWorkshop = 0;
-    need.furnitureWorkshop = 0;
-    int dd = sizeof( need.building );
-    memset( need.building, 0, sizeof( need.building ) );
+    int dd = sizeof( need );
+    memset( need, 0, sizeof( need ) );
+    memset( idle, 0, sizeof( need ) );
+    memset( coverage, 0, sizeof( need ) );
   }
 
   VariantMap save() const
@@ -377,12 +363,15 @@ int isNeedNewBuilding( unsigned int idle, unsigned int have, unsigned int served
 
 struct CheckType
 {
-  object::Type building;
+  object::Type building, building2;
   CitizenGroup::Age age;
   int multiplier;
 
   CheckType( object::Type b, CitizenGroup::Age a, int m ) :
-     building( b ), age( a ), multiplier( m ) {}
+     building( b ), building2( object::unknown ), age( a ), multiplier( m ) {}
+
+  CheckType( object::Type b, object::Type b2, CitizenGroup::Age a, int m ) :
+     building( b ), building2( b2 ), age( a ), multiplier( m ) {}
 
   bool operator<( const CheckType& a) const { return building < a.building; }
 };
@@ -404,14 +393,30 @@ void ComputerCity::Impl::citizensConsumeServices()
 
   std::set<CheckType> checkTypes;
   checkTypes << CheckType( object::school, CitizenGroup::scholar, 4 )
-             << CheckType( object::small_ceres_temple, CitizenGroup::any, 4 );
+             << CheckType( object::small_ceres_temple, object::big_ceres_temple, CitizenGroup::any, 4 )
+             << CheckType( object::small_mars_temple, object::big_mars_temple, CitizenGroup::any, 4 )
+             << CheckType( object::small_mercury_temple, object::big_mercury_temple, CitizenGroup::any, 4 )
+             << CheckType( object::small_neptune_temple, object::big_neptune_temple, CitizenGroup::any, 4 )
+             << CheckType( object::small_venus_temple, object::big_venus_temple, CitizenGroup::any, 4 );
 
   foreach( it, checkTypes )
   {
     const CheckType& check = *it;
-    targets.need.building[ check.building ] += isNeedNewBuilding( idle.type[ check.building ],
-                                                                  peoples.count( check.age ),
-                                                                  mayServe.type[ check.building ], check.multiplier );
+
+    int addServe = 0;
+    if( check.building2 )
+      addServe = mayServe.type[ check.building2 ];
+
+    unsigned int pop = peoples.count( check.age );
+    targets.need[ check.building ] += isNeedNewBuilding( idle.type[ check.building ],
+                                                         pop,
+                                                         mayServe.type[ check.building ] + addServe, check.multiplier );
+
+    int coverage = 0;
+    if( pop > 0 )
+      coverage = mayServe.type[ check.building ] * 100 / pop;
+
+    targets.coverage[ check.building ] = math::clamp<unsigned int>( coverage, 0, 100 );
     targets.idle[ check.building ] = idle.type[ check.building ];
   }
 }
@@ -460,13 +465,7 @@ void ComputerCity::Impl::updateWorkingWarehouse()
 
 void ComputerCity::Impl::placeNewBuildings()
 {
-  if( targets.need.vegetableFarm > 8 )
-  {
-    placeNewBuilding( object::vegetable_farm );
-    targets.need.vegetableFarm = 0;
-  }
-
-  if( targets.need.wheatFishFarm > 8 )
+  if( targets.need[ object::wheat_farm ] > 8 )
   {
     object::Type type = object::wheat_farm;
     int wheatFarmNumber = buildings.count( object::wheat_farm );
@@ -475,37 +474,7 @@ void ComputerCity::Impl::placeNewBuildings()
       type = object::wharf;
 
     placeNewBuilding( type );
-    targets.need.wheatFishFarm = 0;
-  }
-
-  if( targets.need.potteryWorkshop > 8 )
-  {
-    placeNewBuilding( object::pottery_workshop );
-    targets.need.potteryWorkshop = 0;
-  }
-
-  if( targets.need.meatFarm > 8 )
-  {
-    placeNewBuilding( object::meat_farm );
-    targets.need.meatFarm = 0;
-  }
-
-  if( targets.need.fruitFarm > 8 )
-  {
-    placeNewBuilding( object::fig_farm );
-    targets.need.fruitFarm = 0;
-  }
-
-  if( targets.need.oilWorkshop > 8 )
-  {
-    placeNewBuilding( object::oil_workshop );
-    targets.need.oilWorkshop = 0;
-  }
-
-  if( targets.need.building[ object::wine_workshop ] > 8 )
-  {
-    placeNewBuilding( object::wine_workshop );
-    targets.need.building[ object::wine_workshop ] = 0;
+    targets.need[ object::wheat_farm ] = 0;
   }
 
   if( internalGoods.needExpand > 8 )
@@ -514,16 +483,22 @@ void ComputerCity::Impl::placeNewBuildings()
     internalGoods.needExpand = 0;
   }
 
-  if( targets.need.furnitureWorkshop > 8 )
-  {
-    placeNewBuilding( object::furniture_workshop );
-    targets.need.furnitureWorkshop = 0;
-  }
+  std::set<object::Type> types;
+  types << object::vegetable_farm << object::pottery_workshop
+        << object::meat_farm << object::fig_farm
+        << object::oil_workshop << object::wine_workshop
+        << object::furniture_workshop << object::school
+        << object::small_ceres_temple << object::small_mars_temple
+        << object::small_neptune_temple << object::small_mercury_temple
+        << object::small_venus_temple;
 
-  if( targets.need.building[ object::school ] > 8 )
+  foreach( it, types )
   {
-    placeNewBuilding( object::school );
-    targets.need.building[ object::school ] = 0;
+    if( targets.need[ *it ] > 8 )
+    {
+      placeNewBuilding( *it );
+      targets.need[ *it ] = 0;
+    }
   }
 }
 
@@ -589,7 +564,7 @@ void ComputerCity::Impl::citizensConsumeGoods()
     targetSentiment += 40 * ((fishWheat2Consume.need - anyHungry) / (float)fishWheat2Consume.need);
 
     if( anyHungry )
-      targets.need.wheatFishFarm++;
+      targets.need[ object::wheat_farm ]++;
   }
 
   if( fishWheat2Consume.have > fishWheat2Consume.need )
@@ -616,7 +591,7 @@ void ComputerCity::Impl::citizensConsumeGoods()
     targetSentiment += 10 * ((vegetable2Consume.need - anyHungry) / (float)vegetable2Consume.need);
 
     if( anyHungry )
-      targets.need.vegetableFarm++;
+      targets.need[ object::vegetable_farm ]++;
   }
 
   if( mayContinue && pottery2Consume.need > 0 )
@@ -629,7 +604,7 @@ void ComputerCity::Impl::citizensConsumeGoods()
     targetSentiment += 10 * ((pottery2Consume.need - anyBroken) / (float)pottery2Consume.need);
 
     if( anyBroken )
-      targets.need.potteryWorkshop++;
+      targets.need[ object::pottery_workshop ]++;
   }
 
   if( mayContinue && meat2Consume.need > 0 )
@@ -642,7 +617,7 @@ void ComputerCity::Impl::citizensConsumeGoods()
     targetSentiment += 10 * ((meat2Consume.need - anyHungry) / (float)meat2Consume.need);
 
     if( anyHungry )
-      targets.need.meatFarm++;
+      targets.need[ object::meat_farm ]++;
   }
 
   if( mayContinue && fruit2Consume.need > 0 )
@@ -655,7 +630,7 @@ void ComputerCity::Impl::citizensConsumeGoods()
     targetSentiment += 10 * ((fruit2Consume.need - anyHungry) / (float)fruit2Consume.need);
 
     if( anyHungry )
-      targets.need.fruitFarm++;
+      targets.need[ object::fig_farm ]++;
   }
 
   if( mayContinue && furniture2Consume.need > 0 )
@@ -668,7 +643,7 @@ void ComputerCity::Impl::citizensConsumeGoods()
     targetSentiment += 10 * ((furniture2Consume.need - anyBroken) / (float)furniture2Consume.need);
 
     if( anyBroken )
-      targets.need.furnitureWorkshop++;
+      targets.need[ object::furniture_workshop ]++;
   }
 
   if( mayContinue && oil2Consume.need > 0 )
@@ -681,7 +656,7 @@ void ComputerCity::Impl::citizensConsumeGoods()
     targetSentiment += 5 * ((oil2Consume.need - anyHungry) / (float)oil2Consume.need);
 
     if( anyHungry )
-      targets.need.oilWorkshop++;
+      targets.need[ object::oil_workshop ]++;
   }
 
   if( mayContinue && wine2Consume.need > 0 )
@@ -694,7 +669,7 @@ void ComputerCity::Impl::citizensConsumeGoods()
     targetSentiment += 5 * ((wine2Consume.need - anyHungry) / (float)wine2Consume.need);
 
     if( anyHungry )
-      targets.need.building[ object::wine_workshop ]++;
+      targets.need[ object::wine_workshop ]++;
   }
 
   int delta = math::clamp( targetSentiment - sentiment, -2, 2);
