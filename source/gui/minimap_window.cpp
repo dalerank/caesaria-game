@@ -339,7 +339,7 @@ void Minimap::Impl::drawObjectsMmap( Picture& canvas, bool clear, bool force )
         for( int j=0; j < size.height(); j++ )
         {
           Point pnt = getBitmapCoordinates( pos.i() + i, pos.j() + j, mapsize);
-          if( pnt.y() < 0 || pnt.x() < 0 || pnt.x() > mmapWidth || pnt.y() > mmapHeight )
+          if( pnt.y() < 0 || pnt.x() < 0 || pnt.x() > mmapWidth-1 || pnt.y() > mmapHeight )
             continue;
 
           unsigned int* bufp32;
@@ -361,41 +361,49 @@ void Minimap::Impl::drawWalkersMmap( Picture& canvas, bool clear )
   int mapsize = tilemap.size();
 
   // here we can draw anything
-  mapsize = std::min( mapsize, 42 );
-  TilePos tpos = camera->center();
-  TilePos offset = TilePos( mapsize/2, mapsize/2 );
-  TilePos startPos = tpos - offset;
-  TilePos stopPos = tpos + offset;
+  int mmapWidth = objectsMap.width();
+  int mmapHeight = objectsMap.height();
 
   const WalkerList& walkers = city->walkers();
-  TileRect trect( startPos, stopPos );
   if( clear )
     canvas.fill( DefaultColors::clear );
+
+  unsigned int* pixelsObjects = canvas.lock();
 
   foreach( i, walkers )
   {
     const TilePos& pos = (*i)->pos();
-    if( trect.contain( pos ) )
+
+    NColor cl;
+    if ((*i)->agressive() != 0)
     {
-      NColor cl;
-      if ((*i)->agressive() != 0)
+
+      if ((*i)->agressive() > 0)
       {
-
-        if ((*i)->agressive() > 0)
-        {
-          cl = DefaultColors::red;
-        }
-        else
-        {
-          cl = DefaultColors::blue;
-        }
-
-        if (cl.color != 0)
-        {
-          Point pnt = getBitmapCoordinates(pos.i(), pos.j(), mapsize);
-          canvas.fill(cl, Rect(pnt, Size(2)));
-        }
+        cl = DefaultColors::red;
       }
+      else
+      {
+        cl = DefaultColors::blue;
+      }
+    }
+    else if( (*i)->type() == walker::immigrant )
+    {
+      cl = DefaultColors::green;
+    }
+
+    if (cl.color != 0)
+    {
+      Point pnt = getBitmapCoordinates(pos.i(), pos.j(), mapsize);
+      //canvas.fill(cl, Rect(pnt, Size(2)));
+
+      if( pnt.y() < 0 || pnt.x() < 0 || pnt.x() > mmapWidth-1 || pnt.y() > mmapHeight )
+        continue;
+
+      unsigned int* bufp32;
+      bufp32 = pixelsObjects + pnt.y() * mmapWidth + pnt.x();
+      *bufp32 = cl.color;
+      *(bufp32+1) = cl.color;
     }
   }
 
@@ -473,7 +481,7 @@ void Minimap::Impl::drawStaticMmap(Picture& canvas, bool clear)
       Point pnt = getBitmapCoordinates(i, j, mapSize);
       getTerrainColours( tile, true, c1, c2);
 
-      if( pnt.y() < 0 || pnt.x() < 0 || pnt.x() > mmapWidth || pnt.y() > mmapHeight )
+      if( pnt.y() < 0 || pnt.x() < 0 || pnt.x() > mmapWidth-1 || pnt.y() > mmapHeight )
         continue;
 
       unsigned int* bufp32;

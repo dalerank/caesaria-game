@@ -60,7 +60,7 @@ public:
   void initLoaders();
   void initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city );
   void initTilesAnimation( Tilemap& tmap );
-  void finalize( Game& game );  
+  void finalize(Game& game , bool needInitEnterExit);
   bool maySetSign( const Tile& tile );
 
 public signals:
@@ -136,15 +136,18 @@ void Loader::Impl::initTilesAnimation( Tilemap& tmap )
   }
 }
 
-void Loader::Impl::finalize( Game& game )
+void Loader::Impl::finalize( Game& game, bool needInitEnterExit )
 {
   Tilemap& tileMap = game.city()->tilemap();
 
   // exit and entry can't point to one tile or .... can!
   const BorderInfo& border = game.city()->borderInfo();
 
-  initEntryExitTile( border.roadEntry, game.city() );
-  initEntryExitTile( border.roadExit,  game.city() );
+  if( needInitEnterExit )
+  {
+    initEntryExitTile( border.roadEntry, game.city() );
+    initEntryExitTile( border.roadExit,  game.city() );
+  }
 
   initTilesAnimation( tileMap );
 }
@@ -185,8 +188,7 @@ bool Loader::load(vfs::Path filename, Game& game)
     {
       _d->restartFile = (*it)->restartFile();
 
-      if( needToFinalizeMap )
-        _d->finalize( game );
+      _d->finalize( game, needToFinalizeMap );
     }
 
     return loadok;
