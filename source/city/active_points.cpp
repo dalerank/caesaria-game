@@ -40,11 +40,14 @@ void ActivePoints::set( unsigned int index, const TilePos& pos)
     (*this)[index] = pos;
 }
 
-VariantList ActivePoints::save() const {  return save(); }
+VariantList ActivePoints::save() const
+{
+  return TilePosArray::save();
+}
 
 void ActivePoints::load( const VariantList &stream)
 {
-  load( stream );
+  TilePosArray::load( stream );
   resize( maxPoints );
 }
 

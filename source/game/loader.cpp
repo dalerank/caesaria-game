@@ -165,7 +165,7 @@ void Loader::Impl::initLoaders()
 
 Signal1<std::string>& Loader::onUpdate() { return _d->onUpdateSignal; }
 
-bool Loader::load( vfs::Path filename, Game& game )
+bool Loader::load(vfs::Path filename, Game& game)
 {
   // try to load file based on file extension
   foreach( it, _d->loaders )
@@ -180,10 +180,13 @@ bool Loader::load( vfs::Path filename, Game& game )
     }
 
     bool loadok = (*it)->load( filename.toString(), game );
+    bool needToFinalizeMap = (*it)->finalizeMap();
     if( loadok )
     {
       _d->restartFile = (*it)->restartFile();
-      _d->finalize( game );
+
+      if( needToFinalizeMap )
+        _d->finalize( game );
     }
 
     return loadok;

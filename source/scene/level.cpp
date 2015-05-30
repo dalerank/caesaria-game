@@ -177,9 +177,11 @@ void Level::Impl::initRender()
 }
 
 void Level::Impl::initMainUI()
-{
+{  
   PlayerCityPtr city = game->city();
   gui::Ui& ui = *game->gui();
+
+  ui.clear();
 
   Picture rPanelPic( ResourceGroup::panelBackground, PicID::rightPanelTx );
   Engine& engine = Engine::instance();
@@ -221,12 +223,6 @@ void Level::Impl::initSound()
   if( sound.isValid() )
     sound->setCamera( renderer.camera() );
 }
-
-class TabletActionsHandler : public Widget
-{
-public:
-
-};
 
 void Level::Impl::initTabletUI( Level* scene )
 {

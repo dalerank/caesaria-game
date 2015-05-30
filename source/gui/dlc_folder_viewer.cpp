@@ -124,7 +124,7 @@ DlcFolderViewer::DlcFolderViewer(Widget* parent, Directory folder )
     }
   }
 
-  _d->table = new Table( this, -1, Rect( 50, 50, width() - 50, height() - 50 ) );
+  _d->table = new Table( this, -1, Rect( 80, 50, width() - 50, height() - 50 ) );
   _d->table->setDrawFlag( Table::drawColumns, false );
   _d->table->setDrawFlag( Table::drawRows, false );
   _d->table->setDrawFlag( Table::drawActiveCell, true );
@@ -180,6 +180,7 @@ void DlcFolderViewer::_resolveCellClick(int row, int column)
   if( _d->table )
   {
     Path path = _d->table->getCellData( row, column, "path" ).toString();
+    Path save = path;
     path = path.changeExtension( Locale::current() );
 
     if( !path.exist() )
@@ -190,6 +191,10 @@ void DlcFolderViewer::_resolveCellClick(int row, int column)
     if( path.exist() )
     {
       _loadDesc( path );
+    }
+    else
+    {
+      OSystem::openUrl( save.toCString() );
     }
   }
 }

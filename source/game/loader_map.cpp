@@ -227,27 +227,27 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
       {
         int size = 1;
 
-	{
-	  int dj;
-	  try
-	  {
-	    // find size, 5 is maximal size for building
-	    for (dj = 0; dj < gfx::tilemap::c3bldSize; ++dj)
-	    {
-						int edd = edgeData[ i ][ j - dj ];
-	      // find bottom left corner
-						if (edd == 8 * dj + 0x40)
-	      {
-		size = dj + 1;
-		break;
-	      }
-	    }
-	  }
-	  catch(...)
-	  {
-	    size = dj + 1;
-	  }
-	}
+        {
+          int dj;
+          try
+          {
+            // find size, 5 is maximal size for building
+            for (dj = 0; dj < gfx::tilemap::c3bldSize; ++dj)
+            {
+              int edd = edgeData[ i ][ j - dj ];
+              // find bottom left corner
+              if (edd == 8 * dj + 0x40)
+              {
+                size = dj + 1;
+                break;
+              }
+            }
+          }
+          catch(...)
+          {
+            size = dj + 1;
+          }
+        }
 
         Tile& master = oTilemap.at(i, j - size + 1);
         for (int di = 0; di < size; ++di)
