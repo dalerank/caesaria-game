@@ -45,7 +45,7 @@ public:
   virtual void load(const VariantMap &stream);
 
 private:
-  ProsperityRating(PlayerCityPtr city);
+  void _checkStats();
 
   class Impl;
   ScopedPtr< Impl > _d;
