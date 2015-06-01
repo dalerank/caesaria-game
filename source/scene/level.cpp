@@ -154,6 +154,7 @@ public:
   void installHandlers( Base* scene);
   void initSound();
   void initTabletUI(Level* scene);
+  void connectTopMenu2scene(Level* scene);
 
   std::string getScreenshotName();
   vfs::Path createFastSaveName( const std::string& type="", const std::string& postfix="");
@@ -233,6 +234,21 @@ void Level::Impl::initTabletUI( Level* scene )
   tabletUi->setVisible( SETTINGS_VALUE(showTabletMenu) );
 }
 
+void Level::Impl::connectTopMenu2scene(Level* scene)
+{
+  CONNECT( topMenu, onExit(),                 scene,   Level::_requestExitGame )
+  CONNECT( topMenu, onLoad(),                 scene,   Level::_showLoadDialog )
+  CONNECT( topMenu, onEnd(),                  scene,   Level::exit )
+  CONNECT( topMenu, onRestart(),              scene,   Level::restart )
+  CONNECT( topMenu, onSave(),                 this,    Impl::showSaveDialog )
+  CONNECT( topMenu, onRequestAdvisor(),       this,    Impl::showAdvisorsWindow )
+  CONNECT( topMenu, onShowVideoOptions(),     this,    Impl::setVideoOptions )
+  CONNECT( topMenu, onShowSoundOptions(),     this,    Impl::showSoundOptionsWindow )
+  CONNECT( topMenu, onShowGameSpeedOptions(), this,    Impl::showGameSpeedOptionsDialog )
+  CONNECT( topMenu, onShowCityOptions(),      this,    Impl::showCityOptionsDialog )
+  CONNECT( topMenu, onShowExtentInfo(),       extMenu, ExtentMenu::showInfo )
+}
+
 void Level::initialize()
 {
   PlayerCityPtr city = _d->game->city();
@@ -243,19 +259,9 @@ void Level::initialize()
   _d->installHandlers( this );
   _d->initSound();
   _d->initTabletUI( this );
+  _d->connectTopMenu2scene( this );
 
   //connect elements
-  CONNECT( _d->topMenu, onSave(),                 _d.data(),         Impl::showSaveDialog )
-  CONNECT( _d->topMenu, onExit(),                 this,              Level::_requestExitGame )
-  CONNECT( _d->topMenu, onLoad(),                 this,              Level::_showLoadDialog )
-  CONNECT( _d->topMenu, onEnd(),                  this,              Level::exit )
-  CONNECT( _d->topMenu, onRestart(),              this,              Level::restart )
-  CONNECT( _d->topMenu, onRequestAdvisor(),       _d.data(),         Impl::showAdvisorsWindow )
-  CONNECT( _d->topMenu, onShowVideoOptions(),     _d.data(),         Impl::setVideoOptions )
-  CONNECT( _d->topMenu, onShowSoundOptions(),     _d.data(),         Impl::showSoundOptionsWindow )
-  CONNECT( _d->topMenu, onShowGameSpeedOptions(), _d.data(),         Impl::showGameSpeedOptionsDialog )
-  CONNECT( _d->topMenu, onShowCityOptions(),      _d.data(),         Impl::showCityOptionsDialog )
-  CONNECT( _d->topMenu, onShowExtentInfo(),       _d->extMenu,       ExtentMenu::showInfo )
 
   CONNECT( city, onPopulationChanged(),           _d->topMenu,       TopMenu::setPopulation )
   CONNECT( city, onFundsChanged(),                _d->topMenu,       TopMenu::setFunds )
