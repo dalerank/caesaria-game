@@ -6,6 +6,7 @@ namespace gui
 {
 
 const unsigned int AbstractAttribute::ATTRIBEDIT_ATTRIB_CHANGED = Hash( "ATTR" );
+const char* AbstractAttribute::ATTRIBUTE_TYPENAME = "Attribute";
 
 AbstractAttribute::AbstractAttribute(Widget *parent, int myParentID) :
   Widget( parent, -1, Rect(0, 0, parent->width(), parent->height()) ),

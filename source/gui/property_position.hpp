@@ -1,50 +1,31 @@
-#ifndef __NRP_POSITION_ATTRIBUTE_H_INCLUDED__
-#define __NRP_POSITION_ATTRIBUTE_H_INCLUDED__
+#ifndef __CAESARIA_POSITION_ATTRIBUTE_H_INCLUDED__
+#define __CAESARIA_POSITION_ATTRIBUTE_H_INCLUDED__
 
-#include "EdAttributeRect.h"
+#include "property_rect.hpp"
 
-NERPA_MODULE_BEGIN(gui)
+namespace gui
+{
 
-class NrpPositionAttribute : public AttributeRect
+class PositionAttribute : public RectAttribute
 {
 public:
-    //
-    NrpPositionAttribute( Widget* parent, s32 myParentID ) :
-        AttributeRect( parent, myParentID)
-    {
-    }
+  PositionAttribute(Widget* parent, int myParentID=-1 );
 
-	virtual AbstractAttribute* GetChildAttribute( u32 index ) 
-	{
-		if( index >= GetChildAttributesCount() )
-			return 0;
+  virtual AbstractAttribute* getChild( unsigned int index );
 
-		String text[] = { L"\t\t\tX", L"\t\t\tY" };
-
-		AttributeString* attr = findChild< AttributeString* >( text[ index ] );
-		if( !attr )
-		{
-			attr = new AttributeString( this, -1 );
-			attr->setAttributeName( text[ index ] );
-			attr->setParent4Event( this );
-			attr->setEditText( tokens_[ index ] );
-		}
-
-		return attr; 
-	}
-
-	virtual u32 GetChildAttributesCount() const 
-	{ 
-		return 2; 
-	}
-
-    //! Returns the type name of the gui element.
-    virtual String getTypeName() const
-    {
-        return EditorElementTypeNames[EGUIEDIT_POSITIONATTRIBUTE];
-    }
+  virtual unsigned int childCount() const;
 };
 
-NERPA_MODULE_END(gui)
+class SizeAttribute : public RectAttribute
+{
+public:
+  SizeAttribute(Widget* parent, int myParentID=-1 );
 
-#endif
+  virtual AbstractAttribute* getChild( unsigned int index );
+
+  virtual unsigned int childCount() const;
+};
+
+}//end namespace gui
+
+#endif //__CAESARIA_POSITION_ATTRIBUTE_H_INCLUDED__

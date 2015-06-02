@@ -7,19 +7,18 @@
 namespace gui
 {
 
-class AttributeString;
+class StringAttribute;
 
-class AttributeRect : public AbstractAttribute
+class RectAttribute : public AbstractAttribute
 {
 protected:
-  typedef std::map< int, AttributeString* > Editors;
+  typedef std::map< int, StringAttribute* > Editors;
   typedef Editors::iterator EditIterator;
 
 public:
-  //
-  AttributeRect( Widget* parent, int myParentID );
+  RectAttribute( Widget* parent, int myParentID=-1 );
 
-  virtual ~AttributeRect();
+  virtual ~RectAttribute();
 
   virtual unsigned int childCount() const;
 
@@ -34,7 +33,7 @@ public:
 
 protected:
   StringArray tokens_;
-	Label* label_;
+	Label* _label;
 };
 
 }

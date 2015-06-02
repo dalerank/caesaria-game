@@ -53,6 +53,7 @@ struct PrInfo
   int houseCapTrand;
   int percentPlebs;
   int plebsCount;
+  int workersSalary;
 
   PrInfo()
   {
@@ -70,6 +71,7 @@ struct PrInfo
     VARIANT_SAVE_ANY( ret, plebsCount )
     VARIANT_SAVE_ANY( ret, percentPlebs )
     VARIANT_SAVE_ANY( ret, houseCapTrand )
+    VARIANT_SAVE_ANY( ret, workersSalary )
 
     return ret;
   }
@@ -84,6 +86,7 @@ struct PrInfo
     VARIANT_LOAD_ANY( plebsCount, stream )
     VARIANT_LOAD_ANY( percentPlebs, stream )
     VARIANT_LOAD_ANY( houseCapTrand, stream )
+    VARIANT_LOAD_ANY( workersSalary, stream )
   }
 };
 
@@ -94,7 +97,6 @@ public:
   PrInfo prev;
   PrInfo now;
   int prosperityExtend;
-  int workersSalary;
 };
 
 SrvcPtr ProsperityRating::create( PlayerCityPtr city )
@@ -110,7 +112,6 @@ ProsperityRating::ProsperityRating(PlayerCityPtr city)
 {
   _d->lastDate = game::Date::current();
   _d->prosperityExtend = 0;
-  _d->workersSalary = 0;
 }
 
 void ProsperityRating::_checkStats()
@@ -145,7 +146,7 @@ void ProsperityRating::timeStep(const unsigned int time )
   if( game::Date::current().year() > _d->lastDate.year() )
   {
     _d->prev.balance = _city()->treasury().getIssueValue( econ::Issue::balance, econ::Treasury::lastYear );
-    _d->workersSalary = _city()->treasury().workerSalary();
+    _d->now.workersSalary = _city()->treasury().workerSalary();
 
     _d->lastDate = game::Date::current();
 
@@ -179,9 +180,9 @@ void ProsperityRating::timeStep(const unsigned int time )
     _d->prosperityExtend += (unemploymentMore15percent ? prosperity::penalty : 0);
     _d->prosperityExtend += (_d->now.patricianCount > 0 ? prosperity::award : 0);
 
-    _d->workersSalary = _city()->treasury().workerSalary() - _city()->empire()->workerSalary();
-    _d->prosperityExtend += (_d->workersSalary > 0 ? 1 : 0);
-    _d->prosperityExtend += (_d->workersSalary < 0 ? prosperity::penalty : 0);
+    _d->now.workersSalary = _city()->treasury().workerSalary() - _city()->empire()->workerSalary();
+    _d->prosperityExtend += (_d->now.workersSalary > 0 ? 1 : 0);
+    _d->prosperityExtend += (_d->now.workersSalary < 0 ? prosperity::penalty : 0);
    
     _d->prosperityExtend += (_city()->haveOverduePayment() ? -prosperity::taxBrokenPenalty : 0);
     _d->prosperityExtend += (_city()->isPaysTaxes() ? -prosperity::taxBrokenPenalty : 0);
@@ -204,7 +205,7 @@ int ProsperityRating::getMark(ProsperityRating::Mark type) const
   case housesCap: return _d->now.houseCapTrand;
   case haveProfit: return ( _city()->treasury().money() - _d->prev.balance > 0);
   case worklessPercent: return _d->now.workless;
-  case workersSalary: return _d->workersSalary;
+  case workersSalary: return _d->now.workersSalary;
   case changeValue: return value() - _d->prev.prosperity;
   case plebsPercent: return _d->now.percentPlebs;
   }
@@ -221,7 +222,6 @@ VariantMap ProsperityRating::save() const
   VARIANT_SAVE_CLASS_D( ret, _d, prev )
   VARIANT_SAVE_CLASS_D( ret, _d, now )
   VARIANT_SAVE_ANY_D( ret, _d, prosperityExtend )
-  VARIANT_SAVE_ANY_D( ret, _d, workersSalary )
 
   return ret;
 }
@@ -231,7 +231,6 @@ void ProsperityRating::load(const VariantMap& stream)
   VARIANT_LOAD_CLASS_D( _d, prev, stream )
   VARIANT_LOAD_CLASS_D( _d, now, stream )
   VARIANT_LOAD_ANY_D( _d, prosperityExtend, stream )
-  VARIANT_LOAD_ANY_D( _d, workersSalary, stream )
 }
 
 }//end namespace city

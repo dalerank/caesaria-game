@@ -89,12 +89,9 @@ void PropertyBrowser::setAttribs(const VariantMap &attribs)
 void PropertyBrowser::_clearAttributesList()
 {
   // clear the attribute list
-  unsigned int i;
-  for (i=0; i<_attribList.size(); ++i)
-  {
-    if( _attribList[ i ] )
-        _attribList[ i ]->deleteLater();
-  }
+  foreach( i, _attribList )
+    (*i)->deleteLater();
+
   _attribList.clear();
 }
 
@@ -111,7 +108,7 @@ void PropertyBrowser::updateTable_()
 
 AbstractAttribute* PropertyBrowser::createAttributElm_(std::string typeStr, const std::string &attrName )
 {
-  typeStr = "Attribute" + typeStr;
+  typeStr = typeStr + AbstractAttribute::ATTRIBUTE_TYPENAME;
 
   WidgetFactory& wmgr = WidgetFactory::instance();
   AbstractAttribute* attr = (AbstractAttribute*)wmgr.create( typeStr, _attribTable);

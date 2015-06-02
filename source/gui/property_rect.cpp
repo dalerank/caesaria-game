@@ -3,87 +3,88 @@
 #include "core/event.hpp"
 #include "widget_factory.hpp"
 #include "core/utils.hpp"
+#include "widget_helper.hpp"
 
 namespace gui
 {
 
-REGISTER_CLASS_IN_WIDGETFACTORY(AttributeRect)
+REGISTER_CLASS_IN_WIDGETFACTORY(RectAttribute)
 
-AttributeRect::AttributeRect(Widget *parent, int myParentID)
+RectAttribute::RectAttribute(Widget *parent, int myParentID)
   : AbstractAttribute( parent, myParentID )
 {
-  label_ = new Label( this, Rect( 0, 0, width(), height() ) );
-  label_->setSubElement(true);
-  label_->setTextAlignment( align::upperLeft, align::center );
-  label_->setAlignment( align::upperLeft, align::lowerRight, align::upperLeft, align::lowerRight );
+  _label = new Label( this, Rect( 0, 0, width(), height() ) );
+  _label->setSubElement(true);
+  _label->setTextAlignment( align::upperLeft, align::center );
+  _label->setAlignment( align::upperLeft, align::lowerRight, align::upperLeft, align::lowerRight );
 }
 
-AttributeRect::~AttributeRect() {}
+RectAttribute::~RectAttribute() {}
 
-unsigned int AttributeRect::childCount() const { return 4; }
+unsigned int RectAttribute::childCount() const { return 4; }
 
-AbstractAttribute *AttributeRect::getChild(unsigned int index)
+AbstractAttribute* RectAttribute::getChild(unsigned int index)
 {
   if( index >= childCount() )
     return 0;
 
-  std::string text[] = { "\t\t\tLeft", "\t\t\tTop", "\t\t\tRight", "\t\t\tBottom" };
+  std::string text[] = { "\t\t\tleft", "\t\t\ttop", "\t\t\tright", "\t\t\tbottom" };
 
-  AttributeString* attr = safety_cast<AttributeString*>( findChild( text[ index ] ));
+  StringAttribute* attr = findChildA<StringAttribute*>( text[ index ], false, this );
   if( !attr )
-    {
-      attr = new AttributeString( this, -1 );
-      attr->setTitle( text[ index ] );
-      attr->setParent4Event( this );
-      attr->setEditText( tokens_[ index ] );
-    }
+  {
+    attr = new StringAttribute( this, -1 );
+    attr->setTitle( text[ index ] );
+    attr->setParent4Event( this );
+    attr->setEditText( tokens_[ index ] );
+  }
 
   return attr;
 }
 
-void AttributeRect::setValue(const Variant &value)
+void RectAttribute::setValue(const Variant &value)
 {
   std::string splitText = value.toString();
-  label_->setText( splitText );
+  _label->setText( splitText );
 
-  tokens_ = utils::split( tokens_, L", ", 2 );
+  tokens_ = utils::split( splitText, "," );
 
   for( unsigned int i=0; i < tokens_.size(), i < childCount(); i++)
-    {
-      AttributeString* ed = safety_cast< AttributeString* >( getChild( i ) );
+  {
+    StringAttribute* ed = safety_cast< StringAttribute* >( getChild( i ) );
 
-      if( ed )
-        ed->setEditText( tokens_[ i ] );
-    }
+    if( ed )
+      ed->setEditText( tokens_[ i ] );
+  }
 
-  AbstractAttribute::setAttrib(attribs, attribIndex);
+  AbstractAttribute::setValue( value );
 }
 
-bool AttributeRect::onEvent(const NEvent &e)
+bool RectAttribute::onEvent(const NEvent &e)
 {
-  if( e.EventType == sEventGui && e.GuiEvent.EventType == guiEditboxChanged )
+  if( e.EventType == sEventGui && e.gui.type == guiEditboxChanged )
     _isNeedUpdate = true;
 
   return AbstractAttribute::onEvent( e );
 }
 
-bool AttributeRect::updateAttrib(bool sendEvent)
+bool RectAttribute::updateAttrib(bool sendEvent)
 {
-  if (!_attribs)
+  if (!_attribute)
     return true;
 
   std::string retText;
   for( unsigned int i=0; i < childCount(); i++)
+  {
+    if( StringAttribute* editor = safety_cast< StringAttribute* >( getChild( i ) ) )
     {
-      if( AttributeString* editor = safety_cast< AttributeString* >( getChild( i ) ) )
-        {
-          retText.append( editor->GetEditText() );
-          retText.append( ( i != ( GetChildAttributesCount() - 1) ) ? L", " : L"" );
-        }
+      retText.append( editor->editText() );
+      retText.append( ( i != ( childCount() - 1) ) ? ", " : "" );
     }
+  }
 
-  label_->setText( retText  );
-  _attribs->setAttribute( _index, label_->getText() );
+  _label->setText( retText  );
+  //_attribs->setAttribute( _index, _label->text() );
 
   return AbstractAttribute::updateAttrib( sendEvent );
 }

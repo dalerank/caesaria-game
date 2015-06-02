@@ -45,6 +45,7 @@ public:
   virtual void beforeDraw(gfx::Engine &painter);
 
   static const unsigned int ATTRIBEDIT_ATTRIB_CHANGED;
+  static const char* ATTRIBUTE_TYPENAME;
 protected:
   Variant	_attribute;
   Widget* _parentEvent;
