@@ -207,7 +207,7 @@ class Variant
   Variant( const PointF& pt);
   Variant( const Rect& rect);
   Variant( const RectF& rect);
-  Variant( const NColor& color);
+  Variant( const NColor& color );
 
   Variant& operator=( const Variant& other);
 
@@ -245,6 +245,7 @@ class Variant
   Size toSize() const;
   SizeF toSizeF() const;
   TilePos toTilePos() const;
+  NColor toColor() const;
   RectF toRectf() const;
 
   operator unsigned int() const { return toUInt(); }
@@ -256,6 +257,7 @@ class Variant
   operator Point() const { return toPoint(); }
   operator PointF() const { return toPointF(); }
   operator Size() const { return toSize(); }
+  operator NColor() const;
 
   static std::string typeToName(Type type);
   static Type nameToType(const std::string& name);

@@ -274,7 +274,7 @@ void CityRenderer::setMode( Renderer::ModePtr command )
   LayerModePtr ovCmd = _d->changeCommand.as<LayerMode>();
   if( ovCmd.isValid() )
   {
-    _d->setLayer( ovCmd->getType() );
+    _d->setLayer( ovCmd->type() );
   }
 }
 

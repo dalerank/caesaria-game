@@ -1257,6 +1257,11 @@ TilePos Variant::toTilePos() const
   return Variant2ToHelper<TilePos>( _d, Variant::NTilePos, varHandler );
 }
 
+NColor Variant::toColor() const
+{
+   return Variant2ToHelper<NColor>(_d, Variant::Color, varHandler);
+}
+
 /*!
     \fn Rect Variant::toRect() const
 
@@ -1274,6 +1279,8 @@ RectF Variant::toRectf() const
 {
     return Variant2ToHelper<RectF>(_d, Variant::NRectF, varHandler);
 }
+
+Variant::operator NColor() const { return toColor(); }
 
 /*!
     \fn NSizeU Variant::toSize() const
