@@ -64,7 +64,7 @@ static std::string staticTypeToName( Variant::Type t)
   case Variant::Invalid:	return "Invalid";
   case Variant::Bool : return "Bool";
   case Variant::Int : return "Int";
-  case Variant::UInt : return "UInt";
+  case Variant::UInt : return "Uint";
   case Variant::LongLong : return "LongLong";
   case Variant::ULongLong : return "ULongLong";
   case Variant::Double : return "Double";
@@ -72,11 +72,11 @@ static std::string staticTypeToName( Variant::Type t)
   case Variant::Map : return "Map";
   case Variant::List : return "List";
   case Variant::String : return "String";
-  case Variant::NStringArray : return "NStringArray";
-  case Variant::NByteArray : return "NByteArray";
+  case Variant::NStringArray : return "StringArray";
+  case Variant::NByteArray : return "ByteArray";
   case Variant::NDateTime : return "DateTime";
-  case Variant::NRectI : return "NRectI";
-  case Variant::NRectF : return "NRectF";
+  case Variant::NRectI : return "Rect";
+  case Variant::NRectF : return "RectF";
   case Variant::NSize : return "Size";
   case Variant::NSizeF : return "SizeF";
   case Variant::Line : return "Line";
@@ -89,7 +89,7 @@ static std::string staticTypeToName( Variant::Type t)
   case Variant::Color : return "Color";
   case Variant::Uchar : return "Uchar";
   case Variant::Ushort : return "Ushort";
-  case Variant::Ulong : return "ULong";
+  case Variant::Ulong : return "Ulong";
   case Variant::Long : return "Long";
   case Variant::Float : return "Float";
   case Variant::UserType : return "UserType";

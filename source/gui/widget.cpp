@@ -162,10 +162,10 @@ void Widget::setGeometry( const RectF& r, GeometryType mode )
   {
   case ProportionalGeometry:
     _d->desiredRect = Rect(
-          floor( d.width() * r.UpperLeftCorner.x() ),
-          floor( d.height() * r.UpperLeftCorner.y() ),
-          floor( d.width() * r.LowerRightCorner.x() ),
-          floor( d.height() * r.LowerRightCorner.y() ));
+          floor( d.width() * r.left() ),
+          floor( d.height() * r.top() ),
+          floor( d.width() * r.right() ),
+          floor( d.height() * r.bottom() ));
 
     _d->scaleRect = r;
   break;
@@ -236,13 +236,7 @@ void Widget::setAlignment( Alignment left, Alignment right, Alignment top, Align
 void Widget::updateAbsolutePosition()
 {
   __D_IMPL(_d,Widget)
-  const Rect oldRect = _d->absoluteRect;
   _recalculateAbsolutePosition(false);
-
-  if( oldRect.size() != _d->absoluteRect.size() )
-  {
-    _finalizeResize();
-  }
 
   // update all children
   foreach( widget, _d->children ) { (*widget)->updateAbsolutePosition(); }
@@ -659,110 +653,110 @@ void Widget::_addChild( Widget* child )
 
 void Widget::_recalculateAbsolutePosition( bool recursive )
 {
-    Rect parentAbsolute(0,0,0,0);
-    Rect parentAbsoluteClip;
-    float fw=0.f, fh=0.f;
+  Rect parentAbsolute(0,0,0,0);
+  Rect parentAbsoluteClip;
+  float fw=0.f, fh=0.f;
 
-    __D_IMPL(_d,Widget)
-    if ( parent() )
+  __D_IMPL(_d,Widget)
+  if ( parent() )
+  {
+    parentAbsolute = parent()->absoluteRect();
+
+    if( _d->noClip )
     {
-        parentAbsolute = parent()->absoluteRect();
+      Widget* p=this;
+      while( p && p->parent() )
+          p = p->parent();
 
-        if( _d->noClip )
-        {
-            Widget* p=this;
-            while( p && p->parent() )
-                p = p->parent();
-
-            parentAbsoluteClip = p->absoluteClippingRect();
-        }
-        else
-            parentAbsoluteClip = parent()->absoluteClippingRect();
+      parentAbsoluteClip = p->absoluteClippingRect();
     }
+    else
+      parentAbsoluteClip = parent()->absoluteClippingRect();
+  }
 
-    const int diffx = parentAbsolute.width() - _d->lastParentRect.width();
-    const int diffy = parentAbsolute.height() - _d->lastParentRect.height();
+  const int diffx = parentAbsolute.width() - _d->lastParentRect.width();
+  const int diffy = parentAbsolute.height() - _d->lastParentRect.height();
 
 
-    if( _d->alignLeft == align::scale || _d->alignRight == align::scale)
-        fw = (float)parentAbsolute.width();
+  if( _d->alignLeft == align::scale || _d->alignRight == align::scale)
+      fw = (float)parentAbsolute.width();
 
-    if( _d->alignTop == align::scale || _d->alignBottom == align::scale)
-        fh = (float)parentAbsolute.height();
-    
-    switch( _d->alignLeft)
+  if( _d->alignTop == align::scale || _d->alignBottom == align::scale)
+      fh = (float)parentAbsolute.height();
+
+  switch( _d->alignLeft)
+  {
+  case align::automatic:
+  case align::upperLeft: break;
+  case align::lowerRight: _d->desiredRect.UpperLeftCorner += Point( diffx, 0 ); break;
+  case align::center: _d->desiredRect.UpperLeftCorner += Point( diffx/2, 0 ); break;
+  case align::scale: _d->desiredRect.UpperLeftCorner.setX( _d->scaleRect.UpperLeftCorner.x() * fw ); break;
+  }
+
+  switch( _d->alignRight)
+  {
+  case align::automatic:
+  case align::upperLeft:   break;
+  case align::lowerRight: _d->desiredRect.LowerRightCorner += Point( diffx, 0 ); break;
+  case align::center: _d->desiredRect.LowerRightCorner += Point( diffx/2, 0 ); break;
+  case align::scale: _d->desiredRect.LowerRightCorner.setX( roundf( _d->scaleRect.LowerRightCorner.x() * fw ) ); break;
+  }
+
+  switch( _d->alignTop)
+  {
+  case align::automatic:
+  case align::upperLeft: break;
+  case align::lowerRight: _d->desiredRect.UpperLeftCorner += Point( 0, diffy ); break;
+  case align::center: _d->desiredRect.UpperLeftCorner += Point( 0, diffy/2 ); break;
+  case align::scale: _d->desiredRect.UpperLeftCorner.setY( roundf(_d->scaleRect.UpperLeftCorner.y() * fh) ); break;
+  }
+
+  switch( _d->alignBottom)
+  {
+  case align::automatic:
+  case align::upperLeft:  break;
+  case align::lowerRight: _d->desiredRect.LowerRightCorner += Point( 0, diffy );  break;
+  case align::center:  _d->desiredRect.LowerRightCorner += Point( 0, diffy/2 );  break;
+  case align::scale: _d->desiredRect.LowerRightCorner.setY( roundf(_d->scaleRect.LowerRightCorner.y() * fh) );  break;
+  }
+
+  _d->relativeRect = _d->desiredRect;
+
+  const int w = _d->relativeRect.width();
+  const int h = _d->relativeRect.height();
+
+  // make sure the desired rectangle is allowed
+  if (w < (int)_d->minSize.width() )
+      _d->relativeRect.LowerRightCorner.setX( _d->relativeRect.UpperLeftCorner.x() + _d->minSize.width() );
+  if (h < (int)_d->minSize.height() )
+      _d->relativeRect.LowerRightCorner.setY( _d->relativeRect.UpperLeftCorner.y() + _d->minSize.height() );
+  if (_d->maxSize.width() > 0 && w > (int)_d->maxSize.width() )
+      _d->relativeRect.LowerRightCorner.setX( _d->relativeRect.UpperLeftCorner.x() + _d->maxSize.width() );
+  if (_d->maxSize.height() > 0 && h > (int)_d->maxSize.height() )
+      _d->relativeRect.LowerRightCorner.setY( _d->relativeRect.UpperLeftCorner.y() + _d->maxSize.height() );
+
+  _d->relativeRect.repair();
+
+  _d->absoluteRect = _d->relativeRect + parentAbsolute.UpperLeftCorner;
+
+  if (!parent())
+      parentAbsoluteClip = absoluteRect();
+
+  _d->absoluteClippingRect = absoluteRect();
+  _d->absoluteClippingRect.clipAgainst(parentAbsoluteClip);
+
+  _d->lastParentRect = parentAbsolute;
+
+  if ( recursive )
+  {
+    // update all children
+    foreach( it, _d->children )
     {
-    case align::automatic:
-    case align::upperLeft: break;
-    case align::lowerRight: _d->desiredRect.UpperLeftCorner += Point( diffx, 0 ); break;
-    case align::center: _d->desiredRect.UpperLeftCorner += Point( diffx/2, 0 ); break;
-    case align::scale: _d->desiredRect.UpperLeftCorner.setX( _d->scaleRect.UpperLeftCorner.x() * fw ); break;
+        (*it)->_recalculateAbsolutePosition(recursive);
     }
+  }
 
-    switch( _d->alignRight)
-    {
-    case align::automatic:
-    case align::upperLeft:   break;
-    case align::lowerRight: _d->desiredRect.LowerRightCorner += Point( diffx, 0 ); break;
-    case align::center: _d->desiredRect.LowerRightCorner += Point( diffx/2, 0 ); break;
-    case align::scale: _d->desiredRect.LowerRightCorner.setX( roundf( _d->scaleRect.LowerRightCorner.x() * fw ) ); break;
-    }
-
-    switch( _d->alignTop)
-    {
-    case align::automatic:
-    case align::upperLeft: break;
-    case align::lowerRight: _d->desiredRect.UpperLeftCorner += Point( 0, diffy ); break;
-    case align::center: _d->desiredRect.UpperLeftCorner += Point( 0, diffy/2 ); break;
-    case align::scale: _d->desiredRect.UpperLeftCorner.setY( roundf(_d->scaleRect.UpperLeftCorner.y() * fh) ); break;
-    }
-
-    switch( _d->alignBottom)
-    {
-    case align::automatic:
-    case align::upperLeft:  break;
-    case align::lowerRight: _d->desiredRect.LowerRightCorner += Point( 0, diffy );  break;
-    case align::center:  _d->desiredRect.LowerRightCorner += Point( 0, diffy/2 );  break;
-    case align::scale: _d->desiredRect.LowerRightCorner.setY( roundf(_d->scaleRect.LowerRightCorner.y() * fh) );  break;
-    }
-
-    _d->relativeRect = _d->desiredRect;
-
-    const int w = _d->relativeRect.width();
-    const int h = _d->relativeRect.height();
-
-    // make sure the desired rectangle is allowed
-    if (w < (int)_d->minSize.width() )
-        _d->relativeRect.LowerRightCorner.setX( _d->relativeRect.UpperLeftCorner.x() + _d->minSize.width() );
-    if (h < (int)_d->minSize.height() )
-        _d->relativeRect.LowerRightCorner.setY( _d->relativeRect.UpperLeftCorner.y() + _d->minSize.height() );
-    if (_d->maxSize.width() > 0 && w > (int)_d->maxSize.width() )
-        _d->relativeRect.LowerRightCorner.setX( _d->relativeRect.UpperLeftCorner.x() + _d->maxSize.width() );
-    if (_d->maxSize.height() > 0 && h > (int)_d->maxSize.height() )
-        _d->relativeRect.LowerRightCorner.setY( _d->relativeRect.UpperLeftCorner.y() + _d->maxSize.height() );
-
-    _d->relativeRect.repair();
-
-    _d->absoluteRect = _d->relativeRect + parentAbsolute.UpperLeftCorner;
-
-    if (!parent())
-        parentAbsoluteClip = absoluteRect();
-
-    _d->absoluteClippingRect = absoluteRect();
-    _d->absoluteClippingRect.clipAgainst(parentAbsoluteClip);
-
-    _d->lastParentRect = parentAbsolute;
-
-    if ( recursive )
-    {
-      // update all children
-      foreach( it, _d->children )
-      {
-          (*it)->_recalculateAbsolutePosition(recursive);
-      }
-    }
-
-    _finalizeResize();
+  _finalizeResize();
 }
 
 void Widget::animate( unsigned int timeMs )

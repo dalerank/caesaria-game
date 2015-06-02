@@ -8,15 +8,19 @@ namespace gui
 
 REGISTER_CLASS_IN_WIDGETFACTORY(AttributeString)
 
-AttributeString::AttributeString(Widget *parent, int myParentID) :
-  AbstractAttribute( parent, myParentID ), _attribEditBox( NULL )
+AttributeString::AttributeString(Widget *parent, int myParentID)
+  : AbstractAttribute( parent, myParentID ), _attribEditBox( NULL )
 {
-  _attribEditBox = new EditBox( this, Rect( 0, 0, 1, 1 ), "", -1 );
+  _attribEditBox = new EditBox( this, Rect( 0, 0, width(), height() ) , "", -1 );
   _attribEditBox->setGeometry( RectF( 0, 0, 1, 1 ) );
+  _attribEditBox->setAlignment( align::upperLeft, align::lowerRight, align::upperLeft, align::lowerRight );
   _attribEditBox->setSubElement( true );
   _attribEditBox->setDrawBorder( false );
   _attribEditBox->setDrawBackground( false );
-  //_attribEditBox->setAlignment(alignUpperLeft, alignLowerRight, alignUpperLeft, alignLowerRight);
+}
+
+gui::AttributeString::~AttributeString()
+{
 }
 
 bool AttributeString::onEvent(const NEvent &e)
@@ -27,18 +31,14 @@ bool AttributeString::onEvent(const NEvent &e)
   return AbstractAttribute::onEvent( e );
 }
 
-void AttributeString::setAttrib( const Variant& m, const std::string& name )
+void AttributeString::setValue( const Variant& value )
 {
-  _attribEditBox->setText( m.toString() );
-
-  AbstractAttribute::setAttrib( m, name);
+  _attribEditBox->setText( value.toString() );
+  AbstractAttribute::setValue( value );
 }
 
 bool AttributeString::updateAttrib(bool sendEvent)
 {
-  if (!_attribs)
-    return true;
-
   //_attribs->setAttribute(_index, _attribEditBox->getText());
   //_attribEditBox->setText( _attribs->getAttributeAsString( _index ) );
 
@@ -55,6 +55,11 @@ void AttributeString::setFont(Font font)
 void AttributeString::setEditText(const std::string &text)
 {
   _attribEditBox->setText( text );
+}
+
+void AttributeString::_finalizeResize()
+{
+
 }
 
 }//end namespace gui

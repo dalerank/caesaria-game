@@ -44,7 +44,7 @@ void TreeViewItem::init_()
 	Data = 0;
   isExpanded_ = false;
 	_fontColor = 0;
-    _d = new TreeViewItemPrivate;
+  _d = new TreeViewItemPrivate;
 
 	sendToBack();
 }

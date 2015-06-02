@@ -14,13 +14,11 @@ public:
   //
   AttributeString( Widget *parent, int myParentID=-1);
 
-  virtual ~AttributeString()
-  {
-  }
+  virtual ~AttributeString();
 
   virtual bool onEvent(const NEvent &e);
 
-  virtual void setAttrib(const Variant &m, const std::string &name);
+  virtual void setValue(const Variant &value);
 
   //! save the attribute and possibly post the event to its parent
   virtual bool updateAttrib(bool sendEvent=true);
@@ -32,6 +30,8 @@ public:
   virtual void setEditText(const std::string& text);
 
 protected:
+  virtual void _finalizeResize();
+
   EditBox* _attribEditBox;
 };
 

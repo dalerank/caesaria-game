@@ -46,6 +46,7 @@ public:
 
 private:
   void _checkStats();
+  ProsperityRating(PlayerCityPtr city);
 
   class Impl;
   ScopedPtr< Impl > _d;

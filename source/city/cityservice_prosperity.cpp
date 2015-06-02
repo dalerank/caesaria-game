@@ -156,16 +156,17 @@ void ProsperityRating::timeStep(const unsigned int time )
       return;
     }
 
+    int population = _city()->states().population;
     int currentFunds = _city()->treasury().money();
     _d->now.profit = _d->prev.balance < currentFunds;
     _d->prev.balance = currentFunds;
     _d->prosperityExtend = (_d->now.profit ? prosperity::cityHaveProfitAward : prosperity::penalty );
 
-    bool more10PercentIsPatrician = math::percentage( _d->now.patricianCount, _city()->states().population ) > 10;
+    bool more10PercentIsPatrician = math::percentage( _d->now.patricianCount, population ) > 10;
     _d->prosperityExtend += (more10PercentIsPatrician ? prosperity::award : 0);
 
-    _d->percentPlebs = math::percentage( _d->now.plebsCount, _city()->states().population );
-    _d->prosperityExtend += (_d->percentPlebs < prosperity::normalPlebsInCityPercent ? prosperity::award : 0);
+    _d->now.percentPlebs = math::percentage( _d->now.plebsCount, population );
+    _d->prosperityExtend += (_d->now.percentPlebs < prosperity::normalPlebsInCityPercent ? prosperity::award : 0);
 
     bool haveHippodrome = !statistic::getObjects<Hippodrome>( _city(), object::hippodrome ).empty();
     _d->prosperityExtend += (haveHippodrome ? prosperity::award : 0);
@@ -176,7 +177,7 @@ void ProsperityRating::timeStep(const unsigned int time )
 
     _d->prosperityExtend += (unemploymentLess5percent ? prosperity::award : 0);
     _d->prosperityExtend += (unemploymentMore15percent ? prosperity::penalty : 0);
-    _d->prosperityExtend += (patricianCount > 0 ? prosperity::award : 0);
+    _d->prosperityExtend += (_d->now.patricianCount > 0 ? prosperity::award : 0);
 
     _d->workersSalary = _city()->treasury().workerSalary() - _city()->empire()->workerSalary();
     _d->prosperityExtend += (_d->workersSalary > 0 ? 1 : 0);
@@ -205,7 +206,7 @@ int ProsperityRating::getMark(ProsperityRating::Mark type) const
   case worklessPercent: return _d->now.workless;
   case workersSalary: return _d->workersSalary;
   case changeValue: return value() - _d->prev.prosperity;
-  case plebsPercent: return _d->percentPlebs;
+  case plebsPercent: return _d->now.percentPlebs;
   }
 
   return 0;
@@ -221,7 +222,6 @@ VariantMap ProsperityRating::save() const
   VARIANT_SAVE_CLASS_D( ret, _d, now )
   VARIANT_SAVE_ANY_D( ret, _d, prosperityExtend )
   VARIANT_SAVE_ANY_D( ret, _d, workersSalary )
-  VARIANT_SAVE_ANY_D( ret, _d, percentPlebs )
 
   return ret;
 }
@@ -232,7 +232,6 @@ void ProsperityRating::load(const VariantMap& stream)
   VARIANT_LOAD_CLASS_D( _d, now, stream )
   VARIANT_LOAD_ANY_D( _d, prosperityExtend, stream )
   VARIANT_LOAD_ANY_D( _d, workersSalary, stream )
-      VARIANT_LOAD_ANY_D( _d, percentPlebs, stream )
 }
 
 }//end namespace city
