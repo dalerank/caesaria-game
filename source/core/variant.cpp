@@ -140,9 +140,7 @@ static void constructNewVariant( Variant2Impl *x, const void *copy)
     case Variant::NPoint: v_construct<Point>(x, copy); break;
     case Variant::NTilePos: v_construct<TilePos>(x, copy); break;
     case Variant::NPointF: v_construct<PointF>(x, copy); break;
-// 	case Variant::Color:
-// 		v_construct<Color>(x, copy);
-// 		break;
+    case Variant::Color: v_construct<NColor>(x, copy);	break;
     case Variant::Invalid:
     case Variant::UserType:break;
 
@@ -176,6 +174,7 @@ static void clearVariant(Variant2Impl *d)
     case Variant::NSize: v_clear<Size>(d); break;
     case Variant::NSizeF: v_clear<SizeF>(d); break;
     case Variant::NRectI: v_clear<Rect>(d); break;
+    case Variant::Color: v_clear<NColor>(d); break;
 //     case Variant::LineF:
 //         v_clear<LineF>(d);
 //         break;
@@ -299,21 +298,15 @@ inline bool compareNumericMetaType(const Variant2Impl *const a, const Variant2Im
  */
 static long long Variant2Number(const Variant2Impl *d)
 {
-    switch (d->type) {
-    case Variant::Int:
-        return d->data.i;
-    case Variant::LongLong:
-        return d->data.ll;
-    case Variant::Char:        
-        return (long long)( d->data.c );
-    case Variant::Short:
-        return (long long)( d->data.i );
-    case Variant::Long:
-        return (long long)( d->data.i );
-    case Variant::Float:
-        return (long long)floorf( d->data.f );
-    case Variant::Double:
-        return (long long)floor( d->data.d );
+    switch (d->type)
+    {
+    case Variant::Int:    return d->data.i;
+    case Variant::LongLong: return d->data.ll;
+    case Variant::Char:   return (long long)( d->data.c );
+    case Variant::Short:  return (long long)( d->data.i );
+    case Variant::Long:   return (long long)( d->data.i );
+    case Variant::Float:  return (long long)floorf( d->data.f );
+    case Variant::Double: return (long long)floor( d->data.d );
     }
     _CAESARIA_DEBUG_BREAK_IF( true );
     return 0;
@@ -321,17 +314,13 @@ static long long Variant2Number(const Variant2Impl *d)
 
 static unsigned long long Variant2UNumber(const Variant2Impl *d)
 {
-    switch (d->type) {
-    case Variant::UInt:
-        return d->data.u;
-    case Variant::ULongLong:
-        return d->data.ull;
-    case Variant::Char:
-        return (unsigned long long)( d->data.c );
-    case Variant::Ushort:
-        return (unsigned long long)( d->data.i );
-    case Variant::Ulong:
-        return (unsigned long long)( d->data.ll );
+    switch (d->type)
+    {
+    case Variant::UInt:        return d->data.u;
+    case Variant::ULongLong:   return d->data.ull;
+    case Variant::Char:        return (unsigned long long)( d->data.c );
+    case Variant::Ushort:      return (unsigned long long)( d->data.i );
+    case Variant::Ulong:       return (unsigned long long)( d->data.ll );
     }
     _CAESARIA_DEBUG_BREAK_IF( true );
     return 0;
@@ -343,12 +332,10 @@ static long long ConvertToNumber(const Variant2Impl *d, bool *ok)
 
     switch( (unsigned long long)(d->type) )
     {
-    case Variant::String:
-      return utils::toInt( v_cast<std::string>(d)->c_str() );
-    case Variant::NByteArray:
-      return utils::toInt( &(*v_cast<ByteArray>(d))[0] );
-    case Variant::Bool:
-        return (long long)(d->data.b);
+    case Variant::String: return utils::toInt( v_cast<std::string>(d)->c_str() );
+    case Variant::NByteArray: return utils::toInt( &(*v_cast<ByteArray>(d))[0] );
+    case Variant::Bool: return (long long)(d->data.b);
+    case Variant::Color: return v_cast<NColor>(d)->color;
     case Variant::Double:
     case Variant::Int:
     case Variant::Char:
@@ -375,12 +362,10 @@ static unsigned long long ConvertToUnsignedNumber(const Variant2Impl *d, bool *o
 
     switch((unsigned int)(d->type)) 
     {
-    case Variant::String:
-      return utils::toUint( v_cast<std::string>(d)->c_str() );
-    case Variant::NByteArray:
-      return utils::toUint( &(*v_cast<ByteArray>(d))[0] );
-    case Variant::Bool:
-        return (unsigned long long)(d->data.b);
+    case Variant::String:  return utils::toUint( v_cast<std::string>(d)->c_str() );
+    case Variant::NByteArray: return utils::toUint( &(*v_cast<ByteArray>(d))[0] );
+    case Variant::Bool: return (unsigned long long)(d->data.b);
+    case Variant::Color: return v_cast<NColor>(d)->color;
     case Variant::Double:
     case Variant::Int:
     case Variant::Char:
