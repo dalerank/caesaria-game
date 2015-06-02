@@ -95,6 +95,7 @@ public:
 
 public signals:
   Signal0<> onClickedSignal;
+  Signal1<Widget*> onClickedSignalA;
 };
 
 //! constructor
@@ -238,6 +239,7 @@ void Label::_updateBackground(Engine& painter, bool& useAlpha4Text )
 void Label::_handleClick()
 {
   emit _d->onClickedSignal();
+  emit _d->onClickedSignalA( this );
 }
 
 //! destructor
@@ -552,48 +554,49 @@ void Label::setText(const string& newText)
   _d->needUpdatePicture = true;
 }
 
-Signal0<>& Label::onClicked() {  return _d->onClickedSignal; }
+Signal0<>& Label::onClicked() { return _d->onClickedSignal; }
+Signal1<Widget*>& Label::onClickedA() { return _d->onClickedSignalA; }
 
 //! Returns the height of the text in pixels when it is drawn.
 int Label::textHeight() const
 {
-    Font font = _d->font;
-    if( !font.isValid() )
-        return 0;
+  Font font = _d->font;
+  if( !font.isValid() )
+    return 0;
 
-    int height = font.getTextSize("A").height();// + font.GetKerningHeight();
+  int height = font.getTextSize("A").height();// + font.GetKerningHeight();
 
-    if( _d->isWordwrap)
-            height *= _d->brokenText.size();
+  if( _d->isWordwrap)
+    height *= _d->brokenText.size();
 
-    return height;
+  return height;
 }
 
 
 int Label::textWidth() const
 {
-    Font font = _d->font;
-    if( !font.isValid() )
-        return 0;
+  Font font = _d->font;
+  if( !font.isValid() )
+      return 0;
 
-    if( _d->isWordwrap )
+  if( _d->isWordwrap )
+  {
+    int widest = 0;
+
+    for(unsigned int line = 0; line < _d->brokenText.size(); ++line)
     {
-      int widest = 0;
+      int width = font.getTextSize( _d->brokenText[line] ).width();
 
-      for(unsigned int line = 0; line < _d->brokenText.size(); ++line)
-      {
-        int width = font.getTextSize( _d->brokenText[line] ).width();
-
-        if(width > widest)
-          widest = width;
-      }
-
-      return widest;
+      if(width > widest)
+        widest = width;
     }
-    else
-    {
-      return font.getTextSize( text() ).width();
-    }
+
+    return widest;
+  }
+  else
+  {
+    return font.getTextSize( text() ).width();
+  }
 }
 
 void Label::setPadding( const Rect& margin ) {  _d->textMargin = margin; }
@@ -621,10 +624,19 @@ bool Label::onEvent(const NEvent& event)
     case mouseLbtnPressed: _d->lmbPressed = true;
     break;
 
+    case mouseLbtDblClick:
+    {
+      _handleClick();
+    }
+    break;
+
     case mouseLbtnRelease:
     {
-      _d->lmbPressed = false;
-      _handleClick();
+      if( _d->lmbPressed )
+      {
+        _d->lmbPressed = false;
+        _handleClick();
+      }
     }
     break;
 

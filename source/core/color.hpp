@@ -207,7 +207,7 @@ public:
 
 	//! Constructor of the Color. Does nothing.
 	/** The color value is not initialized to save time. */
-	NColor() {}
+  NColor() : color( 0 ) {}
 
 	//! Constructs the color from 4 values representing the alpha, red, green and blue component.
 	/** Must be values between 0 and 255. */
@@ -496,7 +496,7 @@ __REG_COLOR( floralwhite, 0xffFFFAF0 )
 __REG_COLOR( oldlace, 0xffFDF5E6 )
 __REG_COLOR( linen, 0xffFAF0E6 )
 __REG_COLOR( antiqueWhite, 0xffFAEBD7 )
-__REG_COLOR( PapayaWhip, 0xffFFEFD5 )
+__REG_COLOR( papayaWhip, 0xffFFEFD5 )
 __REG_COLOR( blanchedAlmond, 0xffFFEBCD )
 __REG_COLOR( bisque, 0xffFFE4C4 )
 __REG_COLOR( peachPuff, 0xffFFDAB9 )

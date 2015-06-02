@@ -646,7 +646,7 @@ int PlayerCity::favour() const { return empire()->emperor().relation( name() ); 
 
 void PlayerCity::addObject( world::ObjectPtr object )
 {
-  if( is_kind_of<world::Merchant>( object ) )
+  if( object.is<world::Merchant>() )
   {
     world::MerchantPtr merchant = ptr_cast<world::Merchant>( object );
     if( merchant->isSeaRoute() )
@@ -660,7 +660,7 @@ void PlayerCity::addObject( world::ObjectPtr object )
       cityMerchant->send2city();
     }
   }
-  else if( is_kind_of<world::RomeChastenerArmy>( object ) )
+  else if( object.is<world::RomeChastenerArmy>() )
   {
     world::RomeChastenerArmyPtr army = ptr_cast<world::RomeChastenerArmy>( object );
     if( !getOption( legionAttack ) )
@@ -688,7 +688,7 @@ void PlayerCity::addObject( world::ObjectPtr object )
     GameEventPtr e = ShowInfobox::create( _("##romechastener_attack_title##"), _("##romechastener_attack_text##"), true );
     e->dispatch();
   }
-  else if( is_kind_of<world::Barbarian>( object ) )
+  else if( object.is<world::Barbarian>() )
   {
     if( getOption( barbarianAttack ) > 0 )
     {
@@ -704,7 +704,7 @@ void PlayerCity::addObject( world::ObjectPtr object )
       e->dispatch();
     }
   }
-  else if( is_kind_of<world::Messenger>( object ) )
+  else if( object.is<world::Messenger>() )
   {
     world::MessengerPtr msm = ptr_cast<world::Messenger>( object );
     GameEventPtr e = ShowInfobox::create( msm->title(), msm->message() );

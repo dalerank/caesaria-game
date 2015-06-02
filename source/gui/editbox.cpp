@@ -981,19 +981,23 @@ void EditBox::draw( Engine& painter )
     //painter.drawRectangle( markAreaColor, convertLocalToScreen( _d->markAreaRect ), &getAbsoluteClippingRectRef() );
   }
 
-	// draw the text
-  if( _d->bgPicture.isValid() )
+  // draw the background
+  if( _d->drawBackground )
   {
-    painter.draw( _d->bgPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
-  }
-  else
-  {
-    if( _d->background.valid() )
-      painter.draw( _d->background, &absoluteClippingRectRef() );
+    if( _d->bgPicture.isValid() )
+    {
+      painter.draw( _d->bgPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+    }
     else
-      painter.draw( _d->backgroundNb, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+    {
+      if( _d->background.valid() )
+        painter.draw( _d->background, &absoluteClippingRectRef() );
+      else
+        painter.draw( _d->backgroundNb, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+    }
   }
 
+  // draw the text
   if( _d->textPicture.isValid() )
   {
     painter.draw( _d->textPicture, _d->textOffset + absoluteRect().UpperLeftCorner );

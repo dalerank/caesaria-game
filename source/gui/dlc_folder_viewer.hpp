@@ -33,6 +33,7 @@ public:
 
   virtual ~DlcFolderViewer();
   virtual void draw(gfx::Engine &painter);
+  virtual void setupUI(const VariantMap &ui);
 
 private:
   void _resolveCellClick( int row, int column );

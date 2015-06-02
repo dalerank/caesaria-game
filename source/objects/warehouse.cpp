@@ -36,6 +36,7 @@
 #include "constants.hpp"
 #include "good/helper.hpp"
 #include "game/gamedate.hpp"
+#include "core/variant_list.hpp"
 #include "walker/cart_supplier.hpp"
 #include "extension.hpp"
 #include "warehouse_store.hpp"

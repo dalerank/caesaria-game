@@ -28,8 +28,10 @@
 #include "core/saveadapter.hpp"
 #include "gui/widget_helper.hpp"
 #include "core/logger.hpp"
+#include "core/priorities.hpp"
 
 using namespace gfx;
+using namespace vfs;
 
 namespace gui
 {
@@ -41,10 +43,11 @@ class DlcFolderViewer::Impl
 public:
   Picture background;
   Table* table;
-  vfs::Directory folder;
+  Directory folder;
+  StringArray exts;
 
 public:
-  void fillTable( const std::vector<vfs::Path>& items )
+  void fillTable( const std::vector<Path>& items )
   {
     unsigned int columnCount = table->width() / 150;
     table->setRowHeight( 150 );
@@ -63,7 +66,11 @@ public:
         table->addRow( rowNumber );
       }
 
-      Picture pic = PictureLoader::instance().load( vfs::NFile::open( items[ k ] ) );
+      Picture pic;
+      if( items[ k ].isMyExtension( ".pdf" ) )
+      { pic = Picture( "dlcperf", 1 ); }
+      else
+      { pic = PictureLoader::instance().load( vfs::NFile::open( items[ k ] ) ); }
       Image* image = new Image( table, Rect( 0, 0, 140, 140 ), pic, Image::best );
       table->addElementToCell( rowNumber, columnNumber, image );
       table->setCellData( rowNumber, columnNumber, "path", items[ k ].toString() );
@@ -73,7 +80,7 @@ public:
   void init( const Size& size )
   {
     background = Picture( size, 0, true );
-    background.fill( DefaultColors::black.color & 0xaaffffff );
+    background.fill( DefaultColors::black.color & 0xccffffff );
     background.update();
   }
 };
@@ -84,24 +91,27 @@ DlcFolderViewer::DlcFolderViewer(Widget* parent)
   _d->init( size() );
 }
 
-DlcFolderViewer::DlcFolderViewer(Widget* parent, vfs::Directory folder )
+DlcFolderViewer::DlcFolderViewer(Widget* parent, Directory folder )
   : Window( parent, Rect( Point(), parent->size() ), "", -1, bgNone ), _d( new Impl )
 {
   if( !folder.exist() )
     return;
 
+  Window::setupUI( ":/gui/dlcviewer.gui" );
+  setWindowFlag( Window::fdraggable, false );
+
   _d->init( size() );
   _d->folder = folder;
 
-  vfs::Path configFile = folder/".info";
-  std::vector<vfs::Path> items;
+  Path configFile = folder/".info";
+  std::vector<Path> items;
 
   if( configFile.exist() )
   {
     VariantList list = config::load( configFile.toString() ).get( "items" ).toList();
     foreach( it, list )
     {
-      items.push_back( folder/vfs::Path(it->toString()) );
+      items.push_back( folder/Path(it->toString()) );
     }
   }
   else
@@ -109,21 +119,23 @@ DlcFolderViewer::DlcFolderViewer(Widget* parent, vfs::Directory folder )
     vfs::Entries::Items entries = folder.entries().items();
     foreach( it, entries )
     {
-      if( !it->name.isMyExtension( ".desc" ) )
+      if( _d->exts.contains( it->name.extension() )  )
         items.push_back( it->fullpath );
     }
   }
 
-  _d->table = new Table( this, -1, Rect( 50, 50, width() - 50, height() - 50 ) );
+  _d->table = new Table( this, -1, Rect( 80, 50, width() - 50, height() - 50 ) );
   _d->table->setDrawFlag( Table::drawColumns, false );
   _d->table->setDrawFlag( Table::drawRows, false );
   _d->table->setDrawFlag( Table::drawActiveCell, true );
 
   _d->fillTable( items );
-  CONNECT( _d->table, onCellClick(), this, DlcFolderViewer::_resolveCellClick )
+  CONNECT( _d->table, onCellClicked(), this, DlcFolderViewer::_resolveCellClick )
 
-  PushButton* btn = new PushButton( this, Rect( Point( width() / 2 - 50, height() - 40 ), Size( 100, 20 ) ), "Open folder" );
+  PushButton* btn = new PushButton( this, Rect( Point( width() / 2 - 200, height() - 40 ), Size( 200, 24 ) ), "Open folder" );
   CONNECT( btn, onClicked(), this, DlcFolderViewer::_openFolder )
+  btn = new PushButton( this, Rect( Point( width() / 2 + 2, height() - 40 ), Size( 200, 24 ) ), "Close" );
+  CONNECT( btn, onClicked(), this, DlcFolderViewer::deleteLater )
 }
 
 DlcFolderViewer::~DlcFolderViewer() {}
@@ -143,12 +155,23 @@ void DlcFolderViewer::draw(Engine& painter)
   Window::draw( painter );
 }
 
-void DlcFolderViewer::_loadDesc(vfs::Path path)
+void DlcFolderViewer::setupUI(const VariantMap& ui)
 {
-  Window* window = new Window( this, _d->table->relativeRect(), "" );
-  window->setupUI( path );
+  Window::setupUI( ui );
+  _d->exts = ui.get( "etxs" ).toStringArray();
+}
 
-  PushButton* btnClose = findChildA<PushButton*>( "btnClose", true, window );
+void DlcFolderViewer::_loadDesc(Path path)
+{
+  Rect rect = _d->table->relativeRect();
+  rect.rleft() += 100;
+  rect.rright() -= 100;
+  Window* window = new Window( this, rect, "" );
+  window->setupUI( path );
+  window->setModal();
+  window->setWindowFlag( Window::fdraggable, false );
+
+  PushButton* btnClose = new PushButton( window, Rect( window->width() - 40, 12, window->width() - 16, 12 + 24), "X");
   CONNECT( btnClose, onClicked(), window, Window::deleteLater )
 }
 
@@ -156,17 +179,22 @@ void DlcFolderViewer::_resolveCellClick(int row, int column)
 {
   if( _d->table )
   {
-    vfs::Path path = _d->table->getCellData( row, column, "path" ).toString();
+    Path path = _d->table->getCellData( row, column, "path" ).toString();
+    Path save = path;
     path = path.changeExtension( Locale::current() );
 
     if( !path.exist() )
     {
-      path.changeExtension( "en" );
+      path = path.changeExtension( "ru" );
     }
 
     if( path.exist() )
     {
       _loadDesc( path );
+    }
+    else
+    {
+      OSystem::openUrl( save.toCString() );
     }
   }
 }

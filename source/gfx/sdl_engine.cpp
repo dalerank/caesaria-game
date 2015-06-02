@@ -602,6 +602,7 @@ void SdlEngine::draw(const Batch &batch, Rect *clipRect)
 
 void SdlEngine::drawLine(const NColor &color, const Point &p1, const Point &p2)
 {
+  _d->batcher.finish();
   _d->renderState();
   _d->drawCall++;
 

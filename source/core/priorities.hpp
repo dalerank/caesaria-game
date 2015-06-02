@@ -19,7 +19,7 @@
 #define _CAESARIA_PRIORITIES_INCLUDE_H_
 
 #include <vector>
-#include "variant.hpp"
+#include "variant_list.hpp"
 #include "core/foreach.hpp"
 #include <set>
 

@@ -270,13 +270,13 @@ bool Farm::build( const city::AreaInfo& info )
 void Farm::save( VariantMap& stream ) const
 {
   Factory::save( stream );
-  stream[ "locations" ] = _d->sublocs.toVList();
+  stream[ "locations" ] = _d->sublocs.save();
 }
 
 void Farm::load( const VariantMap& stream )
 {
   Factory::load( stream );
-  _d->sublocs.fromVList( stream.get( "locations").toList() );
+  _d->sublocs.load( stream.get( "locations").toList() );
 
   //el muleta for broken farmtiles
   if( !_d->sublocs.empty() && _d->sublocs[ 0 ] == TilePos(0,0) )

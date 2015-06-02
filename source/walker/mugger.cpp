@@ -105,7 +105,7 @@ void Mugger::timeStep(const unsigned long time)
 
       foreach( hIt, hlist )
       {
-        Pathway pathway = PathwayHelper::create( pos(), ptr_cast<Construction>( *hIt ), PathwayHelper::allTerrain );
+        Pathway pathway = PathwayHelper::create( pos(), *hIt, PathwayHelper::allTerrain );
 
         //find path to most expensive house, fire this!!!
         if( pathway.isValid() )

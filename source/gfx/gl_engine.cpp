@@ -36,6 +36,7 @@
 #include "vfs/file.hpp"
 #include "game/settings.hpp"
 #include "core/saveadapter.hpp"
+#include "core/variant_list.hpp"
 #include <SDL_ttf.h>
 
 

@@ -17,7 +17,7 @@
 #define _CAESARIA_POSITIONARRAY_INCLUDE_H_
 
 #include "position.hpp"
-#include "variant.hpp"
+#include "variant_list.hpp"
 
 class PointsArray : public std::vector<Point>
 {

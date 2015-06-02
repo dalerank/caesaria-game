@@ -24,6 +24,7 @@
 #include "gfx/engine.hpp"
 #include "core/color.hpp"
 #include "core/logger.hpp"
+#include "core/variant_list.hpp"
 #include "gfx/picturesarray.hpp"
 #include "widget_factory.hpp"
 

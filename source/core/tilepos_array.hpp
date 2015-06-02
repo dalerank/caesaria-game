@@ -26,56 +26,23 @@
 class TilePosArray : public std::vector< TilePos >
 {
 public:
-  TilePosArray& operator<<(const TilePos& pos )
-  {
-    push_back( pos );
-    return *this;
-  }
+  TilePosArray& operator<<(const TilePos& pos );
 
-  TilePosArray& addIfNot( const TilePos& pos )
-  {
-    foreach( it, *this )
-      if( *it == pos )
-        return *this;
+  TilePosArray& addIfNot( const TilePos& pos );
 
-    push_back( pos );
-    return *this;
-  }
+  TilePosArray& append( const TilePos& pos );
 
-  TilePosArray& append( const TilePos& pos )
-  {
-    push_back( pos );
-    return *this;
-  }
+  TilePos valueOrEmpty( unsigned int index );
 
-  TilePos atSafe( unsigned int index )
-  {
-    return index < size() ? at( index ) : TilePos();
-  }
+  VariantList save() const;
 
-  VariantList toVList() const
-  {
-    VariantList ret;
-    foreach( it, *this ) { ret << *it; }
-    return ret;
-  }
-
-  void fromVList( const VariantList& vlist )
-  {
-    clear();
-    foreach( it, vlist )
-      push_back( it->toTilePos() );
-  }
+  void load( const VariantList& vlist );
 };
 
 class TilePosSet : public std::set<TilePos>
 {
 public:
-  TilePosSet& operator<<(const TilePos& pos )
-  {
-    insert( pos );
-    return *this;
-  }
+  TilePosSet& operator<<(const TilePos& pos );
 };
 
 typedef TilePosArray Locations;

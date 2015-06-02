@@ -22,6 +22,7 @@
 #include "gfx/tilemap.hpp"
 #include "city/city.hpp"
 #include "events/disaster.hpp"
+#include "core/variant_list.hpp"
 #include "core/logger.hpp"
 #include "core/foreach.hpp"
 #include "core/utils.hpp"

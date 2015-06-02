@@ -202,6 +202,8 @@ Widget* Ui::findWidget(const Point &p)
     if( (*it)->visible() && (*it)->isPointInside( p ) )
       return *it;
   }
+
+  return this;
 }
 
 void Ui::deleteLater( Widget* ptrElement )

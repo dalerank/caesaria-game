@@ -25,6 +25,7 @@
 #include "walker/fishing_boat.hpp"
 #include "core/foreach.hpp"
 #include "good/store.hpp"
+#include "core/variant_list.hpp"
 #include "constants.hpp"
 
 using namespace direction;

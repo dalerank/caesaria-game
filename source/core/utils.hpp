@@ -21,6 +21,7 @@
 #include <string>
 #include <cstdarg>
 #include "stringarray.hpp"
+#include "variant.hpp"
 #include "smartlist.hpp"
 #include "hash.hpp"
 
@@ -92,6 +93,8 @@ namespace utils
 
     return items;
   }
+
+  VariantList toVList( const StringArray& items );
 
   float eventProbability(float probability, int k, int n);  
   std::wstring utf8toWString(const char* src, int size);

@@ -167,8 +167,9 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   {
     Picture pic = MetaDataHolder::randomPicture( object::terrain, Size(1) );
     oTile.setPicture( pic );
-    oTile.setFlag( Tile::clearAll, true );
+    oTile.setFlag( Tile::clearAll, true );    
     changeId = imgid::fromResource( pic.name() );
+    oTile.setOriginalImgId( changeId );
   }
   else
   {
@@ -196,7 +197,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
     city::AreaInfo info = { city, oTile.pos(), TilesArray() };
     overlay->build( info );
     city->addOverlay( overlay );
-  }
+  }  
 
   if( changeId > 0 )
   {

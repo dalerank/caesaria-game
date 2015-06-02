@@ -23,94 +23,95 @@
 class DateTime
 {
 public:
-    typedef enum { dateLess=-1, dateEquale=0, dateMore=1 } DATE_EQUALE_FEEL;
-    enum { weekInMonth = 4, daysInWeek = 7, monthsInYear = 12, secondsInHour=3600 };
+  typedef enum { dateLess=-1, dateEquale=0, dateMore=1 } DATE_EQUALE_FEEL;
+  enum { weekInMonth = 4, daysInWeek = 7, monthsInYear = 12, secondsInHour=3600 };
 
-    static const DateTime invalid;
+  static const DateTime invalid;
 
-    unsigned char hour() const;
-    unsigned char month() const;
-    int year() const;
-    unsigned char minutes() const;
-    unsigned char day() const;
-    unsigned char dayOfWeek() const;
-    unsigned char seconds() const;
+  unsigned char hour() const;
+  unsigned char month() const;
+  int year() const;
+  unsigned char minutes() const;
+  unsigned char day() const;
+  unsigned char dayOfWeek() const;
+  unsigned char seconds() const;
 
-    void setHour( unsigned char hour );
-    void setMonth( unsigned char month );
-    void setYear( unsigned int year );
-    void setMinutes( unsigned char minute );
-    void setDay( unsigned char day );
-    void setSeconds( unsigned char second );
+  void setHour( unsigned char hour );
+  void setMonth( unsigned char month );
+  void setYear( unsigned int year );
+  void setMinutes( unsigned char minute );
+  void setDay( unsigned char day );
+  void setSeconds( unsigned char second );
 
-    DateTime( const char* strValue );
+  DateTime( const char* strValue );
 
-    DateTime( int year, unsigned char month, unsigned char day, 
-              unsigned char hour=0, unsigned char minute=0, unsigned char sec=0 );
+  DateTime( int year, unsigned char month, unsigned char day,
+            unsigned char hour=0, unsigned char minute=0, unsigned char sec=0 );
 
-    DateTime( const DateTime& time );
+  DateTime( const DateTime& time );
 
-    DateTime();
+  DateTime();
 
-    DateTime( time_t time );
+  DateTime( time_t time );
+  DateTime date() const;
+  DateTime time() const;
 
-    DateTime date() const;
+  int daysTo( const DateTime& future ) const;
+  int equale( const DateTime& b );
+  int monthsTo( const DateTime& end ) const;
 
-    DateTime getTime() const;
+  DateTime& appendMonth( int month=1 );
+  DateTime& appendWeek( int weekNumber=1 );
+  DateTime& appendDay( int dayNumber=1 );
+  DateTime& operator=( time_t t );
+  DateTime& operator=( const DateTime& t );
 
-    int daysTo( const DateTime& future ) const;
+  static const char* dayName( unsigned char d );
+  static const char* monthName( unsigned char d );
+  static const char* shortMonthName( unsigned char d );
+  int daysInMonth() const;
+  const char* age() const;
 
-    int equale( const DateTime& b );
+  bool isValid() const;
 
-    int monthsTo( const DateTime& end ) const;
+  bool operator>( const DateTime& other ) const;
+  bool operator>=( const DateTime& other ) const;
+  bool operator<( const DateTime& other ) const;
+  bool operator<=( const DateTime& other ) const;
+  bool operator==( const DateTime& other ) const;
+  bool operator!=( const DateTime& other ) const;
 
-    DateTime& appendMonth( int month=1 );
-    DateTime& appendWeek( int weekNumber=1 );
-    DateTime& appendDay( int dayNumber=1 );
+  static DateTime currenTime();
+  static unsigned int elapsedTime();
 
-    //DateTime& appendMinutes( int minute );
+protected:
+  unsigned int _seconds;
+  unsigned int _minutes;
+  unsigned int _hour;
+  unsigned int _day;
+  unsigned int _month;
+  int _year;
 
-    //DateTime& appendHour( int hour );
+  long _toJd() const;
+  void _set( const DateTime& t );
 
-    DateTime& operator=( time_t t );
-    DateTime& operator=( const DateTime& t );
+  int _getMonthToDate( const long end ) const;
 
-    static const char* getDayName( unsigned char d );
-    static const char* getMonthName( unsigned char d );
-    static const char* getShortMonthName( unsigned char d );
-    int daysInMonth() const;
+  int _isEquale( const long b );
 
-    //unsigned char getMonthLength() const;
-    //unsigned char getWeekNumber() const;
+  int _getDaysToDate( const long other ) const;
+  DateTime _JulDayToDate( const long lJD );
+};
 
-    bool isValid() const;
-
-    bool operator>( const DateTime& other ) const;
-    bool operator>=( const DateTime& other ) const;
-    bool operator<( const DateTime& other ) const;
-    bool operator<=( const DateTime& other ) const;
-    bool operator==( const DateTime& other ) const;
-    bool operator!=( const DateTime& other ) const;
-
-    static DateTime getCurrenTime();
-    static unsigned int elapsedTime();
-
-private:
-    unsigned int _seconds;
-    unsigned int _minutes;
-    unsigned int _hour;
-    unsigned int _day;
-    unsigned int _month;
-    int _year;
-
-    long _toJd() const;
-
-    int _getMonthToDate( const long end ) const;
-
-    int _isEquale( const long b );
-
-    int _getDaysToDate( const long other ) const;
-    DateTime _JulDayToDate( const long lJD );
+class RomanDate : public DateTime
+{
+public:
+  static const int abUrbeCondita = 753;
+  const char* age() const;
+  static const char* dayName( unsigned char d );
+  static const char* monthName( unsigned char d );
+  static const char* shortMonthName( unsigned char d );
+  RomanDate( const DateTime& date );
 };
 
 #endif //__CAESARIA_DATETIME_H_INCLUDE_

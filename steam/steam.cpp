@@ -30,9 +30,9 @@
 namespace steamapi
 {
 
-#define _ACH_ID( id, name ) { id, #id, name, "", 0, 0 }
+#define _ACH_ID( id ) { id, #id, #id, "", 0, 0 }
 enum MissionName { n2_nvillage=0, nx_count };
-enum StatName { totalGamesPlayed=0, totalNumWins, NumLosses, stat_count };
+enum StatName { stat_num_games=0, stat_num_wins, stat_num_lose, stat_count };
 
 static const AppId_t CAESARIA_STEAM_APPID=0x04ffd8;
 static const AppId_t CAESARIA_AVEC3_APPID=0x053124;
@@ -84,9 +84,9 @@ struct XClient
 
 Achievement glbAchievements[achv_count] =
 {
-  _ACH_ID( achv_first_win,    CAESARIA_STR_A(achv_first_win)    ),
-  _ACH_ID( achv_new_graphics, CAESARIA_STR_A(achv_new_graphics) ),
-  _ACH_ID( achv_new_village,  CAESARIA_STR_A(achv_new_village)  )
+  _ACH_ID( achievementFirstWin     ),
+  _ACH_ID( achievementNewGraphics  ),
+  _ACH_ID( achievementNewVillage   )
 };
 
 class UserStats
@@ -136,9 +136,9 @@ public:
 
     #define _INIT_STAT( id ) stats[ id ] = StatInfo(id, #id, 0 );
 
-    _INIT_STAT( totalGamesPlayed )
-    _INIT_STAT( totalNumWins     )
-    _INIT_STAT( NumLosses   )
+    _INIT_STAT( stat_num_games )
+    _INIT_STAT( stat_num_wins  )
+    _INIT_STAT( stat_num_lose  )
 
     #undef _INIT_STAT
   }    
@@ -198,7 +198,7 @@ void UserStats::clearAchievement( Achievement &achievement )
 
   // mark it down
 #ifdef  CAESARIA_PLATFORM_WIN
-  sth_clearAchievement( achievement.uniqueName );
+  //sth_clearAchievement( achievement.uniqueName );
 #else
   if( xclient.stats )
   {
@@ -245,19 +245,19 @@ void UserStats::evaluateAchievement( Achievement& achievement )
 
   switch ( achievement.id )
   {
-  case achv_new_village:
+  case achievementNewVillage:
       if(missions[n2_nvillage].count>0){unlockAchievement(achievement);}
   break;
 
-  case achv_first_win:
-      if(totalNumWins>0){ unlockAchievement(achievement);};
+  case achievementFirstWin:
+      if(stat_num_wins>0){ unlockAchievement(achievement);};
   break;
 
-  case achv_new_graphics:
+  case achievementNewGraphics:
   {
     bool haveDlc = false;
 #ifdef CAESARIA_PLATFORM_WIN
-    haveDlc = sth_isDlcInstalled( CAESARIA_AVEC3_APPID );
+    //haveDlc = sth_isDlcInstalled( CAESARIA_AVEC3_APPID );
 #else
     if( xclient.apps )
       haveDlc = xclient.apps->BIsDlcInstalled( CAESARIA_AVEC3_APPID );
@@ -280,9 +280,11 @@ void UserStats::storeStatsIfNecessary()
     // already set any achievements in UnlockAchievement
 
     // set stats
-    sth_SetStat( literals::stat_num_games, totalGamesPlayed );
-    sth_SetStat( literals::stat_num_wins, totalNumWins );
-    sth_SetStat( "NumLosses", totalNumLosses );
+    for( int i=0; i < stat_count; i++ )
+    {
+      StatInfo& stat = stats[ i ];
+      sth_SetStat( stat.name.c_str(), stat.count );
+    }
     // Update average feet / second stat
     //m_pSteamUserStats->UpdateAvgRateStat( "AverageSpeed", m_flGameFeetTraveled, m_flGameDurationSeconds );
     // The averaged result is calculated for us
@@ -443,7 +445,7 @@ void init()
   xclient.stats->RequestCurrentStats();
 #endif
 
-  evaluateAchievement( achv_new_graphics );
+  evaluateAchievement( achievementNewGraphics );
 }
 
 void evaluateAchievements()
@@ -642,7 +644,7 @@ void UserStats::receivedUserStats()
     statsValid = true;
 
     // load achievements
-    for( int iAch = 0; iAch < achievementNumber; ++iAch )
+    for( int iAch = 0; iAch < achv_count; ++iAch )
     {
       Achievement &ach = glbAchievements[iAch];
       ach.reached = sth_getAchievementReached( ach.uniqueName );
@@ -654,8 +656,18 @@ void UserStats::receivedUserStats()
     }
 
     // load stats
-    totalGamesPlayed = sth_getStat( literals::stat_num_games );
-    totalNumWins = sth_getStat( literals::stat_num_wins );
+    for( int index=0; index < nx_count; index++ )
+    {
+      MissionInfo& mission = missions[ index ];
+      mission.count = sth_getStat( mission.name.c_str() );
+    }
+
+    // load stats
+    for( int index=0; index < stat_count; index++ )
+    {
+      StatInfo& stat = stats[ index ];
+      stat.count = sth_getStat( stat.name.c_str() );
+    }
   }
 }
 #else
@@ -736,8 +748,8 @@ bool isAchievementReached(AchievementType achivId)
 
 void missionWin( const std::string& name )
 {
-  glbUserStats.stats[ totalNumWins ].count++;
-  glbUserStats.stats[ totalGamesPlayed ].count++;
+  glbUserStats.stats[ stat_num_wins ].count++;
+  glbUserStats.stats[ stat_num_games ].count++;
   glbUserStats.checkMissions( name );
   evaluateAchievements();
 }

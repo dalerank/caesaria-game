@@ -216,7 +216,7 @@ void DictionaryText::_handleClick( const Point& p)
   int rowHeight = _d->font.getTextSize( "A" ).height() + _d->lineIntervalOffset;
   int rowIndex = (_d->yoffset + localPoint.y()) / rowHeight;
 
-  if( rowIndex >= _d->brokenText.size() )
+  if( rowIndex >= (int)_d->brokenText.size() )
     return;
 
   const Tokens& rline = _d->brokenText[ rowIndex ];

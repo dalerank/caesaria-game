@@ -29,9 +29,9 @@ namespace steamapi
 
 enum AchievementType
 {
-  achv_new_village = 0,
-  achv_new_graphics = 1,
-  achv_first_win = 2,
+  achievementNewVillage = 0,
+  achievementNewGraphics = 1,
+  achievementFirstWin = 2,
   achv_count
 };
 
