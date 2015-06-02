@@ -47,14 +47,23 @@ struct Issue
   Issue( Type t, int m ) : type( t ), money( m ) {}
 };
 
+class IssuesValue : public std::map< Issue::Type, int >
+{
+
+};
+
+class IssuesHistory : public std::vector< IssuesValue >
+{
+public:
+  VariantList save() const;
+  void load( const VariantList& stream );
+};
+
 class Treasury
 {
 public:
   enum { thisYear=0, lastYear=1, twoYearsAgo=2, defaultTaxPrcnt=7 };
   enum { debtDisabled=0, debtEnabled=1  };
-
-  typedef std::map< Issue::Type, int > IssuesValue;
-  typedef std::vector< IssuesValue > IssuesHistory;
 
   Treasury();
   virtual ~Treasury();
