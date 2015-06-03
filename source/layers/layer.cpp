@@ -668,7 +668,7 @@ void Layer::_initialize()
     object::Type ovType = object::toType( *it );
     if( ovType != object::unknown )
       _dfunc()->drObjects.insert( ovType );
-  }  
+    }
 }
 
 bool Layer::_moveCamera(NEvent &event)

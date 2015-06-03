@@ -60,20 +60,21 @@ public:
   PushButton* btnLegionMayAttack;
   PushButton* btnAnroidBarEnabled;
   PushButton* btnToggleBatching;
-  Label* lbFireRisk;
-  TexturedButton* btnIncreaseFireRisk;
-  TexturedButton* btnDecreaseFireRisk;
+  PushButton* btnHighlightBuilding;
   PushButton* btnToggleCcUseAI;
-
-  Label* lbCollapseRisk;
-  TexturedButton* btnIncreaseCollapseRisk;
-  TexturedButton* btnDecreaseCollapseRisk;
-
   PushButton* btnLockInfobox;
   PushButton* btnC3Gameplay;
   PushButton* btnShowTooltips;
   PushButton* btnDifficulty;
   PushButton* btnMetrics;
+
+  Label* lbFireRisk;
+  Label* lbCollapseRisk;
+  TexturedButton* btnIncreaseFireRisk;
+  TexturedButton* btnDecreaseFireRisk;
+  TexturedButton* btnIncreaseCollapseRisk;
+  TexturedButton* btnDecreaseCollapseRisk;
+
   PlayerCityPtr city;
 
   void update();
@@ -98,6 +99,7 @@ public:
   void toggleUseBatching();
   void toggleCcUseAI();
   void toggleMetrics();
+  void toggleHighlightBuilding();
   void toggleCityOption( PlayerCity::OptionType option );
   void changeCityOption( PlayerCity::OptionType option, int delta);
 };
@@ -135,6 +137,7 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, btnToggleBatching )
   GET_DWIDGET_FROM_UI( _d, btnToggleCcUseAI )
   GET_DWIDGET_FROM_UI( _d, btnMetrics )
+  GET_DWIDGET_FROM_UI( _d, btnHighlightBuilding )
 
   CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods )
   CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings )
@@ -156,6 +159,7 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   CONNECT( _d->btnToggleBatching, onClicked(), _d.data(), Impl::toggleUseBatching )
   CONNECT( _d->btnToggleCcUseAI, onClicked(), _d.data(), Impl::toggleCcUseAI )
   CONNECT( _d->btnMetrics, onClicked(), _d.data(), Impl::toggleMetrics )
+  CONNECT( _d->btnHighlightBuilding, onClicked(), _d.data(), Impl::toggleHighlightBuilding )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptions::deleteLater );
@@ -251,6 +255,7 @@ void CityOptions::Impl::toggleBarbarianAttack() {  toggleCityOption( PlayerCity:
 void CityOptions::Impl::toggleC3Gameplay()  {  toggleCityOption( PlayerCity::c3gameplay ); }
 void CityOptions::Impl::toggleZoomEnabled() {  toggleCityOption( PlayerCity::zoomEnabled ); }
 void CityOptions::Impl::invertZoom()  {  toggleCityOption( PlayerCity::zoomInvert ); }
+void CityOptions::Impl::toggleHighlightBuilding() { toggleCityOption( PlayerCity::highlightBuilding ); }
 void CityOptions::Impl::toggleWarnings()  {  toggleCityOption( PlayerCity::warningsEnabled ); }
 
 void CityOptions::Impl::toggleLeftMiddleMouse()
