@@ -71,6 +71,18 @@ Temple::Temple( DivinityPtr divinity, object::Type type, int imgId, const Size& 
 
 void Temple::_updateBuffs() {  _td->lastBuff = game::Date::current(); }
 
+void Temple::_changeAnimationState(bool value)
+{
+  ServiceBuilding::_changeAnimationState( value );
+
+  if( !value )
+  {
+    int index=0;
+    foreach( it, _td->fires )
+      _fgPicture( 1 + index++ ) = gfx::Picture();
+  }
+}
+
 int Temple::_relationMultiplier() const
 {
   if( !divinity().isValid() )
@@ -93,13 +105,16 @@ void Temple::_updateAnimation(const unsigned long time)
 {
   ServiceBuilding::_updateAnimation( time );
 
-  _td->fireAnimation.update( time );
-  int index = 0;
-  foreach( it, _td->fires )
+  if( _animationRef().isRunning() )
   {
-    _fgPicture( 1 + index ) = _td->fireAnimation.currentFrame();
-    _fgPicture( 1 + index ).setOffset( *it );
-    index++;
+    _td->fireAnimation.update( time );
+    int index = 0;
+    foreach( it, _td->fires )
+    {
+      _fgPicture( 1 + index ) = _td->fireAnimation.currentFrame();
+      _fgPicture( 1 + index ).setOffset( *it );
+      index++;
+    }
   }
 }
 
