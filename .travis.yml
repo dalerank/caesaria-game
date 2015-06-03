@@ -4,7 +4,6 @@ android:
   - build-tools-19.1.0
   - android-19
 before_install:
-<<<<<<< HEAD
  - sudo apt-get install -qq wget sshpass
  - ARCH=x86_64
  - NDK_VERSION=r9
