@@ -46,33 +46,46 @@ AboutAmphitheater::AboutAmphitheater(Widget *parent, PlayerCityPtr city, const T
   _setWorkingVisible( true );
 
   _updateWorkersLabel( Point( 40, 150), 542, amph->maximumWorkers(), amph->numberWorkers() );
-  
+
   if( amph->isNeed( walker::gladiator ) )
-  {
-    new Label( this, Rect( 35, 190, width() - 35, 190 + 20 ), _("##amphitheater_haveno_gladiatorpit##") );
-  }
+    _updateWarnings();
   else
   {
-    std::string text = _("##amphitheater_haveno_gladiator_bouts##");
-    if( amph->isShow( Amphitheater::gladiatorBouts ) )
-    {
-      DateTime lastGlBoutDate = amph->lastShow( Amphitheater::gladiatorBouts );
-      text = utils::format( 0xff, "%s %d %s", "##amphitheater_gladiator_contest_runs##", lastGlBoutDate.daysTo( game::Date::current() ), "##days##" );
-    }
-    new Label( this, Rect( 35, 200, width() - 35, 200 + 20 ), text );
-
-    text = _("##amphitheater_haveno_shows##");
-    if( amph->isShow( Amphitheater::theatrical ) )
-    {
-      DateTime lastShowDate = amph->lastShow( Amphitheater::theatrical );
-      text = utils::format( 0xff, "%s %d %s", "##amphitheater_show_runs##", lastShowDate.daysTo( game::Date::current() ), "##days##" );
-    }
-
-    new Label( this, Rect( 35, 220, width() - 35, 220 + 20 ), text );
+    _updateBouthsInfo();
+    _updateShowsInfo();
   }
+
 }
 
 AboutAmphitheater::~AboutAmphitheater() {}
+
+void AboutAmphitheater::_updateWarnings()
+{
+  new Label( this, Rect( 35, 190, width() - 35, 190 + 20 ), _("##amphitheater_haveno_gladiatorpit##") );
+}
+
+void AboutAmphitheater::_updateShowsInfo()
+{
+  std::string text = _("##amphitheater_haveno_shows##");
+  if( amph->isShow( Amphitheater::theatrical ) )
+  {
+    DateTime lastShowDate = amph->lastShow( Amphitheater::theatrical );
+    text = utils::format( 0xff, "%s %d %s", "##amphitheater_show_runs##", lastShowDate.daysTo( game::Date::current() ), "##days##" );
+  }
+
+  new Label( this, Rect( 35, 220, width() - 35, 220 + 20 ), text );
+}
+
+void AboutAmphitheater::_updateBouthsInfo()
+{
+  std::string text = _("##amphitheater_haveno_gladiator_bouts##");
+  if( amph->isShow( Amphitheater::gladiatorBouts ) )
+  {
+    DateTime lastGlBoutDate = amph->lastShow( Amphitheater::gladiatorBouts );
+    text = utils::format( 0xff, "%s %d %s", "##amphitheater_gladiator_contest_runs##", lastGlBoutDate.daysTo( game::Date::current() ), "##days##" );
+  }
+  new Label( this, Rect( 35, 200, width() - 35, 200 + 20 ), text );
+}
 
 }
 
