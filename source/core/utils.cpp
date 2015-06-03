@@ -16,8 +16,6 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "utils.hpp"
-#include "requirements.hpp"
-#include "logger.hpp"
 
 #include <cstdarg>
 #include <cfloat>
@@ -27,6 +25,10 @@
 #include <iostream>
 #include <stdint.h>
 #include <sstream>
+
+#include "requirements.hpp"
+#include "logger.hpp"
+#include "variant_list.hpp"
 #include "stacktrace.hpp"
 
 namespace utils
@@ -408,6 +410,18 @@ float eventProbability(float probability, int k, int n)
   float res = (1 / sqrt( 2* math::PI * npq )) * exp( -pow(t,2)/2 ) ;
 
   return res;*/
+}
+
+std::string trim(const std::string &str, const std::string &tr)
+{
+  return replace( str, tr, "" );
+}
+
+VariantList toVList(const StringArray &items)
+{
+  VariantList ret;
+  foreach( it, items ) ret << *it;
+  return ret;
 }
 
 }//end namespace utils

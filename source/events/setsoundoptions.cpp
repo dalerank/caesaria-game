@@ -36,7 +36,6 @@ public:
   struct Info { int volumes[ audio::count ]; };
 
   Info _current, _save;
-  Signal2< SoundType, int > onChange;
 
   Model()
   {
@@ -55,7 +54,6 @@ public:
   void set( audio::SoundType type, int value )
   {
     _current.volumes[ type ] = math::clamp( value, 0, 100 );
-    emit onChange( type, _current.volumes[ type ] );
   }
 
   unsigned int get( audio::SoundType type ) const;
@@ -92,9 +90,15 @@ void ChangeSoundOptions::_exec(Game& game, unsigned int)
   SoundOptions* dialog = new SoundOptions( game.gui()->rootWidget() );
   Model* model = new Model();
 
+  Engine& ae = Engine::instance();
+
   CONNECT( dialog, onChange(), model,  Model::set )
   CONNECT( dialog, onClose(),  model,  Model::restore )
-  CONNECT( model,  onChange,   dialog, SoundOptions::update )
+  CONNECT( dialog, onChange(), &ae,    Engine::setVolume )
+
+  dialog->update( audio::ambient, ae.volume( audio::ambient ) );
+  dialog->update( audio::theme, ae.volume( audio::theme ) );
+  dialog->update( audio::game, ae.volume( audio::game ) );
 
   dialog->show();
 }

@@ -39,6 +39,7 @@
 #include "vfs/file.hpp"
 #include "gfx/helper.hpp"
 #include "core/color.hpp"
+#include "core/variant_list.hpp"
 
 using namespace gfx;
 
@@ -306,9 +307,7 @@ void PictureBank::Impl::loadAtlas(const vfs::Path& filePath)
       Point start( rInfo.get( 0 ).toInt(), rInfo.get( 1 ).toInt() );
       Size size( rInfo.get( 2 ).toInt(), rInfo.get( 3 ).toInt() );
 
-      Rect orect( start, size );
-      pic.setOriginRect( orect );
-      //pic.setOriginRectf( );
+      pic.setOriginRect( Rect( start, size ) );
       setPicture( i->first, pic );
     }
   }

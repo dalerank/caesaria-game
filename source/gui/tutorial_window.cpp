@@ -85,7 +85,7 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
     std::string text = *it;
     if( text.substr( 0, imgSeparator.length() ) == imgSeparator )
     {
-      const Picture& pic = Picture::load( text.substr( imgSeparator.length() ) );
+      Picture pic( text.substr( imgSeparator.length() ) );
       ListBoxItem& item = lbxHelp->addItem( pic );
       item.setTextAlignment( align::center, align::upperLeft );
       int lineCount = pic.height() / lbxHelp->itemHeight();

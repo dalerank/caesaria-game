@@ -50,7 +50,7 @@ bool GameEvent::tryExec(Game& game, unsigned int time)
 }
 
 bool GameEvent::isDeleted() const { return true; }
-void events::GameEvent::dispatch() { Dispatcher::instance().append( this );}
+void GameEvent::dispatch() { Dispatcher::instance().append( this );}
 
 VariantMap GameEvent::save() const
 {

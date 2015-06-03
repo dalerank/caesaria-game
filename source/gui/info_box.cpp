@@ -187,7 +187,7 @@ void Infobox::_updateWorkersLabel(const Point &pos, int picId, int need, int hav
   std::string text = utils::format( 0xff, "%d %s (%d %s)",
                                     have, _("##employers##"),
                                     need, _("##requierd##") );
-  _d->lbBlackFrame->setIcon( Picture::load( ResourceGroup::panelBackground, picId ), Point( 20, 10 ) );
+  _d->lbBlackFrame->setIcon( Picture( ResourceGroup::panelBackground, picId ), Point( 20, 10 ) );
   _d->lbBlackFrame->setText( text );
 }
 

@@ -47,6 +47,7 @@ void Base::drawFrame(gfx::Engine& engine )
    engine.endRenderFrame();
 }
 
+gfx::Camera* Base::camera() const { return 0; }
 void Base::stop(){ _isStopped = true;}
 
 void Base::update(gfx::Engine& engine )

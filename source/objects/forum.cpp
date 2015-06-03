@@ -43,7 +43,7 @@ public:
 Forum::Forum() : ServiceBuilding(Service::forum, object::forum, Size(2)), _d( new Impl )
 {
   _d->taxValue = 0;
-  setPicture( ResourceGroup::govt, 10 );
+  _picture().load( ResourceGroup::govt, 10 );
 }
 
 void Forum::deliverService()
@@ -51,7 +51,7 @@ void Forum::deliverService()
   if( numberWorkers() > 0 && walkers().size() == 0 )
   {
     TaxCollectorPtr walker = TaxCollector::create( _city() );
-    walker->send2City( this, ServiceWalker::goLowerService|ServiceWalker::anywayWhenFailed );
+    walker->send2City( this, ServiceWalker::goServiceMaximum|ServiceWalker::anywayWhenFailed );
 
     addWalker( walker.object() );
   }

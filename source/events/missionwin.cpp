@@ -20,13 +20,13 @@
 namespace events
 {
 
-GameEventPtr MissionWin::create()
+GameEventPtr MissionWin::create(const std::string& name)
 {
 #ifdef CAESARIA_USE_STEAM
-  steamapi::missionWin();
+  steamapi::missionWin( name );
 #endif
 
-  GameEventPtr ret( new MissionWin() );
+  GameEventPtr ret( new MissionWin( name ) );
   ret->drop();
 
   return ret;
@@ -34,6 +34,6 @@ GameEventPtr MissionWin::create()
 
 void MissionWin::_exec(Game& game, unsigned int) {}
 bool MissionWin::_mayExec(Game&, unsigned int) const{  return true; }
-MissionWin::MissionWin() {}
 
+MissionWin::MissionWin( const std::string& name ) : _name( name ) {}
 }

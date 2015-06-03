@@ -28,6 +28,7 @@
 #include "core/logger.hpp"
 #include "constants.hpp"
 #include "gfx/picture_info_bank.hpp"
+#include "core/variant_list.hpp"
 
 using namespace gfx;
 
@@ -118,7 +119,7 @@ Desirability MetaData::desirability() const{  return _d->desirability;}
 Picture MetaData::picture(int size) const
 {
   StringArray& array = _d->pictures[ size ];
-  return Picture::load( array.random() );
+  return Picture( array.random() );
 }
 
 Variant MetaData::getOption(const std::string &name, Variant defaultVal ) const
@@ -277,7 +278,7 @@ void MetaDataHolder::initialize( vfs::Path filename )
         PictureInfoBank::instance().setOffset( groupName, imageIndex, vOffset.toPoint() );
       }
 
-      Picture pic = Picture::load( groupName, imageIndex );
+      Picture pic( groupName, imageIndex );
       bData._d->pictures[ 0 ] << pic.name();
     }
 
@@ -291,7 +292,7 @@ void MetaDataHolder::initialize( vfs::Path filename )
       VARIANT_INIT_STR( rc, info );
       for( int i=0; i < count; i++ )
       {
-        Picture pic = Picture::load( rc, start + i );
+        Picture pic( rc, start + i );
         if( pic.isValid() )
         {
           bData._d->pictures[ size ] << pic.name();

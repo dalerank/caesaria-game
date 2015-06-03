@@ -99,14 +99,6 @@ public:
   }
 };
 
-class Economy
-{
-public:
-  float money, tax;
-  unsigned int taxesThisYear;
-  DateTime lastTaxationDate;
-};
-
 class Services : public std::map< Service::Type, Service >
 {
 public:
@@ -118,10 +110,16 @@ public:
   int houseLevel;
   int poverity;
 
-  Economy economy;
+  struct
+  {
+    float money, tax;
+    float taxesThisYear;
+    DateTime lastTaxationDate;
+  } economy;
+
   HouseSpecification spec;  // characteristics of the current house level
   Desirability desirability;
-  good::Storage goodStore;
+  good::Storage goodstore;
   Services services;  // value=access to the service (0=no access, 100=good access)  
   Point randomOffset;
   std::string evolveInfo;
@@ -344,7 +342,7 @@ void House::_updateCrime()
     int foodTypeCount = 0;
     for( good::Product k=good::wheat; k <= good::vegetable; ++k )
     {
-      int qty = _d->goodStore.qty( k );
+      int qty = _d->goodstore.qty( k );
       foodStoreQty += qty;
       foodTypeCount += (qty > 0 ? 1 : 0);
     }
@@ -401,7 +399,7 @@ void House::_checkHomeless()
   if( homeless > 0 )
   {
     homeless /= (homeless > 4 ? 2 : 1);
-    CitizenGroup homelessGroup = remHabitants( homeless );
+    CitizenGroup homelessGroup = removeHabitants( homeless );
 
     Emigrant::send2city( _city(), homelessGroup, tile(), "##emigrant_no_home##" );
   }
@@ -771,7 +769,7 @@ void House::_levelDown()
       int currentPeople = math::clamp( math::random( homelessCount+1 ), 0, 8 );
 
       homelessCount -= currentPeople;
-      CitizenGroup homeless = remHabitants( currentPeople );
+      CitizenGroup homeless = removeHabitants( currentPeople );
 
       EmigrantPtr em = Emigrant::send2city( _city(), homeless, tile(), "##emigrant_no_home##" );
 
@@ -805,7 +803,7 @@ void House::_levelDown()
       foreach( tile, perimetr )
       {
         HousePtr house = ptr_cast<House>( TileOverlayFactory::instance().create( object::house ) );
-        CitizenGroup moveGroup = remHabitants( peoplesPerHouse );
+        CitizenGroup moveGroup = removeHabitants( peoplesPerHouse );
         house->addHabitants( moveGroup );
 
         GameEventPtr event = BuildAny::create( (*tile)->pos(), ptr_cast<Overlay>( house ) );
@@ -1079,7 +1077,7 @@ void House::_updateGround()
   if( _city().isValid() && !_city()->getOption( PlayerCity::c3gameplay ) )
   {
     _d->ground.clear();
-    _d->ground << Picture::load( "housng1g", size().width() );
+    _d->ground << Picture( "housng1g", size().width() );
   }
 }
 
@@ -1107,7 +1105,7 @@ void House::addHabitants( CitizenGroup& habitants )
   }
 }
 
-void House::remHabitants( CitizenGroup& group )
+void House::removeHabitants( CitizenGroup& group )
 {
   CitizenGroup newGroup = _d->habitants;
   newGroup.exclude( group );
@@ -1117,7 +1115,7 @@ void House::remHabitants( CitizenGroup& group )
   return;
 }
 
-CitizenGroup House::remHabitants(int count)
+CitizenGroup House::removeHabitants(int count)
 {
   count = math::clamp<int>( count, 0, _d->habitants.count() );
   CitizenGroup newState = _d->habitants;
@@ -1135,7 +1133,7 @@ void House::destroy()
   const unsigned int maxCitizenInGroup = 8;
   do
   {
-    CitizenGroup homeless = remHabitants( std::min( _d->habitants.count(), maxCitizenInGroup ) );
+    CitizenGroup homeless = removeHabitants( std::min( _d->habitants.count(), maxCitizenInGroup ) );
     Emigrant::send2city( _city(), homeless, tile(), math::random( 10 ) > 5 ? "##emigrant_thrown_from_house##" : "##emigrant_no_home##" );
   }
   while( _d->habitants.count() >= maxCitizenInGroup );
@@ -1180,12 +1178,13 @@ void House::save( VariantMap& stream ) const
 
   stream[ "desirability" ] = _d->desirability.base;
   stream[ "currentHubitants" ] = _d->habitants.save();
-  stream[ "goodstore" ] = _d->goodStore.save();
   stream[ "healthLevel" ] = state( pr::health );
+  VARIANT_SAVE_CLASS_D( stream, _d, goodstore )
   VARIANT_SAVE_ANY_D(stream, _d, habitants.maximum )
   VARIANT_SAVE_ANY_D(stream, _d, houseLevel )
   VARIANT_SAVE_ANY_D(stream, _d, changeCondition )
   VARIANT_SAVE_ANY_D(stream, _d, economy.taxesThisYear)
+  VARIANT_SAVE_ANY_D(stream, _d, economy.lastTaxationDate)
   VARIANT_SAVE_ANY_D(stream, _d, poverity)
   VARIANT_SAVE_ANY_D(stream, _d, economy.money)
   VARIANT_SAVE_ANY_D(stream, _d, economy.tax)
@@ -1224,11 +1223,12 @@ void House::load( const VariantMap& stream )
   VARIANT_LOAD_ANY_D(_d, changeCondition,   stream )
   VARIANT_LOAD_ANY_D(_d, poverity,          stream )
   VARIANT_LOAD_ANY_D(_d, economy.money,     stream )
+  VARIANT_LOAD_TIME_D(_d, economy.lastTaxationDate, stream )
   VARIANT_LOAD_ANY_D(_d, economy.tax,       stream )
-
-  _d->goodStore.load( stream.get( "goodstore" ).toMap() );
-  _d->currentYear = game::Date::current().year();
+  VARIANT_LOAD_CLASS_D( _d, goodstore, stream )
   VARIANT_LOAD_ANY_D(_d, economy.taxesThisYear, stream )
+
+  _d->currentYear = game::Date::current().year();
 
   _d->initGoodStore( size().area() );
 
@@ -1255,7 +1255,7 @@ void House::load( const VariantMap& stream )
 void House::_disaster()
 {
   //this really killed people, cant calculate their
-  remHabitants( math::random( _d->habitants.count() ) );
+  removeHabitants( math::random( _d->habitants.count() ) );
 }
 
 void House::collapse()
@@ -1286,7 +1286,7 @@ int House::Impl::getFoodLevel() const
     int maxFoodQty = 0;
     foreach( ft, foods )
     {
-      int tmpQty = goodStore.qty( *ft );
+      int tmpQty = goodstore.qty( *ft );
       if( tmpQty > maxFoodQty )
       {
         maxFoodQty = tmpQty;
@@ -1294,7 +1294,7 @@ int House::Impl::getFoodLevel() const
       }
     }
 
-    ret += math::percentage( maxFoodQty, goodStore.capacity( maxFtype ) );
+    ret += math::percentage( maxFoodQty, goodstore.capacity( maxFtype ) );
     foods.erase( maxFtype );
     foodLevel--;
   }
@@ -1374,7 +1374,7 @@ std::string House::evolveInfo() const                            { return _d->ev
 bool House::isWalkable() const                                   { return size().width() == 1; }
 bool House::isFlat() const                                       { return _d->isFlat; }
 const CitizenGroup& House::habitants() const                     { return _d->habitants; }
-good::Store& House::goodStore()                                  { return _d->goodStore; }
+good::Store& House::goodStore()                                  { return _d->goodstore; }
 const HouseSpecification& House::spec() const                    { return _d->spec; }
 bool House::hasServiceAccess( Service::Type service)             { return (_d->services[service] > 0); }
 float House::getServiceValue( Service::Type service)             { return _d->services[service]; }
@@ -1437,16 +1437,16 @@ void House::_updateHealthLevel()
 void House::Impl::initGoodStore(int size)
 {
   int rsize = 25 * size * houseLevel;
-  goodStore.setCapacity(rsize * 10 );  // no limit
-  goodStore.setCapacity(good::wheat, rsize );
-  goodStore.setCapacity(good::fish, rsize );
-  goodStore.setCapacity(good::meat, rsize );
-  goodStore.setCapacity(good::fruit, rsize );
-  goodStore.setCapacity(good::vegetable, rsize );
-  goodStore.setCapacity(good::pottery, rsize );
-  goodStore.setCapacity(good::furniture, rsize);
-  goodStore.setCapacity(good::oil, rsize );
-  goodStore.setCapacity(good::wine, rsize );
+  goodstore.setCapacity(rsize * 10 );  // no limit
+  goodstore.setCapacity(good::wheat, rsize );
+  goodstore.setCapacity(good::fish, rsize );
+  goodstore.setCapacity(good::meat, rsize );
+  goodstore.setCapacity(good::fruit, rsize );
+  goodstore.setCapacity(good::vegetable, rsize );
+  goodstore.setCapacity(good::pottery, rsize );
+  goodstore.setCapacity(good::furniture, rsize);
+  goodstore.setCapacity(good::oil, rsize );
+  goodstore.setCapacity(good::wine, rsize );
 }
 
 void House::Impl::consumeServices()
@@ -1463,7 +1463,7 @@ void House::Impl::consumeGoods( HousePtr house )
   for( good::Product goodType = good::olive; goodType < good::any(); ++goodType)
   {
      int montlyGoodsQty = spec.computeMonthlyGoodConsumption( house, goodType, true );
-     goodStore.setQty( goodType, std::max( goodStore.qty(goodType) - montlyGoodsQty, 0) );
+     goodstore.setQty( goodType, std::max( goodstore.qty(goodType) - montlyGoodsQty, 0) );
   }
 }
 
@@ -1478,7 +1478,7 @@ void House::Impl::consumeFoods(HousePtr house)
   int availableFoodLevel = 0;
   for( good::Product afl=good::wheat; afl <= good::vegetable; ++afl )
   {
-    availableFoodLevel += ( goodStore.qty( afl ) > 0 ? 1 : 0 );
+    availableFoodLevel += ( goodstore.qty( afl ) > 0 ? 1 : 0 );
   }
 
   availableFoodLevel = std::min( availableFoodLevel, foodLevel );
@@ -1492,13 +1492,13 @@ void House::Impl::consumeFoods(HousePtr house)
       int realConsumedQty = 0;
       for( good::Product gType=good::wheat; gType <= good::vegetable; ++gType )
       {
-        int vQty = std::min( goodStore.qty( gType ), needFoodQty / availableFoodLevel );
+        int vQty = std::min( goodstore.qty( gType ), needFoodQty / availableFoodLevel );
         vQty = std::min( vQty, alsoNeedFood );
         if( vQty > 0 )
         {
           realConsumedQty += vQty;
           alsoNeedFood -= vQty;
-          goodStore.setQty( gType, std::max( goodStore.qty( gType ) - vQty, 0) );
+          goodstore.setQty( gType, std::max( goodstore.qty( gType ) - vQty, 0) );
         }
       }
 

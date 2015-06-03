@@ -54,4 +54,20 @@ const Products& all() { return stage.all; }
 const Products& materials() { return stage.materials; }
 const Products& foods() { return stage.foods; }
 
+Product getMaterial(const Product &pr)
+{
+  switch( pr )
+  {
+  case oil: return olive;
+  case wine: return grape;
+  case furniture: return timber;
+  case pottery: return clay;
+  case weapon: return iron;
+  case prettyWine: return grape;
+  default: break;
+  }
+
+  return none;
+}
+
 }

@@ -125,7 +125,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
     if( building->type() != object::burning_ruins )
       continue;
 
-    Pathway tmp = PathwayHelper::create( pos(), ptr_cast<Construction>( building ), PathwayHelper::allTerrain );
+    Pathway tmp = PathwayHelper::create( pos(), building, PathwayHelper::allTerrain );
     if( tmp.isValid() )
     {
       _setSubAction( go2fire );
@@ -159,8 +159,7 @@ void Prefect::_back2Prefecture()
     return;
   }
 
-  Pathway pathway = PathwayHelper::create( pos(), ptr_cast<Construction>( base ),
-                                           PathwayHelper::roadFirst );  
+  Pathway pathway = PathwayHelper::create( pos(), base, PathwayHelper::roadFirst );
 
   if( pathway.isValid() )
   {
@@ -191,7 +190,7 @@ void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
         house->deleteLater();
 
         _d->fumigateHouseNumber++;
-        house->remHabitants( 1000 ); //all habitants will killed
+        house->removeHabitants( 1000 ); //all habitants will killed
 
         events::GameEventPtr e = events::Disaster::create( house->tile(), events::Disaster::plague );
         e->dispatch();
@@ -232,8 +231,8 @@ void Prefect::_setSubAction( const Prefect::SbAction action)
 
   switch( action )
   {
-  case fightFire: _animationRef().setDelay( Animation::middle ); break;
-  default: _animationRef().setDelay( Animation::fast ); break;
+  case fightFire: _animation().setDelay( Animation::middle ); break;
+  default: _animation().setDelay( Animation::fast ); break;
   }
 }
 
@@ -283,7 +282,7 @@ void Prefect::_brokePathway(TilePos p)
   }
   else if( _d->water > 0 )
   {
-    TilePos destination = _pathwayRef().stopPos();
+    TilePos destination = _pathway().stopPos();
 
     Pathway pathway = PathwayHelper::create( pos(), destination, PathwayHelper::allTerrain );
     if( pathway.isValid() )
@@ -547,9 +546,9 @@ void Prefect::send2City(PrefecturePtr prefecture, Prefect::SbAction action, int 
     ServiceWalker::send2City( prefecture.object() );
   }
 
-  if( _pathwayRef().isValid() )
+  if( _pathway().isValid() )
   {
-    _d->endPatrolPoint = _pathwayRef().stopPos();
+    _d->endPatrolPoint = _pathway().stopPos();
   }
 }
 

@@ -27,7 +27,7 @@ namespace imgid
 {
   std::string toResource( const unsigned int imgId );
   int fromResource( const std::string &pic_name);
-  Picture& toPicture( const unsigned int imgId );
+  Picture toPicture( const unsigned int imgId );
 }
 
 namespace tile

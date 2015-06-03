@@ -29,16 +29,56 @@
 #include "game/player.hpp"
 #include "world/barbarian.hpp"
 #include "core/metric.hpp"
+#include "objects/metadata.hpp"
 #include "core/variant_map.hpp"
 #include "city/states.hpp"
+#include "objects/constants.hpp"
+#include "game/citizen_group.hpp"
+#include "core/priorities.hpp"
 #include "config.hpp"
 
 using namespace gfx;
 using namespace metric;
 
+class CcTargets
+{
+public:
+
+  int population;
+  unsigned int need[ object::userType ];
+  unsigned int idle[ object::userType ];
+  unsigned int coverage[ object::userType ];
+
+  CcTargets()
+  {
+    population = 0;
+    int dd = sizeof( need );
+    memset( need, 0, sizeof( need ) );
+    memset( idle, 0, sizeof( need ) );
+    memset( coverage, 0, sizeof( need ) );
+  }
+
+  VariantMap save() const
+  {
+    return VariantMap();
+  }
+
+  void load( const VariantMap& vm )
+  {
+
+  }
+};
+
 class CcStorage : public good::Storage
 {
 public:
+  bool needExpand;
+
+  CcStorage()
+  {
+    needExpand = 0;
+  }
+
   VariantMap save() const
   {
     VariantMap ret;
@@ -56,6 +96,14 @@ public:
       }
     }
     return ret;
+  }
+
+  virtual void store( good::Stock& stock, const int amount)
+  {
+    if( freeQty() < stock.qty() )
+      needExpand++;
+
+    good::Storage::store( stock, amount );
   }
 
   void load( const VariantMap& stream )
@@ -87,6 +135,105 @@ public:
   }
 };
 
+struct PriceInfo
+{
+  good::Product product;
+  int buy;
+  int sell;
+
+  bool operator<(const PriceInfo& a)
+  {
+    return product < a.product;
+  }
+};
+
+class Prices : public std::set<PriceInfo>
+{
+public:
+};
+
+struct BuildingInfo
+{
+  object::Type type;
+  int maxWorkersNumber;
+  int workersNumber;
+  int progress, productively;
+  int maxService;
+  bool producing;
+  good::Stock ingoods, outgoods;
+
+  BuildingInfo()
+  {
+    type = object::unknown;
+    progress = 0;
+    maxService = 0;
+    producing = false;
+    productively = 50;
+  }
+
+  void threatGoods( CcStorage& storage )
+  {
+    if( workersNumber == 0 )
+      return;
+
+    if( ingoods.type() != good::none )
+    {
+      if( !producing )
+      {
+        if( storage.qty( ingoods.type() ) >= 100 )
+        {
+          good::Stock stock( ingoods.type(), 100, 100 );
+          storage.retrieve( stock, 100 );
+          producing = true;
+        }
+      }
+    }
+    else
+      producing = true;
+
+    if( producing )
+    {
+      float workersKoeff = workersNumber / maxWorkersNumber;
+
+      progress += productively * workersKoeff;
+
+      if( progress >= 100 )
+      {
+        if( outgoods.type() != good::none && outgoods.qty() > 0 )
+        {
+          good::Stock stock( outgoods.type(), 100, 100 );
+          storage.store( stock, 100 );
+        }
+
+        progress -= 100;
+      }
+    }
+  }
+};
+
+class Buildings : public std::vector<BuildingInfo> 
+{
+public:
+  int count( object::Type type )
+  {
+    int ret = 0;
+    foreach( it, *this )
+      ret += (it->type == type ? 1 : 0);
+
+    return ret;
+  }
+
+  VariantMap save() const
+  {
+    return VariantMap();
+  }
+
+  void load( const VariantMap& vm )
+  {
+
+  }
+};
+
 namespace world
 {
 
@@ -97,12 +244,20 @@ public:
   bool distantCity;
   bool available;
   int strength;
+  City::AiMode useAI;
+  int sentiment;
+  Buildings buildings;
+  CitizenGroup peoples;
+  CcTargets targets;
+  Prices prices;
+
   city::States states;
   unsigned int tradeDelay;
 
   CcStorage sells;
   good::Storage realSells;
   CcStorage buys;
+  CcStorage internalGoods;
 
   DateTime lastTimeUpdate;
   DateTime lastTimeMerchantSend;
@@ -110,7 +265,429 @@ public:
 
   unsigned int merchantsNumber;
   econ::Treasury funds;
+
+public:
+  void initPeoples();
+  void calculateMonthState();
+  void calcPopulationChange();
+  void citizensConsumeGoods();
+  void placeNewBuildings();
+  void updateWorkersInBuildings();
+  void placeNewBuilding( object::Type type );
+  void citizensConsumeServices();
+  void updateWorkingWarehouse();
 };
+
+void ComputerCity::Impl::calculateMonthState()
+{
+  if( useAI == City::inactive )
+    return;
+
+  updateWorkersInBuildings();
+  updateWorkingWarehouse();
+  citizensConsumeGoods();
+  citizensConsumeServices();
+
+  int idleBuildings = 0;
+  foreach( it, buildings )
+  {
+    BuildingInfo& info = *it;
+    info.threatGoods( internalGoods );
+    if( info.maxWorkersNumber > 0 && info.workersNumber == 0 )
+      idleBuildings++;
+  }
+
+  if( idleBuildings == 0 )
+    placeNewBuildings();
+}
+
+void ComputerCity::Impl::updateWorkersInBuildings()
+{
+  int workersCount = peoples.count( CitizenGroup::mature );
+
+  int workersNeed = 0;
+  foreach( it, buildings )
+  {
+    it->workersNumber = 0;
+    workersNeed += it->maxWorkersNumber;
+  }
+
+  float koeffLabor = workersCount / (float)workersNeed;
+  foreach( it, buildings )
+  {
+    if( workersCount <= 0 )
+      break;
+
+    if( it->maxWorkersNumber > 0 )
+    {
+      int workers = ceil( it->maxWorkersNumber * koeffLabor );
+      workers = math::clamp( workers, 0, workersCount );
+      it->workersNumber = workers;
+      workersCount -= workers;
+    }
+  }
+}
+
+void ComputerCity::Impl::placeNewBuilding(object::Type type)
+{
+  BuildingInfo info;
+
+  info.type = type;
+  const  MetaData& md = MetaDataHolder::getData( info.type );
+  good::Product output = good::Helper::getType( md.getOption( "output" ).toString() );
+  info.outgoods.setType( output );
+  info.ingoods.setType( good::getMaterial( output ) );
+  info.maxWorkersNumber = md.getOption( "employers" );
+  info.maxService = md.getOption( "maxServe" );
+  info.workersNumber = 0;
+  info.progress = 0;
+  info.productively = md.getOption( "productRate" ).toFloat() / 12.f;
+
+  buildings.push_back( info );
+}
+
+struct ServiceInfo
+{
+  unsigned int type[object::userType];
+
+  ServiceInfo() { memset( this, 0, sizeof(ServiceInfo) ); }
+};
+
+int isNeedNewBuilding( unsigned int idle, unsigned int have, unsigned int served, int multiplier )
+{
+  if( idle > 0 )
+     return 0;
+
+  return (served > have ? 0 : 1) * multiplier;
+}
+
+struct CheckType
+{
+  object::Type building, building2;
+  CitizenGroup::Age age;
+  int multiplier;
+
+  CheckType( object::Type b, CitizenGroup::Age a, int m ) :
+     building( b ), building2( object::unknown ), age( a ), multiplier( m ) {}
+
+  CheckType( object::Type b, object::Type b2, CitizenGroup::Age a, int m ) :
+     building( b ), building2( b2 ), age( a ), multiplier( m ) {}
+
+  bool operator<( const CheckType& a) const { return building < a.building; }
+};
+
+void ComputerCity::Impl::citizensConsumeServices()
+{
+  ServiceInfo mayServe;
+  ServiceInfo idle;
+
+  foreach( it, buildings )
+  {
+    BuildingInfo& info = *it;
+    idle.type[info.type] &= (info.workersNumber < info.maxWorkersNumber);
+    if( info.maxWorkersNumber > 0 )
+    {
+      mayServe.type[ info.type ] += (info.workersNumber / (float)info.maxWorkersNumber) * info.maxService;
+    }
+  }
+
+  std::set<CheckType> checkTypes;
+  checkTypes << CheckType( object::school, CitizenGroup::scholar, 4 )
+             << CheckType( object::small_ceres_temple, object::big_ceres_temple, CitizenGroup::any, 4 )
+             << CheckType( object::small_mars_temple, object::big_mars_temple, CitizenGroup::any, 4 )
+             << CheckType( object::small_mercury_temple, object::big_mercury_temple, CitizenGroup::any, 4 )
+             << CheckType( object::small_neptune_temple, object::big_neptune_temple, CitizenGroup::any, 4 )
+             << CheckType( object::small_venus_temple, object::big_venus_temple, CitizenGroup::any, 4 );
+
+  foreach( it, checkTypes )
+  {
+    const CheckType& check = *it;
+
+    int addServe = 0;
+    if( check.building2 )
+      addServe = mayServe.type[ check.building2 ];
+
+    unsigned int pop = peoples.count( check.age );
+    targets.need[ check.building ] += isNeedNewBuilding( idle.type[ check.building ],
+                                                         pop,
+                                                         mayServe.type[ check.building ] + addServe, check.multiplier );
+
+    int coverage = 0;
+    if( pop > 0 )
+      coverage = mayServe.type[ check.building ] * 100 / pop;
+
+    targets.coverage[ check.building ] = math::clamp<unsigned int>( coverage, 0, 100 );
+    targets.idle[ check.building ] = idle.type[ check.building ];
+  }
+}
+
+void ComputerCity::Impl::updateWorkingWarehouse()
+{
+  int workingWarehouse = 0;
+  foreach( it, buildings )
+  {
+    BuildingInfo& info = *it;
+    if( info.type == object::warehouse )
+    {
+      if( info.workersNumber >= info.maxWorkersNumber / 2 )
+        workingWarehouse++;
+    }
+  }
+
+  int futureCityCapacity = workingWarehouse * 3200;
+  int currentGoodsQty = internalGoods.qty();
+
+  if( currentGoodsQty > futureCityCapacity )
+  {
+    good::Products products;
+    products << good::foods() << good::materials();
+
+    std::vector<good::Product> revProducts;
+    foreach( it, products )
+      revProducts.insert( revProducts.begin(), *it );
+
+    int leftQty = futureCityCapacity;
+    foreach( it, revProducts )
+    {
+      int qty = internalGoods.qty( *it );
+      if( leftQty < qty )
+      {
+        internalGoods.setQty( *it, leftQty );
+        break;
+      }
+
+      leftQty -= qty;
+    }
+  }
+
+  internalGoods.setCapacity( futureCityCapacity );
+}
+
+void ComputerCity::Impl::placeNewBuildings()
+{
+  if( targets.need[ object::wheat_farm ] > 8 )
+  {
+    object::Type type = object::wheat_farm;
+    int wheatFarmNumber = buildings.count( object::wheat_farm );
+    int fishFarmNumber = buildings.count( object::wharf );
+    if( wheatFarmNumber > fishFarmNumber )
+      type = object::wharf;
+
+    placeNewBuilding( type );
+    targets.need[ object::wheat_farm ] = 0;
+  }
+
+  if( internalGoods.needExpand > 8 )
+  {
+    placeNewBuilding( object::warehouse );
+    internalGoods.needExpand = 0;
+  }
+
+  std::set<object::Type> types;
+  types << object::vegetable_farm << object::pottery_workshop
+        << object::meat_farm << object::fig_farm
+        << object::oil_workshop << object::wine_workshop
+        << object::furniture_workshop << object::school
+        << object::small_ceres_temple << object::small_mars_temple
+        << object::small_neptune_temple << object::small_mercury_temple
+        << object::small_venus_temple;
+
+  foreach( it, types )
+  {
+    if( targets.need[ *it ] > 8 )
+    {
+      placeNewBuilding( *it );
+      targets.need[ *it ] = 0;
+    }
+  }
+}
+
+void ComputerCity::Impl::calcPopulationChange()
+{
+  int currentPopulation = peoples.count();
+  int popChange = targets.population - currentPopulation;
+
+  if( popChange > 20 )
+    popChange = math::clamp<int>( popChange, 0, currentPopulation * 0.05 );
+
+  if( popChange < 0 )
+  {
+    peoples.retrieve( abs(popChange) );
+  }
+  else
+  {
+    CitizenGroup toAdd = CitizenGroup::random( popChange );
+    peoples.include( toAdd );
+  }
+
+  states.population = peoples.count();
+}
+
+struct GoodInfo
+{
+  int need;
+  int have;
+};
+
+void ComputerCity::Impl::citizensConsumeGoods()
+{
+  int matureCount = peoples.count( CitizenGroup::mature );
+  int foodQtyNeed = matureCount * 2;
+  foodQtyNeed += peoples.count( CitizenGroup::child );
+  foodQtyNeed += peoples.count( CitizenGroup::student );
+  foodQtyNeed += peoples.count( CitizenGroup::aged );
+
+  GoodInfo wine2Consume = { (int)(foodQtyNeed * 0.05f), internalGoods.qty( good::wine ) };
+  GoodInfo oil2Consume = { (int)(foodQtyNeed * 0.05f), internalGoods.qty( good::oil ) };
+  GoodInfo fruit2Consume = { (int)(foodQtyNeed * 0.1f), internalGoods.qty( good::fruit ) };
+  GoodInfo meat2Consume = { (int)(foodQtyNeed * 0.15f), internalGoods.qty( good::meat ) };
+  GoodInfo vegetable2Consume = { (int)(foodQtyNeed * 0.15f), internalGoods.qty( good::vegetable ) };
+  GoodInfo fishWheat2Consume = { (int)(foodQtyNeed * 0.5f), internalGoods.qty( good::wheat ) + internalGoods.qty( good::fish ) };
+  GoodInfo pottery2Consume = { (int)(matureCount * 0.1f), internalGoods.qty( good::pottery ) };
+  GoodInfo furniture2Consume = { (int)(matureCount * 0.1f), internalGoods.qty( good::furniture ) };
+
+  int targetSentiment = 0;
+  bool mayContinue = false;
+
+  if( fishWheat2Consume.need > 0 )
+  {
+    int fishConsume = math::clamp( fishWheat2Consume.need / 2, 0, internalGoods.qty( good::fish ) );
+    good::Stock fishStock( good::fish, fishConsume, fishConsume );
+    internalGoods.retrieve( fishStock, fishConsume );
+
+    int wheatConsume = math::clamp( fishWheat2Consume.need - fishConsume, 0, internalGoods.qty( good::wheat ) );
+    good::Stock wheatStock( good::wheat, wheatConsume, wheatConsume);
+    internalGoods.retrieve( wheatStock, wheatConsume );
+
+    int anyHungry = fishWheat2Consume.need - wheatConsume;
+    mayContinue = (anyHungry / (float)fishWheat2Consume.need) < 0.5;
+    targetSentiment += 40 * ((fishWheat2Consume.need - anyHungry) / (float)fishWheat2Consume.need);
+
+    if( anyHungry )
+      targets.need[ object::wheat_farm ]++;
+  }
+
+  if( fishWheat2Consume.have > fishWheat2Consume.need )
+  {
+    float koeff = fishWheat2Consume.have / (float)fishWheat2Consume.need;
+    if( koeff > 1.f )
+    {
+      koeff = math::clamp( koeff, 1.0f, 1.2f );
+      targets.population += targets.population * koeff;
+    }
+  }
+  else
+  {
+     targets.population -= targets.population * 0.05f;
+  }
+
+  if( mayContinue && vegetable2Consume.need > 0 )
+  {
+    int realyConsume = math::clamp( vegetable2Consume.need, 0, vegetable2Consume.have );
+    good::Stock stock( good::vegetable, realyConsume, realyConsume);
+    internalGoods.retrieve( stock, realyConsume );
+    int anyHungry = vegetable2Consume.need - realyConsume;
+    mayContinue = (anyHungry / (float)vegetable2Consume.need) < 0.5;
+    targetSentiment += 10 * ((vegetable2Consume.need - anyHungry) / (float)vegetable2Consume.need);
+
+    if( anyHungry )
+      targets.need[ object::vegetable_farm ]++;
+  }
+
+  if( mayContinue && pottery2Consume.need > 0 )
+  {
+    int realyConsume = math::clamp( pottery2Consume.need, 0, pottery2Consume.have );
+    good::Stock stock( good::pottery, realyConsume, realyConsume);
+    internalGoods.retrieve( stock, realyConsume );
+    int anyBroken = pottery2Consume.need - realyConsume;
+    mayContinue = (anyBroken / (float)pottery2Consume.need) < 0.5;
+    targetSentiment += 10 * ((pottery2Consume.need - anyBroken) / (float)pottery2Consume.need);
+
+    if( anyBroken )
+      targets.need[ object::pottery_workshop ]++;
+  }
+
+  if( mayContinue && meat2Consume.need > 0 )
+  {
+    int realyConsume = math::clamp( meat2Consume.need, 0, meat2Consume.have );
+    good::Stock stock( good::meat, realyConsume, realyConsume);
+    internalGoods.retrieve( stock, realyConsume );
+    int anyHungry = meat2Consume.need - realyConsume;
+    mayContinue = (anyHungry / (float)meat2Consume.need) < 0.5;
+    targetSentiment += 10 * ((meat2Consume.need - anyHungry) / (float)meat2Consume.need);
+
+    if( anyHungry )
+      targets.need[ object::meat_farm ]++;
+  }
+
+  if( mayContinue && fruit2Consume.need > 0 )
+  {
+    int realyConsume = math::clamp( fruit2Consume.need, 0, fruit2Consume.have );
+    good::Stock stock( good::fruit, realyConsume, realyConsume);
+    internalGoods.retrieve( stock, realyConsume );
+    int anyHungry = fruit2Consume.need - realyConsume;
+    mayContinue = (anyHungry / (float)fruit2Consume.need) < 0.5;
+    targetSentiment += 10 * ((fruit2Consume.need - anyHungry) / (float)fruit2Consume.need);
+
+    if( anyHungry )
+      targets.need[ object::fig_farm ]++;
+  }
+
+  if( mayContinue && furniture2Consume.need > 0 )
+  {
+    int realyConsume = math::clamp( furniture2Consume.need, 0, furniture2Consume.have );
+    good::Stock stock( good::furniture, realyConsume, realyConsume);
+    internalGoods.retrieve( stock, realyConsume );
+    int anyBroken = furniture2Consume.need - realyConsume;
+    mayContinue = (anyBroken / (float)furniture2Consume.need) < 0.5;
+    targetSentiment += 10 * ((furniture2Consume.need - anyBroken) / (float)furniture2Consume.need);
+
+    if( anyBroken )
+      targets.need[ object::furniture_workshop ]++;
+  }
+
+  if( mayContinue && oil2Consume.need > 0 )
+  {
+    int realyConsume = math::clamp( oil2Consume.need, 0, oil2Consume.have );
+    good::Stock stock( good::oil, realyConsume, realyConsume);
+    internalGoods.retrieve( stock, realyConsume );
+    int anyHungry = oil2Consume.need - realyConsume;
+    mayContinue = (anyHungry / (float)oil2Consume.need) < 0.5;
+    targetSentiment += 5 * ((oil2Consume.need - anyHungry) / (float)oil2Consume.need);
+
+    if( anyHungry )
+      targets.need[ object::oil_workshop ]++;
+  }
+
+  if( mayContinue && wine2Consume.need > 0 )
+  {
+    int realyConsume = math::clamp( wine2Consume.need, 0, oil2Consume.have );
+    good::Stock stock( good::wine, realyConsume, realyConsume);
+    internalGoods.retrieve( stock, realyConsume );
+    int anyHungry = wine2Consume.need - realyConsume;
+    mayContinue = (anyHungry / (float)wine2Consume.need) < 0.5;
+    targetSentiment += 5 * ((wine2Consume.need - anyHungry) / (float)wine2Consume.need);
+
+    if( anyHungry )
+      targets.need[ object::wine_workshop ]++;
+  }
+
+  int delta = math::clamp( targetSentiment - sentiment, -2, 2);
+  sentiment += delta;
+}
+
+void ComputerCity::Impl::initPeoples()
+{
+  int peoplesDelta = states.population - peoples.count();
+  CitizenGroup appendGroup;
+  appendGroup[ CitizenGroup::child   ] += floor( peoplesDelta * 0.1 );
+  appendGroup[ CitizenGroup::student ] += floor( peoplesDelta * 0.2 );
+  appendGroup[ CitizenGroup::mature  ] += floor( peoplesDelta * 0.5 );
+  appendGroup[ CitizenGroup::aged    ] += floor( peoplesDelta * 0.2 );
+  appendGroup[ CitizenGroup::mature  ] += peoplesDelta - appendGroup.count();
+
+  peoples.include( appendGroup );
+}
 
 ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
   : City( empire ), _d( new Impl )
@@ -120,6 +697,7 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
   _d->distantCity = false;
   _d->merchantsNumber = 0;
   _d->available = true;
+  _d->useAI = City::inactive;
   _d->states.population = 0;
   _d->states.nation = world::nation::unknown;
   _d->sells.setCapacity( 99999 );
@@ -136,6 +714,7 @@ bool ComputerCity::_mayTrade() const { return _d->tradeDelay <= 0; }
 econ::Treasury& ComputerCity::treasury() { return _d->funds; }
 bool ComputerCity::isPaysTaxes() const { return true; }
 bool ComputerCity::haveOverduePayment() const { return false; }
+void ComputerCity::setAiMode(City::AiMode mode) { _d->useAI = mode; }
 bool ComputerCity::isDistantCity() const{  return _d->distantCity;}
 bool ComputerCity::isAvailable() const{  return _d->available;}
 void ComputerCity::setAvailable(bool value){  _d->available = value;}
@@ -145,14 +724,19 @@ SmartPtr<Player> ComputerCity::mayor() const { return 0; }
 void ComputerCity::save( VariantMap& options ) const
 {
   City::save( options );
+  _d->states.population = _d->peoples.count();
 
   VARIANT_SAVE_CLASS_D( options, _d, sells )
   VARIANT_SAVE_CLASS_D( options, _d, buys )
   VARIANT_SAVE_CLASS_D( options, _d, realSells )
+  VARIANT_SAVE_CLASS_D( options, _d, peoples )
+  VARIANT_SAVE_CLASS_D( options, _d, buildings )
+  VARIANT_SAVE_CLASS_D( options, _d, targets )
 
   options[ "sea" ] = (_d->tradeType & EmpireMap::sea ? true : false);
   options[ "land" ] = (_d->tradeType & EmpireMap::land ? true : false);
 
+  VARIANT_SAVE_ENUM_D( options, _d, useAI )
   VARIANT_SAVE_ANY_D( options, _d, lastTimeMerchantSend )
   VARIANT_SAVE_ANY_D( options, _d, lastTimeUpdate )
   VARIANT_SAVE_ANY_D( options, _d, states.age )
@@ -161,9 +745,10 @@ void ComputerCity::save( VariantMap& options ) const
   VARIANT_SAVE_ANY_D( options, _d, distantCity )
   VARIANT_SAVE_ANY_D( options, _d, states.romeCity )
   VARIANT_SAVE_ANY_D( options, _d, tradeDelay )
-  VARIANT_SAVE_ANY_D( options, _d, lastAttack )
+  VARIANT_SAVE_ANY_D( options, _d, lastAttack )  
   VARIANT_SAVE_ANY_D( options, _d, states.population )
   VARIANT_SAVE_ANY_D( options, _d, strength )
+  VARIANT_SAVE_ANY_D( options, _d, sentiment )
 }
 
 void ComputerCity::load( const VariantMap& options )
@@ -181,6 +766,8 @@ void ComputerCity::load( const VariantMap& options )
   VARIANT_LOAD_ANY_D   ( _d, tradeDelay,            options )
   VARIANT_LOAD_TIME_D  ( _d, lastAttack,            options )
   VARIANT_LOAD_ANY_D   ( _d, strength,              options )
+  VARIANT_LOAD_ENUM_D  ( _d, useAI,                 options )
+  VARIANT_LOAD_ANYDEF_D( _d, sentiment,         50, options )
   VARIANT_LOAD_ANYDEF_D( _d, states.population, _d->states.population, options )
 
   foreach( gtype, good::all() )
@@ -190,9 +777,12 @@ void ComputerCity::load( const VariantMap& options )
     _d->realSells.setCapacity( *gtype, 0 );
   }
 
+  VARIANT_LOAD_CLASS_D( _d, targets,options )
   VARIANT_LOAD_CLASS_D( _d, sells, options )
   VARIANT_LOAD_CLASS_D( _d, buys, options )
   VARIANT_LOAD_CLASS_D( _d, realSells, options )
+  VARIANT_LOAD_CLASS_D_LIST( _d, peoples, options )
+  VARIANT_LOAD_CLASS_D( _d, buildings, options )
 
   if( _d->realSells.empty() )
   {
@@ -200,6 +790,11 @@ void ComputerCity::load( const VariantMap& options )
     {
       _d->realSells.setCapacity( *it, _d->sells.capacity( *it ) );
     }
+  }
+
+  if( _d->peoples.count() != _d->states.population )
+  {
+      _d->initPeoples();
   }
 
   _d->tradeType = (options.get( "sea" ).toBool() ? EmpireMap::sea : EmpireMap::unknown)
@@ -285,14 +880,16 @@ ComputerCity::~ComputerCity() {}
 
 void ComputerCity::timeStep( unsigned int time )
 {
+  if( game::Date::isWeekChanged() )
+  {
+    _d->calcPopulationChange();
+    _d->strength = math::clamp<int>( _d->strength+1, 0, _d->states.population / 100 );
+  }
+
   if( game::Date::isMonthChanged() )
   {
     _d->tradeDelay = math::clamp<int>( _d->tradeDelay-1, 0, 99 );
-  }
-
-  if( game::Date::isWeekChanged() )
-  {
-    _d->strength = math::clamp<int>( _d->strength+1, 0, _d->states.population / 100 );
+    _d->calculateMonthState();    
   }
 
   if( game::Date::isYearChanged() )
@@ -404,8 +1001,7 @@ void ComputerCity::_initTextures()
   if( _d->distantCity ) { index = PicID::distantCity; }
   else if( _d->states.romeCity ) { index = PicID::romeCity; }
 
-  Picture pic = Picture::load( ResourceGroup::empirebits, index );
-  setPicture( pic );
+  _picture().load( ResourceGroup::empirebits, index );
   _animation().load( ResourceGroup::empirebits, index+1, 6 );
   _animation().setLoop( true );
   _animation().setDelay( 2 );

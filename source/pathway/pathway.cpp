@@ -20,6 +20,7 @@
 #include "core/variant_map.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
+#include "core/variant_list.hpp"
 
 using namespace gfx;
 
@@ -235,7 +236,7 @@ VariantMap Pathway::save() const
   if( length() == 0 ) //not save empty way
     return VariantMap();
 
-  stream[ literals::tiles ] = _d->tiles.locations().toVList();
+  stream[ literals::tiles ] = _d->tiles.locations().save();
   VARIANT_SAVE_ANY_D( stream, _d, reverse )
   VARIANT_SAVE_ANY_D( stream, _d, step )
   VARIANT_SAVE_ANY_D( stream, _d, startPos )

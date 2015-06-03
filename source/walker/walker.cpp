@@ -178,7 +178,7 @@ void Walker::setSpeedMultiplier(float koeff) { _d->speedMultiplier = koeff; }
 void Walker::_walk()
 {
   if( direction::none == _d->action.direction
-      || !_pathwayRef().isValid() )
+      || !_pathway().isValid() )
   {
     // nothing to do
     _noWay();
@@ -324,7 +324,7 @@ const Tile& Walker::_nextTile() const
   case direction::southWest: p += TilePos( -1, -1 ); break;
   case direction::west: p += TilePos( -1, 0 ); break;
   case direction::northWest: p += TilePos( -1, 1 ); break;
-  default: Logger::warning( "Unknown direction: %d", _d->action.direction); break;
+  default: /*Logger::warning( "Unknown direction: %d", _d->action.direction);*/ break;
   }
 
   return _d->city->tilemap().at( p );
@@ -353,10 +353,10 @@ TilePos Walker::pos() const{ return _d->location ? _d->location->pos() : gfx::ti
 void Walker::deleteLater(){ _d->isDeleted = true;}
 void Walker::setUniqueId( const UniqueId uid ) {  _d->uid = uid;}
 Walker::UniqueId Walker::uniqueId() const { return _d->uid; }
-Pathway& Walker::_pathwayRef() {  return _d->pathway; }
+Pathway& Walker::_pathway() { return _d->pathway; }
 const Pathway& Walker::pathway() const {  return _d->pathway; }
-Animation& Walker::_animationRef() {  return _d->animation;}
-const Animation& Walker::_animationRef() const {  return _d->animation;}
+Animation& Walker::_animation() {  return _d->animation;}
+const Animation& Walker::_animation() const {  return _d->animation;}
 void Walker::_setDirection(Direction direction ){  _d->action.direction = direction; }
 void Walker::setThinks(std::string newThinks){  _d->thinks = newThinks;}
 TilePos Walker::places(Walker::Place type) const { return gfx::tilemap::invalidLocation(); }
@@ -382,7 +382,7 @@ void Walker::_setAction( Walker::Action action )
 {
   if( _d->action.action != action  )
   {
-    _animationRef().clear();
+    _animation().clear();
   }
   _d->action.action = action;
 }
@@ -533,7 +533,7 @@ void Walker::turn(TilePos p )
   if( _d->action.direction != direction )
   {
     _d->action.direction = direction;
-    _animationRef().clear();
+    _animation().clear();
   }
 }
 

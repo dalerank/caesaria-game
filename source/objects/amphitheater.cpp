@@ -44,7 +44,7 @@ public:
 Amphitheater::Amphitheater()
   : EntertainmentBuilding(Service::amphitheater, object::amphitheater, Size(3)), _d( new Impl )
 {
-  _fgPicturesRef().resize(2);
+  _fgPictures().resize(2);
 
   _addNecessaryWalker( walker::actor );
   _addNecessaryWalker( walker::gladiator );
@@ -101,7 +101,7 @@ void Amphitheater::deliverService()
 
   if( _animationRef().isRunning())
   {
-    _fgPicturesRef().front() = Picture::load( ResourceGroup::entertainment, 12 );
+    _fgPictures().front().load( ResourceGroup::entertainment, 12 );
     int currentWalkerNumber = walkers().size();
     if( saveWalkesNumber != currentWalkerNumber )
     {
@@ -111,8 +111,8 @@ void Amphitheater::deliverService()
   }
   else
   {
-    _fgPicturesRef().front() = Picture::getInvalid();
-    _fgPicturesRef().back() = Picture::getInvalid();
+    _fgPictures().front() = Picture::getInvalid();
+    _fgPictures().back() = Picture::getInvalid();
   }
 }
 

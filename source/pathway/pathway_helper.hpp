@@ -29,6 +29,13 @@ public:
   static Pathway create(TilePos startPos, TilePos stopPos,
                         WayType type=roadOnly );
 
+  template<class T>
+  static Pathway create( TilePos startPos, SmartPtr<T> building,
+                         WayType type)
+  {
+    return create( startPos, ptr_cast<Construction>( building ), type );
+  }
+
   static Pathway create(TilePos startPos, ConstructionPtr construction,
                         WayType type);
 

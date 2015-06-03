@@ -35,7 +35,7 @@ class Desirability::Impl
 {
 public:
   Font debugFont;
-  std::vector<Picture*> debugText;
+  std::vector<Picture> debugText;
 };
 
 namespace
@@ -62,7 +62,7 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
     if( tile.getFlag( Tile::isConstructible ) && desirability != 0 )
     {
       int desIndex = __des2index( desirability );
-      Picture& pic = Picture::load( ResourceGroup::land2a, 37 + desIndex );
+      Picture pic( ResourceGroup::land2a, 37 + desIndex );
 
       engine.draw( pic, screenPos );
     }
@@ -86,7 +86,7 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
     {
       //other buildings
       int picOffset = __des2index( desirability );
-      Picture& pic = Picture::load( ResourceGroup::land2a, 37 + picOffset );
+      Picture pic( ResourceGroup::land2a, 37 + picOffset );
 
       TilesArray tiles4clear = overlay->area();
 
@@ -99,10 +99,10 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
 
   if( desirability != 0 )
   {
-    Picture* tx = _d->debugFont.once( utils::i2str( desirability ) );
+    Picture tx = _d->debugFont.once( utils::i2str( desirability ) );
     _d->debugText.push_back( tx );
 
-    _addPicture( tile.mappos() + Point( 20, -15 ), *tx );
+    _addPicture( tile.mappos() + Point( 20, -15 ), tx );
   }
 
   tile.setWasDrawn();
@@ -110,7 +110,6 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
 
 void Desirability::beforeRender( Engine& engine )
 {
-  foreach( it, _d->debugText ) { Picture::destroy( *it ); }
   _d->debugText.clear();
 
   Info::beforeRender( engine );
@@ -158,7 +157,7 @@ Desirability::Desirability( Camera& camera, PlayerCityPtr city)
   : Info( camera, city, 0 ), _d( new Impl )
 {
   _d->debugFont = Font::create( "FONT_1" );
-  _fillVisibleObjects( type() );
+  _initialize();
 }
 
 }//end namespace citylayer

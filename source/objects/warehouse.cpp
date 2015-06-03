@@ -36,6 +36,7 @@
 #include "constants.hpp"
 #include "good/helper.hpp"
 #include "game/gamedate.hpp"
+#include "core/variant_list.hpp"
 #include "walker/cart_supplier.hpp"
 #include "extension.hpp"
 #include "warehouse_store.hpp"
@@ -118,7 +119,7 @@ void Warehouse::Room::computePicture()
     picIdx += math::max<int>( 0, units.ivalue() - 1 );
   }
 
-  picture = Picture::load( ResourceGroup::warehouse, picIdx );
+  picture.load( ResourceGroup::warehouse, picIdx );
   picture.addOffset( tile::tilepos2screen( location ) );
 }
 
@@ -134,7 +135,7 @@ public:
 
 static Picture strafePic(const std::string& rc, int index, int i, int j )
 {
-  Picture ret = Picture::load( rc, index );
+  Picture ret( rc, index );
   ret.addOffset( tile::tilepos2screen( TilePos( i, j ) ) );
 
   return ret;
@@ -144,7 +145,7 @@ Warehouse::Warehouse() : WorkingBuilding( object::warehouse, Size( 3 )), _d( new
 {
   setPicture( strafePic( ResourceGroup::warehouse, 19, 0, 2 ) );
 
-  _fgPicturesRef().resize(12+1);  // 8 tiles + 4 + 1 animation slot
+  _fgPictures().resize(12+1);  // 8 tiles + 4 + 1 animation slot
 
   _animationRef().load( ResourceGroup::warehouse, 2, 16 );
   _animationRef().setDelay( 4 );
@@ -153,10 +154,10 @@ Warehouse::Warehouse() : WorkingBuilding( object::warehouse, Size( 3 )), _d( new
 
   _setClearAnimationOnStop( false );
 
-  _fgPicturesRef()[ fgpic::idxMainPic ] = strafePic( ResourceGroup::warehouse, 1,  0, 2);
-  _fgPicturesRef()[ fgpic::idxWhRoof  ] = strafePic( ResourceGroup::warehouse, 18, 0, 2);
-  _fgPicturesRef()[ fgpic::idxAnimWork] = _animationRef().currentFrame();
-  _fgPicturesRef()[ fgpic::idxAnimFlag] = _d->animFlag.currentFrame();
+  _fgPictures()[ fgpic::idxMainPic ] = strafePic( ResourceGroup::warehouse, 1,  0, 2);
+  _fgPictures()[ fgpic::idxWhRoof  ] = strafePic( ResourceGroup::warehouse, 18, 0, 2);
+  _fgPictures()[ fgpic::idxAnimWork] = _animationRef().currentFrame();
+  _fgPictures()[ fgpic::idxAnimFlag] = _d->animFlag.currentFrame();
 
   // add subTiles in Z-order (from far to near)
   _d->rooms.clear();
@@ -181,7 +182,7 @@ void Warehouse::timeStep(const unsigned long time)
   {
     _d->animFlag.update( time );
 
-    _fgPicturesRef()[3] = _d->animFlag.currentFrame();
+    _fgPictures()[3] = _d->animFlag.currentFrame();
   }
 
   if( game::Date::isWeekChanged() )
@@ -203,7 +204,7 @@ void Warehouse::computePictures()
 {
   int index = 4;
   std::string rc = _d->isTradeCenter ? ResourceGroup::tradecenter : ResourceGroup::warehouse;
-  _fgPicturesRef()[ fgpic::idxMainPic ] = strafePic( rc, 1, 0, 2);
+  _fgPictures()[ fgpic::idxMainPic ] = strafePic( rc, 1, 0, 2);
   foreach( room, _d->rooms )
   {
      room->computePicture();

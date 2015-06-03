@@ -16,6 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "citizen_group.hpp"
+#include "core/variant_list.hpp"
 
 unsigned int CitizenGroup::count() const
 {
@@ -24,9 +25,11 @@ unsigned int CitizenGroup::count() const
   return ret;
 }
 
-static std::pair<unsigned int, unsigned int> __getGroupRange( CitizenGroup::Age group )
+typedef std::pair<unsigned int, unsigned int> AgeRange;
+
+static AgeRange __getGroupRange( CitizenGroup::Age group )
 {
-  std::pair<unsigned int, unsigned int> ret(0, 0);
+  AgeRange ret(0, 0);
   switch( group )
   {
   case CitizenGroup::newborn: ret.second=1; break;
@@ -34,8 +37,9 @@ static std::pair<unsigned int, unsigned int> __getGroupRange( CitizenGroup::Age 
   case CitizenGroup::scholar: ret.first=9; ret.second=15; break;
   case CitizenGroup::student: ret.first=16; ret.second=20; break;
   case CitizenGroup::mature: ret.first=CitizenGroup::matureMin; ret.second=50; break;
-  case CitizenGroup::aged: ret.first=51; ret.second=99; break;
-  case CitizenGroup::longliver: ret.second=99; ret.second=99; break;
+  case CitizenGroup::aged: ret.first=51; ret.second=79; break;
+  case CitizenGroup::longliver: ret.second=80; ret.second=99; break;
+  case CitizenGroup::any      : ret.first=0, ret.second=100; break;
   }
 
   return ret;
@@ -43,7 +47,10 @@ static std::pair<unsigned int, unsigned int> __getGroupRange( CitizenGroup::Age 
 
 unsigned int CitizenGroup::count( Age group ) const
 {
-  std::pair<unsigned int, unsigned int> range = __getGroupRange( group );
+  if( group == CitizenGroup::any )
+    return count();
+
+  AgeRange range = __getGroupRange( group );
 
   return count( range.first, range.second );
 }
@@ -59,7 +66,7 @@ unsigned int CitizenGroup::count(unsigned int beginAge, unsigned int endAge) con
   return ret;
 }
 
-CitizenGroup CitizenGroup::retrieve(unsigned int rcount)
+CitizenGroup CitizenGroup::retrieve( unsigned int rcount)
 {
   CitizenGroup ret;
 
@@ -94,7 +101,7 @@ CitizenGroup CitizenGroup::retrieve(unsigned int rcount)
 CitizenGroup CitizenGroup::retrieve( Age group, unsigned int rcount)
 {
   CitizenGroup ret;
-  std::pair<unsigned int, unsigned int> range = __getGroupRange( group );
+  AgeRange range = __getGroupRange( group );
 
   while( rcount > 0 )
   {
@@ -216,7 +223,7 @@ void CitizenGroup::load(const VariantList& stream)
 {
   foreach( g, stream )
   {
-    VariantList gv = (*g).toList();
+    VariantList gv = g->toList();
     unsigned int age = gv.get( 0, 0u );
     unsigned int count = gv.get( 1, 0u );
     _peoples[ age ] = count;
@@ -234,4 +241,20 @@ CitizenGroup::CitizenGroup(CitizenGroup::Age age, int value)
   _peoples.resize( longliver+1 );
   _peoples.reserve( longliver+2 );
   _peoples[ age ] = value;
+}
+
+CitizenGroup CitizenGroup::random(int value)
+{
+  CitizenGroup ret;
+
+  while( value > 0 )
+  {
+    int ageGroup = math::random( 100 );
+    int rValue = math::random( value ) + 1;
+    ret[ ageGroup ] += rValue;
+
+    value -= rValue;
+  }
+
+  return ret;
 }

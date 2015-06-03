@@ -120,6 +120,7 @@ public:
     
 signals public:
   virtual Signal0<>& onClicked();
+  virtual Signal1<Widget*>& onClickedA();
 
 protected:
   virtual void _finalizeResize();
@@ -127,8 +128,9 @@ protected:
   virtual void _updateBackground(gfx::Engine& painter , bool& useAlpha4Text);
   virtual void _handleClick();
 
-  gfx::PictureRef& _textPictureRef();
+  gfx::Picture& _textPicture();
   gfx::Batch& _background();
+  gfx::Pictures& _backgroundNb();
 
 private:
 

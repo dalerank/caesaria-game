@@ -36,6 +36,7 @@ public:
   virtual int  climateType( const std::string& filename ) = 0;
   virtual bool isLoadableFileExtension( const std::string& filename ) = 0;
   virtual std::string restartFile() const = 0;
+  virtual bool finalizeMap() const = 0;
 };
 
 }//end namespace loader

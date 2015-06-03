@@ -70,6 +70,8 @@
 #include "video_config.hpp"
 #include "config.hpp"
 #include "world/emperor.hpp"
+#include "core/metric.hpp"
+#include "roman_celebrates.hpp"
 
 #include <list>
 
@@ -105,6 +107,8 @@ public:
   void initAddons();
   void initHotkeys();
   void initMovie();
+  void initMetrics();
+  void initCelebrations();
   void initGuiEnvironment();
   void initArchiveLoaders();
   void initPantheon( vfs::Path filename );
@@ -128,6 +132,18 @@ void Game::Impl::initMovie()
   {
     config.addFolder( c3videoFile );
   }
+}
+
+void Game::Impl::initMetrics()
+{
+  int value = SETTINGS_VALUE( metricSystem );
+  metric::Measure::setMode( (metric::Measure::Mode)value );
+}
+
+void Game::Impl::initCelebrations()
+{
+  vfs::Path value = SETTINGS_RC_PATH( celebratesConfig );
+  game::Celebrates::instance().load( value );
 }
 
 void Game::Impl::initLocale( std::string localePath )
@@ -191,7 +207,7 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
   std::string errorStr;
   std::string c3res = SETTINGS_VALUE( c3gfx ).toString();
   if( !c3res.empty() )
-  {
+  {    
     vfs::Directory gfxDir( c3res );
     vfs::Path c3sg2( "c3.sg2" );
     vfs::Path c3path = gfxDir/c3sg2;
@@ -206,6 +222,7 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
     }
 
     loader.loadFromModel( SETTINGS_RC_PATH( sg2model ), gfxDir );
+    engine->setFlag( Engine::batching, false );
   }
   else
   {
@@ -441,6 +458,7 @@ void Game::initialize()
   Logger::warning( "Game: set resource folder" );
   vfs::FileSystem::instance().setRcFolder( game::Settings::rcpath() );
 
+  _d->initMetrics();
   _d->initAddons();
   _d->initArchiveLoaders();
   _d->initLocale( SETTINGS_VALUE( localePath ).toString() );

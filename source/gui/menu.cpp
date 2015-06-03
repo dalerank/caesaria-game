@@ -38,6 +38,7 @@
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "city/city.hpp"
+#include "extented_date_info.hpp"
 #include "events/playsound.hpp"
 
 using namespace constants;
@@ -273,11 +274,11 @@ bool Menu::onEvent(const NEvent& event)
 
 Menu* Menu::create(Widget* parent, int id, PlayerCityPtr city )
 {
-  const Picture& bground = Picture::load( ResourceGroup::panelBackground, 16 );
+  Picture bground( ResourceGroup::panelBackground, 16 );
 
   Menu* ret = new Menu( parent, id, Rect( 0, 0, bground.width(), parent->height() ) );
 
-  const Picture& bottom  = Picture::load( ResourceGroup::panelBackground, 21 );
+  Picture bottom( ResourceGroup::panelBackground, 21 );
 
   ret->_d->background.clear();
 
@@ -383,11 +384,11 @@ void Menu::Impl::updateBuildingOptions()
 
 ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city )
 {
-  const Picture& bground = Picture::load( ResourceGroup::panelBackground, 17 );
+  Picture bground( ResourceGroup::panelBackground, 17 );
 
   ExtentMenu* ret = new ExtentMenu( parent, id, Rect( 0, 0, bground.width(), parent->height() ) );
 
-  const Picture& bottom = Picture::load( ResourceGroup::panelBackground, 20 );
+  Picture bottom( ResourceGroup::panelBackground, 20 );
 
   ret->_d->background.clear();
 
@@ -461,7 +462,7 @@ ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle )
   _d->disasterButton->setTooltipText( _("##show_spots_of_city_troubles_tip##") );
 
   _d->middleLabel = new Label(this, Rect( Point( 7, 216 ), Size( 148, 52 )) );
-  _d->middleLabel->setBackgroundPicture( Picture::load( ResourceGroup::menuMiddleIcons, ResourceMenu::emptyMidPicId ) );
+  _d->middleLabel->setBackgroundPicture( Picture( ResourceGroup::menuMiddleIcons, ResourceMenu::emptyMidPicId ) );
 
   _d->overlaysMenu = new OverlaysMenu( parent(), Rect( 0, 0, 160, 1 ), -1 );
   _d->overlaysMenu->hide();
@@ -480,7 +481,7 @@ bool ExtentMenu::onEvent(const NEvent& event)
     if( MenuButton* btn = safety_cast< MenuButton* >( event.gui.caller ) )
     {
       int picId = btn->midPicId() > 0 ? btn->midPicId() : ResourceMenu::emptyMidPicId;
-      _d->middleLabel->setBackgroundPicture( Picture::load( ResourceGroup::menuMiddleIcons, picId ) );
+      _d->middleLabel->setBackgroundPicture( Picture( ResourceGroup::menuMiddleIcons, picId ) );
     }
   }
 
@@ -505,6 +506,20 @@ void ExtentMenu::changeOverlay(int ovType)
 {
   std::string layerName = citylayer::Helper::prettyName( (citylayer::Type)ovType );
   _d->overlaysButton->setText( _( layerName ) );
+}
+
+void ExtentMenu::showInfo(int type)
+{
+  int hash = Hash(CAESARIA_STR_A(ExtentedDateInfo));
+  ExtentedDateInfo* window = safety_cast<ExtentedDateInfo*>( findChild( hash ) );
+  if( !window )
+  {
+    window = new ExtentedDateInfo( this, Rect( Point(), size() ), hash );
+  }
+  else
+  {
+    window->deleteLater();
+  }
 }
 
 Signal1<int>& ExtentMenu::onSelectOverlayType() {  return _d->overlaysMenu->onSelectOverlayType(); }

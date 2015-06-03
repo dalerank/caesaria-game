@@ -468,11 +468,6 @@ TraderoutePtr Empire::findRoute( const std::string& start, const std::string& st
 
 void Empire::timeStep( unsigned int time )
 {    
-  _d->trading.timeStep( time );
-  _d->emperor.timeStep( time );
-  _d->cities.update( time );
-  _d->objects.update( time );
-
   if( game::Date::isMonthChanged() )
   {
     _d->checkLoans();
@@ -484,9 +479,14 @@ void Empire::timeStep( unsigned int time )
   {
     _d->takeTaxes();
   }
+
+  _d->trading.timeStep( time );
+  _d->emperor.timeStep( time );
+  _d->cities.update( time );
+  _d->objects.update( time );
 }
 
-const EmpireMap &Empire::map() const { return _d->emap; }
+const EmpireMap& Empire::map() const { return _d->emap; }
 
 Emperor& Empire::emperor() { return _d->emperor; }
 CityPtr Empire::rome() const { return findCity( Rome::defaultName ); }
@@ -687,44 +687,51 @@ void Empire::Impl::takeTaxes()
     CityPtr city = *it;
 
     int empireTax = 0;
-    bool cityTooYoung4tax = city->states().age < econ::cityAge4tax;
 
-    if( is_kind_of<Rome>( city ) || cityTooYoung4tax )
-    {
+    if( !city->isAvailable() )
       continue;
-    }
 
-    if( is_kind_of<ComputerCity>( city ) )
+    if( is_kind_of<Rome>( city ) )
+    {
+      //no take taxes from capital
+    }       
+    else if( is_kind_of<ComputerCity>( city ) )
     {
       empireTax = city::statistic::taxValue( city->states().population, defaultCityTaxKoeff );
       economy.treasury += empireTax;
-      continue;
-    }
-
-    int profit = city->treasury().getIssueValue( econ::Issue::cityProfit, econ::Treasury::lastYear );
-
-    if( profit <= 0 )
-    {
-      empireTax = city::statistic::taxValue( city->states().population, defaultCityTaxKoeff );
+      emperor.citySentTax( city->name(), empireTax );
     }
     else
     {
-      int minimumExpireTax = city::statistic::taxValue( city->states().population, defaultCityTaxKoeff ) + minimumCityTax;
-      empireTax = math::clamp( profit / cityTaxLimiter, minimumExpireTax, 9999 );
-    }
+      int profit = city->treasury().getIssueValue( econ::Issue::cityProfit, econ::Treasury::lastYear );
+      if( profit <= 0 )
+      {
+        empireTax = city::statistic::taxValue( city->states().population, defaultCityTaxKoeff );
+      }
+      else
+      {
+        int minimumExpireTax = city::statistic::taxValue( city->states().population, defaultCityTaxKoeff ) + minimumCityTax;
+        empireTax = math::clamp( profit / cityTaxLimiter, minimumExpireTax, 9999 );
+        emperor.citySentTax( city->name(), empireTax );
+      }
 
-    econ::Treasury& funds = city->treasury();
+      bool cityTooYoung4tax = city->states().age <= econ::cityAge4tax;
+      if( cityTooYoung4tax )
+        empireTax = 1;
 
-    if( funds.haveMoneyForAction( empireTax, econ::Treasury::debtDisabled ) )
-    {
-      funds.resolveIssue( econ::Issue( econ::Issue::empireTax, -empireTax ) );
+      econ::Treasury& funds = city->treasury();
 
-      economy.treasury += empireTax;
-      emperor.cityTax( city->name(), empireTax );
-    }
-    else
-    {
-      city->treasury().resolveIssue( econ::Issue( econ::Issue::overdueEmpireTax, empireTax ) );
+      if( funds.haveMoneyForAction( empireTax, econ::Treasury::debtDisabled ) )
+      {
+        funds.resolveIssue( econ::Issue( econ::Issue::empireTax, -empireTax ) );
+
+        economy.treasury += empireTax;
+        emperor.citySentTax( city->name(), empireTax );
+      }
+      else
+      {
+        city->treasury().resolveIssue( econ::Issue( econ::Issue::overdueEmpireTax, empireTax ) );
+      }
     }
   }
 }

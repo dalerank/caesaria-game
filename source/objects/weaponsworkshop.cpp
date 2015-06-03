@@ -31,10 +31,10 @@ REGISTER_CLASS_IN_OVERLAYFACTORY( object::weapons_workshop, WeaponsWorkshop)
 WeaponsWorkshop::WeaponsWorkshop()
   : Factory(good::iron, good::weapon, object::weapons_workshop, Size(2) )
 {
-  setPicture( ResourceGroup::commerce, 108);
+  _picture().load( ResourceGroup::commerce, 108);
 
   //_animationRef().load( ResourceGroup::commerce, 109, 6);
-  _fgPicturesRef().resize(2);
+  _fgPictures().resize(2);
 }
 
 bool WeaponsWorkshop::canBuild( const city::AreaInfo& areaInfo ) const
@@ -55,6 +55,6 @@ bool WeaponsWorkshop::build( const city::AreaInfo& info )
 
 void WeaponsWorkshop::_storeChanged()
 {
-  _fgPicturesRef()[1] = inStockRef().empty() ? Picture() : Picture::load( ResourceGroup::commerce, 156 );
-  _fgPicturesRef()[1].setOffset( 20, 15 );
+  _fgPicture(1) = inStockRef().empty() ? Picture() : Picture( ResourceGroup::commerce, 156 );
+  _fgPicture(1).setOffset( 20, 15 );
 }

@@ -193,6 +193,19 @@ Widget* Ui::findWidget(int id)
   return Widget::findChild( id, true );
 }
 
+Widget* Ui::findWidget(const Point &p)
+{
+  const Widgets& widgets = children();
+
+  foreach( it, widgets )
+  {
+    if( (*it)->visible() && (*it)->isPointInside( p ) )
+      return *it;
+  }
+
+  return this;
+}
+
 void Ui::deleteLater( Widget* ptrElement )
 {
   try
@@ -518,7 +531,7 @@ bool Ui::handleEvent( const NEvent& event )
   return false;
 }
 
-Widget* Ui::hovered() const {  return _d->hovered.object(); }
+Widget* Ui::hovered() const { return _d->hovered.object(); }
 
 void Ui::beforeDraw()
 {

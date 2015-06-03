@@ -52,8 +52,8 @@ public:
   CitizenScreenshot( Widget* parent, Rect rectangle, WalkerPtr wlk )
     : Label( parent, rectangle, "", false, Label::bgBlackFrame )
   {
-    _wlkPicture.init( rectangle.size() - Size( 6 ) );
-    _wlkPicture->fill( DefaultColors::green, Rect() );
+    _wlkPicture = gfx::Picture( rectangle.size() - Size( 6 ), 0, true );
+    _wlkPicture.fill( DefaultColors::clear, Rect() );
     _walker = wlk;
   }
 
@@ -69,12 +69,12 @@ public:
 
     Label::draw( painter );
 
-    if( !_wlkPicture.isNull() )
+    if( _wlkPicture.isValid() )
     {
       Rect clipRect = absoluteClippingRect();
       clipRect.UpperLeftCorner += Point( 3, 3 );
       clipRect.LowerRightCorner -= Point( 3, 3 );
-      painter.draw( *_wlkPicture, absoluteRect().lefttop() + Point( 3, 3 ), &clipRect );
+      painter.draw( _wlkPicture, absoluteRect().lefttop() + Point( 3, 3 ), &clipRect );
       gfx::Pictures pics;
       _walker->getPictures( pics );
       painter.draw( pics, absoluteRect().lefttop() + Point( 30, 30 ), &clipRect );
@@ -82,7 +82,7 @@ public:
   }
 
   WalkerPtr _walker;
-  gfx::PictureRef _wlkPicture;
+  gfx::Picture _wlkPicture;
   Signal1<WalkerPtr> _onClickedSignal;
 };
 

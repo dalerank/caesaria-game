@@ -97,7 +97,7 @@ void Animation::update( unsigned int time )
 
 const Picture& Animation::currentFrame() const
 {
-  return _pictures.atSafe( _dfunc()->index );
+  return _pictures.valueOrEmpty( _dfunc()->index );
 }
 
 int Animation::index() const { return _dfunc()->index;}
@@ -111,6 +111,7 @@ Animation::Animation() : __INIT_IMPL(Animation)
 
 Animation::~Animation() {}
 Animation::Animation(const Animation& other) : __INIT_IMPL(Animation){  *this = other;}
+Animation::Animation(const std::string& alias) : __INIT_IMPL(Animation) {  load( alias ); }
 
 void Animation::setDelay( const unsigned int delay ){ _dfunc()->delay = delay;}
 unsigned int Animation::delay() const{  return _dfunc()->delay; }
@@ -123,7 +124,7 @@ void Animation::load( const std::string &prefix, const int start, const int numb
   int revMul = reverse ? -1 : 1;
   for( int i = 0; i < number; ++i)
   {
-    const Picture& pic = Picture::load(prefix, start + revMul*i*step);
+    Picture pic(prefix, start + revMul*i*step);
     _pictures.push_back( pic );
   }
 }
@@ -137,6 +138,7 @@ VariantMap Animation::save() const
 {
   __D_IMPL_CONST(d,Animation)
   VariantMap ret;
+
   VARIANT_SAVE_ANY_D( ret, d, index )
   VARIANT_SAVE_ANY_D( ret, d, delay )
   VARIANT_SAVE_ANY_D( ret, d, loop )
@@ -160,12 +162,10 @@ void Animation::load(const VariantMap &stream)
     int start = range.get( "start" );
     int number = range.get( "number" );
     for( int k=0; k < number; k++ )
-      _pictures.push_back( Picture::load( rc, start + k ) );
+      _pictures.push_back( Picture( rc, start + k ) );
   }
 
-  VariantList vl_pics = stream.get( "pictures" ).toList();
-  foreach( i, vl_pics )
-    _pictures.push_back( Picture::load( i->toString() ) );
+  _pictures.load( stream.get( "pictures" ).toStringArray() );
 }
 
 void Animation::clear() { _pictures.clear();}
@@ -191,7 +191,7 @@ bool Animation::isValid() const{  return _pictures.size() > 0;}
 
 void Animation::addFrame(const std::string& resource, int index)
 {
-  _pictures.push_back( Picture::load( resource, index ) );
+  _pictures.push_back( Picture( resource, index ) );
 }
 
 const Picture& Animation::frame(int index) const

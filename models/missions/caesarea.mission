@@ -13,6 +13,7 @@
   preview.image : ""
 	
   win : {
+    name : "n2_caesarea"
     population : 7000
     culture : 60
     prosperity : 70

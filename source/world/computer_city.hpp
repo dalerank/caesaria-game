@@ -33,6 +33,7 @@ public:
   virtual econ::Treasury& treasury();
   virtual bool isPaysTaxes() const;
   virtual bool haveOverduePayment() const;
+  virtual void setAiMode(AiMode mode);
 
   bool isDistantCity() const;
   virtual bool isAvailable() const;

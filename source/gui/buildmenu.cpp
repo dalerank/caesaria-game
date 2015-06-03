@@ -35,6 +35,7 @@
 #include "core/logger.hpp"
 #include "core/saveadapter.hpp"
 #include "game/settings.hpp"
+#include "core/variant_list.hpp"
 
 //using namespace constants;
 using namespace gfx;
@@ -73,7 +74,7 @@ public:
       sprintf( buffer, "%d", _cost );
       Rect textRect = f.getTextRect( buffer, Rect( 5, 0, width()-10, height() ),
                                      align::lowerRight, verticalTextAlign() );
-      f.draw( *_textPictureRef(), buffer, textRect.left(), textRect.top() );
+      f.draw( _textPicture(), buffer, textRect.left(), textRect.top() );
     }
   }
 

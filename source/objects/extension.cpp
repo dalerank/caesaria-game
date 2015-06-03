@@ -274,6 +274,28 @@ ConstructionExtensionPtr WarehouseBuff::assignTo(WarehousePtr warehouse, int gro
   return buff;
 }
 
+ConstructionExtensionPtr WarehouseBuff::uniqueTo(WarehousePtr warehouse, int group, float value, int week2finish, const std::string& name)
+{
+  if( !warehouse.isValid() )
+    return ConstructionExtensionPtr();
+
+  ConstructionExtensionPtr ret = warehouse->getExtension( name );
+  if( ret.isValid() )
+    return ret;
+
+  WarehouseBuff* buff = new WarehouseBuff();
+  buff->_options[ "value" ] = value;
+  buff->_options[ "group" ] = group;
+  buff->_name = name;
+  buff->_finishDate = game::Date::current();
+  buff->_finishDate.appendWeek( week2finish );
+
+  warehouse->addExtension( buff );
+  buff->drop(); //automatic delete
+
+  return buff;
+}
+
 void WarehouseBuff::timeStep(ConstructionPtr parent, unsigned int time)
 {
   ConstructionExtension::timeStep( parent, time );

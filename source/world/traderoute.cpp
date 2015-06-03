@@ -177,7 +177,7 @@ VariantMap Traderoute::save() const
 
 
   VARIANT_SAVE_CLASS_D( ret, _d,  merchants)
-  ret[ "points" ] = _d->points.toVList();
+  ret[ "points" ] = _d->points.save();
 
   VARIANT_SAVE_ANY_D( ret, _d, seaRoute )
 
@@ -186,7 +186,7 @@ VariantMap Traderoute::save() const
 
 void Traderoute::load(const VariantMap& stream)
 {
-  _d->points.fromVList( stream.get( "points" ).toList() );
+  _d->points.load( stream.get( "points" ).toList() );
   _d->updateBoundingBox();
   _d->updatePictures();
 
@@ -278,7 +278,7 @@ void Traderoute::Impl::updatePictures()
     case 1: picIndex = 89; offset = Point( 0, 15); break;
     }
 
-    Picture pic = Picture::load( ResourceGroup::empirebits, picIndex + (seaRoute ? 8 : 0) );
+    Picture pic( ResourceGroup::empirebits, picIndex + (seaRoute ? 8 : 0) );
     pic.setOffset( offset );
     pictures.push_back( pic );
   }

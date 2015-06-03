@@ -24,6 +24,7 @@
 #include "gfx/engine.hpp"
 #include "core/color.hpp"
 #include "core/logger.hpp"
+#include "core/variant_list.hpp"
 #include "gfx/picturesarray.hpp"
 #include "widget_factory.hpp"
 
@@ -53,6 +54,7 @@ public:
 struct ButtonState
 {
   Picture background;
+  Pictures styleNb;
   Batch style;
   Picture icon;
   Point iconOffset;
@@ -70,10 +72,11 @@ public:
   Rect iconRect;
   int clickTime;
   bool drawText;
-  PictureRef textPicture;
+  Picture textPicture;
   Point textOffset;
   PushButton::BackgroundStyle bgStyle;
   bool needUpdateTextPic;
+  bool needUpdateBackground;
 
   ElementState currentButtonState, lastButtonState;
   ButtonState buttonStates[ StateCount ];
@@ -137,36 +140,36 @@ void PushButton::_updateTextPic()
 {
   __D_IMPL(_d,PushButton)
   ElementState state = _state();
-  PictureRef& textTxs = _d->textPicture;
+  Picture& textTxs = _d->textPicture;
 
-  if( textTxs.isNull() )
+  if( textTxs.isValid() )
   {
-    textTxs.reset( Picture::create( size(), 0, true ) );
+    textTxs = Picture( size(), 0, true );
   }
 
-  if( textTxs->size() != size() )
+  if( textTxs.size() != size() )
   {
-    textTxs.reset( Picture::create( size(), 0, true ) );
+    textTxs = Picture( size(), 0, true );
   }
 
   Font stFont = _d->buttonStates[ state ].font;
-  if( textTxs && stFont.isValid() )
+  if( textTxs.isValid() && stFont.isValid() )
   {
     Rect textRect = stFont.getTextRect( text(), Rect( 0, 0, width(), height() ),
                                               horizontalTextAlign(), verticalTextAlign() );
-    textTxs->fill( 0x00ffffff, Rect( 0, 0, 0, 0 ) );
-    stFont.draw( *textTxs, text(), textRect.UpperLeftCorner + _d->textOffset, true, false );
+    textTxs.fill( 0x00ffffff, Rect( 0, 0, 0, 0 ) );
+    stFont.draw( textTxs, text(), textRect.UpperLeftCorner + _d->textOffset, true, false );
   }
 
   if( _d->bgStyle == flatBorderLine )
   {
-    Decorator::drawLine( *textTxs, Point( 0, 0), Point( width(), 0), DefaultColors::black );
-    Decorator::drawLine( *textTxs, Point( width()-1, 0), Point( width()-1, height() ), DefaultColors::black );
-    Decorator::drawLine( *textTxs, Point( width(), height()-1), Point( 0, height()-1), DefaultColors::black );
-    Decorator::drawLine( *textTxs, Point( 0, height() ), Point( 0, 0), DefaultColors::black );
+    Decorator::drawLine( textTxs, Point( 0, 0), Point( width(), 0), DefaultColors::black );
+    Decorator::drawLine( textTxs, Point( width()-1, 0), Point( width()-1, height() ), DefaultColors::black );
+    Decorator::drawLine( textTxs, Point( width(), height()-1), Point( 0, height()-1), DefaultColors::black );
+    Decorator::drawLine( textTxs, Point( 0, height() ), Point( 0, 0), DefaultColors::black );
   }
 
-  textTxs->update();
+  textTxs.update();
 }
 
 void PushButton::_updateBackground( ElementState state )
@@ -232,9 +235,15 @@ void PushButton::_updateBackground( ElementState state )
   }
 
   Decorator::draw( pics, Rect( Point( 0, 0 ), size() ), mode, Decorator::normalY );
-
   _d->buttonStates[ state ].style.destroy();
-  _d->buttonStates[ state ].style.load( pics, absoluteRect().lefttop() );
+  bool batchOk = _d->buttonStates[ state ].style.load( pics, absoluteRect().lefttop() );
+
+  if( !batchOk )
+  {
+    _d->buttonStates[ state ].style.destroy();
+    Decorator::reverseYoffset( pics );
+    _d->buttonStates[ state ].styleNb = pics;
+  }
 }
 
 void PushButton::_updateStyle()
@@ -300,12 +309,12 @@ void PushButton::setPicture(Picture picture, ElementState state )
 
 void PushButton::setPicture(const std::string& rcname, int index, ElementState state)
 {
-  setPicture( Picture::load( rcname, index ), state );
+  setPicture( Picture( rcname, index ), state );
 }
 
 void PushButton::setIcon( const std::string& rcname, int index, ElementState state)
 {
-  _dfunc()->buttonStates[ state ].icon = Picture::load( rcname, index );
+  _dfunc()->buttonStates[ state ].icon.load( rcname, index );
 }
 
 void PushButton::setIconOffset(Point offset)
@@ -320,7 +329,7 @@ void PushButton::setIconOffset(Point offset)
 void PushButton::setIcon(const std::string& rcname, int index)
 {
   __D_IMPL(_d,PushButton);
-  Picture pic = Picture::load( rcname, index );
+  Picture pic( rcname, index );
   for( int i=stNormal; i < StateCount; i++ )
   {
     _d->buttonStates[ i ].icon = pic;
@@ -329,7 +338,7 @@ void PushButton::setIcon(const std::string& rcname, int index)
 
 void PushButton::setPicture( const std::string& rcname, int index )
 {
-  Picture pic = Picture::load( rcname, index );
+  Picture pic( rcname, index );
   for( int i=stNormal; i < StateCount; i++ )
   {
     setPicture( pic, (ElementState)i );
@@ -495,8 +504,14 @@ void PushButton::beforeDraw( gfx::Engine& painter )
   __D_IMPL(_d,PushButton);
 
 	_d->currentButtonState = _state();
+  if( _d->needUpdateBackground )
+  {
+    _updateStyle();
+    _d->needUpdateBackground = false;
+  }
+
 	if( _d->needUpdateTextPic )
-	{
+	{    
 		_updateTextPic();
 		_d->needUpdateTextPic = false;
 	}
@@ -524,12 +539,17 @@ void PushButton::draw( gfx::Engine& painter )
     if( state.background.isValid() )
       painter.draw( state.background, absoluteRect().lefttop(), &absoluteClippingRectRef() );
     else
-      painter.draw( state.style, &absoluteClippingRectRef());
+    {
+      if( state.style.valid() )
+        painter.draw( state.style, &absoluteClippingRectRef());
+      else
+        painter.draw( state.styleNb, absoluteRect().lefttop(), &absoluteClippingRectRef());
+    }
 	}
 
-  if( _d->drawText && _d->textPicture )
+  if( _d->drawText && _d->textPicture.isValid() )
   {
-    painter.draw( *_d->textPicture, screenLeft(), screenTop(), &absoluteClippingRectRef() );
+    painter.draw( _d->textPicture, screenLeft(), screenTop(), &absoluteClippingRectRef() );
   }
 
   drawIcon( painter );
@@ -573,7 +593,7 @@ void PushButton::setFont( const Font& font )
   _dfunc()->needUpdateTextPic = true;
 }
 
-PictureRef& PushButton::_textPictureRef() {  return _dfunc()->textPicture;}
+Picture& PushButton::_textPicture() { return _dfunc()->textPicture; }
 Font PushButton::font( ElementState state ) {  return _dfunc()->buttonStates[ state ].font;}
 
 void PushButton::_finalizeResize()
@@ -585,7 +605,7 @@ void PushButton::_finalizeResize()
 void PushButton::setBackgroundStyle( const BackgroundStyle style )
 {
   _dfunc()->bgStyle = style;
-  _updateStyle();
+  _dfunc()->needUpdateBackground = true;
 }
 
 void PushButton::setBackgroundStyle(const std::string &strStyle)

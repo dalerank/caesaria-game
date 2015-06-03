@@ -20,6 +20,7 @@
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/variant_map.hpp"
+#include "core/variant_list.hpp"
 #include "gfx/helper.hpp"
 #include "core/logger.hpp"
 
@@ -163,7 +164,7 @@ void Overlay::load( const VariantMap& stream )
   VARIANT_LOAD_ANY_D( _d, size, stream )
 
   std::string pictureName = stream.get( "picture" ).toString();
-  _d->picture = Picture::load( pictureName );
+  _d->picture.load( pictureName );
   if( !_d->picture.isValid() )
   {
     Logger::warning( "TileOverlay: invalid picture for building [%d,%d] with name %s", pos().i(), pos().j(), pictureName.c_str() );
@@ -208,12 +209,12 @@ Point Overlay::offset( const Tile&, const Point& ) const{  return Point( 0, 0 );
 Animation& Overlay::_animationRef(){  return _d->animation;}
 Tile* Overlay::_masterTile(){  return _d->masterTile;}
 PlayerCityPtr Overlay::_city() const{ return _d->city;}
-gfx::Pictures& Overlay::_fgPicturesRef(){  return _d->fgPictures; }
+gfx::Pictures& Overlay::_fgPictures(){  return _d->fgPictures; }
 Picture& Overlay::_fgPicture( unsigned int index ){  return _d->fgPictures[index]; }
 const Picture& Overlay::_fgPicture( unsigned int index ) const {  return _d->fgPictures[index]; }
-Picture& Overlay::_pictureRef(){  return _d->picture;}
+Picture& Overlay::_picture(){  return _d->picture; }
 object::Group Overlay::group() const{  return _d->overlayClass;}
-void Overlay::setPicture(const char* resource, const int index){  setPicture( Picture::load( resource, index ) );}
+void Overlay::setPicture(const char* resource, const int index){ _picture().load( resource, index ); }
 const Picture& Overlay::picture() const{  return _d->picture;}
 void Overlay::setAnimation(const Animation& animation){  _d->animation = animation;}
 const Animation& Overlay::animation() const { return _d->animation;}

@@ -54,13 +54,13 @@ public:
   Camera* camera;
   Tile* currentTile;
   PlayerCityPtr city;
-  PictureRef outline;
-  PictureRef tooltipPic;
+  Picture outline;
+  Picture tooltipPic;
   int nextLayer;
   std::string tooltipText;
   Picture terraintPic;
   Layer::WalkerTypes vwalkers;
-  PictureRef tilePosText;
+  Picture tilePosText;
   Font debugFont;
   AlwaysDrawObjects drObjects;
 
@@ -76,7 +76,7 @@ void Layer::renderUi(Engine& engine)
   __D_IMPL(_d,Layer)
   if( !_d->tooltipText.empty() )
   {
-    engine.draw( *_d->tooltipPic, _d->lastCursorPos );
+    engine.draw( _d->tooltipPic, _d->lastCursorPos );
   }
 }
 
@@ -266,15 +266,15 @@ void Layer::_setTooltipText(const std::string& text)
     _d->tooltipText = text;
     Size size = font.getTextSize( text );
 
-    if( _d->tooltipPic.isNull() || (_d->tooltipPic->size() != size) )
+    if( _d->tooltipPic.isValid() || (_d->tooltipPic.size() != size) )
     {
-      _d->tooltipPic.reset( Picture::create( size, 0, true ) );
+      _d->tooltipPic = Picture( size, 0, true );
     }
 
-    _d->tooltipPic->fill( 0x00000000, Rect( Point( 0, 0 ), _d->tooltipPic->size() ) );
-    _d->tooltipPic->fill( 0xff000000, Rect( Point( 0, 0 ), size ) );
-    _d->tooltipPic->fill( 0xffffffff, Rect( Point( 1, 1 ), size - Size( 2, 2 ) ) );
-    font.draw( *_d->tooltipPic, text, Point(), false );
+    _d->tooltipPic.fill( 0x00000000, Rect( Point( 0, 0 ), _d->tooltipPic.size() ) );
+    _d->tooltipPic.fill( 0xff000000, Rect( Point( 0, 0 ), size ) );
+    _d->tooltipPic.fill( 0xffffffff, Rect( Point( 1, 1 ), size - Size( 2, 2 ) ) );
+    font.draw( _d->tooltipPic, text, Point(), false );
   }
 }
 
@@ -407,7 +407,7 @@ void Layer::drawArea(Engine& engine, const TilesArray& area, const Point &offset
     Tile* tile = *it;
     int tileBorders = ( tile->i() == leftBorderAtI ? 0 : OverlayPic::skipLeftBorder )
                       + ( tile->j() == rightBorderAtJ ? 0 : OverlayPic::skipRightBorder );
-    const Picture& pic = Picture::load(resourceGroup, tileBorders + tileId);
+    Picture pic(resourceGroup, tileBorders + tileId);
     engine.draw( pic, tile->mappos() + offset );
   }
 }
@@ -423,11 +423,12 @@ void Layer::drawLands( Engine& engine, Camera* camera )
   foreach( it, flatTiles )
   {
     Tile& tile = **it;
-    drawPass( engine, tile, camOffset, Renderer::ground );
-    drawPass( engine, tile, camOffset, Renderer::groundAnimation );
+    drawPass( engine, tile, camOffset, Renderer::ground );   
 
     if( tile.rov().isValid() )
       drawTile( engine, tile, camOffset );
+    else
+      drawPass( engine, tile, camOffset, Renderer::groundAnimation );
   }
 
   if( DrawOptions::instance().isFlag( DrawOptions::oldGraphics ) )
@@ -558,7 +559,7 @@ void Layer::afterRender( Engine& engine)
 
   if( opts.isFlag( DrawOptions::showRoads ) )
   {
-    const Picture& grnPicture = Picture::load( "oc3_land", 1);
+    Picture grnPicture( "oc3_land", 1);
 
     TilesArray tiles = _d->city->tilemap().allTiles();
     foreach( it, tiles )
@@ -570,7 +571,7 @@ void Layer::afterRender( Engine& engine)
 
   if( opts.isFlag( DrawOptions::showWalkableTiles ) )
   {
-    const Picture& grnPicture = Picture::load( "oc3_land", 1);
+    Picture grnPicture( "oc3_land", 1);
 
     TilesArray tiles = _d->city->tilemap().allTiles();
     foreach( it, tiles )
@@ -582,7 +583,7 @@ void Layer::afterRender( Engine& engine)
 
   if( opts.isFlag( DrawOptions::showFlatTiles ) )
   {
-    const Picture& grnPicture = Picture::load( "oc3_land", 1);
+    Picture grnPicture( "oc3_land", 1);
 
     TilesArray tiles = _d->city->tilemap().allTiles();
     foreach( it, tiles )
@@ -594,7 +595,7 @@ void Layer::afterRender( Engine& engine)
 
   if( opts.isFlag( DrawOptions::showLockedTiles ) )
   {
-    const Picture& grnPicture = Picture::load( "oc3_land", 2);
+    Picture grnPicture( "oc3_land", 2);
 
     TilesArray tiles = _d->city->tilemap().allTiles();
     foreach( it, tiles )
@@ -612,10 +613,10 @@ void Layer::afterRender( Engine& engine)
     int halfRWidth = rwidth / 2;
     Size size( math::clamp<int>( (tile->picture().width() + 2) / rwidth, 1, 10 ) );
 
-    if( _d->tilePosText->isValid() )
+    if( _d->tilePosText.isValid() )
     {
-      _d->tilePosText->fill( 0x0 );
-      _d->debugFont.draw( *_d->tilePosText, utils::format( 0xff, "%d,%d", tile->i(), tile->j() ), false, true );
+      _d->tilePosText.fill( 0x0 );
+      _d->debugFont.draw( _d->tilePosText, utils::format( 0xff, "%d,%d", tile->i(), tile->j() ), false, true );
     }
 
     OverlayPtr ov = tile->overlay();
@@ -623,8 +624,6 @@ void Layer::afterRender( Engine& engine)
     {
       size = ov->size();
       pos = ov->tile().mappos();
-
-
     }
     else if( tile->masterTile() != 0 )
     {
@@ -637,7 +636,7 @@ void Layer::afterRender( Engine& engine)
     engine.drawLine( DefaultColors::red, pos + Point( halfRWidth, halfRWidth/2 ) * size.width(), pos + Point( rwidth, 0) * size.height() );
     engine.drawLine( DefaultColors::red, pos + Point( rwidth, 0) * size.width(), pos + Point( halfRWidth, -halfRWidth/2 ) * size.height() );
     engine.drawLine( DefaultColors::red, pos + Point( halfRWidth, -halfRWidth/2 ) * size.width(), pos );
-    engine.draw( *_d->tilePosText, pos );
+    engine.draw( _d->tilePosText, pos );
   }
 }
 
@@ -652,7 +651,7 @@ Layer::Layer( Camera* camera, PlayerCityPtr city )
 
   _d->posMode = 0;
   _d->terraintPic = MetaDataHolder::randomPicture( object::terrain, 1 );
-  _d->tilePosText.init( Size( 240, 80 ) );
+  _d->tilePosText = Picture( Size( 240, 80 ), 0, true );
 }
 
 void Layer::_addWalkerType(walker::Type wtype)
@@ -660,16 +659,16 @@ void Layer::_addWalkerType(walker::Type wtype)
   _dfunc()->vwalkers.insert( wtype );
 }
 
-void Layer::_fillVisibleObjects(int ltype)
+void Layer::_initialize()
 {
-  const VariantMap& vm = citylayer::Helper::getConfig( (citylayer::Type)ltype );
-  VariantList vl = vm.get( "visibleObjects" ).toList();
+  const VariantMap& vm = citylayer::Helper::getConfig( (citylayer::Type)type() );
+  StringArray vl = vm.get( "visibleObjects" ).toStringArray();
   foreach( it, vl )
   {
-    object::Type ovType = object::toType( it->toString() );
+    object::Type ovType = object::toType( *it );
     if( ovType != object::unknown )
       _dfunc()->drObjects.insert( ovType );
-  }
+  }  
 }
 
 bool Layer::_moveCamera(NEvent &event)

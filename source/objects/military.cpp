@@ -42,7 +42,7 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(object::fort_legionaries, FortLegionary)
 FortLegionary::FortLegionary()
   : Fort( object::fort_legionaries, 16 )
 {
-  setPicture( ResourceGroup::security, 12 );
+  _picture().load( ResourceGroup::security, 12 );
   _setFlagIndex( 21 );
 
   _addFormation( frmNorthDblLine );
@@ -68,7 +68,7 @@ void FortLegionary::_readyNewSoldier()
 FortMounted::FortMounted()
   : Fort( object::fort_horse, 15 )
 {
-  setPicture( ResourceGroup::security, 12 );
+  _picture().load( ResourceGroup::security, 12 );
   _setFlagIndex( 39 );
 
   _addFormation( frmNorthLine );
@@ -100,7 +100,7 @@ void FortMounted::_readyNewSoldier()
 FortJaveline::FortJaveline()
   : Fort( object::fort_javelin, 14 )
 {
-  setPicture( ResourceGroup::security, 12 );
+  _picture().load( ResourceGroup::security, 12 );
   _setFlagIndex( 30 );
 
   _addFormation( frmNorthDblLine );

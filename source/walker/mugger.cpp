@@ -61,9 +61,9 @@ void Mugger::_reachedPathway()
   switch( _d->state )
   {
   case Impl::go2destination:
-    _animationRef().clear();
-    _animationRef().load( ResourceGroup::citizen2, 455, 8 );
-    _animationRef().load( ResourceGroup::citizen2, 462, 8, Animation::reverse );
+    _animation().clear();
+    _animation().load( ResourceGroup::citizen2, 455, 8 );
+    _animation().load( ResourceGroup::citizen2, 462, 8, Animation::reverse );
     _setAction( acWork );
     _d->state = Impl::robHouse;
   break;
@@ -105,7 +105,7 @@ void Mugger::timeStep(const unsigned long time)
 
       foreach( hIt, hlist )
       {
-        Pathway pathway = PathwayHelper::create( pos(), ptr_cast<Construction>( *hIt ), PathwayHelper::allTerrain );
+        Pathway pathway = PathwayHelper::create( pos(), *hIt, PathwayHelper::allTerrain );
 
         //find path to most expensive house, fire this!!!
         if( pathway.isValid() )
@@ -161,7 +161,7 @@ void Mugger::timeStep(const unsigned long time)
         }
       }
 
-      _animationRef().clear();
+      _animation().clear();
       _setAction( acMove );
       _d->state = Impl::searchHouse;
     }

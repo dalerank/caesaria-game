@@ -49,7 +49,7 @@ Merchant::Merchant( EmpirePtr empire )
   : Object( empire ), _d( new Impl )
 {
   //default picture
-  setPicture( gfx::Picture::load( ResourceGroup::empirebits, PicID::landTradeRoute ) );
+  _picture().load( ResourceGroup::empirebits, PicID::landTradeRoute );
 }
 
 MerchantPtr Merchant::create( EmpirePtr empire, TraderoutePtr route, const std::string& start,
@@ -82,8 +82,8 @@ MerchantPtr Merchant::create( EmpirePtr empire, TraderoutePtr route, const std::
     return MerchantPtr();
   }
 
-  ret->setPicture( gfx::Picture::load( ResourceGroup::empirebits,
-                                       route->isSeaRoute() ? PicID::seaTradeRoute : PicID::landTradeRoute ));
+  ret->setPicture( gfx::Picture( ResourceGroup::empirebits,
+                                 route->isSeaRoute() ? PicID::seaTradeRoute : PicID::landTradeRoute ));
   ret->setLocation( ret->_d->steps.front() );
   return ret;
 }
@@ -117,7 +117,7 @@ void Merchant::save(VariantMap& stream) const
   VARIANT_SAVE_STR_D( stream, _d, baseCity )
   VARIANT_SAVE_STR_D( stream, _d, destCity )
 
-  stream[ "steps" ] = _d->steps.toVList();
+  stream[ "steps" ] = _d->steps.save();
 }
 
 void Merchant::load(const VariantMap& stream)
@@ -129,7 +129,7 @@ void Merchant::load(const VariantMap& stream)
   VARIANT_LOAD_STR_D( _d, baseCity, stream )
   VARIANT_LOAD_STR_D( _d, destCity, stream )
 
-  _d->steps.fromVList( stream.get( "steps" ).toList() );
+  _d->steps.load( stream.get( "steps" ).toList() );
 }
 
 std::string Merchant::baseCity() const{  return _d->baseCity;}

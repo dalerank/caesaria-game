@@ -84,8 +84,7 @@ void Patrician::_findNewWay( const TilePos& start )
 
   for( size_t k=0; k < std::min<size_t>( 3, buildings.size() ); k++ )
   {
-    ConstructionPtr constr = buildings.random();
-    pathway = PathwayHelper::create( start, constr, PathwayHelper::roadOnly );
+    pathway = PathwayHelper::create( start, buildings.random(), PathwayHelper::roadOnly );
 
     if( pathway.isValid() )
     {
@@ -113,13 +112,13 @@ void Patrician::_findNewWay( const TilePos& start )
 
 void Patrician::_reachedPathway()
 {
-  if( _pathwayRef().isReverse() )
+  if( _pathway().isReverse() )
   {
     deleteLater();
   }
   else
   {
-    _pathwayRef().toggleDirection();
+    _pathway().toggleDirection();
     go();
   }
 }

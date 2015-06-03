@@ -21,6 +21,7 @@
 #include "gfx/tilemap.hpp"
 #include "events/build.hpp"
 #include "core/variant_map.hpp"
+#include "core/variant_list.hpp"
 #include "constants.hpp"
 #include "walker/walker.hpp"
 #include "events/clearland.hpp"
@@ -48,7 +49,7 @@ public:
     _pos = pos;
     _index = index;
 
-    Picture pic = Picture::load( ResourceGroup::transport, _index );
+    Picture pic( ResourceGroup::transport, _index );
     pic.addOffset( tile::tilepos2screen( _pos ) );
     setPicture( pic );
 
@@ -83,8 +84,8 @@ public:
     Construction::build( info );
 
     setPicture( Picture::getInvalid() );
-    _fgPicturesRef().clear();
-    Picture pic = Picture::load( ResourceGroup::transport, _index);
+    _fgPictures().clear();
+    Picture pic( ResourceGroup::transport, _index);
 
     const TilePos& pos = info.pos;
     if( _index == descentNorth )
@@ -94,36 +95,36 @@ public:
       info.city->tilemap().at( pos ).setMasterTile( &mt );
 
       pic.addOffset( -30, -15 );
-      _fgPicturesRef().push_back( pic );
+      _fgPictures().push_back( pic );
     }
     else if( _index == liftingNorth )
     {
       Tile& mt = info.city->tilemap().at( pos + TilePos( 0, 1 ) );
       Picture landPic = mt.picture();
       landPic.addOffset( tile::tilepos2screen( TilePos( 0, 1 ) ) );
-      _fgPicturesRef().push_back( landPic );
+      _fgPictures().push_back( landPic );
 
-      _fgPicturesRef().push_back( pic );
+      _fgPictures().push_back( pic );
     }
     else if( _index == descentWest )
     {
       Tile& mt = info.city->tilemap().at( pos + TilePos( 1, 0) );
       Picture landPic = mt.picture();
       landPic.addOffset( tile::tilepos2screen( TilePos( 1, 0 ) )  );
-      _fgPicturesRef().push_back( landPic );
+      _fgPictures().push_back( landPic );
 
      pic.addOffset( 8, -14 );
-      _fgPicturesRef().push_back( pic );
+      _fgPictures().push_back( pic );
     }
     else if(  _index == liftingWest )
     {
       Tile& mt = info.city->tilemap().at( info.pos + TilePos( 1, 0) );
       Picture landPic = mt.picture();
       landPic.addOffset( tile::tilepos2screen( TilePos( 1, 0 ) ) );
-      _fgPicturesRef().push_back( landPic );
+      _fgPictures().push_back( landPic );
 
       pic.addOffset( 0, -15 );
-      _fgPicturesRef().push_back( pic );
+      _fgPictures().push_back( pic );
     }
     else if( _index == footingWest || _index == spanWest )
     {
@@ -246,7 +247,7 @@ bool HighBridge::canBuild( const city::AreaInfo& areaInfo ) const
   {
     _d->subtiles.clear();
     HighBridge* thisp = const_cast< HighBridge* >( this );
-    thisp->_fgPicturesRef().clear();
+    thisp->_fgPictures().clear();
 
     _checkParams( areaInfo.city, _d->direction, startPos, endPos, areaInfo.pos );
 
@@ -368,7 +369,7 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
   break;
   }
 
-  foreach( tile, _d->subtiles ) { _fgPicturesRef().push_back( (*tile)->picture() ); }
+  foreach( tile, _d->subtiles ) { _fgPictures().push_back( (*tile)->picture() ); }
 }
 
 bool HighBridge::_checkOnlyWaterUnderBridge( PlayerCityPtr city, const TilePos& start, const TilePos& stop ) const
@@ -487,7 +488,7 @@ bool HighBridge::build( const city::AreaInfo& info  )
   Construction::build( info );
 
   _d->subtiles.clear();
-  _fgPicturesRef().clear();
+  _fgPictures().clear();
 
   Tilemap& tilemap = info.city->tilemap();
 

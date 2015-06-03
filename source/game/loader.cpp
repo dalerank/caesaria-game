@@ -60,7 +60,7 @@ public:
   void initLoaders();
   void initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city );
   void initTilesAnimation( Tilemap& tmap );
-  void finalize( Game& game );  
+  void finalize(Game& game , bool needInitEnterExit);
   bool maySetSign( const Tile& tile );
 
 public signals:
@@ -136,15 +136,18 @@ void Loader::Impl::initTilesAnimation( Tilemap& tmap )
   }
 }
 
-void Loader::Impl::finalize( Game& game )
+void Loader::Impl::finalize( Game& game, bool needInitEnterExit )
 {
   Tilemap& tileMap = game.city()->tilemap();
 
   // exit and entry can't point to one tile or .... can!
   const BorderInfo& border = game.city()->borderInfo();
 
-  initEntryExitTile( border.roadEntry, game.city() );
-  initEntryExitTile( border.roadExit,  game.city() );
+  if( needInitEnterExit )
+  {
+    initEntryExitTile( border.roadEntry, game.city() );
+    initEntryExitTile( border.roadExit,  game.city() );
+  }
 
   initTilesAnimation( tileMap );
 }
@@ -165,7 +168,7 @@ void Loader::Impl::initLoaders()
 
 Signal1<std::string>& Loader::onUpdate() { return _d->onUpdateSignal; }
 
-bool Loader::load( vfs::Path filename, Game& game )
+bool Loader::load(vfs::Path filename, Game& game)
 {
   // try to load file based on file extension
   foreach( it, _d->loaders )
@@ -180,10 +183,12 @@ bool Loader::load( vfs::Path filename, Game& game )
     }
 
     bool loadok = (*it)->load( filename.toString(), game );
+    bool needToFinalizeMap = (*it)->finalizeMap();
     if( loadok )
     {
       _d->restartFile = (*it)->restartFile();
-      _d->finalize( game );
+
+      _d->finalize( game, needToFinalizeMap );
     }
 
     return loadok;

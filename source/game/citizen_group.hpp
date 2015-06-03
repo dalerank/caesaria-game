@@ -23,14 +23,14 @@
 class CitizenGroup
 {
 public:
-  typedef enum { newborn=0, child, scholar, student, mature, aged, longliver=99 } Age;
-  typedef enum { childMin=2, matureMin=21 } AgeRange;
+  typedef enum { newborn=0, child, scholar, student, mature, aged, longliver=99, any=100 } Age;
+  enum { childMin=2, matureMin=21 };
 
   unsigned int count() const;
   unsigned int count( Age group ) const;
   unsigned int count( unsigned int beginAge, unsigned int endAge ) const;
 
-  CitizenGroup retrieve( unsigned int count );
+  CitizenGroup retrieve(unsigned int count );
   CitizenGroup retrieve( Age group, unsigned int count );
   CitizenGroup& include( CitizenGroup& b );
   void exclude( CitizenGroup& group );
@@ -56,6 +56,7 @@ public:
 
   CitizenGroup();
   CitizenGroup( Age age, int value );
+  static CitizenGroup random( int value );
 protected:
   typedef std::vector< unsigned int > Peoples;
   Peoples _peoples;

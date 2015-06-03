@@ -69,7 +69,7 @@ public:
   LayerPtr lastLayer;
   std::string resForbiden;
   Font textFont;
-  PictureRef textPic;
+  Picture textPic;
   TilesArray buildTiles;  // these tiles have draw over "normal" tilemap tiles!
 };
 
@@ -98,7 +98,7 @@ void Build::_checkPreviewBuild(TilePos pos)
     return;
 
   // TODO: do only when needed, when (i, j, _buildInstance) has changed
-  ConstructionPtr overlay = bldCommand->getContruction();
+  ConstructionPtr overlay = bldCommand->contruction();
 
   if( !overlay.isValid() )
   {
@@ -109,7 +109,7 @@ void Build::_checkPreviewBuild(TilePos pos)
   int cost = MetaDataHolder::getData( overlay->type() ).getOption( MetaDataOptions::cost );
 
   bool walkersOnTile = false;
-  if( bldCommand->isCheckWalkers() )
+  if( bldCommand->flag( LayerMode::checkWalkers ) )
   {
     TilesArray tiles = overlay->area();
     foreach( t, tiles )
@@ -154,8 +154,8 @@ void Build::_checkPreviewBuild(TilePos pos)
   else
   {
     //bldCommand->setCanBuild(false);
-    const Picture& grnPicture = Picture::load( d->resForbiden, 1);
-    const Picture& redPicture = Picture::load( d->resForbiden, 2);
+    Picture grnPicture( d->resForbiden, 1);
+    Picture redPicture( d->resForbiden, 2);
 
     //TilemapArea area = til
     Tilemap& tmap = _city()->tilemap();
@@ -173,7 +173,7 @@ void Build::_checkPreviewBuild(TilePos pos)
         tile->setEPos( basicTile.epos() );
 
         walkersOnTile = false;
-        if( bldCommand->isCheckWalkers() )
+        if( bldCommand->flag( LayerMode::checkWalkers ) )
         {
           walkersOnTile = !_city()->walkers( rPos ).empty();
         }
@@ -278,9 +278,9 @@ void Build::_updatePreviewTiles( bool force )
 
   std::sort( d->buildTiles.begin(), d->buildTiles.end(), compare_tile );
 
-  d->textPic->fill( 0x0, Rect() );
+  d->textPic.fill( 0x0, Rect() );
   d->textFont.setColor( 0xffff0000 );
-  d->textFont.draw( *d->textPic, utils::i2str( d->money4Construction ) + " Dn", Point() );
+  d->textFont.draw( d->textPic, utils::i2str( d->money4Construction ) + " Dn", Point() );
 }
 
 void Build::_buildAll()
@@ -290,7 +290,7 @@ void Build::_buildAll()
   if( bldCommand.isNull() )
     return;
 
-  ConstructionPtr cnstr = bldCommand->getContruction();
+  ConstructionPtr cnstr = bldCommand->contruction();
 
   if( !cnstr.isValid() )
   {
@@ -527,9 +527,9 @@ void Build::_initBuildMode()
   BuildModePtr command = ptr_cast<BuildMode>( _d->renderer->mode() );
   Logger::warningIf( !command.isValid(), "LayerBuild: init unknown command" );
 
-  _d->multiBuilding = command.isValid() ? command->isMultiBuilding() : false;
-  _d->roadAssignment = command.isValid() ? command->isRoadAssignment() : false;
-  _d->borderBuilding = command.isValid() ? command->isBorderBuilding() : false;
+  _d->multiBuilding = command.isValid() ? command->flag( LayerMode::multibuild ) : false;
+  _d->roadAssignment = command.isValid() ? command->flag( LayerMode::assign2road ) : false;
+  _d->borderBuilding = command.isValid() ? command->flag( LayerMode::border ) : false;
 }
 
 void Build::init(Point cursor)
@@ -584,7 +584,7 @@ const Layer::WalkerTypes& Build::visibleTypes() const
 void Build::renderUi(Engine &engine)
 {
   Layer::renderUi( engine );
-  engine.draw( *_dfunc()->textPic, engine.cursorPos() + Point( 10, 10 ));
+  engine.draw( _dfunc()->textPic, engine.cursorPos() + Point( 10, 10 ));
 }
 
 void Build::changeLayer(int layer)
@@ -630,7 +630,7 @@ Build::Build( Renderer& renderer, PlayerCityPtr city)
   d->resForbiden = SETTINGS_VALUE( forbidenTile ).toString();
   d->startTilePos = gfx::tilemap::invalidLocation();
   d->textFont = Font::create( FONT_5 );
-  d->textPic.init( Size( 100, 30 ) );
+  d->textPic = Picture( Size( 100, 30 ), 0, true );
   _addWalkerType( walker::all );
 }
 

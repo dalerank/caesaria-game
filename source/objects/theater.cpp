@@ -29,7 +29,7 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(object::theater, Theater)
 
 Theater::Theater() : EntertainmentBuilding(Service::theater, object::theater, Size(2))
 {
-  _fgPicturesRef().resize(2);
+  _fgPictures().resize(2);
 
   _addNecessaryWalker( walker::actor );
 }
@@ -57,12 +57,12 @@ void Theater::deliverService()
 
   if( _animationRef().isRunning() )
   {
-    _fgPicturesRef().front() = Picture::load( ResourceGroup::entertainment, 35 );
+    _fgPictures().front().load( ResourceGroup::entertainment, 35 );
   }
   else
   {
-    _fgPicturesRef().front() = Picture::getInvalid();
-    _fgPicturesRef().back() = Picture::getInvalid();
+    _fgPictures().front() = Picture::getInvalid();
+    _fgPictures().back() = Picture::getInvalid();
   }
 }
 

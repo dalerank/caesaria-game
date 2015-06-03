@@ -77,7 +77,7 @@ void CartSupplier::_reachedPathway()
   Walker::_reachedPathway();
   city::Helper helper( _city() );
 
-  if( _pathwayRef().isReverse() )
+  if( _pathway().isReverse() )
   {
     // walker is back in the market
     deleteLater();
@@ -130,7 +130,7 @@ void CartSupplier::_reachedPathway()
     wait( _d->stock.qty() );
 
     // walker is near the granary/warehouse
-    _pathwayRef().move( Pathway::reverse );
+    _pathway().move( Pathway::reverse );
     _centerTile();
     go();
   }
@@ -311,24 +311,24 @@ void CartSupplier::save( VariantMap& stream ) const
 {
   Walker::save( stream );
 
-  stream[ "stock" ] = _d->stock.save();
-  VARIANT_SAVE_ANY_D( stream, _d, storageBuildingPos )
-  VARIANT_SAVE_ANY_D( stream, _d, baseBuildingPos )
-  VARIANT_SAVE_ANY_D( stream, _d, maxDistance )
-  VARIANT_SAVE_ENUM_D( stream, _d, rcvReservationID )
-  VARIANT_SAVE_ENUM_D( stream, _d, reservationID )
+  VARIANT_SAVE_CLASS_D( stream, _d, stock )
+  VARIANT_SAVE_ANY_D( stream,   _d, storageBuildingPos )
+  VARIANT_SAVE_ANY_D( stream,   _d, baseBuildingPos )
+  VARIANT_SAVE_ANY_D( stream,   _d, maxDistance )
+  VARIANT_SAVE_ENUM_D( stream,  _d, rcvReservationID )
+  VARIANT_SAVE_ENUM_D( stream,  _d, reservationID )
 }
 
 void CartSupplier::load( const VariantMap& stream )
 {
   Walker::load( stream );
 
-  _d->stock.load( stream.get( "stock" ).toList() );
-  VARIANT_LOAD_ANY_D( _d, storageBuildingPos, stream )
-  VARIANT_LOAD_ANY_D( _d, baseBuildingPos, stream )
-  VARIANT_LOAD_ANY_D( _d, maxDistance, stream )
-  VARIANT_LOAD_ENUM_D( _d, rcvReservationID, stream )
-  VARIANT_LOAD_ENUM_D( _d, reservationID, stream )
+  VARIANT_LOAD_CLASS_D_LIST( _d, stock,             stream );
+  VARIANT_LOAD_ANY_D(        _d, storageBuildingPos,stream )
+  VARIANT_LOAD_ANY_D(        _d, baseBuildingPos,   stream )
+  VARIANT_LOAD_ANY_D(        _d, maxDistance,       stream )
+  VARIANT_LOAD_ENUM_D(       _d, rcvReservationID,  stream )
+  VARIANT_LOAD_ENUM_D(       _d, reservationID,     stream )
 }
 
 bool CartSupplier::die()

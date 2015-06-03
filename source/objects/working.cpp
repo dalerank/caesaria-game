@@ -40,6 +40,9 @@ public:
   std::string errorStr;
   bool clearAnimationOnStop;
   float laborAccessKoeff;
+
+public signals:
+  Signal1<bool> onActiveChangeSignal;
 };
 
 WorkingBuilding::WorkingBuilding(const object::Type type, const Size& size)
@@ -135,6 +138,7 @@ const WalkerList& WorkingBuilding::walkers() const {  return _d->walkerList; }
 bool WorkingBuilding::haveWalkers() const { return !_d->walkerList.empty(); }
 std::string WorkingBuilding::errorDesc() const { return _d->errorStr;}
 void WorkingBuilding::_setError(const std::string& err) { _d->errorStr = err;}
+Signal1<bool>& WorkingBuilding::onActiveChange() { return _d->onActiveChangeSignal; }
 
 unsigned int WorkingBuilding::addWorkers(const unsigned int workers )
 {
@@ -184,9 +188,9 @@ void WorkingBuilding::_updateAnimation(const unsigned long time )
     {
       if( _animationRef().isRunning() )
       {
-        if( _d->clearAnimationOnStop && !_fgPicturesRef().empty() )
+        if( _d->clearAnimationOnStop && !_fgPictures().empty() )
         {
-          _fgPicturesRef().back() = Picture::getInvalid();
+          _fgPictures().back() = Picture::getInvalid();
         }
 
         _animationRef().stop();
@@ -196,9 +200,9 @@ void WorkingBuilding::_updateAnimation(const unsigned long time )
 
   _animationRef().update( time );
   const Picture& pic = _animationRef().currentFrame();
-  if( pic.isValid() && !_fgPicturesRef().empty() )
+  if( pic.isValid() && !_fgPictures().empty() )
   {
-    _fgPicturesRef().back() = _animationRef().currentFrame();
+    _fgPictures().back() = _animationRef().currentFrame();
   }
 }
 

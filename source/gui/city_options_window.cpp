@@ -18,6 +18,7 @@
 #include "city_options_window.hpp"
 #include "pushbutton.hpp"
 #include "core/event.hpp"
+#include "world/empire.hpp"
 #include "listbox.hpp"
 #include "core/utils.hpp"
 #include "dialogbox.hpp"
@@ -35,6 +36,7 @@
 #include "texturedbutton.hpp"
 #include "topmenu.hpp"
 #include "game/difficulty.hpp"
+#include "core/metric.hpp"
 
 using namespace citylayer;
 
@@ -61,6 +63,7 @@ public:
   Label* lbFireRisk;
   TexturedButton* btnIncreaseFireRisk;
   TexturedButton* btnDecreaseFireRisk;
+  PushButton* btnToggleCcUseAI;
 
   Label* lbCollapseRisk;
   TexturedButton* btnIncreaseCollapseRisk;
@@ -70,6 +73,7 @@ public:
   PushButton* btnC3Gameplay;
   PushButton* btnShowTooltips;
   PushButton* btnDifficulty;
+  PushButton* btnMetrics;
   PlayerCityPtr city;
 
   void update();
@@ -92,11 +96,13 @@ public:
   void toggleLegionAttack();
   void toggleAndroidBarEnabled();
   void toggleUseBatching();
+  void toggleCcUseAI();
+  void toggleMetrics();
   void toggleCityOption( PlayerCity::OptionType option );
-  void changeCityOption(PlayerCity::OptionType option, int delta);
+  void changeCityOption( PlayerCity::OptionType option, int delta);
 };
 
-CityOptions::CityOptions(Widget* parent, PlayerCityPtr city )
+CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
   _d->city = city;
@@ -127,6 +133,8 @@ CityOptions::CityOptions(Widget* parent, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, btnDifficulty )
   GET_DWIDGET_FROM_UI( _d, btnAnroidBarEnabled )
   GET_DWIDGET_FROM_UI( _d, btnToggleBatching )
+  GET_DWIDGET_FROM_UI( _d, btnToggleCcUseAI )
+  GET_DWIDGET_FROM_UI( _d, btnMetrics )
 
   CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods )
   CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings )
@@ -146,12 +154,15 @@ CityOptions::CityOptions(Widget* parent, PlayerCityPtr city )
   CONNECT( _d->btnIncreaseCollapseRisk, onClicked(), _d.data(), Impl::increaseCollapseRisk )
   CONNECT( _d->btnDecreaseCollapseRisk, onClicked(), _d.data(), Impl::decreaseCollapseRisk )
   CONNECT( _d->btnToggleBatching, onClicked(), _d.data(), Impl::toggleUseBatching )
+  CONNECT( _d->btnToggleCcUseAI, onClicked(), _d.data(), Impl::toggleCcUseAI )
+  CONNECT( _d->btnMetrics, onClicked(), _d.data(), Impl::toggleMetrics )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptions::deleteLater );
   if( btnClose ) btnClose->setFocus();
 
   _d->update();
+  setModal();
 }
 
 CityOptions::~CityOptions() {}
@@ -202,6 +213,15 @@ void CityOptions::Impl::toggleDifficulty()
   update();
 }
 
+void CityOptions::Impl::toggleMetrics()
+{
+  int value = SETTINGS_VALUE( metricSystem );
+  value = (value+1)%metric::Measure::count;
+  metric::Measure::setMode( (metric::Measure::Mode)value );
+  SETTINGS_SET_VALUE( metricSystem, value );
+  update();
+}
+
 void CityOptions::Impl::toggleAndroidBarEnabled()
 {
   bool value = SETTINGS_VALUE( showTabletMenu );
@@ -244,6 +264,22 @@ void CityOptions::Impl::toggleUseBatching()
 {
   bool value = gfx::Engine::instance().getFlag( gfx::Engine::batching ) > 0;
   gfx::Engine::instance().setFlag( gfx::Engine::batching, !value );
+  update();
+}
+
+void CityOptions::Impl::toggleCcUseAI()
+{
+  bool value = SETTINGS_VALUE( ccUseAI );
+  SETTINGS_SET_VALUE( ccUseAI, !value );
+
+  world::EmpirePtr empire = city->empire();
+  world::CityList cities = empire->cities();
+
+  foreach( it, cities )
+  {
+    (*it)->setAiMode( !value ? world::City::indifferent : world::City::inactive );
+  }
+
   update();
 }
 
@@ -339,7 +375,7 @@ void CityOptions::Impl::update()
   if( btnC3Gameplay )
   {
     bool value = city->getOption( PlayerCity::c3gameplay ) > 0;
-    btnBarbarianMayAttack->setText( value
+    btnC3Gameplay->setText( value
                                     ? _("##city_c3rules_on##")
                                     : _("##city_c3rules_off##")  );
   }
@@ -357,6 +393,12 @@ void CityOptions::Impl::update()
     int value = city->getOption( PlayerCity::difficulty );
     std::string text = utils::format( 0xff, "##city_df_%s##", game::difficulty::name[ value ] );
     btnDifficulty->setText( _(text) );
+  }
+
+  if( btnMetrics )
+  {
+    std::string text = utils::format( 0xff, "%s: %s" , _("##city_metric##"), _(metric::Measure::measureType()) );
+    btnMetrics->setText( text );
   }
 
   if( btnLegionMayAttack )
@@ -381,6 +423,14 @@ void CityOptions::Impl::update()
     btnToggleBatching->setText( value
                                     ? _("##city_batching_on##")
                                     : _("##city_batching_off##")  );
+  }
+
+  if( btnToggleCcUseAI )
+  {
+    bool value = SETTINGS_VALUE( ccUseAI );
+    btnToggleCcUseAI->setText( value
+                                    ? _("##city_ccuseai_on##")
+                                    : _("##city_ccuseai_off##")  );
   }
 }
 

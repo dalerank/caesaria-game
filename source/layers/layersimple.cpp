@@ -20,6 +20,7 @@
 #include "walker/constants.hpp"
 #include "gfx/city_renderer.hpp"
 #include "city/city.hpp"
+#include "core/priorities.hpp"
 #include "gfx/camera.hpp"
 #include "gui/senate_popup_info.hpp"
 #include "objects/senate.hpp"
@@ -33,8 +34,10 @@ class Simple::Impl
 {
 public:
   SenatePopupInfo senateInfo;
-  PictureRef selectedBuildingPic;
+  Picture selectedBuildingPic;
   OverlayPtr lastOverlay;
+  object::TypeSet inacceptable;
+  bool mayAcceptTile;
 };
 
 int Simple::type() const { return citylayer::simple; }
@@ -51,7 +54,7 @@ void Simple::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   OverlayPtr curOverlay = tile.overlay();
 
-  bool blowTile = (curOverlay.isValid() && curOverlay == _d->lastOverlay);
+  bool blowTile = (curOverlay.isValid() && curOverlay == _d->lastOverlay) && _d->mayAcceptTile;
   if( blowTile )
     engine.setColorMask( 0x007f0000, 0x00007f00, 0x0000007f, 0xff000000 );
 
@@ -67,9 +70,14 @@ void Simple::afterRender(Engine& engine)
 
   _d->lastOverlay = 0;
   Tile* tile = _currentTile();
-  if( tile && is_kind_of<Building>( tile->overlay() ) )
+  if( tile )
   {
     _d->lastOverlay = tile->overlay();
+    _d->mayAcceptTile = false;
+
+    if( is_kind_of<Building>( tile->overlay() )
+        && !_d->inacceptable.count( tile->overlay()->type() ) )
+      _d->mayAcceptTile = true;
   }
 }
 
@@ -93,6 +101,8 @@ Simple::Simple( Camera& camera, PlayerCityPtr city)
   : Layer( &camera, city ), _d( new Impl )
 {
   _addWalkerType( walker::all );
+
+  _d->inacceptable << object::fortification << object::wall;
 }
 
 }//end namespace citylayer

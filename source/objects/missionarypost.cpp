@@ -28,7 +28,7 @@ MissionaryPost::MissionaryPost()
 {
   setMaximumWorkers(20);
   setWorkers( 0 );
-  setPicture( ResourceGroup::transport, 93 );
+  _picture().load( ResourceGroup::transport, 93 );
 
   setState( pr::inflammability, 0 );
   setState( pr::collapsibility, 0 );

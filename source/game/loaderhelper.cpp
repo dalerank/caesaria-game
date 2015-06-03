@@ -77,28 +77,41 @@ object::Type LoaderHelper::convImgId2ovrType( unsigned int imgId )
   object::Type ovType = object::unknown;
   switch ( imgId )
   {
-    case 0xb0e:                                 ovType = object::well;    break;
+    case 0xc88:                                 ovType = object::hospital; break;
+    case 0xc11:                                 ovType = object::gladiatorSchool; break;
+    case 0xc39:                                 ovType = object::chariotSchool; break;
+    case 0xc54:                                 ovType = object::statue_middle; break;
+    case 0xc56:                                 ovType = object::senate; break;
     case 0xc89:                                 ovType = object::small_ceres_temple;    break;
+    case 0xb8b:                                 ovType = object::library; break;
+    case 0x2b8:                                 ovType = object::tower; break;
+    case 0xb10:  case 0xb0d:                    ovType = object::native_center;    break;
+    case 0xb0e:                                 ovType = object::well;    break;
+    case 0xb0f:  case 0xb0b:  case 0xb0c:       ovType = object::native_hut;    break;
+    case 0xbdf:                                 ovType = object::amphitheater; break;
+    case 0xb8c:                                 ovType = object::academy;  break;
     case 0xb17:  case 0xb56:                    ovType = object::fountain;    break;
     case 0xbeb:                                 ovType = object::theater ;    break;
-    case 0xb0f:  case 0xb0b:  case 0xb0c:       ovType = object::native_hut;    break;
-    case 0xb10:  case 0xb0d:                    ovType = object::native_center;    break;
-    case 0xb11:  case 0xb44:  case 0xb45:  case 0xb46:
-                                                ovType = object::native_field;    break;
+    case 0xb11: case 0xb44: case 0xb45: case 0xb46: ovType = object::native_field;    break;
     case 0xb43: case 0xb53: case 0xb57:         ovType = object::olive_farm;    break;
-    case 0xb4e: case 0xb52:                      ovType = object::fig_farm;    break;
+    case 0xb4e: case 0xb52:                     ovType = object::fig_farm;    break;
     case 0xb38:                                 ovType = object::market;    break;
     case 0xb7c + 71:                            ovType = object::granery;    break;  //0xbc3 - (71 is id granary in original game)
     case 0xb2f:                                 ovType = object::reservoir;    break;
     case 0xb9a:                                 ovType = object::oil_workshop;    break;
-    case 0x34d:  case 0x34e:  case 0x34f:  case 0x350:
-                                                ovType = object::elevation;    break;
+    case 0x34d: case 0x34e: case 0x34f: case 0x350: ovType = object::elevation;    break;
     case 0xc50 + 74:                            ovType = object::shipyard;    break;
+    case 0xc5c:                                 ovType = object::forum; break;
     case 0xc6d:                                 ovType = object::barracks;    break;
+    case 0xc6f:                                 ovType = object::barber;     break;
+    case 0xc68:                                 ovType = object::fort_horse; break;
+    case 0xc69:                                 ovType = object::fort_legionaries; break;
     case 0xae0 + 0:  case 0xae1: case 0xae2: case 0xae4: case 0xae5:
     case 0xaeb: case 0xae6:
                                                 ovType = object::house;      break;
-    case 0xc70:                                 ovType = object::house;      break;
+    case 0xc70:                                 ovType = object::clinic;      break;
+    case 0xc53:                                 ovType = object::statue_small; break;
+    case 0xc7c:                                 ovType = object::baths;      break;
     case 0xadd: case 0xadb: case 0xade: case 0xadf:
     case 0xb07: case 0xadc:
                                                 ovType = object::house;    break;
@@ -112,8 +125,22 @@ object::Type LoaderHelper::convImgId2ovrType( unsigned int imgId )
     case 0xb8a:                                 ovType = object::school;    break;
     case 0xc2f:                                 ovType = object::actorColony;    break;
     case 0xc91:                                 ovType = object::small_venus_temple;    break;
+    case 0xc8b:                                 ovType = object::small_neptune_temple; break;
     case 0xc8d:                                 ovType = object::small_mercury_temple;    break;
+    case 0xc8f:                                 ovType = object::small_mars_temple; break;
+    case 0xcf6:                                 ovType = object::missionaryPost; break;
     case 0xcf7: case 0xd17: case 0xd09:         ovType = object::warehouse;    break;
+    case 0xc55: ovType = object::statue_big; break;
+    case 0xb08: ovType = object::governorHouse; break;
+    case 0xb09: ovType = object::governorVilla; break;
+    case 0xb0a: ovType = object::governorPalace; break;
+    case 0xb8d: ovType = object::wine_workshop; break;
+    case 0xc6e: ovType = object::military_academy; break;
+    case 0x2b9: ovType = object::gatehouse; break;
+    case 0xc1c: ovType = object::lionsNursery; break;
+    case 0xbac: ovType = object::furniture_workshop; break;
+    case 0xba3: ovType = object::weapons_workshop; break;
+    case 0xbbb: ovType = object::pottery_workshop; break;
   }
 
   return ovType;
@@ -167,8 +194,9 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   {
     Picture pic = MetaDataHolder::randomPicture( object::terrain, Size(1) );
     oTile.setPicture( pic );
-    oTile.setFlag( Tile::clearAll, true );
+    oTile.setFlag( Tile::clearAll, true );    
     changeId = imgid::fromResource( pic.name() );
+    oTile.setOriginalImgId( changeId );
   }
   else
   {
@@ -184,7 +212,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   if( ovType == object::elevation )
   {
     std::string elevationPicName = imgid::toResource( oTile.originalImgId() );
-    overlay->setPicture( Picture::load( elevationPicName ) );
+    overlay->setPicture( Picture( elevationPicName ) );
   }
 
   if( overlay != NULL )
@@ -196,7 +224,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
     city::AreaInfo info = { city, oTile.pos(), TilesArray() };
     overlay->build( info );
     city->addOverlay( overlay );
-  }
+  }  
 
   if( changeId > 0 )
   {

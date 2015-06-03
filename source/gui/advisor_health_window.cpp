@@ -96,15 +96,15 @@ public:
 
     HealthInfo info = findInfo( _service );
 
-    PictureRef& texture = _textPictureRef();
+    Picture& texture = _textPicture();
     Font rfont = font();
     std::string buildingStrT = utils::i2str( _numberBuilding ) + _(info.building);
-    rfont.draw( *texture, buildingStrT, 0, 0 );
+    rfont.draw( texture, buildingStrT, 0, 0 );
 
-    rfont.draw( *texture, utils::i2str(_workingBuilding), 165, 0 );
+    rfont.draw( texture, utils::i2str(_workingBuilding), 165, 0 );
 
     std::string peoplesStrT = utils::i2str( _peoplesCount ) + _(info.people);
-    rfont.draw( *texture, peoplesStrT, 255, 0 );
+    rfont.draw( texture, peoplesStrT, 255, 0 );
   }
 
 private:

@@ -443,7 +443,7 @@ void Migration::Impl::createMigrationFromCity( PlayerCityPtr city )
 
       if( emigrant.isValid() )
       {
-        (*house)->remHabitants( minWorkersNumber );
+        (*house)->removeHabitants( minWorkersNumber );
         emigrant->leaveCity( *(*house)->enterArea().front() );
         emigrant->setThinks( "##immigrant_no_work_for_me##" );
       }

@@ -35,10 +35,49 @@ using namespace city;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::senate, Senate)
 
-struct StatusConfig
+class StateFlags
 {
-  Point offset;
-  Picture flag;
+public:
+  Pictures pics;
+  PointsArray offsets;
+
+  const Picture& getPicture( Senate::Status st ) const { return pics.valueOrEmpty( st );  }
+  Point getOffset( Senate::Status st ) const { return offsets.valueOrEmpty( st ); }
+
+  void set( Senate::Status status, Picture pic, const Point& offset )
+  {
+    if( status >= pics.size() )
+    {
+      pics.resize( status+1 );
+      offsets.resize( status+1 );
+    }
+
+    offsets[ status ] = offset;
+    pics[ status ] = pic;
+  }
+
+  void load( const VariantMap& stream )
+  {
+    VARIANT_LOAD_CLASS_LIST( offsets, stream )
+  }
+
+  VariantMap save() const
+  {
+    VariantMap ret;
+    VARIANT_SAVE_CLASS( ret, offsets )
+
+    return ret;
+  }
+
+  void set( Senate::Status status, const VariantMap& stream )
+  {
+    if( stream.empty() )
+      return;
+
+    Picture pic( stream.get( "rc"), stream.get( "index") );
+    Point offset = stream.get( "offset" );
+    set( status, pic, offset );
+  }
 };
 
 class Senate::Impl
@@ -46,34 +85,19 @@ class Senate::Impl
 public:
   float taxValue;
   std::string errorStr;
-
-  std::map< int, StatusConfig > statusConfigs;
-  void setStatusConfig( Senate::Status status, Picture pic, Point offset )
-  {
-    statusConfigs[ status ].offset = offset;
-    statusConfigs[ status ].flag = pic;
-  }
-
-  void setStatusConfig( Senate::Status status, const VariantMap& stream )
-  {
-    if( stream.empty() )
-      return;
-
-    statusConfigs[ status ].offset = stream.get( "offset" );
-    statusConfigs[ status ].flag = Picture::load( stream.get( "rc"), stream.get( "index") );
-  }
+  StateFlags flags;
 };
 
 Senate::Senate() : ServiceBuilding( Service::senate, object::senate, Size(5) ), _d( new Impl )
 {
-  setPicture( ResourceGroup::govt, 4 );
+  _picture().load( ResourceGroup::govt, 4 );
   _d->taxValue = 0;
 
-  _fgPicturesRef().resize( 8 );
-  _d->setStatusConfig( culture,    Picture::load( ResourceGroup::govt, 5 ), Point( 140, -30 ) );
-  _d->setStatusConfig( prosperity, Picture::load( ResourceGroup::govt, 6 ), Point( 170, -25 ) );
-  _d->setStatusConfig( peace,      Picture::load( ResourceGroup::govt, 7 ), Point( 200, -15 ) );
-  _d->setStatusConfig( favour,     Picture::load( ResourceGroup::govt, 8 ), Point( 230, -10 ) );
+  _fgPictures().resize( 8 );
+  _d->flags.set( culture,    Picture( ResourceGroup::govt, 5 ), Point( 140, -30 ) );
+  _d->flags.set( prosperity, Picture( ResourceGroup::govt, 6 ), Point( 170, -25 ) );
+  _d->flags.set( peace,      Picture( ResourceGroup::govt, 7 ), Point( 200, -15 ) );
+  _d->flags.set( favour,     Picture( ResourceGroup::govt, 8 ), Point( 230, -10 ) );
 }
 
 bool Senate::canBuild( const city::AreaInfo& areaInfo ) const
@@ -136,9 +160,9 @@ void Senate::_updateRatings()
 void Senate::_updateRating(Senate::Status st)
 {
   if( !_fgPicture( st ).isValid() )
-    _fgPicture( st ) = _d->statusConfigs[ st ].flag;
+    _fgPicture( st ) = _d->flags.getPicture( st );
 
-  _fgPicture( st ).setOffset( _d->statusConfigs[ st ].offset + Point( 0, status( st ) / 2 ) );
+  _fgPicture( st ).setOffset( _d->flags.getOffset( st ) + Point( 0, status( st ) / 2 ) );
 }
 
 void Senate::timeStep(const unsigned long time)
@@ -157,10 +181,10 @@ void Senate::initialize(const MetaData& mdata)
   ServiceBuilding::initialize( mdata );
 
   VariantMap ratings = mdata.getOption( "ratings" ).toMap();
-  _d->setStatusConfig( culture,    ratings.get( CAESARIA_STR_A(culture   ) ).toMap() );
-  _d->setStatusConfig( prosperity, ratings.get( CAESARIA_STR_A(prosperity) ).toMap() );
-  _d->setStatusConfig( peace,      ratings.get( CAESARIA_STR_A(peace     ) ).toMap() );
-  _d->setStatusConfig( favour,     ratings.get( CAESARIA_STR_A(favour    ) ).toMap() );
+  _d->flags.set( culture,    ratings.get( CAESARIA_STR_A(culture   ) ).toMap() );
+  _d->flags.set( prosperity, ratings.get( CAESARIA_STR_A(prosperity) ).toMap() );
+  _d->flags.set( peace,      ratings.get( CAESARIA_STR_A(peace     ) ).toMap() );
+  _d->flags.set( favour,     ratings.get( CAESARIA_STR_A(favour    ) ).toMap() );
 }
 
 void Senate::save(VariantMap& stream) const
@@ -169,12 +193,7 @@ void Senate::save(VariantMap& stream) const
 
   VARIANT_SAVE_ANY_D( stream, _d, taxValue )
   VARIANT_SAVE_ANY_D( stream, _d, errorStr )
-
-  PointsArray lastPos;
-  for( int i=culture; i <= favour; i++ )
-    lastPos.push_back( _fgPicture( i ).offset() );
-
-  stream[ "lastPos" ] = lastPos.toVList();
+  VARIANT_SAVE_CLASS_D( stream, _d, flags )
 }
 
 void Senate::load(const VariantMap& stream)
@@ -182,11 +201,9 @@ void Senate::load(const VariantMap& stream)
   ServiceBuilding::load( stream );
   VARIANT_LOAD_ANY_D( _d, taxValue, stream )
   VARIANT_LOAD_STR_D( _d, errorStr, stream )
+  VARIANT_LOAD_CLASS_D( _d, flags, stream )
 
-  PointsArray lastPos;
-  lastPos.fromVList( stream.get( "lastPos" ).toList() );
-  for( int i=culture; i <= favour; i++ )
-    _fgPicture( i ).setOffset( lastPos.atSafe( i ) );
+  _updateRatings();
 }
 
 void Senate::_updateUnemployers()
@@ -198,10 +215,10 @@ void Senate::_updateUnemployers()
     Picture pic;
     if( k * 5 < workless )
     {
-      pic = Picture::load( ResourceGroup::transport, 87 );
+      pic.load( ResourceGroup::transport, 87 );
       pic.setOffset( offsets[ k ] );
     }
-    _fgPicturesRef()[ 4 + k ] = pic;
+    _fgPicture(4 + k) = pic;
   }
 }
 
@@ -242,7 +259,7 @@ void Senate::deliverService()
   if( numberWorkers() > 0 && walkers().size() == 0 )
   {
     TaxCollectorPtr walker = TaxCollector::create( _city() );
-    walker->send2City( this, TaxCollector::goLowerService|TaxCollector::anywayWhenFailed );
+    walker->send2City( this, TaxCollector::goServiceMaximum|TaxCollector::anywayWhenFailed );
 
     addWalker( walker.object() );
   }

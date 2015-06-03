@@ -29,7 +29,6 @@ namespace econ
 {
 
 namespace {
-CAESARIA_LITERALCONST(history)
 enum { defaultSalary=30 };
 }
 
@@ -42,7 +41,7 @@ public:
   int lastYearUpdate;
   int maxDebt;
 
-  Treasury::IssuesHistory history;
+  IssuesHistory history;
 
 signals public:
   Signal1<int> onChangeSignal;
@@ -102,12 +101,16 @@ void Treasury::resolveIssue( econ::Issue issue )
   }
 }
 
-void Treasury::_updateCreditDebt(IssuesValue& step, econ::Issue issue){
-    if(issue.type == econ::Issue::taxIncome || issue.type == econ::Issue::exportGoods || issue.type == econ::Issue::donation){
+void Treasury::_updateCreditDebt(IssuesValue& step, econ::Issue issue)
+{
+    if(issue.type == econ::Issue::taxIncome || issue.type == econ::Issue::exportGoods || issue.type == econ::Issue::donation)
+    {
          step[ econ::Issue::debet ] += issue.money;
-    } else if (issue.type == econ::Issue::importGoods || issue.type == econ::Issue::workersWages || issue.type == econ::Issue::buildConstruction
-                || issue.type == econ::Issue::creditPercents || issue.type == econ::Issue::playerSalary || issue.type == econ::Issue::sundries
-                        || issue.type == econ::Issue::empireTax) {
+    }
+    else if ( issue.type == econ::Issue::importGoods || issue.type == econ::Issue::workersWages || issue.type == econ::Issue::buildConstruction
+              || issue.type == econ::Issue::creditPercents || issue.type == econ::Issue::playerSalary || issue.type == econ::Issue::sundries
+              || issue.type == econ::Issue::empireTax)
+    {
          step[ econ::Issue::credit ] += issue.money;
     }
 
@@ -174,20 +177,7 @@ VariantMap Treasury::save() const
   VARIANT_SAVE_ANY_D( ret, _d, taxRate )
   VARIANT_SAVE_ANY_D( ret, _d, workerSalary )
   VARIANT_SAVE_ANY_D( ret, _d, lastYearUpdate )
-  
-  VariantList history;
-  foreach(  stepIt, _d->history )
-  {
-    VariantList stepHistory;
-    foreach( it, *stepIt )
-    {
-      stepHistory << it->first << it->second;
-    }
-
-    history.push_back( stepHistory );
-  }
-
-  ret[ literals::history ] = history;
+  VARIANT_SAVE_CLASS_D( ret, _d, history )
 
   return ret;
 }
@@ -198,27 +188,47 @@ void Treasury::load( const VariantMap& stream )
   VARIANT_LOAD_ANYDEF_D( _d, taxRate, 7, stream )
   VARIANT_LOAD_ANYDEF_D( _d, workerSalary, defaultSalary, stream )
   VARIANT_LOAD_ANY_D( _d, lastYearUpdate, stream )
-
-  VariantList history = stream.get( literals::history ).toList();
-  _d->history.clear();
-  foreach( it, history )
-  {
-    _d->history.push_back( IssuesValue() );
-    IssuesValue& last = _d->history.back();
-    const VariantList& historyStep = (*it).toList();
-    VariantList::const_iterator stepIt=historyStep.begin(); 
-    while( stepIt != historyStep.end() )
-    {
-      econ::Issue::Type type = (econ::Issue::Type)stepIt->toInt(); ++stepIt;
-      int value = stepIt->toInt(); ++stepIt;
-      
-      last[ type ] = value;
-    }
-  }
+  VARIANT_LOAD_CLASS_D_LIST( _d, history, stream )
 }
 
 Treasury::~Treasury(){}
 Signal1<int>& Treasury::onChange(){  return _d->onChangeSignal; }
 Signal1<econ::Issue::Type>&Treasury::onNewIssue(){ return _d->onNewIssueSignal; }
+
+VariantList IssuesHistory::save() const
+{
+  VariantList ret;
+  foreach( stepIt, *this )
+  {
+    VariantList step;
+    foreach( it, *stepIt )
+    {
+      step << it->first << it->second;
+    }
+
+    ret.push_back( step );
+  }
+
+  return ret;
+}
+
+void IssuesHistory::load(const VariantList& stream)
+{
+  clear();
+  foreach( it, stream )
+  {
+    push_back( IssuesValue() );
+    IssuesValue& last = back();
+    const VariantList& step = it->toList();
+    VariantList::const_iterator stepIt=step.begin();
+    while( stepIt != step.end() )
+    {
+      econ::Issue::Type type = (econ::Issue::Type)stepIt->toInt(); ++stepIt;
+      int value = stepIt->toInt(); ++stepIt;
+
+      last[ type ] = value;
+    }
+  }
+}
 
 }//end namespace funds

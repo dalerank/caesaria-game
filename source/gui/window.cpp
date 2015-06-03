@@ -51,10 +51,13 @@ public:
 	Label* title;
 
 	Picture backgroundImage;
-  Batch bgStyle;
+  Batch background;
+  Pictures backgroundNb;
+
 	Point dragStartPosition;
 	Window::BackgroundType backgroundType;
 	bool dragging;
+  bool needUpdateBackground;
 
 	NColor currentColor;
 	NColor captionColor;
@@ -135,6 +138,32 @@ void Window::_finalizeResize()
   }
 }
 
+void Window::_updateBackground()
+{
+  Pictures pics;
+  _d->backgroundNb.clear();
+  bool errorsOnBatch = false;
+  switch( _d->backgroundType )
+  {
+  case bgWhiteFrame:
+  {
+    _d->background.destroy();
+    Decorator::draw( pics, Rect( 0, 0, width(), height()), Decorator::whiteFrame, Decorator::normalY );
+    errorsOnBatch = !_d->background.load( pics, absoluteRect().lefttop() );
+  }
+  break;
+
+  default: break;
+  }
+
+  if( errorsOnBatch )
+  {
+    Decorator::reverseYoffset( pics );
+    _d->background.destroy();
+    _d->backgroundNb = pics;
+  }
+}
+
 Window::~Window()
 {
 	Logger::warning( "Window was removed" );
@@ -181,13 +210,15 @@ bool Window::onEvent(const NEvent& event)
 				_d->dragging = _d->flags.isFlag( fdraggable );
 				bringToFront();
 
-				return true;
-			case mouseRbtnRelease:
+      return true;
+
+      case mouseRbtnRelease:
 			case mouseLbtnRelease:
 				_d->dragging = false;
 
-				return true;
-			case mouseMoved:
+      return true;
+
+      case mouseMoved:
 				if ( !event.mouse.isLeftPressed() )
 					_d->dragging = false;
 
@@ -204,17 +235,16 @@ bool Window::onEvent(const NEvent& event)
 					move( event.mouse.pos() - _d->dragStartPosition );
 					_d->dragStartPosition = event.mouse.pos();
 
-                    return true;
+          return true;
 				}
-				break;
-			default:
-				break;
+      break;
+
+      default:
+      break;
 			}
 		break;
 
-		case sEventKeyboard:
-			{
-			}
+		case sEventKeyboard:			
 		break;
 
 		default:
@@ -228,6 +258,12 @@ bool Window::onEvent(const NEvent& event)
 
 void Window::beforeDraw( Engine& painter )
 {
+  if( _d->needUpdateBackground )
+  {
+    _d->needUpdateBackground = false;
+    _updateBackground();
+  }
+
 	Widget::beforeDraw( painter );
 }
 
@@ -236,8 +272,6 @@ void Window::draw( Engine& painter )
 {
 	if( visible() )
 	{
-		//NColor colors[ 4 ] = { _d->currentColor, _d->currentColor, _d->currentColor, _d->currentColor };
-
 		if( _d->flags.isFlag( fbackgroundVisible ) )
 		{
 			if( _d->backgroundImage.isValid() )
@@ -246,7 +280,10 @@ void Window::draw( Engine& painter )
 			}
 			else
 			{
-        painter.draw( _d->bgStyle, &absoluteClippingRectRef() );
+        if( _d->background.valid() )
+          painter.draw( _d->background, &absoluteClippingRectRef() );
+        else
+          painter.draw( _d->backgroundNb, absoluteRect().lefttop(), &absoluteClippingRectRef() );
 			}
 		}
 	}
@@ -284,27 +321,14 @@ void Window::setBackground( Picture texture )
 {
   _d->backgroundImage = texture;
   _d->backgroundType = bgNone;
-  _d->bgStyle.destroy();
+  _d->background.destroy();
 }
 
 void Window::setBackground(Window::BackgroundType type)
 {
   _d->backgroundImage = Picture::getInvalid();
   _d->backgroundType = type;
-  _d->bgStyle.destroy();
-  switch( type )
-  {
-  case bgWhiteFrame:
-  {
-    Pictures pics;
-    Decorator::draw( pics, Rect( 0, 0, width(), height()), Decorator::whiteFrame, Decorator::normalY );
-
-    _d->bgStyle.load( pics, absoluteRect().lefttop() );
-  }
-  break;
-
-  default: break;
-  }
+  _d->needUpdateBackground= true;
 }
 
 void Window::setModal()

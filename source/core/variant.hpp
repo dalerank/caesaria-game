@@ -64,6 +64,8 @@ class NColor;
 
 #define VARIANT_SAVE_CLASS_D(vm, d, param) vm[ #param ] = d->param.save();
 #define VARIANT_LOAD_CLASS_D(d, param, vm) d->param.load( vm.get( #param ).toMap() );
+
+#define VARIANT_LOAD_CLASS_LIST(param, vm) param.load( vm.get( #param ).toList() );
 #define VARIANT_LOAD_CLASS_D_LIST(d, param, vm) d->param.load( vm.get( #param ).toList() );
 
 template <typename T>
@@ -186,7 +188,7 @@ class Variant
   Variant( unsigned int ui);
   Variant( long long ll);
   Variant( unsigned long long ull);
-  explicit Variant( bool b);
+  Variant( bool b);
   Variant( double d);
   Variant( float f);
 
@@ -205,7 +207,7 @@ class Variant
   Variant( const PointF& pt);
   Variant( const Rect& rect);
   Variant( const RectF& rect);
-  Variant( const NColor& color);
+  Variant( const NColor& color );
 
   Variant& operator=( const Variant& other);
 
@@ -243,6 +245,7 @@ class Variant
   Size toSize() const;
   SizeF toSizeF() const;
   TilePos toTilePos() const;
+  NColor toColor() const;
   RectF toRectf() const;
 
   operator unsigned int() const { return toUInt(); }
@@ -254,6 +257,7 @@ class Variant
   operator Point() const { return toPoint(); }
   operator PointF() const { return toPointF(); }
   operator Size() const { return toSize(); }
+  operator NColor() const;
 
   static std::string typeToName(Type type);
   static Type nameToType(const std::string& name);
@@ -288,56 +292,6 @@ private:
   // force compile error, prevent Variant(QVariant::Type, int) to be called
   inline Variant(bool, int) { _CAESARIA_DEBUG_BREAK_IF(true); }
 };
-
-class VariantList : public std::list<Variant>
-{
-public:
-  VariantList() {}
-
-  Variant get( const unsigned int index, Variant defaultVal=Variant() ) const
-  {
-    VariantList::const_iterator it = begin();
-    if( index >= size() )
-    {
-      return defaultVal;
-    }
-    else
-    {
-      std::advance( it, index );
-      return *it;
-    }
-  }
-
-  VariantList& operator <<( const Variant& v )
-  {
-    push_back( v );
-    return *this;
-  }
-
-  template<class T>
-  VariantList( const std::vector<T>& array )
-  {
-    //typename std::vector<T>::iterator it = array.begin();
-    foreach( it, array )
-    {
-      push_back( Variant(*it) );
-    }
-  }
-};
-
-template<class T>
-typename std::vector<T>& operator<<(std::vector<T>& v, const VariantList& vars)
-{
-  VariantList::const_iterator it = vars.begin();
-  for( ; it != vars.end(); ++it )
-  {
-    v.push_back( (T)(*it) );
-  }
-
-  return v;
-}
-
-StringArray& operator<<(StringArray& strlist, const VariantList& vars );
 
 inline Variant::Variant() {}
 

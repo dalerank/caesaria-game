@@ -69,9 +69,9 @@ void Rioter::_reachedPathway()
   switch( _d->state )
   {
   case Impl::go2destination:
-    _animationRef().clear();
-    _animationRef().load( ResourceGroup::citizen2, 455, 8 );
-    _animationRef().load( ResourceGroup::citizen2, 462, 8, Animation::reverse );
+    _animation().clear();
+    _animation().load( ResourceGroup::citizen2, 455, 8 );
+    _animation().load( ResourceGroup::citizen2, 462, 8, Animation::reverse );
     _setAction( acFight );
     _d->state = Impl::destroyConstruction;
   break;
@@ -187,7 +187,7 @@ void Rioter::timeStep(const unsigned long time)
 
        if( constructions.empty() )
       {
-        _animationRef().clear();
+        _animation().clear();
         _setAction( acMove );
         _d->state = Impl::searchHouse;
       }

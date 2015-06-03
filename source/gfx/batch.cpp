@@ -42,22 +42,23 @@ void Batch::destroy()
   _batch = 0;
 }
 
-void Batch::load(const Pictures &pics, const Rects& dstrects)
+bool Batch::load(const Pictures &pics, const Rects& dstrects)
 {
   if( pics.empty() )
   {
     //Logger::warning( "!!! WARNING: Cant create batch from pictures, because those are empty" );
-    return;
+    return true;
   }
 
   if( dstrects.size() != pics.size() )
   {
     Logger::warning( "!!! WARNING: Cant create batch from pictures because length not equale dstrects" );
-    return;
+    return false;
   }
 
   SDL_Texture* tx = pics.at( 0 ).texture();
   Rects srcrects;
+  bool haveErrors = false;
   foreach( it, pics )
   {
     if( it->texture() == 0 || it->width() == 0 || it->height() == 0 )
@@ -70,6 +71,7 @@ void Batch::load(const Pictures &pics, const Rects& dstrects)
     {
       Logger::warning( "!!! WARNING: Cant create batch from pictures " + pics.at( 0 ).name() + " to " + it->name() );
       srcrects.push_back( Rect( Point( 0, 0), it->size() ) );
+      haveErrors = true;
       continue;
     }
 
@@ -77,9 +79,10 @@ void Batch::load(const Pictures &pics, const Rects& dstrects)
   }
 
   *this = Engine::instance().loadBatch( pics.at( 0 ), srcrects, dstrects);
+  return !haveErrors;
 }
 
-void Batch::load(const Pictures& pics, const Point& pos)
+bool Batch::load(const Pictures& pics, const Point& pos)
 {
   Rects rects;
   foreach( it, pics )
@@ -87,7 +90,8 @@ void Batch::load(const Pictures& pics, const Point& pos)
     rects.push_back( Rect( pos + (*it).offset(), (*it).size() ) );
   }
 
-  load( pics, rects );
+  bool isOk = load( pics, rects );
+  return isOk;
 }
 
 void Batch::load(const Picture& pic, const Rects& srcrects, const Rects& dstrects)

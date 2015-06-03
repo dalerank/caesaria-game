@@ -28,6 +28,7 @@
 #include "core/logger.hpp"
 #include "constants.hpp"
 #include "core/variant_map.hpp"
+#include "core/variant_list.hpp"
 #include "objects/predefinitions.hpp"
 #include "walker/fish_place.hpp"
 #include "gfx/tilesarray.hpp"
@@ -85,7 +86,7 @@ void FishingBoat::timeStep(const unsigned long time)
     {
     case ready2Catch:
     {
-      _animationRef().clear();
+      _animation().clear();
       Pathway way = _d->findFishingPlace( _city(), pos() );
       if( way.isValid() )
       {
@@ -99,7 +100,7 @@ void FishingBoat::timeStep(const unsigned long time)
 
     case catchFish:
     {
-      _animationRef().clear();
+      _animation().clear();
       _setAction( acWork );
 
       FishPlaceList places = city::statistic::getWalkers<FishPlace>( _city(), walker::fishPlace, pos() );
@@ -178,8 +179,8 @@ bool FishingBoat::die()
 {
   _d->mode = wait;
   _d->base = 0;
-  _animationRef().load( ResourceGroup::carts, 265, 8 );
-  _animationRef().setDelay( gfx::Animation::slow );
+  _animation().load( ResourceGroup::carts, 265, 8 );
+  _animation().setDelay( gfx::Animation::slow );
 
   bool created = Ship::die();
   return created;

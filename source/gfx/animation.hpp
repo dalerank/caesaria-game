@@ -20,6 +20,7 @@
 
 #include "picturesarray.hpp"
 #include "core/variant.hpp"
+#include "core/scopedptr.hpp"
 
 // several frames for a basic visual animation
 namespace gfx
@@ -37,6 +38,7 @@ public:
   virtual ~Animation();
 
   Animation( const Animation& other );
+  Animation( const std::string& alias );
   Animation& operator=(const Animation& other);
 
   void start(bool loop=true);

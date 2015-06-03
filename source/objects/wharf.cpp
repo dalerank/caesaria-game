@@ -38,7 +38,7 @@ public:
 Wharf::Wharf() : CoastalFactory(good::none, good::fish, object::wharf, Size(2)), _d( new Impl )
 {
   // transport 52 53 54 55
-  setPicture( ResourceGroup::wharf, Impl::northPic );
+  _picture().load( ResourceGroup::wharf, Impl::northPic );
 }
 
 void Wharf::destroy()
