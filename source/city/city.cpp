@@ -176,6 +176,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( legionAttack, 0 );
   setOption( climateType, game::climate::central );
   setOption( c3gameplay, 0 );
+  setOption( highlightBuilding, 1 );
   setOption( difficulty, game::difficulty::usual );
 
   _d->states.nation = world::nation::rome;
@@ -192,7 +193,7 @@ std::string PlayerCity::about(Object::AboutType type)
   std::string ret;
   switch(type)
   {
-  case empireMap: ret = "##empiremap_our_city##";      break;
+  case empireMap: ret = "##empiremap_our_city##";     break;
   default:        ret = "##ourcity_unknown_about##";  break;
   }
 
