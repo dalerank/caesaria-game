@@ -36,6 +36,7 @@ public:
   virtual econ::Treasury& treasury();
   virtual std::string name() const;
   virtual bool isPaysTaxes() const;
+  virtual std::string about(AboutType type);
   virtual const city::States& states() const;
   virtual void timeStep(const unsigned int time);
   virtual SmartPtr<Player> mayor() const;

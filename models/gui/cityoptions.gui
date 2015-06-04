@@ -74,7 +74,7 @@
       btnToggleBatching#PushButton  : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_batching_mode##"    }
       btnToggleCcUseAI#PushButton   : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_batching_mode##"    }
       btnMetrics#PushButton         : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_metrics_mode##"     }
-      btnHighlightBuilding#PushButton:{ maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_metrics_mode##"     }
+      btnHighlightBuilding#PushButton:{ maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_highlight_mode##"   }
     }
   }
 

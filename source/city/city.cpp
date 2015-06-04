@@ -194,6 +194,7 @@ std::string PlayerCity::about(Object::AboutType type)
   switch(type)
   {
   case empireMap: ret = "##empiremap_our_city##";     break;
+  case empireAdvInfo: ret = "##empiremap_our_city##"; break;
   default:        ret = "##ourcity_unknown_about##";  break;
   }
 

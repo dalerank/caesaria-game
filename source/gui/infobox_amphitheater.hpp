@@ -32,8 +32,8 @@ public:
 
 private:
   void _updateWarnings();
-  void _updateShowsInfo();
-  void _updateBouthsInfo();
+  void _updateShowsInfo(AmphitheaterPtr amph);
+  void _updateBouthsInfo(AmphitheaterPtr amph);
 };
 
 }

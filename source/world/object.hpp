@@ -30,7 +30,7 @@ class Object : public ReferenceCounted
 {
 public:
   enum { idxPicture=0, idxAnimation=1 };
-  typedef enum { empireMap=0 } AboutType;
+  typedef enum { empireMap=0, empireAdvInfo } AboutType;
   static ObjectPtr create( EmpirePtr empire );
 
   virtual bool isDeleted() const;

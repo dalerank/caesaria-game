@@ -41,6 +41,9 @@ AboutAmphitheater::AboutAmphitheater(Widget *parent, PlayerCityPtr city, const T
   setupUI( ":/gui/infoboxapmhitheater.gui" );
 
   AmphitheaterPtr amph = tile.overlay().as<Amphitheater>();
+  if( !amph.isValid() )
+    return;
+
   setBase( amph );
   setTitle( _( MetaDataHolder::findPrettyName( object::amphitheater ) ) );
   _setWorkingVisible( true );
@@ -51,8 +54,8 @@ AboutAmphitheater::AboutAmphitheater(Widget *parent, PlayerCityPtr city, const T
     _updateWarnings();
   else
   {
-    _updateBouthsInfo();
-    _updateShowsInfo();
+    _updateBouthsInfo( amph );
+    _updateShowsInfo( amph );
   }
 
 }
@@ -64,7 +67,7 @@ void AboutAmphitheater::_updateWarnings()
   new Label( this, Rect( 35, 190, width() - 35, 190 + 20 ), _("##amphitheater_haveno_gladiatorpit##") );
 }
 
-void AboutAmphitheater::_updateShowsInfo()
+void AboutAmphitheater::_updateShowsInfo( AmphitheaterPtr amph )
 {
   std::string text = _("##amphitheater_haveno_shows##");
   if( amph->isShow( Amphitheater::theatrical ) )
@@ -76,7 +79,7 @@ void AboutAmphitheater::_updateShowsInfo()
   new Label( this, Rect( 35, 220, width() - 35, 220 + 20 ), text );
 }
 
-void AboutAmphitheater::_updateBouthsInfo()
+void AboutAmphitheater::_updateBouthsInfo( AmphitheaterPtr amph )
 {
   std::string text = _("##amphitheater_haveno_gladiator_bouts##");
   if( amph->isShow( Amphitheater::gladiatorBouts ) )
@@ -87,6 +90,6 @@ void AboutAmphitheater::_updateBouthsInfo()
   new Label( this, Rect( 35, 200, width() - 35, 200 + 20 ), text );
 }
 
-}
+}//end namespace infobox
 
 }//end namespace gui

@@ -88,10 +88,9 @@ void Simple::afterRender(Engine& engine)
       _d->highlightAny = true;
   }
 
-  if( (_d->ticks % 30) == 0 )
+  if( (_d->ticks++ % 30) == 0 )
   {
     _d->mayHighlight = _city()->getOption( PlayerCity::highlightBuilding );
-    _d->ticks++;
   }
 }
 
