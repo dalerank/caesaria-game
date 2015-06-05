@@ -22,6 +22,7 @@
 #include "objects/house.hpp"
 #include "objects/constants.hpp"
 #include "core/foreach.hpp"
+#include "game/gamedate.hpp"
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
 
@@ -31,6 +32,12 @@ namespace econ
 namespace {
 enum { defaultSalary=30 };
 }
+
+class IssuesDetailedHistory::Impl
+{
+public:
+  IssuesDetailedHistory::DateIssues issues;
+};
 
 class Treasury::Impl
 {
@@ -42,6 +49,7 @@ public:
   int maxDebt;
 
   IssuesHistory history;
+  IssuesDetailedHistory detailedHistory;
 
 signals public:
   Signal1<int> onChangeSignal;
@@ -92,6 +100,8 @@ void Treasury::resolveIssue( econ::Issue issue )
   }
   break;
   }
+
+  _d->detailedHistory.addIssue( issue );
 
   emit _d->onNewIssueSignal( (econ::Issue::Type)issue.type );
 
@@ -178,6 +188,7 @@ VariantMap Treasury::save() const
   VARIANT_SAVE_ANY_D( ret, _d, workerSalary )
   VARIANT_SAVE_ANY_D( ret, _d, lastYearUpdate )
   VARIANT_SAVE_CLASS_D( ret, _d, history )
+  VARIANT_SAVE_CLASS_D( ret, _d, detailedHistory )
 
   return ret;
 }
@@ -189,6 +200,7 @@ void Treasury::load( const VariantMap& stream )
   VARIANT_LOAD_ANYDEF_D( _d, workerSalary, defaultSalary, stream )
   VARIANT_LOAD_ANY_D( _d, lastYearUpdate, stream )
   VARIANT_LOAD_CLASS_D_LIST( _d, history, stream )
+  VARIANT_LOAD_CLASS_D_LIST( _d, detailedHistory, stream )
 }
 
 Treasury::~Treasury(){}
@@ -229,6 +241,66 @@ void IssuesHistory::load(const VariantList& stream)
       last[ type ] = value;
     }
   }
+}
+
+void IssuesDetailedHistory::addIssue(Issue issue)
+{
+  DateIssue dIssue;
+  dIssue.type = issue.type;
+  dIssue.money = issue.money;
+  dIssue.time = game::Date::current();
+  _d->issues.push_back( dIssue );
+  if( _d->issues.size() > 1 )
+  {
+    if( _d->issues.front().time.year() != dIssue.time.year() )
+      _d->issues.erase( _d->issues.begin() );
+    }
+}
+
+const IssuesDetailedHistory::DateIssues& IssuesDetailedHistory::issues()
+{
+  return _d->issues;
+}
+
+IssuesDetailedHistory::IssuesDetailedHistory() : _d( new Impl )
+{
+
+}
+
+IssuesDetailedHistory::~IssuesDetailedHistory() {}
+
+VariantList IssuesDetailedHistory::save() const
+{
+  VariantList ret;
+  foreach( it, _d->issues )
+    ret.push_back( it->save() );
+
+  return ret;
+}
+
+void IssuesDetailedHistory::load(const VariantList& stream)
+{
+  _d->issues.clear();
+  foreach( it, stream )
+  {
+    DateIssue dIssue;
+    dIssue.load( it->toList() );
+    _d->issues.push_back( dIssue );
+    }
+}
+
+VariantList IssuesDetailedHistory::DateIssue::save() const
+{
+  VariantList ret;
+  ret << time << type << money;
+  return ret;
+}
+
+void IssuesDetailedHistory::DateIssue::load(const VariantList& stream)
+{
+  time = stream.get( 0 ).toDateTime();
+  type = (Type)stream.get( 1 ).toInt();
+  money = stream.get( 2 );
 }
 
 }//end namespace funds
