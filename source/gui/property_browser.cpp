@@ -115,7 +115,7 @@ AbstractAttribute* PropertyBrowser::createAttributElm_(std::string typeStr, cons
 
   // if this doesn't exist, use a string editor
   if (!attr)
-    attr = (AbstractAttribute*)wmgr.create( CAESARIA_STR_A(AttributeString), _attribTable);
+    attr = (AbstractAttribute*)wmgr.create( CAESARIA_STR_A(StringAttribute), _attribTable);
 
   attr->setTitle( attrName );
   return attr;
