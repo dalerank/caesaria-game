@@ -578,6 +578,12 @@ void Minimap::saveImage( const std::string& filename ) const
   IMG_SavePNG( filename.c_str(), savePic.surface(), -1 );
 }
 
+void Minimap::update()
+{
+  _d->drawStaticMmap( _d->landRockWaterMap, true );
+  _d->lastObjectsCount = 0;
+}
+
 Signal1<TilePos>& Minimap::onCenterChange() { return _d->onCenterChangeSignal; }
 Signal1<int>& Minimap::onZoomChange() { return _d->onZoomChangeSignal; }
 
