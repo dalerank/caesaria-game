@@ -635,7 +635,7 @@ void Tilemap::Impl::checkCoastAfterTurn()
     for( int j=0; j < size; j++ )
     {
       Tile* tmp = ate( i, j );
-      if( tmp->getFlag( Tile::tlWater ) )
+      if( tmp->getFlag( Tile::tlCoast ) || tmp->getFlag( Tile::tlWater ) )
         tmp->changeDirection( 0, direction );
     }
   }
