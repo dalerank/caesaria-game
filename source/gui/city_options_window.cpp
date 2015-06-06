@@ -43,6 +43,36 @@ using namespace citylayer;
 namespace gui
 {
 
+struct OptionInfo
+{
+  bool alive;
+  const char* btnName;
+  int city_option;
+  const char* settings_option;
+  const char* text_on;
+  const char* text_off;
+};
+
+#define INIT_OPTION(btnName, co, so, text ) { true, #btnName, co, so, "##"text"_on##", "##"text"_off##" }
+static OptionInfo options[] =
+{
+  INIT_OPTION( btnGodEnabled, PlayerCity::godEnabled, "", "city_opts_god" ),
+  INIT_OPTION( btnWarningsEnabled, PlayerCity::warningsEnabled, "", "city_warnings" ),
+  INIT_OPTION( btnZoomEnabled, PlayerCity::zoomEnabled, "", "city_zoom" ),
+  INIT_OPTION( btnInvertZoom, PlayerCity::zoomInvert, "", "city_zoominv" ),
+  INIT_OPTION( btnLockInfobox, -1, game::Settings::lockInfobox, "city_lockinfo" ),
+  INIT_OPTION( btnBarbarianMayAttack, PlayerCity::barbarianAttack, "",  "city_barbarian" ),
+  INIT_OPTION( btnC3Gameplay, PlayerCity::c3gameplay, "", "city_c3rules" ),
+  INIT_OPTION( btnShowTooltips, -1, game::Settings::tooltipEnabled, "city_tooltips" ),
+  INIT_OPTION( btnLegionMayAttack, PlayerCity::legionAttack, "", "city_chastener" ),
+  INIT_OPTION( btnAnroidBarEnabled, -1, game::Settings::showTabletMenu, "city_androidbar" ),
+  INIT_OPTION( btnToggleCcUseAI, -1, game::Settings::ccUseAI, "city_ccuseai" ),
+  INIT_OPTION( btnHighlightBuilding, PlayerCity::highlightBuilding, "", "city_highlight_bld" ),
+
+  { false, "", 0, 0, "", "" }
+};
+#undef INIT_OPTION
+
 namespace dialog
 {
 
@@ -50,6 +80,7 @@ class CityOptions::Impl
 {
 public:
   GameAutoPause locker;
+  Widget* widget;
   PushButton* btnGodEnabled;
   PushButton* btnWarningsEnabled;
   PushButton* btnZoomEnabled;
@@ -60,20 +91,21 @@ public:
   PushButton* btnLegionMayAttack;
   PushButton* btnAnroidBarEnabled;
   PushButton* btnToggleBatching;
-  Label* lbFireRisk;
-  TexturedButton* btnIncreaseFireRisk;
-  TexturedButton* btnDecreaseFireRisk;
+  PushButton* btnHighlightBuilding;
   PushButton* btnToggleCcUseAI;
-
-  Label* lbCollapseRisk;
-  TexturedButton* btnIncreaseCollapseRisk;
-  TexturedButton* btnDecreaseCollapseRisk;
-
   PushButton* btnLockInfobox;
   PushButton* btnC3Gameplay;
   PushButton* btnShowTooltips;
   PushButton* btnDifficulty;
   PushButton* btnMetrics;
+
+  Label* lbFireRisk;
+  Label* lbCollapseRisk;
+  TexturedButton* btnIncreaseFireRisk;
+  TexturedButton* btnDecreaseFireRisk;
+  TexturedButton* btnIncreaseCollapseRisk;
+  TexturedButton* btnDecreaseCollapseRisk;
+
   PlayerCityPtr city;
 
   void update();
@@ -98,6 +130,7 @@ public:
   void toggleUseBatching();
   void toggleCcUseAI();
   void toggleMetrics();
+  void toggleHighlightBuilding();
   void toggleCityOption( PlayerCity::OptionType option );
   void changeCityOption( PlayerCity::OptionType option, int delta);
 };
@@ -107,6 +140,7 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
 {
   _d->city = city;
   _d->locker.activate();
+  _d->widget = this;
   setupUI( ":/gui/cityoptions.gui" );
 
   WidgetEscapeCloser::insertTo( this );
@@ -135,6 +169,7 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, btnToggleBatching )
   GET_DWIDGET_FROM_UI( _d, btnToggleCcUseAI )
   GET_DWIDGET_FROM_UI( _d, btnMetrics )
+  GET_DWIDGET_FROM_UI( _d, btnHighlightBuilding )
 
   CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods )
   CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings )
@@ -156,6 +191,7 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   CONNECT( _d->btnToggleBatching, onClicked(), _d.data(), Impl::toggleUseBatching )
   CONNECT( _d->btnToggleCcUseAI, onClicked(), _d.data(), Impl::toggleCcUseAI )
   CONNECT( _d->btnMetrics, onClicked(), _d.data(), Impl::toggleMetrics )
+  CONNECT( _d->btnHighlightBuilding, onClicked(), _d.data(), Impl::toggleHighlightBuilding )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptions::deleteLater );
@@ -251,6 +287,7 @@ void CityOptions::Impl::toggleBarbarianAttack() {  toggleCityOption( PlayerCity:
 void CityOptions::Impl::toggleC3Gameplay()  {  toggleCityOption( PlayerCity::c3gameplay ); }
 void CityOptions::Impl::toggleZoomEnabled() {  toggleCityOption( PlayerCity::zoomEnabled ); }
 void CityOptions::Impl::invertZoom()  {  toggleCityOption( PlayerCity::zoomInvert ); }
+void CityOptions::Impl::toggleHighlightBuilding() { toggleCityOption( PlayerCity::highlightBuilding ); }
 void CityOptions::Impl::toggleWarnings()  {  toggleCityOption( PlayerCity::warningsEnabled ); }
 
 void CityOptions::Impl::toggleLeftMiddleMouse()
@@ -300,32 +337,21 @@ Widget* CityOptions::Impl::findDebugMenu( Ui* ui )
 
 void CityOptions::Impl::update()
 {
-  if( btnGodEnabled )
+  int index = 0;
+  while( options[index].alive )
   {
-    btnGodEnabled->setText( city->getOption( PlayerCity::godEnabled ) > 0
-                              ? _("##city_opts_god_on##")
-                              : _("##city_opts_god_off##") );
-  }
+    OptionInfo& info = options[index];
+    PushButton* button = findChildA<PushButton*>( info.btnName, true, widget );
 
-  if( btnWarningsEnabled )
-  {
-    btnWarningsEnabled->setText( city->getOption( PlayerCity::warningsEnabled ) > 0
-                              ? _("##city_warnings_on##")
-                              : _("##city_warnings_off##") );
-  }
+    if( button )
+    {
+      bool value = false;
+      if( info.city_option >= 0 ) value = city->getOption( (PlayerCity::OptionType)info.city_option ) > 0;
+      else if( strcmp( info.settings_option, "" ) != 0 ) value = game::Settings::get( info.settings_option );
 
-  if( btnZoomEnabled )
-  {
-    btnZoomEnabled->setText( city->getOption( PlayerCity::zoomEnabled ) > 0
-                              ? _("##city_zoom_on##")
-                              : _("##city_zoom_off##") );
-  }
-
-  if( btnInvertZoom )
-  {
-    btnInvertZoom->setText( city->getOption( PlayerCity::zoomInvert ) > 0
-                              ? _("##city_zoominv_on##")
-                              : _("##city_zoominv_off##") );
+      button->setText( _(value ? info.text_on : info.text_off) );
+    }
+    index++;
   }
 
   if( btnDebugEnabled )
@@ -344,14 +370,6 @@ void CityOptions::Impl::update()
                                 : _("##city_lmbmoving##") );
   }
 
-  if( btnLockInfobox )
-  {
-    bool value = SETTINGS_VALUE( lockInfobox );
-    btnLockInfobox->setText( value
-                                ? _("##city_lockinfo_on##")
-                                : _("##city_lockinfo_off##") );
-  }
-
   if( lbFireRisk )
   {
     int value = city->getOption( PlayerCity::fireKoeff );
@@ -362,30 +380,6 @@ void CityOptions::Impl::update()
   {
     int value = city->getOption( PlayerCity::collapseKoeff );
     lbCollapseRisk->setText( utils::format( 0xff, "%s %d %%", "Collapse risk", value ) );
-  }
-
-  if( btnBarbarianMayAttack )
-  {
-    int value = city->getOption( PlayerCity::barbarianAttack );
-    btnBarbarianMayAttack->setText( value
-                                    ? _("##city_barbarian_on##")
-                                    : _("##city_barbarian_off##")  );
-  }
-
-  if( btnC3Gameplay )
-  {
-    bool value = city->getOption( PlayerCity::c3gameplay ) > 0;
-    btnC3Gameplay->setText( value
-                                    ? _("##city_c3rules_on##")
-                                    : _("##city_c3rules_off##")  );
-  }
-
-  if( btnShowTooltips )
-  {
-    bool value = SETTINGS_VALUE( tooltipEnabled );
-    btnShowTooltips->setText( value
-                                    ? _("##city_tooltips_on##")
-                                    : _("##city_tooltips_off##")  );
   }
 
   if( btnDifficulty )
@@ -401,21 +395,6 @@ void CityOptions::Impl::update()
     btnMetrics->setText( text );
   }
 
-  if( btnLegionMayAttack )
-  {
-    int value = city->getOption( PlayerCity::legionAttack );
-    btnLegionMayAttack->setText( value
-                                    ? _("##city_chastener_on##")
-                                    : _("##city_chastener_off##")  );
-  }
-
-  if( btnAnroidBarEnabled )
-  {
-    bool value = SETTINGS_VALUE( showTabletMenu );
-    btnAnroidBarEnabled->setText( value
-                                    ? _("##city_androidbar_on##")
-                                    : _("##city_androidbar_off##")  );
-  }
 
   if( btnToggleBatching )
   {
@@ -423,14 +402,6 @@ void CityOptions::Impl::update()
     btnToggleBatching->setText( value
                                     ? _("##city_batching_on##")
                                     : _("##city_batching_off##")  );
-  }
-
-  if( btnToggleCcUseAI )
-  {
-    bool value = SETTINGS_VALUE( ccUseAI );
-    btnToggleCcUseAI->setText( value
-                                    ? _("##city_ccuseai_on##")
-                                    : _("##city_ccuseai_off##")  );
   }
 }
 

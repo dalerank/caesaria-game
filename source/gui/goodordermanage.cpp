@@ -327,6 +327,6 @@ void GoodOrderManageWindow::_changeTradeLimit(int value)
   emit _d->onOrderChangedSignal();
 }
 
-}
+}//end namespace advisorwnd
 
 }//end namespace gui

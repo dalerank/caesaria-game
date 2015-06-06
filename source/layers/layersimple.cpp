@@ -33,11 +33,12 @@ namespace citylayer
 class Simple::Impl
 {
 public:
+  int ticks;
   SenatePopupInfo senateInfo;
   Picture selectedBuildingPic;
   OverlayPtr lastOverlay;
   object::TypeSet inacceptable;
-  bool mayAcceptTile;
+  bool highlightAny, mayHighlight;
 };
 
 int Simple::type() const { return citylayer::simple; }
@@ -54,14 +55,21 @@ void Simple::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   OverlayPtr curOverlay = tile.overlay();
 
-  bool blowTile = (curOverlay.isValid() && curOverlay == _d->lastOverlay) && _d->mayAcceptTile;
-  if( blowTile )
-    engine.setColorMask( 0x007f0000, 0x00007f00, 0x0000007f, 0xff000000 );
+  if( _d->mayHighlight )
+  {
+    bool blowTile = (curOverlay.isValid() && curOverlay == _d->lastOverlay) && _d->highlightAny;
+    if( blowTile )
+      engine.setColorMask( 0x007f0000, 0x00007f00, 0x0000007f, 0xff000000 );
 
-  Layer::drawTile(engine, tile, offset);
+    Layer::drawTile(engine, tile, offset);
 
-  if( blowTile )
+    if( blowTile )
       engine.resetColorMask();
+  }
+  else
+  {
+    Layer::drawTile(engine, tile, offset);
+  }
 }
 
 void Simple::afterRender(Engine& engine)
@@ -73,11 +81,16 @@ void Simple::afterRender(Engine& engine)
   if( tile )
   {
     _d->lastOverlay = tile->overlay();
-    _d->mayAcceptTile = false;
+    _d->highlightAny = false;
 
     if( is_kind_of<Building>( tile->overlay() )
         && !_d->inacceptable.count( tile->overlay()->type() ) )
-      _d->mayAcceptTile = true;
+      _d->highlightAny = true;
+  }
+
+  if( (_d->ticks++ % 30) == 0 )
+  {
+    _d->mayHighlight = _city()->getOption( PlayerCity::highlightBuilding );
   }
 }
 
@@ -102,6 +115,7 @@ Simple::Simple( Camera& camera, PlayerCityPtr city)
 {
   _addWalkerType( walker::all );
 
+  _d->ticks = 0;
   _d->inacceptable << object::fortification << object::wall;
 }
 

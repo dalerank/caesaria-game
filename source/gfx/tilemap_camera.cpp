@@ -184,7 +184,7 @@ void TilemapCamera::_setCenter(Point pos, bool checkBorder)
 TilePos TilemapCamera::center() const
 {
   Tile* tile = centerTile();
-  return tile ? tile->pos() : gfx::tilemap::invalidLocation();
+  return tile ? tile->epos() : gfx::tilemap::invalidLocation();
 }
 
 void TilemapCamera::setZoom(int value) { _d->zoom = value; }

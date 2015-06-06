@@ -393,6 +393,8 @@ void ComputerCity::Impl::citizensConsumeServices()
 
   std::set<CheckType> checkTypes;
   checkTypes << CheckType( object::school, CitizenGroup::scholar, 4 )
+             << CheckType( object::academy, CitizenGroup::student, 4 )
+             << CheckType( object::library, CitizenGroup::mature, 4 )
              << CheckType( object::small_ceres_temple, object::big_ceres_temple, CitizenGroup::any, 4 )
              << CheckType( object::small_mars_temple, object::big_mars_temple, CitizenGroup::any, 4 )
              << CheckType( object::small_mercury_temple, object::big_mercury_temple, CitizenGroup::any, 4 )
@@ -978,14 +980,17 @@ std::string ComputerCity::about(Object::AboutType type)
   switch(type)
   {
   case empireMap:
-    {
-      if( isDistantCity() ) ret = "##empmap_distant_romecity_tip##";
-      else ret = name();
-    }
+    if( isDistantCity() ) ret = "##empmap_distant_romecity_tip##";
+    else ret = name();
+  break;
+
+  case empireAdvInfo:
+    if( isDistantCity() ) ret = "##empiremap_distant_city##";
+    else ret = "";
   break;
 
   default:
-      ret = "##compcity_unknown_about##";
+    ret = "##compcity_unknown_about##";
   }
 
   return ret;
@@ -1001,7 +1006,7 @@ void ComputerCity::_initTextures()
   if( _d->distantCity ) { index = PicID::distantCity; }
   else if( _d->states.romeCity ) { index = PicID::romeCity; }
 
-  _picture().load( ResourceGroup::empirebits, index );
+  setPicture( Picture( ResourceGroup::empirebits, index ) );
   _animation().load( ResourceGroup::empirebits, index+1, 6 );
   _animation().setLoop( true );
   _animation().setDelay( 2 );

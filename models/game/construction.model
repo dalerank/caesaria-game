@@ -556,6 +556,7 @@
     desirability : { base : 3,	range : 3,	step : -1 }
     employers : 6
     class : "administration"
+    image : [ "forum", 1 ]
     sound : [ "forum", 1 ]
   },   
   
@@ -744,7 +745,8 @@
     output : "marble"
     productRate : 2.4
     sound : [ "marblequarry", 1 ]
-    image : [ "commerce", 43 ]
+    image : [ "quarry", 1 ]
+    animation : { rc : "quarryanim", start : 1, count : 11, offset : [ 105, 30 ], delay : 3 }
     collapsibility : 1.5
   },
 
