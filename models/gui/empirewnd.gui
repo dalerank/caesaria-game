@@ -35,7 +35,7 @@
   }
 
   btnAi#PushButton : {
-    geometry : [ 20, 20, 44, "20+34" ]
+    geometry : [ 20, "ph-100", 48, "ph-72" ]
     text : "AI"
     text.align : [ "center", "center" ]
   }

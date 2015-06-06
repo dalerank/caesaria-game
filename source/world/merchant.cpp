@@ -49,7 +49,7 @@ Merchant::Merchant( EmpirePtr empire )
   : Object( empire ), _d( new Impl )
 {
   //default picture
-  _picture().load( ResourceGroup::empirebits, PicID::landTradeRoute );
+  setPicture( gfx::Picture( ResourceGroup::empirebits, PicID::landTradeRoute ) );
 }
 
 MerchantPtr Merchant::create( EmpirePtr empire, TraderoutePtr route, const std::string& start,
