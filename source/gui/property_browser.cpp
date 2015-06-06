@@ -122,12 +122,12 @@ AbstractAttribute* PropertyBrowser::createAttributElm_(std::string typeStr, cons
 }
 
 void PropertyBrowser::_createTable()
-{
-  _attribTable->clearRows();
+{  
   foreach( it, _attribList )
     (*it)->deleteLater();
 
   _attribList.clear();
+  _attribTable->clearRows();
 
   foreach( it, _attribs )
   {

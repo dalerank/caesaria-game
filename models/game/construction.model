@@ -556,6 +556,7 @@
     desirability : { base : 3,	range : 3,	step : -1 }
     employers : 6
     class : "administration"
+    image : [ "forum", 1 ]
     sound : [ "forum", 1 ]
   },   
   
