@@ -20,8 +20,7 @@
 
 #include "core/position.hpp"
 #include "gfx/animation.hpp"
-#include "game/enums.hpp"
-#include "tileoverlay.hpp"
+#include "objects/predefinitions.hpp"
 #include "predefinitions.hpp"
 #include "core/direction.hpp"
 
@@ -44,13 +43,13 @@ public:
   explicit Tile(const TilePos& pos);
 
   // tile coordinates
-  int i() const;
-  int j() const;
+  inline int i() const { return _pos.i(); }
+  inline int j() const { return _pos.j(); }
   inline const TilePos& pos() const{ return _pos; }
   inline const TilePos& epos() const { return _epos; }
   inline const Point& mappos() const { return _mappos; }
 
-  inline const TileOverlayPtr& rov() const { return _overlay; }
+  inline const OverlayPtr& rov() const { return _overlay; }
   void setEPos( const TilePos& epos );
 
   Point center() const;
@@ -59,16 +58,16 @@ public:
   void setPicture( const Picture& picture );
   void setPicture( const char* rc, const int index );
   void setPicture( const std::string& name );
-  const Picture& picture() const;
+  inline const Picture& picture() const {  return _picture; }
 
   // used for multi-tile graphics: current displayed picture
   // background of constructible tiles is 1x1 => master used for foreground
   // non-constructible tiles have no foreground => master used for background
-  Tile* masterTile() const;
+  inline Tile* masterTile() const {  return _master;}
   void setMasterTile(Tile* master);
   bool isMasterTile() const;
 
-  void changeDirection( Tile* masterTile, constants::Direction newDirection);
+  void changeDirection( Tile* masterTile, Direction newDirection);
 
   bool isFlat() const;  // returns true if the tile is walkable/boatable (for display purpose)
 
@@ -85,9 +84,9 @@ public:
   bool getFlag( Type type ) const;
   void setFlag( Type type, bool value );
 
-  TileOverlayPtr overlay() const;
-  void setOverlay( TileOverlayPtr overlay );
-  unsigned int originalImgId() const;
+  OverlayPtr overlay() const;
+  void setOverlay( OverlayPtr overlay );
+  inline unsigned int originalImgId() const { return _terrain.imgid;}
   void setOriginalImgId( unsigned short int id );
 
   inline int height() const { return _height; }
@@ -133,7 +132,7 @@ private:
   bool _wasDrawn;
   int _height;
   gfx::Animation _animation;
-  TileOverlayPtr _overlay;
+  OverlayPtr _overlay;
 
 private:
   Tile( const Tile& base );

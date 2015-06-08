@@ -19,7 +19,6 @@
 #define _CAESARIA_CONTAMINATED_WATER_H_INCLUDE_
 
 #include "event.hpp"
-#include "predefinitions.hpp"
 #include "core/scopedptr.hpp"
 
 namespace events

@@ -28,27 +28,42 @@ using namespace gfx;
 namespace gui
 {
 
-const int WindowMessageStack::defaultID = utils::hash( CAESARIA_STR_EXT(WindowMessageStack) );
+const int WindowMessageStack::defaultID = Hash( CAESARIA_STR_EXT(WindowMessageStack) );
 
-class WindowMessageStack::LabelA : public Label
+class LabelA : public Label
 {
 public:
-  LabelA( Widget* parent, const Rect& rectangle, const std::string& message )
+  Decorator::Mode style;
+
+  LabelA( Widget* parent, const Rect& rectangle, const std::string& message, WindowMessageStack::MsgLevel lvl )
     : Label( parent, rectangle, message )
   {
+    style = (lvl == WindowMessageStack::warning ? Decorator::redPanelSmall
+                      : lvl == WindowMessageStack::info ? Decorator::brownPanelSmall : Decorator::greenPanelSmall );
+
     setTextAlignment( align::center, align::center );
     new WidgetDeleter( this, 5000 );
   }
 
 protected:
-  virtual void _updateBackground(gfx::Engine& painter , bool& useAlpha4Text)
+  virtual void _updateBackground(gfx::Engine&, bool&)
   {
-    _backgroundRef().clear();
-    Decorator::draw( _backgroundRef(), Rect( Point(), size() ), Decorator::brownPanelSmall );
+    _background().destroy();
 
-    Picture& emlbPic = Picture::load( ResourceGroup::panelBackground, PicID::empireStamp );
-    _backgroundRef().append( emlbPic, Point( 4, -2 ) );
-    _backgroundRef().append( emlbPic, Point( width() - emlbPic.width()-4, -2 ) );
+    Pictures pics;
+    Decorator::draw( pics, Rect( Point(), size() ), style );
+
+    Picture emlbPic( ResourceGroup::panelBackground, PicID::empireStamp );
+    pics.append( emlbPic, Point( 4, 2 ) );
+    pics.append( emlbPic, Point( width() - emlbPic.width()-4, 2 ) );
+
+    bool batchOk = _background().load( pics, absoluteRect().lefttop() );
+    if( !batchOk )
+    {
+      _background().destroy();
+      Decorator::reverseYoffset( pics );
+      _backgroundNb() = pics;
+    }
   }
 };
 
@@ -99,14 +114,14 @@ void WindowMessageStack::beforeDraw(gfx::Engine& painter)
 
 bool WindowMessageStack::onEvent( const NEvent& ) {  return false; }
 
-void WindowMessageStack::addMessage( std::string message )
+void WindowMessageStack::addMessage( const std::string& text, MsgLevel lvl )
 {
   if( children().size() > 3 )
   {
     removeChild( *children().begin() );
   }
 
-  new LabelA( this, Rect( 0, 0, 2, 20), message );
+  new LabelA( this, Rect( 0, 0, 2, 20), text, lvl );
 
   _update();
 }

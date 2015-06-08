@@ -19,7 +19,6 @@
 #define __CAESARIA_CITYSERVICE_SENTIMENT_H_INCLUDED__
 
 #include "cityservice.hpp"
-#include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
 namespace city
@@ -28,6 +27,8 @@ namespace city
 class Sentiment : public city::Srvc
 {
 public:
+  static const int defaultValue = 60;
+
   static city::SrvcPtr create(PlayerCityPtr city);
   static std::string defaultName();
   virtual void timeStep( const unsigned int time );

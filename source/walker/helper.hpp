@@ -29,14 +29,14 @@ class WalkerHelper
 public:
   static WalkerHelper& instance();
 
-  static std::string getTypename( constants::walker::Type type );
-  static constants::walker::Type getType( const std::string& name );
-  static std::string getPrettyTypename( constants::walker::Type type );
+  static std::string getTypename( walker::Type type );
+  static walker::Type getType( const std::string& name );
+  static std::string getPrettyTypename( walker::Type type );
   static std::string getNationName( world::Nation type );
   static world::Nation getNation( const std::string& name );
-  static gfx::Picture getBigPicture( constants::walker::Type type );
+  static gfx::Picture getBigPicture( walker::Type type );
   static VariantMap getOptions( const std::string& name );
-  static VariantMap getOptions( const constants::walker::Type type );
+  static VariantMap getOptions( const walker::Type type );
   static bool isHuman( WalkerPtr wlk );
   static bool isAnimal( WalkerPtr wlk );
 
@@ -56,12 +56,12 @@ public:
   typedef enum { enemy=-1, neitral=0, friendt=1 } Relation;
   static WalkerRelations& instance();
 
-  static void addFriend( constants::walker::Type who, constants::walker::Type friendType );
-  static void remFriend( constants::walker::Type who, constants::walker::Type friendType );
+  static void addFriend( walker::Type who, walker::Type friendType );
+  static void remFriend( walker::Type who, walker::Type friendType );
   static void addFriend( world::Nation who, world::Nation friendType );
-  static void addEnemy( constants::walker::Type who, constants::walker::Type enemyType );
+  static void addEnemy( walker::Type who, walker::Type enemyType );
   static void addEnemy( world::Nation who, world::Nation enemyType );
-  static bool isNeutral( constants::walker::Type a, constants::walker::Type b );
+  static bool isNeutral( walker::Type a, walker::Type b );
   static bool isNeutral( world::Nation a, world::Nation b);
 
   void load( vfs::Path path );
@@ -84,7 +84,7 @@ SmartPtr<Wlk> findNearestWalker( TilePos pos, const SmartList<Wlk>& walkers )
   SmartPtr< Wlk > p;
 
   int minDistance=99;
-  for( typename SmartList<Wlk>::const_iterator it=walkers.begin(); it != walkers.end(); ++it )
+  foreach( it, walkers )
   {
     int distance = (*it)->pos().distanceFrom( pos );
     if( distance < minDistance )

@@ -21,7 +21,7 @@
 #include "label.hpp"
 #include "core/utils.hpp"
 #include "image.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "texturedbutton.hpp"
 #include "core/gettext.hpp"
 #include "core/logger.hpp"
@@ -30,8 +30,6 @@
 #include "game/gamedate.hpp"
 #include "widget_helper.hpp"
 #include "smkviewer.hpp"
-
-using namespace constants;
 
 namespace gui
 {
@@ -67,7 +65,7 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::Req
   std::string uiFile = _d->video.empty() ? ":/gui/request.gui" : ":/gui/request_video.gui";
 
   setupUI( uiFile );
-
+  setModal();
   setCenter( parent->center() );
 
   city::request::RqGoodPtr gr = ptr_cast<city::request::RqGood>(request);
@@ -94,13 +92,13 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::Req
     {
       text = "##rome_need_some_goods##";
       title = "##emperor_request_money##";
-      video = ":/smk/Urgent_message1.smk";
+      video = "urgent_message1";
     }
     else
     {
       text = "##rome_need_some_money##";
       title = "##emperor_request##";
-      video = ":/smk/Urgent_message2.smk";
+      video = "urgent_message2";
     }
 
     if( lbText ) { lbText->setText( _( text ) ); }
@@ -133,15 +131,13 @@ void EmperrorRequestWindow::draw(gfx::Engine& painter )
 
 void EmperrorRequestWindow::setText(const std::string& text)
 {
-  Label* lbText;
-  GET_WIDGET_FROM_UI( lbText )
+  INIT_WIDGET_FROM_UI( Label*, lbText )
   if( lbText ) { lbText->setText( text );  }
 }
 
 void EmperrorRequestWindow::setTitle(const std::string& text)
 {
-  Label* lbTitle;
-  GET_WIDGET_FROM_UI( lbTitle )
+  INIT_WIDGET_FROM_UI( Label*, lbTitle )
   if( lbTitle ) { lbTitle->setText( text );  }
 }
 

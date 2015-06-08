@@ -18,6 +18,7 @@
 #include "dustcloud.hpp"
 #include "city/city.hpp"
 #include "core/gettext.hpp"
+#include "objects/construction.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/tilemap.hpp"
@@ -27,7 +28,6 @@
 #include "core/logger.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::dustCloud, DustCloud)
@@ -61,14 +61,14 @@ void DustCloud::create(PlayerCityPtr city, const TilePos& start, unsigned int ra
     TilePos offset;
     switch( direction )
     {
-    case north: offset = TilePos( 0, 1 ); break;
-    case northEast: offset = TilePos( 1, 1 ); break;
-    case east: offset = TilePos( 1, 0 ); break;
-    case southEast: offset = TilePos( 1, -1 ); break;
-    case south: offset = TilePos( 0, -1 ); break;
-    case southWest: offset = TilePos( -1, -1 ); break;
-    case west: offset = TilePos( -1, 0 ); break;
-    case northWest: offset = TilePos( -1, 1 ); break;
+    case direction::north: offset = TilePos( 0, 1 ); break;
+    case direction::northEast: offset = TilePos( 1, 1 ); break;
+    case direction::east: offset = TilePos( 1, 0 ); break;
+    case direction::southEast: offset = TilePos( 1, -1 ); break;
+    case direction::south: offset = TilePos( 0, -1 ); break;
+    case direction::southWest: offset = TilePos( -1, -1 ); break;
+    case direction::west: offset = TilePos( -1, 0 ); break;
+    case direction::northWest: offset = TilePos( -1, 1 ); break;
     }
 
     dc->send2City( start, start + offset * range);
@@ -81,7 +81,7 @@ DustCloud::DustCloud(PlayerCityPtr city )
 {
   _setType( walker::dustCloud );
   _d->animation.load( ResourceGroup::sprites, 1, 8 );
-  _d->animation.setDelay( 9 );
+  _d->animation.setDelay( Animation::hugeSlow );
   //_d->animation.setOffset( Point( 5, 7 ) );
 
   setName( _("##dust##") );
@@ -114,8 +114,8 @@ void DustCloud::send2City(const TilePos &start, const TilePos& stop )
   attach();
 
   Tilemap& tmap = _city()->tilemap();
-  _pathwayRef().init( tmap.at( _d->from ) );
-  _pathwayRef().setNextTile( tmap.at( _d->from.nextStep( _d->dst ) ));
+  _pathway().init( tmap.at( _d->from ) );
+  _pathway().setNextTile( tmap.at( _d->from.nextStep( _d->dst ) ));
 }
 
 void DustCloud::timeStep(const unsigned long time)

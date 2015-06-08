@@ -18,18 +18,18 @@
 #include "goods_updater.hpp"
 #include "game/game.hpp"
 #include "objects/construction.hpp"
-#include "helper.hpp"
-#include "good/goodhelper.hpp"
+#include "statistic.hpp"
+#include "good/helper.hpp"
 #include "city.hpp"
 #include "game/gamedate.hpp"
 #include "core/variant_map.hpp"
 #include "objects/house.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "core/logger.hpp"
 #include "events/dispatcher.hpp"
 #include "objects/house_level.hpp"
-
-using namespace constants;
+#include "cityservice_factory.hpp"
+#include "core/variant_list.hpp"
 
 namespace city
 {
@@ -38,10 +38,12 @@ namespace {
 CAESARIA_LITERALCONST(good)
 }
 
+REGISTER_SERVICE_IN_FACTORY(GoodsUpdater,goodsUpdater)
+
 class GoodsUpdater::Impl
 {
 public:
-  typedef std::set<gfx::TileOverlay::Type> BuildingTypes;
+  typedef std::set<object::Type> BuildingTypes;
 
   DateTime endTime;
   bool isDeleted;
@@ -66,11 +68,10 @@ void GoodsUpdater::timeStep(const unsigned int time)
     _d->isDeleted = (_d->endTime < game::Date::current());
 
     Logger::warning( "GoodsUpdater: execute service" );
-    Helper helper( _city() );
 
     foreach( bldType, _d->supportBuildings )
     {
-      BuildingList buildings = helper.find<Building>( *bldType );
+      BuildingList buildings = city::statistic::getObjects<Building>( _city(), *bldType );
       foreach( it, buildings )
       {
         good::Stock stock( _d->gtype, _d->value, _d->value );
@@ -87,13 +88,13 @@ void GoodsUpdater::load(const VariantMap& stream)
   VARIANT_LOAD_TIME_D( _d, endTime, stream )
   VARIANT_LOAD_ANY_D( _d, value, stream )
 
-  _d->gtype = (good::Product)good::Helper::getType( stream.get( lc_good ).toString() );
+  _d->gtype = (good::Product)good::Helper::getType( stream.get( literals::good ).toString() );
 
-  VariantList vl_buildings = stream.get( "buildings" ).toList();
-  foreach( it, vl_buildings )
+  StringArray buildingTypes = stream.get( "buildings" ).toStringArray();
+  foreach( it, buildingTypes )
   {
-    gfx::TileOverlay::Type type = MetaDataHolder::findType( it->toString() );
-    if( type != objects::unknown )
+    object::Type type = object::toType( *it );
+    if( type != object::unknown )
     {
       _d->supportBuildings.insert( type );
     }
@@ -106,13 +107,12 @@ VariantMap GoodsUpdater::save() const
   VARIANT_SAVE_ANY_D( ret, _d, endTime )
   VARIANT_SAVE_ANY_D( ret, _d, value )
 
-  VariantList vl_buildings;
+  StringArray buildingTypes;
   foreach( it, _d->supportBuildings )
-  {
-    vl_buildings.push_back( Variant( MetaDataHolder::findTypename( (gfx::TileOverlay::Type)*it ) ));
-  }
+    buildingTypes << object::toString( *it );
 
-  ret[ lc_good    ] = Variant( good::Helper::getTypeName( _d->gtype ) );
+  ret[ "buildings" ] = utils::toVList( buildingTypes );
+  ret[ literals::good    ] = Variant( good::Helper::getTypeName( _d->gtype ) );
 
   return ret;
 }

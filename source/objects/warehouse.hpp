@@ -20,8 +20,7 @@
 #define _CAESARIA_WAREHOUSE_HPP_INCLUDE_
 
 #include "working.hpp"
-#include "game/enums.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "core/position.hpp"
 
 class Warehouse: public WorkingBuilding
@@ -56,6 +55,8 @@ public:
   bool isGettingFull() const;
   float tradeBuff( Buff type ) const;
 
+  bool isTradeCenter() const;
+  void setTradeCenter( bool enabled );
   Rooms& rooms();
 
   virtual std::string troubleDesc() const;

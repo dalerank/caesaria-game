@@ -20,12 +20,12 @@
 #include "events/showinfobox.hpp"
 #include "game/gamedate.hpp"
 #include "core/gettext.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "objects/extension.hpp"
 #include "objects/factory.hpp"
+#include "city/statistic.hpp"
 #include "core/utils.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace religion
@@ -59,22 +59,21 @@ void __filchGoods( const std::string& title, PlayerCityPtr city, bool showMessag
     events::GameEventPtr event = events::ShowInfobox::create( _(txt),
                                                               _(descr),
                                                               events::ShowInfobox::send2scribe,
-                                                              ":/smk/God_Mercury.smk");
+                                                              "god_mercury");
     event->dispatch();
   }
 
-  SmartList<T> buildings;
-  buildings << city->overlays();
+  SmartList<T> buildings = city::statistic::getObjects<T>( city );
 
   foreach( it, buildings )
   {
     good::Store& store = (*it)->store();
-    for( good::Product gtype=good::wheat; gtype < good::goodCount; ++gtype )
+    foreach( gtype, good::all() )
     {
-      int goodQty = math::random( (store.qty( gtype ) + 99) / 100 ) * 100;
+      int goodQty = math::random( (store.qty( *gtype ) + 99) / 100 ) * 100;
       if( goodQty > 0 )
       {
-        good::Stock rmStock( gtype, goodQty );
+        good::Stock rmStock( *gtype, goodQty );
         store.retrieve( rmStock, goodQty );
       }
     }
@@ -93,12 +92,11 @@ void Mercury::_doSmallCurse(PlayerCityPtr city)
                                                             _("##smallcurse_of_mercury_description##") );
   event->dispatch();
 
-  FactoryList factories;
-  factories << city->overlays();
+  FactoryList factories = city::statistic::getObjects<Factory>( city );
 
   foreach( it, factories )
   {
-    FactoryProgressUpdater::assignTo( ptr_cast<Factory>( *it ), -5, 4 * 12 );
+    FactoryProgressUpdater::assignTo( *it, -5, 4 * 12 );
   }
 }
 

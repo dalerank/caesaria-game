@@ -16,8 +16,10 @@
 #include "eventconverter.hpp"
 #include "time.hpp"
 #include "SDL_version.h"
+#include <SDL_events.h>
 #include "logger.hpp"
 #include <map>
+#include <cstring>
 
 struct SMouseMultiClicks
 {
@@ -169,6 +171,7 @@ void EventConverter::Impl::createKeyMap()
     init_key( SDLK_COMMA,   KEY_COMMA);
     init_key( SDLK_MINUS,   KEY_MINUS);
     init_key( SDLK_PERIOD,  KEY_PERIOD);
+    init_key( SDLK_EQUALS,  KEY_EQUALS);
 }
 
 NEvent EventConverter::get( const SDL_Event& sdlEvent )

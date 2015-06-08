@@ -19,8 +19,6 @@
 #define _CAESARIA_HEALTHUPDATER_H_INCLUDE_
 
 #include "cityservice.hpp"
-#include "predefinitions.hpp"
-#include "core/scopedptr.hpp"
 
 namespace city
 {

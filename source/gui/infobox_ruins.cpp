@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "infobox_ruins.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "image.hpp"
 #include "core/utils.hpp"
 #include "label.hpp"
@@ -25,9 +25,9 @@
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"
 #include "game/settings.hpp"
+#include "game/infoboxmanager.hpp"
 #include "objects/ruins.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -36,10 +36,14 @@ namespace gui
 namespace infobox
 {
 
+REGISTER_OBJECT_BASEINFOBOX(collapsed_ruins,AboutRuins)
+REGISTER_OBJECT_BASEINFOBOX(burned_ruins,AboutRuins)
+REGISTER_OBJECT_BASEINFOBOX(plague_ruins,AboutRuins)
+
 AboutRuins::AboutRuins( Widget* parent, PlayerCityPtr city, const Tile& tile )
-  : Simple( parent, Rect( 0, 0, 510, 350 ) )
+  : Infobox( parent, Rect( 0, 0, 510, 350 ) )
 {
-  RuinsPtr ruin = ptr_cast<Ruins>( tile.overlay() );
+  RuinsPtr ruin = tile.overlay().as<Ruins>();
   if( ruin.isNull() )
   {
     Logger::warning( "AbourRuins: tile overlay at [%d,%d] not ruin", tile.i(), tile.j() );
@@ -63,15 +67,11 @@ AboutRuins::AboutRuins( Widget* parent, PlayerCityPtr city, const Tile& tile )
   lb->setWordwrap( true );
 }
 
-AboutRuins::~AboutRuins()
-{
-}
+AboutRuins::~AboutRuins() {}
 
 void AboutRuins::_showHelp()
 {
-  std::string helpValue = MetaDataHolder::findTypename( _ruinType );
-
-  DictionaryWindow::show( this, helpValue );
+  DictionaryWindow::show( this, object::toString( _ruinType ) );
 }
 
 }

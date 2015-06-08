@@ -17,14 +17,12 @@
 
 #include "start_work.hpp"
 #include "game/game.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "game/gamedate.hpp"
 #include "scene/level.hpp"
 #include "objects/colosseum.hpp"
 #include "postpone.hpp"
 #include "factory.hpp"
-
-using namespace constants;
 
 namespace events
 {
@@ -71,13 +69,11 @@ bool StartWork::_mayExec(Game& game, unsigned int ) const
 {
   if( game::Date::isWeekChanged() )
   {
-    city::Helper helper( game.city() );
-
     bool ret = false;
 
     foreach( i, _bldTypes )
     {
-      WorkingBuildingList bld = helper.find<WorkingBuilding>( gfx::TileOverlay::Type(*i) );
+      WorkingBuildingList bld = city::statistic::getObjects<WorkingBuilding>( game.city(), *i );
 
       ret = !bld.empty();
 

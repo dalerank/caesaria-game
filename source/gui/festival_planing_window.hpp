@@ -28,11 +28,11 @@ namespace gui
 namespace dialog
 {
 
-class FestivalPlaning : public Window
+class FestivalPlanning : public Window
 {
 public:
-  static FestivalPlaning* create( Widget* parent, PlayerCityPtr city, int id );
-  virtual ~FestivalPlaning();
+  static FestivalPlanning* create( Widget* parent, PlayerCityPtr city, int id );
+  virtual ~FestivalPlanning();
 
   virtual void draw( gfx::Engine& painter );
 
@@ -42,7 +42,7 @@ public signals:
   Signal2<int,int>& onFestivalAssign();
 
 private:
-  FestivalPlaning( Widget* parent, int id, const Rect& rectangle, PlayerCityPtr city );
+  FestivalPlanning( Widget* parent, int id, const Rect& rectangle, PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;

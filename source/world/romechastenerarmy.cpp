@@ -23,10 +23,15 @@
 #include "core/logger.hpp"
 #include "events/showinfobox.hpp"
 #include "game/gamedate.hpp"
+#include "config.hpp"
 #include "city.hpp"
 
 namespace world
 {
+
+namespace {
+const int defaultSoldiersCount=16;
+}
 
 class RomeChastenerArmy::Impl
 {
@@ -56,7 +61,8 @@ void RomeChastenerArmy::timeStep(const unsigned int time)
 
   if( !_d->messageSent && game::Date::isWeekChanged() && _d->checkFavor )
   {
-    if( empire()->emperor().relation( target() ) > 35 )
+    bool emperorWantAttackCity = empire()->emperor().relation( target() ) > config::chastener::brokeAttack;
+    if( emperorWantAttackCity )
     {
       Messenger::now( empire(), target(), "##message_from_centurion##", "##centurion_new_order_to_save_player##" );
 
@@ -94,7 +100,7 @@ void RomeChastenerArmy::attack(ObjectPtr obj)
   {
     empire()->emperor().addSoldiers( target(), _d->soldiersNumber );
 
-    events::GameEventPtr e = events::Notification::attack( obj->name(), "##rome_attack_empire_city##", this );
+    events::GameEventPtr e = events::Notify::attack( obj->name(), "##rome_attack_empire_city##", this );
     e->dispatch();
   }
   else
@@ -109,7 +115,7 @@ RomeChastenerArmy::RomeChastenerArmy(EmpirePtr empire)
 {
   _d->checkFavor = false;
   _d->messageSent = false;
-  _d->soldiersNumber = 16;
+  _d->soldiersNumber = defaultSoldiersCount;
 }
 
 }

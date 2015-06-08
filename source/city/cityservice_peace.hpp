@@ -17,11 +17,12 @@
 #define __CAESARIA_CITYSERVICE_PEACE_H_INCLUDED__
 
 #include "cityservice.hpp"
-#include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
 namespace city
 {
+
+PREDEFINE_CLASS_SMARTPOINTER(Peace)
 
 class Peace : public city::Srvc
 {
@@ -32,7 +33,7 @@ public:
   virtual void timeStep( const unsigned int time );
   void addCriminal( WalkerPtr wlk );
 
-  void buildingDestroyed( gfx::TileOverlayPtr overlay, int why );
+  void buildingDestroyed( OverlayPtr overlay, int why );
 
   int value() const;
   static std::string defaultName();
@@ -46,8 +47,6 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
-typedef SmartPtr<Peace> PeacePtr;
 
 }//end namespace city
 

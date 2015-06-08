@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "gfx/layerconstants.hpp"
+#include "layers/constants.hpp"
 #include "menu.hpp"
 #include "texturedbutton.hpp"
 #include "gfx/picture.hpp"
@@ -38,6 +38,7 @@
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "city/city.hpp"
+#include "extented_date_info.hpp"
 #include "events/playsound.hpp"
 
 using namespace constants;
@@ -127,13 +128,13 @@ Menu::Menu( Widget* parent, int id, const Rect& rectangle )
 
   _d->minimizeButton->setGeometry( Rect( Point( 6, 4 ), Size( 31, 20 ) ) );
 
-  _d->houseButton = _addButton( ResourceMenu::houseBtnPicId, true, 0, objects::house,
+  _d->houseButton = _addButton( ResourceMenu::houseBtnPicId, true, 0, object::house,
                                 !haveSubMenu, ResourceMenu::houseMidPicId, _("##build_housing##") );
 
   _d->clearButton = _addButton( 131, true, 1, REMOVE_TOOL_ID,
                                 !haveSubMenu, ResourceMenu::clearMidPicId, _("##clear_land##") );
 
-  _d->roadButton = _addButton( 135, true, 2, objects::road, !haveSubMenu, ResourceMenu::roadMidPicId, _("##build_road_tlp##") );
+  _d->roadButton = _addButton( 135, true, 2, object::road, !haveSubMenu, ResourceMenu::roadMidPicId, _("##build_road_tlp##") );
   _d->waterButton = _addButton( 127, true, 3, development::water, haveSubMenu, ResourceMenu::waterMidPicId, _("##water_build_tlp##") );
   _d->healthButton = _addButton( 163, true, 4, development::health, haveSubMenu, ResourceMenu::healthMidPicId, _("##healthBtnTooltip##") );
   _d->templeButton = _addButton( 151, true, 5, development::religion, haveSubMenu, ResourceMenu::religionMidPicId, _("##templeBtnTooltip##") );
@@ -158,7 +159,7 @@ Menu::Menu( Widget* parent, int id, const Rect& rectangle )
 }
 
 PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul, 
-                             int id, bool haveSubmenu, int midPic, const std::string& tooltip )
+                              int id, bool haveSubmenu, int midPic, const std::string& tooltip )
 {
   Point offset( 1, 32 );
   int dy = 35;
@@ -195,22 +196,20 @@ bool Menu::onEvent(const NEvent& event)
         return false;
 
     int id = event.gui.caller->ID();
-    switch( id )
+    if( id == object::house || id == object::road )
     {
-    case objects::house:
-    case objects::road:
       _d->lastPressed = event.gui.caller;
       _createBuildMenu( -1, this );
       emit _d->onCreateConstructionSignal( id );
-    break;
-
-    case REMOVE_TOOL_ID:
+    }
+    else if( id == REMOVE_TOOL_ID )
+    {
       _d->lastPressed = event.gui.caller;
       _createBuildMenu( -1, this );
       emit _d->onRemoveToolSignal();
-    break;
-
-    default:
+    }
+    else
+    {
       if( _d->lastPressed != event.gui.caller )
       {
         if( event.gui.caller->parent() == this )
@@ -231,7 +230,6 @@ bool Menu::onEvent(const NEvent& event)
           }
         }
       }
-    break;
     }
 
     unselectAll();
@@ -276,11 +274,11 @@ bool Menu::onEvent(const NEvent& event)
 
 Menu* Menu::create(Widget* parent, int id, PlayerCityPtr city )
 {
-  const Picture& bground = Picture::load( ResourceGroup::panelBackground, 16 );
+  Picture bground( ResourceGroup::panelBackground, 16 );
 
   Menu* ret = new Menu( parent, id, Rect( 0, 0, bground.width(), parent->height() ) );
 
-  const Picture& bottom  = Picture::load( ResourceGroup::panelBackground, 21 );
+  Picture bottom( ResourceGroup::panelBackground, 21 );
 
   ret->_d->background.clear();
 
@@ -342,7 +340,7 @@ void Menu::_createBuildMenu( int type, Widget* parent )
    List< BuildMenu* > menus = findChildren<BuildMenu*>();
    foreach( item, menus ) { (*item)->deleteLater(); }
 
-   BuildMenu* buildMenu = BuildMenu::create( (development::Branch)type, this );
+   BuildMenu* buildMenu = BuildMenu::create( (development::Branch)type, this, _d->city->getOption( PlayerCity::c3gameplay ) );
 
    if( buildMenu != NULL )
    {
@@ -386,11 +384,11 @@ void Menu::Impl::updateBuildingOptions()
 
 ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city )
 {
-  const Picture& bground = Picture::load( ResourceGroup::panelBackground, 17 );
+  Picture bground( ResourceGroup::panelBackground, 17 );
 
   ExtentMenu* ret = new ExtentMenu( parent, id, Rect( 0, 0, bground.width(), parent->height() ) );
 
-  const Picture& bottom = Picture::load( ResourceGroup::panelBackground, 20 );
+  Picture bottom( ResourceGroup::panelBackground, 20 );
 
   ret->_d->background.clear();
 
@@ -461,10 +459,10 @@ ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle )
   _d->disasterButton = _addButton( 119, false, 0, -1, false, -1, _("##disasterBtnTooltip##") );
   _d->disasterButton->setGeometry( Rect( Point( 113, 421 ), Size( 39, 22 ) ) );
   _d->disasterButton->setEnabled( false );
-  _d->disasterButton->setTooltipText( "##show_spots_of_city_troubles_tip##");
+  _d->disasterButton->setTooltipText( _("##show_spots_of_city_troubles_tip##") );
 
   _d->middleLabel = new Label(this, Rect( Point( 7, 216 ), Size( 148, 52 )) );
-  _d->middleLabel->setBackgroundPicture( Picture::load( ResourceGroup::menuMiddleIcons, ResourceMenu::emptyMidPicId ) );
+  _d->middleLabel->setBackgroundPicture( Picture( ResourceGroup::menuMiddleIcons, ResourceMenu::emptyMidPicId ) );
 
   _d->overlaysMenu = new OverlaysMenu( parent(), Rect( 0, 0, 160, 1 ), -1 );
   _d->overlaysMenu->hide();
@@ -483,7 +481,7 @@ bool ExtentMenu::onEvent(const NEvent& event)
     if( MenuButton* btn = safety_cast< MenuButton* >( event.gui.caller ) )
     {
       int picId = btn->midPicId() > 0 ? btn->midPicId() : ResourceMenu::emptyMidPicId;
-      _d->middleLabel->setBackgroundPicture( Picture::load( ResourceGroup::menuMiddleIcons, picId ) );
+      _d->middleLabel->setBackgroundPicture( Picture( ResourceGroup::menuMiddleIcons, picId ) );
     }
   }
 
@@ -508,6 +506,20 @@ void ExtentMenu::changeOverlay(int ovType)
 {
   std::string layerName = citylayer::Helper::prettyName( (citylayer::Type)ovType );
   _d->overlaysButton->setText( _( layerName ) );
+}
+
+void ExtentMenu::showInfo(int type)
+{
+  int hash = Hash(CAESARIA_STR_A(ExtentedDateInfo));
+  ExtentedDateInfo* window = safety_cast<ExtentedDateInfo*>( findChild( hash ) );
+  if( !window )
+  {
+    window = new ExtentedDateInfo( this, Rect( Point(), size() ), hash );
+  }
+  else
+  {
+    window->deleteLater();
+  }
 }
 
 Signal1<int>& ExtentMenu::onSelectOverlayType() {  return _d->overlaysMenu->onSelectOverlayType(); }

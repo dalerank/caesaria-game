@@ -36,6 +36,7 @@ public:
   virtual int climateType( const std::string& filename );
   virtual bool isLoadableFileExtension( const std::string& filename );
   virtual std::string restartFile() const;
+  virtual bool finalizeMap() const { return false; }
 
 private:
   class Impl;

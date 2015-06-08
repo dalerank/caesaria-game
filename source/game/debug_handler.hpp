@@ -28,6 +28,7 @@ class DebugHandler
 public:
   DebugHandler();
   void insertTo( Game* game, gui::MainMenu* menu );
+  void setVisible( bool visible );
 
   ~DebugHandler();
 

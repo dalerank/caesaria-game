@@ -27,10 +27,14 @@
 #include "core/direction.hpp"
 #include "objects/objects_factory.hpp"
 #include "pathway/astarpathfinding.hpp"
+#include "gfx/tilearea.hpp"
 #include <fstream>
 #include <cfloat>
 
 using namespace gfx;
+
+namespace terrain
+{
 
 MidpointDisplacement::MidpointDisplacement(int n, int wmult, int hmult, float smoothness, float terrainSquare)
 {
@@ -88,21 +92,21 @@ std::vector<int> MidpointDisplacement::map()
 
   for (int i = 0; i < width_; i += 2 * step) {
     for (int j = 0; j < height_; j+= 2 * step) {
-      map[ CoordinatesToVectorIndex(i, j) ] = random_.Float(0, 2 * h); //???
+      map[ CoordinatesToVectorIndex(i, j) ] = random_.toFloat(0, 2 * h); //???
     }
   }
 
   for (int i = 0; i < width_; i++) {
-    map[ CoordinatesToVectorIndex(i, 0) ] = random_.Float(-3, -2);
-    map[ CoordinatesToVectorIndex(i, height_ - 1) ] = random_.Float(-2, -1);
+    map[ CoordinatesToVectorIndex(i, 0) ] = random_.toFloat(-3, -2);
+    map[ CoordinatesToVectorIndex(i, height_ - 1) ] = random_.toFloat(-2, -1);
   }
 
   for (int i = 0; i < height_; i++) {
-    map[ CoordinatesToVectorIndex(0, i) ] = random_.Float(-3, -2);
-    map[ CoordinatesToVectorIndex(width_ - 1, i) ] = random_.Float(-3, -2);
+    map[ CoordinatesToVectorIndex(0, i) ] = random_.toFloat(-3, -2);
+    map[ CoordinatesToVectorIndex(width_ - 1, i) ] = random_.toFloat(-3, -2);
   }
 
-  map[ CoordinatesToVectorIndex((width_ - 1) / 2, (height_ - 1) / 2) ] = (2 * h) + random_.Float(1, 5);
+  map[ CoordinatesToVectorIndex((width_ - 1) / 2, (height_ - 1) / 2) ] = (2 * h) + random_.toFloat(1, 5);
   /*map.at(CoordinatesToVectorIndex(0, 0)) = -3;
 map.at(CoordinatesToVectorIndex((width_ - 1), 0)) = -3;
 map.at(CoordinatesToVectorIndex(0, (height_ - 1))) = -3;
@@ -120,7 +124,7 @@ map.at(CoordinatesToVectorIndex((width_ - 1) / 2, (height_ - 1) / 2)) = 3;*/
             + map[ CoordinatesToVectorIndex(x - step, y + step) ]
             + map[ CoordinatesToVectorIndex(x + step, y - step) ]
             + map[ CoordinatesToVectorIndex(x + step, y + step) ];
-        map[ CoordinatesToVectorIndex(x, y) ] = sum / 4 + random_.Float(-h, h); //???
+        map[ CoordinatesToVectorIndex(x, y) ] = sum / 4 + random_.toFloat(-h, h); //???
       }
     }
 
@@ -146,7 +150,7 @@ map.at(CoordinatesToVectorIndex((width_ - 1) / 2, (height_ - 1) / 2)) = 3;*/
           count++;
         }
         if(count > 0) {
-          map[ CoordinatesToVectorIndex(x, y) ] = sum / count + random_.Float(-h, h); //???
+          map[ CoordinatesToVectorIndex(x, y) ] = sum / count + random_.toFloat(-h, h); //???
         } else {
           map[ CoordinatesToVectorIndex(x, y) ] = 0;
         }
@@ -388,7 +392,7 @@ static void __finalizeMap(Game& game, int pass )
         {
         case 0:
         {
-          Picture pic = Picture::load( ResourceGroup::land1a, 62 + math::random( 57 ) );
+          Picture pic( ResourceGroup::land1a, 62 + math::random( 57 ) );
           wtile.setPicture( pic );
           //wtile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
           wtile.setOriginalImgId( direction );
@@ -409,7 +413,7 @@ static void __finalizeMap(Game& game, int pass )
 
         wtile.setFlag( Tile::tlWater, true );
         wtile.setFlag( Tile::tlCoast, true );
-        Picture pic = Picture::load( ResourceGroup::land1a, start + rnd );
+        Picture pic( ResourceGroup::land1a, start + rnd );
         wtile.setPicture( pic );
         wtile.setOriginalImgId( imgid::fromResource( pic.name() ) );
       }
@@ -419,6 +423,7 @@ static void __finalizeMap(Game& game, int pass )
 class TerrainGeneratorHelper
 {
 public:
+  int mapSize;
   void canBuildRoad( const Tile* tile, bool& ret )
   {
     ret = tile->isWalkable( true ) || tile->getFlag( Tile::tlTree );
@@ -429,19 +434,49 @@ public:
     ret = (  tile->getFlag( Tile::tlWater ) || tile->getFlag( Tile::tlGrass ) || tile->getFlag( Tile::tlTree ) );
   }
 
+  void needBuildRoad( const Tile* tile, bool& ret )
+  {
+    ret = tile->isWalkable( true ) || tile->getFlag( Tile::tlTree );
+
+    if( tile->getFlag( Tile::tlWater ) )
+    {
+      ret = false;
+      return;
+    }
+
+    if( !ret )
+    {        
+      const int border = 10;
+      if( tile->getFlag( Tile::tlRock )
+          && (tile->i() < border || tile->j() < border || (mapSize - tile->i() < border) || (mapSize - tile->j() < border)) )
+      {
+        ret = true;
+      }
+    }
+  }
+
+  Pathway findWay( Tilemap& oTilemap, TilePos startPos, TilePos endPos )
+  {
+    mapSize = oTilemap.size();
+    Pathfinder& pathfinder = Pathfinder::instance();
+    pathfinder.setCondition( makeDelegate( this, &TerrainGeneratorHelper::needBuildRoad ) );
+
+    return pathfinder.getPath( startPos, endPos, Pathfinder::customCondition | Pathfinder::fourDirection );
+  }
+
   Pathway findWay(Tilemap& oTilemap, int startSide, int endSide )
   {
     Pathfinder& pathfinder = Pathfinder::instance();
     pathfinder.setCondition( makeDelegate( this, &TerrainGeneratorHelper::canBuildRoad ) );
 
     TilesArray tiles = sideTiles( startSide, oTilemap );
-    tiles = tiles.walkableTiles( true );
+    tiles = tiles.walkables( true );
 
     if( tiles.empty() )
       return Pathway();
 
     TilesArray otherTiles = sideTiles( endSide, oTilemap );
-    otherTiles = otherTiles.walkableTiles( true );
+    otherTiles = otherTiles.walkables( true );
 
     return findWay( tiles, otherTiles );
   }
@@ -499,7 +534,7 @@ static void __createRivers(Game& game )
   Pathfinder& pathfinder = Pathfinder::instance();
   pathfinder.setCondition( makeDelegate( &tgHelper, &TerrainGeneratorHelper::canBuildRiver ) );
 
-  TilesArray terrainTiles = oTilemap.getArea( TilePos(0,0), Size( oTilemap.size() ) );
+  TilesArray terrainTiles = oTilemap.allTiles();
   for( TilesArray::iterator it=terrainTiles.begin(); it != terrainTiles.end(); )
   {
     Tile* tile = *it;
@@ -541,7 +576,7 @@ static void __createRivers(Game& game )
 
       foreach( it, wayTiles )
       {
-        TileOverlayPtr overlay = TileOverlayFactory::instance().create( constants::objects::river );
+        OverlayPtr overlay = TileOverlayFactory::instance().create( object::river );
 
         //Picture pic = Picture::load( ResourceGroup::land1a, 62 + math::random( 57 ) );
         (*it)->setPicture( Picture::getInvalid() );
@@ -550,9 +585,9 @@ static void __createRivers(Game& game )
 
         bool isWater = (*it)->getFlag( Tile::tlWater );
 
-        CityAreaInfo info = { oCity, (*it)->pos(), TilesArray() };
+        city::AreaInfo info = { oCity, (*it)->pos(), TilesArray() };
         overlay->build( info );
-        oCity->overlays().push_back( overlay );
+        oCity->addOverlay( overlay );
 
         if( isWater )
           break;
@@ -587,32 +622,91 @@ static void __createRoad(Game& game )
       break;
   }
 
+  BorderInfo borderInfo = oCity->borderInfo();
+  TilesArray borderTiles = oTilemap.border();
+
+  if( !way.isValid() )
+  {
+    TilesArray eterrain = borderTiles.terrains();
+    TilesArray sterrain;
+    for( unsigned int k=eterrain.size()/2; k < eterrain.size(); k++ )
+      sterrain.push_back( eterrain[ k ] );
+
+    eterrain.resize( eterrain.size() / 2 );
+
+    for( int tryCount=0; tryCount < 10; tryCount++ )
+    {
+      borderInfo.roadEntry = sterrain.random()->pos();
+      borderInfo.roadExit = eterrain.random()->pos();
+
+      way = tgHelper.findWay( oTilemap, borderInfo.roadEntry, borderInfo.roadExit );
+      if( way.isValid() )
+        break;
+
+      TilesArray around = oTilemap.getArea( 3, borderInfo.roadEntry );
+      foreach( it, around )
+        sterrain.remove( (*it)->pos() );
+
+      around = oTilemap.getArea( 3, borderInfo.roadExit );
+      foreach( it, around )
+        eterrain.remove( (*it)->pos() );
+    }
+  }
+
   if( way.isValid() )
   {
     TilesArray wayTiles = way.allTiles();
 
     foreach( it, wayTiles )
     {
-      TileOverlayPtr overlay = TileOverlayFactory::instance().create( constants::objects::road );
+      OverlayPtr overlay = TileOverlayFactory::instance().create( object::road );
 
-      Picture pic = Picture::load( ResourceGroup::land1a, PicID::grassPic + math::random( PicID::grassPicsNumber ) );
+      Picture pic( ResourceGroup::land1a, PicID::grassPic + math::random( PicID::grassPicsNumber ) );
       (*it)->setPicture( pic );
       (*it)->setOriginalImgId( imgid::fromResource( pic.name() ) );
 
-      CityAreaInfo info = { oCity, (*it)->pos(), TilesArray() };
+      city::AreaInfo info = { oCity, (*it)->pos(), TilesArray() };
       overlay->build( info );
-      oCity->overlays().push_back( overlay );
+      oCity->addOverlay( overlay );
     }
-
-    BorderInfo borderInfo = oCity->borderInfo();
 
     borderInfo.roadEntry = way.startPos();
     borderInfo.roadExit = way.stopPos();
-    oCity->setBorderInfo( borderInfo );
+  }  
+  else
+  {
+    TilesArray terrain = borderTiles.terrains();
+
+    borderInfo.roadEntry = terrain.random()->pos();
+    borderInfo.roadExit = terrain.random()->pos();       
+  }
+
+  TilesArray water = borderTiles.waters();
+  borderInfo.boatEntry = water.random()->pos();
+  borderInfo.boatExit = water.random()->pos();
+
+  oCity->setBorderInfo( borderInfo );
+}
+
+void __createMeadows( Game& game )
+{
+  PlayerCityPtr oCity = game.city();
+  Tilemap& oTilemap = oCity->tilemap();
+
+  TilesArray tiles = oTilemap.allTiles();
+  int fieldSize = math::max<int>( tiles.size() / 10000.f, 1 );
+  int maxMeadowTiles = pow( fieldSize, 2);
+  for( int k=0; k < maxMeadowTiles; k++ )
+  {
+    Tile* tile = tiles.random();
+    TilesArray meadows = oTilemap.getArea( math::random( fieldSize ), tile->pos() );
+    meadows = meadows.terrains();
+
+    foreach( it, meadows ) (*it)->setFlag( Tile::tlMeadow, true );
   }
 }
 
-void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrainSq)
+void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
 {
   MidpointDisplacement diamond_square = MidpointDisplacement(n2size, 8, 8, smooth, terrainSq);
   std::vector<int> map = diamond_square.map();
@@ -664,7 +758,7 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
       {
         color = NColor( 255, 255, 0, 255);
         tile.setFlag( Tile::tlDeepWater, true );
-        Picture pic = Picture::load( ResourceGroup::land1a, 120 );
+        Picture pic( ResourceGroup::land1a, 120 );
         tile.setPicture( pic );
         tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
       }
@@ -674,7 +768,7 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
       {
         color = NColor( 255, 7, 93, 192);
         tile.setFlag( Tile::tlDeepWater, true );
-        Picture pic = Picture::load( ResourceGroup::land1a, 120 );
+        Picture pic( ResourceGroup::land1a, 120 );
         tile.setPicture( pic );
         tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
       }
@@ -684,7 +778,7 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
       {
         color = NColor( 255, 74, 157, 251);
         tile.setFlag( Tile::tlWater, true );
-        Picture pic = Picture::load( ResourceGroup::land1a, 120 );
+        Picture pic( ResourceGroup::land1a, 120 );
         tile.setPicture( pic );
         tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
       }
@@ -698,14 +792,7 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
       case MidpointDisplacement::grass:
       {
         color = NColor( 255, 7, 192, 53);
-        Picture pic;
-        /*int rnd3 = math::random( 1 );
-        switch( rnd3 )
-        {
-        case 0: pic = ;
-        case 1:
-        }*/
-        pic = Picture::load( ResourceGroup::land1a, 62 + math::random( 57 ) );
+        Picture pic( ResourceGroup::land1a, 62 + math::random( 57 ) );
         tile.setPicture( pic );
         tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
       }
@@ -731,25 +818,25 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
           tile.setFlag( Tile::tlTree, true );
         }
 
-        Picture land = MetaDataHolder::randomPicture( constants::objects::terrain, Size(1) );
+        Picture land = MetaDataHolder::randomPicture( object::terrain, Size(1) );
         tile.setPicture( land );
 
-        Picture tree = Picture::load( ResourceGroup::land1a, start + math::random( rnd ) );
+        Picture tree( ResourceGroup::land1a, start + math::random( rnd ) );
         tile.setOriginalImgId( imgid::fromResource( tree.name() ) );
 
-        TileOverlayPtr overlay = TileOverlayFactory::instance().create( constants::objects::tree );
+        OverlayPtr overlay = TileOverlayFactory::instance().create( object::tree );
         if( overlay != NULL )
         {
-          CityAreaInfo info = { oCity, tile.pos(), TilesArray() };
+          city::AreaInfo info = { oCity, tile.pos(), TilesArray() };
           overlay->build( info );
-          oCity->overlays().push_back( overlay );
+          oCity->addOverlay( overlay );
         }
       }
       break;
 
       case MidpointDisplacement::shallowMountain: {
         color = NColor( 255, 147, 188, 157 );
-        Picture pic = Picture::load( ResourceGroup::land1a, 290 + math::random( 7 ) );
+        Picture pic( ResourceGroup::land1a, 290 + math::random( 7 ) );
         tile.setFlag( Tile::tlRock, true );
         tile.setPicture( pic );
         tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
@@ -758,7 +845,7 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
 
       case MidpointDisplacement::highMountain: {
         color = NColor( 255, 129, 141, 132);
-        Picture pic = Picture::load( ResourceGroup::land1a, 62 + math::random( 57 ) );
+        Picture pic( ResourceGroup::land1a, 62 + math::random( 57 ) );
         //Picture::load( ResourceGroup::land1a, 230 + math::random( 59 ) );
         //tile.setFlag( Tile::tlRock, true );
         tile.setPicture( pic );
@@ -785,7 +872,7 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
   __finalizeMap( game, passCheckInsideCornerTiles );
   __finalizeMap( game, 8 );
   __finalizeMap( game, 9 );
-
+  __createMeadows( game );
   __finalizeMap( game, 0xff );
 
   //update pathfinder map
@@ -794,3 +881,17 @@ void TerrainGenerator::create(Game& game, int n2size, float smooth, float terrai
   __createRivers( game );
   __createRoad( game );
 }
+
+void Generator::create(Game &game, const Generator::Params &params)
+{
+  create( game, params.n2size, params.smooth, params.terrainSq );
+}
+
+void Generator::Params::load(const VariantMap& vm)
+{
+  n2size = vm.get( "size", 5 );
+  smooth = vm.get( "smooth", 2.6 );
+  terrainSq = vm.get( "terrain", 4 );
+}
+
+}//end namespace terrain

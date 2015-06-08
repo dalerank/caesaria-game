@@ -20,8 +20,6 @@
 #include "city/city.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
-
 REGISTER_CLASS_IN_WALKERFACTORY(walker::lion, Lion)
 
 LionPtr Lion::create(PlayerCityPtr city)
@@ -50,5 +48,5 @@ Lion::Lion(PlayerCityPtr city) : Animal( city )
 {
   _setType( walker::lion );
 
-  setName( _("##Lion##") );
+  setName( _("##lion##") );
 }

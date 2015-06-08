@@ -26,6 +26,7 @@
 #include "core/logger.hpp"
 #include "city/cityservice_factory.hpp"
 #include "factory.hpp"
+#include "city/states.hpp"
 
 namespace events
 {
@@ -119,7 +120,7 @@ bool PostponeEvent::_mayExec( Game& game, unsigned int time ) const
     bool popCondition = true;
     if( _d->population > 0 )
     {
-      popCondition = game.city()->population() > _d->population;
+      popCondition = game.city()->states().population > _d->population;
     }
 
     _d->mayDelete = dateCondition && popCondition;
@@ -135,7 +136,7 @@ VariantMap PostponeEvent::save() const
   VariantMap ret = _d->options;
   ret[ "type" ] = Variant( _type );
   ret[ "name" ] = Variant( _name );  
-  ret[ "date" ] = _d->date;
+  VARIANT_SAVE_ANY_D( ret, _d, date )
   VARIANT_SAVE_ANY_D( ret, _d, checkInterval)
   VARIANT_SAVE_ANY_D( ret, _d, population )
   return ret;

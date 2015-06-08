@@ -21,7 +21,7 @@
 namespace updater
 {
 
-const char* const LIB_UPDATE_VERSION = "0.0.7";
+const char* const LIB_UPDATE_VERSION = "0.0.8";
 
 const char* const LIB_UPDATE_PLATFORM =
 #ifdef CAESARIA_PLATFORM_WIN

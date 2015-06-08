@@ -20,12 +20,13 @@
 #include "objects/metadata.hpp"
 #include "objects/warehouse.hpp"
 #include "label.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "special_orders_window.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
+#include "game/infoboxmanager.hpp"
 
 using namespace gfx;
 
@@ -34,6 +35,8 @@ namespace gui
 
 namespace infobox
 {
+
+REGISTER_OBJECT_BASEINFOBOX(warehouse,AboutWarehouse)
 
 AboutWarehouse::AboutWarehouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 225, 510 - 16, 225 + 62 ) )

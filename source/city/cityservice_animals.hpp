@@ -19,12 +19,13 @@
 #define __CAESARIA_CITYSERVICE_ANIMALS_H_INCLUDED__
 
 #include "cityservice.hpp"
-#include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 #include "walker/constants.hpp"
 
 namespace city
 {
+
+PREDEFINE_CLASS_SMARTPOINTER(Animals)
 
 class Animals : public Srvc
 {
@@ -32,7 +33,7 @@ public:
   static SrvcPtr create( PlayerCityPtr city );
   static std::string defaultName();
   virtual void timeStep( const unsigned int time );
-  void setAnimalsNumber( constants::walker::Type animal_type, unsigned int number );
+  void setAnimalsNumber( walker::Type animal_type, unsigned int number );
 
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream);
@@ -43,8 +44,6 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
-typedef SmartPtr<Animals> AnimalsPtr;
 
 }//end namespace city
 

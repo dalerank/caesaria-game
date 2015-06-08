@@ -19,7 +19,7 @@
 #define __CAESARIA_GOODCARAVAN_H_INCLUDED__
 
 #include "movableobject.hpp"
-#include "good/goodstore.hpp"
+#include "good/good.hpp"
 
 namespace world
 {
@@ -27,7 +27,9 @@ namespace world
 class GoodCaravan : public MovableObject
 {
 public:
+  enum { deafaultSpeed=3, defaultCapacity=10000 };
   static GoodCaravanPtr create( CityPtr city );
+
   void sendTo( ObjectPtr obj );
   void sendTo( CityPtr obj );
   good::Store& store();

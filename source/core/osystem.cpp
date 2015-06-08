@@ -17,6 +17,7 @@
 
 #include "osystem.hpp"
 #include "platform.hpp"
+#include <ctime>
 
 #ifdef CAESARIA_PLATFORM_LINUX
 #include <cstdlib>
@@ -32,6 +33,8 @@ const char* getDialogCommand()
   }
   return NULL;
 }
+#elif defined(CAESARIA_PLATFORM_MACOSX)
+  #include <cstdlib>
 #elif defined(CAESARIA_PLATFORM_WIN)
   #include <windows.h>
 #endif
@@ -44,7 +47,7 @@ void OSystem::error(const std::string& title, const std::string& text)
   {
     std::string command = dialogCommand;
     command += " --title \"" + title + "\" --msgbox \"" + text + "\"";
-    int error = ::system(command.c_str());
+    ::system(command.c_str());
   }
 
   // fail-safe method here, using stdio perhaps, depends on your application
@@ -56,9 +59,38 @@ void OSystem::error(const std::string& title, const std::string& text)
 void OSystem::openUrl(const std::string& url)
 {
 #ifdef CAESARIA_PLATFORM_LINUX
-  std::string command = "xdg-open " + url;
-  int error = ::system( command.c_str() );
+  std::string command = "xdg-open '" + url + "'";
+  ::system( command.c_str() );
 #elif defined(CAESARIA_PLATFORM_WIN)
   ShellExecuteA(0, 0, url.c_str(), 0, 0 , SW_SHOW );
+#endif
+}
+
+void OSystem::openDir(const std::string& path)
+{
+  std::string result;
+#ifdef CAESARIA_PLATFORM_LINUX
+  result = "nautilus '" + path + "' &";
+  ::system( result.c_str() );
+#elif defined(CAESARIA_PLATFORM_WIN)
+  ShellExecute(GetDesktopWindow(), "open", path.c_str(), NULL, NULL, SW_SHOWNORMAL);
+#elif defined(CAESARIA_PLATFORM_MACOSX)
+  result = "open \"" + path + "\" &";
+  ::system( result.c_str() );
+#endif
+}
+
+int OSystem::gmtOffsetMs()
+{
+#if defined(CAESARIA_PLATFORM_LINUX) || defined(CAESARIA_PLATFORM_MACOSX)
+  std::time_t current_time;
+  std::time(&current_time);
+  struct std::tm *timeinfo = std::localtime(&current_time);
+  return timeinfo->tm_gmtoff;
+#elif defined(CAESARIA_PLATFORM_WIN)
+  time_t now = time(NULL);
+  struct tm lcl = *localtime(&now);
+  struct tm gmt = *gmtime(&now);
+  return (lcl.tm_hour - gmt.tm_hour);
 #endif
 }

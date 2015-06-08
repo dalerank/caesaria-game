@@ -106,6 +106,11 @@ SHELPER_API bool __cdecl   sth_setAchievement(const char* achName)
     return SteamUserStats()->SetAchievement(achName);
 }
 
+SHELPER_API bool __cdecl   sth_clearAchievement(const char* achName)
+{
+    return SteamUserStats()->ClearAchievement(achName);
+}
+
 SHELPER_API void __cdecl   sth_SetStat(const char* statName, int value)
 {
     SteamUserStats()->SetStat(statName, value);
@@ -125,6 +130,11 @@ SHELPER_API int __cdecl sth_getMediumFriendAvatar(uint64 id)
 {
   CSteamID steamId(id);
   return SteamFriends()->GetMediumFriendAvatar(steamId);
+}
+
+SHELPER_API bool __cdecl sth_isDlcInstalled(uint64 id)
+{
+  return SteamApps()->BIsDlcInstalled((AppId_t)id);
 }
 
 SHELPER_API void __cdecl sth_runCallbacks()

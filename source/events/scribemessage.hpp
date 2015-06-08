@@ -13,12 +13,14 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_EVENT_SCRIBEMESSAGE_H_INCLUDE_
 #define _CAESARIA_EVENT_SCRIBEMESSAGE_H_INCLUDE_
 
 #include "event.hpp"
+#include "good/good.hpp"
+#include "core/position.hpp"
 
 namespace events
 {
@@ -32,6 +34,7 @@ public:
 protected:
   virtual void _exec( Game& game, unsigned int );
   virtual bool _mayExec(Game&, unsigned int ) const;
+  ScribeMessage();
 
 private:
   std::string _title;

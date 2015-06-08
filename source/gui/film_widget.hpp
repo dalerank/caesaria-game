@@ -28,7 +28,7 @@ namespace gui
 class FilmWidget : public Window
 {
 public:
-  FilmWidget( Widget* parent, const vfs::Path& film );
+  FilmWidget( Widget* parent, const std::string& film );
 
   virtual ~FilmWidget(void);
 

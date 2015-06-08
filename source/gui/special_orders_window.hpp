@@ -57,8 +57,7 @@ public:
 private:
   void _updateBtnDevastation();
 
-  GranaryPtr _granary;
-  PushButton* _btnToggleDevastation;
+  __DECLARE_IMPL(GranarySpecialOrdersWindow)
 };
 
 class WarehouseSpecialOrdersWindow : public BaseSpecialOrdersWindow
@@ -68,10 +67,7 @@ public:
   WarehouseSpecialOrdersWindow( Widget* parent, const Point& pos, WarehousePtr warehouse );
   ~WarehouseSpecialOrdersWindow();
 
-  void toggleDevastation();
 private:
-  void _updateBtnDevastation();
-
   __DECLARE_IMPL(WarehouseSpecialOrdersWindow)
 };
 

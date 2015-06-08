@@ -19,14 +19,14 @@
 #define __CAESARIA_ENEMYSOLDIER_H_INCLUDED__
 
 #include "soldier.hpp"
-#include "core/priorities.hpp"
+#include "objects/constants.hpp"
 
 class EnemySoldier : public Soldier
 {
 public:
   typedef enum { attackAll, attackFood, attackCitizen, attackBestBuilding,
                  attackIndustry, attackSenate, attackCount } AttackPriority;
-  static EnemySoldierPtr create( PlayerCityPtr city, constants::walker::Type type );
+  static EnemySoldierPtr create( PlayerCityPtr city, walker::Type type );
 
   virtual void timeStep(const unsigned long time);
 
@@ -56,16 +56,16 @@ protected:
   virtual void _check4attack();
   virtual Pathway _findPathway2NearestConstruction(unsigned int range);
 
-  EnemySoldier( PlayerCityPtr city, constants::walker::Type type );
+  EnemySoldier( PlayerCityPtr city, walker::Type type );
 
-  Priorities<int>& _excludeAttack();
+  object::GroupSet &_excludeAttack();
 
 private:
   Pathway _findFreeSlot(TilePos target, const int range);
   Pathway _findPathway2NearestEnemy(unsigned int range);
 
   AttackPriority _atPriority;
-  Priorities<int> _atExclude;
+  object::GroupSet _atExclude;
 };
 
 #endif //__CAESARIA_ENEMYSOLDIER_H_INCLUDED__

@@ -21,17 +21,17 @@
 #include "gfx/picture.hpp"
 #include "core/variant_map.hpp"
 #include "walker/cart_pusher.hpp"
-#include "good/goodstore_simple.hpp"
-#include "city/helper.hpp"
+#include "good/storage.hpp"
+#include "city/statistic.hpp"
 #include "constants.hpp"
 #include "game/gamedate.hpp"
 #include "walker/cart_supplier.hpp"
 #include "objects_factory.hpp"
+#include "config.hpp"
 
 using namespace gfx;
-using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::granery, Granary)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::granery, Granary)
 
 namespace {
 CAESARIA_LITERALCONST(goodStore)
@@ -39,7 +39,7 @@ static const Renderer::Pass rpass[2] = { Renderer::overlayAnimation, Renderer::o
 static const Renderer::PassQueue granaryPass = Renderer::PassQueue( rpass, rpass + 1 );
 }
 
-class GranaryStore : public good::SimpleStore
+class GranaryStore : public good::Storage
 {
 public:
   static const int maxCapacity = 2400;
@@ -59,7 +59,7 @@ public:
   virtual int reserveStorage( good::Stock &stock, DateTime time )
   {
     return granary->numberWorkers() > 0
-              ? good::SimpleStore::reserveStorage( stock, time )
+              ? good::Storage::reserveStorage( stock, time )
               : 0;
   }
 
@@ -70,26 +70,26 @@ public:
       return;
     }
     
-    good::SimpleStore::store( stock, amount );
+    good::Storage::store( stock, amount );
   }
 
   virtual void applyStorageReservation(good::Stock &stock, const int reservationID)
   {
-    good::SimpleStore::applyStorageReservation( stock, reservationID );
+    good::Storage::applyStorageReservation( stock, reservationID );
 
     granary->computePictures();
   }
 
   virtual void applyRetrieveReservation(good::Stock &stock, const int reservationID)
   {
-    good::SimpleStore::applyRetrieveReservation( stock, reservationID );
+    good::Storage::applyRetrieveReservation( stock, reservationID );
 
     granary->computePictures();
   }
   
   virtual void setOrder( const good::Product type, const good::Orders::Order order )
   {
-    good::SimpleStore::setOrder( type, order );
+    good::Storage::setOrder( type, order );
     setCapacity( type, (order == good::Orders::reject || order == good::Orders::none ) ? 0 : GranaryStore::maxCapacity );
   }
 
@@ -104,24 +104,24 @@ public:
   bool devastateThis;
 };
 
-Granary::Granary() : WorkingBuilding( constants::objects::granery, Size(3) ), _d( new Impl )
+Granary::Granary() : WorkingBuilding( object::granery, Size(3) ), _d( new Impl )
 {
   _d->store.granary = this;
 
-  setPicture( ResourceGroup::commerce, 140 );
-  _fgPicturesRef().resize(6);  // 1 upper level + 4 windows + animation
+  _picture().load( ResourceGroup::commerce, 140 );
+  _fgPictures().resize(6);  // 1 upper level + 4 windows + animation
 
   _animationRef().load(ResourceGroup::commerce, 146, 7, Animation::straight);
   // do the animation in reverse
   _animationRef().load(ResourceGroup::commerce, 151, 6, Animation::reverse);
   _animationRef().setDelay( 4 );
 
-  _fgPicture( 0 ) = Picture::load( ResourceGroup::commerce, 141);
+  _fgPicture( 0 ) = Picture( ResourceGroup::commerce, 141 );
   _fgPicture( 5 ) = _animationRef().currentFrame();
   computePictures();
 
   _d->devastateThis = false;  
-  _d->granarySprite.push_back( Picture::load( ResourceGroup::commerce, 141) );
+  _d->granarySprite.push_back( Picture( ResourceGroup::commerce, 141 ) );
   _d->granarySprite.push_back( Picture::getInvalid() );
 }
 
@@ -133,17 +133,7 @@ void Granary::timeStep(const unsigned long time)
 
   if( game::Date::isWeekChanged() )
   {
-    if(  walkers().empty() )
-    {
-      if( _d->store.isDevastation() )
-      {
-        _tryDevastateGranary();
-      }
-      else
-      {
-        _resolveDeliverMode();
-      }
-    }
+    _weekUpdate();
   }
 }
 
@@ -176,13 +166,13 @@ void Granary::computePictures()
   for (int n = 0; n < 4; ++n)
   {
     // reset all window pictures
-    _fgPicturesRef()[n+1] = Picture::getInvalid();
+    _fgPictures()[n+1] = Picture::getInvalid();
   }
 
-  if (allQty > 0){ _fgPicturesRef()[1] = Picture::load( ResourceGroup::commerce, 142); }
-  if (allQty > maxQty * 0.25) { _fgPicturesRef()[2] = Picture::load( ResourceGroup::commerce, 143); }
-  if (allQty > maxQty * 0.5){ _fgPicturesRef()[3] = Picture::load( ResourceGroup::commerce, 144); }
-  if (allQty > maxQty * 0.9){ _fgPicturesRef()[4] = Picture::load( ResourceGroup::commerce, 145); }
+  if (allQty > 0){ _fgPictures()[1] = Picture( ResourceGroup::commerce, 142); }
+  if (allQty > maxQty * 0.25) { _fgPictures()[2] = Picture( ResourceGroup::commerce, 143); }
+  if (allQty > maxQty * 0.5){ _fgPictures()[3] = Picture( ResourceGroup::commerce, 144); }
+  if (allQty > maxQty * 0.9){ _fgPictures()[4] = Picture( ResourceGroup::commerce, 145); }
 }
 
 void Granary::save( VariantMap& stream) const
@@ -190,14 +180,14 @@ void Granary::save( VariantMap& stream) const
    WorkingBuilding::save( stream );
 
    stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(B_GRANARY) ) );
-   stream[ lc_goodStore ] = _d->store.save();
+   stream[ literals::goodStore ] = _d->store.save();
 }
 
 void Granary::load( const VariantMap& stream)
 {
   WorkingBuilding::load(stream);
 
-  _d->store.load( stream.get( lc_goodStore ).toMap() );
+  _d->store.load( stream.get( literals::goodStore ).toMap() );
 
   computePictures();
 }
@@ -206,8 +196,7 @@ bool Granary::isWalkable() const { return true; }
 
 void Granary::destroy()
 {
-  city::Helper helper( _city() );
-  TilesArray tiles = helper.getArea( this );
+  TilesArray tiles = area();
   foreach( it, tiles )
   {
     (*it)->setFlag( Tile::tlRoad, false );
@@ -269,6 +258,21 @@ void Granary::_resolveDeliverMode()
         addWalker( walker.object() );
         return;
       }
+    }
+    }
+}
+
+void Granary::_weekUpdate()
+{
+  if(  walkers().empty() )
+  {
+    if( _d->store.isDevastation() )
+    {
+      _tryDevastateGranary();
+    }
+    else
+    {
+      _resolveDeliverMode();
     }
   }
 }

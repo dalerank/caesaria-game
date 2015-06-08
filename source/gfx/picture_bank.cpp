@@ -39,6 +39,7 @@
 #include "vfs/file.hpp"
 #include "gfx/helper.hpp"
 #include "core/color.hpp"
+#include "core/variant_list.hpp"
 
 using namespace gfx;
 
@@ -76,11 +77,11 @@ public:
 
 void PictureBank::Impl::setPicture( const std::string &name, const Picture& pic )
 {
-  int dot_pos = name.find('.');
+  int dot_pos = name.find_last_of('.');
   std::string rcname = name.substr(0, dot_pos);
 
   // first: we deallocate the current picture, if any
-  unsigned int picId = utils::hash( rcname );
+  unsigned int picId = Hash( rcname );
   Picture* ptrPic = 0;
   Impl::ItPicture it = resources.find( picId );
   if( it != resources.end() )
@@ -106,14 +107,14 @@ void PictureBank::Impl::setPicture( const std::string &name, const Picture& pic 
   // decode the picture name => to set the offset manually
   Point pic_info = PictureInfoBank::instance().getOffset( rcname );
 
-  if( pic_info == Point( -1, -1 ) )
+  if( pic_info == PictureInfoBank::instance().getDefaultOffset( PictureInfoBank::tileOffset ) )
   {
     // this is a tiled picture=> automatic offset correction
     int cw = gfx::tilemap::cellSize().width() * 2;
     int ch = gfx::tilemap::cellSize().width() / 2;
     offset.setY( pic.height()-ch*( (pic.width()+2)/cw ) );   // (w+2)/60 is the size of the tile: (1x1, 2x2, 3x3, ...)
   }
-  else if( pic_info == Point( -2, -2 ) )
+  else if( pic_info == PictureInfoBank::instance().getDefaultOffset( PictureInfoBank::walkerOffset ) )
   {
      // this is a walker picture=> automatic offset correction
      offset = Point( -pic.width()/2, int(pic.height()*3./4.) );
@@ -143,12 +144,6 @@ void PictureBank::Impl::destroyUnusableTextures()
   }
 }
 
-PictureBank& PictureBank::instance()
-{
-  static PictureBank inst; 
-  return inst;
-}
-
 void PictureBank::reset()
 {
 
@@ -172,7 +167,7 @@ void PictureBank::addAtlas( const std::string& filename )
     VariantMap items = options.get( framesSection ).toMap();
     foreach( i, items )
     {
-      unsigned int hash = utils::hash( i->first );
+      unsigned int hash = Hash( i->first );
       atlas.images.insert( hash );
     }
 
@@ -187,14 +182,14 @@ void PictureBank::loadAtlas(const std::string& filename)
 
 Picture& PictureBank::getPicture(const std::string &name)
 {
-  const unsigned int hash = utils::hash( name );
+  const unsigned int hash = Hash( name );
   //Logger::warning( "PictureBank getpic " + name );
 
   Impl::ItPicture it = _d->resources.find( hash );
   if( it == _d->resources.end() )
   {
     //can't find image in valid resources, try load from hdd
-    const Picture& pic = _d->tryLoadPicture( name );
+    Picture pic = _d->tryLoadPicture( name );
 
     if( pic.isValid() ) { setPicture( name, pic );  }
     else{ _d->resources[ hash ] = pic; }
@@ -254,7 +249,7 @@ Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
     }
   }
 
-  unsigned int hash = utils::hash( name );
+  unsigned int hash = Hash( name );
   foreach( i, atlases )
   {
     bool found = i->find( hash );
@@ -312,9 +307,7 @@ void PictureBank::Impl::loadAtlas(const vfs::Path& filePath)
       Point start( rInfo.get( 0 ).toInt(), rInfo.get( 1 ).toInt() );
       Size size( rInfo.get( 2 ).toInt(), rInfo.get( 3 ).toInt() );
 
-      Rect orect( start, size );
-      pic.setOriginRect( orect );
-      //pic.setOriginRectf( );
+      pic.setOriginRect( Rect( start, size ) );
       setPicture( i->first, pic );
     }
   }

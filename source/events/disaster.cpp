@@ -16,7 +16,8 @@
 #include "disaster.hpp"
 #include "game/game.hpp"
 #include "gfx/tilemap.hpp"
-#include "city/city.hpp"
+#include "city/statistic.hpp"
+#include "objects/house_spec.hpp"
 #include "playsound.hpp"
 #include "objects/objects_factory.hpp"
 #include "dispatcher.hpp"
@@ -29,32 +30,43 @@
 #include "city/cityservice_peace.hpp"
 #include "build.hpp"
 #include "core/foreach.hpp"
+#include "gfx/tilearea.hpp"
 
-using namespace constants;
 using namespace gfx;
+using namespace city;
 
 namespace events
 {
 
+static const int houseOffset=1000;
+
+class Disaster::Impl
+{
+public:
+  TilePos pos;
+  Disaster::Type type;
+  int infoType;
+};
+
 GameEventPtr Disaster::create( const Tile& tile, Type type )
 {
   Disaster* event = new Disaster();
-  event->_pos = tile.pos();
-  event->_type = type;
-  event->_infoType = 0;
+  event->_d->pos = tile.pos();
+  event->_d->type = type;
+  event->_d->infoType = 0;
 
-  TileOverlayPtr overlay = tile.overlay();
+  OverlayPtr overlay = tile.overlay();
   if( overlay.isValid() )
   {
     overlay->deleteLater();
-    HousePtr house = ptr_cast< House >( overlay );
+    HousePtr house = overlay.as<House>();
     if( house.isValid() )
     {
-      event->_infoType = 1000 + house->spec().level();
+      event->_d->infoType = houseOffset + house->spec().level();
     }
     else
     {
-      event->_infoType = overlay->type();
+      event->_d->infoType = overlay->type();
     }
   }
 
@@ -67,12 +79,12 @@ GameEventPtr Disaster::create( const Tile& tile, Type type )
 void Disaster::_exec( Game& game, unsigned int )
 {
   Tilemap& tmap = game.city()->tilemap();
-  Tile& tile = tmap.at( _pos );
-  TilePos rPos = _pos;
+  Tile& tile = tmap.at( _d->pos );
+  TilePos rPos = _d->pos;
 
   bool mayContinue = tile.getFlag( Tile::isDestructible );
 
-  if( _type == Disaster::rift )
+  if( _d->type == Disaster::rift )
   {
     mayContinue = tile.getFlag( Tile::isConstructible );
     mayContinue |= is_kind_of<Construction>( tile.overlay() );
@@ -82,7 +94,7 @@ void Disaster::_exec( Game& game, unsigned int )
   {
     Size size( 1 );
 
-    TileOverlayPtr overlay = tile.overlay();
+    OverlayPtr overlay = tile.overlay();
     if( overlay.isValid() )
     {
       overlay->deleteLater();
@@ -90,7 +102,7 @@ void Disaster::_exec( Game& game, unsigned int )
       size = overlay->size();
     }    
 
-    switch( _type )
+    switch( _d->type )
     {
     case Disaster::collapse:
     {
@@ -103,45 +115,41 @@ void Disaster::_exec( Game& game, unsigned int )
     break;
     }
 
-    city::PeacePtr peaceSrvc;
-    peaceSrvc << game.city()->findService( city::Peace::defaultName() );
+    PeacePtr peaceSrvc = statistic::getService<Peace>( game.city() ) ;
     if( peaceSrvc.isValid() )
     {
-      peaceSrvc->buildingDestroyed( overlay, _type );
+      peaceSrvc->buildingDestroyed( overlay, _d->type );
     }
 
-    TilesArray clearedTiles = tmap.getArea( rPos, size );
+    TilesArea clearedTiles( tmap, rPos, size );
     foreach( tile, clearedTiles )
     {
-      bool needBuildRuins = !( _type == Disaster::rift && (*tile)->pos() == _pos );      
+      bool needBuildRuins = !( _d->type == Disaster::rift && (*tile)->pos() == _d->pos );
 
-      TileOverlayPtr ov;
+      OverlayPtr currentTileOverlay;
       if( needBuildRuins )
       {
-        TileOverlay::Type dstr2constr[] = { objects::burning_ruins, objects::collapsed_ruins,
-                                            objects::plague_ruins, objects::collapsed_ruins,
-                                            objects::collapsed_ruins };
+        object::Type dstr2constr[] = { object::burning_ruins, object::collapsed_ruins,
+                                       object::plague_ruins, object::collapsed_ruins,
+                                       object::collapsed_ruins };
 
-        ov = TileOverlayFactory::instance().create( dstr2constr[_type] );
+        currentTileOverlay = TileOverlayFactory::instance().create( dstr2constr[_d->type] );
 
-        if( ov.isValid() )
+        RuinsPtr ruins = currentTileOverlay.as<Ruins>();
+        if( ruins.isValid() )
         {
-          SmartPtr< Ruins > ruins = ptr_cast< Ruins >( ov );
-          if( ruins.isValid() )
-          {
-            std::string typev = _infoType > 1000
-                                  ? utils::format( 0xff, "house%02d", _infoType - 1000 )
-                                  : MetaDataHolder::findTypename( _infoType );
-            ruins->setInfo( utils::format( 0xff, "##ruins_%s_text##", typev.c_str() ) );
-            ruins->afterBuild();
-          }
+          std::string typev = _d->infoType > houseOffset
+                                ? utils::format( 0xff, "house%02d", _d->infoType - houseOffset )
+                                : object::toString( object::Type( _d->infoType ) );
+          ruins->setInfo( utils::format( 0xff, "##ruins_%s_text##", typev.c_str() ) );
+          ruins->afterBuild();
         }
       }
       else
       {
-        ov = TileOverlayFactory::instance().create( objects::rift );
+        currentTileOverlay = TileOverlayFactory::instance().create( object::rift );
 
-        TilesArray tiles = game.city()->tilemap().getNeighbors(_pos, Tilemap::FourNeighbors);
+        //TilesArray tiles = game.city()->tilemap().getNeighbors(_pos, Tilemap::FourNeighbors);
 
         /*foreach( it, tiles )
         {
@@ -153,18 +161,21 @@ void Disaster::_exec( Game& game, unsigned int )
         }*/
       }
 
-      Dispatcher::instance().append( BuildAny::create( (*tile)->pos(), ov ) );
+      Dispatcher::instance().append( BuildAny::create( (*tile)->pos(), currentTileOverlay ) );
     }
 
     std::string dstr2string[] = { "##alarm_fire_in_city##", "##alarm_building_collapsed##",
                                   "##alarm_plague_in_city##", "##alarm_earthquake##" };
-    emit game.city()->onDisasterEvent()( _pos, _( dstr2string[_type] ) );
+    emit game.city()->onDisasterEvent()( _d->pos, _( dstr2string[_d->type] ) );
   }
 }
 
 bool Disaster::_mayExec(Game&, unsigned int) const{  return true;}
 
-Disaster::Disaster() : _type( count ),_infoType( 0 )
-{}
+Disaster::Disaster() : _d( new Impl )
+{
+  _d->type =count;
+  _d->infoType = 0;
+}
 
 } //end namespace events

@@ -24,7 +24,8 @@
 namespace util
 {
 
-std::string date2str(const DateTime& time);
+std::string date2str(const DateTime& time, bool drawDays);
+std::string date2str(const RomanDate& time, bool drawDays);
 
 }//end namespace util
 

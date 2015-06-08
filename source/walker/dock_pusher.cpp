@@ -14,13 +14,12 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "dock_pusher.hpp"
 #include "city/city.hpp"
+#include "good/stock.hpp"
 #include "walkers_factory.hpp"
-
-using namespace constants;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::docker, Docker)
 

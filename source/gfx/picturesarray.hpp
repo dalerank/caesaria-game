@@ -20,6 +20,7 @@
 #define __CAESARIA_PICTURES_ARRAY_H_INCLUDED__
 
 #include "picture.hpp"
+#include "core/stringarray.hpp"
 
 namespace gfx
 {
@@ -28,11 +29,15 @@ class Pictures : public std::vector<Picture>
 {
 public:
   void load( const std::string& rc, int startIndex, int number, int multiplier=1 );
+  void load( const StringArray& names );
 
   Pictures& operator << ( const Picture& pic );
   Pictures& append( const Pictures& pics );
 
   void append( const gfx::Picture& pic, const Point& offset );
+  const Picture& valueOrEmpty(unsigned int index ) const;
+
+  StringArray names() const;
 };
 
 } //end namespace gfx

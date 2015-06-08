@@ -1,0 +1,9 @@
+{  
+  size : [ 670, 384 ]
+
+  imgPreview#Image :
+  {
+    geometry : [ "pw-164", 80, "pw-20", 190 ]
+    mode : "best"
+  }
+}

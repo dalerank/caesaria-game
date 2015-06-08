@@ -20,14 +20,19 @@
 #include "merchant.hpp"
 #include "city/city.hpp"
 #include "walkers_factory.hpp"
-
-using namespace constants;
+#include "city/statistic.hpp"
+#include "objects/construction.hpp"
+#include "gfx/helper.hpp"
+#include "pathway/pathway_helper.hpp"
+#include "core/logger.hpp"
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::merchantCamel, MerchantCamel)
 
 class MerchantCamel::Impl
 {
 public:
+  bool inCaravan;
+  TilePos headLocation;
   Walker::UniqueId headId;
 };
 
@@ -42,6 +47,7 @@ MerchantCamelPtr MerchantCamel::create(PlayerCityPtr city)
 MerchantCamelPtr MerchantCamel::create(PlayerCityPtr city, MerchantPtr merchant, int delay)
 {
   MerchantCamelPtr camel( new MerchantCamel( city ) );
+  camel->_d->headId = merchant->uniqueId();
   camel->setPos( merchant->pos() );
   camel->setPathway( merchant->pathway() );
   camel->go();
@@ -53,21 +59,61 @@ MerchantCamelPtr MerchantCamel::create(PlayerCityPtr city, MerchantPtr merchant,
 
 void MerchantCamel::timeStep(const unsigned long time)
 {
+  if( !_d->inCaravan )
+  {
+    MerchantPtr head = city::statistic::getWalker<Merchant>( _city(), walker::merchant, _d->headId );
+    if( !head.isValid() )
+    {
+      die();
+    }
+    else
+    {
+      head->addCamel( this );
+      _d->inCaravan = true;
+    }
+  }
+
+  if( !gfx::tilemap::isValidLocation( _d->headLocation ) )
+  {
+    return;
+  }
+
+  if( _d->headLocation.distanceFrom( pos() ) < 1 * (uniqueId() - _d->headId) )
+  {
+    return;
+  }
+
   Human::timeStep( time );
 }
 
 void MerchantCamel::save(VariantMap &stream) const
 {
-
+  Human::save( stream );
+  VARIANT_SAVE_ANY_D( stream, _d, headId )
 }
 
 void MerchantCamel::load(const VariantMap &stream)
 {
+  Human::load( stream );
+  VARIANT_LOAD_ANY_D( _d, headId, stream )
 
+  if( _d->headId == 0  )
+  {
+    Logger::warning( "!!! WARNING: MerchantCamel can't have headID. ");
+    deleteLater();
+  }
+}
+
+void MerchantCamel::updateHeadLocation(const TilePos &pos)
+{
+  _d->headLocation = pos;
 }
 
 MerchantCamel::MerchantCamel(PlayerCityPtr city)
   : Human( city ), _d( new Impl )
 {
+  _d->headId = 0;
+  _d->inCaravan = false;
+  _d->headLocation = gfx::tilemap::invalidLocation();
   _setType( walker::merchantCamel );
 }

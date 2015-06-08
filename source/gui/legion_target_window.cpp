@@ -24,7 +24,6 @@
 #include "core/gettext.hpp"
 #include "pushbutton.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -47,7 +46,7 @@ LegionTargetWindow::LegionTargetWindow(Widget* parent, int id, PlayerCityPtr cit
   : EmpireMapWindow( parent, id, city ), _d( new Impl )
 {
   _d->location = Point( -1, -1 );
-  _d->locationPic = Picture::load( ResourceGroup::empirebits, 29 );
+  _d->locationPic.load( ResourceGroup::empirebits, 29 );
   Size s = _d->locationPic.originRect().size() ;
   _d->locationPic.setOffset( Point( -s.width(), s.height() ) / 2 );
 

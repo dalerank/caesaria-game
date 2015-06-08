@@ -228,6 +228,12 @@ void Pathfinder::Impl::isWater( const Tile* tile, bool& possible ) { possible = 
 
 bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, Pathway& oPathWay, int flags )
 {
+  for( TilesArray::iterator aaIt=arrivedArea.begin(); aaIt != arrivedArea.end(); )
+  {
+    if( *aaIt == NULL ) { aaIt = arrivedArea.erase( aaIt ); }
+    else { aaIt++; }
+  }
+
   if( arrivedArea.empty() )
   {
     Logger::warning( "AStarPathfinder: no arrived area" );
@@ -394,8 +400,8 @@ bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, P
     if( verbose > 0 )
     {
       Logger::warning( "AStarPathfinder: maxLoopCount reached from [%d,%d] to [%d,%d]",
-                     startPos.i(), startPos.j(), endPoints.front()->getPos().i(), endPoints.front()->getPos().j() );
-      Stacktrace::print();
+                       startPos.i(), startPos.j(), endPoints.front()->getPos().i(), endPoints.front()->getPos().j() );
+      crashhandler::printstack();
     }
     return false;
   }

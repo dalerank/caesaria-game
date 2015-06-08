@@ -14,20 +14,20 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "objects/warehouse.hpp"
-#include "city/helper.hpp"
 #include "mars.hpp"
+#include "city/city.hpp"
 #include "events/showinfobox.hpp"
 #include "game/gamedate.hpp"
 #include "core/gettext.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "walker/enemysoldier.hpp"
 #include "events/postpone.hpp"
 #include "core/saveadapter.hpp"
 #include "objects/fort.hpp"
-#include "game/settings.hpp"
 #include "objects/extension.hpp"
+#include "city/spirit_of_mars.hpp"
+#include "city/statistic.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace religion
@@ -53,21 +53,19 @@ void Mars::updateRelation(float income, PlayerCityPtr city)
 void Mars::_doWrath(PlayerCityPtr city)
 {
   events::GameEventPtr message = events::ShowInfobox::create( _("##wrath_of_mars_title##"),
-                                                            _("##wrath_of_mars_text##"),
-                                                            events::ShowInfobox::send2scribe,
-                                                            ":/smk/God_Mars.smk" );
+                                                              _("##wrath_of_mars_text##"),
+                                                              events::ShowInfobox::send2scribe,
+                                                              "god_mars" );
   message->dispatch();
 
-
-  VariantMap vm = config::load( game::Settings::rcpath( "mars_wrath.model" ) );
+  VariantMap vm = config::load( ":/mars_wrath.model" );
   events::GameEventPtr barb_attack = events::PostponeEvent::create( "", vm );
   barb_attack->dispatch();
 }
 
 void Mars::_doSmallCurse(PlayerCityPtr city)
 {  
-  city::Helper helper( city );
-  FortList forts = helper.find<Fort>( objects::militaryGroup );
+  FortList forts = city::statistic::getObjects<Fort>( city );
 
   std::string text, title;
   if( !forts.empty() )
@@ -79,7 +77,7 @@ void Mars::_doSmallCurse(PlayerCityPtr city)
   }
   else
   {
-    title = "##smallcurse_of_mars_title##";
+    title = "##smallcurse_of_mars_failed_title##";
     text = "##smallcurse_of_mars_failed_text##";
   }
 
@@ -92,27 +90,13 @@ void Mars::_doSmallCurse(PlayerCityPtr city)
 
 void Mars::_doBlessing(PlayerCityPtr city)
 {
-  EnemySoldierList enemies;
-  enemies << city->walkers( walker::any );
+  events::GameEventPtr event = events::ShowInfobox::create( _("##spirit_of_mars_title##"),
+                                                            _("##spirit_of_mars_text##"),
+                                                            events::ShowInfobox::send2scribe );
+  event->dispatch();
 
-  bool blessingDone = false;
-  int step = enemies.size() / 3;
-  for( int k=0; k < step; k++ )
-  {
-    int index = math::random( enemies.size() );
-    EnemySoldierList::iterator it = enemies.begin();
-    std::advance( it, index );
-    (*it)->die();
-    blessingDone = true;
-  }
-
-  if( blessingDone )
-  {
-    events::GameEventPtr event = events::ShowInfobox::create( _("##spirit_of_mars_title##"),
-                                                              _("##spirit_of_mars_text##"),
-                                                              events::ShowInfobox::send2scribe );
-    event->dispatch();
-  }
+  city::SrvcPtr spiritOfmars = city::SpiritOfMars::create( city );
+  spiritOfmars->attach();
 }
 
 }//end namespace rome

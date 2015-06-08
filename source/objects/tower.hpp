@@ -29,7 +29,7 @@ public:
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
 
-  virtual bool canBuild(const CityAreaInfo& areaInfo) const;
+  virtual bool canBuild(const city::AreaInfo& areaInfo) const;
   virtual std::string workersProblemDesc() const;
   virtual void deliverService();
 
@@ -40,7 +40,7 @@ public:
   virtual Point offset(const gfx::Tile& tile, const Point& subpos ) const;
   PathwayList getWays(TilePos start, FortificationList dest );
   Pathway getWay(TilePos start, TilePos stop);
-  virtual float evaluateTrainee(constants::walker::Type traineeType);
+  virtual float evaluateTrainee( walker::Type traineeType);
 
 protected:
   void _rebuildWays();

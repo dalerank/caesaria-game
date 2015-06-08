@@ -20,8 +20,7 @@
 #include "lion.hpp"
 #include "pathway/pathway.hpp"
 #include "walkers_factory.hpp"
-
-using namespace constants;
+#include "objects/building.hpp"
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::lionTamer, LionTamer)
 
@@ -58,11 +57,11 @@ void LionTamer::send2City(BuildingPtr base, bool roadOnly)
   {
     LionPtr lion = Lion::create( _city() );
     lion->setPos( pos() );
-    lion->setPathway( _pathwayRef() );
+    lion->setPathway( _pathway() );
     lion->go();
     _d->delay = 12;
 
-    _city()->addWalker( ptr_cast<Walker>( lion ) );
+    attach();
   }
 }
 

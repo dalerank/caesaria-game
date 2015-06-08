@@ -31,24 +31,25 @@ public:
                  frmParade } TroopsFormation;
   typedef std::vector<TroopsFormation> TroopsFormations;  
 
-  Fort( constants::objects::Type type, int picIdLogo );
+  Fort( object::Type type, int picIdLogo );
   virtual ~Fort();
 
-  virtual bool canBuild(const CityAreaInfo& areaInfo) const;
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool canBuild(const city::AreaInfo& areaInfo) const;
+  virtual bool build(const city::AreaInfo &info);
 
-  virtual bool isNeedRoadAccess() const;
-  virtual float evaluateTrainee( constants::walker::Type traineeType);
+  virtual bool isNeedRoad() const;
+  virtual float evaluateTrainee( walker::Type traineeType);
   virtual void timeStep(const unsigned long time);
   virtual bool canDestroy() const;
 
   virtual TroopsFormation formation() const;
   virtual void setFormation( TroopsFormation formation );
   virtual gfx::TilesArray enterArea() const;
+  virtual int flagIndex() const;
 
   virtual void destroy();
 
-  virtual TilePos freeSlot() const;
+  virtual TilePos freeSlot( WalkerPtr who ) const;
   virtual void changePatrolArea();
   virtual TilePos patrolLocation() const;
 
@@ -78,12 +79,26 @@ protected:
   virtual void _setEmblem( gfx::Picture pic );
   virtual void _setName( const std::string& name );
   virtual int  _setFlagIndex( int index );
+  virtual void _check4newSoldier();
   virtual void _addFormation( TroopsFormation formation );
 
 private:  
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+void Fort::_check4newSoldier()
+{
+  int traineeLevel = traineeValue( walker::soldier );
+  bool canProduceNewSoldier = (traineeLevel > 100);
+  bool haveRoom4newSoldier =  (walkers().size() < _d->maxSoldier);
+  // all trainees are there for the create soldier!
+  if( canProduceNewSoldier && haveRoom4newSoldier )
+  {
+     _readyNewSoldier();
+     setTraineeValue( walker::soldier, math::clamp<int>( traineeLevel - 100, 0, _d->maxSoldier * 100 ) );
+  }
+}
 
 class FortArea : public Building
 {

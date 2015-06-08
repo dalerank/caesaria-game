@@ -19,11 +19,15 @@
 #define _CAESARIA_EVENT_NOTIFICATION_H_INCLUDE_
 
 #include "event.hpp"
+#include "core/scopedptr.hpp"
+#include "world/object.hpp"
 
 namespace events
 {
 
-class Notification : public GameEvent
+PREDEFINE_CLASS_SMARTPOINTER(Notify)
+
+class Notify : public GameEvent
 {
 public:
   static GameEventPtr attack(const std::string& cityname, const std::string& message, world::ObjectPtr object );
@@ -33,13 +37,11 @@ protected:
   virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
-  Notification();
+  Notify();
 
   class Impl;
   ScopedPtr<Impl> _d;
 };
-
-typedef SmartPtr<Notification> NotificationPtr;
 
 }
 

@@ -18,13 +18,14 @@
 #include "infobox_market.hpp"
 #include "label.hpp"
 #include "objects/market.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "core/gettext.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "core/utils.hpp"
+#include "core/metric.hpp"
 #include "core/logger.hpp"
+#include "game/infoboxmanager.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -33,12 +34,14 @@ namespace gui
 namespace infobox
 {
 
+REGISTER_OBJECT_BASEINFOBOX(market,AboutMarket)
+
 AboutMarket::AboutMarket(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 155, 510 - 16, 155 + 45) )
 {
   setupUI( ":/gui/infoboxmarket.gui" );
 
-  MarketPtr market = ptr_cast<Market>( tile.overlay() );
+  MarketPtr market = tile.overlay().as<Market>();
 
   if( !market.isValid() )
   {
@@ -46,7 +49,7 @@ AboutMarket::AboutMarket(Widget* parent, PlayerCityPtr city, const Tile& tile )
     return;
   }
 
-  setBase( ptr_cast<Construction>( market ));
+  setBase( market );
   _setWorkingVisible( true );
 
   Label* lbAbout = new Label( this, Rect( 15, 30, width() - 15, 50) );
@@ -107,8 +110,9 @@ void AboutMarket::drawGood( MarketPtr market, const good::Product &goodType, int
   int startOffset = 25;
 
   int offset = ( width() - startOffset * 2 ) / 5;
-  std::string goodName = good::Helper::name( goodType );
-  std::string outText = utils::format( 0xff, "%d", market->goodStore().qty( goodType ) );
+  //std::string goodName = good::Helper::name( goodType );
+  int qty = market->goodStore().qty( goodType );
+  std::string outText = utils::format( 0xff, "%d", metric::Measure::convQty( qty ) );
 
   // pictures of goods
   Picture pic = good::Helper::picture( goodType );

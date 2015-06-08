@@ -24,12 +24,6 @@ namespace {
   unsigned int tickInDay = 25;
 }
 
-Date& Date::instance()
-{
-  static Date inst;
-  return inst;
-}
-
 unsigned int Date::days2ticks(unsigned int days)
 {
   return days * tickInDay;
@@ -48,7 +42,7 @@ void Date::timeStep( unsigned int time )
     _current.appendDay();
     _dayChange = true;
 
-    _weekChange = (_current.day() % 7) == 0;
+    _weekChange = (_current.day() % DateTime::daysInWeek) == 0;
     _monthChange = (save.month() != _current.month());
     _yearChange = (save.year() != _current.year());
   }  

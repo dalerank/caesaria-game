@@ -19,24 +19,27 @@
 #define __CAESARIA_SERVICEWALKER_H_INCLUDED__
 
 #include "human.hpp"
+#include "gfx/tile.hpp"
+#include "game/service.hpp"
 #include "pathway/predefinitions.hpp"
+#include "objects/overlay.hpp"
 #include "walkers_factory_creator.hpp"
 
 /** This walker gives a service to buildings along the road */
 class ServiceWalker : public Human
 {
 public:
-  typedef enum { goLowerService=0x1, anywayWhenFailed=0x2, enterLastHouse=0x4 } Order;
+  typedef enum { noOrders=0, goServiceMaximum=0x1, anywayWhenFailed=0x2, enterLastHouse=0x4, goServiceMinimum=0x8 } Order;
   typedef std::set<BuildingPtr> ReachedBuildings;
 
   static ServiceWalkerPtr create( PlayerCityPtr city, const Service::Type service );
 
   Service::Type serviceType() const;
-  BuildingPtr base() const;
+  const TilePos& baseLocation() const;
 
   void setBase( BuildingPtr base );
 
-  virtual void send2City( BuildingPtr base, int orders=goLowerService );
+  virtual void send2City( BuildingPtr base, int orders=goServiceMaximum );
   virtual float serviceValue() const;
   virtual TilePos places(Place type) const;
 
@@ -74,7 +77,7 @@ protected:
   void _updatePathway(const Pathway& pathway);
   void _updatePathway(PathwayPtr pathway);
   void _cancelPath();
-  void _addObsoleteOverlay( gfx::TileOverlay::Type type );
+  void _addObsoleteOverlay( object::Type type );
 
 private:
   class Impl;

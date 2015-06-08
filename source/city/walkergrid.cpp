@@ -24,12 +24,12 @@ namespace city
 
 static const WalkerList invalidList = WalkerList();
 
-unsigned int WalkerGrid::_offset( const TilePos& pos )
+unsigned int WalkersGrid::_offset( const TilePos& pos )
 {
   return ( pos.j() * _size.width() + pos.i() );
 }
 
-void WalkerGrid::clear()
+void WalkersGrid::clear()
 {
   foreach(it, _grid)
   {
@@ -37,7 +37,7 @@ void WalkerGrid::clear()
   }
 }
 
-void WalkerGrid::append( WalkerPtr a )
+void WalkersGrid::append( WalkerPtr a )
 {
   unsigned int offset = _offset( a->pos() );
   if( offset < _gsize )
@@ -46,19 +46,19 @@ void WalkerGrid::append( WalkerPtr a )
   }
 }
 
-void WalkerGrid::resize( Size size )
+void WalkersGrid::resize( Size size )
 {
   _size = size;
   _gsize = size.area();
   _grid.resize( _gsize );
 }
 
-const Size& WalkerGrid::size() const
+const Size& WalkersGrid::size() const
 {
   return _size;
 }
 
-void WalkerGrid::remove( WalkerPtr a)
+void WalkersGrid::remove( WalkerPtr a)
 {
   unsigned int offset = _offset( a->pos() );
   if( offset < _gsize )
@@ -75,7 +75,32 @@ void WalkerGrid::remove( WalkerPtr a)
   }
 }
 
-const WalkerList& WalkerGrid::at( const TilePos& pos)
+void WalkersGrid::update(const WalkerList& walkers)
+{
+  clear();
+  foreach( it, walkers )
+    append( *it );
+}
+
+bool compare_zvalue(const WalkerPtr& one, const WalkerPtr& two)
+{
+  const int a = /*one->mappos().x() -*/ one->mappos().y();
+  const int b = /*two->mappos().x() -*/ two->mappos().y();
+  return a < b;
+}
+
+void WalkersGrid::sort()
+{
+  foreach( cell, _grid )
+  {
+    if( cell->size() > 1 )
+    {
+      std::sort( cell->begin(), cell->end(), compare_zvalue );
+    }
+  }
+}
+
+const WalkerList& WalkersGrid::at( const TilePos& pos)
 {
   unsigned int offset = _offset( pos );
   if( offset < _gsize  )

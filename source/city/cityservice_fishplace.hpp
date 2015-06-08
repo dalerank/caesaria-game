@@ -19,11 +19,12 @@
 #define __CAESARIA_CITYSERVICE_FISHPLACE_H_INCLUDED__
 
 #include "cityservice.hpp"
-#include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
 namespace city
 {
+
+PREDEFINE_CLASS_SMARTPOINTER(Fishery)
 
 class Fishery : public Srvc
 {
@@ -44,8 +45,6 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
-typedef SmartPtr<Fishery> FisheryPtr;
 
 }//end namespace city
 

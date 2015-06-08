@@ -1,6 +1,6 @@
 // This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
@@ -32,7 +32,7 @@ namespace gui
 class MenuRigthPanel : public Widget
 {
 public:
-  static MenuRigthPanel* create(Widget* parent, const Rect& rectangle, gfx::Picture& tilePic );
+  static MenuRigthPanel* create(Widget* parent, const Rect& rectangle, const gfx::Picture &tilePic );
         
   virtual void draw( gfx::Engine& engine );
 private:
@@ -40,6 +40,8 @@ private:
   ScopedPtr< Impl > _d;
 
   MenuRigthPanel( Widget* parent );
+
+  void _initBackground( const gfx::Picture &tilePic );
 };
 
 }//end namespace gui

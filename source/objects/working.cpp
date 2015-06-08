@@ -13,11 +13,12 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "working.hpp"
 #include "city/helper.hpp"
 #include "walker/walker.hpp"
+#include "city/statistic.hpp"
 #include "events/returnworkers.hpp"
 #include "core/utils.hpp"
 #include "core/variant_map.hpp"
@@ -28,7 +29,6 @@
 
 using namespace gfx;
 using namespace events;
-using namespace constants;
 
 class WorkingBuilding::Impl
 {
@@ -40,9 +40,12 @@ public:
   std::string errorStr;
   bool clearAnimationOnStop;
   float laborAccessKoeff;
+
+public signals:
+  Signal1<bool> onActiveChangeSignal;
 };
 
-WorkingBuilding::WorkingBuilding(const Type type, const Size& size)
+WorkingBuilding::WorkingBuilding(const object::Type type, const Size& size)
 : Building( type, size ), _d( new Impl )
 {
   _d->currentWorkers = 0;
@@ -92,7 +95,7 @@ std::string WorkingBuilding::troubleDesc() const
 {
   std::string trouble = Building::troubleDesc();
 
-  if( isNeedRoadAccess() && getAccessRoads().empty() )
+  if( isNeedRoad() && roadside().empty() )
   {
     trouble = "##working_building_need_road##";
   }
@@ -132,8 +135,10 @@ void WorkingBuilding::setActive(const bool value) { _d->isActive = value; }
 bool WorkingBuilding::isActive() const { return _d->isActive; }
 WorkingBuilding::~WorkingBuilding(){}
 const WalkerList& WorkingBuilding::walkers() const {  return _d->walkerList; }
+bool WorkingBuilding::haveWalkers() const { return !_d->walkerList.empty(); }
 std::string WorkingBuilding::errorDesc() const { return _d->errorStr;}
 void WorkingBuilding::_setError(const std::string& err) { _d->errorStr = err;}
+Signal1<bool>& WorkingBuilding::onActiveChange() { return _d->onActiveChangeSignal; }
 
 unsigned int WorkingBuilding::addWorkers(const unsigned int workers )
 {
@@ -153,31 +158,11 @@ void WorkingBuilding::timeStep( const unsigned long time )
 {
   Building::timeStep( time );
 
-  for( WalkerList::iterator it=_d->walkerList.begin(); it != _d->walkerList.end(); )
-  {
-    if( (*it)->isDeleted() ) { it = _d->walkerList.erase( it ); }
-    else { ++it; }
-  }
+  utils::eraseDeletedElements( _d->walkerList );
 
   if( game::Date::isMonthChanged() && numberWorkers() > 0 )
   {
-    city::Helper helper( _city() );
-    TilePos offset( 8, 8 );
-    TilePos myPos = pos();
-    HouseList houses = helper.find<House>( objects::house, myPos - offset, myPos + offset );
-    float averageDistance = 0;
-    foreach( it, houses )
-    {
-      if( (*it)->spec().level() < HouseLevel::smallVilla )
-      {
-        averageDistance += myPos.distanceFrom( (*it)->pos() );
-      }
-    }
-
-    if( houses.size() > 0 )
-      averageDistance /= houses.size();
-
-    _d->laborAccessKoeff = math::clamp( math::percentage( averageDistance, 8 ) * 2, 25, 100 );
+    _d->laborAccessKoeff = city::statistic::getLaborAccessValue( _city(), this );
   }
 
   if( isActive() )
@@ -192,28 +177,41 @@ void WorkingBuilding::_updateAnimation(const unsigned long time )
     {
       if( _animationRef().isStopped() )
       {
-        _animationRef().start();
+        _changeAnimationState( true );
       }      
     }
     else
     {
       if( _animationRef().isRunning() )
-      {
-        if( _d->clearAnimationOnStop && !_fgPicturesRef().empty() )
-        {
-          _fgPicturesRef().back() = Picture::getInvalid();
-        }
-
-        _animationRef().stop();
+      {      
+        _changeAnimationState( false );
       }
     }
   }
 
-  _animationRef().update( time );
-  const Picture& pic = _animationRef().currentFrame();
-  if( pic.isValid() && !_fgPicturesRef().empty() )
+  if( _animationRef().isRunning() )
   {
-    _fgPicturesRef().back() = _animationRef().currentFrame();
+    _animationRef().update( time );
+    const Picture& pic = _animationRef().currentFrame();
+    if( pic.isValid() && !_fgPictures().empty() )
+    {
+      _fgPictures().back() = _animationRef().currentFrame();
+    }
+  }
+}
+
+void WorkingBuilding::_changeAnimationState(bool enabled)
+{
+  if( enabled )
+    _animationRef().start();
+  else
+  {
+    _animationRef().stop();
+
+    if( _d->clearAnimationOnStop && !_fgPictures().empty() )
+    {
+      _fgPictures().back() = Picture::getInvalid();
+    }
   }
 }
 
@@ -223,10 +221,10 @@ void WorkingBuilding::_disaster()
 {
   unsigned int buriedCitizens = math::random( numberWorkers() );
 
-  GameEventPtr e = ReturnWorkers::create( pos(), numberWorkers() - buriedCitizens );
+  GameEventPtr e = ReturnWorkers::create( pos(), numberWorkers() );
   e->dispatch();
 
-  e = RemoveCitizens::create( pos(), buriedCitizens );
+  e = RemoveCitizens::create( pos(), CitizenGroup( CitizenGroup::mature, buriedCitizens ) );
   e->dispatch();
 
   setWorkers( 0 );
@@ -234,7 +232,7 @@ void WorkingBuilding::_disaster()
 
 void WorkingBuilding::addWalker( WalkerPtr walker )
 {
-  if( walker.isValid() )
+  if( walker.isValid() && !walker->isDeleted() )
   {
     _d->walkerList.push_back( walker );
   }
@@ -288,7 +286,7 @@ static const char* productivityDescription[] =
 
 std::string WorkingBuildingHelper::productivity2desc( WorkingBuildingPtr w, const std::string& prefix )
 {
-  std::string factoryType = MetaDataHolder::findTypename( w->type() );
+  std::string factoryType = object::toString( w->type() );
   unsigned int workKoeff = w->productivity() * productivityDescriptionCount / 100;
 
   workKoeff = math::clamp( workKoeff, 0u, productivityDescriptionCount-1 );
@@ -296,12 +294,12 @@ std::string WorkingBuildingHelper::productivity2desc( WorkingBuildingPtr w, cons
   if( prefix.empty() )
   {
     return utils::format( 0xff, "##%s_%s##",
-                                 factoryType.c_str(), productivityDescription[ workKoeff ] );
+                          factoryType.c_str(), productivityDescription[ workKoeff ] );
   }
   else
   {
     return utils::format( 0xff, "##%s_%s_%s##",
-                                 factoryType.c_str(), prefix.c_str(), productivityDescription[ workKoeff ] );
+                          factoryType.c_str(), prefix.c_str(), productivityDescription[ workKoeff ] );
   }
 }
 

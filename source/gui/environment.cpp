@@ -30,6 +30,7 @@ using namespace gfx;
 
 namespace gui
 {
+typedef std::map<Ui::Flag, int> Flags;
 
 class Ui::Impl
 {
@@ -56,8 +57,9 @@ public:
 
   gfx::Engine* engine;
   Point cursorPos;
-  WidgetFactory factory;
+  Flags flags;
 
+public:
   WidgetPtr createStandartTooltip( Widget* parent );
   void threatDeletionQueue();
 };
@@ -91,7 +93,7 @@ bool Ui::hasFocus( const Widget* element) const
 
 Ui::~Ui() {}
 
-Widget* Ui::rootWidget() {	return this; }
+Widget* Ui::rootWidget() { return this; }
 
 void Ui::Impl::threatDeletionQueue()
 {
@@ -125,7 +127,7 @@ void Ui::draw()
 {
   if( !_d->preRenderFunctionCalled )
   {
-    Logger::warning( "Call beforeDraw() function needed" );
+    Logger::warning( "!!! WARNING: Call beforeDraw() function needed" );
     return;
   }
 
@@ -191,6 +193,19 @@ Widget* Ui::findWidget(int id)
   return Widget::findChild( id, true );
 }
 
+Widget* Ui::findWidget(const Point &p)
+{
+  const Widgets& widgets = children();
+
+  foreach( it, widgets )
+  {
+    if( (*it)->visible() && (*it)->isPointInside( p ) )
+      return *it;
+  }
+
+  return this;
+}
+
 void Ui::deleteLater( Widget* ptrElement )
 {
   try
@@ -227,7 +242,12 @@ void Ui::deleteLater( Widget* ptrElement )
 
 Widget* Ui::createWidget(const std::string& type, Widget* parent)
 {
-  return _d->factory.create( type, parent );
+  return WidgetFactory::instance().create( type, parent );
+}
+
+void Ui::setFlag(Ui::Flag name, int value)
+{
+  _d->flags[ name ] = value;
 }
 
 WidgetPtr Ui::Impl::createStandartTooltip( Widget* parent )
@@ -277,6 +297,7 @@ void Ui::_drawTooltip( unsigned int time )
       Rect geom = _d->toolTip.element->absoluteRect();
       geom.constrainTo( absoluteRect() );
       _d->toolTip.element->setGeometry( geom );
+      _d->toolTip.element->setVisible( _d->flags[ showTooltips ] > 0 );
     }
   }
 
@@ -301,7 +322,7 @@ void Ui::_updateHovered( const Point& mousePos )
   WidgetPtr lastHoveredNoSubelement = _d->hoveredNoSubelement;
   _d->lastHoveredMousePos = mousePos;
 
-	// Get the real Hovered
+  // Get the real Hovered
   _d->hovered = rootWidget()->getElementFromPoint( mousePos );
 
   if( _d->toolTip.element.isValid() && _d->hovered == _d->toolTip.element )
@@ -510,7 +531,7 @@ bool Ui::handleEvent( const NEvent& event )
   return false;
 }
 
-Widget* Ui::hovered() const {  return _d->hovered.object(); }
+Widget* Ui::hovered() const { return _d->hovered.object(); }
 
 void Ui::beforeDraw()
 {

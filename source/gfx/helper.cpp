@@ -18,15 +18,16 @@
 #include "helper.hpp"
 #include "core/exception.hpp"
 #include "objects/building.hpp"
-#include "tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "animation_bank.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
 #include "picture_bank.hpp"
 #include "core/logger.hpp"
 #include "game/gamedate.hpp"
+#include "core/stacktrace.hpp"
 
-using namespace constants;
+using namespace direction;
 
 namespace gfx
 {
@@ -34,11 +35,12 @@ namespace gfx
 namespace tilemap
 {
 
-static int x_tileBase = 60;
+static int x_tileBase = caCellWidth;
 static int y_tileBase = x_tileBase / 2;
 static Size tilePicSize( x_tileBase * 2 - 2, x_tileBase );
 static Size tileCellSize( x_tileBase, y_tileBase );
 static Point centerOffset( y_tileBase / 2, y_tileBase / 2 );
+static TilePos tileInvalidLocation( -1, -1 );
 
 void initTileBase(int width)
 {
@@ -63,6 +65,9 @@ Direction getDirection(const TilePos& b, const TilePos& e)
 
   return directions[ angle ];
 }
+
+const TilePos& invalidLocation() { return tileInvalidLocation; }
+bool isValidLocation(const TilePos &pos) { return pos.i() >= 0 && pos.j() >=0; }
 
 }
 
@@ -113,7 +118,7 @@ std::string toResource( const unsigned int imgId )
   return ret_str;
 }
 
-int fromResource( const std::string &pic_name )
+int fromResource( const std::string& pic_name )
 {
   // example: for land1a_00004, return 244+4=248
   std::string res_pfx;  // resource name prefix = land1a
@@ -132,15 +137,16 @@ int fromResource( const std::string &pic_name )
   else
   {
     Logger::warning( "TileHelper: unknown image " + pic_name );
+    res_id = 0;
   }
 
   return res_id;
 }
 
-Picture& toPicture(const unsigned int imgId)
+Picture toPicture(const unsigned int imgId)
 {
   std::string picname = toResource( imgId );
-  return Picture::load( picname );
+  return Picture( picname );
 }
 
 }
@@ -175,9 +181,10 @@ static int __turnBySet( int imgid, int start, int length, int frameCount, int an
   return imgid;
 }
 
-int turnCoastTile(int imgid, constants::Direction newDirection )
+int turnCoastTile(int imgid, Direction newDirection )
 {
   int koeff[] = { 0, 0, 0, 1, 1, 2, 2, 3, 3, -1};
+  Picture pic = imgid::toPicture( imgid );
   imgid -= 372;
   if( koeff[ newDirection ] >= 0 )
   {
@@ -188,6 +195,14 @@ int turnCoastTile(int imgid, constants::Direction newDirection )
     else if( imgid >= 16 && imgid <= 31 )
     {
       imgid = __turnBySet( imgid, 16, 16, 4, koeff[ newDirection ] );
+    }
+    else if( imgid == 32 || imgid == 33 )
+    {
+      imgid += ( newDirection == direction::west || newDirection == direction::east ) ? 2 : 0;
+    }
+    else if( imgid == 34 || imgid == 35 )
+    {
+      imgid -= ( newDirection == direction::west || newDirection == direction::east ) ? 2 : 0;
     }
     else if( imgid >= 36 && imgid <= 39 )
     {
@@ -201,12 +216,29 @@ int turnCoastTile(int imgid, constants::Direction newDirection )
     {
       imgid = __turnBySet( imgid, 46, 4, 1, koeff[ newDirection ] );
     }
+    else if( imgid >= 50 && imgid <= 53 )
+    {
+      imgid = __turnBySet( imgid, 50, 4, 1, koeff[ newDirection ] );
+    }
+    else if( imgid >= 55 && imgid <= 65 )
+    {
+      imgid = __turnBySet( imgid, 55, 1, 3, koeff[ newDirection ] );
+    }
+    else if( imgid >= 67 && imgid <= 70 )
+    {
+      imgid = __turnBySet( imgid, 67, 4, 1, koeff[ newDirection ] );
+    }
+    else if( imgid == 71 )
+    {
+      imgid = 71;
+    }
     else
     {
-      return -1;
+      imgid;
     }
   }
 
+  Picture pic2 = imgid::toPicture( imgid + 372 );
   return imgid + 372;
 }
 
@@ -247,9 +279,9 @@ void decode(Tile& tile, const int bitset)
   if(bitset & 0x10000) { tile.setFlag( Tile::tlRift, true);      }
 }
 
-Tile& getInvalid()
+const Tile& getInvalid()
 {
-  static Tile invalidTile( TilePos( -1, -1) );
+  static Tile invalidTile( tilemap::invalidLocation() );
   return invalidTile;
 }
 
@@ -258,21 +290,35 @@ void clear(Tile& tile)
   int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
   int imgId = math::random( 58 );
 
-  Picture pic = Picture::load( ResourceGroup::land1a, startOffset + imgId );
+  Picture pic( ResourceGroup::land1a, startOffset + imgId );
   tile.setPicture( ResourceGroup::land1a, startOffset + imgId );
   tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
 }
 
 void fixPlateauFlags(Tile& tile)
 {
-  if( tile.originalImgId() > 200 && tile.originalImgId() < 245 )
+  int imgId = tile.originalImgId();
+  bool plateau = (imgId > 200 && imgId < 245);
+  bool l3aRocks = (imgId > 848 && imgId < 863);
+  if( plateau || l3aRocks )
   {
     tile.setFlag( Tile::clearAll, true );
-    Picture pic = imgid::toPicture( tile.originalImgId() );
-    int size = (pic.width() + 2) / 60;
-    bool flat = pic.height() <= 30 * size;
-    tile.setFlag( Tile::tlRock, !flat );
+    const Picture& pic = tile.picture();
+    bool flat = (pic.height() <= pic.width() / 2);
+    tile.setFlag( Tile::tlRock, !flat || l3aRocks );
   }
+}
+
+Tile& getInvalidSafe()
+{
+  static Tile invalidTileSafe( tilemap::invalidLocation() );
+  if( tilemap::isValidLocation( invalidTileSafe.pos() ) )
+  {
+    invalidTileSafe = Tile( tilemap::invalidLocation() );
+    Logger::warning( "!!! WARNING function getInvalidSafe call" );
+  }
+
+  return invalidTileSafe;
 }
 
 }//end namespace util
