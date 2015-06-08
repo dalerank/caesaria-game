@@ -24,10 +24,11 @@
 #include "game.hpp"
 #include "core/saveadapter.hpp"
 #include "loader.hpp"
+#include "game/player.hpp"
 #include "city/victoryconditions.hpp"
 #include "city/build_options.hpp"
 #include "objects/metadata.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "world/empire.hpp"
 #include "city/city.hpp"
 #include "settings.hpp"
@@ -40,9 +41,11 @@
 #include "core/locale.hpp"
 #include "city/terrain_generator.hpp"
 #include "events/fishplace.hpp"
+#include "city/config.hpp"
 #include "climatemanager.hpp"
 
 using namespace religion;
+using namespace events;
 
 namespace game
 {
@@ -50,21 +53,24 @@ namespace game
 namespace loader
 {
 
-CAESARIA_LITERALCONST(climate)
-CAESARIA_LITERALCONST(adviserEnabled)
-CAESARIA_LITERALCONST(fishPlaceEnabled)
 static const int currentVesion = 1;
+
+CAESARIA_LITERALCONST(climate)
+CAESARIA_LITERALCONST(version)
+CAESARIA_LITERALCONST(map)
 CAESARIA_LITERALCONST(random)
 
 class Mission::Impl
 {
 public:
   std::string restartFile;
+  bool needFinalizeMap;
 };
 
 Mission::Mission()
  : _d( new Impl )
 {
+  _d->needFinalizeMap = false;
 }
 
 bool Mission::load( const std::string& filename, Game& game )
@@ -72,76 +78,84 @@ bool Mission::load( const std::string& filename, Game& game )
   VariantMap vm = config::load( filename );
   _d->restartFile = filename;
   
-  if( currentVesion == vm[ "version" ].toInt() )
+  if( currentVesion == vm[ literals::version ].toInt() )
   {
-    std::string mapToLoad = vm[ "map" ].toString();
-    int climateType = vm.get( lc_climate, -1 );
+    std::string mapToLoad = vm[ literals::map ].toString();
+    Variant vClimate = vm.get( literals::climate );
 
-    if( climateType >= 0 )
+    if( vClimate.isValid() )
     {
-      game::climate::initialize( (ClimateType)climateType );
+      ClimateType type = game::climate::central;
+      if( vClimate.type() == Variant::String )
+        type = game::climate::fromString( vClimate.toString() );
+      else
+        type = (ClimateType)vClimate.toInt();
+
+      game::climate::initialize( type );
     }
 
-    if( mapToLoad == lc_random )
+    if( mapToLoad == literals::random )
     {
-      TerrainGenerator targar;
-      VariantMap rndvm = vm[ lc_random ].toMap();
-      int n2size = rndvm.get( "size", 5 );
-      float smooth = rndvm.get( "smooth", 2.6 );
-      float terrain = rndvm.get( "terrain", 4 );
-      targar.create( game, n2size, smooth, terrain );
+      terrain::Generator targar;
+      terrain::Generator::Params params;
+      params.load( vm[ literals::random ].toMap() );
+      targar.create( game, params );
+
+      game.city()->setCameraPos( game.city()->borderInfo().roadEntry );
+      _d->needFinalizeMap = true;
     }
     else
     {
+      _d->needFinalizeMap = false;
       game::Loader mapLoader;
       mapLoader.load( mapToLoad, game );
     }
 
     PlayerCityPtr city = game.city();
 
-    Variant vCityName = vm[ "city.name" ];
-    if( vCityName.isValid() )
+    std::string cityName = vm.get( "city.name" ).toString();
+    if( !cityName.empty() )
     {
-      city->setName( vCityName.toString() );
+      city->setName( cityName );
     }
 
-    city->player()->setRank( vm.get( "player.rank", 0 ) );
-    city->funds().resolveIssue( FundIssue( city::Funds::donation, vm[ "funds" ].toInt() ) );
+    city->mayor()->setRank( vm.get( "player.rank", 0 ) );
+    city->treasury().resolveIssue( econ::Issue( econ::Issue::donation, vm.get( "funds" ).toInt() ) );
 
     Logger::warning( "GameLoaderMission: load city options ");
-    city->setOption( PlayerCity::adviserEnabled, vm.get( lc_adviserEnabled, 1 ) );
-    city->setOption( PlayerCity::fishPlaceEnabled, vm.get( lc_fishPlaceEnabled, 1 ) );
+    city->setOption( PlayerCity::adviserEnabled, vm.get( CAESARIA_STR_A(adviserEnabled), 1 ) );
+    city->setOption( PlayerCity::fishPlaceEnabled, vm.get( CAESARIA_STR_A(fishPlaceEnabled), 1 ) );
 
     game::Date::instance().init( vm[ "date" ].toDateTime() );
 
-    VariantMap vm_events = vm[ "events" ].toMap();
+    VariantMap vm_events = vm.get( "events" ).toMap();
     foreach( it, vm_events )
     {
-      events::GameEventPtr e = events::PostponeEvent::create( it->first, it->second.toMap() );
+      GameEventPtr e = PostponeEvent::create( it->first, it->second.toMap() );
       e->dispatch();
     }
 
     game.empire()->setCitiesAvailable( false );
     Logger::warning( "GameLoaderMission: load empire state" );
-    game.empire()->load( vm[ "empire" ].toMap() );
+    game.empire()->load( vm.get( "empire" ).toMap() );
 
     city::VictoryConditions winConditions;
-    Variant winOptions = vm[ "win" ];
+    Variant winOptions = vm.get( "win" );
     Logger::warningIf( winOptions.isNull(), "GameLoaderMission: cannot load mission win options from file " + filename );
 
     winConditions.load( winOptions.toMap() );
     city->setVictoryConditions( winConditions );
 
     city::development::Options options;
-    options.load( vm[ "buildoptions" ].toMap() );
+    options.load( vm.get( "buildoptions" ).toMap() );
     city->setBuildOptions( options  );
 
     game.empire()->emperor().updateRelation( city->name(), 50 );
 
-    VariantMap fishpointsVm = vm[ "fishpoints" ].toMap();
+    VariantMap fishpointsVm = vm.get( "fishpoints" ).toMap();
     foreach( it, fishpointsVm )
     {
-      events::GameEventPtr e = events::FishPlaceEvent::create( it->second.toTilePos(), events::FishPlaceEvent::add );
+      GameEventPtr e = ChangeFishery::create( it->second.toTilePos(), ChangeFishery::add );
       e->dispatch();
     }
 
@@ -169,6 +183,8 @@ bool Mission::isLoadableFileExtension( const std::string& filename )
 
 int Mission::climateType(const std::string& filename) { return -1; }
 std::string Mission::restartFile() const { return _d->restartFile; }
+
+bool Mission::finalizeMap() const { return _d->needFinalizeMap; }
 
 }//end namespace loader
 

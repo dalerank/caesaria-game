@@ -19,8 +19,6 @@
 #define __CAESARIA_CITYSERVICE_FACTORY_H_INCLUDED__
 
 #include "cityservice.hpp"
-#include "core/scopedptr.hpp"
-#include "city/city.hpp"
 
 namespace city
 {
@@ -50,7 +48,7 @@ public:
 class ServiceFactory
 {
 public:
-  static SrvcPtr create( PlayerCityPtr city, const std::string& name);
+  static SrvcPtr create( PlayerCityPtr city, const std::string& name );
   static ServiceFactory& instance();
   void addCreator( ServiceCreatorPtr creator );
 
@@ -67,6 +65,12 @@ private:
   class Impl;
   ScopedPtr<Impl> _d;
 };
+
+#define REGISTER_SERVICE_IN_FACTORY(type,a) \
+namespace { \
+struct Registrator_##a { Registrator_##a() { ServiceFactory::instance().addCreator<type>(); }}; \
+static Registrator_##a rtor_##a; \
+}
 
 }//end namespace city
 

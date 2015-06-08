@@ -19,7 +19,7 @@
 #define __CAESARIA_INDIGENE_H_INCLUDED__
 
 #include "human.hpp"
-#include "core/predefinitions.hpp"
+#include "objects/predefinitions.hpp"
 
 class Indigene : public Human
 {

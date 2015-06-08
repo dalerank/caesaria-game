@@ -19,7 +19,6 @@
 #define _CAESARIA_CITYREQUESTDISPATCHER_H_INCLUDE_
 
 #include "cityservice.hpp"
-#include "request.hpp"
 #include "core/signals.hpp"
 
 namespace city

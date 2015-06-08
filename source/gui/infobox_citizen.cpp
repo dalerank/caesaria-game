@@ -34,9 +34,8 @@
 #include "walker/seamerchant.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
+#include "gfx/helper.hpp"
 #include "events/movecamera.hpp"
-
-using namespace constants;
 
 namespace gui
 {
@@ -47,18 +46,14 @@ namespace infobox
 namespace citizen
 {
 
-namespace {
-static const char* sound_ext = ".ogg";
-}
-
 class CitizenScreenshot : public Label
 {
 public:
   CitizenScreenshot( Widget* parent, Rect rectangle, WalkerPtr wlk )
     : Label( parent, rectangle, "", false, Label::bgBlackFrame )
   {
-    _wlkPicture.init( rectangle.size() - Size( 6 ) );
-    _wlkPicture->fill( DefaultColors::green, Rect() );
+    _wlkPicture = gfx::Picture( rectangle.size() - Size( 6 ), 0, true );
+    _wlkPicture.fill( DefaultColors::clear, Rect() );
     _walker = wlk;
   }
 
@@ -74,12 +69,12 @@ public:
 
     Label::draw( painter );
 
-    if( !_wlkPicture.isNull() )
+    if( _wlkPicture.isValid() )
     {
       Rect clipRect = absoluteClippingRect();
       clipRect.UpperLeftCorner += Point( 3, 3 );
       clipRect.LowerRightCorner -= Point( 3, 3 );
-      painter.draw( *_wlkPicture, absoluteRect().lefttop() + Point( 3, 3 ), &clipRect );
+      painter.draw( _wlkPicture, absoluteRect().lefttop() + Point( 3, 3 ), &clipRect );
       gfx::Pictures pics;
       _walker->getPictures( pics );
       painter.draw( pics, absoluteRect().lefttop() + Point( 30, 30 ), &clipRect );
@@ -87,7 +82,7 @@ public:
   }
 
   WalkerPtr _walker;
-  gfx::PictureRef _wlkPicture;
+  gfx::Picture _wlkPicture;
   Signal1<WalkerPtr> _onClickedSignal;
 };
 
@@ -118,7 +113,7 @@ public:
 };
 
 AboutPeople::AboutPeople( Widget* parent, PlayerCityPtr city, const TilePos& pos )
-  : Simple( parent, Rect( 0, 0, 460, 350 ), Rect( 18, 40, 460 - 18, 350 - 120 ) ),
+  : Infobox( parent, Rect( 0, 0, 460, 350 ), Rect( 18, 40, 460 - 18, 350 - 120 ) ),
     _d( new Impl)
 {
   _d->walkers = city->walkers( pos );
@@ -175,7 +170,7 @@ void AboutPeople::_setWalker( WalkerPtr wlk )
   if( !thinks.empty() )
   {
     std::string sound = thinks.substr( 2, thinks.size() - 4 );
-    events::GameEventPtr e = events::PlaySound::create( sound + sound_ext, 100 );
+    events::GameEventPtr e = events::PlaySound::create( sound, 100 );
     e->dispatch();
   }
 
@@ -202,7 +197,7 @@ void AboutPeople::_updateNeighbors()
   Point lbOffset( 60, 0 );
   foreach( itTile, tiles )
   {
-    WalkerList tileWalkers = _d->city->walkers( (*itTile)->pos() );
+    const WalkerList& tileWalkers = _d->city->walkers( (*itTile)->pos() );
     if( !tileWalkers.empty() )
     {
       //mini screenshot from citizen pos need here
@@ -265,7 +260,7 @@ void AboutPeople::Impl::updateCurrentAction(const std::string& action, TilePos p
 {
   destinationPos = pos;
   std::string destBuildingName;
-  gfx::TileOverlayPtr ov = city->getOverlay( pos );
+  OverlayPtr ov = city->getOverlay( pos );
   if( ov.isValid() )
   {
     destBuildingName = MetaDataHolder::findPrettyName( ov->type() );
@@ -282,7 +277,7 @@ void AboutPeople::Impl::updateCurrentAction(const std::string& action, TilePos p
 void AboutPeople::Impl::updateBaseBuilding( TilePos pos )
 {
   baseBuildingPos = pos;
-  gfx::TileOverlayPtr ov = city->getOverlay( pos );
+  OverlayPtr ov = city->getOverlay( pos );
   std::string text;
 
   if( ov.isValid() )
@@ -296,7 +291,7 @@ void AboutPeople::Impl::updateBaseBuilding( TilePos pos )
 
 void AboutPeople::Impl::moveCamera2base()
 {
-  if( baseBuildingPos != TilePos( -1, -1 ) )
+  if( baseBuildingPos != gfx::tilemap::invalidLocation() )
   {
     events::GameEventPtr e = events::MoveCamera::create( baseBuildingPos );
     e->dispatch();
@@ -305,7 +300,7 @@ void AboutPeople::Impl::moveCamera2base()
 
 void AboutPeople::Impl::moveCamera2dst()
 {
-  if( destinationPos != TilePos( -1, -1 ) )
+  if( destinationPos != gfx::tilemap::invalidLocation() )
   {
     events::GameEventPtr e = events::MoveCamera::create( destinationPos );
     e->dispatch();

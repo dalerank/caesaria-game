@@ -18,16 +18,13 @@
 #ifndef __CAESARIA_WALKER_CONSTANTS_H_INCLUDED__
 #define __CAESARIA_WALKER_CONSTANTS_H_INCLUDED__
 
-namespace constants
-{
+#include "core/namedtype.hpp"
 
 namespace walker
 {
 
-enum Type
-{
-  unknown=0,
-  immigrant,
+BEGIN_NAMEDTYPE(Type,unknown)
+  ,immigrant,
   emigrant,
   soldier,
   cartPusher,
@@ -93,12 +90,12 @@ enum Type
   docker,
   gladiatorRiot,
   merchantCamel,
+  house_plague,
+  trigger,
   all = 0xff,
   any = all
-};
+END_NAMEDTYPE(Type)
 
 } //end namespace walker
-
-} //end namespace constants
 
 #endif //__CAESARIA_WALKER_CONSTANTS_H_INCLUDED__

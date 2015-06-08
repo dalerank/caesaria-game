@@ -24,13 +24,13 @@ class RomeArcher : public RomeSoldier
 {
 public:
   static RomeArcherPtr create( PlayerCityPtr city,
-                               constants::walker::Type type=constants::walker::romeSpearman );
+                               walker::Type type=walker::romeSpearman );
 
   virtual void timeStep(const unsigned long time);
 
 protected:
   virtual void _fire(TilePos pos );
-  RomeArcher(PlayerCityPtr city, constants::walker::Type type);
+  RomeArcher(PlayerCityPtr city, walker::Type type);
 };
 
 #endif //_CAESARIA_ROMEARCHER_INCLUDE_H_

@@ -24,17 +24,16 @@
 #include "objects_factory.hpp"
 
 using namespace gfx;
-using namespace constants;
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::waymark, Waymark)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::waymark, Waymark)
 
 Waymark::Waymark()
-  : TileOverlay( constants::objects::waymark, Size(1) )
+  : Overlay( object::waymark, Size(1) )
 {
 }
 
 void Waymark::timeStep( const unsigned long time )
 {
-  TileOverlay::timeStep( time );
+  Overlay::timeStep( time );
 }
 
 bool Waymark::isFlat() const { return _isFlat; }
@@ -45,7 +44,7 @@ void Waymark::initTerrain(Tile& terrain)
 
 }
 
-bool Waymark::build( const CityAreaInfo& info )
+bool Waymark::build( const city::AreaInfo& info )
 {  
   bool isEntryMark = false;
 
@@ -73,15 +72,15 @@ bool Waymark::build( const CityAreaInfo& info )
   }
   else
   {
-    Picture pic = MetaDataHolder::randomPicture( objects::terrain, Size(1) );
+    Picture pic = MetaDataHolder::randomPicture( object::terrain, Size(1) );
     Tile& oTile = tmap.at( info.pos );
     oTile.setPicture( pic );
     oTile.setOriginalImgId( imgid::fromResource( pic.name() ) );
     deleteLater();
   }
 
-  setPicture( ResourceGroup::land3a, picIndex );
+  _picture().load( ResourceGroup::land3a, picIndex );
   _isFlat = picture().height() <= tilemap::cellPicSize().height();
 
-  return TileOverlay::build( info );
+  return Overlay::build( info );
 }

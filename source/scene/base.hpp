@@ -58,6 +58,7 @@ public:
 
   // draws the complete frame
   void drawFrame( gfx::Engine &engine );
+  virtual gfx::Camera* camera() const;
 
   virtual void initialize() = 0;
   virtual bool isStopped() const;

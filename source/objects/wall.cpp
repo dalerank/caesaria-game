@@ -21,25 +21,24 @@
 #include "game/resourcegroup.hpp"
 #include "core/safetycast.hpp"
 #include "constants.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects/road.hpp"
 #include "core/direction.hpp"
 #include "core/logger.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::wall, Wall)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::wall, Wall)
 
 Wall::Wall()
-  : Building( objects::wall, Size(1) )
+  : Building( object::wall, Size(1) )
 {
-  setPicture( ResourceGroup::wall, 178 ); // default picture for wall
+  _picture().load( ResourceGroup::wall, 178 ); // default picture for wall
 }
 
-bool Wall::build( const CityAreaInfo& info )
+bool Wall::build( const city::AreaInfo& info )
 {
   Tilemap& tilemap = info.city->tilemap();
   Tile& terrain = tilemap.at( info.pos );
@@ -53,8 +52,7 @@ bool Wall::build( const CityAreaInfo& info )
 
   Construction::build( info );
 
-  city::Helper helper( info.city );
-  WallList walls = helper.find<Wall>( objects::wall );
+  WallList walls = city::statistic::getObjects<Wall>( info.city, object::wall );
 
   foreach( wall, walls ) { (*wall)->updatePicture( info.city ); }
 
@@ -69,7 +67,7 @@ void Wall::destroy()
 
   if( _city().isValid() )
   {
-    TilesArray area = _city()->tilemap().getArea( pos() - TilePos( 2, 2), Size( 5 ) );
+    TilesArea area( _city()->tilemap(), pos() - TilePos( 2, 2), Size( 5 ) );
 
     foreach( tile, area )
     {
@@ -91,7 +89,7 @@ void Wall::initTerrain(Tile &terrain)
   terrain.setFlag( Tile::tlMeadow, isMeadow );
 }
 
-bool Wall::canBuild( const CityAreaInfo& areaInfo ) const
+bool Wall::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool ret = Construction::canBuild( areaInfo );
 
@@ -104,7 +102,7 @@ bool Wall::canBuild( const CityAreaInfo& areaInfo ) const
   return ret;
 }
 
-const Picture& Wall::picture(const CityAreaInfo& areaInfo) const
+const Picture& Wall::picture(const city::AreaInfo& areaInfo) const
 {
   // find correct picture as for roads
   Tilemap& tmap = areaInfo.city->tilemap();
@@ -114,22 +112,26 @@ const Picture& Wall::picture(const CityAreaInfo& areaInfo) const
   const TilePos tile_pos = (areaInfo.aroundTiles.empty()) ? pos() : areaInfo.pos;
 
   if (!tmap.isInside(tile_pos))
-    return Picture::load( ResourceGroup::wall, 178 );
+  {
+    static Picture ret;
+    ret.load(ResourceGroup::wall, 178 );
+    return ret;
+  }
 
-  TilePos tile_pos_d[countDirection];
-  bool is_border[countDirection] = { 0 };
-  bool is_busy[countDirection] = { 0 };
+  TilePos tile_pos_d[direction::count];
+  bool is_border[direction::count] = { 0 };
+  bool is_busy[direction::count] = { 0 };
 
-  tile_pos_d[north] = tile_pos + TilePos(  0,  1);
-  tile_pos_d[east]  = tile_pos + TilePos(  1,  0);
-  tile_pos_d[south] = tile_pos + TilePos(  0, -1);
-  tile_pos_d[west]  = tile_pos + TilePos( -1,  0);
-  tile_pos_d[northEast] = tile_pos + TilePos( 1, 1 );
-  tile_pos_d[southEast] = tile_pos + TilePos( 1, -1 );
+  tile_pos_d[direction::north] = tile_pos + TilePos(  0,  1);
+  tile_pos_d[direction::east]  = tile_pos + TilePos(  1,  0);
+  tile_pos_d[direction::south] = tile_pos + TilePos(  0, -1);
+  tile_pos_d[direction::west]  = tile_pos + TilePos( -1,  0);
+  tile_pos_d[direction::northEast] = tile_pos + TilePos( 1, 1 );
+  tile_pos_d[direction::southEast] = tile_pos + TilePos( 1, -1 );
 
 
   // all tiles must be in map range
-  for (int i = 0; i < countDirection; ++i)
+  for (int i = 0; i < direction::count; ++i)
   {
     is_border[i] = !tmap.isInside(tile_pos_d[i]);
     if (is_border[i])
@@ -137,13 +139,13 @@ const Picture& Wall::picture(const CityAreaInfo& areaInfo) const
   }
 
   // get overlays for all directions
-  TileOverlayPtr overlay_d[countDirection];
-  overlay_d[north] = tmap.at( tile_pos_d[north] ).overlay();
-  overlay_d[east] = tmap.at( tile_pos_d[east]  ).overlay();
-  overlay_d[south] = tmap.at( tile_pos_d[south] ).overlay();
-  overlay_d[west] = tmap.at( tile_pos_d[west]  ).overlay();
-  overlay_d[northEast] = tmap.at( tile_pos_d[northEast]  ).overlay();
-  overlay_d[southEast] = tmap.at( tile_pos_d[southEast]  ).overlay();
+  OverlayPtr overlay_d[direction::count];
+  overlay_d[direction::north] = tmap.at( tile_pos_d[direction::north] ).overlay();
+  overlay_d[direction::east] = tmap.at( tile_pos_d[direction::east]  ).overlay();
+  overlay_d[direction::south] = tmap.at( tile_pos_d[direction::south] ).overlay();
+  overlay_d[direction::west] = tmap.at( tile_pos_d[direction::west]  ).overlay();
+  overlay_d[direction::northEast] = tmap.at( tile_pos_d[direction::northEast]  ).overlay();
+  overlay_d[direction::southEast] = tmap.at( tile_pos_d[direction::southEast]  ).overlay();
 
   // if we have a TMP array with wall, calculate them
   if (!areaInfo.aroundTiles.empty())
@@ -151,7 +153,7 @@ const Picture& Wall::picture(const CityAreaInfo& areaInfo) const
     foreach( it, areaInfo.aroundTiles )
     {
       if( (*it)->overlay().isNull()
-          || (*it)->overlay()->type() != objects::wall)
+          || (*it)->overlay()->type() != object::wall)
       {
         continue;
       }
@@ -161,37 +163,37 @@ const Picture& Wall::picture(const CityAreaInfo& areaInfo) const
       int j = (*it)->j();
 
       const TilePos& p = areaInfo.pos;
-      if( (p + TilePos( 0, 1 )) == rpos ) is_busy[north] = true;
-      else if(i == p.i() && j == (p.j() - 1)) is_busy[south] = true;
-      else if(j == p.j() && i == (p.i() + 1)) is_busy[east] = true;
-      else if(j == p.j() && i == (p.i() - 1)) is_busy[west] = true;
-      else if((p + TilePos(1, 1)) == rpos ) is_busy[northEast] = true;
-      else if((p + TilePos(1, -1)) == rpos ) is_busy[southEast] = true;
+      if( (p + TilePos( 0, 1 )) == rpos ) is_busy[direction::north] = true;
+      else if(i == p.i() && j == (p.j() - 1)) is_busy[direction::south] = true;
+      else if(j == p.j() && i == (p.i() + 1)) is_busy[direction::east] = true;
+      else if(j == p.j() && i == (p.i() - 1)) is_busy[direction::west] = true;
+      else if((p + TilePos(1, 1)) == rpos ) is_busy[direction::northEast] = true;
+      else if((p + TilePos(1, -1)) == rpos ) is_busy[direction::southEast] = true;
     }
   }
 
   // calculate directions
-  for (int i = 0; i < countDirection; ++i) {
+  for (int i = 0; i < direction::count; ++i) {
     if( !is_border[i] &&
        ( (overlay_d[i].isValid() &&
-          (overlay_d[i]->type() == objects::wall || overlay_d[i]->type() == objects::gatehouse ) )
+          (overlay_d[i]->type() == object::wall || overlay_d[i]->type() == object::gatehouse ) )
         || is_busy[i] ) )
     {
       switch (i)
       {
-      case north: directionFlags += 0x1; break;
-      case east:  directionFlags += 0x2; break;
-      case south: directionFlags += 0x4; break;
-      case west:  directionFlags += 0x8; break;
-      case northEast: directionFlags += 0x10; break;
-      case southEast: directionFlags += 0x20; break;      
+      case direction::north: directionFlags += 0x1; break;
+      case direction::east:  directionFlags += 0x2; break;
+      case direction::south: directionFlags += 0x4; break;
+      case direction::west:  directionFlags += 0x8; break;
+      case direction::northEast: directionFlags += 0x10; break;
+      case direction::southEast: directionFlags += 0x20; break;
       default: break;
       }
     }
   }
 
   Wall& th = *const_cast< Wall* >( this );
-  th._fgPicturesRef().clear();
+  th._fgPictures().clear();
   int index;
   switch( directionFlags & 0xf )
   {  
@@ -213,8 +215,8 @@ const Picture& Wall::picture(const CityAreaInfo& areaInfo) const
   {
     if( (directionFlags & 0x20) == 0 )
     {
-      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 183 ) );
-      th._fgPicturesRef().back().addOffset( -15, -8 );
+      th._fgPictures().push_back( Picture( ResourceGroup::wall, 183 ) );
+      th._fgPictures().back().addOffset( -15, -8 );
     }
   }
   break;
@@ -227,8 +229,8 @@ const Picture& Wall::picture(const CityAreaInfo& areaInfo) const
     index = 178;
     if( (directionFlags & 0x20) == 0 )
     {
-      th._fgPicturesRef().push_back( Picture::load( ResourceGroup::wall, 183 ) );
-      th._fgPicturesRef().back().addOffset( -15, -8 );
+      th._fgPictures().push_back( Picture( ResourceGroup::wall, 183 ) );
+      th._fgPictures().back().addOffset( -15, -8 );
     }
   break; // N + S + E + W (crossing)
 
@@ -237,16 +239,18 @@ const Picture& Wall::picture(const CityAreaInfo& areaInfo) const
     Logger::warning( "Impossible direction on wall building [%d,%d]", areaInfo.pos.i(), areaInfo.pos.j() );
   }
 
-  return Picture::load( ResourceGroup::wall, index );
+  static Picture ret;
+  ret.load( ResourceGroup::wall, index );
+  return ret;
 }
 
 void Wall::updatePicture(PlayerCityPtr city)
 {
-  CityAreaInfo areaInfo = { city, TilePos(), TilesArray() };
+  city::AreaInfo areaInfo = { city, TilePos(), TilesArray() };
   setPicture( picture( areaInfo ) );
 }
 
-bool Wall::isNeedRoadAccess() const
+bool Wall::isNeedRoad() const
 {
   return false;
 }

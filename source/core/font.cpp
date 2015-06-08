@@ -228,12 +228,12 @@ void Font::draw(Picture &dstpic, const std::string &text, const Point& pos, bool
   draw( dstpic, text, pos.x(), pos.y(), useAlpha, updateTx );
 }
 
-Picture* Font::once(const std::string &text, bool mayChange)
+Picture Font::once(const std::string &text, bool mayChange)
 {
   SDL_Surface* textSurface = TTF_RenderUTF8_Blended( _d->ttfFont, text.c_str(), _d->color );
-  Picture* ret = Picture::create( Size( textSurface->w, textSurface->h ), (unsigned char*)textSurface->pixels, mayChange );
+  Picture ret( Size( textSurface->w, textSurface->h ), (unsigned char*)textSurface->pixels, mayChange );
   SDL_FreeSurface( textSurface );
-  ret->update();
+  ret.update();
 
   return ret;
 }
@@ -251,7 +251,6 @@ Font Font::create(FontType type)
 {
   return FontCollection::instance().getFont_( type );
 }
-
 
 Font Font::create(FontType type, NColor color)
 {
@@ -322,7 +321,7 @@ void FontCollection::setFont(const int key, const std::string& name, Font font)
 
 void FontCollection::addFont(const int key, const std::string& name, vfs::Path pathFont, const int size, const NColor& color )
 {
-  TTF_Font* ttf = TTF_OpenFont(pathFont.toString().c_str(), size);
+  TTF_Font* ttf = TTF_OpenFont(pathFont.toCString(), size);
   if( ttf == NULL )
   {
     std::string errorStr( TTF_GetError() );
@@ -341,8 +340,10 @@ void FontCollection::addFont(const int key, const std::string& name, vfs::Path p
   setFont( key, name, font0);
 }
 
-void FontCollection::initialize(const std::string &resourcePath)
+void FontCollection::initialize(const std::string& resourcePath)
 {
+  _d->collection.clear();
+
   vfs::Directory resDir( resourcePath );
   vfs::Path fontFilename = SETTINGS_VALUE( font ).toString();
   vfs::Path absolutFontfilename = resDir/fontFilename;

@@ -16,7 +16,7 @@
 #include "scribemessage.hpp"
 #include "game/game.hpp"
 #include "game/gamedate.hpp"
-#include "city/cityservice_info.hpp"
+#include "city/scribes.hpp"
 #include "city/city.hpp"
 
 namespace events
@@ -38,23 +38,22 @@ GameEventPtr ScribeMessage::create(const std::string& title, const std::string& 
 
 void ScribeMessage::_exec(Game& game, unsigned int)
 {
-  city::InfoPtr srvc;
-  srvc << game.city()->findService( city::Info::defaultName() );
-
-  if( srvc.isValid() )
-  {
-    city::Info::ScribeMessage msg;
-    msg.date = game::Date::current();
-    msg.opened = false;
-    msg.gtype = _gtype;
-    msg.position = _position;
-    msg.text = _text;
-    msg.title = _title;
-    msg.type = 0;
-    srvc->addMessage( msg );
-  }
+  city::Scribes::Message msg;
+  msg.date = game::Date::current();
+  msg.opened = false;
+  msg.gtype = _gtype;
+  msg.position = _position;
+  msg.text = _text;
+  msg.title = _title;
+  msg.type = 0;
+  game.city()->scribes().addMessage( msg );
 }
 
 bool ScribeMessage::_mayExec(Game&, unsigned int) const { return true; }
+
+ScribeMessage::ScribeMessage()
+{
+
+}
 
 }//end namespace events

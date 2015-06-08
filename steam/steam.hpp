@@ -32,7 +32,7 @@ enum AchievementType
   achievementNewVillage = 0,
   achievementNewGraphics = 1,
   achievementFirstWin = 2,
-  achievementNumber
+  achv_count
 };
 
 bool checkSteamRunning();
@@ -41,12 +41,13 @@ void close();
 void update();
 void init();
 
-void unlockAchievement( AchievementType achivId );
-void missionWin();
+void evaluateAchievement( AchievementType achivId );
+void missionWin(const std::string& name);
 bool isAchievementReached( AchievementType achivId );
 bool isStatsReceived();
-const gfx::Picture& achievementImage( AchievementType achivId );
+gfx::Picture achievementImage( AchievementType achivId );
 std::string achievementCaption( AchievementType achivId );
+std::string language();
 
 std::string userName();
 const gfx::Picture& userImage();

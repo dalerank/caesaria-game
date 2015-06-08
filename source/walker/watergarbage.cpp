@@ -20,9 +20,9 @@
 #include "core/gettext.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "game/resourcegroup.hpp"
+#include "objects/construction.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::waterGarbage, WaterGarbage)
@@ -62,7 +62,7 @@ void WaterGarbage::send2City(const TilePos &start )
     setPos( start );
     setPathway( path );
     go();
-    _city()->addWalker( this );
+    attach();
   }
 }
 

@@ -19,8 +19,6 @@
 #define _CAESARIA_DESIRABILITY_UPDATER_H_INCLUDE_
 
 #include "cityservice.hpp"
-#include "predefinitions.hpp"
-#include "core/scopedptr.hpp"
 
 namespace city
 {
@@ -32,7 +30,7 @@ public:
   virtual void timeStep(const unsigned int time);
   static std::string defaultName();
   virtual bool isDeleted() const;
-  virtual void destroy( PlayerCityPtr city );
+  virtual void destroy();
 
   virtual void load(const VariantMap &stream);
   virtual VariantMap save() const;

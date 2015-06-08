@@ -29,6 +29,11 @@ class AboutAmphitheater : public AboutConstruction
 public:
   AboutAmphitheater( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
   virtual ~AboutAmphitheater();
+
+private:
+  void _updateWarnings();
+  void _updateShowsInfo(AmphitheaterPtr amph);
+  void _updateBouthsInfo(AmphitheaterPtr amph);
 };
 
 }

@@ -19,8 +19,8 @@
 #define _CAESARIA_RANDOMANIMALS_EVENT_H_INCLUDE_
 
 #include "event.hpp"
-#include "predefinitions.hpp"
 #include "core/scopedptr.hpp"
+#include "walker/constants.hpp"
 
 namespace events
 {
@@ -29,7 +29,7 @@ class RandomAnimals : public GameEvent
 {
 public:
   static GameEventPtr create();
-  static GameEventPtr create(constants::walker::Type type, unsigned int wolvesNumber );
+  static GameEventPtr create(walker::Type type, unsigned int wolvesNumber );
   virtual bool isDeleted() const;
 
   virtual void load(const VariantMap &stream);

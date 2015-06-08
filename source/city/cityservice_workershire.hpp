@@ -19,9 +19,6 @@
 #define __CAESARIA_CITYSERVICE_WORKERSHIRE_H_INCLUDED__
 
 #include "cityservice.hpp"
-#include "core/scopedptr.hpp"
-#include "gfx/tileoverlay.hpp"
-#include "core/predefinitions.hpp"
 #include "core/priorities.hpp"
 #include "industry.hpp"
 

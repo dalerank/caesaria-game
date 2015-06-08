@@ -21,11 +21,12 @@
   roadBlock : { start : 1, stop : 1, offset : [ -1, -1 ] }
   etruscan : { start : 1, stop : 600, offset : [ -2, -2 ] }
   citizen : { start : 1, stop : 200, offset : [ -2, -2 ] }
+  low_bridge_sw : { rc : "transport", start : 72, stop : 72, offset : [ 0, 44 ] }
   circus_horses : { rc : "carts", start : 537, stop : 600, offset : [ -2, -2 ] }
   circus_charioter : { rc : "carts", start : 601, stop : 616, offset : [ -2, -2 ] }
   carthegenians : { start : 1, stop : 512, offset : [-2, -2] }
   warehouse_base: { rc : "warehouse", start : 1, stop : 1, offset : [ 60, 56 ] }
-  waherhose_roof : { rc : "warehouse", start : 18, stop : 18, offset : [ 56, 93 ] }
+  waherhouse_roof : { rc : "warehouse", start : 18, stop : 18, offset : [ 56, 93 ] }
   warehouse_work : { rc : "warehouse", start : 2, stop : 17, offset : [ 55, 75 ] }
   warehouse_flag : { rc : "warehouse", start : 84, stop : 91, offset : [ 79, 108 ] }
   pretty_fountain : { rc : "utilitya", start : 3, stop : 9, offset : [ 9, 41 ] }
@@ -33,4 +34,13 @@
   awesomeFountain : { rc : "utilitya", start : 19, stop : 25, offset : [ 12, 24 ] }
   patricianFountain : { rc : "utilitya", start : 27, stop : 33, offset : [ 14, 26 ] }
   reservoir_full : { rc : "utilitya", start : 35, stop : 42, offset : [ 47, 63 ] }
+  granary_maintex : { rc : "commerce", start : 141, stop : 141, offset : [ 28, 109 ] }
+  granary_lvl1 : { rc : "commerce", start : 142, stop : 142, offset : [ 33, 75 ] }
+  granary_lvl2 : { rc : "commerce", start : 143, stop : 143, offset : [ 56, 65 ] }
+  granary_lvl3 : { rc : "commerce", start : 144, stop : 144, offset : [ 92, 65 ] }
+  granary_lvl4 : { rc : "commerce", start : 145, stop : 145, offset : [ 118, 76 ] }
+  granary_animation : { rc : "commerce", start : 146, stop : 152, offset : [ 78, 69 ] }
+  market_poor_anim : { rc : "commerce", start : 2, stop : 11, offset : [ 42, 34 ] }
+  our_city_flag : { rc : "empire_bits", start : 2, stop : 7, offset : [ 17, 24 ] }
+  theater_work : { rc : "entertainment", start : 35, stop : 35, offset : [ 34, 37 ] }
 }

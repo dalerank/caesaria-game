@@ -104,7 +104,7 @@ public signals:
 	Signal1<int>& onPositionChanged();
 
 protected:
-	void _resizeEvent();
+	void _finalizeResize();
 	void _refreshControls();
 
   virtual int _getPosFromMousePos(const Point& p) const;

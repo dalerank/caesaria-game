@@ -20,6 +20,7 @@
 
 #include "walker.hpp"
 #include "predefinitions.hpp"
+#include "gfx/animation.hpp"
 
 class RiverWave : public Walker
 {

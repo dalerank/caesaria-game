@@ -17,6 +17,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "player.hpp"
+#include "core/color.hpp"
 #include "core/variant_map.hpp"
 
 class Player::Impl
@@ -26,7 +27,7 @@ public:
   std::string name;
   int salary;
   int rank;
-  unsigned int color;
+  NColor color;
 };
 
 Player::Player() : _d( new Impl )
@@ -34,6 +35,7 @@ Player::Player() : _d( new Impl )
   _d->funds = 0;
   _d->salary = 0;
   _d->rank = 0;
+  _d->color = DefaultColors::red;
 }
 
 PlayerPtr Player::create()
@@ -65,7 +67,7 @@ void Player::load( const VariantMap& stream )
 void Player::appendMoney( int money ){  _d->funds += money;}
 int Player::money() const{  return _d->funds;}
 
-unsigned int Player::color() const{ return _d->color; }
+NColor Player::color() const{ return _d->color; }
 Player::~Player(){}
 void Player::setName( const std::string& name ){  _d->name = name;}
 std::string Player::name() const{  return _d->name;}

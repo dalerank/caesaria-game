@@ -13,12 +13,14 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_BUILD_EVENT_H_INCLUDE_
 #define _CAESARIA_BUILD_EVENT_H_INCLUDE_
 
 #include "event.hpp"
+#include "objects/constants.hpp"
+#include "core/position.hpp"
 
 namespace events
 {
@@ -26,8 +28,8 @@ namespace events
 class BuildAny : public GameEvent
 {
 public:
-  static GameEventPtr create( const TilePos&, gfx::TileOverlay::Type type );
-  static GameEventPtr create( const TilePos&, gfx::TileOverlayPtr overlay );
+  static GameEventPtr create( const TilePos&, object::Type type );
+  static GameEventPtr create( const TilePos&, OverlayPtr overlay );
 
 protected:
   virtual void _exec( Game& game, unsigned int );
@@ -35,7 +37,7 @@ protected:
 
 private:
   TilePos _pos;
-  gfx::TileOverlayPtr _overlay;
+  OverlayPtr _overlay;
 };
 
 } //end namespace events

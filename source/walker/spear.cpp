@@ -21,9 +21,9 @@
 #include "game/resourcegroup.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/foreach.hpp"
+#include "objects/construction.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::spear, Spear)
@@ -45,12 +45,10 @@ void Spear::_onTarget()
     (*w)->acceptAction( Walker::acFight, startPos() );
   }
 
-  ConstructionPtr c;
-  c << _city()->getOverlay( dstPos() );
-
+  ConstructionPtr c = ptr_cast<Construction>(_city()->getOverlay( dstPos() ));
   if( c.isValid() )
   {
-    c->updateState( Construction::damage, 5 );
+    c->updateState( pr::damage, 5 );
   }
 }
 

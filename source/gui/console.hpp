@@ -51,7 +51,7 @@ private:
     TOGGLE_TYPE toggle_visible_;
 
     std::string currentCommand_;												//
-    gfx::PictureRef _bgpic;
+    gfx::Picture _bgpic;
     unsigned int cursorPos_;
 
     void SaveCommands_();

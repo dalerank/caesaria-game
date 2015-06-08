@@ -57,7 +57,4 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-void CrashHandler_initCrashHandler();
-void CrashHandler_handleCrash(int signum);
-
 #endif //__CAESARIA_LOGGER_H_INCLUDED__

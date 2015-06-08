@@ -19,13 +19,27 @@
 #define __CAESARIA_CITYSERVICE_FESTIVAL_H_INCLUDED__
 
 #include "cityservice.hpp"
-#include "core/scopedptr.hpp"
-#include "core/predefinitions.hpp"
 #include "religion/romedivinity.hpp"
-#include "core/variant.hpp"
+
+namespace config
+{
+
+namespace festival
+{
+  struct Info
+  {
+    DateTime date;
+    religion::RomeDivinityType divinity;
+    int size;
+  };
+}
+
+}
 
 namespace city
 {
+
+PREDEFINE_CLASS_SMARTPOINTER(Festival)
 
 class Festival : public Srvc
 {
@@ -33,14 +47,15 @@ public:
   static SrvcPtr create(PlayerCityPtr city);
   static std::string defaultName();
 
-  DateTime lastFestivalDate() const;
-  DateTime nextFestivalDate() const;
-  void assignFestival( religion::RomeDivinityType name, int size);
+  DateTime lastFestival() const;
+  DateTime nextFestival() const;
+  void assign(religion::RomeDivinityType name, int size);
+  void now();
 
   virtual void timeStep( const unsigned int time );
 
   virtual VariantMap save() const;
-  virtual void load(const VariantMap& stream );
+  virtual void load(const VariantMap& stream );  
 
 private:
   Festival( PlayerCityPtr city );
@@ -48,8 +63,6 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
-typedef SmartPtr<Festival> FestivalPtr;
 
 }//end namespace city
 

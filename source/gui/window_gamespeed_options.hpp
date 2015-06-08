@@ -27,16 +27,16 @@ namespace gui
 namespace dialog
 {
 
-class GameSpeedOptions : public Window
+class SpeedOptions : public Window
 {
 public:
-  GameSpeedOptions(Widget* parent,
-                         int gameSpeed,
-                         int scrollSpeed,
-                         int autosaveInterval);
+  SpeedOptions( Widget* parent,
+                int gameSpeed,
+                int scrollSpeed,
+                int autosaveInterval);
 
   //! Деструктор
-  virtual ~GameSpeedOptions(void);
+  virtual ~SpeedOptions(void);
 
   virtual bool onEvent(const NEvent &event);
 

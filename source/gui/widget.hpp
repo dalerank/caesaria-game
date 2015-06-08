@@ -56,13 +56,16 @@ public:
   void setInternalName( const std::string& name );
 
   template< class T >
-  List< T > findChildren()
+  List< T > findChildren( bool indepth=false )
   {
     List< T > ret;
     foreach( it, children() )
     {
       if( T elm = safety_cast< T >( *it ) )
           ret.push_back( elm );
+
+      if( indepth )
+        ret.append( (*it)->findChildren<T>( indepth ) );
     }
 
     return ret;
@@ -379,11 +382,14 @@ public:
     *  \return true if successfully found an element, false to continue searching/fail 
 	 */
   bool next( int startOrder, bool reverse, bool group,
-                      Widget*& first, Widget*& closest, bool includeInvisible=false) const;
+             Widget*& first, Widget*& closest, bool includeInvisible=false) const;
 
   void setParent( Widget* parent );
 
   void setRight(int newRight);
+
+  void addProperty(const std::string& name, const Variant &value );
+  const Variant& getProperty( const std::string& name ) const;
 
 protected:
 
@@ -393,7 +399,8 @@ protected:
    * When _resizeEvent() is called, the widget already has its new
    * geometry.
    */
-  virtual void _resizeEvent();
+  virtual void _finalizeResize();
+  virtual void _finalizeMove();
 
   Widgets& _getChildren();
 

@@ -22,7 +22,7 @@
 #include "environment.hpp"
 #include "core/foreach.hpp"
 #include <vector>
-#include "gfx/layerconstants.hpp"
+#include "layers/constants.hpp"
 
 namespace gui
 {
@@ -60,7 +60,7 @@ void OverlaysMenu::_addButtons(const int type )
     _addButton( citylayer::risks, startPos+=offset );
     _addButton( citylayer::entertainments, startPos+=offset );
     _addButton( citylayer::educations, startPos+=offset );
-    _addButton( citylayer::health, startPos+=offset );
+    _addButton( citylayer::healthAll, startPos+=offset );
     _addButton( citylayer::commerce, startPos+=offset );
     _addButton( citylayer::religion, startPos+=offset );
     setHeight( 8 * offset.y() );
@@ -89,8 +89,9 @@ void OverlaysMenu::_addButtons(const int type )
     _addButton( citylayer::academy, startPos+=offset );
     break;
 
-  case citylayer::health:
-    _addButton( citylayer::barber, startPos );
+  case citylayer::healthAll:
+    _addButton( citylayer::health, startPos );
+    _addButton( citylayer::barber, startPos+=offset );
     _addButton( citylayer::baths, startPos+=offset );
     _addButton( citylayer::doctor, startPos+=offset );
     _addButton( citylayer::hospital, startPos+=offset );
@@ -136,7 +137,7 @@ bool OverlaysMenu::onEvent( const NEvent& event )
       case citylayer::risks:
       case citylayer::entertainments:
       case citylayer::educations:
-      case citylayer::health:
+      case citylayer::healthAll:
       case citylayer::commerce:
         {
           foreach( item, _d->buttons )  { (*item)->deleteLater(); }

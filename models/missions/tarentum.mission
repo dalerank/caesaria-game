@@ -12,12 +12,13 @@
   {
     population : 2500
     culture : 30
+    name : "n2_tarentum"
     prosperity : 10
     peace : 10
     favour : 40
     finishDate : "-300.01.01"
     next : ":/missions/mission4.briefing"
-    title : "##win_engineer_title##"
+    title : "##architect##"
     win.text : "##tarentum_win_text##"
     may_continue : false
     maxHouseLevel : "big_villa"
@@ -30,7 +31,7 @@
   empire :
   {
     enabled : true
-    maxBarbariansGroups : 1
+    maxBarbariansGroups : 0
 
     cities :
     {
@@ -121,7 +122,7 @@
       date : "-350.01.01"
       type : "city_indebt"
       emperorMoney : [ 8000, 5000, 0 ]
-      video : [ ":/smk/Emp_2nd_chance.bik", ":/smk/Emp_displeased.smk", ":/smk/Emp_angry.smk" ]
+      video : [ "emp_2nd_chance", "emp_displeased", "emp_angry" ]
       title : [ "##city_in_debt##", "##city_in_debt_again##", "##city_still_in_debt##" ]
       text : [ "##city_has_runout_money##", "##city_has_runout_money##", "##city_still_in_debt_text##" ]
     }
@@ -135,7 +136,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-	"emperor_request_vines2#city_request" : {
+    "emperor_request_vines2#city_request" : {
       date : "-345.06.01"
       reqtype : "good_request"
       month : 12
@@ -144,7 +145,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-	"emperor_request_vines3#city_request" : {
+    "emperor_request_vines3#city_request" : {
       date : "-342.04.01"
       reqtype : "good_request"
       month : 12
@@ -153,7 +154,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-	"emperor_request_vines4#city_request" : {
+    "emperor_request_vines4#city_request" : {
       date : "-339.08.01"
       reqtype : "good_request"
       month : 12
@@ -162,7 +163,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-	"emperor_request_vines5#city_request" : {
+    "emperor_request_vines5#city_request" : {
       date : "-336.08.01"
       reqtype : "good_request"
       month : 12
@@ -171,7 +172,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-	"emperor_request_vines6#city_request" : {
+    "emperor_request_vines6#city_request" : {
       date : "-333.05.01"
       reqtype : "good_request"
       month : 12
@@ -180,7 +181,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-	"emperor_request_vines7#city_request" : {
+    "emperor_request_vines7#city_request" : {
       date : "-329.05.01"
       reqtype : "good_request"
       month : 12
@@ -189,7 +190,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-	"emperor_request_vines8#city_request" : {
+    "emperor_request_vines8#city_request" : {
       date : "-326.05.01"
       reqtype : "good_request"
       month : 12
@@ -216,7 +217,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-	"emperor_request_vines11#city_request" : {
+    "emperor_request_vines11#city_request" : {
       date : "-317.05.01"
       reqtype : "good_request"
       month : 12
@@ -243,7 +244,7 @@
       fail : { favour : -10, appendMonth : 24 }
     }
 
-	"emperor_request_vines14#city_request" : {
+    "emperor_request_vines14#city_request" : {
       date : "-308.05.01"
       reqtype : "good_request"
       month : 12
@@ -275,7 +276,7 @@
         barbarian_attack#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -302,15 +303,15 @@
         barbarian_attack#messagebox : {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
 
-	"barbarian_invasion2#enemy_attack" : {
+    "barbarian_invasion2#enemy_attack" : {
       date : "-342.07.01"
       type : "enemy_attack"
-	  target : "best_building"
+      target : "best_building"
       items : {
         troop_soldiers : {
           type : "etruscanSoldier"
@@ -326,10 +327,10 @@
       }
 
       exec : {
-		barbarian_attack#messagebox : {
+      barbarian_attack#messagebox : {
 		  title : "##barbarian_attack_title##"
 		  text : "##barbarian_attack_text##"
-      video : ":/smk/Spy_Barbarian.smk"
+      video : "spy_barbarian"
 		}
 	  }
     }
@@ -353,12 +354,13 @@
       }
 
       exec : {
-		barbarian_attack#messagebox : {
-		  title : "##barbarian_attack_title##"
-		  text : "##barbarian_attack_text##"
-      video : ":/smk/Spy_Barbarian.smk"
-		}
-	  }
+        barbarian_attack#messagebox :
+        {
+          title : "##barbarian_attack_title##"
+          text : "##barbarian_attack_text##"
+          video : "spy_barbarian"
+        }
+      }
     }
 
     barbarian_invasion1#enemy_attack :
@@ -390,7 +392,7 @@
         {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
    }
@@ -424,7 +426,7 @@
         {
           title : "##barbarian_attack_title##"
           text : "##barbarian_attack_text##"
-          video : ":/smk/Spy_Barbarian.smk"
+          video : "spy_barbarian"
         }
       }
     }
@@ -449,7 +451,6 @@
     { 
       engineering_post : true
       plaza : true
-      forum : false
       garden : true
       low_bridge : true
       gatehouse : true

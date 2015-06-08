@@ -23,7 +23,6 @@
 #include "walker/predefinitions.hpp"
 #include "walker/constants.hpp"
 
-
 namespace gui
 {
 
@@ -38,7 +37,7 @@ namespace citizen
 class Creator : public ReferenceCounted
 {
 public:
-  virtual gui::infobox::Simple* create( gui::Widget* parent, PlayerCityPtr city, const TilePos& pos ) = 0;
+  virtual gui::infobox::Infobox* create( gui::Widget* parent, PlayerCityPtr city, const TilePos& pos ) = 0;
 };
 
 typedef SmartPtr<Creator> CreatorPtr;
@@ -48,12 +47,12 @@ class PManager
 public:
   static PManager& instance();
 
-  void loadInfoboxes( Manager& manager );
   virtual ~PManager();
 
-  void addCreator( constants::walker::Type type, CreatorPtr c );
+  void addCreator( walker::Type type, CreatorPtr c );
+  void loadInfoboxes();
 
-  gui::infobox::Simple* show( gui::Widget* parent, PlayerCityPtr city , const TilePos& pos);
+  gui::infobox::Infobox* show( gui::Widget* parent, PlayerCityPtr city , const TilePos& pos);
 private:
   PManager();
 
@@ -61,9 +60,9 @@ private:
   ScopedPtr<Impl> _d;
 };
 
-}
+}//end namespace citizen
 
-}
+}//end namespace infobox
 
-}
+}//end namespace gui
 #endif //_CAESARIA_WINDOW_GAMESPEED_OPTIONS_H_INCLUDE_

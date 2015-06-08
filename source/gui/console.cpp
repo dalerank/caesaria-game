@@ -39,7 +39,7 @@ void Console::SaveCommands_()																	//
 
   foreach( it, console_history_ )							//
   {
-    commands[ *it ] = "";
+    commands[ *it ] = Variant( "" );
   }
 
   config::save( commands, path );
@@ -112,11 +112,11 @@ void Console::draw( gfx::Engine& painter )
 {
   resizeMessages();
 
-    if( !_font.isValid() )
-    {
-        Widget::draw( painter );
-        return;
-    }
+  if( !_font.isValid() )
+  {
+    Widget::draw( painter );
+    return;
+  }
 
   if( visible() )															// render only if the console is visible
 	{
@@ -134,7 +134,7 @@ void Console::draw( gfx::Engine& painter )
 			}
 		}
 
-    painter.draw( *_bgpic, absoluteRect().lefttop() );	//draw the bg as per configured color
+    painter.draw( _bgpic, absoluteRect().lefttop() );	//draw the bg as per configured color
 		
     Rect textRect,shellRect;										//we calculate where the message log shall be printed and where the prompt shall be printed
     calculatePrintRects(textRect,shellRect);
@@ -147,9 +147,9 @@ void Console::draw( gfx::Engine& painter )
 		}
 		
     Rect lineRect( textRect.UpperLeftCorner.x(),						//calculate the line rectangle
-                textRect.UpperLeftCorner.y(),
-                textRect.LowerRightCorner.x(),
-                textRect.UpperLeftCorner.y() + lineHeight);
+                   textRect.UpperLeftCorner.y(),
+                   textRect.LowerRightCorner.x(),
+                   textRect.UpperLeftCorner.y() + lineHeight);
 
     NColor fontcolor = DefaultColors::white;
 

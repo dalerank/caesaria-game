@@ -20,10 +20,12 @@
 #include "gfx/tile.hpp"
 
 using namespace gfx;
+namespace {
+static const TilePos invalidePos;
+}
 
 class AStarPoint
-{
-
+{  
 public:
   AStarPoint* parent;
   bool closed;
@@ -41,10 +43,7 @@ public:
     f = g = h = 0;
   }
 
-  TilePos getPos()
-  {
-    return tile ? tile->pos() : TilePos( 0, 0 );
-  }  
+  inline const TilePos& getPos()   {    return tile ? tile->pos() : invalidePos;  }
 
   AStarPoint( const Tile* t ) : tile( t )
   {    
@@ -55,23 +54,28 @@ public:
     f = g = h = 0;
   }
 
-  AStarPoint* getParent()  {    return parent; }
-  void setParent(AStarPoint* p)  {    parent = p;  }
+  inline AStarPoint* getParent()  {    return parent; }
+  inline void setParent(AStarPoint* p)  {    parent = p;  }
 
-  int getGScore(AStarPoint* p, bool useRoad )
+  int getGScore(AStarPoint* p, bool checkRoad )
   { 
-    int offset = (p->tile
-                  ? (p->tile->getFlag( Tile::tlRoad ) ? 0 : +10)
-                  : (+100) ) * ( useRoad ? 1 : 0 );
-    TilePos pos = tile ? tile->pos() : TilePos( 0, 0 );
-    TilePos otherPos = p->tile ? p->tile->pos() : getPos();
-    return p->g + ((pos.i() == otherPos.i() || pos.j() == otherPos.j()) ? 10 : 14) + offset;
+    int roadScore = 0;
+    if( checkRoad )
+    {
+      roadScore = (p->tile
+                    ? (p->tile->getFlag( Tile::tlRoad ) ? 0 : +10)
+                    : (+100) );
+    }
+
+    const TilePos& pos = tile ? tile->pos() : invalidePos;
+    const TilePos& otherPos = p->tile ? p->tile->pos() : getPos();
+    return p->g + ((pos.i() == otherPos.i() || pos.j() == otherPos.j()) ? 10 : 14) + roadScore;
   }
 
   int getHScore(AStarPoint* p)
   {
-    TilePos pos = tile ? tile->pos() : TilePos( 0, 0 );
-    TilePos otherPos = p ? p->tile->pos() : TilePos( 0, 0 );
+    const TilePos& pos = tile ? tile->pos() : invalidePos;
+    const TilePos& otherPos = p ? p->tile->pos() : invalidePos;
     return (abs(otherPos.i() - pos.i()) + abs(otherPos.j() - pos.j())) * 10;
   }
 
@@ -82,10 +86,10 @@ public:
     f = g + h;
   }
 
-  int getGScore(){    return g;  }
-  int getHScore(){    return h;  }
-  int getFScore(){    return f;  }
-  bool hasParent(){    return parent != NULL;  }
+  inline int getGScore(){    return g;  }
+  inline int getHScore(){    return h;  }
+  inline int getFScore(){    return f;  }
+  inline bool hasParent(){    return parent != NULL;  }
 };
 
 #endif //__CAESARIA_ASTARPOINT_H_INCLUDED__

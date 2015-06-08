@@ -29,7 +29,7 @@ namespace gui
 namespace infobox
 {
 
-class AboutHouse : public Simple
+class AboutHouse : public Infobox
 {
 public:
    AboutHouse( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile);
@@ -42,7 +42,8 @@ public:
 
 protected:
    virtual void _showHelp();
-   virtual void _showInformation();
+   virtual void _showHbtInfo();
+   virtual void _showSrvcInfo();
 
 private:
    HousePtr _house;

@@ -20,20 +20,19 @@
 #include "walker/serviceman.hpp"
 #include "gfx/tile.hpp"
 #include "house.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "constants.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::well, Well)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::well, Well)
 
 namespace {
 const unsigned int wellServiceRange = 2;
 }
 
-Well::Well() : ServiceBuilding( Service::well, objects::well, Size(1) )
+Well::Well() : ServiceBuilding( Service::well, object::well, Size(1) )
 {
   setWorkers( 0 );
 }
@@ -53,7 +52,7 @@ void Well::deliverService()
     HousePtr house = ptr_cast<House>( *it );
     if( house.isValid() )
     {
-      lowHealth = std::min<unsigned int>( lowHealth, house->state( (Construction::Param)House::health ) );
+      lowHealth = std::min<unsigned int>( lowHealth, house->state(pr::health ) );
       houses << house;
     }
   }
@@ -63,40 +62,40 @@ void Well::deliverService()
     lowHealth = (100 - lowHealth) / 10;
     foreach( it, houses)
     {
-      if( (*it)->state( (Construction::Param)House::health ) > 10 )
+      if( (*it)->state( pr::health ) > 10 )
       {
-        (*it)->updateState( (Construction::Param)House::health, -lowHealth );
+        (*it)->updateState( pr::health, -lowHealth );
       }
     }
   }
 }
 
-bool Well::isNeedRoadAccess() const {  return false; }
+bool Well::isNeedRoad() const {  return false; }
 void Well::burn() { collapse(); }
 bool Well::isDestructible() const{  return true; }
 
-bool Well::build( const CityAreaInfo& info )
+std::string Well::sound() const
+{
+  return ServiceBuilding::sound();
+}
+
+bool Well::build( const city::AreaInfo& info )
 {
   ServiceBuilding::build( info );
 
   Picture rpic = MetaDataHolder::randomPicture( type(), size() );
   if( !rpic.isValid() )
-    rpic = Picture::load( ResourceGroup::utilitya, 1 );
+    rpic.load( ResourceGroup::utilitya, 1 );
 
   setPicture( rpic );
 
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
   return true;
 }
 
-
-TilesArray Well::coverageArea() const
+TilesArea Well::coverageArea() const
 {
-  TilesArray ret;
-
-  TilePos offset( wellServiceRange, wellServiceRange );
-  city::Helper helper( _city() );
-  ret = helper.getArea( pos() - offset, pos() + offset );
+  TilesArea ret( _city()->tilemap(), pos(), wellServiceRange );
   return ret;
 }

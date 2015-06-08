@@ -200,8 +200,8 @@ void Download::perform()
 			else
 			{
 				// Move failed
-				Logger::warning( "\nFailed renamed %s to %s ", _tempFilename.toString().c_str(),
-																										 _destFilename.toString().c_str() );
+        Logger::warning( "\nFailed renamed %s to %s ", _tempFilename.toCString(),
+                                                     _destFilename.toCString() );
 				_status = FAILED;
 			}
 

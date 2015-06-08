@@ -42,6 +42,10 @@ const float PI = 3.14159265359f;
 
 //! Constant for reciprocal of PI.
 const float RECIPROCAL_PI	= 1.0f/PI;
+const float RECIPROCAL_2PI	= RECIPROCAL_PI/2.f;
+const float SQRT_PI	= sqrt(PI);
+const float SQRT_2PI	= sqrt(2*PI);
+const float RECIPROCAL_SQRT_2PI	= 1.0f/SQRT_2PI;
 
 //! Constant for half of PI.
 const float HALF_PI	= PI/2.0f;
@@ -66,6 +70,7 @@ const double DEGTORAD64 = PI64 / 180.0;
 
 //! 64bit constant for converting from radians to degrees
 const double RADTODEG64 = 180.0 / PI64;
+const double DEGREE360 = 360.0;
 
 //! Utility function to convert a radian value to degrees
 /** Provided as it can be clearer to write radToDeg(X) than RADTODEG * X
@@ -73,12 +78,12 @@ const double RADTODEG64 = 180.0 / PI64;
 */
 inline float rad2Degf( float radians)
 {
-	return RADTODEG * radians;
+  return RADTODEG * radians;
 }
 
 inline int percentage( int value, int base )
 {
-	return base > 0 ? (value * 100 / base) : 0;
+  return base > 0 ? (value * 100 / base) : 0;
 }
 
 inline int random( int max )
@@ -103,7 +108,7 @@ template <class T>
 inline const T& min( const T& a, const T& b) { return a < b ? a : b; }
 
 template< class T >
-inline T clamp(const T& value, const T& low, const T& high)
+inline T clamp(const T value, const T low, const T high)
 {
   const T& mx = math::max<T>( value, low);
   return math::min<T>( mx, high);

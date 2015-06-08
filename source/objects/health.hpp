@@ -41,10 +41,11 @@ public:
   virtual void timeStep(const unsigned long time);
   virtual void deliverService();
   virtual unsigned int walkerDistance() const;
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
   virtual bool mayWork() const;
 protected:
   bool _haveReservorWater;
+  gfx::TilesArray _myArea;
 };
 
 class Barber : public ServiceBuilding

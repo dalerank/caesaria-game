@@ -42,16 +42,16 @@ public:
   Directory operator/(const Directory& dir ) const;
   Path operator/(const Path& filename ) const;
 
-  Entries getEntries() const;
+  Entries entries() const;
   Path find( const Path& fileName, SensType sens = Path::nativeCase ) const;
   Directory up() const;
-  Path getRelativePathTo( Path path ) const;
+  Path relativePathTo( Path path ) const;
   //void Remove();
 
-  static Directory getCurrent();
-  static bool changeCurrentDir( const Path& dirName );
-  static Directory getApplicationDir();
-  static Directory getUserDir();
+  static Directory current();
+  static bool switchTo( const Path& dirName );
+  static Directory applicationDir();
+  static Directory userDir();
 
   static bool create( std::string dir );
   static bool createByPath(Directory dir );

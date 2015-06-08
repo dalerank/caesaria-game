@@ -20,7 +20,7 @@
 #include "objects/market.hpp"
 #include "city/helper.hpp"
 #include "pathway/pathway.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/variant_map.hpp"
 #include "name_generator.hpp"
@@ -28,8 +28,6 @@
 #include "corpse.hpp"
 #include "thinks.hpp"
 #include "walkers_factory.hpp"
-
-using namespace constants;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::marketKid, MarketKid)
 
@@ -54,7 +52,7 @@ MarketKidPtr MarketKid::create(PlayerCityPtr city, MarketBuyerPtr lady )
 {
   MarketKidPtr ret( new MarketKid( city ) );
   ret->setPos( lady->pos() );
-  ret->_pathwayRef() = lady->pathway();
+  ret->_pathway() = lady->pathway();
 
   ret->drop();
 
@@ -66,7 +64,7 @@ MarketKid::MarketKid(PlayerCityPtr city )
 {
   _d->delay = 0;
   _d->birthTime = 0;
-  _d->basket.setCapacity( 100 );
+  _d->basket.setCapacity( defaultCapacity );
   _setType( walker::marketKid );
 
   setName( NameGenerator::rand( NameGenerator::male ) );
@@ -79,9 +77,9 @@ void MarketKid::send2City( MarketPtr destination )
   if( destination.isValid() )
   {
     _d->marketPos = destination->pos();
-    _pathwayRef().move( Pathway::reverse );
+    _pathway().move( Pathway::reverse );
     _centerTile();
-    _city()->addWalker( this );
+    attach();
   }
   else
   {

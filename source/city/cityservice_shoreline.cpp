@@ -21,15 +21,18 @@
 #include "gfx/tilemap.hpp"
 #include "core/time.hpp"
 #include "core/foreach.hpp"
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "walker/watergarbage.hpp"
 #include "game/gamedate.hpp"
 #include "walker/river_wave.hpp"
+#include "cityservice_factory.hpp"
 
 using namespace gfx;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Shoreline, shoreline)
 
 class Shoreline::Impl
 {
@@ -45,25 +48,24 @@ public:
 
 void Shoreline::Impl::checkMap( PlayerCityPtr city )
 {
-  int mapSize = city->tilemap().size();
-  TilesArray tiles = city->tilemap().getArea( TilePos( 0, 0), Size( mapSize ) );
+  const TilesArray& tiles = city->tilemap().allTiles();
 
-  foreach( tile, tiles )
+  foreach( it, tiles )
   {
-    int imgId = (*tile)->originalImgId();
-    if( (imgId >= 372 && imgId <= 403) || (imgId>=414 && imgId<=418) || (*tile)->getFlag( Tile::tlCoast ) )
+    int imgId = (*it)->originalImgId();
+    if( (imgId >= 372 && imgId <= 403) || (imgId>=414 && imgId<=418) || (*it)->getFlag( Tile::tlCoast ) )
     {
-      slTiles.push_back( *tile );
+      slTiles.push_back( *it );
     }
 
-    if( (*tile)->getFlag( Tile::tlDeepWater ) )
+    if( (*it)->getFlag( Tile::tlDeepWater ) )
     {
-      dwTiles.push_back( *tile );
+      dwTiles.push_back( *it );
     }
   }
 }
 
-city::SrvcPtr Shoreline::create( PlayerCityPtr city )
+SrvcPtr Shoreline::create( PlayerCityPtr city )
 {
   city::SrvcPtr ret( new Shoreline( city ) );
   ret->drop();
@@ -82,7 +84,7 @@ Shoreline::Shoreline( PlayerCityPtr city )
 
 void Shoreline::timeStep( const unsigned int time )
 {
-  //if( !GameDate::isWeekChanged() )
+  if( !game::Date::isWeekChanged() )
     return;
 
   if( _d->slTiles.empty() )
@@ -100,8 +102,11 @@ void Shoreline::timeStep( const unsigned int time )
     for( int k=0; k < 20; k++ )
     {
       Tile* t = _d->dwTiles.random();
-      RiverWavePtr rw = RiverWave::create( _city() );
-      rw->send2City( t->pos() );
+      if( t )
+      {
+        RiverWavePtr rw = RiverWave::create( _city() );
+        rw->send2City( t->pos() );
+      }
     }
   }
 
@@ -138,7 +143,6 @@ void Shoreline::timeStep( const unsigned int time )
     {
       tile->setPicture( picName );
     }
-
   }
 }
 

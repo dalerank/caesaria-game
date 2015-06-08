@@ -27,7 +27,7 @@ class Factory : public WorkingBuilding
 {
 public:
   Factory( const good::Product inGood, const good::Product outGood,
-           const TileOverlay::Type type, const Size& size );
+           const object::Type type, const Size& size );
   virtual ~Factory();
 
   good::Stock& inStockRef();
@@ -75,6 +75,9 @@ protected:
   virtual bool _mayDeliverGood() const;
   virtual void _storeChanged();
   virtual void _removeSpoiledGoods();
+  void _weekUpdate( unsigned int time );
+  void _productReady();
+  void _productProgress();
   void _setUnworkingInterval( unsigned int weeks );
   virtual void _reachUnworkingTreshold();
 
@@ -83,24 +86,13 @@ protected:
   ScopedPtr< Impl > _d;
 };
 
-class Winery : public Factory
-{
-public:
-  Winery();
-  virtual bool canBuild(const CityAreaInfo& areaInfo) const;
-  virtual bool build(const CityAreaInfo &info);
-
-protected:
-  virtual void _storeChanged();
-};
-
 class Creamery : public Factory
 {
 public:
   Creamery();
 
-  virtual bool canBuild( const CityAreaInfo& areaInfo ) const;
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool canBuild( const city::AreaInfo& areaInfo ) const;
+  virtual bool build(const city::AreaInfo &info);
 protected:
   virtual void _storeChanged();
 };

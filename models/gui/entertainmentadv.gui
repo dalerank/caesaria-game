@@ -1,5 +1,5 @@
 {
-  geometry : [ 0, 0, 640, 384 ]
+  size : [ 640, 384 ]
   bgtype : "whiteFrame"
   static : true
     
@@ -87,7 +87,7 @@
   lbFestivals#Label : {
     geometry : [ 47, 219, 250, 250 ]
     font : "FONT_5"
-    text : "##Festivals##"
+    text : "##festivals##"
     textAlign : [ "upperLeft", "center" ]
   }
 

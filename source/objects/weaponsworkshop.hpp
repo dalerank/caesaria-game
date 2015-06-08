@@ -26,8 +26,8 @@ class WeaponsWorkshop : public Factory
 public:
   WeaponsWorkshop();
 
-  virtual bool canBuild( const CityAreaInfo& areaInfo ) const;
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool canBuild( const city::AreaInfo& areaInfo ) const;
+  virtual bool build(const city::AreaInfo &info);
 protected:
   virtual void _storeChanged();
 };

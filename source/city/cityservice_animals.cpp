@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "cityservice_animals.hpp"
 #include "city.hpp"
@@ -25,21 +25,22 @@
 #include "walker/constants.hpp"
 #include "walker/helper.hpp"
 #include "walker/walkers_factory.hpp"
+#include "cityservice_factory.hpp"
+#include "config.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace city
 {
 
-namespace {
-static const unsigned int defaultMaxAnimals = 10;
-}
+REGISTER_SERVICE_IN_FACTORY(Animals,animals)
 
 class Animals::Impl
 {
 public:
   std::map< walker::Type, unsigned int > maxAnimal;
+  TilesArray cityBorder;
+  TilesArray border;
 };
 
 SrvcPtr Animals::create( PlayerCityPtr city )
@@ -62,12 +63,17 @@ void Animals::timeStep(const unsigned int time)
     walker::Type currentTerrainAnimal = _city()->climate() == game::climate::desert
                                           ? walker::zebra
                                           : walker::sheep;
-    _d->maxAnimal[ currentTerrainAnimal ] = defaultMaxAnimals;
+    _d->maxAnimal[ currentTerrainAnimal ] = config::animals::defaultNumber;
   }
 
-  Tilemap& tmap = _city()->tilemap();
-  TilesArray border = tmap.getRectangle( TilePos( 0, 0 ), Size( tmap.size() ) );
-  border = border.walkableTiles( true );
+  //lazy initialize city border and cache border array
+  if( _d->cityBorder.empty() )
+  {
+    _d->cityBorder = _city()->tilemap().border();
+    _d->border.reserve( _d->cityBorder.size() / 2 );
+  }
+
+  _d->border = _d->cityBorder.walkables( true );
 
   foreach( winfo, _d->maxAnimal )
   {
@@ -76,13 +82,13 @@ void Animals::timeStep(const unsigned int time)
 
     if( maxAnimalInCity > 0 )
     {
-      WalkerList animals = _city()->walkers( walkerType );
+      const WalkerList& animals = _city()->walkers( walkerType );
       if( animals.size() < maxAnimalInCity )
       {
-        AnimalPtr animal = ptr_cast<Animal>( WalkerManager::instance().create( walkerType, _city() ) );
+        AnimalPtr animal = WalkerManager::instance().create<Animal>( walkerType, _city() );
         if( animal.isValid() )
         {
-          Tile* rndTile = border.random();
+          Tile* rndTile = _d->border.random();
           animal->send2City( rndTile->epos() );
         }
       }
@@ -90,9 +96,8 @@ void Animals::timeStep(const unsigned int time)
   }
 }
 
-void Animals::setAnimalsNumber( constants::walker::Type animal_type, unsigned int number)
+void Animals::setAnimalsNumber( walker::Type animal_type, unsigned int number)
 {
-  //walker::Type wtype = WalkerHelper::getType( animal_type );
   _d->maxAnimal[ animal_type ] = number;
 }
 

@@ -32,78 +32,52 @@ namespace updater
 
 bool Util::caesariaIsRunning()
 {
-	DWORD processes[1024];
-	DWORD num;
+  DWORD processes[1024];
+  DWORD num;
 
-	if (!EnumProcesses(processes, sizeof(processes), &num))
-	{
-		return false;
-	}
+  bool haveInfoAboutProcesses = EnumProcesses(processes, sizeof(processes), &num);
+  if( !haveInfoAboutProcesses )
+  {
+    return false;
+  }
 
-	// Iterate over the processes
-	for (int i = 0; i < int(num/sizeof(DWORD)); i++)
-	{
-		char szProcessName[MAX_PATH] = "unknown";
+  // Iterate over the processes
+  for (int i = 0; i < int(num/sizeof(DWORD)); i++)
+  {
+    char szProcessName[MAX_PATH] = "unknown";
 
-		// Get the handle for this process
-		HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION|PROCESS_VM_READ, FALSE, processes[i]);
+    // Get the handle for this process
+    HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION|PROCESS_VM_READ, FALSE, processes[i]);
 
-		if (hProcess)
-		{
-			HMODULE hMod;
-			DWORD countBytes;
+    if( hProcess )
+    {
+      HMODULE hMod;
+      DWORD countBytes;
 
-			if (EnumProcessModules(hProcess, &hMod, sizeof(hMod), &countBytes))
-			{
-				GetModuleBaseNameA(hProcess, hMod, szProcessName, sizeof(szProcessName));
+      bool haveInfoAboutProcess = EnumProcessModules(hProcess, &hMod, sizeof(hMod), &countBytes);
+      if( haveInfoAboutProcess )
+      {
+        GetModuleBaseNameA(hProcess, hMod, szProcessName, sizeof(szProcessName));
 
-				std::string processName(szProcessName);
+        std::string processName(szProcessName);
 
-				// grayman - This was checking for "Doom3.exe". Starting with 1.08, the D3
-				// executable is no longer needed to run TDM, so we'll check for TheDarkMod.exe
-				// instead.
+        // grayman - This was checking for "Doom3.exe". Starting with 1.08, the D3
+        // executable is no longer needed to run TDM, so we'll check for TheDarkMod.exe
+        // instead.
 
-				if (processName == "TheDarkMod.exe")
-				{
-					// At this point, we know we need to quit. There's no longer a need
-					// to check for "gamex86.dll".
+        if (processName == "caesaria.exe")
+        {
+            // At this point, we know we need to quit. There's no longer a need
+          CloseHandle(hProcess); // close the handle, we're terminating
+          return true;
+        }
+      }
+    }
 
-/*					HMODULE hModules[1024];
-					DWORD cbNeeded;
+    CloseHandle(hProcess);
+  }
 
-					if (EnumProcessModules(hProcess, hModules, sizeof(hModules), &cbNeeded))
-					{
-						for (unsigned int m = 0; m < (cbNeeded / sizeof(HMODULE)); m++)
-						{
-							TCHAR szModName[MAX_PATH];
-
-							// Get the full path to the module's file.
-							if (GetModuleBaseName(hProcess, hModules[m], szModName, sizeof(szModName)/sizeof(TCHAR)))
-							{
-								// Print the module name and handle value.
-								if (std::string(szModName) == "gamex86.dll")
-								{
-									CloseHandle(hProcess); // close the handle, we're terminating
-
-									return true;
-								}
-							}
-						}
-					}
- */
-					// instead, quit
-
-					CloseHandle(hProcess); // close the handle, we're terminating
-
-					return true;
-				}
-			}
-		}
-
-		CloseHandle(hProcess);
-	}
-
-	return false;
+  return false;
 }
     
 } // namespace
@@ -169,7 +143,7 @@ namespace
 bool Util::caesariaIsRunning()
 {
   // Traverse the /proc folder, this sets the flag to TRUE if the process was found
-  vfs::Entries procs = vfs::Directory(systemProcFolder).getEntries();
+  vfs::Entries procs = vfs::Directory(systemProcFolder).entries();
 
   foreach( i, procs )
   {

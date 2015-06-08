@@ -19,10 +19,11 @@
 #include "events/showinfobox.hpp"
 #include "objects/extension.hpp"
 #include "core/gettext.hpp"
+#include "city/statistic.hpp"
 #include "objects/house.hpp"
 #include "city/sentiment.hpp"
+#include "city/wrath_of_venus.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace religion
@@ -50,7 +51,7 @@ void Venus::_doWrath( PlayerCityPtr city )
   events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_venus_title##"),
                                                             _("##wrath_of_venus_description##"),
                                                             events::ShowInfobox::send2scribe,
-                                                            ":/smk/God_Venus.smk");
+                                                            "god_venus");
   event->dispatch();
 
   city::SentimentPtr sentiment;
@@ -60,6 +61,9 @@ void Venus::_doWrath( PlayerCityPtr city )
   {
     sentiment->addBuff( -75, false, 12 );
   }
+
+  city::SrvcPtr wrathOfVenus = city::WrathOfVenus::create( city, DateTime::monthsInYear / 4 );
+  wrathOfVenus->attach();
 }
 
 void Venus::_doBlessing(PlayerCityPtr city)
@@ -67,6 +71,16 @@ void Venus::_doBlessing(PlayerCityPtr city)
   events::GameEventPtr event = events::ShowInfobox::create( _("##blessing_of_venus_title##"),
                                                             _("##blessing_of_venus_description##") );
   event->dispatch();
+
+  HouseList houses = city::statistic::getHouses( city );
+
+  int rndCount = math::random( houses.size() / 5 );
+  for( int i=0; i < rndCount; i++ )
+  {
+    ConstructionPtr house;
+    house << houses.random();
+    ConstructionParamUpdater::assignTo( house, pr::healthBuff, true, -8, DateTime::weekInMonth * 5 );
+  }
 }
 
 void Venus::_doSmallCurse(PlayerCityPtr city)
@@ -96,21 +110,24 @@ void Venus::_doSmallCurse(PlayerCityPtr city)
                                      _("##smcurse2_of_venus_description##"),
                                      events::ShowInfobox::send2scribe );
 
-    HouseList houses;
-    houses << city->overlays();
+    HouseList houses = city::statistic::getHouses( city );
 
     int rndCount = math::random( houses.size() / 5 );
     for( int i=0; i < rndCount; i++ )
     {
-      ConstructionPtr house;
-      house << houses.random();
-      ConstructionParamUpdater::assignTo( house, House::healthBuff, true, -2, DateTime::weekInMonth * 5 );
+      HousePtr house = houses.random();
+      ConstructionParamUpdater::assignTo( house.as<Construction>(), pr::healthBuff, true, -8, DateTime::weekInMonth * 5 );
     }
   }
   break;
   }
 
   e->dispatch();
+}
+
+Venus::Venus()
+{
+  _wrathCounter = 0;
 }
 
 }//end namespace rome

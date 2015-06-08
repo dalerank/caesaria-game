@@ -24,22 +24,21 @@
 #include "core/foreach.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::river, River)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::river, River)
 
 namespace {
   static Renderer::PassQueue riftPassQueue=Renderer::PassQueue(1,Renderer::ground);
 }
 
-River::River() : TileOverlay( objects::river, Size(1) )
+River::River() : Overlay( object::river, Size(1) )
 {
 }
 
-bool River::build( const CityAreaInfo& info )
+bool River::build( const city::AreaInfo& info )
 {
-  TileOverlay::build( info );
+  Overlay::build( info );
   setPicture( computePicture() );
 
   RiverList rifts = neighbors();
@@ -53,6 +52,7 @@ bool River::build( const CityAreaInfo& info )
 
 void River::initTerrain(Tile& terrain)
 {
+  terrain.setFlag( Tile::clearAll, true );
   terrain.setFlag( Tile::tlWater, true );
 }
 
@@ -127,11 +127,11 @@ Picture River::computePicture()
     }
   }
 
-  return Picture::load( ResourceGroup::land1a, index);
+  return Picture( ResourceGroup::land1a, index);
 }
 
-bool River::isWalkable() const{  return false;}
-bool River::isFlat() const {  return true;}
+bool River::isWalkable() const{ return false;}
+bool River::isFlat() const { return true;}
 void River::destroy() {}
 bool River::isDestructible() const { return false;}
 Renderer::PassQueue River::passQueue() const {  return riftPassQueue; }

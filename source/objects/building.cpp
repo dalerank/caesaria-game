@@ -33,8 +33,8 @@
 #include "core/logger.hpp"
 #include "constants.hpp"
 #include "game/gamedate.hpp"
+#include "city/states.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace city;
 
@@ -42,22 +42,34 @@ namespace {
 static Renderer::PassQueue buildingPassQueue=Renderer::PassQueue(1,Renderer::overlayAnimation);
 }
 
+struct CityKoeffs
+{
+  float fireRisk;
+  float collapseRisk;
+
+  CityKoeffs() : fireRisk( 1.f), collapseRisk( 1.f ) {}
+};
+
 class Building::Impl
 {
 public:
-  typedef std::map< constants::walker::Type, int> TraineeMap;
+  typedef std::map<walker::Type,int> TraineeMap;
+  typedef std::set<walker::Type> WalkerTypeSet;
+  typedef std::set<Service::Type> ServiceSet;
 
   TraineeMap traineeMap;  // current level of trainees working in the building (0..200)
-  std::set<Service::Type> reservedServices;  // a serviceWalker is on the way
+  WalkerTypeSet reservedTrainees;  // a trainee is on the way
+  ServiceSet reservedServices;  // a serviceWalker is on the way
 
   int stateDecreaseInterval;
+  CityKoeffs cityKoeffs;
 };
 
-Building::Building(const TileOverlay::Type type, const Size& size )
+Building::Building(const object::Type type, const Size& size )
 : Construction( type, size ), _d( new Impl )
 {
-  setState( Construction::inflammability, 1 );
-  setState( Construction::collapsibility, 1 );
+  setState( pr::inflammability, 1 );
+  setState( pr::collapsibility, 1 );
   _d->stateDecreaseInterval = game::Date::days2ticks( 1 );
 }
 
@@ -67,11 +79,15 @@ void Building::initTerrain( Tile& ) {}
 
 void Building::timeStep(const unsigned long time)
 {
+  if( game::Date::isWeekChanged() )
+  {
+    _updateBalanceKoeffs();
+  }
+
   if( time % _d->stateDecreaseInterval == 1 )
   {
-    float popkoeff = std::max<float>( statistic::getBalanceKoeff( _city() ), 0.1f );
-    updateState( Construction::damage, popkoeff * state( Construction::collapsibility ) );
-    updateState( Construction::fire, popkoeff * state( Construction::inflammability ) );
+    updateState( pr::fire,   _d->cityKoeffs.fireRisk     * state( pr::inflammability ) );
+    updateState( pr::damage, _d->cityKoeffs.collapseRisk * state( pr::collapsibility ) );
   }
 
   Construction::timeStep(time);
@@ -104,23 +120,25 @@ float Building::evaluateService(ServiceWalkerPtr walker)
 
    switch(service)
    {
-   case Service::engineer: res = state( Construction::damage ); break;
-   case Service::prefect: res = state( Construction::fire ); break;
+   case Service::engineer: res = state( pr::damage ); break;
+   case Service::prefect: res = state( pr::fire ); break;
    default: break;
    }
    return res;
 }
 
-bool Building::build( const CityAreaInfo& info )
+bool Building::build( const city::AreaInfo& info )
 {
   Construction::build( info );
 
   switch( info.city->climate() )
   {
-  case game::climate::northen: setState( Construction::inflammability, 0.5 ); break;
-  case game::climate::desert: setState( Construction::inflammability, 2 ); break;
+  case game::climate::northen: setState( pr::inflammability, 0.5 ); break;
+  case game::climate::desert: setState( pr::inflammability, 2 ); break;
   default: break;
   }
+
+  _updateBalanceKoeffs();
 
   return true;
 }
@@ -138,8 +156,8 @@ void Building::applyService( ServiceWalkerPtr walker)
 
    switch( service )
    {
-   case Service::engineer: setState( Construction::damage, 0 ); break;
-   case Service::prefect: setState( Construction::fire, 0 ); break;
+   case Service::engineer: setState( pr::damage, 0 ); break;
+   case Service::prefect: setState( pr::fire, 0 ); break;
    default: break;
    }
 }
@@ -148,7 +166,7 @@ float Building::evaluateTrainee(walker::Type traineeType)
 {
    float res = 0.0;
 
-   if( _reservedTrainees.count(traineeType) == 1 )
+   if( _d->reservedTrainees.count(traineeType) == 1 )
    {
       // don't allow two reservations of the same type
       return 0.0;
@@ -163,18 +181,29 @@ float Building::evaluateTrainee(walker::Type traineeType)
    return res;
 }
 
-void Building::reserveTrainee(walker::Type traineeType) { _reservedTrainees.insert(traineeType); }
-void Building::cancelTrainee(walker::Type traineeType) { _reservedTrainees.erase(traineeType);}
+void Building::reserveTrainee(walker::Type traineeType) { _d->reservedTrainees.insert(traineeType); }
+void Building::cancelTrainee(walker::Type traineeType) { _d->reservedTrainees.erase(traineeType);}
 
 void Building::updateTrainee(  TraineeWalkerPtr walker )
 {
-   _reservedTrainees.erase( walker->type() );
+   _d->reservedTrainees.erase( walker->type() );
    _d->traineeMap[ walker->type() ] += walker->value() ;
 }
 
 void Building::setTraineeValue(walker::Type type, int value)
 {
   _d->traineeMap[ type ] = value;
+}
+
+void Building::initialize(const MetaData &mdata)
+{
+  Construction::initialize( mdata );
+
+  Variant inflammabilityV = mdata.getOption( "inflammability" );
+  if( inflammabilityV.isValid() ) setState( pr::inflammability, inflammabilityV.toDouble() );
+
+  Variant collapsibilityV = mdata.getOption( "collapsibility" );
+  if( collapsibilityV.isValid() ) setState( pr::collapsibility, collapsibilityV.toDouble() );
 }
 
 int Building::traineeValue(walker::Type traineeType) const
@@ -184,3 +213,22 @@ int Building::traineeValue(walker::Type traineeType) const
 }
 
 Renderer::PassQueue Building::passQueue() const {  return buildingPassQueue;}
+
+void Building::_updateBalanceKoeffs()
+{
+  if( !_city().isValid() )
+    return;
+
+  float balance = std::max<float>( statistic::getBalanceKoeff( _city() ), 0.1f );
+
+  float fireKoeff = balance * _city()->getOption( PlayerCity::fireKoeff ) / 100.f;
+  if( !_city()->getOption(PlayerCity::c3gameplay) )
+  {
+    int anyWater = tile().param( Tile::pWellWater ) + tile().param( Tile::pFountainWater ) + tile().param( Tile::pReservoirWater );
+    if( anyWater > 0 )
+      fireKoeff -= 0.3f;
+  }
+
+  _d->cityKoeffs.fireRisk = math::clamp( fireKoeff, 0.f, 9.f );
+  _d->cityKoeffs.collapseRisk = balance * _city()->getOption( PlayerCity::collapseKoeff ) / 100.f;
+}

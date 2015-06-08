@@ -19,6 +19,7 @@
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
 #include "core/variant_map.hpp"
+#include "core/variant_list.hpp"
 #include "core/saveadapter.hpp"
 #include "core/logger.hpp"
 #include <map>
@@ -34,12 +35,6 @@ public:
   PictureInfoMap data;   // key=image name (Govt_00005)
 };
 
-PictureInfoBank& PictureInfoBank::instance()
-{
-  static PictureInfoBank inst;
-  return inst;
-}
-
 PictureInfoBank::PictureInfoBank() : _d( new Impl )
 {
   // tiles
@@ -53,11 +48,10 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setRange( ResourceGroup::plateau, 1, 44, offset);
   _d->setRange( ResourceGroup::commerce, 1, 167, offset);
   _d->setRange( ResourceGroup::transport, 1, 93, offset);
-  _d->setOne( ResourceGroup::transport, 72, 0, 44 ); //lifting low bridge sw
-  _d->setOne( ResourceGroup::transport, 74, 0, 68 ); //span high bridge se
-  _d->setOne( ResourceGroup::transport, 77, 0, 53 ); //span high bridge sw
+  _d->setOne  ( ResourceGroup::transport, 74, 0, 68 ); //span high bridge se
+  _d->setOne  ( ResourceGroup::transport, 77, 0, 53 ); //span high bridge sw
   _d->setRange( ResourceGroup::security, 1, 61, offset);
-  _d->setRange( ResourceGroup::entertaiment, 1, 116, offset);
+  _d->setRange( ResourceGroup::entertainment, 1, 116, offset);
   _d->setRange( ResourceGroup::housing, 1, 51, offset);
   _d->setRange( ResourceGroup::warehouse, 19, 83, offset);
   _d->setRange( ResourceGroup::utilitya, 1, 42, offset);
@@ -71,21 +65,17 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setRange( ResourceGroup::waterOverlay, 11, 12, offset ); //wateroverlay houses 1x1
   _d->setRange( ResourceGroup::waterOverlay, 21, 22, offset ); //wateroverlay reservoir area 1x1
 
-  _d->setOne( ResourceGroup::entertaiment, 12, 37, 62); // amphitheater
-  _d->setOne( ResourceGroup::entertaiment, 35, 34, 37); // theater
-  _d->setOne( ResourceGroup::entertaiment, 50, 70, 105);  // collosseum
+  _d->setOne( ResourceGroup::entertainment, 12, 37, 62); // amphitheater
+  _d->setOne( ResourceGroup::entertainment, 50, 70, 105);  // collosseum
 
   // animations
-  _d->setRange(ResourceGroup::commerce, 2, 11, Point( 42, 34 ));  // market poor
   _d->setRange(ResourceGroup::commerce, 44, 53, Point( 66, 44 ));  // marble
   _d->setRange(ResourceGroup::commerce, 55, 60, Point( 45, 18 ));  // iron
   _d->setRange(ResourceGroup::commerce, 62, 71, Point( 15, 32 ));  // clay
   _d->setRange(ResourceGroup::commerce, 73, 82, Point( 35, 6 ) );  // timber
-  _d->setRange(ResourceGroup::commerce, 87, 98, Point( 14, 36 ) );  // wine
   _d->setRange(ResourceGroup::commerce, 100, 107, Point( 0, 45 ) );  // oil
   _d->setRange(ResourceGroup::commerce, 109, 116, Point( 42, 36 ) );  // weapons
   _d->setRange(ResourceGroup::commerce, 118, 131, Point( 38, 39) );  // furniture
-  _d->setRange(ResourceGroup::commerce, 133, 139, Point( 65, 42 ) );  // pottery
   _d->setRange(ResourceGroup::commerce, 159, 167, Point( 62, 42 ) );  // market rich
 
   _d->setOne( ResourceGroup::land3a, 43, Point( 0, 116 ) );
@@ -97,20 +87,6 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setOne(ResourceGroup::commerce, 155, 48, -4);  // timber
   _d->setOne(ResourceGroup::commerce, 156, 47, -11);  // iron
   _d->setOne(ResourceGroup::commerce, 157, 47, -9);  // clay
-
-  // granary
-  _d->setOne(ResourceGroup::commerce, 141, 28, 109);
-  _d->setOne(ResourceGroup::commerce, 142, 33, 75);
-  _d->setOne(ResourceGroup::commerce, 143, 56, 65);
-  _d->setOne(ResourceGroup::commerce, 144, 92, 65);
-  _d->setOne(ResourceGroup::commerce, 145, 118, 76);
-  _d->setOne(ResourceGroup::commerce, 146, 78, 69);
-  _d->setOne(ResourceGroup::commerce, 147, 78, 69);
-  _d->setOne(ResourceGroup::commerce, 148, 78, 69);
-  _d->setOne(ResourceGroup::commerce, 149, 78, 69);
-  _d->setOne(ResourceGroup::commerce, 150, 78, 69);
-  _d->setOne(ResourceGroup::commerce, 151, 78, 69);
-  _d->setOne(ResourceGroup::commerce, 152, 78, 69);
 
   //legion standart + flag
   _d->setRange( ResourceGroup::sprites, 21, 47, Point( -32, 29 ) );
@@ -154,7 +130,7 @@ void PictureInfoBank::Impl::setOne(const std::string& preffix, const int index, 
 
 Point PictureInfoBank::getOffset(const std::string& resource_name)
 {
-  Impl::PictureInfoMap::iterator it = _d->data.find( utils::hash( resource_name ) );
+  Impl::PictureInfoMap::iterator it = _d->data.find( Hash( resource_name ) );
   if (it == _d->data.end())
   {
     return Point();
@@ -175,6 +151,8 @@ void PictureInfoBank::setOffset(const std::string& preffix, const int index, con
 }
 
 PictureInfoBank::~PictureInfoBank() {}
+
+enum { idxIndex=0, idxXOffset, idxYOffset };
 
 void PictureInfoBank::initialize(vfs::Path filename)
 {
@@ -197,7 +175,7 @@ void PictureInfoBank::initialize(vfs::Path filename)
     else if( v.type() == Variant::List )
     {
       VariantList vl = v.toList();
-      _d->setOne( it->first, vl.get( 0 ).toInt(), vl.get( 1 ).toInt(), vl.get( 2 ).toInt() );
+      _d->setOne( it->first, vl.get( idxIndex ), vl.get( idxXOffset ), vl.get( idxYOffset ) );
     }
   }
 }

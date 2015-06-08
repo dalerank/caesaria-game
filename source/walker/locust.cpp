@@ -25,7 +25,6 @@
 #include "game/gamedate.hpp"
 #include "objects/farm.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 class Locust::Impl
@@ -51,11 +50,11 @@ void Locust::create(PlayerCityPtr city, TilePos pos, int time)
 {
   Locust* locust = new Locust( city );
   locust->setPos( pos );
+  locust->_d->time = time;
 
   WalkerPtr ret( locust );
   ret->drop();
-
-  city->addWalker( ret );
+  ret->attach();
 }
 
 Locust::Locust( PlayerCityPtr city ) : Walker( city ), _d( new Impl )
@@ -70,9 +69,7 @@ Locust::Locust( PlayerCityPtr city ) : Walker( city ), _d( new Impl )
   setFlag( vividly, false );
 }
 
-Locust::~Locust()
-{
-}
+Locust::~Locust() {}
 
 void Locust::timeStep(const unsigned long time)
 {
@@ -80,9 +77,8 @@ void Locust::timeStep(const unsigned long time)
 
   if( game::Date::isWeekChanged() )
   {
-    FarmPtr farm;
-    farm << _city()->getOverlay( pos() );
-    if( farm.isValid() && farm->type() != objects::meat_farm )
+    FarmPtr farm = _city()->getOverlay( pos() ).as<Farm>();
+    if( farm.isValid() && farm->type() != object::meat_farm )
     {
       farm->updateProgress( -50 );
     }
@@ -98,16 +94,16 @@ void Locust::save( VariantMap& stream ) const
 {
   Walker::save( stream );
 
-  stream[ "time" ] = _d->time;
+  VARIANT_SAVE_ANY_D( stream, _d, time )
+  VARIANT_SAVE_ANY_D( stream, _d, counter )
 }
 
 void Locust::load( const VariantMap& stream )
 {
   Walker::load( stream );
 
-  _d->time = stream.get( "time" );
-
-  //_d->picture = Picture::load( _d->rcGroup, _d->currentIndex );
+  VARIANT_LOAD_ANY_D( _d, time, stream )
+  VARIANT_LOAD_ANY_D( _d, counter, stream )
 }
 
 const Picture& Locust::getMainPicture()

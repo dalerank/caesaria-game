@@ -53,13 +53,14 @@ public:
   __GS_PROPERTY(workDir)
   __GS_PROPERTY(lastTranslation)
   __GS_PROPERTY(c3gfx)
+  __GS_PROPERTY(c3music)
+  __GS_PROPERTY(c3video)
   __GS_PROPERTY(oldgfx)
   __GS_PROPERTY(archivesModel)
   __GS_PROPERTY(soundThemesModel)
   __GS_PROPERTY(soundVolume)
   __GS_PROPERTY(ambientVolume)
   __GS_PROPERTY(musicVolume)
-  __GS_PROPERTY(difficulty)
   __GS_PROPERTY(animationsModel)
   __GS_PROPERTY(walkerModel)
   __GS_PROPERTY(emblemsModel)
@@ -89,6 +90,20 @@ public:
   __GS_PROPERTY(scrollSpeed)
   __GS_PROPERTY(buildMenuModel)
   __GS_PROPERTY(borderMoving)
+  __GS_PROPERTY(mmb_moving)
+  __GS_PROPERTY(lockInfobox)
+  __GS_PROPERTY(soundAlias)
+  __GS_PROPERTY(videoAlias)
+  __GS_PROPERTY(playerName)
+  __GS_PROPERTY(lastGame)
+  __GS_PROPERTY(tooltipEnabled)
+  __GS_PROPERTY(screenshotDir)
+  __GS_PROPERTY(showTabletMenu)
+  __GS_PROPERTY(batchTextures)
+  __GS_PROPERTY(ccUseAI)
+  __GS_PROPERTY(metricSystem)
+  __GS_PROPERTY(defaultFont)
+  __GS_PROPERTY(celebratesConfig)
 #undef __GS_PROPERTY
 
   static Settings& instance();
@@ -106,6 +121,7 @@ public:
   void checkwdir( char* argv[], int argc );
   void checkCmdOptions( char* argv[], int argc );
   void checkC3present();
+  void changeSystemLang( const std::string& newLang );
 private:
   Settings();
 
@@ -117,6 +133,7 @@ private:
 
 #define SETTINGS_RC_PATH(a) game::Settings::rcpath( game::Settings::a )
 #define SETTINGS_VALUE(a) game::Settings::get( game::Settings::a )
+#define KILLSWITCH(a) game::Settings::get( game::Settings::a ).toBool()
 #define SETTINGS_SET_VALUE(a, value) game::Settings::set( game::Settings::a, value )
 
 #endif //__CAESARIA_APPCONFIG_H_INCLUDED__

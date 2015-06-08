@@ -21,6 +21,7 @@
 #include "pathway/path_finding.hpp"
 #include "gfx/tile.hpp"
 #include "gfx/tilemap.hpp"
+#include "objects/construction.hpp"
 #include "city/city.hpp"
 #include "name_generator.hpp"
 #include "core/utils.hpp"
@@ -37,8 +38,6 @@
 #include "core/foreach.hpp"
 #include "game/gamedate.hpp"
 #include "walkers_factory.hpp"
-
-using namespace constants;
 
 REGISTER_SOLDIER_IN_WALKERFACTORY( walker::etruscanArcher, walker::etruscanArcher, EnemyArcher, etruscanArcher )
 
@@ -80,7 +79,7 @@ void EnemyArcher::timeStep(const unsigned long time)
       WalkerPtr p = enemies.front();
       turn( p->pos() );
 
-      if( _animationRef().atEnd() )
+      if( _animation().atEnd() )
       {
         _fire( p->pos() );
         _updateAnimation( time+1 );
@@ -102,7 +101,7 @@ void EnemyArcher::timeStep(const unsigned long time)
       ConstructionPtr b = constructions.front();
       turn( b->pos() );
 
-      if( _animationRef().atEnd() )
+      if( _animation().atEnd() )
       {
         _fire( b->pos() );
         _updateAnimation( time+1 );
@@ -118,7 +117,7 @@ void EnemyArcher::timeStep(const unsigned long time)
   } // end switch( _d->action )
 }
 
-EnemyArcherPtr EnemyArcher::create(PlayerCityPtr city, constants::walker::Type type )
+EnemyArcherPtr EnemyArcher::create(PlayerCityPtr city, walker::Type type )
 {
   EnemyArcherPtr ret( new EnemyArcher( city, type ) );
   ret->initialize( WalkerHelper::getOptions( type ) );

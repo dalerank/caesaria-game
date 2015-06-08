@@ -19,11 +19,12 @@
 #define __CAESARIA_CITYSERVICE_RELIGION_H_INCLUDED__
 
 #include "cityservice.hpp"
-#include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
 namespace city
 {
+
+PREDEFINE_CLASS_SMARTPOINTER(Religion)
 
 class Religion : public Srvc
 {
@@ -44,4 +45,4 @@ private:
 
 }//end namespace city
 
-#endif //__OPENCAESAR3_CITYSERVICE_RELIGION_H_INCLUDED__
+#endif //__CAESARIA_CITYSERVICE_RELIGION_H_INCLUDED__

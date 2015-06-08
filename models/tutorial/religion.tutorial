@@ -1,6 +1,7 @@
 {
   title : "##tutorial_religion_title##"
   sound : "fanfare"
+  speech : "tutorial_temples"
   items : [ "##tutorial_religion##", 
             "@img=picture3_00001",
             "##tutorial_religion2##" ]    

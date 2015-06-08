@@ -41,71 +41,77 @@
 class FileLogWriter : public LogWriter
 {
 private:
-	FILE* _logFile;
+  FILE* _logFile;
 public:
-	FileLogWriter(const std::string& path)
-	{
-		DateTime t = DateTime::getCurrenTime();
+  FileLogWriter(const std::string& path)
+  {
+    DateTime t = DateTime::currenTime();
 
-		_logFile = fopen(path.c_str(), "w");
+    _logFile = fopen(path.c_str(), "w");
 
-		if( _logFile )
-		{
-			fputs("Caesaria logfile created: ", _logFile);
-			fputs(utils::format( 0xff, "%02d:%02d:%02d",
-																	t.hour(), t.minutes(), t.seconds()).c_str(),
-						_logFile);
-			fputs("\n", _logFile);
-		}
-	}
+    if( _logFile )
+    {
+      fputs("Caesaria logfile created: ", _logFile);
+      fputs( utils::format( 0xff, "%02d:%02d:%02d",
+             t.hour(), t.minutes(), t.seconds()).c_str(),
+             _logFile);
+      fputs("\n", _logFile);
+    }
+  }
 
-	~FileLogWriter()
-	{
-		DateTime t = DateTime::getCurrenTime();
+  ~FileLogWriter()
+  {
+    DateTime t = DateTime::currenTime();
 
-		if( _logFile )
-		{
-			fputs("Caesaria logfile closed: ", _logFile);
-			fputs( utils::format( 0xff, "%02d:%02d:%02d",
-																	t.hour(), t.minutes(), t.seconds()).c_str(),
-						 _logFile);
-			fputs("\n", _logFile);
+    if( _logFile )
+    {
+      fputs("Caesaria logfile closed: ", _logFile);
+      fputs( utils::format( 0xff, "%02d:%02d:%02d",
+             t.hour(), t.minutes(), t.seconds()).c_str(),
+             _logFile);
+      fputs("\n", _logFile);
 
-			fflush(_logFile);
-		}
-	}
+      fflush(_logFile);
+    }
+  }
 
-	virtual bool isActive() const { return _logFile != 0; }
+  virtual bool isActive() const { return _logFile != 0; }
 
-	virtual void write( std::string str, bool )
-	{
-		// Don't write progress stuff into the logfile
-		// Make sure only one thread is writing to the file at a time
-		if( _logFile )
-		{
-			fputs(str.c_str(), _logFile);
-			fputs("\n", _logFile);
-			fflush(_logFile);
-		}
-	}
+  virtual void write( std::string str, bool )
+  {
+    // Don't write progress stuff into the logfile
+    // Make sure only one thread is writing to the file at a time
+    static int count = 0;
+    if( _logFile )
+    {
+      fputs(str.c_str(), _logFile);
+      fputs("\n", _logFile);
+
+      count++;
+      if( count % 10 == 0 )
+      {
+        fflush(_logFile);
+      }
+    }
+  }
 };
 
 class ConsoleLogWriter : public LogWriter
 {
 public:
-	virtual void write( std::string str, bool newline )
-	{
+  virtual void write( std::string str, bool newline )
+  {
 #ifdef CAESARIA_PLATFORM_ANDROID
-      str.append( newline ? "\n" : "" );
-      __android_log_print(ANDROID_LOG_DEBUG, CAESARIA_PLATFORM_NAME, "%s", str.c_str() );
+    str.append( newline ? "\n" : "" );
+    __android_log_print(ANDROID_LOG_DEBUG, CAESARIA_PLATFORM_NAME, "%s", str.c_str() );
 #else
     std::cout << str;
     if( newline ) std::cout << std::endl;
     else std::cout << std::flush;
 #endif
-	}
+  }
 
-	virtual bool isActive() const { return true; }
+  virtual bool isActive() const { return true; }
 };
 
 class Logger::Impl
@@ -225,7 +231,6 @@ Logger::~Logger() {}
 
 Logger::Logger() : _d( new Impl )
 {
-  CrashHandler_initCrashHandler();
 }
 
 void Logger::registerWriter(std::string name, LogWriterPtr writer)
@@ -234,31 +239,4 @@ void Logger::registerWriter(std::string name, LogWriterPtr writer)
   {
     instance()._d->writers[ name ] = writer;
   }
-}
-
-// Crash handler
-
-#include "stacktrace.hpp"
-#include <signal.h>
-
-void CrashHandler_initCrashHandler()
-{
-  signal( SIGABRT, CrashHandler_handleCrash);
-  signal( SIGSEGV, CrashHandler_handleCrash);
-  signal( SIGILL , CrashHandler_handleCrash);
-  signal( SIGFPE , CrashHandler_handleCrash);
-}
-
-void CrashHandler_handleCrash(int signum)
-{
-  switch(signum)
-  {
-    case SIGABRT: Logger::warning("SIGABRT: abort() called somewhere in the program."); break;
-    case SIGSEGV: Logger::warning("SIGSEGV: Illegal memory access."); break;
-    case SIGILL: Logger::warning("SIGILL: Executing a malformed instruction. (possibly invalid pointer)"); break;
-    case SIGFPE: Logger::warning("SIGFPE: Illegal floating point instruction (possibly division by zero)."); break;
-  }
-
-  Stacktrace::print();
-  exit(signum);
 }

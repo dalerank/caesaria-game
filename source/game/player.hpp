@@ -24,34 +24,36 @@
 #include "predefinitions.hpp"
 #include "core/referencecounted.hpp"
 
+class NColor;
+
 class Player : public Serializable, public ReferenceCounted
 {
 public:
-   static PlayerPtr create();
+  static PlayerPtr create();
 
-   virtual void save( VariantMap& stream) const;
-   virtual void load( const VariantMap& stream);
+  virtual void save( VariantMap& stream) const;
+  virtual void load( const VariantMap& stream);
 
-   void setName( const std::string& name );
-   std::string name() const;
+  void setName( const std::string& name );
+  std::string name() const;
 
-   void setRank( int rank );
-   int rank() const;
+  void setRank( int rank );
+  int rank() const;
 
-   int salary() const;
-   void setSalary( const int value );
+  int salary() const;
+  void setSalary( const int value );
 
-   void appendMoney( int money );
-   int money() const;
+  void appendMoney( int money );
+  int money() const;
 
-   unsigned int color() const;
+  NColor color() const;
 
-   virtual ~Player();
+  virtual ~Player();
 private:
-   Player();
+  Player();
 
-   class Impl;
-   ScopedPtr< Impl > _d;
+  class Impl;
+  ScopedPtr< Impl > _d;
 };
 
 #endif //_CAESARIA_PLAYER_HPP_INCLUDE_
