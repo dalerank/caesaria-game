@@ -161,7 +161,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
 
   _d->services.initialize( this, ":/services.model" );
 
-  _picture().load( ResourceGroup::empirebits, 1 );
+  setPicture( Picture( ResourceGroup::empirebits, 1 ) );
   _initAnimation();
 
   setOption( updateRoads, 0 );

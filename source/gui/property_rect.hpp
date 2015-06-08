@@ -32,7 +32,10 @@ public:
   virtual bool updateAttrib(bool sendEvent=true);
 
 protected:
-  StringArray tokens_;
+  virtual int _getValue(unsigned int index) const;
+  virtual std::string _fullText() const;
+
+  Variant _value;
 	Label* _label;
 };
 

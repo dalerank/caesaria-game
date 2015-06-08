@@ -50,7 +50,7 @@ public:
 Rome::Rome(EmpirePtr empire)
    : City( empire ), _d( new Impl )
 {
-  _picture().load(  "roma", 1  );
+  setPicture( gfx::Picture(  "roma", 1 ) );
 
   setLocation( defaultLocation );
   _d->strength = maxSoldiers;

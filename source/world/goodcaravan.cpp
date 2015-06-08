@@ -123,7 +123,7 @@ GoodCaravan::GoodCaravan( CityPtr city )
 
   setSpeed( deafaultSpeed );
 
-  _picture().load( ResourceGroup::panelBackground, 108 );
+  setPicture( gfx::Picture( ResourceGroup::panelBackground, 108 ) );
 }
 
 }

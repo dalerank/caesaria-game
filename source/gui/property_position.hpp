@@ -6,14 +6,18 @@
 namespace gui
 {
 
-class PositionAttribute : public RectAttribute
+class PointAttribute : public RectAttribute
 {
 public:
-  PositionAttribute(Widget* parent, int myParentID=-1 );
+  PointAttribute(Widget* parent, int myParentID=-1 );
 
   virtual AbstractAttribute* getChild( unsigned int index );
 
   virtual unsigned int childCount() const;
+
+protected:
+  virtual int _getValue(unsigned int index) const;
+  virtual std::string _fullText() const;
 };
 
 class SizeAttribute : public RectAttribute
@@ -24,6 +28,9 @@ public:
   virtual AbstractAttribute* getChild( unsigned int index );
 
   virtual unsigned int childCount() const;
+protected:
+  virtual int _getValue(unsigned int index) const;
+  virtual std::string _fullText() const;
 };
 
 }//end namespace gui

@@ -75,4 +75,9 @@ bool save( const VariantMap& options, const vfs::Path& filename )
   return true;
 }
 
+std::string save(const VariantMap &options)
+{
+  return Json::serialize( options.toVariant(), " " );
+}
+
 }

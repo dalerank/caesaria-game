@@ -36,7 +36,7 @@ AbstractAttribute* RectAttribute::getChild(unsigned int index)
     attr = new StringAttribute( this, -1 );
     attr->setTitle( text[ index ] );
     attr->setParent4Event( this );
-    attr->setEditText( tokens_[ index ] );
+    attr->setEditText( utils::i2str( _getValue( index ) ) );
   }
 
   return attr;
@@ -44,17 +44,16 @@ AbstractAttribute* RectAttribute::getChild(unsigned int index)
 
 void RectAttribute::setValue(const Variant &value)
 {
-  std::string splitText = value.toString();
-  _label->setText( splitText );
+  _value = value;
 
-  tokens_ = utils::split( splitText, "," );
+  _label->setText( _fullText() );
 
-  for( unsigned int i=0; i < tokens_.size(), i < childCount(); i++)
+  for( unsigned int i=0; i < childCount(); i++)
   {
     StringAttribute* ed = safety_cast< StringAttribute* >( getChild( i ) );
 
     if( ed )
-      ed->setEditText( tokens_[ i ] );
+      ed->setEditText( utils::i2str( _getValue( i ) ) );
   }
 
   AbstractAttribute::setValue( value );
@@ -87,6 +86,19 @@ bool RectAttribute::updateAttrib(bool sendEvent)
   //_attribs->setAttribute( _index, _label->text() );
 
   return AbstractAttribute::updateAttrib( sendEvent );
+}
+
+int RectAttribute::_getValue(unsigned int index) const
+{
+  Rect r = _value.toRect();
+  int values[] = { r.left(), r.top(), r.right(), r.bottom() };
+  return index < childCount() ? values[index] : 0;
+}
+
+std::string RectAttribute::_fullText() const
+{
+  Rect r = _value.toRect();
+  return utils::format( 0xff, "[%d,%d,%d,%d]", r.left(), r.top(), r.right(), r.bottom() );
 }
 
 
