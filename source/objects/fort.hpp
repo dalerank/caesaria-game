@@ -79,12 +79,26 @@ protected:
   virtual void _setEmblem( gfx::Picture pic );
   virtual void _setName( const std::string& name );
   virtual int  _setFlagIndex( int index );
+  virtual void _check4newSoldier();
   virtual void _addFormation( TroopsFormation formation );
 
 private:  
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+void Fort::_check4newSoldier()
+{
+  int traineeLevel = traineeValue( walker::soldier );
+  bool canProduceNewSoldier = (traineeLevel > 100);
+  bool haveRoom4newSoldier =  (walkers().size() < _d->maxSoldier);
+  // all trainees are there for the create soldier!
+  if( canProduceNewSoldier && haveRoom4newSoldier )
+  {
+     _readyNewSoldier();
+     setTraineeValue( walker::soldier, math::clamp<int>( traineeLevel - 100, 0, _d->maxSoldier * 100 ) );
+  }
+}
 
 class FortArea : public Building
 {

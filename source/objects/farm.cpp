@@ -240,7 +240,7 @@ void Farm::timeStep(const unsigned long time)
   Factory::timeStep(time);
 
   if( game::Date::isDayChanged() && mayWork()
-      && progress() < 100 && _d->lastProgress != progress() )
+      && _d->lastProgress != progress() )
   {
     _d->lastProgress = progress();
     computePictures();

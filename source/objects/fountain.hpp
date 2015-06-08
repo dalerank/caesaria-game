@@ -43,6 +43,7 @@ private:
   ScopedPtr<Impl> _d;
 
   void _initAnimation();
+  void _dayUpdate();
 };
 
 #endif //__CAESARIA_FOUNTAIN_INCLUDED__

@@ -340,15 +340,7 @@ void Fort::timeStep( const unsigned long time )
 {
   if( game::Date::isWeekChanged() )
   {
-    int traineeLevel = traineeValue( walker::soldier );
-    bool canProduceNewSoldier = (traineeLevel > 100);
-    bool haveRoom4newSoldier =  (walkers().size() < _d->maxSoldier);
-    // all trainees are there for the create soldier!
-    if( canProduceNewSoldier && haveRoom4newSoldier )
-    {
-       _readyNewSoldier();
-       setTraineeValue( walker::soldier, math::clamp<int>( traineeLevel - 100, 0, _d->maxSoldier * 100 ) );
-    }
+    _check4newSoldier();
   }
 
   WorkingBuilding::timeStep( time );

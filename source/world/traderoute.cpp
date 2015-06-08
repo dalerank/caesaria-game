@@ -139,7 +139,7 @@ MerchantPtr Traderoute::addMerchant(const std::string& begin, good::Store &sell,
   }
 
   MerchantPtr merchant = Merchant::create( _d->empire, this, begin, sell, buy );
-  _d->merchants.append( merchant );
+  _d->merchants.postpone( merchant );
 
   CONNECT( merchant, onDestination(), _d.data(), Impl::resolveMerchantArrived );
   return merchant;
