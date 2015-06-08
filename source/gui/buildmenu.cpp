@@ -35,8 +35,9 @@
 #include "core/logger.hpp"
 #include "core/saveadapter.hpp"
 #include "game/settings.hpp"
+#include "core/variant_list.hpp"
 
-using namespace constants;
+//using namespace constants;
 using namespace gfx;
 using namespace city;
 
@@ -72,12 +73,12 @@ public:
       char buffer[32];
       sprintf( buffer, "%d", _cost );
       Rect textRect = f.getTextRect( buffer, Rect( 5, 0, width()-10, height() ),
-                                                align::lowerRight, verticalTextAlign() );
-      f.draw( *_textPictureRef(), buffer, textRect.left(), textRect.top() );
+                                     align::lowerRight, verticalTextAlign() );
+      f.draw( _textPicture(), buffer, textRect.left(), textRect.top() );
     }
   }
 
-  void _resizeEvent()
+  void _finalizeResize()
   {
     for( int i=0; i < StateCount; i++ )
         _updateBackground( ElementState(i) );
@@ -94,6 +95,7 @@ BuildMenu::BuildMenu( Widget* parent, const Rect& rectangle, int id,
                       city::development::Branch branch )
     : Widget( parent, id, rectangle )
 {
+  _c3gameplay = false;
   _branch = branch;
 }
 
@@ -122,8 +124,8 @@ void BuildMenu::initialize()
 
   foreach( it, buildings )
   {
-    TileOverlay::Type bType = MetaDataHolder::findType( it->toString() );
-    if( bType != objects::unknown )
+    object::Type bType = object::toType( it->toString() );
+    if( bType != object::unknown )
     {
       addBuildButton( bType );
     }
@@ -136,19 +138,17 @@ void BuildMenu::initialize()
     {
       textSize = font.getTextSize( button->text());
       max_text_width = std::max(max_text_width, textSize.width() );
-
-      std::string text = utils::format( 0xff, "%i", button->cost() );
-      textSize = font.getTextSize( text );
+      textSize = font.getTextSize( utils::i2str( button->cost() ) );
       max_cost_width = std::max(max_cost_width, textSize.width());
     }
   }
 
-  setWidth( std::max(150, max_text_width + max_cost_width + 20) );
+  setWidth( std::max(150, max_text_width + max_cost_width + 30) );
 
   // set the same size for all buttons
   foreach( widget, children() )
   {
-    BuildButton *button = dynamic_cast< BuildButton* >( *widget );
+    BuildButton *button = safety_cast< BuildButton* >( *widget );
     if( button )
     {
       button->setWidth( width() );
@@ -165,22 +165,27 @@ void BuildMenu::addSubmenuButton(const city::development::Branch menuType, const
 
   BuildButton* button = new BuildButton( this, _(text), Rect( Point( 0, height() ), Size( width(), 25 ) ), -1 );
   button->setID( menuType | subMenuCreateIdHigh );
-  button->setCost(-1);  // no display
+  button->setCost(-1);  // no display cost
 
   setHeight( height() + 30 );
 }
 
-void BuildMenu::addBuildButton(const TileOverlay::Type buildingType )
+void BuildMenu::addBuildButton(const object::Type buildingType )
 {
   //int t = DateTime::getElapsedTime();
-  const MetaData &buildingData = MetaDataHolder::instance().getData( buildingType );
+  const MetaData& buildingData = MetaDataHolder::instance().getData( buildingType );
 
   int cost = buildingData.getOption( MetaDataOptions::cost );
   bool mayBuildInCity = _options.isBuildingAvailble( buildingType );
+  if( _c3gameplay )
+  {
+    mayBuildInCity &= buildingData.getOption( MetaDataOptions::c3logic, true ).toBool();
+  }
+
   if( cost > 0 && mayBuildInCity )
   {
     // building can be built
-    BuildButton* button = new BuildButton( this, _(buildingData.prettyName().c_str()),
+    BuildButton* button = new BuildButton( this, _(buildingData.prettyName()),
                                            Rect( 0, height(), width(), height() + 25 ), -1 );
     button->setCost(cost);
     button->setID( buildingType );
@@ -191,7 +196,7 @@ void BuildMenu::addBuildButton(const TileOverlay::Type buildingType )
   }
 }
 
-BuildMenu* BuildMenu::create(const city::development::Branch menuType, Widget* parent )
+BuildMenu* BuildMenu::create(const city::development::Branch menuType, Widget* parent, bool c3gameplay )
 {
   BuildMenu* ret = 0;
   switch (menuType)
@@ -212,6 +217,10 @@ BuildMenu* BuildMenu::create(const city::development::Branch menuType, Widget* p
   case development::big_temple:     ret = new BuildMenu_bigtemple     ( parent, Rect( 0, 0, 60, 1 )); break;
   default:       break; // DO NOTHING 
   };
+  if( ret )
+  {
+    ret->_c3gameplay = c3gameplay;
+  }
 
   return ret;
 }

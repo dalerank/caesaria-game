@@ -19,7 +19,7 @@
 #define __CAESARIA_VARIANT_MAP_H_INCLUDED__
 
 #include "variant.hpp"
-#include "signals.hpp"
+#include "delegate.hpp"
 
 class VariantMap : public std::map<std::string, Variant>
 {
@@ -73,4 +73,4 @@ public:
   }
 };
 
-#endif // __OPENCAESAR3_VARIANTPRIVATE_H_INCLUDED__
+#endif // __CAESARIA_VARIANT_MAP_H_INCLUDED__

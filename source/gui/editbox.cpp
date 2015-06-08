@@ -23,13 +23,17 @@
 #include "core/variant_map.hpp"
 #include "gfx/picture.hpp"
 #include "core/time.hpp"
+#include "core/utils.hpp"
 #include "core/foreach.hpp"
 #include "gfx/decorator.hpp"
+#include "widget_factory.hpp"
 
 using namespace gfx;
 
 namespace gui
 {
+
+REGISTER_CLASS_IN_WIDGETFACTORY(EditBox)
 
 class EditBox::Impl
 {
@@ -57,8 +61,9 @@ public:
 	unsigned int max;
 	std::string holderText;
   Picture bgPicture;
-  Pictures background;
-  PictureRef textPicture;
+  Batch background;
+  Pictures backgroundNb;
+  Picture textPicture;
 
 	bool wordWrapEnabled, multiLine, autoScrollEnabled, isPasswordBox;
 	char passwordChar;
@@ -97,21 +102,21 @@ signals public:
 
 std::string __ucs2utf8( const std::wstring& text )
 {
-	std::string ret;
-	foreach( i, text )
-	{
-		if( (unsigned short)*i < 0x80 )
-		{
-			ret.push_back( (char)(*i & 0xff ) );
-		}
-		else
-		{
-			ret.push_back( (char)( (*i >> 8) & 0xff) );
-			ret.push_back( (char)( *i & 0xff ) );
-		}
-	}
+  std::string ret;
+  foreach( i, text )
+  {
+    if( (unsigned short)*i < 0x80 )
+    {
+      ret.push_back( (char)(*i & 0xff ) );
+    }
+    else
+    {
+      ret.push_back( (char)( (*i >> 8) & 0xff) );
+      ret.push_back( (char)( *i & 0xff ) );
+    }
+  }
 
-	return ret;
+  return ret;
 }
 
 void EditBox::_init()
@@ -208,7 +213,7 @@ void EditBox::setWordWrap(bool enable)
 	_breakText();
 }
 
-void EditBox::_resizeEvent()
+void EditBox::_finalizeResize()
 {
   _breakText();
   _calculateScrollPos();
@@ -241,7 +246,7 @@ void EditBox::setupUI(const VariantMap& ui)
 {
 	Widget::setupUI( ui );
 
-	setFont( Font::create( ui.get( "font", "FONT_2" ).toString() ) );
+  setFont( Font::create( ui.get( "font", std::string( "FONT_2" ) ).toString() ) );
 
 	_d->textOffset = ui.get( "textOffset" ).toPoint();
 
@@ -761,7 +766,7 @@ void EditBox::_drawHolderText( Font font, Rect* clip )
 
     if( holderFont.isValid() )
     {
-        holderFont.draw( *_d->textPicture, _d->holderText, 0, 0 );
+        holderFont.draw( _d->textPicture, _d->holderText, 0, 0 );
     }
   }
 }
@@ -775,15 +780,25 @@ void EditBox::beforeDraw(Engine& painter)
   {
     _d->needUpdateTexture = false;
 
-    if( !_d->textPicture || ( _d->textPicture && size() != _d->textPicture->size()) )
+    if( !_d->textPicture.isValid() || ( size() != _d->textPicture.size() ) )
     {
-      _d->textPicture.reset( Picture::create( size(), 0, true ) );
-      _d->textPicture->fill( 0x00000000, Rect( 0, 0, 0, 0) );
+      _d->textPicture = Picture( size(), 0, true );
+      _d->textPicture.fill( 0x00000000, Rect( 0, 0, 0, 0) );
     }
 
     if( !_d->bgPicture.isValid() )
     {
-      Decorator::draw( _d->background, Rect( 0, 0, width(), height() ), Decorator::blackFrame );
+      _d->background.destroy();
+
+      Pictures pics;
+      Decorator::draw( pics, Rect( 0, 0, width(), height() ), Decorator::blackFrame, Decorator::normalY );
+      bool batchOk = _d->background.load( pics, absoluteRect().lefttop() );
+      if( !batchOk )
+      {
+        _d->background.destroy();
+        Decorator::reverseYoffset( pics );
+        _d->backgroundNb = pics;
+      }
     }
 
     Rect localClipRect = absoluteRect();
@@ -812,7 +827,7 @@ void EditBox::beforeDraw(Engine& painter)
       const int hlineCount = ml ? _getLineFromPos(realmend) - hlineStart + 1 : 1;
       const int lineCount = ml ? _d->brokenText.size() : 1;
 
-      _d->textPicture->fill( 0x00000000, Rect(0, 0, 0, 0) );
+      _d->textPicture.fill( 0x00000000, Rect(0, 0, 0, 0) );
       if( !_d->text.empty() )
       {
         for (int i=0; i < lineCount; ++i)
@@ -857,7 +872,7 @@ void EditBox::beforeDraw(Engine& painter)
            curTextureRect = _d->lastBreakFont.getTextRect( rText, curTextureRect, horizontalTextAlign(), verticalTextAlign() );
            curTextureRect += (_d->currentTextRect.UpperLeftCorner - absoluteRect().UpperLeftCorner );
 
-           _d->lastBreakFont.draw( *_d->textPicture, rText, curTextureRect.UpperLeftCorner );
+           _d->lastBreakFont.draw( _d->textPicture, rText, curTextureRect.UpperLeftCorner );
 
            // draw mark and marked text
            if( isFocused() && _d->markBegin != _d->markEnd && i >= hlineStart && i < hlineStart + hlineCount)
@@ -966,19 +981,26 @@ void EditBox::draw( Engine& painter )
     //painter.drawRectangle( markAreaColor, convertLocalToScreen( _d->markAreaRect ), &getAbsoluteClippingRectRef() );
   }
 
-	// draw the text
-  if( _d->bgPicture.isValid() )
+  // draw the background
+  if( _d->drawBackground )
   {
-    painter.draw( _d->bgPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
-  }
-  else
-  {
-    painter.draw( _d->background, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+    if( _d->bgPicture.isValid() )
+    {
+      painter.draw( _d->bgPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+    }
+    else
+    {
+      if( _d->background.valid() )
+        painter.draw( _d->background, &absoluteClippingRectRef() );
+      else
+        painter.draw( _d->backgroundNb, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+    }
   }
 
-  if( _d->textPicture )
+  // draw the text
+  if( _d->textPicture.isValid() )
   {
-    painter.draw( *_d->textPicture, _d->textOffset + absoluteRect().UpperLeftCorner );
+    painter.draw( _d->textPicture, _d->textOffset + absoluteRect().UpperLeftCorner );
   }
 
   if( focus )
@@ -1346,24 +1368,30 @@ int EditBox::_getLineFromPos(int pos)
 
 std::wstring __unic2utf8(unsigned short wc)
 {
- std::wstring ret;
+ ByteArray bytes;
+ if (wc < 0x80)
+   bytes.push_back( (wchar_t)wc );
 
- if( wc < 0x80 )
- {
-   ret += (wchar_t)wc;
- }
  else if (wc < 0x800)
  {
-   ret += (wchar_t)( ((0xC0 | wc>>6) << 8 ) + (0x80 | (wc & 0x3F)) );
+   bytes.push_back( 0xc0 | (wc >> 6) );
+   bytes.push_back( 0x80 | (wc & 0x3f) );
  }
- /*else if (wc < 0x10000)
+ else if (wc < 0x10000)
  {
-   unsigned char a = (0xe0 | ((wc >> 12)& 0x0f)) ;
-   unsigned char b = ( (0x80| ((wc >> 6) & 0x3f)) + (0x80| (wc & 0x3f)) );
-   ret += (a << 8) + b;
- }*/
- else
-   ret += '?';
+   bytes.push_back( 0xe0 | (wc >> 12) );
+   bytes.push_back( 0x80 | ((wc >> 6) & 0x3f) );
+   bytes.push_back( 0x80 | (wc & 0x3f) );
+ }
+ else if (wc <= 0x10ffff)
+ {
+   bytes.push_back( 0xf0 | (wc >> 18) );
+   bytes.push_back( 0x80 | ((wc >> 12) & 0x3f) );
+   bytes.push_back( 0x80 | ((wc >> 6) & 0x3f) );
+   bytes.push_back( 0x80 | (wc & 0x3f) );
+ }
+
+ std::wstring ret = utils::utf8toWString( bytes.data(), bytes.size() );
 
  return ret;
 }

@@ -23,7 +23,7 @@
 namespace events
 {
 
-class SetSoundOptions : public GameEvent
+class ChangeSoundOptions : public GameEvent
 {
 public:
   static GameEventPtr create();
@@ -31,8 +31,6 @@ public:
 private:
   virtual bool _mayExec(Game&, unsigned int) const;
   virtual void _exec( Game& game, unsigned int );
-
-  void _saveSoundSettings();
 };
 
 }

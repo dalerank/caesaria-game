@@ -1,11 +1,11 @@
 // This file is part of CaesarIA.
 //
-// openCaesar3 is free software: you can redistribute it and/or modify
+// CaesarIA is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// openCaesar3 is distributed in the hope that it will be useful,
+// CaesarIA is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -24,14 +24,19 @@
 #include "environment.hpp"
 #include "core/event.hpp"
 #include "core/variant_map.hpp"
+#include "core/variant_list.hpp"
 #include "core/foreach.hpp"
 #include "core/saveadapter.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "core/gettext.hpp"
+#include "rect_calc.hpp"
 
 namespace gui
 {
+
+static const Variant invalidVariant;
+CAESARIA_LITERALCONST(vars)
 
 void Widget::beforeDraw(gfx::Engine& painter )
 {
@@ -134,7 +139,8 @@ void Widget::setGeometry( const Rect& r, GeometryType mode )
   updateAbsolutePosition();
 }
 
-void Widget::_resizeEvent(){}
+void Widget::_finalizeResize() {}
+void Widget::_finalizeMove() {}
 
 Widget::Widgets& Widget::_getChildren() {  return _dfunc()->children;}
 
@@ -156,10 +162,10 @@ void Widget::setGeometry( const RectF& r, GeometryType mode )
   {
   case ProportionalGeometry:
     _d->desiredRect = Rect(
-          floor( d.width() * r.UpperLeftCorner.x() ),
-          floor( d.height() * r.UpperLeftCorner.y() ),
-          floor( d.width() * r.LowerRightCorner.x() ),
-          floor( d.height() * r.LowerRightCorner.y() ));
+          floor( d.width() * r.left() ),
+          floor( d.height() * r.top() ),
+          floor( d.width() * r.right() ),
+          floor( d.height() * r.bottom() ));
 
     _d->scaleRect = r;
   break;
@@ -230,13 +236,7 @@ void Widget::setAlignment( Alignment left, Alignment right, Alignment top, Align
 void Widget::updateAbsolutePosition()
 {
   __D_IMPL(_d,Widget)
-  const Rect oldRect = _d->absoluteRect;
   _recalculateAbsolutePosition(false);
-
-  if( oldRect.size() != _d->absoluteRect.size() )
-  {
-    _resizeEvent();
-  }
 
   // update all children
   foreach( widget, _d->children ) { (*widget)->updateAbsolutePosition(); }
@@ -459,7 +459,7 @@ bool Widget::next( int startOrder, bool reverse, bool group, Widget*& first, Wid
     {
         // ignore invisible elements and their children
         if ( ( (*it)->visible() || includeInvisible ) &&
-            (group == true || (*it)->hasTabgroup() == false) )
+             (group == true || (*it)->hasTabgroup() == false) )
         {
             // only check tab stops and those with the same group status
             if ((*it)->isTabStop() && ((*it)->hasTabgroup() == group))
@@ -469,45 +469,44 @@ bool Widget::next( int startOrder, bool reverse, bool group, Widget*& first, Wid
                 // is this what we're looking for?
                 if (currentOrder == wanted)
                 {
-                    closest = *it;
-                    return true;
+                  closest = *it;
+                  return true;
                 }
 
                 // is it closer than the current closest?
                 if (closest)
                 {
-                    closestOrder = closest->tabOrder();
-                    if ( ( reverse && currentOrder > closestOrder && currentOrder < startOrder)
-                        ||(!reverse && currentOrder < closestOrder && currentOrder > startOrder))
-                    {
-                        closest = *it;
-                    }
+                  closestOrder = closest->tabOrder();
+                  if ( ( reverse && currentOrder > closestOrder && currentOrder < startOrder)
+                      ||(!reverse && currentOrder < closestOrder && currentOrder > startOrder))
+                  {
+                    closest = *it;
+                  }
+                }
+                else if ( (reverse && currentOrder < startOrder) || (!reverse && currentOrder > startOrder) )
+                {
+                  closest = *it;
+                }
+
+                // is it before the current first?
+                if (first)
+                {
+                  closestOrder = first->tabOrder();
+
+                  if ( (reverse && closestOrder < currentOrder) || (!reverse && closestOrder > currentOrder) )
+                  {
+                      first = *it;
+                  }
                 }
                 else
-                    if ( (reverse && currentOrder < startOrder) || (!reverse && currentOrder > startOrder) )
-                    {
-                        closest = *it;
-                    }
-
-                    // is it before the current first?
-                    if (first)
-                    {
-                        closestOrder = first->tabOrder();
-
-                        if ( (reverse && closestOrder < currentOrder) || (!reverse && closestOrder > currentOrder) )
-                        {
-                            first = *it;
-                        }
-                    }
-                    else
-                    {
-                        first = *it;
-                    }
+                {
+                  first = *it;
+                }
             }
             // search within children
             if ((*it)->next(startOrder, reverse, group, first, closest))
             {
-                return true;
+              return true;
             }
         }
         ++it;
@@ -517,44 +516,17 @@ bool Widget::next( int startOrder, bool reverse, bool group, Widget*& first, Wid
 
 void Widget::setParent(Widget* p) {  _dfunc()->parent = p; }
 
-static int __convStr2RelPos( Widget* w, std::string s )
+static int __convStr2RelPos( Widget* w, const VariantMap& vars, std::string s )
 {
   s = utils::trim( s );
-  std::string dd = s.substr( 0, 2 );
-  int lenght = 0;
-  if( dd == "pw" ) { lenght = w->parent()->width(); }
-  else if( dd == "ph" ) { lenght = w->parent()->height(); }
-  else dd = "";
 
-  if( !dd.empty() )
-  {
-    std::string opStr = s.substr( 2, 1 );
-    char operation = opStr.empty() ? 0 : opStr[ 0 ];
-    int value = utils::toFloat( s.substr( 3 ) );
-    switch( operation )
-    {
-    case '-':
-    case '+':
-      return lenght + (operation == '-' ? -1 : 1) * value;
-    break;
-
-    case '/': return lenght/value; break;
-    case '*': return lenght*value; break;
-    }
-
-    Logger::warning( "Widget::__convStr2RelPos unknown operation " + s );
-    return 20;
-  }
-  else
-  {
-    return utils::toInt( s );
-  }
+  WidgetCalc wcalc( *w, vars );
+  return wcalc.eval( s );
 }
 
 void Widget::setupUI( const VariantMap& options )
 {
   __D_IMPL(_d,Widget)
-  //setOpacity( in->getAttributeAsFloat( SerializeHelper::opacityProp ) );
   _d->internalName = options.get( "name" ).toString();
   align::Helper ahelper;
   VariantList textAlign = options.get( "textAlign" ).toList();
@@ -571,7 +543,7 @@ void Widget::setupUI( const VariantMap& options )
   }
 
   Variant tmp;
-  setID( (int)options.get( "id", -1 ) );
+  setID( (int)options.get( "id", _d->id ) );
   setText( _( options.get( "text" ).toString() ) );
   setTooltipText( options.get( "tooltip" ).toString() );
   setVisible( options.get( "visible", true ).toBool() );
@@ -581,20 +553,16 @@ void Widget::setupUI( const VariantMap& options )
   _d->tabOrder = options.get( "tabOrder", -1 ).toInt();
   setMaxSize( options.get( "maximumSize", Size( 0 ) ).toSize() );
   setMinSize( options.get( "minimumSize", Size( 1 ) ).toSize() );
-
-  /*setAlignment( ahelper.findType( ui.get( "leftAlign" ).toString() ),
-                ahelper.findType( ui.get( "rightAlign" ).toString() ),
-                ahelper.findType( ui.get( "topAlign" ).toString() ),
-                ahelper.findType( ui.get( "bottomAlign" ).toString() ));*/
+  VariantMap vars = options.get( literals::vars ).toMap();
 
   VariantList aRectList = options.get( "geometry" ).toList();
   if( !aRectList.empty() )
   {
     Rect cRect(
-       __convStr2RelPos( this, aRectList.get( 0 ).toString() ),
-       __convStr2RelPos( this, aRectList.get( 1 ).toString() ),
-       __convStr2RelPos( this, aRectList.get( 2 ).toString() ),
-       __convStr2RelPos( this, aRectList.get( 3 ).toString() ) );
+       __convStr2RelPos( this, vars, aRectList.get( 0 ).toString() ),
+       __convStr2RelPos( this, vars, aRectList.get( 1 ).toString() ),
+       __convStr2RelPos( this, vars, aRectList.get( 2 ).toString() ),
+       __convStr2RelPos( this, vars, aRectList.get( 3 ).toString() ) );
 
     setGeometry( cRect );
   }
@@ -613,14 +581,24 @@ void Widget::setupUI( const VariantMap& options )
     setGeometry( r );
   }
 
+  tmp = options.get( "size" );
+  if( tmp.isValid() )
+  {
+    Size s = tmp.toSize();
+    if( s.width() > 0 ) { setWidth( s.width()); }
+    if( s.height() > 0 ) { setHeight( s.height() ); }
+  }
+
   setNotClipped( options.get( "noclipped", false ).toBool() );
 
-  for( VariantMap::const_iterator it=options.begin(); it != options.end(); ++it )
+  foreach( it, options )
   {
     if( it->second.type() != Variant::Map )
       continue;
 
     VariantMap tmp = it->second.toMap();
+    tmp[ literals::vars ] = vars;
+
     std::string widgetName = it->first;
     std::string widgetType;
     std::string::size_type delimPos = widgetName.find( '#' );
@@ -647,6 +625,12 @@ void Widget::setupUI( const VariantMap& options )
       }
     }
   }
+
+  Variant positionV = options.get( "position" );
+  if( positionV.isValid() )
+    move( positionV.toPoint() );
+
+  _d->properties = options.get( "properties" ).toMap();
 }
 
 void Widget::setupUI(const vfs::Path& filename)
@@ -669,109 +653,110 @@ void Widget::_addChild( Widget* child )
 
 void Widget::_recalculateAbsolutePosition( bool recursive )
 {
-    Rect parentAbsolute(0,0,0,0);
-    Rect parentAbsoluteClip;
-    float fw=0.f, fh=0.f;
+  Rect parentAbsolute(0,0,0,0);
+  Rect parentAbsoluteClip;
+  float fw=0.f, fh=0.f;
 
-    __D_IMPL(_d,Widget)
-    if ( parent() )
+  __D_IMPL(_d,Widget)
+  if ( parent() )
+  {
+    parentAbsolute = parent()->absoluteRect();
+
+    if( _d->noClip )
     {
-        parentAbsolute = parent()->absoluteRect();
+      Widget* p=this;
+      while( p && p->parent() )
+          p = p->parent();
 
-        if( _d->noClip )
-        {
-            Widget* p=this;
-            while( p && p->parent() )
-                p = p->parent();
-
-            parentAbsoluteClip = p->absoluteClippingRect();
-        }
-        else
-            parentAbsoluteClip = parent()->absoluteClippingRect();
+      parentAbsoluteClip = p->absoluteClippingRect();
     }
+    else
+      parentAbsoluteClip = parent()->absoluteClippingRect();
+  }
 
-    const int diffx = parentAbsolute.width() - _d->lastParentRect.width();
-    const int diffy = parentAbsolute.height() - _d->lastParentRect.height();
+  const int diffx = parentAbsolute.width() - _d->lastParentRect.width();
+  const int diffy = parentAbsolute.height() - _d->lastParentRect.height();
 
 
-    if( _d->alignLeft == align::scale || _d->alignRight == align::scale)
-        fw = (float)parentAbsolute.width();
+  if( _d->alignLeft == align::scale || _d->alignRight == align::scale)
+      fw = (float)parentAbsolute.width();
 
-    if( _d->alignTop == align::scale || _d->alignBottom == align::scale)
-        fh = (float)parentAbsolute.height();
-    
-    switch( _d->alignLeft)
+  if( _d->alignTop == align::scale || _d->alignBottom == align::scale)
+      fh = (float)parentAbsolute.height();
+
+  switch( _d->alignLeft)
+  {
+  case align::automatic:
+  case align::upperLeft: break;
+  case align::lowerRight: _d->desiredRect.UpperLeftCorner += Point( diffx, 0 ); break;
+  case align::center: _d->desiredRect.UpperLeftCorner += Point( diffx/2, 0 ); break;
+  case align::scale: _d->desiredRect.UpperLeftCorner.setX( _d->scaleRect.UpperLeftCorner.x() * fw ); break;
+  }
+
+  switch( _d->alignRight)
+  {
+  case align::automatic:
+  case align::upperLeft:   break;
+  case align::lowerRight: _d->desiredRect.LowerRightCorner += Point( diffx, 0 ); break;
+  case align::center: _d->desiredRect.LowerRightCorner += Point( diffx/2, 0 ); break;
+  case align::scale: _d->desiredRect.LowerRightCorner.setX( roundf( _d->scaleRect.LowerRightCorner.x() * fw ) ); break;
+  }
+
+  switch( _d->alignTop)
+  {
+  case align::automatic:
+  case align::upperLeft: break;
+  case align::lowerRight: _d->desiredRect.UpperLeftCorner += Point( 0, diffy ); break;
+  case align::center: _d->desiredRect.UpperLeftCorner += Point( 0, diffy/2 ); break;
+  case align::scale: _d->desiredRect.UpperLeftCorner.setY( roundf(_d->scaleRect.UpperLeftCorner.y() * fh) ); break;
+  }
+
+  switch( _d->alignBottom)
+  {
+  case align::automatic:
+  case align::upperLeft:  break;
+  case align::lowerRight: _d->desiredRect.LowerRightCorner += Point( 0, diffy );  break;
+  case align::center:  _d->desiredRect.LowerRightCorner += Point( 0, diffy/2 );  break;
+  case align::scale: _d->desiredRect.LowerRightCorner.setY( roundf(_d->scaleRect.LowerRightCorner.y() * fh) );  break;
+  }
+
+  _d->relativeRect = _d->desiredRect;
+
+  const int w = _d->relativeRect.width();
+  const int h = _d->relativeRect.height();
+
+  // make sure the desired rectangle is allowed
+  if (w < (int)_d->minSize.width() )
+      _d->relativeRect.LowerRightCorner.setX( _d->relativeRect.UpperLeftCorner.x() + _d->minSize.width() );
+  if (h < (int)_d->minSize.height() )
+      _d->relativeRect.LowerRightCorner.setY( _d->relativeRect.UpperLeftCorner.y() + _d->minSize.height() );
+  if (_d->maxSize.width() > 0 && w > (int)_d->maxSize.width() )
+      _d->relativeRect.LowerRightCorner.setX( _d->relativeRect.UpperLeftCorner.x() + _d->maxSize.width() );
+  if (_d->maxSize.height() > 0 && h > (int)_d->maxSize.height() )
+      _d->relativeRect.LowerRightCorner.setY( _d->relativeRect.UpperLeftCorner.y() + _d->maxSize.height() );
+
+  _d->relativeRect.repair();
+
+  _d->absoluteRect = _d->relativeRect + parentAbsolute.UpperLeftCorner;
+
+  if (!parent())
+      parentAbsoluteClip = absoluteRect();
+
+  _d->absoluteClippingRect = absoluteRect();
+  _d->absoluteClippingRect.clipAgainst(parentAbsoluteClip);
+
+  _d->lastParentRect = parentAbsolute;
+
+  if ( recursive )
+  {
+    // update all children
+    foreach( it, _d->children )
     {
-    case align::automatic:
-    case align::upperLeft: break;
-    case align::lowerRight: _d->desiredRect.UpperLeftCorner += Point( diffx, 0 ); break;
-    case align::center: _d->desiredRect.UpperLeftCorner += Point( diffx/2, 0 ); break;
-    case align::scale: _d->desiredRect.UpperLeftCorner.setX( _d->scaleRect.UpperLeftCorner.x() * fw ); break;
+        (*it)->_recalculateAbsolutePosition(recursive);
     }
+  }
 
-    switch( _d->alignRight)
-    {
-    case align::automatic:
-    case align::upperLeft:   break;
-    case align::lowerRight: _d->desiredRect.LowerRightCorner += Point( diffx, 0 ); break;
-    case align::center: _d->desiredRect.LowerRightCorner += Point( diffx/2, 0 ); break;
-    case align::scale: _d->desiredRect.LowerRightCorner.setX( roundf( _d->scaleRect.LowerRightCorner.x() * fw ) ); break;
-    }
-
-    switch( _d->alignTop)
-    {
-    case align::automatic:
-    case align::upperLeft: break;
-    case align::lowerRight: _d->desiredRect.UpperLeftCorner += Point( 0, diffy ); break;
-    case align::center: _d->desiredRect.UpperLeftCorner += Point( 0, diffy/2 ); break;
-    case align::scale: _d->desiredRect.UpperLeftCorner.setY( roundf(_d->scaleRect.UpperLeftCorner.y() * fh) ); break;
-    }
-
-    switch( _d->alignBottom)
-    {
-    case align::automatic:
-    case align::upperLeft:  break;
-    case align::lowerRight: _d->desiredRect.LowerRightCorner += Point( 0, diffy );  break;
-    case align::center:  _d->desiredRect.LowerRightCorner += Point( 0, diffy/2 );  break;
-    case align::scale: _d->desiredRect.LowerRightCorner.setY( roundf(_d->scaleRect.LowerRightCorner.y() * fh) );  break;
-    }
-
-    _d->relativeRect = _d->desiredRect;
-
-    const int w = _d->relativeRect.width();
-    const int h = _d->relativeRect.height();
-
-    // make sure the desired rectangle is allowed
-    if (w < (int)_d->minSize.width() )
-        _d->relativeRect.LowerRightCorner.setX( _d->relativeRect.UpperLeftCorner.x() + _d->minSize.width() );
-    if (h < (int)_d->minSize.height() )
-        _d->relativeRect.LowerRightCorner.setY( _d->relativeRect.UpperLeftCorner.y() + _d->minSize.height() );
-    if (_d->maxSize.width() > 0 && w > (int)_d->maxSize.width() )
-        _d->relativeRect.LowerRightCorner.setX( _d->relativeRect.UpperLeftCorner.x() + _d->maxSize.width() );
-    if (_d->maxSize.height() > 0 && h > (int)_d->maxSize.height() )
-        _d->relativeRect.LowerRightCorner.setY( _d->relativeRect.UpperLeftCorner.y() + _d->maxSize.height() );
-
-    _d->relativeRect.repair();
-
-    _d->absoluteRect = _d->relativeRect + parentAbsolute.UpperLeftCorner;
-
-    if (!parent())
-        parentAbsoluteClip = absoluteRect();
-
-    _d->absoluteClippingRect = absoluteRect();
-    _d->absoluteClippingRect.clipAgainst(parentAbsoluteClip);
-
-    _d->lastParentRect = parentAbsolute;
-
-    if ( recursive )
-    {
-        // update all children
-        ChildIterator it = _d->children.begin();
-        for (; it != _d->children.end(); ++it)
-        {
-            (*it)->_recalculateAbsolutePosition(recursive);
-        }
-      }
+  _finalizeResize();
 }
 
 void Widget::animate( unsigned int timeMs )
@@ -893,6 +878,17 @@ void Widget::setRight( int newRight )
   Rect r = relativeRect();
   r.rright() = newRight;
   setGeometry( r );
+}
+
+void Widget::addProperty(const std::string& name, const Variant& value)
+{
+  _dfunc()->properties[ name ] = value;
+}
+
+const Variant& Widget::getProperty(const std::string& name) const
+{
+  VariantMap::const_iterator it = _dfunc()->properties.find( name );
+  return it != _dfunc()->properties.end() ? it->second : invalidVariant;
 }
 
 void Widget::installEventHandler( Widget* elementHandler )

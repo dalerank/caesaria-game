@@ -2325,7 +2325,10 @@ int TTF_WasInit( void )
 
 int TTF_GetFontKerningSize(TTF_Font* font, int prev_index, int index)
 {
-    FT_Vector delta;
-    FT_Get_Kerning( font->face, prev_index, index, ft_kerning_default, &delta );
-    return (delta.x >> 6);
+  FT_Vector delta;
+  if( font )
+  {
+      FT_Get_Kerning( font->face, prev_index, index, ft_kerning_default, &delta );
+  }
+  return (delta.x >> 6);
 }

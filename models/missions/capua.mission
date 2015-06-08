@@ -13,6 +13,7 @@
 	
   win :
   {
+    name : "n2_capua"
     population : 2500
     culture : 35_
     prosperity : 10
@@ -20,12 +21,17 @@
     favour : 60
     finishDate : "-300.01.01"
     next : ":/missions/mission4.briefing"
-    title : "##win_engineer_title##"
+    title : "##architect##"
     win.text : "##capua_win_text##"
     may_continue : false
     maxHouseLevel : "big_villa"
     caption : "##capua_title##"
-    overview :  [ "##capua_overview##" ]
+    overview :  [ "##capua_overview##",
+                  "@img=picture5_00006",
+                  "##capua_overview2##",
+                  "@img=picture5_00002",
+                  "##capua_overview3##",
+                  "@img=picture6_00002" ]
   }
 	
   empire : {
@@ -40,15 +46,21 @@
         sea : true
         land : true
         available : true
+
+        sells : { meat : 10, oil : 10 }
+        buys : { meat : 15, timber : 25, furniture : 25 }
       }
 
       "Leptis Magna" : {
-        location : [ 820, 920 ]
+        location : [ 860, 920 ]
 
         sea : true
         land : true
         distant : true
         available : true
+
+        sells : {	oil : 5, timber : 25 }
+        buys : { wine : 25 }
 
         resources : [ "wheat", "vegetable", "olive", "fish",
                       "clay", "marble", "timber", "iron" ]
@@ -61,6 +73,9 @@
         land : true
         distant : true
         available : true
+
+        sells : { meat : 25, marble : 20 }
+        buys : { pottery : 25 }
 
         resources : [ "wheat", "olive", "wine", "fish",
                       "timber", "clay", "marble", "iron" ]
@@ -207,7 +222,7 @@
     { 
       engineering_post : true
       plaza : true
-      forum : false
+      forum : true
       garden : true
       low_bridge : true
       high_bridge : true

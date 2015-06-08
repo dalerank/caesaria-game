@@ -19,9 +19,10 @@
 #define __CAESARIA_WALKER_DEBUG_INFO_H_INCLUDED__
 
 #include "core/scopedptr.hpp"
-#include "gfx/engine.hpp"
-#include "gfx/camera.hpp"
 #include "game/predefinitions.hpp"
+#include "core/color.hpp"
+
+namespace gfx { class Camera; class Engine; }
 
 namespace gfx
 {

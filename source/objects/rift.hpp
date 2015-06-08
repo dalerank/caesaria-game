@@ -18,9 +18,9 @@
 #ifndef __CAESARIA_RIFT_H_INCLUDE__
 #define __CAESARIA_RIFT_H_INCLUDE__
 
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 
-class Rift : public gfx::TileOverlay
+class Rift : public Overlay
 {
 public:
   Rift();
@@ -29,7 +29,7 @@ public:
   void updatePicture();
   RiftList neighbors() const;
 
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo &info);
   virtual void initTerrain( gfx::Tile &terrain);
   virtual bool isWalkable() const;
   virtual bool isFlat() const;

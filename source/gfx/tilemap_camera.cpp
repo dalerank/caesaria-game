@@ -24,11 +24,9 @@
 #include "core/logger.hpp"
 #include "gfx/helper.hpp"
 #include "core/foreach.hpp"
-#include "tileoverlay.hpp"
+#include "objects/overlay.hpp"
 
 #include <set>
-
-using namespace constants;
 
 namespace gfx
 {
@@ -43,6 +41,8 @@ struct MovableOrders
   bool any() { return left || right || up || down; }
 };
 
+enum { zoomStep=10, zoomMiniminal=30, zoomDefault=100, zoomMaximum=300 };
+
 class TilemapCamera::Impl
 {
 public:
@@ -52,6 +52,7 @@ public:
   Size borderSize;
   Point offset;
   int scrollSpeed;
+  int zoom;
 
   Tilemap* tmap;   // tile map to display
   PointF centerMapXZ; // center of the view(in tiles)
@@ -63,11 +64,7 @@ public:
   MovableOrders mayMove( PointF point );
   void resetDrawn();
 
-  Point getOffset( const PointF& center )
-  {
-    return Point( virtualSize.width() / 2  - tileMapSize.width()  * (center.x() + 1) + 1,
-                  virtualSize.height() / 2 + tileMapSize.height() * (center.y() - tmap->size() + 1) - tileMapSize.width() );
-  } 
+  Point getOffset( const PointF& center );
 
   void cacheFlatTiles();
 
@@ -85,7 +82,9 @@ TilemapCamera::TilemapCamera() : _d( new Impl )
   _d->screeSize = Size( 0 );
   _d->virtualSize = Size( 0 );
   _d->centerMapXZ = PointF( 0, 0 );
-  _d->borderSize = Size( 90 );
+  _d->borderSize = Size( gfx::tilemap::cellSize().width() * 4 );
+  _d->tiles.reserve( 2000 );
+  _d->zoom = 100;
 }
 
 TilemapCamera::~TilemapCamera() {}
@@ -113,7 +112,7 @@ void TilemapCamera::setViewport(Size newSize)
   Logger::warning( "TilemapArea::setViewport w=%d h=%d", _d->viewSize.width(), _d->viewSize.height() );
 }
 
-void TilemapCamera::setCenter(TilePos pos)
+void TilemapCamera::setCenter(TilePos pos, bool checkCorner)
 {
   Tile tt( pos );
   Tile lctile( _d->tmap->p2tp( Point( _d->screeSize.width() / 2, _d->screeSize.height() / 2 )) );
@@ -122,7 +121,7 @@ void TilemapCamera::setCenter(TilePos pos)
     pos = lctile.pos();
   }
 
-  _setCenter( Point( pos.i() + pos.j(), _d->tmap->size() - 1 + pos.j() - pos.i() ), false );
+  _setCenter( Point( pos.i() + pos.j(), _d->tmap->size() - 1 + pos.j() - pos.i() ), checkCorner );
 
   emit _d->onPositionChangedSignal( _d->centerMapXZ.toPoint() );
 }
@@ -168,8 +167,7 @@ void TilemapCamera::_setCenter(Point pos, bool checkBorder)
     Point tile0x = _d->tmap->at( 0, mapsize-1 ).mappos();
     Point tilex0 = _d->tmap->at( mapsize-1, 0 ).mappos();
     Point tilexx = _d->tmap->at( mapsize-1, mapsize-1 ).mappos();
-    //if( checkBorder )
-    //MovableOrders mo = _d->mayMove( _d->)
+    if( checkBorder )
     {
       if( futureOffset.x() + tile00.x() > 0
         || (futureOffset.y() + tile0x.y() > 0)
@@ -186,9 +184,13 @@ void TilemapCamera::_setCenter(Point pos, bool checkBorder)
 TilePos TilemapCamera::center() const
 {
   Tile* tile = centerTile();
-  return tile ? tile->pos() : TilePos( -1, -1 );
+  return tile ? tile->epos() : gfx::tilemap::invalidLocation();
 }
 
+void TilemapCamera::setZoom(int value) { _d->zoom = value; }
+int TilemapCamera::zoom() const{ return _d->zoom; }
+void TilemapCamera::changeZoom(int delta) { _d->zoom = math::clamp<int>( _d->zoom + delta, zoomMiniminal, zoomMaximum ); }
+int TilemapCamera::maxZoom() const { return zoomMaximum; }
 int TilemapCamera::centerX() const  {   return _d->centerMapXZ.x();   }
 int TilemapCamera::centerZ() const  {   return _d->centerMapXZ.y();   }
 void TilemapCamera::setScrollSpeed(int speed){  _d->scrollSpeed = speed; }
@@ -209,6 +211,14 @@ Tile* TilemapCamera::at(const Point& pos, bool overborder) const
   float koeffY = (float)_d->virtualSize.height() / (float)_d->screeSize.height();
   Point virtPos = Point( pos.x() * koeffX, pos.y() * koeffY );
   return _d->tmap->at( virtPos - _d->offset, overborder );
+}
+
+Point TilemapCamera::mpos(const Point &pos) const
+{
+  float koeffX = (float)_d->virtualSize.width() / (float)_d->screeSize.width();
+  float koeffY = (float)_d->virtualSize.height() / (float)_d->screeSize.height();
+  Point virtPos = Point( pos.x() * koeffX, pos.y() * koeffY );
+  return virtPos - _d->offset;
 }
 
 Tile* TilemapCamera::centerTile() const
@@ -238,7 +248,7 @@ const TilesArray& TilemapCamera::tiles() const
       int xstart = cx - sizeT.width();
       if ((xstart + z) % 2 == 0)
       {
-	      ++xstart;
+        ++xstart;
       }
 
       for (int x = xstart; x<=cx + sizeT.width(); x+=2)
@@ -299,6 +309,12 @@ void TilemapCamera::Impl::resetDrawn()
   foreach( i, flatTiles ) { (*i)->resetWasDrawn(); }
 }
 
+Point TilemapCamera::Impl::getOffset(const PointF &center)
+{
+  return Point( virtualSize.width() / 2  - tileMapSize.width()  * (center.x() + 1) + 1,
+                virtualSize.height() / 2 + tileMapSize.height() * (center.y() - tmap->size() + 1) - tileMapSize.width() );
+}
+
 void TilemapCamera::Impl::cacheFlatTiles()
 {
   Tile* tile;
@@ -321,7 +337,7 @@ void TilemapCamera::Impl::cacheFlatTiles()
     }
   }
 
-  const TilesArray& tl = tmap->borderTiles();
+  const TilesArray& tl = tmap->svkBorderTiles();
   Rect viewRect( Point( -tilemap::cellPicSize().width(), -tilemap::cellPicSize().height() ),
                  virtualSize + tilemap::cellPicSize() * 2 );
   foreach( i, tl )

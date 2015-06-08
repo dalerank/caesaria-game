@@ -28,9 +28,9 @@
 namespace events
 {
 
-namespace {
 CAESARIA_LITERALCONST(enabled)
-}
+CAESARIA_LITERALCONST(empire)
+CAESARIA_LITERALCONST(adviser)
 
 REGISTER_EVENT_IN_FACTORY(ChangeEmpireOptions, "empire_options")
 
@@ -53,8 +53,8 @@ bool ChangeEmpireOptions::_mayExec(Game& game, unsigned int time) const {  retur
 
 void ChangeEmpireOptions::_exec(Game& game, unsigned int)
 {
-  VariantMap emOpts = _vars.get( "empire" ).toMap();
-  VariantMap advOptions = _vars.get( "adviser" ).toMap();
+  VariantMap emOpts = _vars.get( literals::empire ).toMap();
+  VariantMap advOptions = _vars.get( literals::adviser ).toMap();
 
   if( !emOpts.empty() )
   {
@@ -68,12 +68,12 @@ void ChangeEmpireOptions::_exec(Game& game, unsigned int)
     {
       bool raiseSalary = empire->workerSalary() - lastWorkerSalary;
 
-      events::GameEventPtr e = events::ShowInfobox::create( "##rome##", raiseSalary ? "##rome_raises_wages##" : "##rome_lowers_wages##");
+      GameEventPtr e = ShowInfobox::create( "##rome##", raiseSalary ? "##rome_raises_wages##" : "##rome_lowers_wages##");
       e->dispatch();
     }
   }
 
-  Variant adv_enabled = advOptions.get( lc_enabled );
+  Variant adv_enabled = advOptions.get( literals::enabled );
   if( adv_enabled.isValid() )
   {
     game.city()->setOption( PlayerCity::adviserEnabled, adv_enabled );

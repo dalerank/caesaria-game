@@ -15,21 +15,24 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "city.hpp"
 #include "requestdispatcher.hpp"
 #include "request.hpp"
+#include "city/city.hpp"
 #include "game/gamedate.hpp"
 #include "events/showrequestwindow.hpp"
 #include "core/variant_map.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "core/utils.hpp"
+#include "cityservice_factory.hpp"
 
 namespace city
 {
 
 namespace request
 {
+
+REGISTER_SERVICE_IN_FACTORY(Dispatcher,requestDispatcher)
 
 class Dispatcher::Impl
 {
@@ -40,6 +43,7 @@ public:
 
 public:
   void updateRequests();
+  void weekUpdate( unsigned int time, PlayerCityPtr city );
 };
 
 Dispatcher::Dispatcher( PlayerCityPtr city )
@@ -78,32 +82,39 @@ bool Dispatcher::add( const VariantMap& stream, bool showMessage )
 Dispatcher::~Dispatcher() {}
 std::string Dispatcher::defaultName(){  return "requests";}
 
+void Dispatcher::Impl::weekUpdate( unsigned int time, PlayerCityPtr rcity )
+{
+  const DateTime current = game::Date::current();
+  foreach( rq, requests )
+  {
+    RequestPtr request = *rq;
+    if( request->finishedDate() <= current )
+    {
+      request->fail( rcity );
+      lastRequestCancelDate = current;
+    }
+
+    bool isReady = request->isReady( rcity );
+    if( !request->isAnnounced() && isReady )
+    {
+      events::GameEventPtr e = events::ShowRequestInfo::create( request, true );
+      request->setAnnounced( true );
+      e->dispatch();
+    }
+
+    request->update();
+  }
+}
+
 void Dispatcher::timeStep(const unsigned int time)
 {
   if( game::Date::isWeekChanged() )
   {
-    foreach( rq, _d->requests )
-    {
-      RequestPtr request = *rq;
-      if( request->finishedDate() <= game::Date::current() )
-      {
-        request->fail( _city() );
-        _d->lastRequestCancelDate = game::Date::current();
-      }
+    _d->weekUpdate( time, _city() );
+  }
 
-      bool isReady = request->isReady( _city() );
-      isReady;
-
-      if( !request->isAnnounced() )
-      {
-        events::GameEventPtr e = events::ShowRequestInfo::create( request, true );
-        request->setAnnounced( true );
-        e->dispatch();
-      }
-
-      request->update();
-    }
-
+  if( game::Date::isDayChanged() )
+  {
     _d->updateRequests();
   }
 }
@@ -144,14 +155,13 @@ RequestList Dispatcher::requests() const {  return _d->requests; }
 
 void Dispatcher::Impl::updateRequests()
 {
-  for( RequestList::iterator i=requests.begin(); i != requests.end(); )
-  {
-    if( (*i)->isDeleted() ) { i = requests.erase( i ); }
-    else { ++i; }
-  }
+  utils::eraseDeletedElements( requests );
 
-  requests << newRequests;
-  newRequests.clear();
+  if( !newRequests.empty() )
+  {
+    requests << newRequests;
+    newRequests.clear();
+  }
 }
 
 }//end namespace request

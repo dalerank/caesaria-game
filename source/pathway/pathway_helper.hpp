@@ -29,13 +29,20 @@ public:
   static Pathway create(TilePos startPos, TilePos stopPos,
                         WayType type=roadOnly );
 
+  template<class T>
+  static Pathway create( TilePos startPos, SmartPtr<T> building,
+                         WayType type)
+  {
+    return create( startPos, ptr_cast<Construction>( building ), type );
+  }
+
   static Pathway create(TilePos startPos, ConstructionPtr construction,
                         WayType type);
 
   static Pathway create(TilePos statrPos, TilePos stopPos,
                         const TilePossibleCondition& condition );
 
-  static DirectRoute shortWay( PlayerCityPtr city, TilePos startPos, constants::objects::Type buildingType, WayType type );
+  static DirectRoute shortWay( PlayerCityPtr city, TilePos startPos, object::Type buildingType, WayType type );
 
   static Pathway randomWay( PlayerCityPtr city, TilePos startPos, int walkRadius );
 

@@ -155,11 +155,18 @@ Path Path::removeEndSlash() const
 
 char Path::lastChar() const { return _d->path.empty() ? 0 : *_d->path.rbegin(); }
 char Path::firstChar() const { return _d->path.empty() ? 0 : *_d->path.begin(); }
+bool Path::empty() const { return _d->path.empty(); }
 
 bool Path::exist(SensType sens) const
 {
+  if( empty() )
+  {
+    return false;
+  }
+
   return FileSystem::instance().existFile( *this, sens );
 }
+
 
 bool Path::isFolder() const
 {
@@ -200,6 +207,11 @@ std::string Path::extension() const
   return "";
 }
 
+bool Path::haveExtension() const
+{
+  return !extension().empty();
+}
+
 std::string Path::suffix() const
 {
   std::string ret = extension();
@@ -230,6 +242,7 @@ Path::Path() : _d( new Impl )
 }
 
 const std::string& Path::toString() const { return _d->path; }
+const char *Path::toCString() const { return _d->path.c_str(); }
 
 std::string Path::removeExtension() const
 {

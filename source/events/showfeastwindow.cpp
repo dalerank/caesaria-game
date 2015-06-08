@@ -20,7 +20,7 @@
 #include "game/settings.hpp"
 #include "game/game.hpp"
 #include "city/city.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "gfx/engine.hpp"
 #include "core/utils.hpp"
 #include "gui/environment.hpp"

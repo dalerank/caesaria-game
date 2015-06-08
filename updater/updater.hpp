@@ -299,6 +299,8 @@ public:
 
 	void removeDownload( std::string itemname );
 
+  static void markFileAsExecutable(vfs::Path path);
+
 private:
 	// Throws if mirrors are empty
 	void AssertMirrorsNotEmpty();
@@ -327,9 +329,13 @@ private:
 	// Starts the download and waits for completion
 	void PerformSingleMirroredDownload(const DownloadPtr& download);
 
-	void _markFileAsExecutable(vfs::Path path);
-
   bool isIgnored(std::string name);
+};
+
+class SteamHelper
+{
+public:
+  static void checkDepsAndStart();
 };
 
 } // namespace

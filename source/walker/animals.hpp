@@ -59,7 +59,7 @@ protected:
   virtual void _brokePathway(TilePos pos);
   virtual void _noWay();
 
-  Herbivorous( constants::walker::Type type, PlayerCityPtr city );
+  Herbivorous( walker::Type type, PlayerCityPtr city );
 
 private:
   int _noWayCount;

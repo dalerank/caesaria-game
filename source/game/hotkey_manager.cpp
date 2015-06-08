@@ -35,30 +35,32 @@ public:
     _HK(KEY_F4) _HK(KEY_F5) _HK(KEY_F6)
     _HK(KEY_F7) _HK(KEY_F8) _HK(KEY_F9)
     _HK(KEY_F10) _HK(KEY_F11) _HK(KEY_F12)
-    _HK(KEY_PLUS) _HK(KEY_MINUS)
+    _HK(KEY_PLUS) _HK(KEY_MINUS) _HK(KEY_KEY_0)
+    _HK(KEY_KEY_1) _HK(KEY_KEY_2) _HK(KEY_KEY_3)
+    _HK(KEY_KEY_4) _HK(KEY_KEY_5) _HK(KEY_KEY_6)
+    _HK(KEY_KEY_7) _HK(KEY_KEY_8) _HK(KEY_KEY_9)
+    _HK(KEY_KEY_A) _HK(KEY_KEY_H) _HK(KEY_KEY_F)
+    _HK(KEY_KEY_D) _HK(KEY_KEY_C) _HK(KEY_KEY_T)
+    _HK(KEY_KEY_W) _HK(KEY_KEY_G)
 #undef _HK
   }
 };
 
+typedef std::map<KeyCode, VariantMap> HotkeyScripts;
 class HotkeyManager::Impl
 {
 public:
-  typedef std::map<KeyCode, VariantMap> HotkeyScripts;
   HotkeyMapper hkMapper;
 
   HotkeyScripts scripts;
+
+public signals:
   Signal1<const VariantMap&> onHotkeySignal;
 };
 
-HotkeyManager& HotkeyManager::instance()
-{
-  static HotkeyManager inst;
-  return inst;
-}
-
 void HotkeyManager::execute( int keyCode )
 {
-  Impl::HotkeyScripts::iterator it = _d->scripts.find( (KeyCode)keyCode );
+  HotkeyScripts::iterator it = _d->scripts.find( (KeyCode)keyCode );
   if( it != _d->scripts.end() )
   {
     emit _d->onHotkeySignal( it->second );
@@ -79,7 +81,7 @@ void HotkeyManager::load(vfs::Path file)
       continue;
     }
 
-    Impl::HotkeyScripts::iterator presentIt = _d->scripts.find( hotkey );
+    HotkeyScripts::iterator presentIt = _d->scripts.find( hotkey );
     if( presentIt != _d->scripts.end() )
     {
       Logger::warning( "WARNING!!! HotkeyManager: duplicate hotkey for " + it->first );
@@ -91,6 +93,11 @@ void HotkeyManager::load(vfs::Path file)
 }
 
 HotkeyManager::HotkeyManager() : _d(new Impl) {}
+
+HotkeyManager::~HotkeyManager()
+{
+
+}
 
 } //end namespace game
 

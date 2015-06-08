@@ -23,21 +23,22 @@
 #include "core/position.hpp"
 #include "core/variant.hpp"
 #include "pathway.hpp"
-#include "gfx/tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "route.hpp"
 #include "objects/constants.hpp"
 
 class Propagator
 {
 public:
-  typedef std::set<gfx::TileOverlay::Type> ObsoleteOverlays;
+  enum { nwseDirections=0, allDirections=1 };
+  typedef std::set<object::Type> ObsoleteOverlays;
 
   Propagator( PlayerCityPtr city );
   ~Propagator();
 
   void setAllLands(const bool value);
   void setAllDirections(const bool value);
-  void setObsoleteOverlay( gfx::TileOverlay::Type type );
+  void setObsoleteOverlay( object::Type type );
   void setObsoleteOverlays( const ObsoleteOverlays& ovs );
 
   /** propagate some data in the road network
@@ -52,10 +53,10 @@ public:
 
   /** returns all paths starting at origin */
   PathwayList getWays(const unsigned int maxDistance);
-  DirectPRoutes getRoutes(const gfx::TileOverlay::Type buildingType);
+  DirectPRoutes getRoutes(const object::Type buildingType);
 
   DirectRoute getShortestRoute( const DirectPRoutes& routes );
-  DirectRoute getShortestRoute( const gfx::TileOverlay::Type buildingType );
+  DirectRoute getShortestRoute( const object::Type buildingType );
 
 private:
   class Impl;

@@ -6,13 +6,8 @@ include("${CMAKE_MODULE_PATH}/GenerateVersionHPP.cmake")
 aux_source_directory(. SRC_LIST)
 file(GLOB INC_LIST "*.hpp")
 
-find_package(SDL2 REQUIRED)
-find_package(SDL2_mixer REQUIRED)
-
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}
-  ${SDL2_INCLUDE_DIR}
-  ${SDL2_MIXER_INCLUDE_DIR}
   ${DEP_SOURCE_DIR}
   ${STEAM_API_DIR}
   ${STEAM_API_DIR}/public/opensteam
@@ -39,6 +34,7 @@ file(GLOB MISSIONS_LIST "${GAME_CONFIG_DIR}/missions/*.*")
 file(GLOB HELP_LIST "${GAME_CONFIG_DIR}/help/*.*")
 file(GLOB SHADERS_LIST "${GAME_CONFIG_DIR}/shaders/*.*")
 file(GLOB SCENES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/scene/*.*")
+file(GLOB LAYERS_LIST "${CMAKE_CURRENT_SOURCE_DIR}/layers/*.*")
 file(GLOB RELIGION_LIST "${CMAKE_CURRENT_SOURCE_DIR}/religion/*.*")
 file(GLOB STEAM_SOURCES_LIST "${STEAM_API_DIR}/*.*")
 
@@ -49,12 +45,13 @@ add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST}
                ${PATHWAY_SOURCES_LIST} ${CITY_SOURCES_LIST} ${GOOD_SOURCES_LIST}
                ${GFX_SOURCES_LIST} ${SOURCES_LIST} ${SOUND_SOURCES_LIST} ${WORLD_SOURCES_LIST}
                ${MISSIONS_LIST} ${TUTORIAL_MODELS_LIST} ${SCENES_LIST} ${RELIGION_LIST} ${SHADERS_LIST}
-               ${STEAM_SOURCES_LIST} ${HELP_LIST} )
+               ${STEAM_SOURCES_LIST} ${HELP_LIST} ${LAYERS_LIST} )
 
-target_link_libraries(${PROJECT_NAME}
-  ${SDL2_LIBRARY}
-  ${SDL2_MIXER_LIBRARY}
-)
+include_directories(${SDL2MINI_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} ${SDL2MINI_LIBRARY})
+
+include_directories(${MIXER_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} ${MIXER_LIBRARY})
 
 include_directories(${ZLIB_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARY})
@@ -85,6 +82,7 @@ endif(BUILD_GL_FRAMEBUFFER)
 if(WIN32)
   target_link_libraries(${PROJECT_NAME} "opengl32")
   target_link_libraries(${PROJECT_NAME} "winmm")
+  target_link_libraries(${PROJECT_NAME} "imagehlp")
   set(EXECUTABLE_FILENAME "caesaria")
 endif(WIN32)
 
@@ -128,6 +126,10 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
   message("CaesarIA-game: building in release mode")
   if(NOT APPLE)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s -mwindows")
+  endif()
+
+  if(WIN32)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mwindows")
   endif()
 else()
   message("CaesarIA-game: building in debug mode")

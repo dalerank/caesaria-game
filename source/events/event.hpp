@@ -19,12 +19,10 @@
 #define _CAESARIA_GAME_EVENT_H_INCLUDE_
 
 #include "core/referencecounted.hpp"
-#include "core/smartptr.hpp"
-#include "core/position.hpp"
-#include "objects/building.hpp"
 #include "predefinitions.hpp"
 
 class Game;
+class VariantMap;
 
 namespace events
 {

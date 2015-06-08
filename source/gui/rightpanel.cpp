@@ -18,6 +18,7 @@
 #include "rightpanel.hpp"
 #include "gfx/picture.hpp"
 #include "gfx/engine.hpp"
+#include "gfx/decorator.hpp"
 
 using namespace gfx;
 
@@ -27,11 +28,34 @@ namespace gui
 class MenuRigthPanel::Impl
 {
 public:
-  Pictures background;
+  Batch background;
+  Pictures backgroundNb;
 };
 
 MenuRigthPanel::MenuRigthPanel( Widget* parent ) : Widget( parent, -1, Rect( 0, 0, 100, 100 ) ), _d( new Impl )
 {
+}
+
+void MenuRigthPanel::_initBackground(const Picture &tilePic)
+{
+  _d->background.destroy();
+
+  unsigned int y = 0;
+
+  Pictures pics;
+  while( y < height() )
+  {
+    pics.append( tilePic, Point( 0, y ) );
+    y += tilePic.height();
+  }
+
+  bool batchOk = _d->background.load( pics, lefttop() );
+  if( !batchOk )
+  {
+    _d->background.destroy();
+    Decorator::reverseYoffset( pics );
+    _d->backgroundNb = pics;
+  }
 }
 
 void MenuRigthPanel::draw( gfx::Engine& engine )
@@ -39,25 +63,21 @@ void MenuRigthPanel::draw( gfx::Engine& engine )
   if( !visible() )
     return;
 
-  engine.draw( _d->background, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+  if( _d->background.valid() )
+    engine.draw( _d->background, &absoluteClippingRectRef() );
+  else
+    engine.draw( _d->backgroundNb, absoluteRect().lefttop(), &absoluteClippingRectRef() );
 }
 
-MenuRigthPanel* MenuRigthPanel::create( Widget* parent, const Rect& rectangle, Picture& tilePic )
+MenuRigthPanel* MenuRigthPanel::create( Widget* parent, const Rect& rectangle, const Picture& tilePic )
 {
   MenuRigthPanel* ret = new MenuRigthPanel( parent );
 
-  ret->setGeometry( rectangle );
-  ret->_d->background.clear();
-
-  unsigned int y = 0;
   if( tilePic.height() == 0 )
     return ret;
 
-  while( y < ret->height() )
-  {
-    ret->_d->background.append( tilePic, Point( 0, -y ) );
-    y += tilePic.height();
-  }
+  ret->setGeometry( rectangle );
+  ret->_initBackground( tilePic );
 
   return ret;
 }

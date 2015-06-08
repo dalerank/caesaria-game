@@ -18,7 +18,7 @@
 #include "fort.hpp"
 #include "constants.hpp"
 #include "game/resourcegroup.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
 #include "gfx/helper.hpp"
 #include "walker/romesoldier.hpp"
@@ -38,18 +38,24 @@
 #include "core/variant_map.hpp"
 #include "events/clearland.hpp"
 #include "city/build_options.hpp"
+#include "city/statistic.hpp"
 
-using namespace constants;
 using namespace gfx;
+using namespace events;
+using namespace city;
 
 namespace {
 Renderer::Pass _fpq[] = { Renderer::overlayAnimation };
 static Renderer::PassQueue fortPassQueue( _fpq, _fpq + 2 );
+TilePos fortAreaOffset( 3, 0);
 
-struct LegionEmblem
+class LegionEmblem
 {
+public:
   std::string name;
   Picture pic;
+
+  static LegionEmblem findFree( PlayerCityPtr city );
 };
 
 CAESARIA_LITERALCONST(name)
@@ -57,20 +63,19 @@ CAESARIA_LITERALCONST(img)
 
 }
 
-static LegionEmblem _findFreeEmblem( PlayerCityPtr city )
+LegionEmblem LegionEmblem::findFree( PlayerCityPtr city )
 {
-  FortList forts;
-  forts << city->overlays();
-
+  FortList forts = statistic::getObjects<Fort>( city, object::any );
   std::vector<LegionEmblem> availableEmblems;
+
   VariantMap emblemsModel = config::load( SETTINGS_RC_PATH( emblemsModel ) );
   foreach( it, emblemsModel )
   {
     VariantMap vm_emblem = it->second.toMap();
     LegionEmblem newEmblem;
 
-    newEmblem.name = vm_emblem[ lc_name ].toString();
-    newEmblem.pic = Picture::load( vm_emblem[ lc_img ].toString() );
+    newEmblem.name = vm_emblem[ literals::name ].toString();
+    newEmblem.pic.load( vm_emblem[ literals::img ].toString() );
 
     if( !newEmblem.name.empty() && newEmblem.pic.isValid() )
     {
@@ -95,6 +100,145 @@ static LegionEmblem _findFreeEmblem( PlayerCityPtr city )
                        : LegionEmblem();
 }
 
+class PatrolArea
+{
+public:
+  struct PAPoint
+  {
+    unsigned int uid;
+    TilePos offset;
+  };
+  typedef std::vector<PAPoint> PAPoints;
+
+
+  bool contain( unsigned int uid ) const
+  {
+    foreach( it, points )
+     if( it->uid == uid )
+       return true;
+
+    return false;
+  }
+
+  TilePos getPos( unsigned int uid ) const
+  {
+    foreach( it, points )
+      if( it->uid == uid )
+        return lastPos + it->offset;
+
+    return gfx::tilemap::invalidLocation();
+  }
+
+  void expand()
+  {
+
+  }
+
+  TilePos append( unsigned int uid )
+  {
+    int expandCounter = 0;
+    do
+    {
+      foreach( it, points )
+        if( it->uid == 0 )
+        {
+          it->uid = uid;
+          return lastPos + it->offset;
+        }
+
+      expand();
+    }
+    while( ++expandCounter < 4 );
+
+    return gfx::tilemap::invalidLocation();
+  }
+
+  void reset( PlayerCityPtr city )
+  {
+    TilesArea area;
+    Tilemap& tmap = city->tilemap();
+
+    switch( mode )
+    {
+    case Fort::frmOpen:
+      area = TilesArea( tmap, lastPos, 3 );
+    break;
+
+    case Fort::frmWestLine:
+      area.push_back( &tmap.at( lastPos ) );
+      for( int range=1; range < 10; range++ )
+      {
+        area.push_back( &tmap.at( lastPos - TilePos( 0, range ) ) );
+        area.push_back( &tmap.at( lastPos + TilePos( 0, range ) ) );
+      }
+    break;
+
+    case Fort::frmWestDblLine:
+      area.push_back( &tmap.at( lastPos ) );
+      area.push_back( &tmap.at( lastPos + TilePos( 0, 1 ) ) );
+      for( int range=1; range < 10; range++ )
+      {
+        area.push_back( &tmap.at( lastPos - TilePos( 0, range ) ) );
+        area.push_back( &tmap.at( lastPos - TilePos( -1, range ) ) );
+        area.push_back( &tmap.at( lastPos + TilePos( 0, range ) ) );
+        area.push_back( &tmap.at( lastPos + TilePos( 1, range ) ) );
+      }
+    break;
+
+    case Fort::frmNorthLine:
+      area.push_back( &tmap.at( lastPos ) );
+      for( int range=1; range < 10; range++ )
+      {
+        area.push_back( &tmap.at( lastPos - TilePos( range, 0 ) ) );
+        area.push_back( &tmap.at( lastPos + TilePos( range, 0 ) ) );
+      }
+    break;
+
+    case Fort::frmNorthDblLine:
+      area.push_back( &tmap.at( lastPos ) );
+      area.push_back( &tmap.at( lastPos - TilePos( 1, 0 ) ) );
+      for( int range=1; range < 10; range++ )
+      {
+        area.push_back( &tmap.at( lastPos - TilePos( range,0 ) ) );
+        area.push_back( &tmap.at( lastPos - TilePos( range,1 ) ) );
+        area.push_back( &tmap.at( lastPos + TilePos( range,0 ) ) );
+        area.push_back( &tmap.at( lastPos + TilePos( range,-1 ) ) );
+      }
+    break;
+
+    case Fort::frmParade:
+      area = TilesArea( tmap, lastPos - TilePos( 0, 3 ), lastPos + TilePos( 3, 0 ) );
+    break;
+
+    case Fort::frmSquad:
+    default:
+      area = TilesArea( tmap, lastPos, 3);
+    break;
+    }
+
+    points.clear();
+
+    TilePosArray locations = area.walkables( true ).locations();
+    foreach( it, locations )
+    {
+      PAPoint point = { 0, *it };
+      points.push_back( point );
+    }
+  }
+
+  void setMode( PlayerCityPtr city, Fort::TroopsFormation formation )
+  {
+    if( mode != formation )
+       mode = formation;
+
+    reset( city );
+  }
+
+  TilePos lastPos;
+  PAPoints points;
+  Fort::TroopsFormation mode;
+};
+
 class Fort::Impl
 {
 public:
@@ -103,10 +247,9 @@ public:
   PatrolPointPtr patrolPoint;
   LegionEmblem emblem;
   int flagIndex;
-  TilePos lastPatrolPos;
-  std::map<unsigned int, TilePos> patrolAreaPos;
+  PatrolArea patrolArea;
   Fort::TroopsFormations availableFormations;
-  Fort::TroopsFormation formation;
+
   std::string expeditionName;
   bool attackAnimals;
 };
@@ -115,28 +258,31 @@ class FortArea::Impl
 {
 public:
   TilePos basePos;
+  bool isFlat;
 };
 
-FortArea::FortArea() : Building( objects::fortArea, Size(4) ),
+FortArea::FortArea() : Building( object::fortArea, Size(4) ),
   _d( new Impl )
 {
   setPicture( ResourceGroup::security, 13 );
 
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
+  _d->isFlat = picture().height() <= picture().width() / 2;
+
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
 }
 
 FortArea::~FortArea() {}
 
-bool FortArea::isFlat() const {  return true; }
-bool FortArea::isWalkable() const{  return true;}
+bool FortArea::isFlat() const { return _d->isFlat; }
+bool FortArea::isWalkable() const{ return true;}
 
 void FortArea::destroy()
 {
   Building::destroy();
   if( base().isValid() )
   {
-    events::GameEventPtr e = events::ClearTile::create( _d->basePos );
+    GameEventPtr e = ClearTile::create( _d->basePos );
     e->dispatch();
   }
 }
@@ -154,16 +300,16 @@ FortPtr FortArea::base() const
   return ptr_cast<Fort>( _city()->getOverlay( _d->basePos ) );
 }
 
-Fort::Fort(objects::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) ),
+Fort::Fort(object::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) ),
   _d( new Impl )
 {
-  Picture logo = Picture::load(ResourceGroup::security, picIdLogo );
+  Picture logo(ResourceGroup::security, picIdLogo );
   logo.setOffset( Point( 80, 10 ) );
 
-  Picture area = Picture::load(ResourceGroup::security, 13 );
-  area.setOffset( Tile( TilePos(3,0) ).mappos() + Point(0,-30) );
+  Picture area(ResourceGroup::security, 13 );
+  area.addOffset( tile::tilepos2screen( TilePos( 3, 0) ) );
 
-  _fgPicturesRef().resize(2);
+  _fgPictures().resize(2);
   _fgPicture( 0 ) = logo;
   _fgPicture( 1 ) = area;
 
@@ -171,12 +317,12 @@ Fort::Fort(objects::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) )
   _d->area->drop();
   _d->flagIndex = 21;
   _d->maxSoldier = 16;
-  _d->formation = frmSquad;
+  _d->patrolArea.mode = frmSquad;
   _d->attackAnimals = false;
 
-  setState( Construction::inflammability, 0 );
-  setState( Construction::collapsibility, 0 );
-  setState( Construction::destroyable, 0 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
+  setState( pr::destroyable, 0 );
 }
 
 float Fort::evaluateTrainee(walker::Type traineeType)
@@ -194,24 +340,15 @@ void Fort::timeStep( const unsigned long time )
 {
   if( game::Date::isWeekChanged() )
   {
-    int traineeLevel = traineeValue( walker::soldier );
-    // all trainees are there for the show!
-    if( traineeLevel / 100 >= 1 )
-    {
-      if( walkers().size() < _d->maxSoldier )
-      {
-        _readyNewSoldier();
-        setTraineeValue( walker::soldier, math::clamp<int>( traineeLevel - 100, 0, _d->maxSoldier * 100 ) );
-      }
-    }
+    _check4newSoldier();
   }
 
   WorkingBuilding::timeStep( time );
 }
 
-bool Fort::canDestroy() const { return state( Construction::destroyable ) > 0; }
-Fort::TroopsFormation Fort::formation() const {  return _d->formation; }
-void Fort::setFormation(Fort::TroopsFormation formation){  _d->formation = formation; }
+bool Fort::canDestroy() const { return state( pr::destroyable ) > 0; }
+Fort::TroopsFormation Fort::formation() const { return _d->patrolArea.mode; }
+void Fort::setFormation(Fort::TroopsFormation formation) { _d->patrolArea.setMode( _city(), formation ); }
 
 TilesArray Fort::enterArea() const
 {
@@ -226,13 +363,15 @@ TilesArray Fort::enterArea() const
   return tiles;
 }
 
+int Fort::flagIndex() const { return 0; }
+
 void Fort::destroy()
 {
   WorkingBuilding::destroy();
 
   if( _d->area.isValid()  )
   {
-    events::GameEventPtr e = events::ClearTile::create( _d->area->pos() );
+    GameEventPtr e = ClearTile::create( _d->area->pos() );
     e->dispatch();
     _d->area = 0;
   }
@@ -244,109 +383,26 @@ void Fort::destroy()
   }
 }
 
-TilePos Fort::freeSlot() const
+TilePos Fort::freeSlot(WalkerPtr who) const
 {
   TilePos patrolPos;
   if( _d->patrolPoint.isNull()  )
   {
     Logger::warning( "Not patrol point assign in fort [%d,%d]", pos().i(), pos().j() );
     patrolPos = _d->area->pos() + TilePos( 0, 3 );
-    _d->patrolAreaPos.clear();
   }
   else
   {
     patrolPos = _d->patrolPoint->pos();
-    if( _d->lastPatrolPos != patrolPos )
-    {
-      _d->lastPatrolPos = patrolPos;
-      _d->patrolAreaPos.clear();
-    }
+    _d->patrolArea.lastPos = patrolPos;
   }
 
-  city::Helper helper( _city() );
-  TilesArray tiles;
-
-  TroopsFormation formation = (patrolPos == _d->area->pos() + TilePos( 0, 3 )
-                                 ? frmParade
-                                 : _d->formation);
-
-  TilePos offset;
-  Tilemap& tmap = _city()->tilemap();
-  switch( formation )
+  if( !_d->patrolArea.contain( who->uniqueId() ) )
   {
-  case frmOpen:
-    offset = TilePos( 3, 3 );
-    tiles = helper.getArea( patrolPos - offset, patrolPos + offset );
-  break;
-
-  case frmWestLine:
-    tiles.push_back( &tile() );
-    for( int range=1; range < 10; range++ )
-    {
-      tiles.push_back( &tmap.at( patrolPos - TilePos( 0, range ) ) );
-      tiles.push_back( &tmap.at( patrolPos + TilePos( 0, range ) ) );
-    }
-  break;
-
-  case frmWestDblLine:
-    tiles.push_back( &tile() );
-    tiles.push_back( &tmap.at( patrolPos + TilePos( 0, 1 ) ) );
-    for( int range=1; range < 10; range++ )
-    {
-      tiles.push_back( &tmap.at( patrolPos - TilePos( 0, range ) ) );
-      tiles.push_back( &tmap.at( patrolPos - TilePos( -1, range ) ) );
-      tiles.push_back( &tmap.at( patrolPos + TilePos( 0, range ) ) );
-      tiles.push_back( &tmap.at( patrolPos + TilePos( 1, range ) ) );
-    }
-  break;
-
-  case frmNorthLine:
-    tiles.push_back( &tile() );
-    for( int range=1; range < 10; range++ )
-    {
-      tiles.push_back( &tmap.at( patrolPos - TilePos( range, 0 ) ) );
-      tiles.push_back( &tmap.at( patrolPos + TilePos( range, 0 ) ) );
-    }
-  break;
-
-  case frmNorthDblLine:
-    tiles.push_back( &tile() );
-    tiles.push_back( &tmap.at( patrolPos - TilePos( 1, 0 ) ) );
-    for( int range=1; range < 10; range++ )
-    {
-      tiles.push_back( &tmap.at( patrolPos - TilePos( range,0 ) ) );
-      tiles.push_back( &tmap.at( patrolPos - TilePos( range,1 ) ) );
-      tiles.push_back( &tmap.at( patrolPos + TilePos( range,0 ) ) );
-      tiles.push_back( &tmap.at( patrolPos + TilePos( range,-1 ) ) );
-    }
-  break;
-
-  case frmParade:
-    tiles = helper.getArea( patrolPos - TilePos( 0, 3 ), patrolPos + TilePos( 3, 0 ) );
-  break;
-
-  case frmSquad:
-    offset = TilePos( 2, 2 );
-    tiles = helper.getArea( patrolPos - offset, patrolPos + offset );
-  break;
+    return _d->patrolArea.append( who->uniqueId() );
   }
 
-  tiles = tiles.walkableTiles( true );
-  if( !tiles.empty() )
-  {
-    foreach( it, tiles )
-    {
-      unsigned int tilehash = tile::hash((*it)->pos());
-
-      if( _d->patrolAreaPos.find( tilehash ) == _d->patrolAreaPos.end() )
-      {
-        _d->patrolAreaPos[ tilehash ] = (*it)->pos();
-        return (*it)->pos();
-      }
-    }
-  }
-
-  return TilePos( -1, -1 );
+  return _d->patrolArea.lastPos;
 }
 
 void Fort::changePatrolArea()
@@ -354,10 +410,13 @@ void Fort::changePatrolArea()
   RomeSoldierList sldrs;
   sldrs << walkers();
 
+  TroopsFormation formation = (patrolLocation() == _d->area->pos() + TilePos( 0, 3 )
+                                         ? frmParade
+                                         : _d->patrolArea.mode );
+  _d->patrolArea.setMode( _city(), formation );
+
   foreach( it, sldrs )
-  {
     (*it)->send2patrol();
-  }
 }
 
 TilePos Fort::patrolLocation() const
@@ -365,9 +424,9 @@ TilePos Fort::patrolLocation() const
   TilePos patrolPos;
   if( _d->patrolPoint.isNull()  )
   {
-    Logger::warning( "!!!!WARNING: Fort::patrolLocation(): not patrol point assign in fort [%d,%d]", pos().i(), pos().j() );
+    Logger::warning( "!!! WARNING: Fort::patrolLocation(): not patrol point assign in fort [%d,%d]", pos().i(), pos().j() );
     patrolPos = _d->area->pos() + TilePos( 0, 3 );
-    Stacktrace::print();
+    crashhandler::printstack();
   }
   else
   {
@@ -418,28 +477,24 @@ void Fort::save(VariantMap& stream) const
 {
   WorkingBuilding::save( stream );
 
-  if( _d->patrolPoint.isValid() )
-  {
-    stream[ "patrolPoint" ] =  _d->patrolPoint->pos();
-  }
-
-  VARIANT_SAVE_ANY_D( stream, _d, maxSoldier )
-  VARIANT_SAVE_ANY_D( stream, _d, attackAnimals )
-  VARIANT_SAVE_ANY_D( stream, _d, lastPatrolPos )
-  VARIANT_SAVE_ENUM_D( stream, _d, formation )
+  VARIANT_SAVE_ANY_D ( stream, _d, maxSoldier )
+  VARIANT_SAVE_ANY_D ( stream, _d, attackAnimals )
+  VARIANT_SAVE_ANY_D ( stream, _d, patrolArea.lastPos )
+  VARIANT_SAVE_ENUM_D( stream, _d, patrolArea.mode )
 }
 
 void Fort::load(const VariantMap& stream)
 {
   WorkingBuilding::load( stream );
 
-  TilePos patrolPos = stream.get( "patrolPoint", pos() + TilePos( 3, 4 ) );
-  _d->patrolPoint->setPos( patrolPos );
+  VARIANT_LOAD_ANYDEF_D( _d, patrolArea.lastPos, gfx::tilemap::invalidLocation(), stream )
+  VARIANT_LOAD_ANY_D   ( _d, maxSoldier,                                          stream )
+  VARIANT_LOAD_ANY_D   ( _d, attackAnimals,                                       stream )
+  VARIANT_LOAD_ENUM_D  ( _d, patrolArea.mode,                                     stream )
 
-  VARIANT_LOAD_ANYDEF_D( _d, lastPatrolPos, TilePos(-1, -1), stream )
-  VARIANT_LOAD_ANY_D( _d, maxSoldier, stream )
-  VARIANT_LOAD_ANY_D( _d, attackAnimals, stream )
-  VARIANT_LOAD_ENUM_D( _d, formation, stream )
+  if( !gfx::tilemap::isValidLocation( _d->patrolArea.lastPos ) )
+    _d->patrolArea.lastPos = pos() + TilePos( 3, 4 );
+  _d->patrolPoint->setPos( _d->patrolArea.lastPos );
 }
 
 SoldierList Fort::soldiers() const
@@ -504,20 +559,20 @@ void Fort::_addFormation(Fort::TroopsFormation formation)
   _d->availableFormations.push_back( formation );
 }
 
-bool Fort::canBuild( const CityAreaInfo& areaInfo ) const
+bool Fort::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool isFreeFort = Building::canBuild( areaInfo );
-  CityAreaInfo fortArea = areaInfo;
-  fortArea.pos += TilePos( 3, 0 );
+  city::AreaInfo fortArea = areaInfo;
+  TilePos fortAreaOfffset( 3, 0);
+  fortArea.pos += fortAreaOfffset;
   bool isFreeArea = _d->area->canBuild( fortArea );
 
   return (isFreeFort && isFreeArea);
 }
 
-bool Fort::build( const CityAreaInfo& info )
+bool Fort::build( const city::AreaInfo& info )
 {
-  FortList forts;
-  forts << info.city->overlays();
+  FortList forts = statistic::getObjects<Fort>( info.city, object::any );
 
   const city::development::Options& bOpts = info.city->buildOptions();
   if( forts.size() >= bOpts.maximumForts() )
@@ -528,19 +583,18 @@ bool Fort::build( const CityAreaInfo& info )
 
   Building::build( info );
 
-  CityAreaInfo areaInfo = info;
-  areaInfo.pos += TilePos( 3, 0 );
+  city::AreaInfo areaInfo = info;
+  areaInfo.pos += fortAreaOffset;
   _d->area->build( areaInfo );
   _d->area->setBase( this );
 
-  _d->emblem = _findFreeEmblem( info.city );
+  _d->emblem = LegionEmblem::findFree( info.city );
 
   info.city->addOverlay( _d->area.object() );
 
-  _fgPicturesRef().resize(1);
+  _fgPictures().resize(1);
 
-  BarracksList barracks;
-  barracks << info.city->overlays();
+  BarracksList barracks = statistic::getObjects<Barracks>( info.city, object::barracks );
 
   if( barracks.empty() )
   {
@@ -554,4 +608,4 @@ bool Fort::build( const CityAreaInfo& info )
   return true;
 }
 
-bool Fort::isNeedRoadAccess() const {  return false; }
+bool Fort::isNeedRoad() const {  return false; }

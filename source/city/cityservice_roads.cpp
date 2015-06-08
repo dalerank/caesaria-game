@@ -17,28 +17,34 @@
 
 #include "cityservice_roads.hpp"
 #include "objects/construction.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "game/gamedate.hpp"
 #include "pathway/path_finding.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects/house.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "objects/road.hpp"
 #include "objects/constants.hpp"
+#include "cityservice_factory.hpp"
+#include "config.hpp"
 
-using namespace constants;
 using namespace gfx;
+using namespace config;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(Roads,roads)
 
 class Roads::Impl
 {
 public:
   typedef std::pair< ConstructionPtr, int > UpdateInfo;
   typedef std::vector< UpdateInfo > Updates;
-  typedef std::pair<TileOverlay::Type, int> UpdateBuilding;
+  typedef std::pair<object::Type, int> UpdateBuilding;
+  typedef std::vector< UpdateBuilding > BuildingInfo;
 
+  BuildingInfo btypes;
   int defaultIncreasePaved;
   int defaultDecreasePaved;
 
@@ -54,7 +60,7 @@ SrvcPtr Roads::create(PlayerCityPtr city)
   return ret;
 }
 
-std::string Roads::defaultName(){  return "roads";}
+std::string Roads::defaultName(){  return CAESARIA_STR_A(Roads);}
 
 Roads::Roads( PlayerCityPtr city )
   : Srvc( city, Roads::defaultName() ), _d( new Impl )
@@ -62,6 +68,13 @@ Roads::Roads( PlayerCityPtr city )
   _d->defaultIncreasePaved = 4;
   _d->defaultDecreasePaved = -1;
   _d->lastTimeUpdate = game::Date::current();
+
+  _d->btypes.push_back( Impl::UpdateBuilding(object::senate, desirability::senateInfluence) );
+  _d->btypes.push_back( Impl::UpdateBuilding(object::small_ceres_temple, desirability::normalInfluence));
+  _d->btypes.push_back( Impl::UpdateBuilding(object::small_mars_temple, desirability::normalInfluence));
+  _d->btypes.push_back( Impl::UpdateBuilding(object::small_mercury_temple, desirability::normalInfluence));
+  _d->btypes.push_back( Impl::UpdateBuilding(object::small_neptune_temple, desirability::normalInfluence));
+  _d->btypes.push_back( Impl::UpdateBuilding(object::small_venus_temple, desirability::normalInfluence));
 }
 
 void Roads::timeStep( const unsigned int time )
@@ -69,22 +82,12 @@ void Roads::timeStep( const unsigned int time )
   if( _d->lastTimeUpdate.month() == game::Date::current().month() )
     return;
 
-  _d->lastTimeUpdate = game::Date::current();
-
-  std::vector< Impl::UpdateBuilding > btypes;
-  btypes.push_back( Impl::UpdateBuilding(objects::senate, 10) );
-  btypes.push_back( Impl::UpdateBuilding(objects::small_ceres_temple, 4));
-  btypes.push_back( Impl::UpdateBuilding(objects::small_mars_temple, 4));
-  btypes.push_back( Impl::UpdateBuilding(objects::small_mercury_temple, 4));
-  btypes.push_back( Impl::UpdateBuilding(objects::small_neptune_temple, 4));
-  btypes.push_back( Impl::UpdateBuilding(objects::small_venus_temple, 4));
-
-  Helper helper( _city() );
+  _d->lastTimeUpdate = game::Date::current();  
 
   Impl::Updates positions;
-  foreach( it, btypes )
+  foreach( it, _d->btypes )
   {
-    BuildingList tmp = helper.find<Building>( it->first );
+    BuildingList tmp = statistic::getObjects<Building>( _city(), it->first );
 
     foreach( b, tmp )
     {
@@ -92,7 +95,7 @@ void Roads::timeStep( const unsigned int time )
     }
   }
 
-  HouseList houses = helper.find<House>( objects::house );
+  HouseList houses = city::statistic::getHouses( _city() );
   foreach( house, houses )
   {
     if( (*house)->spec().level() >= HouseLevel::bigMansion )
@@ -109,7 +112,7 @@ void Roads::timeStep( const unsigned int time )
 
   if( _d->lastTimeUpdate.month() % 3 == 1 )
   {
-    RoadList roads = helper.find<Road>( objects::road );
+    RoadList roads = statistic::getObjects<Road>( _city(), object::road );
     foreach( road, roads )
     {
       (*road)->appendPaved( _d->defaultDecreasePaved );

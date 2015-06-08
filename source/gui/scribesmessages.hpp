@@ -26,11 +26,14 @@
 namespace gui
 {
 
-class ScribesMessagestWindow : public Window
+namespace dialog
+{
+
+class ScribesMessages : public Window
 {
 public:
-  ScribesMessagestWindow(Widget* parent, PlayerCityPtr city);
-  virtual ~ScribesMessagestWindow();
+  ScribesMessages(Widget* parent, PlayerCityPtr city);
+  virtual ~ScribesMessages();
 
   virtual void draw( gfx::Engine& painter );
 
@@ -43,6 +46,8 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+}//end namespace dialog
 
 }//end namespace gui
 #endif //__CAESARIA_SCRIBES_MESSAGES_WINDOW_H_INCLUDED__

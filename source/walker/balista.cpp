@@ -24,8 +24,6 @@
 #include "game/gamedate.hpp"
 #include "spear.hpp"
 
-using namespace constants;
-
 namespace {
   const int attackDistance = 16;
 }
@@ -46,8 +44,7 @@ BalistaPtr Balista::create(PlayerCityPtr city)
 {
   BalistaPtr ret( new Balista( city ) );
   ret->drop();
-
-  city->addWalker( ret.object() );
+  ret->attach();
 
   return ret;
 }

@@ -28,7 +28,7 @@ public:
   Market();
 
   good::Store& goodStore();
-  std::list<good::Product> mostNeededGoods();  // used by the market buyer
+  good::Products mostNeededGoods();  // used by the market buyer
 
   // returns the quantity of needed goods
   int getGoodDemand(const good::Product& goodType);  // used by the market buyer

@@ -24,8 +24,8 @@
 #include "dictionary.hpp"
 #include "walker/soldier.hpp"
 #include "label.hpp"
+#include "game/infoboxmanager.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -33,6 +33,11 @@ namespace gui
 
 namespace infobox
 {
+
+REGISTER_OBJECT_BASEINFOBOX(fort_legionaries,AboutFort)
+REGISTER_OBJECT_BASEINFOBOX(fort_javelin,AboutFort)
+REGISTER_OBJECT_BASEINFOBOX(fort_horse,AboutFort)
+REGISTER_OBJECT_BASEINFOBOX(fortArea,AboutFort)
 
 class AboutFort::Impl
 {
@@ -53,11 +58,11 @@ AboutFort::AboutFort(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
   GET_DWIDGET_FROM_UI( _d, lbWeaponQty )
 
-  if( is_kind_of<Fort>( tile.overlay() ) ) { _d->fort = ptr_cast<Fort>( tile.overlay() ); }
-  else if( is_kind_of<FortArea>( tile.overlay() ) )
+  OverlayPtr overlay = tile.overlay();
+  if( overlay.is<Fort>() ) { _d->fort = overlay.as<Fort>(); }
+  else if( overlay.is<FortArea>() )
   {
-    FortAreaPtr area = ptr_cast<FortArea>( tile.overlay() );
-    _d->fort = area->base();
+    _d->fort = overlay.as<FortArea>()->base();
   }
   else
   {

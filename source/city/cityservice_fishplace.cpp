@@ -17,26 +17,26 @@
 
 #include "cityservice_fishplace.hpp"
 #include "objects/construction.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/safetycast.hpp"
 #include "core/utils.hpp"
 #include "core/position.hpp"
 #include "core/variant_map.hpp"
 #include "walker/fish_place.hpp"
 #include "game/gamedate.hpp"
-
-using namespace constants;
+#include "cityservice_factory.hpp"
+#include "core/tilepos_array.hpp"
 
 namespace city
 {
 
+REGISTER_SERVICE_IN_FACTORY(Fishery,fishery)
+
 class Fishery::Impl
 {
 public:
-  typedef std::vector<TilePos> Locations;
-
   unsigned int maxFishPlace;
-  int failedCounter;
+  int nFailed;
 
   Locations locations;
   FishPlaceList places;
@@ -50,12 +50,12 @@ SrvcPtr Fishery::create( PlayerCityPtr city )
   return ret;
 }
 
-std::string Fishery::defaultName() {  return CAESARIA_STR_EXT(Fishery);}
+std::string Fishery::defaultName() {  return CAESARIA_STR_EXT(Fishery); }
 
 Fishery::Fishery( PlayerCityPtr city )
   : Srvc( city, Fishery::defaultName() ), _d( new Impl )
 {
-  _d->failedCounter = 0;
+  _d->nFailed = 0;
   _d->maxFishPlace = 1;
 }
 
@@ -66,8 +66,7 @@ void Fishery::timeStep(const unsigned int time )
 
   if( _d->places.empty() )
   {
-    Helper helper( _city() );
-    _d->places = helper.find<FishPlace>( walker::fishPlace, TilePos(-1, -1) );
+    _d->places = city::statistic::getWalkers<FishPlace>( _city(), walker::fishPlace, TilePos(-1, -1) );
   }
 
   while( _d->places.size() < _d->maxFishPlace )
@@ -85,22 +84,17 @@ void Fishery::timeStep(const unsigned int time )
 
     if( fishplace->isDeleted() )
     {
-      _d->failedCounter++;
+      _d->nFailed++;
       return;
     }
 
     _d->places.push_back( ptr_cast<FishPlace>( fishplace ) );
   }
 
-  FishPlaceList::iterator fit = _d->places.begin();
-  while( fit != _d->places.end() )
-  {
-    if( (*fit)->isDeleted() )     {      fit = _d->places.erase( fit );    }
-    else {  ++fit;    }
-  }
+  utils::eraseDeletedElements( _d->places );
 }
 
-bool Fishery::isDeleted() const { return _d->failedCounter > 3; }
+bool Fishery::isDeleted() const { return _d->nFailed > 3; }
 
 void Fishery::addLocation(TilePos location)
 {

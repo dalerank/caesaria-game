@@ -23,19 +23,20 @@
 class EntertainmentBuilding : public ServiceBuilding
 {
 public:
-  typedef std::vector<constants::walker::Type> NecessaryWalkers;
+  typedef std::vector<walker::Type> NecessaryWalkers;
 
-  EntertainmentBuilding( const Service::Type service, const TileOverlay::Type type,
+  EntertainmentBuilding( const Service::Type service, const object::Type type,
                          Size size);
 
   virtual ~EntertainmentBuilding();
 
   virtual void deliverService();
-  virtual int visitorsNumber() const;
+  virtual int currentVisitors() const;
+  virtual int maxVisitors() const;
 
   virtual unsigned int walkerDistance() const;
 
-  virtual float evaluateTrainee(constants::walker::Type  traineeType);
+  virtual float evaluateTrainee(walker::Type  traineeType);
   virtual bool isShow() const;
   virtual unsigned int showsCount() const;
 
@@ -48,7 +49,7 @@ public:
 
 protected:
   virtual WalkerList _specificWorkers() const;
-  void _addNecessaryWalker( constants::walker::Type type );
+  void _addNecessaryWalker( walker::Type type );
   bool _isWalkerReady();
 
   class Impl;

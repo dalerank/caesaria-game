@@ -23,6 +23,8 @@
 #include "core/scopedptr.hpp"
 #include "core/position.hpp"
 
+class TilePosArray;
+
 namespace world
 {
 

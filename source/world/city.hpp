@@ -26,56 +26,40 @@
 #include "nation.hpp"
 #include "game/predefinitions.hpp"
 
-namespace city
-{
-  class Funds;
-}
+namespace econ { class Treasury; }
+namespace city { struct States; }
 
 namespace world
 {
 
-class CityParams : public std::map<int, int>
-{
-public:
-  typedef enum { culture=0, empireTaxPayed, overduePayment, ageYears, cityPopulation, maxForts, paramCount } ParamName;
-
-  int get( ParamName name ) const
-  {
-    const_iterator it = find( name );
-    return it != end() ? it->second : 0;
-  }
-
-  void set( ParamName name, int value )
-  {
-    (*this)[ name ] = value;
-  }
-};
+struct PriceInfo;
 
 class City : public Object
 {
 public:
+  typedef enum { inactive=0, indifferent, agressive, friendly, aiCount } AiMode;
   City( EmpirePtr empire );
 
   // performs one simulation step
   virtual bool isAvailable() const { return true; }
   virtual void setAvailable( bool value ) {}
+  virtual void setAiMode( AiMode mode ) {}
+  virtual AiMode aiMode() const { return aiCount; }
 
   virtual unsigned int tradeType() const = 0;
-  virtual city::Funds& funds() = 0;
-  virtual unsigned int population() const = 0;
+  virtual econ::Treasury& treasury() = 0;
   virtual bool isPaysTaxes() const = 0;
-  virtual Nation nation() const = 0;
   virtual bool haveOverduePayment() const = 0;
   virtual bool isMovable() const { return false; }
   virtual DateTime lastAttack() const = 0;
   virtual int strength() const = 0;
-  virtual PlayerPtr player() const = 0;
-  virtual unsigned int age() const = 0;
+  virtual PlayerPtr mayor() const = 0;
 
   virtual void delayTrade( unsigned int month ) = 0;
-  virtual void empirePricesChanged( good::Product gtype, int bCost, int sCost ) = 0;
-  virtual const good::Store& importingGoods() const = 0;
-  virtual const good::Store& exportingGoods() const = 0;
+  virtual void empirePricesChanged( good::Product gtype, const PriceInfo& prices ) = 0;
+  virtual const good::Store& sells() const = 0;
+  virtual const good::Store& buys() const = 0;
+  virtual const city::States& states() const = 0;
 };
 
 }//end namespace world

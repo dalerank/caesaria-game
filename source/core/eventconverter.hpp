@@ -18,7 +18,8 @@
 
 #include "event.hpp"
 #include "scopedptr.hpp"
-#include <SDL_events.h>
+
+union SDL_Event;
 
 class EventConverter
 {

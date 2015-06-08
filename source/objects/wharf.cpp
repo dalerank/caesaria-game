@@ -21,14 +21,12 @@
 #include "core/foreach.hpp"
 #include "walker/fishing_boat.hpp"
 #include "core/foreach.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "game/gamedate.hpp"
 #include "constants.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
-
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::wharf, Wharf)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::wharf, Wharf)
 
 class Wharf::Impl
 {
@@ -37,10 +35,10 @@ public:
   FishingBoatPtr boat;
 };
 
-Wharf::Wharf() : CoastalFactory(good::none, good::fish, objects::wharf, Size(2)), _d( new Impl )
+Wharf::Wharf() : CoastalFactory(good::none, good::fish, object::wharf, Size(2)), _d( new Impl )
 {
   // transport 52 53 54 55
-  setPicture( ResourceGroup::wharf, Impl::northPic );
+  _picture().load( ResourceGroup::wharf, Impl::northPic );
 }
 
 void Wharf::destroy()
@@ -158,10 +156,10 @@ void Wharf::_updatePicture(Direction direction)
 {
   switch( direction )
   {
-  case south: setPicture( ResourceGroup::wharf, Impl::southPic ); break;
-  case north: setPicture( ResourceGroup::wharf, Impl::northPic ); break;
-  case west: setPicture( ResourceGroup::wharf, Impl::westPic ); break;
-  case east: setPicture( ResourceGroup::wharf, Impl::eastPic ); break;
+  case direction::south: setPicture( ResourceGroup::wharf, Impl::southPic ); break;
+  case direction::north: setPicture( ResourceGroup::wharf, Impl::northPic ); break;
+  case direction::west: setPicture( ResourceGroup::wharf, Impl::westPic ); break;
+  case direction::east: setPicture( ResourceGroup::wharf, Impl::eastPic ); break;
 
   default: break;
   }

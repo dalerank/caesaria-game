@@ -19,65 +19,80 @@
 #include "core/priorities.hpp"
 #include "objects/house.hpp"
 #include "cityservice_military.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "walker/rioter.hpp"
 #include "events/disaster.hpp"
 #include "events/showinfobox.hpp"
 #include "core/logger.hpp"
+#include "walker/mugger.hpp"
 #include "core/variant_map.hpp"
+#include "statistic.hpp"
+#include "core/stacktrace.hpp"
+#include "cityservice_factory.hpp"
 #include <set>
 
-using namespace constants;
+using namespace events;
 
 namespace city
 {
 
+REGISTER_SERVICE_IN_FACTORY(Peace,peace)
+
+enum { minCh=1, middleCh=2, maxCh=5};
+static const int longTimeWithoutWar = 2;
+
+struct ThreatSeen
+{
+  bool protestor;
+  bool mugger;
+  bool rioter;
+  bool criminal;
+
+  inline void clear() { protestor = mugger = rioter = criminal = false; }
+};
+
 class Peace::Impl
 {
 public:
+  ThreatSeen threats;
   unsigned int peaceYears;
-  bool protestorOrMugglerSeen;
-  bool rioterSeen;
-  bool someCriminalSeen;
   int value;
   bool significantBuildingsDestroyed;
   DateTime lastMessageDate;
 
-  Priorities<int> unsignificantBuildings;
+  Priorities<object::Type> unsignificantBuildings;
 };
 
-city::SrvcPtr Peace::create( PlayerCityPtr city )
+SrvcPtr Peace::create( PlayerCityPtr city )
 {
-  city::SrvcPtr ret( new Peace( city ) );
+  SrvcPtr ret( new Peace( city ) );
   ret->drop();
 
   return ret;
 }
 
 Peace::Peace( PlayerCityPtr city )
-  : city::Srvc( city, defaultName() ), _d( new Impl )
+  : Srvc( city, defaultName() ), _d( new Impl )
 {
   _d->peaceYears = 0;
-  _d->protestorOrMugglerSeen = false;
-  _d->someCriminalSeen = false;
-  _d->rioterSeen = false;
+  _d->threats.clear();
   _d->value = 0;
   _d->significantBuildingsDestroyed = false;
 
-  _d->unsignificantBuildings << objects::prefecture
-                         << objects::engineering_post
-                         << objects::well
-                         << objects::fortArea
-                         << objects::fort_javelin
-                         << objects::fort_legionaries
-                         << objects::fort_horse
-                         << objects::gatehouse
-                         << objects::fortification
-                         << objects::road
-                         << objects::plaza
-                         << objects::high_bridge
-                         << objects::low_bridge
-                         << objects::tower;
+  _d->unsignificantBuildings << object::prefecture
+                             << object::engineering_post
+                             << object::well
+                             << object::fortArea
+                             << object::fort_javelin
+                             << object::fort_legionaries
+                             << object::fort_horse
+                             << object::gatehouse
+                             << object::fortification
+                             << object::road
+                             << object::plaza
+                             << object::high_bridge
+                             << object::low_bridge
+                             << object::tower;
 }
 
 void Peace::timeStep(const unsigned int time )
@@ -85,29 +100,31 @@ void Peace::timeStep(const unsigned int time )
   if( !game::Date::isYearChanged() )
     return;
 
-  city::MilitaryPtr ml;
-  ml << _city()->findService( city::Military::defaultName() );
-
-  int change= _d->protestorOrMugglerSeen ? -1: 0;
-
-  if( ml.isValid() )
+  MilitaryPtr ml = statistic::getService<Military>( _city() );
+  if( ml.isNull() )
   {
-    if( ml->haveNotification( city::Military::Notification::chastener ) )
-      change -= 1;
-
-    if( ml->haveNotification( city::Military::Notification::barbarian ) )
-      change -= 1;
+    Logger::warning( "!!! WARNING: not found military service" );
+    crashhandler::printstack();
+    return;
   }
 
-  change -= std::min( _d->rioterSeen ? -5 : 0, _d->value );
-  change -= std::min( _d->significantBuildingsDestroyed ? -1 : 0, _d->value );
+  int change = (_d->threats.protestor || _d->threats.mugger) ? -minCh: 0;
+
+  if( ml->haveNotification( Notification::chastener ) )
+    change -= 1;
+
+  if( ml->haveNotification( Notification::barbarian ) )
+    change -= 1;
+
+  change -= std::min( _d->threats.rioter ? -maxCh : 0, _d->value );
+  change -= std::min( _d->significantBuildingsDestroyed ? -minCh : 0, _d->value );
 
   if( change == 0 )
   {
-    change = _d->peaceYears > 2 ? 5 : 2;
+    change = _d->peaceYears > longTimeWithoutWar ? maxCh : middleCh;
   }
 
-  if( _d->protestorOrMugglerSeen || _d->rioterSeen )
+  if( _d->threats.protestor || _d->threats.mugger || _d->threats.rioter )
   {
     _d->peaceYears = 0;
   }
@@ -116,32 +133,26 @@ void Peace::timeStep(const unsigned int time )
     _d->peaceYears++;
   }
 
-  change = math::clamp<int>( change, -5, 5 );
+  change = math::clamp<int>( change, -maxCh, maxCh );
 
   _d->value = math::clamp<int>( _d->value + change, 0, 100  );
-  _d->protestorOrMugglerSeen  = false;
-  _d->rioterSeen = false;
+  _d->threats.clear();
   _d->significantBuildingsDestroyed = false;
 }
 
 void Peace::addCriminal( WalkerPtr wlk )
 {
-  if( is_kind_of<Rioter>( wlk ) )
-  {
-    _d->rioterSeen = true;
-  }
-  /*else if( is_kind_of<Protestor>( wlk ) )
-  {
-    _d->protestorOrMugglerSeen = true;
-  }*/
+  if( is_kind_of<Rioter>( wlk ) )   {    _d->threats.rioter = true;  }
+  //else if( is_kind_of<Protestor>( wlk ) )   {    _d->threats.protestor = true;  }
+  else if( is_kind_of<Mugger>( wlk ) ) { _d->threats.mugger = true; }
   else
   {
     Logger::warning( "Peace:addCriminal unknown walker %d", wlk->type() );
-    _d->someCriminalSeen = true;
+    _d->threats.criminal = true;
   }
 }
 
-void Peace::buildingDestroyed(gfx::TileOverlayPtr overlay, int why)
+void Peace::buildingDestroyed(OverlayPtr overlay, int why)
 {
   if( overlay.isNull() )
   {
@@ -169,27 +180,27 @@ void Peace::buildingDestroyed(gfx::TileOverlayPtr overlay, int why)
 
     switch( why )
     {
-    case events::Disaster::collapse:
+    case Disaster::collapse:
       title = "##collapsed_building_title##";
       text = "##collapsed_building_text##";
     break;
 
-    case events::Disaster::fire:
+    case Disaster::fire:
       title = "##city_fire_title##";
       text = "##city_fire_text##";
-      video = ":/smk/city_fire.smk";
+      video = "city_fire";
     break;
 
-    case events::Disaster::riots:
+    case Disaster::riots:
       title = "##destroyed_building_title##";
       text = "##rioter_rampaging_accross_city##";
-      video = ":/smk/riot.smk";
+      video = "riot";
     break;
     }
 
     if( !title.empty() )
     {
-      events::GameEventPtr e = events::ShowInfobox::create( title, text, false, video );
+      GameEventPtr e = ShowInfobox::create( title, text, false, video );
       e->dispatch();
     }
   }
@@ -200,7 +211,7 @@ std::string Peace::defaultName() { return CAESARIA_STR_EXT(Peace); }
 
 std::string Peace::reason() const
 {
-  if( _d->rioterSeen ) { return "##last_riots_bad_for_peace_rating##"; }
+  if( _d->threats.rioter ) { return "##last_riots_bad_for_peace_rating##"; }
 
   return "";
 }
@@ -209,9 +220,10 @@ VariantMap Peace::save() const
 {
   VariantMap ret;
   VARIANT_SAVE_ANY_D( ret, _d, peaceYears )
-  VARIANT_SAVE_ANY_D( ret, _d, someCriminalSeen )
-  VARIANT_SAVE_ANY_D( ret, _d, protestorOrMugglerSeen)
-  VARIANT_SAVE_ANY_D( ret, _d, rioterSeen )
+  VARIANT_SAVE_ANY_D( ret, _d, threats.criminal )
+  VARIANT_SAVE_ANY_D( ret, _d, threats.protestor )
+  VARIANT_SAVE_ANY_D( ret, _d, threats.mugger )
+  VARIANT_SAVE_ANY_D( ret, _d, threats.rioter )
   VARIANT_SAVE_ANY_D( ret, _d, value )
   VARIANT_SAVE_ANY_D( ret, _d, significantBuildingsDestroyed )
 
@@ -221,9 +233,10 @@ VariantMap Peace::save() const
 void Peace::load(const VariantMap& stream)
 {
   VARIANT_LOAD_ANY_D( _d, peaceYears, stream )
-  VARIANT_LOAD_ANY_D( _d, someCriminalSeen, stream )
-  VARIANT_LOAD_ANY_D( _d, protestorOrMugglerSeen, stream )
-  VARIANT_LOAD_ANY_D( _d, rioterSeen, stream )
+  VARIANT_LOAD_ANY_D( _d, threats.criminal, stream )
+  VARIANT_LOAD_ANY_D( _d, threats.protestor, stream )
+  VARIANT_LOAD_ANY_D( _d, threats.mugger, stream )
+  VARIANT_LOAD_ANY_D( _d, threats.rioter, stream )
   VARIANT_LOAD_ANY_D( _d, value, stream )
   VARIANT_LOAD_ANY_D( _d, significantBuildingsDestroyed, stream )
 }

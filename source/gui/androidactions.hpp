@@ -21,25 +21,57 @@
 #include "window.hpp"
 #include "core/signals.hpp"
 
+namespace scene { class Base; }
+
 namespace gui
 {
 
-class AndroidActionsBar : public Window
+namespace tablet
+{
+
+class ActionsBar : public Window
 {
 public:
   virtual void beforeDraw( gfx::Engine& painter);
-  AndroidActionsBar( Widget* parent );
+  virtual bool onEvent(const NEvent &event);
+  ActionsBar( Widget* parent );
 
 public signals:
   Signal0<>& onRequestTileHelp();
   Signal0<>& onEscapeClicked();
   Signal0<>& onEnterClicked();
   Signal0<>& onRequestMenu();
+  Signal1<int>& onChangeZoom();
 
 private:
   class Impl;
   ScopedPtr<Impl> _d;
 };
+
+class ActionsHandler : public Widget
+{
+public:
+  static void assignTo( ActionsBar* parent, scene::Base* scene );
+
+private slots:
+  void _resolveEscapeButton();
+  void _showTileHelp();
+  void _resolveEnterButton();
+  void _resolveExitGame();
+  void _showSaveDialog();
+  void _showLoadDialog();
+  void _restartGame();
+  void _exitToMainMenu();
+  void _showIngameMenu();
+
+private:
+  void _sendKeyboardEvent(int key, bool ctrl=false);
+
+  ActionsHandler( Widget* parent, scene::Base* scene );
+  scene::Base* _scene;
+};
+
+}//end namespace tablet
 
 }//end namesapce gui
 

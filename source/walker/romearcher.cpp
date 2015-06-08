@@ -21,7 +21,6 @@
 #include "game/gamedate.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 REGISTER_SOLDIER_IN_WALKERFACTORY( walker::romeSpearman, walker::romeSpearman, RomeArcher, archer )
 
 RomeArcher::RomeArcher(PlayerCityPtr city, walker::Type type )
@@ -61,7 +60,7 @@ void RomeArcher::timeStep(const unsigned long time)
       WalkerPtr p = enemies.front();
       turn( p->pos() );
 
-      if( _animationRef().index() == (int)(_animationRef().frameCount()-1) )
+      if( _animation().index() == (int)(_animation().frameCount()-1) )
       {
         _fire( p->pos() );
         _updateAnimation( time+1 );
@@ -84,7 +83,7 @@ void RomeArcher::timeStep(const unsigned long time)
       ConstructionPtr b = constructions.front();
       turn( b->pos() );
 
-      if( _animationRef().index() == (int)(_animationRef().frameCount()-1) )
+      if( _animation().index() == (int)(_animation().frameCount()-1) )
       {
         _fire( b->pos() );
         _updateAnimation( time+1 );

@@ -25,6 +25,8 @@ class OSystem
 public:
   static void error( const std::string& title, const std::string& text );
   static void openUrl( const std::string& url );
+  static void openDir( const std::string& path );
+  static int  gmtOffsetMs();
 };
 
 #endif //__CAESARIA_OSYSTEM_INCLUDE_HPP__

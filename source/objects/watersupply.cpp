@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "watersupply.hpp"
 
@@ -31,11 +33,12 @@
 #include "constants.hpp"
 #include "objects_factory.hpp"
 #include "game/gamedate.hpp"
+#include "gfx/tilearea.hpp"
+#include "gfx/helper.hpp"
 
-using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::reservoir, Reservoir)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::reservoir, Reservoir)
 
 class WaterSource::Impl
 {
@@ -43,6 +46,7 @@ public:
   int  water;
   bool lastWaterState;
   int  daysWithoutWater;
+  Point fullOffset;
   bool isRoad;
   std::string errorStr;
 };
@@ -51,7 +55,7 @@ void Reservoir::_dropWater()
 {
   //now remove water flag from near tiles
   Tilemap& tmap = _city()->tilemap();
-  TilesArray reachedTiles = tmap.getArea( pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
+  TilesArea reachedTiles( tmap, pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
 
   foreach( tile, reachedTiles ) { (*tile)->setParam( Tile::pReservoirWater, 0 ); }
 }
@@ -64,6 +68,7 @@ void Reservoir::_waterStateChanged()
 void Reservoir::destroy()
 {
   _dropWater();
+  broke();
 
   // update adjacent aqueducts
   Construction::destroy();
@@ -79,11 +84,27 @@ void Reservoir::addWater(const WaterSource& source)
   WaterSource::addWater( source );
 }
 
+void Reservoir::initialize(const MetaData& mdata)
+{
+  WaterSource::initialize( mdata );
+
+  _d->fullOffset = mdata.getOption( "fullOffset" );
+}
+
+void Reservoir::broke()
+{
+  int saveWater = water();
+  _d->water = 100;
+  WaterSource::broke();
+
+  _d->water = saveWater;
+}
+
 Reservoir::Reservoir()
-    : WaterSource( objects::reservoir, Size( 3 ) )
+    : WaterSource( object::reservoir, Size( 3 ) )
 {  
   _isWaterSource = false;
-  setPicture( ResourceGroup::utilitya, 34 );
+  _picture().load( ResourceGroup::utilitya, 34 );
   
   // utilitya 34      - empty reservoir
   // utilitya 35 ~ 42 - full reservoir animation
@@ -93,12 +114,12 @@ Reservoir::Reservoir()
   _animationRef().setDelay( 11 );
   //_animationRef().setOffset( Point( 47, 63 ) );
 
-  _fgPicturesRef().resize(1);
+  _fgPictures().resize(1);
 }
 
 Reservoir::~Reservoir(){}
 
-bool Reservoir::build( const CityAreaInfo& info )
+bool Reservoir::build( const city::AreaInfo& info )
 {
   Construction::build( info );
 
@@ -135,14 +156,14 @@ void Reservoir::timeStep(const unsigned long time)
   {
     _fgPicture( 0 ) = Picture::getInvalid();
     _dropWater();
+    broke();
     return;
   }
 
   //filled area, that reservoir present
   if( game::Date::isWeekChanged() )
   {
-    Tilemap& tmap = _city()->tilemap();
-    TilesArray reachedTiles = tmap.getArea( pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
+    TilesArea reachedTiles( _city()->tilemap(), pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
 
     foreach( tile, reachedTiles )
     {
@@ -163,32 +184,32 @@ void Reservoir::timeStep(const unsigned long time)
   _fgPicture( 0 ) = _animationRef().currentFrame();
 }
 
-bool Reservoir::canBuild( const CityAreaInfo& areaInfo ) const
+bool Reservoir::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool ret = Construction::canBuild( areaInfo );
 
   bool nearWater = _isNearWater( areaInfo.city, areaInfo.pos );
   Reservoir* thisp = const_cast< Reservoir* >( this );
-  thisp->_fgPicturesRef().clear();
+  thisp->_fgPictures().clear();
   if( nearWater )
   {
-    thisp->_fgPicturesRef().push_back( Picture::load( ResourceGroup::utilitya, 35 )  );
-    thisp->_fgPicturesRef().back().setOffset( 47, -10+picture().offset().y() );
+    thisp->_fgPictures().push_back( Picture( ResourceGroup::utilitya, 35 )  );
+    thisp->_fgPictures().back().setOffset( _d->fullOffset + Point( 0, picture().offset().y() ) );
   }
   return ret;
 }
 
-bool Reservoir::isNeedRoadAccess() const{  return false; }
+bool Reservoir::isNeedRoad() const{  return false; }
 
-WaterSource::WaterSource(const Type type, const Size& size )
+WaterSource::WaterSource(const object::Type type, const Size& size )
   : Construction( type, size ), _d( new Impl )
 
 {
   _d->water = 0;
   _d->lastWaterState = false;
 
-  setState( Building::inflammability, 0 );
-  setState( Building::collapsibility, 0 );
+  setState( pr::inflammability, 0 );
+  setState( pr::collapsibility, 0 );
 }
 
 WaterSource::~WaterSource(){}
@@ -233,7 +254,7 @@ void WaterSource::_produceWater(const TilePos* points, const int size)
     TilePos p = pos() + points[index];
     if( tilemap.isInside( p ) )
     {
-      SmartPtr< WaterSource > ws = ptr_cast<WaterSource>( tilemap.at( p ).overlay() );
+      SmartPtr<WaterSource> ws = ptr_cast<WaterSource>( tilemap.at( p ).overlay() );
     
       if( ws.isValid() )
       {
@@ -249,6 +270,25 @@ bool WaterSource::_isRoad() const { return _d->isRoad; }
 int WaterSource::water() const{ return _d->water; }
 std::string WaterSource::errorDesc() const{  return _d->errorStr;}
 void WaterSource::_setError(const std::string& error){  _d->errorStr = error;}
+
+void WaterSource::broke()
+{
+  Tilemap& tilemap = _city()->tilemap();
+  TilesArray tiles = tilemap.getRectangle( pos() - TilePos( 1, 1), size() + Size(2) );
+
+  int saveWater = water();
+  _d->water = 0;
+  foreach( it, tiles )
+  {
+    SmartPtr<WaterSource> ws = ptr_cast<WaterSource>( (*it)->overlay() );
+
+    if( ws.isValid() )
+    {
+      if( ws->water() > 0 && ws->water() < saveWater )
+          ws->broke();
+    }
+  }
+}
 
 void WaterSource::save(VariantMap &stream) const
 {
@@ -266,14 +306,14 @@ void WaterSource::load(const VariantMap &stream)
 }
 
 
-TilePos Reservoir::entry(constants::Direction direction)
+TilePos Reservoir::entry(Direction direction)
 {
   switch( direction )
   {
-  case north: return pos() + TilePos( 1, 2 );
-  case east: return pos() + TilePos( 2, 1 );
-  case south: return pos() + TilePos( 1, 0 );
-  case west: return pos() + TilePos( 0, 1 );
-  default: return TilePos( -1, -1 );
+  case direction::north: return pos() + TilePos( 1, 2 );
+  case direction::east: return pos() + TilePos( 2, 1 );
+  case direction::south: return pos() + TilePos( 1, 0 );
+  case direction::west: return pos() + TilePos( 0, 1 );
+  default: return gfx::tilemap::invalidLocation();
   }
 }

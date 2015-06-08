@@ -19,12 +19,15 @@
 #include "core/variant.hpp"
 #include "vfs/file.hpp"
 
+namespace vfs{ class Path; class NFile; }
+
 namespace config
 {
 VariantMap load( const vfs::Path& fileName );
 VariantMap load( vfs::NFile file );
 
 bool save( const VariantMap& options, const vfs::Path& filename );
+std::string save( const VariantMap& options );
 }
 
-#endif //__OPENCAESAR3_SAVEADAPTER_H_INCLUDED__
+#endif //__CAESARIA_SAVEADAPTER_H_INCLUDED__

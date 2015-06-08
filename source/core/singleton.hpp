@@ -26,50 +26,49 @@ template <typename T>
 class StaticSingleton
 {
 public:
-	static T& instance()
-	{
-		static T inst;
-		return inst;
-	}
+  static T& instance()
+  {
+    static T inst;
+    return inst;
+  }
 
 protected:
-	StaticSingleton() {}
-
-	virtual ~StaticSingleton() {}
+  StaticSingleton() {}
+  virtual ~StaticSingleton() {}
 
 private:
-	StaticSingleton(const StaticSingleton<T>&) {}
-	StaticSingleton<T>& operator=(const StaticSingleton<T>&) {return this;}
+  StaticSingleton(const StaticSingleton<T>&) {}
+  StaticSingleton<T>& operator=(const StaticSingleton<T>&) {return this;}
 };
 
 template <typename T>
 class DynamicSingleton
 {
 public:
-	static T* instance()
-	{
-		_CAESARIA_DEBUG_BREAK_IF( !m_instance );
-		return m_instance;
-	}
+  static T* instance()
+  {
+    _CAESARIA_DEBUG_BREAK_IF( !_instance );
+    return _instance;
+  }
 
-	DynamicSingleton()
-	{
-		_CAESARIA_DEBUG_BREAK_IF( m_instance );
-		m_instance = static_cast<T*>(this);
-	}
+  DynamicSingleton()
+  {
+    _CAESARIA_DEBUG_BREAK_IF( _instance );
+    _instance = static_cast<T*>(this);
+  }
 
-	virtual ~DynamicSingleton()
-	{
-		m_instance = 0;
-	}
+  virtual ~DynamicSingleton()
+  {
+    _instance = 0;
+  }
 
 private:
-	static T* m_instance;
+  static T* _instance;
 
-	DynamicSingleton(const DynamicSingleton<T>&) {}
-	DynamicSingleton<T&> operator=(const DynamicSingleton<T>&) {}
+  DynamicSingleton(const DynamicSingleton<T>&) {}
+  DynamicSingleton<T&> operator=(const DynamicSingleton<T>&) {}
 };
 
-template <typename T> T* DynamicSingleton<T>::m_instance = 0;
+template <typename T> T* DynamicSingleton<T>::_instance = 0;
 
 #endif //_CAESARIA_SINGLETON_H_INCLUDE_

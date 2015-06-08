@@ -23,6 +23,7 @@
 #include "core/utils.hpp"
 #include "sound/constants.hpp"
 #include "core/logger.hpp"
+#include "spinbox.hpp"
 #include "widgetescapecloser.hpp"
 
 namespace gui
@@ -35,63 +36,54 @@ class SoundOptions::Impl
 {
 public:
   GameAutoPause locker;
+  bool initialized;
 
-  struct Sounds
+  void resolveChange( SpinBox* who, int value )
   {
-    int game,
-        ambient,
-        theme;
-  };
-
-  Sounds current, save;
+    int type = who->getProperty( "soundType" );
+    emit onSoundChangeSignal( audio::SoundType(type), value );
+  }
 
 public signals:
   Signal2<audio::SoundType, int> onSoundChangeSignal;
-  Signal0<> onCloseSignal;
+  Signal0<> onCloseSignal, onApplySignal, onRequestSignal;
 };
 
-SoundOptions::SoundOptions(Widget* parent, int gameSound, int ambientSound, int themeSound )
+SoundOptions::SoundOptions(Widget* parent)
   : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
   _d->locker.activate();
+  _d->initialized = false;
   setupUI( ":/gui/soundoptions.gui" );
 
   setCenter( parent->center() );
 
-  Impl::Sounds tmp = { gameSound, ambientSound, themeSound };
-  _d->save = tmp;
-  _d->current = tmp;
-
-  _update();
   WidgetEscapeCloser::insertTo( this );
 
   INIT_WIDGET_FROM_UI( PushButton*, btnOk )
   if( btnOk ) btnOk->setFocus();
+
+  List<SpinBox*> widgets = findChildren<SpinBox*>( true );
+  foreach( it, widgets )
+    CONNECT( *it, onChangeA(), _d.data(), Impl::resolveChange )
 }
 
 SoundOptions::~SoundOptions( void ) {}
 
 bool SoundOptions::onEvent(const NEvent& event)
-{
+{  
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
     int id = event.gui.caller->ID();
     switch( id )
     {
-    case 1: case 2: _d->current.game += (id == 1 ? -10 : +10 );       _update(); break;
-    case 11: case 12: _d->current.ambient += (id == 11 ? -10 : +10 ); _update(); break;
-    case 21: case 22: _d->current.theme += (id == 21 ? -10 : +10 );   _update(); break;
-
     case 1001:
-      emit _d->onCloseSignal();
+      emit _d->onApplySignal();
       deleteLater();
     break;
 
     case 1002:
     {
-      emit _d->onSoundChangeSignal( audio::gameSound, _d->save.game );
-      emit _d->onSoundChangeSignal( audio::ambientSound, _d->save.ambient );
-      emit _d->onSoundChangeSignal( audio::themeSound, _d->save.theme );
       emit _d->onCloseSignal();
       deleteLater();
     }
@@ -105,26 +97,22 @@ bool SoundOptions::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-Signal2<audio::SoundType, int>& SoundOptions::onSoundChange() {  return _d->onSoundChangeSignal;}
-Signal0<>& SoundOptions::onClose(){  return _d->onCloseSignal;}
+Signal2<audio::SoundType, int>& SoundOptions::onChange() { return _d->onSoundChangeSignal; }
+Signal0<>& SoundOptions::onClose()                       { return _d->onCloseSignal; }
+Signal0<>& SoundOptions::onApply()                       { return _d->onApplySignal; }
 
-void SoundOptions::_update()
+void SoundOptions::update(audio::SoundType type, int value)
 {
-  INIT_WIDGET_FROM_UI( Label*, lbGameSoundPercent )
-  INIT_WIDGET_FROM_UI( Label*, lbAmbientSoundPercent )
-  INIT_WIDGET_FROM_UI( Label*, lbThemeSoundPercent )
+  List<SpinBox*> widgets = findChildren<SpinBox*>( true );
 
-  _d->current.game = math::clamp( _d->current.game, 0, 100 );
-  _d->current.ambient = math::clamp( _d->current.ambient, 0, 100 );
-  _d->current.theme = math::clamp( _d->current.theme, 0, 100 );
-
-  if( lbGameSoundPercent ) { lbGameSoundPercent->setText( utils::format( 0xff, "%d%%", _d->current.game ) ); }
-  if( lbAmbientSoundPercent ) { lbAmbientSoundPercent->setText( utils::format( 0xff, "%d%%", _d->current.ambient ) ); }
-  if( lbThemeSoundPercent ) { lbThemeSoundPercent->setText( utils::format( 0xff, "%d%%", _d->current.theme ) ); }
-
-  emit _d->onSoundChangeSignal( audio::gameSound,_d->current.game );
-  emit _d->onSoundChangeSignal( audio::ambientSound, _d->current.ambient );
-  emit _d->onSoundChangeSignal( audio::themeSound,_d->current.theme );
+  foreach( it, widgets )
+  {
+    if( (*it)->getProperty( "soundType" ).toInt() == type )
+    {
+      (*it)->setValue( value );
+      return;
+    }
+  }
 }
 
 }//end namespace dialog

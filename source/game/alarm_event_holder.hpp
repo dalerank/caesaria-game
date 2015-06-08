@@ -48,4 +48,4 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-#endif //__OPENCAESAR3_ALARM_EVENT_HOLDER_H_INCLUDED__
+#endif //__CAESARIA_ALARM_EVENT_HOLDER_H_INCLUDED__

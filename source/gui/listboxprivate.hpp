@@ -21,6 +21,7 @@
 #include "scrollbar.hpp"
 #include "core/color.hpp"
 #include "gfx/picturesarray.hpp"
+#include "gfx/batch.hpp"
 #include <vector>
 
 namespace gui
@@ -29,7 +30,9 @@ namespace gui
 class ListBox::Impl
 {
 public:
-  gfx::Pictures background;
+  gfx::Batch background;
+  gfx::Pictures backgroundNb;
+
   std::vector< ListBoxItem > items;
   NColor itemDefaultColorText;
   NColor itemDefaultColorTextHighlight;
@@ -56,35 +59,8 @@ signals public:
 	Signal1<int> indexSelected;
   Signal1<std::string> textSelected;
 	Signal1<int> indexSelectedAgain;
-  Signal1<std::string> onItemSelectedAgainSignal;
+  Signal1<const ListBoxItem&> onItemSelectedAgainSignal;
   Signal1<const ListBoxItem&> onItemSelectedSignal;
-
-	void recalculateItemHeight( const Font& defaulFont, int height )
-	{    
-		if( !font.isValid() )
-		{
-			font = defaulFont;
-
-			if ( itemHeightOverride != 0 )
-				itemHeight = itemHeightOverride;
-			else
-				itemHeight = font.getTextSize("A").height() + 4;
-		}
-
-		int newLength = itemHeight * items.size();
-
-		if( newLength != totalItemHeight )
-		{
-			totalItemHeight = newLength;
-			scrollBar->setMaxValue( std::max<int>( 0, totalItemHeight - height ) );
-			int minItemHeight = itemHeight > 0 ? itemHeight : 1;
-			scrollBar->setSmallStep ( minItemHeight );
-			scrollBar->setLargeStep ( 2*minItemHeight );
-
-			scrollBar->setVisible( !( totalItemHeight <= height ) );
-		}
-	}
-
 };
 
 }//end namespace gui

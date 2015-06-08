@@ -24,8 +24,8 @@
 #include "objects/constants.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "dictionary.hpp"
+#include "game/infoboxmanager.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -34,8 +34,10 @@ namespace gui
 namespace infobox
 {
 
+REGISTER_OBJECT_BASEINFOBOX(tree,AboutLand)
+
 AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
-  : Simple( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 60, 510 - 16, 60 + 180) )
+  : Infobox( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 60, 510 - 16, 60 + 180) )
 { 
   Label* lbText = new Label( this, Rect( 38, 60, 470, 60+180 ), "", true, Label::bgNone, lbTextId );
   lbText->setFont( Font::create( FONT_2 ) );
@@ -85,14 +87,14 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
   }
   else if( tile.getFlag( Tile::tlRoad ) )
   {
-    int ovType = tile.overlay().isValid() ? tile.overlay()->type() : objects::unknown;
-    if(ovType == objects::plaza )
+    object::Type ovType = tile.overlay().isValid() ? tile.overlay()->type() : object::unknown;
+    if(ovType == object::plaza )
     {
       title = "##plaza_caption##";
       _helpUri = "plaza";
       text = "##plaza_text##";
     }
-    else if( ovType == objects::road )
+    else if( ovType == object::road )
     {
       _helpUri = "paved_road";
       RoadPtr road = ptr_cast<Road>( tile.overlay() );
@@ -148,15 +150,13 @@ AboutFreeHouse::AboutFreeHouse( Widget* parent, PlayerCityPtr city, const Tile& 
 {
   setTitle( _("##freehouse_caption##") );
 
-  ConstructionPtr cnst = ptr_cast<Construction>( tile.overlay() );
-  if( cnst.isValid() && cnst->getAccessRoads().size() == 0 )
+  ConstructionPtr cnst = tile.overlay().as<Construction>();
+  if( cnst.isValid() )
   {
-    setText( _("##freehouse_text_noroad##") );
+      setText( cnst->roadside().size() == 0
+                  ? _("##freehouse_text_noroad##")
+                  : _("##freehouse_text##") );
   }
-  else
-  {
-    setText( _("##freehouse_text##") );
-    }
 }
 
 void AboutFreeHouse::_showHelp()

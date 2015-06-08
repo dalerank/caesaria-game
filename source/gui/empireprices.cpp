@@ -18,13 +18,12 @@
 #include "empireprices.hpp"
 #include "city/trade_options.hpp"
 #include "city/city.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "image.hpp"
 #include "core/utils.hpp"
 #include "label.hpp"
 #include "core/event.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace city;
 

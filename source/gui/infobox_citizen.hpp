@@ -34,7 +34,7 @@ namespace citizen
 {
 
 // Simple info box with static text on plain background
-class AboutPeople : public Simple
+class AboutPeople : public Infobox
 {
 public:
   AboutPeople(Widget* parent, PlayerCityPtr city, const TilePos& pos);

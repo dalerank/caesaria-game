@@ -27,13 +27,13 @@ public:
   Dock();
   ~Dock();
 
-  virtual bool canBuild(const CityAreaInfo& areaInfo) const;  // returns true if it can be built there
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool canBuild(const city::AreaInfo& areaInfo) const;  // returns true if it can be built there
+  virtual bool build(const city::AreaInfo &info);
   virtual void destroy();
 
   virtual void timeStep(const unsigned long time);
-  virtual void save(VariantMap &stream) const;
-  virtual void load(const VariantMap &stream);
+  virtual void save(VariantMap& stream) const;
+  virtual void load(const VariantMap& stream);
   virtual std::string workersProblemDesc() const;
 
   bool isBusy() const;
@@ -50,8 +50,8 @@ public:
   void storeGoods( good::Stock& stock, const int amount);
 
 private:
-  void _setDirection( constants::Direction direction );
-  virtual void _updatePicture( constants::Direction direction );
+  void _setDirection( Direction direction );
+  virtual void _updatePicture( Direction direction );
   void _tryReceiveGoods();
   void _tryDeliverGoods();
 

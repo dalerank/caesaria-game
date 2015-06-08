@@ -22,8 +22,6 @@
 #include "environment.hpp"
 #include "core/utils.hpp"
 
-using namespace constants;
-
 namespace gui
 {
 
@@ -35,7 +33,7 @@ AboutWorkingBuilding::AboutWorkingBuilding( Widget* parent, WorkingBuildingPtr b
 {
   _working = building;
 
-  setBase( ptr_cast<Construction>( _working ) );
+  setBase( _working  );
   _setWorkingVisible( true );
 
   std::string title = MetaDataHolder::findPrettyName( _working->type() );
@@ -50,8 +48,8 @@ AboutWorkingBuilding::AboutWorkingBuilding( Widget* parent, WorkingBuildingPtr b
   setText( "" );
 
   std::string text = utils::format( 0xff, "%d%% damage - %d%% fire",
-                                           (int)_working->state( Construction::damage ),
-                                           (int)_working->state( Construction::fire ));
+                                           (int)_working->state( pr::damage ),
+                                           (int)_working->state( pr::fire ));
   if( is_kind_of<ServiceBuilding>( _working ) )
   {
     ServiceBuildingPtr srvc = ptr_cast<ServiceBuilding>( _working );

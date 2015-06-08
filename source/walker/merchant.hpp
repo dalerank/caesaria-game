@@ -34,14 +34,16 @@ public:
 
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
-
+  virtual void setPathway(const Pathway &pathway);
   virtual void timeStep(const unsigned long time);
   virtual std::string thoughts(Thought th) const;
 
   std::string parentCity() const;
   virtual TilePos places(Place type) const;
+  void addCamel( MerchantCamelPtr camel );
 
 protected:
+  virtual void _centerTile();
   virtual void _reachedPathway();
 
 private:
