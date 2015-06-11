@@ -156,7 +156,7 @@ public:
 
 
 	//! Assignment operator
-	void operator=(const List<T>& other)
+	List<T>& operator=(const List<T>& other)
 	{
 		if(&other == this)
 		{
@@ -171,6 +171,8 @@ public:
 			push_back(node->Element);
 			node = node->Next;
 		}
+    
+    return *this;
 	}
 
 
