@@ -58,9 +58,7 @@ public:
   virtual void startRenderFrame();
   virtual void endRenderFrame();
 
-  virtual bool initViewport(int index, Size s);
-  virtual void setViewport( int, bool render);
-  virtual void drawViewport( int, Rect r);
+  virtual void setScale( float scale);
 
   void draw(const Picture &picture, const int dx, const int dy, Rect* clipRect=0);
   void draw(const Picture &picture, const Point& pos, Rect* clipRect=0 );

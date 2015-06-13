@@ -73,17 +73,9 @@ public:
   Picture screen;
   Picture fpsText;
 
-  SDL_Window *window;
-  SDL_Renderer *renderer;
+  SDL_Window* window;
+  SDL_Renderer* renderer;
   SdlBatcher batcher;
-
-  struct RTInfo
-  {
-    SDL_Texture* texture;
-    SDL_Rect viewport;
-  };
-
-  std::map< int, RTInfo > renderTargets;
 
   MaskInfo mask;
   unsigned int fps, lastFps;
@@ -95,7 +87,7 @@ public:
   void renderState(const Batch &batch, const Rect *clip);
   void renderState();
   void renderOnce(const Picture& pic, const Rect& src, const Rect& dstRect,
-                  const Rect *clipRect, bool useTxOffset);
+                  const Rect* clipRect, bool useTxOffset);
 };
 
 
@@ -642,64 +634,13 @@ void SdlEngine::resetColorMask()
   _d->mask.reset();
 }
 
-bool SdlEngine::initViewport(int index, Size s)
+void SdlEngine::setScale( float scale )
 {
-  Impl::RTInfo& target = _d->renderTargets[ index ];
-
-  SDL_RendererInfo info;
-  SDL_GetRendererInfo( _d->renderer, &info);
-
-  if( info.max_texture_width < s.width() || info.max_texture_height < s.height() )
-    return false;
-
-  if( target.texture != 0 )
-  {
-    SDL_DestroyTexture( target.texture );
-    target.texture = 0;
-  }
-
-  if( s.area() > 0 )
-  {
-    target.texture = SDL_CreateTexture( _d->renderer, SDL_PIXELFORMAT_RGBA8888,
-                                        SDL_TEXTUREACCESS_TARGET, s.width(), s.height() );
-    SDL_Rect r = { 0, 0, s.width(), s.height() };
-    target.viewport = r;
-  }
-
-  return true;
-}
-
-void SdlEngine::setViewport(int index, bool render)
-{
-  Impl::RTInfo target = _d->renderTargets.at( index );
-
   bool needDraw = _d->batcher.finish();
   if( needDraw )
     _d->renderState();
 
-  if( target.texture )
-  {    
-    if( render )
-    {
-      SDL_SetRenderTarget( _d->renderer, target.texture );
-      SDL_RenderClear(_d->renderer);  // black background for a complete redraw
-      SDL_RenderSetViewport( _d->renderer, &target.viewport );
-    }
-    else
-    {
-      SDL_SetRenderTarget( _d->renderer, 0 );
-      SDL_RenderSetViewport( _d->renderer, 0 );
-    }
-  }
-}
-
-void SdlEngine::drawViewport(int index, Rect r)
-{
-  Impl::RTInfo& target = _d->renderTargets[ index ];
-  if( target.texture )
-  {
-    SDL_RenderCopyEx(_d->renderer, target.texture, 0, 0, 0, 0, SDL_FLIP_NONE );
-  }
+  SDL_RenderSetScale( _d->renderer, scale, scale );
 }
 
 void SdlEngine::createScreenshot( const std::string& filename )
