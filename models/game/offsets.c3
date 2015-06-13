@@ -25,8 +25,8 @@
   circus_horses : { rc : "carts", start : 537, stop : 600, offset : [ -2, -2 ] }
   circus_charioter : { rc : "carts", start : 601, stop : 616, offset : [ -2, -2 ] }
   carthegenians : { start : 1, stop : 512, offset : [-2, -2] }
-  warehouse_base: { rc : "warehouse", start : 1, stop : 1, offset : [ -1, -1 ] }
-  waherhouse_roof : { rc : "warehouse", start : 18, stop : 18, offset : [ 0, 60 ] }
+  warehouse_base: { rc : "warehouse", start : 1, stop : 1, offset : [ -2, 30 ] }
+  waherhouse_roof : { rc : "warehouse", start : 18, stop : 18, offset : [ -2, 60 ] }
   warehouse_work : { rc : "warehouse", start : 2, stop : 17, offset : [ 55, 75 ] }
   warehouse_flag : { rc : "warehouse", start : 84, stop : 91, offset : [ 79, 108 ] }
   pretty_fountain : { rc : "utilitya", start : 3, stop : 9, offset : [ 9, 41 ] }
@@ -43,5 +43,4 @@
   market_poor_anim : { rc : "commerce", start : 2, stop : 11, offset : [ 42, 34 ] }
   our_city_flag : { rc : "empire_bits", start : 2, stop : 7, offset : [ 17, 24 ] }
   theater_work : { rc : "entertainment", start : 35, stop : 35, offset : [ 34, 37 ] }
-
 }
