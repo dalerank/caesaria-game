@@ -268,7 +268,8 @@
     desirability : { base :2,	range : 2,	step : -1 }
     employers : 2
     class : "health"
-    image : [ "security", 19 ]
+    size : [ 2, 2 ]
+    image : [ "barber", 1 ]
     service : "srvc_barber"
     sound : [ "barber", 1 ]
   }, 
