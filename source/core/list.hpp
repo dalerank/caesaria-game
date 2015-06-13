@@ -160,7 +160,7 @@ public:
 	{
 		if(&other == this)
 		{
-			return;
+      return *this;
 		}
 
 		clear();

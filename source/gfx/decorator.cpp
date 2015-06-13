@@ -41,7 +41,7 @@ void Decorator::drawFrame(Pictures& stack, const Rect& rectangle, const int picI
   {
      for (int i = 0; i<(rectangle.width()/sw-1); ++i)
      {
-        stack.append( bg, rectangle.UpperLeftCorner + Point( sw+sw*i, sh+sh*j ) );
+        stack.append( bg, rectangle.lefttop() + Point( sw+sw*i, sh+sh*j ) );
      }
   }
 
@@ -50,8 +50,8 @@ void Decorator::drawFrame(Pictures& stack, const Rect& rectangle, const int picI
   Picture bottomBorder( ResourceGroup::panelBackground, picId+7);
   for (int i = 0; i<(rectangle.width()/sw-1); ++i)
   {
-     stack.append( topBorder, rectangle.UpperLeftCorner + Point( sw+sw*i, 0 ));
-     stack.append( bottomBorder, rectangle.UpperLeftCorner + Point( sw+sw*i, rectangle.height()-sh ) );
+     stack.append( topBorder, rectangle.lefttop() + Point( sw+sw*i, 0 ));
+     stack.append( bottomBorder, rectangle.lefttop() + Point( sw+sw*i, rectangle.height()-sh ) );
   }
 
   // draws vertical borders
@@ -59,18 +59,18 @@ void Decorator::drawFrame(Pictures& stack, const Rect& rectangle, const int picI
   Picture rightBorder( ResourceGroup::panelBackground, picId+5);
   for (int i = 0; i<(rectangle.height()/sh-1); ++i)
   {
-     stack.append( leftBorder, rectangle.UpperLeftCorner + Point( 0, sh+sh*i ) );
-     stack.append( rightBorder, rectangle.UpperLeftCorner + Point( rectangle.width()-sw, sh+sh*i ) );
+     stack.append( leftBorder, rectangle.lefttop() + Point( 0, sh+sh*i ) );
+     stack.append( rightBorder, rectangle.lefttop() + Point( rectangle.width()-sw, sh+sh*i ) );
   }
 
   // topLeft corner
-  stack.append( Picture( ResourceGroup::panelBackground, picId+0), rectangle.UpperLeftCorner );
+  stack.append( Picture( ResourceGroup::panelBackground, picId+0), rectangle.lefttop() );
   // topRight corner
   stack.append( Picture( ResourceGroup::panelBackground, picId+2), Point( rectangle.right()-sh, rectangle.top() ) );
   // bottomLeft corner
   stack.append( Picture( ResourceGroup::panelBackground, picId+6), Point( rectangle.left(), rectangle.bottom() - sh ) );
   // bottomRight corner
-  stack.append( Picture( ResourceGroup::panelBackground, picId+8), rectangle.LowerRightCorner - Point( 16, 16 ) );
+  stack.append( Picture( ResourceGroup::panelBackground, picId+8), rectangle.rightbottom() - Point( 16, 16 ) );
 }
 
 void Decorator::drawBorder(Pictures& stack, const Rect& rectangle, const int offset)
@@ -90,8 +90,8 @@ void Decorator::drawBorder(Pictures& stack, const Rect& rectangle, const int off
   // draws horizontal borders
   for (int i = 0; i<(rectangle.width()/sw-1); ++i)
   {
-     stack.append( topborder, rectangle.UpperLeftCorner + Point( sw+sw*i, 0 ) );
-     stack.append( bottomBorder, rectangle.UpperLeftCorner + Point( sw+sw*i, -rectangle.height()+sh ) );
+     stack.append( topborder, rectangle.lefttop() + Point( sw+sw*i, 0 ) );
+     stack.append( bottomBorder, rectangle.lefttop() + Point( sw+sw*i, -rectangle.height()+sh ) );
   }
 
   // draws vertical borders
@@ -104,7 +104,7 @@ void Decorator::drawBorder(Pictures& stack, const Rect& rectangle, const int off
   }
 
   // topLeft corner
-  stack.append( Picture( ResourceGroup::panelBackground, offset+0), rectangle.UpperLeftCorner);
+  stack.append( Picture( ResourceGroup::panelBackground, offset+0), rectangle.lefttop());
   // topRight corner
   stack.append( Picture( ResourceGroup::panelBackground, offset+2), Point( rectangle.right()-sw, rectangle.top() ) );
   // bottomLeft corner
@@ -138,18 +138,18 @@ void Decorator::drawPanel( Pictures& stack, const Rect& rectangle, int picId )
   if( !pic.isValid() )
     picId = 68;
 
-  stack.append( Picture( ResourceGroup::panelBackground, picId), rectangle.UpperLeftCorner );
+  stack.append( Picture( ResourceGroup::panelBackground, picId), rectangle.lefttop() );
 
   // draws the inside
   Picture centerPic( ResourceGroup::panelBackground, picId+1);
   for (int i = 0; i<(rectangle.width()/16-1); ++i)
   {
-    stack.append( centerPic, rectangle.UpperLeftCorner + Point( 16+16*i, 0 ) );
+    stack.append( centerPic, rectangle.lefttop() + Point( 16+16*i, 0 ) );
   }
 
   // right side
   stack.append( Picture( ResourceGroup::panelBackground, picId+2),
-                rectangle.UpperLeftCorner + Point( rectangle.width()-16, 0) );
+                rectangle.lefttop() + Point( rectangle.width()-16, 0) );
 }
 
 void Decorator::draw( Picture& dstpic, const Rect& rectangle, Mode mode, bool useAlpha, bool updateTexture )
@@ -225,13 +225,13 @@ void Decorator::draw( Pictures& stack, const Rect& rectangle, Decorator::Mode mo
   case whiteFrame:
   {
     Point offset( 16, 16 );
-    draw( stack, Rect( rectangle.UpperLeftCorner + offset, rectangle.LowerRightCorner - offset ), whiteArea );
+    draw( stack, Rect( rectangle.lefttop() + offset, rectangle.rightbottom() - offset ), whiteArea );
     draw( stack, rectangle, whiteBorder );    // draws borders
   }
   break;
 
   case blackFrame:
-    draw(stack, Rect( rectangle.UpperLeftCorner, rectangle.LowerRightCorner - Point( 16, 16 ) ), blackArea );    // draws the inside of the box
+    draw(stack, Rect( rectangle.lefttop(), rectangle.rightbottom() - Point( 16, 16 ) ), blackArea );    // draws the inside of the box
     draw(stack, rectangle, blackBorder );    // draws borders
   break;
 
