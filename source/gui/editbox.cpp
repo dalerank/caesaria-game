@@ -870,9 +870,9 @@ void EditBox::beforeDraw(Engine& painter)
            //font->Draw(txtLine->c_str(), _d->currentTextRect_ + marginOffset, simpleTextColor,	false, true, &localClipRect);
            Rect curTextureRect( Point( 0, 0), _d->currentTextRect.size() );
            curTextureRect = _d->lastBreakFont.getTextRect( rText, curTextureRect, horizontalTextAlign(), verticalTextAlign() );
-           curTextureRect += (_d->currentTextRect.UpperLeftCorner - absoluteRect().UpperLeftCorner );
+           curTextureRect += (_d->currentTextRect.lefttop() - absoluteRect().lefttop() );
 
-           _d->lastBreakFont.draw( _d->textPicture, rText, curTextureRect.UpperLeftCorner );
+           _d->lastBreakFont.draw( _d->textPicture, rText, curTextureRect.lefttop() );
 
            // draw mark and marked text
            if( isFocused() && _d->markBegin != _d->markEnd && i >= hlineStart && i < hlineStart + hlineCount)
@@ -906,9 +906,9 @@ void EditBox::beforeDraw(Engine& painter)
              else
                  mend = _d->lastBreakFont.getTextSize( (char*)txtLine->c_str() ).width();
 
-             _d->markAreaRect = _d->currentTextRect - _d->currentTextRect.UpperLeftCorner;
-             _d->markAreaRect.UpperLeftCorner += Point( mbegin, 0 );
-             _d->markAreaRect.LowerRightCorner += Point( _d->markAreaRect.UpperLeftCorner.x() + mend - mbegin, 0 );
+             _d->markAreaRect = _d->currentTextRect - _d->currentTextRect.lefttop();
+             _d->markAreaRect._lefttop += Point( mbegin, 0 );
+             _d->markAreaRect._bottomright += Point( _d->markAreaRect.left() + mend - mbegin, 0 );
 
              //draw mark
              _d->markAreaRect = _d->markAreaRect /*+ marginOffset */;
@@ -953,8 +953,8 @@ void EditBox::beforeDraw(Engine& painter)
     _d->setTextRect( this, cursorLine);
     _d->cursorRect = _d->currentTextRect - absoluteClippingRect().lefttop();
 
-    _d->cursorRect.UpperLeftCorner += Point( charcursorpos-1, 6 );
-    _d->cursorRect.LowerRightCorner = _d->cursorRect.UpperLeftCorner + Point( 1, height() - 4 );
+    _d->cursorRect._lefttop += Point( charcursorpos-1, 6 );
+    _d->cursorRect._bottomright = _d->cursorRect.lefttop() + Point( 1, height() - 4 );
     //_d->cursorRect.UpperLeftCorner += style.GetMargin().getRect().UpperLeftCorner;
     //_d->cursorRect.LowerRightCorner -= style.GetMargin().getRect().LowerRightCorner;
   }
@@ -986,7 +986,7 @@ void EditBox::draw( Engine& painter )
   {
     if( _d->bgPicture.isValid() )
     {
-      painter.draw( _d->bgPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+      painter.draw( _d->bgPicture, absoluteRect().lefttop(), &absoluteClippingRectRef() );
     }
     else
     {
@@ -1000,7 +1000,7 @@ void EditBox::draw( Engine& painter )
   // draw the text
   if( _d->textPicture.isValid() )
   {
-    painter.draw( _d->textPicture, _d->textOffset + absoluteRect().UpperLeftCorner );
+    painter.draw( _d->textPicture, _d->textOffset + absoluteRect().lefttop() );
   }
 
   if( focus )
@@ -1068,8 +1068,8 @@ Size EditBox::textDimension()
 	for (unsigned int i=1; i < _d->brokenText.size(); ++i)
 	{
 		_d->setTextRect( this, i);
-    ret.addInternalPoint(_d->currentTextRect.UpperLeftCorner);
-    ret.addInternalPoint(_d->currentTextRect.LowerRightCorner);
+    ret.addInternalPoint(_d->currentTextRect.lefttop());
+    ret.addInternalPoint(_d->currentTextRect.rightbottom() );
 	}
 
 	return ret.size();
@@ -1347,8 +1347,8 @@ void EditBox::Impl::setTextRect( EditBox* who, int line, const std::string& temp
 
   currentTextRect = who->absoluteRect();
 
-  currentTextRect.UpperLeftCorner += Point( -horizScrollPos, d.height() * line - vertScrollPos );
-  currentTextRect.LowerRightCorner = Point( currentTextRect.right() + horizScrollPos, currentTextRect.UpperLeftCorner.y() + d.height() );
+  currentTextRect._lefttop += Point( -horizScrollPos, d.height() * line - vertScrollPos );
+  currentTextRect._bottomright = Point( currentTextRect.right() + horizScrollPos, currentTextRect.top() + d.height() );
 }
 
 int EditBox::_getLineFromPos(int pos)
@@ -1463,7 +1463,7 @@ void EditBox::_calculateScrollPos()
 		std::wstring *txtLine = _d->multiLine ? &_d->brokenText[cursLine] : &myText;
 		int cPos = _d->multiLine ? _d->cursorPos - _d->brokenTextPositions[cursLine] : _d->cursorPos;
 
-    int cStart = _d->currentTextRect.UpperLeftCorner.x() + _d->horizScrollPos +
+    int cStart = _d->currentTextRect.left() + _d->horizScrollPos +
                                 font.getTextSize( (char*)txtLine->substr(0, cPos).c_str() ).width();
 
 		int cEnd = cStart + font.getTextSize( "_ " ).width();
@@ -1479,13 +1479,13 @@ void EditBox::_calculateScrollPos()
 	}
 
 	// vertical scroll position
-  if( screenBottom() < _d->currentTextRect.LowerRightCorner.y() + _d->vertScrollPos)
+  if( screenBottom() < _d->currentTextRect.bottom() + _d->vertScrollPos)
   {
-    _d->vertScrollPos = _d->currentTextRect.LowerRightCorner.y() - screenBottom() + _d->vertScrollPos;
+    _d->vertScrollPos = _d->currentTextRect.bottom() - screenBottom() + _d->vertScrollPos;
   }
-  else if ( screenTop() > _d->currentTextRect.UpperLeftCorner.y() + _d->vertScrollPos)
+  else if ( screenTop() > _d->currentTextRect.top() + _d->vertScrollPos)
   {
-    _d->vertScrollPos = _d->currentTextRect.UpperLeftCorner.y() - screenTop() + _d->vertScrollPos;
+    _d->vertScrollPos = _d->currentTextRect.top()  - screenTop() + _d->vertScrollPos;
   }
 	else
 		_d->vertScrollPos = 0;

@@ -158,7 +158,7 @@ void PushButton::_updateTextPic()
     Rect textRect = stFont.getTextRect( text(), Rect( 0, 0, width(), height() ),
                                               horizontalTextAlign(), verticalTextAlign() );
     textTxs.fill( 0x00ffffff, Rect( 0, 0, 0, 0 ) );
-    stFont.draw( textTxs, text(), textRect.UpperLeftCorner + _d->textOffset, true, false );
+    stFont.draw( textTxs, text(), textRect.lefttop() + _d->textOffset, true, false );
   }
 
   if( _d->bgStyle == flatBorderLine )
@@ -567,7 +567,7 @@ void PushButton::drawIcon( gfx::Engine& painter )
   if( !iconTexture.isValid() )
       return;
 
-  Point pos = localToScreen( _d->iconRect ).UpperLeftCorner;
+  Point pos = localToScreen( _d->iconRect ).lefttop();
   painter.draw( iconTexture, pos + bstate.iconOffset );
 }
 

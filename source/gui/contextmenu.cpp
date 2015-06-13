@@ -39,7 +39,7 @@ ContextMenu::ContextMenu( Widget* parent, const Rect& rectangle,
 
   _d->eventParent = 0; 
   _d->closeHandling = cmRemove;
-  _d->pos = rectangle.UpperLeftCorner;
+  _d->pos = rectangle.lefttop();
   _d->needRecalculateItems = true;
 
   if( getFocus )
@@ -482,7 +482,7 @@ void ContextMenu::draw(gfx::Engine& painter )
 void ContextMenu::_recalculateSize()
 {
 	Rect rect;
-	rect.UpperLeftCorner = relativeRect().UpperLeftCorner;
+  rect._lefttop = relativeRect().lefttop();
   Size maxSize( 100, 3 );
 
 	unsigned int i;
@@ -509,7 +509,7 @@ void ContextMenu::_recalculateSize()
 
 	maxSize.setHeight( std::max<unsigned int>( maxSize.height()+5, 10 ) );
 
-	rect.LowerRightCorner = relativeRect().UpperLeftCorner + Point( maxSize.width(), maxSize.height() );
+  rect._bottomright = relativeRect().lefttop() + Point( maxSize.width(), maxSize.height() );
 
 	setGeometry(rect);
 
@@ -534,10 +534,10 @@ void ContextMenu::_recalculateSize()
       if( root && ContextMenuItem::alignAuto == refItem->subMenuAlignment() )
       {
         Rect rectRoot( root->absoluteRect() );
-				if ( absoluteRect().UpperLeftCorner.x() + subRect.LowerRightCorner.x() > rectRoot.LowerRightCorner.x() )
+        if ( absoluteRect().left() + subRect.right() > rectRoot.right() )
 				{
-					subRect.UpperLeftCorner.setX( -subMenuSize.width() );
-					subRect.LowerRightCorner.setX( 0 );
+          subRect.setLeft( -subMenuSize.width() );
+          subRect.setRight( 0 );
 				}
 			}
 			else
@@ -545,16 +545,16 @@ void ContextMenu::_recalculateSize()
 				switch( refItem->subMenuAlignment() & 0x0f )
 				{
 				case ContextMenuItem::alignLeft:
-					subRect.UpperLeftCorner.setX( -subMenuSize.width() );
-					subRect.LowerRightCorner.setX( 0 );
+          subRect.setLeft( -subMenuSize.width() );
+          subRect.setRight( 0 );
 				break;
 
 				case ContextMenuItem::alignRigth:
 				break;
 
 				case ContextMenuItem::alignHorizCenter:
-					subRect.UpperLeftCorner.setX( ( absoluteRect().width() - subMenuSize.width() ) / 2 );
-					subRect.LowerRightCorner.setX( subRect.UpperLeftCorner.x() + subMenuSize.width() );
+          subRect.setLeft( ( absoluteRect().width() - subMenuSize.width() ) / 2 );
+          subRect.setRight( subRect.left() + subMenuSize.width() );
 				break;
 				}
 

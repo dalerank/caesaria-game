@@ -354,15 +354,15 @@ void TreeView::beforeDraw( gfx::Engine& painter )
     Rect frameRect( absoluteRect() );
 
     Rect clientClip( absoluteRect() );
-    clientClip.UpperLeftCorner.ry() += 1;
-    clientClip.UpperLeftCorner.rx() += 1;
-    clientClip.LowerRightCorner.rx() = screenRight();//_absoluteRect.LowerRightCorner.X;
-    clientClip.LowerRightCorner.ry() -= 1;
+    clientClip.rtop() += 1;
+    clientClip.rleft() += 1;
+    clientClip.rright() = screenRight();//_absoluteRect.LowerRightCorner.X;
+    clientClip.rbottom() -= 1;
 
 		if ( ScrollBarV )
-      clientClip.LowerRightCorner.rx() -= DEFAULT_SCROLLBAR_SIZE;
+      clientClip.rright() -= DEFAULT_SCROLLBAR_SIZE;
 		if ( ScrollBarH )
-      clientClip.LowerRightCorner.ry() -= DEFAULT_SCROLLBAR_SIZE;
+      clientClip.rbottom() -= DEFAULT_SCROLLBAR_SIZE;
 
 		if( clipRect )
 		{
@@ -397,7 +397,7 @@ void TreeView::beforeDraw( gfx::Engine& painter )
       if( !fontNode.isValid() )
         fontNode = Font::create( FONT_1 );
 
-			nodeRect.LowerRightCorner = nodeRect.UpperLeftCorner 
+      nodeRect._bottomright = nodeRect.lefttop()
         + Point( fontNode.getTextSize( node->text() ).width() + _indentWidth, _itemHeight );
 			node->setGeometry( nodeRect );		
 
@@ -437,15 +437,15 @@ void TreeView::draw( gfx::Engine& painter )
 	}
 
   Rect clientClip( absoluteRect() );
-  clientClip.UpperLeftCorner.ry() += 1;
-  clientClip.UpperLeftCorner.rx() += 1;
-  clientClip.LowerRightCorner.rx() = screenRight();
-  clientClip.LowerRightCorner.ry() -= 1;
+  clientClip.rtop() += 1;
+  clientClip.rleft() += 1;
+  clientClip.rright() = screenRight();
+  clientClip.rbottom() -= 1;
 
 	if ( ScrollBarV )
-    clientClip.LowerRightCorner.rx() -= DEFAULT_SCROLLBAR_SIZE;
+    clientClip.rright() -= DEFAULT_SCROLLBAR_SIZE;
 	if ( ScrollBarH )
-    clientClip.LowerRightCorner.ry() -= DEFAULT_SCROLLBAR_SIZE;
+    clientClip.rbottom() -= DEFAULT_SCROLLBAR_SIZE;
 
 	if( clipRect )
 		clientClip.clipAgainst( *clipRect );
@@ -462,7 +462,7 @@ void TreeView::draw( gfx::Engine& painter )
 		if( node->hasChildren() )
 		{
 			//рамка для плюса
-      Rect expanderRect( frameRect.UpperLeftCorner + Point( -_indentWidth + 2, ( _indentWidth - 4 ) / 2 ),
+      Rect expanderRect( frameRect.lefttop() + Point( -_indentWidth + 2, ( _indentWidth - 4 ) / 2 ),
                          Size( _indentWidth - 4, _indentWidth - 4 ) );
 
       drawRect( expanderRect, 0xffc0c0c0, painter, clipRect );
@@ -491,7 +491,7 @@ void TreeView::draw( gfx::Engine& painter )
       Rect rc;
 
 			// horizontal line
-      Point lp = frameRect.UpperLeftCorner + Point( -(_indentWidth) + 1, _itemHeight / 2 );
+      Point lp = frameRect.lefttop() + Point( -(_indentWidth) + 1, _itemHeight / 2 );
       Point rp = lp + Point( (node->hasChildren() ? 2 : _indentWidth - 3), 0 );
 
       painter.drawLine( DefaultColors::red, lp, rp );
@@ -511,14 +511,14 @@ void TreeView::draw( gfx::Engine& painter )
 			{
 				// vertical line
         int offsetY = ( node == node->getParentItem()->getFirstChild() ? _indentWidth : 0 );
-        rc.UpperLeftCorner.ry() = frameRect.UpperLeftCorner.y() - ( _itemHeight - offsetY ) / 2;
+        rc.setTop( frameRect.top() - ( _itemHeight - offsetY ) / 2 );
 
-        rc.LowerRightCorner.rx() = rc.UpperLeftCorner.rx() + 1;
+        rc.setRight( rc.left() + 1 );
         drawRect( rc, 0xffc0c0c0, painter, clipRect );
 
 				// the vertical lines of all parents
 				TreeViewItem* nodeTmp = node->getParentItem();
-        rc.UpperLeftCorner.ry() = frameRect.UpperLeftCorner.y();
+        rc.setTop( frameRect.top() );
 
         for( int n = 0; n < node->level() - 2; ++n )
 				{

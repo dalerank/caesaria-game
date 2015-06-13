@@ -72,8 +72,8 @@ public:
     if( _wlkPicture.isValid() )
     {
       Rect clipRect = absoluteClippingRect();
-      clipRect.UpperLeftCorner += Point( 3, 3 );
-      clipRect.LowerRightCorner -= Point( 3, 3 );
+      clipRect._lefttop += Point( 3, 3 );
+      clipRect._bottomright -= Point( 3, 3 );
       painter.draw( _wlkPicture, absoluteRect().lefttop() + Point( 3, 3 ), &clipRect );
       gfx::Pictures pics;
       _walker->getPictures( pics );

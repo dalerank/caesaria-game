@@ -263,12 +263,12 @@ void DictionaryText::draw(gfx::Engine& painter )
   // draw background
   if( _d->bgPicture.isValid() )
   {
-    painter.draw( _d->bgPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+    painter.draw( _d->bgPicture, absoluteRect().lefttop(), &absoluteClippingRectRef() );
   }
 
   if( _d->textPicture.isValid() )
   {
-    painter.draw( _d->textPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+    painter.draw( _d->textPicture, absoluteRect().lefttop(), &absoluteClippingRectRef() );
   }
 
   Widget::draw( painter );
