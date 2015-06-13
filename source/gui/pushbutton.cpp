@@ -111,6 +111,7 @@ PushButton::PushButton(Widget* parent )
   _d->pressed = false;
   _d->drawText = true;
   _d->bgStyle = greyBorderLine;
+  _d->needUpdateBackground = true;
   setTextAlignment( align::center, align::center );
 }
 

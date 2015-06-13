@@ -372,7 +372,6 @@ void EmpireMapWindow::Impl::drawCell(Engine& e, Point start, int side, NColor co
 world::ObjectPtr EmpireMapWindow::Impl::findObject(Point pos)
 {
   world::ObjectList objs = city->empire()->findObjects( -offset + pos, 15 );
-
   return objs.empty() ? world::ObjectPtr() : objs.front();
 }
 
@@ -721,11 +720,11 @@ void EmpireMapWindow::_toggleAi()
 {
   if( _d->currentCity.isValid() )
   {
-    world::City::AiMode mode = _d->currentCity->aiMode();
-    _d->currentCity->setAiMode( mode == world::City::inactive
+    world::City::AiMode mode = _d->currentCity->modeAI();
+    _d->currentCity->setModeAI( mode == world::City::inactive
                                       ? world::City::indifferent
                                       : world::City::inactive );
-    mode = _d->currentCity->aiMode();
+    mode = _d->currentCity->modeAI();
     _d->btnAi->setText( mode == world::City::inactive ? "CC" : "AI" );
   }
 }

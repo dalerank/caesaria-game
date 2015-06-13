@@ -314,7 +314,7 @@ void CityOptions::Impl::toggleCcUseAI()
 
   foreach( it, cities )
   {
-    (*it)->setAiMode( !value ? world::City::indifferent : world::City::inactive );
+    (*it)->setModeAI( !value ? world::City::indifferent : world::City::inactive );
   }
 
   update();
