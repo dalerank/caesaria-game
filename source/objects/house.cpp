@@ -530,7 +530,7 @@ bool House::_tryEvolve_1_to_12_lvl( int level4grow, int growSize, const char des
       //reset desirability level with old house size
       Desirability::update( _city(), this, Desirability::off );
 
-      setSize( growSize  );
+      setSize( Size( growSize ) );
       //_update( false );
 
       city::AreaInfo info = { _city(), pos(), TilesArray() };
@@ -557,7 +557,7 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
   bool mayGrow = true;
   TilePos buildPos = tile().pos();
 
-  if( size() == minSize-1 )
+  if( size() == Size( minSize-1 ) )
   {
     Tilemap& tmap = _city()->tilemap();
     std::map<TilePos, TilesArray> possibleAreas;
@@ -612,7 +612,7 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
       {
         buildPos = itArea->first;
         Desirability::update( _city(), this, Desirability::off );
-        setSize( minSize );
+        setSize( Size( minSize ) );
         _update( true );
         city::AreaInfo info = { _city(), buildPos, TilesArray() };
         build( info );
@@ -746,7 +746,7 @@ void House::_tryDegrade_20_to_12_lvl( int rsize, const char desirability )
       (*tile)->setOverlay( 0 );
     }
 
-    setSize( rsize );
+    setSize( Size( rsize ) );
     city::AreaInfo info = { _city(), bpos + moveVector, TilesArray() };
     build( info );
   }
