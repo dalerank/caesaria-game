@@ -34,7 +34,7 @@ public:
   enum { needTheater=1, needAmphitheater=2, needColosseum=3 };
 
   int level() const;
-  int getMaxHabitantsByTile() const;
+  int tileCapacity() const;
   int taxRate() const;
   int prosperity() const;
   int crime() const;

@@ -72,7 +72,7 @@ public:
   virtual void collapse();
   virtual void burn();
 
-  unsigned int maxHabitants();
+  unsigned int capacity();
   void addHabitants( CitizenGroup& habitants );
   CitizenGroup removeHabitants( int paramCount );
   void removeHabitants( CitizenGroup& group );
@@ -109,12 +109,13 @@ private:
   bool _tryEvolve_12_to_20_lvl(int level4grow, int minSize, const char desirability);
   void _tryDegrage_12_to_2_lvl( const char desirability );
   void _tryDegrade_20_to_12_lvl(int size, const char desirability);
-  void _updateHabitants(const CitizenGroup& group);
+  void _setServiceMaxValue( Service::Type type, unsigned int value );
   void _checkEvolve();
   void _checkPatricianDeals();
   void _updateTax();
   void _updateCrime();
   void _checkHomeless();
+  void _settleVacantLotIfNeed();
 
   class Impl;
   ScopedPtr< Impl > _d;

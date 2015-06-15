@@ -25,6 +25,9 @@ using namespace gfx;
 
 void Desirability::update( PlayerCityPtr r, OverlayPtr overlay, bool onBuild )
 {
+  if( r.isNull() )
+    return;
+
   Tilemap& tilemap = r->tilemap();
 
   const Desirability& dsrbl = overlay->desirability();

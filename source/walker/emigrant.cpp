@@ -208,7 +208,7 @@ void Emigrant::_reachedPathway()
 
 void Emigrant::_append2house( HousePtr house )
 {
-  int freeRoom = house->maxHabitants() - house->habitants().count();
+  int freeRoom = house->capacity() - house->habitants().count();
   if( freeRoom > 0 )
   {
     house->addHabitants( _d->peoples );
@@ -227,7 +227,7 @@ bool Emigrant::_checkNearestHouse()
     foreach( it, houses )
     {
       HousePtr house = *it;
-      unsigned int freeRoom = house->maxHabitants() - house->habitants().count();
+      unsigned int freeRoom = house->capacity() - house->habitants().count();
       vacantRoomPriority[ 1000 - freeRoom ] = house;
     }
 
@@ -235,7 +235,7 @@ bool Emigrant::_checkNearestHouse()
     {
       HousePtr house = it->second;
 
-      int freeRoom = house->maxHabitants() - house->habitants().count();
+      int freeRoom = house->capacity() - house->habitants().count();
       if( freeRoom > 0 )
       {
         Pathway pathway = PathwayHelper::create( pos(), house->pos(), makeDelegate( _d.data(), &Impl::mayWalk ) );
@@ -305,7 +305,7 @@ void Emigrant::_splitHouseFreeRoom(HouseList& moreRooms, HouseList& lessRooms )
   while( itHouse != moreRooms.end() )
   {
     HousePtr house = *itHouse;
-    unsigned int freeRoom = house->maxHabitants() - house->habitants().count();
+    unsigned int freeRoom = house->capacity() - house->habitants().count();
     if( freeRoom > 0 )
     {
       if( freeRoom > myPeoples )
@@ -335,7 +335,7 @@ void Emigrant::_findFinestHouses(HouseList& hlist)
   {
     HousePtr house = *itHouse;
     bool haveRoad = !house->roadside().empty();
-    bool haveVacantRoom = (house->habitants().count() < house->maxHabitants());
+    bool haveVacantRoom = (house->habitants().count() < house->capacity());
     bool normalDesirability = true;
     if( bigcity )
     {

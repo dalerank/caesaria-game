@@ -42,7 +42,7 @@ class HouseSpecification::Impl
 {
 public:
   int houseLevel;
-  int maxHabitantsByTile;
+  int tileCapacity;
   std::string levelName;
   std::string internalName;
   unsigned int srvcInterval, goodInterval, foodInterval;
@@ -70,7 +70,7 @@ public:
 int HouseSpecification::level() const {   return _d->houseLevel;}
 const std::string& HouseSpecification::levelName() const{   return _d->levelName;}
 bool HouseSpecification::isPatrician() const{   return _d->houseLevel >= HouseLevel::smallVilla;}
-int HouseSpecification::getMaxHabitantsByTile() const{   return _d->maxHabitantsByTile;}
+int HouseSpecification::tileCapacity() const{   return _d->tileCapacity; }
 int HouseSpecification::taxRate() const{   return _d->taxRate;}
 int HouseSpecification::minEntertainmentLevel() const{  return _d->minEntertainmentLevel;}
 int HouseSpecification::minEducationLevel() const{  return _d->minEducationLevel;}
@@ -642,7 +642,7 @@ int HouseSpecification::computeDesirabilityLevel(HousePtr house, std::string& oM
 HouseSpecification& HouseSpecification::operator=( const HouseSpecification& other )
 {
   _d->houseLevel = other._d->houseLevel;
-  _d->maxHabitantsByTile = other._d->maxHabitantsByTile;
+  _d->tileCapacity = other._d->tileCapacity;
   _d->levelName = other._d->levelName;
   _d->internalName = other._d->internalName;
   _d->taxRate = other._d->taxRate;
@@ -726,7 +726,7 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
     spec._d->houseLevel = hSpec[ "level" ];
     spec._d->internalName = item->first;
     spec._d->levelName = hSpec[ "title" ].toString();
-    spec._d->maxHabitantsByTile = hSpec.get( "habitants" ).toInt();
+    spec._d->tileCapacity = hSpec.get( "habitants" ).toInt();
     spec._d->minDesirability = hSpec.get( "minDesirability" ).toInt();  // min desirability
     spec._d->maxDesirability = hSpec.get( "maxDesirability" ).toInt();  // desirability levelUp
     spec._d->minEntertainmentLevel = hSpec.get( "entertainment" ).toInt();
