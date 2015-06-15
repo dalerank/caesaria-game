@@ -268,7 +268,8 @@
     desirability : { base :2,	range : 2,	step : -1 }
     employers : 2
     class : "health"
-    image : [ "security", 19 ]
+    size : [ 2, 2 ]
+    image : [ "barber", 1 ]
     service : "srvc_barber"
     sound : [ "barber", 1 ]
   }, 
@@ -556,6 +557,7 @@
     desirability : { base : 3,	range : 3,	step : -1 }
     employers : 6
     class : "administration"
+    image : [ "forum", 1 ]
     sound : [ "forum", 1 ]
   },   
   
@@ -813,6 +815,8 @@
     class : "industry"
     productRate : 4.8
     sound : [ "creamery", 1 ]
+    image : [ "oilworkshop", 1 ]
+    animation : { rc : "oilworkshopa", start : 1, count : 8, offset : [ 85, 30 ], delay : 4 }
     inflammability : 1.2
   },
   

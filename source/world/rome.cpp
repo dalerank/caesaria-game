@@ -50,7 +50,7 @@ public:
 Rome::Rome(EmpirePtr empire)
    : City( empire ), _d( new Impl )
 {
-  _picture().load(  "roma", 1  );
+  setPicture( gfx::Picture(  "roma", 1 ) );
 
   setLocation( defaultLocation );
   _d->strength = maxSoldiers;
@@ -64,6 +64,11 @@ econ::Treasury& Rome::treasury() { return _d->funds; }
 
 std::string Rome::name() const { return Rome::defaultName; }
 bool Rome::isPaysTaxes() const { return true; }
+
+std::string Rome::about(Object::AboutType type)
+{
+  return "##empiremap_capital##";
+}
 const city::States& Rome::states() const { return _d->states; }
 
 void Rome::timeStep(const unsigned int time)

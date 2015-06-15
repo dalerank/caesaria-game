@@ -158,11 +158,7 @@ void WorkingBuilding::timeStep( const unsigned long time )
 {
   Building::timeStep( time );
 
-  for( WalkerList::iterator it=_d->walkerList.begin(); it != _d->walkerList.end(); )
-  {
-    if( (*it)->isDeleted() ) { it = _d->walkerList.erase( it ); }
-    else { ++it; }
-  }
+  utils::eraseDeletedElements( _d->walkerList );
 
   if( game::Date::isMonthChanged() && numberWorkers() > 0 )
   {
@@ -181,28 +177,41 @@ void WorkingBuilding::_updateAnimation(const unsigned long time )
     {
       if( _animationRef().isStopped() )
       {
-        _animationRef().start();
+        _changeAnimationState( true );
       }      
     }
     else
     {
       if( _animationRef().isRunning() )
-      {
-        if( _d->clearAnimationOnStop && !_fgPictures().empty() )
-        {
-          _fgPictures().back() = Picture::getInvalid();
-        }
-
-        _animationRef().stop();
+      {      
+        _changeAnimationState( false );
       }
     }
   }
 
-  _animationRef().update( time );
-  const Picture& pic = _animationRef().currentFrame();
-  if( pic.isValid() && !_fgPictures().empty() )
+  if( _animationRef().isRunning() )
   {
-    _fgPictures().back() = _animationRef().currentFrame();
+    _animationRef().update( time );
+    const Picture& pic = _animationRef().currentFrame();
+    if( pic.isValid() && !_fgPictures().empty() )
+    {
+      _fgPictures().back() = _animationRef().currentFrame();
+    }
+  }
+}
+
+void WorkingBuilding::_changeAnimationState(bool enabled)
+{
+  if( enabled )
+    _animationRef().start();
+  else
+  {
+    _animationRef().stop();
+
+    if( _d->clearAnimationOnStop && !_fgPictures().empty() )
+    {
+      _fgPictures().back() = Picture::getInvalid();
+    }
   }
 }
 

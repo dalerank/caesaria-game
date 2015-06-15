@@ -591,7 +591,7 @@ void ListBox::_drawItemText( Engine& painter, ListBoxItem& item, const Point& po
 
 void ListBox::_updateItemText(Engine& painter, ListBoxItem& item, const Rect& textRect, Font font, const Rect& frameRect)
 {
-  item.updateText( textRect.UpperLeftCorner, font, frameRect.size() );
+  item.updateText( textRect.lefttop(), font, frameRect.size() );
 }
 
 void ListBox::beforeDraw(gfx::Engine& painter)
@@ -638,7 +638,7 @@ void ListBox::beforeDraw(gfx::Engine& painter)
         Rect textRect = currentFont.getTextRect( refItem.text(), Rect( Point(0, 0), frameRect.size() ),
                                                  itemTextHorizontalAlign, itemTextVerticalAlign );
 
-        textRect.UpperLeftCorner += Point( _d->itemsIconWidth+3, 0 );
+        textRect._lefttop += Point( _d->itemsIconWidth+3, 0 );
 
         _updateItemText( painter, refItem, textRect, currentFont, frameRect);
       }
@@ -675,8 +675,8 @@ void ListBox::draw( gfx::Engine& painter )
   const Point& widgetLeftup = absoluteRect().lefttop();
 
   Rect clipRect = absoluteClippingRectRef();
-  clipRect.UpperLeftCorner += Point( 3, 3 );
-  clipRect.LowerRightCorner -= Point( 3, 3 );
+  clipRect._lefttop += Point( 3, 3 );
+  clipRect._bottomright -= Point( 3, 3 );
 
   for( unsigned int i = 0; i < _d->items.size();  i++ )
   {

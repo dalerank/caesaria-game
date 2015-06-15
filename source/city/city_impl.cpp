@@ -89,11 +89,11 @@ void Overlays::onDestroyOverlay(PlayerCityPtr city, OverlayPtr overlay)
   Desirability::update( city, overlay, Desirability::off );
 }
 
-void Walkers::append(WalkerPtr w)
+void Walkers::postpone(WalkerPtr w)
 {
   ++idCount;
   w->setUniqueId( idCount );
-  FlowList::append( w );
+  FlowList::postpone( w );
 }
 
 void Walkers::clear()

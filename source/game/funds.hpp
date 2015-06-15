@@ -47,6 +47,31 @@ struct Issue
   Issue( Type t, int m ) : type( t ), money( m ) {}
 };
 
+class IssuesDetailedHistory
+{
+public:
+  struct DateIssue : public Issue
+  {
+    DateTime time;
+
+    VariantList save() const;
+    void load(const VariantList& stream);
+  };
+  typedef std::vector<DateIssue> DateIssues;
+
+  void addIssue( Issue issue );
+  const DateIssues& issues();
+  IssuesDetailedHistory();
+  ~IssuesDetailedHistory();
+
+  VariantList save() const;
+  void load( const VariantList& stream );
+
+private:
+  class Impl;
+  ScopedPtr<Impl> _d;
+};
+
 class IssuesValue : public std::map< Issue::Type, int >
 {
 

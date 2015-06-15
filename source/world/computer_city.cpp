@@ -244,7 +244,7 @@ public:
   bool distantCity;
   bool available;
   int strength;
-  City::AiMode useAI;
+  City::AiMode modeAI;
   int sentiment;
   Buildings buildings;
   CitizenGroup peoples;
@@ -280,7 +280,7 @@ public:
 
 void ComputerCity::Impl::calculateMonthState()
 {
-  if( useAI == City::inactive )
+  if( modeAI == City::inactive )
     return;
 
   updateWorkersInBuildings();
@@ -393,6 +393,8 @@ void ComputerCity::Impl::citizensConsumeServices()
 
   std::set<CheckType> checkTypes;
   checkTypes << CheckType( object::school, CitizenGroup::scholar, 4 )
+             << CheckType( object::academy, CitizenGroup::student, 4 )
+             << CheckType( object::library, CitizenGroup::mature, 4 )
              << CheckType( object::small_ceres_temple, object::big_ceres_temple, CitizenGroup::any, 4 )
              << CheckType( object::small_mars_temple, object::big_mars_temple, CitizenGroup::any, 4 )
              << CheckType( object::small_mercury_temple, object::big_mercury_temple, CitizenGroup::any, 4 )
@@ -461,6 +463,62 @@ void ComputerCity::Impl::updateWorkingWarehouse()
   }
 
   internalGoods.setCapacity( futureCityCapacity );
+}
+
+void ComputerCity::_checkMerchantsDeadline()
+{
+  if( _d->lastTimeMerchantSend.monthsTo( game::Date::current() ) > config::trade::minMonthsMerchantSend )
+  {
+    TraderouteList routes = empire()->tradeRoutes( name() );
+
+    if( routes.empty() )
+      return;
+
+    if( !_mayTrade() )
+      return;
+
+    _d->lastTimeMerchantSend = game::Date::current();
+
+    if( _d->merchantsNumber >= routes.size() )
+    {
+      return;
+    }
+
+    good::Storage sellGoods, buyGoods;
+    sellGoods.setCapacity( Merchant::defaultCapacity );
+    buyGoods.setCapacity( Merchant::defaultCapacity );
+
+    foreach( gtype, good::all() )
+    {
+      buyGoods.setCapacity( *gtype, _d->buys.capacity( *gtype ) );
+
+      //how much space left
+      int maxQty = (std::min)( _d->sells.capacity( *gtype ) / 4, sellGoods.freeQty() );
+
+      //we want send merchants to all routes
+      maxQty /= routes.size();
+
+      int qty = math::clamp( _d->sells.qty( *gtype ), 0, maxQty );
+
+      //have no goods to sell
+      if( qty == 0 )
+        continue;
+
+      good::Stock& stock = sellGoods.getStock( *gtype );
+      stock.setCapacity( qty );
+
+      //move goods to merchant's storage
+      _d->sells.retrieve( stock, qty );
+    }
+
+    //send merchants to all routes
+    foreach( route, routes )
+    {
+      _d->merchantsNumber++;
+      (*route)->addMerchant( name(), sellGoods, buyGoods );
+    }
+  }
+
 }
 
 void ComputerCity::Impl::placeNewBuildings()
@@ -697,7 +755,7 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
   _d->distantCity = false;
   _d->merchantsNumber = 0;
   _d->available = true;
-  _d->useAI = City::inactive;
+  _d->modeAI = City::inactive;
   _d->states.population = 0;
   _d->states.nation = world::nation::unknown;
   _d->sells.setCapacity( 99999 );
@@ -710,16 +768,27 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
 }
 
 bool ComputerCity::_mayTrade() const { return _d->tradeDelay <= 0; }
-
 econ::Treasury& ComputerCity::treasury() { return _d->funds; }
 bool ComputerCity::isPaysTaxes() const { return true; }
 bool ComputerCity::haveOverduePayment() const { return false; }
-void ComputerCity::setAiMode(City::AiMode mode) { _d->useAI = mode; }
+City::AiMode ComputerCity::modeAI() const { return _d->modeAI; }
 bool ComputerCity::isDistantCity() const{  return _d->distantCity;}
 bool ComputerCity::isAvailable() const{  return _d->available;}
 void ComputerCity::setAvailable(bool value){  _d->available = value;}
-
 SmartPtr<Player> ComputerCity::mayor() const { return 0; }
+
+void ComputerCity::setModeAI(City::AiMode mode)
+{
+  _d->modeAI = mode;
+  if( mode == indifferent )
+  {
+    if( _d->peoples.count() == 0 )
+    {
+      _d->targets.population = 2000;
+      _d->peoples += CitizenGroup::random( _d->targets.population );
+    }
+  }
+}
 
 void ComputerCity::save( VariantMap& options ) const
 {
@@ -736,7 +805,7 @@ void ComputerCity::save( VariantMap& options ) const
   options[ "sea" ] = (_d->tradeType & EmpireMap::sea ? true : false);
   options[ "land" ] = (_d->tradeType & EmpireMap::land ? true : false);
 
-  VARIANT_SAVE_ENUM_D( options, _d, useAI )
+  VARIANT_SAVE_ENUM_D( options, _d, modeAI )
   VARIANT_SAVE_ANY_D( options, _d, lastTimeMerchantSend )
   VARIANT_SAVE_ANY_D( options, _d, lastTimeUpdate )
   VARIANT_SAVE_ANY_D( options, _d, states.age )
@@ -766,7 +835,7 @@ void ComputerCity::load( const VariantMap& options )
   VARIANT_LOAD_ANY_D   ( _d, tradeDelay,            options )
   VARIANT_LOAD_TIME_D  ( _d, lastAttack,            options )
   VARIANT_LOAD_ANY_D   ( _d, strength,              options )
-  VARIANT_LOAD_ENUM_D  ( _d, useAI,                 options )
+  VARIANT_LOAD_ENUM_D  ( _d, modeAI,                options )
   VARIANT_LOAD_ANYDEF_D( _d, sentiment,         50, options )
   VARIANT_LOAD_ANYDEF_D( _d, states.population, _d->states.population, options )
 
@@ -917,57 +986,7 @@ void ComputerCity::timeStep( unsigned int time )
     }
   }
 
-  if( _d->lastTimeMerchantSend.monthsTo( game::Date::current() ) > config::trade::minMonthsMerchantSend )
-  {
-    TraderouteList routes = empire()->tradeRoutes( name() );
-
-    if( routes.empty() )
-      return;
-
-    if( !_mayTrade() )
-      return;
-
-    _d->lastTimeMerchantSend = game::Date::current();
-
-    if( _d->merchantsNumber >= routes.size() )
-    {
-      return;
-    }
-
-    good::Storage sellGoods, buyGoods;
-    sellGoods.setCapacity( Merchant::defaultCapacity );
-    buyGoods.setCapacity( Merchant::defaultCapacity );
-
-    foreach( gtype, good::all() )
-    {
-      buyGoods.setCapacity( *gtype, _d->buys.capacity( *gtype ) );
-
-      //how much space left
-      int maxQty = (std::min)( _d->sells.capacity( *gtype ) / 4, sellGoods.freeQty() );
-
-      //we want send merchants to all routes
-      maxQty /= routes.size();
-
-      int qty = math::clamp( _d->sells.qty( *gtype ), 0, maxQty );
-
-      //have no goods to sell
-      if( qty == 0 )
-        continue;
-
-      good::Stock& stock = sellGoods.getStock( *gtype );
-      stock.setCapacity( qty );
-
-      //move goods to merchant's storage
-      _d->sells.retrieve( stock, qty );
-    }
-
-    //send merchants to all routes
-    foreach( route, routes )
-    {
-      _d->merchantsNumber++;
-      (*route)->addMerchant( name(), sellGoods, buyGoods );
-    }
-  }
+  _checkMerchantsDeadline();
 }
 
 DateTime ComputerCity::lastAttack() const { return _d->lastAttack; }
@@ -978,14 +997,17 @@ std::string ComputerCity::about(Object::AboutType type)
   switch(type)
   {
   case empireMap:
-    {
-      if( isDistantCity() ) ret = "##empmap_distant_romecity_tip##";
-      else ret = name();
-    }
+    if( isDistantCity() ) ret = "##empmap_distant_romecity_tip##";
+    else ret = name();
+  break;
+
+  case empireAdvInfo:
+    if( isDistantCity() ) ret = "##empiremap_distant_city##";
+    else ret = "";
   break;
 
   default:
-      ret = "##compcity_unknown_about##";
+    ret = "##compcity_unknown_about##";
   }
 
   return ret;
@@ -1001,7 +1023,7 @@ void ComputerCity::_initTextures()
   if( _d->distantCity ) { index = PicID::distantCity; }
   else if( _d->states.romeCity ) { index = PicID::romeCity; }
 
-  _picture().load( ResourceGroup::empirebits, index );
+  setPicture( Picture( ResourceGroup::empirebits, index ) );
   _animation().load( ResourceGroup::empirebits, index+1, 6 );
   _animation().setLoop( true );
   _animation().setDelay( 2 );

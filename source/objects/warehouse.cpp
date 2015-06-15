@@ -182,7 +182,7 @@ void Warehouse::timeStep(const unsigned long time)
   {
     _d->animFlag.update( time );
 
-    _fgPictures()[3] = _d->animFlag.currentFrame();
+    _fgPicture(3) = _d->animFlag.currentFrame();
   }
 
   if( game::Date::isWeekChanged() )

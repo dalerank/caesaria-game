@@ -76,7 +76,7 @@ void GroupBox::draw(gfx::Engine& painter )
 
   if( _d->backgroundImage.isValid() )
   {
-    painter.draw( _d->backgroundImage, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+    painter.draw( _d->backgroundImage, absoluteRect().lefttop(), &absoluteClippingRectRef() );
   }
   else
   {

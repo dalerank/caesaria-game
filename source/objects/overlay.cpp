@@ -176,6 +176,10 @@ void Overlay::load( const VariantMap& stream )
 
 void Overlay::initialize(const MetaData& mdata)
 {
+  Size size = mdata.getOption( "size" );
+  if( size.area() > 0 )
+    setSize( size );
+
   if( mdata.picture().isValid() )
   {
     setPicture( mdata.picture() );  // default picture for build tool

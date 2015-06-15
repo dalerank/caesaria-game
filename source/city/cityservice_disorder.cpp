@@ -137,6 +137,7 @@ public:
   void generateRioter( PlayerCityPtr city, HousePtr house );
   void generateProtestor( PlayerCityPtr city, HousePtr house );
   void changeCrimeLevel(PlayerCityPtr city , int delta);
+  void weekUpdate( unsigned int time, PlayerCityPtr rcity );
 };
 
 SrvcPtr Disorder::create( PlayerCityPtr city )
@@ -157,39 +158,30 @@ Disorder::Disorder( PlayerCityPtr city )
   _d->crime.level.maximum = 0;
 }
 
-void Disorder::timeStep( const unsigned int time )
+void Disorder::Impl::weekUpdate( unsigned int time, PlayerCityPtr rcity )
 {
-  if( game::Date::isYearChanged() )
-  {
-    _d->crime.rioters.nextYear();
-    _d->crime.protestor.nextYear();
-  }
+  HouseList houses = city::statistic::getHouses( rcity );
 
-  if( !game::Date::isWeekChanged() )
-    return;
-
-  HouseList houses = city::statistic::getHouses( _city() );
-
-  const WalkerList& walkers = _city()->walkers( walker::protestor );
+  const WalkerList& walkers = rcity->walkers( walker::protestor );
 
   HouseList criminalizedHouse;
-  _d->crime.level.current = 0;
-  _d->crime.level.maximum = 0;
+  crime.level.current = 0;
+  crime.level.maximum = 0;
 
   foreach( house, houses )
   {
     int currentValue = (*house)->getServiceValue( Service::crime )+1;
-    if( currentValue >= _d->crime.level.minimum )
+    if( currentValue >= crime.level.minimum )
     {
       criminalizedHouse.push_back( *house );
     }
 
-    _d->crime.level.current += currentValue;
-    _d->crime.level.maximum = std::max<int>( _d->crime.level.maximum, currentValue );
+    crime.level.current += currentValue;
+    crime.level.maximum = std::max<int>( crime.level.maximum, currentValue );
   }
 
   if( houses.size() > 0 )
-   _d->crime.level.current /= houses.size();
+    crime.level.current /= houses.size();
 
   if( criminalizedHouse.size() > walkers.size() )
   {
@@ -198,7 +190,7 @@ void Disorder::timeStep( const unsigned int time )
 
     int hCrimeLevel = (*it)->getServiceValue( Service::crime );
 
-    int sentiment = _city()->sentiment();
+    int sentiment = rcity->sentiment();
     int randomValue = math::random( crime::maxValue );
     if (sentiment >= minSentiment4protest )
     {
@@ -206,7 +198,7 @@ void Disorder::timeStep( const unsigned int time )
       {
         if ( hCrimeLevel > crime::level4protestor )
         {
-          _d->generateProtestor( _city(), *it );
+          generateProtestor( rcity, *it );
         }
       }
     }
@@ -216,11 +208,11 @@ void Disorder::timeStep( const unsigned int time )
       {
         if ( hCrimeLevel >= crime::level4mugger )
         {
-          _d->generateMugger( _city(), *it );
+          generateMugger( rcity, *it );
         }
         else if ( hCrimeLevel > crime::level4protestor )
         {
-          _d->generateProtestor( _city(), *it );
+          generateProtestor( rcity, *it );
         }
       }
     }
@@ -228,11 +220,25 @@ void Disorder::timeStep( const unsigned int time )
     {
       if ( randomValue >= sentiment + 50 )
       {
-        if ( hCrimeLevel >= crime::level4rioter ) { _d->generateRioter( _city(), *it ); }
-        else if ( hCrimeLevel >= crime::level4mugger ) { _d->generateMugger( _city(), *it ); }
-        else if ( hCrimeLevel > crime::level4protestor ) { _d->generateProtestor( _city(), *it ); }
+        if ( hCrimeLevel >= crime::level4rioter ) { generateRioter( rcity, *it ); }
+        else if ( hCrimeLevel >= crime::level4mugger ) { generateMugger( rcity, *it ); }
+        else if ( hCrimeLevel > crime::level4protestor ) { generateProtestor( rcity, *it ); }
       }
     }
+  }
+}
+
+void Disorder::timeStep( const unsigned int time )
+{
+  if( game::Date::isYearChanged() )
+  {
+    _d->crime.rioters.nextYear();
+    _d->crime.protestor.nextYear();
+  }
+
+  if( game::Date::isWeekChanged() )
+  {
+    _d->weekUpdate( time, _city() );
   }
 }
 

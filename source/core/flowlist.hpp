@@ -33,7 +33,7 @@ public:
     _willAdd.clear();
   }
 
-  void append( SmartPtr<T> overlay ) { _willAdd << overlay; }
+  void postpone( SmartPtr<T> overlay ) { _willAdd << overlay; }
 
 private:
   SmartList<T> _willAdd;

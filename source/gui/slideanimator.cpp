@@ -32,20 +32,20 @@ void SlideAnimator::Impl::checkMode( SlideAnimator* anim )
     if( anim->parent() )
     {
         Rect parentRect = anim->parent()->relativeRect();
-        anim->setStopPos( parentRect.UpperLeftCorner );
+        anim->setStopPos( parentRect.lefttop() );
         Rect hRect = anim->parent()->parent()
                                     ? anim->parent()->parent()->relativeRect()
                                     : Rect( Point( 0, 0 ), anim->ui()->rootWidget()->size() );
         switch( mode )
         {
         case SlideAnimator::SlideTop: anim->setStopPos( Point( anim->getStopPos().x(), -parentRect.height() ) ); break;
-        case SlideAnimator::SlideBottom: anim->setStopPos( Point( anim->getStopPos().x(), hRect.LowerRightCorner.y() ) ); break;
+        case SlideAnimator::SlideBottom: anim->setStopPos( Point( anim->getStopPos().x(), hRect.bottom() ) ); break;
         case SlideAnimator::SlideLeft: anim->setStopPos( Point( - parentRect.width(), anim->getStopPos().y() ) ); break;
-        case SlideAnimator::SlideRight: anim->setStopPos( Point( hRect.LowerRightCorner.x(), anim->getStopPos().y() ) ); break;
+        case SlideAnimator::SlideRight: anim->setStopPos( Point( hRect.right(), anim->getStopPos().y() ) ); break;
         case SlideAnimator::SlideTopLeft: anim->setStopPos( Point( -parentRect.height(), -parentRect.width() ) ); break;
-        case SlideAnimator::SlideTopRight: anim->setStopPos( Point( -parentRect.height(), hRect.LowerRightCorner.x() ) ); break;
-        case SlideAnimator::SlideBottomLeft: anim->setStopPos( Point( -parentRect.width(), hRect.LowerRightCorner.y() ) ); break;
-        case SlideAnimator::SlideBottomRight: anim->setStopPos( Point( hRect.LowerRightCorner.x(), hRect.LowerRightCorner.y() ) ); break;
+        case SlideAnimator::SlideTopRight: anim->setStopPos( Point( -parentRect.height(), hRect.right() ) ); break;
+        case SlideAnimator::SlideBottomLeft: anim->setStopPos( Point( -parentRect.width(), hRect.bottom() ) ); break;
+        case SlideAnimator::SlideBottomRight: anim->setStopPos( Point( hRect.right(), hRect.bottom() ) ); break;
         }
     }
 

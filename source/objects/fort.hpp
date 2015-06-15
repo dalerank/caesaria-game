@@ -74,6 +74,7 @@ public:
   void setAttackAnimals( bool value );
 
 protected:
+  void _check4newSoldier();
   virtual void _readyNewSoldier() {}
   virtual void _setPatrolPoint( PatrolPointPtr patrolPoint );
   virtual void _setEmblem( gfx::Picture pic );

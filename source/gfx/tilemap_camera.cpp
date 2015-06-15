@@ -51,8 +51,10 @@ public:
   Size screeSize;
   Size borderSize;
   Point offset;
+
   int scrollSpeed;
   int zoom;
+  bool zoomAlsoLess;
 
   Tilemap* tmap;   // tile map to display
   PointF centerMapXZ; // center of the view(in tiles)
@@ -82,6 +84,7 @@ TilemapCamera::TilemapCamera() : _d( new Impl )
   _d->screeSize = Size( 0 );
   _d->virtualSize = Size( 0 );
   _d->centerMapXZ = PointF( 0, 0 );
+  _d->zoomAlsoLess = false;
   _d->borderSize = Size( gfx::tilemap::cellSize().width() * 4 );
   _d->tiles.reserve( 2000 );
   _d->zoom = 100;
@@ -184,12 +187,39 @@ void TilemapCamera::_setCenter(Point pos, bool checkBorder)
 TilePos TilemapCamera::center() const
 {
   Tile* tile = centerTile();
-  return tile ? tile->pos() : gfx::tilemap::invalidLocation();
+  return tile ? tile->epos() : gfx::tilemap::invalidLocation();
+}
+
+void TilemapCamera::changeZoom(int delta)
+{
+  int newZoom = math::clamp<int>( _d->zoom + delta, zoomMiniminal, zoomMaximum );
+
+  int mapLast = _d->tmap->size() - 1;
+  const Tile& l00 = _d->tmap->at( 0, 0 );
+  const Tile& l01 = _d->tmap->at( 0, mapLast );
+  const Tile& l10 = _d->tmap->at( mapLast, 0 );
+  const Tile& l11 = _d->tmap->at( mapLast, mapLast );
+
+  float koeff = newZoom / 100.f;
+  float horizontalDistance = l00.mappos().distanceTo( l11.mappos() ) * koeff;
+  float verticalDistance = l01.mappos().distanceTo( l10.mappos() ) * koeff;
+  if( horizontalDistance < _d->screeSize.width()
+      && verticalDistance < _d->screeSize.height() )
+  {
+    if( newZoom < _d->zoom )
+    {
+      if( !_d->zoomAlsoLess )
+        _d->zoomAlsoLess = true;
+      else
+        return;
+    }
+  }
+  _d->zoomAlsoLess = false;
+  _d->zoom = newZoom;
 }
 
 void TilemapCamera::setZoom(int value) { _d->zoom = value; }
 int TilemapCamera::zoom() const{ return _d->zoom; }
-void TilemapCamera::changeZoom(int delta) { _d->zoom = math::clamp<int>( _d->zoom + delta, zoomMiniminal, zoomMaximum ); }
 int TilemapCamera::maxZoom() const { return zoomMaximum; }
 int TilemapCamera::centerX() const  {   return _d->centerMapXZ.x();   }
 int TilemapCamera::centerZ() const  {   return _d->centerMapXZ.y();   }

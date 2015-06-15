@@ -161,7 +161,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
 
   _d->services.initialize( this, ":/services.model" );
 
-  _picture().load( ResourceGroup::empirebits, 1 );
+  setPicture( Picture( ResourceGroup::empirebits, 1 ) );
   _initAnimation();
 
   setOption( updateRoads, 0 );
@@ -176,6 +176,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( legionAttack, 0 );
   setOption( climateType, game::climate::central );
   setOption( c3gameplay, 0 );
+  setOption( highlightBuilding, 1 );
   setOption( difficulty, game::difficulty::usual );
 
   _d->states.nation = world::nation::rome;
@@ -192,7 +193,8 @@ std::string PlayerCity::about(Object::AboutType type)
   std::string ret;
   switch(type)
   {
-  case empireMap: ret = "##empiremap_our_city##";      break;
+  case empireMap: ret = "##empiremap_our_city##";     break;
+  case empireAdvInfo: ret = "##empiremap_our_city##"; break;
   default:        ret = "##ourcity_unknown_about##";  break;
   }
 
@@ -231,7 +233,7 @@ void PlayerCity::timeStep(unsigned int time)
     // for each overlay
     foreach( it, _d->overlays )
     {
-      ConstructionPtr construction = ptr_cast<Construction>( *it );
+      ConstructionPtr construction = (*it).as<Construction>();
       if( construction != NULL )
       {
         // overlay matches the filter
@@ -536,13 +538,13 @@ void PlayerCity::load( const VariantMap& stream )
   _initAnimation();
 }
 
-void PlayerCity::addOverlay( OverlayPtr overlay ) { _d->overlays.append( overlay ); }
+void PlayerCity::addOverlay( OverlayPtr overlay ) { _d->overlays.postpone( overlay ); }
 
 PlayerCity::~PlayerCity() {}
 
 void PlayerCity::addWalker( WalkerPtr walker )
 {
-  _d->walkers.append( walker );
+  _d->walkers.postpone( walker );
 
   walker->setFlag( Walker::showDebugInfo, true );
 }

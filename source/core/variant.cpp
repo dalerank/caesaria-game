@@ -470,9 +470,18 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
                 *str = (*v_cast<StringArray>(d))[0];
               }
             break;
-            /*case Variant::Url:
-                *str = v_cast<Url>(d)->toString();
-            break;*/
+            case Variant::NSize:
+              {
+                const Size* ns = v_cast<Size>(d);
+                *str = utils::format( 0xff, "[%d,%d]", ns->width(), ns->height() );
+              }
+            break;
+            case Variant::NPoint:
+              {
+                const Point* ns = v_cast<Point>(d);
+                *str = utils::format( 0xff, "[%d,%d]", ns->x(), ns->y() );
+              }
+            break;
             default:
                 return false;
         }

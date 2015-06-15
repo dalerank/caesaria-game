@@ -394,7 +394,7 @@ void Plaza::updatePicture()
     }
 
     Desirability::update( _city(), this, Desirability::off );
-    setSize( 2 );
+    setSize( Size( 2 ) );
     city::AreaInfo info = { _city(), pos(), TilesArray() };
     Construction::build( info );
     setPicture( MetaDataHolder::randomPicture( type(), size() ) );
