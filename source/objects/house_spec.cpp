@@ -244,9 +244,20 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing,
   return res;
 }
 
-unsigned int HouseSpecification::getServiceConsumptionInterval() const{  return _d->srvcInterval;}
-unsigned int HouseSpecification::foodConsumptionInterval() const{  return _d->foodInterval; }
-unsigned int HouseSpecification::getGoodConsumptionInterval() const{ return _d->goodInterval; }
+unsigned int HouseSpecification::consumptionInterval(HouseSpecification::IntervalName name) const
+{
+  switch( name )
+  {
+  case intv_service: return _d->srvcInterval;
+  case intv_foods: return _d->foodInterval;
+  case intv_goods: return _d->goodInterval;
+
+  default: break;
+  }
+
+  Logger::warning( "WARNING !!! Unknown interval name %d", name );
+  return 0;
+}
 
 int HouseSpecification::findUnwishedBuildingNearby(HousePtr house, object::Type& rType, TilePos& refPos ) const
 {

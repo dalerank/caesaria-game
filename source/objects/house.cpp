@@ -381,6 +381,26 @@ void House::_settleVacantLotIfNeed()
     _update( true );
 
     Desirability::update( _city(), this, Desirability::on );
+    }
+}
+
+void House::_checkConsumptions( const unsigned long time )
+{
+  if( time % spec().consumptionInterval( HouseSpecification::intv_service ) == 0 )
+  {
+    _d->consumeServices();
+    _updateHealthLevel();
+    cancelService( Service::recruter );
+  }
+
+  if( time % spec().consumptionInterval( HouseSpecification::intv_foods ) == 0 )
+  {
+    _d->consumeFoods( this );
+  }
+
+  if( time % spec().consumptionInterval( HouseSpecification::intv_goods ) == 0 )
+  {
+    _d->consumeGoods( this );
   }
 }
 
@@ -402,22 +422,7 @@ void House::timeStep(const unsigned long time)
     _d->economy.taxesThisYear = 0;
   }
 
-  if( time % spec().getServiceConsumptionInterval() == 0 )
-  {
-    _d->consumeServices();
-    _updateHealthLevel();
-    cancelService( Service::recruter );
-  }
-
-  if( time % spec().foodConsumptionInterval() == 0 )
-  {
-    _d->consumeFoods( this );
-  }
-
-  if( time % spec().getGoodConsumptionInterval() == 0 )
-  {
-    _d->consumeGoods( this );
-  }
+  _checkConsumptions( time );
 
   if( game::Date::isMonthChanged() )
   {
@@ -1441,7 +1446,8 @@ void House::Impl::consumeFoods(HousePtr house)
   if( foodLevel == 0 )
     return;
 
-  const int needFoodQty = spec.computeMonthlyFoodConsumption( house ) * spec.foodConsumptionInterval() / game::Date::days2ticks( 30 );
+  const int interval = spec.consumptionInterval( HouseSpecification::intv_foods );
+  const int needFoodQty = spec.computeMonthlyFoodConsumption( house ) * interval / game::Date::days2ticks( 30 );
 
   int availableFoodLevel = 0;
   for( good::Product afl=good::wheat; afl <= good::vegetable; ++afl )
@@ -1481,5 +1487,5 @@ void House::Impl::consumeFoods(HousePtr house)
   if( !haveFoods4Eating )
   {
     Logger::warning( "House: [%dx%d] have no food for habitants", house->pos().i(), house->pos().j() );
-    }
+  }
 }

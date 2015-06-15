@@ -116,6 +116,7 @@ private:
   void _updateCrime();
   void _checkHomeless();
   void _settleVacantLotIfNeed();
+  void _checkConsumptions(const unsigned long time);
 
   class Impl;
   ScopedPtr< Impl > _d;
