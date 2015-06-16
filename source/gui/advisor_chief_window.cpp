@@ -119,13 +119,14 @@ public:
 class Chief::Impl
 {
 public:  
-  PlayerCityPtr city;
-  std::vector<InfomationRow*> rows;
+  typedef std::vector<InfomationRow*> InformationTable;
 
+  PlayerCityPtr city;
+  InformationTable rows;
   TexturedButton* btnHelp;
 
+public:
   void drawReportRow( AdviceType, std::string text, NColor color=DefaultColors::black );
-
   void drawEmploymentState();
   void drawProfitState();
   void drawMigrationState();
