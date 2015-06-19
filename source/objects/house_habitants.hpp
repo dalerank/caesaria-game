@@ -19,7 +19,6 @@
 #define __CAESARIA_HOUSE_HABITANTS_H_INCLUDED__
 
 #include "game/citizen_group.hpp"
-#include "game/service.hpp"
 
 class House;
 
@@ -46,16 +45,17 @@ public:
   void load( const VariantMap& stream );
 };
 
-class RecruterService : public Service
+class RecruterService
 {
 public:
   RecruterService( Habitants& habitants ) : _habitants( habitants ) {}
+  RecruterService( const RecruterService& other ) : _habitants( other._habitants ) {}
 
-  virtual void set( float i );
-  virtual float value() const;
+  void set( float i );
+  float value() const;
 
-  virtual int max() const;
-  virtual void setMax( int value );
+  int max() const;
+  void setMax( int value );
 
 private:
   Habitants& _habitants;
