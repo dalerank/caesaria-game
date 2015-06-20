@@ -51,6 +51,10 @@ public:
   {
     unsigned int columnCount = table->width() / 150;
     table->setRowHeight( 150 );
+
+    if( items.size() < columnCount )
+      columnCount = items.size();
+
     for( unsigned int k=0; k < columnCount; k++ )
     {
       table->addColumn( "" );
@@ -66,15 +70,17 @@ public:
         table->addRow( rowNumber );
       }
 
-      Picture pic;
-      if( items[ k ].isMyExtension( ".pdf" ) )
-      { pic = Picture( "dlcperf", 1 ); }
-      else
-      { pic = PictureLoader::instance().load( vfs::NFile::open( items[ k ] ) ); }
+      Path picPath = items[ k ];
+      if( picPath.isMyExtension( ".pdf" ) || picPath.isMyExtension( ".mp3" ) )
+      {
+        picPath = picPath.changeExtension( "png" );
+      }
+
+      Picture pic = PictureLoader::instance().load( vfs::NFile::open( picPath ) );
       Image* image = new Image( table, Rect( 0, 0, 140, 140 ), pic, Image::best );
       table->addElementToCell( rowNumber, columnNumber, image );
       table->setCellData( rowNumber, columnNumber, "path", items[ k ].toString() );
-    }
+    }    
   }
 
   void init( const Size& size )
@@ -124,7 +130,7 @@ DlcFolderViewer::DlcFolderViewer(Widget* parent, Directory folder )
     }
   }
 
-  _d->table = new Table( this, -1, Rect( 80, 50, width() - 50, height() - 50 ) );
+  _d->table = new Table( this, -1, Rect( 120, 50, width() - 40, height() - 50 ) );
   _d->table->setDrawFlag( Table::drawColumns, false );
   _d->table->setDrawFlag( Table::drawRows, false );
   _d->table->setDrawFlag( Table::drawActiveCell, true );

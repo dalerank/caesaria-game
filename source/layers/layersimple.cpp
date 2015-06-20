@@ -83,7 +83,7 @@ void Simple::afterRender(Engine& engine)
     _d->lastOverlay = tile->overlay();
     _d->highlightAny = false;
 
-    if( is_kind_of<Building>( tile->overlay() )
+    if( tile->overlay().is<Building>()
         && !_d->inacceptable.count( tile->overlay()->type() ) )
       _d->highlightAny = true;
   }

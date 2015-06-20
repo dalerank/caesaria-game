@@ -43,8 +43,8 @@ public:
   // performs one simulation step
   virtual bool isAvailable() const { return true; }
   virtual void setAvailable( bool value ) {}
-  virtual void setAiMode( AiMode mode ) {}
-  virtual AiMode aiMode() const { return aiCount; }
+  virtual void setModeAI( AiMode mode ) {}
+  virtual AiMode modeAI() const { return aiCount; }
 
   virtual unsigned int tradeType() const = 0;
   virtual econ::Treasury& treasury() = 0;

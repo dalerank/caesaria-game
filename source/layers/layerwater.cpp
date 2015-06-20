@@ -83,7 +83,7 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
 
         drawArea( engine, overlay->area(), offset, ResourceGroup::waterOverlay, OverlayPic::base + tileNumber );
 
-        areaSize = 0;
+        areaSize = Size( 0 );
       }
     }
 

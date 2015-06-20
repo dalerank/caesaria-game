@@ -68,7 +68,7 @@ public:
         Font f = font( _state() );
         std::string text = _("##trade_btn_notrade_text##");
         Rect textRect = f.getTextRect( text, Rect( Point( 0, 0), size() ), horizontalTextAlign(), verticalTextAlign() );
-        f.draw( _textPicture(), text, textRect.UpperLeftCorner );
+        f.draw( _textPicture(), text, textRect._lefttop );
       }
       break;
 
@@ -81,11 +81,11 @@ public:
         Font f = font( _state() );
         std::string text = (order == trade::importing ? "##trade_btn_import_text##" : "##trade_btn_export_text##");
         Rect textRect = f.getTextRect( _(text), Rect( 0, 0, width() / 2, height() ), horizontalTextAlign(), verticalTextAlign() );
-        f.draw( _textPicture(), _(text), textRect.UpperLeftCorner, true );
+        f.draw( _textPicture(), _(text), textRect._lefttop, true );
 
         text = utils::format( 0xff, "%d %s", goodsQty, _("##trade_btn_qty##") );
         textRect = f.getTextRect( text, Rect( width() / 2 + 24 * 2, 0, width(), height() ), horizontalTextAlign(), verticalTextAlign() );
-        f.draw( _textPicture(), text, textRect.UpperLeftCorner, true );
+        f.draw( _textPicture(), text, textRect._lefttop, true );
       }
       break;
 

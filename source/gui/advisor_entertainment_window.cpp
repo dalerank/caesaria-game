@@ -144,9 +144,11 @@ public:
   Label* lbMonthFromLastFestival;
   int monthFromLastFestival;
 
+public:
   InfrastructureInfo getInfo(const object::Type service );
   void updateInfo();
   void updateFestivalInfo();
+  void initUI(Entertainment* parent);
 };
 
 
@@ -166,23 +168,7 @@ Entertainment::Entertainment(PlayerCityPtr city, Widget* parent, int id )
   GET_DWIDGET_FROM_UI( _d, lbMonthFromLastFestival )
   GET_DWIDGET_FROM_UI( _d, lbInfoAboutLastFestival )
 
-  Point startPoint( 2, 2 );
-  Size labelSize( 550, 20 );
-  InfrastructureInfo info;
-  info = _d->getInfo( object::theater );
-  _d->lbTheatresInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint, labelSize ), object::theater, info );
-
-  info = _d->getInfo( object::amphitheater );
-  _d->lbAmphitheatresInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, rowOffset*idxAmph), labelSize), object::amphitheater,
-                                                        info );
-  info = _d->getInfo( object::colloseum );
-  _d->lbColisseumInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, rowOffset*idxColosseum), labelSize), object::colloseum, info );
-
-  info = _d->getInfo( object::hippodrome );
-  _d->lbHippodromeInfo = new EntertainmentInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, rowOffset*idxHippodrome), labelSize), object::hippodrome, info );
-
-  CONNECT( _d->btnNewFestival, onClicked(), this, Entertainment::_showFestivalWindow );
-
+  _d->initUI( this );
   _d->updateInfo();
   _d->updateFestivalInfo();
 }
@@ -376,9 +362,29 @@ void Entertainment::Impl::updateFestivalInfo()
     int currentThinkIndex = math::clamp<int>( monthFromLastFestival, 0, maxFestivalDelay);
     text = utils::format( 0xff, "##more_%d_month_from_festival##", strIndex[ currentThinkIndex ] );
     lbInfoAboutLastFestival->setText( _( text ) );
-  }
+    }
 }
 
+void Entertainment::Impl::initUI( Entertainment* parent )
+{
+  Point startPoint( 2, 2 );
+  Size labelSize( 550, 20 );
+  InfrastructureInfo info;
+  info = getInfo( object::theater );
+  lbTheatresInfo = new EntertainmentInfoLabel( lbBlackframe, Rect( startPoint, labelSize ), object::theater, info );
+
+  info = getInfo( object::amphitheater );
+  lbAmphitheatresInfo = new EntertainmentInfoLabel( lbBlackframe, Rect( startPoint + Point( 0, rowOffset*idxAmph), labelSize), object::amphitheater,
+                                                    info );
+  info = getInfo( object::colloseum );
+  lbColisseumInfo = new EntertainmentInfoLabel( lbBlackframe, Rect( startPoint + Point( 0, rowOffset*idxColosseum), labelSize), object::colloseum, info );
+
+  info = getInfo( object::hippodrome );
+  lbHippodromeInfo = new EntertainmentInfoLabel( lbBlackframe, Rect( startPoint + Point( 0, rowOffset*idxHippodrome), labelSize), object::hippodrome, info );
+
+  CONNECT( btnNewFestival, onClicked(), parent, Entertainment::_showFestivalWindow );
 }
+
+}//end namespace advisor
 
 }//end namespace gui

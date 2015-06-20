@@ -43,7 +43,8 @@ public:
   void setDay( unsigned char day );
   void setSeconds( unsigned char second );
 
-  DateTime( const char* strValue );
+  explicit DateTime( const char* strValue );
+  explicit DateTime( time_t time );
 
   DateTime( int year, unsigned char month, unsigned char day,
             unsigned char hour=0, unsigned char minute=0, unsigned char sec=0 );
@@ -52,7 +53,6 @@ public:
 
   DateTime();
 
-  DateTime( time_t time );
   DateTime date() const;
   DateTime time() const;
 
@@ -111,7 +111,7 @@ public:
   static const char* dayName( unsigned char d );
   static const char* monthName( unsigned char d );
   static const char* shortMonthName( unsigned char d );
-  RomanDate( const DateTime& date );
+  explicit RomanDate( const DateTime& date );
 };
 
 #endif //__CAESARIA_DATETIME_H_INCLUDE_

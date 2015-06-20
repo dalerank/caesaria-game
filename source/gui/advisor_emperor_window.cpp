@@ -225,7 +225,7 @@ void Emperor::_updateRequests()
       if( !(*request)->isDeleted() )
       {
         bool mayExec = (*request)->isReady( _d->city );
-        RequestButton* btn = new RequestButton( this, reqsRect.UpperLeftCorner + Point( 5, 5 ),
+        RequestButton* btn = new RequestButton( this, reqsRect.lefttop() + Point( 5, 5 ),
                                                 std::distance( reqs.begin(), request ), *request );
         btn->setTooltipText( _("##request_btn_tooltip##") );
         btn->setEnabled( mayExec );

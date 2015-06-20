@@ -146,10 +146,10 @@ void Console::draw( gfx::Engine& painter )
 			return;
 		}
 		
-    Rect lineRect( textRect.UpperLeftCorner.x(),						//calculate the line rectangle
-                   textRect.UpperLeftCorner.y(),
-                   textRect.LowerRightCorner.x(),
-                   textRect.UpperLeftCorner.y() + lineHeight);
+    Rect lineRect( textRect.left(),						//calculate the line rectangle
+                   textRect.top(),
+                   textRect.right(),
+                   textRect.bottom() + lineHeight);
 
     NColor fontcolor = DefaultColors::white;
 
@@ -367,10 +367,10 @@ void Console::calculatePrintRects( Rect& textRect, Rect& shellRect)  //! calcula
   if( calculateLimits(maxLines,lineHeight,fontHeight) )
 	{
     shellRect = absoluteRect();
-    shellRect.UpperLeftCorner.ry() = shellRect.LowerRightCorner.y() - lineHeight;
+    shellRect.setTop( shellRect.bottom() - lineHeight );
 
     textRect = absoluteRect();
-    textRect.LowerRightCorner.ry() = textRect.UpperLeftCorner.y() + lineHeight;
+    textRect.setBottom( textRect.top() + lineHeight );
 	}
 	else
 	{

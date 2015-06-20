@@ -75,6 +75,9 @@ protected:
   virtual bool _mayDeliverGood() const;
   virtual void _storeChanged();
   virtual void _removeSpoiledGoods();
+  void _weekUpdate( unsigned int time );
+  void _productReady();
+  void _productProgress();
   void _setUnworkingInterval( unsigned int weeks );
   virtual void _reachUnworkingTreshold();
 

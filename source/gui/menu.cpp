@@ -183,7 +183,7 @@ void Menu::draw(gfx::Engine& painter )
   if( !visible() )
     return;
 
-  painter.draw( _d->background, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+  painter.draw( _d->background, absoluteRect().lefttop(), &absoluteClippingRectRef() );
     
   Widget::draw( painter );
 }

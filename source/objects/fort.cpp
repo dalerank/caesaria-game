@@ -325,6 +325,18 @@ Fort::Fort(object::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) ),
   setState( pr::destroyable, 0 );
 }
 
+void Fort::_check4newSoldier()
+{
+  int traineeLevel = traineeValue( walker::soldier );
+  bool canProduceNewSoldier = (traineeLevel > 100);
+  bool haveRoom4newSoldier = (walkers().size() < _d->maxSoldier);
+  // all trainees are there for the create soldier!
+  if( canProduceNewSoldier && haveRoom4newSoldier )
+  {
+     _readyNewSoldier();
+     setTraineeValue( walker::soldier, math::clamp<int>( traineeLevel - 100, 0, _d->maxSoldier * 100 ) );
+  }
+}
 float Fort::evaluateTrainee(walker::Type traineeType)
 {
   int currentForce = walkers().size() * 100;
@@ -340,15 +352,7 @@ void Fort::timeStep( const unsigned long time )
 {
   if( game::Date::isWeekChanged() )
   {
-    int traineeLevel = traineeValue( walker::soldier );
-    bool canProduceNewSoldier = (traineeLevel > 100);
-    bool haveRoom4newSoldier =  (walkers().size() < _d->maxSoldier);
-    // all trainees are there for the create soldier!
-    if( canProduceNewSoldier && haveRoom4newSoldier )
-    {
-       _readyNewSoldier();
-       setTraineeValue( walker::soldier, math::clamp<int>( traineeLevel - 100, 0, _d->maxSoldier * 100 ) );
-    }
+    _check4newSoldier();
   }
 
   WorkingBuilding::timeStep( time );
