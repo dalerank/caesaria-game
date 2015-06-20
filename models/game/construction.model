@@ -816,7 +816,7 @@
     productRate : 4.8
     sound : [ "creamery", 1 ]
     image : [ "oilworkshop", 1 ]
-    animation : { rc : "oilworkshopa", start : 1, count : 8, offset : [ 85, 30 ], delay : 4 }
+    animation : { rc : "oilworkshopa", start : 1, count : 8, offset : [ 78, 25 ], delay : 4 }
     inflammability : 1.2
   },
   
