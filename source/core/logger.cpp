@@ -45,7 +45,11 @@ private:
 public:
   FileLogWriter(const std::string& path)
   {
+<<<<<<< HEAD
+    DateTime t = DateTime::getCurrenTime();
+=======
     DateTime t = DateTime::currenTime();
+>>>>>>> master
 
     _logFile = fopen(path.c_str(), "w");
 
@@ -61,7 +65,11 @@ public:
 
   ~FileLogWriter()
   {
+<<<<<<< HEAD
+    DateTime t = DateTime::getCurrenTime();
+=======
     DateTime t = DateTime::currenTime();
+>>>>>>> master
 
     if( _logFile )
     {
