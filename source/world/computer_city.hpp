@@ -33,7 +33,8 @@ public:
   virtual econ::Treasury& treasury();
   virtual bool isPaysTaxes() const;
   virtual bool haveOverduePayment() const;
-  virtual void setAiMode(AiMode mode);
+  virtual void setModeAI(AiMode mode);
+  virtual AiMode modeAI() const;
 
   bool isDistantCity() const;
   virtual bool isAvailable() const;
@@ -59,6 +60,7 @@ protected:
   ComputerCity( EmpirePtr empire, const std::string& name );
   bool _mayTrade() const;
   void _initTextures();
+  void _checkMerchantsDeadline();
 
 private:
   class Impl;

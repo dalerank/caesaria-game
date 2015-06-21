@@ -59,7 +59,7 @@ void OSystem::error(const std::string& title, const std::string& text)
 void OSystem::openUrl(const std::string& url)
 {
 #ifdef CAESARIA_PLATFORM_LINUX
-  std::string command = "xdg-open " + url;
+  std::string command = "xdg-open '" + url + "'";
   ::system( command.c_str() );
 #elif defined(CAESARIA_PLATFORM_WIN)
   ShellExecuteA(0, 0, url.c_str(), 0, 0 , SW_SHOW );
@@ -70,7 +70,7 @@ void OSystem::openDir(const std::string& path)
 {
   std::string result;
 #ifdef CAESARIA_PLATFORM_LINUX
-  result = "nautilus " + path + " &";
+  result = "nautilus '" + path + "' &";
   ::system( result.c_str() );
 #elif defined(CAESARIA_PLATFORM_WIN)
   ShellExecute(GetDesktopWindow(), "open", path.c_str(), NULL, NULL, SW_SHOWNORMAL);

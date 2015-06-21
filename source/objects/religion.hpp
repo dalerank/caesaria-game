@@ -37,11 +37,13 @@ protected:
   Temple( religion::DivinityPtr divinity, object::Type type, int imgId, const Size& size );
 
   virtual void _updateBuffs();
+  virtual void _changeAnimationState( bool value );
+  virtual void _updateAnimation( const unsigned long time );
+
   int _relationMultiplier() const;
   void _setBuffValue( float value );
   float _buffValue() const;
   DateTime _lastBuffDate() const;
-  virtual void _updateAnimation( const unsigned long time );
 
 private:
   class Impl;

@@ -105,6 +105,8 @@ public:
     return inst;
   }
 
+  static Mode mode() { return instance()._mode; }
+
 private:
   Measure() : _mode( native ) {}
 

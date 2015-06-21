@@ -229,7 +229,7 @@ void AboutHouse::drawHabitants( HousePtr house )
 
   std::string freeRoomText;
   int current = house->habitants().count();
-  int freeRoom = house->maxHabitants() - current;
+  int freeRoom = house->capacity() - current;
   if( freeRoom > 0 )
   {
     // there is some room for new habitants!

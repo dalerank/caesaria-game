@@ -35,6 +35,7 @@ public:
   ~Loader();
 
   bool load(vfs::Path filename, Game& game);
+
   std::string restartFile() const;
 
 public signals:

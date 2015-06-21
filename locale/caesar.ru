@@ -20,6 +20,7 @@
 "##advchief_haveprofit##":"Активы вашего города увеличились на"
 "##advchief_havedeficit##":"Активы вашего города уменьшились на"
 "##granery##":"Амбар"
+"##age_uc##":"UC"
 "##granary_holds##":"амбар содержит"
 "##granaries_holds##":"амбары содержат"
 "##amphitheater##":"амфитеатр"

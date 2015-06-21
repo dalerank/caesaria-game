@@ -24,6 +24,8 @@
 #include "predefinitions.hpp"
 #include "core/referencecounted.hpp"
 
+class NColor;
+
 class Player : public Serializable, public ReferenceCounted
 {
 public:
@@ -44,7 +46,7 @@ public:
   void appendMoney( int money );
   int money() const;
 
-  unsigned int color() const;
+  NColor color() const;
 
   virtual ~Player();
 private:

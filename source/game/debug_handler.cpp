@@ -309,7 +309,7 @@ void DebugHandler::Impl::handleEvent(int event)
     PropertyWorkspace* browser = safety_cast<PropertyWorkspace*>( game->gui()->findWidget( hash ) );
     if( !browser )
     {
-      browser = new PropertyWorkspace( game->gui()->rootWidget(), game->scene(), Rect( 0, 0, 400, 600 ) );
+      browser = new PropertyWorkspace( game->gui()->rootWidget(), game->scene(), Rect( 0, 0, 500, 700 ) );
       browser->setCity( game->city() );
       game->scene()->installEventHandler( browser->handler() );
     }

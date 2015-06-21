@@ -133,17 +133,7 @@ void Granary::timeStep(const unsigned long time)
 
   if( game::Date::isWeekChanged() )
   {
-    if(  walkers().empty() )
-    {
-      if( _d->store.isDevastation() )
-      {
-        _tryDevastateGranary();
-      }
-      else
-      {
-        _resolveDeliverMode();
-      }
-    }
+    _weekUpdate();
   }
 }
 
@@ -268,6 +258,21 @@ void Granary::_resolveDeliverMode()
         addWalker( walker.object() );
         return;
       }
+    }
+    }
+}
+
+void Granary::_weekUpdate()
+{
+  if(  walkers().empty() )
+  {
+    if( _d->store.isDevastation() )
+    {
+      _tryDevastateGranary();
+    }
+    else
+    {
+      _resolveDeliverMode();
     }
   }
 }

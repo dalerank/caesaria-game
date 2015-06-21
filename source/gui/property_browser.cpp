@@ -20,6 +20,7 @@
 #include "scrollbar.hpp"
 #include "property_attribute.hpp"
 #include "widget_factory.hpp"
+#include "core/utils.hpp"
 #include "property_string.hpp"
 
 namespace gui
@@ -30,7 +31,7 @@ PropertyBrowser::PropertyBrowser( Widget* parent, int id ) :
     _valueColumnWidth( 0.49f )
 {
   #ifdef _DEBUG
-      setDebugName( "AttributeEditor");
+    setDebugName( "AttributeEditor");
   #endif
 
   // create attributes
@@ -54,24 +55,24 @@ PropertyBrowser::~PropertyBrowser()
 
 bool PropertyBrowser::onEvent(const NEvent &event)
 {
-    if( event.EventType == AbstractAttribute::ATTRIBEDIT_ATTRIB_CHANGED )
-    {
-        emit _attributeChanged();
-    }
+  if( event.EventType == AbstractAttribute::ATTRIBEDIT_ATTRIB_CHANGED )
+  {
+    emit _attributeChanged();
+  }
 
-    if( event.EventType == sEventGui
-    && event.gui.caller == _attribTable
-    && event.gui.type == guiTableCellDblclick )
+  if( event.EventType == sEventGui
+      && event.gui.caller == _attribTable
+      && event.gui.type == guiTableCellDblclick )
+  {
+    AbstractAttribute* attr = safety_cast< AbstractAttribute* >( _attribTable->element( _attribTable->selectedRow(), 1 ) );
+    if( attr )
     {
-        AbstractAttribute* attr = safety_cast< AbstractAttribute* >( _attribTable->element( _attribTable->selectedRow(), 1 ) );
-        if( attr )
-        {
-            attr->SetExpanded( !attr->IsExpanded() );
-            updateTable_();
-        }
+      attr->SetExpanded( !attr->IsExpanded() );
+      updateTable_();
     }
+  }
 
-    return Widget::onEvent( event );
+  return Widget::onEvent( event );
 }
 
 const VariantMap& PropertyBrowser::getAttribs()
@@ -88,96 +89,55 @@ void PropertyBrowser::setAttribs(const VariantMap &attribs)
 void PropertyBrowser::_clearAttributesList()
 {
   // clear the attribute list
-  unsigned int i;
-  for (i=0; i<_attribList.size(); ++i)
-  {
-      if( _attribList[ i ] )
-          _attribList[ i ]->deleteLater();
-  }
+  foreach( i, _attribList )
+    (*i)->deleteLater();
+
   _attribList.clear();
 }
 
 void PropertyBrowser::updateTable_()
 {
-    int oldPos = _attribTable->getVerticalScrolBar()->value();
-    _attribTable->clearRows();
+  int oldPos = _attribTable->getVerticalScrolBar()->value();
+  _attribTable->clearRows();
 
-    unsigned int c = _attribs.size();
-    //s32 rowCount=0;
-    for (unsigned int i=0; i < c; ++i )
-    {
-        AbstractAttribute* n = _attribList[i];
+  foreach( i, _attribList )
+    addAttribute2Table_( *i );
 
-        addAttribute2Table_( n );
-    }
-    _attribTable->getVerticalScrolBar()->setValue( oldPos );
+  _attribTable->getVerticalScrolBar()->setValue( oldPos );
 }
 
 AbstractAttribute* PropertyBrowser::createAttributElm_(std::string typeStr, const std::string &attrName )
 {
-    typeStr += "_attribute";
+  typeStr = typeStr + AbstractAttribute::ATTRIBUTE_TYPENAME;
 
-    WidgetFactory& wmgr = WidgetFactory::instance();
-    AbstractAttribute* attr = (AbstractAttribute*)wmgr.create( typeStr, _attribTable);
+  WidgetFactory& wmgr = WidgetFactory::instance();
+  AbstractAttribute* attr = (AbstractAttribute*)wmgr.create( typeStr, _attribTable);
 
-    // if this doesn't exist, use a string editor
-    if (!attr)
-        attr = (AbstractAttribute*)wmgr.create( CAESARIA_STR_A(AttributeString), _attribTable);
+  // if this doesn't exist, use a string editor
+  if (!attr)
+    attr = (AbstractAttribute*)wmgr.create( CAESARIA_STR_A(StringAttribute), _attribTable);
 
-    attr->setAttributeName( attrName );
-    return attr;
+  attr->setTitle( attrName );
+  return attr;
 }
 
 void PropertyBrowser::_createTable()
-{
-  _attribTable->clearRows();
+{  
   foreach( it, _attribList )
     (*it)->deleteLater();
 
   _attribList.clear();
+  _attribTable->clearRows();
 
   foreach( it, _attribs )
   {
-      // try to create attribute
-      /*if( startSection == SerializeHelper::subSectionStartProp )
-      {
-           n = new SubSectionAttribute( _attribTable, -1 );
-           //n->drop();
+    AbstractAttribute* n = createAttributElm_( it->second.typeName(), it->first );
 
-           _attribList.push_back(n);
-           n->setAttributeName( _attribs->getAttributeAsString(i) );
+    _attribList.push_back(n);
+    n->setValue( it->second );
+    n->setFont( Font::create( FONT_1 ) );
 
-           _attribList[i]->setSubElement( true );
-           _attribList[i]->setAttrib(_attribs, i);
-
-           while( true )
-           {
-               String endSection = _attribs->getAttributeName(++i);
-               if( endSection == SerializeHelper::subSectionEndProp )
-               {
-                   _attribList.push_back( NULL );
-                   break;
-               }
-
-               AbstractAttribute* subAttr = createAttributElm_( _attribs->getPropertyTypeString(i),
-                                                                _attribs->getAttributeName(i) );
-
-               n->addChild( subAttr );
-               subAttr->setAttrib( _attribs, i );
-               subAttr->setVisible( false );
-               subAttr->setParentID( getID() );
-               _attribList.push_back( NULL );
-           }
-      }
-      else*/
-      {
-        AbstractAttribute* n = createAttributElm_( it->second.typeName(), it->first );
-
-        _attribList.push_back(n);
-        n->setFont( Font::create( FONT_1 ) );
-
-        _attribList.back()->setSubElement( true );
-      }
+    _attribList.back()->setSubElement( true );
   }
 
   foreach( it, _attribList )
@@ -186,39 +146,37 @@ void PropertyBrowser::_createTable()
 
 void PropertyBrowser::addAttribute2Table_(AbstractAttribute* n, const std::string &offset )
 {
-    if( !n )
-        return;
+  if( !n )
+    return;
 
-    unsigned int rowIndex = _attribTable->addRow( _attribTable->rowCount() );
+  unsigned int rowIndex = _attribTable->addRow( _attribTable->rowCount() );
 
-    std::string prefix = "";
-    if( n->GetChildAttributesCount() > 0 )
-        prefix = n->IsExpanded() ? "-" : "+";
+  std::string prefix = "";
+  if( n->childCount() > 0 )
+      prefix = n->IsExpanded() ? "-" : "+";
 
-    _attribTable->setCellText( rowIndex, 0, offset + prefix + n->GetAttributeName() );
-    _attribTable->addElementToCell( rowIndex, 1, n );
-    n->setGeometry( RectF( 0, 0, 1, 1 ) );
-    n->setAlignment(align::upperLeft, align::lowerRight, align::upperLeft, align::lowerRight);
-    n->setVisible( true );
+  _attribTable->setCellText( rowIndex, 0, offset + prefix + n->title() );
+  _attribTable->addElementToCell( rowIndex, 1, n );
 
-    for( unsigned int index=0; index < n->GetChildAttributesCount(); index++ )
-    {
-       AbstractAttribute* childAttr = n->GetChildAttribute( index );
-       if( n->IsExpanded() )
-         addAttribute2Table_( childAttr, offset + "\t" );
+  n->setVisible( true );
 
-       childAttr->setVisible( n->IsExpanded() );
-    }
+  for( unsigned int index=0; index < n->childCount(); index++ )
+  {
+     AbstractAttribute* childAttr = n->getChild( index );
+     if( n->IsExpanded() )
+       addAttribute2Table_( childAttr, offset + "\t" );
 
-    n->setParentID( ID() );
-    n->grab();
+     childAttr->setVisible( n->IsExpanded() );
+  }
+
+  n->setParentID( ID() );
 }
 
 void PropertyBrowser::updateAttribs()
 {
   for (unsigned int i=0; i<_attribList.size(); ++i)
-        if( _attribList[i] )
-          _attribList[i]->updateAttrib(false);
+    if( _attribList[i] )
+      _attribList[i]->updateAttrib(false);
 }
 
 void PropertyBrowser::_finalizeResize()

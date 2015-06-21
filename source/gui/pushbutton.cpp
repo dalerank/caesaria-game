@@ -24,6 +24,7 @@
 #include "gfx/engine.hpp"
 #include "core/color.hpp"
 #include "core/logger.hpp"
+#include "core/variant_list.hpp"
 #include "gfx/picturesarray.hpp"
 #include "widget_factory.hpp"
 
@@ -110,6 +111,7 @@ PushButton::PushButton(Widget* parent )
   _d->pressed = false;
   _d->drawText = true;
   _d->bgStyle = greyBorderLine;
+  _d->needUpdateBackground = true;
   setTextAlignment( align::center, align::center );
 }
 
@@ -157,7 +159,7 @@ void PushButton::_updateTextPic()
     Rect textRect = stFont.getTextRect( text(), Rect( 0, 0, width(), height() ),
                                               horizontalTextAlign(), verticalTextAlign() );
     textTxs.fill( 0x00ffffff, Rect( 0, 0, 0, 0 ) );
-    stFont.draw( textTxs, text(), textRect.UpperLeftCorner + _d->textOffset, true, false );
+    stFont.draw( textTxs, text(), textRect.lefttop() + _d->textOffset, true, false );
   }
 
   if( _d->bgStyle == flatBorderLine )
@@ -566,7 +568,7 @@ void PushButton::drawIcon( gfx::Engine& painter )
   if( !iconTexture.isValid() )
       return;
 
-  Point pos = localToScreen( _d->iconRect ).UpperLeftCorner;
+  Point pos = localToScreen( _d->iconRect ).lefttop();
   painter.draw( iconTexture, pos + bstate.iconOffset );
 }
 

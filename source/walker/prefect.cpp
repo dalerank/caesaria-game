@@ -125,7 +125,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
     if( building->type() != object::burning_ruins )
       continue;
 
-    Pathway tmp = PathwayHelper::create( pos(), ptr_cast<Construction>( building ), PathwayHelper::allTerrain );
+    Pathway tmp = PathwayHelper::create( pos(), building, PathwayHelper::allTerrain );
     if( tmp.isValid() )
     {
       _setSubAction( go2fire );
@@ -159,8 +159,7 @@ void Prefect::_back2Prefecture()
     return;
   }
 
-  Pathway pathway = PathwayHelper::create( pos(), ptr_cast<Construction>( base ),
-                                           PathwayHelper::roadFirst );  
+  Pathway pathway = PathwayHelper::create( pos(), base, PathwayHelper::roadFirst );
 
   if( pathway.isValid() )
   {

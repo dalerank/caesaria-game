@@ -1,6 +1,6 @@
 {
   English    : { ext : "en", talks : ":/audio/wavs_citizen_en.zip" }
-  Русский    : { ext : "ru", talks : ":/audio/wavs_citizen_ru.zip" }
+  Русский    : { ext : "ru", talks : ":/audio/wavs_citizen_ru.zip", font : "ds-greece.ttf" }
   Українська : { ext : "ua", talks : ":/audio/wavs_citizen_en.zip" }
   Deutsch    : { ext : "de", talks : ":/audio/wavs_citizen_de.zip" }
   Svenska    : { ext : "sv", talks : ":/audio/wavs_citizen_en.zip" }
@@ -14,4 +14,5 @@
   Suomi      : { ext : "fn", talks : ":/audio/wavs_citizen_en.zip" }
   Português  : { ext : "pr", talks : ":/audio/wavs_citizen_en.zip" }
   Cрпски     : { ext : "sb", talks : ":/audio/wavs_citizen_en.zip" }
+  Korean     : { ext : "kr", talks : ":/audio/wavs_citizen_en.zip", font : "HANBatangB.ttf" }
 }

@@ -36,7 +36,7 @@ namespace gui
 class Minimap : public Widget
 {
 public:
-  Minimap(Widget* parent, Rect rect, PlayerCityPtr tilemap, const gfx::Camera& camera );
+  Minimap(Widget* parent, Rect rect, PlayerCityPtr city, const gfx::Camera& camera );
 
   void setCenter( Point pos );
 
@@ -45,6 +45,7 @@ public:
   virtual void beforeDraw( gfx::Engine& painter );
 
   void saveImage( const std::string& filename ) const;
+  void update();
 
 public signals:
   Signal1<TilePos>& onCenterChange();

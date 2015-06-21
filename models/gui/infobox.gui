@@ -41,7 +41,7 @@
 
   lbText#Label :
   {
-    geometry : [ 32, 64, 380, 128 ]
+    geometry : [ 32, 64, "pw-20", 128 ]
     multiline : true
     font : "FONT_2"
     multiline : true

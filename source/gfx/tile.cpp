@@ -103,7 +103,7 @@ void Tile::changeDirection(Tile *masterTile, Direction newDirection)
     _overlay->changeDirection( masterTile, newDirection);
   }
 
-  if( _terrain.coast )
+  if( _terrain.coast || _terrain.water )
   {
     int iid = tile::turnCoastTile( _terrain.imgid, newDirection );
 

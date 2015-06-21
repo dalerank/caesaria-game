@@ -98,7 +98,7 @@ void Build::_checkPreviewBuild(TilePos pos)
     return;
 
   // TODO: do only when needed, when (i, j, _buildInstance) has changed
-  ConstructionPtr overlay = bldCommand->getContruction();
+  ConstructionPtr overlay = bldCommand->contruction();
 
   if( !overlay.isValid() )
   {
@@ -109,7 +109,7 @@ void Build::_checkPreviewBuild(TilePos pos)
   int cost = MetaDataHolder::getData( overlay->type() ).getOption( MetaDataOptions::cost );
 
   bool walkersOnTile = false;
-  if( bldCommand->isCheckWalkers() )
+  if( bldCommand->flag( LayerMode::checkWalkers ) )
   {
     TilesArray tiles = overlay->area();
     foreach( t, tiles )
@@ -173,7 +173,7 @@ void Build::_checkPreviewBuild(TilePos pos)
         tile->setEPos( basicTile.epos() );
 
         walkersOnTile = false;
-        if( bldCommand->isCheckWalkers() )
+        if( bldCommand->flag( LayerMode::checkWalkers ) )
         {
           walkersOnTile = !_city()->walkers( rPos ).empty();
         }
@@ -290,7 +290,7 @@ void Build::_buildAll()
   if( bldCommand.isNull() )
     return;
 
-  ConstructionPtr cnstr = bldCommand->getContruction();
+  ConstructionPtr cnstr = bldCommand->contruction();
 
   if( !cnstr.isValid() )
   {
@@ -527,9 +527,9 @@ void Build::_initBuildMode()
   BuildModePtr command = ptr_cast<BuildMode>( _d->renderer->mode() );
   Logger::warningIf( !command.isValid(), "LayerBuild: init unknown command" );
 
-  _d->multiBuilding = command.isValid() ? command->isMultiBuilding() : false;
-  _d->roadAssignment = command.isValid() ? command->isRoadAssignment() : false;
-  _d->borderBuilding = command.isValid() ? command->isBorderBuilding() : false;
+  _d->multiBuilding = command.isValid() ? command->flag( LayerMode::multibuild ) : false;
+  _d->roadAssignment = command.isValid() ? command->flag( LayerMode::assign2road ) : false;
+  _d->borderBuilding = command.isValid() ? command->flag( LayerMode::border ) : false;
 }
 
 void Build::init(Point cursor)

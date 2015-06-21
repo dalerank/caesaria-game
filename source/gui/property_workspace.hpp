@@ -12,6 +12,7 @@ namespace gui
 {
 
 class WorkspaceEventHandler;
+class Label;
 
 class PropertyWorkspace : public Window
 {
@@ -31,8 +32,6 @@ public:
 	//! change selection
   virtual void setSelectedElement(OverlayPtr sel);
 
-  TreeView* getTreeView() const;
-  PropertyBrowser* getAttributeEditor() const;
   scene::EventHandlerPtr handler() const;
 
   void setCity( PlayerCityPtr city );
@@ -44,7 +43,7 @@ private:
   TreeViewItem* _getTreeNode(OverlayPtr element, TreeViewItem* searchnode);
   void _createElementsTreeView();
   void _createTabControl();
-
+  void _update();
 
   // for dragging the window
   bool                    _resizing;
@@ -53,9 +52,9 @@ private:
   PlayerCityPtr           _city;
   unsigned int            _lastUpdateTime;
   WorkspaceEventHandler*  _eventHandler;
-
-  PropertyBrowser*        _attribEditor;	// edits the current attribute
-  TreeView*               _treeView;       // tree view of all elements in scene
+  Label* _editor;
+  //PropertyBrowser*        _attribEditor;	// edits the current attribute
+  //TreeView*               _treeView;       // tree view of all elements in scene
 };
 
 }

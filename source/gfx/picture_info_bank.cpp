@@ -19,6 +19,7 @@
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
 #include "core/variant_map.hpp"
+#include "core/variant_list.hpp"
 #include "core/saveadapter.hpp"
 #include "core/logger.hpp"
 #include <map>

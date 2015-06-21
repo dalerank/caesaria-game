@@ -19,6 +19,7 @@
 "##advchief_haveprofit##":"Incremento de beneficios este año por:"
 "##advchief_havedeficit##":"Reducción de beneficios este año por:"
 "##granery##":"Granero"
+"##age_uc##":"UC"
 "##granary_holds##":"El granero contiene"
 "##granaries_holds##":"Los graneros contienen"
 "##amphitheater##":"Anfiteatro"

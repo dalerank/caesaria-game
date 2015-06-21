@@ -150,9 +150,50 @@ public:
   EducationInfoLabel* lbCollegeInfo;
   EducationInfoLabel* lbLibraryInfo;
 
-  InfrastructureInfo getInfo( PlayerCityPtr city, const object::Type service );
+public:
   std::string getTrouble( PlayerCityPtr city );
+  InfrastructureInfo getInfo( PlayerCityPtr city, const object::Type service );
+  void initUI(Education* parent, PlayerCityPtr city);
+  void updateCityInfo( PlayerCityPtr city );
 };
+
+void Education::Impl::initUI( Education* parent, PlayerCityPtr city )
+{
+  Point startPoint( 2, 2 );
+  Size labelSize( 550, 20 );
+  InfrastructureInfo info;
+  info = getInfo( city, object::school );
+  lbSchoolInfo = new EducationInfoLabel( lbBlackframe, Rect( startPoint, labelSize ), object::school, info );
+
+  info = getInfo( city, object::academy );
+  lbCollegeInfo = new EducationInfoLabel( lbBlackframe, Rect( startPoint + Point( 0, 20), labelSize), object::academy, info );
+
+  info = getInfo( city, object::library );
+  lbLibraryInfo = new EducationInfoLabel( lbBlackframe, Rect( startPoint + Point( 0, 40), labelSize), object::library, info );
+
+  TexturedButton* btnHelp = new TexturedButton( parent, Point( 12, parent->height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  CONNECT( btnHelp, onClicked(), parent, Education::_showHelp );
+}
+
+void Education::Impl::updateCityInfo(PlayerCityPtr city)
+{
+  int sumScholars = 0;
+  int sumStudents = 0;
+  HouseList houses = statistic::getHouses( city );
+  foreach( house, houses )
+  {
+    sumScholars += (*house)->habitants().scholar_n();
+    sumStudents += (*house)->habitants().student_n();
+  }
+
+  std::string cityInfoStr = utils::format( 0xff, "%d %s, %d %s, %d %s",
+                                                  city->states().population, _("##people##"),
+                                                  sumScholars, _("##scholars##"), sumStudents, _("##students##") );
+  if( lbCityInfo ) { lbCityInfo->setText( cityInfoStr ); }
+
+  std::string advice = getTrouble( city );
+  if( lbTroubleInfo ) { lbTroubleInfo->setText( _(advice) ); }
+}
 
 Education::Education(PlayerCityPtr city, Widget* parent, int id )
 : Base( parent, city, id ),
@@ -166,38 +207,8 @@ Education::Education(PlayerCityPtr city, Widget* parent, int id )
   GET_DWIDGET_FROM_UI( _d, lbCityInfo )
   GET_DWIDGET_FROM_UI( _d, lbTroubleInfo )
 
-  Point startPoint( 2, 2 );
-  Size labelSize( 550, 20 );
-  InfrastructureInfo info;
-  info = _d->getInfo( city, object::school );
-  _d->lbSchoolInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint, labelSize ), object::school, info );
-
-  info = _d->getInfo( city, object::academy );
-  _d->lbCollegeInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 20), labelSize), object::academy, info );
-
-  info = _d->getInfo( city, object::library );
-  _d->lbLibraryInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 40), labelSize), object::library, info );
-
-
-  int sumScholars = 0;
-  int sumStudents = 0;
-  HouseList houses = city::statistic::getHouses( city );
-  foreach( house, houses )
-  {
-    sumScholars += (*house)->habitants().scholar_n();
-    sumStudents += (*house)->habitants().student_n();
-  }
-
-  std::string cityInfoStr = utils::format( 0xff, "%d %s, %d %s, %d %s",
-                                                  city->states().population, _("##people##"),
-                                                  sumScholars, _("##scholars##"), sumStudents, _("##students##") );
-  if( _d->lbCityInfo ) { _d->lbCityInfo->setText( cityInfoStr ); }
-
-  std::string advice = _d->getTrouble( city );
-  if( _d->lbTroubleInfo ) { _d->lbTroubleInfo->setText( _(advice) ); }
-
-  TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
-  CONNECT( btnHelp, onClicked(), this, Education::_showHelp );
+  _d->initUI( this, city );
+  _d->updateCityInfo( city );
 }
 
 void Education::draw( gfx::Engine& painter )
@@ -305,6 +316,6 @@ std::string Education::Impl::getTrouble(PlayerCityPtr city)
   return advices.empty() ? "##education_awesome##" : advices.random();
 }
 
-}
+} //end namespace advisor
 
 } //end namespace gui

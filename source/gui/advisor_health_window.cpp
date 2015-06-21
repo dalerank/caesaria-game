@@ -38,6 +38,7 @@
 #include "widget_helper.hpp"
 
 using namespace gfx;
+using namespace city;
 
 struct HealthInfo
 {
@@ -121,6 +122,7 @@ public:
   HealthInfoLabel* lbBarbersInfo;
   HealthInfoLabel* lbDoctorInfo;
   HealthInfoLabel* lbHospitalInfo;
+  Label* lbBlackframe;
   Label* lbAdvice;
   TexturedButton* btnHelp;
 
@@ -133,6 +135,7 @@ public:
 
   InfrastructureInfo getInfo( PlayerCityPtr city, const object::Type service );
   void updateAdvice( PlayerCityPtr city );
+  void initUI(Health* parent , PlayerCityPtr c);
 };
 
 Health::Health(PlayerCityPtr city, Widget* parent, int id )
@@ -142,29 +145,9 @@ Health::Health(PlayerCityPtr city, Widget* parent, int id )
   setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
   GET_DWIDGET_FROM_UI( _d, lbAdvice )
-  INIT_WIDGET_FROM_UI( Label*, lbBlackframe )
+  GET_DWIDGET_FROM_UI( _d, lbBlackframe )
 
-  Point startPoint = lbBlackframe->lefttop() + Point( 3, 3 );
-  Size labelSize( lbBlackframe->width() - 6, 20 );
-
-  Impl::InfrastructureInfo info = _d->getInfo( city, object::baths );
-  _d->lbBathsInfo = new HealthInfoLabel( this, Rect( startPoint, labelSize ), object::baths,
-                                             info.buildingWork, info.buildingCount, info.peoplesServed );
-
-  info = _d->getInfo( city, object::barber );
-  _d->lbBarbersInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, rowOffset * idxBarber ), labelSize), object::barber,
-                                              info.buildingWork, info.buildingCount, info.peoplesServed );
-
-  info = _d->getInfo( city, object::clinic );
-  _d->lbDoctorInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, rowOffset * idxDoctor ), labelSize), object::clinic,
-                                          info.buildingWork, info.buildingCount, info.peoplesServed );
-
-  info = _d->getInfo( city, object::hospital );
-  _d->lbHospitalInfo = new HealthInfoLabel( this, Rect( startPoint + Point( 0, rowOffset * idxHospital), labelSize), object::hospital,
-                                            info.buildingWork, info.buildingCount, info.peoplesServed );
-
-  _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
-
+  _d->initUI( this, city );
   _d->updateAdvice( city );
 
   TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
@@ -179,10 +162,7 @@ void Health::draw( gfx::Engine& painter )
   Window::draw( painter );
 }
 
-void Health::_showHelp()
-{
-  DictionaryWindow::show( this, "health_advisor" );
-}
+void Health::_showHelp() { DictionaryWindow::show( this, "health_advisor" ); }
 
 Health::Impl::InfrastructureInfo Health::Impl::getInfo(PlayerCityPtr city, const object::Type service)
 {
@@ -192,7 +172,7 @@ Health::Impl::InfrastructureInfo Health::Impl::getInfo(PlayerCityPtr city, const
   ret.peoplesServed = 0;
   ret.buildingCount = 0;
 
-  ServiceBuildingList srvBuildings = city::statistic::getObjects<ServiceBuilding>( city, service );
+  ServiceBuildingList srvBuildings = statistic::getObjects<ServiceBuilding>( city, service );
   foreach( b, srvBuildings )
   {
     ret.buildingWork += (*b)->numberWorkers() > 0 ? 1 : 0;
@@ -207,8 +187,7 @@ void Health::Impl::updateAdvice(PlayerCityPtr c)
   if( !lbAdvice )
     return;
 
-  city::HealthCarePtr hc;
-  hc << c->findService( city::HealthCare::defaultName() );
+  HealthCarePtr hc = statistic::getService<HealthCare>( c );
 
   StringArray outText;
 
@@ -269,6 +248,30 @@ void Health::Impl::updateAdvice(PlayerCityPtr c)
   lbAdvice->setText( _(text) );
 }
 
+void Health::Impl::initUI(Health* parent, PlayerCityPtr c)
+{
+  Point startPoint = lbBlackframe->lefttop() + Point( 3, 3 );
+  Size labelSize( lbBlackframe->width() - 6, 20 );
+
+  Impl::InfrastructureInfo info = getInfo( c, object::baths );
+  lbBathsInfo = new HealthInfoLabel( parent, Rect( startPoint, labelSize ), object::baths,
+                                     info.buildingWork, info.buildingCount, info.peoplesServed );
+
+  info = getInfo( c, object::barber );
+  lbBarbersInfo = new HealthInfoLabel( parent, Rect( startPoint + Point( 0, rowOffset * idxBarber ), labelSize), object::barber,
+                                       info.buildingWork, info.buildingCount, info.peoplesServed );
+
+  info = getInfo( c, object::clinic );
+  lbDoctorInfo = new HealthInfoLabel( parent, Rect( startPoint + Point( 0, rowOffset * idxDoctor ), labelSize), object::clinic,
+                                      info.buildingWork, info.buildingCount, info.peoplesServed );
+
+  info = getInfo( c, object::hospital );
+  lbHospitalInfo = new HealthInfoLabel( parent, Rect( startPoint + Point( 0, rowOffset * idxHospital), labelSize), object::hospital,
+                                        info.buildingWork, info.buildingCount, info.peoplesServed );
+
+  btnHelp = new TexturedButton( parent, Point( 12, parent->height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
 }
+
+}//end namespace advisor
 
 }//end namespace gui

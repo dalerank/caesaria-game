@@ -49,6 +49,7 @@ signals public:
   Signal0<>& onShowGameSpeedOptions();
   Signal0<>& onShowCityOptions();
   Signal1<Advisor>& onRequestAdvisor();
+  Signal1<int>& onShowExtentInfo();
 
 private:
   class Impl;

@@ -103,7 +103,9 @@ void Object::load(const VariantMap& stream)
 
   Logger::warningIf( _d->name.empty(), "Object: name is null" );
 
-  setPicture( Picture( stream.get( "picture" ).toString() ) );
+  std::string picName = stream.get( "picture" ).toString();
+  if( !picName.empty() )
+    setPicture( Picture( picName )  );
   VARIANT_LOAD_CLASS_D( _d, animation, stream )
   VARIANT_LOAD_ANY_D( _d, isDeleted, stream )
 }
@@ -116,8 +118,6 @@ void Object::attach()
 
 Object::~Object() {}
 
-void Object::deleteLater() { _d->isDeleted = true; }
-
 Object::Object( EmpirePtr empire) : _d( new Impl )
 {
   _d->time = 0;
@@ -126,8 +126,8 @@ Object::Object( EmpirePtr empire) : _d( new Impl )
   _d->isDeleted = false;
 }
 
+void Object::deleteLater() { _d->isDeleted = true; }
 Animation& Object::_animation() { return _d->animation; }
-Picture&Object::_picture(){ return _d->pic; }
-Pictures &Object::_pictures() { return _d->pictures; }
+Pictures&  Object::_pictures()  { return _d->pictures; }
 
 }

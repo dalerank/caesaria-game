@@ -202,6 +202,8 @@ Widget* Ui::findWidget(const Point &p)
     if( (*it)->visible() && (*it)->isPointInside( p ) )
       return *it;
   }
+
+  return this;
 }
 
 void Ui::deleteLater( Widget* ptrElement )
@@ -534,7 +536,7 @@ Widget* Ui::hovered() const { return _d->hovered.object(); }
 void Ui::beforeDraw()
 {
   const Size screenSize( _d->engine->virtualSize() );
-  const Point& rigthDown = rootWidget()->absoluteRect().LowerRightCorner;
+  const Point& rigthDown = rootWidget()->absoluteRect().rightbottom();
   
   if( rigthDown.x() != screenSize.width() || rigthDown.y() != screenSize.height() )
   {

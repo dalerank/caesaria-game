@@ -71,30 +71,30 @@ void RectangleAnimator::beforeDraw( Engine& painter)
 		bool mayRemove = true;
 
 		PointF ul( _d->stopRect.left(), _d->stopRect.top() );
-		if( !_d->currentRect.UpperLeftCorner.IsEqual( ul, 0.5f ) )
+    if( !_d->currentRect.lefttop().IsEqual( ul, 0.5f ) )
 		{
-			float step = _d->stopRect.UpperLeftCorner.getDistanceFrom( _d->startRect.UpperLeftCorner ) / float( painter.fps() * (_d->time / 1000.f) );
+      float step = _d->stopRect.lefttop().getDistanceFrom( _d->startRect.lefttop() ) / float( painter.fps() * (_d->time / 1000.f) );
 			float offsetX = _d->stopRect.left() - _d->currentRect.left();
 			int signX = offsetX < 0 ? -1 : 1;
 			float offsetY = _d->stopRect.top() - _d->currentRect.top();
 			int signY = offsetY < 0 ? -1 : 1;
 
-      _d->currentRect.UpperLeftCorner.rx() += signX * std::min<float>( step, fabs( offsetX ) );
-      _d->currentRect.UpperLeftCorner.ry() += signY * std::min<float>( step, fabs( offsetY ) );
+      _d->currentRect.rleft() += signX * std::min<float>( step, fabs( offsetX ) );
+      _d->currentRect.rtop() += signY * std::min<float>( step, fabs( offsetY ) );
       mayRemove = false;
     }
 
 		PointF lr( _d->stopRect.right(), _d->stopRect.bottom() );
-		if( !_d->currentRect.LowerRightCorner.IsEqual( lr, 0.5f ) )
+    if( !_d->currentRect.rightbottom().IsEqual( lr, 0.5f ) )
 		{
-			float step = _d->stopRect.LowerRightCorner.getDistanceFrom( _d->startRect.LowerRightCorner ) / float( painter.fps() * (_d->time / 1000.f) );
+      float step = _d->stopRect.rightbottom().getDistanceFrom( _d->startRect.rightbottom() ) / float( painter.fps() * (_d->time / 1000.f) );
 			float offsetX = _d->stopRect.right() - _d->currentRect.right();
 			int signX = offsetX < 0 ? -1 : 1;
 			float offsetY = _d->stopRect.bottom() - _d->currentRect.bottom();
 			int signY = offsetY < 0 ? -1 : 1;
 
-      _d->currentRect.LowerRightCorner.rx() += signX * std::min<float>( step, fabs( offsetX ) );
-      _d->currentRect.LowerRightCorner.ry() += signY * std::min<float>( step, fabs( offsetY ) );
+      _d->currentRect.rright() += signX * std::min<float>( step, fabs( offsetX ) );
+      _d->currentRect.rbottom() += signY * std::min<float>( step, fabs( offsetY ) );
       mayRemove = false;
     }
 

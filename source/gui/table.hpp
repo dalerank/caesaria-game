@@ -227,7 +227,8 @@ public:
   virtual void setItemFont( Font font );
 
 public signals:
-  Signal2<int,int>& onCellClick();
+  Signal2<int,int>& onCellSelected();
+  Signal2<int,int>& onCellClicked();
 
 protected:
 	virtual void refreshControls();
@@ -241,11 +242,13 @@ private:
   void _recalculateHeights();
   void _recalculateColumnsWidth();
   Cell* _getCell(unsigned int row, unsigned int column) const;
+  void _getCellUnderMouse(int xpos, int ypos, int& column, int &row);
 
   int _getCurrentColumn( int xpos, int ypos );
   void _recalculateCells();
   Font _font;
   bool _clip;
+  int _lastColumnIndex, _lastRowIndex;
   bool _moveOverSelect;
   bool _selecting;
   int  _currentResizedColumn;

@@ -28,6 +28,7 @@
 #include "core/logger.hpp"
 #include "constants.hpp"
 #include "gfx/picture_info_bank.hpp"
+#include "core/variant_list.hpp"
 
 using namespace gfx;
 
