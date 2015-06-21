@@ -29,6 +29,7 @@
 #include "events/dispatcher.hpp"
 #include "objects/house_level.hpp"
 #include "cityservice_factory.hpp"
+#include "core/variant_list.hpp"
 
 namespace city
 {
@@ -89,10 +90,10 @@ void GoodsUpdater::load(const VariantMap& stream)
 
   _d->gtype = (good::Product)good::Helper::getType( stream.get( literals::good ).toString() );
 
-  VariantList vl_buildings = stream.get( "buildings" ).toList();
-  foreach( it, vl_buildings )
+  StringArray buildingTypes = stream.get( "buildings" ).toStringArray();
+  foreach( it, buildingTypes )
   {
-    object::Type type = object::toType( it->toString() );
+    object::Type type = object::toType( *it );
     if( type != object::unknown )
     {
       _d->supportBuildings.insert( type );
@@ -106,12 +107,11 @@ VariantMap GoodsUpdater::save() const
   VARIANT_SAVE_ANY_D( ret, _d, endTime )
   VARIANT_SAVE_ANY_D( ret, _d, value )
 
-  VariantList vl_buildings;
+  StringArray buildingTypes;
   foreach( it, _d->supportBuildings )
-  {
-    vl_buildings.push_back( Variant( object::toString( *it ) ) );
-  }
+    buildingTypes << object::toString( *it );
 
+  ret[ "buildings" ] = utils::toVList( buildingTypes );
   ret[ literals::good    ] = Variant( good::Helper::getTypeName( _d->gtype ) );
 
   return ret;

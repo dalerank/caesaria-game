@@ -304,7 +304,7 @@ void Population::Impl::updateStates()
       if( house->spec().level() < HouseLevel::mansion )
       {
         currentHabitants += house->habitants().count();
-        maxHabitants += house->maxHabitants();
+        maxHabitants += house->capacity();
       }
     }
 

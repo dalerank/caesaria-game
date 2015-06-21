@@ -17,6 +17,7 @@
 #include "core/math.hpp"
 #include "core/foreach.hpp"
 #include "core/variant_map.hpp"
+#include "core/variant_list.hpp"
 #include "core/utils.hpp"
 #include "good/productmap.hpp"
 #include "core/logger.hpp"
@@ -184,9 +185,7 @@ VariantMap Storage::save() const
 
   VariantList stockSave;
   foreach( it, _gsd->stocks )
-  {
     stockSave.push_back( (*it)->save() );
-  }
 
   stream[ "stock" ] = stockSave;
 

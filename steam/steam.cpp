@@ -30,9 +30,9 @@
 namespace steamapi
 {
 
-#define _ACH_ID( id, name ) { id, #id, name, "", 0, 0 }
+#define _ACH_ID( id ) { id, #id, #id, "", 0, 0 }
 enum MissionName { n2_nvillage=0, nx_count };
-enum StatName { totalGamesPlayed=0, totalNumWins, NumLosses, stat_count };
+enum StatName { stat_num_games=0, stat_num_wins, stat_num_lose, stat_count };
 
 static const AppId_t CAESARIA_STEAM_APPID=0x04ffd8;
 static const AppId_t CAESARIA_AVEC3_APPID=0x053124;
@@ -84,9 +84,9 @@ struct XClient
 
 Achievement glbAchievements[achv_count] =
 {
-  _ACH_ID( achv_first_win,    CAESARIA_STR_A(achv_first_win)    ),
-  _ACH_ID( achv_new_graphics, CAESARIA_STR_A(achv_new_graphics) ),
-  _ACH_ID( achv_new_village,  CAESARIA_STR_A(achv_new_village)  )
+  _ACH_ID( achievementFirstWin     ),
+  _ACH_ID( achievementNewGraphics  ),
+  _ACH_ID( achievementNewVillage   )
 };
 
 class UserStats
@@ -136,9 +136,9 @@ public:
 
     #define _INIT_STAT( id ) stats[ id ] = StatInfo(id, #id, 0 );
 
-    _INIT_STAT( totalGamesPlayed )
-    _INIT_STAT( totalNumWins     )
-    _INIT_STAT( NumLosses   )
+    _INIT_STAT( stat_num_games )
+    _INIT_STAT( stat_num_wins  )
+    _INIT_STAT( stat_num_lose  )
 
     #undef _INIT_STAT
   }    
@@ -245,15 +245,15 @@ void UserStats::evaluateAchievement( Achievement& achievement )
 
   switch ( achievement.id )
   {
-  case achv_new_village:
+  case achievementNewVillage:
       if(missions[n2_nvillage].count>0){unlockAchievement(achievement);}
   break;
 
-  case achv_first_win:
-      if(totalNumWins>0){ unlockAchievement(achievement);};
+  case achievementFirstWin:
+      if(stat_num_wins>0){ unlockAchievement(achievement);};
   break;
 
-  case achv_new_graphics:
+  case achievementNewGraphics:
   {
     bool haveDlc = false;
 #ifdef CAESARIA_PLATFORM_WIN
@@ -445,7 +445,7 @@ void init()
   xclient.stats->RequestCurrentStats();
 #endif
 
-  evaluateAchievement( achv_new_graphics );
+  evaluateAchievement( achievementNewGraphics );
 }
 
 void evaluateAchievements()
@@ -748,8 +748,8 @@ bool isAchievementReached(AchievementType achivId)
 
 void missionWin( const std::string& name )
 {
-  glbUserStats.stats[ totalNumWins ].count++;
-  glbUserStats.stats[ totalGamesPlayed ].count++;
+  glbUserStats.stats[ stat_num_wins ].count++;
+  glbUserStats.stats[ stat_num_games ].count++;
   glbUserStats.checkMissions( name );
   evaluateAchievements();
 }

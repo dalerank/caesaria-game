@@ -75,6 +75,7 @@ protected:
   void _disaster();
 
   virtual void _updateAnimation( const unsigned long time );
+  virtual void _changeAnimationState( bool enabled );
 
 private:
 

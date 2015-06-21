@@ -49,7 +49,7 @@ VariantMap Gift::save() const
   VARIANT_SAVE_ANY_D( ret, _d, value )
   VARIANT_SAVE_ANY_D( ret, _d, time )
 
-      return ret;
+  return ret;
 }
 
 Gift& Gift::operator=(const Gift &a)

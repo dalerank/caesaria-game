@@ -8,7 +8,8 @@ Master: ![Build Status](https://travis-ci.org/dalerank/caesaria-game.svg?branch=
 
 CaesarIA is an open-source remake of the popular
 citybuilder and economic sim Caesar III, videogame by
-Empressions Games, written in C++ / SDL.
+Empressions Games, written in C++ / SDL. SDL was patched
+for work with batching textures/atlases.
 
 See more info at the ours [website](https://bitbucket.org/dalerank/caesaria/wiki/Home)
 
@@ -23,24 +24,26 @@ The resources can be in a different folder as the CaesarIA data.
 You can also specify your own path by passing the command-line
 argument "-c3gfx <path to CaesarIII folder>" when running CaesarIA.
 
-### Windows, Mac OS X
+### Saves
 
+On Windows, Mac OS X
 CaesarIA will also check the following folders:
 
 - <game directory>\saves (Windows 2000/XP/7/8)
 
-It's recommended you copy the resources to the "gfx" folder.
+On Linux
+
+- <userhome>/.caesaria/saves (Linux)
+
+### Resources
+
+1. It's recommended you copy the resources to the "gfx" folder.
 The installer not automatically detect a Caesar III installation.
 
-### Linux
+2. You may to run updater.[exe/linux/macos], which will download
+all assets neccessary for play game: configs, textures, sounds etc.
 
-CaesarIA requires the following libraries:
-
-- [SDL2](http://www.libsdl.org) (libsdl2)
-- [SDL2_mixer](http://www.libsdl.org/projects/SDL_mixer/) (libsdl2-mixer)
-
-Check your distribution's package manager or the library
-website on how to install them.
+3. You may download new graphic's set, which we use in steam version
 
 ## Configuration
 
@@ -52,11 +55,10 @@ For more details please check the [wiki](https://bitbucket.org/dalerank/caesaria
 
 ## Development
 
-CaesarIA requires the following developer libraries:
-
-- [SDL2](http://www.libsdl.org) (libsdl2)
-- [SDL2_mixer](http://www.libsdl.org/projects/SDL_mixer/) (libsdl2-mixer)
-- Cmake
+CaesarIA no requires any specific frameworks and all frameworks we need 
+placed in game repository. Game engine used patched SDL2, whic now it is
+part of game. May be you need to install gcc or any compiler for build game.
+We use "cmake" for create configs and build game.
 
 It's also been tested on a variety of other tools on
 Windows/Mac/Linux. More detailed compiling instructions

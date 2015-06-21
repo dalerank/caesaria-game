@@ -49,8 +49,8 @@ public:
   typedef enum { divId=0x200, festId=0x400 } FestID;
   Label* lbTitle;
   Label* lbFestivalName;
-  int festivalType;
-  unsigned int festivalCost;
+  int type;
+  unsigned int cost;
   std::vector<TexturedButton*> godBtns;
   std::map<int, RomeDivinityType > divines;
 
@@ -72,7 +72,7 @@ public signals:
 public:
   void assignFestival()
   {    
-    emit onFestivalAssignSignal( (int)currentDivinity, festivalType );
+    emit onFestivalAssignSignal( (int)currentDivinity, type );
   }
 
   void addImage( Widget* parent, RomeDivinityType type, int column, int startPic )
@@ -128,32 +128,32 @@ FestivalPlanning::FestivalPlanning( Widget* parent, int id, const Rect& rectangl
   GET_DWIDGET_FROM_UI( _d, btnGreatFestival )
 
   _d->updateTitle();
-  _d->festivalType = smallFest;
+  _d->type = smallFest;
 
   _d->btnHelp = new TexturedButton( this, Point( 52, height() - 52 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
   _d->btnExit = new TexturedButton( this, Point( width() - 74, height() - 52 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
 
   /*int money = _d->city->getFunds().getValue();*/
-  _d->festivalCost = city::statistic::getFestivalCost( city, smallFest );
+  _d->cost = city::statistic::getFestivalCost( city, smallFest );
 
   if( _d->btnSmallFestival )
   {
     _d->btnSmallFestival->setID( Impl::festId+smallFest );
-    _d->btnSmallFestival->setText( utils::format( 0xff, "%s %d", _("##small_festival##"), _d->festivalCost ) );
+    _d->btnSmallFestival->setText( utils::format( 0xff, "%s %d", _("##small_festival##"), _d->cost ) );
   }
 
-  _d->festivalCost = city::statistic::getFestivalCost( city, middleFest );
+  _d->cost = city::statistic::getFestivalCost( city, middleFest );
   if( _d->btnMiddleFestival )
   {
     _d->btnMiddleFestival->setID( Impl::festId+middleFest );
-    _d->btnMiddleFestival->setText( utils::format( 0xff, "%s %d", _("##middle_festival##"), _d->festivalCost ));
+    _d->btnMiddleFestival->setText( utils::format( 0xff, "%s %d", _("##middle_festival##"), _d->cost ));
   }
 
-  _d->festivalCost = city::statistic::getFestivalCost( city, greatFest );
+  _d->cost = city::statistic::getFestivalCost( city, greatFest );
   if( _d->btnGreatFestival )
   {
     _d->btnGreatFestival->setID( Impl::festId+greatFest );
-    _d->btnGreatFestival->setText( utils::format( 0xff, "%s %d", _("##great_festival##"), _d->festivalCost ));
+    _d->btnGreatFestival->setText( utils::format( 0xff, "%s %d", _("##great_festival##"), _d->cost ));
   }
 
   _d->btnYes = new TexturedButton( this, Point( 350, height() - 50 ), Size( 39, 26), -1, ResourceMenu::okBtnPicId );
@@ -199,8 +199,8 @@ bool FestivalPlanning::onEvent(const NEvent& event)
 
         StringArray titles;
         titles << "" << "##small_festival##" << "##middle_festival##" << "##great_festival##";
-        _d->festivalType = math::clamp<int>( btn->ID() & 0xf, 0, titles.size() - 1);
-        _d->lbFestivalName->setText( _( titles[ _d->festivalType ] ) );
+        _d->type = math::clamp<int>( btn->ID() & 0xf, 0, titles.size() - 1);
+        _d->lbFestivalName->setText( _( titles[ _d->type ] ) );
 
         btn->setPressed( true );
       }

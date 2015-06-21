@@ -20,6 +20,7 @@
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/variant_map.hpp"
+#include "core/variant_list.hpp"
 #include "gfx/helper.hpp"
 #include "core/logger.hpp"
 
@@ -175,6 +176,10 @@ void Overlay::load( const VariantMap& stream )
 
 void Overlay::initialize(const MetaData& mdata)
 {
+  Size size = mdata.getOption( "size" );
+  if( size.area() > 0 )
+    setSize( size );
+
   if( mdata.picture().isValid() )
   {
     setPicture( mdata.picture() );  // default picture for build tool

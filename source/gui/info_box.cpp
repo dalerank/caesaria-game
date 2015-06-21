@@ -100,8 +100,8 @@ Infobox::Infobox( Widget* parent, const Rect& rect, const Rect& blackArea, int i
   if( _d->lbText )
   {
     Rect r = _d->lbText->relativeRect();
-    if( blackArea.width() == 0 ) { r.LowerRightCorner = _d->btnExit->righttop(); }
-    else { r.LowerRightCorner = blackArea.righttop(); }
+    if( blackArea.width() == 0 ) { r._bottomright = _d->btnExit->righttop(); }
+    else { r._bottomright = blackArea.righttop(); }
 
     _d->lbText->setGeometry( r );
   }  

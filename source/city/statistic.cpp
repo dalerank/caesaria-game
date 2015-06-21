@@ -258,7 +258,7 @@ unsigned int getTaxValue(PlayerCityPtr city)
 
   foreach( house, houses )
   {
-    int maxhb = (*house)->maxHabitants();
+    int maxhb = (*house)->capacity();
     if( maxhb == 0 )
       continue;
 

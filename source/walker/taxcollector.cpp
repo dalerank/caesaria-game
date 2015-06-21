@@ -138,7 +138,7 @@ void TaxCollector::_reachedPathway()
   {
     _d->return2base = true;
 
-    Pathway way = PathwayHelper::create( pos(), ptr_cast<Construction>( base() ), PathwayHelper::roadFirst );
+    Pathway way = PathwayHelper::create( pos(), base(), PathwayHelper::roadFirst );
     if( way.isValid() )
     {
       _updatePathway( way );

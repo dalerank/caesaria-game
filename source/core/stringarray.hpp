@@ -23,7 +23,7 @@
 #include "core/math.hpp"
 #include "core/foreach.hpp"
 
-class StringArray : public std::vector< std::string >
+class StringArray : public std::vector<std::string>
 {
 public:
   inline std::string random() const

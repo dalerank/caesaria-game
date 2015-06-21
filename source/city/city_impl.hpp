@@ -53,7 +53,7 @@ public:
 
   unsigned int idCount;
 
-  void append( WalkerPtr w );
+  void postpone( WalkerPtr w );
 
   void clear();
 

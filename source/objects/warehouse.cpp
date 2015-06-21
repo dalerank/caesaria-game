@@ -36,6 +36,7 @@
 #include "constants.hpp"
 #include "good/helper.hpp"
 #include "game/gamedate.hpp"
+#include "core/variant_list.hpp"
 #include "walker/cart_supplier.hpp"
 #include "extension.hpp"
 #include "warehouse_store.hpp"
@@ -181,7 +182,7 @@ void Warehouse::timeStep(const unsigned long time)
   {
     _d->animFlag.update( time );
 
-    _fgPictures()[3] = _d->animFlag.currentFrame();
+    _fgPicture(3) = _d->animFlag.currentFrame();
   }
 
   if( game::Date::isWeekChanged() )

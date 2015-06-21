@@ -19,6 +19,7 @@
 #include "productmap.hpp"
 #include "core/foreach.hpp"
 #include "core/position.hpp"
+#include "core/variant_list.hpp"
 
 namespace good
 {

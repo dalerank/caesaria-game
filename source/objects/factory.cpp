@@ -90,6 +90,9 @@ public:
   good::Product outGoodType;
   bool produceGood;
   unsigned int finishedQty;
+
+public:
+  void productReady();
 };
 
 Factory::Factory(const good::Product inType, const good::Product outType,
@@ -146,14 +149,43 @@ void Factory::_removeSpoiledGoods()
   store().removeExpired( game::Date::current() );
 }
 
+void Factory::_weekUpdate(unsigned int time)
+{
+  if( numberWorkers() > 0 && walkers().size() == 0 )
+  {
+    receiveGood();
+    deliverGood();
+  }
+
+  if( game::Date::current().month() % 3 == 1 )
+  {
+    _removeSpoiledGoods();
+  }
+
+  if( _d->maxUnworkingWeeks > 0 )
+  {
+    if( numberWorkers() < maximumWorkers() / 3 )
+    {
+      _d->lowWorkerWeeksNumber++;
+    }
+    else
+    {
+      _d->lowWorkerWeeksNumber = std::max<int>( 0, _d->lowWorkerWeeksNumber-1 );
+    }
+
+    if( math::random( (int)_d->lowWorkerWeeksNumber ) > (int)_d->maxUnworkingWeeks )
+    {
+      _reachUnworkingTreshold();
+    }
+    }
+}
+
 void Factory::_setUnworkingInterval(unsigned int weeks)
 {
   _d->maxUnworkingWeeks = weeks;
 }
 
-void Factory::_reachUnworkingTreshold()
-{
-}
+void Factory::_reachUnworkingTreshold() {}
 
 bool Factory::haveMaterial() const {  return (consumeGoodType() != good::none && !inStockRef().empty()); }
 
@@ -164,33 +196,7 @@ void Factory::timeStep(const unsigned long time)
   //try get good from storage building for us
   if( game::Date::isWeekChanged() )
   {
-    if( numberWorkers() > 0 && walkers().size() == 0 )
-    {
-      receiveGood();
-      deliverGood();      
-    }
-
-    if( game::Date::current().month() % 3 == 1 )
-    {
-      _removeSpoiledGoods();
-    }
-
-    if( _d->maxUnworkingWeeks > 0 )
-    {
-      if( numberWorkers() < maximumWorkers() / 3 )
-      {
-        _d->lowWorkerWeeksNumber++;
-      }
-      else
-      {
-        _d->lowWorkerWeeksNumber = std::max<int>( 0, _d->lowWorkerWeeksNumber-1 );
-      }
-
-      if( math::random( (int)_d->lowWorkerWeeksNumber ) > (int)_d->maxUnworkingWeeks )
-      {
-        _reachUnworkingTreshold();
-      }
-    }
+    _weekUpdate( time );
   }
 
   //no workers or no good in stock... stop animate
@@ -199,31 +205,8 @@ void Factory::timeStep(const unsigned long time)
     return;
   }
   
-  if( _d->progress >= 100.0 )
-  {
-    _d->produceGood = false;
-
-    if( _d->goodStore.qty( _d->outGoodType ) < _d->goodStore.capacity( _d->outGoodType )  )
-    {
-      _d->progress -= 100.f;
-      unsigned int qty = getFinishedQty();
-      //gcc fix for temporaly ref object
-      good::Stock tmpStock( _d->outGoodType, qty, qty );
-      _d->goodStore.store( tmpStock, qty );
-    }
-  }
-  else
-  {
-    if( _d->produceGood && game::Date::isDayChanged() )
-    {
-      //ok... factory is work, produce goods
-      float timeKoeff = _d->productionRate / 365.f;
-      float laborAccessKoeff = laborAccessPercent() / 100.f;
-      float dayProgress = productivity() * timeKoeff * laborAccessKoeff;  // work is proportional to time and factory speed
-
-      _d->progress += dayProgress;
-    }
-  }
+  if( _d->progress >= 100.0 ) { _productReady();     }
+  else                        { _productProgress();  }
 
   if( !_d->produceGood )
   {
@@ -317,9 +300,9 @@ void Factory::_storeChanged(){}
 void Factory::setProductRate( const float rate ){  _d->productionRate = rate;}
 float Factory::productRate() const{  return _d->productionRate;}
 
-unsigned int Factory::effciency() const { return laborAccessPercent() * productivity() / 100; }
-unsigned int Factory::getFinishedQty() const{  return _d->finishedQty;}
-unsigned int Factory::getConsumeQty() const{  return 100;}
+unsigned int Factory::effciency()      const { return laborAccessPercent() * productivity() / 100; }
+unsigned int Factory::getFinishedQty() const{ return _d->finishedQty;}
+unsigned int Factory::getConsumeQty()  const{ return 100;}
 
 std::string Factory::cartStateDesc() const
 {
@@ -410,4 +393,32 @@ void Creamery::_storeChanged()
 {
   _fgPicture(1) = inStockRef().empty() ? Picture() : Picture( ResourceGroup::commerce, 154 );
   _fgPicture(1).setOffset( 40, -5 );
+}
+
+
+void Factory::_productReady()
+{
+  _d->produceGood = false;
+
+  if( _d->goodStore.qty( _d->outGoodType ) < _d->goodStore.capacity( _d->outGoodType )  )
+  {
+    _d->progress -= 100.f;
+    unsigned int qty = getFinishedQty();
+    //gcc fix for temporaly ref object
+    good::Stock tmpStock( _d->outGoodType, qty, qty );
+    _d->goodStore.store( tmpStock, qty );
+    }
+}
+
+void Factory::_productProgress()
+{
+  if( _d->produceGood && game::Date::isDayChanged() )
+  {
+    //ok... factory is work, produce goods
+    float timeKoeff = _d->productionRate / 365.f;
+    float laborAccessKoeff = laborAccessPercent() / 100.f;
+    float dayProgress = productivity() * timeKoeff * laborAccessKoeff;  // work is proportional to time and factory speed
+
+    _d->progress += dayProgress;
+  }
 }
