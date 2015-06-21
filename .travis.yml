@@ -32,4 +32,3 @@ after_success:
 env:
 notifications:
     slack: caesariagame:m3lwdYPWqeCOn0zWs0rjX5KY
-
