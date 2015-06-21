@@ -103,7 +103,8 @@ public:
   }
 
 public signals:
-  Signal2<int,int> onCellClickSignal;
+  Signal2<int,int> onCellSelectedSignal;
+  Signal2<int,int> onCellClickedSignal;
 };
 
 //! constructor
@@ -498,6 +499,15 @@ Cell* Table::_getCell( unsigned int row, unsigned int column) const
   return 0;
 }
 
+void Table::_getCellUnderMouse(int xpos, int ypos, int& column, int& row)
+{
+  row = -1;
+  column = -1;
+  if (_d->itemHeight!=0)
+    row = ((ypos - screenTop() /*-_d->itemHeight - 1*/) + _d->verticalScrollBar->value()) / _d->itemHeight;
+
+  column = _getCurrentColumn( xpos, ypos );
+}
 
 void Table::_recalculateHeights()
 {
@@ -534,7 +544,7 @@ void Table::_recalculateScrollBars()
 	// needs horizontal scroll be visible?
   if( _totalItemWidth > tableRect.width() )
 	{
-		tableRect.LowerRightCorner.ry() -= _d->horizontalScrollBar->height();
+    tableRect.rbottom() -= _d->horizontalScrollBar->height();
 		_d->horizontalScrollBar->setVisible( true );
     _d->horizontalScrollBar->setMaxValue( math::max<int>(0,_totalItemWidth - tableRect.width() ) );
 	}
@@ -542,7 +552,7 @@ void Table::_recalculateScrollBars()
 	// needs vertical scroll be visible?
   if( _totalItemHeight > tableRect.height() )
 	{
-		tableRect.LowerRightCorner.rx() -= _d->verticalScrollBar->width();
+    tableRect.rright() -= _d->verticalScrollBar->width();
 		_d->verticalScrollBar->setVisible( true );
     _d->verticalScrollBar->setMaxValue( math::max<int>(0,_totalItemHeight - tableRect.height() + 2 * _d->verticalScrollBar->absoluteRect().width()));
 
@@ -551,7 +561,7 @@ void Table::_recalculateScrollBars()
 		{
       if( _totalItemWidth > tableRect.width() )
 			{
-				tableRect.LowerRightCorner.ry() -= _d->horizontalScrollBar->height();
+        tableRect.rbottom() -= _d->horizontalScrollBar->height();
 				_d->horizontalScrollBar->setVisible(true);
         _d->horizontalScrollBar->setMaxValue( math::max<int>(0,_totalItemWidth - tableRect.width() ) );
 			}
@@ -682,6 +692,7 @@ bool Table::onEvent(const NEvent &event)
 						return true;
 					}
 
+          _getCellUnderMouse( event.mouse.x, event.mouse.y, _lastColumnIndex, _lastRowIndex );
           if ( _selectColumnHeader( event.mouse.x, event.mouse.y ) )
 						return true;
 
@@ -692,7 +703,7 @@ bool Table::onEvent(const NEvent &event)
 
 				case mouseLbtnRelease:
           _currentResizedColumn = -1;
-          _selecting = false;
+          _selecting = false;          
 					if (!absoluteRect().isPointInside(p))
 					{
 						removeFocus();
@@ -714,7 +725,9 @@ bool Table::onEvent(const NEvent &event)
 						return true;
 					}
 
-          _selectNew( event.mouse.x, event.mouse.y, true );
+          _selectNew( event.mouse.x, event.mouse.y, true );          
+          if( _lastColumnIndex == _selectedColumn && _lastRowIndex == _selectedRow )
+            emit _d->onCellClickedSignal( _selectedRow, _selectedColumn );
 					return true;
         break;
 
@@ -946,7 +959,7 @@ void Table::_selectNew( int xpos, int ypos, bool lmb, bool onlyHover)
 			parent()->onEvent( event );
 		}
 		_d->cellLastTimeClick = DateTime::elapsedTime();
-    emit _d->onCellClickSignal(_selectedRow,_selectedColumn);
+    emit _d->onCellSelectedSignal(_selectedRow,_selectedColumn);
 
     if( _selectedRow < 0 || _selectedColumn < 0 )
       return;
@@ -978,19 +991,12 @@ void Table::draw( gfx::Engine& painter )
 			//skin->DrawElement( this, cellStyle.Normal(), rowRect, &clientClip, 0 ) ;
 		}
 
-		// draw selected row background highlighted
-		/*if ((int)i == _selectedRow && _d->isFlag( drawActiveRow ) )
-		{
-			Rect lineRect( _d->rows[ i ].Items[ 0 ]->absoluteRect() );
-			lineRect.LowerRightCorner.X = screenRight();
-			skin->drawElement( this, myStyle.Checked(), lineRect, &_d->itemsArea->getAbsoluteClippingRectRef() );
-		}*/
 
     if( _d->isFlag( drawRows ) )
     {
       Rect lineRect( itRow->items[ 0 ]->absoluteRect() );
-      lineRect.UpperLeftCorner.ry() = lineRect.LowerRightCorner.y() - 1;
-      lineRect.LowerRightCorner.rx() = screenRight();
+      lineRect.setTop( lineRect.bottom() - 1 );
+      lineRect.setRight (screenRight());
       painter.drawLine( 0xffc0c0c0, lineRect.lefttop(), lineRect.rightbottom() );
     }
   }
@@ -1111,6 +1117,7 @@ Widget* Table::element( unsigned int row, unsigned int column) const
 }
 
 ScrollBar* Table::getVerticalScrolBar() { return _d->verticalScrollBar; }
-Signal2<int,int>& Table::onCellClick() { return _d->onCellClickSignal; }
+Signal2<int,int>& Table::onCellSelected() { return _d->onCellSelectedSignal; }
+Signal2<int,int>& Table::onCellClicked() { return _d->onCellClickedSignal; }
 
 }//end namespace gui

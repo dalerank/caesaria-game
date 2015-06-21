@@ -23,8 +23,8 @@
 class CitizenGroup
 {
 public:
-  typedef enum { newborn=0, child, scholar, student, mature, aged, longliver=99 } Age;
-  typedef enum { childMin=2, matureMin=21 } AgeRange;
+  typedef enum { newborn=0, child, scholar, student, mature, aged, longliver=99, any=100 } Age;
+  enum { childMin=2, matureMin=21 };
 
   unsigned int count() const;
   unsigned int count( Age group ) const;

@@ -261,7 +261,7 @@ const char* ByteArray::data() const {  return &(*this)[0]; }
 char* ByteArray::data(){  return &(*this)[0]; }
 
 std::string ByteArray::toString() const
-{
+{  
   std::string ret( data() );
   ret.resize( size() );
   return ret;

@@ -71,6 +71,7 @@
 #include "config.hpp"
 #include "world/emperor.hpp"
 #include "core/metric.hpp"
+#include "roman_celebrates.hpp"
 
 #include <list>
 
@@ -107,6 +108,7 @@ public:
   void initHotkeys();
   void initMovie();
   void initMetrics();
+  void initCelebrations();
   void initGuiEnvironment();
   void initArchiveLoaders();
   void initPantheon( vfs::Path filename );
@@ -136,6 +138,12 @@ void Game::Impl::initMetrics()
 {
   int value = SETTINGS_VALUE( metricSystem );
   metric::Measure::setMode( (metric::Measure::Mode)value );
+}
+
+void Game::Impl::initCelebrations()
+{
+  vfs::Path value = SETTINGS_RC_PATH( celebratesConfig );
+  game::Celebrates::instance().load( value );
 }
 
 void Game::Impl::initLocale( std::string localePath )

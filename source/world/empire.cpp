@@ -303,7 +303,7 @@ void Empire::addObject(ObjectPtr obj)
     }
   }
 
-  _d->objects.append( obj );
+  _d->objects.postpone( obj );
 }
 
 CityPtr Empire::addCity( CityPtr city )

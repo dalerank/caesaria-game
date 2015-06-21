@@ -35,15 +35,15 @@ class RectT
 public:
 
   //! Default constructor creating empty rectangle at (0,0)
-  RectT() : UpperLeftCorner(0,0), LowerRightCorner(0,0) {}
+  RectT() : _lefttop(0,0), _bottomright(0,0) {}
 
   //! Constructor with two corners
   RectT(T x, T y, T x2, T y2)
-          : UpperLeftCorner(x,y), LowerRightCorner(x2,y2) {}
+          : _lefttop(x,y), _bottomright(x2,y2) {}
 
   //! Constructor with two corners
   RectT(const Vector2<T>& upperLeft, const Vector2<T>& lowerRight)
-          : UpperLeftCorner(upperLeft), LowerRightCorner(lowerRight) {}
+          : _lefttop(upperLeft), _bottomright(lowerRight) {}
 
   //! move right by given numbers
   RectT<T> operator+(const Vector2<T>& pos) const
@@ -55,8 +55,8 @@ public:
   //! move right by given numbers
   RectT<T>& operator+=(const Vector2<T>& pos)
   {
-          UpperLeftCorner += pos;
-          LowerRightCorner += pos;
+          _lefttop += pos;
+          _bottomright += pos;
           return *this;
   }
 
@@ -70,23 +70,23 @@ public:
   //! move left by given numbers
   RectT<T>& operator-=(const Vector2<T>& pos)
   {
-          UpperLeftCorner -= pos;
-          LowerRightCorner -= pos;
+          _lefttop -= pos;
+          _bottomright -= pos;
           return *this;
   }
 
   //! equality operator
   bool operator==(const RectT<T>& other) const
   {
-          return (UpperLeftCorner == other.UpperLeftCorner &&
-                  LowerRightCorner == other.LowerRightCorner);
+          return (_lefttop == other._lefttop &&
+                  _bottomright == other._bottomright);
   }
 
   //! inequality operator
   bool operator!=(const RectT<T>& other) const
   {
-          return (UpperLeftCorner != other.UpperLeftCorner ||
-                  LowerRightCorner != other.LowerRightCorner);
+          return (_lefttop != other._lefttop ||
+                  _bottomright != other._bottomright);
   }
 
   //! compares size of rectangles
@@ -117,15 +117,15 @@ public:
   \param y Y-Coordinate of the point to add to this box. */
   void addInternalPoint(T x, T y)
   {
-    if (x>LowerRightCorner.x() )
-      LowerRightCorner.setX( x );
-    if (y>LowerRightCorner.y() )
-      LowerRightCorner.setY( y );
+    if (x>_bottomright.x() )
+      _bottomright.setX( x );
+    if (y>_bottomright.y() )
+      _bottomright.setY( y );
 
-    if (x<UpperLeftCorner.x() )
-      UpperLeftCorner.setX( x );
-    if (y<UpperLeftCorner.y())
-      UpperLeftCorner.setY( y );
+    if (x<_lefttop.x() )
+      _lefttop.setX( x );
+    if (y<_lefttop.y())
+      _lefttop.setY( y );
   }
 
   //! Returns if a 2d point is within this rectangle.
@@ -133,10 +133,10 @@ public:
   \return True if the position is within the rectangle, false if not. */
   bool isPointInside(const Vector2<T>& pos) const
   {
-          return (UpperLeftCorner.x() <= pos.x() &&
-                  UpperLeftCorner.y() <= pos.y() &&
-                  LowerRightCorner.x() >= pos.x() &&
-                  LowerRightCorner.y() >= pos.y() );
+          return (_lefttop.x() <= pos.x() &&
+                  _lefttop.y() <= pos.y() &&
+                  _bottomright.x() >= pos.x() &&
+                  _bottomright.y() >= pos.y() );
   }
 
   //! Check if the rectangle collides with another rectangle.
@@ -144,34 +144,34 @@ public:
   \return True if the rectangles collide. */
   bool isRectCollided(const RectT<T>& other) const
   {
-          return (LowerRightCorner.y() > other.UpperLeftCorner.y() &&
-                  UpperLeftCorner.y() < other.LowerRightCorner.y() &&
-                  LowerRightCorner.x() > other.UpperLeftCorner.x() &&
-                  UpperLeftCorner.x() < other.LowerRightCorner.x());
+          return (_bottomright.y() > other._lefttop.y() &&
+                  _lefttop.y() < other._bottomright.y() &&
+                  _bottomright.x() > other._lefttop.x() &&
+                  _lefttop.x() < other._bottomright.x());
   }
 
   //! Clips this rectangle with another one.
   /** \param other RectT to clip with */
   void clipAgainst(const RectT<T>& other)
   {
-		if (other.LowerRightCorner.x() < LowerRightCorner.x())
-			LowerRightCorner.setX( other.LowerRightCorner.x() );
+    if (other._bottomright.x() < _bottomright.x())
+      _bottomright.setX( other._bottomright.x() );
 
-        if (other.LowerRightCorner.y() < LowerRightCorner.y())
-			LowerRightCorner.setY( other.LowerRightCorner.y() );
+        if (other._bottomright.y() < _bottomright.y())
+      _bottomright.setY( other._bottomright.y() );
 
-		if (other.UpperLeftCorner.x() > UpperLeftCorner.x())
-			UpperLeftCorner.setX( other.UpperLeftCorner.x() );
+    if (other._lefttop.x() > _lefttop.x())
+      _lefttop.setX( other._lefttop.x() );
 
-        if (other.UpperLeftCorner.y() > UpperLeftCorner.y())
-			UpperLeftCorner.setY( other.UpperLeftCorner.y() );
+        if (other._lefttop.y() > _lefttop.y())
+      _lefttop.setY( other._lefttop.y() );
 
 		// correct possible invalid rect resulting from clipping
-		if (UpperLeftCorner.y() > LowerRightCorner.y())
-			UpperLeftCorner.setY( LowerRightCorner.y() );
+    if (_lefttop.y() > _bottomright.y())
+      _lefttop.setY( _bottomright.y() );
 		
-        if (UpperLeftCorner.x() > LowerRightCorner.x())
-			UpperLeftCorner.setX( LowerRightCorner.x() );
+        if (_lefttop.x() > _bottomright.x())
+      _lefttop.setX( _bottomright.x() );
 	}
 
 	//! Moves this rectangle to fit inside another one.
@@ -181,32 +181,32 @@ public:
 		if (other.width() < width() || other.height() < height())
 			return false;
 
-		int diff = other.LowerRightCorner.x() - LowerRightCorner.x();
+    int diff = other._bottomright.x() - _bottomright.x();
 		if (diff < 0)
 		{
-			LowerRightCorner += Vector2<T>( diff, 0 );
-			UpperLeftCorner += Vector2<T>( diff, 0 );
+      _bottomright += Vector2<T>( diff, 0 );
+      _lefttop += Vector2<T>( diff, 0 );
 		}
 
-		diff = other.LowerRightCorner.y() - LowerRightCorner.y();
+    diff = other._bottomright.y() - _bottomright.y();
 		if (diff < 0)
 		{
-			LowerRightCorner += Vector2<T>( 0, diff );
-			UpperLeftCorner  += Vector2<T>( 0, diff );
+      _bottomright += Vector2<T>( 0, diff );
+      _lefttop  += Vector2<T>( 0, diff );
 		}
 
-		diff = UpperLeftCorner.x() - other.UpperLeftCorner.x();
+    diff = _lefttop.x() - other._lefttop.x();
 		if (diff < 0)
 		{
-			UpperLeftCorner -= Vector2<T>( diff, 0 );
-			LowerRightCorner -= Vector2<T>( diff, 0 );
+      _lefttop -= Vector2<T>( diff, 0 );
+      _bottomright -= Vector2<T>( diff, 0 );
 		}
 
-		diff = UpperLeftCorner.y() - other.UpperLeftCorner.y();
+    diff = _lefttop.y() - other._lefttop.y();
 		if (diff < 0)
 		{
-			UpperLeftCorner -= Vector2<T>( diff, 0 );
-			LowerRightCorner -= Vector2<T>( diff, 0 );
+      _lefttop -= Vector2<T>( diff, 0 );
+      _bottomright -= Vector2<T>( diff, 0 );
 		}
 
 		return true;
@@ -215,30 +215,30 @@ public:
 	//! Get width of rectangle.
 	T width() const
 	{
-		return LowerRightCorner.x() - UpperLeftCorner.x();
+    return _bottomright.x() - _lefttop.x();
 	}
 
 	//! Get height of rectangle.
 	T height() const
 	{
-		return LowerRightCorner.y() - UpperLeftCorner.y();
+    return _bottomright.y() - _lefttop.y();
 	}
 
 	//! If the lower right corner of the rect is smaller then the upper left, the points are swapped.
 	void repair()
 	{
-		if (LowerRightCorner.x() < UpperLeftCorner.x())
+    if (_bottomright.x() < _lefttop.x())
 		{
-			T tmp = LowerRightCorner.x();
-			LowerRightCorner.setX( UpperLeftCorner.x() );
-			UpperLeftCorner.setX( tmp );
+      T tmp = _bottomright.x();
+      _bottomright.setX( _lefttop.x() );
+      _lefttop.setX( tmp );
 		}
 
-		if (LowerRightCorner.y() < UpperLeftCorner.y())
+    if (_bottomright.y() < _lefttop.y())
 		{
-			T tmp = LowerRightCorner.y();
-			LowerRightCorner.setY( UpperLeftCorner.y() );
-			UpperLeftCorner.setY( tmp );
+      T tmp = _bottomright.y();
+      _bottomright.setY( _lefttop.y() );
+      _lefttop.setY( tmp );
 		}
 	}
 
@@ -247,53 +247,57 @@ public:
 	right than the LowerRightCorner. */
 	bool isValid() const
 	{
-		return ((LowerRightCorner.x() >= UpperLeftCorner.x()) &&
-			(LowerRightCorner.y() >= UpperLeftCorner.y()));
+    return ((_bottomright.x() >= _lefttop.x()) &&
+      (_bottomright.y() >= _lefttop.y()));
 	}
 
     //! Get the center of the rectangle
   Vector2<T> center() const
 	{
 		return Vector2<T>(
-				(UpperLeftCorner.x() + LowerRightCorner.x()) / 2,
-				(UpperLeftCorner.y() + LowerRightCorner.y()) / 2);
+        (_lefttop.x() + _bottomright.x()) / 2,
+        (_lefttop.y() + _bottomright.y()) / 2);
 	}
 
   RectT<T> relativeTo( const RectT<T>& other, T limit )
   {
     RectT<T> retRect( *this );
-    retRect.UpperLeftCorner -= Vector2<T>( (retRect.UpperLeftCorner.x() - other.UpperLeftCorner.x()) / limit, 0 );
-    retRect.UpperLeftCorner -= Vector2<T>( 0, (retRect.UpperLeftCorner.y() - other.UpperLeftCorner.y()) / limit );
-    retRect.LowerRightCorner -= Vector2<T>( (retRect.LowerRightCorner.x() - other.LowerRightCorner.x()) / limit, 0 );
-    retRect.LowerRightCorner -= Vector2<T>( 0, (retRect.LowerRightCorner.y() - other.LowerRightCorner.y()) / limit );
+    retRect._lefttop -= Vector2<T>( (retRect._lefttop.x() - other._lefttop.x()) / limit, 0 );
+    retRect._lefttop -= Vector2<T>( 0, (retRect._lefttop.y() - other._lefttop.y()) / limit );
+    retRect._bottomright -= Vector2<T>( (retRect._bottomright.x() - other._bottomright.x()) / limit, 0 );
+    retRect._bottomright -= Vector2<T>( 0, (retRect._bottomright.y() - other._bottomright.y()) / limit );
 
     return retRect;
   }
 
   bool IsEqual(const RectT<T>& other, float tolerance) const
   {
-    return UpperLeftCorner.IsEqual( other.UpperLeftCorner, tolerance)
-           && LowerRightCorner.IsEqual( other.LowerRightCorner, tolerance);
+    return _lefttop.IsEqual( other._lefttop, tolerance)
+           && _bottomright.IsEqual( other._bottomright, tolerance);
   }
 
-	Vector2<T> righttop() const { return Vector2<T>( LowerRightCorner.x(), UpperLeftCorner.y() ); }
-	Vector2<T> leftbottom() const { return Vector2<T>( UpperLeftCorner.x(), LowerRightCorner.y() ); }
-  const Vector2<T>& lefttop() const { return UpperLeftCorner; }
-  const Vector2<T>& rightbottom() const { return LowerRightCorner; }
+  Vector2<T> righttop() const { return Vector2<T>( _bottomright.x(), _lefttop.y() ); }
+  Vector2<T> leftbottom() const { return Vector2<T>( _lefttop.x(), _bottomright.y() ); }
+  const Vector2<T>& lefttop() const { return _lefttop; }
+  const Vector2<T>& rightbottom() const { return _bottomright; }
 
-  inline T top() const 	{		return UpperLeftCorner.y();   }
-  inline T& rtop()      {		return UpperLeftCorner.ry();	}
-  inline T left() const	{		return UpperLeftCorner.x();   }
-  inline T& rleft()     {		return UpperLeftCorner.rx();	}
-  inline T bottom()const{		return LowerRightCorner.y();	}
-  inline T& rbottom()   {   return LowerRightCorner.ry(); }
-  inline T right() const{		return LowerRightCorner.x();	}
-  inline T& rright()    {   return LowerRightCorner.rx(); }
+  inline T top() const 	{		return _lefttop.y();   }
+  inline T& rtop()      {		return _lefttop.ry();	}
+  inline T left() const	{		return _lefttop.x();   }
+  inline T& rleft()     {		return _lefttop.rx();	}
+  inline T bottom()const{		return _bottomright.y();	}
+  inline T& rbottom()   {   return _bottomright.ry(); }
+  inline T right() const{		return _bottomright.x();	}
+  inline T& rright()    {   return _bottomright.rx(); }
+  inline void setLeft( T value ) { _lefttop.setX( value ); }
+  inline void setTop( T value ) { _lefttop.setY( value ); }
+  inline void setRight( T value ) { _bottomright.setX( value ); }
+  inline void setBottom( T value ) { _bottomright.setY( value ); }
 
 	//! Upper left corner
-	Vector2<T> UpperLeftCorner;
+  Vector2<T> _lefttop;
 	//! Lower right corner
-	Vector2<T> LowerRightCorner;
+  Vector2<T> _bottomright;
 };
 
 class RectF;
@@ -312,12 +316,12 @@ public:
 
   Rect operator+(const Point& offset ) const
   {
-    return Rect( UpperLeftCorner + offset, LowerRightCorner + offset );
+    return Rect( _lefttop + offset, _bottomright + offset );
   }
 
   Rect operator-(const Point& offset ) const
   {
-    return Rect( UpperLeftCorner - offset, LowerRightCorner - offset );
+    return Rect( _lefttop - offset, _bottomright - offset );
   }
   
   //! Get the dimensions of the rectangle
@@ -348,8 +352,8 @@ public:
 
   RectF& operator=( const RectT<float>& other )
   {
-    UpperLeftCorner = other.UpperLeftCorner;
-    LowerRightCorner = other.LowerRightCorner;
+    _lefttop = other._lefttop;
+    _bottomright = other._bottomright;
 
     return *this;
   }
@@ -362,21 +366,21 @@ public:
 
   RectF& operator=( const RectF& other )
   {
-    UpperLeftCorner = other.UpperLeftCorner;
-    LowerRightCorner = other.LowerRightCorner;
+    _lefttop = other._lefttop;
+    _bottomright = other._bottomright;
 
     return *this;
   }
 
   Rect toRect() const 
   { 
-    return Rect( UpperLeftCorner.As<int>(), LowerRightCorner.As<int>() );
+    return Rect( _lefttop.As<int>(), _bottomright.As<int>() );
   }
 };
 
 inline RectF Rect::toRectF() const
 {
-  return RectF( UpperLeftCorner.As<float>(), LowerRightCorner.As<float>() );
+  return RectF( _lefttop.As<float>(), _bottomright.As<float>() );
 }
 
 

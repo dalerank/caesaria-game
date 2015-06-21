@@ -52,7 +52,7 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(object::vegetable_farm, FarmVegetable)
 class FarmTile : public Construction
 {
 public:
-  FarmTile() : Construction( object::farmtile, 1 ) {}
+  FarmTile() : Construction( object::farmtile, Size( 1 ) ) {}
   FarmTile(const good::Product outGood, const TilePos& farmpos);
   virtual ~FarmTile() {}
   Picture& getPicture();
@@ -70,7 +70,7 @@ private:
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::farmtile, FarmTile)
 
 FarmTile::FarmTile( const good::Product outGood, const TilePos& farmpos )
- : Construction( object::farmtile, 1 )
+ : Construction( object::farmtile, Size( 1 ) )
 {
   _farmpos = farmpos;
   //_animation.load( ResourceGroup::commerce, picIdx, 5);
@@ -240,7 +240,7 @@ void Farm::timeStep(const unsigned long time)
   Factory::timeStep(time);
 
   if( game::Date::isDayChanged() && mayWork()
-      && progress() < 100 && _d->lastProgress != progress() )
+      && _d->lastProgress != progress() )
   {
     _d->lastProgress = progress();
     computePictures();
@@ -249,7 +249,7 @@ void Farm::timeStep(const unsigned long time)
 
 bool Farm::build( const city::AreaInfo& info )
 {
-  setSize( 2 );
+  setSize( Size( 2 ) );
   city::AreaInfo upInfo = info;
   if( !info.city->getOption( PlayerCity::forceBuild ) ) //it flag use on load only
   {
@@ -270,13 +270,13 @@ bool Farm::build( const city::AreaInfo& info )
 void Farm::save( VariantMap& stream ) const
 {
   Factory::save( stream );
-  stream[ "locations" ] = _d->sublocs.toVList();
+  stream[ "locations" ] = _d->sublocs.save();
 }
 
 void Farm::load( const VariantMap& stream )
 {
   Factory::load( stream );
-  _d->sublocs.fromVList( stream.get( "locations").toList() );
+  _d->sublocs.load( stream.get( "locations").toList() );
 
   //el muleta for broken farmtiles
   if( !_d->sublocs.empty() && _d->sublocs[ 0 ] == TilePos(0,0) )

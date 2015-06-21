@@ -6,16 +6,19 @@ namespace gui
 {
 
 const unsigned int AbstractAttribute::ATTRIBEDIT_ATTRIB_CHANGED = Hash( "ATTR" );
+const char* AbstractAttribute::ATTRIBUTE_TYPENAME = "Attribute";
 
 AbstractAttribute::AbstractAttribute(Widget *parent, int myParentID) :
-  Widget( parent, -1, Rect(0, 0, 1, 1) ),
-  _attribs( 0 ),
+  Widget( parent, -1, Rect(0, 0, parent->width(), parent->height()) ),
+  _attribute( 0 ),
   _parentEvent( 0 ), _expanded( false ), _isNeedUpdate( false ),
   _name( "NewAttribute" ), _myParentID(myParentID)
 {
 #ifdef _DEBUG
     setDebugName( "ArtributeEdit");
 #endif
+  setGeometry( RectF( 0, 0, 1.f, 1.f) );
+  setAlignment( align::upperLeft, align::lowerRight, align::upperLeft, align::lowerRight );
 }
 
 AbstractAttribute::~AbstractAttribute()
@@ -67,31 +70,15 @@ bool AbstractAttribute::onEvent(const NEvent &e)
   return Widget::onEvent(e);
 }
 
-AbstractAttribute *AbstractAttribute::GetChildAttribute(unsigned int index) { return NULL; }
+AbstractAttribute* AbstractAttribute::getChild(unsigned int index) { return NULL; }
 
-void AbstractAttribute::setAttrib( const Variant& attribs, const std::string& name)
+void AbstractAttribute::setValue( const Variant& attribute )
 {
-  _attribs = attribs;
-
-  std::string rname = name + " (" + attribs.typeName() +  ")";
-  setText( rname );
-
-  // get minimum height
-  int y=0;
-  ConstChildIterator it = children().begin();
-  for (; it != children().end(); ++it)
-  {
-    if( y < (*it)->relativeRect().bottom() )
-      y = (*it)->relativeRect().bottom();
-  }
-
+  _attribute = attribute;
   updateAttrib(false);
 }
 
-void AbstractAttribute::setParentID(int parentID)
-{
-  _myParentID = parentID;
-}
+void AbstractAttribute::setParentID(int parentID) {  _myParentID = parentID; }
 
 void AbstractAttribute::setFont(Font font) {}
 
@@ -109,19 +96,17 @@ bool AbstractAttribute::updateAttrib(bool sendEvent)
   return true;
 }
 
-void AbstractAttribute::setAttributeName(const std::string &name)
+void AbstractAttribute::beforeDraw(gfx::Engine &painter)
 {
-  _name = name;
+  if( size() != parent()->size() )
+    setGeometry( RectF( 0, 0, 1, 1 ) );
+
+  Widget::beforeDraw( painter );
 }
 
-void AbstractAttribute::setParent4Event(Widget *parent)
-{
-  _parentEvent = parent;
-}
-
-unsigned int AbstractAttribute::GetChildAttributesCount() const
-{
-  return 0;
-}
+void AbstractAttribute::setTitle(const std::string &name) {  _name = name;}
+void AbstractAttribute::setParent4Event(Widget *parent){  _parentEvent = parent;}
+const std::string &AbstractAttribute::title() const { return _name; }
+unsigned int AbstractAttribute::childCount() const{ return 0; }
 
 }//end namespace gui

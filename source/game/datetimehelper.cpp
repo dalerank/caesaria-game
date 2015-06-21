@@ -22,10 +22,12 @@
 namespace util
 {
 
-std::string date2str(const DateTime& time, bool drawDays)
+
+template<class T>
+std::string _date2str(const T& time, bool drawDays)
 {
   std::string month = utils::format( 0xff, "##month_%d_short##", time.month() );
-  std::string age = utils::format( 0xff, "##age_%s##", time.year() > 0 ? "ad" : "bc" );
+  std::string age = utils::format( 0xff, "##age_%s##", time.age() );
   std::string text;
   if( drawDays)
     text = utils::format( 0xff, "%d %s %d %s", time.day(), _( month ), abs( time.year() ), _( age ) );
@@ -34,5 +36,8 @@ std::string date2str(const DateTime& time, bool drawDays)
 
   return text;
 }
+
+std::string date2str(const RomanDate  &time, bool drawDays){  return _date2str( time, drawDays );}
+std::string date2str(const DateTime &time, bool drawDays){  return _date2str( time, drawDays );}
 
 }//end namespace util

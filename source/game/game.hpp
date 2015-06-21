@@ -40,7 +40,9 @@ public:
 
   bool exec();
 
+  void play();
   void reset();
+  void pause();
   void clear();
 
   PlayerPtr        player() const;
@@ -55,17 +57,10 @@ public:
   bool isPaused() const;
 
   void step( unsigned int count = 1);
-
-  void play();
-  void pause();
-
   void changeTimeMultiplier(int percent);
   void setTimeMultiplier(int percent);
   int timeMultiplier() const;
   void setNextScreen( scene::ScreenType screen);
-
-public signals:
-  Signal1<std::string>& onSaveAccepted();
 
 private:
 

@@ -268,7 +268,8 @@
     desirability : { base :2,	range : 2,	step : -1 }
     employers : 2
     class : "health"
-    image : [ "security", 19 ]
+    size : [ 1, 1 ]
+    image : [ "barber", 1 ]
     service : "srvc_barber"
     sound : [ "barber", 1 ]
   }, 
@@ -277,6 +278,7 @@
     cost : 50,
     desirability : { base :-2,	range : 2,	step : 1 }
     employers : 10
+    maxServe : 75
     class : "education"
     image : [ "commerce", 83 ]
     sound : [ "school", 1 ]
@@ -286,6 +288,7 @@
     cost : 100,
     desirability : { base :4,	range : 4,	step : -1 }
     employers : 30
+    maxServe : 100
     class : "education"
     image : [ "commerce", 85 ]
     sound : [ "academy", 1 ]
@@ -295,6 +298,7 @@
     cost : 75,
     desirability : { base : 4,	range : 4,	step : -1 }
     employers : 20
+    maxServe : 800
     class : "education"
     image : [ "commerce", 84 ]
     sound : [ "library", 1 ]
@@ -553,6 +557,7 @@
     desirability : { base : 3,	range : 3,	step : -1 }
     employers : 6
     class : "administration"
+    image : [ "forum", 1 ]
     sound : [ "forum", 1 ]
   },   
   
@@ -741,7 +746,8 @@
     output : "marble"
     productRate : 2.4
     sound : [ "marblequarry", 1 ]
-    image : [ "commerce", 43 ]
+    image : [ "quarry", 1 ]
+    animation : { rc : "quarryanim", start : 1, count : 11, offset : [ 105, 30 ], delay : 3 }
     collapsibility : 1.5
   },
 
@@ -809,6 +815,8 @@
     class : "industry"
     productRate : 4.8
     sound : [ "creamery", 1 ]
+    image : [ "oilworkshop", 1 ]
+    animation : { rc : "oilworkshopa", start : 1, count : 8, offset : [ 78, 25 ], delay : 4 }
     inflammability : 1.2
   },
   

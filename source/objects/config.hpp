@@ -31,6 +31,11 @@ namespace servicebld
 enum { defaultWorkers=5, defaultRange=30 };
 }
 
+namespace educationbld
+{
+enum { maxSchoolVisitors=75, maxAcademyVisitors=100, maxLibraryVisitors=800 };
+}
+
 }//end namespace city
 
 #endif //__CAESARIA_OBJECTS_CONFIG_H_INCLUDED__

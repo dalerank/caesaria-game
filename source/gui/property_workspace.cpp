@@ -12,6 +12,7 @@
 #include "environment.hpp"
 #include "core/timer.hpp"
 #include "core/logger.hpp"
+#include "core/saveadapter.hpp"
 
 using namespace gfx;
 
@@ -38,7 +39,7 @@ public:
     if( !_scene )
       return;   
 
-    if( event.EventType == sEventMouse && event.mouse.type == mouseLbtDblClick )
+    if( event.EventType == sEventMouse && event.mouse.type == mouseLbtnPressed )
     {
       Camera* camera = _scene->camera();
       Tile* tile = camera->at( event.mouse.pos(), false );
@@ -59,8 +60,7 @@ public:
 //! constructor
 PropertyWorkspace::PropertyWorkspace( Widget* _parent, scene::Base* scene, const Rect& rectangle )
     : Window( _parent, rectangle, "", -1 ),
-      _resizing(false), _selectedElement(0),
-      _attribEditor(0)
+      _resizing(false), _selectedElement(0)
 {
 	#ifdef _DEBUG
       setDebugName( "PropertyWorkspace");
@@ -81,25 +81,48 @@ PropertyWorkspace::PropertyWorkspace( Widget* _parent, scene::Base* scene, const
 
   _eventHandler = new WorkspaceEventHandler( *this, scene );
 
-  _createElementsTreeView();
+  //_createElementsTreeView();
   _createTabControl();
   _lastUpdateTime = 0;
 
-  PushButton* btnClose = new PushButton( this, Rect( width() - 20, 0, width(), 20 ), "X" );
+  PushButton* btnClose = new PushButton( this, Rect( width() - 24, 0, width(), 24 ), "X" );
   CONNECT( btnClose, onClicked(), this, PropertyWorkspace::deleteLater )
 }
 
 void PropertyWorkspace::_createElementsTreeView()
 {
-  _treeView = new TreeView( this, Rect(0,0,100,100), -1, true, true, true );
-  _treeView->setGeometry( Rect(12, 12, width()/2, height()-12));
+ // _treeView = new TreeView( this, Rect(0,0,100,100), -1, true, true, true );
+ // _treeView->setGeometry( Rect(12, 12, width()/2, height()-12));
 }
 
 void PropertyWorkspace::_createTabControl()
 {
-  _attribEditor = new PropertyBrowser( this );
+  /*_attribEditor = new PropertyBrowser( this );
   _attribEditor->setID( EGUIEDCE_ATTRIB_EDITOR );  
-  _attribEditor->setGeometry( Rect(width()/2, 12, width()-12, height()-12) );
+  _attribEditor->setGeometry( Rect(13, 13, width()-13, height()-13) );
+  */
+  _editor = new Label( this, Rect(13, 13, width()-13, height()-13), "" );
+  _editor->setFont( Font::create( FONT_1 ) );
+  _editor->setWordwrap( true );
+}
+
+void PropertyWorkspace::_update()
+{
+  /*_treeView->getRoot()->clearChildren();
+  const OverlayList& overlays = _city->overlays();
+  OverlayList forest;
+  foreach( it, overlays )
+  {
+    if( (*it)->type() == object::tree )
+      forest.push_back( *it );
+  }
+
+  TreeViewItem* item = _treeView->getRoot()->addChildBack( "Trees" );
+  foreach( it, forest )
+  {
+    std::string text = utils::format( 0xff, "[%d,%d]%s", (*it)->pos().i(), (*it)->pos().j(), (*it)->name().c_str() );
+    item->addChildBack( text, 0, -1, -1, (*it).object() );
+  }*/
 }
 
 //! destructor
@@ -110,10 +133,13 @@ PropertyWorkspace::~PropertyWorkspace()
     _eventHandler->_finished = true;
 }
 
-TreeView* PropertyWorkspace::getTreeView() const{	return _treeView;}
-PropertyBrowser* PropertyWorkspace::getAttributeEditor() const{  return _attribEditor;}
 scene::EventHandlerPtr PropertyWorkspace::handler() const{  return _eventHandler;}
-void PropertyWorkspace::setCity(PlayerCityPtr city){  _city = city;}
+
+void PropertyWorkspace::setCity(PlayerCityPtr city)
+{
+  _city = city;
+  _update();
+}
 
 TreeViewItem* PropertyWorkspace::_getTreeNode(OverlayPtr element, TreeViewItem* searchnode)
 {
@@ -151,44 +177,27 @@ void PropertyWorkspace::_addChildrenToTree( Widget* _parentElement, TreeViewItem
 
 void PropertyWorkspace::updateTree( Widget* elm )
 {
-	_treeView->getRoot()->clearChildren();
-  _addChildrenToTree(elm, _treeView->getRoot());
-  _treeView->getRoot()->getFirstChild()->setExpanded(true);
+  //_treeView->getRoot()->clearChildren();
+  //_addChildrenToTree(elm, _treeView->getRoot());
+  //_treeView->getRoot()->getFirstChild()->setExpanded(true);
 }
 
 void PropertyWorkspace::setSelectedElement(OverlayPtr sel)
 {
 	// save changes
-	_attribEditor->updateAttribs();
-  TreeViewItem* elementTreeNode = _getTreeNode(sel, _treeView->getRoot());
+  //_attribEditor->updateAttribs();
+  VariantMap attribs;// = _attribEditor->getAttribs();
 
-	if (elementTreeNode)
-	{
-		elementTreeNode->setSelected(true);
-		while (elementTreeNode)
-		{
-			elementTreeNode->setExpanded(true);
-			elementTreeNode = elementTreeNode->getParentItem();
-		}
-	}
-
-  VariantMap attribs = _attribEditor->getAttribs();
-
-  /*if (_selectedElement.isValid() && sel != _selectedElement)
-	{
-		// deserialize attributes
-		_selectedElement->load(Attribs);
-  }*/
-	// clear the attributes list
-  attribs.clear();
+  //attribs.clear();
 	_selectedElement = sel;
 
 	// get the new attributes
   if (_selectedElement.isValid())
     _selectedElement->save(attribs);
 
-  _attribEditor->setAttribs( attribs );
-  _treeView->getRoot()->addChildBack( sel->name(), 0, -1, -1, (void*)sel.object() );
+  //_attribEditor->setAttribs( attribs );
+  std::string text = config::save(attribs);
+  _editor->setText( text );
 }
 
 //! draws the element and its children.

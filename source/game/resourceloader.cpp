@@ -23,6 +23,7 @@
 #include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
 #include "game/settings.hpp"
+#include "core/variant_list.hpp"
 #include "gfx/loader.hpp"
 
 using namespace vfs;

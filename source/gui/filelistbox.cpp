@@ -51,7 +51,7 @@ ListBoxItem& FileListBox::addItem(const std::string& text, Font font, const int 
   DateTime time = vfs::FileSystem::instance().getFileUpdateTime( text );
   int gmtOffset = OSystem::gmtOffsetMs() / DateTime::secondsInHour;
   std::string timeStr = utils::format( 0xff, "(%02d %s %02d:%02d:%02d)",
-                                              time.day(), DateTime::getShortMonthName( time.month()-1 ),
+                                              time.day(), DateTime::shortMonthName( time.month()-1 ),
                                               (time.hour() + gmtOffset)%24, time.minutes(), time.seconds() );
   ListBoxItem& item = ListBox::addItem( vfs::Path( text ).baseName().toString(), font, color );
 

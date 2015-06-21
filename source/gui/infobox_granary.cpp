@@ -95,7 +95,7 @@ void AboutGranary::showSpecialOrdersWindow()
   }
   else
   {
-    pos = absoluteRect().UpperLeftCorner;
+    pos = absoluteRect().lefttop();
   }
 
   new GranarySpecialOrdersWindow( parent(), pos, _granary );

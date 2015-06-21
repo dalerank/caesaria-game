@@ -120,6 +120,7 @@ public:
     
 signals public:
   virtual Signal0<>& onClicked();
+  virtual Signal1<Widget*>& onClickedA();
 
 protected:
   virtual void _finalizeResize();

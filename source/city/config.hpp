@@ -19,6 +19,7 @@
 #define __CAESARIA_CITY_CONFIG_H_INCLUDED__
 
 #include "predefinitions.hpp"
+#include "core/namedtype.hpp"
 
 namespace config
 {
@@ -35,7 +36,9 @@ enum { defaultNumber=10 };
 
 namespace crime
 {
-enum { maxLevel=10, rioterCost=20, level4protestor = 50, level4mugger = 70, defaultValue = 75, level4rioter = 90, maxValue=100 };
+enum { maxLevel=10, protestorCost=15, rioterCost=20,
+       level4protestor = 50, level4mugger = 70,
+       defaultValue = 75, level4rioter = 90, maxValue=100 };
 }
 
 namespace festival
@@ -48,7 +51,6 @@ namespace health
 {
 enum { levelNumber = 12, bad = 40, terrible = 20, maxValue=100 };
 }
-
 
 namespace workless
 {
@@ -90,5 +92,15 @@ enum { veryAngry=5, angry=10, veryUpset=15, upset=22,
 }
 
 }//end namespace city
+
+namespace extentinfo
+{
+BEGIN_NAMEDTYPE(Type,none)
+APPEND_NAMEDTYPE(celebrates)
+APPEND_NAMEDTYPE(economy)
+APPEND_NAMEDTYPE(population)
+END_NAMEDTYPE(Type)
+}
+typedef extentinfo::Type ExtentInfo;
 
 #endif //__CAESARIA_CITY_CONFIG_H_INCLUDED__

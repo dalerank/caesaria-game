@@ -54,7 +54,7 @@ SrvcPtr Military::create( PlayerCityPtr city )
 }
 
 Military::Military( PlayerCityPtr city )
-  : city::Srvc( city, defaultName() ), _d( new Impl )
+  : Srvc( city, defaultName() ), _d( new Impl )
 {
   _d->needUpdateMilitaryThreat = true;
   _d->threatValue = 0;

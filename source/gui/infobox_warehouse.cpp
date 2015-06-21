@@ -101,7 +101,7 @@ void AboutWarehouse::showSpecialOrdersWindow()
   }
   else
   {
-    pos = absoluteRect().UpperLeftCorner;
+    pos = absoluteRect().lefttop();
   }
 
   new WarehouseSpecialOrdersWindow( parent(), pos, _warehouse );

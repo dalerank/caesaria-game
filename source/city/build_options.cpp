@@ -22,6 +22,7 @@
 #include "objects/constants.hpp"
 #include "gfx/helper.hpp"
 #include "objects/overlay.hpp"
+#include "core/variant_list.hpp"
 
 using namespace gfx;
 

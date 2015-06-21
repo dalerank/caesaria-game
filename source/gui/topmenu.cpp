@@ -34,6 +34,8 @@
 #include "widgetescapecloser.hpp"
 #include "gfx/decorator.hpp"
 #include "listbox.hpp"
+#include "core/metric.hpp"
+#include "city/config.hpp"
 
 using namespace gfx;
 
@@ -66,6 +68,7 @@ slots public:
   void resolveAdvisorShow(int);
   void handleDebugEvent(int);
   void showShortKeyInfo();
+  void resolveExtentInfo(Widget* sender);
   void initBackground( const Size& size );
 
 signals public:
@@ -78,7 +81,8 @@ signals public:
   Signal0<> onShowSoundOptionsSignal;
   Signal0<> onShowGameSpeedOptionsSignal;
   Signal0<> onShowCityOptionsSignal;
-  Signal1<advisor::Type> onRequestAdvisorSignal;
+  Signal1<int> onShowExtentInfoSignal;
+  Signal1<Advisor> onRequestAdvisorSignal;
 };
 
 void TopMenu::draw(gfx::Engine& engine )
@@ -116,7 +120,18 @@ void TopMenu::Impl::updateDate()
   if( !game::Date::isDayChanged() )
     return;
 
-  lbDate->setText( util::date2str( game::Date::current(), true ) );
+  std::string text;
+  if( metric::Measure::mode() == metric::Measure::roman )
+  {
+    RomanDate rDate( game::Date::current() );
+    text = util::date2str( rDate, true );
+  }
+  else
+  {
+    text = util::date2str( game::Date::current(), true );
+  }
+
+  lbDate->setText( text );
 }
 
 void TopMenu::Impl::showShortKeyInfo()
@@ -130,6 +145,15 @@ void TopMenu::Impl::showShortKeyInfo()
   WidgetEscapeCloser::insertTo( bg );
 
   CONNECT( btnExit, onClicked(), bg, Label::deleteLater );
+}
+
+void TopMenu::Impl::resolveExtentInfo(Widget *sender)
+{
+  int tag = sender->getProperty( CAESARIA_STR_A(ExtentInfo) );
+  if( tag != extentinfo::none )
+  {
+    emit onShowExtentInfoSignal( tag );
+  }
 }
 
 void TopMenu::Impl::initBackground( const Size& size )
@@ -188,16 +212,22 @@ TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
   {
     _d->lbPopulation->setPosition( Point( width() - populationLabelOffset, 0 ) );
     _d->lbPopulation->setIcon( useIcon ? Picture( "population", 1 ) : Picture() );
+    _d->lbPopulation->addProperty( CAESARIA_STR_A(ExtentInfo), extentinfo::population );
   }
 
   if( _d->lbFunds )
   {
     _d->lbFunds->setPosition(  Point( width() - fundLabelOffset, 0) );
     _d->lbFunds->setIcon( useIcon ? Picture( "paneling", 332 ) : Picture() );
+    _d->lbFunds->addProperty( CAESARIA_STR_A(ExtentInfo), extentinfo::economy);
   }
 
   if( _d->lbDate )
+  {
     _d->lbDate->setPosition( Point( width() - dateLabelOffset, 0) );
+    _d->lbDate->addProperty( CAESARIA_STR_A(ExtentInfo), extentinfo::celebrates );
+    CONNECT( _d->lbDate, onClickedA(), _d.data(), Impl::resolveExtentInfo )
+  }
 
   ContextMenuItem* tmp = addItem( _("##gmenu_file##"), -1, true, true, false, false );
   ContextMenu* file = tmp->addSubMenu();
@@ -257,6 +287,7 @@ Signal0<>& TopMenu::onExit() {  return _d->onExitSignal; }
 Signal0<>& TopMenu::onSave(){  return _d->onSaveSignal; }
 Signal0<>& TopMenu::onEnd(){  return _d->onEndSignal; }
 Signal1<Advisor>& TopMenu::onRequestAdvisor() {  return _d->onRequestAdvisorSignal; }
+Signal1<int> &TopMenu::onShowExtentInfo() { return _d->onShowExtentInfoSignal; }
 Signal0<>& TopMenu::onLoad(){  return _d->onLoadSignal; }
 Signal0<>&TopMenu::onRestart() { return _d->onRestartSignal; }
 Signal0<>& TopMenu::onShowVideoOptions(){  return _d->onShowVideoOptionsSignal; }

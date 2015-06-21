@@ -17,6 +17,7 @@
 
 #include "notification.hpp"
 #include "gamedate.hpp"
+#include "core/variant_list.hpp"
 
 namespace notification
 {

@@ -6,20 +6,24 @@
 namespace gui
 {
 
-REGISTER_CLASS_IN_WIDGETFACTORY(AttributeString)
+REGISTER_CLASS_IN_WIDGETFACTORY(StringAttribute)
 
-AttributeString::AttributeString(Widget *parent, int myParentID) :
-  AbstractAttribute( parent, myParentID ), _attribEditBox( NULL )
+StringAttribute::StringAttribute(Widget *parent, int myParentID)
+  : AbstractAttribute( parent, myParentID ), _attribEditBox( NULL )
 {
-  _attribEditBox = new EditBox( this, Rect( 0, 0, 1, 1 ), "", -1 );
+  _attribEditBox = new EditBox( this, Rect( 0, 0, width(), height() ) , "", -1 );
   _attribEditBox->setGeometry( RectF( 0, 0, 1, 1 ) );
+  _attribEditBox->setAlignment( align::upperLeft, align::lowerRight, align::upperLeft, align::lowerRight );
   _attribEditBox->setSubElement( true );
   _attribEditBox->setDrawBorder( false );
   _attribEditBox->setDrawBackground( false );
-  //_attribEditBox->setAlignment(alignUpperLeft, alignLowerRight, alignUpperLeft, alignLowerRight);
 }
 
-bool AttributeString::onEvent(const NEvent &e)
+StringAttribute::~StringAttribute()
+{
+}
+
+bool StringAttribute::onEvent(const NEvent &e)
 {
   if( e.EventType == sEventGui && e.gui.type == guiEditboxChanged )
     _isNeedUpdate = true;
@@ -27,34 +31,32 @@ bool AttributeString::onEvent(const NEvent &e)
   return AbstractAttribute::onEvent( e );
 }
 
-void AttributeString::setAttrib( const Variant& m, const std::string& name )
+void StringAttribute::setValue( const Variant& value )
 {
-  _attribEditBox->setText( m.toString() );
-
-  AbstractAttribute::setAttrib( m, name);
+  _attribEditBox->setText( value.toString() );
+  AbstractAttribute::setValue( value );
 }
 
-bool AttributeString::updateAttrib(bool sendEvent)
+bool StringAttribute::updateAttrib(bool sendEvent)
 {
-  if (!_attribs)
-    return true;
-
   //_attribs->setAttribute(_index, _attribEditBox->getText());
   //_attribEditBox->setText( _attribs->getAttributeAsString( _index ) );
 
   return AbstractAttribute::updateAttrib(sendEvent);
 }
 
-std::string AttributeString::GetEditText() const { return _attribEditBox->text(); }
+std::string StringAttribute::editText() const { return _attribEditBox->text(); }
 
-void AttributeString::setFont(Font font)
+void StringAttribute::setFont(Font font)
 {
   if( _attribEditBox ) _attribEditBox->setFont( font );
 }
 
-void AttributeString::setEditText(const std::string &text)
+void StringAttribute::setEditText(const std::string &text)
 {
   _attribEditBox->setText( text );
 }
+
+void StringAttribute::_finalizeResize() {}
 
 }//end namespace gui
