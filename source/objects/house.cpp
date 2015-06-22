@@ -62,19 +62,79 @@ namespace {
                                  -19,-21,-23,-27, -31 };
 }
 
-class Services : public std::map< Service::Type, Service >
+class ISrvcAdapter
 {
 public:
-  void reset()
+  virtual ~ISrvcAdapter() {}
+  virtual void set( float value ) = 0;
+  virtual float value() const = 0;
+  virtual float max() const = 0;
+  virtual void setMax( float value ) = 0;
+  virtual void consume( float value ) = 0;
+};
+
+template<class T>
+class SrvcAdapter : public ISrvcAdapter
+{
+public:
+  T* obj;
+
+  SrvcAdapter() { obj = new T(); }
+  SrvcAdapter(int) {}
+  virtual ~SrvcAdapter() { if( obj ) delete obj; }
+  virtual void set( float value ) { obj->set( value ); }
+  virtual float value() const { return obj->value(); }
+  virtual float max() const { return obj->max(); }
+  virtual void setMax( float value ) { obj->setMax( value ); }
+  virtual void consume( float delta ) { set( value() + delta ); }
+};
+
+class HbtAdapter : public SrvcAdapter<RecruterService>
+{
+public:
+  HbtAdapter( Habitants& hbt ) : SrvcAdapter(0)
+  {
+    obj = new RecruterService( hbt );
+  }
+
+  virtual void consume( float delta ) {} //worker force not consumable
+};
+
+class Services : public std::map<Service::Type, ISrvcAdapter*>
+{
+public:
+  ~Services()
+  {
+    foreach(it, *this)
+      delete it->second;
+  }
+
+  Services()
   {
     for( int i = 0; i<Service::srvCount; ++i )
     {
-      // for every service type
-      Service::Type service = Service::Type(i);
-      (*this)[service] = Service();
+      insert( std::make_pair( Service::Type(i), new SrvcAdapter<Service>() ) );
     }
 
-    (*this)[ Service::crime ] = 0;
+    at( Service::crime )->set( 0 );
+  }
+
+  ISrvcAdapter* at( Service::Type t )
+  {
+    iterator it = find( t );
+    if( it != end() )
+      return it->second;
+
+    return 0;
+  }
+
+  void replace( Service::Type t, ISrvcAdapter* adapter )
+  {
+    iterator it = find( t );
+    if( it != end() )
+      delete it->second;
+
+    it->second = adapter;
   }
 
   void load( const VariantList& stream )
@@ -82,7 +142,7 @@ public:
     for( unsigned int i=0; i < stream.size(); i+=2 )
     {
       Service::Type type = Service::Type( stream.get( i ).toInt() );
-      (*this)[ type ] = stream.get( i+1 ).toFloat(); //serviceValue
+      at( type )->set( stream.get( i+1 ).toFloat() ); //serviceValue
     }
   }
 
@@ -92,7 +152,7 @@ public:
      foreach( mapItem, *this )
      {
        ret.push_back( Variant( (int)mapItem->first ) );
-       ret.push_back( Variant( mapItem->second ) );
+       ret.push_back( Variant( mapItem->second->value() ) );
      }
 
      return ret;
@@ -155,8 +215,7 @@ House::House( HouseLevel::ID level ) : Building( object::house ), _d( new Impl )
   _d->initGoodStore( 1 );
 
   // init the service access
-  _d->services.reset();
-  _d->services[ Service::recruter ] = RecruterService( _d->habitants );
+  _d->services.replace( Service::recruter, new HbtAdapter( _d->habitants ) );
 
   _update( true );
 }
@@ -740,7 +799,7 @@ void House::_tryDegrade_20_to_12_lvl( int rsize, const char desirability )
 
 void House::_setServiceMaxValue(Service::Type type, unsigned int value)
 {
-  _d->services[ type ].setMax( value );
+  _d->services.at( type )->setMax( value );
 }
 
 void House::_levelDown()
@@ -1278,13 +1337,14 @@ int House::Impl::getFoodLevel() const
 
 unsigned int House::hired() const
 {
-  const Service& srvc = _d->services[ Service::recruter ];
-  return srvc.max() - srvc.value();
+  ISrvcAdapter* srvc = _d->services.at( Service::recruter );
+  return srvc->max() - srvc->value();
 }
 
 unsigned int House::unemployed() const
 {
-  return _d->services[ Service::recruter ].value();
+  ISrvcAdapter* srvc = _d->services.at( Service::recruter );
+  return srvc->value();
 }
 
 bool House::isEducationNeed(Service::Type type) const
@@ -1350,8 +1410,8 @@ const CitizenGroup& House::habitants() const                     { return _d->ha
 good::Store& House::goodStore()                                  { return _d->goodstore; }
 const HouseSpecification& House::spec() const                    { return _d->spec; }
 bool House::hasServiceAccess( Service::Type service)             { return (_d->services[service] > 0); }
-float House::getServiceValue( Service::Type service)             { return _d->services[service]; }
-void House::setServiceValue( Service::Type service, float value) { _d->services[service] = value; }
+float House::getServiceValue( Service::Type service)             { return _d->services.at(service)->value(); }
+void House::setServiceValue( Service::Type service, float value) { _d->services.at(service)->set( value ); }
 unsigned int House::capacity()                                   { return _d->habitants.capacity; }
 void House::appendServiceValue( Service::Type srvc, float value) { setServiceValue( srvc, getServiceValue( srvc ) + value ); }
 
@@ -1424,11 +1484,8 @@ void House::Impl::initGoodStore(int size)
 
 void House::Impl::consumeServices()
 {
-  int currentWorkersPower = services[ Service::recruter ];       //save available workers number
-
-  foreach( s, services ) { s->second -= 1; } //consume services
-
-  services[ Service::recruter ] = currentWorkersPower;     //restore available workers number
+  foreach( s, services )
+    { s->second->consume( -1 ); } //consume services
 }
 
 void House::Impl::consumeGoods( HousePtr house )

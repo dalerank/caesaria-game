@@ -42,19 +42,19 @@ public:
   } Type;
 
   Service() : _value( 0 ), _min( 0 ), _max( 100 ) {}
-  ~Service() {}
 
-  virtual void set( float i ) { _value = math::clamp<float>( i, _min, _max); }
-  virtual float value() const { return _value; }
+  void set( float i ) { _value = math::clamp<float>( i, _min, _max); }
+  float value() const { return _value; }
 
-  virtual int max() const { return _max; }
-  virtual void setMax( int value ) { _max = value; set( _value ); }
+  int max() const { return _max; }
+  void setMax( int value ) { _max = value; set( _value ); }
 
-  operator float() const { return _value; }
+  operator float() const { return value(); }
 
   Service& operator=( float i) { set( i ); return *this; }
   Service& operator-=(float i) { set( _value - i ); return *this; }
   Service& operator+=(float i) { set( _value + i ); return *this; }
+
 private:
   float _value;
   int _min, _max;
