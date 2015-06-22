@@ -578,7 +578,7 @@
     pretty : "Well",
     image : [ "utilitya", 1 ]
     image.ext : {
-      type_1 : { size:1, rc : "well", start : 1, count : 4 }
+      type_1 : { size:1, rc : "well", start : 1, count : 1 }
     }
     class : "water"
     sound : [ "well", 1 ]
