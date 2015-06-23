@@ -95,7 +95,7 @@ void Roads::timeStep( const unsigned int time )
     }
   }
 
-  HouseList houses = city::statistic::getHouses( _city() );
+  HouseList houses = statistic::getHouses( _city() );
   foreach( house, houses )
   {
     if( (*house)->spec().level() >= HouseLevel::bigMansion )
@@ -132,7 +132,7 @@ void Roads::Impl::updateRoadsAround( Propagator& propagator, UpdateInfo info )
     const TilesArray& tiles = (*current)->allTiles();
     foreach( it, tiles )
     {
-      RoadPtr road = ptr_cast<Road>( (*it)->overlay() );
+      RoadPtr road = (*it)->overlay().as<Road>();
       if( road.isValid() )
       {
         road->appendPaved( defaultIncreasePaved );

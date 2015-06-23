@@ -63,7 +63,7 @@ public:
       if( is_kind_of<BigTemple>( temple ) ) { info.bigTempleNum++; }
       else { info.smallTempleNum++; }
 
-      info.parishionerNumber += temple->parishionerNumber();
+      info.parishionerNumber += temple->currentVisitors();
     }
   }
 
@@ -131,7 +131,7 @@ void Religion::timeStep( const unsigned int time )
     //add parishioners to all divinities by oracles
     int oraclesParishionerNumber = 0;
     foreach( itOracle, oracles )
-      oraclesParishionerNumber += (*itOracle)->parishionerNumber();
+      oraclesParishionerNumber += (*itOracle)->currentVisitors();
 
     _d->templesCoverity.setOraclesParishioner( oraclesParishionerNumber );
 
