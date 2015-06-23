@@ -71,7 +71,8 @@ public:
   }MaskInfo;
 
   Picture screen;
-  Picture fpsText;
+  Picture fpsTx;
+  std::string debugTextStr;
 
   SDL_Window* window;
   SDL_Renderer* renderer;
@@ -99,6 +100,7 @@ SdlEngine::SdlEngine() : Engine(), _d( new Impl )
 
   _d->lastUpdateFps = DateTime::elapsedTime();
   _d->fps = 0;
+  _d->debugTextStr.reserve( 32 );
 }
 
 SdlEngine::~SdlEngine(){}
@@ -305,7 +307,7 @@ void SdlEngine::init()
   _d->window = window;
   _d->renderer = renderer;
 
-  _d->fpsText = Picture( Size( 200, 20 ), 0, true );
+  _d->fpsTx = Picture( Size( 200, 20 ), 0, true );
 }
 
 void SdlEngine::exit()
@@ -379,15 +381,15 @@ void SdlEngine::endRenderFrame()
 
     if( DebugTimer::ticks() - timeCount > 500 )
     {
-      std::string debugText = utils::format( 0xff, "fps:%d dc:%d", _d->lastFps, _d->drawCall );
-      _d->fpsText.fill( 0, Rect() );
-      _d->debugFont.draw( _d->fpsText, debugText, Point( 0, 0 ) );
+      _d->debugTextStr = utils::format( 0xff, "fps:%d dc:%d", _d->lastFps, _d->drawCall );
+      _d->fpsTx.fill( 0, Rect() );
+      _d->debugFont.draw( _d->fpsTx, _d->debugTextStr, Point( 0, 0 ) );
       timeCount = DebugTimer::ticks();
 #ifdef SHOW_FPS_IN_LOG
       Logger::warning( "FPS: %d", _d->fps );
 #endif
     }
-    draw( _d->fpsText, Point( _d->screen.width() / 2, 2 ), 0 );
+    draw( _d->fpsTx, Point( _d->screen.width() / 2, 2 ), 0 );
   }
 
   bool needDraw = _d->batcher.finish();

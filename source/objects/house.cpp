@@ -124,8 +124,12 @@ public:
     iterator it = find( t );
     if( it != end() )
       return it->second;
-
-    return 0;
+    else
+    {
+      ISrvcAdapter* newService = new SrvcAdapter<Service>();
+      insert( std::make_pair( t, newService ) );
+      return newService;
+    }
   }
 
   void replace( Service::Type t, ISrvcAdapter* adapter )
