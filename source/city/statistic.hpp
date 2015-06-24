@@ -168,16 +168,16 @@ SmartPtr<T> getWalker( PlayerCityPtr r, walker::Type type, Walker::UniqueId id )
   {
     foreach( it, all )
     {
-      if((*it)->type() == type && (*it)->uniqueId() != id )
-        return ptr_cast<T>( *it );
+      if((*it)->type() == type && (*it)->uniqueId() == id )
+        return it->as<T>();
     }
   }
   else
   {
     foreach( it, all )
     {
-      if( (*it)->uniqueId() != id )
-        return ptr_cast<T>( *it );
+      if( (*it)->uniqueId() == id )
+        return it->as<T>();
     }
   }
 
