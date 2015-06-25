@@ -94,7 +94,7 @@ public:
   {
     SmartList<T> ret;
     foreach( it, *this )
-      if( !is_kind_of<W>( it ) )
+      if( !is_kind_of<W>( *it ) )
         ret.push_back( *it );
 
     return ret;

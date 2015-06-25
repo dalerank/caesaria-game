@@ -173,6 +173,7 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, btnToggleCcUseAI )
   GET_DWIDGET_FROM_UI( _d, btnMetrics )
   GET_DWIDGET_FROM_UI( _d, btnHighlightBuilding )
+  GET_DWIDGET_FROM_UI( _d, btnDetroyEpidemicHouses )
 
   CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods )
   CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings )

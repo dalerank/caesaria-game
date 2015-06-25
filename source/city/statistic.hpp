@@ -74,6 +74,7 @@ bool canImport( PlayerCityPtr city, good::Product type );
 bool canProduce( PlayerCityPtr city, good::Product type );
 HouseList getHouses( PlayerCityPtr r, std::set<int> levels=std::set<int>() );
 FarmList getFarms(PlayerCityPtr r, std::set<object::Type> which=std::set<object::Type>() );
+OverlayList getNeighbors( OverlayPtr overlay, PlayerCityPtr r );
 
 template< class T >
 SmartList< T > getObjects( PlayerCityPtr r, object::Type type )
@@ -89,6 +90,15 @@ SmartList< T > getObjects( PlayerCityPtr r, object::Type type )
       ret.addIfValid( item->as<T>() );
   }
 
+  return ret;
+}
+
+template<class T, class B>
+SmartList<T> getNeighbors(PlayerCityPtr r, SmartPtr<B> overlay)
+{
+  OverlayList ovs = getNeighbors( ptr_cast<Overlay>( overlay ), r );
+  SmartList<T> ret;
+  ret << ovs;
   return ret;
 }
 
