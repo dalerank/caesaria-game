@@ -31,7 +31,7 @@ public:
   SmartList& operator<<( const SmartList<Src>& srcList )
   {
     foreach( it, srcList )
-      addIfValid( ptr_cast<T>(*it) );
+      addIfValid( ptr_cast<T>( *it ) );
 
     return *this;
   }
@@ -94,7 +94,7 @@ public:
   {
     SmartList<T> ret;
     foreach( it, *this )
-      if( !is_kind_of<W>( *it ) )
+      if( !is_kind_of<W>( it ) )
         ret.push_back( *it );
 
     return ret;
