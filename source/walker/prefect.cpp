@@ -179,12 +179,13 @@ void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
 {        
   foreach( it, reachedBuildings )
   {
+    if( (*it).isNull() ) continue;
+    if( (*it)->isDeleted() ) continue;
+
+    (*it)->applyService( this );
+
     HousePtr house = it->as<House>();
-
     if( house.isNull() ) continue;
-    if( house->isDeleted() ) continue;
-
-    house->applyService( this );
 
     int healthLevel = house->state( pr::health );
     if( healthLevel < 1 )
