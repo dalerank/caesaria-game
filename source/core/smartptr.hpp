@@ -72,7 +72,7 @@ public:
 
   void detachObject()   { obj = 0; }
   void attachObject(void * anObj) {    obj = (T*)anObj;   }
-  inline T* object()   { return obj;  }
+  inline T* object() const { return obj;  }
   inline T* operator->() const   { return obj; }
   
   SmartPtr()   { obj = 0;  }
@@ -112,7 +112,7 @@ public:
   }
 
   template<class Src>
-  bool equals( SmartPtr<Src> ptr ) const { return (obj == ptr.obj); }
+  inline bool equals( const SmartPtr<Src>& ptr ) const { return ((void*)obj == ptr.object()); }
 
   template<class Dst>
   SmartPtr<Dst> as() const
