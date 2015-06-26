@@ -1,6 +1,6 @@
 language: objective-c
 compiler:
-- gcc
+- gcc-4.8
 os:
 - osx
 before_install:
