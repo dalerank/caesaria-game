@@ -38,6 +38,13 @@ public:
   const TilePos& baseLocation() const;
 
   void setBase( BuildingPtr base );
+  BuildingPtr base() const;
+
+  template<class T>
+  void setBase( SmartPtr<T> base )
+  {
+    setBase( ptr_cast<Building>( base ) );
+  }
 
   virtual void send2City( BuildingPtr base, int orders=goServiceMaximum );
   virtual float serviceValue() const;

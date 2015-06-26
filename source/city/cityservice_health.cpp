@@ -92,8 +92,8 @@ void HealthCare::timeStep(const unsigned int time )
     if( _d->avgMinHealth < health::bad )
     {
       GameEventPtr e = WarningMessage::create( _d->avgMinHealth < health::terrible
-                                               ? "##advchief_health_terrible##"
-                                               : "##advchief_health_bad##", 2 );
+                                               ? "##minimum_health_terrible##"
+                                               : "##minimum_health_bad##", 2 );
       e->dispatch();
     }
   }

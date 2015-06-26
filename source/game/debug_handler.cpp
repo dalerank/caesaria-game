@@ -58,6 +58,7 @@
 #include "vfs/filesystem.hpp"
 #include "game/resourceloader.hpp"
 #include "religion/config.hpp"
+#include "world/computer_city.hpp"
 #include "gui/property_workspace.hpp"
 
 using namespace gfx;
@@ -312,6 +313,20 @@ void DebugHandler::Impl::handleEvent(int event)
       browser = new PropertyWorkspace( game->gui()->rootWidget(), game->scene(), Rect( 0, 0, 500, 700 ) );
       browser->setCity( game->city() );
       game->scene()->installEventHandler( browser->handler() );
+    }
+  }
+  break;
+
+  case send_exporter:
+  {
+    world::CityList cities = game->empire()->cities();
+    foreach( it, cities )
+    {
+      world::ComputerCityPtr ccity = (*it).as<world::ComputerCity>();
+      if( ccity.isValid() )
+      {
+        ccity->__debugSendMerchant();
+      }
     }
   }
   break;

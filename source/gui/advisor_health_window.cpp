@@ -99,12 +99,12 @@ public:
 
     Picture& texture = _textPicture();
     Font rfont = font();
-    std::string buildingStrT = utils::i2str( _numberBuilding ) + _(info.building);
+    std::string buildingStrT = utils::i2str( _numberBuilding ) + " " + _(info.building);
     rfont.draw( texture, buildingStrT, 0, 0 );
 
     rfont.draw( texture, utils::i2str(_workingBuilding), 165, 0 );
 
-    std::string peoplesStrT = utils::i2str( _peoplesCount ) + _(info.people);
+    std::string peoplesStrT = utils::i2str( _peoplesCount ) + " " + _(info.people);
     rfont.draw( texture, peoplesStrT, 255, 0 );
   }
 
@@ -238,7 +238,16 @@ void Health::Impl::updateAdvice(PlayerCityPtr c)
         outText << "##healthadv_some_regions_need_barbers##";
         outText << "##healthadv_some_regions_need_barbers_2##";
       }
-      if( needHospital > 0 ) { outText << "##healthadv_some_regions_need_hospital##"; }
+
+      if( needHospital > 0 )
+      {
+        outText << "##healthadv_some_regions_need_hospital##";
+      }
+
+      if( hc.isValid() )
+      {
+        outText << hc->reason();
+      }
     }
   }
 

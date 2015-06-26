@@ -1413,7 +1413,7 @@ bool House::isFlat() const                                       { return _d->is
 const CitizenGroup& House::habitants() const                     { return _d->habitants; }
 good::Store& House::goodStore()                                  { return _d->goodstore; }
 const HouseSpecification& House::spec() const                    { return _d->spec; }
-bool House::hasServiceAccess( Service::Type service)             { return (_d->services[service] > 0); }
+bool House::hasServiceAccess( Service::Type service)             { return getServiceValue(service) > 0; }
 float House::getServiceValue( Service::Type service)             { return _d->services.at(service)->value(); }
 void House::setServiceValue( Service::Type service, float value) { _d->services.at(service)->set( value ); }
 unsigned int House::capacity()                                   { return _d->habitants.capacity; }

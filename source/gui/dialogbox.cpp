@@ -23,6 +23,7 @@
 #include "core/event.hpp"
 #include "gfx/engine.hpp"
 #include "environment.hpp"
+#include "gameautopause.hpp"
 #include "core/logger.hpp"
 
 using namespace gfx;
@@ -40,6 +41,8 @@ namespace {
 
 class Dialog::Impl
 {
+public:
+  GameAutoPause locker;
 signals public:
   Signal1<int> onResultSignal;
   Signal0<> onOkSignal;
@@ -48,7 +51,7 @@ signals public:
 };
 
 Dialog::Dialog(Ui *ui, const Rect& rectangle, const std::string& title,
-                      const std::string& text, int buttons )
+                      const std::string& text, int buttons, bool lockGame)
                       : Window( ui->rootWidget(), rectangle, "" ), _d( new Impl )
 {
   Font font = Font::create( FONT_3 );
@@ -108,6 +111,9 @@ Dialog::Dialog(Ui *ui, const Rect& rectangle, const std::string& title,
 
    }
   setModal();
+
+  if( lockGame )
+    _d->locker.activate();
 }
 
 Signal1<int>& Dialog::onResult()
@@ -158,9 +164,9 @@ Dialog* Information(Ui* ui, const std::string &title, const std::string &text)
   return ret;
 }
 
-Dialog* Confirmation(Ui* ui, const std::string &title, const std::string &text)
+Dialog* Confirmation(Ui* ui, const std::string &title, const std::string &text, bool pauseGame)
 {
-  Dialog* ret = new Dialog( ui, Rect(), title, text, Dialog::btnOkCancel );
+  Dialog* ret = new Dialog( ui, Rect(), title, text, Dialog::btnOkCancel, pauseGame );
   ret->setModal();
   CONNECT( ret, onOk(), ret, Dialog::deleteLater );
   CONNECT( ret, onCancel(), ret, Dialog::deleteLater );

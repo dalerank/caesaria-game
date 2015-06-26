@@ -156,7 +156,9 @@ public:
   MerchantCamelList camels;
   State nextState;
 
+public:
   void resolveState( PlayerCityPtr city, WalkerPtr wlk, const TilePos& position );
+  void setCamelsGo(int delay );
 };
 
 Merchant::Merchant(PlayerCityPtr city )
@@ -303,6 +305,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
         Logger::warning( "LandMerchant: [%d,%d] wait while store buying goods on my animals", position.i(), position.j() );
         wlk->setThinks( "##landmerchant_say_about_store_goods##" );
         waitInterval = game::Date::days2ticks( 7 );
+        setCamelsGo( waitInterval );
       }
 
       nextState = stGoOutFromCity;
@@ -392,6 +395,7 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
 
     nextState = stFindWarehouseForBuying;
     waitInterval = 60;
+    setCamelsGo( waitInterval );
 
     resolveState( city, wlk, position );
   }
@@ -409,12 +413,25 @@ void Merchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const TileP
       route->addMerchant( ourCityName, sell, buy );
     }
 
+    foreach( it, camels )
+      (*it)->deleteLater();
+
     nextState = stNothing;
   }
   break;
 
   default:
     Logger::warning( "LandMerchant: unknown state resolved" );
+  }
+}
+
+void Merchant::Impl::setCamelsGo( int delay )
+{
+  foreach( it, camels )
+  {
+    (*it)->wait( delay );
+    if( !delay )
+      (*it)->go();
   }
 }
 
@@ -484,6 +501,7 @@ void Merchant::setPathway(const Pathway& pathway)
   {
     Pathway newPath = PathwayHelper::create( (*it)->pos(), pathway.stopPos(), PathwayHelper::roadFirst );
     (*it)->setPathway( newPath );
+    (*it)->wait( 0 );
   }
 }
 

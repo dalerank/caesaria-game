@@ -65,6 +65,7 @@ void MerchantCamel::timeStep(const unsigned long time)
     if( !head.isValid() )
     {
       die();
+      Logger::warning( "WARNING !!!: MerchantCamel havenot headID caravan %d", _d->headId );
     }
     else
     {

@@ -177,6 +177,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( climateType, game::climate::central );
   setOption( c3gameplay, 0 );
   setOption( highlightBuilding, 1 );
+  setOption( destroyEpidemicHouses, 0 );
   setOption( difficulty, game::difficulty::usual );
 
   _d->states.nation = world::nation::rome;
