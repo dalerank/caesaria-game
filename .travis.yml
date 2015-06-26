@@ -1,3 +1,4 @@
+language: objective-c
 compiler:
 - gcc
 os:
