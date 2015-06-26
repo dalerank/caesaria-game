@@ -1,4 +1,5 @@
-language: objective-c
+compiler:
+- gcc
 os:
 - osx
 before_install:
