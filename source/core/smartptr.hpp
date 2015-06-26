@@ -111,6 +111,9 @@ public:
     return *this;
   }
 
+  template<class Src>
+  bool equals( SmartPtr<Src> ptr ) const { return (obj == ptr.obj); }
+
   template<class Dst>
   SmartPtr<Dst> as() const
   {
