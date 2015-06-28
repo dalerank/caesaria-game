@@ -212,6 +212,8 @@ int Dock::queueSize() const
   return merchants.size();
 }
 
+const good::Store &Dock::exportStore() const { return _d->exportGoods; }
+
 const Tile& Dock::queueTile() const
 {
   TilesArea tiles( _city()->tilemap(), pos(), 3 );

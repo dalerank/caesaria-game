@@ -15,13 +15,10 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_INFOBOX_CITIZEN_H_INCLUDE_
-#define _CAESARIA_INFOBOX_CITIZEN_H_INCLUDE_
+#ifndef __CAESARIA_INFOBOX_DOCK_H_INCLUDE_
+#define __CAESARIA_INFOBOX_DOCK_H_INCLUDE_
 
-#include <string>
-#include <list>
-
-#include "info_box.hpp"
+#include "infobox_construction.hpp"
 
 namespace gui
 {
@@ -29,27 +26,18 @@ namespace gui
 namespace infobox
 {
 
-namespace citizen
-{
-
-// Simple info box with static text on plain background
-class AboutPeople : public Infobox
+// info box about a market
+class AboutDock : public AboutConstruction
 {
 public:
-  AboutPeople(Widget* parent, PlayerCityPtr city, const TilePos& pos);
-  virtual ~AboutPeople();
-
-protected:
-  void _setWalker(WalkerPtr walker);
-  void _updateTitle();
-  void _updateNeighbors();
-  class Impl;
-  ScopedPtr<Impl> _d;
+   AboutDock( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
+   virtual ~AboutDock();
+   
+   void drawGood(DockPtr dock, const good::Product& goodType, int, int );
+   void updateStore(DockPtr dock);
 };
 
 }
 
-}
-
 }//end namespace gui
-#endif //_CAESARIA_INFOBOX_CITIZEN_H_INCLUDE_
+#endif //__CAESARIA_INFOBOX_DOCK_H_INCLUDE_
