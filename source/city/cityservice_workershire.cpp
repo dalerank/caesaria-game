@@ -110,7 +110,7 @@ bool WorkersHire::Impl::haveRecruter( WorkingBuildingPtr building )
 {
   foreach( w, hrInCity )
   {
-    RecruterPtr hr = ptr_cast<Recruter>( *w );
+    RecruterPtr hr = w->as<Recruter>();
     if( hr.isValid() )
     {
       if( hr->baseLocation() == building->pos() )

@@ -161,6 +161,7 @@ void Recruter::_noWay()
 
   if( newway.isValid() )
   {
+    setPathway( newway );
     _d->failedCounter = 0;
     _d->patrolFinished = true;
     go();
