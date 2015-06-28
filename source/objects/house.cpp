@@ -1210,6 +1210,11 @@ void House::__debugChangeLevel(int change)
       : _levelDown();
 }
 
+void House::__debugMakeGeneration()
+{
+  _d->habitants.makeGeneration( *this );
+}
+
 void House::save( VariantMap& stream ) const
 {
   Building::save( stream );

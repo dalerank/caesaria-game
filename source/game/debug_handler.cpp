@@ -59,6 +59,8 @@
 #include "game/resourceloader.hpp"
 #include "religion/config.hpp"
 #include "world/computer_city.hpp"
+#include "objects/house.hpp"
+#include "objects/house_habitants.hpp"
 #include "gui/property_workspace.hpp"
 
 using namespace gfx;
@@ -126,7 +128,8 @@ enum {
   add_wine_to_warehouse,
   add_oil_to_warehouse,
   remove_favor,
-  property_browser
+  property_browser,
+  make_generation
 };
 
 class DebugHandler::Impl
@@ -213,6 +216,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( "city", show_fest )
   ADD_DEBUG_EVENT( "city", add_favor )
   ADD_DEBUG_EVENT( "city", remove_favor )
+  ADD_DEBUG_EVENT( "city", make_generation )
 
   ADD_DEBUG_EVENT( "options", all_sound_off )
   ADD_DEBUG_EVENT( "options", reload_aqueducts )
@@ -364,6 +368,14 @@ void DebugHandler::Impl::handleEvent(int event)
   case add_weapons_to_warehouse:addGoods2Wh( good::weapon ); break;
   case add_wine_to_warehouse: addGoods2Wh( good::wine ); break;
   case add_oil_to_warehouse: addGoods2Wh( good::oil ); break;
+
+  case make_generation:
+  {
+    HouseList houses = city::statistic::getHouses( game->city() );
+    foreach( it, houses )
+      (*it)->__debugMakeGeneration();
+  }
+  break;
 
   case win_mission:
   case fail_mission:

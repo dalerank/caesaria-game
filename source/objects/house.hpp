@@ -97,6 +97,7 @@ public:
   bool isCheckedDesirability() const;
 
   void __debugChangeLevel( int change );
+  void __debugMakeGeneration();
 
 private:
   void _updateHealthLevel();
