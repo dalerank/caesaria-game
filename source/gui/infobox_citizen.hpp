@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_INFOBOX_CITIZEN_H_INCLUDE_
 #define _CAESARIA_INFOBOX_CITIZEN_H_INCLUDE_
@@ -40,9 +40,11 @@ public:
   virtual ~AboutPeople();
 
 protected:
+  void _drawGood(const good::Product &goodType, int qty, int index, int paintY);
   void _setWalker(WalkerPtr walker);
   void _updateTitle();
   void _updateNeighbors();
+  void _updateExtInfo();
   class Impl;
   ScopedPtr<Impl> _d;
 };

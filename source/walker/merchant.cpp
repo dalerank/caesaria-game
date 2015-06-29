@@ -562,6 +562,9 @@ std::string Merchant::thoughts(Walker::Thought th) const
   return Human::thoughts( th );
 }
 
+good::ProductMap Merchant::sold() const { return _d->sell.filled(); }
+good::ProductMap Merchant::bougth() const { return _d->buy.filled(); }
+
 std::string Merchant::parentCity() const{ return _d->baseCityName; }
 
 TilePos Merchant::places(Walker::Place type) const

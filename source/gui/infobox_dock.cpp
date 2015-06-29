@@ -74,7 +74,7 @@ void AboutDock::drawGood( DockPtr dock, const good::Product &goodType, int index
 {
   int startOffset = 25;
 
-  int offset = ( width() - startOffset * 2 ) / 5;
+  int offset = ( width() - startOffset * 2 ) / 6;
   //std::string goodName = good::Helper::name( goodType );
   int qty = dock->exportStore().qty( goodType );
   std::string outText = utils::format( 0xff, "%d", metric::Measure::convQty( qty ) );
@@ -90,7 +90,7 @@ void AboutDock::drawGood( DockPtr dock, const good::Product &goodType, int index
   lb->setTextOffset( Point( 30, 0 ) );
 }
 
-void gui::infobox::AboutDock::updateStore( DockPtr dock )
+void AboutDock::updateStore( DockPtr dock )
 {
   int paintY = 100;
   drawGood( dock, good::wheat,     0, paintY );

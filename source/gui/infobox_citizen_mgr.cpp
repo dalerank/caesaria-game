@@ -34,7 +34,7 @@ namespace infobox
 {
 
 namespace citizen
-{
+{ 
 
 class PManager::Impl
 {
@@ -47,7 +47,7 @@ template< class T >
 class CitizenInfoboxParser : public InfoboxCreator
 {
 public:
-  gui::infobox::Infobox* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
+  Infobox* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
   {
     WalkerList walkers = city->walkers( pos );
     

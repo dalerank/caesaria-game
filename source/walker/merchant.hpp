@@ -38,6 +38,9 @@ public:
   virtual void timeStep(const unsigned long time);
   virtual std::string thoughts(Thought th) const;
 
+  good::ProductMap sold() const;
+  good::ProductMap bougth() const;
+
   std::string parentCity() const;
   virtual TilePos places(Place type) const;
   void addCamel( MerchantCamelPtr camel );

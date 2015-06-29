@@ -13,8 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
-
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include <cstdio>
 
@@ -27,14 +26,17 @@
 #include "gfx/picture.hpp"
 #include "city/helper.hpp"
 #include "core/gettext.hpp"
+#include "good/productmap.hpp"
 #include "events/playsound.hpp"
 #include "gfx/decorator.hpp"
 #include "walker/enemysoldier.hpp"
+#include "good/helper.hpp"
 #include "gfx/engine.hpp"
 #include "walker/seamerchant.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
 #include "gfx/helper.hpp"
+#include "core/metric.hpp"
 #include "events/movecamera.hpp"
 
 namespace gui
@@ -175,6 +177,7 @@ void AboutPeople::_setWalker( WalkerPtr wlk )
   }
 
   _updateTitle();
+  _updateExtInfo();
   _updateNeighbors();
 
   _d->updateCurrentAction( wlk->thoughts( Walker::thAction ), wlk->places( Walker::plDestination ) );
@@ -212,13 +215,59 @@ void AboutPeople::_updateNeighbors()
   }
 }
 
+void AboutPeople::_updateExtInfo()
+{
+  if( _d->object.isNull() )
+    return;
+
+  switch( _d->object->type() )
+  {
+  case walker::merchant:
+  {
+    MerchantPtr m = _d->object.as<Merchant>();
+    good::ProductMap mmap = m->bougth();
+    int index=0;
+    foreach( it, mmap )
+      _drawGood( it->first, it->second, index++, 100 );
+
+    mmap = m->sold();
+    index=0;
+    foreach( it, mmap )
+      _drawGood( it->first, it->second, index++, 125 );
+  }
+  break;
+
+  default:
+  break;
+  }
+}
+
+void AboutPeople::_drawGood( const good::Product& goodType, int qty, int index, int paintY )
+{
+  int startOffset = 25;
+
+  int offset = ( width() - startOffset * 2 ) / 6;
+  //std::string goodName = good::Helper::name( goodType );
+  std::string outText = utils::format( 0xff, "%d", metric::Measure::convQty( qty ) );
+
+  // pictures of goods
+  gfx::Picture pic = good::Helper::picture( goodType );
+  Point pos( index * offset + startOffset, paintY );
+
+  Label* lb = new Label( this, Rect( pos, pos + Point( 100, 24 )) );
+  lb->setFont( Font::create( FONT_2 ) );
+  lb->setIcon( pic );
+  lb->setText( outText );
+  lb->setTextOffset( Point( 30, 0 ) );
+}
+
 void AboutPeople::_updateTitle()
 {
   if( _d->object.isNull() )
     return;
 
   std::string title;
-  if( is_kind_of<EnemySoldier>( _d->object ) )
+  if( _d->object.is<EnemySoldier>() )
   {
     title = WalkerHelper::getNationName( _d->object->nation() );
     title.insert( title.size()-2, "_soldier" );
@@ -229,15 +278,15 @@ void AboutPeople::_updateTitle()
     {
     case walker::merchant:
     {
-      MerchantPtr m = ptr_cast<Merchant>( _d->object );
-      title = _("##trade_caravan_from##") + m->parentCity();
+      MerchantPtr m = _d->object.as<Merchant>();
+      title = _("##trade_caravan_from##") + std::string(" ") + m->parentCity();
     }
     break;
 
     case walker::seaMerchant:
     {
-      SeaMerchantPtr m = ptr_cast<SeaMerchant>( _d->object );
-      title = _("##trade_ship_from##") + m->parentCity();
+      SeaMerchantPtr m = _d->object.as<SeaMerchant>();
+      title = _("##trade_ship_from##") + std::string(" ") + m->parentCity();
     }
     break;
 
