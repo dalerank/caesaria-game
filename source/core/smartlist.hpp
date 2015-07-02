@@ -79,6 +79,16 @@ public:
     }
   }
 
+  SmartPtr<T> valueOrEmpty( unsigned int index ) const
+  {
+    if( index >= this->size() )
+      return SmartPtr<T>();
+
+    typename SmartList<T>::const_iterator it = this->begin();
+    std::advance( it, index );
+    return *it;
+  }
+
   void removeAt( int index )
   {
     if( index < this->size() )

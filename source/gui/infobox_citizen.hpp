@@ -38,20 +38,27 @@ class AboutPeople : public Infobox
 public:
   AboutPeople(Widget* parent, PlayerCityPtr city, const TilePos& pos);
   virtual ~AboutPeople();
+  virtual void draw(gfx::Engine &engine);
 
 protected:
-  void _drawGood(const good::Product &goodType, int qty, int index, int paintY);
+  AboutPeople( Widget* parent, const Rect& window, const Rect& blackArea );
+  const WalkerList& _walkers() const;
+
   void _setWalker(WalkerPtr walker);
   void _updateTitle();
   void _updateNeighbors();
-  void _updateExtInfo();
+  void _init(PlayerCityPtr city , const TilePos &pos, const std::string& model );
+  virtual void _updateExtInfo();
+  Label* _lbThinks();
+
+private:
   class Impl;
   ScopedPtr<Impl> _d;
 };
 
-}
+}//end namespace citizen
 
-}
+}//end namespace infobox
 
 }//end namespace gui
 #endif //_CAESARIA_INFOBOX_CITIZEN_H_INCLUDE_

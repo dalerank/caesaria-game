@@ -19,41 +19,19 @@
 #define _CAESARIA_WALKER_MERCHANT_INCLUDE_H_
 
 #include "human.hpp"
-#include "world/trading.hpp"
+#include "good/productmap.hpp"
 
-/** This is the empire merchant which buy/sell goods at warehouses */
 class Merchant : public Human
 {
 public:
-  static WalkerPtr create( PlayerCityPtr city );
-  static WalkerPtr create( PlayerCityPtr city, world::MerchantPtr merchant );
-
   virtual ~Merchant();
 
-  void send2city();
-
-  virtual void save( VariantMap& stream) const;
-  virtual void load( const VariantMap& stream);
-  virtual void setPathway(const Pathway &pathway);
-  virtual void timeStep(const unsigned long time);
-  virtual std::string thoughts(Thought th) const;
-
-  good::ProductMap sold() const;
-  good::ProductMap bougth() const;
-
-  std::string parentCity() const;
-  virtual TilePos places(Place type) const;
-  void addCamel( MerchantCamelPtr camel );
+  virtual good::ProductMap sold() const;
+  virtual good::ProductMap bougth() const;
+  virtual std::string parentCity() const;
 
 protected:
-  virtual void _centerTile();
-  virtual void _reachedPathway();
-
-private:
   Merchant( PlayerCityPtr city );
-
-  class Impl;
-  ScopedPtr< Impl > _d;
 };
 
 #endif //_CAESARIA_WALKER_MERCHANT_INCLUDE_H_

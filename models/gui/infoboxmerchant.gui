@@ -1,5 +1,5 @@
 {  
-  geometry : [ 0, 0, 460, 350 ]
+  geometry : [ 0, 0, 460, 380 ]
   bgtype : "whiteFrame"
 
   lbCurrentAction#Label : {

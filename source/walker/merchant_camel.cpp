@@ -17,7 +17,7 @@
 
 #include "merchant_camel.hpp"
 #include "core/position.hpp"
-#include "merchant.hpp"
+#include "merchant_land.hpp"
 #include "city/city.hpp"
 #include "walkers_factory.hpp"
 #include "city/statistic.hpp"
@@ -61,7 +61,7 @@ void MerchantCamel::timeStep(const unsigned long time)
 {
   if( !_d->inCaravan )
   {
-    MerchantPtr head = city::statistic::getWalker<Merchant>( _city(), walker::merchant, _d->headId );
+    LandMerchantPtr head = city::statistic::getWalker<LandMerchant>( _city(), walker::merchant, _d->headId );
     if( !head.isValid() )
     {
       die();

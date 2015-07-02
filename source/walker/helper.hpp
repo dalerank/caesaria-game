@@ -34,7 +34,7 @@ public:
   static std::string getPrettyTypename( walker::Type type );
   static std::string getNationName( world::Nation type );
   static world::Nation getNation( const std::string& name );
-  static gfx::Picture getBigPicture( walker::Type type );
+  static gfx::Picture bigPicture( walker::Type type );
   static VariantMap getOptions( const std::string& name );
   static VariantMap getOptions( const walker::Type type );
   static bool isHuman( WalkerPtr wlk );

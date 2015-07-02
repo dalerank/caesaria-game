@@ -34,13 +34,23 @@ class Manager;
 namespace citizen
 {
 
-class Creator : public ReferenceCounted
+class CzInfoboxCreator : public ReferenceCounted
 {
 public:
   virtual Infobox* create( gui::Widget* parent, PlayerCityPtr city, const TilePos& pos ) = 0;
 };
 
-typedef SmartPtr<Creator> CreatorPtr;
+template< class T >
+class CzBaseCreator : public CzInfoboxCreator
+{
+public:
+  Infobox* create( gui::Widget* parent, PlayerCityPtr city, const TilePos& pos )
+  {
+    return new T( parent, city, pos );
+  }
+};
+
+typedef SmartPtr<CzInfoboxCreator> CzInfoboxCreatorPtr;
 
 class PManager
 {
@@ -49,7 +59,7 @@ public:
 
   virtual ~PManager();
 
-  void addCreator( walker::Type type, CreatorPtr c );
+  void addCreator( walker::Type type, CzInfoboxCreatorPtr c );
   void loadInfoboxes();
 
   Infobox* show( gui::Widget* parent, PlayerCityPtr city , const TilePos& pos);
@@ -65,4 +75,10 @@ private:
 }//end namespace infobox
 
 }//end namespace gui
+
+#define REGISTER_CITIZEN_INFOBOX(name,a) \
+namespace { \
+struct Registrator_##name { Registrator_##name() { PManager::instance().addCreator( walker::name, new CzBaseCreator<a>() ); }}; \
+static Registrator_##name rtor_##name; \
+}
 #endif //_CAESARIA_WINDOW_GAMESPEED_OPTIONS_H_INCLUDE_

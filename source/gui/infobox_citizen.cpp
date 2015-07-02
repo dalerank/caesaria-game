@@ -32,7 +32,7 @@
 #include "walker/enemysoldier.hpp"
 #include "good/helper.hpp"
 #include "gfx/engine.hpp"
-#include "walker/seamerchant.hpp"
+#include "walker/merchant_sea.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
 #include "gfx/helper.hpp"
@@ -118,35 +118,12 @@ AboutPeople::AboutPeople( Widget* parent, PlayerCityPtr city, const TilePos& pos
   : Infobox( parent, Rect( 0, 0, 460, 350 ), Rect( 18, 40, 460 - 18, 350 - 120 ) ),
     _d( new Impl)
 {
-  _d->walkers = city->walkers( pos );
-  _d->city = city;
+  _init( city, pos, ":/gui/infoboxcitizen.gui" );
+}
 
-  Widget::setupUI( ":/gui/infoboxcitizen.gui" );
-
-  new Label( this, Rect( 25, 100, width() - 25, height() - 130), "", false, Label::bgWhiteBorderA );
-  new Label( this, Rect( 28, 103, width() - 28, height() - 133), "", false, Label::bgBlack );
-
-  _d->lbName = new Label( this, Rect( 90, 108, width() - 30, 108 + 20) );
-  _d->lbName->setFont( Font::create( FONT_2 ));
-  _d->lbType = new Label( this, Rect( 90, 128, width() - 30, 128 + 20) );
-  _d->lbType->setFont( Font::create( FONT_1 ));
-
-  _d->lbThinks = new Label( this, Rect( 90, 148, width() - 30, height() - 140),
-                            "##citizen_thoughts_will_be_placed_here##" );
-
-  _d->lbThinks->setWordwrap( true );
-  _d->lbCitizenPic = new Label( this, Rect( 30, 112, 30 + 55, 112 + 80) );
-
-  GET_DWIDGET_FROM_UI( _d, lbCurrentAction )
-  GET_DWIDGET_FROM_UI( _d, lbBaseBuilding )
-  GET_DWIDGET_FROM_UI( _d, btnMove2base )
-  GET_DWIDGET_FROM_UI( _d, btnMove2dst )
-
-  CONNECT( _d->btnMove2base, onClicked(), _d.data(), Impl::moveCamera2base )
-  CONNECT( _d->btnMove2dst, onClicked(), _d.data(), Impl::moveCamera2dst )
-
-  if( !_d->walkers.empty() )
-   _setWalker( _d->walkers.front() );
+AboutPeople::AboutPeople( Widget* parent, const Rect& window, const Rect& blackArea )
+  : Infobox( parent, window, blackArea ), _d( new Impl)
+{
 }
 
 void AboutPeople::_setWalker( WalkerPtr wlk )
@@ -164,7 +141,7 @@ void AboutPeople::_setWalker( WalkerPtr wlk )
 
   std::string walkerType = WalkerHelper::getPrettyTypename( wlk->type() );
   _d->lbType->setText( _(walkerType) );
-  _d->lbCitizenPic->setBackgroundPicture( WalkerHelper::getBigPicture( wlk->type() ) );
+  _d->lbCitizenPic->setBackgroundPicture( WalkerHelper::bigPicture( wlk->type() ) );
 
   std::string thinks = wlk->thoughts( Walker::thCurrent );
   _d->lbThinks->setText( _( thinks ) );
@@ -190,9 +167,8 @@ void AboutPeople::_updateNeighbors()
     return;
 
   foreach( it, _d->screenshots )
-  {
     (*it)->deleteLater();
-  }
+
   _d->screenshots.clear();
 
   gfx::TilesArray tiles = _d->city->tilemap().getNeighbors( _d->object->pos(), gfx::Tilemap::AllNeighbors);
@@ -215,51 +191,35 @@ void AboutPeople::_updateNeighbors()
   }
 }
 
-void AboutPeople::_updateExtInfo()
+void AboutPeople::_init( PlayerCityPtr city, const TilePos& pos, const std::string& model )
 {
-  if( _d->object.isNull() )
-    return;
+  _d->walkers = city->walkers( pos );
+  _d->city = city;
 
-  switch( _d->object->type() )
-  {
-  case walker::merchant:
-  {
-    MerchantPtr m = _d->object.as<Merchant>();
-    good::ProductMap mmap = m->bougth();
-    int index=0;
-    foreach( it, mmap )
-      _drawGood( it->first, it->second, index++, 100 );
+  Widget::setupUI( model );
 
-    mmap = m->sold();
-    index=0;
-    foreach( it, mmap )
-      _drawGood( it->first, it->second, index++, 125 );
-  }
-  break;
+  _d->lbName = new Label( this, Rect( 90, 108, width() - 30, 108 + 20) );
+  _d->lbName->setFont( Font::create( FONT_2 ));
+  _d->lbType = new Label( this, Rect( 90, 128, width() - 30, 128 + 20) );
+  _d->lbType->setFont( Font::create( FONT_1 ));
 
-  default:
-  break;
-  }
+  _d->lbThinks = new Label( this, Rect( 90, 148, width() - 30, height() - 140),
+                            "##citizen_thoughts_will_be_placed_here##" );
+
+  _d->lbThinks->setWordwrap( true );
+  _d->lbCitizenPic = new Label( this, Rect( 30, 112, 30 + 55, 112 + 80) );
+
+  GET_DWIDGET_FROM_UI( _d, lbCurrentAction )
+  GET_DWIDGET_FROM_UI( _d, lbBaseBuilding )
+  GET_DWIDGET_FROM_UI( _d, btnMove2base )
+  GET_DWIDGET_FROM_UI( _d, btnMove2dst )
+
+  CONNECT( _d->btnMove2base, onClicked(), _d.data(), Impl::moveCamera2base )
+  CONNECT( _d->btnMove2dst, onClicked(), _d.data(), Impl::moveCamera2dst )
 }
 
-void AboutPeople::_drawGood( const good::Product& goodType, int qty, int index, int paintY )
-{
-  int startOffset = 25;
-
-  int offset = ( width() - startOffset * 2 ) / 6;
-  //std::string goodName = good::Helper::name( goodType );
-  std::string outText = utils::format( 0xff, "%d", metric::Measure::convQty( qty ) );
-
-  // pictures of goods
-  gfx::Picture pic = good::Helper::picture( goodType );
-  Point pos( index * offset + startOffset, paintY );
-
-  Label* lb = new Label( this, Rect( pos, pos + Point( 100, 24 )) );
-  lb->setFont( Font::create( FONT_2 ) );
-  lb->setIcon( pic );
-  lb->setText( outText );
-  lb->setTextOffset( Point( 30, 0 ) );
-}
+void AboutPeople::_updateExtInfo(){}
+Label *AboutPeople::_lbThinks(){ return _d->lbThinks; }
 
 void AboutPeople::_updateTitle()
 {
@@ -304,6 +264,18 @@ AboutPeople::~AboutPeople()
     _d->object->setFlag( Walker::showPath, false );
   }
 }
+
+void AboutPeople::draw(gfx::Engine& engine)
+{
+  if( _d->object.isNull() )
+  {
+    _setWalker( _d->walkers.valueOrEmpty( 0 ) );
+  }
+
+  Infobox::draw( engine );
+}
+
+const WalkerList& AboutPeople::_walkers() const { return _d->walkers; }
 
 void AboutPeople::Impl::updateCurrentAction(const std::string& action, TilePos pos)
 {

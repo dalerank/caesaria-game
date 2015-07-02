@@ -62,6 +62,7 @@
 #include "objects/house.hpp"
 #include "objects/house_habitants.hpp"
 #include "gui/property_workspace.hpp"
+#include "objects/factory.hpp"
 
 using namespace gfx;
 using namespace citylayer;
@@ -129,7 +130,22 @@ enum {
   add_oil_to_warehouse,
   remove_favor,
   property_browser,
-  make_generation
+  make_generation,
+  all_wheatfarms_ready,
+  all_wahrf_ready,
+  all_olivefarms_ready,
+  all_fruitfarms_ready,
+  all_grapefarms_ready,
+  all_vegetablefarms_ready,
+  all_claypit_ready,
+  all_timberyard_ready,
+  all_ironmin_ready,
+  all_marblequarry_ready,
+  all_potteryworkshtp_ready,
+  all_furnitureworksop_ready,
+  all_weaponworkshop_ready,
+  all_wineworkshop_ready,
+  all_oilworkshop_ready
 };
 
 class DebugHandler::Impl
@@ -139,6 +155,7 @@ public:
 
   void handleEvent( int );
   EnemySoldierPtr makeEnemy( walker::Type type );
+  void setFactoryReady(object::Type type);
   void addGoods2Wh( good::Product type );
   void runScript(std::string filename);
   gui::ContextMenu* debugMenu;
@@ -193,6 +210,22 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( "goods", add_weapons_to_warehouse )
   ADD_DEBUG_EVENT( "goods", add_wine_to_warehouse )
   ADD_DEBUG_EVENT( "goods", add_oil_to_warehouse )
+
+  ADD_DEBUG_EVENT( "factories", all_wheatfarms_ready )
+  ADD_DEBUG_EVENT( "factories", all_wahrf_ready )
+  ADD_DEBUG_EVENT( "factories", all_olivefarms_ready )
+  ADD_DEBUG_EVENT( "factories", all_fruitfarms_ready )
+  ADD_DEBUG_EVENT( "factories", all_grapefarms_ready )
+  ADD_DEBUG_EVENT( "factories", all_vegetablefarms_ready )
+  ADD_DEBUG_EVENT( "factories", all_claypit_ready )
+  ADD_DEBUG_EVENT( "factories", all_timberyard_ready )
+  ADD_DEBUG_EVENT( "factories", all_ironmin_ready )
+  ADD_DEBUG_EVENT( "factories", all_marblequarry_ready )
+  ADD_DEBUG_EVENT( "factories", all_potteryworkshtp_ready )
+  ADD_DEBUG_EVENT( "factories", all_furnitureworksop_ready )
+  ADD_DEBUG_EVENT( "factories", all_weaponworkshop_ready )
+  ADD_DEBUG_EVENT( "factories", all_wineworkshop_ready )
+  ADD_DEBUG_EVENT( "factories", all_oilworkshop_ready )
 
   ADD_DEBUG_EVENT( "other", send_player_army )
   ADD_DEBUG_EVENT( "other", screenshot )
@@ -274,6 +307,20 @@ Signal2<scene::Level*,bool>& DebugHandler::onWinMission() { return _d->winMissio
 DebugHandler::DebugHandler() : _d(new Impl)
 {
   _d->debugMenu = 0;
+}
+
+void DebugHandler::Impl::setFactoryReady( object::Type type )
+{
+  FactoryList factories = city::statistic::getObjects<Factory>( game->city(), type );
+  foreach( it, factories )
+  {
+    FactoryPtr f = *it;
+    if( f->numberWorkers() > 0 )
+    {
+      float progress = f->progress();
+      f->updateProgress( 101.f - progress );
+    }
+  }
 }
 
 void DebugHandler::Impl::handleEvent(int event)
@@ -368,6 +415,22 @@ void DebugHandler::Impl::handleEvent(int event)
   case add_weapons_to_warehouse:addGoods2Wh( good::weapon ); break;
   case add_wine_to_warehouse: addGoods2Wh( good::wine ); break;
   case add_oil_to_warehouse: addGoods2Wh( good::oil ); break;
+
+  case all_wheatfarms_ready: setFactoryReady( object::wheat_farm ); break;
+  case all_wahrf_ready: setFactoryReady( object::wharf ); break;
+  case all_olivefarms_ready: setFactoryReady( object::olive_farm ); break;
+  case all_fruitfarms_ready: setFactoryReady( object::fig_farm ); break;
+  case all_grapefarms_ready: setFactoryReady( object::vinard ); break;
+  case all_vegetablefarms_ready: setFactoryReady( object::vegetable_farm ); break;
+  case all_claypit_ready: setFactoryReady( object::clay_pit ); break;
+  case all_timberyard_ready: setFactoryReady( object::lumber_mill ); break;
+  case all_ironmin_ready: setFactoryReady( object::iron_mine ); break;
+  case all_marblequarry_ready: setFactoryReady( object::quarry ); break;
+  case all_potteryworkshtp_ready: setFactoryReady( object::pottery_workshop ); break;
+  case all_furnitureworksop_ready: setFactoryReady( object::furniture_workshop ); break;
+  case all_weaponworkshop_ready: setFactoryReady( object::weapons_workshop ); break;
+  case all_wineworkshop_ready: setFactoryReady( object::wine_workshop ); break;
+  case all_oilworkshop_ready: setFactoryReady( object::oil_workshop ); break;
 
   case make_generation:
   {

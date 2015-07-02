@@ -77,6 +77,11 @@ public:
     : PushButton( parent, Rect( pos + requestButtonOffset * index, requestButtonSize), "", -1, false, PushButton::blackBorderUp )
   {
     _request = request;
+
+    request::RqGoodPtr gr = _request.as<request::RqGood>();
+    if( gr.isValid() )
+      _goodPic = good::Helper::picture( gr->goodType() );
+
     _finalizeResize();
 
     CONNECT( this, onClicked(), this, RequestButton::_executeRequest );
@@ -105,13 +110,7 @@ public:
   virtual void draw(Engine &painter)
   {
     PushButton::draw( painter );
-
-    request::RqGoodPtr gr = _request.as<request::RqGood>();
-    if( gr.isValid() )
-    {
-      Picture goodPicture = good::Helper::picture( gr->goodType() );
-      painter.draw( goodPicture, absoluteRect().lefttop() + Point( 40, 2 ), &absoluteClippingRectRef() );
-    }
+    painter.draw( _goodPic, absoluteRect().lefttop() + Point( 40, 2 ), &absoluteClippingRectRef() );
   }
 
 public signals:
@@ -128,6 +127,7 @@ private:
 
   Signal1<request::RequestPtr> _onExecRequestSignal;
   request::RequestPtr _request;
+  Picture _goodPic;
 };
 
 class Emperor::Impl

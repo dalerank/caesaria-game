@@ -23,7 +23,7 @@
 #include "gfx/tilemap.hpp"
 #include "good/helper.hpp"
 #include "core/foreach.hpp"
-#include "walker/seamerchant.hpp"
+#include "walker/merchant_sea.hpp"
 #include "core/foreach.hpp"
 #include "walker/cart_supplier.hpp"
 #include "good/storage.hpp"

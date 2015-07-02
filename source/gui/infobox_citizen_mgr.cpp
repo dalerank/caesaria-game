@@ -39,7 +39,7 @@ namespace citizen
 class PManager::Impl
 {
 public:
-  typedef std::map< walker::Type, CreatorPtr> Creators;
+  typedef std::map< walker::Type, CzInfoboxCreatorPtr> Creators;
   Creators creators;
 };
 
@@ -67,7 +67,7 @@ REGISTER_OBJECT_INFOBOX(plaza, new CitizenInfoboxParser<AboutLand>() )
 REGISTER_OBJECT_INFOBOX(unknown, new CitizenInfoboxParser<AboutLand>() )
 
 template< class T >
-class SpecificCitizenInfoboxCreator : public Creator
+class SpecificCitizenInfoboxCreator : public CzInfoboxCreator
 {
 public:
   Infobox* create(  gui::Widget* parent, PlayerCityPtr city, const TilePos& pos )
@@ -89,12 +89,12 @@ void PManager::loadInfoboxes()
 
 PManager::~PManager() {}
 
-void PManager::addCreator( walker::Type type, CreatorPtr c)
+void PManager::addCreator( walker::Type type, CzInfoboxCreatorPtr c)
 {
   Impl::Creators::iterator it = _d->creators.find( type );
   if( it != _d->creators.end() )
   {
-    Logger::warning( "InfoboxCitizenManager: also have infobox creator for type %s", WalkerHelper::getTypename( type ).c_str() );
+    Logger::warning( "InfoboxCitizenManager: also have infobox creator for type " + WalkerHelper::getTypename( type ) );
     return;
   }
 
