@@ -51,7 +51,7 @@ struct EntertInfo
 
 static EntertInfo infos[] = {
                               { object::theater, "##theaters##", "##peoples##" },
-                              { object::amphitheater, "##amphitheatres##" "##peoples##" },
+                              { object::amphitheater, "##amphitheaters##" "##peoples##" },
                               { object::colloseum, "##colloseum##", "##peoples##" },
                               { object::hippodrome, "##hippodromes##",  "-" },
                               { object::unknown, "", "" }
@@ -306,6 +306,7 @@ void Entertainment::Impl::updateInfo()
 
   if( minTheaterSrvc < 30 )   { troubles << "##some_houses_inadequate_entertainment##"; }
   if( thInfo.partlyWork > 0 ) { troubles << "##some_theaters_need_actors##"; }
+  if( thInfo.buildingCount == 0 ) { troubles << "##your_city_need_theaters##"; }
   if( amthInfo.partlyWork > 0){ troubles << "##some_amphitheaters_no_actors##"; }
   if( amthInfo.buildingCount == 0 ) { troubles << "##blood_sports_add_spice_to_life##"; }
   if( clsInfo.partlyWork > 0 ){ troubles << "##small_colloseum_show##"; }
@@ -342,7 +343,7 @@ void Entertainment::Impl::updateFestivalInfo()
   FestivalPtr fest = statistic::getService<Festival>( city );
   if( fest.isValid() )
   {    
-    std::string text = utils::i2str( monthFromLastFestival ) +  _("##month_from_last_festival##");
+    std::string text = utils::i2str( monthFromLastFestival ) + " " +  _("##month_from_last_festival##");
 
     if( lbMonthFromLastFestival ) { lbMonthFromLastFestival->setText( text ); }
 
@@ -359,7 +360,7 @@ void Entertainment::Impl::updateFestivalInfo()
                                        24, 24, 24, 24,
                                        24, 24, 31, 31 };
 
-    int currentThinkIndex = math::clamp<int>( monthFromLastFestival, 0, maxFestivalDelay);
+    int currentThinkIndex = math::clamp<int>( monthFromLastFestival, 0, maxFestivalDelay-1);
     text = utils::format( 0xff, "##more_%d_month_from_festival##", strIndex[ currentThinkIndex ] );
     lbInfoAboutLastFestival->setText( _( text ) );
     }

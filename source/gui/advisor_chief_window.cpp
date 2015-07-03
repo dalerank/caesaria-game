@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "advisor_chief_window.hpp"
 #include "gfx/decorator.hpp"
@@ -40,6 +40,7 @@
 #include "city/cityservice_military.hpp"
 #include "city/cityservice_disorder.hpp"
 #include "city/cityservice_health.hpp"
+#include "city/cityservice_religion.hpp"
 #include "city/cityservice_festival.hpp"
 #include "city/goods_updater.hpp"
 #include "city/sentiment.hpp"
@@ -74,7 +75,8 @@ typedef enum { atEmployers=0, profitState,
                atSentiment,
                atCount } AdviceType;
 
-static const std::string titles[atCount] = {
+static const std::string titles[atCount] =
+{
   "##advchief_employment##",
   "##advchief_finance##",
   "##advchief_migration##",
@@ -491,7 +493,12 @@ void Chief::Impl::drawEducation()
 
 void Chief::Impl::drawReligion()
 {
-  std::string text;
+  std::string text = "##advchief_religion_unknown##";
+  ReligionPtr srvc = statistic::getService<Religion>( city );
+  if( srvc.isValid() )
+  {
+
+  }
   drawReportRow( atReligion, text );
 }
 

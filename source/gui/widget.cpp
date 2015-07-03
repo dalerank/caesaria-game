@@ -518,7 +518,7 @@ void Widget::setParent(Widget* p) {  _dfunc()->parent = p; }
 
 static int __convStr2RelPos( Widget* w, const VariantMap& vars, std::string s )
 {
-  s = utils::trim( s );
+  s = utils::replace( s, " ", "" );
 
   WidgetCalc wcalc( *w, vars );
   return wcalc.eval( s );

@@ -56,13 +56,13 @@ void AboutMerchant::_updateExtInfo()
     MerchantPtr m = wlk.as<Merchant>();
     good::ProductMap mmap = m->bougth();
     int index=0;
-    new Label( this, Rect( Point( 16, _lbBlackFrame()->bottom() + 2 ), Size( 5, 24 ) ), _("##bougth##"));
+    new Label( this, Rect( Point( 16, _lbBlackFrame()->bottom() + 2 ), Size( 84, 24 ) ), _("##bougth##"));
     foreach( it, mmap )
       _drawGood( it->first, it->second, index++, _lbBlackFrame()->bottom() + 2 );
 
     mmap = m->sold();
     index=0;
-    new Label( this, Rect( Point( 16, _lbBlackFrame()->bottom() + 26 ), Size( 5, 24 ) ), _("##sold##"));
+    new Label( this, Rect( Point( 16, _lbBlackFrame()->bottom() + 26 ), Size( 84, 24 ) ), _("##sold##"));
     foreach( it, mmap )
       _drawGood( it->first, it->second, index++, _lbBlackFrame()->bottom() + 26 );
   }
@@ -75,7 +75,7 @@ void AboutMerchant::_updateExtInfo()
 
 void AboutMerchant::_drawGood( const good::Product& goodType, int qty, int index, int paintY )
 {
-  int startOffset = 70;
+  int startOffset = 100;
 
   int offset = ( width() - startOffset * 2 ) / 4;
   //std::string goodName = good::Helper::name( goodType );
