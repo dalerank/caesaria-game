@@ -65,6 +65,34 @@ public:
   }
 };
 
+class VariantListReader
+{
+public:
+  VariantListReader( const VariantList& list )
+    : _list( list )
+  {
+    _initialized = false;
+  }
+
+  const Variant& next()
+  {
+    if( !_initialized )
+      _it = _list.begin();
+
+    const Variant& value = *_it;
+    ++_it;
+
+    return value;
+  }
+
+  bool atEnd() { return _it == _list.end(); }
+
+private:
+  bool _initialized;
+  VariantList::const_iterator _it;
+  const VariantList& _list;
+};
+
 template<class T>
 typename std::vector<T>& operator<<(std::vector<T>& v, const VariantList& vars)
 {

@@ -403,7 +403,8 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
       info << city->findService( city::Info::defaultName() );
 
       city::Info::History history = info->history();
-      history.push_back( info->lastParams() );
+      city::Info::Parameters params = info->lastParams();
+      history.push_back( params );
 
       _values.clear();
       foreach( it, history )
