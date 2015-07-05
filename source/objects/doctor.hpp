@@ -15,36 +15,28 @@
 //
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_ADVISOR_HEALTH_WINDOW_H_INCLUDED__
-#define __CAESARIA_ADVISOR_HEALTH_WINDOW_H_INCLUDED__
+#ifndef __CAESARIA_DOCTOR_H_INCLUDED__
+#define __CAESARIA_DOCTOR_H_INCLUDED__
 
-#include "window.hpp"
-#include "core/scopedptr.hpp"
-#include "core/signals.hpp"
-#include "game/predefinitions.hpp"
+#include "health.hpp"
 
-namespace gui
-{
-
-namespace advisorwnd
-{
-
-class Health : public Window
+class Doctor : public HealthBuilding
 {
 public:
-  Health( PlayerCityPtr city, Widget* parent, int id );
+  Doctor();
 
-  virtual void draw( gfx::Engine& painter );
+  virtual void buildingsServed(const std::set<BuildingPtr>&, ServiceWalkerPtr);
+  virtual unsigned int walkerDistance() const;
+  virtual void deliverService();
+
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
+  virtual unsigned int patientsNumber() const;
 
 private:
-  void _showHelp();
-
   class Impl;
-  ScopedPtr< Impl > _d;
+  ScopedPtr<Impl> _d;
 };
 
-}
 
-}//end namespace gui
-
-#endif //__CAESARIA_ADVISOR_HEALTH_WINDOW_H_INCLUDED__
+#endif //__CAESARIA_DOCTOR_H_INCLUDED__

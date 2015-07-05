@@ -74,7 +74,7 @@ namespace advisorwnd
 {
 
 namespace {
-  struct InfrastructureInfo
+  struct HealthcareInfo
   {
     int buildingCount;
     int buildingWork;
@@ -103,13 +103,13 @@ class EducationInfoLabel : public Label
 {
 public:
   EducationInfoLabel( Widget* parent, const Rect& rect, const object::Type service,
-                      const InfrastructureInfo& info )
+                      const HealthcareInfo& info )
     : Label( parent, rect ), _service( service ), _info( info )
   {
     setFont( Font::create( FONT_1_WHITE ) );
   }
 
-  const InfrastructureInfo& getInfo() const   {    return _info;  }
+  const HealthcareInfo& getInfo() const   {    return _info;  }
 
   virtual void _updateTexture( gfx::Engine& painter )
   {
@@ -136,7 +136,7 @@ public:
 
 private:
   object::Type _service;
-  InfrastructureInfo _info;
+  HealthcareInfo _info;
 };
 
 class Education::Impl
@@ -152,7 +152,7 @@ public:
 
 public:
   std::string getTrouble( PlayerCityPtr city );
-  InfrastructureInfo getInfo( PlayerCityPtr city, const object::Type service );
+  HealthcareInfo getInfo( PlayerCityPtr city, const object::Type service );
   void initUI(Education* parent, PlayerCityPtr city);
   void updateCityInfo( PlayerCityPtr city );
 };
@@ -161,7 +161,7 @@ void Education::Impl::initUI( Education* parent, PlayerCityPtr city )
 {
   Point startPoint( 2, 2 );
   Size labelSize( 550, 20 );
-  InfrastructureInfo info;
+  HealthcareInfo info;
   info = getInfo( city, object::school );
   lbSchoolInfo = new EducationInfoLabel( lbBlackframe, Rect( startPoint, labelSize ), object::school, info );
 
@@ -224,9 +224,9 @@ void Education::_showHelp()
   DictionaryWindow::show( this, "education_advisor" );
 }
 
-InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Type bType)
+HealthcareInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Type bType)
 {
-  InfrastructureInfo ret;
+  HealthcareInfo ret;
 
   ret.buildingWork = 0;
   ret.peoplesStuding = 0;
@@ -277,9 +277,9 @@ InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Ty
 std::string Education::Impl::getTrouble(PlayerCityPtr city)
 {
   StringArray advices;
-  const InfrastructureInfo& schInfo = lbSchoolInfo->getInfo();
-  const InfrastructureInfo& clgInfo = lbCollegeInfo->getInfo();
-  const InfrastructureInfo& lbrInfo = lbLibraryInfo->getInfo();
+  const HealthcareInfo& schInfo = lbSchoolInfo->getInfo();
+  const HealthcareInfo& clgInfo = lbCollegeInfo->getInfo();
+  const HealthcareInfo& lbrInfo = lbLibraryInfo->getInfo();
   if( schInfo.need == 0 && clgInfo.need == 0 && lbrInfo.need == 0 )
   {
     return "##not_need_education##";

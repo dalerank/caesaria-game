@@ -12,28 +12,36 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_HEALTHBUILDINGS_H_INCLUDED__
 #define __CAESARIA_HEALTHBUILDINGS_H_INCLUDED__
 
 #include "service.hpp"
 
-class Doctor : public ServiceBuilding
+class HealthBuilding : public ServiceBuilding
 {
 public:
-  Doctor();
+  virtual unsigned int patientsNumber() const { return 0; }
 
-  virtual unsigned int walkerDistance() const;
-  virtual void deliverService();
+protected:
+  HealthBuilding( const Service::Type service,
+                  const object::Type type,
+                  const Size& size )
+    : ServiceBuilding( service, type, size )
+  {
+
+  }
 };
 
-class Hospital : public ServiceBuilding
+class Hospital : public HealthBuilding
 {
 public:
   Hospital();
 };
 
-class Baths : public ServiceBuilding
+class Baths : public HealthBuilding
 {
 public:
   Baths();
@@ -48,7 +56,7 @@ protected:
   gfx::TilesArray _myArea;
 };
 
-class Barber : public ServiceBuilding
+class Barber : public HealthBuilding
 {
 public:
   Barber();

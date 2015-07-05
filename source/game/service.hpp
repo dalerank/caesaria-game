@@ -67,6 +67,7 @@ public:
 
   static Service::Type getType(const std::string& name);
   static std::string getName( Service::Type type );
+  static Service::Type fromObject( int objectType );
 
 private:
   ServiceHelper();

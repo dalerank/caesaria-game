@@ -49,7 +49,7 @@ typedef enum { none=0, small, middle, big, count } Type;
 
 namespace health
 {
-enum { levelNumber = 12, bad = 40, terrible = 20, maxValue=100 };
+enum { levelNumber = 12, bad = 40, terrible = 20, maxValue=100, unknownState=0xff };
 }
 
 namespace workless

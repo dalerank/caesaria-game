@@ -45,5 +45,13 @@
     font : "FONT_1"
     multiline : true
   }
+
+  btnHelp#TexturedButton : {
+      geometry : [ 12, "ph-39", 36, "ph-15" ]
+      normal : [ "paneling", 528 ]
+      hovered : [ "paneling", 529 ]
+      pressed : [ "paneling", 530 ]
+      disabled : [ "paneling", 531 ]
+  }
 }
 

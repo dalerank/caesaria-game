@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "health.hpp"
 #include "game/resourcegroup.hpp"
@@ -25,28 +27,15 @@
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::hospital, Hospital)
-REGISTER_CLASS_IN_OVERLAYFACTORY(object::clinic, Doctor)
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::baths, Baths)
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::barber, Barber)
 
-Doctor::Doctor() : ServiceBuilding(Service::doctor, object::clinic, Size(1)){
-}
-
-unsigned int Doctor::walkerDistance() const{ return 26; }
-
-void Doctor::deliverService()
-{
-  if( numberWorkers() > 0 && walkers().size() == 0 )
-  {
-    ServiceBuilding::deliverService();
-  }
-}
-
-Hospital::Hospital() : ServiceBuilding(Service::hospital, object::hospital, Size(3 ) )
+Hospital::Hospital()
+  : HealthBuilding(Service::hospital, object::hospital, Size(3 ) )
 {
 }
 
-Baths::Baths() : ServiceBuilding(Service::baths, object::baths, Size(2) )
+Baths::Baths() : HealthBuilding(Service::baths, object::baths, Size(2) )
 {
   _haveReservorWater = false;
   _fgPictures().resize(1);
@@ -83,11 +72,11 @@ void Baths::deliverService()
 {
   if( _haveReservorWater && numberWorkers() > 0 && walkers().empty() )
   {
-    ServiceBuilding::deliverService();
+    HealthBuilding::deliverService();
   }
 }
 
-Barber::Barber() : ServiceBuilding(Service::barber, object::barber, Size(1))
+Barber::Barber() : HealthBuilding(Service::barber, object::barber, Size(1))
 {
 }
 
@@ -95,7 +84,7 @@ void Barber::deliverService()
 {
   if( walkers().empty() && numberWorkers() )
   {
-    ServiceBuilding::deliverService();
+    HealthBuilding::deliverService();
   }
 }
 
