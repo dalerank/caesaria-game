@@ -88,7 +88,7 @@ void Fire::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( fireLevel >= 0)
     {
-      _addColumn( screenPos, fireLevel );
+      drawColumn( engine, screenPos, fireLevel );
     }
   }
 
