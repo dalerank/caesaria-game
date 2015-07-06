@@ -13,17 +13,31 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_DOCTOR_H_INCLUDED__
-#define __CAESARIA_DOCTOR_H_INCLUDED__
+#include "barber.hpp"
+#include "game/resourcegroup.hpp"
+#include "game/gamedate.hpp"
+#include "core/position.hpp"
+#include "gfx/tilemap.hpp"
+#include "city/statistic.hpp"
+#include "constants.hpp"
+#include "objects_factory.hpp"
 
-#include "health.hpp"
+using namespace gfx;
 
-class Doctor : public HealthBuilding
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::barber, Barber)
+
+Barber::Barber() : HealthBuilding(Service::barber, object::barber, Size(1))
 {
-public:
-  Doctor();
-};
+}
 
-#endif //__CAESARIA_DOCTOR_H_INCLUDED__
+void Barber::deliverService()
+{
+  if( walkers().empty() && numberWorkers() )
+  {
+    HealthBuilding::deliverService();
+  }
+}
+
+unsigned int Barber::walkerDistance() const {  return 35; }

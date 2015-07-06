@@ -109,8 +109,23 @@ public:
 
     rfont.draw( texture, utils::i2str( _info.buildingWork ), 165, 0 );
 
-    std::string peoplesStrT = utils::format( 0xff, "%d (%d) %s", _info.peoplesServed, _info.needService, _(info.people) );
+    std::string peoplesStrT = _("##health_no_info##");
+    if( _info.buildingCount > 0 )
+    {
+      peoplesStrT = utils::format( 0xff, "%d (%d) %s", _info.peoplesServed, _info.needService, _(info.people) );
+    }
+
     rfont.draw( texture, peoplesStrT, 255, 0 );
+
+    std::string coverageStrT;
+    if( _info.buildingCount > 0 )
+    {
+      int coveragePrcnt = _info.needService > 0
+                            ? math::percentage( _info.peoplesServed, _info.needService )
+                            : 100;
+      coverageStrT = utils::format( 0xff, "%d %%", coveragePrcnt );
+    }
+    rfont.draw( texture, coverageStrT, 455, 0 );
   }
 
 private:

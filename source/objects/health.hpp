@@ -23,46 +23,25 @@
 class HealthBuilding : public ServiceBuilding
 {
 public:
-  virtual unsigned int patientsNumber() const { return 0; }
+  virtual ~HealthBuilding();
+
+  virtual unsigned int patientsNumber() const;
+
+  virtual void buildingsServed(const std::set<BuildingPtr>&, ServiceWalkerPtr);
+  virtual unsigned int walkerDistance() const;
+  virtual void deliverService();
+
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
 
 protected:
   HealthBuilding( const Service::Type service,
                   const object::Type type,
-                  const Size& size )
-    : ServiceBuilding( service, type, size )
-  {
+                  const Size& size );
 
-  }
-};
-
-class Hospital : public HealthBuilding
-{
-public:
-  Hospital();
-};
-
-class Baths : public HealthBuilding
-{
-public:
-  Baths();
-
-  virtual void timeStep(const unsigned long time);
-  virtual void deliverService();
-  virtual unsigned int walkerDistance() const;
-  virtual bool build(const city::AreaInfo &info);
-  virtual bool mayWork() const;
-protected:
-  bool _haveReservorWater;
-  gfx::TilesArray _myArea;
-};
-
-class Barber : public HealthBuilding
-{
-public:
-  Barber();
-
-  virtual void deliverService();
-  virtual unsigned int walkerDistance() const;
+private:
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 #endif //__CAESARIA_HEALTHBUILDINGS_H_INCLUDED__

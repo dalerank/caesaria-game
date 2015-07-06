@@ -20,72 +20,109 @@
 #include "game/gamedate.hpp"
 #include "core/position.hpp"
 #include "gfx/tilemap.hpp"
+#include "house.hpp"
 #include "city/statistic.hpp"
+#include "walker/serviceman.hpp"
+#include "core/variant_list.hpp"
 #include "constants.hpp"
 #include "objects_factory.hpp"
 
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(object::hospital, Hospital)
-REGISTER_CLASS_IN_OVERLAYFACTORY(object::baths, Baths)
-REGISTER_CLASS_IN_OVERLAYFACTORY(object::barber, Barber)
-
-Hospital::Hospital()
-  : HealthBuilding(Service::hospital, object::hospital, Size(3 ) )
+class ServedHouses : public std::map<int, int>
 {
-}
-
-Baths::Baths() : HealthBuilding(Service::baths, object::baths, Size(2) )
-{
-  _haveReservorWater = false;
-  _fgPictures().resize(1);
-}
-
-unsigned int Baths::walkerDistance() const {  return 35;}
-
-bool Baths::build( const city::AreaInfo& info )
-{ 
-  bool result = ServiceBuilding::build( info );
-  _myArea = area();
-
-  return result;
-}
-
-bool Baths::mayWork() const {  return ServiceBuilding::mayWork() && _haveReservorWater; }
-
-void Baths::timeStep(const unsigned long time)
-{
-  if( game::Date::isWeekChanged() )
+public:
+  VariantList save() const
   {
-    bool haveWater = false;
-    foreach( tile, _myArea )
+    VariantList ret;
+
+    foreach( it, *this )
+      ret << it->first << it->second;
+
+    return ret;
+  }
+
+  void load( const VariantList& stream )
+  {
+    VariantListReader r( stream );
+
+    while( !r.atEnd() )
     {
-      haveWater |= (*tile)->param( Tile::pReservoirWater ) > 0;
+      int type = r.next();
+      (*this)[ type ] = r.next();
     }
-    _haveReservorWater = (haveWater && numberWorkers() > 0);
   }
+};
 
-  ServiceBuilding::timeStep( time );
+class HealthBuilding::Impl
+{
+public:
+  unsigned int patientsNumber;
+  ServedHouses servedHouses;
+  DateTime lastDateResults;
+};
+
+HealthBuilding::HealthBuilding(const Service::Type service, const object::Type type, const Size &size)
+  : ServiceBuilding( service, type, size ), _d( new Impl )
+{
+
 }
 
-void Baths::deliverService()
+void HealthBuilding::buildingsServed(const std::set<BuildingPtr>& buildings, ServiceWalkerPtr walker)
 {
-  if( _haveReservorWater && numberWorkers() > 0 && walkers().empty() )
+  foreach( it, buildings )
   {
-    HealthBuilding::deliverService();
+    if( (*it)->type() == object::house )
+    {
+      HousePtr house = it->as<House>();
+      TilePos pos = house->pos();
+      int hash = (pos.i() << 8) | pos.i();
+      _d->servedHouses[ hash ] = house->habitants().count();
+    }
   }
+
+  ServiceBuilding::buildingsServed( buildings, walker );
 }
 
-Barber::Barber() : HealthBuilding(Service::barber, object::barber, Size(1))
-{
-}
+unsigned int HealthBuilding::walkerDistance() const{ return 26; }
 
-void Barber::deliverService()
+void HealthBuilding::deliverService()
 {
-  if( walkers().empty() && numberWorkers() )
+  if( _d->lastDateResults.monthsTo( game::Date::current() ) > 0 )
   {
-    HealthBuilding::deliverService();
+    _d->lastDateResults = game::Date::current();
+    _d->patientsNumber = 0;
+    foreach( it, _d->servedHouses )
+      _d->patientsNumber += it->second;
+
+    _d->servedHouses.clear();
+  }
+
+  if( numberWorkers() > 0 && walkers().size() == 0 )
+  {
+    ServiceBuilding::deliverService();
   }
 }
 
-unsigned int Barber::walkerDistance() const {  return 35; }
+void HealthBuilding::save(VariantMap& stream) const
+{
+  ServiceBuilding::save( stream );
+  VARIANT_SAVE_ANY_D( stream, _d, patientsNumber )
+  VARIANT_SAVE_ANY_D( stream, _d, lastDateResults )
+  VARIANT_SAVE_CLASS_D( stream, _d, servedHouses )
+}
+
+void HealthBuilding::load(const VariantMap &stream)
+{
+  ServiceBuilding::load( stream );
+  VARIANT_LOAD_ANY_D( _d, patientsNumber, stream )
+  VARIANT_LOAD_TIME_D( _d, lastDateResults, stream )
+  VARIANT_LOAD_CLASS_D_LIST( _d, servedHouses, stream )
+}
+
+HealthBuilding::~HealthBuilding() {}
+
+unsigned int HealthBuilding::patientsNumber() const
+{
+  return _d->patientsNumber;
+}

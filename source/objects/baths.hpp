@@ -13,17 +13,27 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_DOCTOR_H_INCLUDED__
-#define __CAESARIA_DOCTOR_H_INCLUDED__
+#ifndef __CAESARIA_BATHS_H_INCLUDED__
+#define __CAESARIA_BATHS_H_INCLUDED__
 
 #include "health.hpp"
+#include "gfx/tilesarray.hpp"
 
-class Doctor : public HealthBuilding
+class Baths : public HealthBuilding
 {
 public:
-  Doctor();
+  Baths();
+
+  virtual void timeStep(const unsigned long time);
+  virtual void deliverService();
+  virtual unsigned int walkerDistance() const;
+  virtual bool build(const city::AreaInfo &info);
+  virtual bool mayWork() const;
+protected:
+  bool _haveReservorWater;
+  gfx::TilesArray _myArea;
 };
 
-#endif //__CAESARIA_DOCTOR_H_INCLUDED__
+#endif //__CAESARIA_BATHS_H_INCLUDED__
