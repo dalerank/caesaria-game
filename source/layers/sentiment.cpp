@@ -12,36 +12,36 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-20155 Dalerank, dalerankn8@gmail.com
 
-#include "layerfire.hpp"
-#include "objects/overlay.hpp"
+#include "sentiment.hpp"
 #include "objects/constants.hpp"
 #include "objects/house.hpp"
 #include "objects/house_spec.hpp"
 #include "game/resourcegroup.hpp"
-#include "city/statistic.hpp"
 #include "constants.hpp"
-#include "gfx/tilemap_camera.hpp"
+#include "city/statistic.hpp"
 #include "core/event.hpp"
-#include "core/gettext.hpp"
+#include "gfx/tilemap_camera.hpp"
 
 using namespace gfx;
 
 namespace citylayer
 {
 
-static const char* fireLevelName[] = {
-                                       "##no_fire_risk##",
-                                       "##very_low_fire_risk##", "##some_low_fire_risk##", "##low_fire_risk##",
-                                       "##middle_file_risk##", "##some_fire_risk##", "##high_fire_risk##",
-                                       "##very_high_fire_risk##",
-                                       "##extreme_fire_risk##", "##moment_fire_risk##"
-                                     };
+enum { maxSentimentLevel=10, sentimentColumnIndex=15 };
+static const char* sentimentLevelName[maxSentimentLevel] = {
+                                         "##city_loathed_you##", "##sentiment_people_veryangry_you##",
+                                         "##sentiment_people_angry_you##", "##sentiment_people_upset_you##",
+                                         "##sentiment_people_annoyed_you##","##sentiment_people_indiffirent_you##",
+                                         "##sentiment_people_extr_pleased_you##", "##sentiment_people_pleased_you##",
+                                         "##sentiment_people_love_you##", "##sentiment_people_idolize_you##"
+                                       };
 
+int Sentiment::type() const {  return citylayer::sentiment; }
 
-int Fire::type() const { return citylayer::fire; }
-
-void Fire::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Sentiment::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 
@@ -57,28 +57,27 @@ void Fire::drawTile(Engine& engine, Tile& tile, const Point& offset)
   {
     bool needDrawAnimations = false;
     OverlayPtr overlay = tile.overlay();
-    int fireLevel = 0;
+    int sentimentLevel = 0;
+
     if( _isVisibleObject( overlay->type() ) )
     {
-      // Base set of visible objects
       needDrawAnimations = true;
     }
     else if( overlay->type() == object::house )
     {
-      HousePtr house = ptr_cast<House>( overlay );
-      fireLevel = (int)house->state( pr::fire );
-      needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
-    }
-    else //other buildings
-    {
-      ConstructionPtr constr = ptr_cast<Construction>( overlay );
-      if( constr != 0 )
-      {
-        fireLevel = (int)constr->state( pr::fire );
-      }
+      HousePtr house = overlay.as<House>();
 
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base  );
+      sentimentLevel = (int)house->state( pr::happiness );
+      needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
+
+      if( !needDrawAnimations )
+      {
+        drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+      }
+    }
+    else
+    {
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base );
     }
 
     if( needDrawAnimations )
@@ -86,16 +85,24 @@ void Fire::drawTile(Engine& engine, Tile& tile, const Point& offset)
       Layer::drawTile( engine, tile, offset );
       registerTileForRendering( tile );
     }
-    else if( fireLevel >= 0)
+    else if( sentimentLevel > 0 )
     {
-      drawColumn( engine, screenPos, fireLevel );
+      drawColumn( engine, screenPos, 100 - sentimentLevel );
     }
   }
 
   tile.setWasDrawn();
 }
 
-void Fire::handleEvent(NEvent& event)
+LayerPtr Sentiment::create( Camera& camera, PlayerCityPtr city)
+{
+  LayerPtr ret( new Sentiment( camera, city ) );
+  ret->drop();
+
+  return ret;
+}
+
+void Sentiment::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
@@ -107,15 +114,15 @@ void Fire::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        ConstructionPtr constr = tile->overlay().as<Construction>();
-        if( constr != 0 )
+        HousePtr house = tile->overlay().as<House>();
+        if( house.isValid() )
         {
-          int fireLevel = math::clamp<int>( constr->state( pr::fire ), 0, 100 );
-          text = fireLevelName[ math::clamp<int>( fireLevel / 10, 0, 9 ) ];
+          int happiness = math::clamp<int>( house->state( pr::happiness ) / maxSentimentLevel, 0, maxSentimentLevel-1 );
+          text = sentimentLevelName[ happiness ];
         }
       }
 
-      _setTooltipText( _(text) );
+      _setTooltipText( text );
     }
     break;
 
@@ -126,18 +133,10 @@ void Fire::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerPtr Fire::create( Camera& camera, PlayerCityPtr city)
+Sentiment::Sentiment( Camera& camera, PlayerCityPtr city)
+  : Info( camera, city, sentimentColumnIndex )
 {
-  LayerPtr ret( new Fire( camera, city ) );
-  ret->drop();
-
-  return ret;
-}
-
-Fire::Fire( Camera& camera, PlayerCityPtr city)
-  : Info( camera, city, 18 )
-{
-  _addWalkerType( walker::prefect );
+  _addWalkerType( walker::unknown );
   _initialize();
 }
 

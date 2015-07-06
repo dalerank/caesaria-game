@@ -897,7 +897,7 @@ void ComputerCity::addObject(ObjectPtr object )
 {
   if( is_kind_of<Merchant>( object ) )
   {
-    MerchantPtr merchant = ptr_cast<Merchant>( object );
+    MerchantPtr merchant = object.as<Merchant>();
     good::Store& sellGoods = merchant->sellGoods();
     good::Store& buyGoods = merchant->buyGoods();
 

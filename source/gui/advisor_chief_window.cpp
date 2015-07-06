@@ -101,7 +101,7 @@ public:
 
     Picture pic;
     pic.load( ResourceGroup::panelBackground, 48 ), Point( 5, 5 );
-    setIcon( pic );
+    setIcon( pic, Point( 5, 5 ) );
     setFont( Font::create( FONT_2 ) );
 
     setTextOffset( Point( 255, 0) );

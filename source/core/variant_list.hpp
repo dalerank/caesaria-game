@@ -77,7 +77,10 @@ public:
   const Variant& next()
   {
     if( !_initialized )
+    {
       _it = _list.begin();
+      _initialized = true;
+    }
 
     const Variant& value = *_it;
     ++_it;

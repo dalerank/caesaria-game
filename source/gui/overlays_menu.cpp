@@ -72,6 +72,7 @@ void OverlaysMenu::_addButtons(const int type )
     _addButton( citylayer::crime, startPos+=offset );
     _addButton( citylayer::aborigen, startPos+=offset );
     _addButton( citylayer::troubles, startPos+=offset );
+    _addButton( citylayer::sentiment, startPos+=offset );
     break;
 
   case citylayer::entertainments:
