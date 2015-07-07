@@ -118,7 +118,7 @@ void Sentiment::handleEvent(NEvent& event)
         if( house.isValid() )
         {
           int happiness = math::clamp<int>( house->state( pr::happiness ) / maxSentimentLevel, 0, maxSentimentLevel-1 );
-          text = sentimentLevelName[ happiness ];
+          text = sentimentLevelName[ maxSentimentLevel - happiness ];
         }
       }
 
@@ -136,7 +136,9 @@ void Sentiment::handleEvent(NEvent& event)
 Sentiment::Sentiment( Camera& camera, PlayerCityPtr city)
   : Info( camera, city, sentimentColumnIndex )
 {
-  _addWalkerType( walker::unknown );
+  _visibleWalkers() << walker::protestor
+                    << walker::mugger
+                    << walker::rioter;
   _initialize();
 }
 
