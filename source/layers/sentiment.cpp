@@ -21,6 +21,7 @@
 #include "objects/house_spec.hpp"
 #include "game/resourcegroup.hpp"
 #include "constants.hpp"
+#include "core/priorities.hpp"
 #include "city/statistic.hpp"
 #include "core/event.hpp"
 #include "gfx/tilemap_camera.hpp"
@@ -35,7 +36,7 @@ static const char* sentimentLevelName[maxSentimentLevel] = {
                                          "##city_loathed_you##", "##sentiment_people_veryangry_you##",
                                          "##sentiment_people_angry_you##", "##sentiment_people_upset_you##",
                                          "##sentiment_people_annoyed_you##","##sentiment_people_indiffirent_you##",
-                                         "##sentiment_people_extr_pleased_you##", "##sentiment_people_pleased_you##",
+                                         "##sentiment_people_pleased_you##", "##sentiment_people_extr_pleased_you##",
                                          "##sentiment_people_love_you##", "##sentiment_people_idolize_you##"
                                        };
 
@@ -118,7 +119,7 @@ void Sentiment::handleEvent(NEvent& event)
         if( house.isValid() )
         {
           int happiness = math::clamp<int>( house->state( pr::happiness ) / maxSentimentLevel, 0, maxSentimentLevel-1 );
-          text = sentimentLevelName[ maxSentimentLevel - happiness ];
+          text = sentimentLevelName[ happiness ];
         }
       }
 

@@ -53,13 +53,22 @@ using namespace city;
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::house, House)
 
 namespace {
-  enum { maxNegativeStep=-2, maxPositiveStep=2 };
+  enum { needDegrade=-2, noEvolve=0, mayEvolve=2, happinessWeekChange=5,
+         maxTableTax=25, defaultHappiness=50, maxHappiness=100 };
 
-  static int happines4tax[25] = { 10,  9,  7,  6,  4,
-                                   2,  1,  0, -1, -2,
-                                  -2, -3, -4, -5, -7,
-                                  -9,-11,-13,-15, -17,
-                                 -19,-21,-23,-27, -31 };
+  static int happines4tax[maxTableTax] = { 10,  9,  7,  6,  4,
+                                                 2,  1,  0, -1, -2,
+                                                -2, -3, -4, -5, -7,
+                                                -9,-11,-13,-15, -17,
+                                               -19,-21,-23,-27, -31 };
+
+  int getHappines4tax( int tax )
+  {
+    tax = math::max( tax, 0 );
+    return tax > maxTableTax
+              ? -tax * 1.3
+              : happines4tax[ tax ];
+  }
 }
 
 class ISrvcAdapter
@@ -188,6 +197,7 @@ public:
   bool isFlat;
   int currentYear;
   int changeCondition;
+  int needHappiness;
   Pictures ground;
 
 public:
@@ -198,7 +208,8 @@ public:
   int getFoodLevel() const;
 };
 
-House::House( HouseLevel::ID level ) : Building( object::house ), _d( new Impl )
+House::House( HouseLevel::ID level )
+  : Building( object::house ), _d( new Impl )
 {
   HouseSpecHelper& helper = HouseSpecHelper::instance();
   _d->houseLevel = level;
@@ -206,7 +217,6 @@ House::House( HouseLevel::ID level ) : Building( object::house ), _d( new Impl )
   _d->desirability.base = -3;
   _d->desirability.range = 3;
   _d->desirability.step = 1;
-  _d->changeCondition = 0;
   _d->economy.money = 0;
   _d->economy.tax = 0;
   _d->economy.taxesThisYear = 0;
@@ -214,6 +224,9 @@ House::House( HouseLevel::ID level ) : Building( object::house ), _d( new Impl )
 
   setState( pr::health, 100 );
   setState( pr::fire, 0 );
+
+  _d->changeCondition = 0;
+  _d->needHappiness = 100;
   setState( pr::happiness, 100 );
 
   _d->initGoodStore( 1 );
@@ -230,9 +243,9 @@ void House::_checkEvolve()
   if( !validate )
   {
     _d->changeCondition--;
-    if( _d->changeCondition <= maxNegativeStep )
+    if( _d->changeCondition <= needDegrade )
     {
-      _d->changeCondition = 0;
+      _d->changeCondition = noEvolve;
       _levelDown();
     }
   }
@@ -246,9 +259,9 @@ void House::_checkEvolve()
     object::Type needBuilding;
     TilePos rPos;
 
-    int unwishCount = nextSpec.findUnwishedBuildingNearby( this, needBuilding, rPos );
-    int lowHouse = nextSpec.findLowLevelHouseNearby( this, rPos );
-    if( unwishCount > 0 || lowHouse > 0 )
+    bool haveUnwishBuildingsNearMe = nextSpec.findUnwishedBuildingNearby( this, needBuilding, rPos ) > 0;
+    bool haveLowHouseNearMe = nextSpec.findLowLevelHouseNearby( this, rPos ) > 0;
+    if( haveUnwishBuildingsNearMe || haveLowHouseNearMe )
     {
       _d->evolveInfo = "##nearby_building_negative_effect##";
       mayUpgrade = false;
@@ -257,19 +270,19 @@ void House::_checkEvolve()
     if( mayUpgrade )
     {
       _d->changeCondition++;
-      if( _d->changeCondition >= maxPositiveStep )
+      if( _d->changeCondition >= mayEvolve )
       {
-        _d->changeCondition = 0;
+        _d->changeCondition = noEvolve;
         _levelUp();
       }
     }
     else
     {
-      _d->changeCondition = 0;
+      _d->changeCondition = noEvolve;
     }
   }
 
-  if( _d->changeCondition < 0 )
+  if( _d->changeCondition < noEvolve )
   {
     std::string why;
     _d->spec.checkHouse( this, &why );
@@ -285,7 +298,7 @@ void House::_checkEvolve()
 
     _d->evolveInfo = why;
   }
-  else if( _d->changeCondition > 0 )
+  else if( _d->changeCondition > noEvolve )
   {
     _d->evolveInfo = _("##house_evolves_at##");
   }
@@ -336,35 +349,35 @@ void House::_updateCrime()
     return;
 
   int unemploymentPrc = math::percentage( _d->habitants.workers.current, _d->habitants.workers.max );
-  int unempInfluence4happiness = 0; ///!!!
-  if( unemploymentPrc > 25 ) { unempInfluence4happiness = -3; }
-  else if( unemploymentPrc > 17 ) { unempInfluence4happiness = -2; }
-  else if( unemploymentPrc > 10 ) { unempInfluence4happiness = -1; }
-  else if( unemploymentPrc < 5 ) { unempInfluence4happiness = 1; }
+  int unemployedInfluence = 0; ///!!!
+  if( unemploymentPrc > 25 ) { unemployedInfluence = -3; }
+  else if( unemploymentPrc > 17 ) { unemployedInfluence = -2; }
+  else if( unemploymentPrc > 10 ) { unemployedInfluence = -1; }
+  else if( unemploymentPrc < 5 ) { unemployedInfluence = 1; }
 
-  int wagesInfluence4happiness = 0; ///!!!
+  int workerWagesInfluence = 0; ///!!!
   if( !spec().isPatrician() )
   {
     int diffWages = statistic::getWagesDiff( _city() );
     if( diffWages < 0)
     {
-      wagesInfluence4happiness = diffWages;
+      workerWagesInfluence = diffWages;
     }
     else if( diffWages > 0 )
     {
-      wagesInfluence4happiness = std::min( diffWages, 8 ) / 2;
+      workerWagesInfluence = std::min( diffWages, 8 ) / 2;
     }
   }
 
-  int taxValue = statistic::getTaxValue( _city() );
-  int taxInfluence4happiness = happines4tax[ math::clamp( taxValue, 0, 25 ) ]; ///!!!
+  int taxValue = _city()->treasury().taxRate();
+  int taxrateInfluence = getHappines4tax( taxValue ); ///!!!
   if( spec().isPatrician() )
   {
-    taxInfluence4happiness *= 1.5;
+    taxrateInfluence *= 1.5;
   }
 
-  int foodAbundanceInfluence4happines = 0; ///!!!
-  int foodStockInfluence4happines = 0; ///!!!
+  int foodAbundanceInfluence = 0; ///!!!
+  int foodStockInfluence = 0; ///!!!
   int monthWithFood = 0;
   if( _d->spec.minFoodLevel() > 0 )
   {
@@ -378,26 +391,18 @@ void House::_updateCrime()
     }
 
     int diffFoodLevel = foodTypeCount - _d->spec.minFoodLevel();
-    foodAbundanceInfluence4happines = diffFoodLevel * (diffFoodLevel < 0 ? 4 : 2);
+    foodAbundanceInfluence = diffFoodLevel * (diffFoodLevel < 0 ? 4 : 2);
 
     const unsigned int habtnConsumeGoodQty = currentHabtn / 2;
     monthWithFood = foodStoreQty / (habtnConsumeGoodQty+1);
 
-    foodStockInfluence4happines = math::clamp<double>( -4 + 1.25 * monthWithFood, -4., 4. );
+    foodStockInfluence = math::clamp<double>( -4 + 1.25 * monthWithFood, -4., 4. );
   }
 
-  int poverity4happiness = _d->spec.level() > HouseLevel::hut ? -_d->poverity / 2 : 0;
+  int poverityHouse = _d->spec.level() > HouseLevel::hut ? -_d->poverity / 2 : 0;
+  int desirabilityInfluence = 0;
 
-  int curHappiness = 50
-                  + unempInfluence4happiness
-                  + wagesInfluence4happiness
-                  + taxInfluence4happiness
-                  + foodAbundanceInfluence4happines
-                  + foodStockInfluence4happines
-                  + poverity4happiness
-                  + (int)state( pr::happinessBuff );
-
-  if( monthWithFood > 0 )
+  if( spec().level() > HouseLevel::hut )
   {
     TilePos offset( 4, 4 );
     TilePos sizeOffset( size().width(), size().height() );
@@ -406,24 +411,41 @@ void House::_updateCrime()
     foreach( it, tiles ) { averageDes += (*it)->param( Tile::pDesirability ); }
     averageDes /= (tiles.size() + 1);
 
-    int desInfluence4happines = math::clamp( averageDes - spec().minDesirabilityLevel(), -10, 10 );
+    desirabilityInfluence = math::clamp( averageDes - spec().minDesirabilityLevel(), -10, 10 );
     if( averageDes < spec().minDesirabilityLevel() )
-      desInfluence4happines -= 5;
+      desirabilityInfluence -= 5;
     else if( averageDes > spec().maxDesirabilityLevel() )
-      desInfluence4happines += 2;
+      desirabilityInfluence += 2;
 
-    curHappiness += desInfluence4happines;
+    if( monthWithFood < 2 ) //if we have no food, then break positive influence
+      desirabilityInfluence = math::min( desirabilityInfluence, 0 );
   }
 
-  setState( pr::happiness, curHappiness );
+  int curHappiness = defaultHappiness
+                  + unemployedInfluence
+                  + workerWagesInfluence
+                  + taxrateInfluence
+                  + foodAbundanceInfluence
+                  + foodStockInfluence
+                  + poverityHouse
+                  + desirabilityInfluence
+                  + (int)state( pr::happinessBuff );  
 
-  int unhappyValue = 100 - curHappiness;
+  _d->needHappiness = curHappiness;
+
+  int unhappyValue = maxHappiness - curHappiness;
   int signChange = math::signnum( unhappyValue - getServiceValue( Service::crime) );
 
   appendServiceValue( Service::crime, _d->spec.crime() * signChange * cityKoeff );
 }
 
-void House::_checkHomeless()
+void House::_updateHappiness()
+{
+  int signChange = math::signnum( _d->needHappiness - state( pr::happiness ) );
+  updateState( pr::happiness, signChange * happinessWeekChange );
+}
+
+void House::_updateHomeless()
 {
   int homeless = _d->habitants.homeless();
   if( homeless > 0 )
@@ -432,7 +454,7 @@ void House::_checkHomeless()
     CitizenGroup homelessGroup = removeHabitants( homeless );
 
     Emigrant::send2city( _city(), homelessGroup, tile(), "##emigrant_no_home##" );
-    }
+  }
 }
 
 void House::_settleVacantLotIfNeed()
@@ -447,7 +469,7 @@ void House::_settleVacantLotIfNeed()
     }
 }
 
-void House::_checkConsumptions( const unsigned long time )
+void House::_updateConsumptions( const unsigned long time )
 {
   if( time % spec().consumptionInterval( HouseSpecification::intv_service ) == 0 )
   {
@@ -485,7 +507,7 @@ void House::timeStep(const unsigned long time)
     _d->economy.taxesThisYear = 0;
   }
 
-  _checkConsumptions( time );
+  _updateConsumptions( time );
 
   if( game::Date::isMonthChanged() )
   {
@@ -501,8 +523,9 @@ void House::timeStep(const unsigned long time)
   if( game::Date::isWeekChanged() )
   {
     _checkEvolve();
+    _updateHappiness();
     _updateCrime();
-    _checkHomeless();
+    _updateHomeless();
     _checkPatricianDeals();
   }
 
