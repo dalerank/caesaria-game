@@ -96,6 +96,32 @@ inline int random( int max )
 #endif
 }
 
+/**
+ * Fills array with distinct random values from range min<->max
+ */
+inline bool random_values_of_range(int arr[], size_t size, int min, int max)
+{
+  for (int i = 0; i < size; ++i)
+  {
+    bool fail = false;
+    int next;
+    do
+    {
+      next = random(max - min) + min;
+      for (int j = 0; j < i; ++j)
+      {
+        if (arr[j] == next)
+        {
+          fail = true;
+          break;
+        }
+      }
+    } while (fail);
+    arr[i] = next;
+  }
+  return true;
+}
+
 #ifdef _MSC_VER
 #undef max
 #undef min

@@ -70,6 +70,31 @@ public:
     return *it;
   }
 
+  // Returns `count` different random elements from this list
+  // This list should have at least `count` values
+  // Useful for randomized actions
+  // Recommended `count` to be not more than half of list size, due to performance reasons.
+  SmartList<T> random(size_t count) const
+  {
+    if (this->size() < count)
+      return SmartList<T>();
+
+    int rands[count];
+    math::random_values_of_range(rands, count, 0, this->size());
+
+    SmartList<T> ret;
+
+    for (size_t i = 0; i < count; ++i)
+    {
+      typename SmartList<T>::const_iterator it = this->begin();
+      std::advance(it, rands[i]);
+      SmartPtr<T> value = *it;
+      ret << value;
+    }
+
+    return ret;
+  }
+
   void remove( const SmartPtr< T >& a )
   {
     for( typename SmartList<T>::iterator it = this->begin(); it != this->end(); )
