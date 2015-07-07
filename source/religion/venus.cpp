@@ -76,22 +76,28 @@ void Venus::_doBlessing(PlayerCityPtr city)
                                             _("##blessing_of_venus_description##") );
   event->dispatch();
 
+  // Increase health by 8 in <=20% of houses for 5 month
   HouseList houses = statistic::getHouses( city );
 
   int rndCount = math::random( houses.size() / 5 );
-  for( int i=0; i < rndCount; i++ )
+  if (rndCount > 0)
   {
-    ConstructionParamUpdater::assignTo( houses.random().as<Construction>(),
-                                        pr::healthBuff, true, -8, DateTime::weekInMonth * 5 );
+    HouseList list = houses.random((size_t) rndCount);
+    foreach(it, list)
+    {
+      HousePtr house = *it;
+      ConstructionParamUpdater::assignTo(house.as<Construction>(),
+                                         pr::healthBuff, true, 8, DateTime::weekInMonth * 5);
+    }
   }
 }
 
 void Venus::_doSmallCurse(PlayerCityPtr city)
 {
-  int curseTupe = math::random( 3 );
+  int curseType = math::random( 3 );
 
   GameEventPtr e;
-  switch( curseTupe )
+  switch(curseType)
   {
   case 0:
   {
@@ -112,34 +118,45 @@ void Venus::_doSmallCurse(PlayerCityPtr city)
                              _("##smcurse1_of_venus_description##"),
                              ShowInfobox::send2scribe );
 
+    // Reduce health by 8 in <=20% of houses for 5 month
     HouseList houses = statistic::getHouses( city );
 
     int rndCount = math::random( houses.size() / 5 );
-    for( int i=0; i < rndCount; i++ )
+    if (rndCount > 0)
     {
-      HousePtr house = houses.random();
-      ConstructionParamUpdater::assignTo( house.as<Construction>(), pr::healthBuff, true, -8, DateTime::weekInMonth * 5 );
+      HouseList list = houses.random((size_t) rndCount);
+      foreach(it, list)
+      {
+        HousePtr house = *it;
+        ConstructionParamUpdater::assignTo(house.as<Construction>(),
+                                           pr::healthBuff, true, -8, DateTime::weekInMonth * 5);
+      }
     }
   }
   break;
 
   case 2:
   {
-     e = ShowInfobox::create( _("##smcurse_of_venus_title##"),
-                              _("##smcurse2_of_venus_description##"),
-                              ShowInfobox::send2scribe );
+    e = ShowInfobox::create(_("##smcurse_of_venus_title##"),
+                            _("##smcurse2_of_venus_description##"),
+                            ShowInfobox::send2scribe);
 
-     HouseList houses = statistic::getHouses( city );
+    // People emigrates from <=20% of houses
+    HouseList houses = statistic::getHouses( city );
 
-     int rndCount = math::random( houses.size() / 5 );
-     for( int i=0; i < rndCount; i++ )
-     {
-       HousePtr house = houses.random();
-       int hbCount = house->habitants().count();
-       CitizenGroup homeless = house->removeHabitants( hbCount );
-       EmigrantPtr emigrants = Emigrant::send2city( city, homeless, house->tile(), "##emigrant_no_home##" );
-       emigrants->leaveCity( house->tile() );
-     }
+    int rndCount = math::random(houses.size() / 5);
+    if (rndCount > 0)
+    {
+      HouseList list = houses.random((size_t) rndCount);
+      foreach(it, list)
+      {
+        HousePtr house = *it;
+        int hbCount = house->habitants().count();
+        CitizenGroup homeless = house->removeHabitants(hbCount);
+        EmigrantPtr emigrants = Emigrant::send2city(city, homeless, house->tile(), "##emigrant_no_home##");
+        emigrants->leaveCity(house->tile());
+      }
+    }
   }
   break;
   }
