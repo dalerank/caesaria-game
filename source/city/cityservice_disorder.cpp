@@ -305,7 +305,7 @@ void Disorder::Impl::generateRioter(PlayerCityPtr city, HousePtr house)
   crime.rioters.thisYear++;
 
   RioterPtr rioter = Rioter::create( city );
-  rioter->send2City( ptr_cast<Building>( house ) );
+  rioter->send2City( house.as<Building>() );
 
   changeCrimeLevel( city, -crime::rioterCost );
 }

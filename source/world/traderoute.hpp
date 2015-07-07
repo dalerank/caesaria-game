@@ -39,7 +39,7 @@ public:
   CityPtr beginCity() const;
   CityPtr endCity() const;
   CityPtr partner( const std::string& name ) const;
-  std::string getName() const;
+  std::string name() const;
 
   void timeStep( unsigned int time );
   PointsArray points( bool reverse=false ) const;
@@ -51,7 +51,7 @@ public:
 
   MerchantPtr addMerchant( const std::string& begin, good::Store& sell, good::Store& buy );
   MerchantPtr merchant( unsigned int index );
-  MerchantList merchants() const;
+  const MerchantList& merchants() const;
 
   VariantMap save() const;
   void load( const VariantMap& stream );

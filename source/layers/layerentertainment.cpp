@@ -106,7 +106,7 @@ void Entertainment::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( entertainmentLevel > 0 )
     {
-      _addColumn( screenPos, entertainmentLevel );
+      drawColumn( engine, screenPos, entertainmentLevel );
     }
   }
 

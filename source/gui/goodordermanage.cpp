@@ -29,6 +29,8 @@
 #include "core/utils.hpp"
 #include "core/event.hpp"
 #include "widgetescapecloser.hpp"
+#include "stretch_layout.hpp"
+#include "multilinebutton.hpp"
 
 using namespace gfx;
 using namespace city;
@@ -121,7 +123,7 @@ public:
   Label* lbIndustryInfo;
   Picture icon;
   GoodOrderManageWindow::GoodMode gmode;
-  PushButton* btnStackingState;
+  MultilineButton* btnStackingState;
 
 signals public:
   Signal0<> onOrderChangedSignal;
@@ -296,17 +298,20 @@ void GoodOrderManageWindow::toggleStackingGoods()
 void GoodOrderManageWindow::updateStackingState()
 {
   bool isStacking = _d->city->tradeOptions().isStacking( _d->type );
-  std::string text;
+  StringArray text;
   if( isStacking )
   {
-    text = utils::format( 0xff, "%s %s", _("##stacking_resource##"), _("##click_here_that_use_it##") );
+    text << _("##stacking_resource##");
+    text << _("##click_here_that_use_it##");
   }
   else
   {
-    text = utils::format( 0xff, "%s %s", _("##use_and_trade_resource##"), _("##click_here_that_stacking##") );
+    text << _("##use_and_trade_resource##");
+    text << _("##click_here_that_stacking##");
   }
 
   _d->btnStackingState->setText( text );
+  _d->btnStackingState->setLineFont( 1, Font::create( FONT_0 ) );
 }
 
 Signal0<>& GoodOrderManageWindow::onOrderChanged() { return _d->onOrderChangedSignal; }

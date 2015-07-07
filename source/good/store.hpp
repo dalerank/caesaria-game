@@ -105,6 +105,7 @@ public:
   // store/retrieve to goodStore
   void applyStorageReservation(Storage& goodStore, const int reservationID);
   void applyRetrieveReservation(Storage& goodStore, const int reservationID);
+  ProductMap filled() const;
 
   // immediate store/retrieve, exception if impossible
   virtual void store( good::Stock& stock, const int amount);

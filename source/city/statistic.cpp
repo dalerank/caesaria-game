@@ -430,6 +430,30 @@ HouseList getEvolveHouseReadyBy(PlayerCityPtr r, const object::Type checkType )
   return getEvolveHouseReadyBy( r, checkTypes );
 }
 
+OverlayList getNeighbors( OverlayPtr overlay, PlayerCityPtr r )
+{
+  if( overlay.isNull() )
+    return OverlayList();
+
+  Size size = overlay->size();
+  TilePos start = overlay->pos();
+  TilePos stop = start + TilePos( 2, 2 ) + TilePos( size.width(), size.height() );
+  OverlayList ret;
+  gfx::TilesArray tiles = r->tilemap().getRectangle( start, stop );
+  std::set<OverlayPtr> checked;
+  foreach( it, tiles )
+  {
+    OverlayPtr ov = (*it)->overlay();
+    if( ov.isValid() && checked.count( ov ) == 0 )
+    {
+      checked.insert( ov );
+      ret.push_back( ov );
+    }
+  }
+
+  return ret;
+}
+
 }//end namespace statistic
 
 }//end namespace city

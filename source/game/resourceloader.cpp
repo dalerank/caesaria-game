@@ -116,6 +116,8 @@ void ResourceLoader::loadFiles(ArchivePtr archive)
   const vfs::Entries::Items& files = archive->entries()->items();
   gfx::PictureBank& pb = gfx::PictureBank::instance();
 
+  std::string basename;
+  basename.reserve( 256 );
   foreach( it, files )
   {
     NFile file = archive->createAndOpenFile( it->name );
@@ -124,7 +126,7 @@ void ResourceLoader::loadFiles(ArchivePtr archive)
       gfx::Picture pic = PictureLoader::instance().load( file );
       if( pic.isValid() )
       {
-        std::string basename = it->name.baseName().toString();
+        basename = it->name.baseName().toString();
         pb.setPicture( basename, pic );
       }
     }

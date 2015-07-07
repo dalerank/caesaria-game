@@ -78,6 +78,7 @@ class Helper::Impl : public EnumsHelper<good::Product>
 public:
   typedef std::map<good::Product, std::string > GoodNames;
   GoodNames goodName;  // index=GoodType, value=Good
+  const std::string invalidText;
 
   void append( good::Product type, const std::string& name, const std::string& prName )
   {
@@ -144,10 +145,10 @@ Picture Helper::picture(Product type, bool emp )
 
 Helper::~Helper() {}
 
-std::string Helper::name(Product type )
+const std::string& Helper::name(Product type )
 {
   Impl::GoodNames::iterator it = instance()._d->goodName.find( type );
-  return it != instance()._d->goodName.end() ? it->second : "";
+  return it != instance()._d->goodName.end() ? it->second : instance()._d->invalidText;
 }
 
 Product Helper::getType( const std::string& name )

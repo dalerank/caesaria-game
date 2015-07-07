@@ -518,7 +518,7 @@ void Widget::setParent(Widget* p) {  _dfunc()->parent = p; }
 
 static int __convStr2RelPos( Widget* w, const VariantMap& vars, std::string s )
 {
-  s = utils::trim( s );
+  s = utils::replace( s, " ", "" );
 
   WidgetCalc wcalc( *w, vars );
   return wcalc.eval( s );
@@ -733,7 +733,7 @@ void Widget::_recalculateAbsolutePosition( bool recursive )
   if (_d->maxSize.width() > 0 && w > (int)_d->maxSize.width() )
       _d->relativeRect.setRight( _d->relativeRect.left() + _d->maxSize.width() );
   if (_d->maxSize.height() > 0 && h > (int)_d->maxSize.height() )
-      _d->relativeRect.setBottom( _d->relativeRect.left() + _d->maxSize.height() );
+      _d->relativeRect.setBottom( _d->relativeRect.top() + _d->maxSize.height() );
 
   _d->relativeRect.repair();
 

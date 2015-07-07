@@ -89,6 +89,7 @@ class Religion::Impl
 public:
   TemplesCoverity templesCoverity;
   DateTime lastMessageDate;
+  StringArray reasons;
 
   void updateRelation(PlayerCityPtr city, DivinityPtr divn );
 };
@@ -111,7 +112,9 @@ Religion::Religion( PlayerCityPtr city )
 void Religion::timeStep( const unsigned int time )
 {  
   if( game::Date::isWeekChanged() )
-  {
+  {   
+    _d->reasons.clear();
+
     if( _city()->getOption( PlayerCity::godEnabled ) == 0 )
       return;
 
@@ -136,9 +139,7 @@ void Religion::timeStep( const unsigned int time )
     _d->templesCoverity.setOraclesParishioner( oraclesParishionerNumber );
 
     foreach( it, divinities )
-    {
       (*it)->setEffectPoint( 0 );
-    }
 
     std::map< int, StringArray > templesByGod;
 
@@ -157,7 +158,10 @@ void Religion::timeStep( const unsigned int time )
       {
         DivinityPtr god = rome::Pantheon::get( awardedGods.front() );
         if( god.isValid() )
+        {
           god->setEffectPoint( award::admiredGod );
+          _d->reasons << utils::format( 0xff, "##%s_god_admired##", god->internalName().c_str() );
+        }
       }
 
       if( templesByGod.size() > 1 )
@@ -168,15 +172,16 @@ void Religion::timeStep( const unsigned int time )
         {
           DivinityPtr god = rome::Pantheon::get( unhappyGods.front() );
           if( god.isValid() )
+          {
             god->setEffectPoint( -penalty::brokenGod );
+            _d->reasons << utils::format( 0xff, "##%s_god_broken##", god->internalName().c_str() );
+          }
         }
       }
     }
 
     foreach( it, divinities )
-    {
       _d->updateRelation( _city(), *it );
-    }
   }
 
   if( game::Date::isMonthChanged() )
@@ -200,12 +205,14 @@ void Religion::timeStep( const unsigned int time )
       if( god->wrathPoints() > 0 )
       {
         godsWrath[ god->wrathPoints() ].push_back( god );
+        _d->reasons << utils::format( 0xff, "##%s_god_wrath##", god->internalName().c_str() );
       }      
       else if( god->relation() < relation::minimum4wrath )
       {
         godsUnhappy[ god->relation() ].push_back( god );
+        _d->reasons << utils::format( 0xff, "##%s_god_unhappy##", god->internalName().c_str() );
       }
-    }
+    }       
 
     //find wrath god
     DivinityList someGods = divinities;
@@ -235,6 +242,17 @@ void Religion::load(const VariantMap& stream)
   Srvc::load( stream );
 
   VARIANT_LOAD_TIME_D( _d, lastMessageDate, stream )
+}
+
+std::string Religion::reason() const
+{
+  if( _city()->getOption( PlayerCity::godEnabled ) == 0 )
+    return "##no_gods_in_your_city##";
+
+  if( _d->reasons.empty() )
+    return "##no_gods_info_for_city##";
+
+  return _d->reasons.random();
 }
 
 void Religion::Impl::updateRelation( PlayerCityPtr city, DivinityPtr divn )

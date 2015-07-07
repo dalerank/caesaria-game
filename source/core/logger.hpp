@@ -26,7 +26,7 @@
 class LogWriter : public ReferenceCounted
 {
 public:
-  virtual void write( std::string, bool newLine ) = 0;
+  virtual void write( const std::string&, bool newLine ) = 0;
   virtual bool isActive() const = 0;
 };
 

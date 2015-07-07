@@ -44,7 +44,7 @@ public:
   // called when a service man should service the neighborhood
   virtual void deliverService();
   
-  virtual void save( VariantMap& stream) const;
+  virtual void save( VariantMap& stream ) const;
   virtual void load( const VariantMap& stream);
   virtual void buildingsServed( const std::set<BuildingPtr>& buildings, ServiceWalkerPtr walker );
   virtual unsigned int walkerDistance() const;
