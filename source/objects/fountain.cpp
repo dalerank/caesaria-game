@@ -91,22 +91,7 @@ void Fountain::timeStep(const unsigned long time)
   //filled area, that fontain present and work
   if( game::Date::isDayChanged() )
   {
-    _d->haveReservoirWater = tile().param( Tile::pReservoirWater ) > 0;
-
-    if( mayWork() )
-    {
-      TilesArea reachedTiles( _city()->tilemap(), pos(), _d->fillDistance );
-
-      foreach( tile, reachedTiles )
-      {
-        int value = (*tile)->param( Tile::pFountainWater );
-        (*tile)->setParam( Tile::pFountainWater, math::clamp( value+1, 0, 20 ) );
-      }
-    }
-    else
-    {
-
-    }
+    _dayUpdate();
   }
 
   if( game::Date::isWeekChanged() )
@@ -228,14 +213,24 @@ void Fountain::_initAnimation()
   _animationRef().setDelay( 2 );
   _fgPicture( 0 ) = Picture::getInvalid();
   _animationRef().stop();
+}
 
-  /*switch ( _d->lastPicId )
+void Fountain::_dayUpdate()
+{
+  _d->haveReservoirWater = tile().param( Tile::pReservoirWater ) > 0;
+
+  if( mayWork() )
   {
-  case simpleFountain: _animationRef().setOffset( Point( 12, 24 ) ); break;
-  //case testFountain: _animationRef().setOffset( Point( 0, 31 ) ); break;
-  case prettyFountain: _animationRef().setOffset( Point( 9, 41 ) ); break;
-  case awesomeFountain: _animationRef().setOffset( Point( 12, 24 ) ); break;
-  case patricianFountain: _animationRef().setOffset( Point( 14, 26 ) ); break;
-  default: break;
-  }*/
+    TilesArea reachedTiles( _city()->tilemap(), pos(), _d->fillDistance );
+
+    foreach( tile, reachedTiles )
+    {
+      int value = (*tile)->param( Tile::pFountainWater );
+      (*tile)->setParam( Tile::pFountainWater, math::clamp( value+1, 0, 20 ) );
+    }
+  }
+  else
+  {
+
+  }
 }

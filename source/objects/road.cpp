@@ -368,9 +368,7 @@ void Plaza::load(const VariantMap& stream)
 
 const Picture& Plaza::picture() const
 {
-  return tile().masterTile()
-           ? Construction::picture()
-           : Picture( ResourceGroup::entertainment, 102);
+  return Construction::picture();
 }
 
 void Plaza::updatePicture()
@@ -396,7 +394,7 @@ void Plaza::updatePicture()
     }
 
     Desirability::update( _city(), this, Desirability::off );
-    setSize( 2 );
+    setSize( Size( 2 ) );
     city::AreaInfo info = { _city(), pos(), TilesArray() };
     Construction::build( info );
     setPicture( MetaDataHolder::randomPicture( type(), size() ) );

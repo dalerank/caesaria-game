@@ -47,6 +47,7 @@ protected:
 
   Widget* _resetInfoPanel();
   void _showHelp();
+  void _toggleAi();
 
   class Impl;
   ScopedPtr< Impl > _d;

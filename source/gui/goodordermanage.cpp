@@ -29,6 +29,8 @@
 #include "core/utils.hpp"
 #include "core/event.hpp"
 #include "widgetescapecloser.hpp"
+#include "stretch_layout.hpp"
+#include "multilinebutton.hpp"
 
 using namespace gfx;
 using namespace city;
@@ -68,7 +70,7 @@ public:
         Font f = font( _state() );
         std::string text = _("##trade_btn_notrade_text##");
         Rect textRect = f.getTextRect( text, Rect( Point( 0, 0), size() ), horizontalTextAlign(), verticalTextAlign() );
-        f.draw( _textPicture(), text, textRect.UpperLeftCorner );
+        f.draw( _textPicture(), text, textRect._lefttop );
       }
       break;
 
@@ -81,11 +83,11 @@ public:
         Font f = font( _state() );
         std::string text = (order == trade::importing ? "##trade_btn_import_text##" : "##trade_btn_export_text##");
         Rect textRect = f.getTextRect( _(text), Rect( 0, 0, width() / 2, height() ), horizontalTextAlign(), verticalTextAlign() );
-        f.draw( _textPicture(), _(text), textRect.UpperLeftCorner, true );
+        f.draw( _textPicture(), _(text), textRect._lefttop, true );
 
         text = utils::format( 0xff, "%d %s", goodsQty, _("##trade_btn_qty##") );
         textRect = f.getTextRect( text, Rect( width() / 2 + 24 * 2, 0, width(), height() ), horizontalTextAlign(), verticalTextAlign() );
-        f.draw( _textPicture(), text, textRect.UpperLeftCorner, true );
+        f.draw( _textPicture(), text, textRect._lefttop, true );
       }
       break;
 
@@ -121,7 +123,7 @@ public:
   Label* lbIndustryInfo;
   Picture icon;
   GoodOrderManageWindow::GoodMode gmode;
-  PushButton* btnStackingState;
+  MultilineButton* btnStackingState;
 
 signals public:
   Signal0<> onOrderChangedSignal;
@@ -296,17 +298,20 @@ void GoodOrderManageWindow::toggleStackingGoods()
 void GoodOrderManageWindow::updateStackingState()
 {
   bool isStacking = _d->city->tradeOptions().isStacking( _d->type );
-  std::string text;
+  StringArray text;
   if( isStacking )
   {
-    text = utils::format( 0xff, "%s %s", _("##stacking_resource##"), _("##click_here_that_use_it##") );
+    text << _("##stacking_resource##");
+    text << _("##click_here_that_use_it##");
   }
   else
   {
-    text = utils::format( 0xff, "%s %s", _("##use_and_trade_resource##"), _("##click_here_that_stacking##") );
+    text << _("##use_and_trade_resource##");
+    text << _("##click_here_that_stacking##");
   }
 
   _d->btnStackingState->setText( text );
+  _d->btnStackingState->setLineFont( 1, Font::create( FONT_0 ) );
 }
 
 Signal0<>& GoodOrderManageWindow::onOrderChanged() { return _d->onOrderChangedSignal; }
@@ -327,6 +332,6 @@ void GoodOrderManageWindow::_changeTradeLimit(int value)
   emit _d->onOrderChangedSignal();
 }
 
-}
+}//end namespace advisorwnd
 
 }//end namespace gui

@@ -25,7 +25,7 @@ class Size : Vector2<int>
 public:
   Size( const int w, const int h ) : Vector2<int>( w, h ) {}
   Size() : Vector2<int>( 0, 0 ) {}
-  Size( const int s ) : Vector2<int>( s, s ) {}
+  explicit Size( const int s ) : Vector2<int>( s, s ) {}
 
   Size operator+(const Size& other) const { return Size( _x + other._x, _y + other._y ); }
 
@@ -53,7 +53,7 @@ class SizeF : Vector2<float>
 public:
   SizeF( const float w, const float h ) : Vector2<float>( w, h ) {}
   SizeF() : Vector2<float>( 0, 0 ) {}
-  SizeF( const float s ) : Vector2<float>( s, s ) {}
+  explicit SizeF( const float s ) : Vector2<float>( s, s ) {}
 
   SizeF operator+(const SizeF& other) const { return SizeF( _x + other._x, _y + other._y ); }
 

@@ -72,6 +72,10 @@
       btnLockInfobox#PushButton     : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_lockinfo_mode##"    }
       btnAnroidBarEnabled#PushButton: { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_androidbar_mode##"  }
       btnToggleBatching#PushButton  : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_batching_mode##"    }
+      btnToggleCcUseAI#PushButton   : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_batching_mode##"    }
+      btnMetrics#PushButton         : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_metrics_mode##"     }
+      btnHighlightBuilding#PushButton:{ maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_highlight_mode##"   }
+      btnDetroyEpidemicHouses#PushButton:{maximumSize:[ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_destroy_epdh##"     }
     }
   }
 

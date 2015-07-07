@@ -35,8 +35,8 @@ public:
   virtual void destroy();  // handles the walkers
 
   int serviceRange() const;  // max distance from building to road for road to propose the service
-  virtual int serviceDelay() const;
   void setServiceDelay( const int delay );
+  virtual int serviceDelay() const;
 
   virtual int time2NextService() const;
   virtual DateTime lastSendService() const;
@@ -44,7 +44,7 @@ public:
   // called when a service man should service the neighborhood
   virtual void deliverService();
   
-  virtual void save( VariantMap& stream) const;
+  virtual void save( VariantMap& stream ) const;
   virtual void load( const VariantMap& stream);
   virtual void buildingsServed( const std::set<BuildingPtr>& buildings, ServiceWalkerPtr walker );
   virtual unsigned int walkerDistance() const;

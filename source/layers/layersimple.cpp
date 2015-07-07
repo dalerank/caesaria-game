@@ -20,6 +20,7 @@
 #include "walker/constants.hpp"
 #include "gfx/city_renderer.hpp"
 #include "city/city.hpp"
+#include "core/priorities.hpp"
 #include "gfx/camera.hpp"
 #include "gui/senate_popup_info.hpp"
 #include "objects/senate.hpp"
@@ -32,9 +33,17 @@ namespace citylayer
 class Simple::Impl
 {
 public:
+  int ticks;
   SenatePopupInfo senateInfo;
   Picture selectedBuildingPic;
   OverlayPtr lastOverlay;
+  object::TypeSet inacceptable;
+
+  struct
+  {
+    bool any,
+         may;
+  } highlight;
 };
 
 int Simple::type() const { return citylayer::simple; }
@@ -51,14 +60,21 @@ void Simple::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   OverlayPtr curOverlay = tile.overlay();
 
-  bool blowTile = (curOverlay.isValid() && curOverlay == _d->lastOverlay);
-  if( blowTile )
-    engine.setColorMask( 0x007f0000, 0x00007f00, 0x0000007f, 0xff000000 );
+  if( _d->highlight.may )
+  {
+    bool blowTile = (curOverlay.isValid() && curOverlay == _d->lastOverlay) && _d->highlight.any;
+    if( blowTile )
+      engine.setColorMask( 0x007f0000, 0x00007f00, 0x0000007f, 0xff000000 );
 
-  Layer::drawTile(engine, tile, offset);
+    Layer::drawTile(engine, tile, offset);
 
-  if( blowTile )
+    if( blowTile )
       engine.resetColorMask();
+  }
+  else
+  {
+    Layer::drawTile(engine, tile, offset);
+  }
 }
 
 void Simple::afterRender(Engine& engine)
@@ -67,9 +83,19 @@ void Simple::afterRender(Engine& engine)
 
   _d->lastOverlay = 0;
   Tile* tile = _currentTile();
-  if( tile && is_kind_of<Building>( tile->overlay() ) )
+  if( tile )
   {
     _d->lastOverlay = tile->overlay();
+    _d->highlight.any = false;
+
+    if( tile->overlay().is<Building>()
+        && !_d->inacceptable.count( tile->overlay()->type() ) )
+      _d->highlight.any = true;
+  }
+
+  if( (_d->ticks++ % 30) == 0 )
+  {
+    _d->highlight.may = _city()->getOption( PlayerCity::highlightBuilding );
   }
 }
 
@@ -93,6 +119,9 @@ Simple::Simple( Camera& camera, PlayerCityPtr city)
   : Layer( &camera, city ), _d( new Impl )
 {
   _addWalkerType( walker::all );
+
+  _d->ticks = 0;
+  _d->inacceptable << object::fortification << object::wall;
 }
 
 }//end namespace citylayer

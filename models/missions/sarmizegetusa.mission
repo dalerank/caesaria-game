@@ -14,6 +14,7 @@
 	
   win : {
     population : 24000
+    name : "n2_sarmizegetusa"
     culture : 65
     prosperity : 60
     peace : 60

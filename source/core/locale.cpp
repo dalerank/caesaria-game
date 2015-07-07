@@ -22,58 +22,62 @@
 #include "variant_map.hpp"
 #include "saveadapter.hpp"
 
-namespace {
-  struct tr
-  {
-    std::string def_text;
-    std::string text;
-  };
-  
-  typedef std::map< int, tr > Translator;
+struct tr
+{
+  std::string def_text;
+  std::string text;
+};
+
+typedef std::map< int, tr > Translator;
+
+class LocaleImpl
+{
+public:
   Translator translator;
   vfs::Directory directory;
   std::string currentLanguage;
-  std::string invalidText = "";
+  const std::string invalidText;
 
-static void __loadTranslator( vfs::Path filename )
-{  
-  VariantMap trs = config::load( directory/filename );
-  Logger::warning( "Locale: load translation from " + (directory/filename).toString() );
-
-  foreach( it, trs )
+  void loadTranslator( vfs::Path filename )
   {
-    int hash = Hash( it->first );
-    translator[ hash ].text = it->second.toString();
+    VariantMap trs = config::load( directory/filename );
+    Logger::warning( "Locale: load translation from " + (directory/filename).toString() );
+
+    foreach( it, trs )
+    {
+      int hash = Hash( it->first );
+      translator[ hash ].text = it->second.toString();
+    }
   }
-}
 
-static void __loadDefault()
-{
-  vfs::Path filename( "caesar.en" );
-  VariantMap trs = config::load( directory/filename );
-  Logger::warning( "Locale: load default translation from " + (directory/filename).toString() );
-
-  foreach( it, trs )
+  void loadDefault()
   {
-    int hash = Hash( it->first );
-    translator[ hash ].def_text = it->second.toString();
-  }
-}
+    vfs::Path filename( "caesar.en" );
+    VariantMap trs = config::load( directory/filename );
+    Logger::warning( "Locale: load default translation from " + (directory/filename).toString() );
 
-}
+    foreach( it, trs )
+    {
+      int hash = Hash( it->first );
+      translator[ hash ].def_text = it->second.toString();
+    }
+  }
+};
+
+static LocaleImpl _llocale;
 
 void Locale::setDirectory(vfs::Directory dir)
 {
-  directory = dir;
-  translator.clear();
-  __loadDefault();
+  _llocale.directory = dir;
+  _llocale.translator.clear();
+  _llocale.loadDefault();
 }
 
 void Locale::setLanguage(std::string language)
 {
-  currentLanguage = language;
+  _llocale.currentLanguage = language;
 
-  foreach( it, translator )
+  foreach( it, _llocale.translator )
   {
     it->second.text.clear();
   }
@@ -83,21 +87,21 @@ void Locale::setLanguage(std::string language)
 
 std::string Locale::current()
 {
-  return currentLanguage;
+  return _llocale.currentLanguage;
 }
 
 void Locale::addTranslation(std::string filename)
 {
-  vfs::Path realPath = filename + "." + currentLanguage;
-  __loadTranslator( realPath );
+  vfs::Path realPath = filename + "." + _llocale.currentLanguage;
+  _llocale.loadTranslator( realPath );
 }
 
 const char* Locale::translate( const std::string& text)
 {
   int hash = Hash( text );
-  Translator::iterator it = translator.find( hash );
+  Translator::iterator it = _llocale.translator.find( hash );
 
-  if( it == translator.end() )
+  if( it == _llocale.translator.end() )
   {
     return text.c_str();
   }

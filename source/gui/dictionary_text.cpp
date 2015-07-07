@@ -216,7 +216,7 @@ void DictionaryText::_handleClick( const Point& p)
   int rowHeight = _d->font.getTextSize( "A" ).height() + _d->lineIntervalOffset;
   int rowIndex = (_d->yoffset + localPoint.y()) / rowHeight;
 
-  if( rowIndex >= _d->brokenText.size() )
+  if( rowIndex >= (int)_d->brokenText.size() )
     return;
 
   const Tokens& rline = _d->brokenText[ rowIndex ];
@@ -263,12 +263,12 @@ void DictionaryText::draw(gfx::Engine& painter )
   // draw background
   if( _d->bgPicture.isValid() )
   {
-    painter.draw( _d->bgPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+    painter.draw( _d->bgPicture, absoluteRect().lefttop(), &absoluteClippingRectRef() );
   }
 
   if( _d->textPicture.isValid() )
   {
-    painter.draw( _d->textPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+    painter.draw( _d->textPicture, absoluteRect().lefttop(), &absoluteClippingRectRef() );
   }
 
   Widget::draw( painter );

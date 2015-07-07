@@ -170,7 +170,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
       float curNeed = bld->evaluateTrainee( type() );
       if( _d->maxNeed < curNeed )
       {
-        Pathway way = PathwayHelper::create( startPos, bld.object(),
+        Pathway way = PathwayHelper::create( startPos, bld,
                                              roadOnly ? PathwayHelper::roadOnly : PathwayHelper::allTerrain );
         if( way.isValid() && way.length() < minDistance )
         {

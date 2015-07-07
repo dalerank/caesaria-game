@@ -74,7 +74,7 @@ namespace advisorwnd
 {
 
 namespace {
-  struct InfrastructureInfo
+  struct HealthcareInfo
   {
     int buildingCount;
     int buildingWork;
@@ -103,13 +103,13 @@ class EducationInfoLabel : public Label
 {
 public:
   EducationInfoLabel( Widget* parent, const Rect& rect, const object::Type service,
-                      const InfrastructureInfo& info )
+                      const HealthcareInfo& info )
     : Label( parent, rect ), _service( service ), _info( info )
   {
     setFont( Font::create( FONT_1_WHITE ) );
   }
 
-  const InfrastructureInfo& getInfo() const   {    return _info;  }
+  const HealthcareInfo& getInfo() const   {    return _info;  }
 
   virtual void _updateTexture( gfx::Engine& painter )
   {
@@ -136,7 +136,7 @@ public:
 
 private:
   object::Type _service;
-  InfrastructureInfo _info;
+  HealthcareInfo _info;
 };
 
 class Education::Impl
@@ -150,9 +150,50 @@ public:
   EducationInfoLabel* lbCollegeInfo;
   EducationInfoLabel* lbLibraryInfo;
 
-  InfrastructureInfo getInfo( PlayerCityPtr city, const object::Type service );
+public:
   std::string getTrouble( PlayerCityPtr city );
+  HealthcareInfo getInfo( PlayerCityPtr city, const object::Type service );
+  void initUI(Education* parent, PlayerCityPtr city);
+  void updateCityInfo( PlayerCityPtr city );
 };
+
+void Education::Impl::initUI( Education* parent, PlayerCityPtr city )
+{
+  Point startPoint( 2, 2 );
+  Size labelSize( 550, 20 );
+  HealthcareInfo info;
+  info = getInfo( city, object::school );
+  lbSchoolInfo = new EducationInfoLabel( lbBlackframe, Rect( startPoint, labelSize ), object::school, info );
+
+  info = getInfo( city, object::academy );
+  lbCollegeInfo = new EducationInfoLabel( lbBlackframe, Rect( startPoint + Point( 0, 20), labelSize), object::academy, info );
+
+  info = getInfo( city, object::library );
+  lbLibraryInfo = new EducationInfoLabel( lbBlackframe, Rect( startPoint + Point( 0, 40), labelSize), object::library, info );
+
+  TexturedButton* btnHelp = new TexturedButton( parent, Point( 12, parent->height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  CONNECT( btnHelp, onClicked(), parent, Education::_showHelp );
+}
+
+void Education::Impl::updateCityInfo(PlayerCityPtr city)
+{
+  int sumScholars = 0;
+  int sumStudents = 0;
+  HouseList houses = statistic::getHouses( city );
+  foreach( house, houses )
+  {
+    sumScholars += (*house)->habitants().scholar_n();
+    sumStudents += (*house)->habitants().student_n();
+  }
+
+  std::string cityInfoStr = utils::format( 0xff, "%d %s, %d %s, %d %s",
+                                                  city->states().population, _("##people##"),
+                                                  sumScholars, _("##scholars##"), sumStudents, _("##students##") );
+  if( lbCityInfo ) { lbCityInfo->setText( cityInfoStr ); }
+
+  std::string advice = getTrouble( city );
+  if( lbTroubleInfo ) { lbTroubleInfo->setText( _(advice) ); }
+}
 
 Education::Education(PlayerCityPtr city, Widget* parent, int id )
 : Base( parent, city, id ),
@@ -166,38 +207,8 @@ Education::Education(PlayerCityPtr city, Widget* parent, int id )
   GET_DWIDGET_FROM_UI( _d, lbCityInfo )
   GET_DWIDGET_FROM_UI( _d, lbTroubleInfo )
 
-  Point startPoint( 2, 2 );
-  Size labelSize( 550, 20 );
-  InfrastructureInfo info;
-  info = _d->getInfo( city, object::school );
-  _d->lbSchoolInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint, labelSize ), object::school, info );
-
-  info = _d->getInfo( city, object::academy );
-  _d->lbCollegeInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 20), labelSize), object::academy, info );
-
-  info = _d->getInfo( city, object::library );
-  _d->lbLibraryInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 40), labelSize), object::library, info );
-
-
-  int sumScholars = 0;
-  int sumStudents = 0;
-  HouseList houses = city::statistic::getHouses( city );
-  foreach( house, houses )
-  {
-    sumScholars += (*house)->habitants().scholar_n();
-    sumStudents += (*house)->habitants().student_n();
-  }
-
-  std::string cityInfoStr = utils::format( 0xff, "%d %s, %d %s, %d %s",
-                                                  city->states().population, _("##people##"),
-                                                  sumScholars, _("##scholars##"), sumStudents, _("##students##") );
-  if( _d->lbCityInfo ) { _d->lbCityInfo->setText( cityInfoStr ); }
-
-  std::string advice = _d->getTrouble( city );
-  if( _d->lbTroubleInfo ) { _d->lbTroubleInfo->setText( _(advice) ); }
-
-  TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
-  CONNECT( btnHelp, onClicked(), this, Education::_showHelp );
+  _d->initUI( this, city );
+  _d->updateCityInfo( city );
 }
 
 void Education::draw( gfx::Engine& painter )
@@ -213,9 +224,9 @@ void Education::_showHelp()
   DictionaryWindow::show( this, "education_advisor" );
 }
 
-InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Type bType)
+HealthcareInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Type bType)
 {
-  InfrastructureInfo ret;
+  HealthcareInfo ret;
 
   ret.buildingWork = 0;
   ret.peoplesStuding = 0;
@@ -266,9 +277,9 @@ InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Ty
 std::string Education::Impl::getTrouble(PlayerCityPtr city)
 {
   StringArray advices;
-  const InfrastructureInfo& schInfo = lbSchoolInfo->getInfo();
-  const InfrastructureInfo& clgInfo = lbCollegeInfo->getInfo();
-  const InfrastructureInfo& lbrInfo = lbLibraryInfo->getInfo();
+  const HealthcareInfo& schInfo = lbSchoolInfo->getInfo();
+  const HealthcareInfo& clgInfo = lbCollegeInfo->getInfo();
+  const HealthcareInfo& lbrInfo = lbLibraryInfo->getInfo();
   if( schInfo.need == 0 && clgInfo.need == 0 && lbrInfo.need == 0 )
   {
     return "##not_need_education##";
@@ -305,6 +316,6 @@ std::string Education::Impl::getTrouble(PlayerCityPtr city)
   return advices.empty() ? "##education_awesome##" : advices.random();
 }
 
-}
+} //end namespace advisor
 
 } //end namespace gui

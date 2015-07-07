@@ -41,7 +41,9 @@ public:
 
 protected:
   virtual void _finalizeResize();
+  virtual void removeChild(Widget *child);
 
+protected:
   bool _vertical;
   bool _needUpdate;
   unsigned int _offset;

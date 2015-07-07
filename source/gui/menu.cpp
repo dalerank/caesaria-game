@@ -38,6 +38,7 @@
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "city/city.hpp"
+#include "extented_date_info.hpp"
 #include "events/playsound.hpp"
 
 using namespace constants;
@@ -182,7 +183,7 @@ void Menu::draw(gfx::Engine& painter )
   if( !visible() )
     return;
 
-  painter.draw( _d->background, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+  painter.draw( _d->background, absoluteRect().lefttop(), &absoluteClippingRectRef() );
     
   Widget::draw( painter );
 }
@@ -505,6 +506,20 @@ void ExtentMenu::changeOverlay(int ovType)
 {
   std::string layerName = citylayer::Helper::prettyName( (citylayer::Type)ovType );
   _d->overlaysButton->setText( _( layerName ) );
+}
+
+void ExtentMenu::showInfo(int type)
+{
+  int hash = Hash(CAESARIA_STR_A(ExtentedDateInfo));
+  ExtentedDateInfo* window = safety_cast<ExtentedDateInfo*>( findChild( hash ) );
+  if( !window )
+  {
+    window = new ExtentedDateInfo( this, Rect( Point(), size() ), hash );
+  }
+  else
+  {
+    window->deleteLater();
+  }
 }
 
 Signal1<int>& ExtentMenu::onSelectOverlayType() {  return _d->overlaysMenu->onSelectOverlayType(); }

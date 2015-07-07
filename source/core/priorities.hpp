@@ -19,7 +19,7 @@
 #define _CAESARIA_PRIORITIES_INCLUDE_H_
 
 #include <vector>
-#include "variant.hpp"
+#include "variant_list.hpp"
 #include "core/foreach.hpp"
 #include <set>
 
@@ -49,12 +49,17 @@ public:
     return *this;
   }
 
-  VariantList toVList() const
+  VariantList save() const
   {
     VariantList vl;
     foreach( i, *this ) { vl.push_back( Variant( *i ) ); }
 
     return vl;
+  }
+
+  void load( const VariantList& stream )
+  {
+    *this << stream;
   }
 
   bool count( const T& v ) const

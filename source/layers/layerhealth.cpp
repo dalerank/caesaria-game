@@ -99,8 +99,7 @@ void Health::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( healthLevel > 0 )
     {
-      _addColumn( screenPos, healthLevel );
-      //drawColumn( engine, screenPos, healthLevel );
+      drawColumn( engine, screenPos, healthLevel );
     }
   }
 
@@ -201,7 +200,7 @@ Health::Health(Camera& camera, PlayerCityPtr city, int type)
   break;
   }
 
-  _fillVisibleObjects( citylayer::health );
+  _initialize();
 }
 
 }//end namespace citylayer

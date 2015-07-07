@@ -30,10 +30,7 @@ using namespace gfx;
 namespace citylayer
 {
 
-int Religion::type() const
-{
-  return citylayer::religion;
-}
+int Religion::type() const { return citylayer::religion; }
 
 void Religion::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
@@ -85,7 +82,7 @@ void Religion::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( religionLevel > 0 )
     {
-      _addColumn( screenPos, religionLevel );
+      drawColumn( engine, screenPos, religionLevel );
     }
   }
 
@@ -139,7 +136,7 @@ Religion::Religion( Camera& camera, PlayerCityPtr city)
   : Info( camera, city, 9 )
 {
   _addWalkerType( walker::priest );
-  _fillVisibleObjects( citylayer::religion );
+  _initialize();
 }
 
 }//end namespace citylayer

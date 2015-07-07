@@ -18,7 +18,9 @@
 #include "orders.hpp"
 #include "core/utils.hpp"
 #include "core/foreach.hpp"
+#include "productmap.hpp"
 #include "core/logger.hpp"
+#include "core/variant_list.hpp"
 #include "core/variant_map.hpp"
 #include "helper.hpp"
 
@@ -141,6 +143,19 @@ void Store::applyRetrieveReservation(Storage &goodStore, const int reservationID
   good::Stock &stock = goodStore.getStock(reservedStock.type() );
 
   applyRetrieveReservation(stock, reservationID);
+}
+
+ProductMap Store::filled() const
+{
+  ProductMap ret;
+  foreach( goodType, good::all() )
+  {
+    int q = qty( *goodType );
+    if( q > 0 )
+      ret[ *goodType ] = q;
+  }
+
+  return ret;
 }
 
 void Store::store( good::Stock& stock, const int amount)

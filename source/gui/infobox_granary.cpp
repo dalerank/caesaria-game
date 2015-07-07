@@ -29,8 +29,10 @@
 #include "good/helper.hpp"
 #include "game/infoboxmanager.hpp"
 #include "widget_helper.hpp"
+#include "core/metric.hpp"
 
 using namespace gfx;
+using namespace metric;
 
 namespace gui
 {
@@ -63,10 +65,13 @@ AboutGranary::AboutGranary(Widget* parent, PlayerCityPtr city, const Tile& tile 
   if( lbUnits )
   {
     // summary: total stock, free capacity
-    std::string desc = utils::format( 0xff, "%d %s, %s %d",
-                                             _granary->store().qty(),
+    int capacity = _granary->store().qty();
+    int freeQty = _granary->store().freeQty();
+    std::string desc = utils::format( 0xff, "%d %s, %s %d (%s)",
+                                             Measure::convQty( capacity ),
                                              _("##units_in_stock##"), _("##freespace_for##"),
-                                             _granary->store().freeQty() );
+                                             Measure::convQty( freeQty ),
+                                             Measure::measureType() );
     lbUnits->setPosition( _lbTitleRef()->leftbottom() + Point( 0, 5 ) );
     lbUnits->setText( desc );
 
@@ -90,7 +95,7 @@ void AboutGranary::showSpecialOrdersWindow()
   }
   else
   {
-    pos = absoluteRect().UpperLeftCorner;
+    pos = absoluteRect().lefttop();
   }
 
   new GranarySpecialOrdersWindow( parent(), pos, _granary );
@@ -100,11 +105,14 @@ void AboutGranary::drawGood(good::Product goodType, int col, int paintY)
 {
   std::string goodName = good::Helper::getTypeName( goodType );
   int qty = _granary->store().qty(goodType);
-  std::string outText = utils::format( 0xff, "%d %s", qty, _( "##" + goodName + "##" ) );
+  qty = Measure::convQty( qty );
+  const char* measure = Measure::measureShort();
+
+  std::string outText = utils::format( 0xff, "%d %s %s", qty, _(measure), _( "##" + goodName + "##" ) );
 
   // pictures of goods
   const Picture& pic = good::Helper::picture( goodType );
-  Label* lb = new Label( this, Rect( Point( (col == 0 ? 31 : 250), paintY), Size( 150, 24 )) );
+  Label* lb = new Label( this, Rect( Point( (col == 0 ? 31 : 250), paintY), Size( width()/2 - 15, 24 )) );
   lb->setIcon( pic );
   lb->setFont( Font::create( FONT_2 ) );
   lb->setText( outText );

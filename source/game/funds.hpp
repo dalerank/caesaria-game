@@ -23,28 +23,50 @@
 #include "core/signals.hpp"
 #include "good/good.hpp"
 #include "predefinitions.hpp"
+#include "economy_issue.hpp"
 
 namespace econ
 {
 
 enum { maxDebt=-4900 };
 
-struct Issue
-{ 
-  enum Type { unknown=0, taxIncome=1,
-              exportGoods, donation,
-              importGoods, workersWages,
-              buildConstruction, creditPercents,
-              playerSalary, sundries, moneyStolen,
-              empireTax, debet, credit, cityProfit,
-              overduePayment, overdueEmpireTax,
-              balance, caesarsHelp,
-              issueTypeCount };
-  Type type;
-  int money;
+class IssuesDetailedHistory
+{
+public:
+  struct DateIssue : public Issue
+  {
+    DateTime time;
 
-  Issue() : type( unknown ), money( 0 ) {}
-  Issue( Type t, int m ) : type( t ), money( m ) {}
+    VariantList save() const;
+    void load(const VariantList& stream);
+  };
+  typedef std::vector<DateIssue> DateIssues;
+
+  void addIssue( Issue issue );
+  const DateIssues& issues();
+  IssuesDetailedHistory();
+  ~IssuesDetailedHistory();
+
+  VariantList save() const;
+  void load( const VariantList& stream );
+
+private:
+  class Impl;
+  ScopedPtr<Impl> _d;
+};
+
+class IssuesValue : public std::map< Issue::Type, int >
+{
+public:
+  VariantList save() const;
+  void load( const VariantList& stream );
+};
+
+class IssuesHistory : public std::vector< IssuesValue >
+{
+public:
+  VariantList save() const;
+  void load( const VariantList& stream );
 };
 
 class Treasury
@@ -52,9 +74,6 @@ class Treasury
 public:
   enum { thisYear=0, lastYear=1, twoYearsAgo=2, defaultTaxPrcnt=7 };
   enum { debtDisabled=0, debtEnabled=1  };
-
-  typedef std::map< Issue::Type, int > IssuesValue;
-  typedef std::vector< IssuesValue > IssuesHistory;
 
   Treasury();
   virtual ~Treasury();

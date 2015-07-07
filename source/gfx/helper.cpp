@@ -184,6 +184,7 @@ static int __turnBySet( int imgid, int start, int length, int frameCount, int an
 int turnCoastTile(int imgid, Direction newDirection )
 {
   int koeff[] = { 0, 0, 0, 1, 1, 2, 2, 3, 3, -1};
+  Picture pic = imgid::toPicture( imgid );
   imgid -= 372;
   if( koeff[ newDirection ] >= 0 )
   {
@@ -194,6 +195,14 @@ int turnCoastTile(int imgid, Direction newDirection )
     else if( imgid >= 16 && imgid <= 31 )
     {
       imgid = __turnBySet( imgid, 16, 16, 4, koeff[ newDirection ] );
+    }
+    else if( imgid == 32 || imgid == 33 )
+    {
+      imgid += ( newDirection == direction::west || newDirection == direction::east ) ? 2 : 0;
+    }
+    else if( imgid == 34 || imgid == 35 )
+    {
+      imgid -= ( newDirection == direction::west || newDirection == direction::east ) ? 2 : 0;
     }
     else if( imgid >= 36 && imgid <= 39 )
     {
@@ -207,12 +216,29 @@ int turnCoastTile(int imgid, Direction newDirection )
     {
       imgid = __turnBySet( imgid, 46, 4, 1, koeff[ newDirection ] );
     }
+    else if( imgid >= 50 && imgid <= 53 )
+    {
+      imgid = __turnBySet( imgid, 50, 4, 1, koeff[ newDirection ] );
+    }
+    else if( imgid >= 55 && imgid <= 65 )
+    {
+      imgid = __turnBySet( imgid, 55, 1, 3, koeff[ newDirection ] );
+    }
+    else if( imgid >= 67 && imgid <= 70 )
+    {
+      imgid = __turnBySet( imgid, 67, 4, 1, koeff[ newDirection ] );
+    }
+    else if( imgid == 71 )
+    {
+      imgid = 71;
+    }
     else
     {
-      return -1;
+      imgid;
     }
   }
 
+  Picture pic2 = imgid::toPicture( imgid + 372 );
   return imgid + 372;
 }
 

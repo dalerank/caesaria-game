@@ -111,7 +111,7 @@ void Education::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( educationLevel > 0 )
     {
-      _addColumn( screenPos, educationLevel );
+      drawColumn( engine, screenPos, educationLevel );
     }
   }
 
@@ -216,7 +216,7 @@ Education::Education( Camera& camera, PlayerCityPtr city, int type)
   case citylayer::academy: _flags << object::academy; _visibleWalkers() << walker::teacher; break;
   }
 
-  _fillVisibleObjects( citylayer::education );
+  _initialize();
 }
 
 }//end namespace citylayer

@@ -90,7 +90,7 @@ void Crime::drawTile( Engine& engine, Tile& tile, const Point& offset)
     }
     else if( crime >= 0)
     {
-      _addColumn( screenPos, crime );
+      drawColumn( engine, screenPos, crime );
     }
   }
 
@@ -142,7 +142,7 @@ Crime::Crime( Camera& camera, PlayerCityPtr city)
   : Info( camera, city, 18 )
 {
   _addWalkerType( walker::prefect );
-  _fillVisibleObjects( type() );
+  _initialize();
 }
 
 }//end namespace citylayer

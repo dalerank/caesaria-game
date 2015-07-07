@@ -151,15 +151,15 @@ void MainMenu::_recalculateSize()
   Font font = Font::create( FONT_2_WHITE );
   
   int hg = std::max<int>( DEFAULT_MENU_HEIGHT, height() );
-  setGeometry( Rect( parentRect.UpperLeftCorner.x(), parentRect.UpperLeftCorner.y(),
-                                                                           parentRect.LowerRightCorner.x(), parentRect.UpperLeftCorner.y() + hg ) );
+  setGeometry( Rect( parentRect.left(), parentRect.top(),
+                     parentRect.right(), parentRect.top() + hg ) );
   Rect rect;
 
-  rect.UpperLeftCorner = parentRect.UpperLeftCorner;
+  rect._lefttop = parentRect.lefttop();
   hg = std::max<int>( font.getTextSize("A").height(), hg );
   //if (skin && height < skin->getSize ( EGDS_MENU_HEIGHT ))
   //	height = skin->getSize(EGDS_MENU_HEIGHT);
-  int width = rect.UpperLeftCorner.x();
+  int width = rect.left();
   int i;
 
   for( i=0; i<(int)itemCount(); ++i)

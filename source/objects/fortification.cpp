@@ -445,6 +445,9 @@ const Picture& Fortification::picture(const city::AreaInfo& areaInfo) const
   _d->index = index;
   th._d->mayPatrol = (_d->offset.y() > 0);
 
+  if( areaInfo.city.isValid() && !areaInfo.city->getOption( PlayerCity::c3gameplay ) )
+      _d->offset *= 2;
+
   th._d->tmpPicture.load( ResourceGroup::wall, index );
   th._d->tmpPicture.addOffset( _d->offset );
   return _d->tmpPicture;

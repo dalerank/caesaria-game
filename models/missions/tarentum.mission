@@ -12,6 +12,7 @@
   {
     population : 2500
     culture : 30
+    name : "n2_tarentum"
     prosperity : 10
     peace : 10
     favour : 40

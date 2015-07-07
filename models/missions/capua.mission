@@ -13,6 +13,7 @@
 	
   win :
   {
+    name : "n2_capua"
     population : 2500
     culture : 35_
     prosperity : 10
@@ -45,6 +46,9 @@
         sea : true
         land : true
         available : true
+
+        sells : { meat : 10, oil : 10 }
+        buys : { meat : 15, timber : 25, furniture : 25 }
       }
 
       "Leptis Magna" : {
@@ -54,6 +58,9 @@
         land : true
         distant : true
         available : true
+
+        sells : {	oil : 5, timber : 25 }
+        buys : { wine : 25 }
 
         resources : [ "wheat", "vegetable", "olive", "fish",
                       "clay", "marble", "timber", "iron" ]
@@ -66,6 +73,9 @@
         land : true
         distant : true
         available : true
+
+        sells : { meat : 25, marble : 20 }
+        buys : { pottery : 25 }
 
         resources : [ "wheat", "olive", "wine", "fish",
                       "timber", "clay", "marble", "iron" ]

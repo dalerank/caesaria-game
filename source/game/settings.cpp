@@ -22,6 +22,7 @@
 #include "core/variant_map.hpp"
 #include "core/utils.hpp"
 #include "core/foreach.hpp"
+#include "core/metric.hpp"
 
 namespace game
 {
@@ -99,6 +100,9 @@ __REG_PROPERTY(screenshotDir)
 __REG_PROPERTY(showTabletMenu)
 __REG_PROPERTY(batchTextures)
 __REG_PROPERTY(ccUseAI)
+__REG_PROPERTY(metricSystem)
+__REG_PROPERTY(defaultFont)
+__REG_PROPERTY(celebratesConfig)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -148,6 +152,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ freeplay_opts       ] = std::string( "/freeplay.model" );
   _d->options[ walkerRelations     ] = std::string( "/relations.model" );
   _d->options[ font                ] = std::string( "FreeSerif.ttf" );
+  _d->options[ defaultFont         ] = std::string( "FreeSerif.ttf" );
   _d->options[ simpleAnimationModel] = std::string( "/basic_animations.model" );
   _d->options[ hotkeysModel        ] = std::string( "/hotkeys.model" );
   _d->options[ cartsModel          ] = std::string( "/carts.model" );
@@ -158,6 +163,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ buildMenuModel      ] = std::string( "build_menu.model" );
   _d->options[ soundAlias          ] = std::string( "sounds.model" );
   _d->options[ videoAlias          ] = std::string( "videos.model" );
+  _d->options[ celebratesConfig    ] = std::string( "romancelebs.model" );
   _d->options[ screenshotDir       ] = vfs::Directory::userDir().toString();
   _d->options[ batchTextures       ] = true;
   _d->options[ experimental        ] = false;
@@ -175,6 +181,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ autosaveInterval    ] = 3;
   _d->options[ soundVolume         ] = 100;
   _d->options[ lockInfobox         ] = true;
+  _d->options[ metricSystem        ] = metric::Measure::native;
   _d->options[ ambientVolume       ] = 50;
   _d->options[ cellw               ] = 60;
   _d->options[ musicVolume         ] = 25;

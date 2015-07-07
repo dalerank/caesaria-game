@@ -24,6 +24,7 @@
 #include "environment.hpp"
 #include "core/event.hpp"
 #include "core/variant_map.hpp"
+#include "core/variant_list.hpp"
 #include "core/foreach.hpp"
 #include "core/saveadapter.hpp"
 #include "core/utils.hpp"
@@ -125,13 +126,13 @@ void Widget::setGeometry( const Rect& r, GeometryType mode )
     SizeF d = r2.size().toSizeF();
 
     if( _d->alignLeft == align::scale)
-      _d->scaleRect.UpperLeftCorner.setX( (float)r.UpperLeftCorner.x() / d.width() );
+      _d->scaleRect.setLeft( (float)r.left() / d.width() );
     if (_d->alignRight == align::scale)
-      _d->scaleRect.LowerRightCorner.setX( (float)r.LowerRightCorner.x() / d.width() );
+      _d->scaleRect.setRight( (float)r.right() / d.width() );
     if (_d->alignTop == align::scale)
-      _d->scaleRect.UpperLeftCorner.setY( (float)r.UpperLeftCorner.y() / d.height() );
+      _d->scaleRect.setTop( (float)r.top() / d.height() );
     if (_d->alignBottom == align::scale)
-      _d->scaleRect.LowerRightCorner.setY( (float)r.LowerRightCorner.y() / d.height() );
+      _d->scaleRect.setBottom(  (float)r.bottom() / d.height() );
   }
 
   _d->desiredRect = r;
@@ -161,10 +162,10 @@ void Widget::setGeometry( const RectF& r, GeometryType mode )
   {
   case ProportionalGeometry:
     _d->desiredRect = Rect(
-          floor( d.width() * r.UpperLeftCorner.x() ),
-          floor( d.height() * r.UpperLeftCorner.y() ),
-          floor( d.width() * r.LowerRightCorner.x() ),
-          floor( d.height() * r.LowerRightCorner.y() ));
+          floor( d.width() * r.left() ),
+          floor( d.height() * r.top() ),
+          floor( d.width() * r.right() ),
+          floor( d.height() * r.bottom() ));
 
     _d->scaleRect = r;
   break;
@@ -222,26 +223,20 @@ void Widget::setAlignment( Alignment left, Alignment right, Alignment top, Align
 
     RectF dRect = _d->desiredRect.toRectF();
     if( _d->alignLeft == align::scale)
-      _d->scaleRect.UpperLeftCorner.setX( dRect.UpperLeftCorner.x() / d.width() );
+      _d->scaleRect.setLeft( dRect.left() / d.width() );
     if(_d->alignRight == align::scale)
-      _d->scaleRect.LowerRightCorner.setX( dRect.LowerRightCorner.x() / d.width() );
+      _d->scaleRect.setRight( dRect.right() / d.width() );
     if( _d->alignTop  == align::scale)
-      _d->scaleRect.UpperLeftCorner.setY( dRect.UpperLeftCorner.y() / d.height() );
+      _d->scaleRect.setTop( dRect.top() / d.height() );
     if (_d->alignBottom == align::scale)
-      _d->scaleRect.LowerRightCorner.setY( dRect.LowerRightCorner.y() / d.height() );
+      _d->scaleRect.setBottom( dRect.bottom() / d.height() );
   }
 }
 
 void Widget::updateAbsolutePosition()
 {
   __D_IMPL(_d,Widget)
-  const Rect oldRect = _d->absoluteRect;
   _recalculateAbsolutePosition(false);
-
-  if( oldRect.size() != _d->absoluteRect.size() )
-  {
-    _finalizeResize();
-  }
 
   // update all children
   foreach( widget, _d->children ) { (*widget)->updateAbsolutePosition(); }
@@ -523,7 +518,7 @@ void Widget::setParent(Widget* p) {  _dfunc()->parent = p; }
 
 static int __convStr2RelPos( Widget* w, const VariantMap& vars, std::string s )
 {
-  s = utils::trim( s );
+  s = utils::replace( s, " ", "" );
 
   WidgetCalc wcalc( *w, vars );
   return wcalc.eval( s );
@@ -658,110 +653,110 @@ void Widget::_addChild( Widget* child )
 
 void Widget::_recalculateAbsolutePosition( bool recursive )
 {
-    Rect parentAbsolute(0,0,0,0);
-    Rect parentAbsoluteClip;
-    float fw=0.f, fh=0.f;
+  Rect parentAbsolute(0,0,0,0);
+  Rect parentAbsoluteClip;
+  float fw=0.f, fh=0.f;
 
-    __D_IMPL(_d,Widget)
-    if ( parent() )
+  __D_IMPL(_d,Widget)
+  if ( parent() )
+  {
+    parentAbsolute = parent()->absoluteRect();
+
+    if( _d->noClip )
     {
-        parentAbsolute = parent()->absoluteRect();
+      Widget* p=this;
+      while( p && p->parent() )
+          p = p->parent();
 
-        if( _d->noClip )
-        {
-            Widget* p=this;
-            while( p && p->parent() )
-                p = p->parent();
-
-            parentAbsoluteClip = p->absoluteClippingRect();
-        }
-        else
-            parentAbsoluteClip = parent()->absoluteClippingRect();
+      parentAbsoluteClip = p->absoluteClippingRect();
     }
+    else
+      parentAbsoluteClip = parent()->absoluteClippingRect();
+  }
 
-    const int diffx = parentAbsolute.width() - _d->lastParentRect.width();
-    const int diffy = parentAbsolute.height() - _d->lastParentRect.height();
+  const int diffx = parentAbsolute.width() - _d->lastParentRect.width();
+  const int diffy = parentAbsolute.height() - _d->lastParentRect.height();
 
 
-    if( _d->alignLeft == align::scale || _d->alignRight == align::scale)
-        fw = (float)parentAbsolute.width();
+  if( _d->alignLeft == align::scale || _d->alignRight == align::scale)
+      fw = (float)parentAbsolute.width();
 
-    if( _d->alignTop == align::scale || _d->alignBottom == align::scale)
-        fh = (float)parentAbsolute.height();
-    
-    switch( _d->alignLeft)
+  if( _d->alignTop == align::scale || _d->alignBottom == align::scale)
+      fh = (float)parentAbsolute.height();
+
+  switch( _d->alignLeft)
+  {
+  case align::automatic:
+  case align::upperLeft: break;
+  case align::lowerRight: _d->desiredRect._lefttop += Point( diffx, 0 ); break;
+  case align::center: _d->desiredRect._lefttop += Point( diffx/2, 0 ); break;
+  case align::scale: _d->desiredRect.setLeft( _d->scaleRect.left() * fw ); break;
+  }
+
+  switch( _d->alignRight)
+  {
+  case align::automatic:
+  case align::upperLeft:   break;
+  case align::lowerRight: _d->desiredRect._bottomright += Point( diffx, 0 ); break;
+  case align::center: _d->desiredRect._bottomright += Point( diffx/2, 0 ); break;
+  case align::scale: _d->desiredRect.setRight( roundf( _d->scaleRect.right() * fw ) ); break;
+  }
+
+  switch( _d->alignTop)
+  {
+  case align::automatic:
+  case align::upperLeft: break;
+  case align::lowerRight: _d->desiredRect._lefttop += Point( 0, diffy ); break;
+  case align::center: _d->desiredRect._lefttop += Point( 0, diffy/2 ); break;
+  case align::scale: _d->desiredRect.setTop( roundf(_d->scaleRect.top() * fh) ); break;
+  }
+
+  switch( _d->alignBottom)
+  {
+  case align::automatic:
+  case align::upperLeft:  break;
+  case align::lowerRight: _d->desiredRect._bottomright += Point( 0, diffy );  break;
+  case align::center:  _d->desiredRect._bottomright += Point( 0, diffy/2 );  break;
+  case align::scale: _d->desiredRect.setBottom( roundf(_d->scaleRect.bottom() * fh) );  break;
+  }
+
+  _d->relativeRect = _d->desiredRect;
+
+  const int w = _d->relativeRect.width();
+  const int h = _d->relativeRect.height();
+
+  // make sure the desired rectangle is allowed
+  if (w < (int)_d->minSize.width() )
+      _d->relativeRect.setRight( _d->relativeRect.left() + _d->minSize.width() );
+  if (h < (int)_d->minSize.height() )
+      _d->relativeRect.setBottom( _d->relativeRect.top() + _d->minSize.height() );
+  if (_d->maxSize.width() > 0 && w > (int)_d->maxSize.width() )
+      _d->relativeRect.setRight( _d->relativeRect.left() + _d->maxSize.width() );
+  if (_d->maxSize.height() > 0 && h > (int)_d->maxSize.height() )
+      _d->relativeRect.setBottom( _d->relativeRect.top() + _d->maxSize.height() );
+
+  _d->relativeRect.repair();
+
+  _d->absoluteRect = _d->relativeRect + parentAbsolute.lefttop();
+
+  if (!parent())
+      parentAbsoluteClip = absoluteRect();
+
+  _d->absoluteClippingRect = absoluteRect();
+  _d->absoluteClippingRect.clipAgainst(parentAbsoluteClip);
+
+  _d->lastParentRect = parentAbsolute;
+
+  if ( recursive )
+  {
+    // update all children
+    foreach( it, _d->children )
     {
-    case align::automatic:
-    case align::upperLeft: break;
-    case align::lowerRight: _d->desiredRect.UpperLeftCorner += Point( diffx, 0 ); break;
-    case align::center: _d->desiredRect.UpperLeftCorner += Point( diffx/2, 0 ); break;
-    case align::scale: _d->desiredRect.UpperLeftCorner.setX( _d->scaleRect.UpperLeftCorner.x() * fw ); break;
+        (*it)->_recalculateAbsolutePosition(recursive);
     }
+  }
 
-    switch( _d->alignRight)
-    {
-    case align::automatic:
-    case align::upperLeft:   break;
-    case align::lowerRight: _d->desiredRect.LowerRightCorner += Point( diffx, 0 ); break;
-    case align::center: _d->desiredRect.LowerRightCorner += Point( diffx/2, 0 ); break;
-    case align::scale: _d->desiredRect.LowerRightCorner.setX( roundf( _d->scaleRect.LowerRightCorner.x() * fw ) ); break;
-    }
-
-    switch( _d->alignTop)
-    {
-    case align::automatic:
-    case align::upperLeft: break;
-    case align::lowerRight: _d->desiredRect.UpperLeftCorner += Point( 0, diffy ); break;
-    case align::center: _d->desiredRect.UpperLeftCorner += Point( 0, diffy/2 ); break;
-    case align::scale: _d->desiredRect.UpperLeftCorner.setY( roundf(_d->scaleRect.UpperLeftCorner.y() * fh) ); break;
-    }
-
-    switch( _d->alignBottom)
-    {
-    case align::automatic:
-    case align::upperLeft:  break;
-    case align::lowerRight: _d->desiredRect.LowerRightCorner += Point( 0, diffy );  break;
-    case align::center:  _d->desiredRect.LowerRightCorner += Point( 0, diffy/2 );  break;
-    case align::scale: _d->desiredRect.LowerRightCorner.setY( roundf(_d->scaleRect.LowerRightCorner.y() * fh) );  break;
-    }
-
-    _d->relativeRect = _d->desiredRect;
-
-    const int w = _d->relativeRect.width();
-    const int h = _d->relativeRect.height();
-
-    // make sure the desired rectangle is allowed
-    if (w < (int)_d->minSize.width() )
-        _d->relativeRect.LowerRightCorner.setX( _d->relativeRect.UpperLeftCorner.x() + _d->minSize.width() );
-    if (h < (int)_d->minSize.height() )
-        _d->relativeRect.LowerRightCorner.setY( _d->relativeRect.UpperLeftCorner.y() + _d->minSize.height() );
-    if (_d->maxSize.width() > 0 && w > (int)_d->maxSize.width() )
-        _d->relativeRect.LowerRightCorner.setX( _d->relativeRect.UpperLeftCorner.x() + _d->maxSize.width() );
-    if (_d->maxSize.height() > 0 && h > (int)_d->maxSize.height() )
-        _d->relativeRect.LowerRightCorner.setY( _d->relativeRect.UpperLeftCorner.y() + _d->maxSize.height() );
-
-    _d->relativeRect.repair();
-
-    _d->absoluteRect = _d->relativeRect + parentAbsolute.UpperLeftCorner;
-
-    if (!parent())
-        parentAbsoluteClip = absoluteRect();
-
-    _d->absoluteClippingRect = absoluteRect();
-    _d->absoluteClippingRect.clipAgainst(parentAbsoluteClip);
-
-    _d->lastParentRect = parentAbsolute;
-
-    if ( recursive )
-    {
-      // update all children
-      foreach( it, _d->children )
-      {
-          (*it)->_recalculateAbsolutePosition(recursive);
-      }
-    }
-
-    _finalizeResize();
+  _finalizeResize();
 }
 
 void Widget::animate( unsigned int timeMs )
@@ -812,13 +807,13 @@ bool Widget::isMyChild( Widget* child ) const
 
 void Widget::setWidth( unsigned int width )
 {
-  const Rect rectangle( relativeRect().UpperLeftCorner, Size( width, height() ) );
+  const Rect rectangle( relativeRect().lefttop(), Size( width, height() ) );
   setGeometry( rectangle );
 }
 
 void Widget::setHeight( unsigned int height )
 {
-  const Rect rectangle( relativeRect().UpperLeftCorner, Size( width(), height ) );
+  const Rect rectangle( relativeRect().lefttop(), Size( width(), height ) );
   setGeometry( rectangle );
 }
 
@@ -869,9 +864,9 @@ void Widget::setSubElement( bool subElement ){  _dfunc()->isSubElement = subElem
 void Widget::setTabStop( bool enable ){  _dfunc()->isTabStop = enable;}
 void Widget::setLeft( int newLeft ) { setPosition( Point( newLeft, top() ) ); }
 void Widget::setTop( int newTop ) { setPosition( Point( left(), newTop ) );  }
-int Widget::top() const { return relativeRect().UpperLeftCorner.y(); }
-int Widget::left() const { return relativeRect().UpperLeftCorner.x(); }
-int Widget::right() const { return relativeRect().LowerRightCorner.x(); }
+int Widget::top() const { return relativeRect().top(); }
+int Widget::left() const { return relativeRect().left(); }
+int Widget::right() const { return relativeRect().right(); }
 void Widget::hide() { setVisible( false ); }
 void Widget::show() {  setVisible( true ); }
 Alignment Widget::horizontalTextAlign() const{  return _dfunc()->textHorzAlign; }
@@ -910,7 +905,7 @@ void Widget::setCenter(Point center)
 void Widget::setBottom( int b )
 {
   Rect r = _dfunc()->relativeRect;
-  r.LowerRightCorner.setY(  b );
+  r.setBottom(  b );
   setGeometry( r );
 }
 

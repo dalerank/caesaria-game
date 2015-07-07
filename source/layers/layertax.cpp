@@ -24,6 +24,7 @@
 #include "core/event.hpp"
 #include "gfx/camera.hpp"
 #include "core/gettext.hpp"
+#include "game/gamedate.hpp"
 #include "city/statistic.hpp"
 
 using namespace gfx;
@@ -59,15 +60,10 @@ void Tax::drawTile(Engine& engine, Tile& tile, const Point& offset)
     else if( overlay->type() == object::house )
     {
       HousePtr house = ptr_cast<House>( overlay );
-      //taxLevel = house->getServiceValue( Service::forum );
+      int taxAccess = house->getServiceValue( Service::forum );
       taxLevel = math::clamp<int>( house->taxesThisYear(), 0, 100 );
-      needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
-
-      if( needDrawAnimations  )
-      {
-        int taxAccess = house->hasServiceAccess( Service::forum );
-        needDrawAnimations = (taxAccess < 25);
-      }
+      needDrawAnimations = ((house->spec().level() == 1 && house->habitants().empty())
+                            || taxAccess < 25);
 
       if( !needDrawAnimations )
       {
@@ -86,8 +82,7 @@ void Tax::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( taxLevel > 0 )
     {
-      _addColumn( screenPos, taxLevel );
-      //drawColumn( engine, screenPos, taxLevel );
+      drawColumn( engine, screenPos, taxLevel );
     }
   }
 
@@ -122,11 +117,11 @@ void Tax::handleEvent(NEvent& event)
         }
         else
         {
-          HousePtr house = ptr_cast<House>( tile->overlay() );
+          HousePtr house = tile->overlay().as<House>();
           if( house.isValid() )
           {
-            int taxAccess = house->hasServiceAccess( Service::forum );
-            if( taxAccess < 25 )
+            bool lastTaxationTooOld = house->lastTaxationDate().monthsTo( game::Date::current() ) > DateTime::monthsInYear / 2;
+            if( lastTaxationTooOld )
               text = "##house_not_registered_for_taxes##";
           }
         }
@@ -144,9 +139,10 @@ void Tax::handleEvent(NEvent& event)
 }
 
 Tax::Tax( Camera& camera, PlayerCityPtr city)
-  : Info( camera, city, 9 )
+  : Info( camera, city, 124 )
 {
   _addWalkerType( walker::taxCollector );
+  _initialize();
 }
 
 }//end namespace citylayer

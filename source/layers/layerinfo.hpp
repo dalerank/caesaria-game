@@ -34,9 +34,9 @@ public:
   virtual ~Info();
 
 protected:
-  void _addColumn( Point pos, int value );
   void _addPicture( Point pos, const gfx::Picture& pic );
-  void _loadColumnPicture( int picId );
+  void _loadColumnPicture( const char* rc, int picId );
+  virtual void _initialize();
 
   Info(gfx::Camera& camera, PlayerCityPtr city, int columnIndex);
 

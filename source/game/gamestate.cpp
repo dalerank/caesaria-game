@@ -36,7 +36,8 @@ using namespace scene;
 namespace gamestate
 {
 
-void BaseState::_initialize(scene::Base* screen, ScreenType screenType) {
+void BaseState::_initialize(scene::Base* screen, ScreenType screenType)
+{
   this->_screen = screen;
   this->_screenType = screenType;
   this->_screen->initialize();
@@ -72,8 +73,8 @@ ScreenType BaseState::getScreenType()
 
 scene::Base* BaseState::toBase() {  return _screen; }
 
-MissionSelect::MissionSelect(Game* game, gfx::Engine* engine, const std::string& file):
-  BaseState(game),
+MissionSelect::MissionSelect(Game* game, gfx::Engine* engine, const std::string& file)
+   : BaseState(game),
   _briefing(new scene::Briefing( *game, *engine, file ))
 {
   _initialize(_briefing, SCREEN_BRIEFING);
@@ -83,7 +84,7 @@ MissionSelect::~MissionSelect()
 {
   switch( _screen->result() )
   {
-  case scene::Briefing::loadMission:
+  case Briefing::loadMission:
   {
     bool loadOk = _game->load( _briefing->getMapName() );
     Logger::warning( (loadOk ? "Briefing: end loading file" : "Briefing: cant load file") + _briefing->getMapName() );
@@ -99,7 +100,7 @@ MissionSelect::~MissionSelect()
 
 ShowMainMenu::ShowMainMenu(Game* game, gfx::Engine* engine):
   BaseState(game),
-  startMenu(new scene::StartMenu( *game, *engine ))
+  startMenu(new StartMenu( *game, *engine ))
 {
   _initialize(startMenu, SCREEN_MENU);
 }
@@ -110,7 +111,7 @@ ShowMainMenu::~ShowMainMenu()
 
   switch( _screen->result() )
   {
-  case scene::StartMenu::startNewGame:
+  case StartMenu::startNewGame:
   {
     std::srand( DateTime::elapsedTime() );
     std::string startMission = ":/missions/tutorial.mission";
@@ -124,12 +125,12 @@ ShowMainMenu::~ShowMainMenu()
   }
   break;
 
-  case scene::StartMenu::reloadScreen:
+  case StartMenu::reloadScreen:
     _game->setNextScreen( SCREEN_MENU );
   break;
 
-  case scene::StartMenu::loadSavedGame:
-  case scene::StartMenu::loadMission:
+  case StartMenu::loadSavedGame:
+  case StartMenu::loadMission:
   {
     bool loadOk = _game->load( startMenu->mapName() );
     Logger::warning( (loadOk ? "ScreenMenu: end loading mission/sav" : "ScreenMenu: cant load file") + startMenu->mapName()  );
@@ -138,7 +139,7 @@ ShowMainMenu::~ShowMainMenu()
   }
   break;
 
-  case scene::StartMenu::loadMap:
+  case StartMenu::loadMap:
   {
     bool loadOk = _game->load( startMenu->mapName() );
     Logger::warning( (loadOk ? "ScreenMenu: end loading map" : "ScreenMenu: cant load map") + startMenu->mapName() );
@@ -152,7 +153,7 @@ ShowMainMenu::~ShowMainMenu()
   }
   break;
 
-  case scene::StartMenu::closeApplication:
+  case StartMenu::closeApplication:
   {
     _game->setNextScreen( SCREEN_QUIT );
   }
@@ -229,10 +230,10 @@ GameLoop::~GameLoop()
   _nextFilename = _level->nextFilename();
   switch( _screen->result() )
   {
-  case scene::Level::mainMenu: _game->setNextScreen( SCREEN_MENU );  break;
-  case scene::Level::loadGame: _game->setNextScreen( SCREEN_GAME );  _game->load( _level->nextFilename() ); break;
+  case Level::res_menu: _game->setNextScreen( SCREEN_MENU );  break;
+  case Level::res_load: _game->setNextScreen( SCREEN_GAME );  _game->load( _level->nextFilename() ); break;
 
-  case scene::Level::restart:
+  case Level::res_restart:
   {
     Logger::warning( "ScreenGame: restart game " + _restartFilename );
     bool loadOk = _game->load( _restartFilename );
@@ -253,8 +254,8 @@ GameLoop::~GameLoop()
   }
   break;
 
-  case scene::Level::loadBriefing: _game->setNextScreen( SCREEN_BRIEFING ); break;
-  case scene::Level::quitGame: _game->setNextScreen( SCREEN_QUIT );  break;
+  case Level::res_briefing: _game->setNextScreen( SCREEN_BRIEFING ); break;
+  case Level::res_quit: _game->setNextScreen( SCREEN_QUIT );  break;
   default: _game->setNextScreen( SCREEN_QUIT ); break;
   }
 }

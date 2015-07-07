@@ -45,7 +45,7 @@ private:
 public:
   FileLogWriter(const std::string& path)
   {
-    DateTime t = DateTime::getCurrenTime();
+    DateTime t = DateTime::currenTime();
 
     _logFile = fopen(path.c_str(), "w");
 
@@ -61,7 +61,7 @@ public:
 
   ~FileLogWriter()
   {
-    DateTime t = DateTime::getCurrenTime();
+    DateTime t = DateTime::currenTime();
 
     if( _logFile )
     {
@@ -77,7 +77,7 @@ public:
 
   virtual bool isActive() const { return _logFile != 0; }
 
-  virtual void write( std::string str, bool )
+  virtual void write( const std::string& str, bool )
   {
     // Don't write progress stuff into the logfile
     // Make sure only one thread is writing to the file at a time
@@ -99,7 +99,7 @@ public:
 class ConsoleLogWriter : public LogWriter
 {
 public:
-  virtual void write( std::string str, bool newline )
+  virtual void write( const std::string& str, bool newline )
   {
 #ifdef CAESARIA_PLATFORM_ANDROID
     str.append( newline ? "\n" : "" );
@@ -167,13 +167,13 @@ void Logger::warning(const std::string& text) {  instance()._d->write( text );}
 void Logger::warningIf(bool warn, const std::string& text){  if( warn ) warning( text ); }
 void Logger::update(const std::string& text, bool newline){  instance()._d->write( text, newline ); }
 
-void Logger::addFilter(const std::string text)
+void Logger::addFilter(const std::string& text)
 {
   if (hasFilter(text)) return;
   instance()._d->filters.append(text);
 }
 
-bool Logger::hasFilter(const std::string text)
+bool Logger::hasFilter(const std::string& text)
 {
   foreach(filter, instance()._d->filters)
   {
@@ -182,7 +182,7 @@ bool Logger::hasFilter(const std::string text)
   return false;
 }
 
-bool Logger::removeFilter(const std::string text)
+bool Logger::removeFilter(const std::string& text)
 {
   foreach(filter, instance()._d->filters)
   {

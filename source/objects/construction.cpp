@@ -22,24 +22,26 @@
 #include "gfx/tilemap.hpp"
 #include "city/city.hpp"
 #include "events/disaster.hpp"
+#include "core/variant_list.hpp"
 #include "core/logger.hpp"
 #include "core/foreach.hpp"
 #include "core/utils.hpp"
 #include "extension.hpp"
 #include "gfx/tilearea.hpp"
 #include "core/json.hpp"
+#include "core/flowlist.hpp"
 
 using namespace gfx;
 
 class Construction::Impl
 {
 public:
+  typedef FlowList<ConstructionExtension> Extensions;
   typedef std::map<Param, double> Params;
   TilesArray accessRoads;
   Params params;
 
-  ConstructionExtensionList newExtensions;
-  ConstructionExtensionList extensions;
+  Extensions extensions;
 };
 
 Construction::Construction(const object::Type type, const Size& size)
@@ -89,8 +91,8 @@ std::string Construction::troubleDesc() const
   }
 
   int lvlTrouble = 0;
-  int damage = state( pr::fire );
-  int fire = state( pr::damage );
+  int damage = state( pr::damage );
+  int fire = state( pr::fire );
 
   if( fire > 50 || damage > 50 )
   {
@@ -239,8 +241,18 @@ void Construction::load( const VariantMap& stream )
   }
 }
 
-void Construction::addExtension(ConstructionExtensionPtr ext) {  _d->newExtensions.push_back( ext ); }
-const ConstructionExtensionList&Construction::extensions() const { return _d->extensions; }
+void Construction::addExtension(ConstructionExtensionPtr ext) {  _d->extensions.postpone( ext ); }
+
+ConstructionExtensionPtr Construction::getExtension(const std::string& name)
+{
+  foreach( it, _d->extensions )
+    if( (*it)->name() == name )
+      return *it;
+
+  return ConstructionExtensionPtr();
+}
+
+const ConstructionExtensionList& Construction::extensions() const { return _d->extensions; }
 
 void Construction::initialize(const MetaData& mdata)
 {
@@ -281,20 +293,12 @@ TilesArray Construction::enterArea() const
 
 void Construction::timeStep(const unsigned long time)
 {  
-  for( ConstructionExtensionList::iterator it=_d->extensions.begin();
-       it != _d->extensions.end(); )
-  {
+  foreach( it, _d->extensions )
     (*it)->timeStep( this, time );
 
-    if( (*it)->isDeleted() ) { it = _d->extensions.erase( it ); }
-    else { ++it; }
-  }
+  utils::eraseDeletedElements( _d->extensions );
 
-  if( !_d->newExtensions.empty() )
-  {
-    _d->extensions << _d->newExtensions;
-    _d->newExtensions.clear();
-  }
+  _d->extensions.merge();
 
   Overlay::timeStep( time );
 }

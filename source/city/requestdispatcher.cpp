@@ -43,6 +43,7 @@ public:
 
 public:
   void updateRequests();
+  void weekUpdate( unsigned int time, PlayerCityPtr city );
 };
 
 Dispatcher::Dispatcher( PlayerCityPtr city )
@@ -81,29 +82,35 @@ bool Dispatcher::add( const VariantMap& stream, bool showMessage )
 Dispatcher::~Dispatcher() {}
 std::string Dispatcher::defaultName(){  return "requests";}
 
+void Dispatcher::Impl::weekUpdate( unsigned int time, PlayerCityPtr rcity )
+{
+  const DateTime current = game::Date::current();
+  foreach( rq, requests )
+  {
+    RequestPtr request = *rq;
+    if( request->finishedDate() <= current )
+    {
+      request->fail( rcity );
+      lastRequestCancelDate = current;
+    }
+
+    bool isReady = request->isReady( rcity );
+    if( !request->isAnnounced() && isReady )
+    {
+      events::GameEventPtr e = events::ShowRequestInfo::create( request, true );
+      request->setAnnounced( true );
+      e->dispatch();
+    }
+
+    request->update();
+  }
+}
+
 void Dispatcher::timeStep(const unsigned int time)
 {
   if( game::Date::isWeekChanged() )
   {
-    foreach( rq, _d->requests )
-    {
-      RequestPtr request = *rq;
-      if( request->finishedDate() <= game::Date::current() )
-      {
-        request->fail( _city() );
-        _d->lastRequestCancelDate = game::Date::current();
-      }
-
-      bool isReady = request->isReady( _city() );
-      if( !request->isAnnounced() && isReady )
-      {
-        events::GameEventPtr e = events::ShowRequestInfo::create( request, true );
-        request->setAnnounced( true );
-        e->dispatch();
-      }
-
-      request->update();
-    }    
+    _d->weekUpdate( time, _city() );
   }
 
   if( game::Date::isDayChanged() )
@@ -117,9 +124,11 @@ VariantMap Dispatcher::save() const
   VariantMap ret;
   VariantMap vm_rq;
 
+  std::string name;
+  name.reserve( 256 );
   foreach( rq, _d->requests )
   {
-    std::string name = utils::format( 0xff, "request_%02d", std::distance( _d->requests.begin(), rq ) );
+    name = utils::format( 0xff, "request_%02d", std::distance( _d->requests.begin(), rq ) );
     vm_rq[ name ] = (*rq)->save();
   }
 

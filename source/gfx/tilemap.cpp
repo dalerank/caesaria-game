@@ -298,7 +298,10 @@ TilesArray Tilemap::getArea(const TilePos& start, const TilePos& stop ) const
 
 TilesArray Tilemap::getArea(const TilePos& start, const Size& size ) const
 {
-  return getArea( start, start + TilePos( size.width()-1, size.height()-1 ) );
+  TilePos stop = start;
+  stop.ri() += math::max( size.width()-1, 0 );
+  stop.rj() += math::max( size.height()-1, 0 );
+  return getArea( start, stop );
 }
 
 TilesArray Tilemap::getArea(int range, const TilePos& center) const
@@ -438,8 +441,16 @@ void Tilemap::turnRight()
   {    
     const Impl::TurnInfo& ti = it->second;
 
-    Picture pic = ti.overlay.isValid() ? ti.overlay->picture() : ti.pic;
-    int pSize = (pic.width() + 2) / _d->virtWidth;
+    int pSize=0;
+    if( ti.overlay.isValid() )
+    {
+      pSize = ti.overlay->size().width();
+    }
+    else
+    {
+      const Picture& pic = ti.pic;
+      pSize = (pic.width() + 2) / _d->virtWidth;
+    }
 
     pSize = math::clamp<int>( pSize, 1, 10 );
 
@@ -627,7 +638,7 @@ void Tilemap::Impl::checkCoastAfterTurn()
     for( int j=0; j < size; j++ )
     {
       Tile* tmp = ate( i, j );
-      if( tmp->getFlag( Tile::tlWater ) )
+      if( tmp->getFlag( Tile::tlCoast ) || tmp->getFlag( Tile::tlWater ) )
         tmp->changeDirection( 0, direction );
     }
   }

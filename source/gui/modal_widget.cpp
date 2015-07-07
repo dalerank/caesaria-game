@@ -175,8 +175,8 @@ void ModalScreen::draw(gfx::Engine& painter )
 			if( (*w)->visible())
 			{
 				r = (*w)->absoluteRect();
-				r.LowerRightCorner += Point( 1, 1 );
-				r.UpperLeftCorner -= Point( 1, 1 );
+        r._bottomright += Point( 1, 1 );
+        r._lefttop -= Point( 1, 1 );
 
 				//painter.drawRectangle( 0xffc0c0c0, r, &getAbsoluteClippingRectRef() );
 			}

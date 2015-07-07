@@ -628,7 +628,7 @@ void Layer::afterRender( Engine& engine)
     else if( tile->masterTile() != 0 )
     {
       pos = tile->masterTile()->mappos();
-      size = (tile->masterTile()->picture().width() + 2) / rwidth;
+      size = Size( (tile->masterTile()->picture().width() + 2) / rwidth );
     }
 
     pos += offset;
@@ -650,7 +650,7 @@ Layer::Layer( Camera* camera, PlayerCityPtr city )
   _d->currentTile = 0;
 
   _d->posMode = 0;
-  _d->terraintPic = MetaDataHolder::randomPicture( object::terrain, 1 );
+  _d->terraintPic = MetaDataHolder::randomPicture( object::terrain, Size( 1 ) );
   _d->tilePosText = Picture( Size( 240, 80 ), 0, true );
 }
 
@@ -659,16 +659,16 @@ void Layer::_addWalkerType(walker::Type wtype)
   _dfunc()->vwalkers.insert( wtype );
 }
 
-void Layer::_fillVisibleObjects(int ltype)
+void Layer::_initialize()
 {
-  const VariantMap& vm = citylayer::Helper::getConfig( (citylayer::Type)ltype );
-  VariantList vl = vm.get( "visibleObjects" ).toList();
+  const VariantMap& vm = citylayer::Helper::getConfig( (citylayer::Type)type() );
+  StringArray vl = vm.get( "visibleObjects" ).toStringArray();
   foreach( it, vl )
   {
-    object::Type ovType = object::toType( it->toString() );
+    object::Type ovType = object::toType( *it );
     if( ovType != object::unknown )
       _dfunc()->drObjects.insert( ovType );
-  }
+    }
 }
 
 bool Layer::_moveCamera(NEvent &event)

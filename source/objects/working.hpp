@@ -19,6 +19,7 @@
 #define __CAESARIA_WORKINGBUILDING_H_INCLUDED__
 
 #include "objects/building.hpp"
+#include "core/signals.hpp"
 
 /** Building where people work */
 class WorkingBuilding : public Building
@@ -64,6 +65,9 @@ public:
 
   virtual void initialize(const MetaData &mdata);
 
+public signals:
+  Signal1<bool>& onActiveChange();
+
 protected:
   void _setError(const std::string& err);
   void _fireWorkers();
@@ -71,6 +75,7 @@ protected:
   void _disaster();
 
   virtual void _updateAnimation( const unsigned long time );
+  virtual void _changeAnimationState( bool enabled );
 
 private:
 

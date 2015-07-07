@@ -100,8 +100,8 @@ Infobox::Infobox( Widget* parent, const Rect& rect, const Rect& blackArea, int i
   if( _d->lbText )
   {
     Rect r = _d->lbText->relativeRect();
-    if( blackArea.width() == 0 ) { r.LowerRightCorner = _d->btnExit->righttop(); }
-    else { r.LowerRightCorner = blackArea.righttop(); }
+    if( blackArea.width() == 0 ) { r._bottomright = _d->btnExit->righttop(); }
+    else { r._bottomright = blackArea.righttop(); }
 
     _d->lbText->setGeometry( r );
   }  
@@ -153,7 +153,14 @@ bool Infobox::onEvent( const NEvent& event)
 
 void Infobox::setTitle( const std::string& title )
 {
-  if( _d->lbTitle ) { _d->lbTitle->setText( title ); }
+  if( _d->lbTitle )
+  {
+    Size s = _d->lbTitle->font().getTextSize( title );
+    if( s.width() > (int)_d->lbTitle->width() )
+      _d->lbTitle->setFont( Font::create( FONT_2 ) );
+
+    _d->lbTitle->setText( title );
+  }
 }
 
 bool Infobox::isAutoPosition() const{  return _d->isAutoPosition;}
@@ -174,7 +181,7 @@ void Infobox::setupUI(const vfs::Path& filename)
 Label* Infobox::_lbTitleRef(){  return _d->lbTitle;}
 
 Label* Infobox::_lbTextRef(){ return _d->lbText; }
-Label* Infobox::_lbBlackFrameRef(){  return _d->lbBlackFrame; }
+Label* Infobox::_lbBlackFrame(){  return _d->lbBlackFrame; }
 PushButton*Infobox::_btnExitRef() { return _d->btnExit; }
 
 void Infobox::_updateWorkersLabel(const Point &pos, int picId, int need, int have )

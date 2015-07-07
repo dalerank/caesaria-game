@@ -28,15 +28,22 @@ public:
 
   religion::DivinityPtr divinity() const;
 
-  virtual unsigned int parishionerNumber() const = 0;
+  virtual unsigned int parishionerNumber() const;
   virtual void deliverService();
   virtual unsigned int walkerDistance() const;
+  virtual void initialize(const MetaData& mdata);
 
 protected:
   Temple( religion::DivinityPtr divinity, object::Type type, int imgId, const Size& size );
 
   virtual void _updateBuffs();
-  DateTime _lastBuff() const;
+  virtual void _changeAnimationState( bool value );
+  virtual void _updateAnimation( const unsigned long time );
+
+  int _relationMultiplier() const;
+  void _setBuffValue( float value );
+  float _buffValue() const;
+  DateTime _lastBuffDate() const;
 
 private:
   class Impl;
@@ -67,9 +74,6 @@ public:
 protected:
   virtual void _updateBuffs();
   virtual void initialize(const MetaData &mdata);
-
-private:
-  int _buffValue;
 };
 
 class TempleNeptune : public SmallTemple
@@ -93,6 +97,7 @@ public:
 class TempleMercury : public SmallTemple
 {
 public:
+  virtual void _updateBuffs();
   TempleMercury();
 };
 

@@ -49,6 +49,10 @@ public:
   virtual int scrollSpeed() const = 0;
   virtual Tile* centerTile() const = 0;
   virtual void startFrame() = 0;
+  virtual void setZoom( int amount ) = 0;
+  virtual void changeZoom( int delta ) = 0;
+  virtual int maxZoom() const = 0;
+  virtual int zoom() const = 0;
   virtual void setCenter( TilePos pos, bool checkCorner ) = 0;
   virtual void setCenter( TilePos pos ) { setCenter( pos, true ); }
   virtual void refresh() = 0;

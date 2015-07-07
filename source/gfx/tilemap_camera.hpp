@@ -59,6 +59,11 @@ public:
   int centerZ() const;
   TilePos center() const;
 
+  virtual void setZoom( int value );
+  virtual int zoom() const;
+  virtual void changeZoom( int delta );
+  virtual int maxZoom() const;
+
   void setScrollSpeed( int speed );
   int scrollSpeed() const;
 

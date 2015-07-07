@@ -43,6 +43,7 @@ public:
 
   virtual bool isHovered( const Widget* element );
   Widget* findWidget( int id );
+  Widget* findWidget( const Point& p );
   Widget* hovered() const;
 
   virtual void draw();

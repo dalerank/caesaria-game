@@ -24,14 +24,15 @@ namespace events
 class MissionWin : public GameEvent
 {
 public:
-  static GameEventPtr create();
+  static GameEventPtr create(const std::string& name);
 
 protected:
   virtual void _exec( Game& game, unsigned int );
   virtual bool _mayExec(Game &game, unsigned int time) const;
 
 private:
-  MissionWin();
+  MissionWin(const std::string &name);
+  std::string _name;
 };
 
 }

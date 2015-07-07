@@ -40,6 +40,9 @@ public:
   std::string errorStr;
   bool clearAnimationOnStop;
   float laborAccessKoeff;
+
+public signals:
+  Signal1<bool> onActiveChangeSignal;
 };
 
 WorkingBuilding::WorkingBuilding(const object::Type type, const Size& size)
@@ -135,6 +138,7 @@ const WalkerList& WorkingBuilding::walkers() const {  return _d->walkerList; }
 bool WorkingBuilding::haveWalkers() const { return !_d->walkerList.empty(); }
 std::string WorkingBuilding::errorDesc() const { return _d->errorStr;}
 void WorkingBuilding::_setError(const std::string& err) { _d->errorStr = err;}
+Signal1<bool>& WorkingBuilding::onActiveChange() { return _d->onActiveChangeSignal; }
 
 unsigned int WorkingBuilding::addWorkers(const unsigned int workers )
 {
@@ -154,11 +158,7 @@ void WorkingBuilding::timeStep( const unsigned long time )
 {
   Building::timeStep( time );
 
-  for( WalkerList::iterator it=_d->walkerList.begin(); it != _d->walkerList.end(); )
-  {
-    if( (*it)->isDeleted() ) { it = _d->walkerList.erase( it ); }
-    else { ++it; }
-  }
+  utils::eraseDeletedElements( _d->walkerList );
 
   if( game::Date::isMonthChanged() && numberWorkers() > 0 )
   {
@@ -177,28 +177,41 @@ void WorkingBuilding::_updateAnimation(const unsigned long time )
     {
       if( _animationRef().isStopped() )
       {
-        _animationRef().start();
+        _changeAnimationState( true );
       }      
     }
     else
     {
       if( _animationRef().isRunning() )
-      {
-        if( _d->clearAnimationOnStop && !_fgPictures().empty() )
-        {
-          _fgPictures().back() = Picture::getInvalid();
-        }
-
-        _animationRef().stop();
+      {      
+        _changeAnimationState( false );
       }
     }
   }
 
-  _animationRef().update( time );
-  const Picture& pic = _animationRef().currentFrame();
-  if( pic.isValid() && !_fgPictures().empty() )
+  if( _animationRef().isRunning() )
   {
-    _fgPictures().back() = _animationRef().currentFrame();
+    _animationRef().update( time );
+    const Picture& pic = _animationRef().currentFrame();
+    if( pic.isValid() && !_fgPictures().empty() )
+    {
+      _fgPictures().back() = _animationRef().currentFrame();
+    }
+  }
+}
+
+void WorkingBuilding::_changeAnimationState(bool enabled)
+{
+  if( enabled )
+    _animationRef().start();
+  else
+  {
+    _animationRef().stop();
+
+    if( _d->clearAnimationOnStop && !_fgPictures().empty() )
+    {
+      _fgPictures().back() = Picture::getInvalid();
+    }
   }
 }
 

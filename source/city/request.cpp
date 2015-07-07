@@ -105,7 +105,7 @@ struct Penalty
 
   void apply( PlayerCityPtr city ) const
   {
-    GameEventPtr e = UpdateFavour::create( city->name(), -favour );
+    GameEventPtr e = UpdateFavour::create( city->name(), favour );
     e->dispatch();
   }
 };

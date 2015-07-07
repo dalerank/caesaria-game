@@ -42,17 +42,13 @@ namespace city
 
 REGISTER_SERVICE_IN_FACTORY(Info,info)
 
-CAESARIA_LITERALCONST(lastHistory)
-CAESARIA_LITERALCONST(allHistory)
-CAESARIA_LITERALCONST(maxparam)
-
 class Info::Impl
 {
 public:
   DateTime lastDate;
-  Info::History lastYearHistory;
+  Info::History lastHistory;
   Info::History allHistory;
-  Info::MaxParameters maxParams;
+  Info::MaxParameters maxparam;
 };
 
 VariantMap Info::History::save() const
@@ -119,8 +115,8 @@ Info::Info( PlayerCityPtr city )
   : Srvc( city, defaultName() ), _d( new Impl )
 {
   _d->lastDate = game::Date::current();
-  _d->lastYearHistory.resize( DateTime::monthsInYear );
-  _d->maxParams.resize( paramsCount );
+  _d->lastHistory.resize( DateTime::monthsInYear );
+  _d->maxparam.resize( paramsCount );
 }
 
 void Info::timeStep(const unsigned int time )
@@ -134,10 +130,10 @@ void Info::timeStep(const unsigned int time )
     bool isYearChanged = game::Date::current().year() != _d->lastDate.year();
     _d->lastDate = game::Date::current();
 
-    _d->lastYearHistory.erase( _d->lastYearHistory.begin() );
-    _d->lastYearHistory.push_back( Parameters() );
+    _d->lastHistory.erase( _d->lastHistory.begin() );
+    _d->lastHistory.push_back( Parameters() );
 
-    Parameters& last = _d->lastYearHistory.back();
+    Parameters& last = _d->lastHistory.back();
     last.date = _d->lastDate;
     last[ population  ] = _city()->states().population;
     last[ funds       ] = _city()->treasury().money();
@@ -204,7 +200,7 @@ void Info::timeStep(const unsigned int time )
 
     for( int k=0; k < paramsCount; k++ )
     {
-      _d->maxParams[ k ].value = std::max<int>( last[ k ], _d->maxParams[ k ].value );
+      _d->maxparam[ k ].value = std::max<int>( last[ k ], _d->maxparam[ k ].value );
     }
 
     if( isYearChanged )
@@ -214,17 +210,17 @@ void Info::timeStep(const unsigned int time )
   }
 }
 
-Info::Parameters Info::lastParams() const { return _d->lastYearHistory.empty() ? Parameters() : _d->lastYearHistory.back(); }
+Info::Parameters Info::lastParams() const { return _d->lastHistory.empty() ? Parameters() : _d->lastHistory.back(); }
 
 Info::Parameters Info::params(unsigned int monthAgo) const
 {
-  if( _d->lastYearHistory.empty() )
+  if( _d->lastHistory.empty() )
     return Parameters();
 
-  if( monthAgo >= _d->lastYearHistory.size() )
-    return _d->lastYearHistory.front();
+  if( monthAgo >= _d->lastHistory.size() )
+    return _d->lastHistory.front();
 
-  return _d->lastYearHistory[ monthAgo ];
+  return _d->lastHistory[ monthAgo ];
 }
 
 Info::Parameters Info::yearParams(unsigned int year) const
@@ -238,7 +234,7 @@ Info::Parameters Info::yearParams(unsigned int year) const
   return _d->allHistory[ year ];
 }
 
-const Info::MaxParameters& Info::maxParams() const { return _d->maxParams; }
+const Info::MaxParameters& Info::maxParams() const { return _d->maxparam; }
 const Info::History& Info::history() const { return _d->allHistory; }
 std::string Info::defaultName() {  return CAESARIA_STR_EXT(Info); }
 
@@ -246,20 +242,25 @@ VariantMap Info::save() const
 {
   VariantMap ret;
 
-  ret[ literals::lastHistory ] = _d->lastYearHistory.save();
-  ret[ literals::allHistory ] = _d->allHistory.save();
-  ret[ literals::maxparam ] = _d->maxParams.save();
+  VARIANT_SAVE_CLASS_D( ret, _d, lastHistory )
+  VARIANT_SAVE_CLASS_D( ret, _d, allHistory )
+  VARIANT_SAVE_CLASS_D( ret, _d, maxparam )
 
   return ret;
 }
 
 void Info::load(const VariantMap& stream)
 {
-  _d->lastYearHistory.load( stream.get( literals::lastHistory ).toMap());
-  _d->allHistory.load( stream.get( literals::allHistory ).toMap() );
-  _d->maxParams.load( stream.get( literals::maxparam ).toMap() );
+  VARIANT_LOAD_CLASS_D( _d, lastHistory, stream )
+  VARIANT_LOAD_CLASS_D( _d, allHistory, stream )
+  VARIANT_LOAD_CLASS_D( _d, maxparam, stream )
 
-  _d->lastYearHistory.resize( DateTime::monthsInYear );
+  if( _d->lastHistory.size() > DateTime::monthsInYear )
+  {
+    Info::History::iterator oldHistoryStart = _d->lastHistory.begin();
+    Info::History::iterator oldHistoryEnd = _d->lastHistory.begin() + _d->lastHistory.size() - DateTime::monthsInYear;
+    _d->lastHistory.erase( oldHistoryStart, oldHistoryEnd );
+  }
 }
 
 Info::Parameters::Parameters()
@@ -268,6 +269,14 @@ Info::Parameters::Parameters()
 
   foreach( i, *this )
     *i = 0;
+}
+
+Info::Parameters::Parameters(const Info::Parameters& other)
+{
+  resize( paramsCount );
+
+  for( unsigned int i=0; i < other.size(); i++ )
+    (*this)[ i ] = other[ i ];
 }
 
 VariantList Info::Parameters::save() const

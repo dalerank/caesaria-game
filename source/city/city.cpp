@@ -39,7 +39,7 @@
 #include "trade_options.hpp"
 #include "good/storage.hpp"
 #include "world/trading.hpp"
-#include "walker/merchant.hpp"
+#include "walker/merchant_land.hpp"
 #include "game/gamedate.hpp"
 #include "core/foreach.hpp"
 #include "events/event.hpp"
@@ -53,7 +53,7 @@
 #include "objects/senate.hpp"
 #include "objects/house.hpp"
 #include "world/empiremap.hpp"
-#include "walker/seamerchant.hpp"
+#include "walker/merchant_sea.hpp"
 #include "cityservice_factory.hpp"
 #include "world/emperor.hpp"
 #include "game/resourcegroup.hpp"
@@ -161,7 +161,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
 
   _d->services.initialize( this, ":/services.model" );
 
-  _picture().load( ResourceGroup::empirebits, 1 );
+  setPicture( Picture( ResourceGroup::empirebits, 1 ) );
   _initAnimation();
 
   setOption( updateRoads, 0 );
@@ -176,6 +176,8 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( legionAttack, 0 );
   setOption( climateType, game::climate::central );
   setOption( c3gameplay, 0 );
+  setOption( highlightBuilding, 1 );
+  setOption( destroyEpidemicHouses, 0 );
   setOption( difficulty, game::difficulty::usual );
 
   _d->states.nation = world::nation::rome;
@@ -192,7 +194,8 @@ std::string PlayerCity::about(Object::AboutType type)
   std::string ret;
   switch(type)
   {
-  case empireMap: ret = "##empiremap_our_city##";      break;
+  case empireMap: ret = "##empiremap_our_city##";     break;
+  case empireAdvInfo: ret = "##empiremap_our_city##"; break;
   default:        ret = "##ourcity_unknown_about##";  break;
   }
 
@@ -231,7 +234,7 @@ void PlayerCity::timeStep(unsigned int time)
     // for each overlay
     foreach( it, _d->overlays )
     {
-      ConstructionPtr construction = ptr_cast<Construction>( *it );
+      ConstructionPtr construction = (*it).as<Construction>();
       if( construction != NULL )
       {
         // overlay matches the filter
@@ -536,13 +539,13 @@ void PlayerCity::load( const VariantMap& stream )
   _initAnimation();
 }
 
-void PlayerCity::addOverlay( OverlayPtr overlay ) { _d->overlays.append( overlay ); }
+void PlayerCity::addOverlay( OverlayPtr overlay ) { _d->overlays.postpone( overlay ); }
 
 PlayerCity::~PlayerCity() {}
 
 void PlayerCity::addWalker( WalkerPtr walker )
 {
-  _d->walkers.append( walker );
+  _d->walkers.postpone( walker );
 
   walker->setFlag( Walker::showDebugInfo, true );
 }
@@ -646,21 +649,21 @@ int PlayerCity::favour() const { return empire()->emperor().relation( name() ); 
 
 void PlayerCity::addObject( world::ObjectPtr object )
 {
-  if( is_kind_of<world::Merchant>( object ) )
+  if( object.is<world::Merchant>() )
   {
     world::MerchantPtr merchant = ptr_cast<world::Merchant>( object );
     if( merchant->isSeaRoute() )
     {
-      SeaMerchantPtr cityMerchant = ptr_cast<SeaMerchant>( SeaMerchant::create( this, merchant ) );
+      SeaMerchantPtr cityMerchant = SeaMerchant::create( this, merchant );
       cityMerchant->send2city();
     }
     else
     {
-      MerchantPtr cityMerchant = ptr_cast<Merchant>( Merchant::create( this, merchant ) );
+      LandMerchantPtr cityMerchant = LandMerchant::create( this, merchant );
       cityMerchant->send2city();
     }
   }
-  else if( is_kind_of<world::RomeChastenerArmy>( object ) )
+  else if( object.is<world::RomeChastenerArmy>() )
   {
     world::RomeChastenerArmyPtr army = ptr_cast<world::RomeChastenerArmy>( object );
     if( !getOption( legionAttack ) )
@@ -688,7 +691,7 @@ void PlayerCity::addObject( world::ObjectPtr object )
     GameEventPtr e = ShowInfobox::create( _("##romechastener_attack_title##"), _("##romechastener_attack_text##"), true );
     e->dispatch();
   }
-  else if( is_kind_of<world::Barbarian>( object ) )
+  else if( object.is<world::Barbarian>() )
   {
     if( getOption( barbarianAttack ) > 0 )
     {
@@ -704,7 +707,7 @@ void PlayerCity::addObject( world::ObjectPtr object )
       e->dispatch();
     }
   }
-  else if( is_kind_of<world::Messenger>( object ) )
+  else if( object.is<world::Messenger>() )
   {
     world::MessengerPtr msm = ptr_cast<world::Messenger>( object );
     GameEventPtr e = ShowInfobox::create( msm->title(), msm->message() );

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_WALKER_PREFECT_H_INCLUDED__
 #define __CAESARIA_WALKER_PREFECT_H_INCLUDED__
@@ -38,7 +38,7 @@ public:
   virtual void save( VariantMap& stream ) const;
 
   virtual void send2City( PrefecturePtr prefecture, Prefect::SbAction, int water=0 );
-  virtual void send2City( BuildingPtr base, int orders=goLowerService );
+  virtual void send2City( BuildingPtr base, int orders=goServiceMaximum );
   virtual void acceptAction(Action action, TilePos pos);
   virtual bool die();
   virtual void initialize(const VariantMap &options);

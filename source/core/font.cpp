@@ -122,40 +122,40 @@ Rect Font::getTextRect(const std::string& text, const Rect& baseRect,
   {
   case align::center:
     // align to h centre
-    resultRect.UpperLeftCorner.setX( (baseRect.width()/2) - (d.width()/2) );
-    resultRect.LowerRightCorner.setX( (baseRect.width()/2) + (d.width()/2) );
+    resultRect.setLeft( (baseRect.width()/2) - (d.width()/2) );
+    resultRect.setRight( (baseRect.width()/2) + (d.width()/2) );
     break;
   case align::lowerRight:
     // align to right edge
-    resultRect.UpperLeftCorner.setX( baseRect.width() - d.width() );
-    resultRect.LowerRightCorner.setX( baseRect.width() );
+    resultRect.setLeft( baseRect.width() - d.width() );
+    resultRect.setRight( baseRect.width() );
     break;
   default:
     // align to left edge
-    resultRect.UpperLeftCorner.setX( 0 );
-    resultRect.LowerRightCorner.setX( d.width() );
+    resultRect.setLeft( 0 );
+    resultRect.setRight( d.width() );
   }
 
   switch (verticalAlign)
   {
   case align::center:
     // align to v centre
-    resultRect.UpperLeftCorner.setY( (baseRect.height()/2) - (d.height()/2) );
-    resultRect.LowerRightCorner.setY( (baseRect.height()/2) + (d.height()/2) );
+    resultRect.setTop( (baseRect.height()/2) - (d.height()/2) );
+    resultRect.setBottom( (baseRect.height()/2) + (d.height()/2) );
     break;
   case align::lowerRight:
     // align to bottom edge
-    resultRect.UpperLeftCorner.setY( baseRect.height() - d.height() );
-    resultRect.LowerRightCorner.setY( baseRect.height() );
+    resultRect.setTop( baseRect.height() - d.height() );
+    resultRect.setBottom( baseRect.height() );
     break;
   default:
     // align to top edge
-    resultRect.UpperLeftCorner.setY( 0 );
-    resultRect.LowerRightCorner.setY( d.height() );
+    resultRect.setTop( 0 );
+    resultRect.setBottom( d.height() );
     break;
   }
 
-  resultRect += baseRect.UpperLeftCorner;
+  resultRect += baseRect.lefttop();
 
   return resultRect;
 }
@@ -340,8 +340,10 @@ void FontCollection::addFont(const int key, const std::string& name, vfs::Path p
   setFont( key, name, font0);
 }
 
-void FontCollection::initialize(const std::string &resourcePath)
+void FontCollection::initialize(const std::string& resourcePath)
 {
+  _d->collection.clear();
+
   vfs::Directory resDir( resourcePath );
   vfs::Path fontFilename = SETTINGS_VALUE( font ).toString();
   vfs::Path absolutFontfilename = resDir/fontFilename;

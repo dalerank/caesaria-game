@@ -358,7 +358,7 @@ unsigned int Migration::Impl::calcVacantHouse( PlayerCityPtr city )
   {
     if( (*house)->roadside().size() > 0 && (*house)->state( pr::settleLock ) == 0 )
     {
-      vh += math::clamp<int>( (*house)->maxHabitants() - (*house)->habitants().count(), 0, 0xff );
+      vh += math::clamp<int>( (*house)->capacity() - (*house)->habitants().count(), 0, 0xff );
     }
   }
 
@@ -443,7 +443,7 @@ void Migration::Impl::createMigrationFromCity( PlayerCityPtr city )
 
       if( emigrant.isValid() )
       {
-        (*house)->remHabitants( minWorkersNumber );
+        (*house)->removeHabitants( minWorkersNumber );
         emigrant->leaveCity( *(*house)->enterArea().front() );
         emigrant->setThinks( "##immigrant_no_work_for_me##" );
       }

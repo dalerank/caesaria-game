@@ -18,34 +18,32 @@
 #include "layerinfo.hpp"
 #include "gfx/camera.hpp"
 #include "city/city.hpp"
+#include "core/variant_map.hpp"
+#include "layers/constants.hpp"
 #include "game/resourcegroup.hpp"
 
 using namespace gfx;
 
 namespace citylayer
-{
+{  
 
 class Info::Impl
 {
 public:
-  Picture footColumn;
-  Picture bodyColumn;
-  Picture headerColumn;
-
-  struct ColumnInfo {
-    Point pos;
-    int value;
-  };
+  struct
+  {
+    Picture foot;
+    Picture body;
+    Picture header;
+  } columnPic;
 
   struct PictureInfo {
     Point pos;
     Picture pic;
   };
 
-  typedef std::vector<ColumnInfo> Columns;
   typedef std::vector<PictureInfo> Pictures;
 
-  Columns columns;
   Pictures pictures;
 };
 
@@ -54,11 +52,33 @@ void Info::render(Engine& engine)
   Layer::render( engine );
 }
 
-void Info::_loadColumnPicture(int picId)
+void Info::_loadColumnPicture( const char* rc, int picId)
 {
-  _d->footColumn.load( ResourceGroup::sprites, picId + 2 );
-  _d->bodyColumn.load( ResourceGroup::sprites, picId + 1 );
-  _d->headerColumn.load( ResourceGroup::sprites, picId );
+  _d->columnPic.foot.load( rc, picId + 2 );
+  _d->columnPic.body.load( rc, picId + 1 );
+  _d->columnPic.header.load( rc, picId );
+}
+
+void Info::_initialize()
+{
+  Layer::_initialize();
+
+  const VariantMap& vm = citylayer::Helper::getConfig( (citylayer::Type)type() );
+  VariantMap columnVm = vm.get( "column" ).toMap();
+  if( !columnVm.empty() )
+  {
+    std::string rc = columnVm.get( "rc" ).toString();
+    int footIdx = columnVm.get( "foot" );
+    int bodyIdx = columnVm.get( "body" );
+    int headerIdx = columnVm.get( "header" );
+    Picture test(rc, footIdx);
+    if( test.isValid() )
+    {
+      _d->columnPic.foot.load( rc, footIdx );
+      _d->columnPic.body.load( rc, bodyIdx );
+      _d->columnPic.header.load( rc, headerIdx );
+    }
+  }
 }
 
 void Info::drawColumn( Engine& engine, const Point& pos, const int percent)
@@ -69,7 +89,6 @@ void Info::drawColumn( Engine& engine, const Point& pos, const int percent)
   // Foot (10)
   //
   // In original game fire colomn may be in one of 12 (?) states: none, f, f+h, f+b+h, f+2b+h, ... f+8b+h
-
 
   int clamped = math::clamp(percent, 0, 100);
   int rounded = (clamped / 10) * 10;
@@ -89,16 +108,16 @@ void Info::drawColumn( Engine& engine, const Point& pos, const int percent)
     return;
   }
 
-  engine.draw( _d->footColumn, pos + Point( 10, -21 ) );
+  engine.draw( _d->columnPic.foot, pos + Point( 10, -21 ) );
 
   if(rounded > 10)
   {
     for( int offsetY=7; offsetY < rounded; offsetY += 10 )
     {
-      engine.draw( _d->bodyColumn, pos - Point( -18, 8 + offsetY ) );
+      engine.draw( _d->columnPic.body, pos - Point( -18, 8 + offsetY ) );
     }
 
-    engine.draw(_d->headerColumn, pos - Point(-7, 25 + rounded));
+    engine.draw(_d->columnPic.header, pos - Point(-7, 25 + rounded));
   }
 }
 
@@ -106,18 +125,12 @@ Info::~Info() {  }
 
 void Info::beforeRender(Engine& engine)
 {
-  _d->columns.clear();
   _d->pictures.clear();
 }
 
 void Info::afterRender(Engine& engine)
 {
   Point camOffset = _camera()->offset();
-
-  foreach( it, _d->columns )
-  {
-    drawColumn( engine, it->pos, it->value );
-  }
 
   foreach( it, _d->pictures )
   {
@@ -130,13 +143,7 @@ void Info::afterRender(Engine& engine)
 Info::Info( Camera& camera, PlayerCityPtr city, int columnIndex )
   : Layer( &camera, city ), _d( new Impl )
 {
-  _loadColumnPicture( columnIndex );
-}
-
-void Info::_addColumn(Point pos, int value)
-{
-  Impl::ColumnInfo info = { pos, value };
-  _d->columns.push_back( info );
+  _loadColumnPicture( ResourceGroup::sprites, columnIndex );
 }
 
 void Info::_addPicture(Point pos, const Picture& pic)

@@ -21,6 +21,7 @@
 #include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
+#include "core/variant_list.hpp"
 #include "core/metric.hpp"
 
 using namespace metric;
@@ -231,7 +232,7 @@ void WarehouseStore::retrieve(good::Stock& stock, const int amount)
 VariantMap WarehouseStore::save() const
 {
   VariantMap ret = Store::save();
-  ret[ "capacities" ] = _capacities.save();
+  VARIANT_SAVE_CLASS( ret, _capacities )
 
   return ret;
 }
@@ -241,7 +242,8 @@ void WarehouseStore::load(const VariantMap &stream)
   Store::load( stream );
   int maxCapacity = capacity();
 
-  _capacities.load( stream.get( "capacities" ).toList() );
+  VARIANT_LOAD_CLASS_LIST( _capacities, stream )
+
   foreach( it, _capacities )
     if( it->second == 0 )
       it->second = maxCapacity;

@@ -81,7 +81,7 @@ public:
       rfont.draw( texture, utils::i2str( _bigTempleCount ), 280, 0 );
 
 #ifdef DEBUG
-      rfont.draw( texture, utils::format( 0xff, "%d/f_%d", _lastFestival, _divinity->relation() ), 350, 0 );
+      rfont.draw( texture, utils::format( 0xff, "f%d/r%d", _lastFestival, (int)_divinity->relation() ), 320, 0 );
 #else
       rfont.draw( texture, utils::i2str( _lastFestival ), 350, 0 );
 #endif

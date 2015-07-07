@@ -26,6 +26,7 @@
 #include "objects/warehouse.hpp"
 #include "city/city.hpp"
 #include "core/variant_map.hpp"
+#include "core/variant_list.hpp"
 #include "game/gamedate.hpp"
 #include "events/removecitizen.hpp"
 #include "game/resourcegroup.hpp"

@@ -92,7 +92,7 @@ void Damage::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( damageLevel >= 0 )
     {
-      _addColumn( screenPos, damageLevel );
+      drawColumn( engine, screenPos, damageLevel );
     }
   }
 
@@ -142,7 +142,7 @@ Damage::Damage( Camera& camera, PlayerCityPtr city)
   : Info( camera, city, damageColumnIndex )
 {
   _addWalkerType( walker::engineer );
-  _fillVisibleObjects( type() );
+  _initialize();
 }
 
 }//end namespace city

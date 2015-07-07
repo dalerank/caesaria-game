@@ -106,7 +106,7 @@ void Entertainment::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( entertainmentLevel > 0 )
     {
-      _addColumn( screenPos, entertainmentLevel );
+      drawColumn( engine, screenPos, entertainmentLevel );
     }
   }
 
@@ -225,7 +225,7 @@ Entertainment::Entertainment( Camera& camera, PlayerCityPtr city, int type )
   default: break;
   }
 
-  _fillVisibleObjects( citylayer::entertainment );
+  _initialize();
 }
 
 }//end namespace citylayer

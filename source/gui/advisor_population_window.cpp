@@ -295,24 +295,32 @@ void Population::Impl::updateStates()
   if( lbAdvice )
   {
     int maxHabitants = 0;
-    int currentHabitants = 0;
+    int plebsHabitants = 0;
     HouseList houses = city::statistic::getHouses( city );
+    int lowLevelHouses = 0;
     foreach( it, houses )
     {
       HousePtr house = *it;
+      int level = house->spec().level();
 
-      if( house->spec().level() < HouseLevel::mansion )
+      if( level < HouseLevel::mansion )
       {
-        currentHabitants += house->habitants().count();
-        maxHabitants += house->maxHabitants();
+        plebsHabitants += house->habitants().count();
+        maxHabitants += house->capacity();
       }
+
+      lowLevelHouses += (level < HouseLevel::domus ? 1 : 0);
     }
 
     StringArray reasons;
-    if( math::percentage( currentHabitants, maxHabitants ) > 90 )
-    {
+    if( math::percentage( plebsHabitants, maxHabitants ) > 90 )
       reasons << "##lowgrade_housing_want_better_conditions##";
-    }
+
+    if( math::percentage( lowLevelHouses, houses.size() ) > 30 )
+      reasons << "##lowgrade_housing_too_much_in_city##";
+
+    if( reasons.empty() )
+      reasons << "##your_city_have_good_prestige##";
 
     lbAdvice->setText( _( reasons.random() ) );
   }
@@ -395,7 +403,8 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
       info << city->findService( city::Info::defaultName() );
 
       city::Info::History history = info->history();
-      history.push_back( info->lastParams() );
+      city::Info::Parameters params = info->lastParams();
+      history.push_back( params );
 
       _values.clear();
       foreach( it, history )

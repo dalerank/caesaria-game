@@ -20,6 +20,7 @@
 
 #include "gui/widget.hpp"
 #include "core/signals.hpp"
+#include "game/advisor.hpp"
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 
@@ -74,6 +75,7 @@ public:
 
 slots public:
   void changeOverlay( int ovType );
+  void showInfo( int type );
 
 signals public:
   Signal1<int>& onSelectOverlayType();

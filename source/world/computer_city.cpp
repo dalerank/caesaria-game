@@ -34,6 +34,7 @@
 #include "city/states.hpp"
 #include "objects/constants.hpp"
 #include "game/citizen_group.hpp"
+#include "core/priorities.hpp"
 #include "config.hpp"
 
 using namespace gfx;
@@ -42,27 +43,19 @@ using namespace metric;
 class CcTargets
 {
 public:
+
   int population;
-  int needWheatFishFarm;
-  int needVegetableFarm;
-  int needPotteryWorkshop;
-  int needMeatFarm;
-  int needFruitFarm;
-  int needFurnitureWorkshop;
-  int needOilWorkshop;
-  int needWineWorkshop;
+  unsigned int need[ object::userType ];
+  unsigned int idle[ object::userType ];
+  unsigned int coverage[ object::userType ];
 
   CcTargets()
   {
     population = 0;
-    needVegetableFarm = 0;
-    needWheatFishFarm = 0;
-    needPotteryWorkshop = 0;
-    needMeatFarm = 0;
-    needFruitFarm = 0;
-    needOilWorkshop = 0;
-    needWineWorkshop = 0;
-    needFurnitureWorkshop = 0;
+    int dd = sizeof( need );
+    memset( need, 0, sizeof( need ) );
+    memset( idle, 0, sizeof( need ) );
+    memset( coverage, 0, sizeof( need ) );
   }
 
   VariantMap save() const
@@ -165,6 +158,7 @@ struct BuildingInfo
   int maxWorkersNumber;
   int workersNumber;
   int progress, productively;
+  int maxService;
   bool producing;
   good::Stock ingoods, outgoods;
 
@@ -172,6 +166,7 @@ struct BuildingInfo
   {
     type = object::unknown;
     progress = 0;
+    maxService = 0;
     producing = false;
     productively = 50;
   }
@@ -249,7 +244,7 @@ public:
   bool distantCity;
   bool available;
   int strength;
-  City::AiMode useAI;
+  City::AiMode modeAI;
   int sentiment;
   Buildings buildings;
   CitizenGroup peoples;
@@ -279,17 +274,19 @@ public:
   void placeNewBuildings();
   void updateWorkersInBuildings();
   void placeNewBuilding( object::Type type );
+  void citizensConsumeServices();
   void updateWorkingWarehouse();
 };
 
 void ComputerCity::Impl::calculateMonthState()
 {
-  if( useAI == City::inactive )
+  if( modeAI == City::inactive )
     return;
 
   updateWorkersInBuildings();
   updateWorkingWarehouse();
   citizensConsumeGoods();
+  citizensConsumeServices();
 
   int idleBuildings = 0;
   foreach( it, buildings )
@@ -341,11 +338,89 @@ void ComputerCity::Impl::placeNewBuilding(object::Type type)
   info.outgoods.setType( output );
   info.ingoods.setType( good::getMaterial( output ) );
   info.maxWorkersNumber = md.getOption( "employers" );
+  info.maxService = md.getOption( "maxServe" );
   info.workersNumber = 0;
   info.progress = 0;
   info.productively = md.getOption( "productRate" ).toFloat() / 12.f;
 
   buildings.push_back( info );
+}
+
+struct ServiceInfo
+{
+  unsigned int type[object::userType];
+
+  ServiceInfo() { memset( this, 0, sizeof(ServiceInfo) ); }
+};
+
+int isNeedNewBuilding( unsigned int idle, unsigned int have, unsigned int served, int multiplier )
+{
+  if( idle > 0 )
+     return 0;
+
+  return (served > have ? 0 : 1) * multiplier;
+}
+
+struct CheckType
+{
+  object::Type building, building2;
+  CitizenGroup::Age age;
+  int multiplier;
+
+  CheckType( object::Type b, CitizenGroup::Age a, int m ) :
+     building( b ), building2( object::unknown ), age( a ), multiplier( m ) {}
+
+  CheckType( object::Type b, object::Type b2, CitizenGroup::Age a, int m ) :
+     building( b ), building2( b2 ), age( a ), multiplier( m ) {}
+
+  bool operator<( const CheckType& a) const { return building < a.building; }
+};
+
+void ComputerCity::Impl::citizensConsumeServices()
+{
+  ServiceInfo mayServe;
+  ServiceInfo idle;
+
+  foreach( it, buildings )
+  {
+    BuildingInfo& info = *it;
+    idle.type[info.type] &= (info.workersNumber < info.maxWorkersNumber);
+    if( info.maxWorkersNumber > 0 )
+    {
+      mayServe.type[ info.type ] += (info.workersNumber / (float)info.maxWorkersNumber) * info.maxService;
+    }
+  }
+
+  std::set<CheckType> checkTypes;
+  checkTypes << CheckType( object::school, CitizenGroup::scholar, 4 )
+             << CheckType( object::academy, CitizenGroup::student, 4 )
+             << CheckType( object::library, CitizenGroup::mature, 4 )
+             << CheckType( object::small_ceres_temple, object::big_ceres_temple, CitizenGroup::any, 4 )
+             << CheckType( object::small_mars_temple, object::big_mars_temple, CitizenGroup::any, 4 )
+             << CheckType( object::small_mercury_temple, object::big_mercury_temple, CitizenGroup::any, 4 )
+             << CheckType( object::small_neptune_temple, object::big_neptune_temple, CitizenGroup::any, 4 )
+             << CheckType( object::small_venus_temple, object::big_venus_temple, CitizenGroup::any, 4 );
+
+  foreach( it, checkTypes )
+  {
+    const CheckType& check = *it;
+
+    int addServe = 0;
+    if( check.building2 )
+      addServe = mayServe.type[ check.building2 ];
+
+    unsigned int pop = peoples.count( check.age );
+    targets.need[ check.building ] += isNeedNewBuilding( idle.type[ check.building ],
+                                                         pop,
+                                                         mayServe.type[ check.building ] + addServe, check.multiplier );
+
+    int coverage = 0;
+    if( pop > 0 )
+      coverage = mayServe.type[ check.building ] * 100 / pop;
+
+    targets.coverage[ check.building ] = math::clamp<unsigned int>( coverage, 0, 100 );
+    targets.idle[ check.building ] = idle.type[ check.building ];
+  }
 }
 
 void ComputerCity::Impl::updateWorkingWarehouse()
@@ -390,15 +465,72 @@ void ComputerCity::Impl::updateWorkingWarehouse()
   internalGoods.setCapacity( futureCityCapacity );
 }
 
-void ComputerCity::Impl::placeNewBuildings()
+void ComputerCity::__debugSendMerchant()
 {
-  if( targets.needVegetableFarm > 8 )
+  _d->merchantsNumber = 0;
+  _d->lastTimeMerchantSend = DateTime();
+  _checkMerchantsDeadline();
+}
+
+void ComputerCity::_checkMerchantsDeadline()
+{
+  if( _d->lastTimeMerchantSend.monthsTo( game::Date::current() ) > config::trade::minMonthsMerchantSend )
   {
-    placeNewBuilding( object::vegetable_farm );
-    targets.needVegetableFarm = 0;
+    TraderouteList routes = empire()->tradeRoutes( name() );
+
+    if( routes.empty() )
+      return;
+
+    if( !_mayTrade() )
+      return;
+
+    _d->lastTimeMerchantSend = game::Date::current();
+
+    if( _d->merchantsNumber >= routes.size() )
+    {
+      return;
+    }
+
+    good::Storage sellGoods, buyGoods;
+    sellGoods.setCapacity( Merchant::defaultCapacity );
+    buyGoods.setCapacity( Merchant::defaultCapacity );
+
+    foreach( gtype, good::all() )
+    {
+      buyGoods.setCapacity( *gtype, _d->buys.capacity( *gtype ) );
+
+      //how much space left
+      int maxQty = (std::min)( _d->sells.capacity( *gtype ) / 4, sellGoods.freeQty() );
+
+      //we want send merchants to all routes
+      maxQty /= routes.size();
+
+      int qty = math::clamp( _d->sells.qty( *gtype ), 0, maxQty );
+
+      //have no goods to sell
+      if( qty == 0 )
+        continue;
+
+      good::Stock& stock = sellGoods.getStock( *gtype );
+      stock.setCapacity( qty );
+
+      //move goods to merchant's storage
+      _d->sells.retrieve( stock, qty );
+    }
+
+    //send merchants to all routes
+    foreach( route, routes )
+    {
+      _d->merchantsNumber++;
+      (*route)->addMerchant( name(), sellGoods, buyGoods );
+    }
   }
 
-  if( targets.needWheatFishFarm > 8 )
+}
+
+void ComputerCity::Impl::placeNewBuildings()
+{
+  if( targets.need[ object::wheat_farm ] > 8 )
   {
     object::Type type = object::wheat_farm;
     int wheatFarmNumber = buildings.count( object::wheat_farm );
@@ -407,37 +539,7 @@ void ComputerCity::Impl::placeNewBuildings()
       type = object::wharf;
 
     placeNewBuilding( type );
-    targets.needWheatFishFarm = 0;
-  }
-
-  if( targets.needPotteryWorkshop > 8 )
-  {
-    placeNewBuilding( object::pottery_workshop );
-    targets.needPotteryWorkshop = 0;
-  }
-
-  if( targets.needMeatFarm > 8 )
-  {
-    placeNewBuilding( object::meat_farm );
-    targets.needMeatFarm = 0;
-  }
-
-  if( targets.needFruitFarm > 8 )
-  {
-    placeNewBuilding( object::fig_farm );
-    targets.needFruitFarm = 0;
-  }
-
-  if( targets.needOilWorkshop > 8 )
-  {
-    placeNewBuilding( object::oil_workshop );
-    targets.needOilWorkshop = 0;
-  }
-
-  if( targets.needWineWorkshop > 8 )
-  {
-    placeNewBuilding( object::wine_workshop );
-    targets.needWineWorkshop = 0;
+    targets.need[ object::wheat_farm ] = 0;
   }
 
   if( internalGoods.needExpand > 8 )
@@ -446,10 +548,22 @@ void ComputerCity::Impl::placeNewBuildings()
     internalGoods.needExpand = 0;
   }
 
-  if( targets.needFurnitureWorkshop > 8 )
+  std::set<object::Type> types;
+  types << object::vegetable_farm << object::pottery_workshop
+        << object::meat_farm << object::fig_farm
+        << object::oil_workshop << object::wine_workshop
+        << object::furniture_workshop << object::school
+        << object::small_ceres_temple << object::small_mars_temple
+        << object::small_neptune_temple << object::small_mercury_temple
+        << object::small_venus_temple;
+
+  foreach( it, types )
   {
-    placeNewBuilding( object::furniture_workshop );
-    targets.needFurnitureWorkshop = 0;
+    if( targets.need[ *it ] > 8 )
+    {
+      placeNewBuilding( *it );
+      targets.need[ *it ] = 0;
+    }
   }
 }
 
@@ -515,7 +629,7 @@ void ComputerCity::Impl::citizensConsumeGoods()
     targetSentiment += 40 * ((fishWheat2Consume.need - anyHungry) / (float)fishWheat2Consume.need);
 
     if( anyHungry )
-      targets.needWheatFishFarm++;
+      targets.need[ object::wheat_farm ]++;
   }
 
   if( fishWheat2Consume.have > fishWheat2Consume.need )
@@ -542,7 +656,7 @@ void ComputerCity::Impl::citizensConsumeGoods()
     targetSentiment += 10 * ((vegetable2Consume.need - anyHungry) / (float)vegetable2Consume.need);
 
     if( anyHungry )
-      targets.needVegetableFarm++;
+      targets.need[ object::vegetable_farm ]++;
   }
 
   if( mayContinue && pottery2Consume.need > 0 )
@@ -555,7 +669,7 @@ void ComputerCity::Impl::citizensConsumeGoods()
     targetSentiment += 10 * ((pottery2Consume.need - anyBroken) / (float)pottery2Consume.need);
 
     if( anyBroken )
-      targets.needPotteryWorkshop++;
+      targets.need[ object::pottery_workshop ]++;
   }
 
   if( mayContinue && meat2Consume.need > 0 )
@@ -568,7 +682,7 @@ void ComputerCity::Impl::citizensConsumeGoods()
     targetSentiment += 10 * ((meat2Consume.need - anyHungry) / (float)meat2Consume.need);
 
     if( anyHungry )
-      targets.needMeatFarm++;
+      targets.need[ object::meat_farm ]++;
   }
 
   if( mayContinue && fruit2Consume.need > 0 )
@@ -581,7 +695,7 @@ void ComputerCity::Impl::citizensConsumeGoods()
     targetSentiment += 10 * ((fruit2Consume.need - anyHungry) / (float)fruit2Consume.need);
 
     if( anyHungry )
-      targets.needFruitFarm++;
+      targets.need[ object::fig_farm ]++;
   }
 
   if( mayContinue && furniture2Consume.need > 0 )
@@ -594,7 +708,7 @@ void ComputerCity::Impl::citizensConsumeGoods()
     targetSentiment += 10 * ((furniture2Consume.need - anyBroken) / (float)furniture2Consume.need);
 
     if( anyBroken )
-      targets.needFurnitureWorkshop++;
+      targets.need[ object::furniture_workshop ]++;
   }
 
   if( mayContinue && oil2Consume.need > 0 )
@@ -607,7 +721,7 @@ void ComputerCity::Impl::citizensConsumeGoods()
     targetSentiment += 5 * ((oil2Consume.need - anyHungry) / (float)oil2Consume.need);
 
     if( anyHungry )
-      targets.needOilWorkshop++;
+      targets.need[ object::oil_workshop ]++;
   }
 
   if( mayContinue && wine2Consume.need > 0 )
@@ -620,7 +734,7 @@ void ComputerCity::Impl::citizensConsumeGoods()
     targetSentiment += 5 * ((wine2Consume.need - anyHungry) / (float)wine2Consume.need);
 
     if( anyHungry )
-      targets.needWineWorkshop++;
+      targets.need[ object::wine_workshop ]++;
   }
 
   int delta = math::clamp( targetSentiment - sentiment, -2, 2);
@@ -648,7 +762,7 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
   _d->distantCity = false;
   _d->merchantsNumber = 0;
   _d->available = true;
-  _d->useAI = City::inactive;
+  _d->modeAI = City::inactive;
   _d->states.population = 0;
   _d->states.nation = world::nation::unknown;
   _d->sells.setCapacity( 99999 );
@@ -661,16 +775,27 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
 }
 
 bool ComputerCity::_mayTrade() const { return _d->tradeDelay <= 0; }
-
 econ::Treasury& ComputerCity::treasury() { return _d->funds; }
 bool ComputerCity::isPaysTaxes() const { return true; }
 bool ComputerCity::haveOverduePayment() const { return false; }
-void ComputerCity::setAiMode(City::AiMode mode) { _d->useAI = mode; }
+City::AiMode ComputerCity::modeAI() const { return _d->modeAI; }
 bool ComputerCity::isDistantCity() const{  return _d->distantCity;}
 bool ComputerCity::isAvailable() const{  return _d->available;}
 void ComputerCity::setAvailable(bool value){  _d->available = value;}
-
 SmartPtr<Player> ComputerCity::mayor() const { return 0; }
+
+void ComputerCity::setModeAI(City::AiMode mode)
+{
+  _d->modeAI = mode;
+  if( mode == indifferent )
+  {
+    if( _d->peoples.count() == 0 )
+    {
+      _d->targets.population = 2000;
+      _d->peoples += CitizenGroup::random( _d->targets.population );
+    }
+  }
+}
 
 void ComputerCity::save( VariantMap& options ) const
 {
@@ -687,7 +812,7 @@ void ComputerCity::save( VariantMap& options ) const
   options[ "sea" ] = (_d->tradeType & EmpireMap::sea ? true : false);
   options[ "land" ] = (_d->tradeType & EmpireMap::land ? true : false);
 
-  VARIANT_SAVE_ENUM_D( options, _d, useAI )
+  VARIANT_SAVE_ENUM_D( options, _d, modeAI )
   VARIANT_SAVE_ANY_D( options, _d, lastTimeMerchantSend )
   VARIANT_SAVE_ANY_D( options, _d, lastTimeUpdate )
   VARIANT_SAVE_ANY_D( options, _d, states.age )
@@ -717,7 +842,7 @@ void ComputerCity::load( const VariantMap& options )
   VARIANT_LOAD_ANY_D   ( _d, tradeDelay,            options )
   VARIANT_LOAD_TIME_D  ( _d, lastAttack,            options )
   VARIANT_LOAD_ANY_D   ( _d, strength,              options )
-  VARIANT_LOAD_ENUM_D  ( _d, useAI,                 options )
+  VARIANT_LOAD_ENUM_D  ( _d, modeAI,                options )
   VARIANT_LOAD_ANYDEF_D( _d, sentiment,         50, options )
   VARIANT_LOAD_ANYDEF_D( _d, states.population, _d->states.population, options )
 
@@ -772,7 +897,7 @@ void ComputerCity::addObject(ObjectPtr object )
 {
   if( is_kind_of<Merchant>( object ) )
   {
-    MerchantPtr merchant = ptr_cast<Merchant>( object );
+    MerchantPtr merchant = object.as<Merchant>();
     good::Store& sellGoods = merchant->sellGoods();
     good::Store& buyGoods = merchant->buyGoods();
 
@@ -789,9 +914,9 @@ void ComputerCity::addObject(ObjectPtr object )
 
     _d->merchantsNumber = std::max<int>( 0, _d->merchantsNumber-1);
   }
-  else if( is_kind_of<Barbarian>( object ) )
+  else if( object.is<Barbarian>() )
   {
-    BarbarianPtr brb = ptr_cast<Barbarian>( object );
+    BarbarianPtr brb = object.as<Barbarian>();
     _d->lastAttack = game::Date::current();
     int attack = std::max<int>( brb->strength() - strength(), 0 );
     if( !attack ) attack = 10;
@@ -824,7 +949,7 @@ void ComputerCity::changeTradeOptions(const VariantMap& stream)
   {
     good::Product gtype = good::Helper::getType( it->first );
     _d->buys.setCapacity( gtype, Unit::fromValue( it->second ).toQty() );
-  }
+    }
 }
 
 ComputerCity::~ComputerCity() {}
@@ -840,7 +965,7 @@ void ComputerCity::timeStep( unsigned int time )
   if( game::Date::isMonthChanged() )
   {
     _d->tradeDelay = math::clamp<int>( _d->tradeDelay-1, 0, 99 );
-    _d->calculateMonthState();
+    _d->calculateMonthState();    
   }
 
   if( game::Date::isYearChanged() )
@@ -868,57 +993,7 @@ void ComputerCity::timeStep( unsigned int time )
     }
   }
 
-  if( _d->lastTimeMerchantSend.monthsTo( game::Date::current() ) > config::trade::minMonthsMerchantSend )
-  {
-    TraderouteList routes = empire()->tradeRoutes( name() );
-
-    if( routes.empty() )
-      return;
-
-    if( !_mayTrade() )
-      return;
-
-    _d->lastTimeMerchantSend = game::Date::current();
-
-    if( _d->merchantsNumber >= routes.size() )
-    {
-      return;
-    }
-
-    good::Storage sellGoods, buyGoods;
-    sellGoods.setCapacity( Merchant::defaultCapacity );
-    buyGoods.setCapacity( Merchant::defaultCapacity );
-
-    foreach( gtype, good::all() )
-    {
-      buyGoods.setCapacity( *gtype, _d->buys.capacity( *gtype ) );
-
-      //how much space left
-      int maxQty = (std::min)( _d->sells.capacity( *gtype ) / 4, sellGoods.freeQty() );
-
-      //we want send merchants to all routes
-      maxQty /= routes.size();
-
-      int qty = math::clamp( _d->sells.qty( *gtype ), 0, maxQty );
-
-      //have no goods to sell
-      if( qty == 0 )
-        continue;
-
-      good::Stock& stock = sellGoods.getStock( *gtype );
-      stock.setCapacity( qty );
-
-      //move goods to merchant's storage
-      _d->sells.retrieve( stock, qty );
-    }
-
-    //send merchants to all routes
-    foreach( route, routes )
-    {
-      _d->merchantsNumber++;
-      (*route)->addMerchant( name(), sellGoods, buyGoods );
-    }
-  }
+  _checkMerchantsDeadline();
 }
 
 DateTime ComputerCity::lastAttack() const { return _d->lastAttack; }
@@ -929,14 +1004,17 @@ std::string ComputerCity::about(Object::AboutType type)
   switch(type)
   {
   case empireMap:
-    {
-      if( isDistantCity() ) ret = "##empmap_distant_romecity_tip##";
-      else ret = name();
-    }
+    if( isDistantCity() ) ret = "##empmap_distant_romecity_tip##";
+    else ret = name();
+  break;
+
+  case empireAdvInfo:
+    if( isDistantCity() ) ret = "##empiremap_distant_city##";
+    else ret = "";
   break;
 
   default:
-      ret = "##compcity_unknown_about##";
+    ret = "##compcity_unknown_about##";
   }
 
   return ret;
@@ -952,7 +1030,7 @@ void ComputerCity::_initTextures()
   if( _d->distantCity ) { index = PicID::distantCity; }
   else if( _d->states.romeCity ) { index = PicID::romeCity; }
 
-  _picture().load( ResourceGroup::empirebits, index );
+  setPicture( Picture( ResourceGroup::empirebits, index ) );
   _animation().load( ResourceGroup::empirebits, index+1, 6 );
   _animation().setLoop( true );
   _animation().setDelay( 2 );

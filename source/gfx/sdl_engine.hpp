@@ -47,9 +47,7 @@ public:
   virtual void setColorMask( int rmask, int gmask, int bmask, int amask );
   virtual void resetColorMask();
 
-  virtual bool initViewport( int, Size s);
-  virtual void setViewport( int, bool render);
-  virtual void drawViewport( int, Rect r);
+  virtual void setScale( float scale );
 
   virtual Batch loadBatch(const Picture& pic, const Rects& srcRects, const Rects& dstRects, const Rect* clipRect);
   virtual void unloadBatch( const Batch& batch );

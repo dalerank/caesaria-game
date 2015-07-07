@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "city/city.hpp"
 #include "venus.hpp"
@@ -23,8 +25,11 @@
 #include "objects/house.hpp"
 #include "city/sentiment.hpp"
 #include "city/wrath_of_venus.hpp"
+#include "walker/emigrant.hpp"
 
 using namespace gfx;
+using namespace city;
+using namespace events;
 
 namespace religion
 {
@@ -48,38 +53,36 @@ void Venus::updateRelation(float income, PlayerCityPtr city)
 
 void Venus::_doWrath( PlayerCityPtr city )
 {
-  events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_venus_title##"),
-                                                            _("##wrath_of_venus_description##"),
-                                                            events::ShowInfobox::send2scribe,
-                                                            "god_venus");
+  GameEventPtr event = ShowInfobox::create( _("##wrath_of_venus_title##"),
+                                            _("##wrath_of_venus_description##"),
+                                            ShowInfobox::send2scribe,
+                                            "god_venus");
   event->dispatch();
 
-  city::SentimentPtr sentiment;
-  sentiment << city->findService( city::Sentiment::defaultName() );
+  SentimentPtr sentiment = statistic::getService<Sentiment>( city );
 
   if( sentiment.isValid() )
   {
     sentiment->addBuff( -75, false, 12 );
   }
 
-  city::SrvcPtr wrathOfVenus = city::WrathOfVenus::create( city, DateTime::monthsInYear / 4 );
+  SrvcPtr wrathOfVenus = WrathOfVenus::create( city, DateTime::monthsInYear / 4 );
   wrathOfVenus->attach();
 }
 
 void Venus::_doBlessing(PlayerCityPtr city)
 {
-  events::GameEventPtr event = events::ShowInfobox::create( _("##blessing_of_venus_title##"),
-                                                            _("##blessing_of_venus_description##") );
+  GameEventPtr event = ShowInfobox::create( _("##blessing_of_venus_title##"),
+                                            _("##blessing_of_venus_description##") );
   event->dispatch();
 
-  HouseList houses = city::statistic::getHouses( city );
+  HouseList houses = statistic::getHouses( city );
 
   int rndCount = math::random( houses.size() / 5 );
   for( int i=0; i < rndCount; i++ )
   {
-    ConstructionPtr house;
-    house << houses.random();
-    ConstructionParamUpdater::assignTo( house, pr::healthBuff, true, -8, DateTime::weekInMonth * 5 );
+    ConstructionParamUpdater::assignTo( houses.random().as<Construction>(),
+                                        pr::healthBuff, true, -8, DateTime::weekInMonth * 5 );
   }
 }
 
@@ -87,16 +90,15 @@ void Venus::_doSmallCurse(PlayerCityPtr city)
 {
   int curseTupe = math::random( 3 );
 
-  events::GameEventPtr e;
+  GameEventPtr e;
   switch( curseTupe )
   {
   case 0:
   {
-    e = events::ShowInfobox::create( _("##smcurse_of_venus_title##"),
-                                     _("##smcurse_of_venus_description##"),
-                                       events::ShowInfobox::send2scribe );
-    city::SentimentPtr sentiment;
-    sentiment << city->findService( city::Sentiment::defaultName() );
+    e = ShowInfobox::create( _("##smcurse_of_venus_title##"),
+                             _("##smcurse_of_venus_description##"),
+                             ShowInfobox::send2scribe );
+    SentimentPtr sentiment = statistic::getService<Sentiment>( city );
     if( sentiment.isValid() )
     {
       sentiment->addBuff( -math::random( 5 ), true, 12 );
@@ -106,11 +108,11 @@ void Venus::_doSmallCurse(PlayerCityPtr city)
 
   case 1:
   {
-    e = events::ShowInfobox::create( _("##smcurse_of_venus_title##"),
-                                     _("##smcurse2_of_venus_description##"),
-                                     events::ShowInfobox::send2scribe );
+    e = ShowInfobox::create( _("##smcurse_of_venus_title##"),
+                             _("##smcurse1_of_venus_description##"),
+                             ShowInfobox::send2scribe );
 
-    HouseList houses = city::statistic::getHouses( city );
+    HouseList houses = statistic::getHouses( city );
 
     int rndCount = math::random( houses.size() / 5 );
     for( int i=0; i < rndCount; i++ )
@@ -118,6 +120,26 @@ void Venus::_doSmallCurse(PlayerCityPtr city)
       HousePtr house = houses.random();
       ConstructionParamUpdater::assignTo( house.as<Construction>(), pr::healthBuff, true, -8, DateTime::weekInMonth * 5 );
     }
+  }
+  break;
+
+  case 2:
+  {
+     e = ShowInfobox::create( _("##smcurse_of_venus_title##"),
+                              _("##smcurse2_of_venus_description##"),
+                              ShowInfobox::send2scribe );
+
+     HouseList houses = statistic::getHouses( city );
+
+     int rndCount = math::random( houses.size() / 5 );
+     for( int i=0; i < rndCount; i++ )
+     {
+       HousePtr house = houses.random();
+       int hbCount = house->habitants().count();
+       CitizenGroup homeless = house->removeHabitants( hbCount );
+       EmigrantPtr emigrants = Emigrant::send2city( city, homeless, house->tile(), "##emigrant_no_home##" );
+       emigrants->leaveCity( house->tile() );
+     }
   }
   break;
   }

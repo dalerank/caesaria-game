@@ -39,7 +39,7 @@ static const char* fireLevelName[] = {
                                      };
 
 
-int Fire::type() const {  return citylayer::fire; }
+int Fire::type() const { return citylayer::fire; }
 
 void Fire::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
@@ -88,7 +88,7 @@ void Fire::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( fireLevel >= 0)
     {
-      _addColumn( screenPos, fireLevel );
+      drawColumn( engine, screenPos, fireLevel );
     }
   }
 
@@ -107,7 +107,7 @@ void Fire::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        ConstructionPtr constr = ptr_cast<Construction>( tile->overlay() );
+        ConstructionPtr constr = tile->overlay().as<Construction>();
         if( constr != 0 )
         {
           int fireLevel = math::clamp<int>( constr->state( pr::fire ), 0, 100 );
@@ -138,7 +138,7 @@ Fire::Fire( Camera& camera, PlayerCityPtr city)
   : Info( camera, city, 18 )
 {
   _addWalkerType( walker::prefect );
-  _fillVisibleObjects( citylayer::fire );
+  _initialize();
 }
 
 }//end namespace citylayer

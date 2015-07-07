@@ -32,8 +32,8 @@ public:
   virtual void destroy();
 
   virtual void timeStep(const unsigned long time);
-  virtual void save(VariantMap &stream) const;
-  virtual void load(const VariantMap &stream);
+  virtual void save(VariantMap& stream) const;
+  virtual void load(const VariantMap& stream);
   virtual std::string workersProblemDesc() const;
 
   bool isBusy() const;
@@ -42,6 +42,8 @@ public:
   const gfx::Tile& queueTile() const;
 
   int queueSize() const;
+
+  const good::Store& exportStore() const;
 
   void requestGoods( good::Stock& stock );
 

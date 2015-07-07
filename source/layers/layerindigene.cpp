@@ -30,10 +30,7 @@ using namespace gfx;
 namespace citylayer
 {
 
-int Indigene::type() const
-{
-  return citylayer::aborigen;
-}
+int Indigene::type() const { return citylayer::aborigen; }
 
 void Indigene::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
@@ -75,7 +72,7 @@ void Indigene::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( discontentLevel >= 0 )
     {
-      _addColumn( screenPos, discontentLevel );
+      drawColumn( engine, screenPos, discontentLevel );
     }
   }
 
@@ -119,7 +116,7 @@ Indigene::Indigene( Camera& camera, PlayerCityPtr city)
   : Info( camera, city, 15 )
 {
   _visibleWalkers() << walker::indigene << walker::missioner;
-  _fillVisibleObjects( citylayer::aborigen );
+  _initialize();
 }
 
 }//end namespace citylayer

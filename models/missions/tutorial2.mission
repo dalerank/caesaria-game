@@ -12,6 +12,7 @@
   win :
   {
     population : 650
+    name : "n2_nexthope"
     culture : 0
     prosperity : 0
     peace : 0
