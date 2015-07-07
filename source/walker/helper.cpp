@@ -248,7 +248,7 @@ world::Nation WalkerHelper::getNation(const std::string &name)
   return nation;
 }
 
-Picture WalkerHelper::getBigPicture(walker::Type type)
+Picture WalkerHelper::bigPicture(walker::Type type)
 {
   int index = -1;
   switch( type )

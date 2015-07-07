@@ -15,7 +15,6 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-
 #include "alignment.hpp"
 
 namespace align
@@ -23,10 +22,11 @@ namespace align
 
 Helper::Helper() : EnumsHelper<Type>( automatic )
 {
-  append( upperLeft,  CAESARIA_STR_A(upperLeft) );
-  append( lowerRight, CAESARIA_STR_A(lowerRight) );
-  append( center,     CAESARIA_STR_A(center) );
-  append( scale,      CAESARIA_STR_A(scale) );
+#define REG_ALIGN(name) append( name, #name );
+  REG_ALIGN( upperLeft )
+  REG_ALIGN( lowerRight )
+  REG_ALIGN( center )
+  REG_ALIGN( scale )
   append( automatic, "auto" );
 }
 

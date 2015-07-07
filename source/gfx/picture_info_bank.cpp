@@ -159,6 +159,8 @@ void PictureInfoBank::initialize(vfs::Path filename)
   Logger::warning( "PictureInfoBank: start load offsets from " + filename.toString() );
   VariantMap m = config::load( filename );
 
+  std::string rc;
+  rc.reserve(256);
   foreach( it, m )
   {
     Variant v = it->second;
@@ -168,7 +170,7 @@ void PictureInfoBank::initialize(vfs::Path filename)
       VariantMap vm = v.toMap();
       int startIndex = vm[ "start" ];
       int stopIndex = vm[ "stop" ];
-      std::string rc = vm[ "rc" ].toString();
+      rc = vm[ "rc" ].toString();
       Point offset = vm[ "offset" ].toPoint();
       _d->setRange( rc.empty() ? it->first : rc, startIndex, stopIndex, offset );
     }

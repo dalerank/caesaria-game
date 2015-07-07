@@ -32,7 +32,6 @@ namespace city
 
 Economy::Economy() : econ::Treasury()
 {
-  int k=0;
 }
 
 Economy::~Economy() {}

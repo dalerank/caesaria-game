@@ -281,10 +281,8 @@ unsigned int toUint( const char* in, const char** out/*=0*/ )
 
 std::string replace( std::string text, const std::string& from, const std::string& to )
 {
-  for (size_t i = 0; (i = text.find(from, i)) != std::string::npos; i += to.length())
+  for(size_t i = 0; (i = text.find(from, i)) != std::string::npos; i += to.length())
     text.replace(i, from.length(), to);
-
-  //std::cout << text << std::endl;
 
   return text;
 }

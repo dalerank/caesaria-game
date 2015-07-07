@@ -97,6 +97,7 @@ public:
   bool isCheckedDesirability() const;
 
   void __debugChangeLevel( int change );
+  void __debugMakeGeneration();
 
 private:
   void _updateHealthLevel();
@@ -114,9 +115,10 @@ private:
   void _checkPatricianDeals();
   void _updateTax();
   void _updateCrime();
-  void _checkHomeless();
+  void _updateHappiness();
+  void _updateHomeless();
   void _settleVacantLotIfNeed();
-  void _checkConsumptions(const unsigned long time);
+  void _updateConsumptions(const unsigned long time);
 
   class Impl;
   ScopedPtr< Impl > _d;

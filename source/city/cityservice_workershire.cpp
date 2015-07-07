@@ -110,7 +110,7 @@ bool WorkersHire::Impl::haveRecruter( WorkingBuildingPtr building )
 {
   foreach( w, hrInCity )
   {
-    RecruterPtr hr = ptr_cast<Recruter>( *w );
+    RecruterPtr hr = w->as<Recruter>();
     if( hr.isValid() )
     {
       if( hr->baseLocation() == building->pos() )
@@ -232,7 +232,7 @@ VariantMap WorkersHire::save() const
 {
   VariantMap ret;
   VARIANT_SAVE_ANY_D( ret, _d, distance );
-  ret[ literals::priorities ] = _d->priorities.toVList();
+  ret[ literals::priorities ] = _d->priorities.save();
 
   return ret;
 }

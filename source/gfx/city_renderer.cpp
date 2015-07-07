@@ -50,6 +50,7 @@
 #include "layers/layertroubles.hpp"
 #include "layers/layerindigene.hpp"
 #include "layers/layereducation.hpp"
+#include "layers/sentiment.hpp"
 #include "walker/walker.hpp"
 #include "objects/aqueduct.hpp"
 #include "tilemap_camera.hpp"
@@ -120,6 +121,7 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   addLayer( Health::create( _d->camera, city, citylayer::baths ));
   addLayer( Religion::create( _d->camera, city ) );
   addLayer( Damage::create( _d->camera, city ) );
+  addLayer( Sentiment::create( _d->camera, city ) );
   addLayer( citylayer::Desirability::create( _d->camera, city ) );
   addLayer( Entertainment::create( _d->camera, city, citylayer::entertainment ) );
   addLayer( Entertainment::create( _d->camera, city, citylayer::theater ) );

@@ -43,6 +43,8 @@ public:
 
   int queueSize() const;
 
+  const good::Store& exportStore() const;
+
   void requestGoods( good::Stock& stock );
 
   int importingGoods( good::Stock& stock );

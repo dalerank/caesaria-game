@@ -35,31 +35,54 @@ using namespace direction;
 namespace gfx
 {
 
-namespace{
+namespace
+{
   CAESARIA_LITERALCONST( small )
   CAESARIA_LITERALCONST( big )
   CAESARIA_LITERALCONST( mega )
 
-  static const Point frontCartOffsetSouth = Point( -33, 22 );
-  static const Point frontCartOffsetWest  = Point( -31, 35 );
-  static const Point frontCartOffsetNorth = Point(  -5, 37 );
-  static const Point frontCartOffsetEast  = Point(  -5, 22 );
-  static const Point frontCartOffsetSouthEast  = Point( -20, 20 );
-  static const Point frontCartOffsetNorthWest  = Point( -20, 40 );
-  static const Point frontCartOffsetNorthEast  = Point( -5, 30 );
-  static const Point frontCartOffsetSouthWest  = Point( -5, 22 );
+struct CartInfo
+{
+  typedef std::map< Direction, Point > Offsets;
+  struct
+  {
+    Offsets front;
+    Offsets back;
+  } offset;
 
-  static const Point backCartOffsetSouth = Point(  -5, 40 );
-  static const Point backCartOffsetWest  = Point(  -5, 22 );
-  static const Point backCartOffsetNorth = Point( -33, 22 );
-  static const Point backCartOffsetEast  = Point( -31, 35 );
-  static const Point backCartOffsetSouthEast  = Point( -20, 40 );
-  static const Point backCartOffsetNorthWest  = Point( -20, 20 );
-  static const Point backCartOffsetNorthEast  = Point( -30, 30 );
-  static const Point backCartOffsetSouthWest  = Point( -0, 30 );
+  CartInfo()
+  {
+#define FR_OFFSET(dir,x,y) offset.front[ dir ] = Point(x,y);
+#define BK_OFFSET(dir,x,y) offset.back[ dir ] = Point(x,y);
+    FR_OFFSET( south, -33, 22 )
+    FR_OFFSET( west, -31, 35 )
+    FR_OFFSET( north, -5, 37 )
+    FR_OFFSET( east, -5, 22 )
+    FR_OFFSET( southEast, -20, 20 )
+    FR_OFFSET( northWest, -20, 40 )
+    FR_OFFSET( northEast, -5, 30 )
+    FR_OFFSET( southWest, -5, 22 )
 
-  static const int defaultStepInFrame = 8;
+    BK_OFFSET( south, -5, 40 )
+    BK_OFFSET( west, -5, 22 )
+    BK_OFFSET( north, -33, 22 )
+    BK_OFFSET( east, -31, 35 )
+    BK_OFFSET( southEast, -20, 40 )
+    BK_OFFSET( northWest, -20, 20 )
+    BK_OFFSET( northEast, -30, 30 )
+    BK_OFFSET( southWest,  -0, 30 )
+  }
+
+  Point getOffset( bool back, Direction dir )
+  {
+    return (back ? offset.back : offset.front)[ dir ];
+  }
+};
+
 }
+
+static const int defaultStepInFrame = 8;
+static CartInfo cartInfo;
 
 struct ActionAnimation
 {
@@ -323,15 +346,15 @@ void AnimationBank::Impl::fixCartOffset( unsigned int who, bool back, int addh )
 #define __CDA(a) DirectedAction(Walker::acMove,a)
   Point addPointH( 0, addh );
   MovementAnimation& ma = carts[who].actions;
-  ma[ __CDA(south) ].setOffset( addPointH + (back ? backCartOffsetSouth : frontCartOffsetSouth) );
-  ma[ __CDA(west)  ].setOffset ( addPointH + (back ? backCartOffsetWest  : frontCartOffsetWest) );
-  ma[ __CDA(north) ].setOffset( addPointH + (back ? backCartOffsetNorth : frontCartOffsetNorth));
-  ma[ __CDA(east)  ].setOffset ( addPointH + (back ? backCartOffsetEast  : frontCartOffsetEast) );
+  ma[ __CDA(south) ].setOffset( addPointH + cartInfo.getOffset( back, south ) );
+  ma[ __CDA(west)  ].setOffset ( addPointH + cartInfo.getOffset( back, west ) );
+  ma[ __CDA(north) ].setOffset( addPointH + cartInfo.getOffset( back, north ) );
+  ma[ __CDA(east)  ].setOffset ( addPointH + cartInfo.getOffset( back, east ) );
 
-  ma[ __CDA(southEast) ].setOffset( addPointH + (back ? backCartOffsetSouthEast : frontCartOffsetSouthEast) );
-  ma[ __CDA(northWest) ].setOffset( addPointH + (back ? backCartOffsetNorthWest : frontCartOffsetNorthWest) );
-  ma[ __CDA(northEast) ].setOffset( addPointH + (back ? backCartOffsetNorthEast : frontCartOffsetNorthEast) );
-  ma[ __CDA(southWest) ].setOffset( addPointH + (back ? backCartOffsetSouthWest : frontCartOffsetSouthWest) );
+  ma[ __CDA(southEast) ].setOffset( addPointH + cartInfo.getOffset( back, southEast ) );
+  ma[ __CDA(northWest) ].setOffset( addPointH + cartInfo.getOffset( back, northWest ) );
+  ma[ __CDA(northEast) ].setOffset( addPointH + cartInfo.getOffset( back, northEast ) );
+  ma[ __CDA(southWest) ].setOffset( addPointH + cartInfo.getOffset( back, southWest ) );
 #undef __CDA
 }
 

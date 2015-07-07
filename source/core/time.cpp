@@ -304,8 +304,8 @@ void DateTime::_set(const DateTime& val )
 
 const char* RomanDate::age() const { return age_uc; }
 const char* RomanDate::dayName(unsigned char d) { return romanDayNames[ math::clamp<int>( d, 0, 6 ) ]; }
-const char* RomanDate::monthName(unsigned char d) { return monthNames[ math::clamp<int>( d, 0, 11 ) ];}
-const char* RomanDate::shortMonthName(unsigned char d) { return shortMonthNames[ math::clamp<int>( d, 0, 11 ) ]; }
+const char* RomanDate::monthName(unsigned char d) { return romanMonthNames[ math::clamp<int>( d, 0, 11 ) ];}
+const char* RomanDate::shortMonthName(unsigned char d) { return romanShortMonthNames[ math::clamp<int>( d, 0, 11 ) ]; }
 
 RomanDate::RomanDate(const DateTime& date)
 {

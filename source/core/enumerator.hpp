@@ -25,6 +25,7 @@ template< class T >
 class EnumsHelper
 {
 public:
+  const std::string noText;
   T findType( const std::string& name ) const
   {
     foreach( it, _equales )
@@ -38,10 +39,10 @@ public:
     return getInvalid();
   }
 
-  std::string findName( const T& type ) const
+  const std::string& findName( const T& type ) const
   {
     typename Equales::const_iterator it = _equales.find( type );
-    return it != _equales.end() ? it->second : "";
+    return it != _equales.end() ? it->second : noText;
   }
 
   bool empty() const { return _equales.empty(); }

@@ -12,91 +12,117 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "health.hpp"
 #include "game/resourcegroup.hpp"
 #include "game/gamedate.hpp"
 #include "core/position.hpp"
 #include "gfx/tilemap.hpp"
+#include "house.hpp"
 #include "city/statistic.hpp"
+#include "walker/serviceman.hpp"
+#include "core/variant_list.hpp"
 #include "constants.hpp"
 #include "objects_factory.hpp"
 
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(object::hospital, Hospital)
-REGISTER_CLASS_IN_OVERLAYFACTORY(object::clinic, Doctor)
-REGISTER_CLASS_IN_OVERLAYFACTORY(object::baths, Baths)
-REGISTER_CLASS_IN_OVERLAYFACTORY(object::barber, Barber)
+class ServedHouses : public std::map<int, int>
+{
+public:
+  VariantList save() const
+  {
+    VariantList ret;
 
-Doctor::Doctor() : ServiceBuilding(Service::doctor, object::clinic, Size(1)){
+    foreach( it, *this )
+      ret << it->first << it->second;
+
+    return ret;
+  }
+
+  void load( const VariantList& stream )
+  {
+    VariantListReader r( stream );
+
+    while( !r.atEnd() )
+    {
+      int type = r.next();
+      (*this)[ type ] = r.next();
+    }
+  }
+};
+
+class HealthBuilding::Impl
+{
+public:
+  unsigned int patientsNumber;
+  ServedHouses servedHouses;
+  DateTime lastDateResults;
+};
+
+HealthBuilding::HealthBuilding(const Service::Type service, const object::Type type, const Size &size)
+  : ServiceBuilding( service, type, size ), _d( new Impl )
+{
+
 }
 
-unsigned int Doctor::walkerDistance() const{ return 26; }
-
-void Doctor::deliverService()
+void HealthBuilding::buildingsServed(const std::set<BuildingPtr>& buildings, ServiceWalkerPtr walker)
 {
+  foreach( it, buildings )
+  {
+    if( (*it)->type() == object::house )
+    {
+      HousePtr house = it->as<House>();
+      TilePos pos = house->pos();
+      int hash = (pos.i() << 8) | pos.i();
+      _d->servedHouses[ hash ] = house->habitants().count();
+    }
+  }
+
+  ServiceBuilding::buildingsServed( buildings, walker );
+}
+
+unsigned int HealthBuilding::walkerDistance() const{ return 26; }
+
+void HealthBuilding::deliverService()
+{
+  if( _d->lastDateResults.monthsTo( game::Date::current() ) > 0 )
+  {
+    _d->lastDateResults = game::Date::current();
+    _d->patientsNumber = 0;
+    foreach( it, _d->servedHouses )
+      _d->patientsNumber += it->second;
+
+    _d->servedHouses.clear();
+  }
+
   if( numberWorkers() > 0 && walkers().size() == 0 )
   {
     ServiceBuilding::deliverService();
   }
 }
 
-Hospital::Hospital() : ServiceBuilding(Service::hospital, object::hospital, Size(3 ) )
+void HealthBuilding::save(VariantMap& stream) const
 {
+  ServiceBuilding::save( stream );
+  VARIANT_SAVE_ANY_D( stream, _d, patientsNumber )
+  VARIANT_SAVE_ANY_D( stream, _d, lastDateResults )
+  VARIANT_SAVE_CLASS_D( stream, _d, servedHouses )
 }
 
-Baths::Baths() : ServiceBuilding(Service::baths, object::baths, Size(2) )
+void HealthBuilding::load(const VariantMap &stream)
 {
-  _haveReservorWater = false;
-  _fgPictures().resize(1);
+  ServiceBuilding::load( stream );
+  VARIANT_LOAD_ANY_D( _d, patientsNumber, stream )
+  VARIANT_LOAD_TIME_D( _d, lastDateResults, stream )
+  VARIANT_LOAD_CLASS_D_LIST( _d, servedHouses, stream )
 }
 
-unsigned int Baths::walkerDistance() const {  return 35;}
+HealthBuilding::~HealthBuilding() {}
 
-bool Baths::build( const city::AreaInfo& info )
-{ 
-  bool result = ServiceBuilding::build( info );
-  _myArea = area();
-
-  return result;
-}
-
-bool Baths::mayWork() const {  return ServiceBuilding::mayWork() && _haveReservorWater; }
-
-void Baths::timeStep(const unsigned long time)
+unsigned int HealthBuilding::patientsNumber() const
 {
-  if( game::Date::isWeekChanged() )
-  {
-    bool haveWater = false;
-    foreach( tile, _myArea )
-    {
-      haveWater |= (*tile)->param( Tile::pReservoirWater ) > 0;
-    }
-    _haveReservorWater = (haveWater && numberWorkers() > 0);
-  }
-
-  ServiceBuilding::timeStep( time );
+  return _d->patientsNumber;
 }
-
-void Baths::deliverService()
-{
-  if( _haveReservorWater && numberWorkers() > 0 && walkers().empty() )
-  {
-    ServiceBuilding::deliverService();
-  }
-}
-
-Barber::Barber() : ServiceBuilding(Service::barber, object::barber, Size(1))
-{
-}
-
-void Barber::deliverService()
-{
-  if( walkers().empty() && numberWorkers() )
-  {
-    ServiceBuilding::deliverService();
-  }
-}
-
-unsigned int Barber::walkerDistance() const {  return 35; }

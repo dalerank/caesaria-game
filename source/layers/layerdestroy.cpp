@@ -342,7 +342,7 @@ void Destroy::handleEvent(NEvent& event)
     {
       switch( event.keyboard.key )
       {
-      case KEY_ESCAPE: _setNextLayer( citylayer::simple ); break;
+      case KEY_ESCAPE: _exitDestroyTool(); break;
       default: break;
       }
     }

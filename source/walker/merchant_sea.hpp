@@ -12,19 +12,21 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_SEAMERCHANT_INCLUDE_H_
 #define _CAESARIA_SEAMERCHANT_INCLUDE_H_
 
-#include "human.hpp"
+#include "merchant.hpp"
 #include "world/trading.hpp"
 
 /** This is the empire merchant which buy/sell goods at warehouses */
-class SeaMerchant : public Human
+class SeaMerchant : public Merchant
 {
 public:
   static WalkerPtr create( PlayerCityPtr city );
-  static WalkerPtr create( PlayerCityPtr city, world::MerchantPtr merchant );
+  static SeaMerchantPtr create( PlayerCityPtr city, world::MerchantPtr merchant );
 
   virtual ~SeaMerchant();
 
@@ -32,6 +34,9 @@ public:
 
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
+
+  virtual good::ProductMap sold() const;
+  virtual good::ProductMap bougth() const;
 
   virtual void timeStep(const unsigned long time);
 
