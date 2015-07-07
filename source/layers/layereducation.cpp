@@ -111,7 +111,7 @@ void Education::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( educationLevel > 0 )
     {
-      _addColumn( screenPos, educationLevel );
+      drawColumn( engine, screenPos, educationLevel );
     }
   }
 

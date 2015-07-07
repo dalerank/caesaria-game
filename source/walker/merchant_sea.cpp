@@ -12,8 +12,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "seamerchant.hpp"
+#include "merchant_sea.hpp"
 #include "good/storage.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "city/statistic.hpp"
@@ -73,7 +75,7 @@ public:
 };
 
 SeaMerchant::SeaMerchant(PlayerCityPtr city )
-  : Human( city ), _d( new Impl )
+  : Merchant( city ), _d( new Impl )
 {
   _setType( walker::seaMerchant );
   _d->waitInterval = 0;
@@ -416,9 +418,8 @@ void SeaMerchant::save( VariantMap& stream ) const
   VARIANT_SAVE_ANY_D( stream, _d, currentSell )
   VARIANT_SAVE_ANY_D( stream, _d, currentBuys )
   VARIANT_SAVE_ENUM_D( stream, _d, nextState )
-
-  stream[ "buy"   ] = _d->buy.save();
-  stream[ "sell"  ] = _d->sell.save();
+  VARIANT_SAVE_CLASS_D( stream, _d, buy )
+  VARIANT_SAVE_CLASS_D( stream, _d, sell )
 }
 
 void SeaMerchant::load( const VariantMap& stream)
@@ -430,10 +431,12 @@ void SeaMerchant::load( const VariantMap& stream)
   VARIANT_LOAD_ENUM_D( _d, nextState, stream )
   VARIANT_LOAD_ANY_D( _d, currentBuys, stream )
   VARIANT_LOAD_ANY_D( _d, currentSell, stream )
-
-  _d->buy.load( stream.get( "buy").toMap() );
-  _d->sell.load( stream.get( "sell" ).toMap() );
+  VARIANT_LOAD_CLASS_D( _d, buy, stream )
+  VARIANT_LOAD_CLASS_D( _d, sell, stream )
 }
+
+good::ProductMap SeaMerchant::sold() const { return _d->sell.filled(); }
+good::ProductMap SeaMerchant::bougth() const { return _d->buy.filled(); }
 
 void SeaMerchant::timeStep(const unsigned long time)
 {
@@ -526,11 +529,13 @@ TilePos SeaMerchant::places(Walker::Place type) const
 }
 
 
-WalkerPtr SeaMerchant::create(PlayerCityPtr city) {  return create( city, world::MerchantPtr() ); }
+WalkerPtr SeaMerchant::create(PlayerCityPtr city) {  return create( city, world::MerchantPtr() ).object(); }
 
-WalkerPtr SeaMerchant::create(PlayerCityPtr city, world::MerchantPtr merchant )
+SeaMerchantPtr SeaMerchant::create(PlayerCityPtr city, world::MerchantPtr merchant )
 {
-  SeaMerchant* cityMerchant( new SeaMerchant( city ) );
+  SeaMerchantPtr cityMerchant( new SeaMerchant( city ) );
+  cityMerchant->drop();
+
   if( merchant.isValid() )
   {
     cityMerchant->_d->sell.resize( merchant->sellGoods() );
@@ -540,10 +545,7 @@ WalkerPtr SeaMerchant::create(PlayerCityPtr city, world::MerchantPtr merchant )
     cityMerchant->_d->baseCityName = merchant->baseCity();
   }
 
-  WalkerPtr ret( cityMerchant );
-  ret->drop();
-
-  return ret;
+  return cityMerchant;
 }
 
 std::string SeaMerchant::parentCity() const { return _d->baseCityName; }

@@ -31,6 +31,7 @@
 #include "widget_helper.hpp"
 #include "filelistbox.hpp"
 #include "vfs/file.hpp"
+#include "gameautopause.hpp"
 #include "widgetescapecloser.hpp"
 
 namespace gui
@@ -42,6 +43,7 @@ namespace dialog
 class LoadFile::Impl
 {
 public:
+  GameAutoPause locker;
   Label* lbTitle;
   FileListBox* lbxFiles;
   PushButton* btnExit;
@@ -65,14 +67,14 @@ signals public:
 };
 
 LoadFile::LoadFile( Widget* parent, const Rect& rect,
-                                const vfs::Directory& dir, const std::string& ext,
-                                int id )
+                    const vfs::Directory& dir, const std::string& ext,
+                    int id )
   : Window( parent, rect, "", id ), _d( new Impl )
 {
   _d->btnLoad = 0;
+  _d->locker.activate();
 
   Widget::setupUI( ":/gui/loadfile.gui" );
-
   WidgetEscapeCloser::insertTo( this );
 
   // create the title

@@ -33,7 +33,7 @@ class Helper
 public:
   static Helper& instance();
 
-  static std::string name( good::Product type );
+  static const std::string &name( good::Product type );
   static gfx::Picture picture( good::Product type, bool emp=false );
   static good::Product getType( const std::string& name );
   static std::string getTypeName( good::Product type );

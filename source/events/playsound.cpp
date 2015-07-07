@@ -21,7 +21,7 @@
 namespace events
 {
 
-GameEventPtr PlaySound::create( std::string rc, int index, int volume, audio::SoundType type  )
+GameEventPtr PlaySound::create( const std::string& rc, int index, int volume, audio::SoundType type  )
 {
   PlaySound* e = new PlaySound();
   e->_sound = utils::format( 0xff, "%s_%05d", rc.c_str(), index );
@@ -34,7 +34,7 @@ GameEventPtr PlaySound::create( std::string rc, int index, int volume, audio::So
   return ret;
 }
 
-GameEventPtr PlaySound::create(std::string filename, int volume, audio::SoundType type )
+GameEventPtr PlaySound::create(const std::string& filename, int volume, audio::SoundType type )
 {
   PlaySound* e = new PlaySound();
   e->_sound = filename;

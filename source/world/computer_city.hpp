@@ -55,6 +55,7 @@ public:
   virtual void addObject(ObjectPtr object);
 
   void changeTradeOptions( const VariantMap& stream );
+  void __debugSendMerchant();
 
 protected:
   ComputerCity( EmpirePtr empire, const std::string& name );

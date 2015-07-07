@@ -465,6 +465,13 @@ void ComputerCity::Impl::updateWorkingWarehouse()
   internalGoods.setCapacity( futureCityCapacity );
 }
 
+void ComputerCity::__debugSendMerchant()
+{
+  _d->merchantsNumber = 0;
+  _d->lastTimeMerchantSend = DateTime();
+  _checkMerchantsDeadline();
+}
+
 void ComputerCity::_checkMerchantsDeadline()
 {
   if( _d->lastTimeMerchantSend.monthsTo( game::Date::current() ) > config::trade::minMonthsMerchantSend )
@@ -890,7 +897,7 @@ void ComputerCity::addObject(ObjectPtr object )
 {
   if( is_kind_of<Merchant>( object ) )
   {
-    MerchantPtr merchant = ptr_cast<Merchant>( object );
+    MerchantPtr merchant = object.as<Merchant>();
     good::Store& sellGoods = merchant->sellGoods();
     good::Store& buyGoods = merchant->buyGoods();
 
@@ -907,9 +914,9 @@ void ComputerCity::addObject(ObjectPtr object )
 
     _d->merchantsNumber = std::max<int>( 0, _d->merchantsNumber-1);
   }
-  else if( is_kind_of<Barbarian>( object ) )
+  else if( object.is<Barbarian>() )
   {
-    BarbarianPtr brb = ptr_cast<Barbarian>( object );
+    BarbarianPtr brb = object.as<Barbarian>();
     _d->lastAttack = game::Date::current();
     int attack = std::max<int>( brb->strength() - strength(), 0 );
     if( !attack ) attack = 10;
@@ -942,7 +949,7 @@ void ComputerCity::changeTradeOptions(const VariantMap& stream)
   {
     good::Product gtype = good::Helper::getType( it->first );
     _d->buys.setCapacity( gtype, Unit::fromValue( it->second ).toQty() );
-  }
+    }
 }
 
 ComputerCity::~ComputerCity() {}

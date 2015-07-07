@@ -49,12 +49,17 @@ public:
     return *this;
   }
 
-  VariantList toVList() const
+  VariantList save() const
   {
     VariantList vl;
     foreach( i, *this ) { vl.push_back( Variant( *i ) ); }
 
     return vl;
+  }
+
+  void load( const VariantList& stream )
+  {
+    *this << stream;
   }
 
   bool count( const T& v ) const

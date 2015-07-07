@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "prefect.hpp"
 #include "core/position.hpp"
@@ -41,6 +41,7 @@
 #include "events/fireworkers.hpp"
 
 using namespace gfx;
+using namespace events;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::prefect, Prefect)
 
@@ -54,7 +55,7 @@ class Prefect::Impl
 public:
   int water;
   TilePos endPatrolPoint;
-  Prefect::SbAction action;
+  Prefect::SbAction prefectAction;
   int fumigateHouseNumber;
 };
 
@@ -175,32 +176,43 @@ void Prefect::_back2Prefecture()
 }
 
 void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
-{
+{        
   foreach( it, reachedBuildings )
   {
-    BuildingPtr building = *it;
-    building->applyService( ServiceWalkerPtr( this ) );
+    if( (*it).isNull() ) continue;
+    if( (*it)->isDeleted() ) continue;
 
-    HousePtr house = ptr_cast<House>( building );
-    if( house.isValid() )
+    (*it)->applyService( this );
+
+    HousePtr house = it->as<House>();
+    if( house.isNull() ) continue;
+
+    int healthLevel = house->state( pr::health );
+    if( healthLevel < 1 )
     {
-      int healthLevel = house->state( pr::health );
-      if( healthLevel < 1 )
+      (*it)->deleteLater();
+
+      _d->fumigateHouseNumber++;
+      house->removeHabitants( 1000 ); //all habitants will killed
+
+      GameEventPtr e = Disaster::create( house->tile(), Disaster::plague );
+      e->dispatch();
+
+      if( _d->fumigateHouseNumber > 5 )
       {
-        house->deleteLater();
-
-        _d->fumigateHouseNumber++;
-        house->removeHabitants( 1000 ); //all habitants will killed
-
-        events::GameEventPtr e = events::Disaster::create( house->tile(), events::Disaster::plague );
+        e = ShowInfobox::create( "##pestilence_event_title##", "##pestilent_event_text##",
+                                 ShowInfobox::send2scribe, "sick" );
         e->dispatch();
+        _d->fumigateHouseNumber = -999;
+      }
 
-        if( _d->fumigateHouseNumber > 5 )
+      if( _city()->getOption( PlayerCity::destroyEpidemicHouses ) )
+      {
+        HouseList hlist = city::statistic::getNeighbors<House>( _city(), house );
+        foreach( dIt, hlist )
         {
-          e = events::ShowInfobox::create( "##pestilence_event_title##", "##pestilent_event_text##",
-                                           events::ShowInfobox::send2scribe, "sick" );
+          GameEventPtr e = Disaster::create( (*dIt)->tile(), Disaster::plague );
           e->dispatch();
-          _d->fumigateHouseNumber = -999;
         }
       }
     }
@@ -227,7 +239,7 @@ void Prefect::_back2Patrol()
 
 void Prefect::_setSubAction( const Prefect::SbAction action)
 {
-  _d->action = action;
+  _d->prefectAction = action;
 
   switch( action )
   {
@@ -301,11 +313,11 @@ void Prefect::_brokePathway(TilePos p)
 void Prefect::_reachedPathway()
 {
   TilesArray area;
-  BuildingPtr base = ptr_cast<Building>( _city()->getOverlay( baseLocation() ) );
+  BuildingPtr base = _city()->getOverlay( baseLocation() ).as<Building>();
   if( base.isValid() )
     area = base->enterArea();
 
-  switch( _d->action )
+  switch( _d->prefectAction )
   {
   case patrol:
     if( area.contain( pos() )  )
@@ -341,7 +353,7 @@ void Prefect::_reachedPathway()
 
 void Prefect::_centerTile()
 {
-  switch( _d->action )
+  switch( _d->prefectAction )
   {
   case doNothing:
   break; 
@@ -371,7 +383,7 @@ void Prefect::_centerTile()
       //on next deliverService
 
       //found fire, no water, go prefecture
-      PrefecturePtr ptr = ptr_cast<Prefecture>( _city()->getOverlay( baseLocation() ) );
+      PrefecturePtr ptr = _city()->getOverlay( baseLocation() ).as<Prefecture>();
       if( ptr.isValid() )
         ptr->fireDetect( firePos );
 
@@ -454,7 +466,7 @@ void Prefect::timeStep(const unsigned long time)
   default: break;
   }
 
-  switch( _d->action )
+  switch( _d->prefectAction )
   {
 
   case fightFire:
@@ -598,7 +610,7 @@ std::string Prefect::thoughts(Thought th) const
   switch( th )
   {
   case thCurrent:
-    switch( _d->action )
+    switch( _d->prefectAction )
     {
     case go2fire: return "##prefect_goto_fire##";
     case fightFire: return "##prefect_fight_fire##";
@@ -628,13 +640,14 @@ void Prefect::load( const VariantMap& stream )
 {
   ServiceWalker::load( stream );
  
-  _setSubAction( (SbAction)stream.get( "prefectAction" ).toInt() );
-  VARIANT_LOAD_ANY_D( _d, water, stream );
-  VARIANT_LOAD_ANY_D( _d, endPatrolPoint, stream );
+  VARIANT_LOAD_ENUM_D( _d, prefectAction, stream )
+  VARIANT_LOAD_ANY_D( _d, water, stream )
+  VARIANT_LOAD_ANY_D( _d, endPatrolPoint, stream )
 
+  _setSubAction( _d->prefectAction );
   _setAction( _d->water > 0 ? acDragWater : acMove );
 
-  PrefecturePtr prefecture = ptr_cast<Prefecture>( _city()->getOverlay( baseLocation() ) );
+  PrefecturePtr prefecture = _city()->getOverlay( baseLocation() ).as<Prefecture>();
   if( prefecture.isValid() )
   {
     prefecture->addWalker( this );
@@ -652,8 +665,8 @@ void Prefect::save( VariantMap& stream ) const
   ServiceWalker::save( stream );
 
   stream[ "type" ] = (int)walker::prefect;
-  stream[ "prefectAction" ] = (int)_d->action;
-  VARIANT_SAVE_ANY_D( stream, _d, water );
-  VARIANT_SAVE_ANY_D( stream, _d, endPatrolPoint );
+  VARIANT_SAVE_ENUM_D( stream, _d, prefectAction )
+  VARIANT_SAVE_ANY_D( stream, _d, water )
+  VARIANT_SAVE_ANY_D( stream, _d, endPatrolPoint )
   stream[ "__debug_typeName" ] = Variant( WalkerHelper::getTypename( type() ) );
 }

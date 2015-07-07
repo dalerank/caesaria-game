@@ -101,7 +101,7 @@ AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
     lbStockInfo->setTextOffset( Point( 30, 0 ) );
 
     _lbTextRef()->setGeometry( Rect( lbStockInfo->leftbottom() + Point( 0, 5 ),
-                                     _lbBlackFrameRef()->righttop() - Point( 0, 5 ) ) );
+                                     _lbBlackFrame()->righttop() - Point( 0, 5 ) ) );
     _lbTextRef()->setFont( Font::create( FONT_1 ) );
   }
 

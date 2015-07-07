@@ -23,29 +23,12 @@
 #include "core/signals.hpp"
 #include "good/good.hpp"
 #include "predefinitions.hpp"
+#include "economy_issue.hpp"
 
 namespace econ
 {
 
 enum { maxDebt=-4900 };
-
-struct Issue
-{ 
-  enum Type { unknown=0, taxIncome=1,
-              exportGoods, donation,
-              importGoods, workersWages,
-              buildConstruction, creditPercents,
-              playerSalary, sundries, moneyStolen,
-              empireTax, debet, credit, cityProfit,
-              overduePayment, overdueEmpireTax,
-              balance, caesarsHelp,
-              issueTypeCount };
-  Type type;
-  int money;
-
-  Issue() : type( unknown ), money( 0 ) {}
-  Issue( Type t, int m ) : type( t ), money( m ) {}
-};
 
 class IssuesDetailedHistory
 {
@@ -74,7 +57,9 @@ private:
 
 class IssuesValue : public std::map< Issue::Type, int >
 {
-
+public:
+  VariantList save() const;
+  void load( const VariantList& stream );
 };
 
 class IssuesHistory : public std::vector< IssuesValue >

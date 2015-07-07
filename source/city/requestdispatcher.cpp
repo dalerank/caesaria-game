@@ -124,9 +124,11 @@ VariantMap Dispatcher::save() const
   VariantMap ret;
   VariantMap vm_rq;
 
+  std::string name;
+  name.reserve( 256 );
   foreach( rq, _d->requests )
   {
-    std::string name = utils::format( 0xff, "request_%02d", std::distance( _d->requests.begin(), rq ) );
+    name = utils::format( 0xff, "request_%02d", std::distance( _d->requests.begin(), rq ) );
     vm_rq[ name ] = (*rq)->save();
   }
 

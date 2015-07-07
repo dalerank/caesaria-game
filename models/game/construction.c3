@@ -577,9 +577,6 @@
     employers : 0,
     pretty : "Well",
     image : [ "utilitya", 1 ]
-    image.ext : {
-      type_1 : { size:1, rc : "well", start : 1, count : 4 }
-    }
     class : "water"
     sound : [ "well", 1 ]
   }, 

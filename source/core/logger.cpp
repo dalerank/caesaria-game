@@ -77,7 +77,7 @@ public:
 
   virtual bool isActive() const { return _logFile != 0; }
 
-  virtual void write( std::string str, bool )
+  virtual void write( const std::string& str, bool )
   {
     // Don't write progress stuff into the logfile
     // Make sure only one thread is writing to the file at a time
@@ -99,7 +99,7 @@ public:
 class ConsoleLogWriter : public LogWriter
 {
 public:
-  virtual void write( std::string str, bool newline )
+  virtual void write( const std::string& str, bool newline )
   {
 #ifdef CAESARIA_PLATFORM_ANDROID
     str.append( newline ? "\n" : "" );

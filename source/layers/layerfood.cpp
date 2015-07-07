@@ -79,7 +79,7 @@ void Food::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( foodLevel >= 0 )
     {
-      _addColumn( screenPos, math::clamp( 100 - foodLevel, 0, 100 ) );
+      drawColumn( engine, screenPos, math::clamp( 100 - foodLevel, 0, 100 ) );
     }
   }
 
