@@ -35,6 +35,10 @@ namespace world
 class Merchants : public FlowList<Merchant>
 {
 public:
+  Traderoute* route;
+
+  Merchants() : route( 0 ) {}
+
   VariantMap save() const
   {
     VariantMap ret;
@@ -46,6 +50,43 @@ public:
     }
 
     return ret;
+  }
+
+  void load( const VariantMap& stream )
+  {
+    if( !route )
+    {
+      Logger::warning( "WARNING !!!: Merchants::load() route is null" );
+      return;
+    }
+
+    foreach( it, stream )
+    {
+      good::Storage sell, buy;
+      MerchantPtr m = route->addMerchant( route->beginCity()->name(), sell, buy );
+
+      if( m.isValid() )
+      {
+        m->load( it->second.toMap() );
+      }
+      else
+      {
+        Logger::warning( "WARNING !!!: Merchants::load() cant load merchant index %d for route %s",
+                         std::distance( stream.begin(), it ), route->name().c_str() );
+      }
+    }
+  }
+
+  void update( unsigned int time )
+  {
+    MerchantList::iterator it=begin();
+    while( it != end() )
+    {
+      if( (*it)->isDeleted() ) {  it = erase( it ); }
+      else  { (*it)->timeStep( time ); ++it;  }
+    }
+
+    merge();
   }
 };
 
@@ -72,7 +113,7 @@ public:
 
 CityPtr Traderoute::beginCity() const {  return _d->empire->findCity( _d->begin );}
 CityPtr Traderoute::endCity() const{  return _d->empire->findCity( _d->end );}
-std::string Traderoute::getName() const{  return _d->begin + "<->" + _d->end;}
+std::string Traderoute::name() const{  return _d->begin + "<->" + _d->end;}
 
 CityPtr Traderoute::partner(const std::string& name) const
 {
@@ -81,14 +122,7 @@ CityPtr Traderoute::partner(const std::string& name) const
 
 void Traderoute::timeStep( unsigned int time )
 {
-  MerchantList::iterator it=_d->merchants.begin();
-  while( it != _d->merchants.end() )
-  {
-    if( (*it)->isDeleted() ) {  it = _d->merchants.erase( it ); }
-    else  { (*it)->timeStep( time ); ++it;  }
-  }
-
-  _d->merchants.merge();
+  _d->merchants.update( time );
 }
 
 PointsArray Traderoute::points( bool reverse ) const
@@ -151,6 +185,7 @@ Traderoute::Traderoute( EmpirePtr empire, std::string begin, std::string end )
   _d->empire = empire;
   _d->begin = begin;
   _d->end = end;
+  _d->merchants.route = this;
 }
 
 Traderoute::~Traderoute() {}
@@ -166,7 +201,7 @@ MerchantPtr Traderoute::merchant( unsigned int index )
   return *it;
 }
 
-MerchantList Traderoute::merchants() const
+const MerchantList& Traderoute::merchants() const
 {
   return _d->merchants;
 }
@@ -175,10 +210,8 @@ VariantMap Traderoute::save() const
 {  
   VariantMap ret;
 
-
-  VARIANT_SAVE_CLASS_D( ret, _d,  merchants)
-  ret[ "points" ] = _d->points.save();
-
+  VARIANT_SAVE_CLASS_D( ret, _d, merchants)
+  VARIANT_SAVE_CLASS_D( ret, _d, points )
   VARIANT_SAVE_ANY_D( ret, _d, seaRoute )
 
   return ret;
@@ -186,27 +219,12 @@ VariantMap Traderoute::save() const
 
 void Traderoute::load(const VariantMap& stream)
 {
-  _d->points.load( stream.get( "points" ).toList() );
+  VARIANT_LOAD_CLASS_D_LIST (_d, points, stream )
+  VARIANT_LOAD_CLASS_D( _d, merchants, stream )
+  VARIANT_LOAD_ANY_D( _d, seaRoute, stream )
+
   _d->updateBoundingBox();
   _d->updatePictures();
-
-  VariantMap merchants = stream.get( "merchants" ).toMap();
-  foreach( it, merchants )
-  {
-    good::Storage sell, buy;
-    MerchantPtr m = addMerchant( _d->begin, sell, buy );
-
-    if( m.isValid() )
-    {
-      m->load( it->second.toMap() );
-    }
-    else
-    {
-      Logger::warning( "WARNING !!!: Traderoute::load cant load merchant index %d", std::distance( merchants.begin(), it) );
-    }
-  }
-
-  VARIANT_LOAD_ANY_D( _d, seaRoute, stream )
 }
 
 unsigned int Traderoute::getId(const std::string& begin, const std::string& end)

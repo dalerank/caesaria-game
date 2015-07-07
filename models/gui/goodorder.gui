@@ -27,7 +27,7 @@
     tooltip : "##tradeadv_industrystate_tip##"
   }
 
-  btnStackingState#PushButton : {
+  btnStackingState#MultilineButton : {
     geometry : [ 50, 160, "pw-60", 210 ]
     font : "FONT_2"
     bgtype : "whiteBorderUp"

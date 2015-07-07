@@ -234,8 +234,10 @@ float Senate::collectTaxes()
   return save;
 }
 
-unsigned int Senate::funds() const {  return _city()->treasury().money(); }
-std::string Senate::errorDesc() const {  return _d->errorStr; }
+unsigned int Senate::funds()       const { return _city()->treasury().money(); }
+unsigned int Senate::thisYearTax() const { return _city()->treasury().getIssueValue( econ::Issue::taxIncome,
+                                                                                     econ::Treasury::thisYear ); }
+std::string Senate::errorDesc()    const { return _d->errorStr; }
 
 int Senate::status(Senate::Status status) const
 {

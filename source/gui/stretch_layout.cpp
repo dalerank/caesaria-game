@@ -25,7 +25,7 @@ namespace gui
 REGISTER_CLASS_IN_WIDGETFACTORY(HLayout)
 REGISTER_CLASS_IN_WIDGETFACTORY(VLayout)
 
-bool compare_tag(Widget* one, Widget* two)
+bool compareID(Widget* one, Widget* two)
 {
   return one->ID() < two->ID();
 }
@@ -50,7 +50,7 @@ void Layout::updateLayout()
   foreach( it, children() )
     ch.push_back( *it );
 
-  std::sort( ch.begin(), ch.end(), compare_tag );
+  std::sort( ch.begin(), ch.end(), compareID );
 
   unsigned int lastPos = _offset;
   while( ch.size() > 0 )
@@ -112,8 +112,13 @@ void Layout::setupUI(const VariantMap &stream)
 void Layout::_finalizeResize()
 {
   _needUpdate = true;
-
   Widget::_finalizeResize();
+}
+
+void Layout::removeChild(gui::Widget *child)
+{
+  Widget::removeChild( child );
+  _needUpdate = true;
 }
 
 Layout::Layout(Widget *parent)

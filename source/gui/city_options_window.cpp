@@ -68,6 +68,7 @@ static OptionInfo options[] =
   INIT_OPTION( btnAnroidBarEnabled, -1, game::Settings::showTabletMenu, "city_androidbar" ),
   INIT_OPTION( btnToggleCcUseAI, -1, game::Settings::ccUseAI, "city_ccuseai" ),
   INIT_OPTION( btnHighlightBuilding, PlayerCity::highlightBuilding, "", "city_highlight_bld" ),
+  INIT_OPTION( btnDetroyEpidemicHouses, PlayerCity::destroyEpidemicHouses, "", "city_destroy_epdh" ),
 
   { false, "", 0, 0, "", "" }
 };
@@ -98,6 +99,7 @@ public:
   PushButton* btnShowTooltips;
   PushButton* btnDifficulty;
   PushButton* btnMetrics;
+  PushButton* btnDetroyEpidemicHouses;
 
   Label* lbFireRisk;
   Label* lbCollapseRisk;
@@ -131,6 +133,7 @@ public:
   void toggleCcUseAI();
   void toggleMetrics();
   void toggleHighlightBuilding();
+  void toggleDestroyEpidemicHouses();
   void toggleCityOption( PlayerCity::OptionType option );
   void changeCityOption( PlayerCity::OptionType option, int delta);
 };
@@ -170,6 +173,7 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, btnToggleCcUseAI )
   GET_DWIDGET_FROM_UI( _d, btnMetrics )
   GET_DWIDGET_FROM_UI( _d, btnHighlightBuilding )
+  GET_DWIDGET_FROM_UI( _d, btnDetroyEpidemicHouses )
 
   CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods )
   CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings )
@@ -192,6 +196,7 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   CONNECT( _d->btnToggleCcUseAI, onClicked(), _d.data(), Impl::toggleCcUseAI )
   CONNECT( _d->btnMetrics, onClicked(), _d.data(), Impl::toggleMetrics )
   CONNECT( _d->btnHighlightBuilding, onClicked(), _d.data(), Impl::toggleHighlightBuilding )
+  CONNECT( _d->btnDetroyEpidemicHouses, onClicked(), _d.data(), Impl::toggleDestroyEpidemicHouses )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptions::deleteLater );
@@ -289,6 +294,7 @@ void CityOptions::Impl::toggleZoomEnabled() {  toggleCityOption( PlayerCity::zoo
 void CityOptions::Impl::invertZoom()  {  toggleCityOption( PlayerCity::zoomInvert ); }
 void CityOptions::Impl::toggleHighlightBuilding() { toggleCityOption( PlayerCity::highlightBuilding ); }
 void CityOptions::Impl::toggleWarnings()  {  toggleCityOption( PlayerCity::warningsEnabled ); }
+void CityOptions::Impl::toggleDestroyEpidemicHouses() { toggleCityOption( PlayerCity::destroyEpidemicHouses ); }
 
 void CityOptions::Impl::toggleLeftMiddleMouse()
 {

@@ -112,6 +112,8 @@ void Shoreline::timeStep( const unsigned int time )
 
   _d->lastTimeUpdate = time;
 
+  std::string picName;
+  picName.reserve( 256 );
   foreach( it, _d->slTiles )
   {
     Tile* tile = *it;
@@ -138,7 +140,7 @@ void Shoreline::timeStep( const unsigned int time )
       }
     }
 
-    std::string picName = imgid::toResource( picId );
+    picName = imgid::toResource( picId );
     if( picName != tile->picture().name())
     {
       tile->setPicture( picName );

@@ -71,31 +71,32 @@ void Treasury::resolveIssue( econ::Issue issue )
   bool needUpdateTreasury = true;
   switch( issue.type )
   {
-  case econ::Issue::unknown:
+  case Issue::unknown:
     Logger::warning( "Funds: wrong issue type %d", issue.type );
     return;
   break;
 
-  case econ::Issue::overduePayment:
-  case econ::Issue::overdueEmpireTax:
+  case Issue::overduePayment:
+  case Issue::overdueEmpireTax:
     needUpdateTreasury = false;
   break;
 
   default:
   {
     IssuesValue& step = _d->history.front();
-    if( step.count( (econ::Issue::Type)issue.type ) == 0 )
+    if( step.count( (Issue::Type)issue.type ) == 0 )
     {
-      step[ (econ::Issue::Type)issue.type ] = 0;
+      step[ (Issue::Type)issue.type ] = 0;
     }
 
-    step[ (econ::Issue::Type)issue.type ] += abs( issue.money );
+    step[ (Issue::Type)issue.type ] += abs( issue.money );
 
     _updateCreditDebt(step, issue);
 
     if( needUpdateTreasury )
     {
       _d->money += issue.money;
+      step[ Issue::balance ] = _d->money;
     }
   }
   break;
@@ -103,7 +104,7 @@ void Treasury::resolveIssue( econ::Issue issue )
 
   _d->detailedHistory.addIssue( issue );
 
-  emit _d->onNewIssueSignal( (econ::Issue::Type)issue.type );
+  emit _d->onNewIssueSignal( (Issue::Type)issue.type );
 
   if( saveMoney != _d->money )
   {
@@ -111,27 +112,27 @@ void Treasury::resolveIssue( econ::Issue issue )
   }
 }
 
-void Treasury::_updateCreditDebt(IssuesValue& step, econ::Issue issue)
+void Treasury::_updateCreditDebt(IssuesValue& step, Issue issue)
 {
-    if(issue.type == econ::Issue::taxIncome || issue.type == econ::Issue::exportGoods || issue.type == econ::Issue::donation)
+    if(issue.type == Issue::taxIncome || issue.type == Issue::exportGoods || issue.type == Issue::donation)
     {
-         step[ econ::Issue::debet ] += issue.money;
+         step[ Issue::debet ] += issue.money;
     }
-    else if ( issue.type == econ::Issue::importGoods || issue.type == econ::Issue::workersWages || issue.type == econ::Issue::buildConstruction
-              || issue.type == econ::Issue::creditPercents || issue.type == econ::Issue::playerSalary || issue.type == econ::Issue::sundries
-              || issue.type == econ::Issue::empireTax)
+    else if ( issue.type == Issue::importGoods || issue.type == Issue::workersWages || issue.type == Issue::buildConstruction
+              || issue.type == Issue::creditPercents || issue.type == Issue::playerSalary || issue.type == Issue::sundries
+              || issue.type == Issue::empireTax)
     {
-         step[ econ::Issue::credit ] += issue.money;
+         step[ Issue::credit ] += issue.money;
     }
 
-    step[ econ::Issue::cityProfit ] = step[ econ::Issue::debet ] + step[ econ::Issue::credit ];
+    step[ Issue::cityProfit ] = step[ Issue::debet ] + step[ Issue::credit ];
 }
 
 int Treasury::money() const { return _d->money; }
 
 int Treasury::profit() const
 {
-  int balanceLastYear = getIssueValue( econ::Issue::balance, lastYear );
+  int balanceLastYear = getIssueValue( Issue::balance, lastYear );
   return _d->money - balanceLastYear;
 }
 
@@ -151,8 +152,8 @@ void Treasury::updateHistory( const DateTime& date )
   }
 
   IssuesValue& step = _d->history.front();
-  step[ econ::Issue::balance ] = _d->money;
-  step[ econ::Issue::cityProfit ] = profit();
+  step[ Issue::balance ] = _d->money;
+  step[ Issue::cityProfit ] = profit();
 
   _d->lastYearUpdate = date.year();
   _d->history.insert( _d->history.begin(), IssuesValue() );
@@ -163,7 +164,7 @@ void Treasury::updateHistory( const DateTime& date )
   }
 }
 
-int Treasury::getIssueValue(econ::Issue::Type type, int age ) const
+int Treasury::getIssueValue(Issue::Type type, int age ) const
 {
   if( (unsigned int)age >= _d->history.size() )
     return 0;
@@ -205,21 +206,13 @@ void Treasury::load( const VariantMap& stream )
 
 Treasury::~Treasury(){}
 Signal1<int>& Treasury::onChange(){  return _d->onChangeSignal; }
-Signal1<econ::Issue::Type>&Treasury::onNewIssue(){ return _d->onNewIssueSignal; }
+Signal1<Issue::Type>& Treasury::onNewIssue(){ return _d->onNewIssueSignal; }
 
 VariantList IssuesHistory::save() const
 {
   VariantList ret;
   foreach( stepIt, *this )
-  {
-    VariantList step;
-    foreach( it, *stepIt )
-    {
-      step << it->first << it->second;
-    }
-
-    ret.push_back( step );
-  }
+    ret.push_back( stepIt->save() );
 
   return ret;
 }
@@ -231,15 +224,7 @@ void IssuesHistory::load(const VariantList& stream)
   {
     push_back( IssuesValue() );
     IssuesValue& last = back();
-    const VariantList& step = it->toList();
-    VariantList::const_iterator stepIt=step.begin();
-    while( stepIt != step.end() )
-    {
-      econ::Issue::Type type = (econ::Issue::Type)stepIt->toInt(); ++stepIt;
-      int value = stepIt->toInt(); ++stepIt;
-
-      last[ type ] = value;
-    }
+    last.load( it->toList() );
   }
 }
 
@@ -254,7 +239,7 @@ void IssuesDetailedHistory::addIssue(Issue issue)
   {
     if( _d->issues.front().time.year() != dIssue.time.year() )
       _d->issues.erase( _d->issues.begin() );
-    }
+  }
 }
 
 const IssuesDetailedHistory::DateIssues& IssuesDetailedHistory::issues()
@@ -286,7 +271,7 @@ void IssuesDetailedHistory::load(const VariantList& stream)
     DateIssue dIssue;
     dIssue.load( it->toList() );
     _d->issues.push_back( dIssue );
-    }
+  }
 }
 
 VariantList IssuesDetailedHistory::DateIssue::save() const
@@ -301,6 +286,27 @@ void IssuesDetailedHistory::DateIssue::load(const VariantList& stream)
   time = stream.get( 0 ).toDateTime();
   type = (Type)stream.get( 1 ).toInt();
   money = stream.get( 2 );
+}
+
+VariantList IssuesValue::save() const
+{
+  VariantList ret;
+  foreach( it, *this )
+    ret << it->first << it->second;
+
+  return ret;
+}
+
+void IssuesValue::load(const VariantList& stream)
+{
+  VariantListReader reader( stream );
+  while( reader.atEnd() )
+  {
+    econ::Issue::Type type = (Issue::Type)reader.next().toInt(); //type
+    int value = reader.next().toInt(); //value
+
+    (*this)[ type ] = value;
+  }
 }
 
 }//end namespace funds

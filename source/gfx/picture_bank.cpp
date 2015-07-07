@@ -68,6 +68,10 @@ public:
   TextureCounter txCounters;
   CachedPictures resources;  // key=image name, value=picture
 
+  struct {
+    std::string rc;
+  } cache;
+
 public:
   Picture tryLoadPicture( const std::string& name );
   void loadAtlas(const vfs::Path& filename );
@@ -201,9 +205,9 @@ Picture& PictureBank::getPicture(const std::string &name)
 
 Picture& PictureBank::getPicture(const std::string& prefix, const int idx)
 {
-  std::string resource_name = utils::format( 0xff, "%s_%05d", prefix.c_str(), idx );
+  _d->cache.rc = utils::format( 0xff, "%s_%05d", prefix.c_str(), idx );
 
-  return getPicture(resource_name);
+  return getPicture( _d->cache.rc );
 }
 
 bool PictureBank::present(const std::string& prefix, const int idx) const
@@ -215,6 +219,7 @@ PictureBank::PictureBank() : _d( new Impl )
 {
   _d->picExentions << ".png";
   _d->picExentions << ".bmp";
+  _d->cache.rc.reserve( 128 );
 }
 
 PictureBank::~PictureBank(){}

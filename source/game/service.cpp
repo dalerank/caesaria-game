@@ -16,6 +16,7 @@
 #include "service.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"
+#include "objects/constants.hpp"
 
 ServiceHelper& ServiceHelper::instance()
 {
@@ -82,4 +83,17 @@ std::string ServiceHelper::getName( Service::Type type )
   }
 
   return name;
+}
+
+Service::Type ServiceHelper::fromObject(int objectType)
+{
+  switch( objectType )
+  {
+  case object::barber: return Service::barber;
+  case object::baths: return Service::baths;
+  case object::hospital: return Service::hospital;
+  case object::clinic: return Service::doctor;
+  }
+
+  return Service::srvCount;
 }

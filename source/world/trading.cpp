@@ -107,7 +107,7 @@ VariantMap Trading::save() const
   VariantMap routesVm;
   foreach( it, _d->routes )
   {
-    routesVm[ it->second->getName() ] = it->second->save();
+    routesVm[ it->second->name() ] = it->second->save();
   }
 
   ret[ "routes" ] = routesVm;

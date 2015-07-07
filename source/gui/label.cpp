@@ -45,6 +45,7 @@ public:
     append( Label::bgNone, "none" );
     append( Label::bgWhiteFrame, "whiteFrame" );
     append( Label::bgBlackFrame, "blackFrame" );
+    append( Label::bgWhiteBorderA, "whiteBorder" );
   }
 };
 

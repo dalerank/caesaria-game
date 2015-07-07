@@ -39,7 +39,7 @@
 #include "trade_options.hpp"
 #include "good/storage.hpp"
 #include "world/trading.hpp"
-#include "walker/merchant.hpp"
+#include "walker/merchant_land.hpp"
 #include "game/gamedate.hpp"
 #include "core/foreach.hpp"
 #include "events/event.hpp"
@@ -53,7 +53,7 @@
 #include "objects/senate.hpp"
 #include "objects/house.hpp"
 #include "world/empiremap.hpp"
-#include "walker/seamerchant.hpp"
+#include "walker/merchant_sea.hpp"
 #include "cityservice_factory.hpp"
 #include "world/emperor.hpp"
 #include "game/resourcegroup.hpp"
@@ -177,6 +177,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( climateType, game::climate::central );
   setOption( c3gameplay, 0 );
   setOption( highlightBuilding, 1 );
+  setOption( destroyEpidemicHouses, 0 );
   setOption( difficulty, game::difficulty::usual );
 
   _d->states.nation = world::nation::rome;
@@ -653,12 +654,12 @@ void PlayerCity::addObject( world::ObjectPtr object )
     world::MerchantPtr merchant = ptr_cast<world::Merchant>( object );
     if( merchant->isSeaRoute() )
     {
-      SeaMerchantPtr cityMerchant = ptr_cast<SeaMerchant>( SeaMerchant::create( this, merchant ) );
+      SeaMerchantPtr cityMerchant = SeaMerchant::create( this, merchant );
       cityMerchant->send2city();
     }
     else
     {
-      MerchantPtr cityMerchant = ptr_cast<Merchant>( Merchant::create( this, merchant ) );
+      LandMerchantPtr cityMerchant = LandMerchant::create( this, merchant );
       cityMerchant->send2city();
     }
   }

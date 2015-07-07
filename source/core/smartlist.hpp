@@ -31,7 +31,7 @@ public:
   SmartList& operator<<( const SmartList<Src>& srcList )
   {
     foreach( it, srcList )
-      addIfValid( ptr_cast<T>(*it) );
+      addIfValid( ptr_cast<T>( *it ) );
 
     return *this;
   }
@@ -77,6 +77,16 @@ public:
       if( a == *it ) { it = this->erase( it ); }
       else { ++it; }
     }
+  }
+
+  SmartPtr<T> valueOrEmpty( unsigned int index ) const
+  {
+    if( index >= this->size() )
+      return SmartPtr<T>();
+
+    typename SmartList<T>::const_iterator it = this->begin();
+    std::advance( it, index );
+    return *it;
   }
 
   void removeAt( int index )

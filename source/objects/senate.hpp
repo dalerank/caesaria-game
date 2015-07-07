@@ -26,7 +26,9 @@ class Senate : public ServiceBuilding
 public:
   typedef enum { culture, prosperity, peace, favour, workless } Status;
   Senate();
+
   unsigned int funds() const;
+  unsigned int thisYearTax() const;
 
   float collectTaxes();
 
