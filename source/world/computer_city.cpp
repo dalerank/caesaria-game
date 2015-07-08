@@ -52,7 +52,7 @@ public:
   CcTargets()
   {
     population = 0;
-    int dd = sizeof( need );
+//    int dd = sizeof( need );
     memset( need, 0, sizeof( need ) );
     memset( idle, 0, sizeof( need ) );
     memset( coverage, 0, sizeof( need ) );

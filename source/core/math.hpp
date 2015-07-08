@@ -101,14 +101,14 @@ inline int random( int max )
  */
 inline bool random_values_of_range(int arr[], size_t size, int min, int max)
 {
-  for (int i = 0; i < size; ++i)
+  for (size_t i = 0; i < size; ++i)
   {
     bool fail = false;
     int next;
     do
     {
       next = random(max - min) + min;
-      for (int j = 0; j < i; ++j)
+      for (size_t j = 0; j < i; ++j)
       {
         if (arr[j] == next)
         {
