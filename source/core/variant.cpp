@@ -1626,7 +1626,8 @@ static const unsigned int CanConvertMatrix[Variant::LastCoreType + 1] =
 
 /*LineF*/        1 << Variant::Line,
 
-/*Point*/        1 << Variant::NPointF,
+                // TODO: Fix narrowing, remove cast
+/*Point*/        (const unsigned int) (1 << Variant::NPointF),
 
 /*PointF*/       1 << Variant::NPoint
 

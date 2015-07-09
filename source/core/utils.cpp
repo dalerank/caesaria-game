@@ -68,7 +68,7 @@ int vformat(std::string& str, int max_size, const char* format, va_list argument
   return length;
 }
 
-std::wstring utf8toWString(const char* src, int size)
+std::wstring utf8toWString(const char* src, size_t size)
 {
   std::wstring dest;
 

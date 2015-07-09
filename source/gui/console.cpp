@@ -151,7 +151,7 @@ void Console::draw( gfx::Engine& painter )
                    textRect.right(),
                    textRect.bottom() + lineHeight);
 
-    NColor fontcolor = DefaultColors::white;
+//    NColor fontcolor = DefaultColors::white;
 
   /* for(unsigned int i = 0; i < console_messages_.size(); i++)
    {

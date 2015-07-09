@@ -114,9 +114,9 @@ protected:
         int index = itemAt( event.mouse.pos() );
         if( index >= 0 )
         {
-          ListBoxItem& itemUnderMouse = item( index );
+          //ListBoxItem& itemUnderMouse = item((unsigned int) index);
 
-          bool opened = itemUnderMouse.data( literals::opened );
+          //bool opened = itemUnderMouse.data( literals::opened );
 
           //std::string text = opened ? "" : _("##scribemessages_unread##");
           //setTooltipText( text );
