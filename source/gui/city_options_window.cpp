@@ -53,7 +53,7 @@ struct OptionInfo
   const char* text_off;
 };
 
-#define INIT_OPTION(btnName, co, so, text ) { true, #btnName, co, so, "##"text"_on##", "##"text"_off##" }
+#define INIT_OPTION(btnName, co, so, text ) { true, #btnName, co, so, "##" text"_on##", "##" text"_off##" }
 static OptionInfo options[] =
 {
   INIT_OPTION( btnGodEnabled, PlayerCity::godEnabled, "", "city_opts_god" ),

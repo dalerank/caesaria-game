@@ -162,7 +162,10 @@ if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   endif(HAIKU)
 endif()
 
-# tests for C++11 suport
+# Enforce C++11
+set(USE_CPP11 ON)
+
+# Check for C++11 suport
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
 if(COMPILER_SUPPORTS_CXX11)

@@ -88,7 +88,7 @@ public:
 
   Impl() : EnumsHelper<good::Product>(good::none)
   {
-#define __REG_GTYPE(a) append( good::a, CAESARIA_STR_EXT(a), "##"CAESARIA_STR_EXT(a)"##" );
+#define __REG_GTYPE(a) append( good::a, CAESARIA_STR_EXT(a), "##" CAESARIA_STR_EXT(a)"##" );
     __REG_GTYPE(none )
     __REG_GTYPE(wheat)
     __REG_GTYPE(fish )
