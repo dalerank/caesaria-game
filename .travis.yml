@@ -16,4 +16,7 @@ script:
 # Build CaesarIA
 - make -j4
 notifications:
-    slack: caesariagame:m3lwdYPWqeCOn0zWs0rjX5KY
+    slack:
+        - caesariagame:m3lwdYPWqeCOn0zWs0rjX5KY
+    on_failure: always
+    on_success: never
