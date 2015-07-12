@@ -123,5 +123,5 @@ int RecruterService::max() const { return _habitants.workers.max; }
 
 void RecruterService::setMax(int)
 {
-  Logger::warning( "WARNING !!! RecruterService::setMax blocked. Max value drive by Habitants class." );
+  Logger::warning( "!!!Warning: RecruterService::setMax blocked. Max value drive by Habitants class." );
 }

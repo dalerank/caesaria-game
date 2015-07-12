@@ -13,27 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#include "merchant.hpp"
-#include "city/city.hpp"
-
-Merchant::~Merchant()
-{
-
-}
-
-good::ProductMap Merchant::sold() const {  return good::ProductMap(); }
-good::ProductMap Merchant::bougth() const{  return good::ProductMap(); }
-good::ProductMap Merchant::mayBuy() const{  return good::ProductMap(); }
-
-std::string Merchant::parentCity() const
-{
-  return "";
-}
-
-Merchant::Merchant(PlayerCityPtr city)
- : Human( city )
-{
-
-}
+#include "spring.hpp"

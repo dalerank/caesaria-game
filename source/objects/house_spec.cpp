@@ -255,7 +255,7 @@ unsigned int HouseSpecification::consumptionInterval(HouseSpecification::Interva
   default: break;
   }
 
-  Logger::warning( "WARNING !!! Unknown interval name %d", name );
+  Logger::warning( "!!!Warning: Unknown interval name %d", name );
   return 0;
 }
 

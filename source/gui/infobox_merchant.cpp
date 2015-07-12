@@ -55,10 +55,12 @@ void AboutMerchant::_updateExtInfo()
   {
     MerchantPtr m = wlk.as<Merchant>();
     good::ProductMap mmap = m->bougth();
+    good::ProductMap bmap = m->mayBuy();
+
     int index=0;
     new Label( this, Rect( Point( 16, _lbBlackFrame()->bottom() + 2 ), Size( 84, 24 ) ), _("##bougth##"));
-    foreach( it, mmap )
-      _drawGood( it->first, it->second, index++, _lbBlackFrame()->bottom() + 2 );
+    foreach( it, bmap )
+      _drawGood( it->first, mmap[ it->first ], index++, _lbBlackFrame()->bottom() + 2 );
 
     mmap = m->sold();
     index=0;

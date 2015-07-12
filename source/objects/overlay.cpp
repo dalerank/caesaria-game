@@ -186,6 +186,7 @@ void Overlay::initialize(const MetaData& mdata)
   }
 }
 
+void Overlay::reinit() {}
 bool Overlay::isWalkable() const{  return false;}
 bool Overlay::isDestructible() const { return true; }
 bool Overlay::isFlat() const { return false;}
@@ -234,7 +235,7 @@ TilesArray Overlay::area() const
 {
   if( _city().isNull() )
   {
-    Logger::warning( "WARNING !!!: Helper::getArea city is null" );
+    Logger::warning( "!!!Warning: Helper::getArea city is null" );
     return gfx::TilesArray();
   }
 

@@ -320,7 +320,7 @@ void ServiceWalker::send2City(BuildingPtr base, int orders)
 {
   if( base.isNull() )
   {
-    Logger::warning( "WARNING !!!: Try send from unexist base " );
+    Logger::warning( "!!!Warning: Try send from unexist base " );
     return;
   }
 
@@ -328,13 +328,13 @@ void ServiceWalker::send2City(BuildingPtr base, int orders)
 
   if( servBuilding.isValid() && _d->maxDistance <= defaultServiceDistance )
   {
-    Logger::warning( "WARNING !!!: Base have short distance for walker. Parent [%d,%d] ", base->pos().i(), base->pos().j() );
+    Logger::warning( "!!!Warning: Base have short distance for walker. Parent [%d,%d] ", base->pos().i(), base->pos().j() );
     setMaxDistance( servBuilding->walkerDistance() );
   }
 
   if( !base.is<WorkingBuilding>() )
   {
-    Logger::warning( "WARNING !!!: ServiceWalker send not from service building. Parent [%d,%d] ", base->pos().i(), base->pos().j() );
+    Logger::warning( "!!!Warning: ServiceWalker send not from service building. Parent [%d,%d] ", base->pos().i(), base->pos().j() );
   }
 
   setBase( base );

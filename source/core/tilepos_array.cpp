@@ -65,3 +65,9 @@ TilePosSet& TilePosSet::operator<<(const TilePos &pos)
   insert( pos );
   return *this;
 }
+
+
+TilePos TilePosArray::random()
+{
+  return valueOrEmpty( math::random( size() - 1 ) );
+}

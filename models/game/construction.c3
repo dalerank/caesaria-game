@@ -459,6 +459,27 @@
     desirability : { base : 8, 	range : 4,	step : -2 }
     employers : 12
     class : "trade"
+
+    image.north : {
+      image : [ "transport", 5 ]
+      animation : { rc : "transport", start : 6, count : 10, delay : 4, offset : [ 107, 61 ], pingpong : true }
+    }
+
+    image.east : {
+      image : [ "transport", 17 ]
+      animation : { rc : "transport", start : 18, count : 10, delay : 4, offset : [ 62, 36 ], pingpong : true }
+    }
+
+    image.south : {
+      image : [ "transport", 29 ]
+      animation : { rc : "transport", start : 30, count : 10, delay : 4, offset : [ 35, 51 ], pingpong : true }
+    }
+
+    image.west : {
+      image : [ "transport", 41 ]
+      animation : { rc : "transport", start : 42, count : 10, delay : 4, offset : [ 48, 70 ], pingpong : true }
+    }
+
     sound : [ "dock", 1 ]
   }, 
 

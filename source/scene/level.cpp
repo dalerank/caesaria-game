@@ -451,9 +451,7 @@ void Level::Impl::extendReign(int years)
 
 void Level::Impl::handleDirectionChange(Direction direction)
 {
-  direction::Helper dHelper;
-
-  GameEventPtr e = WarningMessage::create( _("##" + dHelper.findName( direction ) + "##"), 1 );
+  GameEventPtr e = WarningMessage::create( _("##" + direction::Helper::instance().findName( direction ) + "##"), 1 );
   e->dispatch();
 }
 

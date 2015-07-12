@@ -88,6 +88,7 @@ public:
   virtual void load( const VariantMap& stream );
 
   virtual void initialize( const MetaData& mdata );
+  virtual void reinit();
 
   virtual void debugLoadOld( int oldFormat, const VariantMap& stream );
 

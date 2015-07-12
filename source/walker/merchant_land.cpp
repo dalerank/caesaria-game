@@ -562,8 +562,9 @@ std::string LandMerchant::thoughts(Walker::Thought th) const
   return Human::thoughts( th );
 }
 
-good::ProductMap LandMerchant::sold() const { return _d->sell.filled(); }
-good::ProductMap LandMerchant::bougth() const { return _d->buy.filled(); }
+good::ProductMap LandMerchant::sold() const { return _d->sell.details(); }
+good::ProductMap LandMerchant::bougth() const { return _d->buy.details(); }
+good::ProductMap LandMerchant::mayBuy() const { return _d->buy.amounts(); }
 
 std::string LandMerchant::parentCity() const{ return _d->baseCityName; }
 

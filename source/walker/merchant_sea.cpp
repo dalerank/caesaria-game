@@ -435,8 +435,9 @@ void SeaMerchant::load( const VariantMap& stream)
   VARIANT_LOAD_CLASS_D( _d, sell, stream )
 }
 
-good::ProductMap SeaMerchant::sold() const { return _d->sell.filled(); }
-good::ProductMap SeaMerchant::bougth() const { return _d->buy.filled(); }
+good::ProductMap SeaMerchant::sold() const { return _d->sell.details(); }
+good::ProductMap SeaMerchant::bougth() const { return _d->buy.details(); }
+good::ProductMap SeaMerchant::mayBuy() const { return _d->buy.amounts(); }
 
 void SeaMerchant::timeStep(const unsigned long time)
 {
