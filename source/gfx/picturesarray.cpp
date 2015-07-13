@@ -49,6 +49,7 @@ Pictures& Pictures::append(const Pictures& pics)
 Pictures &Pictures::append(const std::string &rc, int index)
 {
   this->push_back( Picture( rc, index ) );
+  return *this;
 }
 
 void Pictures::append(const Picture &pic, const Point &offset)
