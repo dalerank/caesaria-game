@@ -478,12 +478,13 @@ void Dock::_tryDeliverGoods()
 
 void Dock::_tryReceiveGoods()
 {
+  if( walkers().size() >= 2 )
+  {
+    return;
+  }
+
   for( auto gtype : good::all() )
   {
-    if( walkers().size() >= 2 )
-    {
-      return;
-    }
 
     if( _d->requestGoods.qty( gtype ) > 0 )
     {
