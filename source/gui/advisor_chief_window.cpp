@@ -269,9 +269,9 @@ void Chief::Impl::drawFoodStockState()
   goodsUpdaters << city->services();
 
   bool romeSendWheat = false;
-  foreach( it, goodsUpdaters )
+  for( auto updater : goodsUpdaters )
   {
-    if( (*it)->goodType() == good::wheat )
+    if( updater->goodType() == good::wheat )
     {
       romeSendWheat = true;
     }
@@ -284,8 +284,7 @@ void Chief::Impl::drawFoodStockState()
   }
   else
   {
-    InfoPtr info;
-    info << city->findService( city::Info::defaultName() );
+    InfoPtr info = city::statistic::getService<Info>( city );
 
     if( info.isValid() )
     {
@@ -319,8 +318,7 @@ void Chief::Impl::drawFoodStockState()
 void Chief::Impl::drawFoodConsumption()
 {
   std::string text;
-  city::InfoPtr info;
-  info << city->findService( Info::defaultName() );
+  city::InfoPtr info = statistic::getService<Info>( city );
 
   int fk = info->lastParams()[ Info::foodKoeff ];
 
@@ -351,8 +349,7 @@ void Chief::Impl::drawFoodConsumption()
 void Chief::Impl::drawMilitary()
 {
   StringArray reasons;
-  city::MilitaryPtr mil;
-  mil << city->findService( city::Military::defaultName() );
+  MilitaryPtr mil = statistic::getService<Military>( city );
   bool isBesieged = false;
 
   if( mil.isValid() )
@@ -374,15 +371,15 @@ void Chief::Impl::drawMilitary()
     {
       int minDistance = infinteDistance;
       world::ObjectPtr maxThreat;
-      foreach( i, objs )
+      for( auto obj : objs )
       {
-        if( is_kind_of<world::Barbarian>( *i ) ||
-            is_kind_of<world::RomeChastenerArmy>( *i ) )
+        if( is_kind_of<world::Barbarian>( obj ) ||
+            is_kind_of<world::RomeChastenerArmy>( obj ) )
         {
-          int distance = city->location().distanceTo( (*i)->location() );
+          int distance = city->location().distanceTo( obj->location() );
           if( minDistance > distance )
           {
-            maxThreat = *i;
+            maxThreat = obj;
             minDistance = distance;
           }
         }
@@ -412,9 +409,9 @@ void Chief::Impl::drawMilitary()
     BarracksList barracks = statistic::getObjects<Barracks>( city, object::barracks );
 
     bool needWeapons = false;
-    foreach( it, barracks )
+    for( auto barrack : barracks )
     {
-      if( (*it)->isNeedWeapons() )
+      if( barrack->isNeedWeapons() )
       {
         needWeapons = true;
         break;

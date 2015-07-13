@@ -160,7 +160,7 @@ void StartMenu::Impl::fitScreenResolution()
 
 void StartMenu::Impl::playMenuSoundTheme()
 {
-  audio::Engine::instance().play( "rome6", 50, audio::theme );
+  audio::Engine::instance().play( "main_menu", 50, audio::theme );
 }
 
 void StartMenu::Impl::continuePlay()
@@ -351,6 +351,7 @@ void StartMenu::Impl::showCredits()
                          _("##music##"),
                          " ",
                          "Aliaksandr BeatCheat (www.beatcheat.net), Peter Willington",
+                         "Omri Lahav",
                          " ",
                          _("##localization##"),
                          " ",

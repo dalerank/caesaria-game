@@ -177,7 +177,7 @@ void Factory::_weekUpdate(unsigned int time)
     {
       _reachUnworkingTreshold();
     }
-    }
+  }
 }
 
 void Factory::_setUnworkingInterval(unsigned int weeks)

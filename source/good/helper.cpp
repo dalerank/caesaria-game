@@ -182,7 +182,7 @@ float Helper::importPrice(PlayerCityPtr city, Product gtype, unsigned int qty)
 
 Product Helper::random()
 {
-  return Product( math::random( good::all().size() ));
+  return Product( math::random( good::all().size()-1 ));
 }
 
 }//end namespace good

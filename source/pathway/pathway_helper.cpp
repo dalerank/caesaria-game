@@ -148,10 +148,8 @@ Pathway PathwayHelper::randomWay( PlayerCityPtr city, TilePos startPos, int walk
   {
     do
     {
-      TilesArray::iterator destPos = tiles.begin();
-      std::advance( destPos, math::random( tiles.size() - 1 ) );
-
-      Pathway pathway = create( startPos, (*destPos)->pos(), PathwayHelper::allTerrain );
+      Tile* destPos = tiles.random();
+      Pathway pathway = create( startPos, destPos->pos(), PathwayHelper::allTerrain );
 
       if( pathway.isValid() )
       {

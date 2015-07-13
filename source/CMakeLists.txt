@@ -288,29 +288,3 @@ if(EXT_BINDIR)
       COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${GAME_BINARY_FILENAME}" "${CMAKE_SOURCE_DIR}/${EXT_BINDIR}/${GAME_BINARY_FILENAME}"
   )
 endif(EXT_BINDIR)
-
-
-
-# Copy DLL to build output directory
-if(WIN32)
-  set(_LIBS_FOR_DLL_SOURCE
-    ${SDL2_LIBRARY}
-    ${SDL2_MIXER_LIBRARY}
-    ${SDL2_TTF_LIBRARY}
-  )
-
-  foreach(_lib ${_LIBS_FOR_DLL_SOURCE})
-    GET_FILENAME_COMPONENT(_lib_abs ${_lib} ABSOLUTE)
-    GET_FILENAME_COMPONENT(_lib_path ${_lib} PATH)
-
-    # Gather list of all .xml and .conf files in "/config"
-    file(GLOB DLLs ${_lib_path}/*.dll
-      ${_lib_path}/../bin/*.dll)
-
-    foreach(dll ${DLLs})
-      add_custom_command( TARGET ${PROJECT_NAME}
-                          POST_BUILD
-                          COMMAND ${CMAKE_COMMAND} -E copy ${dll} ${WORK_DIR})
-    endforeach()
-  endforeach(_lib)
-endif(WIN32)

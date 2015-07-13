@@ -96,7 +96,7 @@ LegionEmblem LegionEmblem::findFree( PlayerCityPtr city )
   }
 
   return availableEmblems.size() > 0
-                       ? availableEmblems[ math::random( availableEmblems.size() ) ]
+                       ? availableEmblems[ math::random( availableEmblems.size()-1 ) ]
                        : LegionEmblem();
 }
 

@@ -131,6 +131,7 @@ Table::Table( Widget* parent,
   _d->cellLastTimeClick = 0;
   _d->itemHeight = 0;
   _d->spring.setColor( DefaultColors::red );
+  _d->spring.setDelta( 8 );
   _d->header = new HidingElement( this, Rect( 0, 0, width(), DEFAULT_SCROLLBAR_SIZE ) );
   _d->header->setAlignment( align::upperLeft, align::lowerRight, align::upperLeft, align::upperLeft );
   _d->header->setSubElement( true );

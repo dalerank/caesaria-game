@@ -122,9 +122,9 @@ void Engine::setVolume( audio::SoundType type, int value)
 void Engine::loadAlias(const vfs::Path& filename)
 {
   VariantMap alias = config::load( filename );
-  foreach( it, alias )
+  for( auto item : alias )
   {
-    _d->aliases[ Hash( it->first ) ] = it->second.toString();
+    _d->aliases[ Hash( item.first ) ] = item.second.toString();
   }
 }
 
@@ -222,15 +222,15 @@ Path Engine::Impl::findFullPath( const std::string& sampleName )
   if( sPath.extension().empty() )
   {
     Path fPath;
-    foreach( it, extensions )
+    for( auto ext : extensions )
     {
-      fPath = sPath.toString() + *it;
+      fPath = sPath.toString() + ext;
       if( fPath.exist() )
         return fPath;
 
-      foreach( dirIt, folders )
+      for( auto folder : folders )
       {
-        rPath = dirIt->find( fPath, Path::ignoreCase );
+        rPath = folder.find( fPath, Path::ignoreCase );
         if( !rPath.empty() )
           return rPath;
       }
@@ -241,9 +241,9 @@ Path Engine::Impl::findFullPath( const std::string& sampleName )
     if( sPath.exist() )
       return sPath;
 
-    foreach( dirIt, folders )
+    for( auto folder : folders )
     {
-      rPath = dirIt->find( sPath, Path::ignoreCase );
+      rPath = folder.find( sPath, Path::ignoreCase );
       if( !rPath.empty() )
         return rPath;
     }
@@ -393,11 +393,11 @@ void Engine::stop(int channel)
   if( !_d->useSound )
     return;
 
-  foreach( it,_d->samples )
+  for( auto sample :_d->samples )
   {
-    if( it->second.channel == channel )
+    if( sample.second.channel == channel )
     {
-      it->second.finished = true;
+      sample.second.finished = true;
       return;
     }
   }
@@ -410,11 +410,10 @@ void Engine::_updateSamplesVolume()
 
   int gameLvl = volume( audio::game );
 
-  foreach( it, _d->samples )
+  for( auto sample : _d->samples )
   {
-    Sample& sample = it->second;
-    int typeVlm = volume( sample.typeSound );
-    sample.setVolume( gameLvl, typeVlm );
+    int typeVlm = volume( sample.second.typeSound );
+    sample.second.setVolume( gameLvl, typeVlm );
   }
 }
 

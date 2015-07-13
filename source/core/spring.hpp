@@ -43,6 +43,11 @@ public:
     update();
   }
 
+  void setDelta( const T& delta )
+  {
+    _delta = delta;
+  }
+
   void update()
   {
     if( _min == _max )
@@ -94,6 +99,16 @@ public:
   void setAlphaCondition( int min, int max, int delta )
   {
     _a.setCondition( min, max, delta );
+  }
+
+  void setDelta( int value )
+  {
+    _a.setDelta( value);
+    _r.setDelta( value );
+    _g.setDelta( value );
+    _b.setDelta( value );
+
+    update();
   }
 
   void update()

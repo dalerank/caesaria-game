@@ -91,10 +91,9 @@ template<typename T = int>
 inline T __random(T max, std::false_type, std::false_type)
 {
   static_assert(std::numeric_limits<T>::is_integer, "Integer type required.");
-  max = (max == 0) ? std::numeric_limits<T>::max() : max;
   static std::random_device random_device;
   static std::default_random_engine engine(random_device());
-  std::uniform_int_distribution<T> distribution(0, max);
+  std::uniform_int_distribution<T> distribution(0, max );
   return distribution(engine);
 }
 
