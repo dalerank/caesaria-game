@@ -72,7 +72,7 @@ public:
 class CcStorage : public good::Storage
 {
 public:
-  bool needExpand;
+  unsigned int needExpand;
 
   CcStorage()
   {
