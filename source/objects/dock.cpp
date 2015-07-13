@@ -22,12 +22,9 @@
 #include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
 #include "good/helper.hpp"
-#include "core/foreach.hpp"
 #include "walker/merchant_sea.hpp"
-#include "core/foreach.hpp"
 #include "walker/cart_supplier.hpp"
 #include "good/storage.hpp"
-#include "constants.hpp"
 #include "events/event.hpp"
 #include "game/gamedate.hpp"
 #include "walker/cart_pusher.hpp"
@@ -80,7 +77,7 @@ public:
 
     bool pingpong;
     std::string rc;
-    int delay;
+    unsigned int delay;
     int start;
     bool customOffset;
     Point offset;
