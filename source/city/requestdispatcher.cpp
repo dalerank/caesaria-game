@@ -85,9 +85,8 @@ std::string Dispatcher::defaultName(){  return "requests";}
 void Dispatcher::Impl::weekUpdate( unsigned int time, PlayerCityPtr rcity )
 {
   const DateTime current = game::Date::current();
-  foreach( rq, requests )
+  for( auto request : requests )
   {
-    RequestPtr request = *rq;
     if( request->finishedDate() <= current )
     {
       request->fail( rcity );
@@ -140,10 +139,8 @@ VariantMap Dispatcher::save() const
 void Dispatcher::load(const VariantMap& stream)
 {
   VariantMap vm_items = stream.get( "items" ).toMap();
-  foreach( it, vm_items )
-  {
-    add( it->second.toMap(), false );
-  }
+  for( auto item : vm_items )
+    add( item.second.toMap(), false );
 
   VARIANT_LOAD_TIME_D( _d, lastRequestCancelDate, stream )
 }

@@ -63,12 +63,12 @@ void WalkersGrid::remove( WalkerPtr a)
   unsigned int offset = _offset( a->pos() );
   if( offset < _gsize )
   {
-    WalkerList& d = _grid[ offset ];
-    foreach( it, d )
+    WalkerList& walkers = _grid[ offset ];
+    foreach( wlk, walkers )
     {
-      if( *it == a )
+      if( *wlk == a )
       {
-        d.erase( it );
+        walkers.erase( wlk );
         return;
       }
     }
@@ -78,8 +78,8 @@ void WalkersGrid::remove( WalkerPtr a)
 void WalkersGrid::update(const WalkerList& walkers)
 {
   clear();
-  foreach( it, walkers )
-    append( *it );
+  for( auto wlk : walkers )
+    append( wlk );
 }
 
 bool compare_zvalue(const WalkerPtr& one, const WalkerPtr& two)
@@ -91,11 +91,11 @@ bool compare_zvalue(const WalkerPtr& one, const WalkerPtr& two)
 
 void WalkersGrid::sort()
 {
-  foreach( cell, _grid )
+  for( auto cell : _grid )
   {
-    if( cell->size() > 1 )
+    if( cell.size() > 1 )
     {
-      std::sort( cell->begin(), cell->end(), compare_zvalue );
+      std::sort( cell.begin(), cell.end(), compare_zvalue );
     }
   }
 }

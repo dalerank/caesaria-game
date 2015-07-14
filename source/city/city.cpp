@@ -259,11 +259,11 @@ const WalkerList& PlayerCity::walkers( walker::Type rtype )
   }
 
   _d->cached.walkers.clear();
-  for (auto w : _d->walkers)
+  for( auto wlk : _d->walkers )
   {
-    if (w->type() == rtype)
+    if (wlk->type() == rtype)
     {
-      _d->cached.walkers.push_back(w);
+      _d->cached.walkers.push_back(wlk);
     }
   }
 

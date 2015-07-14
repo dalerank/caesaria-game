@@ -60,7 +60,7 @@ public:
     {
       CoverageInfo& info = (*this)[ temple->divinity()->internalName() ];
 
-      if( is_kind_of<BigTemple>( temple ) ) { info.bigTempleNum++; }
+      if( temple.is<BigTemple>() ) { info.bigTempleNum++; }
       else { info.smallTempleNum++; }
 
       info.parishionerNumber += temple->parishionerNumber();
@@ -70,17 +70,17 @@ public:
   void clear( const DivinityList& divns )
   {
     std::map< std::string, CoverageInfo >::clear();
-    foreach( it, divns )
+    for( auto divinity : divns )
     {
-      CoverageInfo& cvInfo = (*this)[ (*it)->internalName() ];
+      CoverageInfo& cvInfo = (*this)[ divinity->internalName() ];
       cvInfo.smallTempleNum = 0;
     }
   }
 
   void setOraclesParishioner( int parishioners )
   {
-    foreach( it, *this )
-      it->second.parishionerNumber += parishioners;
+    for( auto item : *this )
+      item.second.parishionerNumber += parishioners;
   }
 };
 
@@ -138,16 +138,16 @@ void Religion::timeStep( const unsigned int time )
 
     _d->templesCoverity.setOraclesParishioner( oraclesParishionerNumber );
 
-    foreach( it, divinities )
-      (*it)->setEffectPoint( 0 );
+    for( auto divn :  divinities )
+      divn->setEffectPoint( 0 );
 
     std::map< int, StringArray > templesByGod;
 
-    foreach( it, _d->templesCoverity )
+    for( auto coverity : _d->templesCoverity )
     {
-      const CoverageInfo& info = it->second;
+      const CoverageInfo& info = coverity.second;
       int maxTemples = info.bigTempleNum + info.smallTempleNum;
-      templesByGod[ maxTemples ].push_back( it->first );
+      templesByGod[ maxTemples ].push_back( coverity.first );
     }
 
     if( !templesByGod.empty() )
@@ -180,8 +180,8 @@ void Religion::timeStep( const unsigned int time )
       }
     }
 
-    foreach( it, divinities )
-      _d->updateRelation( _city(), *it );
+    for( auto divn : divinities )
+      _d->updateRelation( _city(), divn );
   }
 
   if( game::Date::isMonthChanged() )
@@ -199,9 +199,8 @@ void Religion::timeStep( const unsigned int time )
     //check gods wrath and mood
     std::map< int, DivinityList > godsWrath;
     std::map< int, DivinityList > godsUnhappy;
-    foreach( it, divinities )
+    for( auto god : divinities )
     {
-      DivinityPtr god = *it;
       if( god->wrathPoints() > 0 )
       {
         godsWrath[ god->wrathPoints() ].push_back( god );

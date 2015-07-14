@@ -103,9 +103,9 @@ void DesirabilityUpdater::Impl::update( PlayerCityPtr city, bool positive)
 {
   const TilesArray& tiles = city->tilemap().allTiles();
 
-  foreach( it, tiles )
+  for( auto tile : tiles )
   {
-    (*it)->changeParam( Tile::pDesirability, positive ? value : -value );
+    tile->changeParam( Tile::pDesirability, positive ? value : -value );
   }
 }
 

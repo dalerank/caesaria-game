@@ -46,11 +46,11 @@ void Economy::payWages(PlayerCityPtr city)
 
     float salary = statistic::getMonthlyOneWorkerWages( city );
     float wages = 0;
-    foreach( it, houses )
+    for( auto house : houses )
     {
-      int workers = (*it)->hired();
+      int workers = house->hired();
       float house_wages = salary * workers;
-      (*it)->appendMoney( house_wages );
+      house->appendMoney( house_wages );
       wages += house_wages;
     }
     resolveIssue( econ::Issue( econ::Issue::workersWages, ceil( -wages ) ) );
@@ -66,10 +66,10 @@ void Economy::collectTaxes(PlayerCityPtr city)
   float lastMonthTax = 0;
 
   ForumList forums = statistic::getObjects<Forum>( city, object::forum );
-  foreach( forum, forums ) { lastMonthTax += (*forum)->collectTaxes(); }
+  for( auto forum : forums ) { lastMonthTax += forum->collectTaxes(); }
 
   SenateList senates = statistic::getObjects<Senate>( city, object::senate );
-  foreach( senate, senates ) { lastMonthTax += (*senate)->collectTaxes(); }
+  for( auto senate : senates ) { lastMonthTax += senate->collectTaxes(); }
 
   resolveIssue( econ::Issue( econ::Issue::taxIncome, lastMonthTax ) );
 }

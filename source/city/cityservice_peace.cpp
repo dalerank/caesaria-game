@@ -142,9 +142,9 @@ void Peace::timeStep(const unsigned int time )
 
 void Peace::addCriminal( WalkerPtr wlk )
 {
-  if( is_kind_of<Rioter>( wlk ) )   {    _d->threats.rioter = true;  }
+  if( wlk.is<Rioter>() )   {    _d->threats.rioter = true;  }
   //else if( is_kind_of<Protestor>( wlk ) )   {    _d->threats.protestor = true;  }
-  else if( is_kind_of<Mugger>( wlk ) ) { _d->threats.mugger = true; }
+  else if( wlk .is<Mugger>() ) { _d->threats.mugger = true; }
   else
   {
     Logger::warning( "Peace:addCriminal unknown walker %d", wlk->type() );
@@ -160,7 +160,7 @@ void Peace::buildingDestroyed(OverlayPtr overlay, int why)
     return;
   }
 
-  HousePtr house = ptr_cast<House>( overlay );
+  HousePtr house = overlay.as<House>();
   if( house.isValid() && house->spec().level() > HouseLevel::tent )
   {
     _d->significantBuildingsDestroyed = true;

@@ -81,9 +81,9 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
     return;
 
   _d->isDeleted = true;
-  foreach( i, _d->items )
+  for( auto item : _d->items )
   {
-    VariantMap soldiers = i->second.toMap();
+    VariantMap soldiers = item.second.toMap();
 
     std::string soldierType = soldiers.get( literals::type ).toString();
     int soldierNumber = soldiers.get( literals::count );

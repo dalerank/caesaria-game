@@ -112,10 +112,10 @@ void HealthCare::Impl::updateValue(PlayerCityPtr city)
   value = 0;
   avgMinHealth = 100;
   int houseWithBadHealth = 0;
-  foreach( house, houses )
+  for( auto house : houses )
   {
-    unsigned int hLvl = (*house)->state( pr::health );
-    if( (*house)->habitants().count() > 0 )
+    unsigned int hLvl = house->state( pr::health );
+    if( house->habitants().count() > 0 )
     {
       value += hLvl;
       if( hLvl < health::bad )
@@ -153,7 +153,7 @@ void HealthCare::Impl::updateReasons( PlayerCityPtr city )
         reasons << reasonsInfo[i].info;
       }
     }
-    }
+  }
 }
 
 void HealthCare::Impl::showWarningIfNeed()

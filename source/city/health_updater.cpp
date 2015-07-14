@@ -57,10 +57,8 @@ void HealthUpdater::timeStep( const unsigned int time)
     Logger::warning( "HealthUpdater: execute service" );
     HouseList houses = city::statistic::getHouses( _city() );
 
-    foreach( it, houses )
-    {
-      (*it)->updateState( pr::health, _d->value );
-    }
+    for( auto house : houses )
+      house->updateState( pr::health, _d->value );
   }
 }
 

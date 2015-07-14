@@ -85,25 +85,25 @@ public:
 
   void updateLists()
   {
-    foreach( gtype, good::all() )
+    for( auto gtype : good::all() )
     {
-      const GoodInfo& info = goods[ *gtype ];
+      const GoodInfo& info = goods[ gtype ];
 
       switch( info.order )
       {
       case trade::importing:
-        buys.setCapacity( *gtype , 9999 );
-        sells.setCapacity( *gtype , 0 );
+        buys.setCapacity( gtype , 9999 );
+        sells.setCapacity( gtype , 0 );
       break;
 
       case trade::exporting:
-        buys.setCapacity( *gtype , 0 );
-        sells.setCapacity( *gtype , 9999 );
+        buys.setCapacity( gtype , 0 );
+        sells.setCapacity( gtype , 9999 );
       break;
 
       case trade::noTrade:
-        buys.setCapacity( *gtype , 0 );
-        buys.setCapacity( *gtype , 0 );
+        buys.setCapacity( gtype , 0 );
+        buys.setCapacity( gtype , 0 );
       break;
 
       default: break;
@@ -115,14 +115,14 @@ public:
   {
     buys.setCapacity( 9999 );
     sells.setCapacity( 9999 );
-    foreach( gtype, good::all() )
+    for( auto gtype : good::all() )
     {
-      goods[ *gtype  ].stacking = false;
-      goods[ *gtype  ].order = trade::noTrade;
-      goods[ *gtype  ].vendor = true;
-      goods[ *gtype  ].exportLimit = 0;
-      goods[ *gtype  ].sellPrice = 0;
-      goods[ *gtype  ].buyPrice = 0;
+      goods[ gtype  ].stacking = false;
+      goods[ gtype  ].order = trade::noTrade;
+      goods[ gtype  ].vendor = true;
+      goods[ gtype  ].exportLimit = 0;
+      goods[ gtype  ].sellPrice = 0;
+      goods[ gtype  ].buyPrice = 0;
     }
 
     goods[ good::fish ].order = trade::disabled;
@@ -289,17 +289,17 @@ void Options::setOrder( good::Product type, Order order )
 
 void Options::load( const VariantMap& stream )
 {
-  foreach( it, stream )
+  for( auto it : stream )
   {
-    good::Product gtype = good::Helper::getType( it->first );
+    good::Product gtype = good::Helper::getType( it.first );
 
     if( gtype == good::none )
     {
       Logger::warning( "%s %s [%s %d]", "Can't convert type from ",
-                           it->first.c_str(), __FILE__, __LINE__ );
+                       it.first.c_str(), __FILE__, __LINE__ );
     }
 
-    _d->goods[ gtype ].load( it->second.toList() );
+    _d->goods[ gtype ].load( it.second.toList() );
   }
 
   _d->updateLists();
@@ -309,9 +309,9 @@ VariantMap Options::save() const
 {
   VariantMap ret;
 
-  for( Impl::GoodsInfo::iterator it=_d->goods.begin(); it != _d->goods.end(); ++it )
+  for( auto product : _d->goods )
   {
-    ret[ good::Helper::getTypeName( it->first ) ] = it->second.save();
+    ret[ good::Helper::getTypeName( product.first ) ] = product.second.save();
   }
 
   return ret;

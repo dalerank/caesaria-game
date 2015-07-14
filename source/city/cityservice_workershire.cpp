@@ -95,9 +95,9 @@ void WorkersHire::Impl::fillIndustryMap()
 
   industryBuildings.clear();
 
-  foreach(it, types)
+  for( auto type : types)
   {
-    const MetaData& info = MetaDataHolder::getData( *it );
+    const MetaData& info = MetaDataHolder::getData( type );
     int workersNeed = info.getOption( literals::employers );
     if( workersNeed > 0 )
     {
@@ -108,9 +108,9 @@ void WorkersHire::Impl::fillIndustryMap()
 
 bool WorkersHire::Impl::haveRecruter( WorkingBuildingPtr building )
 {
-  foreach( w, hrInCity )
+  for( auto wlk : hrInCity )
   {
-    RecruterPtr hr = w->as<Recruter>();
+    RecruterPtr hr = wlk.as<Recruter>();
     if( hr.isValid() )
     {
       if( hr->baseLocation() == building->pos() )
@@ -156,15 +156,15 @@ void WorkersHire::timeStep( const unsigned int time )
 
   if( !_d->priorities.empty() )
   {
-    foreach( hireIt, _d->priorities )
+    for( auto priority : _d->priorities )
     {
-      object::Groups groups = industry::toGroups( *hireIt );
+      object::Groups groups = industry::toGroups( priority );
 
-      foreach( grIt, groups )
+      for( auto group : groups )
       {
         for( WorkingBuildingList::iterator it=buildings.begin(); it != buildings.end(); )
         {
-          if( (*it)->group() == *grIt )
+          if( (*it)->group() == group )
           {
             _d->hireWorkers( _city(), *it );
             it = buildings.erase( it );
@@ -175,9 +175,9 @@ void WorkersHire::timeStep( const unsigned int time )
     }
   }
 
-  foreach( it, buildings )
+  for( auto building : buildings )
   {    
-    _d->hireWorkers( _city(), *it );
+    _d->hireWorkers( _city(), building );
   }
 
   if( _d->lastMessageDate.monthsTo( game::Date::current() ) > DateTime::monthsInYear / 2 )

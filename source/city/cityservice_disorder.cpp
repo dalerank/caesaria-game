@@ -168,12 +168,12 @@ void Disorder::Impl::weekUpdate( unsigned int time, PlayerCityPtr rcity )
   crime.level.current = 0;
   crime.level.maximum = 0;
 
-  foreach( house, houses )
+  for( auto house : houses )
   {
-    int currentValue = (*house)->getServiceValue( Service::crime )+1;
+    int currentValue = house->getServiceValue( Service::crime )+1;
     if( currentValue >= crime.level.minimum )
     {
-      criminalizedHouse.push_back( *house );
+      criminalizedHouse.push_back( house );
     }
 
     crime.level.current += currentValue;
@@ -322,10 +322,8 @@ void Disorder::Impl::changeCrimeLevel(PlayerCityPtr city, int delta )
 {
   HouseList houses = statistic::getHouses( city );
 
-  foreach( it, houses )
-  {
-    (*it)->appendServiceValue( Service::crime, delta );
-  }
+  for( auto house : houses )
+    house->appendServiceValue( Service::crime, delta );
 }
 
 }//end namespace city

@@ -75,10 +75,10 @@ void Animals::timeStep(const unsigned int time)
 
   _d->border = _d->cityBorder.walkables( true );
 
-  foreach( winfo, _d->maxAnimal )
+  for( auto winfo : _d->maxAnimal )
   {
-    walker::Type walkerType = winfo->first;
-    unsigned int maxAnimalInCity = winfo->second;
+    walker::Type walkerType = winfo.first;
+    unsigned int maxAnimalInCity = winfo.second;
 
     if( maxAnimalInCity > 0 )
     {
@@ -106,8 +106,8 @@ VariantMap Animals::save() const
   VariantMap ret = Srvc::save();
 
   VariantMap animalsVm;
-  foreach( winfo, _d->maxAnimal )
-    animalsVm[ WalkerHelper::getTypename( winfo->first ) ] = winfo->second;
+  for( auto winfo : _d->maxAnimal )
+    animalsVm[ WalkerHelper::getTypename( winfo.first ) ] = winfo.second;
 
   ret[ "animals" ] = animalsVm;
 
@@ -119,10 +119,10 @@ void Animals::load(const VariantMap& stream)
   Srvc::load( stream );
 
   VariantMap animalsVm = stream.get( "animals" ).toMap();
-  foreach( info, animalsVm )
+  for( auto info : animalsVm )
   {
-    walker::Type wtype = WalkerHelper::getType( info->first );
-    _d->maxAnimal[ wtype ] = info->second;
+    walker::Type wtype = WalkerHelper::getType( info.first );
+    _d->maxAnimal[ wtype ] = info.second;
   }
 }
 

@@ -43,9 +43,9 @@ HirePriorities Helper::getHirePriorities() const
 void Helper::updateTilePics()
 {
   TilesArray tiles = _city->tilemap().getArea( TilePos( 0, 0 ), Size( _city->tilemap().size() ) );
-  foreach( it, tiles)
+  for( auto tile : tiles)
   {
-    (*it)->setPicture( Picture( (*it)->picture().name() ) );
+    tile->setPicture( Picture( tile->picture().name() ) );
   }
 }
 

@@ -82,9 +82,8 @@ void ClearTile::_exec( Game& game, unsigned int )
     }
 
     TilesArray clearedTiles = tmap.getArea( rPos, size );
-    foreach( it, clearedTiles )
+    for( auto tile : clearedTiles )
     {
-      Tile* tile = *it;
       tile->setMasterTile( NULL );
       tile->setFlag( Tile::tlTree, false);
       tile->setFlag( Tile::tlRoad, false);

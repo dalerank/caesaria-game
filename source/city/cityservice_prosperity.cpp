@@ -119,9 +119,8 @@ void ProsperityRating::_checkStats()
   HouseList houses = statistic::getHouses( _city() );
 
   int prosperityCap = 0;
-  foreach( it, houses)
+  for( auto house : houses)
   {
-    HousePtr house = *it;
     prosperityCap += house->spec().prosperity();
     _d->now.patricianCount += house->spec().isPatrician() ? house->habitants().count() : 0;
     _d->now.plebsCount += house->spec().level() < HouseLevel::plebsLevel ? house->habitants().count() : 0;

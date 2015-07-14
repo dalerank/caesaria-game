@@ -57,10 +57,10 @@ VariantMap Info::History::save() const
 
   int step=0;
   std::string stepName;
-  foreach( i, *this )
+  for( auto item : *this )
   {
     stepName = utils::format( 0xff, "%04d", step++ );
-    currentVm[ stepName ] = i->save();
+    currentVm[ stepName ] = item.save();
   }
 
   return currentVm;
@@ -93,11 +93,11 @@ VariantMap Info::MaxParameters::save() const
 void Info::MaxParameters::load(const VariantMap &vm)
 {
   resize( paramsCount );
-  foreach( i, vm )
+  for( auto item : vm )
   {
-    int index = utils::toInt( i->first );
-    DateTime date = i->second.toList().get( 0 ).toDateTime();
-    int value = i->second.toList().get( 1 ).toInt();
+    int index = utils::toInt( item.first );
+    DateTime date = item.second.toList().get( 0 ).toDateTime();
+    int value = item.second.toList().get( 1 ).toInt();
     (*this)[ index ].date = date;
     (*this)[ index ].value = value;
   }
@@ -180,13 +180,11 @@ void Info::timeStep(const unsigned int time )
 
     last[ houseNumber ] = 0;
     last[ shackNumber ] = 0;
-    foreach( it, houses )
+    for( auto house : houses )
     {
-      HousePtr h = *it;
-
-      if( h->habitants().count() > 0 )
+      if( house->habitants().count() > 0 )
       {
-        int hLvl = h->spec().level();
+        int hLvl = house->spec().level();
         last[ slumNumber ] += ( hLvl == HouseLevel::hovel || hLvl == HouseLevel::tent ? 1 : 0);
         last[ shackNumber ] += ( hLvl >= HouseLevel::shack || hLvl < HouseLevel::hut ? 1 : 0);
         last[ houseNumber ]++;
@@ -267,8 +265,8 @@ Info::Parameters::Parameters()
 {
   resize( paramsCount );
 
-  foreach( i, *this )
-    *i = 0;
+  for( auto item : *this )
+    item = 0;
 }
 
 Info::Parameters::Parameters(const Info::Parameters& other)
@@ -293,9 +291,9 @@ VariantList Info::Parameters::save() const
 void Info::Parameters::load(const VariantList& stream)
 {
   int k=0;
-  foreach( it, stream )
+  for( auto it : stream )
   {
-    (*this)[ k ] = *it;
+    (*this)[ k ] = it;
     k++;
   }
 }

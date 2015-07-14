@@ -64,9 +64,9 @@ void ServiceUpdater::timeStep( const unsigned int time)
     Logger::warning( "ServiceUpdater: execute service" );
     HouseList houses = statistic::getHouses( _city() );
 
-    foreach( it, houses )
+    for( auto item : houses )
     {
-      (*it)->setServiceValue( _d->stype, _d->value );
+      item->setServiceValue( _d->stype, _d->value );
     }
   }
 }
