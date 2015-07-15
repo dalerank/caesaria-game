@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "wharf.hpp"
 #include "gfx/tile.hpp"
@@ -23,6 +25,7 @@
 #include "core/foreach.hpp"
 #include "good/store.hpp"
 #include "game/gamedate.hpp"
+#include "city/statistic.hpp"
 #include "constants.hpp"
 #include "objects_factory.hpp"
 
@@ -142,7 +145,7 @@ std::string Wharf::troubleDesc() const
 {
   if( _d->boat.isValid() )
   {
-    WalkerList places = _city()->walkers( walker::fishPlace );
+    const WalkerList& places = _city()->statistic().walkers.find( walker::fishPlace );
     if( places.empty() )
     {
       return "##no_fishplace_in_city##";

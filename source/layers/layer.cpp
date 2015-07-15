@@ -311,7 +311,7 @@ void Layer::render( Engine& engine)
   {
     WalkerList overDrawWalkers;
 
-    const WalkerList& walkers = _city()->walkers( walker::all );
+    const WalkerList& walkers = _city()->statistic().walkers.find( walker::all );
     foreach( it, walkers )
     {
       if( (*it)->getFlag( Walker::showPath ) )

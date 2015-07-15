@@ -18,6 +18,7 @@
 #include "cityservice_animals.hpp"
 #include "city.hpp"
 #include "gfx/tile.hpp"
+#include "city/statistic.hpp"
 #include "game/gamedate.hpp"
 #include "gfx/tilemap.hpp"
 #include "walker/animals.hpp"
@@ -82,7 +83,7 @@ void Animals::timeStep(const unsigned int time)
 
     if( maxAnimalInCity > 0 )
     {
-      const WalkerList& animals = _city()->walkers( walkerType );
+      const WalkerList& animals = _city()->statistic().walkers.find( walkerType );
       if( animals.size() < maxAnimalInCity )
       {
         AnimalPtr animal = WalkerManager::instance().create<Animal>( walkerType, _city() );
@@ -106,8 +107,8 @@ VariantMap Animals::save() const
   VariantMap ret = Srvc::save();
 
   VariantMap animalsVm;
-  foreach( winfo, _d->maxAnimal )
-    animalsVm[ WalkerHelper::getTypename( winfo->first ) ] = winfo->second;
+  for( auto winfo : _d->maxAnimal )
+    animalsVm[ WalkerHelper::getTypename( winfo.first ) ] = winfo.second;
 
   ret[ "animals" ] = animalsVm;
 

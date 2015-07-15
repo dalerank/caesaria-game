@@ -162,18 +162,18 @@ void Disorder::Impl::weekUpdate( unsigned int time, PlayerCityPtr rcity )
 {
   HouseList houses = city::statistic::getHouses( rcity );
 
-  const WalkerList& walkers = rcity->walkers( walker::protestor );
+  const WalkerList& walkers = rcity->statistic().walkers.find( walker::protestor );
 
   HouseList criminalizedHouse;
   crime.level.current = 0;
   crime.level.maximum = 0;
 
-  foreach( house, houses )
+  for( auto house : houses )
   {
-    int currentValue = (*house)->getServiceValue( Service::crime )+1;
+    int currentValue = house->getServiceValue( Service::crime )+1;
     if( currentValue >= crime.level.minimum )
     {
-      criminalizedHouse.push_back( *house );
+      criminalizedHouse.push_back( house );
     }
 
     crime.level.current += currentValue;

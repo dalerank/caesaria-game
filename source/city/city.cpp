@@ -110,6 +110,7 @@ public:
   city::States states;
   city::Walkers walkers;
   city::Options options;
+  ScopedPtr<city::Statistic> statistic;
 
   PlayerPtr player;
 
@@ -120,16 +121,6 @@ public:
   TilePos cameraStart;
 
   int sentiment;
-
-  struct
-  {
-    WalkerList walkers;
-
-    void clear()
-    {
-      walkers.clear();
-    }
-  } cached;
 
 public:
   // collect taxes from all houses
@@ -154,6 +145,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->states.population = 0;
   _d->economy.setTaxRate( econ::Treasury::defaultTaxPrcnt );
   _d->states.age = 0;
+  _d->statistic.reset( new city::Statistic( *this ) );
   _d->walkers.idCount = 1;
   _d->sentiment = city::Sentiment::defaultValue;
   _d->empMapPicture.load( ResourceGroup::empirebits, 1 );
@@ -220,8 +212,7 @@ void PlayerCity::timeStep(unsigned int time)
   }
 
   //update walkers access map
-  _d->cached.clear();
-
+  _d->statistic->update( time );
   _d->walkers.update( this, time );
   _d->overlays.update( this, time );
   _d->services.timeStep( this, time );
@@ -251,25 +242,6 @@ void PlayerCity::Impl::monthStep( PlayerCityPtr city, const DateTime& time )
   economy.updateHistory( game::Date::current() );
 }
 
-const WalkerList& PlayerCity::walkers( walker::Type rtype )
-{
-  if( rtype == walker::all )
-  {
-    return _d->walkers;
-  }
-
-  _d->cached.walkers.clear();
-  for (auto w : _d->walkers)
-  {
-    if (w->type() == rtype)
-    {
-      _d->cached.walkers.push_back(w);
-    }
-  }
-
-  return _d->cached.walkers;
-}
-
 const WalkerList& PlayerCity::walkers(const TilePos& pos) { return _d->walkers.at( pos ); }
 const WalkerList& PlayerCity::walkers() const { return _d->walkers; }
 
@@ -285,7 +257,6 @@ void PlayerCity::setBorderInfo(const BorderInfo& info)
   _d->borderInfo.boatExit = info.boatExit.fit( start, stop );
 }
 
-OverlayList&  PlayerCity::overlays()             { return _d->overlays; }
 const OverlayList&PlayerCity::overlays() const   { return _d->overlays; }
 city::ActivePoints& PlayerCity::activePoints()   { return _d->activePoints; }
 city::Scribes &PlayerCity::scribes()             { return _d->scribes; }
@@ -623,6 +594,8 @@ void PlayerCity::resize( unsigned int size)
   _d->tilemap.resize( size );
   _d->walkers.grid.resize( Size( size ) );
 }
+
+const city::Statistic&PlayerCity::statistic() const { return *_d->statistic; }
 
 PlayerCityPtr PlayerCity::create( world::EmpirePtr empire, PlayerPtr player )
 {

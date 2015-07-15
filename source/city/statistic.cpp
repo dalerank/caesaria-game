@@ -456,4 +456,35 @@ OverlayList getNeighbors( OverlayPtr overlay, PlayerCityPtr r )
 
 }//end namespace statistic
 
+Statistic::Statistic(PlayerCity& rcity)
+  : walkers{ rcity }
+{
+
+}
+
+void Statistic::update(const unsigned long time)
+{
+   walkers.cached.clear();
+}
+
+const WalkerList& Statistic::_Walkers::find(walker::Type type) const
+{
+  if( type == walker::all )
+  {
+    return _city.walkers();
+  }
+
+  if( cached.count( type ) > 0 )
+    return cached.at( type );
+
+  WalkerList& wl = const_cast<_Walkers*>( this )->cached[ type ];
+  for( auto w : _city.walkers() )
+  {
+    if( w->type() == type )
+      wl.push_back(w);
+  }
+
+  return wl;
+}
+
 }//end namespace city

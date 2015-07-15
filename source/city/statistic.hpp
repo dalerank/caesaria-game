@@ -35,6 +35,21 @@
 namespace city
 {
 
+class Statistic
+{
+public:
+  Statistic( PlayerCity& rcity );
+  void update( const unsigned long time );
+
+  struct _Walkers
+  {
+    const WalkerList& find( walker::Type type ) const;
+
+    PlayerCity& _city;
+    std::map<int, WalkerList> cached;
+  } walkers;
+};
+
 namespace statistic
 {
 
