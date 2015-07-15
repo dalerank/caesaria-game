@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "advisor_chief_window.hpp"
 #include "gfx/decorator.hpp"
@@ -40,6 +40,7 @@
 #include "city/cityservice_military.hpp"
 #include "city/cityservice_disorder.hpp"
 #include "city/cityservice_health.hpp"
+#include "city/cityservice_religion.hpp"
 #include "city/cityservice_festival.hpp"
 #include "city/goods_updater.hpp"
 #include "city/sentiment.hpp"
@@ -74,7 +75,8 @@ typedef enum { atEmployers=0, profitState,
                atSentiment,
                atCount } AdviceType;
 
-static const std::string titles[atCount] = {
+static const std::string titles[atCount] =
+{
   "##advchief_employment##",
   "##advchief_finance##",
   "##advchief_migration##",
@@ -99,7 +101,7 @@ public:
 
     Picture pic;
     pic.load( ResourceGroup::panelBackground, 48 ), Point( 5, 5 );
-    setIcon( pic );
+    setIcon( pic, Point( 5, 5 ) );
     setFont( Font::create( FONT_2 ) );
 
     setTextOffset( Point( 255, 0) );
@@ -267,9 +269,9 @@ void Chief::Impl::drawFoodStockState()
   goodsUpdaters << city->services();
 
   bool romeSendWheat = false;
-  foreach( it, goodsUpdaters )
+  for( auto updater : goodsUpdaters )
   {
-    if( (*it)->goodType() == good::wheat )
+    if( updater->goodType() == good::wheat )
     {
       romeSendWheat = true;
     }
@@ -282,8 +284,7 @@ void Chief::Impl::drawFoodStockState()
   }
   else
   {
-    InfoPtr info;
-    info << city->findService( city::Info::defaultName() );
+    InfoPtr info = city::statistic::getService<Info>( city );
 
     if( info.isValid() )
     {
@@ -317,8 +318,7 @@ void Chief::Impl::drawFoodStockState()
 void Chief::Impl::drawFoodConsumption()
 {
   std::string text;
-  city::InfoPtr info;
-  info << city->findService( Info::defaultName() );
+  city::InfoPtr info = statistic::getService<Info>( city );
 
   int fk = info->lastParams()[ Info::foodKoeff ];
 
@@ -349,8 +349,7 @@ void Chief::Impl::drawFoodConsumption()
 void Chief::Impl::drawMilitary()
 {
   StringArray reasons;
-  city::MilitaryPtr mil;
-  mil << city->findService( city::Military::defaultName() );
+  MilitaryPtr mil = statistic::getService<Military>( city );
   bool isBesieged = false;
 
   if( mil.isValid() )
@@ -372,15 +371,15 @@ void Chief::Impl::drawMilitary()
     {
       int minDistance = infinteDistance;
       world::ObjectPtr maxThreat;
-      foreach( i, objs )
+      for( auto obj : objs )
       {
-        if( is_kind_of<world::Barbarian>( *i ) ||
-            is_kind_of<world::RomeChastenerArmy>( *i ) )
+        if( is_kind_of<world::Barbarian>( obj ) ||
+            is_kind_of<world::RomeChastenerArmy>( obj ) )
         {
-          int distance = city->location().distanceTo( (*i)->location() );
+          int distance = city->location().distanceTo( obj->location() );
           if( minDistance > distance )
           {
-            maxThreat = *i;
+            maxThreat = obj;
             minDistance = distance;
           }
         }
@@ -410,9 +409,9 @@ void Chief::Impl::drawMilitary()
     BarracksList barracks = statistic::getObjects<Barracks>( city, object::barracks );
 
     bool needWeapons = false;
-    foreach( it, barracks )
+    for( auto barrack : barracks )
     {
-      if( (*it)->isNeedWeapons() )
+      if( barrack->isNeedWeapons() )
       {
         needWeapons = true;
         break;
@@ -491,7 +490,12 @@ void Chief::Impl::drawEducation()
 
 void Chief::Impl::drawReligion()
 {
-  std::string text;
+  std::string text = "##advchief_religion_unknown##";
+  ReligionPtr srvc = statistic::getService<Religion>( city );
+  if( srvc.isValid() )
+  {
+
+  }
   drawReportRow( atReligion, text );
 }
 

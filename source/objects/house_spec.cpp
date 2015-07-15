@@ -92,11 +92,11 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing,
   std::string reason;
   std::string defaultStr;
   object::Type defaultNeedType;
-  TilePos defaultPos;
+//  TilePos defaultPos;
 
   std::string& ref = retMissing ? *retMissing : defaultStr;
   object::Type& needBuilding = retBtype ? *retBtype : defaultNeedType;
-  TilePos& rPos = retPos ? *retPos : defaultPos;
+//  TilePos& rPos = retPos ? *retPos : defaultPos;
 
   needBuilding = object::unknown;
 
@@ -255,7 +255,7 @@ unsigned int HouseSpecification::consumptionInterval(HouseSpecification::Interva
   default: break;
   }
 
-  Logger::warning( "WARNING !!! Unknown interval name %d", name );
+  Logger::warning( "!!!Warning: Unknown interval name %d", name );
   return 0;
 }
 

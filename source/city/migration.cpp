@@ -354,11 +354,11 @@ unsigned int Migration::Impl::calcVacantHouse( PlayerCityPtr city )
 {
   unsigned int vh = 0;
   HouseList houses = city::statistic::getHouses(city);
-  foreach( house, houses )
+  for( auto house : houses )
   {
-    if( (*house)->roadside().size() > 0 && (*house)->state( pr::settleLock ) == 0 )
+    if( house->roadside().size() > 0 && house->state( pr::settleLock ) == 0 )
     {
-      vh += math::clamp<int>( (*house)->capacity() - (*house)->habitants().count(), 0, 0xff );
+      vh += math::clamp<int>( house->capacity() - house->habitants().count(), 0, 0xff );
     }
   }
 
@@ -377,8 +377,7 @@ float Migration::Impl::getMigrationKoeff( PlayerCityPtr city )
 
 Info::Parameters Migration::Impl::lastMonthParams( PlayerCityPtr city )
 {
-  InfoPtr info;
-  info << city->findService( Info::defaultName() );
+  InfoPtr info = statistic::getService<Info>( city );
 
   Info::Parameters params;
   if( info.isValid() )
@@ -421,7 +420,7 @@ void Migration::Impl::createMigrationToCity( PlayerCityPtr city )
 
 void Migration::Impl::createMigrationFromCity( PlayerCityPtr city )
 {
-  HouseList houses = city::statistic::getHouses( city );
+  HouseList houses = statistic::getHouses( city );
   const int minWorkersNumber = 4;
   for( HouseList::iterator i=houses.begin(); i != houses.end(); )
   {
@@ -433,18 +432,15 @@ void Migration::Impl::createMigrationFromCity( PlayerCityPtr city )
 
   if( !houses.empty() )
   {
-    int stepNumber = std::max<int>( rand() % houses.size(), 1 );
-    for( int i=0; i < stepNumber; i++ )
+    int number = math::random( houses.size() );
+    HouseList randHouses = houses.random( number );
+    for( auto house : randHouses )
     {
-      HouseList::iterator house = houses.begin();
-      std::advance( house, math::random( houses.size() ) );
-
       ImmigrantPtr emigrant = Immigrant::create( city );
-
       if( emigrant.isValid() )
       {
-        (*house)->removeHabitants( minWorkersNumber );
-        emigrant->leaveCity( *(*house)->enterArea().front() );
+        house->removeHabitants( minWorkersNumber );
+        emigrant->leaveCity( *(house->enterArea().front()) );
         emigrant->setThinks( "##immigrant_no_work_for_me##" );
       }
     }

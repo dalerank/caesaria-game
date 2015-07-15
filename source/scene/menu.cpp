@@ -160,7 +160,7 @@ void StartMenu::Impl::fitScreenResolution()
 
 void StartMenu::Impl::playMenuSoundTheme()
 {
-  audio::Engine::instance().play( "rome6", 50, audio::theme );
+  audio::Engine::instance().play( "main_menu", 50, audio::theme );
 }
 
 void StartMenu::Impl::continuePlay()
@@ -329,10 +329,8 @@ void StartMenu::Impl::showCredits()
                          "pecunia (pecunia@heavengames.com) game mechanics",
                          "amdmi3 (amdmi3@amdmi3.ru) bsd fixes",
                          "greg kennedy(kennedy.greg@gmail.com) smk decoder",
-                         "akuskis (?) aqueduct system, victor sosa",
-                         "ImperatorPrime, nickers, veprbl, ramMASTER",
-                         "tracertong, VladRassokhin, hellium",
-                         "pufik6666, andreibranescu, rovanion",
+                         "akuskis (?) aqueduct system",
+                         "VladRassokhin, hellium, andreibranescu",
                          " ",
                          _("##operations_manager##"),
                          " ",
@@ -346,13 +344,14 @@ void StartMenu::Impl::showCredits()
                          _("##graphics##"),
                          " ",
                          "Dmitry Plotnikov (main artist)",
-                         "Jennifer Kin (empire map)",
+                         "Jennifer Kin (empire map, icons)",
                          "Andre Lisket (school, theater, baths and others)",
                          "Il'ya Korchagin (grape farm tiles)",
                          " ",
                          _("##music##"),
                          " ",
                          "Aliaksandr BeatCheat (www.beatcheat.net), Peter Willington",
+                         "Omri Lahav",
                          " ",
                          _("##localization##"),
                          " ",
@@ -371,6 +370,8 @@ void StartMenu::Impl::showCredits()
                          "Zatolokinandrey, yuri_abzyanov, dmitrii.dukhonchenko, twilight.temple",
                          "holubmarek,butjer1010, Agmenor Ultime, m0nochr0mex, Alexeyco",
                          "rad.n,j simek.cz, saintech, phdarcy, Casey Knauss, meikit2000",
+                         "victor sosa, ImperatorPrime, nickers, veprbl, ramMASTER",
+                         "tracertong, pufik6666, rovanion"
                          "" };
 
   Label* frame = new Label( parent, Rect( Point( 0, 0), size ), "", false, gui::Label::bgSimpleBlack );
@@ -448,12 +449,12 @@ void StartMenu::Impl::showMainMenu()
   ADD_MENU_BUTTON( "##mainmenu_load##",           Impl::showLoadMenu )
   ADD_MENU_BUTTON( "##mainmenu_options##",        Impl::showOptionsMenu )
   ADD_MENU_BUTTON( "##mainmenu_credits##",        Impl::showCredits )
-#ifdef CAESARIA_USE_STEAM
+//#ifdef CAESARIA_USE_STEAM
   if( vfs::Path( ":/dlc" ).exist() )
   {
     ADD_MENU_BUTTON( "##mainmenu_mcmxcviii##",    Impl::showAdvancedMaterials )
   }
-#endif
+//#endif
   ADD_MENU_BUTTON( "##mainmenu_quit##",           Impl::quitGame )
 }
 

@@ -52,7 +52,7 @@ public:
   CcTargets()
   {
     population = 0;
-    int dd = sizeof( need );
+//    int dd = sizeof( need );
     memset( need, 0, sizeof( need ) );
     memset( idle, 0, sizeof( need ) );
     memset( coverage, 0, sizeof( need ) );
@@ -72,7 +72,7 @@ public:
 class CcStorage : public good::Storage
 {
 public:
-  bool needExpand;
+  unsigned int needExpand;
 
   CcStorage()
   {
@@ -897,7 +897,7 @@ void ComputerCity::addObject(ObjectPtr object )
 {
   if( is_kind_of<Merchant>( object ) )
   {
-    MerchantPtr merchant = ptr_cast<Merchant>( object );
+    MerchantPtr merchant = object.as<Merchant>();
     good::Store& sellGoods = merchant->sellGoods();
     good::Store& buyGoods = merchant->buyGoods();
 

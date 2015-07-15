@@ -167,7 +167,7 @@ void Peace::buildingDestroyed(OverlayPtr overlay, int why)
   }
   else
   {
-    _d->significantBuildingsDestroyed |= !_d->unsignificantBuildings.count( overlay->type() );
+    _d->significantBuildingsDestroyed |= !_d->unsignificantBuildings.contain( overlay->type() );
   }
 
   if( _d->lastMessageDate.monthsTo( game::Date::current() ) > 1 )
@@ -241,4 +241,4 @@ void Peace::load(const VariantMap& stream)
   VARIANT_LOAD_ANY_D( _d, significantBuildingsDestroyed, stream )
 }
 
-}
+}//end namespace city

@@ -4,6 +4,7 @@
 #include "pushbutton.hpp"
 #include "gfx/engine.hpp"
 #include "core/event.hpp"
+#include "core/spring.hpp"
 #include "core/flagholder.hpp"
 
 #define ARROW_PAD 15
@@ -22,7 +23,6 @@ public:
 
 	Widget* element;
 };
-
 
 struct Row
 {
@@ -86,6 +86,7 @@ public:
   ScrollBar* verticalScrollBar;
   ScrollBar* horizontalScrollBar;
   bool needRefreshCellsGeometry;
+  math::SpringColor spring;
   unsigned int  cellLastTimeClick;
 
   void insertRow( Row& row, int index )
@@ -129,6 +130,8 @@ Table::Table( Widget* parent,
 
   _d->cellLastTimeClick = 0;
   _d->itemHeight = 0;
+  _d->spring.setColor( DefaultColors::red );
+  _d->spring.setDelta( 8 );
   _d->header = new HidingElement( this, Rect( 0, 0, width(), DEFAULT_SCROLLBAR_SIZE ) );
   _d->header->setAlignment( align::upperLeft, align::lowerRight, align::upperLeft, align::upperLeft );
   _d->header->setSubElement( true );
@@ -991,7 +994,6 @@ void Table::draw( gfx::Engine& painter )
 			//skin->DrawElement( this, cellStyle.Normal(), rowRect, &clientClip, 0 ) ;
 		}
 
-
     if( _d->isFlag( drawRows ) )
     {
       Rect lineRect( itRow->items[ 0 ]->absoluteRect() );
@@ -1020,10 +1022,12 @@ void Table::draw( gfx::Engine& painter )
     if( cell )
     {
       Rect cellRect = cell->absoluteRect();
-      painter.drawLine( DefaultColors::red, cellRect.lefttop(), cellRect.righttop() );
-      painter.drawLine( DefaultColors::red, cellRect.lefttop(), cellRect.leftbottom() );
-      painter.drawLine( DefaultColors::red, cellRect.leftbottom(), cellRect.rightbottom() );
-      painter.drawLine( DefaultColors::red, cellRect.rightbottom(), cellRect.righttop() );
+      _d->spring.update();
+
+      painter.drawLine( _d->spring, cellRect.lefttop(), cellRect.righttop() );
+      painter.drawLine( _d->spring, cellRect.lefttop(), cellRect.leftbottom() );
+      painter.drawLine( _d->spring, cellRect.leftbottom(), cellRect.rightbottom() );
+      painter.drawLine( _d->spring, cellRect.rightbottom(), cellRect.righttop() );
     }
   }
 

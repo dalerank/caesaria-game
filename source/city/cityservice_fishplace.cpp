@@ -72,13 +72,9 @@ void Fishery::timeStep(const unsigned int time )
   while( _d->places.size() < _d->maxFishPlace )
   {
     FishPlacePtr fishplace = FishPlace::create( _city() );
-    TilePos travelingPoint = _city()->borderInfo().boatExit;
-    if( !_d->locations.empty() )
-    {
-      travelingPoint = _d->locations.size() > 1
-                         ? _d->locations[ math::random( _d->locations.size() ) ]
-                         : _d->locations.front();
-    }
+    TilePos travelingPoint = _d->locations.empty()
+                               ? _city()->borderInfo().boatExit
+                               : _d->locations.random();
 
     fishplace->send2city( _city()->borderInfo().boatEntry, travelingPoint );
 

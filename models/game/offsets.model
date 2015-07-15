@@ -58,4 +58,5 @@
   forum : { rc : "forum", start : 1, stop : 1, offset : [ -1, -1 ] }
   barber : { rc : "barber", start : 1, stop : 1, offset : [ -1, -1 ] }
   oilworkshop : { rc : "oilworkshop", start : 1, stop : 1, offset : [ -1, -1 ] }
+
 }

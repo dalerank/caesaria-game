@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "dock.hpp"
 #include "gfx/helper.hpp"
@@ -22,12 +22,9 @@
 #include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
 #include "good/helper.hpp"
-#include "core/foreach.hpp"
-#include "walker/seamerchant.hpp"
-#include "core/foreach.hpp"
+#include "walker/merchant_sea.hpp"
 #include "walker/cart_supplier.hpp"
 #include "good/storage.hpp"
-#include "constants.hpp"
 #include "events/event.hpp"
 #include "game/gamedate.hpp"
 #include "walker/cart_pusher.hpp"
@@ -36,6 +33,7 @@
 #include "objects_factory.hpp"
 
 using namespace direction;
+using namespace events;
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::dock, Dock)
@@ -60,6 +58,59 @@ public:
   void initStores();
 };
 
+class DockConfig
+{
+public:
+  struct AnimConfig
+  {
+    static const int noOffset = -9999;
+    AnimConfig( const VariantMap& stream )
+    {
+      VARIANT_LOAD_ANY( pingpong, stream )
+      VARIANT_LOAD_STR( rc, stream )
+      VARIANT_LOAD_ANY( start, stream )
+      VARIANT_LOAD_ANY( count, stream )
+      VARIANT_LOAD_ANY( delay, stream )
+      VARIANT_LOAD_ANYDEF( offset, stream, Point( noOffset, noOffset ) )
+      customOffset = offset.x() != noOffset;
+    }
+
+    bool pingpong;
+    std::string rc;
+    unsigned int delay;
+    int start;
+    bool customOffset;
+    Point offset;
+    int count;
+  };
+
+  void load( const MetaData& md, Direction dir )
+  {
+    std::string configName = "image." + direction::Helper::instance().findName( dir );
+
+    VariantMap stream = md.getOption( configName ).toMap();
+    if( !stream.empty() )
+    {
+      VARIANT_LOAD_PICTURE( image, stream )
+      VARIANT_LOAD_PICTURE( stock, stream )
+
+      AnimConfig anim( stream.get( "animation" ).toMap() );
+      animation.load( anim.rc, anim.start, anim.count );
+      animation.setDelay( anim.delay );
+
+      if( anim.pingpong )
+        animation.load( anim.rc, anim.start + anim.count, anim.count, true );
+
+      if( anim.customOffset )
+        animation.setOffset( anim.offset );
+    }
+  }
+
+  Picture image;
+  Picture stock;
+  Animation animation;
+};
+
 Dock::Dock(): WorkingBuilding( object::dock, Size(3) ), _d( new Impl )
 {
   // dock pictures
@@ -67,10 +118,9 @@ Dock::Dock(): WorkingBuilding( object::dock, Size(3) ), _d( new Impl )
   // transport 17       animation = 18~28
   // transport 29       animation = 30~40
   // transport 41       animation = 42~51
-  _picture().load( ResourceGroup::transport, 5 );
+  setPicture( Picture( ResourceGroup::transport, 5 ) );
 
   _d->initStores();
-
   _fgPictures().resize(1);
   _animationRef().setDelay( 5 );
   _setClearAnimationOnStop( false );
@@ -93,7 +143,7 @@ bool Dock::build( const city::AreaInfo& info )
 
   TilesArea area(  info.city->tilemap(), info.pos, size() );
 
-  foreach( tile, area ) { _d->saveTileInfo.push_back( tile::encode( *(*tile) ) ); }
+  for( auto tile : area ) { _d->saveTileInfo.push_back( tile::encode( *tile ) ); }
 
   WorkingBuilding::build( info );
 
@@ -142,9 +192,9 @@ void Dock::save(VariantMap& stream) const
   VARIANT_SAVE_ANY_D( stream, _d, dateSendGoods );
 
   stream[ "saved_tile"] = VariantList( _d->saveTileInfo );
-  stream[ "exportGoods" ] = _d->exportGoods.save();
-  stream[ "importGoods" ] = _d->importGoods.save();
-  stream[ "requestGoods" ] = _d->requestGoods.save();
+  VARIANT_SAVE_CLASS_D( stream, _d, exportGoods )
+  VARIANT_SAVE_CLASS_D( stream, _d, importGoods )
+  VARIANT_SAVE_CLASS_D( stream, _d, requestGoods )
 }
 
 void Dock::load(const VariantMap& stream)
@@ -168,6 +218,12 @@ void Dock::load(const VariantMap& stream)
   _updatePicture( _d->direction );
 }
 
+void Dock::reinit()
+{
+  MetaDataHolder::instance().reload( type() );
+  _updatePicture( _d->direction );
+}
+
 std::string Dock::workersProblemDesc() const
 {
   return WorkingBuildingHelper::productivity2desc( const_cast<Dock*>( this ), isBusy() ? "busy" : "" );
@@ -175,7 +231,9 @@ std::string Dock::workersProblemDesc() const
 
 bool Dock::isBusy() const
 {
-  SeaMerchantList merchants = city::statistic::getWalkers<SeaMerchant>( _city(), walker::seaMerchant, landingTile().pos() );
+  SeaMerchantList merchants = city::statistic::getWalkers<SeaMerchant>( _city(),
+                                                                        walker::seaMerchant,
+                                                                        landingTile().pos() );
 
   return !merchants.empty();
 }
@@ -201,7 +259,7 @@ int Dock::queueSize() const
 {
   TilePos offset( 3, 3 );
   SeaMerchantList merchants = city::statistic::getWalkers<SeaMerchant>( _city(), walker::seaMerchant,
-                                                                           pos() - offset, pos() + offset );
+                                                                        pos() - offset, pos() + offset );
 
   for( SeaMerchantList::iterator it=merchants.begin(); it != merchants.end(); )
   {
@@ -212,19 +270,21 @@ int Dock::queueSize() const
   return merchants.size();
 }
 
+const good::Store& Dock::exportStore() const { return _d->exportGoods; }
+
 const Tile& Dock::queueTile() const
 {
   TilesArea tiles( _city()->tilemap(), pos(), 3 );
 
-  foreach( it, tiles )
+  for( auto tile : tiles )
   {
-    if( (*it)->getFlag( Tile::tlDeepWater ) )
+    if( tile->getFlag( Tile::tlDeepWater ) )
     {
       bool needMove;
-      bool busyTile = city::statistic::isTileBusy<SeaMerchant>( _city(), (*it)->pos(), WalkerPtr(), needMove );
+      bool busyTile = city::statistic::isTileBusy<SeaMerchant>( _city(), tile->pos(), WalkerPtr(), needMove );
       if( !busyTile )
       {
-        return *(*it);
+        return *tile;
       }
     }
   }
@@ -257,7 +317,7 @@ int Dock::importingGoods( good::Stock& stock)
   {
     _d->importGoods.store( stock, traderMaySell );
 
-    events::GameEventPtr e = events::Payment::import( stock.type(), traderMaySell );
+    GameEventPtr e = Payment::import( stock.type(), traderMaySell );
     e->dispatch();
 
     cost = good::Helper::importPrice( _city(), stock.type(), traderMaySell );
@@ -279,7 +339,7 @@ int Dock::exportingGoods( good::Stock& stock, int qty )
   int cost = 0;
   if( qty > 0 )
   {
-    events::GameEventPtr e = events::Payment::exportg( stock.type(), qty );
+    GameEventPtr e = Payment::exportg( stock.type(), qty );
     e->dispatch();
 
     cost = good::Helper::exportPrice( _city(), stock.type(), qty );
@@ -292,25 +352,13 @@ Dock::~Dock(){}
 
 void Dock::_updatePicture(Direction direction)
 {
-  int index=0;
-  Point offset;
-  switch( direction )
-  {
-  case direction::south: index = Impl::southPic; offset = Point( 35, 51 ); break;
-  case direction::north: index = Impl::northPic; offset = Point( 107, 61 );break;
-  case direction::west:  index = Impl::westPic;  offset = Point( 48, 70 ); break;
-  case direction::east:  index = Impl::eastPic;  offset = Point( 62, 36 ); break;
+  const MetaData& md = MetaDataHolder::getData( type() );
 
-  default: break;
-  }
+  DockConfig config;
+  config.load( md, direction );
 
-  _picture().load( ResourceGroup::transport, index );
-  _animationRef().clear();
-  _animationRef().load( ResourceGroup::transport, index+1, 10 );
-
-  //now fill in reverse order
-  _animationRef().load( ResourceGroup::transport, index+10, 10, Animation::reverse );
-  _animationRef().setOffset( offset );
+  setPicture( config.image );
+  setAnimation( config.animation );
 }
 
 void Dock::_setDirection(Direction direction)
@@ -360,10 +408,8 @@ Direction Dock::Impl::getDirection(PlayerCityPtr city, TilePos pos, Size size)
 bool Dock::Impl::isConstructibleArea(const TilesArray& tiles)
 {
   bool ret = true;
-  foreach( i, tiles )
-  {
-    ret &= (*i)->getFlag( Tile::isConstructible );
-  }
+  for( auto tile : tiles )
+    ret &= tile->getFlag( Tile::isConstructible );
 
   return ret;
 }
@@ -371,10 +417,8 @@ bool Dock::Impl::isConstructibleArea(const TilesArray& tiles)
 bool Dock::Impl::isCoastalArea(const TilesArray& tiles)
 {
   bool ret = true;
-  foreach( i, tiles )
-  {
-    ret &= (*i)->getFlag( Tile::tlWater ) && isFlatCoast( *(*i) );
-  }
+  for( auto tile : tiles )
+    ret &= tile->getFlag( Tile::tlWater ) && isFlatCoast( *tile );
 
   return ret;
 }
@@ -392,19 +436,19 @@ void Dock::Impl::initStores()
 
 void Dock::_tryDeliverGoods()
 {
-  foreach( gtype, good::all() )
+  if( walkers().size() > 2 )
   {
-    if( walkers().size() > 2 )
-    {
-      return;
-    }
+    return;
+  }
 
-    int qty = std::min( _d->importGoods.getMaxRetrieve( *gtype ), 400 );
+  for( auto gtype : good::all() )
+  {
+    int qty = std::min( _d->importGoods.getMaxRetrieve( gtype ), 400 );
 
     if( qty > 0 )
     {
       CartPusherPtr walker = CartPusher::create( _city() );
-      good::Stock pusherStock( *gtype, qty, 0 );
+      good::Stock pusherStock( gtype, qty, 0 );
       _d->importGoods.retrieve( pusherStock, qty );
       walker->send2city( BuildingPtr( this ), pusherStock );
 
@@ -431,29 +475,30 @@ void Dock::_tryDeliverGoods()
 
 void Dock::_tryReceiveGoods()
 {
-  foreach( gtype, good::all() )
+  if( walkers().size() >= 2 )
   {
-    if( walkers().size() >= 2 )
-    {
-      return;
-    }
+    return;
+  }
 
-    if( _d->requestGoods.qty( *gtype ) > 0 )
+  for( auto gtype : good::all() )
+  {
+
+    if( _d->requestGoods.qty( gtype ) > 0 )
     {
       CartSupplierPtr cart = CartSupplier::create( _city() );
-      int qty = std::min( 400, _d->requestGoods.getMaxRetrieve( *gtype ) );
-      cart->send2city( this, *gtype, qty );
+      int qty = std::min( 400, _d->requestGoods.getMaxRetrieve( gtype ) );
+      cart->send2city( this, gtype, qty );
 
       if( !cart->isDeleted() )
       {
         addWalker( cart.object() );
-        good::Stock tmpStock( *gtype, qty, 0 );
+        good::Stock tmpStock( gtype, qty, 0 );
         _d->requestGoods.retrieve( tmpStock, qty );
         return;
       }
       else
       {
-        _d->requestGoods.setQty( *gtype, 0 );
+        _d->requestGoods.setQty( gtype, 0 );
       }
     }
   }

@@ -68,6 +68,9 @@ class NColor;
 #define VARIANT_LOAD_CLASS_LIST(param, vm) param.load( vm.get( #param ).toList() );
 #define VARIANT_LOAD_CLASS_D_LIST(d, param, vm) d->param.load( vm.get( #param ).toList() );
 
+#define VARIANT_LOAD_PICTURE(param, vm) { VariantList v=vm.get( #param ).toList(); param.load( v.get( 0 ).toString(), v.get( 1 ).toInt() ); }
+#define VARIANT_LOAD_PICTURE_D(d, param, vm) { VariantList v=vm.get( #param ).toList(); d->param.load( v.get( 0 ).toString(), v.get( 1 ).toInt() ); }
+
 template <typename T>
 inline Variant createVariant2FromValue(const T &);
 

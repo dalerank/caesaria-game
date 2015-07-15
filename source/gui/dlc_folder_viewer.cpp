@@ -71,7 +71,8 @@ public:
       }
 
       Path picPath = items[ k ];
-      if( picPath.isMyExtension( ".pdf" ) || picPath.isMyExtension( ".mp3" ) )
+      if( picPath.isMyExtension( ".pdf" ) || picPath.isMyExtension( ".mp3" )
+          || picPath.isMyExtension( ".ogg" ))
       {
         picPath = picPath.changeExtension( "png" );
       }
@@ -115,18 +116,18 @@ DlcFolderViewer::DlcFolderViewer(Widget* parent, Directory folder )
   if( configFile.exist() )
   {
     VariantList list = config::load( configFile.toString() ).get( "items" ).toList();
-    foreach( it, list )
+    for( auto item : list )
     {
-      items.push_back( folder/Path(it->toString()) );
+      items.push_back( folder/Path(item.toString()) );
     }
   }
   else
   {
     vfs::Entries::Items entries = folder.entries().items();
-    foreach( it, entries )
+    for( auto item : entries )
     {
-      if( _d->exts.contains( it->name.extension() )  )
-        items.push_back( it->fullpath );
+      if( _d->exts.contains( item.name.extension() )  )
+        items.push_back( item.fullpath );
     }
   }
 

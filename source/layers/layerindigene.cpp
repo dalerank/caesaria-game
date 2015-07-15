@@ -72,7 +72,7 @@ void Indigene::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( discontentLevel >= 0 )
     {
-      _addColumn( screenPos, discontentLevel );
+      drawColumn( engine, screenPos, discontentLevel );
     }
   }
 

@@ -148,7 +148,7 @@ VariantMap Animation::save() const
   return ret;
 }
 
-void Animation::load(const VariantMap &stream)
+void Animation::load(const VariantMap& stream)
 {
   __D_IMPL(d,Animation)
   VARIANT_LOAD_ANY_D( d, index, stream )
@@ -162,7 +162,7 @@ void Animation::load(const VariantMap &stream)
     int start = range.get( "start" );
     int number = range.get( "number" );
     for( int k=0; k < number; k++ )
-      _pictures.push_back( Picture( rc, start + k ) );
+      _pictures.append( rc, start + k  );
   }
 
   _pictures.load( stream.get( "pictures" ).toStringArray() );

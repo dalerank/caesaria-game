@@ -39,9 +39,8 @@
 #include "trade_options.hpp"
 #include "good/storage.hpp"
 #include "world/trading.hpp"
-#include "walker/merchant.hpp"
+#include "walker/merchant_land.hpp"
 #include "game/gamedate.hpp"
-#include "core/foreach.hpp"
 #include "events/event.hpp"
 #include "victoryconditions.hpp"
 #include "core/logger.hpp"
@@ -53,7 +52,7 @@
 #include "objects/senate.hpp"
 #include "objects/house.hpp"
 #include "world/empiremap.hpp"
-#include "walker/seamerchant.hpp"
+#include "walker/merchant_sea.hpp"
 #include "cityservice_factory.hpp"
 #include "world/emperor.hpp"
 #include "game/resourcegroup.hpp"
@@ -232,9 +231,9 @@ void PlayerCity::timeStep(unsigned int time)
   {
     setOption( updateRoads, 0 );
     // for each overlay
-    foreach( it, _d->overlays )
+    for (auto it : _d->overlays)
     {
-      ConstructionPtr construction = (*it).as<Construction>();
+      ConstructionPtr construction = it.as<Construction>();
       if( construction != NULL )
       {
         // overlay matches the filter
@@ -260,11 +259,11 @@ const WalkerList& PlayerCity::walkers( walker::Type rtype )
   }
 
   _d->cached.walkers.clear();
-  foreach( w, _d->walkers )
+  for (auto w : _d->walkers)
   {
-    if( (*w)->type() == rtype  )
+    if (w->type() == rtype)
     {
-      _d->cached.walkers.push_back( *w );
+      _d->cached.walkers.push_back(w);
     }
   }
 
@@ -302,9 +301,9 @@ int PlayerCity::strength() const
   FortList forts = city::statistic::getObjects<Fort>( const_cast<PlayerCity*>( this ) );
 
   int ret = 0;
-  foreach( i, forts )
+  for (auto i : forts)
   {
-    SoldierList soldiers = (*i)->soldiers();
+    SoldierList soldiers = i->soldiers();
     ret += soldiers.size();
   }
 
@@ -323,9 +322,11 @@ void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
   unsigned int pop = 0;
   HouseList houseList = city::statistic::getHouses( city );
 
-  foreach( house, houseList)
-    pop += (*house)->habitants().count();
-  
+  for (auto house : houseList)
+  {
+    pop += house->habitants().count();
+  }
+
   states.population = pop;
   emit onPopulationChangedSignal( pop );
 }
@@ -363,14 +364,14 @@ void PlayerCity::save( VariantMap& stream) const
   Logger::warning( "City: save walkers information" );
   VariantMap vm_walkers;
   int walkedId = 0;
-  foreach( w, _d->walkers )
+  for (auto w : _d->walkers)
   {
     VariantMap vm_walker;
     walker::Type wtype = walker::unknown;
     try
     {
-      wtype = (*w)->type();
-      (*w)->save( vm_walker );
+      wtype = w->type();
+      w->save( vm_walker );
       vm_walkers[ utils::format( 0xff, "%d", walkedId ) ] = vm_walker;
     }
     catch(...)
@@ -384,17 +385,17 @@ void PlayerCity::save( VariantMap& stream) const
 
   Logger::warning( "City: save overlays information" );
   VariantMap vm_overlays;
-  foreach( overlay, _d->overlays )
+  for (auto overlay : _d->overlays)
   {
     VariantMap vm_overlay;
     object::Type otype = object::unknown;
 
     try
     {
-      otype = (*overlay)->type();
-      (*overlay)->save( vm_overlay );
-      vm_overlays[ utils::format( 0xff, "%d,%d", (*overlay)->pos().i(),
-                                                 (*overlay)->pos().j() ) ] = vm_overlay;
+      otype = overlay->type();
+      overlay->save( vm_overlay );
+      auto pos = overlay->pos();
+      vm_overlays[ utils::format( 0xff, "%d,%d", pos.i(), pos.j() ) ] = vm_overlay;
     }
     catch(...)
     {
@@ -405,9 +406,9 @@ void PlayerCity::save( VariantMap& stream) const
 
   Logger::warning( "City: save services information" );
   VariantMap vm_services;
-  foreach( service, _d->services )
-  {   
-    vm_services[ (*service)->name() ] = (*service)->save();
+  for (auto service : _d->services)
+  {
+    vm_services[service->name() ] = service->save();
   }
 
   stream[ "saveFormat" ] = CAESARIA_BUILD_NUMBER;
@@ -458,9 +459,9 @@ void PlayerCity::load( const VariantMap& stream )
   Logger::warning( "City: load overlays" );
   VariantMap overlays = stream.get( "overlays" ).toMap();
 
-  foreach( item, overlays )
+  for (auto item : overlays)
   {
-    VariantMap overlayParams = item->second.toMap();
+    VariantMap overlayParams = item.second.toMap();
     VariantList config = overlayParams.get( "config" ).toList();
 
     object::Type overlayType = (object::Type)config.get( ovconfig::idxType ).toInt();
@@ -480,15 +481,15 @@ void PlayerCity::load( const VariantMap& stream )
     }
     else
     {
-      Logger::warning( "City: can't load overlay " + item->first );
+      Logger::warning( "City: can't load overlay " + item.first );
     }
   }
 
   Logger::warning( "City: parse walkers info" );
   VariantMap walkers = stream.get( "walkers" ).toMap();
-  foreach( item, walkers )
+  for (auto item : walkers)
   {
-    VariantMap walkerInfo = item->second.toMap();
+    VariantMap walkerInfo = item.second.toMap();
     int walkerType = (int)walkerInfo.get( "type", walker::unknown );
 
     WalkerPtr walker = WalkerManager::instance().create( walker::Type( walkerType ), this );
@@ -499,25 +500,25 @@ void PlayerCity::load( const VariantMap& stream )
     }
     else
     {
-      Logger::warning( "City: can't load walker " + item->first );
+      Logger::warning( "City: can't load walker " + item.first );
     }
   }
 
   Logger::warning( "City: load service info" );
   VariantMap services = stream.get( "services" ).toMap();
-  foreach( item, services )
+  for (auto item : services)
   {
-    VariantMap servicesSave = item->second.toMap();
+    VariantMap servicesSave = item.second.toMap();
 
-    city::SrvcPtr srvc = findService( item->first );
+    city::SrvcPtr srvc = findService( item.first );
     if( srvc.isNull() )
     {
-      Logger::warning( "City: " + item->first + " is not basic service, try load by name" );
+      Logger::warning( "City: " + item.first + " is not basic service, try load by name" );
 
-      srvc = city::ServiceFactory::create( this, item->first );
+      srvc = city::ServiceFactory::create( this, item.first );
       if( srvc.isValid() )
       {
-        Logger::warning( "City: creating service " + item->first + " directly");
+        Logger::warning( "City: creating service " + item.first + " directly");
         addService( srvc );
       }
     }
@@ -528,7 +529,7 @@ void PlayerCity::load( const VariantMap& stream )
     }
     else
     {
-      Logger::warning( "!!! WARNING: Can't find service " + item->first );
+      Logger::warning( "!!! WARNING: Can't find service " + item.first );
     }
   }
 
@@ -552,10 +553,10 @@ void PlayerCity::addWalker( WalkerPtr walker )
 
 city::SrvcPtr PlayerCity::findService( const std::string& name ) const
 {
-  foreach( service, _d->services )
+  for (auto service : _d->services)
   {
-    if( name == (*service)->name() )
-      return *service;
+    if( name == service->name() )
+      return service;
   }
 
   return city::SrvcPtr();
@@ -606,8 +607,10 @@ int PlayerCity::getOption(PlayerCity::OptionType opt) const
 
 void PlayerCity::clean()
 {
-  foreach( it, _d->services )
-    (*it)->destroy();
+  for (auto it : _d->services)
+  {
+    it->destroy();
+  }
 
   _d->services.clear();
   _d->walkers.clear();
@@ -654,12 +657,12 @@ void PlayerCity::addObject( world::ObjectPtr object )
     world::MerchantPtr merchant = ptr_cast<world::Merchant>( object );
     if( merchant->isSeaRoute() )
     {
-      SeaMerchantPtr cityMerchant = ptr_cast<SeaMerchant>( SeaMerchant::create( this, merchant ) );
+      SeaMerchantPtr cityMerchant = SeaMerchant::create( this, merchant );
       cityMerchant->send2city();
     }
     else
     {
-      MerchantPtr cityMerchant = ptr_cast<Merchant>( Merchant::create( this, merchant ) );
+      LandMerchantPtr cityMerchant = LandMerchant::create( this, merchant );
       cityMerchant->send2city();
     }
   }

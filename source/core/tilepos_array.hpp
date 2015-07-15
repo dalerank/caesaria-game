@@ -34,6 +34,8 @@ public:
 
   TilePos valueOrEmpty( unsigned int index );
 
+  TilePos random();
+
   VariantList save() const;
 
   void load( const VariantList& vlist );

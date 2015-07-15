@@ -52,6 +52,12 @@ public:
     ADD_DIRECTION(northEast)
 #undef ADD_DIRECTION
   }
+
+  static Helper& instance()
+  {
+    static Helper inst;
+    return inst;
+  }
 };
 
 } //end namespace direction

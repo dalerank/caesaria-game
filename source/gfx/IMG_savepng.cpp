@@ -61,7 +61,7 @@ static void sdlrw_write_png(png_structp png_ptr, png_bytep data, png_size_t leng
     SDL_RWops *rwops = (SDL_RWops *)png_get_io_ptr(png_ptr);
 
     // write, and fallover if there's a problem writing the whole buffer
-    if(SDL_RWwrite(rwops, data, 1, length) != (int)length) {
+    if(SDL_RWwrite(rwops, data, 1, length) != (size_t)length) {
         png_error(png_ptr, "Write was not able to write all png data");
     }
 }
@@ -389,7 +389,7 @@ int IMG_SavePNG_RW(SDL_RWops *dest, SDL_Surface *surf, int compression)
       unsigned char* b4 = new unsigned char[ outsurf->w * outsurf->h * 4 ];
 
       const unsigned char* bytes = (const unsigned char*)outsurf->pixels;
-      for( unsigned int index=0; index < outsurf->w * outsurf->h; index++ )
+      for( unsigned int index=0; index < (unsigned int)(outsurf->w * outsurf->h); index++ )
       {
         b4[ index*4+3] = bytes[index*4+0];
         b4[ index*4+2] = bytes[index*4+1];

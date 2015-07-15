@@ -16,6 +16,7 @@
 #include "service.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"
+#include "objects/constants.hpp"
 
 ServiceHelper& ServiceHelper::instance()
 {
@@ -25,7 +26,7 @@ ServiceHelper& ServiceHelper::instance()
 
 ServiceHelper::ServiceHelper() : EnumsHelper<Service::Type>( Service::srvCount )
 {
-#define __REG_SERVICE(a) append( Service::a, "srvc_"CAESARIA_STR_EXT(a) );
+#define __REG_SERVICE(a) append( Service::a, "srvc_" CAESARIA_STR_EXT(a) );
   __REG_SERVICE( well )
   __REG_SERVICE( fountain )
   __REG_SERVICE( market )
@@ -82,4 +83,17 @@ std::string ServiceHelper::getName( Service::Type type )
   }
 
   return name;
+}
+
+Service::Type ServiceHelper::fromObject(int objectType)
+{
+  switch( objectType )
+  {
+  case object::barber: return Service::barber;
+  case object::baths: return Service::baths;
+  case object::hospital: return Service::hospital;
+  case object::clinic: return Service::doctor;
+  }
+
+  return Service::srvCount;
 }

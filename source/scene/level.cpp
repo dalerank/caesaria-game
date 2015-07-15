@@ -252,7 +252,6 @@ void Level::Impl::connectTopMenu2scene(Level* scene)
 void Level::initialize()
 {
   PlayerCityPtr city = _d->game->city();
-  gui::Ui& ui = *_d->game->gui();
 
   _d->initRender();
   _d->initMainUI();
@@ -310,6 +309,7 @@ void Level::initialize()
 #endif
 
 #ifdef CAESARIA_USE_STEAM
+  gui::Ui& ui = *_d->game->gui();
   dialog::Information( &ui, "Please note", "Black object are not done yet and will be added as soon as finished." );
 #endif
 }
@@ -451,9 +451,7 @@ void Level::Impl::extendReign(int years)
 
 void Level::Impl::handleDirectionChange(Direction direction)
 {
-  direction::Helper dHelper;
-
-  GameEventPtr e = WarningMessage::create( _("##" + dHelper.findName( direction ) + "##"), 1 );
+  GameEventPtr e = WarningMessage::create( _("##" + direction::Helper::instance().findName( direction ) + "##"), 1 );
   e->dispatch();
 }
 

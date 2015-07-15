@@ -574,7 +574,7 @@ void Prefect::send2City(BuildingPtr base, int orders)
   }
   else
   {
-    Logger::warning( "WARNING !!!: Prefect try send from non prefecture building. Delete prefect.");
+    Logger::warning( "!!!Warning: Prefect try send from non prefecture building. Delete prefect.");
     deleteLater();
   }
 }

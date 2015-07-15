@@ -161,6 +161,7 @@ void Recruter::_noWay()
 
   if( newway.isValid() )
   {
+    setPathway( newway );
     _d->failedCounter = 0;
     _d->patrolFinished = true;
     go();
@@ -191,7 +192,7 @@ void Recruter::send2City(BuildingPtr base, int orders)
   }
   else
   {
-    Logger::warning( "WARNING !!!: Recruter try hire workers for non working buildng. Delete rectuter.");
+    Logger::warning( "!!!WARNING: Recruter try hire workers for non working buildng. Delete rectuter.");
     deleteLater();
   }
 }

@@ -222,7 +222,7 @@ void AboutHouse::drawHabitants( HousePtr house )
   int picId = house->spec().isPatrician() ? 541 : 542;
    
   Picture citPic( ResourceGroup::panelBackground, picId );
-  _lbBlackFrameRef()->setIcon( citPic, Point( 15, 5 ) );
+  _lbBlackFrame()->setIcon( citPic, Point( 15, 5 ) );
 
   // number of habitants
   Label* lbHabitants = new Label( this, Rect( 60, 157, width() - 16, 157 + citPic.height() ) );

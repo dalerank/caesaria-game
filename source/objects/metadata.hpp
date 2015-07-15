@@ -40,8 +40,9 @@ class MetaData
 {
   friend class MetaDataHolder;
 
-  static MetaData invalid;
 public:
+  static MetaData invalid;
+
   MetaData( const object::Type type, const std::string& name );
   MetaData( const MetaData& a );
 
@@ -61,7 +62,7 @@ public:
   MetaData& operator=( const MetaData& a );
 private:
   class Impl;
-  ScopedPtr< Impl > _d;
+  ScopedPtr<Impl> _d;
 };
 
 // contains some metaData for each building type
@@ -72,10 +73,11 @@ public:
 
   static MetaDataHolder& instance();
 
-  void addData(const MetaData& data);
+  void addData(const MetaData& data, bool force);
   static const MetaData& getData(const object::Type buildingType);
   bool hasData(const object::Type buildingType) const;
   OverlayTypes availableTypes() const;
+
 
   // return factory that consume good
   object::Type getConsumerType(const good::Product inGoodType) const;
@@ -88,12 +90,14 @@ public:
   static gfx::Picture randomPicture( object::Type type, Size size );
 
   void initialize(vfs::Path filename );
+  void reload( const object::Type type );
   ~MetaDataHolder();
 private:
   MetaDataHolder();
+  void _loadConfig(object::Type type, const std::string &name, const VariantMap& options, bool force);
 
   class Impl;
-  ScopedPtr< Impl > _d;
+  ScopedPtr<Impl> _d;
 };
 
 #endif //_CAESARIA_OBJECTS_METADATA_H_INCLUDE_

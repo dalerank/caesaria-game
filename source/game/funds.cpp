@@ -206,21 +206,13 @@ void Treasury::load( const VariantMap& stream )
 
 Treasury::~Treasury(){}
 Signal1<int>& Treasury::onChange(){  return _d->onChangeSignal; }
-Signal1<Issue::Type>&Treasury::onNewIssue(){ return _d->onNewIssueSignal; }
+Signal1<Issue::Type>& Treasury::onNewIssue(){ return _d->onNewIssueSignal; }
 
 VariantList IssuesHistory::save() const
 {
   VariantList ret;
   foreach( stepIt, *this )
-  {
-    VariantList step;
-    foreach( it, *stepIt )
-    {
-      step << it->first << it->second;
-    }
-
-    ret.push_back( step );
-  }
+    ret.push_back( stepIt->save() );
 
   return ret;
 }
@@ -232,15 +224,7 @@ void IssuesHistory::load(const VariantList& stream)
   {
     push_back( IssuesValue() );
     IssuesValue& last = back();
-    const VariantList& step = it->toList();
-    VariantList::const_iterator stepIt=step.begin();
-    while( stepIt != step.end() )
-    {
-      econ::Issue::Type type = (Issue::Type)stepIt->toInt(); ++stepIt;
-      int value = stepIt->toInt(); ++stepIt;
-
-      last[ type ] = value;
-    }
+    last.load( it->toList() );
   }
 }
 
@@ -255,7 +239,7 @@ void IssuesDetailedHistory::addIssue(Issue issue)
   {
     if( _d->issues.front().time.year() != dIssue.time.year() )
       _d->issues.erase( _d->issues.begin() );
-    }
+  }
 }
 
 const IssuesDetailedHistory::DateIssues& IssuesDetailedHistory::issues()
@@ -302,6 +286,27 @@ void IssuesDetailedHistory::DateIssue::load(const VariantList& stream)
   time = stream.get( 0 ).toDateTime();
   type = (Type)stream.get( 1 ).toInt();
   money = stream.get( 2 );
+}
+
+VariantList IssuesValue::save() const
+{
+  VariantList ret;
+  foreach( it, *this )
+    ret << it->first << it->second;
+
+  return ret;
+}
+
+void IssuesValue::load(const VariantList& stream)
+{
+  VariantListReader reader( stream );
+  while( reader.atEnd() )
+  {
+    econ::Issue::Type type = (Issue::Type)reader.next().toInt(); //type
+    int value = reader.next().toInt(); //value
+
+    (*this)[ type ] = value;
+  }
 }
 
 }//end namespace funds

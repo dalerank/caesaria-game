@@ -112,8 +112,13 @@ void Layout::setupUI(const VariantMap &stream)
 void Layout::_finalizeResize()
 {
   _needUpdate = true;
-
   Widget::_finalizeResize();
+}
+
+void Layout::removeChild(gui::Widget *child)
+{
+  Widget::removeChild( child );
+  _needUpdate = true;
 }
 
 Layout::Layout(Widget *parent)

@@ -4,6 +4,11 @@
                        "elevation", "tree", "rift", "prefecture", "burning_ruins", "waymark", "roadBlock", "plague_ruins" ]
   }
 
+  sentiment : {
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge", "high_bridge",
+                       "elevation", "tree", "rift", "burning_ruins", "waymark", "roadBlock", "plague_ruins" ]
+  }
+
   damage : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge", "farmtile",
                        "high_bridge", "elevation", "rift", "tree", "burning_ruins", "engineering_post", "waymark", "roadBlock",
