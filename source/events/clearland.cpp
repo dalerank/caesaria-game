@@ -108,7 +108,7 @@ void ClearTile::_exec( Game& game, unsigned int )
         // 30% => choose green_sth 62-119
         // 70% => choose green_flat 232-289
         int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
-        int imgId = math::random( 58 );
+        int imgId = math::random( 58-1 );
 
         Picture pic;
         pic.load( ResourceGroup::land1a, startOffset + imgId );

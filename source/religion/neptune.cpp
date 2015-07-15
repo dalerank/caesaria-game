@@ -58,21 +58,10 @@ void Neptune::_doWrath(PlayerCityPtr city)
   ShipList boats;
   boats << city->walkers();
 
-  if( boats.size() > 5 )
+  ShipList destroyBoats = boats.random( 5 );
+  for( auto ship : destroyBoats )
   {
-    int destroyBoats =  math::random( boats.size() );
-    for( int i=0; i < destroyBoats; i++ )
-    {
-      ShipPtr ship = boats.random();
-      ship->die();
-    }
-  }
-  else
-  {
-    foreach( ship, boats )
-    {
-      (*ship)->die();
-    }
+    ship->die();
   }
 }
 

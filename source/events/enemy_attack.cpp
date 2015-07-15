@@ -105,7 +105,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
 
       tiles = tiles.walkables( true );
 
-      Tile* tile = tiles[ math::random( tiles.size() ) ];
+      Tile* tile = tiles.random();
       if( tile )
       {
         location = tile->pos();

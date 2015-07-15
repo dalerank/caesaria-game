@@ -65,15 +65,15 @@ void __filchGoods( const std::string& title, PlayerCityPtr city, bool showMessag
 
   SmartList<T> buildings = city::statistic::getObjects<T>( city );
 
-  foreach( it, buildings )
+  for( auto building : buildings )
   {
-    good::Store& store = (*it)->store();
-    foreach( gtype, good::all() )
+    good::Store& store = building->store();
+    for( auto gtype : good::all() )
     {
-      int goodQty = math::random( (store.qty( *gtype ) + 99) / 100 ) * 100;
+      int goodQty = math::random( (store.qty( gtype ) + 99) / 100 ) * 100;
       if( goodQty > 0 )
       {
-        good::Stock rmStock( *gtype, goodQty );
+        good::Stock rmStock( gtype, goodQty );
         store.retrieve( rmStock, goodQty );
       }
     }

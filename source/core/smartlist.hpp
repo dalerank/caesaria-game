@@ -75,8 +75,8 @@ public:
   // Recommended `count` to be not more than half of list size, due to performance reasons.
   SmartList<T> random(size_t count) const
   {
-    if (this->size() < count)
-      return SmartList<T>();
+    if (this->size() <= count)
+      return *this;
 
     int rands[count];
     math::random_values_of_range(rands, count, 0, this->size()-1);

@@ -163,7 +163,9 @@ enum {
   all_oilworkshop_ready,
   decrease_sentiment,
   increase_sentiment,
-  reload_buildings_config
+  reload_buildings_config,
+  toggle_show_buildings,
+  toggle_show_trees
 };
 
 class DebugHandler::Impl
@@ -281,6 +283,8 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( draw, toggle_overlay_base )
   ADD_DEBUG_EVENT( draw, toggle_show_path )
   ADD_DEBUG_EVENT( draw, toggle_show_roads )
+  ADD_DEBUG_EVENT( draw, toggle_show_buildings )
+  ADD_DEBUG_EVENT( draw, toggle_show_trees )
   ADD_DEBUG_EVENT( draw, toggle_show_object_area )
   ADD_DEBUG_EVENT( draw, toggle_show_walkable_tiles )
   ADD_DEBUG_EVENT( draw, toggle_show_locked_tiles )
@@ -579,7 +583,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case earthquake:
   {
-    int mapsize = game->city()->tilemap().size();
+    int mapsize = game->city()->tilemap().size()-1;
     TilePos start( math::random(mapsize), math::random(mapsize) );
     TilePos stop( math::random(mapsize), math::random(mapsize) );
     events::GameEventPtr e = events::EarthQuake::create( start, stop );
@@ -651,6 +655,8 @@ void DebugHandler::Impl::handleEvent(int event)
   case toggle_show_walkable_tiles: DrawOptions::instance().toggle( DrawOptions::showWalkableTiles );  break;
   case toggle_show_locked_tiles: DrawOptions::instance().toggle( DrawOptions::showLockedTiles );  break;
   case toggle_show_flat_tiles: DrawOptions::instance().toggle( DrawOptions::showFlatTiles );  break;
+  case toggle_show_buildings : DrawOptions::instance().toggle( DrawOptions::showBuildings ); break;
+  case toggle_show_trees : DrawOptions::instance().toggle( DrawOptions::showTrees ); break;
 
   case add_soldiers_in_fort:
   {

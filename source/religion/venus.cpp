@@ -121,16 +121,11 @@ void Venus::_doSmallCurse(PlayerCityPtr city)
     // Reduce health by 8 in <=20% of houses for 5 month
     HouseList houses = statistic::getHouses( city );
 
-    int rndCount = math::random( houses.size() / 5 );
-    if (rndCount > 0)
+    HouseList list = houses.random( houses.size() / 5 );
+    for( auto house : list)
     {
-      HouseList list = houses.random((size_t) rndCount);
-      foreach(it, list)
-      {
-        HousePtr house = *it;
-        ConstructionParamUpdater::assignTo(house.as<Construction>(),
-                                           pr::healthBuff, true, -8, DateTime::weekInMonth * 5);
-      }
+      ConstructionParamUpdater::assignTo( house.as<Construction>(),
+                                          pr::healthBuff, true, -8, DateTime::weekInMonth * 5);
     }
   }
   break;
@@ -144,19 +139,15 @@ void Venus::_doSmallCurse(PlayerCityPtr city)
     // People emigrates from <=20% of houses
     HouseList houses = statistic::getHouses( city );
 
-    int rndCount = math::random(houses.size() / 5);
-    if (rndCount > 0)
+    HouseList list = houses.random(houses.size() / 5);
+    for( auto house : list)
     {
-      HouseList list = houses.random((size_t) rndCount);
-      foreach(it, list)
-      {
-        HousePtr house = *it;
-        int hbCount = house->habitants().count();
-        CitizenGroup homeless = house->removeHabitants(hbCount);
-        EmigrantPtr emigrants = Emigrant::send2city(city, homeless, house->tile(), "##emigrant_no_home##");
-        emigrants->leaveCity(house->tile());
-      }
+      int hbCount = house->habitants().count();
+      CitizenGroup homeless = house->removeHabitants(hbCount);
+      EmigrantPtr emigrants = Emigrant::send2city(city, homeless, house->tile(), "##emigrant_no_home##");
+      emigrants->leaveCity(house->tile());
     }
+
   }
   break;
   }

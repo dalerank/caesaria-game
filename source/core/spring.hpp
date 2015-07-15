@@ -29,6 +29,8 @@ template<class T>
 class Spring
 {
 public:
+  Spring() : _signdelta(1) {}
+
   Spring(const T& value, const T& min, const T& max, const T& delta)
     : _value( value ), _delta( delta ), _min( min ), _max( max ), _signdelta( 1 )
   {
