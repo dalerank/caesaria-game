@@ -245,11 +245,11 @@ void SimpleLogger::write(const std::string &message, bool newline) {
   Logger::instance()._d->write(message, newline);
 }
 
-SimpleLogger::SimpleLogger(const std::string &category) : category(category) {
+SimpleLogger::SimpleLogger(std::string category) : category(category) {
 }
 
 void SimpleLogger::log(SimpleLogger::Severity severity, const std::string &text) {
-  write(toS(severity) + " " + category + ": " + text);
+  write(std::string(toS(severity)) + " " + std::string(category) + ": " + std::string(text));
 }
 
 void SimpleLogger::log(SimpleLogger::Severity severity, const char *fmt, ...) {
