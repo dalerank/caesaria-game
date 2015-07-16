@@ -171,7 +171,7 @@ void ProsperityRating::timeStep(const unsigned int time )
     bool haveHippodrome = !_city()->statistic().objects.find<Hippodrome>( object::hippodrome ).empty();
     _d->prosperityExtend += (haveHippodrome ? prosperity::award : 0);
 
-    _d->now.workless = statistic::getWorklessPercent( _city() );
+    _d->now.workless = _city()->statistic().workers.worklessPercent();
     bool unemploymentLess5percent = _d->now.workless < prosperity::normalWorklesPercent;
     bool unemploymentMore15percent = _d->now.workless > workless::high;
 

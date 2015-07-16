@@ -179,6 +179,16 @@ public:
       return SmartPtr<T>();
     }
 
+    template<class T, class B>
+    SmartList<T> neighbors( SmartPtr<B> overlay) const
+    {
+      OverlayList ovs = neighbors( ptr_cast<Overlay>( overlay ), true );
+      SmartList<T> ret;
+      ret << ovs;
+      return ret;
+    }
+
+    OverlayList neighbors( OverlayPtr overlay, bool v ) const;
     FarmList farms(std::set<object::Type> which=std::set<object::Type>() ) const;
     HouseList houses( std::set<int> levels=std::set<int>() ) const;
 
@@ -204,6 +214,9 @@ public:
     int wagesDiff() const;
     unsigned int monthlyWages() const;
     float monthlyOneWorkerWages() const;
+    unsigned int available() const;
+    unsigned int worklessPercent() const;
+    unsigned int workless() const;
 
     Statistic& _parent;
   } workers;
@@ -222,7 +235,6 @@ public:
 namespace statistic
 {
 
-unsigned int getAvailableWorkersNumber( PlayerCityPtr city );
 unsigned int getWorklessNumber( PlayerCityPtr city );
 unsigned int getWorklessPercent( PlayerCityPtr city );
 unsigned int getFoodStock( PlayerCityPtr city );
@@ -243,16 +255,6 @@ int getLaborAccessValue( PlayerCityPtr city, WorkingBuildingPtr wb );
 int getEntertainmentCoverage(PlayerCityPtr city, Service::Type service );
 bool canImport( PlayerCityPtr city, good::Product type );
 bool canProduce( PlayerCityPtr city, good::Product type );
-OverlayList getNeighbors( OverlayPtr overlay, PlayerCityPtr r );
-
-template<class T, class B>
-SmartList<T> getNeighbors(PlayerCityPtr r, SmartPtr<B> overlay)
-{
-  OverlayList ovs = getNeighbors( ptr_cast<Overlay>( overlay ), r );
-  SmartList<T> ret;
-  ret << ovs;
-  return ret;
-}
 
 template<class T>
 bool isTileBusy( PlayerCityPtr r, TilePos p, WalkerPtr caller, bool& needMeMove )

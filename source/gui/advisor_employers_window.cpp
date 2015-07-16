@@ -179,9 +179,9 @@ void Employer::Impl::updateWorkersState()
   if( !lbWorkersState )
     return;
 
-  int workers = statistic::getAvailableWorkersNumber( city );
-  int worklessPercent = statistic::getWorklessPercent( city );
-  int withoutWork = statistic::getWorklessNumber( city );
+  int workers = city->statistic().workers.available();
+  int worklessPercent = city->statistic().workers.worklessPercent();
+  int withoutWork = city->statistic().workers.workless();
 
   std::string strWorkerState = utils::format( 0xff, "%d %s     %d %s  ( %d%% )",
                                               workers, _("##advemployer_panel_workers##"),

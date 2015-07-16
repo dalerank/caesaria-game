@@ -589,7 +589,7 @@ void PlayerCity::resize( unsigned int size)
   _d->walkers.grid.resize( Size( size ) );
 }
 
-const city::Statistic&PlayerCity::statistic() const { return *_d->statistic; }
+const city::Statistic& PlayerCity::statistic() const { return *_d->statistic; }
 
 PlayerCityPtr PlayerCity::create( world::EmpirePtr empire, PlayerPtr player )
 {

@@ -208,10 +208,10 @@ void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
 
       if( _city()->getOption( PlayerCity::destroyEpidemicHouses ) )
       {
-        HouseList hlist = city::statistic::getNeighbors<House>( _city(), house );
-        foreach( dIt, hlist )
+        HouseList hlist = _city()->statistic().objects.neighbors<House>( house );
+        for( auto h : hlist )
         {
-          GameEventPtr e = Disaster::create( (*dIt)->tile(), Disaster::plague );
+          GameEventPtr e = Disaster::create( h->tile(), Disaster::plague );
           e->dispatch();
         }
       }

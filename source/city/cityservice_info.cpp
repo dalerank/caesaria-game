@@ -152,7 +152,7 @@ void Info::timeStep(const unsigned int time )
 
     last[ needWorkers ] = wInfo.need - wInfo.current;
     last[ maxWorkers  ] = wInfo.need;
-    last[ workless    ] = statistic::getWorklessPercent( _city() );
+    last[ workless    ] = _city()->statistic().workers.worklessPercent();
     last[ payDiff     ] = _city()->empire()->workerSalary() - _city()->treasury().workerSalary();
     last[ tax         ] = _city()->treasury().taxRate();
     last[ cityWages   ] = _city()->treasury().workerSalary();
@@ -263,10 +263,7 @@ void Info::load(const VariantMap& stream)
 
 Info::Parameters::Parameters()
 {
-  resize( paramsCount );
-
-  for( auto item : *this )
-    item = 0;
+  resize( paramsCount, 0 );
 }
 
 Info::Parameters::Parameters(const Info::Parameters& other)

@@ -211,7 +211,7 @@ void Chief::Impl::drawReportRow( AdviceType type, std::string text, NColor color
 void Chief::Impl::drawEmploymentState()
 {
   Statistic::WorkersInfo wInfo = city->statistic().workers.details();
-  int workless = statistic::getWorklessPercent( city );
+  int workless = city->statistic().workers.worklessPercent();
   std::string text;
   NColor color = DefaultColors::black;
 

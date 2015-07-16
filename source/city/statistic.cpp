@@ -119,32 +119,6 @@ bool canProduce(PlayerCityPtr city, good::Product type)
   return !buildings.empty();
 }
 
-unsigned int getAvailableWorkersNumber(PlayerCityPtr city)
-{
-  HouseList houses = city->statistic().objects.houses();
-
-  int workersNumber = 0;
-  for( auto house : houses )
-    workersNumber += house->habitants().mature_n();
-
-  return workersNumber;
-}
-
-unsigned int getWorklessNumber(PlayerCityPtr city)
-{
-  HouseList houses = city->statistic().objects.houses();
-
-  int worklessNumber = 0;
-  for( auto house : houses ) { worklessNumber += house->unemployed(); }
-
-  return worklessNumber;
-}
-
-unsigned int getWorklessPercent(PlayerCityPtr city)
-{
-  return math::percentage( getWorklessNumber( city ), getAvailableWorkersNumber( city ) );
-}
-
 unsigned int getCrimeLevel( PlayerCityPtr city )
 {
   DisorderPtr ds = getService<Disorder>( city );
@@ -317,30 +291,6 @@ HouseList getEvolveHouseReadyBy(PlayerCityPtr r, const object::Type checkType )
   return getEvolveHouseReadyBy( r, checkTypes );
 }
 
-OverlayList getNeighbors( OverlayPtr overlay, PlayerCityPtr r )
-{
-  if( overlay.isNull() )
-    return OverlayList();
-
-  Size size = overlay->size();
-  TilePos start = overlay->pos();
-  TilePos stop = start + TilePos( 2, 2 ) + TilePos( size.width(), size.height() );
-  OverlayList ret;
-  gfx::TilesArray tiles = r->tilemap().getRectangle( start, stop );
-  std::set<OverlayPtr> checked;
-  for( auto tile : tiles )
-  {
-    OverlayPtr ov = tile->overlay();
-    if( ov.isValid() && checked.count( ov ) == 0 )
-    {
-      checked.insert( ov );
-      ret.push_back( ov );
-    }
-  }
-
-  return ret;
-}
-
 }//end namespace statistic
 
 Statistic::Statistic(PlayerCity& c)
@@ -481,6 +431,8 @@ unsigned int Statistic::_Population::current() const
   {
     pop += house->habitants().count();
   }
+
+  return pop;
 }
 
 unsigned int Statistic::_Workers::monthlyWages() const
@@ -500,6 +452,56 @@ unsigned int Statistic::_Workers::monthlyWages() const
 float Statistic::_Workers::monthlyOneWorkerWages() const
 {
   return _parent.rcity.treasury().workerSalary() / (10.f * DateTime::monthsInYear);
+}
+
+unsigned int Statistic::_Workers::available() const
+{
+  HouseList houses = _parent.objects.houses();
+
+  int workersNumber = 0;
+  for( auto house : houses )
+    workersNumber += house->habitants().mature_n();
+
+  return workersNumber;
+}
+
+OverlayList Statistic::_Objects::neighbors(OverlayPtr overlay, bool v) const
+{
+  if( overlay.isNull() )
+    return OverlayList();
+
+  Size size = overlay->size();
+  TilePos start = overlay->pos();
+  TilePos stop = start + TilePos( 2, 2 ) + TilePos( size.width(), size.height() );
+  OverlayList ret;
+  gfx::TilesArray tiles = _parent.rcity.tilemap().getRectangle( start, stop );
+  std::set<OverlayPtr> checked;
+  for( auto tile : tiles )
+  {
+    OverlayPtr ov = tile->overlay();
+    if( ov.isValid() && checked.count( ov ) == 0 )
+    {
+      checked.insert( ov );
+      ret.push_back( ov );
+    }
+  }
+
+  return ret;
+}
+
+unsigned int Statistic::_Workers::worklessPercent() const
+{
+  return math::percentage( workless(), available() );
+}
+
+unsigned int Statistic::_Workers::workless() const
+{
+  HouseList houses = _parent.objects.houses();
+
+  int worklessNumber = 0;
+  for( auto house : houses ) { worklessNumber += house->unemployed(); }
+
+  return worklessNumber;
 }
 
 }//end namespace city
