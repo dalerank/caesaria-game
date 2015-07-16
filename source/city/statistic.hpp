@@ -99,10 +99,10 @@ SmartList< T > getObjects( PlayerCityPtr r, object::Type type )
 
   SmartList< T > ret;
   const OverlayList& buildings = r->overlays();
-  foreach( item, buildings )
+  for (auto building : buildings)
   {
-    if( (*item).isValid() && ((*item)->type() == type || type == object::any ) )
-      ret.addIfValid( item->as<T>() );
+    if( building.isValid() && (type == object::any || building->type() == type) )
+      ret.addIfValid( building.as<T>() );
   }
 
   return ret;
@@ -154,18 +154,18 @@ SmartList< T > getWalkers( PlayerCityPtr r, walker::Type type,
   else
   {
     gfx::TilesArea area( r->tilemap(), start, stop );
-    foreach( tile, area)
+    for (auto tile : area)
     {
-      const WalkerList& wlkOnTile = r->walkers( (*tile)->pos() );
+      const WalkerList& wlkOnTile = r->walkers( tile->pos() );
       walkersInArea.insert( walkersInArea.end(), wlkOnTile.begin(), wlkOnTile.end() );
     }
   }
 
   SmartList< T > result;
-  foreach( w, walkersInArea )
+  for (auto walker : walkersInArea)
   {
-    if( (*w)->type() == type || type == walker::any )
-      result.addIfValid( w->as<T>() );
+    if(type == walker::any || walker->type() == type)
+      result.addIfValid( walker.as<T>() );
   }
 
   return result;
@@ -177,8 +177,10 @@ SmartList< T > getWalkers( PlayerCityPtr r )
   const WalkerList& walkers = r->walkers();
 
   SmartList< T > result;
-  foreach( w, walkers )
-    result.addIfValid( w->as<T>() );
+  for (auto walker : walkers)
+  {
+    result.addIfValid( walker.as<T>() );
+  }
 
   return result;
 }
@@ -189,21 +191,10 @@ SmartPtr<T> getWalker( PlayerCityPtr r, walker::Type type, Walker::UniqueId id )
 {
   const WalkerList& all = r->walkers();
 
-  if( type != walker::any )
+  for (auto walker : all)
   {
-    foreach( it, all )
-    {
-      if((*it)->type() == type && (*it)->uniqueId() == id )
-        return it->as<T>();
-    }
-  }
-  else
-  {
-    foreach( it, all )
-    {
-      if( (*it)->uniqueId() == id )
-        return it->as<T>();
-    }
+    if((type == walker::any || walker->type() == type) && walker->uniqueId() == id )
+      return walker.as<T>();
   }
 
   return SmartPtr<T>();
@@ -215,11 +206,11 @@ SmartList< T > getObjects( PlayerCityPtr r, std::set<object::Type> which )
   SmartList< T > ret;
   const OverlayList& ovs = r->overlays();
 
-  foreach( it, ovs )
+  for (auto overlay : ovs)
   {
-    if( which.count( (*it)->type() ) > 0 )
+    if( which.count( overlay->type() ) > 0 )
     {
-      ret << *it;
+      ret << overlay;
     }
   }
 
@@ -233,14 +224,13 @@ SmartPtr< T > nextObject( PlayerCityPtr r, SmartPtr< T > current )
     return SmartPtr<T>();
 
   SmartList< T > objects = getObjects<T>( r, current->type() );
-  foreach( obj, objects )
-  {
-    if( current == *obj )
-    {
-      obj++;
-      if( obj == objects.end() ) { return *objects.begin(); }
-      else { return *obj; }
-    }
+
+  auto it = std::find(objects.begin(), objects.end(), current);
+  if (it != objects.end()) {
+    it++;
+    if( it == objects.end() )
+      it = objects.begin();
+    return *it;
   }
 
   return SmartPtr<T>();
@@ -253,17 +243,15 @@ SmartPtr<T> prewObject( PlayerCityPtr r, SmartPtr<T> current)
     return SmartPtr<T>();
 
   SmartList< T > objects = getObjects<T>( r, current->type() );
-  foreach( obj, objects )
-  {
-    if( current == *obj )
+
+  auto it = std::find(objects.begin(), objects.end(), current);
+  if (it != objects.end()) {
+    if (it == objects.begin()) // MSVC compiler doesn't support circular lists. Neither standard does.
     {
-      if (obj == objects.begin()) // MSVC compiler doesn't support sircular lists. Neither standart does.
-      {
-        obj = objects.end();
-      }
-      obj--;
-      return *obj;
+      it = objects.end();
     }
+    it--;
+    return *it;
   }
 
   return SmartPtr<T>();
@@ -285,9 +273,9 @@ SmartList< T > getObjects( PlayerCityPtr r, const object::Type type, TilePos sta
   SmartList< T > ret;
 
   gfx::TilesArea area( r->tilemap(), start, stop );
-  foreach( tile, area )
+  for (auto tile : area)
   {
-    SmartPtr<T> obj = ptr_cast< T >( (*tile)->overlay() );
+    SmartPtr<T> obj = ptr_cast< T >( tile->overlay() );
     if( obj.isValid() && (obj->type() == type || type == object::any) )
     {
       ret.push_back( obj );
@@ -304,9 +292,9 @@ SmartList< T > getObjects( PlayerCityPtr r, object::Group group, const TilePos& 
 
   gfx::TilesArea area( r->tilemap(), start, stop );
 
-  foreach( tile, area )
+  for (auto tile : area)
   {
-    SmartPtr<T> obj = (*tile)->overlay().as<T>();
+    SmartPtr<T> obj = tile->overlay().as<T>();
     if( obj.isValid() && (obj->getClass() == group || group == object::group::any ) )
     {
       ret.push_back( obj );
@@ -321,9 +309,9 @@ SmartList<T> getObjects( PlayerCityPtr r, object::Group group )
 {
   SmartList<T> ret;
   const OverlayList& buildings = r->overlays();
-  foreach( item, buildings )
+  for (auto building : buildings)
   {
-    SmartPtr<T> b = item->as<T>();
+    SmartPtr<T> b = building.as<T>();
     if( b.isValid() && (b->group() == group || group == object::group::any ) )
     {
       ret.push_back( b );
@@ -338,9 +326,9 @@ SmartList<T> getObjects( PlayerCityPtr r )
 {
   SmartList<T> ret;
   const OverlayList& buildings = r->overlays();
-  foreach( item, buildings )
+  for (auto building : buildings)
   {
-    ret.addIfValid( item->as<T>() );
+    ret.addIfValid( building.as<T>() );
   }
 
   return ret;
@@ -350,13 +338,13 @@ template< class T >
 SmartList< T > getObjectsNotIs( PlayerCityPtr r, const std::set<object::Type>& which )
 {
   SmartList< T > ret;
-  const OverlayList& ovs = r->overlays();
+  const OverlayList& overlays = r->overlays();
 
-  foreach( it, ovs )
+  for (auto overlay : overlays)
   {
-    if( which.count( (*it)->type() ) == 0 )
+    if( which.count( overlay->type() ) == 0 )
     {
-      ret.addIfValid( (*it).as<T>() );
+      ret.addIfValid( overlay.as<T>() );
     }
   }
 
@@ -367,13 +355,13 @@ template< class T >
 SmartList< T > getObjectsNotIs( PlayerCityPtr r, const std::set<object::Group>& which )
 {
   SmartList< T > ret;
-  const OverlayList& ovs = r->overlays();
+  const OverlayList& overlays = r->overlays();
 
-  foreach( it, ovs )
+  for (auto overlay : overlays)
   {
-    if( which.count( (*it)->group() ) == 0 )
+    if( which.count( overlay->group() ) == 0 )
     {
-      ret.addIfValid( (*it).as<T>() );
+      ret.addIfValid( overlay.as<T>() );
     }
   }
 
