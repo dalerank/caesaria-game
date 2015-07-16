@@ -91,6 +91,8 @@ using namespace gfx;
 using namespace events;
 using namespace config;
 
+static SimpleLogger LOG_CITY( "City" );
+
 namespace config {
 CAESARIA_LITERALCONST(tilemap)
 static const int minimumOldFormat = 58;
@@ -125,7 +127,7 @@ public:
 public:
   // collect taxes from all houses
   void monthStep( PlayerCityPtr city, const DateTime& time );
-  void calculatePopulation( PlayerCityPtr city );
+  void calculatePopulation();
 
 signals public:
   Signal1<int> onPopulationChangedSignal;
@@ -208,7 +210,7 @@ void PlayerCity::timeStep(unsigned int time)
 
   if( game::Date::isWeekChanged() )
   {
-    _d->calculatePopulation( this );
+    _d->calculatePopulation();
   }
 
   //update walkers access map
@@ -240,6 +242,12 @@ void PlayerCity::Impl::monthStep( PlayerCityPtr city, const DateTime& time )
   economy.payWages( city );
   economy.payMayorSalary( city );
   economy.updateHistory( game::Date::current() );
+}
+
+void PlayerCity::Impl::calculatePopulation()
+{
+  states.population = statistic->population.current();
+  emit onPopulationChangedSignal( states.population );
 }
 
 const WalkerList& PlayerCity::walkers(const TilePos& pos) { return _d->walkers.at( pos ); }
@@ -288,33 +296,19 @@ DateTime PlayerCity::lastAttack() const
   return mil.isValid() ? mil->lastAttack() : DateTime( -350, 0, 0 );
 }
 
-void PlayerCity::Impl::calculatePopulation( PlayerCityPtr city )
-{
-  unsigned int pop = 0;
-  HouseList houseList = city::statistic::getHouses( city );
-
-  for (auto house : houseList)
-  {
-    pop += house->habitants().count();
-  }
-
-  states.population = pop;
-  emit onPopulationChangedSignal( pop );
-}
-
 void PlayerCity::save( VariantMap& stream) const
 {
-  Logger::warning( "City: create save map" );
+  LOG_CITY.info( "Create save map" );
   City::save( stream );
 
-  Logger::warning( "City: save tilemap information");
+  LOG_CITY.info( "Save tilemap information" );
   VariantMap vm_tilemap;
   _d->tilemap.save( vm_tilemap );
 
   stream[ literals::tilemap    ] = vm_tilemap;
   VARIANT_SAVE_ENUM_D( stream, _d, walkers.idCount )
 
-  Logger::warning( "City: save main paramters ");
+  LOG_CITY.info( "Save main paramters " );
   stream[ "roadEntry"  ] = _d->borderInfo.roadEntry;
   stream[ "roadExit"   ] = _d->borderInfo.roadExit;
   stream[ "boatEntry"  ] = _d->borderInfo.boatEntry;
@@ -323,16 +317,16 @@ void PlayerCity::save( VariantMap& stream) const
   VARIANT_SAVE_ANY_D( stream, _d, cameraStart )
   VARIANT_SAVE_ANY_D( stream, _d, states.population )
 
-  Logger::warning( "City: save finance information" );
+  LOG_CITY.info( "Save finance information" );
   stream[ "funds" ] = _d->economy.save();
   VARIANT_SAVE_CLASS_D( stream, _d, scribes )
 
-  Logger::warning( "City: save trade/build/win options" );
+  LOG_CITY.info( "Save trade/build/win options" );
   VARIANT_SAVE_CLASS_D( stream, _d, tradeOptions )
   VARIANT_SAVE_CLASS_D( stream, _d, buildOptions )
   stream[ "winTargets"   ] = _d->targets.save();
 
-  Logger::warning( "City: save walkers information" );
+  LOG_CITY.info( "Save walkers information" );
   VariantMap vm_walkers;
   int walkedId = 0;
   for (auto w : _d->walkers)
@@ -347,14 +341,14 @@ void PlayerCity::save( VariantMap& stream) const
     }
     catch(...)
     {
-      Logger::warning( "ERROR: Cant save walker type " + WalkerHelper::getTypename( wtype ) );
+      LOG_CITY.error( "Can't save walker type " + WalkerHelper::getTypename( wtype ));
     }
 
     walkedId++;
   }
   stream[ "walkers" ] = vm_walkers;
 
-  Logger::warning( "City: save overlays information" );
+  LOG_CITY.info( "Save overlays information" );
   VariantMap vm_overlays;
   for (auto overlay : _d->overlays)
   {
@@ -370,12 +364,12 @@ void PlayerCity::save( VariantMap& stream) const
     }
     catch(...)
     {
-      Logger::warning( "ERROR: Cant save overlay type " + object::toString( otype ) );
+      LOG_CITY.error( "Can't save overlay type " + object::toString( otype ));
     }
   }
   stream[ "overlays" ] = vm_overlays;
 
-  Logger::warning( "City: save services information" );
+  LOG_CITY.info( "Save services information" );
   VariantMap vm_services;
   for (auto service : _d->services)
   {
@@ -387,18 +381,18 @@ void PlayerCity::save( VariantMap& stream) const
   VARIANT_SAVE_ANY_D( stream, _d, states.age )
   VARIANT_SAVE_CLASS_D( stream, _d, activePoints )
 
-  Logger::warning( "City: finalize save map" );
+  LOG_CITY.info( "Finalize save map" );
 }
 
 void PlayerCity::load( const VariantMap& stream )
-{  
-  Logger::warning( "City: start parse savemap" );
+{
+  LOG_CITY.info( "Start parse savemap" );
   int saveFormat = stream.get( "saveFormat", minimumOldFormat );
   bool needLoadOld = saveFormat < CAESARIA_BUILD_NUMBER;
 
   if( needLoadOld )
   {
-    Logger::warning( "!!! WARNING: Try load from format %d", saveFormat );
+    LOG_CITY.warn( "Trying to load from format %d", saveFormat );
   }
 
   City::load( stream );
@@ -406,7 +400,7 @@ void PlayerCity::load( const VariantMap& stream )
   _d->walkers.grid.resize( Size( _d->tilemap.size() ) );
   VARIANT_LOAD_ENUM_D( _d, walkers.idCount, stream )
 
-  Logger::warning( "City: parse main params" );
+  LOG_CITY.info( "Parse main params" );
   _d->borderInfo.roadEntry = TilePos( stream.get( "roadEntry" ).toTilePos() );
   _d->borderInfo.roadExit = TilePos( stream.get( "roadExit" ).toTilePos() );
   _d->borderInfo.boatEntry = TilePos( stream.get( "boatEntry" ).toTilePos() );
@@ -414,20 +408,20 @@ void PlayerCity::load( const VariantMap& stream )
   VARIANT_LOAD_ANY_D( _d, states.population, stream )
   VARIANT_LOAD_ANY_D( _d, cameraStart, stream )
 
-  Logger::warning( "City: parse options" );
+  LOG_CITY.info( "Parse options" );
   VARIANT_LOAD_CLASS_D_LIST( _d, options, stream )
   setOption( PlayerCity::forceBuild, 1 );
 
-  Logger::warning( "City: parse funds" );
+  LOG_CITY.info( "Parse funds" );
   _d->economy.load( stream.get( "funds" ).toMap() );
   VARIANT_LOAD_CLASS_D( _d, scribes, stream )
 
-  Logger::warning( "City: parse trade/build/win params" );
+  LOG_CITY.info( "Parse trade/build/win params" );
   VARIANT_LOAD_CLASS_D( _d, tradeOptions, stream )
   VARIANT_LOAD_CLASS_D( _d, buildOptions, stream )
   _d->targets.load( stream.get( "winTargets").toMap() );
 
-  Logger::warning( "City: load overlays" );
+  LOG_CITY.info( "Load overlays" );
   VariantMap overlays = stream.get( "overlays" ).toMap();
 
   for (auto item : overlays)
@@ -452,11 +446,11 @@ void PlayerCity::load( const VariantMap& stream )
     }
     else
     {
-      Logger::warning( "City: can't load overlay " + item.first );
+      LOG_CITY.warn( "Can't load overlay " + item.first );
     }
   }
 
-  Logger::warning( "City: parse walkers info" );
+  LOG_CITY.info( "Parse walkers info" );
   VariantMap walkers = stream.get( "walkers" ).toMap();
   for (auto item : walkers)
   {
@@ -471,11 +465,11 @@ void PlayerCity::load( const VariantMap& stream )
     }
     else
     {
-      Logger::warning( "City: can't load walker " + item.first );
+      LOG_CITY.warn( "Can't load walker " + item.first );
     }
   }
 
-  Logger::warning( "City: load service info" );
+  LOG_CITY.info( "Load service info" );
   VariantMap services = stream.get( "services" ).toMap();
   for (auto item : services)
   {
@@ -484,12 +478,12 @@ void PlayerCity::load( const VariantMap& stream )
     city::SrvcPtr srvc = findService( item.first );
     if( srvc.isNull() )
     {
-      Logger::warning( "City: " + item.first + " is not basic service, try load by name" );
+      LOG_CITY.warn( "'" + item.first + "' is not basic service, trying to load by name" );
 
       srvc = city::ServiceFactory::create( this, item.first );
       if( srvc.isValid() )
       {
-        Logger::warning( "City: creating service " + item.first + " directly");
+        LOG_CITY.warn( "Creating service '" + item.first + "' directly" );
         addService( srvc );
       }
     }
@@ -500,7 +494,7 @@ void PlayerCity::load( const VariantMap& stream )
     }
     else
     {
-      Logger::warning( "!!! WARNING: Can't find service " + item.first );
+      LOG_CITY.warn( "Can't find service '" + item.first + "'" );
     }
   }
 

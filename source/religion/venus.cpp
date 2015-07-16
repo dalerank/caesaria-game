@@ -77,7 +77,7 @@ void Venus::_doBlessing(PlayerCityPtr city)
   event->dispatch();
 
   // Increase health by 8 in <=20% of houses for 5 month
-  HouseList houses = statistic::getHouses( city );
+  HouseList houses = city->statistic().objects.houses();
 
   int rndCount = math::random( houses.size() / 5 );
   if (rndCount > 0)
@@ -119,7 +119,7 @@ void Venus::_doSmallCurse(PlayerCityPtr city)
                              ShowInfobox::send2scribe );
 
     // Reduce health by 8 in <=20% of houses for 5 month
-    HouseList houses = statistic::getHouses( city );
+    HouseList houses = city->statistic().objects.houses();
 
     HouseList list = houses.random( houses.size() / 5 );
     for( auto house : list)
@@ -137,7 +137,7 @@ void Venus::_doSmallCurse(PlayerCityPtr city)
                             ShowInfobox::send2scribe);
 
     // People emigrates from <=20% of houses
-    HouseList houses = statistic::getHouses( city );
+    HouseList houses = city->statistic().objects.houses();
 
     HouseList list = houses.random(houses.size() / 5);
     for( auto house : list)

@@ -177,7 +177,7 @@ int Military::monthFromLastAttack() const{ return _d->lastEnemyAttack.monthsTo( 
 
 world::PlayerArmyList Military::expeditions() const
 {
-  FortList forts = statistic::getObjects<Fort>( _city(), object::group::military );
+  FortList forts = _city()->statistic().objects.find<Fort>( object::group::military );
 
   world::PlayerArmyList ret;
   for( auto fort : forts )

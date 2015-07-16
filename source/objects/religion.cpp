@@ -167,9 +167,9 @@ void TempleCeres::_updateBuffs()
 
     int multiplier = _relationMultiplier();
 
-    foreach( it, farms )
+    for( auto farm : farms )
     {
-      FactoryProgressUpdater::uniqueTo( ptr_cast<Factory>( *it ), _buffValue() * multiplier, 4, CAESARIA_STR_A(TempleCeres) );
+      FactoryProgressUpdater::uniqueTo( farm.as<Factory>(), _buffValue() * multiplier, 4, CAESARIA_STR_A(TempleCeres) );
     }
 
     SmallTemple::_updateBuffs();

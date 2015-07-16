@@ -195,7 +195,7 @@ void Employer::Impl::updateYearlyWages()
   if( !lbYearlyWages )
     return;
 
-  int wages = statistic::getMonthlyWorkersWages( city ) * DateTime::monthsInYear;
+  int wages = city->statistic().workers.monthlyWages() * DateTime::monthsInYear;
   std::string wagesStr = utils::format( 0xff, "%s %d", _("##workers_yearly_wages_is##"), wages );
 
   lbYearlyWages->setText( wagesStr );

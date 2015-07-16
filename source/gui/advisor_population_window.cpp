@@ -378,7 +378,7 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
   {
   case dm_census:
     {
-      CitizenGroup population = city->statistic().population();
+      CitizenGroup population = city->statistic().population.details();
 
       _maxValue = 100;
       for( int age=CitizenGroup::newborn; age <= CitizenGroup::longliver; age++ )

@@ -168,7 +168,7 @@ void ProsperityRating::timeStep(const unsigned int time )
     _d->now.percentPlebs = math::percentage( _d->now.plebsCount, population );
     _d->prosperityExtend += (_d->now.percentPlebs < prosperity::normalPlebsInCityPercent ? prosperity::award : 0);
 
-    bool haveHippodrome = !statistic::getObjects<Hippodrome>( _city(), object::hippodrome ).empty();
+    bool haveHippodrome = !_city()->statistic().objects.find<Hippodrome>( object::hippodrome ).empty();
     _d->prosperityExtend += (haveHippodrome ? prosperity::award : 0);
 
     _d->now.workless = statistic::getWorklessPercent( _city() );

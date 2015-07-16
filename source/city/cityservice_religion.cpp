@@ -23,7 +23,6 @@
 #include "game/gamedate.hpp"
 #include "objects/religion.hpp"
 #include "religion/pantheon.hpp"
-#include "core/foreach.hpp"
 #include "core/variant_map.hpp"
 #include "core/utils.hpp"
 #include "core/gettext.hpp"
@@ -36,6 +35,11 @@
 
 using namespace religion;
 using namespace events;
+
+namespace
+{
+static SimpleLogger LOG( "Religion" );
+}
 
 namespace city
 {
@@ -67,20 +71,22 @@ public:
     }
   }
 
-  void clear( const DivinityList& divns )
+  void clear( const DivinityList& divinities )
   {
     std::map< std::string, CoverageInfo >::clear();
-    for( auto divinity : divns )
+    for (auto divinity : divinities)
     {
-      CoverageInfo& cvInfo = (*this)[ divinity->internalName() ];
+      CoverageInfo &cvInfo = (*this)[divinity->internalName()];
       cvInfo.smallTempleNum = 0;
     }
   }
 
   void setOraclesParishioner( int parishioners )
   {
-    for( auto item : *this )
-      item.second.parishionerNumber += parishioners;
+    for (auto it : *this)
+    {
+      it.second.parishionerNumber += parishioners;
+    }
   }
 };
 
@@ -91,7 +97,7 @@ public:
   DateTime lastMessageDate;
   StringArray reasons;
 
-  void updateRelation(PlayerCityPtr city, DivinityPtr divn );
+  void updateRelation( PlayerCityPtr city, DivinityPtr divinity );
 };
 
 SrvcPtr Religion::create( PlayerCityPtr city )
@@ -118,36 +124,43 @@ void Religion::timeStep( const unsigned int time )
     if( _city()->getOption( PlayerCity::godEnabled ) == 0 )
       return;
 
-    Logger::warning( "Religion: start update relations" );
+    LOG.info( "Update relations started" );
     DivinityList divinities = rome::Pantheon::instance().all();
 
     //clear temples info
     _d->templesCoverity.clear( divinities );
 
     //update temples info
-    TempleList temples = statistic::getObjects<Temple>( _city(), object::group::religion );
-    foreach( it, temples )
-      _d->templesCoverity.update( *it );
+    TempleList temples = _city()->statistic().objects.find<Temple>( object::group::religion );
+    for (auto temple : temples)
+    {
+      _d->templesCoverity.update( temple );
+    }
 
     TempleOracleList oracles = _city()->statistic().objects.find<TempleOracle>( object::oracle );
 
     //add parishioners to all divinities by oracles
     int oraclesParishionerNumber = 0;
-    for( auto oracle : oracles )
+
+    for (auto oracle : oracles)
+    {
       oraclesParishionerNumber += oracle->currentVisitors();
+    }
 
     _d->templesCoverity.setOraclesParishioner( oraclesParishionerNumber );
 
-    for( auto divn :  divinities )
-      divn->setEffectPoint( 0 );
+    for (auto divinity : divinities)
+    {
+      divinity->setEffectPoint( 0 );
+    }
 
     std::map< int, StringArray > templesByGod;
 
-    for( auto coverity : _d->templesCoverity )
+    for (auto coverity : _d->templesCoverity)
     {
-      const CoverageInfo& info = coverity.second;
+      const CoverageInfo &info = coverity.second;
       int maxTemples = info.bigTempleNum + info.smallTempleNum;
-      templesByGod[ maxTemples ].push_back( coverity.first );
+      templesByGod[maxTemples].push_back( coverity.first );
     }
 
     if( !templesByGod.empty() )
@@ -180,8 +193,10 @@ void Religion::timeStep( const unsigned int time )
       }
     }
 
-    for( auto divn : divinities )
-      _d->updateRelation( _city(), divn );
+    for (auto divinity : divinities)
+    {
+      _d->updateRelation( _city(), divinity );
+    }
   }
 
   if( game::Date::isMonthChanged() )
@@ -199,7 +214,7 @@ void Religion::timeStep( const unsigned int time )
     //check gods wrath and mood
     std::map< int, DivinityList > godsWrath;
     std::map< int, DivinityList > godsUnhappy;
-    for( auto god : divinities )
+    for (auto god : divinities)
     {
       if( god->wrathPoints() > 0 )
       {
@@ -254,32 +269,33 @@ std::string Religion::reason() const
   return _d->reasons.random();
 }
 
-void Religion::Impl::updateRelation( PlayerCityPtr city, DivinityPtr divn )
+void Religion::Impl::updateRelation( PlayerCityPtr city, DivinityPtr divinity )
 {
-  if( !divn.isValid() )
+  if (divinity.isNull())
   {
-    Logger::warning( "!!! WARNING: Cant update relation for null god" );
+    LOG.warn( "Can't update relation for null god" );
     return;
   }
 
-  CoverageInfo& myTemples = templesCoverity[ divn->internalName() ];
+  CoverageInfo &myTemples = templesCoverity[divinity->internalName()];
   unsigned int faithValue = 0;
   if( city->states().population > 0 )
   {
     faithValue = math::clamp<unsigned int>( math::percentage( myTemples.parishionerNumber, city->states().population ), 0u, 100u );
   }
 
-  Logger::warning( "Religion: set faith income for %s is %d [r=%f]", divn->name().c_str(), faithValue, divn->relation() );
-  divn->updateRelation( faithValue, city );
+  LOG.info( "Faith income for %s is %d [r=%f.2]", divinity->name().c_str(), faithValue, divinity->relation());
+  divinity->updateRelation( faithValue, city );
 
-  bool unhappy = divn->relation() < relation::negative;
+  bool unhappy = divinity->relation() < relation::negative;
   bool maySendNotification = lastMessageDate.monthsTo( game::Date::current() ) > DateTime::monthsInYear/2;
 
   if( unhappy && maySendNotification )
   {
     lastMessageDate = game::Date::current();
-    std::string text = divn->relation() < relation::wrathfull ? "##gods_wrathful_text##" : "##gods_unhappy_text##";
-    std::string title = divn->relation() < relation::wrathfull ? "##gods_wrathful_title##" : "##gods_unhappy_title##";
+    std::string text = divinity->relation() < relation::wrathfull ? "##gods_wrathful_text##" : "##gods_unhappy_text##";
+    std::string title =
+        divinity->relation() < relation::wrathfull ? "##gods_wrathful_title##" : "##gods_unhappy_title##";
 
     GameEventPtr e = ShowInfobox::create( _(title), _(text), ShowInfobox::send2scribe );
     e->dispatch();

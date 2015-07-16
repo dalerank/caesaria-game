@@ -38,13 +38,13 @@ Economy::~Economy() {}
 
 void Economy::payWages(PlayerCityPtr city)
 {
-  int wages = statistic::getMonthlyWorkersWages( city );
+  int wages = city->statistic().workers.monthlyWages();
 
   if( haveMoneyForAction( wages ) )
   {
     HouseList houses = city->statistic().objects.houses();
 
-    float salary = statistic::getMonthlyOneWorkerWages( city );
+    float salary = city->statistic().workers.monthlyOneWorkerWages();
     float wages = 0;
     for( auto house : houses )
     {

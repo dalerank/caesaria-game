@@ -32,6 +32,50 @@ public:
 
 typedef SmartPtr<LogWriter> LogWriterPtr;
 
+class SimpleLogger {
+public:
+  SimpleLogger(const std::string &category);
+
+  bool isDebugEnabled() const;
+
+  void debug(const char *fmt, ...);
+
+  void debug(const std::string &text);
+
+  void info(const char *fmt, ...);
+
+  void info(const std::string &text);
+
+  void warn(const char *fmt, ...);
+
+  void warn(const std::string &text);
+
+  void error(const char *fmt, ...);
+
+  void error(const std::string &text);
+
+  void fatal(const char *fmt, ...);
+
+  void fatal(const std::string &text);
+
+private:
+  void write(const std::string &message, bool newline = true);
+  const std::string &category;
+
+  enum class Severity : unsigned short {
+    DBG,
+    INFO,
+    WARN,
+    ERROR,
+    FATAL
+  };
+
+  void log(Severity, const char *fmt, ...);
+
+  void log(Severity, const std::string &text);
+
+  const std::string toS(Severity severity);
+};
 class Logger
 {
 public:
@@ -55,6 +99,7 @@ private:
 
   class Impl;
   ScopedPtr< Impl > _d;
+  friend class SimpleLogger;
 };
 
 #endif //__CAESARIA_LOGGER_H_INCLUDED__

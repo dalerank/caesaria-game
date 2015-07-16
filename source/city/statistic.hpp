@@ -41,12 +41,7 @@ public:
   Statistic( PlayerCity& rcity );
   void update( const unsigned long time );
 
-  struct _Section
-  {
-    Statistic& _parent;
-  };
-
-  struct _Walkers : public _Section
+  struct _Walkers
   {
     const WalkerList& find( walker::Type type ) const;
 
@@ -62,10 +57,36 @@ public:
       return result;
     }
 
+    template< class T >
+    SmartPtr<T> find( walker::Type type, Walker::UniqueId id ) const
+    {
+      const WalkerList& all = _parent.rcity.walkers();
+
+      if( type != walker::any )
+      {
+        for( auto wlk : all )
+        {
+          if( wlk->type() == type && wlk->uniqueId() == id )
+            return wlk.as<T>();
+        }
+      }
+      else
+      {
+        for( auto wlk : all )
+        {
+          if( wlk->uniqueId() == id )
+            return wlk.as<T>();
+        }
+      }
+
+      return SmartPtr<T>();
+    }
+
+    Statistic& _parent;
     std::map<int, WalkerList> cached;
   } walkers;
 
-  struct _Objects : _Section
+  struct _Objects
   {
     template< class T >
     SmartList< T > find( std::set<object::Type> which ) const
@@ -158,13 +179,15 @@ public:
       return SmartPtr<T>();
     }
 
-
+    FarmList farms(std::set<object::Type> which=std::set<object::Type>() ) const;
     HouseList houses( std::set<int> levels=std::set<int>() ) const;
 
+    Statistic& _parent;
   } objects;
 
-  struct _Tax : _Section
+  struct _Tax
   {
+    Statistic& _parent;
     unsigned int value() const;
   } tax;
 
@@ -174,14 +197,24 @@ public:
     int need;
   };
 
-  struct _Workers : _Section
+  struct _Workers
   {
     WorkersInfo details() const;
     unsigned int need() const;
     int wagesDiff() const;
+    unsigned int monthlyWages() const;
+    float monthlyOneWorkerWages() const;
+
+    Statistic& _parent;
   } workers;
 
-  CitizenGroup population() const;
+  struct _Population
+  {
+    CitizenGroup details() const;
+    unsigned int current() const;
+
+    Statistic& _parent;
+  } population;
 
   PlayerCity& rcity;
 };
@@ -190,8 +223,6 @@ namespace statistic
 {
 
 unsigned int getAvailableWorkersNumber( PlayerCityPtr city );
-unsigned int getMonthlyWorkersWages( PlayerCityPtr city );
-float getMonthlyOneWorkerWages( PlayerCityPtr city );
 unsigned int getWorklessNumber( PlayerCityPtr city );
 unsigned int getWorklessPercent( PlayerCityPtr city );
 unsigned int getFoodStock( PlayerCityPtr city );
@@ -212,7 +243,6 @@ int getLaborAccessValue( PlayerCityPtr city, WorkingBuildingPtr wb );
 int getEntertainmentCoverage(PlayerCityPtr city, Service::Type service );
 bool canImport( PlayerCityPtr city, good::Product type );
 bool canProduce( PlayerCityPtr city, good::Product type );
-FarmList getFarms(PlayerCityPtr r, std::set<object::Type> which=std::set<object::Type>() );
 OverlayList getNeighbors( OverlayPtr overlay, PlayerCityPtr r );
 
 template<class T, class B>
@@ -276,31 +306,6 @@ SmartList< T > getWalkers( PlayerCityPtr r, walker::Type type,
   }
 
   return result;
-}
-
-template< class T >
-SmartPtr<T> getWalker( PlayerCityPtr r, walker::Type type, Walker::UniqueId id )
-{
-  const WalkerList& all = r->walkers();
-
-  if( type != walker::any )
-  {
-    for( auto wlk : all )
-    {
-      if( wlk->type() == type && wlk->uniqueId() == id )
-        return wlk.as<T>();
-    }
-  }
-  else
-  {
-    for( auto wlk : all )
-    {
-      if( wlk->uniqueId() == id )
-        return wlk.as<T>();
-    }
-  }
-
-  return SmartPtr<T>();
 }
 
 template<class T>

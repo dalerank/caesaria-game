@@ -130,25 +130,6 @@ unsigned int getAvailableWorkersNumber(PlayerCityPtr city)
   return workersNumber;
 }
 
-unsigned int getMonthlyWorkersWages(PlayerCityPtr city)
-{
-  Statistic::WorkersInfo wInfo = city->statistic().workers.details();
-
-  if( wInfo.current == 0 )
-    return 0;
-
-  //wages all worker in year
-  //workers take salary in sestertius 1/100 part of dinarius
-  int wages = wInfo.current * getMonthlyOneWorkerWages( city );
-
-  return std::max<int>( wages, 1 );
-}
-
-float getMonthlyOneWorkerWages(PlayerCityPtr city)
-{
-  return city->treasury().workerSalary() / (10.f * DateTime::monthsInYear);
-}
-
 unsigned int getWorklessNumber(PlayerCityPtr city)
 {
   HouseList houses = city->statistic().objects.houses();
@@ -207,7 +188,7 @@ unsigned int getFoodMonthlyConsumption(PlayerCityPtr city)
 unsigned int getFoodProducing(PlayerCityPtr city)
 {
   int foodProducing = 0;
-  FarmList farms = getObjects<Farm>( city, object::group::food );
+  FarmList farms = city->statistic().objects.find<Farm>( object::group::food );
 
   for( auto farm : farms )
     foodProducing += farm->produceQty();
@@ -324,22 +305,6 @@ int getLaborAccessValue(PlayerCityPtr city, WorkingBuildingPtr wb)
   return math::clamp( math::percentage( averageDistance, maxLaborDistance ) * 2, 25, 100 );
 }
 
-FarmList getFarms(PlayerCityPtr r, std::set<object::Type> which)
-{
-  FarmList ret;
-  FarmList farms = getObjects<Farm>( r, object::group::food );
-
-  for( auto it : farms )
-  {
-    if( which.count( it->type() ) > 0 )
-    {
-      ret << it;
-    }
-  }
-
-  return ret;
-}
-
 int taxValue(unsigned int population, int koeff)
 {
   return population / 1000 * koeff;
@@ -383,6 +348,7 @@ Statistic::Statistic(PlayerCity& c)
     objects{ *this },
     tax{ *this },
     workers{ *this },
+    population{ *this },
     rcity( c )
 {
 
@@ -404,7 +370,7 @@ const WalkerList& Statistic::_Walkers::find(walker::Type type) const
     return cached.at( type );
 
   WalkerList& wl = const_cast<_Walkers*>( this )->cached[ type ];
-  for( auto w : _city.walkers() )
+  for( auto w : _parent.rcity.walkers() )
   {
     if( w->type() == type )
       wl.push_back(w);
@@ -418,7 +384,7 @@ unsigned int Statistic::_Tax::value() const
   HouseList houses = _parent.objects.houses();
 
   float taxValue = 0.f;
-  float taxRate = _parent.rcity->treasury().taxRate();
+  float taxRate = _parent.rcity.treasury().taxRate();
 
   for( auto house : houses )
   {
@@ -440,6 +406,7 @@ HouseList Statistic::_Objects::houses(std::set<int> levels) const
   if( levels.empty() )
     return houses;
 
+  HouseList ret;
   for( auto it : houses )
   {
     if( levels.count( it->spec().level() ) > 0 )
@@ -451,11 +418,11 @@ HouseList Statistic::_Objects::houses(std::set<int> levels) const
   return ret;
 }
 
-Statistic::WorkersInfo Statistic::_Workers::details()
+Statistic::WorkersInfo Statistic::_Workers::details() const
 {
   WorkersInfo ret;
 
-  WorkingBuildingList buildings = find<WorkingBuilding>( _parent.rcity, object::any );
+  WorkingBuildingList buildings = _parent.objects.find<WorkingBuilding>( object::any );
 
   ret.current = 0;
   ret.need = 0;
@@ -476,17 +443,63 @@ unsigned int Statistic::_Workers::need() const
 
 int Statistic::_Workers::wagesDiff() const
 {
-  return _parent.rcity->treasury().workerSalary() - _parent.rcity->empire()->workerSalary();
+  return _parent.rcity.treasury().workerSalary() - _parent.rcity.empire()->workerSalary();
 }
 
-CitizenGroup Statistic::population() const
+CitizenGroup Statistic::_Population::details() const
 {
-  HouseList houses = objects.houses();
+  HouseList houses = _parent.objects.houses();
 
   CitizenGroup ret;
   for( auto house : houses ) { ret += house->habitants(); }
 
   return ret;
+}
+
+FarmList Statistic::_Objects::farms( std::set<object::Type> which) const
+{
+  FarmList ret;
+  FarmList farms = find<Farm>( object::group::food );
+
+  for( auto it : farms )
+  {
+    if( which.count( it->type() ) > 0 )
+    {
+      ret << it;
+    }
+  }
+
+  return ret;
+}
+
+unsigned int Statistic::_Population::current() const
+{
+  unsigned int pop = 0;
+  HouseList houseList = _parent.objects.houses();
+
+  for (auto house : houseList)
+  {
+    pop += house->habitants().count();
+  }
+}
+
+unsigned int Statistic::_Workers::monthlyWages() const
+{
+  Statistic::WorkersInfo wInfo = details();
+
+  if( wInfo.current == 0 )
+    return 0;
+
+  //wages all worker in year
+  //workers take salary in sestertius 1/100 part of dinarius
+  int wages = wInfo.current * monthlyOneWorkerWages();
+
+  return std::max<int>( wages, 1 );
+}
+
+float Statistic::_Workers::monthlyOneWorkerWages() const
+{
+  return _parent.rcity.treasury().workerSalary() / (10.f * DateTime::monthsInYear);
 }
 
 }//end namespace city

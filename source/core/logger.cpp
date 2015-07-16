@@ -240,3 +240,102 @@ void Logger::registerWriter(std::string name, LogWriterPtr writer)
     instance()._d->writers[ name ] = writer;
   }
 }
+
+void SimpleLogger::write(const std::string &message, bool newline) {
+  Logger::instance()._d->write(message, newline);
+}
+
+SimpleLogger::SimpleLogger(const std::string &category) : category(category) {
+}
+
+void SimpleLogger::log(SimpleLogger::Severity severity, const std::string &text) {
+  write(toS(severity) + " " + category + ": " + text);
+}
+
+void SimpleLogger::log(SimpleLogger::Severity severity, const char *fmt, ...) {
+  va_list args;
+  va_start(args, fmt);
+  std::string ret;
+  utils::vformat(ret, 512, fmt, args);
+  log(severity, ret);
+  va_end(args);
+}
+
+bool SimpleLogger::isDebugEnabled() const {
+#ifdef DEBUG
+  return true;
+#else
+  return false;
+#endif
+}
+
+const std::string SimpleLogger::toS(SimpleLogger::Severity severity) {
+  switch (severity) {
+    case Severity::DBG:
+      return "[DEBUG]";
+    case Severity::INFO:
+      return "[INFO]";
+    case Severity::WARN:
+      return "[WARN]";
+    case Severity::ERROR:
+      return "[ERROR]";
+    case Severity::FATAL:
+      return "[FATAL]";
+  }
+  return "[UNKNOWN]";
+}
+
+void SimpleLogger::debug(const std::string &text) {
+  log(Severity::DBG, text);
+}
+
+void SimpleLogger::info(const std::string &text) {
+  log(Severity::INFO, text);
+}
+
+void SimpleLogger::warn(const std::string &text) {
+  log(Severity::WARN, text);
+}
+
+void SimpleLogger::error(const std::string &text) {
+  log(Severity::ERROR, text);
+}
+
+void SimpleLogger::fatal(const std::string &text) {
+  log(Severity::FATAL, text);
+}
+
+void SimpleLogger::debug(const char *fmt, ...) {
+  va_list args;
+  va_start(args, fmt);
+  log(Severity::DBG, fmt, args);
+  va_end(args);
+}
+
+void SimpleLogger::info(const char *fmt, ...) {
+  va_list args;
+  va_start(args, fmt);
+  log(Severity::INFO, fmt, args);
+  va_end(args);
+}
+
+void SimpleLogger::warn(const char *fmt, ...) {
+  va_list args;
+  va_start(args, fmt);
+  log(Severity::WARN, fmt, args);
+  va_end(args);
+}
+
+void SimpleLogger::error(const char *fmt, ...) {
+  va_list args;
+  va_start(args, fmt);
+  log(Severity::ERROR, fmt, args);
+  va_end(args);
+}
+
+void SimpleLogger::fatal(const char *fmt, ...) {
+  va_list args;
+  va_start(args, fmt);
+  log(Severity::FATAL, fmt, args);
+  va_end(args);
+}

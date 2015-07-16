@@ -148,7 +148,7 @@ void Info::timeStep(const unsigned int time )
                             ? foodProducing / (yearlyFoodConsumption+1)
                             : -(yearlyFoodConsumption / (foodProducing+1) );
 
-    statistic::WorkersInfo wInfo = statistic::getWorkersNumber( _city() );
+    Statistic::WorkersInfo wInfo = _city()->statistic().workers.details();
 
     last[ needWorkers ] = wInfo.need - wInfo.current;
     last[ maxWorkers  ] = wInfo.need;
@@ -176,7 +176,7 @@ void Info::timeStep(const unsigned int time )
       last[ Info::milthreat ] = mil->threatValue();
     }
 
-    HouseList houses = city::statistic::getHouses( _city() );
+    HouseList houses = _city()->statistic().objects.houses();
 
     last[ houseNumber ] = 0;
     last[ shackNumber ] = 0;
