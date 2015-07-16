@@ -145,7 +145,7 @@ void Sentiment::timeStep(const unsigned int time )
       }
     }
 
-    HouseList houses = statistic::getHouses( _city() );
+    HouseList houses = _city()->statistic().objects.houses();
 
     unsigned int houseNumber = 0;
     _d->finishValue = 0;

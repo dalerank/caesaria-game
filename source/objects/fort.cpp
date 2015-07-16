@@ -65,13 +65,13 @@ CAESARIA_LITERALCONST(img)
 
 LegionEmblem LegionEmblem::findFree( PlayerCityPtr city )
 {
-  FortList forts = statistic::getObjects<Fort>( city, object::any );
+  FortList forts = city->statistic().objects.find<Fort>( object::any );
   std::vector<LegionEmblem> availableEmblems;
 
   VariantMap emblemsModel = config::load( SETTINGS_RC_PATH( emblemsModel ) );
-  foreach( it, emblemsModel )
+  for( auto it : emblemsModel )
   {
-    VariantMap vm_emblem = it->second.toMap();
+    VariantMap vm_emblem = it.second.toMap();
     LegionEmblem newEmblem;
 
     newEmblem.name = vm_emblem[ literals::name ].toString();
@@ -584,7 +584,7 @@ bool Fort::canBuild( const city::AreaInfo& areaInfo ) const
 
 bool Fort::build( const city::AreaInfo& info )
 {
-  FortList forts = statistic::getObjects<Fort>( info.city, object::any );
+  FortList forts = info.city->statistic().objects.find<Fort>( object::any );
 
   const city::development::Options& bOpts = info.city->buildOptions();
   if( forts.size() >= bOpts.maximumForts() )
@@ -606,7 +606,7 @@ bool Fort::build( const city::AreaInfo& info )
 
   _fgPictures().resize(1);
 
-  BarracksList barracks = statistic::getObjects<Barracks>( info.city, object::barracks );
+  BarracksList barracks = info.city->statistic().objects.find<Barracks>( object::barracks );
 
   if( barracks.empty() )
   {

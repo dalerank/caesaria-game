@@ -94,7 +94,7 @@ void Protestor::timeStep(const unsigned long time)
   {
   case Impl::searchHouse:
   {
-    HouseList houses = city::statistic::getHouses( _city() );
+    HouseList houses = _city()->statistic().objects.houses();
     for( HouseList::iterator it=houses.begin(); it != houses.end(); )
     {
       if( (*it)->spec().level() <= _d->houseLevel ) { it=houses.erase( it ); }
@@ -119,7 +119,7 @@ void Protestor::timeStep(const unsigned long time)
 
   case Impl::searchAnyBuilding:
   {
-    HouseList houses = city::statistic::getHouses( _city() );
+    HouseList houses = _city()->statistic().objects.houses();
 
     Pathway pathway = _d->findHouse( _city(), houses, pos() );
     if( pathway.isValid() )

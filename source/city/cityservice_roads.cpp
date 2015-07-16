@@ -85,22 +85,22 @@ void Roads::timeStep( const unsigned int time )
   _d->lastTimeUpdate = game::Date::current();  
 
   Impl::Updates positions;
-  foreach( it, _d->btypes )
+  for( auto type : _d->btypes )
   {
-    BuildingList tmp = statistic::getObjects<Building>( _city(), it->first );
+    BuildingList tmp = _city()->statistic().objects.find<Building>( type.first );
 
     foreach( b, tmp )
     {
-      positions.push_back( Impl::UpdateInfo( b->object(), it->second ) );
+      positions.push_back( Impl::UpdateInfo( b->object(), type.second ) );
     }
   }
 
-  HouseList houses = city::statistic::getHouses( _city() );
-  foreach( house, houses )
+  HouseList houses = _city()->statistic().objects.houses();
+  for( auto house : houses )
   {
-    if( (*house)->spec().level() >= HouseLevel::bigMansion )
+    if( house->spec().level() >= HouseLevel::bigMansion )
     {
-      positions.push_back( Impl::UpdateInfo( house->object(), 5 ) );
+      positions.push_back( Impl::UpdateInfo( house.object(), 5 ) );
     }
   }
 
@@ -112,10 +112,10 @@ void Roads::timeStep( const unsigned int time )
 
   if( _d->lastTimeUpdate.month() % 3 == 1 )
   {
-    RoadList roads = statistic::getObjects<Road>( _city(), object::road );
-    foreach( road, roads )
+    RoadList roads = _city()->statistic().objects.find<Road>( object::road );
+    for( auto road : roads )
     {
-      (*road)->appendPaved( _d->defaultDecreasePaved );
+      road->appendPaved( _d->defaultDecreasePaved );
     }
   }
 }
@@ -132,7 +132,7 @@ void Roads::Impl::updateRoadsAround( Propagator& propagator, UpdateInfo info )
     const TilesArray& tiles = (*current)->allTiles();
     foreach( it, tiles )
     {
-      RoadPtr road = ptr_cast<Road>( (*it)->overlay() );
+      RoadPtr road = (*it)->overlay().as<Road>();
       if( road.isValid() )
       {
         road->appendPaved( defaultIncreasePaved );

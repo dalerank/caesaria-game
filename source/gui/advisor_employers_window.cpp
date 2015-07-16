@@ -261,20 +261,20 @@ void Employer::Impl::updateSalaryLabel()
 
 Employer::Impl::EmployersInfo Employer::Impl::getEmployersInfo(industry::Type type )
 {
-  object::Groups bldGroups = industry::toGroups( type );
+  object::Groups groups = industry::toGroups( type );
 
   WorkingBuildingList buildings;
-  foreach( buildingsGroup, bldGroups )
+  for( auto gr : groups )
   {
-    WorkingBuildingList sectorBuildings = statistic::getObjects<WorkingBuilding>( city, *buildingsGroup );
+    WorkingBuildingList sectorBuildings = city->statistic().objects.find<WorkingBuilding>( gr );
     buildings.insert( buildings.begin(), sectorBuildings.begin(), sectorBuildings.end() );
   }
 
   EmployersInfo ret = { 0, 0 };
-  foreach( b, buildings )
+  for( auto b : buildings )
   {
-    ret.currentWorkers += (*b)->numberWorkers();
-    ret.needWorkers += (*b)->maximumWorkers();
+    ret.currentWorkers += b->numberWorkers();
+    ret.needWorkers += b->maximumWorkers();
   }
 
   return ret;

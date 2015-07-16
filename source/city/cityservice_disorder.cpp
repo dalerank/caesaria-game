@@ -162,7 +162,7 @@ void Disorder::Impl::weekUpdate( unsigned int time, PlayerCityPtr rcity )
 {
   HouseList houses = city::statistic::getHouses( rcity );
 
-  const WalkerList& walkers = rcity->walkers( walker::protestor );
+  const WalkerList& walkers = rcity->statistic().walkers.find( walker::protestor );
 
   HouseList criminalizedHouse;
   crime.level.current = 0;

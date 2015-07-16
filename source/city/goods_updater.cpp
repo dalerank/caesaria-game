@@ -71,7 +71,7 @@ void GoodsUpdater::timeStep(const unsigned int time)
 
     for( auto bldType : _d->supportBuildings )
     {
-      BuildingList buildings = city::statistic::getObjects<Building>( _city(), bldType );
+      BuildingList buildings = _city()->statistic().objects.find<Building>( bldType );
       for( auto building : buildings )
       {
         good::Stock stock( _d->gtype, _d->value, _d->value );

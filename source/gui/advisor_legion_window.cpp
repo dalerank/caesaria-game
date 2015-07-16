@@ -152,9 +152,9 @@ Legion::Legion( Widget* parent, int id, PlayerCityPtr city, FortList forts )
   GET_DWIDGET_FROM_UI( _d, lbBlackframe )
 
   int index=0;
-  foreach( it, forts )
+  for( auto fort : forts )
   {
-    LegionButton* btn = new LegionButton( this, startLegionArea + legionButtonOffset, index++, *it );
+    LegionButton* btn = new LegionButton( this, startLegionArea + legionButtonOffset, index++, fort );
 
     CONNECT( btn, onShowLegionSignal, this, Legion::_handleMove2Legion );
     CONNECT( btn, onLegionRetreatSignal, this, Legion::_handleRetreaLegion );
@@ -230,8 +230,8 @@ void Legion::Impl::updateAlarms(PlayerCityPtr city)
 {
   MilitaryPtr mil = statistic::getService<Military>( city );
 
-  WalkerList chasteners = city->walkers( walker::romeChastenerSoldier );
-  WalkerList elephants = city->walkers( walker::romeChastenerElephant );
+  WalkerList chasteners = city->statistic().walkers.find( walker::romeChastenerSoldier );
+  WalkerList elephants = city->statistic().walkers.find( walker::romeChastenerElephant );
 
   if( chasteners.size() || elephants.size() )
   {
@@ -246,18 +246,18 @@ void Legion::Impl::updateAlarms(PlayerCityPtr city)
   }
 
   world::PlayerArmyList expeditions = mil->expeditions();
-  foreach( it, expeditions )
+  for( auto expedition : expeditions )
   {
-    if( (*it)->mode() == world::PlayerArmy::go2location )
+    if( expedition->mode() == world::PlayerArmy::go2location )
     {
       lbAlarm->setText( _("##out_legion_go_to_location##") );
       return;
     }
   }
 
-  foreach( it, expeditions )
+  for( auto expedition : expeditions )
   {
-    if( (*it)->mode() == world::PlayerArmy::go2home )
+    if( expedition->mode() == world::PlayerArmy::go2home )
     {
       lbAlarm->setText( _("##out_legion_back_to_city##") );
       return;

@@ -61,23 +61,6 @@ static const float minBalanceKoeff=.5f;
 static const int   maxLaborDistance=8;
 }
 
-WorkersInfo getWorkersNumber(PlayerCityPtr city )
-{
-  WorkersInfo ret;
-
-  WorkingBuildingList buildings = getObjects<WorkingBuilding>( city, object::any );
-
-  ret.current = 0;
-  ret.need = 0;
-  for( auto bld : buildings )
-  {
-    ret.current += bld->numberWorkers();
-    ret.need += bld->maximumWorkers();
-  }
-
-  return ret;
-}
-
 float getBalanceKoeff(PlayerCityPtr city)
 { 
   if( city.isNull() )
@@ -93,7 +76,7 @@ float getBalanceKoeff(PlayerCityPtr city)
 int getEntertainmentCoverage(PlayerCityPtr city, Service::Type service)
 {
   int need = 0, have = 0;
-  HouseList houses = getHouses( city );
+  HouseList houses = city->statistic().objects.houses();
   for( auto house : houses )
   {
     if( house->isEntertainmentNeed( service ) )
@@ -136,25 +119,9 @@ bool canProduce(PlayerCityPtr city, good::Product type)
   return !buildings.empty();
 }
 
-CitizenGroup getPopulation(PlayerCityPtr city)
-{
-  HouseList houses = getHouses( city );
-
-  CitizenGroup ret;
-  for( auto house : houses ) { ret += house->habitants(); }
-
-  return ret;
-}
-
-unsigned int getWorkersNeed(PlayerCityPtr city)
-{
-  WorkersInfo wInfo = getWorkersNumber( city );
-  return wInfo.need < wInfo.current ? 0 : wInfo.need - wInfo.current;
-}
-
 unsigned int getAvailableWorkersNumber(PlayerCityPtr city)
 {
-  HouseList houses = getHouses( city );
+  HouseList houses = city->statistic().objects.houses();
 
   int workersNumber = 0;
   for( auto house : houses )
@@ -165,7 +132,7 @@ unsigned int getAvailableWorkersNumber(PlayerCityPtr city)
 
 unsigned int getMonthlyWorkersWages(PlayerCityPtr city)
 {
-  WorkersInfo wInfo = getWorkersNumber( city );
+  Statistic::WorkersInfo wInfo = city->statistic().workers.details();
 
   if( wInfo.current == 0 )
     return 0;
@@ -184,7 +151,7 @@ float getMonthlyOneWorkerWages(PlayerCityPtr city)
 
 unsigned int getWorklessNumber(PlayerCityPtr city)
 {
-  HouseList houses = getHouses( city );
+  HouseList houses = city->statistic().objects.houses();
 
   int worklessNumber = 0;
   for( auto house : houses ) { worklessNumber += house->unemployed(); }
@@ -206,7 +173,7 @@ unsigned int getCrimeLevel( PlayerCityPtr city )
 unsigned int blackHouses( PlayerCityPtr city )
 {
   unsigned int ret = 0;
-  HouseList houses = getHouses( city );
+  HouseList houses = city->statistic().objects.houses();
   if( city->states().population > pop4blackHouseCalc )
   {
     for( auto house : houses )
@@ -220,7 +187,7 @@ unsigned int getFoodStock(PlayerCityPtr city)
 {
   int foodSum = 0;
 
-  GranaryList granaries = getObjects<Granary>( city, object::granery );
+  GranaryList granaries = city->statistic().objects.find<Granary>( object::granery );
   for( auto gr : granaries ) { foodSum += gr->store().qty(); }
 
   return foodSum;
@@ -229,7 +196,7 @@ unsigned int getFoodStock(PlayerCityPtr city)
 unsigned int getFoodMonthlyConsumption(PlayerCityPtr city)
 {
   int foodComsumption = 0;
-  HouseList houses = getHouses( city );
+  HouseList houses = city->statistic().objects.houses();
 
   for( auto house : houses )
     foodComsumption += house->spec().computeMonthlyFoodConsumption( house );
@@ -248,30 +215,9 @@ unsigned int getFoodProducing(PlayerCityPtr city)
   return foodProducing;
 }
 
-unsigned int getTaxValue(PlayerCityPtr city)
-{
-  HouseList houses = getHouses( city  );
-
-  float taxValue = 0.f;
-  float taxRate = city->treasury().taxRate();
-
-  for( auto house : houses )
-  {
-    int maxhb = house->capacity();
-    if( maxhb == 0 )
-      continue;
-
-    int maturehb = house->habitants().mature_n();
-    int housetax = house->spec().taxRate();
-    taxValue += housetax * maturehb * taxRate / maxhb;
-  }
-
-  return taxValue;
-}
-
 unsigned int getTaxPayersPercent(PlayerCityPtr city)
 {
-  HouseList houses = getHouses( city );
+  HouseList houses = city->statistic().objects.houses();
 
   unsigned int registered = 0;
   unsigned int population = 0;
@@ -300,11 +246,6 @@ int months2lastAttack(PlayerCityPtr city)
   return ml.isValid() ? ml->monthFromLastAttack() : 0;
 }
 
-int getWagesDiff(PlayerCityPtr city)
-{
-  return city->treasury().workerSalary() - city->empire()->workerSalary();
-}
-
 unsigned int getFestivalCost(PlayerCityPtr city, FestivalType type)
 {
   unsigned int pop = city->states().population;
@@ -322,7 +263,7 @@ HouseList getEvolveHouseReadyBy(PlayerCityPtr city, const object::TypeSet& check
 {
   HouseList ret;
 
-  HouseList houses = getHouses( city );
+  HouseList houses = city->statistic().objects.houses();
 
   for( auto it : houses )
   {
@@ -341,7 +282,7 @@ good::ProductMap getProductMap(PlayerCityPtr city, bool includeGranary)
 {
   good::ProductMap cityGoodsAvailable;
 
-  WarehouseList warehouses = getObjects<Warehouse>( city, object::any );
+  WarehouseList warehouses = city->statistic().objects.find<Warehouse>( object::any );
 
   for( auto wh : warehouses )
   {
@@ -351,7 +292,7 @@ good::ProductMap getProductMap(PlayerCityPtr city, bool includeGranary)
 
   if( includeGranary )
   {
-    GranaryList granaries = getObjects<Granary>( city, object::any );
+    GranaryList granaries = city->statistic().objects.find<Granary>( object::any );
 
     for( auto gg : granaries )
     {
@@ -381,24 +322,6 @@ int getLaborAccessValue(PlayerCityPtr city, WorkingBuildingPtr wb)
     averageDistance /= houses.size();
 
   return math::clamp( math::percentage( averageDistance, maxLaborDistance ) * 2, 25, 100 );
-}
-
-HouseList getHouses(PlayerCityPtr city, std::set<int> levels )
-{
-  HouseList ret;
-  HouseList houses = getObjects<House>( city, object::house );
-  if( levels.empty() )
-    return houses;
-
-  for( auto it : houses )
-  {
-    if( levels.count( it->spec().level() ) > 0 )
-    {
-      ret << it;
-    }
-  }
-
-  return ret;
 }
 
 FarmList getFarms(PlayerCityPtr r, std::set<object::Type> which)
@@ -454,5 +377,116 @@ OverlayList getNeighbors( OverlayPtr overlay, PlayerCityPtr r )
 }
 
 }//end namespace statistic
+
+Statistic::Statistic(PlayerCity& c)
+  : walkers{ *this },
+    objects{ *this },
+    tax{ *this },
+    workers{ *this },
+    rcity( c )
+{
+
+}
+
+void Statistic::update(const unsigned long time)
+{
+   walkers.cached.clear();
+}
+
+const WalkerList& Statistic::_Walkers::find(walker::Type type) const
+{
+  if( type == walker::all )
+  {
+    return _parent.rcity.walkers();
+  }
+
+  if( cached.count( type ) > 0 )
+    return cached.at( type );
+
+  WalkerList& wl = const_cast<_Walkers*>( this )->cached[ type ];
+  for( auto w : _city.walkers() )
+  {
+    if( w->type() == type )
+      wl.push_back(w);
+  }
+
+  return wl;
+}
+
+unsigned int Statistic::_Tax::value() const
+{
+  HouseList houses = _parent.objects.houses();
+
+  float taxValue = 0.f;
+  float taxRate = _parent.rcity->treasury().taxRate();
+
+  for( auto house : houses )
+  {
+    int maxhb = house->capacity();
+    if( maxhb == 0 )
+      continue;
+
+    int maturehb = house->habitants().mature_n();
+    int housetax = house->spec().taxRate();
+    taxValue += housetax * maturehb * taxRate / maxhb;
+  }
+
+  return taxValue;
+}
+
+HouseList Statistic::_Objects::houses(std::set<int> levels) const
+{
+  const HouseList& houses = find<House>( object::house );
+  if( levels.empty() )
+    return houses;
+
+  for( auto it : houses )
+  {
+    if( levels.count( it->spec().level() ) > 0 )
+    {
+      ret << it;
+    }
+  }
+
+  return ret;
+}
+
+Statistic::WorkersInfo Statistic::_Workers::details()
+{
+  WorkersInfo ret;
+
+  WorkingBuildingList buildings = find<WorkingBuilding>( _parent.rcity, object::any );
+
+  ret.current = 0;
+  ret.need = 0;
+  for( auto bld : buildings )
+  {
+    ret.current += bld->numberWorkers();
+    ret.need += bld->maximumWorkers();
+  }
+
+  return ret;
+}
+
+unsigned int Statistic::_Workers::need() const
+{
+  WorkersInfo wInfo = details();
+  return wInfo.need < wInfo.current ? 0 : wInfo.need - wInfo.current;
+}
+
+int Statistic::_Workers::wagesDiff() const
+{
+  return _parent.rcity->treasury().workerSalary() - _parent.rcity->empire()->workerSalary();
+}
+
+CitizenGroup Statistic::population() const
+{
+  HouseList houses = objects.houses();
+
+  CitizenGroup ret;
+  for( auto house : houses ) { ret += house->habitants(); }
+
+  return ret;
+}
 
 }//end namespace city

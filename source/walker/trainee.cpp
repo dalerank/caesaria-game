@@ -120,9 +120,9 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   Pathway finalPath;
 
   BuildingList buildings;
-  foreach( buildingType, _d->necBuildings )
+  for( auto buildingType : _d->necBuildings )
   {
-    BuildingList tmpBuildings = city::statistic::getObjects<Building>( _city(), *buildingType );
+    BuildingList tmpBuildings = _city()->statistic().objects.find<Building>( buildingType );
     buildings.insert( buildings.end(), tmpBuildings.begin(), tmpBuildings.end() );
   }
 
@@ -133,9 +133,8 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   unsigned int minDistance = _d->maxDistance;
 
   bool isNeedTrainee = false;
-  foreach( it, buildings )
+  for( auto bld : buildings )
   {
-    BuildingPtr bld = *it;
     float howMuchNeedMyService = bld->evaluateTrainee( type() );
     if( howMuchNeedMyService > 0 )
     {
@@ -153,15 +152,13 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
 
   std::set<BuildingPtr> checkedBuilding;
 
-  foreach( itile, startArea )
+  for( auto itile : startArea )
   {
-    TilePos startPos = (*itile)->pos();
+    TilePos startPos = itile->pos();
 
-    foreach( it, buildings )
+    for( auto bld : buildings )
     {
-      BuildingPtr bld = *it;
-
-      bool buildingAlsoServicing = checkedBuilding.count( *it ) > 0;
+      bool buildingAlsoServicing = checkedBuilding.count( bld ) > 0;
       if( buildingAlsoServicing )
         continue;
 
@@ -204,10 +201,10 @@ void TraineeWalker::_checkDestination(const object::Type buildingType, Propagato
 {
   DirectPRoutes pathWayList = pathPropagator.getRoutes( buildingType );
 
-  foreach( item, pathWayList )
+  for( auto item : pathWayList )
   {
     // for every building within range
-    BuildingPtr building = ptr_cast<Building>( item->first );
+    BuildingPtr building = item.first.as<Building>();
 
     float need = building->evaluateTrainee( type() );
     if (need > _d->maxNeed)

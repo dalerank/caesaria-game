@@ -63,7 +63,7 @@ public:
       if( temple.is<BigTemple>() ) { info.bigTempleNum++; }
       else { info.smallTempleNum++; }
 
-      info.parishionerNumber += temple->parishionerNumber();
+      info.parishionerNumber += temple->currentVisitors();
     }
   }
 
@@ -129,12 +129,12 @@ void Religion::timeStep( const unsigned int time )
     foreach( it, temples )
       _d->templesCoverity.update( *it );
 
-    TempleOracleList oracles = statistic::getObjects<TempleOracle>( _city(), object::oracle );
+    TempleOracleList oracles = _city()->statistic().objects.find<TempleOracle>( object::oracle );
 
     //add parishioners to all divinities by oracles
     int oraclesParishionerNumber = 0;
-    foreach( itOracle, oracles )
-      oraclesParishionerNumber += (*itOracle)->parishionerNumber();
+    for( auto oracle : oracles )
+      oraclesParishionerNumber += oracle->currentVisitors();
 
     _d->templesCoverity.setOraclesParishioner( oraclesParishionerNumber );
 

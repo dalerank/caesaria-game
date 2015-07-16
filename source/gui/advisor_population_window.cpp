@@ -296,11 +296,10 @@ void Population::Impl::updateStates()
   {
     int maxHabitants = 0;
     int plebsHabitants = 0;
-    HouseList houses = city::statistic::getHouses( city );
+    HouseList houses = city->statistic().objects.houses();
     int lowLevelHouses = 0;
-    foreach( it, houses )
+    for( auto house : houses )
     {
-      HousePtr house = *it;
       int level = house->spec().level();
 
       if( level < HouseLevel::mansion )
@@ -379,7 +378,7 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
   {
   case dm_census:
     {
-      CitizenGroup population = statistic::getPopulation( city );
+      CitizenGroup population = city->statistic().population();
 
       _maxValue = 100;
       for( int age=CitizenGroup::newborn; age <= CitizenGroup::longliver; age++ )
@@ -399,8 +398,7 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
 
   case dm_population:
     {
-      city::InfoPtr info;
-      info << city->findService( city::Info::defaultName() );
+      city::InfoPtr info = statistic::getService<city::Info>( city );
 
       city::Info::History history = info->history();
       city::Info::Parameters params = info->lastParams();
@@ -423,7 +421,7 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
 
   case dm_society:
     {
-      HouseList houses = city::statistic::getHouses( city );
+      HouseList houses = city->statistic().objects.houses();
 
       _values.clear();
       _maxValue = 5;
@@ -433,10 +431,10 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
         levelPopulations[ k ] = 0;
       }
 
-      foreach( it, houses )
+      for( auto it : houses )
       {
-        const HouseSpecification& spec = (*it)->spec();
-        levelPopulations[ spec.level() ] += (*it)->habitants().count();
+        const HouseSpecification& spec = it->spec();
+        levelPopulations[ spec.level() ] += it->habitants().count();
         _maxValue = std::max( levelPopulations[ spec.level() ], _maxValue );
       }
 

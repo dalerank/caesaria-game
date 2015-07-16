@@ -123,7 +123,7 @@ void Finance::_updateTaxRateNowLabel()
   if( !lbTaxRateNow )
     return;
 
-  int taxValue = statistic::getTaxValue( _city );
+  int taxValue = _city->statistic().tax.value();
   std::string strCurretnTax = utils::format( 0xff, "%d%% %s %d %s",
                                                     _city->treasury().taxRate(), _("##may_collect_about##"),
                                                     taxValue, _("##denaries##") );

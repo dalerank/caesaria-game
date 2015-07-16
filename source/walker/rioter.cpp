@@ -96,10 +96,10 @@ void Rioter::timeStep(const unsigned long time)
   {
   case Impl::searchHouse:
   {
-    ConstructionList constructions = city::statistic::getObjects<Construction>( _city(), object::house );
+    ConstructionList constructions = _city()->statistic().objects.find<Construction>( object::house );
     for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
     {
-      HousePtr h = ptr_cast<House>( *it );
+      HousePtr h = (*it).as<House>();
       if( h->spec().level() <= _d->houseLevel ) { it=constructions.erase( it ); }
       else { ++it; }
     }
@@ -122,7 +122,7 @@ void Rioter::timeStep(const unsigned long time)
 
   case Impl::searchAnyBuilding:
   {
-    ConstructionList constructions = city::statistic::getObjects<Construction>( _city(), object::house );
+    ConstructionList constructions = _city()->statistic().objects.find<Construction>( object::house );
 
     for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
     {

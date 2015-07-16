@@ -184,20 +184,20 @@ HealthcareInfo Health::Impl::getInfo(PlayerCityPtr city, const object::Type obje
   ret.buildingCount = 0;
   ret.needService = 0;
 
-  HealthBuildingList srvBuildings = statistic::getObjects<HealthBuilding>( city, objectType );
-  foreach( b, srvBuildings )
+  HealthBuildingList srvBuildings = city->statistic().objects.find<HealthBuilding>( objectType );
+  for( auto b : srvBuildings )
   {
-    ret.buildingWork += (*b)->numberWorkers() > 0 ? 1 : 0;
-    ret.peoplesServed += (*b)->patientsNumber();
+    ret.buildingWork += b->numberWorkers() > 0 ? 1 : 0;
+    ret.peoplesServed += b->patientsNumber();
     ret.buildingCount++;
   }
 
-  HouseList houses = statistic::getHouses( city );
+  HouseList houses = city->statistic().objects.houses();
   Service::Type serviceType = ServiceHelper::fromObject( objectType );
-  foreach( h, houses )
+  for( auto h : houses )
   {
-    if( (*h)->isHealthNeed( serviceType ) )
-    ret.needService += (*h)->habitants().count();
+    if( h->isHealthNeed( serviceType ) )
+    ret.needService += h->habitants().count();
   }
 
   return ret;
@@ -227,15 +227,14 @@ void Health::Impl::updateAdvice(PlayerCityPtr c)
     }
     else
     {
-      HouseList houses =  city::statistic::getHouses( c );
+      HouseList houses = c->statistic().objects.houses();
 
       unsigned int needBath = 0;
       unsigned int needBarbers = 0;
       unsigned int needDoctors = 0;
       unsigned int needHospital = 0;
-      foreach( it, houses )
+      for( auto house : houses )
       {
-        HousePtr house = *it;
         needBath += house->isHealthNeed( Service::baths ) ? 1 : 0;
         needDoctors += house->isHealthNeed( Service::doctor ) ? 1 : 0;
         needBarbers += house->isHealthNeed( Service::barber ) ? 1 : 0;

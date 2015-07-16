@@ -210,7 +210,7 @@ void Chief::Impl::drawReportRow( AdviceType type, std::string text, NColor color
 
 void Chief::Impl::drawEmploymentState()
 {
-  statistic::WorkersInfo wInfo = statistic::getWorkersNumber( city );
+  Statistic::WorkersInfo wInfo = city->statistic().workers.details();
   int workless = statistic::getWorklessPercent( city );
   std::string text;
   NColor color = DefaultColors::black;
@@ -406,7 +406,7 @@ void Chief::Impl::drawMilitary()
 
   if( reasons.empty() )
   {
-    BarracksList barracks = statistic::getObjects<Barracks>( city, object::barracks );
+    BarracksList barracks = city->statistic().objects.find<Barracks>( object::barracks );
 
     bool needWeapons = false;
     for( auto barrack : barracks )

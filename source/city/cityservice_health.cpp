@@ -107,7 +107,7 @@ std::string HealthCare::reason() const
 
 void HealthCare::Impl::updateValue(PlayerCityPtr city)
 {
-  HouseList houses = statistic::getHouses( city );
+  HouseList houses = city->statistic().objects.houses();
 
   value = 0;
   avgMinHealth = 100;
@@ -135,7 +135,7 @@ void HealthCare::Impl::updateReasons( PlayerCityPtr city )
   int lvl = math::clamp<int>( value / (health::maxValue/health::levelNumber), 0, health::levelNumber-1 );
   std::string mainReason = healthDescription[ lvl ];
 
-  BuildingList clinics = statistic::getObjects<Building>( city, object::clinic );
+  BuildingList clinics = city->statistic().objects.find<Building>( object::clinic );
 
   mainReason += clinics.size() > 0 ? "_clinic##" : "##";
 

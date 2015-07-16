@@ -65,7 +65,7 @@ void RandomDamage::_exec( Game& game, unsigned int time )
 
     if( _d->priority != object::group::unknown )
     {
-      ctrs = statistic::getObjects<Construction>( game.city(), _d->priority );
+      ctrs = game.city()->statistic().objects.find<Construction>( _d->priority );
     }
     else
     {

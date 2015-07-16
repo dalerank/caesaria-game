@@ -105,16 +105,16 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     // get the list of buildings within reach   
     if( tryDockCount < maxTryDockCount )
     {
-      DockList docks = city::statistic::getObjects<Dock>( city, object::dock );
+      DockList docks = city->statistic().objects.find<Dock>( object::dock );
 
       if( !docks.empty() )
       {
         DockList freeDocks;
-        foreach( dock, docks )
+        for( auto dock : docks )
         {
-          if( !(*dock)->isBusy() )
+          if( !dock->isBusy() )
           {
-            freeDocks.push_back( *dock );
+            freeDocks.push_back( dock );
           }
         }
 

@@ -313,10 +313,9 @@ EnemySoldierPtr DebugHandler::Impl::makeEnemy( walker::Type type )
 
 void DebugHandler::Impl::addGoods2Wh(good::Product type)
 {
-  WarehouseList whList = city::statistic::getObjects<Warehouse>( game->city(), object::warehouse );
-  foreach( wh, whList)
+  WarehouseList whList = game->city()->statistic().objects.find<Warehouse>( object::warehouse );
+  for( auto warehouse : whList)
   {
-    WarehousePtr warehouse = *wh;
     good::Stock stock(type, 400, 400 );
     warehouse->store().store( stock, 400 );
   }
@@ -337,7 +336,7 @@ DebugHandler::DebugHandler() : _d(new Impl)
 
 void DebugHandler::Impl::setFactoryReady( object::Type type )
 {
-  FactoryList factories = city::statistic::getObjects<Factory>( game->city(), type );
+  FactoryList factories = game->city()->statistic().objects.find<Factory>( type );
   for( auto factory : factories )
   {
     if( factory->numberWorkers() > 0 )
@@ -350,7 +349,7 @@ void DebugHandler::Impl::setFactoryReady( object::Type type )
 
 void DebugHandler::Impl::updateSentiment(int delta)
 {
-  HouseList houses = city::statistic::getHouses( game->city() );
+  HouseList houses = game->city()->statistic().objects.houses();
   for( auto house : houses )
     house->updateState( pr::happiness, delta );
 }
@@ -477,7 +476,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case make_generation:
   {
-    HouseList houses = city::statistic::getHouses( game->city() );
+    HouseList houses = game->city()->statistic().objects.houses();
     for( auto house : houses )
       house->__debugMakeGeneration();
   }

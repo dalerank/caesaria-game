@@ -63,7 +63,7 @@ void UpdateHouseService::_exec( Game& game, unsigned int time )
     Logger::warning( "Execute update house service event" + ServiceHelper::getName( _d->type ) );
     _d->isDeleted = true;
 
-    HouseList houses = statistic::getHouses( game.city() );
+    HouseList houses = game.city()->statistic().objects.houses();
 
     foreach( it, houses  )
       (*it)->appendServiceValue( _d->type, _d->value );

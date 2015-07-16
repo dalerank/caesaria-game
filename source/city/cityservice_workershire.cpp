@@ -150,9 +150,9 @@ void WorkersHire::timeStep( const unsigned int time )
   if( _city()->states().population == 0 )
     return;
 
-  _d->hrInCity = _city()->walkers( walker::recruter );
+  _d->hrInCity = _city()->statistic().walkers.find( walker::recruter );
 
-  WorkingBuildingList buildings = statistic::getObjects<WorkingBuilding>( _city(), object::any );
+  WorkingBuildingList buildings = _city()->statistic().objects.find<WorkingBuilding>( object::any );
 
   if( !_d->priorities.empty() )
   {
@@ -184,7 +184,7 @@ void WorkersHire::timeStep( const unsigned int time )
   {
     _d->lastMessageDate = game::Date::current();
 
-    int workersNeed = statistic::getWorkersNeed( _city() );
+    int workersNeed = _city()->statistic().workers.need();
     if( workersNeed > employements::needMoreWorkers )
     {
       GameEventPtr e = ShowInfobox::create( _("##city_need_workers_title##"), _("##city_need_workers_text##"),

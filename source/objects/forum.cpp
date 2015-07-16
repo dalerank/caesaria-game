@@ -110,7 +110,7 @@ float Forum::collectTaxes()
 void Forum::Impl::removeMoney(PlayerCityPtr city)
 {
   SenatePtr senate;
-  SenateList senates = city::statistic::getObjects<Senate>( city, object::senate );
+  SenateList senates = city->statistic().objects.find<Senate>( object::senate );
   if( !senates.empty() )
     senate = senates.front();
 

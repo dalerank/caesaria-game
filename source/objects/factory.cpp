@@ -382,7 +382,7 @@ bool Creamery::build( const city::AreaInfo& info )
 {
   Factory::build( info );
 
-  bool haveOliveFarm = !city::statistic::getObjects<Building>( info.city, object::olive_farm ).empty();
+  bool haveOliveFarm = !info.city->statistic().objects.find<Building>( object::olive_farm ).empty();
 
   _setError( haveOliveFarm ? "" : _("##need_olive_for_work##") );
 

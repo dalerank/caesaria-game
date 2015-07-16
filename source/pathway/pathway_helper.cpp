@@ -111,24 +111,24 @@ Pathway PathwayHelper::create(TilePos startPos, TilePos stopPos, const TilePossi
 DirectRoute PathwayHelper::shortWay(PlayerCityPtr city, TilePos startPos, object::Type buildingType, PathwayHelper::WayType type)
 {
   DirectRoute ret;
-  ConstructionList constructions = city::statistic::getObjects<Construction>( city, buildingType );
+  ConstructionList constructions = city->statistic().objects.find<Construction>( buildingType );
 
-  foreach( it, constructions )
+  for( auto it : constructions )
   {
-    Pathway path = create( startPos, *it, type );
+    Pathway path = create( startPos, it, type );
     if( path.isValid() )
     {
       if( !ret.way().isValid() )
       {
         ret.second = path;
-        ret.first = *it;
+        ret.first = it;
       }
       else
       {
         if( ret.way().length() > path.length() )
         {
           ret.second = path;
-          ret.first = *it;
+          ret.first = it;
         }
       }
     }

@@ -18,6 +18,7 @@
 
 #include "layer.hpp"
 #include "objects/overlay.hpp"
+#include "city/statistic.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/tilesarray.hpp"
 #include "gfx/helper.hpp"
@@ -311,7 +312,7 @@ void Layer::render( Engine& engine)
   {
     WalkerList overDrawWalkers;
 
-    const WalkerList& walkers = _city()->walkers( walker::all );
+    const WalkerList& walkers = _city()->statistic().walkers.find( walker::all );
     for( auto wlk : walkers )
     {
       if( wlk->getFlag( Walker::showPath ) )

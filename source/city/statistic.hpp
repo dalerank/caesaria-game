@@ -35,18 +35,160 @@
 namespace city
 {
 
+class Statistic
+{
+public:
+  Statistic( PlayerCity& rcity );
+  void update( const unsigned long time );
+
+  struct _Section
+  {
+    Statistic& _parent;
+  };
+
+  struct _Walkers : public _Section
+  {
+    const WalkerList& find( walker::Type type ) const;
+
+    template< class T >
+    SmartList< T > find() const
+    {
+      const WalkerList& walkers = _parent.rcity.walkers();
+
+      SmartList< T > result;
+      for( auto w : walkers )
+        result.addIfValid( w.as<T>() );
+
+      return result;
+    }
+
+    std::map<int, WalkerList> cached;
+  } walkers;
+
+  struct _Objects : _Section
+  {
+    template< class T >
+    SmartList< T > find( std::set<object::Type> which ) const
+    {
+      SmartList< T > ret;
+      const OverlayList& ovs = _parent.rcity.overlays();
+
+      for( auto ov : ovs )
+      {
+        if( which.count( ov->type() ) > 0 )
+        {
+          ret << ov;
+        }
+      }
+
+      return ret;
+    }
+
+    template< class T >
+    SmartList<T> find( object::Group group ) const
+    {
+      SmartList<T> ret;
+      const OverlayList& buildings = _parent.rcity.overlays();
+      for( auto item : buildings )
+      {
+        SmartPtr<T> b = item.as<T>();
+        if( b.isValid() && (b->group() == group || group == object::group::any ) )
+        {
+          ret.push_back( b );
+        }
+      }
+
+      return ret;
+    }
+
+    template< class T >
+    SmartList< T > find( object::Type type ) const
+    {
+      SmartList< T > ret;
+      const OverlayList& buildings = _parent.rcity.overlays();
+      for( auto bld : buildings )
+      {
+        if( bld.isValid() && (bld->type() == type || type == object::any) )
+          ret.addIfValid( bld.as<T>() );
+      }
+
+      return ret;
+    }
+
+    template< class T >
+    SmartPtr< T > next( SmartPtr< T > current ) const
+    {
+      if( current.isNull() )
+        return SmartPtr<T>();
+
+      SmartList< T > objects = find<T>( current->type() );
+      foreach( obj, objects )
+      {
+        if( current == *obj )
+        {
+          obj++;
+          if( obj == objects.end() ) { return *objects.begin(); }
+          else { return *obj; }
+        }
+      }
+
+      return SmartPtr<T>();
+    }
+
+    template<class T>
+    SmartPtr<T> prew( SmartPtr<T> current) const
+    {
+      if( current.isNull() )
+        return SmartPtr<T>();
+
+      SmartList< T > objects = find<T>( current->type() );
+      foreach( obj, objects )
+      {
+        if( current == *obj )
+        {
+          if (obj == objects.begin()) // MSVC compiler doesn't support sircular lists. Neither standart does.
+          {
+            obj = objects.end();
+          }
+          obj--;
+          return *obj;
+        }
+      }
+
+      return SmartPtr<T>();
+    }
+
+
+    HouseList houses( std::set<int> levels=std::set<int>() ) const;
+
+  } objects;
+
+  struct _Tax : _Section
+  {
+    unsigned int value() const;
+  } tax;
+
+  struct WorkersInfo
+  {
+    int current;
+    int need;
+  };
+
+  struct _Workers : _Section
+  {
+    WorkersInfo details() const;
+    unsigned int need() const;
+    int wagesDiff() const;
+  } workers;
+
+  CitizenGroup population() const;
+
+  PlayerCity& rcity;
+};
+
 namespace statistic
 {
 
-struct WorkersInfo
-{
-  int current;
-  int need;
-};
-
-WorkersInfo getWorkersNumber( PlayerCityPtr city );
-CitizenGroup getPopulation( PlayerCityPtr city );
-unsigned int getWorkersNeed( PlayerCityPtr city );
 unsigned int getAvailableWorkersNumber( PlayerCityPtr city );
 unsigned int getMonthlyWorkersWages( PlayerCityPtr city );
 float getMonthlyOneWorkerWages( PlayerCityPtr city );
@@ -55,13 +197,11 @@ unsigned int getWorklessPercent( PlayerCityPtr city );
 unsigned int getFoodStock( PlayerCityPtr city );
 unsigned int getFoodMonthlyConsumption( PlayerCityPtr city );
 unsigned int getFoodProducing( PlayerCityPtr city );
-unsigned int getTaxValue( PlayerCityPtr city );
 unsigned int getTaxPayersPercent( PlayerCityPtr city );
 unsigned int getHealth( PlayerCityPtr city );
 unsigned int blackHouses( PlayerCityPtr city );
 int months2lastAttack( PlayerCityPtr city );
 int taxValue( unsigned int population, int koeff);
-int getWagesDiff( PlayerCityPtr city );
 unsigned int getFestivalCost( PlayerCityPtr city, FestivalType type );
 HouseList getEvolveHouseReadyBy(PlayerCityPtr, const object::TypeSet& checkTypes);
 HouseList getEvolveHouseReadyBy(PlayerCityPtr, const object::Type checkTypes);
@@ -72,26 +212,8 @@ int getLaborAccessValue( PlayerCityPtr city, WorkingBuildingPtr wb );
 int getEntertainmentCoverage(PlayerCityPtr city, Service::Type service );
 bool canImport( PlayerCityPtr city, good::Product type );
 bool canProduce( PlayerCityPtr city, good::Product type );
-HouseList getHouses( PlayerCityPtr r, std::set<int> levels=std::set<int>() );
 FarmList getFarms(PlayerCityPtr r, std::set<object::Type> which=std::set<object::Type>() );
 OverlayList getNeighbors( OverlayPtr overlay, PlayerCityPtr r );
-
-template< class T >
-SmartList< T > getObjects( PlayerCityPtr r, object::Type type )
-{
-  if( r.isNull() )
-    return SmartList<T>();
-
-  SmartList< T > ret;
-  const OverlayList& buildings = r->overlays();
-  foreach( item, buildings )
-  {
-    if( (*item).isValid() && ((*item)->type() == type || type == object::any ) )
-      ret.addIfValid( item->as<T>() );
-  }
-
-  return ret;
-}
 
 template<class T, class B>
 SmartList<T> getNeighbors(PlayerCityPtr r, SmartPtr<B> overlay)
@@ -139,35 +261,22 @@ SmartList< T > getWalkers( PlayerCityPtr r, walker::Type type,
   else
   {
     gfx::TilesArea area( r->tilemap(), start, stop );
-    foreach( tile, area)
+    for( auto tile : area)
     {
-      const WalkerList& wlkOnTile = r->walkers( (*tile)->pos() );
+      const WalkerList& wlkOnTile = r->walkers( tile->pos() );
       walkersInArea.insert( walkersInArea.end(), wlkOnTile.begin(), wlkOnTile.end() );
     }
   }
 
   SmartList< T > result;
-  foreach( w, walkersInArea )
+  for( auto w : walkersInArea )
   {
-    if( (*w)->type() == type || type == walker::any )
-      result.addIfValid( w->as<T>() );
+    if( w->type() == type || type == walker::any )
+      result.addIfValid( w.as<T>() );
   }
 
   return result;
 }
-
-template< class T >
-SmartList< T > getWalkers( PlayerCityPtr r )
-{
-  const WalkerList& walkers = r->walkers();
-
-  SmartList< T > result;
-  foreach( w, walkers )
-    result.addIfValid( w->as<T>() );
-
-  return result;
-}
-
 
 template< class T >
 SmartPtr<T> getWalker( PlayerCityPtr r, walker::Type type, Walker::UniqueId id )
@@ -176,78 +285,18 @@ SmartPtr<T> getWalker( PlayerCityPtr r, walker::Type type, Walker::UniqueId id )
 
   if( type != walker::any )
   {
-    foreach( it, all )
+    for( auto wlk : all )
     {
-      if((*it)->type() == type && (*it)->uniqueId() == id )
-        return it->as<T>();
+      if( wlk->type() == type && wlk->uniqueId() == id )
+        return wlk.as<T>();
     }
   }
   else
   {
-    foreach( it, all )
+    for( auto wlk : all )
     {
-      if( (*it)->uniqueId() == id )
-        return it->as<T>();
-    }
-  }
-
-  return SmartPtr<T>();
-}
-
-template< class T >
-SmartList< T > getObjects( PlayerCityPtr r, std::set<object::Type> which )
-{
-  SmartList< T > ret;
-  const OverlayList& ovs = r->overlays();
-
-  foreach( it, ovs )
-  {
-    if( which.count( (*it)->type() ) > 0 )
-    {
-      ret << *it;
-    }
-  }
-
-  return ret;
-}
-
-template< class T >
-SmartPtr< T > nextObject( PlayerCityPtr r, SmartPtr< T > current )
-{
-  if( r.isNull() || current.isNull() )
-    return SmartPtr<T>();
-
-  SmartList< T > objects = getObjects<T>( r, current->type() );
-  foreach( obj, objects )
-  {
-    if( current == *obj )
-    {
-      obj++;
-      if( obj == objects.end() ) { return *objects.begin(); }
-      else { return *obj; }
-    }
-  }
-
-  return SmartPtr<T>();
-}
-
-template<class T>
-SmartPtr<T> prewObject( PlayerCityPtr r, SmartPtr<T> current)
-{
-  if(  r.isNull() || current.isNull() )
-    return SmartPtr<T>();
-
-  SmartList< T > objects = getObjects<T>( r, current->type() );
-  foreach( obj, objects )
-  {
-    if( current == *obj )
-    {
-      if (obj == objects.begin()) // MSVC compiler doesn't support sircular lists. Neither standart does.
-      {
-        obj = objects.end();
-      }
-      obj--;
-      return *obj;
+      if( wlk->uniqueId() == id )
+        return wlk.as<T>();
     }
   }
 
@@ -295,23 +344,6 @@ SmartList< T > getObjects( PlayerCityPtr r, object::Group group, const TilePos& 
     if( obj.isValid() && (obj->getClass() == group || group == object::group::any ) )
     {
       ret.push_back( obj );
-    }
-  }
-
-  return ret;
-}
-
-template< class T >
-SmartList<T> getObjects( PlayerCityPtr r, object::Group group )
-{
-  SmartList<T> ret;
-  const OverlayList& buildings = r->overlays();
-  foreach( item, buildings )
-  {
-    SmartPtr<T> b = item->as<T>();
-    if( b.isValid() && (b->group() == group || group == object::group::any ) )
-    {
-      ret.push_back( b );
     }
   }
 

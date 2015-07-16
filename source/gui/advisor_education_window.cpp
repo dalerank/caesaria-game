@@ -179,11 +179,11 @@ void Education::Impl::updateCityInfo(PlayerCityPtr city)
 {
   int sumScholars = 0;
   int sumStudents = 0;
-  HouseList houses = statistic::getHouses( city );
-  foreach( house, houses )
+  HouseList houses = city->statistic().objects.houses();
+  for( auto house : houses )
   {
-    sumScholars += (*house)->habitants().scholar_n();
-    sumStudents += (*house)->habitants().student_n();
+    sumScholars += house->habitants().scholar_n();
+    sumStudents += house->habitants().student_n();
   }
 
   std::string cityInfoStr = utils::format( 0xff, "%d %s, %d %s, %d %s",
@@ -235,7 +235,7 @@ HealthcareInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Type b
   ret.nextLevel = 0;
   ret.coverage = 0;
 
-  ServiceBuildingList servBuildings = statistic::getObjects<ServiceBuilding>( city, bType );
+  ServiceBuildingList servBuildings = city->statistic().objects.find<ServiceBuilding>( bType );
 
   ret.buildingCount = servBuildings.size();
   SrvcInfo info = findInfo( bType );
@@ -244,9 +244,8 @@ HealthcareInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Type b
     Logger::warning( "AdvisorEducationWindow: unknown building type %d", bType );
   }
 
-  foreach( it, servBuildings )
+  for( auto serv : servBuildings )
   {
-    ServiceBuildingPtr serv = *it;
     if( serv->numberWorkers() > 0 )
     {
       ret.buildingWork++;
@@ -254,11 +253,10 @@ HealthcareInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Type b
     }
   }
 
-  HouseList houses = statistic::getHouses( city );
+  HouseList houses = city->statistic().objects.houses();
   int minAccessLevel = awesomeAccessValue;
-  foreach( it, houses )
+  for( auto house : houses )
   {
-    HousePtr house = *it;
     int habitantsCount = house->habitants().count();
     if( habitantsCount > 0 )
     {

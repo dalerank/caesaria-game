@@ -116,7 +116,7 @@ ProsperityRating::ProsperityRating(PlayerCityPtr city)
 
 void ProsperityRating::_checkStats()
 {
-  HouseList houses = statistic::getHouses( _city() );
+  HouseList houses = _city()->statistic().objects.houses();
 
   int prosperityCap = 0;
   for( auto house : houses)

@@ -88,8 +88,8 @@ bool Colosseum::build( const city::AreaInfo& info )
 {
   ServiceBuilding::build( info );
 
-  GladiatorSchoolList glSchools = city::statistic::getObjects<GladiatorSchool>( info.city, object::gladiatorSchool );
-  LionsNurseryList lionsNs = city::statistic::getObjects<LionsNursery>( info.city, object::lionsNursery );
+  GladiatorSchoolList glSchools = info.city->statistic().objects.find<GladiatorSchool>( object::gladiatorSchool );
+  LionsNurseryList lionsNs = info.city->statistic().objects.find<LionsNursery>( object::lionsNursery );
 
   _d->lastDateGl = game::Date::current();
   _d->lastDateLion = game::Date::current();
@@ -128,7 +128,7 @@ std::string Colosseum::troubleDesc() const
 
 bool Colosseum::isNeedGladiators() const
 {
-  GladiatorSchoolList colloseums = city::statistic::getObjects<GladiatorSchool>( _city(), object::gladiatorSchool );
+  GladiatorSchoolList colloseums = _city()->statistic().objects.find<GladiatorSchool>( object::gladiatorSchool );
 
   return colloseums.empty();
 }

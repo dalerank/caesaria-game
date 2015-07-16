@@ -44,7 +44,7 @@ bool Winery::build( const city::AreaInfo& info )
 {
   Factory::build( info );
 
-  bool haveVinegrad = !city::statistic::getObjects<Building>( info.city, object::vinard ).empty();
+  bool haveVinegrad = !info.city->statistic().objects.find<Building>( object::vinard ).empty();
 
   _setError( haveVinegrad ? "" : "##need_grape##" );
 
