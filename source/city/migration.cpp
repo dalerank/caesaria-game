@@ -56,13 +56,14 @@ const int shacksPenalty = 10;
 const int warBlockedMigration = 50;
 const int cityUnderAttackPenalty = 2;
 const int defaultEmIndesirability = 50;
+static SimpleLogger LOG_MIGRATION("MigrationService");
 }
 
 class Migration::Impl
 {
 public:
   int lastMonthMigration;
-  int updateTickInerval;
+  int updateTickInterval;
   int emigrantsIndesirability;
   int lastMonthComing;
   int lastMonthLeaving;
@@ -101,7 +102,7 @@ Migration::Migration( PlayerCityPtr city )
   _d->chanceCounter = 1;
   _d->haveTroubles = false;
   _d->lastUpdate = game::Date::current();
-  _d->updateTickInerval = game::Date::days2ticks( 7 );
+  _d->updateTickInterval = game::Date::days2ticks( 7 );
   _d->emigrantsIndesirability = 0;
 }
 
@@ -117,20 +118,20 @@ void Migration::timeStep( const unsigned int time )
     }
   }
 
-  if( time % _d->updateTickInerval != 1 )
+  if( time % _d->updateTickInterval != 1 )
     return;
 
-  Logger::warning( "MigrationSrvc: start calculate" );
+  LOG_MIGRATION.warn( "Calculation started" );
   const int worklessCitizenAway = SETTINGS_VALUE( worklessCitizenAway );
 
   float migrationKoeff = _d->getMigrationKoeff( _city() );
   Info::Parameters params = _d->lastMonthParams( _city() );
-  Logger::warning( "MigrationSrvc: current migration koeff=%f", migrationKoeff );
+  LOG_MIGRATION.warn( "Current migration factor is %f", migrationKoeff );
 
-  _d->emigrantsIndesirability = defaultEmIndesirability; //base indesirability value
+  _d->emigrantsIndesirability = defaultEmIndesirability; //base undesirability value
   float emDesKoeff = math::clamp<float>( (float)SETTINGS_VALUE( emigrantSalaryKoeff ), 1.f, 99.f );
 
-  //if salary in city more then empire people more effectivelly go to our city
+  //if salary in city more then empire people more effectively go to our city
   const int diffSalary = _city()->empire()->workerSalary() - _city()->treasury().workerSalary();
   int diffSalaryInfluence = diffSalary * emDesKoeff;
 
@@ -186,10 +187,10 @@ void Migration::timeStep( const unsigned int time )
 
   _d->emigrantsIndesirability *= migrationKoeff;
 
-  Logger::warning( "MigrationSrvc: current indesrbl=%d", _d->emigrantsIndesirability );
+  LOG_MIGRATION.warn( "Current undesirability is %d", _d->emigrantsIndesirability );
   if( warInfluence > warBlockedMigration )
   {
-    Logger::warning( "Migration: enemies in city migration broke" );
+    LOG_MIGRATION.warn( "Enemies in city: migration stopped" );
     return;
   }
 
@@ -210,7 +211,7 @@ void Migration::timeStep( const unsigned int time )
     _d->lastMonthComing = 0;
     _d->lastMonthLeaving = 0;
 
-    Logger::warning( "MigrationSrvc: current workless=%f indesrbl=%f",
+    LOG_MIGRATION.warn( "Current workless=%f undesrbl=%f",
                      curWorklessValue * migrationKoeff,
                      _d->emigrantsIndesirability * migrationKoeff );
   }
@@ -232,7 +233,8 @@ void Migration::timeStep( const unsigned int time )
     }
   }
 
-  _d->updateTickInerval = math::random( game::Date::days2ticks( _d->checkRange ) ) + 10;
+  _d->updateTickInterval = math::random( game::Date::days2ticks( _d->checkRange ) ) + 10;
+  LOG_MIGRATION.warn( "Calculation finished." );
 }
 
 std::string Migration::reason() const
