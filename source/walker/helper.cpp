@@ -40,10 +40,10 @@ public:
   }
 };
 
-class HationEnums : public EnumsHelper<world::Nation>
+class NationEnums : public EnumsHelper<world::Nation>
 {
 public:
-  HationEnums() : EnumsHelper<world::Nation>( world::nation::unknown )
+  NationEnums() : EnumsHelper<world::Nation>( world::nation::unknown )
   {
 
   }
@@ -58,7 +58,7 @@ public:
   TypeEnums htype;
   PrettyNames typenames;
 
-  HationEnums hnation;
+  NationEnums hnation;
   PrettyNations nationnames;
 
   VariantMap options;
