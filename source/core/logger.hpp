@@ -34,7 +34,7 @@ typedef SmartPtr<LogWriter> LogWriterPtr;
 
 class SimpleLogger {
 public:
-  SimpleLogger(const std::string &category);
+  SimpleLogger(std::string category);
 
   bool isDebugEnabled() const;
 
@@ -60,7 +60,7 @@ public:
 
 private:
   void write(const std::string &message, bool newline = true);
-  const std::string &category;
+  std::string category;
 
   enum class Severity : unsigned short {
     DBG,
