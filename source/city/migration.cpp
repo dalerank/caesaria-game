@@ -121,12 +121,12 @@ void Migration::timeStep( const unsigned int time )
   if( time % _d->updateTickInterval != 1 )
     return;
 
-  LOG_MIGRATION.warn( "Calculation started" );
+  LOG_MIGRATION.info( "Calculation started" );
   const int worklessCitizenAway = SETTINGS_VALUE( worklessCitizenAway );
 
   float migrationKoeff = _d->getMigrationKoeff( _city() );
   Info::Parameters params = _d->lastMonthParams( _city() );
-  LOG_MIGRATION.warn( "Current migration factor is %f", migrationKoeff );
+  LOG_MIGRATION.info( "Current migration factor is %f", migrationKoeff );
 
   _d->emigrantsIndesirability = defaultEmIndesirability; //base undesirability value
   float emDesKoeff = math::clamp<float>( (float)SETTINGS_VALUE( emigrantSalaryKoeff ), 1.f, 99.f );
@@ -187,10 +187,10 @@ void Migration::timeStep( const unsigned int time )
 
   _d->emigrantsIndesirability *= migrationKoeff;
 
-  LOG_MIGRATION.warn( "Current undesirability is %d", _d->emigrantsIndesirability );
+  LOG_MIGRATION.info( "Current undesirability is %d", _d->emigrantsIndesirability );
   if( warInfluence > warBlockedMigration )
   {
-    LOG_MIGRATION.warn( "Enemies in city: migration stopped" );
+    LOG_MIGRATION.info( "Enemies in city: migration stopped" );
     return;
   }
 
@@ -211,7 +211,7 @@ void Migration::timeStep( const unsigned int time )
     _d->lastMonthComing = 0;
     _d->lastMonthLeaving = 0;
 
-    LOG_MIGRATION.warn( "Current workless=%f undesrbl=%f",
+    LOG_MIGRATION.info( "Current workless=%f undesrbl=%f",
                      curWorklessValue * migrationKoeff,
                      _d->emigrantsIndesirability * migrationKoeff );
   }
@@ -234,7 +234,7 @@ void Migration::timeStep( const unsigned int time )
   }
 
   _d->updateTickInterval = math::random( game::Date::days2ticks( _d->checkRange ) ) + 10;
-  LOG_MIGRATION.warn( "Calculation finished." );
+  LOG_MIGRATION.info( "Calculation finished." );
 }
 
 std::string Migration::reason() const

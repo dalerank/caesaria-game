@@ -29,9 +29,9 @@ using namespace gfx;
 namespace {
 static Renderer::PassQueue defaultPassQueue=Renderer::PassQueue(1,Renderer::overlayAnimation);
 static Pictures invalidPictures;
+static SimpleLogger LOG_OVERLAY( "Overlay" );
 }
 
-static SimpleLogger LOG_OVERLAY( "Overlay" );
 
 class Overlay::Impl
 {
