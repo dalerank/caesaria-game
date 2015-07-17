@@ -9,6 +9,7 @@ before_install:
 - sudo apt-get -qq update
 - sudo apt-get install -qq cmake build-essential libasound2-dev
 - sudo apt-get -qq install g++-4.8
+- sudo export CXX="g++-4.8" CC="gcc-4.8"
 #- sudo apt-get install -qq gcc-multilib g++-multilib
 install:
 # Create unix makefiles
