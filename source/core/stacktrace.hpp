@@ -18,13 +18,14 @@
 #ifndef __CAESARIA_STACKTRACE_H_INCLUDED__
 #define __CAESARIA_STACKTRACE_H_INCLUDED__
 
+#include <cdk.h>
 #include "platform.hpp"
 
 namespace crashhandler
 {
 void install();
 void remove();
-void printstack(unsigned int starting_frame = 0, unsigned int max_frames = 63);
+void printstack( boolean showMessage = true, unsigned int starting_frame = 0, unsigned int max_frames = 63 );
 }
 
 #endif //__CAESARIA_STACKTRACE_H_INCLUDED__
