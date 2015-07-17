@@ -68,10 +68,14 @@ struct SubRating
   virtual float calcCoverage( PlayerCityPtr rcity )
   {
     visitors = 0;
-    float coverage = 0.f;
+    unsigned int population = rcity->states().population;
+    if (population == 0)
+    {
+      return 0;
+    }
     SmartList<T> list = rcity->statistic().objects.find<T>( (object::Type)objType );
     for( auto it : list) { visitors += it->currentVisitors(); }
-    coverage = visitors / rcity->states().population;
+    float coverage = visitors / population;
 
     return coverage;
   }
@@ -81,13 +85,13 @@ struct SubRating
     float coverageValue = calcCoverage( rcity );
 
     value = 0;
-    coverageValue = std::min( coverageValue, 1.0f );
-    coverage = coverageValue * 100;
+    coverageValue = math::clamp<float>(coverageValue, 0f, 1.0f );
+    coverage = (int) (coverageValue * 100);
     for( int i=0; i < coverage::levelNumber; i++ )
     {
       if( coverageValue >= intervals[ i ].coverage )
       {
-        value = intervals[ i ].points * coverageValue;
+        value = (int) (intervals[ i ].points * coverageValue);
         break;
       }
     }
