@@ -208,7 +208,7 @@ void Health::Impl::updateAdvice(PlayerCityPtr c)
   if( !lbAdvice )
     return;
 
-  HealthCarePtr hc = statistic::getService<HealthCare>( c );
+  HealthCarePtr hc = c->statistic().services.find<HealthCare>();
 
   StringArray outText;
 

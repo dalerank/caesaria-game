@@ -47,18 +47,10 @@ namespace statistic
 namespace {
 static const float popBalanceKoeff=1000.f;
 static const int   pop4blackHouseCalc=300;
-static const int   minServiceValue4Tax=25;
-static const int   greatFestivalCostLimiter=5;
-static const int   middleFestivalCostLimiter=10;
-static const int   smallFestivalCostLimiter=20;
-static const int   greatFestivalMinCost=40;
-static const int   middleFestivalMinCost=20;
-static const int   smallFestivalMinCost=10;
 static const int   minBlackHouseDesirability =-10;
 static const float maxBalanceKoeff=2.f;
 static const float normalBalanceKoeff=1.f;
 static const float minBalanceKoeff=.5f;
-static const int   maxLaborDistance=8;
 }
 
 float getBalanceKoeff(PlayerCityPtr city)
@@ -92,39 +84,6 @@ int getEntertainmentCoverage(PlayerCityPtr city, Service::Type service)
             : math::percentage( need, have) );
 }
 
-bool canImport(PlayerCityPtr city, good::Product type)
-{
-  world::EmpirePtr empire = city->empire();
-  world::TraderouteList routes = empire->tradeRoutes( city->name() );
-  bool haveImportWay = false;
-  for( auto route : routes )
-  {
-    world::CityPtr partner = route->partner( city->name() );
-    const good::Store& goods = partner->sells();
-    if( goods.capacity( type ) > 0 )
-    {
-      haveImportWay = true;
-      break;
-    }
-  }
-
-  return haveImportWay;
-}
-
-bool canProduce(PlayerCityPtr city, good::Product type)
-{
-  Helper helper( city );
-
-  FactoryList buildings = helper.findProducers<Factory>( type );
-  return !buildings.empty();
-}
-
-unsigned int getCrimeLevel( PlayerCityPtr city )
-{
-  DisorderPtr ds = getService<Disorder>( city );
-  return ds.isValid() ? ds->value() : 0;
-}
-
 unsigned int blackHouses( PlayerCityPtr city )
 {
   unsigned int ret = 0;
@@ -136,82 +95,6 @@ unsigned int blackHouses( PlayerCityPtr city )
   }
 
   return ret;
-}
-
-unsigned int getFoodStock(PlayerCityPtr city)
-{
-  int foodSum = 0;
-
-  GranaryList granaries = city->statistic().objects.find<Granary>( object::granery );
-  for( auto gr : granaries ) { foodSum += gr->store().qty(); }
-
-  return foodSum;
-}
-
-unsigned int getFoodMonthlyConsumption(PlayerCityPtr city)
-{
-  int foodComsumption = 0;
-  HouseList houses = city->statistic().objects.houses();
-
-  for( auto house : houses )
-    foodComsumption += house->spec().computeMonthlyFoodConsumption( house );
-
-  return foodComsumption;
-}
-
-unsigned int getFoodProducing(PlayerCityPtr city)
-{
-  int foodProducing = 0;
-  FarmList farms = city->statistic().objects.find<Farm>( object::group::food );
-
-  for( auto farm : farms )
-    foodProducing += farm->produceQty();
-
-  return foodProducing;
-}
-
-unsigned int getTaxPayersPercent(PlayerCityPtr city)
-{
-  HouseList houses = city->statistic().objects.houses();
-
-  unsigned int registered = 0;
-  unsigned int population = 0;
-  for( auto house : houses )
-  {
-    unsigned int hbCount = house->habitants().count();
-    population += hbCount;
-    if( house->getServiceValue( Service::forum ) > minServiceValue4Tax )
-    {
-      registered += hbCount;
-    }
-  }
-
-  return math::percentage( registered, population );
-}
-
-unsigned int getHealth(PlayerCityPtr city)
-{
-  HealthCarePtr hc = getService<HealthCare>( city );
-  return hc.isValid() ? hc->value() : 0;
-}
-
-int months2lastAttack(PlayerCityPtr city)
-{
-  MilitaryPtr ml = getService<Military>( city );
-  return ml.isValid() ? ml->monthFromLastAttack() : 0;
-}
-
-unsigned int getFestivalCost(PlayerCityPtr city, FestivalType type)
-{
-  unsigned int pop = city->states().population;
-  switch( type )
-  {
-  case smallFest: return int( pop / smallFestivalCostLimiter ) + smallFestivalMinCost;
-  case middleFest: return int( pop / middleFestivalCostLimiter ) + middleFestivalMinCost;
-  case greatFest: return int( pop / greatFestivalCostLimiter ) + greatFestivalMinCost;
-  }
-
-  return 0;
 }
 
 HouseList getEvolveHouseReadyBy(PlayerCityPtr city, const object::TypeSet& checkTypes )
@@ -233,57 +116,6 @@ HouseList getEvolveHouseReadyBy(PlayerCityPtr city, const object::TypeSet& check
   return ret;
 }
 
-good::ProductMap getProductMap(PlayerCityPtr city, bool includeGranary)
-{
-  good::ProductMap cityGoodsAvailable;
-
-  WarehouseList warehouses = city->statistic().objects.find<Warehouse>( object::any );
-
-  for( auto wh : warehouses )
-  {
-    good::ProductMap whStore = wh->store().details();
-    cityGoodsAvailable += whStore;
-  }
-
-  if( includeGranary )
-  {
-    GranaryList granaries = city->statistic().objects.find<Granary>( object::any );
-
-    for( auto gg : granaries )
-    {
-      good::ProductMap grStore = gg->store().details();
-      cityGoodsAvailable += grStore;
-    }
-  }
-
-  return cityGoodsAvailable;
-}
-
-int getLaborAccessValue(PlayerCityPtr city, WorkingBuildingPtr wb)
-{
-  TilePos offset( maxLaborDistance, maxLaborDistance );
-  TilePos wbpos = wb->pos();
-  HouseList houses = getObjects<House>( city, object::house, wbpos - offset, wbpos + offset );
-  float averageDistance = 0;
-  for( auto it : houses )
-  {
-    if( it->spec().level() < HouseLevel::smallVilla )
-    {
-      averageDistance += wbpos.distanceFrom( it->pos() );
-    }
-  }
-
-  if( houses.size() > 0 )
-    averageDistance /= houses.size();
-
-  return math::clamp( math::percentage( averageDistance, maxLaborDistance ) * 2, 25, 100 );
-}
-
-int taxValue(unsigned int population, int koeff)
-{
-  return population / 1000 * koeff;
-}
-
 HouseList getEvolveHouseReadyBy(PlayerCityPtr r, const object::Type checkType )
 {
   object::TypeSet checkTypes;
@@ -299,6 +131,13 @@ Statistic::Statistic(PlayerCity& c)
     tax{ *this },
     workers{ *this },
     population{ *this },
+    food{ *this },
+    services{ *this },
+    festival{ *this },
+    goods{ *this },
+    crime{ *this },
+    health{ *this },
+    military{ *this },
     rcity( c )
 {
 
@@ -307,6 +146,12 @@ Statistic::Statistic(PlayerCity& c)
 void Statistic::update(const unsigned long time)
 {
    walkers.cached.clear();
+}
+
+unsigned int Statistic::_Crime::level() const
+{
+  DisorderPtr ds = _parent.services.find<Disorder>();
+  return ds.isValid() ? ds->value() : 0;
 }
 
 const WalkerList& Statistic::_Walkers::find(walker::Type type) const
@@ -329,7 +174,7 @@ const WalkerList& Statistic::_Walkers::find(walker::Type type) const
   return wl;
 }
 
-unsigned int Statistic::_Tax::value() const
+unsigned int Statistic::_Tax::possible() const
 {
   HouseList houses = _parent.objects.houses();
 
@@ -502,6 +347,156 @@ unsigned int Statistic::_Workers::workless() const
   for( auto house : houses ) { worklessNumber += house->unemployed(); }
 
   return worklessNumber;
+}
+
+unsigned int Statistic::_Food::inGranaries() const
+{
+  int foodSum = 0;
+
+  GranaryList granaries = _parent.objects.find<Granary>( object::granery );
+  for( auto gr : granaries ) { foodSum += gr->store().qty(); }
+
+  return foodSum;
+}
+
+unsigned int Statistic::_Food::monthlyConsumption() const
+{
+  int foodComsumption = 0;
+  HouseList houses = _parent.objects.houses();
+
+  for( auto house : houses )
+    foodComsumption += house->spec().computeMonthlyFoodConsumption( house );
+
+  return foodComsumption;
+}
+
+unsigned int Statistic::_Tax::payersPercent() const
+{
+  HouseList houses = _parent.objects.houses();
+
+  unsigned int registered = 0;
+  unsigned int population = 0;
+  for( auto house : houses )
+  {
+    unsigned int hbCount = house->habitants().count();
+    population += hbCount;
+    if( house->getServiceValue( Service::forum ) > minServiceValue )
+    {
+      registered += hbCount;
+    }
+  }
+
+  return math::percentage( registered, population );
+}
+
+unsigned int Statistic::_Food::possibleProducing() const
+{
+  int foodProducing = 0;
+  FarmList farms = _parent.objects.farms();
+
+  for( auto farm : farms )
+    foodProducing += farm->produceQty();
+
+  return foodProducing;
+}
+
+unsigned int Statistic::_Festival::calcCost(FestivalType type) const
+{
+  unsigned int pop = _parent.rcity.states().population;
+  switch( type )
+  {
+  case smallFest: return int( pop / smallFestivalCostLimiter ) + smallFestivalMinCost;
+  case middleFest: return int( pop / middleFestivalCostLimiter ) + middleFestivalMinCost;
+  case greatFest: return int( pop / greatFestivalCostLimiter ) + greatFestivalMinCost;
+  }
+
+  return 0;
+}
+
+good::ProductMap Statistic::_Goods::details(bool includeGranary) const
+{
+  good::ProductMap cityGoodsAvailable;
+
+  WarehouseList warehouses = _parent.objects.find<Warehouse>( object::any );
+
+  for( auto wh : warehouses )
+  {
+    good::ProductMap whStore = wh->store().details();
+    cityGoodsAvailable += whStore;
+  }
+
+  if( includeGranary )
+  {
+    GranaryList granaries = _parent.objects.find<Granary>( object::any );
+
+    for( auto gg : granaries )
+    {
+      good::ProductMap grStore = gg->store().details();
+      cityGoodsAvailable += grStore;
+    }
+  }
+
+  return cityGoodsAvailable;
+}
+
+int Statistic::_Objects::laborAccess(WorkingBuildingPtr wb) const
+{
+  if( wb.isNull() )
+    return 0;
+
+  TilePos offset( maxLaborDistance, maxLaborDistance );
+  TilePos wbpos = wb->pos();
+  HouseList houses = find<House>( object::house, wbpos - offset, wbpos + offset );
+  float averageDistance = 0;
+  for( auto it : houses )
+  {
+    if( it->spec().level() < HouseLevel::smallVilla )
+    {
+      averageDistance += wbpos.distanceFrom( it->pos() );
+    }
+  }
+
+  if( houses.size() > 0 )
+    averageDistance /= houses.size();
+
+  return math::clamp( math::percentage( averageDistance, maxLaborDistance ) * 2, 25, 100 );
+}
+
+unsigned int Statistic::_Health::value() const
+{
+  HealthCarePtr h = _parent.services.find<HealthCare>();
+  return h.isValid() ? h->value() : 100;
+}
+
+int Statistic::_Military::months2lastAttack() const
+{
+  MilitaryPtr ml = _parent.services.find<Military>();
+  return ml.isValid() ? ml->monthFromLastAttack() : 0;
+}
+
+bool Statistic::_Goods::canImport(good::Product type) const
+{
+  world::EmpirePtr empire = _parent.rcity.empire();
+  world::TraderouteList routes = empire->tradeRoutes( _parent.rcity.name() );
+  bool haveImportWay = false;
+  for( auto route : routes )
+  {
+    world::CityPtr partner = route->partner( _parent.rcity.name() );
+    const good::Store& gs = partner->sells();
+    if( gs.capacity( type ) > 0 )
+    {
+      haveImportWay = true;
+      break;
+    }
+  }
+
+  return haveImportWay;
+}
+
+bool Statistic::_Goods::canProduce(good::Product type) const
+{
+  FactoryList buildings = _parent.objects.producers<Factory>( type );
+  return !buildings.empty();
 }
 
 }//end namespace city

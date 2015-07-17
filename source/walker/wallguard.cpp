@@ -195,7 +195,7 @@ std::string WallGuard::thoughts(Thought th) const
   case thCurrent:
   {
     TilePos offset( 10, 10 );
-    EnemySoldierList enemies = city::statistic::getWalkers<EnemySoldier>( _city(), walker::any, pos() - offset, pos() + offset );
+    EnemySoldierList enemies = _city()->statistic().walkers.find<EnemySoldier>( walker::any, pos() - offset, pos() + offset );
     if( enemies.empty() )
     {
       return Soldier::thoughts(th);

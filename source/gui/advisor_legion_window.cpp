@@ -228,7 +228,7 @@ void Legion::_showHelp()
 
 void Legion::Impl::updateAlarms(PlayerCityPtr city)
 {
-  MilitaryPtr mil = statistic::getService<Military>( city );
+  MilitaryPtr mil = city->statistic().services.find<Military>();
 
   WalkerList chasteners = city->statistic().walkers.find( walker::romeChastenerSoldier );
   WalkerList elephants = city->statistic().walkers.find( walker::romeChastenerElephant );
@@ -265,6 +265,6 @@ void Legion::Impl::updateAlarms(PlayerCityPtr city)
   }
 }
 
-}
+}//end namespace advisorwnd
 
 }//end namespace gui

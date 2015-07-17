@@ -152,7 +152,7 @@ void RqGood::exec( PlayerCityPtr city )
 
 bool RqGood::isReady( PlayerCityPtr city ) const
 {
-  good::ProductMap gm = statistic::getProductMap( city, false );
+  good::ProductMap gm = city->statistic().goods.details( false );
 
   Unit stockCap = Unit::fromQty( gm[ _d->stock.type() ] );
   Unit needCap = Unit::fromValue( _d->stock.capacity() );

@@ -433,7 +433,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case show_fest:
   {
-    city::FestivalPtr fest = city::statistic::getService<city::Festival>( game->city() );
+    city::FestivalPtr fest = game->city()->statistic().services.find<city::Festival>();
     if( fest.isValid() )
       fest->now();
   }
@@ -516,7 +516,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case kill_all_enemies:
   {
-     EnemySoldierList enemies = city::statistic::getWalkers<EnemySoldier>( game->city(), walker::any, gfx::tilemap::invalidLocation() );
+     EnemySoldierList enemies = game->city()->statistic().walkers.find<EnemySoldier>( walker::any, gfx::tilemap::invalidLocation() );
 
      for( auto enemy : enemies )
        enemy->die();
@@ -659,7 +659,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case add_soldiers_in_fort:
   {
-    FortList forts = city::statistic::getObjects<Fort>( game->city() );
+    FortList forts = game->city()->statistic().objects.find<Fort>();
 
     for( auto fort : forts )
     {

@@ -48,9 +48,9 @@ void TaxCollector::_centerTile()
   Walker::_centerTile();
 
   ReachedBuildings buildings = getReachedBuildings( pos() );
-  foreach( it, buildings )
+  for( auto bld : buildings )
   {
-    HousePtr house = ptr_cast<House>( *it );
+    HousePtr house = bld.as<House>();
 
     if( house.isValid() )
     {
@@ -69,13 +69,13 @@ std::string TaxCollector::thoughts(Thought th) const
   if( th == thCurrent )
   {
     TilePos offset( 2, 2 );
-    HouseList houses = city::statistic::getObjects<House>( _city(), object::house, pos() - offset, pos() + offset );
+    HouseList houses = _city()->statistic().objects.find<House>( object::house, pos() - offset, pos() + offset );
     unsigned int poorHouseCounter=0;
     unsigned int richHouseCounter=0;
 
-    foreach( h, houses )
+    for( auto house : houses )
     {
-      HouseLevel::ID level = (HouseLevel::ID)(*h)->spec().level();
+      HouseLevel::ID level = (HouseLevel::ID)house->spec().level();
       if( level < HouseLevel::bigDomus ) poorHouseCounter++;
       else if( level >= HouseLevel::smallVilla ) richHouseCounter++;
     }
@@ -127,9 +127,9 @@ void TaxCollector::_reachedPathway()
     }
 
     Logger::warning( "TaxCollector: path history" );
-    foreach( it, _d->history )
+    for( auto step : _d->history )
     {
-      Logger::warning( "       [%s]:%f", it->first.c_str(), it->second );
+      Logger::warning( "       [%s]:%f", step.first.c_str(), step.second );
     }
     deleteLater();
     return;

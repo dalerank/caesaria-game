@@ -284,7 +284,7 @@ void Chief::Impl::drawFoodStockState()
   }
   else
   {
-    InfoPtr info = city::statistic::getService<Info>( city );
+    InfoPtr info = city->statistic().services.find<Info>();
 
     if( info.isValid() )
     {
@@ -318,7 +318,7 @@ void Chief::Impl::drawFoodStockState()
 void Chief::Impl::drawFoodConsumption()
 {
   std::string text;
-  city::InfoPtr info = statistic::getService<Info>( city );
+  city::InfoPtr info = city->statistic().services.find<Info>();
 
   int fk = info->lastParams()[ Info::foodKoeff ];
 
@@ -349,7 +349,7 @@ void Chief::Impl::drawFoodConsumption()
 void Chief::Impl::drawMilitary()
 {
   StringArray reasons;
-  MilitaryPtr mil = statistic::getService<Military>( city );
+  MilitaryPtr mil = city->statistic().services.find<Military>();
   bool isBesieged = false;
 
   if( mil.isValid() )
@@ -436,7 +436,7 @@ void Chief::Impl::drawCrime()
 {
   std::string text;
 
-  DisorderPtr ds = statistic::getService<Disorder>( city );
+  DisorderPtr ds = city->statistic().services.find<Disorder>();
   if( ds.isValid() )
   {
     text = ds->reason();
@@ -451,7 +451,7 @@ void Chief::Impl::drawHealth()
 {
   std::string text;
 
-  HealthCarePtr cityHealth = statistic::getService<HealthCare>( city );
+  HealthCarePtr cityHealth = city->statistic().services.find<HealthCare>();
   if( cityHealth.isValid() )
   {
     text = cityHealth->reason();
@@ -491,7 +491,7 @@ void Chief::Impl::drawEducation()
 void Chief::Impl::drawReligion()
 {
   std::string text = "##advchief_religion_unknown##";
-  ReligionPtr srvc = statistic::getService<Religion>( city );
+  ReligionPtr srvc = city->statistic().services.find<Religion>();
   if( srvc.isValid() )
   {
 
@@ -503,7 +503,7 @@ void Chief::Impl::drawEntertainment()
 {
   StringArray reasons;
 
-  FestivalPtr srvc = statistic::getService<Festival>( city );
+  FestivalPtr srvc = city->statistic().services.find<Festival>();
   if( srvc.isValid() )
   {
     int monthFromLastFestival = srvc->lastFestival().monthsTo( game::Date::current() );
@@ -513,7 +513,7 @@ void Chief::Impl::drawEntertainment()
     }
   }
 
-  CultureRatingPtr cltr = statistic::getService<CultureRating>( city );
+  CultureRatingPtr cltr = city->statistic().services.find<CultureRating>();
   if( cltr.isValid() )
   {
     int theaterCoverage = cltr->coverage( CultureRating::covTheatres );
@@ -534,7 +534,7 @@ void Chief::Impl::drawEntertainment()
 
 void Chief::Impl::drawSentiment()
 {
-  SentimentPtr sentiment = statistic::getService<Sentiment>( city );
+  SentimentPtr sentiment = city->statistic().services.find<Sentiment>();
 
   std::string text = sentiment.isValid()
                      ? sentiment->reason()

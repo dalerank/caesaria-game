@@ -38,6 +38,7 @@
 #include "walkers_factory.hpp"
 
 using namespace gfx;
+using namespace events;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::rioter, Rioter)
 
@@ -83,7 +84,9 @@ void Rioter::_reachedPathway()
 void Rioter::_updateThoughts()
 {
   StringArray ret;
-  ret << "##rioter_say_1##" << "##rioter_say_2##" << "##rioter_say_3##";
+  ret << "##rioter_say_1##"
+      << "##rioter_say_2##"
+      << "##rioter_say_3##";
 
   setThinks( ret.random() );
 }
@@ -174,8 +177,7 @@ void Rioter::timeStep(const unsigned long time)
   {
     if( game::Date::isDayChanged() )
     {
-      ConstructionList constructions = city::statistic::getObjects<Construction>( _city(),
-                                                                             object::any,
+      ConstructionList constructions = _city()->statistic().objects.find<Construction>( object::any,
                                                                              pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
 
       for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
@@ -193,14 +195,13 @@ void Rioter::timeStep(const unsigned long time)
       }
       else
       {
-        foreach( it, constructions )
+        for( auto c : constructions )
         {
-          ConstructionPtr c = *it;
           c->updateState( pr::fire, 1 );
           c->updateState( pr::damage, 1 );
           if( c->state( pr::damage ) < 10 || c->state( pr::fire ) < 10 )
           {
-            events::GameEventPtr e = events::Disaster::create( c->tile(), events::Disaster::riots );
+            GameEventPtr e = Disaster::create( c->tile(), Disaster::riots );
             e->dispatch();
           }
           break;

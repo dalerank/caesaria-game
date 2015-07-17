@@ -69,7 +69,7 @@ Finance::Finance(PlayerCityPtr city, Widget* parent, int id )
 
   _updateCityTreasure();
   _updateTaxRateNowLabel();
-  _updateRegPayers();
+  _updateRegisteredPayers();
   _initReportRows();
   _initTaxManager();
 }
@@ -123,7 +123,7 @@ void Finance::_updateTaxRateNowLabel()
   if( !lbTaxRateNow )
     return;
 
-  int taxValue = _city->statistic().tax.value();
+  int taxValue = _city->statistic().tax.possible();
   std::string strCurretnTax = utils::format( 0xff, "%d%% %s %d %s",
                                                     _city->treasury().taxRate(), _("##may_collect_about##"),
                                                     taxValue, _("##denaries##") );
@@ -178,9 +178,9 @@ void Finance::_initTaxManager()
   CONNECT( btnHelp,        onClicked(), this, Finance::_showHelp );
 }
 
-void Finance::_updateRegPayers()
+void Finance::_updateRegisteredPayers()
 {
-  unsigned int regTaxPayers = statistic::getTaxPayersPercent( _city );
+  unsigned int regTaxPayers = _city->statistic().tax.payersPercent();
   std::string strRegPaeyrs = utils::format( 0xff, "%d%% %s", regTaxPayers, _("##population_registered_as_taxpayers##") );
   INIT_WIDGET_FROM_UI( Label*, lbRegPayers )
   if( lbRegPayers )

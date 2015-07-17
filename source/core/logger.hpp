@@ -66,7 +66,7 @@ private:
     DBG,
     INFO,
     WARN,
-    ERROR,
+    ERR,
     FATAL
   };
 

@@ -117,7 +117,7 @@ void Forum::Impl::removeMoney(PlayerCityPtr city)
   int maxMoney = city->treasury().money();
   if( maxMoney > 0 )
   {
-    ForumList forums = city::statistic::getObjects<Forum>( city );
+    ForumList forums = city->statistic().objects.find<Forum>();
 
     if( senate.isValid() )
       maxMoney /= 2;

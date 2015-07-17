@@ -26,6 +26,7 @@
 #include "walker/fishing_boat.hpp"
 
 using namespace gfx;
+using namespace events;
 
 namespace religion
 {
@@ -49,10 +50,10 @@ void Neptune::updateRelation(float income, PlayerCityPtr city)
 
 void Neptune::_doWrath(PlayerCityPtr city)
 {
-  events::GameEventPtr event = events::ShowInfobox::create( _("##wrath_of_neptune_title##"),
-                                                            _("##wrath_of_neptune_description##"),
-                                                            events::ShowInfobox::send2scribe,
-                                                            "god_neptune");
+  GameEventPtr event = ShowInfobox::create( _("##wrath_of_neptune_title##"),
+                                            _("##wrath_of_neptune_description##"),
+                                            ShowInfobox::send2scribe,
+                                            "god_neptune");
   event->dispatch();
 
   ShipList boats;
@@ -67,12 +68,12 @@ void Neptune::_doWrath(PlayerCityPtr city)
 
 void Neptune::_doSmallCurse(PlayerCityPtr city)
 {
-  events::GameEventPtr event = events::ShowInfobox::create( _("##smallcurse_of_neptune_title##"),
-                                                            _("##smallcurse_of_neptune_description##"),
-                                                            events::ShowInfobox::send2scribe );
+  GameEventPtr event = ShowInfobox::create( _("##smallcurse_of_neptune_title##"),
+                                            _("##smallcurse_of_neptune_description##"),
+                                            ShowInfobox::send2scribe );
   event->dispatch();
 
-  DockList docks = city::statistic::getObjects<Dock>( city );
+  DockList docks = city->statistic().objects.find<Dock>();
 
   DockPtr dock = docks.random();
   if( dock.isValid() )
@@ -83,13 +84,12 @@ void Neptune::_doSmallCurse(PlayerCityPtr city)
 
 void Neptune::_doBlessing(PlayerCityPtr city)
 {
-  FishingBoatList boats = city::statistic::getWalkers<FishingBoat>( city, walker::fishingBoat, TilePos(-1, -1));
+  FishingBoatList boats = city->statistic().walkers.find<FishingBoat>( walker::fishingBoat, TilePos(-1, -1));
 
-  FishingBoatPtr boat = boats.random();
-  foreach( it, boats )
+  boats = boats.random( math::max<size_t>( boats.size() / 5, 5 ) );
+  for( auto boat : boats )
   {
-    if( (*it)->fishQty() < boat->fishQty() )
-      (*it)->addFish( boat->fishMax() - boat->fishQty() );
+    boat->addFish( boat->fishMax() - boat->fishQty() );
   }
 }
 

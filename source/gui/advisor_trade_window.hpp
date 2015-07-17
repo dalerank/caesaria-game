@@ -46,7 +46,7 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-}
+}//end namespace advisorwnd
 
 }//end namespace gui
 #endif //__CAESARIA_ADVISOR_TRADE_WINDOW_H_INCLUDED__

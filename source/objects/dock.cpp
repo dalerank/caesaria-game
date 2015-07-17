@@ -231,8 +231,7 @@ std::string Dock::workersProblemDesc() const
 
 bool Dock::isBusy() const
 {
-  SeaMerchantList merchants = city::statistic::getWalkers<SeaMerchant>( _city(),
-                                                                        walker::seaMerchant,
+  SeaMerchantList merchants = _city()->statistic().walkers.find<SeaMerchant>( walker::seaMerchant,
                                                                         landingTile().pos() );
 
   return !merchants.empty();
@@ -258,8 +257,8 @@ const Tile& Dock::landingTile() const
 int Dock::queueSize() const
 {
   TilePos offset( 3, 3 );
-  SeaMerchantList merchants = city::statistic::getWalkers<SeaMerchant>( _city(), walker::seaMerchant,
-                                                                        pos() - offset, pos() + offset );
+  SeaMerchantList merchants = _city()->statistic().walkers.find<SeaMerchant>( walker::seaMerchant,
+                                                                              pos() - offset, pos() + offset );
 
   for( SeaMerchantList::iterator it=merchants.begin(); it != merchants.end(); )
   {

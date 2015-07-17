@@ -104,7 +104,7 @@ HousePtr Emigrant::_findBlankHouse()
   HousePtr blankHouse;
 
   TilePos offset( 5, 5 );
-  HouseList houses = city::statistic::getObjects<House>( _city(), object::house, pos() - offset, pos() + offset );
+  HouseList houses = _city()->statistic().objects.find<House>( object::house, pos() - offset, pos() + offset );
 
   _checkHouses( houses );
 
@@ -221,24 +221,21 @@ bool Emigrant::_checkNearestHouse()
   for( int k=1; k < 3; k++ )
   {
     TilePos offset( k, k );
-    HouseList houses = city::statistic::getObjects<House>( _city(), object::house, pos()-offset, pos() + offset );
+    HouseList houses = _city()->statistic().objects.find<House>( object::house, pos()-offset, pos() + offset );
 
     std::map< int, HousePtr > vacantRoomPriority;
-    foreach( it, houses )
+    for( auto house : houses )
     {
-      HousePtr house = *it;
       unsigned int freeRoom = house->capacity() - house->habitants().count();
       vacantRoomPriority[ 1000 - freeRoom ] = house;
     }
 
-    foreach( it, vacantRoomPriority )  //have destination
+    for( auto item : vacantRoomPriority )  //have destination
     {
-      HousePtr house = it->second;
-
-      int freeRoom = house->capacity() - house->habitants().count();
+      int freeRoom = item.second->capacity() - item.second->habitants().count();
       if( freeRoom > 0 )
       {
-        Pathway pathway = PathwayHelper::create( pos(), house->pos(), makeDelegate( _d.data(), &Impl::mayWalk ) );
+        Pathway pathway = PathwayHelper::create( pos(), item.second->pos(), makeDelegate( _d.data(), &Impl::mayWalk ) );
 
         _updatePathway( pathway );
         go();
@@ -252,7 +249,7 @@ bool Emigrant::_checkNearestHouse()
 
 void Emigrant::_brokePathway(TilePos p)
 {
-  if( is_kind_of<House>( _nextTile().overlay() ) )
+  if( _nextTile().overlay().is<House>() )
   {
     return;
   }

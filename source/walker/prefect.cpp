@@ -89,7 +89,8 @@ bool Prefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& 
 WalkerPtr Prefect::_looks4Enemy( const int range )
 {
   TilePos offset( range, range );
-  WalkerList walkers = city::statistic::getWalkers<Walker>( _city(), walker::any, pos() - offset, pos() + offset );
+  WalkerList walkers = _city()->statistic().walkers.find<Walker>( walker::any,
+                                                                  pos() - offset, pos() + offset );
 
   for( WalkerList::iterator it = walkers.begin(); it != walkers.end(); )
   {

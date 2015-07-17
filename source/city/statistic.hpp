@@ -82,6 +82,46 @@ public:
       return SmartPtr<T>();
     }
 
+    template< class T >
+    SmartList< T > find( walker::Type type,
+                         TilePos start=gfx::tilemap::invalidLocation(),
+                         TilePos stop=gfx::tilemap::invalidLocation() ) const
+    {
+      WalkerList walkersInArea;
+
+      TilePos stopPos = stop;
+
+      if( start == gfx::tilemap::invalidLocation() )
+      {
+        const WalkerList& all =_parent.rcity.walkers();
+        walkersInArea.insert( walkersInArea.end(), all.begin(), all.end() );
+      }
+      else if( stopPos == gfx::tilemap::invalidLocation() )
+      {
+        const WalkerList& wlkOnTile = _parent.rcity.walkers( start );
+        walkersInArea.insert( walkersInArea.end(), wlkOnTile.begin(), wlkOnTile.end() );
+      }
+      else
+      {
+        gfx::TilesArea area( _parent.rcity.tilemap(), start, stop );
+        for( auto tile : area)
+        {
+          const WalkerList& wlkOnTile = _parent.rcity.walkers( tile->pos() );
+          walkersInArea.insert( walkersInArea.end(), wlkOnTile.begin(), wlkOnTile.end() );
+        }
+      }
+
+      SmartList< T > result;
+      for( auto w : walkersInArea )
+      {
+        if( w->type() == type || type == walker::any )
+          result.addIfValid( w.as<T>() );
+      }
+
+      return result;
+    }
+
+
     Statistic& _parent;
     std::map<int, WalkerList> cached;
   } walkers;
@@ -99,6 +139,36 @@ public:
         if( which.count( ov->type() ) > 0 )
         {
           ret << ov;
+        }
+      }
+
+      return ret;
+    }
+
+    template< class T >
+    SmartList<T> find() const
+    {
+      SmartList<T> ret;
+      const OverlayList& buildings = _parent.rcity.overlays();
+      for( auto item : buildings )
+        ret.addIfValid( item.as<T>() );
+
+      return ret;
+    }
+
+    template< class T >
+    SmartList< T > find( object::Group group, const TilePos& start, const TilePos& stop )
+    {
+      SmartList< T > ret;
+
+      gfx::TilesArea area( _parent.rcity.tilemap(), start, stop );
+
+      for( auto tile : area )
+      {
+        SmartPtr<T> obj = tile->overlay().as<T>();
+        if( obj.isValid() && (obj->getClass() == group || group == object::group::any ) )
+        {
+          ret.push_back( obj );
         }
       }
 
@@ -137,6 +207,24 @@ public:
     }
 
     template< class T >
+    SmartList< T > find( const object::Type type, TilePos start, TilePos stop ) const
+    {
+      SmartList< T > ret;
+
+      gfx::TilesArea area( _parent.rcity.tilemap(), start, stop );
+      for( auto tile : area )
+      {
+        SmartPtr<T> obj = ptr_cast< T >( tile->overlay() );
+        if( obj.isValid() && (obj->type() == type || type == object::any) )
+        {
+          ret.push_back( obj );
+        }
+      }
+
+      return ret;
+    }
+
+    template< class T >
     SmartPtr< T > next( SmartPtr< T > current ) const
     {
       if( current.isNull() )
@@ -167,7 +255,7 @@ public:
       {
         if( current == *obj )
         {
-          if (obj == objects.begin()) // MSVC compiler doesn't support sircular lists. Neither standart does.
+          if (obj == objects.begin()) // MSVC compiler doesn't support circular lists. Neither standart does.
           {
             obj = objects.end();
           }
@@ -188,17 +276,58 @@ public:
       return ret;
     }
 
+    template< class T >
+    SmartList<T> producers(const good::Product goodtype) const
+    {
+      SmartList< T > ret;
+      const OverlayList& overlays = _parent.rcity.overlays();
+      for( auto ov : overlays )
+      {
+        SmartPtr< T > b = ov.as<T>();
+        if( b.isValid() && b->produceGoodType() == goodtype )
+        {
+          ret.push_back( b );
+        }
+      }
+
+      return ret;
+    }
+
+    template< class T >
+    SmartList< T > findNotIn( const std::set<object::Group>& which ) const
+    {
+      SmartList< T > ret;
+      const OverlayList& ovs = _parent.rcity.overlays();
+
+      for( auto ov : ovs )
+      {
+        if( which.count( ov->group() ) == 0 )
+        {
+          ret.addIfValid( ov.as<T>() );
+        }
+      }
+
+      return ret;
+    }
+
+
+    enum { maxLaborDistance=8 };
+
     OverlayList neighbors( OverlayPtr overlay, bool v ) const;
     FarmList farms(std::set<object::Type> which=std::set<object::Type>() ) const;
     HouseList houses( std::set<int> levels=std::set<int>() ) const;
+    int laborAccess( WorkingBuildingPtr wb ) const;
 
     Statistic& _parent;
   } objects;
 
   struct _Tax
   {
+    unsigned int possible() const;
+    unsigned int payersPercent() const;
     Statistic& _parent;
-    unsigned int value() const;
+
+    static const int minServiceValue=25;
   } tax;
 
   struct WorkersInfo
@@ -229,32 +358,82 @@ public:
     Statistic& _parent;
   } population;
 
+  struct _Food
+  {
+    unsigned int inGranaries() const;
+    unsigned int monthlyConsumption() const;
+    unsigned int possibleProducing() const;
+
+    Statistic& _parent;
+  } food;
+
+  struct _Services
+  {
+    template<class T>
+    SmartPtr<T> find() const
+    {
+      SrvcPtr ret = _parent.rcity.findService( T::defaultName() );
+      return ptr_cast<T>( ret );
+    }
+
+    Statistic& _parent;
+  } services;
+
+  struct _Festival
+  {
+    unsigned int calcCost( FestivalType type ) const;
+
+    enum { greatFestivalCostLimiter=5,
+           middleFestivalCostLimiter=10,
+           smallFestivalMinCost=10,
+           smallFestivalCostLimiter=20,
+           middleFestivalMinCost=20,
+           greatFestivalMinCost=40 };
+
+    Statistic& _parent;
+  } festival;
+
+  struct _Crime
+  {
+    unsigned int level() const;
+
+    Statistic& _parent;
+  } crime;
+
+  struct _Goods
+  {
+    good::ProductMap details(bool includeGranary) const;
+    bool canImport( good::Product type ) const;
+    bool canProduce( good::Product type ) const;
+
+    Statistic& _parent;
+  } goods;
+
+  struct _Health
+  {
+    unsigned int value() const;
+
+    Statistic& _parent;
+  } health;
+
+  struct _Military
+  {
+    int months2lastAttack() const;
+
+    Statistic& _parent;
+  } military;
+
   PlayerCity& rcity;
 };
 
 namespace statistic
 {
 
-unsigned int getWorklessNumber( PlayerCityPtr city );
-unsigned int getWorklessPercent( PlayerCityPtr city );
-unsigned int getFoodStock( PlayerCityPtr city );
-unsigned int getFoodMonthlyConsumption( PlayerCityPtr city );
-unsigned int getFoodProducing( PlayerCityPtr city );
-unsigned int getTaxPayersPercent( PlayerCityPtr city );
-unsigned int getHealth( PlayerCityPtr city );
 unsigned int blackHouses( PlayerCityPtr city );
-int months2lastAttack( PlayerCityPtr city );
-int taxValue( unsigned int population, int koeff);
-unsigned int getFestivalCost( PlayerCityPtr city, FestivalType type );
 HouseList getEvolveHouseReadyBy(PlayerCityPtr, const object::TypeSet& checkTypes);
 HouseList getEvolveHouseReadyBy(PlayerCityPtr, const object::Type checkTypes);
-unsigned int getCrimeLevel( PlayerCityPtr city );
-good::ProductMap getProductMap(PlayerCityPtr city , bool includeGranary);
 float getBalanceKoeff( PlayerCityPtr city );
-int getLaborAccessValue( PlayerCityPtr city, WorkingBuildingPtr wb );
 int getEntertainmentCoverage(PlayerCityPtr city, Service::Type service );
-bool canImport( PlayerCityPtr city, good::Product type );
-bool canProduce( PlayerCityPtr city, good::Product type );
 
 template<class T>
 bool isTileBusy( PlayerCityPtr r, TilePos p, WalkerPtr caller, bool& needMeMove )
@@ -272,105 +451,6 @@ bool isTileBusy( PlayerCityPtr r, TilePos p, WalkerPtr caller, bool& needMeMove 
 }
 
 template< class T >
-SmartList< T > getWalkers( PlayerCityPtr r, walker::Type type,
-                           TilePos start=gfx::tilemap::invalidLocation(),
-                           TilePos stop=gfx::tilemap::invalidLocation() )
-{
-  WalkerList walkersInArea;
-
-  TilePos stopPos = stop;
-
-  if( start == gfx::tilemap::invalidLocation() )
-  {
-    const WalkerList& all = r->walkers();
-    walkersInArea.insert( walkersInArea.end(), all.begin(), all.end() );
-  }
-  else if( stopPos == gfx::tilemap::invalidLocation() )
-  {
-    const WalkerList& wlkOnTile = r->walkers( start );
-    walkersInArea.insert( walkersInArea.end(), wlkOnTile.begin(), wlkOnTile.end() );
-  }
-  else
-  {
-    gfx::TilesArea area( r->tilemap(), start, stop );
-    for( auto tile : area)
-    {
-      const WalkerList& wlkOnTile = r->walkers( tile->pos() );
-      walkersInArea.insert( walkersInArea.end(), wlkOnTile.begin(), wlkOnTile.end() );
-    }
-  }
-
-  SmartList< T > result;
-  for( auto w : walkersInArea )
-  {
-    if( w->type() == type || type == walker::any )
-      result.addIfValid( w.as<T>() );
-  }
-
-  return result;
-}
-
-template<class T>
-SmartPtr<T> getService( PlayerCityPtr r)
-{
-  if( r.isNull() )
-    return 0;
-
-  SrvcPtr ret = r->findService( T::defaultName() );
-  return ptr_cast<T>( ret );
-}
-
-template< class T >
-SmartList< T > getObjects( PlayerCityPtr r, const object::Type type, TilePos start, TilePos stop )
-{
-  SmartList< T > ret;
-
-  gfx::TilesArea area( r->tilemap(), start, stop );
-  foreach( tile, area )
-  {
-    SmartPtr<T> obj = ptr_cast< T >( (*tile)->overlay() );
-    if( obj.isValid() && (obj->type() == type || type == object::any) )
-    {
-      ret.push_back( obj );
-    }
-  }
-
-  return ret;
-}
-
-template< class T >
-SmartList< T > getObjects( PlayerCityPtr r, object::Group group, const TilePos& start, const TilePos& stop )
-{
-  SmartList< T > ret;
-
-  gfx::TilesArea area( r->tilemap(), start, stop );
-
-  foreach( tile, area )
-  {
-    SmartPtr<T> obj = (*tile)->overlay().as<T>();
-    if( obj.isValid() && (obj->getClass() == group || group == object::group::any ) )
-    {
-      ret.push_back( obj );
-    }
-  }
-
-  return ret;
-}
-
-template< class T >
-SmartList<T> getObjects( PlayerCityPtr r )
-{
-  SmartList<T> ret;
-  const OverlayList& buildings = r->overlays();
-  foreach( item, buildings )
-  {
-    ret.addIfValid( item->as<T>() );
-  }
-
-  return ret;
-}
-
-template< class T >
 SmartList< T > getObjectsNotIs( PlayerCityPtr r, const std::set<object::Type>& which )
 {
   SmartList< T > ret;
@@ -379,23 +459,6 @@ SmartList< T > getObjectsNotIs( PlayerCityPtr r, const std::set<object::Type>& w
   foreach( it, ovs )
   {
     if( which.count( (*it)->type() ) == 0 )
-    {
-      ret.addIfValid( (*it).as<T>() );
-    }
-  }
-
-  return ret;
-}
-
-template< class T >
-SmartList< T > getObjectsNotIs( PlayerCityPtr r, const std::set<object::Group>& which )
-{
-  SmartList< T > ret;
-  const OverlayList& ovs = r->overlays();
-
-  foreach( it, ovs )
-  {
-    if( which.count( (*it)->group() ) == 0 )
     {
       ret.addIfValid( (*it).as<T>() );
     }

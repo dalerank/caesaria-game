@@ -65,7 +65,7 @@ void BuildAny::_exec( Game& game, unsigned int )
   }
 
   TilePos offset(10, 10);
-  EnemySoldierList enemies = city::statistic::getWalkers<EnemySoldier>( game.city(), walker::any, _pos - offset, _pos + offset );
+  EnemySoldierList enemies =  game.city()->statistic().walkers.find<EnemySoldier>( walker::any, _pos - offset, _pos + offset );
   if( !enemies.empty() && _overlay->group() != object::group::disaster)
   {
     GameEventPtr e = WarningMessage::create( "##too_close_to_enemy_troops##", 2 );
@@ -123,7 +123,7 @@ void BuildAny::_exec( Game& game, unsigned int )
           e->dispatch();
         }
 
-        int laborAccessKoeff = city::statistic::getLaborAccessValue( game.city(), wb );
+        int laborAccessKoeff = wb->laborAccessPercent();
         if( laborAccessKoeff < 50 )
         {
           GameEventPtr e = WarningMessage::create( "##working_build_poor_labor_warning##", 2 );

@@ -33,6 +33,7 @@
 #include "gfx/animation_bank.hpp"
 
 using namespace gfx;
+using namespace events;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::burned_ruins, BurnedRuins)
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::burning_ruins, BurningRuins)
@@ -61,13 +62,14 @@ void BurningRuins::timeStep(const unsigned long time)
   if( game::Date::isDayChanged() )
   {
     TilePos offset( 2, 2 );
-    BuildingList buildings = city::statistic::getObjects<Building>( _city(), object::any, pos() - offset, pos() + offset );
+    BuildingList buildings = _city()->statistic().objects.find<Building>( object::any,
+                                                                          pos() - offset, pos() + offset );
 
-    foreach( it, buildings)
+    for( auto bld : buildings)
     {
-      if( (*it)->group() != object::group::disaster )
+      if( bld->group() != object::group::disaster )
       {
-        (*it)->updateState( pr::fire, _value );
+        bld->updateState( pr::fire, _value );
       }
     }
 
@@ -121,7 +123,7 @@ void BurningRuins::destroy()
     fire->rmLocation( pos() );
   }
 
-  events::GameEventPtr event = events::BuildAny::create( pos(), p.object() );
+  GameEventPtr event = BuildAny::create( pos(), p.object() );
   event->dispatch();
 }
 
@@ -290,7 +292,7 @@ void PlagueRuins::destroy()
   p->drop();
   p->setInfo( info() );
 
-  events::GameEventPtr event = events::BuildAny::create( pos(), p.object() );
+  GameEventPtr event = BuildAny::create( pos(), p.object() );
   event->dispatch();
 }
 

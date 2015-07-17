@@ -220,7 +220,7 @@ void Level::Impl::installHandlers( Base* scene )
 
 void Level::Impl::initSound()
 {
-  SmartPtr<city::AmbientSound> sound = statistic::getService<city::AmbientSound>( game->city() );
+  SmartPtr<city::AmbientSound> sound = game->city()->statistic().services.find<city::AmbientSound>();
   if( sound.isValid() )
     sound->setCamera( renderer.camera() );
 }
@@ -580,8 +580,8 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
   PlayerCityPtr pcity = game->city();
 
   const city::VictoryConditions& vc = pcity->victoryConditions();
-  MilitaryPtr mil = statistic::getService<city::Military>( pcity );
-  InfoPtr info = statistic::getService<city::Info>( pcity );
+  MilitaryPtr mil = pcity->statistic().services.find<Military>();
+  InfoPtr info = pcity->statistic().services.find<Info>();
 
   if( mil.isValid() && info.isValid()  )
   {

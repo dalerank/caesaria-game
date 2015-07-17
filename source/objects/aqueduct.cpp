@@ -74,9 +74,10 @@ bool Aqueduct::build( const city::AreaInfo& info )
   WaterSource::build( info );
 
   TilePos offset( 2, 2 );
-  AqueductList aqueducts = city::statistic::getObjects<Aqueduct>( _city(), object::aqueduct, info.pos - offset, info.pos + offset );
+  AqueductList aqueducts = _city()->statistic().objects.find<Aqueduct>( object::aqueduct,
+                                                                        info.pos - offset, info.pos + offset );
 
-  foreach( aqueduct, aqueducts ) { (*aqueduct)->updatePicture( info.city ); }
+  for( auto aqueduct : aqueducts ) { aqueduct->updatePicture( info.city ); }
   return true;
 }
 
@@ -96,9 +97,9 @@ void Aqueduct::destroy()
   if( _city().isValid() )
   {
     TilesArea area( _city()->tilemap(), pos() - TilePos( 2, 2 ), Size( 5 ) );
-    foreach( tile, area )
+    for( auto tile : area )
     {
-      AqueductPtr aq = ptr_cast<Aqueduct>( (*tile)->overlay() );
+      AqueductPtr aq = tile->overlay().as<Aqueduct>();
       if( aq.isValid() )
       {
         aq->updatePicture( _city() );
@@ -154,19 +155,19 @@ bool Aqueduct::canBuild( const city::AreaInfo& areaInfo) const
       tp_to = areaInfo.pos;
 
     TilesArray perimetr = tilemap.getRectangle(tp_from, tp_to, !Tilemap::checkCorners);
-    foreach( tile, perimetr )
+    for( auto tile : perimetr )
     {
       AqueductPtr bldAqueduct;
-      foreach( it, areaInfo.aroundTiles )
+      for( auto aTile : areaInfo.aroundTiles )
       {
-        if( (*it)->pos() == (*tile)->pos() )
+        if( aTile->pos() == tile->pos() )
         {
-          bldAqueduct = ptr_cast< Aqueduct >( (*it)->overlay() );
+          bldAqueduct = aTile->overlay().as<Aqueduct>();
           break;
         }
       }
 
-      if( (*tile)->getFlag( Tile::tlRoad ) && bldAqueduct.isValid()  )
+      if( tile->getFlag( Tile::tlRoad ) && bldAqueduct.isValid()  )
         return false;
     }
   }
@@ -230,12 +231,12 @@ const Picture& Aqueduct::picture( const city::AreaInfo& info ) const
   const TilePos& p = info.pos;
   if (!info.aroundTiles.empty())
   {
-    foreach( it, info.aroundTiles )
+    for( auto tile : info.aroundTiles )
     {
-      int i = (*it)->epos().i();
-      int j = (*it)->epos().j();
+      int i = tile->epos().i();
+      int j = tile->epos().j();
 
-      if( !is_kind_of<Aqueduct>( (*it)->overlay() ) )
+      if( !tile->overlay().is<Aqueduct>() )
         continue;
 
       if( i == p.i() && j == (p.j() + 1)) is_busy[north] = true;

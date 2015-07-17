@@ -156,7 +156,7 @@ Entertainment::Entertainment(PlayerCityPtr city, Widget* parent, int id )
 : Base( parent, city, id ), _d( new Impl )
 {
   _d->city = city;
-  FestivalPtr fest = statistic::getService<Festival>( city );
+  FestivalPtr fest = city->statistic().services.find<Festival>();
 
   setupUI( ":/gui/entertainmentadv.gui" );
   _d->monthFromLastFestival = fest->lastFestival().monthsTo( game::Date::current() );
@@ -215,7 +215,7 @@ HealthcareInfo Entertainment::Impl::getInfo( const object::Type service)
 
 void Entertainment::_assignFestival( int divinityType, int festSize)
 {
-  FestivalPtr fest = statistic::getService<Festival>( _d->city );
+  FestivalPtr fest = _d->city->statistic().services.find<Festival>();
   if( fest.isValid() )
   {
     fest->assign( (religion::RomeDivinityType)divinityType, festSize );
@@ -338,7 +338,7 @@ void Entertainment::Impl::updateFestivalInfo()
   if( !lbInfoAboutLastFestival )
     return;
 
-  FestivalPtr fest = statistic::getService<Festival>( city );
+  FestivalPtr fest = city->statistic().services.find<Festival>();
   if( fest.isValid() )
   {    
     std::string text = utils::i2str( monthFromLastFestival ) + " " +  _("##month_from_last_festival##");

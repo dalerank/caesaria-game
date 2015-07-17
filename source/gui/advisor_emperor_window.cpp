@@ -204,15 +204,15 @@ void Emperor::_updateRequests()
     (*btn)->deleteLater();
   }
 
-  request::RequestList reqs;
-  request::DispatcherPtr dispatcher = statistic::getService<request::Dispatcher>( _d->city );
+  request::RequestList requests;
+  request::DispatcherPtr dispatcher = _d->city->statistic().services.find<request::Dispatcher>();
 
   if( dispatcher.isValid() )
   {
-    reqs = dispatcher->requests();
+    requests = dispatcher->requests();
   }
 
-  if( reqs.empty() )
+  if( requests.empty() )
   {
     Label* lb = new Label( this, reqsRect, _("##have_no_requests##") );
     lb->setWordwrap( true );
@@ -220,13 +220,13 @@ void Emperor::_updateRequests()
   }
   else
   {
-    foreach( request, reqs )
+    foreach( r, requests )
     {
-      if( !(*request)->isDeleted() )
+      if( !(*r)->isDeleted() )
       {
-        bool mayExec = (*request)->isReady( _d->city );
+        bool mayExec = (*r)->isReady( _d->city );
         RequestButton* btn = new RequestButton( this, reqsRect.lefttop() + Point( 5, 5 ),
-                                                std::distance( reqs.begin(), request ), *request );
+                                                std::distance( requests.begin(), r ), *r );
         btn->setTooltipText( _("##request_btn_tooltip##") );
         btn->setEnabled( mayExec );
         CONNECT(btn, onExecRequest(), _d.data(), Impl::resolveRequest );
@@ -337,6 +337,6 @@ void Emperor::Impl::resolveRequest(request::RequestPtr request)
   }
 }
 
-}
+}//end namespace advisorwnd
 
 }//end namespace gui

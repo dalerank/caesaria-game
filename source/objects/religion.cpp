@@ -162,8 +162,10 @@ void TempleCeres::_updateBuffs()
   if( _lastBuffDate().month() != game::Date::current().month() )
   {
     TilePos offset( 5, 5 );
-    FarmList farms = city::statistic::getObjects<Farm>( _city(), object::any,
-                                                        pos() - offset, pos() + offset + TilePos( size().width(), size().width() ) );
+    FarmList farms = _city()->statistic().objects.find<Farm>( object::any,
+                                                              pos() - offset,
+                                                              pos() + offset + TilePos( size().width(),
+                                                              size().width() ) );
 
     int multiplier = _relationMultiplier();
 
@@ -214,15 +216,17 @@ void TempleMercury::_updateBuffs()
   if( _lastBuffDate().month() != game::Date::current().month() )
   {
     TilePos offset( 5, 5 );
-    WarehouseList warehouses = city::statistic::getObjects<Warehouse>( _city(), object::any,
-                                                                       pos() - offset, pos() + offset + TilePos( size().width(), size().width() ) );
+    WarehouseList warehouses = _city()->statistic().objects.find<Warehouse>( object::any,
+                                                                             pos() - offset,
+                                                                             pos() + offset + TilePos( size().width(),
+                                                                             size().width() ) );
 
     int multiplier = _relationMultiplier();
 
-    foreach( it, warehouses )
+    for( auto wh : warehouses )
     {
-      WarehouseBuff::uniqueTo( *it, Warehouse::sellGoodsBuff, _buffValue() * multiplier,  4, CAESARIA_STR_A(TempleMercury) );
-      WarehouseBuff::uniqueTo( *it, Warehouse::buyGoodsBuff, -_buffValue() * multiplier,  4, CAESARIA_STR_A(TempleMercury) );
+      WarehouseBuff::uniqueTo( wh, Warehouse::sellGoodsBuff, _buffValue() * multiplier,  4, CAESARIA_STR_A(TempleMercury) );
+      WarehouseBuff::uniqueTo( wh, Warehouse::buyGoodsBuff, -_buffValue() * multiplier,  4, CAESARIA_STR_A(TempleMercury) );
     }
 
     SmallTemple::_updateBuffs();
@@ -285,7 +289,7 @@ bool BigTemple::build( const city::AreaInfo& info )
     return true;
   }
 
-  good::ProductMap goods = city::statistic::getProductMap( info.city, false );
+  good::ProductMap goods = info.city->statistic().goods.details( false );
   if( goods[ good::marble ] >= 2 )
   {
     Temple::build( info );

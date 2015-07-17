@@ -194,7 +194,7 @@ void Migration::timeStep( const unsigned int time )
     return;
   }
 
-  MilitaryPtr mil = statistic::getService<Military>( _city() );
+  MilitaryPtr mil = _city()->statistic().services.find<Military>();
 
   if( mil.isValid() )
   {
@@ -379,7 +379,7 @@ float Migration::Impl::getMigrationKoeff( PlayerCityPtr city )
 
 Info::Parameters Migration::Impl::lastMonthParams( PlayerCityPtr city )
 {
-  InfoPtr info = statistic::getService<Info>( city );
+  InfoPtr info = city->statistic().services.find<Info>();
 
   Info::Parameters params;
   if( info.isValid() )

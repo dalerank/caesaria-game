@@ -58,7 +58,7 @@ void _decreaseHousesHealth( object::Type btype, PlayerCityPtr city, int value )
     if( building->type() != btype )
         continue;
 
-    HouseList houses = city::statistic::getObjects<House>( city, object::house, building->pos() - offset, building->pos() + offset );
+    HouseList houses = city->statistic().objects.find<House>( object::house, building->pos() - offset, building->pos() + offset );
 
     for( auto house : houses )
     {

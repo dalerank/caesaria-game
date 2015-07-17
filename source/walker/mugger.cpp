@@ -90,12 +90,13 @@ void Mugger::timeStep(const unsigned long time)
   {
     TilePos offset(10, 10);
 
-    HouseList houses = city::statistic::getObjects<House>( _city(), object::house, pos() - offset, pos() + offset );
+    HouseList houses = _city()->statistic().objects.find<House>( object::house, pos() - offset, pos() + offset );
+
     std::map< int, HouseList > houseEpxens;
-    foreach( it, houses )
+    for( auto house : houses )
     {
-      int money = (*it)->getServiceValue( Service::forum );
-      houseEpxens[ money ] << *it;
+      int money = house->getServiceValue( Service::forum );
+      houseEpxens[ money ] << house;
     }
 
     for( std::map< int, HouseList >::reverse_iterator expHList = houseEpxens.rbegin();
@@ -103,9 +104,9 @@ void Mugger::timeStep(const unsigned long time)
     {
       HouseList& hlist = expHList->second;
 
-      foreach( hIt, hlist )
+      for( auto house : hlist )
       {
-        Pathway pathway = PathwayHelper::create( pos(), *hIt, PathwayHelper::allTerrain );
+        Pathway pathway = PathwayHelper::create( pos(), house, PathwayHelper::allTerrain );
 
         //find path to most expensive house, fire this!!!
         if( pathway.isValid() )
@@ -149,14 +150,14 @@ void Mugger::timeStep(const unsigned long time)
   {
     if( game::Date::isDayChanged() )
     {
-      HouseList houses = city::statistic::getObjects<House>( _city(), object::house, pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
+      HouseList houses = _city()->statistic().objects.find<House>( object::house, pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
 
-      foreach( it, houses )
+      for( auto house : houses )
       {
-        int money = (*it)->getServiceValue( Service::forum );
+        int money = house->getServiceValue( Service::forum );
         if( money > 1 )
         {
-          (*it)->appendServiceValue( Service::forum, -1.f );
+          house->appendServiceValue( Service::forum, -1.f );
           break;
         }
       }

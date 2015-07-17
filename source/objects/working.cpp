@@ -162,7 +162,7 @@ void WorkingBuilding::timeStep( const unsigned long time )
 
   if( game::Date::isMonthChanged() && numberWorkers() > 0 )
   {
-    _d->laborAccessKoeff = city::statistic::getLaborAccessValue( _city(), this );
+    _d->laborAccessKoeff = _city()->statistic().objects.laborAccess( this );
   }
 
   if( isActive() )

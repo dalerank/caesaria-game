@@ -176,19 +176,19 @@ std::string RomeSoldier::thoughts(Thought th) const
   if( th == thCurrent )
   {
     TilePos offset( 10, 10 );
-    EnemySoldierList enemies = city::statistic::getWalkers<EnemySoldier>( _city(), walker::any, pos() - offset, pos() + offset );
+    EnemySoldierList enemies = _city()->statistic().walkers.find<EnemySoldier>( walker::any, pos() - offset, pos() + offset );
     if( enemies.empty() )
     {
       return Soldier::thoughts( th );
     }
     else
     {
-      RomeSoldierList ourSoldiers = city::statistic::getWalkers<RomeSoldier>( _city(), walker::any, pos() - offset, pos() + offset );
+      RomeSoldierList ourSoldiers = _city()->statistic().walkers.find<RomeSoldier>( walker::any, pos() - offset, pos() + offset );
       int enemyStrength = 0;
       int ourStrength = 0;
 
-      foreach( it, enemies) { enemyStrength += (*it)->strike(); }
-      foreach( it, ourSoldiers ) { ourStrength += (*it)->strike(); }
+      for( auto enemy : enemies) { enemyStrength += enemy->strike(); }
+      for( auto sldr : ourSoldiers ) { ourStrength += sldr->strike(); }
 
       if( ourStrength > enemyStrength )
       {
@@ -372,7 +372,7 @@ void RomeSoldier::_reachedPathway()
 
   case go2position:
   {
-    WalkerList walkersOnTile = city::statistic::getWalkers<Walker>( _city(), type(), pos() );
+    WalkerList walkersOnTile = _city()->statistic().walkers.find<Walker>( type(), pos() );
     walkersOnTile.remove( this );
 
     if( walkersOnTile.size() > 0 ) //only me in this tile

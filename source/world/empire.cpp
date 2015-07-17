@@ -693,7 +693,7 @@ void Empire::Impl::takeTaxes()
     }       
     else if( city.is<ComputerCity>() )
     {
-      empireTax = city::statistic::taxValue( city->states().population, defaultCityTaxKoeff );
+      empireTax = econ::calcTaxValue( city->states().population, defaultCityTaxKoeff );
       economy.treasury += empireTax;
       emperor.citySentTax( city->name(), empireTax );
     }
@@ -702,11 +702,11 @@ void Empire::Impl::takeTaxes()
       int profit = city->treasury().getIssueValue( econ::Issue::cityProfit, econ::Treasury::lastYear );
       if( profit <= 0 )
       {
-        empireTax = city::statistic::taxValue( city->states().population, defaultCityTaxKoeff );
+        empireTax = econ::calcTaxValue( city->states().population, defaultCityTaxKoeff );
       }
       else
       {
-        int minimumExpireTax = city::statistic::taxValue( city->states().population, defaultCityTaxKoeff ) + minimumCityTax;
+        int minimumExpireTax =econ::calcTaxValue( city->states().population, defaultCityTaxKoeff ) + minimumCityTax;
         empireTax = math::clamp( profit / cityTaxLimiter, minimumExpireTax, 9999 );
         emperor.citySentTax( city->name(), empireTax );
       }

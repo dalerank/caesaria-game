@@ -134,7 +134,7 @@ FestivalPlanning::FestivalPlanning( Widget* parent, int id, const Rect& rectangl
   _d->btnExit = new TexturedButton( this, Point( width() - 74, height() - 52 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
 
   /*int money = _d->city->getFunds().getValue();*/
-  _d->cost = city::statistic::getFestivalCost( city, smallFest );
+  _d->cost = city->statistic().festival.calcCost( smallFest );
 
   if( _d->btnSmallFestival )
   {
@@ -142,14 +142,14 @@ FestivalPlanning::FestivalPlanning( Widget* parent, int id, const Rect& rectangl
     _d->btnSmallFestival->setText( utils::format( 0xff, "%s %d", _("##small_festival##"), _d->cost ) );
   }
 
-  _d->cost = city::statistic::getFestivalCost( city, middleFest );
+  _d->cost = city->statistic().festival.calcCost( middleFest );
   if( _d->btnMiddleFestival )
   {
     _d->btnMiddleFestival->setID( Impl::festId+middleFest );
     _d->btnMiddleFestival->setText( utils::format( 0xff, "%s %d", _("##middle_festival##"), _d->cost ));
   }
 
-  _d->cost = city::statistic::getFestivalCost( city, greatFest );
+  _d->cost = city->statistic().festival.calcCost( greatFest );
   if( _d->btnGreatFestival )
   {
     _d->btnGreatFestival->setID( Impl::festId+greatFest );

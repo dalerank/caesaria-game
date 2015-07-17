@@ -64,7 +64,8 @@ std::string Engineer::thoughts(Thought th) const
 void Engineer::_centerTile()
 {
   TilePos offset( reachDistance(), reachDistance() );
-  ConstructionList buildings = city::statistic::getObjects<Construction>( _city(), object::any, pos() - offset, pos() + offset );
+  ConstructionList buildings = _city()->statistic().objects.find<Construction>( object::any,
+                                                                                pos() - offset, pos() + offset );
   foreach( b, buildings )
   {
     if( !_d->_reachedBuildings.count( *b ) )

@@ -138,11 +138,11 @@ void Info::timeStep(const unsigned int time )
     last[ population  ] = _city()->states().population;
     last[ funds       ] = _city()->treasury().money();
     last[ taxpayes    ] =  0;//_d->city->getLastMonthTaxpayer();
-    last[ foodStock   ] = statistic::getFoodStock( _city() );
-    last[ foodMontlyConsumption ] = statistic::getFoodMonthlyConsumption( _city() );
+    last[ foodStock   ] = _city()->statistic().food.inGranaries();
+    last[ foodMontlyConsumption ] = _city()->statistic().food.monthlyConsumption();
     last[ monthWithFood ] = last[ foodMontlyConsumption ] > 0 ? (last[ foodStock ] / last[ foodMontlyConsumption ]) : 0;
 
-    int foodProducing = statistic::getFoodProducing( _city() );
+    int foodProducing = _city()->statistic().food.possibleProducing();
     int yearlyFoodConsumption = last[ foodMontlyConsumption ] * DateTime::monthsInYear;
     last[ foodKoeff   ] = ( foodProducing - yearlyFoodConsumption > 0 )
                             ? foodProducing / (yearlyFoodConsumption+1)
@@ -157,20 +157,20 @@ void Info::timeStep(const unsigned int time )
     last[ tax         ] = _city()->treasury().taxRate();
     last[ cityWages   ] = _city()->treasury().workerSalary();
     last[ romeWages   ] = _city()->empire()->workerSalary();
-    last[ crimeLevel  ] = statistic::getCrimeLevel( _city() );
+    last[ crimeLevel  ] = _city()->statistic().crime.level();
     last[ favour      ] = _city()->favour();
     last[ prosperity  ] = _city()->prosperity();
-    last[ monthWtWar  ] = statistic::months2lastAttack( _city() );
+    last[ monthWtWar  ] = _city()->statistic().military.months2lastAttack();
     last[ blackHouses ] = statistic::blackHouses( _city() );
     last[ peace       ] = 0;
 
-    PeacePtr peaceSrvc = statistic::getService<Peace>( _city() );
+    PeacePtr peaceSrvc = _city()->statistic().services.find<Peace>();
     if( peaceSrvc.isValid() )
     {
       last[ peace ] = peaceSrvc->value();
     }
 
-    MilitaryPtr mil = statistic::getService<Military>( _city() );
+    MilitaryPtr mil = _city()->statistic().services.find<Military>();
     if( mil.isValid() )
     {
       last[ Info::milthreat ] = mil->threatValue();
@@ -191,7 +191,7 @@ void Info::timeStep(const unsigned int time )
       }
     }
 
-    SentimentPtr sentimentSrvc = statistic::getService<Sentiment>( _city() );
+    SentimentPtr sentimentSrvc = _city()->statistic().services.find<Sentiment>();
 
     if( sentimentSrvc.isValid())
       last[ sentiment ] = sentimentSrvc->value();

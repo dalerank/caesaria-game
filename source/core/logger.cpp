@@ -277,7 +277,7 @@ const std::string SimpleLogger::toS(SimpleLogger::Severity severity) {
       return "[INFO]";
     case Severity::WARN:
       return "[WARN]";
-    case Severity::ERROR:
+    case Severity::ERR:
       return "[ERROR]";
     case Severity::FATAL:
       return "[FATAL]";
@@ -298,7 +298,7 @@ void SimpleLogger::warn(const std::string &text) {
 }
 
 void SimpleLogger::error(const std::string &text) {
-  log(Severity::ERROR, text);
+  log(Severity::ERR, text);
 }
 
 void SimpleLogger::fatal(const std::string &text) {
@@ -329,7 +329,7 @@ void SimpleLogger::warn(const char *fmt, ...) {
 void SimpleLogger::error(const char *fmt, ...) {
   va_list args;
   va_start(args, fmt);
-  log(Severity::ERROR, fmt, args);
+  log(Severity::ERR, fmt, args);
   va_end(args);
 }
 

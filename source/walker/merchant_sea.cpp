@@ -166,21 +166,21 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     if( myDock.isValid() && emptyDock )
     {
       trade::Options& options = city->tradeOptions();
-      good::ProductMap cityGoodsAvailable = statistic::getProductMap( city, false );
+      good::ProductMap cityGoodsAvailable = city->statistic().goods.details( false );
       //request goods
-      foreach( goodType, good::all() )
+      for( auto goodType : good::all() )
       {
-        int needQty = buy.freeQty( *goodType );
-        if (!options.isExporting(*goodType))
+        int needQty = buy.freeQty( goodType );
+        if (!options.isExporting( goodType) )
         {
           continue;
         }
-        int exportLimit = options.tradeLimit( trade::exporting, *goodType ).toQty();
-        int maySell = math::clamp<unsigned int>( cityGoodsAvailable[ *goodType ] - exportLimit, 0, needQty );
+        int exportLimit = options.tradeLimit( trade::exporting, goodType ).toQty();
+        int maySell = math::clamp<unsigned int>( cityGoodsAvailable[ goodType ] - exportLimit, 0, needQty );
 
         if( maySell > 0)
         {
-          good::Stock stock( *goodType, maySell, maySell );
+          good::Stock stock( goodType, maySell, maySell );
           myDock->requestGoods( stock );
           anyBuy = true;
         }
@@ -205,18 +205,18 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     {
       trade::Options& options = city->tradeOptions();
       //try buy goods
-      foreach( goodType, good::all() )
+      for( auto goodType : good::all() )
       {
-        if (!options.isExporting(*goodType))
+        if (!options.isExporting( goodType))
         {
           continue;
         }
 
-        int needQty = buy.freeQty( *goodType );
+        int needQty = buy.freeQty( goodType );
 
         if( needQty > 0 )
         {
-          good::Stock& stock = buy.getStock( *goodType );
+          good::Stock& stock = buy.getStock( goodType );
           currentBuys += myDock->exportingGoods( stock, needQty );
           anyBuy = true;
         }
@@ -389,12 +389,12 @@ void SeaMerchant::Impl::goAwayFromCity( PlayerCityPtr city, WalkerPtr walker )
 
 DockPtr SeaMerchant::Impl::findLandingDock(PlayerCityPtr city, WalkerPtr walker)
 {
-  DockList docks = city::statistic::getObjects<Dock>( city, object::dock, walker->pos() - TilePos( 1, 1), walker->pos() + TilePos( 1, 1 ) );
-  foreach( dock, docks )
+  DockList docks = city->statistic().objects.find<Dock>( object::dock, walker->pos() - TilePos( 1, 1), walker->pos() + TilePos( 1, 1 ) );
+  for( auto dock : docks )
   {
-    if( (*dock)->landingTile().pos() == walker->pos() )
+    if( dock->landingTile().pos() == walker->pos() )
     {
-      return *dock;
+      return dock;
     }
   }
 

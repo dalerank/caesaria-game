@@ -277,12 +277,12 @@ econ::Treasury& PlayerCity::treasury()           { return _d->economy;   }
 
 int PlayerCity::strength() const
 {
-  FortList forts = city::statistic::getObjects<Fort>( const_cast<PlayerCity*>( this ) );
+  FortList forts = statistic().objects.find<Fort>();
 
   int ret = 0;
-  for (auto i : forts)
+  for (auto fort : forts)
   {
-    SoldierList soldiers = i->soldiers();
+    SoldierList soldiers = fort->soldiers();
     ret += soldiers.size();
   }
 

@@ -115,7 +115,7 @@ void Disaster::_exec( Game& game, unsigned int )
     break;
     }
 
-    PeacePtr peaceSrvc = statistic::getService<Peace>( game.city() ) ;
+    PeacePtr peaceSrvc = game.city()->statistic().services.find<Peace>() ;
     if( peaceSrvc.isValid() )
     {
       peaceSrvc->buildingDestroyed( overlay, _d->type );

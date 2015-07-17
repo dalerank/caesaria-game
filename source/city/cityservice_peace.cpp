@@ -100,7 +100,7 @@ void Peace::timeStep(const unsigned int time )
   if( !game::Date::isYearChanged() )
     return;
 
-  MilitaryPtr ml = statistic::getService<Military>( _city() );
+  MilitaryPtr ml = _city()->statistic().services.find<Military>();
   if( ml.isNull() )
   {
     Logger::warning( "!!! WARNING: not found military service" );
@@ -147,7 +147,7 @@ void Peace::addCriminal( WalkerPtr wlk )
   else if( wlk .is<Mugger>() ) { _d->threats.mugger = true; }
   else
   {
-    Logger::warning( "Peace:addCriminal unknown walker %d", wlk->type() );
+    Logger::warning( "Peace: addCriminal unknown walker %d", wlk->type() );
     _d->threats.criminal = true;
   }
 }

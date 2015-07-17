@@ -211,7 +211,7 @@ void Employer::Impl::changeSalary(int relative)
 
 void Employer::Impl::showPriorityWindow( industry::Type industry )
 {
-  WorkersHirePtr wh = statistic::getService<WorkersHire>( city );
+  WorkersHirePtr wh = city->statistic().services.find<WorkersHire>();
 
   int priority = wh->getPriority( industry );
   dialog::HirePriority* wnd = new dialog::HirePriority( lbSalaries->ui()->rootWidget(), industry, priority );
@@ -220,7 +220,7 @@ void Employer::Impl::showPriorityWindow( industry::Type industry )
 
 void Employer::Impl::setIndustryPriority( industry::Type industry, int priority)
 {
-  WorkersHirePtr wh = statistic::getService<WorkersHire>( city );
+  WorkersHirePtr wh = city->statistic().services.find<WorkersHire>();
 
   if( wh.isValid() )
   {
@@ -233,15 +233,15 @@ void Employer::Impl::setIndustryPriority( industry::Type industry, int priority)
 
 void Employer::Impl::update()
 {
-  WorkersHirePtr wh = statistic::getService<WorkersHire>( city );
+  WorkersHirePtr wh = city->statistic().services.find<WorkersHire>();
 
   if( wh.isNull() )
     return;
 
-  foreach( i, empButtons )
+  for( auto button : empButtons )
   {
-    int priority = wh->getPriority( (industry::Type)(*i)->ID() );
-    (*i)->setPriority( priority );
+    int priority = wh->getPriority( (industry::Type)button->ID() );
+    button->setPriority( priority );
   }
 }
 
@@ -354,6 +354,6 @@ bool Employer::onEvent(const NEvent& event)
 
 void Employer::_showHelp() { DictionaryWindow::show( this, "labor_advisor" ); }
 
-}
+}//end namespace advisorwnd
 
 }//end namespace gui

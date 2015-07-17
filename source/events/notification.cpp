@@ -61,10 +61,10 @@ void Notify::_exec(Game& game, unsigned int)
 {
   world::CityPtr pCity = game.empire()->findCity( _d->cityname );
 
-  if( is_kind_of<PlayerCity>( pCity ) )
-  {
-    PlayerCityPtr plrCity = ptr_cast<PlayerCity>( pCity );
-    MilitaryPtr mil = statistic::getService<Military>( plrCity );
+  PlayerCityPtr plrCity = ptr_cast<PlayerCity>( pCity );
+  if( plrCity.isValid() )
+  {    
+    MilitaryPtr mil = plrCity->statistic().services.find<Military>();
 
     if( mil.isValid() )
     {

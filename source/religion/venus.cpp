@@ -59,7 +59,7 @@ void Venus::_doWrath( PlayerCityPtr city )
                                             "god_venus");
   event->dispatch();
 
-  SentimentPtr sentiment = statistic::getService<Sentiment>( city );
+  SentimentPtr sentiment = city->statistic().services.find<Sentiment>();
 
   if( sentiment.isValid() )
   {
@@ -104,7 +104,7 @@ void Venus::_doSmallCurse(PlayerCityPtr city)
     e = ShowInfobox::create( _("##smcurse_of_venus_title##"),
                              _("##smcurse_of_venus_description##"),
                              ShowInfobox::send2scribe );
-    SentimentPtr sentiment = statistic::getService<Sentiment>( city );
+    SentimentPtr sentiment = city->statistic().services.find<Sentiment>();
     if( sentiment.isValid() )
     {
       sentiment->addBuff( -math::random( 5 ), true, 12 );

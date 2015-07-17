@@ -86,9 +86,6 @@ public:
   }    
 
   template< class T >
-  SmartList< T > findProducers( const good::Product goodtype );
-
-  template< class T >
   SmartPtr< T > next( const SmartPtr< T > current );
 
   template< class T >
@@ -101,23 +98,6 @@ public:
 protected:
   PlayerCityPtr _city;
 };
-
-template< class T >
-SmartList<T> Helper::findProducers(const good::Product goodtype )
-{
-  SmartList< T > ret;
-  const OverlayList& overlays = _city->overlays();
-  foreach( item, overlays )
-  {
-    SmartPtr< T > b = item->as<T>();
-    if( b.isValid() && b->produceGoodType() == goodtype )
-    {
-      ret.push_back( b );
-    }
-  }
-
-  return ret;
-}
 
 }//end namespace city
 
