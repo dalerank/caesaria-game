@@ -68,8 +68,10 @@ int main(int argc, char* argv[])
   std::string systemLang = SETTINGS_VALUE( language ).toString();
 #ifdef CAESARIA_USE_STEAM
   if( !steamapi::connect() )
+  {
     LOG.fatal("Failed to connect to steam");
     return EXIT_FAILURE;
+  }
 
   if( systemLang.empty() )
     systemLang = steamapi::language();

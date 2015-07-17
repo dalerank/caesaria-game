@@ -597,8 +597,10 @@ void SdlEngine::draw(const Batch &batch, Rect *clipRect)
 
 void SdlEngine::drawLine(const NColor &color, const Point &p1, const Point &p2)
 {
-  _d->batcher.finish();
-  _d->renderState();
+  bool needDraw = _d->batcher.finish();
+  if( needDraw )
+    _d->renderState();
+
   _d->drawCall++;
 
   SDL_SetRenderDrawColor( _d->renderer, color.red(), color.green(), color.blue(), color.alpha() );

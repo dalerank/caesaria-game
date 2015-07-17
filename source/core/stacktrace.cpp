@@ -202,7 +202,7 @@ static LONG CALLBACK ExceptionHandler(LPEXCEPTION_POINTERS e)
 #endif
 
 /** Print a demangled stack backtrace of the caller function to FILE* out. */
-void printstack( boolean showMessage, unsigned int starting_frame, unsigned int max_frames )
+void printstack( bool showMessage, unsigned int starting_frame, unsigned int max_frames )
 {
 #if !defined(CAESARIA_PLATFORM_WIN) && !defined(CAESARIA_PLATFORM_ANDROID)
   if (showMessage)

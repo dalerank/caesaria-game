@@ -85,7 +85,7 @@ struct SubRating
     float coverageValue = calcCoverage( rcity );
 
     value = 0;
-    coverageValue = math::clamp<float>(coverageValue, 0f, 1.0f );
+    coverageValue = math::clamp<float>(coverageValue, 0.f, 1.0f );
     coverage = (int) (coverageValue * 100);
     for( int i=0; i < coverage::levelNumber; i++ )
     {

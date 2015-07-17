@@ -42,6 +42,29 @@ using namespace events;
 namespace citylayer
 {
 
+class DestroingArea : std::set<int>
+{
+public:
+  DestroingArea& operator+=(Tile* tile)
+  {
+    this->insert( tile::hash( tile->epos() ) );
+    return *this;
+  }
+
+  DestroingArea& operator+=(const TilesArray& tiles )
+  {
+    for( auto tile : tiles )
+      this->insert( tile::hash( tile->epos() ) );
+
+    return *this;
+  }
+
+  bool inArea( Tile* tile ) const
+  {
+    return tile->getFlag( Tile::isDestructible ) && count( tile::hash( tile->epos() ) ) > 0;
+  }
+};
+
 class Destroy::Impl
 {
 public:
@@ -88,29 +111,41 @@ void Destroy::render( Engine& engine )
 
   const TilesArray& visibleTiles = _camera()->tiles();
   const TilesArray& flatTiles = _camera()->flatTiles();
+  const TilesArray& groundTiles = _camera()->groundTiles();
 
   _camera()->startFrame();
 
-  std::set<int> hashDestroyArea;
+  DestroingArea hashDestroyArea;
   TilesArray destroyArea = _getSelectedArea( _d->startTilePos );
 
   //create list of destroy tiles add full area building if some of it tile constain in destroy area
   _d->savesum = _d->money4destroy;
   _d->money4destroy = 0;
-  for( auto dtile : destroyArea)
+  for( auto dtile : destroyArea )
   {
-    hashDestroyArea.insert( tile::hash( dtile->epos() ) );
+    hashDestroyArea += dtile;
 
     OverlayPtr overlay = dtile->overlay();
     if( overlay.isValid() )
-    {
-      TilesArray overlayArea = overlay->area();
-
-      for( auto areatile : overlayArea )
-        hashDestroyArea.insert( tile::hash( areatile->epos() ) );
-    }    
+      hashDestroyArea += overlay->area();
 
     _d->money4destroy += _checkMoney4destroy( *dtile );
+  }
+
+  for( auto tile : groundTiles )
+  {
+    if( hashDestroyArea.inArea( tile ) )
+    {
+      engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
+      drawPass( engine, *tile, cameraOffset, Renderer::ground );
+      drawPass( engine, *tile, cameraOffset, Renderer::groundAnimation );
+      engine.resetColorMask();
+    }
+    else
+    {
+      drawPass( engine, *tile, cameraOffset, Renderer::ground );
+      drawPass( engine, *tile, cameraOffset, Renderer::groundAnimation );
+    }
   }
 
   // FIRST PART: draw all flat land (walkable/boatable)  
@@ -118,78 +153,18 @@ void Destroy::render( Engine& engine )
   {
     Tile* master = ftile->masterTile();
 
-    ftile = master == 0 ? ftile : master;
+    ftile = (master == 0 ? ftile : master);
 
     if( !ftile->rwd() )
     {
-      int tilePosHash = tile::hash(ftile->epos());
-      if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() &&
-          ftile->getFlag( Tile::isDestructible ) )
+      if( hashDestroyArea.inArea( ftile ) )
       {
         engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
-      }
-
-      drawPass( engine, *ftile, cameraOffset, Renderer::ground );
-      drawPass( engine, *ftile, cameraOffset, Renderer::groundAnimation );
-
-      drawTile( engine, *ftile, cameraOffset );
-
-      engine.resetColorMask();
-    }
-  }
-
-  for( auto vtile : visibleTiles )
-  {
-    if( !vtile->isFlat() )
-    {
-      Tile* master = vtile->masterTile();
-      master = master == 0 ? vtile : master;
-      int tilePosHash = tile::hash( master->epos());
-
-      if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() &&
-          vtile->getFlag( Tile::isDestructible ) )
-      {
-        engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
-      }
-
-      if( vtile->rov().isNull() )
-      {
-        // multi-tile: draw the master tile.
-        // and it is time to draw the master tile
-        if( !master->rwd() && master == vtile )
-        {
-          drawPass( engine, *master, cameraOffset, Renderer::ground );
-          drawPass( engine, *master, cameraOffset, Renderer::groundAnimation );
-        }
+        drawTile( engine, *ftile, cameraOffset );
+        engine.resetColorMask();
       }
       else
-      {
-        Size size = vtile->rov()->size();
-        const Picture& terrainPic = master->picture();
-
-        if( !master->rwd() && master == vtile )
-        {
-          if( size.width() > 1 )
-          {
-            for( int i=0; i < size.width(); i++ )
-              for( int j=0; j < size.height(); j++ )
-              {
-                TilePos tpos = vtile->epos() + TilePos( i, j );
-                Point mappos = Point( tilemap::cellSize().width() * ( tpos.i() + tpos.j() ),
-                                      tilemap::cellSize().height() * ( tpos.i() - tpos.j() ) - 0 * tilemap::cellSize().height() );
-
-                engine.draw( terrainPic, mappos + cameraOffset );
-              }
-          }
-          else
-          {
-            drawPass( engine, *master, cameraOffset, Renderer::ground );
-            drawPass( engine, *master, cameraOffset, Renderer::groundAnimation );
-          }
-        }
-      }
-
-      engine.resetColorMask();
+        drawTile( engine, *ftile, cameraOffset );
     }
   }
 
@@ -198,19 +173,18 @@ void Destroy::render( Engine& engine )
   {
     int z = vtile->epos().z();
 
-    int tilePosHash = tile::hash(vtile->epos());
-    if( hashDestroyArea.find( tilePosHash ) != hashDestroyArea.end() )
+    if( hashDestroyArea.inArea( vtile ) )
     {
-      if( vtile->getFlag( Tile::isDestructible ) )
-      {
-        engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
-      }
+      engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
+      drawProminentTile( engine, *vtile, cameraOffset, z, false );
+      drawWalkers( engine, *vtile, cameraOffset );
+      engine.resetColorMask();
     }
-
-    drawProminentTile( engine, *vtile, cameraOffset, z, false );
-
-    drawWalkers( engine, *vtile, cameraOffset );
-    engine.resetColorMask();
+    else
+    {
+      drawProminentTile( engine, *vtile, cameraOffset, z, false );
+      drawWalkers( engine, *vtile, cameraOffset );
+    }
   }
 }
 
