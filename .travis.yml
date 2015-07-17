@@ -4,10 +4,12 @@ compiler:
 - gcc
 before_install:
 # Get build dependencies
-- sudo apt-add-repository --yes ppa:zoogie/sdl2-snapshots #libsdl2
+- sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+- sudo apt-add-repository --yes ppa:zoogie/sdl2-snapshots
 - sudo apt-get -qq update
-#- sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch
 - sudo apt-get install -qq cmake build-essential libasound2-dev
+- sudo apt-get -qq install g++-4.8
+- if [ "$CXX" == "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 #- sudo apt-get install -qq gcc-multilib g++-multilib
 install:
 # Create unix makefiles
