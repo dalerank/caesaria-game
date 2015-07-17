@@ -177,7 +177,7 @@ Pathway Pathfinder::getPath(TilePos start, TilePos stop,  int flags)
   if( start == stop )
   {
     LOG_PF.warn( "Pathfinder::getPath start==stop" );
-    crashhandler::printstack();
+    crashhandler::printstack(false);
     return Pathway();
   }
 
@@ -404,7 +404,7 @@ bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, P
     {
       LOG_PF.warn( "AStar: maxLoopCount reached from [%d,%d] to [%d,%d]",
                        startPos.i(), startPos.j(), endPoints.front()->getPos().i(), endPoints.front()->getPos().j() );
-      crashhandler::printstack();
+      crashhandler::printstack(false);
     }
     return false;
   }

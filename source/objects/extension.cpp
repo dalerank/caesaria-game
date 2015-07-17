@@ -68,7 +68,7 @@ ConstructionExtensionPtr FactoryProgressUpdater::assignTo(FactoryPtr factory, fl
   if( factory.isValid() ) { factory->addExtension( ret );  }
   else
   {
-    crashhandler::printstack();
+    crashhandler::printstack(false);
     Logger::warning( "WARNING!!! Factory not initialized" );
   }
 
@@ -80,7 +80,7 @@ ConstructionExtensionPtr FactoryProgressUpdater::uniqueTo(FactoryPtr factory, fl
   if( !factory.isValid() )
   {
     Logger::warning( "WARNING!!! Factory not initialized" );
-    crashhandler::printstack();
+    crashhandler::printstack(false);
     return ConstructionExtensionPtr();
   }
 
