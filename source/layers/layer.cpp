@@ -40,6 +40,7 @@
 #include "core/timer.hpp"
 #include "core/logger.hpp"
 #include "gfx/animation_bank.hpp"
+#include "city/statistic.hpp"
 
 using namespace gfx;
 
