@@ -35,9 +35,15 @@
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::recruter, Recruter)
 
-namespace {
-enum { maxReachDistance=2, noPriority = 999 };
-}
+enum class ReachDistance : unsigned short
+{
+  max=2
+};
+
+enum class HirePriority : unsigned short
+{
+  no = 999
+};
 
 class Recruter::Impl
 {
@@ -60,7 +66,7 @@ Recruter::Recruter(PlayerCityPtr city )
  : ServiceWalker( city, Service::recruter ), _d( new Impl )
 {    
   _d->needWorkers = 0;
-  _d->reachDistance = maxReachDistance;
+  _d->reachDistance = (int)ReachDistance::max;
   _d->once_shot = false;
   _d->failedCounter = 0;
   _d->patrolFinished = false;
@@ -87,12 +93,12 @@ void Recruter::setPriority(const city::HirePriorities& priority)
   _d->priority = priority;
 
   int priorityLevel = 1;
-  foreach( i, _d->priority )
+  for( auto priority : _d->priority )
   {
-    object::Groups groups = city::industry::toGroups( *i );
-    foreach( grIt, groups )
+    object::Groups groups = city::industry::toGroups( priority );
+    for( auto group : groups )
     {
-      _d->priorityMap[ *grIt ] = priorityLevel;
+      _d->priorityMap[ group ] = priorityLevel;
     }
 
     priorityLevel++;
@@ -117,21 +123,24 @@ void Recruter::_centerTile()
     ServiceWalkerHelper hlp( *this );
     std::set<HousePtr> houses = hlp.getReachedBuildings<House>( pos() );
 
-    foreach( it, houses ) { (*it)->applyService( this ); }
+    for( auto house : houses )
+    {
+      house->applyService( this );
+    }
 
     if( !_d->priority.empty() )
     {
-      std::set<WorkingBuildingPtr> blds = hlp.getReachedBuildings<WorkingBuilding>( pos() );
+      std::set<WorkingBuildingPtr> buildings = hlp.getReachedBuildings<WorkingBuilding>( pos() );
 
-      foreach( it, blds )
+      for( auto bld : buildings )
       {
-        if( it->equals( refBase ) ) //avoid recruting from out base
+        if( bld.equals( refBase ) ) //avoid recruting from out base
           continue;
 
-        bool priorityOver = _d->isMyPriorityOver( refBase, *it );
+        bool priorityOver = _d->isMyPriorityOver( refBase, bld );
         if( priorityOver )
         {
-          int removedFromWb = (*it)->removeWorkers( _d->needWorkers );
+          int removedFromWb = bld->removeWorkers( _d->needWorkers );
           hireWorkers( removedFromWb );
         }
       }
@@ -277,8 +286,8 @@ bool Recruter::Impl::isMyPriorityOver(BuildingPtr base, WorkingBuildingPtr wbuil
 {
   PriorityMap::iterator myPrIt = priorityMap.find( base->group() );
   PriorityMap::iterator bldPrIt = priorityMap.find( wbuilding->group() );
-  int mypriority = (myPrIt != priorityMap.end() ? myPrIt->second : noPriority);
-  int wpriority = (bldPrIt != priorityMap.end() ? bldPrIt->second : noPriority);
+  int mypriority = (myPrIt != priorityMap.end() ? myPrIt->second : (int)HirePriority::no);
+  int wpriority = (bldPrIt != priorityMap.end() ? bldPrIt->second : (int)HirePriority::no);
 
   return mypriority < wpriority;
 }

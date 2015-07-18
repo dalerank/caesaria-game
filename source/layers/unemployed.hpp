@@ -15,36 +15,26 @@
 //
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_OVERLAYS_MENU_H_INCLUDED__
-#define __CAESARIA_OVERLAYS_MENU_H_INCLUDED__
+#ifndef __CAESARIA_LAYERUNEMPLOYED_H_INCLUDED__
+#define __CAESARIA_LAYERUNEMPLOYED_H_INCLUDED__
 
-#include "widget.hpp"
-#include "core/scopedptr.hpp"
-#include "core/signals.hpp"
+#include "layerinfo.hpp"
 
-namespace gui
+namespace citylayer
 {
 
-class OverlaysMenu : public Widget
+class Unemployed : public Info
 {
 public:
-  OverlaysMenu( Widget* parent, const Rect& rectangle, int id);
+  virtual int type() const;
+  virtual void drawTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
+  virtual void handleEvent(NEvent& event);
 
-  bool isPointInside(const Point& point) const;
-
-  bool onEvent(const NEvent& event);
-
-signals public:
-  Signal1<int>& onSelectOverlayType();
+  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
 
 private:
-  void _addButtons( const int type );
-  // add the button in the menu.
-  void _addButton(const int buildingType, const Point& offset );
-
-  class Impl;
-  ScopedPtr< Impl > _d;
+  Unemployed( gfx::Camera& camera, PlayerCityPtr city );
 };
 
-}//end namespace gui
-#endif //__CAESARIA_OVERLAYS_MENU_H_INCLUDED__
+}//end namespace city
+#endif //__CAESARIA_LAYERUNEMPLOYED_H_INCLUDED__

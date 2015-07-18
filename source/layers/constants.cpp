@@ -86,6 +86,7 @@ Helper::Helper()
     LAYER(commerce)
     LAYER(tax)
     LAYER(sentiment)
+    LAYER(unemployed)
     LAYER(build)
     LAYER(destroyd)
     LAYER(market)
@@ -93,12 +94,12 @@ Helper::Helper()
 #undef LAYER
 
   VariantMap vm = config::load( SETTINGS_RC_PATH(layersOptsModel) );
-  foreach( it, vm )
+  for( auto it : vm )
   {
-    Type layerType = findType( it->first );
+    Type layerType = findType( it.first );
     if( layerType != count )
     {
-      _d->configs[ layerType ] = it->second.toMap();
+      _d->configs[ layerType ] = it.second.toMap();
     }
   }
 }

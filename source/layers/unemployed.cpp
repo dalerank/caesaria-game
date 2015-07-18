@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#include "sentiment.hpp"
+#include "unemployed.hpp"
 #include "objects/constants.hpp"
 #include "objects/house.hpp"
 #include "objects/house_spec.hpp"
@@ -25,24 +25,16 @@
 #include "city/statistic.hpp"
 #include "core/event.hpp"
 #include "gfx/tilemap_camera.hpp"
+#include "core/gettext.hpp"
 
 using namespace gfx;
 
 namespace citylayer
 {
 
-enum { maxSentimentLevel=10, sentimentColumnIndex=15 };
-static const char* sentimentLevelName[maxSentimentLevel] = {
-                                         "##city_loathed_you##", "##sentiment_people_veryangry_you##",
-                                         "##sentiment_people_angry_you##", "##sentiment_people_upset_you##",
-                                         "##sentiment_people_annoyed_you##","##sentiment_people_indiffirent_you##",
-                                         "##sentiment_people_pleased_you##", "##sentiment_people_extr_pleased_you##",
-                                         "##sentiment_people_love_you##", "##sentiment_people_idolize_you##"
-                                       };
+int Unemployed::type() const {  return citylayer::unemployed; }
 
-int Sentiment::type() const {  return citylayer::sentiment; }
-
-void Sentiment::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Unemployed::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 
@@ -58,7 +50,8 @@ void Sentiment::drawTile(Engine& engine, Tile& tile, const Point& offset)
   {
     bool needDrawAnimations = false;
     OverlayPtr overlay = tile.overlay();
-    int sentimentLevel = 0;
+    WorkingBuildingPtr workBuilding = overlay.as<WorkingBuilding>();
+    int worklessPercent = 0;
 
     if( _isVisibleObject( overlay->type() ) )
     {
@@ -68,7 +61,9 @@ void Sentiment::drawTile(Engine& engine, Tile& tile, const Point& offset)
     {
       HousePtr house = overlay.as<House>();
 
-      sentimentLevel = (int)house->state( pr::happiness );
+      int worklessNumber = (int)house->getServiceValue( Service::recruter );
+      int matureNumber = (int)house->habitants().mature_n();
+      worklessPercent = math::percentage( worklessNumber, matureNumber );
       needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
 
       if( !needDrawAnimations )
@@ -76,9 +71,12 @@ void Sentiment::drawTile(Engine& engine, Tile& tile, const Point& offset)
         drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
       }
     }
-    else
+    else if( workBuilding.isValid() )
     {
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+      worklessPercent = math::percentage( workBuilding->needWorkers(), workBuilding->maximumWorkers() );
+      needDrawAnimations = workBuilding->needWorkers() > 0;
+      if( !needDrawAnimations )
+        drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base );
     }
 
     if( needDrawAnimations )
@@ -86,24 +84,24 @@ void Sentiment::drawTile(Engine& engine, Tile& tile, const Point& offset)
       Layer::drawTile( engine, tile, offset );
       registerTileForRendering( tile );
     }
-    else if( sentimentLevel > 0 )
+    else if( worklessPercent > 0 )
     {
-      drawColumn( engine, screenPos, 100 - sentimentLevel );
+      drawColumn( engine, screenPos, worklessPercent );
     }
   }
 
   tile.setWasDrawn();
 }
 
-LayerPtr Sentiment::create( Camera& camera, PlayerCityPtr city)
+LayerPtr Unemployed::create( Camera& camera, PlayerCityPtr city)
 {
-  LayerPtr ret( new Sentiment( camera, city ) );
+  LayerPtr ret( new Unemployed( camera, city ) );
   ret->drop();
 
   return ret;
 }
 
-void Sentiment::handleEvent(NEvent& event)
+void Unemployed::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
@@ -116,10 +114,25 @@ void Sentiment::handleEvent(NEvent& event)
       if( tile != 0 )
       {
         HousePtr house = tile->overlay().as<House>();
+        WorkingBuildingPtr workBuilding = tile->overlay().as<WorkingBuilding>();
+
         if( house.isValid() )
         {
-          int happiness = math::clamp<int>( house->state( pr::happiness ) / maxSentimentLevel, 0, maxSentimentLevel-1 );
-          text = sentimentLevelName[ happiness ];
+          int workless = house->getServiceValue( Service::recruter);
+
+          if( workless > 0 )
+            text = utils::format( 0xff, "%s %d %s", _("##this_house_have##"), workless, _("##unemployers##") );
+          else
+            text = "##this_house_haveno_unemployers##";
+        }
+        else if( workBuilding.isValid() )
+        {
+          int need = workBuilding->needWorkers();
+
+          if( need > 0 )
+            text = utils::format( 0xff, "%s %d %s", _("##this_building_need##"), need, _("##workers##") );
+          else
+            text = "##this_building_have_all_workers##";
         }
       }
 
@@ -134,12 +147,10 @@ void Sentiment::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-Sentiment::Sentiment( Camera& camera, PlayerCityPtr city)
-  : Info( camera, city, sentimentColumnIndex )
+Unemployed::Unemployed( Camera& camera, PlayerCityPtr city)
+  : Info( camera, city, 15 )
 {
-  _visibleWalkers() << walker::protestor
-                    << walker::mugger
-                    << walker::rioter;
+  _visibleWalkers() << walker::recruter;
   _initialize();
 }
 
