@@ -609,6 +609,28 @@ void SdlEngine::drawLine(const NColor &color, const Point &p1, const Point &p2)
   SDL_SetRenderDrawColor( _d->renderer, 0, 0, 0, 0 );
 }
 
+void SdlEngine::drawLines(const NColor &color, const PointsArray& points)
+{
+  bool needDraw = _d->batcher.finish();
+  if( needDraw )
+    _d->renderState();
+
+  _d->drawCall++;
+
+  SDL_SetRenderDrawColor( _d->renderer, color.red(), color.green(), color.blue(), color.alpha() );
+  std::vector<SDL_Point> _points;
+  _points.reserve( points.size() );
+  for( auto p : points )
+  {
+    SDL_Point ps = { p.x(), p.y() };
+    _points.push_back( ps );
+  }
+
+  SDL_RenderDrawLines( _d->renderer, _points.data(), _points.size() );
+
+  SDL_SetRenderDrawColor( _d->renderer, 0, 0, 0, 0 );
+}
+
 void SdlEngine::setColorMask( int rmask, int gmask, int bmask, int amask )
 {  
   Impl::MaskInfo& mask = _d->mask;
