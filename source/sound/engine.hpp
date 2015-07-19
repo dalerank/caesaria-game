@@ -25,15 +25,15 @@
 #include "core/variant.hpp"
 #include "constants.hpp"
 #include "config.hpp"
+#include "core/singleton.hpp"
 
 namespace audio
 {
 
-class Engine
+class Engine : public StaticSingleton<Engine>
 {
+  friend class StaticSingleton;
 public:
-  static Engine& instance();
-
   void setVolume( SoundType type, int value);
   void loadAlias(const vfs::Path& filename );
   void addFolder( vfs::Directory dir );

@@ -269,6 +269,11 @@ std::string Religion::reason() const
   return _d->reasons.random();
 }
 
+Religion::~Religion()
+{
+
+}
+
 void Religion::Impl::updateRelation( PlayerCityPtr city, DivinityPtr divinity )
 {
   if (divinity.isNull())
