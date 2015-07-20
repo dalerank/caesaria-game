@@ -91,6 +91,11 @@ VariantMap ServiceUpdater::save() const
   return ret;
 }
 
+ServiceUpdater::~ServiceUpdater()
+{
+
+}
+
 ServiceUpdater::ServiceUpdater( PlayerCityPtr city )
   : Srvc( city, ServiceUpdater::defaultName() ), _d( new Impl )
 {

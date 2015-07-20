@@ -107,12 +107,6 @@ public:
   vfs::Path findFullPath(const std::string& sampleName );
 };
 
-Engine& Engine::instance()
-{
-  static Engine _instance;
-  return _instance;
-}
-
 void Engine::setVolume( audio::SoundType type, int value)
 {
   _d->volumes[ type ] = value;

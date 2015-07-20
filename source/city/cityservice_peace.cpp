@@ -104,7 +104,7 @@ void Peace::timeStep(const unsigned int time )
   if( ml.isNull() )
   {
     Logger::warning( "!!! WARNING: not found military service" );
-    crashhandler::printstack();
+    crashhandler::printstack(false);
     return;
   }
 

@@ -232,7 +232,7 @@ VariantMap WorkersHire::save() const
 {
   VariantMap ret;
   VARIANT_SAVE_ANY_D( ret, _d, distance );
-  ret[ literals::priorities ] = _d->priorities.save();
+  VARIANT_SAVE_CLASS_D( ret, _d, priorities )
 
   return ret;
 }

@@ -108,9 +108,9 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
       const VariantList rlist = data.toList();
       std::string serializedValue;
       serializedValue.reserve( 512 );
-      foreach( it, rlist )
+      for( auto item : rlist )
       {
-        serializedValue = serialize( *it, "" );
+        serializedValue = serialize( item, "" );
         if( serializedValue.empty() )
         {
             success = false;
@@ -138,16 +138,16 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
         StringArray pairs;
         std::string serializedValue;
         serializedValue.reserve( 512 );
-        foreach( it, vmap )
+        for( auto item : vmap )
         {        
-          serializedValue = serialize( it->second, tab + "  ");
+          serializedValue = serialize( item.second, tab + "  ");
           if( serializedValue.empty())
           {
                   //success = false;
-            pairs.push_back( tab + sanitizeString( it->first ) + std::string( " : \"nonSerializableValue\"" ) );
+            pairs.push_back( tab + sanitizeString( item.first ) + std::string( " : \"nonSerializableValue\"" ) );
             continue;
           }
-          pairs.push_back( tab + sanitizeString( it->first ) + " : " + serializedValue );
+          pairs.push_back( tab + sanitizeString( item.first ) + " : " + serializedValue );
         }
         str += join(pairs, ",\n");
         std::string rtab( tab );

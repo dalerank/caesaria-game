@@ -67,6 +67,7 @@ public:
   void draw(const Picture& pic, const Rects& srcRects, const Rects& dstRects, Rect* clipRect=0 );
   void draw(const Batch& pic, Rect* clipRect=0 );
   void drawLine(const NColor &color, const Point &p1, const Point &p2);
+  void drawLines(const NColor &color, const PointsArray& p1);
 
   void setColorMask( int rmask, int gmask, int bmask, int amask );
   void resetColorMask();

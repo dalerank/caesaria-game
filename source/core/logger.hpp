@@ -60,6 +60,7 @@ public:
 
 private:
   void write(const std::string &message, bool newline = true);
+
   std::string category;
 
   enum class Severity : unsigned short {
@@ -71,11 +72,12 @@ private:
   };
 
   void log(Severity, const char *fmt, ...);
-
-  void log(Severity, const std::string &text);
+  void llog(Severity, const std::string &text);
+  void vlog(Severity severity, const char *fmt, va_list args);
 
   const std::string toS(Severity severity);
 };
+
 class Logger
 {
 public:

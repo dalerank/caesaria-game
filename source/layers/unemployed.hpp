@@ -15,17 +15,26 @@
 //
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_STACKTRACE_H_INCLUDED__
-#define __CAESARIA_STACKTRACE_H_INCLUDED__
+#ifndef __CAESARIA_LAYERUNEMPLOYED_H_INCLUDED__
+#define __CAESARIA_LAYERUNEMPLOYED_H_INCLUDED__
 
-//#include <cdk.h>
-#include "platform.hpp"
+#include "layerinfo.hpp"
 
-namespace crashhandler
+namespace citylayer
 {
-void install();
-void remove();
-void printstack(bool showMessage = true, unsigned int starting_frame = 0, unsigned int max_frames = 63 );
-}
 
-#endif //__CAESARIA_STACKTRACE_H_INCLUDED__
+class Unemployed : public Info
+{
+public:
+  virtual int type() const;
+  virtual void drawTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
+  virtual void handleEvent(NEvent& event);
+
+  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
+
+private:
+  Unemployed( gfx::Camera& camera, PlayerCityPtr city );
+};
+
+}//end namespace city
+#endif //__CAESARIA_LAYERUNEMPLOYED_H_INCLUDED__

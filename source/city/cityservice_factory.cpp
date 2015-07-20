@@ -54,12 +54,6 @@ SrvcPtr ServiceFactory::create( PlayerCityPtr city, const std::string& name )
   return SrvcPtr();
 }
 
-ServiceFactory& ServiceFactory::instance()
-{
-  static city::ServiceFactory inst;
-  return inst;
-}
-
 void ServiceFactory::addCreator( ServiceCreatorPtr creator )
 {
   if( creator.isNull() )
@@ -75,6 +69,11 @@ void ServiceFactory::addCreator( ServiceCreatorPtr creator )
   }
 
   _d->creators.push_back( creator );
+}
+
+ServiceFactory::~ServiceFactory()
+{
+
 }
 
 ServiceFactory::ServiceFactory() : _d( new Impl )
