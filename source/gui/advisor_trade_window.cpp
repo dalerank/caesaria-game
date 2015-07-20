@@ -28,7 +28,6 @@
 #include "core/gettext.hpp"
 #include "groupbox.hpp"
 #include "objects/factory.hpp"
-#include "city/helper.hpp"
 #include "city/trade_options.hpp"
 #include "objects/warehouse.hpp"
 #include "good/store.hpp"

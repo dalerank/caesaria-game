@@ -13,18 +13,20 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "statistic.hpp"
 #include "objects/construction.hpp"
-#include "helper.hpp"
 #include "trade_options.hpp"
+#include "walker/workerhunter.hpp"
 #include "objects/house.hpp"
 #include "objects/constants.hpp"
 #include "objects/granary.hpp"
 #include "objects/house_spec.hpp"
 #include "good/store.hpp"
+#include "gfx/tilemap.hpp"
 #include "game/funds.hpp"
+#include "cityservice_workershire.hpp"
 #include "objects/farm.hpp"
 #include "world/empire.hpp"
 #include "objects/warehouse.hpp"
@@ -138,6 +140,7 @@ Statistic::Statistic(PlayerCity& c)
     crime{ *this },
     health{ *this },
     military{ *this },
+    map{ *this },
     rcity( c )
 {
 
@@ -213,6 +216,20 @@ HouseList Statistic::_Objects::houses(std::set<int> levels) const
   return ret;
 }
 
+gfx::TilesArray Statistic::_Map::perimetr(const TilePos& lu, const TilePos& rb) const
+{
+  return _parent.rcity.tilemap().getRectangle( lu, rb );
+}
+
+void Statistic::_Map::updateTilePics() const
+{
+  const gfx::TilesArray& tiles = _parent.rcity.tilemap().allTiles();
+  for( auto tile : tiles)
+  {
+    tile->setPicture( tile->picture().name() );
+  }
+}
+
 Statistic::WorkersInfo Statistic::_Workers::details() const
 {
   WorkersInfo ret;
@@ -222,8 +239,8 @@ Statistic::WorkersInfo Statistic::_Workers::details() const
   ret.current = 0;
   ret.need = 0;
   for( auto bld : buildings )
-  {
-    ret.current += bld->numberWorkers();
+    {
+      ret.current += bld->numberWorkers();
     ret.need += bld->maximumWorkers();
   }
 
@@ -316,8 +333,8 @@ OverlayList Statistic::_Objects::neighbors(OverlayPtr overlay, bool v) const
     return OverlayList();
 
   Size size = overlay->size();
-  TilePos start = overlay->pos();
-  TilePos stop = start + TilePos( 2, 2 ) + TilePos( size.width(), size.height() );
+  TilePos start = overlay->pos() - TilePos(1,1);
+  TilePos stop = start + TilePos( size.width(), size.height() );
   OverlayList ret;
   gfx::TilesArray tiles = _parent.rcity.tilemap().getRectangle( start, stop );
   std::set<OverlayPtr> checked;
@@ -347,6 +364,12 @@ unsigned int Statistic::_Workers::workless() const
   for( auto house : houses ) { worklessNumber += house->unemployed(); }
 
   return worklessNumber;
+}
+
+HirePriorities Statistic::_Workers::hirePriorities() const
+{
+  WorkersHirePtr wh = _parent.services.find<WorkersHire>();
+  return wh.isValid() ? wh->priorities() : HirePriorities();
 }
 
 unsigned int Statistic::_Food::inGranaries() const

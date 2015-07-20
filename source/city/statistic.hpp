@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_CITYSTATISTIC_H_INCLUDED__
 #define __CAESARIA_CITYSTATISTIC_H_INCLUDED__
@@ -30,6 +30,8 @@
 #include "gfx/helper.hpp"
 #include "walker/walker.hpp"
 #include "gfx/tilearea.hpp"
+#include "industry.hpp"
+#include "pathway/pathway_helper.hpp"
 #include "city.hpp"
 
 namespace city
@@ -80,6 +82,38 @@ public:
       }
 
       return SmartPtr<T>();
+    }
+
+    template<class T>
+    Pathway freeTile( TilePos target, TilePos currentPos, const int range ) const
+    {
+      for( int currentRange=1; currentRange <= range; currentRange++ )
+      {
+        TilePos offset( currentRange, currentRange );
+        gfx::TilesArray tiles = _parent.map.perimetr( currentPos - offset, currentPos + offset );
+        tiles = tiles.walkables( true );
+
+        float crntDistance = target.distanceFrom( currentPos );
+        for( auto tile : tiles )
+        {
+          SmartList<T> eslist;
+          eslist << _parent.rcity.walkers( tile->pos() );
+
+          if( !eslist.empty() )
+            continue;
+
+          if( target.distanceFrom( tile->pos() ) > crntDistance )
+            continue;
+
+          Pathway pathway = PathwayHelper::create( currentPos, tile->pos(), PathwayHelper::allTerrain );
+          if( pathway.isValid() )
+          {
+            return pathway;
+          }
+        }
+      }
+
+      return Pathway();
     }
 
     template< class T >
@@ -315,8 +349,8 @@ public:
 
     OverlayList neighbors( OverlayPtr overlay, bool v ) const;
     FarmList farms(std::set<object::Type> which=std::set<object::Type>() ) const;
-    HouseList houses( std::set<int> levels=std::set<int>() ) const;
-    int laborAccess( WorkingBuildingPtr wb ) const;
+    HouseList houses( std::set<int> levels=std::set<int>() ) const;    
+    int laborAccess( WorkingBuildingPtr wb ) const;    
 
     Statistic& _parent;
   } objects;
@@ -346,6 +380,7 @@ public:
     unsigned int available() const;
     unsigned int worklessPercent() const;
     unsigned int workless() const;
+    HirePriorities hirePriorities() const;
 
     Statistic& _parent;
   } workers;
@@ -423,6 +458,23 @@ public:
     Statistic& _parent;
   } military;
 
+  struct _Map
+  {
+    gfx::TilesArray perimetr( const TilePos& lu, const TilePos& rb) const;
+
+    template< class T >
+    gfx::TilesArray around( T overlay ) const
+    {
+      TilePos start = overlay->pos() - TilePos(1,1);
+      TilePos stop = start + TilePos( overlay->size().width(), overlay->size().height() );
+      return perimetr( start, stop );
+    }
+
+    void updateTilePics() const;
+
+    Statistic& _parent;
+  } map;
+
   PlayerCity& rcity;
 };
 
@@ -448,23 +500,6 @@ bool isTileBusy( PlayerCityPtr r, TilePos p, WalkerPtr caller, bool& needMeMove 
   }
 
   return walkers.empty() > 1;
-}
-
-template< class T >
-SmartList< T > getObjectsNotIs( PlayerCityPtr r, const std::set<object::Type>& which )
-{
-  SmartList< T > ret;
-  const OverlayList& ovs = r->overlays();
-
-  foreach( it, ovs )
-  {
-    if( which.count( (*it)->type() ) == 0 )
-    {
-      ret.addIfValid( (*it).as<T>() );
-    }
-  }
-
-  return ret;
 }
 
 }//end namespace statistic

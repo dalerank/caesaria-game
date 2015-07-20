@@ -22,7 +22,6 @@
 #include "game/resourcegroup.hpp"
 #include "gfx/helper.hpp"
 #include "good/stock.hpp"
-#include "city/helper.hpp"
 #include "good/helper.hpp"
 #include "city/city.hpp"
 #include "core/utils.hpp"

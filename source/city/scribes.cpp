@@ -22,7 +22,6 @@
 #include "objects/house.hpp"
 #include "objects/house_spec.hpp"
 #include "gfx/tile.hpp"
-#include "city/helper.hpp"
 #include "good/helper.hpp"
 #include "core/utils.hpp"
 #include "game/gamedate.hpp"

@@ -17,7 +17,6 @@
 
 #include "sentiment.hpp"
 #include "game/gamedate.hpp"
-#include "helper.hpp"
 #include "objects/house.hpp"
 #include "core/variant_map.hpp"
 #include "core/gettext.hpp"

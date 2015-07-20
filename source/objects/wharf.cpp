@@ -18,7 +18,6 @@
 #include "wharf.hpp"
 #include "gfx/tile.hpp"
 #include "game/resourcegroup.hpp"
-#include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/foreach.hpp"
 #include "walker/fishing_boat.hpp"
@@ -46,8 +45,6 @@ Wharf::Wharf() : CoastalFactory(good::none, good::fish, object::wharf, Size(2)),
 
 void Wharf::destroy()
 {
-  city::Helper helper( _city() );
-
   if( _d->boat.isValid() )
   {
     _d->boat->die();

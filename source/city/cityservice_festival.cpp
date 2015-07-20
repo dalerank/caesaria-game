@@ -20,6 +20,7 @@
 #include "city.hpp"
 #include "game/player.hpp"
 #include "city/statistic.hpp"
+#include "objects/construction.hpp"
 #include "core/gettext.hpp"
 #include "core/variant_map.hpp"
 #include "religion/pantheon.hpp"

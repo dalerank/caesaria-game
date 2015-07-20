@@ -22,7 +22,6 @@
 #include "good/helper.hpp"
 #include "label.hpp"
 #include "objects/factory.hpp"
-#include "city/helper.hpp"
 #include "gfx/engine.hpp"
 #include "widget_helper.hpp"
 #include "core/logger.hpp"

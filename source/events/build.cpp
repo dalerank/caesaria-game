@@ -18,12 +18,12 @@
 #include "build.hpp"
 #include "objects/objects_factory.hpp"
 #include "game/game.hpp"
-#include "city/helper.hpp"
 #include "game/funds.hpp"
 #include "playsound.hpp"
 #include "walker/enemysoldier.hpp"
 #include "city/statistic.hpp"
 #include "core/logger.hpp"
+#include "objects/working.hpp"
 #include "warningmessage.hpp"
 
 using namespace gfx;

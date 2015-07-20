@@ -46,7 +46,6 @@
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "world/merchant.hpp"
-#include "city/helper.hpp"
 #include "city/statistic.hpp"
 #include "objects/forum.hpp"
 #include "objects/senate.hpp"

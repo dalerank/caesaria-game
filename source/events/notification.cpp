@@ -20,6 +20,7 @@
 #include "world/object.hpp"
 #include "game/game.hpp"
 #include "city/city.hpp"
+#include "objects/construction.hpp"
 #include "world/empire.hpp"
 #include "world/barbarian.hpp"
 #include "world/romechastenerarmy.hpp"

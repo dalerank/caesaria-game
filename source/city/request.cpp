@@ -20,6 +20,7 @@
 #include "good/helper.hpp"
 #include "statistic.hpp"
 #include "events/removegoods.hpp"
+#include "objects/construction.hpp"
 #include "events/fundissue.hpp"
 #include "game/funds.hpp"
 #include "core/utils.hpp"
@@ -140,7 +141,7 @@ void RqGood::exec( PlayerCityPtr city )
   {
     Unit stockCap = Unit::fromValue( _d->stock.capacity() );
     good::Stock stock( _d->stock.type(), stockCap.toQty() );
-    events::GameEventPtr e = events::RemoveGoods::create( stock.type(), stock.capacity() );
+    GameEventPtr e = RemoveGoods::create( stock.type(), stock.capacity() );
     e->dispatch();
     success( city );
 
@@ -230,7 +231,7 @@ void RqGood::fail( PlayerCityPtr city )
     _startDate = _finishDate;
 
     //std::string text = utils::format( 0xff, "You also have %d month to comply failed request", _d->failAppendMonth );
-    GameEventPtr e = ShowInfobox::create( _("##emperor_anger##"), _("##emperor_anger_text##") );
+    auto e = ShowInfobox::create( _("##emperor_anger##"), _("##emperor_anger_text##") );
     e->dispatch();
 
     _finishDate.appendMonth( _d->failedRequest.appendMonth );
@@ -241,7 +242,7 @@ void RqGood::fail( PlayerCityPtr city )
   {
     Request::fail( city );
 
-    GameEventPtr e = ShowInfobox::create( _("##emperor_anger##"), _("##request_faild_text##") );
+    auto e = ShowInfobox::create( _("##emperor_anger##"), _("##request_faild_text##") );
     e->dispatch();
   }
 }
@@ -254,7 +255,7 @@ void RqGood::update()
   {
     _d->alsoRemind = true;
 
-    GameEventPtr e = ShowRequestInfo::create( this, true, _("##imperial_reminder_text##"), "", _("##imperial_reminder##") );
+    auto e = ShowRequestInfo::create( this, true, _("##imperial_reminder_text##"), "", _("##imperial_reminder##") );
     e->dispatch();
   }
 }

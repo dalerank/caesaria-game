@@ -19,6 +19,7 @@
 #include "gfx/decorator.hpp"
 #include "core/gettext.hpp"
 #include "pushbutton.hpp"
+#include "objects/construction.hpp"
 #include "label.hpp"
 #include "core/logger.hpp"
 #include "game/resourcegroup.hpp"
@@ -199,10 +200,8 @@ void Emperor::_updateRequests()
   Rect reqsRect( Point( 32, 91 ), Size( 570, 220 ) );
 
   List<RequestButton*> btns = findChildren<RequestButton*>();
-  foreach( btn, btns )
-  {
-    (*btn)->deleteLater();
-  }
+  for( auto btn : btns )
+    btn->deleteLater();
 
   request::RequestList requests;
   request::DispatcherPtr dispatcher = _d->city->statistic().services.find<request::Dispatcher>();

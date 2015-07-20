@@ -19,9 +19,9 @@
 #include "label.hpp"
 #include "texturedbutton.hpp"
 #include "gfx/decorator.hpp"
+#include "objects/construction.hpp"
 #include "core/event.hpp"
 #include "gui/environment.hpp"
-#include "core/foreach.hpp"
 #include "city/city.hpp"
 #include "core/gettext.hpp"
 #include "game/funds.hpp"
@@ -184,7 +184,7 @@ bool FestivalPlanning::onEvent(const NEvent& event)
     {
       if( (btn->ID() & Impl::divId) == Impl::divId )
       {
-        foreach ( abtn, _d->godBtns )  { (*abtn)->setPressed( false ); }
+        for( auto abtn : _d->godBtns )  { abtn->setPressed( false ); }
 
         btn->setPressed( true );
         _d->currentDivinity = _d->divines[ btn->ID() ];

@@ -19,7 +19,6 @@
 #include "gfx/decorator.hpp"
 #include "core/gettext.hpp"
 #include "objects/house.hpp"
-#include "city/helper.hpp"
 #include "core/logger.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/engine.hpp"

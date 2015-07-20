@@ -17,6 +17,7 @@
 
 #include "militarythreat.hpp"
 #include "game/game.hpp"
+#include "objects/construction.hpp"
 #include "city/cityservice_military.hpp"
 #include "city/statistic.hpp"
 
@@ -55,4 +56,4 @@ void MilitaryThreat::_exec(Game& game, unsigned int)
   }
 }
 
-}
+}//end namespace events

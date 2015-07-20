@@ -17,7 +17,7 @@
 
 #include "funds.hpp"
 #include "objects/construction.hpp"
-#include "city/helper.hpp"
+#include "core/variant_list.hpp"
 #include "city/trade_options.hpp"
 #include "objects/house.hpp"
 #include "objects/constants.hpp"

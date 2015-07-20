@@ -17,11 +17,11 @@
 
 #include "locust.hpp"
 #include "core/variant_map.hpp"
-#include "city/helper.hpp"
 #include "core/gettext.hpp"
 #include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
+#include "city/city.hpp"
 #include "game/gamedate.hpp"
 #include "objects/farm.hpp"
 

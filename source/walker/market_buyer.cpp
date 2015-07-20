@@ -18,6 +18,7 @@
 #include "market_buyer.hpp"
 #include "objects/metadata.hpp"
 #include "core/exception.hpp"
+#include "city/city.hpp"
 #include "core/position.hpp"
 #include "objects/market.hpp"
 #include "objects/granary.hpp"
@@ -27,7 +28,6 @@
 #include "pathway/path_finding.hpp"
 #include "market_kid.hpp"
 #include "good/storage.hpp"
-#include "city/helper.hpp"
 #include "name_generator.hpp"
 #include "core/variant_map.hpp"
 #include "objects/constants.hpp"
@@ -125,10 +125,10 @@ void MarketBuyer::computeWalkerDestination( MarketPtr market )
   good::Products marketGoods = _d->market->mostNeededGoods();
   
   //only look at goods that shall not be stockpiled
-  foreach(goodType, marketGoods )
+  for( auto goodType : marketGoods )
   {
-    if( !_city()->tradeOptions().isStacking(*goodType) )
-      priorityGoods.insert(*goodType);
+    if( !_city()->tradeOptions().isStacking(goodType) )
+      priorityGoods.insert(goodType);
   }
 
   _d->destBuildingPos = gfx::tilemap::invalidLocation();  // no destination yet
@@ -144,9 +144,9 @@ void MarketBuyer::computeWalkerDestination( MarketPtr market )
     pathPropagator.propagate( _d->maxDistance);
 
     // try to find the most needed good
-    foreach( goodType, priorityGoods )
+    for( auto goodType : priorityGoods )
     {
-      _d->priorityGood = *goodType;
+      _d->priorityGood = goodType;
 
       if( _d->priorityGood == good::wheat || _d->priorityGood == good::fish
           || _d->priorityGood == good::meat || _d->priorityGood == good::fruit

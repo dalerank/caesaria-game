@@ -17,12 +17,12 @@
 
 #include "enemy_attack.hpp"
 #include "game/game.hpp"
-#include "city/helper.hpp"
 #include "game/gamedate.hpp"
 #include "events/dispatcher.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/variant_map.hpp"
 #include "core/logger.hpp"
+#include "city/city.hpp"
 #include "walker/enemysoldier.hpp"
 #include "city/cityservice_military.hpp"
 #include "walker/walkers_factory.hpp"

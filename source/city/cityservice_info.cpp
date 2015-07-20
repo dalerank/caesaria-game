@@ -22,7 +22,6 @@
 #include "objects/house.hpp"
 #include "objects/house_spec.hpp"
 #include "gfx/tile.hpp"
-#include "city/helper.hpp"
 #include "good/helper.hpp"
 #include "core/utils.hpp"
 #include "game/gamedate.hpp"
@@ -68,10 +67,10 @@ VariantMap Info::History::save() const
 
 void Info::History::load(const VariantMap &vm)
 {
-  foreach( i, vm )
+  for( auto i : vm )
   {
     push_back( Parameters() );
-    back().load( i->second.toList() );
+    back().load( i.second.toList() );
   }
 }
 
@@ -269,7 +268,6 @@ Info::Parameters::Parameters()
 Info::Parameters::Parameters(const Info::Parameters& other)
 {
   resize( paramsCount );
-
   for( unsigned int i=0; i < other.size(); i++ )
     (*this)[ i ] = other[ i ];
 }

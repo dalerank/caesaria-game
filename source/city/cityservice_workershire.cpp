@@ -17,7 +17,6 @@
 
 #include "cityservice_workershire.hpp"
 #include "objects/construction.hpp"
-#include "city/helper.hpp"
 #include "core/safetycast.hpp"
 #include "objects/engineer_post.hpp"
 #include "objects/prefecture.hpp"

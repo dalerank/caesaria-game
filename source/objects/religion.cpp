@@ -16,7 +16,6 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "religion.hpp"
-#include "city/helper.hpp"
 #include "religion/pantheon.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/position.hpp"

@@ -16,7 +16,6 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "working.hpp"
-#include "city/helper.hpp"
 #include "walker/walker.hpp"
 #include "city/statistic.hpp"
 #include "events/returnworkers.hpp"

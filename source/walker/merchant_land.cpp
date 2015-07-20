@@ -22,7 +22,6 @@
 #include "pathway/path_finding.hpp"
 #include "city/statistic.hpp"
 #include "core/variant_map.hpp"
-#include "city/helper.hpp"
 #include "gfx/tile.hpp"
 #include "world/empire.hpp"
 #include "core/utils.hpp"
@@ -55,11 +54,11 @@ namespace wh_picker
 void checkForTradeCenters( DirectPRoutes& routes )
 {
   DirectPRoutes tradecenterWayList;
-  foreach( it, routes )
+  for( auto route : routes )
   {
-    WarehousePtr warehouse = it->first.as<Warehouse>();
+    WarehousePtr warehouse = route.first.as<Warehouse>();
     if( warehouse->isTradeCenter() )
-      tradecenterWayList[ it->first ] = it->second;
+      tradecenterWayList[ route.first ] = route.second;
   }
 
   //if we found trade centers in city, clear all other ways
@@ -85,14 +84,14 @@ DirectRoute get4Buys( Propagator &pathPropagator, good::Storage& basket, PlayerC
     // for every warehouse within range
     WarehousePtr warehouse = routeIt->first.as<Warehouse>();
     int rating = 0;
-    foreach( gtype, good::all() )
+    for( auto gtype : good::all() )
     {
-      if (!options.isExporting(*gtype))
+      if (!options.isExporting( gtype ) )
       {
         continue;
       }
-      int qty = warehouse->store().getMaxRetrieve( *gtype );
-      int need = basket.freeQty( *gtype );
+      int qty = warehouse->store().getMaxRetrieve( gtype );
+      int need = basket.freeQty( gtype );
       rating = need > 0 ? ( qty ) : 0;
     }
 

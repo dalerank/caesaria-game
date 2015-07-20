@@ -25,7 +25,6 @@
 #include "core/variant.hpp"
 #include "walker/trainee.hpp"
 #include "core/utils.hpp"
-#include "city/helper.hpp"
 #include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
 #include "city/statistic.hpp"

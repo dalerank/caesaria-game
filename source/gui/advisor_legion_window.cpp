@@ -24,7 +24,6 @@
 #include "core/utils.hpp"
 #include "gfx/engine.hpp"
 #include "objects/military.hpp"
-#include "city/helper.hpp"
 #include "city/cityservice_military.hpp"
 #include "texturedbutton.hpp"
 #include "walker/soldier.hpp"

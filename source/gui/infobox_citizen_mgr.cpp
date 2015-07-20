@@ -19,7 +19,6 @@
 #include "walker/patrolpoint.hpp"
 #include "infobox_citizen_mgr.hpp"
 #include "game/infoboxmanager.hpp"
-#include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "infobox_citizen.hpp"
 #include "core/logger.hpp"

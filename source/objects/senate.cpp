@@ -21,7 +21,6 @@
 #include "game/resourcegroup.hpp"
 #include "game/funds.hpp"
 #include "walker/taxcollector.hpp"
-#include "city/helper.hpp"
 #include "constants.hpp"
 #include "city/statistic.hpp"
 #include "core/gettext.hpp"

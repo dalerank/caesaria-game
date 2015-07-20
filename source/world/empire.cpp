@@ -22,7 +22,7 @@
 #include "core/saveadapter.hpp"
 #include "core/utils.hpp"
 #include "trading.hpp"
-#include "core/foreach.hpp"
+#include "objects/construction.hpp"
 #include "core/logger.hpp"
 #include "traderoute.hpp"
 #include "object.hpp"
@@ -62,7 +62,7 @@ public:
 
   void setAvailable( bool value )
   {
-    foreach( it, *this ) { (*it)->setAvailable( value ); }
+    for( auto it : *this ) { it->setAvailable( value ); }
   }
 
   void update( unsigned int time )

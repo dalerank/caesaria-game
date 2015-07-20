@@ -33,14 +33,15 @@ enum {
   badmood=20,
   negative=30,
   minimum4wrath=40,
-  defaultMood=50
+  neitralMood=50,
+  maximum=100
 };
 
 }
 
 namespace penalty
 {
-enum { brokenGod=25, maximum=50 };
+enum { wp4wrath=5, wp4badmood=2, wp4negativeRel=1, brokenGod=25, maximum=50 };
 }
 
 namespace award

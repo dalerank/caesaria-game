@@ -17,6 +17,7 @@
 
 #include "updatecitysentiment.hpp"
 #include "game/game.hpp"
+#include "objects/construction.hpp"
 #include "city/statistic.hpp"
 #include "city/sentiment.hpp"
 
@@ -46,4 +47,4 @@ void UpdateCitySentiment::_exec(Game& game, unsigned int)
   }
 }
 
-}
+}//end namespace events

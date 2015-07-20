@@ -18,7 +18,7 @@
 #include "road_block.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/tile.hpp"
-#include "city/helper.hpp"
+#include "city/city.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
 #include "core/variant_map.hpp"
@@ -52,9 +52,9 @@ bool RoadBlock::canBuild(const city::AreaInfo& areaInfo) const
   bool is_constructible = true;
 
   TilesArea area( tilemap, areaInfo.pos, size() ); // something very complex ???
-  foreach( tile, area )
+  for( auto tile : area )
   {
-    is_constructible &= is_kind_of<Road>( (*tile)->overlay() );
+    is_constructible &= tile->overlay().is<Road>();
   }
 
   const_cast<RoadBlock*>( this )->setState( pr::errorBuild, !is_constructible );
