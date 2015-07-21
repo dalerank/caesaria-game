@@ -295,7 +295,7 @@ void Population::Impl::updateStates()
   {
     int maxHabitants = 0;
     int plebsHabitants = 0;
-    HouseList houses = city->statistic().objects.houses();
+    HouseList houses = city->statistic().houses.find();
     int lowLevelHouses = 0;
     for( auto house : houses )
     {
@@ -420,7 +420,7 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
 
   case dm_society:
     {
-      HouseList houses = city->statistic().objects.houses();
+      HouseList houses = city->statistic().houses.find();
 
       _values.clear();
       _maxValue = 5;

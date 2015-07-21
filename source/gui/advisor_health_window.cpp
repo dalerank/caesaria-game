@@ -192,7 +192,7 @@ HealthcareInfo Health::Impl::getInfo(PlayerCityPtr city, const object::Type obje
     ret.buildingCount++;
   }
 
-  HouseList houses = city->statistic().objects.houses();
+  HouseList houses = city->statistic().houses.find();
   Service::Type serviceType = ServiceHelper::fromObject( objectType );
   for( auto h : houses )
   {
@@ -227,7 +227,7 @@ void Health::Impl::updateAdvice(PlayerCityPtr c)
     }
     else
     {
-      HouseList houses = c->statistic().objects.houses();
+      HouseList houses = c->statistic().houses.find();
 
       unsigned int needBath = 0;
       unsigned int needBarbers = 0;

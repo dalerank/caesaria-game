@@ -95,7 +95,7 @@ void Roads::timeStep( const unsigned int time )
     }
   }
 
-  HouseList houses = _city()->statistic().objects.houses();
+  HouseList houses = _city()->statistic().houses.find();
   for( auto house : houses )
   {
     if( house->spec().level() >= HouseLevel::bigMansion )
@@ -105,9 +105,9 @@ void Roads::timeStep( const unsigned int time )
   }
 
   Propagator propagator( _city() );
-  foreach( upos, positions )
+  for( auto upos : positions )
   {
-    _d->updateRoadsAround( propagator, *upos );
+    _d->updateRoadsAround( propagator, upos );
   }
 
   if( _d->lastTimeUpdate.month() % 3 == 1 )

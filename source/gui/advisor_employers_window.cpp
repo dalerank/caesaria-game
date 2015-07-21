@@ -214,7 +214,7 @@ void Employer::Impl::showPriorityWindow( industry::Type industry )
   WorkersHirePtr wh = city->statistic().services.find<WorkersHire>();
 
   int priority = wh->getPriority( industry );
-  dialog::HirePriority* wnd = new dialog::HirePriority( lbSalaries->ui()->rootWidget(), industry, priority );
+  auto wnd = new dialog::HirePriority( lbSalaries->ui()->rootWidget(), industry, priority );
   CONNECT( wnd, onAcceptPriority(), this, Impl::setIndustryPriority );
 }
 

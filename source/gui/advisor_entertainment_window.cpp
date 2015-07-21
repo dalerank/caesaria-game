@@ -242,7 +242,7 @@ void Entertainment::Impl::updateInfo()
   int nextLevelColloseum = 0;
   int maxHouseLevel = 0;
 
-  HouseList houses = city->statistic().objects.houses();
+  HouseList houses = city->statistic().houses.find();
   for( auto house : houses )
   {
     maxHouseLevel = std::max<int>( maxHouseLevel, house->spec().level() );

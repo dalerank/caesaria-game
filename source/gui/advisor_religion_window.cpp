@@ -205,7 +205,7 @@ void Religion::_showHelp()
 void Religion::Impl::updateReligionAdvice(PlayerCityPtr city)
 {
   StringArray advices;
-  HouseList houses = city->statistic().objects.houses();
+  HouseList houses = city->statistic().houses.find();
 
   int needBasicReligion = 0;
   int needSecondReligion = 0;

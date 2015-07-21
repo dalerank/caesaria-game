@@ -179,7 +179,7 @@ void Education::Impl::updateCityInfo(PlayerCityPtr city)
 {
   int sumScholars = 0;
   int sumStudents = 0;
-  HouseList houses = city->statistic().objects.houses();
+  HouseList houses = city->statistic().houses.find();
   for( auto house : houses )
   {
     sumScholars += house->habitants().scholar_n();
@@ -253,7 +253,7 @@ HealthcareInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Type b
     }
   }
 
-  HouseList houses = city->statistic().objects.houses();
+  HouseList houses = city->statistic().houses.find();
   int minAccessLevel = awesomeAccessValue;
   for( auto house : houses )
   {

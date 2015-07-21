@@ -341,7 +341,7 @@ void House::_updateTax()
 
 void House::_updateCrime()
 {
-  float cityKoeff = statistic::getBalanceKoeff( _city() );
+  float cityKoeff = _city()->statistic().balance.koeff();
 
   const int currentHabtn = habitants().count();
 

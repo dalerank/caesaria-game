@@ -252,7 +252,7 @@ void Chief::Impl::drawProfitState()
 
 void Chief::Impl::drawMigrationState()
 {
-  city::MigrationPtr migration = ptr_cast<Migration>( city->findService( Migration::defaultName() ) );
+  MigrationPtr migration = city->statistic().services.find<Migration>();
 
   std::string text = _("##migration_unknown_reason##");
   if( migration.isValid() )
@@ -264,18 +264,8 @@ void Chief::Impl::drawMigrationState()
 }
 
 void Chief::Impl::drawFoodStockState()
-{ 
-  SmartList<GoodsUpdater> goodsUpdaters;
-  goodsUpdaters << city->services();
-
-  bool romeSendWheat = false;
-  for( auto updater : goodsUpdaters )
-  {
-    if( updater->goodType() == good::wheat )
-    {
-      romeSendWheat = true;
-    }
-  }
+{   
+  bool romeSendWheat = city->statistic().goods.isRomeSend( good::wheat );
 
   std::string text = _("##food_stock_unknown_reason##");
   if( romeSendWheat )
@@ -406,7 +396,7 @@ void Chief::Impl::drawMilitary()
 
   if( reasons.empty() )
   {
-    BarracksList barracks = city->statistic().objects.find<Barracks>( object::barracks );
+    BarracksList barracks = city->statistic().objects.find<Barracks>();
 
     bool needWeapons = false;
     for( auto barrack : barracks )
@@ -473,7 +463,7 @@ void Chief::Impl::drawEducation()
 
   for( int i=0; avTypes[i] != object::unknown; i++ )
   {
-    HouseList houses = statistic::getEvolveHouseReadyBy( city, avTypes[ i ] );
+    HouseList houses = city->statistic().houses.ready4evolve( avTypes[ i ] );
     if( houses.size() > 0 )
     {
       reasons << avReasons[i];
@@ -523,7 +513,7 @@ void Chief::Impl::drawEntertainment()
     }
   }
 
-  int hippodromeCoverage = statistic::getEntertainmentCoverage( city, Service::hippodrome );
+  int hippodromeCoverage = city->statistic().entertainment.coverage( Service::hippodrome );
   if( hippodromeCoverage >= serviceAwesomeCoverage )
   {
     reasons << "##current_races_runs_for_another##";

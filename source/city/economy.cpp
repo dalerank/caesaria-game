@@ -42,7 +42,7 @@ void Economy::payWages(PlayerCityPtr city)
 
   if( haveMoneyForAction( wages ) )
   {
-    HouseList houses = city->statistic().objects.houses();
+    HouseList houses = city->statistic().houses.find();
 
     float salary = city->statistic().workers.monthlyOneWorkerWages();
     float wages = 0;

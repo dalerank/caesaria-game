@@ -165,7 +165,7 @@ void Emperor::_showChangeSalaryWindow()
   }
 
   PlayerPtr pl = _d->city->mayor();
-  dialog::ChangeSalary* dialog = new dialog::ChangeSalary( parent(), pl->salary() );
+  auto dialog = new dialog::ChangeSalary( parent(), pl->salary() );
   dialog->show();
 
   TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
@@ -176,7 +176,7 @@ void Emperor::_showChangeSalaryWindow()
 void Emperor::_showSend2CityWindow()
 {
   PlayerPtr pl = _d->city->mayor();
-  dialog::CityDonation* dialog = new dialog::CityDonation( parent(), pl->money() );
+  auto dialog = new dialog::CityDonation( parent(), pl->money() );
   dialog->show();
 
   CONNECT( dialog, onSendMoney(), _d.data(), Impl::sendMoney );
@@ -187,9 +187,9 @@ void Emperor::_showGiftWindow()
   PlayerPtr pl = _d->city->mayor();
   world::Emperor& emperor = _d->city->empire()->emperor();
 
-  dialog::EmperorGift* dialog = new dialog::EmperorGift( parent(),
-                                                         pl->money(),
-                                                         emperor.lastGiftDate( _d->city->name() ) );
+  auto dialog = new dialog::EmperorGift( parent(),
+                                         pl->money(),
+                                         emperor.lastGiftDate( _d->city->name() ) );
   dialog->show();
 
   CONNECT( dialog, onSendGift(), _d.data(), Impl::sendGift );

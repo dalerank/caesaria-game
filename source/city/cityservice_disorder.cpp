@@ -160,7 +160,7 @@ Disorder::Disorder( PlayerCityPtr city )
 
 void Disorder::Impl::weekUpdate( unsigned int time, PlayerCityPtr rcity )
 {
-  HouseList houses = rcity->statistic().objects.houses();
+  HouseList houses = rcity->statistic().houses.find();
 
   const WalkerList& walkers = rcity->statistic().walkers.find( walker::protestor );
 
@@ -320,7 +320,7 @@ void Disorder::Impl::generateProtestor(PlayerCityPtr city, HousePtr house)
 
 void Disorder::Impl::changeCrimeLevel(PlayerCityPtr city, int delta )
 {
-  HouseList houses = city->statistic().objects.houses();
+  HouseList houses = city->statistic().houses.find();
 
   for( auto house : houses )
     house->appendServiceValue( Service::crime, delta );

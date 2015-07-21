@@ -280,7 +280,7 @@ const Tile& Dock::queueTile() const
     if( tile->getFlag( Tile::tlDeepWater ) )
     {
       bool needMove;
-      bool busyTile = city::statistic::isTileBusy<SeaMerchant>( _city(), tile->pos(), WalkerPtr(), needMove );
+      bool busyTile = _city()->statistic().map.isTileBusy<SeaMerchant>( tile->pos(), WalkerPtr(), needMove );
       if( !busyTile )
       {
         return *tile;

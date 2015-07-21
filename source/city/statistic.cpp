@@ -25,6 +25,7 @@
 #include "objects/house_spec.hpp"
 #include "good/store.hpp"
 #include "gfx/tilemap.hpp"
+#include "goods_updater.hpp"
 #include "game/funds.hpp"
 #include "cityservice_workershire.hpp"
 #include "objects/farm.hpp"
@@ -43,34 +44,23 @@
 namespace city
 {
 
-namespace statistic
-{
-
 namespace {
 static const float popBalanceKoeff=1000.f;
-static const int   pop4blackHouseCalc=300;
-static const int   minBlackHouseDesirability =-10;
 static const float maxBalanceKoeff=2.f;
 static const float normalBalanceKoeff=1.f;
 static const float minBalanceKoeff=.5f;
 }
 
-float getBalanceKoeff(PlayerCityPtr city)
+float Statistic::_Balance::koeff() const
 { 
-  if( city.isNull() )
-  {
-    Logger::warning( "Statistic::getBalanceKoeff cityptr is null");
-    return normalBalanceKoeff;
-  }
-
-  float result = atan( city->states().population / popBalanceKoeff );
+  float result = atan( _parent.rcity.states().population / popBalanceKoeff );
   return math::clamp(result, minBalanceKoeff, maxBalanceKoeff);
 }
 
-int getEntertainmentCoverage(PlayerCityPtr city, Service::Type service)
+int Statistic::_Entertainment::coverage(Service::Type service) const
 {
   int need = 0, have = 0;
-  HouseList houses = city->statistic().objects.houses();
+  HouseList houses = _parent.rcity.statistic().houses.find();
   for( auto house : houses )
   {
     if( house->isEntertainmentNeed( service ) )
@@ -86,24 +76,11 @@ int getEntertainmentCoverage(PlayerCityPtr city, Service::Type service)
             : math::percentage( need, have) );
 }
 
-unsigned int blackHouses( PlayerCityPtr city )
-{
-  unsigned int ret = 0;
-  HouseList houses = city->statistic().objects.houses();
-  if( city->states().population > pop4blackHouseCalc )
-  {
-    for( auto house : houses )
-      ret += ( house->tile().param( gfx::Tile::pDesirability ) > minBlackHouseDesirability ? 0 : 1);
-  }
-
-  return ret;
-}
-
-HouseList getEvolveHouseReadyBy(PlayerCityPtr city, const object::TypeSet& checkTypes )
+HouseList Statistic::_Houses::ready4evolve(const object::TypeSet& checkTypes ) const
 {
   HouseList ret;
 
-  HouseList houses = city->statistic().objects.houses();
+  HouseList houses = find();
 
   for( auto it : houses )
   {
@@ -118,14 +95,12 @@ HouseList getEvolveHouseReadyBy(PlayerCityPtr city, const object::TypeSet& check
   return ret;
 }
 
-HouseList getEvolveHouseReadyBy(PlayerCityPtr r, const object::Type checkType )
+HouseList Statistic::_Houses::ready4evolve( const object::Type checkType ) const
 {
   object::TypeSet checkTypes;
   checkTypes.insert( checkType );
-  return getEvolveHouseReadyBy( r, checkTypes );
+  return ready4evolve( checkTypes );
 }
-
-}//end namespace statistic
 
 Statistic::Statistic(PlayerCity& c)
   : walkers{ *this },
@@ -141,6 +116,9 @@ Statistic::Statistic(PlayerCity& c)
     health{ *this },
     military{ *this },
     map{ *this },
+    houses{ *this },
+    entertainment{ *this },
+    balance{ *this },
     rcity( c )
 {
 
@@ -179,7 +157,7 @@ const WalkerList& Statistic::_Walkers::find(walker::Type type) const
 
 unsigned int Statistic::_Tax::possible() const
 {
-  HouseList houses = _parent.objects.houses();
+  HouseList houses = _parent.houses.find();
 
   float taxValue = 0.f;
   float taxRate = _parent.rcity.treasury().taxRate();
@@ -196,24 +174,6 @@ unsigned int Statistic::_Tax::possible() const
   }
 
   return taxValue;
-}
-
-HouseList Statistic::_Objects::houses(std::set<int> levels) const
-{
-  const HouseList& houses = find<House>( object::house );
-  if( levels.empty() )
-    return houses;
-
-  HouseList ret;
-  for( auto it : houses )
-  {
-    if( levels.count( it->spec().level() ) > 0 )
-    {
-      ret << it;
-    }
-  }
-
-  return ret;
 }
 
 gfx::TilesArray Statistic::_Map::perimetr(const TilePos& lu, const TilePos& rb) const
@@ -260,7 +220,7 @@ int Statistic::_Workers::wagesDiff() const
 
 CitizenGroup Statistic::_Population::details() const
 {
-  HouseList houses = _parent.objects.houses();
+  HouseList houses = _parent.houses.find();
 
   CitizenGroup ret;
   for( auto house : houses ) { ret += house->habitants(); }
@@ -287,7 +247,7 @@ FarmList Statistic::_Objects::farms( std::set<object::Type> which) const
 unsigned int Statistic::_Population::current() const
 {
   unsigned int pop = 0;
-  HouseList houseList = _parent.objects.houses();
+  HouseList houseList = _parent.houses.find();
 
   for (auto house : houseList)
   {
@@ -318,7 +278,7 @@ float Statistic::_Workers::monthlyOneWorkerWages() const
 
 unsigned int Statistic::_Workers::available() const
 {
-  HouseList houses = _parent.objects.houses();
+  HouseList houses = _parent.houses.find();
 
   int workersNumber = 0;
   for( auto house : houses )
@@ -358,7 +318,7 @@ unsigned int Statistic::_Workers::worklessPercent() const
 
 unsigned int Statistic::_Workers::workless() const
 {
-  HouseList houses = _parent.objects.houses();
+  HouseList houses = _parent.houses.find();
 
   int worklessNumber = 0;
   for( auto house : houses ) { worklessNumber += house->unemployed(); }
@@ -385,7 +345,7 @@ unsigned int Statistic::_Food::inGranaries() const
 unsigned int Statistic::_Food::monthlyConsumption() const
 {
   int foodComsumption = 0;
-  HouseList houses = _parent.objects.houses();
+  HouseList houses = _parent.houses.find();
 
   for( auto house : houses )
     foodComsumption += house->spec().computeMonthlyFoodConsumption( house );
@@ -395,7 +355,7 @@ unsigned int Statistic::_Food::monthlyConsumption() const
 
 unsigned int Statistic::_Tax::payersPercent() const
 {
-  HouseList houses = _parent.objects.houses();
+  HouseList houses = _parent.houses.find();
 
   unsigned int registered = 0;
   unsigned int population = 0;
@@ -520,6 +480,51 @@ bool Statistic::_Goods::canProduce(good::Product type) const
 {
   FactoryList buildings = _parent.objects.producers<Factory>( type );
   return !buildings.empty();
+}
+
+bool Statistic::_Goods::isRomeSend(good::Product type) const
+{
+  auto updaters = _parent.rcity.services().select<GoodsUpdater>();
+  for( auto updater : updaters )
+  {
+    if( updater->goodType() == type )
+    {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+unsigned int Statistic::_Houses::terribleNumber() const
+{
+  unsigned int ret = 0;
+  HouseList hs = find();
+  if( _parent.rcity.states().population > pop4shacksCalc )
+  {
+    for( auto house : hs )
+      ret += ( house->tile().param( gfx::Tile::pDesirability ) > minShacksDesirability ? 0 : 1);
+  }
+
+  return ret;
+}
+
+HouseList Statistic::_Houses::find(std::set<int> levels) const
+{
+  HouseList houses = find();
+  if( levels.empty() )
+    return houses;
+
+  HouseList ret;
+  for( auto it : houses )
+  {
+    if( levels.count( it->spec().level() ) > 0 )
+    {
+      ret << it;
+    }
+  }
+
+  return ret;
 }
 
 }//end namespace city

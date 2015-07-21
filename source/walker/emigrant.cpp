@@ -110,7 +110,7 @@ HousePtr Emigrant::_findBlankHouse()
 
   if( houses.empty() )
   {
-    houses = _city()->statistic().objects.houses(  );
+    houses = _city()->statistic().houses.find();
     _checkHouses( houses );
   }
 

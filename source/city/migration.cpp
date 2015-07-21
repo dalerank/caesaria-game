@@ -355,7 +355,7 @@ void Migration::citizenLeaveCity(WalkerPtr walker)
 unsigned int Migration::Impl::calcVacantHouse( PlayerCityPtr city )
 {
   unsigned int vh = 0;
-  HouseList houses = city->statistic().objects.houses();
+  HouseList houses = city->statistic().houses.find();
   for( auto house : houses )
   {
     if( house->roadside().size() > 0 && house->state( pr::settleLock ) == 0 )
@@ -422,7 +422,7 @@ void Migration::Impl::createMigrationToCity( PlayerCityPtr city )
 
 void Migration::Impl::createMigrationFromCity( PlayerCityPtr city )
 {
-  HouseList houses = city->statistic().objects.houses();
+  HouseList houses = city->statistic().houses.find();
   const int minWorkersNumber = 4;
   for( HouseList::iterator i=houses.begin(); i != houses.end(); )
   {

@@ -218,7 +218,7 @@ void Building::_updateBalanceKoeffs()
   if( !_city().isValid() )
     return;
 
-  float balance = std::max<float>( statistic::getBalanceKoeff( _city() ), 0.1f );
+  float balance = std::max<float>( _city()->statistic().balance.koeff(), 0.1f );
 
   float fireKoeff = balance * _city()->getOption( PlayerCity::fireKoeff ) / 100.f;
   if( !_city()->getOption(PlayerCity::c3gameplay) )

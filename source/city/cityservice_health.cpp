@@ -107,7 +107,7 @@ std::string HealthCare::reason() const
 
 void HealthCare::Impl::updateValue(PlayerCityPtr city)
 {
-  HouseList houses = city->statistic().objects.houses();
+  HouseList houses = city->statistic().houses.find();
 
   value = 0;
   avgMinHealth = 100;
@@ -147,7 +147,7 @@ void HealthCare::Impl::updateReasons( PlayerCityPtr city )
       object::TypeSet availableTypes;
       availableTypes.insert( reasonsInfo[ i ].type );
 
-      HouseList housesWantEvolve = statistic::getEvolveHouseReadyBy( city, availableTypes );
+      HouseList housesWantEvolve = city->statistic().houses.ready4evolve( availableTypes );
       if( housesWantEvolve.size() > 0 )
       {
         reasons << reasonsInfo[i].info;

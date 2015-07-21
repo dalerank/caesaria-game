@@ -287,7 +287,7 @@ bool RomeSoldier::_tryAttack()
   if( action() == acFight )
   {
     bool needMove = false;
-    city::statistic::isTileBusy<Soldier>( _city(), pos(), this, needMove );
+    _city()->statistic().map.isTileBusy<Soldier>( pos(), this, needMove );
     if( needMove )
     {
       _move2freePos( targetPos );

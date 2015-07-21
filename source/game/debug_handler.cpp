@@ -349,7 +349,7 @@ void DebugHandler::Impl::setFactoryReady( object::Type type )
 
 void DebugHandler::Impl::updateSentiment(int delta)
 {
-  HouseList houses = game->city()->statistic().objects.houses();
+  HouseList houses = game->city()->statistic().houses.find();
   for( auto house : houses )
     house->updateState( pr::happiness, delta );
 }
@@ -476,7 +476,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case make_generation:
   {
-    HouseList houses = game->city()->statistic().objects.houses();
+    HouseList houses = game->city()->statistic().houses.find();
     for( auto house : houses )
       house->__debugMakeGeneration();
   }

@@ -160,7 +160,7 @@ void Info::timeStep(const unsigned int time )
     last[ favour      ] = _city()->favour();
     last[ prosperity  ] = _city()->prosperity();
     last[ monthWtWar  ] = _city()->statistic().military.months2lastAttack();
-    last[ blackHouses ] = statistic::blackHouses( _city() );
+    last[ blackHouses ] = _city()->statistic().houses.terribleNumber();
     last[ peace       ] = 0;
 
     PeacePtr peaceSrvc = _city()->statistic().services.find<Peace>();
@@ -175,7 +175,7 @@ void Info::timeStep(const unsigned int time )
       last[ Info::milthreat ] = mil->threatValue();
     }
 
-    HouseList houses = _city()->statistic().objects.houses();
+    HouseList houses = _city()->statistic().houses.find();
 
     last[ houseNumber ] = 0;
     last[ shackNumber ] = 0;
