@@ -29,12 +29,15 @@
 #include "game/gamedate.hpp"
 #include "core/utils.hpp"
 #include "walker/walkers_factory.hpp"
+#include "objects_factory.hpp"
 #include "config.hpp"
 
 using namespace gfx;
 
 namespace world
 {
+
+REGISTER_CLASS_IN_WORLDFACTORY(PlayerArmy)
 
 struct SoldierInfo
 {
@@ -222,7 +225,7 @@ void PlayerArmy::_check4attack()
   {
     if( it->first < config::army::viewRange )
     {
-      _attackObject( ptr_cast<Object>( it->second ) );
+      _attackObject( it->second.as<Object>() );
       break;
     }
     else if( it->first < viewDistance() )

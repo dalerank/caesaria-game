@@ -22,11 +22,14 @@
 #include "gfx/animation.hpp"
 #include "core/logger.hpp"
 #include "core/stacktrace.hpp"
+#include "objects_factory.hpp"
 
 using namespace gfx;
 
 namespace world
 {
+
+REGISTER_CLASS_IN_WORLDFACTORY(Object)
 
 class Object::Impl
 {

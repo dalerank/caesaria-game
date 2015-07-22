@@ -20,7 +20,6 @@
 #include "core/predefinitions.hpp"
 #include "core/safetycast.hpp"
 #include "core/position.hpp"
-#include "servicewalker_helper.hpp"
 #include "city/city.hpp"
 #include "core/variant_map.hpp"
 #include "game/resourcegroup.hpp"
@@ -119,19 +118,17 @@ void Recruter::_centerTile()
     return;
   }
 
+  ReachedBuildings reached = getReachedBuildings( pos() );
   if( _d->needWorkers )
   {
-    ServiceWalkerHelper hlp( *this );
-    std::set<HousePtr> houses = hlp.getReachedBuildings<House>( pos() );
+    UqBuildings<House> houses = reached.select<House>();
 
     for( auto house : houses )
-    {
       house->applyService( this );
-    }
 
     if( !_d->priority.empty() )
     {
-      std::set<WorkingBuildingPtr> buildings = hlp.getReachedBuildings<WorkingBuilding>( pos() );
+      UqBuildings<WorkingBuilding> buildings = reached.select<WorkingBuilding>();
 
       for( auto bld : buildings )
       {

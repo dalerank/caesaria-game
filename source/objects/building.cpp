@@ -49,16 +49,29 @@ struct CityKoeffs
   CityKoeffs() : fireRisk( 1.f), collapseRisk( 1.f ) {}
 };
 
+class ReservedServices : public std::map<Service::Type, DateTime>
+{
+public:
+  bool contain( Service::Type type ) const
+  {
+    return count( type ) > 0;
+  }
+
+  void reserve( Service::Type type )
+  {
+    (*this)[ type ] = game::Date::current();
+  }
+};
+
 class Building::Impl
 {
 public:
   typedef std::map<walker::Type,int> TraineeMap;
   typedef std::set<walker::Type> WalkerTypeSet;
-  typedef std::set<Service::Type> ServiceSet;
 
   TraineeMap traineeMap;  // current level of trainees working in the building (0..200)
   WalkerTypeSet reservedTrainees;  // a trainee is on the way
-  ServiceSet reservedServices;  // a serviceWalker is on the way
+  ReservedServices reservedServices;  // a serviceWalker is on the way
 
   int stateDecreaseInterval;
   CityKoeffs cityKoeffs;
@@ -111,7 +124,7 @@ float Building::evaluateService(ServiceWalkerPtr walker)
 {
    float res = 0.0;
    Service::Type service = walker->serviceType();
-   if(_d->reservedServices.count(service) == 1)
+   if(_d->reservedServices.contain(service))
    {
       // service is already reserved
       return 0.0;
@@ -142,23 +155,23 @@ bool Building::build( const city::AreaInfo& info )
   return true;
 }
 
-void Building::reserveService(const Service::Type service) { _d->reservedServices.insert(service);}
-bool Building::isServiceReserved( const Service::Type service ) { return _d->reservedServices.count(service)>0; }
+void Building::reserveService(const Service::Type service) { _d->reservedServices.reserve(service); }
+bool Building::isServiceReserved( const Service::Type service ) { return _d->reservedServices.contain(service); }
 void Building::cancelService(const Service::Type service){ _d->reservedServices.erase(service);}
 
 void Building::applyService( ServiceWalkerPtr walker)
 {
-   // std::cout << "apply service" << std::endl;
-   // remove service reservation
-   Service::Type service = walker->serviceType();
-   _d->reservedServices.erase(service);
+  // std::cout << "apply service" << std::endl;
+  // remove service reservation
+  Service::Type service = walker->serviceType();
+  _d->reservedServices.erase(service);
 
-   switch( service )
-   {
-   case Service::engineer: setState( pr::damage, 0 ); break;
-   case Service::prefect: setState( pr::fire, 0 ); break;
-   default: break;
-   }
+  switch( service )
+  {
+  case Service::engineer: setState( pr::damage, 0 ); break;
+  case Service::prefect: setState( pr::fire, 0 ); break;
+  default: break;
+  }
 }
 
 float Building::evaluateTrainee(walker::Type traineeType)

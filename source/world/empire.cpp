@@ -193,6 +193,7 @@ public:
   Objects objects;
   Economy economy;
   Emperor emperor;
+
   bool enabled;
   unsigned int maxBarbariansGroups;
 

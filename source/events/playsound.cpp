@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "playsound.hpp"
 #include "core/utils.hpp"
@@ -54,7 +56,7 @@ void PlaySound::_exec(Game&, unsigned int)
 
 bool PlaySound::_mayExec(Game&, unsigned int) const{  return true; }
 
-PlaySound::PlaySound() : _sound( ""), _volume( 0 ), _type( audio::ambient )
+PlaySound::PlaySound() : _sound(""), _volume( 0 ), _type( audio::ambient )
 {}
 
 }
