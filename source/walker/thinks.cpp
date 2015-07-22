@@ -22,14 +22,15 @@
 #include "constants.hpp"
 #include "animals.hpp"
 #include "helper.hpp"
+#include "objects/construction.hpp"
 #include "core/utils.hpp"
+#include "city/statistic.hpp"
 
 using namespace city;
 
 std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const StringArray& own)
 {
-  city::InfoPtr info;
-  info << city->findService( city::Info::defaultName() );
+  city::InfoPtr info = city->statistic().services.find<Info>();
 
   if( info.isNull() )
   {
@@ -37,7 +38,7 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
     return "##unknown_reason##";
   }
 
-  if( is_kind_of<Animal>( walker ) )
+  if( walker.is<Animal>() )
   {
     std::string text = utils::format( 0xff, "##animal_%s_say##", WalkerHelper::getTypename( walker->type() ).c_str() );
     return text;
@@ -45,7 +46,7 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
 
   StringArray troubles = own;
   std::string walkerTypename = WalkerHelper::getTypename( walker->type() );
-  city::Info::Parameters params = info->lastParams();
+  Info::Parameters params = info->lastParams();
   if( params[ Info::monthWithFood ] < 3 )
   {
     troubles.push_back( "##" + walkerTypename + "_so_hungry##" );

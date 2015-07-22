@@ -165,12 +165,12 @@ void ServiceWalker::_computeWalkerPath( int orders )
   else if( (orders & goServiceMinimum) == goServiceMinimum )
   {
     float minPathValue = 9999.f;
-    foreach( current, pathWayList )
+    for( auto current : pathWayList )
     {
-      float pathValue = evaluatePath( *current );
+      float pathValue = evaluatePath( current );
       if(pathValue < minPathValue)
       {
-        bestPath = *current;
+        bestPath = current;
         minPathValue = pathValue;
       }
     }
@@ -193,16 +193,11 @@ void ServiceWalker::_computeWalkerPath( int orders )
   if( (orders & enterLastHouse) == enterLastHouse )
   {
     const TilesArray& tiles = bestPath->allTiles();
-    foreach( itTile, tiles )
+    for( auto tile : tiles )
     {
-      ServiceWalker::ReachedBuildings reachedBuildings = getReachedBuildings( (*itTile)->pos() );
-      foreach( it, reachedBuildings )
-      {
-        if( (*it)->type() == object::house )
-        {
-          _d->lastHousePos = (*itTile)->pos();
-        }
-      }
+      bool haveHouse = getReachedBuildings( tile->pos() ).contain( object::house );
+      if( haveHouse )
+        _d->lastHousePos = tile->pos();
     }
   }
 
@@ -214,13 +209,13 @@ void ServiceWalker::_cancelPath()
 {
   TilesArray pathTileList = pathway().allTiles();
 
-  foreach( tile, pathTileList )
+  for( auto tile : pathTileList )
   {
-    ReachedBuildings reachedBuildings = getReachedBuildings( (*tile)->pos() );
-    foreach( b, reachedBuildings )
+    ReachedBuildings reachedBuildings = getReachedBuildings( tile->pos() );
+    for( auto b : reachedBuildings )
     {
       // the building has not been reserved yet
-       (*b)->cancelService( _d->service );
+       b->cancelService( _d->service );
     }
   }
 }
@@ -237,19 +232,13 @@ void ServiceWalker::return2Base()
   }
 }
 
-ServiceWalker::ReachedBuildings ServiceWalker::getReachedBuildings(const TilePos& pos )
+ReachedBuildings ServiceWalker::getReachedBuildings(const TilePos& pos )
 {
   ReachedBuildings res;
 
   TilesArea reachedTiles( _city()->tilemap(), pos, reachDistance() );
-  foreach( it, reachedTiles )
-  {
-    BuildingPtr building = (*it)->overlay().as<Building>();
-    if( building.isValid() )
-    {
-      res.insert(building);
-    }
-  }
+  for( auto tile : reachedTiles )
+    res.addIfValid( tile->overlay().as<Building>() );
 
   return res;
 }
@@ -257,23 +246,23 @@ ServiceWalker::ReachedBuildings ServiceWalker::getReachedBuildings(const TilePos
 float ServiceWalker::evaluatePath( PathwayPtr pathWay )
 {
   // evaluate all buildings along the path
-  ServiceWalker::ReachedBuildings doneBuildings;  // list of evaluated building: don't do them again
+  ReachedBuildings doneBuildings;  // list of evaluated building: don't do them again
   const TilesArray& pathTileList = pathWay->allTiles();
 
   int distance = 0;
   float res = 0.0;
-  foreach( itTile, pathTileList )
+  for( auto tile : pathTileList )
   {
-    ServiceWalker::ReachedBuildings reachedBuildings = getReachedBuildings( (*itTile)->pos() );
-    foreach( it, reachedBuildings )
+    ReachedBuildings reachedBuildings = getReachedBuildings( tile->pos() );
+    for( auto bld : reachedBuildings )
     {
-      std::pair<ServiceWalker::ReachedBuildings::iterator, bool> rc = doneBuildings.insert( *it );
+      std::pair<ReachedBuildings::iterator, bool> rc = doneBuildings.insert( bld );
       if (rc.second == true)
       {
         // the building has not been evaluated yet
-        int oneTileValue = (*it)->evaluateService( ServiceWalkerPtr( this ) );
+        int oneTileValue = bld->evaluateService( ServiceWalkerPtr( this ) );
         // mul serviceValue for buildingSize, need for more effectively count of path result
-        res += (oneTileValue * (*it)->size().area() );
+        res += (oneTileValue * bld->size().area() );
       }
     }
     distance++;
@@ -288,16 +277,16 @@ void ServiceWalker::_reservePath( const Pathway& pathWay)
   ReachedBuildings doneBuildings;  // list of evaluated building: don't do them again
   const TilesArray& pathTileList = pathWay.allTiles();
 
-  foreach( itTile, pathTileList )
+  for( auto tile : pathTileList )
   {
-    ReachedBuildings reachedBuildings = getReachedBuildings( (*itTile)->pos() );
-    foreach( it, reachedBuildings )
+    ReachedBuildings reachedBuildings = getReachedBuildings( tile->pos() );
+    for( auto bld : reachedBuildings )
     {
-      std::pair<ReachedBuildings::iterator, bool> rc = doneBuildings.insert( *it );
+      std::pair<ReachedBuildings::iterator, bool> rc = doneBuildings.insert( bld );
       if (rc.second == true)
       {
         // the building has not been reserved yet
-        (*it)->reserveService(_d->service);
+        bld->reserveService(_d->service);
       }
     }
   }
@@ -349,7 +338,7 @@ void ServiceWalker::_centerTile()
 
   ReachedBuildings reachedBuildings = getReachedBuildings( pos() );
 
-  foreach( b, reachedBuildings ) { (*b)->applyService( this ); }
+  for( auto b : reachedBuildings ) { b->applyService( this ); }
 
   ServiceBuildingPtr servBuilding = base().as<ServiceBuilding>();
   if( servBuilding.isValid() )
@@ -579,3 +568,21 @@ BuildingPtr ServiceWalker::base() const
 ServiceWalker::~ServiceWalker() {}
 void ServiceWalker::setBase( BuildingPtr base ) { _d->basePos = (base.isValid() ? base->pos() : gfx::tilemap::invalidLocation()); }
 WalkerPtr ServicemanCreator::create(PlayerCityPtr city) { return ServiceWalker::create( city, serviceType ).object();  }
+
+bool ReachedBuildings::contain(object::Type type) const
+{
+  for( auto i : *this )
+    if( i->type() == type )
+      return true;
+
+  return false;
+}
+
+BuildingPtr ReachedBuildings::firstOf(object::Type type) const
+{
+  for( auto i : *this )
+    if( i->type() == type )
+      return i;
+
+  return BuildingPtr();
+}

@@ -93,8 +93,7 @@ void WallGuard::timeStep(const unsigned long time)
   {
   case fightEnemy:
   {
-    EnemySoldierList enemies;
-    enemies << _findEnemiesInRange( attackDistance() );
+    EnemySoldierList enemies = _findEnemiesInRange( attackDistance() ).select<EnemySoldier>();
 
     bool haveEnemiesInRande = !enemies.empty();
     if( haveEnemiesInRande )
@@ -116,8 +115,7 @@ void WallGuard::timeStep(const unsigned long time)
 
   case check4attack:
   {
-    EnemySoldierList enemies;
-    enemies << _findEnemiesInRange( attackDistance() );
+    EnemySoldierList enemies = _findEnemiesInRange( attackDistance() ).select<EnemySoldier>();
 
     if( !enemies.empty() )
     {    
@@ -175,7 +173,7 @@ void WallGuard::load(const VariantMap& stream)
   VARIANT_LOAD_ANY_D( _d, patrolPosition, stream )
 
   TilePos basePosition = stream.get( "base" );
-  TowerPtr tower = ptr_cast<Tower>( _city()->getOverlay( basePosition ) );
+  TowerPtr tower = _city()->getOverlay( basePosition ).as<Tower>();
 
   if( tower.isValid() )
   {
@@ -242,9 +240,9 @@ FortificationList WallGuard::_findNearestWalls( EnemySoldierPtr enemy )
     TilePos ePos = enemy->pos();
     TilesArray tiles = tmap.getRectangle( ePos - offset, ePos + offset );
 
-    foreach( tile, tiles )
+    for( auto tile : tiles )
     {
-      FortificationPtr f = (*tile)->overlay().as<Fortification>();
+      FortificationPtr f = tile->overlay().as<Fortification>();
       if( f.isValid() && f->mayPatrol() )
       {
         ret.push_back( f );
@@ -257,8 +255,7 @@ FortificationList WallGuard::_findNearestWalls( EnemySoldierPtr enemy )
 
 bool WallGuard::_tryAttack()
 {
-  EnemySoldierList enemies;
-  enemies << _findEnemiesInRange( attackDistance() * 2 );
+  EnemySoldierList enemies = _findEnemiesInRange( attackDistance() * 2 ).select<EnemySoldier>();
 
   if( !enemies.empty() )
   {
@@ -281,12 +278,12 @@ bool WallGuard::_tryAttack()
         FortificationList nearestWall = _findNearestWalls( enemy );
 
         PathwayList wayList = _d->base->getWays( pos(), nearestWall );
-        foreach( way, wayList )
+        for( auto way : wayList )
         {
-          double tmpDistance = (*way)->stopPos().distanceFrom( enemy->pos() );
+          double tmpDistance = way->stopPos().distanceFrom( enemy->pos() );
           if( tmpDistance < minDistance )
           {
-            shortestWay = *way;
+            shortestWay = way;
             minDistance = tmpDistance;
           }
         }
@@ -439,13 +436,13 @@ EnemySoldierPtr WallGuard::_findNearbyEnemy(EnemySoldierList enemies )
 {
   EnemySoldierPtr ret;
   double minDistance = 999;
-  foreach( it, enemies )
+  for( auto enemy : enemies )
   {
-    double tmpDistance = pos().distanceFrom( (*it)->pos() );
+    double tmpDistance = pos().distanceFrom( enemy->pos() );
     if( tmpDistance > 2 && tmpDistance < minDistance )
     {
       minDistance = tmpDistance;
-      ret = *it;
+      ret = enemy;
     }
   }
 

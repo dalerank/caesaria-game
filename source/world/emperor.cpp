@@ -102,10 +102,8 @@ void Emperor::timeStep(unsigned int time)
     __D_IMPL(d,Emperor)
 
     CityList empireCities = d->empire->cities();
-    foreach( it, empireCities )
+    for( auto cityp : empireCities )
     {
-      CityPtr cityp = *it;
-
       if( !cityp->isAvailable() )
         continue;
 
@@ -248,13 +246,13 @@ void Emperor::resetRelations(const StringArray& cities)
     }
     else
     {
-      foreach( it, cities )
-        empCities.addIfValid( d->empire->findCity( *it ) );
+      for( auto city : cities )
+        empCities.addIfValid( d->empire->findCity( city ) );
     }
 
-    foreach( it, empCities )
+    for( auto city : empCities )
     {
-      Relation& r = d->relations[ (*it)->name() ];
+      Relation& r = d->relations[ city->name() ];
       r.reset();
     }
   }
@@ -265,14 +263,14 @@ void Emperor::checkCities()
 {
   __D_IMPL(d,Emperor)
   CityList empireCities = d->empire->cities();
-  foreach( it, empireCities )
+  for( auto city : empireCities )
   {
-    if( !(*it)->isAvailable() )
+    if( !city->isAvailable() )
       continue;
 
-    if( d->relations.count( (*it)->name() ) == 0 )
+    if( d->relations.count( city->name() ) == 0 )
     {
-      Relation& relation = d->relations[ (*it)->name() ];
+      Relation& relation = d->relations[ city->name() ];
       relation.reset();
     }
   }
