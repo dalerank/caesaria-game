@@ -21,6 +21,7 @@
 #include <string>
 #include "referencecounted.hpp"
 #include "smartptr.hpp"
+#include "singleton.hpp"
 #include "scopedptr.hpp"
 
 class LogWriter : public ReferenceCounted
@@ -34,7 +35,7 @@ typedef SmartPtr<LogWriter> LogWriterPtr;
 
 class SimpleLogger {
 public:
-  SimpleLogger(std::string category);
+  SimpleLogger(const std::string& category);
 
   bool isDebugEnabled() const;
 
@@ -59,9 +60,10 @@ public:
   void fatal(const std::string &text);
 
 private:
+  SimpleLogger() {}
   void write(const std::string &message, bool newline = true);
 
-  std::string category;
+  std::string _category;
 
   enum class Severity : unsigned short {
     DBG,
@@ -78,8 +80,9 @@ private:
   const std::string toS(Severity severity);
 };
 
-class Logger
+class Logger : public StaticSingleton<Logger>
 {
+  friend class StaticSingleton;
 public:
   typedef enum { consolelog=0, filelog, count } Type;
   static void warning( const char* fmt, ...);
@@ -101,7 +104,6 @@ private:
 
   class Impl;
   ScopedPtr< Impl > _d;
-  friend class SimpleLogger;
 };
 
 #endif //__CAESARIA_LOGGER_H_INCLUDED__

@@ -138,6 +138,8 @@ signals public:
 PlayerCity::PlayerCity(world::EmpirePtr empire)
   :  City( empire ), _d( new Impl )
 {
+  LOG_CITY.warn( "Start initialize" );
+
   _d->borderInfo.roadEntry = TilePos( 0, 0 );
   _d->borderInfo.roadExit = TilePos( 0, 0 );
   _d->borderInfo.boatEntry = TilePos( 0, 0 );

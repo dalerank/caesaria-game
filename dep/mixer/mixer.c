@@ -48,6 +48,7 @@
 #define WAVE        0x45564157      /* "WAVE" */
 #define FORM        0x4d524f46      /* "FORM" */
 #define OGGS        0x5367674f      /* "OggS" */
+#define SGGS        0x4f67674f      /* "SggS" */
 #define CREA        0x61657243      /* "Crea" */
 #define FLAC        0x43614C66      /* "fLaC" */
 

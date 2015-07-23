@@ -26,11 +26,6 @@
 
 using namespace gfx;
 
-namespace
-{
-    static SimpleLogger LOG_WH( "WalkerHelper" );
-}
-
 class TypeEnums : public EnumsHelper<walker::Type>
 {
 public:
@@ -174,7 +169,7 @@ VariantMap WalkerHelper::getOptions(const walker::Type type )
   VariantMap::iterator mapIt = instance()._d->options.find( tname );
   if( mapIt == instance()._d->options.end())
   {
-    LOG_WH.warn( "Unknown walker info for type %d", type );
+    Logger::warning( "Unknown walker info for type %d", type );
     return VariantMap();
   }
 
@@ -208,7 +203,7 @@ std::string WalkerHelper::getTypename( walker::Type type )
 
   if( name.empty() )
   {
-    LOG_WH.warn( "WalkerHelper: can't find walker typeName for %d", type );
+    Logger::warning( "WalkerHelper: can't find walker typeName for %d", type );
     //_CAESARIA_DEBUG_BREAK_IF( "Can't find walker typeName by WalkerType" );
   }
 
@@ -221,7 +216,7 @@ walker::Type WalkerHelper::getType(const std::string &name)
 
   if( type == instance()._d->htype.getInvalid() )
   {
-    LOG_WH.warn( "Can't find walker type for %s", name.c_str());
+    Logger::warning( "Can't find walker type for %s", name.c_str());
     //_CAESARIA_DEBUG_BREAK_IF( "Can't find walker type by typeName" );
   }
 
@@ -246,8 +241,7 @@ world::Nation WalkerHelper::getNation(const std::string &name)
 
   if( nation == instance()._d->hnation.getInvalid() )
   {
-    LOG_WH.warn( "Can't find nation type for %s", name.c_str());
-    //_CAESARIA_DEBUG_BREAK_IF( "Can't find walker type by typeName" );
+    Logger::warning( "Can't find nation type for " + name );
   }
 
   return nation;
@@ -394,7 +388,7 @@ void __fillRelations( const std::string& name, const VariantMap& items, const st
 
     if( ftype == unknownType )
     {
-      LOG_WH.warn( warnText.c_str(), itType->c_str(), name.c_str());
+      Logger::warning( warnText.c_str(), itType->c_str(), name.c_str());
     }
     else
     {
