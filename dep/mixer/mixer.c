@@ -615,6 +615,7 @@ Mix_Chunk *Mix_LoadWAV_RW(SDL_RWops *src, int freesrc)
             break;
 #ifdef OGG_MUSIC
         case OGGS:
+        case SGGS:
             loaded = Mix_LoadOGG_RW(src, freesrc, &wavespec,
                     (Uint8 **)&chunk->abuf, &chunk->alen);
             break;
