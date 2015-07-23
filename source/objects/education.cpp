@@ -70,20 +70,17 @@ void School::buildingsServed(const std::set<BuildingPtr>& buildings, ServiceWalk
   if( walker->pathway().isReverse() )
     return;
 
-  foreach( it, buildings )
+  std::set<HousePtr> houses = utils::select<House>( buildings );
+  for( auto house : houses )
   {
-    HousePtr house = ptr_cast<House>( *it );
-    if( house.isValid() )
-    {
-      unsigned int posHash = gfx::tile::hash(house->pos());
-      _d->srvBuidings[ posHash ] = house->habitants().scholar_n();
-    }
+    unsigned int posHash = gfx::tile::hash(house->pos());
+    _d->srvBuidings[ posHash ] = house->habitants().scholar_n();
   }
 
   _d->currentPeopleServed = 0;
-  foreach( it, _d->srvBuidings )
+  for( auto bld : _d->srvBuidings )
   {
-    _d->currentPeopleServed += it->second;
+    _d->currentPeopleServed += bld.second;
   }
 
   if( _d->currentPeopleServed > _d->maxMonthVisitors )

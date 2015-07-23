@@ -118,6 +118,8 @@ public:
 
 Pathfinder::Pathfinder() : _d( new Impl )
 {
+  LOG_PF.warn( "Initialize" );
+
   _d->maxLoopCount = 4800;
   _d->verbose = 0;
 }
@@ -423,12 +425,6 @@ bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, P
   }
 
   return oPathWay.length() > 0;
-}
-
-Pathfinder& Pathfinder::instance()
-{
-  static Pathfinder inst;
-  return inst;
 }
 
 Pathfinder::~Pathfinder() {}

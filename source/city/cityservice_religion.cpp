@@ -113,6 +113,7 @@ std::string Religion::defaultName() { return CAESARIA_STR_EXT(Religion); }
 Religion::Religion( PlayerCityPtr city )
   : Srvc( city, Religion::defaultName() ), _d( new Impl )
 {
+  LOG.warn( "Initialized" );
 }
 
 void Religion::timeStep( const unsigned int time )

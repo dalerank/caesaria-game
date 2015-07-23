@@ -91,9 +91,9 @@ ConstructionExtensionPtr FactoryProgressUpdater::uniqueTo(FactoryPtr factory, fl
   }
 
   ConstructionExtensionList exts = factory->extensions();
-  foreach( it, exts )
+  for( auto it : exts )
   {
-    if( (*it)->name() == name )
+    if( it->name() == name )
       return ConstructionExtensionPtr();
   }
 
@@ -160,9 +160,9 @@ void FortCurseByMars::timeStep(ConstructionPtr parent, unsigned int time)
 
     SoldierList sldrs = base->soldiers();
 
-    foreach( it, sldrs )
+    for( auto it : sldrs )
     {
-      (*it)->updateMorale( -100 );
+      it->updateMorale( -100 );
     }
   }
 

@@ -242,14 +242,19 @@ void Logger::registerWriter(std::string name, LogWriterPtr writer)
 }
 
 void SimpleLogger::write(const std::string &message, bool newline) {
-  Logger::instance()._d->write(message, newline);
+  Logger::update( message, newline );
 }
 
-SimpleLogger::SimpleLogger(std::string category) : category(category) {
-}
+SimpleLogger::SimpleLogger( const std::string& category)
+  : _category(category)
+{}
 
-void SimpleLogger::llog(SimpleLogger::Severity severity, const std::string &text) {
-  write(std::string(toS(severity)) + " " + std::string(category) + ": " + std::string(text));
+void SimpleLogger::llog(SimpleLogger::Severity severity, const std::string &text)
+{
+  std::string rtext = toS(severity) + " ";
+  rtext += _category;
+  rtext += ": " + text;
+  write(rtext);
 }
 
 void SimpleLogger::vlog(SimpleLogger::Severity severity, const char *fmt, va_list args) {

@@ -371,7 +371,7 @@ void StartMenu::Impl::showCredits()
                          "holubmarek,butjer1010, Agmenor Ultime, m0nochr0mex, Alexeyco",
                          "rad.n,j simek.cz, saintech, phdarcy, Casey Knauss, meikit2000",
                          "victor sosa, ImperatorPrime, nickers, veprbl, ramMASTER",
-                         "tracertong, pufik6666, rovanion"
+                         "tracertong, pufik6666, rovanion",
                          "" };
 
   Label* frame = new Label( parent, Rect( Point( 0, 0), size ), "", false, gui::Label::bgSimpleBlack );

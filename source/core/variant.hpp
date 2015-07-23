@@ -66,6 +66,8 @@ class NColor;
 #define VARIANT_LOAD_CLASS_D(d, param, vm) d->param.load( vm.get( #param ).toMap() );
 
 #define VARIANT_LOAD_CLASS_LIST(param, vm) param.load( vm.get( #param ).toList() );
+#define VARIANT_LOAD_CLASS_D_AS_LIST(d, param, vm) d->param << vm.get( #param ).toList();
+#define VARIANT_SAVE_CLASS_D_LIST(vm, d, param) vm[ #param ] = VariantList( d->param );
 #define VARIANT_LOAD_CLASS_D_LIST(d, param, vm) d->param.load( vm.get( #param ).toList() );
 
 #define VARIANT_LOAD_PICTURE(param, vm) { VariantList v=vm.get( #param ).toList(); param.load( v.get( 0 ).toString(), v.get( 1 ).toInt() ); }
@@ -250,6 +252,9 @@ class Variant
   TilePos toTilePos() const;
   NColor toColor() const;
   RectF toRectf() const;
+
+  template<class T>
+  inline T toEnum() { return (T)toInt(); }
 
   operator unsigned int() const { return toUInt(); }
   operator int() const { return toInt(); }

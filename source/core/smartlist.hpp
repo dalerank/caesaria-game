@@ -21,6 +21,7 @@
 #include "smartptr.hpp"
 #include "core/math.hpp"
 #include <deque>
+#include <set>
 
 template <class T>
 class SmartList : public std::deque<SmartPtr< T > >
@@ -134,5 +135,24 @@ public:
     return ret;
   }
 };
+
+namespace utils
+{
+
+template<class Object, class Parent>
+std::set<SmartPtr<Object>> select( const std::set<SmartPtr<Parent>>& objects )
+{
+  std::set<SmartPtr<Object>> ret;
+  for( auto item : objects )
+  {
+    SmartPtr<Object> a = ptr_cast<Object>( item );
+    if( a.isValid() )
+      ret.insert( a );
+  }
+
+  return ret;
+}
+
+}//end namespace utils
 
 #endif //__CAESARIA_SMARTLIST_H_INCLUDE__

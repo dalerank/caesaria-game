@@ -42,6 +42,13 @@ void TilesArea::reset(const Tilemap& tmap, const TilePos& center, int distance)
   append( tmap.getArea( center - offset, center + offset ) );
 }
 
+TilesArea& TilesArea::operator=(const TilesArray& other)
+{
+  clear();
+  append( other );
+  return *this;
+}
+
 TilesArea::TilesArea() {}
 
 } //end namespace gfx

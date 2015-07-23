@@ -61,7 +61,7 @@ bool ClayPit::canBuild( const city::AreaInfo& areaInfo ) const
   Tilemap& tilemap = areaInfo.city->tilemap();
   TilesArray perimetr = tilemap.getRectangle( areaInfo.pos + TilePos( -1, -1), size() + Size( 2 ), Tilemap::checkCorners );
 
-  foreach( tile, perimetr )  {  near_water |= (*tile)->getFlag( Tile::tlWater ); }
+  for( auto tile : perimetr ) { near_water |= tile->getFlag( Tile::tlWater ); }
 
   const_cast<ClayPit*>( this )->_setError( near_water ? "" : "##clay_pit_need_water##" );
 
