@@ -183,12 +183,12 @@ VariantMap WalkerHelper::getOptions(const walker::Type type )
 
 bool WalkerHelper::isHuman(WalkerPtr wlk)
 {
-  return is_kind_of<Human>( wlk );
+  return wlk.is<Human>();
 }
 
 bool WalkerHelper::isAnimal(WalkerPtr wlk)
 {
-  return is_kind_of<Animal>( wlk ) || is_kind_of<Fish>( wlk);
+  return wlk.is<Animal>() || wlk.is<Fish>();
 }
 
 void WalkerHelper::load( const vfs::Path& filename )

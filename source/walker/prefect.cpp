@@ -93,7 +93,7 @@ WalkerPtr Prefect::_looks4Enemy( const int range )
     else { ++it; }
   }
 
-  WalkerPtr enemy = findNearestWalker( pos(), walkers );
+  WalkerPtr enemy = utils::findNearestWalker( pos(), walkers );
 
   return enemy;
 }

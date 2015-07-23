@@ -28,12 +28,14 @@ class Tilemap;
 class TilesArea : public TilesArray
 {
 public:
-  TilesArea();
+  TilesArea();  
   TilesArea( const Tilemap& tmap, const TilePos& leftup, const TilePos& rightdown );
   TilesArea( const Tilemap& tmap, const TilePos& center, int distance );
   TilesArea( const Tilemap& tmap, const TilePos& leftup, const Size& size );
 
   void reset(const Tilemap& tmap, const TilePos& center, int distance );
+
+  TilesArea& operator=(const TilesArray& other);
 };
 
 } //end namespace gfx

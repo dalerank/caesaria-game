@@ -82,10 +82,10 @@ void EntertainmentBuilding::deliverService()
     _animationRef().stop(); //have no actors for the show
   }
 
-  foreach( item, _d->necWalkers )
+  for( auto item : _d->necWalkers )
   {
-    int level = traineeValue( *item );
-    setTraineeValue( *item, math::clamp( level - decreaseLevel, 0, 100) );
+    int level = traineeValue( item );
+    setTraineeValue( item, math::clamp( level - decreaseLevel, 0, 100) );
   }
 }
 
@@ -122,12 +122,12 @@ std::string EntertainmentBuilding::troubleDesc() const
 
   if( ret.empty() )
   {
-    foreach( item, _d->necWalkers )
+    for( auto item : _d->necWalkers )
     {
-      int level = traineeValue( *item );
+      int level = traineeValue( item );
       if( level == 0 )
       {
-        ret = utils::format( 0xff, "##need_trainee_%s##", WalkerHelper::getTypename( *item ).c_str() );
+        ret = utils::format( 0xff, "##need_trainee_%s##", WalkerHelper::getTypename( item ).c_str() );
         break;
       }
     }
@@ -148,8 +148,8 @@ void EntertainmentBuilding::_addNecessaryWalker(walker::Type type)
 bool EntertainmentBuilding::_isWalkerReady()
 {
   int maxLevel = 0;
-  foreach( item, _d->necWalkers )
-  {  maxLevel = std::max( maxLevel, traineeValue( *item ) ); }
+  for( auto item : _d->necWalkers )
+    maxLevel = std::max( maxLevel, traineeValue( item ) );
 
   return maxLevel;
 }

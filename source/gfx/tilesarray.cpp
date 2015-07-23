@@ -134,6 +134,16 @@ TilesArray TilesArray::walkables(bool alllands) const
   return ret;
 }
 
+TilesArray TilesArray::select(Tile::Type flag) const
+{
+  TilesArray ret;
+  for( auto tile : *this )
+    if( tile->getFlag( Tile::isConstructible ) )
+      ret.push_back( tile );
+
+  return ret;
+}
+
 TilesArray TilesArray::terrains() const
 {
   TilesArray ret;
@@ -164,13 +174,10 @@ TilesArray TilesArray::waters() const
 
 TilesArray& TilesArray::remove( const TilePos& pos)
 {
-  foreach( it, *this )
+  for( iterator it=begin(); it!=end(); )
   {
-    if( (*it)->pos() == pos )
-    {
-      erase( it );
-      break;
-    }
+    if( (*it)->pos() == pos ) { it = erase( it ); }
+    else { ++it; }
   }
 
   return *this;

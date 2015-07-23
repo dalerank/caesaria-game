@@ -33,6 +33,7 @@
 #include "constants.hpp"
 #include "game/gamedate.hpp"
 #include "city/states.hpp"
+#include "walker/typeset.hpp"
 
 using namespace gfx;
 using namespace city;
@@ -57,19 +58,70 @@ public:
     return count( type ) > 0;
   }
 
+  VariantList save() const
+  {
+    VariantList ret;
+    for( auto item : *this )
+      ret.emplace_back( VariantList(item.first, item.second) );
+
+    return ret;
+  }
+
+  void load( const VariantList& stream )
+  {
+    for( auto item : stream )
+    {
+      VariantList vl = item.toList();
+      Service::Type stype = vl.get( 0 ).toEnum<Service::Type>();
+      DateTime value = vl.get( 1 ).toDateTime();
+      (*this)[ stype ] = value;
+    }
+  }
+
   void reserve( Service::Type type )
   {
     (*this)[ type ] = game::Date::current();
+  }
+
+  void removeExpired( int days=1 )
+  {
+    DateTime current = game::Date::current();
+    for( iterator it = begin(); it != end(); )
+    {
+      if( it->second.daysTo( current ) > days ) { it = erase( it );}
+      else { ++it; }
+    }
+  }
+};
+
+class TraineeMap : public std::map<walker::Type,int>
+{
+public:
+  VariantList save() const
+  {
+    VariantList ret;
+    for( auto item : *this )
+      ret.emplace_back( VariantList(item.first, item.second) );
+
+    return ret;
+  }
+
+  void load( const VariantList& stream )
+  {
+    for( auto item : stream )
+    {
+      VariantList vl = item.toList();
+      walker::Type wtype = vl.get( 0 ).toEnum<walker::Type>();
+      int value = vl.get( 1 );
+      (*this)[ wtype ] = value;
+    }
   }
 };
 
 class Building::Impl
 {
 public:
-  typedef std::map<walker::Type,int> TraineeMap;
-  typedef std::set<walker::Type> WalkerTypeSet;
-
-  TraineeMap traineeMap;  // current level of trainees working in the building (0..200)
+  TraineeMap trainees;  // current level of trainees working in the building (0..200)
   WalkerTypeSet reservedTrainees;  // a trainee is on the way
   ReservedServices reservedServices;  // a serviceWalker is on the way
 
@@ -110,14 +162,6 @@ void Building::storeGoods(good::Stock &stock, const int amount)
   std::string bldType = debugName();
   Logger::warning( "This building should not store any goods %s at [%d,%d]",
                    bldType.c_str(), pos().i(), pos().j() );
-  try
-  {
-   //_CAESARIA_DEBUG_BREAK_IF("This building should not store any goods");
-  }
-  catch(...)
-  {
-
-  }
 }
 
 float Building::evaluateService(ServiceWalkerPtr walker)
@@ -199,12 +243,12 @@ void Building::cancelTrainee(walker::Type traineeType) { _d->reservedTrainees.er
 void Building::updateTrainee(  TraineeWalkerPtr walker )
 {
    _d->reservedTrainees.erase( walker->type() );
-   _d->traineeMap[ walker->type() ] += walker->value() ;
+   _d->trainees[ walker->type() ] += walker->value() ;
 }
 
 void Building::setTraineeValue(walker::Type type, int value)
 {
-  _d->traineeMap[ type ] = value;
+  _d->trainees[ type ] = value;
 }
 
 void Building::initialize(const MetaData &mdata)
@@ -218,10 +262,26 @@ void Building::initialize(const MetaData &mdata)
   if( collapsibilityV.isValid() ) setState( pr::collapsibility, collapsibilityV.toDouble() );
 }
 
+void Building::save(VariantMap& stream) const
+{
+  Construction::save( stream );
+  VARIANT_SAVE_CLASS_D( stream, _d, trainees )
+  VARIANT_SAVE_CLASS_D( stream, _d, reservedTrainees )
+  VARIANT_SAVE_CLASS_D( stream, _d, reservedServices )
+}
+
+void Building::load(const VariantMap& stream)
+{
+  Construction::load( stream );
+  VARIANT_LOAD_CLASS_D_LIST( _d, trainees, stream )
+  VARIANT_LOAD_CLASS_D_LIST( _d, reservedTrainees, stream )
+  VARIANT_LOAD_CLASS_D_LIST( _d, reservedServices, stream )
+}
+
 int Building::traineeValue(walker::Type traineeType) const
 {
-  Impl::TraineeMap::iterator i = _d->traineeMap.find( traineeType );
-  return i != _d->traineeMap.end() ? i->second : -1;
+  TraineeMap::iterator i = _d->trainees.find( traineeType );
+  return i != _d->trainees.end() ? i->second : -1;
 }
 
 Renderer::PassQueue Building::passQueue() const {  return buildingPassQueue;}

@@ -194,6 +194,12 @@ VariantMap Storage::save() const
 
 void Storage::load( const VariantMap& stream )
 {
+  if( stream.empty() )
+  {
+    Logger::warning( "!!! WARNING: Storage::load from empty stream" );
+    return;
+  }
+
   good::Store::load( stream );
   _gsd->capacity = (int)stream.get( "max" );
 

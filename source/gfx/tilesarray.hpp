@@ -54,6 +54,7 @@ public:
   TilesArray& append( Tile* a );
 
   TilesArray walkables( bool alllands=false ) const;
+  TilesArray select( Tile::Type flag ) const;
 
   TilesArray terrains() const;
 

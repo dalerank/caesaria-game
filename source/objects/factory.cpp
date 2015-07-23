@@ -79,6 +79,11 @@ public signals:
 class Factory::Impl
 {
 public:
+  struct
+  {
+
+  };
+
   bool isActive;
   float productionRate;  // max production / year
   float progress;  // progress of the work, in percent (0-100).

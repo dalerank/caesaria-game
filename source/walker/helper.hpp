@@ -22,6 +22,7 @@
 #include "vfs/path.hpp"
 #include "core/variant.hpp"
 #include "world/nation.hpp"
+#include "typeset.hpp"
 #include "walker.hpp"
 
 class WalkerHelper
@@ -78,23 +79,37 @@ private:
   ScopedPtr<Impl> _d;
 };
 
+namespace utils
+{
+
+inline void excludeWalkers( WalkerList& list, const WalkerTypeSet& set )
+{
+  for( auto it=list.begin(); it != list.end(); )
+  {
+    if( set.count( (*it)->type() ) > 0 ) { it=list.erase( it ); }
+    else { ++it; }
+  }
+}
+
 template< class Wlk >
-SmartPtr<Wlk> findNearestWalker( TilePos pos, const SmartList<Wlk>& walkers )
+SmartPtr<Wlk> findNearestWalker( const TilePos& pos, const SmartList<Wlk>& walkers )
 {
   SmartPtr< Wlk > p;
 
   int minDistance=99;
-  foreach( it, walkers )
+  for( auto wlk : walkers )
   {
-    int distance = (*it)->pos().distanceFrom( pos );
+    int distance = wlk->pos().distanceFrom( pos );
     if( distance < minDistance )
     {
       minDistance =  distance;
-      p = *it;
+      p = wlk;
     }
   }
 
   return p;
 }
+
+}//end namespace utils
 
 #endif //_CAESARIA_WALKERHELPER_H_INCLUDE_
