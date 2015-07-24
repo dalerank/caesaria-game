@@ -152,12 +152,12 @@ void ServiceWalker::_computeWalkerPath( int orders )
   if( (orders & goServiceMaximum) == goServiceMaximum )
   {
     float maxPathValue = 0.0;
-    foreach( current, pathWayList )
+    for( auto current : pathWayList )
     {
-      float pathValue = evaluatePath( *current );
+      float pathValue = evaluatePath( current );
       if(pathValue > maxPathValue)
       {
-        bestPath = *current;
+        bestPath = current;
         maxPathValue = pathValue;
       }
     }
@@ -210,14 +210,7 @@ void ServiceWalker::_cancelPath()
   TilesArray pathTileList = pathway().allTiles();
 
   for( auto tile : pathTileList )
-  {
-    ReachedBuildings reachedBuildings = getReachedBuildings( tile->pos() );
-    for( auto b : reachedBuildings )
-    {
-      // the building has not been reserved yet
-       b->cancelService( _d->service );
-    }
-  }
+    getReachedBuildings( tile->pos() ).cancelService( _d->service );
 }
 
 void ServiceWalker::_addObsoleteOverlay(object::Type type) { _d->obsoleteOvs.insert( type ); }
@@ -528,9 +521,9 @@ void ServiceWalker::initialize(const VariantMap& options)
   Human::initialize( options );
 
   VariantList oboletesOvs = options.get( "obsoleteOverlays" ).toList();
-  foreach( it, oboletesOvs )
+  for( auto it : oboletesOvs )
   {
-    object::Type ovType = object::toType( it->toString() );
+    object::Type ovType = object::toType( it.toString() );
     if( ovType != object::unknown )
       _addObsoleteOverlay( ovType );
   }
@@ -585,4 +578,10 @@ BuildingPtr ReachedBuildings::firstOf(object::Type type) const
       return i;
 
   return BuildingPtr();
+}
+
+void ReachedBuildings::cancelService(Service::Type service)
+{
+  for( auto i : *this )
+    i->cancelService( service );
 }

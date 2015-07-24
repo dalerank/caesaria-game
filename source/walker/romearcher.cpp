@@ -55,16 +55,15 @@ void RomeArcher::timeStep(const unsigned long time)
   {
   case Soldier::fightEnemy:
   {
-    WalkerList enemies = _findEnemiesInRange( attackDistance() );
+    WalkerPtr enemy = _findEnemiesInRange( attackDistance() ).valueOrEmpty(0);
 
-    if( !enemies.empty() )
+    if( !enemy.isValid() )
     {
-      WalkerPtr p = enemies.front();
-      turn( p->pos() );
+      turn( enemy->pos() );
 
       if( _animation().index() == (int)(_animation().frameCount()-1) )
       {
-        _fire( p->pos() );
+        _fire( enemy->pos() );
         _updateAnimation( time+1 );
       }
     }
@@ -78,16 +77,15 @@ void RomeArcher::timeStep(const unsigned long time)
 
   case Soldier::destroyBuilding:
   {
-    ConstructionList constructions = _findContructionsInRange( attackDistance() );
+    ConstructionPtr construction = _findContructionsInRange( attackDistance() ).valueOrEmpty(0);
 
-    if( !constructions.empty() )
+    if( !construction.isValid() )
     {
-      ConstructionPtr b = constructions.front();
-      turn( b->pos() );
+      turn( construction->pos() );
 
       if( _animation().index() == (int)(_animation().frameCount()-1) )
       {
-        _fire( b->pos() );
+        _fire( construction->pos() );
         _updateAnimation( time+1 );
       }
     }

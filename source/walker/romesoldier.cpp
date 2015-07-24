@@ -159,14 +159,14 @@ void RomeSoldier::load(const VariantMap& stream)
   VARIANT_LOAD_ANY_D( _d, patrolPosition, stream );
   VARIANT_LOAD_ANY_D( _d, basePos, stream );
 
-  FortPtr fort = ptr_cast<Fort>( _city()->getOverlay( _d->basePos ) );
-
+  FortPtr fort = _city()->getOverlay( _d->basePos ).as<Fort>();
   if( fort.isValid() )
   {
     fort->addWalker( this );
   }
   else
   {
+    Logger::warning( "!!! WARNING: RomeSoldier cant find base for himself at [%d,%d]", _d->basePos.i(), _d->basePos.j() );
     die();
   }
 }
@@ -246,14 +246,17 @@ WalkerList RomeSoldier::_findEnemiesInRange( unsigned int range )
   FortPtr fort = base();
   bool attackAnimals = fort.isValid() ? fort->isAttackAnimals() : false;
 
-  foreach( tile, area )
+  for( auto tile : area )
   {
-    WalkerList tileWalkers = _city()->walkers( (*tile)->pos() );
+    WalkerList tileWalkers = _city()->walkers( tile->pos() );
 
-    foreach( w, tileWalkers )
+    for( auto w : tileWalkers )
     {
-      if( (*w)->agressive() > 0 )  { walkers << *w; }
-      else if( attackAnimals && is_kind_of<Animal>( *w ) ) { walkers << *w; }
+      bool isAgressive = w->agressive() > 0;
+      bool myAttackAnimal = (attackAnimals && w.is<Animal>());
+
+      if( isAgressive || myAttackAnimal )
+        walkers << w;
     }
   }
 
@@ -305,9 +308,9 @@ Pathway RomeSoldier::_findPathway2NearestEnemy( unsigned int range )
   {
     WalkerList walkers = _findEnemiesInRange( tmpRange );
 
-    foreach( w, walkers)
+    for( auto w : walkers)
     {
-      ret = PathwayHelper::create( pos(), (*w)->pos(), PathwayHelper::allTerrain );
+      ret = PathwayHelper::create( pos(), w->pos(), PathwayHelper::allTerrain );
       if( ret.isValid() )
       {
         return ret;

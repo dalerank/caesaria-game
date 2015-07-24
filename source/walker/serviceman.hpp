@@ -76,6 +76,8 @@ public:
   bool contain( object::Type type ) const;
   BuildingPtr firstOf( object::Type type ) const;
 
+  void cancelService( Service::Type service );
+
   template<class Dst>
   bool firstOf( object::Type type ) const
   {
