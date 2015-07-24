@@ -36,6 +36,7 @@
 #include "core/variant.hpp"
 #include "game/gamedate.hpp"
 #include "walkers_factory.hpp"
+#include "core/common.hpp"
 
 using namespace gfx;
 using namespace events;
@@ -178,7 +179,8 @@ void Rioter::timeStep(const unsigned long time)
     if( game::Date::isDayChanged() )
     {
       ConstructionList constructions = _city()->statistic().objects.find<Construction>( object::any,
-                                                                             pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
+                                                                                        pos() - TilePos( 1, 1),
+                                                                                        pos() + TilePos( 1, 1) );
 
       for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
       {
@@ -233,11 +235,8 @@ void Rioter::send2City( BuildingPtr bld )
   setPos( tiles.random()->pos() );
   _d->houseLevel = 0;
 
-  if( is_kind_of<House>( bld ) )
-  {
-    HousePtr house = ptr_cast<House>( bld );
-    _d->houseLevel = house->spec().level();
-  }
+  if( bld.is<House>() )
+    _d->houseLevel = bld.as<House>()->spec().level();
 
   _d->state = Impl::searchHouse;
 
@@ -277,16 +276,14 @@ int Rioter::agressive() const { return 1; }
 void Rioter::excludeAttack(object::Group group) { _d->excludeGroups << group; }
 
 Pathway Rioter::Impl::findTarget(PlayerCityPtr city, ConstructionList constructions, TilePos pos )
-{  
+{    
   if( !constructions.empty() )
   {
+    constructions = constructions.random( 10 );
     Pathway pathway;
-    for( int i=0; i<10; i++)
+    for( auto c : constructions )
     {
-      ConstructionList::iterator it = constructions.begin();
-      std::advance( it, rand() % constructions.size() );
-
-      pathway = PathwayHelper::create( pos, *it, PathwayHelper::allTerrain );
+      pathway = PathwayHelper::create( pos, c, PathwayHelper::allTerrain );
       if( pathway.isValid() )
       {
         return pathway;

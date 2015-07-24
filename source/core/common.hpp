@@ -53,17 +53,30 @@ SmartPtr<Object> findNearest( const TilePos& pos, const SmartList<Object>& list 
   return p;
 }
 
-  template<class ObjectList>
-  ObjectList& eraseIfDeleted( ObjectList& list )
+template<class ObjectList>
+ObjectList& selectAgressive( const ObjectList& list, int much=0 )
+{
+  ObjectList ret;
+  for( auto it : list )
   {
-    for( typename ObjectList::iterator it=list.begin(); it != list.end(); )
-    {
-      if( (*it)->isDeleted() ) { it = list.erase( it ); }
-      else { ++it; }
-    }
-
-    return list;
+    if( it->agressive() > much )
+      ret.push_back( it );
   }
+
+  return ret;
+}
+
+template<class ObjectList>
+ObjectList& eraseIfDeleted( ObjectList& list )
+{
+  for( typename ObjectList::iterator it=list.begin(); it != list.end(); )
+  {
+    if( (*it)->isDeleted() ) { it = list.erase( it ); }
+    else { ++it; }
+  }
+
+  return list;
+}
 
 template< class Object >
 SmartPtr<Object> findByName( const SmartList<Object> list, const std::string& name)

@@ -61,7 +61,7 @@ public:
 };
 
 Prefect::Prefect(PlayerCityPtr city )
-: ServiceWalker( city, Service::prefect ), _d( new Impl )
+  : ServiceWalker( city, Service::prefect ), _d( new Impl )
 {
   _setType( walker::prefect );
   _d->water = 0;
@@ -88,15 +88,8 @@ WalkerPtr Prefect::_looks4Enemy( const int range )
   WalkerList walkers = _city()->statistic().walkers.find<Walker>( walker::any,
                                                                   pos() - offset, pos() + offset );
 
-  for( WalkerList::iterator it = walkers.begin(); it != walkers.end(); )
-  {
-    if( (*it)->agressive() <= 0 ) { it = walkers.erase( it ); }
-    else { ++it; }
-  }
-
-  WalkerPtr enemy = utils::findNearest( pos(), walkers );
-
-  return enemy;
+  walkers = utils::selectAgressive( walkers );
+  return utils::findNearest( pos(), walkers );
 }
 
 bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
@@ -137,7 +130,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
 
 void Prefect::_back2Prefecture()
 {
-  PrefecturePtr base = ptr_cast<Prefecture>( _city()->getOverlay( baseLocation() ) );
+  PrefecturePtr base = _city()->getOverlay( baseLocation() ).as<Prefecture>();
 
   if( base.isNull() )
   {
@@ -170,6 +163,42 @@ void Prefect::_back2Prefecture()
   }
 }
 
+void Prefect::_serveHouse( HousePtr house )
+{
+  if( !house.isValid() )
+    return;
+
+  int healthLevel = house->state( pr::health );
+  if( healthLevel < 1 )
+  {
+    bld->deleteLater();
+
+    _d->fumigateHouseNumber++;
+    house->removeHabitants( 1000 ); //all habitants will killed
+
+    GameEventPtr e = Disaster::create( house->tile(), Disaster::plague );
+    e->dispatch();
+
+    if( _d->fumigateHouseNumber > 5 )
+    {
+      e = ShowInfobox::create( "##pestilence_event_title##", "##pestilent_event_text##",
+                               ShowInfobox::send2scribe, "sick" );
+      e->dispatch();
+      _d->fumigateHouseNumber = -999;
+    }
+
+    if( _city()->getOption( PlayerCity::destroyEpidemicHouses ) )
+    {
+      HouseList hlist = _city()->statistic().objects.neighbors<House>( house );
+      for( auto h : hlist )
+      {
+        GameEventPtr e = Disaster::create( h->tile(), Disaster::plague );
+        e->dispatch();
+      }
+    }
+  }
+}
+
 void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
 {        
   for( auto bld : reachedBuildings )
@@ -179,38 +208,7 @@ void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
 
     bld->applyService( this );
 
-    HousePtr house = bld.as<House>();
-    if( house.isNull() ) continue;
-
-    int healthLevel = house->state( pr::health );
-    if( healthLevel < 1 )
-    {
-      bld->deleteLater();
-
-      _d->fumigateHouseNumber++;
-      house->removeHabitants( 1000 ); //all habitants will killed
-
-      GameEventPtr e = Disaster::create( house->tile(), Disaster::plague );
-      e->dispatch();
-
-      if( _d->fumigateHouseNumber > 5 )
-      {
-        e = ShowInfobox::create( "##pestilence_event_title##", "##pestilent_event_text##",
-                                 ShowInfobox::send2scribe, "sick" );
-        e->dispatch();
-        _d->fumigateHouseNumber = -999;
-      }
-
-      if( _city()->getOption( PlayerCity::destroyEpidemicHouses ) )
-      {
-        HouseList hlist = _city()->statistic().objects.neighbors<House>( house );
-        for( auto h : hlist )
-        {
-          GameEventPtr e = Disaster::create( h->tile(), Disaster::plague );
-          e->dispatch();
-        }
-      }
-    }
+    _serveHouse( bld.as<House>() );
   }
 }
 
@@ -245,12 +243,13 @@ void Prefect::_setSubAction( const Prefect::SbAction action)
 
 bool Prefect::_figthFire()
 {
-  TilesArray tiles = _city()->tilemap().getNeighbors(pos(), Tilemap::AllNeighbors);
+  BuildingList buildings = _city()->tilemap().getNeighbors(pos(), Tilemap::AllNeighbors)
+                                             .overlays()
+                                             .select<Building>();
 
-  for( auto tile : tiles )
+  for( auto building : buildings )
   {
-    BuildingPtr building = tile->overlay().as<Building>();
-    if( building.isValid() && building->type() == object::burning_ruins )
+    if( building->type() == object::burning_ruins )
     {
       turn( building->pos() );
       _setSubAction( fightFire );
