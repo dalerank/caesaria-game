@@ -35,7 +35,7 @@ ServiceWalkerPtr MarketLady::create(PlayerCityPtr city)
 
 MarketPtr MarketLady::market() const
 {
-  return ptr_cast<Market>( _city()->getOverlay( baseLocation() ) );
+  return _city()->getOverlay( baseLocation() ).as<Market>();
 }
 
 void MarketLady::_updateThoughts()

@@ -126,8 +126,7 @@ void MarketKid::_reachedPathway()
 
   deleteLater();
 
-  MarketPtr market;
-  market << _city()->getOverlay( _d->marketPos );
+  auto market = _city()->getOverlay( _d->marketPos ).as<Market>();
   if( market.isValid() )
   {
     market->goodStore().store( _d->basket, _d->basket.qty() );

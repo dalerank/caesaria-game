@@ -59,8 +59,19 @@ public:
 
   inline Products& operator<<(const Products& a)
   {
-    foreach( it, a )
-      this->insert( *it );
+    for( auto g : a )
+      this->insert( g );
+
+    return *this;
+  }
+
+  Products& exclude( const Products& a)
+  {
+    for( auto g : a )
+    {
+      if( this->count( g ) )
+        this->erase( g );
+    }
 
     return *this;
   }

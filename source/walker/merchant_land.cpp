@@ -143,14 +143,18 @@ public:
                  stNothing,
                  stBackToBaseCity } State;
 
-  TilePos destBuildingPos;  // warehouse
+  TilePos destination;  // warehouse
   good::Storage sell;
   good::Storage buy;
   int attemptCount;
   int waitInterval;
   std::string baseCityName;
-  int currentSell;
-  int currentBuys;
+  struct
+  {
+    int sell;
+    int buys;
+  } money;
+
   int maxDistance;
   MerchantCamelList camels;
   State nextState;
@@ -167,8 +171,8 @@ LandMerchant::LandMerchant(PlayerCityPtr city )
   _d->maxDistance = 60;
   _d->waitInterval = 0;
   _d->attemptCount = 0;
-  _d->currentBuys = 0;
-  _d->currentSell = 0;
+  _d->money.buys = 0;
+  _d->money.sell = 0;
 
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
@@ -181,7 +185,7 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
   {
   case stFindWarehouseForSelling:
     {
-      destBuildingPos = gfx::tilemap::invalidLocation();  // no destination yet
+      destination = gfx::tilemap::invalidLocation();  // no destination yet
 
       // get the list of buildings within reach
       Propagator pathPropagator( city );
@@ -209,7 +213,7 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
       {
         // we found a destination!
         nextState = stSellGoods;
-        destBuildingPos = route.first->pos();
+        destination = route.first->pos();
         wlk->setPos( route.second.startPos() );
         wlk->setPathway( route.second );      
         wlk->go();
@@ -224,7 +228,7 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
 
   case stFindWarehouseForBuying:
     {
-      destBuildingPos = gfx::tilemap::invalidLocation();  // no destination yet
+      destination = gfx::tilemap::invalidLocation();  // no destination yet
 
       // get the list of buildings within reach
       Propagator pathPropagator( city );
@@ -245,7 +249,7 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
       {
         // we found a destination!
         nextState = stBuyGoods;
-        destBuildingPos = route.first->pos();    
+        destination = route.first->pos();
         wlk->setPos( route.second.startPos() );
         wlk->setPathway( route.second );
         wlk->go();
@@ -260,7 +264,7 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
 
   case stBuyGoods:
     {
-      WarehousePtr warehouse = city->getOverlay( destBuildingPos ).as<Warehouse>();
+      WarehousePtr warehouse = city->getOverlay( destination ).as<Warehouse>();
 
       if( warehouse.isValid() )
       {
@@ -290,7 +294,7 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
               good::Stock& stock = buy.getStock( goodType );
               whStore.retrieve( stock, mayBuy );
 
-              currentBuys += good::Helper::exportPrice( city, goodType, mayBuy );
+              money.buys += good::Helper::exportPrice( city, goodType, mayBuy );
 
               GameEventPtr e = Payment::exportg( goodType, mayBuy, tradeKoeff );
               e->dispatch();
@@ -345,7 +349,7 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
 
   case stSellGoods:
   {
-    WarehousePtr warehouse = city->getOverlay( destBuildingPos ).as<Warehouse>();
+    WarehousePtr warehouse = city->getOverlay( destination ).as<Warehouse>();
 
     const good::Store& cityOrders = city->buys();
 
@@ -383,7 +387,7 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
             good::Stock& stock = sell.getStock( goodType );
             warehouse->store().store( stock, maySells );
 
-            currentSell += good::Helper::importPrice( city, goodType, maySells );
+            money.sell += good::Helper::importPrice( city, goodType, maySells );
 
             GameEventPtr e = Payment::import( goodType, maySells );
             e->dispatch();
@@ -412,8 +416,8 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
       route->addMerchant( ourCityName, sell, buy );
     }
 
-    foreach( it, camels )
-      (*it)->deleteLater();
+    for( auto it : camels )
+      it->deleteLater();
 
     nextState = stNothing;
   }
@@ -426,11 +430,11 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
 
 void LandMerchant::Impl::setCamelsGo( int delay )
 {
-  foreach( it, camels )
+  for( auto camel : camels )
   {
-    (*it)->wait( delay );
+    camel->wait( delay );
     if( !delay )
-      (*it)->go();
+      camel->go();
   }
 }
 
@@ -461,12 +465,12 @@ void LandMerchant::send2city()
 void LandMerchant::save( VariantMap& stream ) const
 {
   Walker::save( stream );
-  VARIANT_SAVE_ANY_D( stream, _d, destBuildingPos )
+  VARIANT_SAVE_ANY_D( stream, _d, destination )
   VARIANT_SAVE_ANY_D( stream, _d, maxDistance )
   VARIANT_SAVE_STR_D( stream, _d, baseCityName )
   VARIANT_SAVE_ANY_D( stream, _d, waitInterval )
-  VARIANT_SAVE_ANY_D( stream, _d, currentSell )
-  VARIANT_SAVE_ANY_D( stream, _d, currentBuys )
+  VARIANT_SAVE_ANY_D( stream, _d, money.sell )
+  VARIANT_SAVE_ANY_D( stream, _d, money.buys )
   VARIANT_SAVE_ENUM_D( stream, _d, nextState )
   VARIANT_SAVE_CLASS_D( stream, _d, sell )
   VARIANT_SAVE_CLASS_D( stream, _d, buy )
@@ -475,12 +479,12 @@ void LandMerchant::save( VariantMap& stream ) const
 void LandMerchant::load( const VariantMap& stream)
 {
   Walker::load( stream );
-  VARIANT_LOAD_ANY_D( _d, destBuildingPos, stream )
+  VARIANT_LOAD_ANY_D( _d, destination, stream )
   VARIANT_LOAD_ANY_D( _d, maxDistance, stream )
   VARIANT_LOAD_STR_D( _d, baseCityName, stream )
   VARIANT_LOAD_ANY_D( _d, waitInterval, stream )
-  VARIANT_LOAD_ANY_D( _d, currentSell, stream )
-  VARIANT_LOAD_ANY_D( _d, currentBuys, stream )
+  VARIANT_LOAD_ANY_D( _d, money.sell, stream )
+  VARIANT_LOAD_ANY_D( _d, money.buys, stream )
   VARIANT_LOAD_ENUM_D( _d, nextState, stream );
   VARIANT_LOAD_CLASS_D( _d, sell, stream )
   VARIANT_LOAD_CLASS_D( _d, buy, stream )
@@ -496,11 +500,11 @@ void LandMerchant::setPathway(const Pathway& pathway)
 {
   Human::setPathway( pathway );
 
-  foreach( it, _d->camels )
+  for( auto camel : _d->camels )
   {
-    Pathway newPath = PathwayHelper::create( (*it)->pos(), pathway.stopPos(), PathwayHelper::roadFirst );
-    (*it)->setPathway( newPath );
-    (*it)->wait( 0 );
+    Pathway newPath = PathwayHelper::create( camel->pos(), pathway.stopPos(), PathwayHelper::roadFirst );
+    camel->setPathway( newPath );
+    camel->wait( 0 );
   }
 }
 
@@ -533,14 +537,14 @@ std::string LandMerchant::thoughts(Walker::Thought th) const
     break;
 
     case Impl::stGoOutFromCity:
-      if( _d->currentBuys >0 || _d->currentSell > 0 )
+      if( _d->money.buys >0 || _d->money.sell > 0 )
       {
         return "##merchant_just_unloading_my_goods##";
       }
     break;
 
     case Impl::stBackToBaseCity:
-      if( _d->currentSell - _d->currentBuys < 0 )
+      if( _d->money.sell - _d->money.buys < 0 )
       {
         return "##merchant_notbad_city##";
       }
@@ -571,7 +575,7 @@ TilePos LandMerchant::places(Walker::Place type) const
 {
   switch( type )
   {
-  case plDestination: return _d->destBuildingPos;
+  case plDestination: return _d->destination;
   default: break;
   }
 
@@ -587,8 +591,8 @@ void LandMerchant::_centerTile()
 {
   Human::_centerTile();
 
-  foreach( it, _d->camels )
-    (*it)->updateHeadLocation( pos() );
+  for( auto camel : _d->camels )
+    camel->updateHeadLocation( pos() );
 }
 
 WalkerPtr LandMerchant::create(PlayerCityPtr city) {  return create( city, world::MerchantPtr() ).object(); }

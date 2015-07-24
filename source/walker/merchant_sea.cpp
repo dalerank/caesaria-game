@@ -278,16 +278,16 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
       trade::Options& options = city->tradeOptions();
       const good::Store& importing = options.buys();
       //try sell goods
-      foreach( goodType, good::all() )
+      for( auto goodType : good::all() )
       {
-        if (!options.isImporting(*goodType))
+        if (!options.isImporting(goodType))
         {
           continue;
         }
 
-        if( sell.qty(*goodType) > 0 && importing.capacity(*goodType) > 0)
+        if( sell.qty(goodType) > 0 && importing.capacity(goodType) > 0)
         {
-          currentSell += myDock->importingGoods( sell.getStock(*goodType) );
+          currentSell += myDock->importingGoods( sell.getStock(goodType) );
           anySell = true;
         }
       }
@@ -327,24 +327,23 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
 
 Pathway SeaMerchant::Impl::findRandomRaid(const DockList& docks, TilePos position)
 {
-  DockList::const_iterator i = docks.begin();
   DockPtr minQueueDock;
   int minQueue = 999;
 
-  for( DockList::const_iterator it=docks.begin(); it != docks.end(); ++it )
+  for( auto it : docks )
   {
-    int currentQueueSize = (*it)->queueSize();
+    int currentQueueSize = it->queueSize();
     if( currentQueueSize < minQueue )
     {
       minQueue = currentQueueSize;
-      minQueueDock = *it;
+      minQueueDock = it;
     }
   }
 
   Pathway ret;
   if( minQueueDock.isValid() )
   {
-    ret = PathwayHelper::create( position, (*i)->queueTile().pos(), PathwayHelper::deepWater );
+    ret = PathwayHelper::create( position, minQueueDock->queueTile().pos(), PathwayHelper::deepWater );
   }
 
   return ret;
@@ -389,7 +388,9 @@ void SeaMerchant::Impl::goAwayFromCity( PlayerCityPtr city, WalkerPtr walker )
 
 DockPtr SeaMerchant::Impl::findLandingDock(PlayerCityPtr city, WalkerPtr walker)
 {
-  DockList docks = city->statistic().objects.find<Dock>( object::dock, walker->pos() - TilePos( 1, 1), walker->pos() + TilePos( 1, 1 ) );
+  DockList docks = city->statistic().objects.find<Dock>( object::dock,
+                                                         walker->pos() - TilePos( 1, 1),
+                                                         walker->pos() + TilePos( 1, 1 ) );
   for( auto dock : docks )
   {
     if( dock->landingTile().pos() == walker->pos() )

@@ -560,8 +560,7 @@ void PlayerCity::setOption(PlayerCity::OptionType opt, int value) { _d->options[
 
 int PlayerCity::prosperity() const
 {
-  city::ProsperityRatingPtr csPrsp;
-  csPrsp << findService( city::ProsperityRating::defaultName() );
+  city::ProsperityRatingPtr csPrsp = statistic().services.find<city::ProsperityRating>();
   return csPrsp.isValid() ? csPrsp->value() : 0;
 }
 

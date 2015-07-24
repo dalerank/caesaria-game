@@ -212,6 +212,18 @@ bool Options::isStacking( good::Product type )
   return ( it == _d->goods.end() ? false : it->second.stacking );
 }
 
+good::Products Options::locked() const
+{
+  good::Products ret;
+  for( auto g : _d->goods )
+  {
+    if( g.second.stacking )
+      ret.insert( g.first );
+  }
+
+  return ret;
+}
+
 bool Options::isExporting( good::Product type ) const
 {
   Impl::GoodsInfo::const_iterator it = _d->goods.find( type );

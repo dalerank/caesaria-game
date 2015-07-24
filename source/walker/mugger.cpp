@@ -150,7 +150,9 @@ void Mugger::timeStep(const unsigned long time)
   {
     if( game::Date::isDayChanged() )
     {
-      HouseList houses = _city()->statistic().objects.find<House>( object::house, pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
+      HouseList houses = _city()->statistic().objects.find<House>( object::house,
+                                                                   pos() - TilePos( 1, 1),
+                                                                   pos() + TilePos( 1, 1) );
 
       for( auto house : houses )
       {

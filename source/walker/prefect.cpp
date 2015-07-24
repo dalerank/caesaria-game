@@ -171,7 +171,7 @@ void Prefect::_serveHouse( HousePtr house )
   int healthLevel = house->state( pr::health );
   if( healthLevel < 1 )
   {
-    bld->deleteLater();
+    house->deleteLater();
 
     _d->fumigateHouseNumber++;
     house->removeHabitants( 1000 ); //all habitants will killed
