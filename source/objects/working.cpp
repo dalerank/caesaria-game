@@ -25,6 +25,8 @@
 #include "objects/house.hpp"
 #include "objects/house_level.hpp"
 #include "events/removecitizen.hpp"
+#include "core/common.hpp"
+#include "walker/typeset.hpp"
 
 using namespace gfx;
 using namespace events;
@@ -161,7 +163,7 @@ void WorkingBuilding::timeStep( const unsigned long time )
 {
   Building::timeStep( time );
 
-  utils::eraseDeletedElements( _d->walkerList );
+  utils::eraseIfDeleted( _d->walkerList );
 
   if( game::Date::isMonthChanged() && numberWorkers() > 0 )
   {
@@ -245,14 +247,11 @@ void WorkingBuilding::destroy()
 {
   Building::destroy();
 
-  for( auto wlk : _d->walkerList )
-  {
-    walker::Type wt = wlk->type();
-    if( wt == walker::cartPusher || wt == walker::supplier )
-      continue;
-
+  WalkerList mayDelete = walkers();
+  utils::excludeByType( mayDelete, WalkerTypeSet( walker::cartPusher,
+                                                  walker::supplier ) );
+  for( auto wlk : mayDelete )
     wlk->deleteLater();
-  }
 
   if( numberWorkers() > 0 )
   {

@@ -244,12 +244,12 @@ const Picture& Aqueduct::picture( const city::AreaInfo& info ) const
   // calculate directions
   for (int i = 0; i < direction::count; ++i)
   {
-    bool isReservoirNear = is_kind_of<Reservoir>( overlay_d[i] );
+    bool isReservoirNear = overlay_d[i].is<Reservoir>();
     if( !is_border[i] && (is_kind_of<Aqueduct>( overlay_d[i] ) || isReservoirNear || is_busy[i] ) )
     {
       if( isReservoirNear )
       {
-        ReservoirPtr reservoir = overlay_d[ i ].is<Reservoir>();
+        ReservoirPtr reservoir = overlay_d[ i ].as<Reservoir>();
         switch( i )
         {
         case north: directionFlags += ( reservoir->entry( south ) == p + TilePos( 0, 1 ) ? 1 : 0 ); break;

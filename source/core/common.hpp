@@ -25,7 +25,7 @@ namespace utils
 {
 
 template<class ObjectList, class Set>
-inline void excludeByType( ObjectList& list, const Set& set )
+void excludeByType( ObjectList& list, const Set& set )
 {
   for( auto it=list.begin(); it != list.end(); )
   {
@@ -53,6 +53,18 @@ SmartPtr<Object> findNearest( const TilePos& pos, const SmartList<Object>& list 
   return p;
 }
 
+  template<class ObjectList>
+  ObjectList& eraseIfDeleted( ObjectList& list )
+  {
+    for( typename ObjectList::iterator it=list.begin(); it != list.end(); )
+    {
+      if( (*it)->isDeleted() ) { it = list.erase( it ); }
+      else { ++it; }
+    }
+
+    return list;
+  }
+
 template< class Object >
 SmartPtr<Object> findByName( const SmartList<Object> list, const std::string& name)
 {
@@ -63,6 +75,20 @@ SmartPtr<Object> findByName( const SmartList<Object> list, const std::string& na
   }
 
   return SmartPtr<Object>();
+}
+
+template<class Object, class Parent>
+std::set<SmartPtr<Object>> select( const std::set<SmartPtr<Parent>>& objects )
+{
+  std::set<SmartPtr<Object>> ret;
+  for( auto item : objects )
+  {
+    SmartPtr<Object> a = ptr_cast<Object>( item );
+    if( a.isValid() )
+      ret.insert( a );
+  }
+
+  return ret;
 }
 
 }//end namespace utils

@@ -29,6 +29,7 @@
 #include "constants.hpp"
 #include "actor_colony.hpp"
 #include "walker/helper.hpp"
+#include "core/common.hpp"
 #include "objects_factory.hpp"
 
 using namespace gfx;
@@ -38,7 +39,11 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(object::amphitheater, Amphitheater)
 class Amphitheater::Impl
 {
 public:
-  DateTime lastDateGl, lastDateShow;
+  struct
+  {
+    DateTime glads;
+    DateTime arts;
+  } lastshow;
 };
 
 Amphitheater::Amphitheater()
@@ -106,7 +111,7 @@ void Amphitheater::deliverService()
     if( saveWalkesNumber != currentWalkerNumber )
     {
       (lastSrvc == Service::colloseum
-        ? _d->lastDateGl : _d->lastDateShow ) = game::Date::current();
+        ? _d->lastshow.glads : _d->lastshow.arts ) = game::Date::current();
     }
   }
   else
@@ -119,15 +124,15 @@ void Amphitheater::deliverService()
 void Amphitheater::save(VariantMap& stream) const
 {
   EntertainmentBuilding::save( stream );
-  VARIANT_SAVE_ANY_D( stream, _d, lastDateGl )
-  VARIANT_SAVE_ANY_D( stream, _d, lastDateShow )
+  VARIANT_SAVE_ANY_D( stream, _d, lastshow.glads )
+  VARIANT_SAVE_ANY_D( stream, _d, lastshow.arts )
 }
 
 void Amphitheater::load(const VariantMap& stream)
 {
   EntertainmentBuilding::load( stream );
-  VARIANT_LOAD_TIME_D( _d, lastDateGl, stream )
-  VARIANT_LOAD_TIME_D( _d, lastDateShow, stream )
+  VARIANT_LOAD_TIME_D( _d, lastshow.glads, stream )
+  VARIANT_LOAD_TIME_D( _d, lastshow.arts, stream )
 }
 
 int Amphitheater::maxVisitors() const { return 800; }
@@ -147,8 +152,8 @@ DateTime Amphitheater::lastShow(Amphitheater::PlayType type) const
 {
   switch( type )
   {
-  case theatrical: return _d->lastDateShow;
-  case gladiatorBouts: return  _d->lastDateGl;
+  case theatrical: return _d->lastshow.arts;
+  case gladiatorBouts: return  _d->lastshow.glads;
   }
 
   return DateTime( -350, 1, 1 );
@@ -156,10 +161,10 @@ DateTime Amphitheater::lastShow(Amphitheater::PlayType type) const
 
 Service::Type Amphitheater::_getServiceManType() const
 {
-  ServiceWalkerList servicemen;
-  servicemen << walkers();
-
-  return (!servicemen.empty() ? servicemen.front()->serviceType() : Service::srvCount);
+  ServiceWalkerList servicemen = walkers().select<ServiceWalker>();
+  return (!servicemen.empty()
+                ? servicemen.front()->serviceType()
+                : Service::srvCount);
 }
 
 bool Amphitheater::isNeed(walker::Type type)

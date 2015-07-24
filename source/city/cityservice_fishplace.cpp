@@ -25,6 +25,7 @@
 #include "walker/fish_place.hpp"
 #include "game/gamedate.hpp"
 #include "cityservice_factory.hpp"
+#include "core/common.hpp"
 #include "core/tilepos_array.hpp"
 
 namespace city
@@ -87,7 +88,7 @@ void Fishery::timeStep(const unsigned int time )
     _d->places.push_back( ptr_cast<FishPlace>( fishplace ) );
   }
 
-  utils::eraseDeletedElements( _d->places );
+  utils::eraseIfDeleted( _d->places );
 }
 
 bool Fishery::isDeleted() const { return _d->nFailed > 3; }

@@ -40,7 +40,9 @@
 #include "city/states.hpp"
 #include "config.hpp"
 #include "core/flowlist.hpp"
+#include "emperor_line.hpp"
 #include "events/changeemperor.hpp"
+#include "core/common.hpp"
 
 using namespace config;
 
@@ -62,26 +64,19 @@ public:
 
   void setAvailable( bool value )
   {
-    for( auto it : *this ) { it->setAvailable( value ); }
+    for( auto city : *this )
+      city->setAvailable( value );
   }
 
   void update( unsigned int time )
   {
     for( auto city : *this )
-    {
       city->timeStep( time );
-    }
   }
 
   CityPtr find( const std::string& name ) const
   {
-    for( auto city : *this )
-    {
-      if( city->name() == name )
-        return city;
-    }
-
-    return CityPtr();
+    return utils::findByName( *this, name );
   }
 
   VariantMap save() const
@@ -140,13 +135,8 @@ public:
 
   void update( unsigned int time )
   {
-    for( ObjectList::iterator it=begin(); it != end(); )
-    {
-      (*it)->timeStep( time );
-      if( (*it)->isDeleted() ) { it = erase( it ); }
-      else { ++it; }
-    }
-
+    for( auto obj : *this ) obj->timeStep( time );
+    utils::eraseIfDeleted( *this );
     merge();
   }
 
@@ -172,7 +162,7 @@ public:
 
       ObjectPtr obj = ObjectsFactory::instance().create( objectType, empire );
       obj->load( vm );
-      *this << obj;
+      push_back( obj );
     }
   }
 };

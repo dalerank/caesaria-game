@@ -28,6 +28,7 @@
 #include "walker/serviceman.hpp"
 #include "game/gamedate.hpp"
 #include "walker/helper.hpp"
+#include "core/common.hpp"
 #include "objects_factory.hpp"
 
 using namespace gfx;

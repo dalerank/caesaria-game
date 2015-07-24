@@ -25,6 +25,7 @@
 #include "game/gamedate.hpp"
 #include "objects_factory.hpp"
 #include "core/logger.hpp"
+#include "core/common.hpp"
 #include "config.hpp"
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::school, School)

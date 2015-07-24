@@ -107,8 +107,8 @@ void Relation::load(const VariantMap &stream)
 VariantMap Relations::save() const
 {
   VariantMap ret;
-  foreach( it, *this )
-    ret[ it->first ] = it->second.save();
+  for( auto it : *this )
+    ret[ it.first ] = it.second.save();
 
   return ret;
 }

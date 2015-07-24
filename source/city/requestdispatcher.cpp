@@ -25,6 +25,7 @@
 #include "core/logger.hpp"
 #include "core/utils.hpp"
 #include "cityservice_factory.hpp"
+#include "core/common.hpp"
 
 namespace city
 {
@@ -154,7 +155,7 @@ RequestList Dispatcher::requests() const {  return _d->requests; }
 
 void Dispatcher::Impl::updateRequests()
 {
-  utils::eraseDeletedElements( requests );
+  utils::eraseIfDeleted( requests );
 
   if( !newRequests.empty() )
   {

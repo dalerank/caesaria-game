@@ -308,7 +308,7 @@ void Construction::timeStep(const unsigned long time)
   for( auto ext : _d->extensions )
     ext->timeStep( this, time );
 
-  utils::eraseDeletedElements( _d->extensions );
+  utils::eraseIfDeleted( _d->extensions );
 
   _d->extensions.merge();
 

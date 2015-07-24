@@ -140,6 +140,6 @@ void Barracks::load(const VariantMap& stream)
 {
   TrainingBuilding::load( stream );
 
-  VARIANT_LOAD_CLASS_D( _d, store, store )
+  VARIANT_LOAD_CLASS_D( _d, store, stream )
   VARIANT_LOAD_ANY_D( _d, notNeedSoldiers, stream )
 }

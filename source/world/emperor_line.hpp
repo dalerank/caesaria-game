@@ -13,28 +13,36 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_DIRECTED_ACTION_H_INCLUDED__
-#define __CAESARIA_DIRECTED_ACTION_H_INCLUDED__
+#ifndef __CAESARIA_EMPERORLINE_H_INCLUDED__
+#define __CAESARIA_EMPERORLINE_H_INCLUDED__
 
-#include "core/direction.hpp"
+#include "predefinitions.hpp"
+#include "core/scopedptr.hpp"
+#include "core/variant.hpp"
+#include "vfs/path.hpp"
 
-struct DirectedAction
+namespace world
 {
-  int action;
-  Direction direction;
 
-  DirectedAction(int a=0, Direction d=direction::none) : action(a), direction(d) {}
+class EmperorLine
+{
+public:
+  static EmperorLine& instance();
 
-  bool valid() const { return direction::none != direction; }
+  std::string getEmperor( DateTime time );
+  VariantMap getInfo( const std::string& name ) const;
 
-  inline bool operator<( const DirectedAction &a ) const
-  {
-    return ( action != a.action
-              ? action < a.action
-              : direction < a.direction );
-  }
+  void load(vfs::Path filename );
+
+private:
+  EmperorLine();
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
-#endif //__CAESARIA_DIRECTED_ACTION_H_INCLUDED__
+}//end namespace world
+
+#endif //__CAESARIA_EMPERORLINE_H_INCLUDED__

@@ -215,22 +215,22 @@ void PlayerArmy::_check4attack()
 
   std::map< int, MovableObjectPtr > distanceMap;
 
-  foreach( it, mobjects )
+  for( auto it : mobjects )
   {
-    float distance = location().distanceTo( (*it)->location() );    
-    distanceMap[ (int)distance ] = *it;
+    float distance = location().distanceTo( it->location() );
+    distanceMap[ (int)distance ] = it;
   }
 
-  foreach( it, distanceMap )
+  for( auto it : distanceMap )
   {
-    if( it->first < config::army::viewRange )
+    if( it.first < config::army::viewRange )
     {
-      _attackObject( it->second.as<Object>() );
+      _attackObject( it.second.as<Object>() );
       break;
     }
-    else if( it->first < viewDistance() )
+    else if( it.first < viewDistance() )
     {
-      bool validWay = _findWay( location(), it->second->location() );
+      bool validWay = _findWay( location(), it.second->location() );
       if( validWay )
       {
         _d->mode = PlayerArmy::go2location;
@@ -245,16 +245,16 @@ void PlayerArmy::_check4attack()
      std::map< int, CityPtr > citymap;
 
      DateTime currentDate = game::Date::current();
-     foreach( it, cities )
+     for( auto city : cities )
      {
-       float distance = location().distanceTo( (*it)->location() );
-       int month2lastAttack = math::clamp<int>( DateTime::monthsInYear - (*it)->lastAttack().monthsTo( currentDate ), 0, DateTime::monthsInYear );
-       citymap[ month2lastAttack * 100 + (int)distance ] = *it;
+       float distance = location().distanceTo( city->location() );
+       int month2lastAttack = math::clamp<int>( DateTime::monthsInYear - city->lastAttack().monthsTo( currentDate ), 0, DateTime::monthsInYear );
+       citymap[ month2lastAttack * 100 + (int)distance ] = city;
      }
 
-     foreach( it, citymap )
+     for( auto city : citymap )
      {
-       bool validWay = _findWay( location(), it->second->location() );
+       bool validWay = _findWay( location(), city.second->location() );
        if( validWay )
        {
          _d->mode = PlayerArmy::go2location;
@@ -281,15 +281,15 @@ void PlayerArmy::_reachedWay()
     PlayerCityPtr pCity = ptr_cast<PlayerCity>( _d->base );
     if( pCity.isValid() )
     {
-      foreach( it, _d->soldiersInfo )
+      for( auto sldr : _d->soldiersInfo )
       {
-        int type = (*it).save[ "type" ];
+        int type = sldr.save[ "type" ];
         WalkerPtr walker = WalkerManager::instance().create( (walker::Type)type, pCity );
-        walker->load( (*it).save );
+        walker->load( sldr.save );
         walker->attach();
       }
 
-      FortPtr fort = ptr_cast<Fort>( pCity->getOverlay( _d->fortPos ) );
+      FortPtr fort = pCity->getOverlay( _d->fortPos ).as<Fort>();
       if( fort.isValid() )
       {
         fort->returnSoldiers();
@@ -307,9 +307,9 @@ void PlayerArmy::_attackAny()
   objs.remove( this );
 
   bool successAttack = false;
-  foreach( i, objs )
+  for( auto i : objs )
   {
-    successAttack = _attackObject( *i );
+    successAttack = _attackObject( i );
     if( successAttack )
       break;
   }
@@ -352,9 +352,9 @@ PlayerArmy::PlayerArmy( EmpirePtr empire )
 void PlayerArmy::Impl::updateStrength()
 {
   unsigned int result = 0;
-  foreach( it, soldiersInfo )
+  for( auto it : soldiersInfo )
   {
-    result += (*it).strike;
+    result += it.strike;
   }
 }
 

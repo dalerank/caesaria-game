@@ -82,18 +82,6 @@ namespace utils
 
   std::string i2str( int valie );
 
-  template< class Item >
-  SmartList<Item>& eraseDeletedElements( SmartList<Item>& items )
-  {
-    for( typename SmartList<Item>::iterator it=items.begin(); it != items.end(); )
-    {
-      if( (*it)->isDeleted() ) { it = items.erase( it ); }
-      else { ++it; }
-    }
-
-    return items;
-  }
-
   VariantList toVList( const StringArray& items );
 
   float eventProbability(float probability, int k, int n);  

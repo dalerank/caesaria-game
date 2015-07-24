@@ -95,7 +95,7 @@ void TraineeWalker::setBase(BuildingPtr originBuilding)
 
 BuildingPtr TraineeWalker::receiver() const
 {
-  return ptr_cast<Building>( _city()->getOverlay( _d->destLocation ) );
+  return _city()->getOverlay( _d->destLocation ).as<Building>();
 }
 
 void TraineeWalker::_computeWalkerPath( bool roadOnly )
@@ -107,7 +107,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
     return;
   }
 
-  BuildingPtr base = ptr_cast<Building>( _city()->getOverlay( _d->baseLocation ) );
+  BuildingPtr base = ( _city()->getOverlay( _d->baseLocation ).as<Building>());
   if( !base.isValid() )
   {
     Logger::warning( "!!! WARNING: trainee walker base is null at [%d,%d]", _d->baseLocation.i(), _d->baseLocation.j() );
@@ -121,10 +121,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
 
   BuildingList buildings;
   for( auto buildingType : _d->necBuildings )
-  {
-    BuildingList tmpBuildings = _city()->statistic().objects.find<Building>( buildingType );
-    buildings.insert( buildings.end(), tmpBuildings.begin(), tmpBuildings.end() );
-  }
+    buildings.append( _city()->statistic().objects.find<Building>( buildingType ) );
 
   TilesArray startArea = roadOnly ? base->roadside() : base->enterArea();
 
@@ -242,7 +239,7 @@ void TraineeWalker::_reachedPathway()
   Walker::_reachedPathway();
   deleteLater();
 
-  BuildingPtr dest = ptr_cast<Building>( _city()->getOverlay( _d->destLocation ) );
+  BuildingPtr dest = _city()->getOverlay( _d->destLocation ).as<Building>();
   if( dest.isValid() )
   {
     dest->updateTrainee( this );

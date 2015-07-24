@@ -239,14 +239,12 @@ FortificationList WallGuard::_findNearestWalls( EnemySoldierPtr enemy )
     TilePos offset( range, range );
     TilePos ePos = enemy->pos();
     TilesArray tiles = tmap.getRectangle( ePos - offset, ePos + offset );
+    FortificationList walls = tiles.overlays().select<Fortification>();
 
-    for( auto tile : tiles )
+    for( auto wall : walls )
     {
-      FortificationPtr f = tile->overlay().as<Fortification>();
-      if( f.isValid() && f->mayPatrol() )
-      {
-        ret.push_back( f );
-      }
+      if( wall->mayPatrol() )
+        ret.push_back( wall );
     }
   }
 
@@ -272,12 +270,11 @@ bool WallGuard::_tryAttack()
     {
       PathwayPtr shortestWay;
       int minDistance = 999;
-      foreach( it, enemies )
+      for( auto enemy : enemies )
       {
-        EnemySoldierPtr enemy = *it;
         FortificationList nearestWall = _findNearestWalls( enemy );
-
         PathwayList wayList = _d->base->getWays( pos(), nearestWall );
+
         for( auto way : wayList )
         {
           double tmpDistance = way->stopPos().distanceFrom( enemy->pos() );

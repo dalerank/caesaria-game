@@ -45,7 +45,7 @@ static const int brokenMoreTaxPenalty = 2;
 static const int taxBrokenFavourDecrease = 3;
 static const int taxBrokenFavourDecreaseMax = 8;
 static const int normalSalaryFavourUpdate = 1;
-static const int minimumFabvour4wrathGenerate = 20;
+static const int minimumFavour4wrathGenerate = 20;
 static const int maxWrathPointValue = 20;
 }
 
@@ -56,7 +56,10 @@ public:
   Empire* empire;
   std::string name;
 
+public:
   void resolveTroubleCities( const CityList& cities );
+  void updateRelation( CityPtr city );
+  CityList findTroubleCities();
 };
 
 Emperor::Emperor() : __INIT_IMPL(Emperor)
@@ -82,7 +85,6 @@ void Emperor::updateRelation(const std::string& cityname, int value)
 void Emperor::sendGift(const Gift& gift)
 {
   Relation& relation = _dfunc()->relations[ gift.sender() ];
-
   relation.update( gift );
 }
 
@@ -95,78 +97,83 @@ DateTime Emperor::lastGiftDate(const std::string& cityname) const
     return it->second.lastGift.date();
 }
 
+void Emperor::Impl::updateRelation( CityPtr cityp )
+{
+  if( !cityp->isAvailable() )
+    return;
+
+  Relation& relation = relations[ cityp->name() ];
+
+  relation.soldiersSent = 0;     //clear chasteners count
+  relation.change( -config::emperor::yearlyFavorDecrease );
+
+  int monthWithoutTax = relation.lastTaxDate.monthsTo( game::Date::current() );
+  if( monthWithoutTax > DateTime::monthsInYear )
+  {
+    int decrease = math::clamp( taxBrokenFavourDecrease + monthWithoutTax / DateTime::monthsInYear * 2, 0, taxBrokenFavourDecreaseMax );
+    relation.change( -decrease );
+  }
+
+  float salaryKoeff = EmpireHelper::governorSalaryKoeff( cityp );
+  if( salaryKoeff > 1.f ) { salaryKoeff = -(int)salaryKoeff * salaryKoeff; }
+  else if( salaryKoeff < 1.f ) { salaryKoeff = normalSalaryFavourUpdate; }
+  else { salaryKoeff = 0; }
+
+  relation.change( salaryKoeff );
+
+  int brokenEmpireTax = cityp->treasury().getIssueValue( econ::Issue::overdueEmpireTax, econ::Treasury::lastYear );
+  if( brokenEmpireTax > 0 )
+  {
+    relation.change( -brokenTaxPenalty );
+
+    brokenEmpireTax = cityp->treasury().getIssueValue( econ::Issue::overdueEmpireTax, econ::Treasury::twoYearsAgo );
+    if( brokenEmpireTax > 0 )
+      relation.change( -brokenMoreTaxPenalty );
+  }
+}
+
+CityList Emperor::Impl::findTroubleCities()
+{
+  CityList ret;
+  for( auto it : relations )
+  {
+    CityPtr city = empire->findCity( it.first );
+    Relation& relation = relations[ it.first ];
+
+    if( !city.isValid() )
+    {
+      Logger::warning( "!!! WARNING: city not availaible " + it.first );
+      continue;
+    }
+
+    bool emperorAngry = relation.value() < minimumFavour4wrathGenerate;
+    if( emperorAngry  )
+    {
+      relation.wrathPoint += math::clamp( maxWrathPointValue - relation.value(), 0, maxWrathPointValue );
+      if( relation.soldiersSent == 0 )
+        ret.push_back( city );
+    }
+    else
+    {
+      relation.wrathPoint = 0;
+    }
+  }
+
+  return ret;
+}
+
 void Emperor::timeStep(unsigned int time)
 {
+  __D_IMPL(d,Emperor)
   if( game::Date::isYearChanged() )
   {
-    __D_IMPL(d,Emperor)
-
-    CityList empireCities = d->empire->cities();
-    for( auto cityp : empireCities )
-    {
-      if( !cityp->isAvailable() )
-        continue;
-
-      Relation& relation = d->relations[ cityp->name() ];
-
-      relation.soldiersSent = 0;     //clear chasteners count
-      relation.change( -config::emperor::yearlyFavorDecrease );
-
-      int monthWithoutTax = relation.lastTaxDate.monthsTo( game::Date::current() );
-      if( monthWithoutTax > DateTime::monthsInYear )
-      {
-        int decrease = math::clamp( taxBrokenFavourDecrease + monthWithoutTax / DateTime::monthsInYear * 2, 0, taxBrokenFavourDecreaseMax );
-        relation.change( -decrease );
-      }
-
-      float salaryKoeff = EmpireHelper::governorSalaryKoeff( cityp );
-      if( salaryKoeff > 1.f ) { salaryKoeff = -(int)salaryKoeff * salaryKoeff; }
-      else if( salaryKoeff < 1.f ) { salaryKoeff = normalSalaryFavourUpdate; }
-      else { salaryKoeff = 0; }
-
-      relation.change( salaryKoeff );
-
-      int brokenEmpireTax = cityp->treasury().getIssueValue( econ::Issue::overdueEmpireTax, econ::Treasury::lastYear );
-      if( brokenEmpireTax > 0 )
-      {
-        relation.change( -brokenTaxPenalty );
-
-        brokenEmpireTax = cityp->treasury().getIssueValue( econ::Issue::overdueEmpireTax, econ::Treasury::twoYearsAgo );
-        if( brokenEmpireTax > 0 )
-          relation.change( -brokenMoreTaxPenalty );
-      }
-    }
+    for( auto cityp : d->empire->cities() )
+      d->updateRelation( cityp );
   }
 
   if( game::Date::isMonthChanged() )
   {
-    __D_IMPL(d,Emperor)
-
-    CityList troubleCities;
-    foreach( it, d->relations )
-    {
-      CityPtr city = d->empire->findCity( it->first );
-      Relation& relation = d->relations[ it->first ];
-
-      if( !city.isValid() )
-      {
-        Logger::warning( "!!! WARNING: city not availaible " + it->first );
-        continue;
-      }
-
-      bool emperorAngry = relation.value() < minimumFabvour4wrathGenerate;
-      if( emperorAngry  )
-      {
-        relation.wrathPoint += math::clamp( maxWrathPointValue - relation.value(), 0, maxWrathPointValue );
-        if( relation.soldiersSent == 0 )
-          troubleCities << city;
-      }
-      else
-      {
-        relation.wrathPoint = 0;
-      }
-    }
-
+    CityList troubleCities = d->findTroubleCities();
     d->resolveTroubleCities( troubleCities );
   }
 }
@@ -300,73 +307,4 @@ void Emperor::init(Empire &empire)
   d->empire = &empire;
 }
 
-struct EmperorInfo
-{
-  std::string name;
-  DateTime beginReign;
-  VariantMap options;
-
-  void load( const VariantMap& stream )
-  {
-    beginReign = stream.get( "date" ).toDateTime();
-    name = stream.get( "name" ).toString();
-    options = stream;
-  }
-};
-
-class EmperorLine::Impl
-{
-public:
-  typedef std::map< DateTime, EmperorInfo> ChangeInfo;
-
-  ChangeInfo changes;
-};
-
-EmperorLine& EmperorLine::instance()
-{
-  static EmperorLine inst;
-  return inst;
-}
-
-std::string EmperorLine::getEmperor(DateTime time)
-{
-  foreach( it, _d->changes )
-  {
-    if( it->first >= time )
-      return it->second.name;
-  }
-
-  return "";
-}
-
-VariantMap EmperorLine::getInfo(std::string name) const
-{
-  foreach( it, _d->changes )
-  {
-    if( name == it->second.name )
-      return it->second.options;
-  }
-
-  return VariantMap();
-}
-
-void EmperorLine::load(vfs::Path filename)
-{
-  _d->changes.clear();
-
-  VariantMap opts = config::load( filename );
-  foreach( it, opts )
-  {
-    EmperorInfo info;
-    info.load( it->second.toMap() );
-
-    _d->changes[ info.beginReign ] = info;
-  }
-}
-
-EmperorLine::EmperorLine() : _d( new Impl )
-{
-
-}
-
-}
+}//end namespace world

@@ -133,4 +133,4 @@ void Object::deleteLater() { _d->isDeleted = true; }
 Animation& Object::_animation() { return _d->animation; }
 Pictures&  Object::_pictures()  { return _d->pictures; }
 
-}
+}//end namespace world
