@@ -40,27 +40,23 @@ public:
   float money;
   bool return2base;
 
-  std::map< std::string, float > history;
+  std::map< TilePos, float > history;
 };
 
 void TaxCollector::_centerTile()
 {
   Walker::_centerTile();
 
-  ReachedBuildings buildings = getReachedBuildings( pos() );
-  for( auto bld : buildings )
+  UqBuildings<House> houses = getReachedBuildings( pos() ).select<House>();
+  for( auto house : houses )
   {
-    HousePtr house = bld.as<House>();
+    if( house->isDeleted() || _d->history.count( house->pos() ) > 0 )
+      continue;
 
-    if( house.isValid() )
-    {
-      float tax = house->collectTaxes();
-      _d->money += tax;
-      house->applyService( this );
-
-      std::string posStr = utils::format( 0xff, "%02dx%02d", house->pos().i(), house->pos().j() );
-      _d->history[ posStr ] += tax;
-    }
+    float tax = house->collectTaxes();
+    _d->money += tax;
+    house->applyService( this );
+    _d->history[ house->pos() ] += tax;
   }
 }
 
@@ -82,7 +78,6 @@ std::string TaxCollector::thoughts(Thought th) const
 
     if( poorHouseCounter > houses.size() / 2 ) { return "##tax_collector_very_little_tax##";  }
     if( richHouseCounter > houses.size() / 2 ) { return "##tax_collector_high_tax##";  }
-
   }
 
   return ServiceWalker::thoughts(th);
@@ -128,9 +123,8 @@ void TaxCollector::_reachedPathway()
 
     Logger::warning( "TaxCollector: path history" );
     for( auto step : _d->history )
-    {
-      Logger::warning( "       [%s]:%f", step.first.c_str(), step.second );
-    }
+      Logger::warning( "       [%02dx%02d]:%f", step.first.i(), step.first.j(), step.second );
+
     deleteLater();
     return;
   }
