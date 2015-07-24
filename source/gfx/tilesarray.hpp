@@ -55,6 +55,7 @@ public:
 
   TilesArray walkables( bool alllands=false ) const;
   TilesArray select( Tile::Type flag ) const;
+  TilesArray select( Tile::Param param ) const;
 
   TilesArray terrains() const;
 

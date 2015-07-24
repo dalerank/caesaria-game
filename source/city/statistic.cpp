@@ -111,8 +111,8 @@ Statistic::Statistic(PlayerCity& c)
     food{ *this },
     services{ *this },
     festival{ *this },
-    goods{ *this },
     crime{ *this },
+    goods{ *this },
     health{ *this },
     military{ *this },
     map{ *this },
@@ -511,7 +511,7 @@ unsigned int Statistic::_Houses::terribleNumber() const
 
 HouseList Statistic::_Houses::find(std::set<int> levels) const
 {
-  HouseList houses = find();
+  HouseList houses = _parent.objects.find<House>();
   if( levels.empty() )
     return houses;
 

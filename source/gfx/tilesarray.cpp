@@ -138,7 +138,17 @@ TilesArray TilesArray::select(Tile::Type flag) const
 {
   TilesArray ret;
   for( auto tile : *this )
-    if( tile->getFlag( Tile::isConstructible ) )
+    if( tile->getFlag( flag ) )
+      ret.push_back( tile );
+
+  return ret;
+}
+
+TilesArray TilesArray::select(Tile::Param param) const
+{
+  TilesArray ret;
+  for( auto tile : *this )
+    if( tile->param( param ) )
       ret.push_back( tile );
 
   return ret;

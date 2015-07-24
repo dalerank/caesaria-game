@@ -58,14 +58,14 @@ bool Aqueduct::build( const city::AreaInfo& info )
   Tile& terrain = tilemap.at( info.pos );
 
   // we can't build if already have aqueduct here
-  AqueductPtr aqueveduct = ptr_cast<Aqueduct>( terrain.overlay() );
+  AqueductPtr aqueveduct = terrain.overlay().as<Aqueduct>();
   if( aqueveduct.isValid() )
   {
     return false;
   }
 
   _setIsRoad( terrain.getFlag( Tile::tlRoad ) );
-  RoadPtr road = ptr_cast<Road>( terrain.overlay() );
+  RoadPtr road = terrain.overlay().as<Road>();
   if( road.isValid() )
   {
     road->setState( pr::lockTerrain, 1 );
@@ -97,14 +97,9 @@ void Aqueduct::destroy()
   if( _city().isValid() )
   {
     TilesArea area( _city()->tilemap(), pos() - TilePos( 2, 2 ), Size( 5 ) );
-    for( auto tile : area )
-    {
-      AqueductPtr aq = tile->overlay().as<Aqueduct>();
-      if( aq.isValid() )
-      {
-        aq->updatePicture( _city() );
-      }
-    }
+    AqueductList aqueducts = area.overlays().select<Aqueduct>();
+    for( auto aq : aqueducts )
+      aq->updatePicture( _city() );
   }
 
   if( tile().getFlag( Tile::tlRoad ) || _isRoad() )
@@ -254,7 +249,7 @@ const Picture& Aqueduct::picture( const city::AreaInfo& info ) const
     {
       if( isReservoirNear )
       {
-        ReservoirPtr reservoir = ptr_cast<Reservoir>( overlay_d[ i ] );
+        ReservoirPtr reservoir = overlay_d[ i ].is<Reservoir>();
         switch( i )
         {
         case north: directionFlags += ( reservoir->entry( south ) == p + TilePos( 0, 1 ) ? 1 : 0 ); break;

@@ -166,8 +166,8 @@ void Colosseum::load(const VariantMap& stream)
 WalkerList Colosseum::_specificWorkers() const
 {
   WalkerList ret = walkers();
-  utils::excludeWalkers( ret, WalkerTypeSet(walker::lionTamer,
-                                            walker::gladiator ) );
+  utils::excludeByType( ret, WalkerTypeSet(walker::lionTamer,
+                                           walker::gladiator ) );
 
   return ret;
 }

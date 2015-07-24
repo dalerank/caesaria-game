@@ -30,6 +30,7 @@
 #include "gfx/tilearea.hpp"
 #include "core/json.hpp"
 #include "core/flowlist.hpp"
+#include "core/common.hpp"
 
 using namespace gfx;
 using namespace events;
@@ -260,11 +261,7 @@ void Construction::addExtension(ConstructionExtensionPtr ext) { _d->extensions.p
 
 ConstructionExtensionPtr Construction::getExtension(const std::string& name)
 {
-  for( auto ext : _d->extensions )
-    if( ext->name() == name )
-      return ext;
-
-  return ConstructionExtensionPtr();
+  return utils::findByName( _d->extensions, name );
 }
 
 const ConstructionExtensionList& Construction::extensions() const { return _d->extensions; }

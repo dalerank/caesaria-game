@@ -178,13 +178,8 @@ bool Amphitheater::isNeed(walker::Type type)
 
 WalkerList Amphitheater::_specificWorkers() const
 {
-  WalkerList ret;
-
-  foreach( i, walkers() )
-  {
-    if( (*i)->type() == walker::actor || (*i)->type() == walker::gladiator )
-      ret << *i;
-  }
+  WalkerList ret = walkers();
+  utils::excludeByType( ret, WalkerTypeSet( walker::actor, walker::gladiator ) );
 
   return ret;
 }

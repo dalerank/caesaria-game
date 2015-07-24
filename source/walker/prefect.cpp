@@ -39,6 +39,7 @@
 #include "walkers_factory.hpp"
 #include "gfx/helper.hpp"
 #include "events/fireworkers.hpp"
+#include "core/common.hpp"
 
 using namespace gfx;
 using namespace events;
@@ -93,7 +94,7 @@ WalkerPtr Prefect::_looks4Enemy( const int range )
     else { ++it; }
   }
 
-  WalkerPtr enemy = utils::findNearestWalker( pos(), walkers );
+  WalkerPtr enemy = utils::findNearest( pos(), walkers );
 
   return enemy;
 }

@@ -27,6 +27,7 @@
 #include "objects_factory.hpp"
 
 using namespace gfx;
+using namespace events;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::clay_pit, ClayPit)
 
@@ -47,7 +48,7 @@ void ClayPit::_reachUnworkingTreshold()
 {
   Factory::_reachUnworkingTreshold();
 
-  events::GameEventPtr e = events::ShowInfobox::create( "##clay_pit_flooded##", "##clay_pit_flooded_by_low_support##");
+  GameEventPtr e = ShowInfobox::create( "##clay_pit_flooded##", "##clay_pit_flooded_by_low_support##");
   e->dispatch();
 
   collapse();
@@ -56,14 +57,16 @@ void ClayPit::_reachUnworkingTreshold()
 bool ClayPit::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool is_constructible = Construction::canBuild( areaInfo );
-  bool near_water = false;
+
+  if( !is_constructible )
+    return false;
 
   Tilemap& tilemap = areaInfo.city->tilemap();
   TilesArray perimetr = tilemap.getRectangle( areaInfo.pos + TilePos( -1, -1), size() + Size( 2 ), Tilemap::checkCorners );
 
-  for( auto tile : perimetr ) { near_water |= tile->getFlag( Tile::tlWater ); }
+  bool near_water = !perimetr.select( Tile::tlWater ).empty();
 
   const_cast<ClayPit*>( this )->_setError( near_water ? "" : "##clay_pit_need_water##" );
 
-  return (is_constructible && near_water);
+  return near_water;
 } 
