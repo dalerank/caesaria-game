@@ -267,10 +267,8 @@ void Road::load(const VariantMap& stream)
   updatePicture();
 }
 
-namespace pr
-{
 REGISTER_PARAM_H( errorBuild )
-}
+
 // I didn't decide what is the best approach: make Plaza as constructions or as upgrade to roads
 Plaza::Plaza()
 {
@@ -294,10 +292,8 @@ bool Plaza::canBuild(const city::AreaInfo& areaInfo) const
   bool is_constructible = true;
 
   TilesArea area( tilemap, areaInfo.pos, size() ); // something very complex ???
-  foreach( tile, area )
-  {
-    is_constructible &= is_kind_of<Road>( (*tile)->overlay() );
-  }
+  for( auto tile : area )
+    is_constructible &= tile->overlay().is<Road>();
 
   const_cast<Plaza*>( this )->setState( pr::errorBuild, !is_constructible  );
 

@@ -77,8 +77,6 @@ void Overlay::setType(const object::Type type)
   _d->name = bd.name();
 }
 
-void Overlay::timeStep(const unsigned long) {}
-
 void Overlay::changeDirection( Tile* masterTile, Direction direction)
 {
   _d->masterTile = masterTile;
@@ -188,28 +186,13 @@ void Overlay::initialize(const MetaData& mdata)
   }
 }
 
+void Overlay::timeStep(const unsigned long) {}
 void Overlay::reinit() {}
+void Overlay::burn() {} //nothing to do, neck for virtual function
 bool Overlay::isWalkable() const{  return false;}
 bool Overlay::isDestructible() const { return true; }
 bool Overlay::isFlat() const { return false;}
 void Overlay::debugLoadOld(int oldFormat, const VariantMap& stream) {}
-
-TilePos Overlay::pos() const
-{
-  if( !_d->masterTile )
-  {
-    LOG_OVERLAY.warn( "Master tile can't be null. Problem in tile with type " + type());
-    return gfx::tilemap::invalidLocation();
-  }
-  return _d->masterTile->epos();
-}
-
-std::string Overlay::sound() const
-{
-  const MetaData& md = MetaDataHolder::instance().getData( type() );
-  return md.sound();
-}
-
 void Overlay::setName( const std::string& name ){ _d->name = name;}
 void Overlay::setSize( const Size& size ){  _d->size = size;}
 Point Overlay::offset( const Tile&, const Point& ) const{  return Point( 0, 0 );}
@@ -232,6 +215,22 @@ bool Overlay::isDeleted() const{ return _d->isDeleted;}
 Renderer::PassQueue Overlay::passQueue() const{ return defaultPassQueue;}
 std::string Overlay::name(){  return _d->name;}
 object::Type Overlay::type() const{ return _d->overlayType;}
+
+TilePos Overlay::pos() const
+{
+  if( !_d->masterTile )
+  {
+    LOG_OVERLAY.warn( "Master tile can't be null. Problem in tile with type " + type());
+    return gfx::tilemap::invalidLocation();
+  }
+  return _d->masterTile->epos();
+}
+
+std::string Overlay::sound() const
+{
+  const MetaData& md = MetaDataHolder::instance().getData( type() );
+  return md.sound();
+}
 
 TilesArray Overlay::area() const
 {
