@@ -75,7 +75,9 @@ void BurningRuins::timeStep(const unsigned long time)
       {
         if( overlay->group() != object::group::disaster )
         {
-          float chanceFire = (100 - state( pr::fire ))/100.f;
+          BuildingPtr building = overlay.as<Building>();
+          float fireValue = building.isValid() ? building->state( pr::fire ) : 50;
+          float chanceFire = fireValue/100.f;
           if( math::probably( chanceFire ) )
             overlay->burn();
         }
