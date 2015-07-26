@@ -80,6 +80,7 @@ void Tree::timeStep( const unsigned long time )
     {
       _d->state = State::burnt;
       setPicture( "burnedTree", 1 );
+      _d->flat = false;
       _animationRef().clear();
       _fgPictures().clear();
     }

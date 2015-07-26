@@ -84,7 +84,7 @@ public:
 class Engine::Impl
 {
 public:
-  static const int maxSamplesNumner = 64;
+  static const int maxSamplesNumber = 64;
   bool useSound;
 
   typedef std::map< audio::SoundType, int > Volumes;
@@ -254,19 +254,22 @@ unsigned int Engine::_loadSound(const std::string& sampleName)
   std::string sampleCanonical = utils::localeLower( sampleName );
 
   unsigned int sampleHash = Hash( sampleCanonical );
-  if( _d->samples.size()<Impl::maxSamplesNumner )
+  if( _d->samples.size()<Impl::maxSamplesNumber )
   {
     Samples::iterator i = _d->samples.find( sampleHash );
 
     if( i != _d->samples.end() )
     {
-      return true;
+      return sampleHash;
     }
 
     vfs::Path realPath = _d->findFullPath( sampleCanonical );
 
     if( realPath.toString().empty() )
-      return false;
+    {
+      Logger::warning( "SoundEngine: could not find sound %s", sampleName.c_str() );
+      return 0;
+    }
 
     Sample sample;
 
@@ -276,7 +279,8 @@ unsigned int Engine::_loadSound(const std::string& sampleName)
 
     if( data.empty() )
     {
-      return false;
+      Logger::warning( "SoundEngine: could not load sound (%s)", realPath.toCString() );
+      return 0;
     }
 
     sample.channel = -1;
@@ -284,8 +288,8 @@ unsigned int Engine::_loadSound(const std::string& sampleName)
     sample.sound = realPath.toString();
     if(sample.chunk == NULL)
     {
-      Logger::warning( "SoundEngine: could not load sound (%s)", SDL_GetError() );
-      return false;
+      Logger::warning( "SoundEngine: could not load sound (%s) with error:%s", realPath.toCString(), SDL_GetError() );
+      return 0;
     }
 
     _d->samples[ sampleHash ] = sample;
