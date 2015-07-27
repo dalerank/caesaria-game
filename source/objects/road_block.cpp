@@ -40,10 +40,7 @@ RoadBlock::RoadBlock()
 // Blocks can be built ONLY on top of existing roads
 // Also in original game there was a bug:
 // gamer could place any number of plazas on one road tile (!!!)
-namespace pr
-{
 REGISTER_PARAM_H(errorBuild)
-}
 
 bool RoadBlock::canBuild(const city::AreaInfo& areaInfo) const
 {
@@ -53,9 +50,7 @@ bool RoadBlock::canBuild(const city::AreaInfo& areaInfo) const
 
   TilesArea area( tilemap, areaInfo.pos, size() ); // something very complex ???
   for( auto tile : area )
-  {
     is_constructible &= tile->overlay().is<Road>();
-  }
 
   const_cast<RoadBlock*>( this )->setState( pr::errorBuild, !is_constructible );
 

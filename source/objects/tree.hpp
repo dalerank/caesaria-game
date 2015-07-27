@@ -29,11 +29,14 @@ public:
   virtual bool isFlat() const;
   virtual void initTerrain(gfx::Tile &terrain);
   virtual bool build(const city::AreaInfo &info);
-  virtual void save(VariantMap &stream) const;
-  virtual void load(const VariantMap &stream);
+  virtual void save(VariantMap& stream) const;
+  virtual void load(const VariantMap& stream);
   virtual void destroy();
+  virtual void burn();
 private:
-  bool _isFlat;
+  void _startBurning();
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 #endif //__CAESARIA_TREE_H_INCLUDED__

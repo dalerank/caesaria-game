@@ -173,6 +173,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( highlightBuilding, 1 );
   setOption( destroyEpidemicHouses, 0 );
   setOption( difficulty, game::difficulty::usual );
+  setOption( forestFire, 1 );
 
   _d->states.nation = world::nation::rome;
 }

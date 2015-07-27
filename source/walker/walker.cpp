@@ -200,7 +200,7 @@ void Walker::setSpeedMultiplier(float koeff) { _d->speed.multiplier = koeff; }
 
 void Walker::_walk()
 {
-  if( _d->action.valid() || !_pathway().isValid() )
+  if( !_d->action.valid() || !_pathway().isValid() )
   {
     // nothing to do
     _noWay();

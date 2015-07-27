@@ -21,6 +21,7 @@
 #include "religion/pantheon.hpp"
 #include "city/statistic.hpp"
 #include "game/funds.hpp"
+#include "objects/tree.hpp"
 #include "game/player.hpp"
 #include "events/random_animals.hpp"
 #include "walker/enemysoldier.hpp"
@@ -165,7 +166,8 @@ enum {
   increase_sentiment,
   reload_buildings_config,
   toggle_show_buildings,
-  toggle_show_trees
+  toggle_show_trees,
+  forest_fire
 };
 
 class DebugHandler::Impl
@@ -255,6 +257,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( disaster, random_collapse )
   ADD_DEBUG_EVENT( disaster, random_plague )
   ADD_DEBUG_EVENT( disaster, earthquake )
+  ADD_DEBUG_EVENT( disaster, forest_fire )
 
   ADD_DEBUG_EVENT( level, win_mission )
   ADD_DEBUG_EVENT( level, fail_mission )
@@ -404,6 +407,15 @@ void DebugHandler::Impl::handleEvent(int event)
     OverlayList ovs = game->city()->overlays();
     for( auto overlay : ovs )
       overlay->reinit();
+  }
+  break;
+
+  case forest_fire:
+  {
+    SmartList<Tree> forest = game->city()->overlays().select<Tree>();
+    forest = forest.random( 2 );
+    for( auto tree : forest )
+      tree->burn();
   }
   break;
 

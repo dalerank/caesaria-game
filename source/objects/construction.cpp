@@ -194,8 +194,8 @@ void Construction::computeRoadside()
   for( int dst=1; dst <= roadsideDistance(); dst++ )
   {
     TilesArray tiles = tilemap.getRectangle( pos() + TilePos( -dst, -dst ),
-                                            pos() + TilePos( s+dst-1, s+dst-1 ),
-                                            !Tilemap::checkCorners );
+                                             pos() + TilePos( s+dst-1, s+dst-1 ),
+                                             !Tilemap::checkCorners );
 
     _d->accessRoads.append( tiles.select( Tile::tlRoad ) );
   }

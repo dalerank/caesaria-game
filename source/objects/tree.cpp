@@ -22,27 +22,72 @@
 #include "gfx/tilemap.hpp"
 #include "objects/construction.hpp"
 #include "objects_factory.hpp"
+#include "game/gamedate.hpp"
+#include "gfx/animation_bank.hpp"
 #include "core/variant_map.hpp"
 
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::tree, Tree)
 
-namespace {
-CAESARIA_LITERALCONST(treeFlat)
-}
+enum class State { well=0, burning, burnt };
+class Tree::Impl
+{
+public:
+  bool flat;
+  int age;
+  int health;
+  State state;
+  bool spreadFire;
+};
 
 Tree::Tree()
-  : Overlay( object::tree, Size(1) )
+  : Overlay( object::tree, Size(1) ), _d( new Impl )
 {
+  _d->age = math::random( 15 );
+  _d->flat = false;
+  _d->health = 100;
+  _d->state = State::well;
+  _d->spreadFire = false;
 }
 
 void Tree::timeStep( const unsigned long time )
 {
   Overlay::timeStep( time );
+  if( _d->state == State::burning )
+  {
+    if( game::Date::isDayChanged() )
+    {
+      _d->health-=5;
+      if( !_d->spreadFire && _d->health < 50 )
+      {
+        _d->spreadFire = true;
+
+        OverlayList ovs = _city()->tilemap().getNeighbors( pos() )
+                                            .overlays();
+        for( auto overlay : ovs )
+        {
+          if( math::probably( 0.5f ) )
+            overlay->burn();
+        }
+      }
+    }
+
+    _animationRef().update( time );
+    _fgPictures().back() = _animationRef().currentFrame();
+
+    if( _d->health <= 0 )
+    {
+      _d->state = State::burnt;
+      setPicture( "burnedTree", 1 );
+      _d->flat = false;
+      _animationRef().clear();
+      _fgPictures().clear();
+    }
+  }
 }
 
-bool Tree::isFlat() const { return _isFlat; }
+bool Tree::isFlat() const { return _d->flat; }
 
 void Tree::initTerrain(Tile& terrain)
 {
@@ -53,7 +98,7 @@ bool Tree::build( const city::AreaInfo& info )
 {
   std::string picname = imgid::toResource( info.city->tilemap().at( info.pos ).originalImgId() );
   _picture().load( picname );
-  _isFlat = (picture().height() <= tilemap::cellPicSize().height());
+  _d->flat = (picture().height() <= tilemap::cellPicSize().height());
   return Overlay::build( info );
 }
 
@@ -61,14 +106,25 @@ void Tree::save(VariantMap& stream) const
 {
   Overlay::save( stream );
 
-  stream[ literals::treeFlat ] = _isFlat;
+  VARIANT_SAVE_ANY_D( stream, _d, flat )
+  VARIANT_SAVE_ANY_D( stream, _d, age )
+  VARIANT_SAVE_ANY_D( stream, _d, health )
+  VARIANT_SAVE_ENUM_D( stream, _d, state )
+  VARIANT_SAVE_ANY_D( stream, _d, spreadFire )
 }
 
 void Tree::load(const VariantMap& stream)
 {
   Overlay::load( stream );
 
-  _isFlat = stream.get( literals::treeFlat );
+  VARIANT_LOAD_ANY_D( _d, flat, stream )
+  VARIANT_LOAD_ANY_D( _d, age, stream )
+  VARIANT_LOAD_ANY_D( _d, health, stream )
+  VARIANT_LOAD_ENUM_D( _d, state, stream )
+  VARIANT_LOAD_ANY_D( _d, spreadFire, stream )
+
+  if( _d->state == State::burning )
+    _startBurning();
 }
 
 void Tree::destroy()
@@ -76,4 +132,19 @@ void Tree::destroy()
   TilesArray tiles = area();
   for( auto it : tiles )
     it->setFlag( Tile::tlTree, false );
+}
+
+void Tree::burn()
+{
+  if( _d->state != State::well )
+    return;
+
+  _startBurning();
+}
+
+void Tree::_startBurning()
+{
+  _d->state = State::burning;
+  _animationRef() = AnimationBank::instance().simple( AnimationBank::animFire + 0 );
+  _fgPictures().resize(1);
 }

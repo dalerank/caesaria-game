@@ -171,6 +171,12 @@ inline int signnum( float x )
   return (x > 0) ? 1 : ((x < 0) ? -1 : 0);
 }
 
+inline bool probably( float chance )
+{
+  double u = (float)rand()/(float)RAND_MAX;
+  return ( u < chance );
+}
+
 //! Utility function to convert a radian value to degrees
 /** Provided as it can be clearer to write radToDeg(X) than RADTODEG * X
 \param radians	The radians value to convert to degrees.

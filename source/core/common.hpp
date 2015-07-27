@@ -54,7 +54,7 @@ SmartPtr<Object> findNearest( const TilePos& pos, const SmartList<Object>& list 
 }
 
 template<class ObjectList>
-ObjectList& selectAgressive( const ObjectList& list, int much=0 )
+ObjectList selectAgressive( const ObjectList& list, int much=0 )
 {
   ObjectList ret;
   for( auto it : list )
