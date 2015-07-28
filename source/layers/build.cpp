@@ -77,14 +77,12 @@ public:
 void Build::_discardPreview()
 {
   __D_IMPL(d,Build)
-  foreach( tile, d->buildTiles )
+  for( auto tile : d->buildTiles )
   {
-    if( (*tile)->overlay().isValid() )
-    {
-      (*tile)->overlay()->deleteLater();
-    }
+    if( tile->overlay().isValid() )
+      tile->overlay()->deleteLater();
 
-    delete *tile;
+    delete tile;
   }
 
   d->buildTiles.clear();

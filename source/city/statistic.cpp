@@ -293,7 +293,7 @@ OverlayList Statistic::_Objects::neighbors(OverlayPtr overlay, bool v) const
     return OverlayList();
 
   Size size = overlay->size();
-  TilePos start = overlay->pos() - TilePos(1,1);
+  TilePos start = overlay->pos() - gfx::tilemap::unitLocation();
   TilePos stop = start + TilePos( size.width(), size.height() );
   OverlayList ret;
   gfx::TilesArray tiles = _parent.rcity.tilemap().getRectangle( start, stop );

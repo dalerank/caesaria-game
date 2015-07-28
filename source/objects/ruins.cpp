@@ -67,9 +67,8 @@ void BurningRuins::timeStep(const unsigned long time)
     bool needSpread = ( state( pr::spreadFire ) == 0 && state( pr::fire ) < 50 );
     if( needSpread )
     {
-      TilePos offset( 2, 2 );
-      OverlayList overlays = _city()->statistic().objects.find<Overlay>( object::any,
-                                                                         pos() - offset, pos() + offset );
+      OverlayList overlays = _city()->tilemap().getNeighbors( pos() ).overlays();
+
       setState( pr::spreadFire, 1 );
       for( auto overlay : overlays)
       {
@@ -77,7 +76,7 @@ void BurningRuins::timeStep(const unsigned long time)
         {
           BuildingPtr building = overlay.as<Building>();
           float fireValue = building.isValid() ? building->state( pr::fire ) : 50;
-          float chanceFire = fireValue/100.f;
+          float chanceFire = fireValue/100.f * (_city()->getOption( PlayerCity::fireKoeff )/100.f);
           if( math::probably( chanceFire ) )
             overlay->burn();
         }
@@ -142,8 +141,7 @@ bool BurningRuins::build( const city::AreaInfo& info)
   tile().setFlag( Tile::tlTree, false );
   tile().setFlag( Tile::tlRoad, false );
 
-  city::FirePtr fire;
-  fire << info.city->findService( city::Fire::defaultName() );
+  city::FirePtr fire = info.city->statistic().services.find<city::Fire>();
   _value = (info.city->getOption( PlayerCity::fireKoeff ) / 100.f) *
            (defaultForce / 100.f);
 
@@ -243,8 +241,6 @@ PlagueRuins::PlagueRuins() : Ruins( object::plague_ruins )
   _picture().load( ResourceGroup::land2a, 187 );
   _animationRef() = AnimationBank::instance().simple( AnimationBank::animFire + 2 );
 
-  //_animationRef().load( ResourceGroup::land2a, 188, 8 );
-  //_animationRef().setOffset( Point( 14, 26 ) );
   _fgPictures().resize(2);
   _fgPicture(1).load( ResourceGroup::sprites, 218 );
   _fgPicture(1).setOffset( Point( 20, 35 ) );
@@ -264,19 +260,11 @@ void PlagueRuins::timeStep(const unsigned long time)
       {
         _picture().load( ResourceGroup::land2a, 214 );
         _animationRef() = AnimationBank::instance().simple( AnimationBank::animFire + 1 );
-
-        //_animationRef().clear();
-        //_animationRef().load( ResourceGroup::land2a, 215, 8);
-        //_animationRef().setOffset( Point( 14, 26 ) );
       }
       else if( state( pr::fire ) == 25 )
       {
         _picture().load( ResourceGroup::land2a, 223 );
         _animationRef() = AnimationBank::instance().simple( AnimationBank::animFire + 0 );
-
-        //_animationRef().clear();
-        //_animationRef().load(ResourceGroup::land2a, 224, 8);
-        //_animationRef().setOffset( Point( 14, 18 ) );
       }
     }
     else
