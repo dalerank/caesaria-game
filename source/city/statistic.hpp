@@ -559,7 +559,7 @@ inline bool Statistic::_Map::isTileBusy( const TilePos& p, WalkerPtr caller, boo
 template< class T >
 inline gfx::TilesArray Statistic::_Map::around( T overlay ) const
 {
-  TilePos start = overlay->pos() - TilePos(1,1);
+  TilePos start = overlay->pos() - gfx::tilemap::unitLocation();
   TilePos stop = start + TilePos( overlay->size().width(), overlay->size().height() );
   return perimetr( start, stop );
 }

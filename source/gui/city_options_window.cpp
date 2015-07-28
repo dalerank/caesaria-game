@@ -69,6 +69,7 @@ static OptionInfo options[] =
   INIT_OPTION( btnToggleCcUseAI, -1, game::Settings::ccUseAI, "city_ccuseai" ),
   INIT_OPTION( btnHighlightBuilding, PlayerCity::highlightBuilding, "", "city_highlight_bld" ),
   INIT_OPTION( btnDetroyEpidemicHouses, PlayerCity::destroyEpidemicHouses, "", "city_destroy_epdh" ),
+  INIT_OPTION( btnForestFire, PlayerCity::forestFire, "", "city_forest_fire" ),
 
   { false, "", 0, 0, "", "" }
 };
@@ -100,6 +101,7 @@ public:
   PushButton* btnDifficulty;
   PushButton* btnMetrics;
   PushButton* btnDetroyEpidemicHouses;
+  PushButton* btnForestFire;
 
   Label* lbFireRisk;
   Label* lbCollapseRisk;
@@ -174,6 +176,7 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, btnMetrics )
   GET_DWIDGET_FROM_UI( _d, btnHighlightBuilding )
   GET_DWIDGET_FROM_UI( _d, btnDetroyEpidemicHouses )
+  GET_DWIDGET_FROM_UI( _d, btnForestFire )
 
   CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods )
   CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings )

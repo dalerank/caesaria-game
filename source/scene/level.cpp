@@ -689,7 +689,7 @@ bool Level::_tryExecHotkey(NEvent &event)
       case KEY_KEY_E:
       {
         TilePos center = _d->renderer.camera()->center();
-        TileRect trect( center-TilePos(1,1), center+TilePos(1,1));
+        TileRect trect( center-tilemap::unitLocation(), center+tilemap::unitLocation());
         const BorderInfo& binfo = _d->game->city()->borderInfo();
         center = (trect.contain(binfo.roadEntry) ? binfo.roadExit : binfo.roadEntry);
         _d->renderer.camera()->setCenter( center, false );

@@ -41,6 +41,7 @@ static Size tilePicSize( x_tileBase * 2 - 2, x_tileBase );
 static Size tileCellSize( x_tileBase, y_tileBase );
 static Point centerOffset( y_tileBase / 2, y_tileBase / 2 );
 static TilePos tileInvalidLocation( -1, -1 );
+static TilePos tilePosLocation( 1, 1 );
 
 void initTileBase(int width)
 {
@@ -68,6 +69,7 @@ Direction getDirection(const TilePos& b, const TilePos& e)
 
 const TilePos& invalidLocation() { return tileInvalidLocation; }
 bool isValidLocation(const TilePos &pos) { return pos.i() >= 0 && pos.j() >=0; }
+const TilePos& unitLocation(){ return tilePosLocation; }
 
 }
 
