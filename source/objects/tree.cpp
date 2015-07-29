@@ -39,6 +39,7 @@ public:
   int health;
   State state;
   bool spreadFire;
+  DateTime lastTimeGrow;
 };
 
 Tree::Tree()
@@ -48,6 +49,7 @@ Tree::Tree()
   _d->flat = false;
   _d->health = 100;
   _d->state = State::well;
+  _d->lastTimeGrow = game::Date::current();
   _d->spreadFire = false;
 }
 
@@ -60,30 +62,22 @@ void Tree::timeStep( const unsigned long time )
     {
       _d->health-=5;
       if( !_d->spreadFire && _d->health < 50 )
-      {
-        _d->spreadFire = true;
-
-        OverlayList ovs = _city()->tilemap().getNeighbors( pos() )
-                                            .overlays();
-        for( auto overlay : ovs )
-        {
-          if( math::probably( 0.5f ) )
-            overlay->burn();
-        }
-      }
+        _burnAround();
     }
 
     _animationRef().update( time );
     _fgPictures().back() = _animationRef().currentFrame();
 
     if( _d->health <= 0 )
-    {
-      _d->state = State::burnt;
-      setPicture( "burnedTree", 1 );
-      _d->flat = false;
-      _animationRef().clear();
-      _fgPictures().clear();
-    }
+      _die();
+  }
+  else if( game::Date::isMonthChanged() )
+  {
+    _d->health = math::clamp( _d->health+5, 0, 100 );
+    bool mayHealth4grow = _d->health > 50;
+    bool growLast2years = _d->lastTimeGrow.monthsTo( game::Date::current() ) < DateTime::monthsInYear * 2;
+    if(mayHealth4grow && !growLast2years)
+      _growAround();
   }
 }
 
@@ -150,4 +144,38 @@ void Tree::_startBurning()
   _d->state = State::burning;
   _animationRef() = AnimationBank::instance().simple( AnimationBank::animFire + 0 );
   _fgPictures().resize(1);
+}
+
+void Tree::_burnAround()
+{
+   _d->spreadFire = true;
+
+  OverlayList ovs = _city()->tilemap().getNeighbors( pos() )
+                                      .overlays();
+  for( auto overlay : ovs )
+  {
+    if( math::probably( 0.5f ) )
+      overlay->burn();
+  }
+}
+
+void Tree::_growAround()
+{
+  TilesArray tiles = _city()->tilemap().getNeighbors( pos() );
+  for( auto tile : tiles )
+  {
+    if( math::probably( 0.3f ) && tile->getFlag( Tile::isConstructible ) )
+    {
+      ;
+    }
+  }
+}
+
+void Tree::_die()
+{
+  _d->state = State::burnt;
+  setPicture( "burnedTree", 1 );
+  _d->flat = false;
+  _animationRef().clear();
+  _fgPictures().clear();
 }

@@ -35,6 +35,10 @@ public:
   virtual void burn();
 private:
   void _startBurning();
+  void _burnAround();
+  void _growAround();
+  void _die();
+
   class Impl;
   ScopedPtr<Impl> _d;
 };
