@@ -136,6 +136,9 @@ void Tree::destroy()
 
 void Tree::burn()
 {
+  if( _city()->getOption( PlayerCity::forestFire ) == 0 )
+    return;
+
   if( _d->state != State::well )
     return;
 

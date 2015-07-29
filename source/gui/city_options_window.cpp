@@ -129,7 +129,8 @@ public:
   void toggleC3Gameplay();
   void toggleDifficulty();
   void toggleShowTooltips();
-  void toggleLegionAttack();
+  void toggleShowTooltips();
+  void toggleForestFire();
   void toggleAndroidBarEnabled();
   void toggleUseBatching();
   void toggleCcUseAI();
@@ -200,6 +201,7 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   CONNECT( _d->btnMetrics, onClicked(), _d.data(), Impl::toggleMetrics )
   CONNECT( _d->btnHighlightBuilding, onClicked(), _d.data(), Impl::toggleHighlightBuilding )
   CONNECT( _d->btnDetroyEpidemicHouses, onClicked(), _d.data(), Impl::toggleDestroyEpidemicHouses )
+  CONNECT( _d->btnForestFire, onClicked(), _d.data(), Impl::toggleForestFire )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptions::deleteLater );
@@ -298,6 +300,7 @@ void CityOptions::Impl::invertZoom()  {  toggleCityOption( PlayerCity::zoomInver
 void CityOptions::Impl::toggleHighlightBuilding() { toggleCityOption( PlayerCity::highlightBuilding ); }
 void CityOptions::Impl::toggleWarnings()  {  toggleCityOption( PlayerCity::warningsEnabled ); }
 void CityOptions::Impl::toggleDestroyEpidemicHouses() { toggleCityOption( PlayerCity::destroyEpidemicHouses ); }
+void CityOptions::Impl::toggleForestFire() { toggleCityOption( PlayerCity::forestFire ); }
 
 void CityOptions::Impl::toggleLeftMiddleMouse()
 {

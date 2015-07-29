@@ -118,7 +118,7 @@ void Unemployed::handleEvent(NEvent& event)
 
         if( house.isValid() )
         {
-          int workless = house->getServiceValue( Service::recruter);
+          int workless = house->getServiceValue( Service::recruter );
 
           if( workless > 0 )
             text = utils::format( 0xff, "%s %d %s", _("##this_house_have##"), workless, _("##unemployers##") );
