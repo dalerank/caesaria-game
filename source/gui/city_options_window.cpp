@@ -129,7 +129,7 @@ public:
   void toggleC3Gameplay();
   void toggleDifficulty();
   void toggleShowTooltips();
-  void toggleShowTooltips();
+  void toggleLegionAttack();
   void toggleForestFire();
   void toggleAndroidBarEnabled();
   void toggleUseBatching();

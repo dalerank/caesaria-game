@@ -516,6 +516,8 @@ void Minimap::draw(Engine& painter)
   Point p = getBitmapCoordinates(startPos.i(), startPos.j(), mapsize);
   Point myCenter(width()/2,height()/2);
 
+  painter.resetColorMask();
+
   painter.draw( _d->background, absoluteRect().lefttop(), &absoluteClippingRectRef() );
   painter.draw( _d->landRockWaterMap, absoluteRect().lefttop() + myCenter - p, &absoluteClippingRectRef() );
   painter.draw( _d->objectsMap, absoluteRect().lefttop() + myCenter - p, &absoluteClippingRectRef() );

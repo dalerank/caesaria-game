@@ -62,7 +62,7 @@ struct Sample
     {
       float result = math::clamp<int>( volume, 0, 100 ) / 100.f;
 
-      result = ( result * (type/100.f) * (game/100.f) ) * ( 2 * MIX_MAX_VOLUME );
+      result = ( result * (type/100.f) * (game/100.f) ) * MIX_MAX_VOLUME;
 
       Mix_Volume( channel, (int)result );
     }
