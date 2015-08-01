@@ -537,7 +537,16 @@ void ExtentMenu::showInfo(int type)
   }
 }
 
-void ExtentMenu::setAlarmEnabled( bool enabled ){  _d->disasterButton->setEnabled( enabled );}
+void ExtentMenu::setAlarmEnabled( bool enabled )
+{
+  if( enabled )
+  {
+    events::GameEventPtr e = events::PlaySound::create( "extm_alarm", 1, 100, audio::effects );
+    e->dispatch();
+  }
+
+  _d->disasterButton->setEnabled( enabled );
+}
 
 Signal1<int>& ExtentMenu::onSelectOverlayType() {  return _d->overlaysMenu->onSelectOverlayType(); }
 Signal0<>& ExtentMenu::onEmpireMapShow(){  return _d->empireButton->onClicked(); }

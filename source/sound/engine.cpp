@@ -139,6 +139,7 @@ Engine::Engine() : _d( new Impl )
   _d->volumes[ theme ] = maxVolumeValue() / 2;
   _d->volumes[ ambient ] = maxVolumeValue() / 4;
   _d->volumes[ speech ] = maxVolumeValue() / 2;
+  _d->volumes[ effects ] = maxVolumeValue() / 2;
 
   _d->extensions << ".ogg" << ".wav";
   addFolder( Directory() );
