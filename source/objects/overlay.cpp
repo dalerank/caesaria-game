@@ -115,6 +115,9 @@ bool Overlay::build(const city::AreaInfo &info)
   return true;
 }
 
+bool Overlay::canDestroy() const { return true; }
+std::string Overlay::errorDesc() const { return ""; }
+
 Tile& Overlay::tile() const
 {
   if( !_d->masterTile )
