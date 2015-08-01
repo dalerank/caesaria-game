@@ -59,7 +59,7 @@ void ClearTile::_exec( Game& game, unsigned int )
 
     bool deleteRoad = cursorTile.getFlag( Tile::tlRoad );
 
-    if( !overlay->canDestroy() )
+    if( overlay.isValid() && !overlay->canDestroy() )
     {
       GameEventPtr e = WarningMessage::create( _( overlay->errorDesc() ), WarningMessage::neitral );
       e->dispatch();
