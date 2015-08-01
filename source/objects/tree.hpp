@@ -30,6 +30,7 @@ public:
   virtual void initTerrain(gfx::Tile &terrain);
   virtual bool build(const city::AreaInfo &info);
   virtual void save(VariantMap& stream) const;
+  virtual void canDestroy() const;
   virtual void load(const VariantMap& stream);
   virtual void destroy();
   virtual void burn();
