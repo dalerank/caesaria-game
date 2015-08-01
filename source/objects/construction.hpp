@@ -26,7 +26,6 @@
 #include "game/service.hpp"
 #include "objects/metadata.hpp"
 #include "gfx/tilesarray.hpp"
-#include "param.hpp"
 
 class Construction : public Overlay
 {

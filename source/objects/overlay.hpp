@@ -29,6 +29,7 @@
 #include "city/areainfo.hpp"
 #include "city/desirability.hpp"
 #include "core/debug_queue.hpp"
+#include "param.hpp"
 #include "constants.hpp"
 
 class MetaData;
@@ -82,6 +83,8 @@ public:
 
   virtual gfx::Renderer::PassQueue passQueue() const;
   virtual Desirability desirability() const;
+
+  virtual void setState( Param name, double value );
 
   std::string name();  // landoverlay debug name
   void setName( const std::string& name );

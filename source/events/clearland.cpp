@@ -64,10 +64,10 @@ void ClearTile::_exec( Game& game, unsigned int )
       GameEventPtr e = WarningMessage::create( _( overlay->errorDesc() ), WarningMessage::neitral );
       e->dispatch();
 
-      const MetaData& md = MetaDataHolder::getData( constr->type() );
+      const MetaData& md = MetaDataHolder::getData( overlay->type() );
       if( md.getOption( MetaDataOptions::requestDestroy, false ).toBool() )
       {
-        e = RequestDestroy::create( constr );
+        e = RequestDestroy::create( overlay );
         e->dispatch();
       }
       return;

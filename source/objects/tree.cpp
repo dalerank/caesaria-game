@@ -108,7 +108,7 @@ void Tree::save(VariantMap& stream) const
   VARIANT_SAVE_ANY_D( stream, _d, lastTimeGrow )
 }
 
-void Tree::canDestroy() const { return _d->state != State::burning; }
+bool Tree::canDestroy() const { return _d->state != State::burning; }
 
 void Tree::load(const VariantMap& stream)
 {

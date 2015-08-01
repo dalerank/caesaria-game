@@ -68,6 +68,8 @@ Desirability Overlay::desirability() const
   return MetaDataHolder::getData( type() ).desirability();
 }
 
+void Overlay::setState(Param name, double value) {}
+
 void Overlay::setType(const object::Type type)
 {
   const MetaData& bd = MetaDataHolder::getData( type );
