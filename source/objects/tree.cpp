@@ -77,7 +77,7 @@ void Tree::timeStep( const unsigned long time )
     bool mayHealth4grow = _d->health > 50;
     bool growLast2years = _d->lastTimeGrow.monthsTo( game::Date::current() ) < DateTime::monthsInYear * 2;
     if(mayHealth4grow && !growLast2years)
-      _growAround();
+      grow();
   }
 }
 
@@ -105,6 +105,7 @@ void Tree::save(VariantMap& stream) const
   VARIANT_SAVE_ANY_D( stream, _d, health )
   VARIANT_SAVE_ENUM_D( stream, _d, state )
   VARIANT_SAVE_ANY_D( stream, _d, spreadFire )
+  VARIANT_SAVE_ANY_D( stream, _d, lastTimeGrow )
 }
 
 void Tree::load(const VariantMap& stream)
@@ -116,6 +117,7 @@ void Tree::load(const VariantMap& stream)
   VARIANT_LOAD_ANY_D( _d, health, stream )
   VARIANT_LOAD_ENUM_D( _d, state, stream )
   VARIANT_LOAD_ANY_D( _d, spreadFire, stream )
+  VARIANT_LOAD_TIME_D( _d, lastTimeGrow, stream )
 
   if( _d->state == State::burning )
     _startBurning();
@@ -159,14 +161,33 @@ void Tree::_burnAround()
   }
 }
 
-void Tree::_growAround()
+void Tree::grow()
 {
   TilesArray tiles = _city()->tilemap().getNeighbors( pos() );
+  _d->lastTimeGrow = game::Date::current();
   for( auto tile : tiles )
   {
     if( math::probably( 0.3f ) && tile->getFlag( Tile::isConstructible ) )
     {
-      ;
+      OverlayPtr overlay = TileOverlayFactory::instance().create( type() );
+      if( overlay.isValid()  )
+      {
+        city::AreaInfo info = { _city(), tile->pos(), TilesArray() };
+        bool buildOk = overlay->build( info );
+        if( buildOk )
+        {
+          _city()->addOverlay( overlay );
+
+          TreePtr newTree = overlay.as<Tree>();
+          if( newTree.isValid() )
+          {
+            Picture pic = MetaDataHolder::randomPicture( type(), Size(1) );
+            newTree->setPicture( pic );
+            newTree->_d->flat = pic.height() > pic.width() / 2;
+            newTree->_d->health = 10;
+          }
+        }
+      }
     }
   }
 }

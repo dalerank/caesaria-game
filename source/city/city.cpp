@@ -174,6 +174,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( destroyEpidemicHouses, 0 );
   setOption( difficulty, game::difficulty::usual );
   setOption( forestFire, 1 );
+  setOption( forestGrow, 0 );
 
   _d->states.nation = world::nation::rome;
 }

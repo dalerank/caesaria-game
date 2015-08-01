@@ -33,10 +33,11 @@ public:
   virtual void load(const VariantMap& stream);
   virtual void destroy();
   virtual void burn();
+  virtual void grow();
+
 private:
   void _startBurning();
   void _burnAround();
-  void _growAround();
   void _die();
 
   class Impl;

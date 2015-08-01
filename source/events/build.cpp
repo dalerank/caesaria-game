@@ -87,7 +87,7 @@ void BuildAny::_exec( Game& game, unsigned int )
     Desirability::update( game.city(), _overlay, Desirability::on );
     game.city()->addOverlay( _overlay );
 
-    ConstructionPtr construction = ptr_cast<Construction>( _overlay );
+    ConstructionPtr construction = _overlay.as<Construction>();
     if( construction.isValid() )
     {
       const MetaData& buildingData = MetaDataHolder::getData( _overlay->type() );
