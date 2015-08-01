@@ -32,19 +32,21 @@ namespace gui
 {
 typedef std::map<Ui::Flag, int> Flags;
 
+struct UiTooltipWorker
+{
+  WidgetPtr element;
+  unsigned int LastTime;
+  unsigned int EnterTime;
+  unsigned int LaunchTime;
+  unsigned int RelaunchTime;
+
+  Widget* standart( Widget* parent );
+};
+
 class Ui::Impl
 {
-public:
-  struct SToolTip
-  {
-    WidgetPtr element;
-    unsigned int LastTime;
-    unsigned int EnterTime;
-    unsigned int LaunchTime;
-    unsigned int RelaunchTime;
-  };
-
-  SToolTip toolTip;
+public:  
+  UiTooltipWorker toolTip;
   bool preRenderFunctionCalled;
 
   WidgetPtr hovered;
@@ -60,14 +62,13 @@ public:
   Flags flags;
 
 public:
-  WidgetPtr createStandartTooltip( Widget* parent );
   void threatDeletionQueue();
 };
 
 Ui::Ui(Engine& painter )
   : Widget( 0, -1, Rect() ), _d( new Impl )
 {
-  setDebugName( "GuiEnv" );
+  setDebugName( "Ui" );
 
   _d->preRenderFunctionCalled = false;
   _d->hovered = 0;
@@ -97,9 +98,9 @@ Widget* Ui::rootWidget() { return this; }
 
 void Ui::Impl::threatDeletionQueue()
 {
-  foreach( widget, deletionQueue )
+  for( auto widget : deletionQueue )
   {
-    try{ (*widget)->remove(); }
+    try{ widget->remove(); }
     catch(...){}
   }
 
@@ -113,8 +114,8 @@ void Ui::clear()
 
   _updateHovered( Point( -9999, -9999 ) );
 
-  foreach( it, children() )
-    deleteLater( *it );
+  for( auto widget : children() )
+    deleteLater( widget );
 }
 
 void Ui::setFocus() {}
@@ -131,7 +132,7 @@ void Ui::draw()
     return;
   }
 
-  Widget::draw( *_d->engine );
+  Widget::draw( *_d->engine );  
 
   _drawTooltip( DateTime::elapsedTime() );
   _d->preRenderFunctionCalled = false;
@@ -197,10 +198,10 @@ Widget* Ui::findWidget(const Point &p)
 {
   const Widgets& widgets = children();
 
-  foreach( it, widgets )
+  for( auto widget : widgets )
   {
-    if( (*it)->visible() && (*it)->isPointInside( p ) )
-      return *it;
+    if( widget->visible() && widget->isPointInside( p ) )
+      return widget;
   }
 
   return this;
@@ -226,9 +227,9 @@ void Ui::deleteLater( Widget* ptrElement )
       _d->hoveredNoSubelement = WidgetPtr();
     }
 
-    foreach( widget, _d->deletionQueue )
+    for( auto widget : _d->deletionQueue )
     {
-      if( (*widget) == ptrElement )
+      if( widget == ptrElement )
       {
         return;
       }
@@ -250,29 +251,6 @@ void Ui::setFlag(Ui::Flag name, int value)
   _d->flags[ name ] = value;
 }
 
-WidgetPtr Ui::Impl::createStandartTooltip( Widget* parent )
-{
-  Label* elm = new Label( parent, Rect( 0, 0, 2, 2 ), hoveredNoSubelement->tooltipText(), true, Label::bgSimpleWhite );
-  elm->setSubElement(true);
-  elm->setTextAlignment( align::upperLeft, align::upperLeft );
-  elm->setTextOffset( Point( 5, 5 ) );
-
-  Size tlpSize( elm->textWidth() + 20, elm->textHeight() + 2 );
-  if( tlpSize.width() > parent->width() * 0.75 )
-  {
-    tlpSize.setWidth( parent->width() * 0.5 );
-    tlpSize.setHeight( elm->textHeight() * 2 + 10 );
-    elm->setWordwrap( true );
-  }
-
-  Rect rect( cursorPos, tlpSize );
-
-  rect -= Point( tlpSize.width() + 20, -20 );
-  elm->setGeometry( rect );
-
-  return elm;
-}
-
 void Ui::_drawTooltip( unsigned int time )
 {
   // launch tooltip
@@ -290,9 +268,10 @@ void Ui::_drawTooltip( unsigned int time )
     }
 
     _d->toolTip.element = _d->createStandartTooltip( this );
+    _d->toolTip.element->addProperty( "tooltip", 1 );
     _d->toolTip.element->setGeometry( _d->toolTip.element->relativeRect() + Point( 1, 1 ) );
     if( _d->toolTip.element->screenBottom() > (int)height() ||
-         _d->toolTip.element->screenLeft() < (int)0 )
+        _d->toolTip.element->screenLeft() < (int)0 )
     {
       Rect geom = _d->toolTip.element->absoluteRect();
       geom.constrainTo( absoluteRect() );
@@ -548,16 +527,15 @@ void Ui::beforeDraw()
 
   _updateHovered( _d->cursorPos );
 
-  const Widgets& rchildren = children();
-  foreach( i, rchildren )
-  {
-    (*i)->beforeDraw( *_d->engine );
-  }
+  Widgets rchildren = children();
 
   if( _d->toolTip.element.isValid() )
   {
     _d->toolTip.element->bringToFront();
   }
+
+  for( auto widget : rchildren )
+    widget->beforeDraw( *_d->engine );
 
   _d->preRenderFunctionCalled = true;
 }
@@ -586,5 +564,28 @@ void Ui::animate( unsigned int time )
 }
 
 Point Ui::cursorPos() const {  return _d->cursorPos; }
+
+Widget* UiTooltipWorker::standart(Widget *parent)
+{
+  Label* elm = new Label( parent, Rect( 0, 0, 2, 2 ), hoveredNoSubelement->tooltipText(), true, Label::bgSimpleWhite );
+  elm->setSubElement(true);
+  elm->setTextAlignment( align::upperLeft, align::upperLeft );
+  elm->setTextOffset( Point( 5, 5 ) );
+
+  Size tooltipSize( elm->textWidth() + 20, elm->textHeight() + 2 );
+  if( tooltipSize.width() > parent->width() * 0.75 )
+    {
+      tooltipSize.setWidth( parent->width() * 0.5 );
+      tooltipSize.setHeight( elm->textHeight() * 2 + 10 );
+      elm->setWordwrap( true );
+    }
+
+  Rect rect( cursorPos, tooltipSize );
+
+  rect -= Point( tooltipSize.width() + 20, -20 );
+  elm->setGeometry( rect );
+
+  return elm;
+}
 
 }//end namespace gui
