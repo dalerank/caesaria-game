@@ -48,6 +48,7 @@ public:
   Picture objectsMap;
   Picture walkersMap;
   Picture background;
+  bool backgrodunInit;
 
   PlayerCityPtr city;
   Camera const* camera;
@@ -88,8 +89,7 @@ Minimap::Minimap(Widget* parent, Rect rect, PlayerCityPtr city, const gfx::Camer
   _d->colors.reset( new minimap::Colors( city->climate() ) );
   _d->btnZoomIn =  new TexturedButton( this, righttop() - Point( 28, -2  ), Size( 24 ), -1, 605 );
   _d->btnZoomOut = new TexturedButton( this, righttop() - Point( 28, -26 ), Size( 24 ), -1, 601 );
-  _d->initStaticMmap();
-  _d->drawStaticMmap( _d->landRockWaterMap, true );
+  _d->backgrodunInit = false;
   setTooltipText( _("##minimap_tooltip##") );
 }
 
@@ -481,7 +481,7 @@ void Minimap::Impl::drawStaticMmap(Picture& canvas, bool clear)
       Point pnt = getBitmapCoordinates(i, j, mapSize);
       getTerrainColours( tile, true, c1, c2);
 
-      if( pnt.y() < 0 || pnt.x() < 0 || pnt.x() > mmapWidth-1 || pnt.y() > mmapHeight )
+      if( pnt.y() < 0 || pnt.x() < 0 || pnt.x() > mmapWidth-1 || pnt.y() > mmapHeight-1 )
         continue;
 
       unsigned int* bufp32;
@@ -563,6 +563,14 @@ bool Minimap::onEvent(const NEvent& event)
 void Minimap::beforeDraw(Engine& painter)
 {
   Widget::beforeDraw( painter );
+
+  if( !_d->backgrodunInit )
+  {
+    _d->backgrodunInit = true;
+    painter.resetColorMask();
+    _d->initStaticMmap();
+    _d->drawStaticMmap( _d->landRockWaterMap, true );
+  }
 
   if( DateTime::elapsedTime() - _d->lastTimeUpdate > 250 )
   {
