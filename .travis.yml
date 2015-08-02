@@ -13,7 +13,7 @@ before_install:
 - sudo apt-get -qq install sshpass
 - sudo apt-get install -qq cmake build-essential libasound2-dev
 - sudo apt-get -qq install g++-4.8
-- if [ "$CXX" == "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+#- if [ "$CXX" == "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 #- sudo apt-get install -qq gcc-multilib g++-multilib
 install:
 - cd $TRAVIS_BUILD_DIR
