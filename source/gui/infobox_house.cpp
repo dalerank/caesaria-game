@@ -104,7 +104,7 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
     return;
   }
 
-  events::GameEventPtr e = events::PlaySound::create( "bmsel_house", 1, 100, audio::effects );
+  events::GameEventPtr e = events::PlaySound::create( "bmsel_house", 1, 100, audio::infobox, true );
   e->dispatch();
 
   setTitle( _(_house->levelName()) );

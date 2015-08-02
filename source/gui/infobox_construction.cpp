@@ -110,7 +110,7 @@ void AboutConstruction::_baseAssigned()
   if( base().isValid() )
   {
     std::string typeName = object::toString( base()->type() );
-    events::GameEventPtr e = events::PlaySound::create( "bmsel_"+typeName, 1, 100, audio::effects );
+    events::GameEventPtr e = events::PlaySound::create( "bmsel_"+typeName, 1, 100, audio::infobox, true );
     e->dispatch();
   }
 }

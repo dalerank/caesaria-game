@@ -405,7 +405,7 @@ ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city )
   Picture bottom( ResourceGroup::panelBackground, 20 );
 
   ret->_d->background.clear();
-
+  ret->setID( Hash( CAESARIA_STR_A(ExtentMenu)) );
   ret->_d->background.append( bground, Point( 0, 0 ) );
   unsigned int y = bground.height();
   while( y < parent->height() )

@@ -47,8 +47,8 @@ public:
   void init();
   void exit();
 
-  int play( std::string sampleName, int volume, SoundType type );
-  int play( const std::string& rc, int index, int volume, SoundType type );
+  int play( std::string sampleName, int volume, SoundType type, bool force=false);
+  int play(const std::string& rc, int index, int volume, SoundType type, bool force=false);
 
   bool isPlaying(const std::string& sampleName ) const;
 

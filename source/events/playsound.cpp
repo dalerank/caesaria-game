@@ -23,25 +23,19 @@
 namespace events
 {
 
-GameEventPtr PlaySound::create( const std::string& rc, int index, int volume, audio::SoundType type  )
+GameEventPtr PlaySound::create( const std::string& rc, int index, int volume, audio::SoundType type, bool force )
 {
-  PlaySound* e = new PlaySound();
-  e->_sound = utils::format( 0xff, "%s_%05d", rc.c_str(), index );
-  e->_volume = volume;
-  e->_type = type;
-
-  GameEventPtr ret( e );
-  ret->drop();
-
-  return ret;
+  return create( utils::format( 0xff, "%s_%05d", rc.c_str(), index ),
+                 volume, type, force );
 }
 
-GameEventPtr PlaySound::create(const std::string& filename, int volume, audio::SoundType type )
+GameEventPtr PlaySound::create(const std::string& filename, int volume, audio::SoundType type, bool force)
 {
   PlaySound* e = new PlaySound();
   e->_sound = filename;
   e->_volume = volume;
   e->_type = type;
+  e->_force = force;
 
   GameEventPtr ret( e );
   ret->drop();
@@ -51,7 +45,7 @@ GameEventPtr PlaySound::create(const std::string& filename, int volume, audio::S
 
 void PlaySound::_exec(Game&, unsigned int)
 {
-  audio::Engine::instance().play( _sound, _volume, _type );
+  audio::Engine::instance().play( _sound, _volume, _type, _force );
 }
 
 bool PlaySound::_mayExec(Game&, unsigned int) const{  return true; }

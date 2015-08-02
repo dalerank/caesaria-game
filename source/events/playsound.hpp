@@ -27,8 +27,8 @@ namespace events
 class PlaySound : public GameEvent
 {
 public:
-  static GameEventPtr create(const std::string& rc, int index, int volume, audio::SoundType type=audio::ambient  );
-  static GameEventPtr create(const std::string& filename, int volume, audio::SoundType type=audio::ambient );
+  static GameEventPtr create(const std::string& rc, int index, int volume, audio::SoundType type=audio::ambient, bool force=false );
+  static GameEventPtr create(const std::string& filename, int volume, audio::SoundType type=audio::ambient, bool force=false );
 
 protected:
   virtual void _exec( Game& game, unsigned int );
@@ -39,6 +39,7 @@ private:
 
   std::string _sound;
   int _volume;
+  bool _force;
   audio::SoundType _type;
 };
 
