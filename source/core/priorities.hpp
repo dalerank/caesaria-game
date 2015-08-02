@@ -20,7 +20,6 @@
 
 #include <vector>
 #include "variant_list.hpp"
-#include "core/foreach.hpp"
 #include <set>
 
 template<class T>
@@ -33,8 +32,8 @@ inline std::set<T>& operator<<(std::set<T>& which, const T& value)
 template<class T>
 inline std::set<T>& operator<<(std::set<T>& which, const VariantList& values)
 {
-  foreach( it, values )
-    which.insert( *it );
+  for( auto item : values )
+    which.insert( item );
 
   return which;
 }
@@ -52,7 +51,7 @@ public:
   VariantList save() const
   {
     VariantList vl;
-    foreach( i, *this ) { vl.push_back( Variant( *i ) ); }
+    for( auto item : *this ) { vl.push_back( Variant( item ) ); }
 
     return vl;
   }
@@ -62,16 +61,16 @@ public:
     *this << stream;
   }
 
-  bool count( const T& v ) const
+  bool contain( const T& v ) const
   {
-    foreach( i, *this ) { if( *i == v ) return true; }
+    for( auto item : *this ) { if( item == v ) return true; }
 
     return false;
   }
 
   Priorities& operator << ( const VariantList& vl )
   {
-    foreach( i, vl ) { this->push_back( (T)(*i).toInt() ); }
+    for( auto i : vl ) { this->push_back( (T)i.toInt() ); }
 
     return *this;
   }

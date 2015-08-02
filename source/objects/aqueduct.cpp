@@ -58,14 +58,14 @@ bool Aqueduct::build( const city::AreaInfo& info )
   Tile& terrain = tilemap.at( info.pos );
 
   // we can't build if already have aqueduct here
-  AqueductPtr aqueveduct = ptr_cast<Aqueduct>( terrain.overlay() );
+  AqueductPtr aqueveduct = terrain.overlay().as<Aqueduct>();
   if( aqueveduct.isValid() )
   {
     return false;
   }
 
   _setIsRoad( terrain.getFlag( Tile::tlRoad ) );
-  RoadPtr road = ptr_cast<Road>( terrain.overlay() );
+  RoadPtr road = terrain.overlay().as<Road>();
   if( road.isValid() )
   {
     road->setState( pr::lockTerrain, 1 );
@@ -74,9 +74,10 @@ bool Aqueduct::build( const city::AreaInfo& info )
   WaterSource::build( info );
 
   TilePos offset( 2, 2 );
-  AqueductList aqueducts = city::statistic::getObjects<Aqueduct>( _city(), object::aqueduct, info.pos - offset, info.pos + offset );
+  AqueductList aqueducts = _city()->statistic().objects.find<Aqueduct>( object::aqueduct,
+                                                                        info.pos - offset, info.pos + offset );
 
-  foreach( aqueduct, aqueducts ) { (*aqueduct)->updatePicture( info.city ); }
+  for( auto aqueduct : aqueducts ) { aqueduct->updatePicture( info.city ); }
   return true;
 }
 
@@ -96,14 +97,9 @@ void Aqueduct::destroy()
   if( _city().isValid() )
   {
     TilesArea area( _city()->tilemap(), pos() - TilePos( 2, 2 ), Size( 5 ) );
-    foreach( tile, area )
-    {
-      AqueductPtr aq = ptr_cast<Aqueduct>( (*tile)->overlay() );
-      if( aq.isValid() )
-      {
-        aq->updatePicture( _city() );
-      }
-    }
+    AqueductList aqueducts = area.overlays().select<Aqueduct>();
+    for( auto aq : aqueducts )
+      aq->updatePicture( _city() );
   }
 
   if( tile().getFlag( Tile::tlRoad ) || _isRoad() )
@@ -154,19 +150,19 @@ bool Aqueduct::canBuild( const city::AreaInfo& areaInfo) const
       tp_to = areaInfo.pos;
 
     TilesArray perimetr = tilemap.getRectangle(tp_from, tp_to, !Tilemap::checkCorners);
-    foreach( tile, perimetr )
+    for( auto tile : perimetr )
     {
       AqueductPtr bldAqueduct;
-      foreach( it, areaInfo.aroundTiles )
+      for( auto aTile : areaInfo.aroundTiles )
       {
-        if( (*it)->pos() == (*tile)->pos() )
+        if( aTile->pos() == tile->pos() )
         {
-          bldAqueduct = ptr_cast< Aqueduct >( (*it)->overlay() );
+          bldAqueduct = aTile->overlay().as<Aqueduct>();
           break;
         }
       }
 
-      if( (*tile)->getFlag( Tile::tlRoad ) && bldAqueduct.isValid()  )
+      if( tile->getFlag( Tile::tlRoad ) && bldAqueduct.isValid()  )
         return false;
     }
   }
@@ -230,12 +226,12 @@ const Picture& Aqueduct::picture( const city::AreaInfo& info ) const
   const TilePos& p = info.pos;
   if (!info.aroundTiles.empty())
   {
-    foreach( it, info.aroundTiles )
+    for( auto tile : info.aroundTiles )
     {
-      int i = (*it)->epos().i();
-      int j = (*it)->epos().j();
+      int i = tile->epos().i();
+      int j = tile->epos().j();
 
-      if( !is_kind_of<Aqueduct>( (*it)->overlay() ) )
+      if( !tile->overlay().is<Aqueduct>() )
         continue;
 
       if( i == p.i() && j == (p.j() + 1)) is_busy[north] = true;
@@ -248,12 +244,12 @@ const Picture& Aqueduct::picture( const city::AreaInfo& info ) const
   // calculate directions
   for (int i = 0; i < direction::count; ++i)
   {
-    bool isReservoirNear = is_kind_of<Reservoir>( overlay_d[i] );
+    bool isReservoirNear = overlay_d[i].is<Reservoir>();
     if( !is_border[i] && (is_kind_of<Aqueduct>( overlay_d[i] ) || isReservoirNear || is_busy[i] ) )
     {
       if( isReservoirNear )
       {
-        ReservoirPtr reservoir = ptr_cast<Reservoir>( overlay_d[ i ] );
+        ReservoirPtr reservoir = overlay_d[ i ].as<Reservoir>();
         switch( i )
         {
         case north: directionFlags += ( reservoir->entry( south ) == p + TilePos( 0, 1 ) ? 1 : 0 ); break;

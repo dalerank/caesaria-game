@@ -18,7 +18,6 @@
 #include "spirit_of_mars.hpp"
 #include "game/game.hpp"
 #include "objects/construction.hpp"
-#include "helper.hpp"
 #include "city.hpp"
 #include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
@@ -62,7 +61,7 @@ void SpiritOfMars::timeStep( const unsigned int time)
 
     Logger::warning( "SpiritOfMars: execute service" );
 
-    EnemySoldierList enemies = statistic::getWalkers<EnemySoldier>( _city() );
+    EnemySoldierList enemies = _city()->statistic().walkers.find<EnemySoldier>();
 
     if( enemies.size() > 0 )
     {

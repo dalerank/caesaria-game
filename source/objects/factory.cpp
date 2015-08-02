@@ -79,6 +79,11 @@ public signals:
 class Factory::Impl
 {
 public:
+  struct
+  {
+
+  };
+
   bool isActive;
   float productionRate;  // max production / year
   float progress;  // progress of the work, in percent (0-100).
@@ -177,7 +182,7 @@ void Factory::_weekUpdate(unsigned int time)
     {
       _reachUnworkingTreshold();
     }
-    }
+  }
 }
 
 void Factory::_setUnworkingInterval(unsigned int weeks)
@@ -382,7 +387,7 @@ bool Creamery::build( const city::AreaInfo& info )
 {
   Factory::build( info );
 
-  bool haveOliveFarm = !city::statistic::getObjects<Building>( info.city, object::olive_farm ).empty();
+  bool haveOliveFarm = !info.city->statistic().objects.find<Building>( object::olive_farm ).empty();
 
   _setError( haveOliveFarm ? "" : _("##need_olive_for_work##") );
 

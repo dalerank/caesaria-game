@@ -69,13 +69,13 @@ void GoodsUpdater::timeStep(const unsigned int time)
 
     Logger::warning( "GoodsUpdater: execute service" );
 
-    foreach( bldType, _d->supportBuildings )
+    for( auto bldType : _d->supportBuildings )
     {
-      BuildingList buildings = city::statistic::getObjects<Building>( _city(), *bldType );
-      foreach( it, buildings )
+      BuildingList buildings = _city()->statistic().objects.find<Building>( bldType );
+      for( auto building : buildings )
       {
         good::Stock stock( _d->gtype, _d->value, _d->value );
-        (*it)->storeGoods( stock, _d->value );
+        building->storeGoods( stock, _d->value );
       }
     }
   }
@@ -91,9 +91,9 @@ void GoodsUpdater::load(const VariantMap& stream)
   _d->gtype = (good::Product)good::Helper::getType( stream.get( literals::good ).toString() );
 
   StringArray buildingTypes = stream.get( "buildings" ).toStringArray();
-  foreach( it, buildingTypes )
+  for( auto typeStr : buildingTypes )
   {
-    object::Type type = object::toType( *it );
+    object::Type type = object::toType( typeStr );
     if( type != object::unknown )
     {
       _d->supportBuildings.insert( type );
@@ -108,8 +108,8 @@ VariantMap GoodsUpdater::save() const
   VARIANT_SAVE_ANY_D( ret, _d, value )
 
   StringArray buildingTypes;
-  foreach( it, _d->supportBuildings )
-    buildingTypes << object::toString( *it );
+  for( auto type : _d->supportBuildings )
+    buildingTypes << object::toString( type );
 
   ret[ "buildings" ] = utils::toVList( buildingTypes );
   ret[ literals::good    ] = Variant( good::Helper::getTypeName( _d->gtype ) );

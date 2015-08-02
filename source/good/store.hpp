@@ -72,7 +72,7 @@ public:
   virtual void setCapacity(const good::Product& goodType, const int maxQty) = 0;
 
   virtual int capacity() const = 0;
-  virtual ProductMap details() const = 0;
+  virtual ProductMap details() const;
   virtual int capacity(const good::Product& goodType ) const = 0;
 
   virtual int freeQty( const good::Product& goodType ) const;
@@ -105,11 +105,12 @@ public:
   // store/retrieve to goodStore
   void applyStorageReservation(Storage& goodStore, const int reservationID);
   void applyRetrieveReservation(Storage& goodStore, const int reservationID);
-  ProductMap filled() const;
+
+  ProductMap amounts() const;
 
   // immediate store/retrieve, exception if impossible
-  virtual void store( good::Stock& stock, const int amount);
-  virtual void retrieve( good::Stock& stock, const int amount);
+  virtual void store( good::Stock& stock, const int amounts);
+  virtual void retrieve( good::Stock& stock, const int amounts);
 
   // store all goods from the given goodStore
   virtual void storeAll( Store &goodStore);

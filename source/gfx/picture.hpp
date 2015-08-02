@@ -37,7 +37,6 @@ class PictureImpl;
 class Picture
 {
 public:
-  typedef enum { preloaded, filesystem } LoadMode;
   Picture();
   Picture( const Size& size, unsigned char* data=0, bool mayChange=false );
   Picture( const std::string& group, const int id );

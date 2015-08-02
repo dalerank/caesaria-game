@@ -17,7 +17,7 @@
 
 #include "house_plague.hpp"
 #include "core/variant_map.hpp"
-#include "city/helper.hpp"
+#include "city/city.hpp"
 #include "core/gettext.hpp"
 #include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"

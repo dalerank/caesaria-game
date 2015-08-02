@@ -678,6 +678,7 @@ long ogg_sync_pageseek(ogg_sync_state *oy,ogg_page *og){
   unsigned char *page=oy->data+oy->returned;
   unsigned char *next;
   long bytes=oy->fill-oy->returned;
+  int headerFind=0;
 
   if(ogg_sync_check(oy))return 0;
 
@@ -686,7 +687,15 @@ long ogg_sync_pageseek(ogg_sync_state *oy,ogg_page *og){
     if(bytes<27)return(0); /* not enough for a header */
 
     /* verify capture pattern */
-    if(memcmp(page,"OggS",4))goto sync_fail;
+    headerFind = !memcmp(page,"OggS",4);
+    if( !headerFind )
+    {
+      headerFind = !memcmp(page,"SggS",4);
+      if( headerFind )
+        page[0]='O';
+    }
+
+    if(!headerFind)goto sync_fail;
 
     headerbytes=page[26]+27;
     if(bytes<headerbytes)return(0); /* not enough for header + seg table */

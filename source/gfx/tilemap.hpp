@@ -66,7 +66,7 @@ public:
     AllNeighbors
   };
 
-  TilesArray getNeighbors( TilePos pos, TileNeighbors type = AllNeighbors);
+  TilesArray getNeighbors(const TilePos& pos, TileNeighbors type = AllNeighbors);
 
   // returns all tiles in a rectangular area
   // (i1, j1) : left corner of the rectangle (minI, minJ)

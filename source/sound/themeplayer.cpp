@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
-#include "player.hpp"
+#include "themeplayer.hpp"
 #include "core/time.hpp"
 #include "game/settings.hpp"
 #include "core/stringarray.hpp"
@@ -24,20 +24,26 @@
 #include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
 #include "sound/engine.hpp"
+#include "city/cityservice_factory.hpp"
+
+namespace city
+{
+REGISTER_SERVICE_IN_FACTORY(audio::ThemePlayer,themePlayer)
+}
 
 namespace audio
 {
 
 typedef StringArray Playlist;
 
-class Player::Impl
+class ThemePlayer::Impl
 {
 public:
   Playlist playlist;
   int lastIndex;
 };
 
-Player::Player( PlayerCityPtr city )
+ThemePlayer::ThemePlayer( PlayerCityPtr city )
   : Srvc( city, defaultName()  ), _d( new Impl )
 { 
   vfs::Path path = SETTINGS_RC_PATH( soundThemesModel );
@@ -50,24 +56,24 @@ Player::Player( PlayerCityPtr city )
   _d->lastIndex = 0;
 }
 
-city::SrvcPtr Player::create( PlayerCityPtr city )
+city::SrvcPtr ThemePlayer::create( PlayerCityPtr city )
 {
-  city::SrvcPtr ret( new Player( city ) );
+  city::SrvcPtr ret( new ThemePlayer( city ) );
   ret->drop();
 
   return ret;
 }
 
-std::string Player::defaultName() { return "audio_player"; }
+std::string ThemePlayer::defaultName() { return "audio_player"; }
 
-void Player::timeStep(const unsigned int time )
+void ThemePlayer::timeStep(const unsigned int time )
 {
   if( game::Date::isWeekChanged() )
   {
     if( _d->playlist.empty() )
       return;
 
-    audio::Engine& engine = audio::Engine::instance();
+    Engine& engine = Engine::instance();
     std::string sample = _d->playlist[ _d->lastIndex ];
 
     if( !engine.isPlaying( sample ) )
@@ -80,9 +86,9 @@ void Player::timeStep(const unsigned int time )
   }
 }
 
-Player::~Player()
+ThemePlayer::~ThemePlayer()
 {
-  audio::Engine& engine = audio::Engine::instance();
+  Engine& engine = Engine::instance();
   std::string sample = _d->playlist[ _d->lastIndex ];
   engine.stop( sample );
 }

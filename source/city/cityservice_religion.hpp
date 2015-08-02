@@ -37,6 +37,8 @@ public:
   virtual void load(const VariantMap& stream);
   std::string reason() const;
 
+  virtual ~Religion();
+
 private:
   Religion( PlayerCityPtr city );
 

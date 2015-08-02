@@ -16,7 +16,6 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "working.hpp"
-#include "city/helper.hpp"
 #include "walker/walker.hpp"
 #include "city/statistic.hpp"
 #include "events/returnworkers.hpp"
@@ -26,6 +25,8 @@
 #include "objects/house.hpp"
 #include "objects/house_level.hpp"
 #include "events/removecitizen.hpp"
+#include "core/common.hpp"
+#include "walker/typeset.hpp"
 
 using namespace gfx;
 using namespace events;
@@ -33,8 +34,12 @@ using namespace events;
 class WorkingBuilding::Impl
 {
 public:
-  unsigned int currentWorkers;
-  unsigned int maxWorkers;
+  struct
+  {
+    unsigned int current;
+    unsigned int maximum;
+  } workers;
+
   bool isActive;
   WalkerList walkerList;
   std::string errorStr;
@@ -48,8 +53,8 @@ public signals:
 WorkingBuilding::WorkingBuilding(const object::Type type, const Size& size)
 : Building( type, size ), _d( new Impl )
 {
-  _d->currentWorkers = 0;
-  _d->maxWorkers = 0;
+  _d->workers.current = 0;
+  _d->workers.maximum = 0;
   _d->isActive = true;
   _d->clearAnimationOnStop = true;
   _d->laborAccessKoeff = 100;
@@ -59,23 +64,23 @@ WorkingBuilding::WorkingBuilding(const object::Type type, const Size& size)
 void WorkingBuilding::save( VariantMap& stream ) const
 {
   Building::save( stream );
-  VARIANT_SAVE_ANY_D( stream, _d, currentWorkers );
+  VARIANT_SAVE_ANY_D( stream, _d, workers.current );
   VARIANT_SAVE_ANY_D( stream, _d, isActive );
-  VARIANT_SAVE_ANY_D( stream, _d, maxWorkers );
+  VARIANT_SAVE_ANY_D( stream, _d, workers.maximum );
   VARIANT_SAVE_ANY_D( stream, _d, laborAccessKoeff );
 }
 
 void WorkingBuilding::load( const VariantMap& stream)
 {
   Building::load( stream );
-  VARIANT_LOAD_ANY_D( _d, currentWorkers, stream );
+  VARIANT_LOAD_ANY_D( _d, workers.current, stream );
   VARIANT_LOAD_ANY_D( _d, isActive, stream );
-  VARIANT_LOAD_ANY_D( _d, maxWorkers, stream );
+  VARIANT_LOAD_ANY_D( _d, workers.maximum, stream );
   VARIANT_LOAD_ANY_D( _d, laborAccessKoeff, stream );
 
-  if( !_d->maxWorkers )
+  if( !_d->workers.maximum )
   {
-    _d->maxWorkers = MetaDataHolder::getData( type() ).getOption( MetaDataOptions::employers );
+    _d->workers.maximum = MetaDataHolder::getData( type() ).getOption( MetaDataOptions::employers );
   }
 }
 
@@ -123,10 +128,10 @@ void WorkingBuilding::initialize(const MetaData& mdata)
 }
 
 std::string WorkingBuilding::workersStateDesc() const { return ""; }
-void WorkingBuilding::setMaximumWorkers(const unsigned int maxWorkers) { _d->maxWorkers = maxWorkers; }
-unsigned int WorkingBuilding::maximumWorkers() const { return _d->maxWorkers; }
-void WorkingBuilding::setWorkers(const unsigned int currentWorkers){  _d->currentWorkers = math::clamp( currentWorkers, 0u, _d->maxWorkers );}
-unsigned int WorkingBuilding::numberWorkers() const { return _d->currentWorkers; }
+void WorkingBuilding::setMaximumWorkers(const unsigned int maxWorkers) { _d->workers.maximum = maxWorkers; }
+unsigned int WorkingBuilding::maximumWorkers() const { return _d->workers.maximum; }
+void WorkingBuilding::setWorkers(const unsigned int currentWorkers){  _d->workers.current = math::clamp( currentWorkers, 0u, _d->workers.maximum );}
+unsigned int WorkingBuilding::numberWorkers() const { return _d->workers.current; }
 unsigned int WorkingBuilding::needWorkers() const { return maximumWorkers() - numberWorkers(); }
 unsigned int WorkingBuilding::productivity() const { return math::percentage( numberWorkers(), maximumWorkers() ); }
 unsigned int WorkingBuilding::laborAccessPercent() const { return _d->laborAccessKoeff; }
@@ -158,11 +163,11 @@ void WorkingBuilding::timeStep( const unsigned long time )
 {
   Building::timeStep( time );
 
-  utils::eraseDeletedElements( _d->walkerList );
+  utils::eraseIfDeleted( _d->walkerList );
 
   if( game::Date::isMonthChanged() && numberWorkers() > 0 )
   {
-    _d->laborAccessKoeff = city::statistic::getLaborAccessValue( _city(), this );
+    _d->laborAccessKoeff = _city()->statistic().objects.laborAccess( this );
   }
 
   if( isActive() )
@@ -242,14 +247,11 @@ void WorkingBuilding::destroy()
 {
   Building::destroy();
 
-  foreach( it, _d->walkerList )
-  {
-    walker::Type wt = (*it)->type();
-    if( wt == walker::cartPusher || wt == walker::supplier )
-      continue;
-
-    (*it)->deleteLater();
-  }
+  WalkerList mayDelete = walkers();
+  utils::excludeByType( mayDelete, WalkerTypeSet( walker::cartPusher,
+                                                  walker::supplier ) );
+  for( auto wlk : mayDelete )
+    wlk->deleteLater();
 
   if( numberWorkers() > 0 )
   {

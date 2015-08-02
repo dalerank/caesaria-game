@@ -38,7 +38,7 @@ bool Theater::build( const city::AreaInfo& info )
 {
   ServiceBuilding::build( info );
 
-  ActorColonyList actors = city::statistic::getObjects<ActorColony>( info.city, object::actorColony );
+  ActorColonyList actors = info.city->statistic().objects.find<ActorColony>( object::actorColony );
 
   if( actors.empty() )
   {

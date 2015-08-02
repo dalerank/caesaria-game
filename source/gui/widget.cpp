@@ -45,7 +45,7 @@ void Widget::beforeDraw(gfx::Engine& painter )
     return;
   //"Parent must be exists";
 
-  foreach( widget, d->children ) { (*widget)->beforeDraw( painter ); }
+  for( auto child : d->children ) { child->beforeDraw( painter ); }
 }
 
 Ui* Widget::ui() {  return _environment; }
@@ -110,10 +110,10 @@ Widget::Widget( Widget* parent, int id, const Rect& rectangle )
 Widget::~Widget()
 {
   // delete all children
-  foreach( widget, _dfunc()->children )
+  for( auto child : _dfunc()->children )
   {
-    (*widget)->setParent( 0 );
-    (*widget)->drop();
+    child->setParent( 0 );
+    child->drop();
   }
 }
 
@@ -239,7 +239,7 @@ void Widget::updateAbsolutePosition()
   _recalculateAbsolutePosition(false);
 
   // update all children
-  foreach( widget, _d->children ) { (*widget)->updateAbsolutePosition(); }
+  for( auto child : _d->children ) { child->updateAbsolutePosition(); }
 }
 
 Widget* Widget::getElementFromPoint( const Point& point )
@@ -290,8 +290,8 @@ void Widget::addChild( Widget* child )
 void Widget::removeChild( Widget* child )
 {
   __D_IMPL(_d,Widget)
-  ChildIterator it = _d->children.begin();
-  for (; it != _d->children.end(); ++it)
+  foreach( it, _d->children )
+  {
     if ((*it) == child)
     {
       (*it)->setParent( 0 );
@@ -299,6 +299,7 @@ void Widget::removeChild( Widget* child )
       _d->children.erase(it);
       return;
     }
+  }
 }
 
 void Widget::draw(gfx::Engine& painter )
@@ -306,7 +307,7 @@ void Widget::draw(gfx::Engine& painter )
   if ( visible() )
   {
     Widgets& children = _getChildren();
-    foreach( widget, children ) { (*widget)->draw( painter ); }
+    for( auto child : children ) { child->draw( painter ); }
   }
 }
 
@@ -422,16 +423,16 @@ Widget* Widget::findChild( int id, bool searchchildren/*=false*/ ) const
   Widget* e = 0;
 
   __D_IMPL_CONST(_d,Widget)
-  foreach( widget, _d->children )
+  for( auto child : _d->children )
   {
-    if( (*widget)->ID() == id)
+    if( child->ID() == id)
     {
-      return *widget;
+      return child;
     }
 
     if( searchchildren )
     {
-      e = (*widget)->findChild(id, true);
+      e = child->findChild(id, true);
     }
 
     if( e )
@@ -591,15 +592,15 @@ void Widget::setupUI( const VariantMap& options )
 
   setNotClipped( options.get( "noclipped", false ).toBool() );
 
-  foreach( it, options )
+  for( auto item : options )
   {
-    if( it->second.type() != Variant::Map )
+    if( item.second.type() != Variant::Map )
       continue;
 
-    VariantMap tmp = it->second.toMap();
+    VariantMap tmp = item.second.toMap();
     tmp[ literals::vars ] = vars;
 
-    std::string widgetName = it->first;
+    std::string widgetName = item.first;
     std::string widgetType;
     std::string::size_type delimPos = widgetName.find( '#' );
     if( delimPos != std::string::npos )
@@ -750,9 +751,9 @@ void Widget::_recalculateAbsolutePosition( bool recursive )
   if ( recursive )
   {
     // update all children
-    foreach( it, _d->children )
+    for( auto child : _d->children )
     {
-        (*it)->_recalculateAbsolutePosition(recursive);
+      child->_recalculateAbsolutePosition(recursive);
     }
   }
 
@@ -764,7 +765,7 @@ void Widget::animate( unsigned int timeMs )
   if( !visible() )
     return;
 
-  foreach( widget, _getChildren() ) { (*widget)->animate( timeMs ); }
+  for( auto child : _getChildren() ) { child->animate( timeMs ); }
 }
 
 void Widget::remove()
@@ -776,9 +777,9 @@ void Widget::remove()
 
 bool Widget::onEvent( const NEvent& event )
 {
-  foreach( item, _dfunc()->eventHandlers )
+  for( auto child : _dfunc()->eventHandlers )
   {
-    bool handled = (*item)->onEvent( event );
+    bool handled = child->onEvent( event );
     if( handled )
       return true;
   }

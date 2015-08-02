@@ -40,6 +40,7 @@
 //using namespace constants;
 using namespace gfx;
 using namespace city;
+using namespace events;
 
 // used to display the building name and its cost
 namespace gui
@@ -59,6 +60,11 @@ public:
     setFont( fontRed, stHovered );
     setTextAlignment( align::upperLeft, align::center );
     setTextOffset( Point( 15, 0 ) );
+  }
+
+  void setSound( const std::string& name )
+  {
+    addProperty( "sound", name );
   }
 
   void _updateTextPic()
@@ -112,28 +118,28 @@ void BuildMenu::initialize()
   VariantList submenu = config.get( "submenu" ).toList();
   VariantList buildings = config.get( "buildings" ).toList();
 
-  foreach( it, submenu )
+  for( auto item : submenu )
   {
-    development::Branch branch = development::toBranch( it->toString() );
+    development::Branch branch = development::toBranch( item.toString() );
     if( branch != development::unknown )
     {
-      std::string title = utils::format( 0xff, "##bldm_%s##", it->toString().c_str() );
+      std::string title = utils::format( 0xff, "##bldm_%s##", item.toString().c_str() );
       addSubmenuButton( branch, title );
     }
   }
 
-  foreach( it, buildings )
+  for( auto item : buildings )
   {
-    object::Type bType = object::toType( it->toString() );
+    object::Type bType = object::toType( item.toString() );
     if( bType != object::unknown )
     {
       addBuildButton( bType );
     }
   }
 
-  foreach( widget, children() )
+  for( auto widget : children() )
   {
-    BuildButton *button = dynamic_cast< BuildButton* >( *widget );
+    BuildButton *button = safety_cast< BuildButton* >( widget );
     if( button )
     {
       textSize = font.getTextSize( button->text());
@@ -146,9 +152,9 @@ void BuildMenu::initialize()
   setWidth( std::max(150, max_text_width + max_cost_width + 30) );
 
   // set the same size for all buttons
-  foreach( widget, children() )
+  for( auto widget : children() )
   {
-    BuildButton *button = safety_cast< BuildButton* >( *widget );
+    BuildButton *button = safety_cast< BuildButton* >( widget );
     if( button )
     {
       button->setWidth( width() );
@@ -166,6 +172,9 @@ void BuildMenu::addSubmenuButton(const city::development::Branch menuType, const
   BuildButton* button = new BuildButton( this, _(text), Rect( Point( 0, height() ), Size( width(), 25 ) ), -1 );
   button->setID( menuType | subMenuCreateIdHigh );
   button->setCost(-1);  // no display cost
+  button->setSound( "bmsel_" + development::toString( menuType ) );
+
+  CONNECT( button, onClickedEx(), this, BuildMenu::_resolveButtonClick );
 
   setHeight( height() + 30 );
 }
@@ -189,10 +198,11 @@ void BuildMenu::addBuildButton(const object::Type buildingType )
                                            Rect( 0, height(), width(), height() + 25 ), -1 );
     button->setCost(cost);
     button->setID( buildingType );
+    button->setSound( "bmsel_" + buildingData.name() );
 
     setHeight( height() + 30 );
 
-    CONNECT( button, onClicked(), this, BuildMenu::_resolveButtonClick );
+    CONNECT( button, onClickedEx(), this, BuildMenu::_resolveButtonClick );
   }
 }
 
@@ -217,6 +227,7 @@ BuildMenu* BuildMenu::create(const city::development::Branch menuType, Widget* p
   case development::big_temple:     ret = new BuildMenu_bigtemple     ( parent, Rect( 0, 0, 60, 1 )); break;
   default:       break; // DO NOTHING 
   };
+
   if( ret )
   {
     ret->_c3gameplay = c3gameplay;
@@ -234,9 +245,13 @@ bool BuildMenu::isPointInside( const Point& point ) const
 
 void BuildMenu::setBuildOptions( const development::Options& options ) {  _options = options; }
 
-void BuildMenu::_resolveButtonClick()
+void BuildMenu::_resolveButtonClick( Widget* widget )
 {
-  events::GameEventPtr e = events::PlaySound::create( "icon", 1, 100 );
+  std::string sound = widget->getProperty( "sound" ).toString();
+  if( sound.empty() )
+    sound = "icon";
+
+  GameEventPtr e = PlaySound::create( sound, 1, 100 );
   e->dispatch();
 }
 

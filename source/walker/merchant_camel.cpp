@@ -61,11 +61,11 @@ void MerchantCamel::timeStep(const unsigned long time)
 {
   if( !_d->inCaravan )
   {
-    LandMerchantPtr head = city::statistic::getWalker<LandMerchant>( _city(), walker::merchant, _d->headId );
+    LandMerchantPtr head = _city()->statistic().walkers.find<LandMerchant>( walker::merchant, _d->headId );
     if( !head.isValid() )
     {
       die();
-      Logger::warning( "WARNING !!!: MerchantCamel havenot headID caravan %d", _d->headId );
+      Logger::warning( "!!!Warning: MerchantCamel havenot headID caravan %d", _d->headId );
     }
     else
     {

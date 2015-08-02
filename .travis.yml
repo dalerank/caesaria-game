@@ -6,6 +6,8 @@ before_install:
 - brew install cmake
 - brew install wget
 - brew install https://raw.github.com/eugeneoden/homebrew/eca9de1/Library/Formula/sshpass.rb
+- if [ "$CXX" == "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+#- sudo apt-get install -qq gcc-multilib g++-multilib
 install:
 - cd $TRAVIS_BUILD_DIR
 # Create unix makefiles
@@ -32,5 +34,7 @@ after_success:
 - sshpass -p "$SCP_PASS" scp -v *.macos dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/stuff/
 env:
 notifications:
-    slack: caesariagame:m3lwdYPWqeCOn0zWs0rjX5KY
-
+    slack:
+        - caesariagame:m3lwdYPWqeCOn0zWs0rjX5KY
+    on_failure: always
+    on_success: never

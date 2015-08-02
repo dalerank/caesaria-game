@@ -51,13 +51,13 @@ void Services::initialize(PlayerCityPtr city, const std::string& model)
 {
   VariantMap services = config::load( model );
 
-  foreach( it, services )
+  for (auto it : services)
   {
-    SrvcPtr service = ServiceFactory::instance().create( city, it->first );
+    SrvcPtr service = ServiceFactory::instance().create( city, it.first );
     if( service.isValid() )
       city->addService( service );
     else
-      Logger::warning( "!!! WARNING: Cant initialize service %s on city create", it->first.c_str() );
+      Logger::warning( "!!! WARNING: Cant initialize service %s on city create", it.first.c_str() );
   }
 }
 
@@ -127,17 +127,18 @@ void Walkers::update(PlayerCityPtr, unsigned int time)
 VariantList Options::save() const
 {
   VariantList ret;
-  foreach( it, *this )
-    ret << Point( it->first, it->second );
-
+  for (auto it : *this)
+  {
+    ret << Point(it.first, it.second);
+  }
   return ret;
 }
 
 void Options::load(const VariantList& stream)
 {
-  foreach( it, stream )
+  for (auto it : stream)
   {
-    Point tmp = *it;
+    Point tmp = it;
     (*this)[ (PlayerCity::OptionType)tmp.x() ] = tmp.y();
   }
 

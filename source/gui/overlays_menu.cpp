@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "overlays_menu.hpp"
 #include "core/gettext.hpp"
@@ -114,6 +114,7 @@ void OverlaysMenu::_addButtons(const int type )
     _addButton( citylayer::food, startPos+=offset );
     _addButton( citylayer::market, startPos+=offset );
     _addButton( citylayer::desirability, startPos+=offset );
+    _addButton( citylayer::unemployed, startPos+=offset );
     break;
 
   default: break;

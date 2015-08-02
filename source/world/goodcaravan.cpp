@@ -70,11 +70,7 @@ void GoodCaravan::sendTo(ObjectPtr obj)
   }
 }
 
-void GoodCaravan::sendTo(CityPtr obj)
-{
-  sendTo( ptr_cast<Object>( obj ) );
-}
-
+void GoodCaravan::sendTo(CityPtr obj) { sendTo( obj.as<Object>() ); }
 good::Store& GoodCaravan::store() { return _d->store; }
 std::string GoodCaravan::type() const { return CAESARIA_STR_EXT(GoodCaravan); }
 
@@ -126,4 +122,4 @@ GoodCaravan::GoodCaravan( CityPtr city )
   setPicture( gfx::Picture( ResourceGroup::panelBackground, 108 ) );
 }
 
-}
+}//end namespace world

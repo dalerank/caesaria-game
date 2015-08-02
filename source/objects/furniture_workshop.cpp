@@ -38,7 +38,7 @@ bool FurnitureWorkshop::build( const city::AreaInfo& info )
 {
   Factory::build( info );
 
-  bool haveTimberLogger = !city::statistic::getObjects<TimberLogger>( info.city, object::lumber_mill ).empty();
+  bool haveTimberLogger = !info.city->statistic().objects.find<TimberLogger>( object::lumber_mill ).empty();
 
   _setError( haveTimberLogger ? "" : _("##need_timber_for_work##") );
 

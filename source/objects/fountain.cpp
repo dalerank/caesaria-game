@@ -81,9 +81,9 @@ void Fountain::deliverService()
   ServiceWalkerPtr walker = ServiceWalker::create( _city(), serviceType() );
   walker->setBase( BuildingPtr( this ) );
   walker->setReachDistance( 4 );
-  ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( tile().pos() );
+  ReachedBuildings reachedBuildings = walker->getReachedBuildings( tile().pos() );
 
-  foreach( b, reachedBuildings ) { (*b)->applyService( walker ); }
+  for( auto b : reachedBuildings ) { b->applyService( walker ); }
 }
 
 void Fountain::timeStep(const unsigned long time)
@@ -155,9 +155,9 @@ bool Fountain::isNeedRoad() const { return false; }
 bool Fountain::haveReservoirAccess() const
 {
   TilesArea reachedTiles( _city()->tilemap(), pos(), 10 );
-  foreach( tile, reachedTiles )
+  for( auto tile : reachedTiles )
   {
-    OverlayPtr overlay = (*tile)->overlay();
+    OverlayPtr overlay = tile->overlay();
     if( overlay.isValid() && (object::reservoir == overlay->type()) )
     {
       return true;
@@ -173,8 +173,8 @@ void Fountain::destroy()
 
   TilesArea reachedTiles( _city()->tilemap(), pos(), _d->fillDistance );
 
-  foreach( tile, reachedTiles )
-    { (*tile)->setParam( Tile::pFountainWater, 0 ); }
+  for( auto tile : reachedTiles )
+    tile->setParam( Tile::pFountainWater, 0 );
 
   if( numberWorkers() > 0 )
   {
@@ -193,7 +193,7 @@ void Fountain::load(const VariantMap& stream)
 
   VARIANT_LOAD_ANYDEF_D( _d, lastPicId, simpleFountain, stream )
   VARIANT_LOAD_ANY_D( _d, haveReservoirWater, stream );
-  _picture().load( ResourceGroup::utilitya, _d->lastPicId );
+  setPicture( ResourceGroup::utilitya, _d->lastPicId );
   _initAnimation();
   //check animation
   timeStep( 1 );
@@ -223,10 +223,10 @@ void Fountain::_dayUpdate()
   {
     TilesArea reachedTiles( _city()->tilemap(), pos(), _d->fillDistance );
 
-    foreach( tile, reachedTiles )
+    for( auto tile : reachedTiles )
     {
-      int value = (*tile)->param( Tile::pFountainWater );
-      (*tile)->setParam( Tile::pFountainWater, math::clamp( value+1, 0, 20 ) );
+      int value = tile->param( Tile::pFountainWater );
+      tile->setParam( Tile::pFountainWater, math::clamp( value+1, 0, 20 ) );
     }
   }
   else

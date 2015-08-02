@@ -21,7 +21,6 @@
 #include "game/resourcegroup.hpp"
 #include "game/funds.hpp"
 #include "walker/taxcollector.hpp"
-#include "city/helper.hpp"
 #include "constants.hpp"
 #include "city/statistic.hpp"
 #include "core/gettext.hpp"
@@ -107,7 +106,7 @@ bool Senate::canBuild( const city::AreaInfo& areaInfo ) const
 
   if( mayBuild )
   {
-    bool isSenatePresent = !statistic::getObjects<Building>( areaInfo.city, object::senate).empty();
+    bool isSenatePresent = !areaInfo.city->statistic().objects.find<Building>( object::senate).empty();
     _d->errorStr = isSenatePresent ? _("##can_build_only_one_of_building##") : "";
     mayBuild &= !isSenatePresent;
   }
@@ -245,7 +244,7 @@ int Senate::status(Senate::Status status) const
   {
     switch(status)
     {
-    case workless:   return statistic::getWorklessPercent( _city() );
+    case workless:   return _city()->statistic().workers.worklessPercent();
     case culture:    return _city()->culture();
     case prosperity: return _city()->prosperity();
     case peace:      return _city()->peace();

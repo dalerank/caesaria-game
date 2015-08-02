@@ -14,15 +14,16 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "ironmine.hpp"
 
 #include "gfx/tile.hpp"
+#include "city/city.hpp"
+#include "gfx/tilemap.hpp"
 #include "gfx/tilesarray.hpp"
 #include "game/resourcegroup.hpp"
 #include "game/gamedate.hpp"
-#include "city/helper.hpp"
 #include "events/showinfobox.hpp"
 #include "objects_factory.hpp"
 
@@ -51,7 +52,7 @@ bool IronMine::canBuild( const city::AreaInfo& areaInfo ) const
   TilesArray perimetr = tilemap.getRectangle( areaInfo.pos + TilePos( -1, -1 ),
                                               areaInfo.pos + TilePos(3, 3), Tilemap::checkCorners );
 
-  foreach( it, perimetr ) { near_mountain |= (*it)->getFlag( Tile::tlRock ); }
+  for( auto tile : perimetr ) { near_mountain |= tile->getFlag( Tile::tlRock ); }
 
   const_cast< IronMine* >( this )->_setError( near_mountain ? "" : "##iron_mine_need_mountain_near##" );
 

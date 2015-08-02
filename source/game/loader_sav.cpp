@@ -111,8 +111,8 @@ int C3Sav::climateType(const std::string& filename)
   char climateType=-1;
   try
   {
-    uint32_t tmp;
-    uint32_t lengthPkBlock;
+//    uint32_t tmp;
+//    uint32_t lengthPkBlock;
     f.seekg( 8, std::ios::cur ); // read dummy
     SkipCompressed(f); // skip graphic ids
     SkipCompressed(f); // skip edge ids

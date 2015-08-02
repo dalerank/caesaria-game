@@ -196,7 +196,7 @@ void Decorator::draw( Picture& dstpic, const Rect& rectangle, Mode mode, bool us
   break;
 
   default:
-    Logger::warning( "WARNING !!!: Unsupport draw instuctions" );
+    Logger::warning( "!!!Warning: Unsupport draw instuctions" );
   break;
   }
 
