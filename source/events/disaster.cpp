@@ -115,16 +115,16 @@ void Disaster::_exec( Game& game, unsigned int )
     break;
     }
 
-    PeacePtr peaceSrvc = statistic::getService<Peace>( game.city() ) ;
+    PeacePtr peaceSrvc = game.city()->statistic().services.find<Peace>() ;
     if( peaceSrvc.isValid() )
     {
       peaceSrvc->buildingDestroyed( overlay, _d->type );
     }
 
     TilesArea clearedTiles( tmap, rPos, size );
-    foreach( tile, clearedTiles )
+    for( auto tile : clearedTiles )
     {
-      bool needBuildRuins = !( _d->type == Disaster::rift && (*tile)->pos() == _d->pos );
+      bool needBuildRuins = !( _d->type == Disaster::rift && tile->pos() == _d->pos );
 
       OverlayPtr currentTileOverlay;
       if( needBuildRuins )
@@ -161,7 +161,7 @@ void Disaster::_exec( Game& game, unsigned int )
         }*/
       }
 
-      Dispatcher::instance().append( BuildAny::create( (*tile)->pos(), currentTileOverlay ) );
+      Dispatcher::instance().append( BuildAny::create( tile->pos(), currentTileOverlay ) );
     }
 
     std::string dstr2string[] = { "##alarm_fire_in_city##", "##alarm_building_collapsed##",

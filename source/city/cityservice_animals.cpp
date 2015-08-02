@@ -18,8 +18,10 @@
 #include "cityservice_animals.hpp"
 #include "city.hpp"
 #include "gfx/tile.hpp"
+#include "city/statistic.hpp"
 #include "game/gamedate.hpp"
 #include "gfx/tilemap.hpp"
+#include "objects/construction.hpp"
 #include "walker/animals.hpp"
 #include "core/variant_map.hpp"
 #include "walker/constants.hpp"
@@ -75,14 +77,14 @@ void Animals::timeStep(const unsigned int time)
 
   _d->border = _d->cityBorder.walkables( true );
 
-  foreach( winfo, _d->maxAnimal )
+  for( auto winfo : _d->maxAnimal )
   {
-    walker::Type walkerType = winfo->first;
-    unsigned int maxAnimalInCity = winfo->second;
+    walker::Type walkerType = winfo.first;
+    unsigned int maxAnimalInCity = winfo.second;
 
     if( maxAnimalInCity > 0 )
     {
-      const WalkerList& animals = _city()->walkers( walkerType );
+      const WalkerList& animals = _city()->statistic().walkers.find( walkerType );
       if( animals.size() < maxAnimalInCity )
       {
         AnimalPtr animal = WalkerManager::instance().create<Animal>( walkerType, _city() );
@@ -106,8 +108,8 @@ VariantMap Animals::save() const
   VariantMap ret = Srvc::save();
 
   VariantMap animalsVm;
-  foreach( winfo, _d->maxAnimal )
-    animalsVm[ WalkerHelper::getTypename( winfo->first ) ] = winfo->second;
+  for( auto winfo : _d->maxAnimal )
+    animalsVm[ WalkerHelper::getTypename( winfo.first ) ] = winfo.second;
 
   ret[ "animals" ] = animalsVm;
 
@@ -119,10 +121,10 @@ void Animals::load(const VariantMap& stream)
   Srvc::load( stream );
 
   VariantMap animalsVm = stream.get( "animals" ).toMap();
-  foreach( info, animalsVm )
+  for( auto info : animalsVm )
   {
-    walker::Type wtype = WalkerHelper::getType( info->first );
-    _d->maxAnimal[ wtype ] = info->second;
+    walker::Type wtype = WalkerHelper::getType( info.first );
+    _d->maxAnimal[ wtype ] = info.second;
   }
 }
 

@@ -351,8 +351,8 @@ void Window::setupUI(const VariantMap &ui)
   StringArray buttons = ui.get( "buttons" ).toStringArray();  
   if( buttons.empty() || buttons.front() == "off" )
   {
-    foreach( i, _d->buttons )
-       (*i)->hide();
+    for( auto button : _d->buttons )
+       button->hide();
   }
 
   _d->flags.setFlag( fdraggable, !ui.get( "static", false ).toBool() );

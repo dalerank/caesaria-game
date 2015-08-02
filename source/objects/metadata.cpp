@@ -143,17 +143,91 @@ MetaData& MetaData::operator=(const MetaData &a)
   return *this;
 }
 
+void MetaDataHolder::_loadConfig(object::Type type, const std::string& name, const VariantMap& options, bool force )
+{
+  MetaData bData( type, name );
+
+  bData._d->options = options;
+  VariantMap desMap = options.get( "desirability" ).toMap();
+  bData._d->desirability.VARIANT_LOAD_ANY(base, desMap );
+  bData._d->desirability.VARIANT_LOAD_ANY(range, desMap);
+  bData._d->desirability.VARIANT_LOAD_ANY(step, desMap );
+
+  bData._d->desc = options.get( "desc" ).toStringArray();
+  bData._d->prettyName = options.get( "prettyName", Variant( bData._d->prettyName ) ).toString();
+
+  bData._d->group = findGroup( options.get( "class" ).toString() );
+
+  VariantList basePic = options.get( "image" ).toList();
+  if( !basePic.empty() )
+  {
+    std::string groupName = basePic.get( 0 ).toString();
+    int imageIndex = basePic.get( 1 ).toInt();
+    Variant vOffset = options.get( "image.offset" );
+    if( vOffset.isValid() )
+    {
+      PictureInfoBank::instance().setOffset( groupName, imageIndex, vOffset.toPoint() );
+    }
+
+    Picture pic( groupName, imageIndex );
+    if( pic.isValid() )
+      bData._d->pictures[ 0 ].push_back( pic.name() );
+  }
+
+  VariantMap extPics = options.get( "image.ext" ).toMap();
+  for( auto config : extPics )
+  {
+    VariantMap info = config.second.toMap();
+    VARIANT_INIT_ANY( int, size, info )
+    VARIANT_INIT_ANY( int, start, info );
+    VARIANT_INIT_ANY( int, count, info );
+    VARIANT_INIT_STR( rc, info );
+
+    for( int i=0; i < count; i++ )
+    {
+      Picture pic( rc, start + i );
+      if( pic.isValid() )
+        bData._d->pictures[ size ].push_back( pic.name() );
+    }
+  }
+
+  VariantList soundVl = options.get( "sound" ).toList();
+  if( !soundVl.empty() )
+  {
+    bData._d->sound = utils::format( 0xff, "%s_%05d",
+                                     soundVl.get( 0 ).toString().c_str(),
+                                     soundVl.get( 1 ).toInt() );
+  }
+
+  addData( bData, force );
+}
+
 object::Group MetaData::group() const {  return _d->group; }
+
+class ObjectsMap : public std::map<object::Type, MetaData>
+{
+public:
+  const MetaData& valueOrEmpty( object::Type type ) const
+  {
+    ObjectsMap::const_iterator mapIt = find( type );
+    if( mapIt == end() )
+    {
+      Logger::warning("MetaDataHolder::Unknown objects %d", type );
+      return MetaData::invalid;
+    }
+    return mapIt->second;
+  }
+};
 
 class MetaDataHolder::Impl
 {
 public:
   BuildingClassHelper classHelper;
 
-  typedef std::map<object::Type, MetaData> ObjectsMap;
   typedef std::map<good::Product, object::Type> FactoryInMap;
 
   ObjectsMap objectsInfo;// key=building_type, value=data
+  vfs::Path configFile;
   FactoryInMap mapBuildingByInGood;
 };
 
@@ -178,26 +252,12 @@ object::Type MetaDataHolder::getConsumerType(const good::Product inGoodType) con
 
 const MetaData& MetaDataHolder::getData(const object::Type buildingType)
 {
-  Impl::ObjectsMap::iterator mapIt;
-  mapIt = instance()._d->objectsInfo.find(buildingType);
-  if (mapIt == instance()._d->objectsInfo.end())
-  {
-    Logger::warning("MetaDataHolder::Unknown objects %d", buildingType );
-    return MetaData::invalid;
-  }
-  return mapIt->second;
+  return instance()._d->objectsInfo.valueOrEmpty( buildingType );
 }
 
 bool MetaDataHolder::hasData(const object::Type buildingType) const
 {
-  bool res = true;
-  Impl::ObjectsMap::iterator mapIt;
-  mapIt = _d->objectsInfo.find(buildingType);
-  if (mapIt == _d->objectsInfo.end())
-  {
-    res = false;
-  }
-  return res;
+  return _d->objectsInfo.count( buildingType ) > 0;
 }
 
 MetaDataHolder::OverlayTypes MetaDataHolder::availableTypes() const
@@ -207,17 +267,33 @@ MetaDataHolder::OverlayTypes MetaDataHolder::availableTypes() const
   return ret;
 }
 
-void MetaDataHolder::addData(const MetaData &data)
+void MetaDataHolder::reload(const object::Type type)
+{
+  VariantMap constructions = config::load( _d->configFile );
+
+  std::string nameType = object::toString( type );
+  VariantMap config = constructions.get( nameType ).toMap();
+
+  if( !config.empty() )
+  {
+    _loadConfig( type, nameType, config, true );
+  }
+}
+
+void MetaDataHolder::addData(const MetaData& data, bool force )
 {
   object::Type buildingType = data.type();
 
-  if (hasData(buildingType))
+  if( force )
+    _d->objectsInfo.erase( buildingType );
+
+  if( hasData(buildingType) )
   {
     Logger::warning( "MetaDataHolder: Info is already set for " + data.name() );
     return;
   }
 
-  _d->objectsInfo.insert(std::make_pair(buildingType, data));
+  _d->objectsInfo.insert( std::make_pair(buildingType,data) );
 }
 
 
@@ -228,6 +304,7 @@ MetaDataHolder::MetaDataHolder() : _d( new Impl )
 void MetaDataHolder::initialize( vfs::Path filename )
 {
   // populate _mapBuildingByInGood
+  _d->configFile = filename;
   _d->mapBuildingByInGood[good::iron  ] = object::weapons_workshop;
   _d->mapBuildingByInGood[good::timber] = object::furniture_workshop;
   _d->mapBuildingByInGood[good::clay  ] = object::pottery_workshop;
@@ -236,78 +313,23 @@ void MetaDataHolder::initialize( vfs::Path filename )
 
   VariantMap constructions = config::load( filename );
 
-  foreach( mapItem, constructions )
+  for( auto kv : constructions )
   {
-    VariantMap options = mapItem->second.toMap();
+    const object::Type btype = object::toType( kv.first );
 
-    const object::Type btype = object::toType( mapItem->first );
     if( btype == object::unknown )
     {
-      Logger::warning( "!!!Warning: can't associate type with %s", mapItem->first.c_str() );
+      Logger::warning( "!!!WARNING: can't associate type with " + kv.first );
       continue;
     }
 
-    Impl::ObjectsMap::const_iterator bdataIt = _d->objectsInfo.find( btype );
-    if( bdataIt != _d->objectsInfo.end() )
+    if( hasData( btype ) )
     {
-      Logger::warning( "!!!Warning: type %s also initialized", mapItem->first.c_str() );
+      Logger::warning( "!!!WARNING: type %s also initialized " + kv.first );
       continue;
     }
 
-    MetaData bData( btype, mapItem->first );
-
-    bData._d->options = options;
-    VariantMap desMap = options[ "desirability" ].toMap();
-    bData._d->desirability.VARIANT_LOAD_ANY(base, desMap );
-    bData._d->desirability.VARIANT_LOAD_ANY(range, desMap);
-    bData._d->desirability.VARIANT_LOAD_ANY(step, desMap );
-
-    bData._d->desc = options.get( "desc" ).toStringArray();
-    bData._d->prettyName = options.get( "prettyName", Variant( bData._d->prettyName ) ).toString();
-
-    bData._d->group = findGroup( options[ "class" ].toString() );
-
-    VariantList basePic = options[ "image" ].toList();
-    if( !basePic.empty() )
-    {
-      std::string groupName = basePic.get( 0 ).toString();
-      int imageIndex = basePic.get( 1 ).toInt();
-      Variant vOffset = options[ "image.offset" ];
-      if( vOffset.isValid() )
-      {
-        PictureInfoBank::instance().setOffset( groupName, imageIndex, vOffset.toPoint() );
-      }
-
-      Picture pic( groupName, imageIndex );
-      bData._d->pictures[ 0 ] << pic.name();
-    }
-
-    VariantMap extPics = options[ "image.ext" ].toMap();
-    foreach( it, extPics )
-    {
-      VariantMap info = it->second.toMap();
-      VARIANT_INIT_ANY( int, size, info )
-      VARIANT_INIT_ANY( int, start, info );
-      VARIANT_INIT_ANY( int, count, info );
-      VARIANT_INIT_STR( rc, info );
-      for( int i=0; i < count; i++ )
-      {
-        Picture pic( rc, start + i );
-        if( pic.isValid() )
-        {
-          bData._d->pictures[ size ] << pic.name();
-        }
-      }
-    }
-
-    VariantList soundVl = options[ "sound" ].toList();
-    if( !soundVl.empty() )
-    {
-      bData._d->sound = utils::format( 0xff, "%s_%05d",
-                                              soundVl.get( 0 ).toString().c_str(), soundVl.get( 1 ).toInt() );
-    }
-
-    addData( bData );
+    _loadConfig( btype, kv.first, kv.second.toMap(), false );
   }
 }
 
@@ -319,7 +341,7 @@ object::Group MetaDataHolder::findGroup( const std::string& name )
 
   if( type == instance()._d->classHelper.getInvalid() )
   {
-    Logger::warning( "MetaDataHolder: can't find object class for className %s", name.c_str() );
+    Logger::warning( "!!! MetaDataHolder: can't find object class for className %s", name.c_str() );
     return object::group::unknown;
   }
 

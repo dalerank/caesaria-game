@@ -19,24 +19,11 @@
 #include "core/logger.hpp"
 #include "empire.hpp"
 #include "object.hpp"
-#include "romechastenerarmy.hpp"
-#include "barbarian.hpp"
 #include "city.hpp"
-#include "playerarmy.hpp"
 #include <map>
 
 namespace world
 {
-
-template< class T >
-class BaseCreator : public ObjectCreator
-{
-public:
-  virtual ObjectPtr create( EmpirePtr empire )
-  {
-    return T::create( empire ).object();
-  }
-};
 
 class ObjectsFactory::Impl
 {
@@ -47,10 +34,6 @@ public:
 
 ObjectsFactory::ObjectsFactory() : _d( new Impl )
 {
-  addCreator( CAESARIA_STR_EXT(Object), new BaseCreator<Object>() );
-  addCreator( CAESARIA_STR_EXT(RomeChastenerArmy), new BaseCreator<RomeChastenerArmy>() );
-  addCreator( CAESARIA_STR_EXT(Barbarian), new BaseCreator<Barbarian>() );
-  addCreator( CAESARIA_STR_EXT(PlayerArmy), new BaseCreator<PlayerArmy>() );
 }
 
 ObjectsFactory::~ObjectsFactory(){}
@@ -66,12 +49,6 @@ ObjectPtr ObjectsFactory::create(const std::string& type, EmpirePtr empire)
 
   Logger::warning( "ObjectsFactory: cannot create empire object from type " + (type.empty() ? "null" : type) );
   return Object::create( empire );
-}
-
-ObjectsFactory& ObjectsFactory::instance()
-{
-  static ObjectsFactory inst;
-  return inst;
 }
 
 void ObjectsFactory::addCreator( const std::string& type, ObjectCreator* ctor )

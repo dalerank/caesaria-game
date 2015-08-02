@@ -23,7 +23,8 @@
   tree : {
     class : "tree"
     image.ext : {
-      type_1 : { size:1, rc : "land1a", start : 10, count : 1 }
+      type_1 : { size:1, rc : "land1a", start : 10, count : 7 }
+      type_2 : { size:1, rc : "land1a", start : 33, count : 27 }
     }
   }
 
@@ -476,6 +477,31 @@
     desirability : { base : 8, 	range : 4,	step : -2 }
     employers : 12
     class : "trade"
+
+    image.north : {
+      image : [ "transport", 5 ]
+      stock : [ "transporta", 5 ]
+      animation : { rc : "transport", start : 6, count : 8, delay : 4 }
+    }
+
+    image.east : {
+      image : [ "transport", 17 ]
+      stock : [ "transporta", 17 ]
+      animation : { rc : "transport", start : 18, count : 8, delay : 4 }
+    }
+
+    image.south : {
+      image : [ "transport", 29 ]
+      stock : [ "transporta", 29 ]
+      animation : { rc : "transport", start : 30, count : 8, delay : 4 }
+    }
+
+    image.west : {
+      image : [ "transport", 41 ]
+      stock : [ "transporta", 41 ]
+      animation : { rc : "transport", start : 42, count : 8, delay : 4 }
+    }
+
     sound : [ "dock", 1 ]
   }, 
 

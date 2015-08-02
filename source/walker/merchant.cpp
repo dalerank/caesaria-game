@@ -23,15 +23,9 @@ Merchant::~Merchant()
 
 }
 
-good::ProductMap Merchant::sold() const
-{
-  return good::ProductMap();
-}
-
-good::ProductMap Merchant::bougth() const
-{
-  return good::ProductMap();
-}
+good::ProductMap Merchant::sold() const {  return good::ProductMap(); }
+good::ProductMap Merchant::bougth() const{  return good::ProductMap(); }
+good::ProductMap Merchant::mayBuy() const{  return good::ProductMap(); }
 
 std::string Merchant::parentCity() const
 {

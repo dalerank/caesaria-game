@@ -34,6 +34,23 @@ using namespace city;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::immigrant, Immigrant)
 
+enum class ThinksAboutFood : unsigned short
+{
+   nothing = 0,
+   onemonth,
+   somemonth,
+   much,
+   count
+};
+
+static const std::string ThinksAboutFoodDesc[] = {
+  "##immigrant_nofood_here##",
+  "##immigrant_onemonthfood_here##",
+  "##immigrant_somefood_here##",
+  "##immigrant_much_food_here##",
+  ""
+};
+
 Immigrant::Immigrant( PlayerCityPtr city ) : Emigrant( city )
 {
   CitizenGroup peoples;
@@ -94,12 +111,10 @@ void Immigrant::_updateThoughts()
   thinks << "##immigrant_where_my_home##";
   thinks << "##immigrant_want_to_be_liontamer##";
 
-  int fstock = statistic::getFoodStock( _city() );
-  int mconsumption = statistic::getFoodMonthlyConsumption( _city() );
-  if( fstock / (mconsumption+1) > 4 )
-  {
-    thinks << "##immigrant_much_food_here##";
-  }
+  int fstock = _city()->statistic().food.inGranaries();
+  int mconsumption = _city()->statistic().food.monthlyConsumption();
+  int index = math::clamp<int>( fstock / (mconsumption+1), (int)ThinksAboutFood::nothing, (int)ThinksAboutFood::much );
+  thinks << ThinksAboutFoodDesc[ index ];
 
   setThinks( thinks.random() );
 }

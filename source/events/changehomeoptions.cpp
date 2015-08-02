@@ -17,7 +17,6 @@
 
 #include "changehomeoptions.hpp"
 #include "game/game.hpp"
-#include "city/helper.hpp"
 #include "city/build_options.hpp"
 #include "world/empire.hpp"
 #include "game/settings.hpp"

@@ -19,7 +19,6 @@
 #define __CAESARIA_SMARTLIST_H_INCLUDE__
 
 #include "smartptr.hpp"
-#include "foreach.hpp"
 #include "core/math.hpp"
 #include <deque>
 
@@ -30,8 +29,16 @@ public:
   template< class Src >
   SmartList& operator<<( const SmartList<Src>& srcList )
   {
-    foreach( it, srcList )
-      addIfValid( ptr_cast<T>( *it ) );
+    for( auto it : srcList )
+      addIfValid( ptr_cast<T>( it ) );
+
+    return *this;
+  }
+
+  SmartList& append( const SmartList<T>& other )
+  {
+    for( auto it : other )
+      addIfValid( it );
 
     return *this;
   }
@@ -42,12 +49,20 @@ public:
     return *this;
   }
 
+  bool contain( SmartPtr<T> a ) const
+  {
+    for( auto it : *this )
+      if( it == a ) return true;
+
+    return false;
+  }
+
   template< class Dst >
   SmartList<Dst> select() const
   {
     SmartList<Dst> ret;
-    foreach( it, *this )
-      ret.addIfValid( ptr_cast<Dst>( *it ) );
+    for( auto it : *this )
+      ret.addIfValid( ptr_cast<Dst>( it ) );
 
     return ret;
   }
@@ -66,8 +81,33 @@ public:
       return SmartPtr<T>();
 
     typename SmartList<T>::const_iterator it = this->begin();
-    std::advance( it, math::random( this->size() ) );
+    std::advance( it, math::random( this->size()-1 ) );
     return *it;
+  }
+
+  // Returns `count` different random elements from this list
+  // This list should have at least `count` values
+  // Useful for randomized actions
+  // Recommended `count` to be not more than half of list size, due to performance reasons.
+  SmartList<T> random(size_t count) const
+  {
+    if (this->size() <= count)
+      return *this;
+
+    int rands[count];
+    math::random_values_of_range(rands, count, 0, this->size()-1);
+
+    SmartList<T> ret;
+
+    for (size_t i = 0; i < count; ++i)
+    {
+      typename SmartList<T>::const_iterator it = this->begin();
+      std::advance(it, rands[i]);
+      SmartPtr<T> value = *it;
+      ret << value;
+    }
+
+    return ret;
   }
 
   void remove( const SmartPtr< T >& a )
@@ -103,9 +143,9 @@ public:
   SmartList<T> exclude() const
   {
     SmartList<T> ret;
-    foreach( it, *this )
-      if( !is_kind_of<W>( *it ) )
-        ret.push_back( *it );
+    for( auto it : *this )
+      if( !is_kind_of<W>( it ) )
+        ret.push_back( it );
 
     return ret;
   }

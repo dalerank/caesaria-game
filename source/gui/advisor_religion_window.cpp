@@ -140,8 +140,8 @@ public:
   {
     InfrastructureInfo ret;
 
-    ret.smallTemplCount = city::statistic::getObjects<ServiceBuilding>( city, small ).size();
-    ret.bigTempleCount = city::statistic::getObjects<ServiceBuilding>( city, big ).size();
+    ret.smallTemplCount = city->statistic().objects.find<ServiceBuilding>( small ).size();
+    ret.bigTempleCount = city->statistic().objects.find<ServiceBuilding>( big ).size();
 
     return ret;
   }
@@ -205,7 +205,7 @@ void Religion::_showHelp()
 void Religion::Impl::updateReligionAdvice(PlayerCityPtr city)
 {
   StringArray advices;
-  HouseList houses = city::statistic::getHouses( city );
+  HouseList houses = city->statistic().houses.find();
 
   int needBasicReligion = 0;
   int needSecondReligion = 0;

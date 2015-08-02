@@ -17,7 +17,6 @@
 
 #include "cityservice_workershire.hpp"
 #include "objects/construction.hpp"
-#include "city/helper.hpp"
 #include "core/safetycast.hpp"
 #include "objects/engineer_post.hpp"
 #include "objects/prefecture.hpp"
@@ -95,9 +94,9 @@ void WorkersHire::Impl::fillIndustryMap()
 
   industryBuildings.clear();
 
-  foreach(it, types)
+  for( auto type : types)
   {
-    const MetaData& info = MetaDataHolder::getData( *it );
+    const MetaData& info = MetaDataHolder::getData( type );
     int workersNeed = info.getOption( literals::employers );
     if( workersNeed > 0 )
     {
@@ -108,9 +107,9 @@ void WorkersHire::Impl::fillIndustryMap()
 
 bool WorkersHire::Impl::haveRecruter( WorkingBuildingPtr building )
 {
-  foreach( w, hrInCity )
+  for( auto wlk : hrInCity )
   {
-    RecruterPtr hr = w->as<Recruter>();
+    RecruterPtr hr = wlk.as<Recruter>();
     if( hr.isValid() )
     {
       if( hr->baseLocation() == building->pos() )
@@ -150,21 +149,21 @@ void WorkersHire::timeStep( const unsigned int time )
   if( _city()->states().population == 0 )
     return;
 
-  _d->hrInCity = _city()->walkers( walker::recruter );
+  _d->hrInCity = _city()->statistic().walkers.find( walker::recruter );
 
-  WorkingBuildingList buildings = statistic::getObjects<WorkingBuilding>( _city(), object::any );
+  WorkingBuildingList buildings = _city()->statistic().objects.find<WorkingBuilding>( object::any );
 
   if( !_d->priorities.empty() )
   {
-    foreach( hireIt, _d->priorities )
+    for( auto priority : _d->priorities )
     {
-      object::Groups groups = industry::toGroups( *hireIt );
+      object::Groups groups = industry::toGroups( priority );
 
-      foreach( grIt, groups )
+      for( auto group : groups )
       {
         for( WorkingBuildingList::iterator it=buildings.begin(); it != buildings.end(); )
         {
-          if( (*it)->group() == *grIt )
+          if( (*it)->group() == group )
           {
             _d->hireWorkers( _city(), *it );
             it = buildings.erase( it );
@@ -175,16 +174,16 @@ void WorkersHire::timeStep( const unsigned int time )
     }
   }
 
-  foreach( it, buildings )
+  for( auto building : buildings )
   {    
-    _d->hireWorkers( _city(), *it );
+    _d->hireWorkers( _city(), building );
   }
 
   if( _d->lastMessageDate.monthsTo( game::Date::current() ) > DateTime::monthsInYear / 2 )
   {
     _d->lastMessageDate = game::Date::current();
 
-    int workersNeed = statistic::getWorkersNeed( _city() );
+    int workersNeed = _city()->statistic().workers.need();
     if( workersNeed > employements::needMoreWorkers )
     {
       GameEventPtr e = ShowInfobox::create( _("##city_need_workers_title##"), _("##city_need_workers_text##"),
@@ -232,7 +231,7 @@ VariantMap WorkersHire::save() const
 {
   VariantMap ret;
   VARIANT_SAVE_ANY_D( ret, _d, distance );
-  ret[ literals::priorities ] = _d->priorities.save();
+  VARIANT_SAVE_CLASS_D( ret, _d, priorities )
 
   return ret;
 }

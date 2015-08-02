@@ -22,6 +22,7 @@
 #include "vfs/path.hpp"
 #include "core/variant.hpp"
 #include "world/nation.hpp"
+#include "typeset.hpp"
 #include "walker.hpp"
 
 class WalkerHelper
@@ -77,24 +78,5 @@ private:
   class Impl;
   ScopedPtr<Impl> _d;
 };
-
-template< class Wlk >
-SmartPtr<Wlk> findNearestWalker( TilePos pos, const SmartList<Wlk>& walkers )
-{
-  SmartPtr< Wlk > p;
-
-  int minDistance=99;
-  foreach( it, walkers )
-  {
-    int distance = (*it)->pos().distanceFrom( pos );
-    if( distance < minDistance )
-    {
-      minDistance =  distance;
-      p = *it;
-    }
-  }
-
-  return p;
-}
 
 #endif //_CAESARIA_WALKERHELPER_H_INCLUDE_

@@ -40,11 +40,11 @@ SrvcPtr ServiceFactory::create( PlayerCityPtr city, const std::string& name )
   Logger::warning( "CityServiceFactory: try find creator for service " + srvcType );
 
   ServiceFactory& inst = instance();
-  foreach( it, inst._d->creators )
+  for( auto creator : inst._d->creators )
   {
-    if( srvcType == (*it)->serviceName() )
+    if( srvcType == creator->serviceName() )
     {
-      city::SrvcPtr srvc = (*it)->create( city );
+      city::SrvcPtr srvc = creator->create( city );
       srvc->setName( name );
       return srvc;
     }
@@ -54,20 +54,14 @@ SrvcPtr ServiceFactory::create( PlayerCityPtr city, const std::string& name )
   return SrvcPtr();
 }
 
-ServiceFactory& ServiceFactory::instance()
-{
-  static city::ServiceFactory inst;
-  return inst;
-}
-
 void ServiceFactory::addCreator( ServiceCreatorPtr creator )
 {
   if( creator.isNull() )
     return;
 
-  foreach( it, _d->creators )
+  for( auto item : _d->creators )
   {
-    if( creator->serviceName() == (*it)->serviceName() )
+    if( creator->serviceName() == item->serviceName() )
     {
       Logger::warning( "CityServiceFactory: Also have creator for service " + creator->serviceName() );
       return;
@@ -75,6 +69,11 @@ void ServiceFactory::addCreator( ServiceCreatorPtr creator )
   }
 
   _d->creators.push_back( creator );
+}
+
+ServiceFactory::~ServiceFactory()
+{
+
 }
 
 ServiceFactory::ServiceFactory() : _d( new Impl )

@@ -17,7 +17,7 @@
     postfix : " %"
     textAlign : [ "center", "center" ]
     font : "FONT_2"
-    properties : { soundType : 1 }
+    properties : { soundType : 3 }
   }
          
   spinAmbientSound#SpinBox :
@@ -27,7 +27,7 @@
     postfix : " %"
     textAlign : [ "center", "center" ]
     font : "FONT_2"
-    properties : { soundType : 2 }
+    properties : { soundType : 1 }
   }
     
   spinThemeSound#SpinBox :
@@ -37,7 +37,7 @@
     postfix : " %"
     textAlign : [ "center", "center" ]
     font : "FONT_2"
-    properties : { soundType : 3 }
+    properties : { soundType : 2 }
   }
 
   btnOk#PushButton :

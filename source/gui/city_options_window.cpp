@@ -53,7 +53,7 @@ struct OptionInfo
   const char* text_off;
 };
 
-#define INIT_OPTION(btnName, co, so, text ) { true, #btnName, co, so, "##"text"_on##", "##"text"_off##" }
+#define INIT_OPTION(btnName, co, so, text ) { true, #btnName, co, so, "##" text"_on##", "##" text"_off##" }
 static OptionInfo options[] =
 {
   INIT_OPTION( btnGodEnabled, PlayerCity::godEnabled, "", "city_opts_god" ),
@@ -69,6 +69,8 @@ static OptionInfo options[] =
   INIT_OPTION( btnToggleCcUseAI, -1, game::Settings::ccUseAI, "city_ccuseai" ),
   INIT_OPTION( btnHighlightBuilding, PlayerCity::highlightBuilding, "", "city_highlight_bld" ),
   INIT_OPTION( btnDetroyEpidemicHouses, PlayerCity::destroyEpidemicHouses, "", "city_destroy_epdh" ),
+  INIT_OPTION( btnForestFire, PlayerCity::forestFire, "", "city_forest_fire" ),
+  INIT_OPTION( btnForestGrow, PlayerCity::forestGrow, "", "city_forest_grow" ),
 
   { false, "", 0, 0, "", "" }
 };
@@ -100,6 +102,8 @@ public:
   PushButton* btnDifficulty;
   PushButton* btnMetrics;
   PushButton* btnDetroyEpidemicHouses;
+  PushButton* btnForestFire;
+  PushButton* btnForestGrow;
 
   Label* lbFireRisk;
   Label* lbCollapseRisk;
@@ -128,6 +132,8 @@ public:
   void toggleDifficulty();
   void toggleShowTooltips();
   void toggleLegionAttack();
+  void toggleForestFire();
+  void toggleForestGrow();
   void toggleAndroidBarEnabled();
   void toggleUseBatching();
   void toggleCcUseAI();
@@ -174,6 +180,8 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, btnMetrics )
   GET_DWIDGET_FROM_UI( _d, btnHighlightBuilding )
   GET_DWIDGET_FROM_UI( _d, btnDetroyEpidemicHouses )
+  GET_DWIDGET_FROM_UI( _d, btnForestFire )
+  GET_DWIDGET_FROM_UI( _d, btnForestGrow )
 
   CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods )
   CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings )
@@ -197,6 +205,8 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   CONNECT( _d->btnMetrics, onClicked(), _d.data(), Impl::toggleMetrics )
   CONNECT( _d->btnHighlightBuilding, onClicked(), _d.data(), Impl::toggleHighlightBuilding )
   CONNECT( _d->btnDetroyEpidemicHouses, onClicked(), _d.data(), Impl::toggleDestroyEpidemicHouses )
+  CONNECT( _d->btnForestFire, onClicked(), _d.data(), Impl::toggleForestFire )
+  CONNECT( _d->btnForestFire, onClicked(), _d.data(), Impl::toggleForestGrow )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptions::deleteLater );
@@ -295,6 +305,8 @@ void CityOptions::Impl::invertZoom()  {  toggleCityOption( PlayerCity::zoomInver
 void CityOptions::Impl::toggleHighlightBuilding() { toggleCityOption( PlayerCity::highlightBuilding ); }
 void CityOptions::Impl::toggleWarnings()  {  toggleCityOption( PlayerCity::warningsEnabled ); }
 void CityOptions::Impl::toggleDestroyEpidemicHouses() { toggleCityOption( PlayerCity::destroyEpidemicHouses ); }
+void CityOptions::Impl::toggleForestFire() { toggleCityOption( PlayerCity::forestFire ); }
+void CityOptions::Impl::toggleForestGrow() { toggleCityOption( PlayerCity::forestGrow ); }
 
 void CityOptions::Impl::toggleLeftMiddleMouse()
 {

@@ -17,7 +17,6 @@
 
 #include "sentiment.hpp"
 #include "game/gamedate.hpp"
-#include "helper.hpp"
 #include "objects/house.hpp"
 #include "core/variant_map.hpp"
 #include "core/gettext.hpp"
@@ -72,18 +71,18 @@ public:
   VariantList save() const
   {
     VariantList vlBuffs;
-    foreach( it, *this )
-      vlBuffs.push_back( it->save() );
+    for( auto item : *this )
+      vlBuffs.push_back( item.save() );
 
     return vlBuffs;
   }
 
   void load( const VariantList& vl )
   {
-    foreach( it, vl )
+    for( auto item : vl )
     {
       BuffInfo buff;
-      buff.load( it->toMap() );
+      buff.load( item.toMap() );
       push_back( buff );
     }
   }
@@ -145,18 +144,17 @@ void Sentiment::timeStep(const unsigned int time )
       }
     }
 
-    HouseList houses = statistic::getHouses( _city() );
+    HouseList houses = _city()->statistic().houses.find();
 
     unsigned int houseNumber = 0;
     _d->finishValue = 0;
-    foreach( it, houses )
+    for( auto house : houses )
     {
-      HousePtr h = *it;
-      h->setState( pr::happinessBuff, _d->buffValue );
+      house->setState( pr::happinessBuff, _d->buffValue );
 
-      if( h->habitants().count() > 0 )
+      if( house->habitants().count() > 0 )
       {
-        _d->finishValue += h->state( pr::happiness );
+        _d->finishValue += house->state( pr::happiness );
         houseNumber++;
       }
     }

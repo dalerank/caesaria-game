@@ -41,7 +41,7 @@ private:
   void _increaseTax();
   void _initReportRows();
   void _initTaxManager();
-  void _updateRegPayers();
+  void _updateRegisteredPayers();
   void _updateCityTreasure();
   int  _calculateTaxValue();
 

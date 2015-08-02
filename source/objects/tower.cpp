@@ -18,7 +18,7 @@
 #include "tower.hpp"
 #include "constants.hpp"
 #include "game/resourcegroup.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
 #include "fortification.hpp"
 #include "core/direction.hpp"
@@ -131,14 +131,14 @@ void Tower::_rebuildWays()
     TilePos offset( range, range );
     TilesArray tiles = _city()->tilemap().getRectangle( pos() - offset,
                                                               pos() + offset );
-    foreach( tile, tiles )
+    for( auto tile : tiles )
     {
       bool patrolingWall;
-      _d->mayPatroling( *tile, patrolingWall );
+      _d->mayPatroling( tile, patrolingWall );
       if( patrolingWall )
       {
         TilePos tpos = enter.front()->pos();
-        Pathway pathway = PathwayHelper::create( tpos, (*tile)->pos(), makeDelegate( _d.data(), &Impl::mayPatroling ) );
+        Pathway pathway = PathwayHelper::create( tpos, tile->pos(), makeDelegate( _d.data(), &Impl::mayPatroling ) );
 
         if( pathway.isValid() )
         {
@@ -204,12 +204,11 @@ void Tower::deliverService()
 
 TilesArray Tower::enterArea() const
 {
-  city::Helper helper( _city() );
-  TilesArray tiles = helper.getAroundTiles( const_cast< Tower* >( this )  );
+  TilesArray tiles = _city()->statistic().map.around( this );
 
   for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); )
   {
-    FortificationPtr wall = ptr_cast<Fortification>( (*it)->overlay() );
+    FortificationPtr wall = (*it)->overlay().as<Fortification>();
     if( wall.isValid() && wall->isTowerEnter() ) { ++it; }
     else { it = tiles.erase( it ); }
   }

@@ -16,7 +16,6 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "army.hpp"
-#include "core/foreach.hpp"
 #include "game/gamedate.hpp"
 #include "empire.hpp"
 #include "core/logger.hpp"

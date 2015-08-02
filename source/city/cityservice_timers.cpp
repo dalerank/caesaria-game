@@ -31,12 +31,6 @@ public:
   TimerList timers;
 };
 
-Timers& Timers::instance()
-{
-  static Timers inst;
-  return inst;
-}
-
 Timers::Timers() : _d( new Impl )
 { 
 }

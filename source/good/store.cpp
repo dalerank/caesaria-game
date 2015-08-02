@@ -145,19 +145,6 @@ void Store::applyRetrieveReservation(Storage &goodStore, const int reservationID
   applyRetrieveReservation(stock, reservationID);
 }
 
-ProductMap Store::filled() const
-{
-  ProductMap ret;
-  foreach( goodType, good::all() )
-  {
-    int q = qty( *goodType );
-    if( q > 0 )
-      ret[ *goodType ] = q;
-  }
-
-  return ret;
-}
-
 void Store::store( good::Stock& stock, const int amount)
 {
   good::Stock reservedStock;
@@ -255,6 +242,33 @@ bool Store::isDevastation() const{  return _d->devastation;}
 void Store::setDevastation( bool value ){  _d->devastation = value;}
 
 Store::~Store() {}
+
+ProductMap Store::details() const
+{
+  ProductMap ret;
+  foreach( goodType, good::all() )
+  {
+    int q = qty( *goodType );
+    if( q > 0 )
+      ret[ *goodType ] = q;
+  }
+
+  return ret;
+}
+
+ProductMap Store::amounts() const
+{
+  ProductMap ret;
+  foreach( goodType, good::all() )
+  {
+    int cap = capacity( *goodType );
+    if( cap > 0 )
+      ret[ *goodType ] = cap;
+  }
+
+  return ret;
+}
+
 void Store::setOrder( const good::Product type, const Orders::Order order ){  _d->goodOrders.set( type, order );}
 Orders::Order Store::getOrder(const good::Product type ) const{  return _d->goodOrders.get( type );}
 
