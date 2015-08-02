@@ -12,7 +12,7 @@ before_install:
 - sudo apt-get -qq install gcc-mingw-w64-i686 g++-mingw-w64-i686 wine
 - sudo apt-get -qq install sshpass
 - sudo apt-get install -qq cmake build-essential libasound2-dev
-#- sudo apt-get -qq install g++-4.8
+- sudo apt-get -qq install g++-4.8
 - if [ "$CXX" == "g++" ]; then export CXX="i686-w64-mingw32-g++" CC="i686-w64-mingw32-gcc"; fi
 #- sudo apt-get install -qq gcc-multilib g++-multilib
 install:
