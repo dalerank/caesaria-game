@@ -98,20 +98,20 @@ good::Products Market::mostNeededGoods()
 
   std::multimap<float, good::Product> mapGoods;  // ordered by demand
 
-  foreach( goodType, good::all() )
+  for( auto goodType : good::all() )
   {
     // for all types of good
-    good::Stock &stock = _d->goodStore.getStock(*goodType);
+    good::Stock &stock = _d->goodStore.getStock(goodType);
     int demand = stock.capacity() - stock.qty();
     if (demand > 200)
     {
-      mapGoods.insert( std::make_pair(float(stock.qty())/float(stock.capacity()), *goodType));
+      mapGoods.insert( std::make_pair(float(stock.qty())/float(stock.capacity()), goodType));
     }
   }
 
-  foreach( it, mapGoods )
+  for( auto it : mapGoods )
   {
-    res.insert(it->second);
+    res.insert(it.second);
   }
 
   return res;

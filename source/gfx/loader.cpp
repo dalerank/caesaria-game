@@ -73,7 +73,7 @@ Picture PictureLoader::load( vfs::NFile file )
     }
     else
     {
-      Logger::warning( "WARNING !!!: PictureLoader have unknown extension with " + file.path().absolutePath().toString() );
+      Logger::warning( "!!!Warning: PictureLoader have unknown extension with " + file.path().absolutePath().toString() );
       bool isMyFormat = (*loader)->isALoadableFileFormat(file);
       if( isMyFormat )
       {

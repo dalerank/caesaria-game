@@ -62,13 +62,14 @@ public:
                       // height of the view(in tiles) nb_tilesY = 1+2*_view_height
   TilesArray tiles;   // cached list of visible tiles
   TilesArray flatTiles;
+  TilesArray groundTiles;
 
   MovableOrders mayMove( PointF point );
   void resetDrawn();
 
   Point getOffset( const PointF& center );
 
-  void cacheFlatTiles();
+  void updateFlatTiles();
 
 public signals:
   Signal1<Point> onPositionChangedSignal;
@@ -307,16 +308,14 @@ const TilesArray& TilemapCamera::tiles() const
       }
     }
 
-    _d->cacheFlatTiles();
+    _d->updateFlatTiles();
   }
 
   return _d->tiles;
 }
 
-const TilesArray& TilemapCamera::flatTiles() const
-{
-  return _d->flatTiles;
-}
+const TilesArray& TilemapCamera::flatTiles() const { return _d->flatTiles; }
+const TilesArray& TilemapCamera::groundTiles() const { return _d->groundTiles; }
 
 MovableOrders TilemapCamera::Impl::mayMove(PointF )
 {
@@ -335,8 +334,8 @@ MovableOrders TilemapCamera::Impl::mayMove(PointF )
 
 void TilemapCamera::Impl::resetDrawn()
 {
-  foreach( i, tiles ) { (*i)->resetWasDrawn(); }
-  foreach( i, flatTiles ) { (*i)->resetWasDrawn(); }
+  for( auto i : tiles ) { i->resetWasDrawn(); }
+  for( auto i : flatTiles ) { i->resetWasDrawn(); }
 }
 
 Point TilemapCamera::Impl::getOffset(const PointF &center)
@@ -345,20 +344,29 @@ Point TilemapCamera::Impl::getOffset(const PointF &center)
                 virtualSize.height() / 2 + tileMapSize.height() * (center.y() - tmap->size() + 1) - tileMapSize.width() );
 }
 
-void TilemapCamera::Impl::cacheFlatTiles()
+void TilemapCamera::Impl::updateFlatTiles()
 {
-  Tile* tile;
   unsigned int reserve = flatTiles.size();
   flatTiles.clear();
+  groundTiles.clear();
   flatTiles.reserve( reserve );
 
   resetDrawn();
-  foreach( it, tiles )
+  for( auto tile : tiles )
   {
-    int z = (*it)->epos().z();
-    tile = (*it)->masterTile();
+    if( tile->getFlag( Tile::tlElevation ) ||
+        tile->getFlag( Tile::tlRock ) )
+      continue;
+
+    groundTiles.push_back( tile );
+  }
+
+  for( auto t : tiles )
+  {
+    int z = t->epos().z();
+    Tile* tile = t->masterTile();
     if( !tile )
-      tile = *it;
+      tile = t;
 
     if( tile->isFlat() && tile->epos().z() == z && !tile->rwd() )
     {
@@ -370,11 +378,11 @@ void TilemapCamera::Impl::cacheFlatTiles()
   const TilesArray& tl = tmap->svkBorderTiles();
   Rect viewRect( Point( -tilemap::cellPicSize().width(), -tilemap::cellPicSize().height() ),
                  virtualSize + tilemap::cellPicSize() * 2 );
-  foreach( i, tl )
+  for( auto i : tl )
   {
-    if( viewRect.isPointInside( (*i)->mappos() + Point( tilemap::cellPicSize().width()/2, 0 ) + offset)  )
+    if( viewRect.isPointInside( i->mappos() + Point( tilemap::cellPicSize().width()/2, 0 ) + offset)  )
     {
-      flatTiles.push_back( *i );
+      flatTiles.push_back( i );
     }
   }
 }

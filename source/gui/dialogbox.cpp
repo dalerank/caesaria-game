@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "dialogbox.hpp"
 #include "gfx/picture.hpp"
@@ -109,7 +109,8 @@ Dialog::Dialog(Ui *ui, const Rect& rectangle, const std::string& title,
                         Size( 39, 26 ), btnNever, cancelBtnPicId );
 
 
-   }
+  }
+
   setModal();
 
   if( lockGame )
@@ -123,19 +124,40 @@ Signal1<int>& Dialog::onResult()
 
 bool Dialog::onEvent( const NEvent& event )
 {
-  if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
+  switch( event.EventType )
   {
-    int id = event.gui.caller->ID();
-    emit _d->onResultSignal( id );
+    case sEventGui:
+      if( event.gui.type == guiButtonClicked )
+      {
+        int id = event.gui.caller->ID();
+        emit _d->onResultSignal( id );
 
-    switch( id )
+        switch( id )
+        {
+        case btnOk: emit _d->onOkSignal(); break;
+        case btnCancel: emit _d->onCancelSignal(); break;
+        case btnNever: emit _d->onNeverSignal(); break;
+        }
+
+        return true;
+      }
+    break;
+
+    case sEventKeyboard:
     {
-    case btnOk: emit _d->onOkSignal(); break;
-    case btnCancel: emit _d->onCancelSignal(); break;
-    case btnNever: emit _d->onNeverSignal(); break;
-    }
+      switch( event.keyboard.key )
+      {
+      case KEY_ESCAPE: emit _d->onCancelSignal(); break;
+      case KEY_RETURN: emit _d->onOkSignal(); break;
+      default: break;
+      }
 
-    return true;
+      return true;
+    }
+    break;
+
+    default:
+    break;
   }
 
   return Widget::onEvent( event );
@@ -158,8 +180,9 @@ void Dialog::draw(gfx::Engine& painter )
 Dialog* Information(Ui* ui, const std::string &title, const std::string &text)
 {
   Dialog* ret = new Dialog( ui, Rect(), title, text, Dialog::btnOk );
-  ret->setModal();
-  CONNECT( ret, onOk(), ret, Dialog::deleteLater );
+
+  CONNECT( ret, onOk(), ret, Dialog::deleteLater )
+  CONNECT( ret, onCancel(), ret, Dialog::deleteLater )
 
   return ret;
 }
@@ -167,9 +190,9 @@ Dialog* Information(Ui* ui, const std::string &title, const std::string &text)
 Dialog* Confirmation(Ui* ui, const std::string &title, const std::string &text, bool pauseGame)
 {
   Dialog* ret = new Dialog( ui, Rect(), title, text, Dialog::btnOkCancel, pauseGame );
-  ret->setModal();
-  CONNECT( ret, onOk(), ret, Dialog::deleteLater );
-  CONNECT( ret, onCancel(), ret, Dialog::deleteLater );
+
+  CONNECT( ret, onOk(), ret, Dialog::deleteLater )
+  CONNECT( ret, onCancel(), ret, Dialog::deleteLater )
 
   return ret;
 }

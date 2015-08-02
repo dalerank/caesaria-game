@@ -42,14 +42,14 @@ void Well::deliverService()
   ServiceWalkerPtr walker = ServiceWalker::create( _city(), serviceType() );
   walker->setBase( BuildingPtr( this ) );
 
-  ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( tile().pos() );
+  ReachedBuildings reachedBuildings = walker->getReachedBuildings( tile().pos() );
 
   unsigned int lowHealth = 100;
   HouseList houses;
-  foreach( it, reachedBuildings)
+  for( auto bld : reachedBuildings)
   {
-    (*it)->applyService( walker );
-    HousePtr house = ptr_cast<House>( *it );
+    bld->applyService( walker );
+    HousePtr house = bld.as<House>();
     if( house.isValid() )
     {
       lowHealth = std::min<unsigned int>( lowHealth, house->state(pr::health ) );
@@ -60,11 +60,11 @@ void Well::deliverService()
   if( lowHealth < 30 )
   {
     lowHealth = (100 - lowHealth) / 10;
-    foreach( it, houses)
+    for( auto house : houses)
     {
-      if( (*it)->state( pr::health ) > 10 )
+      if( house->state( pr::health ) > 10 )
       {
-        (*it)->updateState( pr::health, -lowHealth );
+        house->updateState( pr::health, -lowHealth );
       }
     }
   }

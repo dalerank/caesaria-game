@@ -18,7 +18,6 @@
 #include "desirability_updater.hpp"
 #include "game/game.hpp"
 #include "objects/construction.hpp"
-#include "helper.hpp"
 #include "city.hpp"
 #include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
@@ -103,9 +102,9 @@ void DesirabilityUpdater::Impl::update( PlayerCityPtr city, bool positive)
 {
   const TilesArray& tiles = city->tilemap().allTiles();
 
-  foreach( it, tiles )
+  for( auto tile : tiles )
   {
-    (*it)->changeParam( Tile::pDesirability, positive ? value : -value );
+    tile->changeParam( Tile::pDesirability, positive ? value : -value );
   }
 }
 

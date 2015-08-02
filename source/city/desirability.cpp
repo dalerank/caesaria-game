@@ -35,9 +35,9 @@ void Desirability::update( PlayerCityPtr r, OverlayPtr overlay, bool onBuild )
 
   //change desirability in selfarea
   TilesArea area( tilemap, overlay->pos(), overlay->size() );
-  foreach( tile, area )
+  for( auto tile : area )
   {
-    (*tile)->changeParam( Tile::pDesirability, mul * dsrbl.base );
+    tile->changeParam( Tile::pDesirability, mul * dsrbl.base );
   }
 
   //change deisirability around
@@ -46,9 +46,9 @@ void Desirability::update( PlayerCityPtr r, OverlayPtr overlay, bool onBuild )
   {
     TilesArray perimetr = tilemap.getRectangle( overlay->pos() - TilePos( curRange, curRange ),
                                                 overlay->size() + Size( 2 * curRange ) );
-    foreach( tile, perimetr )
+    for( auto tile : perimetr )
     {
-      (*tile)->changeParam( Tile::pDesirability, current );
+      tile->changeParam( Tile::pDesirability, current );
     }
 
     current += mul * dsrbl.step;

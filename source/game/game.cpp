@@ -21,7 +21,6 @@
 #include "city/build_options.hpp"
 #include "core/utils.hpp"
 #include "objects/construction.hpp"
-#include "city/helper.hpp"
 #include "game/player.hpp"
 #include "gfx/picture.hpp"
 #include "gfx/gl_engine.hpp"

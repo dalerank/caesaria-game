@@ -32,10 +32,10 @@ using namespace gui::dialog;
 namespace events
 {
 
-GameEventPtr RequestDestroy::create( ConstructionPtr constr )
+GameEventPtr RequestDestroy::create( OverlayPtr constr )
 {
   RequestDestroy* e = new RequestDestroy();
-  e->_reqConstruction = constr;
+  e->_overlay = constr;
   e->_alsoExec = false;
   e->_mayDelete = false;
 
@@ -50,7 +50,7 @@ void RequestDestroy::_exec(Game& game, unsigned int)
   if( !_alsoExec )
   {
     _alsoExec = true;
-    std::string constrQuestion = _reqConstruction->errorDesc();
+    std::string constrQuestion = _overlay->errorDesc();
     std::string questionStr = constrQuestion.empty()
                                   ? "##destroy_this_building##"
                                   : constrQuestion;
@@ -65,10 +65,10 @@ bool RequestDestroy::_mayExec(Game& , unsigned int ) const { return !_alsoExec; 
 
 void RequestDestroy::_applyDestroy()
 {
-  if( _reqConstruction.isValid() )
+  if( _overlay.isValid() )
   {
-    _reqConstruction->setState( pr::destroyable, 1. );
-    GameEventPtr e = ClearTile::create( _reqConstruction->pos() );
+    _overlay->setState( pr::destroyable, 1. );
+    GameEventPtr e = ClearTile::create( _overlay->pos() );
     e->dispatch();
     _mayDelete = true;
   }

@@ -34,7 +34,7 @@ if(UNIX AND NOT APPLE)
   file(GLOB PTHREAD_SOURCES_LIST "src/thread/pthread/*.c")
   file(GLOB DLOPEN_SOURCES_LIST "src/loadso/dlopen/*.c")
   file(GLOB AUDIO_ALSA_SOURCES_LIST "src/audio/alsa/*.c")
-  file(GLOB AUDIO_PULSE_SOURCES_LIST "src/audio/pulseaudio/*.c")
+  #file(GLOB AUDIO_PULSE_SOURCES_LIST "src/audio/pulseaudio/*.c")
   file(GLOB FILESYSTEM_SOURCES_LIST "src/filesystem/unix/*.c")
 
   add_definitions(-DSDL_TIMER_UNIX)

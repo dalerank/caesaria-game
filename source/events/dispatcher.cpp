@@ -84,9 +84,9 @@ VariantMap Dispatcher::save() const
 {
   VariantMap ret;
   int index = 0;
-  foreach( event, _d->events )
+  for( auto event : _d->events )
   {
-    ret[ utils::format( 0xff, "event_%d", index++ ) ] = (*event)->save();
+    ret[ utils::format( 0xff, "event_%d", index++ ) ] = event->save();
   }
 
   return ret;
@@ -94,9 +94,9 @@ VariantMap Dispatcher::save() const
 
 void Dispatcher::load(const VariantMap& stream)
 {
-  foreach( it, stream )
+  for( auto it : stream )
   {
-    GameEventPtr e = PostponeEvent::create( it->first, it->second.toMap() );
+    GameEventPtr e = PostponeEvent::create( it.first, it.second.toMap() );
 
     if( e.isValid() )
     {

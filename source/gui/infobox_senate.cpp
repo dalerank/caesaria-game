@@ -29,6 +29,7 @@
 #include "texturedbutton.hpp"
 #include "events/showadvisorwindow.hpp"
 #include "core/logger.hpp"
+#include "events/playsound.hpp"
 #include "game/infoboxmanager.hpp"
 
 using namespace gfx;
@@ -55,6 +56,9 @@ AboutSenate::AboutSenate(Widget* parent, PlayerCityPtr city, const Tile& tile )
   SenatePtr senate = tile.overlay().as<Senate>();
   if( senate.isNull() )
     return;
+
+  events::GameEventPtr e = events::PlaySound::create( "bmsel_senate", 1, 100, audio::infobox, true );
+  e->dispatch();
 
   std::string title = MetaDataHolder::instance().getData( object::senate ).prettyName();
   setTitle( _(title) );

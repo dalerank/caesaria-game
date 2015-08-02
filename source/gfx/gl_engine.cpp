@@ -910,7 +910,12 @@ void GlEngine::draw(const Pictures& pictures, const Point& pos, Rect* clipRect)
 
 void GlEngine::drawLine(const NColor& color, const Point& p1, const Point& p2)
 {
-  int i=0;
+  //  int i=0;
+}
+
+void GlEngine::drawLines(const NColor& color, const PointsArray& p1)
+{
+
 }
 
 void GlEngine::draw( const Picture &picture, const Point& pos, Rect* clipRect )

@@ -339,7 +339,7 @@ bool LowBridge::canDestroy() const
 {
   foreach( subtile, _d->subtiles )
   {
-    WalkerList walkers = city::statistic::getWalkers<Walker>( _city(), walker::any, pos() + (*subtile)->pos() );
+    WalkerList walkers = _city()->statistic().walkers.find<Walker>( walker::any, pos() + (*subtile)->pos() );
     if( !walkers.empty() )
     {
       _d->error = "##cant_demolish_bridge_with_people##";
@@ -398,10 +398,8 @@ void LowBridge::load(const VariantMap& stream)
 void LowBridge::hide()
 {
   setState( pr::destroyable, 1);
-  foreach( it, _d->subtiles )
-  {
-    (*it)->hide();
-  }
+  for( auto tile : _d->subtiles )
+    tile->hide();
 }
 
 LowBridgeSubTile::LowBridgeSubTile(const TilePos &pos, int index)

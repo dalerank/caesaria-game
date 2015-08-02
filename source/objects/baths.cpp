@@ -50,11 +50,7 @@ void Baths::timeStep(const unsigned long time)
 {
   if( game::Date::isWeekChanged() )
   {
-    bool haveWater = false;
-    foreach( tile, _myArea )
-    {
-      haveWater |= (*tile)->param( Tile::pReservoirWater ) > 0;
-    }
+    bool haveWater = !_myArea.select( Tile::pReservoirWater ).empty();
     _haveReservorWater = (haveWater && numberWorkers() > 0);
   }
 

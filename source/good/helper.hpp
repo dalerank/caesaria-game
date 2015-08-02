@@ -38,8 +38,8 @@ public:
   static good::Product getType( const std::string& name );
   static std::string getTypeName( good::Product type );
 
-  static float exportPrice( PlayerCityPtr city, good::Product gtype, int qty );
-  static float importPrice( PlayerCityPtr city, good::Product gtype, int qty );
+  static float exportPrice(PlayerCityPtr city, good::Product gtype, unsigned int qty);
+  static float importPrice(PlayerCityPtr city, good::Product gtype, unsigned int qty);
   static good::Product random();
   ~Helper();
 private:

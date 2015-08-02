@@ -18,12 +18,12 @@
 #include "build.hpp"
 #include "objects/objects_factory.hpp"
 #include "game/game.hpp"
-#include "city/helper.hpp"
 #include "game/funds.hpp"
 #include "playsound.hpp"
 #include "walker/enemysoldier.hpp"
 #include "city/statistic.hpp"
 #include "core/logger.hpp"
+#include "objects/working.hpp"
 #include "warningmessage.hpp"
 
 using namespace gfx;
@@ -65,7 +65,7 @@ void BuildAny::_exec( Game& game, unsigned int )
   }
 
   TilePos offset(10, 10);
-  EnemySoldierList enemies = city::statistic::getWalkers<EnemySoldier>( game.city(), walker::any, _pos - offset, _pos + offset );
+  EnemySoldierList enemies =  game.city()->statistic().walkers.find<EnemySoldier>( walker::any, _pos - offset, _pos + offset );
   if( !enemies.empty() && _overlay->group() != object::group::disaster)
   {
     GameEventPtr e = WarningMessage::create( "##too_close_to_enemy_troops##", 2 );
@@ -87,7 +87,7 @@ void BuildAny::_exec( Game& game, unsigned int )
     Desirability::update( game.city(), _overlay, Desirability::on );
     game.city()->addOverlay( _overlay );
 
-    ConstructionPtr construction = ptr_cast<Construction>( _overlay );
+    ConstructionPtr construction = _overlay.as<Construction>();
     if( construction.isValid() )
     {
       const MetaData& buildingData = MetaDataHolder::getData( _overlay->type() );
@@ -116,14 +116,14 @@ void BuildAny::_exec( Game& game, unsigned int )
       WorkingBuildingPtr wb = construction.as<WorkingBuilding>();
       if( wb.isValid() && wb->maximumWorkers() > 0 )
       {
-        unsigned int worklessCount = statistic::getWorklessNumber( game.city() );
+        unsigned int worklessCount = game.city()->statistic().workers.workless();
         if( worklessCount < wb->maximumWorkers() )
         {
           GameEventPtr e = WarningMessage::create( "##city_need_more_workers##", 2 );
           e->dispatch();
         }
 
-        int laborAccessKoeff = city::statistic::getLaborAccessValue( game.city(), wb );
+        int laborAccessKoeff = wb->laborAccessPercent();
         if( laborAccessKoeff < 50 )
         {
           GameEventPtr e = WarningMessage::create( "##working_build_poor_labor_warning##", 2 );

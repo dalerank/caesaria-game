@@ -19,6 +19,7 @@
 #include "gfx/decorator.hpp"
 #include "core/gettext.hpp"
 #include "pushbutton.hpp"
+#include "objects/construction.hpp"
 #include "label.hpp"
 #include "core/logger.hpp"
 #include "game/resourcegroup.hpp"
@@ -164,7 +165,7 @@ void Emperor::_showChangeSalaryWindow()
   }
 
   PlayerPtr pl = _d->city->mayor();
-  dialog::ChangeSalary* dialog = new dialog::ChangeSalary( parent(), pl->salary() );
+  auto dialog = new dialog::ChangeSalary( parent(), pl->salary() );
   dialog->show();
 
   TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
@@ -175,7 +176,7 @@ void Emperor::_showChangeSalaryWindow()
 void Emperor::_showSend2CityWindow()
 {
   PlayerPtr pl = _d->city->mayor();
-  dialog::CityDonation* dialog = new dialog::CityDonation( parent(), pl->money() );
+  auto dialog = new dialog::CityDonation( parent(), pl->money() );
   dialog->show();
 
   CONNECT( dialog, onSendMoney(), _d.data(), Impl::sendMoney );
@@ -186,9 +187,9 @@ void Emperor::_showGiftWindow()
   PlayerPtr pl = _d->city->mayor();
   world::Emperor& emperor = _d->city->empire()->emperor();
 
-  dialog::EmperorGift* dialog = new dialog::EmperorGift( parent(),
-                                                         pl->money(),
-                                                         emperor.lastGiftDate( _d->city->name() ) );
+  auto dialog = new dialog::EmperorGift( parent(),
+                                         pl->money(),
+                                         emperor.lastGiftDate( _d->city->name() ) );
   dialog->show();
 
   CONNECT( dialog, onSendGift(), _d.data(), Impl::sendGift );
@@ -199,20 +200,18 @@ void Emperor::_updateRequests()
   Rect reqsRect( Point( 32, 91 ), Size( 570, 220 ) );
 
   List<RequestButton*> btns = findChildren<RequestButton*>();
-  foreach( btn, btns )
-  {
-    (*btn)->deleteLater();
-  }
+  for( auto btn : btns )
+    btn->deleteLater();
 
-  request::RequestList reqs;
-  request::DispatcherPtr dispatcher = statistic::getService<request::Dispatcher>( _d->city );
+  request::RequestList requests;
+  request::DispatcherPtr dispatcher = _d->city->statistic().services.find<request::Dispatcher>();
 
   if( dispatcher.isValid() )
   {
-    reqs = dispatcher->requests();
+    requests = dispatcher->requests();
   }
 
-  if( reqs.empty() )
+  if( requests.empty() )
   {
     Label* lb = new Label( this, reqsRect, _("##have_no_requests##") );
     lb->setWordwrap( true );
@@ -220,13 +219,13 @@ void Emperor::_updateRequests()
   }
   else
   {
-    foreach( request, reqs )
+    foreach( r, requests )
     {
-      if( !(*request)->isDeleted() )
+      if( !(*r)->isDeleted() )
       {
-        bool mayExec = (*request)->isReady( _d->city );
+        bool mayExec = (*r)->isReady( _d->city );
         RequestButton* btn = new RequestButton( this, reqsRect.lefttop() + Point( 5, 5 ),
-                                                std::distance( reqs.begin(), request ), *request );
+                                                std::distance( requests.begin(), r ), *r );
         btn->setTooltipText( _("##request_btn_tooltip##") );
         btn->setEnabled( mayExec );
         CONNECT(btn, onExecRequest(), _d.data(), Impl::resolveRequest );
@@ -337,6 +336,6 @@ void Emperor::Impl::resolveRequest(request::RequestPtr request)
   }
 }
 
-}
+}//end namespace advisorwnd
 
 }//end namespace gui

@@ -39,6 +39,11 @@ struct Issue
   Issue( Type t, int m ) : type( t ), money( m ) {}
 };
 
+inline unsigned int calcTaxValue( unsigned int population, int koeff )
+{
+  return population / 1000 * koeff;
+}
+
 }//end namespace econ
 
 #endif //__CAESARIA_ECONOMY_ISSUE_H_INCLUDED__

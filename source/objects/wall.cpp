@@ -52,9 +52,9 @@ bool Wall::build( const city::AreaInfo& info )
 
   Construction::build( info );
 
-  WallList walls = city::statistic::getObjects<Wall>( info.city, object::wall );
+  WallList walls = info.city->statistic().objects.find<Wall>( object::wall );
 
-  foreach( wall, walls ) { (*wall)->updatePicture( info.city ); }
+  for( auto wall : walls ) { wall->updatePicture( info.city ); }
 
   updatePicture( info.city );
 

@@ -341,7 +341,7 @@ void House::_updateTax()
 
 void House::_updateCrime()
 {
-  float cityKoeff = statistic::getBalanceKoeff( _city() );
+  float cityKoeff = _city()->statistic().balance.koeff();
 
   const int currentHabtn = habitants().count();
 
@@ -358,7 +358,7 @@ void House::_updateCrime()
   int workerWagesInfluence = 0; ///!!!
   if( !spec().isPatrician() )
   {
-    int diffWages = statistic::getWagesDiff( _city() );
+    int diffWages = _city()->statistic().workers.wagesDiff();
     if( diffWages < 0)
     {
       workerWagesInfluence = diffWages;

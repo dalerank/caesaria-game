@@ -43,7 +43,7 @@ void _removeGoodFrom( PlayerCityPtr city, object::Type btype, good::Product what
 #ifdef CAESARIA_PLATFORM_HAIKU
   bList << city->overlays();
 #else
-  bList = city::statistic::getObjects<T>( city, btype );
+  bList = city->statistic().objects.find<T>( btype );
 #endif
   foreach( it, bList )
   {

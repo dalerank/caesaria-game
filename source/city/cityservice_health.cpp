@@ -107,15 +107,15 @@ std::string HealthCare::reason() const
 
 void HealthCare::Impl::updateValue(PlayerCityPtr city)
 {
-  HouseList houses = statistic::getHouses( city );
+  HouseList houses = city->statistic().houses.find();
 
   value = 0;
   avgMinHealth = 100;
   int houseWithBadHealth = 0;
-  foreach( house, houses )
+  for( auto house : houses )
   {
-    unsigned int hLvl = (*house)->state( pr::health );
-    if( (*house)->habitants().count() > 0 )
+    unsigned int hLvl = house->state( pr::health );
+    if( house->habitants().count() > 0 )
     {
       value += hLvl;
       if( hLvl < health::bad )
@@ -135,7 +135,7 @@ void HealthCare::Impl::updateReasons( PlayerCityPtr city )
   int lvl = math::clamp<int>( value / (health::maxValue/health::levelNumber), 0, health::levelNumber-1 );
   std::string mainReason = healthDescription[ lvl ];
 
-  BuildingList clinics = statistic::getObjects<Building>( city, object::clinic );
+  BuildingList clinics = city->statistic().objects.find<Building>( object::clinic );
 
   mainReason += clinics.size() > 0 ? "_clinic##" : "##";
 
@@ -147,13 +147,13 @@ void HealthCare::Impl::updateReasons( PlayerCityPtr city )
       object::TypeSet availableTypes;
       availableTypes.insert( reasonsInfo[ i ].type );
 
-      HouseList housesWantEvolve = statistic::getEvolveHouseReadyBy( city, availableTypes );
+      HouseList housesWantEvolve = city->statistic().houses.ready4evolve( availableTypes );
       if( housesWantEvolve.size() > 0 )
       {
         reasons << reasonsInfo[i].info;
       }
     }
-    }
+  }
 }
 
 void HealthCare::Impl::showWarningIfNeed()

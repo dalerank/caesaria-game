@@ -71,9 +71,9 @@ bool StartWork::_mayExec(Game& game, unsigned int ) const
   {
     bool ret = false;
 
-    foreach( i, _bldTypes )
+    for( auto type : _bldTypes )
     {
-      WorkingBuildingList bld = city::statistic::getObjects<WorkingBuilding>( game.city(), *i );
+      WorkingBuildingList bld = game.city()->statistic().objects.find<WorkingBuilding>( type );
 
       ret = !bld.empty();
 

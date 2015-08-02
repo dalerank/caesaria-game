@@ -22,7 +22,6 @@
 #include "game/resourcegroup.hpp"
 #include "gfx/helper.hpp"
 #include "good/stock.hpp"
-#include "city/helper.hpp"
 #include "good/helper.hpp"
 #include "city/city.hpp"
 #include "core/utils.hpp"
@@ -324,7 +323,7 @@ FarmWheat::FarmWheat() : Farm(good::wheat, object::wheat_farm)
 
 std::string FarmWheat::troubleDesc() const
 {
-  LocustList lc = city::statistic::getWalkers<Locust>( _city(), walker::locust, pos() );
+  LocustList lc = _city()->statistic().walkers.find<Locust>( walker::locust, pos() );
   if( !lc.empty() )
   {
     return "##trouble_farm_was_blighted_by_locust##";

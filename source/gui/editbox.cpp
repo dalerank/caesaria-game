@@ -103,16 +103,16 @@ signals public:
 std::string __ucs2utf8( const std::wstring& text )
 {
   std::string ret;
-  foreach( i, text )
+  for( auto symbol : text )
   {
-    if( (unsigned short)*i < 0x80 )
+    if( (unsigned short)symbol < 0x80 )
     {
-      ret.push_back( (char)(*i & 0xff ) );
+      ret.push_back( (char)(symbol & 0xff ) );
     }
     else
     {
-      ret.push_back( (char)( (*i >> 8) & 0xff) );
-      ret.push_back( (char)( *i & 0xff ) );
+      ret.push_back( (char)( (symbol >> 8) & 0xff) );
+      ret.push_back( (char)(  symbol       & 0xff ) );
     }
   }
 

@@ -40,6 +40,7 @@ public:
 
   good::ProductMap sold() const;
   good::ProductMap bougth() const;
+  good::ProductMap mayBuy() const;
 
   std::string parentCity() const;
   virtual TilePos places(Place type) const;

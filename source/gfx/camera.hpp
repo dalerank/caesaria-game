@@ -42,6 +42,7 @@ public:
   virtual void moveDown(const int amount) = 0;
   virtual const TilesArray& tiles() const = 0;
   virtual const TilesArray& flatTiles() const = 0;
+  virtual const TilesArray& groundTiles() const = 0;
   virtual int centerX() const = 0;
   virtual int centerZ() const = 0;
   virtual TilePos center() const = 0;

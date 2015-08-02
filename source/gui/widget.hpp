@@ -59,13 +59,13 @@ public:
   List< T > findChildren( bool indepth=false )
   {
     List< T > ret;
-    foreach( it, children() )
+    for( auto child : children() )
     {
-      if( T elm = safety_cast< T >( *it ) )
+      if( T elm = safety_cast< T >( child ) )
           ret.push_back( elm );
 
       if( indepth )
-        ret.append( (*it)->findChildren<T>( indepth ) );
+        ret.append( child->findChildren<T>( indepth ) );
     }
 
     return ret;

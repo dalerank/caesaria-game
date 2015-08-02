@@ -56,13 +56,14 @@ const int shacksPenalty = 10;
 const int warBlockedMigration = 50;
 const int cityUnderAttackPenalty = 2;
 const int defaultEmIndesirability = 50;
+static SimpleLogger LOG_MIGRATION("MigrationService");
 }
 
 class Migration::Impl
 {
 public:
   int lastMonthMigration;
-  int updateTickInerval;
+  int updateTickInterval;
   int emigrantsIndesirability;
   int lastMonthComing;
   int lastMonthLeaving;
@@ -91,6 +92,8 @@ SrvcPtr Migration::create( PlayerCityPtr city )
 Migration::Migration( PlayerCityPtr city )
   : Srvc( city, defaultName() ), _d( new Impl )
 {  
+  LOG_MIGRATION.warn( "Initialize" );
+
   VariantMap options = config::load( ":/migration.model" );
   VARIANT_LOAD_ANYDEF_D( _d, checkRange, DateTime::daysInWeek, options )
   VARIANT_LOAD_ANYDEF_D( _d, worklessMinInfluence, 0, options )
@@ -101,7 +104,7 @@ Migration::Migration( PlayerCityPtr city )
   _d->chanceCounter = 1;
   _d->haveTroubles = false;
   _d->lastUpdate = game::Date::current();
-  _d->updateTickInerval = game::Date::days2ticks( 7 );
+  _d->updateTickInterval = game::Date::days2ticks( 7 );
   _d->emigrantsIndesirability = 0;
 }
 
@@ -117,20 +120,20 @@ void Migration::timeStep( const unsigned int time )
     }
   }
 
-  if( time % _d->updateTickInerval != 1 )
+  if( time % _d->updateTickInterval != 1 )
     return;
 
-  Logger::warning( "MigrationSrvc: start calculate" );
+  LOG_MIGRATION.info( "Calculation started" );
   const int worklessCitizenAway = SETTINGS_VALUE( worklessCitizenAway );
 
   float migrationKoeff = _d->getMigrationKoeff( _city() );
   Info::Parameters params = _d->lastMonthParams( _city() );
-  Logger::warning( "MigrationSrvc: current migration koeff=%f", migrationKoeff );
+  LOG_MIGRATION.info( "Current migration factor is %f", migrationKoeff );
 
-  _d->emigrantsIndesirability = defaultEmIndesirability; //base indesirability value
+  _d->emigrantsIndesirability = defaultEmIndesirability; //base undesirability value
   float emDesKoeff = math::clamp<float>( (float)SETTINGS_VALUE( emigrantSalaryKoeff ), 1.f, 99.f );
 
-  //if salary in city more then empire people more effectivelly go to our city
+  //if salary in city more then empire people more effectively go to our city
   const int diffSalary = _city()->empire()->workerSalary() - _city()->treasury().workerSalary();
   int diffSalaryInfluence = diffSalary * emDesKoeff;
 
@@ -186,14 +189,14 @@ void Migration::timeStep( const unsigned int time )
 
   _d->emigrantsIndesirability *= migrationKoeff;
 
-  Logger::warning( "MigrationSrvc: current indesrbl=%d", _d->emigrantsIndesirability );
+  LOG_MIGRATION.info( "Current undesirability is %d", _d->emigrantsIndesirability );
   if( warInfluence > warBlockedMigration )
   {
-    Logger::warning( "Migration: enemies in city migration broke" );
+    LOG_MIGRATION.info( "Enemies in city: migration stopped" );
     return;
   }
 
-  MilitaryPtr mil = statistic::getService<Military>( _city() );
+  MilitaryPtr mil = _city()->statistic().services.find<Military>();
 
   if( mil.isValid() )
   {
@@ -210,7 +213,7 @@ void Migration::timeStep( const unsigned int time )
     _d->lastMonthComing = 0;
     _d->lastMonthLeaving = 0;
 
-    Logger::warning( "MigrationSrvc: current workless=%f indesrbl=%f",
+    LOG_MIGRATION.info( "Current workless=%f undesrbl=%f",
                      curWorklessValue * migrationKoeff,
                      _d->emigrantsIndesirability * migrationKoeff );
   }
@@ -232,7 +235,8 @@ void Migration::timeStep( const unsigned int time )
     }
   }
 
-  _d->updateTickInerval = math::random( game::Date::days2ticks( _d->checkRange ) ) + 10;
+  _d->updateTickInterval = math::random( game::Date::days2ticks( _d->checkRange ) ) + 10;
+  LOG_MIGRATION.info( "Calculation finished." );
 }
 
 std::string Migration::reason() const
@@ -353,12 +357,12 @@ void Migration::citizenLeaveCity(WalkerPtr walker)
 unsigned int Migration::Impl::calcVacantHouse( PlayerCityPtr city )
 {
   unsigned int vh = 0;
-  HouseList houses = city::statistic::getHouses(city);
-  foreach( house, houses )
+  HouseList houses = city->statistic().houses.find();
+  for( auto house : houses )
   {
-    if( (*house)->roadside().size() > 0 && (*house)->state( pr::settleLock ) == 0 )
+    if( house->roadside().size() > 0 && house->state( pr::settleLock ) == 0 )
     {
-      vh += math::clamp<int>( (*house)->capacity() - (*house)->habitants().count(), 0, 0xff );
+      vh += math::clamp<int>( house->capacity() - house->habitants().count(), 0, 0xff );
     }
   }
 
@@ -377,8 +381,7 @@ float Migration::Impl::getMigrationKoeff( PlayerCityPtr city )
 
 Info::Parameters Migration::Impl::lastMonthParams( PlayerCityPtr city )
 {
-  InfoPtr info;
-  info << city->findService( Info::defaultName() );
+  InfoPtr info = city->statistic().services.find<Info>();
 
   Info::Parameters params;
   if( info.isValid() )
@@ -421,7 +424,7 @@ void Migration::Impl::createMigrationToCity( PlayerCityPtr city )
 
 void Migration::Impl::createMigrationFromCity( PlayerCityPtr city )
 {
-  HouseList houses = city::statistic::getHouses( city );
+  HouseList houses = city->statistic().houses.find();
   const int minWorkersNumber = 4;
   for( HouseList::iterator i=houses.begin(); i != houses.end(); )
   {
@@ -433,18 +436,15 @@ void Migration::Impl::createMigrationFromCity( PlayerCityPtr city )
 
   if( !houses.empty() )
   {
-    int stepNumber = std::max<int>( rand() % houses.size(), 1 );
-    for( int i=0; i < stepNumber; i++ )
+    int number = math::random( houses.size() );
+    HouseList randHouses = houses.random( number );
+    for( auto house : randHouses )
     {
-      HouseList::iterator house = houses.begin();
-      std::advance( house, math::random( houses.size() ) );
-
       ImmigrantPtr emigrant = Immigrant::create( city );
-
       if( emigrant.isValid() )
       {
-        (*house)->removeHabitants( minWorkersNumber );
-        emigrant->leaveCity( *(*house)->enterArea().front() );
+        house->removeHabitants( minWorkersNumber );
+        emigrant->leaveCity( *(house->enterArea().front()) );
         emigrant->setThinks( "##immigrant_no_work_for_me##" );
       }
     }

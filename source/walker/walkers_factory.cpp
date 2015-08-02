@@ -40,7 +40,7 @@ WalkerPtr WalkerManager::create(const walker::Type walkerType, PlayerCityPtr cit
 
   if( findConstructor != _d->constructors.end() )
   {
-    return ptr_cast<Walker>( findConstructor->second->create( city ) );
+    return findConstructor->second->create( city ).as<Walker>();
   }
 
   Logger::warning( "WalkerManager: cannot create walker from type %d", walkerType );
