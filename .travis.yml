@@ -8,7 +8,8 @@ before_install:
 - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
 - sudo apt-get -qq update
 - sudo apt-get -qq install cmake p7zip-full build-essential
-- sudo apt-get -qq install binutils-mingw-w64-x86-64
+- sudo apt-get -qq install binutils-mingw-w64-i686
+- sudo apt-get -qq install g++-mingw-w64-i686
 - sudo apt-get -qq install g++-mingw-w64-x86-64
 - sudo apt-get -qq install sshpass
 - sudo apt-get install -qq cmake build-essential libasound2-dev
