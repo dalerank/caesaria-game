@@ -166,6 +166,13 @@ inline T clamp(const T value, const T low, const T high)
   return math::min<T>( mx, high);
 }
 
+template< class T >
+inline void clamp_to(T& value, const T low, const T high)
+{
+  const T& mx = math::max<T>( value, low);
+  value = math::min<T>( mx, high);
+}
+
 inline int signnum( float x )
 {
   return (x > 0) ? 1 : ((x < 0) ? -1 : 0);

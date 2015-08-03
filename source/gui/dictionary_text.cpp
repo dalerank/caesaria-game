@@ -684,7 +684,7 @@ void DictionaryText::_init()
   _d->scrollbar->setNotClipped( false );
   _d->scrollbar->setSubElement(true);
   _d->scrollbar->setVisibleFilledArea( false );
-  _d->scrollbar->setTabStop(false);
+  _d->scrollbar->setTabstop(false);
   _d->scrollbar->setAlignment( align::lowerRight, align::lowerRight, align::upperLeft, align::lowerRight);
   _d->scrollbar->setVisible(true);
   _d->scrollbar->setValue(0);

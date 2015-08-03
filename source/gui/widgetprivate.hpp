@@ -29,15 +29,14 @@ class Widget;
 class Widget::Impl
 {
 public:
-	
-	//FontsMap overrideFonts;
-	//OpacityMap opacity;
-	//ColorMap overrideColors;
-	//ElementStyle* style;
 	std::set<Widget*> eventHandlers;
 
   //! maximum and minimum size of the element
-  Size maxSize, minSize;
+  struct
+  {
+   Size maximimum;
+   Size mininimum;
+  } size;
 
   //! Pointer to the parent
   Widget* parent;
@@ -66,9 +65,6 @@ public:
 
 	Alignment textHorzAlign, textVertAlign;
 
-  //! is visible?
-  bool isVisible;
-
   std::string internalName;
 
   std::string toolTipText;
@@ -76,16 +72,26 @@ public:
   std::string text;
 
   //! tells the element how to act when its parent is resized
-  Alignment alignLeft, alignRight, alignTop, alignBottom;
+  struct {
+    Alignment left,
+              right,
+              top,
+              bottom;
+  } align;
 
   //! id
   int id;
 
-  //! tab stop like in windows
-  bool isTabStop;
+  struct {
+    //! tab stop like in windows
+    bool tabStop;
 
-  //! is enabled?
-  bool isEnabled;
+    //! is visible?
+    bool visible;
+
+    //! is enabled?
+    bool enabled;
+  } flag;
 
   //! is a part of a larger whole and should not be serialized?
   bool isSubElement;
@@ -99,7 +105,7 @@ public:
   //! tab groups are containers like windows, use ctrl+tab to navigate
   bool isTabGroup;
 
-  //
+  //runtime properties
   VariantMap properties;
 };
 
