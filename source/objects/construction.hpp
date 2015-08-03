@@ -26,7 +26,6 @@
 #include "game/service.hpp"
 #include "objects/metadata.hpp"
 #include "gfx/tilesarray.hpp"
-#include "param.hpp"
 
 class Construction : public Overlay
 {
@@ -34,7 +33,6 @@ public:
   virtual ~Construction();
 
   virtual bool canBuild( const city::AreaInfo& areaInfo ) const;  // returns true if it can be built there
-  virtual std::string errorDesc() const;
   virtual std::string troubleDesc() const;
   virtual bool build( const city::AreaInfo& info );
   virtual void burn();
@@ -46,7 +44,6 @@ public:
   virtual int  roadsideDistance() const; // virtual because HOUSE has different behavior
   virtual gfx::TilesArray enterArea() const;
 
-  virtual bool canDestroy() const;
   virtual void destroy();
 
   virtual void updateState( Param name, double value );

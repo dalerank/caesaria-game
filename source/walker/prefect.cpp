@@ -442,6 +442,14 @@ void Prefect::_noWay()
   _back2Prefecture();
 }
 
+static BuildingPtr isBurningRuins( const Tile& tile, bool& inFire )
+{
+  BuildingPtr building = tile.overlay().as<Building>();
+  inFire = (building.isValid() && building->type() == object::burning_ruins );
+
+  return inFire ? building : BuildingPtr();
+}
+
 void Prefect::timeStep(const unsigned long time)
 {
   ServiceWalker::timeStep( time );
@@ -465,8 +473,11 @@ void Prefect::timeStep(const unsigned long time)
 
   case fightFire:
   {    
-    BuildingPtr building = _nextTile().overlay().as<Building>();
-    bool inFire = (building.isValid() && building->type() == object::burning_ruins );
+    bool inFire;
+    BuildingPtr building = isBurningRuins( _nextTile(), inFire );
+
+    if( !inFire )
+      building = isBurningRuins( tile(), inFire );
 
     if( inFire )
     {

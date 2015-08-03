@@ -56,7 +56,9 @@ void MarketLady::_centerTile()
 {
   ServiceWalker::_centerTile();
 
-  if( market().isValid() && market()->goodStore().empty() )
+  if( market().isValid()
+      && market()->goodStore().empty()
+      && !pathway().isReverse() )
   {
     return2Base();
   }

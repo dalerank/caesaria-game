@@ -40,6 +40,7 @@ public:
   void setBase( SmartPtr<T> a )
   {
     _construction = ptr_cast<Construction>( a );
+    _baseAssigned();
   }
 
 protected:
@@ -47,6 +48,7 @@ protected:
   void _setWorkingActive( bool working );
   void _updateWorkingText();
   void _resolveToggleWorking();
+  virtual void _baseAssigned();
   PushButton* _btnToggleWorkingRef();
 
 private:

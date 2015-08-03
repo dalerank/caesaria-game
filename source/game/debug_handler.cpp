@@ -167,7 +167,8 @@ enum {
   reload_buildings_config,
   toggle_show_buildings,
   toggle_show_trees,
-  forest_fire
+  forest_fire,
+  forest_grow
 };
 
 class DebugHandler::Impl
@@ -276,6 +277,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( in_city, make_generation )
   ADD_DEBUG_EVENT( in_city, decrease_sentiment )
   ADD_DEBUG_EVENT( in_city, increase_sentiment )
+  ADD_DEBUG_EVENT( in_city, forest_grow )
 
   ADD_DEBUG_EVENT( options, all_sound_off )
   ADD_DEBUG_EVENT( options, reload_aqueducts )
@@ -485,6 +487,15 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case decrease_sentiment: updateSentiment( -10 ); break;
   case increase_sentiment: updateSentiment( +10 ); break;
+  case forest_grow:
+  {
+    TreeList forest = game->city()->statistic().objects.find<Tree>();
+    forest = forest.random( 10 );
+
+    for( auto tree : forest )
+      tree->grow();
+  }
+  break;
 
   case make_generation:
   {
@@ -558,7 +569,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
     if( event == send_barbarian_to_player )
     {
-      brb->attack( ptr_cast<world::Object>( game->city() ) );
+      brb->attack( game->city().as<world::Object>() );
     }
     else
     {

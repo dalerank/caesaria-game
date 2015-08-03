@@ -134,7 +134,8 @@ inline bool random_values_of_range(int arr[], size_t size, int min, int max)
     do
     {
       next = random(max - min) + min;
-      for (size_t j = 0; j < i; ++j)
+      size_t j = 0;
+      for(; j < i; ++j)
       {
         if (arr[j] == next)
         {
@@ -142,6 +143,8 @@ inline bool random_values_of_range(int arr[], size_t size, int min, int max)
           break;
         }
       }
+      if( j == i )
+        break;
     } while (fail);
     arr[i] = next;
   }

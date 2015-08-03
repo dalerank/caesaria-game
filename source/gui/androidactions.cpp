@@ -74,6 +74,9 @@ Signal1<int>& ActionsBar::onChangeZoom()     { return _d->onChangeZoomSignal; }
 
 void ActionsBar::beforeDraw(gfx::Engine& painter)
 {
+  if( !visible() )
+    return;
+
   if( parent()->children().back() != this )
   {
     bringToFront();

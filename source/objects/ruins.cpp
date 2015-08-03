@@ -218,7 +218,7 @@ bool CollapsedRuins::build( const city::AreaInfo& info )
 
   tile().setFlag( Tile::tlTree, false );
   tile().setFlag( Tile::tlRoad, false );
-  _picture().load( ResourceGroup::land2a, 111 + math::random( 8 ) );
+  _picture().load( ResourceGroup::land2a, 111 + math::random( 7 ) );
 
   if( !_alsoBuilt )
   {

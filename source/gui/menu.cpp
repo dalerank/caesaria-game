@@ -405,7 +405,7 @@ ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city )
   Picture bottom( ResourceGroup::panelBackground, 20 );
 
   ret->_d->background.clear();
-
+  ret->setID( Hash( CAESARIA_STR_A(ExtentMenu)) );
   ret->_d->background.append( bground, Point( 0, 0 ) );
   unsigned int y = bground.height();
   while( y < parent->height() )
@@ -537,7 +537,16 @@ void ExtentMenu::showInfo(int type)
   }
 }
 
-void ExtentMenu::setAlarmEnabled( bool enabled ){  _d->disasterButton->setEnabled( enabled );}
+void ExtentMenu::setAlarmEnabled( bool enabled )
+{
+  if( enabled )
+  {
+    events::GameEventPtr e = events::PlaySound::create( "extm_alarm", 1, 100, audio::effects );
+    e->dispatch();
+  }
+
+  _d->disasterButton->setEnabled( enabled );
+}
 
 Signal1<int>& ExtentMenu::onSelectOverlayType() {  return _d->overlaysMenu->onSelectOverlayType(); }
 Signal0<>& ExtentMenu::onEmpireMapShow(){  return _d->empireButton->onClicked(); }

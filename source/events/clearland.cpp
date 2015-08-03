@@ -59,16 +59,15 @@ void ClearTile::_exec( Game& game, unsigned int )
 
     bool deleteRoad = cursorTile.getFlag( Tile::tlRoad );
 
-    ConstructionPtr constr = overlay.as<Construction>();
-    if( constr.isValid() && !constr->canDestroy() )
+    if( overlay.isValid() && !overlay->canDestroy() )
     {
-      GameEventPtr e = WarningMessage::create( _( constr->errorDesc() ), WarningMessage::neitral );
+      GameEventPtr e = WarningMessage::create( _( overlay->errorDesc() ), WarningMessage::neitral );
       e->dispatch();
 
-      const MetaData& md = MetaDataHolder::getData( constr->type() );
+      const MetaData& md = MetaDataHolder::getData( overlay->type() );
       if( md.getOption( MetaDataOptions::requestDestroy, false ).toBool() )
       {
-        e = RequestDestroy::create( constr );
+        e = RequestDestroy::create( overlay );
         e->dispatch();
       }
       return;

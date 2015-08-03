@@ -50,7 +50,8 @@ public:
   typedef enum { adviserEnabled=0, godEnabled, fishPlaceEnabled, updateRoads,
                  forceBuild, warningsEnabled, updateTiles, zoomEnabled, zoomInvert,
                  fireKoeff, barbarianAttack, c3gameplay, difficulty, legionAttack, climateType,
-                 collapseKoeff, highlightBuilding, destroyEpidemicHouses, forestFire } OptionType;
+                 collapseKoeff, highlightBuilding, destroyEpidemicHouses, forestFire,
+                 forestGrow } OptionType;
 
   static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr mayor );
   virtual ~PlayerCity();

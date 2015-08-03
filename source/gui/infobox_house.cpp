@@ -59,6 +59,7 @@
 #include "environment.hpp"
 #include "dialogbox.hpp"
 #include "game/infoboxmanager.hpp"
+#include "events/playsound.hpp"
 #include "infobox_land.hpp"
 
 using namespace gfx;
@@ -94,7 +95,17 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
 {
   setupUI( ":/gui/infoboxhouse.gui" );
 
-  _house = ptr_cast<House>( tile.overlay() );
+  _house = tile.overlay().as<House>();
+
+  if( _house.isNull() )
+  {
+    Logger::warning( "!!! WARNING: Cant find house at [%d,%d]", tile.pos().i(), tile.pos().j() );
+    deleteLater();
+    return;
+  }
+
+  events::GameEventPtr e = events::PlaySound::create( "bmsel_house", 1, 100, audio::infobox, true );
+  e->dispatch();
 
   setTitle( _(_house->levelName()) );
 

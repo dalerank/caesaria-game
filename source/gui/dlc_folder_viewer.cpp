@@ -72,7 +72,7 @@ public:
 
       Path picPath = items[ k ];
       if( picPath.isMyExtension( ".pdf" ) || picPath.isMyExtension( ".mp3" )
-          || picPath.isMyExtension( ".ogg" ))
+          || picPath.isMyExtension( ".ogg" ) || picPath.isMyExtension( ".jpg" ))
       {
         picPath = picPath.changeExtension( "png" );
       }

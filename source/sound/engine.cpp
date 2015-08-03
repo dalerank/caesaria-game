@@ -62,7 +62,7 @@ struct Sample
     {
       float result = math::clamp<int>( volume, 0, 100 ) / 100.f;
 
-      result = ( result * (type/100.f) * (game/100.f) ) * ( 2 * MIX_MAX_VOLUME );
+      result = ( result * (type/100.f) * (game/100.f) ) * MIX_MAX_VOLUME;
 
       Mix_Volume( channel, (int)result );
     }
@@ -139,6 +139,8 @@ Engine::Engine() : _d( new Impl )
   _d->volumes[ theme ] = maxVolumeValue() / 2;
   _d->volumes[ ambient ] = maxVolumeValue() / 4;
   _d->volumes[ speech ] = maxVolumeValue() / 2;
+  _d->volumes[ effects ] = maxVolumeValue() / 2;
+  _d->volumes[ infobox ] = maxVolumeValue() / 2;
 
   _d->extensions << ".ogg" << ".wav";
   addFolder( Directory() );
@@ -253,9 +255,9 @@ unsigned int Engine::_loadSound(const std::string& sampleName)
 
   std::string sampleCanonical = utils::localeLower( sampleName );
 
-  unsigned int sampleHash = Hash( sampleCanonical );
   if( _d->samples.size()<Impl::maxSamplesNumber )
   {
+    unsigned int sampleHash = Hash( sampleCanonical );
     Samples::iterator i = _d->samples.find( sampleHash );
 
     if( i != _d->samples.end() )
@@ -293,12 +295,13 @@ unsigned int Engine::_loadSound(const std::string& sampleName)
     }
 
     _d->samples[ sampleHash ] = sample;
+    return sampleHash;
   }
 
-  return sampleHash;
+  return 0;
 }
 
-int Engine::play( std::string sampleName, int volValue, SoundType type )
+int Engine::play(std::string sampleName, int volValue, SoundType type, bool force)
 {
   if(!_d->useSound )
     return -1;
@@ -323,7 +326,8 @@ int Engine::play( std::string sampleName, int volValue, SoundType type )
       return -1;
     }
 
-    if( (i->second.channel == -1 )
+    if( force
+        || (i->second.channel == -1 )
         || (i->second.channel >= 0 && Mix_Playing( i->second.channel ) <= 0) )
     {
 
@@ -345,7 +349,7 @@ int Engine::play( std::string sampleName, int volValue, SoundType type )
   return -1;
 }
 
-int Engine::play(const std::string &rc, int index, int volume, SoundType type)
+int Engine::play(const std::string &rc, int index, int volume, SoundType type, bool force)
 {
   std::string filename = utils::format( 0xff, "%s_%05d", rc.c_str(), index );
   return play( filename, volume, type );
