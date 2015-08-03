@@ -152,8 +152,7 @@ void AmbientSound::timeStep( const unsigned int time )
     if( abs( distance.i() ) > ambientsnd::maxDistance || abs( distance.j() ) > ambientsnd::maxDistance
         || !(*i).isValid() )
     {
-      //ae.stop( (*i).getSound() );
-      _d->emitters.erase( i++ );
+      i = _d->emitters.erase( i );
     }
     else
     {

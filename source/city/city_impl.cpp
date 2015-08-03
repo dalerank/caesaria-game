@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "city_impl.hpp"
 #include "cityservice.hpp"
@@ -26,6 +26,7 @@
 #include "cityservice_factory.hpp"
 #include "city.hpp"
 #include "core/logger.hpp"
+#include "walker/helper.hpp"
 #include "game/difficulty.hpp"
 
 namespace city
@@ -100,6 +101,31 @@ void Walkers::clear()
 {
   FlowList::clear();
   grid.clear();
+}
+
+VariantMap Walkers::save() const
+{
+  VariantMap ret;
+  int walkedId = 0;
+  for (auto w : *this)
+  {
+    VariantMap vm_walker;
+    walker::Type wtype = walker::unknown;
+    try
+    {
+      wtype = w->type();
+      w->save( vm_walker );
+      ret[ utils::i2str( walkedId ) ] = vm_walker;
+    }
+    catch(...)
+    {
+      Logger::warning( "!!! WARNING: Can't save walker type " + WalkerHelper::getTypename( wtype ));
+    }
+
+    walkedId++;
+  }
+
+  return ret;
 }
 
 void Walkers::update(PlayerCityPtr, unsigned int time)
