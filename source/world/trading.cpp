@@ -38,11 +38,10 @@ public:
   VariantMap save() const
   {
     VariantMap ret;
-    foreach( it, *this )
+    for( auto it : *this )
     {
-      VariantList tmp;
-      tmp << it->second.buy << it->second.sell;
-      ret[ good::Helper::getTypeName( it->first ) ] = tmp;
+      VariantList tmp( it.second.buy, it.second.sell );
+      ret[ good::Helper::getTypeName( it.first ) ] = tmp;
     }
 
     return ret;
@@ -50,12 +49,12 @@ public:
 
   void load( const VariantMap& stream )
   {
-    foreach( it, stream )
+    for( auto it : stream )
     {
-      good::Product gtype = good::Helper::getType( it->first );
+      good::Product gtype = good::Helper::getType( it.first );
       if( gtype != good::none )
       {
-        VariantList vl = it->second.toList();
+        VariantList vl = it.second.toList();
         setPrice( gtype, vl.get( idxBuyPrice, 0 ).toInt(), vl.get( idxSellPrice, 0 ).toInt() );
       }
     }
@@ -68,7 +67,45 @@ public:
   }
 };
 
-typedef std::map< unsigned int, TraderoutePtr > TradeRoutes;
+class TradeRoutes : public std::map< unsigned int, TraderoutePtr>
+{
+public:
+  VariantMap save() const
+  {
+    VariantMap ret;
+    for( auto it : *this )
+      ret[ it.second->name() ] = it.second->save();
+
+    return ret;
+  }
+
+  void load( Trading& trading, const VariantMap& stream )
+  {
+    for( auto it : stream )
+    {
+      StringArray cityNames = utils::split( it.first,"<->" );
+      if( !cityNames.empty() )
+      {
+        std::string beginCity = cityNames.valueOrEmpty( 0 );
+        std::string endCity = cityNames.valueOrEmpty( 1 );
+        TraderoutePtr route = trading.createRoute( beginCity, endCity );
+        if( route.isValid() )
+        {
+          route->load( it.second.toMap() );
+        }
+        else
+        {
+          Logger::warning( "WARNING!!! Trading::load cant create route from %s to %s",
+                           beginCity.c_str(), endCity.c_str() );
+        }
+      }
+      else
+      {
+        Logger::warning( "WARNING!!! Trading::load cant create route from " + it.first );
+      }
+    }
+  }
+};
 
 class Trading::Impl
 {
@@ -89,10 +126,8 @@ void Trading::timeStep( unsigned int time )
 {
   if( game::Date::isDayChanged() )
   {
-    foreach( it,_d->routes )
-    {
-      it->second->timeStep( time );
-    }
+    for( auto it :_d->routes )
+      it.second->timeStep( time );
   }
 }
 
@@ -104,13 +139,8 @@ void Trading::init( EmpirePtr empire )
 VariantMap Trading::save() const
 {
   VariantMap ret;
-  VariantMap routesVm;
-  foreach( it, _d->routes )
-  {
-    routesVm[ it->second->getName() ] = it->second->save();
-  }
 
-  ret[ "routes" ] = routesVm;
+  VARIANT_SAVE_CLASS_D( ret, _d, routes )
   VARIANT_SAVE_CLASS_D( ret, _d, empirePrices )
 
   return ret;
@@ -119,39 +149,14 @@ VariantMap Trading::save() const
 void Trading::load(const VariantMap& stream)
 {
   VariantMap routes = stream.get( "routes" ).toMap();
-  foreach( it, routes )
-  {
-    StringArray cityNames = utils::split( it->first,"<->" );
-    if( !cityNames.empty() )
-    {
-      std::string beginCity = cityNames.valueOrEmpty( 0 );
-      std::string endCity = cityNames.valueOrEmpty( 1 );
-      TraderoutePtr route = createRoute( beginCity, endCity );
-      if( route.isValid() )
-      {
-        route->load( it->second.toMap() );
-      }
-      else
-      {
-        Logger::warning( "WARNING!!! Trading::load cant create route from %s to %s",
-                         beginCity.c_str(), endCity.c_str() );
-      }
-    }
-    else
-    {
-      Logger::warning( "WARNING!!! Trading::load cant create route from " + it->first );
-    }
-  } 
+  _d->routes.load( *this, routes );
 
   VARIANT_LOAD_CLASS_D( _d, empirePrices, stream )
 }
 
-Trading::~Trading()
-{
+Trading::~Trading() {}
 
-}
-
-void Trading::sendMerchant(const std::string& begin, const std::string& end,
+void Trading::sendMerchant( const std::string& begin, const std::string& end,
                             good::Store &sell, good::Store &buy )
 {
   TraderoutePtr route = findRoute( begin, end );
@@ -230,11 +235,11 @@ TraderouteList Trading::routes( const std::string& begin )
 
   CityPtr city = _d->empire->findCity( begin );
 
-  foreach( it, _d->routes )
+  for( auto route : _d->routes )
   {
-    if( it->second->beginCity() == city || it->second->endCity() == city )
+    if( route.second->beginCity() == city || route.second->endCity() == city )
     {
-      ret.push_back( it->second );
+      ret.push_back( route.second );
     }
   }
 

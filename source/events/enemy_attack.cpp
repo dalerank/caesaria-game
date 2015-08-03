@@ -17,12 +17,12 @@
 
 #include "enemy_attack.hpp"
 #include "game/game.hpp"
-#include "city/helper.hpp"
 #include "game/gamedate.hpp"
 #include "events/dispatcher.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/variant_map.hpp"
 #include "core/logger.hpp"
+#include "city/city.hpp"
 #include "walker/enemysoldier.hpp"
 #include "city/cityservice_military.hpp"
 #include "walker/walkers_factory.hpp"
@@ -81,9 +81,9 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
     return;
 
   _d->isDeleted = true;
-  foreach( i, _d->items )
+  for( auto item : _d->items )
   {
-    VariantMap soldiers = i->second.toMap();
+    VariantMap soldiers = item.second.toMap();
 
     std::string soldierType = soldiers.get( literals::type ).toString();
     int soldierNumber = soldiers.get( literals::count );
@@ -105,7 +105,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
 
       tiles = tiles.walkables( true );
 
-      Tile* tile = tiles[ math::random( tiles.size() ) ];
+      Tile* tile = tiles.random();
       if( tile )
       {
         location = tile->pos();

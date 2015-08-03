@@ -19,7 +19,6 @@
 #include <iostream>
 
 #include "core/addon_requirements.hpp"
-#include "gfx/picture.hpp"
 
 extern "C"
 {

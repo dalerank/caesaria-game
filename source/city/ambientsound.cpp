@@ -142,8 +142,8 @@ void AmbientSound::timeStep( const unsigned int time )
   _d->emmitersArea.clear();
   _d->emmitersArea.reset( _city()->tilemap(), _d->cameraPos, ambientsnd::maxDistance );
 
-  foreach( tile, _d->emmitersArea )
-    _d->emitters.insert( SoundEmitter( *tile, _d->cameraPos ) );
+  for( auto tile : _d->emmitersArea )
+    _d->emitters.insert( SoundEmitter( tile, _d->cameraPos ) );
 
   //remove so far emitters
   for( Emitters::iterator i=_d->emitters.begin(); i != _d->emitters.end(); )
@@ -164,9 +164,11 @@ void AmbientSound::timeStep( const unsigned int time )
   //create emitters map
   _d->processedSounds.clear();
 
+  std::string resourceName;
+  resourceName.reserve(256);
   for( Emitters::reverse_iterator i=_d->emitters.rbegin(); i != _d->emitters.rend(); ++i )
   {
-    std::string resourceName = i->sound();
+    resourceName = i->sound();
 
     if( resourceName.empty() )
       continue;

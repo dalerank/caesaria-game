@@ -45,6 +45,7 @@ public:
     append( Label::bgNone, "none" );
     append( Label::bgWhiteFrame, "whiteFrame" );
     append( Label::bgBlackFrame, "blackFrame" );
+    append( Label::bgWhiteBorderA, "whiteBorder" );
   }
 };
 
@@ -254,7 +255,7 @@ void Label::draw(gfx::Engine& painter )
   // draw background
   if( _d->bgPicture.isValid() )
   {
-    painter.draw( _d->bgPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+    painter.draw( _d->bgPicture, absoluteRect().lefttop(), &absoluteClippingRectRef() );
   }
   else
   {
@@ -266,12 +267,12 @@ void Label::draw(gfx::Engine& painter )
 
   if( _d->icon.isValid() )
   {
-    painter.draw( _d->icon, absoluteRect().UpperLeftCorner + _d->iconOffset, &absoluteClippingRectRef() );
+    painter.draw( _d->icon, absoluteRect().lefttop() + _d->iconOffset, &absoluteClippingRectRef() );
   }
 
   if( _d->textPicture.isValid() )
   {
-    painter.draw( _d->textPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+    painter.draw( _d->textPicture, absoluteRect().lefttop(), &absoluteClippingRectRef() );
   }
 
   Widget::draw( painter );

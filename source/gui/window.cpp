@@ -42,6 +42,31 @@ public:
   }
 };
 
+class BatchState
+{
+public:
+  Batch state;
+  Pictures images;
+
+  void reset() { images.clear(); }
+
+  void fill( const Rect& area, const Point& lefttop, Decorator::Mode style, bool negativeY )
+  {
+    bool errorsOnBatch = false;
+    state.destroy();
+    Decorator::draw( images, area, style, negativeY  );
+    errorsOnBatch = !state.load( images, lefttop );
+
+    if( errorsOnBatch )
+    {
+      Decorator::reverseYoffset( images );
+      state.destroy();
+    }
+    else
+      images.clear();
+  }
+};
+
 class Window::Impl
 {
 public:
@@ -50,14 +75,24 @@ public:
 
 	Label* title;
 
-	Picture backgroundImage;
-  Batch background;
-  Pictures backgroundNb;
+  struct
+  {
+    BatchState batch;
+
+    Window::BackgroundType type;
+    Picture image;
+    bool dirty;
+
+    void set(Window::BackgroundType t)
+    {
+      image = Picture::getInvalid();
+      type  = t;
+      dirty = true;
+    }
+  } background;
 
 	Point dragStartPosition;
-	Window::BackgroundType backgroundType;
 	bool dragging;
-  bool needUpdateBackground;
 
 	NColor currentColor;
 	NColor captionColor;
@@ -77,19 +112,17 @@ Window::Window( Widget* parent, const Rect& rectangle, const std::string& title,
 #ifdef _DEBUG
   setDebugName( "Window");
 #endif
-	_d->backgroundImage = Picture::getInvalid();
+  _d->background.image = Picture::getInvalid();
 	_d->dragging = false;
-	_d->buttons.resize( buttonCount );
-	for( unsigned int index=0; index < _d->buttons.size(); index++ )
-        _d->buttons[ index ] = NULL;
+  _d->buttons.resize( buttonCount, nullptr );
 
   _init();
 
     // this element is a tab group
   setBackground( type );
   setTabgroup( true );
-  setTabStop(true);
-  setTabOrder(-1);
+  setTabstop( true );
+  setTaborder(-1);
   setText( title );
 }
 
@@ -102,16 +135,16 @@ void Window::setText(const std::string& text )
 
 void Window::_createSystemButton( ButtonName btnName, const std::string& tooltip, bool visible )
 {
-    PushButton*& btn = _d->buttons[ btnName ];
-    if( !btn )
-    {
-        btn = new PushButton( this, Rect( 0, 0, 10,10 ) );
-        btn->setTooltipText( tooltip );
-        btn->setVisible(visible);
-        btn->setSubElement(true);
-        btn->setTabStop(false);
-        btn->setAlignment(align::lowerRight, align::lowerRight, align::upperLeft, align::upperLeft);
-    }
+  PushButton*& btn = _d->buttons[ btnName ];
+  if( !btn )
+  {
+      btn = new PushButton( this, Rect( 0, 0, 10,10 ) );
+      btn->setTooltipText( tooltip );
+      btn->setVisible(visible);
+      btn->setSubElement(true);
+      btn->setTabstop(false);
+      btn->setAlignment(align::lowerRight, align::lowerRight, align::upperLeft, align::upperLeft);
+  }
 }
 
 void Window::_init()
@@ -132,43 +165,33 @@ void Window::_init()
 void Window::_finalizeResize()
 {
   Widget::_finalizeResize();
-  if( _d->backgroundType != bgNone  )
+  if( _d->background.type != bgNone  )
   {
-    setBackground( _d->backgroundType );
+    setBackground( _d->background.type );
   }
 }
 
 void Window::_updateBackground()
 {
-  Pictures pics;
-  _d->backgroundNb.clear();
-  bool errorsOnBatch = false;
-  switch( _d->backgroundType )
+  _d->background.batch.reset();
+  switch( _d->background.type )
   {
   case bgWhiteFrame:
   {
-    _d->background.destroy();
-    Decorator::draw( pics, Rect( 0, 0, width(), height()), Decorator::whiteFrame, Decorator::normalY );
-    errorsOnBatch = !_d->background.load( pics, absoluteRect().lefttop() );
+    _d->background.batch.fill( Rect( 0, 0, width(), height()),
+                               absoluteRect().lefttop(),
+                               Decorator::whiteFrame, Decorator::normalY );
   }
   break;
 
   default: break;
   }
-
-  if( errorsOnBatch )
-  {
-    Decorator::reverseYoffset( pics );
-    _d->background.destroy();
-    _d->backgroundNb = pics;
-  }
 }
 
 Window::~Window()
 {
-	Logger::warning( "Window was removed" );
+  Logger::warning( "Window ID=%d was removed", ID() );
 }
-
 
 //! called if an event happened.
 bool Window::onEvent(const NEvent& event)
@@ -258,9 +281,9 @@ bool Window::onEvent(const NEvent& event)
 
 void Window::beforeDraw( Engine& painter )
 {
-  if( _d->needUpdateBackground )
+  if( _d->background.dirty )
   {
-    _d->needUpdateBackground = false;
+    _d->background.dirty = false;
     _updateBackground();
   }
 
@@ -274,16 +297,16 @@ void Window::draw( Engine& painter )
 	{
 		if( _d->flags.isFlag( fbackgroundVisible ) )
 		{
-			if( _d->backgroundImage.isValid() )
+      if( _d->background.image.isValid() )
 			{
-				painter.draw( _d->backgroundImage, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+        painter.draw( _d->background.image, absoluteRect().lefttop(), &absoluteClippingRectRef() );
 			}
 			else
 			{
-        if( _d->background.valid() )
-          painter.draw( _d->background, &absoluteClippingRectRef() );
+        if( _d->background.batch.state.valid() )
+          painter.draw( _d->background.batch.state, &absoluteClippingRectRef() );
         else
-          painter.draw( _d->backgroundNb, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+          painter.draw( _d->background.batch.images, absoluteRect().lefttop(), &absoluteClippingRectRef() );
 			}
 		}
 	}
@@ -319,16 +342,14 @@ Rect Window::clientRect() const{	return Rect(0, 0, 0, 0);}
 
 void Window::setBackground( Picture texture )
 {
-  _d->backgroundImage = texture;
-  _d->backgroundType = bgNone;
-  _d->background.destroy();
+  _d->background.image = texture;
+  _d->background.type = bgNone;
+  _d->background.batch.state.destroy();
 }
 
 void Window::setBackground(Window::BackgroundType type)
 {
-  _d->backgroundImage = Picture::getInvalid();
-  _d->backgroundType = type;
-  _d->needUpdateBackground= true;
+  _d->background.set( type );
 }
 
 void Window::setModal()
@@ -337,7 +358,7 @@ void Window::setModal()
   mdScr->addChild( this );
 }
 
-Picture Window::background() const {return _d->backgroundImage; }
+Picture Window::background() const {return _d->background.image; }
 
 void Window::setWindowFlag( FlagName flag, bool enabled/*=true */ )
 {
@@ -351,8 +372,8 @@ void Window::setupUI(const VariantMap &ui)
   StringArray buttons = ui.get( "buttons" ).toStringArray();  
   if( buttons.empty() || buttons.front() == "off" )
   {
-    foreach( i, _d->buttons )
-       (*i)->hide();
+    for( auto button : _d->buttons )
+       button->hide();
   }
 
   _d->flags.setFlag( fdraggable, !ui.get( "static", false ).toBool() );

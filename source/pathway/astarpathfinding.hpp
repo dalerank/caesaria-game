@@ -19,11 +19,13 @@
 #include "core/scopedptr.hpp"
 #include "predefinitions.hpp"
 #include "gfx/tilesarray.hpp"
+#include "core/singleton.hpp"
 #include "core/delegate.hpp"
 #include "pathway.hpp"
 
-class Pathfinder
+class Pathfinder : public StaticSingleton<Pathfinder>
 {
+  friend class StaticSingleton;
 public:
   typedef enum { noFlags=0x0,
                  checkStart=0x1, checkStop=0x2,
@@ -31,8 +33,6 @@ public:
                  waterOnly=0x20, traversePath=0x40,
                  everyWhere=0x80, fourDirection=0x100,
                  customCondition=0x200, ignoreRoad=0x400 } Flags;
-
-  static Pathfinder& instance();
 
   void update( const gfx::Tilemap& tmap );
 

@@ -195,7 +195,7 @@ void Tilemap::addSvkBorder()
 
 int Tilemap::size() const { return _d->size; }
 
-TilesArray Tilemap::getNeighbors(TilePos pos, TileNeighbors type)
+TilesArray Tilemap::getNeighbors( const TilePos& pos, TileNeighbors type)
 {
   TilePos offset(1,1);
   switch (type){
@@ -298,7 +298,10 @@ TilesArray Tilemap::getArea(const TilePos& start, const TilePos& stop ) const
 
 TilesArray Tilemap::getArea(const TilePos& start, const Size& size ) const
 {
-  return getArea( start, start + TilePos( size.width()-1, size.height()-1 ) );
+  TilePos stop = start;
+  stop.ri() += math::max( size.width()-1, 0 );
+  stop.rj() += math::max( size.height()-1, 0 );
+  return getArea( start, stop );
 }
 
 TilesArray Tilemap::getArea(int range, const TilePos& center) const

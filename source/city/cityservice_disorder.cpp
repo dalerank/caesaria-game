@@ -160,20 +160,20 @@ Disorder::Disorder( PlayerCityPtr city )
 
 void Disorder::Impl::weekUpdate( unsigned int time, PlayerCityPtr rcity )
 {
-  HouseList houses = city::statistic::getHouses( rcity );
+  HouseList houses = rcity->statistic().houses.find();
 
-  const WalkerList& walkers = rcity->walkers( walker::protestor );
+  const WalkerList& walkers = rcity->statistic().walkers.find( walker::protestor );
 
   HouseList criminalizedHouse;
   crime.level.current = 0;
   crime.level.maximum = 0;
 
-  foreach( house, houses )
+  for( auto house : houses )
   {
-    int currentValue = (*house)->getServiceValue( Service::crime )+1;
+    int currentValue = house->getServiceValue( Service::crime )+1;
     if( currentValue >= crime.level.minimum )
     {
-      criminalizedHouse.push_back( *house );
+      criminalizedHouse.push_back( house );
     }
 
     crime.level.current += currentValue;
@@ -185,10 +185,8 @@ void Disorder::Impl::weekUpdate( unsigned int time, PlayerCityPtr rcity )
 
   if( criminalizedHouse.size() > walkers.size() )
   {
-    HouseList::iterator it = criminalizedHouse.begin();
-    std::advance( it, math::random(criminalizedHouse.size()));
-
-    int hCrimeLevel = (*it)->getServiceValue( Service::crime );
+    HousePtr house = criminalizedHouse.random();
+    int hCrimeLevel = house->getServiceValue( Service::crime );
 
     int sentiment = rcity->sentiment();
     int randomValue = math::random( crime::maxValue );
@@ -198,7 +196,7 @@ void Disorder::Impl::weekUpdate( unsigned int time, PlayerCityPtr rcity )
       {
         if ( hCrimeLevel > crime::level4protestor )
         {
-          generateProtestor( rcity, *it );
+          generateProtestor( rcity, house );
         }
       }
     }
@@ -208,11 +206,11 @@ void Disorder::Impl::weekUpdate( unsigned int time, PlayerCityPtr rcity )
       {
         if ( hCrimeLevel >= crime::level4mugger )
         {
-          generateMugger( rcity, *it );
+          generateMugger( rcity, house );
         }
         else if ( hCrimeLevel > crime::level4protestor )
         {
-          generateProtestor( rcity, *it );
+          generateProtestor( rcity, house );
         }
       }
     }
@@ -220,9 +218,9 @@ void Disorder::Impl::weekUpdate( unsigned int time, PlayerCityPtr rcity )
     {
       if ( randomValue >= sentiment + 50 )
       {
-        if ( hCrimeLevel >= crime::level4rioter ) { generateRioter( rcity, *it ); }
-        else if ( hCrimeLevel >= crime::level4mugger ) { generateMugger( rcity, *it ); }
-        else if ( hCrimeLevel > crime::level4protestor ) { generateProtestor( rcity, *it ); }
+        if ( hCrimeLevel >= crime::level4rioter ) { generateRioter( rcity, house ); }
+        else if ( hCrimeLevel >= crime::level4mugger ) { generateMugger( rcity, house ); }
+        else if ( hCrimeLevel > crime::level4protestor ) { generateProtestor( rcity, house ); }
       }
     }
   }
@@ -305,7 +303,7 @@ void Disorder::Impl::generateRioter(PlayerCityPtr city, HousePtr house)
   crime.rioters.thisYear++;
 
   RioterPtr rioter = Rioter::create( city );
-  rioter->send2City( ptr_cast<Building>( house ) );
+  rioter->send2City( house.as<Building>() );
 
   changeCrimeLevel( city, -crime::rioterCost );
 }
@@ -322,12 +320,10 @@ void Disorder::Impl::generateProtestor(PlayerCityPtr city, HousePtr house)
 
 void Disorder::Impl::changeCrimeLevel(PlayerCityPtr city, int delta )
 {
-  HouseList houses = statistic::getHouses( city );
+  HouseList houses = city->statistic().houses.find();
 
-  foreach( it, houses )
-  {
-    (*it)->appendServiceValue( Service::crime, delta );
-  }
+  for( auto house : houses )
+    house->appendServiceValue( Service::crime, delta );
 }
 
 }//end namespace city

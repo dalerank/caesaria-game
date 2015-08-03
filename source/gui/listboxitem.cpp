@@ -119,7 +119,11 @@ void ListBoxItem::updateText(const Point &p, Font f, const Size &s)
 
 void ListBoxItem::resetPicture( const Size& s )
 {
-  if( _d->textPic.isValid() || _d->textPic.size() != s )
+  if( !_d->textPic.isValid() )
+  {
+    _d->textPic = Picture( s, 0, true );
+  }
+  else if( _d->textPic.size() != s )
   {
     _d->textPic = Picture( s, 0, true );
   }

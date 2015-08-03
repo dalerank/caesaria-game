@@ -93,7 +93,7 @@ bool EnemySoldier::_tryAttack()
   if( action() == acFight )
   {
     bool needMeMove = false;
-    city::statistic::isTileBusy<EnemySoldier>( _city(), pos(), this, needMeMove );
+    _city()->statistic().map.isTileBusy<EnemySoldier>( pos(), this, needMeMove );
 
     if( needMeMove )
     {

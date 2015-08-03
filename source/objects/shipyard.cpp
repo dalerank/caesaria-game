@@ -150,11 +150,11 @@ bool Shipyard::Impl::isNeedCreateBoat(PlayerCityPtr city )
 
 WharfPtr Shipyard::Impl::findFreeWharf( PlayerCityPtr city )
 {
-  WharfList wharfs = city::statistic::getObjects<Wharf>( city, object::wharf );
-  foreach( wharf, wharfs )
+  WharfList wharfs = city->statistic().objects.find<Wharf>( object::wharf );
+  for( auto wharf : wharfs )
   {
-    if( (*wharf)->getBoat().isNull() )
-      return *wharf;
+    if( wharf->getBoat().isNull() )
+      return wharf;
   }
 
   return WharfPtr();

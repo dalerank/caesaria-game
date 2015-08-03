@@ -17,15 +17,11 @@
 
 #include "helper.hpp"
 #include "stock.hpp"
-#include "core/enumerator.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
-#include "gfx/animation_bank.hpp"
 #include "city/trade_options.hpp"
 #include "city/city.hpp"
 #include "core/logger.hpp"
-#include "core/metric.hpp"
-#include <vector>
 
 using namespace gfx;
 using namespace metric;
@@ -78,6 +74,7 @@ class Helper::Impl : public EnumsHelper<good::Product>
 public:
   typedef std::map<good::Product, std::string > GoodNames;
   GoodNames goodName;  // index=GoodType, value=Good
+  const std::string invalidText;
 
   void append( good::Product type, const std::string& name, const std::string& prName )
   {
@@ -87,7 +84,7 @@ public:
 
   Impl() : EnumsHelper<good::Product>(good::none)
   {
-#define __REG_GTYPE(a) append( good::a, CAESARIA_STR_EXT(a), "##"CAESARIA_STR_EXT(a)"##" );
+#define __REG_GTYPE(a) append( good::a, CAESARIA_STR_EXT(a), "##" CAESARIA_STR_EXT(a)"##" );
     __REG_GTYPE(none )
     __REG_GTYPE(wheat)
     __REG_GTYPE(fish )
@@ -123,7 +120,7 @@ Helper::Helper() : _d( new Impl )
 
 Picture Helper::picture(Product type, bool emp )
 {
-  int picId = -1;
+  int picId;
 
   if( emp )
   {
@@ -144,10 +141,10 @@ Picture Helper::picture(Product type, bool emp )
 
 Helper::~Helper() {}
 
-std::string Helper::name(Product type )
+const std::string& Helper::name(Product type )
 {
   Impl::GoodNames::iterator it = instance()._d->goodName.find( type );
-  return it != instance()._d->goodName.end() ? it->second : "";
+  return it != instance()._d->goodName.end() ? it->second : instance()._d->invalidText;
 }
 
 Product Helper::getType( const std::string& name )
@@ -169,14 +166,14 @@ std::string Helper::getTypeName(Product type )
   return instance()._d->findName( type );
 }
 
-float Helper::exportPrice(PlayerCityPtr city, good::Product gtype, int qty)
+float Helper::exportPrice(PlayerCityPtr city, good::Product gtype, unsigned int qty)
 {
   int price = city->tradeOptions().buyPrice( gtype );
   Unit units = Unit::fromQty( qty );
   return price * units.ivalue();
 }
 
-float Helper::importPrice(PlayerCityPtr city, Product gtype, int qty)
+float Helper::importPrice(PlayerCityPtr city, Product gtype, unsigned int qty)
 {
   int price = city->tradeOptions().sellPrice( gtype );
   Unit units = Unit::fromQty( qty );
@@ -185,7 +182,7 @@ float Helper::importPrice(PlayerCityPtr city, Product gtype, int qty)
 
 Product Helper::random()
 {
-  return Product( math::random( good::all().size() ));
+  return Product( math::random( good::all().size()-1 ));
 }
 
 }//end namespace good

@@ -13,13 +13,14 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "cityservice_festival.hpp"
 #include "game/gamedate.hpp"
 #include "city.hpp"
 #include "game/player.hpp"
 #include "city/statistic.hpp"
+#include "objects/construction.hpp"
 #include "core/gettext.hpp"
 #include "core/variant_map.hpp"
 #include "religion/pantheon.hpp"
@@ -78,7 +79,7 @@ void Festival::assign( RomeDivinityType name, int size )
   _d->nextfest.date.appendMonth( festival::prepareMonthsDelay + size );
   _d->nextfest.divinity = name;
 
-  GameEventPtr e = Payment::create( econ::Issue::sundries, -statistic::getFestivalCost( _city(), (FestivalType)size ) );
+  GameEventPtr e = Payment::create( econ::Issue::sundries, -_city()->statistic().festival.calcCost( (FestivalType)size ) );
   e->dispatch();
 }
 

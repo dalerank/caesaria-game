@@ -57,7 +57,7 @@ int vformat(std::string& str, int max_size, const char* format, va_list argument
   {
     Logger::warning( "String::vformat: String truncated when processing " + str );
     if( outputStacktraceLog )
-      crashhandler::printstack(0,63);
+      crashhandler::printstack(false);
   }
  
   str = buffer_ptr;
@@ -68,7 +68,7 @@ int vformat(std::string& str, int max_size, const char* format, va_list argument
   return length;
 }
 
-std::wstring utf8toWString(const char* src, int size)
+std::wstring utf8toWString(const char* src, size_t size)
 {
   std::wstring dest;
 
@@ -281,10 +281,8 @@ unsigned int toUint( const char* in, const char** out/*=0*/ )
 
 std::string replace( std::string text, const std::string& from, const std::string& to )
 {
-  for (size_t i = 0; (i = text.find(from, i)) != std::string::npos; i += to.length())
+  for(size_t i = 0; (i = text.find(from, i)) != std::string::npos; i += to.length())
     text.replace(i, from.length(), to);
-
-  //std::cout << text << std::endl;
 
   return text;
 }
@@ -423,5 +421,257 @@ VariantList toVList(const StringArray &items)
   foreach( it, items ) ret << *it;
   return ret;
 }
+
+std::string toRoman(int value)
+{
+  struct romandata_t { int value; char const* numeral; };
+  static romandata_t const romandata[] =
+     { 1000, "M",
+        900, "CM",
+        500, "D",
+        400, "CD",
+        100, "C",
+         90, "XC",
+         50, "L",
+         40, "XL",
+         10, "X",
+          9, "IX",
+          5, "V",
+          4, "IV",
+          1, "I",
+          0, NULL }; // end marker
+
+  std::string result;
+  for (romandata_t const* current = romandata; current->value > 0; ++current)
+  {
+    while (value >= current->value)
+    {
+      result += current->numeral;
+      value  -= current->value;
+    }
+  }
+  return result;
+}
+
+/*
+ *
+#include <string>
+#include <cstdlib>
+#include <iostream>
+#include <cassert>
+#include <algorithm>
+#include <vector>
+#include <ctime>
+
+std::string allowed_chars = " ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+// class selection contains the fitness function, encapsulates the
+// target string and allows access to it's length. The class is only
+// there for access control, therefore everything is static. The
+// string target isn't defined in the function because that way the
+// length couldn't be accessed outside.
+class selection
+{
+public:
+  // this function returns 0 for the destination string, and a
+  // negative fitness for a non-matching string. The fitness is
+  // calculated as the negated sum of the circular distances of the
+  // string letters with the destination letters.
+  static int fitness(std::string candidate)
+  {
+    assert(target.length() == candidate.length());
+
+    int fitness_so_far = 0;
+
+    for (int i = 0; i < target.length(); ++i)
+    {
+      int target_pos = allowed_chars.find(target[i]);
+      int candidate_pos = allowed_chars.find(candidate[i]);
+      int diff = std::abs(target_pos - candidate_pos);
+      fitness_so_far -= std::min(diff, int(allowed_chars.length()) - diff);
+    }
+
+    return fitness_so_far;
+  }
+
+  // get the target string length
+  static int target_length() { return target.length(); }
+private:
+  static std::string target;
+};
+
+std::string selection::target = "METHINKS IT IS LIKE A WEASEL";
+
+// helper function: cyclically move a character through allowed_chars
+void move_char(char& c, int distance)
+{
+  while (distance < 0)
+    distance += allowed_chars.length();
+  int char_pos = allowed_chars.find(c);
+  c = allowed_chars[(char_pos + distance) % allowed_chars.length()];
+}
+
+// mutate the string by moving the characters by a small random
+// distance with the given probability
+std::string mutate(std::string parent, double mutation_rate)
+{
+  for (int i = 0; i < parent.length(); ++i)
+    if (std::rand()/(RAND_MAX + 1.0) < mutation_rate)
+    {
+      int distance = std::rand() % 3 + 1;
+      if(std::rand()%2 == 0)
+        move_char(parent[i], distance);
+      else
+        move_char(parent[i], -distance);
+    }
+  return parent;
+}
+
+// helper function: tell if the first argument is less fit than the
+// second
+bool less_fit(std::string const& s1, std::string const& s2)
+{
+  return selection::fitness(s1) < selection::fitness(s2);
+}
+
+int main()
+{
+  int const C = 100;
+
+  std::srand(time(0));
+
+  std::string parent;
+  for (int i = 0; i < selection::target_length(); ++i)
+  {
+    parent += allowed_chars[std::rand() % allowed_chars.length()];
+  }
+
+  int const initial_fitness = selection::fitness(parent);
+
+  for(int fitness = initial_fitness;
+      fitness < 0;
+      fitness = selection::fitness(parent))
+  {
+    std::cout << parent << ": " << fitness << "\n";
+    double const mutation_rate = 0.02 + (0.9*fitness)/initial_fitness;
+    typedef std::vector<std::string> childvec;
+    childvec childs;
+    childs.reserve(C+1);
+
+    childs.push_back(parent);
+    for (int i = 0; i < C; ++i)
+      childs.push_back(mutate(parent, mutation_rate));
+
+    parent = *std::max_element(childs.begin(), childs.end(), less_fit);
+  }
+  std::cout << "final string: " << parent << "\n";
+}
+*/
+
+/*
+ * forest fire
+ class forest
+{
+public:
+    forest()
+    {
+  _bmp.create( MAX_SIDE, MAX_SIDE );
+  initForest( 0.05f, 0.005f );
+    }
+
+    void initForest( float p, float f )
+    {
+  _p = p; _f = f;
+  seedForest();
+    }
+
+    void mainLoop()
+    {
+  display();
+  simulate();
+    }
+
+    void setHWND( HWND hwnd ) { _hwnd = hwnd; }
+
+private:
+    float probRand() { return ( float )rand() / 32768.0f; }
+
+    void display()
+    {
+  HDC bdc = _bmp.getDC();
+  DWORD clr;
+
+  for( int y = 0; y < MAX_SIDE; y++ )
+  {
+      for( int x = 0; x < MAX_SIDE; x++ )
+      {
+    switch( _forest[x][y] )
+    {
+        case FIRE: clr = 255; break;
+        case TREE: clr = RGB( 0, 255, 0 ); break;
+        default: clr = 0;
+    }
+
+    SetPixel( bdc, x, y, clr );
+      }
+  }
+
+  HDC dc = GetDC( _hwnd );
+  BitBlt( dc, 0, 0, MAX_SIDE, MAX_SIDE, _bmp.getDC(), 0, 0, SRCCOPY );
+  ReleaseDC( _hwnd, dc );
+    }
+
+    void seedForest()
+    {
+  ZeroMemory( _forestT, sizeof( _forestT ) );
+  ZeroMemory( _forest, sizeof( _forest ) );
+  for( int y = 0; y < MAX_SIDE; y++ )
+      for( int x = 0; x < MAX_SIDE; x++ )
+    if( probRand() < _p ) _forest[x][y] = TREE;
+    }
+
+    bool getNeighbors( int x, int y )
+    {
+  int a, b;
+  for( int yy = -1; yy < 2; yy++ )
+      for( int xx = -1; xx < 2; xx++ )
+      {
+    if( !xx && !yy ) continue;
+    a = x + xx; b = y + yy;
+    if( a < MAX_SIDE && b < MAX_SIDE && a > -1 && b > -1 )
+    if( _forest[a][b] == FIRE ) return true;
+      }
+
+  return false;
+    }
+
+    void simulate()
+    {
+  for( int y = 0; y < MAX_SIDE; y++ )
+  {
+      for( int x = 0; x < MAX_SIDE; x++ )
+      {
+    switch( _forest[x][y] )
+    {
+        case FIRE: _forestT[x][y] = NONE; break;
+        case NONE: if( probRand() < _p ) _forestT[x][y] = TREE; break;
+        case TREE: if( getNeighbors( x, y ) || probRand() < _f ) _forestT[x][y] = FIRE;
+    }
+      }
+  }
+
+  for( int y = 0; y < MAX_SIDE; y++ )
+      for( int x = 0; x < MAX_SIDE; x++ )
+    _forest[x][y] = _forestT[x][y];
+    }
+
+    myBitmap _bmp;
+    HWND     _hwnd;
+    BYTE     _forest[MAX_SIDE][MAX_SIDE], _forestT[MAX_SIDE][MAX_SIDE];
+    float    _p, _f;
+};
+//--------------------------------------------------------------------------------------------------
+*/
+
 
 }//end namespace utils

@@ -29,7 +29,9 @@ using namespace gfx;
 namespace {
 static Renderer::PassQueue defaultPassQueue=Renderer::PassQueue(1,Renderer::overlayAnimation);
 static Pictures invalidPictures;
+static SimpleLogger LOG_OVERLAY( "Overlay" );
 }
+
 
 class Overlay::Impl
 {
@@ -66,6 +68,8 @@ Desirability Overlay::desirability() const
   return MetaDataHolder::getData( type() ).desirability();
 }
 
+void Overlay::setState(Param name, double value) {}
+
 void Overlay::setType(const object::Type type)
 {
   const MetaData& bd = MetaDataHolder::getData( type );
@@ -74,8 +78,6 @@ void Overlay::setType(const object::Type type)
   _d->overlayClass = bd.group();
   _d->name = bd.name();
 }
-
-void Overlay::timeStep(const unsigned long) {}
 
 void Overlay::changeDirection( Tile* masterTile, Direction direction)
 {
@@ -115,11 +117,14 @@ bool Overlay::build(const city::AreaInfo &info)
   return true;
 }
 
+bool Overlay::canDestroy() const { return true; }
+std::string Overlay::errorDesc() const { return ""; }
+
 Tile& Overlay::tile() const
 {
   if( !_d->masterTile )
   {
-    Logger::warning( "master tile must be exists" );
+    LOG_OVERLAY.warn( "Master tile can't be null. Problem in tile with type " + type());
     static Tile invalid( gfx::tilemap::invalidLocation() );
     return invalid;
   }
@@ -167,7 +172,7 @@ void Overlay::load( const VariantMap& stream )
   _d->picture.load( pictureName );
   if( !_d->picture.isValid() )
   {
-    Logger::warning( "TileOverlay: invalid picture for building [%d,%d] with name %s", pos().i(), pos().j(), pictureName.c_str() );
+    LOG_OVERLAY.warn( "Invalid picture for building [%d,%d] with name %s", pos().i(), pos().j(), pictureName.c_str());
   }
   _d->picture.setOffset( stream.get( "pictureOffset" ).toPoint() );
   VARIANT_LOAD_ANYDEF_D( _d, isDeleted, false, stream )
@@ -176,33 +181,23 @@ void Overlay::load( const VariantMap& stream )
 
 void Overlay::initialize(const MetaData& mdata)
 {
+  Size size = mdata.getOption( "size" );
+  if( size.area() > 0 )
+    setSize( size );
+
   if( mdata.picture().isValid() )
   {
     setPicture( mdata.picture() );  // default picture for build tool
   }
 }
 
+void Overlay::timeStep(const unsigned long) {}
+void Overlay::reinit() {}
+void Overlay::burn() {} //nothing to do, neck for virtual function
 bool Overlay::isWalkable() const{  return false;}
 bool Overlay::isDestructible() const { return true; }
 bool Overlay::isFlat() const { return false;}
 void Overlay::debugLoadOld(int oldFormat, const VariantMap& stream) {}
-
-TilePos Overlay::pos() const
-{
-  if( !_d->masterTile )
-  {
-    Logger::warning(  "master tile can't be null" );
-    return gfx::tilemap::invalidLocation();
-  }
-  return _d->masterTile->epos();
-}
-
-std::string Overlay::sound() const
-{
-  const MetaData& md = MetaDataHolder::instance().getData( type() );
-  return md.sound();
-}
-
 void Overlay::setName( const std::string& name ){ _d->name = name;}
 void Overlay::setSize( const Size& size ){  _d->size = size;}
 Point Overlay::offset( const Tile&, const Point& ) const{  return Point( 0, 0 );}
@@ -226,11 +221,27 @@ Renderer::PassQueue Overlay::passQueue() const{ return defaultPassQueue;}
 std::string Overlay::name(){  return _d->name;}
 object::Type Overlay::type() const{ return _d->overlayType;}
 
+TilePos Overlay::pos() const
+{
+  if( !_d->masterTile )
+  {
+    LOG_OVERLAY.warn( "Master tile can't be null. Problem in tile with type " + type());
+    return gfx::tilemap::invalidLocation();
+  }
+  return _d->masterTile->epos();
+}
+
+std::string Overlay::sound() const
+{
+  const MetaData& md = MetaDataHolder::instance().getData( type() );
+  return md.sound();
+}
+
 TilesArray Overlay::area() const
 {
   if( _city().isNull() )
   {
-    Logger::warning( "WARNING !!!: Helper::getArea city is null" );
+    LOG_OVERLAY.error( "In Overlay::area() city is null. Tile type is " + type() );
     return gfx::TilesArray();
   }
 
@@ -250,11 +261,11 @@ void OverlayDebugQueue::print()
   OverlayDebugQueue& inst = (OverlayDebugQueue&)instance();
   if( !inst._pointers.empty() )
   {
-    Logger::warning( "PRINT OVERLAY DEBUG QUEUE" );
+    LOG_OVERLAY.debug( "PRINT OVERLAY DEBUG QUEUE" );
     foreach( it, inst._pointers )
     {
       Overlay* ov = (Overlay*)*it;
-      Logger::warning( "%s - %s [%d,%d] ref:%d", ov->name().c_str(),
+      LOG_OVERLAY.debug( "%s - %s [%d,%d] ref:%d", ov->name().c_str(),
                                           object::toString( ov->type() ).c_str(),
                                           ov->pos().i(), ov->pos().j(), ov->rcount() );
     }

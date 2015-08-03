@@ -18,6 +18,7 @@
 #include "orders.hpp"
 #include "core/utils.hpp"
 #include "core/foreach.hpp"
+#include "productmap.hpp"
 #include "core/logger.hpp"
 #include "core/variant_list.hpp"
 #include "core/variant_map.hpp"
@@ -241,6 +242,33 @@ bool Store::isDevastation() const{  return _d->devastation;}
 void Store::setDevastation( bool value ){  _d->devastation = value;}
 
 Store::~Store() {}
+
+ProductMap Store::details() const
+{
+  ProductMap ret;
+  foreach( goodType, good::all() )
+  {
+    int q = qty( *goodType );
+    if( q > 0 )
+      ret[ *goodType ] = q;
+  }
+
+  return ret;
+}
+
+ProductMap Store::amounts() const
+{
+  ProductMap ret;
+  foreach( goodType, good::all() )
+  {
+    int cap = capacity( *goodType );
+    if( cap > 0 )
+      ret[ *goodType ] = cap;
+  }
+
+  return ret;
+}
+
 void Store::setOrder( const good::Product type, const Orders::Order order ){  _d->goodOrders.set( type, order );}
 Orders::Order Store::getOrder(const good::Product type ) const{  return _d->goodOrders.get( type );}
 

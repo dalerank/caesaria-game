@@ -42,7 +42,7 @@ class HouseSpecification::Impl
 {
 public:
   int houseLevel;
-  int maxHabitantsByTile;
+  int tileCapacity;
   std::string levelName;
   std::string internalName;
   unsigned int srvcInterval, goodInterval, foodInterval;
@@ -70,7 +70,7 @@ public:
 int HouseSpecification::level() const {   return _d->houseLevel;}
 const std::string& HouseSpecification::levelName() const{   return _d->levelName;}
 bool HouseSpecification::isPatrician() const{   return _d->houseLevel >= HouseLevel::smallVilla;}
-int HouseSpecification::getMaxHabitantsByTile() const{   return _d->maxHabitantsByTile;}
+int HouseSpecification::tileCapacity() const{   return _d->tileCapacity; }
 int HouseSpecification::taxRate() const{   return _d->taxRate;}
 int HouseSpecification::minEntertainmentLevel() const{  return _d->minEntertainmentLevel;}
 int HouseSpecification::minEducationLevel() const{  return _d->minEducationLevel;}
@@ -92,11 +92,11 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing,
   std::string reason;
   std::string defaultStr;
   object::Type defaultNeedType;
-  TilePos defaultPos;
+//  TilePos defaultPos;
 
   std::string& ref = retMissing ? *retMissing : defaultStr;
   object::Type& needBuilding = retBtype ? *retBtype : defaultNeedType;
-  TilePos& rPos = retPos ? *retPos : defaultPos;
+//  TilePos& rPos = retPos ? *retPos : defaultPos;
 
   needBuilding = object::unknown;
 
@@ -244,9 +244,20 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing,
   return res;
 }
 
-unsigned int HouseSpecification::getServiceConsumptionInterval() const{  return _d->srvcInterval;}
-unsigned int HouseSpecification::foodConsumptionInterval() const{  return _d->foodInterval; }
-unsigned int HouseSpecification::getGoodConsumptionInterval() const{ return _d->goodInterval; }
+unsigned int HouseSpecification::consumptionInterval(HouseSpecification::IntervalName name) const
+{
+  switch( name )
+  {
+  case intv_service: return _d->srvcInterval;
+  case intv_foods: return _d->foodInterval;
+  case intv_goods: return _d->goodInterval;
+
+  default: break;
+  }
+
+  Logger::warning( "!!!Warning: Unknown interval name %d", name );
+  return 0;
+}
 
 int HouseSpecification::findUnwishedBuildingNearby(HousePtr house, object::Type& rType, TilePos& refPos ) const
 {
@@ -254,17 +265,18 @@ int HouseSpecification::findUnwishedBuildingNearby(HousePtr house, object::Type&
   TilePos offset( aresOffset, aresOffset );
   TilePos housePos = house->pos();
   int houseDesrbl = house->desirability().base;
-  BuildingList buildings = city::statistic::getObjects<Building>( house->_city(), object::any, housePos - offset, housePos + offset );
+  BuildingList buildings = house->_city()->statistic().objects.find<Building>( object::any,
+                                                                               housePos - offset, housePos + offset );
 
   int ret = 0;
-  foreach( it, buildings )
+  for( auto bld : buildings )
   {
-    int desValue = (*it)->desirability().base;
+    int desValue = bld->desirability().base;
     if( desValue < 0 && houseDesrbl > desValue && abs( houseDesrbl - desValue ) > 1 )
     {
       ret = 1;
-      refPos = (*it)->pos();
-      rType = (*it)->type();
+      refPos = bld->pos();
+      rType = bld->type();
       break;
     }
   }
@@ -277,17 +289,18 @@ int HouseSpecification::findLowLevelHouseNearby(HousePtr house, TilePos& refPos 
   int aresOffset = math::clamp<int>( house->spec().level() / 5, 1, 10 );
   TilePos offset( aresOffset, aresOffset );
   TilePos housePos = house->pos();
-  HouseList houses = city::statistic::getObjects<House>( house->_city(), object::house, housePos - offset, housePos + offset );
+  HouseList houses = house->_city()->statistic().objects.find<House>( object::house,
+                                                                      housePos - offset, housePos + offset );
 
   int ret = 0;
-  foreach( it, houses )
+  for( auto house : houses )
   {
-    int pop = (*it)->habitants().count();
-    int bLevel = (*it)->spec().level();
+    int pop = house->habitants().count();
+    int bLevel = house->spec().level();
     if( pop > 0 && (_d->houseLevel - bLevel > 2) )
     {
       ret = 1;
-      refPos = (*it)->pos();
+      refPos = house->pos();
       break;
     }
   }
@@ -630,8 +643,8 @@ int HouseSpecification::computeDesirabilityLevel(HousePtr house, std::string& oM
 
   float middleDesirbl = 0;;
 
-  foreach( tile, area )
-    middleDesirbl += (float)(*tile)->param( Tile::pDesirability );
+  for( auto tile : area )
+    middleDesirbl += (float)tile->param( Tile::pDesirability );
 
   if( !area.empty() )
     middleDesirbl /= area.size();
@@ -642,7 +655,7 @@ int HouseSpecification::computeDesirabilityLevel(HousePtr house, std::string& oM
 HouseSpecification& HouseSpecification::operator=( const HouseSpecification& other )
 {
   _d->houseLevel = other._d->houseLevel;
-  _d->maxHabitantsByTile = other._d->maxHabitantsByTile;
+  _d->tileCapacity = other._d->tileCapacity;
   _d->levelName = other._d->levelName;
   _d->internalName = other._d->internalName;
   _d->taxRate = other._d->taxRate;
@@ -693,11 +706,11 @@ HouseSpecification HouseSpecHelper::getSpec(const int houseLevel)
 
 int HouseSpecHelper::getLevel( const std::string& name )
 {
-  foreach( item, _d->levels )
+  for( auto item : _d->levels )
   {
-    if( item->second.internalName() == name )
+    if( item.second.internalName() == name )
     {
-      return item->second.level();
+      return item.second.level();
     }
   }
 
@@ -716,17 +729,17 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
     return;
   }
 
-  foreach( item, houseSpecs )
+  for( auto item : houseSpecs )
   {
     // this is not a comment (comments start by #)
     // std::cout << "Line #" << linenum << ":" << line << std::endl;
-    VariantMap hSpec = item->second.toMap();
+    VariantMap hSpec = item.second.toMap();
 
     HouseSpecification spec;
     spec._d->houseLevel = hSpec[ "level" ];
-    spec._d->internalName = item->first;
+    spec._d->internalName = item.first;
     spec._d->levelName = hSpec[ "title" ].toString();
-    spec._d->maxHabitantsByTile = hSpec.get( "habitants" ).toInt();
+    spec._d->tileCapacity = hSpec.get( "habitants" ).toInt();
     spec._d->minDesirability = hSpec.get( "minDesirability" ).toInt();  // min desirability
     spec._d->maxDesirability = hSpec.get( "maxDesirability" ).toInt();  // desirability levelUp
     spec._d->minEntertainmentLevel = hSpec.get( "entertainment" ).toInt();
@@ -749,31 +762,31 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
     spec._d->prosperity = hSpec.get( "prosperity" ).toInt();  // prosperity
     spec._d->taxRate = hSpec.get( "tax" ).toInt();// tax_rate
 
-    foreach(i, good::all() )
+    for( auto goodType : good::all() )
     {
-      spec._d->consumptionMuls[ *i ] = 1;
+      spec._d->consumptionMuls[ goodType ] = 1;
     }
 
     //load consumption goods koefficient
     VariantMap varConsumptions = hSpec.get( "consumptionkoeff" ).toMap();
-    foreach( v, varConsumptions )
+    for( auto v : varConsumptions )
     {
-      spec._d->consumptionMuls[ good::Helper::getType( v->first ) ] = (float)v->second;
+      spec._d->consumptionMuls[ good::Helper::getType( v.first ) ] = (float)v.second;
     }
 
     VariantMap vmTextures = hSpec.get( "txs" ).toMap();
-    foreach( it, vmTextures )
+    for( auto it : vmTextures )
     {
-      std::string arName = utils::format( 0xff, "h%d_%s", spec._d->houseLevel, it->first.c_str() );
-      StringArray txNames = it->second.toStringArray();
+      std::string arName = utils::format( 0xff, "h%d_%s", spec._d->houseLevel, it.first.c_str() );
+      StringArray txNames = it.second.toStringArray();
 
       StringArray& hSizeTxs = _d->houseTextures[ arName ];
-      foreach( tx, txNames )
+      for( auto tx : txNames )
       {
-        Picture pic( *tx );
+        Picture pic( tx );
         if( pic.isValid() )
         {
-          hSizeTxs.push_back( *tx );
+          hSizeTxs.push_back( tx );
         }
       }
     }

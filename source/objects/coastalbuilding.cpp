@@ -23,7 +23,6 @@
 #include "gfx/tilemap.hpp"
 #include "core/foreach.hpp"
 #include "walker/fishing_boat.hpp"
-#include "core/foreach.hpp"
 #include "good/store.hpp"
 #include "core/variant_list.hpp"
 #include "constants.hpp"
@@ -69,8 +68,8 @@ bool CoastalFactory::build( const city::AreaInfo& info )
 
   TilesArea area( info.city->tilemap(), info.pos, size() );
 
-  foreach( tile, area )
-    _d->saveTileInfo.push_back( tile::encode( *(*tile) ) );
+  for( auto tile : area )
+    _d->saveTileInfo.push_back( tile::encode( *tile ) );
 
   return Factory::build( info );
 }
@@ -80,7 +79,7 @@ void CoastalFactory::destroy()
   TilesArray tiles = area();
 
   int index=0;
-  foreach( tile, tiles ) { tile::decode( *(*tile), _d->saveTileInfo[ index++ ] ); }
+  for( auto tile : tiles ) { tile::decode( *tile, _d->saveTileInfo[ index++ ] ); }
 
   Factory::destroy();
 }
@@ -89,16 +88,16 @@ void CoastalFactory::save(VariantMap& stream) const
 {
   Factory::save( stream );
 
-  stream[ "direction" ] = (int)_d->direction;
-  stream[ "saved_tile"] = VariantList( _d->saveTileInfo );
+  VARIANT_SAVE_ANY_D( stream, _d, direction )
+  VARIANT_SAVE_CLASS_D_LIST( stream, _d, saveTileInfo )
 }
 
 void CoastalFactory::load(const VariantMap& stream)
 {
   Factory::load( stream );
 
-  _d->direction = (Direction)stream.get( "direction", (int)southWest ).toInt();
-  _d->saveTileInfo << stream.get( "saved_tile" ).toList();
+  VARIANT_LOAD_ENUM_D( _d, direction, stream )
+  VARIANT_LOAD_CLASS_D_AS_LIST( _d, saveTileInfo, stream )
 }
 
 void CoastalFactory::assignBoat(ShipPtr)

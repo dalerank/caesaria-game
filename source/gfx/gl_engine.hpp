@@ -58,9 +58,7 @@ public:
   virtual void startRenderFrame();
   virtual void endRenderFrame();
 
-  virtual bool initViewport(int index, Size s);
-  virtual void setViewport( int, bool render);
-  virtual void drawViewport( int, Rect r);
+  virtual void setScale( float scale);
 
   void draw(const Picture &picture, const int dx, const int dy, Rect* clipRect=0);
   void draw(const Picture &picture, const Point& pos, Rect* clipRect=0 );
@@ -69,6 +67,7 @@ public:
   void draw(const Picture& pic, const Rects& srcRects, const Rects& dstRects, Rect* clipRect=0 );
   void draw(const Batch& pic, Rect* clipRect=0 );
   void drawLine(const NColor &color, const Point &p1, const Point &p2);
+  void drawLines(const NColor &color, const PointsArray& p1);
 
   void setColorMask( int rmask, int gmask, int bmask, int amask );
   void resetColorMask();

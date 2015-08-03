@@ -29,6 +29,7 @@
 #include "city/statistic.hpp"
 
 using namespace gfx;
+using namespace events;
 
 namespace religion
 {
@@ -52,20 +53,20 @@ void Mars::updateRelation(float income, PlayerCityPtr city)
 
 void Mars::_doWrath(PlayerCityPtr city)
 {
-  events::GameEventPtr message = events::ShowInfobox::create( _("##wrath_of_mars_title##"),
-                                                              _("##wrath_of_mars_text##"),
-                                                              events::ShowInfobox::send2scribe,
-                                                              "god_mars" );
+  GameEventPtr message = ShowInfobox::create( _("##wrath_of_mars_title##"),
+                                              _("##wrath_of_mars_text##"),
+                                              ShowInfobox::send2scribe,
+                                              "god_mars" );
   message->dispatch();
 
   VariantMap vm = config::load( ":/mars_wrath.model" );
-  events::GameEventPtr barb_attack = events::PostponeEvent::create( "", vm );
+  GameEventPtr barb_attack = PostponeEvent::create( "", vm );
   barb_attack->dispatch();
 }
 
 void Mars::_doSmallCurse(PlayerCityPtr city)
 {  
-  FortList forts = city::statistic::getObjects<Fort>( city );
+  FortList forts = city->statistic().objects.find<Fort>();
 
   std::string text, title;
   if( !forts.empty() )
@@ -81,18 +82,18 @@ void Mars::_doSmallCurse(PlayerCityPtr city)
     text = "##smallcurse_of_mars_failed_text##";
   }
 
-  events::GameEventPtr message = events::ShowInfobox::create( _(title),
-                                                              _(text),
-                                                              events::ShowInfobox::send2scribe );
+  GameEventPtr message = ShowInfobox::create( _(title),
+                                              _(text),
+                                              ShowInfobox::send2scribe );
 
   message->dispatch();
 }
 
 void Mars::_doBlessing(PlayerCityPtr city)
 {
-  events::GameEventPtr event = events::ShowInfobox::create( _("##spirit_of_mars_title##"),
-                                                            _("##spirit_of_mars_text##"),
-                                                            events::ShowInfobox::send2scribe );
+  GameEventPtr event = ShowInfobox::create( _("##spirit_of_mars_title##"),
+                                            _("##spirit_of_mars_text##"),
+                                            ShowInfobox::send2scribe );
   event->dispatch();
 
   city::SrvcPtr spiritOfmars = city::SpiritOfMars::create( city );

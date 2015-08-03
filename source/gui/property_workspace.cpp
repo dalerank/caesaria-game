@@ -71,9 +71,9 @@ PropertyWorkspace::PropertyWorkspace( Widget* _parent, scene::Base* scene, const
 
   setWindowFlag( fdraggable, true );
 	// we can ctrl+tab to it
-	setTabStop(true);
+	setTabstop(true);
 	// the tab order number is auto-assigned
-	setTabOrder(-1);
+	setTaborder(-1);
 
 	// set window text
   setText("");

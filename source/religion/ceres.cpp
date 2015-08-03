@@ -54,11 +54,11 @@ void Ceres::_doWrath( PlayerCityPtr city )
                                                             "god_ceres");
   event->dispatch();
 
-  FarmList farms = city::statistic::getFarms( city );
+  FarmList farms = city->statistic().objects.farms();
 
-  foreach( farm, farms )
+  for( auto farm : farms )
   {
-    FactoryProgressUpdater::assignTo( ptr_cast<Factory>( *farm ), -8, DateTime::weekInMonth * DateTime::monthsInYear );
+    FactoryProgressUpdater::assignTo( farm.as<Factory>(), -8, DateTime::weekInMonth * DateTime::monthsInYear );
   }
 }
 
@@ -68,12 +68,12 @@ void Ceres::_doBlessing(PlayerCityPtr city)
                                                             _("##blessing_of_ceres_description##") );
   event->dispatch();
 
-  FarmList farms = city::statistic::getObjects<Farm>( city );
+  FarmList farms = city->statistic().objects.farms();
 
-  foreach(farm, farms )
+  for( auto farm : farms )
   {
-    (*farm)->updateProgress( 100.f -  (*farm)->progress() );
-    FactoryProgressUpdater::assignTo( ptr_cast<Factory>( *farm ), 5, game::Date::days2ticks( 60 ) );
+    farm->updateProgress( 100.f -  farm->progress() );
+    FactoryProgressUpdater::assignTo( farm.as<Factory>(), 5, game::Date::days2ticks( 60 ) );
   }
 }
 
@@ -83,11 +83,11 @@ void Ceres::_doSmallCurse(PlayerCityPtr city)
                                                             _("##smallcurse_of_ceres_description##") );
   event->dispatch();
 
-  FarmList farms = city::statistic::getFarms( city );
+  FarmList farms = city->statistic().objects.farms();
 
-  foreach( farm, farms )
+  for( auto farm : farms )
   {
-    (*farm)->updateProgress( -(*farm)->progress() );
+    farm->updateProgress( -farm->progress() );
   }
 }
 

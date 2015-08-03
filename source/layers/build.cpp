@@ -41,6 +41,7 @@
 #include "gfx/helper.hpp"
 #include "layerdestroy.hpp"
 #include "gfx/tilemap.hpp"
+#include "city/statistic.hpp"
 
 using namespace gui;
 using namespace gfx;
@@ -76,14 +77,12 @@ public:
 void Build::_discardPreview()
 {
   __D_IMPL(d,Build)
-  foreach( tile, d->buildTiles )
+  for( auto tile : d->buildTiles )
   {
-    if( (*tile)->overlay().isValid() )
-    {
-      (*tile)->overlay()->deleteLater();
-    }
+    if( tile->overlay().isValid() )
+      tile->overlay()->deleteLater();
 
-    delete *tile;
+    delete tile;
   }
 
   d->buildTiles.clear();
@@ -92,7 +91,7 @@ void Build::_discardPreview()
 void Build::_checkPreviewBuild(TilePos pos)
 {
   __D_IMPL(d,Build);
-  BuildModePtr bldCommand = ptr_cast<BuildMode>( d->renderer->mode() );
+  BuildModePtr bldCommand =  d->renderer->mode().as<BuildMode>();
 
   if (bldCommand.isNull())
     return;
@@ -111,10 +110,10 @@ void Build::_checkPreviewBuild(TilePos pos)
   bool walkersOnTile = false;
   if( bldCommand->flag( LayerMode::checkWalkers ) )
   {
-    TilesArray tiles = overlay->area();
-    foreach( t, tiles )
+    TilesArray tiles = _city()->tilemap().getArea( pos, size );
+    for( auto tile : tiles )
     {
-      const WalkerList& walkers = _city()->walkers( (*t)->pos() );
+      const WalkerList& walkers = _city()->walkers( tile->pos() );
 
       if( !walkers.empty() )
       {
@@ -146,7 +145,7 @@ void Build::_checkPreviewBuild(TilePos pos)
         }
         tile->setPicture( tmap.at( pos + TilePos( di, dj ) ).picture() );
         tile->setMasterTile( masterTile );
-        tile->setOverlay( ptr_cast<Overlay>( overlay ) );
+        tile->setOverlay( overlay.as<Overlay>() );
         d->buildTiles.push_back( tile );
       }
     }

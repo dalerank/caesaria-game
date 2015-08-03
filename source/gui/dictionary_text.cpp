@@ -61,7 +61,7 @@ struct Tokens : std::vector<TextToken>
   const std::string text() const
   {
     std::string ret;
-    foreach( i, *this )  {    ret += i->text;      }
+    for( auto token : *this ) { ret += token.text; }
     return ret;
   }
 };
@@ -181,21 +181,20 @@ void DictionaryText::_updateTexture( gfx::Engine& painter )
         r -= Point( 0, height * _d->brokenText.size() / 2 );
       }
 
-      foreach( it, _d->brokenText )
+      for( auto tokens : _d->brokenText )
       {
-        Tokens& dline = *it;
-        std::string tmpString = dline.text();
+        std::string tmpString = tokens.text();
 
         Rect textRect = _d->font.getTextRect( tmpString, r, horizontalTextAlign(), verticalTextAlign() );
         textRect += _d->textOffset;
 
         int offset = 0;
-        foreach( chunk, dline )
+        for( auto chunk : tokens )
         {
-          chunk->font.draw( _d->textPicture, chunk->text,
-                            textRect.lefttop() + Point( offset + chunk->offset, 0 ),
-                            useAlpha4Text, false );
-          offset += chunk->offset;
+          chunk.font.draw( _d->textPicture, chunk.text,
+                           textRect.lefttop() + Point( offset + chunk.offset, 0 ),
+                           useAlpha4Text, false );
+          offset += chunk.offset;
         }
 
         r += Point( 0, height + _d->lineIntervalOffset );
@@ -263,12 +262,12 @@ void DictionaryText::draw(gfx::Engine& painter )
   // draw background
   if( _d->bgPicture.isValid() )
   {
-    painter.draw( _d->bgPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+    painter.draw( _d->bgPicture, absoluteRect().lefttop(), &absoluteClippingRectRef() );
   }
 
   if( _d->textPicture.isValid() )
   {
-    painter.draw( _d->textPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+    painter.draw( _d->textPicture, absoluteRect().lefttop(), &absoluteClippingRectRef() );
   }
 
   Widget::draw( painter );
@@ -685,7 +684,7 @@ void DictionaryText::_init()
   _d->scrollbar->setNotClipped( false );
   _d->scrollbar->setSubElement(true);
   _d->scrollbar->setVisibleFilledArea( false );
-  _d->scrollbar->setTabStop(false);
+  _d->scrollbar->setTabstop(false);
   _d->scrollbar->setAlignment( align::lowerRight, align::lowerRight, align::upperLeft, align::lowerRight);
   _d->scrollbar->setVisible(true);
   _d->scrollbar->setValue(0);

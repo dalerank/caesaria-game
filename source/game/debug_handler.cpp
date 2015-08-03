@@ -21,6 +21,7 @@
 #include "religion/pantheon.hpp"
 #include "city/statistic.hpp"
 #include "game/funds.hpp"
+#include "objects/tree.hpp"
 #include "game/player.hpp"
 #include "events/random_animals.hpp"
 #include "walker/enemysoldier.hpp"
@@ -58,11 +59,30 @@
 #include "vfs/filesystem.hpp"
 #include "game/resourceloader.hpp"
 #include "religion/config.hpp"
+#include "world/computer_city.hpp"
+#include "objects/house.hpp"
+#include "objects/house_habitants.hpp"
 #include "gui/property_workspace.hpp"
+#include "objects/factory.hpp"
 
 using namespace gfx;
 using namespace citylayer;
 using namespace gui;
+
+enum {
+  enemies,
+  requests,
+  divinity,
+  money,
+  goods,
+  factories,
+  other,
+  disaster,
+  level,
+  in_city,
+  options,
+  draw
+};
 
 enum {
   add_enemy_archers=0,
@@ -125,7 +145,30 @@ enum {
   add_wine_to_warehouse,
   add_oil_to_warehouse,
   remove_favor,
-  property_browser
+  property_browser,
+  make_generation,
+  all_wheatfarms_ready,
+  all_wahrf_ready,
+  all_olivefarms_ready,
+  all_fruitfarms_ready,
+  all_grapefarms_ready,
+  all_vegetablefarms_ready,
+  all_claypit_ready,
+  all_timberyard_ready,
+  all_ironmin_ready,
+  all_marblequarry_ready,
+  all_potteryworkshtp_ready,
+  all_furnitureworksop_ready,
+  all_weaponworkshop_ready,
+  all_wineworkshop_ready,
+  all_oilworkshop_ready,
+  decrease_sentiment,
+  increase_sentiment,
+  reload_buildings_config,
+  toggle_show_buildings,
+  toggle_show_trees,
+  forest_fire,
+  forest_grow
 };
 
 class DebugHandler::Impl
@@ -135,6 +178,8 @@ public:
 
   void handleEvent( int );
   EnemySoldierPtr makeEnemy( walker::Type type );
+  void setFactoryReady(object::Type type);
+  void updateSentiment( int delta );
   void addGoods2Wh( good::Product type );
   void runScript(std::string filename);
   gui::ContextMenu* debugMenu;
@@ -151,80 +196,104 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   gui::ContextMenuItem* tmp = menu->addItem( "Debug", -1, true, true, false, false );
   _d->debugMenu = tmp->addSubMenu();
 
-#define ADD_DEBUG_EVENT(section, ev) { gui::ContextMenuItem* item = _d->debugMenu->addItem( section, #ev, ev ); \
+#define ADD_DEBUG_EVENT(section, ev) { gui::ContextMenuItem* item = _d->debugMenu->addItem( #section, #ev, ev ); \
                                        CONNECT( item, onAction(), _d.data(), Impl::handleEvent ); }
 
-  ADD_DEBUG_EVENT( "enemies", add_enemy_archers )
-  ADD_DEBUG_EVENT( "enemies", add_enemy_soldiers )
-  ADD_DEBUG_EVENT( "enemies", add_chastener_soldiers )
-  ADD_DEBUG_EVENT( "enemies", add_wolves )
-  ADD_DEBUG_EVENT( "enemies", send_chastener )
-  ADD_DEBUG_EVENT( "enemies", add_empire_barbarian )
-  ADD_DEBUG_EVENT( "enemies", send_barbarian_to_player )
-  ADD_DEBUG_EVENT( "enemies", kill_all_enemies )
+  ADD_DEBUG_EVENT( enemies, add_enemy_archers )
+  ADD_DEBUG_EVENT( enemies, add_enemy_soldiers )
+  ADD_DEBUG_EVENT( enemies, add_chastener_soldiers )
+  ADD_DEBUG_EVENT( enemies, add_wolves )
+  ADD_DEBUG_EVENT( enemies, send_chastener )
+  ADD_DEBUG_EVENT( enemies, add_empire_barbarian )
+  ADD_DEBUG_EVENT( enemies, send_barbarian_to_player )
+  ADD_DEBUG_EVENT( enemies, kill_all_enemies )
 
-  ADD_DEBUG_EVENT( "request", comply_rome_request )
-  ADD_DEBUG_EVENT( "request", test_request )
+  ADD_DEBUG_EVENT( requests, comply_rome_request )
+  ADD_DEBUG_EVENT( requests, test_request )
 
-  ADD_DEBUG_EVENT( "religion", send_mars_wrath )
-  ADD_DEBUG_EVENT( "religion", send_mars_spirit )
-  ADD_DEBUG_EVENT( "religion", send_venus_wrath )
-  ADD_DEBUG_EVENT( "religion", send_venus_smallcurse )
+  ADD_DEBUG_EVENT( divinity, send_mars_wrath )
+  ADD_DEBUG_EVENT( divinity, send_mars_spirit )
+  ADD_DEBUG_EVENT( divinity, send_venus_wrath )
+  ADD_DEBUG_EVENT( divinity, send_venus_smallcurse )
 
-  ADD_DEBUG_EVENT( "money", add_1000_dn )
-  ADD_DEBUG_EVENT( "money", add_player_money )
+  ADD_DEBUG_EVENT( money, add_1000_dn )
+  ADD_DEBUG_EVENT( money, add_player_money )
 
-  ADD_DEBUG_EVENT( "goods", add_wheat_to_warehouse )
-  ADD_DEBUG_EVENT( "goods", add_fish_to_warehouse )
-  ADD_DEBUG_EVENT( "goods", add_olives_to_warehouse )
-  ADD_DEBUG_EVENT( "goods", add_fruit_to_warehouse )
-  ADD_DEBUG_EVENT( "goods", add_grape_to_warehouse )
-  ADD_DEBUG_EVENT( "goods", add_vegetable_to_warehouse )
-  ADD_DEBUG_EVENT( "goods", add_clay_to_warehouse )
-  ADD_DEBUG_EVENT( "goods", add_timber_to_warehouse )
-  ADD_DEBUG_EVENT( "goods", add_iron_to_warehouse )
-  ADD_DEBUG_EVENT( "goods", add_marble_to_warehouse )
-  ADD_DEBUG_EVENT( "goods", add_pottery_to_warehouse )
-  ADD_DEBUG_EVENT( "goods", add_furniture_to_warehouse )
-  ADD_DEBUG_EVENT( "goods", add_weapons_to_warehouse )
-  ADD_DEBUG_EVENT( "goods", add_wine_to_warehouse )
-  ADD_DEBUG_EVENT( "goods", add_oil_to_warehouse )
+  ADD_DEBUG_EVENT( goods, add_wheat_to_warehouse )
+  ADD_DEBUG_EVENT( goods, add_fish_to_warehouse )
+  ADD_DEBUG_EVENT( goods, add_olives_to_warehouse )
+  ADD_DEBUG_EVENT( goods, add_fruit_to_warehouse )
+  ADD_DEBUG_EVENT( goods, add_grape_to_warehouse )
+  ADD_DEBUG_EVENT( goods, add_vegetable_to_warehouse )
+  ADD_DEBUG_EVENT( goods, add_clay_to_warehouse )
+  ADD_DEBUG_EVENT( goods, add_timber_to_warehouse )
+  ADD_DEBUG_EVENT( goods, add_iron_to_warehouse )
+  ADD_DEBUG_EVENT( goods, add_marble_to_warehouse )
+  ADD_DEBUG_EVENT( goods, add_pottery_to_warehouse )
+  ADD_DEBUG_EVENT( goods, add_furniture_to_warehouse )
+  ADD_DEBUG_EVENT( goods, add_weapons_to_warehouse )
+  ADD_DEBUG_EVENT( goods, add_wine_to_warehouse )
+  ADD_DEBUG_EVENT( goods, add_oil_to_warehouse )
 
-  ADD_DEBUG_EVENT( "other", send_player_army )
-  ADD_DEBUG_EVENT( "other", screenshot )
+  ADD_DEBUG_EVENT( factories, all_wheatfarms_ready )
+  ADD_DEBUG_EVENT( factories, all_wahrf_ready )
+  ADD_DEBUG_EVENT( factories, all_olivefarms_ready )
+  ADD_DEBUG_EVENT( factories, all_fruitfarms_ready )
+  ADD_DEBUG_EVENT( factories, all_grapefarms_ready )
+  ADD_DEBUG_EVENT( factories, all_vegetablefarms_ready )
+  ADD_DEBUG_EVENT( factories, all_claypit_ready )
+  ADD_DEBUG_EVENT( factories, all_timberyard_ready )
+  ADD_DEBUG_EVENT( factories, all_ironmin_ready )
+  ADD_DEBUG_EVENT( factories, all_marblequarry_ready )
+  ADD_DEBUG_EVENT( factories, all_potteryworkshtp_ready )
+  ADD_DEBUG_EVENT( factories, all_furnitureworksop_ready )
+  ADD_DEBUG_EVENT( factories, all_weaponworkshop_ready )
+  ADD_DEBUG_EVENT( factories, all_wineworkshop_ready )
+  ADD_DEBUG_EVENT( factories, all_oilworkshop_ready )
 
-  ADD_DEBUG_EVENT( "disaster", random_fire )
-  ADD_DEBUG_EVENT( "disaster", random_collapse )
-  ADD_DEBUG_EVENT( "disaster", random_plague )
-  ADD_DEBUG_EVENT( "disaster", earthquake )
+  ADD_DEBUG_EVENT( other, send_player_army )
+  ADD_DEBUG_EVENT( other, screenshot )
 
-  ADD_DEBUG_EVENT( "game", win_mission )
-  ADD_DEBUG_EVENT( "game", fail_mission )
-  ADD_DEBUG_EVENT( "game", change_emperor )
-  ADD_DEBUG_EVENT( "game", property_browser )
+  ADD_DEBUG_EVENT( disaster, random_fire )
+  ADD_DEBUG_EVENT( disaster, random_collapse )
+  ADD_DEBUG_EVENT( disaster, random_plague )
+  ADD_DEBUG_EVENT( disaster, earthquake )
+  ADD_DEBUG_EVENT( disaster, forest_fire )
 
-  ADD_DEBUG_EVENT( "city", add_soldiers_in_fort )
-  ADD_DEBUG_EVENT( "city", add_city_border )
-  ADD_DEBUG_EVENT( "city", send_exporter )
-  ADD_DEBUG_EVENT( "city", crash_favor )
-  ADD_DEBUG_EVENT( "city", add_scribe_messages )
-  ADD_DEBUG_EVENT( "city", run_script )
-  ADD_DEBUG_EVENT( "city", show_fest )
-  ADD_DEBUG_EVENT( "city", add_favor )
-  ADD_DEBUG_EVENT( "city", remove_favor )
+  ADD_DEBUG_EVENT( level, win_mission )
+  ADD_DEBUG_EVENT( level, fail_mission )
+  ADD_DEBUG_EVENT( level, change_emperor )
+  ADD_DEBUG_EVENT( level, property_browser )
 
-  ADD_DEBUG_EVENT( "options", all_sound_off )
-  ADD_DEBUG_EVENT( "options", reload_aqueducts )
-  ADD_DEBUG_EVENT( "options", toggle_experimental_options )
+  ADD_DEBUG_EVENT( in_city, add_soldiers_in_fort )
+  ADD_DEBUG_EVENT( in_city, add_city_border )
+  ADD_DEBUG_EVENT( in_city, send_exporter )
+  ADD_DEBUG_EVENT( in_city, crash_favor )
+  ADD_DEBUG_EVENT( in_city, add_scribe_messages )
+  ADD_DEBUG_EVENT( in_city, run_script )
+  ADD_DEBUG_EVENT( in_city, show_fest )
+  ADD_DEBUG_EVENT( in_city, add_favor )
+  ADD_DEBUG_EVENT( in_city, remove_favor )
+  ADD_DEBUG_EVENT( in_city, make_generation )
+  ADD_DEBUG_EVENT( in_city, decrease_sentiment )
+  ADD_DEBUG_EVENT( in_city, increase_sentiment )
+  ADD_DEBUG_EVENT( in_city, forest_grow )
 
-  ADD_DEBUG_EVENT( "draw", toggle_grid_visibility )
-  ADD_DEBUG_EVENT( "draw", toggle_overlay_base )
-  ADD_DEBUG_EVENT( "draw", toggle_show_path )
-  ADD_DEBUG_EVENT( "draw", toggle_show_roads )
-  ADD_DEBUG_EVENT( "draw", toggle_show_object_area )
-  ADD_DEBUG_EVENT( "draw", toggle_show_walkable_tiles )
-  ADD_DEBUG_EVENT( "draw", toggle_show_locked_tiles )
-  ADD_DEBUG_EVENT( "draw", toggle_show_flat_tiles )
+  ADD_DEBUG_EVENT( options, all_sound_off )
+  ADD_DEBUG_EVENT( options, reload_aqueducts )
+  ADD_DEBUG_EVENT( options, toggle_experimental_options )
+  ADD_DEBUG_EVENT( options, reload_buildings_config )
+
+  ADD_DEBUG_EVENT( draw, toggle_grid_visibility )
+  ADD_DEBUG_EVENT( draw, toggle_overlay_base )
+  ADD_DEBUG_EVENT( draw, toggle_show_path )
+  ADD_DEBUG_EVENT( draw, toggle_show_roads )
+  ADD_DEBUG_EVENT( draw, toggle_show_buildings )
+  ADD_DEBUG_EVENT( draw, toggle_show_trees )
+  ADD_DEBUG_EVENT( draw, toggle_show_object_area )
+  ADD_DEBUG_EVENT( draw, toggle_show_walkable_tiles )
+  ADD_DEBUG_EVENT( draw, toggle_show_locked_tiles )
+  ADD_DEBUG_EVENT( draw, toggle_show_flat_tiles )
 #undef ADD_DEBUG_EVENT
 }
 
@@ -249,10 +318,9 @@ EnemySoldierPtr DebugHandler::Impl::makeEnemy( walker::Type type )
 
 void DebugHandler::Impl::addGoods2Wh(good::Product type)
 {
-  WarehouseList whList = city::statistic::getObjects<Warehouse>( game->city(), object::warehouse );
-  foreach( wh, whList)
+  WarehouseList whList = game->city()->statistic().objects.find<Warehouse>( object::warehouse );
+  for( auto warehouse : whList)
   {
-    WarehousePtr warehouse = *wh;
     good::Stock stock(type, 400, 400 );
     warehouse->store().store( stock, 400 );
   }
@@ -269,6 +337,26 @@ Signal2<scene::Level*,bool>& DebugHandler::onWinMission() { return _d->winMissio
 DebugHandler::DebugHandler() : _d(new Impl)
 {
   _d->debugMenu = 0;
+}
+
+void DebugHandler::Impl::setFactoryReady( object::Type type )
+{
+  FactoryList factories = game->city()->statistic().objects.find<Factory>( type );
+  for( auto factory : factories )
+  {
+    if( factory->numberWorkers() > 0 )
+    {
+      float progress = factory->progress();
+      factory->updateProgress( 101.f - progress );
+    }
+  }
+}
+
+void DebugHandler::Impl::updateSentiment(int delta)
+{
+  HouseList houses = game->city()->statistic().houses.find();
+  for( auto house : houses )
+    house->updateState( pr::happiness, delta );
 }
 
 void DebugHandler::Impl::handleEvent(int event)
@@ -316,6 +404,37 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
 
+  case reload_buildings_config:
+  {
+    OverlayList ovs = game->city()->overlays();
+    for( auto overlay : ovs )
+      overlay->reinit();
+  }
+  break;
+
+  case forest_fire:
+  {
+    SmartList<Tree> forest = game->city()->overlays().select<Tree>();
+    forest = forest.random( 2 );
+    for( auto tree : forest )
+      tree->burn();
+  }
+  break;
+
+  case send_exporter:
+  {
+    world::CityList cities = game->empire()->cities();
+    for( auto acity : cities )
+    {
+      world::ComputerCityPtr ccity = acity.as<world::ComputerCity>();
+      if( ccity.isValid() )
+      {
+        ccity->__debugSendMerchant();
+      }
+    }
+  }
+  break;
+
   case add_player_money:    game->player()->appendMoney( 1000 );  break;
 
   case add_favor:
@@ -328,7 +447,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case show_fest:
   {
-    city::FestivalPtr fest = city::statistic::getService<city::Festival>( game->city() );
+    city::FestivalPtr fest = game->city()->statistic().services.find<city::Festival>();
     if( fest.isValid() )
       fest->now();
   }
@@ -349,6 +468,42 @@ void DebugHandler::Impl::handleEvent(int event)
   case add_weapons_to_warehouse:addGoods2Wh( good::weapon ); break;
   case add_wine_to_warehouse: addGoods2Wh( good::wine ); break;
   case add_oil_to_warehouse: addGoods2Wh( good::oil ); break;
+
+  case all_wheatfarms_ready: setFactoryReady( object::wheat_farm ); break;
+  case all_wahrf_ready: setFactoryReady( object::wharf ); break;
+  case all_olivefarms_ready: setFactoryReady( object::olive_farm ); break;
+  case all_fruitfarms_ready: setFactoryReady( object::fig_farm ); break;
+  case all_grapefarms_ready: setFactoryReady( object::vinard ); break;
+  case all_vegetablefarms_ready: setFactoryReady( object::vegetable_farm ); break;
+  case all_claypit_ready: setFactoryReady( object::clay_pit ); break;
+  case all_timberyard_ready: setFactoryReady( object::lumber_mill ); break;
+  case all_ironmin_ready: setFactoryReady( object::iron_mine ); break;
+  case all_marblequarry_ready: setFactoryReady( object::quarry ); break;
+  case all_potteryworkshtp_ready: setFactoryReady( object::pottery_workshop ); break;
+  case all_furnitureworksop_ready: setFactoryReady( object::furniture_workshop ); break;
+  case all_weaponworkshop_ready: setFactoryReady( object::weapons_workshop ); break;
+  case all_wineworkshop_ready: setFactoryReady( object::wine_workshop ); break;
+  case all_oilworkshop_ready: setFactoryReady( object::oil_workshop ); break;
+
+  case decrease_sentiment: updateSentiment( -10 ); break;
+  case increase_sentiment: updateSentiment( +10 ); break;
+  case forest_grow:
+  {
+    TreeList forest = game->city()->statistic().objects.find<Tree>();
+    forest = forest.random( 10 );
+
+    for( auto tree : forest )
+      tree->grow();
+  }
+  break;
+
+  case make_generation:
+  {
+    HouseList houses = game->city()->statistic().houses.find();
+    for( auto house : houses )
+      house->__debugMakeGeneration();
+  }
+  break;
 
   case win_mission:
   case fail_mission:
@@ -384,10 +539,10 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case kill_all_enemies:
   {
-     EnemySoldierList enemies = city::statistic::getWalkers<EnemySoldier>( game->city(), walker::any, gfx::tilemap::invalidLocation() );
+     EnemySoldierList enemies = game->city()->statistic().walkers.find<EnemySoldier>( walker::any, gfx::tilemap::invalidLocation() );
 
-     foreach( it, enemies )
-       (*it)->die();
+     for( auto enemy : enemies )
+       enemy->die();
   }
   break;
 
@@ -414,7 +569,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
     if( event == send_barbarian_to_player )
     {
-      brb->attack( ptr_cast<world::Object>( game->city() ) );
+      brb->attack( game->city().as<world::Object>() );
     }
     else
     {
@@ -450,7 +605,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case earthquake:
   {
-    int mapsize = game->city()->tilemap().size();
+    int mapsize = game->city()->tilemap().size()-1;
     TilePos start( math::random(mapsize), math::random(mapsize) );
     TilePos stop( math::random(mapsize), math::random(mapsize) );
     events::GameEventPtr e = events::EarthQuake::create( start, stop );
@@ -522,20 +677,22 @@ void DebugHandler::Impl::handleEvent(int event)
   case toggle_show_walkable_tiles: DrawOptions::instance().toggle( DrawOptions::showWalkableTiles );  break;
   case toggle_show_locked_tiles: DrawOptions::instance().toggle( DrawOptions::showLockedTiles );  break;
   case toggle_show_flat_tiles: DrawOptions::instance().toggle( DrawOptions::showFlatTiles );  break;
+  case toggle_show_buildings : DrawOptions::instance().toggle( DrawOptions::showBuildings ); break;
+  case toggle_show_trees : DrawOptions::instance().toggle( DrawOptions::showTrees ); break;
 
   case add_soldiers_in_fort:
   {
-    FortList forts = city::statistic::getObjects<Fort>( game->city() );
+    FortList forts = game->city()->statistic().objects.find<Fort>();
 
-    foreach( it, forts )
+    for( auto fort : forts )
     {
-      int howMuchAdd = 16 - (*it)->walkers().size();
-      TilesArray tiles = (*it)->enterArea();
+      int howMuchAdd = 16 - fort->walkers().size();
+      TilesArray tiles = fort->enterArea();
       for( int i=0; i < howMuchAdd; i++ )
       {
         RomeSoldierPtr soldier = RomeSoldier::create( game->city(), walker::legionary );
-        soldier->send2city( *it, tiles.front()->pos() );
-        (*it)->addWalker( soldier.object() );
+        soldier->send2city( fort, tiles.front()->pos() );
+        fort->addWalker( soldier.object() );
       }
     }
   }

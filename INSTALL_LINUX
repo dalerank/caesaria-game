@@ -32,21 +32,18 @@ running, run:
 1.a Ubuntu and Debian:
 
 1.a.1 Base dependencies
-$ sudo apt-get install build-essential g++ zlib1g-dev \
-libsdl1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev \
+$ sudo apt-get install build-essential g++ \
 qt4-dev-tools ctags libqxt-dev git cmake p7zip-full wget
 
 1.b Fedora:
 
 1.b.1 Base dependencies
 $ sudo yum install make automake gcc gcc-c++ \
-zlib-devel SDL-devel SDL_mixer-devel SDL_ttf-devel \
 qt-devel ctags cmake git p7zip wget libpng12-devel
 
 1.c openSUSE 12.3
 
-$ sudo zypper install libSDL-devel libSDL_ttf-devel \
- libSDL_mixer-devel git cmake gcc-c++ libjpeg-devel \
+$ sudo zypper install git cmake gcc-c++ libjpeg-devel \
 libpng-devel 
 
 

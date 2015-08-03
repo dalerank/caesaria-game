@@ -75,6 +75,9 @@
       btnToggleCcUseAI#PushButton   : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_batching_mode##"    }
       btnMetrics#PushButton         : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_metrics_mode##"     }
       btnHighlightBuilding#PushButton:{ maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_highlight_mode##"   }
+      btnDetroyEpidemicHouses#PushButton:{maximumSize:[ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_destroy_epdh##"     }
+      btnForestFire#PushButton      : {maximumSize  :[ 0, 24 ],  bgtype : "smallGrayBorderLine", text : "##city_forest_fire##"      }
+      btnForestGrow#PushButton      : {maximumSize  :[ 0, 24 ],  bgtype : "smallGrayBorderLine", text : "##city_forest_grow##"      }
     }
   }
 

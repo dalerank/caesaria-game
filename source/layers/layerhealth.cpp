@@ -99,8 +99,7 @@ void Health::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( healthLevel > 0 )
     {
-      _addColumn( screenPos, healthLevel );
-      //drawColumn( engine, screenPos, healthLevel );
+      drawColumn( engine, screenPos, healthLevel );
     }
   }
 

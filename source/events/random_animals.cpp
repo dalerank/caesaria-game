@@ -93,7 +93,7 @@ void RandomAnimals::_exec( Game& game, unsigned int time)
 
   if( _d->maxAnimals >= 0 )
   {
-    AnimalsPtr srvc = statistic::getService<Animals>( game.city() );
+    AnimalsPtr srvc = game.city()->statistic().services.find<Animals>();
 
     if( srvc.isValid() )
     {

@@ -22,6 +22,7 @@
 #include "picturesarray.hpp"
 #include "core/size.hpp"
 #include "core/rect_array.hpp"
+#include "core/position_array.hpp"
 #include "batch.hpp"
 #include <map>
 
@@ -62,9 +63,7 @@ public:
   virtual Batch loadBatch(const Picture& pic, const Rects& srcRects, const Rects& dstRects, const Rect* clipRect=0) = 0;
   virtual void unloadBatch( const Batch& batch ) = 0;
 
-  virtual bool initViewport( int, Size s) = 0;
-  virtual void setViewport( int, bool render) = 0;
-  virtual void drawViewport( int, Rect r) = 0;
+  virtual void setScale( float scale ) = 0;
 
   virtual void startRenderFrame() = 0;  // start a new frame
   virtual void endRenderFrame() = 0;  // display the frame
@@ -77,6 +76,7 @@ public:
   virtual void draw(const Batch& batch, Rect* clipRect=0 ) = 0;
 
   virtual void drawLine( const NColor& color, const Point& p1, const Point& p2 ) = 0;
+  virtual void drawLines( const NColor& color, const PointsArray& points ) = 0;
 
   virtual void setColorMask( int rmask, int gmask, int bmask, int amask ) = 0;
   virtual void resetColorMask() = 0;

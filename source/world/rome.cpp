@@ -27,6 +27,8 @@
 #include "game/player.hpp"
 #include "city/states.hpp"
 
+using namespace events;
+
 namespace world {
 
 namespace {
@@ -65,10 +67,7 @@ econ::Treasury& Rome::treasury() { return _d->funds; }
 std::string Rome::name() const { return Rome::defaultName; }
 bool Rome::isPaysTaxes() const { return true; }
 
-std::string Rome::about(Object::AboutType type)
-{
-  return "##empiremap_capital##";
-}
+std::string Rome::about(Object::AboutType type) { return "##empiremap_capital##"; }
 const city::States& Rome::states() const { return _d->states; }
 
 void Rome::timeStep(const unsigned int time)
@@ -85,29 +84,29 @@ const good::Store& Rome::sells() const{ return _d->gstore; }
 
 void Rome::addObject(ObjectPtr obj)
 {
-  if( is_kind_of<GoodCaravan>( obj ) )
+  if( obj.is<GoodCaravan>() )
   {
-    GoodCaravanPtr caravan = ptr_cast<GoodCaravan>( obj );
+    GoodCaravanPtr caravan = obj.as<GoodCaravan>();
 
     good::Product gtype = good::none;
-    foreach( i, good::all())
+    for( auto i : good::all())
     {
-      if( caravan->store().qty( *i ) > 0 )
+      if( caravan->store().qty( i ) > 0 )
       {
-        gtype = *i;
+        gtype = i;
         break;
       }
     }
 
-    events::GameEventPtr e = events::ShowInfobox::create( _("##rome_gratitude_request_title##"),
-                                                          _("##rome_gratitude_request_text##"),
-                                                          gtype,
-                                                          !events::ShowInfobox::send2scribe);
+    GameEventPtr e = ShowInfobox::create( _("##rome_gratitude_request_title##"),
+                                          _("##rome_gratitude_request_text##"),
+                                          gtype,
+                                          !ShowInfobox::send2scribe);
     e->dispatch();
   }  
-  else if( is_kind_of<Barbarian>( obj ) )
+  else if( obj.is<Barbarian>() )
   {
-    BarbarianPtr brb = ptr_cast<Barbarian>( obj );
+    BarbarianPtr brb = obj.as<Barbarian>();
 
     if( brb.isValid() )
     {

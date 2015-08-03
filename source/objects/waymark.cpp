@@ -18,7 +18,7 @@
 #include "waymark.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/helper.hpp"
-#include "city/helper.hpp"
+#include "city/city.hpp"
 #include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects_factory.hpp"
@@ -51,9 +51,9 @@ bool Waymark::build( const city::AreaInfo& info )
   Tilemap& tmap = info.city->tilemap();
   TilesArray around = tmap.getNeighbors( info.pos );
   TilePos entryPos = info.city->borderInfo().roadEntry;
-  foreach( it, around )
+  for( auto tile : around )
   {
-    if( (*it)->pos() == entryPos )
+    if( tile->pos() == entryPos )
     {
       isEntryMark = true;
       break;

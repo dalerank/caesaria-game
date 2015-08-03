@@ -66,7 +66,7 @@ protected:
   virtual void _afterCreate() {}
   Label* _lbTitleRef();
   Label* _lbTextRef();
-  Label* _lbBlackFrameRef();
+  Label* _lbBlackFrame();
   PushButton* _btnExitRef();
 
   virtual void _updateWorkersLabel( const Point& pos, int picId, int need, int have );

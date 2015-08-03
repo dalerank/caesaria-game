@@ -68,7 +68,7 @@ Fortification::~Fortification() {}
 bool Fortification::build( const city::AreaInfo& info )
 {
   // we can't build if already have wall here
-  WallPtr wall = ptr_cast<Wall>( info.city->getOverlay( info.pos ) );
+  WallPtr wall = info.city->getOverlay( info.pos ).as<Wall>();
   if( wall.isValid() )
   {
     return false;
@@ -82,12 +82,12 @@ bool Fortification::build( const city::AreaInfo& info )
   }
 
   Building::build( info );
-  FortificationList fortifications = city::statistic::getObjects<Fortification>( info.city, object::fortification );
+  FortificationList fortifications = info.city->statistic().objects.find<Fortification>( object::fortification );
 
-  foreach( frt, fortifications ) { (*frt)->updatePicture( info.city ); }
+  for( auto fort : fortifications ) { fort->updatePicture( info.city ); }
 
-  TowerList towers = city::statistic::getObjects<Tower>( info.city, object::tower );
-  foreach( tower, towers ) { (*tower)->resetPatroling(); }
+  TowerList towers = info.city->statistic().objects.find<Tower>( object::tower );
+  for( auto tower : towers ) { tower->resetPatroling(); }
 
   updatePicture( info.city );
 

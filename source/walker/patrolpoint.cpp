@@ -83,7 +83,7 @@ void PatrolPoint::timeStep(const unsigned long time)
 
 FortPtr PatrolPoint::base() const
 {
-  return ptr_cast<Fort>( _city()->getOverlay( _d->basePos ) );
+  return _city()->getOverlay( _d->basePos ).as<Fort>();
 }
 
 void PatrolPoint::save(VariantMap& stream) const
@@ -93,7 +93,7 @@ void PatrolPoint::save(VariantMap& stream) const
 
 void PatrolPoint::acceptPosition()
 {
-  FortPtr fort = ptr_cast<Fort>( _city()->getOverlay( _d->basePos ) );
+  FortPtr fort = base();
   if( fort.isValid() )
   {
     fort->changePatrolArea();

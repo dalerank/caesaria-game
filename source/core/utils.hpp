@@ -82,22 +82,12 @@ namespace utils
 
   std::string i2str( int valie );
 
-  template< class Item >
-  SmartList<Item>& eraseDeletedElements( SmartList<Item>& items )
-  {
-    for( typename SmartList<Item>::iterator it=items.begin(); it != items.end(); )
-    {
-      if( (*it)->isDeleted() ) { it = items.erase( it ); }
-      else { ++it; }
-    }
-
-    return items;
-  }
-
   VariantList toVList( const StringArray& items );
 
+  std::string toRoman( int value );
+
   float eventProbability(float probability, int k, int n);  
-  std::wstring utf8toWString(const char* src, int size);
+  std::wstring utf8toWString(const char* src, size_t size);
 }
 
 #endif //__CAESARIA_STRING_UTILS_H_INCLUDED__

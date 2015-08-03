@@ -54,6 +54,7 @@ namespace tilemap
   const Size& cellPicSize();
   const Size& cellSize();
   const TilePos& invalidLocation();
+  const TilePos& unitLocation();
   bool isValidLocation( const TilePos& pos );
 }
 

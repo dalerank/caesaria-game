@@ -13,33 +13,22 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_CITYSERVICE_AUDIOPLAYER_H_INCLUDED__
-#define __CAESARIA_CITYSERVICE_AUDIOPLAYER_H_INCLUDED__
+#include "hospital.hpp"
+#include "game/resourcegroup.hpp"
+#include "game/gamedate.hpp"
+#include "core/position.hpp"
+#include "gfx/tilemap.hpp"
+#include "city/statistic.hpp"
+#include "constants.hpp"
+#include "objects_factory.hpp"
 
-#include "city/cityservice.hpp"
-#include "city/city.hpp"
-#include "core/timer.hpp"
+using namespace gfx;
 
-namespace audio
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::hospital, Hospital)
+
+Hospital::Hospital()
+  : HealthBuilding(Service::hospital, object::hospital, Size(3) )
 {
-
-class Player : public city::Srvc
-{
-public:
-  static city::SrvcPtr create(PlayerCityPtr city);
-  static std::string defaultName();
-  virtual void timeStep( const unsigned int time );
-
-  virtual ~Player();
-private:
-  Player(PlayerCityPtr city);
-
-  class Impl;
-  ScopedPtr< Impl > _d;
-};
-
-}//end namespace audio
-
-#endif //__CAESARIA_CITYSERVICE_AUDIOPLAYER_H_INCLUDED__
+}

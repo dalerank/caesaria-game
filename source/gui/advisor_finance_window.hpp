@@ -39,6 +39,10 @@ private:
   void _updateTaxRateNowLabel();
   void _decreaseTax();
   void _increaseTax();
+  void _initReportRows();
+  void _initTaxManager();
+  void _updateRegisteredPayers();
+  void _updateCityTreasure();
   int  _calculateTaxValue();
 
   class Impl;

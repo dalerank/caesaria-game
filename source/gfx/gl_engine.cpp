@@ -819,22 +819,9 @@ void GlEngine::endRenderFrame()
   _drawCall = 0;
 }
 
-bool GlEngine::initViewport(int index, Size s)
+void GlEngine::setScale( float scale )
 {
-#ifdef CAESARIA_USE_FRAMEBUFFER
-  _d->viewportSize = s;
-#endif
-  return false;
-}
-
-void GlEngine::setViewport(int, bool render)
-{
-  _d->useViewport = render;
-}
-
-void GlEngine::drawViewport(int, Rect r)
-{
-
+  //
 }
 
 void GlEngine::draw(const Picture& picture, const int dx, const int dy, Rect* clipRect)
@@ -923,7 +910,12 @@ void GlEngine::draw(const Pictures& pictures, const Point& pos, Rect* clipRect)
 
 void GlEngine::drawLine(const NColor& color, const Point& p1, const Point& p2)
 {
-  int i=0;
+  //  int i=0;
+}
+
+void GlEngine::drawLines(const NColor& color, const PointsArray& p1)
+{
+
 }
 
 void GlEngine::draw( const Picture &picture, const Point& pos, Rect* clipRect )

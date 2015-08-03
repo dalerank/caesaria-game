@@ -82,8 +82,7 @@ void Tax::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( taxLevel > 0 )
     {
-      _addColumn( screenPos, taxLevel );
-      //drawColumn( engine, screenPos, taxLevel );
+      drawColumn( engine, screenPos, taxLevel );
     }
   }
 

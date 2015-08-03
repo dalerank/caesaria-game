@@ -71,19 +71,12 @@ public:
   }MaskInfo;
 
   Picture screen;
-  Picture fpsText;
+  Picture fpsTx;
+  std::string debugTextStr;
 
-  SDL_Window *window;
-  SDL_Renderer *renderer;
+  SDL_Window* window;
+  SDL_Renderer* renderer;
   SdlBatcher batcher;
-
-  struct RTInfo
-  {
-    SDL_Texture* texture;
-    SDL_Rect viewport;
-  };
-
-  std::map< int, RTInfo > renderTargets;
 
   MaskInfo mask;
   unsigned int fps, lastFps;
@@ -95,7 +88,7 @@ public:
   void renderState(const Batch &batch, const Rect *clip);
   void renderState();
   void renderOnce(const Picture& pic, const Rect& src, const Rect& dstRect,
-                  const Rect *clipRect, bool useTxOffset);
+                  const Rect* clipRect, bool useTxOffset);
 };
 
 
@@ -107,6 +100,7 @@ SdlEngine::SdlEngine() : Engine(), _d( new Impl )
 
   _d->lastUpdateFps = DateTime::elapsedTime();
   _d->fps = 0;
+  _d->debugTextStr.reserve( 32 );
 }
 
 SdlEngine::~SdlEngine(){}
@@ -275,6 +269,7 @@ void SdlEngine::init()
   }
 
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+  SDL_SetRenderDrawBlendMode( renderer, SDL_BLENDMODE_BLEND );
   SDL_RenderClear(renderer);
   SDL_RenderPresent(renderer);
 
@@ -313,7 +308,7 @@ void SdlEngine::init()
   _d->window = window;
   _d->renderer = renderer;
 
-  _d->fpsText = Picture( Size( 200, 20 ), 0, true );
+  _d->fpsTx = Picture( Size( 200, 20 ), 0, true );
 }
 
 void SdlEngine::exit()
@@ -387,15 +382,15 @@ void SdlEngine::endRenderFrame()
 
     if( DebugTimer::ticks() - timeCount > 500 )
     {
-      std::string debugText = utils::format( 0xff, "fps:%d dc:%d", _d->lastFps, _d->drawCall );
-      _d->fpsText.fill( 0, Rect() );
-      _d->debugFont.draw( _d->fpsText, debugText, Point( 0, 0 ) );
+      _d->debugTextStr = utils::format( 0xff, "fps:%d dc:%d", _d->lastFps, _d->drawCall );
+      _d->fpsTx.fill( 0, Rect() );
+      _d->debugFont.draw( _d->fpsTx, _d->debugTextStr, Point( 0, 0 ) );
       timeCount = DebugTimer::ticks();
 #ifdef SHOW_FPS_IN_LOG
       Logger::warning( "FPS: %d", _d->fps );
 #endif
     }
-    draw( _d->fpsText, Point( _d->screen.width() / 2, 2 ), 0 );
+    draw( _d->fpsTx, Point( _d->screen.width() / 2, 2 ), 0 );
   }
 
   bool needDraw = _d->batcher.finish();
@@ -602,12 +597,36 @@ void SdlEngine::draw(const Batch &batch, Rect *clipRect)
 
 void SdlEngine::drawLine(const NColor &color, const Point &p1, const Point &p2)
 {
-  _d->batcher.finish();
-  _d->renderState();
+  bool needDraw = _d->batcher.finish();
+  if( needDraw )
+    _d->renderState();
+
   _d->drawCall++;
 
   SDL_SetRenderDrawColor( _d->renderer, color.red(), color.green(), color.blue(), color.alpha() );
   SDL_RenderDrawLine( _d->renderer, p1.x(), p1.y(), p2.x(), p2.y() );
+
+  SDL_SetRenderDrawColor( _d->renderer, 0, 0, 0, 0 );
+}
+
+void SdlEngine::drawLines(const NColor &color, const PointsArray& points)
+{
+  bool needDraw = _d->batcher.finish();
+  if( needDraw )
+    _d->renderState();
+
+  _d->drawCall++;
+
+  SDL_SetRenderDrawColor( _d->renderer, color.red(), color.green(), color.blue(), color.alpha() );
+  std::vector<SDL_Point> _points;
+  _points.reserve( points.size() );
+  for( auto p : points )
+  {
+    SDL_Point ps = { p.x(), p.y() };
+    _points.push_back( ps );
+  }
+
+  SDL_RenderDrawLines( _d->renderer, _points.data(), _points.size() );
 
   SDL_SetRenderDrawColor( _d->renderer, 0, 0, 0, 0 );
 }
@@ -642,64 +661,13 @@ void SdlEngine::resetColorMask()
   _d->mask.reset();
 }
 
-bool SdlEngine::initViewport(int index, Size s)
+void SdlEngine::setScale( float scale )
 {
-  Impl::RTInfo& target = _d->renderTargets[ index ];
-
-  SDL_RendererInfo info;
-  SDL_GetRendererInfo( _d->renderer, &info);
-
-  if( info.max_texture_width < s.width() || info.max_texture_height < s.height() )
-    return false;
-
-  if( target.texture != 0 )
-  {
-    SDL_DestroyTexture( target.texture );
-    target.texture = 0;
-  }
-
-  if( s.area() > 0 )
-  {
-    target.texture = SDL_CreateTexture( _d->renderer, SDL_PIXELFORMAT_RGBA8888,
-                                        SDL_TEXTUREACCESS_TARGET, s.width(), s.height() );
-    SDL_Rect r = { 0, 0, s.width(), s.height() };
-    target.viewport = r;
-  }
-
-  return true;
-}
-
-void SdlEngine::setViewport(int index, bool render)
-{
-  Impl::RTInfo target = _d->renderTargets.at( index );
-
   bool needDraw = _d->batcher.finish();
   if( needDraw )
     _d->renderState();
 
-  if( target.texture )
-  {    
-    if( render )
-    {
-      SDL_SetRenderTarget( _d->renderer, target.texture );
-      SDL_RenderClear(_d->renderer);  // black background for a complete redraw
-      SDL_RenderSetViewport( _d->renderer, &target.viewport );
-    }
-    else
-    {
-      SDL_SetRenderTarget( _d->renderer, 0 );
-      SDL_RenderSetViewport( _d->renderer, 0 );
-    }
-  }
-}
-
-void SdlEngine::drawViewport(int index, Rect r)
-{
-  Impl::RTInfo& target = _d->renderTargets[ index ];
-  if( target.texture )
-  {
-    SDL_RenderCopyEx(_d->renderer, target.texture, 0, 0, 0, 0, SDL_FLIP_NONE );
-  }
+  SDL_RenderSetScale( _d->renderer, scale, scale );
 }
 
 void SdlEngine::createScreenshot( const std::string& filename )

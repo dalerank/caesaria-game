@@ -52,7 +52,7 @@ public:
   CcTargets()
   {
     population = 0;
-    int dd = sizeof( need );
+//    int dd = sizeof( need );
     memset( need, 0, sizeof( need ) );
     memset( idle, 0, sizeof( need ) );
     memset( coverage, 0, sizeof( need ) );
@@ -72,7 +72,7 @@ public:
 class CcStorage : public good::Storage
 {
 public:
-  bool needExpand;
+  unsigned int needExpand;
 
   CcStorage()
   {
@@ -82,17 +82,15 @@ public:
   VariantMap save() const
   {
     VariantMap ret;
-    foreach( gtype, good::all() )
+    for( auto gtype : good::all() )
     {
-      std::string tname = good::Helper::getTypeName( *gtype );
-      int ncapacity = capacity( *gtype );
+      std::string tname = good::Helper::getTypeName( gtype );
+      int ncapacity = capacity( gtype );
       if( ncapacity > 0 )
       {
         ncapacity = Unit::fromQty( ncapacity ).ivalue();
-        int value = Unit::fromQty( qty( *gtype ) ).ivalue();
-        Point p( value, ncapacity );
-
-        ret[ tname ] = p;
+        int value = Unit::fromQty( qty( gtype ) ).ivalue();
+        ret[ tname ] = Point( value, ncapacity );
       }
     }
     return ret;
@@ -108,16 +106,16 @@ public:
 
   void load( const VariantMap& stream )
   {
-    foreach( it, stream )
+    for( auto item : stream )
     {
-      good::Product gtype = good::Helper::getType( it->first );
-      Variant value = it->second;
+      good::Product gtype = good::Helper::getType( item.first );
+      Variant value = item.second;
       switch( value.type() )
       {
         case Variant::Int:
         case Variant::UInt:
         {
-          setCapacity( gtype, Unit::fromValue( it->second ).toQty() );
+          setCapacity( gtype, Unit::fromValue( item.second ).toQty() );
         }
         break;
 
@@ -217,8 +215,8 @@ public:
   int count( object::Type type )
   {
     int ret = 0;
-    foreach( it, *this )
-      ret += (it->type == type ? 1 : 0);
+    for( auto item : *this )
+      ret += (item.type == type ? 1 : 0);
 
     return ret;
   }
@@ -240,30 +238,38 @@ namespace world
 class ComputerCity::Impl
 {
 public:
-  unsigned int tradeType;
   bool distantCity;
   bool available;
   int strength;
-  City::AiMode useAI;
+  City::AiMode modeAI;
   int sentiment;
   Buildings buildings;
   CitizenGroup peoples;
   CcTargets targets;
-  Prices prices;
 
   city::States states;
-  unsigned int tradeDelay;
 
   CcStorage sells;
   good::Storage realSells;
   CcStorage buys;
   CcStorage internalGoods;
 
-  DateTime lastTimeUpdate;
-  DateTime lastTimeMerchantSend;
-  DateTime lastAttack;
+  struct
+  {
+    unsigned int delay;
+    unsigned int merchants_n;
+    Prices prices;
+    DateTime merchantSent;
 
-  unsigned int merchantsNumber;
+  } trade;
+  unsigned int terrain;
+
+  struct
+  {
+    DateTime update;
+    DateTime attacked;
+  } lasttime;
+
   econ::Treasury funds;
 
 public:
@@ -280,7 +286,7 @@ public:
 
 void ComputerCity::Impl::calculateMonthState()
 {
-  if( useAI == City::inactive )
+  if( modeAI == City::inactive )
     return;
 
   updateWorkersInBuildings();
@@ -289,9 +295,8 @@ void ComputerCity::Impl::calculateMonthState()
   citizensConsumeServices();
 
   int idleBuildings = 0;
-  foreach( it, buildings )
+  for( auto info : buildings )
   {
-    BuildingInfo& info = *it;
     info.threatGoods( internalGoods );
     if( info.maxWorkersNumber > 0 && info.workersNumber == 0 )
       idleBuildings++;
@@ -463,6 +468,69 @@ void ComputerCity::Impl::updateWorkingWarehouse()
   }
 
   internalGoods.setCapacity( futureCityCapacity );
+}
+
+void ComputerCity::__debugSendMerchant()
+{
+  _d->trade.merchants_n = 0;
+  _d->trade.merchantSent = DateTime();
+  _checkMerchantsDeadline();
+}
+
+void ComputerCity::_checkMerchantsDeadline()
+{
+  if( _d->trade.merchantSent.monthsTo( game::Date::current() ) > config::trade::minMonthsMerchantSend )
+  {
+    TraderouteList routes = empire()->tradeRoutes( name() );
+
+    if( routes.empty() )
+      return;
+
+    if( !_mayTrade() )
+      return;
+
+    _d->trade.merchantSent = game::Date::current();
+
+    if( _d->trade.merchants_n >= routes.size() )
+    {
+      return;
+    }
+
+    good::Storage sellGoods, buyGoods;
+    sellGoods.setCapacity( Merchant::defaultCapacity );
+    buyGoods.setCapacity( Merchant::defaultCapacity );
+
+    for( auto gtype : good::all() )
+    {
+      buyGoods.setCapacity( gtype, _d->buys.capacity( gtype ) );
+
+      //how much space left
+      int maxQty = (std::min)( _d->sells.capacity( gtype ) / 4, sellGoods.freeQty() );
+
+      //we want send merchants to all routes
+      maxQty /= routes.size();
+
+      int qty = math::clamp( _d->sells.qty( gtype ), 0, maxQty );
+
+      //have no goods to sell
+      if( qty == 0 )
+        continue;
+
+      good::Stock& stock = sellGoods.getStock( gtype );
+      stock.setCapacity( qty );
+
+      //move goods to merchant's storage
+      _d->sells.retrieve( stock, qty );
+    }
+
+    //send merchants to all routes
+    for( auto route : routes )
+    {
+      _d->trade.merchants_n++;
+      route->addMerchant( name(), sellGoods, buyGoods );
+    }
+  }
+
 }
 
 void ComputerCity::Impl::placeNewBuildings()
@@ -695,11 +763,11 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
   : City( empire ), _d( new Impl )
 {
   setName( name );
-  _d->tradeDelay = 0;
+  _d->trade.delay = 0;
   _d->distantCity = false;
-  _d->merchantsNumber = 0;
+  _d->trade.merchants_n = 0;
   _d->available = true;
-  _d->useAI = City::inactive;
+  _d->modeAI = City::inactive;
   _d->states.population = 0;
   _d->states.nation = world::nation::unknown;
   _d->sells.setCapacity( 99999 );
@@ -711,17 +779,28 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
   _initTextures();
 }
 
-bool ComputerCity::_mayTrade() const { return _d->tradeDelay <= 0; }
-
+bool ComputerCity::_mayTrade() const { return _d->trade.delay <= 0; }
 econ::Treasury& ComputerCity::treasury() { return _d->funds; }
 bool ComputerCity::isPaysTaxes() const { return true; }
 bool ComputerCity::haveOverduePayment() const { return false; }
-void ComputerCity::setAiMode(City::AiMode mode) { _d->useAI = mode; }
+City::AiMode ComputerCity::modeAI() const { return _d->modeAI; }
 bool ComputerCity::isDistantCity() const{  return _d->distantCity;}
 bool ComputerCity::isAvailable() const{  return _d->available;}
 void ComputerCity::setAvailable(bool value){  _d->available = value;}
-
 SmartPtr<Player> ComputerCity::mayor() const { return 0; }
+
+void ComputerCity::setModeAI(City::AiMode mode)
+{
+  _d->modeAI = mode;
+  if( mode == indifferent )
+  {
+    if( _d->peoples.count() == 0 )
+    {
+      _d->targets.population = 2000;
+      _d->peoples += CitizenGroup::random( _d->targets.population );
+    }
+  }
+}
 
 void ComputerCity::save( VariantMap& options ) const
 {
@@ -735,19 +814,19 @@ void ComputerCity::save( VariantMap& options ) const
   VARIANT_SAVE_CLASS_D( options, _d, buildings )
   VARIANT_SAVE_CLASS_D( options, _d, targets )
 
-  options[ "sea" ] = (_d->tradeType & EmpireMap::sea ? true : false);
-  options[ "land" ] = (_d->tradeType & EmpireMap::land ? true : false);
+  options[ "sea" ] = (_d->terrain & EmpireMap::sea ? true : false);
+  options[ "land" ] = (_d->terrain & EmpireMap::land ? true : false);
 
-  VARIANT_SAVE_ENUM_D( options, _d, useAI )
-  VARIANT_SAVE_ANY_D( options, _d, lastTimeMerchantSend )
-  VARIANT_SAVE_ANY_D( options, _d, lastTimeUpdate )
+  VARIANT_SAVE_ENUM_D( options, _d, modeAI )
+  VARIANT_SAVE_ANY_D( options, _d, trade.merchantSent )
+  VARIANT_SAVE_ANY_D( options, _d, lasttime.update )
   VARIANT_SAVE_ANY_D( options, _d, states.age )
   VARIANT_SAVE_ANY_D( options, _d, available )
-  VARIANT_SAVE_ANY_D( options, _d, merchantsNumber )
+  VARIANT_SAVE_ANY_D( options, _d, trade.merchants_n )
   VARIANT_SAVE_ANY_D( options, _d, distantCity )
   VARIANT_SAVE_ANY_D( options, _d, states.romeCity )
-  VARIANT_SAVE_ANY_D( options, _d, tradeDelay )
-  VARIANT_SAVE_ANY_D( options, _d, lastAttack )  
+  VARIANT_SAVE_ANY_D( options, _d, trade.delay )
+  VARIANT_SAVE_ANY_D( options, _d, lasttime.attacked )
   VARIANT_SAVE_ANY_D( options, _d, states.population )
   VARIANT_SAVE_ANY_D( options, _d, strength )
   VARIANT_SAVE_ANY_D( options, _d, sentiment )
@@ -757,27 +836,23 @@ void ComputerCity::load( const VariantMap& options )
 {
   City::load( options );
 
-  VARIANT_LOAD_TIME_D  ( _d, lastTimeUpdate,        options )
-  VARIANT_LOAD_TIME_D  ( _d, lastTimeMerchantSend,  options )
+  VARIANT_LOAD_TIME_D  ( _d, lasttime.update,       options )
+  VARIANT_LOAD_TIME_D  ( _d, trade.merchantSent,    options )
   VARIANT_LOAD_ANY_D   ( _d, available,             options )
-  VARIANT_LOAD_ANY_D   ( _d, merchantsNumber,       options )
+  VARIANT_LOAD_ANY_D   ( _d, trade.merchants_n,     options )
   VARIANT_LOAD_ANY_D   ( _d, distantCity,           options )
   VARIANT_LOAD_ANY_D   ( _d, available,             options )
   VARIANT_LOAD_ANY_D   ( _d, states.romeCity,       options )
   VARIANT_LOAD_ANY_D   ( _d, states.age,            options )
-  VARIANT_LOAD_ANY_D   ( _d, tradeDelay,            options )
-  VARIANT_LOAD_TIME_D  ( _d, lastAttack,            options )
+  VARIANT_LOAD_ANY_D   ( _d, trade.delay,           options )
+  VARIANT_LOAD_TIME_D  ( _d, lasttime.attacked,     options )
   VARIANT_LOAD_ANY_D   ( _d, strength,              options )
-  VARIANT_LOAD_ENUM_D  ( _d, useAI,                 options )
+  VARIANT_LOAD_ENUM_D  ( _d, modeAI,                options )
   VARIANT_LOAD_ANYDEF_D( _d, sentiment,         50, options )
   VARIANT_LOAD_ANYDEF_D( _d, states.population, _d->states.population, options )
 
-  foreach( gtype, good::all() )
-  {
-    _d->sells.setCapacity( *gtype, 0 );
-    _d->buys.setCapacity( *gtype, 0 );
-    _d->realSells.setCapacity( *gtype, 0 );
-  }
+  for( auto i : good::all() )
+    _resetGoodState( i );
 
   VARIANT_LOAD_CLASS_D( _d, targets,options )
   VARIANT_LOAD_CLASS_D( _d, sells, options )
@@ -786,11 +861,12 @@ void ComputerCity::load( const VariantMap& options )
   VARIANT_LOAD_CLASS_D_LIST( _d, peoples, options )
   VARIANT_LOAD_CLASS_D( _d, buildings, options )
 
+
   if( _d->realSells.empty() )
   {
-    foreach( it, good::all() )
+    for( auto it : good::all() )
     {
-      _d->realSells.setCapacity( *it, _d->sells.capacity( *it ) );
+      _d->realSells.setCapacity( it, _d->sells.capacity( it ) );
     }
   }
 
@@ -799,7 +875,7 @@ void ComputerCity::load( const VariantMap& options )
       _d->initPeoples();
   }
 
-  _d->tradeType = (options.get( "sea" ).toBool() ? EmpireMap::sea : EmpireMap::unknown)
+  _d->terrain = (options.get( "sea" ).toBool() ? EmpireMap::sea : EmpireMap::unknown)
                   + (options.get( "land" ).toBool() ? EmpireMap::land : EmpireMap::unknown);
 
   _initTextures();
@@ -808,7 +884,7 @@ void ComputerCity::load( const VariantMap& options )
 const good::Store& ComputerCity::sells() const { return _d->realSells; }
 const good::Store& ComputerCity::buys() const{ return _d->buys; }
 const city::States& ComputerCity::states() const { return _d->states; }
-void ComputerCity::delayTrade(unsigned int month){  _d->tradeDelay = month;}
+void ComputerCity::delayTrade(unsigned int month){  _d->trade.delay = month;}
 void ComputerCity::empirePricesChanged(good::Product, const PriceInfo &){}
 
 CityPtr ComputerCity::create( EmpirePtr empire, const std::string& name )
@@ -821,29 +897,29 @@ CityPtr ComputerCity::create( EmpirePtr empire, const std::string& name )
 
 void ComputerCity::addObject(ObjectPtr object )
 {
-  if( is_kind_of<Merchant>( object ) )
+  if( object.is<Merchant>() )
   {
-    MerchantPtr merchant = ptr_cast<Merchant>( object );
+    MerchantPtr merchant = object.as<Merchant>();
     good::Store& sellGoods = merchant->sellGoods();
     good::Store& buyGoods = merchant->buyGoods();
 
     _d->buys.storeAll( buyGoods );
 
-    foreach( gtype, good::all() )
+    for( auto gtype : good::all() )
     {
-      int qty = sellGoods.freeQty( *gtype );
-      good::Stock stock( *gtype, qty, qty );
+      int qty = sellGoods.freeQty( gtype );
+      good::Stock stock( gtype, qty, qty );
       _d->realSells.store( stock, qty );
     }
 
     _d->sells.storeAll( sellGoods );
 
-    _d->merchantsNumber = std::max<int>( 0, _d->merchantsNumber-1);
+    _d->trade.merchants_n = std::max<int>( 0, _d->trade.merchants_n-1);
   }
-  else if( is_kind_of<Barbarian>( object ) )
+  else if( object.is<Barbarian>() )
   {
-    BarbarianPtr brb = ptr_cast<Barbarian>( object );
-    _d->lastAttack = game::Date::current();
+    BarbarianPtr brb = object.as<Barbarian>();
+    _d->lasttime.attacked = game::Date::current();
     int attack = std::max<int>( brb->strength() - strength(), 0 );
     if( !attack ) attack = 10;
     _d->strength = math::clamp<int>( _d->strength - math::random( attack ), 0, 100 );
@@ -863,18 +939,18 @@ void ComputerCity::addObject(ObjectPtr object )
 void ComputerCity::changeTradeOptions(const VariantMap& stream)
 {
   VariantMap sells_vm = stream.get( "sells" ).toMap();
-  foreach( it, sells_vm )
+  for( auto it : sells_vm )
   {
-    good::Product gtype = good::Helper::getType( it->first );
-    _d->sells.setCapacity( gtype, Unit::fromValue( it->second ).toQty() );
-    _d->realSells.setCapacity( gtype, Unit::fromValue( it->second ).toQty() );
+    good::Product gtype = good::Helper::getType( it.first );
+    _d->sells.setCapacity( gtype, Unit::fromValue( it.second ).toQty() );
+    _d->realSells.setCapacity( gtype, Unit::fromValue( it.second ).toQty() );
   }
 
   VariantMap buys_vm = stream.get( "buys" ).toMap();
-  foreach( it, buys_vm )
+  for( auto it : buys_vm )
   {
-    good::Product gtype = good::Helper::getType( it->first );
-    _d->buys.setCapacity( gtype, Unit::fromValue( it->second ).toQty() );
+    good::Product gtype = good::Helper::getType( it.first );
+    _d->buys.setCapacity( gtype, Unit::fromValue( it.second ).toQty() );
   }
 }
 
@@ -890,7 +966,7 @@ void ComputerCity::timeStep( unsigned int time )
 
   if( game::Date::isMonthChanged() )
   {
-    _d->tradeDelay = math::clamp<int>( _d->tradeDelay-1, 0, 99 );
+    _d->trade.delay = math::clamp<int>( _d->trade.delay-1, 0, 99 );
     _d->calculateMonthState();    
   }
 
@@ -906,73 +982,19 @@ void ComputerCity::timeStep( unsigned int time )
   }
 
   //one year before step need
-  if( _d->lastTimeUpdate.monthsTo( game::Date::current() ) > DateTime::monthsInYear-1 )
+  if( _d->lasttime.update.monthsTo( game::Date::current() ) > DateTime::monthsInYear-1 )
   {
-    _d->merchantsNumber = math::clamp<int>( _d->merchantsNumber-1, 0, config::trade::maxMerchantsInRoute );
-    _d->lastTimeUpdate = game::Date::current();
+    _d->trade.merchants_n = math::clamp<int>( _d->trade.merchants_n-1, 0, config::trade::maxMerchantsInRoute );
+    _d->lasttime.update = game::Date::current();
 
-    foreach( gtype, good::all() )
-    {
-      _d->sells.setQty( *gtype, _d->sells.capacity( *gtype ) );
-      _d->buys.setQty( *gtype, 0  );
-      _d->realSells.setQty( *gtype, 0 );
-    }
+    for( auto i : good::all() )
+      _resetGoodState( i );
   }
 
-  if( _d->lastTimeMerchantSend.monthsTo( game::Date::current() ) > config::trade::minMonthsMerchantSend )
-  {
-    TraderouteList routes = empire()->tradeRoutes( name() );
-
-    if( routes.empty() )
-      return;
-
-    if( !_mayTrade() )
-      return;
-
-    _d->lastTimeMerchantSend = game::Date::current();
-
-    if( _d->merchantsNumber >= routes.size() )
-    {
-      return;
-    }
-
-    good::Storage sellGoods, buyGoods;
-    sellGoods.setCapacity( Merchant::defaultCapacity );
-    buyGoods.setCapacity( Merchant::defaultCapacity );
-
-    foreach( gtype, good::all() )
-    {
-      buyGoods.setCapacity( *gtype, _d->buys.capacity( *gtype ) );
-
-      //how much space left
-      int maxQty = (std::min)( _d->sells.capacity( *gtype ) / 4, sellGoods.freeQty() );
-
-      //we want send merchants to all routes
-      maxQty /= routes.size();
-
-      int qty = math::clamp( _d->sells.qty( *gtype ), 0, maxQty );
-
-      //have no goods to sell
-      if( qty == 0 )
-        continue;
-
-      good::Stock& stock = sellGoods.getStock( *gtype );
-      stock.setCapacity( qty );
-
-      //move goods to merchant's storage
-      _d->sells.retrieve( stock, qty );
-    }
-
-    //send merchants to all routes
-    foreach( route, routes )
-    {
-      _d->merchantsNumber++;
-      (*route)->addMerchant( name(), sellGoods, buyGoods );
-    }
-  }
+  _checkMerchantsDeadline();
 }
 
-DateTime ComputerCity::lastAttack() const { return _d->lastAttack; }
+DateTime ComputerCity::lastAttack() const { return _d->lasttime.attacked; }
 
 std::string ComputerCity::about(Object::AboutType type)
 {
@@ -996,7 +1018,7 @@ std::string ComputerCity::about(Object::AboutType type)
   return ret;
 }
 
-unsigned int ComputerCity::tradeType() const { return _d->tradeType; }
+unsigned int ComputerCity::tradeType() const { return _d->terrain; }
 int ComputerCity::strength() const { return _d->strength; }
 
 void ComputerCity::_initTextures()
@@ -1010,6 +1032,13 @@ void ComputerCity::_initTextures()
   _animation().load( ResourceGroup::empirebits, index+1, 6 );
   _animation().setLoop( true );
   _animation().setDelay( 2 );
+}
+
+void ComputerCity::_resetGoodState(good::Product pr)
+{
+  _d->sells.setQty( pr, _d->sells.capacity( pr ) );
+  _d->buys.setQty( pr, 0  );
+  _d->realSells.setQty( pr, 0 );
 }
 
 }//end namespace world

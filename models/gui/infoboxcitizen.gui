@@ -19,6 +19,12 @@
     text : ">"
   }
 
+  lbBorder#Label :
+  {
+    geometry : [ 25, 100, "pw-25", "100+120" ]
+    bgtype : "whiteBorder"    
+  }
+
   btnMove2base#PushButton : {
     geometry : [ 16, "ph-60", 40, "ph-40" ]
     font : "FONT_2"

@@ -59,6 +59,7 @@
 #include "environment.hpp"
 #include "dialogbox.hpp"
 #include "game/infoboxmanager.hpp"
+#include "events/playsound.hpp"
 #include "infobox_land.hpp"
 
 using namespace gfx;
@@ -94,7 +95,17 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
 {
   setupUI( ":/gui/infoboxhouse.gui" );
 
-  _house = ptr_cast<House>( tile.overlay() );
+  _house = tile.overlay().as<House>();
+
+  if( _house.isNull() )
+  {
+    Logger::warning( "!!! WARNING: Cant find house at [%d,%d]", tile.pos().i(), tile.pos().j() );
+    deleteLater();
+    return;
+  }
+
+  events::GameEventPtr e = events::PlaySound::create( "bmsel_house", 1, 100, audio::infobox, true );
+  e->dispatch();
 
   setTitle( _(_house->levelName()) );
 
@@ -222,14 +233,14 @@ void AboutHouse::drawHabitants( HousePtr house )
   int picId = house->spec().isPatrician() ? 541 : 542;
    
   Picture citPic( ResourceGroup::panelBackground, picId );
-  _lbBlackFrameRef()->setIcon( citPic, Point( 15, 5 ) );
+  _lbBlackFrame()->setIcon( citPic, Point( 15, 5 ) );
 
   // number of habitants
   Label* lbHabitants = new Label( this, Rect( 60, 157, width() - 16, 157 + citPic.height() ) );
 
   std::string freeRoomText;
   int current = house->habitants().count();
-  int freeRoom = house->maxHabitants() - current;
+  int freeRoom = house->capacity() - current;
   if( freeRoom > 0 )
   {
     // there is some room for new habitants!

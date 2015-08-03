@@ -110,14 +110,14 @@ float Forum::collectTaxes()
 void Forum::Impl::removeMoney(PlayerCityPtr city)
 {
   SenatePtr senate;
-  SenateList senates = city::statistic::getObjects<Senate>( city, object::senate );
+  SenateList senates = city->statistic().objects.find<Senate>( object::senate );
   if( !senates.empty() )
     senate = senates.front();
 
   int maxMoney = city->treasury().money();
   if( maxMoney > 0 )
   {
-    ForumList forums = city::statistic::getObjects<Forum>( city );
+    ForumList forums = city->statistic().objects.find<Forum>();
 
     if( senate.isValid() )
       maxMoney /= 2;

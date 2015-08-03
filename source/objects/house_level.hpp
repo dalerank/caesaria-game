@@ -33,8 +33,8 @@ public:
                  smallPalace, middlePalace, bigPalace, greatPalace,
                  maxLevel } ID;
 
-  typedef enum { maxSize2=2, maxSize3, maxSize4 } HouseMaxSize;
-  enum { plebsLevel=5 };
+  typedef enum { maxSize2=2, maxSize3, maxSize4, maxSize5 } HouseMaxSize;
+  enum { plebsLevel=domus, patricianLevel=smallVilla };
 };
 
 #endif //_CAESARIA_HOUSE_LEVEL_H_INCLUDE_

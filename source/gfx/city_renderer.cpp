@@ -50,6 +50,8 @@
 #include "layers/layertroubles.hpp"
 #include "layers/layerindigene.hpp"
 #include "layers/layereducation.hpp"
+#include "layers/unemployed.hpp"
+#include "layers/sentiment.hpp"
 #include "walker/walker.hpp"
 #include "objects/aqueduct.hpp"
 #include "tilemap_camera.hpp"
@@ -107,7 +109,7 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   _d->camera.init( *_d->tilemap, engine->virtualSize() );
   _d->engine = engine;
   _d->lastZoom = _d->camera.zoom();
-  _d->engine->initViewport( 0, _d->engine->screenSize() );
+  _d->engine->setScale( 1.f );
 
   addLayer( Simple::create( _d->camera, city ) );
   addLayer( Water::create( _d->camera, city ) );
@@ -120,6 +122,8 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   addLayer( Health::create( _d->camera, city, citylayer::baths ));
   addLayer( Religion::create( _d->camera, city ) );
   addLayer( Damage::create( _d->camera, city ) );
+  addLayer( Sentiment::create( _d->camera, city ) );
+  addLayer( Unemployed::create( _d->camera, city ) );
   addLayer( citylayer::Desirability::create( _d->camera, city ) );
   addLayer( Entertainment::create( _d->camera, city, citylayer::entertainment ) );
   addLayer( Entertainment::create( _d->camera, city, citylayer::theater ) );
@@ -143,6 +147,8 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   dopts.setFlag( DrawOptions::windowActive, true );
   dopts.setFlag( DrawOptions::mayChangeLayer, true );
   dopts.setFlag( DrawOptions::oldGraphics, oldGraphic );
+  dopts.setFlag( DrawOptions::showBuildings, true );
+  dopts.setFlag( DrawOptions::showTrees, true );
   dopts.setFlag( DrawOptions::mmbMoving, SETTINGS_VALUE( mmb_moving ) );
 
   _d->setLayer( citylayer::simple );
@@ -199,15 +205,17 @@ void CityRenderer::Impl::setLayer(int type)
 
 void CityRenderer::render()
 {  
-  bool zoomChanged = _d->lastZoom != _d->camera.zoom();
-  if( zoomChanged )
+  LayerPtr layer = _d->currentLayer;
+  Engine& engine = *_d->engine;
+
+  if( _d->lastZoom != _d->camera.zoom() )
   {
     _d->lastZoom = _d->camera.zoom();
 
-    Size s = _d->engine->screenSize() * _d->lastZoom / _d->camera.maxZoom();
-    bool zoomOk = _d->engine->initViewport( 0, s );
-    if( zoomOk )
-      _d->camera.setViewport( s );
+    float fzoom = _d->lastZoom / 100.f;
+    Size s = engine.screenSize() * (1/fzoom);
+    engine.setScale( fzoom );
+    _d->camera.setViewport( s );
   }
 
   if( _d->city->getOption( PlayerCity::updateTiles ) > 0 )
@@ -216,22 +224,18 @@ void CityRenderer::render()
     _d->city->setOption( PlayerCity::updateTiles, 0 );
   }
 
-  LayerPtr layer = _d->currentLayer;
-  Engine& engine = *_d->engine;
-
   if( layer.isNull() )
   {
     return;
   }
 
-  engine.setViewport(0, true );
+  engine.setScale( _d->lastZoom / 100.f );
 
   layer->beforeRender( engine );
   layer->render( engine );
   layer->afterRender( engine );
 
-  engine.setViewport( 0, false );
-  engine.drawViewport( 0, Rect() );
+  engine.setScale( 1.f );
 
   layer->renderUi( engine );
 
@@ -329,7 +333,7 @@ Camera* CityRenderer::camera() {  return &_d->camera; }
 Renderer::ModePtr CityRenderer::mode() const {  return _d->changeCommand;}
 void CityRenderer::addLayer( LayerPtr layer){  _d->layers.push_back( layer ); }
 LayerPtr CityRenderer::currentLayer() const { return _d->currentLayer; }
-void CityRenderer::setViewport(const Size& size){ _d->camera.setViewport( size ); }
+void CityRenderer::setViewport(const Size& size) { _d->camera.setViewport( size ); }
 Signal1<int>& CityRenderer::onLayerSwitch() { return _d->onLayerSwitchSignal; }
 
 }//end namespace gfx

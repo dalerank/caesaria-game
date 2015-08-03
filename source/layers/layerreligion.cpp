@@ -82,7 +82,7 @@ void Religion::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( religionLevel > 0 )
     {
-      _addColumn( screenPos, religionLevel );
+      drawColumn( engine, screenPos, religionLevel );
     }
   }
 

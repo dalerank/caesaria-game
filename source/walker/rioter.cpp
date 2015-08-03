@@ -36,8 +36,10 @@
 #include "core/variant.hpp"
 #include "game/gamedate.hpp"
 #include "walkers_factory.hpp"
+#include "core/common.hpp"
 
 using namespace gfx;
+using namespace events;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::rioter, Rioter)
 
@@ -83,7 +85,9 @@ void Rioter::_reachedPathway()
 void Rioter::_updateThoughts()
 {
   StringArray ret;
-  ret << "##rioter_say_1##" << "##rioter_say_2##" << "##rioter_say_3##";
+  ret << "##rioter_say_1##"
+      << "##rioter_say_2##"
+      << "##rioter_say_3##";
 
   setThinks( ret.random() );
 }
@@ -96,10 +100,10 @@ void Rioter::timeStep(const unsigned long time)
   {
   case Impl::searchHouse:
   {
-    ConstructionList constructions = city::statistic::getObjects<Construction>( _city(), object::house );
+    ConstructionList constructions = _city()->statistic().objects.find<Construction>( object::house );
     for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
     {
-      HousePtr h = ptr_cast<House>( *it );
+      HousePtr h = (*it).as<House>();
       if( h->spec().level() <= _d->houseLevel ) { it=constructions.erase( it ); }
       else { ++it; }
     }
@@ -122,7 +126,7 @@ void Rioter::timeStep(const unsigned long time)
 
   case Impl::searchAnyBuilding:
   {
-    ConstructionList constructions = city::statistic::getObjects<Construction>( _city(), object::house );
+    ConstructionList constructions = _city()->statistic().objects.find<Construction>( object::house );
 
     for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
     {
@@ -174,9 +178,9 @@ void Rioter::timeStep(const unsigned long time)
   {
     if( game::Date::isDayChanged() )
     {
-      ConstructionList constructions = city::statistic::getObjects<Construction>( _city(),
-                                                                             object::any,
-                                                                             pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
+      ConstructionList constructions = _city()->statistic().objects.find<Construction>( object::any,
+                                                                                        pos() - TilePos( 1, 1),
+                                                                                        pos() + TilePos( 1, 1) );
 
       for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
       {
@@ -193,14 +197,13 @@ void Rioter::timeStep(const unsigned long time)
       }
       else
       {
-        foreach( it, constructions )
+        for( auto c : constructions )
         {
-          ConstructionPtr c = *it;
           c->updateState( pr::fire, 1 );
           c->updateState( pr::damage, 1 );
           if( c->state( pr::damage ) < 10 || c->state( pr::fire ) < 10 )
           {
-            events::GameEventPtr e = events::Disaster::create( c->tile(), events::Disaster::riots );
+            GameEventPtr e = Disaster::create( c->tile(), Disaster::riots );
             e->dispatch();
           }
           break;
@@ -232,11 +235,8 @@ void Rioter::send2City( BuildingPtr bld )
   setPos( tiles.random()->pos() );
   _d->houseLevel = 0;
 
-  if( is_kind_of<House>( bld ) )
-  {
-    HousePtr house = ptr_cast<House>( bld );
-    _d->houseLevel = house->spec().level();
-  }
+  if( bld.is<House>() )
+    _d->houseLevel = bld.as<House>()->spec().level();
 
   _d->state = Impl::searchHouse;
 
@@ -276,16 +276,14 @@ int Rioter::agressive() const { return 1; }
 void Rioter::excludeAttack(object::Group group) { _d->excludeGroups << group; }
 
 Pathway Rioter::Impl::findTarget(PlayerCityPtr city, ConstructionList constructions, TilePos pos )
-{  
+{    
   if( !constructions.empty() )
   {
+    constructions = constructions.random( 10 );
     Pathway pathway;
-    for( int i=0; i<10; i++)
+    for( auto c : constructions )
     {
-      ConstructionList::iterator it = constructions.begin();
-      std::advance( it, rand() % constructions.size() );
-
-      pathway = PathwayHelper::create( pos, *it, PathwayHelper::allTerrain );
+      pathway = PathwayHelper::create( pos, c, PathwayHelper::allTerrain );
       if( pathway.isValid() )
       {
         return pathway;

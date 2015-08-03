@@ -12,8 +12,10 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "seamerchant.hpp"
+#include "merchant_sea.hpp"
 #include "good/storage.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "city/statistic.hpp"
@@ -73,7 +75,7 @@ public:
 };
 
 SeaMerchant::SeaMerchant(PlayerCityPtr city )
-  : Human( city ), _d( new Impl )
+  : Merchant( city ), _d( new Impl )
 {
   _setType( walker::seaMerchant );
   _d->waitInterval = 0;
@@ -103,16 +105,16 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     // get the list of buildings within reach   
     if( tryDockCount < maxTryDockCount )
     {
-      DockList docks = city::statistic::getObjects<Dock>( city, object::dock );
+      DockList docks = city->statistic().objects.find<Dock>( object::dock );
 
       if( !docks.empty() )
       {
         DockList freeDocks;
-        foreach( dock, docks )
+        for( auto dock : docks )
         {
-          if( !(*dock)->isBusy() )
+          if( !dock->isBusy() )
           {
-            freeDocks.push_back( *dock );
+            freeDocks.push_back( dock );
           }
         }
 
@@ -164,21 +166,21 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     if( myDock.isValid() && emptyDock )
     {
       trade::Options& options = city->tradeOptions();
-      good::ProductMap cityGoodsAvailable = statistic::getProductMap( city, false );
+      good::ProductMap cityGoodsAvailable = city->statistic().goods.details( false );
       //request goods
-      foreach( goodType, good::all() )
+      for( auto goodType : good::all() )
       {
-        int needQty = buy.freeQty( *goodType );
-        if (!options.isExporting(*goodType))
+        int needQty = buy.freeQty( goodType );
+        if (!options.isExporting( goodType) )
         {
           continue;
         }
-        int exportLimit = options.tradeLimit( trade::exporting, *goodType ).toQty();
-        int maySell = math::clamp<unsigned int>( cityGoodsAvailable[ *goodType ] - exportLimit, 0, needQty );
+        int exportLimit = options.tradeLimit( trade::exporting, goodType ).toQty();
+        int maySell = math::clamp<unsigned int>( cityGoodsAvailable[ goodType ] - exportLimit, 0, needQty );
 
         if( maySell > 0)
         {
-          good::Stock stock( *goodType, maySell, maySell );
+          good::Stock stock( goodType, maySell, maySell );
           myDock->requestGoods( stock );
           anyBuy = true;
         }
@@ -203,18 +205,18 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     {
       trade::Options& options = city->tradeOptions();
       //try buy goods
-      foreach( goodType, good::all() )
+      for( auto goodType : good::all() )
       {
-        if (!options.isExporting(*goodType))
+        if (!options.isExporting( goodType))
         {
           continue;
         }
 
-        int needQty = buy.freeQty( *goodType );
+        int needQty = buy.freeQty( goodType );
 
         if( needQty > 0 )
         {
-          good::Stock& stock = buy.getStock( *goodType );
+          good::Stock& stock = buy.getStock( goodType );
           currentBuys += myDock->exportingGoods( stock, needQty );
           anyBuy = true;
         }
@@ -276,16 +278,16 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
       trade::Options& options = city->tradeOptions();
       const good::Store& importing = options.buys();
       //try sell goods
-      foreach( goodType, good::all() )
+      for( auto goodType : good::all() )
       {
-        if (!options.isImporting(*goodType))
+        if (!options.isImporting(goodType))
         {
           continue;
         }
 
-        if( sell.qty(*goodType) > 0 && importing.capacity(*goodType) > 0)
+        if( sell.qty(goodType) > 0 && importing.capacity(goodType) > 0)
         {
-          currentSell += myDock->importingGoods( sell.getStock(*goodType) );
+          currentSell += myDock->importingGoods( sell.getStock(goodType) );
           anySell = true;
         }
       }
@@ -325,24 +327,23 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
 
 Pathway SeaMerchant::Impl::findRandomRaid(const DockList& docks, TilePos position)
 {
-  DockList::const_iterator i = docks.begin();
   DockPtr minQueueDock;
   int minQueue = 999;
 
-  for( DockList::const_iterator it=docks.begin(); it != docks.end(); ++it )
+  for( auto it : docks )
   {
-    int currentQueueSize = (*it)->queueSize();
+    int currentQueueSize = it->queueSize();
     if( currentQueueSize < minQueue )
     {
       minQueue = currentQueueSize;
-      minQueueDock = *it;
+      minQueueDock = it;
     }
   }
 
   Pathway ret;
   if( minQueueDock.isValid() )
   {
-    ret = PathwayHelper::create( position, (*i)->queueTile().pos(), PathwayHelper::deepWater );
+    ret = PathwayHelper::create( position, minQueueDock->queueTile().pos(), PathwayHelper::deepWater );
   }
 
   return ret;
@@ -387,12 +388,14 @@ void SeaMerchant::Impl::goAwayFromCity( PlayerCityPtr city, WalkerPtr walker )
 
 DockPtr SeaMerchant::Impl::findLandingDock(PlayerCityPtr city, WalkerPtr walker)
 {
-  DockList docks = city::statistic::getObjects<Dock>( city, object::dock, walker->pos() - TilePos( 1, 1), walker->pos() + TilePos( 1, 1 ) );
-  foreach( dock, docks )
+  DockList docks = city->statistic().objects.find<Dock>( object::dock,
+                                                         walker->pos() - TilePos( 1, 1),
+                                                         walker->pos() + TilePos( 1, 1 ) );
+  for( auto dock : docks )
   {
-    if( (*dock)->landingTile().pos() == walker->pos() )
+    if( dock->landingTile().pos() == walker->pos() )
     {
-      return *dock;
+      return dock;
     }
   }
 
@@ -416,9 +419,8 @@ void SeaMerchant::save( VariantMap& stream ) const
   VARIANT_SAVE_ANY_D( stream, _d, currentSell )
   VARIANT_SAVE_ANY_D( stream, _d, currentBuys )
   VARIANT_SAVE_ENUM_D( stream, _d, nextState )
-
-  stream[ "buy"   ] = _d->buy.save();
-  stream[ "sell"  ] = _d->sell.save();
+  VARIANT_SAVE_CLASS_D( stream, _d, buy )
+  VARIANT_SAVE_CLASS_D( stream, _d, sell )
 }
 
 void SeaMerchant::load( const VariantMap& stream)
@@ -430,10 +432,13 @@ void SeaMerchant::load( const VariantMap& stream)
   VARIANT_LOAD_ENUM_D( _d, nextState, stream )
   VARIANT_LOAD_ANY_D( _d, currentBuys, stream )
   VARIANT_LOAD_ANY_D( _d, currentSell, stream )
-
-  _d->buy.load( stream.get( "buy").toMap() );
-  _d->sell.load( stream.get( "sell" ).toMap() );
+  VARIANT_LOAD_CLASS_D( _d, buy, stream )
+  VARIANT_LOAD_CLASS_D( _d, sell, stream )
 }
+
+good::ProductMap SeaMerchant::sold() const { return _d->sell.details(); }
+good::ProductMap SeaMerchant::bougth() const { return _d->buy.details(); }
+good::ProductMap SeaMerchant::mayBuy() const { return _d->buy.amounts(); }
 
 void SeaMerchant::timeStep(const unsigned long time)
 {
@@ -526,11 +531,13 @@ TilePos SeaMerchant::places(Walker::Place type) const
 }
 
 
-WalkerPtr SeaMerchant::create(PlayerCityPtr city) {  return create( city, world::MerchantPtr() ); }
+WalkerPtr SeaMerchant::create(PlayerCityPtr city) {  return create( city, world::MerchantPtr() ).object(); }
 
-WalkerPtr SeaMerchant::create(PlayerCityPtr city, world::MerchantPtr merchant )
+SeaMerchantPtr SeaMerchant::create(PlayerCityPtr city, world::MerchantPtr merchant )
 {
-  SeaMerchant* cityMerchant( new SeaMerchant( city ) );
+  SeaMerchantPtr cityMerchant( new SeaMerchant( city ) );
+  cityMerchant->drop();
+
   if( merchant.isValid() )
   {
     cityMerchant->_d->sell.resize( merchant->sellGoods() );
@@ -540,10 +547,7 @@ WalkerPtr SeaMerchant::create(PlayerCityPtr city, world::MerchantPtr merchant )
     cityMerchant->_d->baseCityName = merchant->baseCity();
   }
 
-  WalkerPtr ret( cityMerchant );
-  ret->drop();
-
-  return ret;
+  return cityMerchant;
 }
 
 std::string SeaMerchant::parentCity() const { return _d->baseCityName; }
