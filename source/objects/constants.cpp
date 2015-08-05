@@ -18,6 +18,7 @@
 #include "constants.hpp"
 #include "metadata.hpp"
 #include "core/logger.hpp"
+#include "core/variant_list.hpp"
 
 namespace object
 {
@@ -149,5 +150,29 @@ std::string toString( const Group& g)
 {
   return MetaDataHolder::instance().findGroupname( g );
 }
+
+VariantList TypeSet::save() const
+{
+  StringArray ret;
+  for( auto type : *this )
+    ret.push_back( toString( type ) );
+
+  return ret;
+}
+
+void TypeSet::load(const VariantList& stream)
+{
+  StringArray names;
+  names << stream;
+  for( auto typeStr : names )
+  {
+    object::Type type = toType( typeStr );
+    if( type != object::unknown )
+    {
+      insert( type );
+    }
+  }
+}
+
 
 }//end namespace object

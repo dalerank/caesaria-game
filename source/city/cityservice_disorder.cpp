@@ -45,9 +45,9 @@ const int minSentiment4protest = 60;
 const int minSentiment4mugger = 30;
 
 std::string crimeDesc[ crime::maxLevel ] = { "##advchief_no_crime##", "##advchief_very_low_crime##", "##advchief_low_crime##",
-                                              "##advchief_some_crime##", "##advchief_which_crime##", "##advchief_more_crime##",
-                                              "##advchief_simple_crime##", "##advchief_average_crime##", "##advchief_high_crime##",
-                                              "##advchief_veryhigh_crime##" };
+                                             "##advchief_some_crime##", "##advchief_which_crime##", "##advchief_more_crime##",
+                                             "##advchief_simple_crime##", "##advchief_average_crime##", "##advchief_high_crime##",
+                                             "##advchief_veryhigh_crime##" };
 }
 
 namespace city

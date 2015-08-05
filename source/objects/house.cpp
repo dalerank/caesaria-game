@@ -57,10 +57,10 @@ namespace {
          maxTableTax=25, defaultHappiness=50, maxHappiness=100 };
 
   static int happines4tax[maxTableTax] = { 10,  9,  7,  6,  4,
-                                                 2,  1,  0, -1, -2,
-                                                -2, -3, -4, -5, -7,
-                                                -9,-11,-13,-15, -17,
-                                               -19,-21,-23,-27, -31 };
+                                                2,  1,  0, -1,  -2,
+                                               -2, -3, -4, -5,  -7,
+                                               -9,-11,-13,-15, -17,
+                                              -19,-21,-23,-27, -31 };
 
   int getHappines4tax( int tax )
   {
