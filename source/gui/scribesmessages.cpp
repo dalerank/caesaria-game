@@ -94,7 +94,7 @@ protected:
 
     item.resetPicture( frameRect.size() );
 
-    item.draw( util::date2str( time, true ), font, Point( 35, 0 ) );
+    item.draw( utils::date2str( time, true ), font, Point( 35, 0 ) );
     item.draw( item.text(), font, Point( width() / 2, 0 ) );
   }
 

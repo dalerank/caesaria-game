@@ -124,11 +124,11 @@ void TopMenu::Impl::updateDate()
   if( metric::Measure::mode() == metric::Measure::roman )
   {
     RomanDate rDate( game::Date::current() );
-    text = util::date2str( rDate, true );
+    text = utils::date2str( rDate, true );
   }
   else
   {
-    text = util::date2str( game::Date::current(), true );
+    text = utils::date2str( game::Date::current(), true );
   }
 
   lbDate->setText( text );
