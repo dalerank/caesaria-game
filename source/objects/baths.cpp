@@ -44,6 +44,21 @@ bool Baths::build( const city::AreaInfo& info )
   return result;
 }
 
+bool Baths::canBuild(const city::AreaInfo& areaInfo) const
+{
+  bool ok = HealthBuilding::canBuild( areaInfo );
+
+  if( ok )
+  {
+    Baths* nc_this = const_cast<Baths*>( this );
+    TilesArray possiblePlace = areaInfo.city->tilemap().getArea( areaInfo.pos, areaInfo.pos + TilePos(1,1) );
+    bool haveWater = !possiblePlace.select( Tile::pReservoirWater ).empty();
+    nc_this->_fgPicture(0) = haveWater ? animation().frame( 0 ) : Picture::getInvalid();
+  }
+
+  return ok;
+}
+
 bool Baths::mayWork() const {  return ServiceBuilding::mayWork() && _haveReservorWater; }
 
 void Baths::timeStep(const unsigned long time)

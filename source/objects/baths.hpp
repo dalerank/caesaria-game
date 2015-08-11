@@ -30,6 +30,7 @@ public:
   virtual void deliverService();
   virtual unsigned int walkerDistance() const;
   virtual bool build(const city::AreaInfo &info);
+  virtual bool canBuild(const city::AreaInfo &areaInfo) const;
   virtual bool mayWork() const;
 protected:
   bool _haveReservorWater;

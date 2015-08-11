@@ -84,6 +84,9 @@ public:
     SmartList< T > find( object::Type type ) const;
 
     template< class T >
+    SmartList< T > find( object::TypeSet types ) const;
+
+    template< class T >
     SmartList< T > find( const object::Type type, TilePos start, TilePos stop ) const;
 
     template< class T >
@@ -429,6 +432,20 @@ inline SmartList<T> Statistic::_Objects::find( object::Group group ) const
     {
       ret.push_back( b );
     }
+  }
+
+  return ret;
+}
+
+template< class T >
+inline SmartList< T > Statistic::_Objects::find( object::TypeSet types ) const
+{
+  SmartList< T > ret;
+  const OverlayList& buildings = _parent.rcity.overlays();
+  for( auto bld : buildings )
+  {
+    if( bld.isValid() && types.count( bld->type() ) > 0 )
+      ret.addIfValid( bld.as<T>() );
   }
 
   return ret;

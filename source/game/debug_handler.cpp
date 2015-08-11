@@ -64,6 +64,8 @@
 #include "objects/house_habitants.hpp"
 #include "gui/property_workspace.hpp"
 #include "objects/factory.hpp"
+#include "events/warningmessage.hpp"
+#include "objects/house_spec.hpp"
 
 using namespace gfx;
 using namespace citylayer;
@@ -81,6 +83,7 @@ enum {
   level,
   in_city,
   options,
+  house,
   draw
 };
 
@@ -168,7 +171,9 @@ enum {
   toggle_show_buildings,
   toggle_show_trees,
   forest_fire,
-  forest_grow
+  forest_grow,
+  increase_max_level,
+  decrease_max_level
 };
 
 class DebugHandler::Impl
@@ -278,6 +283,9 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( in_city, decrease_sentiment )
   ADD_DEBUG_EVENT( in_city, increase_sentiment )
   ADD_DEBUG_EVENT( in_city, forest_grow )
+
+  ADD_DEBUG_EVENT( house, increase_max_level )
+  ADD_DEBUG_EVENT( house, decrease_max_level )
 
   ADD_DEBUG_EVENT( options, all_sound_off )
   ADD_DEBUG_EVENT( options, reload_aqueducts )
@@ -432,6 +440,21 @@ void DebugHandler::Impl::handleEvent(int event)
         ccity->__debugSendMerchant();
       }
     }
+  }
+  break;
+
+  case increase_max_level:
+  case decrease_max_level:
+  {
+    city::VictoryConditions conditions;
+    conditions = game->city()->victoryConditions();
+    conditions.setMaxHouseLevel( conditions.maxHouseLevel() + (event == increase_max_level ? 1 : -1) );
+    game->city()->setVictoryConditions( conditions );
+
+    std::string levelName = HouseSpecHelper::instance().getSpec( conditions.maxHouseLevel() ).internalName();
+    events::GameEventPtr e = events::WarningMessage::create( "DEBUG: House max level is " + levelName,
+                                                             events::WarningMessage::neitral );
+    e->dispatch();
   }
   break;
 

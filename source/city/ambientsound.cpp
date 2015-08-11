@@ -140,7 +140,7 @@ void AmbientSound::timeStep( const unsigned int time )
 
   //add new emitters
   _d->emmitersArea.clear();
-  _d->emmitersArea.reset( _city()->tilemap(), _d->cameraPos, ambientsnd::maxDistance );
+  _d->emmitersArea.add( _city()->tilemap(), _d->cameraPos, ambientsnd::maxDistance );
 
   for( auto tile : _d->emmitersArea )
     _d->emitters.insert( SoundEmitter( tile, _d->cameraPos ) );
@@ -152,8 +152,7 @@ void AmbientSound::timeStep( const unsigned int time )
     if( abs( distance.i() ) > ambientsnd::maxDistance || abs( distance.j() ) > ambientsnd::maxDistance
         || !(*i).isValid() )
     {
-      //ae.stop( (*i).getSound() );
-      _d->emitters.erase( i++ );
+      i = _d->emitters.erase( i );
     }
     else
     {

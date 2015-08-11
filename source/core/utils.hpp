@@ -86,6 +86,8 @@ namespace utils
 
   std::string toRoman( int value );
 
+  bool endsWith( const std::string& text, const std::string& which );
+
   float eventProbability(float probability, int k, int n);  
   std::wstring utf8toWString(const char* src, size_t size);
 }
