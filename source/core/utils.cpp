@@ -244,9 +244,16 @@ int toInt( const char* in, const char** out/*=0*/ )
   }
 }
 
-int toInt( const std::string& number )
+int toInt(const std::string& number, int base)
 {
-  return toInt( number.c_str() );
+  switch( base )
+  {
+  case 16:
+    return std::stoul( number, nullptr, 16);
+
+  default:
+    return toInt( number.c_str() );
+  }
 }
 
 unsigned int toUint( const char* in, const char** out/*=0*/ )
