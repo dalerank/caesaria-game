@@ -37,6 +37,11 @@ namespace gui
 {
 
 REGISTER_CLASS_IN_WIDGETFACTORY(DlcFolderViewer)
+#ifdef CAESARIA_USE_STEAM
+static std::string ld_prefix = "STEAM_RUNTIME=0 LD_LIBRARY_PATH=\"$SYSTEM_LD_LIBRARY_PATH\" PATH=\"$SYSTEM_PATH\" ";
+#else
+static std::string ld_prefix;
+#endif
 
 class DlcFolderViewer::Impl
 {
@@ -149,7 +154,7 @@ DlcFolderViewer::~DlcFolderViewer() {}
 
 void DlcFolderViewer::_openFolder()
 {
-  OSystem::openDir( _d->folder.toString() );
+  OSystem::openDir( _d->folder.toString(), ld_prefix );
 }
 
 void DlcFolderViewer::draw(Engine& painter)
@@ -187,7 +192,7 @@ void DlcFolderViewer::_resolveCellClick(int row, int column)
   if( _d->table )
   {
     Path path = _d->table->getCellData( row, column, "path" ).toString();
-    Path save = path;
+    Path save = path;   
     path = path.changeExtension( Locale::current() );
 
     if( !path.exist() )
@@ -201,7 +206,7 @@ void DlcFolderViewer::_resolveCellClick(int row, int column)
     }
     else
     {
-      OSystem::openUrl( save.toCString() );
+      OSystem::openUrl( save.toCString(), ld_prefix );
     }
   }
 }
