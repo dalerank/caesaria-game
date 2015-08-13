@@ -88,7 +88,7 @@ private:
   DrawMode _mode;
   int _picIndex;
   unsigned int _maxValue;
-  int _minXValue, _maxXValue;
+  struct { int min, max; } _x;
   bool _isSmall;
 };
 
@@ -386,12 +386,12 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
         _maxValue = std::max<int>( _maxValue, population[ age ] );
       }
 
-      _minXValue = 0;
-      _maxXValue = _values.size();
+      _x.min = 0;
+      _x.max = _values.size();
       _maxValue = __calcMaxLegentYValue( _maxValue );
 
       emit onMaxYChange( _maxValue );
-      emit onMaxXChange( _maxXValue );
+      emit onMaxXChange( _x.max );
     }
   break;
 
@@ -412,9 +412,9 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
       }
 
       _maxValue = __calcMaxLegentYValue( _maxValue );
-      _maxXValue = _values.size();
+      _x.max = _values.size();
       emit onMaxYChange( _maxValue );
-      emit onMaxXChange( _maxXValue );
+      emit onMaxXChange( _x.max );
     }
   break;
 
@@ -439,8 +439,8 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
 
       if( !levelPopulations.empty() )
       {
-        _minXValue = levelPopulations.begin()->second;
-        _maxXValue = levelPopulations.rbegin()->second;
+        _x.min = levelPopulations.begin()->second;
+        _x.max = levelPopulations.rbegin()->second;
         for( auto it : levelPopulations )
         {
           _values.push_back( it.second );
@@ -448,9 +448,9 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
       }
 
       _maxValue = __calcMaxLegentYValue( _maxValue );
-      _maxXValue = HouseLevel::maxLevel;
+      _x.max = HouseLevel::maxLevel;
       emit onMaxYChange( _maxValue );
-      emit onMaxXChange( _maxXValue );
+      emit onMaxXChange( _x.max );
     }
   break;
 
