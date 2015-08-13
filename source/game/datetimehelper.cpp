@@ -19,7 +19,7 @@
 #include "core/utils.hpp"
 #include "core/gettext.hpp"
 
-namespace util
+namespace utils
 {
 
 

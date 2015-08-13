@@ -107,7 +107,7 @@ public:
   city::Scribes scribes;
   city::development::Options buildOptions;
   city::trade::Options tradeOptions;
-  city::VictoryConditions targets;
+  city::VictoryConditions winTargets;
   city::States states;
   city::Walkers walkers;
   city::Options options;
@@ -128,11 +128,12 @@ public:
   void monthStep( PlayerCityPtr city, const DateTime& time );
   void calculatePopulation();
 
-signals public:
-  Signal1<int> onPopulationChangedSignal;
-  Signal1<std::string> onWarningMessageSignal;
-  Signal2<TilePos,std::string> onDisasterEventSignal;
-  Signal0<> onChangeBuildingOptionsSignal;
+ struct {
+  Signal1<int> onPopulationChanged;
+  Signal1<std::string> onWarningMessage;
+  Signal2<TilePos,std::string> onDisasterEvent;
+  Signal0<> onBuildingOptionsChanged;
+ } signal;
 };
 
 PlayerCity::PlayerCity(world::EmpirePtr empire)
@@ -203,7 +204,7 @@ void PlayerCity::timeStep(unsigned int time)
   if( game::Date::isYearChanged() )
   {
     _d->states.age++;
-    _d->targets.decreaseReignYear();
+    _d->winTargets.decreaseReignYear();
   }
 
   if( game::Date::isMonthChanged() )
@@ -250,7 +251,7 @@ void PlayerCity::Impl::monthStep( PlayerCityPtr city, const DateTime& time )
 void PlayerCity::Impl::calculatePopulation()
 {
   states.population = statistic->population.current();
-  emit onPopulationChangedSignal( states.population );
+  emit signal.onPopulationChanged( states.population );
 }
 
 const WalkerList& PlayerCity::walkers(const TilePos& pos) { return _d->walkers.at( pos ); }
@@ -294,8 +295,7 @@ int PlayerCity::strength() const
 
 DateTime PlayerCity::lastAttack() const
 {
-  city::MilitaryPtr mil;
-  mil << findService( city::Military::defaultName() );
+  city::MilitaryPtr mil = statistic().services.find<city::Military>();
   return mil.isValid() ? mil->lastAttack() : DateTime( -350, 0, 0 );
 }
 
@@ -327,29 +327,10 @@ void PlayerCity::save( VariantMap& stream) const
   LOG_CITY.info( "Save trade/build/win options" );
   VARIANT_SAVE_CLASS_D( stream, _d, tradeOptions )
   VARIANT_SAVE_CLASS_D( stream, _d, buildOptions )
-  stream[ "winTargets"   ] = _d->targets.save();
+  VARIANT_SAVE_CLASS_D( stream, _d, winTargets )
 
   LOG_CITY.info( "Save walkers information" );
-  VariantMap vm_walkers;
-  int walkedId = 0;
-  for (auto w : _d->walkers)
-  {
-    VariantMap vm_walker;
-    walker::Type wtype = walker::unknown;
-    try
-    {
-      wtype = w->type();
-      w->save( vm_walker );
-      vm_walkers[ utils::format( 0xff, "%d", walkedId ) ] = vm_walker;
-    }
-    catch(...)
-    {
-      LOG_CITY.error( "Can't save walker type " + WalkerHelper::getTypename( wtype ));
-    }
-
-    walkedId++;
-  }
-  stream[ "walkers" ] = vm_walkers;
+  VARIANT_SAVE_CLASS_D( stream, _d, walkers )
 
   LOG_CITY.info( "Save overlays information" );
   VariantMap vm_overlays;
@@ -422,7 +403,7 @@ void PlayerCity::load( const VariantMap& stream )
   LOG_CITY.info( "Parse trade/build/win params" );
   VARIANT_LOAD_CLASS_D( _d, tradeOptions, stream )
   VARIANT_LOAD_CLASS_D( _d, buildOptions, stream )
-  _d->targets.load( stream.get( "winTargets").toMap() );
+  _d->winTargets.load( stream.get( "winTargets").toMap() );
 
   LOG_CITY.info( "Load overlays" );
   VariantMap overlays = stream.get( "overlays" ).toMap();
@@ -535,16 +516,16 @@ const city::SrvcList& PlayerCity::services() const { return _d->services; }
 void PlayerCity::setBuildOptions(const city::development::Options& options)
 {
   _d->buildOptions = options;
-  emit _d->onChangeBuildingOptionsSignal();
+  emit _d->signal.onBuildingOptionsChanged();
 }
 
 const city::States &PlayerCity::states() const              { return _d->states; }
-Signal1<std::string>& PlayerCity::onWarningMessage()        { return _d->onWarningMessageSignal; }
-Signal2<TilePos,std::string>& PlayerCity::onDisasterEvent() { return _d->onDisasterEventSignal; }
-Signal0<>&PlayerCity::onChangeBuildingOptions()             { return _d->onChangeBuildingOptionsSignal; }
+Signal1<std::string>& PlayerCity::onWarningMessage()        { return _d->signal.onWarningMessage; }
+Signal2<TilePos,std::string>& PlayerCity::onDisasterEvent() { return _d->signal.onDisasterEvent; }
+Signal0<>&PlayerCity::onChangeBuildingOptions()             { return _d->signal.onBuildingOptionsChanged; }
 const city::development::Options& PlayerCity::buildOptions() const { return _d->buildOptions; }
-const city::VictoryConditions& PlayerCity::victoryConditions() const {   return _d->targets; }
-void PlayerCity::setVictoryConditions(const city::VictoryConditions& targets) { _d->targets = targets; }
+const city::VictoryConditions& PlayerCity::victoryConditions() const {   return _d->winTargets; }
+void PlayerCity::setVictoryConditions(const city::VictoryConditions& targets) { _d->winTargets = targets; }
 OverlayPtr PlayerCity::getOverlay( const TilePos& pos ) const { return _d->tilemap.at( pos ).overlay(); }
 PlayerPtr PlayerCity::mayor() const                         { return _d->player; }
 city::trade::Options& PlayerCity::tradeOptions()            { return _d->tradeOptions; }
@@ -553,7 +534,7 @@ const good::Store& PlayerCity::sells() const                { return _d->tradeOp
 const good::Store& PlayerCity::buys() const                 { return _d->tradeOptions.buys(); }
 ClimateType PlayerCity::climate() const                     { return (ClimateType)getOption( PlayerCity::climateType ); }
 unsigned int PlayerCity::tradeType() const                  { return world::EmpireMap::sea | world::EmpireMap::land; }
-Signal1<int>& PlayerCity::onPopulationChanged()             { return _d->onPopulationChangedSignal; }
+Signal1<int>& PlayerCity::onPopulationChanged()             { return _d->signal.onPopulationChanged; }
 Signal1<int>& PlayerCity::onFundsChanged()                  { return _d->economy.onChange(); }
 void PlayerCity::setCameraPos(const TilePos pos)            { _d->cameraStart = pos; }
 TilePos PlayerCity::cameraPos() const                       { return _d->cameraStart; }

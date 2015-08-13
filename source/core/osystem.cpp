@@ -17,6 +17,7 @@
 
 #include "osystem.hpp"
 #include "platform.hpp"
+#include "logger.hpp"
 #include <ctime>
 
 #ifdef CAESARIA_PLATFORM_LINUX
@@ -56,21 +57,22 @@ void OSystem::error(const std::string& title, const std::string& text)
 #endif
 }
 
-void OSystem::openUrl(const std::string& url)
+void OSystem::openUrl(const std::string& url, const std::string& prefix)
 {
 #ifdef CAESARIA_PLATFORM_LINUX
-  std::string command = "xdg-open '" + url + "'";
+  std::string command = prefix + "xdg-open '" + url + "'";
+  Logger::warning( command );
   ::system( command.c_str() );
 #elif defined(CAESARIA_PLATFORM_WIN)
   ShellExecuteA(0, 0, url.c_str(), 0, 0 , SW_SHOW );
 #endif
 }
 
-void OSystem::openDir(const std::string& path)
+void OSystem::openDir(const std::string& path, const std::string& prefix)
 {
   std::string result;
 #ifdef CAESARIA_PLATFORM_LINUX
-  result = "nautilus '" + path + "' &";
+  result = prefix + "nautilus '" + path + "' &";
   ::system( result.c_str() );
 #elif defined(CAESARIA_PLATFORM_WIN)
   ShellExecute(GetDesktopWindow(), "open", path.c_str(), NULL, NULL, SW_SHOWNORMAL);

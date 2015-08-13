@@ -188,5 +188,6 @@ int VictoryConditions::maxHouseLevel() const { return _d->maxHouseLevel; }
 const StringArray& VictoryConditions::overview() const{  return _d->overview;}
 void VictoryConditions::addReignYears(int value){  _d->reignYears += value;}
 void VictoryConditions::decreaseReignYear(){ _d->reignYears = std::max<int>( _d->reignYears-1, 0); }
+void VictoryConditions::setMaxHouseLevel(int level) { _d->maxHouseLevel = math::clamp<int>( level, HouseLevel::vacantLot, HouseLevel::greatPalace ); }
 
 }//end namespace city

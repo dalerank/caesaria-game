@@ -139,8 +139,11 @@ void Tax::handleEvent(NEvent& event)
 }
 
 Tax::Tax( Camera& camera, PlayerCityPtr city)
-  : Info( camera, city, 124 )
+  : Info( camera, city, 9 )
 {
+  if( !city->getOption( PlayerCity::c3gameplay ) )
+    _loadColumnPicture( ResourceGroup::sprites, 124 );
+
   _addWalkerType( walker::taxCollector );
   _initialize();
 }

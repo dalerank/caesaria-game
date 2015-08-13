@@ -920,10 +920,8 @@ void ListBox::fitText(const std::string& text)
 
 void ListBox::addItems(const StringArray& strings)
 {
-  foreach( it, strings )
+  for( auto line : strings )
   {
-    const std::string& line = *it;
-
     if( line.find( "\tc" ) != std::string::npos )
     {
       std::string nLine = utils::replace( line, "\tc", "" );

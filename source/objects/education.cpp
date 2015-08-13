@@ -127,7 +127,9 @@ std::string Academy::sound() const
 void EducationBuilding::initialize(const MetaData& mdata)
 {
   ServiceBuilding::initialize( mdata );
-  _d->maxMonthVisitors = mdata.getOption( "maxServe" );
+  int maxServe = mdata.getOption( "maxServe" );
+  if( maxServe > 0 )
+    _d->maxMonthVisitors = maxServe;
 }
 
 EducationBuilding::EducationBuilding(const Service::Type service, const object::Type type, const Size& size)

@@ -187,8 +187,8 @@
   }
 
   fishingBoat : {
-    move : { rc : "fboat", start : 1, frames : 3, action : 1, step : 8 }
-    work : { rc : "fboat", start : 25, frames : 3, action : 4, step : 8 }
+    move : { rc : "carts", start : 249, frames : 1, action : 1, step : 8 }
+    work : { rc : "carts", start : 257, frames : 1, action : 4, step : 8 }
     die : { rc : "carts", start : 265, frames : 8, action : 3, step : 0 }
   }
 
@@ -228,8 +228,7 @@
   }
 
   seaMerchant : {
-    move      : { rc : "fboat", start : 1,   frames : 3, action : 1, step : 8 }
-    work      : { rc : "fboat", start : 25,  frames : 3, action : 4, step : 8 }
+    move : { rc : "carts", start : 241, frames : 1, action : 1, step : 8 }
     die       : { rc : "carts", start : 265, frames : 8, action : 3, step : 0 }
   }
 
