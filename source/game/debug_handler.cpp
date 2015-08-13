@@ -189,9 +189,10 @@ public:
   void runScript(std::string filename);
   gui::ContextMenu* debugMenu;
 
-public signals:
-  Signal2<scene::Level*, bool> failedMissionSignal;
-  Signal2<scene::Level*, bool> winMissionSignal;
+  struct {
+    Signal2<scene::Level*, bool> failedMission;
+    Signal2<scene::Level*, bool> winMission;
+  } signal;
 };
 
 void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
@@ -339,8 +340,8 @@ void DebugHandler::Impl::runScript(std::string filename)
   events::Dispatcher::instance().load( filename );
 }
 
-Signal2<scene::Level*,bool>& DebugHandler::onFailedMission() { return _d->failedMissionSignal; }
-Signal2<scene::Level*,bool>& DebugHandler::onWinMission() { return _d->winMissionSignal; }
+Signal2<scene::Level*,bool>& DebugHandler::onFailedMission() { return _d->signal.failedMission; }
+Signal2<scene::Level*,bool>& DebugHandler::onWinMission() { return _d->signal.winMission; }
 
 DebugHandler::DebugHandler() : _d(new Impl)
 {
@@ -534,8 +535,8 @@ void DebugHandler::Impl::handleEvent(int event)
     scene::Level* l = safety_cast<scene::Level*>( game->scene() );
     if( l )
     {
-      Signal2<scene::Level*,bool>& signal = (event == win_mission ? winMissionSignal : failedMissionSignal);
-      emit signal( l, true);
+      Signal2<scene::Level*,bool>& foremit = (event == win_mission ? signal.winMission : signal.failedMission);
+      emit foremit( l, true);
     }
   }
   break;

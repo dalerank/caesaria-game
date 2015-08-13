@@ -26,31 +26,35 @@
 class Timer::Impl
 {
 public:
-  unsigned int time;
-  unsigned int startTime;
+  struct {
+  unsigned int interval;
+  unsigned int start;
+  } time;
+
   int id;
   bool loop;
   bool isActive;
 
-signals public:
-  Signal1<int> onTimeoutASignal;
-  Signal0<> onTimeoutSignal;
+  struct {
+    Signal1<int> onTimeoutA;
+    Signal0<> onTimeout;
+  } signal;
 };
 
 Timer::~Timer(void) {}
 
 Timer::Timer() : _d( new Impl ) 
 {
-  _d->time = 0;
+  _d->time.interval = 0;
   _d->isActive = true;
   _d->loop = false;
-  _d->startTime = 0;
+  _d->time.start = 0;
 }
 
 TimerPtr Timer::create( unsigned int time, bool loop, int id/*=-1 */ )
 {
   TimerPtr ret( new Timer() );
-  ret->_d->time = time;
+  ret->_d->time.interval = time;
   ret->_d->loop = loop;
   ret->_d->id = id;
   ret->drop();
@@ -62,30 +66,30 @@ TimerPtr Timer::create( unsigned int time, bool loop, int id/*=-1 */ )
 
 void Timer::update( unsigned int time )
 {
-  if( !_d->startTime )
+  if( !_d->time.start )
   {
-    _d->startTime = time;
+    _d->time.start = time;
   }
 
-  if( _d->isActive && ( time - _d->startTime > _d->time) )
+  if( _d->isActive && ( time - _d->time.start > _d->time.interval ) )
   {
-    emit _d->onTimeoutASignal( _d->id );
-    emit _d->onTimeoutSignal();
+    emit _d->signal.onTimeoutA( _d->id );
+    emit _d->signal.onTimeout();
 
     _d->isActive = false;
 
     if( _d->loop )
     {
-      _d->startTime = time;
+      _d->time.start = time;
       _d->isActive = true;
     }
   }
 }
 
-void Timer::setTime( unsigned int time ) {  _d->time = time;}
+void Timer::setInterval( unsigned int time ) {  _d->time.interval = time;}
 void Timer::setLoop( bool loop ) {  _d->loop = loop;}
-Signal1<int>& Timer::onTimeoutA(){  return _d->onTimeoutASignal;}
-Signal0<>& Timer::onTimeout(){  return _d->onTimeoutSignal;}
+Signal1<int>& Timer::onTimeoutA(){  return _d->signal.onTimeoutA;}
+Signal0<>& Timer::onTimeout(){  return _d->signal.onTimeout;}
 bool Timer::isActive() const{  return _d->isActive;}
 void Timer::destroy(){  _d->isActive = false; }
 

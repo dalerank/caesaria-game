@@ -51,7 +51,6 @@ class HotkeyManager::Impl
 {
 public:
   HotkeyMapper hkMapper;
-
   HotkeyScripts scripts;
 
 public signals:
@@ -72,32 +71,28 @@ Signal1<const VariantMap&>& HotkeyManager::onHotkey() { return _d->onHotkeySigna
 void HotkeyManager::load(vfs::Path file)
 {
   VariantMap stream = config::load( file );
-  foreach( it, stream )
+  for( auto it : stream )
   {
-    KeyCode hotkey = _d->hkMapper.findType( it->first );
+    KeyCode hotkey = _d->hkMapper.findType( it.first );
     if( hotkey == KEY_KEY_CODES_COUNT )
     {
-      Logger::warning( "WARNING!!! HotkeyManager: cant find equale for " + it->first );
+      Logger::warning( "WARNING!!! HotkeyManager: cant find equale for " + it.first );
       continue;
     }
 
     HotkeyScripts::iterator presentIt = _d->scripts.find( hotkey );
     if( presentIt != _d->scripts.end() )
     {
-      Logger::warning( "WARNING!!! HotkeyManager: duplicate hotkey for " + it->first );
+      Logger::warning( "WARNING!!! HotkeyManager: duplicate hotkey for " + it.first );
       continue;
     }
 
-    _d->scripts[ hotkey ] = it->second.toMap();
+    _d->scripts[ hotkey ] = it.second.toMap();
   }
 }
 
 HotkeyManager::HotkeyManager() : _d(new Impl) {}
-
-HotkeyManager::~HotkeyManager()
-{
-
-}
+HotkeyManager::~HotkeyManager(){}
 
 } //end namespace game
 

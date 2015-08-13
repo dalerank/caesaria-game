@@ -37,7 +37,7 @@ public:
 
   void update( unsigned int time );
 
-  void setTime( unsigned int time );
+  void setInterval( unsigned int time );
   void setLoop( bool loop );
 
   bool isActive() const;
