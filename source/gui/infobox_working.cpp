@@ -58,7 +58,7 @@ AboutWorkingBuilding::AboutWorkingBuilding( Widget* parent, WorkingBuildingPtr b
     Rect rect = btnHelp->relativeRect();
     rect += Point( btnHelp->width() + 5, 0 );
     rect.rright() += 60;
-    PushButton* btn = new PushButton( this, rect, "Habitants", -1, false, PushButton::whiteBorderUp );
+    PushButton* btn = new PushButton( this, rect, "Adv.Info", -1, false, PushButton::whiteBorderUp );
     CONNECT( btn, onClicked(), this, AboutWorkingBuilding::_showAdvInfo )
   }
 }

@@ -75,7 +75,7 @@ void Tree::timeStep( const unsigned long time )
   {
     _d->health = math::clamp( _d->health+5, 0, 100 );
     bool mayHealth4grow = _d->health > 50;
-    bool growLast2years = _d->lastTimeGrow.monthsTo( game::Date::current() ) < DateTime::monthsInYear * 2;
+    bool growLast2years = _d->lastTimeGrow.monthsTo( game::Date::current() ) < DateTime::monthsInYear * 5;
     if(mayHealth4grow && !growLast2years)
       grow();
   }
