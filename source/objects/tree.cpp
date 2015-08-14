@@ -169,8 +169,9 @@ void Tree::grow()
 {
   TilesArray tiles = _city()->tilemap().getNeighbors( pos() );
   _d->lastTimeGrow = game::Date::current();
-  for( auto tile : tiles )
+  for( int i=0; i < tiles.size(); ++i )
   {
+    auto tile = tiles.random();
     if( math::probably( 0.1f ) && tile->getFlag( Tile::isConstructible ) )
     {
       OverlayPtr overlay = TileOverlayFactory::instance().create( type() );
@@ -189,6 +190,7 @@ void Tree::grow()
             newTree->setPicture( pic );
             newTree->_d->flat = pic.height() < pic.width() / 2;
             newTree->_d->health = 10;
+            break;
           }
         }
       }

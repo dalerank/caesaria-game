@@ -207,7 +207,7 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   CONNECT( _d->btnHighlightBuilding, onClicked(), _d.data(), Impl::toggleHighlightBuilding )
   CONNECT( _d->btnDetroyEpidemicHouses, onClicked(), _d.data(), Impl::toggleDestroyEpidemicHouses )
   CONNECT( _d->btnForestFire, onClicked(), _d.data(), Impl::toggleForestFire )
-  CONNECT( _d->btnForestFire, onClicked(), _d.data(), Impl::toggleForestGrow )
+  CONNECT( _d->btnForestGrow, onClicked(), _d.data(), Impl::toggleForestGrow )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptions::deleteLater );

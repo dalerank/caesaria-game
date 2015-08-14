@@ -84,7 +84,8 @@ enum {
   in_city,
   options,
   house,
-  draw
+  draw,
+  empire
 };
 
 enum {
@@ -120,7 +121,7 @@ enum {
   earthquake,
   toggle_experimental_options,
   kill_all_enemies,
-  send_exporter,
+  send_merchants,
   random_fire,
   random_collapse,
   random_plague,
@@ -271,12 +272,12 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( level, change_emperor )
   ADD_DEBUG_EVENT( level, property_browser )
 
+  ADD_DEBUG_EVENT( empire, send_merchants )
+
   ADD_DEBUG_EVENT( in_city, add_soldiers_in_fort )
   ADD_DEBUG_EVENT( in_city, add_city_border )
-  ADD_DEBUG_EVENT( in_city, send_exporter )
   ADD_DEBUG_EVENT( in_city, crash_favor )
   ADD_DEBUG_EVENT( in_city, add_scribe_messages )
-  ADD_DEBUG_EVENT( in_city, run_script )
   ADD_DEBUG_EVENT( in_city, show_fest )
   ADD_DEBUG_EVENT( in_city, add_favor )
   ADD_DEBUG_EVENT( in_city, remove_favor )
@@ -288,6 +289,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( house, increase_max_level )
   ADD_DEBUG_EVENT( house, decrease_max_level )
 
+  ADD_DEBUG_EVENT( options, run_script )
   ADD_DEBUG_EVENT( options, all_sound_off )
   ADD_DEBUG_EVENT( options, reload_aqueducts )
   ADD_DEBUG_EVENT( options, toggle_experimental_options )
@@ -430,7 +432,7 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
 
-  case send_exporter:
+  case send_merchants:
   {
     world::CityList cities = game->empire()->cities();
     for( auto acity : cities )
