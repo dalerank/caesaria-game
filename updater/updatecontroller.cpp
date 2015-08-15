@@ -15,7 +15,7 @@
 
 #include "updatecontroller.hpp"
 #include "constants.hpp"
-
+#include "core/osystem.hpp"
 #include "util.hpp"
 
 namespace updater
@@ -191,8 +191,8 @@ void UpdateController::performStep(int step)
 		_updater.setBinaryAsExecutable();
 		break;
 
-	case RestartUpdater:		
-		_updater.RestartUpdater();
+  case RestartUpdater:
+    _updater.restartUpdater();
 		break;
 
 	case Done:
@@ -270,8 +270,8 @@ void UpdateController::finalizeStep(int step)
 
 	case DownloadNewUpdater:
 		{
-			_updater.RestartUpdater();
-			TryToProceedTo(RestartUpdater);
+      _updater.restartUpdater();
+      TryToProceedTo(RestartUpdater);
 		}
 		break;
 
@@ -303,7 +303,7 @@ void UpdateController::finalizeStep(int step)
 		TryToProceedTo(Done);
 		break;
 
-	case RestartUpdater:
+  case RestartUpdater:
 		TryToProceedTo(Done);
 		break;
 

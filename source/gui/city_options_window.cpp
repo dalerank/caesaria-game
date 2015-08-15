@@ -142,6 +142,7 @@ public:
   void toggleDestroyEpidemicHouses();
   void toggleCityOption( PlayerCity::OptionType option );
   void changeCityOption( PlayerCity::OptionType option, int delta);
+  void setAutoText( Widget* widget, const std::string& text );
 };
 
 CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
@@ -206,7 +207,7 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   CONNECT( _d->btnHighlightBuilding, onClicked(), _d.data(), Impl::toggleHighlightBuilding )
   CONNECT( _d->btnDetroyEpidemicHouses, onClicked(), _d.data(), Impl::toggleDestroyEpidemicHouses )
   CONNECT( _d->btnForestFire, onClicked(), _d.data(), Impl::toggleForestFire )
-  CONNECT( _d->btnForestFire, onClicked(), _d.data(), Impl::toggleForestGrow )
+  CONNECT( _d->btnForestGrow, onClicked(), _d.data(), Impl::toggleForestGrow )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptions::deleteLater );
@@ -217,7 +218,6 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
 }
 
 CityOptions::~CityOptions() {}
-
 
 void CityOptions::Impl::toggleDebug()
 {
@@ -234,6 +234,20 @@ void CityOptions::Impl::changeCityOption( PlayerCity::OptionType option, int del
   int value = city->getOption( option );
   city->setOption( option, math::clamp<int>( value + delta, 0, 9999 ) );
   update();
+}
+
+void CityOptions::Impl::setAutoText(Widget *widget, const std::string &text)
+{
+  if( widget )
+  {
+    widget->setText( _(text) );
+    if( utils::endsWith( text, "##" ) )
+    {
+      std::string tlp = text.substr( 0, text.length() - 2 );
+      tlp.append( "_tlp##" );
+      widget->setTooltipText( _( tlp ) );
+    }
+  }
 }
 
 void CityOptions::Impl::increaseFireRisk() { changeCityOption( PlayerCity::fireKoeff, +10 ); }
@@ -367,7 +381,7 @@ void CityOptions::Impl::update()
       if( info.city_option >= 0 ) value = city->getOption( (PlayerCity::OptionType)info.city_option ) > 0;
       else if( strcmp( info.settings_option, "" ) != 0 ) value = game::Settings::get( info.settings_option );
 
-      button->setText( _(value ? info.text_on : info.text_off) );
+      setAutoText( button, value ? info.text_on : info.text_off );
     }
     index++;
   }
@@ -375,17 +389,15 @@ void CityOptions::Impl::update()
   if( btnDebugEnabled )
   {
     Widget* menu = findDebugMenu( btnDebugEnabled->ui() );
-    btnDebugEnabled->setText( (menu ? menu->visible() : false)
-                                ? _("##city_debug_on##")
-                                : _("##city_debug_off##") );
+    setAutoText( btnDebugEnabled, (menu ? menu->visible() : false)
+                                    ? "##city_debug_on##"
+                                    : "##city_debug_off##" );
   }
 
   if( btnMmbMoving )
   {
     bool value = DrawOptions::instance().isFlag( DrawOptions::mmbMoving ) > 0;
-    btnMmbMoving->setText( value
-                                ? _("##city_mmbmoving##")
-                                : _("##city_lmbmoving##") );
+    setAutoText( btnMmbMoving, value ? "##city_mmbmoving##" : "##city_lmbmoving##" );
   }
 
   if( lbFireRisk )
@@ -404,22 +416,20 @@ void CityOptions::Impl::update()
   {
     int value = city->getOption( PlayerCity::difficulty );
     std::string text = utils::format( 0xff, "##city_df_%s##", game::difficulty::name[ value ] );
-    btnDifficulty->setText( _(text) );
+    setAutoText( btnDifficulty, text );
   }
 
   if( btnMetrics )
   {
     std::string text = utils::format( 0xff, "%s: %s" , _("##city_metric##"), _(metric::Measure::measureType()) );
-    btnMetrics->setText( text );
+    setAutoText( btnMetrics, text );
   }
 
 
   if( btnToggleBatching )
   {
     bool value = gfx::Engine::instance().getFlag( gfx::Engine::batching ) > 0;
-    btnToggleBatching->setText( value
-                                    ? _("##city_batching_on##")
-                                    : _("##city_batching_off##")  );
+    setAutoText( btnToggleBatching, value ? "##city_batching_on##" : "##city_batching_off##" );
   }
 }
 

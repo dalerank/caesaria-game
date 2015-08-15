@@ -178,8 +178,10 @@ Pathway Pathfinder::getPath(TilePos start, TilePos stop,  int flags)
 {
   if( start == stop )
   {
+#ifdef DEBUG
     LOG_PF.warn( "Pathfinder::getPath start==stop" );
     crashhandler::printstack(false);
+#endif
     return Pathway();
   }
 

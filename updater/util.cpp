@@ -183,11 +183,11 @@ bool FindProcessByName(const char* processName)
 	
 	if (err == -1)
 	{
-        Logger::warning("Failed to receive buffer size for process list.");
+    Logger::warning("Failed to receive buffer size for process list.");
 		return false;
 	}
 	
-    kinfo_proc* procList = static_cast<kinfo_proc*>(malloc(length));
+  kinfo_proc* procList = static_cast<kinfo_proc*>(malloc(length));
 	
 	if (procList == NULL)
 	{

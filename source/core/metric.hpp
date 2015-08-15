@@ -75,6 +75,7 @@ public:
   static int convQty( int qty );
 
   static Mode mode() { return instance()._mode; }
+  static bool isRoman() { return instance()._mode == roman; }
 
 private:
   Measure() : _mode( native ) {}

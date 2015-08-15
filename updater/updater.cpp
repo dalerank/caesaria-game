@@ -20,14 +20,9 @@
 #include "http/httprequest.hpp"
 #include "constants.hpp"
 #include "core/foreach.hpp"
+#include "core/osystem.hpp"
 #include "vfs/filesystem.hpp"
 #include "util.hpp"
-
-#if defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
-  #include <limits.h>
-  #include <unistd.h>
-  #include <sys/stat.h>
-#endif
 
 namespace updater
 {
@@ -81,7 +76,7 @@ void Updater::setBinaryAsExecutable()
     if( path2exe.exist() )
     {
       // set the executable bit on binary
-      markFileAsExecutable( path2exe );
+      OSystem::markFileAsExecutable( path2exe.toString() );
     }
   }
 }
@@ -89,23 +84,6 @@ void Updater::setBinaryAsExecutable()
 void Updater::removeDownload(std::string itemname)
 {
 	_downloadQueue.removeItem( itemname );
-}
-
-void Updater::markFileAsExecutable(vfs::Path path)
-{
-#if defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
-  Logger::warning( "Marking file as executable: " + path.toString() );
-
-  struct stat mask;
-  stat(path.toCString(), &mask);
-
-  mask.st_mode |= S_IXUSR|S_IXGRP|S_IXOTH;
-
-  if( chmod(path.toString().c_str(), mask.st_mode) == -1)
-  {
-    Logger::warning( "Could not mark file as executable: " + path.toString() );
-  }
-#endif
 }
 
 void Updater::CleanupPreviousSession()
@@ -697,62 +675,6 @@ void Updater::NotifyDownloadProgress()
   }
 }
 
-void Updater::PrepareUpdateBatchFile()
-{
-  vfs::Path temporaryUpdater = TEMP_FILE_PREFIX + _executable.toString();
-  // Create a new batch file in the target location
-  vfs::Directory targetdir = getTargetDir();
-  _updateBatchFile =  targetdir.getFilePath( UPDATE_UPDATER_BATCH_FILE );
-
-  Logger::warning( "Preparing CaesarIA update batch file in " + _updateBatchFile.toString() );
-
-  std::ofstream batch(_updateBatchFile.toString().c_str());
-
-  vfs::Path tempUpdater = temporaryUpdater.baseName();
-  vfs::Path updater = _executable.baseName();
-
-  // Append the current set of command line arguments to the new instance
-  std::string arguments;
-
-  foreach( i,_options.GetRawCmdLineArgs() )
-  {
-    arguments += " " + *i;
-  }
-
-#ifdef CAESARIA_PLATFORM_WIN
-  batch << "@ping 127.0.0.1 -n 2 -w 1000 > nul" << std::endl; // # hack equivalent to Wait 2
-  batch << "@copy " << tempUpdater.toString() << " " << updater.toString() << " >nul" << std::endl;
-  batch << "@del " << tempUpdater.toString() << std::endl;
-  batch << "@echo CaesarIA Updater executable has been updated." << std::endl;
-
-  batch << "@echo Re-launching CaesarIA Updater executable." << std::endl << std::endl;
-
-  batch << "@start " << updater.toString() << " " << arguments;
-#else // POSIX
-  // grayman - accomodate spaces in pathnames
-  tempUpdater = targetdir.getFilePath( tempUpdater );
-  updater = targetdir.getFilePath( updater );
-
-  batch << "#!/bin/bash" << std::endl;
-  batch << "echo \"Upgrading CaesarIA Updater executable...\"" << std::endl;
-  batch << "cd \"" << getTargetDir().toString() << "\"" << std::endl;
-  batch << "sleep 2s" << std::endl;
-  batch << "mv -f \"" << tempUpdater.toString() << "\" \"" << updater.toString() << "\"" << std::endl;
-  batch << "chmod +x \"" << updater.toString() << "\"" << std::endl;
-  batch << "echo \"CaesarIA Updater executable has been updated.\"" << std::endl;
-  batch << "echo \"Re-launching CaesarIA Updater executable.\"" << std::endl;
-
-  batch << "\"" << updater.toString() << "\" " << arguments;
-#endif
-
-  batch.close();
-
-#ifdef CAESARIA_PLATFORM_UNIX
-  // Mark the shell script as executable in *nix
-  markFileAsExecutable(_updateBatchFile);
-#endif
-}
-
 void Updater::cleanupUpdateStep()
 {
   for (ReleaseFileSet::iterator i = _downloadQueue.begin(); i != _downloadQueue.end(); ++i)
@@ -864,80 +786,15 @@ void Updater::RemoveAllPackagesExceptUpdater()
       // The inner loop didn't find the executable, remove that package
       _downloadQueue.erase(i++);
     }
-  }
+    }
 }
 
-void Updater::RestartUpdater()
+void Updater::restartUpdater()
 {
-  Logger::warning( "Preparing restart...");
-  PrepareUpdateBatchFile();
-
-#ifdef CAESARIA_PLATFORM_WIN
-  if (!_updateBatchFile.toString().empty())
-  {
-    Logger::warning( "Update batch file pending, launching process.");
-
-    // Spawn a new process
-
-    // Create a caesaria updater process, setting the working directory to the target directory
-    STARTUPINFOA siStartupInfo;
-    PROCESS_INFORMATION piProcessInfo;
-
-    memset(&siStartupInfo, 0, sizeof(siStartupInfo));
-    memset(&piProcessInfo, 0, sizeof(piProcessInfo));
-
-    siStartupInfo.cb = sizeof(siStartupInfo);
-
-    vfs::Directory parentPath = _updateBatchFile.directory();
-
-    Logger::warning( "Starting batch file " + _updateBatchFile.toString() + " in " + parentPath.toString() );
-
-    BOOL success = CreateProcessA( NULL, (LPSTR) _updateBatchFile.toString().c_str(), NULL, NULL,  false, 0, NULL,
-                                   parentPath.toString().c_str(), &siStartupInfo, &piProcessInfo);
-
-    if (!success)
-    {
-      LPVOID lpMsgBuf;
-
-      FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                    NULL,
-                    GetLastError(),
-                    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                    (LPTSTR) &lpMsgBuf,
-                    0,
-                    NULL);
-
-      throw FailureException( "Could not start new process: " + std::string((LPCSTR)lpMsgBuf));
-
-      LocalFree(lpMsgBuf);
-    }
-    else
-    {
-      Logger::warning( "Process started");
-      exit(0);
-    }
-  }
-#else
-  if (!_updateBatchFile.toString().empty())
-  {
-    Logger::warning( "Relaunching CaesarIA updater via shell script " + _updateBatchFile.toString() );
-
-    // Perform the system command in a fork
-    //int r = fork();
-    //if( r >= 0 )
-    {
-      // Don't wait for the subprocess to finish
-      system((_updateBatchFile.toString() + " &").c_str());
-      exit(EXIT_SUCCESS);
-      return;
-    }
-
-    Logger::warning( "Process spawned.");
-
-    // Done here too
-    return;
-  }
-#endif
+  vfs::Path temporaryUpdater = TEMP_FILE_PREFIX + _executable.toString();
+  // Create a new batch file in the target location
+  vfs::Directory targetdir = getTargetDir();
+  OSystem::restartProcess( temporaryUpdater.toString(), targetdir.toString(), _options.GetRawCmdLineArgs() );
 }
 
 void Updater::postUpdateCleanup()

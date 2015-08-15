@@ -103,10 +103,7 @@ public:
     setFont( Font::create( FONT_1_WHITE ) );
   }
 
-  const HealthcareInfo& getInfo() const
-  {
-    return _info;
-  }
+  const HealthcareInfo& getInfo() const { return _info; }
 
   virtual void _updateTexture( gfx::Engine& painter )
   {
@@ -116,10 +113,10 @@ public:
 
     Picture& texture = _textPicture();
     Font rfont = font();
-    rfont.draw( texture, utils::i2str( _info.buildingCount ) + _( info.building ), ofNumberInCity, 0 );
+    rfont.draw( texture, utils::format( 0xff, "%d %s", _info.buildingCount, _(info.building)), ofNumberInCity, 0 );
     rfont.draw( texture, utils::i2str( _info.buildingWork ), ofWorkInCity, 0 );
     rfont.draw( texture, utils::i2str( _info.buildingShow ), ofHaveShow, 0 );
-    rfont.draw( texture, utils::i2str( _info.peoplesServed ) + _(info.people), ofHowmuchServed, 0 );
+    rfont.draw( texture, utils::format( 0xff, "#d %s",_info.peoplesServed, _(info.people)), ofHowmuchServed, 0 );
   }
 
 private:

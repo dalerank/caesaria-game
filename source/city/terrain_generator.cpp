@@ -392,7 +392,7 @@ static void __finalizeMap(Game& game, int pass )
         {
         case 0:
         {
-          Picture pic( ResourceGroup::land1a, 62 + math::random( 57 ) );
+          Picture pic( ResourceGroup::land1a, 62 + math::random( 56 ) );
           wtile.setPicture( pic );
           //wtile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
           wtile.setOriginalImgId( direction );
@@ -409,7 +409,7 @@ static void __finalizeMap(Game& game, int pass )
       if( start > 0 )
       {
         if( rnd > 0 )
-          rnd = math::random( 4 );
+          rnd = math::random( 3 );
 
         wtile.setFlag( Tile::tlWater, true );
         wtile.setFlag( Tile::tlCoast, true );
@@ -661,7 +661,7 @@ static void __createRoad(Game& game )
     {
       OverlayPtr overlay = TileOverlayFactory::instance().create( object::road );
 
-      Picture pic( ResourceGroup::land1a, PicID::grassPic + math::random( PicID::grassPicsNumber ) );
+      Picture pic( ResourceGroup::land1a, PicID::grassPic + math::random( PicID::grassPicsNumber-1 ) );
       (*it)->setPicture( pic );
       (*it)->setOriginalImgId( imgid::fromResource( pic.name() ) );
 
@@ -699,7 +699,7 @@ void __createMeadows( Game& game )
   for( int k=0; k < maxMeadowTiles; k++ )
   {
     Tile* tile = tiles.random();
-    TilesArray meadows = oTilemap.getArea( math::random( fieldSize ), tile->pos() );
+    TilesArray meadows = oTilemap.getArea( math::random( fieldSize-1 ), tile->pos() );
     meadows = meadows.terrains();
 
     foreach( it, meadows ) (*it)->setFlag( Tile::tlMeadow, true );
@@ -792,7 +792,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
       case MidpointDisplacement::grass:
       {
         color = NColor( 255, 7, 192, 53);
-        Picture pic( ResourceGroup::land1a, 62 + math::random( 57 ) );
+        Picture pic( ResourceGroup::land1a, 62 + math::random( 56 ) );
         tile.setPicture( pic );
         tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
       }
@@ -805,13 +805,13 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
         if( math::random( 10 ) > 6 )
         {
           start = 10;
-          rnd = 7;
+          rnd = 6;
         }
 
         if( tile.i() == 0 || tile.i() == ((int)mapSize - 1) || tile.j() == 0 || tile.j() == ((int)mapSize - 1) )
         {
           start = 62;
-          rnd = 57;
+          rnd = 56;
         }
         else
         {
@@ -836,7 +836,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
 
       case MidpointDisplacement::shallowMountain: {
         color = NColor( 255, 147, 188, 157 );
-        Picture pic( ResourceGroup::land1a, 290 + math::random( 7 ) );
+        Picture pic( ResourceGroup::land1a, 290 + math::random( 6 ) );
         tile.setFlag( Tile::tlRock, true );
         tile.setPicture( pic );
         tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
@@ -845,7 +845,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
 
       case MidpointDisplacement::highMountain: {
         color = NColor( 255, 129, 141, 132);
-        Picture pic( ResourceGroup::land1a, 62 + math::random( 57 ) );
+        Picture pic( ResourceGroup::land1a, 62 + math::random( 56 ) );
         //Picture::load( ResourceGroup::land1a, 230 + math::random( 59 ) );
         //tile.setFlag( Tile::tlRock, true );
         tile.setPicture( pic );

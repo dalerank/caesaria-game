@@ -29,6 +29,9 @@ public:
   void activate();
   static void insertTo( gui::Widget* parent );
   virtual ~GameAutoPause();
+
+private:
+  bool _activated;
 };
 
 #endif //_CAESARIA_GAMEAUTOPAUSE_H_INCLUDE_

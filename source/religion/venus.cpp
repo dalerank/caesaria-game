@@ -145,7 +145,8 @@ void Venus::_doSmallCurse(PlayerCityPtr city)
       int hbCount = house->habitants().count();
       CitizenGroup homeless = house->removeHabitants(hbCount);
       EmigrantPtr emigrants = Emigrant::send2city(city, homeless, house->tile(), "##emigrant_no_home##");
-      emigrants->leaveCity(house->tile());
+      if( emigrants.isValid() )
+        emigrants->leaveCity(house->tile());
     }
 
   }

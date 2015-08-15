@@ -433,7 +433,8 @@ int Statistic::_Objects::laborAccess(WorkingBuildingPtr wb) const
   float averageDistance = 0;
   for( auto it : houses )
   {
-    if( it->spec().level() < HouseLevel::smallVilla )
+    if( it->spec().level() > HouseLevel::vacantLot
+        && it->spec().level() < HouseLevel::smallVilla )
     {
       averageDistance += wbpos.distanceFrom( it->pos() );
     }

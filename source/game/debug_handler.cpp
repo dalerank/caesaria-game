@@ -64,6 +64,8 @@
 #include "objects/house_habitants.hpp"
 #include "gui/property_workspace.hpp"
 #include "objects/factory.hpp"
+#include "events/warningmessage.hpp"
+#include "objects/house_spec.hpp"
 
 using namespace gfx;
 using namespace citylayer;
@@ -81,7 +83,9 @@ enum {
   level,
   in_city,
   options,
-  draw
+  house,
+  draw,
+  empire
 };
 
 enum {
@@ -117,7 +121,7 @@ enum {
   earthquake,
   toggle_experimental_options,
   kill_all_enemies,
-  send_exporter,
+  send_merchants,
   random_fire,
   random_collapse,
   random_plague,
@@ -168,7 +172,9 @@ enum {
   toggle_show_buildings,
   toggle_show_trees,
   forest_fire,
-  forest_grow
+  forest_grow,
+  increase_max_level,
+  decrease_max_level
 };
 
 class DebugHandler::Impl
@@ -184,9 +190,10 @@ public:
   void runScript(std::string filename);
   gui::ContextMenu* debugMenu;
 
-public signals:
-  Signal2<scene::Level*, bool> failedMissionSignal;
-  Signal2<scene::Level*, bool> winMissionSignal;
+  struct {
+    Signal2<scene::Level*, bool> failedMission;
+    Signal2<scene::Level*, bool> winMission;
+  } signal;
 };
 
 void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
@@ -265,12 +272,12 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( level, change_emperor )
   ADD_DEBUG_EVENT( level, property_browser )
 
+  ADD_DEBUG_EVENT( empire, send_merchants )
+
   ADD_DEBUG_EVENT( in_city, add_soldiers_in_fort )
   ADD_DEBUG_EVENT( in_city, add_city_border )
-  ADD_DEBUG_EVENT( in_city, send_exporter )
   ADD_DEBUG_EVENT( in_city, crash_favor )
   ADD_DEBUG_EVENT( in_city, add_scribe_messages )
-  ADD_DEBUG_EVENT( in_city, run_script )
   ADD_DEBUG_EVENT( in_city, show_fest )
   ADD_DEBUG_EVENT( in_city, add_favor )
   ADD_DEBUG_EVENT( in_city, remove_favor )
@@ -279,6 +286,10 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( in_city, increase_sentiment )
   ADD_DEBUG_EVENT( in_city, forest_grow )
 
+  ADD_DEBUG_EVENT( house, increase_max_level )
+  ADD_DEBUG_EVENT( house, decrease_max_level )
+
+  ADD_DEBUG_EVENT( options, run_script )
   ADD_DEBUG_EVENT( options, all_sound_off )
   ADD_DEBUG_EVENT( options, reload_aqueducts )
   ADD_DEBUG_EVENT( options, toggle_experimental_options )
@@ -331,8 +342,8 @@ void DebugHandler::Impl::runScript(std::string filename)
   events::Dispatcher::instance().load( filename );
 }
 
-Signal2<scene::Level*,bool>& DebugHandler::onFailedMission() { return _d->failedMissionSignal; }
-Signal2<scene::Level*,bool>& DebugHandler::onWinMission() { return _d->winMissionSignal; }
+Signal2<scene::Level*,bool>& DebugHandler::onFailedMission() { return _d->signal.failedMission; }
+Signal2<scene::Level*,bool>& DebugHandler::onWinMission() { return _d->signal.winMission; }
 
 DebugHandler::DebugHandler() : _d(new Impl)
 {
@@ -421,7 +432,7 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
 
-  case send_exporter:
+  case send_merchants:
   {
     world::CityList cities = game->empire()->cities();
     for( auto acity : cities )
@@ -432,6 +443,21 @@ void DebugHandler::Impl::handleEvent(int event)
         ccity->__debugSendMerchant();
       }
     }
+  }
+  break;
+
+  case increase_max_level:
+  case decrease_max_level:
+  {
+    city::VictoryConditions conditions;
+    conditions = game->city()->victoryConditions();
+    conditions.setMaxHouseLevel( conditions.maxHouseLevel() + (event == increase_max_level ? 1 : -1) );
+    game->city()->setVictoryConditions( conditions );
+
+    std::string levelName = HouseSpecHelper::instance().getSpec( conditions.maxHouseLevel() ).internalName();
+    events::GameEventPtr e = events::WarningMessage::create( "DEBUG: House max level is " + levelName,
+                                                             events::WarningMessage::neitral );
+    e->dispatch();
   }
   break;
 
@@ -511,8 +537,8 @@ void DebugHandler::Impl::handleEvent(int event)
     scene::Level* l = safety_cast<scene::Level*>( game->scene() );
     if( l )
     {
-      Signal2<scene::Level*,bool>& signal = (event == win_mission ? winMissionSignal : failedMissionSignal);
-      emit signal( l, true);
+      Signal2<scene::Level*,bool>& foremit = (event == win_mission ? signal.winMission : signal.failedMission);
+      emit foremit( l, true);
     }
   }
   break;

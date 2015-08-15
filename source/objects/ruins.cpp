@@ -70,15 +70,19 @@ void BurningRuins::timeStep(const unsigned long time)
       OverlayList overlays = _city()->tilemap().getNeighbors( pos() ).overlays();
 
       setState( pr::spreadFire, 1 );
-      for( auto overlay : overlays)
+      for( int i=0; i < overlays.size(); ++i )
       {
+        auto overlay = overlays.random();
         if( overlay->group() != object::group::disaster )
         {
           BuildingPtr building = overlay.as<Building>();
           float fireValue = building.isValid() ? building->state( pr::fire ) : 50;
           float chanceFire = fireValue/100.f * (_city()->getOption( PlayerCity::fireKoeff )/100.f);
           if( math::probably( chanceFire ) )
+          {
             overlay->burn();
+            break;
+          }
         }
       }
     }

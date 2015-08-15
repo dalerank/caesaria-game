@@ -161,7 +161,7 @@ public:
     switch( mode )
     {
     case Fort::frmOpen:
-      area = TilesArea( tmap, lastPos, 3 );
+      area = TilesArea( tmap, 3, lastPos );
     break;
 
     case Fort::frmWestLine:
@@ -212,7 +212,7 @@ public:
 
     case Fort::frmSquad:
     default:
-      area = TilesArea( tmap, lastPos, 3);
+      area = TilesArea( tmap, 3, lastPos );
     break;
     }
 
