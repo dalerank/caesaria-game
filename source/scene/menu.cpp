@@ -94,7 +94,7 @@ public:
   void showSoundOptions();
   void showVideoOptions();
   void showMissionSelector();
-  void quitGame() { result=closeApplication; isStopped=true; }
+  void quitGame();
   void selectFile( std::string fileName );
   void setPlayerName( std::string name );
   void openSteamPage() { OSystem::openUrl( "http://store.steampowered.com/app/327640" ); }
@@ -113,6 +113,7 @@ public:
   void resolveSteamStats();
   void changePlayerNameIfNeed(bool force=false);
   void reload();
+  void restart();
   void openDlcDirectory(Widget* sender);
 };
 
@@ -154,8 +155,12 @@ void StartMenu::Impl::fitScreenResolution()
 {
   gfx::Engine::Modes modes = game->engine()->modes();
   SETTINGS_SET_VALUE( resolution, modes.front() );
+  SETTINGS_SET_VALUE( fullscreen, true );
   SETTINGS_SET_VALUE( screenFitted, true );
   game::Settings::save();
+
+  dialog::Information( game->gui(), "", "Enabled fullscreen mode. Please restart game");
+  //CONNECT( dlg, onOk(), this, Impl::restart );
 }
 
 void StartMenu::Impl::playMenuSoundTheme()
@@ -194,6 +199,22 @@ void StartMenu::Impl::reload()
 {
   result = StartMenu::reloadScreen;
   isStopped = true;
+}
+
+void StartMenu::Impl::restart()
+{
+  std::string filename;
+#ifdef CAESARIA_PLATFORM_LINUX
+  filename = "caesaria.linux";
+#elif defined(CAESARIA_PLATFORM_WIN)
+  filename = "caesaria.exe";
+#elif defined(CAESARIA_PLATFORM_MACOSX)
+  filename = "caesaria.macos";
+#endif
+
+  vfs::Directory appDir = vfs::Directory::applicationDir();
+  vfs::Path appFile = appDir/vfs::Path(filename);
+  OSystem::restartProcess( appFile.toString(), appDir.toString(), StringArray() );
 }
 
 void StartMenu::Impl::openDlcDirectory(Widget* sender)
@@ -350,12 +371,13 @@ void StartMenu::Impl::showCredits()
                          " ",
                          _("##music##"),
                          " ",
-                         "Aliaksandr BeatCheat (www.beatcheat.net), Peter Willington",
-                         "Omri Lahav",
+                         "Aliaksandr BeatCheat (sounds)",
+                         "Omri Lahav (main theme)",
+                         "Kevin MacLeod (ambient, game themes)"
                          " ",
                          _("##localization##"),
                          " ",
-                         "Alexander Klimenko, Manuel Alvarez, Artem Tolmachev",
+                         "Alexander Klimenko, Manuel Alvarez, Artem Tolmachev, Peter Willington",
                          " ",
                          _("##thanks_to##"),
                          " ",
@@ -506,6 +528,13 @@ void StartMenu::Impl::showMissionSelector()
   changePlayerNameIfNeed();
 }
 
+void StartMenu::Impl::quitGame()
+{
+  game::Settings::save();
+  result=closeApplication;
+  isStopped=true;
+}
+
 void StartMenu::Impl::selectFile(std::string fileName)
 {
   fileMap = fileName;
@@ -594,19 +623,21 @@ void StartMenu::initialize()
 
   _d->showMainMenu();
 
-#ifdef CAESARIA_PLATFORM_ANDROID
-  bool screenFitted = SETTINGS_VALUE( screenFitted );
+  bool screenFitted = KILLSWITCH( screenFitted ) || KILLSWITCH( fullscreen );
   if( !screenFitted )
   {
-    dialog::Dialog* dialog = new dialog::Dialog( _d->game->gui(),  Rect( 0, 0, 400, 150 ),
+    Rect dialogRect = OSystem::is( OSystem::android ) ? Rect( 0, 0, 400, 150 ) : Rect();
+    dialog::Dialog* dialog = new dialog::Dialog( _d->game->gui(), dialogRect,
                                                  "Information", "Is need autofit screen resolution?",
                                                  dialog::Dialog::btnOkCancel );
     CONNECT(dialog, onOk(), dialog, dialog::Dialog::deleteLater );
     CONNECT(dialog, onCancel(), dialog, dialog::Dialog::deleteLater );
     CONNECT(dialog, onOk(), _d.data(), Impl::fitScreenResolution );
+    SETTINGS_SET_VALUE(screenFitted, true);
+
     dialog->show();
   }
-#else
+#ifndef CAESARIA_PLATFORM_ANDROID
   _d->playMenuSoundTheme();
 #endif
 
@@ -653,6 +684,6 @@ void StartMenu::afterFrame()
 int StartMenu::result() const{  return _d->result;}
 bool StartMenu::isStopped() const{  return _d->isStopped;}
 std::string StartMenu::mapName() const{  return _d->fileMap;}
-std::string scene::StartMenu::playerName() const { return SETTINGS_VALUE( playerName ).toString(); }
+std::string StartMenu::playerName() const { return SETTINGS_VALUE( playerName ).toString(); }
 
 }//end namespace scene
