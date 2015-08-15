@@ -855,7 +855,7 @@ void SteamHelper::checkDepsAndStart()
     batch.close();
 
     // Mark the shell script as executable in *nix
-    Updater::markFileAsExecutable(tmp.toCString());
+    OSystem::markFileAsExecutable(tmp.toCString());
     system( "./__install_frameworks.sh" );
   }
 
