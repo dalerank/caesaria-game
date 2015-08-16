@@ -6,7 +6,7 @@ branches:
 - windows-build
 before_install:
 # Get build dependencies
-- sudo apt-add-repository --yes ppa:zoogie/sdl2-snapshots #libsdl2
+- sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
 - sudo apt-get -qq update
 - sudo apt-get -qq install cmake p7zip-full build-essential
 - sudo apt-get -qq install binutils-mingw-w64-i686
