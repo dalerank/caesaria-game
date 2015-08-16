@@ -14,7 +14,7 @@ before_install:
 - sudo apt-get -qq install sshpass
 # Get mingw32 for x86 windows build
 - wget https://www.dropbox.com/s/tuaa5ejhxepvedd/i686-w64-mingw32.zip
-- unzip -n i686-w64-mingw32.zip -d /usr
+- sudo unzip -n i686-w64-mingw32.zip -d /usr
 install:
 - cd $TRAVIS_BUILD_DIR
 # Create unix makefiles
