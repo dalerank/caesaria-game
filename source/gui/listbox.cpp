@@ -132,7 +132,7 @@ void ListBox::_recalculateItemHeight( const Font& defaulFont, int h )
 ListBox::~ListBox() {}
 
 //! returns amount of list items
-unsigned int ListBox::itemCount() const {  return _d->items.size(); }
+unsigned int ListBox::itemsCount() const {  return _d->items.size(); }
 
 //! returns string of a list item. the may be a value from 0 to itemCount-1
 ListBoxItem& ListBox::item(unsigned int id)

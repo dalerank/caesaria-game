@@ -632,10 +632,10 @@ Entries FileSystem::getFileList()
 					unsigned int size = 0;
 					bool isDirectory = false;
 
-					if((strcmp(dirEntry->d_name, ".")==0) || (strcmp(dirEntry->d_name, "..")==0))
+          if((strcmp(dirEntry->d_name, ".")==0) || (strcmp(dirEntry->d_name, "..")==0))
 					{
 						continue;
-					}
+          }
 					struct stat buf;
 					if (stat(dirEntry->d_name, &buf)==0)
 					{

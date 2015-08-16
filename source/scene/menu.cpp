@@ -252,12 +252,12 @@ void StartMenu::Impl::showLanguageOptions()
   VariantMap languages = config::load( SETTINGS_RC_PATH( langModel ) );
   std::string currentLang = SETTINGS_VALUE( language ).toString();
   int currentIndex = -1;
-  foreach( it, languages )
+  for( auto it : languages )
   {
-    lbx->addItem( it->first );
-    std::string ext = it->second.toMap().get( literals::ext ).toString();
+    lbx->addItem( it.first );
+    std::string ext = it.second.toMap().get( literals::ext ).toString();
     if( ext == currentLang )
-      currentIndex = std::distance( languages.begin(), it );
+      currentIndex = lbx->itemsCount() - 1;
   }
 
   lbx->setSelected( currentIndex );
@@ -281,11 +281,11 @@ void StartMenu::Impl::changeLanguage(const gui::ListBoxItem& item)
   std::string currentFont = SETTINGS_VALUE( font ).toString();
 
   VariantMap languages = config::load( SETTINGS_RC_PATH( langModel ) );
-  foreach( it, languages )
+  for( auto it : languages )
   {
-    if( item.text() == it->first )
+    if( item.text() == it.first )
     {
-      VariantMap vm = it->second.toMap();
+      VariantMap vm = it.second.toMap();
       lang = vm.get( literals::ext ).toString();
       talksArchive = vm.get( literals::talks ).toString();
       newFont  = vm.get( literals::font ).toString();
@@ -493,12 +493,17 @@ void StartMenu::Impl::showAdvancedMaterials()
     return;
   }
 
+  StringArray excludeFolders;
+  excludeFolders << vfs::Path::firstEntry << vfs::Path::secondEntry;
   vfs::Entries::Items entries = dir.entries().items();
-  foreach( it, entries )
+  for( auto it : entries )
   {
-    if( it->isDirectory )
+    if( it.isDirectory )
     {
-      vfs::Path path2subdir = it->fullpath;
+      if( excludeFolders.contains( it.name.extension() ) )
+        continue;
+
+      vfs::Path path2subdir = it.fullpath;
       std::string locText = "##mainmenu_dlc_" + path2subdir.baseName().toString() + "##";
 
       PushButton* btn = menu->addButton( _(locText), -1 );

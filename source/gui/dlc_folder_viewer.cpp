@@ -49,7 +49,8 @@ public:
   Picture background;
   Table* table;
   Directory folder;
-  StringArray exts;
+  StringArray available;
+  StringArray exclude;
 
 public:
   void fillTable( const std::vector<Path>& items )
@@ -76,8 +77,7 @@ public:
       }
 
       Path picPath = items[ k ];
-      if( picPath.isMyExtension( ".pdf" ) || picPath.isMyExtension( ".mp3" )
-          || picPath.isMyExtension( ".ogg" ) || picPath.isMyExtension( ".jpg" ))
+      if( available.contains( picPath.extension() ) )
       {
         picPath = picPath.changeExtension( "png" );
       }
@@ -131,7 +131,10 @@ DlcFolderViewer::DlcFolderViewer(Widget* parent, Directory folder )
     vfs::Entries::Items entries = folder.entries().items();
     for( auto item : entries )
     {
-      if( _d->exts.contains( item.name.extension() )  )
+      if( _d->exclude.contains( item.name.toString() ) )
+        continue;
+
+      if( _d->available.contains( item.name.extension() )  )
         items.push_back( item.fullpath );
     }
   }
@@ -170,7 +173,8 @@ void DlcFolderViewer::draw(Engine& painter)
 void DlcFolderViewer::setupUI(const VariantMap& ui)
 {
   Window::setupUI( ui );
-  _d->exts = ui.get( "etxs" ).toStringArray();
+  _d->available = ui.get( "etxs" ).toStringArray();
+  _d->exclude = ui.get( "exclude" ).toStringArray();
 }
 
 void DlcFolderViewer::_loadDesc(Path path)
