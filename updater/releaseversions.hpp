@@ -24,42 +24,42 @@ namespace updater
 {
 
 class ReleaseVersions :
-	public std::map<std::string, ReleaseFileSet>,
-	public IniFile::SectionVisitor
+  public std::map<std::string, ReleaseFileSet>,
+  public IniFile::SectionVisitor
 {
 public:
-	virtual ~ReleaseVersions() {}
-	void LoadFromIniFile(IniFilePtr iniFile)
-	{
-		iniFile->ForeachSection(*this);
-	}
+  virtual ~ReleaseVersions() {}
+  void LoadFromIniFile(IniFilePtr iniFile)
+  {
+    iniFile->ForeachSection(*this);
+  }
 
-	void VisitSection(const IniFile& iniFile, const std::string& sectionName)
-	{
-		// Get the info from the section header
-		if(utils::startsWith( sectionName, "Version"))
-		{
-			StringArray tokens = utils::split( sectionName, " " );
+  void VisitSection(const IniFile& iniFile, const std::string& sectionName)
+  {
+    // Get the info from the section header
+    if(utils::startsWith( sectionName, "Version"))
+    {
+      StringArray tokens = utils::split( sectionName, " " );
 
-			if( tokens.size() == 3 && tokens[ 1 ] == "File")
-			{
-				std::string version = tokens[ 0 ].substr( 7 );
-				std::string filename = tokens[ 2 ];
+      if( tokens.size() == 3 && tokens[ 1 ] == "File")
+      {
+        std::string version = tokens[ 0 ].substr( 7 );
+        std::string filename = tokens[ 2 ];
 
-				ReleaseFileSet& set = FindOrInsertVersion(version);
+        ReleaseFileSet& set = FindOrInsertVersion(version);
 
-				ReleaseFile file(filename);
+        ReleaseFile file(filename);
 
-				file.crc = CRC::ParseFromString(iniFile.GetValue(sectionName, "crc"));
-				file.filesize = utils::toUint( iniFile.GetValue(sectionName, "filesize") );
-				file.localChangesAllowed = iniFile.GetValue(sectionName, "allow_local_modifications") == "1";
+        file.crc = CRC::ParseFromString(iniFile.GetValue(sectionName, "crc"));
+        file.filesize = utils::toUint( iniFile.GetValue(sectionName, "filesize") );
+        file.localChangesAllowed = iniFile.GetValue(sectionName, "allow_local_modifications") == "1";
 
-				Logger::warning( "Found version %s file: %s with checksum %x", version.c_str(), filename.c_str(), file.crc );
+        Logger::warning( "Found version %s file: %s with checksum %x", version.c_str(), filename.c_str(), file.crc );
 
-				set.insert(ReleaseFileSet::value_type(filename, file));
-			}
-		}
-	}
+        set.insert(ReleaseFileSet::value_type(filename, file));
+      }
+    }
+  }
 
 private:
 	ReleaseFileSet& FindOrInsertVersion(const std::string& version)

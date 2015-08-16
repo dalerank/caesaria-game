@@ -26,17 +26,22 @@
 #include "core/variant_map.hpp"
 #include "core/gettext.hpp"
 #include "showinfobox.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "gui/film_widget.hpp"
 #include "world/empire.hpp"
 #include "game/gamedate.hpp"
 #include "fundissue.hpp"
 #include "factory.hpp"
+#include "game/funds.hpp"
 
 namespace events
 {
 
 REGISTER_EVENT_IN_FACTORY(CityIndebt, "city_indebt")
+
+namespace {
+enum {noDebts=0,haveDebtInPast=1,lastWarning=2,sendLegion=3};
+}
 
 class CityIndebt::Impl
 {
@@ -67,6 +72,7 @@ void CityIndebt::load(const VariantMap& stream)
   VARIANT_LOAD_ANY_D( _d, isDeleted, stream )
 
   _d->emperorMoney << stream.get( "emperorMoney" ).toList();
+
   _d->text = stream.get( "text" ).toStringArray();
   _d->title = stream.get( "title" ).toStringArray();
   _d->video = stream.get( "video" ).toStringArray();
@@ -91,7 +97,7 @@ bool CityIndebt::_mayExec(Game& game, unsigned int time) const
 {
   if( game::Date::isWeekChanged() )
   {
-    if( game.city()->funds().treasury() < -4900 )
+    if( game.city()->treasury().money() < econ::maxDebt )
     {
       return true;
     }
@@ -103,7 +109,7 @@ bool CityIndebt::_mayExec(Game& game, unsigned int time) const
 CityIndebt::CityIndebt() : _d( new Impl )
 {
   _d->isDeleted = false;
-  _d->state = 0;
+  _d->state = noDebts;
 }
 
 void CityIndebt::_exec(Game& game, unsigned int)
@@ -113,9 +119,9 @@ void CityIndebt::_exec(Game& game, unsigned int)
 
   switch( _d->state )
   {
-  case 0:
-  case 1:
-  case 2:
+  case noDebts:
+  case haveDebtInPast:
+  case lastWarning:
   {
     std::string video = _d->state < _d->video.size() ? _d->video[ _d->state ] : "unknown.video";
     std::string text = _d->state < _d->text.size() ? _d->text[ _d->state ] : "##city_in_debt_text##";
@@ -130,17 +136,17 @@ void CityIndebt::_exec(Game& game, unsigned int)
 
     _d->state++;
 
-    GameEventPtr e = FundIssueEvent::create( city::Funds::caesarsHelp, money );
+    GameEventPtr e = Payment::create( econ::Issue::caesarsHelp, money );
     e->dispatch();
     _d->lastMessageSent = game::Date::current();
   }
   break;
 
-  case 3:
+  case sendLegion:
   {
     if( _d->lastMessageSent.monthsTo( game::Date::current() ) > 11 )
     {
-      GameEventPtr e = ShowInfobox::create( "##message_from_centurion##", "##centurion_send_army_to_player##", true, ":/smk/Emp_send_army.smk" );
+      GameEventPtr e = ShowInfobox::create( "##message_from_centurion##", "##centurion_send_army_to_player##", true, "emp_send_army" );
       e->dispatch();
 
       world::CityPtr rome = game.empire()->rome();

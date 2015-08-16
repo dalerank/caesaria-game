@@ -19,6 +19,7 @@
 #define _CAESARIA_EVENT_REQUESTDESTROY_H_INCLUDE_
 
 #include "event.hpp"
+#include "objects/predefinitions.hpp"
 
 namespace events
 {
@@ -26,7 +27,7 @@ namespace events
 class RequestDestroy : public GameEvent
 {
 public:
-  static GameEventPtr create( ConstructionPtr constr );
+  static GameEventPtr create(OverlayPtr constr );
   virtual bool isDeleted() const;
 
 protected:
@@ -36,7 +37,7 @@ protected:
   void _declineDestroy();
 
 private:
-  ConstructionPtr _reqConstruction;
+  OverlayPtr _overlay;
   bool _mayDelete, _alsoExec;
 };
 

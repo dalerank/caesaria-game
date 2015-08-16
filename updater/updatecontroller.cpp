@@ -15,7 +15,7 @@
 
 #include "updatecontroller.hpp"
 #include "constants.hpp"
-
+#include "core/osystem.hpp"
 #include "util.hpp"
 
 namespace updater
@@ -53,15 +53,15 @@ void UpdateController::DontPauseAt(UpdateStep step)
 
 void UpdateController::StartOrContinue()
 {
-	assert(_synchronizer == NULL); // debug builds take this seriously
+  assert(_synchronizer == NULL); // debug builds take this seriously
 
-	if( _synchronizer.isNull() )
-	{
-		ExceptionSafeThreadPtr p( new ExceptionSafeThread( makeDelegate( this, &UpdateController::run )) );
-		p->SetThreadType( ThreadTypeIntervalDriven );
-		p->drop();
-		_synchronizer = p;
-	}
+  if( _synchronizer.isNull() )
+  {
+     ExceptionSafeThreadPtr p( new ExceptionSafeThread( makeDelegate( this, &UpdateController::run )) );
+     p->SetThreadType( ThreadTypeIntervalDriven );
+     p->drop();
+     _synchronizer = p;
+  }
 }
 
 void UpdateController::PerformPostUpdateCleanup()
@@ -71,21 +71,21 @@ void UpdateController::PerformPostUpdateCleanup()
 
 void UpdateController::Abort()
 {
-	_abortFlag = true;
+  _abortFlag = true;
 
-	if(_synchronizer != NULL)
-	{
-		try
-		{
-			_synchronizer->Stop();
-		}
-		catch (std::runtime_error& ex)
-		{
-			Logger::warning( "Controller thread aborted. %s", ex.what() );
-		}
+  if(_synchronizer != NULL)
+  {
+    try
+    {
+      _synchronizer->Stop();
+    }
+    catch (std::runtime_error& ex)
+    {
+      Logger::warning( "Controller thread aborted. %s", ex.what() );
+    }
 
-		_updater.cancelDownloads();
-	}
+    _updater.cancelDownloads();
+  }
 }
 
 bool UpdateController::AllThreadsDone() {	return _synchronizer == NULL;}
@@ -191,8 +191,8 @@ void UpdateController::performStep(int step)
 		_updater.setBinaryAsExecutable();
 		break;
 
-	case RestartUpdater:		
-		_updater.RestartUpdater();
+  case RestartUpdater:
+    _updater.restartUpdater();
 		break;
 
 	case Done:
@@ -270,8 +270,8 @@ void UpdateController::finalizeStep(int step)
 
 	case DownloadNewUpdater:
 		{
-			_updater.RestartUpdater();
-			TryToProceedTo(RestartUpdater);
+      _updater.restartUpdater();
+      TryToProceedTo(RestartUpdater);
 		}
 		break;
 
@@ -303,7 +303,7 @@ void UpdateController::finalizeStep(int step)
 		TryToProceedTo(Done);
 		break;
 
-	case RestartUpdater:
+  case RestartUpdater:
 		TryToProceedTo(Done);
 		break;
 

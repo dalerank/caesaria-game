@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_LAYERMODE_H_INCLUDE_
 #define __CAESARIA_LAYERMODE_H_INCLUDE_
@@ -29,11 +31,14 @@ namespace gfx
 class LayerMode : public Renderer::Mode
 {
 public:
+  typedef enum { border=0, multibuild, checkWalkers, assign2road } Flag;
   static Renderer::ModePtr create( const int type );
 
-  int getType() const;
+  int type() const;
+  bool flag( Flag name );
 protected:
   void _setType( int type );
+  void _setFlag( Flag name, bool value );
   LayerMode( int type );
 
 private:
@@ -52,13 +57,9 @@ private:
 class BuildMode : public LayerMode
 {
 public:
-  static Renderer::ModePtr create( TileOverlay::Type type );
+  static Renderer::ModePtr create( object::Type type );
 
-  ConstructionPtr getContruction() const;
-  bool isBorderBuilding() const;
-  bool isMultiBuilding() const;
-  bool isRoadAssignment() const;
-  bool isCheckWalkers() const;
+  ConstructionPtr contruction() const;
 public:
   BuildMode();
 

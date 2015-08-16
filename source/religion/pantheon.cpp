@@ -17,7 +17,6 @@
 #include "pantheon.hpp"
 #include "gfx/picture.hpp"
 #include "game/gamedate.hpp"
-#include "city/helper.hpp"
 #include "events/event.hpp"
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"
@@ -28,8 +27,6 @@
 #include "mercury.hpp"
 #include "core/variant_map.hpp"
 #include "mars.hpp"
-
-using namespace constants;
 
 namespace religion
 {
@@ -42,12 +39,6 @@ class Pantheon::Impl
 public:  
   DivinityList divinties;
 };
-
-Pantheon& Pantheon::instance()
-{
-  static Pantheon inst;
-  return inst;
-}
 
 Pantheon::Pantheon() : _d( new Impl )
 {
@@ -66,15 +57,16 @@ DivinityPtr Pantheon::get( RomeDivinityType name )
 DivinityPtr Pantheon::get( const std::string& name)
 {
   DivinityList divines = instance().all();
-  foreach( current, divines )
+  for( auto current : divines )
   {
-    if( (*current)->name() == name || (*current)->internalName() == name )
-      return *current;
+    if( current->name() == name || current->internalName() == name )
+      return current;
   }
 
   return DivinityPtr();
 }
 
+Pantheon::~Pantheon() {}
 DivinityList Pantheon::all(){ return _d->divinties; }
 DivinityPtr Pantheon::mars(){  return get( romeDivMars ); }
 DivinityPtr Pantheon::neptune() { return get( romeDivNeptune ); }
@@ -104,27 +96,27 @@ void Pantheon::save(VariantMap& stream)
 {
   DivinityList divines = instance().all();
 
-  foreach( current, divines )
+  for( auto current : divines )
   {
-    stream[ (*current)->internalName() ] = (*current)->save();
+    stream[ current->internalName() ] = current->save();
   }
 }
 
 void Pantheon::doFestival( RomeDivinityType who, int type )
 {
-  DivinityPtr divn = get( who );
+  auto divn = get( who ).as<RomeDivinity>();
   if( divn.isValid() )
   {
-    ptr_cast<rome::RomeDivinity>(divn)->assignFestival( type );
+    divn->assignFestival( type );
   }
 }
 
 void Pantheon::doFestival(const std::string& who, int type)
 {
-  DivinityPtr divn = get( who );
+  auto divn = get( who ).as<RomeDivinity>();
   if( divn.isValid() )
   {
-    ptr_cast<rome::RomeDivinity>(divn)->assignFestival( type );
+    divn->assignFestival( type );
   }
 }
 

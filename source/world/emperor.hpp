@@ -24,6 +24,8 @@
 #include "core/signals.hpp"
 #include "vfs/path.hpp"
 
+class Gift;
+
 namespace world
 {
 
@@ -33,11 +35,11 @@ public:
   Emperor();
   virtual ~Emperor();
 
-  int relation( const std::string& cityname );
+  int relation( const std::string& cityname ) const;
   void updateRelation( const std::string& cityname, int value );
 
-  void sendGift( const std::string& cityname, unsigned int money );
-  DateTime lastGiftDate( const std::string& cityname );
+  void sendGift( const Gift& money );
+  DateTime lastGiftDate( const std::string& cityname ) const;
   void timeStep( unsigned int time );
 
   void remSoldiers(const std::string& cityname, int value);
@@ -45,7 +47,7 @@ public:
   std::string name() const;
   void setName( const std::string& name );
 
-  void cityTax( const std::string& cityname, unsigned int money );
+  void citySentTax( const std::string& cityname, unsigned int money );
   void resetRelations( const StringArray& cities );
   void checkCities();
 
@@ -57,23 +59,6 @@ private:
   __DECLARE_IMPL(Emperor)
 };
 
-class EmperorLine
-{
-public:
-  static EmperorLine& instance();
-
-  std::string getEmperor( DateTime time );
-  VariantMap getInfo( std::string name ) const;
-
-  void load(vfs::Path filename );
-
-private:
-  EmperorLine();
-
-  class Impl;
-  ScopedPtr<Impl> _d;
-};
-
-}
+}//end namespace world
 
 #endif //__CAESARIA_EMPEROR_H_INCLUDED__

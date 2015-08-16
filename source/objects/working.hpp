@@ -13,18 +13,19 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_WORKINGBUILDING_H_INCLUDED__
 #define __CAESARIA_WORKINGBUILDING_H_INCLUDED__
 
 #include "objects/building.hpp"
+#include "core/signals.hpp"
 
 /** Building where people work */
 class WorkingBuilding : public Building
 {
 public:
-  WorkingBuilding(const TileOverlay::Type type, const Size& size);
+  WorkingBuilding(const object::Type type, const Size& size);
   virtual ~WorkingBuilding();
 
   void setMaximumWorkers(const unsigned int maximumWorkers);
@@ -55,6 +56,7 @@ public:
 
   virtual void addWalker( WalkerPtr walker );
   virtual const WalkerList& walkers() const;
+  bool haveWalkers() const;
 
   virtual std::string errorDesc() const;
   virtual std::string workersProblemDesc() const;
@@ -63,6 +65,9 @@ public:
 
   virtual void initialize(const MetaData &mdata);
 
+public signals:
+  Signal1<bool>& onActiveChange();
+
 protected:
   void _setError(const std::string& err);
   void _fireWorkers();
@@ -70,6 +75,7 @@ protected:
   void _disaster();
 
   virtual void _updateAnimation( const unsigned long time );
+  virtual void _changeAnimationState( bool enabled );
 
 private:
 

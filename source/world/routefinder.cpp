@@ -18,10 +18,16 @@
 #include "routefinder.hpp"
 #include "empiremap.hpp"
 #include "core/delegate.hpp"
+#include "core/tilepos_array.hpp"
 #include "core/foreach.hpp"
 
 namespace world
 {
+
+namespace {
+const int lineScore=10;
+const int diagScore=14;
+}
 
 class EmPoint
 {
@@ -60,13 +66,13 @@ public:
   int getGScore( const EmPoint* p)
   {
     TilePos otherPos = p->pos;
-    return p->g + ((pos.i() == otherPos.i() || pos.j() == otherPos.j()) ? 10 : 14);
+    return p->g + ((pos.i() == otherPos.i() || pos.j() == otherPos.j()) ? lineScore : diagScore);
   }
 
   int getHScore( const EmPoint* p)
   {
     TilePos otherPos = p ? p->pos : TilePos( 0, 0 );
-    return (abs(otherPos.i() - pos.i()) + abs(otherPos.j() - pos.j())) * 10;
+    return (abs(otherPos.i() - pos.i()) + abs(otherPos.j() - pos.j())) * lineScore;
   }
 
   void computeScores( const EmPoint* end )

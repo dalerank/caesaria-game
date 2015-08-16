@@ -16,7 +16,7 @@
 #include "showtileinfo.hpp"
 #include "game/infoboxmanager.hpp"
 #include "game/game.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "movecamera.hpp"
 
 namespace events
@@ -44,9 +44,10 @@ void ShowTileInfo::_exec(Game& game, unsigned int time)
   case next:
   case prew:
   {
-    city::Helper helper( game.city() );
-    ConstructionPtr c =  ptr_cast<Construction>( game.city()->getOverlay( _pos ) );
-    c = (_mode == next ? helper.next( c ) : helper.prew( c ));
+    ConstructionPtr c =  game.city()->getOverlay( _pos ).as<Construction>();
+    c = (_mode == next
+                ? game.city()->statistic().objects.next( c )
+                : game.city()->statistic().objects.prew( c ));
 
     if( c.isValid() )
     {
@@ -62,7 +63,7 @@ void ShowTileInfo::_exec(Game& game, unsigned int time)
   break;
   }
 
-  gui::infobox::Manager::getInstance().showHelp( game.city(), game.gui(), _pos );
+  gui::infobox::Manager::instance().showHelp( game.city(), game.gui(), _pos );
 }
 
 bool ShowTileInfo::_mayExec(Game&, unsigned int ) const { return true; }

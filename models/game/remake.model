@@ -1,4 +1,5 @@
 {
+  old : ":/gfx/pics_old.zip"
   main : ":/gfx/pics.zip"
   wait : ":/gfx/pics_wait.zip"
   celts : ":/gfx/pics_celts.zip"

@@ -19,7 +19,6 @@
 #define __CAESARIA_POSITION_H_INCLUDED__
 
 #include <iostream>
-
 #include "vector2.hpp"
 
 class PointF;
@@ -27,41 +26,41 @@ class PointF;
 class Point : public Vector2<int>
 {
 public:
-    Point( const int x, const int y ) : Vector2<int>( x, y ) {}
-    Point() : Vector2<int>( 0, 0 ) {}
-    Point( const Vector2<int>& pos ) : Vector2<int>( pos ) {}
+  Point( const int x, const int y ) : Vector2<int>( x, y ) {}
+  Point() : Vector2<int>( 0, 0 ) {}
+  Point( const Vector2<int>& pos ) : Vector2<int>( pos ) {}
 
-    Point operator+(const Point& other) const { return Point( _x + other._x, _y + other._y ); }
-    Point operator-(const Point& other) const { return Point( _x - other._x, _y - other._y ); }
-    Point operator -() const { return Point( -_x, -_y); }
-    Point operator*(float mul) const{ return Point( _x*mul, _y*mul ); }
+  Point operator+(const Point& other) const { return Point( _x + other._x, _y + other._y ); }
+  Point operator-(const Point& other) const { return Point( _x - other._x, _y - other._y ); }
+  Point operator-() const { return Point( -_x, -_y); }
+  Point operator*(float mul) const{ return Point( _x*mul, _y*mul ); }
 
-    void setX( const int nx ) { _x = nx; }
-    void setY( const int ny ) { _y = ny; }
+  void setX( const int nx ) { _x = nx; }
+  void setY( const int ny ) { _y = ny; }
 
-    float distanceTo( const Point& other ) const { return sqrtf( pow( float(_x - other._x), 2.f) + pow( float(_y - other._y), 2.f) ); }
+  float distanceTo( const Point& other ) const { return sqrtf( pow( float(_x - other._x), 2.f) + pow( float(_y - other._y), 2.f) ); }
 
-    PointF toPointF() const; 
+  PointF toPointF() const;
 };
 
 class PointF : public Vector2<float>
 {
 public:
-    PointF( const float x, const float y ) : Vector2<float>( x, y ) {}
-    PointF() : Vector2<float>( 0, 0 ) {}
-    PointF( const Vector2<float>& pos ) : Vector2<float>( pos ) {}
+  PointF( const float x, const float y ) : Vector2<float>( x, y ) {}
+  PointF() : Vector2<float>( 0, 0 ) {}
+  PointF( const Vector2<float>& pos ) : Vector2<float>( pos ) {}
 
-    PointF operator+(const PointF& other) const { return PointF( _x + other._x, _y + other._y ); }
+  PointF operator+(const PointF& other) const { return PointF( _x + other._x, _y + other._y ); }
 
-    void setX( const float nx ) { _x = nx; }
-    void setY( const float ny ) { _y = ny; }
+  void setX( const float nx ) { _x = nx; }
+  void setY( const float ny ) { _y = ny; }
 
-    Point toPoint() const { return Point( (int)_x, (int)_y ); }
+  Point toPoint() const { return Point( (int)_x, (int)_y ); }
 };
 
 inline PointF Point::toPointF() const
 { 
-    return PointF( (float)_x, (float)_y );
+  return PointF( (float)_x, (float)_y );
 }
 
 class TilePos : Vector2<int>
@@ -71,20 +70,20 @@ public:
   TilePos( const TilePos& other ) : Vector2<int>( other._x, other._y ) {}
   TilePos() : Vector2<int>( 0, 0 ) {}
 
-  int i() const { return _x; }
-  int j() const { return _y; }
-  int z() const { return _y - _x; }
+  inline int i() const { return _x; }
+  inline int j() const { return _y; }
+  inline int z() const { return _y - _x; }
 
-  int& ri() { return _x; }
-  int& rj() { return _y; }
+  inline int& ri() { return _x; }
+  inline int& rj() { return _y; }
 
   inline TilePos northnb() const { return TilePos( _x, _y+1 ); }
   inline TilePos southnb() const { return TilePos( _x, _y-1 ); }
   inline TilePos eastnb() const { return TilePos( _x+1, _y ); }
   inline TilePos westnb() const { return TilePos( _x-1, _y ); }
 
-  void setI( const int i ) { _x = i; }
-  void setJ( const int j ) { _y = j; }
+  inline void setI( const int i ) { _x = i; }
+  inline void setJ( const int j ) { _y = j; }
 
   float distanceFrom( const TilePos& other ) const { return getDistanceFrom( other );}
   int getDistanceFromSQ(const TilePos& other) const { return Vector2<int>::getDistanceFromSQ(other);}

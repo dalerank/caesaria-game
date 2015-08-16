@@ -19,7 +19,7 @@
 #define __CAESARIA_VARIANT_MAP_H_INCLUDED__
 
 #include "variant.hpp"
-#include "signals.hpp"
+#include "delegate.hpp"
 
 class VariantMap : public std::map<std::string, Variant>
 {
@@ -35,9 +35,9 @@ public:
 
   VariantMap& operator+=(const VariantMap& other )
   {
-    foreach( it, other )
+    for (auto it : other)
     {
-      (*this)[ it->first ] = it->second;
+      (*this)[ it.first ] = it.second;
     }
 
     return *this;
@@ -45,17 +45,19 @@ public:
 
   void visitEach( Visitor visitor )
   {
-    foreach( it, *this )
-      visitor( it->first, it->second );
+    for (auto it : *this)
+    {
+      visitor( it.first, it.second );
+    }
   }
 
   VariantMap& operator=(const VariantMap& other )
   {
     clear();
 
-    foreach( it, other )
+    for (auto it : other)
     {
-      (*this)[ it->first ] = it->second;
+      (*this)[ it.first ] = it.second;
     }
 
     return *this;
@@ -73,4 +75,4 @@ public:
   }
 };
 
-#endif // __OPENCAESAR3_VARIANTPRIVATE_H_INCLUDED__
+#endif // __CAESARIA_VARIANT_MAP_H_INCLUDED__

@@ -1,7 +1,8 @@
 {
-  geometry : [ 0, 0, 640, 420 ]
+  size : [ 640, 420 ]
   bgtype : "whiteFrame"
-
+  static : true
+  
   lbBlackframe#Label : {
     geometry : [ 70, 50, "pw-16", 120 ]
     bgtype : "blackFrame"
@@ -31,7 +32,7 @@
 
   lbRegPayers#Label : { 
     font : "FONT_1_WHITE"  
-    geometry : [ 75, 95, 200, 120 ]
+    geometry : [ 75, 95, 300, 120 ]
   }
 
   lbLastYear#Label : {

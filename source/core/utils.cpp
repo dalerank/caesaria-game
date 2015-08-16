@@ -16,8 +16,6 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "utils.hpp"
-#include "requirements.hpp"
-#include "logger.hpp"
 
 #include <cstdarg>
 #include <cfloat>
@@ -27,6 +25,10 @@
 #include <iostream>
 #include <stdint.h>
 #include <sstream>
+
+#include "requirements.hpp"
+#include "logger.hpp"
+#include "variant_list.hpp"
 #include "stacktrace.hpp"
 
 namespace utils
@@ -55,7 +57,7 @@ int vformat(std::string& str, int max_size, const char* format, va_list argument
   {
     Logger::warning( "String::vformat: String truncated when processing " + str );
     if( outputStacktraceLog )
-      Stacktrace::print();
+      crashhandler::printstack(false);
   }
  
   str = buffer_ptr;
@@ -64,6 +66,66 @@ int vformat(std::string& str, int max_size, const char* format, va_list argument
     delete[] buffer_ptr;
 
   return length;
+}
+
+std::wstring utf8toWString(const char* src, size_t size)
+{
+  std::wstring dest;
+
+  dest.clear();
+  wchar_t w = 0;
+  int bytes = 0;
+  wchar_t err = L'�';
+
+  for(size_t i = 0; i < size; i++)
+  {
+    unsigned char c = (unsigned char)src[i];
+    if (c <= 0x7f)
+    {//first byte
+      if (bytes)
+      {
+        dest.push_back(err);
+        bytes = 0;
+      }
+      dest.push_back((wchar_t)c);
+    }
+    else if (c <= 0xbf)
+    {//second/third/etc byte
+      if (bytes)
+      {
+        w = ((w << 6)|(c & 0x3f));
+        bytes--;
+        if (bytes == 0)
+          dest.push_back(w);
+      }
+      else
+        dest.push_back(err);
+    }
+    else if (c <= 0xdf)
+    {//2byte sequence start
+      bytes = 1;
+      w = c & 0x1f;
+    }
+    else if (c <= 0xef)
+    {//3byte sequence start
+      bytes = 2;
+      w = c & 0x0f;
+    }
+    else if (c <= 0xf7)
+    {//3byte sequence start
+      bytes = 3;
+      w = c & 0x07;
+    }
+    else
+    {
+      dest.push_back(err);
+      bytes = 0;
+    }
+  }
+  if( bytes )
+    dest.push_back(err);
+
+  return dest;
 }
 
 void useStackTrace(bool enabled) {  outputStacktraceLog = enabled;}
@@ -83,13 +145,20 @@ std::string i2str(int value)
 
 std::string format( unsigned int max_size, const char* fmt, ...)
 {
-  va_list argument_list;
-  va_start(argument_list, fmt);
-
   std::string ret;
-  vformat( ret, max_size, fmt, argument_list);
+  try
+  {
+    va_list argument_list;
+    va_start(argument_list, fmt);
 
-  va_end(argument_list);
+    vformat( ret, max_size, fmt, argument_list);
+
+    va_end(argument_list);
+  }
+  catch(...)
+  {
+    ret = "error_on_format_text";
+  }
 
   return ret;
 }
@@ -212,10 +281,8 @@ unsigned int toUint( const char* in, const char** out/*=0*/ )
 
 std::string replace( std::string text, const std::string& from, const std::string& to )
 {
-  for (size_t i = 0; (i = text.find(from, i)) != std::string::npos; i += to.length())
+  for(size_t i = 0; (i = text.find(from, i)) != std::string::npos; i += to.length())
     text.replace(i, from.length(), to);
-
-  //std::cout << text << std::endl;
 
   return text;
 }
@@ -250,19 +317,6 @@ int compare( const std::string& a, const std::string& b, equaleMode mode )
   }
 }
 
-unsigned int hash( const std::string& text )
-{
-  unsigned int nHash = 0;
-  const char* key = text.c_str();
-  if( key )
-  {
-    while(*key)
-      nHash = (nHash<<5) + nHash + *key++;
-  }
-
-  return nHash;
-}
-
 unsigned int hash( unsigned int max_size, const char* fmt, ... )
 {
   va_list argument_list;
@@ -273,7 +327,7 @@ unsigned int hash( unsigned int max_size, const char* fmt, ... )
 
   va_end(argument_list);
 
-  return hash( fmtStr );
+  return Hash( fmtStr );
 }
 
 StringArray split( std::string str, std::string spl )
@@ -338,6 +392,81 @@ bool startsWith(std::string text, std::string start)
 unsigned int toUint(const std::string& in)
 {
   return toUint( in.c_str(), 0 );
+}
+
+float eventProbability(float probability, int k, int n)
+{
+  int limit = math::random( n ) * (1 - probability);
+  return k > limit ? 1 : 0;
+
+  /*probability = math::clamp<float>( probability, 0, 1);
+  k = math::clamp( k, 0, n );
+  float q = 1 - probability;
+
+  float npq = n * probability * q;
+  float t = (k - n*probability)/sqrt(npq);
+  float res = (1 / sqrt( 2* math::PI * npq )) * exp( -pow(t,2)/2 ) ;
+
+  return res;*/
+}
+
+std::string trim(const std::string &str, const std::string &tr)
+{
+  return replace( str, tr, "" );
+}
+
+VariantList toVList(const StringArray &items)
+{
+  VariantList ret;
+  foreach( it, items ) ret << *it;
+  return ret;
+}
+
+std::string toRoman(int value)
+{
+  struct romandata_t { int value; char const* numeral; };
+  static romandata_t const romandata[] =
+     { {1000, "M"},
+       {900,  "CM"},
+       {500,  "D"},
+       {400,  "CD"},
+       {100,  "C"},
+       {90,   "XC"},
+       {50,   "L"},
+       {40,   "XL"},
+       {10,   "X"},
+       {9,    "IX"},
+       {5,    "V"},
+       {4,    "IV"},
+       {1,    "I"},
+       {0,    NULL} }; // end marker
+
+  std::string result;
+  for (romandata_t const* current = romandata; current->value > 0; ++current)
+  {
+    while (value >= current->value)
+    {
+      result += current->numeral;
+      value  -= current->value;
+    }
+  }
+  return result;
+}
+
+bool endsWith(const std::string& text, const std::string& which)
+{
+  if( text.length() < which.length() )
+    return false;
+
+  auto itext = text.rbegin();
+  auto iwhich = which.rbegin();
+  for( ; iwhich != which.rend(); ++iwhich, ++itext )
+  {
+    if( *itext != *iwhich )
+      return false;
+  }
+
+  return true;
 }
 
 }//end namespace utils

@@ -22,6 +22,7 @@
 
   roadBlock : {
     cost : 10
+    c3logic : false
     class : "road"
     image : [ "roadBlock", 1 ]
   }
@@ -339,9 +340,9 @@
     desirability : { base :4,	range : 4,	step : -1 }
     employers : 2
     class : "religion"
-    sound : [ "security", 47 ]
-    image : [ "smlneptune", 1 ]
+    image : [ "security", 47 ]
     image.offset : [-1, -1]
+    sound : [ "templeneptune", 1 ]
   }, 
   
   small_mercury_temple : {
@@ -425,6 +426,7 @@
     employers : 5
     class : "food"
     image : [ "commerce", 1 ]
+    animation : { rc : "commerce", start : 2, count : 10, delay : 4 }
     sound : [ "market", 1 ]
   }, 
 
@@ -457,6 +459,27 @@
     desirability : { base : 8, 	range : 4,	step : -2 }
     employers : 12
     class : "trade"
+
+    image.north : {
+      image : [ "transport", 5 ]
+      animation : { rc : "transport", start : 6, count : 10, delay : 4, offset : [ 107, 61 ], pingpong : true }
+    }
+
+    image.east : {
+      image : [ "transport", 17 ]
+      animation : { rc : "transport", start : 18, count : 10, delay : 4, offset : [ 62, 36 ], pingpong : true }
+    }
+
+    image.south : {
+      image : [ "transport", 29 ]
+      animation : { rc : "transport", start : 30, count : 10, delay : 4, offset : [ 35, 51 ], pingpong : true }
+    }
+
+    image.west : {
+      image : [ "transport", 41 ]
+      animation : { rc : "transport", start : 42, count : 10, delay : 4, offset : [ 48, 70 ], pingpong : true }
+    }
+
     sound : [ "dock", 1 ]
   }, 
 
@@ -492,8 +515,9 @@
   engineering_post : {
     cost : 30,
     desirability : { base : 0, 	range : 0,	step : 0 }
-    employers : 5
+    employers : 5   
     image : [ "transport", 56 ]
+    animation : { rc : "transport", start : 57, count : 10, offset : [ 10, 42 ], delay : 4 }
     class : "engineer"
   },
 
@@ -503,6 +527,7 @@
     employers : 0
     class : "bridge"
     requestDestroy : true
+    subtileOffset : [ 10, -12 ]
   }, 
   
   high_bridge : {
@@ -519,6 +544,13 @@
     employers : 20
     class : "administration"
     sound : [ "senate", 1 ]
+
+    ratings : {
+      culture  :   { rc : "govt", index: 5, offset : [ 140, -30 ] }
+      prosperity : { rc : "govt", index: 6, offset : [ 170, -25 ] }
+      peace :      { rc : "govt", index: 7, offset : [ 200, -15 ] }
+      favour :     { rc : "govt", index: 8, offset : [ 230, -10 ] }
+    }
   }, 
    
   forum : {
@@ -548,6 +580,7 @@
     desirability : { base : -6,	range : 3,	step : -2 }
     employers : 0
     class : "water"
+    fullOffset : [ 47, -10 ]
     sound : [ "reservoir", 1 ]
   }, 
 
@@ -565,9 +598,6 @@
     employers : 0,
     pretty : "Well",
     image : [ "utilitya", 1 ]
-    image.ext : {
-      type_1 : { size:1, rc : "well", start : 1, count : 4 }
-    }
     class : "water"
     sound : [ "well", 1 ]
   }, 
@@ -752,6 +782,7 @@
     productRate : 4.8
     class : "industry"
     sound : [ "winery", 1 ]
+    animation : { rc : "commerce", start : 87, count : 12, offset : [ 14, 36 ], delay : 4 }
   },
 
   oil_workshop :
@@ -798,6 +829,6 @@
     class : "industry"
     productRate : 4.8
     image : [ "commerce", 132 ]
-    animation : { rc : "commerce", start : 133, count : 7, delay : 3 }
+    animation : { rc : "commerce", start : 133, count : 7, offset : [ 65, 42 ], delay : 3 }
   }
 }

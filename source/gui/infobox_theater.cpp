@@ -22,9 +22,9 @@
 #include "core/gettext.hpp"
 #include "core/saveadapter.hpp"
 #include "core/variant_map.hpp"
+#include "game/infoboxmanager.hpp"
 #include "label.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -33,11 +33,15 @@ namespace gui
 namespace infobox
 {
 
+REGISTER_OBJECT_BASEINFOBOX(theater,AboutTheater)
+
 AboutTheater::AboutTheater(Widget *parent, PlayerCityPtr city, const Tile &tile)
-  : AboutWorkingBuilding( parent, ptr_cast<WorkingBuilding>( tile.overlay() ) )
+  : AboutWorkingBuilding( parent, tile.overlay().as<WorkingBuilding>() )
 {
-  TheaterPtr theater = ptr_cast<Theater>( _getBuilding() );
-  setTitle( _( theater->name() ) );
+  setupUI( ":/gui/infoboxtheater.gui" );
+
+  TheaterPtr theater = _getBuilding().as<Theater>();
+  setTitle( _( MetaDataHolder::findPrettyName( theater->type() ) ) );
 
   _lbTextRef()->setTextAlignment( align::upperLeft, align::center);
   _updateWorkersLabel( Point( 40, 150), 542, theater->maximumWorkers(), theater->numberWorkers() );

@@ -20,37 +20,43 @@
 #include "core/predefinitions.hpp"
 #include "core/safetycast.hpp"
 #include "core/position.hpp"
-#include "servicewalker_helper.hpp"
-#include "city/helper.hpp"
+#include "city/city.hpp"
 #include "core/variant_map.hpp"
-#include "game/enums.hpp"
 #include "game/resourcegroup.hpp"
+#include "pathway/pathway_helper.hpp"
 #include "pathway/path_finding.hpp"
 #include "core/logger.hpp"
 #include "constants.hpp"
 #include "corpse.hpp"
-#include "core/foreach.hpp"
+#include "objects/working.hpp"
 #include "helper.hpp"
+#include "gfx/helper.hpp"
 #include "walkers_factory.hpp"
-
-using namespace constants;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::recruter, Recruter)
 
-namespace {
-CAESARIA_LITERALCONST(priority)
-static const int noPriority = 999;
-}
+enum class ReachDistance : unsigned short
+{
+  max=2
+};
+
+enum class HirePriority : unsigned short
+{
+  no = 999
+};
 
 class Recruter::Impl
 {
 public:
-  typedef std::map< objects::Group, int > PriorityMap;
+  typedef std::map< object::Group, int > PriorityMap;
 
   unsigned int needWorkers;
   city::HirePriorities priority;
   PriorityMap priorityMap;
   unsigned int reachDistance;
+  bool patrolFinished;
+  int failedCounter;
+  bool once_shot;
 
 public:
   bool isMyPriorityOver(BuildingPtr base, WorkingBuildingPtr wbuilding );
@@ -60,17 +66,25 @@ Recruter::Recruter(PlayerCityPtr city )
  : ServiceWalker( city, Service::recruter ), _d( new Impl )
 {    
   _d->needWorkers = 0;
-  _d->reachDistance = 2;
+  _d->reachDistance = (int)ReachDistance::max;
+  _d->once_shot = false;
+  _d->failedCounter = 0;
+  _d->patrolFinished = false;
   _setType( walker::recruter );
 }
 
 void Recruter::hireWorkers( const int workers )
 {
-  WorkingBuildingPtr wbase = ptr_cast<WorkingBuilding>( base() );
+  WorkingBuildingPtr wbase = base().as<WorkingBuilding>();
   if( wbase.isValid() ) 
   {
     unsigned int reallyHire = wbase->addWorkers( workers );
     _d->needWorkers -= reallyHire;
+  }
+  else
+  {
+    Logger::warning( "!!! WARNING: Recruter base[%d,%d] is null. Stop working.", baseLocation().i(), baseLocation().j() );
+    return2Base();
   }
 }
 
@@ -79,12 +93,12 @@ void Recruter::setPriority(const city::HirePriorities& priority)
   _d->priority = priority;
 
   int priorityLevel = 1;
-  foreach( i, _d->priority )
+  for( auto priority : _d->priority )
   {
-    city::industry::BuildingGroups groups = city::industry::toGroups( *i );
-    foreach( grIt, groups )
+    object::Groups groups = city::industry::toGroups( priority );
+    for( auto group : groups )
     {
-      _d->priorityMap[ *grIt ] = priorityLevel;
+      _d->priorityMap[ group ] = priorityLevel;
     }
 
     priorityLevel++;
@@ -96,25 +110,35 @@ int Recruter::needWorkers() const { return _d->needWorkers; }
 void Recruter::_centerTile()
 {
   Walker::_centerTile();
+  BuildingPtr refBase = base();
 
+  if( refBase.isNull() )
+  {
+    Logger::warning( "!!! WARNING: Recruter haveno base" );
+    return;
+  }
+
+  ReachedBuildings reached = getReachedBuildings( pos() );
   if( _d->needWorkers )
   {
-    ServiceWalkerHelper hlp( *this );
-    std::set<HousePtr> houses = hlp.getReachedBuildings<House>( pos() );
+    UqBuildings<House> houses = reached.select<House>();
 
-    foreach( it, houses ) { (*it)->applyService( this ); }
+    for( auto house : houses )
+      house->applyService( this );
 
     if( !_d->priority.empty() )
     {
-      std::set<WorkingBuildingPtr> blds = hlp.getReachedBuildings<WorkingBuilding>( pos() );
+      UqBuildings<WorkingBuilding> buildings = reached.select<WorkingBuilding>();
 
-      foreach( it, blds )
+      for( auto bld : buildings )
       {
-        bool priorityOver = _d->isMyPriorityOver( base(), *it );
+        if( bld.equals( refBase ) ) //avoid recruting from out base
+          continue;
+
+        bool priorityOver = _d->isMyPriorityOver( refBase, bld );
         if( priorityOver )
         {
-          WorkingBuildingPtr wbld = *it;
-          int removedFromWb = wbld->removeWorkers( _d->needWorkers );
+          int removedFromWb = bld->removeWorkers( _d->needWorkers );
           hireWorkers( removedFromWb );
         }
       }
@@ -122,10 +146,32 @@ void Recruter::_centerTile()
   }
   else
   {    
-    if( !_pathwayRef().isReverse() ) //return2Base();
+    if( !_pathway().isReverse() ) //return2Base();
     {
-      _pathwayRef().toggleDirection();
+      _pathway().toggleDirection();
     }
+  }
+}
+
+void Recruter::_noWay()
+{
+  _d->failedCounter++;
+
+  Pathway newway;
+  if( _d->failedCounter > 5 )
+  {
+    Logger::warning( "!!! WARNING: Failed find way for recruter " + name() );
+    die();
+  }
+
+  newway = PathwayHelper::create( pos(), base(), PathwayHelper::roadFirst );
+
+  if( newway.isValid() )
+  {
+    setPathway( newway );
+    _d->failedCounter = 0;
+    _d->patrolFinished = true;
+    go();
   }
 }
 
@@ -141,19 +187,19 @@ RecruterPtr Recruter::create(PlayerCityPtr city )
 void Recruter::send2City( WorkingBuildingPtr building, const int workersNeeded )
 {
   _d->needWorkers = workersNeeded;
-  ServiceWalker::send2City( building.object(), ServiceWalker::goLowerService | ServiceWalker::anywayWhenFailed );
+  ServiceWalker::send2City( building.object(), ServiceWalker::goServiceMaximum | ServiceWalker::anywayWhenFailed );
 }
 
 void Recruter::send2City(BuildingPtr base, int orders)
 {
-  WorkingBuildingPtr wb = ptr_cast<WorkingBuilding>( base );
+  WorkingBuildingPtr wb = base.as<WorkingBuilding>();
   if( wb.isValid() )
   {
     send2City( wb, wb->needWorkers() );
   }
   else
   {
-    Logger::warning( "WARNING !!!: Recruter try hire workers for non working buildng. Delete rectuter.");
+    Logger::warning( "!!!WARNING: Recruter try hire workers for non working buildng. Delete rectuter.");
     deleteLater();
   }
 }
@@ -162,7 +208,9 @@ void Recruter::once(WorkingBuildingPtr building, const unsigned int workersNeed,
 {
   _d->needWorkers = workersNeed;
   _d->reachDistance = distance;
-  setBase( ptr_cast<Building>( building ) );
+  _d->once_shot = true;
+
+  setBase( building );
   setPos( building->pos() );
   _centerTile();
 }
@@ -176,7 +224,7 @@ TilePos Recruter::places(Walker::Place type) const
 {
   switch( type )
   {
-  case plOrigin: return base().isValid() ? base()->pos() : TilePos( -1, -1 );
+  case plOrigin: return baseLocation();
   default: break;
   }
 
@@ -188,19 +236,29 @@ unsigned int Recruter::reachDistance() const { return _d->reachDistance;}
 void Recruter::save(VariantMap& stream) const
 {
   ServiceWalker::save( stream );
-  stream[ lc_priority ] = _d->priority.toVariantList();
-  VARIANT_SAVE_ANY_D( stream, _d, needWorkers );
+  VARIANT_SAVE_CLASS_D( stream, _d, priority )
+  VARIANT_SAVE_ANY_D( stream, _d, needWorkers )
+  VARIANT_SAVE_ANY_D( stream, _d, failedCounter )
+  VARIANT_SAVE_ANY_D( stream, _d, patrolFinished )
 }
 
 void Recruter::load(const VariantMap& stream)
 {
   ServiceWalker::load( stream );
-  VARIANT_LOAD_ANY_D( _d, needWorkers, stream );
-  _d->priority << stream.get( lc_priority ).toList();
+  VARIANT_LOAD_ANY_D( _d, needWorkers, stream )
+  VARIANT_LOAD_CLASS_D_LIST( _d, priority, stream )
+  VARIANT_LOAD_ANY_D( _d, failedCounter, stream )
+  VARIANT_LOAD_ANY_D( _d, patrolFinished, stream )
 }
 
 bool Recruter::die()
 {
+  if( _d->once_shot )
+  {
+    deleteLater();
+    return true;
+  }
+
   bool created = ServiceWalker::die();
 
   if( !created )
@@ -212,12 +270,22 @@ bool Recruter::die()
   return created;
 }
 
+void Recruter::_reachedPathway()
+{
+  if( _d->patrolFinished )
+  {
+    deleteLater();
+  }
+
+  ServiceWalker::_reachedPathway();
+}
+
 bool Recruter::Impl::isMyPriorityOver(BuildingPtr base, WorkingBuildingPtr wbuilding)
 {
-  PriorityMap::iterator myPrIt = priorityMap.find( (objects::Group)base->group() );
-  PriorityMap::iterator bldPrIt = priorityMap.find( (objects::Group)wbuilding->group() );
-  int mypriority = (myPrIt != priorityMap.end() ? myPrIt->second : noPriority);
-  int wpriority = (bldPrIt != priorityMap.end() ? bldPrIt->second : noPriority);
+  PriorityMap::iterator myPrIt = priorityMap.find( base->group() );
+  PriorityMap::iterator bldPrIt = priorityMap.find( wbuilding->group() );
+  int mypriority = (myPrIt != priorityMap.end() ? myPrIt->second : (int)HirePriority::no);
+  int wpriority = (bldPrIt != priorityMap.end() ? bldPrIt->second : (int)HirePriority::no);
 
   return mypriority < wpriority;
 }

@@ -32,24 +32,34 @@ namespace gui
 namespace dialog
 {
 
-class GameSpeedOptions::Impl
+class SpeedOptions::Impl
 {
 public:
   GameAutoPause locker;
-  Signal1<int> onGameSpeedChangeSignal;
-  Signal1<int> onScrollSpeedChangeSignal;
-  Signal1<int> onAutosaveIntervalShangeSignal;
-  int speedValue, scrollValue, autosaveInterval;
+
+  struct
+  {
+    int game;
+    int scroll;
+  } speed;
+
+  int autosaveInterval;
+
+  struct {
+    Signal1<int> onGameSpeedChange;
+    Signal1<int> onScrollSpeedChange;
+    Signal1<int> onAutosaveIntervalShange;
+  } signal;
 };
 
-GameSpeedOptions::GameSpeedOptions( Widget* parent,
+SpeedOptions::SpeedOptions( Widget* parent,
                                     int gameSpeed,
                                     int scrollSpeed,
                                     int autosaveInterval)
   : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
-  _d->speedValue = gameSpeed;
-  _d->scrollValue = scrollSpeed;
+  _d->speed.game = gameSpeed;
+  _d->speed.scroll = scrollSpeed;
   _d->autosaveInterval = autosaveInterval;
   _d->locker.activate();
 
@@ -60,24 +70,24 @@ GameSpeedOptions::GameSpeedOptions( Widget* parent,
   _update();
 }
 
-GameSpeedOptions::~GameSpeedOptions( void ) {}
+SpeedOptions::~SpeedOptions( void ) {}
 
-bool GameSpeedOptions::onEvent(const NEvent& event)
+bool SpeedOptions::onEvent(const NEvent& event)
 {
   if( event.EventType == sEventGui && guiButtonClicked == event.gui.type )
   {
     int id = event.gui.caller->ID();
     switch( id )
     {
-    case 1: case 2: _d->speedValue += (id == 1 ? -10 : +10 ); _update(); break;
-    case 11: case 12: _d->scrollValue += (id == 11 ? -10 : +10 ); _update(); break;
+    case 1: case 2: _d->speed.game += (id == 1 ? -10 : +10 ); _update(); break;
+    case 11: case 12: _d->speed.scroll += (id == 11 ? -10 : +10 ); _update(); break;
     case 21: case 22: _d->autosaveInterval += (id == 21 ? -1 : +1 ); _update(); break;
 
     case 1001:
     {
-      emit _d->onGameSpeedChangeSignal( _d->speedValue );
-      emit _d->onScrollSpeedChangeSignal( _d->scrollValue );
-      emit _d->onAutosaveIntervalShangeSignal( _d->autosaveInterval );
+      emit _d->signal.onGameSpeedChange( _d->speed.game );
+      emit _d->signal.onScrollSpeedChange( _d->speed.scroll );
+      emit _d->signal.onAutosaveIntervalShange( _d->autosaveInterval );
       deleteLater();
     }
     break;
@@ -91,23 +101,23 @@ bool GameSpeedOptions::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-Signal1<int>& GameSpeedOptions::onGameSpeedChange() {  return _d->onGameSpeedChangeSignal;}
-Signal1<int>& GameSpeedOptions::onScrollSpeedChange(){  return _d->onScrollSpeedChangeSignal;}
-Signal1<int>& GameSpeedOptions::onAutosaveIntervalChange(){ return _d->onAutosaveIntervalShangeSignal; }
+Signal1<int>& SpeedOptions::onGameSpeedChange() {  return _d->signal.onGameSpeedChange;}
+Signal1<int>& SpeedOptions::onScrollSpeedChange(){  return _d->signal.onScrollSpeedChange;}
+Signal1<int>& SpeedOptions::onAutosaveIntervalChange(){ return _d->signal.onAutosaveIntervalShange; }
 
-void GameSpeedOptions::_update()
+void SpeedOptions::_update()
 {
   INIT_WIDGET_FROM_UI( Label*, lbGameSpeedPercent )
   INIT_WIDGET_FROM_UI( Label*, lbScrollSpeedPercent )
   INIT_WIDGET_FROM_UI( Label*, lbAutosaveInterval )
 
-  _d->speedValue = math::clamp( _d->speedValue, 10, 300 );
-  _d->scrollValue = math::clamp( _d->scrollValue, 10, 200 );
-  _d->autosaveInterval = math::clamp( _d->autosaveInterval, 1, 12 );
+  math::clamp_to( _d->speed.game, 10, 300 );
+  math::clamp_to( _d->speed.scroll, 10, 200 );
+  math::clamp_to( _d->autosaveInterval, 1, 12 );
 
-  if( lbGameSpeedPercent ) { lbGameSpeedPercent->setText( utils::i2str( _d->speedValue ) + "%" ); }
-  if( lbScrollSpeedPercent ) { lbScrollSpeedPercent->setText( utils::i2str( _d->scrollValue ) + "%" ); }
-  if( lbAutosaveInterval ) { lbAutosaveInterval->setText( utils::i2str( _d->autosaveInterval ) + " m." ); }
+  if( lbGameSpeedPercent )   { lbGameSpeedPercent->setText( utils::i2str( _d->speed.game ) + "%" ); }
+  if( lbScrollSpeedPercent ) { lbScrollSpeedPercent->setText( utils::i2str( _d->speed.scroll ) + "%" ); }
+  if( lbAutosaveInterval )   { lbAutosaveInterval->setText( utils::i2str( _d->autosaveInterval ) + " m." ); }
 }
 
 }//end namespace dialog

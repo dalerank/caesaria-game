@@ -21,15 +21,15 @@
 #include "pathway/path_finding.hpp"
 #include "gfx/tile.hpp"
 #include "gfx/tilemap.hpp"
-#include "city/city.hpp"
+#include "city/statistic.hpp"
+#include "core/priorities.hpp"
 #include "core/variant_map.hpp"
 #include "name_generator.hpp"
 #include "core/utils.hpp"
 #include "events/event.hpp"
 #include "core/logger.hpp"
-#include "objects/constants.hpp"
+#include "objects/construction.hpp"
 #include "corpse.hpp"
-#include "city/helper.hpp"
 #include "game/resourcegroup.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "helper.hpp"
@@ -38,8 +38,8 @@
 #include "core/foreach.hpp"
 #include "events/militarythreat.hpp"
 #include "walkers_factory.hpp"
+#include "objects/metadata.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_SOLDIER_IN_WALKERFACTORY( walker::britonSoldier, walker::britonSoldier, EnemySoldier, briton)
@@ -60,14 +60,14 @@ EnemySoldier::EnemySoldier( PlayerCityPtr city, walker::Type type )
   setAttackPriority( attackAll );
   setAttackDistance( 1 );
 
-  _atExclude << objects::disasterGroup
-             << objects::roadGroup
-             << objects::gardenGroup;
+  _atExclude << object::group::disaster
+             << object::group::road
+             << object::group::garden;
 
   addFriend( type );
 }
 
-Priorities<int>& EnemySoldier::_excludeAttack() {  return _atExclude; }
+object::GroupSet& EnemySoldier::_excludeAttack() {  return _atExclude; }
 
 bool EnemySoldier::_tryAttack()
 {
@@ -92,9 +92,8 @@ bool EnemySoldier::_tryAttack()
 
   if( action() == acFight )
   {
-    city::Helper helper( _city() );
     bool needMeMove = false;
-    helper.isTileBusy<EnemySoldier>( pos(), this, needMeMove );
+    _city()->statistic().map.isTileBusy<EnemySoldier>( pos(), this, needMeMove );
 
     if( needMeMove )
     {
@@ -255,14 +254,14 @@ ConstructionList EnemySoldier::_findContructionsInRange( unsigned int range )
   case attackIndustry:
   {
     ConstructionList tmpRet;
-    TileOverlay::Group needGroup;
+    object::Group needGroup;
     switch( _atPriority )
     {
-    case attackIndustry: needGroup = objects::industryGroup; break;
-    case attackFood: needGroup = objects::foodGroup; break;
-    case attackCitizen:  needGroup = objects::houseGroup; break;
-    case attackSenate: needGroup = objects::administrationGroup; break;
-    default: needGroup = objects::unknownGroup; break;
+    case attackIndustry: needGroup = object::group::industry; break;
+    case attackFood: needGroup = object::group::food; break;
+    case attackCitizen:  needGroup = object::group::house; break;
+    case attackSenate: needGroup = object::group::administration; break;
+    default: needGroup = object::group::unknown; break;
     }
 
     foreach( it, ret )
@@ -400,7 +399,7 @@ void EnemySoldier::timeStep(const unsigned long time)
       ConstructionPtr b = constructions.front();
 
       turn( b->pos() );
-      b->updateState( Construction::damage, 1 );
+      b->updateState( pr::damage, 1 );
     }
     else
     {
@@ -416,7 +415,7 @@ EnemySoldier::~EnemySoldier() {}
 
 int EnemySoldier::agressive() const { return 2; }
 
-EnemySoldierPtr EnemySoldier::create(PlayerCityPtr city, constants::walker::Type type )
+EnemySoldierPtr EnemySoldier::create(PlayerCityPtr city, walker::Type type )
 {
   EnemySoldierPtr ret( new EnemySoldier( city, type ) );
   ret->setName( NameGenerator::rand( NameGenerator::male ) );
@@ -430,7 +429,7 @@ void EnemySoldier::send2City( TilePos pos )
 {
   setPos( pos );
   _check4attack();
-  _city()->addWalker( this );
+  attach();
 
   events::GameEventPtr e = events::MilitaryThreat::create( 1 );
   e->dispatch();

@@ -20,10 +20,8 @@
 #include "city/city.hpp"
 #include "pathway/pathway.hpp"
 #include "objects/market.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "walkers_factory.hpp"
-
-using namespace constants;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::marketLady, MarketLady)
 
@@ -35,18 +33,19 @@ ServiceWalkerPtr MarketLady::create(PlayerCityPtr city)
   return ret;
 }
 
+MarketPtr MarketLady::market() const
+{
+  return _city()->getOverlay( baseLocation() ).as<Market>();
+}
+
 void MarketLady::_updateThoughts()
 {
   if( pathway().isReverse() )
   {
-    MarketPtr market = ptr_cast<Market>( base() );
-    if( market.isValid() )
+    if( market().isValid() && market()->goodStore().empty() )
     {
-      if( market->goodStore().empty() )
-      {
-        setThinks( "##marketLady_no_food_on_market##" );
-        return;
-      }
+      setThinks( "##marketLady_no_food_on_market##" );
+      return;
     }
   }
 
@@ -57,11 +56,11 @@ void MarketLady::_centerTile()
 {
   ServiceWalker::_centerTile();
 
-  MarketPtr market = ptr_cast<Market>( base() );
-  if( market.isValid() )
+  if( market().isValid()
+      && market()->goodStore().empty()
+      && !pathway().isReverse() )
   {
-    if( market->goodStore().empty() )
-      return2Base();
+    return2Base();
   }
 }
 

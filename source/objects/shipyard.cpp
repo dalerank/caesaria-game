@@ -14,23 +14,21 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "shipyard.hpp"
 
 #include "constants.hpp"
 #include "game/resourcegroup.hpp"
 #include "game/gamedate.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "wharf.hpp"
 #include "pathway/pathway.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "walker/fishing_boat.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
-
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::shipyard, Shipyard)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::shipyard, Shipyard)
 
 class Shipyard::Impl
 {
@@ -45,11 +43,11 @@ public:
   WharfPtr findFreeWharf( PlayerCityPtr city );
 };
 
-Shipyard::Shipyard() : CoastalFactory(good::timber, good::none, objects::shipyard, Size(2)),
+Shipyard::Shipyard() : CoastalFactory(good::timber, good::none, object::shipyard, Size(2)),
   _d( new Impl )
 {
   // transport 1 2 3 4
-  setPicture( ResourceGroup::shipyard, Impl::northPic );
+  _picture().load( ResourceGroup::shipyard, Impl::northPic );
 
   inStockRef().setCapacity( 1200 );
   store().setCapacity( 1200 );
@@ -132,10 +130,10 @@ void Shipyard::_updatePicture(Direction direction)
 {
   switch( direction )
   {
-  case south: setPicture( ResourceGroup::shipyard, Impl::southPic ); break;
-  case north: setPicture( ResourceGroup::shipyard, Impl::northPic ); break;
-  case west: setPicture( ResourceGroup::shipyard, Impl::westPic ); break;
-  case east: setPicture( ResourceGroup::shipyard, Impl::eastPic ); break;
+  case direction::south: setPicture( ResourceGroup::shipyard, Impl::southPic ); break;
+  case direction::north: setPicture( ResourceGroup::shipyard, Impl::northPic ); break;
+  case direction::west: setPicture( ResourceGroup::shipyard, Impl::westPic ); break;
+  case direction::east: setPicture( ResourceGroup::shipyard, Impl::eastPic ); break;
 
   default: break;
   }
@@ -152,13 +150,11 @@ bool Shipyard::Impl::isNeedCreateBoat(PlayerCityPtr city )
 
 WharfPtr Shipyard::Impl::findFreeWharf( PlayerCityPtr city )
 {
-  city::Helper helper( city );
-
-  WharfList wharfs = helper.find<Wharf>( objects::wharf );
-  foreach( wharf, wharfs )
+  WharfList wharfs = city->statistic().objects.find<Wharf>( object::wharf );
+  for( auto wharf : wharfs )
   {
-    if( (*wharf)->getBoat().isNull() )
-      return *wharf;
+    if( wharf->getBoat().isNull() )
+      return wharf;
   }
 
   return WharfPtr();

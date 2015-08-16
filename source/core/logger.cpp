@@ -41,71 +41,77 @@
 class FileLogWriter : public LogWriter
 {
 private:
-	FILE* _logFile;
+  FILE* _logFile;
 public:
-	FileLogWriter(const std::string& path)
-	{
-		DateTime t = DateTime::getCurrenTime();
+  FileLogWriter(const std::string& path)
+  {
+    DateTime t = DateTime::currenTime();
 
-		_logFile = fopen(path.c_str(), "w");
+    _logFile = fopen(path.c_str(), "w");
 
-		if( _logFile )
-		{
-			fputs("Caesaria logfile created: ", _logFile);
-			fputs(utils::format( 0xff, "%02d:%02d:%02d",
-																	t.hour(), t.minutes(), t.seconds()).c_str(),
-						_logFile);
-			fputs("\n", _logFile);
-		}
-	}
+    if( _logFile )
+    {
+      fputs("Caesaria logfile created: ", _logFile);
+      fputs( utils::format( 0xff, "%02d:%02d:%02d",
+             t.hour(), t.minutes(), t.seconds()).c_str(),
+             _logFile);
+      fputs("\n", _logFile);
+    }
+  }
 
-	~FileLogWriter()
-	{
-		DateTime t = DateTime::getCurrenTime();
+  ~FileLogWriter()
+  {
+    DateTime t = DateTime::currenTime();
 
-		if( _logFile )
-		{
-			fputs("Caesaria logfile closed: ", _logFile);
-			fputs( utils::format( 0xff, "%02d:%02d:%02d",
-																	t.hour(), t.minutes(), t.seconds()).c_str(),
-						 _logFile);
-			fputs("\n", _logFile);
+    if( _logFile )
+    {
+      fputs("Caesaria logfile closed: ", _logFile);
+      fputs( utils::format( 0xff, "%02d:%02d:%02d",
+             t.hour(), t.minutes(), t.seconds()).c_str(),
+             _logFile);
+      fputs("\n", _logFile);
 
-			fflush(_logFile);
-		}
-	}
+      fflush(_logFile);
+    }
+  }
 
-	virtual bool isActive() const { return _logFile != 0; }
+  virtual bool isActive() const { return _logFile != 0; }
 
-	virtual void write( std::string str, bool )
-	{
-		// Don't write progress stuff into the logfile
-		// Make sure only one thread is writing to the file at a time
-		if( _logFile )
-		{
-			fputs(str.c_str(), _logFile);
-			fputs("\n", _logFile);
-			fflush(_logFile);
-		}
-	}
+  virtual void write( const std::string& str, bool )
+  {
+    // Don't write progress stuff into the logfile
+    // Make sure only one thread is writing to the file at a time
+    static int count = 0;
+    if( _logFile )
+    {
+      fputs(str.c_str(), _logFile);
+      fputs("\n", _logFile);
+
+      count++;
+      if( count % 10 == 0 )
+      {
+        fflush(_logFile);
+      }
+    }
+  }
 };
 
 class ConsoleLogWriter : public LogWriter
 {
 public:
-	virtual void write( std::string str, bool newline )
-	{
+  virtual void write( const std::string& str, bool newline )
+  {
 #ifdef CAESARIA_PLATFORM_ANDROID
-      str.append( newline ? "\n" : "" );
-      __android_log_print(ANDROID_LOG_DEBUG, CAESARIA_PLATFORM_NAME, "%s", str.c_str() );
+    str.append( newline ? "\n" : "" );
+    __android_log_print(ANDROID_LOG_DEBUG, CAESARIA_PLATFORM_NAME, "%s", str.c_str() );
 #else
     std::cout << str;
     if( newline ) std::cout << std::endl;
     else std::cout << std::flush;
 #endif
-	}
+  }
 
-	virtual bool isActive() const { return true; }
+  virtual bool isActive() const { return true; }
 };
 
 class Logger::Impl
@@ -161,13 +167,13 @@ void Logger::warning(const std::string& text) {  instance()._d->write( text );}
 void Logger::warningIf(bool warn, const std::string& text){  if( warn ) warning( text ); }
 void Logger::update(const std::string& text, bool newline){  instance()._d->write( text, newline ); }
 
-void Logger::addFilter(const std::string text)
+void Logger::addFilter(const std::string& text)
 {
   if (hasFilter(text)) return;
   instance()._d->filters.append(text);
 }
 
-bool Logger::hasFilter(const std::string text)
+bool Logger::hasFilter(const std::string& text)
 {
   foreach(filter, instance()._d->filters)
   {
@@ -176,7 +182,7 @@ bool Logger::hasFilter(const std::string text)
   return false;
 }
 
-bool Logger::removeFilter(const std::string text)
+bool Logger::removeFilter(const std::string& text)
 {
   foreach(filter, instance()._d->filters)
   {
@@ -225,7 +231,6 @@ Logger::~Logger() {}
 
 Logger::Logger() : _d( new Impl )
 {
-  CrashHandler_initCrashHandler();
 }
 
 void Logger::registerWriter(std::string name, LogWriterPtr writer)
@@ -236,29 +241,112 @@ void Logger::registerWriter(std::string name, LogWriterPtr writer)
   }
 }
 
-// Crash handler
-
-#include "stacktrace.hpp"
-#include <signal.h>
-
-void CrashHandler_initCrashHandler()
-{
-  signal( SIGABRT, CrashHandler_handleCrash);
-  signal( SIGSEGV, CrashHandler_handleCrash);
-  signal( SIGILL , CrashHandler_handleCrash);
-  signal( SIGFPE , CrashHandler_handleCrash);
+void SimpleLogger::write(const std::string &message, bool newline) {
+  Logger::update( message, newline );
 }
 
-void CrashHandler_handleCrash(int signum)
-{
-  switch(signum)
-  {
-    case SIGABRT: Logger::warning("SIGABRT: abort() called somewhere in the program."); break;
-    case SIGSEGV: Logger::warning("SIGSEGV: Illegal memory access."); break;
-    case SIGILL: Logger::warning("SIGILL: Executing a malformed instruction. (possibly invalid pointer)"); break;
-    case SIGFPE: Logger::warning("SIGFPE: Illegal floating point instruction (possibly division by zero)."); break;
-  }
+SimpleLogger::SimpleLogger( const std::string& category)
+  : _category(category)
+{}
 
-  Stacktrace::print();
-  exit(signum);
+void SimpleLogger::llog(SimpleLogger::Severity severity, const std::string &text)
+{
+  std::string rtext = toS(severity) + " ";
+  rtext += _category;
+  rtext += ": " + text;
+  write(rtext);
+}
+
+void SimpleLogger::vlog(SimpleLogger::Severity severity, const char *fmt, va_list args) {
+  std::string ret;
+  utils::vformat(ret, 512, fmt, args);
+  llog(severity, ret);
+}
+
+void SimpleLogger::log(SimpleLogger::Severity severity, const char *fmt, ...) {
+  va_list args;
+  va_start(args, fmt);
+  std::string ret;
+  utils::vformat(ret, 512, fmt, args);
+  llog(severity, ret);
+  va_end(args);
+}
+
+bool SimpleLogger::isDebugEnabled() const {
+#ifdef DEBUG
+  return true;
+#else
+  return false;
+#endif
+}
+
+const std::string SimpleLogger::toS(SimpleLogger::Severity severity) {
+  switch (severity) {
+    case Severity::DBG:
+      return "[DEBUG]";
+    case Severity::INFO:
+      return "[INFO]";
+    case Severity::WARN:
+      return "[WARN]";
+    case Severity::ERR:
+      return "[ERROR]";
+    case Severity::FATAL:
+      return "[FATAL]";
+  }
+  return "[UNKNOWN]";
+}
+
+void SimpleLogger::debug(const std::string &text) {
+  llog(Severity::DBG, text);
+}
+
+void SimpleLogger::info(const std::string &text) {
+  llog(Severity::INFO, text);
+}
+
+void SimpleLogger::warn(const std::string &text) {
+  llog(Severity::WARN, text);
+}
+
+void SimpleLogger::error(const std::string &text) {
+  llog(Severity::ERR, text);
+}
+
+void SimpleLogger::fatal(const std::string &text) {
+  llog(Severity::FATAL, text);
+}
+
+void SimpleLogger::debug(const char *fmt, ...) {
+  va_list args;
+  va_start(args, fmt);
+  vlog(Severity::DBG, fmt, args);
+  va_end(args);
+}
+
+void SimpleLogger::info(const char *fmt, ...) {
+  va_list args;
+  va_start(args, fmt);
+  vlog(Severity::INFO, fmt, args);
+  va_end(args);
+}
+
+void SimpleLogger::warn(const char *fmt, ...) {
+  va_list args;
+  va_start(args, fmt);
+  vlog(Severity::WARN, fmt, args);
+  va_end(args);
+}
+
+void SimpleLogger::error(const char *fmt, ...) {
+  va_list args;
+  va_start(args, fmt);
+  vlog(Severity::ERR, fmt, args);
+  va_end(args);
+}
+
+void SimpleLogger::fatal(const char *fmt, ...) {
+  va_list args;
+  va_start(args, fmt);
+  vlog(Severity::FATAL, fmt, args);
+  va_end(args);
 }

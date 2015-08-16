@@ -21,9 +21,11 @@
 namespace world
 {
 
-enum Nation
+namespace nation
 {
-  unknownNation=0,
+enum Type
+{
+  unknown=0,
   rome,
   etruscan,
   barbarian,
@@ -42,8 +44,11 @@ enum Nation
   gaul,
   iberian,
   helveti,
-  nationCount
+  count
 };
+}//end namespace nation
+
+typedef nation::Type Nation;
 
 }//end namespace world
 

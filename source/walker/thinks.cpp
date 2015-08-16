@@ -22,15 +22,36 @@
 #include "constants.hpp"
 #include "animals.hpp"
 #include "helper.hpp"
+#include "objects/construction.hpp"
 #include "core/utils.hpp"
+#include "city/statistic.hpp"
 
-using namespace constants;
 using namespace city;
+
+class ThinksConstructor : public StringArray
+{
+public:
+  ThinksConstructor( const std::string& type )
+  {
+    _type = type;
+  }
+
+  ThinksConstructor& addIf( bool condition, const std::string& past )
+  {
+    if( condition )
+      push_back( "##" + _type + past + "##" );
+
+    return *this;
+  }
+
+private:
+  std::string _type;
+};
+
 
 std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const StringArray& own)
 {
-  city::InfoPtr info;
-  info << city->findService( city::Info::defaultName() );
+  city::InfoPtr info = city->statistic().services.find<Info>();
 
   if( info.isNull() )
   {
@@ -38,93 +59,35 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
     return "##unknown_reason##";
   }
 
-  if( is_kind_of<Animal>( walker ) )
+  if( walker.is<Animal>() )
   {
     std::string text = utils::format( 0xff, "##animal_%s_say##", WalkerHelper::getTypename( walker->type() ).c_str() );
     return text;
   }
 
-  StringArray troubles = own;
-  std::string walkerTypename = WalkerHelper::getTypename( walker->type() );
-  city::Info::Parameters params = info->lastParams();
-  if( params[ Info::monthWithFood ] < 3 )
-  {
-    troubles.push_back( "##" + walkerTypename + "_so_hungry##" );
-  }
+  Info::Parameters params = info->lastParams();
+  ThinksConstructor ret( WalkerHelper::getTypename( walker->type() ) );
+  ret << own;
 
-  if( params[ Info::godsMood ] < 3 )
-  {
-    troubles.push_back( "##" + walkerTypename + "_gods_angry##" );
-  }
+  ret.addIf( params[ Info::monthWithFood ] < 3,     "_so_hungry" )
+     .addIf( params[ Info::godsMood ] < 3,          "_gods_angry" )
+     .addIf( params[ Info::colloseumCoverage ] < 3, "_need_colloseum" )
+     .addIf( params[ Info::theaterCoverage ] < 3,   "_need_theater" )
+     .addIf( params[ Info::entertainment ] < 20,    "_low_entertainment" )
+     .addIf( params[ Info::needWorkers ] > 0,       "_need_workers" )
+     .addIf( params[ Info::workless ] > 15,         "_high_workless" )
+     .addIf( params[ Info::tax ] > 10,              "_high_tax" )
+     .addIf( params[ Info::payDiff ] < 0,           "_low_salary" );
 
-  if( params[ Info::colloseumCoverage ] < 3 )
-  {
-    troubles.push_back( "##" + walkerTypename + "_need_colloseum##" );
-  }
+  if( !ret.empty() )
+    return ret.random();
 
-  if( params[ Info::theaterCoverage ] < 3 )
-  {
-    troubles.push_back( "##" + walkerTypename + "_need_theater##" );
-  }
+  ret.clear();
+  ret << own;
+  ret.addIf( params[ Info::lifeValue ] > 90, "_good_life" )
+     .addIf( params[ Info::lifeValue ] > 75, "_average_life" )
+     .addIf( params[ Info::lifeValue ] > 50, "_normal_life" )
+     .addIf( params[ Info::education ] > 90, "_good_education" );
 
-  if( params[ Info::entertainment ] < 20 )
-  {
-    troubles.push_back( "##" + walkerTypename + "_low_entertainment##" );
-  }
-
-  if( params[ Info::needWorkers ] > 0 )
-  {
-    troubles.push_back( "##" + walkerTypename + "_need_workers##" );
-  }
-
-  if( params[ Info::workless ] > 15 )
-  {
-    troubles.push_back( "##" + walkerTypename + "_high_workless##" );
-  }
-
-  if( params[ Info::tax ] > 10 )
-  {
-    troubles.push_back( "##" + walkerTypename + "_high_tax##" );
-  }
-
-  if( params[ Info::payDiff ] < 0 )
-  {
-    troubles.push_back( "##" + walkerTypename + "_low_salary##" );
-  }
-
-  if( !troubles.empty() )
-  {
-    return troubles.random();
-  }
-
-  StringArray positiveIdeas = own;
-  if( params[ Info::lifeValue ] > 90 )
-  {
-    positiveIdeas.push_back( "##" + walkerTypename + "_good_life##" );
-  }
-  else if( params[ Info::lifeValue ] > 75 )
-  {
-    positiveIdeas.push_back( "##" + walkerTypename + "_average_life##" );
-  }
-  else if( params[ Info::lifeValue ] > 50 )
-  {
-    positiveIdeas.push_back( "##" + walkerTypename + "_normal_life##" );
-  }
-
-  if( params[ Info::education ] > 90 )
-  {
-    positiveIdeas.push_back( "##" + walkerTypename + "_good_education##" );
-  }
-
-  std::string ret;
-  if( !positiveIdeas.empty() )
-  {
-    ret = positiveIdeas.random();
-  }
-  else
-  {
-    ret = positiveIdeas.random();
-  }
-
-  return ret.empty() ? "##unknown_reason##" : ret;
+  return ret.empty() ? "##unknown_reason##" : ret.random();
 }

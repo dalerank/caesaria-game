@@ -160,6 +160,7 @@ enum KeyCode
     KEY_COMMA            = 0xBC,  // Comma Key  (,)
     KEY_MINUS            = 0xBD,  // Minus Key  (-)
     KEY_PERIOD           = 0xBE,  // Period Key (.)
+    KEY_EQUALS           = 0xBF,
     KEY_ATTN             = 0xF6,  // Attn key
     KEY_CRSEL            = 0xF7,  // CrSel key
     KEY_EXSEL            = 0xF8,  // ExSel key
@@ -237,6 +238,9 @@ enum GuiEventType
 	guiTableCellChange,
 	guiTableCellSelected,
 	guiTableCellDblclick,
+  guiTreeviewNodeExpand,
+  guiTreeviewNodeCollapse,
+  guiTreeviewNodeSelect,
 
 	//! No real event. Just for convenience to get number of events
 	guiEventCount
@@ -376,7 +380,6 @@ struct NEvent
     //! Currently only valid if the event was EMIE_MOUSE_MOVED
     unsigned int buttonStates;
 
-    const Point pos() { return Point( x, y ); }
     const Point pos() const { return Point( x, y ); }
     bool isLeftPressed() const { return 0 != ( buttonStates & mbsmLeft ); }     //! Is the left button pressed down?
     bool isRightPressed() const { return 0 != ( buttonStates & mbsmRight ); }   //! Is the right button pressed down?

@@ -24,7 +24,6 @@
 #include "core/utils.hpp"
 #include "gfx/engine.hpp"
 #include "objects/military.hpp"
-#include "city/helper.hpp"
 #include "city/cityservice_military.hpp"
 #include "texturedbutton.hpp"
 #include "walker/soldier.hpp"
@@ -35,10 +34,11 @@
 #include "world/playerarmy.hpp"
 #include "dialogbox.hpp"
 #include "dictionary.hpp"
+#include "city/statistic.hpp"
 #include "environment.hpp"
 
 using namespace gfx;
-using namespace constants;
+using namespace city;
 
 namespace gui
 {
@@ -49,6 +49,9 @@ namespace advisorwnd
 namespace {
   Point legionButtonOffset = Point( 4, 4 );
   Size legionButtonSize = Size( 565, 42 );
+
+  enum { gotoLegionX=360, return2fortX=450, send2empireX=530 };
+  Size btnSize(32, 32);
 }
 
 class LegionButton : public PushButton
@@ -58,16 +61,16 @@ public:
     : PushButton( parent, Rect( pos + legionButtonOffset * index, legionButtonSize), "", -1, false, PushButton::blackBorderUp )
   {
     _fort = fort;
-    _resizeEvent();
+    _finalizeResize();
 
-    PushButton* gotoLegion    = new PushButton( this, Rect( 360, 5, 360 + 32, 6 + 32 ), "", -1, false, PushButton::blackBorderUp );
+    PushButton* gotoLegion    = new PushButton( this, Rect( Point( gotoLegionX, 5), btnSize ), "", -1, false, PushButton::blackBorderUp );
     gotoLegion->setIcon( ResourceGroup::panelBackground, 563 );
     gotoLegion->setIconOffset( Point( 4, 4 ) );
-    PushButton* return2fort   = new PushButton( this, Rect( 450, 5, 450 + 32, 6 +32 ), "", -1, false, PushButton::blackBorderUp );
+    PushButton* return2fort   = new PushButton( this, Rect( Point( return2fortX, 5), btnSize ), "", -1, false, PushButton::blackBorderUp );
     return2fort->setIcon(  ResourceGroup::panelBackground, 564 );
     return2fort->setIconOffset( Point( 4, 4 ) );
     return2fort->setTooltipText( _("##return_2_fort##") );
-    PushButton* empireService = new PushButton( this, Rect( 530, 5, 530 + 32, 6 + 32), "", -1, false, PushButton::blackBorderUp );
+    PushButton* empireService = new PushButton( this, Rect( Point( send2empireX, 5), btnSize ), "", -1, false, PushButton::blackBorderUp );
     empireService->setIcon( ResourceGroup::panelBackground, 566 );
     empireService->setIconOffset( Point( 4, 4 ) );
     empireService->setTooltipText( "##empire_service_tip##");
@@ -81,21 +84,21 @@ public:
   {
     PushButton::_updateTextPic();
 
-    PictureRef& pic = _textPictureRef();
+    Picture& pic = _textPicture();
 
     Font fontW = Font::create( FONT_1_WHITE );
     Font fontB = Font::create( FONT_1 );
 
     if( _fort.isValid() )
     {
-      fontW.draw( *pic, _( _fort->legionName() ), 70, 4 );
+      fontW.draw( pic, _( _fort->legionName() ), 70, 4 );
 
-      std::string qtyStr = utils::format( 0xff, "%d %s", _fort->soldiers().size(), _("##soldiers##") );
-      fontB.draw( *pic, qtyStr, 70, 22 );
+      std::string qtyStr = utils::i2str( _fort->soldiers().size() ) +  _("##soldiers##");
+      fontB.draw( pic, qtyStr, 70, 22 );
 
       int moraleValue = _fort->legionMorale() / 10;
       std::string moraleStr = utils::format( 0xff, "##legion_morale_%d##", moraleValue );
-      fontB.draw( *pic, _( moraleStr ), 180, 15 );
+      fontB.draw( pic, _( moraleStr ), 180, 15 );
     }    
   }
 
@@ -106,15 +109,16 @@ public:
     painter.draw( _fort->legionEmblem(), absoluteRect().lefttop() + Point( 6, 4 ), &absoluteClippingRectRef() );
   }
 
-public signals:
-  Signal1<FortPtr> onShowLegionSignal;
-  Signal1<FortPtr> onLegionRetreatSignal;
-  Signal1<FortPtr> onEmpireServiceSignal;
+  struct {
+    Signal1<FortPtr> onShowLegion;
+    Signal1<FortPtr> onLegionRetreat;
+    Signal1<FortPtr> onEmpireService;
+  } signal;
 
 private slots:
-  void _resolveMove2Legion() { emit onShowLegionSignal( _fort ); }
-  void _resolveReturnLegion2Fort() { emit onLegionRetreatSignal( _fort ); }
-  void _resolveEmpireService() { emit onEmpireServiceSignal( _fort ); }
+  void _resolveMove2Legion() { emit signal.onShowLegion( _fort ); }
+  void _resolveReturnLegion2Fort() { emit signal.onLegionRetreat( _fort ); }
+  void _resolveEmpireService() { emit signal.onEmpireService( _fort ); }
 
 private:
   FortPtr _fort;
@@ -148,13 +152,13 @@ Legion::Legion( Widget* parent, int id, PlayerCityPtr city, FortList forts )
   GET_DWIDGET_FROM_UI( _d, lbBlackframe )
 
   int index=0;
-  foreach( it, forts )
+  for( auto fort : forts )
   {
-    LegionButton* btn = new LegionButton( this, startLegionArea + legionButtonOffset, index++, *it );
+    LegionButton* btn = new LegionButton( this, startLegionArea + legionButtonOffset, index++, fort );
 
-    CONNECT( btn, onShowLegionSignal, this, Legion::_handleMove2Legion );
-    CONNECT( btn, onLegionRetreatSignal, this, Legion::_handleRetreaLegion );
-    CONNECT( btn, onEmpireServiceSignal, this, Legion::_handleServiceEmpire );
+    CONNECT( btn, signal.onShowLegion, this, Legion::_handleMove2Legion );
+    CONNECT( btn, signal.onLegionRetreat, this, Legion::_handleRetreaLegion );
+    CONNECT( btn, signal.onEmpireService, this, Legion::_handleServiceEmpire );
   }
 
   if( _d->lbBlackframe && forts.empty() )
@@ -207,7 +211,7 @@ void Legion::_handleServiceEmpire(FortPtr fort)
 
   if( !maySendExpedition )
   {
-    DialogBox::information( this, "", _(reasonFailed) );
+    dialog::Information( ui(), "", _(reasonFailed) );
     return;
   }
 
@@ -224,13 +228,10 @@ void Legion::_showHelp()
 
 void Legion::Impl::updateAlarms(PlayerCityPtr city)
 {
-  city::MilitaryPtr mil;
-  mil << city->findService( city::Military::defaultName() );
+  MilitaryPtr mil = city->statistic().services.find<Military>();
 
-  city::Helper helper( city );
-
-  WalkerList chasteners = helper.find<Walker>( walker::romeChastenerSoldier );
-  WalkerList elephants = helper.find<Walker>( walker::romeChastenerElephant );
+  WalkerList chasteners = city->statistic().walkers.find( walker::romeChastenerSoldier );
+  WalkerList elephants = city->statistic().walkers.find( walker::romeChastenerElephant );
 
   if( chasteners.size() || elephants.size() )
   {
@@ -238,25 +239,25 @@ void Legion::Impl::updateAlarms(PlayerCityPtr city)
     return;
   }
 
-  if( mil->haveNotification( city::Military::Notification::barbarian ) )
+  if( mil->haveNotification( Notification::barbarian ) )
   {
     lbAlarm->setText( _("##barbarian_are_closing_city##") );
     return;
   }
 
   world::PlayerArmyList expeditions = mil->expeditions();
-  foreach( it, expeditions )
+  for( auto expedition : expeditions )
   {
-    if( (*it)->mode() == world::PlayerArmy::go2location )
+    if( expedition->mode() == world::PlayerArmy::go2location )
     {
       lbAlarm->setText( _("##out_legion_go_to_location##") );
       return;
     }
   }
 
-  foreach( it, expeditions )
+  for( auto expedition : expeditions )
   {
-    if( (*it)->mode() == world::PlayerArmy::go2home )
+    if( expedition->mode() == world::PlayerArmy::go2home )
     {
       lbAlarm->setText( _("##out_legion_back_to_city##") );
       return;
@@ -264,6 +265,6 @@ void Legion::Impl::updateAlarms(PlayerCityPtr city)
   }
 }
 
-}
+}//end namespace advisorwnd
 
 }//end namespace gui

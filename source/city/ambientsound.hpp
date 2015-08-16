@@ -18,26 +18,34 @@
 #ifndef __CAESARIA_CITYSERVICE_WATER_H_INCLUDED__
 #define __CAESARIA_CITYSERVICE_WATER_H_INCLUDED__
 
-#include "city/cityservice.hpp"
-#include "core/scopedptr.hpp"
-#include "game/predefinitions.hpp"
-#include "gfx/camera.hpp"
+#include "cityservice.hpp"
+
+namespace gfx { class Camera; }
 
 namespace city
 {
 
+/*
+ * Service which observe camerpa position and play sound
+ * for objects around
+ */
 class AmbientSound : public Srvc
 {
 public:
-  static SrvcPtr create( PlayerCityPtr city, gfx::Camera* camera );
+
+  static SrvcPtr create( PlayerCityPtr city );
   virtual ~AmbientSound();
 
+  /** Call every frame */
   virtual void timeStep( const unsigned int time );
+
+  /** Call before destructor */
   virtual void destroy();
+  void setCamera( gfx::Camera* camera );
 
   static std::string defaultName();
 private:
-  AmbientSound( PlayerCityPtr city, gfx::Camera* camera );
+  AmbientSound( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;

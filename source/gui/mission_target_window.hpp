@@ -35,6 +35,7 @@ public:
   virtual ~MissionTargets();
 
   virtual void draw( gfx::Engine& painter );
+  virtual void show();
   void setCity( PlayerCityPtr city );
 
 private:

@@ -88,12 +88,13 @@ public:
   void setUrl( const std::string& url );
   const std::string& url() const;
 
-  Variant data() const;
-  void setData( const Variant& value );
+  Variant data( const std::string& name ) const;
+  void setData( const std::string& name, const Variant& value );
 
   void setTextColor( ColorType type, NColor color);
 
   void updateText( const Point& p, Font f, const Size& s );
+  void resetPicture(const Size &s);
   void draw(const std::string& text, Font f , const Point& p);
   void clear();
 

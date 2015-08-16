@@ -284,7 +284,7 @@ public:
 	void RemoveAllPackagesExceptUpdater();
 
 	// Re-launches the updater (starts update batch file in Win32 builds)
-	void RestartUpdater();
+  void restartUpdater();
 
 	// Cleanup (both after regular exit and user terminations)
 	void postUpdateCleanup();
@@ -327,9 +327,13 @@ private:
 	// Starts the download and waits for completion
 	void PerformSingleMirroredDownload(const DownloadPtr& download);
 
-	void _markFileAsExecutable(vfs::Path path);
-
   bool isIgnored(std::string name);
+};
+
+class SteamHelper
+{
+public:
+  static void checkDepsAndStart();
 };
 
 } // namespace

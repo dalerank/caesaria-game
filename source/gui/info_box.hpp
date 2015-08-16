@@ -13,8 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
-
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_INFOBOXSIMPLE_H_INCLUDE_
 #define _CAESARIA_INFOBOXSIMPLE_H_INCLUDE_
@@ -38,11 +37,13 @@ namespace infobox
 {
 
 // base class for info boxes
-class Simple : public Window
+class Infobox : public Window
 {
-public:
-  Simple( Widget* parent, const Rect& rect, const Rect& blackArea=Rect(), int id=-1 );
-  virtual ~Simple();
+public:  
+  static const Rect defaultRect;
+
+  Infobox( Widget* parent, const Rect& rect, const Rect& blackArea=Rect(), int id=-1 );
+  virtual ~Infobox();
 
   virtual void draw( gfx::Engine& engine );  // draw on screen
 
@@ -65,7 +66,7 @@ protected:
   virtual void _afterCreate() {}
   Label* _lbTitleRef();
   Label* _lbTextRef();
-  Label* _lbBlackFrameRef();
+  Label* _lbBlackFrame();
   PushButton* _btnExitRef();
 
   virtual void _updateWorkersLabel( const Point& pos, int picId, int need, int have );
@@ -74,7 +75,7 @@ protected:
   ScopedPtr< Impl > _d;
 };
 
-class InfoboxBuilding : public Simple
+class InfoboxBuilding : public Infobox
 {
 public:
   InfoboxBuilding( Widget* parent, const gfx::Tile& tile );

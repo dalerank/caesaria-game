@@ -19,6 +19,7 @@
 #include "gfx/decorator.hpp"
 #include "core/gettext.hpp"
 #include "pushbutton.hpp"
+#include "objects/construction.hpp"
 #include "label.hpp"
 #include "core/logger.hpp"
 #include "game/resourcegroup.hpp"
@@ -31,7 +32,7 @@
 #include "city/city.hpp"
 #include "city/request.hpp"
 #include "core/foreach.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "game/gamedate.hpp"
 #include "gameautopause.hpp"
 #include "city/statistic.hpp"
@@ -41,7 +42,7 @@
 #include "dialogbox.hpp"
 #include "events/fundissue.hpp"
 #include "change_salary_window.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "world/empire.hpp"
 #include "world/emperor.hpp"
 #include "city_donation_window.hpp"
@@ -51,8 +52,11 @@
 #include "texturedbutton.hpp"
 #include "dictionary.hpp"
 #include "gui/widget_helper.hpp"
+#include "game/gift.hpp"
 
 using namespace gfx;
+using namespace events;
+using namespace  city;
 
 namespace gui
 {
@@ -61,18 +65,25 @@ namespace advisorwnd
 {
 
 namespace {
-  Point requestButtonOffset = Point( 0, 60 );
+  Point requestButtonOffset = Point( 0, 55 );
   Size requestButtonSize = Size( 560, 40 );
+
+  enum { favourLimiter=20, maxFavourValue=100 };
 }
 
 class RequestButton : public PushButton
 {
 public:
-  RequestButton( Widget* parent, const Point& pos, int index, city::request::RequestPtr request )
+  RequestButton( Widget* parent, const Point& pos, int index, request::RequestPtr request )
     : PushButton( parent, Rect( pos + requestButtonOffset * index, requestButtonSize), "", -1, false, PushButton::blackBorderUp )
   {
     _request = request;
-    _resizeEvent();
+
+    request::RqGoodPtr gr = _request.as<request::RqGood>();
+    if( gr.isValid() )
+      _goodPic = good::Helper::picture( gr->goodType() );
+
+    _finalizeResize();
 
     CONNECT( this, onClicked(), this, RequestButton::_executeRequest );
   }
@@ -81,48 +92,43 @@ public:
   {
     PushButton::_updateTextPic();
 
-    PictureRef& pic = _textPictureRef();
+    Picture& pic = _textPicture();
 
     Font font = Font::create( FONT_1_WHITE );
 
-    city::request::RqGoodPtr gr = ptr_cast<city::request::RqGood>(_request);
+    request::RqGoodPtr gr = _request.as<request::RqGood>();
     if( gr.isValid() )
     {
-      font.draw( *pic, utils::format( 0xff, "%d", gr->qty() ), 2, 2 );
-      font.draw( *pic, good::Helper::getTypeName( gr->goodType() ), 60, 2 );
+      font.draw( pic, utils::format( 0xff, "%d", gr->qty() ), 2, 2 );
+      font.draw( pic, good::Helper::getTypeName( gr->goodType() ), 60, 2 );
 
       int month2comply = game::Date::current().monthsTo( gr->finishedDate() );
-      font.draw( *pic, utils::format( 0xff, "%d %s", month2comply, _( "##rqst_month_2_comply##") ), 250, 2 );
-      font.draw( *pic, gr->description(), 5, pic->height() - 20 );
+      font.draw( pic, utils::format( 0xff, "%d %s", month2comply, _( "##rqst_month_2_comply##") ), 250, 2 );
+      font.draw( pic, gr->description(), 5, pic.height() - 20 );
     }
   }
 
   virtual void draw(Engine &painter)
   {
     PushButton::draw( painter );
-
-    city::request::RqGoodPtr gr = ptr_cast<city::request::RqGood>(_request);
-    if( gr.isValid() )
-    {
-      Picture goodPicture = good::Helper::picture( gr->goodType() );
-      painter.draw( goodPicture, absoluteRect().lefttop() + Point( 40, 2 ), &absoluteClippingRectRef() );
-    }
+    painter.draw( _goodPic, absoluteRect().lefttop() + Point( 40, 2 ), &absoluteClippingRectRef() );
   }
 
 public signals:
-  Signal1<city::request::RequestPtr>& onExecRequest() { return _onExecRequestSignal; }
+  Signal1<request::RequestPtr>& onExecRequest() { return _onExecRequestSignal; }
 
 private:
   void _acceptRequest()  { emit _onExecRequestSignal( _request );  }
 
   void _executeRequest()
   {
-    DialogBox* dialog = DialogBox::confirmation( ui()->rootWidget(),  "", "##dispatch_emperor_request_question##" );
+    dialog::Dialog* dialog = dialog::Confirmation( ui(),  "", "##dispatch_emperor_request_question##" );
     CONNECT( dialog, onOk(), this, RequestButton::_acceptRequest );
   }
 
-  Signal1<city::request::RequestPtr> _onExecRequestSignal;
-  city::request::RequestPtr _request;
+  Signal1<request::RequestPtr> _onExecRequestSignal;
+  request::RequestPtr _request;
+  Picture _goodPic;
 };
 
 class Emperor::Impl
@@ -142,11 +148,11 @@ public:
   void sendMoney( int money );
   void sendGift( int money );
   void changeSalary(int money );
-  void resolveRequest( city::request::RequestPtr request );
+  void resolveRequest( request::RequestPtr request );
 
   std::string getEmperorFavourStr()
   {
-    return utils::format( 0xff, "##emperor_favour_%02d##", (int)(city->favour() / 100.f) * 20 );
+    return utils::format( 0xff, "##emperor_favour_%02d##", city->favour() * favourLimiter / maxFavourValue  );
   }
 };
 
@@ -154,12 +160,12 @@ void Emperor::_showChangeSalaryWindow()
 {
   if( game::Date::current() > _d->city->victoryConditions().finishDate() )
   {
-    DialogBox::information( this, "", _("##disabled_draw_salary_for_free_reign##") );
+    dialog::Information( ui(), "", _("##disabled_draw_salary_for_free_reign##") );
     return;
   }
 
-  PlayerPtr pl = _d->city->player();
-  dialog::ChangeSalary* dialog = new dialog::ChangeSalary( parent(), pl->salary() );
+  PlayerPtr pl = _d->city->mayor();
+  auto dialog = new dialog::ChangeSalary( parent(), pl->salary() );
   dialog->show();
 
   TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
@@ -169,8 +175,8 @@ void Emperor::_showChangeSalaryWindow()
 
 void Emperor::_showSend2CityWindow()
 {
-  PlayerPtr pl = _d->city->player();
-  dialog::CityDonation* dialog = new dialog::CityDonation( parent(), pl->money() );
+  PlayerPtr pl = _d->city->mayor();
+  auto dialog = new dialog::CityDonation( parent(), pl->money() );
   dialog->show();
 
   CONNECT( dialog, onSendMoney(), _d.data(), Impl::sendMoney );
@@ -178,12 +184,12 @@ void Emperor::_showSend2CityWindow()
 
 void Emperor::_showGiftWindow()
 {
-  PlayerPtr pl = _d->city->player();
+  PlayerPtr pl = _d->city->mayor();
   world::Emperor& emperor = _d->city->empire()->emperor();
 
-  dialog::EmperorGift* dialog = new dialog::EmperorGift( parent(),
-                                                         pl->money(),
-                                                         emperor.lastGiftDate( _d->city->name() ) );
+  auto dialog = new dialog::EmperorGift( parent(),
+                                         pl->money(),
+                                         emperor.lastGiftDate( _d->city->name() ) );
   dialog->show();
 
   CONNECT( dialog, onSendGift(), _d.data(), Impl::sendGift );
@@ -194,21 +200,18 @@ void Emperor::_updateRequests()
   Rect reqsRect( Point( 32, 91 ), Size( 570, 220 ) );
 
   List<RequestButton*> btns = findChildren<RequestButton*>();
-  foreach( btn, btns )
-  {
-    (*btn)->deleteLater();
-  }
+  for( auto btn : btns )
+    btn->deleteLater();
 
-  city::request::RequestList reqs;
-  city::request::DispatcherPtr dispatcher;
-  dispatcher << _d->city->findService( city::request::Dispatcher::defaultName() );
+  request::RequestList requests;
+  request::DispatcherPtr dispatcher = _d->city->statistic().services.find<request::Dispatcher>();
 
   if( dispatcher.isValid() )
   {
-    reqs = dispatcher->requests();
+    requests = dispatcher->requests();
   }
 
-  if( reqs.empty() )
+  if( requests.empty() )
   {
     Label* lb = new Label( this, reqsRect, _("##have_no_requests##") );
     lb->setWordwrap( true );
@@ -216,12 +219,13 @@ void Emperor::_updateRequests()
   }
   else
   {
-    foreach( request, reqs )
+    foreach( r, requests )
     {
-      if( !(*request)->isDeleted() )
+      if( !(*r)->isDeleted() )
       {
-        bool mayExec = (*request)->isReady( _d->city );
-        RequestButton* btn = new RequestButton( this, reqsRect.UpperLeftCorner + Point( 5, 5 ), std::distance( request, reqs.begin() ), *request );
+        bool mayExec = (*r)->isReady( _d->city );
+        RequestButton* btn = new RequestButton( this, reqsRect.lefttop() + Point( 5, 5 ),
+                                                std::distance( requests.begin(), r ), *r );
         btn->setTooltipText( _("##request_btn_tooltip##") );
         btn->setEnabled( mayExec );
         CONNECT(btn, onExecRequest(), _d.data(), Impl::resolveRequest );
@@ -237,17 +241,15 @@ void Emperor::_showHelp()
 }
 
 Emperor::Emperor( PlayerCityPtr city, Widget* parent, int id )
-: Window( parent, Rect( 0, 0, 1, 1 ), "", id ), _d( new Impl )
+: Base( parent, city, id ), _d( new Impl )
 {
   _d->autoPause.activate();
   _d->city = city;
   _d->isRequestsUpdated = true;
 
   Widget::setupUI( ":/gui/emperoropts.gui" );
-  setPosition( Point( (parent->width() - width() )/2, parent->height() / 2 - 242 ) );
 
-  gui::Label* lbTitle;
-  GET_WIDGET_FROM_UI( lbTitle )
+  INIT_WIDGET_FROM_UI( Label*, lbTitle )
 
   GET_DWIDGET_FROM_UI( _d, lbEmperorFavour )
   GET_DWIDGET_FROM_UI( _d, lbEmperorFavourDesc  )
@@ -265,7 +267,7 @@ Emperor::Emperor( PlayerCityPtr city, Widget* parent, int id )
 
   if( lbTitle )
   {
-    std::string text = city->player()->name();
+    std::string text = city->mayor()->name();
     if( text.empty() )
       text = _("##emperor_advisor_title##");
 
@@ -292,40 +294,40 @@ void Emperor::draw(gfx::Engine& painter )
 
 void Emperor::Impl::sendMoney( int money )
 {
-  city->player()->appendMoney( -money );
-  events::GameEventPtr e = events::FundIssueEvent::create( city::Funds::donation, money );
+  city->mayor()->appendMoney( -money );
+  GameEventPtr e = Payment::create( econ::Issue::donation, money );
   e->dispatch();
 }
 
 void Emperor::Impl::sendGift(int money)
 {
-  if( money > city->player()->money() )
+  if( money > city->mayor()->money() )
   {
-    DialogBox::information( lbEmperorFavour->ui()->rootWidget(),
-                            _("##nomoney_for_gift_title##"),
-                            _("##nomoney_for_gift_text##") );
+    dialog::Information( lbEmperorFavour->ui(),
+                         _("##nomoney_for_gift_title##"),
+                         _("##nomoney_for_gift_text##") );
     return;
   }
 
-  city->player()->appendMoney( -money );
-  city->empire()->emperor().sendGift( city->name(), money );
+  city->mayor()->appendMoney( -money );
+  city->empire()->emperor().sendGift( Gift( city->name(), "gift", money ) );
 }
 
 void Emperor::Impl::changeSalary( int money )
 {
-  PlayerPtr pl = city->player();
+  PlayerPtr pl = city->mayor();
   pl->setSalary( money );
 
   float salKoeff = world::EmpireHelper::governorSalaryKoeff( ptr_cast<world::City>( city ) );
   if( salKoeff > 1.f )
   {
-    DialogBox::information( lbEmperorFavour->parent(),
-                            "##changesalary_warning##",
-                            "##changesalary_greater_salary##" );
+    dialog::Information( lbEmperorFavour->ui(),
+                         _("##changesalary_warning##"),
+                         _("##changesalary_greater_salary##") );
   }
 }
 
-void Emperor::Impl::resolveRequest(city::request::RequestPtr request)
+void Emperor::Impl::resolveRequest(request::RequestPtr request)
 {
   if( request.isValid() )
   {
@@ -334,6 +336,6 @@ void Emperor::Impl::resolveRequest(city::request::RequestPtr request)
   }
 }
 
-}
+}//end namespace advisorwnd
 
 }//end namespace gui

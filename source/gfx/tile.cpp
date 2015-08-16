@@ -18,14 +18,12 @@
 #include "tile.hpp"
 #include "core/exception.hpp"
 #include "objects/building.hpp"
-#include "tileoverlay.hpp"
+#include "objects/overlay.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "helper.hpp"
 #include "game/gamedate.hpp"
-
-using namespace constants;
 
 namespace gfx
 {
@@ -71,14 +69,9 @@ Tile::Tile( const TilePos& pos) //: _terrain( 0, 0, 0, 0, 0, 0 )
   setEPos( pos );
 }
 
-int Tile::i() const    {   return _pos.i();   }
-int Tile::j() const    {   return _pos.j();   }
 void Tile::setPicture(const Picture& picture) {  _picture = picture; }
-void Tile::setPicture(const char* rc, const int index){ setPicture( Picture::load( rc, index ) );}
-void Tile::setPicture(const std::string& name){ setPicture( Picture::load( name ) );}
-
-const Picture& Tile::picture() const {  return _picture; }
-Tile* Tile::masterTile() const{  return _master;}
+void Tile::setPicture(const char* rc, const int index){ _picture.load( rc, index );}
+void Tile::setPicture(const std::string& name){ _picture.load( name );}
 void Tile::setMasterTile(Tile* master){  _master = master; }
 
 bool Tile::isFlat() const
@@ -103,14 +96,14 @@ void Tile::setEPos(const TilePos& epos)
                    tilemap::cellSize().height() * ( _epos.i() - _epos.j() ) - _height * tilemap::cellSize().height() );
 }
 
-void Tile::changeDirection(Tile *masterTile, constants::Direction newDirection)
+void Tile::changeDirection(Tile *masterTile, Direction newDirection)
 {
   if( masterTile && _overlay.isValid() )
   {
     _overlay->changeDirection( masterTile, newDirection);
   }
 
-  if( _terrain.coast )
+  if( _terrain.coast || _terrain.water )
   {
     int iid = tile::turnCoastTile( _terrain.imgid, newDirection );
 
@@ -129,7 +122,7 @@ void Tile::animate(unsigned int time)
   }
 }
 
-const Animation& Tile::animation() const{  return _overlay.isValid() ? invalidAnimation : _animation; }
+const Animation& Tile::animation() const{ return _animation; }
 void Tile::setAnimation(const Animation& animation){ _animation = animation;}
 
 bool Tile::isWalkable( bool alllands ) const
@@ -199,9 +192,8 @@ void Tile::setFlag(Tile::Type type, bool value)
   }
 }
 
-TileOverlayPtr Tile::overlay() const{ return _overlay;}
-void Tile::setOverlay(TileOverlayPtr overlay){  _overlay = overlay;}
-unsigned int Tile::originalImgId() const{ return _terrain.imgid;}
+OverlayPtr Tile::overlay() const  { return _overlay;}
+void Tile::setOverlay(OverlayPtr overlay){  _overlay = overlay;}
 void Tile::setOriginalImgId(unsigned short id){  _terrain.imgid = id;}
 void Tile::setParam( Param param, int value) { _terrain.params[ param ] = value; }
 void Tile::changeParam( Param param, int value) { _terrain.params[ param ] += value; }

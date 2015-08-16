@@ -25,11 +25,11 @@ class RomeHorseman : public RomeSoldier
 {
 public:
   static RomeHorsemanPtr create( PlayerCityPtr city,
-                                 constants::walker::Type type=constants::walker::romeHorseman );
+                                 walker::Type type=walker::romeHorseman );
 
   //void send2city( FortPtr base, TilePos pos );
 protected:
-  RomeHorseman( PlayerCityPtr city, constants::walker::Type type );
+  RomeHorseman( PlayerCityPtr city, walker::Type type );
 };
 
 #endif //_CAESARIA_ROMEHORSEMAN_INCLUDE_H_

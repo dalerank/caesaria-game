@@ -26,12 +26,13 @@
 #include "core/logger.hpp"
 #include "city/cityservice_factory.hpp"
 #include "factory.hpp"
+#include "city/states.hpp"
 
 namespace events
 {
 
 namespace {
- const int checkInterval = 50;
+static const unsigned int defaultCheckInterval = 50;
 }
 
 class PostponeEvent::Impl
@@ -40,6 +41,7 @@ public:
   DateTime date;
   unsigned int population;
   bool mayDelete;
+  unsigned int checkInterval;
   VariantMap options;
 
   void executeRequest( Game& game, const std::string& type, bool& result );
@@ -107,7 +109,7 @@ void PostponeEvent::_exec(Game& game, unsigned int)
 
 bool PostponeEvent::_mayExec( Game& game, unsigned int time ) const
 {
-  if( time % checkInterval == 1 )
+  if( _d->checkInterval == 0 || (time % _d->checkInterval == 1) )
   {
     bool dateCondition = true;
     if( _d->date.year() != -1000 )
@@ -118,7 +120,7 @@ bool PostponeEvent::_mayExec( Game& game, unsigned int time ) const
     bool popCondition = true;
     if( _d->population > 0 )
     {
-      popCondition = game.city()->population() > _d->population;
+      popCondition = game.city()->states().population > _d->population;
     }
 
     _d->mayDelete = dateCondition && popCondition;
@@ -133,9 +135,10 @@ VariantMap PostponeEvent::save() const
 {
   VariantMap ret = _d->options;
   ret[ "type" ] = Variant( _type );
-  ret[ "name" ] = Variant( _name );
-  ret[ "date" ] = _d->date;
-  VARIANT_SAVE_ANY_D( ret, _d, population );
+  ret[ "name" ] = Variant( _name );  
+  VARIANT_SAVE_ANY_D( ret, _d, date )
+  VARIANT_SAVE_ANY_D( ret, _d, checkInterval)
+  VARIANT_SAVE_ANY_D( ret, _d, population )
   return ret;
 }
 
@@ -144,7 +147,8 @@ void PostponeEvent::load(const VariantMap& stream)
   GameEvent::load( stream );
 
   _d->date = stream.get( "date", DateTime( -1000, 1, 1 ) ).toDateTime();
-  VARIANT_LOAD_ANY_D( _d, population, stream );
+  VARIANT_LOAD_ANY_D( _d, population, stream )
+  VARIANT_LOAD_ANYDEF_D( _d, checkInterval, defaultCheckInterval, stream )
   _d->options = stream;
 }
 

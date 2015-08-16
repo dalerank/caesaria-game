@@ -23,9 +23,9 @@
 #include "core/gettext.hpp"
 #include "game/gamedate.hpp"
 #include "core/utils.hpp"
+#include "game/infoboxmanager.hpp"
 
 using namespace gfx;
-using namespace constants;
 
 namespace gui
 {
@@ -33,43 +33,63 @@ namespace gui
 namespace infobox
 {
 
+REGISTER_OBJECT_BASEINFOBOX(amphitheater,AboutAmphitheater)
+
 AboutAmphitheater::AboutAmphitheater(Widget *parent, PlayerCityPtr city, const Tile &tile)
   : AboutConstruction( parent, Rect( 0, 0, 470, 300), Rect( 16, 145, 470 - 16, 145 + 100 ) )
 {
-  AmphitheaterPtr amph = ptr_cast<Amphitheater>(tile.overlay());
-  setBase( ptr_cast<Construction>( amph ) );
-  setTitle( _( MetaDataHolder::findPrettyName( objects::amphitheater ) ) );
+  setupUI( ":/gui/infoboxapmhitheater.gui" );
+
+  AmphitheaterPtr amph = tile.overlay().as<Amphitheater>();
+  if( !amph.isValid() )
+    return;
+
+  setBase( amph );
+  setTitle( _( MetaDataHolder::findPrettyName( object::amphitheater ) ) );
   _setWorkingVisible( true );
 
   _updateWorkersLabel( Point( 40, 150), 542, amph->maximumWorkers(), amph->numberWorkers() );
-  
+
   if( amph->isNeed( walker::gladiator ) )
-  {
-    new Label( this, Rect( 35, 190, width() - 35, 190 + 20 ), _("##amphitheater_haveno_gladiatorpit##") );
-  }
+    _updateWarnings();
   else
   {
-    std::string text = _("##amphitheater_haveno_gladiator_bouts##");
-    if( amph->isShowGladiatorBouts() )
-    {
-      DateTime lastGlBoutDate = amph->lastBoutsDate();
-      text = utils::format( 0xff, "%s %d %s", "##amphitheater_gladiator_contest_runs##", lastGlBoutDate.daysTo( game::Date::current() ), "##days##" );
-    }
-    new Label( this, Rect( 35, 200, width() - 35, 200 + 20 ), text );
-
-    text = _("##amphitheater_haveno_shows##");
-    if( amph->isActorsShow() )
-    {
-      DateTime lastShowDate = amph->lastShowDate();
-      text = utils::format( 0xff, "%s %d %s", "##amphitheater_show_runs##", lastShowDate.daysTo( game::Date::current() ), "##days##" );
-    }
-
-    new Label( this, Rect( 35, 220, width() - 35, 220 + 20 ), text );
+    _updateBouthsInfo( amph );
+    _updateShowsInfo( amph );
   }
+
 }
 
 AboutAmphitheater::~AboutAmphitheater() {}
 
+void AboutAmphitheater::_updateWarnings()
+{
+  new Label( this, Rect( 35, 190, width() - 35, 190 + 20 ), _("##amphitheater_haveno_gladiatorpit##") );
 }
+
+void AboutAmphitheater::_updateShowsInfo( AmphitheaterPtr amph )
+{
+  std::string text = _("##amphitheater_haveno_shows##");
+  if( amph->isShow( Amphitheater::theatrical ) )
+  {
+    DateTime lastShowDate = amph->lastShow( Amphitheater::theatrical );
+    text = utils::format( 0xff, "%s %d %s", "##amphitheater_show_runs##", lastShowDate.daysTo( game::Date::current() ), "##days##" );
+  }
+
+  new Label( this, Rect( 35, 220, width() - 35, 220 + 20 ), text );
+}
+
+void AboutAmphitheater::_updateBouthsInfo( AmphitheaterPtr amph )
+{
+  std::string text = _("##amphitheater_haveno_gladiator_bouts##");
+  if( amph->isShow( Amphitheater::gladiatorBouts ) )
+  {
+    DateTime lastGlBoutDate = amph->lastShow( Amphitheater::gladiatorBouts );
+    text = utils::format( 0xff, "%s %d %s", "##amphitheater_gladiator_contest_runs##", lastGlBoutDate.daysTo( game::Date::current() ), "##days##" );
+  }
+  new Label( this, Rect( 35, 200, width() - 35, 200 + 20 ), text );
+}
+
+}//end namespace infobox
 
 }//end namespace gui

@@ -20,13 +20,9 @@
 #include "http/httprequest.hpp"
 #include "constants.hpp"
 #include "core/foreach.hpp"
+#include "core/osystem.hpp"
+#include "vfs/filesystem.hpp"
 #include "util.hpp"
-
-#if defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
-  #include <limits.h>
-  #include <unistd.h>
-  #include <sys/stat.h>
-#endif
 
 namespace updater
 {
@@ -37,26 +33,26 @@ Updater::Updater(const UpdaterOptions& options, vfs::Path executable) :
 	_executable( executable ), // convert that file to lower to be sure
 	_updatingUpdater(false)
 {
-	// Set up internet connectivity
-	HttpConnectionPtr http( new HttpConnection() );
-	http->drop();
-	_conn = http;
+  // Set up internet connectivity
+  HttpConnectionPtr http( new HttpConnection() );
+  http->drop();
+  _conn = http;
 
-	// Assign the proxy settings to the connection
-	_options.CheckProxy(_conn);
+  // Assign the proxy settings to the connection
+  _options.CheckProxy(_conn);
 
   _ignoreList.insert(STABLE_VERSION_FILE);
   _ignoreList.insert(UPDATE_VERSION_FILE);
   _ignoreList.insert(CAESARIA_MIRRORS_INFO);
 
-	MirrorDownload::InitRandomizer();
+  MirrorDownload::InitRandomizer();
 
 #ifdef CAESARIA_PLATFORM_WIN
-	if( _executable.extension().empty() )
-	{
-		Logger::warning( "Adding EXE extension to executable: " + _executable.toString() );
-		_executable = _executable.toString() + ".exe";
-	}
+  if( !_executable.haveExtension() )
+  {
+    Logger::warning( "Adding EXE extension to executable: " + _executable.toString() );
+    _executable.changeExtension(".exe");
+  }
 #endif
 }
 
@@ -80,7 +76,7 @@ void Updater::setBinaryAsExecutable()
     if( path2exe.exist() )
     {
       // set the executable bit on binary
-      _markFileAsExecutable( path2exe );
+      OSystem::markFileAsExecutable( path2exe.toString() );
     }
   }
 }
@@ -90,27 +86,10 @@ void Updater::removeDownload(std::string itemname)
 	_downloadQueue.removeItem( itemname );
 }
 
-void Updater::_markFileAsExecutable(vfs::Path path )
-{
-#if defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
-	Logger::warning( "Marking file as executable: " + path.toString() );
-
-	struct stat mask;
-	stat(path.toString().c_str(), &mask);
-
-	mask.st_mode |= S_IXUSR|S_IXGRP|S_IXOTH;
-
-  if( chmod(path.toString().c_str(), mask.st_mode) == -1)
-	{
-		Logger::warning( "Could not mark file as executable: " + path.toString() );
-	}
-#endif
-}
-
 void Updater::CleanupPreviousSession()
 {
-	// Remove batch file from previous run
-	vfs::NFile::remove( getTargetDir()/UPDATE_UPDATER_BATCH_FILE );
+  // Remove batch file from previous run
+  vfs::NFile::remove( getTargetDir()/UPDATE_UPDATER_BATCH_FILE );
 }
 
 bool Updater::isMirrorsNeedUpdate()
@@ -120,16 +99,16 @@ bool Updater::isMirrorsNeedUpdate()
 
   if( !mirrorPath.exist() )
   {
-        // No mirrors file
-        Logger::update( "No mirrors file present on this machine.");
-        return true;
+    // No mirrors file
+    Logger::update( "No mirrors file present on this machine.");
+    return true;
   }
 
   // File exists, check options
   if( _options.isSet("keep-mirrors") )
   {
-        Logger::update( "Skipping mirrors update (--keep-mirrors is set)." );
-        return false;
+    Logger::update( "Skipping mirrors update (--keep-mirrors is set)." );
+    return false;
   }
 
   // Update by default
@@ -152,12 +131,12 @@ void Updater::updateMirrors()
 
   if (request->GetStatus() == HttpRequest::OK)
   {
-          // Load the mirrors from the file
-          loadMirrors();
+    // Load the mirrors from the file
+    loadMirrors();
   }
   else
   {
-          Logger::warning( " Mirrors download failed: %s", request->GetErrorMessage().c_str() );
+    Logger::warning( " Mirrors download failed: %s", request->GetErrorMessage().c_str() );
   }
 }
 
@@ -190,7 +169,7 @@ void Updater::GetStableVersionFromServer()
 
   if (releaseIni == NULL)
   {
-        throw FailureException("Could not download current version info file from server.");
+    throw FailureException("Could not download current version info file from server.");
   }
 
   // Build the release file set
@@ -209,8 +188,8 @@ void Updater::GetVersionInfoFromServer()
 
   if (versionInfo == NULL)
   {
-        Logger::warning( "Cannot find downloaded version info file: %s", folder.getFilePath(UPDATE_VERSION_FILE).toString().c_str() );
-        return;
+    Logger::warning( "Cannot find downloaded version info file: %s", folder.getFilePath(UPDATE_VERSION_FILE).toCString() );
+    return;
   }
 
   _releaseVersions.LoadFromIniFile( versionInfo );
@@ -221,12 +200,12 @@ void Updater::NotifyFileProgress(vfs::Path file, CurFileInfo::Operation op, doub
 {
   if (_fileProgressCallback != NULL)
   {
-        CurFileInfo info;
-        info.operation = op;
-        info.file = file;
-        info.progressFraction = fraction;
+    CurFileInfo info;
+    info.operation = op;
+    info.file = file;
+    info.progressFraction = fraction;
 
-        _fileProgressCallback->OnFileOperationProgress(info);
+    _fileProgressCallback->OnFileOperationProgress(info);
   }
 }
 
@@ -242,23 +221,23 @@ void Updater::DetermineLocalVersion()
   std::size_t totalItems = 0;
 
   // Get the total count of version information items, for calculating the progress
-  for (ReleaseVersions::const_iterator v = _releaseVersions.begin(); v != _releaseVersions.end(); ++v)
+  foreach( v, _releaseVersions )
   {
-        totalItems += v->second.size();
+    totalItems += v->second.size();
   }
 
   std::size_t curItem = 0;
 
-  for (ReleaseVersions::const_iterator v = _releaseVersions.begin(); v != _releaseVersions.end(); ++v)
+  foreach( v, _releaseVersions )
   {
-    Logger::warning( "Trying to match against version: %s", v->first.c_str() );
+    Logger::warning( "Trying to match against version: " + v->first );
 
     const ReleaseFileSet& set = v->second;
 
     // Will be true on first mismatching file
     bool mismatch = false;
 
-    for (ReleaseFileSet::const_iterator f = set.begin(); f != set.end(); ++f)
+    foreach( f, set )
     {
       NotifyFileProgress(f->second.file, CurFileInfo::Check, static_cast<double>(curItem) / totalItems);
 
@@ -267,7 +246,8 @@ void Updater::DetermineLocalVersion()
       vfs::Directory folder = getTargetDir();
       vfs::Path candidate = folder.getFilePath( f->second.file );
 
-      if( utils::isEquale( candidate.baseName().toString(), _executable.baseName().toString(), utils::equaleIgnoreCase ) )
+      bool filesEquale = utils::isEquale( candidate.baseName().toString(), _executable.baseName().toString(), utils::equaleIgnoreCase );
+      if( filesEquale )
       {
         Logger::warning( "IGNORE" );
         continue;
@@ -282,7 +262,7 @@ void Updater::DetermineLocalVersion()
 
       if (f->second.localChangesAllowed)
       {
-        Logger::warning( "File %s exists, local changes are allowed, skipping.", candidate.toString().c_str() );
+        Logger::warning( "File %s exists, local changes are allowed, skipping.", candidate.toCString() );
         continue;
       }
 
@@ -317,13 +297,13 @@ void Updater::DetermineLocalVersion()
     // All files passed the check?
     if (!mismatch)
     {
-        _pureLocalVersion = v->first;
-        Logger::warning( " Local installation matches version: " + _pureLocalVersion );
+      _pureLocalVersion = v->first;
+      Logger::warning( " Local installation matches version: " + _pureLocalVersion );
     }
   }
 
   // Sum up the totals for all files, each file has exactly one version
-  for (FileVersionMap::const_iterator i = _fileVersions.begin(); i != _fileVersions.end(); ++i)
+  foreach( i, _fileVersions )
   {
     // sum up the totals for this version
     const std::string& version = i->second;
@@ -347,7 +327,7 @@ void Updater::DetermineLocalVersion()
 
   if (!_localVersions.empty())
   {
-    for (LocalVersionBreakdown::const_iterator i = _localVersions.begin(); i != _localVersions.end(); ++i)
+    foreach( i, _localVersions )
     {
       const std::string& version = i->first;
 
@@ -462,7 +442,7 @@ vfs::Directory Updater::getTargetDir()
   }
 
   // Get the current path
-  vfs::Path targetPath = vfs::Directory::getCurrent();
+  vfs::Path targetPath = vfs::Directory::current();
 
   return targetPath;
 }
@@ -695,63 +675,6 @@ void Updater::NotifyDownloadProgress()
   }
 }
 
-void Updater::PrepareUpdateBatchFile()
-{
-  vfs::Path temporaryUpdater = TEMP_FILE_PREFIX + _executable.toString();
-  // Create a new batch file in the target location
-  vfs::Directory targetdir = getTargetDir();
-  _updateBatchFile =  targetdir.getFilePath( UPDATE_UPDATER_BATCH_FILE );
-
-  Logger::warning( "Preparing CaesarIA update batch file in " + _updateBatchFile.toString() );
-
-  std::ofstream batch(_updateBatchFile.toString().c_str());
-
-  vfs::Path tempUpdater = temporaryUpdater.baseName();
-  vfs::Path updater = _executable.baseName();
-
-  // Append the current set of command line arguments to the new instance
-  std::string arguments;
-
-  for (std::vector<std::string>::const_iterator i = _options.GetRawCmdLineArgs().begin();
-         i != _options.GetRawCmdLineArgs().end(); ++i)
-  {
-        arguments += " " + *i;
-  }
-
-#ifdef CAESARIA_PLATFORM_WIN
-  batch << "@ping 127.0.0.1 -n 2 -w 1000 > nul" << std::endl; // # hack equivalent to Wait 2
-  batch << "@copy " << tempUpdater.toString() << " " << updater.toString() << " >nul" << std::endl;
-  batch << "@del " << tempUpdater.toString() << std::endl;
-  batch << "@echo CaesarIA Updater executable has been updated." << std::endl;
-
-  batch << "@echo Re-launching CaesarIA Updater executable." << std::endl << std::endl;
-
-  batch << "@start " << updater.toString() << " " << arguments;
-#else // POSIX
-  // grayman - accomodate spaces in pathnames
-  tempUpdater = targetdir.getFilePath( tempUpdater );
-  updater = targetdir.getFilePath( updater );
-
-  batch << "#!/bin/bash" << std::endl;
-  batch << "echo \"Upgrading CaesarIA Updater executable...\"" << std::endl;
-  batch << "cd \"" << getTargetDir().toString() << "\"" << std::endl;
-  batch << "sleep 2s" << std::endl;
-  batch << "mv -f \"" << tempUpdater.toString() << "\" \"" << updater.toString() << "\"" << std::endl;
-  batch << "chmod +x \"" << updater.toString() << "\"" << std::endl;
-  batch << "echo \"CaesarIA Updater executable has been updated.\"" << std::endl;
-  batch << "echo \"Re-launching CaesarIA Updater executable.\"" << std::endl;
-
-  batch << "\"" << updater.toString() << "\" " << arguments;
-#endif
-
-  batch.close();
-
-#ifdef CAESARIA_PLATFORM_UNIX
-  // Mark the shell script as executable in *nix
-  _markFileAsExecutable(_updateBatchFile);
-#endif
-}
-
 void Updater::cleanupUpdateStep()
 {
   for (ReleaseFileSet::iterator i = _downloadQueue.begin(); i != _downloadQueue.end(); ++i)
@@ -821,7 +744,7 @@ bool Updater::NewUpdaterAvailable()
 
   Logger::warning( "Looking for executable " + _executable.toString() + " in download queue.");
 
-  vfs::Path myPath = vfs::Directory::getApplicationDir()/_executable;
+  vfs::Path myPath = vfs::Directory::applicationDir()/_executable;
   ByteArray crcData = vfs::NFile::open( myPath ).readAll();
   unsigned int fileSize = vfs::NFile::size( myPath );
 
@@ -863,86 +786,21 @@ void Updater::RemoveAllPackagesExceptUpdater()
       // The inner loop didn't find the executable, remove that package
       _downloadQueue.erase(i++);
     }
-  }
+    }
 }
 
-void Updater::RestartUpdater()
+void Updater::restartUpdater()
 {
-  Logger::warning( "Preparing restart...");
-  PrepareUpdateBatchFile();
-
-#ifdef CAESARIA_PLATFORM_WIN
-  if (!_updateBatchFile.toString().empty())
-  {
-    Logger::warning( "Update batch file pending, launching process.");
-
-    // Spawn a new process
-
-    // Create a tdmlauncher process, setting the working directory to the target directory
-    STARTUPINFOA siStartupInfo;
-    PROCESS_INFORMATION piProcessInfo;
-
-    memset(&siStartupInfo, 0, sizeof(siStartupInfo));
-    memset(&piProcessInfo, 0, sizeof(piProcessInfo));
-
-    siStartupInfo.cb = sizeof(siStartupInfo);
-
-    vfs::Directory parentPath = _updateBatchFile.directory();
-
-    Logger::warning( "Starting batch file " + _updateBatchFile.toString() + " in " + parentPath.toString() );
-
-    BOOL success = CreateProcessA( NULL, (LPSTR) _updateBatchFile.toString().c_str(), NULL, NULL,  false, 0, NULL,
-                                                                                                                         parentPath.toString().c_str(), &siStartupInfo, &piProcessInfo);
-
-    if (!success)
-    {
-      LPVOID lpMsgBuf;
-
-      FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                    NULL,
-                    GetLastError(),
-                    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                    (LPTSTR) &lpMsgBuf,
-                    0,
-                    NULL);
-
-      throw FailureException( "Could not start new process: " + std::string((LPCSTR)lpMsgBuf));
-
-      LocalFree(lpMsgBuf);
-    }
-    else
-    {
-      Logger::warning( "Process started");
-      exit(0);
-    }
-  }
-#else
-  if (!_updateBatchFile.toString().empty())
-  {
-    Logger::warning( "Relaunching CaesarIA updater via shell script " + _updateBatchFile.toString() );
-
-    // Perform the system command in a fork
-    //int r = fork();
-    //if( r >= 0 )
-    {
-      // Don't wait for the subprocess to finish
-      system((_updateBatchFile.toString() + " &").c_str());
-      exit(EXIT_SUCCESS);
-      return;
-    }
-
-    Logger::warning( "Process spawned.");
-
-    // Done here too
-    return;
-  }
-#endif
+  vfs::Path temporaryUpdater = TEMP_FILE_PREFIX + _executable.toString();
+  // Create a new batch file in the target location
+  vfs::Directory targetdir = getTargetDir();
+  OSystem::restartProcess( temporaryUpdater.toString(), targetdir.toString(), _options.GetRawCmdLineArgs() );
 }
 
 void Updater::postUpdateCleanup()
 {
   vfs::Directory pdir =  getTargetDir();
-  vfs::Entries dir = pdir.getEntries();
+  vfs::Entries dir = pdir.entries();
   foreach( i, dir )
   {
     if( utils::startsWith( i->name.toString(), TEMP_FILE_PREFIX) )
@@ -954,7 +812,75 @@ void Updater::postUpdateCleanup()
 
 void Updater::cancelDownloads()
 {
-  _downloadManager->ClearDownloads();
+  _downloadManager->clearDownloads();
+}
+
+void SteamHelper::checkDepsAndStart()
+{
+#ifdef CAESARIA_PLATFORM_MACOSX
+  vfs::Path sdl2relpath = "Library/Frameworks/SDL2.framework";
+  vfs::Path sdl2abspath = vfs::Directory::userDir()/sdl2relpath;
+
+  if( !sdl2abspath.exist() )
+  {
+    vfs::Path tmp = "__install_frameworks.sh";
+    Logger::warning( "Preparing updater for install frameworks " + tmp.toString() );
+
+    std::ofstream batch(tmp.toCString());
+
+    // grayman - accomodate spaces in pathnames
+    tmp = vfs::Directory::applicationDir()/tmp;
+
+    batch << "#!/usr/bin/env bash" << std::endl;
+    batch << "SDLFR=~/Library/Frameworks/SDL2.framework" << std::endl;
+    batch << "SAVEDIR=saves" << std::endl;
+    batch << "LIBDIR=~/Library/Frameworks/" << std::endl;
+    batch << "# if the file doesn't exist, try to create folder" << std::endl;
+    batch << "if [ ! -d $SDLFR ]" << std::endl;
+    batch << "then" << std::endl;
+    batch << "hdiutil mount SDL2_mixer-2.0.0.dmg" << std::endl;
+    batch << "hdiutil mount SDL2-2.0.3.dmg" << std::endl;
+    batch << "mkdir -p $LIBDIR" << std::endl;
+    batch << "cp -r /Volumes/SDL2/SDL2.framework $LIBDIR" << std::endl;
+    batch << "cp -r /Volumes/SDL2_mixer/SDL2_mixer.framework $LIBDIR" << std::endl;
+    batch << "hdiutil unmount /Volumes/SDL2" << std::endl;
+    batch << "hdiutil unmount /Volumes/SDL2_mixer" << std::endl;
+    batch << "fi" << std::endl;
+    batch << "if [ ! -d $SAVEDIR ]" << std::endl;
+    batch << "then" << std::endl;
+    batch << "rm -f $SAVEDIR" << std::endl;
+    batch << "mkdir $SAVEDIR" << std::endl;
+    batch << "fi" << std::endl;
+
+    batch.close();
+
+    // Mark the shell script as executable in *nix
+    OSystem::markFileAsExecutable(tmp.toCString());
+    system( "./__install_frameworks.sh" );
+  }
+
+  system( "./caesaria.macos &" );
+  exit(EXIT_SUCCESS);
+#elif defined(CAESARIA_PLATFORM_WIN)
+  STARTUPINFOA siStartupInfo;
+  PROCESS_INFORMATION piProcessInfo;
+
+  memset(&siStartupInfo, 0, sizeof(siStartupInfo));
+  memset(&piProcessInfo, 0, sizeof(piProcessInfo));
+
+  siStartupInfo.cb = sizeof(siStartupInfo);
+
+  vfs::Directory parentPath = vfs::Directory::applicationDir();
+
+  Logger::warning( "Starting game in " + parentPath.toString() );
+
+  BOOL success = CreateProcessA( NULL, "caesaria.exe", NULL, NULL,  false, 0, NULL,
+                                 parentPath.toCString(), &siStartupInfo, &piProcessInfo);
+
+#elif defined(CAESARIA_PLATFORM_LINUX)
+  system( "./caesaria.linux &" );
+  exit(EXIT_SUCCESS);
+#endif
 }
 
 } // namespace

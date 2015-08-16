@@ -22,7 +22,8 @@
 #include "core/gettext.hpp"
 #include "label.hpp"
 #include "image.hpp"
-#include "good/goodhelper.hpp"
+#include "good/stock.hpp"
+#include "good/helper.hpp"
 #include "dictionary.hpp"
 #include "environment.hpp"
 #include "objects/shipyard.hpp"
@@ -30,8 +31,8 @@
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
 #include "city/city.hpp"
+#include "game/infoboxmanager.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -40,10 +41,20 @@ namespace gui
 namespace infobox
 {
 
+REGISTER_OBJECT_BASEINFOBOX(shipyard,AboutShipyard)
+REGISTER_OBJECT_BASEINFOBOX(wharf,AboutWharf)
+REGISTER_OBJECT_BASEINFOBOX(pottery_workshop,AboutFactory)
+REGISTER_OBJECT_BASEINFOBOX(weapons_workshop,AboutFactory)
+REGISTER_OBJECT_BASEINFOBOX(furniture_workshop,AboutFactory)
+REGISTER_OBJECT_BASEINFOBOX(wine_workshop,AboutFactory)
+REGISTER_OBJECT_BASEINFOBOX(oil_workshop,AboutFactory)
+
 AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
-  : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 160, 510 - 16, 160 + 42) )
+  : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 160, 510 - 16, 160 + 52) )
 {
-  FactoryPtr factory = ptr_cast<Factory>( tile.overlay() );
+  setupUI( ":/gui/infoboxfactory.gui" );
+
+  FactoryPtr factory = tile.overlay().as<Factory>();
   setBase( ptr_cast<Construction>( factory ) );
   _type = factory->type();
   std::string  title = MetaDataHolder::findPrettyName( factory->type() );
@@ -89,12 +100,14 @@ AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
     lbStockInfo->setText( text );
     lbStockInfo->setTextOffset( Point( 30, 0 ) );
 
-    _lbTextRef()->setPosition( lbStockInfo->leftbottom() + Point( 0, 5 ));
+    _lbTextRef()->setGeometry( Rect( lbStockInfo->leftbottom() + Point( 0, 5 ),
+                                     _lbBlackFrame()->righttop() - Point( 0, 5 ) ) );
+    _lbTextRef()->setFont( Font::create( FONT_1 ) );
   }
 
   std::string workInfo = factory->workersProblemDesc();
   std::string cartInfo = factory->cartStateDesc();
-  setText( utils::format( 0xff, "%s\n%s", _(workInfo), _( cartInfo ) ) );
+  setText( utils::format( 0xff, "%s %s", _(workInfo), _( cartInfo ) ) );
 
   _updateWorkersLabel( Point( 32, 157 ), 542, factory->maximumWorkers(), factory->numberWorkers() );
 }

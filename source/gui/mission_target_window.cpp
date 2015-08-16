@@ -30,6 +30,7 @@
 #include "core/foreach.hpp"
 #include "core/utils.hpp"
 #include "city/victoryconditions.hpp"
+#include "sound/engine.hpp"
 #include "core/logger.hpp"
 #include "gameautopause.hpp"
 #include "widgetescapecloser.hpp"
@@ -46,6 +47,8 @@ namespace dialog
 class MissionTargets::Impl
 {
 public:
+  audio::Muter muter;
+  audio::SampleDeleter speechDel;
   GameAutoPause locker;
   PlayerCityPtr city;
   Label* lbTitle;
@@ -65,12 +68,11 @@ MissionTargets* MissionTargets::create(Widget* parent, PlayerCityPtr city, int i
   MissionTargets* ret = new MissionTargets( parent, id, Rect( 0, 0, 610, 430 ) );
   ret->setCenter( parent->center() );
   ret->setCity( city );
+  ret->show();
   ret->setModal();
 
   return ret;
 }
-
-MissionTargets::~MissionTargets() {}
 
 MissionTargets::MissionTargets( Widget* parent, int id, const Rect& rectangle )
   : Window( parent, rectangle, "", id ), _d( new Impl )
@@ -80,8 +82,7 @@ MissionTargets::MissionTargets( Widget* parent, int id, const Rect& rectangle )
 
   WidgetEscapeCloser::insertTo( this );
 
-  TexturedButton* btnExit;
-  GET_WIDGET_FROM_UI( btnExit )
+  INIT_WIDGET_FROM_UI( TexturedButton*, btnExit )
   CONNECT( btnExit, onClicked(), this, MissionTargets::deleteLater );
 
   GET_DWIDGET_FROM_UI( _d, lbTitle )
@@ -102,12 +103,24 @@ void MissionTargets::draw( gfx::Engine& painter )
   Window::draw( painter );
 }
 
+void MissionTargets::show()
+{
+  Window::show();
+}
+
+MissionTargets::~MissionTargets()
+{
+}
+
 void MissionTargets::setCity(PlayerCityPtr city)
 {
   _d->city = city;
   const city::VictoryConditions& wint = _d->city->victoryConditions();
 
-  if( _d->lbTitle ) _d->lbTitle->setText( _d->city->player()->name()  );
+  std::string missionTitle = wint.missionTitle();
+  if(missionTitle.empty()) missionTitle = "##build_your_rome##";
+
+  if( _d->lbTitle ) _d->lbTitle->setText( _(missionTitle)  );
 
   std::string text;
 
@@ -154,7 +167,7 @@ void MissionTargets::setCity(PlayerCityPtr city)
       std::string text = *it;
       if( text.substr( 0, 5 ) == "@img=" )
       {
-        Picture pic = Picture::load( text.substr( 5 ) );
+        Picture pic( text.substr( 5 ) );
         ListBoxItem& item = _d->lbxHelp->addItem( pic );
         item.setTextAlignment( align::center, align::upperLeft );
         int lineCount = pic.height() / _d->lbxHelp->itemHeight();
@@ -170,6 +183,13 @@ void MissionTargets::setCity(PlayerCityPtr city)
   {
     _d->lbShortDesc->setText( _(wint.shortDesc()) );
     _d->lbShortDesc->setVisible( !wint.shortDesc().empty() );
+  }
+
+  if( !wint.beginSpeech().empty() )
+  {
+    _d->muter.activate(5);
+    _d->speechDel.assign( wint.beginSpeech() );
+    audio::Engine::instance().play( wint.beginSpeech(), 100, audio::speech );
   }
 }
 

@@ -18,10 +18,7 @@
 #ifndef __CAESARIA_ADVISOR_FINANCE_WINDOW_H_INCLUDED__
 #define __CAESARIA_ADVISOR_FINANCE_WINDOW_H_INCLUDED__
 
-#include "window.hpp"
-#include "core/scopedptr.hpp"
-#include "core/signals.hpp"
-#include "game/predefinitions.hpp"
+#include "advisor_base_window.hpp"
 
 namespace gui
 {
@@ -29,7 +26,7 @@ namespace gui
 namespace advisorwnd
 {
 
-class Finance : public Window
+class Finance : public Base
 {
 public:
   Finance( PlayerCityPtr city, Widget* parent, int id );
@@ -39,6 +36,14 @@ public:
 private:
   void _showHelp();
   void _drawReportRow( const Point& pos, const std::string& title, int type );
+  void _updateTaxRateNowLabel();
+  void _decreaseTax();
+  void _increaseTax();
+  void _initReportRows();
+  void _initTaxManager();
+  void _updateRegisteredPayers();
+  void _updateCityTreasure();
+  int  _calculateTaxValue();
 
   class Impl;
   ScopedPtr< Impl > _d;
@@ -47,4 +52,4 @@ private:
 }//end advisorwnd
 
 }//end namespace gui
-#endif //__OPENCAESAR3_ADVISOR_HEALTH_WINDOW_H_INCLUDED__
+#endif //__CAESARIA_ADVISOR_FINANCE_WINDOW_H_INCLUDED__

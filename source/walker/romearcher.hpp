@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_ROMEARCHER_INCLUDE_H_
 #define _CAESARIA_ROMEARCHER_INCLUDE_H_
@@ -24,13 +24,13 @@ class RomeArcher : public RomeSoldier
 {
 public:
   static RomeArcherPtr create( PlayerCityPtr city,
-                               constants::walker::Type type=constants::walker::romeSpearman );
+                               walker::Type type=walker::romeSpearman );
 
   virtual void timeStep(const unsigned long time);
 
 protected:
   virtual void _fire(TilePos pos );
-  RomeArcher(PlayerCityPtr city, constants::walker::Type type);
+  RomeArcher(PlayerCityPtr city, walker::Type type);
 };
 
 #endif //_CAESARIA_ROMEARCHER_INCLUDE_H_

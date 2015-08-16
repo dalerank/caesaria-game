@@ -18,7 +18,7 @@
 #include "merchant.hpp"
 #include "empire.hpp"
 #include "city.hpp"
-#include "good/goodstore_simple.hpp"
+#include "good/storage.hpp"
 #include "core/utils.hpp"
 #include "core/variant_map.hpp"
 #include "core/foreach.hpp"
@@ -33,8 +33,8 @@ class Merchant::Impl
 {
 public:
   TraderoutePtr route;
-  good::SimpleStore sells;
-  good::SimpleStore buys;
+  good::Storage sells;
+  good::Storage buys;
   PointsArray steps;
   unsigned int step;
   std::string destCity, baseCity;
@@ -49,7 +49,7 @@ Merchant::Merchant( EmpirePtr empire )
   : Object( empire ), _d( new Impl )
 {
   //default picture
-  setPicture( gfx::Picture::load( ResourceGroup::empirebits, PicID::landTradeRoute ) );
+  setPicture( gfx::Picture( ResourceGroup::empirebits, PicID::landTradeRoute ) );
 }
 
 MerchantPtr Merchant::create( EmpirePtr empire, TraderoutePtr route, const std::string& start,
@@ -76,13 +76,14 @@ MerchantPtr Merchant::create( EmpirePtr empire, TraderoutePtr route, const std::
   ret->_d->steps = route->points( !startCity );
   ret->_d->step = 0;  
 
-  if( ret->_d->steps.empty() )
+  bool noWayForMe = ret->_d->steps.empty();
+  if( noWayForMe )
   {
     return MerchantPtr();
   }
 
-  ret->setPicture( gfx::Picture::load( ResourceGroup::empirebits,
-                                       route->isSeaRoute() ? PicID::seaTradeRoute : PicID::landTradeRoute ));
+  ret->setPicture( gfx::Picture( ResourceGroup::empirebits,
+                                 route->isSeaRoute() ? PicID::seaTradeRoute : PicID::landTradeRoute ));
   ret->setLocation( ret->_d->steps.front() );
   return ret;
 }
@@ -110,34 +111,28 @@ void Merchant::save(VariantMap& stream) const
 {
   Object::save( stream );
 
-  stream[ "sells"    ]= _d->sells.save();
-  stream[ "buys"     ]= _d->buys.save();
-  stream[ "step"     ]= _d->step;
-  stream[ "begin"    ]= Variant( _d->baseCity );
-  stream[ "end"      ]= Variant( _d->destCity );
-
-  VariantList vl_steps;
-
-  foreach( p, _d->steps ) { vl_steps.push_back( *p ); }
-
-  stream[ "steps"    ]= vl_steps;
+  VARIANT_SAVE_CLASS_D( stream, _d, sells )
+  VARIANT_SAVE_CLASS_D( stream, _d, buys )
+  VARIANT_SAVE_ANY_D( stream, _d, step )
+  VARIANT_SAVE_STR_D( stream, _d, baseCity )
+  VARIANT_SAVE_STR_D( stream, _d, destCity )
+  VARIANT_SAVE_CLASS_D( stream, _d, steps )
 }
 
 void Merchant::load(const VariantMap& stream)
 {
   Object::load( stream );
-  _d->sells.load( stream.get( "sells" ).toMap() );
-  _d->buys.load( stream.get( "buys" ).toMap() );
-  _d->step = stream.get( "step" ).toInt();
-  _d->baseCity = stream.get( "begin" ).toString();
-  _d->destCity = stream.get( "end" ).toString();
 
-  VariantList steps = stream.get( "steps" ).toList();
-  foreach( v, steps ) { _d->steps.push_back( v->toPoint() ); }
+  VARIANT_LOAD_CLASS_D( _d, sells, stream )
+  VARIANT_LOAD_CLASS_D( _d, buys, stream )
+  VARIANT_LOAD_ANY_D( _d, step, stream )
+  VARIANT_LOAD_STR_D( _d, baseCity, stream )
+  VARIANT_LOAD_STR_D( _d, destCity, stream )
+  VARIANT_LOAD_CLASS_D_LIST( _d, steps, stream )
 }
 
 std::string Merchant::baseCity() const{  return _d->baseCity;}
-good::Store& Merchant::sellGoods(){  return _d->sells;}
-good::Store &Merchant::buyGoods(){  return _d->buys;}
+good::Store& Merchant::sellGoods() { return _d->sells; }
+good::Store& Merchant::buyGoods() { return _d->buys; }
 
 }//end namespace world

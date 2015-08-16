@@ -21,6 +21,7 @@
 #include "game/predefinitions.hpp"
 #include "game/service.hpp"
 #include "core/variant.hpp"
+#include "config.hpp"
 
 namespace religion
 {
@@ -35,6 +36,12 @@ typedef enum
 
   romeDivCount=0xff
 } RomeDivinityType;
+
+struct RomeDinName
+{
+  RomeDivinityType type;
+  std::string name;
+};
 
 const char* const baseDivinityNames[] =
 {

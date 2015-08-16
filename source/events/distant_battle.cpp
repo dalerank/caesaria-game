@@ -21,7 +21,7 @@
 #include "world/object.hpp"
 #include "factory.hpp"
 
-using namespace constants;
+//using namespace constants;
 
 namespace events
 {

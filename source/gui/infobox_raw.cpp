@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "infobox_raw.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "image.hpp"
 #include "core/utils.hpp"
 #include "label.hpp"
@@ -26,8 +26,10 @@
 #include "infobox_factory.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
+#include "game/infoboxmanager.hpp"
+#include "dialogbox.hpp"
+#include "texturedbutton.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -36,22 +38,30 @@ namespace gui
 namespace infobox
 {
 
+REGISTER_OBJECT_BASEINFOBOX(vinard,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(wheat_farm,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(vegetable_farm,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(olive_farm,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(fig_farm,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(meat_farm,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(clay_pit,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(lumber_mill,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(quarry,AboutRawMaterial)
+REGISTER_OBJECT_BASEINFOBOX(iron_mine,AboutRawMaterial)
+
 AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : AboutConstruction( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 170, 510 - 16, 170 + 74 ) )
-{
+{  
   Widget::setupUI( ":/gui/infoboxraw.gui" );
-  FactoryPtr rawmb = ptr_cast<Factory>( tile.overlay() );
+
+  FactoryPtr rawmb = tile.overlay().as<Factory>();
   _type = rawmb->type();
 
-  setBase( ptr_cast<Construction>( rawmb ) );
+  setBase( rawmb );
   _setWorkingVisible( true );
 
-  Label* lbDamage;
-  Label* lbProgress;
-  Label* lbProductivity;
-  GET_WIDGET_FROM_UI( lbProductivity )
-  GET_WIDGET_FROM_UI( lbProgress )
-  GET_WIDGET_FROM_UI( lbDamage )
+  INIT_WIDGET_FROM_UI( Label*, lbProductivity )
+  INIT_WIDGET_FROM_UI( Label*, lbProgress )
 
   if( rawmb->produceGoodType() != good::none )
   {
@@ -60,14 +70,6 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
   }
 
   _updateWorkersLabel( Point( 32, 160 ), 542, rawmb->maximumWorkers(), rawmb->numberWorkers() );
-
-  if( lbDamage != NULL )
-  {
-    std::string text = utils::format( 0xff, "%d%% damage - %d%% fire",
-                                            (int)rawmb->state( Construction::damage ),
-                                            (int)rawmb->state( Construction::fire ) );
-    lbDamage->setText( text );
-  }
 
   if( lbProgress != NULL )
   {
@@ -85,6 +87,30 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
   if( lbProductivity != NULL )
   {
     lbProductivity->setText( _(text) );
+  }
+
+  INIT_WIDGET_FROM_UI( TexturedButton*, btnHelp )
+  if( btnHelp )
+  {
+    Rect rect = btnHelp->relativeRect();
+    rect += Point( btnHelp->width() + 5, 0 );
+    rect.rright() += 60;
+    PushButton* btn = new PushButton( this, rect, "Adv.Info", -1, false, PushButton::whiteBorderUp );
+    CONNECT( btn, onClicked(), this, AboutRawMaterial::_showAdvInfo )
+  }
+}
+
+void AboutRawMaterial::_showAdvInfo()
+{
+  FactoryPtr rawmb = base().as<Factory>();
+  if( rawmb.isValid() )
+  {
+    std::string workerState = utils::format( 0xff, "Damage=%d\nFire=%d\n",
+                                                  (int)rawmb->state( pr::damage ),
+                                                  (int)rawmb->state( pr::fire ) );
+
+    dialog::Dialog* dialog = dialog::Information( ui(), "Information", workerState );
+    dialog->setCenter( ui()->rootWidget()->center() );
   }
 }
 

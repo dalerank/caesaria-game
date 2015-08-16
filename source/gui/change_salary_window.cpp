@@ -56,22 +56,20 @@ ChangeSalary::ChangeSalary(Widget* p, unsigned int salary)
   if( lbxTitles )
   {
     world::GovernorRanks ranks = world::EmpireHelper::ranks();
-    foreach( i, ranks )
+    for( auto rank : ranks )
     {
-      std::string salaryStr = _( "##" + (*i).rankName + "_salary##" );
-      ListBoxItem& item = lbxTitles->addItem( salaryStr + "   " + utils::i2str( (*i).salary ) );
-      item.setTag( (*i).salary );
-      if( (*i).salary == salary )
+      std::string salaryStr = _( "##" + rank.rankName + "_salary##" );
+      ListBoxItem& item = lbxTitles->addItem( salaryStr + "   " + utils::i2str( rank.salary ) );
+      item.setTag( rank.salary );
+      if( rank.salary == salary )
       {
-        lbxTitles->setSelected( std::distance( ranks.begin(), i ) );
+        lbxTitles->setSelected( lbxTitles->itemCount() - 1 );
       }
     }
   }
 
-  PushButton* btnCancel;
-  PushButton* btnOk;
-  GET_WIDGET_FROM_UI( btnCancel  )
-  GET_WIDGET_FROM_UI( btnOk )
+  INIT_WIDGET_FROM_UI( PushButton*, btnCancel  )
+  INIT_WIDGET_FROM_UI( PushButton*, btnOk )
 
   CONNECT( btnCancel, onClicked(), this, ChangeSalary::deleteLater );
   CONNECT( btnOk, onClicked(), _dfunc().data(), Impl::setNewSalary );

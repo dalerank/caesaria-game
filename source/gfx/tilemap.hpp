@@ -46,8 +46,10 @@ public:
   const Tile& at( const int i, const int j ) const;
   const Tile& at( const TilePos& ij ) const;
   TilesArray allTiles() const;
-  const TilesArray& borderTiles() const;
-  void addBorder();
+  const TilesArray& border() const;
+
+  const TilesArray& svkBorderTiles() const;
+  void addSvkBorder();
 
   // returns all tiles on a rectangular perimeter
   // (i1, j1) : left corner of the rectangle (minI, minJ)
@@ -64,7 +66,7 @@ public:
     AllNeighbors
   };
 
-  TilesArray getNeighbors( TilePos pos, TileNeighbors type = AllNeighbors);
+  TilesArray getNeighbors(const TilePos& pos, TileNeighbors type = AllNeighbors);
 
   // returns all tiles in a rectangular area
   // (i1, j1) : left corner of the rectangle (minI, minJ)
@@ -81,7 +83,7 @@ public:
   void turnRight();
   void turnLeft();
 
-  constants::Direction direction() const;
+  Direction direction() const;
 
   TilePos fit( const TilePos& pos ) const;
 
@@ -93,4 +95,4 @@ private:
 };
 
 }//end namespace gfx
-#endif //__OPENCAESAR3_TILEMAP_H_INCLUDED__
+#endif //__CAESARIA_TILEMAP_H_INCLUDED__

@@ -20,8 +20,6 @@
 #include "corpse.hpp"
 #include "game/resourcegroup.hpp"
 
-using namespace constants;
-
 Ship::Ship(PlayerCityPtr city )
   : Walker( city )
 {

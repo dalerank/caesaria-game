@@ -19,7 +19,7 @@
 #include "objects/house.hpp"
 #include "pathway/path_finding.hpp"
 #include "constants.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "objects/house_level.hpp"
 #include "objects/constants.hpp"
 #include "core/foreach.hpp"
@@ -34,7 +34,6 @@
 #include "game/gamedate.hpp"
 #include "walkers_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::mugger, Mugger)
@@ -62,9 +61,9 @@ void Mugger::_reachedPathway()
   switch( _d->state )
   {
   case Impl::go2destination:
-    _animationRef().clear();
-    _animationRef().load( ResourceGroup::citizen2, 455, 8 );
-    _animationRef().load( ResourceGroup::citizen2, 462, 8, Animation::reverse );
+    _animation().clear();
+    _animation().load( ResourceGroup::citizen2, 455, 8 );
+    _animation().load( ResourceGroup::citizen2, 462, 8, Animation::reverse );
     _setAction( acWork );
     _d->state = Impl::robHouse;
   break;
@@ -89,15 +88,15 @@ void Mugger::timeStep(const unsigned long time)
   {
   case Impl::searchHouse:
   {
-    city::Helper helper( _city() );
     TilePos offset(10, 10);
 
-    HouseList houses = helper.find<House>( objects::house, pos() - offset, pos() + offset );
+    HouseList houses = _city()->statistic().objects.find<House>( object::house, pos() - offset, pos() + offset );
+
     std::map< int, HouseList > houseEpxens;
-    foreach( it, houses )
+    for( auto house : houses )
     {
-      int money = (*it)->getServiceValue( Service::forum );
-      houseEpxens[ money ] << *it;
+      int money = house->getServiceValue( Service::forum );
+      houseEpxens[ money ] << house;
     }
 
     for( std::map< int, HouseList >::reverse_iterator expHList = houseEpxens.rbegin();
@@ -105,9 +104,9 @@ void Mugger::timeStep(const unsigned long time)
     {
       HouseList& hlist = expHList->second;
 
-      foreach( hIt, hlist )
+      for( auto house : hlist )
       {
-        Pathway pathway = PathwayHelper::create( pos(), ptr_cast<Construction>( *hIt ), PathwayHelper::allTerrain );
+        Pathway pathway = PathwayHelper::create( pos(), house, PathwayHelper::allTerrain );
 
         //find path to most expensive house, fire this!!!
         if( pathway.isValid() )
@@ -151,20 +150,21 @@ void Mugger::timeStep(const unsigned long time)
   {
     if( game::Date::isDayChanged() )
     {
-      city::Helper helper( _city() );
-      HouseList houses = helper.find<House>( objects::house, pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
+      HouseList houses = _city()->statistic().objects.find<House>( object::house,
+                                                                   pos() - TilePos( 1, 1),
+                                                                   pos() + TilePos( 1, 1) );
 
-      foreach( it, houses )
+      for( auto house : houses )
       {
-        int money = (*it)->getServiceValue( Service::forum );
+        int money = house->getServiceValue( Service::forum );
         if( money > 1 )
         {
-          (*it)->appendServiceValue( Service::forum, -1.f );
+          house->appendServiceValue( Service::forum, -1.f );
           break;
         }
       }
 
-      _animationRef().clear();
+      _animation().clear();
       _setAction( acMove );
       _d->state = Impl::searchHouse;
     }
@@ -192,11 +192,7 @@ void Mugger::send2City( HousePtr house )
 
   setPos( tiles.random()->pos() );
   _d->state = Impl::searchHouse;
-
-  if( !isDeleted() )
-  {
-    _city()->addWalker( WalkerPtr( this ));
-  }
+  attach();
 }
 
 bool Mugger::die()
@@ -216,14 +212,14 @@ void Mugger::save(VariantMap& stream) const
 {
   Walker::save( stream );
 
-  stream[ "state" ] = (int)_d->state;
+  VARIANT_SAVE_ENUM_D( stream, _d, state )
 }
 
 void Mugger::load(const VariantMap& stream)
 {
   Walker::load( stream );
 
-  _d->state = (Impl::State)stream.get( "state" ).toInt();
+  VARIANT_LOAD_ENUM_D( _d, state, stream )
 }
 
 int Mugger::agressive() const { return 1; }

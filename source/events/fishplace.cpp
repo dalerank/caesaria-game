@@ -25,25 +25,21 @@
 #include "core/priorities.hpp"
 #include "core/logger.hpp"
 #include "city/cityservice_fishplace.hpp"
-
-using namespace constants;
+#include "city/statistic.hpp"
 
 namespace events
 {
 
-namespace {
-}
-
-class FishPlaceEvent::Impl
+class ChangeFishery::Impl
 {
 public:
   TilePos location;
-  FishPlaceEvent::Mode mode;
+  ChangeFishery::Mode mode;
 };
 
-GameEventPtr FishPlaceEvent::create( TilePos pos, Mode mode )
+GameEventPtr ChangeFishery::create( TilePos pos, Mode mode )
 {
-  FishPlaceEvent* fp = new FishPlaceEvent();
+  ChangeFishery* fp = new ChangeFishery();
   fp->_d->location = pos;
   fp->_d->mode = mode;
 
@@ -53,29 +49,29 @@ GameEventPtr FishPlaceEvent::create( TilePos pos, Mode mode )
   return ret;
 }
 
-void FishPlaceEvent::_exec( Game& game, unsigned int time)
+void ChangeFishery::_exec( Game& game, unsigned int time)
 {
-  city::FisheryPtr fishery;
-  fishery << game.city()->findService( city::Fishery::defaultName() );
+  city::FisheryPtr fishery = game.city()->statistic().services.find<city::Fishery>();
+
   if( fishery.isValid() )
   {
     switch( _d->mode )
     {
-    case FishPlaceEvent::add: fishery->addLocation( _d->location ); break;
+    case ChangeFishery::add: fishery->addLocation( _d->location ); break;
 
-    case FishPlaceEvent::unknown:
-    case FishPlaceEvent::remove:
+    case ChangeFishery::unknown:
+    case ChangeFishery::remove:
       break;
     }
   }
 }
 
-bool FishPlaceEvent::_mayExec(Game&, unsigned int) const { return true; }
+bool ChangeFishery::_mayExec(Game&, unsigned int) const { return true; }
 
-void FishPlaceEvent::load(const VariantMap& stream) {}
-VariantMap FishPlaceEvent::save() const{ return VariantMap(); }
+void ChangeFishery::load(const VariantMap& stream) {}
+VariantMap ChangeFishery::save() const{ return VariantMap(); }
 
-FishPlaceEvent::FishPlaceEvent() : _d( new Impl )
+ChangeFishery::ChangeFishery() : _d( new Impl )
 {
 }
 

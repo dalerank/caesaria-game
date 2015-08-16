@@ -15,21 +15,25 @@
 
 #include "event_messagebox.hpp"
 #include "label.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "game/datetimehelper.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
 {
 
-EventMessageBox::EventMessageBox(Widget* parent, const std::string& title,
+namespace infobox
+{
+
+AboutEvent::AboutEvent(Widget* parent, const std::string& title,
                                   const std::string& message, DateTime time, good::Product gtype, const std::string& additional)
-  : Simple( parent, Rect( 0, 0, 480, 320 ), Rect( 18, 40, 480 - 18, 320 - 50 ) )
+  : Infobox( parent, Rect( 0, 0, 480, 320 ), Rect( 18, 40, 480 - 18, 320 - 50 ) )
 {
   setTitle( title );
   setAutoPosition( false );
+  setModal();
+  setWindowFlag( fdraggable, false );
 
   setCenter( parent->center() );
 
@@ -38,9 +42,9 @@ EventMessageBox::EventMessageBox(Widget* parent, const std::string& title,
   _lbTextRef()->setText( message );
 
   Rect rect = _lbTextRef()->relativeRect();
-  rect.LowerRightCorner = Point( rect.width() / 2, rect.top() + 30 );
+  rect._bottomright = Point( rect.width() / 2, rect.top() + 30 );
 
-  Label* lbTime = new Label( this, rect, util::date2str( time ) );
+  Label* lbTime = new Label( this, rect, utils::date2str( time, true ) );
   lbTime->setFont( Font::create( FONT_2_WHITE ) );
 
   if( !additional.empty() )
@@ -57,8 +61,9 @@ EventMessageBox::EventMessageBox(Widget* parent, const std::string& title,
     Rect rect = _lbTextRef()->relativeRect();
     _lbTextRef()->move( Point( 0, 30 ) );
 
-    rect.LowerRightCorner.setY( rect.top() + 30 );
-    rect.UpperLeftCorner.setX( rect.left() + 40 );
+    rect.setBottom( rect.top() + 30 );
+    rect.setLeft( rect.left() + 40 );
+
     Label* goodLabel = new Label( this, rect, good::Helper::getTypeName( gtype ) );
     goodLabel->setTextAlignment( align::upperLeft, align::center );
     goodLabel->setTextOffset( Point( 30, 0 ) );
@@ -66,6 +71,8 @@ EventMessageBox::EventMessageBox(Widget* parent, const std::string& title,
   }    
 }
 
-EventMessageBox::~EventMessageBox() {}
+AboutEvent::~AboutEvent() {}
+
+}//end namespace infobox
 
 }//end namespace gui

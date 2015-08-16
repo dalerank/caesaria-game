@@ -19,24 +19,93 @@
 #define __CAESARIA_SERVICEWALKER_H_INCLUDED__
 
 #include "human.hpp"
+#include "gfx/tile.hpp"
+#include "game/service.hpp"
 #include "pathway/predefinitions.hpp"
+#include "objects/overlay.hpp"
 #include "walkers_factory_creator.hpp"
 
 /** This walker gives a service to buildings along the road */
+template<class T>
+class UqBuildings : public std::set<SmartPtr<T>>
+{
+public:
+  void addIfValid( SmartPtr<T> building )
+  {
+    if( building.isValid() )
+      this->insert( building );
+  }
+
+  template<class Dst>
+  UqBuildings<Dst> select() const
+  {
+    UqBuildings<Dst> ret;
+    for( auto i : *this )
+      ret.addIfValid( ptr_cast<Dst>( i ) );
+
+    return ret;
+  }
+
+  template<class Dst>
+  bool contain() const
+  {
+    for( auto i : *this )
+      if( is_kind_of<Dst>( i ) )
+        return true;
+
+    return false;
+  }
+
+  template<class Dst>
+  bool firstOf() const
+  {
+    for( auto i : *this )
+    {
+      SmartPtr<Dst> ret = ptr_cast<Dst>( i );
+      if( ret.isValid() )
+        return ret;
+    }
+
+    return SmartPtr<Dst>();
+  }
+};
+
+class ReachedBuildings : public UqBuildings<Building>
+{
+public:
+  bool contain( object::Type type ) const;
+  BuildingPtr firstOf( object::Type type ) const;
+
+  void cancelService( Service::Type service );
+
+  template<class Dst>
+  bool firstOf( object::Type type ) const
+  {
+    BuildingPtr ret = firstOf( type );
+    return ptr_cast<Dst>( ret );
+  }
+};
+
 class ServiceWalker : public Human
 {
 public:
-  typedef enum { goLowerService=0x1, anywayWhenFailed=0x2, enterLastHouse=0x4 } Order;
-  typedef std::set<BuildingPtr> ReachedBuildings;
+  typedef enum { noOrders=0, goServiceMaximum=0x1, anywayWhenFailed=0x2, enterLastHouse=0x4, goServiceMinimum=0x8 } Order;
 
   static ServiceWalkerPtr create( PlayerCityPtr city, const Service::Type service );
 
   Service::Type serviceType() const;
-  BuildingPtr base() const;
+  const TilePos& baseLocation() const;
 
   void setBase( BuildingPtr base );
+  BuildingPtr base() const;
 
-  virtual void send2City( BuildingPtr base, int orders=goLowerService );
+  template<class T>
+  void setBase( SmartPtr<T> base )
+  {
+    setBase( ptr_cast<Building>( base ) );
+  }
+
+  virtual void send2City( BuildingPtr base, int orders=goServiceMaximum );
   virtual float serviceValue() const;
   virtual TilePos places(Place type) const;
 
@@ -74,7 +143,7 @@ protected:
   void _updatePathway(const Pathway& pathway);
   void _updatePathway(PathwayPtr pathway);
   void _cancelPath();
-  void _addObsoleteOverlay( gfx::TileOverlay::Type type );
+  void _addObsoleteOverlay( object::Type type );
 
 private:
   class Impl;

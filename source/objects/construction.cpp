@@ -22,60 +22,131 @@
 #include "gfx/tilemap.hpp"
 #include "city/city.hpp"
 #include "events/disaster.hpp"
+#include "core/variant_list.hpp"
 #include "core/logger.hpp"
 #include "core/foreach.hpp"
 #include "core/utils.hpp"
 #include "extension.hpp"
+#include "gfx/tilearea.hpp"
 #include "core/json.hpp"
+#include "core/flowlist.hpp"
+#include "core/common.hpp"
 
 using namespace gfx;
+using namespace events;
+
+class Params : public std::map<Param, double>
+{
+public:
+  VariantList save() const
+  {
+    VariantList ret;
+    for( auto item : *this )
+      ret.push_back( VariantList( item.first, item.second ) );
+
+    return ret;
+  }
+
+  void load( const VariantList& stream )
+  {
+    for( auto item : stream )
+    {
+      const VariantList& vl = item.toList();
+      Param param = (Param)vl.get( 0 ).toInt();
+      double value = vl.get( 1, 0.f ).toDouble();
+      (*this)[ param ] = value;
+    }
+  }
+};
+
+class Extensions : public FlowList<ConstructionExtension>
+{
+public:
+  VariantMap save() const
+  {
+    VariantMap ret;
+    int extIndex = 0;
+    for( auto ext : *this )
+    {
+      VariantMap vmExt;
+      ext->save( vmExt );
+      ret[ utils::i2str( extIndex++ ) ] = vmExt;
+    }
+
+    return ret;
+  }
+
+  void load( const VariantMap& stream )
+  {
+    for( auto item : stream )
+    {
+      ConstructionExtensionPtr extension = ExtensionsFactory::instance().create( item.second.toMap() );
+      if( extension.isValid() )
+      {
+        this->push_back( extension );
+      }
+      else
+      {
+        Logger::warning( "Construction: cant load extension from " + Json::serialize( item.second, " " ) );
+      }
+    }
+  }
+};
 
 class Construction::Impl
 {
 public:
-  typedef std::map<int, double> Params;
   TilesArray accessRoads;
-  Params params;
-
-  ConstructionExtensionList newExtensions;
-  ConstructionExtensionList extensions;
+  Params states;
+  Extensions extensions;
 };
 
-Construction::Construction(const Type type, const Size& size)
-  : TileOverlay( type, size ), _d( new Impl )
+Construction::Construction(const object::Type type, const Size& size)
+  : Overlay( type, size ), _d( new Impl )
 {
-  _d->params[ fire ] = 0;
-  _d->params[ damage ] = 0;
+  _d->states[ pr::fire ] = 0;
+  _d->states[ pr::damage ] = 0;
 }
 
-bool Construction::canBuild(const CityAreaInfo& areaInfo) const
+TilesArray& Construction::_roadside() { return _d->accessRoads; }
+
+void Construction::_checkDestroyState()
+{
+  if( state( pr::damage ) >= 100 )
+  {
+    collapse();
+  }
+  else if( state( pr::fire ) >= 100 )
+  {
+    burn();
+  }
+}
+
+bool Construction::canBuild(const city::AreaInfo& areaInfo) const
 {
   Tilemap& tilemap = areaInfo.city->tilemap();
 
-  bool is_constructible = true;
-
   //return area for available tiles
-  TilesArray area = tilemap.getArea( areaInfo.pos, size() );
+  TilesArea area( tilemap, areaInfo.pos, size() );
+  area = area.select( Tile::isConstructible );
 
   //on over map size
   if( (int)area.size() != size().area() )
-    return false;
+    return false;  
 
-  foreach( tile, area ) {is_constructible &= (*tile)->getFlag( Tile::isConstructible );}
-
-  return is_constructible;
+  return true;
 }
 
 std::string Construction::troubleDesc() const
 {
-  if( isNeedRoadAccess() && getAccessRoads().empty() )
+  if( isNeedRoad() && roadside().empty() )
   {
     return "##trouble_need_road_access##";
   }
 
   int lvlTrouble = 0;
-  int damage = state( Construction::fire );
-  int fire = state( Construction::damage );
+  int damage = state( pr::damage );
+  int fire = state( pr::fire );
 
   if( fire > 50 || damage > 50 )
   {
@@ -88,30 +159,28 @@ std::string Construction::troubleDesc() const
   return "";
 }
 
-std::string Construction::errorDesc() const { return ""; }
-TilesArray Construction::getAccessRoads() const { return _d->accessRoads; }
-bool Construction::canDestroy() const { return true; }
-void Construction::destroy() { TileOverlay::destroy(); }
-bool Construction::isNeedRoadAccess() const{ return true; }
+TilesArray Construction::roadside() const { return _d->accessRoads; }
+void Construction::destroy() { Overlay::destroy(); }
+bool Construction::isNeedRoad() const{ return true; }
 Construction::~Construction() {}
 
-bool Construction::build( const CityAreaInfo& info )
+bool Construction::build( const city::AreaInfo& info )
 {
-  TileOverlay::build( info );
+  Overlay::build( info );
 
   std::string name =  utils::format( 0xff, "%s_%d_%d",
-                                            MetaDataHolder::findTypename( type() ).c_str(),
-                                            info.pos.i(), info.pos.j() );
+                                     object::toString( type() ).c_str(),
+                                     info.pos.i(), info.pos.j() );
   setName( name );
 
-  computeAccessRoads();
+  computeRoadside();
   return true;
 }
 
 // here the problem lays: if we remove road, it is left in _accessRoads array
 // also we need to recompute _accessRoads if we place new road tile
 // on next to this road tile buildings
-void Construction::computeAccessRoads()
+void Construction::computeRoadside()
 {
   _d->accessRoads.clear();
   if( !_masterTile() )
@@ -120,28 +189,23 @@ void Construction::computeAccessRoads()
   Tilemap& tilemap = _city()->tilemap();
 
   int s = size().width();
-  for( int dst=1; dst <= roadAccessDistance(); dst++ )
+  for( int dst=1; dst <= roadsideDistance(); dst++ )
   {
-    TilesArray rect = tilemap.getRectangle( pos() + TilePos( -dst, -dst ),
-                                            pos() + TilePos( s+dst-1, s+dst-1 ),
-                                            !Tilemap::checkCorners );
-    foreach( tile, rect )
-    {
-      if( (*tile)->getFlag( Tile::tlRoad ) )
-      {
-        _d->accessRoads.push_back( *tile );
-      }
-    }
+    TilesArray tiles = tilemap.getRectangle( pos() + TilePos( -dst, -dst ),
+                                             pos() + TilePos( s+dst-1, s+dst-1 ),
+                                             !Tilemap::checkCorners );
+
+    _d->accessRoads.append( tiles.select( Tile::tlRoad ) );
   }
 }
 
-int Construction::roadAccessDistance() const{  return 1; }
+int Construction::roadsideDistance() const{ return 1; }
 
 void Construction::burn()
 {
   deleteLater();
 
-  events::GameEventPtr event = events::Disaster::create( tile(), events::Disaster::fire );
+  GameEventPtr event = Disaster::create( tile(), Disaster::fire );
   event->dispatch();
 
   Logger::warning( "Construction catch fire at %d,%d!", pos().i(), pos().j() );
@@ -154,77 +218,55 @@ void Construction::collapse()
 
   deleteLater();
 
-  events::GameEventPtr event = events::Disaster::create( tile(), events::Disaster::collapse );
+  GameEventPtr event = Disaster::create( tile(), Disaster::collapse );
   event->dispatch();
 
   Logger::warning( "Construction collapsed at %d,%d!", pos().i(), pos().j() );
 }
 
-const Picture& Construction::picture() const { return TileOverlay::picture(); }
+const Picture& Construction::picture() const { return Overlay::picture(); }
 
-void Construction::setState( ParameterType param, double value)
+void Construction::setState( Param param, double value)
 {
-  _d->params[ param ] = math::clamp<double>( value, 0.f, 100.f );
+  _d->states[ param ] = math::clamp<double>( value, 0.f, 100.f );
+
+  if( param == pr::damage || param == pr::fire )
+  {
+    _checkDestroyState();
+  }
 }
 
-void Construction::updateState(Construction::ParameterType name, double value)
+void Construction::updateState( Param name, double value)
 {
   setState( name, state( name ) + value );
 }
 
 void Construction::save( VariantMap& stream) const
 {
-  TileOverlay::save( stream );
-  VariantList vl_states;
-  foreach( it, _d->params )
-  {
-    vl_states.push_back( VariantList() << (int)it->first << (double)it->second );
-  }
-
-  VariantMap vm_extensions;
-  int extIndex = 0;
-  foreach( it, _d->extensions )
-  {
-    VariantMap vmExt;
-    (*it)->save( vmExt );
-    vm_extensions[ utils::i2str( extIndex++ ) ] = vmExt;
-  }
-
-  stream[ "extensions" ] = vm_extensions;
-  stream[ "states" ] = vl_states;
+  Overlay::save( stream );
+  VARIANT_SAVE_CLASS_D( stream, _d, extensions )
+  VARIANT_SAVE_CLASS_D( stream, _d, states )
 }
 
 void Construction::load( const VariantMap& stream )
 {
-  TileOverlay::load( stream );
-  VariantList vl_states = stream.get( "states" ).toList();
-  foreach( it, vl_states )
-  {
-    const VariantList& param = it->toList();
-    _d->params[ (Construction::Param)param.get( 0 ).toInt() ] = param.get( 1, 0.f ).toDouble();
-  }
-
-  VariantMap vm_extensions = stream.get( "extensions" ).toMap();
-  foreach( it, vm_extensions )
-  {
-    ConstructionExtensionPtr extension = ExtensionsFactory::instance().create( it->second.toMap() );
-    if( extension.isValid() )
-    {
-      addExtension( extension );
-    }
-    else
-    {
-      Logger::warning( "Construction: cant load extension from " + Json::serialize( it->second, " " ) );
-    }
-  }
+  Overlay::load( stream );
+  VARIANT_LOAD_CLASS_D_LIST( _d, states, stream )
+  VARIANT_LOAD_CLASS_D( _d, extensions, stream )
 }
 
-void Construction::addExtension(ConstructionExtensionPtr ext) {  _d->newExtensions.push_back( ext ); }
-const ConstructionExtensionList&Construction::extensions() const { return _d->extensions; }
+void Construction::addExtension(ConstructionExtensionPtr ext) { _d->extensions.postpone( ext ); }
+
+ConstructionExtensionPtr Construction::getExtension(const std::string& name)
+{
+  return utils::findByName( _d->extensions, name );
+}
+
+const ConstructionExtensionList& Construction::extensions() const { return _d->extensions; }
 
 void Construction::initialize(const MetaData& mdata)
 {
-  TileOverlay::initialize( mdata );
+  Overlay::initialize( mdata );
 
   VariantMap anMap = mdata.getOption( "animation" ).toMap();
   if( !anMap.empty() )
@@ -247,49 +289,32 @@ void Construction::initialize(const MetaData& mdata)
   }
 }
 
-double Construction::state( ParameterType param) const { return _d->params[ param ]; }
+double Construction::state(Param param) const { return _d->states[ param ]; }
 
 TilesArray Construction::enterArea() const
 {
   int s = size().width();
   TilesArray near = _city()->tilemap().getRectangle( pos() - TilePos(1, 1),
-                                                                  pos() + TilePos(s, s),
-                                                                  !Tilemap::checkCorners );  
+                                                     pos() + TilePos(s, s),
+                                                     !Tilemap::checkCorners );
 
-  return near.walkableTiles( true );
+  return near.walkables( true );
 }
 
 void Construction::timeStep(const unsigned long time)
-{
-  if( state( Construction::damage ) >= 100 )
-  {    
-    collapse();
-  }
-  else if( state( Construction::fire ) >= 100 )
-  {
-    burn();
-  }
+{  
+  for( auto ext : _d->extensions )
+    ext->timeStep( this, time );
 
-  for( ConstructionExtensionList::iterator it=_d->extensions.begin();
-       it != _d->extensions.end(); )
-  {
-    (*it)->timeStep( this, time );
+  utils::eraseIfDeleted( _d->extensions );
 
-    if( (*it)->isDeleted() ) { it = _d->extensions.erase( it ); }
-    else { ++it; }
-  }
+  _d->extensions.merge();
 
-  if( !_d->newExtensions.empty() )
-  {
-    _d->extensions << _d->newExtensions;
-    _d->newExtensions.clear();
-  }
-
-  TileOverlay::timeStep( time );
+  Overlay::timeStep( time );
 }
 
-const Picture& Construction::picture(const CityAreaInfo& areaInfo) const
+const Picture& Construction::picture(const city::AreaInfo& areaInfo) const
 {
-  return TileOverlay::picture();
+  return Overlay::picture();
 }
 

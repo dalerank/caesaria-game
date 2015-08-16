@@ -23,6 +23,7 @@
 #include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
 #include "game/settings.hpp"
+#include "core/variant_list.hpp"
 #include "gfx/loader.hpp"
 
 using namespace vfs;
@@ -47,13 +48,13 @@ ResourceLoader::~ResourceLoader(){  }
 void ResourceLoader::loadFromModel( Path path2model, const Directory dir )
 {
   VariantMap archives = config::load( path2model );
-  foreach( a, archives )
+  for( auto entry : archives )
   {
-    Path absArchivePath( a->second.toString() );
+    Path absArchivePath( entry.second.toString() );
 
     if( !absArchivePath.exist() )
     {
-      Path rpath = a->second.toString();
+      Path rpath = entry.second.toString();
       absArchivePath = dir/rpath;
     }
     Logger::warning( "ResourceLoader: try mount archive " + absArchivePath.toString() );
@@ -65,7 +66,7 @@ void ResourceLoader::loadFromModel( Path path2model, const Directory dir )
 
     if( archive.isValid() )
     {
-      emit _d->onStartLoadingSignal( a->first );
+      emit _d->onStartLoadingSignal( entry.first );
 
       NFile archiveInfo = archive->createAndOpenFile( archiveDescFile );
       loadAtlases( archiveInfo, true );
@@ -85,16 +86,16 @@ void ResourceLoader::loadAtlases(vfs::NFile archiveInfo, bool lazy)
   {
     VariantMap vm = config::load( archiveInfo );
 
-    VariantList atlasNames = vm.get( atlasListSection ).toList();
-    foreach( it, atlasNames )
+    StringArray atlasNames = vm.get( atlasListSection ).toStringArray();
+    for( auto name : atlasNames )
     {
       if( lazy )
       {        
-        gfx::PictureBank::instance().addAtlas( it->toString() );
+        gfx::PictureBank::instance().addAtlas( name );
       }
       else
       {
-        gfx::PictureBank::instance().loadAtlas( it->toString() );
+        gfx::PictureBank::instance().loadAtlas( name );
       }
     }
   }
@@ -115,15 +116,17 @@ void ResourceLoader::loadFiles(ArchivePtr archive)
   const vfs::Entries::Items& files = archive->entries()->items();
   gfx::PictureBank& pb = gfx::PictureBank::instance();
 
-  foreach( it, files )
+  std::string basename;
+  basename.reserve( 256 );
+  for( auto entry : files )
   {
-    NFile file = archive->createAndOpenFile( it->name );
+    NFile file = archive->createAndOpenFile( entry.name );
     if( file.isOpen() )
     {
       gfx::Picture pic = PictureLoader::instance().load( file );
       if( pic.isValid() )
       {
-        std::string basename = it->name.baseName().toString();
+        basename = entry.name.baseName().toString();
         pb.setPicture( basename, pic );
       }
     }

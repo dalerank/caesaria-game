@@ -18,19 +18,18 @@
 #ifndef _CAESARIA_HOTKEY_MANAGER_INCLUDE_H_
 #define _CAESARIA_HOTKEY_MANAGER_INCLUDE_H_
 
-#include <string>
 #include "vfs/path.hpp"
 #include "core/signals.hpp"
 #include "core/variant.hpp"
+#include "core/singleton.hpp"
 
 namespace game
 {
 
-class HotkeyManager
+class HotkeyManager : public StaticSingleton<HotkeyManager>
 {
+  friend class StaticSingleton;
 public:
-  static HotkeyManager& instance();
-
   void load( vfs::Path file );
   void execute( int keyCode );
 
@@ -39,6 +38,7 @@ public signals:
 
 private:
   HotkeyManager();
+  ~HotkeyManager();
 
   class Impl;
   ScopedPtr<Impl> _d;

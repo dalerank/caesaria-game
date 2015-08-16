@@ -24,21 +24,21 @@ class SmallStatue : public Building
 {
 public:
   SmallStatue();
-  bool isNeedRoadAccess() const;
+  bool isNeedRoad() const;
 };
 
 class MediumStatue : public Building
 {
 public:
   MediumStatue();
-  bool isNeedRoadAccess() const;
+  bool isNeedRoad() const;
 };
 
 class BigStatue : public Building
 {
 public:
   BigStatue();
-  bool isNeedRoadAccess() const;
+  bool isNeedRoad() const;
 };
 
 class TriumphalArch : public Building

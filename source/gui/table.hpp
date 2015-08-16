@@ -1,7 +1,8 @@
-#ifndef __CAESRAIA_TABLE_INCLUDE__
+#ifndef __CAESARIA_TABLE_INCLUDE__
 #define __CAESARIA_TABLE_INCLUDE__
 
 #include "widget.hpp"
+#include "core/signals.hpp"
 
 namespace gui
 {
@@ -67,6 +68,8 @@ const std::string TableOrderingModeNames[] =
   ""
 };
 
+class Cell;
+
 class Table : public Widget
 {
 public:
@@ -77,6 +80,7 @@ public:
 		drawActiveRow = (1 << 2),
 		drawRowBackground = (1 << 3),
 		drawBorder = ( 1 << 4 ),
+    drawActiveCell = ( 1 << 5 ),
 		drawCount
 	} DrawFlag;
 	//! constructor
@@ -85,7 +89,7 @@ public:
 			 bool drawBack=false, bool moveOverSelect=true);
 
 	//! destructor
-	~Table();
+  virtual ~Table();
 
 	//! Adds a column
 	//! If columnIndex is outside the current range, do push new colum at the end
@@ -95,7 +99,7 @@ public:
 	virtual void removeColumn(unsigned int columnIndex);
 
 	//! Returns the number of columns in the table control
-	virtual int getColumnCount() const;
+	virtual int columnCount() const;
 
 	//! Makes a column active. This will trigger an ordering process.
 	/** \param idx: The id of the column to make active.
@@ -103,7 +107,7 @@ public:
 	virtual bool setActiveColumn(int columnIndex, bool doOrder=false);
 
 	//! Returns which header is currently active
-	virtual int getActiveColumn() const;
+  virtual int activeColumn() const;
 
 	//! Returns the ordering used by the currently active column
 	virtual TableRowOrderingMode getActiveColumnOrdering() const;
@@ -111,8 +115,8 @@ public:
 	//! set a column width
 	virtual void setColumnWidth(unsigned int columnIndex, unsigned int width);
 
-    //! returns column width
-    virtual unsigned int getColumnWidth(unsigned int columnIndex) const;
+  //! returns column width
+  virtual unsigned int columnWidth(unsigned int columnIndex) const;
 
 	//! columns can be resized by drag 'n drop
 	virtual void setResizableColumns(bool resizable);
@@ -128,17 +132,17 @@ public:
 	virtual void setColumnOrdering(unsigned int columnIndex, TableColumnOrderingMode mode);
 
 	//! Returns which row is currently selected
-	virtual int getSelected() const;
+  virtual int selectedRow() const;
 
 	//! set wich row is currently selected
-	virtual void setSelected( int index );
+  virtual void setSelectedRow( int index );
 
-		virtual ScrollBar* getVerticalScrolBar();
+  virtual ScrollBar* getVerticalScrolBar();
 
-		virtual int getSelectedColumn() const;
+  virtual int selectedColumn() const;
 
 	//! Returns amount of rows in the tabcontrol
-	virtual int getRowCount() const;
+	virtual int rowCount() const;
 
 	//! adds a row to the table
 	/** \param rowIndex: zero based index of rows. The row will be
@@ -166,34 +170,33 @@ public:
 	//! \param columnIndex: When set to -1 the active column is used.
 	virtual void orderRows(int columnIndex=-1, TableRowOrderingMode mode=rowOrderingNone);
 
-
 	//! Set the text of a cell
-	virtual void setCellText(unsigned int rowIndex, unsigned int columnIndex, const std::string& text);
+  virtual void setCellText(unsigned int row, unsigned int column, const std::string& text);
+
+  //! Set the text of a cell, and set a color of this cell.
+  virtual void setCellText(unsigned int row, unsigned int column, const std::string& text, NColor color);
 
   //! Set element of a cell
-  virtual void setCellElement(unsigned int rowIndex, unsigned int columnIndex, Widget* elm );
+  virtual void addElementToCell(unsigned int row, unsigned int column, Widget* elm );
 
   //! Remove element from cell
-  virtual void removeCellElement(unsigned int rowIndex, unsigned int columnIndex);
+  virtual void removeElementFromCell(unsigned int row, unsigned int column);
 
   //! Get element from cell
-  virtual Widget* getCellElement(unsigned int rowIndex, unsigned int columnIndex) const;
-
-	//! Set the text of a cell, and set a color of this cell.
-	virtual void setCellText(unsigned int rowIndex, unsigned int columnIndex, const std::string& text, NColor color);
+  virtual Widget* element(unsigned int row, unsigned int column) const;
 
 	//! Set the data of a cell
 	//! data will not be serialized.
-	virtual void setCellData(unsigned int rowIndex, unsigned int columnIndex, void *data);
+  virtual void setCellData(unsigned int row, unsigned int column, const std::string& name, Variant data );
 
 	//! Set the color of a cell text
-	virtual void setCellTextColor(unsigned int rowIndex, unsigned int columnIndex, NColor color);
+  virtual void setCellTextColor(unsigned int row, unsigned int column, NColor color);
 
 	//! Get the text of a cell
-	virtual std::string getCellText(unsigned int rowIndex, unsigned int columnIndex ) const;
+  virtual std::string getCellText(unsigned int row, unsigned int column ) const;
 
 	//! Get the data of a cell
-	virtual void* getCellData(unsigned int rowIndex, unsigned int columnIndex ) const;
+  virtual Variant getCellData(unsigned int row, unsigned int column, const std::string& name ) const;
 
 	//! clears the table, deletes all items in the table
 	virtual void clear();
@@ -214,48 +217,56 @@ public:
 	virtual bool isFlag( DrawFlag flag ) const;
 
 	//!
-	virtual void setItemHeight( int height );
+	virtual void setRowHeight( int height );
 
   //!
   virtual void beforeDraw( gfx::Engine& painter );
 
   virtual void removeChild(Widget* child);
 
+  virtual void setItemFont( Font font );
+
+public signals:
+  Signal2<int,int>& onCellSelected();
+  Signal2<int,int>& onCellClicked();
+
 protected:
 	virtual void refreshControls();
-	virtual void recalculateScrollBars_();
+  virtual void _recalculateScrollBars();
 
 private:
-	void selectNew( int xpos, int ypos, bool lmb, bool onlyHover=false);
-	bool selectColumnHeader(int xpos, int ypos);
-	bool dragColumnStart(int xpos, int ypos);
-	bool dragColumnUpdate(int xpos);
-	void recalculateHeights();
-	void recalculateColumnsWidth_();
+  void _selectNew( int xpos, int ypos, bool lmb, bool onlyHover=false);
+  bool _selectColumnHeader(int xpos, int ypos);
+  bool _dragColumnStart(int xpos, int ypos);
+  bool _dragColumnUpdate(int xpos);
+  void _recalculateHeights();
+  void _recalculateColumnsWidth();
+  Cell* _getCell(unsigned int row, unsigned int column) const;
+  void _getCellUnderMouse(int xpos, int ypos, int& column, int &row);
 
-  int getCurrentColumn_( int xpos, int ypos );
-  void recalculateCells_();
-  Font font_;
-  bool Clip;
-  bool MoveOverSelect;
-  bool Selecting;
-  int  CurrentResizedColumn;
-  int  ResizeStart;
-  bool ResizableColumns;
+  int _getCurrentColumn( int xpos, int ypos );
+  void _recalculateCells();
+  Font _font;
+  bool _clip;
+  int _lastColumnIndex, _lastRowIndex;
+  bool _moveOverSelect;
+  bool _selecting;
+  int  _currentResizedColumn;
+  int  _resizeStart;
+  bool _resizableColumns;
   std::string _headerStyle;
 
-	int ItemHeight;
-	int overItemHeight_;
-	int TotalItemHeight;
-	int TotalItemWidth;
+  int _overItemHeight;
+  int _totalItemHeight;
+  int _totalItemWidth;
 	int _selectedRow, _selectedColumn;
-	int CellHeightPadding;
-	int CellWidthPadding;
-	int ActiveTab;
-	TableRowOrderingMode CurrentOrdering;
+  int _cellHeightPadding;
+  int _cellWidthPadding;
+  int _activeTab;
+  TableRowOrderingMode _currentOrdering;
 
 	class Impl;
-	Impl* _d;
+  ScopedPtr<Impl> _d;
 };
 
 } //end namespace gui

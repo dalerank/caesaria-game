@@ -24,24 +24,21 @@
 #include "core/priorities.hpp"
 #include "core/variant_map.hpp"
 #include "core/logger.hpp"
+#include "city/statistic.hpp"
+#include "city/states.hpp"
 #include "factory.hpp"
 
-using namespace constants;
+using namespace city;
 
 namespace events
 {
-
-namespace {
-CAESARIA_LITERALCONST(population)
-CAESARIA_LITERALCONST(strong)
-}
 
 REGISTER_EVENT_IN_FACTORY(RandomPlague, "random_plague")
 
 class RandomPlague::Impl
 {
 public:
-  int minPopulation, maxPopulation;
+  Ranged::Range popRange;
   bool isDeleted;
   int strong;
 };
@@ -56,25 +53,20 @@ GameEventPtr RandomPlague::create()
 
 void RandomPlague::_exec( Game& game, unsigned int time)
 {
-  int population = game.city()->population();
-  if( population > _d->minPopulation && population < _d->maxPopulation )
+  int population = game.city()->states().population;
+  if( _d->popRange.contain( population ) )
   {
     Logger::warning( "Execute random plague event" );
     _d->isDeleted = true;
 
-    HouseList houses;
-    houses << game.city()->overlays();
+    HouseList houses = game.city()->statistic().houses.find();
 
     unsigned int number4burn = math::clamp<unsigned int>( (houses.size() * _d->strong / 100), 1u, 100u );
 
     for( unsigned int k=0; k < number4burn; k++ )
     {
       HousePtr house = houses.random();
-      house->setState( House::health, 0 );
-      /*
-      e = events::Disaster::create( building->tile(), events::Disaster::plague );
-      e->dispatch();
-      */
+      house->setState( pr::health, 0 );
     }
   }
 }
@@ -84,28 +76,22 @@ bool RandomPlague::isDeleted() const {  return _d->isDeleted; }
 
 void RandomPlague::load(const VariantMap& stream)
 {
-  VariantList vl = stream.get( lc_population ).toList();
-  _d->minPopulation = vl.get( 0, 0 ).toInt();
-  _d->maxPopulation = vl.get( 1, 999999 ).toInt();
-  _d->strong = stream.get( lc_strong, 10 );
+  Ranged::load( stream );
+  VARIANT_LOAD_ANYDEF_D( _d, strong, 10, stream )
 }
 
 VariantMap RandomPlague::save() const
 {
-  VariantMap ret;
-  VariantList vl_pop;
-  vl_pop << _d->minPopulation << _d->maxPopulation;
-
-  ret[ lc_population ] = vl_pop;
-  ret[ lc_strong     ] = _d->strong;
+  VariantMap ret = Ranged::save();
+  VARIANT_SAVE_ANY_D( ret, _d, strong )
   return ret;
 }
 
 RandomPlague::RandomPlague() : _d( new Impl )
 {
   _d->isDeleted = false;
-  _d->minPopulation = 0;
-  _d->maxPopulation = 999999;
+  _d->popRange.min = 0;
+  _d->popRange.max = 999999;
   _d->strong = 10;
 }
 

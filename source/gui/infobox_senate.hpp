@@ -12,6 +12,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_INFOBOXSENATE_H_INCLUDE_
 #define _CAESARIA_INFOBOXSENATE_H_INCLUDE_
@@ -25,7 +27,7 @@ namespace gui
 namespace infobox
 {
 
-class AboutSenate : public Simple
+class AboutSenate : public Infobox
 {
 public:
   AboutSenate( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );

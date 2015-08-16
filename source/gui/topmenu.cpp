@@ -25,7 +25,6 @@
 #include "core/utils.hpp"
 #include "game/datetimehelper.hpp"
 #include "gfx/engine.hpp"
-#include "game/enums.hpp"
 #include "game/gamedate.hpp"
 #include "environment.hpp"
 #include "widget_helper.hpp"
@@ -33,9 +32,11 @@
 #include "texturedbutton.hpp"
 #include "game/advisor.hpp"
 #include "widgetescapecloser.hpp"
+#include "gfx/decorator.hpp"
 #include "listbox.hpp"
+#include "core/metric.hpp"
+#include "city/config.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -55,8 +56,10 @@ public:
   Label* lbPopulation;
   Label* lbFunds;
   Label* lbDate;
+  bool useIcon;
   ContextMenu* langSelect;
-  Pictures background;
+  Batch background;
+  Pictures backgroundNb;
 
 slots public:
   void resolveSave();
@@ -65,6 +68,7 @@ slots public:
   void resolveAdvisorShow(int);
   void handleDebugEvent(int);
   void showShortKeyInfo();
+  void resolveExtentInfo(Widget* sender);
   void initBackground( const Size& size );
 
 signals public:
@@ -77,7 +81,8 @@ signals public:
   Signal0<> onShowSoundOptionsSignal;
   Signal0<> onShowGameSpeedOptionsSignal;
   Signal0<> onShowCityOptionsSignal;
-  Signal1<advisor::Type> onRequestAdvisorSignal;
+  Signal1<int> onShowExtentInfoSignal;
+  Signal1<Advisor> onRequestAdvisorSignal;
 };
 
 void TopMenu::draw(gfx::Engine& engine )
@@ -87,7 +92,10 @@ void TopMenu::draw(gfx::Engine& engine )
 
   _d->updateDate();
 
-  engine.draw( _d->background, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+  if( _d->background.valid() )
+    engine.draw( _d->background, &absoluteClippingRectRef() );
+  else
+    engine.draw( _d->backgroundNb, absoluteRect().lefttop(), &absoluteClippingRectRef() );
 
   MainMenu::draw( engine );
 }
@@ -95,21 +103,35 @@ void TopMenu::draw(gfx::Engine& engine )
 void TopMenu::setPopulation( int value )
 {
   if( _d->lbPopulation )
-    _d->lbPopulation->setText( utils::format( 0xff, "%s %d", _("##pop##"), value ) );
+    _d->lbPopulation->setText( utils::format( 0xff, "%s %d", _d->useIcon ? "" : _("##pop##"), value ) );
 }
 
 void TopMenu::setFunds( int value )
 {
   if( _d->lbFunds )
-    _d->lbFunds->setText( utils::format( 0xff, "%.2s %d", _("##denarii_short##"), value) );
+    _d->lbFunds->setText( utils::format( 0xff, "%.2s %d", _d->useIcon ? "" : _("##denarii_short##"), value) );
 }
 
 void TopMenu::Impl::updateDate()
 {
-  if( !lbDate || saveDate.month() == game::Date::current().month() )
+  if( !lbDate )
     return;
 
-  lbDate->setText( util::date2str( game::Date::current() ) );
+  if( !game::Date::isDayChanged() )
+    return;
+
+  std::string text;
+  if( metric::Measure::mode() == metric::Measure::roman )
+  {
+    RomanDate rDate( game::Date::current() );
+    text = utils::date2str( rDate, true );
+  }
+  else
+  {
+    text = utils::date2str( game::Date::current(), true );
+  }
+
+  lbDate->setText( text );
 }
 
 void TopMenu::Impl::showShortKeyInfo()
@@ -125,24 +147,37 @@ void TopMenu::Impl::showShortKeyInfo()
   CONNECT( btnExit, onClicked(), bg, Label::deleteLater );
 }
 
+void TopMenu::Impl::resolveExtentInfo(Widget *sender)
+{
+  int tag = sender->getProperty( CAESARIA_STR_A(ExtentInfo) );
+  if( tag != extentinfo::none )
+  {
+    emit onShowExtentInfoSignal( tag );
+  }
+}
+
 void TopMenu::Impl::initBackground( const Size& size )
 {
-  Pictures p_marble;
-  for (int i = 1; i<=12; ++i)
-  {
-    p_marble.push_back( Picture::load( ResourceGroup::panelBackground, i));
-  }
-
-  background.clear();
+  Pictures p_marble, pics;
+  p_marble.load( ResourceGroup::panelBackground, 1,12 );
 
   unsigned int i = 0;
   int x = 0;
 
-  while( x < size.width())
+  while( x < size.width() )
   {
-    background.append( p_marble[i%12], Point( x, 0 ) );
+    pics.append( p_marble[i%12], Point() );
+    pics.back().setOffset( x, 0 );
     x += p_marble[i%12].width();
     i++;
+  }
+
+  bool batchOk = background.load( pics, Point() );
+  if( !batchOk )
+  {
+    background.destroy();
+    Decorator::reverseYoffset( pics );
+    backgroundNb = pics;
   }
 }
 
@@ -159,7 +194,7 @@ void TopMenu::Impl::showAboutInfo()
   CONNECT( btnExit, onClicked(), bg, Label::deleteLater );
 }
 
-TopMenu::TopMenu( Widget* parent, const int height ) 
+TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
 : MainMenu( parent, Rect( 0, 0, parent->width(), height ) ),
   _d( new Impl )
 {
@@ -167,19 +202,32 @@ TopMenu::TopMenu( Widget* parent, const int height )
   setGeometry( Rect( 0, 0, parent->width(), height ) );
 
   _d->initBackground( size() );
+  _d->useIcon = useIcon;
 
   GET_DWIDGET_FROM_UI( _d, lbPopulation )
   GET_DWIDGET_FROM_UI( _d, lbFunds )
   GET_DWIDGET_FROM_UI( _d, lbDate )
 
   if( _d->lbPopulation )
+  {
     _d->lbPopulation->setPosition( Point( width() - populationLabelOffset, 0 ) );
+    _d->lbPopulation->setIcon( useIcon ? Picture( "population", 1 ) : Picture() );
+    _d->lbPopulation->addProperty( CAESARIA_STR_A(ExtentInfo), extentinfo::population );
+  }
 
   if( _d->lbFunds )
+  {
     _d->lbFunds->setPosition(  Point( width() - fundLabelOffset, 0) );
+    _d->lbFunds->setIcon( useIcon ? Picture( "paneling", 332 ) : Picture() );
+    _d->lbFunds->addProperty( CAESARIA_STR_A(ExtentInfo), extentinfo::economy);
+  }
 
   if( _d->lbDate )
+  {
     _d->lbDate->setPosition( Point( width() - dateLabelOffset, 0) );
+    _d->lbDate->addProperty( CAESARIA_STR_A(ExtentInfo), extentinfo::celebrates );
+    CONNECT( _d->lbDate, onClickedA(), _d.data(), Impl::resolveExtentInfo )
+  }
 
   ContextMenuItem* tmp = addItem( _("##gmenu_file##"), -1, true, true, false, false );
   ContextMenu* file = tmp->addSubMenu();
@@ -221,7 +269,7 @@ TopMenu::TopMenu( Widget* parent, const int height )
   advisersMenu->addItem( _("##visit_military_advisor##"   ), advisor::military );
   advisersMenu->addItem( _("##visit_imperial_advisor##"     ), advisor::empire );
   advisersMenu->addItem( _("##visit_rating_advisor##"    ), advisor::ratings );
-  advisersMenu->addItem( _("##visit_trade_advisor##"    ), advisor::trading);
+  advisersMenu->addItem( _("##visit_trade_advisor##"    ), advisor::trading );
   advisersMenu->addItem( _("##visit_population_advisor##" ), advisor::population );
   advisersMenu->addItem( _("##visit_health_advisor##"     ), advisor::health );
   advisersMenu->addItem( _("##visit_education_advisor##"  ), advisor::education );
@@ -238,7 +286,8 @@ TopMenu::TopMenu( Widget* parent, const int height )
 Signal0<>& TopMenu::onExit() {  return _d->onExitSignal; }
 Signal0<>& TopMenu::onSave(){  return _d->onSaveSignal; }
 Signal0<>& TopMenu::onEnd(){  return _d->onEndSignal; }
-Signal1<advisor::Type>& TopMenu::onRequestAdvisor() {  return _d->onRequestAdvisorSignal; }
+Signal1<Advisor>& TopMenu::onRequestAdvisor() {  return _d->onRequestAdvisorSignal; }
+Signal1<int> &TopMenu::onShowExtentInfo() { return _d->onShowExtentInfoSignal; }
 Signal0<>& TopMenu::onLoad(){  return _d->onLoadSignal; }
 Signal0<>&TopMenu::onRestart() { return _d->onRestartSignal; }
 Signal0<>& TopMenu::onShowVideoOptions(){  return _d->onShowVideoOptionsSignal; }

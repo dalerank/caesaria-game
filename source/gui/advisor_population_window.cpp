@@ -19,21 +19,20 @@
 #include "gfx/decorator.hpp"
 #include "core/gettext.hpp"
 #include "objects/house.hpp"
-#include "city/helper.hpp"
 #include "core/logger.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/engine.hpp"
 #include "city/statistic.hpp"
 #include "city/cityservice_info.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "city/migration.hpp"
 #include "label.hpp"
 #include "texturedbutton.hpp"
 #include "dictionary.hpp"
 #include "widget_helper.hpp"
 #include "core/utils.hpp"
+#include "city/states.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace city;
 
@@ -42,6 +41,9 @@ namespace gui
 
 namespace advisorwnd
 {
+
+enum { deltaNormalMigration=10, maxValues4boldLine=20, maxValues4middleLine=40, maxValues4thickLine=100,
+       boldLineIndex=75, middleLineIndex=76, thickLineIndex=77, verryThickLineIndex=78 };
 
 class CityChartLegend : public Label
 {
@@ -86,7 +88,7 @@ private:
   DrawMode _mode;
   int _picIndex;
   unsigned int _maxValue;
-  int _minXValue, _maxXValue;
+  struct { int min, max; } _x;
   bool _isSmall;
 };
 
@@ -126,16 +128,15 @@ public:
 };
 
 Population::Population(PlayerCityPtr city, Widget* parent, int id )
-: Window( parent, Rect( 0, 0, 1, 1 ), "", id ),
+: Base( parent, city, id ),
   __INIT_IMPL(Population)
 {
   setupUI( ":/gui/populationadv.gui" );
-  setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
   __D_IMPL(_d,Population)
   _d->city = city;
-
   _d->chartCurrent = 0;
+
   CityChartLegend* legendY = new CityChartLegend( this, Rect( 8, 60, 56, 280 ), false, 2 );
   CityChartLegend* legendX = new CityChartLegend( this, Rect( 54, 270, 480, 290 ), true, 10 );
 
@@ -147,12 +148,9 @@ Population::Population(PlayerCityPtr city, Widget* parent, int id )
   GET_DWIDGET_FROM_UI( _d, lbYearMigrationValue )
   GET_DWIDGET_FROM_UI( _d, lbAdvice )
 
-  Label* lbNextChartArea;
-  Label* lbChart;
-  Label* lbPrevChartArea;
-  GET_WIDGET_FROM_UI( lbPrevChartArea )
-  GET_WIDGET_FROM_UI( lbNextChartArea )
-  GET_WIDGET_FROM_UI( lbChart )
+  INIT_WIDGET_FROM_UI( Label*, lbPrevChartArea )
+  INIT_WIDGET_FROM_UI( Label*, lbNextChartArea )
+  INIT_WIDGET_FROM_UI( Label*, lbChart )
 
   if( lbNextChartArea )
   {
@@ -232,10 +230,8 @@ void Population::Impl::showNextChart() { switch2nextChart( 1 ); }
 
 void Population::Impl::updateStates()
 {
-  InfoPtr info;
-  info << city->findService( city::Info::defaultName() );
-  int currentPop = city->population();
-
+  InfoPtr info = city->statistic().services.find<Info>();
+  int currentPop = city->states().population;
 
   if( lbMigrationValue )
   {
@@ -244,7 +240,7 @@ void Population::Impl::updateStates()
     int migrationValue = currentPop - lastMonth[ Info::population ];
 
     std::string migrationText = "##unknown_migration_reason##";
-    if( abs( migrationValue ) < 10 )
+    if( abs( migrationValue ) < deltaNormalMigration )
     {
       migrationText = "##balance_between_migration##";
     }
@@ -258,8 +254,7 @@ void Population::Impl::updateStates()
     }
     else
     {
-      city::MigrationPtr migration;
-      migration << city->findService( city::Migration::defaultName() );
+      MigrationPtr migration = city->statistic().services.find<Migration>();
 
       if( migration.isValid() )
       {
@@ -272,11 +267,12 @@ void Population::Impl::updateStates()
 
   if( lbFoodValue )
   {
-    statistic::GoodsMap goods = statistic::getGoodsMap( city, true );
+    good::ProductMap goods = city->statistic().goods.details( true );
     int foodLevel = 0;
-    for( good::Product k=good::wheat; k <= good::vegetable; ++k )
+
+    foreach( k, good::foods() )
     {
-      foodLevel += (goods[ k ] > 0 ? 1 : 0);
+      foodLevel += (goods[ *k ] > 0 ? 1 : 0);
     }
 
     lbFoodValue->setText( _( "##varieties_food_eaten##") + utils::i2str( foodLevel ) );
@@ -287,7 +283,8 @@ void Population::Impl::updateStates()
     Info::Parameters params = info->yearParams( 1 );
     std::string text = "##yearmigration_unknown##";
     int lastPop = params[ Info::population ];
-    if( abs( lastPop - currentPop ) < 10 ) text = "##overall_city_population_static##";
+
+    if( abs( lastPop - currentPop ) < deltaNormalMigration ) text = "##overall_city_population_static##";
     else if( lastPop < currentPop ) text = "##overall_people_are_coming_city##";
     else text = "##overall_people_are_leaving_city##";
 
@@ -296,29 +293,32 @@ void Population::Impl::updateStates()
 
   if( lbAdvice )
   {
-    city::Helper helper( city );
-
     int maxHabitants = 0;
-    int currentHabitants = 0;
-    HouseList houses = helper.find<House>( objects::house );
-    foreach( it, houses )
+    int plebsHabitants = 0;
+    HouseList houses = city->statistic().houses.find();
+    int lowLevelHouses = 0;
+    for( auto house : houses )
     {
-      HousePtr house = *it;
+      int level = house->spec().level();
 
-      int houseLevel = house->spec().level();
-
-      if( houseLevel < HouseLevel::mansion )
+      if( level < HouseLevel::mansion )
       {
-        currentHabitants += house->habitants().count();
-        maxHabitants += house->maxHabitants();
+        plebsHabitants += house->habitants().count();
+        maxHabitants += house->capacity();
       }
+
+      lowLevelHouses += (level < HouseLevel::domus ? 1 : 0);
     }
 
     StringArray reasons;
-    if( math::percentage( currentHabitants, maxHabitants ) > 90 )
-    {
+    if( math::percentage( plebsHabitants, maxHabitants ) > 90 )
       reasons << "##lowgrade_housing_want_better_conditions##";
-    }
+
+    if( math::percentage( lowLevelHouses, houses.size() ) > 30 )
+      reasons << "##lowgrade_housing_too_much_in_city##";
+
+    if( reasons.empty() )
+      reasons << "##your_city_have_good_prestige##";
 
     lbAdvice->setText( _( reasons.random() ) );
   }
@@ -335,17 +335,17 @@ CityChartLegend::CityChartLegend(Widget *parent, const Rect &rectangle, bool hor
 void CityChartLegend::setMaxValue(int value)
 {
   _maxValue = value;
-  _resizeEvent();
+  _finalizeResize();
 }
 
 void CityChartLegend::_updateTexture(Engine &painter)
 {
   Label::_updateTexture( painter );
 
-  if( !_textPictureRef() )
+  if( !_textPicture().isValid() )
     return;
 
-  Picture pic = *_textPictureRef();
+  Picture& pic = _textPicture();
 
   pic.fill( 0, Rect() );
   for( int k=0; k < _stepCount+1; k++ )
@@ -367,6 +367,8 @@ CityChart::DrawMode CityChart::fit(CityChart::DrawMode mode)
   return (DrawMode)mode;
 }
 
+static int __calcMaxLegentYValue( int value ) { return (value * 1.5 / 100 ) * 100; }
+
 void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
 {
   _values.clear();
@@ -375,31 +377,31 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
   {
   case dm_census:
     {
-      CitizenGroup population = statistic::getPopulation( city );
+      CitizenGroup population = city->statistic().population.details();
 
       _maxValue = 100;
       for( int age=CitizenGroup::newborn; age <= CitizenGroup::longliver; age++ )
-        {
-          _values.push_back( population[ age ] );
-          _maxValue = std::max<int>( _maxValue, population[ age ] );
-        }
+      {
+        _values.push_back( population[ age ] );
+        _maxValue = std::max<int>( _maxValue, population[ age ] );
+      }
 
-      _minXValue = 0;
-      _maxXValue = _values.size();
-      _maxValue = ( _maxValue * 1.5 / 100 ) * 100;
+      _x.min = 0;
+      _x.max = _values.size();
+      _maxValue = __calcMaxLegentYValue( _maxValue );
 
       emit onMaxYChange( _maxValue );
-      emit onMaxXChange( _maxXValue );
+      emit onMaxXChange( _x.max );
     }
   break;
 
   case dm_population:
     {
-      city::InfoPtr info;
-      info << city->findService( city::Info::defaultName() );
+      InfoPtr info = city->statistic().services.find<Info>();
 
-      city::Info::History history = info->history();
-      history.push_back( info->lastParams() );
+      Info::History history = info->history();
+      Info::Parameters params = info->lastParams();
+      history.push_back( params );
 
       _values.clear();
       foreach( it, history )
@@ -409,47 +411,46 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
         _maxValue = std::max<unsigned int>( _maxValue, p[ Info::population ] );
       }
 
-      _maxValue = ( _maxValue * 1.5 / 100 ) * 100;
-      _maxXValue = _values.size();
+      _maxValue = __calcMaxLegentYValue( _maxValue );
+      _x.max = _values.size();
       emit onMaxYChange( _maxValue );
-      emit onMaxXChange( _maxXValue );
+      emit onMaxXChange( _x.max );
     }
   break;
 
   case dm_society:
     {
-      city::Helper helper( city );
-      HouseList houses = helper.find<House>( objects::house );
+      HouseList houses = city->statistic().houses.find();
 
       _values.clear();
       _maxValue = 5;
       std::map< unsigned int, unsigned int> levelPopulations;
-      for( int k=0; k < HouseLevel::count; k++ )
+      for( int k=0; k < HouseLevel::maxLevel; k++ )
       {
         levelPopulations[ k ] = 0;
       }
 
-      foreach( it, houses )
+      for( auto it : houses )
       {
-        const HouseSpecification& spec = (*it)->spec();
-        levelPopulations[ spec.level() ] += (*it)->habitants().count();
+        const HouseSpecification& spec = it->spec();
+        levelPopulations[ spec.level() ] += it->habitants().count();
         _maxValue = std::max( levelPopulations[ spec.level() ], _maxValue );
       }
 
       if( !levelPopulations.empty() )
       {
-        _minXValue = levelPopulations.begin()->second;
-        _maxXValue = levelPopulations.rbegin()->second;
-        foreach( it, levelPopulations )
+        _x.min = levelPopulations.begin()->second;
+        _x.max = levelPopulations.rbegin()->second;
+        for( auto it : levelPopulations )
         {
-          _values.push_back( it->second );
+          _values.push_back( it.second );
         }
       }
 
-      _maxValue = ( _maxValue * 1.5 / 100 ) * 100;
-      _maxXValue = HouseLevel::count;
+      _maxValue = __calcMaxLegentYValue( _maxValue );
+      _x.max = HouseLevel::maxLevel;
       emit onMaxYChange( _maxValue );
-      emit onMaxXChange( _maxXValue );
+      emit onMaxXChange( _x.max );
     }
   break;
 
@@ -458,33 +459,33 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
 
   if( _isSmall )
   {
-    _picIndex = 78;
+    _picIndex = verryThickLineIndex;
   }
   else
   {
-    if( _values.size() <= 20 ) { _picIndex = 75; }
-    else if( _values.size() <= 40 ) { _picIndex = 76; }
-    else if( _values.size() <= 100 ) { _picIndex = 77; }
-    else { _picIndex = 78; }
+    if( _values.size() <= maxValues4boldLine ) { _picIndex = boldLineIndex; }
+    else if( _values.size() <= maxValues4middleLine ) { _picIndex = middleLineIndex; }
+    else if( _values.size() <= maxValues4thickLine ) { _picIndex = thickLineIndex; }
+    else { _picIndex = verryThickLineIndex; }
   }
 
-  _resizeEvent();
+  _finalizeResize();
 }
 
 void CityChart::draw(Engine &painter)
 {  
-  if( !_textPictureRef() || _maxValue == 0 )
+  if( !_textPicture().isValid() || _maxValue == 0 )
     return;
 
-  Picture& pic = *_textPictureRef();
-  Picture& rpic = Picture::load( ResourceGroup::panelBackground, _picIndex );
+  Picture& pic = _textPicture();
+  Picture rpic( ResourceGroup::panelBackground, _picIndex );
 
   pic.fill( 0, Rect() );
   int index=0;
   unsigned int maxHeight = std::min( rpic.height(), pic.height() );
-  foreach( it, _values )
+  for( auto value : _values )
   {
-    int y = maxHeight - (*it) * maxHeight / _maxValue;
+    int y = maxHeight - value * maxHeight / _maxValue;
     painter.draw( rpic, Rect( 0, y, rpic.width(), maxHeight),
                   Rect( rpic.width() * index, y, rpic.width() * (index+1), maxHeight) + absoluteRect().lefttop(),
                   &absoluteClippingRectRef() );

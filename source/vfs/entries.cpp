@@ -97,21 +97,23 @@ Entries& Entries::operator=( const Entries& other )
 
 Entries::ConstItemIt Entries::begin() const {  return _d->files.begin(); }
 Entries::ConstItemIt Entries::end() const{  return _d->files.end(); }
-Entries::Items &Entries::_items(){  return _d->files; }
+Entries::Items& Entries::_items(){  return _d->files; }
 
 void Entries::_updateCache()
 {
   _d->hashedIndex.clear();
   _d->hashedIcIndex.clear();
-  for( unsigned int k=0; k < _d->files.size(); k++ )
+  int k=0;
+  foreach( it, _d->files )
   {
-    EntryInfo& info = _d->files[ k ];
-    info.fphash = utils::hash( info.fullpath.toString() );
-    info.nhash = utils::hash( info.name.toString() );
-    info.nihash = utils::hash( utils::localeLower( info.name.toString() ) );
+    EntryInfo& info = *it;
+    info.fphash = Hash( info.fullpath.toString() );
+    info.nhash = Hash( info.name.toString() );
+    info.nihash = Hash( utils::localeLower( info.name.toString() ) );
 
     _d->hashedIndex[ info.nhash ] = k;
     _d->hashedIcIndex[ info.nihash ] = k;
+    k++;
   }
 }
 
@@ -238,8 +240,8 @@ int Entries::findFile(const Path& filename, bool isDirectory) const
 
   std::string fname = filename.baseName().toString();
   unsigned int fnHash = (sType == Path::ignoreCase
-                            ? utils::hash( utils::localeLower( fname ) )
-                            : utils::hash( fname )
+                            ? Hash( utils::localeLower( fname ) )
+                            : Hash( fname )
                         );
 
   if( _d->hashedIndex.empty() )

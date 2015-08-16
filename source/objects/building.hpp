@@ -19,11 +19,6 @@
 #ifndef _CAESARIA_BUILDING_H_INCLUDE_
 #define _CAESARIA_BUILDING_H_INCLUDE_
 
-#include <string>
-#include <map>
-#include <list>
-#include <set>
-
 #include "construction.hpp"
 #include "good/good.hpp"
 #include "core/scopedptr.hpp"
@@ -37,7 +32,7 @@
 class Building : public Construction
 {
 public:
-  Building(const Type type, const Size& size=Size(1) );
+  Building(const object::Type type, const Size& size=Size(1) );
   virtual ~Building();
   virtual void initTerrain( gfx::Tile& terrain);
 
@@ -45,28 +40,32 @@ public:
   virtual void storeGoods(good::Stock& stock, const int amount = -1);
 
   // evaluate the given service
-  virtual float evaluateService( ServiceWalkerPtr walker);
-  virtual bool build(const CityAreaInfo &info);
+  virtual bool build(const city::AreaInfo& info);
 
   // handle service reservation
   void reserveService(const Service::Type service);
   bool isServiceReserved(const Service::Type service);
   void cancelService(const Service::Type service);
+  virtual float evaluateService( ServiceWalkerPtr walker);
   virtual void applyService( ServiceWalkerPtr walker);
 
   // evaluate the need for the given trainee
-  virtual float evaluateTrainee( constants::walker::Type traineeType);  // returns >0 if trainee is needed
-  void reserveTrainee( constants::walker::Type traineeType ); // trainee will come
-  void cancelTrainee( constants::walker::Type traineeType );  // trainee will not come
-  int traineeValue( constants::walker::Type traineeType ) const;
+  virtual float evaluateTrainee( walker::Type traineeType);  // returns >0 if trainee is needed
+  void reserveTrainee( walker::Type traineeType ); // trainee will come
+  void cancelTrainee( walker::Type traineeType );  // trainee will not come
+  int traineeValue( walker::Type traineeType ) const;
 
   virtual void updateTrainee( TraineeWalkerPtr walker ); // trainee arrives
-  virtual void setTraineeValue( constants::walker::Type type, int value ); // trainee arrives
+  virtual void setTraineeValue( walker::Type type, int value ); // trainee arrives
+  virtual void initialize(const MetaData &mdata);
+
+  virtual void save(VariantMap &stream) const;
+  virtual void load(const VariantMap &stream);
 
   virtual gfx::Renderer::PassQueue passQueue() const;
 
 protected:
-  std::set< constants::walker::Type > _reservedTrainees;  // a trainee is on the way
+  void _updateBalanceKoeffs();
 
   class Impl;
   ScopedPtr< Impl > _d;

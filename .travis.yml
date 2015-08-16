@@ -1,3 +1,4 @@
+
 language: cpp
 compiler:
 - gcc
@@ -31,7 +32,7 @@ before_install:
 install:
 - cd $TRAVIS_BUILD_DIR
 # Create unix makefiles
-- cmake -DCMAKE_BUILD_TYPE=Release -DUSE_STEAM=1 -DCMAKE_TOOLCHAIN_FILE=xcompile/win32-cross.cmake
+- cmake -DUSE_STEAM=1 -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=xcompile/win32-cross.cmake
 before_script:
 # Don't ask for confirmation when using scp
 - echo -e "Host frs.sourceforge.net\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
@@ -53,3 +54,8 @@ after_success:
 - sshpass -p "$SCP_PASS" scp -v $ZIPNAME dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/bin/
 - sshpass -p "$SCP_PASS" scp -v *.exe dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/stuff/
 env:
+notifications:
+    slack:
+        - caesariagame:m3lwdYPWqeCOn0zWs0rjX5KY
+    on_failure: always
+    on_success: never

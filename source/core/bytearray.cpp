@@ -131,6 +131,11 @@ ByteArray::ByteArray()
 {  
 }
 
+ByteArray::ByteArray(unsigned int cap)
+{
+  resize( cap );
+}
+
 static const std::string base64_chars =
              "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
              "abcdefghijklmnopqrstuvwxyz"
@@ -256,7 +261,7 @@ const char* ByteArray::data() const {  return &(*this)[0]; }
 char* ByteArray::data(){  return &(*this)[0]; }
 
 std::string ByteArray::toString() const
-{
+{  
   std::string ret( data() );
   ret.resize( size() );
   return ret;

@@ -24,40 +24,85 @@
 #include "gui/environment.hpp"
 #include "core/logger.hpp"
 
-using namespace gui;
+using namespace gui::dialog;
+using namespace audio;
 
 namespace events
 {
 
-GameEventPtr SetSoundOptions::create()
+class Model
 {
-  GameEventPtr ret( new SetSoundOptions() );
+public:
+  struct Info { int volumes[ audio::count ]; };
+
+  Info _current, _save;
+
+  Model()
+  {
+    Engine& ae = Engine::instance();
+
+    Info tmp;
+    for( int i=audio::ambient; i < audio::count; i++ )
+      tmp.volumes[ i ] = ae.volume( SoundType(i) );
+
+    _save = tmp;
+    _current = tmp;
+  }
+
+  void destroy() { delete this; }
+
+  void set( audio::SoundType type, int value )
+  {
+    _current.volumes[ type ] = math::clamp( value, 0, 100 );
+  }
+
+  unsigned int get( audio::SoundType type ) const;
+
+  void apply()
+  {
+    SETTINGS_SET_VALUE( soundVolume,   _current.volumes[ audio::game ] );
+    SETTINGS_SET_VALUE( ambientVolume, _current.volumes[ audio::ambient ] );
+    SETTINGS_SET_VALUE( musicVolume,   _current.volumes[ audio::theme ] );
+    game::Settings::save();
+    destroy();
+  }
+
+  void restore()
+  {
+    Engine& ae = Engine::instance();
+    for( int i=audio::ambient; i < audio::count; i++ )
+      ae.setVolume( SoundType(i), _save.volumes[ i ] );
+    destroy();
+  }
+
+};
+
+GameEventPtr ChangeSoundOptions::create()
+{
+  GameEventPtr ret( new ChangeSoundOptions() );
   ret->drop();
 
   return ret;
 }
 
-void SetSoundOptions::_exec(Game& game, unsigned int)
+void ChangeSoundOptions::_exec(Game& game, unsigned int)
 {
-  audio::Engine& e = audio::Engine::instance();
-  dialog::SoundOptions* dialog = new dialog::SoundOptions( game.gui()->rootWidget(),
-                                                           e.volume( audio::gameSound ),
-                                                           e.volume( audio::ambientSound ),
-                                                           e.volume( audio::themeSound ) );
+  SoundOptions* dialog = new SoundOptions( game.gui()->rootWidget() );
+  Model* model = new Model();
 
-  CONNECT( dialog, onSoundChange(), &e, audio::Engine::setVolume );
-  CONNECT( dialog, onClose(), this, SetSoundOptions::_saveSoundSettings );
+  Engine& ae = Engine::instance();
+
+  CONNECT( dialog, onChange(), model,  Model::set )
+  CONNECT( dialog, onClose(),  model,  Model::restore )
+  CONNECT( dialog, onChange(), &ae,    Engine::setVolume )
+
+  dialog->update( audio::ambient, ae.volume( audio::ambient ) );
+  dialog->update( audio::theme, ae.volume( audio::theme ) );
+  dialog->update( audio::game, ae.volume( audio::game ) );
+
+  dialog->show();
 }
 
-bool SetSoundOptions::_mayExec(Game&, unsigned int) const { return true; }
-
-void SetSoundOptions::_saveSoundSettings()
-{
-  audio::Engine& se = audio::Engine::instance();
-  SETTINGS_SET_VALUE( soundVolume, se.volume( audio::gameSound ) );
-  SETTINGS_SET_VALUE( ambientVolume, se.volume( audio::ambientSound ) );
-  SETTINGS_SET_VALUE( musicVolume, se.volume( audio::themeSound ) );
-  game::Settings::save();
-}
+bool ChangeSoundOptions::_mayExec(Game&, unsigned int) const { return true; }
 
 }

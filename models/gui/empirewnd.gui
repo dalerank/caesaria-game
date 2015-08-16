@@ -13,7 +13,7 @@
     normal : [ "paneling", 292 ]
     hovered : [ "paneling", 293 ]
     pressed : [ "paneling", 294 ]
-    disabled : [ "paneling", 295 ]
+    disabled : [ "paneling", 294 ]
     tooltip : "##to_trade_advisor##"
   }
 
@@ -32,6 +32,12 @@
     hovered : [ "paneling", 529 ]
     pressed : [ "paneling", 530 ]
     disabled : [ "paneling", 531 ]
+  }
+
+  btnAi#PushButton : {
+    geometry : [ 20, "ph-100", 48, "ph-72" ]
+    text : "AI"
+    text.align : [ "center", "center" ]
   }
 
   lbTitle#Label : {

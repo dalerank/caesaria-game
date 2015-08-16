@@ -17,7 +17,7 @@
 #include "pathway_helper.hpp"
 #include "astarpathfinding.hpp"
 #include "gfx/tilemap.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "core/logger.hpp"
 
 using namespace gfx;
@@ -74,11 +74,11 @@ Pathway PathwayHelper::create( TilePos startPos, ConstructionPtr construction, P
     switch( type )
     {
     case allTerrain: way = p.getPath( startPos, construction->enterArea(), Pathfinder::terrainOnly );
-    case roadOnly: way = p.getPath( startPos, construction->getAccessRoads(), Pathfinder::roadOnly );
+    case roadOnly: way = p.getPath( startPos, construction->roadside(), Pathfinder::roadOnly );
 
     case roadFirst:
     {
-      way = p.getPath( startPos, construction->getAccessRoads(), Pathfinder::roadOnly );
+      way = p.getPath( startPos, construction->roadside(), Pathfinder::roadOnly );
 
       if( !way.isValid() )
       {
@@ -108,28 +108,27 @@ Pathway PathwayHelper::create(TilePos startPos, TilePos stopPos, const TilePossi
   return Pathfinder::instance().getPath( startPos, stopPos, Pathfinder::customCondition );
 }
 
-DirectRoute PathwayHelper::shortWay(PlayerCityPtr city, TilePos startPos, constants::objects::Type buildingType, PathwayHelper::WayType type)
+DirectRoute PathwayHelper::shortWay(PlayerCityPtr city, TilePos startPos, object::Type buildingType, PathwayHelper::WayType type)
 {
   DirectRoute ret;
-  city::Helper helper( city );
-  ConstructionList constructions = helper.find<Construction>( buildingType );
+  ConstructionList constructions = city->statistic().objects.find<Construction>( buildingType );
 
-  foreach( it, constructions )
+  for( auto it : constructions )
   {
-    Pathway path = create( startPos, *it, type );
+    Pathway path = create( startPos, it, type );
     if( path.isValid() )
     {
       if( !ret.way().isValid() )
       {
         ret.second = path;
-        ret.first = *it;
+        ret.first = it;
       }
       else
       {
         if( ret.way().length() > path.length() )
         {
           ret.second = path;
-          ret.first = *it;
+          ret.first = it;
         }
       }
     }
@@ -142,17 +141,15 @@ Pathway PathwayHelper::randomWay( PlayerCityPtr city, TilePos startPos, int walk
 {
   TilePos offset( walkRadius / 2, walkRadius / 2 );
   TilesArray tiles = city->tilemap().getArea( startPos - offset, startPos + offset );
-  tiles = tiles.walkableTiles( true );
+  tiles = tiles.walkables( true );
 
   int loopCounter = 0; //loop limiter
   if( !tiles.empty() )
   {
     do
     {
-      TilesArray::iterator destPos = tiles.begin();
-      std::advance( destPos, math::random( tiles.size() - 1 ) );
-
-      Pathway pathway = create( startPos, (*destPos)->pos(), PathwayHelper::allTerrain );
+      Tile* destPos = tiles.random();
+      Pathway pathway = create( startPos, destPos->pos(), PathwayHelper::allTerrain );
 
       if( pathway.isValid() )
       {
@@ -180,7 +177,7 @@ Pathway PathwayHelper::way2border(PlayerCityPtr city, TilePos pos)
       break;
 
     TilesArray border = tmap.getRectangle( start, stop );
-    border = border.walkableTiles( true );
+    border = border.walkables( true );
     foreach( it, border )
     {
       Tile* tile = *it;

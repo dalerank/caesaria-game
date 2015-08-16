@@ -25,6 +25,7 @@ using namespace gfx;
 
 namespace events
 {
+const int defaultReturnWorkersDistance = 40;
 
 GameEventPtr ReturnWorkers::create(TilePos center, unsigned int workers)
 {
@@ -39,22 +40,20 @@ GameEventPtr ReturnWorkers::create(TilePos center, unsigned int workers)
 void ReturnWorkers::_exec(Game& game, unsigned int time)
 {
   Tilemap& tilemap = game.city()->tilemap();
-  const int defaultFireWorkersDistance = 40;
-  for( int curRange=1; curRange < defaultFireWorkersDistance; curRange++ )
+  for( int curRange=1; curRange < defaultReturnWorkersDistance; curRange++ )
   {
-    HouseList hList;
-    hList << tilemap.getRectangle( curRange, _center ).overlays();
+    HouseList hList = tilemap.getRectangle( curRange, _center ).overlays().select<House>();
 
     foreach( it, hList )
     {
       HousePtr house = *it;
       if( house.isValid() )
       {
-        int lastWorkersCount = house->getServiceValue( Service::recruter );
-        house->appendServiceValue( Service::recruter, _workers );
-        int currentWorkers = (int)house->getServiceValue( Service::recruter );
+        int lastWorkersCount = (int)house->unemployed(); //save value, forexample 5 (max 8)
+        house->appendServiceValue( Service::recruter, _workers );                //add some people, current value 8
+        int delta = (int)house->unemployed();   //check delta 8 - 5 == 3
 
-        int mayAppend = math::clamp<int>( _workers, 0, currentWorkers - lastWorkersCount );
+        int mayAppend = math::clamp<int>( _workers, 0, delta - lastWorkersCount );
         _workers -= mayAppend;
       }
 
@@ -65,9 +64,6 @@ void ReturnWorkers::_exec(Game& game, unsigned int time)
 }
 
 bool ReturnWorkers::_mayExec(Game&, unsigned int) const { return true; }
+ReturnWorkers::ReturnWorkers() : _workers( 0 ){}
 
-ReturnWorkers::ReturnWorkers() : _workers( 0 )
-{
-
-}
 }

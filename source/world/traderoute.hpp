@@ -25,6 +25,7 @@
 #include "core/position.hpp"
 #include "good/good.hpp"
 #include "gfx/picturesarray.hpp"
+#include "core/position_array.hpp"
 
 namespace world
 {
@@ -38,11 +39,11 @@ public:
   CityPtr beginCity() const;
   CityPtr endCity() const;
   CityPtr partner( const std::string& name ) const;
-  std::string getName() const;
+  std::string name() const;
 
-  void update( unsigned int time );
+  void timeStep( unsigned int time );
   PointsArray points( bool reverse=false ) const;
-  bool containPoint( Point pos, int devianceDistance=10 );
+  bool containPoint(const Point &pos, int devianceDistance=10 );
   void setPoints(const PointsArray& points , bool seaRoute);
   const gfx::Pictures& pictures() const;
 
@@ -50,10 +51,12 @@ public:
 
   MerchantPtr addMerchant( const std::string& begin, good::Store& sell, good::Store& buy );
   MerchantPtr merchant( unsigned int index );
-  MerchantList merchants() const;
+  const MerchantList& merchants() const;
 
   VariantMap save() const;
   void load( const VariantMap& stream );
+
+  static unsigned int getId( const std::string& begin, const std::string& end );
 
 signals public:
   Signal1<MerchantPtr>& onMerchantArrived();

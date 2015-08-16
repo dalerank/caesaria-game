@@ -19,6 +19,7 @@
 #include "core/logger.hpp"
 #include "core/foreach.hpp"
 #include "core/variant_map.hpp"
+#include "core/tilepos_array.hpp"
 #include "routefinder.hpp"
 
 namespace world

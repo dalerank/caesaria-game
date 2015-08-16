@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "gfx/layerconstants.hpp"
+#include "layers/constants.hpp"
 #include "menu.hpp"
 #include "texturedbutton.hpp"
 #include "gfx/picture.hpp"
@@ -38,11 +38,13 @@
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "city/city.hpp"
+#include "extented_date_info.hpp"
 #include "events/playsound.hpp"
 
 using namespace constants;
 using namespace gfx;
 using namespace city;
+using namespace events;
 
 namespace gui
 {
@@ -85,8 +87,9 @@ public:
   PlayerCityPtr city;
 
 
-  void initActionButton( PushButton* btn, Point pos );
-  void playSound();
+  void initActionButton(PushButton* btn, const Point& pos,
+                        bool pushBtn=true);
+  void playSound(Widget* widget);
   void updateBuildingOptions();
 
 signals public:
@@ -110,6 +113,7 @@ public:
 
   int midPicId() const { return _midIconId; }
   void setMidPicId( int id ) { _midIconId = id; }
+  void setSound( const std::string& name ) { addProperty( "sound", name ); }
 private:
   int _midIconId;
 };
@@ -123,42 +127,42 @@ Menu::Menu( Widget* parent, int id, const Rect& rectangle )
 
   const bool haveSubMenu = true;
   _d->minimizeButton = _addButton( ResourceMenu::maximizeBtn, false, 0, MAXIMIZE_ID,
-                                   !haveSubMenu, ResourceMenu::emptyMidPicId, _("##show_bigpanel##") );
+                                   !haveSubMenu, ResourceMenu::emptyMidPicId, "show_bigpanel" );
 
   _d->minimizeButton->setGeometry( Rect( Point( 6, 4 ), Size( 31, 20 ) ) );
 
-  _d->houseButton = _addButton( ResourceMenu::houseBtnPicId, true, 0, objects::house,
-                                !haveSubMenu, ResourceMenu::houseMidPicId, _("##build_housing##") );
+  _d->houseButton = _addButton( ResourceMenu::houseBtnPicId, true, 0, object::house,
+                                !haveSubMenu, ResourceMenu::houseMidPicId, "housing" );
 
   _d->clearButton = _addButton( 131, true, 1, REMOVE_TOOL_ID,
-                                !haveSubMenu, ResourceMenu::clearMidPicId, _("##clear_land##") );
+                                !haveSubMenu, ResourceMenu::clearMidPicId, "clear_land" );
 
-  _d->roadButton = _addButton( 135, true, 2, objects::road, !haveSubMenu, ResourceMenu::roadMidPicId, _("##build_road_tlp##") );
-  _d->waterButton = _addButton( 127, true, 3, development::water, haveSubMenu, ResourceMenu::waterMidPicId, _("##water_build_tlp##") );
-  _d->healthButton = _addButton( 163, true, 4, development::health, haveSubMenu, ResourceMenu::healthMidPicId, _("##healthBtnTooltip##") );
-  _d->templeButton = _addButton( 151, true, 5, development::religion, haveSubMenu, ResourceMenu::religionMidPicId, _("##templeBtnTooltip##") );
-  _d->educationButton = _addButton( 147, true, 6, development::education, haveSubMenu, ResourceMenu::educationMidPicId, _("##education_objects##") );
+  _d->roadButton = _addButton( 135, true, 2, object::road, !haveSubMenu, ResourceMenu::roadMidPicId, "road" );
+  _d->waterButton = _addButton( 127, true, 3, development::water, haveSubMenu, ResourceMenu::waterMidPicId, "water" );
+  _d->healthButton = _addButton( 163, true, 4, development::health, haveSubMenu, ResourceMenu::healthMidPicId, "health" );
+  _d->templeButton = _addButton( 151, true, 5, development::religion, haveSubMenu, ResourceMenu::religionMidPicId, "temples" );
+  _d->educationButton = _addButton( 147, true, 6, development::education, haveSubMenu, ResourceMenu::educationMidPicId, "education" );
 
   _d->entertainmentButton = _addButton( 143, true, 7, development::entertainment, haveSubMenu,
-                                        ResourceMenu::entertainmentMidPicId, _("##entertainment##") );
+                                        ResourceMenu::entertainmentMidPicId, "entertainment" );
 
   _d->administrationButton = _addButton( 139, true, 8, development::administration, haveSubMenu,
-                                         ResourceMenu::administrationMidPicId, _("##administration_building##") );
+                                         ResourceMenu::administrationMidPicId, "administration" );
 
   _d->engineerButton = _addButton( 167, true, 9, development::engineering, haveSubMenu,
-                                   ResourceMenu::engineerMidPicId, _("##engineering_structures##") );
+                                   ResourceMenu::engineerMidPicId, "engineering" );
 
   _d->securityButton = _addButton( 159, true, 10, development::security, haveSubMenu,
-                                   ResourceMenu::securityMidPicId, _("##securityBtnTooltip##") );
+                                   ResourceMenu::securityMidPicId, "security" );
 
   _d->commerceButton = _addButton( 155, true, 11, development::commerce, haveSubMenu,
-                                   ResourceMenu::comerceMidPicId, _("##comerceBtnTooltip##") );
+                                   ResourceMenu::comerceMidPicId, "comerce" );
 
   CONNECT( _d->minimizeButton, onClicked(), this, Menu::minimize );
 }
 
 PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul, 
-                             int id, bool haveSubmenu, int midPic, const std::string& tooltip )
+                              int id, bool haveSubmenu, int midPic, const std::string& ident )
 {
   Point offset( 1, 32 );
   int dy = 35;
@@ -166,7 +170,8 @@ PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul,
   MenuButton* ret = new MenuButton( this, Point( 0, 0 ), -1, -1, startPic, pushBtn );
   ret->setID( id | ( haveSubmenu ? BuildMenu::subMenuCreateIdHigh : 0 ) );
   ret->setPosition( offset + Point( 0, dy * yMul ) );
-  ret->setTooltipText( tooltip );
+  ret->setTooltipText( _( "##extm_"+ident+"_tlp##" ) );
+  ret->setSound( "extm_" + ident );
 
   if( MenuButton* btn = safety_cast< MenuButton* >( ret ) )
   {
@@ -182,7 +187,7 @@ void Menu::draw(gfx::Engine& painter )
   if( !visible() )
     return;
 
-  painter.draw( _d->background, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+  painter.draw( _d->background, absoluteRect().lefttop(), &absoluteClippingRectRef() );
     
   Widget::draw( painter );
 }
@@ -195,22 +200,20 @@ bool Menu::onEvent(const NEvent& event)
         return false;
 
     int id = event.gui.caller->ID();
-    switch( id )
+    if( id == object::house || id == object::road )
     {
-    case objects::house:
-    case objects::road:
       _d->lastPressed = event.gui.caller;
       _createBuildMenu( -1, this );
       emit _d->onCreateConstructionSignal( id );
-    break;
-
-    case REMOVE_TOOL_ID:
+    }
+    else if( id == REMOVE_TOOL_ID )
+    {
       _d->lastPressed = event.gui.caller;
       _createBuildMenu( -1, this );
       emit _d->onRemoveToolSignal();
-    break;
-
-    default:
+    }
+    else
+    {
       if( _d->lastPressed != event.gui.caller )
       {
         if( event.gui.caller->parent() == this )
@@ -231,7 +234,6 @@ bool Menu::onEvent(const NEvent& event)
           }
         }
       }
-    break;
     }
 
     unselectAll();
@@ -276,11 +278,11 @@ bool Menu::onEvent(const NEvent& event)
 
 Menu* Menu::create(Widget* parent, int id, PlayerCityPtr city )
 {
-  const Picture& bground = Picture::load( ResourceGroup::panelBackground, 16 );
+  Picture bground( ResourceGroup::panelBackground, 16 );
 
   Menu* ret = new Menu( parent, id, Rect( 0, 0, bground.width(), parent->height() ) );
 
-  const Picture& bottom  = Picture::load( ResourceGroup::panelBackground, 21 );
+  Picture bottom( ResourceGroup::panelBackground, 21 );
 
   ret->_d->background.clear();
 
@@ -308,7 +310,7 @@ void Menu::minimize()
   PositionAnimator* anim = new PositionAnimator( this, WidgetAnimator::removeSelf, stopPos, 300 );
   CONNECT( anim, onFinish(), &_d->onHideSignal, Signal0<>::_emit );
 
-  events::GameEventPtr e = events::PlaySound::create( "panel", 3, 100 );
+  GameEventPtr e = PlaySound::create( "panel", 3, 100 );
   e->dispatch();
 }
 
@@ -318,16 +320,16 @@ void Menu::maximize()
   show();
   new PositionAnimator( this, WidgetAnimator::showParent | WidgetAnimator::removeSelf, stopPos, 300 );
 
-  events::GameEventPtr e = events::PlaySound::create( "panel", 3, 100 );
+  GameEventPtr e = PlaySound::create( "panel", 3, 100 );
   e->dispatch();
 }
 
 bool Menu::unselectAll()
 {
   bool anyPressed = false;
-  foreach( it, children() )
+  for( auto item : children() )
   {
-    if( PushButton* btn = safety_cast< PushButton* >( *it ) )
+    if( PushButton* btn = safety_cast< PushButton* >( item ) )
     {
       anyPressed |= btn->isPressed();
       btn->setPressed( false );
@@ -340,9 +342,10 @@ bool Menu::unselectAll()
 void Menu::_createBuildMenu( int type, Widget* parent )
 {
    List< BuildMenu* > menus = findChildren<BuildMenu*>();
-   foreach( item, menus ) { (*item)->deleteLater(); }
+   for( auto m : menus ) { m->deleteLater(); }
 
-   BuildMenu* buildMenu = BuildMenu::create( (development::Branch)type, this );
+   BuildMenu* buildMenu = BuildMenu::create( (development::Branch)type, this,
+                                             _d->city->getOption( PlayerCity::c3gameplay ) );
 
    if( buildMenu != NULL )
    {
@@ -358,15 +361,24 @@ void Menu::_createBuildMenu( int type, Widget* parent )
 
 Signal0<>& Menu::onHide() { return _d->onHideSignal; }
 
-void Menu::Impl::initActionButton(PushButton* btn, Point pos)
+void Menu::Impl::initActionButton(PushButton* btn, const Point& pos, bool pushBtn )
 {
   btn->setPosition( pos );
-  CONNECT( btn, onClicked(), this, Impl::playSound );
+  btn->setIsPushButton( pushBtn );
+  CONNECT( btn, onClickedEx(), this, Impl::playSound );
 }
 
-void Menu::Impl::playSound()
+void Menu::Impl::playSound( Widget* widget )
 {
-  events::GameEventPtr e = events::PlaySound::create( "panel", rand() % 2 + 1, 100 );
+  std::string sound = widget->getProperty( "sound" ).toString();
+  int index = 1;
+  if( sound.empty() )
+  {
+    sound = "panel";
+    index = math::random( 2 ) + 1;
+  }
+
+  GameEventPtr e = PlaySound::create( sound, index, 100 );
   e->dispatch();
 }
 
@@ -386,14 +398,14 @@ void Menu::Impl::updateBuildingOptions()
 
 ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city )
 {
-  const Picture& bground = Picture::load( ResourceGroup::panelBackground, 17 );
+  Picture bground( ResourceGroup::panelBackground, 17 );
 
   ExtentMenu* ret = new ExtentMenu( parent, id, Rect( 0, 0, bground.width(), parent->height() ) );
 
-  const Picture& bottom = Picture::load( ResourceGroup::panelBackground, 20 );
+  Picture bottom( ResourceGroup::panelBackground, 20 );
 
   ret->_d->background.clear();
-
+  ret->setID( Hash( CAESARIA_STR_A(ExtentMenu)) );
   ret->_d->background.append( bground, Point( 0, 0 ) );
   unsigned int y = bground.height();
   while( y < parent->height() )
@@ -416,16 +428,13 @@ ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle )
   setupUI( ":/gui/fullmenu.gui" );
 
   _d->minimizeButton->deleteLater();
-  _d->minimizeButton = _addButton( 97, false, 0, MAXIMIZE_ID, false, ResourceMenu::emptyMidPicId, _("##hide_bigpanel##") );
+  _d->minimizeButton = _addButton( 97, false, 0, MAXIMIZE_ID, false, ResourceMenu::emptyMidPicId, "hide_bigpanel" );
   _d->minimizeButton->setGeometry( Rect( Point( 127, 5 ), Size( 31, 20 ) ) );
   CONNECT( _d->minimizeButton, onClicked(), this, ExtentMenu::minimize );  
 
-  _d->initActionButton( _d->houseButton, Point( 13, 277 ) );
-  _d->houseButton->setIsPushButton( false );
-  _d->initActionButton( _d->clearButton, Point( 63, 277 ) );
-  _d->clearButton->setIsPushButton( false );
-  _d->initActionButton( _d->roadButton, Point( 113, 277 ) );
-  _d->roadButton->setIsPushButton( false );
+  _d->initActionButton( _d->houseButton, Point( 13, 277 ), false );
+  _d->initActionButton( _d->clearButton, Point( 63, 277 ), false );
+  _d->initActionButton( _d->roadButton, Point( 113, 277 ), false );
 
   _d->initActionButton( _d->waterButton, Point( 13, 313 ) );
   _d->initActionButton( _d->healthButton, Point( 63, 313 ) );
@@ -438,33 +447,37 @@ ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle )
   _d->initActionButton( _d->commerceButton, Point( 113, 385) );
 
   //header
-  _d->senateButton = _addButton( 79, false, 0, -1, false, -1, _("##senate##") );
+  _d->senateButton = _addButton( 79, false, 0, -1, false, -1, "senate" );
   _d->senateButton->setGeometry( Rect( Point( 7, 155 ), Size( 71, 23 ) ) );
-  _d->empireButton = _addButton( 82, false, 0, -1, false, -1, _("##empireBtnTooltip##") );
+
+  _d->empireButton = _addButton( 82, false, 0, -1, false, -1, "empire" );
   _d->empireButton->setGeometry( Rect( Point( 84, 155 ), Size( 71, 23 ) ) );
   
-  _d->missionButton = _addButton( 85, false, 0, -1, false, -1, _("##missionBtnTooltip##") );
+  _d->missionButton = _addButton( 85, false, 0, -1, false, -1, "mission" );
   _d->missionButton->setGeometry( Rect( Point( 7, 184 ), Size( 33, 22 ) ) );
-  _d->northButton = _addButton( 88, false, 0, -1, false, -1, _("##reorient_map_to_north##") );
+
+  _d->northButton = _addButton( 88, false, 0, -1, false, -1, "reorient_map_to_north" );
   _d->northButton->setGeometry( Rect( Point( 46, 184 ), Size( 33, 22 ) ) );
-  _d->rotateLeftButton = _addButton( 91, false, 0, -1, false, -1, _("##rotate_map_counter-clockwise##") );
+
+  _d->rotateLeftButton = _addButton( 91, false, 0, -1, false, -1, "rotate_map_counter_clockwise" );
   _d->rotateLeftButton->setGeometry( Rect( Point( 84, 184 ), Size( 33, 22 ) ) );
-  _d->rotateRightButton = _addButton( 94, false, 0, -1, false, -1, _("##rotate_map_clockwise##") );
+
+  _d->rotateRightButton = _addButton( 94, false, 0, -1, false, -1, "rotate_map_clockwise" ) ;
   _d->rotateRightButton->setGeometry( Rect( Point( 123, 184 ), Size( 33, 22 ) ) );
 
-  _d->cancelButton = _addButton( 171, false, 0, -1, false, -1, _("##cancelBtnTooltip##") );
+  _d->cancelButton = _addButton( 171, false, 0, -1, false, -1, "cancel" );
   _d->cancelButton->setGeometry( Rect( Point( 13, 421 ), Size( 39, 22 ) ) );
   _d->cancelButton->setEnabled( false );
 
-  _d->messageButton = _addButton( 115, false, 0, -1, false, -1, _("##messageBtnTooltip##") );
+  _d->messageButton = _addButton( 115, false, 0, -1, false, -1, "message" );
   _d->messageButton->setGeometry( Rect( Point( 63, 421 ), Size( 39, 22 ) ) );
-  _d->disasterButton = _addButton( 119, false, 0, -1, false, -1, _("##disasterBtnTooltip##") );
+
+  _d->disasterButton = _addButton( 119, false, 0, -1, false, -1, "troubles" );
   _d->disasterButton->setGeometry( Rect( Point( 113, 421 ), Size( 39, 22 ) ) );
   _d->disasterButton->setEnabled( false );
-  _d->disasterButton->setTooltipText( "##show_spots_of_city_troubles_tip##");
 
   _d->middleLabel = new Label(this, Rect( Point( 7, 216 ), Size( 148, 52 )) );
-  _d->middleLabel->setBackgroundPicture( Picture::load( ResourceGroup::menuMiddleIcons, ResourceMenu::emptyMidPicId ) );
+  _d->middleLabel->setBackgroundPicture( Picture( ResourceGroup::menuMiddleIcons, ResourceMenu::emptyMidPicId ) );
 
   _d->overlaysMenu = new OverlaysMenu( parent(), Rect( 0, 0, 160, 1 ), -1 );
   _d->overlaysMenu->hide();
@@ -483,7 +496,7 @@ bool ExtentMenu::onEvent(const NEvent& event)
     if( MenuButton* btn = safety_cast< MenuButton* >( event.gui.caller ) )
     {
       int picId = btn->midPicId() > 0 ? btn->midPicId() : ResourceMenu::emptyMidPicId;
-      _d->middleLabel->setBackgroundPicture( Picture::load( ResourceGroup::menuMiddleIcons, picId ) );
+      _d->middleLabel->setBackgroundPicture( Picture( ResourceGroup::menuMiddleIcons, picId ) );
     }
   }
 
@@ -510,6 +523,31 @@ void ExtentMenu::changeOverlay(int ovType)
   _d->overlaysButton->setText( _( layerName ) );
 }
 
+void ExtentMenu::showInfo(int type)
+{
+  int hash = Hash(CAESARIA_STR_A(ExtentedDateInfo));
+  ExtentedDateInfo* window = safety_cast<ExtentedDateInfo*>( findChild( hash ) );
+  if( !window )
+  {
+    window = new ExtentedDateInfo( this, Rect( Point(), size() ), hash );
+  }
+  else
+  {
+    window->deleteLater();
+  }
+}
+
+void ExtentMenu::setAlarmEnabled( bool enabled )
+{
+  if( enabled )
+  {
+    events::GameEventPtr e = events::PlaySound::create( "extm_alarm", 1, 100, audio::effects );
+    e->dispatch();
+  }
+
+  _d->disasterButton->setEnabled( enabled );
+}
+
 Signal1<int>& ExtentMenu::onSelectOverlayType() {  return _d->overlaysMenu->onSelectOverlayType(); }
 Signal0<>& ExtentMenu::onEmpireMapShow(){  return _d->empireButton->onClicked(); }
 Signal0<>& ExtentMenu::onAdvisorsWindowShow(){  return _d->senateButton->onClicked(); }
@@ -519,5 +557,4 @@ Signal0<>& ExtentMenu::onRotateRight() { return _d->rotateRightButton->onClicked
 Signal0<>& ExtentMenu::onRotateLeft() { return _d->rotateLeftButton->onClicked(); }
 Signal0<>& ExtentMenu::onMissionTargetsWindowShow(){  return _d->missionButton->onClicked(); }
 
-void ExtentMenu::setAlarmEnabled( bool enabled ){  _d->disasterButton->setEnabled( enabled );}
-}
+}//end namespace gui

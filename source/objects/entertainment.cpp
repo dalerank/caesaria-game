@@ -19,7 +19,6 @@
 #include "core/position.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/foreach.hpp"
-#include "city/helper.hpp"
 #include "training.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"
@@ -27,8 +26,6 @@
 #include "objects/constants.hpp"
 #include "game/gamedate.hpp"
 #include "walker/helper.hpp"
-
-using namespace constants;
 
 namespace {
 static const int idleDecreaseLevel = 10;
@@ -43,7 +40,7 @@ public:
 };
 
 EntertainmentBuilding::EntertainmentBuilding(const Service::Type service,
-                                             const TileOverlay::Type type,
+                                             const object::Type type,
                                              Size size )
   : ServiceBuilding(service, type, size), _d( new Impl )
 {
@@ -85,15 +82,16 @@ void EntertainmentBuilding::deliverService()
     _animationRef().stop(); //have no actors for the show
   }
 
-  foreach( item, _d->necWalkers )
+  for( auto item : _d->necWalkers )
   {
-    int level = traineeValue( *item );
-    setTraineeValue( *item, math::clamp( level - decreaseLevel, 0, 100) );
+    int level = traineeValue( item );
+    setTraineeValue( item, math::clamp( level - decreaseLevel, 0, 100) );
   }
 }
 
-int EntertainmentBuilding::visitorsNumber() const{  return 0;}
-unsigned int EntertainmentBuilding::walkerDistance() const {  return 35; }
+int EntertainmentBuilding::currentVisitors() const{  return 0;}
+int EntertainmentBuilding::maxVisitors() const { return 0; }
+unsigned int EntertainmentBuilding::walkerDistance() const { return 35; }
 
 float EntertainmentBuilding::evaluateTrainee(walker::Type traineeType)
 {
@@ -124,12 +122,12 @@ std::string EntertainmentBuilding::troubleDesc() const
 
   if( ret.empty() )
   {
-    foreach( item, _d->necWalkers )
+    for( auto item : _d->necWalkers )
     {
-      int level = traineeValue( *item );
+      int level = traineeValue( item );
       if( level == 0 )
       {
-        ret = utils::format( 0xff, "##need_trainee_%s##", WalkerHelper::getTypename( *item ).c_str() );
+        ret = utils::format( 0xff, "##need_trainee_%s##", WalkerHelper::getTypename( item ).c_str() );
         break;
       }
     }
@@ -150,8 +148,8 @@ void EntertainmentBuilding::_addNecessaryWalker(walker::Type type)
 bool EntertainmentBuilding::_isWalkerReady()
 {
   int maxLevel = 0;
-  foreach( item, _d->necWalkers )
-  {  maxLevel = std::max( maxLevel, traineeValue( *item ) ); }
+  for( auto item : _d->necWalkers )
+    maxLevel = std::max( maxLevel, traineeValue( item ) );
 
   return maxLevel;
 }

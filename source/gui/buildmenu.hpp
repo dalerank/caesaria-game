@@ -32,17 +32,17 @@ public:
   static const int subMenuCreateIdHigh = 0x1000;
 
   BuildMenu( Widget* parent, const Rect& rectangle, int id,
-             city::development::Branch branch );
+             city::development::Branch branch);
   virtual ~BuildMenu();
 
   static BuildMenu* create( const city::development::Branch menuType,
-                            Widget* parent );
+                            Widget* parent, bool c3gameplay );
 
   // add the subMenu in the menu.
-  void addSubmenuButton(const city::development::Branch menuType, const std::string &text);
+  void addSubmenuButton(const city::development::Branch menuType, const std::string& text);
 
   // add the button in the menu.
-  void addBuildButton(const gfx::TileOverlay::Type buildingType);
+  void addBuildButton(const object::Type buildingType);
 
   virtual bool isPointInside(const Point& point) const;
 
@@ -51,10 +51,11 @@ public:
   void setBuildOptions(const city::development::Options& options );
 
 protected:
-  void _resolveButtonClick();
+  void _resolveButtonClick(Widget* widget);
 
   city::development::Options _options;
   city::development::Branch _branch;
+  bool _c3gameplay;
 };
 
 class BuildMenu_water : public BuildMenu

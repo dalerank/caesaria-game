@@ -39,7 +39,7 @@ void Console::SaveCommands_()																	//
 
   foreach( it, console_history_ )							//
   {
-    commands[ *it ] = "";
+    commands[ *it ] = Variant( "" );
   }
 
   config::save( commands, path );
@@ -112,11 +112,11 @@ void Console::draw( gfx::Engine& painter )
 {
   resizeMessages();
 
-    if( !_font.isValid() )
-    {
-        Widget::draw( painter );
-        return;
-    }
+  if( !_font.isValid() )
+  {
+    Widget::draw( painter );
+    return;
+  }
 
   if( visible() )															// render only if the console is visible
 	{
@@ -134,7 +134,7 @@ void Console::draw( gfx::Engine& painter )
 			}
 		}
 
-    painter.draw( *_bgpic, absoluteRect().lefttop() );	//draw the bg as per configured color
+    painter.draw( _bgpic, absoluteRect().lefttop() );	//draw the bg as per configured color
 		
     Rect textRect,shellRect;										//we calculate where the message log shall be printed and where the prompt shall be printed
     calculatePrintRects(textRect,shellRect);
@@ -146,12 +146,12 @@ void Console::draw( gfx::Engine& painter )
 			return;
 		}
 		
-    Rect lineRect( textRect.UpperLeftCorner.x(),						//calculate the line rectangle
-                textRect.UpperLeftCorner.y(),
-                textRect.LowerRightCorner.x(),
-                textRect.UpperLeftCorner.y() + lineHeight);
+    Rect lineRect( textRect.left(),						//calculate the line rectangle
+                   textRect.top(),
+                   textRect.right(),
+                   textRect.bottom() + lineHeight);
 
-    NColor fontcolor = DefaultColors::white;
+//    NColor fontcolor = DefaultColors::white;
 
   /* for(unsigned int i = 0; i < console_messages_.size(); i++)
    {
@@ -367,10 +367,10 @@ void Console::calculatePrintRects( Rect& textRect, Rect& shellRect)  //! calcula
   if( calculateLimits(maxLines,lineHeight,fontHeight) )
 	{
     shellRect = absoluteRect();
-    shellRect.UpperLeftCorner.ry() = shellRect.LowerRightCorner.y() - lineHeight;
+    shellRect.setTop( shellRect.bottom() - lineHeight );
 
     textRect = absoluteRect();
-    textRect.LowerRightCorner.ry() = textRect.UpperLeftCorner.y() + lineHeight;
+    textRect.setBottom( textRect.top() + lineHeight );
 	}
 	else
 	{

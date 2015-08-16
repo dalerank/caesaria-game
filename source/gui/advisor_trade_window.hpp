@@ -18,7 +18,7 @@
 #ifndef __CAESARIA_ADVISOR_TRADE_WINDOW_H_INCLUDED__
 #define __CAESARIA_ADVISOR_TRADE_WINDOW_H_INCLUDED__
 
-#include "window.hpp"
+#include "advisor_base_window.hpp"
 #include "core/scopedptr.hpp"
 #include "core/signals.hpp"
 #include "game/predefinitions.hpp"
@@ -29,7 +29,7 @@ namespace gui
 namespace advisorwnd
 {
 
-class Trade : public Window
+class Trade : public Base
 {
 public:
   Trade( PlayerCityPtr city, Widget* parent, int id );
@@ -46,7 +46,7 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-}
+}//end namespace advisorwnd
 
 }//end namespace gui
 #endif //__CAESARIA_ADVISOR_TRADE_WINDOW_H_INCLUDED__

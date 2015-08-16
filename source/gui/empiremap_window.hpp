@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_EMPIREMAP_WINDOW_H_INCLUDED__
 #define __CAESARIA_EMPIREMAP_WINDOW_H_INCLUDED__
@@ -47,6 +47,7 @@ protected:
 
   Widget* _resetInfoPanel();
   void _showHelp();
+  void _toggleAi();
 
   class Impl;
   ScopedPtr< Impl > _d;

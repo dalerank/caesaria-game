@@ -33,7 +33,7 @@ void ModalScreen::assignTo( Widget* widget )
 }
 
 ModalScreen::ModalScreen( Widget* parent, int id)
-: Widget( parent->ui()->rootWidget(), id, Rect(0, 0, parent->width(), parent->height() ) ),
+: Widget( parent->ui()->rootWidget(), id, Rect( 0,0, 1, 1) ),
           _mouseDownTime(0)
 {
   #ifdef _DEBUG
@@ -90,7 +90,7 @@ bool ModalScreen::visible() const
 
 bool ModalScreen::isPointInside(const Point& point) const
 {
-    return true;
+  return true;
 }
 
 //! called if an event happened.
@@ -99,60 +99,60 @@ bool ModalScreen::onEvent(const NEvent& event)
   if (!enabled() || !visible() )
     return Widget::onEvent(event);
 
-	switch(event.EventType)
-	{
-	case sEventGui:
-		switch(event.gui.type)
-		{
-		case guiElementFocused:
-			if ( !_canTakeFocus(event.gui.caller))
-			{
-				if ( !children().empty() )
-					(*children().begin())->setFocus();
-				else
-					setFocus();
-			}
-			Widget::onEvent(event);
-			return false;
+  switch(event.EventType)
+  {
+  case sEventGui:
+    switch(event.gui.type)
+    {
+    case guiElementFocused:
+      if ( !_canTakeFocus(event.gui.caller))
+      {
+        if ( !children().empty() )
+          (*children().begin())->setFocus();
+        else
+          setFocus();
+      }
+      Widget::onEvent(event);
+      return false;
 
-		case guiElementFocusLost:
-			if ( !_canTakeFocus(event.gui.element))
-			{
-				if ( isMyChild(event.gui.caller) )
-				{
-					if ( !children().empty() )
-						(*children().begin())->setFocus();
-					else
-						setFocus();
-				}
-				else
-				{
-					_mouseDownTime = DateTime::elapsedTime();
-				}
-				return true;
-			}
-			else
-			{
-				return Widget::onEvent(event);
-			}
+    case guiElementFocusLost:
+      if ( !_canTakeFocus(event.gui.element))
+      {
+        if ( isMyChild(event.gui.caller) )
+        {
+                if ( !children().empty() )
+                        (*children().begin())->setFocus();
+                else
+                        setFocus();
+        }
+        else
+        {
+                _mouseDownTime = DateTime::elapsedTime();
+        }
+        return true;
+      }
+      else
+      {
+        return Widget::onEvent(event);
+      }
 
-		case guiElementClosed:
-			// do not interfere with children being removed
-			return Widget::onEvent(event);
+    case guiElementClosed:
+      // do not interfere with children being removed
+      return Widget::onEvent(event);
 
-		default:
-		break;
-		}
-		break;
-	case sEventMouse:
-		if( event.mouse.type == mouseLbtnPressed )
-		{
-			_mouseDownTime = DateTime::elapsedTime();
-		}
-	
-	default:
-	break;
-	}
+    default:
+    break;
+    }
+    break;
+  case sEventMouse:
+    if( event.mouse.type == mouseLbtnPressed )
+    {
+      _mouseDownTime = DateTime::elapsedTime();
+    }
+
+  default:
+  break;
+}
 
 	Widget::onEvent(event);	// anyone knows why events are passed on here? Causes p.e. problems when this is child of a CGUIWindow.
 
@@ -175,8 +175,8 @@ void ModalScreen::draw(gfx::Engine& painter )
 			if( (*w)->visible())
 			{
 				r = (*w)->absoluteRect();
-				r.LowerRightCorner += Point( 1, 1 );
-				r.UpperLeftCorner -= Point( 1, 1 );
+        r._bottomright += Point( 1, 1 );
+        r._lefttop -= Point( 1, 1 );
 
 				//painter.drawRectangle( 0xffc0c0c0, r, &getAbsoluteClippingRectRef() );
 			}
@@ -186,15 +186,27 @@ void ModalScreen::draw(gfx::Engine& painter )
 	Widget::draw( painter );
 }
 
+void ModalScreen::beforeDraw(gfx::Engine& painter)
+{
+  const Size& screenSize = painter.screenSize();
+  if( right() != screenSize.width() || bottom() != screenSize.height() )
+  {
+    // resize gui environment
+    setGeometry( Rect( Point( 0, 0 ), screenSize ) );
+  }
+
+  Widget::beforeDraw( painter );
+}
+
 //! Removes a child.
 void ModalScreen::removeChild(Widget* child)
 {
-	Widget::removeChild(child);
+  Widget::removeChild(child);
 
-	if (children().empty())
-	{
-		deleteLater();
-	}
+  if( children().empty() )
+  {
+    deleteLater();
+  }
 }
 
 
@@ -206,7 +218,7 @@ void ModalScreen::addChild(Widget* child)
 }
 
 
-void ModalScreen::_resizeEvent()
+void ModalScreen::_finalizeResize()
 {
   //setGeometry( RectF( 0, 0, 1, 1 ) );
 }

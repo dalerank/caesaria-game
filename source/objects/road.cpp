@@ -23,33 +23,33 @@
 #include "core/variant_map.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
-#include "city/helper.hpp"
+#include "core/utils.hpp"
+#include "city/statistic.hpp"
 #include "core/foreach.hpp"
+#include "events/warningmessage.hpp"
 #include "objects_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::road, Road)
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::plaza, Plaza)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::road, Road)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::plaza, Plaza)
 
 namespace {
-static Renderer::PassQueue roadPassQueue=Renderer::PassQueue(1,Renderer::ground);
 typedef enum { road2north = 0x1, road2east = 0x2, road2south = 0x4, road2west = 0x8 } RoadDirection;
 }
 
 Road::Road()
-  : Construction( objects::road, Size(1) )
+  : Construction( object::road, Size(1) )
 {
   _paved = 0;
 }
 
-bool Road::build( const CityAreaInfo& info )
+bool Road::build( const city::AreaInfo& info )
 {
   info.city->setOption( PlayerCity::updateRoads, 1 );
 
   Tilemap& tilemap = info.city->tilemap();
-  TileOverlayPtr overlay = tilemap.at( info.pos ).overlay();
+  OverlayPtr overlay = tilemap.at( info.pos ).overlay();
 
   if( is_kind_of<Road>( overlay ) )
   {
@@ -69,16 +69,27 @@ bool Road::build( const CityAreaInfo& info )
   return true;
 }
 
-bool Road::canBuild( const CityAreaInfo& areaInfo ) const
+bool Road::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool is_free = Construction::canBuild( areaInfo );
 
   if( is_free )
     return true; // we try to build on free tile
 
-  TileOverlayPtr overlay  = areaInfo.city->tilemap().at( areaInfo.pos ).overlay();
+  OverlayPtr overlay  = areaInfo.city->tilemap().at( areaInfo.pos ).overlay();
 
-  Picture pic = picture( areaInfo );
+  Picture pic;
+  if( overlay.is<Aqueduct>() )
+  {
+    TilesArray tiles = areaInfo.aroundTiles;
+    tiles.push_back( &tile() );
+    city::AreaInfo advInfo = { areaInfo.city, areaInfo.pos, tiles };
+    pic = overlay.as<Aqueduct>()->picture( advInfo );
+  }
+  else
+  {
+    pic = picture( areaInfo );
+  }
   const_cast<Road*>( this )->setPicture( pic );
 
   return ( is_kind_of<Aqueduct>( overlay ) || is_kind_of<Road>( overlay ) );
@@ -89,7 +100,7 @@ void Road::initTerrain(Tile& terrain)
   terrain.setFlag( Tile::tlRoad, true );
 }
 
-const gfx::Picture& Road::picture( const CityAreaInfo& areaInfo) const
+const gfx::Picture& Road::picture( const city::AreaInfo& areaInfo) const
 {
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
   if (!areaInfo.aroundTiles.empty())
@@ -186,25 +197,27 @@ const gfx::Picture& Road::picture( const CityAreaInfo& areaInfo) const
     }
   }
 
-  return Picture::load( ResourceGroup::road, index);
+  static Picture ret;
+  ret.load( ResourceGroup::road, index);
+
+  return ret;
 }
 
 bool Road::isWalkable() const {  return true;}
 bool Road::isFlat() const{  return true;}
 void Road::updatePicture()
 {
-  CityAreaInfo info = { _city(), _masterTile() ? _masterTile()->epos() : TilePos(), TilesArray() };
+  city::AreaInfo info = { _city(), _masterTile() ? _masterTile()->epos() : TilePos(), TilesArray() };
   setPicture( picture( info ) );
 }
-bool Road::isNeedRoadAccess() const {  return false; }
+bool Road::isNeedRoad() const {  return false; }
 
 void Road::destroy()
 {
-  if( state( lockTerrain ) > 0 )
+  if( state( pr::lockTerrain ) > 0 )
     return;
 
-  city::Helper helper( _city() );
-  TilesArray tiles = helper.getArea( this );
+  TilesArray tiles = area();
 
   foreach( it, tiles )
   {
@@ -225,9 +238,9 @@ void Road::appendPaved( int value )
   }
 }
 
-void Road::computeAccessRoads()
+void Road::computeRoadside()
 {
-  Construction::computeAccessRoads();
+  Construction::computeRoadside();
   updatePicture();
 }
 
@@ -238,7 +251,6 @@ void Road::changeDirection(Tile *masterTile, Direction direction)
 }
 
 int Road::pavedValue() const {  return _paved; }
-Renderer::PassQueue Road::passQueue() const{  return roadPassQueue;}
 
 void Road::save(VariantMap& stream) const
 {
@@ -255,6 +267,8 @@ void Road::load(const VariantMap& stream)
   updatePicture();
 }
 
+REGISTER_PARAM_H( errorBuild )
+
 // I didn't decide what is the best approach: make Plaza as constructions or as upgrade to roads
 Plaza::Plaza()
 {
@@ -262,43 +276,51 @@ Plaza::Plaza()
   // because as we remove original road we need to recompute adjacent tiles
   // or we will run into big troubles
 
-  setType(objects::plaza);
-  setPicture( Picture::load( ResourceGroup::entertaiment, 102) ); // 102 ~ 107
+  setType(object::plaza);
+  _picture().load( ResourceGroup::entertainment, 102 ); // 102 ~ 107
   setSize( Size( 1 ) );
 }
 
 // Plazas can be built ONLY on top of existing roads
 // Also in original game there was a bug:
 // gamer could place any number of plazas on one road tile (!!!)
-bool Plaza::canBuild(const CityAreaInfo& areaInfo) const
+bool Plaza::canBuild(const city::AreaInfo& areaInfo) const
 {
   //std::cout << "Plaza::canBuild" << std::endl;
   Tilemap& tilemap = areaInfo.city->tilemap();
 
   bool is_constructible = true;
 
-  TilesArray area = tilemap.getArea( areaInfo.pos, size() ); // something very complex ???
-  foreach( tile, area )
-  {
-    is_constructible &= is_kind_of<Road>( (*tile)->overlay() );
-  }
+  TilesArea area( tilemap, areaInfo.pos, size() ); // something very complex ???
+  for( auto tile : area )
+    is_constructible &= tile->overlay().is<Road>();
+
+  const_cast<Plaza*>( this )->setState( pr::errorBuild, !is_constructible  );
 
   return is_constructible;
 }
 
-const Picture& Plaza::picture(const CityAreaInfo& areaInfo) const
+std::string Plaza::errorDesc() const
+{
+  if( state( pr::errorBuild ) )
+    return "##need_road_for_build##";
+
+  return "";
+}
+
+const Picture& Plaza::picture(const city::AreaInfo& areaInfo) const
 {
   return picture();
 }
 
 void Plaza::appendPaved(int) {}
 
-bool Plaza::build( const CityAreaInfo& info )
+bool Plaza::build( const city::AreaInfo& info )
 {
   RoadPtr road = ptr_cast<Road>( info.city->getOverlay( info.pos ) );
   if( road.isValid() )
   {
-    road->setState( (Construction::Param)Road::lockTerrain, 1 );
+    road->setState( pr::lockTerrain, 1 );
   }
 
   Construction::build( info );
@@ -333,23 +355,21 @@ void Plaza::load(const VariantMap& stream)
 
   if( size().area() > 1 )
   {
-    CityAreaInfo info = { _city(), pos(), TilesArray() };
+    city::AreaInfo info = { _city(), pos(), TilesArray() };
     Construction::build( info );
   }
 
-  setPicture( Picture::load( stream.get( "picture" ).toString() ) );
+  _picture().load( stream.get( "picture" ).toString() );
 }
 
 const Picture& Plaza::picture() const
 {
-  return tile().masterTile()
-           ? Construction::picture()
-           : Picture::load( ResourceGroup::entertaiment, 102);
+  return Construction::picture();
 }
 
 void Plaza::updatePicture()
 {
-  TilesArray nearTiles = _city()->tilemap().getArea( pos(), Size(2) );
+  TilesArea nearTiles( _city()->tilemap(), pos(), Size(2) );
 
   bool canGrow2squarePlaza = ( nearTiles.size() == 4 ); // be carefull on map edges
   foreach( tile, nearTiles )
@@ -369,12 +389,11 @@ void Plaza::updatePicture()
       }
     }
 
-    city::Helper helper( _city() );
-    helper.updateDesirability( this, city::Helper::offDesirability );
-    setSize( 2 );
-    CityAreaInfo info = { _city(), pos(), TilesArray() };
+    Desirability::update( _city(), this, Desirability::off );
+    setSize( Size( 2 ) );
+    city::AreaInfo info = { _city(), pos(), TilesArray() };
     Construction::build( info );
     setPicture( MetaDataHolder::randomPicture( type(), size() ) );
-    helper.updateDesirability( this, city::Helper::onDesirability );
+    Desirability::update( _city(), this, Desirability::on );
   }
 }

@@ -26,11 +26,11 @@
 
 namespace events
 {
+typedef SmartList<GameEvent> Events;
 
 class Dispatcher::Impl
 {
 public:
-  typedef SmartList< GameEvent > Events;
 
   Events events;
   Events newEvents;
@@ -51,13 +51,12 @@ void Dispatcher::append(GameEventPtr event)
   else
   {
     Logger::warning( "EventsDispatcher: cant add event but is null" );
-    Stacktrace::print();
   }
 }
 
 void Dispatcher::update(Game& game, unsigned int time )
 {
-  for( Impl::Events::iterator it=_d->events.begin(); it != _d->events.end();  )
+  for( Events::iterator it=_d->events.begin(); it != _d->events.end();  )
   {
     GameEventPtr e = *it;
 
@@ -85,9 +84,9 @@ VariantMap Dispatcher::save() const
 {
   VariantMap ret;
   int index = 0;
-  foreach( event, _d->events )
+  for( auto event : _d->events )
   {
-    ret[ utils::format( 0xff, "event_%d", index++ ) ] = (*event)->save();
+    ret[ utils::format( 0xff, "event_%d", index++ ) ] = event->save();
   }
 
   return ret;
@@ -95,9 +94,9 @@ VariantMap Dispatcher::save() const
 
 void Dispatcher::load(const VariantMap& stream)
 {
-  foreach( it, stream )
+  for( auto it : stream )
   {
-    GameEventPtr e = PostponeEvent::create( it->first, it->second.toMap() );
+    GameEventPtr e = PostponeEvent::create( it.first, it.second.toMap() );
 
     if( e.isValid() )
     {
@@ -106,7 +105,7 @@ void Dispatcher::load(const VariantMap& stream)
   }
 }
 
-void Dispatcher::load(vfs::Path filename, const std::string& section)
+void Dispatcher::load( const vfs::Path& filename, const std::string& section)
 {
   VariantMap vm = config::load( filename );
 

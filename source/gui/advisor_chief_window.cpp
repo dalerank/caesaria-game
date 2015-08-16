@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "advisor_chief_window.hpp"
 #include "gfx/decorator.hpp"
@@ -24,12 +24,11 @@
 #include "core/utils.hpp"
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
-#include "game/enums.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "objects/house.hpp"
 #include "core/color.hpp"
 #include "gui/texturedbutton.hpp"
-#include "city/funds.hpp"
+#include "game/funds.hpp"
 #include "objects/barracks.hpp"
 #include "objects/house_level.hpp"
 #include "objects/constants.hpp"
@@ -41,6 +40,7 @@
 #include "city/cityservice_military.hpp"
 #include "city/cityservice_disorder.hpp"
 #include "city/cityservice_health.hpp"
+#include "city/cityservice_religion.hpp"
 #include "city/cityservice_festival.hpp"
 #include "city/goods_updater.hpp"
 #include "city/sentiment.hpp"
@@ -50,8 +50,8 @@
 #include "world/romechastenerarmy.hpp"
 #include "world/empire.hpp"
 #include "core/logger.hpp"
+#include "city/states.hpp"
 
-using namespace constants;
 using namespace gfx;
 using namespace city;
 
@@ -60,6 +60,11 @@ namespace gui
 
 namespace advisorwnd
 {
+
+enum { cityHavenotFood=-4, cityHavenotFoodNextMonth=0, cityHaveSmallFoodNextMonth=1,
+       cityPriduceMoreFood=2,
+       bigWorklessPercent=10, enemyNearCityGatesDistance=40, enemyNearCityDistance=100,
+       bigThreatValue=100, serviceAwesomeCoverage=100, haveThreatDistance=200, infinteDistance=999 };
 
 typedef enum { atEmployers=0, profitState,
                migrationState, foodStockState,
@@ -70,7 +75,8 @@ typedef enum { atEmployers=0, profitState,
                atSentiment,
                atCount } AdviceType;
 
-static const std::string titles[atCount] = {
+static const std::string titles[atCount] =
+{
   "##advchief_employment##",
   "##advchief_finance##",
   "##advchief_migration##",
@@ -93,7 +99,9 @@ public:
   {
     _title = title;
 
-    setIcon( Picture::load( ResourceGroup::panelBackground, 48 ), Point( 5, 5 ) );
+    Picture pic;
+    pic.load( ResourceGroup::panelBackground, 48 ), Point( 5, 5 );
+    setIcon( pic, Point( 5, 5 ) );
     setFont( Font::create( FONT_2 ) );
 
     setTextOffset( Point( 255, 0) );
@@ -104,22 +112,23 @@ public:
     Label::_updateTexture( painter );
 
     Font font = Font::create( FONT_2_WHITE );
-    font.draw( *_textPictureRef(), _(_title), Point( 20, 0), true );
+    font.draw( _textPicture(), _(_title), Point( 20, 0), true );
   }
 
   std::string _title;
 };
 
-class AdvisorChief::Impl
+class Chief::Impl
 {
 public:  
-  PlayerCityPtr city;
-  std::vector<InfomationRow*> rows;
+  typedef std::vector<InfomationRow*> InformationTable;
 
+  PlayerCityPtr city;
+  InformationTable rows;
   TexturedButton* btnHelp;
 
-  void drawReportRow( AdviceType, std::string text, NColor color );
-
+public:
+  void drawReportRow( AdviceType, std::string text, NColor color=DefaultColors::black );
   void drawEmploymentState();
   void drawProfitState();
   void drawMigrationState();
@@ -136,19 +145,16 @@ public:
   void initRows( Widget* parent, int width );
 };
 
-AdvisorChief::AdvisorChief(PlayerCityPtr city, Widget* parent, int id )
-  : Window( parent, Rect( 0, 0, 1, 1 ), "" ), __INIT_IMPL( AdvisorChief )
+Chief::Chief(PlayerCityPtr city, Widget* parent, int id )
+  : Base( parent, city ), __INIT_IMPL( Chief )
 {
-  __D_IMPL(_d, AdvisorChief )
+  __D_IMPL(_d, Chief )
   setupUI( ":/gui/chiefadv.gui" );
-
-  _d->city = city;
-  setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
   WidgetEscapeCloser::insertTo( this );  
 
+  _d->city = city;
   _d->initRows( this, width() );
-
   _d->drawEmploymentState();
   _d->drawProfitState();
   _d->drawMigrationState();
@@ -163,10 +169,10 @@ AdvisorChief::AdvisorChief(PlayerCityPtr city, Widget* parent, int id )
   _d->drawSentiment();
 
   TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
-  CONNECT( btnHelp, onClicked(), this, AdvisorChief::_showHelp );
+  CONNECT( btnHelp, onClicked(), this, Chief::_showHelp );
 }
 
-void AdvisorChief::Impl::initRows( Widget* parent, int width )
+void Chief::Impl::initRows( Widget* parent, int width )
 {
   Point startPoint( 20, 60 );
   Point offset( 0, 27 );
@@ -177,7 +183,7 @@ void AdvisorChief::Impl::initRows( Widget* parent, int width )
   }
 }
 
-void AdvisorChief::draw( gfx::Engine& painter )
+void Chief::draw( gfx::Engine& painter )
 {
   if( !visible() )
     return;
@@ -185,12 +191,12 @@ void AdvisorChief::draw( gfx::Engine& painter )
   Window::draw( painter );
 }
 
-void AdvisorChief::_showHelp()
+void Chief::_showHelp()
 {
   DictionaryWindow::show( this, "advisor_chief" );
 }
 
-void AdvisorChief::Impl::drawReportRow( AdviceType type, std::string text, NColor color=DefaultColors::black )
+void Chief::Impl::drawReportRow( AdviceType type, std::string text, NColor color )
 {
   if( type < atCount )
   {
@@ -202,28 +208,27 @@ void AdvisorChief::Impl::drawReportRow( AdviceType type, std::string text, NColo
   }
 }
 
-void AdvisorChief::Impl::drawEmploymentState()
+void Chief::Impl::drawEmploymentState()
 {
-  int currentWorkers, maxWorkers;
-  statistic::getWorkersNumber( city, currentWorkers, maxWorkers );
-  int workless = statistic::getWorklessPercent( city );
+  Statistic::WorkersInfo wInfo = city->statistic().workers.details();
+  int workless = city->statistic().workers.worklessPercent();
   std::string text;
   NColor color = DefaultColors::black;
 
-  if( city->population() == 0 )
+  if( city->states().population == 0 )
   {
     text = _("##no_people_in_city##");
     color =  DefaultColors::brown;
   }
   else
   {
-    int needWorkersNumber = maxWorkers - currentWorkers;
+    int needWorkersNumber = wInfo.need - wInfo.current;
     if( needWorkersNumber > 10 )
     {
       text = utils::format( 0xff, "%s %d", _("##advchief_needworkers##"), needWorkersNumber );
       color = DefaultColors::brown;
     }
-    else if( workless > 10 )
+    else if( workless > bigWorklessPercent )
     {
       text = utils::format( 0xff, "%s %d%%", _("##advchief_workless##"), workless );
       color = DefaultColors::brown;
@@ -234,20 +239,20 @@ void AdvisorChief::Impl::drawEmploymentState()
   drawReportRow( atEmployers, text, color );
 }
 
-void AdvisorChief::Impl::drawProfitState()
+void Chief::Impl::drawProfitState()
 {
   std::string text;
-  int profit = city->funds().profit();
-  if( profit >= 0 )  {    text = utils::format( 0xff, "%s %d", _("##advchief_haveprofit##"), profit );  }
-  else  {    text = utils::format( 0xff, "%s %d", _("##advchief_havedeficit##"), profit );  }
+  int profit = city->treasury().profit();
+  std::string prefix = (profit >= 0 ? "##advchief_haveprofit##" : "##advchief_havedeficit##");
+  text = _(prefix) + std::string(" ") + utils::i2str( profit );
+  NColor textColor = profit > 0 ? DefaultColors::black : DefaultColors::brown;
 
-  drawReportRow( profitState, text,
-                 profit > 0 ? DefaultColors::black : DefaultColors::brown );
+  drawReportRow( profitState, text, textColor );
 }
 
-void AdvisorChief::Impl::drawMigrationState()
+void Chief::Impl::drawMigrationState()
 {
-  SmartPtr<city::Migration> migration = ptr_cast<city::Migration>( city->findService( city::Migration::defaultName() ) );
+  MigrationPtr migration = city->statistic().services.find<Migration>();
 
   std::string text = _("##migration_unknown_reason##");
   if( migration.isValid() )
@@ -258,19 +263,9 @@ void AdvisorChief::Impl::drawMigrationState()
   drawReportRow( migrationState, _( text ) );
 }
 
-void AdvisorChief::Impl::drawFoodStockState()
-{ 
-  SmartList<city::GoodsUpdater> goodsUpdaters;
-  goodsUpdaters << city->services();
-
-  bool romeSendWheat = false;
-  foreach( it, goodsUpdaters )
-  {
-    if( (*it)->goodType() == good::wheat )
-    {
-      romeSendWheat = true;
-    }
-  }
+void Chief::Impl::drawFoodStockState()
+{   
+  bool romeSendWheat = city->statistic().goods.isRomeSend( good::wheat );
 
   std::string text = _("##food_stock_unknown_reason##");
   if( romeSendWheat )
@@ -279,25 +274,24 @@ void AdvisorChief::Impl::drawFoodStockState()
   }
   else
   {
-    city::InfoPtr info;
-    info << city->findService( city::Info::defaultName() );
+    InfoPtr info = city->statistic().services.find<Info>();
 
     if( info.isValid() )
     {
-      city::Info::Parameters lastMonth = info->lastParams();
-      city::Info::Parameters prevMonth = info->params( 1 );
+      Info::Parameters lastMonth = info->lastParams();
+      Info::Parameters prevMonth = info->params( Info::lastMonth );
 
-      if( lastMonth[ city::Info::foodStock ] < prevMonth[ city::Info::foodStock ] )
+      if( lastMonth[ Info::foodStock ] < prevMonth[ Info::foodStock ] )
       {
         text = "##no_food_stored_last_month##";
       }
       else
       {
-        int monthWithFood = lastMonth[ city::Info::monthWithFood ];
+        int monthWithFood = lastMonth[ Info::monthWithFood ];
         switch( monthWithFood )
         {
-          case 0: text = "##have_no_food_on_next_month##"; break;
-          case 1: text = "##small_food_on_next_month##"; break;
+          case cityHavenotFoodNextMonth: text = "##have_no_food_on_next_month##"; break;
+          case cityHaveSmallFoodNextMonth: text = "##small_food_on_next_month##"; break;
           case 2: text = "##some_food_on_next_month##"; break;
           case 3: text = "##our_foods_level_are_low##"; break;
 
@@ -308,28 +302,27 @@ void AdvisorChief::Impl::drawFoodStockState()
     }
   }
 
-  drawReportRow( foodStockState, text );
+  drawReportRow( foodStockState, _(text) );
 }
 
-void AdvisorChief::Impl::drawFoodConsumption()
+void Chief::Impl::drawFoodConsumption()
 {
   std::string text;
-  city::InfoPtr info;
-  info << city->findService( city::Info::defaultName() );
+  city::InfoPtr info = city->statistic().services.find<Info>();
 
-  int fk = info->lastParams()[ city::Info::foodKoeff ];
+  int fk = info->lastParams()[ Info::foodKoeff ];
 
-  if( fk < -4 )
+  if( fk < cityHavenotFood )
   {
     text = "##we_eat_much_then_produce##";
   }
-  else if( fk > 2 )
+  else if( fk > cityPriduceMoreFood )
   {
     text = "##we_produce_much_than_eat##";
   }
   else
   {
-    switch( info->lastParams()[ city::Info::foodKoeff ] )
+    switch( info->lastParams()[ Info::foodKoeff ] )
     {
     case -3: text = "##we_eat_more_thie_produce##"; break;
     case -2: text = "##we_eat_some_then_produce##"; break;
@@ -343,41 +336,40 @@ void AdvisorChief::Impl::drawFoodConsumption()
   drawReportRow( foodConsumption, _(text) );
 }
 
-void AdvisorChief::Impl::drawMilitary()
+void Chief::Impl::drawMilitary()
 {
   StringArray reasons;
-  city::MilitaryPtr mil;
-  mil << city->findService( city::Military::defaultName() );
+  MilitaryPtr mil = city->statistic().services.find<Military>();
   bool isBesieged = false;
 
   if( mil.isValid() )
   {
-    isBesieged = mil->threatValue() > 100;
+    isBesieged = mil->threatValue() > bigThreatValue;
 
     if( !isBesieged )
     {
-      city::Military::Notification n = mil->priorityNotification();          
+      Notification n = mil->priorityNotification();
       reasons << n.message;
     }    
   }
 
   if( reasons.empty() )
   {
-    world::ObjectList objs = city->empire()->findObjects( city->location(), 200 );   
+    world::ObjectList objs = city->empire()->findObjects( city->location(), haveThreatDistance );
 
     if( !objs.empty() )
     {
-      int minDistance = 999;
+      int minDistance = infinteDistance;
       world::ObjectPtr maxThreat;
-      foreach( i, objs )
+      for( auto obj : objs )
       {
-        if( is_kind_of<world::Barbarian>( *i ) ||
-            is_kind_of<world::RomeChastenerArmy>( *i ) )
+        if( is_kind_of<world::Barbarian>( obj ) ||
+            is_kind_of<world::RomeChastenerArmy>( obj ) )
         {
-          int distance = city->location().distanceTo( (*i)->location() );
+          int distance = city->location().distanceTo( obj->location() );
           if( minDistance > distance )
           {
-            maxThreat = *i;
+            maxThreat = obj;
             minDistance = distance;
           }
         }
@@ -385,12 +377,12 @@ void AdvisorChief::Impl::drawMilitary()
 
       if( maxThreat.isValid() )
       {
-        if( minDistance <= 40 )
+        if( minDistance <= enemyNearCityGatesDistance )
         {
           std::string threatText = utils::format( 0xff, "##%s_troops_at_our_gates##", maxThreat->type().c_str() );
           reasons << threatText;
         }
-        else if( minDistance <= 100 )
+        else if( minDistance <= enemyNearCityDistance )
         {
           reasons << "##our_enemies_near_city##";
         }
@@ -404,14 +396,12 @@ void AdvisorChief::Impl::drawMilitary()
 
   if( reasons.empty() )
   {
-    city::Helper helper( city );
-
-    BarracksList barracks = helper.find<Barracks>( objects::barracks );
+    BarracksList barracks = city->statistic().objects.find<Barracks>();
 
     bool needWeapons = false;
-    foreach( it, barracks )
+    for( auto barrack : barracks )
     {
-      if( (*it)->isNeedWeapons() )
+      if( barrack->isNeedWeapons() )
       {
         needWeapons = true;
         break;
@@ -432,13 +422,11 @@ void AdvisorChief::Impl::drawMilitary()
   drawReportRow( atMilitary, _(reasons.random()) );
 }
 
-void AdvisorChief::Impl::drawCrime()
+void Chief::Impl::drawCrime()
 {
   std::string text;
 
-  city::DisorderPtr ds;
-  ds << city->findService( city::Disorder::defaultName() );
-
+  DisorderPtr ds = city->statistic().services.find<Disorder>();
   if( ds.isValid() )
   {
     text = ds->reason();
@@ -449,12 +437,11 @@ void AdvisorChief::Impl::drawCrime()
   drawReportRow( atCrime, _(text) );
 }
 
-void AdvisorChief::Impl::drawHealth()
+void Chief::Impl::drawHealth()
 {
   std::string text;
 
-  city::HealthCarePtr cityHealth;
-  cityHealth << city->findService( city::HealthCare::defaultName() );
+  HealthCarePtr cityHealth = city->statistic().services.find<HealthCare>();
   if( cityHealth.isValid() )
   {
     text = cityHealth->reason();
@@ -465,21 +452,18 @@ void AdvisorChief::Impl::drawHealth()
   drawReportRow( atHealth, _(text));
 }
 
-void AdvisorChief::Impl::drawEducation()
+void Chief::Impl::drawEducation()
 {
   std::string text;
 
   StringArray reasons;
-  int avTypes[] = { objects::school, objects::library, objects::academy, objects::unknown };
+  object::Type avTypes[] = { object::school, object::library, object::academy, object::unknown };
   std::string avReasons[] = { "##advchief_some_need_education##", "##advchief_some_need_library##",
                               "##advchief_some_need_academy##", "" };
 
-  for( int i=0; avTypes[ i ] != objects::unknown; i++ )
+  for( int i=0; avTypes[i] != object::unknown; i++ )
   {
-    std::set<int> availableTypes;
-    availableTypes.insert( avTypes[ i ] );
-
-    HouseList houses = statistic::getEvolveHouseReadyBy( city, availableTypes );
+    HouseList houses = city->statistic().houses.ready4evolve( avTypes[ i ] );
     if( houses.size() > 0 )
     {
       reasons << avReasons[i];
@@ -488,50 +472,49 @@ void AdvisorChief::Impl::drawEducation()
 
   text = reasons.random();
 
-  text = text.empty()
-            ? "##advchief_education_ok##"
-            : text;
-
+  if( text.empty() )
+    text = "##advchief_education_ok##";
 
   drawReportRow( atEducation, _( text ) );
 }
 
-void AdvisorChief::Impl::drawReligion()
+void Chief::Impl::drawReligion()
 {
-  std::string text;
+  std::string text = "##advchief_religion_unknown##";
+  ReligionPtr srvc = city->statistic().services.find<Religion>();
+  if( srvc.isValid() )
+  {
+
+  }
   drawReportRow( atReligion, text );
 }
 
-void AdvisorChief::Impl::drawEntertainment()
+void Chief::Impl::drawEntertainment()
 {
   StringArray reasons;
 
-  city::FestivalPtr srvc;
-  srvc << city->findService( city::Festival::defaultName() );
-
-  city::CultureRatingPtr cltr;
-  cltr << city->findService( city::CultureRating::defaultName() );
-
+  FestivalPtr srvc = city->statistic().services.find<Festival>();
   if( srvc.isValid() )
   {
-    int monthFromLastFestival = srvc->lastFestivalDate().monthsTo( game::Date::current() );
-    if( monthFromLastFestival > 6 )
+    int monthFromLastFestival = srvc->lastFestival().monthsTo( game::Date::current() );
+    if( monthFromLastFestival > DateTime::monthsInYear / 2 )
     {
       reasons << "##citizens_grumble_lack_festivals_held##";
     }
   }
 
+  CultureRatingPtr cltr = city->statistic().services.find<CultureRating>();
   if( cltr.isValid() )
   {
-    int theaterCoverage = cltr->coverage( city::CultureRating::covTheatres );
-    if( theaterCoverage >= 100 )
+    int theaterCoverage = cltr->coverage( CultureRating::covTheatres );
+    if( theaterCoverage >= serviceAwesomeCoverage )
     {
       reasons << "##current_play_runs_for_another##";
     }
   }
 
-  int hippodromeCoverage = statistic::getEntertainmentCoverage( city, Service::hippodrome );
-  if( hippodromeCoverage >= 100 )
+  int hippodromeCoverage = city->statistic().entertainment.coverage( Service::hippodrome );
+  if( hippodromeCoverage >= serviceAwesomeCoverage )
   {
     reasons << "##current_races_runs_for_another##";
   }
@@ -539,13 +522,12 @@ void AdvisorChief::Impl::drawEntertainment()
   drawReportRow( atEntertainment, _( reasons.random() ) );
 }
 
-void AdvisorChief::Impl::drawSentiment()
+void Chief::Impl::drawSentiment()
 {
-  city::SentimentPtr st;
-  st << city->findService( city::Sentiment::defaultName() );
+  SentimentPtr sentiment = city->statistic().services.find<Sentiment>();
 
-  std::string text = st.isValid()
-                     ? st->reason()
+  std::string text = sentiment.isValid()
+                     ? sentiment->reason()
                      : "##unknown_sentiment_reason##";
 
   drawReportRow( atSentiment, text );

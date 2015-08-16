@@ -18,13 +18,14 @@
 #include "infobox_market.hpp"
 #include "label.hpp"
 #include "objects/market.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "core/gettext.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "core/utils.hpp"
+#include "core/metric.hpp"
 #include "core/logger.hpp"
+#include "game/infoboxmanager.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -33,69 +34,74 @@ namespace gui
 namespace infobox
 {
 
+REGISTER_OBJECT_BASEINFOBOX(market,AboutMarket)
+
 AboutMarket::AboutMarket(Widget* parent, PlayerCityPtr city, const Tile& tile )
-  : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 155, 510 - 16, 155 + 45) )
+  : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 155, 510 - 16, 155 + 50) )
 {
-   MarketPtr market = ptr_cast<Market>( tile.overlay() );
+  setupUI( ":/gui/infoboxmarket.gui" );
 
-   if( !market.isValid() )
-   {
-     Logger::warning( "AboutMarket: market is null tile at [d,%d]", tile.i(), tile.j() );
-     return;
-   }
+  MarketPtr market = tile.overlay().as<Market>();
 
-   setBase( ptr_cast<Construction>( market ));
-   _setWorkingVisible( true );
+  if( !market.isValid() )
+  {
+    Logger::warning( "AboutMarket: market is null tile at [d,%d]", tile.i(), tile.j() );
+    return;
+  }
 
-   Label* lbAbout = new Label( this, Rect( 15, 30, width() - 15, 50) );
-   lbAbout->setWordwrap( true );
-   lbAbout->setFont( Font::create( FONT_1 ) );
-   lbAbout->setTextAlignment( align::upperLeft, align::upperLeft );
+  setBase( market );
+  _setWorkingVisible( true );
 
-   std::string title = MetaDataHolder::findPrettyName( market->type() );
-   setTitle( _( title ) );
+  Label* lbAbout = new Label( this, Rect( 15, 30, width() - 15, 50) );
+  lbAbout->setWordwrap( true );
+  lbAbout->setFont( Font::create( FONT_1 ) );
+  lbAbout->setTextAlignment( align::upperLeft, align::upperLeft );
 
-   if( market->numberWorkers() > 0 )
-   {
-     good::Store& goods = market->goodStore();
-     int furageSum = 0;
-     // for all furage types of good
-     for( good::Product pr=good::none; pr<good::olive; ++pr )
-     {
-       furageSum += goods.qty( pr );
-     }
+  std::string title = MetaDataHolder::findPrettyName( market->type() );
+  setTitle( _( title ) );
 
-     int paintY = 100;
-     if( 0 < furageSum )
-     {
-       drawGood( market, good::wheat, 0, paintY );
-       drawGood( market, good::fish, 1, paintY);
-       drawGood( market, good::meat, 2, paintY);
-       drawGood( market, good::fruit, 3, paintY);
-       drawGood( market, good::vegetable, 4, paintY);
-       lbAbout->setHeight( 60 );
-     }
-     else
-     {
-       lbAbout->setHeight( 90 );
-       lbAbout->setWordwrap( true );
-     }
+  if( market->numberWorkers() > 0 )
+  {
+    good::Store& goods = market->goodStore();
+    int furageSum = 0;
+    // for all furage types of good
+    for( good::Product pr=good::none; pr<good::olive; ++pr )
+    {
+      furageSum += goods.qty( pr );
+    }
 
-     paintY += 24;
-     drawGood( market, good::pottery, 0, paintY);
-     drawGood( market, good::furniture, 1, paintY);
-     drawGood( market, good::oil, 2, paintY);
-     drawGood( market, good::wine, 3, paintY);
+    int paintY = 100;
+    if( 0 < furageSum )
+    {
+      drawGood( market, good::wheat, 0, paintY );
+      drawGood( market, good::fish, 1, paintY);
+      drawGood( market, good::meat, 2, paintY);
+      drawGood( market, good::fruit, 3, paintY);
+      drawGood( market, good::vegetable, 4, paintY);
+      lbAbout->setHeight( 60 );
+    }
+    else
+    {
+      lbAbout->setHeight( 90 );
+      lbAbout->setWordwrap( true );
+      lbAbout->setTextAlignment( align::upperLeft, align::center );
+    }
 
-     lbAbout->setText( 0 == furageSum ? _("##market_search_food_source##") : _("##market_about##"));
-   }
-   else
-   {
-     lbAbout->setHeight( 50 );
-     lbAbout->setText( _("##market_no_workers##") );
-   }
+    paintY += 24;
+    drawGood( market, good::pottery, 0, paintY);
+    drawGood( market, good::furniture, 1, paintY);
+    drawGood( market, good::oil, 2, paintY);
+    drawGood( market, good::wine, 3, paintY);
 
-   _updateWorkersLabel( Point( 32, 8 ), 542, market->maximumWorkers(), market->numberWorkers() );
+    lbAbout->setText( 0 == furageSum ? _("##market_search_food_source##") : _("##market_about##"));
+  }
+  else
+  {
+    lbAbout->setHeight( 50 );
+    lbAbout->setText( _("##market_no_workers##") );
+  }
+
+  _updateWorkersLabel( Point( 32, 8 ), 542, market->maximumWorkers(), market->numberWorkers() );
 }
 
 AboutMarket::~AboutMarket() {}
@@ -105,8 +111,9 @@ void AboutMarket::drawGood( MarketPtr market, const good::Product &goodType, int
   int startOffset = 25;
 
   int offset = ( width() - startOffset * 2 ) / 5;
-  std::string goodName = good::Helper::name( goodType );
-  std::string outText = utils::format( 0xff, "%d", market->goodStore().qty( goodType ) );
+  //std::string goodName = good::Helper::name( goodType );
+  int qty = market->goodStore().qty( goodType );
+  std::string outText = utils::format( 0xff, "%d", metric::Measure::convQty( qty ) );
 
   // pictures of goods
   Picture pic = good::Helper::picture( goodType );

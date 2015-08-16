@@ -27,8 +27,8 @@
 #include "core/foreach.hpp"
 #include "objects/house.hpp"
 #include "objects/watersupply.hpp"
+#include "game/infoboxmanager.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -37,18 +37,22 @@ namespace gui
 namespace infobox
 {
 
+REGISTER_OBJECT_BASEINFOBOX(reservoir,AboutReservoir)
+REGISTER_OBJECT_BASEINFOBOX(fountain,AboutFontain)
+REGISTER_OBJECT_BASEINFOBOX(well,AboutWell)
+
 AboutFontain::AboutFontain(Widget* parent, PlayerCityPtr city, const Tile& tile)
   : AboutConstruction( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
 {
+  setupUI( ":/gui/infoboxfountain.gui" );
   setTitle( _("##fountain##") );
 
   _lbTextRef()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
   _lbTextRef()->setWordwrap( true );
 
-  FountainPtr fountain;
-  fountain << tile.overlay();
+  FountainPtr fountain = tile.overlay().as<Fountain>();
 
-  setBase( ptr_cast<Construction>( fountain ) );
+  setBase( fountain );
 
   std::string text;
   if( fountain.isValid() )
@@ -78,7 +82,7 @@ AboutFontain::~AboutFontain(){}
 
 void AboutFontain::_showHelp()
 {
-  DictionaryWindow::show( parent(), objects::fountain );
+  DictionaryWindow::show( parent(), object::fountain );
 }
 
 AboutReservoir::AboutReservoir(Widget* parent, PlayerCityPtr city, const Tile& tile)
@@ -89,8 +93,8 @@ AboutReservoir::AboutReservoir(Widget* parent, PlayerCityPtr city, const Tile& t
   _lbTextRef()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
   _lbTextRef()->setWordwrap( true );
 
-  ReservoirPtr reservoir = ptr_cast<Reservoir>( tile.overlay() );
-  setBase( ptr_cast<Construction>( reservoir ) );
+  ReservoirPtr reservoir = tile.overlay().as<Reservoir>();
+  setBase( reservoir );
 
   std::string text;
   if( reservoir.isValid() )
@@ -107,7 +111,7 @@ AboutReservoir::~AboutReservoir() {}
 
 void AboutReservoir::_showHelp()
 {
-  DictionaryWindow::show( parent(), objects::reservoir );
+  DictionaryWindow::show( parent(), object::reservoir );
 }
 
 AboutWell::AboutWell(Widget* parent, PlayerCityPtr city, const Tile& tile)
@@ -118,13 +122,13 @@ AboutWell::AboutWell(Widget* parent, PlayerCityPtr city, const Tile& tile)
   _lbTextRef()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
   _lbTextRef()->setWordwrap( true );
 
-  WellPtr well = ptr_cast<Well>( tile.overlay() );
-  setBase( ptr_cast<Construction>( well ) );
+  WellPtr well = tile.overlay().as<Well>();
+  setBase( well );
 
   std::string text;
   if( well.isValid() )
   {
-    TilesArray coverageArea = well->coverageArea();
+    TilesArea coverageArea = well->coverageArea();
 
     bool haveHouseInArea = false;
     foreach( tile, coverageArea )
@@ -154,14 +158,14 @@ AboutWell::AboutWell(Widget* parent, PlayerCityPtr city, const Tile& tile)
       }
       else
       {
-        TilesArray tiles = well->coverageArea();
+        TilesArea tiles = well->coverageArea();
         bool haveLowHealthHouse = false;
         foreach( it, tiles )
         {
           HousePtr house = ptr_cast<House>( (*it)->overlay() );
           if( house.isValid() )
           {
-            haveLowHealthHouse |= house->state( (Construction::Param)House::health ) < 10;
+            haveLowHealthHouse |= house->state( pr::health ) < 10;
           }
         }
 
@@ -179,7 +183,7 @@ AboutWell::~AboutWell() {}
 
 void AboutWell::_showHelp()
 {
-  DictionaryWindow::show( parent(), objects::well );
+  DictionaryWindow::show( parent(), object::well );
 }
 
 }

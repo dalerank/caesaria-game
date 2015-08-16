@@ -13,7 +13,8 @@
 	
   win :
   {
-    population : 150
+    population : 0
+    name : "n1_random"
     culture : 0
     prosperity : 0
     peace : 0
@@ -22,19 +23,29 @@
     title : "##clerk##"
     finish : "300.01.01"
     may_continue : false
-    short : "##build_some_houses##"
+    short : "##win_or_die##"
     maxHouseLevel : "big_villa"
     caption : "##new_village##"
     overview :  [ "##tutorial_text##",
                   "@img=picture2_00002" ]
   }
 	
-  empire : {
+  empire :
+  {
     enabled : true
+    cities :
+    {
+      all : "enabled"
+    }
   }
   		
   events :
   {
+    tutorial#random_collapse :
+    {
+      population : 60
+      strong : 25
+    }
   }
 	
   buildoptions :

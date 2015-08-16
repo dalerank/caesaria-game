@@ -1,48 +1,89 @@
 {  
-  geometry : [ 0, 0, 480, 320 ]
+  geometry : [ 0, 0, 480, 480 ]
   bgtype : "whiteFrame"
 
   lbTitle#Label :
   {
-    geometryf : [ 0.1, 0.02, 0.9, 0.13 ]
+    geometryf : [ 0.1, 0.02, 0.9, 0.1 ]
     font : "FONT_5"
     text : "##city_options##"
     textAlign : [ "center", "center" ]
   }
 
-  btnGodEnabled#PushButton : {
-    geometry : [ 16, 50, 220, 70 ]
-    bgtype : "smallGrayBorderLine"
-    text : "##city_god_mode##"
-  }
+  columns#HLayout : {
+    geometry : [ 16, 50, "pw-16", "ph-30" ]
 
-  btnWarningsEnabled#PushButton : {
-    geometry : [ 16, 75, 220, 95 ]
-    bgtype : "smallGrayBorderLine"
-    text : "##city_warnings_mode##"
-  }
+    columnA#VLayout : {
+      btnGodEnabled#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_god_mode##"       }
+      btnC3Gameplay#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_c3city_mode##"       }
+      btnDifficulty#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_barbarian_mode##" }
 
-  btnZoomEnabled#PushButton : {
-    geometry : [ 16, 100, 220, 120 ]
-    bgtype : "smallGrayBorderLine"
-    text : "##city_zoom_mode##"
-  }
+      firerisk#HLayout : {
+        maximumSize : [ 0, 24 ]
+        lbFireRisk#Label : { font : "FONT_2" }
+        btnIncreaseFireRisk#TexturedButton : {
+          maximumSize : [ 24, 24 ]
+          normal : [ "paneling", 605 ]
+          hovered : [ "paneling", 606 ]
+          pressed : [ "paneling", 607 ]
+          disabled : [ "paneling", 305 ]
+        }
 
-  btnInvertZoom#PushButton : {
-    geometry : [ 16, 125, 220, 145 ]
-    bgtype : "smallGrayBorderLine"
-    text : "##city_zoominv_mode##"
-  }
+        btnDecreaseFireRisk#TexturedButton : {
+          maximumSize : [ 24, 24 ]
+          normal : [ "paneling", 601 ]
+          hovered : [ "paneling", 602 ]
+          pressed : [ "paneling", 603 ]
+          disabled : [ "paneling", 304 ]
+        }
+      }
 
-  btnDebugEnabled#PushButton : {
-    geometry : [ 16, 150, 220, 175 ]
-    bgtype : "smallGrayBorderLine"
-    text : "##city_debug_mode##"
+      collapserisk#HLayout : {
+        maximumSize : [ 0, 24 ]
+        lbCollapseRisk#Label : { font : "FONT_2" }
+        btnIncreaseCollapseRisk#TexturedButton : {
+          maximumSize : [ 24, 24 ]
+          normal : [ "paneling", 605 ]
+          hovered : [ "paneling", 606 ]
+          pressed : [ "paneling", 607 ]
+          disabled : [ "paneling", 305 ]
+        }
+
+        btnDecreaseCollapseRisk#TexturedButton : {
+          maximumSize : [ 24, 24 ]
+          normal : [ "paneling", 601 ]
+          hovered : [ "paneling", 602 ]
+          pressed : [ "paneling", 603 ]
+          disabled : [ "paneling", 304 ]
+        }
+      }
+
+      btnBarbarianMayAttack#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_barbarian_mode##" }
+      btnLegionMayAttack#PushButton    : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_barbarian_mode##" }
+    }
+
+    columnB#VLayout : {
+      btnShowTooltips#PushButton    : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_showtooltip_mode##" }
+      btnWarningsEnabled#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_warnings_mode##"    }
+      btnZoomEnabled#PushButton     : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_zoom_mode##"        }
+      btnInvertZoom#PushButton      : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_zoominv_mode##"     }
+      btnDebugEnabled#PushButton    : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_debug_mode##"       }
+      btnMmbMoving#PushButton       : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_mmbmoving_mode##"   }
+      btnLockInfobox#PushButton     : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_lockinfo_mode##"    }
+      btnAnroidBarEnabled#PushButton: { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_androidbar_mode##"  }
+      btnToggleBatching#PushButton  : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_batching_mode##"    }
+      btnToggleCcUseAI#PushButton   : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_batching_mode##"    }
+      btnMetrics#PushButton         : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_metrics_mode##"     }
+      btnHighlightBuilding#PushButton:{ maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_highlight_mode##"   }
+      btnDetroyEpidemicHouses#PushButton:{maximumSize:[ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_destroy_epdh##"     }
+      btnForestFire#PushButton      : {maximumSize  :[ 0, 24 ],  bgtype : "smallGrayBorderLine", text : "##city_forest_fire##"      }
+      btnForestGrow#PushButton      : {maximumSize  :[ 0, 24 ],  bgtype : "smallGrayBorderLine", text : "##city_forest_grow##"      }
+    }
   }
 
   btnClose#TexturedButton :
   {
-    geometry : [ 440, 284, 464, 308 ]
+    geometry : [ "pw-34", "ph-34", "pw-10", "ph-10" ]
     normal : [ "paneling", 532 ]
     hovered : [ "paneling", 533 ]
     pressed : [ "paneling", 534 ]

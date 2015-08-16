@@ -24,12 +24,15 @@
 #include "gfx/helper.hpp"
 #include "game/gamedate.hpp"
 #include "objects_factory.hpp"
+#include "core/logger.hpp"
+#include "core/common.hpp"
+#include "config.hpp"
 
-using namespace constants;
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::school, School)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::library, Library)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::academy, Academy)
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::school, School)
-
-class School::Impl
+class EducationBuilding::Impl
 {
 public:
   typedef std::map<unsigned int, unsigned int> ServedBuildings;
@@ -38,14 +41,11 @@ public:
   unsigned int maxMonthVisitors;
 };
 
-School::School() : ServiceBuilding(Service::school, objects::school, Size(2)), _d( new Impl )
+School::School() : EducationBuilding(Service::school, object::school, Size(2))
 {
-  setPicture( ResourceGroup::commerce, 83 );
-  _d->maxMonthVisitors = 75;
+  _picture().load( ResourceGroup::commerce, 83 );
+  _d->maxMonthVisitors = config::educationbld::maxSchoolVisitors;
 }
-
-int School::getVisitorsNumber() const { return _d->currentPeopleServed; }
-
 
 void School::deliverService()
 {
@@ -64,27 +64,24 @@ void School::deliverService()
   }
 }
 
-unsigned int School::walkerDistance() const {  return 26; }
+unsigned int School::walkerDistance() const { return 26; }
 
 void School::buildingsServed(const std::set<BuildingPtr>& buildings, ServiceWalkerPtr walker)
 {
   if( walker->pathway().isReverse() )
     return;
 
-  foreach( it, buildings )
+  std::set<HousePtr> houses = utils::select<House>( buildings );
+  for( auto house : houses )
   {
-    HousePtr house = ptr_cast<House>( *it );
-    if( house.isValid() )
-    {
-      unsigned int posHash = gfx::tile::hash(house->pos());
-      _d->srvBuidings[ posHash ] = house->habitants().count( CitizenGroup::scholar );
-    }
+    unsigned int posHash = gfx::tile::hash(house->pos());
+    _d->srvBuidings[ posHash ] = house->habitants().scholar_n();
   }
 
   _d->currentPeopleServed = 0;
-  foreach( it, _d->srvBuidings )
+  for( auto bld : _d->srvBuidings )
   {
-    _d->currentPeopleServed += it->second;
+    _d->currentPeopleServed += bld.second;
   }
 
   if( _d->currentPeopleServed > _d->maxMonthVisitors )
@@ -93,22 +90,22 @@ void School::buildingsServed(const std::set<BuildingPtr>& buildings, ServiceWalk
 
 int School::_getWalkerOrders() const
 {
-  return ServiceWalker::goLowerService|ServiceWalker::anywayWhenFailed|ServiceWalker::enterLastHouse;
+  return ServiceWalker::goServiceMaximum|ServiceWalker::anywayWhenFailed|ServiceWalker::enterLastHouse;
 }
 
-Library::Library() : ServiceBuilding(Service::library, objects::library, Size(2))
+Library::Library() : EducationBuilding(Service::library, object::library, Size(2))
 {
-  setPicture( ResourceGroup::commerce, 84 );
+  _picture().load( ResourceGroup::commerce, 84 );
+  _d->maxMonthVisitors = config::educationbld::maxLibraryVisitors;
+  _d->currentPeopleServed = _d->maxMonthVisitors;
 }
 
-int Library::getVisitorsNumber() const {  return 800; }
-
-Academy::Academy() : ServiceBuilding(Service::academy, objects::academy, Size(3))
+Academy::Academy() : EducationBuilding(Service::academy, object::academy, Size(3))
 {
-  setPicture( ResourceGroup::commerce, 85 );
+  _picture().load( ResourceGroup::commerce, 85 );
+  _d->maxMonthVisitors = config::educationbld::maxAcademyVisitors;
+  _d->currentPeopleServed = _d->maxMonthVisitors;
 }
-
-int Academy::getVisitorsNumber() const {  return 100; }
 
 void Academy::deliverService()
 {
@@ -126,3 +123,20 @@ std::string Academy::sound() const
           ? ServiceBuilding::sound()
           : "");
 }
+
+void EducationBuilding::initialize(const MetaData& mdata)
+{
+  ServiceBuilding::initialize( mdata );
+  int maxServe = mdata.getOption( "maxServe" );
+  if( maxServe > 0 )
+    _d->maxMonthVisitors = maxServe;
+}
+
+EducationBuilding::EducationBuilding(const Service::Type service, const object::Type type, const Size& size)
+  : ServiceBuilding( service, type, size ), _d( new Impl )
+{
+
+}
+
+int EducationBuilding::currentVisitors() const { return _d->currentPeopleServed; }
+int EducationBuilding::maxVisitors() const { return _d->maxMonthVisitors; }

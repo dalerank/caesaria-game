@@ -12,11 +12,12 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include <cstdio>
 
 #include "infobox_senate.hpp"
-
 #include "gfx/tile.hpp"
 #include "objects/metadata.hpp"
 #include "objects/senate.hpp"
@@ -24,12 +25,13 @@
 #include "core/utils.hpp"
 #include "core/gettext.hpp"
 #include "label.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "texturedbutton.hpp"
 #include "events/showadvisorwindow.hpp"
 #include "core/logger.hpp"
+#include "events/playsound.hpp"
+#include "game/infoboxmanager.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -38,16 +40,27 @@ namespace gui
 namespace infobox
 {
 
+REGISTER_OBJECT_BASEINFOBOX(senate,AboutSenate)
+
 namespace {
   int advisorBtnId = 0x2552;
   Signal0<> invalidBtnClickedSignal;
+  Point lbStartPos( 60, 35 );
 }
 
 AboutSenate::AboutSenate(Widget* parent, PlayerCityPtr city, const Tile& tile )
-  : Simple( parent, Rect( 0, 0, 510, 290 ), Rect( 16, 126, 510 - 16, 126 + 62 ) )
+  : Infobox( parent, Rect( 0, 0, 510, 290 ), Rect( 16, 126, 510 - 16, 126 + 62 ) )
 {
-  SenatePtr senate = ptr_cast<Senate>( tile.overlay() );
-  std::string title = MetaDataHolder::instance().getData( objects::senate ).prettyName();
+  setupUI( ":/gui/infoboxsenate.gui" );
+
+  SenatePtr senate = tile.overlay().as<Senate>();
+  if( senate.isNull() )
+    return;
+
+  events::GameEventPtr e = events::PlaySound::create( "bmsel_senate", 1, 100, audio::infobox, true );
+  e->dispatch();
+
+  std::string title = MetaDataHolder::instance().getData( object::senate ).prettyName();
   setTitle( _(title) );
 
   // number of workers
@@ -55,10 +68,13 @@ AboutSenate::AboutSenate(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
   std::string denariesStr = utils::format( 0xff, "%s %d", _("##senate_save##"), senate->funds() );
 
-  Label* lb = new Label( this, Rect( 60, 35, width() - 16, 35 + 30 ), denariesStr );
+  Size lbSize( width() - 32, 30 );
+  Label* lb = new Label( this, Rect( lbStartPos, lbSize ), denariesStr );
   lb->setIcon( good::Helper::picture( good::denaries ) );
-  lb->setText( denariesStr );
   lb->setTextOffset( Point( 30, 0 ));
+
+  std::string taxThisYearStr = utils::format( 0xff, "%s %d", _("##senate_thisyear_tax##"), senate->thisYearTax() );
+  lb = new Label( this, Rect( lb->leftbottom(), lbSize ), taxThisYearStr );
 
   new Label( this, Rect( 60, 215, 60 + 300, 215 + 24 ), _("##visit_rating_advisor##") );
   TexturedButton* btnAdvisor = new TexturedButton( this, Point( 350, 215 ), Size(28), advisorBtnId, 289 );

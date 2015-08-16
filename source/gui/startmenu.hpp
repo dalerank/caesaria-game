@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_MENU_H_INCLUDE_
 #define __CAESARIA_MENU_H_INCLUDE_
@@ -21,7 +22,6 @@
 #include "widget.hpp"
 
 #include "gfx/picture.hpp"
-#include "game/enums.hpp"
 
 namespace gui
 {

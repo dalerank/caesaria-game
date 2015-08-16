@@ -13,16 +13,19 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_MARKET_KID_H_INCLUDED__
 #define __CAESARIA_MARKET_KID_H_INCLUDED__
 
 #include "human.hpp"
+#include "good/good.hpp"
+#include "objects/predefinitions.hpp"
 
 class MarketKid : public Human
 {
 public:
+  enum { defaultCapacity=100 };
   static MarketKidPtr create( PlayerCityPtr city );
   static MarketKidPtr create( PlayerCityPtr city, MarketBuyerPtr lady );
 

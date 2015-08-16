@@ -17,8 +17,6 @@
 #define __CAESARIA_TEXTURED_BUTTON_H_INCLUDED__
 
 #include "pushbutton.hpp"
-#include "gfx/picture.hpp"
-#include "game/resourcegroup.hpp"
 
 namespace gui
 {
@@ -26,29 +24,14 @@ namespace gui
 class TexturedButton : public PushButton
 {
 public:
-  TexturedButton( Widget* parent, const Point& pos, const Size& size, int id, 
-                  int normalTxIndex, int hovTxIndex=-1, int prsTxIndex=-1, int dsbTxIndex=-1 ) 
-    : PushButton( parent, Rect( pos, size ), "", id, false, noBackground )
-  {
-    setPicture( ResourceGroup::panelBackground, normalTxIndex, stNormal );
-    setPicture( ResourceGroup::panelBackground, (hovTxIndex == -1) ? normalTxIndex+1 : hovTxIndex , stHovered );
-    setPicture( ResourceGroup::panelBackground, (prsTxIndex == -1) ? normalTxIndex+2 : prsTxIndex , stPressed );
-    setPicture( ResourceGroup::panelBackground, (dsbTxIndex == -1) ? normalTxIndex+3 : dsbTxIndex , stDisabled );
-  }
+  TexturedButton( Widget* parent, const Point& pos, const Size& size, int id,
+                  int normalTxIndex, int hovTxIndex=-1, int prsTxIndex=-1, int dsbTxIndex=-1 );
 
   TexturedButton( Widget* parent, const Point& pos, const Size& size, int id,
                   const char* resourceGroup,
-                  int normalTxIndex, int hovTxIndex=-1, int prsTxIndex=-1, int dsbTxIndex=-1 )
-    : PushButton( parent, Rect( pos, size ), "", id, false, noBackground )
-  {
-    setPicture( resourceGroup, normalTxIndex , stNormal );
-    setPicture( resourceGroup, (hovTxIndex == -1) ? normalTxIndex+1 : hovTxIndex, stHovered );
-    setPicture( resourceGroup, (prsTxIndex == -1) ? normalTxIndex+2 : prsTxIndex, stPressed );
-    setPicture( resourceGroup, (dsbTxIndex == -1) ? normalTxIndex+3 : dsbTxIndex, stDisabled );
-  }
+                  int normalTxIndex, int hovTxIndex=-1, int prsTxIndex=-1, int dsbTxIndex=-1 );
 
-  TexturedButton( Widget* parent ) : PushButton( parent )
-  {}
+  TexturedButton( Widget* parent );
 };
 
 }//end namespace gui

@@ -22,8 +22,8 @@
 #include "objects/barracks.hpp"
 #include "label.hpp"
 #include "core/utils.hpp"
+#include "game/infoboxmanager.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace gui
@@ -31,6 +31,8 @@ namespace gui
 
 namespace infobox
 {
+
+REGISTER_OBJECT_BASEINFOBOX(barracks,AboutBarracks)
 
 class AboutBarracks::Impl
 {
@@ -43,7 +45,7 @@ AboutBarracks::AboutBarracks(Widget* parent, PlayerCityPtr city, const Tile& til
 {
   setupUI( ":/gui/barracsopts.gui" );
 
-  BarracksPtr barracks = ptr_cast<Barracks>( tile.overlay() );
+  BarracksPtr barracks = tile.overlay().as<Barracks>();
 
   if( !barracks.isValid() )
   {

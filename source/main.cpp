@@ -40,34 +40,48 @@ int SDL_main(int argc, char* argv[])
 #else
 int main(int argc, char* argv[])
 #endif
-{  
+{
+  crashhandler::install();
+
   vfs::Directory workdir;
 #ifdef CAESARIA_PLATFORM_ANDROID
   workdir  = vfs::Path( SDL_AndroidGetExternalStoragePath() );
 #else
   workdir = vfs::Path( argv[0] ).directory();
 #endif
+  game::Settings& options = game::Settings::instance();
   Logger::registerWriter( Logger::consolelog, "" );
 
-  game::Settings::instance().setwdir( workdir.toString() );
-  game::Settings::instance().checkwdir( argv, argc );  
+  options.setwdir( workdir.toString() );
+  options.checkwdir( argv, argc );
   Logger::registerWriter( Logger::filelog, workdir.toString() );
 
-  Logger::warning( "Game: setting workdir to " + SETTINGS_VALUE( workDir ).toString()  );
+  SimpleLogger LOG("Game");
 
-  Logger::warning( "Game: load game settings" );
-  game::Settings::load();
-  game::Settings::instance().checkCmdOptions( argv, argc );
-  game::Settings::instance().checkC3present();
+  LOG.info("Setting workdir to " + SETTINGS_VALUE(workDir).toString());
 
-  Logger::warning( "Game: setting language to " + SETTINGS_VALUE( language ).toString() );
-  Logger::warning( "Game: using native C3 resources from " + SETTINGS_VALUE( c3gfx ).toString() );
-  Logger::warning( "Game: set cell width %d", SETTINGS_VALUE( cellw ).toInt() );
+  LOG.info("Loading game settings");
+  options.load();
+  options.checkCmdOptions( argv, argc );
+  options.checkC3present();
 
+  std::string systemLang = SETTINGS_VALUE( language ).toString();
 #ifdef CAESARIA_USE_STEAM
   if( !steamapi::connect() )
+  {
+    LOG.fatal("Failed to connect to steam");
     return EXIT_FAILURE;
+  }
+
+  if( systemLang.empty() )
+    systemLang = steamapi::language();
 #endif
+
+  options.changeSystemLang( systemLang );
+
+  LOG.info("Language is set to " + SETTINGS_VALUE(language).toString());
+  LOG.info("Using native C3 resources from " + SETTINGS_VALUE(c3gfx).toString());
+  LOG.info("Cell width set to %d", SETTINGS_VALUE(cellw).toInt());
 
   try
   {
@@ -77,13 +91,16 @@ int main(int argc, char* argv[])
   }
   catch( Exception& e )
   {
-    Logger::warning( "Critical error: " + e.getDescription() );
-    Stacktrace::print();
+    LOG.fatal("Critical error: " + e.getDescription());
+
+    crashhandler::printstack();
   }
 
 #ifdef CAESARIA_USE_STEAM
   steamapi::close();
 #endif
+
+  crashhandler::remove();
 
   return 0;
 }

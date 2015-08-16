@@ -33,22 +33,21 @@ public:
   virtual bool isAvailable() const { return true; }
 
   virtual unsigned int tradeType() const;
-  virtual city::Funds& funds();
+  virtual econ::Treasury& treasury();
   virtual std::string name() const;
-  virtual unsigned int population() const;
   virtual bool isPaysTaxes() const;
-  virtual unsigned int age() const;
+  virtual std::string about(AboutType type);
+  virtual const city::States& states() const;
   virtual void timeStep(const unsigned int time);
-  virtual SmartPtr<Player> player() const;
+  virtual SmartPtr<Player> mayor() const;
   virtual bool haveOverduePayment() const;
   virtual void addObject(ObjectPtr);
-  virtual world::Nation nation() const;
   virtual DateTime lastAttack() const;
   virtual int strength() const;
   virtual void delayTrade( unsigned int month );
-  virtual void empirePricesChanged( good::Product gtype, int bCost, int sCost );
-  virtual const good::Store& importingGoods() const;
-  virtual const good::Store& exportingGoods() const;
+  virtual void empirePricesChanged( good::Product gtype, const PriceInfo& prices );
+  virtual const good::Store& sells() const;
+  virtual const good::Store& buys() const;
 
 private:
   class Impl;

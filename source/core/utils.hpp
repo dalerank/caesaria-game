@@ -21,6 +21,9 @@
 #include <string>
 #include <cstdarg>
 #include "stringarray.hpp"
+#include "variant.hpp"
+#include "smartlist.hpp"
+#include "hash.hpp"
 
 class Font;
 
@@ -30,7 +33,6 @@ namespace utils
   std::string format( unsigned int max_size, const char* fmt, ...);
 
   unsigned int hash( unsigned int max_size, const char* fmt, ...);
-  unsigned int hash( const std::string& text );
   bool startsWith( std::string text, std::string start );
 
   //! Convert a simple string of base 10 digits into an unsigned 32 bit integer.
@@ -68,6 +70,7 @@ namespace utils
   std::string replace(std::string text, const std::string& from, const std::string& to);
 
   StringArray split( std::string str, std::string spl );
+  std::string trim( const std::string& str, const std::string& tr );
 
   bool isEqualen(const std::string& str1, const std::string& str2, unsigned int n);
 
@@ -78,6 +81,15 @@ namespace utils
   std::string trim( const std::string& str );
 
   std::string i2str( int valie );
+
+  VariantList toVList( const StringArray& items );
+
+  std::string toRoman( int value );
+
+  bool endsWith( const std::string& text, const std::string& which );
+
+  float eventProbability(float probability, int k, int n);  
+  std::wstring utf8toWString(const char* src, size_t size);
 }
 
 #endif //__CAESARIA_STRING_UTILS_H_INCLUDED__

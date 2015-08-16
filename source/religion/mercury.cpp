@@ -20,12 +20,12 @@
 #include "events/showinfobox.hpp"
 #include "game/gamedate.hpp"
 #include "core/gettext.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "objects/extension.hpp"
 #include "objects/factory.hpp"
+#include "city/statistic.hpp"
 #include "core/utils.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace religion
@@ -59,17 +59,16 @@ void __filchGoods( const std::string& title, PlayerCityPtr city, bool showMessag
     events::GameEventPtr event = events::ShowInfobox::create( _(txt),
                                                               _(descr),
                                                               events::ShowInfobox::send2scribe,
-                                                              ":/smk/God_Mercury.smk");
+                                                              "god_mercury");
     event->dispatch();
   }
 
-  SmartList<T> buildings;
-  buildings << city->overlays();
+  SmartList<T> buildings = city->statistic().objects.find<T>();
 
-  foreach( it, buildings )
+  for( auto building : buildings )
   {
-    good::Store& store = (*it)->store();
-    for( good::Product gtype=good::wheat; gtype < good::goodCount; ++gtype )
+    good::Store& store = building->store();
+    for( auto gtype : good::all() )
     {
       int goodQty = math::random( (store.qty( gtype ) + 99) / 100 ) * 100;
       if( goodQty > 0 )
@@ -93,12 +92,11 @@ void Mercury::_doSmallCurse(PlayerCityPtr city)
                                                             _("##smallcurse_of_mercury_description##") );
   event->dispatch();
 
-  FactoryList factories;
-  factories << city->overlays();
+  FactoryList factories = city->statistic().objects.find<Factory>();
 
-  foreach( it, factories )
+  for( auto factory : factories )
   {
-    FactoryProgressUpdater::assignTo( ptr_cast<Factory>( *it ), -5, 4 * 12 );
+    FactoryProgressUpdater::assignTo( factory, -5, 4 * 12 );
   }
 }
 
@@ -107,9 +105,9 @@ void Mercury::_doBlessing(PlayerCityPtr city)
   WarehouseList whList;
   whList << city->overlays();
 
-  foreach( it, whList )
+  for( auto wh : whList )
   {
-    WarehouseBuff::assignTo( *it, Warehouse::sellGoodsBuff, 0.2, 4 * 12 );
+    WarehouseBuff::assignTo( wh, Warehouse::sellGoodsBuff, 0.2, 4 * 12 );
   }
 }
 

@@ -17,7 +17,6 @@
 
 #include "cityservice_workershire.hpp"
 #include "objects/construction.hpp"
-#include "city/helper.hpp"
 #include "core/safetycast.hpp"
 #include "objects/engineer_post.hpp"
 #include "objects/prefecture.hpp"
@@ -25,37 +24,42 @@
 #include "core/foreach.hpp"
 #include "objects/constants.hpp"
 #include "game/gamedate.hpp"
+#include "core/gettext.hpp"
 #include "objects/metadata.hpp"
 #include "statistic.hpp"
 #include "events/showinfobox.hpp"
 #include "core/saveadapter.hpp"
+#include "cityservice_factory.hpp"
 #include "core/variant_map.hpp"
+#include "city/states.hpp"
+#include "config.hpp"
 
-using namespace constants;
 using namespace std;
 using namespace gfx;
+using namespace events;
+using namespace config;
 
 namespace city
 {
 
+REGISTER_SERVICE_IN_FACTORY(WorkersHire,workers_hire)
+
 namespace {
 CAESARIA_LITERALCONST(priorities)
 CAESARIA_LITERALCONST(employers)
-const unsigned int defaultHireDistance = 36;
 }
 
 class WorkersHire::Impl
 {
 public:
-  typedef std::vector<TileOverlay::Type> BuildingsType;
-  typedef std::map<TileOverlay::Group, BuildingsType> GroupBuildings;
+  typedef std::map<object::Group, object::Types> GroupBuildings;
 
   WalkerList hrInCity;
   unsigned int distance;
   DateTime lastMessageDate;
   HirePriorities priorities;
   GroupBuildings industryBuildings;
-  std::set<TileOverlay::Type> excludeTypes;
+  object::TypeSet excludeTypes;
 
 public:
   void fillIndustryMap();
@@ -77,11 +81,11 @@ WorkersHire::WorkersHire(PlayerCityPtr city)
   : Srvc( city, WorkersHire::defaultName() ), _d( new Impl )
 {
   _d->lastMessageDate = game::Date::current();
-  _d->excludeTypes.insert( objects::fountain );
+  _d->excludeTypes.insert( object::fountain );
   _d->fillIndustryMap();
-  _d->distance = defaultHireDistance;
+  _d->distance = employements::hireDistance;
 
-  load( config::load( ":workershire.model" ) );
+  load( config::load( ":/workershire.model" ) );
 }
 
 void WorkersHire::Impl::fillIndustryMap()
@@ -90,10 +94,10 @@ void WorkersHire::Impl::fillIndustryMap()
 
   industryBuildings.clear();
 
-  foreach(it, types)
+  for( auto type : types)
   {
-    const MetaData& info = MetaDataHolder::getData( *it );
-    int workersNeed = info.getOption( lc_employers );
+    const MetaData& info = MetaDataHolder::getData( type );
+    int workersNeed = info.getOption( literals::employers );
     if( workersNeed > 0 )
     {
       industryBuildings[ info.group() ].push_back( info.type() );
@@ -103,12 +107,12 @@ void WorkersHire::Impl::fillIndustryMap()
 
 bool WorkersHire::Impl::haveRecruter( WorkingBuildingPtr building )
 {
-  foreach( w, hrInCity )
+  for( auto wlk : hrInCity )
   {
-    RecruterPtr hr = ptr_cast<Recruter>( *w );
+    RecruterPtr hr = wlk.as<Recruter>();
     if( hr.isValid() )
     {
-      if( hr->base() == building.object() )
+      if( hr->baseLocation() == building->pos() )
         return true;
     }
   }
@@ -127,7 +131,7 @@ void WorkersHire::Impl::hireWorkers(PlayerCityPtr city, WorkingBuildingPtr bld)
   if( haveRecruter( bld ) )
     return;
 
-  if( bld->getAccessRoads().size() > 0 )
+  if( bld->roadside().size() > 0 )
   {
     RecruterPtr hr = Recruter::create( city );
     hr->setPriority( priorities );
@@ -142,25 +146,24 @@ void WorkersHire::timeStep( const unsigned int time )
   if( !game::Date::isWeekChanged() )
     return;
 
-  if( _city()->population() == 0 )
+  if( _city()->states().population == 0 )
     return;
 
-  _d->hrInCity = _city()->walkers( walker::recruter );
+  _d->hrInCity = _city()->statistic().walkers.find( walker::recruter );
 
-  city::Helper helper( _city() );
-  WorkingBuildingList buildings = helper.find< WorkingBuilding >( objects::any );
+  WorkingBuildingList buildings = _city()->statistic().objects.find<WorkingBuilding>( object::any );
 
   if( !_d->priorities.empty() )
   {
-    foreach( hireIt, _d->priorities )
+    for( auto priority : _d->priorities )
     {
-      industry::BuildingGroups groups = industry::toGroups( *hireIt );
+      object::Groups groups = industry::toGroups( priority );
 
-      foreach( grIt, groups )
+      for( auto group : groups )
       {
         for( WorkingBuildingList::iterator it=buildings.begin(); it != buildings.end(); )
         {
-          if( (*it)->group() == *grIt )
+          if( (*it)->group() == group )
           {
             _d->hireWorkers( _city(), *it );
             it = buildings.erase( it );
@@ -171,20 +174,20 @@ void WorkersHire::timeStep( const unsigned int time )
     }
   }
 
-  foreach( it, buildings )
+  for( auto building : buildings )
   {    
-    _d->hireWorkers( _city(), *it );
+    _d->hireWorkers( _city(), building );
   }
 
   if( _d->lastMessageDate.monthsTo( game::Date::current() ) > DateTime::monthsInYear / 2 )
   {
     _d->lastMessageDate = game::Date::current();
 
-    int workersNeed = statistic::getWorkersNeed( _city() );
-    if( workersNeed > 20 )
+    int workersNeed = _city()->statistic().workers.need();
+    if( workersNeed > employements::needMoreWorkers )
     {
-      events::GameEventPtr e = events::ShowInfobox::create( "##city_need_workers_title##", "##city_need_workers_text##",
-                                                            events::ShowInfobox::send2scribe );
+      GameEventPtr e = ShowInfobox::create( _("##city_need_workers_title##"), _("##city_need_workers_text##"),
+                                            ShowInfobox::send2scribe );
       e->dispatch();
     }
   }
@@ -228,7 +231,7 @@ VariantMap WorkersHire::save() const
 {
   VariantMap ret;
   VARIANT_SAVE_ANY_D( ret, _d, distance );
-  ret[ lc_priorities ] = _d->priorities.toVariantList();
+  VARIANT_SAVE_CLASS_D( ret, _d, priorities )
 
   return ret;
 }
@@ -236,9 +239,9 @@ VariantMap WorkersHire::save() const
 void WorkersHire::load(const VariantMap& stream)
 {
   VARIANT_LOAD_ANY_D( _d, distance, stream );
-  if( _d->distance == 0 ) _d->distance = defaultHireDistance;
+  if( _d->distance == 0 ) _d->distance = employements::hireDistance;
 
-  VariantList priorVl = stream.get( lc_priorities ).toList();
+  VariantList priorVl = stream.get( literals::priorities ).toList();
 
   if( !priorVl.empty() )
   {

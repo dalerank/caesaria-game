@@ -17,10 +17,11 @@
 // Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
 
 #include "warehouse_store.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
+#include "core/variant_list.hpp"
 #include "core/metric.hpp"
 
 using namespace metric;
@@ -29,10 +30,10 @@ WarehouseStore::WarehouseStore()
 {
   _warehouse = NULL;
 
-  for( good::Product goodType=good::wheat; goodType <= good::goodCount; ++goodType )
+  foreach( goodType, good::all() )
   {
-    setOrder( goodType, good::Orders::accept );
-    _capacities[ goodType ] = 9999;
+    setOrder( *goodType, good::Orders::accept );
+    _capacities[ *goodType ] = 9999;
   }
 }
 
@@ -47,7 +48,7 @@ int WarehouseStore::qty(const good::Product &goodType) const
 
   foreach( room, _warehouse->rooms() )
   {
-    if ( room->type() == goodType || goodType == good::goodCount )
+    if ( room->type() == goodType || goodType == good::any() )
     {
       amount += room->qty();
     }
@@ -56,7 +57,7 @@ int WarehouseStore::qty(const good::Product &goodType) const
   return amount;
 }
 
-int WarehouseStore::qty() const {  return qty( good::goodCount ); }
+int WarehouseStore::qty() const { return qty( good::any() ); }
 
 int WarehouseStore::getMaxStore(const good::Product goodType)
 {
@@ -66,12 +67,12 @@ int WarehouseStore::getMaxStore(const good::Product goodType)
   }
 
   // compute the quantity of each goodType in the warehouse, taking in account all reservations
-  StockMap maxStore;
+  good::ProductMap maxStore;
 
   // init the map
-  for( good::Product i = good::none; i != good::goodCount; ++i)
+  foreach( i, good::all() )
   {
-    maxStore[ i ] = 0;
+    maxStore[ *i ] = 0;
   }
   // put current stock in the map
   foreach( room, _warehouse->rooms() )
@@ -131,36 +132,29 @@ void WarehouseStore::applyStorageReservation( good::Stock &stock, const int rese
   // std::cout << "WarehouseStore, store qty=" << amount << " resID=" << reservationID << std::endl;
 
   // first we look at the half filled subTiles
-  foreach( room, _warehouse->rooms() )
+  if (amount > 0)
   {
-    if (amount == 0)
+    foreach( room, _warehouse->rooms() )
     {
-      break;
+      if( room->type() == stock.type() && room->freeQty() > 0 )
+      {
+        int tileAmount = std::min(amount, room->freeQty());
+        // std::cout << "put in half filled" << std::endl;
+        room->append(stock, tileAmount);
+        amount -= tileAmount;
+      }
     }
 
-    if( room->type() == stock.type() && room->freeQty() > 0 )
+    // then we look at the empty subTiles
+    foreach( room, _warehouse->rooms() )
     {
-      int tileAmount = std::min(amount, room->freeQty());
-      // std::cout << "put in half filled" << std::endl;
-      room->append(stock, tileAmount);
-      amount -= tileAmount;
-    }
-  }
-
-  // then we look at the empty subTiles
-  foreach( room, _warehouse->rooms() )
-  {
-    if (amount == 0)
-    {
-      break;
-    }
-
-    if( room->type() == good::none)
-    {
-      int tileAmount = std::min(amount, room->capacity() );
-      // std::cout << "put in empty tile" << std::endl;
-      room->append(stock, tileAmount);
-      amount -= tileAmount;
+      if( room->type() == good::none)
+      {
+        int tileAmount = std::min(amount, room->capacity() );
+        // std::cout << "put in empty tile" << std::endl;
+        room->append(stock, tileAmount);
+        amount -= tileAmount;
+      }
     }
   }
 
@@ -238,13 +232,7 @@ void WarehouseStore::retrieve(good::Stock& stock, const int amount)
 VariantMap WarehouseStore::save() const
 {
   VariantMap ret = Store::save();
-  VariantList vl;
-  for( good::Product k=good::none; k < good::goodCount; ++k )
-  {
-    StockMap::const_iterator it = _capacities.find( k );
-    vl << (it != _capacities.end() ? it->second : 0);
-  }
-  ret[ "capacities" ] = vl;
+  VARIANT_SAVE_CLASS( ret, _capacities )
 
   return ret;
 }
@@ -252,16 +240,13 @@ VariantMap WarehouseStore::save() const
 void WarehouseStore::load(const VariantMap &stream)
 {
   Store::load( stream );
-  VariantList vl = stream.get( "capacities" ).toList();
-
-  int index = 0;
   int maxCapacity = capacity();
-  foreach( it, vl )
-  {
-    int value = it->toInt();
-    _capacities[ (good::Product)index ] = (value == 0 ? maxCapacity : value);
-    index++;
-  }
+
+  VARIANT_LOAD_CLASS_LIST( _capacities, stream )
+
+  foreach( it, _capacities )
+    if( it->second == 0 )
+      it->second = maxCapacity;
 }
 
 int WarehouseStore::capacity() const
@@ -269,10 +254,23 @@ int WarehouseStore::capacity() const
   return Warehouse::Room::basicCapacity * _warehouse->rooms().size();
 }
 
-void WarehouseStore::setCapacity(const int) {}
-void WarehouseStore::setCapacity(const good::Product &goodType, const int maxQty)
+good::ProductMap WarehouseStore::details() const
 {
-  _capacities[ goodType ] = maxQty;
+  good::ProductMap ret;
+
+  foreach( room, _warehouse->rooms() )
+  {
+    ret[ room->type() ] += room->qty();
+  }
+
+  return ret;
 }
 
-int WarehouseStore::capacity( const good::Product& goodType ) const{  return capacity();}
+void WarehouseStore::setCapacity(const int) {}
+void WarehouseStore::setCapacity(const good::Product &goodType, const int maxQty) {  _capacities[ goodType ] = maxQty; }
+
+int WarehouseStore::capacity( const good::Product& goodType ) const
+{
+  good::ProductMap::const_iterator it = _capacities.find( goodType );
+  return it != _capacities.end() ? it->second : 0;
+}

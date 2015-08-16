@@ -24,7 +24,7 @@
 #include "core/gettext.hpp"
 #include "gfx/decorator.hpp"
 #include "objects/metadata.hpp"
-#include "objects/house_level.hpp"
+#include "objects/house_spec.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/event.hpp"
 #include "texturedbutton.hpp"
@@ -33,7 +33,7 @@
 #include "objects/market.hpp"
 #include "objects/granary.hpp"
 #include "core/utils.hpp"
-#include "good/goodhelper.hpp"
+#include "good/helper.hpp"
 #include "objects/farm.hpp"
 #include "objects/entertainment.hpp"
 #include "objects/house.hpp"
@@ -42,7 +42,7 @@
 #include "objects/warehouse.hpp"
 #include "gfx/engine.hpp"
 #include "gui/special_orders_window.hpp"
-#include "good/goodstore.hpp"
+#include "good/store.hpp"
 #include "groupbox.hpp"
 #include "walker/walker.hpp"
 #include "objects/watersupply.hpp"
@@ -51,12 +51,20 @@
 #include "objects/constants.hpp"
 #include "events/event.hpp"
 #include "game/settings.hpp"
+#include "widget_helper.hpp"
 #include "image.hpp"
 #include "game/gamedate.hpp"
 #include "dictionary.hpp"
+#include "pushbutton.hpp"
+#include "environment.hpp"
+#include "core/gettext.hpp"
+#include "dialogbox.hpp"
+#include "game/infoboxmanager.hpp"
+#include "events/playsound.hpp"
+#include "infobox_land.hpp"
 
-using namespace constants;
 using namespace gfx;
+using namespace gui::dialog;
 
 namespace gui
 {
@@ -64,12 +72,41 @@ namespace gui
 namespace infobox
 {
 
+class InfoboxHouseCreator : public InfoboxCreator
+{
+public:
+  Infobox* create( PlayerCityPtr city, gui::Widget* parent, TilePos pos )
+  {
+    HousePtr house = city->getOverlay( pos ).as<House>();
+    if( house.isValid() && house->habitants().count() > 0 )
+    {
+      return new AboutHouse( parent, city, city->tilemap().at( pos ) );
+    }
+    else
+    {
+      return new AboutFreeHouse( parent, city, city->tilemap().at( pos ) );
+    }
+  }
+};
+
+REGISTER_OBJECT_INFOBOX( house, new InfoboxHouseCreator() )
+
 AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
-  : Simple( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )
+  : Infobox( parent, Rect( 0, 0, 510, 360 ), Rect( 16, 150, 510 - 16, 360 - 50 ) )
 {
   setupUI( ":/gui/infoboxhouse.gui" );
 
-  _house = ptr_cast<House>( tile.overlay() );
+  _house = tile.overlay().as<House>();
+
+  if( _house.isNull() )
+  {
+    Logger::warning( "!!! WARNING: Cant find house at [%d,%d]", tile.pos().i(), tile.pos().j() );
+    deleteLater();
+    return;
+  }
+
+  events::GameEventPtr e = events::PlaySound::create( "bmsel_house", 1, 100, audio::infobox, true );
+  e->dispatch();
 
   setTitle( _(_house->levelName()) );
 
@@ -85,20 +122,56 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
     {
       text =  "##greatPalace_info##";
     }
+    else
+    {
+      if( text == "##nearby_building_negative_effect##" )
+      {
+        object::Type needBuilding;
+        TilePos rPos;
+        HouseSpecification spec = _house->spec().next();
+
+        int unwish = spec.findUnwishedBuildingNearby( _house, needBuilding, rPos );
+
+        if( !unwish )
+          spec.findLowLevelHouseNearby( _house, rPos );
+
+        text = _(text);
+        OverlayPtr overlay = city->getOverlay( rPos );
+        if( overlay.isValid() )
+        {
+          std::string housePrettyType;
+          if( overlay->type() == object::house )
+          {
+            HousePtr house = overlay.as<House>();
+            housePrettyType = house.isValid() ? house->levelName() : "##unknown_house_type##";
+          }
+          else
+          {
+            housePrettyType = overlay.isValid() ? MetaDataHolder::findPrettyName( overlay->type() ) : "";
+          }
+
+          housePrettyType = utils::format( 0xff, "(%s)", _(housePrettyType) );
+          text = utils::replace( text, "{0}", housePrettyType );
+        }
+      }
+    }
 
     houseInfo->setText( _(text) );
-  }
+  }  
 
-  std::string workerState = utils::format( 0xff, "hb=%d hr=%d nb=%d ch=%d sch=%d st=%d mt=%d old=%d",
-                                                  _house->habitants().count(),
-                                                  (int)_house->getServiceValue( Service::recruter ),
-                                                  _house->habitants().count( CitizenGroup::newborn ),
-                                                  _house->habitants().count( CitizenGroup::child ),
-                                                  _house->habitants().count( CitizenGroup::scholar ),
-                                                  _house->habitants().count( CitizenGroup::student ),
-                                                  _house->habitants().count( CitizenGroup::mature ),
-                                                  _house->habitants().count( CitizenGroup::aged ) );
-  new Label( this, Rect( 16, 125, width() - 16, 150 ), workerState );
+  INIT_WIDGET_FROM_UI( TexturedButton*, btnHelp )
+  if( btnHelp )
+  {
+    Rect rect = btnHelp->relativeRect();
+    rect += Point( btnHelp->width() + 5, 0 );
+    rect.rright() += 60;
+    PushButton* btn = new PushButton( this, rect, "Habitants", -1, false, PushButton::whiteBorderUp );
+    CONNECT( btn, onClicked(), this, AboutHouse::_showHbtInfo )
+
+    rect += Point( btn->width() + 5, 0 );
+    btn = new PushButton( this, rect, "Services", -1, false, PushButton::whiteBorderUp );
+    CONNECT( btn, onClicked(), this, AboutHouse::_showSrvcInfo )
+  }
 
   drawHabitants( _house );
 
@@ -161,15 +234,15 @@ void AboutHouse::drawHabitants( HousePtr house )
   // citizen or patrician picture
   int picId = house->spec().isPatrician() ? 541 : 542;
    
-  Picture& citPic = Picture::load( ResourceGroup::panelBackground, picId );
-  _lbBlackFrameRef()->setIcon( citPic, Point( 15, 5 ) );
+  Picture citPic( ResourceGroup::panelBackground, picId );
+  _lbBlackFrame()->setIcon( citPic, Point( 15, 5 ) );
 
   // number of habitants
   Label* lbHabitants = new Label( this, Rect( 60, 157, width() - 16, 157 + citPic.height() ) );
 
   std::string freeRoomText;
   int current = house->habitants().count();
-  int freeRoom = house->maxHabitants() - current;
+  int freeRoom = house->capacity() - current;
   if( freeRoom > 0 )
   {
     // there is some room for new habitants!
@@ -223,12 +296,37 @@ bool AboutHouse::onEvent(const NEvent& event)
     }
   }
 
-  return Simple::onEvent( event );
+  return Infobox::onEvent( event );
 }
 
-void AboutHouse::_showHelp()
+void AboutHouse::_showHelp() { DictionaryWindow::show( this, "house" ); }
+
+void AboutHouse::_showHbtInfo()
 {
-  DictionaryWindow::show( this, "house" );
+  std::string workerState = utils::format( 0xff, "Live=%d\nUnemployed=%d\nHired=%d\nNewborn=%d\nChild=%d\nIn school=%d\nStudents=%d\nMature=%d\nAged(not work)=%d",
+                                                  _house->habitants().count(),
+                                                  (int)_house->unemployed(),
+                                                  _house->hired(),
+                                                  _house->habitants().count( CitizenGroup::newborn ),
+                                                  _house->habitants().child_n(),
+                                                  _house->habitants().scholar_n(),
+                                                  _house->habitants().student_n(),
+                                                  _house->habitants().mature_n(),
+                                                  _house->habitants().aged_n() );
+
+  Dialog* dialog = new Dialog( ui(), Rect( 0, 0, 400, 400 ), "Habitants", workerState, Dialog::btnOk );
+  dialog->setCenter( ui()->rootWidget()->center() );
+  CONNECT( dialog, onOk(), dialog, Dialog::deleteLater )
+}
+
+void AboutHouse::_showSrvcInfo()
+{
+  std::string srvcState = utils::format( 0xff, "Health=%d",
+                                               (int)_house->state( pr::health ));
+
+  Dialog* dialog = new Dialog( ui(), Rect( 0, 0, 400, 400 ), "Services", srvcState, Dialog::btnOk );
+  dialog->setCenter( ui()->rootWidget()->center() );
+  CONNECT( dialog, onOk(), dialog, Dialog::deleteLater )
 }
 
 }

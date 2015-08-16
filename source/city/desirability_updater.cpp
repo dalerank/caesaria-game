@@ -18,7 +18,6 @@
 #include "desirability_updater.hpp"
 #include "game/game.hpp"
 #include "objects/construction.hpp"
-#include "helper.hpp"
 #include "city.hpp"
 #include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
@@ -26,12 +25,14 @@
 #include "core/logger.hpp"
 #include "events/dispatcher.hpp"
 #include "gfx/tilemap.hpp"
+#include "cityservice_factory.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace city
 {
+
+REGISTER_SERVICE_IN_FACTORY(DesirabilityUpdater,desirabilityUpdater)
 
 class DesirabilityUpdater::Impl
 {
@@ -71,21 +72,21 @@ void DesirabilityUpdater::timeStep( const unsigned int time )
 std::string DesirabilityUpdater::defaultName() { return "desirability_updater"; }
 bool DesirabilityUpdater::isDeleted() const {  return _d->isDeleted; }
 
-void DesirabilityUpdater::destroy( PlayerCityPtr city ){ _d->update( city, false ); }
+void DesirabilityUpdater::destroy(){ _d->update( _city(), false ); }
 
 void DesirabilityUpdater::load(const VariantMap& stream)
 {
-  _d->endTime = stream.get( "endTime" ).toDateTime();
-  _d->value = stream.get( "value" );
-  _d->alsoInfluence = stream.get( "alsoInfluence", false );
+  VARIANT_LOAD_TIME_D( _d, endTime, stream )
+  VARIANT_LOAD_ANY_D( _d, value, stream )
+  VARIANT_LOAD_ANYDEF_D( _d, alsoInfluence, false, stream )
 }
 
 VariantMap DesirabilityUpdater::save() const
 {
   VariantMap ret;
-  ret[ "endTime" ] = _d->endTime;
-  ret[ "value" ] = _d->value;
-  ret[ "alsoInfluence" ] = _d->alsoInfluence;
+  VARIANT_SAVE_ANY_D( ret, _d, endTime )
+  VARIANT_SAVE_ANY_D( ret, _d, value )
+  VARIANT_SAVE_ANY_D( ret, _d, alsoInfluence )
 
   return ret;
 }
@@ -101,9 +102,9 @@ void DesirabilityUpdater::Impl::update( PlayerCityPtr city, bool positive)
 {
   const TilesArray& tiles = city->tilemap().allTiles();
 
-  foreach( it, tiles )
+  for( auto tile : tiles )
   {
-    (*it)->changeParam( Tile::pDesirability, positive ? value : -value );
+    tile->changeParam( Tile::pDesirability, positive ? value : -value );
   }
 }
 

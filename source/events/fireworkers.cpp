@@ -17,17 +17,18 @@
 
 #include "fireworkers.hpp"
 #include "game/game.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects/working.hpp"
 #include "gfx/tile.hpp"
+#include "city/city.hpp"
 #include "core/foreach.hpp"
 
 using namespace gfx;
-using namespace constants;
 
 namespace events
 {
+static const int defaultReturnWorkersDistance = 40;
 
 GameEventPtr FireWorkers::create(TilePos center, unsigned int workers)
 {
@@ -49,15 +50,15 @@ FireWorkers::FireWorkers() : _workers( 0 ) {}
 void FireWorkers::_exec(Game& game, unsigned int)
 {
   Tilemap& tilemap = game.city()->tilemap();
-  const int defaultFireWorkersDistance = 40;
 
-  for( int curRange=1; curRange < defaultFireWorkersDistance; curRange++ )
+  for( int curRange=1; curRange < defaultReturnWorkersDistance; curRange++ )
   {
-    TilesArray perimetr = tilemap.getRectangle( _center - TilePos( curRange, curRange ),
-                                                 _center + TilePos( curRange, curRange ) );
-    foreach( tile, perimetr )
+    TilePos range( curRange, curRange );
+    TilesArray perimetr = tilemap.getRectangle( _center - range,
+                                                _center + range );
+    foreach( it, perimetr )
     {
-      WorkingBuildingPtr wrkBuilding = ptr_cast<WorkingBuilding>( (*tile)->overlay() );
+      WorkingBuildingPtr wrkBuilding = (*it)->overlay().as<WorkingBuilding>();
       if( wrkBuilding.isValid() )
       {
         int removedFromWb = wrkBuilding->removeWorkers( _workers );
@@ -71,8 +72,7 @@ void FireWorkers::_exec(Game& game, unsigned int)
 
   if( _workers > 0 )
   {
-    city::Helper helper( game.city() );
-    WorkingBuildingList  wb = helper.find<WorkingBuilding>( objects::any );
+    WorkingBuildingList wb = game.city()->statistic().objects.find<WorkingBuilding>( object::any );
     foreach( it, wb )
     {
       int removedFromWb = (*it)->removeWorkers( _workers );
@@ -84,4 +84,4 @@ void FireWorkers::_exec(Game& game, unsigned int)
   }
 }
 
-}
+}// end namesopace events

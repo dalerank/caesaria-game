@@ -14,36 +14,36 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "ironmine.hpp"
 
 #include "gfx/tile.hpp"
+#include "city/city.hpp"
+#include "gfx/tilemap.hpp"
 #include "gfx/tilesarray.hpp"
 #include "game/resourcegroup.hpp"
 #include "game/gamedate.hpp"
-#include "city/helper.hpp"
 #include "events/showinfobox.hpp"
 #include "objects_factory.hpp"
 
 using namespace gfx;
-using namespace constants;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(objects::iron_mine, IronMine)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::iron_mine, IronMine)
 
 IronMine::IronMine()
-  : Factory(good::none, good::iron, objects::iron_mine, Size(2) )
+  : Factory(good::none, good::iron, object::iron_mine, Size(2) )
 {
-  setPicture( ResourceGroup::commerce, 54 );
+  _picture().load( ResourceGroup::commerce, 54 );
 
   _animationRef().load( ResourceGroup::commerce, 55, 6 );
   _animationRef().setDelay( 5 );
-  _fgPicturesRef().resize( 2 );
+  _fgPictures().resize( 2 );
 
-  _setUnworkingInterval( 8 );
+  _setUnworkingInterval( 12 );
 }
 
-bool IronMine::canBuild( const CityAreaInfo& areaInfo ) const
+bool IronMine::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool is_constructible = WorkingBuilding::canBuild( areaInfo );
   bool near_mountain = false;  // tells if the factory is next to a mountain
@@ -52,7 +52,7 @@ bool IronMine::canBuild( const CityAreaInfo& areaInfo ) const
   TilesArray perimetr = tilemap.getRectangle( areaInfo.pos + TilePos( -1, -1 ),
                                               areaInfo.pos + TilePos(3, 3), Tilemap::checkCorners );
 
-  foreach( it, perimetr ) { near_mountain |= (*it)->getFlag( Tile::tlRock ); }
+  for( auto tile : perimetr ) { near_mountain |= tile->getFlag( Tile::tlRock ); }
 
   const_cast< IronMine* >( this )->_setError( near_mountain ? "" : "##iron_mine_need_mountain_near##" );
 
@@ -68,6 +68,8 @@ void IronMine::_reachUnworkingTreshold()
 {
   Factory::_reachUnworkingTreshold();
 
-  events::GameEventPtr e = events::ShowInfobox::create( "##iron_mine_collapse##", "##iron_mine_collpase_by_low_support##");
+  events::GameEventPtr e = events::ShowInfobox::create( "##iron_mine_collapse##", "##iron_mine_collapse_by_low_support##");
   e->dispatch();
+
+  collapse();
 }

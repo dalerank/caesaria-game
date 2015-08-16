@@ -66,7 +66,7 @@ Popup::Popup( Widget* parent, const std::string& title,
   GET_DWIDGET_FROM_UI( _d, lbText  )
 
   if( lbTitle ) lbTitle->setText( title );
-  if( lbTime ) lbTime->setText( util::date2str( time ) );
+  if( lbTime ) lbTime->setText( utils::date2str( time, true ) );
   if( lbReceiver ) lbReceiver->setText( receiver );
 
   CONNECT( _d->btnExit, onClicked(), this, Popup::deleteLater );

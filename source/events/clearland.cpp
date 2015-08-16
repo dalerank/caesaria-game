@@ -23,9 +23,9 @@
 #include "core/gettext.hpp"
 #include "gfx/helper.hpp"
 #include "requestdestroy.hpp"
+#include "objects/construction.hpp"
 #include "game/resourcegroup.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 namespace events
@@ -55,20 +55,19 @@ void ClearTile::_exec( Game& game, unsigned int )
     Size size( 1 );
     TilePos rPos = _pos;
 
-    TileOverlayPtr overlay = cursorTile.overlay();
+    OverlayPtr overlay = cursorTile.overlay();
 
     bool deleteRoad = cursorTile.getFlag( Tile::tlRoad );
 
-    ConstructionPtr constr = ptr_cast<Construction>(overlay);
-    if( constr.isValid() && !constr->canDestroy() )
+    if( overlay.isValid() && !overlay->canDestroy() )
     {
-      GameEventPtr e = WarningMessage::create( _( constr->errorDesc() ) );
+      GameEventPtr e = WarningMessage::create( _( overlay->errorDesc() ), WarningMessage::neitral );
       e->dispatch();
 
-      const MetaData& md = MetaDataHolder::getData( constr->type() );
+      const MetaData& md = MetaDataHolder::getData( overlay->type() );
       if( md.getOption( MetaDataOptions::requestDestroy, false ).toBool() )
       {
-        e = RequestDestroy::create( constr );
+        e = RequestDestroy::create( overlay );
         e->dispatch();
       }
       return;
@@ -82,9 +81,8 @@ void ClearTile::_exec( Game& game, unsigned int )
     }
 
     TilesArray clearedTiles = tmap.getArea( rPos, size );
-    foreach( it, clearedTiles )
+    for( auto tile : clearedTiles )
     {
-      Tile* tile = *it;
       tile->setMasterTile( NULL );
       tile->setFlag( Tile::tlTree, false);
       tile->setFlag( Tile::tlRoad, false);
@@ -109,10 +107,11 @@ void ClearTile::_exec( Game& game, unsigned int )
         // 30% => choose green_sth 62-119
         // 70% => choose green_flat 232-289
         int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
-        int imgId = math::random( 58 );
+        int imgId = math::random( 58-1 );
 
-        Picture pic = Picture::load( ResourceGroup::land1a, startOffset + imgId );
-        tile->setPicture( ResourceGroup::land1a, startOffset + imgId );
+        Picture pic;
+        pic.load( ResourceGroup::land1a, startOffset + imgId );
+        tile->setPicture( pic );
         tile->setOriginalImgId( imgid::fromResource( pic.name() ) );
       }
     }

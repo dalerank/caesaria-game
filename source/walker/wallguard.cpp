@@ -13,10 +13,10 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "wallguard.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "name_generator.hpp"
 #include "corpse.hpp"
 #include "core/variant_map.hpp"
@@ -33,8 +33,8 @@
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
 #include "walker/helper.hpp"
+#include "gfx/helper.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 class WallGuard::Impl
@@ -51,7 +51,7 @@ WallGuard::WallGuard( PlayerCityPtr city, walker::Type type )
   setName( NameGenerator::rand( NameGenerator::male ) );
 
   setAttackDistance( 5 );
-  _d->patrolPosition = TilePos( -1, -1 );
+  _d->patrolPosition = gfx::tilemap::invalidLocation();
 }
 
 WallGuard::~WallGuard(){}
@@ -93,12 +93,12 @@ void WallGuard::timeStep(const unsigned long time)
   {
   case fightEnemy:
   {
-    EnemySoldierList enemies;
-    enemies << _findEnemiesInRange( attackDistance() );
+    EnemySoldierList enemies = _findEnemiesInRange( attackDistance() ).select<EnemySoldier>();
 
-    if( !enemies.empty() )
+    bool haveEnemiesInRande = !enemies.empty();
+    if( haveEnemiesInRande )
     {
-      if( _animationRef().atEnd() )
+      if( _animation().atEnd() )
       {
         EnemySoldierPtr p = _findNearbyEnemy( enemies );
         turn( p->pos() );
@@ -115,8 +115,7 @@ void WallGuard::timeStep(const unsigned long time)
 
   case check4attack:
   {
-    EnemySoldierList enemies;
-    enemies << _findEnemiesInRange( attackDistance() );
+    EnemySoldierList enemies = _findEnemiesInRange( attackDistance() ).select<EnemySoldier>();
 
     if( !enemies.empty() )
     {    
@@ -158,10 +157,10 @@ void WallGuard::save(VariantMap& stream) const
 {
   Soldier::save( stream );
 
-  stream[ "base" ] = _d->base.isValid() ? _d->base->pos() : TilePos( -1, -1 );
-  stream[ "strikeForce" ] = _d->strikeForce;
-  stream[ "resistance" ] = _d->resistance;
-  stream[ "patrolPosition" ] = _d->patrolPosition;
+  stream[ "base" ] = _d->base.isValid() ? _d->base->pos() : gfx::tilemap::invalidLocation();
+  VARIANT_SAVE_ANY_D( stream, _d, strikeForce )
+  VARIANT_SAVE_ANY_D( stream, _d, resistance )
+  VARIANT_SAVE_ANY_D( stream, _d, patrolPosition )
   stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(WallGuard) ) );
 }
 
@@ -169,12 +168,12 @@ void WallGuard::load(const VariantMap& stream)
 {
   Soldier::load( stream );
 
-  _d->strikeForce = stream.get( "strikeForce" );
-  _d->resistance = stream.get( "resistance" );
-  _d->patrolPosition = stream.get( "patrolPosition" );
+  VARIANT_LOAD_ANY_D( _d, strikeForce, stream )
+  VARIANT_LOAD_ANY_D( _d, resistance, stream )
+  VARIANT_LOAD_ANY_D( _d, patrolPosition, stream )
 
   TilePos basePosition = stream.get( "base" );
-  TowerPtr tower = ptr_cast<Tower>( _city()->getOverlay( basePosition ) );
+  TowerPtr tower = _city()->getOverlay( basePosition ).as<Tower>();
 
   if( tower.isValid() )
   {
@@ -193,10 +192,8 @@ std::string WallGuard::thoughts(Thought th) const
   {
   case thCurrent:
   {
-    city::Helper helper( _city() );
-
     TilePos offset( 10, 10 );
-    EnemySoldierList enemies = helper.find<EnemySoldier>( walker::any, pos() - offset, pos() + offset );
+    EnemySoldierList enemies = _city()->statistic().walkers.find<EnemySoldier>( walker::any, pos() - offset, pos() + offset );
     if( enemies.empty() )
     {
       return Soldier::thoughts(th);
@@ -218,7 +215,7 @@ TilePos WallGuard::places(Walker::Place type) const
 {
   switch( type )
   {
-  case plOrigin: return _d->base.isValid() ? _d->base->pos() : TilePos( -1, -1 );
+  case plOrigin: return _d->base.isValid() ? _d->base->pos() : gfx::tilemap::invalidLocation();
   case plDestination: return _d->patrolPosition;
   default: break;
   }
@@ -242,14 +239,12 @@ FortificationList WallGuard::_findNearestWalls( EnemySoldierPtr enemy )
     TilePos offset( range, range );
     TilePos ePos = enemy->pos();
     TilesArray tiles = tmap.getRectangle( ePos - offset, ePos + offset );
+    FortificationList walls = tiles.overlays().select<Fortification>();
 
-    foreach( tile, tiles )
+    for( auto wall : walls )
     {
-      FortificationPtr f = ptr_cast<Fortification>( (*tile)->overlay() );
-      if( f.isValid() && f->mayPatrol() )
-      {
-        ret.push_back( f );
-      }
+      if( wall->mayPatrol() )
+        ret.push_back( wall );
     }
   }
 
@@ -258,8 +253,7 @@ FortificationList WallGuard::_findNearestWalls( EnemySoldierPtr enemy )
 
 bool WallGuard::_tryAttack()
 {
-  EnemySoldierList enemies;
-  enemies << _findEnemiesInRange( attackDistance() * 2 );
+  EnemySoldierList enemies = _findEnemiesInRange( attackDistance() * 2 ).select<EnemySoldier>();
 
   if( !enemies.empty() )
   {
@@ -276,18 +270,17 @@ bool WallGuard::_tryAttack()
     {
       PathwayPtr shortestWay;
       int minDistance = 999;
-      foreach( it, enemies )
+      for( auto enemy : enemies )
       {
-        EnemySoldierPtr enemy = *it;
         FortificationList nearestWall = _findNearestWalls( enemy );
-
         PathwayList wayList = _d->base->getWays( pos(), nearestWall );
-        foreach( way, wayList )
+
+        for( auto way : wayList )
         {
-          double tmpDistance = (*way)->stopPos().distanceFrom( enemy->pos() );
+          double tmpDistance = way->stopPos().distanceFrom( enemy->pos() );
           if( tmpDistance < minDistance )
           {
-            shortestWay = *way;
+            shortestWay = way;
             minDistance = tmpDistance;
           }
         }
@@ -320,7 +313,7 @@ void WallGuard::_back2base()
       go();
     }
 
-    if( !_pathwayRef().isValid() )
+    if( !_pathway().isValid() )
     {
       deleteLater();
     }
@@ -382,7 +375,7 @@ void WallGuard::_brokePathway(TilePos p)
     {
       _setSubAction( patrol );
       setPathway( Pathway() );
-      wait( game::Date::days2ticks( 7 ) );
+      wait( game::Date::days2ticks( DateTime::daysInWeek ) );
     }
   }
 }
@@ -440,13 +433,13 @@ EnemySoldierPtr WallGuard::_findNearbyEnemy(EnemySoldierList enemies )
 {
   EnemySoldierPtr ret;
   double minDistance = 999;
-  foreach( it, enemies )
+  for( auto enemy : enemies )
   {
-    double tmpDistance = pos().distanceFrom( (*it)->pos() );
+    double tmpDistance = pos().distanceFrom( enemy->pos() );
     if( tmpDistance > 2 && tmpDistance < minDistance )
     {
       minDistance = tmpDistance;
-      ret = *it;
+      ret = enemy;
     }
   }
 

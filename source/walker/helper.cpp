@@ -24,7 +24,6 @@
 #include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
 
-using namespace constants;
 using namespace gfx;
 
 class TypeEnums : public EnumsHelper<walker::Type>
@@ -36,10 +35,10 @@ public:
   }
 };
 
-class HationEnums : public EnumsHelper<world::Nation>
+class NationEnums : public EnumsHelper<world::Nation>
 {
 public:
-  HationEnums() : EnumsHelper<world::Nation>( world::unknownNation )
+  NationEnums() : EnumsHelper<world::Nation>( world::nation::unknown )
   {
 
   }
@@ -54,7 +53,7 @@ public:
   TypeEnums htype;
   PrettyNames typenames;
 
-  HationEnums hnation;
+  NationEnums hnation;
   PrettyNations nationnames;
 
   VariantMap options;
@@ -73,8 +72,8 @@ public:
 
   Impl()
   {
-#define __REG_WNATION(a) appendNation( world::a, CAESARIA_STR_A(a));
-    __REG_WNATION( unknownNation )
+#define __REG_WNATION(a) appendNation( world::nation::a, CAESARIA_STR_A(a));
+    __REG_WNATION( unknown )
     __REG_WNATION( rome )
     __REG_WNATION( etruscan )
     __REG_WNATION( barbarian )
@@ -170,7 +169,7 @@ VariantMap WalkerHelper::getOptions(const walker::Type type )
   VariantMap::iterator mapIt = instance()._d->options.find( tname );
   if( mapIt == instance()._d->options.end())
   {
-    Logger::warning("WalkerInfo: Unknown walker info for type %d", type );
+    Logger::warning( "Unknown walker info for type %d", type );
     return VariantMap();
   }
 
@@ -179,12 +178,12 @@ VariantMap WalkerHelper::getOptions(const walker::Type type )
 
 bool WalkerHelper::isHuman(WalkerPtr wlk)
 {
-  return is_kind_of<Human>( wlk );
+  return wlk.is<Human>();
 }
 
 bool WalkerHelper::isAnimal(WalkerPtr wlk)
 {
-  return is_kind_of<Animal>( wlk ) || is_kind_of<Fish>( wlk);
+  return wlk.is<Animal>() || wlk.is<Fish>();
 }
 
 void WalkerHelper::load( const vfs::Path& filename )
@@ -217,7 +216,7 @@ walker::Type WalkerHelper::getType(const std::string &name)
 
   if( type == instance()._d->htype.getInvalid() )
   {
-    Logger::warning( "WalkerHelper: can't find walker type for %s", name.c_str() );
+    Logger::warning( "Can't find walker type for %s", name.c_str());
     //_CAESARIA_DEBUG_BREAK_IF( "Can't find walker type by typeName" );
   }
 
@@ -242,14 +241,13 @@ world::Nation WalkerHelper::getNation(const std::string &name)
 
   if( nation == instance()._d->hnation.getInvalid() )
   {
-    Logger::warning( "WalkerHelper: can't find nation type for %s", name.c_str() );
-    //_CAESARIA_DEBUG_BREAK_IF( "Can't find walker type by typeName" );
+    Logger::warning( "Can't find nation type for " + name );
   }
 
   return nation;
 }
 
-Picture WalkerHelper::getBigPicture(walker::Type type)
+Picture WalkerHelper::bigPicture(walker::Type type)
 {
   int index = -1;
   switch( type )
@@ -271,7 +269,7 @@ Picture WalkerHelper::getBigPicture(walker::Type type)
   break;
   }
 
-  return index >= 0 ? Picture::load( "bigpeople", index ) : Picture::getInvalid();
+  return index >= 0 ? Picture( "bigpeople", index ) : Picture::getInvalid();
 }
 
 WalkerHelper::~WalkerHelper(){}
@@ -390,7 +388,7 @@ void __fillRelations( const std::string& name, const VariantMap& items, const st
 
     if( ftype == unknownType )
     {
-      Logger::warning( warnText.c_str(), itType->c_str(), name.c_str() );
+      Logger::warning( warnText.c_str(), itType->c_str(), name.c_str());
     }
     else
     {
@@ -424,12 +422,12 @@ void WalkerRelations::load(const VariantMap& stream)
     __fillRelations<world::Nation>( it->first, item, "friend",
                                    &WalkerHelper::getNation,
                                    "NationRelations: unknown friend %s for type %s",
-                                   &WalkerRelations::addFriend, world::unknownNation );
+                                   &WalkerRelations::addFriend, world::nation::unknown );
 
     __fillRelations<world::Nation>( it->first, item, "enemy",
                                    &WalkerHelper::getNation,
                                    "NationRelations: unknown enemy %s for type %s",
-                                   &WalkerRelations::addEnemy, world::unknownNation );
+                                   &WalkerRelations::addEnemy, world::nation::unknown );
   }
 }
 
