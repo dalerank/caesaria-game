@@ -500,7 +500,7 @@ void StartMenu::Impl::showAdvancedMaterials()
   {
     if( it.isDirectory )
     {
-      if( excludeFolders.contains( it.name.extension() ) )
+      if( excludeFolders.contains( it.name.toString() ) )
         continue;
 
       vfs::Path path2subdir = it.fullpath;
