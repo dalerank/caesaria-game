@@ -88,6 +88,7 @@
 #include "city/active_points.hpp"
 #include "city/statistic.hpp"
 #include "events/loadgame.hpp"
+#include "sound/themeplayer.hpp"
 #include "city/states.hpp"
 
 using namespace gui;
@@ -220,9 +221,15 @@ void Level::Impl::installHandlers( Base* scene )
 
 void Level::Impl::initSound()
 {
-  SmartPtr<city::AmbientSound> sound = game->city()->statistic().services.find<city::AmbientSound>();
+  auto sound = game->city()->statistic().services.find<city::AmbientSound>();
+  auto player = game->city()->statistic().services.find<audio::ThemePlayer>();
   if( sound.isValid() )
     sound->setCamera( renderer.camera() );
+
+  if( player.isValid() )
+  {
+    CONNECT( player, onSwitch(), this, Impl::resolveWarningMessage )
+  }
 }
 
 void Level::Impl::initTabletUI( Level* scene )
