@@ -684,25 +684,38 @@ void SdlEngine::createScreenshot( const std::string& filename )
 
 Engine::Modes SdlEngine::modes() const
 {
-  Modes ret;
-
   /* Get available fullscreen/hardware modes */
   int num = SDL_GetNumDisplayModes(0);
 
   std::set<unsigned int> uniqueModes;
+#define ADD_RESOLUTION(w,h) uniqueModes.insert( (w<<16) + h);
+  ADD_RESOLUTION(1920,1080)
+  ADD_RESOLUTION(1600,900)
+  ADD_RESOLUTION(1440,800)
+  ADD_RESOLUTION(1280,1024)
+  ADD_RESOLUTION(1024,768)
+  ADD_RESOLUTION(800,600)
+#undef ADD_RESOLUTION
 
+  int maxWidth = 0;
   for (int i = 0; i < num; ++i)
   {
     SDL_DisplayMode mode;
     if (SDL_GetDisplayMode(0, i, &mode) == 0 && mode.w > 640 )
     {
+      maxWidth = math::max( mode.w, maxWidth );
       unsigned int modeHash = (mode.w << 16) + mode.h;
       if( uniqueModes.count( modeHash ) == 0)
-      {
-        ret.push_back(Size(mode.w, mode.h));
         uniqueModes.insert( modeHash );
-      }
     }
+  }
+
+  Modes ret;
+  for( auto mode : uniqueModes )
+  {
+    int width = (mode >> 16)&0xffff;
+    if( width <= maxWidth )
+      ret.insert( ret.begin(), Size( width, mode&0xffff));
   }
 
   return ret;

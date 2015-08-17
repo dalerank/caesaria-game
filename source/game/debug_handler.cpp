@@ -65,6 +65,7 @@
 #include "gui/property_workspace.hpp"
 #include "objects/factory.hpp"
 #include "events/warningmessage.hpp"
+#include "sound/themeplayer.hpp"
 #include "objects/house_spec.hpp"
 
 using namespace gfx;
@@ -174,7 +175,8 @@ enum {
   forest_fire,
   forest_grow,
   increase_max_level,
-  decrease_max_level
+  decrease_max_level,
+  next_theme
 };
 
 class DebugHandler::Impl
@@ -260,6 +262,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
 
   ADD_DEBUG_EVENT( other, send_player_army )
   ADD_DEBUG_EVENT( other, screenshot )
+  ADD_DEBUG_EVENT( other, next_theme )
 
   ADD_DEBUG_EVENT( disaster, random_fire )
   ADD_DEBUG_EVENT( disaster, random_collapse )
@@ -399,6 +402,16 @@ void DebugHandler::Impl::handleEvent(int event)
     good::Stock stock( good::Helper::random(), 1000, 1000 );
     caravan->store().store( stock, stock.qty() );
     caravan->sendTo( game->empire()->rome() );
+  }
+  break;
+
+  case next_theme:
+  {
+    auto player = game->city()->statistic().services.find<audio::ThemePlayer>();
+    if( player.isValid() )
+    {
+      player->next();
+    }
   }
   break;
 
