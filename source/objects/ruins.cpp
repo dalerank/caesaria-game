@@ -70,7 +70,7 @@ void BurningRuins::timeStep(const unsigned long time)
       OverlayList overlays = _city()->tilemap().getNeighbors( pos() ).overlays();
 
       setState( pr::spreadFire, 1 );
-      for( int i=0; i < overlays.size(); ++i )
+      for( unsigned int i=0; i < overlays.size(); ++i )
       {
         auto overlay = overlays.random();
         if( overlay->group() != object::group::disaster )

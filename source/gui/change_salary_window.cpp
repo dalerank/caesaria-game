@@ -63,7 +63,7 @@ ChangeSalary::ChangeSalary(Widget* p, unsigned int salary)
       item.setTag( rank.salary );
       if( rank.salary == salary )
       {
-        lbxTitles->setSelected( lbxTitles->itemCount() - 1 );
+        lbxTitles->setSelected( lbxTitles->itemsCount() - 1 );
       }
     }
   }

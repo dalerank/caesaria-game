@@ -169,7 +169,7 @@ void Tree::grow()
 {
   TilesArray tiles = _city()->tilemap().getNeighbors( pos() );
   _d->lastTimeGrow = game::Date::current();
-  for( int i=0; i < tiles.size(); ++i )
+  for( unsigned int i=0; i < tiles.size(); ++i )
   {
     auto tile = tiles.random();
     if( math::probably( 0.1f ) && tile->getFlag( Tile::isConstructible ) )

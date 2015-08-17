@@ -78,7 +78,7 @@ static const char *ExceptionName(DWORD exceptionCode)
 /** Print out a stacktrace. */
 static void Stacktrace(LPEXCEPTION_POINTERS e)
 {
-	PIMAGEHLP_SYMBOL pSym;
+  /*PIMAGEHLP_SYMBOL pSym;
 	STACKFRAME sf;
 	HANDLE process, thread;
 	DWORD dwModBase, Disp;
@@ -135,7 +135,7 @@ static void Stacktrace(LPEXCEPTION_POINTERS e)
 		}
 		++count;
 	}
-	GlobalFree(pSym);
+  GlobalFree(pSym);*/
 }
 
 /** Callback for SymEnumerateModules */

@@ -164,6 +164,7 @@ bool OSystem::is(OSystem::Type type)
     return true;
 #endif
   break;
+  default: break;
   }
 
   return false;
@@ -254,10 +255,10 @@ void OSystem::markFileAsExecutable( const std::string& filename )
 void OSystem::restartProcess( const std::string& filename, const std::string& dir, const StringArray& cmds)
 {
   Logger::warning( "Preparing restart...");
-  std::string _updateBatchFile = _prepareUpdateBatchFile( filename, dir, cmds );
+  std::string _updateBatchFile = _prepareUpdateBatchFile( filename, dir, cmds );  
 
 #ifdef CAESARIA_PLATFORM_WIN
-  if (!_updateBatchFile.toString().empty())
+  if (!_updateBatchFile.empty())
   {
     Logger::warning( "Update batch file pending, launching process.");
 
@@ -272,11 +273,12 @@ void OSystem::restartProcess( const std::string& filename, const std::string& di
 
     siStartupInfo.cb = sizeof(siStartupInfo);
 
-    vfs::Directory parentPath = _updateBatchFile.directory();
+    vfs::Path batchFilePath( _updateBatchFile );
+    vfs::Directory parentPath = batchFilePath.directory();
 
-    Logger::warning( "Starting batch file " + _updateBatchFile.toString() + " in " + parentPath.toString() );
+    Logger::warning( "Starting batch file " + batchFilePath.toString() + " in " + parentPath.toString() );
 
-    BOOL success = CreateProcessA( NULL, (LPSTR) _updateBatchFile.toString().c_str(), NULL, NULL,  false, 0, NULL,
+    BOOL success = CreateProcessA( NULL, (LPSTR) batchFilePath.toString().c_str(), NULL, NULL,  false, 0, NULL,
                                    parentPath.toString().c_str(), &siStartupInfo, &piProcessInfo);
 
     if (!success)
@@ -291,7 +293,7 @@ void OSystem::restartProcess( const std::string& filename, const std::string& di
                     0,
                     NULL);
 
-      throw FailureException( "Could not start new process: " + std::string((LPCSTR)lpMsgBuf));
+      throw std::ios_base::failure( "Could not start new process: " + std::string((LPCSTR)lpMsgBuf));
 
       LocalFree(lpMsgBuf);
     }
