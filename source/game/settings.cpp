@@ -27,6 +27,7 @@
 namespace game
 {
 
+#define _CONFIG_PATH(a) std::string( #a ".model");
 #define __REG_PROPERTY(a) const char* Settings::a = CAESARIA_STR_EXT(a);
 __REG_PROPERTY(localePath)
 __REG_PROPERTY(resourcePath )
@@ -103,6 +104,7 @@ __REG_PROPERTY(ccUseAI)
 __REG_PROPERTY(metricSystem)
 __REG_PROPERTY(defaultFont)
 __REG_PROPERTY(celebratesConfig)
+__REG_PROPERTY(ambientsounds)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -164,6 +166,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ soundAlias          ] = std::string( "sounds.model" );
   _d->options[ videoAlias          ] = std::string( "videos.model" );
   _d->options[ celebratesConfig    ] = std::string( "romancelebs.model" );
+  _d->options[ ambientsounds       ] = std::string( "/ambientsounds.model" );
   _d->options[ screenshotDir       ] = vfs::Directory::userDir().toString();
   _d->options[ batchTextures       ] = true;
   _d->options[ experimental        ] = false;

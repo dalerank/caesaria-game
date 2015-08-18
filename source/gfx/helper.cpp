@@ -323,6 +323,24 @@ Tile& getInvalidSafe()
   return invalidTileSafe;
 }
 
-}//end namespace util
+Tile::Type toTileType(const std::string& name)
+{
+  if( name == CAESARIA_STR_EXT(tlTree) )    return Tile::tlTree;
+  if( name == CAESARIA_STR_EXT(tlRock) )    return Tile::tlRock;
+  if( name == CAESARIA_STR_EXT(tlWater) )   return Tile::tlWater;
+  if( name == CAESARIA_STR_EXT(tlGarden) )  return Tile::tlGarden;
+  if( name == CAESARIA_STR_EXT(tlRoad) )    return Tile::tlRoad;
+  if( name == CAESARIA_STR_EXT(tlCoast) )   return Tile::tlCoast;
+  if( name == CAESARIA_STR_EXT(tlElevation))return Tile::tlElevation;
+  if( name == CAESARIA_STR_EXT(tlMeadow) )  return Tile::tlMeadow;
+  if( name == CAESARIA_STR_EXT(tlRubble) )  return Tile::tlRubble;
+  if( name == CAESARIA_STR_EXT(tlWall) )    return Tile::tlWall;
+  if( name == CAESARIA_STR_EXT(tlDeepWater))return Tile::tlDeepWater;
+  if( name == CAESARIA_STR_EXT(tlRift) )    return Tile::tlRift;
+  if( name == CAESARIA_STR_EXT(tlGrass) )   return Tile::tlGrass;
+  return Tile::tlUnknown;
+}
+
+}//end namespace tile
 
 }//end namespace gfx

@@ -104,6 +104,7 @@ public:
   __GS_PROPERTY(metricSystem)
   __GS_PROPERTY(defaultFont)
   __GS_PROPERTY(celebratesConfig)
+  __GS_PROPERTY(ambientsounds)
 #undef __GS_PROPERTY
 
   static Settings& instance();
