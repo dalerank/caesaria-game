@@ -24,6 +24,7 @@
 #include "objects/overlay.hpp"
 #include "core/foreach.hpp"
 #include "config.hpp"
+#include "core/saveadapter.hpp"
 #include "cityservice_factory.hpp"
 
 #include <set>
@@ -35,6 +36,36 @@ namespace city
 {
 
 REGISTER_SERVICE_IN_FACTORY(AmbientSound,ambient_sound)
+
+struct AmbientEmitter
+{
+  typedef struct
+  {
+    StringArray sounds;
+  } Info;
+
+  std::map< Tile::Type, Info > info;
+
+  static AmbientEmitter& instance()
+  {
+    static AmbientEmitter inst;
+    return inst;
+  }
+
+  void initialize( const std::string& filename )
+  {
+    VariantMap types = config::load( filename );
+    for( auto type : types )
+    {
+
+    }
+  }
+
+  std::string sound( Tile::Type tileType )
+  {
+    return utils::format( 0xff, "emptyland_%05d", (tile->i() * tile->j()) % 3 + 1  );
+  }
+};
 
 struct SoundEmitter
 {  
@@ -72,7 +103,7 @@ struct SoundEmitter
       }
       else
       {
-        return utils::format( 0xff, "emptyland_%05d", (tile->i() * tile->j()) % 3 + 1  );
+        return EmptyLandEmitter::sound( Tile::tl);
       }
     }
 
