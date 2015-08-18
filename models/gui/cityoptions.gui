@@ -78,6 +78,7 @@
       btnDetroyEpidemicHouses#PushButton:{maximumSize:[ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_destroy_epdh##"     }
       btnForestFire#PushButton      : {maximumSize  :[ 0, 24 ],  bgtype : "smallGrayBorderLine", text : "##city_forest_fire##"      }
       btnForestGrow#PushButton      : {maximumSize  :[ 0, 24 ],  bgtype : "smallGrayBorderLine", text : "##city_forest_grow##"      }
+      btnBorderMoving#PushButton    : {maximumSize  :[ 0, 24 ],  bgtype : "smallGrayBorderLine", text : "##city_border_moving##"      }
     }
   }
 

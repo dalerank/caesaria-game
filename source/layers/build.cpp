@@ -39,7 +39,6 @@
 #include "gfx/tilearea.hpp"
 #include "gfx/city_renderer.hpp"
 #include "gfx/helper.hpp"
-#include "layerdestroy.hpp"
 #include "gfx/tilemap.hpp"
 #include "city/statistic.hpp"
 
@@ -69,8 +68,11 @@ public:
   Renderer* renderer;
   LayerPtr lastLayer;
   std::string resForbiden;
-  Font textFont;
-  Picture textPic;
+  struct {
+    Font font;
+    Picture image;
+  } text;
+
   TilesArray buildTiles;  // these tiles have draw over "normal" tilemap tiles!
 };
 
@@ -277,9 +279,9 @@ void Build::_updatePreviewTiles( bool force )
 
   std::sort( d->buildTiles.begin(), d->buildTiles.end(), compare_tile );
 
-  d->textPic.fill( 0x0, Rect() );
-  d->textFont.setColor( 0xffff0000 );
-  d->textFont.draw( d->textPic, utils::i2str( d->money4Construction ) + " Dn", Point() );
+  d->text.image.fill( 0x0, Rect() );
+  d->text.font.setColor( 0xffff0000 );
+  d->text.font.draw( d->text.image, utils::i2str( d->money4Construction ) + " Dn", Point() );
 }
 
 void Build::_buildAll()
@@ -583,7 +585,7 @@ const Layer::WalkerTypes& Build::visibleTypes() const
 void Build::renderUi(Engine &engine)
 {
   Layer::renderUi( engine );
-  engine.draw( _dfunc()->textPic, engine.cursorPos() + Point( 10, 10 ));
+  engine.draw( _dfunc()->text.image, engine.cursorPos() + Point( 10, 10 ));
 }
 
 void Build::changeLayer(int layer)
@@ -628,8 +630,8 @@ Build::Build( Renderer& renderer, PlayerCityPtr city)
   d->needUpdateTiles = false;
   d->resForbiden = SETTINGS_VALUE( forbidenTile ).toString();
   d->startTilePos = gfx::tilemap::invalidLocation();
-  d->textFont = Font::create( FONT_5 );
-  d->textPic = Picture( Size( 100, 30 ), 0, true );
+  d->text.font = Font::create( FONT_5 );
+  d->text.image = Picture( Size( 100, 30 ), 0, true );
   _addWalkerType( walker::all );
 }
 

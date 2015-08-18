@@ -53,7 +53,7 @@ struct OptionInfo
   const char* text_off;
 };
 
-#define INIT_OPTION(btnName, co, so, text ) { true, #btnName, co, so, "##" text"_on##", "##" text"_off##" }
+#define INIT_OPTION(btnName, co, so, text ) { true, #btnName, co, so, "##" text "_on##", "##" text "_off##" }
 static OptionInfo options[] =
 {
   INIT_OPTION( btnGodEnabled, PlayerCity::godEnabled, "", "city_opts_god" ),
@@ -104,6 +104,7 @@ public:
   PushButton* btnDetroyEpidemicHouses;
   PushButton* btnForestFire;
   PushButton* btnForestGrow;
+  PushButton* btnBorderMoving;
 
   Label* lbFireRisk;
   Label* lbCollapseRisk;
@@ -138,11 +139,13 @@ public:
   void toggleUseBatching();
   void toggleCcUseAI();
   void toggleMetrics();
+  void toggleBorderMoving();
   void toggleHighlightBuilding();
   void toggleDestroyEpidemicHouses();
   void toggleCityOption( PlayerCity::OptionType option );
   void changeCityOption( PlayerCity::OptionType option, int delta);
   void setAutoText( Widget* widget, const std::string& text );
+  void setAutoText( Widget *widget, const std::string& text, bool enabled );
 };
 
 CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
@@ -183,6 +186,7 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, btnDetroyEpidemicHouses )
   GET_DWIDGET_FROM_UI( _d, btnForestFire )
   GET_DWIDGET_FROM_UI( _d, btnForestGrow )
+  GET_DWIDGET_FROM_UI( _d, btnBorderMoving )
 
   CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods )
   CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings )
@@ -208,6 +212,7 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   CONNECT( _d->btnDetroyEpidemicHouses, onClicked(), _d.data(), Impl::toggleDestroyEpidemicHouses )
   CONNECT( _d->btnForestFire, onClicked(), _d.data(), Impl::toggleForestFire )
   CONNECT( _d->btnForestGrow, onClicked(), _d.data(), Impl::toggleForestGrow )
+  CONNECT( _d->btnBorderMoving, onClicked(), _d.data(), Impl::toggleBorderMoving )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptions::deleteLater );
@@ -236,7 +241,12 @@ void CityOptions::Impl::changeCityOption( PlayerCity::OptionType option, int del
   update();
 }
 
-void CityOptions::Impl::setAutoText(Widget *widget, const std::string &text)
+void CityOptions::Impl::setAutoText(Widget *widget, const std::string& text, bool enabled )
+{
+  setAutoText( widget, utils::format( 0xff, "##%s_%s##", text.c_str(), enabled ? "on" : "off" ) );
+}
+
+void CityOptions::Impl::setAutoText(Widget *widget, const std::string& text)
 {
   if( widget )
   {
@@ -284,6 +294,13 @@ void CityOptions::Impl::toggleMetrics()
   value = (value+1)%metric::Measure::count;
   metric::Measure::setMode( (metric::Measure::Mode)value );
   SETTINGS_SET_VALUE( metricSystem, value );
+  update();
+}
+
+void CityOptions::Impl::toggleBorderMoving()
+{
+  bool value = DrawOptions::instance().isFlag( DrawOptions::borderMoving );
+  DrawOptions::instance().setFlag( DrawOptions::borderMoving, !value );
   update();
 }
 
@@ -389,9 +406,7 @@ void CityOptions::Impl::update()
   if( btnDebugEnabled )
   {
     Widget* menu = findDebugMenu( btnDebugEnabled->ui() );
-    setAutoText( btnDebugEnabled, (menu ? menu->visible() : false)
-                                    ? "##city_debug_on##"
-                                    : "##city_debug_off##" );
+    setAutoText( btnDebugEnabled, "city_debug", (menu ? menu->visible() : false) );
   }
 
   if( btnMmbMoving )
@@ -429,7 +444,13 @@ void CityOptions::Impl::update()
   if( btnToggleBatching )
   {
     bool value = gfx::Engine::instance().getFlag( gfx::Engine::batching ) > 0;
-    setAutoText( btnToggleBatching, value ? "##city_batching_on##" : "##city_batching_off##" );
+    setAutoText( btnToggleBatching, "city_batching", value );
+  }
+
+  if( btnBorderMoving )
+  {
+    bool value = gfx::Engine::instance().getFlag( gfx::Engine::batching ) > 0;
+    setAutoText( btnBorderMoving, "city_border_moving", value );
   }
 }
 
