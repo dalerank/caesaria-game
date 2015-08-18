@@ -140,10 +140,10 @@ Farm::Farm(const good::Product outGood, const object::Type farmType )
   mainPic.addOffset( tile::tilepos2screen( TilePos( 0, 1) ) );
   _fgPictures().push_back( mainPic );  // farm building
 
-  foreach( it, _d->sublocs )
+  for( auto pos : _d->sublocs )
   {
     Picture tPic = FarmTile::computePicture( outGood, 0 );
-    tPic.addOffset( tile::tilepos2screen( *it ) );
+    tPic.addOffset( tile::tilepos2screen( pos ) );
     _fgPictures().push_back( tPic );
   }
   setPicture( Picture::getInvalid() );
@@ -157,9 +157,9 @@ bool Farm::canBuild( const city::AreaInfo& areaInfo ) const
   bool on_meadow = false;
 
   TilesArea area( areaInfo.city->tilemap(), areaInfo.pos, size() );
-  foreach( tile, area )
+  for( auto tile : area )
   {
-    on_meadow |= (*tile)->getFlag( Tile::tlMeadow );
+    on_meadow |= tile->getFlag( Tile::tlMeadow );
   }
 
   Farm* non_const_this = const_cast< Farm* >( this );
@@ -168,11 +168,33 @@ bool Farm::canBuild( const city::AreaInfo& areaInfo ) const
   return (is_constructible && on_meadow);
 }
 
+void Farm::burn()
+{
+  Factory::burn();
+  for( auto pos : _d->sublocs )
+  {
+    OverlayPtr ov = _city()->getOverlay( pos );
+    if( ov.isValid() )
+      ov->burn();
+  }
+}
+
+void Farm::collapse()
+{
+  Factory::collapse();
+  for( auto pos : _d->sublocs )
+  {
+    OverlayPtr ov = _city()->getOverlay( pos );
+    if( ov.isValid() )
+      ov->collapse();
+  }
+}
+
 void Farm::destroy()
 {
-  foreach( it, _d->sublocs )
+  for( auto pos : _d->sublocs )
   {
-    OverlayPtr ov = _city()->getOverlay( *it );
+    OverlayPtr ov = _city()->getOverlay( pos );
     if( ov.isValid() && ov->type() == object::farmtile )
     {
       events::GameEventPtr e = events::ClearTile::create( ov->pos() );
@@ -187,9 +209,9 @@ void Farm::computeRoadside()
 {
   Factory::computeRoadside();
 
-  foreach( it, _d->sublocs )
+  for( auto pos : _d->sublocs )
   {
-    ConstructionPtr ov = ptr_cast<Construction>( _city()->getOverlay( *it ) );
+    ConstructionPtr ov = _city()->getOverlay( pos ).as<Construction>();
     if( ov.isValid() && ov->type() == object::farmtile )
     {
       _roadside().append( ov->roadside() );
@@ -223,7 +245,7 @@ void Farm::computePictures()
       amount = 0;  // for next subTiles
     }
 
-    SmartPtr<FarmTile> ft = ptr_cast<FarmTile>( _city()->getOverlay( _d->sublocs[n] ) );
+    SmartPtr<FarmTile> ft = _city()->getOverlay( _d->sublocs[n] ).as<FarmTile>();
     if( ft.isValid() )
       ft->setPicture( FarmTile::computePicture( produceGoodType(), percentTile ));
   }
@@ -367,7 +389,6 @@ OverlayPtr Farm::_buildFarmTile(const city::AreaInfo &info, const TilePos &ppos)
 {
   OverlayPtr farmtile( new FarmTile( produceGoodType(), ppos ) );
   farmtile->drop();
-
   farmtile->build( info );
   info.city->addOverlay( farmtile );
   return farmtile;

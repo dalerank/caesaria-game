@@ -65,6 +65,7 @@ public:
   virtual gfx::TilesArray area() const;
 
   virtual void burn();
+  virtual void collapse();
 
   virtual Point offset(const gfx::Tile &tile, const Point& subpos ) const;
   virtual void timeStep(const unsigned long time);  // perform one simulation step

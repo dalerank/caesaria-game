@@ -193,7 +193,8 @@ void Overlay::initialize(const MetaData& mdata)
 
 void Overlay::timeStep(const unsigned long) {}
 void Overlay::reinit() {}
-void Overlay::burn() {} //nothing to do, neck for virtual function
+void Overlay::burn() {}
+void Overlay::collapse() {} //nothing to do, neck for virtual function
 bool Overlay::isWalkable() const{  return false;}
 bool Overlay::isDestructible() const { return true; }
 bool Overlay::isFlat() const { return false;}
