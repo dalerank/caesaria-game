@@ -257,7 +257,7 @@ void UserStats::evaluateAchievement( Achievement& achievement )
   {
     bool haveDlc = false;
 #ifdef CAESARIA_PLATFORM_WIN
-    //haveDlc = sth_isDlcInstalled( CAESARIA_AVEC3_APPID );
+    haveDlc = sth_isDlcInstalled( CAESARIA_AVEC3_APPID );
 #else
     if( xclient.apps )
       haveDlc = xclient.apps->BIsDlcInstalled( CAESARIA_AVEC3_APPID );
