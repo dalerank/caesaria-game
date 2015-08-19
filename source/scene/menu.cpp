@@ -58,6 +58,7 @@
 #include "vfs/directory.hpp"
 #include "gui/dlc_folder_viewer.hpp"
 #include "steam.hpp"
+#include "gui/window_language_select.hpp"
 
 using namespace gfx;
 using namespace gui;
@@ -66,8 +67,6 @@ namespace scene
 {
 
 CAESARIA_LITERALCONST(ext)
-CAESARIA_LITERALCONST(talks)
-CAESARIA_LITERALCONST(font)
 
 class StartMenu::Impl
 {
@@ -237,30 +236,7 @@ void StartMenu::Impl::showSoundOptions()
 void StartMenu::Impl::showLanguageOptions()
 {
   Widget* parent = game->gui()->rootWidget();
-  Size windowSize( 512, 384 );
-
-  Label* frame = new Label( parent, Rect( Point(), windowSize ), "", false, gui::Label::bgWhiteFrame );
-  ListBox* lbx = new ListBox( frame, Rect( 0, 0, 1, 1 ), -1, true, true );
-  PushButton* btn = new PushButton( frame, Rect( 0, 0, 1, 1), _("##apply##") );
-
-  WidgetEscapeCloser::insertTo( frame );
-  frame->setCenter( parent->center() );
-  lbx->setFocus();
-  lbx->setGeometry( RectF( 0.05, 0.05, 0.95, 0.85 ) );
-  btn->setGeometry( RectF( 0.1, 0.88, 0.9, 0.95 ) );
-
-  VariantMap languages = config::load( SETTINGS_RC_PATH( langModel ) );
-  std::string currentLang = SETTINGS_VALUE( language ).toString();
-  int currentIndex = -1;
-  for( auto it : languages )
-  {
-    lbx->addItem( it.first );
-    std::string ext = it.second.toMap().get( literals::ext ).toString();
-    if( ext == currentLang )
-      currentIndex = lbx->itemsCount() - 1;
-  }
-
-  lbx->setSelected( currentIndex );
+  dialog::LanguageSelect* dlg = new dialog::LanguageSelect( parent );
 
   CONNECT( lbx, onItemSelected(), this, Impl::changeLanguage );
   CONNECT( btn, onClicked(),      this, Impl::reload );

@@ -15,26 +15,24 @@
 //
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_TEXTURED_BUTTON_H_INCLUDED__
-#define __CAESARIA_TEXTURED_BUTTON_H_INCLUDED__
+#ifndef _CAESARIA_WINDOW_LANGUAGE_SELECT_H_INCLUDE_
+#define _CAESARIA_INFOBOXTEMPLE_H_INCLUDE_
 
-#include "pushbutton.hpp"
+#include "label.hpp"
 
 namespace gui
 {
 
-class TexturedButton : public PushButton
+namespace dialog
+{
+
+class LanguageSelect : public Label
 {
 public:
-  TexturedButton( Widget* parent, const Point& pos, const Size& size, int id,
-                  int normalTxIndex, int hovTxIndex=-1, int prsTxIndex=-1, int dsbTxIndex=-1 );
-
-  TexturedButton( Widget* parent, const Point& pos, const Size& size, int id,
-                  const char* resourceGroup,
-                  int normalTxIndex, int hovTxIndex=-1, int prsTxIndex=-1, int dsbTxIndex=-1 );
-
-  TexturedButton( Widget* parent );
+  LanguageSelect( Widget* parent, Size size = Size(512,384));
 };
 
+}//end namespace dialog
+
 }//end namespace gui
-#endif //__CAESARIA_TEXTURED_BUTTON_H_INCLUDED__
+#endif //_CAESARIA_INFOBOXTEMPLE_H_INCLUDE_
