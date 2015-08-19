@@ -329,7 +329,7 @@ void Farm::initialize(const MetaData& mdata)
 
 Picture Farm::_getMainPicture()
 {
-  const MetaData& md = MetaDataHolder::getData( type() );
+  const MetaData& md = MetaDataHolder::find( type() );
   Picture ret = md.picture();
   if( !ret.isValid() )
     ret.load(ResourceGroup::commerce, 12);

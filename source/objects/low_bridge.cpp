@@ -427,7 +427,7 @@ bool LowBridgeSubTile::build(const city::AreaInfo &info)
   Construction::build( info );
   _fgPictures().clear();
   _pos = info.pos;
-  const MetaData& md = MetaDataHolder::getData( type() );
+  const MetaData& md = MetaDataHolder::find( type() );
   Point sbOffset = md.getOption( "subtileOffset" );
   _rpicture.load( ResourceGroup::transport, _index );
   _rpicture.addOffset( sbOffset );

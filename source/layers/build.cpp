@@ -107,7 +107,7 @@ void Build::_checkPreviewBuild(TilePos pos)
   }
 
   Size size = overlay->size();
-  int cost = MetaDataHolder::getData( overlay->type() ).getOption( MetaDataOptions::cost );
+  int cost = MetaDataHolder::find( overlay->type() ).getOption( MetaDataOptions::cost );
 
   bool walkersOnTile = false;
   if( bldCommand->flag( LayerMode::checkWalkers ) )
@@ -308,9 +308,8 @@ void Build::_buildAll()
 
   bool buildOk = false;  
   city::AreaInfo areaInfo = { _city(), TilePos(), TilesArray() };
-  foreach( it, d->buildTiles )
+  for( auto tile : d->buildTiles )
   {
-    Tile* tile = *it;
     areaInfo.pos = tile->epos();
     if( cnstr->canBuild( areaInfo ) && tile->isMasterTile())
     {
@@ -428,9 +427,9 @@ void Build::_drawBuildTiles( Engine& engine)
   __D_IMPL(_d,Build);
   Point offset = _camera()->offset();
   city::AreaInfo areaInfo = { _city(), TilePos(), _d->buildTiles };
-  foreach( it, _d->buildTiles )
+  for( auto tile : _d->buildTiles )
   {
-    Tile* postTile = *it;
+    Tile* postTile = tile;
     postTile->resetWasDrawn();
 
     if( postTile->masterTile() )
@@ -444,8 +443,8 @@ void Build::_drawBuildTiles( Engine& engine)
     {
       engine.setColorMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
 
-      drawPass( engine, **it, offset, Renderer::ground );
-      drawPass( engine, **it, offset, Renderer::groundAnimation );
+      drawPass( engine, *tile, offset, Renderer::ground );
+      drawPass( engine, *tile, offset, Renderer::groundAnimation );
     }
 
     drawPass( engine, *postTile, offset, Renderer::ground );

@@ -24,6 +24,7 @@
     cost : 10
     c3logic : false
     class : "road"
+    checkWalkersOnBuild : false
     image : [ "roadBlock", 1 ]
   }
 
@@ -38,6 +39,7 @@
     cost : 4,
     desirability : { base : 1, range : 0, step : 0 }
     class : "road"
+    checkWalkersOnBuild : false
     image : [ "land2a", 44 ]
   },
 
@@ -116,6 +118,7 @@
     cost : 10,
     desirability : { base : -3, range : 3, step : 1 }
     employers : 0
+    checkWalkersOnBuild : false
     class : "house"
   }
 
@@ -153,6 +156,7 @@
     desirability : { base : 4, range : 2,	step : -2 }
     employers : 0
     class : "road"
+    checkWalkersOnBuild : false
     image : [ "entertainment", 102 ]
     image.ext : {
       type_1 : { size:1, rc : "entertainment", start : 102, count : 6 }
@@ -165,6 +169,7 @@
     cost : 12,
     desirability : { base :3,	range : 3,	step : -1 }
     employers : 0
+    checkWalkersOnBuild : false
     class : "garden"
     image : [ "entertainment", 110 ]
     image.ext : {

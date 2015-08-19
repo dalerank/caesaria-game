@@ -51,14 +51,14 @@ bool Road::build( const city::AreaInfo& info )
   Tilemap& tilemap = info.city->tilemap();
   OverlayPtr overlay = tilemap.at( info.pos ).overlay();
 
-  if( is_kind_of<Road>( overlay ) )
+  if( overlay.is<Road>() )
   {
     return false;
   }
 
-  if( is_kind_of<Aqueduct>( overlay ) )
+  if( overlay.is<Aqueduct>() )
   {
-    AqueductPtr aq = ptr_cast<Aqueduct>( overlay );
+    AqueductPtr aq = overlay.as<Aqueduct>();
     aq->addRoad();
 
     return false;
@@ -92,7 +92,7 @@ bool Road::canBuild( const city::AreaInfo& areaInfo ) const
   }
   const_cast<Road*>( this )->setPicture( pic );
 
-  return ( is_kind_of<Aqueduct>( overlay ) || is_kind_of<Road>( overlay ) );
+  return ( overlay.is<Aqueduct>() || overlay.is<Road>() );
 }
 
 void Road::initTerrain(Tile& terrain)
@@ -105,11 +105,11 @@ const gfx::Picture& Road::picture( const city::AreaInfo& areaInfo) const
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
   if (!areaInfo.aroundTiles.empty())
   {
-    foreach( it, areaInfo.aroundTiles )
+    for( auto tile : areaInfo.aroundTiles )
     {
-      const TilePos& epos = (*it)->epos();
+      const TilePos& epos = tile->epos();
 
-      if( (*it)->getFlag( Tile::tlRoad ) || is_kind_of<Road>( (*it)->overlay() ) )
+      if( tile->getFlag( Tile::tlRoad ) || tile->overlay().is<Road>() )
       {
         const TilePos& p = areaInfo.pos;
         if( epos == p.northnb() ) directionFlags |= road2north; // road to the north
@@ -124,12 +124,11 @@ const gfx::Picture& Road::picture( const city::AreaInfo& areaInfo) const
   if( areaInfo.city.isValid() )
     roads = areaInfo.city->tilemap().getNeighbors( areaInfo.pos, Tilemap::FourNeighbors );
 
-  foreach( it, roads )
+  for( auto tile : roads )
   {
-    Tile* tile = *it;
     const TilePos& epos = tile->epos();
     const TilePos& p = areaInfo.pos;
-    if( tile->getFlag( Tile::tlRoad ) || is_kind_of<Road>( tile->overlay() ) )
+    if( tile->getFlag( Tile::tlRoad ) || tile->overlay().is<Road>() )
     {
       if (epos.j() > p.j())      { directionFlags |= road2north; } // road to the north
       else if (epos.j() < p.j()) { directionFlags |= road2south; } // road to the south

@@ -33,6 +33,7 @@
     desirability : { base : 1, range : 0, step : 0 }
     class : "road"
     image : [ "land2a", 44 ]
+    checkWalkersOnBuild : false
     image.ext : {
       type_1 : { size:1, rc : "land2a", start : 2, count : 1 }
     }
@@ -87,6 +88,7 @@
   roadBlock : {
     cost : 10     
     class : "road"
+    checkWalkersOnBuild : false
     image : [ "roadBlock", 1 ]
   }
 
@@ -119,6 +121,7 @@
     cost : 10,
     desirability : { base : -3, range : 3, step : 1 }
     employers : 0
+    checkWalkersOnBuild : false
     class : "house"
   }
 
@@ -157,6 +160,7 @@
     desirability : { base : 4, range : 2,	step : -2 }
     employers : 0
     class : "road"
+    checkWalkersOnBuild : false
     image : [ "entertainment", 102 ]
     image.ext : {
       type_1 : { size:1, rc : "entertainment", start : 102, count : 6 }
@@ -170,6 +174,7 @@
     desirability : { base :3,	range : 3,	step : -1 }
     employers : 0
     class : "garden"
+    checkWalkersOnBuild : false
     image : [ "entertainment", 110 ]
     image.ext : {
       type_1 : { size:1, rc : "entertainment", start : 110, count : 4 }
