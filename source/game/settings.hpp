@@ -134,6 +134,7 @@ private:
 
 #define SETTINGS_RC_PATH(a) game::Settings::rcpath( game::Settings::a )
 #define SETTINGS_VALUE(a) game::Settings::get( game::Settings::a )
+#define SETTINGS_STR(a) game::Settings::get( game::Settings::a ).toString()
 #define KILLSWITCH(a) game::Settings::get( game::Settings::a ).toBool()
 #define SETTINGS_SET_VALUE(a, value) game::Settings::set( game::Settings::a, value )
 

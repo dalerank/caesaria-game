@@ -20,9 +20,17 @@
 #include "core/locale.hpp"
 #include "walker/name_generator.hpp"
 #include "sound/engine.hpp"
+#include "listbox.hpp"
+#include "pushbutton.hpp"
+#include "core/gettext.hpp"
+#include "widgetescapecloser.hpp"
+#include "core/saveadapter.hpp"
+#include "core/logger.hpp"
+#include "core/variant_map.hpp"
 
 CAESARIA_LITERALCONST(talks)
 CAESARIA_LITERALCONST(font)
+CAESARIA_LITERALCONST(ext)
 
 namespace gui
 {
@@ -30,33 +38,67 @@ namespace gui
 namespace dialog
 {
 
-LanguageSelect::LanguageSelect(gui::Widget* parent, Size size)
+LanguageSelect::LanguageSelect(gui::Widget* parent, vfs::Path model, const std::string& current, Size size)
+  : Label( parent, Rect( Point(), size ), "", false, gui::Label::bgWhiteFrame )
 {
-  Label( parent, Rect( Point(), windowSize ), "", false, gui::Label::bgWhiteFrame );
-  ListBox* lbx = new ListBox( frame, Rect( 0, 0, 1, 1 ), -1, true, true );
-  PushButton* btn = new PushButton( frame, Rect( 0, 0, 1, 1), _("##apply##") );
+  ListBox* lbx = new ListBox( this, Rect( 0, 0, 1, 1 ), -1, true, true );
+  PushButton* btn = new PushButton( this, Rect( 0, 0, 1, 1), _("##continue##") );
 
-  WidgetEscapeCloser::insertTo( frame );
-  frame->setCenter( parent->center() );
+  WidgetEscapeCloser::insertTo( this );
+  setCenter( parent->center() );
   lbx->setFocus();
   lbx->setGeometry( RectF( 0.05, 0.05, 0.95, 0.85 ) );
   btn->setGeometry( RectF( 0.1, 0.88, 0.9, 0.95 ) );
 
-  VariantMap languages = config::load( SETTINGS_RC_PATH( langModel ) );
-  std::string currentLang = SETTINGS_VALUE( language ).toString();
+  _model = model;
+  VariantMap languages = config::load( _model );
+
   int currentIndex = -1;
   for( auto it : languages )
   {
     lbx->addItem( it.first );
     std::string ext = it.second.toMap().get( literals::ext ).toString();
-    if( ext == currentLang )
+    if( ext == current )
       currentIndex = lbx->itemsCount() - 1;
   }
 
   lbx->setSelected( currentIndex );
 
+  CONNECT( lbx, onItemSelected(), this, LanguageSelect::_changeLanguage )
+  CONNECT( btn, onClicked(),      this, LanguageSelect::_apply          )
 }
 
+void LanguageSelect::setDefaultFont(const std::string& fontname)
+{
+  _defaultFont = fontname;
+}
+
+void LanguageSelect::_changeLanguage(const gui::ListBoxItem& item)
+{
+  VariantMap languages = config::load( _model );
+  for( auto it : languages )
+  {
+    if( item.text() == it.first )
+    {
+      VariantMap vm = it.second.toMap();
+      std::string lang = vm.get( literals::ext ).toString();
+      std::string talksArchive = vm.get( literals::talks ).toString();
+      std::string newFont  = vm.get( literals::font ).toString();
+
+      if( newFont.empty() )
+        newFont = _defaultFont;
+
+      emit onChange( lang, newFont, talksArchive );
+      return;
+    }
+  }
+}
+
+void LanguageSelect::_apply()
+{
+  deleteLater();
+  emit onContinue();
+}
 
 }//end namespace dialog
 
