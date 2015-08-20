@@ -23,7 +23,7 @@
 namespace citylayer
 {
 
-class Indigene : public Info
+class Aborigens : public Info
 {
 public:
   virtual int type() const;
@@ -33,7 +33,7 @@ public:
   static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
 
 private:
-  Indigene( gfx::Camera& camera, PlayerCityPtr city );
+  Aborigens( gfx::Camera& camera, PlayerCityPtr city );
 };
 
 }//end namespace citylayer
