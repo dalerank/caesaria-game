@@ -428,16 +428,22 @@ void Layer::drawLands( Engine& engine, Camera* camera )
 
   // FIRST PART: draw all flat land (walkable/boatable)
   for( auto tile : groundTiles )
-  {
-    drawPass( engine, *tile, camOffset, Renderer::ground );
-    drawPass( engine, *tile, camOffset, Renderer::groundAnimation );
-  }
+    drawLandTile( engine, *tile, camOffset );
 
   for( auto tile : flatTiles )
-  {
-    if( tile->rov().isValid() )
-      drawTile( engine, *tile, camOffset );
-  }
+    drawFlatTile( engine, *tile, camOffset );
+}
+
+void Layer::drawLandTile(Engine &engine, Tile &tile, const Point &camOffset)
+{
+  drawPass( engine, tile, camOffset, Renderer::ground );
+  drawPass( engine, tile, camOffset, Renderer::groundAnimation );
+}
+
+void Layer::drawFlatTile(Engine& engine, Tile& tile, const Point& camOffset)
+{
+  if( tile.rov().isValid() )
+    drawTile( engine, tile, camOffset );
 }
 
 void Layer::init( Point cursor )

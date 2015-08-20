@@ -53,6 +53,7 @@ static const int frameCountLimiter=25;
 class Build::Impl
 {
 public:
+  typedef std::map<unsigned int, Tile*> CachedTiles;
   bool multiBuilding;
   TilePos lastTilePos;
   TilePos startTilePos;
@@ -62,7 +63,6 @@ public:
   bool borderBuilding;
   bool roadAssignment;
   bool needUpdateTiles;
-  bool drawTileBasicPicture;
   int drawLayerIndex;
   int frameCount;
   int money4Construction;
@@ -78,7 +78,7 @@ public:
   } text;
 
   TilesArray buildTiles;  // these tiles have draw over "normal" tilemap tiles!
-  std::map<unsigned int, Tile*> cachedTiles;
+  CachedTiles cachedTiles;
 
 public:
   void sortBuildTiles();
@@ -96,6 +96,7 @@ void Build::_discardPreview()
   }
 
   d->buildTiles.clear();
+  d->cachedTiles.clear();
 }
 
 void Build::_checkPreviewBuild(TilePos pos)
@@ -424,6 +425,9 @@ int Build::type() const {  return citylayer::build; }
 
 void Build::_drawBuildTile( Engine& engine, Tile* tile, const Point& offset )
 {
+  if( tile == nullptr )
+    return;
+
   __D_IMPL(_d,Build);
   city::AreaInfo areaInfo = { _city(), TilePos(), _d->buildTiles };
 
@@ -437,18 +441,33 @@ void Build::_drawBuildTile( Engine& engine, Tile* tile, const Point& offset )
   engine.resetColorMask();
 
   areaInfo.pos = postTile->epos();
+  bool maskSet = false;
+
   if( construction.isValid() && construction->canBuild( areaInfo ) )
   {
     engine.setColorMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
-
-    drawPass( engine, *tile, offset, Renderer::ground );
-    drawPass( engine, *tile, offset, Renderer::groundAnimation );
+    maskSet = true;
   }
-
   drawPass( engine, *postTile, offset, Renderer::ground );
   drawPass( engine, *postTile, offset, Renderer::groundAnimation );
 
-  drawProminentTile( engine, *postTile, offset, postTile->epos().z(), true );
+  if( maskSet )
+  {
+    const Picture& picOver = construction->picture( areaInfo );
+    engine.draw( picOver, postTile->mappos() + offset );
+    drawPass( engine, *postTile, offset, Renderer::overlayAnimation );
+    engine.resetColorMask();
+  }
+}
+
+void Build::_tryDrawBuildTile( Engine& engine, Tile &tile, const Point& camOffset)
+{
+  Impl::CachedTiles& cache = _dfunc()->cachedTiles;
+  auto it = cache.find( tile::hash( tile.epos() ) );
+  if( it != cache.end() )
+  {
+    _drawBuildTile( engine, it->second, camOffset );
+  }
 }
 
 void Build::_drawBuildTiles( Engine& engine )
@@ -458,9 +477,7 @@ void Build::_drawBuildTiles( Engine& engine )
   Point offset = _camera()->offset();
 
   for( auto tile : _d->buildTiles )
-    _drawBuildTile( engine, tile, offset );
-
-  engine.resetColorMask();
+    _drawBuildTile( engine, tile, offset );  
 }
 
 void Build::drawTile( Engine& engine, Tile& tile, const Point& offset )
@@ -471,62 +488,43 @@ void Build::drawTile( Engine& engine, Tile& tile, const Point& offset )
   ConstructionPtr cntr = tile.overlay().as<Construction>();
   city::AreaInfo info = { _city(), tile.epos(), _d->buildTiles };
 
-  if( _d->drawTileBasicPicture )
+  const Picture* picBasic = 0;
+  const Picture* picOver = 0;
+  if( cntr.isValid() && info.aroundTiles.size() > 0 )
   {
-    const Picture* picBasic = 0;
-    const Picture* picOver = 0;
-    if( cntr.isValid() && info.aroundTiles.size() > 0 )
-    {
-      picBasic = &cntr->picture();
-      picOver = &cntr->picture( info );
-    }
+    picBasic = &cntr->picture();
+    picOver = &cntr->picture( info );
+  }
 
-    if( picOver && picBasic != picOver )
-    {
-      drawPass( engine, tile, offset, Renderer::ground );
-      engine.draw( *picOver, screenPos );
-      drawPass( engine, tile, offset, Renderer::overlayAnimation );
-    }
-    else if( _d->lastLayer.isValid() )
-    {
-      _d->lastLayer->drawTile( engine, tile, offset );
-    }
-    else
-    {
-      Layer::drawTile( engine, tile, offset );
-    }
+  if( picOver && picBasic != picOver )
+  {
+    drawPass( engine, tile, offset, Renderer::ground );
+    engine.draw( *picOver, screenPos );
+    drawPass( engine, tile, offset, Renderer::overlayAnimation );
+  }
+  else if( _d->lastLayer.isValid() )
+  {
+    _d->lastLayer->drawTile( engine, tile, offset );
   }
   else
   {
-    if( cntr.isValid() )
-    {
-      const Picture& picOver = cntr->picture( info );
-      engine.draw( picOver, screenPos );
-      drawPass( engine, tile, offset, Renderer::overlayAnimation );
-    }
-    else
-    {
-      Layer::drawTile( engine, tile, offset );
-    }
+    Layer::drawTile( engine, tile, offset );
   }
 
   if( !_d->overdrawBuilding )
-  {
-    auto it = _d->cachedTiles.find( tile::hash( tile.epos() ) );
-    if( it != _d->cachedTiles.end() )
-    {
-      if( it->second != nullptr )
-      {
-        _drawBuildTile( engine, it->second, _camera()->offset() );
-      }
-    }
-  }
+    _tryDrawBuildTile( engine, tile, offset );
+}
+
+void Build::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, const int depth, bool force)
+{
+  Layer::drawProminentTile( engine, tile, offset, depth, force );
+
+  _tryDrawBuildTile( engine, tile, offset );
 }
 
 void Build::render( Engine& engine)
 {
   __D_IMPL(d,Build);
-  d->drawTileBasicPicture = true;
   Layer::render( engine );
 
   if( ++d->frameCount >= frameCountLimiter)
@@ -535,8 +533,6 @@ void Build::render( Engine& engine)
   }
 
   d->frameCount %= frameCountLimiter;
-
-  d->drawTileBasicPicture = false;
 
   if( d->overdrawBuilding )
     _drawBuildTiles( engine );

@@ -72,6 +72,8 @@ public:
                         const std::string& resourceGroup, int tileId );
 
   virtual void drawLands( gfx::Engine& engine, gfx::Camera* camera );
+  virtual void drawLandTile(gfx::Engine& engine, gfx::Tile &tile, const Point& camOffset );
+  virtual void drawFlatTile( gfx::Engine& engine, gfx::Tile& tile, const Point& camOffset );
   virtual void drawWalkers( gfx::Engine& engine, const gfx::Tile& tile, const Point& camOffset );
   virtual void init( Point cursor );
   virtual void beforeRender( gfx::Engine& engine);
