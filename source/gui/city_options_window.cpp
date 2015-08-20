@@ -34,6 +34,7 @@
 #include "layers/layer.hpp"
 #include "game/settings.hpp"
 #include "texturedbutton.hpp"
+#include "city/build_options.hpp"
 #include "topmenu.hpp"
 #include "game/difficulty.hpp"
 #include "core/metric.hpp"
@@ -105,6 +106,7 @@ public:
   PushButton* btnForestFire;
   PushButton* btnForestGrow;
   PushButton* btnBorderMoving;
+  PushButton* btnRoadBlocks;
 
   Label* lbFireRisk;
   Label* lbCollapseRisk;
@@ -135,6 +137,7 @@ public:
   void toggleLegionAttack();
   void toggleForestFire();
   void toggleForestGrow();
+  void toggleRoadBlocks();
   void toggleAndroidBarEnabled();
   void toggleUseBatching();
   void toggleCcUseAI();
@@ -187,6 +190,7 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, btnForestFire )
   GET_DWIDGET_FROM_UI( _d, btnForestGrow )
   GET_DWIDGET_FROM_UI( _d, btnBorderMoving )
+  GET_DWIDGET_FROM_UI( _d, btnRoadBlocks )
 
   CONNECT( _d->btnGodEnabled, onClicked(), _d.data(), Impl::toggleGods )
   CONNECT( _d->btnWarningsEnabled, onClicked(), _d.data(), Impl::toggleWarnings )
@@ -213,6 +217,7 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   CONNECT( _d->btnForestFire, onClicked(), _d.data(), Impl::toggleForestFire )
   CONNECT( _d->btnForestGrow, onClicked(), _d.data(), Impl::toggleForestGrow )
   CONNECT( _d->btnBorderMoving, onClicked(), _d.data(), Impl::toggleBorderMoving )
+  CONNECT( _d->btnRoadBlocks, onClicked(), _d.data(), Impl::toggleRoadBlocks )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptions::deleteLater );
@@ -338,6 +343,14 @@ void CityOptions::Impl::toggleWarnings()  {  toggleCityOption( PlayerCity::warni
 void CityOptions::Impl::toggleDestroyEpidemicHouses() { toggleCityOption( PlayerCity::destroyEpidemicHouses ); }
 void CityOptions::Impl::toggleForestFire() { toggleCityOption( PlayerCity::forestFire ); }
 void CityOptions::Impl::toggleForestGrow() { toggleCityOption( PlayerCity::forestGrow ); }
+
+void CityOptions::Impl::toggleRoadBlocks()
+{
+  city::development::Options opts;
+  opts = city->buildOptions();
+  opts.toggleBuildingAvailable( object::market );
+  city->setBuildOptions( opts );
+}
 
 void CityOptions::Impl::toggleLeftMiddleMouse()
 {

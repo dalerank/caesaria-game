@@ -319,13 +319,13 @@ BuildingPtr reserveShortestPath( const object::Type buildingType,
   //find shortest path
   int maxLength = 999;
   PathwayPtr shortestPath = 0;
-  foreach( pathIt, pathWayList )
+  for( auto item : pathWayList )
   {
-    if( pathIt->second->length() < maxLength )
+    if( (int)item.second->length() < maxLength )
     {
-      shortestPath = pathIt->second;
-      maxLength = pathIt->second->length();
-      res = pathIt->first.as<Building>();
+      shortestPath = item.second;
+      maxLength = item.second->length();
+      res = item.first.as<Building>();
     }
   }
 

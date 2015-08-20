@@ -197,7 +197,6 @@ MetaData& MetaData::operator=(const MetaData &a)
   _d->desirability = a._d->desirability;
   _d->checkWalkersOnBuild = a._d->checkWalkersOnBuild;
   _d->desc = a._d->desc;
-  _d->checkWalkersOnBuild = true;
   _d->options = a._d->options;
 
   return *this;

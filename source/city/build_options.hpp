@@ -67,7 +67,7 @@ public:
   Options();
   virtual ~Options();
 
-  void setBuildingAvailble( const object::Type type, bool mayBuild );
+  void setBuildingAvailable( const object::Type type, bool mayBuild );
   void setGroupAvailable(const Branch type, Variant mayBuild );
   bool isGroupAvailable(const Branch type ) const;
   unsigned int getBuildingsQuote( const object::Type type ) const;
@@ -80,8 +80,9 @@ public:
 
   Options& operator=(const Options& a);
 
-  void setBuildingAvailble(const Range& range, bool mayBuild);
-  bool isBuildingsAvailble(const Range& range) const;
+  void setBuildingAvailable(const Range& range, bool mayBuild);
+  void toggleBuildingAvailable( const object::Type type );
+  bool isBuildingsAvailable(const Range& range) const;
   bool isCheckDesirability() const;
   unsigned int maximumForts() const;
 

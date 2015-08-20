@@ -136,18 +136,18 @@ Options::Options() : _d( new Impl )
 
 Options::~Options() {}
 
-void Options::setBuildingAvailble( const object::Type type, bool mayBuild )
+void Options::setBuildingAvailable( const object::Type type, bool mayBuild )
 {
   _d->rules[ type ].mayBuild = mayBuild;
 }
 
-void Options::setBuildingAvailble( const Range& range, bool mayBuild )
+void Options::setBuildingAvailable( const Range& range, bool mayBuild )
 {
   for( auto i : range )
     _d->rules[ i ].mayBuild = mayBuild;
 }
 
-bool Options::isBuildingsAvailble(const Range& range) const
+bool Options::isBuildingsAvailable(const Range& range) const
 {
   bool mayBuild = false;
   for( auto i : range )
@@ -168,7 +168,7 @@ void Options::setGroupAvailable( const development::Branch type, Variant vmb )
   Range range = Range::fromBranch( type );
 
   for( auto i : range )
-    setBuildingAvailble( i, mayBuild );
+    setBuildingAvailable( i, mayBuild );
 }
 
 bool Options::isGroupAvailable(const Branch type) const
@@ -178,7 +178,7 @@ bool Options::isGroupAvailable(const Branch type) const
   if( range.empty() )
     return false;
 
-  return isBuildingsAvailble( range );
+  return isBuildingsAvailable( range );
 }
 
 unsigned int Options::getBuildingsQuote(const object::Type type) const
@@ -314,6 +314,12 @@ Range& Range::operator<<(const object::Type type)
 {
   this->insert( type );
   return *this;
+}
+
+void Options::toggleBuildingAvailable(const object::Type type)
+{
+  bool isEnabled = isBuildingAvailble( type );
+  setBuildingAvailable( type, !isEnabled );
 }
 
 }//end namespace development
