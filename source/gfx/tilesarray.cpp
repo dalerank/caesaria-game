@@ -31,6 +31,17 @@ bool TilesArray::contain(const TilePos &tilePos) const
   return false;
 }
 
+Tile* TilesArray::find(const TilePos& tilePos) const
+{
+  for( auto tile : *this )
+  {
+    if( tile->epos() == tilePos )
+      return tile;
+  }
+
+  return 0;
+}
+
 TilesArray::TilesArray(const TilesArray& a)
 {
   *this = a;

@@ -152,6 +152,7 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   dopts.setFlag( DrawOptions::showBuildings, true );
   dopts.setFlag( DrawOptions::showTrees, true );
   dopts.setFlag( DrawOptions::mmbMoving, SETTINGS_VALUE( mmb_moving ) );
+  dopts.setFlag( DrawOptions::overdrawOnBuild, false );
 
   _d->setLayer( citylayer::simple );
 }

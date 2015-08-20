@@ -37,6 +37,7 @@ public:
   };
 
   bool contain( const TilePos& tilePos ) const;
+  Tile* find( const TilePos& tilePos ) const;
 
   TilesArray() {}
 

@@ -52,6 +52,7 @@ private:
   void _finishBuild();
   void _initBuildMode();
   void _drawBuildTiles( gfx::Engine& engine );
+  void _drawBuildTile( gfx::Engine& engine, gfx::Tile* tile, const Point& offset );
   void _exitBuildMode();
 
   Build( gfx::Renderer& renderer, PlayerCityPtr city );
