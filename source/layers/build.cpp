@@ -574,6 +574,16 @@ void Build::beforeRender(Engine& engine)
     Layer::beforeRender( engine );
 }
 
+void Build::drawPass(Engine& engine, Tile& tile, const Point& offset, Renderer::Pass pass)
+{
+  __D_IMPL(_d,Build);
+  _d->overdrawBuilding = DrawOptions::instance().isFlag( DrawOptions::overdrawOnBuild );
+  if( _d->lastLayer.isValid() )
+    _d->lastLayer->drawPass( engine, tile, offset, pass );
+  else
+    Layer::drawPass( engine, tile, offset, pass );
+}
+
 void Build::afterRender(Engine& engine)
 {
   __D_IMPL(_d,Build);

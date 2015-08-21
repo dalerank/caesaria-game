@@ -35,6 +35,7 @@ public:
   virtual void init(Point cursor);
   virtual void drawProminentTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset, const int depth, bool force);
   virtual void beforeRender(gfx::Engine &engine);
+  virtual void drawPass(gfx::Engine &engine, gfx::Tile &tile, const Point &offset, gfx::Renderer::Pass pass);
   virtual void afterRender(gfx::Engine &engine);
   virtual const WalkerTypes& visibleTypes() const;
   virtual void renderUi(gfx::Engine &engine);
