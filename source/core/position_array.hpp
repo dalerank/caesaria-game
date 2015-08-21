@@ -29,6 +29,12 @@ public:
     return ret;
   }
 
+  PointsArray& operator<<(const Point& point)
+  {
+    push_back( point );
+    return *this;
+  }
+
   Point valueOrEmpty( unsigned int index ) const
   {
     return index < size() ? at( index ) : Point();

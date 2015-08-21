@@ -28,14 +28,14 @@ void ConsoleCommand::PrintUsage(MessageSink* pOutput)
 {
 	std::string wstr = "Command : ";
 	wstr += GetName();
-	pOutput->AppendMessage( wstr );
+	pOutput->appendMessage( wstr );
 
 	wstr = "usage : ";
-	pOutput->AppendMessage( wstr );
+	pOutput->appendMessage( wstr );
 
 	wstr = " ";
 	wstr += GetUsage();
-	pOutput->AppendMessage( wstr );
+	pOutput->appendMessage( wstr );
 
 }
 
@@ -45,13 +45,13 @@ void ConsoleCommand::PrintDesc(MessageSink* pOutput)
 	PrintUsage( pOutput );
 
 	std::string wstr = "description";
-	pOutput->AppendMessage( wstr );
+	pOutput->appendMessage( wstr );
 
 	for(unsigned int i = 0; i < command_declines_.size(); i++)
 	{
 		wstr = " ";
 		wstr += command_declines_[i];
-		pOutput->AppendMessage( wstr );
+		pOutput->appendMessage( wstr );
 	}
 }
 
