@@ -21,6 +21,7 @@
 #include "core/referencecounted.hpp"
 #include "core/scopedptr.hpp"
 #include "core/variant.hpp"
+#include "vfs/path.hpp"
 #include "objects/constants.hpp"
 
 namespace city
@@ -51,7 +52,7 @@ typedef enum
 
 Branch toBranch( const std::string& name );
 std::string toString( Branch branch );
-void loadBranchOptions( const std::string& filename );
+void loadBranchOptions(vfs::Path filename );
 
 class Range : public object::TypeSet
 {

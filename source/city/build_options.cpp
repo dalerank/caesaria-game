@@ -238,7 +238,7 @@ bool Options::isBuildingAvailable(const object::Type type ) const
 Branch toBranch(const std::string& name) { return BranchHelper::instance().findType( name ); }
 std::string toString(Branch branch) { return BranchHelper::instance().findName( branch ); }
 
-void loadBranchOptions(const std::string &filename)
+void loadBranchOptions( vfs::Path filename )
 {
   BranchHelper& helper = BranchHelper::instance();
   VariantMap vm = config::load( filename );
@@ -249,7 +249,7 @@ void loadBranchOptions(const std::string &filename)
     Branch branch = helper.findType( it.first );
     if( branch != development::unknown )
     {
-      BranchHelper::Types& branchData = conf[ branch];
+      BranchHelper::Types& branchData = conf[ branch ];
       VariantList vmTypes = it.second.toList();
 
       for( auto bIt : vmTypes )
@@ -265,6 +265,17 @@ void loadBranchOptions(const std::string &filename)
 Range Range::fromBranch(const Branch branch)
 {
   Range ret;
+
+  BranchHelper::Config& conf = BranchHelper::instance().config;
+
+  if( !conf[ branch ].empty() )
+  {
+    for( auto type : conf[ branch ] )
+      ret << type;
+
+    return ret;
+  }
+
   switch( branch )
   {
   case development::farm: ret = Range::fromSequence( object::wheat_farm, object::meat_farm); break;
@@ -281,6 +292,7 @@ Range Range::fromBranch(const Branch branch)
     ret = Range::fromSequence( object::engineering_post, object::wharf);
     ret << object::plaza;
     ret << object::garden;
+    ret << object::roadBlock;
   break;
 
   case development::security: ret = Range::fromSequence( object::prefecture, object::fortArea ); break;

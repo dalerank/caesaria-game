@@ -70,6 +70,7 @@
 #include "config.hpp"
 #include "world/emperor.hpp"
 #include "core/metric.hpp"
+#include "city/build_options.hpp"
 #include "roman_celebrates.hpp"
 
 #include <list>
@@ -103,6 +104,7 @@ public:
   void initVideo();
   void initSound();
   void initPictures();
+  void initGameConfigs();
   void initAddons();
   void initHotkeys();
   void initMovie();
@@ -288,6 +290,11 @@ void Game::Impl::initPictures()
                                            SETTINGS_RC_PATH( simpleAnimationModel ) );
 }
 
+void Game::Impl::initGameConfigs()
+{
+  city::development::loadBranchOptions( SETTINGS_RC_PATH( cntrGroupsModel ) );
+}
+
 void Game::Impl::initAddons()
 {
   addon::Manager& am = addon::Manager::instance();
@@ -458,6 +465,7 @@ void Game::initialize()
   vfs::FileSystem::instance().setRcFolder( game::Settings::rcpath() );
 
   _d->initMetrics();
+  _d->initGameConfigs();
   _d->initAddons();
   _d->initArchiveLoaders();
   _d->initLocale( SETTINGS_VALUE( localePath ).toString() );

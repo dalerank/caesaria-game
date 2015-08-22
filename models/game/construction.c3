@@ -22,7 +22,7 @@
 
   roadBlock : {
     cost : 10
-    c3logic : false
+    c3logic : true
     class : "road"
     checkWalkersOnBuild : false
     image : [ "roadBlock", 1 ]

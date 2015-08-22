@@ -45,8 +45,8 @@ struct AmbientEmitter
   struct Info
   {
     StringArray sounds;
-    int lastIndex;
     unsigned int lastAccess;
+    int lastIndex;
 
     Info() : lastAccess(0), lastIndex(0) {}
   };

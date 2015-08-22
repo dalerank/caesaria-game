@@ -106,6 +106,7 @@ public:
   __GS_PROPERTY(celebratesConfig)
   __GS_PROPERTY(ambientsounds)
   __GS_PROPERTY(debugMenu)
+  __GS_PROPERTY(cntrGroupsModel)
 #undef __GS_PROPERTY
 
   static Settings& instance();
