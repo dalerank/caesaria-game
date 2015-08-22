@@ -389,8 +389,9 @@ void LowBridge::load(const VariantMap& stream)
   Construction::load( stream );
 
   VariantList vl_tinfo = stream.get( "terraininfo" ).toList();
-  for( unsigned int i=0; i < vl_tinfo.size(); i++ )
-  {
+  int lenth = math::min( vl_tinfo.size(), _d->subtiles.size() );
+  for( unsigned int i=0; i < lenth; i++ )
+  {    
     _d->subtiles[ i ]->_imgId = vl_tinfo.get( i ).toInt();
   }
 }
