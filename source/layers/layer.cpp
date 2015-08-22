@@ -685,4 +685,41 @@ DrawOptions& DrawOptions::instance()
   return inst;
 }
 
+bool DrawOptions::getFlag(DrawOptions::Flag flag)
+{
+  return instance().isFlag( flag );
+}
+
+void DrawOptions::takeFlag(DrawOptions::Flag flag, int value)
+{
+  instance().setFlag( flag, value );
+}
+
+DrawOptions::Flag DrawOptions::findFlag(const std::string& name)
+{
+  return (Flag)instance()._helper.findType( name );
+}
+
+DrawOptions::DrawOptions() : _helper(0)
+{
+#define _O(a) _helper.append( DrawOptions::a, CAESARIA_STR_EXT(a) );
+  _O(drawGrid)
+  _O(shadowOverlay)
+  _O(showPath)
+  _O(windowActive)
+  _O(showRoads)
+  _O(showObjectArea)
+  _O(showWalkableTiles)
+  _O(showLockedTiles)
+  _O(showFlatTiles)
+  _O(borderMoving)
+  _O(mayChangeLayer)
+  _O(oldGraphics)
+  _O(mmbMoving)
+  _O(showBuildings)
+  _O(showTrees)
+  _O(overdrawOnBuild)
+#undef _O
+}
+
 }//end namespace gfx

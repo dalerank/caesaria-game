@@ -15,35 +15,15 @@
 //
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_WINDOW_CITY_OPTIONS_H_INCLUDE_
-#define _CAESARIA_WINDOW_CITY_OPTIONS_H_INCLUDE_
+#ifndef __CAESARIA_CITY_OPTION_H_INCLUDED__
+#define __CAESARIA_CITY_OPTION_H_INCLUDED__
 
-#include "window.hpp"
-#include "core/signals.hpp"
-#include "gfx/engine.hpp"
-#include "city/city.hpp"
+#include "city.hpp"
 
-namespace gui
-{
+namespace city
+{  
 
-namespace dialog
-{
+PlayerCity::OptionType findOption( const std::string& name);
 
-class CityOptions : public Window
-{
-public:
-  CityOptions( Widget* parent, PlayerCityPtr city );
-
-  virtual ~CityOptions();
-  virtual void setupUI(const VariantMap &ui);
-
-private:
-  class Impl;
-  ScopedPtr< Impl > _d;
-};
-
-} //end namespace dialog
-
-} //end namespace gui
-
-#endif //_CAESARIA_WINDOW_CITY_OPTIONS_H_INCLUDE_
+}//end namespace city
+#endif //__CAESARIA_CITY_OPTION_H_INCLUDED__

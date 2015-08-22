@@ -229,7 +229,7 @@ Options& Options::operator=(const development::Options& a)
   return *this;
 }
 
-bool Options::isBuildingAvailble(const object::Type type ) const
+bool Options::isBuildingAvailable(const object::Type type ) const
 {
   BuildingRules::iterator it = _d->rules.find( type );
   return (it != _d->rules.end() ? (*it).second.mayBuild : true);
@@ -318,7 +318,7 @@ Range& Range::operator<<(const object::Type type)
 
 void Options::toggleBuildingAvailable(const object::Type type)
 {
-  bool isEnabled = isBuildingAvailble( type );
+  bool isEnabled = isBuildingAvailable( type );
   setBuildingAvailable( type, !isEnabled );
 }
 

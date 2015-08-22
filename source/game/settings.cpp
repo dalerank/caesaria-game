@@ -71,6 +71,7 @@ __REG_PROPERTY(ranksModel)
 __REG_PROPERTY(autosaveInterval)
 __REG_PROPERTY(talksArchive)
 __REG_PROPERTY(render)
+__REG_PROPERTY(debugMenu)
 __REG_PROPERTY(empireObjectsModel)
 __REG_PROPERTY(pic_offsets)
 __REG_PROPERTY(picsArchive)
@@ -196,6 +197,11 @@ Settings::Settings() : _d( new Impl )
   _d->options[ emigrantSalaryKoeff ] = 5.f;
   _d->options[ oldgfx              ] = 1;
   _d->options[ showTabletMenu      ] = false;
+  _d->options[ debugMenu           ] = false;
+
+#ifdef DEBUG
+  _d->options[ debugMenu           ] = true;
+#endif
 
 #ifdef CAESARIA_USE_STEAM
   _d->options[ oldgfx              ] = 0;

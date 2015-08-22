@@ -72,7 +72,7 @@ public:
   bool isGroupAvailable(const Branch type ) const;
   unsigned int getBuildingsQuote( const object::Type type ) const;
 
-  bool isBuildingAvailble( const object::Type type ) const;
+  bool isBuildingAvailable( const object::Type type ) const;
 
   void clear();
   void load( const VariantMap& options );
