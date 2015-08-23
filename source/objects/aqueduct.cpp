@@ -311,7 +311,8 @@ const Picture& Aqueduct::picture( const city::AreaInfo& info ) const
   case 5:  // N + S
   {
     index = 121; 
-    if( tmap.at( tile_pos ).getFlag( Tile::tlRoad ) )
+
+    if( _isRoadOnTile( info ) )
     {
       index = 119; 
       const_cast<Aqueduct*>( this )->_setIsRoad( true );
@@ -336,7 +337,7 @@ const Picture& Aqueduct::picture( const city::AreaInfo& info ) const
   case 10: // E + W
   {
     index = 122; 
-    if( tmap.at( tile_pos ).getFlag( Tile::tlRoad ) )
+    if( _isRoadOnTile( info )  )
     {
       index = 120; 
       const_cast<Aqueduct*>( this )->_setIsRoad( true );
@@ -362,6 +363,29 @@ const Picture& Aqueduct::picture( const city::AreaInfo& info ) const
   static Picture ret;
   ret.load( ResourceGroup::aqueduct, index + (water() == 0 ? 15 : 0) );
   return ret;
+}
+
+bool Aqueduct::_isRoadOnTile( const city::AreaInfo& info ) const
+{
+  bool advTileIsRoad = false;
+  if( !info.aroundTiles.empty() )
+  {
+    Tile* ntile = info.aroundTiles.find( info.pos );
+    if( ntile )
+    {
+      advTileIsRoad = ntile->getFlag( Tile::tlRoad );
+      if( !advTileIsRoad && ntile->overlay().isValid() )
+      {
+        advTileIsRoad = ntile->overlay().is<Road>();
+      }
+    }
+  }
+
+  bool myTileIsRoad = false;
+  if( info.city.isValid() )
+    myTileIsRoad = info.city->tilemap().at( info.pos ).getFlag( Tile::tlRoad );
+  return myTileIsRoad || advTileIsRoad;
+
 }
 
 void Aqueduct::updatePicture(PlayerCityPtr city)
