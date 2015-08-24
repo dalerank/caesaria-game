@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "layerindigene.hpp"
+#include "aborigens.hpp"
 #include "objects/constants.hpp"
 #include "objects/native.hpp"
 #include "game/resourcegroup.hpp"
@@ -30,9 +30,9 @@ using namespace gfx;
 namespace citylayer
 {
 
-int Indigene::type() const { return citylayer::aborigen; }
+int Aborigens::type() const { return citylayer::aborigen; }
 
-void Indigene::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Aborigens::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   Point screenPos = tile.mappos() + offset;
 
@@ -79,15 +79,15 @@ void Indigene::drawTile(Engine& engine, Tile& tile, const Point& offset)
   tile.setWasDrawn();
 }
 
-LayerPtr Indigene::create( Camera& camera, PlayerCityPtr city)
+LayerPtr Aborigens::create( Camera& camera, PlayerCityPtr city)
 {
-  LayerPtr ret( new Indigene( camera, city ) );
+  LayerPtr ret( new Aborigens( camera, city ) );
   ret->drop();
 
   return ret;
 }
 
-void Indigene::handleEvent(NEvent& event)
+void Aborigens::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
@@ -112,7 +112,7 @@ void Indigene::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-Indigene::Indigene( Camera& camera, PlayerCityPtr city)
+Aborigens::Aborigens( Camera& camera, PlayerCityPtr city)
   : Info( camera, city, 15 )
 {
   _visibleWalkers() << walker::indigene << walker::missioner;

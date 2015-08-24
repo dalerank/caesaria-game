@@ -90,13 +90,13 @@ WorkersHire::WorkersHire(PlayerCityPtr city)
 
 void WorkersHire::Impl::fillIndustryMap()
 {
-  MetaDataHolder::OverlayTypes types = MetaDataHolder::instance().availableTypes();
+  object::Types types = MetaDataHolder::instance().availableTypes();
 
   industryBuildings.clear();
 
   for( auto type : types)
   {
-    const MetaData& info = MetaDataHolder::getData( type );
+    const MetaData& info = MetaDataHolder::find( type );
     int workersNeed = info.getOption( literals::employers );
     if( workersNeed > 0 )
     {

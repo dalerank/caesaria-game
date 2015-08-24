@@ -13,8 +13,8 @@ namespace gui
 //! constructor
 Console::Console( Widget* parent, int id, const Rect& rectangle )
       : Widget( parent, id, rectangle ),
-							 consoleHistoryIndex_(0),
-               toggle_visible_(NONE)
+        consoleHistoryIndex_(0),
+        toggle_visible_(NONE)
 {
   calculateConsoleRect( ui()->rootWidget()->size() );										//calculate the console rectangle
 
@@ -27,17 +27,16 @@ Console::Console( Widget* parent, int id, const Rect& rectangle )
 
   _font = Font::create( FONT_1_WHITE );
 
-   appendMessage( "NrpConsole initialized" );								//append a message
+  appendMessage( "Console initialized" );								//append a message
 }
 
-void Console::SaveCommands_()																	//
+void Console::SaveCommands_()
 {					
-	//   
-  vfs::Path path( ":/commands.model" );					//
+  vfs::Path path( ":/commands.model" );
 
   VariantMap commands;
 
-  foreach( it, console_history_ )							//
+  foreach( it, console_history_ )
   {
     commands[ *it ] = Variant( "" );
   }
@@ -45,9 +44,9 @@ void Console::SaveCommands_()																	//
   config::save( commands, path );
 }
 
-void Console::LoadSaveCommands_()													//
+void Console::LoadSaveCommands_()
 {
-  vfs::Path path( ":/commands.model" );					//
+  vfs::Path path( ":/commands.model" );
 
   VariantMap commands = config::load( path );
   foreach( it, commands )
@@ -77,10 +76,10 @@ void Console::resizeMessages()											//! resize the message count
   unsigned int maxLines = 0;
   unsigned int lineHeight = 0;
   int fontHeight = 0;
-  if( calculateLimits(maxLines,lineHeight,fontHeight) )						//
+  if( calculateLimits(maxLines,lineHeight,fontHeight) )
 	{
     unsigned int messageCount = console_messages_.size();
-		if(messageCount > maxLines)											// 
+    if(messageCount > maxLines)
       console_messages_.erase( console_messages_.begin(), console_messages_.begin() + messageCount - maxLines );
 	}
 }
@@ -98,9 +97,9 @@ void Console::setVisible( bool vis )											//! toggle the visibility of the 
   Widget::setVisible( true );
 }
 
-void Console::appendMessage( const std::string& message )					//
+void Console::appendMessage( const std::string& message )
 {
-  console_messages_.push_back( message );								//
+  console_messages_.push_back( message );
 }
 
 void Console::clearMessages()											//! clear all the messages in the sink
@@ -134,13 +133,25 @@ void Console::draw( gfx::Engine& painter )
 			}
 		}
 
-    painter.draw( _bgpic, absoluteRect().lefttop() );	//draw the bg as per configured color
+    if( _bgpic.isValid() )
+    {
+      painter.draw( _bgpic, absoluteRect().lefttop() );	//draw the bg as per configured color
+    }
+    else
+    {
+      PointsArray array;
+      array << absoluteRect().lefttop() << absoluteRect().righttop()
+            << absoluteRect().righttop() << absoluteRect().rightbottom()
+            << absoluteRect().rightbottom() << absoluteRect().leftbottom()
+            << absoluteRect().leftbottom() << absoluteRect().lefttop();
+      painter.drawLines( DefaultColors::red, array );
+    }
 		
     Rect textRect,shellRect;										//we calculate where the message log shall be printed and where the prompt shall be printed
     calculatePrintRects(textRect,shellRect);
 
     unsigned int maxLines, lineHeight;											//now, render the messages
-    int fontHeight=0;													//
+    int fontHeight=0;
     if(!calculateLimits(maxLines,lineHeight,fontHeight))
 		{
 			return;
@@ -190,8 +201,8 @@ void Console::draw( gfx::Engine& painter )
 
 void Console::resolveCommand_()											//  Enter
 {
-  addToHistory( currentCommand_ );											//
-  handleCommandString( currentCommand_ );									//
+  addToHistory( currentCommand_ );
+  handleCommandString( currentCommand_ );
   currentCommand_ = "";
 	consoleHistoryIndex_ = 0;
 	cursorPos_ = 1;
@@ -242,7 +253,7 @@ void Console::setNextCommand_()
 	}
 }
 
-void Console::inputChar_( unsigned int key_char, bool shift_down )		//
+void Console::inputChar_( unsigned int key_char, bool shift_down )
 {
 	if(key_char)
 	{
@@ -259,7 +270,7 @@ void Console::inputChar_( unsigned int key_char, bool shift_down )		//
 	}
 }
 
-void Console::keyPress( const NEvent& event )							//
+void Console::keyPress( const NEvent& event )
 {
   if( event.keyboard.key == KEY_RETURN )
 	{
@@ -312,7 +323,7 @@ void Console::handleCommandString( const std::string& wstr)						//! handle the 
 		//append the message
     std::string msg = ">> Command : ";
 		msg += cmdLine;
-		AppendMessage( msg );
+    appendMessage( msg );
 
 		//parsing logic
 		
@@ -337,8 +348,8 @@ void Console::handleCommandString( const std::string& wstr)						//! handle the 
 
 void Console::addToHistory( const std::string& wstr)								//! add to history and readjust history
 {
-	for( size_t cnt=0; cnt < console_history_.size(); cnt++ )						//     
-		if( console_history_[ cnt ] == wstr )										//    
+  for( size_t cnt=0; cnt < console_history_.size(); cnt++ )
+    if( console_history_[ cnt ] == wstr )
 			return;
  
     if( (int)console_history_.size() >= 20 )
@@ -347,16 +358,14 @@ void Console::addToHistory( const std::string& wstr)								//! add to history a
 	console_history_.push_back( wstr.c_str() );
 }
 
-void Console::calculateConsoleRect(const Size& screenSize)	//! calculate the whole console rect
+void Console::calculateConsoleRect( const Size& screenSize )	//! calculate the whole console rect
 {
-  Rect console_rect;
+  Rect rect( 0, 0,
+             screenSize.width()  * 0.9,
+             screenSize.height() * 0.3 );
+  rect.setLeft( screenSize.width() * 0.15 );
 
-  Size consoleDim = ui()->rootWidget()->size();									//calculate console dimension
-
-  consoleDim.setWidth( consoleDim.width()  * 0.9 );
-  consoleDim.setHeight( consoleDim.height() * 0.3 );
-
-  setGeometry( console_rect );
+  setGeometry( rect );
 }
 
 void Console::calculatePrintRects( Rect& textRect, Rect& shellRect)  //! calculate the messages rect and prompt / shell rect
@@ -400,20 +409,20 @@ bool Console::calculateLimits(unsigned int& maxLines, unsigned int& lineHeight,i
 	}
 }
 
-void Console::tabComplete()											//
+void Console::tabComplete()
 {
 	if(currentCommand_.size() == 0)
 	{
 		return;
 	}
 
-  std::string ccStr = currentCommand_.substr(1,currentCommand_.size() - 1); //
+  std::string ccStr = currentCommand_.substr(1,currentCommand_.size() - 1);
 	
-  StringArray names;						//
+  StringArray names;
 
 	GetRegisteredCommands( names );
 
-  StringArray commands_find;				//
+  StringArray commands_find;
 
   for(unsigned int i = 0; i < names.size(); i++)
 	{
@@ -427,22 +436,22 @@ void Console::tabComplete()											//
 		}
 		else if(thisCmd.size() > ccStr.size())
 		{
-      if(thisCmd.substr(0,ccStr.size()) == ccStr) //
-			{												//      
+      if(thisCmd.substr(0,ccStr.size()) == ccStr)
+      {
 				commands_find.push_back( thisCmd );
 			}
 		}
 	}
 
-	if( commands_find.size() == 1 )							//    
+  if( commands_find.size() == 1 )
 	{	
 		currentCommand_ = commands_find[ 0 ];
 		return;
 	}
-	else													//       
+  else
 	{
 		for( size_t cnt=0; cnt < commands_find.size(); cnt++ )
-			AppendMessage( commands_find[ cnt ] );
+      appendMessage( commands_find[ cnt ] );
 	}
 }
 

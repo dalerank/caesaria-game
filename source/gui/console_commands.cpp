@@ -22,7 +22,7 @@ bool IC_Command_ECHO::invoke(const StringArray& args, CommandDispatcher* pDispat
 			wstr.append( args[i] );
 			wstr.append( " " );
 		}
-		pOutput->AppendMessage( wstr );
+		pOutput->appendMessage( wstr );
 	}
 	return true;
 }
@@ -59,7 +59,7 @@ bool IC_Command_HELP::invoke(const StringArray& args, CommandDispatcher* pDispat
 		else
 		{
 			std::string msg = "Command not fonud " + wstr;
-			pOutput->AppendMessage( msg );
+			pOutput->appendMessage( msg );
 		}
 	}
 	return true;
@@ -97,7 +97,7 @@ bool IC_Command_INFO::invoke(const StringArray& args,
 {
 	if( args.size() == 0 )
 	{
-		pOutput->AppendMessage( "no param" );
+		pOutput->appendMessage( "no param" );
 		return true;
 	}
 
@@ -112,10 +112,10 @@ bool IC_Command_INFO::invoke(const StringArray& args,
 		//GGetListSystemObject( strings );
 
 		for( size_t cnt=0; cnt < strings.size(); cnt++ )
-			pOutput->AppendMessage( strings[ cnt ] );
+			pOutput->appendMessage( strings[ cnt ] );
 
 
-		pOutput->AppendMessage( std::string( "Size of objlist = " ) + utils::format( 0xff, "%d", strings.size() ) );
+		pOutput->appendMessage( std::string( "Size of objlist = " ) + utils::format( 0xff, "%d", strings.size() ) );
 
 		return true;
 	}
@@ -133,7 +133,7 @@ IC_Command_CLS::~IC_Command_CLS() {}
 
 bool IC_Command_CLS::invoke(const StringArray& args, CommandDispatcher* pDispatcher, MessageSink* pOutput)
 {
-	pOutput->ClearMessages();
+	pOutput->clearMessages();
 	return true;
 }
 

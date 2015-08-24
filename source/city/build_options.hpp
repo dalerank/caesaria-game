@@ -21,6 +21,7 @@
 #include "core/referencecounted.hpp"
 #include "core/scopedptr.hpp"
 #include "core/variant.hpp"
+#include "vfs/path.hpp"
 #include "objects/constants.hpp"
 
 namespace city
@@ -51,7 +52,7 @@ typedef enum
 
 Branch toBranch( const std::string& name );
 std::string toString( Branch branch );
-void loadBranchOptions( const std::string& filename );
+void loadBranchOptions(vfs::Path filename );
 
 class Range : public object::TypeSet
 {
@@ -67,12 +68,12 @@ public:
   Options();
   virtual ~Options();
 
-  void setBuildingAvailble( const object::Type type, bool mayBuild );
+  void setBuildingAvailable( const object::Type type, bool mayBuild );
   void setGroupAvailable(const Branch type, Variant mayBuild );
   bool isGroupAvailable(const Branch type ) const;
   unsigned int getBuildingsQuote( const object::Type type ) const;
 
-  bool isBuildingAvailble( const object::Type type ) const;
+  bool isBuildingAvailable( const object::Type type ) const;
 
   void clear();
   void load( const VariantMap& options );
@@ -80,8 +81,9 @@ public:
 
   Options& operator=(const Options& a);
 
-  void setBuildingAvailble(const Range& range, bool mayBuild);
-  bool isBuildingsAvailble(const Range& range) const;
+  void setBuildingAvailable(const Range& range, bool mayBuild);
+  void toggleBuildingAvailable( const object::Type type );
+  bool isBuildingsAvailable(const Range& range) const;
   bool isCheckDesirability() const;
   unsigned int maximumForts() const;
 

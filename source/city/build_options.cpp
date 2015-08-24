@@ -85,8 +85,8 @@ public:
   VariantMap saveRules() const
   {
     VariantMap ret;
-    foreach( it, *this )
-      ret[ object::toString( it->first ) ] = it->second.mayBuild;
+    for( auto it : *this )
+      ret[ object::toString( it.first ) ] = it.second.mayBuild;
 
     return ret;
   }
@@ -94,27 +94,27 @@ public:
   VariantMap saveQuotes() const
   {
     VariantMap ret;
-    foreach( it, *this )
-      ret[ object::toString( it->first ) ] = it->second.quotes;
+    for( auto it : *this )
+      ret[ object::toString( it.first ) ] = it.second.quotes;
 
     return ret;
   }
 
   void loadRules( const VariantMap& stream )
   {
-    foreach( item, stream )
+    for( auto item : stream )
     {
-      object::Type btype = object::toType( item->first );
-      (*this)[ btype ].mayBuild = item->second.toBool();
+      object::Type btype = object::toType( item.first );
+      (*this)[ btype ].mayBuild = item.second.toBool();
     }
   }
 
   void loadQuotes( const VariantMap& stream )
   {
-    foreach( item, stream )
+    for( auto item : stream )
     {
-      object::Type btype = object::toType( item->first );
-      (*this)[ btype ].quotes = item->second.toBool();
+      object::Type btype = object::toType( item.first );
+      (*this)[ btype ].quotes = item.second.toBool();
     }
   }
 };
@@ -136,22 +136,22 @@ Options::Options() : _d( new Impl )
 
 Options::~Options() {}
 
-void Options::setBuildingAvailble( const object::Type type, bool mayBuild )
+void Options::setBuildingAvailable( const object::Type type, bool mayBuild )
 {
   _d->rules[ type ].mayBuild = mayBuild;
 }
 
-void Options::setBuildingAvailble( const Range& range, bool mayBuild )
+void Options::setBuildingAvailable( const Range& range, bool mayBuild )
 {
-  foreach( i, range )
-    _d->rules[ *i ].mayBuild = mayBuild;
+  for( auto i : range )
+    _d->rules[ i ].mayBuild = mayBuild;
 }
 
-bool Options::isBuildingsAvailble(const Range& range) const
+bool Options::isBuildingsAvailable(const Range& range) const
 {
   bool mayBuild = false;
-  foreach( i, range )
-    mayBuild |= _d->rules[ *i ].mayBuild;
+  for( auto i : range )
+    mayBuild |= _d->rules[ i ].mayBuild;
 
   return mayBuild;
 }
@@ -167,8 +167,8 @@ void Options::setGroupAvailable( const development::Branch type, Variant vmb )
   bool mayBuild = (vmb.toString() != disable_all);
   Range range = Range::fromBranch( type );
 
-  foreach( i, range )
-    setBuildingAvailble( *i, mayBuild );
+  for( auto i : range )
+    setBuildingAvailable( i, mayBuild );
 }
 
 bool Options::isGroupAvailable(const Branch type) const
@@ -178,7 +178,7 @@ bool Options::isGroupAvailable(const Branch type) const
   if( range.empty() )
     return false;
 
-  return isBuildingsAvailble( range );
+  return isBuildingsAvailable( range );
 }
 
 unsigned int Options::getBuildingsQuote(const object::Type type) const
@@ -229,7 +229,7 @@ Options& Options::operator=(const development::Options& a)
   return *this;
 }
 
-bool Options::isBuildingAvailble(const object::Type type ) const
+bool Options::isBuildingAvailable(const object::Type type ) const
 {
   BuildingRules::iterator it = _d->rules.find( type );
   return (it != _d->rules.end() ? (*it).second.mayBuild : true);
@@ -238,23 +238,23 @@ bool Options::isBuildingAvailble(const object::Type type ) const
 Branch toBranch(const std::string& name) { return BranchHelper::instance().findType( name ); }
 std::string toString(Branch branch) { return BranchHelper::instance().findName( branch ); }
 
-void loadBranchOptions(const std::string &filename)
+void loadBranchOptions( vfs::Path filename )
 {
   BranchHelper& helper = BranchHelper::instance();
   VariantMap vm = config::load( filename );
   BranchHelper::Config& conf = helper.config;
 
-  foreach( it, vm )
+  for( auto it : vm )
   {
-    Branch branch = helper.findType( it->first );
+    Branch branch = helper.findType( it.first );
     if( branch != development::unknown )
     {
-      BranchHelper::Types& branchData = conf[ branch];
-      VariantList vmTypes = it->second.toList();
+      BranchHelper::Types& branchData = conf[ branch ];
+      VariantList vmTypes = it.second.toList();
 
-      foreach( bIt, vmTypes )
+      for( auto bIt : vmTypes )
       {
-        object::Type ovType = object::toType( bIt->toString() );
+        object::Type ovType = object::toType( bIt.toString() );
         if( ovType != object::unknown )
           branchData.insert( ovType );
       }
@@ -265,6 +265,17 @@ void loadBranchOptions(const std::string &filename)
 Range Range::fromBranch(const Branch branch)
 {
   Range ret;
+
+  BranchHelper::Config& conf = BranchHelper::instance().config;
+
+  if( !conf[ branch ].empty() )
+  {
+    for( auto type : conf[ branch ] )
+      ret << type;
+
+    return ret;
+  }
+
   switch( branch )
   {
   case development::farm: ret = Range::fromSequence( object::wheat_farm, object::meat_farm); break;
@@ -281,6 +292,7 @@ Range Range::fromBranch(const Branch branch)
     ret = Range::fromSequence( object::engineering_post, object::wharf);
     ret << object::plaza;
     ret << object::garden;
+    ret << object::roadBlock;
   break;
 
   case development::security: ret = Range::fromSequence( object::prefecture, object::fortArea ); break;
@@ -289,9 +301,9 @@ Range Range::fromBranch(const Branch branch)
   case development::big_temple: ret = Range::fromSequence( object::big_ceres_temple, object::big_venus_temple ); break;
   case development::all:
   {
-    MetaDataHolder::OverlayTypes types = MetaDataHolder::instance().availableTypes();
-    foreach( it, types )
-      ret << *it;
+    object::Types types = MetaDataHolder::instance().availableTypes();
+    for( auto type : types )
+      ret << type;
   }
   break;
 
@@ -314,6 +326,12 @@ Range& Range::operator<<(const object::Type type)
 {
   this->insert( type );
   return *this;
+}
+
+void Options::toggleBuildingAvailable(const object::Type type)
+{
+  bool isEnabled = isBuildingAvailable( type );
+  setBuildingAvailable( type, !isEnabled );
 }
 
 }//end namespace development

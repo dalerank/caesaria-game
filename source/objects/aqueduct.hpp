@@ -44,6 +44,7 @@ public:
   virtual const gfx::Picture& picture(const city::AreaInfo& info) const;
 protected:
   virtual void _waterStateChanged();
+  bool _isRoadOnTile(const city::AreaInfo& info) const;
 };
 
 #endif // __CAESARIA_AQUEDUCT_H_INCLUDED__

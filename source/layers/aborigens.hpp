@@ -13,37 +13,28 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_WINDOW_CITY_OPTIONS_H_INCLUDE_
-#define _CAESARIA_WINDOW_CITY_OPTIONS_H_INCLUDE_
+#ifndef __CAESARIA_LAYERINDIGENE_H_INCLUDED__
+#define __CAESARIA_LAYERINDIGENE_H_INCLUDED__
 
-#include "window.hpp"
-#include "core/signals.hpp"
-#include "gfx/engine.hpp"
-#include "city/city.hpp"
+#include "layerinfo.hpp"
 
-namespace gui
+namespace citylayer
 {
 
-namespace dialog
-{
-
-class CityOptions : public Window
+class Aborigens : public Info
 {
 public:
-  CityOptions( Widget* parent, PlayerCityPtr city );
+  virtual int type() const;
+  virtual void drawTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
+  virtual void handleEvent(NEvent& event);
 
-  virtual ~CityOptions();
-  virtual void setupUI(const VariantMap &ui);
+  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
 
 private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  Aborigens( gfx::Camera& camera, PlayerCityPtr city );
 };
 
-} //end namespace dialog
-
-} //end namespace gui
-
-#endif //_CAESARIA_WINDOW_CITY_OPTIONS_H_INCLUDE_
+}//end namespace citylayer
+#endif //__CAESARIA_LAYERINDIGENE_H_INCLUDED__

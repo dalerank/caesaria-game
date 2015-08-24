@@ -49,7 +49,7 @@ REGISTER_SOLDIER_IN_WALKERFACTORY( walker::etruscanSoldier, walker::etruscanSold
 namespace {
   static unsigned int __getCost( ConstructionPtr b )
   {
-    return MetaDataHolder::getData( b->type() ).getOption( MetaDataOptions::cost );
+    return MetaDataHolder::find( b->type() ).getOption( MetaDataOptions::cost );
   }
 }
 

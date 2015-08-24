@@ -231,10 +231,10 @@ void SdlEngine::init()
   else
   {
     window = SDL_CreateWindow("CaesariA",
-        SDL_WINDOWPOS_CENTERED,
-        SDL_WINDOWPOS_CENTERED,
-        _srcSize.width(), _srcSize.height(),
-        flags);
+                              SDL_WINDOWPOS_CENTERED,
+                              SDL_WINDOWPOS_CENTERED,
+                              _srcSize.width(), _srcSize.height(),
+                              flags);
   }
 
   if (window == NULL)

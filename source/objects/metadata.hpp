@@ -39,11 +39,13 @@ public:
 class MetaData
 {
   friend class MetaDataHolder;
+  MetaData( const object::Type type, const std::string& name );
+
+  void initialize(const VariantMap& options);
 
 public:
   static MetaData invalid;
 
-  MetaData( const object::Type type, const std::string& name );
   MetaData( const MetaData& a );
 
   ~MetaData();
@@ -52,6 +54,7 @@ public:
   std::string sound() const;
   std::string prettyName() const;
   std::string description() const;
+  bool checkWalkersOnBuild() const;
   object::Type type() const;
   object::Group group() const;
   gfx::Picture picture( int size=0 ) const;
@@ -69,15 +72,12 @@ private:
 class MetaDataHolder
 {
 public:
-  typedef std::vector<object::Type> OverlayTypes;
-
   static MetaDataHolder& instance();
 
   void addData(const MetaData& data, bool force);
-  static const MetaData& getData(const object::Type buildingType);
+  static const MetaData& find(const object::Type buildingType);
   bool hasData(const object::Type buildingType) const;
-  OverlayTypes availableTypes() const;
-
+  object::Types availableTypes() const;
 
   // return factory that consume good
   object::Type getConsumerType(const good::Product inGoodType) const;

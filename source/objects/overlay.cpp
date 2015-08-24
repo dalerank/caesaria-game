@@ -65,14 +65,14 @@ Overlay::Overlay(const object::Type type, const Size& size)
 
 Desirability Overlay::desirability() const
 {
-  return MetaDataHolder::getData( type() ).desirability();
+  return MetaDataHolder::find( type() ).desirability();
 }
 
 void Overlay::setState(Param name, double value) {}
 
 void Overlay::setType(const object::Type type)
 {
-  const MetaData& bd = MetaDataHolder::getData( type );
+  const MetaData& bd = MetaDataHolder::find( type );
 
   _d->overlayType = type;
   _d->overlayClass = bd.group();
@@ -149,7 +149,7 @@ void Overlay::save( VariantMap& stream ) const
 
   MetaDataHolder& md = MetaDataHolder::instance();
   config.push_back( md.hasData( _d->overlayType )
-                      ? Variant( md.getData( _d->overlayType ).name() )
+                      ? Variant( md.find( _d->overlayType ).name() )
                       : Variant( debugName() ) );
 
   config.push_back( tile().pos() );
@@ -193,7 +193,8 @@ void Overlay::initialize(const MetaData& mdata)
 
 void Overlay::timeStep(const unsigned long) {}
 void Overlay::reinit() {}
-void Overlay::burn() {} //nothing to do, neck for virtual function
+void Overlay::burn() {}
+void Overlay::collapse() {} //nothing to do, neck for virtual function
 bool Overlay::isWalkable() const{  return false;}
 bool Overlay::isDestructible() const { return true; }
 bool Overlay::isFlat() const { return false;}
@@ -233,7 +234,7 @@ TilePos Overlay::pos() const
 
 std::string Overlay::sound() const
 {
-  const MetaData& md = MetaDataHolder::instance().getData( type() );
+  const MetaData& md = MetaDataHolder::instance().find( type() );
   return md.sound();
 }
 

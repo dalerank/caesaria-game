@@ -311,9 +311,9 @@ void Level::initialize()
 
   CONNECT( &_d->dhandler, onWinMission(), _d.data(), Impl::checkWinMission )
   CONNECT( &_d->dhandler, onFailedMission(), _d.data(), Impl::checkFailedMission )
-#ifdef DEBUG  
-  _d->dhandler.setVisible( true );
-#endif
+
+  if( KILLSWITCH(debugMenu) )
+    _d->dhandler.setVisible( true );
 
 #ifdef CAESARIA_USE_STEAM
   gui::Ui& ui = *_d->game->gui();

@@ -428,16 +428,22 @@ void Layer::drawLands( Engine& engine, Camera* camera )
 
   // FIRST PART: draw all flat land (walkable/boatable)
   for( auto tile : groundTiles )
-  {
-    drawPass( engine, *tile, camOffset, Renderer::ground );
-    drawPass( engine, *tile, camOffset, Renderer::groundAnimation );
-  }
+    drawLandTile( engine, *tile, camOffset );
 
   for( auto tile : flatTiles )
-  {
-    if( tile->rov().isValid() )
-      drawTile( engine, *tile, camOffset );
-  }
+    drawFlatTile( engine, *tile, camOffset );
+}
+
+void Layer::drawLandTile(Engine &engine, Tile &tile, const Point &camOffset)
+{
+  drawPass( engine, tile, camOffset, Renderer::ground );
+  drawPass( engine, tile, camOffset, Renderer::groundAnimation );
+}
+
+void Layer::drawFlatTile(Engine& engine, Tile& tile, const Point& camOffset)
+{
+  if( tile.rov().isValid() )
+    drawTile( engine, tile, camOffset );
 }
 
 void Layer::init( Point cursor )
@@ -677,6 +683,43 @@ DrawOptions& DrawOptions::instance()
 {
   static DrawOptions inst;
   return inst;
+}
+
+bool DrawOptions::getFlag(DrawOptions::Flag flag)
+{
+  return instance().isFlag( flag );
+}
+
+void DrawOptions::takeFlag(DrawOptions::Flag flag, int value)
+{
+  instance().setFlag( flag, value );
+}
+
+DrawOptions::Flag DrawOptions::findFlag(const std::string& name)
+{
+  return (Flag)instance()._helper.findType( name );
+}
+
+DrawOptions::DrawOptions() : _helper(0)
+{
+#define _O(a) _helper.append( DrawOptions::a, CAESARIA_STR_EXT(a) );
+  _O(drawGrid)
+  _O(shadowOverlay)
+  _O(showPath)
+  _O(windowActive)
+  _O(showRoads)
+  _O(showObjectArea)
+  _O(showWalkableTiles)
+  _O(showLockedTiles)
+  _O(showFlatTiles)
+  _O(borderMoving)
+  _O(mayChangeLayer)
+  _O(oldGraphics)
+  _O(mmbMoving)
+  _O(showBuildings)
+  _O(showTrees)
+  _O(overdrawOnBuild)
+#undef _O
 }
 
 }//end namespace gfx

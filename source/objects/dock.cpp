@@ -346,7 +346,7 @@ Dock::~Dock(){}
 
 void Dock::_updatePicture(Direction direction)
 {
-  const MetaData& md = MetaDataHolder::getData( type() );
+  const MetaData& md = MetaDataHolder::find( type() );
 
   DockConfig config;
   config.load( md, direction );

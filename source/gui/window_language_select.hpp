@@ -15,35 +15,40 @@
 //
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_WINDOW_CITY_OPTIONS_H_INCLUDE_
-#define _CAESARIA_WINDOW_CITY_OPTIONS_H_INCLUDE_
+#ifndef _CAESARIA_WINDOW_LANGUAGE_SELECT_H_INCLUDE_
+#define _CAESARIA_WINDOW_LANGUAGE_SELECT_H_INCLUDE_
 
-#include "window.hpp"
-#include "core/signals.hpp"
-#include "gfx/engine.hpp"
-#include "city/city.hpp"
+#include "label.hpp"
 
 namespace gui
 {
 
+class ListBoxItem;
+
 namespace dialog
 {
 
-class CityOptions : public Window
+class LanguageSelect : public Label
 {
 public:
-  CityOptions( Widget* parent, PlayerCityPtr city );
+  LanguageSelect(Widget* parent, vfs::Path model,
+                 const std::string& current, Size size = Size(512,384));
 
-  virtual ~CityOptions();
-  virtual void setupUI(const VariantMap &ui);
+  void setDefaultFont( const std::string& fontname );
+
+public signals:
+  Signal3<std::string,std::string,std::string> onChange;
+  Signal0<> onContinue;
 
 private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  void _changeLanguage(const ListBoxItem& item);
+  void _apply();
+
+  vfs::Path _model;
+  std::string _defaultFont;
 };
 
-} //end namespace dialog
+}//end namespace dialog
 
-} //end namespace gui
-
-#endif //_CAESARIA_WINDOW_CITY_OPTIONS_H_INCLUDE_
+}//end namespace gui
+#endif //_CAESARIA_WINDOW_LANGUAGE_SELECT_H_INCLUDE_

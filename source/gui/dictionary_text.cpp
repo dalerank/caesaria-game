@@ -24,6 +24,8 @@
 #include "gfx/pictureconverter.hpp"
 #include "core/color.hpp"
 #include "core/logger.hpp"
+#include "core/json.hpp"
+#include "core/utils.hpp"
 #include "widget_factory.hpp"
 
 using namespace std;
@@ -374,7 +376,20 @@ void DictionaryText::Impl::breakText( const std::string& rtext, const Size& wdgS
 			richText.offset = linewidth;
       richText.font = font.current;
 			richText.uri = true;
-			richText.font.setColor( DefaultColors::blue );
+      NColor color = DefaultColors::blue;
+
+      if(rText[i+1] == '#')
+      {
+        std::string colorStr = rText.substr(i+2, i+10);
+        int value = utils::toInt( colorStr, true );
+        if( value != 0)
+        {
+          color.set( value );
+          i+=9;
+        }
+      }
+
+      richText.font.setColor( color );
 			richText.text = "";
 			whitespace = "";
 		}

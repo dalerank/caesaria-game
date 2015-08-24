@@ -12,45 +12,45 @@ namespace gui
 class Console : public Widget , public CommandDispatcher, public MessageSink
 {
 public:
-    Console( Widget* parent, int id, const Rect& rectangle );															//! constructor
-    virtual ~Console();													//! destructor
+    Console( Widget* parent, int id, const Rect& rectangle );
+    virtual ~Console();
 
     void setVisible( bool vis );
     void toggleVisible();
 
     void draw( gfx::Engine& painter );
 
-    void appendMessage( const std::string& message );						//
-    void clearMessages();													//
+    void appendMessage( const std::string& message );
+    void clearMessages();
 
     int initKey() const;
 
-    void keyPress( const NEvent& event );								//
+    void keyPress( const NEvent& event );
 
 private:
-    void handleCommandString( const std::string& wstr);							//
-    void addToHistory( const std::string& line);								//
-    void calculateConsoleRect(const Size& screenSize); //
+    void handleCommandString( const std::string& wstr);
+    void addToHistory( const std::string& line);
+    void calculateConsoleRect(const Size& screenSize);
     void calculatePrintRects( Rect& textRect, Rect& shellRect);
-    bool calculateLimits(unsigned int& maxLines, unsigned int& lineHeight, int& fontHeight);	//
+    bool calculateLimits(unsigned int& maxLines, unsigned int& lineHeight, int& fontHeight);
     void resizeMessages();
-    void tabComplete();														//
+    void tabComplete();
     void setNextCommand_();
     void setPrevCommand_();
     void resolveCommand_();
     void inputChar_(unsigned int key_char, bool shift_down );
-    void registerDefaultCommands_();					//
+    void registerDefaultCommands_();
     void moveCursor_( bool leftStep );
 
-    StringArray console_messages_;								//
-    StringArray console_history_;								//
+    StringArray console_messages_;
+    StringArray console_history_;
     unsigned int consoleHistoryIndex_;
     Font _font;
 
     typedef enum { NONE=0, UPLIGTH, DOWNLIGTH } TOGGLE_TYPE;
     TOGGLE_TYPE toggle_visible_;
 
-    std::string currentCommand_;												//
+    std::string currentCommand_;
     gfx::Picture _bgpic;
     unsigned int cursorPos_;
 

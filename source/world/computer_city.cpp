@@ -338,7 +338,7 @@ void ComputerCity::Impl::placeNewBuilding(object::Type type)
   BuildingInfo info;
 
   info.type = type;
-  const  MetaData& md = MetaDataHolder::getData( info.type );
+  const  MetaData& md = MetaDataHolder::find( info.type );
   good::Product output = good::Helper::getType( md.getOption( "output" ).toString() );
   info.outgoods.setType( output );
   info.ingoods.setType( good::getMaterial( output ) );

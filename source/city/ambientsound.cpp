@@ -22,9 +22,13 @@
 #include "sound/engine.hpp"
 #include "core/utils.hpp"
 #include "objects/overlay.hpp"
+#include "gfx/helper.hpp"
 #include "core/foreach.hpp"
 #include "config.hpp"
+#include "core/variant_map.hpp"
+#include "core/saveadapter.hpp"
 #include "cityservice_factory.hpp"
+#include "game/settings.hpp"
 
 #include <set>
 
@@ -35,6 +39,61 @@ namespace city
 {
 
 REGISTER_SERVICE_IN_FACTORY(AmbientSound,ambient_sound)
+
+struct AmbientEmitter
+{
+  struct Info
+  {
+    StringArray sounds;
+    unsigned int lastAccess;
+    int lastIndex;
+
+    Info() : lastAccess(0), lastIndex(0) {}
+  };
+
+  std::map< Tile::Type, Info > info;
+
+  static AmbientEmitter& instance()
+  {
+    static AmbientEmitter inst;
+    return inst;
+  }
+
+  void initialize( const vfs::Path& filename )
+  {
+    VariantMap types = config::load( filename );
+    for( auto rtype : types )
+    {
+      Tile::Type type = gfx::tile::toTileType( rtype.first );
+      if( type != Tile::tlUnknown )
+      {
+        info[ type ].sounds = rtype.second.toStringArray();
+      }
+    }
+  }
+
+  static std::string sound( Tile::Type tileType, unsigned int time )
+  {
+    AmbientEmitter& ambient = instance();
+    auto it = ambient.info.find( tileType );
+    if( it != ambient.info.end() )
+    {
+      Info& ref = it->second;
+      if( time - ref.lastAccess > 1000 )
+      {
+        if( ref.sounds.size() > 0 )
+        {
+          ref.lastIndex = (ref.lastIndex+1)%ref.sounds.size();
+          ref.lastAccess = time;
+          return ref.sounds[ ref.lastIndex ];
+        }
+      }
+    }
+    //return utils::format( 0xff, "emptyland_%05d", (tile->i() * tile->j()) % 3 + 1  );
+
+    return "";
+  }
+};
 
 struct SoundEmitter
 {  
@@ -54,8 +113,9 @@ struct SoundEmitter
              < a.tile->pos().getDistanceFromSQ( cameraPos ));
   }
 
-  std::string sound() const
+  std::string sound( unsigned int time ) const
   {
+    time = DateTime::elapsedTime();
     if( overlay.isValid() )
     {
       return overlay->sound();
@@ -72,7 +132,7 @@ struct SoundEmitter
       }
       else
       {
-        return utils::format( 0xff, "emptyland_%05d", (tile->i() * tile->j()) % 3 + 1  );
+        return AmbientEmitter::sound( Tile::tlGrass, time );
       }
     }
 
@@ -119,6 +179,7 @@ AmbientSound::AmbientSound(PlayerCityPtr city)
 {
   _d->camera = 0;
   _d->emmitersArea.reserve( ambientsnd::maxDistance * ambientsnd::maxDistance + 1 );
+  AmbientEmitter::instance().initialize( SETTINGS_RC_PATH(ambientsounds) );
 }
 
 void AmbientSound::timeStep( const unsigned int time )
@@ -167,7 +228,7 @@ void AmbientSound::timeStep( const unsigned int time )
   resourceName.reserve(256);
   for( Emitters::reverse_iterator i=_d->emitters.rbegin(); i != _d->emitters.rend(); ++i )
   {
-    resourceName = i->sound();
+    resourceName = i->sound( time );
 
     if( resourceName.empty() )
       continue;

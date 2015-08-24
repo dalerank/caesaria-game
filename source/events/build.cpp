@@ -90,7 +90,7 @@ void BuildAny::_exec( Game& game, unsigned int )
     ConstructionPtr construction = _overlay.as<Construction>();
     if( construction.isValid() )
     {
-      const MetaData& buildingData = MetaDataHolder::getData( _overlay->type() );
+      const MetaData& buildingData = MetaDataHolder::find( _overlay->type() );
       game.city()->treasury().resolveIssue( econ::Issue( econ::Issue::buildConstruction,
                                                          -(int)buildingData.getOption( MetaDataOptions::cost ) ) );
 

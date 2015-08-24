@@ -21,6 +21,12 @@
                        "plague_ruins" ]
   }
 
+  market : {
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge", "farmtile",
+                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "waymark", "roadBlock",
+                       "plague_ruins" ]
+  }
+
   desirability : {
     visibleObjects : [ "road", "plaza", "garden", "collapsed_ruins", "burned_ruins", "collapsed_ruins", "low_bridge",
                        "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark", "senate", "roadBlock",

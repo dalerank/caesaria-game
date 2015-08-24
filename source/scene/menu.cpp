@@ -58,16 +58,13 @@
 #include "vfs/directory.hpp"
 #include "gui/dlc_folder_viewer.hpp"
 #include "steam.hpp"
+#include "gui/window_language_select.hpp"
 
 using namespace gfx;
 using namespace gui;
 
 namespace scene
 {
-
-CAESARIA_LITERALCONST(ext)
-CAESARIA_LITERALCONST(talks)
-CAESARIA_LITERALCONST(font)
 
 class StartMenu::Impl
 {
@@ -106,7 +103,7 @@ public:
   void handleStartCareer();
   void showLanguageOptions();
   void showPackageOptions();
-  void changeLanguage(const gui::ListBoxItem&);
+  void changeLanguage(std::string lang, std::string newFont, std::string sounds);
   void fitScreenResolution();
   void playMenuSoundTheme();
   void continuePlay();
@@ -223,9 +220,7 @@ void StartMenu::Impl::openDlcDirectory(Widget* sender)
     return;
 
   vfs::Path path( sender->getProperty( "path" ).toString() );
-
-  Widget* parent = game->gui()->rootWidget();
-  /*DlcFolderViewer* viewer = */new DlcFolderViewer( parent, path );
+  new DlcFolderViewer( game->gui()->rootWidget(), path );
 }
 
 void StartMenu::Impl::showSoundOptions()
@@ -236,34 +231,14 @@ void StartMenu::Impl::showSoundOptions()
 
 void StartMenu::Impl::showLanguageOptions()
 {
-  Widget* parent = game->gui()->rootWidget();
-  Size windowSize( 512, 384 );
+  vfs::Path model = SETTINGS_RC_PATH( langModel );
+  std::string currentLang = SETTINGS_STR( language );
+  std::string dfFont = SETTINGS_STR( defaultFont );
+  dialog::LanguageSelect* dlg = new dialog::LanguageSelect( game->gui()->rootWidget(), model, currentLang );
+  dlg->setDefaultFont( dfFont );
 
-  Label* frame = new Label( parent, Rect( Point(), windowSize ), "", false, gui::Label::bgWhiteFrame );
-  ListBox* lbx = new ListBox( frame, Rect( 0, 0, 1, 1 ), -1, true, true );
-  PushButton* btn = new PushButton( frame, Rect( 0, 0, 1, 1), _("##apply##") );
-
-  WidgetEscapeCloser::insertTo( frame );
-  frame->setCenter( parent->center() );
-  lbx->setFocus();
-  lbx->setGeometry( RectF( 0.05, 0.05, 0.95, 0.85 ) );
-  btn->setGeometry( RectF( 0.1, 0.88, 0.9, 0.95 ) );
-
-  VariantMap languages = config::load( SETTINGS_RC_PATH( langModel ) );
-  std::string currentLang = SETTINGS_VALUE( language ).toString();
-  int currentIndex = -1;
-  for( auto it : languages )
-  {
-    lbx->addItem( it.first );
-    std::string ext = it.second.toMap().get( literals::ext ).toString();
-    if( ext == currentLang )
-      currentIndex = lbx->itemsCount() - 1;
-  }
-
-  lbx->setSelected( currentIndex );
-
-  CONNECT( lbx, onItemSelected(), this, Impl::changeLanguage );
-  CONNECT( btn, onClicked(),      this, Impl::reload );
+  CONNECT( dlg, onChange,   this, Impl::changeLanguage )
+  CONNECT( dlg, onContinue, this, Impl::reload         )
 }
 
 void StartMenu::Impl::showPackageOptions()
@@ -272,33 +247,12 @@ void StartMenu::Impl::showPackageOptions()
   dlg->setModal();
 }
 
-void StartMenu::Impl::changeLanguage(const gui::ListBoxItem& item)
-{
-  std::string lang;
-  std::string talksArchive;
-  std::string newFont;
-
-  std::string currentFont = SETTINGS_VALUE( font ).toString();
-
-  VariantMap languages = config::load( SETTINGS_RC_PATH( langModel ) );
-  for( auto it : languages )
-  {
-    if( item.text() == it.first )
-    {
-      VariantMap vm = it.second.toMap();
-      lang = vm.get( literals::ext ).toString();
-      talksArchive = vm.get( literals::talks ).toString();
-      newFont  = vm.get( literals::font ).toString();
-
-      if( newFont.empty() )
-        newFont = SETTINGS_VALUE( defaultFont ).toString();
-
-      break;
-    }
-  }
+void StartMenu::Impl::changeLanguage(std::string lang, std::string newFont, std::string sounds)
+{  
+  std::string currentFont = SETTINGS_STR( font );
 
   SETTINGS_SET_VALUE( language, Variant( lang ) );
-  SETTINGS_SET_VALUE( talksArchive, Variant( talksArchive ) );
+  SETTINGS_SET_VALUE( talksArchive, Variant( sounds ) );
 
   if( currentFont != newFont )
   {
@@ -310,21 +264,21 @@ void StartMenu::Impl::changeLanguage(const gui::ListBoxItem& item)
 
   Locale::setLanguage( lang );
   NameGenerator::instance().setLanguage( lang );
-  audio::Helper::initTalksArchive( talksArchive );
+  audio::Helper::initTalksArchive( sounds );
 }
 
 void StartMenu::Impl::handleStartCareer()
 {
   menu->clear();
 
-  std::string playerName = SETTINGS_VALUE( playerName ).toString();
+  std::string playerName = SETTINGS_STR( playerName );
 
   dialog::ChangePlayerName* dlg = new dialog::ChangePlayerName( game->gui()->rootWidget() );
   dlg->setName( playerName );
 
   CONNECT( dlg, onNameChange(), this, Impl::setPlayerName );
   CONNECT( dlg, onContinue(),   this, Impl::handleNewGame );
-  CONNECT( dlg, onClose(),      this, Impl::showMainMenu );
+  CONNECT( dlg, onClose(),      this, Impl::showMainMenu  );
 }
 
 void StartMenu::Impl::handleNewGame()

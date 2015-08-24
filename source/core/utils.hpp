@@ -49,7 +49,7 @@ namespace utils
 
   int toInt(const char* in, const char** out=0);
 
-  int toInt(const std::string& number );
+  int toInt(const std::string& number, int base=10);
 
   //! Converts a sequence of digits into a whole positive floating point value.
   /** Only digits 0 to 9 are parsed.  Parsing stops at any other character,
