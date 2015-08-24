@@ -160,7 +160,7 @@ bool VLayout::full() const
 {
   for( auto widget : children() )
   {
-    if( widget->bottom() > height() )
+    if( widget->bottom() > (int)height() )
       return true;
   }
 

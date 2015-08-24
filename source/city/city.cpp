@@ -81,6 +81,7 @@
 #include "core/requirements.hpp"
 #include "cityservice_prosperity.hpp"
 #include "cityservice_culture.hpp"
+#include "events/warningmessage.hpp"
 #include "cityservice_peace.hpp"
 #include "ambientsound.hpp"
 
@@ -176,6 +177,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( difficulty, game::difficulty::usual );
   setOption( forestFire, 1 );
   setOption( forestGrow, 0 );
+  setOption( warfNeedTimber, 1 );
 
   _d->states.nation = world::nation::rome;
 }
@@ -539,7 +541,23 @@ Signal1<int>& PlayerCity::onFundsChanged()                  { return _d->economy
 void PlayerCity::setCameraPos(const TilePos pos)            { _d->cameraStart = pos; }
 TilePos PlayerCity::cameraPos() const                       { return _d->cameraStart; }
 void PlayerCity::addService( city::SrvcPtr service )        { _d->services.push_back( service ); }
-void PlayerCity::setOption(PlayerCity::OptionType opt, int value) { _d->options[ opt ] = value; }
+
+void PlayerCity::setOption(PlayerCity::OptionType opt, int value)
+{
+  _d->options[ opt ] = value;
+  if( opt == c3gameplay && value )
+  {
+    _d->options[ warfNeedTimber ] = false;
+    _d->options[ forestFire ] = false;
+    _d->options[ forestGrow ] = false;
+    _d->options[ forestGrow ] = false;
+    _d->options[ highlightBuilding ] = false;
+    _d->options[ destroyEpidemicHouses ] = false;
+
+    GameEventPtr e = WarningMessage::create( "WARNING: enabled C3 gameplay only!", WarningMessage::negative );
+    e->dispatch();
+  }
+}
 
 int PlayerCity::prosperity() const
 {

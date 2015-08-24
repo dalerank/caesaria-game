@@ -179,6 +179,7 @@ void Options::load(const VariantList& stream)
   resetIfNot( PlayerCity::barbarianAttack, 1 );
   resetIfNot( PlayerCity::legionAttack, 1 );
   resetIfNot( PlayerCity::c3gameplay, 0 );
+  resetIfNot( PlayerCity::warfNeedTimber, 1 );
   resetIfNot( PlayerCity::difficulty, game::difficulty::usual );
 }
 
