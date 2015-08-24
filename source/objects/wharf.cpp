@@ -91,12 +91,12 @@ void Wharf::timeStep(const unsigned long time)
 
 ShipPtr Wharf::getBoat() const
 {
-  return ptr_cast<Ship>( _d->boat );
+  return _d->boat.as<Ship>();
 }
 
 void Wharf::assignBoat( ShipPtr boat )
 {
-  _d->boat = ptr_cast<FishingBoat>( boat );
+  _d->boat = boat.as<FishingBoat>();
   if( _d->boat.isValid() )
   {
     _d->boat->setBase( this );
