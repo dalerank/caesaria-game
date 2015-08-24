@@ -63,6 +63,7 @@ void EventConverter::Impl::createKeyMap()
 
     // combined modifiers missing
     init_key( SDLK_PAUSE, KEY_PAUSE );
+    init_key( SDLK_BACKQUOTE, KEY_TILDA );
     init_key( SDLK_CAPSLOCK, KEY_CAPITAL );
 
     init_key( SDLK_ESCAPE, KEY_ESCAPE );
@@ -352,7 +353,7 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
     ret.keyboard.pressed = (sdlEvent.type == SDL_KEYDOWN);
     ret.keyboard.shift = (sdlEvent.key.keysym.mod & KMOD_SHIFT) != 0;
     ret.keyboard.control = (sdlEvent.key.keysym.mod & KMOD_CTRL ) != 0;
-    ret.keyboard.symbol = 0;
+    ret.keyboard.symbol = sdlEvent.key.keysym.sym;
   }
   break;
 

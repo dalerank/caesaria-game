@@ -92,7 +92,7 @@ Ui::Ui(Engine& painter )
   setGeometry( Rect( Point(), painter.virtualSize() ) );
 
   _d->consoleId = Hash( CAESARIA_STR_EXT(Console) );
-  _d->console = new Console( this, _d->consoleId, Rect() );
+  _d->console = 0;//new Console( this, _d->consoleId, Rect() );
 }
 
 //! Returns if the element has focus
@@ -439,18 +439,21 @@ bool Ui::handleEvent( const NEvent& event )
     case sTextInput:
     case sEventKeyboard:
         {
-          if( _d->console && _d->console->initKey() == (int)event.keyboard.symbol )
+          if( _d->console )
           {
+            if(  _d->console->initKey() == (int)event.keyboard.symbol )
+            {
               if( _d->console && !event.keyboard.control && event.keyboard.pressed )
                   _d->console->toggleVisible();
 
               return true;
-          }
+            }
 
-          if( _d->console && _d->console->visible() && !event.keyboard.control && event.keyboard.pressed )
-          {
+            if( _d->console->visible() && !event.keyboard.control && event.keyboard.pressed )
+            {
               _d->console->keyPress( event );
               return true;
+            }
           }
 
           if( getFocus() && getFocus()->onEvent(event))
