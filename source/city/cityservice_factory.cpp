@@ -35,7 +35,7 @@ public:
 SrvcPtr ServiceFactory::create( PlayerCityPtr city, const std::string& name )
 {
   std::string::size_type sharpPos = name.find( "#" );
-  std::string srvcType = sharpPos != std::string::npos ? name.substr( sharpPos+1 ) : name;
+  const std::string srvcType = sharpPos != std::string::npos ? name.substr( sharpPos+1 ) : name;
 
   Logger::warning( "CityServiceFactory: try find creator for service " + srvcType );
 

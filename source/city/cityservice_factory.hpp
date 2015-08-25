@@ -45,7 +45,10 @@ public:
   virtual std::string serviceName() const { return T::defaultName(); }
 };
 
-
+/**
+ * @brief Factory, which can create services for city
+ *        from registered classes.
+ */
 class ServiceFactory : public StaticSingleton<ServiceFactory>
 {
   friend class StaticSingleton;
