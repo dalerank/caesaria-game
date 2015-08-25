@@ -104,7 +104,7 @@ public:
   {
     for( auto item : stream )
     {
-      object::Type btype = object::toType( item.first );
+      object::Type btype = object::findType( item.first );
       (*this)[ btype ].mayBuild = item.second.toBool();
     }
   }
@@ -113,8 +113,8 @@ public:
   {
     for( auto item : stream )
     {
-      object::Type btype = object::toType( item.first );
-      (*this)[ btype ].quotes = item.second.toBool();
+      object::Type btype = object::findType( item.first );
+      (*this)[ btype ].quotes = item.second.toInt();
     }
   }
 };
@@ -235,7 +235,7 @@ bool Options::isBuildingAvailable(const object::Type type ) const
   return (it != _d->rules.end() ? (*it).second.mayBuild : true);
 }
 
-Branch toBranch(const std::string& name) { return BranchHelper::instance().findType( name ); }
+Branch findBranch(const std::string& name) { return BranchHelper::instance().findType( name ); }
 std::string toString(Branch branch) { return BranchHelper::instance().findName( branch ); }
 
 void loadBranchOptions( vfs::Path filename )
@@ -254,7 +254,7 @@ void loadBranchOptions( vfs::Path filename )
 
       for( auto bIt : vmTypes )
       {
-        object::Type ovType = object::toType( bIt.toString() );
+        object::Type ovType = object::findType( bIt.toString() );
         if( ovType != object::unknown )
           branchData.insert( ovType );
       }
@@ -276,6 +276,27 @@ Range Range::fromBranch(const Branch branch)
     return ret;
   }
 
+  return _defaultRange( branch );
+}
+
+Range Range::fromSequence(const object::Type start, const object::Type stop)
+{
+  Range ret;
+  for( object::Type i=start; i <= stop; ++i )
+    ret << i;
+
+  return ret;
+}
+
+Range& Range::operator<<(const object::Type type)
+{
+  this->insert( type );
+  return *this;
+}
+
+Range Range::_defaultRange(const Branch branch)
+{
+  Range ret;
   switch( branch )
   {
   case development::farm: ret = Range::fromSequence( object::wheat_farm, object::meat_farm); break;
@@ -311,21 +332,6 @@ Range Range::fromBranch(const Branch branch)
   }
 
   return ret;
-}
-
-Range Range::fromSequence(const object::Type start, const object::Type stop)
-{
-  Range ret;
-  for( object::Type i=start; i <= stop; ++i )
-    ret << i;
-
-  return ret;
-}
-
-Range& Range::operator<<(const object::Type type)
-{
-  this->insert( type );
-  return *this;
 }
 
 void Options::toggleBuildingAvailable(const object::Type type)

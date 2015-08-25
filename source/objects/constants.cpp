@@ -136,7 +136,7 @@ std::string toString(const Type& t)
   return Helper::instance().findName( t );
 }
 
-Type toType(const std::string &name)
+Type findType(const std::string &name)
 {
   object::Type type = Helper::instance().findType( name );
 
@@ -166,7 +166,7 @@ void TypeSet::load(const VariantList& stream)
   names << stream;
   for( auto typeStr : names )
   {
-    object::Type type = toType( typeStr );
+    object::Type type = findType( typeStr );
     if( type != object::unknown )
     {
       insert( type );

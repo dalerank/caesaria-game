@@ -50,7 +50,16 @@ typedef enum
   all
 } Branch;
 
-Branch toBranch( const std::string& name );
+/** convert name to Branch
+ *  return Branch::unkown if not found
+ */
+Branch findBranch( const std::string& name );
+
+/**
+ * @brief convert Branch type to string
+ * @param branch type
+ * @return string, empty string if not found
+ */
 std::string toString( Branch branch );
 void loadBranchOptions(vfs::Path filename );
 
@@ -59,9 +68,20 @@ class Range : public object::TypeSet
 public:
   static Range fromBranch( const Branch branch);
   static Range fromSequence( const object::Type start, const object::Type stop );
+
+  /**
+   * @brief Add type to range
+   * @param object type
+   * @return ref to self
+   */
   Range& operator<<( const object::Type type );
+protected:
+  static Range _defaultRange( const Branch branch );
 };
 
+/**
+ * @brief The city build options class
+ */
 class Options : public ReferenceCounted
 {
 public:
