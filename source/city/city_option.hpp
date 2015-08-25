@@ -25,5 +25,13 @@ namespace city
 
 PlayerCity::OptionType findOption( const std::string& name);
 
+class Options : public std::map<int, int>
+{
+public:
+  VariantList save() const;
+  void load(const VariantList &stream );
+  void resetIfNot( int name, int value );
+};
+
 }//end namespace city
 #endif //__CAESARIA_CITY_OPTION_H_INCLUDED__

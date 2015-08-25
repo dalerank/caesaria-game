@@ -83,6 +83,7 @@
 #include "cityservice_culture.hpp"
 #include "events/warningmessage.hpp"
 #include "cityservice_peace.hpp"
+#include "city_option.hpp"
 #include "ambientsound.hpp"
 
 #include <set>
@@ -229,16 +230,7 @@ void PlayerCity::timeStep(unsigned int time)
   if( getOption( updateRoads ) > 0 )
   {
     setOption( updateRoads, 0 );
-    // for each overlay
-    for (auto it : _d->overlays)
-    {
-      ConstructionPtr construction = it.as<Construction>();
-      if( construction != NULL )
-      {
-        // overlay matches the filter
-        construction->computeRoadside();
-      }
-    }   
+    _d->overlays.recalcRoadAccess();
   }
 }
 
@@ -603,16 +595,14 @@ PlayerCityPtr PlayerCity::create( world::EmpirePtr empire, PlayerPtr player )
 
 int PlayerCity::culture() const
 {
-  city::CultureRatingPtr csClt;
-  csClt << findService( city::CultureRating::defaultName() );
-  return csClt.isValid() ? csClt->value() : 0;
+  city::CultureRatingPtr culture = statistic().services.find<city::CultureRating>();
+  return culture.isValid() ? culture->value() : 0;
 }
 
 int PlayerCity::peace() const
 {
-  city::PeacePtr p;
-  p << findService( city::Peace::defaultName() );
-  return p.isValid() ? p->value() : 0;
+  city::PeacePtr peace = statistic().services.find<city::Peace>();
+  return peace.isValid() ? peace->value() : 0;
 }
 
 int PlayerCity::sentiment() const {  return _d->sentiment; }

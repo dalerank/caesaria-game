@@ -26,6 +26,7 @@
 #include "cityservice_factory.hpp"
 #include "city.hpp"
 #include "core/logger.hpp"
+#include "objects/construction.hpp"
 #include "walker/helper.hpp"
 #include "game/difficulty.hpp"
 
@@ -83,6 +84,20 @@ void Overlays::update(PlayerCityPtr city, unsigned int time)
   }
 
   merge();
+}
+
+void Overlays::recalcRoadAccess()
+{
+  // for each overlay
+  for( auto ov : *this )
+  {
+    ConstructionPtr construction = ov.as<Construction>();
+    if( construction != NULL )
+    {
+      // overlay matches the filter
+      construction->computeRoadside();
+    }
+  }
 }
 
 void Overlays::onDestroyOverlay(PlayerCityPtr city, OverlayPtr overlay)
@@ -148,45 +163,6 @@ void Walkers::update(PlayerCityPtr, unsigned int time)
 
   grid.update( *this );
   grid.sort();
-}
-
-VariantList Options::save() const
-{
-  VariantList ret;
-  for (auto it : *this)
-  {
-    ret << Point(it.first, it.second);
-  }
-  return ret;
-}
-
-void Options::load(const VariantList& stream)
-{
-  for (auto it : stream)
-  {
-    Point tmp = it;
-    (*this)[ (PlayerCity::OptionType)tmp.x() ] = tmp.y();
-  }
-
-  resetIfNot( PlayerCity::climateType, game::climate::central );
-  resetIfNot( PlayerCity::adviserEnabled, 1 );
-  resetIfNot( PlayerCity::fishPlaceEnabled, 1 );
-  resetIfNot( PlayerCity::godEnabled, 1 );
-  resetIfNot( PlayerCity::zoomEnabled, 1 );
-  resetIfNot( PlayerCity::zoomInvert, 1 );
-  resetIfNot( PlayerCity::fireKoeff, 100 );
-  resetIfNot( PlayerCity::collapseKoeff, 100 );
-  resetIfNot( PlayerCity::barbarianAttack, 1 );
-  resetIfNot( PlayerCity::legionAttack, 1 );
-  resetIfNot( PlayerCity::c3gameplay, 0 );
-  resetIfNot( PlayerCity::warfNeedTimber, 1 );
-  resetIfNot( PlayerCity::difficulty, game::difficulty::usual );
-}
-
-void Options::resetIfNot( int name, int value)
-{
-  if( !count( name ) )
-    (*this)[ name ] = value;
 }
 
 }//end namespace city

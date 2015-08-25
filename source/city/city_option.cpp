@@ -16,6 +16,8 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "city_option.hpp"
+#include "core/variant_list.hpp"
+#include "game/difficulty.hpp"
 #include "core/enumerator.hpp"
 
 namespace city
@@ -60,6 +62,45 @@ public:
 PlayerCity::OptionType findOption(const std::string& name)
 {
   return (PlayerCity::OptionType)OptionEnum::instance().findType( name );
+}
+
+VariantList Options::save() const
+{
+  VariantList ret;
+  for (auto it : *this)
+  {
+    ret << Point(it.first, it.second);
+  }
+  return ret;
+}
+
+void Options::load(const VariantList& stream)
+{
+  for (auto it : stream)
+  {
+    Point tmp = it;
+    (*this)[ (PlayerCity::OptionType)tmp.x() ] = tmp.y();
+  }
+
+  resetIfNot( PlayerCity::climateType, game::climate::central );
+  resetIfNot( PlayerCity::adviserEnabled, 1 );
+  resetIfNot( PlayerCity::fishPlaceEnabled, 1 );
+  resetIfNot( PlayerCity::godEnabled, 1 );
+  resetIfNot( PlayerCity::zoomEnabled, 1 );
+  resetIfNot( PlayerCity::zoomInvert, 1 );
+  resetIfNot( PlayerCity::fireKoeff, 100 );
+  resetIfNot( PlayerCity::collapseKoeff, 100 );
+  resetIfNot( PlayerCity::barbarianAttack, 1 );
+  resetIfNot( PlayerCity::legionAttack, 1 );
+  resetIfNot( PlayerCity::c3gameplay, 0 );
+  resetIfNot( PlayerCity::warfNeedTimber, 1 );
+  resetIfNot( PlayerCity::difficulty, game::difficulty::usual );
+}
+
+void Options::resetIfNot( int name, int value)
+{
+  if( !count( name ) )
+    (*this)[ name ] = value;
 }
 
 }//end namespace city

@@ -40,7 +40,7 @@ class Overlays : public FlowList<Overlay>
 {
 public:
   void update( PlayerCityPtr city, unsigned int time );
-
+  void recalcRoadAccess();
   void onDestroyOverlay( PlayerCityPtr city, OverlayPtr overlay );
 };
 
@@ -62,14 +62,6 @@ public:
   VariantMap save() const;
 
   void update( PlayerCityPtr, unsigned int time );
-};
-
-class Options : public std::map<int, int>
-{
-public:
-  VariantList save() const;
-  void load(const VariantList &stream );
-  void resetIfNot( int name, int value );
 };
 
 }//end namespace city
