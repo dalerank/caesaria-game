@@ -127,7 +127,15 @@ typedef struct SDL_Renderer SDL_Renderer;
 struct SDL_Texture;
 typedef struct SDL_Texture SDL_Texture;
 
-
+struct SDL_Batch
+{
+    SDL_Texture* texture;
+    void* vertices;
+    void* coordinates;
+    void* indices;
+    unsigned int size;
+};
+typedef struct SDL_Batch SDL_Batch;
 /* Function prototypes */
 
 /**
@@ -781,6 +789,45 @@ extern DECLSPEC int SDLCALL SDL_RenderCopy(SDL_Renderer * renderer,
                                            SDL_Texture * texture,
                                            const SDL_Rect * srcrect,
                                            const SDL_Rect * dstrect);
+
+/**
+ *  \brief Create a new draw sequence to the current rendering target.
+ *
+ *  \param renderer The renderer which should copy parts of a texture.
+ *  \param texture The source texture.
+ *  \param srcrect   A pointer to the source rectangle, or NULL for the entire
+ *                   texture.
+ *  \param dstrect   A pointer to the destination rectangle, or NULL for the
+ *                   entire rendering target.
+ *  \param size      size of arrays
+ *  \return 0 on success, or -1 on error
+ */
+extern DECLSPEC SDL_Batch* SDLCALL SDL_CreateBatch(SDL_Renderer * renderer,
+                                                   SDL_Texture * texture,
+                                                   const SDL_Rect * srcrect,
+                                                   const SDL_Rect * dstrect,
+                                                   unsigned int size);
+
+/**
+ *  \brief Destoroy batch in the current rendering target.
+ *
+ *  \param renderer The renderer which should copy parts of a texture.
+ *  \param batch    The batch.
+ *  \return 0 on success, or -1 on error
+ */
+extern DECLSPEC int SDLCALL SDL_DestroyBatch(SDL_Renderer * renderer,
+                                             SDL_Batch * batch );
+
+/**
+ *  \brief Copy a portions of the texture to the current rendering target.
+ *
+ *  \param renderer The renderer which should copy parts of a texture.
+ *  \param batch    The batch struct.
+ *
+ *  \return 0 on success, or -1 on error
+ */
+extern DECLSPEC int SDLCALL SDL_RenderBatch(SDL_Renderer * renderer,
+                                            SDL_Batch * batch);
 
 /**
  *  \brief Copy a portion of the source texture to the current rendering target, rotating it by angle around the given center

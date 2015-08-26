@@ -443,6 +443,9 @@ GL_CreateRenderer(SDL_Window * window, Uint32 flags)
     renderer->RenderFillRects = GL_RenderFillRects;
     renderer->RenderCopy = GL_RenderCopy;
     renderer->RenderCopyEx = GL_RenderCopyEx;
+    renderer->RenderBatch = GL_RenderBatch;
+    renderer->CreateBatch = GL_CreateBatch;
+    renderer->DestroyBatch = GL_DestroyBatch;
     renderer->RenderReadPixels = GL_RenderReadPixels;
     renderer->RenderPresent = GL_RenderPresent;
     renderer->DestroyTexture = GL_DestroyTexture;
@@ -1244,6 +1247,7 @@ GL_RenderFillRects(SDL_Renderer * renderer, const SDL_FRect * rects, int count)
     return GL_CheckError("", renderer);
 }
 
+static int
 GL_CreateBatch(SDL_Renderer * renderer, SDL_Batch* batch, SDL_Texture * texture,
             const SDL_Rect * srcrect, const SDL_Rect * dstrect, unsigned int size)
 {
@@ -1424,7 +1428,13 @@ GL_RenderBatch(SDL_Renderer * renderer, SDL_Batch * batch)
   GL_SetBlendMode(data, texture->blendMode);
 
   if (texturedata->yuv) {
-      GL_SetShader(data, SHADER_YV12);
+      GL_SetShader(data, SHADER_YUV);
+  } else if (texturedata->nv12) {
+      if (texture->format == SDL_PIXELFORMAT_NV12) {
+          GL_SetShader(data, SHADER_NV12);
+      } else {
+          GL_SetShader(data, SHADER_NV21);
+      }
   } else {
       GL_SetShader(data, SHADER_RGB);
   }

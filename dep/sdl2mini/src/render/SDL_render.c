@@ -1926,3 +1926,47 @@ int SDL_GL_UnbindTexture(SDL_Texture *texture)
 }
 
 /* vi: set ts=4 sw=4 expandtab: */
+
+int
+SDL_RenderBatch(SDL_Renderer * renderer, SDL_Batch * batch )
+{
+    if( !batch )
+      return -1;
+
+    CHECK_RENDERER_MAGIC(renderer, -1);
+
+    SDL_Texture* texture = batch->texture;
+    CHECK_TEXTURE_MAGIC(texture, -1);
+
+    if (renderer != texture->renderer) {
+        return SDL_SetError("Texture was not created with this renderer");
+    }
+
+    /* Don't draw while we're hidden */
+    if (renderer->hidden) {
+        return 0;
+    }
+
+    return renderer->RenderBatch(renderer, batch);
+}
+
+SDL_Batch *SDL_CreateBatch(SDL_Renderer *renderer, SDL_Texture *texture,
+                           const SDL_Rect *srcrect, const SDL_Rect *dstrect, unsigned int size)
+{
+  SDL_Batch* batch = SDL_malloc( sizeof(SDL_Batch) );
+  renderer->CreateBatch(renderer, batch, texture, srcrect, dstrect, size);
+
+  return batch;
+}
+
+int SDL_DestroyBatch(SDL_Renderer *renderer, SDL_Batch * batch )
+{
+  if( batch )
+  {
+    renderer->DestroyBatch(renderer, batch);
+    SDL_free( batch );
+  }
+
+  return 0;
+}
+

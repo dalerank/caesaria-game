@@ -101,6 +101,10 @@ struct SDL_Renderer
     int (*UpdateViewport) (SDL_Renderer * renderer);
     int (*UpdateClipRect) (SDL_Renderer * renderer);
     int (*RenderClear) (SDL_Renderer * renderer);
+    int (*RenderBatch) (SDL_Renderer * renderer, SDL_Batch * batch);
+    int (*CreateBatch) (SDL_Renderer * renderer, SDL_Batch*,  SDL_Texture * texture,
+                        const SDL_Rect * srcrect, const SDL_Rect * dstrect, unsigned int size);
+    int (*DestroyBatch) (SDL_Renderer * renderer, SDL_Batch* batch);
     int (*RenderDrawPoints) (SDL_Renderer * renderer, const SDL_FPoint * points,
                              int count);
     int (*RenderDrawLines) (SDL_Renderer * renderer, const SDL_FPoint * points,
