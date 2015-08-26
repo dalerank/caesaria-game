@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -76,6 +76,12 @@ typedef unsigned int uintptr_t;
 # define SIZEOF_VOIDP 4
 #endif
 
+#define HAVE_DDRAW_H 1
+#define HAVE_DINPUT_H 1
+#define HAVE_DSOUND_H 1
+#define HAVE_DXGI_H 1
+#define HAVE_XINPUT_H 1
+
 /* This is disabled by default to avoid C runtime dependencies and manifest requirements */
 #ifdef HAVE_LIBC
 /* Useful headers */
@@ -105,12 +111,10 @@ typedef unsigned int uintptr_t;
 #define HAVE_STRCHR 1
 #define HAVE_STRRCHR 1
 #define HAVE_STRSTR 1
-#define HAVE_ITOA 1
 #define HAVE__LTOA 1
 #define HAVE__ULTOA 1
 #define HAVE_STRTOL 1
 #define HAVE_STRTOUL 1
-#define HAVE_STRTOLL 1
 #define HAVE_STRTOD 1
 #define HAVE_ATOI 1
 #define HAVE_ATOF 1
@@ -118,37 +122,49 @@ typedef unsigned int uintptr_t;
 #define HAVE_STRNCMP 1
 #define HAVE__STRICMP 1
 #define HAVE__STRNICMP 1
-#define HAVE_SSCANF 1
-#define HAVE_M_PI 1
 #define HAVE_ATAN 1
 #define HAVE_ATAN2 1
+#define HAVE_ACOS  1
+#define HAVE_ASIN  1
 #define HAVE_CEIL 1
-#define HAVE_COPYSIGN 1
 #define HAVE_COS 1
 #define HAVE_COSF 1
 #define HAVE_FABS 1
 #define HAVE_FLOOR 1
 #define HAVE_LOG 1
 #define HAVE_POW 1
-#define HAVE_SCALBN 1
 #define HAVE_SIN 1
 #define HAVE_SINF 1
 #define HAVE_SQRT 1
+#define HAVE_SQRTF 1
+#define HAVE_TAN 1
+#define HAVE_TANF 1
+#if _MSC_VER >= 1800
+#define HAVE_STRTOLL 1
+#define HAVE_VSSCANF 1
+#define HAVE_COPYSIGN 1
+#define HAVE_SCALBN 1
+#endif
+#if !defined(_MSC_VER) || defined(_USE_MATH_DEFINES)
+#define HAVE_M_PI 1
+#endif
 #else
 #define HAVE_STDARG_H   1
 #define HAVE_STDDEF_H   1
 #endif
 
 /* Enable various audio drivers */
-#define SDL_AUDIO_DRIVER_DSOUND 0
-#define SDL_AUDIO_DRIVER_XAUDIO2    0
+#define SDL_AUDIO_DRIVER_DSOUND 1
+#define SDL_AUDIO_DRIVER_XAUDIO2    1
 #define SDL_AUDIO_DRIVER_WINMM  1
-#define SDL_AUDIO_DRIVER_DISK   0
+#define SDL_AUDIO_DRIVER_DISK   1
 #define SDL_AUDIO_DRIVER_DUMMY  1
 
 /* Enable various input drivers */
-#define SDL_JOYSTICK_DINPUT 0
-#define SDL_HAPTIC_DINPUT   0
+#define SDL_JOYSTICK_DINPUT 1
+#define SDL_JOYSTICK_XINPUT 1
+#define SDL_HAPTIC_DINPUT   1
+#define SDL_HAPTIC_XINPUT   1
 
 /* Enable various shared object loading systems */
 #define SDL_LOADSO_WINDOWS  1
@@ -164,7 +180,10 @@ typedef unsigned int uintptr_t;
 #define SDL_VIDEO_DRIVER_WINDOWS    1
 
 #ifndef SDL_VIDEO_RENDER_D3D
-#define SDL_VIDEO_RENDER_D3D    0
+#define SDL_VIDEO_RENDER_D3D    1
+#endif
+#ifndef SDL_VIDEO_RENDER_D3D11
+#define SDL_VIDEO_RENDER_D3D11	0
 #endif
 
 /* Enable OpenGL support */
@@ -177,6 +196,16 @@ typedef unsigned int uintptr_t;
 #ifndef SDL_VIDEO_RENDER_OGL
 #define SDL_VIDEO_RENDER_OGL    1
 #endif
+#ifndef SDL_VIDEO_RENDER_OGL_ES2
+#define SDL_VIDEO_RENDER_OGL_ES2    1
+#endif
+#ifndef SDL_VIDEO_OPENGL_ES2
+#define SDL_VIDEO_OPENGL_ES2    1
+#endif
+#ifndef SDL_VIDEO_OPENGL_EGL
+#define SDL_VIDEO_OPENGL_EGL    1
+#endif
+
 
 /* Enable system power support */
 #define SDL_POWER_WINDOWS 1

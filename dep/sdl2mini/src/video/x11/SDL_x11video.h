@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -18,7 +18,7 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../../SDL_internal.h"
 
 #ifndef _SDL_x11video_h
 #define _SDL_x11video_h
@@ -33,6 +33,9 @@
 
 #if SDL_VIDEO_DRIVER_X11_XCURSOR
 #include <X11/Xcursor/Xcursor.h>
+#endif
+#if SDL_VIDEO_DRIVER_X11_XDBE
+#include <X11/extensions/Xdbe.h>
 #endif
 #if SDL_VIDEO_DRIVER_X11_XINERAMA
 #include <X11/extensions/Xinerama.h>
@@ -53,10 +56,8 @@
 #include <X11/extensions/xf86vmode.h>
 #endif
 
-#ifdef HAVE_DBUS_DBUS_H
-#define SDL_USE_LIBDBUS 1
-#include <dbus/dbus.h>
-#endif
+#include "../../core/linux/SDL_dbus.h"
+#include "../../core/linux/SDL_ibus.h"
 
 #include "SDL_x11dyn.h"
 
@@ -110,13 +111,12 @@ typedef struct SDL_VideoData
     Atom XdndDrop;
     Atom XdndFinished;
     Atom XdndSelection;
+    Atom XKLAVIER_STATE;
 
     SDL_Scancode key_layout[256];
     SDL_bool selection_waiting;
 
-#if SDL_USE_LIBDBUS
-    DBusConnection *dbus;
-#endif
+    Uint32 last_mode_change_deadline;
 } SDL_VideoData;
 
 extern SDL_bool X11_UseDirectColorVisuals(void);

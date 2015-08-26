@@ -74,9 +74,11 @@ local int gz_comp(state, flush)
         /* write out current buffer contents if full, or if flushing, but if
            doing Z_FINISH then don't write until we get to Z_STREAM_END */
         if (strm->avail_out == 0 || (flush != Z_NO_FLUSH &&
-            (flush != Z_FINISH || ret == Z_STREAM_END))) {
+            (flush != Z_FINISH || ret == Z_STREAM_END)))
+        {
             have = (unsigned)(strm->next_out - state->next);
-            if (have && ((got = write(state->fd, state->next, have)) < 0 ||
+            got = write(state->fd, state->next, have);
+            if (have && (got < 0 ||
                          (unsigned)got != have)) {
                 gz_error(state, Z_ERRNO, zstrerror());
                 return -1;

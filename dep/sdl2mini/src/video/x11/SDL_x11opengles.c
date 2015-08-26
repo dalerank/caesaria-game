@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -18,7 +18,7 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../../SDL_internal.h"
 
 #if SDL_VIDEO_DRIVER_X11 && SDL_VIDEO_OPENGL_EGL
 
@@ -29,13 +29,14 @@
 /* EGL implementation of SDL OpenGL support */
 
 int
-X11_GLES_LoadLibrary(_THIS, const char *path) {
-        
+X11_GLES_LoadLibrary(_THIS, const char *path)
+{
     SDL_VideoData *data = (SDL_VideoData *) _this->driverdata;
 
     /* If the profile requested is not GL ES, switch over to X11_GL functions  */
     if (_this->gl_config.profile_mask != SDL_GL_CONTEXT_PROFILE_ES) {
         #if SDL_VIDEO_OPENGL_GLX
+        X11_GLES_UnloadLibrary(_this);
         _this->GL_LoadLibrary = X11_GL_LoadLibrary;
         _this->GL_GetProcAddress = X11_GL_GetProcAddress;
         _this->GL_UnloadLibrary = X11_GL_UnloadLibrary;
@@ -74,13 +75,13 @@ X11_GLES_GetVisual(_THIS, Display * display, int screen)
                                             &visual_id) == EGL_FALSE || !visual_id) {
         /* Use the default visual when all else fails */
         vi_in.screen = screen;
-        egl_visualinfo = XGetVisualInfo(display,
+        egl_visualinfo = X11_XGetVisualInfo(display,
                                         VisualScreenMask,
                                         &vi_in, &out_count);
     } else {
         vi_in.screen = screen;
         vi_in.visualid = visual_id;
-        egl_visualinfo = XGetVisualInfo(display, VisualScreenMask | VisualIDMask, &vi_in, &out_count);
+        egl_visualinfo = X11_XGetVisualInfo(display, VisualScreenMask | VisualIDMask, &vi_in, &out_count);
     }
 
     return egl_visualinfo;
@@ -93,9 +94,9 @@ X11_GLES_CreateContext(_THIS, SDL_Window * window)
     SDL_WindowData *data = (SDL_WindowData *) window->driverdata;
     Display *display = data->videodata->display;
 
-    XSync(display, False);
+    X11_XSync(display, False);
     context = SDL_EGL_CreateContext(_this, data->egl_surface);
-    XSync(display, False);
+    X11_XSync(display, False);
 
     return context;
 }
