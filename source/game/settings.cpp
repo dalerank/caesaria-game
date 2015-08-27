@@ -171,7 +171,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ ambientsounds       ] = std::string( "ambientsounds.model" );
   _d->options[ cntrGroupsModel     ] = std::string( "construction_groups.model" );
   _d->options[ screenshotDir       ] = vfs::Directory::userDir().toString();
-  _d->options[ batchTextures       ] = true;
+  _d->options[ batchTextures       ] = false;
   _d->options[ experimental        ] = false;
   _d->options[ needAcceptBuild     ] = false;
   _d->options[ borderMoving        ] = false;

@@ -146,7 +146,7 @@ SDL_Batch* __createBatch( SDL_Renderer* render, const Picture& pic, const Rects&
 
 Batch SdlEngine::loadBatch(const Picture &pic, const Rects &srcRects, const Rects &dstRects, const Rect *clipRect)
 {
-  if( !pic.isValid() )
+  if( !pic.isValid() || !_d->batcher.active() )
     return Batch();
 
   Batch ret;

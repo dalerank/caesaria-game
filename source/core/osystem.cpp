@@ -325,3 +325,6 @@ void OSystem::restartProcess( const std::string& filename, const std::string& di
   }
 #endif
 }
+
+bool OSystem::isAndroid() { return is( android ); }
+bool OSystem::isLinux() { return is( linux ); }

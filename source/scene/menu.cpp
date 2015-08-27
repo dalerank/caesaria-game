@@ -118,7 +118,7 @@ void StartMenu::Impl::showSaveSelectDialog()
 {
   Widget* parent = game->gui()->rootWidget();
 
-  vfs::Path savesPath = SETTINGS_VALUE( savedir ).toString();  
+  vfs::Path savesPath = SETTINGS_STR( savedir );
 
   result = StartMenu::loadSavedGame;
   gui::dialog::LoadGame* wnd = gui::dialog::LoadGame::create( parent, savesPath );
@@ -136,7 +136,7 @@ void StartMenu::Impl::changePlayerName() { changePlayerNameIfNeed(true); }
 
 void StartMenu::Impl::changePlayerNameIfNeed(bool force)
 {
-  std::string playerName = SETTINGS_VALUE( playerName ).toString();
+  std::string playerName = SETTINGS_STR( playerName );
   if( playerName.empty() || force )
   {
     dialog::ChangePlayerName* dlg = new dialog::ChangePlayerName( game->gui()->rootWidget() );
@@ -168,28 +168,29 @@ void StartMenu::Impl::playMenuSoundTheme()
 void StartMenu::Impl::continuePlay()
 {
   result = StartMenu::loadSavedGame;
-  selectFile( SETTINGS_VALUE( lastGame ).toString() );
+  selectFile( SETTINGS_STR( lastGame ) );
 }
 
 void StartMenu::Impl::resolveSteamStats()
 {
-#ifdef CAESARIA_USE_STEAM
-  int offset = 0;
-  for( int k=0; k < steamapi::achv_count; k++ )
+  if( steamapi::available() )
   {
-    steamapi::AchievementType achivId = steamapi::AchievementType(k);
-    if( steamapi::isAchievementReached( achivId ) )
+    int offset = 0;
+    for( int k=0; k < steamapi::achv_count; k++ )
     {
-      gfx::Picture pic = steamapi::achievementImage( achivId );
-      if( pic.isValid() )
+      steamapi::AchievementType achivId = steamapi::AchievementType(k);
+      if( steamapi::isAchievementReached( achivId ) )
       {
-        gui::Image* img = new gui::Image( game->gui()->rootWidget(), Point( 10, 100 + offset ), pic );
-        img->setTooltipText( steamapi::achievementCaption( achivId ) );
-        offset += 65;
+        gfx::Picture pic = steamapi::achievementImage( achivId );
+        if( pic.isValid() )
+        {
+          gui::Image* img = new gui::Image( game->gui()->rootWidget(), Point( 10, 100 + offset ), pic );
+          img->setTooltipText( steamapi::achievementCaption( achivId ) );
+          offset += 65;
+        }
       }
     }
   }
-#endif
 }
 
 void StartMenu::Impl::reload()
@@ -539,9 +540,10 @@ void StartMenu::draw()
 
   _d->game->gui()->draw();
 
-#ifdef CAESARIA_USE_STEAM
-  _d->engine->draw( _d->userImage, Point( 20, 20 ) );
-#endif
+  if( steamapi::available() )
+  {
+    _d->engine->draw( _d->userImage, Point( 20, 20 ) );
+  }
 }
 
 void StartMenu::handleEvent( NEvent& event )
@@ -558,7 +560,7 @@ void StartMenu::initialize()
 {
   events::Dispatcher::instance().reset();
   Logger::warning( "ScreenMenu: initialize start");
-  std::string resName = SETTINGS_VALUE( titleResource ).toString();
+  std::string resName = SETTINGS_STR( titleResource );
   _d->bgPicture.load( resName, 1);
 
   // center the bgPicture on the screen
@@ -582,48 +584,52 @@ void StartMenu::initialize()
 
   _d->showMainMenu();
 
-  bool screenFitted = KILLSWITCH( screenFitted ) || KILLSWITCH( fullscreen );
-  if( !screenFitted )
+  if( OSystem::isAndroid() )
   {
-    Rect dialogRect = OSystem::is( OSystem::android ) ? Rect( 0, 0, 400, 150 ) : Rect();
-    dialog::Dialog* dialog = new dialog::Dialog( _d->game->gui(), dialogRect,
-                                                 "Information", "Is need autofit screen resolution?",
-                                                 dialog::Dialog::btnOkCancel );
-    CONNECT(dialog, onOk(), dialog, dialog::Dialog::deleteLater );
-    CONNECT(dialog, onCancel(), dialog, dialog::Dialog::deleteLater );
-    CONNECT(dialog, onOk(), _d.data(), Impl::fitScreenResolution );
-    SETTINGS_SET_VALUE(screenFitted, true);
+    bool screenFitted = KILLSWITCH( screenFitted ) || KILLSWITCH( fullscreen );
+    if( !screenFitted )
+    {
+      Rect dialogRect = Rect( 0, 0, 400, 150 );
+      dialog::Dialog* dialog = new dialog::Dialog( _d->game->gui(), dialogRect,
+                                                   "Information", "Is need autofit screen resolution?",
+                                                   dialog::Dialog::btnOkCancel );
+      CONNECT(dialog, onOk(), dialog, dialog::Dialog::deleteLater );
+      CONNECT(dialog, onCancel(), dialog, dialog::Dialog::deleteLater );
+      CONNECT(dialog, onOk(), _d.data(), Impl::fitScreenResolution );
+      SETTINGS_SET_VALUE(screenFitted, true);
 
-    dialog->show();
-  }
-#ifndef CAESARIA_PLATFORM_ANDROID
-  _d->playMenuSoundTheme();
-#endif
-
-#ifdef CAESARIA_USE_STEAM
-  steamapi::init();
-
-  std::string steamName = steamapi::userName();
-
-  std::string lastName = SETTINGS_VALUE( playerName ).toString();
-  if( lastName.empty() )
-    SETTINGS_SET_VALUE( playerName, Variant( steamName ) );
-
-  _d->userImage = steamapi::userImage();
-  if( steamName.empty() )
-  {
-    OSystem::error( "Error", "Can't login in Steam" );
-    _d->isStopped = true;
-    _d->result = closeApplication;
-    return;
+      dialog->show();
+    }
   }
 
-  std::string text = utils::format( 0xff, "Build %d\n%s", CAESARIA_BUILD_NUMBER, steamName.c_str() );
-  _d->lbSteamName = new Label( _d->game->gui()->rootWidget(), Rect( 100, 10, 400, 80 ), text );
-  _d->lbSteamName->setTextAlignment( align::upperLeft, align::center );
-  _d->lbSteamName->setWordwrap( true );
-  _d->lbSteamName->setFont( Font::create( FONT_3, DefaultColors::white ) );
-#endif
+  if( !OSystem::isAndroid() )
+    _d->playMenuSoundTheme();
+
+  if( steamapi::available() )
+  {
+    steamapi::init();
+
+    std::string steamName = steamapi::userName();
+
+    std::string lastName = SETTINGS_STR( playerName );
+    if( lastName.empty() )
+      SETTINGS_SET_VALUE( playerName, Variant( steamName ) );
+
+    _d->userImage = steamapi::userImage();
+    if( steamName.empty() )
+    {
+      OSystem::error( "Error", "Can't login in Steam" );
+      _d->isStopped = true;
+      _d->result = closeApplication;
+      return;
+    }
+
+    std::string text = utils::format( 0xff, "Build %d\n%s", CAESARIA_BUILD_NUMBER, steamName.c_str() );
+    _d->lbSteamName = new Label( _d->game->gui()->rootWidget(), Rect( 100, 10, 400, 80 ), text );
+    _d->lbSteamName->setTextAlignment( align::upperLeft, align::center );
+    _d->lbSteamName->setWordwrap( true );
+    _d->lbSteamName->setFont( Font::create( FONT_3, DefaultColors::white ) );
+  }
 }
 
 void StartMenu::afterFrame()
@@ -633,16 +639,17 @@ void StartMenu::afterFrame()
   static unsigned int saveTime = 0;
   events::Dispatcher::instance().update( *_d->game, saveTime++ );
 
-#ifdef CAESARIA_USE_STEAM
-  steamapi::update();
-  if( steamapi::isStatsReceived() )
-    _d->resolveSteamStats();
-#endif
+  if( steamapi::available() )
+  {
+    steamapi::update();
+    if( steamapi::isStatsReceived() )
+      _d->resolveSteamStats();
+  }
 }
 
 int StartMenu::result() const{  return _d->result;}
 bool StartMenu::isStopped() const{  return _d->isStopped;}
 std::string StartMenu::mapName() const{  return _d->fileMap;}
-std::string StartMenu::playerName() const { return SETTINGS_VALUE( playerName ).toString(); }
+std::string StartMenu::playerName() const { return SETTINGS_STR( playerName ); }
 
 }//end namespace scene

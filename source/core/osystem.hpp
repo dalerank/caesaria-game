@@ -33,6 +33,9 @@ public:
   static void markFileAsExecutable( const std::string& filename );
   static bool is( Type type );
   static void restartProcess(const std::string &filename, const std::string& dir, const StringArray& cmds);
+
+  static bool isAndroid();
+  static bool isLinux();
 };
 
 #endif //__CAESARIA_OSYSTEM_INCLUDE_HPP__

@@ -761,6 +761,15 @@ void evaluateAchievement( AchievementType achivId )
   glbUserStats.storeStatsIfNecessary();
 }
 
+bool available()
+{
+  bool result = 0;
+#ifdef CAESARIA_USE_STEAM
+  result = true;
+#endif
+  return result;
+}
+
 }
 
 #endif //CAESARIA_USE_STEAM

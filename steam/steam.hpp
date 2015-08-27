@@ -35,6 +35,8 @@ enum AchievementType
   achv_count
 };
 
+bool available();
+
 bool checkSteamRunning();
 bool connect();
 void close();

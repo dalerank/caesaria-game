@@ -79,6 +79,9 @@ bool Batch::load(const Pictures &pics, const Rects& dstrects)
   }
 
   *this = Engine::instance().loadBatch( pics.at( 0 ), srcrects, dstrects);
+  if( _batch == 0 )
+    haveErrors = true;
+
   return !haveErrors;
 }
 

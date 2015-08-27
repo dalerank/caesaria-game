@@ -77,6 +77,10 @@ static int GL_RenderDrawLines(SDL_Renderer * renderer,
                               const SDL_FPoint * points, int count);
 static int GL_RenderFillRects(SDL_Renderer * renderer,
                               const SDL_FRect * rects, int count);
+static int GL_CreateBatch(SDL_Renderer * renderer, SDL_Batch* batch, SDL_Texture * texture,
+                                 const SDL_Rect * srcrect, const SDL_Rect* dstrect, unsigned int size);
+static int GL_RenderBatch(SDL_Renderer * renderer, SDL_Batch * batch);
+static int GL_DestroyBatch(SDL_Renderer * renderer, SDL_Batch * batch);
 static int GL_RenderCopy(SDL_Renderer * renderer, SDL_Texture * texture,
                          const SDL_Rect * srcrect, const SDL_FRect * dstrect);
 static int GL_RenderCopyEx(SDL_Renderer * renderer, SDL_Texture * texture,
@@ -443,6 +447,8 @@ GL_CreateRenderer(SDL_Window * window, Uint32 flags)
     renderer->RenderFillRects = GL_RenderFillRects;
     renderer->RenderCopy = GL_RenderCopy;
     renderer->RenderCopyEx = GL_RenderCopyEx;
+    //renderer->SetTextureAlphaMod =
+    //renderer->SetTextureBlendMode = GL_SetBlendMode;
     renderer->RenderBatch = GL_RenderBatch;
     renderer->CreateBatch = GL_CreateBatch;
     renderer->DestroyBatch = GL_DestroyBatch;
@@ -1052,10 +1058,10 @@ GL_UpdateClipRect(SDL_Renderer * renderer)
         if (renderer->target) {
             data->glScissor(renderer->viewport.x + rect->x, renderer->viewport.y + rect->y, rect->w, rect->h);
         } else {
-            int w, h;
+           /* int w, h;
 
-            SDL_GetRendererOutputSize(renderer, &w, &h);
-            data->glScissor(renderer->viewport.x + rect->x, (h - renderer->viewport.y - renderer->viewport.h) + rect->y, rect->w, rect->h);
+            SDL_GetRendererOutputSize(renderer, &w, &h);*/
+            data->glScissor(renderer->viewport.x + rect->x, renderer->viewport.h - rect->y - rect->h, rect->w, rect->h);
         }
     } else {
         data->glDisable(GL_SCISSOR_TEST);
@@ -1383,79 +1389,6 @@ GL_DestroyBatch(SDL_Renderer *renderer, SDL_Batch *batch)
 }
 
 static int
-GL_RenderBatch(SDL_Renderer * renderer, SDL_Batch * batch)
-{
-  if( batch == 0 )
-    return -1;
-
-  if( batch->size == 0 || batch->texture == 0 )
-    return -1;
-
-  GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
-  GL_TextureData *texturedata = (GL_TextureData *) batch->texture->driverdata;
-  SDL_Texture* texture = batch->texture;
-
-  if ( texture->native)
-  {
-      texture = texture->native;
-  }
-
-  ////!!!!!!!!!!!!!!!!!!!
-  GL_ActivateRenderer(renderer);
-
-  data->glEnable(texturedata->type);
-  if (texturedata->yuv)
-  {
-      data->glActiveTextureARB(GL_TEXTURE2_ARB);
-      data->glBindTexture(texturedata->type, texturedata->vtexture);
-
-      data->glActiveTextureARB(GL_TEXTURE1_ARB);
-      data->glBindTexture(texturedata->type, texturedata->utexture);
-
-      data->glActiveTextureARB(GL_TEXTURE0_ARB);
-  }
-  data->glBindTexture(texturedata->type, texturedata->texture);
-
-  if (texture->modMode)
-  {
-      GL_SetColor(data, texture->r, texture->g, texture->b, texture->a);
-  }
-  else
-  {
-      GL_SetColor(data, 255, 255, 255, 255);
-  }
-
-  GL_SetBlendMode(data, texture->blendMode);
-
-  if (texturedata->yuv) {
-      GL_SetShader(data, SHADER_YUV);
-  } else if (texturedata->nv12) {
-      if (texture->format == SDL_PIXELFORMAT_NV12) {
-          GL_SetShader(data, SHADER_NV12);
-      } else {
-          GL_SetShader(data, SHADER_NV21);
-      }
-  } else {
-      GL_SetShader(data, SHADER_RGB);
-  }
-
-  data->glEnableClientState(GL_VERTEX_ARRAY);
-  data->glVertexPointer(3, GL_FLOAT, 0, batch->vertices);
-
-  data->glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-  data->glTexCoordPointer(2, GL_FLOAT, 0, batch->coordinates);
-
-  data->glDrawElements(GL_TRIANGLES, 6 * batch->size, GL_UNSIGNED_SHORT, batch->indices);
-
-  data->glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-  data->glDisableClientState(GL_VERTEX_ARRAY);
-
-  data->glDisable(texturedata->type);
-
-  return GL_CheckError("", renderer);
-}
-
-static int
 GL_SetupCopy(SDL_Renderer * renderer, SDL_Texture * texture)
 {
     GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
@@ -1614,6 +1547,48 @@ GL_RenderCopyEx(SDL_Renderer * renderer, SDL_Texture * texture,
 
     return GL_CheckError("", renderer);
 }
+
+static int
+GL_RenderBatch(SDL_Renderer * renderer, SDL_Batch * batch)
+{
+  if( batch == 0 )
+    return -1;
+
+  if( batch->size == 0 || batch->texture == 0 )
+    return -1;
+
+  GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
+  GL_TextureData *texturedata = (GL_TextureData *) batch->texture->driverdata;
+  SDL_Texture* texture = batch->texture;
+
+  if ( texture->native)
+  {
+      texture = texture->native;
+  }
+
+  ////!!!!!!!!!!!!!!!!!!!
+  GL_ActivateRenderer(renderer);
+
+  if (GL_SetupCopy(renderer, texture) < 0) {
+      return -1;
+  }
+
+  data->glEnableClientState(GL_VERTEX_ARRAY);
+  data->glVertexPointer(3, GL_FLOAT, 0, batch->vertices);
+
+  data->glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+  data->glTexCoordPointer(2, GL_FLOAT, 0, batch->coordinates);
+
+  data->glDrawElements(GL_TRIANGLES, 6 * batch->size, GL_UNSIGNED_SHORT, batch->indices);
+
+  data->glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+  data->glDisableClientState(GL_VERTEX_ARRAY);
+
+  data->glDisable(texturedata->type);
+
+  return GL_CheckError("", renderer);
+}
+
 
 static int
 GL_RenderReadPixels(SDL_Renderer * renderer, const SDL_Rect * rect,
