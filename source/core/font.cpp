@@ -249,19 +249,19 @@ Font& Font::operator=( const Font& other )
 
 Font Font::create(FontType type)
 {
-  return FontCollection::instance().getFont_( type );
+  return FontCollection::instance()._getFont( type );
 }
 
 Font Font::create(FontType type, NColor color)
 {
-  Font ret = FontCollection::instance().getFont_( type );
+  Font ret = FontCollection::instance()._getFont( type );
   ret.setColor( color );
   return ret;
 }
 
 Font Font::create(const std::string& type)
 {
-  return FontCollection::instance().getFont_( type );
+  return FontCollection::instance()._getFont( type );
 }
 
 class FontTypeHelper : public EnumsHelper<int>
@@ -286,14 +286,14 @@ FontCollection& FontCollection::instance()
 FontCollection::FontCollection() : _d( new Impl )
 { }
 
-Font& FontCollection::getFont_(const std::string& name)
+Font& FontCollection::_getFont(const std::string& name)
 {
   int type = _d->fhelper.findType( name );
 
-  return getFont_( type );
+  return _getFont( type );
 }
 
-Font& FontCollection::getFont_(const int key)
+Font& FontCollection::_getFont(const int key)
 {
   std::map<int, Font>::iterator it = _d->collection.find(key);
   if (it == _d->collection.end())
