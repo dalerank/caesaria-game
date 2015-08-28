@@ -17,6 +17,9 @@
 
 #include "steam.hpp"
 
+namespace steamapi
+{
+
 #ifdef CAESARIA_USE_STEAM
 
 #include "core/osystem.hpp"
@@ -26,9 +29,6 @@
 #ifdef CAESARIA_PLATFORM_WIN
 #include "helper/helper.h"
 #endif
-
-namespace steamapi
-{
 
 #define _ACH_ID( id ) { id, #id, #id, "", 0, 0 }
 enum MissionName { n2_nvillage=0, nx_count };
@@ -761,16 +761,23 @@ void evaluateAchievement( AchievementType achivId )
   glbUserStats.storeStatsIfNecessary();
 }
 
-bool available()
-{
-  bool result = 0;
-#ifdef CAESARIA_USE_STEAM
-  result = true;
-#endif
-  return result;
-}
+bool available() { return true; }
 
-}
+#else
+
+bool available() { return false; }
+bool checkSteamRunning() { return true; }
+bool connect() { return true; }
+void close() {}
+bool isAchievementReached(steamapi::AchievementType) { return true; }
+gfx::Picture achievementImage(steamapi::AchievementType) { return gfx::Picture(); }
+void init() {}
+std::string userName(){ return ""; }
+void update(){}
+std::string achievementCaption(AchievementType achivId) { return ""; }
+const gfx::Picture&userImage() { return gfx::Picture::getInvalid(); }
+bool isStatsReceived() { return false; }
 
 #endif //CAESARIA_USE_STEAM
 
+}
