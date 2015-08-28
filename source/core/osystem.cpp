@@ -184,7 +184,7 @@ static std::string _prepareUpdateBatchFile( const std::string& executableFp, con
 
   vfs::Path temporaryUpdater = tempFilePrefix + executable.baseName().toString();
 
-  std::string restartBatchFile = OSystem::is( OSystem::windows ) ? "update_updater.cmd" : "update_updater.sh";
+  std::string restartBatchFile = OSystem::isWindows() ? "update_updater.cmd" : "update_updater.sh";
 
   vfs::Path updateBatchFile =  targetdir.getFilePath( restartBatchFile );
 
@@ -332,3 +332,4 @@ void OSystem::restartProcess( const std::string& filename, const std::string& di
 
 bool OSystem::isAndroid() { return is( android ); }
 bool OSystem::isLinux() { return is( linux ); }
+bool OSystem::isWindows() { return is( windows ); }

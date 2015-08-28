@@ -36,6 +36,7 @@ public:
 
   static bool isAndroid();
   static bool isLinux();
+  static bool isWindows();
 };
 
 #endif //__CAESARIA_OSYSTEM_INCLUDE_HPP__

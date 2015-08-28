@@ -111,7 +111,7 @@
 
 /* Enable various audio drivers */
 #define SDL_AUDIO_DRIVER_COREAUDIO  1
-#define SDL_AUDIO_DRIVER_DISK   1
+#define SDL_AUDIO_DRIVER_DISK   0
 #define SDL_AUDIO_DRIVER_DUMMY  1
 
 /* Enable various input drivers */
@@ -167,10 +167,10 @@
 #define SDL_VIDEO_OPENGL    1
 #endif
 #ifndef SDL_VIDEO_OPENGL_CGL
-#define SDL_VIDEO_OPENGL_CGL    1
+#define SDL_VIDEO_OPENGL_CGL   1
 #endif
 #ifndef SDL_VIDEO_OPENGL_GLX
-#define SDL_VIDEO_OPENGL_GLX    1
+#define SDL_VIDEO_OPENGL_GLX    0
 #endif
 
 /* Enable system power support */

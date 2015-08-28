@@ -171,7 +171,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ ambientsounds       ] = std::string( "ambientsounds.model" );
   _d->options[ cntrGroupsModel     ] = std::string( "construction_groups.model" );
   _d->options[ screenshotDir       ] = vfs::Directory::userDir().toString();
-  _d->options[ batchTextures       ] = false;
+  _d->options[ batchTextures       ] = true;
   _d->options[ experimental        ] = false;
   _d->options[ needAcceptBuild     ] = false;
   _d->options[ borderMoving        ] = false;
@@ -294,26 +294,43 @@ void Settings::checkCmdOptions(char* argv[], int argc)
 void Settings::checkC3present()
 {
   std::string c3path = _d->options[ c3gfx ].toString();
-  int useOldGfx = _d->options[ oldgfx ];
-  if( !c3path.empty() || useOldGfx )
+  bool useOldGraphics = !c3path.empty() || KILLSWITCH(oldgfx);
+
+  typedef struct { std::string key; std::string value; } kv;
+  const kv items[] = {
+                       {houseModel, "house"},
+                       {constructionModel, "construction"},
+                       {citiesModel, "cities"},
+                       {climateModel, "climateModel"},
+                       {walkerModel, "walker"},
+                       {animationsModel, "animation"},
+                       {empireObjectsModel, "empire_objects"},
+                       {simpleAnimationModel, "basic_animations"},
+                       {cartsModel, "carts"},
+                       {worldModel, "worldmap"},
+                       {buildMenuModel, "build_menu"},
+                       {soundAlias, "sounds"},
+                       {videoAlias, "videos"},
+                       {pic_offsets, "offsets"},
+                       {"", ""} };
+
+  if( useOldGraphics )
   {
-    _d->options[ houseModel          ] = Variant( std::string( "/house.c3" ) );
-    _d->options[ constructionModel   ] = Variant( std::string( "/construction.c3" ) );
-    _d->options[ citiesModel         ] = Variant( std::string( "/cities.c3" ) );
-    _d->options[ climateModel        ] = Variant( std::string( "/climate.c3" ) );
-    _d->options[ walkerModel         ] = Variant( std::string( "/walker.c3" ) );
-    _d->options[ animationsModel     ] = Variant( std::string( "/animations.c3" ) );
-    _d->options[ empireObjectsModel  ] = Variant( std::string( "/empire_objects.c3" ) );
-    _d->options[ simpleAnimationModel] = Variant( std::string( "/basic_animations.c3" ) );
-    _d->options[ cartsModel          ] = Variant( std::string( "/carts.c3" ) );
-    _d->options[ worldModel          ] = Variant( std::string( "/worldmap.c3" ) );
-    _d->options[ buildMenuModel      ] = Variant( std::string( "/build_menu.c3" ) );
-    _d->options[ soundAlias          ] = Variant( std::string( "/sounds.c3" ) );
-    _d->options[ videoAlias          ] = Variant( std::string( "/videos.c3" ) );
-    _d->options[ pic_offsets         ] = Variant( std::string( "/offsets.c3" ) );
+    for( int index=0; !items[index].key.empty(); index++ )
+      _d->options[ items[index].key ] = items[ index ].value + ".c3";
+
     _d->options[ forbidenTile        ] = Variant( std::string( "org_land" ) );
     _d->options[ titleResource       ] = Variant( std::string( "title" ) );
     _d->options[ cellw ] = 30;
+  }
+  else
+  {
+    for( int index=0; !items[index].key.empty(); index++ )
+      _d->options[ items[index].key ] = items[ index ].value + ".model";
+
+    _d->options[ forbidenTile        ] = Variant( std::string( "c3_land" ) );
+    _d->options[ titleResource       ] = Variant( std::string( "titlerm" ) );
+    _d->options[ cellw ] = 60;
   }
 }
 
