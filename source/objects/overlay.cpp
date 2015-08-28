@@ -124,7 +124,7 @@ Tile& Overlay::tile() const
 {
   if( !_d->masterTile )
   {
-    LOG_OVERLAY.warn( "Master tile can't be null. Problem in tile with type " + type());
+    LOG_OVERLAY.warn( "Master tile can't be null. Problem in tile with type " + object::toString( type() ) );
     static Tile invalid( gfx::tilemap::invalidLocation() );
     return invalid;
   }
@@ -226,7 +226,7 @@ TilePos Overlay::pos() const
 {
   if( !_d->masterTile )
   {
-    LOG_OVERLAY.warn( "Master tile can't be null. Problem in tile with type " + type());
+    LOG_OVERLAY.warn( "Master tile can't be null. Problem in tile with type " + object::toString( type() ) );
     return gfx::tilemap::invalidLocation();
   }
   return _d->masterTile->epos();
@@ -242,7 +242,7 @@ TilesArray Overlay::area() const
 {
   if( _city().isNull() )
   {
-    LOG_OVERLAY.error( "In Overlay::area() city is null. Tile type is " + type() );
+    LOG_OVERLAY.error( "In Overlay::area() city is null. Tile type is " +object::toString( type() ) );
     return gfx::TilesArray();
   }
 

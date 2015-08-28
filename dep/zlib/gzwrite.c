@@ -4,6 +4,8 @@
  */
 
 #include "gzguts.h"
+#include <fcntl.h>
+#include <unistd.h>
 
 /* Local functions */
 local int gz_init OF((gz_statep));
@@ -77,7 +79,7 @@ local int gz_comp(state, flush)
             (flush != Z_FINISH || ret == Z_STREAM_END)))
         {
             have = (unsigned)(strm->next_out - state->next);
-            got = write(state->fd, state->next, have);
+            got = (int)write(state->fd, state->next, have);
             if (have && (got < 0 ||
                          (unsigned)got != have)) {
                 gz_error(state, Z_ERRNO, zstrerror());
