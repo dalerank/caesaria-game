@@ -58,7 +58,11 @@ void OSystem::error(const std::string& title, const std::string& text)
   {
     std::string command = dialogCommand;
     command += " --title \"" + title + "\" --msgbox \"" + text + "\"";
-    ::system(command.c_str());
+    int syserror = ::system(command.c_str());
+    if( syserror )
+    {
+      Logger::warning( "WARNING: Cant execute command " + command );
+    }
   }
 
   // fail-safe method here, using stdio perhaps, depends on your application

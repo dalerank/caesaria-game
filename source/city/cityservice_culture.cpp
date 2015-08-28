@@ -58,7 +58,7 @@ static const Points academies = { {1.0,10}, {0.86,7},  {0.71,4},  {0.51,2}, {0.3
 template<class T, class WhatFind=object::Type>
 struct SubRating
 {
-  Points intervals;
+  const Points& intervals;
   WhatFind whatFind;
   int coverage;
   int value;
