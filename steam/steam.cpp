@@ -21,14 +21,14 @@
 #include "core/logger.hpp"
 #include "public/steam/steam_api.h"
 
+#ifdef CAESARIA_PLATFORM_WIN
+#include "helper/helper.h"
+#endif
+
 namespace steamapi
 {
 
 #ifdef CAESARIA_USE_STEAM
-
-#ifdef CAESARIA_PLATFORM_WIN
-#include "helper/helper.h"
-#endif
 
 #define _ACH_ID( id ) { id, #id, #id, "", 0, 0 }
 enum MissionName { n2_nvillage=0, nx_count };
@@ -779,5 +779,4 @@ const gfx::Picture&userImage() { return gfx::Picture::getInvalid(); }
 bool isStatsReceived() { return false; }
 
 #endif //CAESARIA_USE_STEAM
-
 }

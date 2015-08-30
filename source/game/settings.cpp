@@ -303,7 +303,7 @@ void Settings::checkC3present()
                        {citiesModel, "cities"},
                        {climateModel, "climateModel"},
                        {walkerModel, "walker"},
-                       {animationsModel, "animation"},
+                       {animationsModel, "animations"},
                        {empireObjectsModel, "empire_objects"},
                        {simpleAnimationModel, "basic_animations"},
                        {cartsModel, "carts"},
