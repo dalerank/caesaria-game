@@ -55,9 +55,9 @@ public:
   {
     clear();
 
-    for (auto it : other)
+    foreach( it, other)
     {
-      (*this)[ it.first ] = it.second;
+      (*this)[ it->first ] = it->second;
     }
 
     return *this;

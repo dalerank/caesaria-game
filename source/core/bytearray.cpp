@@ -173,6 +173,7 @@ std::string ByteArray::base64() const
   {
     for(j = i; j < 3; j++)
       char_array_3[j] = '\0';
+    //memset( char_array_3+i, 0, 3-i );
 
     char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
     char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);

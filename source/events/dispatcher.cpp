@@ -84,9 +84,9 @@ VariantMap Dispatcher::save() const
 {
   VariantMap ret;
   int index = 0;
-  for( auto event : _d->events )
+  foreach( event, _d->events )
   {
-    ret[ utils::format( 0xff, "event_%d", index++ ) ] = event->save();
+    ret[ utils::format( 0xff, "event_%d", index++ ) ] = (*event)->save();
   }
 
   return ret;

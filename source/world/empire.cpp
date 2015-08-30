@@ -70,8 +70,8 @@ public:
 
   void update( unsigned int time )
   {
-    for( auto city : *this )
-      city->timeStep( time );
+    foreach( it, *this )
+      (*it)->timeStep( time );
   }
 
   CityPtr find( const std::string& name ) const
@@ -82,8 +82,9 @@ public:
   VariantMap save() const
   {
     VariantMap ret;
-    for( auto city : *this )
+    foreach( it, *this )
     {
+      auto city = *it;
       //not need save city player
       if( city->name() == playerCity )
         continue;

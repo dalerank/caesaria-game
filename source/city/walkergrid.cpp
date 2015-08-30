@@ -91,11 +91,11 @@ bool compare_zvalue(const WalkerPtr& one, const WalkerPtr& two)
 
 void WalkersGrid::sort()
 {
-  for( auto cell : _grid )
+  foreach( cell, _grid )
   {
-    if( cell.size() > 1 )
+    if( (*cell).size() > 1 )
     {
-      std::sort( cell.begin(), cell.end(), compare_zvalue );
+      std::sort( (*cell).begin(), (*cell).end(), compare_zvalue );
     }
   }
 }
