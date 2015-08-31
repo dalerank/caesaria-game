@@ -328,8 +328,9 @@ void PlayerCity::save( VariantMap& stream) const
 
   LOG_CITY.info( "Save overlays information" );
   VariantMap vm_overlays;
-  for (auto overlay : _d->overlays)
+  foreach( it, _d->overlays)
   {
+    OverlayPtr overlay = *it;
     VariantMap vm_overlay;
     object::Type otype = object::unknown;
 
