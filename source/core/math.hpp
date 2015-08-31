@@ -105,13 +105,13 @@ inline T __random(T max, std::false_type, std::true_type)
 }
 
 template<typename T>
-inline T __random(T max, std::true_type, std::false_type)
+inline T __random(T rmax, std::true_type, std::false_type)
 {
   static_assert(std::is_floating_point<T>::value, "Floating point type required.");
-  max = (max == 0) ? std::numeric_limits<T>::max() : max;
+  rmax = (rmax == 0) ? std::numeric_limits<T>::max() : rmax;
   static std::random_device random_device;
   static std::default_random_engine engine(random_device());
-  std::uniform_real_distribution<T> distribution(0, std::nextafter(max, std::numeric_limits<T>::max()));
+  std::uniform_real_distribution<T> distribution(0, std::nextafter(rmax, std::numeric_limits<T>::max()));
   return distribution(engine);
 }
 
@@ -119,7 +119,7 @@ inline T __random(T max, std::true_type, std::false_type)
 template<typename T = int>
 inline T random(T max)
 {
-  return __random(max, typename std::is_floating_point<T>::type(), typename std::is_enum<T>::type());
+  return __random<T>(max, typename std::is_floating_point<T>::type(), typename std::is_enum<T>::type());
 }
 
 /**

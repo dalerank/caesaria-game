@@ -102,23 +102,28 @@ HouseList Statistic::_Houses::ready4evolve( const object::Type checkType ) const
   return ready4evolve( checkTypes );
 }
 
+#ifdef _MSC_VER >= 1300
+#define INIT_SUBSTAT(a) a({*this})
+#else
+#define INIT_SUBSTAT(a) a{*this}
+#endif
 Statistic::Statistic(PlayerCity& c)
-  : walkers{ *this },
-    objects{ *this },
-    tax{ *this },
-    workers{ *this },
-    population{ *this },
-    food{ *this },
-    services{ *this },
-    festival{ *this },
-    crime{ *this },
-    goods{ *this },
-    health{ *this },
-    military{ *this },
-    map{ *this },
-    houses{ *this },
-    entertainment{ *this },
-    balance{ *this },
+    : INIT_SUBSTAT(walkers),
+    INIT_SUBSTAT(objects),
+    INIT_SUBSTAT(tax),
+    INIT_SUBSTAT(workers),
+    INIT_SUBSTAT(population),
+    INIT_SUBSTAT(food),
+    INIT_SUBSTAT(services),
+    INIT_SUBSTAT(festival),
+    INIT_SUBSTAT(crime),
+    INIT_SUBSTAT(goods),
+    INIT_SUBSTAT(health),
+    INIT_SUBSTAT(military),
+    INIT_SUBSTAT(map),
+    INIT_SUBSTAT(houses),
+    INIT_SUBSTAT(entertainment),
+    INIT_SUBSTAT(balance),
     rcity( c )
 {
 

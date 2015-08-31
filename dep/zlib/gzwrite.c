@@ -5,7 +5,7 @@
 
 #include "gzguts.h"
 #include <fcntl.h>
-#include <unistd.h>
+//#include <unistd.h>
 
 /* Local functions */
 local int gz_init OF((gz_statep));

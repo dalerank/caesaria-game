@@ -51,7 +51,7 @@ public:
  */
 class ServiceFactory : public StaticSingleton<ServiceFactory>
 {
-  friend class StaticSingleton;
+  SET_STATICSINGLETON_FRIEND_FOR(ServiceFactory)
 public:
   static SrvcPtr create( PlayerCityPtr city, const std::string& name );
   void addCreator( ServiceCreatorPtr creator );

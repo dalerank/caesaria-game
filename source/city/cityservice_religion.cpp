@@ -52,9 +52,10 @@ struct CoverageInfo
     int small_n;
     int big_n;
   } temples;
+
   int parishionerNumber;
 
-  CoverageInfo() : temples { 0, 0 }, parishionerNumber( 0 ) {}
+  CoverageInfo() : temples({0,0}), parishionerNumber( 0 ) {}
 };
 
 class TemplesCoverity : public std::map< std::string, CoverageInfo >
