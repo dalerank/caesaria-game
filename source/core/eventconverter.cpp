@@ -16,7 +16,7 @@
 #include "eventconverter.hpp"
 #include "time.hpp"
 #include "SDL_version.h"
-#include <SDL_events.h>
+#include "SDL_events.h"
 #include "logger.hpp"
 #include <map>
 #include <cstring>

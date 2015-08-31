@@ -110,7 +110,7 @@ TilePos TilesArray::rightDownCorner() const
   return ret;
 }
 
-TilesArray&TilesArray::operator=(const TilesArray& a)
+TilesArray& TilesArray::operator=(const TilesArray& a)
 {
   clear();
   if( a.size() == 1 )
@@ -120,7 +120,7 @@ TilesArray&TilesArray::operator=(const TilesArray& a)
   return *this;
 }
 
-TilesArray&TilesArray::append(const TilesArray& a)
+TilesArray& TilesArray::append(const TilesArray& a)
 {
   insert( end(), a.begin(), a.end() );
 

@@ -97,7 +97,7 @@ public:
 
     std::vector<int> rands;
     rands.resize(count);
-    math::random_values_of_range(rands, count, 0, this->size()-1);
+    math::random_values_of_range(rands.data(), count, 0, this->size()-1);
 
     SmartList<T> ret;
 

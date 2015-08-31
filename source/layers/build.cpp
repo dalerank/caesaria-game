@@ -308,7 +308,7 @@ void Build::_buildAll()
   }
 
   bool buildOk = false;  
-  city::AreaInfo areaInfo = { _city(), TilePos(), TilesArray() };
+  city::AreaInfo areaInfo( _city(), TilePos(), TilesArray() );
   for( auto tile : d->buildTiles )
   {
     areaInfo.pos = tile->epos();

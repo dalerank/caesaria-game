@@ -102,7 +102,7 @@ HouseList Statistic::_Houses::ready4evolve( const object::Type checkType ) const
   return ready4evolve( checkTypes );
 }
 
-#ifdef _MSC_VER >= 1300
+#if _MSC_VER >= 1300
 #define INIT_SUBSTAT(a) a({*this})
 #else
 #define INIT_SUBSTAT(a) a{*this}

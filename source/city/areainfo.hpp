@@ -20,6 +20,7 @@
 
 #include "predefinitions.hpp"
 #include "gfx/predefinitions.hpp"
+#include "core/position.hpp"
 
 namespace city
 {
@@ -29,6 +30,10 @@ struct AreaInfo
   PlayerCityPtr city;
   TilePos pos;
   const gfx::TilesArray& aroundTiles;
+
+  AreaInfo(PlayerCityPtr rcity,
+      const TilePos& rpos,
+      const gfx::TilesArray& tiles);
 };
 
 }//end namespace city

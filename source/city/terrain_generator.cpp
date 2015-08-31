@@ -879,7 +879,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
   Pathfinder::instance().update( oTilemap );
 
   __createRivers( game );
-  __createRoad( game );
+  __createRoad( game ); 
 }
 
 void Generator::create(Game &game, const Generator::Params &params)
