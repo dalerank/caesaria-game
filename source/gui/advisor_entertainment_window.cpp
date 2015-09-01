@@ -26,7 +26,6 @@
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
 #include "city/statistic.hpp"
-#include "core/foreach.hpp"
 #include "objects/house.hpp"
 #include "festival_planing_window.hpp"
 #include "objects/house_spec.hpp"

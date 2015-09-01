@@ -85,17 +85,17 @@ ContextMenuItem* ContextMenu::addItem( const std::string& path, const std::strin
   }
 
   items.erase( items.begin() );
-  foreach( it, items )
+  for( auto&& item : items )
   {
     if( lastItem->subMenu() == NULL )
     {
-      lastItem = lastItem->addSubMenu()->addItem( *it, -1, true, true );
+      lastItem = lastItem->addSubMenu()->addItem( item, -1, true, true );
     }
     else
     {
-      lastItem = lastItem->subMenu()->findItem( *it );
+      lastItem = lastItem->subMenu()->findItem( item );
       if( !lastItem )
-        lastItem = lastItem->addSubMenu()->addItem( *it, -1, true, true );
+        lastItem = lastItem->addSubMenu()->addItem( item, -1, true, true );
     }
   }
 

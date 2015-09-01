@@ -49,9 +49,9 @@ void RoadPropagator::canBuildRoad(const gfx::Tile* tile, bool& ret)
 
 bool __checkWalkables( const TilesArray& tiles )
 {
-  foreach( it, tiles )
+  for( auto tile : tiles )
   {
-    if( !(*it)->isWalkable( true ) || (*it)->overlay().is<Building>() )
+    if( !tile->isWalkable( true ) || tile->overlay().is<Building>() )
       return false;
   }
 

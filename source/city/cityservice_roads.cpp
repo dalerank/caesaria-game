@@ -89,9 +89,9 @@ void Roads::timeStep( const unsigned int time )
   {
     BuildingList tmp = _city()->statistic().objects.find<Building>( type.first );
 
-    foreach( b, tmp )
+    for( auto b : tmp )
     {
-      positions.push_back( Impl::UpdateInfo( b->object(), type.second ) );
+      positions.push_back( Impl::UpdateInfo( b.object(), type.second ) );
     }
   }
 
@@ -105,7 +105,7 @@ void Roads::timeStep( const unsigned int time )
   }
 
   Propagator propagator( _city() );
-  for( auto upos : positions )
+  for( auto&& upos : positions )
   {
     _d->updateRoadsAround( propagator, upos );
   }
@@ -127,12 +127,12 @@ void Roads::Impl::updateRoadsAround( Propagator& propagator, UpdateInfo info )
   propagator.init( info.first );
   PathwayList pathWayList = propagator.getWays( info.second );
 
-  foreach( current, pathWayList )
+  for( auto&& path : pathWayList )
   {
-    const TilesArray& tiles = (*current)->allTiles();
-    foreach( it, tiles )
+    const TilesArray& tiles = path->allTiles();
+    for( auto tile : tiles )
     {
-      RoadPtr road = (*it)->overlay().as<Road>();
+      RoadPtr road = tile->overlay().as<Road>();
       if( road.isValid() )
       {
         road->appendPaved( defaultIncreasePaved );

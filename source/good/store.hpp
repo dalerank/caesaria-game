@@ -33,6 +33,9 @@ struct ReserveInfo
   DateTime time;
   unsigned int id;
 
+  int qty() const { return stock.qty(); }
+  good::Product type() const { return stock.type(); }
+
   bool operator<(const ReserveInfo& a ) const
   {
     return id < a.id;

@@ -48,7 +48,6 @@
 #include "pathway/astarpathfinding.hpp"
 #include "objects/house_spec.hpp"
 #include "walker/name_generator.hpp"
-#include "core/foreach.hpp"
 #include "religion/pantheon.hpp"
 #include "vfs/archive_sg2.hpp"
 #include "vfs/archive_zip.hpp"
@@ -425,9 +424,9 @@ bool Game::load(std::string filename)
 
   Logger::warning( "Game: calculate road access for buildings" );
   const OverlayList& llo = _d->city->overlays();
-  foreach( overlay, llo )
+  for( auto overlay : llo )
   {
-    ConstructionPtr construction = overlay->as<Construction>();
+    ConstructionPtr construction = overlay.as<Construction>();
     if( construction.isValid() )
     {
       construction->computeRoadside();

@@ -16,7 +16,6 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "cityservice_factory.hpp"
-#include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "city/city.hpp"
 #include "cityservice_timers.hpp"

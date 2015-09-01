@@ -553,9 +553,8 @@ static void __createRivers(Game& game )
     for( int range=0; range < 99; range++ )
     {
       TilesArray perimeter = oTilemap.getRectangle( range, centertile->pos() );
-      foreach( it, perimeter )
+      for( auto currentTile : perimeter )
       {
-        Tile* currentTile = *it;
         if( currentTile->getFlag( Tile::tlWater ) )
         {
           way = pathfinder.getPath( *centertile, *currentTile, Pathfinder::customCondition | Pathfinder::fourDirection );
@@ -574,18 +573,18 @@ static void __createRivers(Game& game )
     {
       TilesArray wayTiles = way.allTiles();
 
-      foreach( it, wayTiles )
+      for( auto tile : wayTiles )
       {
         OverlayPtr overlay = TileOverlayFactory::instance().create( object::river );
 
         //Picture pic = Picture::load( ResourceGroup::land1a, 62 + math::random( 57 ) );
-        (*it)->setPicture( Picture::getInvalid() );
+        tile->setPicture( Picture::getInvalid() );
         //(*it)->setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
-        (*it)->setOriginalImgId( 0 );
+        tile->setOriginalImgId( 0 );
 
-        bool isWater = (*it)->getFlag( Tile::tlWater );
+        bool isWater = tile->getFlag( Tile::tlWater );
 
-        city::AreaInfo info = { oCity, (*it)->pos(), TilesArray() };
+        city::AreaInfo info = { oCity, tile->pos(), TilesArray() };
         overlay->build( info );
         oCity->addOverlay( overlay );
 
@@ -644,12 +643,12 @@ static void __createRoad(Game& game )
         break;
 
       TilesArray around = oTilemap.getArea( 3, borderInfo.roadEntry );
-      foreach( it, around )
-        sterrain.remove( (*it)->pos() );
+      for( auto tile : around )
+        sterrain.remove( tile->pos() );
 
       around = oTilemap.getArea( 3, borderInfo.roadExit );
-      foreach( it, around )
-        eterrain.remove( (*it)->pos() );
+      for( auto tile : around )
+        eterrain.remove( tile->pos() );
     }
   }
 
@@ -657,15 +656,15 @@ static void __createRoad(Game& game )
   {
     TilesArray wayTiles = way.allTiles();
 
-    foreach( it, wayTiles )
+    for( auto tile : wayTiles )
     {
       OverlayPtr overlay = TileOverlayFactory::instance().create( object::road );
 
       Picture pic( ResourceGroup::land1a, PicID::grassPic + math::random( PicID::grassPicsNumber-1 ) );
-      (*it)->setPicture( pic );
-      (*it)->setOriginalImgId( imgid::fromResource( pic.name() ) );
+      tile->setPicture( pic );
+      tile->setOriginalImgId( imgid::fromResource( pic.name() ) );
 
-      city::AreaInfo info = { oCity, (*it)->pos(), TilesArray() };
+      city::AreaInfo info = { oCity, tile->pos(), TilesArray() };
       overlay->build( info );
       oCity->addOverlay( overlay );
     }
@@ -702,7 +701,7 @@ void __createMeadows( Game& game )
     TilesArray meadows = oTilemap.getArea( math::random( fieldSize-1 ), tile->pos() );
     meadows = meadows.terrains();
 
-    foreach( it, meadows ) (*it)->setFlag( Tile::tlMeadow, true );
+    for( auto tile : meadows ) tile->setFlag( Tile::tlMeadow, true );
   }
 }
 

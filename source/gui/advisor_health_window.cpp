@@ -26,7 +26,6 @@
 #include "core/gettext.hpp"
 #include "objects/construction.hpp"
 #include "city/statistic.hpp"
-#include "core/foreach.hpp"
 #include "objects/house.hpp"
 #include "texturedbutton.hpp"
 #include "objects/constants.hpp"

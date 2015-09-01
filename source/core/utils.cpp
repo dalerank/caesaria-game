@@ -425,7 +425,7 @@ std::string trim(const std::string &str, const std::string &tr)
 VariantList toVList(const StringArray &items)
 {
   VariantList ret;
-  foreach( it, items ) ret << *it;
+  for( auto&& str : items ) ret << str;
   return ret;
 }
 

@@ -51,9 +51,9 @@ int Store::getMaxRetrieve(const good::Product goodType)
   int rqty = qty(goodType);
 
   // remove all retrieval reservations
-  foreach( i, _d->retrieveReservations)
+  for( auto&& reserve : _d->retrieveReservations)
   {
-    rqty -= i->stock.qty();
+    rqty -= reserve.qty();
   }
 
   return rqty;
@@ -187,11 +187,11 @@ void Store::retrieve(good::Stock &stock, int amount)
 
 void Store::storeAll( Store& goodStore)
 {
-  foreach( goodType, good::all() )
+  for( auto goodType : good::all() )
   {
     // for all types of good (except G_NONE)
-    good::Stock stock( *goodType, 9999, 0 );
-    goodStore.retrieve( stock, goodStore.qty( *goodType ) );
+    good::Stock stock( goodType, 9999, 0 );
+    goodStore.retrieve( stock, goodStore.qty( goodType ) );
     if( !stock.empty() )
     {
       store(stock, stock.qty());
@@ -208,10 +208,9 @@ VariantMap Store::save() const
   VARIANT_SAVE_CLASS_D( stream, _d, retrieveReservations )
 
   VariantList vm_orders;
-  foreach( i, good::all() )
-  {
-    vm_orders.push_back( (int)getOrder( *i ) );
-  }
+  for( auto goodType : good::all() )
+    vm_orders.push_back( (int)getOrder( goodType ) );
+
   stream[ "orders" ] = vm_orders;
 
   return stream;
@@ -231,9 +230,9 @@ void Store::load( const VariantMap& stream )
 
   VariantList vm_orders = stream.get( "orders" ).toList();
   int index = 0;
-  foreach( var, vm_orders )
+  for( auto&& var : vm_orders )
   {
-    setOrder( (good::Product)index, (Orders::Order)var->toInt() );
+    setOrder( (good::Product)index, (Orders::Order)var.toInt() );
     index++;
   }
 }
@@ -246,11 +245,11 @@ Store::~Store() {}
 ProductMap Store::details() const
 {
   ProductMap ret;
-  foreach( goodType, good::all() )
+  for( auto goodType : good::all() )
   {
-    int q = qty( *goodType );
+    int q = qty( goodType );
     if( q > 0 )
-      ret[ *goodType ] = q;
+      ret[ goodType ] = q;
   }
 
   return ret;
@@ -259,11 +258,11 @@ ProductMap Store::details() const
 ProductMap Store::amounts() const
 {
   ProductMap ret;
-  foreach( goodType, good::all() )
+  for( auto goodType : good::all() )
   {
-    int cap = capacity( *goodType );
+    int cap = capacity( goodType );
     if( cap > 0 )
-      ret[ *goodType ] = cap;
+      ret[ goodType ] = cap;
   }
 
   return ret;
@@ -288,10 +287,10 @@ Reservations::Reservations(){  _idCounter = 1; }
 
 const ReserveInfo& Reservations::get(unsigned int id) const
 {
-  foreach( i, *this )
+  for( auto&& info : *this )
   {
-    if( i->id == id )
-      return *i;
+    if( info.id == id )
+      return info;
   }
 
   return Reservations::invalid;

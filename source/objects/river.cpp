@@ -42,10 +42,8 @@ bool River::build( const city::AreaInfo& info )
   setPicture( computePicture() );
 
   RiverList rifts = neighbors();
-  foreach( it, rifts )
-  {
-    (*it)->updatePicture();
-  } 
+  for( auto tile : rifts )
+    tile->updatePicture();
 
   return true;
 }
@@ -58,20 +56,8 @@ void River::initTerrain(Tile& terrain)
 
 RiverList River::neighbors() const
 {
-  RiverList ret;
-
   TilesArray tiles = _city()->tilemap().getNeighbors(pos(), Tilemap::FourNeighbors);
-
-  foreach( it, tiles )
-  {
-    RiverPtr rt = ptr_cast<River>( (*it)->overlay() );
-    if( rt.isValid() )
-    {
-      ret.push_back( rt );
-    }
-  }
-
-  return ret;
+  return tiles.overlays().select<River>();
 }
 
 Picture River::computePicture()
@@ -82,9 +68,9 @@ Picture River::computePicture()
   RiverList neigs = neighbors();
 
   directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
-  foreach( it, neigs )
+  for( auto riverTile : neigs )
   {
-    Tile* tile = &(*it)->tile();
+    Tile* tile = &riverTile->tile();
     if (tile->j() > j)      { directionFlags += 1; } // road to the north
     else if (tile->j() < j) { directionFlags += 4; } // road to the south
     else if (tile->i() > i) { directionFlags += 2; } // road to the east
@@ -113,12 +99,12 @@ Picture River::computePicture()
     case 2: index = 165; break; // East
     case 3: index = 1188;  break; // North+East
     case 4: index = 166; break; // South
-    case 5: index = 162 + math::random( 2 ); break;  // North+South
+    case 5: index = 162 + math::random( 1 ); break;  // North+South
     case 6: index = 1198;  break; // East+South
     case 7: index = 188; break; // North+East+South
     case 8: index = 167; break; // West
     case 9: index = 198; break; // North+West
-    case 0xa: index = 160 + math::random( 2 ); break;  // East+West
+    case 0xa: index = 160 + math::random( 1 ); break;  // East+West
     case 0xb: index = 185; break; // North+East+West
     case 0xc: index = 1194; break;  // South+West
     case 0xd: index = 194; break; // North+South+West

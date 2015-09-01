@@ -21,7 +21,6 @@
 #include "objects/constants.hpp"
 #include "game/funds.hpp"
 #include "core/variant_list.hpp"
-#include "core/foreach.hpp"
 #include "objects/house.hpp"
 #include "walker/rioter.hpp"
 #include "core/variant_map.hpp"

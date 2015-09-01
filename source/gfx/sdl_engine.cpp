@@ -37,7 +37,6 @@
 #include "core/utils.hpp"
 #include "core/font.hpp"
 #include "core/eventconverter.hpp"
-#include "core/foreach.hpp"
 #include "gfx/decorator.hpp"
 #include "game/settings.hpp"
 #include "core/timer.hpp"
@@ -477,9 +476,9 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
 
   if( getFlag( Engine::batching ) )
   {
-    foreach( it, pictures )
+    for( auto&& pic : pictures )
     {
-      bool batched = _d->batcher.append( *it, pos, clipRect );
+      bool batched = _d->batcher.append( pic, pos, clipRect );
       if( !batched )
         _d->renderState();
     }
@@ -496,9 +495,8 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
     }
 
     const Impl::MaskInfo& mask = _d->mask;
-    foreach( it, pictures )
+    for( const Picture& picture : pictures )
     {
-      const Picture& picture = *it;
       SDL_Texture* ptx = picture.texture();
       const Rect& orect = picture.originRect();
       Size size = orect.size();

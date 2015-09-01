@@ -24,7 +24,6 @@
 #include "dialogbox.hpp"
 #include "core/gettext.hpp"
 #include "environment.hpp"
-#include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "gameautopause.hpp"
 #include "widget_helper.hpp"

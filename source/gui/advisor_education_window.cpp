@@ -28,7 +28,6 @@
 #include "objects/house.hpp"
 #include "dictionary.hpp"
 #include "texturedbutton.hpp"
-#include "core/foreach.hpp"
 #include "objects/house_spec.hpp"
 #include "objects/constants.hpp"
 #include "objects/service.hpp"

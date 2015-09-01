@@ -198,9 +198,9 @@ static std::string _prepareUpdateBatchFile( const std::string& executableFp, con
   // Append the current set of command line arguments to the new instance
   std::string arguments;
 
-  foreach( i, cmds )
+  for( auto&& optionItem : cmds )
   {
-    arguments += " " + *i;
+    arguments += " " + optionItem;
   }
 
 #ifdef CAESARIA_PLATFORM_WIN

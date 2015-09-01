@@ -29,7 +29,6 @@
 #include "gfx/helper.hpp"
 #include "resourcegroup.hpp"
 #include "gfx/animation_bank.hpp"
-#include "core/foreach.hpp"
 #include "game.hpp"
 #include "objects/objects_factory.hpp"
 #include "city/city.hpp"

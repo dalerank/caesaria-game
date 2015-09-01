@@ -21,7 +21,6 @@
 #include "city/trade_options.hpp"
 #include "objects/house.hpp"
 #include "objects/constants.hpp"
-#include "core/foreach.hpp"
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
@@ -212,8 +211,8 @@ Signal1<Issue::Type>& Treasury::onNewIssue(){ return _d->signal.onNewIssue; }
 VariantList IssuesHistory::save() const
 {
   VariantList ret;
-  foreach( stepIt, *this )
-    ret.push_back( stepIt->save() );
+  for( auto&& step : *this )
+    ret.push_back( step.save() );
 
   return ret;
 }

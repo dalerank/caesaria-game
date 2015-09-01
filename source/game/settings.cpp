@@ -21,7 +21,6 @@
 #include "vfs/directory.hpp"
 #include "core/variant_map.hpp"
 #include "core/utils.hpp"
-#include "core/foreach.hpp"
 #include "core/metric.hpp"
 
 namespace game
@@ -369,7 +368,7 @@ void Settings::load()
 {
   VariantMap settings = config::load( rcpath( Settings::settingsPath ) );
 
-  foreach( v, settings ) { set( v->first, v->second ); }
+  for( auto&& v : settings ) { set( v.first, v.second ); }
 }
 
 void Settings::save()

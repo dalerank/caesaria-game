@@ -29,7 +29,6 @@
 #include "core/utils.hpp"
 #include "objects/metadata.hpp"
 #include "city/build_options.hpp"
-#include "core/foreach.hpp"
 #include "objects/constants.hpp"
 #include "events/playsound.hpp"
 #include "core/logger.hpp"

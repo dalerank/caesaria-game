@@ -21,7 +21,6 @@
 #include "objects/house.hpp"
 #include "gfx/tilemap.hpp"
 #include "gfx/tile.hpp"
-#include "core/foreach.hpp"
 
 using namespace gfx;
 
@@ -47,11 +46,11 @@ void RemoveCitizens::_exec(Game& game, unsigned int time)
   {
     HouseList hList = tilemap.getRectangle( curRange, _center ).overlays().select<House>();
 
-    foreach( itHouse, hList )
+    for( auto house : hList )
     {
-      if( (*itHouse).isValid() )
+      if( house.isValid() )
       {
-        (*itHouse)->removeHabitants( _group );
+        house->removeHabitants( _group );
         if( _group.empty() )
           break;
       }

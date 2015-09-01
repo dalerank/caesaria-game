@@ -37,9 +37,9 @@ class TileRow : public TilesArray
 public:
   ~TileRow()
   {
-    foreach( it, *this )
+    for( auto&& tile : *this )
     {
-      delete *it;
+      delete tile;
     }
   }
 };
@@ -318,9 +318,8 @@ void Tilemap::save( VariantMap& stream ) const
   std::vector<short> idInfo;
 
   const TilesArray& tiles = allTiles();
-  foreach( it, tiles )
+  for( auto tile : tiles )
   {
-    Tile* tile = *it;    
     bitsetInfo.push_back( tile::encode( *tile ) );
     desInfo.push_back( tile->param( Tile::pDesirability ) );
     idInfo.push_back( tile->originalImgId() );
@@ -370,10 +369,8 @@ void Tilemap::load( const VariantMap& stream )
 
   TilesArray tiles = allTiles();
   int index = 0;
-  foreach( it, tiles )
+  for( auto tile : tiles )
   {
-    Tile* tile = *it;
-
     tile::decode( *tile, bitsetAr[index] );
     tile->setParam( Tile::pDesirability, desAr[index] );
 
@@ -437,9 +434,9 @@ void Tilemap::turnRight()
     }
   }  
 
-  foreach( it, masterTiles )
+  for( auto&& it : masterTiles )
   {    
-    const Impl::TurnInfo& ti = it->second;
+    const Impl::TurnInfo& ti = it.second;
 
     int pSize=0;
     if( ti.overlay.isValid() )
@@ -502,9 +499,9 @@ void Tilemap::turnLeft()
     }
   }
 
-  foreach( it, masterTiles )
+  for( auto&& it : masterTiles )
   {
-    const Impl::TurnInfo& ti = it->second;
+    const Impl::TurnInfo& ti = it.second;
 
     Picture pic = ti.overlay.isValid() ? ti.overlay->picture() : ti.pic;
     int pSize = (pic.width() + 2) / _d->virtWidth;

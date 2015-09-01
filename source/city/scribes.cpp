@@ -137,7 +137,7 @@ VariantMap Scribes::Messages::save() const
   int step=0;
   std::string stepName;
   stepName.reserve( 256 );
-  for( auto i : *this )
+  for( auto&& i : *this )
   {
     stepName = utils::format( 0xff, "%04d", step++ );
     ret[ stepName ] = i.save();

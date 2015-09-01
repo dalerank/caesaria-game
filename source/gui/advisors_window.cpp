@@ -40,7 +40,6 @@
 #include "advisor_religion_window.hpp"
 #include "advisor_finance_window.hpp"
 #include "advisor_chief_window.hpp"
-#include "core/foreach.hpp"
 #include "game/funds.hpp"
 #include "events/event.hpp"
 #include "city/requestdispatcher.hpp"
@@ -130,9 +129,9 @@ void Parlor::showAdvisor(const Advisor type )
     return;
 
   Widget::Widgets rchildren = children();
-  foreach( child, rchildren )
+  for( auto child : rchildren )
   {
-    PushButton* btn = safety_cast< PushButton* >( *child );
+    PushButton* btn = safety_cast< PushButton* >( child );
     if( btn )
     {
       btn->setPressed( btn->ID() == type );
