@@ -328,7 +328,7 @@ void Settings::checkC3present()
     for( int index=0; !items[index].key.empty(); index++ )
       _d->options[ items[index].key ] = items[ index ].value + ".model";
 
-    _d->options[ forbidenTile        ] = Variant( std::string( "c3_land" ) );
+    _d->options[ forbidenTile        ] = Variant( std::string( "oc3_land" ) );
     _d->options[ titleResource       ] = Variant( std::string( "titlerm" ) );
     _d->options[ cellw ] = 60;
   }

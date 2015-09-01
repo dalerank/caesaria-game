@@ -442,12 +442,26 @@ void Build::_drawBuildTile( Engine& engine, Tile* tile, const Point& offset )
 
   areaInfo.pos = postTile->epos();
   bool maskSet = false;
+  Size size(1,1);
 
   if( construction.isValid() && construction->canBuild( areaInfo ) )
   {
     engine.setColorMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
     maskSet = true;
+
+    size = construction->size();
   }
+
+  if( postTile == tile && maskSet )
+  {
+    TilesArray area = _city()->tilemap().getArea( areaInfo.pos, size );
+    for( auto gtile : area )
+    {
+      drawPass( engine, *gtile, offset, Renderer::ground );
+      drawPass( engine, *gtile, offset, Renderer::groundAnimation );
+    }
+  }
+
   drawPass( engine, *postTile, offset, Renderer::ground );
   drawPass( engine, *postTile, offset, Renderer::groundAnimation );
 
@@ -577,7 +591,6 @@ void Build::beforeRender(Engine& engine)
 void Build::drawPass(Engine& engine, Tile& tile, const Point& offset, Renderer::Pass pass)
 {
   __D_IMPL(_d,Build);
-  _d->overdrawBuilding = DrawOptions::instance().isFlag( DrawOptions::overdrawOnBuild );
   if( _d->lastLayer.isValid() )
     _d->lastLayer->drawPass( engine, tile, offset, pass );
   else

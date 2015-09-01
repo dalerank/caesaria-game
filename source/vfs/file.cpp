@@ -153,6 +153,11 @@ void NFile::flush()
   }
 }
 
+size_t NFile::lastModify() const
+{
+  return _entity.isValid() ? _entity->lastModify() : 0;
+}
+
 NFile& NFile::operator=( const NFile& other )
 {
   _entity = other._entity;

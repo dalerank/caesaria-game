@@ -64,6 +64,8 @@ public:
 
   void flush();
 
+  virtual size_t lastModify() const;
+
   NFile& operator=(const NFile& other );
 
   static unsigned long size( vfs::Path filename );

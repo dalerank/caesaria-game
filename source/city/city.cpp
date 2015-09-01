@@ -486,7 +486,7 @@ void PlayerCity::load( const VariantMap& stream )
 
 void PlayerCity::addOverlay( OverlayPtr overlay ) { _d->overlays.postpone( overlay ); }
 
-PlayerCity::~PlayerCity() {}
+PlayerCity::~PlayerCity(){}
 
 void PlayerCity::addWalker( WalkerPtr walker )
 {
@@ -566,13 +566,12 @@ int PlayerCity::getOption(PlayerCity::OptionType opt) const
 
 void PlayerCity::clean()
 {
-  for (auto it : _d->services)
-  {
-    it->destroy();
-  }
+  for (auto srvc : _d->services)
+    srvc->destroy();
 
   _d->services.clear();
   _d->walkers.clear();
+  city::Timers::instance().reset();
   _d->overlays.clear();
   _d->tilemap.resize( 0 );
 }
