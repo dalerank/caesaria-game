@@ -44,7 +44,7 @@ public:
 
 class ObjectsFactory : public StaticSingleton<ObjectsFactory>
 {
-  friend class StaticSingleton;
+  SET_STATICSINGLETON_FRIEND_FOR(ObjectsFactory)
 public:
   bool canCreate( const std::string& type ) const;
 

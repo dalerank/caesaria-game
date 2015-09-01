@@ -369,11 +369,13 @@ localexit:
     /* *INDENT-ON* */
 }
 
+#ifndef _MSC_VER >= 1300
 void
 _ftol2_sse()
 {
     _ftol();
 }
+#endif
 
 /* 64-bit math operators for 32-bit systems */
 void

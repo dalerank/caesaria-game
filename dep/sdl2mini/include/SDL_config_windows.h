@@ -161,9 +161,9 @@ typedef unsigned int uintptr_t;
 #define SDL_AUDIO_DRIVER_DUMMY  1
 
 /* Enable various input drivers */
-#define SDL_JOYSTICK_DINPUT 1
+#define SDL_JOYSTICK_DINPUT 0
 #define SDL_JOYSTICK_XINPUT 1
-#define SDL_HAPTIC_DINPUT   1
+#define SDL_HAPTIC_DINPUT   0
 #define SDL_HAPTIC_XINPUT   1
 
 /* Enable various shared object loading systems */
