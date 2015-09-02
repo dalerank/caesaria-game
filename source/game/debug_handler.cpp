@@ -189,8 +189,13 @@ public:
   void setFactoryReady(object::Type type);
   void updateSentiment( int delta );
   void addGoods2Wh( good::Product type );
+  void reloadConfigs();
   void runScript(std::string filename);
   gui::ContextMenu* debugMenu;
+
+#ifdef DEBUG
+  FileChangeObserver configUpdater;
+#endif
 
   struct {
     Signal2<scene::Level*, bool> failedMission;
@@ -309,6 +314,11 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( draw, toggle_show_locked_tiles )
   ADD_DEBUG_EVENT( draw, toggle_show_flat_tiles )
 #undef ADD_DEBUG_EVENT
+
+#ifdef DEBUG
+  _d->configUpdater.setFilename( ":/construction.model" );
+  CONNECT( &_d->configUpdater, onChange, _d.data(), Impl::reloadConfigs );
+#endif
 }
 
 void DebugHandler::setVisible(bool visible)
@@ -338,6 +348,13 @@ void DebugHandler::Impl::addGoods2Wh(good::Product type)
     good::Stock stock(type, 400, 400 );
     warehouse->store().store( stock, 400 );
   }
+}
+
+void DebugHandler::Impl::reloadConfigs()
+{
+  OverlayList ovs = game->city()->overlays();
+  for( auto overlay : ovs )
+    overlay->reinit();
 }
 
 void DebugHandler::Impl::runScript(std::string filename)
@@ -428,13 +445,7 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
 
-  case reload_buildings_config:
-  {
-    OverlayList ovs = game->city()->overlays();
-    for( auto overlay : ovs )
-      overlay->reinit();
-  }
-  break;
+  case reload_buildings_config: reloadConfigs(); break;
 
   case forest_fire:
   {
@@ -737,4 +748,34 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
   }
+}
+
+FileChangeObserver::~FileChangeObserver()
+{
+  Timer::destroy( Hash(filename) );
+}
+
+void FileChangeObserver::check()
+{
+  if( !file.isOpen() && !filename.empty() )
+  {
+    file = vfs::NFile::open( filename );
+    lastModify = file.lastModify();
+  }
+
+  unsigned int modifyTime = file.lastModify();
+  if( lastModify != modifyTime )
+  {
+    lastModify = modifyTime;
+    emit onChange();
+  }
+}
+
+void FileChangeObserver::setFilename(const std::string& fname)
+{
+  Timer::destroy( Hash(filename) );
+
+  filename = fname;
+  TimerPtr timer = Timer::create( 25, true, Hash(fname) );
+  CONNECT( timer, onTimeout(), this, FileChangeObserver::check )
 }

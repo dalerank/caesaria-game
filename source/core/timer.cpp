@@ -64,6 +64,13 @@ TimerPtr Timer::create( unsigned int time, bool loop, int id/*=-1 */ )
   return ret;
 }
 
+void Timer::destroy(int id)
+{
+  TimerPtr timer = city::Timers::instance().find( id );
+  if( timer.isValid() )
+    timer->destroy();
+}
+
 void Timer::update( unsigned int time )
 {
   if( !_d->time.start )
@@ -88,6 +95,7 @@ void Timer::update( unsigned int time )
 
 void Timer::setInterval( unsigned int time ) {  _d->time.interval = time;}
 void Timer::setLoop( bool loop ) {  _d->loop = loop;}
+int Timer::id() const { return _d->id; }
 Signal1<int>& Timer::onTimeoutA(){  return _d->signal.onTimeoutA;}
 Signal0<>& Timer::onTimeout(){  return _d->signal.onTimeout;}
 bool Timer::isActive() const{  return _d->isActive;}

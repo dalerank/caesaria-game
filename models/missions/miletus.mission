@@ -593,6 +593,7 @@
       plaza : true
       clay_pit : true
       iron_mine : true
+      roadBlock : true
       pottery : true
       weapons_workshop : true
       oil_workshop : true

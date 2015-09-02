@@ -107,7 +107,7 @@ void Aqueduct::destroy()
     RoadPtr r( new Road() );
     r->drop();
 
-    city::AreaInfo info( _city(), pos(), TilesArray() );
+    city::AreaInfo info( _city(), pos() );
     r->build( info );
     _city()->addOverlay( ptr_cast<Overlay>( r ) );
   }
@@ -390,7 +390,7 @@ bool Aqueduct::_isRoadOnTile( const city::AreaInfo& info ) const
 
 void Aqueduct::updatePicture(PlayerCityPtr city)
 {
-  city::AreaInfo info( city, _masterTile() ? _masterTile()->pos() : TilePos(), TilesArray() );
+  city::AreaInfo info( city, _masterTile() ? _masterTile()->pos() : TilePos() );
   setPicture( picture( info ) );
 }
 

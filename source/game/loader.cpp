@@ -101,7 +101,7 @@ void Loader::Impl::initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city )
   {
     tile::clear( signTile );
     OverlayPtr waymark = TileOverlayFactory::instance().create( object::waymark );
-    city::AreaInfo info( city, tlPos + tlOffset, TilesArray() );
+    city::AreaInfo info( city, tlPos + tlOffset );
     waymark->build( info );
     city->addOverlay( waymark );
   }

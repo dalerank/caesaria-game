@@ -134,7 +134,7 @@ void Build::_checkPreviewBuild(TilePos pos)
     }
   }
 
-  city::AreaInfo areaInfo = { _city(), pos, d->buildTiles };
+  city::AreaInfo areaInfo( _city(), pos, d->buildTiles );
   if( !walkersOnTile && overlay->canBuild( areaInfo ) )
   {
     //bldCommand->setCanBuild(true);
@@ -308,7 +308,7 @@ void Build::_buildAll()
   }
 
   bool buildOk = false;  
-  city::AreaInfo areaInfo( _city(), TilePos(), TilesArray() );
+  city::AreaInfo areaInfo( _city(), TilePos() );
   for( auto tile : d->buildTiles )
   {
     areaInfo.pos = tile->epos();
@@ -331,6 +331,8 @@ void Build::_buildAll()
                                                    : errorStr, WarningMessage::neitral );
     event->dispatch();
   }
+
+  d->needUpdateTiles = true;
 }
 
 void Build::_exitBuildMode()
@@ -429,7 +431,7 @@ void Build::_drawBuildTile( Engine& engine, Tile* tile, const Point& offset )
     return;
 
   __D_IMPL(_d,Build);
-  city::AreaInfo areaInfo = { _city(), TilePos(), _d->buildTiles };
+  city::AreaInfo areaInfo = { _city(), TilePos(), &_d->buildTiles };
 
   Tile* postTile = tile;
   postTile->resetWasDrawn();
@@ -442,12 +444,26 @@ void Build::_drawBuildTile( Engine& engine, Tile* tile, const Point& offset )
 
   areaInfo.pos = postTile->epos();
   bool maskSet = false;
+  Size size(1,1);
 
   if( construction.isValid() && construction->canBuild( areaInfo ) )
   {
     engine.setColorMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
     maskSet = true;
+
+    size = construction->size();
   }
+
+  if( postTile == tile && maskSet )
+  {
+    TilesArray area = _city()->tilemap().getArea( areaInfo.pos, size );
+    for( auto gtile : area )
+    {
+      drawPass( engine, *gtile, offset, Renderer::ground );
+      drawPass( engine, *gtile, offset, Renderer::groundAnimation );
+    }
+  }
+
   drawPass( engine, *postTile, offset, Renderer::ground );
   drawPass( engine, *postTile, offset, Renderer::groundAnimation );
 
@@ -486,7 +502,7 @@ void Build::drawTile( Engine& engine, Tile& tile, const Point& offset )
   Point screenPos = tile.mappos() + offset;
 
   ConstructionPtr cntr = tile.overlay().as<Construction>();
-  city::AreaInfo info = { _city(), tile.epos(), _d->buildTiles };
+  city::AreaInfo info( _city(), tile.epos(), &_d->buildTiles );
 
   const Picture* picBasic = 0;
   const Picture* picOver = 0;
@@ -577,7 +593,6 @@ void Build::beforeRender(Engine& engine)
 void Build::drawPass(Engine& engine, Tile& tile, const Point& offset, Renderer::Pass pass)
 {
   __D_IMPL(_d,Build);
-  _d->overdrawBuilding = DrawOptions::instance().isFlag( DrawOptions::overdrawOnBuild );
   if( _d->lastLayer.isValid() )
     _d->lastLayer->drawPass( engine, tile, offset, pass );
   else

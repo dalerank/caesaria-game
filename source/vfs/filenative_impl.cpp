@@ -25,6 +25,7 @@
     #define getline_def getline_fp
   #else
     #define getline_def getline
+    #include <sys/stat.h>
   #endif
 #endif
 
@@ -232,6 +233,17 @@ int FileNative::write( const ByteArray& bArray )
 }
 
 bool FileNative::isOpen() const { return _file != 0;}
+
+size_t FileNative::lastModify() const
+{
+#ifdef CAESARIA_PLATFORM_LINUX
+  struct stat attr;
+  stat(_name.toString().c_str(), &attr);
+  return attr.st_mtime;
+#else
+
+#endif
+}
 
 void FileNative::flush()
 {

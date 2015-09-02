@@ -21,10 +21,17 @@
 namespace city
 {
 
+static const gfx::TilesArray clearTiles;
+
+const gfx::TilesArray& AreaInfo::tiles() const
+{
+  return (_tiles != 0 ? *_tiles : clearTiles);
+}
+
 AreaInfo::AreaInfo(PlayerCityPtr rcity,
-      const TilePos& rpos,
-      const gfx::TilesArray& tiles) 
-      : city(rcity), pos(rpos), aroundTiles( tiles )
+                   const TilePos& rpos,
+                   gfx::TilesArray* tiles)
+      : city(rcity), pos(rpos), _tiles( tiles )
   {}
 
 }//end namespace city

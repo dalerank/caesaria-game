@@ -25,15 +25,20 @@
 namespace city
 {
 
-struct AreaInfo
+class AreaInfo
 {
+public:
   PlayerCityPtr city;
   TilePos pos;
-  const gfx::TilesArray& aroundTiles;
+
+  const gfx::TilesArray& tiles() const;
 
   AreaInfo(PlayerCityPtr rcity,
-      const TilePos& rpos,
-      const gfx::TilesArray& tiles);
+           const TilePos& rpos,
+           const gfx::TilesArray* tiles = 0);
+
+private:
+  gfx::TilesArray* _tiles;
 };
 
 }//end namespace city

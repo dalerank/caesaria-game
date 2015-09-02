@@ -750,7 +750,7 @@
       fort_horse : true
       military_academy : true
       barracks : true
-
+      roadBlock : true
       lumber_mill : true
       clay_pit : true
 

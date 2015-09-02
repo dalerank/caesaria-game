@@ -328,7 +328,7 @@ void StartMenu::Impl::showCredits()
                          " ",
                          "Aliaksandr BeatCheat (sounds)",
                          "Omri Lahav (main theme)",
-                         "Kevin MacLeod (ambient, game themes)"
+                         "Kevin MacLeod (ambient, game themes)",
                          " ",
                          _("##localization##"),
                          " ",

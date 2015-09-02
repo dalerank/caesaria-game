@@ -32,6 +32,7 @@ class Timer : public ReferenceCounted
 public:
   enum { looped=true, singleShot=false };
   static TimerPtr create( unsigned int time, bool loop, int id=-1 );
+  static void destroy( int id );
 
   virtual ~Timer();
 
@@ -39,6 +40,8 @@ public:
 
   void setInterval( unsigned int time );
   void setLoop( bool loop );
+
+  int id() const;
 
   bool isActive() const;
   

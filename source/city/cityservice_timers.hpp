@@ -32,6 +32,8 @@ class Timers : public StaticSingleton<Timers>
 public:
   void update( const unsigned int time );
   void addTimer( TimerPtr timer );
+  void reset();
+  TimerPtr find( int id ) const;
 
   ~Timers();
 private:

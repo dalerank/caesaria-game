@@ -328,8 +328,9 @@ void PlayerCity::save( VariantMap& stream) const
 
   LOG_CITY.info( "Save overlays information" );
   VariantMap vm_overlays;
-  for (auto overlay : _d->overlays)
+  foreach( it, _d->overlays)
   {
+    OverlayPtr overlay = *it;
     VariantMap vm_overlay;
     object::Type otype = object::unknown;
 
@@ -413,7 +414,7 @@ void PlayerCity::load( const VariantMap& stream )
     OverlayPtr overlay = TileOverlayFactory::instance().create( overlayType );
     if( overlay.isValid() && gfx::tilemap::isValidLocation( pos ) )
     {
-      city::AreaInfo info = { this, pos, TilesArray() };
+      city::AreaInfo info( this, pos );
       overlay->build( info );
       overlay->load( overlayParams );      
       //support old formats
@@ -485,7 +486,7 @@ void PlayerCity::load( const VariantMap& stream )
 
 void PlayerCity::addOverlay( OverlayPtr overlay ) { _d->overlays.postpone( overlay ); }
 
-PlayerCity::~PlayerCity() {}
+PlayerCity::~PlayerCity(){}
 
 void PlayerCity::addWalker( WalkerPtr walker )
 {
@@ -565,13 +566,12 @@ int PlayerCity::getOption(PlayerCity::OptionType opt) const
 
 void PlayerCity::clean()
 {
-  for (auto it : _d->services)
-  {
-    it->destroy();
-  }
+  for (auto srvc : _d->services)
+    srvc->destroy();
 
   _d->services.clear();
   _d->walkers.clear();
+  city::Timers::instance().reset();
   _d->overlays.clear();
   _d->tilemap.resize( 0 );
 }

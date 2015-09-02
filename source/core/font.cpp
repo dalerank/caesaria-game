@@ -325,9 +325,10 @@ void FontCollection::addFont(const int key, const std::string& name, vfs::Path p
   if( ttf == NULL )
   {
     std::string errorStr( TTF_GetError() );
-#ifdef CAESARIA_PLATFORM_WIN
-    errorStr += "\n Is it only latin symbols in path to game?";
-#endif
+
+    if( OSystem::isWindows() )
+      errorStr += "\n Is it only latin symbols in path to game?";
+
     OSystem::error( "CRITICAL!!! ", errorStr );
     THROW( errorStr );
   }

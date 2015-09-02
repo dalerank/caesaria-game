@@ -21,6 +21,7 @@
 #include "vfs/directory.hpp"
 #include "core/variant_map.hpp"
 #include "core/utils.hpp"
+#include "core/osystem.hpp"
 #include "core/metric.hpp"
 
 namespace game
@@ -236,12 +237,16 @@ void Settings::setwdir( const std::string& wdirstr )
   _d->options[ savedir ] = Variant( (wdir/defaultSaveDir).toString() );
 
   vfs::Directory saveDir;
-#ifdef CAESARIA_PLATFORM_LINUX
-  vfs::Path dirName = vfs::Path( ".caesaria/" ) + defaultSaveDir;
-  saveDir = vfs::Directory::userDir()/dirName;
-#elif defined(CAESARIA_PLATFORM_WIN) || defined(CAESARIA_PLATFORM_HAIKU) || defined(CAESARIA_PLATFORM_MACOSX) || defined(CAESARIA_PLATFORM_ANDROID)
-  saveDir = wdir/defaultSaveDir;
-#endif
+  vfs::Path dirName;
+  if( OSystem::isLinux() )
+  {
+    dirName = vfs::Path( ".caesaria/" ) + defaultSaveDir;
+    saveDir = vfs::Directory::userDir()/dirName;
+  }
+  else
+  {
+    saveDir = wdir/defaultSaveDir;
+  }
   _d->options[ savedir ] = Variant( saveDir.toString() );
 }
 
@@ -327,7 +332,7 @@ void Settings::checkC3present()
     for( int index=0; !items[index].key.empty(); index++ )
       _d->options[ items[index].key ] = items[ index ].value + ".model";
 
-    _d->options[ forbidenTile        ] = Variant( std::string( "c3_land" ) );
+    _d->options[ forbidenTile        ] = Variant( std::string( "oc3_land" ) );
     _d->options[ titleResource       ] = Variant( std::string( "titlerm" ) );
     _d->options[ cellw ] = 60;
   }

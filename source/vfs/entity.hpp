@@ -64,6 +64,8 @@ public:
   virtual bool isEof() const = 0;
 
   virtual void flush() = 0;
+
+  virtual size_t lastModify() const = 0;
 };
 
 typedef SmartPtr< Entity > FSEntityPtr;
