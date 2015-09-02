@@ -528,7 +528,7 @@
       warehouse : true
       senate : true
       garden : true
-
+      roadBlock : true
       prefecture : true
       small_ceres_temple : true
       small_venus_temple : true
