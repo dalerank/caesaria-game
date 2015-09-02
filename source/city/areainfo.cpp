@@ -13,10 +13,11 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "areainfo.hpp"
 #include "city.hpp"
+#include "gfx/tilesarray.hpp"
 
 namespace city
 {
@@ -30,7 +31,7 @@ const gfx::TilesArray& AreaInfo::tiles() const
 
 AreaInfo::AreaInfo(PlayerCityPtr rcity,
                    const TilePos& rpos,
-                   gfx::TilesArray* tiles)
+                   const gfx::TilesArray* tiles)
       : city(rcity), pos(rpos), _tiles( tiles )
   {}
 

@@ -153,7 +153,7 @@ bool Aqueduct::canBuild( const city::AreaInfo& areaInfo) const
     for( auto tile : perimetr )
     {
       AqueductPtr bldAqueduct;
-      for( auto aTile : areaInfo.aroundTiles )
+      for( auto aTile : areaInfo.tiles() )
       {
         if( aTile->pos() == tile->pos() )
         {
@@ -189,7 +189,7 @@ const Picture& Aqueduct::picture( const city::AreaInfo& info ) const
 
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
 
-  const TilePos tile_pos = (info.aroundTiles.empty()) ? tile().epos() : info.pos;
+  const TilePos tile_pos = (info.tiles().empty()) ? tile().epos() : info.pos;
 
   if (!tmap.isInside(tile_pos))
   {
@@ -224,9 +224,9 @@ const Picture& Aqueduct::picture( const city::AreaInfo& info ) const
 
   // if we have a TMP array with aqueducts, calculate them
   const TilePos& p = info.pos;
-  if (!info.aroundTiles.empty())
+  if (!info.tiles().empty())
   {
-    for( auto tile : info.aroundTiles )
+    for( auto tile : info.tiles() )
     {
       int i = tile->epos().i();
       int j = tile->epos().j();
@@ -368,9 +368,9 @@ const Picture& Aqueduct::picture( const city::AreaInfo& info ) const
 bool Aqueduct::_isRoadOnTile( const city::AreaInfo& info ) const
 {
   bool advTileIsRoad = false;
-  if( !info.aroundTiles.empty() )
+  if( !info.tiles().empty() )
   {
-    Tile* ntile = info.aroundTiles.find( info.pos );
+    Tile* ntile = info.tiles().find( info.pos );
     if( ntile )
     {
       advTileIsRoad = ntile->getFlag( Tile::tlRoad );

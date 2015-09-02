@@ -99,7 +99,7 @@ void RoadBlock::load(const VariantMap& stream)
 
   if( size().area() > 1 )
   {
-    city::AreaInfo info = { _city(), pos(), TilesArray() };
+    city::AreaInfo info( _city(), pos() );
     Construction::build( info );
   }
 

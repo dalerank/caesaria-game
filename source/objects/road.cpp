@@ -81,9 +81,9 @@ bool Road::canBuild( const city::AreaInfo& areaInfo ) const
   Picture pic;
   if( overlay.is<Aqueduct>() )
   {
-    TilesArray tiles = areaInfo.aroundTiles;
+    TilesArray tiles = areaInfo.tiles();
     tiles.push_back( &tile() );
-    city::AreaInfo advInfo = { areaInfo.city, areaInfo.pos, tiles };
+    city::AreaInfo advInfo( areaInfo.city, areaInfo.pos, &tiles );
     pic = overlay.as<Aqueduct>()->picture( advInfo );
   }
   else
@@ -107,9 +107,9 @@ const Picture& Road::picture( const city::AreaInfo& areaInfo) const
 
   Tilemap& tmap = areaInfo.city->tilemap();
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
-  if (!areaInfo.aroundTiles.empty())
+  if (!areaInfo.tiles().empty())
   {
-    for( auto tile : areaInfo.aroundTiles )
+    for( auto tile : areaInfo.tiles() )
     {
       const TilePos& epos = tile->epos();
 
@@ -247,7 +247,7 @@ bool Road::isWalkable() const {  return true;}
 bool Road::isFlat() const{  return true;}
 void Road::updatePicture()
 {
-  city::AreaInfo info = { _city(), _masterTile() ? _masterTile()->epos() : TilePos(), TilesArray() };
+  city::AreaInfo info( _city(), _masterTile() ? _masterTile()->epos() : TilePos() );
   setPicture( picture( info ) );
 }
 bool Road::isNeedRoad() const {  return false; }
@@ -395,7 +395,7 @@ void Plaza::load(const VariantMap& stream)
 
   if( size().area() > 1 )
   {
-    city::AreaInfo info = { _city(), pos(), TilesArray() };
+    city::AreaInfo info( _city(), pos() );
     Construction::build( info );
   }
 
@@ -421,17 +421,17 @@ void Plaza::updatePicture()
   if( canGrow2squarePlaza )
   {
     nearTiles.remove( pos() );
-    foreach( tile, nearTiles )
+    for( auto tile : nearTiles )
     {
-      if( (*tile)->overlay().isValid() )
+      if( tile->overlay().isValid() )
       {
-        (*tile)->overlay()->deleteLater();
+        tile->overlay()->deleteLater();
       }
     }
 
     Desirability::update( _city(), this, Desirability::off );
     setSize( Size( 2 ) );
-    city::AreaInfo info = { _city(), pos(), TilesArray() };
+    city::AreaInfo info( _city(), pos() );
     Construction::build( info );
     setPicture( MetaDataHolder::randomPicture( type(), size() ) );
     Desirability::update( _city(), this, Desirability::on );

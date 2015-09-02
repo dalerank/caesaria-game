@@ -246,7 +246,7 @@ const Picture& Wall::picture(const city::AreaInfo& areaInfo) const
 
 void Wall::updatePicture(PlayerCityPtr city)
 {
-  city::AreaInfo areaInfo = { city, TilePos(), TilesArray() };
+  city::AreaInfo areaInfo( city, TilePos() );
   setPicture( picture( areaInfo ) );
 }
 

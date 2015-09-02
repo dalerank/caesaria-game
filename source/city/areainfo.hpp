@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_CITYAREAINFO_H_INCLUDED__
 #define __CAESARIA_CITYAREAINFO_H_INCLUDED__
@@ -38,7 +38,7 @@ public:
            const gfx::TilesArray* tiles = 0);
 
 private:
-  gfx::TilesArray* _tiles;
+  const gfx::TilesArray* _tiles;
 };
 
 }//end namespace city

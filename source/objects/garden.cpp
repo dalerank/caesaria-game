@@ -75,7 +75,7 @@ void Garden::load(const VariantMap& stream)
   //after loading size may change to 2
   if( size().area() > 1 )
   {
-    city::AreaInfo info = { _city(), pos(), TilesArray() };
+    city::AreaInfo info( _city(), pos() );
     Construction::build( info );
   }
 
@@ -143,7 +143,7 @@ void Garden::update()
     Desirability::update( _city(), this, Desirability::off );
 
     setSize( Size( 2 ) );
-    city::AreaInfo info = { _city(), pos(), TilesArray() };
+    city::AreaInfo info( _city(), pos() );
     Construction::build( info );
     setPicture( MetaDataHolder::randomPicture( type(), size() ) );
     Desirability::update( _city(), this, Desirability::on );
