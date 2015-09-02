@@ -98,7 +98,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\caesaria-test\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">caesaria</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">caesaria</TargetName>
@@ -189,27 +189,12 @@
     <PostBuildEvent>
       <Message>
       </Message>
-      <Command>xcopy /Y ..\..\bin\$(Platform)\$(Configuration)\caesaria.exe ..\..\game\$(Platform)\$(Configuration)\
-xcopy /Y ..\..\dep\FreeSerif.ttf ..\..\game\$(Platform)\$(Configuration)\resources\
-xcopy /Y ..\..\dep\ds-greece.ttf ..\..\game\$(Platform)\$(Configuration)\resources\
-xcopy /E /I /Y ..\..\models\game  ..\..\game\$(Platform)\$(Configuration)\resources\
-xcopy /E /I /Y ..\..\models\gui  ..\..\game\$(Platform)\$(Configuration)\resources\gui\
-xcopy /E /I /Y ..\..\models\missions  ..\..\game\$(Platform)\$(Configuration)\resources\missions\
-xcopy /E /I /Y ..\..\models\tutorial  ..\..\game\$(Platform)\$(Configuration)\resources\tutorial\
-xcopy /E /I /Y ..\..\locale  ..\..\game\$(Platform)\$(Configuration)\resources\locale\
-xcopy /E /I /Y ..\..\models\shaders  ..\..\game\$(Platform)\$(Configuration)\resources\shaders\
-xcopy /E /I /Y ..\..\dep\fonts\ds-greece.ttf  ..\..\game\$(Platform)\$(Configuration)\resources\
-xcopy /E /I /Y ..\..\dep\fonts\FreeSerif.ttf  ..\..\game\$(Platform)\$(Configuration)\resources\
-xcopy /Y ..\..\dep\SDL2\lib\x86\SDL2.dll  ..\..\game\$(Platform)\$(Configuration)\
-xcopy /Y ..\..\dep\SDL2\lib\x86\SDL2.dll  ..\..\game\$(Platform)\$(Configuration)\
-xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libFLAC-8.dll ..\..\game\$(Platform)\$(Configuration)\
-xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libmikmod-2.dll ..\..\game\$(Platform)\$(Configuration)\
-xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libmodplug-1.dll ..\..\game\$(Platform)\$(Configuration)\
-xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libogg-0.dll ..\..\game\$(Platform)\$(Configuration)\
-xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libvorbis-0.dll ..\..\game\$(Platform)\$(Configuration)\
-xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libvorbisfile-3.dll ..\..\game\$(Platform)\$(Configuration)\
-xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\SDL2_mixer.dll ..\..\game\$(Platform)\$(Configuration)\
-xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\smpeg2.dll ..\..\game\$(Platform)\$(Configuration)\
+      <Command>xcopy /E /I /Y ..\..\models\game  ..\..\..\caesaria-test\resources\
+xcopy /E /I /Y ..\..\models\gui  ..\..\..\caesaria-test\resources\gui\
+xcopy /E /I /Y ..\..\models\missions  ..\..\..\caesaria-test\resources\missions\
+xcopy /E /I /Y ..\..\models\tutorial  ..\..\..\caesaria-test\resources\tutorial\
+xcopy /E /I /Y ..\..\locale  ..\..\..\caesaria-test\resources\locale\
+xcopy /E /I /Y ..\..\models\shaders  ..\..\..\caesaria-test\resources\shaders\
 </Command>
     </PostBuildEvent>
     <Link>
