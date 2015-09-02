@@ -414,7 +414,7 @@ void PlayerCity::load( const VariantMap& stream )
     OverlayPtr overlay = TileOverlayFactory::instance().create( overlayType );
     if( overlay.isValid() && gfx::tilemap::isValidLocation( pos ) )
     {
-      city::AreaInfo info = { this, pos, TilesArray() };
+      city::AreaInfo info( this, pos );
       overlay->build( info );
       overlay->load( overlayParams );      
       //support old formats

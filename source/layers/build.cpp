@@ -134,7 +134,7 @@ void Build::_checkPreviewBuild(TilePos pos)
     }
   }
 
-  city::AreaInfo areaInfo = { _city(), pos, d->buildTiles };
+  city::AreaInfo areaInfo( _city(), pos, d->buildTiles );
   if( !walkersOnTile && overlay->canBuild( areaInfo ) )
   {
     //bldCommand->setCanBuild(true);
@@ -308,7 +308,7 @@ void Build::_buildAll()
   }
 
   bool buildOk = false;  
-  city::AreaInfo areaInfo( _city(), TilePos(), TilesArray() );
+  city::AreaInfo areaInfo( _city(), TilePos() );
   for( auto tile : d->buildTiles )
   {
     areaInfo.pos = tile->epos();
@@ -331,6 +331,8 @@ void Build::_buildAll()
                                                    : errorStr, WarningMessage::neitral );
     event->dispatch();
   }
+
+  d->needUpdateTiles = true;
 }
 
 void Build::_exitBuildMode()
@@ -429,7 +431,7 @@ void Build::_drawBuildTile( Engine& engine, Tile* tile, const Point& offset )
     return;
 
   __D_IMPL(_d,Build);
-  city::AreaInfo areaInfo = { _city(), TilePos(), _d->buildTiles };
+  city::AreaInfo areaInfo = { _city(), TilePos(), &_d->buildTiles };
 
   Tile* postTile = tile;
   postTile->resetWasDrawn();
@@ -500,7 +502,7 @@ void Build::drawTile( Engine& engine, Tile& tile, const Point& offset )
   Point screenPos = tile.mappos() + offset;
 
   ConstructionPtr cntr = tile.overlay().as<Construction>();
-  city::AreaInfo info = { _city(), tile.epos(), _d->buildTiles };
+  city::AreaInfo info( _city(), tile.epos(), &_d->buildTiles );
 
   const Picture* picBasic = 0;
   const Picture* picOver = 0;

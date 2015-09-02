@@ -36,6 +36,8 @@ public:
 
   static bool isAndroid();
   static bool isLinux();
+  static bool isUnix();
+  static bool isMac();
   static bool isWindows();
 };
 

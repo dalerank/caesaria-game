@@ -250,7 +250,7 @@ public:
 	void CheckLocalFiles();
 
 	// True if the local files are not up to date and downloads need to be started
-	bool LocalFilesNeedUpdate();
+	bool isLocalFilesNeedUpdate();
 
 	// Generates an internal TODO list needed to perform the update step
 	void PrepareUpdateStep(std::string prefix);

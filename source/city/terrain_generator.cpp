@@ -585,7 +585,7 @@ static void __createRivers(Game& game )
 
         bool isWater = (*it)->getFlag( Tile::tlWater );
 
-        city::AreaInfo info = { oCity, (*it)->pos(), TilesArray() };
+        city::AreaInfo info( oCity, (*it)->pos() );
         overlay->build( info );
         oCity->addOverlay( overlay );
 
@@ -665,7 +665,7 @@ static void __createRoad(Game& game )
       (*it)->setPicture( pic );
       (*it)->setOriginalImgId( imgid::fromResource( pic.name() ) );
 
-      city::AreaInfo info = { oCity, (*it)->pos(), TilesArray() };
+      city::AreaInfo info( oCity, (*it)->pos() );
       overlay->build( info );
       oCity->addOverlay( overlay );
     }
@@ -827,7 +827,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
         OverlayPtr overlay = TileOverlayFactory::instance().create( object::tree );
         if( overlay != NULL )
         {
-          city::AreaInfo info = { oCity, tile.pos(), TilesArray() };
+          city::AreaInfo info( oCity, tile.pos() );
           overlay->build( info );
           oCity->addOverlay( overlay );
         }
