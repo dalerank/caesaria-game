@@ -12,7 +12,6 @@ set( TILESET_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/core/utils.cpp"
       "${BASE_SOURCE_DIR}/core/bytearray.cpp"
       "${BASE_SOURCE_DIR}/core/logger.cpp"
-      "${BASE_SOURCE_DIR}/thread/mutex.cpp"
       "${BASE_SOURCE_DIR}/core/time.cpp"
       "${BASE_SOURCE_DIR}/thread/thread.cpp"
       "${BASE_SOURCE_DIR}/thread/threadevent.cpp"
@@ -48,12 +47,6 @@ if(HAIKU)
   target_link_libraries( ${PROJECT_NAME} root network )
   set(EXECUTABLE_FILENAME "tileset.haiku")
 endif(HAIKU)
-
-if(UNIX)
-  target_link_libraries( ${PROJECT_NAME} ${CURL_LIBRARY} )
-  target_link_libraries( ${PROJECT_NAME} pthread )
-  set(EXECUTABLE_FILENAME "tileset.linux")
-endif(UNIX)
 
 if(APPLE)
   set(EXECUTABLE_FILENAME "tileset.macos")

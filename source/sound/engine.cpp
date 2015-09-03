@@ -27,7 +27,6 @@
 #include <SDL_mixer.h>
 #include "game/settings.hpp"
 #include "core/exception.hpp"
-#include "thread/mutex.hpp"
 #include "core/logger.hpp"
 #include "vfs/directory.hpp"
 #include "core/foreach.hpp"

@@ -18,19 +18,19 @@
 
 #include <string.h>
 
-void CTask::setTaskStatus(TaskStatus_t state)
+void ThreadTask::setTaskStatus(TaskStatus_t state)
 {
 	m_mutex.lock();
 	m_state=state;
 	m_mutex.unlock();
 }
 
-void CTask::setId(ThreadID* pid)
+void ThreadTask::setId(std::thread::id* pid)
 {
-	memcpy(&m_dwThread,pid,sizeof(ThreadID));
+  memcpy(&m_dwThread,pid,sizeof(std::thread::id));
 }
 
-bool CTask::wait(int timeoutSeconds)
+bool ThreadTask::wait(int timeoutSeconds)
 {
 	timeoutSeconds *= 1000;
 
@@ -45,7 +45,7 @@ bool CTask::wait(int timeoutSeconds)
 	return false;
 }
 
-TaskStatus_t CTask::getStatus()
+TaskStatus_t ThreadTask::getStatus()
 {
 	TaskStatus_t state ;
 
@@ -56,13 +56,13 @@ TaskStatus_t CTask::getStatus()
 	return state;
 }
 
-void CTask::assign(ThreadID* pId)
+void ThreadTask::assign(std::thread::id* pId)
 {
-	memcpy(pId,&m_dwThread,sizeof(ThreadID));
+  memcpy(pId,&m_dwThread,sizeof(std::thread::id));
 }
 
-CTask::CTask()
+ThreadTask::ThreadTask()
 {
 	m_state=TaskStatusNotSubmitted;
-	memset(&m_dwThread,0,sizeof(ThreadID));
+  memset(&m_dwThread,0,sizeof(std::thread::id));
 }

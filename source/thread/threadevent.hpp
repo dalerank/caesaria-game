@@ -18,25 +18,17 @@
 #ifndef _CAESARIA_THREADEVENT_H_INCLUDE_
 #define _CAESARIA_THREADEVENT_H_INCLUDE_
 
-#include "core/predefinitions.hpp"
+#include <mutex>
+#include <thread>
+#include <condition_variable>
 
-#ifdef CAESARIA_PLATFORM_WIN
-#include "windows.h"
-#else
-#include <pthread.h>
-#endif
-
-class CEventClass
+class ThreadEvent
 {
 private:
-	ThreadID m_owner;
+  std::thread::id _owner;
 
-#ifdef CAESARIA_PLATFORM_WIN
-	HANDLE m_event;
-#else
-	pthread_cond_t m_ready;
-	pthread_mutex_t m_lock;
-#endif
+  std::condition_variable _ready;
+  std::mutex _lock;
 
 public:
 	bool m_bCreated;
@@ -44,8 +36,8 @@ public:
 	bool wait();
 	void reset();
 
-	CEventClass(void);
-	~CEventClass(void);
+  ThreadEvent(void);
+  ~ThreadEvent(void);
 };
 
 #endif //_CAESARIA_THREADEVENT_H_INCLUDE_
