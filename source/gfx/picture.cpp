@@ -216,7 +216,7 @@ Picture::Picture(const Size& size, unsigned char* data, bool mayChange) : _d( ne
   {
     SDL_FreeSurface( _d->surface );
     _d->surface = 0;
-    }
+  }
 }
 
 Picture::Picture(const std::string& group, const int id) : _d( new PictureImpl )
