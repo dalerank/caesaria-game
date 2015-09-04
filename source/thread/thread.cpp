@@ -371,7 +371,6 @@ unsigned int Thread::GetEventsPending()
 Thread::Thread(void)
 :m_StopTimeout(30)
 ,_bRunning(false)
-,_thread(NULL)
 ,_dwId(0L)
 ,_lppvQueue(NULL)
 ,_chQueue(QUEUE_SIZE)
@@ -689,7 +688,7 @@ bool Thread::Start()
 		if( m_dwObjectCondition & THREAD_CREATION )
 			m_dwObjectCondition = m_dwObjectCondition ^ THREAD_CREATION;
 
-    _thread = std::thread(_THKERNEL);
+    _thread = std::thread(_THKERNEL,(void*)this);
 
     if( !_thread.joinable() )
 		{

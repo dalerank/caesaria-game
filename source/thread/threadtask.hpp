@@ -18,7 +18,7 @@
 
 #include "core/platform.hpp"
 #include <mutex>
-#include "core/predefinitions.hpp"
+#include <thread>
 
 typedef enum
 {

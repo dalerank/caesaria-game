@@ -68,6 +68,14 @@ public:
     return ret;
   }
 
+  SmartList& for_each( std::function<void (SmartPtr<T>)> func_pointer )
+  {
+    for( auto&& item : *this )
+      func_pointer( item );
+
+    return *this;
+  }
+
   SmartList& addIfValid( SmartPtr< T > a )
   {
     if( a.isValid() )
