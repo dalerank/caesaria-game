@@ -97,9 +97,9 @@ void Aqueduct::destroy()
   if( _city().isValid() )
   {
     TilesArea area( _city()->tilemap(), pos() - TilePos( 2, 2 ), Size( 5 ) );
-    AqueductList aqueducts = area.overlays().select<Aqueduct>();
-    for( auto aq : aqueducts )
-      aq->updatePicture( _city() );
+    area.overlays()
+        .select<Aqueduct>()
+        .for_each( [this](AqueductPtr aq){ aq->updatePicture( _city() ); });
   }
 
   if( tile().getFlag( Tile::tlRoad ) || _isRoad() )

@@ -12,7 +12,6 @@ set( UPD_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/core/utils.cpp"
       "${BASE_SOURCE_DIR}/core/bytearray.cpp"
       "${BASE_SOURCE_DIR}/core/logger.cpp"
-      "${BASE_SOURCE_DIR}/thread/mutex.cpp"
       "${BASE_SOURCE_DIR}/core/time.cpp"
       "${BASE_SOURCE_DIR}/thread/thread.cpp"
       "${BASE_SOURCE_DIR}/thread/threadevent.cpp"

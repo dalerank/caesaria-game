@@ -17,9 +17,12 @@
 #include <iostream>
 #include <set>
 
+#include "vfs/file.hpp"
 #include "core/logger.hpp"
+#include "gfx/loader_png.hpp"
 #include "core/stringarray.hpp"
 #include "core/utils.hpp"
+#include "gfx/picture.hpp"
 #include "vfs/directory.hpp"
 #include "SDL/SDL_video.h"
 
@@ -35,7 +38,13 @@ public:
     name = rname;
   }
 
-  bool operator<(const ImageName& image2)
+  ImageName(const ImageName& a )
+  {
+    image = a.image;
+    name = a.name;
+  }
+
+  bool operator<(const ImageName& image2) const
   {
     int area1 = this->image->w * this->image->h;
     int area2 = image2.image->w * image2.image->h;
@@ -142,26 +151,27 @@ private:
   Node* root;
   std::map<std::string, Rect> rectangleMap;
 
+public:
   Texture(int width, int height)
   {
     image = SDL_CreateRGBSurface( 0, width, height, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
-    graphics = image.createGraphics();
+    //graphics = image.createGraphics();
 
     root = new Node(0,0, width, height);
-    rectangleMap = new TreeMap<String, Rectangle>();
   }
 
-  bool AddImage(SDL_Surface* image, const std::string& name, int padding)
+  bool AddImage(SDL_Surface* rimage, const std::string& name, int padding)
   {
-    Node node = root.Insert(image, padding);
+    Node* node = root->Insert(rimage, padding);
 
-    if(node == null)
+    if(node == nullptr)
     {
       return false;
     }
 
-    rectangleMap.put(name, node.rect);
-    graphics.drawImage(image, null, node.rect.x, node.rect.y);
+    rectangleMap[name] = node->rect;
+    SDL_Rect rect = { (short)node->rect.left(), (short)node->rect.top(), (ushort)rimage->w, (ushort)rimage->h };
+    SDL_BlitSurface( rimage, nullptr, image, &rect );
 
     return true;
   }
@@ -173,30 +183,41 @@ public:
     {
       //ImageIO.write(image, "png", new File(name + ".png"));
 
-      std::string atlasName = name + ".atlas";
-      StringArray atlas;
+      vfs::NFile atlas = vfs::NFile::open( name + ".atlas", vfs::Entity::fmWrite );
 
-      atlas << "{\ntexture: \"" + name + ".png\" \n";
-      atlas << "frames: {\n";
+      std::string header = "{\ntexture: \"" + name + ".png\" \n";
+      std::string frames = "frames: {\n";
+
+      atlas.write( header.c_str(), header.size() );
+      atlas.write( frames.c_str(), frames.size() );
       for( auto&& e : rectangleMap )
       {
         Rect r = e.second;
-        const std::string& keyVal = e.first;
+        std::string keyVal = e.first;
 
         if (fileNameOnly)
-          keyVal = keyVal.substr(keyVal.lastIndexOf('/') + 1);
+          keyVal = keyVal.substr(keyVal.find_last_of('/') + 1);
         if (unitCoordinates)
         {
-          atlas.write(keyVal + " " + r.x/(float)width + " " + r.y/(float)height + " " + r.width/(float)width + " " + r.height/(float)height);
+          std::string str = utils::format( 0xff, "%s %f %f %f %f", keyVal.c_str(),
+                                                           r.left()/(float)width,
+                                                           r.top()/(float)height,
+                                                           r.width()/(float)width,
+                                                           r.height()/(float)height );
+          atlas.write( str.c_str(), str.size() );
         }
         else
-          atlas.write(keyVal + ": [" + r.x + ", " + r.y + ", " + r.width + ", " + r.height + " ]");
-        atlas.newLine();
+        {
+          std::string str = utils::format( 0xff, "%s: [%d, %d, %d, %d]", keyVal.c_str(), r.left(), r.top(), r.width(), r.height() );
+          atlas.write( str.c_str(), str.size() );
+        }
+
+        atlas.write( "\n", 1 );
       }
-      atlas.write( "}\n}" );
-      atlas.close();
+      atlas.write( "}\n}", 3 );
+      atlas.flush();
     }
-    catch(IOException e)
+    catch(...)
     {
 
     }
@@ -224,47 +245,45 @@ public:
 
     Logger::warning( "Found %d images", imageFiles.size() );
 
-    std::set<ImageName> imageNameSet();
-		
+    std::set<ImageName> imageNameSet;
+    PictureLoaderPng pngLoader;
+
     for( auto&& filename : imageFiles)
 		{
 			try
 			{
-        gfx::Picture image = gfx::Picture::load( filename );
+        vfs::NFile file = vfs::NFile::open( filename );
+        gfx::Picture image = pngLoader.load( file );
 				
         if(image.width() > width || image.height() > height)
 				{
           Logger::warning( "Error: '%s' (%dx%d) ) is larger than the atlas (%dx%d)",
-                           filename.getPath(), image.getWidth(), image.getHeight(), width, height );
+                           filename.c_str(), image.width(), image.height(), width, height );
 					return;
-				}
+				}			        
 				
-        String path = filename.getPath().substring(0, filename.getPath().lastIndexOf(".")).replace("\\", "/");
-				
-				imageNameSet.add(new ImageName(image, path));
-				
+        ImageName in(image.surface(), file.path().baseName(false).toString() );
+        imageNameSet.insert( in );
 			}
-			catch(IOException e)
+      catch(...)
 			{
-        System.out.println("Could not open file: '" + filename.getAbsoluteFile() + "'");
+        Logger::warning( "Could not open file: '" + filename + "'" );
 			}
 		}
 		
-		List<Texture> textures = new ArrayList<Texture>();
-		
-		textures.add(new Texture(width, height));
-		
+    std::vector<Texture*> textures;
+    textures.push_back( new Texture(width, height) );
 		int count = 0;
 		
 		for(ImageName imageName : imageNameSet)
 		{
-			boolean added = false;
+      bool added = false;
 			
-			System.out.println("Adding " + imageName.name + " to atlas (" + (++count) + ")");
+      Logger::warning( "Adding " + imageName.name + " to atlas (" + utils::i2str(++count) + ")");
 			
-			for(Texture texture : textures)
+      for( auto texture : textures)
 			{
-				if(texture.AddImage(imageName.image, imageName.name, padding))
+        if(texture->AddImage(imageName.image, imageName.name, padding))
 				{
 					added = true;
 					break;
@@ -273,18 +292,18 @@ public:
 			
 			if(!added)
 			{
-				Texture texture = new Texture(width, height);
-				texture.AddImage(imageName.image, imageName.name, padding);
-				textures.add(texture);
+        Texture* texture = new Texture(width, height);
+        texture->AddImage(imageName.image, imageName.name, padding);
+        textures.push_back(texture);
 			}
 		}
 		
 		count = 0;
 		
-		for(Texture texture : textures)
+    for(Texture* texture : textures)
 		{
-			System.out.println("Writing atlas: " + name + (++count));
-			texture.Write(name + count, fileNameOnly, unitCoordinates, width, height);
+      Logger::warning( "Writing atlas: " + name + utils::i2str(++count));
+      texture->Write(name + utils::i2str(count), fileNameOnly, unitCoordinates, width, height);
 		}
 	}
 	
@@ -293,18 +312,18 @@ public:
     if(path.isFolder())
 		{
       vfs::Directory directory( path );
-      StringArray files = directory.listFiles( ".png" );
-      StringArray directories = directory.listFolders();
+      StringArray files = directory.entries().items().files( ".png" );
+      StringArray directories = directory.entries().items().folders();
 		
-      imageFiles.addAll( files );
+      imageFiles << files;
 			
       for( auto str : directories)
 			{
-        GetImageFiles( vfs::Path( d ), imageFiles);
+        GetImageFiles( vfs::Path( str ), imageFiles);
 			}
 		}
   }
-}
+};
 
 int main(int argc, char* argv[])
 {
@@ -316,7 +335,7 @@ int main(int argc, char* argv[])
     Logger::warning("\t\t<ignorePaths>: Only writes out the file name without the path of it to the atlas txt file.");
     Logger::warning("\t\t<unitCoordinates>: Coordinates will be written to atlas txt file in 0..1 range instead of 0..width, 0..height range");
     Logger::warning("\tExample: AtlasGenerator atlas 2048 2048 5 1 1 images");
-    return;
+    return 0;
   }
 
   AtlasGenerator atlasGenerator;

@@ -12,7 +12,6 @@ set( TILESET_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/core/utils.cpp"
       "${BASE_SOURCE_DIR}/core/bytearray.cpp"
       "${BASE_SOURCE_DIR}/core/logger.cpp"
-      "${BASE_SOURCE_DIR}/thread/mutex.cpp"
       "${BASE_SOURCE_DIR}/core/time.cpp"
       "${BASE_SOURCE_DIR}/thread/thread.cpp"
       "${BASE_SOURCE_DIR}/thread/threadevent.cpp"
@@ -20,6 +19,9 @@ set( TILESET_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/core/variant.cpp"
       "${BASE_SOURCE_DIR}/vfs/directory.cpp"
       "${BASE_SOURCE_DIR}/vfs/file.cpp"
+      "${BASE_SOURCE_DIR}/gfx/picture.cpp"
+      "${BASE_SOURCE_DIR}/gfx/loader_png.cpp"
+      "${BASE_SOURCE_DIR}/gfx/picture_bank.cpp"
       "${BASE_SOURCE_DIR}/vfs/path.cpp"
       "${BASE_SOURCE_DIR}/vfs/entries.cpp"
       "${BASE_SOURCE_DIR}/vfs/filesystem.cpp"
@@ -31,12 +33,14 @@ set( TILESET_DEP_SOURCES_LIST
 
 include_directories( ${BASE_SOURCE_DIR} )
 include_directories( ${DEP_DIR} )
+include_directories( ${SDL2MINI_INCLUDE_DIR} )
+include_directories(${PNG_INCLUDE_DIR})
 
 add_executable(${PROJECT_NAME}
                ${TILESET_SRC_LIST} ${TILESET_INC_LIST}
                ${TILESET_DEP_SOURCES_LIST} )
 
-include_directories(${SDL2MINI_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} ${PNG_LIBRARY})
 target_link_libraries(${PROJECT_NAME} ${SDL2MINI_LIBRARY})
 
 if(WIN32)
@@ -45,19 +49,17 @@ if(WIN32)
 endif(WIN32)
 
 if(HAIKU)
-  target_link_libraries( ${PROJECT_NAME} root network )
+  target_link_libraries( ${PROJECT_NAME} root )
   set(EXECUTABLE_FILENAME "tileset.haiku")
 endif(HAIKU)
-
-if(UNIX)
-  target_link_libraries( ${PROJECT_NAME} ${CURL_LIBRARY} )
-  target_link_libraries( ${PROJECT_NAME} pthread )
-  set(EXECUTABLE_FILENAME "tileset.linux")
-endif(UNIX)
 
 if(APPLE)
   set(EXECUTABLE_FILENAME "tileset.macos")
 endif(APPLE)
+
+if(UNIX AND NOT APPLE)
+  target_link_libraries(${PROJECT_NAME} "dl")
+endif()
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME ${EXECUTABLE_FILENAME})
 
