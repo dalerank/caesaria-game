@@ -162,7 +162,7 @@ void UserStats::unlockAchievement( Achievement &achievement )
 
   // mark it down
 #ifdef  CAESARIA_PLATFORM_WIN
-  sth_setAchievement( achievement.uniqueName );
+  sth_setAchievement( achievement.steamName );
 #else
   if( xclient.stats )
   {
@@ -647,11 +647,11 @@ void UserStats::receivedUserStats()
     for( int iAch = 0; iAch < achv_count; ++iAch )
     {
       Achievement &ach = glbAchievements[iAch];
-      ach.reached = sth_getAchievementReached( ach.uniqueName );
-      sth_getAchievementAttribute( ach.uniqueName, "name", ach.caption );
-      sth_getAchievementAttribute( ach.uniqueName, "desc", ach.description );
+      ach.reached = sth_getAchievementReached( ach.steamName );
+      sth_getAchievementAttribute( ach.steamName, "name", ach.caption );
+      sth_getAchievementAttribute( ach.steamName, "desc", ach.description );
 
-      ach.idIconImage = sth_getAchievementIcon( ach.uniqueName );
+      ach.idIconImage = sth_getAchievementIcon( ach.steamName );
       ach.image = getSteamImage( ach.idIconImage );
     }
 

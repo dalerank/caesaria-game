@@ -211,18 +211,16 @@ Picture::Picture(const Size& size, unsigned char* data, bool mayChange) : _d( ne
   else
   {
     _d->surface = SDL_CreateRGBSurface( 0, size.width(), size.height(), 32,
-                                       0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
+                                        0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
     SDL_FillRect( _d->surface, 0, 0 );
   }
 
-#ifndef CAESARIA_DISABLE_PICTUREBANK
   Engine::instance().loadPicture( *this, mayChange );
   if( !mayChange )
   {
     SDL_FreeSurface( _d->surface );
     _d->surface = 0;
   }
-#endif
 }
 
 #ifndef CAESARIA_DISABLE_PICTUREBANK

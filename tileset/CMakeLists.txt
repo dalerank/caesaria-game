@@ -18,9 +18,17 @@ set( TILESET_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/thread/threadevent.cpp"
       "${BASE_SOURCE_DIR}/thread/threadtask.cpp"
       "${BASE_SOURCE_DIR}/core/variant.cpp"
+      "${BASE_SOURCE_DIR}/core/eventconverter.cpp"
+      "${BASE_SOURCE_DIR}/core/font.cpp"
+      "${BASE_SOURCE_DIR}/core/debug_timer.cpp"
       "${BASE_SOURCE_DIR}/vfs/directory.cpp"
       "${BASE_SOURCE_DIR}/vfs/file.cpp"
+      "${BASE_SOURCE_DIR}/gfx/batch.cpp"
       "${BASE_SOURCE_DIR}/gfx/picture.cpp"
+      "${BASE_SOURCE_DIR}/gfx/engine.cpp"
+      "${BASE_SOURCE_DIR}/gfx/sdl_batcher.cpp"
+      "${BASE_SOURCE_DIR}/gfx/sdl_engine.cpp"
+      "${BASE_SOURCE_DIR}/gfx/IMG_savepng.cpp"
       "${BASE_SOURCE_DIR}/gfx/loader_png.cpp"
       "${BASE_SOURCE_DIR}/vfs/path.cpp"
       "${BASE_SOURCE_DIR}/vfs/entries.cpp"
@@ -46,6 +54,7 @@ target_link_libraries(${PROJECT_NAME} ${SDL2MINI_LIBRARY})
 target_link_libraries(${PROJECT_NAME} ${SDL2_TTF_LIBRARY})
 
 if(WIN32)
+  target_link_libraries(${PROJECT_NAME} "winmm")
   target_link_libraries( ${PROJECT_NAME} psapi )
   set(EXECUTABLE_FILENAME "tileset")
 endif(WIN32)
@@ -84,13 +93,13 @@ endif(WIN32)
 # prepare working directory
 set(TILESET_BINARY_FILENAME ${EXECUTABLE_FILENAME})
 if(WIN32)
-  set(TILESET_BINARY_FILENAME ${UPDATER_BINARY_FILENAME}.exe)
+  set(TILESET_BINARY_FILENAME ${TILESET_BINARY_FILENAME}.exe)
 endif(WIN32)
 
 ADD_CUSTOM_COMMAND(
     TARGET ${PROJECT_NAME}
     POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${TILESET_BINARY_FILENAME}" "${WORK_DIR}/tools/${TILESET_BINARY_FILENAME}"
+    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${TILESET_BINARY_FILENAME}" "${WORK_DIR}/tools/tileset/${TILESET_BINARY_FILENAME}"
 )
 
 if(EXT_BINDIR)

@@ -23,7 +23,6 @@
 #include "SDL_version.h"
 #include "color.hpp"
 #include "vfs/directory.hpp"
-#include "game/settings.hpp"
 #include "core/osystem.hpp"
 #include "gfx/engine.hpp"
 #include <map>
@@ -341,12 +340,12 @@ void FontCollection::addFont(const int key, const std::string& name, vfs::Path p
   setFont( key, name, font0);
 }
 
-void FontCollection::initialize(const std::string& resourcePath)
+void FontCollection::initialize(const std::string& resourcePath, const std::string& family)
 {
   _d->collection.clear();
 
   vfs::Directory resDir( resourcePath );
-  vfs::Path fontFilename = SETTINGS_VALUE( font ).toString();
+  vfs::Path fontFilename = family;
   vfs::Path absolutFontfilename = resDir/fontFilename;
 
   addFont( FONT_0,       CAESARIA_STR_EXT(FONT_0),      absolutFontfilename, 12, DefaultColors::black );

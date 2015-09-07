@@ -18,14 +18,20 @@
 #include <set>
 
 #include "vfs/file.hpp"
+#include "gfx/IMG_savepng.h"
 #include "core/logger.hpp"
 #include "gfx/loader_png.hpp"
+#include "gfx/sdl_engine.hpp"
 #include "core/stringarray.hpp"
 #include "core/utils.hpp"
 #include "gfx/picture.hpp"
 #include "vfs/directory.hpp"
 #include <SDL_video.h>
 #include <SDL.h>
+
+#ifdef CAESARIA_PLATFORM_WIN
+  #undef main
+#endif
 
 class ImageName
 {
@@ -69,7 +75,7 @@ public:
 
 class Texture
 {
-private:
+public:
   class Node
   {
   public:
@@ -142,16 +148,16 @@ private:
   };
 
 private:
-  gfx::Picture image;
   Node* root;
-  std::map<std::string, Node*> rectangleMap;
 
 public:
+  gfx::Picture image;
+  std::map<std::string, Node*> rectangleMap;
+
   Texture(int width, int height)
   {
     image = gfx::Picture( Size( width, height ), 0, true );
     image.fill( DefaultColors::clear );
-    //graphics = image.createGraphics();
 
     root = new Node(0,0, width, height);
   }
@@ -166,7 +172,8 @@ public:
     }
 
     rectangleMap[name] = node;
-    SDL_Rect rect = { (short)node->rect.left(), (short)node->rect.top(), (ushort)rimage.width(), (ushort)rimage.height() };
+    SDL_Rect rect = { (short)node->rect.left(), (short)node->rect.top(),
+                      (unsigned short)rimage.width(), (unsigned short)rimage.height() };
     SDL_BlitSurface( rimage.surface(), nullptr, image.surface(), &rect );
 
     return true;
@@ -177,12 +184,13 @@ public:
   {
     try
     {
-      //ImageIO.write(image, "png", new File(name + ".png"));
+      std::string filename = name+".png";
+      IMG_SavePNG( filename.c_str(), image.surface(), -1 );
 
       vfs::NFile atlas = vfs::NFile::open( name + ".atlas", vfs::Entity::fmWrite );
 
       std::string header = "{\ntexture: \"" + name + ".png\" \n";
-      std::string frames = "frames: {\n";
+      std::string frames = "  frames: {\n";
 
       atlas.write( header.c_str(), header.size() );
       atlas.write( frames.c_str(), frames.size() );
@@ -195,7 +203,7 @@ public:
           keyVal = keyVal.substr(keyVal.find_last_of('/') + 1);
         if (unitCoordinates)
         {
-          std::string str = utils::format( 0xff, "%s %f %f %f %f", keyVal.c_str(),
+          std::string str = utils::format( 0xff, "    %s %f %f %f %f", keyVal.c_str(),
                                                            r.left()/(float)width,
                                                            r.top()/(float)height,
                                                            r.width()/(float)width,
@@ -204,13 +212,13 @@ public:
         }
         else
         {
-          std::string str = utils::format( 0xff, "%s: [%d, %d, %d, %d]", keyVal.c_str(), r.left(), r.top(), r.width(), r.height() );
+          std::string str = utils::format( 0xff, "    %s: [%d, %d, %d, %d]", keyVal.c_str(), r.left(), r.top(), r.width(), r.height() );
           atlas.write( str.c_str(), str.size() );
         }
 
         atlas.write( "\n", 1 );
       }
-      atlas.write( "}\n}", 3 );
+      atlas.write( "  }\n}", 5 );
       atlas.flush();
     }
     catch(...)
@@ -223,6 +231,8 @@ public:
 class AtlasGenerator
 {	
 public:
+  std::vector<Texture*> textures;
+
   void Run(std::string name, int width, int height, int padding, bool fileNameOnly, bool unitCoordinates, const StringArray& dirs)
 	{
     StringArray imageFiles;
@@ -249,8 +259,8 @@ public:
 			try
 			{
         vfs::NFile file = vfs::NFile::open( filename );
-        gfx::Picture image = pngLoader.load( file );
-				
+        gfx::Picture image = pngLoader.load( file, streaming );
+
         if(image.width() > width || image.height() > height)
 				{
           Logger::warning( "Error: '%s' (%dx%d) ) is larger than the atlas (%dx%d)",
@@ -266,8 +276,7 @@ public:
         Logger::warning( "Could not open file: '" + filename + "'" );
 			}
 		}
-		
-    std::vector<Texture*> textures;
+		    
     Texture* tx = new Texture(width, height);
     textures.push_back( tx );
 		int count = 0;
@@ -299,8 +308,8 @@ public:
 		
     for(Texture* texture : textures)
 		{
-      Logger::warning( "Writing atlas: " + name + utils::i2str(++count));
-      texture->Write(name + utils::i2str(count), fileNameOnly, unitCoordinates, width, height);
+      //Logger::warning( "Writing atlas: " + name + utils::i2str(++count));
+      //texture->Write(name + utils::i2str(count), fileNameOnly, unitCoordinates, width, height);
 		}
 	}
 	
@@ -324,17 +333,12 @@ public:
 
 int main(int argc, char* argv[])
 {
-  SDL_Init(SDL_INIT_VIDEO);
-
-  SDL_Window* window = SDL_CreateWindow("Tileset",
-                            SDL_WINDOWPOS_CENTERED,
-                            SDL_WINDOWPOS_CENTERED,
-                            800, 600,
-                            SDL_WINDOW_OPENGL );
-  SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
-
-
   Logger::registerWriter( Logger::consolelog, "" );
+  gfx::Engine* engine = new gfx::SdlEngine();
+
+  Logger::warning( "GraficEngine: set size" );
+  engine->setScreenSize( Size( 800, 600 ) );
+  engine->init();
 
   if(argc < 5)
   {
@@ -360,4 +364,33 @@ int main(int argc, char* argv[])
                      utils::toInt(argv[5]) != 0,
                      utils::toInt(argv[6]) != 0,
                      dirs);
+
+  bool running = true;
+  int x = 0;
+  SDL_Event event;
+
+  while(running)
+  {
+    engine->startRenderFrame();
+
+    while(SDL_PollEvent(&event) != 0)
+    {
+      if(event.type == SDL_QUIT) running = false;
+    }
+
+    for( Texture* tx : atlasGenerator.textures )
+    {
+      for( auto pair : tx->rectangleMap )
+      {
+        Texture::Node* node = pair.second;
+
+        x = x++ % 100;
+        node->image.setAlpha( x );
+        engine->draw( node->image, Point( x, 0 ) );
+      }
+    }
+
+    engine->delay( 10 );
+    engine->endRenderFrame();
+  }
 }

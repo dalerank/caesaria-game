@@ -37,9 +37,8 @@
 #include "core/utils.hpp"
 #include "core/font.hpp"
 #include "core/eventconverter.hpp"
-#include "gfx/decorator.hpp"
-#include "game/settings.hpp"
 #include "core/timer.hpp"
+#include "core/debug_timer.hpp"
 #include "sdl_batcher.hpp"
 
 #ifdef CAESARIA_PLATFORM_MACOSX
@@ -244,8 +243,8 @@ void SdlEngine::init()
   Logger::warning("SDLGraficEngine: init successfull");
 #endif
 
-  int render_version = math::clamp( game::Settings::get( "render_mode" ).toInt(), 0, SDL_GetNumRenderDrivers());
-  SDL_Renderer *renderer = SDL_CreateRenderer(window, render_version-1, SDL_RENDERER_ACCELERATED );
+  //int render_version = math::clamp( game::Settings::get( "render_mode" ).toInt(), 0, SDL_GetNumRenderDrivers());
+  SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
 
   if (renderer == NULL)
   {

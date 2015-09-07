@@ -258,7 +258,7 @@ void StartMenu::Impl::changeLanguage(std::string lang, std::string newFont, std:
   if( currentFont != newFont )
   {
     SETTINGS_SET_VALUE( font, newFont );
-    FontCollection::instance().initialize( game::Settings::rcpath().toString() );
+    FontCollection::instance().initialize( game::Settings::rcpath().toString(), newFont );
   }
 
   game::Settings::save();

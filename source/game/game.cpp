@@ -279,7 +279,8 @@ void Game::Impl::initPantheon( vfs::Path filename)
 void Game::Impl::initFontCollection( vfs::Path resourcePath )
 {
   Logger::warning( "Game: load fonts" );
-  FontCollection::instance().initialize( resourcePath.toString() );
+  std::string fontname = SETTINGS_STR( font );
+  FontCollection::instance().initialize( resourcePath.toString(), fontname );
 }
 
 void Game::Impl::initPictures()

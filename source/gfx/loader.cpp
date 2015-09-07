@@ -55,7 +55,7 @@ PictureLoader& PictureLoader::instance()
   return instanceLoader;
 }
 
-Picture PictureLoader::load( vfs::NFile file )
+Picture PictureLoader::load( vfs::NFile file, bool streaming )
 {
   if( !file.isOpen() )
      return Picture::getInvalid();
@@ -67,8 +67,7 @@ Picture PictureLoader::load( vfs::NFile file )
     {
       // reset file position which might have changed due to previous loadImage calls
       file.seek(0);
-      Picture ret = loader->load( file );
-      return ret;
+      return loader->load( file, streaming );
     }
     else
     {
@@ -77,7 +76,7 @@ Picture PictureLoader::load( vfs::NFile file )
       if( isMyFormat )
       {
         file.seek(0);
-        return loader->load( file );
+        return loader->load( file, streaming );
       }
     }
   }
