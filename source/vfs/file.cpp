@@ -62,7 +62,12 @@ NFile::NFile( FSEntityPtr file )
   #ifdef _DEBUG
     setDebugName("NFile");
   #endif
-	_entity = file;
+    _entity = file;
+}
+
+NFile::NFile(const NFile& nfile)
+{
+  *this = nfile;
 }
 
 NFile::~NFile()

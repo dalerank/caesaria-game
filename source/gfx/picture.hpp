@@ -39,8 +39,12 @@ class Picture
 public:
   Picture();
   Picture( const Size& size, unsigned char* data=0, bool mayChange=false );
+
+#ifndef CAESARIA_DISABLE_PICTUREBANK
   Picture( const std::string& group, const int id );
   Picture( const std::string& filename );
+#endif
+
   ~Picture();
 
   Picture( const Picture& other );
@@ -67,8 +71,10 @@ public:
   unsigned int& textureID();
   unsigned int textureID() const;
 
+#ifndef CAESARIA_DISABLE_PICTUREBANK
   void load( const std::string& group, const int id );
   void load( const std::string& filename );
+#endif
 
   int width() const;
   int height() const;

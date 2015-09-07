@@ -5,6 +5,7 @@ set(BASE_SOURCE_DIR "${CMAKE_SOURCE_DIR}/source")
 set(DEP_DIR "${CMAKE_SOURCE_DIR}/dep")
 
 aux_source_directory(. TILESET_SRC_LIST)
+add_definitions(-DCAESARIA_DISABLE_PICTUREBANK)
 file(GLOB TILESET_INC_LIST "*.hpp")
 
 set( TILESET_DEP_SOURCES_LIST
@@ -21,7 +22,6 @@ set( TILESET_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/vfs/file.cpp"
       "${BASE_SOURCE_DIR}/gfx/picture.cpp"
       "${BASE_SOURCE_DIR}/gfx/loader_png.cpp"
-      "${BASE_SOURCE_DIR}/gfx/picture_bank.cpp"
       "${BASE_SOURCE_DIR}/vfs/path.cpp"
       "${BASE_SOURCE_DIR}/vfs/entries.cpp"
       "${BASE_SOURCE_DIR}/vfs/filesystem.cpp"
@@ -34,7 +34,8 @@ set( TILESET_DEP_SOURCES_LIST
 include_directories( ${BASE_SOURCE_DIR} )
 include_directories( ${DEP_DIR} )
 include_directories( ${SDL2MINI_INCLUDE_DIR} )
-include_directories(${PNG_INCLUDE_DIR})
+include_directories( ${PNG_INCLUDE_DIR})
+include_directories( ${SDL2_TTF_INCLUDE_DIR})
 
 add_executable(${PROJECT_NAME}
                ${TILESET_SRC_LIST} ${TILESET_INC_LIST}
@@ -42,6 +43,7 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} ${PNG_LIBRARY})
 target_link_libraries(${PROJECT_NAME} ${SDL2MINI_LIBRARY})
+target_link_libraries(${PROJECT_NAME} ${SDL2_TTF_LIBRARY})
 
 if(WIN32)
   target_link_libraries( ${PROJECT_NAME} psapi )
@@ -59,17 +61,18 @@ endif(APPLE)
 
 if(UNIX AND NOT APPLE)
   target_link_libraries(${PROJECT_NAME} "dl")
+  set(EXECUTABLE_FILENAME "tileset.linux")
 endif()
 
 set_property(TARGET ${PROJECT_NAME} PROPERTY OUTPUT_NAME ${EXECUTABLE_FILENAME})
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
-  message("CaesarIA-updater: building in release mode")
+  message("CaesarIA-tileset: building in release mode")
   if(NOT APPLE)
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s")
   endif()
 else()
-  message("CaesarIA-updater: building in debug mode")
+  message("CaesarIA-tileset: building in debug mode")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -g")
 endif(CMAKE_BUILD_TYPE STREQUAL "Release")
 
@@ -79,15 +82,15 @@ if(WIN32)
 endif(WIN32)
 
 # prepare working directory
-set(UPDATER_BINARY_FILENAME ${EXECUTABLE_FILENAME})
+set(TILESET_BINARY_FILENAME ${EXECUTABLE_FILENAME})
 if(WIN32)
-  set(UPDATER_BINARY_FILENAME ${UPDATER_BINARY_FILENAME}.exe)
+  set(TILESET_BINARY_FILENAME ${UPDATER_BINARY_FILENAME}.exe)
 endif(WIN32)
 
 ADD_CUSTOM_COMMAND(
     TARGET ${PROJECT_NAME}
     POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${UPDATER_BINARY_FILENAME}" "${WORK_DIR}/${UPDATER_BINARY_FILENAME}"
+    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${TILESET_BINARY_FILENAME}" "${WORK_DIR}/tools/${TILESET_BINARY_FILENAME}"
 )
 
 if(EXT_BINDIR)
@@ -95,7 +98,7 @@ if(EXT_BINDIR)
   ADD_CUSTOM_COMMAND(
       TARGET ${PROJECT_NAME}
       POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${GAME_BINARY_FILENAME}" "${CMAKE_SOURCE_DIR}/${EXT_BINDIR}/${UPDATER_BINARY_FILENAME}"
+      COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${TILESET_BINARY_FILENAME}" "${CMAKE_SOURCE_DIR}/${EXT_BINDIR}/tools/${TILESET_BINARY_FILENAME}"
   )
 endif(EXT_BINDIR)
 

@@ -89,15 +89,8 @@ void Overlays::update(PlayerCityPtr city, unsigned int time)
 void Overlays::recalcRoadAccess()
 {
   // for each overlay
-  for( auto ov : *this )
-  {
-    ConstructionPtr construction = ov.as<Construction>();
-    if( construction != NULL )
-    {
-      // overlay matches the filter
-      construction->computeRoadside();
-    }
-  }
+  this->select<Construction>()
+        .for_each( [](ConstructionPtr ptr){ ptr->computeRoadside();} );
 }
 
 void Overlays::onDestroyOverlay(PlayerCityPtr city, OverlayPtr overlay)

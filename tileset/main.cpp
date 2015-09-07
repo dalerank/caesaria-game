@@ -24,21 +24,28 @@
 #include "core/utils.hpp"
 #include "gfx/picture.hpp"
 #include "vfs/directory.hpp"
-#include "SDL/SDL_video.h"
+#include <SDL_video.h>
+#include <SDL.h>
 
 class ImageName
 {
 public:
-  SDL_Surface* image;
+  gfx::Picture image;
   std::string name;
 
-  ImageName(SDL_Surface* rimage, const std::string& rname)
+  ImageName(gfx::Picture rimage, const std::string& rname)
   {
     image = rimage;
     name = rname;
   }
 
-  ImageName(const ImageName& a )
+  ImageName& operator=(const ImageName& a)
+  {
+    image = a.image;
+    name = a.name;
+  }
+
+  ImageName(const ImageName& a)
   {
     image = a.image;
     name = a.name;
@@ -46,8 +53,8 @@ public:
 
   bool operator<(const ImageName& image2) const
   {
-    int area1 = this->image->w * this->image->h;
-    int area2 = image2.image->w * image2.image->h;
+    int area1 = this->image.width() * this->image.height();
+    int area2 = image2.image.width() * image2.image.height();
 
     if(area1 != area2)
     {
@@ -55,7 +62,7 @@ public:
     }
     else
     {
-      return strcmp(this->name.c_str(), image2.name.c_str()) < 0;
+      return name < image2.name;
     }
   }
 };
@@ -67,100 +74,89 @@ private:
   {
   public:
     Rect rect;
-    std::vector<Node*> child;
-    SDL_Surface* image;
+    Node* child1;
+    Node* child2;
+    gfx::Picture image;
 
     Node(int x, int y, int width, int height)
     {
-      rect = Rect(x, y, width, height);
-      child.resize(2);
-      child[0] = nullptr;
-      child[1] = nullptr;
-      image = nullptr;
+      rect = Rect( Point(x, y), Size(width, height) );
+      child1 = nullptr;
+      child2 = nullptr;
     }
 
     bool IsLeaf()
     {
-      return child[0] == nullptr && child[1] == nullptr;
+      return child1 == nullptr && child2 == nullptr;
     }
 
     // Algorithm from http://www.blackpawn.com/texts/lightmaps/
-    Node* Insert(SDL_Surface* image, int padding)
+    Node* Insert(gfx::Picture rimage, int padding)
     {
       if(!IsLeaf())
       {
-        Node* newNode = child[0]->Insert(image, padding);
+        Node* newNode = child1->Insert(rimage, padding);
 
         if(newNode != nullptr)
         {
           return newNode;
         }
 
-        return child[1]->Insert(image, padding);
+        return child2->Insert(rimage, padding);
       }
       else
       {
-        if(this->image != nullptr)
+        if( this->image.isValid() )
         {
           return nullptr; // occupied
         }
 
-        if(image->w > rect.width() || image->h > rect.height() )
+        if(rimage.width() > rect.width() || rimage.height() > rect.height() )
         {
           return nullptr; // does not fit
         }
 
-        if(image->w == rect.width() && image->h == rect.height())
+        if(rimage.width() == rect.width() && rimage.height() == rect.height())
         {
-          this->image = image; // perfect fit
+          this->image = rimage; // perfect fit
           return this;
         }
 
-        int dw = rect.width() - image->w;
-        int dh = rect.height() - image->h;
+        int dw = rect.width() - rimage.width();
+        int dh = rect.height() - rimage.height();
 
         if(dw > dh)
         {
-          child[0] = new Node(rect.left(), rect.top(), image->w, rect.height());
-          child[1] = new Node(padding+rect.left()+image->w, rect.top(), rect.width() - image->w - padding, rect.height());
+          child1 = new Node(rect.left(), rect.top(), rimage.width(), rect.height());
+          child2 = new Node(padding+rect.left()+rimage.width(), rect.top(), rect.width() - rimage.width() - padding, rect.height());
         }
         else
         {
-          child[0] = new Node(rect.left(), rect.top(), rect.width(), image->h);
-          child[1] = new Node(rect.left(), padding+rect.top()+image->h, rect.width(), rect.height() - image->h - padding);
+          child1 = new Node(rect.left(), rect.top(), rect.width(), rimage.height());
+          child2 = new Node(rect.left(), padding+rect.top()+rimage.height(), rect.width(), rect.height() - rimage.height() - padding);
         }
-        /*if(dw > dh)
-        {
-          child[0] = new Node(rect.x, rect.y, image.getWidth(), rect.height);
-          child[1] = new Node(padding+rect.x+image.getWidth(), rect.y, rect.width - image.getWidth(), rect.height);
-        }
-        else
-        {
-          child[0] = new Node(rect.x, rect.y, rect.width, image.getHeight());
-          child[1] = new Node(rect.x, padding+rect.y+image.getHeight(), rect.width, rect.height - image.getHeight());
-        }*/
 
-        return child[0]->Insert(image, padding);
+        return child1->Insert(rimage, padding);
       }
     }
   };
 
 private:
-  SDL_Surface* image;
-  //Graphics2D graphics;
+  gfx::Picture image;
   Node* root;
-  std::map<std::string, Rect> rectangleMap;
+  std::map<std::string, Node*> rectangleMap;
 
 public:
   Texture(int width, int height)
   {
-    image = SDL_CreateRGBSurface( 0, width, height, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
+    image = gfx::Picture( Size( width, height ), 0, true );
+    image.fill( DefaultColors::clear );
     //graphics = image.createGraphics();
 
     root = new Node(0,0, width, height);
   }
 
-  bool AddImage(SDL_Surface* rimage, const std::string& name, int padding)
+  bool AddImage(gfx::Picture rimage, const std::string& name, int padding)
   {
     Node* node = root->Insert(rimage, padding);
 
@@ -169,9 +165,9 @@ public:
       return false;
     }
 
-    rectangleMap[name] = node->rect;
-    SDL_Rect rect = { (short)node->rect.left(), (short)node->rect.top(), (ushort)rimage->w, (ushort)rimage->h };
-    SDL_BlitSurface( rimage, nullptr, image, &rect );
+    rectangleMap[name] = node;
+    SDL_Rect rect = { (short)node->rect.left(), (short)node->rect.top(), (ushort)rimage.width(), (ushort)rimage.height() };
+    SDL_BlitSurface( rimage.surface(), nullptr, image.surface(), &rect );
 
     return true;
   }
@@ -192,7 +188,7 @@ public:
       atlas.write( frames.c_str(), frames.size() );
       for( auto&& e : rectangleMap )
       {
-        Rect r = e.second;
+        Rect r = e.second->rect;
         std::string keyVal = e.first;
 
         if (fileNameOnly)
@@ -248,7 +244,7 @@ public:
     std::set<ImageName> imageNameSet;
     PictureLoaderPng pngLoader;
 
-    for( auto&& filename : imageFiles)
+    for( const std::string& filename : imageFiles)
 		{
 			try
 			{
@@ -262,7 +258,7 @@ public:
 					return;
 				}			        
 				
-        ImageName in(image.surface(), file.path().baseName(false).toString() );
+        ImageName in(image, file.path().baseName(false).toString() );
         imageNameSet.insert( in );
 			}
       catch(...)
@@ -272,16 +268,17 @@ public:
 		}
 		
     std::vector<Texture*> textures;
-    textures.push_back( new Texture(width, height) );
+    Texture* tx = new Texture(width, height);
+    textures.push_back( tx );
 		int count = 0;
 		
-		for(ImageName imageName : imageNameSet)
+    for(auto&& imageName : imageNameSet)
 		{
       bool added = false;
 			
       Logger::warning( "Adding " + imageName.name + " to atlas (" + utils::i2str(++count) + ")");
 			
-      for( auto texture : textures)
+      for( auto&& texture : textures)
 			{
         if(texture->AddImage(imageName.image, imageName.name, padding))
 				{
@@ -327,28 +324,40 @@ public:
 
 int main(int argc, char* argv[])
 {
-  if(argc < 4)
+  SDL_Init(SDL_INIT_VIDEO);
+
+  SDL_Window* window = SDL_CreateWindow("Tileset",
+                            SDL_WINDOWPOS_CENTERED,
+                            SDL_WINDOWPOS_CENTERED,
+                            800, 600,
+                            SDL_WINDOW_OPENGL );
+  SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
+
+
+  Logger::registerWriter( Logger::consolelog, "" );
+
+  if(argc < 5)
   {
-    Logger::warning("Texture Atlas Generator by Lukasz Bruun - lukasz.dk");
+    Logger::warning("CaesarIA texture atlas generator by Dalerank(java code Lukasz Bruun)");
     Logger::warning("\tUsage: AtlasGenerator <name> <width> <height> <padding> <ignorePaths> <unitCoordinates> <directory> [<directory> ...]");
     Logger::warning("\t\t<padding>: Padding between images in the final texture atlas.");
     Logger::warning("\t\t<ignorePaths>: Only writes out the file name without the path of it to the atlas txt file.");
-    Logger::warning("\t\t<unitCoordinates>: Coordinates will be written to atlas txt file in 0..1 range instead of 0..width, 0..height range");
-    Logger::warning("\tExample: AtlasGenerator atlas 2048 2048 5 1 1 images");
+    Logger::warning("\t\t<unitCoordinates>: Coordinates will be written to atlas json file in 0..1 range instead of 0..width, 0..height range");
+    Logger::warning("\tExample: tileset atlas 2048 2048 5 1 1 images");
     return 0;
   }
 
   AtlasGenerator atlasGenerator;
   StringArray dirs;
 
-  for(int i = 6; i < argc; ++i)
+  for(int i = 7; i < argc; ++i)
     dirs << argv[i];
 
-  atlasGenerator.Run(argv[0],
-                     utils::toInt(argv[1]),
+  atlasGenerator.Run(argv[1],
                      utils::toInt(argv[2]),
                      utils::toInt(argv[3]),
-                     utils::toInt(argv[4]) != 0,
+                     utils::toInt(argv[4]),
                      utils::toInt(argv[5]) != 0,
+                     utils::toInt(argv[6]) != 0,
                      dirs);
 }

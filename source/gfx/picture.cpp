@@ -79,15 +79,17 @@ Size Picture::size() const                    { return _orect.size(); }
 unsigned int Picture::sizeInBytes() const     { return size().area() * 4; }
 bool Picture::isValid() const                 { return (_d->texture || _d->opengltx); }
 
+#ifndef CAESARIA_DISABLE_PICTUREBANK
 void Picture::load( const std::string& group, const int id )
 {
   *this = PictureBank::instance().getPicture( group, id );
 }
 
-void Picture::load(const std::string& filename )
+void Picture::load( const std::string& filename )
 {
   *this = PictureBank::instance().getPicture( filename );
 }
+#endif
 
 void Picture::setAlpha(unsigned char value)
 {
@@ -175,10 +177,12 @@ void Picture::update()
     return;
   }
 
+#ifndef CAESARIA_DISABLE_PICTUREBANK
   if( _d->surface && _d->opengltx > 0 )
   {    
     Engine::instance().loadPicture( *this, false );
   }
+#endif
 }
 
 void Picture::fill( const NColor& color, Rect rect )
@@ -211,14 +215,17 @@ Picture::Picture(const Size& size, unsigned char* data, bool mayChange) : _d( ne
     SDL_FillRect( _d->surface, 0, 0 );
   }
 
+#ifndef CAESARIA_DISABLE_PICTUREBANK
   Engine::instance().loadPicture( *this, mayChange );
   if( !mayChange )
   {
     SDL_FreeSurface( _d->surface );
     _d->surface = 0;
   }
+#endif
 }
 
+#ifndef CAESARIA_DISABLE_PICTUREBANK
 Picture::Picture(const std::string& group, const int id) : _d( new PictureImpl )
 {
   _d->drop();
@@ -230,6 +237,7 @@ Picture::Picture(const std::string& filename )  : _d( new PictureImpl )
    _d->drop();
   load( filename );
 }
+#endif
 
 const Picture& Picture::getInvalid() {  return _invalidPicture; }
 

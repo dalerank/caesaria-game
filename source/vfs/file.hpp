@@ -27,6 +27,7 @@ class NFile : public Entity
 {
 public:	
   NFile( FSEntityPtr file );
+  NFile( const NFile& nfile );
 
   NFile();
 
@@ -73,7 +74,7 @@ public:
   static bool remove( Path filename );
   static bool rename( Path oldpath, Path newpath );
 
-private:
+private:  
   FSEntityPtr _entity;
 };
 
