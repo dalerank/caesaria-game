@@ -23,12 +23,23 @@
 namespace city
 {
 
-typedef std::vector< ServiceCreatorPtr > Creators;
+typedef SmartList<ServiceCreator> Creators;
 
 class ServiceFactory::Impl
 {
 public:
   Creators creators;
+
+  ServiceCreatorPtr find( const std::string& name )
+  {
+    for( auto creator : creators )
+    {
+      if( name == creator->serviceName() )
+        return creator;
+    }
+
+    return ServiceCreatorPtr();
+  }
 };
 
 SrvcPtr ServiceFactory::create( PlayerCityPtr city, const std::string& name )
@@ -38,15 +49,12 @@ SrvcPtr ServiceFactory::create( PlayerCityPtr city, const std::string& name )
 
   Logger::warning( "CityServiceFactory: try find creator for service " + srvcType );
 
-  ServiceFactory& inst = instance();
-  for( auto creator : inst._d->creators )
+  auto creator = instance()._d->find( srvcType );
+  if( creator.isValid() )
   {
-    if( srvcType == creator->serviceName() )
-    {
-      city::SrvcPtr srvc = creator->create( city );
-      srvc->setName( name );
-      return srvc;
-    }
+    city::SrvcPtr srvc = creator->create( city );
+    srvc->setName( name );
+    return srvc;
   }
 
   Logger::warning( "CityServiceFactory: not found creator for service " + name );
@@ -58,13 +66,12 @@ void ServiceFactory::addCreator( ServiceCreatorPtr creator )
   if( creator.isNull() )
     return;
 
-  for( auto item : _d->creators )
+  auto found = _d->find( creator->serviceName() );
+
+  if( found.isValid() )
   {
-    if( creator->serviceName() == item->serviceName() )
-    {
-      Logger::warning( "CityServiceFactory: Also have creator for service " + creator->serviceName() );
-      return;
-    }
+    Logger::warning( "CityServiceFactory: Also have creator for service " + creator->serviceName() );
+    return;
   }
 
   _d->creators.push_back( creator );

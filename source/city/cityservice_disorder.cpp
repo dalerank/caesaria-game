@@ -323,10 +323,14 @@ void Disorder::Impl::generateProtestor(PlayerCityPtr city, HousePtr house)
 
 void Disorder::Impl::changeCrimeLevel(PlayerCityPtr city, int delta )
 {
-  HouseList houses = city->statistic().houses.find();
-
-  for( auto house : houses )
-    house->appendServiceValue( Service::crime, delta );
+  city->statistic().houses
+                   .find()
+                   .for_each(
+                              [delta](HousePtr house)
+                              {
+                                house->appendServiceValue( Service::crime, delta );
+                              }
+                            );
 }
 
 }//end namespace city

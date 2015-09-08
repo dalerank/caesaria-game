@@ -33,7 +33,7 @@
 namespace city
 {
 
-void Services::timeStep(PlayerCityPtr city, unsigned int time)
+void Services::update(PlayerCityPtr city, unsigned int time)
 {
   iterator serviceIt = begin();
   while( serviceIt != end() )
@@ -156,6 +156,12 @@ void Walkers::update(PlayerCityPtr, unsigned int time)
 
   grid.update( *this );
   grid.sort();
+}
+
+void city::Services::destroyAll()
+{
+  for (auto srvc : *this)
+    srvc->destroy();
 }
 
 }//end namespace city

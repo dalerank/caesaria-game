@@ -31,8 +31,9 @@ class Services : public city::SrvcList
 {
 public:
   /** Call every frame */
-  void timeStep( PlayerCityPtr city, unsigned int time);
+  void update( PlayerCityPtr city, unsigned int time);
   void initialize( PlayerCityPtr city, const std::string& model );
+  void destroyAll();
 };
 
 /**  */

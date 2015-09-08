@@ -224,7 +224,7 @@ void PlayerCity::timeStep(unsigned int time)
   _d->statistic->update( time );
   _d->walkers.update( this, time );
   _d->overlays.update( this, time );
-  _d->services.timeStep( this, time );
+  _d->services.update( this, time );
   city::Timers::instance().update( time );
 
   if( getOption( updateRoads ) > 0 )
@@ -275,16 +275,9 @@ econ::Treasury& PlayerCity::treasury()           { return _d->economy;   }
 
 int PlayerCity::strength() const
 {
-  FortList forts = statistic().objects.find<Fort>();
-
-  int ret = 0;
-  for (auto fort : forts)
-  {
-    SoldierList soldiers = fort->soldiers();
-    ret += soldiers.size();
-  }
-
-  return ret;
+  return statistic().objects
+                    .find<Fort>()
+                    .summ<int>(0, [](FortPtr f) { return f->soldiers_n(); } );
 }
 
 DateTime PlayerCity::lastAttack() const
@@ -328,9 +321,8 @@ void PlayerCity::save( VariantMap& stream) const
 
   LOG_CITY.info( "Save overlays information" );
   VariantMap vm_overlays;
-  foreach( it, _d->overlays)
+  for( auto overlay : _d->overlays )
   {
-    OverlayPtr overlay = *it;
     VariantMap vm_overlay;
     object::Type otype = object::unknown;
 
@@ -566,9 +558,7 @@ int PlayerCity::getOption(PlayerCity::OptionType opt) const
 
 void PlayerCity::clean()
 {
-  for (auto srvc : _d->services)
-    srvc->destroy();
-
+  _d->services.destroyAll();
   _d->services.clear();
   _d->walkers.clear();
   city::Timers::instance().reset();

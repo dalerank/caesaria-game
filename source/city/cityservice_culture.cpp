@@ -90,9 +90,10 @@ struct SubRating
       return 0;
     }
     /** buildings which we need check **/
-    SmartList<T> list = rcity->statistic().objects.find<T>( whatFind );
-    for( auto it : list)
-      { visitors += it->currentVisitors(); }
+    rcity->statistic().objects
+                      .find<T>( whatFind )
+                      .for_each( [this](SmartPtr<T> r){ visitors += r->currentVisitors(); } );
+
     float coverage = visitors / population;
 
     return coverage;
