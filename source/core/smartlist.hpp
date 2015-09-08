@@ -85,6 +85,19 @@ public:
     return SmartPtr<T>();
   }
 
+  template<class U>
+  SmartPtr<U> firstOrEmpty()
+  {
+    for( auto it : *this )
+    {
+      SmartPtr<U> ptr = ptr_cast<U>( it );
+      if( ptr.isValid() )
+        return ptr;
+    }
+
+    return SmartPtr<U>();
+  }
+
   template< class Q >
   Q summ( const Q& initial, std::function<Q (SmartPtr<T>)> func_summ )
   {

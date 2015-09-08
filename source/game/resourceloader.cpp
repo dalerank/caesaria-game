@@ -48,7 +48,7 @@ ResourceLoader::~ResourceLoader(){  }
 void ResourceLoader::loadFromModel( Path path2model, const Directory dir )
 {
   VariantMap archives = config::load( path2model );
-  for( auto entry : archives )
+  for( auto&& entry : archives )
   {
     Path absArchivePath( entry.second.toString() );
 
@@ -87,7 +87,7 @@ void ResourceLoader::loadAtlases(vfs::NFile archiveInfo, bool lazy)
     VariantMap vm = config::load( archiveInfo );
 
     StringArray atlasNames = vm.get( atlasListSection ).toStringArray();
-    for( auto name : atlasNames )
+    for( auto& name : atlasNames )
     {
       if( lazy )
       {        
@@ -118,7 +118,7 @@ void ResourceLoader::loadFiles(ArchivePtr archive)
 
   std::string basename;
   basename.reserve( 256 );
-  for( auto entry : files )
+  for( auto& entry : files )
   {
     NFile file = archive->createAndOpenFile( entry.name );
     if( file.isOpen() )

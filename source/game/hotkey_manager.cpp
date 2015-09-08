@@ -71,7 +71,7 @@ Signal1<const VariantMap&>& HotkeyManager::onHotkey() { return _d->onHotkeySigna
 void HotkeyManager::load(vfs::Path file)
 {
   VariantMap stream = config::load( file );
-  for( auto it : stream )
+  for( auto&& it : stream )
   {
     KeyCode hotkey = _d->hkMapper.findType( it.first );
     if( hotkey == KEY_KEY_CODES_COUNT )
