@@ -76,7 +76,7 @@ public:
     return *this;
   }
 
-  SmartPtr<T> find( std::function<bool (SmartPtr<T>)> func_compare )
+  SmartPtr<T> find( std::function<bool (SmartPtr<T>)> func_compare ) const
   {
     for( auto&& item : *this )
       if( func_compare( item ) )
@@ -86,7 +86,7 @@ public:
   }
 
   template<class U>
-  SmartPtr<U> firstOrEmpty()
+  SmartPtr<U> firstOrEmpty() const
   {
     for( auto it : *this )
     {
@@ -99,7 +99,7 @@ public:
   }
 
   template< class Q >
-  Q summ( const Q& initial, std::function<Q (SmartPtr<T>)> func_summ )
+  Q summ( const Q& initial, std::function<Q (SmartPtr<T>)> func_summ ) const
   {
     Q ret = initial;
     for( auto&& item : *this )

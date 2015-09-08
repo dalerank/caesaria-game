@@ -41,7 +41,8 @@
 #include "core/color.hpp"
 #include "core/variant_list.hpp"
 
-using namespace gfx;
+namespace gfx
+{
 
 namespace {
 const char* framesSection = "frames";
@@ -255,12 +256,12 @@ Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
   }
 
   unsigned int hash = Hash( name );
-  foreach( i, atlases )
+  for( auto&& curAtlass : atlases )
   {
-    bool found = i->find( hash );
+    bool found = curAtlass.find( hash );
     if( found )
     {
-      loadAtlas( (*i).filename );
+      loadAtlas( curAtlass.filename );
       //unloadAtlas.erase( i );
       break;
     }
@@ -317,3 +318,5 @@ void PictureBank::Impl::loadAtlas(const vfs::Path& filePath)
     }
   }
 }
+
+}//end namespace gfx

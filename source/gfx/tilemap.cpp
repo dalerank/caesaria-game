@@ -138,11 +138,7 @@ TilePos Tilemap::p2tp(const Point &pos)
 Tile& Tilemap::at(const int i, const int j) {  return _d->at( i, j );}
 const Tile& Tilemap::at(const int i, const int j) const  {  return _d->at( i, j ); }
 Tile& Tilemap::at( const TilePos& ij ){  return _d->at( ij.i(), ij.j() ); }
-
-const Tile& Tilemap::at( const TilePos& ij ) const
-{
-  return const_cast<Tilemap*>( this )->at( ij.i(), ij.j() );
-}
+const Tile& Tilemap::at( const TilePos& ij) const {  return this->at( ij.i(), ij.j() ); }
 
 TilesArray Tilemap::allTiles() const
 {
@@ -231,31 +227,36 @@ TilesArray Tilemap::getRectangle( TilePos start, TilePos stop, const bool corner
 
   int tmpij = start.i();
   //west side
+  TilePos location;
   for(int j = start.j() + delta_corners; j <= stop.j() - delta_corners; ++j)
   {
-    if( isInside( TilePos( tmpij, j  ) ) )
-      res.push_back( &at( tmpij, j ));
+    location.set( tmpij, j );
+    if( isInside( location ) )
+      res.push_back( &at( location ));
   }
 
   tmpij = stop.j();
   for(int i = start.i() + 1; i <= stop.i() - delta_corners; ++i)
   {
-    if( isInside( TilePos( i, tmpij  ) ) )
-      res.push_back( &at(i, tmpij ));
+    location.set( i, tmpij );
+    if( isInside( location ) )
+      res.push_back( &at( location ));
   }
 
   tmpij = stop.i();
   for (int j = stop.j() - 1; j >= start.j() + delta_corners; --j)  // corners have been handled already
   {
-    if( isInside( TilePos( tmpij, j ) ))
-      res.push_back(&at( tmpij, j));
+    location.set( tmpij, j );
+    if( isInside( location ))
+      res.push_back(&at( location ));
   }
 
   tmpij = start.j();
   for( int i = stop.i() - 1; i >= start.i() + 1; --i)  // corners have been handled already
   {
-    if( isInside( TilePos( i, tmpij )) )
-      res.push_back(&at( i, tmpij));
+    location.set( i, tmpij );
+    if( isInside( location ) )
+      res.push_back(&at( location ) );
   }
 
   return res;
@@ -282,13 +283,15 @@ TilesArray Tilemap::getArea(const TilePos& start, const TilePos& stop ) const
   Rect r( start.i(), start.j(), stop.i(), stop.j() );
   r.repair();
 
+  TilePos location;
   for (int i = r.left(); i <= r.right(); ++i)
   {
     for (int j = r.top(); j <= r.bottom(); ++j)
     {
-      if( isInside( TilePos( i, j ) ))
+      location.set( i, j );
+      if( isInside( location ))
       {
-        res.push_back( &( const_cast<Tilemap*>( this )->at( TilePos( i, j ) )) );
+        res.push_back( _d->at( location ) );
       }
     }
   }
@@ -421,19 +424,20 @@ void Tilemap::turnRight()
   _d->saveMasterTiles( masterTiles );
 
   const int& msize = _d->size;
-  Tile* tmp;
+  Tile* mTile;
   for( int i=0; i < msize/2;i++)
   {
     for( int j=i; j < msize-1-i;j++)
     {
-      tmp = _d->ate( i, j );
+      mTile = _d->ate( i, j );
       _d->set( i, j, _d->ate( msize -j-1, i ) );
       _d->set( msize-j-1, i, _d->ate( msize-i-1, msize-j-1 ) );
       _d->set( msize-i-1, msize-j-1, _d->ate( j, msize-i-1 ) );
-      _d->set( j, msize-i-1, tmp );
+      _d->set( j, msize-i-1, mTile );
     }
   }  
 
+  TilePos mTilePos;
   for( auto&& it : masterTiles )
   {    
     const Impl::TurnInfo& ti = it.second;
@@ -451,8 +455,8 @@ void Tilemap::turnRight()
 
     pSize = math::clamp<int>( pSize, 1, 10 );
 
-    TilePos mTilePos = ti.tile->epos() - TilePos( 0, pSize - 1 );
-    Tile* mTile = _d->ate( mTilePos );
+    mTilePos = ti.tile->epos() - TilePos( 0, pSize - 1 );
+    mTile = _d->ate( mTilePos );
     for( int i=0; i < pSize; i++ )
     {
       for( int j=0; j < pSize; j++ )
@@ -486,19 +490,20 @@ void Tilemap::turnLeft()
   _d->saveMasterTiles( masterTiles );
 
   unsigned int size = _d->size;
-  Tile* tmp;
+  Tile* mTile;
   for( unsigned int i=0;i<size/2;i++)
   {
     for( unsigned int j=i;j<size-1-i;j++)
     {
-      tmp = _d->ate( i, j );
+      mTile = _d->ate( i, j );
       _d->set( i, j, _d->ate( j, size-1-i ) );
       _d->set( j, size-1-i, _d->ate( size-1-i, size-1-j ) );
       _d->set( size-1-i, size-1-j, _d->ate( size-1-j, i ) );
-      _d->set( size-1-j, i, tmp );
+      _d->set( size-1-j, i, mTile );
     }
   }
 
+  TilePos mTilePos;
   for( auto&& it : masterTiles )
   {
     const Impl::TurnInfo& ti = it.second;
@@ -508,8 +513,8 @@ void Tilemap::turnLeft()
 
     pSize = math::clamp<int>( pSize, 1, 10);
 
-    TilePos mTilePos = ti.tile->epos() - TilePos( pSize - 1, 0 );
-    Tile* mTile = _d->ate( mTilePos );
+    mTilePos = ti.tile->epos() - TilePos( pSize - 1, 0 );
+    mTile = _d->ate( mTilePos );
     for( int i=0; i < pSize; i++ )
     {
       for( int j=0; j < pSize; j++ )

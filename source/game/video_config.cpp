@@ -59,12 +59,12 @@ vfs::Path Config::realPath(const std::string &movie) const
 
   if( realPath.extension().empty() )
   {
-    foreach( dirIt, _d->folders )
+    for( auto& dir : _d->folders )
     {
-      foreach( extIt, _d->extensions )
+      for( auto& ext : _d->extensions )
       {
-        realPath = sPath.changeExtension( *extIt );
-        realPath = dirIt->find( realPath.baseName(), vfs::Path::ignoreCase );
+        realPath = sPath.changeExtension( ext );
+        realPath = dir.find( realPath.baseName(), vfs::Path::ignoreCase );
 
         if( !realPath.toString().empty() )
           return realPath;
@@ -73,9 +73,9 @@ vfs::Path Config::realPath(const std::string &movie) const
   }
   else
   {
-    foreach( dirIt, _d->folders )
+    for( auto& dir : _d->folders )
     {
-      realPath = (*dirIt)/sPath;
+      realPath = dir/sPath;
 
       if( realPath.exist() )
         return realPath;

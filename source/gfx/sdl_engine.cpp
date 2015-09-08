@@ -618,7 +618,7 @@ void SdlEngine::drawLines(const NColor &color, const PointsArray& points)
   SDL_SetRenderDrawColor( _d->renderer, color.red(), color.green(), color.blue(), color.alpha() );
   std::vector<SDL_Point> _points;
   _points.reserve( points.size() );
-  for( auto p : points )
+  for( auto& p : points )
   {
     SDL_Point ps = { p.x(), p.y() };
     _points.push_back( ps );
