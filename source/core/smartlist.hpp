@@ -76,6 +76,25 @@ public:
     return *this;
   }
 
+  SmartPtr<T> find( std::function<bool (SmartPtr<T>)> func_compare )
+  {
+    for( auto&& item : *this )
+      if( func_compare( item ) )
+        return item;
+
+    return SmartPtr<T>();
+  }
+
+  template< class Q >
+  Q summ( const Q& initial, std::function<Q (SmartPtr<T>)> func_summ )
+  {
+    Q ret = initial;
+    for( auto&& item : *this )
+      ret += func_summ( item );
+
+    return ret;
+  }
+
   SmartList& addIfValid( SmartPtr< T > a )
   {
     if( a.isValid() )
@@ -147,6 +166,16 @@ public:
     typename SmartList<T>::const_iterator it = this->begin();
     std::advance( it, index );
     this->erase( it );
+  }
+
+  template< class W >
+  int count() const
+  {
+    int ret;
+    for( auto it : *this )
+      ret += (is_kind_of<W>( it ) ? 1 : 0);
+
+    return ret;
   }
 
   template< class W >

@@ -26,8 +26,6 @@
 #include "core/utils.hpp"
 #include "gfx/picture.hpp"
 #include "vfs/directory.hpp"
-#include <SDL_video.h>
-#include <SDL.h>
 
 #ifdef CAESARIA_PLATFORM_WIN
   #undef main
@@ -91,24 +89,24 @@ public:
       child2 = nullptr;
     }
 
-    bool IsLeaf()
+    bool isLeaf()
     {
       return child1 == nullptr && child2 == nullptr;
     }
 
     // Algorithm from http://www.blackpawn.com/texts/lightmaps/
-    Node* Insert(gfx::Picture rimage, int padding)
+    Node* insert(gfx::Picture rimage, int padding)
     {
-      if(!IsLeaf())
+      if(!isLeaf())
       {
-        Node* newNode = child1->Insert(rimage, padding);
+        Node* newNode = child1->insert(rimage, padding);
 
         if(newNode != nullptr)
         {
           return newNode;
         }
 
-        return child2->Insert(rimage, padding);
+        return child2->insert(rimage, padding);
       }
       else
       {
@@ -142,7 +140,7 @@ public:
           child2 = new Node(rect.left(), padding+rect.top()+rimage.height(), rect.width(), rect.height() - rimage.height() - padding);
         }
 
-        return child1->Insert(rimage, padding);
+        return child1->insert(rimage, padding);
       }
     }
   };
@@ -162,9 +160,9 @@ public:
     root = new Node(0,0, width, height);
   }
 
-  bool AddImage(gfx::Picture rimage, const std::string& name, int padding)
+  bool addImage(gfx::Picture rimage, const std::string& name, int padding)
   {
-    Node* node = root->Insert(rimage, padding);
+    Node* node = root->insert(rimage, padding);
 
     if(node == nullptr)
     {
@@ -172,28 +170,22 @@ public:
     }
 
     rectangleMap[name] = node;
-    SDL_Rect rect = { (short)node->rect.left(), (short)node->rect.top(),
-                      (unsigned short)rimage.width(), (unsigned short)rimage.height() };
-    SDL_BlitSurface( rimage.surface(), nullptr, image.surface(), &rect );
+    rimage.draw( node->image, node->rect.lefttop(), rimage.size() );
 
     return true;
   }
 
 public:
-  void Write(const std::string& name, bool fileNameOnly, bool unitCoordinates, int width, int height)
+  void write(const std::string& name, bool fileNameOnly, bool unitCoordinates, int width, int height)
   {
     try
     {
-      std::string filename = name+".png";
-      IMG_SavePNG( filename.c_str(), image.surface(), -1 );
+      image.save( name + ".png" );
 
       vfs::NFile atlas = vfs::NFile::open( name + ".atlas", vfs::Entity::fmWrite );
 
-      std::string header = "{\ntexture: \"" + name + ".png\" \n";
-      std::string frames = "  frames: {\n";
-
-      atlas.write( header.c_str(), header.size() );
-      atlas.write( frames.c_str(), frames.size() );
+      atlas.write( "{\ntexture: \"" + name + ".png\" \n" );
+      atlas.write( "  frames: {\n" );
       for( auto&& e : rectangleMap )
       {
         Rect r = e.second->rect;
@@ -201,6 +193,7 @@ public:
 
         if (fileNameOnly)
           keyVal = keyVal.substr(keyVal.find_last_of('/') + 1);
+
         if (unitCoordinates)
         {
           std::string str = utils::format( 0xff, "    %s %f %f %f %f", keyVal.c_str(),
@@ -208,17 +201,17 @@ public:
                                                            r.top()/(float)height,
                                                            r.width()/(float)width,
                                                            r.height()/(float)height );
-          atlas.write( str.c_str(), str.size() );
+          atlas.write( str );
         }
         else
         {
           std::string str = utils::format( 0xff, "    %s: [%d, %d, %d, %d]", keyVal.c_str(), r.left(), r.top(), r.width(), r.height() );
-          atlas.write( str.c_str(), str.size() );
+          atlas.write( str );
         }
 
-        atlas.write( "\n", 1 );
+        atlas.write( "\n" );
       }
-      atlas.write( "  }\n}", 5 );
+      atlas.write( "  }\n}" );
       atlas.flush();
     }
     catch(...)
@@ -233,7 +226,7 @@ class AtlasGenerator
 public:
   std::vector<Texture*> textures;
 
-  void Run(std::string name, int width, int height, int padding, bool fileNameOnly, bool unitCoordinates, const StringArray& dirs)
+  void run(std::string name, int width, int height, int padding, bool fileNameOnly, bool unitCoordinates, const StringArray& dirs)
 	{
     StringArray imageFiles;
 
@@ -246,7 +239,7 @@ public:
 				return;
 			}
 
-      GetImageFiles(path, imageFiles);
+      getImageFiles(path, imageFiles);
 		}
 
     Logger::warning( "Found %d images", imageFiles.size() );
@@ -259,7 +252,7 @@ public:
 			try
 			{
         vfs::NFile file = vfs::NFile::open( filename );
-        gfx::Picture image = pngLoader.load( file, streaming );
+        gfx::Picture image = pngLoader.load( file, true );
 
         if(image.width() > width || image.height() > height)
 				{
@@ -289,7 +282,7 @@ public:
 			
       for( auto&& texture : textures)
 			{
-        if(texture->AddImage(imageName.image, imageName.name, padding))
+        if(texture->addImage(imageName.image, imageName.name, padding))
 				{
 					added = true;
 					break;
@@ -299,7 +292,7 @@ public:
 			if(!added)
 			{
         Texture* texture = new Texture(width, height);
-        texture->AddImage(imageName.image, imageName.name, padding);
+        texture->addImage(imageName.image, imageName.name, padding);
         textures.push_back(texture);
 			}
 		}
@@ -308,12 +301,12 @@ public:
 		
     for(Texture* texture : textures)
 		{
-      //Logger::warning( "Writing atlas: " + name + utils::i2str(++count));
-      //texture->Write(name + utils::i2str(count), fileNameOnly, unitCoordinates, width, height);
+      Logger::warning( "Writing atlas: " + name + utils::i2str(++count));
+      texture->write(name + utils::i2str(count), fileNameOnly, unitCoordinates, width, height);
 		}
 	}
 	
-  void GetImageFiles(vfs::Path path, StringArray& imageFiles)
+  void getImageFiles(vfs::Path path, StringArray& imageFiles)
 	{
     if(path.isFolder())
 		{
@@ -325,7 +318,7 @@ public:
 			
       for( auto str : directories)
 			{
-        GetImageFiles( vfs::Path( str ), imageFiles);
+        getImageFiles( vfs::Path( str ), imageFiles);
 			}
 		}
   }
@@ -357,7 +350,7 @@ int main(int argc, char* argv[])
   for(int i = 7; i < argc; ++i)
     dirs << argv[i];
 
-  atlasGenerator.Run(argv[1],
+  atlasGenerator.run(argv[1],
                      utils::toInt(argv[2]),
                      utils::toInt(argv[3]),
                      utils::toInt(argv[4]),
@@ -384,9 +377,7 @@ int main(int argc, char* argv[])
       {
         Texture::Node* node = pair.second;
 
-        x = x++ % 100;
-        node->image.setAlpha( x );
-        engine->draw( node->image, Point( x, 0 ) );
+        engine->draw( node->image, node->rect.lefttop() );
       }
     }
 
