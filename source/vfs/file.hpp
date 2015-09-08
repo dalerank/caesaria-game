@@ -42,8 +42,8 @@ public:
 
   ByteArray readAll();
 
-  int write(const void* buffer, unsigned int sizeToWrite);
-
+  int write( const void* buffer, unsigned int sizeToWrite );
+  int write( const std::string& str );
   int write( const ByteArray& bArray );
 
   //! changes position in file, returns true if successful

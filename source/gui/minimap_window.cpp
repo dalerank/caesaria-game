@@ -31,7 +31,6 @@
 #include "core/tilerect.hpp"
 #include "texturedbutton.hpp"
 #include "gfx/helper.hpp"
-#include "gfx/IMG_savepng.h"
 #include "gfx/decorator.hpp"
 #include "city/states.hpp"
 
@@ -585,7 +584,7 @@ void Minimap::saveImage( const std::string& filename ) const
   _d->drawStaticMmap( savePic, true );
   _d->drawObjectsMmap( savePic, false, true );
   _d->drawWalkersMmap( savePic, false );
-  IMG_SavePNG( filename.c_str(), savePic.surface(), -1 );
+  savePic.save( filename );
 }
 
 void Minimap::update()

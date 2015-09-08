@@ -140,6 +140,11 @@ int NFile::write(const void* buffer, unsigned int sizeToWrite)
   return _entity.isValid() ? _entity->write( buffer, sizeToWrite ) : 0;
 }
 
+int NFile::write(const std::string& str )
+{
+  return write( str.c_str(), str.size() );
+}
+
 int NFile::write( const ByteArray& bArray )
 {
   return _entity.isValid() ? _entity->write( bArray ) : 0;

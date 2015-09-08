@@ -81,12 +81,15 @@ public:
   int pitch() const;
 
   void fill(const NColor& color, Rect rect=Rect() );
+  Picture& draw(Picture pic, const Point& point, const Size& size );
 
   unsigned int* lock();
   void unlock();
 
   Size size() const;
   unsigned int sizeInBytes() const;
+
+  void save( const std::string& filename );
 
   bool isValid() const;  
 

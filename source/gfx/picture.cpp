@@ -22,6 +22,7 @@
 #include "core/position.hpp"
 #include "core/rectangle.hpp"
 #include "gfx/picture_bank.hpp"
+#include "gfx/IMG_savepng.h"
 #include "gfx/engine.hpp"
 #include "core/requirements.hpp"
 #include "core/color.hpp"
@@ -78,6 +79,12 @@ const std::string& Picture::name() const      { return _name;}
 Size Picture::size() const                    { return _orect.size(); }
 unsigned int Picture::sizeInBytes() const     { return size().area() * 4; }
 bool Picture::isValid() const                 { return (_d->texture || _d->opengltx); }
+
+void Picture::save(const std::string& filename)
+{
+  if( _d->surface )
+    IMG_SavePNG( filename.c_str(), _d->surface, -1 );
+}
 
 #ifndef CAESARIA_DISABLE_PICTUREBANK
 void Picture::load( const std::string& group, const int id )
@@ -238,5 +245,19 @@ Picture::Picture(const std::string& filename )  : _d( new PictureImpl )
 #endif
 
 const Picture& Picture::getInvalid() {  return _invalidPicture; }
+
+Picture& Picture::draw(gfx::Picture pic, const Point& point, const Size& size)
+{
+  if( pic.surface() && _d->surface && _d->texture )
+  {
+    SDL_Rect rect = { (short)point.x(), (short)point.y(),
+                      (unsigned short)size.width(), (unsigned short)size.height() };
+    SDL_BlitSurface( pic.surface(), nullptr, _d->surface, &rect );
+
+    update();
+  }
+
+  return *this;
+}
 
 }//end namespace gfx
