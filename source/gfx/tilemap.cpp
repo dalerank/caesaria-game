@@ -65,7 +65,7 @@ public:
   Direction direction;
   int virtWidth;
 
-  Tile* ate(const TilePos& pos);
+  Tile* ate( const TilePos& pos );
   Tile* ate( const int i, const int j );
 
   Tile& at( const int i, const int j );
@@ -291,7 +291,7 @@ TilesArray Tilemap::getArea(const TilePos& start, const TilePos& stop ) const
       location.set( i, j );
       if( isInside( location ))
       {
-        res.push_back( _d->at( location ) );
+        res.push_back( &_d->at( location.i(), location.j() ) );
       }
     }
   }

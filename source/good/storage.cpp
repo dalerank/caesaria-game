@@ -169,7 +169,7 @@ void Storage::applyRetrieveReservation(good::Stock& stock, const int reservation
   }
 
   int amount = reservedStock.qty();
-  good::Stock &currentStock = getStock(reservedStock.type());
+  good::Stock& currentStock = getStock(reservedStock.type());
   currentStock.pop( amount );
   stock.push( amount );
 }

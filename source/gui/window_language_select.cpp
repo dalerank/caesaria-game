@@ -38,8 +38,15 @@ namespace gui
 namespace dialog
 {
 
+class LanguageSelect::Impl
+{
+public:
+  vfs::Path model;
+};
+
 LanguageSelect::LanguageSelect(gui::Widget* parent, vfs::Path model, const std::string& current, Size size)
-  : Label( parent, Rect( Point(), size ), "", false, gui::Label::bgWhiteFrame )
+  : Label( parent, Rect( Point(), size ), "", false, gui::Label::bgWhiteFrame ),
+    _d( new Impl )
 {
   ListBox* lbx = new ListBox( this, Rect( 0, 0, 1, 1 ), -1, true, true );
   PushButton* btn = new PushButton( this, Rect( 0, 0, 1, 1), _("##continue##") );
@@ -50,8 +57,8 @@ LanguageSelect::LanguageSelect(gui::Widget* parent, vfs::Path model, const std::
   lbx->setGeometry( RectF( 0.05, 0.05, 0.95, 0.85 ) );
   btn->setGeometry( RectF( 0.1, 0.88, 0.9, 0.95 ) );
 
-  _model = model;
-  VariantMap languages = config::load( _model );
+  _d->model = model;
+  VariantMap languages = config::load( _d->model );
 
   int currentIndex = -1;
   for( auto it : languages )
@@ -75,7 +82,7 @@ void LanguageSelect::setDefaultFont(const std::string& fontname)
 
 void LanguageSelect::_changeLanguage(const gui::ListBoxItem& item)
 {
-  VariantMap languages = config::load( _model );
+  VariantMap languages = config::load( _d->model );
   for( auto it : languages )
   {
     if( item.text() == it.first )
