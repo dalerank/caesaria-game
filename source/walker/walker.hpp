@@ -35,7 +35,7 @@
 #include "predefinitions.hpp"
 
 class Pathway;
-namespace gfx { class Tile; class Animation; }
+namespace gfx { class Tile; class Animation; class Tilemap; }
 
 class Walker : public Serializable, public ReferenceCounted
 {
@@ -145,6 +145,7 @@ protected:
   void _setLocation( gfx::Tile* tile );
   void _setType( walker::Type type );
   PlayerCityPtr _city() const;
+  gfx::Tilemap& _map() const;
   void _setHealth( double value );
   void _updateAnimation(const unsigned int time);
   void _setWpos(const Point &pos );

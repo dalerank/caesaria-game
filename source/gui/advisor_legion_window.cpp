@@ -230,10 +230,10 @@ void Legion::Impl::updateAlarms(PlayerCityPtr city)
 {
   MilitaryPtr mil = city->statistic().services.find<Military>();
 
-  WalkerList chasteners = city->statistic().walkers.find( walker::romeChastenerSoldier );
-  WalkerList elephants = city->statistic().walkers.find( walker::romeChastenerElephant );
+  int chasteners_n = city->statistic().walkers.count( walker::romeChastenerSoldier );
+  int elephants_n = city->statistic().walkers.count( walker::romeChastenerElephant );
 
-  if( chasteners.size() || elephants.size() )
+  if( chasteners_n > 0 || elephants_n > 0 )
   {
     lbAlarm->setText( _("##emperror_legion_at_out_gates##") );
     return;

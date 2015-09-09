@@ -164,7 +164,7 @@ void Disorder::Impl::weekUpdate( unsigned int time, PlayerCityPtr rcity )
 {
   HouseList houses = rcity->statistic().houses.find();
 
-  const WalkerList& walkers = rcity->statistic().walkers.find( walker::protestor );
+  int protestor_n = rcity->statistic().walkers.count( walker::protestor );
 
   HouseList criminalizedHouse;
   crime.level.current = 0;
@@ -185,7 +185,7 @@ void Disorder::Impl::weekUpdate( unsigned int time, PlayerCityPtr rcity )
   if( houses.size() > 0 )
     crime.level.current /= houses.size();
 
-  if( criminalizedHouse.size() > walkers.size() )
+  if( criminalizedHouse.size() > protestor_n )
   {
     HousePtr house = criminalizedHouse.random();
     int hCrimeLevel = house->getServiceValue( Service::crime );

@@ -139,10 +139,9 @@ void ServiceWalker::_computeWalkerPath( int orders )
     orders = goServiceMaximum;
   }
 
-  ConstructionPtr ctr = base().as<Construction>();
   Propagator pathPropagator( _city() );
 
-  pathPropagator.init( ctr );
+  pathPropagator.init( base().as<Construction>() );
   pathPropagator.setAllDirections( Propagator::nwseDirections );
   pathPropagator.setObsoleteOverlays( _d->obsoleteOvs );
 
@@ -253,7 +252,7 @@ float ServiceWalker::evaluatePath( PathwayPtr pathWay )
       if (rc.second == true)
       {
         // the building has not been evaluated yet
-        int oneTileValue = bld->evaluateService( ServiceWalkerPtr( this ) );
+        int oneTileValue = bld->evaluateService( this );
         // mul serviceValue for buildingSize, need for more effectively count of path result
         res += (oneTileValue * bld->size().area() );
       }
@@ -331,7 +330,8 @@ void ServiceWalker::_centerTile()
 
   ReachedBuildings reachedBuildings = getReachedBuildings( pos() );
 
-  for( auto b : reachedBuildings ) { b->applyService( this ); }
+  for( auto b : reachedBuildings )
+    b->applyService( this );
 
   ServiceBuildingPtr servBuilding = base().as<ServiceBuilding>();
   if( servBuilding.isValid() )
@@ -553,9 +553,7 @@ ServiceWalkerPtr ServiceWalker::create(PlayerCityPtr city, const Service::Type s
 
 BuildingPtr ServiceWalker::base() const
 {
-  return _city().isValid()
-          ? _city()->getOverlay( baseLocation() ).as<Building>()
-          : BuildingPtr();
+  return _map().overlay( baseLocation() ).as<Building>();
 }
 
 ServiceWalker::~ServiceWalker() {}

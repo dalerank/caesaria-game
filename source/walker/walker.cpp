@@ -178,7 +178,7 @@ void Walker::timeStep(const unsigned long time)
 
 void Walker::setPos( const TilePos& pos )
 {
-  _d->map.tile = &_d->city->tilemap().at( pos );
+  _d->map.tile = &_map().at( pos );
   _d->world.pos = _d->map.tile->center().toPointF();
 
   _computeDirection();
@@ -387,6 +387,15 @@ PlayerCityPtr Walker::_city() const{  return _d->city;}
 void Walker::_setHealth(double value){  _d->state.health = value;}
 bool Walker::getFlag(Walker::Flag flag) const{ return _d->flags.count( flag ) > 0; }
 const Tile& Walker::tile() const {  return _d->map.tile ? *_d->map.tile : invalidTile; }
+
+Tilemap& Walker::_map() const
+{
+  if( _city().isValid() )
+    return _city()->tilemap();
+
+  Logger::warning( "!!! WARNING: City is null at Walker::_map()" );
+  return gfx::tilemap::getInvalid();
+}
 
 void Walker::setFlag(Walker::Flag flag, bool value)
 {

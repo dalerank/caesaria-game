@@ -135,9 +135,9 @@ void HealthCare::Impl::updateReasons( PlayerCityPtr city )
   int lvl = math::clamp<int>( value / (health::maxValue/health::levelNumber), 0, health::levelNumber-1 );
   std::string mainReason = healthDescription[ lvl ];
 
-  BuildingList clinics = city->statistic().objects.find<Building>( object::clinic );
+  int clinics_n = city->statistic().objects.count( object::clinic );
 
-  mainReason += clinics.size() > 0 ? "_clinic##" : "##";
+  mainReason += clinics_n > 0 ? "_clinic##" : "##";
 
   reasons << mainReason;
   if( lvl > health::levelNumber / 3 )

@@ -227,16 +227,17 @@ void EnemySoldier::_check4attack()
 ConstructionList EnemySoldier::_findContructionsInRange( unsigned int range )
 {
   ConstructionList ret;
-  Tilemap& tmap = _city()->tilemap();
+  Tilemap& tmap = _map();
 
   for( unsigned int k=0; k <= range; k++ )
   {
-    TilesArray tiles = tmap.getRectangle( k, pos() );
+    ConstructionList blds = tmap.getRectangle( k, pos() )
+                                .overlays()
+                                .select<Construction>();
 
-    for( auto tile : tiles )
+    for( auto b : blds )
     {
-      ConstructionPtr b = tile->overlay().as<Construction>();
-      if( b.isValid() && !_atExclude.count( b->group() ) )
+      if( !_atExclude.count( b->group() ) )
       {
         ret.push_back( b );
       }
@@ -313,9 +314,8 @@ Pathway EnemySoldier::_findPathway2NearestConstruction( unsigned int range )
 
   ConstructionList constructions = _findContructionsInRange( range );
 
-  foreach( it, constructions )
+  for( auto c : constructions )
   {
-    ConstructionPtr c = ptr_cast<Construction>( *it );
     ret = PathwayHelper::create( pos(), c, PathwayHelper::allTerrain );
     if( ret.isValid() )
     {

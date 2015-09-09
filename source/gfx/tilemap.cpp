@@ -38,9 +38,7 @@ public:
   ~TileRow()
   {
     for( auto&& tile : *this )
-    {
       delete tile;
-    }
   }
 };
 
@@ -69,8 +67,9 @@ public:
   Tile* ate( const int i, const int j );
 
   Tile& at( const int i, const int j );
+  Tile& at( const TilePos& pos ) { return at( pos.i(), pos.j() ); }
 
-  bool isInside( const TilePos& pos );
+  bool isInside( const TilePos& pos ) { return isInside( pos.i(), pos.j() ); }
   inline bool isInside( const int i, const int j ) { return( i >= 0 && j>=0 && i < size && j < size); }
 
   void resize( const int s );
@@ -138,6 +137,7 @@ TilePos Tilemap::p2tp(const Point &pos)
 Tile& Tilemap::at(const int i, const int j) {  return _d->at( i, j );}
 const Tile& Tilemap::at(const int i, const int j) const  {  return _d->at( i, j ); }
 Tile& Tilemap::at( const TilePos& ij ){  return _d->at( ij.i(), ij.j() ); }
+OverlayPtr Tilemap::overlay(const TilePos& ij) { return _d->at( ij ).overlay(); }
 const Tile& Tilemap::at( const TilePos& ij) const {  return this->at( ij.i(), ij.j() ); }
 
 TilesArray Tilemap::allTiles() const
@@ -194,11 +194,13 @@ int Tilemap::size() const { return _d->size; }
 TilesArray Tilemap::getNeighbors( const TilePos& pos, TileNeighbors type)
 {
   TilePos offset(1,1);
-  switch (type){
-    case AllNeighbors:
-      return getRectangle(pos - offset, pos + offset, checkCorners);
-    case FourNeighbors:
-      return getRectangle(pos - offset, pos + offset, !checkCorners);
+  switch (type)
+  {
+  case AllNeighbors:
+    return getRectangle(pos - offset, pos + offset, checkCorners);
+
+  case FourNeighbors:
+    return getRectangle(pos - offset, pos + offset, !checkCorners);
   }
 
   Logger::warning( "CRITICAL: Unexpected type %d in Tilemap::getNeighbors", type );
@@ -542,7 +544,7 @@ Tile* Tilemap::Impl::ate(const TilePos& pos )
 
 Tile* Tilemap::Impl::ate(const int i, const int j)
 {
-  if( isInside( TilePos( i, j ) ) )
+  if( isInside( i, j ) )
   {
     return (*this)[i][j];
   }
@@ -559,11 +561,6 @@ Tile& Tilemap::Impl::at(const int i, const int j)
 
   //Logger::warning( "Need inside point current=[%d, %d]", i, j );
   return gfx::tile::getInvalidSafe();
-}
-
-bool Tilemap::Impl::isInside(const TilePos& pos)
-{
-  return( pos.i() >= 0 && pos.j()>=0 && pos.i() < size && pos.j() < size);
 }
 
 void Tilemap::Impl::resize(const int s)

@@ -42,6 +42,8 @@ public:
 
   Tile& at( const int i, const int j );
   Tile& at( const TilePos& ij );
+
+  OverlayPtr overlay( const TilePos& ij );
   
   const Tile& at( const int i, const int j ) const;
   const Tile& at( const TilePos& ij ) const;
@@ -89,6 +91,7 @@ public:
 
   Tile* at(const Point& pos, bool overborder);
   TilePos p2tp( const Point& pos );
+
 private: 
   class Impl;
   ScopedPtr< Impl > _d;

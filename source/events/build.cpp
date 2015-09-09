@@ -65,8 +65,8 @@ void BuildAny::_exec( Game& game, unsigned int )
   }
 
   TilePos offset(10, 10);
-  EnemySoldierList enemies =  game.city()->statistic().walkers.find<EnemySoldier>( walker::any, _pos - offset, _pos + offset );
-  if( !enemies.empty() && _overlay->group() != object::group::disaster)
+  int enemies_n =  game.city()->statistic().walkers.count<EnemySoldier>( walker::any, _pos - offset, _pos + offset );
+  if( enemies_n > 0 && _overlay->group() != object::group::disaster)
   {
     GameEventPtr e = WarningMessage::create( "##too_close_to_enemy_troops##", 2 );
     e->dispatch();

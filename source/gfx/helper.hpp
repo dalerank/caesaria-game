@@ -23,6 +23,8 @@
 namespace gfx
 {
 
+class Tilemap;
+
 namespace imgid
 {
   std::string toResource( const unsigned int imgId );
@@ -51,6 +53,7 @@ namespace tilemap
 
   Direction getDirection( const TilePos& b, const TilePos& e );
   void initTileBase( int width );
+  Tilemap& getInvalid();
   const Point& cellCenter();
   const Size& cellPicSize();
   const Size& cellSize();

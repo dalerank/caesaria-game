@@ -34,6 +34,19 @@ void excludeByType( ObjectList& list, const Set& set )
   }
 }
 
+template<class ObjectList, class T>
+int countByType( const ObjectList& objects, const T& type )
+{
+  int ret = 0;
+  for( auto& it : objects )
+  {
+    if( it->type() == type )
+      ret++;
+  }
+
+  return ret;
+}
+
 template< class Object >
 SmartPtr<Object> findNearest( const TilePos& pos, const SmartList<Object>& list )
 {
