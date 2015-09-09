@@ -56,7 +56,7 @@ ConstructionExtensionPtr FactoryProgressUpdater::create()
 
 ConstructionExtensionPtr FactoryProgressUpdater::assignTo(FactoryPtr factory, float value, int week2finish)
 {
-  FactoryProgressUpdater* updater = new FactoryProgressUpdater();
+  auto updater = new FactoryProgressUpdater();
   updater->_options[ "value" ] = value;
 
   updater->_finishDate = game::Date::current();
@@ -133,7 +133,7 @@ ConstructionExtensionPtr FortCurseByMars::create()
 
 ConstructionExtensionPtr FortCurseByMars::assignTo(FortPtr fort, unsigned int monthsCurse)
 {
-  FortCurseByMars* curse = new FortCurseByMars();
+  auto curse = new FortCurseByMars();
   DateTime gdate = game::Date::current();
   gdate.appendMonth( monthsCurse );
   curse->_finishDate = gdate;
@@ -283,7 +283,7 @@ ConstructionExtensionPtr WarehouseBuff::uniqueTo(WarehousePtr warehouse, int gro
   if( ret.isValid() )
     return ret;
 
-  WarehouseBuff* buff = new WarehouseBuff();
+  auto buff = new WarehouseBuff();
   buff->_options[ "value" ] = value;
   buff->_options[ "group" ] = group;
   buff->_name = name;
@@ -317,7 +317,7 @@ ConstructionExtensionPtr ConstructionParamUpdater::create()
 
 ConstructionExtensionPtr ConstructionParamUpdater::assignTo(ConstructionPtr construction, Param paramName, bool relative, int value, int week2finish)
 {
-  ConstructionParamUpdater* buff = new ConstructionParamUpdater();
+  auto buff = new ConstructionParamUpdater();
   buff->_options[ "value" ] = value;
   buff->_options[ "relative" ] = relative;
   buff->_options[ "finishValue" ] = value;

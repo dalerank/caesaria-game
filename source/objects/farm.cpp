@@ -89,7 +89,7 @@ Picture FarmTile::computePicture( const good::Product outGood, const int percent
   good2pics[ good::grape     ] = 33;
   good2pics[ good::meat      ] = 38;
 
-  std::map<good::Product, int>::iterator rIt = good2pics.find( outGood );
+  auto rIt = good2pics.find( outGood );
   if( rIt != good2pics.end() )
   {
     picIdx = rIt->second;

@@ -104,7 +104,7 @@ SmartPtr<Object> findByName( const SmartList<Object> list, const std::string& na
 }
 
 template<class Object, class Parent>
-std::set<SmartPtr<Object>> select( const std::set<SmartPtr<Parent>>& objects )
+std::set<SmartPtr<Object>> uniques( const std::set<SmartPtr<Parent>>& objects )
 {
   std::set<SmartPtr<Object>> ret;
   for( auto item : objects )
