@@ -91,6 +91,9 @@ public:
     template< class T >
     SmartList< T > find( object::Type type ) const;
 
+    template< class T >
+    int count() const;
+
     int count( object::Type type ) const;
 
     template< class T >
@@ -491,6 +494,20 @@ inline SmartList< T > Statistic::_Objects::find( object::TypeSet types ) const
   }
 
   return ret;
+}
+
+template< class T >
+inline int Statistic::_Objects::count() const
+{
+  int result = 0;
+  const OverlayList& buildings = _parent.rcity.overlays();
+  for( auto bld : buildings )
+  {
+    if( is_kind_of<T>( bld ) )
+      result++;
+  }
+
+  return result;
 }
 
 template< class T >
