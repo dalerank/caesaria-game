@@ -37,10 +37,8 @@
 #include "core/utils.hpp"
 #include "core/font.hpp"
 #include "core/eventconverter.hpp"
-#include "core/foreach.hpp"
-#include "gfx/decorator.hpp"
-#include "game/settings.hpp"
 #include "core/timer.hpp"
+#include "core/debug_timer.hpp"
 #include "sdl_batcher.hpp"
 
 #ifdef CAESARIA_PLATFORM_MACOSX
@@ -90,7 +88,6 @@ public:
   void renderOnce(const Picture& pic, const Rect& src, const Rect& dstRect,
                   const Rect* clipRect, bool useTxOffset);
 };
-
 
 Picture& SdlEngine::screen(){  return _d->screen; }
 
@@ -146,7 +143,7 @@ SDL_Batch* __createBatch( SDL_Renderer* render, const Picture& pic, const Rects&
 
 Batch SdlEngine::loadBatch(const Picture &pic, const Rects &srcRects, const Rects &dstRects, const Rect *clipRect)
 {
-  if( !pic.isValid() )
+  if( !pic.isValid() || !_d->batcher.active() )
     return Batch();
 
   Batch ret;
@@ -246,8 +243,8 @@ void SdlEngine::init()
   Logger::warning("SDLGraficEngine: init successfull");
 #endif
 
-  int render_version = math::clamp( game::Settings::get( "render_mode" ).toInt(), 0, SDL_GetNumRenderDrivers());
-  SDL_Renderer *renderer = SDL_CreateRenderer(window, render_version-1, SDL_RENDERER_ACCELERATED );
+  //int render_version = math::clamp( game::Settings::get( "render_mode" ).toInt(), 0, SDL_GetNumRenderDrivers());
+  SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
 
   if (renderer == NULL)
   {
@@ -282,7 +279,9 @@ void SdlEngine::init()
 
   SDL_GetRendererInfo( renderer, &info );  
   int gl_version;
-  SDL_GL_GetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, &gl_version );
+  SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+  SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 16);
+  SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &gl_version );
   Logger::warning( "SDLGraficEngine: init render %s ", info.name );
   Logger::warning( "SDLGraficEngine: using OpenGL %d ", gl_version );
 
@@ -476,9 +475,9 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
 
   if( getFlag( Engine::batching ) )
   {
-    foreach( it, pictures )
+    for( auto&& pic : pictures )
     {
-      bool batched = _d->batcher.append( *it, pos, clipRect );
+      bool batched = _d->batcher.append( pic, pos, clipRect );
       if( !batched )
         _d->renderState();
     }
@@ -495,9 +494,8 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
     }
 
     const Impl::MaskInfo& mask = _d->mask;
-    foreach( it, pictures )
+    for( const Picture& picture : pictures )
     {
-      const Picture& picture = *it;
       SDL_Texture* ptx = picture.texture();
       const Rect& orect = picture.originRect();
       Size size = orect.size();
@@ -620,7 +618,7 @@ void SdlEngine::drawLines(const NColor &color, const PointsArray& points)
   SDL_SetRenderDrawColor( _d->renderer, color.red(), color.green(), color.blue(), color.alpha() );
   std::vector<SDL_Point> _points;
   _points.reserve( points.size() );
-  for( auto p : points )
+  for( auto& p : points )
   {
     SDL_Point ps = { p.x(), p.y() };
     _points.push_back( ps );

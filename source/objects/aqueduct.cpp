@@ -97,9 +97,9 @@ void Aqueduct::destroy()
   if( _city().isValid() )
   {
     TilesArea area( _city()->tilemap(), pos() - TilePos( 2, 2 ), Size( 5 ) );
-    AqueductList aqueducts = area.overlays().select<Aqueduct>();
-    for( auto aq : aqueducts )
-      aq->updatePicture( _city() );
+    area.overlays()
+        .select<Aqueduct>()
+        .for_each( [this](AqueductPtr aq){ aq->updatePicture( _city() ); });
   }
 
   if( tile().getFlag( Tile::tlRoad ) || _isRoad() )
@@ -107,7 +107,7 @@ void Aqueduct::destroy()
     RoadPtr r( new Road() );
     r->drop();
 
-    city::AreaInfo info = { _city(), pos(), TilesArray() };
+    city::AreaInfo info( _city(), pos() );
     r->build( info );
     _city()->addOverlay( ptr_cast<Overlay>( r ) );
   }
@@ -153,7 +153,7 @@ bool Aqueduct::canBuild( const city::AreaInfo& areaInfo) const
     for( auto tile : perimetr )
     {
       AqueductPtr bldAqueduct;
-      for( auto aTile : areaInfo.aroundTiles )
+      for( auto aTile : areaInfo.tiles() )
       {
         if( aTile->pos() == tile->pos() )
         {
@@ -189,7 +189,7 @@ const Picture& Aqueduct::picture( const city::AreaInfo& info ) const
 
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
 
-  const TilePos tile_pos = (info.aroundTiles.empty()) ? tile().epos() : info.pos;
+  const TilePos tile_pos = (info.tiles().empty()) ? tile().epos() : info.pos;
 
   if (!tmap.isInside(tile_pos))
   {
@@ -224,9 +224,9 @@ const Picture& Aqueduct::picture( const city::AreaInfo& info ) const
 
   // if we have a TMP array with aqueducts, calculate them
   const TilePos& p = info.pos;
-  if (!info.aroundTiles.empty())
+  if (!info.tiles().empty())
   {
-    for( auto tile : info.aroundTiles )
+    for( auto tile : info.tiles() )
     {
       int i = tile->epos().i();
       int j = tile->epos().j();
@@ -368,9 +368,9 @@ const Picture& Aqueduct::picture( const city::AreaInfo& info ) const
 bool Aqueduct::_isRoadOnTile( const city::AreaInfo& info ) const
 {
   bool advTileIsRoad = false;
-  if( !info.aroundTiles.empty() )
+  if( !info.tiles().empty() )
   {
-    Tile* ntile = info.aroundTiles.find( info.pos );
+    Tile* ntile = info.tiles().find( info.pos );
     if( ntile )
     {
       advTileIsRoad = ntile->getFlag( Tile::tlRoad );
@@ -390,7 +390,7 @@ bool Aqueduct::_isRoadOnTile( const city::AreaInfo& info ) const
 
 void Aqueduct::updatePicture(PlayerCityPtr city)
 {
-  city::AreaInfo info = { city, _masterTile() ? _masterTile()->pos() : TilePos(), TilesArray() };
+  city::AreaInfo info( city, _masterTile() ? _masterTile()->pos() : TilePos() );
   setPicture( picture( info ) );
 }
 

@@ -66,11 +66,7 @@ void Military::timeStep(const unsigned int time )
   {
     DateTime curDate = game::Date::current();
     //clear old notificationse
-    for( Notifications::iterator it=_d->notifications.begin(); it != _d->notifications.end(); )
-    {
-      if( it->date.monthsTo( curDate ) > notificationHistoryMonths ) { it = _d->notifications.erase( it ); }
-      else { ++it; }
-    }
+    _d->notifications.eraseOld( curDate, notificationHistoryMonths );
   }
 
   if( game::Date::isWeekChanged() )
@@ -90,9 +86,9 @@ void Military::timeStep(const unsigned int time )
   {
     _d->needUpdateMilitaryThreat = false;
 
-    EnemySoldierList enemiesInCity = _city()->walkers().select<EnemySoldier>();
+    int enemiesInCity_n = _city()->walkers().count<EnemySoldier>();
 
-    _d->threatValue = enemiesInCity.size() * enemySoldiertThreat;
+    _d->threatValue = enemiesInCity_n * enemySoldiertThreat;
   }  
 }
 
@@ -119,15 +115,7 @@ const Notifications& Military::notifications() const
 
 bool Military::haveNotification( Notification::Type type) const
 {
-  for( auto notification : _d->notifications )
-  {
-    if( notification.type == type )
-    {
-      return true;
-    }
-  }
-
-  return false;
+  return _d->notifications.contain( type );
 }
 
 bool Military::isUnderAttack() const

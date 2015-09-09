@@ -50,6 +50,8 @@ public:
     }
   }
 
+  LocaleImpl() {}
+
   void loadDefault()
   {
     vfs::Path filename( "caesar.en" );

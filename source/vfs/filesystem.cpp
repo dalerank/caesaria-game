@@ -605,6 +605,10 @@ Entries FileSystem::getFileList()
 			{
 				do
 				{
+          if(!strcmp( c_file.name, ".") || !strcmp( c_file.name, ".."))
+          {
+            continue;
+          }
 					ret.addItem( Path( rpath.toString() + c_file.name ), 0, c_file.size, (_A_SUBDIR & c_file.attrib) != 0, 0);
 				}
 				while( _findnext( hFile, &c_file ) == 0 );

@@ -505,7 +505,7 @@ bool Updater::CheckLocalFile(vfs::Path installPath, const ReleaseFile& releaseFi
   //Logger::warning( " Checking for file " + releaseFile.file.toString() + ": ");
 
   // check ignore list
-  if( isIgnored( utils::localeLower(releaseFile.file.toString()) ) )
+  if( isIgnored( releaseFile.file.canonical().toString() ) )
   {
     Logger::warning("IGNORED");
     return true; // ignore this file
@@ -543,7 +543,7 @@ bool Updater::CheckLocalFile(vfs::Path installPath, const ReleaseFile& releaseFi
   return true;
 }
 
-bool Updater::LocalFilesNeedUpdate()
+bool Updater::isLocalFilesNeedUpdate()
 {
   return !_downloadQueue.empty();
 }

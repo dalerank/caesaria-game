@@ -41,10 +41,12 @@ public signals:
   Signal0<> onContinue;
 
 private:
+  class Impl;
+  ScopedPtr<Impl> _d;
+
   void _changeLanguage(const ListBoxItem& item);
   void _apply();
 
-  vfs::Path _model;
   std::string _defaultFont;
 };
 

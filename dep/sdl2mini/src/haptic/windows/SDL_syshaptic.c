@@ -20,7 +20,7 @@
 */
 #include "SDL_config.h"
 
-#ifdef SDL_HAPTIC_DINPUT
+#if SDL_HAPTIC_DINPUT
 
 #include "SDL_assert.h"
 #include "SDL_thread.h"

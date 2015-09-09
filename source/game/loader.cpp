@@ -29,7 +29,6 @@
 #include "gfx/helper.hpp"
 #include "resourcegroup.hpp"
 #include "gfx/animation_bank.hpp"
-#include "core/foreach.hpp"
 #include "game.hpp"
 #include "objects/objects_factory.hpp"
 #include "city/city.hpp"
@@ -102,7 +101,7 @@ void Loader::Impl::initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city )
   {
     tile::clear( signTile );
     OverlayPtr waymark = TileOverlayFactory::instance().create( object::waymark );
-    city::AreaInfo info = { city, tlPos + tlOffset, TilesArray() };
+    city::AreaInfo info( city, tlPos + tlOffset );
     waymark->build( info );
     city->addOverlay( waymark );
   }

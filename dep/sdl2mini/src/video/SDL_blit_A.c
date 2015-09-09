@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -18,7 +18,7 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../SDL_internal.h"
 
 #include "SDL_video.h"
 #include "SDL_blit.h"
@@ -334,7 +334,6 @@ BlitRGBtoRGBPixelAlphaMMX(SDL_BlitInfo * info)
     Uint32 *dstp = (Uint32 *) info->dst;
     int dstskip = info->dst_skip >> 2;
     SDL_PixelFormat *sf = info->src_fmt;
-    Uint32 chanmask = sf->Rmask | sf->Gmask | sf->Bmask;
     Uint32 amask = sf->Amask;
     Uint32 ashift = sf->Ashift;
     Uint64 multmask, multmask2;
@@ -344,7 +343,7 @@ BlitRGBtoRGBPixelAlphaMMX(SDL_BlitInfo * info)
     mm_zero = _mm_setzero_si64();       /* 0 -> mm_zero */
     multmask = 0x00FF;
 	multmask <<= (ashift * 2);
-	multmask2 = 0x00FF00FF00FF00FF;
+	multmask2 = 0x00FF00FF00FF00FFULL;
 
     while (height--) {
 		/* *INDENT-OFF* */
@@ -522,7 +521,6 @@ BlitRGBtoRGBPixelAlphaMMX3DNOW(SDL_BlitInfo * info)
     Uint32 *dstp = (Uint32 *) info->dst;
     int dstskip = info->dst_skip >> 2;
     SDL_PixelFormat *sf = info->src_fmt;
-    Uint32 chanmask = sf->Rmask | sf->Gmask | sf->Bmask;
     Uint32 amask = sf->Amask;
     Uint32 ashift = sf->Ashift;
     Uint64 multmask, multmask2;
@@ -532,7 +530,7 @@ BlitRGBtoRGBPixelAlphaMMX3DNOW(SDL_BlitInfo * info)
     mm_zero = _mm_setzero_si64();       /* 0 -> mm_zero */
     multmask = 0x00FF;
     multmask <<= (ashift * 2);
-    multmask2 = 0x00FF00FF00FF00FF;
+    multmask2 = 0x00FF00FF00FF00FFULL;
 
     while (height--) {
 	    /* *INDENT-OFF* */
@@ -582,7 +580,7 @@ BlitRGBtoRGBPixelAlphaMMX3DNOW(SDL_BlitInfo * info)
     _mm_empty();
 }
 
-#endif /* __MMX__ */
+#endif /* __3dNOW__ */
 
 /* 16bpp special case for per-surface alpha=50%: blend 2 pixels in parallel */
 

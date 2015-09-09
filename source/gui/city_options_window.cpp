@@ -24,7 +24,6 @@
 #include "dialogbox.hpp"
 #include "core/gettext.hpp"
 #include "environment.hpp"
-#include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "gameautopause.hpp"
 #include "widget_helper.hpp"
@@ -146,6 +145,7 @@ public:
   PushButton* btnToggleBatching;
   PushButton* btnDifficulty;
   PushButton* btnMetrics;
+  PushButton* btnC3Gameplay;
   PushButton* btnRoadBlocks;
 
   Label* lbFireRisk;
@@ -167,6 +167,8 @@ public:
   void toggleRoadBlocks();
   void toggleUseBatching();
   void toggleMetrics();
+  void toggleC3gameplay();
+  void enableC3gameplay();
   void toggleCityOption( PlayerCity::OptionType option );
   void changeCityOption( PlayerCity::OptionType option, int delta);
   void changeShowTooltips(std::string,std::string,int value);
@@ -193,6 +195,7 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, btnIncreaseFireRisk )
   GET_DWIDGET_FROM_UI( _d, btnDecreaseFireRisk )
   GET_DWIDGET_FROM_UI( _d, lbCollapseRisk )
+  GET_DWIDGET_FROM_UI( _d, btnC3Gameplay )
   GET_DWIDGET_FROM_UI( _d, btnIncreaseCollapseRisk )
   GET_DWIDGET_FROM_UI( _d, btnDecreaseCollapseRisk )
 
@@ -220,6 +223,7 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   CONNECT( _d->btnToggleBatching, onClicked(), _d.data(), Impl::toggleUseBatching )
   CONNECT( _d->btnMetrics, onClicked(), _d.data(), Impl::toggleMetrics )
   CONNECT( _d->btnRoadBlocks, onClicked(), _d.data(), Impl::toggleRoadBlocks )
+  CONNECT( _d->btnC3Gameplay, onClicked(), _d.data(), Impl::toggleC3gameplay )
 
   INIT_WIDGET_FROM_UI( PushButton*, btnClose )
   CONNECT( btnClose, onClicked(), this, CityOptions::deleteLater );
@@ -323,6 +327,21 @@ void CityOptions::Impl::toggleMetrics()
   update();
 }
 
+void CityOptions::Impl::toggleC3gameplay()
+{
+  int value = city->getOption( PlayerCity::c3gameplay );
+  value = !value;
+  if( value )
+  {
+    auto dlg = dialog::Confirmation( widget->ui(), "Gameplay", "Will be enable C3 gameplay mode. Continue?", true );
+    dlg->show();
+
+    CONNECT( dlg, onOk(), this, Impl::enableC3gameplay )
+    }
+}
+
+void CityOptions::Impl::enableC3gameplay() { city->setOption( PlayerCity::c3gameplay, true ); }
+
 void CityOptions::Impl::changeShowTooltips(std::string,std::string,int value)
 {
   widget->ui()->setFlag( Ui::showTooltips, value );
@@ -347,9 +366,9 @@ void CityOptions::Impl::toggleUseBatching()
 Widget* CityOptions::Impl::findDebugMenu( Ui* ui )
 {
   const Widgets& children = ui->rootWidget()->children();
-  foreach( it, children )
+  for( auto w : children )
   {
-    TopMenu* ret = safety_cast<TopMenu*>( *it );
+    TopMenu* ret = safety_cast<TopMenu*>( w );
     if( ret != 0 )
     {
       return ret->findItem( "Debug" );
@@ -404,6 +423,13 @@ void CityOptions::Impl::update()
   {
     int value = city->getOption( PlayerCity::difficulty );
     std::string text = utils::format( 0xff, "##city_df_%s##", game::difficulty::name[ value ] );
+    _setAutoText( btnDifficulty, text );
+  }
+
+  if( btnC3Gameplay )
+  {
+    int value = city->getOption( PlayerCity::c3gameplay );
+    std::string text = utils::format( 0xff, "##city_c3gameplay_%s##", value ? "on" : "off" );
     _setAutoText( btnDifficulty, text );
   }
 

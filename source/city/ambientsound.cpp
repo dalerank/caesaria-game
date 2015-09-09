@@ -23,7 +23,6 @@
 #include "core/utils.hpp"
 #include "objects/overlay.hpp"
 #include "gfx/helper.hpp"
-#include "core/foreach.hpp"
 #include "config.hpp"
 #include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
@@ -42,13 +41,19 @@ REGISTER_SERVICE_IN_FACTORY(AmbientSound,ambient_sound)
 
 struct AmbientEmitter
 {
+  static const int msIntervalBetweenSwitch = 1000;
   struct Info
   {
     StringArray sounds;
-    unsigned int lastAccess;
-    int lastIndex;
+    unsigned int lastAccessTime;
+    int index;
 
-    Info() : lastAccess(0), lastIndex(0) {}
+    int nextIndex() const
+    {
+      return (index+1)%sounds.size();
+    }
+
+    Info() : lastAccessTime(0), index(0) {}
   };
 
   std::map< Tile::Type, Info > info;
@@ -62,9 +67,9 @@ struct AmbientEmitter
   void initialize( const vfs::Path& filename )
   {
     VariantMap types = config::load( filename );
-    for( auto rtype : types )
+    for( auto&& rtype : types )
     {
-      Tile::Type type = gfx::tile::toTileType( rtype.first );
+      Tile::Type type = gfx::tile::findType( rtype.first );
       if( type != Tile::tlUnknown )
       {
         info[ type ].sounds = rtype.second.toStringArray();
@@ -79,17 +84,16 @@ struct AmbientEmitter
     if( it != ambient.info.end() )
     {
       Info& ref = it->second;
-      if( time - ref.lastAccess > 1000 )
+      if( time - ref.lastAccessTime > AmbientEmitter::msIntervalBetweenSwitch )
       {
         if( ref.sounds.size() > 0 )
         {
-          ref.lastIndex = (ref.lastIndex+1)%ref.sounds.size();
-          ref.lastAccess = time;
-          return ref.sounds[ ref.lastIndex ];
+          ref.index = ref.nextIndex();
+          ref.lastAccessTime = time;
+          return ref.sounds[ ref.index ];
         }
       }
     }
-    //return utils::format( 0xff, "emptyland_%05d", (tile->i() * tile->j()) % 3 + 1  );
 
     return "";
   }
@@ -251,7 +255,7 @@ void AmbientSound::destroy()
   _d->camera = 0;
 }
 
-void city::AmbientSound::setCamera(Camera *camera)
+void AmbientSound::setCamera(Camera *camera)
 {
   _d->camera = camera;
 }

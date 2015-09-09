@@ -24,7 +24,6 @@
 #include "core/utils.hpp"
 #include "objects/construction.hpp"
 #include "gfx/engine.hpp"
-#include "core/foreach.hpp"
 #include "city/statistic.hpp"
 #include "game/funds.hpp"
 #include "world/empire.hpp"

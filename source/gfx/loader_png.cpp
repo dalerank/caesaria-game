@@ -59,7 +59,7 @@ bool PictureLoaderPng::isALoadableFileFormat( vfs::NFile file) const
 
 
 // load in the image data
-Picture PictureLoaderPng::load( vfs::NFile file ) const
+Picture PictureLoaderPng::load(vfs::NFile file , bool streaming) const
 {
   if(!file.isOpen())
   {
@@ -96,7 +96,7 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   png_infop info_ptr = png_create_info_struct(png_ptr);
   if (!info_ptr)
   {
-    Logger::warning( "LOAD PNG: Internal PNG create info struct failure " + file.path().toString() );
+    Logger::warning( "LOAD PNG: Couldn't create image information for PNG file " + file.path().toString() );
     png_destroy_read_struct(&png_ptr, NULL, NULL);
     return Picture::getInvalid();
   }
@@ -105,6 +105,7 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   if (setjmp(png_jmpbuf(png_ptr)))
   {
     png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+    Logger::warning( "LOAD PNG: Error reading the PNG file. " + file.path().toString() );
     return Picture::getInvalid();
   }
 
@@ -228,7 +229,7 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   Picture pic;
   if( ColorType==PNG_COLOR_TYPE_RGB_ALPHA )
   {
-    pic = Picture( Size( Width, Height ), bytes.data() );
+    pic = Picture( Size( Width, Height ), bytes.data(), streaming );
   }
   else
   {
@@ -243,7 +244,7 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
       b4[ index*4+2 ] = bytes[index*3+0];
     }
 
-    pic = Picture( Size( Width, Height ), b4.data() );
+    pic = Picture( Size( Width, Height ), b4.data(), streaming );
   }
   return pic;
 }

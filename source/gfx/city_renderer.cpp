@@ -161,10 +161,9 @@ void CityRenderer::Impl::resetWalkersAfterTurn()
 {
   const WalkerList& walkers = city->walkers();
 
-  foreach( it, walkers )
+  for( auto wlk : walkers )
   {
-    WalkerPtr w = *it;
-    w->setPos( w->tile().epos() );
+    wlk->setPos( wlk->tile().epos() );
   }
 }
 
@@ -187,11 +186,11 @@ void CityRenderer::Impl::setLayer(int type)
   }
 
   LayerPtr newLayer;
-  foreach( it, layers )
+  for( auto layer : layers )
   {
-    if( (*it)->type() == type )
+    if( layer->type() == type )
     {
-      newLayer = *it;
+      newLayer = layer;
       break;
     }
   }
@@ -289,10 +288,8 @@ void CityRenderer::animate(unsigned int time)
 {
   const TilesArray& visibleTiles = _d->camera.tiles();
 
-  foreach( i, visibleTiles )
-  {
-    (*i)->animate( time );
-  }
+  for( auto&& tile : visibleTiles )
+    tile->animate( time );
 }
 
 void CityRenderer::rotateRight()
@@ -321,10 +318,10 @@ void CityRenderer::setLayer(int layertype)
 
 LayerPtr CityRenderer::getLayer(int type) const
 {
-  foreach( it, _d->layers)
+  for( auto layer : _d->layers)
   {
-    if( (*it)->type() == type )
-      return *it;
+    if( layer->type() == type )
+      return layer;
   }
 
   return LayerPtr();

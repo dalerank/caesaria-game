@@ -19,11 +19,12 @@
       btnZoom#OptionButton     : { base : "city_zoom",     states : { off:0, on:1 }, link : [ "city", "zoomEnabled" ] }
       btnInvertZoom#OptionButton :{base : "city_zoominv",  states : { off:0, on:1 }, link : [ "city", "zoomInvert" ] }
       btnLockInfobox#OptionButton:{base : "city_lockinfo", states : { off:0, on:1 }, link : [ "game", "lockInfobox" ] }
-      btnBarbarian#OptionButton : {base : "city_barbarian",states : { off:0, on:1 }, link : [ "city", "barbarianAttack" ] }
-      btnC3Gameplay#OptionButton :{base : "city_c3rules",  states : { off:0, on:1 }, link : [ "city", "c3gameplay" ] }
+      btnBarbarian#OptionButton : {base : "city_barbarian",states : { off:0, on:1 }, link : [ "city", "barbarianAttack" ] }      
       btnShowTooltips#OptionButton:{base: "city_tooltips", states : { off:0, on:1 }, link : [ "game", "tooltipEnabled" ] }
       btnBuildOverDraw#OptionButton:{base:"city_buildoverdraw",states:{off:0,on:1 }, link : [ "draw", "overdrawOnBuild" ] }
+      btnWarfNeedTimber#OptionButton:{base:"city_warf_timber",states:{off:0,on:1 }, link : [ "city", "warfNeedTimber" ] }
 
+      btnC3Gameplay#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_c3rules_mode##" }
       btnDifficulty#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_barbarian_mode##" }
       btnRoadBlocks#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_roadblock_mode##" }
 

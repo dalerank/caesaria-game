@@ -61,6 +61,14 @@ Rome::Rome(EmpirePtr empire)
   _d->states.population = defaultPopulation;
 }
 
+CityPtr Rome::create(EmpirePtr empire)
+{
+  CityPtr ret( new Rome(empire) );
+  ret->drop();
+
+  return ret;
+}
+
 unsigned int Rome::tradeType() const { return 0; }
 econ::Treasury& Rome::treasury() { return _d->funds; }
 
@@ -75,7 +83,7 @@ void Rome::timeStep(const unsigned int time)
   City::timeStep( time );
 }
 
-SmartPtr<Player> Rome::mayor() const { return 0; }
+PlayerPtr Rome::mayor() const { return 0; }
 bool Rome::haveOverduePayment() const { return false; }
 const good::Store& Rome::buys() const{ return _d->gstore; }
 void Rome::delayTrade(unsigned int month) {}

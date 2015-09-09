@@ -48,7 +48,6 @@
 #include "pathway/astarpathfinding.hpp"
 #include "objects/house_spec.hpp"
 #include "walker/name_generator.hpp"
-#include "core/foreach.hpp"
 #include "religion/pantheon.hpp"
 #include "vfs/archive_sg2.hpp"
 #include "vfs/archive_zip.hpp"
@@ -127,7 +126,7 @@ void Game::Impl::initMovie()
   movie::Config& config = movie::Config::instance();
 
   config.loadAlias( SETTINGS_RC_PATH( videoAlias ) );
-  std::string c3videoFile = SETTINGS_VALUE( c3video ).toString();
+  std::string c3videoFile = SETTINGS_STR( c3video );
 
   if( !c3videoFile.empty() )
   {
@@ -154,7 +153,7 @@ void Game::Impl::initLocale( std::string localePath )
   Locale::setDirectory( localePath );
 
   Logger::warning( "Game: load default language" );
-  Locale::setLanguage( SETTINGS_VALUE( language ).toString() );
+  Locale::setLanguage( SETTINGS_STR( language ) );
 }
 
 void Game::Impl::initVideo()
@@ -191,14 +190,14 @@ void Game::Impl::initSound()
   ae.setVolume( audio::game, SETTINGS_VALUE( soundVolume ) );
   ae.loadAlias( SETTINGS_RC_PATH( soundAlias ) );
 
-  std::string c3musicFolder = SETTINGS_VALUE( c3music ).toString();
+  std::string c3musicFolder = SETTINGS_STR( c3music );
   if( !c3musicFolder.empty() )
   {
     ae.addFolder( c3musicFolder );
   }
 
   Logger::warning( "Game: load talks archive" );
-  audio::Helper::initTalksArchive( SETTINGS_VALUE( talksArchive ).toString() );
+  audio::Helper::initTalksArchive( SETTINGS_STR( talksArchive ) );
 }
 
 void Game::Impl::mountArchives(ResourceLoader &loader)
@@ -206,7 +205,7 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
   Logger::warning( "Game: mount archives begin" );
 
   std::string errorStr;
-  std::string c3res = SETTINGS_VALUE( c3gfx ).toString();
+  std::string c3res = SETTINGS_STR( c3gfx );
   if( !c3res.empty() )
   {    
     vfs::Directory gfxDir( c3res );
@@ -252,7 +251,7 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
 void Game::Impl::createSaveDir()
 {
   Logger::warning( "Game: initialize save directory" );
-  vfs::Directory saveDir = SETTINGS_VALUE( savedir ).toString();
+  vfs::Directory saveDir = SETTINGS_STR( savedir );
 
   bool dirCreated = true;
   if( !saveDir.exist() )
@@ -268,7 +267,7 @@ void Game::Impl::initGuiEnvironment()
   Logger::warning( "Game: initialize gui" );
   gui = new gui::Ui( *engine );
 
-  gui::infobox::Manager::instance().setBoxLock( SETTINGS_VALUE( lockInfobox ) );
+  gui::infobox::Manager::instance().setBoxLock( KILLSWITCH( lockInfobox ) );
 }
 
 void Game::Impl::initPantheon( vfs::Path filename)
@@ -280,7 +279,8 @@ void Game::Impl::initPantheon( vfs::Path filename)
 void Game::Impl::initFontCollection( vfs::Path resourcePath )
 {
   Logger::warning( "Game: load fonts" );
-  FontCollection::instance().initialize( resourcePath.toString() );
+  std::string fontname = SETTINGS_STR( font );
+  FontCollection::instance().initialize( resourcePath.toString(), fontname );
 }
 
 void Game::Impl::initPictures()
@@ -425,9 +425,9 @@ bool Game::load(std::string filename)
 
   Logger::warning( "Game: calculate road access for buildings" );
   const OverlayList& llo = _d->city->overlays();
-  foreach( overlay, llo )
+  for( auto overlay : llo )
   {
-    ConstructionPtr construction = overlay->as<Construction>();
+    ConstructionPtr construction = overlay.as<Construction>();
     if( construction.isValid() )
     {
       construction->computeRoadside();
@@ -468,7 +468,7 @@ void Game::initialize()
   _d->initGameConfigs();
   _d->initAddons();
   _d->initArchiveLoaders();
-  _d->initLocale( SETTINGS_VALUE( localePath ).toString() );
+  _d->initLocale( SETTINGS_STR( localePath ) );
   _d->initVideo();
   _d->initMovie();
   _d->initFontCollection( game::Settings::rcpath() );
@@ -586,7 +586,7 @@ void Game::reset()
   _d->empire = world::Empire::create();
 
   _d->player = Player::create();
-  _d->player->setName( SETTINGS_VALUE( playerName ).toString() );
+  _d->player->setName( SETTINGS_STR( playerName ) );
   _d->pauseCounter = 0;
   _d->timeX10 = 0;
   _d->saveTime = 0;
@@ -595,7 +595,7 @@ void Game::reset()
   WalkerRelations::instance().clear();
   WalkerRelations::instance().load( SETTINGS_RC_PATH( walkerRelations ) );
 
-  bool oldGameplay = SETTINGS_VALUE( oldgfx ) || !SETTINGS_VALUE( c3gfx ).toString().empty();
+  bool oldGameplay = KILLSWITCH( oldgfx ) || !SETTINGS_STR( c3gfx ).empty();
   _d->city = PlayerCity::create( _d->empire, _d->player );
   _d->city->setOption( PlayerCity::c3gameplay, oldGameplay );
 }

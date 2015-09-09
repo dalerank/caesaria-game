@@ -85,6 +85,7 @@ if(APPLE)
   find_library(IOKIT_LIBRARY IOKit)
   find_library(CARBON_LIBRARY Carbon)
   find_library(COREAUDIO_LIBRARY CoreAudio)
+  find_library(COREVIDEO_LIBRARY CoreVideo)
   find_library(AUDIOUNIT_LIBRARY AudioUnit)
 
   file(GLOB DLOPEN_SOURCES_LIST "src/loadso/dlopen/*.c")
@@ -128,7 +129,7 @@ if(APPLE)
                 ${DLOPEN_SOURCES_LIST}
              )
 
-  target_link_libraries( ${PROJECT_NAME} ${COCOA_LIBRARY} ${IOKIT_LIBRARY} ${CARBON_LIBRARY} ${COREAUDIO_LIBRARY} ${AUDIOUNIT_LIBRARY})
+  target_link_libraries( ${PROJECT_NAME} ${COCOA_LIBRARY} ${IOKIT_LIBRARY} ${CARBON_LIBRARY} ${COREAUDIO_LIBRARY} ${AUDIOUNIT_LIBRARY} ${COREVIDEO_LIBRARY})
 endif()
 
 if(WIN32)

@@ -41,7 +41,8 @@
 #include "core/color.hpp"
 #include "core/variant_list.hpp"
 
-using namespace gfx;
+namespace gfx
+{
 
 namespace {
 const char* framesSection = "frames";
@@ -169,9 +170,9 @@ void PictureBank::addAtlas( const std::string& filename )
     atlas.filename = filename;
 
     VariantMap items = options.get( framesSection ).toMap();
-    foreach( i, items )
+    for( auto&& i : items )
     {
-      unsigned int hash = Hash( i->first );
+      unsigned int hash = Hash( i.first );
       atlas.images.insert( hash );
     }
 
@@ -232,9 +233,9 @@ Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
   bool fileExist = false;
   if( realPath.extension().empty() )
   {
-    foreach( itExt, picExentions )
+    for( auto&& ext : picExentions )
     {
-      realPath = name + *itExt;
+      realPath = name + ext;
 
       if( realPath.exist() )
       {
@@ -255,12 +256,12 @@ Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
   }
 
   unsigned int hash = Hash( name );
-  foreach( i, atlases )
+  for( auto&& curAtlass : atlases )
   {
-    bool found = i->find( hash );
+    bool found = curAtlass.find( hash );
     if( found )
     {
-      loadAtlas( (*i).filename );
+      loadAtlas( curAtlass.filename );
       //unloadAtlas.erase( i );
       break;
     }
@@ -305,15 +306,17 @@ void PictureBank::Impl::loadAtlas(const vfs::Path& filePath)
   if( !info.empty() )
   {
     VariantMap items = info.get( framesSection ).toMap();
-    foreach( i, items )
+    for( auto&& i : items )
     {
-      VariantList rInfo = i->second.toList();
+      VariantList rInfo = i.second.toList();
       Picture pic = mainTexture;
       Point start( rInfo.get( 0 ).toInt(), rInfo.get( 1 ).toInt() );
       Size size( rInfo.get( 2 ).toInt(), rInfo.get( 3 ).toInt() );
 
       pic.setOriginRect( Rect( start, size ) );
-      setPicture( i->first, pic );
+      setPicture( i.first, pic );
     }
   }
 }
+
+}//end namespace gfx

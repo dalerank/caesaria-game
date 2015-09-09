@@ -323,7 +323,7 @@ Tile& getInvalidSafe()
   return invalidTileSafe;
 }
 
-Tile::Type toTileType(const std::string& name)
+Tile::Type findType(const std::string& name)
 {
   if( name == CAESARIA_STR_EXT(tlTree) )    return Tile::tlTree;
   if( name == CAESARIA_STR_EXT(tlRock) )    return Tile::tlRock;

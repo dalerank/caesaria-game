@@ -64,7 +64,7 @@ private:
 
 class Measure : public StaticSingleton<Measure>
 {
-  friend class StaticSingleton;
+  SET_STATICSINGLETON_FRIEND_FOR(Measure)
 public:
   typedef enum { native=0, metric, roman, count } Mode;
 

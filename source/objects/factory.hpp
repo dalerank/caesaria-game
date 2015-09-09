@@ -34,6 +34,7 @@ public:
   const good::Stock& inStockRef() const;
 
   good::Stock& outStockRef();
+  const good::Stock& outStockRef() const;
 
   good::Product consumeGoodType() const;
   good::Product produceGoodType() const;
@@ -76,6 +77,7 @@ protected:
   virtual void _storeChanged();
   virtual void _removeSpoiledGoods();
   void _weekUpdate( unsigned int time );
+  void _setConsumeGoodType( int index, good::Product product );
   void _productReady();
   void _productProgress();
   void _setUnworkingInterval( unsigned int weeks );

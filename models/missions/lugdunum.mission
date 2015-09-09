@@ -818,7 +818,7 @@
       prefecture : true
       engineering_post : true
       plaza : true
-
+      roadBlock : true
       quarry : true
       clay_pit : true
       iron_mine : true

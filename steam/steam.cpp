@@ -17,8 +17,6 @@
 
 #include "steam.hpp"
 
-#ifdef CAESARIA_USE_STEAM
-
 #include "core/osystem.hpp"
 #include "core/logger.hpp"
 #include "public/steam/steam_api.h"
@@ -30,18 +28,20 @@
 namespace steamapi
 {
 
+#ifdef CAESARIA_USE_STEAM
+
 #define _ACH_ID( id ) { id, #id, #id, "", 0, 0 }
 enum MissionName { n2_nvillage=0, nx_count };
 enum StatName { stat_num_games=0, stat_num_wins, stat_num_lose, stat_count };
 
 static const AppId_t CAESARIA_STEAM_APPID=0x04ffd8;
 static const AppId_t CAESARIA_AVEC3_APPID=0x053124;
-static bool glbOfflineMode = false;
+static bool gameRunInOfflineMode = false;
 
 struct Achievement
 {
   AchievementType id;
-  const char* uniqueName;
+  const char* steamName;
   char caption[128];
   char description[256];
   bool reached;
@@ -162,11 +162,11 @@ void UserStats::unlockAchievement( Achievement &achievement )
 
   // mark it down
 #ifdef  CAESARIA_PLATFORM_WIN
-  sth_setAchievement( achievement.uniqueName );
+  sth_setAchievement( achievement.steamName );
 #else
   if( xclient.stats )
   {
-    xclient.stats->SetAchievement( achievement.uniqueName );
+    xclient.stats->SetAchievement( achievement.steamName );
   }
 #endif
 
@@ -202,7 +202,7 @@ void UserStats::clearAchievement( Achievement &achievement )
 #else
   if( xclient.stats )
   {
-    xclient.stats->ClearAchievement( achievement.uniqueName );
+    xclient.stats->ClearAchievement( achievement.steamName );
   }
 #endif
 
@@ -382,7 +382,7 @@ bool connect()
   // from Steam, but if Steam is at the login prompt when you run your game from the debugger, it
   // will return false.
   Logger::warning( "CurrentGameLanguage: %s", SteamApps()->GetCurrentGameLanguage() );
-  glbOfflineMode = !SteamUser()->BLoggedOn();
+  gameRunInOfflineMode = !SteamUser()->BLoggedOn();
 
   bool mayStart = SteamApps()->BIsSubscribedApp( CAESARIA_STEAM_APPID );
   if( !mayStart )
@@ -392,7 +392,7 @@ bool connect()
     return false;
   }
 
-  if( glbOfflineMode )
+  if( gameRunInOfflineMode )
   {
     Logger::warning( "Game work in offline mode" );
     OSystem::error( "Warning", "Game work in offline mode" );
@@ -647,11 +647,11 @@ void UserStats::receivedUserStats()
     for( int iAch = 0; iAch < achv_count; ++iAch )
     {
       Achievement &ach = glbAchievements[iAch];
-      ach.reached = sth_getAchievementReached( ach.uniqueName );
-      sth_getAchievementAttribute( ach.uniqueName, "name", ach.caption );
-      sth_getAchievementAttribute( ach.uniqueName, "desc", ach.description );
+      ach.reached = sth_getAchievementReached( ach.steamName );
+      sth_getAchievementAttribute( ach.steamName, "name", ach.caption );
+      sth_getAchievementAttribute( ach.steamName, "desc", ach.description );
 
-      ach.idIconImage = sth_getAchievementIcon( ach.uniqueName );
+      ach.idIconImage = sth_getAchievementIcon( ach.steamName );
       ach.image = getSteamImage( ach.idIconImage );
     }
 
@@ -690,11 +690,11 @@ void UserStats::receivedUserStats(UserStatsReceived_t *pCallback)
       for( int iAch = 0; iAch < achv_count; ++iAch )
       {
         Achievement& ach = glbAchievements[iAch];
-        steamUserStats->GetAchievement( ach.uniqueName, &ach.reached );
-        sprintf( ach.caption, "%s", steamUserStats->GetAchievementDisplayAttribute( ach.uniqueName, "name" ) );
-        sprintf( ach.description, "%s", steamUserStats->GetAchievementDisplayAttribute( ach.uniqueName, "desc" ) );
+        steamUserStats->GetAchievement( ach.steamName, &ach.reached );
+        sprintf( ach.caption, "%s", steamUserStats->GetAchievementDisplayAttribute( ach.steamName, "name" ) );
+        sprintf( ach.description, "%s", steamUserStats->GetAchievementDisplayAttribute( ach.steamName, "desc" ) );
 
-        ach.idIconImage = steamUserStats->GetAchievementIcon( ach.uniqueName );
+        ach.idIconImage = steamUserStats->GetAchievementIcon( ach.steamName );
         ach.image = getSteamImage( ach.idIconImage );
       }
 
@@ -761,7 +761,22 @@ void evaluateAchievement( AchievementType achivId )
   glbUserStats.storeStatsIfNecessary();
 }
 
-}
+bool available() { return true; }
+
+#else
+
+bool available() { return false; }
+bool checkSteamRunning() { return true; }
+bool connect() { return true; }
+void close() {}
+bool isAchievementReached(steamapi::AchievementType) { return true; }
+gfx::Picture achievementImage(steamapi::AchievementType) { return gfx::Picture(); }
+void init() {}
+std::string userName(){ return ""; }
+void update(){}
+std::string achievementCaption(AchievementType achivId) { return ""; }
+const gfx::Picture&userImage() { return gfx::Picture::getInvalid(); }
+bool isStatsReceived() { return false; }
 
 #endif //CAESARIA_USE_STEAM
-
+}

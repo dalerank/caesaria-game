@@ -118,7 +118,7 @@
                    
     buildings : 
     { 
-      well : true
+      well : true     
     }
   }
 }

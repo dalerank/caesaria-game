@@ -207,10 +207,8 @@ std::string Path::extension() const
   return "";
 }
 
-bool Path::haveExtension() const
-{
-  return !extension().empty();
-}
+bool Path::haveExtension() const {  return !extension().empty(); }
+unsigned int Path::hash() const{   return Hash( toString() ); }
 
 std::string Path::suffix() const
 {

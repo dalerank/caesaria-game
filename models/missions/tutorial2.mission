@@ -138,6 +138,7 @@
       small_mars_temple : true
       small_neptune_temple : true
       small_mercury_temple : true
+      roadBlock : true
       market : true
       granery : true
       wheat_farm : true

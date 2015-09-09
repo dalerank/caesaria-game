@@ -509,13 +509,8 @@ void Fort::load(const VariantMap& stream)
   _d->patrolPoint->setPos( _d->patrolArea.lastPos );
 }
 
-SoldierList Fort::soldiers() const
-{
-  SoldierList soldiers;
-  soldiers << walkers();
-
-  return soldiers;
-}
+SoldierList Fort::soldiers() const {  return walkers().select<Soldier>(); }
+int Fort::soldiers_n() const { return walkers().count<Soldier>(); }
 
 void Fort::returnSoldiers()
 {

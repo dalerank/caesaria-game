@@ -64,6 +64,13 @@ TimerPtr Timer::create( unsigned int time, bool loop, int id/*=-1 */ )
   return ret;
 }
 
+void Timer::destroy(int id)
+{
+  TimerPtr timer = city::Timers::instance().find( id );
+  if( timer.isValid() )
+    timer->destroy();
+}
+
 void Timer::update( unsigned int time )
 {
   if( !_d->time.start )
@@ -88,74 +95,8 @@ void Timer::update( unsigned int time )
 
 void Timer::setInterval( unsigned int time ) {  _d->time.interval = time;}
 void Timer::setLoop( bool loop ) {  _d->loop = loop;}
+int Timer::id() const { return _d->id; }
 Signal1<int>& Timer::onTimeoutA(){  return _d->signal.onTimeoutA;}
 Signal0<>& Timer::onTimeout(){  return _d->signal.onTimeout;}
 bool Timer::isActive() const{  return _d->isActive;}
 void Timer::destroy(){  _d->isActive = false; }
-
-class DebugTimer::Impl
-{
-public:
-  struct TimerInfo
-  {
-    std::string name;
-    unsigned int time;
-
-    TimerInfo() : time( 0 ) {}
-  };
-
-  std::map<unsigned int, TimerInfo> timers;
-};
-
-unsigned int DebugTimer::ticks()
-{
-  return SDL_GetTicks();
-}
-
-void DebugTimer::reset(const std::string &name)
-{
-  unsigned int namehash = Hash( name );
-  instance()._d->timers[ namehash ].time = SDL_GetPerformanceCounter();
-}
-
-unsigned int DebugTimer::take(const std::string &name, bool reset)
-{
-  unsigned int namehash = Hash( name );
-  Impl::TimerInfo& tinfo = instance()._d->timers[ namehash ];
-
-  unsigned int ret = tinfo.time;
-  if( reset )
-    tinfo.time = SDL_GetPerformanceCounter();
-
-  return ret;
-}
-
-unsigned int DebugTimer::delta(const std::string &name, bool reset)
-{
-  unsigned int namehash = Hash( name );
-  Impl::TimerInfo& tinfo = instance()._d->timers[ namehash ];
-
-  unsigned int ret = SDL_GetPerformanceCounter() - tinfo.time;
-  if( reset )
-    tinfo.time = SDL_GetPerformanceCounter();
-
-  return ret;
-}
-
-void DebugTimer::check(const std::string& prefix, const std::string &name)
-{
-#ifdef CAESARIA_USE_DEBUGTIMERS
-  unsigned int t = delta( name, true );
-  Logger::warning( "DEBUG_TIMER:%s%s delta:%d", prefix.c_str(), name.c_str(), t );
-#else
-
-#endif
-}
-
-DebugTimer& DebugTimer::instance()
-{
-  static DebugTimer inst;
-  return inst;
-}
-
-DebugTimer::DebugTimer() : _d(new Impl) {}

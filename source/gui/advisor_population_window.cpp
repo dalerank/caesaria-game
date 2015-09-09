@@ -270,9 +270,9 @@ void Population::Impl::updateStates()
     good::ProductMap goods = city->statistic().goods.details( true );
     int foodLevel = 0;
 
-    foreach( k, good::foods() )
+    for( auto goodType : good::foods() )
     {
-      foodLevel += (goods[ *k ] > 0 ? 1 : 0);
+      foodLevel += (goods[ goodType ] > 0 ? 1 : 0);
     }
 
     lbFoodValue->setText( _( "##varieties_food_eaten##") + utils::i2str( foodLevel ) );
@@ -404,11 +404,10 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
       history.push_back( params );
 
       _values.clear();
-      foreach( it, history )
+      for( const Info::Parameters& step : history )
       {
-        const Info::Parameters& p = *it;
-        _values.push_back( p[ Info::population ] );
-        _maxValue = std::max<unsigned int>( _maxValue, p[ Info::population ] );
+        _values.push_back( step[ Info::population ] );
+        _maxValue = std::max<unsigned int>( _maxValue, step[ Info::population ] );
       }
 
       _maxValue = __calcMaxLegentYValue( _maxValue );

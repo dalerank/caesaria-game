@@ -19,7 +19,7 @@ TreeViewItem::TreeViewItem( TreeViewItem* parent )
 	init_();
     itemParent_ = parent;
     owner_ = parent->getParentTreeView();
-#ifdef _DEBUG
+#ifdef DEBUG
   setDebugName( "NrpTreeViewItem" );
 #endif
 }
@@ -30,8 +30,8 @@ TreeViewItem::TreeViewItem( TreeView* parent )
 	init_();
   owner_ = parent;
 
-#ifdef _DEBUG
-	setDebugName( L"NrpTreeViewItem" );
+#ifdef DEBUG
+  setDebugName( "NrpTreeViewItem" );
 #endif
 }
 

@@ -30,7 +30,7 @@ namespace events
 
 class Dispatcher : public StaticSingleton<Dispatcher>
 {
-  friend class StaticSingleton;
+  SET_STATICSINGLETON_FRIEND_FOR(Dispatcher)
 public:
   virtual ~Dispatcher();
 

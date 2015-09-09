@@ -177,7 +177,7 @@ void Tree::grow()
       OverlayPtr overlay = TileOverlayFactory::instance().create( type() );
       if( overlay.isValid()  )
       {
-        city::AreaInfo info = { _city(), tile->pos(), TilesArray() };
+        city::AreaInfo info( _city(), tile->pos() );
         bool buildOk = overlay->build( info );
         if( buildOk )
         {

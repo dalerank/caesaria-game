@@ -58,7 +58,11 @@ void OSystem::error(const std::string& title, const std::string& text)
   {
     std::string command = dialogCommand;
     command += " --title \"" + title + "\" --msgbox \"" + text + "\"";
-    ::system(command.c_str());
+    int syserror = ::system(command.c_str());
+    if( syserror )
+    {
+      Logger::warning( "WARNING: Cant execute command " + command );
+    }
   }
 
   // fail-safe method here, using stdio perhaps, depends on your application
@@ -180,7 +184,7 @@ static std::string _prepareUpdateBatchFile( const std::string& executableFp, con
 
   vfs::Path temporaryUpdater = tempFilePrefix + executable.baseName().toString();
 
-  std::string restartBatchFile = OSystem::is( OSystem::windows ) ? "update_updater.cmd" : "update_updater.sh";
+  std::string restartBatchFile = OSystem::isWindows() ? "update_updater.cmd" : "update_updater.sh";
 
   vfs::Path updateBatchFile =  targetdir.getFilePath( restartBatchFile );
 
@@ -194,9 +198,9 @@ static std::string _prepareUpdateBatchFile( const std::string& executableFp, con
   // Append the current set of command line arguments to the new instance
   std::string arguments;
 
-  foreach( i, cmds )
+  for( auto&& optionItem : cmds )
   {
-    arguments += " " + *i;
+    arguments += " " + optionItem;
   }
 
 #ifdef CAESARIA_PLATFORM_WIN
@@ -325,3 +329,9 @@ void OSystem::restartProcess( const std::string& filename, const std::string& di
   }
 #endif
 }
+
+bool OSystem::isAndroid() { return is( android ); }
+bool OSystem::isLinux() { return is( linux ); }
+bool OSystem::isUnix() { return is( unix ); }
+bool OSystem::isMac() { return is( macos ); }
+bool OSystem::isWindows() { return is( windows ); }

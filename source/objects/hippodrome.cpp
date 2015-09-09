@@ -333,7 +333,7 @@ void Hippodrome::_init( bool onBuild )
 HippodromeSectionPtr Hippodrome::_addSection(HippodromeSection::Type type, TilePos offset )
 {
   HippodromeSectionPtr ret = new HippodromeSection( *this, _d->direction, type );
-  city::AreaInfo info = { _city(), pos() + offset, TilesArray() };
+  city::AreaInfo info( _city(), pos() + offset );
   ret->build( info );
   ret->drop();
 

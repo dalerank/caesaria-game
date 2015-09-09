@@ -127,13 +127,13 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
 
   if( !needDrawAnimations && ( tile.isWalkable(true) || tile.getFlag( Tile::tlOverlay ) ) )
   {
-    drawLandTile( engine, tile, offset, areaSize );
+    _drawLandTile( engine, tile, offset, areaSize );
   }
 
   tile.setWasDrawn();
 }
 
-void Water::drawLandTile( Engine& engine, Tile& tile, const Point& offset, const Size& areaSize )
+void Water::_drawLandTile( Engine& engine, Tile& tile, const Point& offset, const Size& areaSize )
 {
   Tilemap& tilemap = _city()->tilemap();
   TilesArray area = tilemap.getArea( tile.epos(), areaSize );
@@ -157,7 +157,7 @@ void Water::drawLandTile( Engine& engine, Tile& tile, const Point& offset, const
 void Water::drawPass(Engine& engine, Tile& tile, const Point& offset, Renderer::Pass pass)
 {
   if( pass == Renderer::groundAnimation )
-    drawLandTile( engine, tile, offset, Size( 1 ) );
+    _drawLandTile( engine, tile, offset, Size( 1 ) );
   else
     Layer::drawPass( engine, tile, offset, pass );
 }

@@ -62,7 +62,12 @@ NFile::NFile( FSEntityPtr file )
   #ifdef _DEBUG
     setDebugName("NFile");
   #endif
-	_entity = file;
+    _entity = file;
+}
+
+NFile::NFile(const NFile& nfile)
+{
+  *this = nfile;
 }
 
 NFile::~NFile()
@@ -135,6 +140,11 @@ int NFile::write(const void* buffer, unsigned int sizeToWrite)
   return _entity.isValid() ? _entity->write( buffer, sizeToWrite ) : 0;
 }
 
+int NFile::write(const std::string& str )
+{
+  return write( str.c_str(), str.size() );
+}
+
 int NFile::write( const ByteArray& bArray )
 {
   return _entity.isValid() ? _entity->write( bArray ) : 0;
@@ -151,6 +161,11 @@ void NFile::flush()
   {
 	  _entity->flush();
   }
+}
+
+size_t NFile::lastModify() const
+{
+  return _entity.isValid() ? _entity->lastModify() : 0;
 }
 
 NFile& NFile::operator=( const NFile& other )

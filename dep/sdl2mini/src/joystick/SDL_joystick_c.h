@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -18,7 +18,7 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../SDL_internal.h"
 
 /* Useful functions and variables from SDL_joystick.c */
 #include "SDL_joystick.h"
@@ -41,9 +41,6 @@ extern int SDL_PrivateJoystickHat(SDL_Joystick * joystick,
                                   Uint8 hat, Uint8 value);
 extern int SDL_PrivateJoystickButton(SDL_Joystick * joystick,
                                      Uint8 button, Uint8 state);
-
-/* Helper function to let lower sys layer tell the event system if the joystick code needs to think */
-extern SDL_bool SDL_PrivateJoystickNeedsPolling();
 
 /* Internal sanity checking functions */
 extern int SDL_PrivateJoystickValid(SDL_Joystick * joystick);

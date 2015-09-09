@@ -23,8 +23,12 @@
 #ifdef CAESARIA_PLATFORM_WIN
 #include <windows.h>
 typedef HINSTANCE addon_lib_t;
+#define __freeLibrary(a) ::FreeLibrary(a)
+#define __loadLibrary(a) ::LoadLibraryA(a)
 #else
 #include <dlfcn.h>
+#define __freeLibrary(a) ::dlclose(a)
+#define __loadLibrary(a) ::dlopen(a, RTLD_LAZY)
 typedef void* addon_lib_t;
 #endif
 
@@ -66,21 +70,13 @@ Addon::Addon() : _d( new Impl )
 
 Addon::~Addon()
 {
-# ifdef CAESARIA_PLATFORM_WIN
-  ::FreeLibrary(_d->library);
-# else
   if( _d->library != 0 )
-    ::dlclose(_d->library);
-# endif
+    __freeLibrary(_d->library);
 }
 
 bool Addon::open(vfs::Path path)
 {
-# ifdef CAESARIA_PLATFORM_WIN
-  _d->library = ::LoadLibraryA(path.toString().c_str());
-# else
-  _d->library = ::dlopen(path.toCString(), RTLD_LAZY);
-# endif
+  _d->library = __loadLibrary( path.toCString() );
 
   if( _d->library != 0 )
   {
@@ -122,6 +118,7 @@ void Manager::load(vfs::Directory folder)
 {
   vfs::Entries flist = folder.entries();
   std::string addonExtension = ".unk";
+
 #if defined(CAESARIA_PLATFORM_WIN)
   addonExtension = ".win";
 #elif defined(CAESARIA_PLATFORM_LINUX)

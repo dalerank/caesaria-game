@@ -19,7 +19,6 @@
 #include "objects/house.hpp"
 #include "gfx/tilemap.hpp"
 #include "gfx/tile.hpp"
-#include "core/foreach.hpp"
 
 using namespace gfx;
 
@@ -44,18 +43,14 @@ void ReturnWorkers::_exec(Game& game, unsigned int time)
   {
     HouseList hList = tilemap.getRectangle( curRange, _center ).overlays().select<House>();
 
-    foreach( it, hList )
+    for( auto house : hList )
     {
-      HousePtr house = *it;
-      if( house.isValid() )
-      {
-        int lastWorkersCount = (int)house->unemployed(); //save value, forexample 5 (max 8)
-        house->appendServiceValue( Service::recruter, _workers );                //add some people, current value 8
-        int delta = (int)house->unemployed();   //check delta 8 - 5 == 3
+      int lastWorkersCount = (int)house->unemployed(); //save value, forexample 5 (max 8)
+      house->appendServiceValue( Service::recruter, _workers );                //add some people, current value 8
+      int delta = (int)house->unemployed();   //check delta 8 - 5 == 3
 
-        int mayAppend = math::clamp<int>( _workers, 0, delta - lastWorkersCount );
-        _workers -= mayAppend;
-      }
+      int mayAppend = math::clamp<int>( _workers, 0, delta - lastWorkersCount );
+      _workers -= mayAppend;
 
       if( !_workers )
         return;

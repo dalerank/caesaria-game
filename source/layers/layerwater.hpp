@@ -34,9 +34,10 @@ public:
 
   static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
   virtual void handleEvent(NEvent& event);
-  void drawLandTile( gfx::Engine &engine, gfx::Tile &tile, const Point &offset, const Size &areaSize);
 
 private:
+  void _drawLandTile( gfx::Engine &engine, gfx::Tile &tile, const Point &offset, const Size &areaSize);
+
   class Impl;
   ScopedPtr<Impl> _d;
 

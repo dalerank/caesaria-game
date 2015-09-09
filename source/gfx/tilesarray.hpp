@@ -62,7 +62,7 @@ public:
 
   TilesArray waters() const;
 
-  TilesArray& remove(const TilePos &pos );
+  TilesArray& remove(const TilePos& pos );
   TilePosArray locations() const;
 
   OverlayList overlays() const;

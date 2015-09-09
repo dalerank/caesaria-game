@@ -17,7 +17,6 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "productmap.hpp"
-#include "core/foreach.hpp"
 #include "core/position.hpp"
 #include "core/variant_list.hpp"
 
@@ -26,8 +25,8 @@ namespace good
 
 ProductMap& ProductMap::operator+=(const ProductMap& other)
 {
-  foreach( it, other )
-    (*this)[ it->first ] += it->second;
+  for( auto&& it : other )
+    (*this)[ it.first ] += it.second;
 
   return *this;
 }
@@ -35,17 +34,17 @@ ProductMap& ProductMap::operator+=(const ProductMap& other)
 VariantList ProductMap::save() const
 {
   VariantList ret;
-  foreach( it, *this )
-    ret << Point( it->first, it->second );
+  for( auto&& it : *this )
+    ret << Point( it.first, it.second );
 
   return ret;
 }
 
 void ProductMap::load(const VariantList &stream)
 {
-  foreach( it, stream )
+  for( auto&& it : stream )
   {
-    Point t = *it;
+    Point t = it.toPoint();
     (*this)[ (Product)t.x() ] = t.y();
   }
 }

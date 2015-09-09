@@ -81,6 +81,7 @@ private:
   void _loadObjects(const VariantMap& objects );
   void _initializeObjects(vfs::Path filename);
   void _initializeCities( vfs::Path filename );
+  void _initializeCapital();
 
   class Impl;
   ScopedPtr< Impl > _d;

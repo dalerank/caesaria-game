@@ -29,7 +29,6 @@
 #include "core/utils.hpp"
 #include "objects/metadata.hpp"
 #include "city/build_options.hpp"
-#include "core/foreach.hpp"
 #include "objects/constants.hpp"
 #include "events/playsound.hpp"
 #include "core/logger.hpp"
@@ -120,7 +119,7 @@ void BuildMenu::initialize()
 
   for( auto item : submenu )
   {
-    development::Branch branch = development::toBranch( item.toString() );
+    development::Branch branch = development::findBranch( item.toString() );
     if( branch != development::unknown )
     {
       std::string title = utils::format( 0xff, "##bldm_%s##", item.toString().c_str() );
@@ -130,7 +129,7 @@ void BuildMenu::initialize()
 
   for( auto item : buildings )
   {
-    object::Type bType = object::toType( item.toString() );
+    object::Type bType = object::findType( item.toString() );
     if( bType != object::unknown )
     {
       addBuildButton( bType );

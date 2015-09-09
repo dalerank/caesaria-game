@@ -109,7 +109,7 @@ const Picture& Wall::picture(const city::AreaInfo& areaInfo) const
 
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
 
-  const TilePos tile_pos = (areaInfo.aroundTiles.empty()) ? pos() : areaInfo.pos;
+  const TilePos tile_pos = (areaInfo.tiles().empty()) ? pos() : areaInfo.pos;
 
   if (!tmap.isInside(tile_pos))
   {
@@ -148,9 +148,9 @@ const Picture& Wall::picture(const city::AreaInfo& areaInfo) const
   overlay_d[direction::southEast] = tmap.at( tile_pos_d[direction::southEast]  ).overlay();
 
   // if we have a TMP array with wall, calculate them
-  if (!areaInfo.aroundTiles.empty())
+  if (!areaInfo.tiles().empty())
   {
-    foreach( it, areaInfo.aroundTiles )
+    foreach( it, areaInfo.tiles() )
     {
       if( (*it)->overlay().isNull()
           || (*it)->overlay()->type() != object::wall)
@@ -246,7 +246,7 @@ const Picture& Wall::picture(const city::AreaInfo& areaInfo) const
 
 void Wall::updatePicture(PlayerCityPtr city)
 {
-  city::AreaInfo areaInfo = { city, TilePos(), TilesArray() };
+  city::AreaInfo areaInfo( city, TilePos() );
   setPicture( picture( areaInfo ) );
 }
 

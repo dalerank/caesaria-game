@@ -54,9 +54,9 @@ public:
   static Directory userDir();
 
   static bool create( std::string dir );
-  static bool createByPath(Directory dir );
+  static bool createByPath( Directory dir );
 };
 
-}//end namespace io
+}//end namespace vfs
 
 #endif //__CAESARIA_DIRECTORY_H_INCLUDED__
