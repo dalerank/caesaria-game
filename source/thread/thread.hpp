@@ -13,11 +13,16 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_THREAD_H_INCLUDE_
 #define _CAESARIA_THREAD_H_INCLUDE_
 
+#include <mutex>
+#include <thread>
+#include "threadevent.hpp"
+#include "threadtask.hpp"
+#include "core/predefinitions.hpp"
 #include "core/platform.hpp"
 #include "core/smartptr.hpp"
 #include "core/referencecounted.hpp"
@@ -26,14 +31,12 @@
   #include <stdio.h>
   #include <malloc.h>
   #include <memory.h>
-  #include <pthread.h>
   #include <stdlib.h>
   #include <time.h>
   #include <errno.h>
 #elif defined(CAESARIA_PLATFORM_MACOSX)
   #include <stdio.h>
   #include <memory.h>
-  #include <pthread.h>
   #include <stdlib.h>
   #include <time.h>
   #include <errno.h>
@@ -41,18 +44,6 @@
 	#include <windows.h>
 	#include <stdio.h>
 #endif
-
-/*#if defined(AS400) || defined(OS400)
-	typedef pthread_id_np_t ThreadId_t;
-#elif defined(VMS)
-	typedef pthread_t ThreadId_t;
-#elif defined(USE_BEGIN_THREAD)
-#endif*/
-
-#include "mutex.hpp"
-#include "threadevent.hpp"
-#include "threadtask.hpp"
-#include "core/predefinitions.hpp"
 
 #define QUEUE_SIZE 100
 #define DEFAULT_STACK_SIZE 0
@@ -78,27 +69,23 @@ typedef enum
 class Thread : public ReferenceCounted
 {
 private:
-	CEventClass   m_event;         // event controller
+  ThreadEvent   m_event;         // event controller
 	int           m_StopTimeout;   // specifies a timeout value for stop
 																 // if a thread fails to stop within m_StopTimeout
 																 // seconds an exception is thrown
-	bool		     m_bRunning;					// set to TRUE if thread is running
+  bool		     _bRunning;					// set to TRUE if thread is running
 
-#ifdef CAESARIA_PLATFORM_WIN
-	HANDLE		  m_thread;		   // thread handle
-#else
-	pthread_t     m_thread;        // thread handle
-#endif
-	ThreadID	    m_dwId;          // id of this thread
-	void**        m_lppvQueue;    // task que
-	unsigned int  m_chQueue;       // que depth
-	int  m_queuePos;      // current que possition
-	void*         m_lpvProcessor;  // data which is currently being processed
-	ThreadState_t m_state;         // current state of thread see thread state data
+  std::thread   _thread;        // thread handle
+  std::thread::id	    _dwId;          // id of this thread
+  void**        _lppvQueue;    // task que
+  unsigned int  _chQueue;       // que depth
+  int  _queuePos;      // current que possition
+  void*         _lpvProcessor;  // data which is currently being processed
+  ThreadState_t _state;         // current state of thread see thread state data
 																 // structure.
-	unsigned int  m_dwIdle;        // used for Sleep periods
-	ThreadType_t  m_type;
-	unsigned int  m_stackSize;     // thread stack size
+  unsigned int  _dwIdle;        // used for Sleep periods
+  ThreadType_t  _type;
+  unsigned int  _stackSize;     // thread stack size
 #define NO_ERRORS			       0
 #define MUTEX_CREATION		       0x01
 #define EVENT_CREATION		       0x02
@@ -121,7 +108,7 @@ public:
 	 * user definable member functions
 	 *
 	 **/
-	Mutex	  m_mutex;         // mutex that protects threads internal data
+  std::mutex	  _mutex;         // mutex that protects threads internal data
 
 	virtual bool OnTask(void* lpvData);     // called when an event occurs
 	virtual bool OnTask();                   // called when a time interval has elapsed
@@ -130,38 +117,29 @@ public:
 	~Thread(void);
 
 	static void	msleep(unsigned int milli);
-#ifdef CAESARIA_PLATFORM_WIN
-	friend long unsigned int WINAPI _THKERNEL( LPVOID lpvData );
-#else
-	friend void* _THKERNEL( void* lpvData );
-#endif
+  friend void _THKERNEL( void* lpvData );
 
 	bool FromSameThread();
 	float		PercentCapacity();
 	void    WaitTillExit();
 	bool		KernelProcess();
 	bool		Event(void* lpvData=NULL);
-	bool    Event(CTask *pvTask);
+  bool    Event(ThreadTask *pvTask);
 	void		SetOnStopTimeout(int seconds ) { m_StopTimeout = seconds; }
 	bool    SetQueueSize( unsigned int ch );
 	bool		Stop();
 	bool		Start();
-	void		getID(ThreadID *pId);      // returns thread id
+  void		getID(std::thread::id *pId);      // returns thread id
 	ThreadState_t ThreadState();
 	bool		PingThread(unsigned int dwTimeout=0);
 	bool    AtCapacity();
-#ifdef CAESARIA_PLATFORM_WINDOWS
-	void		SetPriority(DWORD dwPriority=THREAD_PRIORITY_NORMAL);
-#else
-	void		SetPriority(unsigned int dwPriority=0);
-#endif
 	unsigned int GetErrorFlags() { return m_dwObjectCondition; } // returns state of object
 	void		SetThreadType(ThreadType_t typ=ThreadTypeNotDefined,unsigned int dwIdle=100);
 	void		SetIdle(unsigned int dwIdle=100);
 	unsigned int GetEventsPending();
-	static bool ThreadIdsEqual(ThreadID *p1, ThreadID *p2);
+  static bool threadIdsEqual(std::thread::id *p1, std::thread::id *p2);
 
-	static ThreadID getID();
+  static std::thread::id getID();
 
 };
 

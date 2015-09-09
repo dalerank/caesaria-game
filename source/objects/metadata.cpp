@@ -79,6 +79,7 @@ public:
   object::Group group;
   std::string name;  // debug name  (english, ex:"iron")
   std::string sound;
+  bool checkWalkersOnBuild;
   StringArray desc;
   VariantMap options;
   std::string prettyName;
@@ -92,7 +93,63 @@ MetaData::MetaData(const object::Type buildingType, const std::string& name )
   _d->prettyName = "##" + name + "##";
   _d->tileovType = buildingType;
   _d->group = object::group::unknown;
-  _d->name = name;  
+  _d->name = name;
+}
+
+void MetaData::initialize(const VariantMap& options )
+{
+  _d->options = options;
+  VariantMap desMap = options.get( "desirability" ).toMap();
+  _d->desirability.VARIANT_LOAD_ANY(base, desMap );
+  _d->desirability.VARIANT_LOAD_ANY(range, desMap);
+  _d->desirability.VARIANT_LOAD_ANY(step, desMap );
+
+  _d->desc = options.get( "desc" ).toStringArray();
+  _d->prettyName = options.get( "prettyName", Variant( _d->prettyName ) ).toString();
+
+  _d->group = MetaDataHolder::findGroup( options.get( "class" ).toString() );
+  _d->checkWalkersOnBuild = options.get( "checkWalkersOnBuild", true );
+
+  VariantList basePic = options.get( "image" ).toList();
+  if( !basePic.empty() )
+  {
+    std::string groupName = basePic.get( 0 ).toString();
+    int imageIndex = basePic.get( 1 ).toInt();
+    Variant vOffset = options.get( "image.offset" );
+    if( vOffset.isValid() )
+    {
+      PictureInfoBank::instance().setOffset( groupName, imageIndex, vOffset.toPoint() );
+    }
+
+    Picture pic( groupName, imageIndex );
+    if( pic.isValid() )
+      _d->pictures[ 0 ].push_back( pic.name() );
+  }
+
+  VariantMap extPics = options.get( "image.ext" ).toMap();
+  for( auto config : extPics )
+  {
+    VariantMap info = config.second.toMap();
+    VARIANT_INIT_ANY( int, size, info )
+    VARIANT_INIT_ANY( int, start, info );
+    VARIANT_INIT_ANY( int, count, info );
+    VARIANT_INIT_STR( rc, info );
+
+    for( int i=0; i < count; i++ )
+    {
+      Picture pic( rc, start + i );
+      if( pic.isValid() )
+        _d->pictures[ size ].push_back( pic.name() );
+    }
+  }
+
+  VariantList soundVl = options.get( "sound" ).toList();
+  if( !soundVl.empty() )
+  {
+    _d->sound = utils::format( 0xff, "%s_%05d",
+                               soundVl.get( 0 ).toString().c_str(),
+                               soundVl.get( 1 ).toInt() );
+  }
 }
 
 MetaData::MetaData(const MetaData &a) : _d( new Impl )
@@ -113,6 +170,7 @@ std::string MetaData::description() const
   return _d->desc[ rand() % _d->desc.size() ];
 }
 
+bool MetaData::checkWalkersOnBuild() const { return _d->checkWalkersOnBuild; }
 object::Type MetaData::type() const {  return _d->tileovType;}
 Desirability MetaData::desirability() const{  return _d->desirability;}
 
@@ -137,6 +195,7 @@ MetaData& MetaData::operator=(const MetaData &a)
   _d->pictures = a._d->pictures;
   _d->group = a._d->group;
   _d->desirability = a._d->desirability;
+  _d->checkWalkersOnBuild = a._d->checkWalkersOnBuild;
   _d->desc = a._d->desc;
   _d->options = a._d->options;
 
@@ -146,58 +205,7 @@ MetaData& MetaData::operator=(const MetaData &a)
 void MetaDataHolder::_loadConfig(object::Type type, const std::string& name, const VariantMap& options, bool force )
 {
   MetaData bData( type, name );
-
-  bData._d->options = options;
-  VariantMap desMap = options.get( "desirability" ).toMap();
-  bData._d->desirability.VARIANT_LOAD_ANY(base, desMap );
-  bData._d->desirability.VARIANT_LOAD_ANY(range, desMap);
-  bData._d->desirability.VARIANT_LOAD_ANY(step, desMap );
-
-  bData._d->desc = options.get( "desc" ).toStringArray();
-  bData._d->prettyName = options.get( "prettyName", Variant( bData._d->prettyName ) ).toString();
-
-  bData._d->group = findGroup( options.get( "class" ).toString() );
-
-  VariantList basePic = options.get( "image" ).toList();
-  if( !basePic.empty() )
-  {
-    std::string groupName = basePic.get( 0 ).toString();
-    int imageIndex = basePic.get( 1 ).toInt();
-    Variant vOffset = options.get( "image.offset" );
-    if( vOffset.isValid() )
-    {
-      PictureInfoBank::instance().setOffset( groupName, imageIndex, vOffset.toPoint() );
-    }
-
-    Picture pic( groupName, imageIndex );
-    if( pic.isValid() )
-      bData._d->pictures[ 0 ].push_back( pic.name() );
-  }
-
-  VariantMap extPics = options.get( "image.ext" ).toMap();
-  for( auto config : extPics )
-  {
-    VariantMap info = config.second.toMap();
-    VARIANT_INIT_ANY( int, size, info )
-    VARIANT_INIT_ANY( int, start, info );
-    VARIANT_INIT_ANY( int, count, info );
-    VARIANT_INIT_STR( rc, info );
-
-    for( int i=0; i < count; i++ )
-    {
-      Picture pic( rc, start + i );
-      if( pic.isValid() )
-        bData._d->pictures[ size ].push_back( pic.name() );
-    }
-  }
-
-  VariantList soundVl = options.get( "sound" ).toList();
-  if( !soundVl.empty() )
-  {
-    bData._d->sound = utils::format( 0xff, "%s_%05d",
-                                     soundVl.get( 0 ).toString().c_str(),
-                                     soundVl.get( 1 ).toInt() );
-  }
+  bData.initialize( options );
 
   addData( bData, force );
 }
@@ -250,7 +258,7 @@ object::Type MetaDataHolder::getConsumerType(const good::Product inGoodType) con
   return res;
 }
 
-const MetaData& MetaDataHolder::getData(const object::Type buildingType)
+const MetaData& MetaDataHolder::find(const object::Type buildingType)
 {
   return instance()._d->objectsInfo.valueOrEmpty( buildingType );
 }
@@ -260,10 +268,10 @@ bool MetaDataHolder::hasData(const object::Type buildingType) const
   return _d->objectsInfo.count( buildingType ) > 0;
 }
 
-MetaDataHolder::OverlayTypes MetaDataHolder::availableTypes() const
+object::Types MetaDataHolder::availableTypes() const
 {
-  OverlayTypes ret;
-  foreach( it, _d->objectsInfo ) { ret.push_back( it->first );  }
+  object::Types ret;
+  for( auto info : _d->objectsInfo ) { ret.push_back( info.first );  }
   return ret;
 }
 
@@ -315,7 +323,7 @@ void MetaDataHolder::initialize( vfs::Path filename )
 
   for( auto kv : constructions )
   {
-    const object::Type btype = object::toType( kv.first );
+    const object::Type btype = object::findType( kv.first );
 
     if( btype == object::unknown )
     {
@@ -355,16 +363,16 @@ std::string MetaDataHolder::findGroupname(object::Group group)
 
 std::string MetaDataHolder::findPrettyName(object::Type type)
 {
-  return instance().getData( type ).prettyName();
+  return instance().find( type ).prettyName();
 }
 
 std::string MetaDataHolder::findDescription(object::Type type)
 {
-  return instance().getData( type ).description();
+  return instance().find( type ).description();
 }
 
 Picture MetaDataHolder::randomPicture(object::Type type, Size size)
 {
-  const MetaData& md = getData( type );
+  const MetaData& md = find( type );
   return md.picture( size.width() );
 }

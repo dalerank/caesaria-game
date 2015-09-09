@@ -161,7 +161,7 @@ public:
     switch( mode )
     {
     case Fort::frmOpen:
-      area = TilesArea( tmap, lastPos, 3 );
+      area = TilesArea( tmap, 3, lastPos );
     break;
 
     case Fort::frmWestLine:
@@ -212,7 +212,7 @@ public:
 
     case Fort::frmSquad:
     default:
-      area = TilesArea( tmap, lastPos, 3);
+      area = TilesArea( tmap, 3, lastPos );
     break;
     }
 
@@ -509,13 +509,8 @@ void Fort::load(const VariantMap& stream)
   _d->patrolPoint->setPos( _d->patrolArea.lastPos );
 }
 
-SoldierList Fort::soldiers() const
-{
-  SoldierList soldiers;
-  soldiers << walkers();
-
-  return soldiers;
-}
+SoldierList Fort::soldiers() const {  return walkers().select<Soldier>(); }
+int Fort::soldiers_n() const { return walkers().count<Soldier>(); }
 
 void Fort::returnSoldiers()
 {

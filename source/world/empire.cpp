@@ -70,8 +70,8 @@ public:
 
   void update( unsigned int time )
   {
-    for( auto city : *this )
-      city->timeStep( time );
+    foreach( it, *this )
+      (*it)->timeStep( time );
   }
 
   CityPtr find( const std::string& name ) const
@@ -82,8 +82,9 @@ public:
   VariantMap save() const
   {
     VariantMap ret;
-    for( auto city : *this )
+    foreach( it, *this )
     {
+      auto city = *it;
       //not need save city player
       if( city->name() == playerCity )
         continue;
@@ -211,10 +212,10 @@ Empire::Empire() : _d( new Impl )
 CityList Empire::cities() const
 {
   CityList ret;
-  for( auto city : _d->cities )
+  foreach( it, _d->cities )
   {
-    if( city->isAvailable() )
-      ret.push_back( city );
+    if( (*it)->isAvailable() )
+      ret.push_back( *it );
   }
 
   return ret;
@@ -253,20 +254,12 @@ void Empire::_initializeCities( vfs::Path filename )
     addCity( city );
     city->load( item.second.toMap() );
     _d->emap.setCity( city->location() );
-  }
+    }
 }
 
-void Empire::initialize(vfs::Path citiesPath, vfs::Path objectsPath, vfs::Path filemap)
+void Empire::_initializeCapital()
 {
-  VariantMap emap = config::load( filemap.toString() );
-  _d->emap.initialize( emap );
-
-  _initializeCities( citiesPath );
-  _initializeObjects( objectsPath );
-
-  //initialize capital
-  CityPtr stubRome = new Rome( this );
-  stubRome->drop();
+  auto stubRome = Rome::create( this );
 
   CityPtr rome = findCity( Rome::defaultName );
   if( rome.isValid() )
@@ -278,6 +271,17 @@ void Empire::initialize(vfs::Path citiesPath, vfs::Path objectsPath, vfs::Path f
   _d->cities.push_back( stubRome );
 }
 
+void Empire::initialize(vfs::Path citiesPath, vfs::Path objectsPath, vfs::Path filemap)
+{
+  VariantMap emap = config::load( filemap.toString() );
+  _d->emap.initialize( emap );
+
+  _initializeCities( citiesPath );
+  _initializeObjects( objectsPath );
+
+  _initializeCapital();
+}
+
 void Empire::addObject(ObjectPtr obj)
 {
   if( obj->name().empty() )
@@ -285,8 +289,9 @@ void Empire::addObject(ObjectPtr obj)
     obj->setName( obj->type() + utils::i2str( _d->objects.id++ ) );
   }  
 
-  for( auto object : _d->objects )
+  foreach( it, _d->objects )
   {
+    auto object = *it;
     if( object == obj )
     {
       Logger::warning( "WARNING!!! Empire:addObject also have object with name " + obj->name() );
@@ -378,10 +383,7 @@ PriceInfo Empire::getPrice(good::Product gtype) const
   return _d->trading.getPrice( gtype );
 }
 
-void Empire::clear()
-{
-
-}
+void Empire::clear() {}
 
 TraderoutePtr Empire::createTradeRoute(std::string start, std::string stop )
 {
@@ -513,16 +515,18 @@ ObjectList Empire::findObjects( Point location, int deviance ) const
   ObjectList ret;
   int sqrDeviance = pow( deviance, 2 ); //not need calculate sqrt
 
-  for( auto item : _d->objects )
+  foreach( it, _d->objects )
   {
+    auto item = *it;
     if( item->isAvailable() && location.getDistanceFromSQ( item->location() ) < sqrDeviance )
     {        
       ret << item;
     }
   }
 
-  for( auto city : _d->cities )
+  foreach( it, _d->cities )
   {
+    auto city  = *it;
     if( city->isAvailable() && location.getDistanceFromSQ( city->location() ) < sqrDeviance )
     {
       ret << city.as<Object>();
@@ -535,11 +539,11 @@ ObjectList Empire::findObjects( Point location, int deviance ) const
 
 ObjectPtr Empire::findObject(const std::string& name) const
 {
-  for( auto city : _d->objects )
+  foreach( it, _d->objects )
   {
-    if( city->name() == name )
+    if( (*it)->name() == name )
     {
-      return city;
+      return *it;
     }
   }
 

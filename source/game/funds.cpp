@@ -21,7 +21,6 @@
 #include "city/trade_options.hpp"
 #include "objects/house.hpp"
 #include "objects/constants.hpp"
-#include "core/foreach.hpp"
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
@@ -51,9 +50,10 @@ public:
   IssuesHistory history;
   IssuesDetailedHistory detailedHistory;
 
-signals public:
-  Signal1<int> onChangeSignal;
-  Signal1<econ::Issue::Type> onNewIssueSignal;
+  struct {
+    Signal1<int> onChange;
+    Signal1<econ::Issue::Type> onNewIssue;
+  } signal;
 };
 
 Treasury::Treasury() : _d( new Impl )
@@ -104,11 +104,11 @@ void Treasury::resolveIssue( econ::Issue issue )
 
   _d->detailedHistory.addIssue( issue );
 
-  emit _d->onNewIssueSignal( (Issue::Type)issue.type );
+  emit _d->signal.onNewIssue( (Issue::Type)issue.type );
 
   if( saveMoney != _d->money )
   {
-    emit _d->onChangeSignal( _d->money );
+    emit _d->signal.onChange( _d->money );
   }
 }
 
@@ -205,14 +205,14 @@ void Treasury::load( const VariantMap& stream )
 }
 
 Treasury::~Treasury(){}
-Signal1<int>& Treasury::onChange(){  return _d->onChangeSignal; }
-Signal1<Issue::Type>& Treasury::onNewIssue(){ return _d->onNewIssueSignal; }
+Signal1<int>& Treasury::onChange(){  return _d->signal.onChange; }
+Signal1<Issue::Type>& Treasury::onNewIssue(){ return _d->signal.onNewIssue; }
 
 VariantList IssuesHistory::save() const
 {
   VariantList ret;
-  foreach( stepIt, *this )
-    ret.push_back( stepIt->save() );
+  for( auto&& step : *this )
+    ret.push_back( step.save() );
 
   return ret;
 }
@@ -220,11 +220,11 @@ VariantList IssuesHistory::save() const
 void IssuesHistory::load(const VariantList& stream)
 {
   clear();
-  foreach( it, stream )
+  for( auto it : stream )
   {
     push_back( IssuesValue() );
     IssuesValue& last = back();
-    last.load( it->toList() );
+    last.load( it.toList() );
   }
 }
 
@@ -257,8 +257,8 @@ IssuesDetailedHistory::~IssuesDetailedHistory() {}
 VariantList IssuesDetailedHistory::save() const
 {
   VariantList ret;
-  foreach( it, _d->issues )
-    ret.push_back( it->save() );
+  for( auto it : _d->issues )
+    ret.push_back( it.save() );
 
   return ret;
 }
@@ -266,10 +266,10 @@ VariantList IssuesDetailedHistory::save() const
 void IssuesDetailedHistory::load(const VariantList& stream)
 {
   _d->issues.clear();
-  foreach( it, stream )
+  for( auto it : stream )
   {
     DateIssue dIssue;
-    dIssue.load( it->toList() );
+    dIssue.load( it.toList() );
     _d->issues.push_back( dIssue );
   }
 }
@@ -291,8 +291,8 @@ void IssuesDetailedHistory::DateIssue::load(const VariantList& stream)
 VariantList IssuesValue::save() const
 {
   VariantList ret;
-  foreach( it, *this )
-    ret << it->first << it->second;
+  for( auto it  : *this )
+    ret << it.first << it.second;
 
   return ret;
 }

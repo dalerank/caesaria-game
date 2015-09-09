@@ -27,7 +27,6 @@
 #include <SDL_mixer.h>
 #include "game/settings.hpp"
 #include "core/exception.hpp"
-#include "thread/mutex.hpp"
 #include "core/logger.hpp"
 #include "vfs/directory.hpp"
 #include "core/foreach.hpp"
@@ -58,13 +57,13 @@ struct Sample
 
   void setVolume( int game, int type )
   {
-    if( channel >= 0 )
+    if( chunk )
     {
       float result = math::clamp<int>( volume, 0, 100 ) / 100.f;
 
       result = ( result * (type/100.f) * (game/100.f) ) * MIX_MAX_VOLUME;
 
-      Mix_Volume( channel, (int)result );
+      Mix_VolumeChunk( chunk, (int)result );
     }
   }
 
@@ -72,6 +71,7 @@ struct Sample
   {
     if( channel >= 0 )
       Mix_FreeChunk( chunk );
+    chunk = 0;
   }
 };
 

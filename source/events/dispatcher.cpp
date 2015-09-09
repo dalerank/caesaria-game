@@ -17,7 +17,6 @@
 
 #include "dispatcher.hpp"
 #include "core/utils.hpp"
-#include "core/foreach.hpp"
 #include "postpone.hpp"
 #include "core/variant_map.hpp"
 #include "core/logger.hpp"
@@ -84,7 +83,7 @@ VariantMap Dispatcher::save() const
 {
   VariantMap ret;
   int index = 0;
-  for( auto event : _d->events )
+  for( auto&& event : _d->events )
   {
     ret[ utils::format( 0xff, "event_%d", index++ ) ] = event->save();
   }
@@ -94,7 +93,7 @@ VariantMap Dispatcher::save() const
 
 void Dispatcher::load(const VariantMap& stream)
 {
-  for( auto it : stream )
+  for( auto&& it : stream )
   {
     GameEventPtr e = PostponeEvent::create( it.first, it.second.toMap() );
 

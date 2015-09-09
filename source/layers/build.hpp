@@ -33,7 +33,9 @@ public:
   virtual void drawTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
   virtual void render( gfx::Engine &engine);
   virtual void init(Point cursor);
+  virtual void drawProminentTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset, const int depth, bool force);
   virtual void beforeRender(gfx::Engine &engine);
+  virtual void drawPass(gfx::Engine &engine, gfx::Tile &tile, const Point &offset, gfx::Renderer::Pass pass);
   virtual void afterRender(gfx::Engine &engine);
   virtual const WalkerTypes& visibleTypes() const;
   virtual void renderUi(gfx::Engine &engine);
@@ -52,6 +54,8 @@ private:
   void _finishBuild();
   void _initBuildMode();
   void _drawBuildTiles( gfx::Engine& engine );
+  void _drawBuildTile( gfx::Engine& engine, gfx::Tile* tile, const Point& offset );
+  void _tryDrawBuildTile(gfx::Engine& engine, gfx::Tile& tile, const Point &camOffset);
   void _exitBuildMode();
 
   Build( gfx::Renderer& renderer, PlayerCityPtr city );

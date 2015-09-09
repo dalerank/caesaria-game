@@ -64,7 +64,7 @@ private:
 
 class Measure : public StaticSingleton<Measure>
 {
-  friend class StaticSingleton;
+  SET_STATICSINGLETON_FRIEND_FOR(Measure)
 public:
   typedef enum { native=0, metric, roman, count } Mode;
 
@@ -75,6 +75,7 @@ public:
   static int convQty( int qty );
 
   static Mode mode() { return instance()._mode; }
+  static bool isRoman() { return instance()._mode == roman; }
 
 private:
   Measure() : _mode( native ) {}

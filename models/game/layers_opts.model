@@ -15,6 +15,18 @@
                        "plague_ruins" ]
   }
 
+  unemployed : {
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge", "farmtile",
+                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "waymark", "roadBlock",
+                       "plague_ruins" ]
+  }
+
+  market : {
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge", "farmtile",
+                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "waymark", "roadBlock",
+                       "plague_ruins" ]
+  }
+
   desirability : {
     visibleObjects : [ "road", "plaza", "garden", "collapsed_ruins", "burned_ruins", "collapsed_ruins", "low_bridge",
                        "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark", "senate", "roadBlock",
@@ -24,25 +36,25 @@
   education : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge",
                        "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark", "school",
-                       "library", "academy", "roadBlock", "plague_ruins" ]
+                       "library", "academy", "roadBlock", "plague_ruins", "reservoir", "aqueduct" ]
   }
 
   school : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge",
                        "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark", "school", "roadBlock",
-                       "plague_ruins" ]
+                       "plague_ruins", "reservoir", "aqueduct" ]
   }
 
   library : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge",
                        "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark", "library",
-                       "roadBlock", "plague_ruins" ]
+                       "roadBlock", "plague_ruins", "reservoir", "aqueduct" ]
   }
 
   academy : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge",
                        "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark", "academy",
-                       "roadBlock", "plague_ruins" ]
+                       "roadBlock", "plague_ruins", "reservoir", "aqueduct" ]
   }
 
   entertainment : {

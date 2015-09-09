@@ -29,7 +29,6 @@
 #include "gfx/helper.hpp"
 #include "resourcegroup.hpp"
 #include "gfx/animation_bank.hpp"
-#include "core/foreach.hpp"
 #include "game.hpp"
 #include "objects/objects_factory.hpp"
 #include "city/city.hpp"
@@ -102,7 +101,7 @@ void Loader::Impl::initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city )
   {
     tile::clear( signTile );
     OverlayPtr waymark = TileOverlayFactory::instance().create( object::waymark );
-    city::AreaInfo info = { city, tlPos + tlOffset, TilesArray() };
+    city::AreaInfo info( city, tlPos + tlOffset );
     waymark->build( info );
     city->addOverlay( waymark );
   }
@@ -112,26 +111,26 @@ void Loader::Impl::initTilesAnimation( Tilemap& tmap )
 {
   TilesArray area = tmap.allTiles();
 
-  foreach( it, area )
+  for( auto tile : area )
   {
-    int rId = (*it)->originalImgId() - 364;
+    int rId = tile->originalImgId() - 364;
     if( rId >= 0 && rId < 8 )
     {
       Animation water = AnimationBank::simple( AnimationBank::animWater );
       water.setIndex( rId );
-      (*it)->setAnimation( water );
-      (*it)->setFlag( Tile::tlDeepWater, true );
+      tile->setAnimation( water );
+      tile->setFlag( Tile::tlDeepWater, true );
     }
 
-    if( (*it)->getFlag( Tile::tlMeadow ) )
+    if( tile->getFlag( Tile::tlMeadow ) )
     {
       const Animation& meadow = AnimationBank::simple( AnimationBank::animMeadow );
-      if( !(*it)->picture().isValid() )
+      if( !tile->picture().isValid() )
       {
         Picture pic = MetaDataHolder::randomPicture( object::terrain, Size(1) );
-        (*it)->setPicture( pic );
+        tile->setPicture( pic );
       }
-      (*it)->setAnimation( meadow );
+      tile->setAnimation( meadow );
     }
   }
 }
@@ -171,22 +170,22 @@ Signal1<std::string>& Loader::onUpdate() { return _d->onUpdateSignal; }
 bool Loader::load(vfs::Path filename, Game& game)
 {
   // try to load file based on file extension
-  foreach( it, _d->loaders )
+  for( auto loader : _d->loaders )
   {
-    if( !(*it)->isLoadableFileExtension( filename.toString() ) )
+    if( !loader->isLoadableFileExtension( filename.toString() ) )
       continue;
 
-    ClimateType currentClimate = (ClimateType)(*it)->climateType( filename.toString() );
+    ClimateType currentClimate = (ClimateType)loader->climateType( filename.toString() );
     if( currentClimate >= 0  )
     {
       game::climate::initialize( currentClimate );
     }
 
-    bool loadok = (*it)->load( filename.toString(), game );
-    bool needToFinalizeMap = (*it)->finalizeMap();
+    bool loadok = loader->load( filename.toString(), game );
+    bool needToFinalizeMap = loader->finalizeMap();
     if( loadok )
     {
-      _d->restartFile = (*it)->restartFile();
+      _d->restartFile = loader->restartFile();
 
       _d->finalize( game, needToFinalizeMap );
     }

@@ -34,12 +34,14 @@ public:
 
 GameAutoPause::GameAutoPause()
 {
+  _activated = false;
 }
 
 void GameAutoPause::activate()
 {
   GameEventPtr e = Pause::create( Pause::hidepause );
   e->dispatch();
+  _activated = true;
 }
 
 void GameAutoPause::insertTo( gui::Widget *parent)
@@ -49,6 +51,9 @@ void GameAutoPause::insertTo( gui::Widget *parent)
 
 GameAutoPause::~GameAutoPause()
 {
+  if( !_activated )
+    return;
+
   GameEventPtr e = Pause::create( Pause::hideplay );
   e->dispatch();
 }

@@ -26,8 +26,8 @@ TilePosArray& TilePosArray::operator<<(const TilePos& pos)
 
 TilePosArray& TilePosArray::addIfNot(const TilePos& pos)
 {
-  foreach( it, *this )
-    if( *it == pos )
+  for( auto&& tpos : *this )
+    if( tpos == pos )
       return *this;
 
   push_back( pos );
@@ -48,24 +48,22 @@ TilePos TilePosArray::valueOrEmpty(unsigned int index)
 VariantList TilePosArray::save() const
 {
   VariantList ret;
-  foreach( it, *this ) { ret << *it; }
+  for( auto pos : *this ) { ret << pos; }
   return ret;
 }
 
 void TilePosArray::load(const VariantList &vlist)
 {
   clear();
-  foreach( it, vlist )
-    push_back( it->toTilePos() );
+  for( auto&& it : vlist )
+    push_back( it.toTilePos() );
 }
-
 
 TilePosSet& TilePosSet::operator<<(const TilePos &pos)
 {
   insert( pos );
   return *this;
 }
-
 
 TilePos TilePosArray::random()
 {

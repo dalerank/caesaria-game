@@ -25,7 +25,7 @@
 
 class Pathfinder : public StaticSingleton<Pathfinder>
 {
-  friend class StaticSingleton;
+  SET_STATICSINGLETON_FRIEND_FOR(Pathfinder)
 public:
   typedef enum { noFlags=0x0,
                  checkStart=0x1, checkStop=0x2,

@@ -60,7 +60,7 @@ AboutSenate::AboutSenate(Widget* parent, PlayerCityPtr city, const Tile& tile )
   events::GameEventPtr e = events::PlaySound::create( "bmsel_senate", 1, 100, audio::infobox, true );
   e->dispatch();
 
-  std::string title = MetaDataHolder::instance().getData( object::senate ).prettyName();
+  std::string title = MetaDataHolder::instance().find( object::senate ).prettyName();
   setTitle( _(title) );
 
   // number of workers

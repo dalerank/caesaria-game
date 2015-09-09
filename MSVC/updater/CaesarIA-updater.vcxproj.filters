@@ -56,9 +56,6 @@
     <ClCompile Include="..\..\source\core\logger.cpp">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\core\stringhelper.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\core\time.cpp">
       <Filter>core</Filter>
     </ClCompile>
@@ -85,6 +82,15 @@
     </ClCompile>
     <ClCompile Include="..\..\source\thread\threadtask.cpp">
       <Filter>thread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\core\utils.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\core\osystem.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\core\hash.cpp">
+      <Filter>core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -142,9 +148,6 @@
     <ClInclude Include="..\..\source\core\logger.hpp">
       <Filter>core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\source\core\stringhelper.hpp">
-      <Filter>core</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\source\core\time.hpp">
       <Filter>core</Filter>
     </ClInclude>
@@ -171,6 +174,15 @@
     </ClInclude>
     <ClInclude Include="..\..\source\thread\threadtask.hpp">
       <Filter>thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\utils.hpp">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\osystem.hpp">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\source\core\hash.hpp">
+      <Filter>core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

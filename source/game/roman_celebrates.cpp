@@ -52,9 +52,9 @@ Celebrates& Celebrates::instance()
 void Celebrates::load(vfs::Path path)
 {
   VariantMap conf = config::load( path );
-  foreach( it, conf )
+  for( auto&& it : conf )
   {
-    VariantMap infoVm = it->second.toMap();
+    VariantMap infoVm = it.second.toMap();
     int day = infoVm.get( "day" );
     int month = infoVm.get( "month" );
     std::string description = infoVm.get( "desc" );

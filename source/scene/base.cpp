@@ -23,6 +23,7 @@
 #include "core/event.hpp"
 #include "core/eventconverter.hpp"
 #include "core/timer.hpp"
+#include "core/debug_timer.hpp"
 
 namespace scene
 {

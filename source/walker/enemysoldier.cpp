@@ -49,7 +49,7 @@ REGISTER_SOLDIER_IN_WALKERFACTORY( walker::etruscanSoldier, walker::etruscanSold
 namespace {
   static unsigned int __getCost( ConstructionPtr b )
   {
-    return MetaDataHolder::getData( b->type() ).getOption( MetaDataOptions::cost );
+    return MetaDataHolder::find( b->type() ).getOption( MetaDataOptions::cost );
   }
 }
 
@@ -150,18 +150,17 @@ WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
     TilesArray tiles = tmap.getRectangle( k, pos() );
 
     walker::Type rtype;
-    foreach( tile, tiles )
+    for( auto tile : tiles )
     {
-      const WalkerList& tileWalkers = _city()->walkers( (*tile)->pos() );
+      const WalkerList& tileWalkers = _city()->walkers( tile->pos() );
 
-      foreach( i, tileWalkers )
+      for( auto wlk : tileWalkers )
       {
-        WalkerPtr wlk = *i;
         rtype = wlk->type();
         if( rtype == type() || !WalkerHelper::isHuman( wlk ) || isFriendTo( wlk ) )
           continue;
 
-        walkers.push_back( *i );
+        walkers.push_back( wlk );
       }
     }
   }
@@ -175,9 +174,9 @@ Pathway EnemySoldier::_findPathway2NearestEnemy( unsigned int range )
 
   WalkerList walkers = _findEnemiesInRange( range );
 
-  foreach( it, walkers)
+  for( auto wlk : walkers)
   {
-    ret = PathwayHelper::create( pos(), (*it)->pos(), PathwayHelper::allTerrain );
+    ret = PathwayHelper::create( pos(), wlk->pos(), PathwayHelper::allTerrain );
     if( ret.isValid() )
     {
       return ret;
@@ -234,9 +233,9 @@ ConstructionList EnemySoldier::_findContructionsInRange( unsigned int range )
   {
     TilesArray tiles = tmap.getRectangle( k, pos() );
 
-    foreach( it, tiles )
+    for( auto tile : tiles )
     {
-      ConstructionPtr b = ptr_cast<Construction>( (*it)->overlay() );
+      ConstructionPtr b = tile->overlay().as<Construction>();
       if( b.isValid() && !_atExclude.count( b->group() ) )
       {
         ret.push_back( b );
@@ -264,11 +263,11 @@ ConstructionList EnemySoldier::_findContructionsInRange( unsigned int range )
     default: needGroup = object::group::unknown; break;
     }
 
-    foreach( it, ret )
+    for( auto bld : ret )
     {
-      if( (*it)->group() == needGroup )
+      if( bld->group() == needGroup )
       {
-        tmpRet << *it;
+        tmpRet << bld;
       }
     }
 

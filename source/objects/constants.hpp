@@ -205,8 +205,15 @@ END_NAMEDTYPE(Type)
 typedef std::set<Group> GroupSet;
 typedef std::vector<Group> Groups;
 typedef std::vector<Type> Types;
-typedef std::set<Type> TypeSet;
 std::string toString( const Type& t);
+
+class TypeSet : public std::set<Type>
+{
+public:
+  VariantList save() const;
+  void load( const VariantList& stream );
+};
+
 Type toType( const std::string& name);
 
 class Helper : public EnumsHelper<Type>

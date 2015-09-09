@@ -32,7 +32,7 @@ namespace audio
 
 class Engine : public StaticSingleton<Engine>
 {
-  friend class StaticSingleton;
+  SET_STATICSINGLETON_FRIEND_FOR(Engine)
 public:
   void setVolume( SoundType type, int value);
   void loadAlias(const vfs::Path& filename );

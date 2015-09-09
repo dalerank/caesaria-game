@@ -37,7 +37,7 @@ public:
   typedef enum { tlRoad=0, tlWater, tlTree, tlMeadow, tlRock, tlOverlay,
                  tlGarden, tlElevation, tlWall, tlDeepWater, tlRubble,
                  isConstructible, isDestructible, tlRift, tlCoast, tlGrass, clearAll,
-                 wasDrawn } Type;
+                 wasDrawn, tlUnknown } Type;
 
 public:
   explicit Tile(const TilePos& pos);

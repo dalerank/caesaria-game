@@ -21,8 +21,8 @@
 #include "objects/engineer_post.hpp"
 #include "objects/prefecture.hpp"
 #include "walker/workerhunter.hpp"
-#include "core/foreach.hpp"
 #include "objects/constants.hpp"
+#include "core/foreach.hpp"
 #include "game/gamedate.hpp"
 #include "core/gettext.hpp"
 #include "objects/metadata.hpp"
@@ -90,13 +90,13 @@ WorkersHire::WorkersHire(PlayerCityPtr city)
 
 void WorkersHire::Impl::fillIndustryMap()
 {
-  MetaDataHolder::OverlayTypes types = MetaDataHolder::instance().availableTypes();
+  object::Types types = MetaDataHolder::instance().availableTypes();
 
   industryBuildings.clear();
 
-  for( auto type : types)
+  for( auto&& type : types)
   {
-    const MetaData& info = MetaDataHolder::getData( type );
+    const MetaData& info = MetaDataHolder::find( type );
     int workersNeed = info.getOption( literals::employers );
     if( workersNeed > 0 )
     {
@@ -155,7 +155,7 @@ void WorkersHire::timeStep( const unsigned int time )
 
   if( !_d->priorities.empty() )
   {
-    for( auto priority : _d->priorities )
+    for( auto&& priority : _d->priorities )
     {
       object::Groups groups = industry::toGroups( priority );
 

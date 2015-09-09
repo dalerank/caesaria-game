@@ -18,7 +18,6 @@
 #include "animation.hpp"
 #include "core/position.hpp"
 #include "core/variant_map.hpp"
-#include "core/foreach.hpp"
 #include "core/utils.hpp"
 #include "animation_bank.hpp"
 #include "core/logger.hpp"
@@ -50,12 +49,12 @@ unsigned int Animation::frameCount() const{  return _pictures.size();}
 
 void Animation::setOffset( const Point& offset )
 {
-  foreach( pic, _pictures ) { pic->setOffset( offset ); }
+  for( auto&& pic : _pictures ) { pic.setOffset( offset ); }
 }
 
 void Animation::addOffset(const Point& offset)
 {
-  foreach( pic, _pictures) { pic->addOffset( offset );}
+  for( auto&& pic : _pictures) { pic.addOffset( offset );}
 }
 
 Point Animation::offset() const

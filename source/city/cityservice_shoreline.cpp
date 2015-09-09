@@ -20,7 +20,6 @@
 #include "gfx/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/time.hpp"
-#include "core/foreach.hpp"
 #include "objects/overlay.hpp"
 #include "walker/watergarbage.hpp"
 #include "game/gamedate.hpp"

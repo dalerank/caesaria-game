@@ -13,28 +13,25 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_LAYERINDIGENE_H_INCLUDED__
-#define __CAESARIA_LAYERINDIGENE_H_INCLUDED__
+#ifndef __CAESARIA_CITY_OPTION_H_INCLUDED__
+#define __CAESARIA_CITY_OPTION_H_INCLUDED__
 
-#include "layerinfo.hpp"
+#include "city.hpp"
 
-namespace citylayer
-{
+namespace city
+{  
 
-class Indigene : public Info
+PlayerCity::OptionType findOption( const std::string& name);
+
+class Options : public std::map<int, int>
 {
 public:
-  virtual int type() const;
-  virtual void drawTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
-  virtual void handleEvent(NEvent& event);
-
-  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
-
-private:
-  Indigene( gfx::Camera& camera, PlayerCityPtr city );
+  VariantList save() const;
+  void load(const VariantList &stream );
+  void resetIfNot( int name, int value );
 };
 
-}//end namespace citylayer
-#endif //__CAESARIA_LAYERINDIGENE_H_INCLUDED__
+}//end namespace city
+#endif //__CAESARIA_CITY_OPTION_H_INCLUDED__

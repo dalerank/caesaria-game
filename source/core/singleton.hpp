@@ -41,6 +41,12 @@ private:
   StaticSingleton<T>& operator=(const StaticSingleton<T>&) {return this;}
 };
 
+#if _MSC_VER >= 1300 
+#define SET_STATICSINGLETON_FRIEND_FOR(a) template<class a> friend class StaticSingleton;
+#else
+#define SET_STATICSINGLETON_FRIEND_FOR(a) friend class StaticSingleton;
+#endif
+
 template <typename T>
 class DynamicSingleton
 {

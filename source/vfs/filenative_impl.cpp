@@ -20,11 +20,14 @@
 
 #ifdef CAESARIA_PLATFORM_WIN
 #define getline_def getline_fp
+#include "windows.h"
+#include <time.h>
 #elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
   #ifdef CAESARIA_PLATFORM_ANDROID
     #define getline_def getline_fp
   #else
     #define getline_def getline
+    #include <sys/stat.h>
   #endif
 #endif
 
@@ -232,6 +235,44 @@ int FileNative::write( const ByteArray& bArray )
 }
 
 bool FileNative::isOpen() const { return _file != 0;}
+
+size_t FileNative::lastModify() const
+{
+#ifdef CAESARIA_PLATFORM_LINUX
+  struct stat attr;
+  stat(_name.toCString(), &attr);
+  return attr.st_mtime;
+#else
+  FILETIME creationTime,
+           lpLastAccessTime,
+           lastWriteTime;
+  HANDLE  hFile = CreateFile(_name.toCString(), GENERIC_READ, FILE_SHARE_READ, NULL,
+                             OPEN_EXISTING, 0, NULL);
+  bool err = GetFileTime( hFile, &creationTime, &lpLastAccessTime, &lastWriteTime );
+  time_t ret = 0;
+  if( !err )
+  {
+    SYSTEMTIME sysTime;
+    FileTimeToSystemTime( &creationTime, &sysTime );
+
+    struct tm tmtime = {0};
+
+    tmtime.tm_year = sysTime.wYear - 1900;
+    tmtime.tm_mon = sysTime.wMonth - 1;
+    tmtime.tm_mday = sysTime.wDay;
+    tmtime.tm_hour = sysTime.wHour;
+    tmtime.tm_min = sysTime.wMinute;
+    tmtime.tm_sec = sysTime.wSecond;
+    tmtime.tm_wday = 0;
+    tmtime.tm_yday = 0;
+    tmtime.tm_isdst = -1;
+    ret = mktime(&tmtime);
+  }
+
+  CloseHandle( hFile );
+  return ret;
+#endif
+}
 
 void FileNative::flush()
 {

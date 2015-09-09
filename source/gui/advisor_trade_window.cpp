@@ -75,26 +75,26 @@ void Trade::Impl::updateGoodsInfo()
 
   Widget::Widgets children = gbInfo->children();
 
-  foreach( child, children ) { (*child)->deleteLater(); }
+  for( auto&& child : children ) { child->deleteLater(); }
 
   Point startDraw( 0, 5 );
   Size btnSize( gbInfo->width(), 20 );
   trade::Options& copt = city->tradeOptions();
   int indexOffset=0;
-  foreach( gtype, good::all() )
+  for( auto gtype : good::all() )
   {
-    trade::Order tradeState = copt.getOrder( *gtype );
-    if( tradeState == trade::disabled || *gtype == good::none)
+    trade::Order tradeState = copt.getOrder( gtype );
+    if( tradeState == trade::disabled || gtype == good::none)
     {
       continue;
     }
 
-    bool workState = getWorkState( *gtype );
-    int exportQty = copt.tradeLimit( trade::exporting, *gtype ).ivalue();
-    int importQty = copt.tradeLimit( trade::importing, *gtype ).ivalue();
+    bool workState = getWorkState( gtype );
+    int exportQty = copt.tradeLimit( trade::exporting, gtype ).ivalue();
+    int importQty = copt.tradeLimit( trade::importing, gtype ).ivalue();
     
     TradeGoodInfo* btn = new TradeGoodInfo( gbInfo, Rect( startDraw + Point( 0, btnSize.height()) * indexOffset, btnSize ),
-                                            *gtype, allgoods[ *gtype ], workState, tradeState, exportQty, importQty );
+                                            gtype, allgoods[ gtype ], workState, tradeState, exportQty, importQty );
     indexOffset++;
     CONNECT( btn, onClickedA(), this, Impl::showGoodOrderManageWindow );
   } 
@@ -105,7 +105,7 @@ bool Trade::Impl::getWorkState(good::Product gtype )
   bool industryActive = false;
   FactoryList producers = city->statistic().objects.producers<Factory>( gtype );
 
-  foreach( it, producers ) { industryActive |= (*it)->isActive(); }
+  for( auto factory : producers ) { industryActive |= factory->isActive(); }
 
   return producers.empty() ? true : industryActive;
 }

@@ -190,7 +190,7 @@
     </PostBuildEvent>
     <Link>
       <AdditionalOptions> /machine:X86 -static -static-libgcc -static-libstdc++ /debug %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;psapi.lib;..\..\bin\$(Platform)\$(Configuration)\curl.lib;ws2_32.lib</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;psapi.lib;..\..\bin\$(Platform)\$(Configuration)\curl.lib;ws2_32.lib;dbghelp.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImportLibrary>..\..\bin\updater\$(Platform)\$(Configuration)\updater.lib</ImportLibrary>
@@ -541,10 +541,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\core\bytearray.cpp" />
+    <ClCompile Include="..\..\source\core\hash.cpp" />
     <ClCompile Include="..\..\source\core\logger.cpp" />
+    <ClCompile Include="..\..\source\core\osystem.cpp" />
     <ClCompile Include="..\..\source\core\stacktrace.cpp" />
-    <ClCompile Include="..\..\source\core\stringhelper.cpp" />
     <ClCompile Include="..\..\source\core\time.cpp" />
+    <ClCompile Include="..\..\source\core\utils.cpp" />
     <ClCompile Include="..\..\source\core\variant.cpp" />
     <ClCompile Include="..\..\source\thread\mutex.cpp" />
     <ClCompile Include="..\..\source\thread\thread.cpp" />
@@ -572,10 +574,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\core\bytearray.hpp" />
+    <ClInclude Include="..\..\source\core\hash.hpp" />
     <ClInclude Include="..\..\source\core\logger.hpp" />
+    <ClInclude Include="..\..\source\core\osystem.hpp" />
     <ClInclude Include="..\..\source\core\stacktrace.hpp" />
-    <ClInclude Include="..\..\source\core\stringhelper.hpp" />
     <ClInclude Include="..\..\source\core\time.hpp" />
+    <ClInclude Include="..\..\source\core\utils.hpp" />
     <ClInclude Include="..\..\source\core\variant.hpp" />
     <ClInclude Include="..\..\source\thread\mutex.hpp" />
     <ClInclude Include="..\..\source\thread\thread.hpp" />

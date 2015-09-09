@@ -49,7 +49,7 @@ public:
   virtual ~ListBox();
 
   //! returns amount of list items
-  virtual unsigned int itemCount() const;
+  virtual unsigned int itemsCount() const;
 
   //! returns string of a list item. the id may be a value from 0 to itemCount-1
   virtual ListBoxItem& item(unsigned int id);

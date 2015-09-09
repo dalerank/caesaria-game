@@ -726,7 +726,7 @@
       small_neptune_temple : true
       small_mercury_temple : true
       market : true
-
+      roadBlock : true
 			fort_legionaries : true
       fort_javelin : true
       fort_horse : true

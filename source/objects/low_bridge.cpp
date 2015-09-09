@@ -389,8 +389,9 @@ void LowBridge::load(const VariantMap& stream)
   Construction::load( stream );
 
   VariantList vl_tinfo = stream.get( "terraininfo" ).toList();
-  for( unsigned int i=0; i < vl_tinfo.size(); i++ )
-  {
+  int lenth = math::min( vl_tinfo.size(), _d->subtiles.size() );
+  for( int i=0; i < lenth; i++ )
+  {    
     _d->subtiles[ i ]->_imgId = vl_tinfo.get( i ).toInt();
   }
 }
@@ -427,7 +428,7 @@ bool LowBridgeSubTile::build(const city::AreaInfo &info)
   Construction::build( info );
   _fgPictures().clear();
   _pos = info.pos;
-  const MetaData& md = MetaDataHolder::getData( type() );
+  const MetaData& md = MetaDataHolder::find( type() );
   Point sbOffset = md.getOption( "subtileOffset" );
   _rpicture.load( ResourceGroup::transport, _index );
   _rpicture.addOffset( sbOffset );

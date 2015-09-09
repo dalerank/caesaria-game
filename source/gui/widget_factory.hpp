@@ -45,7 +45,7 @@ public:
 
 class WidgetFactory : public StaticSingleton<WidgetFactory>
 {
-  friend class StaticSingleton;
+  SET_STATICSINGLETON_FRIEND_FOR(WidgetFactory)
 public:
   ~WidgetFactory();
 

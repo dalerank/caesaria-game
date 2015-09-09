@@ -37,6 +37,7 @@ public:
   };
 
   bool contain( const TilePos& tilePos ) const;
+  Tile* find( const TilePos& tilePos ) const;
 
   TilesArray() {}
 
@@ -61,7 +62,7 @@ public:
 
   TilesArray waters() const;
 
-  TilesArray& remove(const TilePos &pos );
+  TilesArray& remove(const TilePos& pos );
   TilePosArray locations() const;
 
   OverlayList overlays() const;

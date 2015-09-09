@@ -270,7 +270,7 @@ const good::Store& Dock::exportStore() const { return _d->goods.exporting; }
 
 const Tile& Dock::queueTile() const
 {
-  TilesArea tiles( _city()->tilemap(), pos(), 3 );
+  TilesArea tiles( _city()->tilemap(), 3, pos() );
   tiles = tiles.select( Tile::tlDeepWater );
 
   for( auto tile : tiles )
@@ -346,7 +346,7 @@ Dock::~Dock(){}
 
 void Dock::_updatePicture(Direction direction)
 {
-  const MetaData& md = MetaDataHolder::getData( type() );
+  const MetaData& md = MetaDataHolder::find( type() );
 
   DockConfig config;
   config.load( md, direction );

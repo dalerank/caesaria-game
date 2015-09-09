@@ -45,6 +45,7 @@ public:
   virtual void load(const VariantMap &stream);
 
 private:
+  void _changeIndexIfAqueduct( const city::AreaInfo& areaInfo, int& m, int index) const;
   int _paved;
 };
 

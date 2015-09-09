@@ -26,7 +26,7 @@
 // contains data needed for loading pictures
 class PictureInfoBank : public StaticSingleton<PictureInfoBank>
 {
-  friend class StaticSingleton;
+  SET_STATICSINGLETON_FRIEND_FOR(PictureInfoBank)
 public:
   typedef enum { walkerOffset=0, tileOffset } OffsetType;
   ~PictureInfoBank();

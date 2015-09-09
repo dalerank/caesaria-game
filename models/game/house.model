@@ -170,8 +170,8 @@
       prosperity : 25,
       tax : 2
       txs : {
-        s1: [ "housng1a_00013", "housng1a_00014", "housng1b_00013", "housng1b_00014" ]
-        s2: [ "housng1a_00017", "housng1b_00017" ]
+        s1: [ "housng1a_00013", "housng1b_00013", "housng1c_00013", "housng1d_00013" ]
+        s2: [ "housng1a_00017", "housng1b_00017", "housng1c_00017", "housng1d_00017" ]
       }
     },
   /* 6;Grand taudis;15;6;12;10;2;1;0;0;1;0;0;0;0;3;30;2 */
@@ -199,8 +199,8 @@
       prosperity : 30,
       tax : 2
       txs : {
-       s1: [ "housng1a_00015", "housng1a_00016", "housng1b_00015", "housng1b_00016" ]
-       s2: [ "housng1a_00018", "housng1b_00018" ]
+       s1: [ "housng1a_00015", "housng1b_00015" ]
+       s2: [ "housng1a_00018", "housng1b_00018", "housng1c_00018", "housng1d_00018" ]
       }
     },
 

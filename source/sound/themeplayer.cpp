@@ -41,6 +41,9 @@ class ThemePlayer::Impl
 public:
   Playlist playlist;
   int lastIndex;
+  Signal1<std::string> onSwitchSignal;
+
+  void trySwitch2next();  
 };
 
 ThemePlayer::ThemePlayer( PlayerCityPtr city )
@@ -64,6 +67,8 @@ city::SrvcPtr ThemePlayer::create( PlayerCityPtr city )
   return ret;
 }
 
+Signal1<std::string>& ThemePlayer::onSwitch() { return _d->onSwitchSignal; }
+
 std::string ThemePlayer::defaultName() { return "audio_player"; }
 
 void ThemePlayer::timeStep(const unsigned int time )
@@ -78,12 +83,14 @@ void ThemePlayer::timeStep(const unsigned int time )
 
     if( !engine.isPlaying( sample ) )
     {
-      _d->lastIndex = (_d->lastIndex+1) % _d->playlist.size();
-      sample = _d->playlist[ _d->lastIndex ];
-
-      engine.play( sample, 100, audio::theme );
+      _d->trySwitch2next();
     }
   }
+}
+
+void ThemePlayer::next()
+{
+  _d->trySwitch2next();
 }
 
 ThemePlayer::~ThemePlayer()
@@ -94,3 +101,16 @@ ThemePlayer::~ThemePlayer()
 }
 
 }//end namespace audio
+
+
+void audio::ThemePlayer::Impl::trySwitch2next()
+{
+  Engine& engine = Engine::instance();
+  std::string sample = playlist[ lastIndex ];
+
+  lastIndex = (lastIndex+1) % playlist.size();
+  sample = playlist[ lastIndex ];
+  engine.play( sample, 100, audio::theme );
+
+  emit onSwitchSignal( "##theme_" + sample + "##" );
+}

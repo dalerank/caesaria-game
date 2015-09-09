@@ -18,9 +18,7 @@
 #ifndef __CAESARIA_ARCHIVE_LOADER_H_INCLUDED__
 #define __CAESARIA_ARCHIVE_LOADER_H_INCLUDED__
 
-#include "core/referencecounted.hpp"
-#include "vfs/file.hpp"
-#include "core/smartptr.hpp"
+#include "file.hpp"
 
 namespace vfs
 {

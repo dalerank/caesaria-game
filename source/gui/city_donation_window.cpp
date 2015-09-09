@@ -69,7 +69,7 @@ CityDonation::CityDonation( Widget* p, int money )
   if( money == 0 )
   {
     Widgets widgets = lbBlack->children();
-    foreach( it, widgets ) (*it)->hide();
+    for( auto widget : widgets ) widget->hide();
 
     lbBlack->setText( _("##no_money_for_donation##") );
     btnSend->hide();

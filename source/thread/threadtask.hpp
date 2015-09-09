@@ -17,8 +17,8 @@
 #define _CAESARIA_THREADTASK_H_INCLUDE_
 
 #include "core/platform.hpp"
-#include "mutex.hpp"
-#include "core/predefinitions.hpp"
+#include <mutex>
+#include <thread>
 
 typedef enum
 {
@@ -28,18 +28,18 @@ typedef enum
 	TaskStatusCompleted
 } TaskStatus_t;
 
-class CTask
+class ThreadTask
 {
 private:
 	TaskStatus_t m_state;
-	ThreadID m_dwThread;
+  std::thread::id m_dwThread;
 
 public:
-	Mutex m_mutex;
+  std::mutex m_mutex;
 
 	void setTaskStatus(TaskStatus_t state);
 
-	void setId( ThreadID *pid );
+  void setId( std::thread::id *pid );
 
 	/**
 	 *
@@ -58,11 +58,11 @@ public:
 	 **/
 	TaskStatus_t getStatus();
 
-	void assign(ThreadID *pId);
+  void assign(std::thread::id *pId);
 
-	CTask();
+  ThreadTask();
 
-	virtual ~CTask(){}
+  virtual ~ThreadTask(){}
 	virtual bool task()=0;
 };
 

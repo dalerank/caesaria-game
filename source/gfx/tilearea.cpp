@@ -26,9 +26,9 @@ TilesArea::TilesArea(const Tilemap &tmap, const TilePos& leftup, const TilePos& 
   append( tmap.getArea( leftup, rightdown ) );
 }
 
-TilesArea::TilesArea(const Tilemap &tmap, const TilePos& center, int distance)
+TilesArea::TilesArea(const Tilemap &tmap, int distance, const TilePos& center)
 {
-  reset( tmap, center, distance );
+  add( tmap, center, distance );
 }
 
 TilesArea::TilesArea(const Tilemap &tmap, const TilePos& leftup, const Size& size)
@@ -36,7 +36,7 @@ TilesArea::TilesArea(const Tilemap &tmap, const TilePos& leftup, const Size& siz
   append( tmap.getArea( leftup, size ) );
 }
 
-void TilesArea::reset(const Tilemap& tmap, const TilePos& center, int distance)
+void TilesArea::add(const Tilemap& tmap, const TilePos& center, int distance)
 {
   TilePos offset( distance, distance );
   append( tmap.getArea( center - offset, center + offset ) );

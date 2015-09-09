@@ -229,7 +229,7 @@ ReachedBuildings ServiceWalker::getReachedBuildings(const TilePos& pos )
 {
   ReachedBuildings res;
 
-  TilesArea reachedTiles( _city()->tilemap(), pos, reachDistance() );
+  TilesArea reachedTiles( _city()->tilemap(), reachDistance(), pos );
   for( auto tile : reachedTiles )
     res.addIfValid( tile->overlay().as<Building>() );
 
@@ -523,7 +523,7 @@ void ServiceWalker::initialize(const VariantMap& options)
   VariantList oboletesOvs = options.get( "obsoleteOverlays" ).toList();
   for( auto it : oboletesOvs )
   {
-    object::Type ovType = object::toType( it.toString() );
+    object::Type ovType = object::findType( it.toString() );
     if( ovType != object::unknown )
       _addObsoleteOverlay( ovType );
   }

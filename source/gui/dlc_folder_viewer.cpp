@@ -37,6 +37,11 @@ namespace gui
 {
 
 REGISTER_CLASS_IN_WIDGETFACTORY(DlcFolderViewer)
+#ifdef CAESARIA_USE_STEAM
+static std::string ld_prefix = "STEAM_RUNTIME=0 LD_LIBRARY_PATH=\"$SYSTEM_LD_LIBRARY_PATH\" PATH=\"$SYSTEM_PATH\" ";
+#else
+static std::string ld_prefix;
+#endif
 
 class DlcFolderViewer::Impl
 {
@@ -44,7 +49,8 @@ public:
   Picture background;
   Table* table;
   Directory folder;
-  StringArray exts;
+  StringArray available;
+  StringArray exclude;
 
 public:
   void fillTable( const std::vector<Path>& items )
@@ -71,8 +77,7 @@ public:
       }
 
       Path picPath = items[ k ];
-      if( picPath.isMyExtension( ".pdf" ) || picPath.isMyExtension( ".mp3" )
-          || picPath.isMyExtension( ".ogg" ) || picPath.isMyExtension( ".jpg" ))
+      if( available.contains( picPath.extension() ) )
       {
         picPath = picPath.changeExtension( "png" );
       }
@@ -126,7 +131,10 @@ DlcFolderViewer::DlcFolderViewer(Widget* parent, Directory folder )
     vfs::Entries::Items entries = folder.entries().items();
     for( auto item : entries )
     {
-      if( _d->exts.contains( item.name.extension() )  )
+      if( _d->exclude.contains( item.name.toString() ) )
+        continue;
+
+      if( _d->available.contains( item.name.extension() )  )
         items.push_back( item.fullpath );
     }
   }
@@ -149,7 +157,7 @@ DlcFolderViewer::~DlcFolderViewer() {}
 
 void DlcFolderViewer::_openFolder()
 {
-  OSystem::openDir( _d->folder.toString() );
+  OSystem::openDir( _d->folder.toString(), ld_prefix );
 }
 
 void DlcFolderViewer::draw(Engine& painter)
@@ -165,7 +173,8 @@ void DlcFolderViewer::draw(Engine& painter)
 void DlcFolderViewer::setupUI(const VariantMap& ui)
 {
   Window::setupUI( ui );
-  _d->exts = ui.get( "etxs" ).toStringArray();
+  _d->available = ui.get( "etxs" ).toStringArray();
+  _d->exclude = ui.get( "exclude" ).toStringArray();
 }
 
 void DlcFolderViewer::_loadDesc(Path path)
@@ -187,7 +196,7 @@ void DlcFolderViewer::_resolveCellClick(int row, int column)
   if( _d->table )
   {
     Path path = _d->table->getCellData( row, column, "path" ).toString();
-    Path save = path;
+    Path save = path;   
     path = path.changeExtension( Locale::current() );
 
     if( !path.exist() )
@@ -201,7 +210,7 @@ void DlcFolderViewer::_resolveCellClick(int row, int column)
     }
     else
     {
-      OSystem::openUrl( save.toCString() );
+      OSystem::openUrl( save.toCString(), ld_prefix );
     }
   }
 }

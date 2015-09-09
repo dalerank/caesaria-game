@@ -23,6 +23,7 @@
 #include "divinities.hpp"
 #include "ceres.hpp"
 #include "neptune.hpp"
+#include "city/city.hpp"
 #include "venus.hpp"
 #include "mercury.hpp"
 #include "core/variant_map.hpp"

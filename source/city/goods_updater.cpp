@@ -43,12 +43,10 @@ REGISTER_SERVICE_IN_FACTORY(GoodsUpdater,goodsUpdater)
 class GoodsUpdater::Impl
 {
 public:
-  typedef std::set<object::Type> BuildingTypes;
-
   DateTime endTime;
   bool isDeleted;
   good::Product gtype;
-  BuildingTypes supportBuildings;
+  object::TypeSet buildings;
 
   int value;
 };
@@ -69,14 +67,11 @@ void GoodsUpdater::timeStep(const unsigned int time)
 
     Logger::warning( "GoodsUpdater: execute service" );
 
-    for( auto bldType : _d->supportBuildings )
+    BuildingList buildings = _city()->statistic().objects.find<Building>( _d->buildings );
+    for( auto building : buildings )
     {
-      BuildingList buildings = _city()->statistic().objects.find<Building>( bldType );
-      for( auto building : buildings )
-      {
-        good::Stock stock( _d->gtype, _d->value, _d->value );
-        building->storeGoods( stock, _d->value );
-      }
+      good::Stock stock( _d->gtype, _d->value, _d->value );
+      building->storeGoods( stock, _d->value );
     }
   }
 }
@@ -87,18 +82,9 @@ void GoodsUpdater::load(const VariantMap& stream)
 {
   VARIANT_LOAD_TIME_D( _d, endTime, stream )
   VARIANT_LOAD_ANY_D( _d, value, stream )
+  VARIANT_LOAD_CLASS_D_LIST( _d, buildings, stream )
 
   _d->gtype = (good::Product)good::Helper::getType( stream.get( literals::good ).toString() );
-
-  StringArray buildingTypes = stream.get( "buildings" ).toStringArray();
-  for( auto typeStr : buildingTypes )
-  {
-    object::Type type = object::toType( typeStr );
-    if( type != object::unknown )
-    {
-      _d->supportBuildings.insert( type );
-    }
-  }
 }
 
 VariantMap GoodsUpdater::save() const
@@ -106,12 +92,7 @@ VariantMap GoodsUpdater::save() const
   VariantMap ret;
   VARIANT_SAVE_ANY_D( ret, _d, endTime )
   VARIANT_SAVE_ANY_D( ret, _d, value )
-
-  StringArray buildingTypes;
-  for( auto type : _d->supportBuildings )
-    buildingTypes << object::toString( type );
-
-  ret[ "buildings" ] = utils::toVList( buildingTypes );
+  VARIANT_SAVE_CLASS_D( ret, _d, buildings )
   ret[ literals::good    ] = Variant( good::Helper::getTypeName( _d->gtype ) );
 
   return ret;

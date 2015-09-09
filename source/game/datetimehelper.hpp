@@ -21,7 +21,7 @@
 #include "core/time.hpp"
 #include <string>
 
-namespace util
+namespace utils
 {
 
 std::string date2str(const DateTime& time, bool drawDays);

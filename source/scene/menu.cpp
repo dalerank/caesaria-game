@@ -58,16 +58,13 @@
 #include "vfs/directory.hpp"
 #include "gui/dlc_folder_viewer.hpp"
 #include "steam.hpp"
+#include "gui/window_language_select.hpp"
 
 using namespace gfx;
 using namespace gui;
 
 namespace scene
 {
-
-CAESARIA_LITERALCONST(ext)
-CAESARIA_LITERALCONST(talks)
-CAESARIA_LITERALCONST(font)
 
 class StartMenu::Impl
 {
@@ -94,7 +91,7 @@ public:
   void showSoundOptions();
   void showVideoOptions();
   void showMissionSelector();
-  void quitGame() { result=closeApplication; isStopped=true; }
+  void quitGame();
   void selectFile( std::string fileName );
   void setPlayerName( std::string name );
   void openSteamPage() { OSystem::openUrl( "http://store.steampowered.com/app/327640" ); }
@@ -106,13 +103,14 @@ public:
   void handleStartCareer();
   void showLanguageOptions();
   void showPackageOptions();
-  void changeLanguage(const gui::ListBoxItem&);
+  void changeLanguage(std::string lang, std::string newFont, std::string sounds);
   void fitScreenResolution();
   void playMenuSoundTheme();
   void continuePlay();
   void resolveSteamStats();
   void changePlayerNameIfNeed(bool force=false);
   void reload();
+  void restart();
   void openDlcDirectory(Widget* sender);
 };
 
@@ -120,7 +118,7 @@ void StartMenu::Impl::showSaveSelectDialog()
 {
   Widget* parent = game->gui()->rootWidget();
 
-  vfs::Path savesPath = SETTINGS_VALUE( savedir ).toString();  
+  vfs::Path savesPath = SETTINGS_STR( savedir );
 
   result = StartMenu::loadSavedGame;
   gui::dialog::LoadGame* wnd = gui::dialog::LoadGame::create( parent, savesPath );
@@ -138,7 +136,7 @@ void StartMenu::Impl::changePlayerName() { changePlayerNameIfNeed(true); }
 
 void StartMenu::Impl::changePlayerNameIfNeed(bool force)
 {
-  std::string playerName = SETTINGS_VALUE( playerName ).toString();
+  std::string playerName = SETTINGS_STR( playerName );
   if( playerName.empty() || force )
   {
     dialog::ChangePlayerName* dlg = new dialog::ChangePlayerName( game->gui()->rootWidget() );
@@ -154,8 +152,12 @@ void StartMenu::Impl::fitScreenResolution()
 {
   gfx::Engine::Modes modes = game->engine()->modes();
   SETTINGS_SET_VALUE( resolution, modes.front() );
+  SETTINGS_SET_VALUE( fullscreen, true );
   SETTINGS_SET_VALUE( screenFitted, true );
   game::Settings::save();
+
+  dialog::Information( game->gui(), "", "Enabled fullscreen mode. Please restart game");
+  //CONNECT( dlg, onOk(), this, Impl::restart );
 }
 
 void StartMenu::Impl::playMenuSoundTheme()
@@ -166,28 +168,29 @@ void StartMenu::Impl::playMenuSoundTheme()
 void StartMenu::Impl::continuePlay()
 {
   result = StartMenu::loadSavedGame;
-  selectFile( SETTINGS_VALUE( lastGame ).toString() );
+  selectFile( SETTINGS_STR( lastGame ) );
 }
 
 void StartMenu::Impl::resolveSteamStats()
 {
-#ifdef CAESARIA_USE_STEAM
-  int offset = 0;
-  for( int k=0; k < steamapi::achv_count; k++ )
+  if( steamapi::available() )
   {
-    steamapi::AchievementType achivId = steamapi::AchievementType(k);
-    if( steamapi::isAchievementReached( achivId ) )
+    int offset = 0;
+    for( int k=0; k < steamapi::achv_count; k++ )
     {
-      gfx::Picture pic = steamapi::achievementImage( achivId );
-      if( pic.isValid() )
+      steamapi::AchievementType achivId = steamapi::AchievementType(k);
+      if( steamapi::isAchievementReached( achivId ) )
       {
-        gui::Image* img = new gui::Image( game->gui()->rootWidget(), Point( 10, 100 + offset ), pic );
-        img->setTooltipText( steamapi::achievementCaption( achivId ) );
-        offset += 65;
+        gfx::Picture pic = steamapi::achievementImage( achivId );
+        if( pic.isValid() )
+        {
+          gui::Image* img = new gui::Image( game->gui()->rootWidget(), Point( 10, 100 + offset ), pic );
+          img->setTooltipText( steamapi::achievementCaption( achivId ) );
+          offset += 65;
+        }
       }
     }
   }
-#endif
 }
 
 void StartMenu::Impl::reload()
@@ -196,15 +199,29 @@ void StartMenu::Impl::reload()
   isStopped = true;
 }
 
+void StartMenu::Impl::restart()
+{
+  std::string filename;
+#ifdef CAESARIA_PLATFORM_LINUX
+  filename = "caesaria.linux";
+#elif defined(CAESARIA_PLATFORM_WIN)
+  filename = "caesaria.exe";
+#elif defined(CAESARIA_PLATFORM_MACOSX)
+  filename = "caesaria.macos";
+#endif
+
+  vfs::Directory appDir = vfs::Directory::applicationDir();
+  vfs::Path appFile = appDir/vfs::Path(filename);
+  OSystem::restartProcess( appFile.toString(), appDir.toString(), StringArray() );
+}
+
 void StartMenu::Impl::openDlcDirectory(Widget* sender)
 {
   if( sender == 0 )
     return;
 
   vfs::Path path( sender->getProperty( "path" ).toString() );
-
-  Widget* parent = game->gui()->rootWidget();
-  /*DlcFolderViewer* viewer = */new DlcFolderViewer( parent, path );
+  new DlcFolderViewer( game->gui()->rootWidget(), path );
 }
 
 void StartMenu::Impl::showSoundOptions()
@@ -215,34 +232,14 @@ void StartMenu::Impl::showSoundOptions()
 
 void StartMenu::Impl::showLanguageOptions()
 {
-  Widget* parent = game->gui()->rootWidget();
-  Size windowSize( 512, 384 );
+  vfs::Path model = SETTINGS_RC_PATH( langModel );
+  std::string currentLang = SETTINGS_STR( language );
+  std::string dfFont = SETTINGS_STR( defaultFont );
+  dialog::LanguageSelect* dlg = new dialog::LanguageSelect( game->gui()->rootWidget(), model, currentLang );
+  dlg->setDefaultFont( dfFont );
 
-  Label* frame = new Label( parent, Rect( Point(), windowSize ), "", false, gui::Label::bgWhiteFrame );
-  ListBox* lbx = new ListBox( frame, Rect( 0, 0, 1, 1 ), -1, true, true );
-  PushButton* btn = new PushButton( frame, Rect( 0, 0, 1, 1), _("##apply##") );
-
-  WidgetEscapeCloser::insertTo( frame );
-  frame->setCenter( parent->center() );
-  lbx->setFocus();
-  lbx->setGeometry( RectF( 0.05, 0.05, 0.95, 0.85 ) );
-  btn->setGeometry( RectF( 0.1, 0.88, 0.9, 0.95 ) );
-
-  VariantMap languages = config::load( SETTINGS_RC_PATH( langModel ) );
-  std::string currentLang = SETTINGS_VALUE( language ).toString();
-  int currentIndex = -1;
-  foreach( it, languages )
-  {
-    lbx->addItem( it->first );
-    std::string ext = it->second.toMap().get( literals::ext ).toString();
-    if( ext == currentLang )
-      currentIndex = std::distance( languages.begin(), it );
-  }
-
-  lbx->setSelected( currentIndex );
-
-  CONNECT( lbx, onItemSelected(), this, Impl::changeLanguage );
-  CONNECT( btn, onClicked(),      this, Impl::reload );
+  CONNECT( dlg, onChange,   this, Impl::changeLanguage )
+  CONNECT( dlg, onContinue, this, Impl::reload         )
 }
 
 void StartMenu::Impl::showPackageOptions()
@@ -251,59 +248,38 @@ void StartMenu::Impl::showPackageOptions()
   dlg->setModal();
 }
 
-void StartMenu::Impl::changeLanguage(const gui::ListBoxItem& item)
-{
-  std::string lang;
-  std::string talksArchive;
-  std::string newFont;
-
-  std::string currentFont = SETTINGS_VALUE( font ).toString();
-
-  VariantMap languages = config::load( SETTINGS_RC_PATH( langModel ) );
-  foreach( it, languages )
-  {
-    if( item.text() == it->first )
-    {
-      VariantMap vm = it->second.toMap();
-      lang = vm.get( literals::ext ).toString();
-      talksArchive = vm.get( literals::talks ).toString();
-      newFont  = vm.get( literals::font ).toString();
-
-      if( newFont.empty() )
-        newFont = SETTINGS_VALUE( defaultFont ).toString();
-
-      break;
-    }
-  }
+void StartMenu::Impl::changeLanguage(std::string lang, std::string newFont, std::string sounds)
+{  
+  std::string currentFont = SETTINGS_STR( font );
 
   SETTINGS_SET_VALUE( language, Variant( lang ) );
-  SETTINGS_SET_VALUE( talksArchive, Variant( talksArchive ) );
+  SETTINGS_SET_VALUE( talksArchive, Variant( sounds ) );
 
   if( currentFont != newFont )
   {
     SETTINGS_SET_VALUE( font, newFont );
-    FontCollection::instance().initialize( game::Settings::rcpath().toString() );
+    FontCollection::instance().initialize( game::Settings::rcpath().toString(), newFont );
   }
 
   game::Settings::save();
 
   Locale::setLanguage( lang );
   NameGenerator::instance().setLanguage( lang );
-  audio::Helper::initTalksArchive( talksArchive );
+  audio::Helper::initTalksArchive( sounds );
 }
 
 void StartMenu::Impl::handleStartCareer()
 {
   menu->clear();
 
-  std::string playerName = SETTINGS_VALUE( playerName ).toString();
+  std::string playerName = SETTINGS_STR( playerName );
 
   dialog::ChangePlayerName* dlg = new dialog::ChangePlayerName( game->gui()->rootWidget() );
   dlg->setName( playerName );
 
   CONNECT( dlg, onNameChange(), this, Impl::setPlayerName );
   CONNECT( dlg, onContinue(),   this, Impl::handleNewGame );
-  CONNECT( dlg, onClose(),      this, Impl::showMainMenu );
+  CONNECT( dlg, onClose(),      this, Impl::showMainMenu  );
 }
 
 void StartMenu::Impl::handleNewGame()
@@ -350,12 +326,13 @@ void StartMenu::Impl::showCredits()
                          " ",
                          _("##music##"),
                          " ",
-                         "Aliaksandr BeatCheat (www.beatcheat.net), Peter Willington",
-                         "Omri Lahav",
+                         "Aliaksandr BeatCheat (sounds)",
+                         "Omri Lahav (main theme)",
+                         "Kevin MacLeod (ambient, game themes)",
                          " ",
                          _("##localization##"),
                          " ",
-                         "Alexander Klimenko, Manuel Alvarez, Artem Tolmachev",
+                         "Alexander Klimenko, Manuel Alvarez, Artem Tolmachev, Peter Willington",
                          " ",
                          _("##thanks_to##"),
                          " ",
@@ -471,12 +448,17 @@ void StartMenu::Impl::showAdvancedMaterials()
     return;
   }
 
+  StringArray excludeFolders;
+  excludeFolders << vfs::Path::firstEntry << vfs::Path::secondEntry;
   vfs::Entries::Items entries = dir.entries().items();
-  foreach( it, entries )
+  for( auto it : entries )
   {
-    if( it->isDirectory )
+    if( it.isDirectory )
     {
-      vfs::Path path2subdir = it->fullpath;
+      if( excludeFolders.contains( it.name.toString() ) )
+        continue;
+
+      vfs::Path path2subdir = it.fullpath;
       std::string locText = "##mainmenu_dlc_" + path2subdir.baseName().toString() + "##";
 
       PushButton* btn = menu->addButton( _(locText), -1 );
@@ -504,6 +486,13 @@ void StartMenu::Impl::showMissionSelector()
   CONNECT( wnd, onSelectFile(), this, Impl::selectFile );
 
   changePlayerNameIfNeed();
+}
+
+void StartMenu::Impl::quitGame()
+{
+  game::Settings::save();
+  result=closeApplication;
+  isStopped=true;
 }
 
 void StartMenu::Impl::selectFile(std::string fileName)
@@ -551,9 +540,10 @@ void StartMenu::draw()
 
   _d->game->gui()->draw();
 
-#ifdef CAESARIA_USE_STEAM
-  _d->engine->draw( _d->userImage, Point( 20, 20 ) );
-#endif
+  if( steamapi::available() )
+  {
+    _d->engine->draw( _d->userImage, Point( 20, 20 ) );
+  }
 }
 
 void StartMenu::handleEvent( NEvent& event )
@@ -570,7 +560,7 @@ void StartMenu::initialize()
 {
   events::Dispatcher::instance().reset();
   Logger::warning( "ScreenMenu: initialize start");
-  std::string resName = SETTINGS_VALUE( titleResource ).toString();
+  std::string resName = SETTINGS_STR( titleResource );
   _d->bgPicture.load( resName, 1);
 
   // center the bgPicture on the screen
@@ -583,57 +573,63 @@ void StartMenu::initialize()
 
   Size scrSize = _d->engine->virtualSize();
   TexturedButton* btnHomePage = new TexturedButton( _d->game->gui()->rootWidget(),
-                                                              Point( scrSize.width() - 128, scrSize.height() - 100 ), Size( 128 ), -1,
-                                                              "logo_rdt", 1, 2, 2, 2 );
+                                                    Point( scrSize.width() - 128, scrSize.height() - 100 ), Size( 128 ), -1,
+                                                    "logo_rdt", 1, 2, 2, 2 );
 
   TexturedButton* btnSteamPage = new TexturedButton( _d->game->gui()->rootWidget(), Point( btnHomePage->left() - 128, scrSize.height() - 100 ),  Size( 128 ), -1,
-                                                                "steam_icon", 1, 2, 2, 2 );
+                                                     "steam_icon", 1, 2, 2, 2 );
 
   CONNECT( btnSteamPage, onClicked(), _d.data(), Impl::openSteamPage );
   CONNECT( btnHomePage, onClicked(), _d.data(), Impl::openHomePage );
 
   _d->showMainMenu();
 
-#ifdef CAESARIA_PLATFORM_ANDROID
-  bool screenFitted = SETTINGS_VALUE( screenFitted );
-  if( !screenFitted )
+  if( OSystem::isAndroid() )
   {
-    dialog::Dialog* dialog = new dialog::Dialog( _d->game->gui(),  Rect( 0, 0, 400, 150 ),
-                                                 "Information", "Is need autofit screen resolution?",
-                                                 dialog::Dialog::btnOkCancel );
-    CONNECT(dialog, onOk(), dialog, dialog::Dialog::deleteLater );
-    CONNECT(dialog, onCancel(), dialog, dialog::Dialog::deleteLater );
-    CONNECT(dialog, onOk(), _d.data(), Impl::fitScreenResolution );
-    dialog->show();
-  }
-#else
-  _d->playMenuSoundTheme();
-#endif
+    bool screenFitted = KILLSWITCH( screenFitted ) || KILLSWITCH( fullscreen );
+    if( !screenFitted )
+    {
+      Rect dialogRect = Rect( 0, 0, 400, 150 );
+      dialog::Dialog* dialog = new dialog::Dialog( _d->game->gui(), dialogRect,
+                                                   "Information", "Is need autofit screen resolution?",
+                                                   dialog::Dialog::btnOkCancel );
+      CONNECT(dialog, onOk(), dialog, dialog::Dialog::deleteLater );
+      CONNECT(dialog, onCancel(), dialog, dialog::Dialog::deleteLater );
+      CONNECT(dialog, onOk(), _d.data(), Impl::fitScreenResolution );
+      SETTINGS_SET_VALUE(screenFitted, true);
 
-#ifdef CAESARIA_USE_STEAM
-  steamapi::init();
-
-  std::string steamName = steamapi::userName();
-
-  std::string lastName = SETTINGS_VALUE( playerName ).toString();
-  if( lastName.empty() )
-    SETTINGS_SET_VALUE( playerName, Variant( steamName ) );
-
-  _d->userImage = steamapi::userImage();
-  if( steamName.empty() )
-  {
-    OSystem::error( "Error", "Can't login in Steam" );
-    _d->isStopped = true;
-    _d->result = closeApplication;
-    return;
+      dialog->show();
+    }
   }
 
-  std::string text = utils::format( 0xff, "Build %d\n%s", CAESARIA_BUILD_NUMBER, steamName.c_str() );
-  _d->lbSteamName = new Label( _d->game->gui()->rootWidget(), Rect( 100, 10, 400, 80 ), text );
-  _d->lbSteamName->setTextAlignment( align::upperLeft, align::center );
-  _d->lbSteamName->setWordwrap( true );
-  _d->lbSteamName->setFont( Font::create( FONT_3, DefaultColors::white ) );
-#endif
+  if( !OSystem::isAndroid() )
+    _d->playMenuSoundTheme();
+
+  if( steamapi::available() )
+  {
+    steamapi::init();
+
+    std::string steamName = steamapi::userName();
+
+    std::string lastName = SETTINGS_STR( playerName );
+    if( lastName.empty() )
+      SETTINGS_SET_VALUE( playerName, Variant( steamName ) );
+
+    _d->userImage = steamapi::userImage();
+    if( steamName.empty() )
+    {
+      OSystem::error( "Error", "Can't login in Steam" );
+      _d->isStopped = true;
+      _d->result = closeApplication;
+      return;
+    }
+
+    std::string text = utils::format( 0xff, "Build %d\n%s", CAESARIA_BUILD_NUMBER, steamName.c_str() );
+    _d->lbSteamName = new Label( _d->game->gui()->rootWidget(), Rect( 100, 10, 400, 80 ), text );
+    _d->lbSteamName->setTextAlignment( align::upperLeft, align::center );
+    _d->lbSteamName->setWordwrap( true );
+    _d->lbSteamName->setFont( Font::create( FONT_3, DefaultColors::white ) );
+  }
 }
 
 void StartMenu::afterFrame()
@@ -643,16 +639,17 @@ void StartMenu::afterFrame()
   static unsigned int saveTime = 0;
   events::Dispatcher::instance().update( *_d->game, saveTime++ );
 
-#ifdef CAESARIA_USE_STEAM
-  steamapi::update();
-  if( steamapi::isStatsReceived() )
-    _d->resolveSteamStats();
-#endif
+  if( steamapi::available() )
+  {
+    steamapi::update();
+    if( steamapi::isStatsReceived() )
+      _d->resolveSteamStats();
+  }
 }
 
 int StartMenu::result() const{  return _d->result;}
 bool StartMenu::isStopped() const{  return _d->isStopped;}
 std::string StartMenu::mapName() const{  return _d->fileMap;}
-std::string scene::StartMenu::playerName() const { return SETTINGS_VALUE( playerName ).toString(); }
+std::string StartMenu::playerName() const { return SETTINGS_STR( playerName ); }
 
 }//end namespace scene

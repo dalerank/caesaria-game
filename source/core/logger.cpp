@@ -128,9 +128,9 @@ public:
   {
     // Check for filter pass
     bool pass = filters.size() == 0;
-    foreach ( filter, filters )
+    for( auto&& filter : filters )
     {
-      if (message.compare( 0, filter->length(), *filter ) == 0)
+      if (message.compare( 0, filter.length(), filter ) == 0)
       {
         pass = true;
         break;
@@ -138,11 +138,11 @@ public:
     }
     if (!pass) return;
 
-    foreach( i, writers )
+    for( auto&& item : writers )
     {
-      if( i->second.isValid() )
+      if( item.second.isValid() )
       {
-        i->second->write( message, newline );
+        item.second->write( message, newline );
       }
     }
   }
@@ -175,9 +175,9 @@ void Logger::addFilter(const std::string& text)
 
 bool Logger::hasFilter(const std::string& text)
 {
-  foreach(filter, instance()._d->filters)
+  for( auto&& filter : instance()._d->filters)
   {
-    if (*filter == text) return true;
+    if (filter == text) return true;
   }
   return false;
 }
