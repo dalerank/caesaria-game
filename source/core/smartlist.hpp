@@ -184,7 +184,7 @@ public:
   template< class W >
   int count() const
   {
-    int ret;
+    int ret = 0;
     for( auto it : *this )
       ret += (is_kind_of<W>( it ) ? 1 : 0);
 

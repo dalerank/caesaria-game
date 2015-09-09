@@ -329,7 +329,7 @@ int main(int argc, char* argv[])
   Logger::registerWriter( Logger::consolelog, "" );
   gfx::Engine* engine = new gfx::SdlEngine();
 
-  Logger::warning( "GraficEngine: set size" );
+  Logger::warning( "GraficEngine: set size" );  
   engine->setScreenSize( Size( 800, 600 ) );
   engine->init();
 
@@ -359,8 +359,18 @@ int main(int argc, char* argv[])
                      dirs);
 
   bool running = true;
-  int x = 0;
   SDL_Event event;
+
+  bool gray = true;
+  gfx::Picture bg( engine->screenSize(), 0, true );
+  for( int x=0; x < bg.width(); x+= 5 )
+  {
+    for( int y=0; y < bg.height(); y+= 5 )
+    {
+      bg.fill( gray ? DefaultColors::darkSlateGray : DefaultColors::dimGrey, Rect( x, y, x+5, y+5 ) );
+    }
+  }
+  bg.update();
 
   while(running)
   {
@@ -371,6 +381,7 @@ int main(int argc, char* argv[])
       if(event.type == SDL_QUIT) running = false;
     }
 
+    engine->draw( bg, Point() );
     for( Texture* tx : atlasGenerator.textures )
     {
       for( auto pair : tx->rectangleMap )

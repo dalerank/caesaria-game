@@ -68,7 +68,8 @@ void Simple::drawTile(Engine& engine, Tile& tile, const Point& offset)
     if( blowTile )
     {
       _d->highlight.alpha.update();
-      engine.setColorMask( 0x007f0000, 0x00007f00, 0x0000007f, _d->highlight.alpha.value() << 24 );
+      int value = _d->highlight.alpha.value();
+      engine.setColorMask( value << 16, value << 8, value, 0xff000000 );
     }
 
     Layer::drawTile(engine, tile, offset);

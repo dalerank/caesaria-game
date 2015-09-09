@@ -1,4 +1,5 @@
 {
+  housng1a : { start : 1, stop : 45, offset : [-1,-1] }
   housng1b : { start : 1, stop : 45, offset : [-1,-1] }
   housng1c : { start : 1, stop : 45, offset : [-1,-1] }
   housng1d : { start : 1, stop : 45, offset : [-1,-1] }
