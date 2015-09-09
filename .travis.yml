@@ -6,14 +6,13 @@ branches:
 before_install:
 # Get build dependencies
 - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+- sudo add-apt-repository --yes ppa:tobydox/mingw-x-precise
 - sudo apt-get -qq update
-- sudo apt-get -qq install cmake p7zip-full build-essential
-- sudo apt-get -qq install binutils-mingw-w64-i686
-- sudo apt-get -qq install g++-mingw-w64-i686
+- sudo apt-get -qq install cmake p7zip-full build-essential libasound2-dev
+- sudo apt-get -qq install -y mingw32-x-binutils mingw32-x-gcc mingw32-x-runtime
 - sudo apt-get -qq install sshpass
-- sudo apt-get install -qq cmake build-essential libasound2-dev
 - sudo apt-get -qq install g++-4.8
-- if [ "$CXX" == "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+#- if [ "$CXX" == "g++" ]; then export CXX="i686-w64-mingw32-g++" CC="i686-w64-mingw32-gcc"; fi
 #- sudo apt-get install -qq gcc-multilib g++-multilib
 install:
 - cd $TRAVIS_BUILD_DIR
