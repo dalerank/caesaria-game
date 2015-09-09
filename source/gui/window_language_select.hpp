@@ -34,6 +34,7 @@ public:
   LanguageSelect(Widget* parent, vfs::Path model,
                  const std::string& current, Size size = Size(512,384));
 
+  virtual ~LanguageSelect();
   void setDefaultFont( const std::string& fontname );
 
 public signals:
