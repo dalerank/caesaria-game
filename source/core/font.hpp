@@ -92,10 +92,10 @@ class FontCollection
 public:
   static FontCollection& instance();
 
-  void initialize(const std::string &resourcePath);
+  void initialize(const std::string& resourcePath, const std::string& family );
 
-  Font& getFont_(const int key);  // get a saved font
-  Font& getFont_(const std::string& name );  // get a saved font
+  Font& _getFont(const int key);  // get a saved font
+  Font& _getFont(const std::string& name );  // get a saved font
 
   void setFont(const int key, const std::string& name, Font font);  // save a font
   void addFont(const int key, const std::string& name, vfs::Path filename, const int size, const NColor& color);

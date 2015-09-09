@@ -1,4 +1,5 @@
 {
+  housng1a : { start : 1, stop : 45, offset : [-1,-1] }
   housng1b : { start : 1, stop : 45, offset : [-1,-1] }
   housng1c : { start : 1, stop : 45, offset : [-1,-1] }
   housng1d : { start : 1, stop : 45, offset : [-1,-1] }
@@ -58,4 +59,5 @@
   forum : { rc : "forum", start : 1, stop : 1, offset : [ -1, -1 ] }
   barber : { rc : "barber", start : 1, stop : 1, offset : [ -1, -1 ] }
   oilworkshop : { rc : "oilworkshop", start : 1, stop : 1, offset : [ -1, -1 ] }
+  burnedTree : { rc : "burnedTree", start : 1, stop : 1, offset : [ -1, -1 ] }
 }

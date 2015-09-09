@@ -189,6 +189,7 @@
   fishingBoat : {
     move : { rc : "carts", start : 249, frames : 1, action : 1, step : 8 }
     work : { rc : "carts", start : 257, frames : 1, action : 4, step : 8 }
+    die : { rc : "carts", start : 265, frames : 8, action : 3, step : 0 }
   }
 
   lion : {
@@ -228,16 +229,17 @@
 
   seaMerchant : {
     move : { rc : "carts", start : 241, frames : 1, action : 1, step : 8 }
+    die       : { rc : "carts", start : 265, frames : 8, action : 3, step : 0 }
   }
 
   indigene : {
-    move : { rc : "indigene", start : 1, frames : 12, action : 1, step : 8 }
+    move   : { rc : "indigene", start : 1, frames : 12, action : 1, step : 8 }
   }
 
   balista : {
-    none : { rc : "sprites", start : 210, frames : 1, action : 0, step : 8 }
+    none  : { rc : "sprites", start : 210, frames : 1, action : 0, step : 8 }
     fight : { rc : "sprites", start : 162, frames : 6, action : 2, step : 8 }
-    work : { rc : "sprites", start : 162, frames : 6, action : 4, step : 8 }
+    work  : { rc : "sprites", start : 162, frames : 6, action : 4, step : 8 }
   }
 
   romeChastenerSoldier : {

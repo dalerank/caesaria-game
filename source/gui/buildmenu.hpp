@@ -51,7 +51,7 @@ public:
   void setBuildOptions(const city::development::Options& options );
 
 protected:
-  void _resolveButtonClick();
+  void _resolveButtonClick(Widget* widget);
 
   city::development::Options _options;
   city::development::Branch _branch;

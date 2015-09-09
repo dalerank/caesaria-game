@@ -19,7 +19,6 @@
 #include "gfx/decorator.hpp"
 #include "core/gettext.hpp"
 #include "objects/house.hpp"
-#include "city/helper.hpp"
 #include "core/logger.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/engine.hpp"
@@ -89,7 +88,7 @@ private:
   DrawMode _mode;
   int _picIndex;
   unsigned int _maxValue;
-  int _minXValue, _maxXValue;
+  struct { int min, max; } _x;
   bool _isSmall;
 };
 
@@ -231,7 +230,7 @@ void Population::Impl::showNextChart() { switch2nextChart( 1 ); }
 
 void Population::Impl::updateStates()
 {
-  InfoPtr info = statistic::getService<Info>( city );
+  InfoPtr info = city->statistic().services.find<Info>();
   int currentPop = city->states().population;
 
   if( lbMigrationValue )
@@ -255,7 +254,7 @@ void Population::Impl::updateStates()
     }
     else
     {
-      MigrationPtr migration = statistic::getService<Migration>( city );
+      MigrationPtr migration = city->statistic().services.find<Migration>();
 
       if( migration.isValid() )
       {
@@ -268,12 +267,12 @@ void Population::Impl::updateStates()
 
   if( lbFoodValue )
   {
-    good::ProductMap goods = statistic::getProductMap( city, true );
+    good::ProductMap goods = city->statistic().goods.details( true );
     int foodLevel = 0;
 
-    foreach( k, good::foods() )
+    for( auto goodType : good::foods() )
     {
-      foodLevel += (goods[ *k ] > 0 ? 1 : 0);
+      foodLevel += (goods[ goodType ] > 0 ? 1 : 0);
     }
 
     lbFoodValue->setText( _( "##varieties_food_eaten##") + utils::i2str( foodLevel ) );
@@ -295,24 +294,31 @@ void Population::Impl::updateStates()
   if( lbAdvice )
   {
     int maxHabitants = 0;
-    int currentHabitants = 0;
-    HouseList houses = city::statistic::getHouses( city );
-    foreach( it, houses )
+    int plebsHabitants = 0;
+    HouseList houses = city->statistic().houses.find();
+    int lowLevelHouses = 0;
+    for( auto house : houses )
     {
-      HousePtr house = *it;
+      int level = house->spec().level();
 
-      if( house->spec().level() < HouseLevel::mansion )
+      if( level < HouseLevel::mansion )
       {
-        currentHabitants += house->habitants().count();
+        plebsHabitants += house->habitants().count();
         maxHabitants += house->capacity();
       }
+
+      lowLevelHouses += (level < HouseLevel::domus ? 1 : 0);
     }
 
     StringArray reasons;
-    if( math::percentage( currentHabitants, maxHabitants ) > 90 )
-    {
+    if( math::percentage( plebsHabitants, maxHabitants ) > 90 )
       reasons << "##lowgrade_housing_want_better_conditions##";
-    }
+
+    if( math::percentage( lowLevelHouses, houses.size() ) > 30 )
+      reasons << "##lowgrade_housing_too_much_in_city##";
+
+    if( reasons.empty() )
+      reasons << "##your_city_have_good_prestige##";
 
     lbAdvice->setText( _( reasons.random() ) );
   }
@@ -371,7 +377,7 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
   {
   case dm_census:
     {
-      CitizenGroup population = statistic::getPopulation( city );
+      CitizenGroup population = city->statistic().population.details();
 
       _maxValue = 100;
       for( int age=CitizenGroup::newborn; age <= CitizenGroup::longliver; age++ )
@@ -380,41 +386,40 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
         _maxValue = std::max<int>( _maxValue, population[ age ] );
       }
 
-      _minXValue = 0;
-      _maxXValue = _values.size();
+      _x.min = 0;
+      _x.max = _values.size();
       _maxValue = __calcMaxLegentYValue( _maxValue );
 
       emit onMaxYChange( _maxValue );
-      emit onMaxXChange( _maxXValue );
+      emit onMaxXChange( _x.max );
     }
   break;
 
   case dm_population:
     {
-      city::InfoPtr info;
-      info << city->findService( city::Info::defaultName() );
+      InfoPtr info = city->statistic().services.find<Info>();
 
-      city::Info::History history = info->history();
-      history.push_back( info->lastParams() );
+      Info::History history = info->history();
+      Info::Parameters params = info->lastParams();
+      history.push_back( params );
 
       _values.clear();
-      foreach( it, history )
+      for( const Info::Parameters& step : history )
       {
-        const Info::Parameters& p = *it;
-        _values.push_back( p[ Info::population ] );
-        _maxValue = std::max<unsigned int>( _maxValue, p[ Info::population ] );
+        _values.push_back( step[ Info::population ] );
+        _maxValue = std::max<unsigned int>( _maxValue, step[ Info::population ] );
       }
 
       _maxValue = __calcMaxLegentYValue( _maxValue );
-      _maxXValue = _values.size();
+      _x.max = _values.size();
       emit onMaxYChange( _maxValue );
-      emit onMaxXChange( _maxXValue );
+      emit onMaxXChange( _x.max );
     }
   break;
 
   case dm_society:
     {
-      HouseList houses = city::statistic::getHouses( city );
+      HouseList houses = city->statistic().houses.find();
 
       _values.clear();
       _maxValue = 5;
@@ -424,27 +429,27 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
         levelPopulations[ k ] = 0;
       }
 
-      foreach( it, houses )
+      for( auto it : houses )
       {
-        const HouseSpecification& spec = (*it)->spec();
-        levelPopulations[ spec.level() ] += (*it)->habitants().count();
+        const HouseSpecification& spec = it->spec();
+        levelPopulations[ spec.level() ] += it->habitants().count();
         _maxValue = std::max( levelPopulations[ spec.level() ], _maxValue );
       }
 
       if( !levelPopulations.empty() )
       {
-        _minXValue = levelPopulations.begin()->second;
-        _maxXValue = levelPopulations.rbegin()->second;
-        foreach( it, levelPopulations )
+        _x.min = levelPopulations.begin()->second;
+        _x.max = levelPopulations.rbegin()->second;
+        for( auto it : levelPopulations )
         {
-          _values.push_back( it->second );
+          _values.push_back( it.second );
         }
       }
 
       _maxValue = __calcMaxLegentYValue( _maxValue );
-      _maxXValue = HouseLevel::maxLevel;
+      _x.max = HouseLevel::maxLevel;
       emit onMaxYChange( _maxValue );
-      emit onMaxXChange( _maxXValue );
+      emit onMaxXChange( _x.max );
     }
   break;
 
@@ -477,9 +482,9 @@ void CityChart::draw(Engine &painter)
   pic.fill( 0, Rect() );
   int index=0;
   unsigned int maxHeight = std::min( rpic.height(), pic.height() );
-  foreach( it, _values )
+  for( auto value : _values )
   {
-    int y = maxHeight - (*it) * maxHeight / _maxValue;
+    int y = maxHeight - value * maxHeight / _maxValue;
     painter.draw( rpic, Rect( 0, y, rpic.width(), maxHeight),
                   Rect( rpic.width() * index, y, rpic.width() * (index+1), maxHeight) + absoluteRect().lefttop(),
                   &absoluteClippingRectRef() );

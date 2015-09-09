@@ -33,7 +33,7 @@ namespace gfx
 
 class AnimationBank : public StaticSingleton<AnimationBank>
 {
-  friend class StaticSingleton;
+  SET_STATICSINGLETON_FRIEND_FOR(AnimationBank)
 public:
   typedef enum {
     animUnknown      =0,

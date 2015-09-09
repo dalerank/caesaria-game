@@ -20,7 +20,6 @@
 #define _CAESARIA_GOOD_H_INCLUDE_
 
 #include "core/namedtype.hpp"
-#include "core/foreach.hpp"
 #include <set>
 #include <map>
 
@@ -57,10 +56,21 @@ public:
     return *this;
   }
 
-  inline Products& operator<<(const Products& a)
+  inline Products& operator<<(const Products& other)
   {
-    foreach( it, a )
-      this->insert( *it );
+    for( auto goodType : other )
+      this->insert( goodType );
+
+    return *this;
+  }
+
+  Products& exclude( const Products& types)
+  {
+    for( auto goodType : types )
+    {
+      if( this->count( goodType ) )
+        this->erase( goodType );
+    }
 
     return *this;
   }

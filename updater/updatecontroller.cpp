@@ -15,7 +15,7 @@
 
 #include "updatecontroller.hpp"
 #include "constants.hpp"
-
+#include "core/osystem.hpp"
 #include "util.hpp"
 
 namespace updater
@@ -91,7 +91,7 @@ void UpdateController::Abort()
 bool UpdateController::AllThreadsDone() {	return _synchronizer == NULL;}
 std::size_t UpdateController::GetNumMirrors(){	return _updater.GetNumMirrors(); }
 bool UpdateController::NewUpdaterAvailable(){	return _updater.NewUpdaterAvailable();}
-bool UpdateController::LocalFilesNeedUpdate(){	return _updater.LocalFilesNeedUpdate();}
+bool UpdateController::LocalFilesNeedUpdate(){	return _updater.isLocalFilesNeedUpdate();}
 std::size_t UpdateController::GetTotalDownloadSize(){	return _updater.GetTotalDownloadSize();}
 std::size_t UpdateController::GetTotalBytesDownloaded(){	return _updater.GetTotalBytesDownloaded();}
 std::size_t UpdateController::GetNumFilesToBeUpdated(){	return _updater.GetNumFilesToBeUpdated();}
@@ -191,8 +191,8 @@ void UpdateController::performStep(int step)
 		_updater.setBinaryAsExecutable();
 		break;
 
-	case RestartUpdater:		
-		_updater.RestartUpdater();
+  case RestartUpdater:
+    _updater.restartUpdater();
 		break;
 
 	case Done:
@@ -242,7 +242,7 @@ void UpdateController::finalizeStep(int step)
 				// Update necessary, new updater available
                 TryToProceedTo(DownloadNewUpdater);
 			}
-            else if (_updater.LocalFilesNeedUpdate())
+            else if (_updater.isLocalFilesNeedUpdate())
 			{
 				// Update necessary, updater is ok
 				if (_updater.DifferentialUpdateAvailable())
@@ -270,8 +270,8 @@ void UpdateController::finalizeStep(int step)
 
 	case DownloadNewUpdater:
 		{
-			_updater.RestartUpdater();
-			TryToProceedTo(RestartUpdater);
+      _updater.restartUpdater();
+      TryToProceedTo(RestartUpdater);
 		}
 		break;
 
@@ -303,7 +303,7 @@ void UpdateController::finalizeStep(int step)
 		TryToProceedTo(Done);
 		break;
 
-	case RestartUpdater:
+  case RestartUpdater:
 		TryToProceedTo(Done);
 		break;
 

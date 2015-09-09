@@ -17,15 +17,11 @@
 
 #include "helper.hpp"
 #include "stock.hpp"
-#include "core/enumerator.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
-#include "gfx/animation_bank.hpp"
 #include "city/trade_options.hpp"
 #include "city/city.hpp"
 #include "core/logger.hpp"
-#include "core/metric.hpp"
-#include <vector>
 
 using namespace gfx;
 using namespace metric;
@@ -33,51 +29,40 @@ using namespace metric;
 namespace good
 {
 
-static const int empPicId[ 20 ] = { PicID::bad,
-                                       /*G_WHEAT*/11, 
-                                       /*G_FISH*/27,
-                                       /*G_MEAT*/16, 
-                                       /*G_FRUIT*/13, 
-                                       /*G_VEGETABLE*/12,                           
-                                       /*G_OLIVE*/14, 
-                                       /*G_OIL*/18,
-                                       /*G_GRAPE*/15,                           
-                                       /*G_WINE*/17, 
-                                       /*G_TIMBER*/20, 
-                                       /*G_FURNITURE*/24,
-                                       /*G_CLAY*/21,
-                                       /*G_POTTERY*/25, 
-                                       /*G_IRON*/19, 
-                                       /*G_WEAPON*/23,                                                   
-                                       /*G_MARBLE*/22,                                                    
-                                       /*G_DENARIES*/26,                            
-                                       PicID::bad };
+struct PicId
+{
+  Product type;
+  int emp;
+  int local;
+};
 
- static const int localPicId[ 20 ] = { PicID::bad,
-                                          /*G_WHEAT*/317, 
-                                          /*G_FISH*/333,
-                                          /*G_MEAT*/322,
-                                          /*G_FRUIT*/319,
-                                          /*G_VEGETABLE*/318,
-                                          /*G_OLIVE*/320,
-                                          /*G_OIL*/324,
-                                          /*G_GRAPE*/321,   
-                                          /*G_WINE*/323, 
-                                          /*G_TIMBER*/326,
-                                          /*G_FURNITURE*/330,
-                                          /*G_CLAY*/327,
-                                          /*G_POTTERY*/331,
-                                          /*G_IRON*/325,  
-                                          /*G_WEAPON*/329, 
-                                          /*G_MARBLE*/328, 
-                                          /*G_DENARIES*/332,
-                                          PicID::bad };
+static const PicId defaultsPicId[ 20 ] = {
+  { none,       0,   0 },
+  { wheat,     11, 317 },
+  { vegetable, 12, 318 },
+  { fruit,     13, 319 },
+  { olive,     14, 320 },
+  { grape,     15, 321 },
+  { meat,      16, 322 },
+  { wine,      17, 323 },
+  { oil,       18, 324 },
+  { iron,      19, 325 },
+  { timber,    20, 326 },
+  { clay,      21, 327 },
+  { marble,    22, 328 },
+  { weapon,    23, 329 },
+  { furniture, 24, 330 },
+  { pottery,   25, 331 },
+  { denaries,  26, 332 },
+  { fish,      27,   0 }
+};
 
 class Helper::Impl : public EnumsHelper<good::Product>
 {
 public:
   typedef std::map<good::Product, std::string > GoodNames;
   GoodNames goodName;  // index=GoodType, value=Good
+  const std::string invalidText;
 
   void append( good::Product type, const std::string& name, const std::string& prName )
   {
@@ -87,7 +72,7 @@ public:
 
   Impl() : EnumsHelper<good::Product>(good::none)
   {
-#define __REG_GTYPE(a) append( good::a, CAESARIA_STR_EXT(a), "##"CAESARIA_STR_EXT(a)"##" );
+#define __REG_GTYPE(a) append( good::a, CAESARIA_STR_EXT(a), "##" CAESARIA_STR_EXT(a)"##" );
     __REG_GTYPE(none )
     __REG_GTYPE(wheat)
     __REG_GTYPE(fish )
@@ -123,15 +108,15 @@ Helper::Helper() : _d( new Impl )
 
 Picture Helper::picture(Product type, bool emp )
 {
-  int picId = -1;
+  int picId;
 
   if( emp )
   {
-    picId = empPicId[ type ];
+    picId = defaultsPicId[ type ].emp;
   }
   else
   {
-    picId = localPicId[ type ];
+    picId = defaultsPicId[ type ].local;
   }
   
   if( picId > 0 )
@@ -144,10 +129,10 @@ Picture Helper::picture(Product type, bool emp )
 
 Helper::~Helper() {}
 
-std::string Helper::name(Product type )
+const std::string& Helper::name(Product type )
 {
   Impl::GoodNames::iterator it = instance()._d->goodName.find( type );
-  return it != instance()._d->goodName.end() ? it->second : "";
+  return it != instance()._d->goodName.end() ? it->second : instance()._d->invalidText;
 }
 
 Product Helper::getType( const std::string& name )
@@ -169,14 +154,14 @@ std::string Helper::getTypeName(Product type )
   return instance()._d->findName( type );
 }
 
-float Helper::exportPrice(PlayerCityPtr city, good::Product gtype, int qty)
+float Helper::exportPrice(PlayerCityPtr city, good::Product gtype, unsigned int qty)
 {
   int price = city->tradeOptions().buyPrice( gtype );
   Unit units = Unit::fromQty( qty );
   return price * units.ivalue();
 }
 
-float Helper::importPrice(PlayerCityPtr city, Product gtype, int qty)
+float Helper::importPrice(PlayerCityPtr city, Product gtype, unsigned int qty)
 {
   int price = city->tradeOptions().sellPrice( gtype );
   Unit units = Unit::fromQty( qty );
@@ -185,7 +170,7 @@ float Helper::importPrice(PlayerCityPtr city, Product gtype, int qty)
 
 Product Helper::random()
 {
-  return Product( math::random( good::all().size() ));
+  return Product( math::random( good::all().size()-1 ));
 }
 
 }//end namespace good

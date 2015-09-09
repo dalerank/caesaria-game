@@ -46,6 +46,7 @@ public:
   virtual bool die();
 
 protected:
+  virtual void _reachedPathway();
   virtual void _centerTile();
   virtual void _noWay();
 

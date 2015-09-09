@@ -58,7 +58,7 @@ void Habitants::update( House& h, const CitizenGroup& group )
       Logger::warning( "WARNING!!! Habitants::update currentWorkers(%d) > maxWorkers(%d)", workers.current + deltaWorkersNumber, workers.max );
 
     workers.current = math::clamp<int>( workers.current + deltaWorkersNumber, 0, workers.max );
-    }
+  }
 }
 
 void Habitants::updateCapacity(House& h)
@@ -123,5 +123,5 @@ int RecruterService::max() const { return _habitants.workers.max; }
 
 void RecruterService::setMax(int)
 {
-  Logger::warning( "WARNING !!! RecruterService::setMax blocked. Max value drive by Habitants class." );
+  Logger::warning( "!!!Warning: RecruterService::setMax blocked. Max value drive by Habitants class." );
 }

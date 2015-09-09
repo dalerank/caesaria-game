@@ -1,146 +1,168 @@
 {
   crime : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge", "high_bridge",
-                       "elevation", "tree", "rift", "prefecture", "burning_ruins", "waymark", "roadBlock" ]
+                       "elevation", "tree", "rift", "prefecture", "burning_ruins", "waymark", "roadBlock", "plague_ruins" ]
+  }
+
+  sentiment : {
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge", "high_bridge",
+                       "elevation", "tree", "rift", "burning_ruins", "waymark", "roadBlock", "plague_ruins" ]
   }
 
   damage : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge", "farmtile",
-                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "engineering_post", "waymark", "roadBlock"]
+                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "engineering_post", "waymark", "roadBlock",
+                       "plague_ruins" ]
+  }
+
+  unemployed : {
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge", "farmtile",
+                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "waymark", "roadBlock",
+                       "plague_ruins" ]
+  }
+
+  market : {
+    visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge", "farmtile",
+                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "waymark", "roadBlock",
+                       "plague_ruins" ]
   }
 
   desirability : {
     visibleObjects : [ "road", "plaza", "garden", "collapsed_ruins", "burned_ruins", "collapsed_ruins", "low_bridge",
-                       "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark", "senate", "roadBlock" ]
+                       "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark", "senate", "roadBlock",
+                       "plague_ruins" ]
   }
 
   education : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge",
                        "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark", "school",
-                       "library", "academy", "roadBlock" ]
+                       "library", "academy", "roadBlock", "plague_ruins", "reservoir", "aqueduct" ]
   }
 
   school : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge",
-                       "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark", "school", "roadBlock" ]
+                       "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark", "school", "roadBlock",
+                       "plague_ruins", "reservoir", "aqueduct" ]
   }
 
   library : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge",
                        "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark", "library",
-                       "roadBlock" ]
+                       "roadBlock", "plague_ruins", "reservoir", "aqueduct" ]
   }
 
   academy : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge",
                        "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark", "academy",
-                       "roadBlock" ]
+                       "roadBlock", "plague_ruins", "reservoir", "aqueduct" ]
   }
 
   entertainment : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge",
                        "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark", "tree",
-                       "theater", "amphitheater", "colloseum", "hippodrome", "roadBlock" ]
+                       "theater", "amphitheater", "colloseum", "hippodrome", "roadBlock", "plague_ruins" ]
   }
 
   theater : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge",
                        "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark",
-                       "theater", "roadBlock" ]
+                       "theater", "roadBlock", "plague_ruins" ]
   }
 
   amphitheater : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge",
                        "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark",
-                       "amphitheater", "roadBlock" ]
+                       "amphitheater", "roadBlock", "plague_ruins" ]
   }
 
   colloseum : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge",
                        "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark",
-                       "colloseum", "roadBlock" ]
+                       "colloseum", "roadBlock", "plague_ruins" ]
   }
 
   hippodrome : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "low_bridge",
                        "high_bridge", "tree", "elevation", "rift", "burning_ruins", "waymark",
-                       "hippodrome", "roadBlock" ]
+                       "hippodrome", "roadBlock", "plague_ruins" ]
   }
 
   fire : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge", "farmtile",
-                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "prefecture", "waymark", "roadBlock" ]
+                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "prefecture", "waymark", "roadBlock",
+                       "plague_ruins" ]
   }
 
   food : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
                        "high_bridge", "elevation", "rift", "tree", "burning_ruins", "market", "granary",
-                       "waymark", "roadBlock" ]
+                       "waymark", "roadBlock", "plague_ruins" ]
   }
 
   health : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
                        "high_bridge", "elevation", "rift", "tree", "burning_ruins", "waymark", "doctor",
-                       "hospital", "barber", "baths", "roadBlock" ]
+                       "hospital", "barber", "baths", "roadBlock", "plague_ruins" ]
   }
 
   doctor : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
                        "high_bridge", "elevation", "rift", "tree", "burning_ruins", "waymark", "doctor",
-                       "roadBlock" ]
+                       "roadBlock", "plague_ruins" ]
   }
 
   hospital : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
                        "high_bridge", "elevation", "rift", "tree", "burning_ruins", "waymark", "hospital",
-                       "roadBlock" ]
+                       "roadBlock", "plague_ruins" ]
   }
 
   barber : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
                        "high_bridge", "elevation", "rift", "tree", "burning_ruins", "waymark", "barber",
-                       "roadBlock" ]
+                       "roadBlock", "plague_ruins" ]
   }
 
   baths : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
                        "high_bridge", "elevation", "rift", "tree", "burning_ruins", "waymark", "baths",
-                       "roadBlock" ]
+                       "roadBlock", "plague_ruins" ]
   }
 
   aborigen : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
                        "high_bridge", "elevation", "rift", "tree", "burning_ruins", "nativeCenter", "nativeField",
-                       "waymark", "roadBlock" ]
+                       "waymark", "roadBlock", "plague_ruins" ]
   }
 
   religion : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
                        "high_bridge", "elevation", "rift", "tree", "burning_ruins", "small_temple_ceres",
                        "small_mars_temple", "small_mercury_temple", "small_neptune_temple", "small_venus_temple",
-                       "big_ceres_temple", "roadBlock",
+                       "big_ceres_temple", "roadBlock", "plague_ruins",
                        "big_mars_temple", "big_mercury_temple", "big_neptune_temple", "big_venus_temple", "oracle", "waymark" ]
   }
 
   tax : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
-                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "seante", "forum", "waymark" ]
+                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "seante", "forum", "waymark",
+                       "plague_ruins" ]
     column : { rc : "taxcolumn", foot : 124, body : 125,  }
   }
 
   troubles : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
-                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "waymark" ]
+                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "waymark", "plague_ruins" ]
   }
 
   risks : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
-                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "waymark" ]
+                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "waymark", "plague_ruins" ]
   }
 
   water : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
                        "high_bridge", "elevation", "rift", "tree", "burning_ruins", "reservoir",
-                       "fountain", "well", "aqueduct", "tree", "waymark" ]
+                       "fountain", "well", "aqueduct", "tree", "waymark", "plague_ruins" ]
   }
 }

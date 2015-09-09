@@ -13,10 +13,10 @@
     
   lbTitle#Label : 
   {
-    geometryf : [ 0.10 , 0.02, 0.9, 0.19 ]
+    geometryf : [ 0.10 , 0.02, 0.9, 0.13 ]
     text : "##title##"
     font : "FONT_5"
-    textAlign : [ "center", "upperLeft" ]
+    textAlign : [ "center", "center" ]
   }
 
   btnHelp#TexturedButton :

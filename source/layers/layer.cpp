@@ -18,10 +18,12 @@
 
 #include "layer.hpp"
 #include "objects/overlay.hpp"
-#include "core/foreach.hpp"
+#include "city/statistic.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/tilesarray.hpp"
 #include "gfx/helper.hpp"
+#include "objects/building.hpp"
+#include "objects/tree.hpp"
 #include "core/variant_map.hpp"
 #include "core/event.hpp"
 #include "gfx/city_renderer.hpp"
@@ -38,6 +40,7 @@
 #include "core/timer.hpp"
 #include "core/logger.hpp"
 #include "gfx/animation_bank.hpp"
+#include "city/statistic.hpp"
 
 using namespace gfx;
 
@@ -246,13 +249,13 @@ void Layer::drawWalkers( Engine& engine, const Tile& tile, const Point& camOffse
 
   bool viewAll = vWalkers.count( walker::all );
 
-  foreach( w, walkers )
+  for( auto wlk : walkers )
   {
-    if( viewAll || vWalkers.count( (*w)->type() ) > 0 )
+    if( viewAll || vWalkers.count( wlk->type() ) > 0 )
     {
       pics.clear();
-      (*w)->getPictures( pics );
-      engine.draw( pics, (*w)->mappos() + camOffset );
+      wlk->getPictures( pics );
+      engine.draw( pics, wlk->mappos() + camOffset );
     }
   }
 }
@@ -295,9 +298,8 @@ void Layer::render( Engine& engine)
   }
   // SECOND PART: draw all sprites, impassable land and buildings
   //int r0=0, r1=0, r2=0;
-  foreach( it, visibleTiles )
+  for( auto tile : visibleTiles )
   {
-    Tile* tile = *it;
     int z = tile->epos().z();
 
     drawProminentTile( engine, *tile, camOffset, z, false );
@@ -311,23 +313,23 @@ void Layer::render( Engine& engine)
   {
     WalkerList overDrawWalkers;
 
-    const WalkerList& walkers = _city()->walkers( walker::all );
-    foreach( it, walkers )
+    const WalkerList& walkers = _city()->statistic().walkers.find( walker::all );
+    for( auto wlk : walkers )
     {
-      if( (*it)->getFlag( Walker::showPath ) )
+      if( wlk->getFlag( Walker::showPath ) )
       {
-        overDrawWalkers << *it;
+        overDrawWalkers << wlk;
       }
       else
       {
-        if( (*it)->getFlag( Walker::showDebugInfo ) )
-          WalkerDebugInfo::showPath( *it, engine, _d->camera );
+        if( wlk->getFlag( Walker::showDebugInfo ) )
+          WalkerDebugInfo::showPath( wlk, engine, _d->camera );
       }
     }
 
-    foreach ( it, overDrawWalkers )
+    for( auto it : overDrawWalkers )
     {
-      WalkerDebugInfo::showPath( *it, engine, _d->camera, DefaultColors::yellow );
+      WalkerDebugInfo::showPath( it, engine, _d->camera, DefaultColors::yellow );
     }
   }
 }
@@ -377,9 +379,16 @@ void Layer::drawTile(Engine& engine, Tile& tile, const Point& offset)
     if( tile.rov().isValid() )
     {
       registerTileForRendering( tile );
-      drawPass( engine, tile, offset, Renderer::overlayGround );
-      drawPass( engine, tile, offset, Renderer::overlay );
-      drawPass( engine, tile, offset, Renderer::overlayAnimation );
+
+      bool breakBuilding = is_kind_of<Building>( tile.rov() ) && !DrawOptions::instance().isFlag( DrawOptions::showBuildings );
+      bool breakTree = is_kind_of<Tree>( tile.rov() ) && !DrawOptions::instance().isFlag( DrawOptions::showTrees );
+
+      if( !(breakBuilding || breakTree) )
+      {
+        drawPass( engine, tile, offset, Renderer::overlayGround );
+        drawPass( engine, tile, offset, Renderer::overlay );
+        drawPass( engine, tile, offset, Renderer::overlayAnimation );
+      }
     }
     else
     {
@@ -402,9 +411,8 @@ void Layer::drawArea(Engine& engine, const TilesArray& area, const Point &offset
   int rightBorderAtJ = overlay.isValid()
                           ? overlay->size().height() - 1 + baseTile->j()
                           : baseTile->j();
-  foreach( it, area )
+  for( auto tile : area )
   {
-    Tile* tile = *it;
     int tileBorders = ( tile->i() == leftBorderAtI ? 0 : OverlayPic::skipLeftBorder )
                       + ( tile->j() == rightBorderAtJ ? 0 : OverlayPic::skipRightBorder );
     Picture pic(resourceGroup, tileBorders + tileId);
@@ -415,70 +423,27 @@ void Layer::drawArea(Engine& engine, const TilesArray& area, const Point &offset
 void Layer::drawLands( Engine& engine, Camera* camera )
 {
   const TilesArray& flatTiles = camera->flatTiles();
-  const TilesArray& visibleTiles = camera->tiles();
-  const Picture& terrainPic = _dfunc()->terraintPic;
+  const TilesArray& groundTiles = camera->groundTiles();
   Point camOffset = camera->offset();
 
   // FIRST PART: draw all flat land (walkable/boatable)
-  foreach( it, flatTiles )
-  {
-    Tile& tile = **it;
-    drawPass( engine, tile, camOffset, Renderer::ground );   
+  for( auto tile : groundTiles )
+    drawLandTile( engine, *tile, camOffset );
 
-    if( tile.rov().isValid() )
-      drawTile( engine, tile, camOffset );
-    else
-      drawPass( engine, tile, camOffset, Renderer::groundAnimation );
-  }
+  for( auto tile : flatTiles )
+    drawFlatTile( engine, *tile, camOffset );
+}
 
-  if( DrawOptions::instance().isFlag( DrawOptions::oldGraphics ) )
-    return;
+void Layer::drawLandTile(Engine &engine, Tile &tile, const Point &camOffset)
+{
+  drawPass( engine, tile, camOffset, Renderer::ground );
+  drawPass( engine, tile, camOffset, Renderer::groundAnimation );
+}
 
-  foreach( it, visibleTiles )
-  {
-    Tile& t = **it;
-    if( !t.isFlat() )
-    {
-      Tile* master = t.masterTile();
-      master = (master == 0 ? &t : master);
-
-      if( t.rov().isNull() )
-      {
-        // multi-tile: draw the master tile.
-        // and it is time to draw the master tile
-        if( t.getFlag( Tile::tlRock ) )
-        {
-          t.setFlag( Tile::tlRock, true);
-        }
-      }
-      else
-      {
-        Size size = t.rov()->size();
-        if( !master->rwd() && master == &t )
-        {
-          if( size.width() > 1 )
-          {
-            for( int i=0; i < size.width(); i++ )
-              for( int j=0; j < size.height(); j++ )
-              {
-                TilePos tpos = t.epos() + TilePos( i, j );
-                Point mappos = Point( tilemap::cellSize().width() * ( tpos.i() + tpos.j() ),
-                                      tilemap::cellSize().height() * ( tpos.i() - tpos.j() ) - 0 * tilemap::cellSize().height() );
-
-                engine.draw( terrainPic, mappos + camOffset );
-              }
-          }
-          else
-          {
-            drawPass( engine, *master, camOffset, Renderer::ground );
-            drawPass( engine, *master, camOffset, Renderer::groundAnimation );
-          }
-        }
-      }
-    }
-  }
-
-
+void Layer::drawFlatTile(Engine& engine, Tile& tile, const Point& camOffset)
+{
+  if( tile.rov().isValid() )
+    drawTile( engine, tile, camOffset );
 }
 
 void Layer::init( Point cursor )
@@ -562,10 +527,10 @@ void Layer::afterRender( Engine& engine)
     Picture grnPicture( "oc3_land", 1);
 
     TilesArray tiles = _d->city->tilemap().allTiles();
-    foreach( it, tiles )
+    for( auto tile : tiles )
     {
-      if( (*it)->getFlag( Tile::tlRoad ) )
-        engine.draw( grnPicture , offset + (*it)->mappos() );
+      if( tile->getFlag( Tile::tlRoad ) )
+        engine.draw( grnPicture , offset + tile->mappos() );
     }
   }
 
@@ -574,10 +539,10 @@ void Layer::afterRender( Engine& engine)
     Picture grnPicture( "oc3_land", 1);
 
     TilesArray tiles = _d->city->tilemap().allTiles();
-    foreach( it, tiles )
+    for( auto tile : tiles )
     {
-      if( (*it)->isWalkable( true ) )
-        engine.draw( grnPicture , offset + (*it)->mappos() );
+      if( tile->isWalkable( true ) )
+        engine.draw( grnPicture , offset + tile->mappos() );
     }
   }
 
@@ -586,10 +551,10 @@ void Layer::afterRender( Engine& engine)
     Picture grnPicture( "oc3_land", 1);
 
     TilesArray tiles = _d->city->tilemap().allTiles();
-    foreach( it, tiles )
+    for( auto tile : tiles )
     {
-      if( (*it)->isFlat() )
-        engine.draw( grnPicture , offset + (*it)->mappos() );
+      if( tile->isFlat() )
+        engine.draw( grnPicture , offset + tile->mappos() );
     }
   }
 
@@ -598,10 +563,10 @@ void Layer::afterRender( Engine& engine)
     Picture grnPicture( "oc3_land", 2);
 
     TilesArray tiles = _d->city->tilemap().allTiles();
-    foreach( it, tiles )
+    for( auto tile : tiles )
     {
-      if( !(*it)->isWalkable( true ) )
-        engine.draw( grnPicture , offset + (*it)->mappos() );
+      if( !tile->isWalkable( true ) )
+        engine.draw( grnPicture , offset + tile->mappos() );
     }
   }
 
@@ -663,9 +628,9 @@ void Layer::_initialize()
 {
   const VariantMap& vm = citylayer::Helper::getConfig( (citylayer::Type)type() );
   StringArray vl = vm.get( "visibleObjects" ).toStringArray();
-  foreach( it, vl )
+  for( auto it : vl )
   {
-    object::Type ovType = object::toType( *it );
+    object::Type ovType = object::findType( it );
     if( ovType != object::unknown )
       _dfunc()->drObjects.insert( ovType );
     }
@@ -718,6 +683,43 @@ DrawOptions& DrawOptions::instance()
 {
   static DrawOptions inst;
   return inst;
+}
+
+bool DrawOptions::getFlag(DrawOptions::Flag flag)
+{
+  return instance().isFlag( flag );
+}
+
+void DrawOptions::takeFlag(DrawOptions::Flag flag, int value)
+{
+  instance().setFlag( flag, value );
+}
+
+DrawOptions::Flag DrawOptions::findFlag(const std::string& name)
+{
+  return (Flag)instance()._helper.findType( name );
+}
+
+DrawOptions::DrawOptions() : _helper(0)
+{
+#define _O(a) _helper.append( DrawOptions::a, CAESARIA_STR_EXT(a) );
+  _O(drawGrid)
+  _O(shadowOverlay)
+  _O(showPath)
+  _O(windowActive)
+  _O(showRoads)
+  _O(showObjectArea)
+  _O(showWalkableTiles)
+  _O(showLockedTiles)
+  _O(showFlatTiles)
+  _O(borderMoving)
+  _O(mayChangeLayer)
+  _O(oldGraphics)
+  _O(mmbMoving)
+  _O(showBuildings)
+  _O(showTrees)
+  _O(overdrawOnBuild)
+#undef _O
 }
 
 }//end namespace gfx

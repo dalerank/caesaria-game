@@ -90,7 +90,7 @@ void Crime::drawTile( Engine& engine, Tile& tile, const Point& offset)
     }
     else if( crime >= 0)
     {
-      _addColumn( screenPos, crime );
+      drawColumn( engine, screenPos, crime );
     }
   }
 

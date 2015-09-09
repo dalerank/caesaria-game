@@ -22,8 +22,8 @@
   #include <wspiapi.h>
 #endif
 
-#include "thread/mutex.hpp"
 #include <curl/curl.h>
+#include "thread/thread.hpp"
 #include "vfs/path.hpp"
 
 namespace updater
@@ -33,7 +33,7 @@ class HttpConnection::Impl
 {
 public:
 	// The mutex for managing access to the counter above
-	Mutex bytesDownloadedMutex;
+  std::mutex bytesDownloadedMutex;
 };
 
 HttpConnection::HttpConnection() : _d( new Impl ),
@@ -96,7 +96,8 @@ HttpRequestPtr HttpConnection::createRequest(const std::string& url, vfs::Path d
 void HttpConnection::AddBytesDownloaded(std::size_t bytes)
 {
 	// Make sure only one thread is accessing the counter at a time
-	MutexLocker locker(&_d->bytesDownloadedMutex);
+  std::unique_lock<std::mutex> locker(_d->bytesDownloadedMutex);
+  locker;
 
 	_bytesDownloaded += bytes;
 }

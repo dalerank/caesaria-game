@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_GUI_DIALOGBOX_INCLUDE_H_
 #define _CAESARIA_GUI_DIALOGBOX_INCLUDE_H_
@@ -31,12 +31,13 @@ namespace dialog
 class Dialog : public Window
 {
 public:
+  enum { stillPlay=0, pauseGame=1 };
   enum { btnYes=0x1, btnNo=0x2, btnOk=0x4, btnCancel=0x8,
          btnOkCancel=btnOk|btnCancel,
          btnNever=0x10 };
 
   Dialog( Ui* ui, const Rect& rectangle, const std::string& title,
-             const std::string& text, int buttons );
+             const std::string& text, int buttons, bool lockGame=false );
 
   bool onEvent(const NEvent& event);
 
@@ -56,9 +57,10 @@ private:
 Dialog* Information(  Ui* ui,
                       const std::string& title,
                       const std::string& text );
-Dialog* Confirmation( Ui* ui,
+Dialog* Confirmation(Ui* ui,
                       const std::string& title,
-                      const std::string& text );
+                      const std::string& text ,
+                      bool pauseGame = false);
 
 }//end namespace dialog
 

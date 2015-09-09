@@ -62,11 +62,11 @@ void ServiceUpdater::timeStep( const unsigned int time)
     _d->isDeleted = (_d->endTime < game::Date::current());
 
     Logger::warning( "ServiceUpdater: execute service" );
-    HouseList houses = statistic::getHouses( _city() );
+    HouseList houses = _city()->statistic().houses.find();
 
-    foreach( it, houses )
+    for( auto item : houses )
     {
-      (*it)->setServiceValue( _d->stype, _d->value );
+      item->setServiceValue( _d->stype, _d->value );
     }
   }
 }
@@ -89,6 +89,11 @@ VariantMap ServiceUpdater::save() const
   ret[ literals::service    ] = ServiceHelper::getName( _d->stype );
 
   return ret;
+}
+
+ServiceUpdater::~ServiceUpdater()
+{
+
 }
 
 ServiceUpdater::ServiceUpdater( PlayerCityPtr city )

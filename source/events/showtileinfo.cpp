@@ -46,8 +46,8 @@ void ShowTileInfo::_exec(Game& game, unsigned int time)
   {
     ConstructionPtr c =  game.city()->getOverlay( _pos ).as<Construction>();
     c = (_mode == next
-                ? city::statistic::nextObject( game.city(), c )
-                : city::statistic::prewObject( game.city(), c ));
+                ? game.city()->statistic().objects.next( c )
+                : game.city()->statistic().objects.prew( c ));
 
     if( c.isValid() )
     {

@@ -21,7 +21,6 @@
 #include "gfx/tile.hpp"
 #include "core/utils.hpp"
 #include "core/gettext.hpp"
-#include "city/helper.hpp"
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "walker/walker.hpp"
@@ -63,7 +62,6 @@ REGISTER_OBJECT_SERVICEINFOBOX(missionaryPost, "", "")
 REGISTER_OBJECT_SERVICEINFOBOX(school,"", "" )
 REGISTER_OBJECT_SERVICEINFOBOX(academy,"", "" )
 REGISTER_OBJECT_SERVICEINFOBOX(library,"", "" )
-REGISTER_OBJECT_SERVICEINFOBOX(dock,"", "" )
 REGISTER_OBJECT_SERVICEINFOBOX(actorColony,"", "" )
 REGISTER_OBJECT_SERVICEINFOBOX(gladiatorSchool,"", "" )
 REGISTER_OBJECT_SERVICEINFOBOX(lionsNursery,"", "")

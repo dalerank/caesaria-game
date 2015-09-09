@@ -79,6 +79,11 @@ public signals:
 class Factory::Impl
 {
 public:
+  struct
+  {
+
+  };
+
   bool isActive;
   float productionRate;  // max production / year
   float progress;  // progress of the work, in percent (0-100).
@@ -118,6 +123,7 @@ Factory::Factory(const good::Product inType, const good::Product outType,
 good::Stock& Factory::inStockRef(){   return _d->goodStore.getStock(_d->inGoodType);}
 const good::Stock& Factory::inStockRef() const { return _d->goodStore.getStock(_d->inGoodType);}
 good::Stock &Factory::outStockRef(){  return _d->goodStore.getStock(_d->outGoodType);}
+const good::Stock&Factory::outStockRef() const { return _d->goodStore.getStock(_d->outGoodType); }
 good::Product Factory::consumeGoodType() const{  return _d->inGoodType; }
 int Factory::progress(){  return math::clamp<int>( (int)_d->progress, 0, 100 );}
 void Factory::updateProgress(float value){  _d->progress = math::clamp<float>( _d->progress += value, 0.f, 101.f );}
@@ -127,9 +133,8 @@ bool Factory::mayWork() const
   if( numberWorkers() == 0 || !isActive() )
     return false;
 
-  good::Stock& inStock = const_cast< Factory* >( this )->inStockRef();
   bool mayContinue = false;
-  if( inStock.type() == good::none )
+  if( inStockRef().type() == good::none )
   {
     mayContinue = true;
   }
@@ -138,8 +143,7 @@ bool Factory::mayWork() const
     mayContinue = ( haveMaterial() || _d->produceGood );
   }
 
-  const good::Stock& outStock = const_cast< Factory* >( this )->outStockRef();
-  mayContinue &= (outStock.freeQty() > 0);
+  mayContinue &= (outStockRef().freeQty() > 0);
 
   return mayContinue;
 }
@@ -178,6 +182,11 @@ void Factory::_weekUpdate(unsigned int time)
       _reachUnworkingTreshold();
     }
     }
+}
+
+void Factory::_setConsumeGoodType(int, good::Product product)
+{
+   _d->inGoodType = product;
 }
 
 void Factory::_setUnworkingInterval(unsigned int weeks)
@@ -382,7 +391,7 @@ bool Creamery::build( const city::AreaInfo& info )
 {
   Factory::build( info );
 
-  bool haveOliveFarm = !city::statistic::getObjects<Building>( info.city, object::olive_farm ).empty();
+  bool haveOliveFarm = !info.city->statistic().objects.find<Building>( object::olive_farm ).empty();
 
   _setError( haveOliveFarm ? "" : _("##need_olive_for_work##") );
 

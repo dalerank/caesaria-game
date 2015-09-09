@@ -26,6 +26,7 @@
 #include "core/logger.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/flowlist.hpp"
+#include "core/common.hpp"
 
 using namespace gfx;
 
@@ -35,17 +36,53 @@ namespace world
 class Merchants : public FlowList<Merchant>
 {
 public:
+  Traderoute* route;
+
+  Merchants() : route( 0 ) {}
+
   VariantMap save() const
   {
     VariantMap ret;
-    foreach( m, *this )
+    for( auto m : *this )
     {
       VariantMap saveRoute;
-      (*m)->save( saveRoute );
-      ret[ "->" + (*m)->destinationCity() ] = saveRoute;
+      m->save( saveRoute );
+      ret[ "->" + m->destinationCity() ] = saveRoute;
     }
 
     return ret;
+  }
+
+  void load( const VariantMap& stream )
+  {
+    if( !route )
+    {
+      Logger::warning( "!!!WARNING: Merchants::load() route is null" );
+      return;
+    }
+
+    foreach( it, stream )
+    {
+      good::Storage sell, buy;
+      MerchantPtr m = route->addMerchant( route->beginCity()->name(), sell, buy );
+
+      if( m.isValid() )
+      {
+        m->load( it->second.toMap() );
+      }
+      else
+      {
+        Logger::warning( "!!!WARNING: Merchants::load() cant load merchant index %d for route %s",
+                         std::distance( stream.begin(), it ), route->name().c_str() );
+      }
+    }
+  }
+
+  void update( unsigned int time )
+  {
+    for( auto it : *this ) it->timeStep( time );
+    utils::eraseIfDeleted( *this );
+    merge();
   }
 };
 
@@ -72,7 +109,7 @@ public:
 
 CityPtr Traderoute::beginCity() const {  return _d->empire->findCity( _d->begin );}
 CityPtr Traderoute::endCity() const{  return _d->empire->findCity( _d->end );}
-std::string Traderoute::getName() const{  return _d->begin + "<->" + _d->end;}
+std::string Traderoute::name() const{  return _d->begin + "<->" + _d->end;}
 
 CityPtr Traderoute::partner(const std::string& name) const
 {
@@ -81,14 +118,7 @@ CityPtr Traderoute::partner(const std::string& name) const
 
 void Traderoute::timeStep( unsigned int time )
 {
-  MerchantList::iterator it=_d->merchants.begin();
-  while( it != _d->merchants.end() )
-  {
-    if( (*it)->isDeleted() ) {  it = _d->merchants.erase( it ); }
-    else  { (*it)->timeStep( time ); ++it;  }
-  }
-
-  _d->merchants.merge();
+  _d->merchants.update( time );
 }
 
 PointsArray Traderoute::points( bool reverse ) const
@@ -107,12 +137,10 @@ bool Traderoute::containPoint( const Point& pos, int devianceDistance)
   if( !_d->boundingBox.isPointInside( pos ) )
     return false;
 
-  foreach( it, _d->points )
+  for( auto it : _d->points )
   {
-    if( it->distanceTo( pos ) < devianceDistance )
-    {
+    if( it.distanceTo( pos ) < devianceDistance )
       return true;
-    }
   }
 
   return false;
@@ -151,34 +179,20 @@ Traderoute::Traderoute( EmpirePtr empire, std::string begin, std::string end )
   _d->empire = empire;
   _d->begin = begin;
   _d->end = end;
+  _d->merchants.route = this;
 }
 
 Traderoute::~Traderoute() {}
 
-MerchantPtr Traderoute::merchant( unsigned int index )
-{
-  bool invalidIndex = index >= _d->merchants.size();
-  if( invalidIndex )
-    return MerchantPtr();
-
-  MerchantList::iterator it = _d->merchants.begin();
-  std::advance( it, index );
-  return *it;
-}
-
-MerchantList Traderoute::merchants() const
-{
-  return _d->merchants;
-}
+MerchantPtr Traderoute::merchant( unsigned int index ) { return _d->merchants.valueOrEmpty( index ); }
+const MerchantList& Traderoute::merchants() const{  return _d->merchants; }
 
 VariantMap Traderoute::save() const
 {  
   VariantMap ret;
 
-
-  VARIANT_SAVE_CLASS_D( ret, _d,  merchants)
-  ret[ "points" ] = _d->points.save();
-
+  VARIANT_SAVE_CLASS_D( ret, _d, merchants)
+  VARIANT_SAVE_CLASS_D( ret, _d, points )
   VARIANT_SAVE_ANY_D( ret, _d, seaRoute )
 
   return ret;
@@ -186,27 +200,12 @@ VariantMap Traderoute::save() const
 
 void Traderoute::load(const VariantMap& stream)
 {
-  _d->points.load( stream.get( "points" ).toList() );
+  VARIANT_LOAD_CLASS_D_LIST (_d, points, stream )
+  VARIANT_LOAD_CLASS_D( _d, merchants, stream )
+  VARIANT_LOAD_ANY_D( _d, seaRoute, stream )
+
   _d->updateBoundingBox();
   _d->updatePictures();
-
-  VariantMap merchants = stream.get( "merchants" ).toMap();
-  foreach( it, merchants )
-  {
-    good::Storage sell, buy;
-    MerchantPtr m = addMerchant( _d->begin, sell, buy );
-
-    if( m.isValid() )
-    {
-      m->load( it->second.toMap() );
-    }
-    else
-    {
-      Logger::warning( "WARNING !!!: Traderoute::load cant load merchant index %d", std::distance( merchants.begin(), it) );
-    }
-  }
-
-  VARIANT_LOAD_ANY_D( _d, seaRoute, stream )
 }
 
 unsigned int Traderoute::getId(const std::string& begin, const std::string& end)
@@ -221,19 +220,13 @@ Signal1<MerchantPtr>& Traderoute::onMerchantArrived()
 
 void Traderoute::Impl::resolveMerchantArrived(MerchantPtr merchant)
 {
-  foreach( m, merchants )
-  {
-    if( *m == merchant )
-    {
-      (*m)->deleteLater();
-      break;
-    }
-  }
+  if( merchants.contain( merchant ) )
+    merchant->deleteLater();
 
   CityPtr city = empire->findCity( merchant->destinationCity() );
   if( city.isValid() )
   {
-    city->addObject( ptr_cast<Object>( merchant ) );
+    city->addObject( merchant.as<Object>() );
   }
 
   emit onMerchantArrivedSignal( merchant );
@@ -248,10 +241,8 @@ void Traderoute::Impl::updateBoundingBox()
   }
 
   boundingBox = Rect( points.front(), points.front() );
-  foreach ( it, points )
-  {
-    boundingBox.addInternalPoint( it->x(), it->y() );
-  }
+  for( auto it : points )
+    boundingBox.addInternalPoint( it.x(), it.y() );
 }
 
 void Traderoute::Impl::updatePictures()

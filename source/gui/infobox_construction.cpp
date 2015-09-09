@@ -22,6 +22,7 @@
 #include "core/logger.hpp"
 #include "core/gettext.hpp"
 #include "events/showtileinfo.hpp"
+#include "events/playsound.hpp"
 
 namespace gui
 {
@@ -66,10 +67,10 @@ PushButton* AboutConstruction::_btnToggleWorkingRef() { return _btnToggleWorking
 
 void AboutConstruction::_setWorkingVisible(bool show)
 {
-  if( !_btnToggleWorking && _lbBlackFrameRef() )
+  if( !_btnToggleWorking && _lbBlackFrame() )
   {
-      Rect btnRect( Point( _lbBlackFrameRef()->width() - 110, (_lbBlackFrameRef()->height() - 25)/2 ), Size( 100, 25 ) );
-     _btnToggleWorking = new PushButton( _lbBlackFrameRef(), btnRect, "", -1, false, PushButton::blackBorderUp  );
+      Rect btnRect( Point( _lbBlackFrame()->width() - 110, (_lbBlackFrame()->height() - 25)/2 ), Size( 100, 25 ) );
+     _btnToggleWorking = new PushButton( _lbBlackFrame(), btnRect, "", -1, false, PushButton::blackBorderUp  );
      _btnToggleWorking->setFont( Font::create( FONT_1 ) );
      _updateWorkingText();
 
@@ -96,11 +97,21 @@ void AboutConstruction::_updateWorkingText()
 
 void AboutConstruction::_resolveToggleWorking()
 {
-  WorkingBuildingPtr working = ptr_cast<WorkingBuilding>( base() );
+  WorkingBuildingPtr working = base().as<WorkingBuilding>();
   if( working.isValid() )
   {
     working->setActive( !working->isActive() );
     _setWorkingActive( working->isActive() );
+  }
+}
+
+void AboutConstruction::_baseAssigned()
+{
+  if( base().isValid() )
+  {
+    std::string typeName = object::toString( base()->type() );
+    events::GameEventPtr e = events::PlaySound::create( "bmsel_"+typeName, 1, 100, audio::infobox, true );
+    e->dispatch();
   }
 }
 

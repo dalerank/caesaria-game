@@ -19,11 +19,11 @@
 
 #include "objects/metadata.hpp"
 #include "core/exception.hpp"
-#include "city/helper.hpp"
 #include "core/position.hpp"
 #include "objects/granary.hpp"
 #include "objects/warehouse.hpp"
 #include "gfx/tile.hpp"
+#include "city/city.hpp"
 #include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
 #include "good/helper.hpp"
@@ -32,6 +32,7 @@
 #include "objects/factory.hpp"
 #include "name_generator.hpp"
 #include "good/store.hpp"
+#include "core/variant_list.hpp"
 #include "objects/constants.hpp"
 #include "events/removecitizen.hpp"
 #include "city/trade_options.hpp"
@@ -75,7 +76,6 @@ CartSupplier::CartSupplier( PlayerCityPtr city )
 void CartSupplier::_reachedPathway()
 {
   Walker::_reachedPathway();
-  city::Helper helper( _city() );
 
   if( _pathway().isReverse() )
   {
@@ -155,35 +155,35 @@ void CartSupplier::_changeDirection()
 
 void CartSupplier::getPictures( Pictures& oPics)
 {
-   oPics.clear();
+  oPics.clear();
 
-   // depending on the walker direction, the cart is ahead or behind
-   switch (direction())
-   {
-   case direction::west:
-   case direction::northWest:
-   case direction::north:
-   case direction::northEast:
-      oPics.push_back( _cart().currentFrame() );
-      oPics.push_back( getMainPicture() );
-   break;
+  // depending on the walker direction, the cart is ahead or behind
+  switch (direction())
+  {
+  case direction::west:
+  case direction::northWest:
+  case direction::north:
+  case direction::northEast:
+     oPics.push_back( _cart().currentFrame() );
+     oPics.push_back( getMainPicture() );
+  break;
 
-   case direction::east:
-   case direction::southEast:
-   case direction::south:
-   case direction::southWest:
-      oPics.push_back( getMainPicture() );
-      oPics.push_back( _cart().currentFrame() );
-   break;
+  case direction::east:
+  case direction::southEast:
+  case direction::south:
+  case direction::southWest:
+     oPics.push_back( getMainPicture() );
+     oPics.push_back( _cart().currentFrame() );
+  break;
 
-   default:
-   break;
-   }
+  default:
+  break;
+  }
 
-   if( _d->anim.isBack() )
-   {
-     std::iter_swap( oPics.begin(), oPics.begin() + 1);
-   }
+  if( _d->anim.isBack() )
+  {
+    std::iter_swap( oPics.begin(), oPics.begin() + 1);
+  }
 }
 
 template< class T >

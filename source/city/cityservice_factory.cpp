@@ -16,7 +16,6 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "cityservice_factory.hpp"
-#include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "city/city.hpp"
 #include "cityservice_timers.hpp"
@@ -24,40 +23,42 @@
 namespace city
 {
 
-typedef std::vector< ServiceCreatorPtr > Creators;
+typedef SmartList<ServiceCreator> Creators;
 
 class ServiceFactory::Impl
 {
 public:
   Creators creators;
+
+  ServiceCreatorPtr find( const std::string& name )
+  {
+    for( auto creator : creators )
+    {
+      if( name == creator->serviceName() )
+        return creator;
+    }
+
+    return ServiceCreatorPtr();
+  }
 };
 
 SrvcPtr ServiceFactory::create( PlayerCityPtr city, const std::string& name )
 {
   std::string::size_type sharpPos = name.find( "#" );
-  std::string srvcType = sharpPos != std::string::npos ? name.substr( sharpPos+1 ) : name;
+  const std::string srvcType = sharpPos != std::string::npos ? name.substr( sharpPos+1 ) : name;
 
   Logger::warning( "CityServiceFactory: try find creator for service " + srvcType );
 
-  ServiceFactory& inst = instance();
-  foreach( it, inst._d->creators )
+  auto creator = instance()._d->find( srvcType );
+  if( creator.isValid() )
   {
-    if( srvcType == (*it)->serviceName() )
-    {
-      city::SrvcPtr srvc = (*it)->create( city );
-      srvc->setName( name );
-      return srvc;
-    }
+    city::SrvcPtr srvc = creator->create( city );
+    srvc->setName( name );
+    return srvc;
   }
 
   Logger::warning( "CityServiceFactory: not found creator for service " + name );
   return SrvcPtr();
-}
-
-ServiceFactory& ServiceFactory::instance()
-{
-  static city::ServiceFactory inst;
-  return inst;
 }
 
 void ServiceFactory::addCreator( ServiceCreatorPtr creator )
@@ -65,16 +66,20 @@ void ServiceFactory::addCreator( ServiceCreatorPtr creator )
   if( creator.isNull() )
     return;
 
-  foreach( it, _d->creators )
+  auto found = _d->find( creator->serviceName() );
+
+  if( found.isValid() )
   {
-    if( creator->serviceName() == (*it)->serviceName() )
-    {
-      Logger::warning( "CityServiceFactory: Also have creator for service " + creator->serviceName() );
-      return;
-    }
+    Logger::warning( "CityServiceFactory: Also have creator for service " + creator->serviceName() );
+    return;
   }
 
   _d->creators.push_back( creator );
+}
+
+ServiceFactory::~ServiceFactory()
+{
+
 }
 
 ServiceFactory::ServiceFactory() : _d( new Impl )

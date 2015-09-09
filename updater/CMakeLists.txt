@@ -12,7 +12,6 @@ set( UPD_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/core/utils.cpp"
       "${BASE_SOURCE_DIR}/core/bytearray.cpp"
       "${BASE_SOURCE_DIR}/core/logger.cpp"
-      "${BASE_SOURCE_DIR}/thread/mutex.cpp"
       "${BASE_SOURCE_DIR}/core/time.cpp"
       "${BASE_SOURCE_DIR}/thread/thread.cpp"
       "${BASE_SOURCE_DIR}/thread/threadevent.cpp"
@@ -107,7 +106,7 @@ if(EXT_BINDIR)
   ADD_CUSTOM_COMMAND(
       TARGET ${PROJECT_NAME}
       POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${GAME_BINARY_FILENAME}" "${CMAKE_SOURCE_DIR}/${EXT_BINDIR}/${UPDATER_BINARY_FILENAME}"
+      COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${UPDATER_BINARY_FILENAME}" "${CMAKE_SOURCE_DIR}/${EXT_BINDIR}/${UPDATER_BINARY_FILENAME}"
   )
 endif(EXT_BINDIR)
 
@@ -118,3 +117,6 @@ if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -Wno-unused-value")
   endif(NOT HAIKU)
 endif(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+
+# Enforce C++11
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")

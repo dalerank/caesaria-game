@@ -65,13 +65,13 @@ CAESARIA_LITERALCONST(img)
 
 LegionEmblem LegionEmblem::findFree( PlayerCityPtr city )
 {
-  FortList forts = statistic::getObjects<Fort>( city, object::any );
+  FortList forts = city->statistic().objects.find<Fort>( object::any );
   std::vector<LegionEmblem> availableEmblems;
 
   VariantMap emblemsModel = config::load( SETTINGS_RC_PATH( emblemsModel ) );
-  foreach( it, emblemsModel )
+  for( auto it : emblemsModel )
   {
-    VariantMap vm_emblem = it->second.toMap();
+    VariantMap vm_emblem = it.second.toMap();
     LegionEmblem newEmblem;
 
     newEmblem.name = vm_emblem[ literals::name ].toString();
@@ -96,7 +96,7 @@ LegionEmblem LegionEmblem::findFree( PlayerCityPtr city )
   }
 
   return availableEmblems.size() > 0
-                       ? availableEmblems[ math::random( availableEmblems.size() ) ]
+                       ? availableEmblems[ math::random( availableEmblems.size()-1 ) ]
                        : LegionEmblem();
 }
 
@@ -161,7 +161,7 @@ public:
     switch( mode )
     {
     case Fort::frmOpen:
-      area = TilesArea( tmap, lastPos, 3 );
+      area = TilesArea( tmap, 3, lastPos );
     break;
 
     case Fort::frmWestLine:
@@ -212,7 +212,7 @@ public:
 
     case Fort::frmSquad:
     default:
-      area = TilesArea( tmap, lastPos, 3);
+      area = TilesArea( tmap, 3, lastPos );
     break;
     }
 
@@ -438,7 +438,7 @@ TilePos Fort::patrolLocation() const
   {
     Logger::warning( "!!! WARNING: Fort::patrolLocation(): not patrol point assign in fort [%d,%d]", pos().i(), pos().j() );
     patrolPos = _d->area->pos() + TilePos( 0, 3 );
-    crashhandler::printstack();
+    crashhandler::printstack(false);
   }
   else
   {
@@ -509,13 +509,8 @@ void Fort::load(const VariantMap& stream)
   _d->patrolPoint->setPos( _d->patrolArea.lastPos );
 }
 
-SoldierList Fort::soldiers() const
-{
-  SoldierList soldiers;
-  soldiers << walkers();
-
-  return soldiers;
-}
+SoldierList Fort::soldiers() const {  return walkers().select<Soldier>(); }
+int Fort::soldiers_n() const { return walkers().count<Soldier>(); }
 
 void Fort::returnSoldiers()
 {
@@ -584,7 +579,7 @@ bool Fort::canBuild( const city::AreaInfo& areaInfo ) const
 
 bool Fort::build( const city::AreaInfo& info )
 {
-  FortList forts = statistic::getObjects<Fort>( info.city, object::any );
+  FortList forts = info.city->statistic().objects.find<Fort>( object::any );
 
   const city::development::Options& bOpts = info.city->buildOptions();
   if( forts.size() >= bOpts.maximumForts() )
@@ -606,7 +601,7 @@ bool Fort::build( const city::AreaInfo& info )
 
   _fgPictures().resize(1);
 
-  BarracksList barracks = statistic::getObjects<Barracks>( info.city, object::barracks );
+  BarracksList barracks = info.city->statistic().objects.find<Barracks>( object::barracks );
 
   if( barracks.empty() )
   {

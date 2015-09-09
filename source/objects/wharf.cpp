@@ -12,17 +12,19 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "wharf.hpp"
 #include "gfx/tile.hpp"
 #include "game/resourcegroup.hpp"
-#include "city/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/foreach.hpp"
 #include "walker/fishing_boat.hpp"
 #include "core/foreach.hpp"
 #include "good/store.hpp"
 #include "game/gamedate.hpp"
+#include "city/statistic.hpp"
 #include "constants.hpp"
 #include "objects_factory.hpp"
 
@@ -43,8 +45,6 @@ Wharf::Wharf() : CoastalFactory(good::none, good::fish, object::wharf, Size(2)),
 
 void Wharf::destroy()
 {
-  city::Helper helper( _city() );
-
   if( _d->boat.isValid() )
   {
     _d->boat->die();
@@ -91,12 +91,12 @@ void Wharf::timeStep(const unsigned long time)
 
 ShipPtr Wharf::getBoat() const
 {
-  return ptr_cast<Ship>( _d->boat );
+  return _d->boat.as<Ship>();
 }
 
 void Wharf::assignBoat( ShipPtr boat )
 {
-  _d->boat = ptr_cast<FishingBoat>( boat );
+  _d->boat = boat.as<FishingBoat>();
   if( _d->boat.isValid() )
   {
     _d->boat->setBase( this );
@@ -142,7 +142,7 @@ std::string Wharf::troubleDesc() const
 {
   if( _d->boat.isValid() )
   {
-    WalkerList places = _city()->walkers( walker::fishPlace );
+    const WalkerList& places = _city()->statistic().walkers.find( walker::fishPlace );
     if( places.empty() )
     {
       return "##no_fishplace_in_city##";

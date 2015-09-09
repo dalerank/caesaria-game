@@ -85,37 +85,37 @@ void Roads::timeStep( const unsigned int time )
   _d->lastTimeUpdate = game::Date::current();  
 
   Impl::Updates positions;
-  foreach( it, _d->btypes )
+  for( auto type : _d->btypes )
   {
-    BuildingList tmp = statistic::getObjects<Building>( _city(), it->first );
+    BuildingList tmp = _city()->statistic().objects.find<Building>( type.first );
 
-    foreach( b, tmp )
+    for( auto b : tmp )
     {
-      positions.push_back( Impl::UpdateInfo( b->object(), it->second ) );
+      positions.push_back( Impl::UpdateInfo( b.object(), type.second ) );
     }
   }
 
-  HouseList houses = city::statistic::getHouses( _city() );
-  foreach( house, houses )
+  HouseList houses = _city()->statistic().houses.find();
+  for( auto house : houses )
   {
-    if( (*house)->spec().level() >= HouseLevel::bigMansion )
+    if( house->spec().level() >= HouseLevel::bigMansion )
     {
-      positions.push_back( Impl::UpdateInfo( house->object(), 5 ) );
+      positions.push_back( Impl::UpdateInfo( house.object(), 5 ) );
     }
   }
 
   Propagator propagator( _city() );
-  foreach( upos, positions )
+  for( auto&& upos : positions )
   {
-    _d->updateRoadsAround( propagator, *upos );
+    _d->updateRoadsAround( propagator, upos );
   }
 
   if( _d->lastTimeUpdate.month() % 3 == 1 )
   {
-    RoadList roads = statistic::getObjects<Road>( _city(), object::road );
-    foreach( road, roads )
+    RoadList roads = _city()->statistic().objects.find<Road>( object::road );
+    for( auto road : roads )
     {
-      (*road)->appendPaved( _d->defaultDecreasePaved );
+      road->appendPaved( _d->defaultDecreasePaved );
     }
   }
 }
@@ -127,12 +127,12 @@ void Roads::Impl::updateRoadsAround( Propagator& propagator, UpdateInfo info )
   propagator.init( info.first );
   PathwayList pathWayList = propagator.getWays( info.second );
 
-  foreach( current, pathWayList )
+  for( auto&& path : pathWayList )
   {
-    const TilesArray& tiles = (*current)->allTiles();
-    foreach( it, tiles )
+    const TilesArray& tiles = path->allTiles();
+    for( auto tile : tiles )
     {
-      RoadPtr road = ptr_cast<Road>( (*it)->overlay() );
+      RoadPtr road = tile->overlay().as<Road>();
       if( road.isValid() )
       {
         road->appendPaved( defaultIncreasePaved );

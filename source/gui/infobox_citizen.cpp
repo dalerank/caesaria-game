@@ -13,8 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
-
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include <cstdio>
 
@@ -25,16 +24,19 @@
 #include "walker/constants.hpp"
 #include "walker/helper.hpp"
 #include "gfx/picture.hpp"
-#include "city/helper.hpp"
 #include "core/gettext.hpp"
+#include "good/productmap.hpp"
 #include "events/playsound.hpp"
 #include "gfx/decorator.hpp"
 #include "walker/enemysoldier.hpp"
+#include "good/helper.hpp"
 #include "gfx/engine.hpp"
-#include "walker/seamerchant.hpp"
+#include "walker/merchant_sea.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
 #include "gfx/helper.hpp"
+#include "gfx/tilemap.hpp"
+#include "core/metric.hpp"
 #include "events/movecamera.hpp"
 
 namespace gui
@@ -116,35 +118,12 @@ AboutPeople::AboutPeople( Widget* parent, PlayerCityPtr city, const TilePos& pos
   : Infobox( parent, Rect( 0, 0, 460, 350 ), Rect( 18, 40, 460 - 18, 350 - 120 ) ),
     _d( new Impl)
 {
-  _d->walkers = city->walkers( pos );
-  _d->city = city;
+  _init( city, pos, ":/gui/infoboxcitizen.gui" );
+}
 
-  Widget::setupUI( ":/gui/infoboxcitizen.gui" );
-
-  new Label( this, Rect( 25, 100, width() - 25, height() - 130), "", false, Label::bgWhiteBorderA );
-  new Label( this, Rect( 28, 103, width() - 28, height() - 133), "", false, Label::bgBlack );
-
-  _d->lbName = new Label( this, Rect( 90, 108, width() - 30, 108 + 20) );
-  _d->lbName->setFont( Font::create( FONT_2 ));
-  _d->lbType = new Label( this, Rect( 90, 128, width() - 30, 128 + 20) );
-  _d->lbType->setFont( Font::create( FONT_1 ));
-
-  _d->lbThinks = new Label( this, Rect( 90, 148, width() - 30, height() - 140),
-                            "##citizen_thoughts_will_be_placed_here##" );
-
-  _d->lbThinks->setWordwrap( true );
-  _d->lbCitizenPic = new Label( this, Rect( 30, 112, 30 + 55, 112 + 80) );
-
-  GET_DWIDGET_FROM_UI( _d, lbCurrentAction )
-  GET_DWIDGET_FROM_UI( _d, lbBaseBuilding )
-  GET_DWIDGET_FROM_UI( _d, btnMove2base )
-  GET_DWIDGET_FROM_UI( _d, btnMove2dst )
-
-  CONNECT( _d->btnMove2base, onClicked(), _d.data(), Impl::moveCamera2base )
-  CONNECT( _d->btnMove2dst, onClicked(), _d.data(), Impl::moveCamera2dst )
-
-  if( !_d->walkers.empty() )
-   _setWalker( _d->walkers.front() );
+AboutPeople::AboutPeople( Widget* parent, const Rect& window, const Rect& blackArea )
+  : Infobox( parent, window, blackArea ), _d( new Impl)
+{
 }
 
 void AboutPeople::_setWalker( WalkerPtr wlk )
@@ -162,7 +141,7 @@ void AboutPeople::_setWalker( WalkerPtr wlk )
 
   std::string walkerType = WalkerHelper::getPrettyTypename( wlk->type() );
   _d->lbType->setText( _(walkerType) );
-  _d->lbCitizenPic->setBackgroundPicture( WalkerHelper::getBigPicture( wlk->type() ) );
+  _d->lbCitizenPic->setBackgroundPicture( WalkerHelper::bigPicture( wlk->type() ) );
 
   std::string thinks = wlk->thoughts( Walker::thCurrent );
   _d->lbThinks->setText( _( thinks ) );
@@ -175,6 +154,7 @@ void AboutPeople::_setWalker( WalkerPtr wlk )
   }
 
   _updateTitle();
+  _updateExtInfo();
   _updateNeighbors();
 
   _d->updateCurrentAction( wlk->thoughts( Walker::thAction ), wlk->places( Walker::plDestination ) );
@@ -187,9 +167,8 @@ void AboutPeople::_updateNeighbors()
     return;
 
   foreach( it, _d->screenshots )
-  {
     (*it)->deleteLater();
-  }
+
   _d->screenshots.clear();
 
   gfx::TilesArray tiles = _d->city->tilemap().getNeighbors( _d->object->pos(), gfx::Tilemap::AllNeighbors);
@@ -212,13 +191,43 @@ void AboutPeople::_updateNeighbors()
   }
 }
 
+void AboutPeople::_init( PlayerCityPtr city, const TilePos& pos, const std::string& model )
+{
+  _d->walkers = city->walkers( pos );
+  _d->city = city;
+
+  Widget::setupUI( model );
+
+  _d->lbName = new Label( this, Rect( 90, 108, width() - 30, 108 + 20) );
+  _d->lbName->setFont( Font::create( FONT_2 ));
+  _d->lbType = new Label( this, Rect( 90, 128, width() - 30, 128 + 20) );
+  _d->lbType->setFont( Font::create( FONT_1 ));
+
+  _d->lbThinks = new Label( this, Rect( 90, 148, width() - 30, height() - 140),
+                            "##citizen_thoughts_will_be_placed_here##" );
+
+  _d->lbThinks->setWordwrap( true );
+  _d->lbCitizenPic = new Label( this, Rect( 30, 112, 30 + 55, 112 + 80) );
+
+  GET_DWIDGET_FROM_UI( _d, lbCurrentAction )
+  GET_DWIDGET_FROM_UI( _d, lbBaseBuilding )
+  GET_DWIDGET_FROM_UI( _d, btnMove2base )
+  GET_DWIDGET_FROM_UI( _d, btnMove2dst )
+
+  CONNECT( _d->btnMove2base, onClicked(), _d.data(), Impl::moveCamera2base )
+  CONNECT( _d->btnMove2dst, onClicked(), _d.data(), Impl::moveCamera2dst )
+}
+
+void AboutPeople::_updateExtInfo(){}
+Label *AboutPeople::_lbThinks(){ return _d->lbThinks; }
+
 void AboutPeople::_updateTitle()
 {
   if( _d->object.isNull() )
     return;
 
   std::string title;
-  if( is_kind_of<EnemySoldier>( _d->object ) )
+  if( _d->object.is<EnemySoldier>() )
   {
     title = WalkerHelper::getNationName( _d->object->nation() );
     title.insert( title.size()-2, "_soldier" );
@@ -229,15 +238,15 @@ void AboutPeople::_updateTitle()
     {
     case walker::merchant:
     {
-      MerchantPtr m = ptr_cast<Merchant>( _d->object );
-      title = _("##trade_caravan_from##") + m->parentCity();
+      MerchantPtr m = _d->object.as<Merchant>();
+      title = _("##trade_caravan_from##") + std::string(" ") + m->parentCity();
     }
     break;
 
     case walker::seaMerchant:
     {
-      SeaMerchantPtr m = ptr_cast<SeaMerchant>( _d->object );
-      title = _("##trade_ship_from##") + m->parentCity();
+      SeaMerchantPtr m = _d->object.as<SeaMerchant>();
+      title = _("##trade_ship_from##") + std::string(" ") + m->parentCity();
     }
     break;
 
@@ -255,6 +264,18 @@ AboutPeople::~AboutPeople()
     _d->object->setFlag( Walker::showPath, false );
   }
 }
+
+void AboutPeople::draw(gfx::Engine& engine)
+{
+  if( _d->object.isNull() )
+  {
+    _setWalker( _d->walkers.valueOrEmpty( 0 ) );
+  }
+
+  Infobox::draw( engine );
+}
+
+const WalkerList& AboutPeople::_walkers() const { return _d->walkers; }
 
 void AboutPeople::Impl::updateCurrentAction(const std::string& action, TilePos pos)
 {

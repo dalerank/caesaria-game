@@ -29,6 +29,7 @@
 #include "city/areainfo.hpp"
 #include "city/desirability.hpp"
 #include "core/debug_queue.hpp"
+#include "param.hpp"
 #include "constants.hpp"
 
 class MetaData;
@@ -56,9 +57,15 @@ public:
   virtual bool isFlat() const;
   virtual void initTerrain( gfx::Tile& terrain ) = 0;
 
+  virtual std::string errorDesc() const;
+
   virtual bool build( const city::AreaInfo& info );
+  virtual bool canDestroy() const;
   virtual void destroy();  // handles the delete
   virtual gfx::TilesArray area() const;
+
+  virtual void burn();
+  virtual void collapse();
 
   virtual Point offset(const gfx::Tile &tile, const Point& subpos ) const;
   virtual void timeStep(const unsigned long time);  // perform one simulation step
@@ -78,6 +85,8 @@ public:
   virtual gfx::Renderer::PassQueue passQueue() const;
   virtual Desirability desirability() const;
 
+  virtual void setState( Param name, double value );
+
   std::string name();  // landoverlay debug name
   void setName( const std::string& name );
 
@@ -88,6 +97,7 @@ public:
   virtual void load( const VariantMap& stream );
 
   virtual void initialize( const MetaData& mdata );
+  virtual void reinit();
 
   virtual void debugLoadOld( int oldFormat, const VariantMap& stream );
 

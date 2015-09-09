@@ -69,11 +69,15 @@ protected:
   bool _blessingDone;
   bool _smallCurseDone;
   int _wrathPoints;
-  float _relation;
-  float _needRelation;
   int _effectPoints;
   gfx::Picture _pic;
   StringArray _moodDescr;
+
+  struct
+  {
+    float current;
+    float target;
+  } _relation;
 };
 
 }//end namespace rome

@@ -21,8 +21,8 @@
 #include "core/namedtype.hpp"
 #include "core/hash.hpp"
 
-#define REGISTER_PARAM(name,id) static const Param name = Param(id);
-#define REGISTER_PARAM_H(name) static const Param name = Param( (int)Hash(#name) );
+#define REGISTER_PARAM(name,id) namespace pr { static const Param name = Param(id); }
+#define REGISTER_PARAM_H(name) namespace pr{ static const Param name = Param( (int)Hash(#name) ); }
 
 namespace pr
 {
@@ -39,7 +39,7 @@ APPEND_NAMEDTYPE_ID(healthBuff,8)
 APPEND_NAMEDTYPE_ID(settleLock,9)
 APPEND_NAMEDTYPE_ID(lockTerrain,10)
 APPEND_NAMEDTYPE_ID(food,11)
-APPEND_NAMEDTYPE_ID(paramCount,12)
+APPEND_NAMEDTYPE_ID(paramCount,13)
 END_NAMEDTYPE(Type)
 }
 

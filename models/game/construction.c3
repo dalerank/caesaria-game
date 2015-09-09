@@ -22,8 +22,9 @@
 
   roadBlock : {
     cost : 10
-    c3logic : false
+    c3logic : true
     class : "road"
+    checkWalkersOnBuild : false
     image : [ "roadBlock", 1 ]
   }
 
@@ -38,6 +39,7 @@
     cost : 4,
     desirability : { base : 1, range : 0, step : 0 }
     class : "road"
+    checkWalkersOnBuild : false
     image : [ "land2a", 44 ]
   },
 
@@ -116,6 +118,7 @@
     cost : 10,
     desirability : { base : -3, range : 3, step : 1 }
     employers : 0
+    checkWalkersOnBuild : false
     class : "house"
   }
 
@@ -153,6 +156,7 @@
     desirability : { base : 4, range : 2,	step : -2 }
     employers : 0
     class : "road"
+    checkWalkersOnBuild : false
     image : [ "entertainment", 102 ]
     image.ext : {
       type_1 : { size:1, rc : "entertainment", start : 102, count : 6 }
@@ -165,6 +169,7 @@
     cost : 12,
     desirability : { base :3,	range : 3,	step : -1 }
     employers : 0
+    checkWalkersOnBuild : false
     class : "garden"
     image : [ "entertainment", 110 ]
     image.ext : {
@@ -459,6 +464,27 @@
     desirability : { base : 8, 	range : 4,	step : -2 }
     employers : 12
     class : "trade"
+
+    image.north : {
+      image : [ "transport", 5 ]
+      animation : { rc : "transport", start : 6, count : 10, delay : 4, offset : [ 107, 61 ], pingpong : true }
+    }
+
+    image.east : {
+      image : [ "transport", 17 ]
+      animation : { rc : "transport", start : 18, count : 10, delay : 4, offset : [ 62, 36 ], pingpong : true }
+    }
+
+    image.south : {
+      image : [ "transport", 29 ]
+      animation : { rc : "transport", start : 30, count : 10, delay : 4, offset : [ 35, 51 ], pingpong : true }
+    }
+
+    image.west : {
+      image : [ "transport", 41 ]
+      animation : { rc : "transport", start : 42, count : 10, delay : 4, offset : [ 48, 70 ], pingpong : true }
+    }
+
     sound : [ "dock", 1 ]
   }, 
 
@@ -577,9 +603,6 @@
     employers : 0,
     pretty : "Well",
     image : [ "utilitya", 1 ]
-    image.ext : {
-      type_1 : { size:1, rc : "well", start : 1, count : 4 }
-    }
     class : "water"
     sound : [ "well", 1 ]
   }, 

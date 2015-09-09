@@ -183,7 +183,7 @@ bool Hippodrome::canBuild( const city::AreaInfo& areaInfo ) const
     const_cast<Hippodrome*>( this )->_init();
   }
 
-  HippodromeList hpList = city::statistic::getObjects<Hippodrome>( areaInfo.city, object::hippodrome );
+  HippodromeList hpList = areaInfo.city->statistic().objects.find<Hippodrome>( object::hippodrome );
   if( !hpList.empty() )
   {
     const_cast<Hippodrome*>( this )->_setError( "##may_build_only_once_hippodrome##");
@@ -333,7 +333,7 @@ void Hippodrome::_init( bool onBuild )
 HippodromeSectionPtr Hippodrome::_addSection(HippodromeSection::Type type, TilePos offset )
 {
   HippodromeSectionPtr ret = new HippodromeSection( *this, _d->direction, type );
-  city::AreaInfo info = { _city(), pos() + offset, TilesArray() };
+  city::AreaInfo info( _city(), pos() + offset );
   ret->build( info );
   ret->drop();
 

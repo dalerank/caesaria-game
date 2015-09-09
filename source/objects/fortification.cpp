@@ -68,7 +68,7 @@ Fortification::~Fortification() {}
 bool Fortification::build( const city::AreaInfo& info )
 {
   // we can't build if already have wall here
-  WallPtr wall = ptr_cast<Wall>( info.city->getOverlay( info.pos ) );
+  WallPtr wall = info.city->getOverlay( info.pos ).as<Wall>();
   if( wall.isValid() )
   {
     return false;
@@ -82,12 +82,12 @@ bool Fortification::build( const city::AreaInfo& info )
   }
 
   Building::build( info );
-  FortificationList fortifications = city::statistic::getObjects<Fortification>( info.city, object::fortification );
+  FortificationList fortifications = info.city->statistic().objects.find<Fortification>( object::fortification );
 
-  foreach( frt, fortifications ) { (*frt)->updatePicture( info.city ); }
+  for( auto fort : fortifications ) { fort->updatePicture( info.city ); }
 
-  TowerList towers = city::statistic::getObjects<Tower>( info.city, object::tower );
-  foreach( tower, towers ) { (*tower)->resetPatroling(); }
+  TowerList towers = info.city->statistic().objects.find<Tower>( object::tower );
+  for( auto tower : towers ) { tower->resetPatroling(); }
 
   updatePicture( info.city );
 
@@ -144,7 +144,7 @@ const Picture& Fortification::picture(const city::AreaInfo& areaInfo) const
 
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
 
-  const TilePos tile_pos = (areaInfo.aroundTiles.empty()) ? pos() : areaInfo.pos;
+  const TilePos tile_pos = (areaInfo.tiles().empty()) ? pos() : areaInfo.pos;
 
   if (!tmap.isInside(tile_pos))
   {
@@ -188,17 +188,17 @@ const Picture& Fortification::picture(const city::AreaInfo& areaInfo) const
 
   // if we have a TMP array with wall, calculate them
   const TilePos& p = areaInfo.pos;
-  if( !areaInfo.aroundTiles.empty())
+  if( !areaInfo.tiles().empty())
   {
-    foreach( it, areaInfo.aroundTiles )
+    for( auto tile : areaInfo.tiles() )
     {
-      if( (*it)->overlay().isNull()
-          || (*it)->overlay()->type() != object::fortification )
+      if( tile->overlay().isNull()
+          || tile->overlay()->type() != object::fortification )
         continue;
 
-      TilePos rpos = (*it)->pos();
-      int i = (*it)->i();
-      int j = (*it)->j();
+      TilePos rpos = tile->pos();
+      int i = tile->i();
+      int j = tile->j();
 
       if( (p + TilePos( 0, 1 )) == rpos ) is_busy[north] = true;
       else if(i == p.i() && j == (p.j() - 1)) is_busy[south] = true;
@@ -457,7 +457,7 @@ int Fortification::getDirection() const {  return _d->direction;}
 
 void Fortification::updatePicture(PlayerCityPtr city)
 {
-  city::AreaInfo info = { city, pos(), TilesArray() };
+  city::AreaInfo info( city, pos() );
   setPicture( picture( info) );
 }
 

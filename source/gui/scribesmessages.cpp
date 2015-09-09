@@ -36,6 +36,7 @@
 #include "event_messagebox.hpp"
 #include "core/gettext.hpp"
 #include "gui/label.hpp"
+#include "events/playsound.hpp"
 #include "widget_helper.hpp"
 
 using namespace gfx;
@@ -93,7 +94,7 @@ protected:
 
     item.resetPicture( frameRect.size() );
 
-    item.draw( util::date2str( time, true ), font, Point( 35, 0 ) );
+    item.draw( utils::date2str( time, true ), font, Point( 35, 0 ) );
     item.draw( item.text(), font, Point( width() / 2, 0 ) );
   }
 
@@ -114,9 +115,9 @@ protected:
         int index = itemAt( event.mouse.pos() );
         if( index >= 0 )
         {
-          ListBoxItem& itemUnderMouse = item( index );
+          //ListBoxItem& itemUnderMouse = item((unsigned int) index);
 
-          bool opened = itemUnderMouse.data( literals::opened );
+          //bool opened = itemUnderMouse.data( literals::opened );
 
           //std::string text = opened ? "" : _("##scribemessages_unread##");
           //setTooltipText( text );
@@ -166,6 +167,9 @@ ScribesMessages::ScribesMessages( Widget* p, PlayerCityPtr city )
   CONNECT( _d->lbxMessages, onRemoveMessage, this, ScribesMessages::_removeMessage );
   CONNECT( _d->btnExit, onClicked(), this, ScribesMessages::deleteLater );
   CONNECT( _d->btnHelp, onClicked(), this, ScribesMessages::_showHelp );
+
+  events::GameEventPtr e = events::PlaySound::create( "extm_scribes", 1, 100, audio::effects );
+  e->dispatch();
 
   if( _d->lbxMessages ) _d->lbxMessages->setFocus();
   setModal();

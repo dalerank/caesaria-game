@@ -32,26 +32,25 @@ namespace city
 
 Economy::Economy() : econ::Treasury()
 {
-  int k=0;
 }
 
 Economy::~Economy() {}
 
 void Economy::payWages(PlayerCityPtr city)
 {
-  int wages = statistic::getMonthlyWorkersWages( city );
+  int wages = city->statistic().workers.monthlyWages();
 
   if( haveMoneyForAction( wages ) )
   {
-    HouseList houses = statistic::getHouses( city );
+    HouseList houses = city->statistic().houses.find();
 
-    float salary = statistic::getMonthlyOneWorkerWages( city );
+    float salary = city->statistic().workers.monthlyOneWorkerWages();
     float wages = 0;
-    foreach( it, houses )
+    for( auto house : houses )
     {
-      int workers = (*it)->hired();
+      int workers = house->hired();
       float house_wages = salary * workers;
-      (*it)->appendMoney( house_wages );
+      house->appendMoney( house_wages );
       wages += house_wages;
     }
     resolveIssue( econ::Issue( econ::Issue::workersWages, ceil( -wages ) ) );
@@ -66,11 +65,11 @@ void Economy::collectTaxes(PlayerCityPtr city)
 {
   float lastMonthTax = 0;
 
-  ForumList forums = statistic::getObjects<Forum>( city, object::forum );
-  foreach( forum, forums ) { lastMonthTax += (*forum)->collectTaxes(); }
+  ForumList forums = city->statistic().objects.find<Forum>( object::forum );
+  for( auto forum : forums ) { lastMonthTax += forum->collectTaxes(); }
 
-  SenateList senates = statistic::getObjects<Senate>( city, object::senate );
-  foreach( senate, senates ) { lastMonthTax += (*senate)->collectTaxes(); }
+  SenateList senates = city->statistic().objects.find<Senate>( object::senate );
+  for( auto senate : senates ) { lastMonthTax += senate->collectTaxes(); }
 
   resolveIssue( econ::Issue( econ::Issue::taxIncome, lastMonthTax ) );
 }

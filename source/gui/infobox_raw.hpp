@@ -33,6 +33,7 @@ public:
   virtual void _showHelp();
 
 private:
+  void _showAdvInfo();
   object::Type _type;
 };
 

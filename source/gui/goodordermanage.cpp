@@ -22,13 +22,15 @@
 #include "good/helper.hpp"
 #include "label.hpp"
 #include "objects/factory.hpp"
-#include "city/helper.hpp"
 #include "gfx/engine.hpp"
 #include "widget_helper.hpp"
 #include "core/logger.hpp"
 #include "core/utils.hpp"
 #include "core/event.hpp"
+#include "city/statistic.hpp"
 #include "widgetescapecloser.hpp"
+#include "stretch_layout.hpp"
+#include "multilinebutton.hpp"
 
 using namespace gfx;
 using namespace city;
@@ -121,7 +123,7 @@ public:
   Label* lbIndustryInfo;
   Picture icon;
   GoodOrderManageWindow::GoodMode gmode;
-  PushButton* btnStackingState;
+  MultilineButton* btnStackingState;
 
 signals public:
   Signal0<> onOrderChangedSignal;
@@ -229,13 +231,12 @@ void GoodOrderManageWindow::changeTradeState()
 
 bool GoodOrderManageWindow::isIndustryEnabled()
 {
-  city::Helper helper( _d->city );
   //if any factory work in city, that industry work too
   bool anyFactoryWork = false;
-  FactoryList factories = helper.findProducers<Factory>( _d->type );
-  foreach( factory, factories )
+  FactoryList factories = _d->city->statistic().objects.producers<Factory>( _d->type );
+  for( auto factory : factories )
   {
-    anyFactoryWork |= (*factory)->isActive();
+    anyFactoryWork |= factory->isActive();
   }
 
   return factories.empty() ? true : anyFactoryWork;
@@ -243,12 +244,11 @@ bool GoodOrderManageWindow::isIndustryEnabled()
 
 void GoodOrderManageWindow::updateIndustryState()
 {
-  city::Helper helper( _d->city );
   int workFactoryCount=0, idleFactoryCount=0;
-  FactoryList factories = helper.findProducers<Factory>( _d->type );
-  foreach( factory, factories )
+  FactoryList factories = _d->city->statistic().objects.producers<Factory>( _d->type );
+  for( auto factory : factories )
   {
-    ( (*factory)->standIdle() ? idleFactoryCount : workFactoryCount ) += 1;
+    ( factory->standIdle() ? idleFactoryCount : workFactoryCount ) += 1;
   }
 
   //bool industryActive = _d->city->tradeOptions().isVendor( _d->type );
@@ -273,12 +273,10 @@ void GoodOrderManageWindow::updateIndustryState()
 
 void GoodOrderManageWindow::toggleIndustryEnable()
 {
-  city::Helper helper( _d->city );
-
   bool industryEnabled = isIndustryEnabled();
   //up or down all factory for this industry
-  FactoryList factories = helper.findProducers<Factory>( _d->type );
-  foreach( factory, factories ) { (*factory)->setActive( !industryEnabled ); }
+  FactoryList factories = _d->city->statistic().objects.producers<Factory>( _d->type );
+  for( auto factory : factories ) { factory->setActive( !industryEnabled ); }
 
   updateIndustryState();
   emit _d->onOrderChangedSignal();
@@ -296,17 +294,20 @@ void GoodOrderManageWindow::toggleStackingGoods()
 void GoodOrderManageWindow::updateStackingState()
 {
   bool isStacking = _d->city->tradeOptions().isStacking( _d->type );
-  std::string text;
+  StringArray text;
   if( isStacking )
   {
-    text = utils::format( 0xff, "%s %s", _("##stacking_resource##"), _("##click_here_that_use_it##") );
+    text << _("##stacking_resource##");
+    text << _("##click_here_that_use_it##");
   }
   else
   {
-    text = utils::format( 0xff, "%s %s", _("##use_and_trade_resource##"), _("##click_here_that_stacking##") );
+    text << _("##use_and_trade_resource##");
+    text << _("##click_here_that_stacking##");
   }
 
   _d->btnStackingState->setText( text );
+  _d->btnStackingState->setLineFont( 1, Font::create( FONT_0 ) );
 }
 
 Signal0<>& GoodOrderManageWindow::onOrderChanged() { return _d->onOrderChangedSignal; }

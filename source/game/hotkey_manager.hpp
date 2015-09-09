@@ -28,7 +28,7 @@ namespace game
 
 class HotkeyManager : public StaticSingleton<HotkeyManager>
 {
-  friend class StaticSingleton;
+  SET_STATICSINGLETON_FRIEND_FOR(HotkeyManager)
 public:
   void load( vfs::Path file );
   void execute( int keyCode );

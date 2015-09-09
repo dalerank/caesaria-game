@@ -339,7 +339,7 @@ bool LowBridge::canDestroy() const
 {
   foreach( subtile, _d->subtiles )
   {
-    WalkerList walkers = city::statistic::getWalkers<Walker>( _city(), walker::any, pos() + (*subtile)->pos() );
+    WalkerList walkers = _city()->statistic().walkers.find<Walker>( walker::any, pos() + (*subtile)->pos() );
     if( !walkers.empty() )
     {
       _d->error = "##cant_demolish_bridge_with_people##";
@@ -389,8 +389,9 @@ void LowBridge::load(const VariantMap& stream)
   Construction::load( stream );
 
   VariantList vl_tinfo = stream.get( "terraininfo" ).toList();
-  for( unsigned int i=0; i < vl_tinfo.size(); i++ )
-  {
+  int lenth = math::min( vl_tinfo.size(), _d->subtiles.size() );
+  for( int i=0; i < lenth; i++ )
+  {    
     _d->subtiles[ i ]->_imgId = vl_tinfo.get( i ).toInt();
   }
 }
@@ -398,10 +399,8 @@ void LowBridge::load(const VariantMap& stream)
 void LowBridge::hide()
 {
   setState( pr::destroyable, 1);
-  foreach( it, _d->subtiles )
-  {
-    (*it)->hide();
-  }
+  for( auto tile : _d->subtiles )
+    tile->hide();
 }
 
 LowBridgeSubTile::LowBridgeSubTile(const TilePos &pos, int index)
@@ -429,7 +428,7 @@ bool LowBridgeSubTile::build(const city::AreaInfo &info)
   Construction::build( info );
   _fgPictures().clear();
   _pos = info.pos;
-  const MetaData& md = MetaDataHolder::getData( type() );
+  const MetaData& md = MetaDataHolder::find( type() );
   Point sbOffset = md.getOption( "subtileOffset" );
   _rpicture.load( ResourceGroup::transport, _index );
   _rpicture.addOffset( sbOffset );

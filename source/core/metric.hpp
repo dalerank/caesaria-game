@@ -18,6 +18,8 @@
 #ifndef __CAESARIA_METRIC_H_INCLUDED__
 #define __CAESARIA_METRIC_H_INCLUDED__
 
+#include "core/singleton.hpp"
+
 namespace metric
 {
 
@@ -60,52 +62,20 @@ private:
   float _value;
 };
 
-class Measure
+class Measure : public StaticSingleton<Measure>
 {
+  SET_STATICSINGLETON_FRIEND_FOR(Measure)
 public:
   typedef enum { native=0, metric, roman, count } Mode;
 
-  static const char* measureType()
-  {
-    switch( instance()._mode )
-    {
-    case native: return "##quantity##";
-    case metric: return "##kilogram##";
-    case roman:  return "##modius##";
-    default: return "unknown";
-    }
-  }
-
-  static const char* measureShort()
-  {
-    switch( instance()._mode )
-    {
-    case native: return "##qty##";
-    case metric: return "##kg##";
-    case roman:  return "##md##";
-    default: return "unknown";
-    }
-  }
+  static const char* measureType();
+  static const char* measureShort();
 
   static void setMode( Mode mode ) { instance()._mode = mode; }
-  static int convQty( int qty )
-  {
-    switch( instance()._mode )
-    {
-    case native: return qty;
-    case metric: return qty / 2;
-    case roman: return qty / 7;
-    default: return qty;
-    }
-  }
-
-  static Measure& instance()
-  {
-    static Measure inst;
-    return inst;
-  }
+  static int convQty( int qty );
 
   static Mode mode() { return instance()._mode; }
+  static bool isRoman() { return instance()._mode == roman; }
 
 private:
   Measure() : _mode( native ) {}

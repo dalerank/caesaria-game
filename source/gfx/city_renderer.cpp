@@ -48,8 +48,11 @@
 #include "layers/crime.hpp"
 #include "layers/layerdestroy.hpp"
 #include "layers/layertroubles.hpp"
-#include "layers/layerindigene.hpp"
+#include "layers/aborigens.hpp"
 #include "layers/layereducation.hpp"
+#include "layers/unemployed.hpp"
+#include "layers/sentiment.hpp"
+#include "layers/market_access.hpp"
 #include "walker/walker.hpp"
 #include "objects/aqueduct.hpp"
 #include "tilemap_camera.hpp"
@@ -120,6 +123,8 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   addLayer( Health::create( _d->camera, city, citylayer::baths ));
   addLayer( Religion::create( _d->camera, city ) );
   addLayer( Damage::create( _d->camera, city ) );
+  addLayer( Sentiment::create( _d->camera, city ) );
+  addLayer( Unemployed::create( _d->camera, city ) );
   addLayer( citylayer::Desirability::create( _d->camera, city ) );
   addLayer( Entertainment::create( _d->camera, city, citylayer::entertainment ) );
   addLayer( Entertainment::create( _d->camera, city, citylayer::theater ) );
@@ -136,14 +141,18 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   addLayer( Education::create( _d->camera, city, citylayer::academy ) );
   addLayer( Troubles::create( _d->camera, city, citylayer::risks ) );
   addLayer( Troubles::create( _d->camera, city, citylayer::troubles ) );
-  addLayer( citylayer::Indigene::create( _d->camera, city ) );
+  addLayer( Aborigens::create( _d->camera, city ) );
+  addLayer( MarketAccess::create( _d->camera, city ) );
 
   DrawOptions& dopts = DrawOptions::instance();
   dopts.setFlag( DrawOptions::borderMoving, engine->isFullscreen() );
   dopts.setFlag( DrawOptions::windowActive, true );
   dopts.setFlag( DrawOptions::mayChangeLayer, true );
   dopts.setFlag( DrawOptions::oldGraphics, oldGraphic );
+  dopts.setFlag( DrawOptions::showBuildings, true );
+  dopts.setFlag( DrawOptions::showTrees, true );
   dopts.setFlag( DrawOptions::mmbMoving, SETTINGS_VALUE( mmb_moving ) );
+  dopts.setFlag( DrawOptions::overdrawOnBuild, false );
 
   _d->setLayer( citylayer::simple );
 }
@@ -152,10 +161,9 @@ void CityRenderer::Impl::resetWalkersAfterTurn()
 {
   const WalkerList& walkers = city->walkers();
 
-  foreach( it, walkers )
+  for( auto wlk : walkers )
   {
-    WalkerPtr w = *it;
-    w->setPos( w->tile().epos() );
+    wlk->setPos( wlk->tile().epos() );
   }
 }
 
@@ -178,11 +186,11 @@ void CityRenderer::Impl::setLayer(int type)
   }
 
   LayerPtr newLayer;
-  foreach( it, layers )
+  for( auto layer : layers )
   {
-    if( (*it)->type() == type )
+    if( layer->type() == type )
     {
-      newLayer = *it;
+      newLayer = layer;
       break;
     }
   }
@@ -280,10 +288,8 @@ void CityRenderer::animate(unsigned int time)
 {
   const TilesArray& visibleTiles = _d->camera.tiles();
 
-  foreach( i, visibleTiles )
-  {
-    (*i)->animate( time );
-  }
+  for( auto&& tile : visibleTiles )
+    tile->animate( time );
 }
 
 void CityRenderer::rotateRight()
@@ -312,10 +318,10 @@ void CityRenderer::setLayer(int layertype)
 
 LayerPtr CityRenderer::getLayer(int type) const
 {
-  foreach( it, _d->layers)
+  for( auto layer : _d->layers)
   {
-    if( (*it)->type() == type )
-      return *it;
+    if( layer->type() == type )
+      return layer;
   }
 
   return LayerPtr();

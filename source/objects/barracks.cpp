@@ -132,14 +132,14 @@ void Barracks::save(VariantMap& stream) const
 {
   TrainingBuilding::save( stream );
 
-  stream[ "store" ] = _d->store.save();
-  VARIANT_SAVE_ANY_D( stream, _d, notNeedSoldiers );
+  VARIANT_SAVE_CLASS_D( stream, _d, store )
+  VARIANT_SAVE_ANY_D( stream, _d, notNeedSoldiers )
 }
 
 void Barracks::load(const VariantMap& stream)
 {
   TrainingBuilding::load( stream );
 
-  _d->store.load( stream.get( "store" ).toMap() );
-  VARIANT_LOAD_ANY_D( _d, notNeedSoldiers, stream );
+  VARIANT_LOAD_CLASS_D( _d, store, stream )
+  VARIANT_LOAD_ANY_D( _d, notNeedSoldiers, stream )
 }

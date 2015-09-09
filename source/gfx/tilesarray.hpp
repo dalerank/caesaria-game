@@ -37,6 +37,7 @@ public:
   };
 
   bool contain( const TilePos& tilePos ) const;
+  Tile* find( const TilePos& tilePos ) const;
 
   TilesArray() {}
 
@@ -54,12 +55,14 @@ public:
   TilesArray& append( Tile* a );
 
   TilesArray walkables( bool alllands=false ) const;
+  TilesArray select( Tile::Type flag ) const;
+  TilesArray select( Tile::Param param ) const;
 
   TilesArray terrains() const;
 
   TilesArray waters() const;
 
-  TilesArray& remove(const TilePos &pos );
+  TilesArray& remove(const TilePos& pos );
   TilePosArray locations() const;
 
   OverlayList overlays() const;

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_CITYSERVICE_FESTIVAL_H_INCLUDED__
 #define __CAESARIA_CITYSERVICE_FESTIVAL_H_INCLUDED__
@@ -21,23 +21,18 @@
 #include "cityservice.hpp"
 #include "religion/romedivinity.hpp"
 
-namespace config
-{
-
-namespace festival
-{
-  struct Info
-  {
-    DateTime date;
-    religion::RomeDivinityType divinity;
-    int size;
-  };
-}
-
-}
-
 namespace city
 {
+
+struct FestivalInfo
+{
+  DateTime date;
+  religion::RomeDivinityType divinity;
+  int size;
+
+  VariantList save() const;
+  void load( const VariantList& stream );
+};
 
 PREDEFINE_CLASS_SMARTPOINTER(Festival)
 
@@ -58,6 +53,7 @@ public:
   virtual void load(const VariantMap& stream );  
 
 private:
+  void _doFestival();
   Festival( PlayerCityPtr city );
 
   class Impl;

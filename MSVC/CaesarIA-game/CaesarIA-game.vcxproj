@@ -98,7 +98,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\$(Platform)\$(Configuration)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\caesaria-test\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Platform)\$(Configuration)\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">caesaria</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">caesaria</TargetName>
@@ -158,7 +158,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <AdditionalOptions> %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>..\..\dep\SDL2\include;..\..\dep\SDL2_mixer\include;..\..\dep\zlib;..\..\dep\libpng;..\..\dep;..\..\source;..\..\updater;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../dep/bzip2;../../dep/lzma;../../steam;../../dep/ttf;..\..\dep\sdl2mini\include;..\..\dep\mixer;..\..\dep\zlib;..\..\dep\libpng;..\..\dep;../../dep/aes;../../dep/smk;..\..\source;..\..\updater;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <CompileAs>CompileAsCpp</CompileAs>
@@ -189,32 +189,17 @@
     <PostBuildEvent>
       <Message>
       </Message>
-      <Command>xcopy /Y ..\..\bin\$(Platform)\$(Configuration)\caesaria.exe ..\..\game\$(Platform)\$(Configuration)\
-xcopy /Y ..\..\dep\FreeSerif.ttf ..\..\game\$(Platform)\$(Configuration)\resources\
-xcopy /Y ..\..\dep\ds-greece.ttf ..\..\game\$(Platform)\$(Configuration)\resources\
-xcopy /E /I /Y ..\..\models\game  ..\..\game\$(Platform)\$(Configuration)\resources\
-xcopy /E /I /Y ..\..\models\gui  ..\..\game\$(Platform)\$(Configuration)\resources\gui\
-xcopy /E /I /Y ..\..\models\missions  ..\..\game\$(Platform)\$(Configuration)\resources\missions\
-xcopy /E /I /Y ..\..\models\tutorial  ..\..\game\$(Platform)\$(Configuration)\resources\tutorial\
-xcopy /E /I /Y ..\..\locale  ..\..\game\$(Platform)\$(Configuration)\resources\locale\
-xcopy /E /I /Y ..\..\models\shaders  ..\..\game\$(Platform)\$(Configuration)\resources\shaders\
-xcopy /E /I /Y ..\..\dep\fonts\ds-greece.ttf  ..\..\game\$(Platform)\$(Configuration)\resources\
-xcopy /E /I /Y ..\..\dep\fonts\FreeSerif.ttf  ..\..\game\$(Platform)\$(Configuration)\resources\
-xcopy /Y ..\..\dep\SDL2\lib\x86\SDL2.dll  ..\..\game\$(Platform)\$(Configuration)\
-xcopy /Y ..\..\dep\SDL2\lib\x86\SDL2.dll  ..\..\game\$(Platform)\$(Configuration)\
-xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libFLAC-8.dll ..\..\game\$(Platform)\$(Configuration)\
-xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libmikmod-2.dll ..\..\game\$(Platform)\$(Configuration)\
-xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libmodplug-1.dll ..\..\game\$(Platform)\$(Configuration)\
-xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libogg-0.dll ..\..\game\$(Platform)\$(Configuration)\
-xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libvorbis-0.dll ..\..\game\$(Platform)\$(Configuration)\
-xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\libvorbisfile-3.dll ..\..\game\$(Platform)\$(Configuration)\
-xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\SDL2_mixer.dll ..\..\game\$(Platform)\$(Configuration)\
-xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\smpeg2.dll ..\..\game\$(Platform)\$(Configuration)\
+      <Command>xcopy /E /I /Y ..\..\models\game  ..\..\..\caesaria-test\resources\
+xcopy /E /I /Y ..\..\models\gui  ..\..\..\caesaria-test\resources\gui\
+xcopy /E /I /Y ..\..\models\missions  ..\..\..\caesaria-test\resources\missions\
+xcopy /E /I /Y ..\..\models\tutorial  ..\..\..\caesaria-test\resources\tutorial\
+xcopy /E /I /Y ..\..\locale  ..\..\..\caesaria-test\resources\locale\
+xcopy /E /I /Y ..\..\models\shaders  ..\..\..\caesaria-test\resources\shaders\
 </Command>
     </PostBuildEvent>
     <Link>
       <AdditionalOptions> /machine:X86 /debug %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;winmm.lib;imm32.lib;version.lib;msimg32.lib;..\..\dep\SDL2\lib\x86\SDL2main.lib;..\..\dep\SDL2\lib\x86\SDL2.lib;..\..\dep\SDL2_mixer\lib\x86\SDL2_mixer.lib;..\..\bin\$(Platform)\$(Configuration)\zlib.lib;..\..\bin\$(Platform)\$(Configuration)\aes.lib;..\..\bin\$(Platform)\$(Configuration)\\bzip2.lib;..\..\bin\$(Platform)\$(Configuration)\lzma.lib;..\..\bin\$(Platform)\$(Configuration)\smk.lib;..\..\bin\$(Platform)\$(Configuration)\ttf.lib;..\..\bin\$(Platform)\$(Configuration)\libpng.lib;..\..\bin\$(Platform)\$(Configuration)\freetype.lib;opengl32.lib</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;winmm.lib;imm32.lib;version.lib;msimg32.lib;..\..\dep\sdl2mini\lib\sdl2mini.lib;..\..\dep\mixer\lib\mixer.lib;../../dep/smk/lib/smk.lib;../../dep/aes/lib/aes.lib;../../dep/freetype/lib/freetype.lib;../../dep/libpng/lib/libpng.lib;../../dep/ttf/lib/ttf.lib;../../dep/zlib/lib/zlib.lib;../../dep/lzma/lib/lzma.lib;../../dep/bzip2/lib/bzip2.lib;../../steam/helper/steam_helper.lib;opengl32.lib;dbghelp.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ImportLibrary>..\..\bin\CaesarIA-game\$(Platform)\$(Configuration)\caesaria.lib</ImportLibrary>
@@ -713,9 +698,11 @@ xcopy /Y ..\..\dep\SDL2_mixer\lib\x86\smpeg2.dll ..\..-test_x64
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\source\**\*.cpp" />
+    <ClCompile Include="..\..\steam\steam.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\source\**\*.hpp" />
+    <ClInclude Include="..\..\steam\steam.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

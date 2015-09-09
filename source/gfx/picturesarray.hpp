@@ -33,6 +33,7 @@ public:
 
   Pictures& operator << ( const Picture& pic );
   Pictures& append( const Pictures& pics );
+  Pictures& append( const std::string& rc, int index );
 
   void append( const gfx::Picture& pic, const Point& offset );
   const Picture& valueOrEmpty(unsigned int index ) const;

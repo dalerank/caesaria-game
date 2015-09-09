@@ -36,7 +36,7 @@ enum { defaultNumber=10 };
 
 namespace crime
 {
-enum { maxLevel=10, protestorCost=15, rioterCost=20,
+enum { maxLevel=10, protestorCost=15, muggerCost=20, rioterCost=30,
        level4protestor = 50, level4mugger = 70,
        defaultValue = 75, level4rioter = 90, maxValue=100 };
 }
@@ -49,7 +49,7 @@ typedef enum { none=0, small, middle, big, count } Type;
 
 namespace health
 {
-enum { levelNumber = 12, bad = 40, terrible = 20, maxValue=100 };
+enum { levelNumber = 12, bad = 40, terrible = 20, maxValue=100, unknownState=0xff };
 }
 
 namespace workless
