@@ -321,6 +321,19 @@ unsigned int Statistic::_Workers::available() const
   return workersNumber;
 }
 
+int Statistic::_Objects::count(object::Type type) const
+{
+  int ret;
+  const OverlayList& buildings = _parent.rcity.overlays();
+  for( auto bld : buildings )
+  {
+    if( bld.isValid() && bld->type() == type )
+      ret++;
+  }
+
+  return ret;
+}
+
 OverlayList Statistic::_Objects::neighbors(OverlayPtr overlay, bool v) const
 {
   if( overlay.isNull() )

@@ -132,9 +132,9 @@ void Info::afterRender(Engine& engine)
 {
   Point camOffset = _camera()->offset();
 
-  foreach( it, _d->pictures )
+  for( auto& pic : _d->pictures )
   {
-    engine.draw( it->pic, camOffset + it->pos );
+    engine.draw( pic.pic, camOffset + pic.pos );
   }
 
   Layer::afterRender( engine );

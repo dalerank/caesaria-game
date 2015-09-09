@@ -91,6 +91,8 @@ public:
     template< class T >
     SmartList< T > find( object::Type type ) const;
 
+    int count( object::Type type ) const;
+
     template< class T >
     SmartList< T > find( object::TypeSet types ) const;
 
