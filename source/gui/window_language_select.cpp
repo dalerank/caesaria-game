@@ -72,8 +72,10 @@ LanguageSelect::LanguageSelect(gui::Widget* parent, vfs::Path model, const std::
   lbx->setSelected( currentIndex );
 
   CONNECT( lbx, onItemSelected(), this, LanguageSelect::_changeLanguage )
-  CONNECT( btn, onClicked(),      this, LanguageSelect::_apply          )
+      CONNECT( btn, onClicked(),      this, LanguageSelect::_apply          )
 }
+
+LanguageSelect::~LanguageSelect() {}
 
 void LanguageSelect::setDefaultFont(const std::string& fontname)
 {
