@@ -185,7 +185,7 @@ void Disorder::Impl::weekUpdate( unsigned int time, PlayerCityPtr rcity )
   if( houses.size() > 0 )
     crime.level.current /= houses.size();
 
-  if( criminalizedHouse.size() > protestor_n )
+  if( (int)criminalizedHouse.size() > protestor_n )
   {
     HousePtr house = criminalizedHouse.random();
     int hCrimeLevel = house->getServiceValue( Service::crime );

@@ -76,8 +76,7 @@ void Temple::_changeAnimationState(bool value)
 
   if( !value )
   {
-    int index=0;
-    foreach( it, _td->fires )
+    for( int index=0; index < _td->fires.size(); index++ )
       _fgPicture( 1 + index++ ) = gfx::Picture();
   }
 }
@@ -107,12 +106,10 @@ void Temple::_updateAnimation(const unsigned long time)
   if( _animationRef().isRunning() )
   {
     _td->fireAnimation.update( time );
-    int index = 0;
-    foreach( it, _td->fires )
+    for( int index=0; index < _td->fires.size(); index++ )
     {
       _fgPicture( 1 + index ) = _td->fireAnimation.currentFrame();
-      _fgPicture( 1 + index ).setOffset( *it );
-      index++;
+      _fgPicture( 1 + index ).setOffset( _td->fires[index] );
     }
   }
 }

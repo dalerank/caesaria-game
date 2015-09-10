@@ -44,9 +44,9 @@ bool TimberLogger::canBuild( const city::AreaInfo& areaInfo ) const
 
    Tilemap& tilemap = areaInfo.city->tilemap();
    TilesArray area = tilemap.getRectangle( areaInfo.pos + TilePos( -1, -1 ), size() + Size( 2 ), Tilemap::checkCorners );
-   foreach( tile, area )
+   for( auto tile : area )
    {
-     near_forest |= (*tile)->getFlag( Tile::tlTree );
+     near_forest |= tile->getFlag( Tile::tlTree );
    }
 
    const_cast< TimberLogger* >( this )->_setError( near_forest ? "" : _("##lumber_mill_need_forest_near##"));
