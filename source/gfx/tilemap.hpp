@@ -44,6 +44,8 @@ public:
   Tile& at( const TilePos& ij );
 
   OverlayPtr overlay( const TilePos& ij );
+  template<class T>
+  SmartPtr<T> overlay(const TilePos &ij) { return ptr_cast<T>( overlay( ij ) ); }
   
   const Tile& at( const int i, const int j ) const;
   const Tile& at( const TilePos& ij ) const;

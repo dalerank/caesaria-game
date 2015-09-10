@@ -76,12 +76,6 @@ int HouseSpecification::minEntertainmentLevel() const{  return _d->minEntertainm
 int HouseSpecification::minEducationLevel() const{  return _d->minEducationLevel;}
 int HouseSpecification::minHealthLevel() const {  return _d->minHealthLevel; }
 int HouseSpecification::minReligionLevel() const{  return _d->minReligionLevel;}
-//
-// int HouseLevelSpec::getMinWaterLevel()
-// {
-//    return _minWaterLevel;
-// }
-//
 int HouseSpecification::minFoodLevel() const{  return _d->minFoodLevel;}
 
 bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing,
@@ -92,11 +86,9 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing,
   std::string reason;
   std::string defaultStr;
   object::Type defaultNeedType;
-//  TilePos defaultPos;
 
   std::string& ref = retMissing ? *retMissing : defaultStr;
   object::Type& needBuilding = retBtype ? *retBtype : defaultNeedType;
-//  TilePos& rPos = retPos ? *retPos : defaultPos;
 
   needBuilding = object::unknown;
 
