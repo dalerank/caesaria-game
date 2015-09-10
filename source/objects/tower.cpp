@@ -208,9 +208,9 @@ TilesArray Tower::enterArea() const
 
   for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); )
   {
-    auto wall = (*it)->overlay<Fortification>();
+    /*auto wall = (*it)->overlay<Fortification>();
     if( wall.isValid() && wall->isTowerEnter() ) { ++it; }
-    else { it = tiles.erase( it ); }
+    else { it = tiles.erase( it ); }*/
   }
 
   return tiles;
@@ -228,7 +228,7 @@ PathwayList Tower::getWays(TilePos start, FortificationList dest)
   PathwayList ret;
   for( auto wall : dest )
   {
-    Pathway tmp = PathwayHelper::create( start, wall->epos(), makeDelegate( _d.data(), &Impl::mayPatroling ) );
+    Pathway tmp = PathwayHelper::create( start, wall->pos(), makeDelegate( _d.data(), &Impl::mayPatroling ) );
     if( tmp.isValid() )
     {    
       ret.push_back( PathwayPtr( new Pathway( tmp ) ) );

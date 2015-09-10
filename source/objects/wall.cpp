@@ -44,11 +44,11 @@ bool Wall::build( const city::AreaInfo& info )
   Tile& terrain = tilemap.at( info.pos );
 
   // we can't build if already have wall here
-  WallPtr wall = terrain.overlay<Wall>();
+  /*WallPtr wall = terrain.overlay<Wall>();
   if( wall.isValid() )
   {
     return false;
-  }
+  }*/
 
   Construction::build( info );
 
@@ -72,11 +72,11 @@ void Wall::destroy()
 
     for( auto tile : area )
     {
-      WallPtr wall = tile->overlay<Wall>();
+      /*WallPtr wall = tile->overlay<Wall>();
       if( wall.isValid()  )
       {
         wall->updatePicture( _city() );
-      }
+      }*/
     }
   }
 }

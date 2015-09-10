@@ -38,10 +38,10 @@ bool Theater::build( const city::AreaInfo& info )
 {
   ServiceBuilding::build( info );
 
-  int actors_n = info.city->statistic().objects.count<ActorColony>();
+  /*int actors_n = info.city->statistic().objects.count<ActorColony>();
 
   if( !actors_n )
-    _setError( "##need_actor_colony##" );
+    _setError( "##need_actor_colony##" );*/
 
   return true;
 }

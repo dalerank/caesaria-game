@@ -59,10 +59,10 @@ NFile::NFile()
 
 NFile::NFile( FSEntityPtr file )
 {
-  #ifdef _DEBUG
-    setDebugName("NFile");
-  #endif
-    _entity = file;
+#ifdef _DEBUG
+  setDebugName("NFile");
+#endif
+  _entity = file;
 }
 
 NFile::NFile(const NFile& nfile)

@@ -56,9 +56,9 @@ void River::initTerrain(Tile& terrain)
 
 RiverList River::neighbors() const
 {
-  return _city()->tilemap()
+  return RiverList();/* _city()->tilemap()
                     .getNeighbors(pos(), Tilemap::FourNeighbors);
-                    .overlays<River>();
+                    .overlays<River>(); */
 }
 
 Picture River::computePicture()

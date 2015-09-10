@@ -21,6 +21,7 @@
 #include "gfx/IMG_savepng.h"
 #include "core/logger.hpp"
 #include "gfx/loader_png.hpp"
+#include "core/debug_timer.hpp"
 #include "gfx/sdl_engine.hpp"
 #include "core/stringarray.hpp"
 #include "core/utils.hpp"
@@ -274,7 +275,7 @@ public:
     textures.push_back( tx );
 		int count = 0;
 		
-    for(auto&& imageName : imageNameSet)
+    for( auto&& imageName : imageNameSet )
 		{
       bool added = false;
 			
@@ -331,6 +332,8 @@ int main(int argc, char* argv[])
 
   Logger::warning( "GraficEngine: set size" );  
   engine->setScreenSize( Size( 800, 600 ) );
+  engine->setFlag( gfx::Engine::debugInfo, true );
+  engine->setFlag( gfx::Engine::batching, false );
   engine->init();
 
   if(argc < 5)
@@ -363,23 +366,27 @@ int main(int argc, char* argv[])
 
   bool gray = true;
   gfx::Picture bg( engine->screenSize(), 0, true );
-  for( int x=0; x < bg.width(); x+= 5 )
+  int offset = 10;
+  for( int x=0; x < bg.width(); x+= offset )
   {
-    for( int y=0; y < bg.height(); y+= 5 )
+    for( int y=0; y < bg.height(); y+= offset )
     {
-      bg.fill( gray ? DefaultColors::darkSlateGray : DefaultColors::dimGrey, Rect( x, y, x+5, y+5 ) );
+      bg.fill( gray ? DefaultColors::darkSlateGray : DefaultColors::lightSlateGray, Rect( x, y, x+offset, y+offset ) );
+      gray = !gray;
     }
+    gray = !gray;
   }
   bg.update();
 
   while(running)
   {
-    engine->startRenderFrame();
-
+    static unsigned int lastTimeUpdate = DebugTimer::ticks();
     while(SDL_PollEvent(&event) != 0)
     {
       if(event.type == SDL_QUIT) running = false;
     }
+
+    engine->startRenderFrame();
 
     engine->draw( bg, Point() );
     for( Texture* tx : atlasGenerator.textures )
@@ -387,12 +394,17 @@ int main(int argc, char* argv[])
       for( auto pair : tx->rectangleMap )
       {
         Texture::Node* node = pair.second;
-
+        node->image.save( "1.png" );
         engine->draw( node->image, node->rect.lefttop() );
       }
     }
-
-    engine->delay( 10 );
     engine->endRenderFrame();
+
+    int delayTicks = DebugTimer::ticks() - lastTimeUpdate;
+    if( delayTicks < 33 )
+    {
+      engine->delay( std::max<int>( 33 - delayTicks, 0 ) );
+    }
+    lastTimeUpdate = DebugTimer::ticks();
   }
 }

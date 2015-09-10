@@ -314,7 +314,7 @@ void Warehouse::_resolveDeliverMode()
   for( auto gType : good::all() )
   {
     good::Orders::Order order = _d->goodStore.getOrder( gType );
-    int goodFreeQty = math::clamp<int>( _d->goodStore.freeQty( *gType ), 0, Room::basicCapacity );
+    int goodFreeQty = math::clamp<int>( _d->goodStore.freeQty( gType ), 0, Room::basicCapacity );
 
     if( good::Orders::deliver == order && goodFreeQty > 0 )
     {
