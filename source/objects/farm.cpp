@@ -40,6 +40,7 @@
 #include "city/states.hpp"
 
 using namespace gfx;
+using namespace events;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::fig_farm,       FarmFruit    )
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::wheat_farm,     FarmWheat    )
@@ -197,7 +198,7 @@ void Farm::destroy()
     OverlayPtr ov = _city()->getOverlay( pos );
     if( ov.isValid() && ov->type() == object::farmtile )
     {
-      events::GameEventPtr e = events::ClearTile::create( ov->pos() );
+      GameEventPtr e = ClearTile::create( ov->pos() );
       e->dispatch();
     }
   }
@@ -245,9 +246,9 @@ void Farm::computePictures()
       amount = 0;  // for next subTiles
     }
 
-    SmartPtr<FarmTile> ft = _city()->getOverlay( _d->sublocs[n] ).as<FarmTile>();
-    if( ft.isValid() )
-      ft->setPicture( FarmTile::computePicture( produceGoodType(), percentTile ));
+    auto farmTile = _city()->getOverlay( _d->sublocs[n] ).as<FarmTile>();
+    if( farmTile.isValid() )
+      farmTile->setPicture( FarmTile::computePicture( produceGoodType(), percentTile ));
   }
 }
 
@@ -345,8 +346,8 @@ FarmWheat::FarmWheat() : Farm(good::wheat, object::wheat_farm)
 
 std::string FarmWheat::troubleDesc() const
 {
-  LocustList lc = _city()->statistic().walkers.find<Locust>( walker::locust, pos() );
-  if( !lc.empty() )
+  int locust_n = _city()->statistic().walkers.count( walker::locust, pos() );
+  if( locust_n > 0 )
   {
     return "##trouble_farm_was_blighted_by_locust##";
   }
@@ -396,11 +397,11 @@ OverlayPtr Farm::_buildFarmTile(const city::AreaInfo &info, const TilePos &ppos)
 
 void Farm::_buildFarmTiles(const city::AreaInfo& info, const TilePos& ppos )
 {
-  foreach( it, _d->sublocs )
+  for( auto&& location : _d->sublocs )
   {
     city::AreaInfo tInfo = info;
-    tInfo.pos += *it;
+    tInfo.pos += location;
     _buildFarmTile( tInfo, ppos );
-    *it = tInfo.pos;
+    location = tInfo.pos;
   }
 }

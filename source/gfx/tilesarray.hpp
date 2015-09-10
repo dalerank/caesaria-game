@@ -73,6 +73,9 @@ public:
   void pop_front();
 
   Tile* random() const;
+
+  template< class T >
+  SmartList<T> overlays() { return overlays().select<T>(); }
 };
 
 }//end namespace

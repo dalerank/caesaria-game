@@ -169,15 +169,9 @@ bool Gatehouse::build( const city::AreaInfo& info )
   _update( info );
   _d->updateSprite();
 
-  TilesArea tiles( info.city->tilemap(), info.pos, size() );
-  foreach( it, tiles )
-  {
-    RoadPtr road = ptr_cast<Road>( (*it)->overlay() );
-    if( road.isValid() )
-    {
-      road->setState( pr::lockTerrain, 1 );
-    }
-  }
+  auto roads = TilesArea( info.city->tilemap(), info.pos, size() ).overlays<Road>();
+  for( auto road : roads )
+    road->setState( pr::lockTerrain, 1 );
 
   return Building::build( info );
 }

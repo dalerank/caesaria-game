@@ -408,7 +408,7 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
 
   {
     TilesArea tiles( tilemap, curPos - TilePos( 10, 0), curPos - TilePos(1, 0) );
-    for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
+    for( auto it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
 
       if( __isFlatCoastTile( **it ) )
