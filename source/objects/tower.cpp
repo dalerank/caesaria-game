@@ -208,9 +208,9 @@ TilesArray Tower::enterArea() const
 
   for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); )
   {
-    /*auto wall = (*it)->overlay<Fortification>();
+    auto wall = (*it)->overlay<Fortification>();
     if( wall.isValid() && wall->isTowerEnter() ) { ++it; }
-    else { it = tiles.erase( it ); }*/
+    else { it = tiles.erase( it ); }
   }
 
   return tiles;

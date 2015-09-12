@@ -226,7 +226,8 @@ void Warehouse::save( VariantMap& stream ) const
   VARIANT_SAVE_ANY_D( stream, _d, isTradeCenter)
 
   VariantList vm_tiles;
-  foreach( room, _d->rooms ) { vm_tiles.push_back( room->save() ); }
+  for( auto& room : _d->rooms )
+    vm_tiles.push_back( room.save() );
 
   stream[ literals::tiles ] = vm_tiles;
 }
@@ -318,12 +319,12 @@ void Warehouse::_resolveDeliverMode()
 
     if( good::Orders::deliver == order && goodFreeQty > 0 )
     {
-      auto cartSupplier = CartSupplier::create( _city() );
-      cartSupplier->send2city( BuildingPtr( this ), gType, goodFreeQty );
+      auto supplier = CartSupplier::create( _city() );
+      supplier->send2city( BuildingPtr( this ), gType, goodFreeQty );
 
-      if( !cartSupplier->isDeleted() )
+      if( !supplier->isDeleted() )
       {
-        addWalker( cartSupplier.object() );
+        addWalker( supplier.object() );
         return;
       }
     }
@@ -344,15 +345,16 @@ void Warehouse::_resolveDevastationMode()
       if( goodQty > 0 )
       {
         good::Stock stock( goodType, goodQty, goodQty);
-        CartPusherPtr cart = CartPusher::create( _city() );
-        cart->stock().setCapacity( maxCapacity );
-        cart->send2city( BuildingPtr( this ), stock );
+        auto pusher = CartPusher::create( _city() );
+        pusher->stock().setCapacity( maxCapacity );
+        pusher->send2city( BuildingPtr( this ), stock );
 
-        if( !cart->isDeleted() )
+        if( !pusher->isDeleted() )
         {
           good::Stock tmpStock( goodType, goodQty );;
           _d->goodStore.retrieve( tmpStock, goodQty );
-          addWalker( cart.object() );
+          addWalker( pusher.object() );
+          break;
         }
       }
     }   
