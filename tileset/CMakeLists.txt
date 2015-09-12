@@ -30,6 +30,8 @@ set( TILESET_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/gfx/sdl_engine.cpp"
       "${BASE_SOURCE_DIR}/gfx/IMG_savepng.cpp"
       "${BASE_SOURCE_DIR}/gfx/loader_png.cpp"
+      "${BASE_SOURCE_DIR}/gfx/loader_bmp.cpp"
+      "${BASE_SOURCE_DIR}/gfx/loader.cpp"
       "${BASE_SOURCE_DIR}/vfs/path.cpp"
       "${BASE_SOURCE_DIR}/vfs/entries.cpp"
       "${BASE_SOURCE_DIR}/vfs/filesystem.cpp"

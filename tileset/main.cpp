@@ -20,7 +20,7 @@
 #include "vfs/file.hpp"
 #include "gfx/IMG_savepng.h"
 #include "core/logger.hpp"
-#include "gfx/loader_png.hpp"
+#include "gfx/loader.hpp"
 #include "core/debug_timer.hpp"
 #include "gfx/sdl_engine.hpp"
 #include "core/stringarray.hpp"
@@ -171,7 +171,7 @@ public:
     }
 
     rectangleMap[name] = node;
-    rimage.draw( node->image, node->rect.lefttop(), rimage.size() );
+    image.draw( rimage, node->rect.lefttop(), rimage.size() );
 
     return true;
   }
@@ -246,14 +246,13 @@ public:
     Logger::warning( "Found %d images", imageFiles.size() );
 
     std::set<ImageName> imageNameSet;
-    PictureLoaderPng pngLoader;
 
     for( const std::string& filename : imageFiles)
 		{
 			try
 			{
         vfs::NFile file = vfs::NFile::open( filename );
-        gfx::Picture image = pngLoader.load( file, true );
+        gfx::Picture image = PictureLoader::instance().load( file, true );
 
         if(image.width() > width || image.height() > height)
 				{
@@ -331,7 +330,7 @@ int main(int argc, char* argv[])
   gfx::Engine* engine = new gfx::SdlEngine();
 
   Logger::warning( "GraficEngine: set size" );  
-  engine->setScreenSize( Size( 800, 600 ) );
+  engine->setScreenSize( Size( 800, 800 ) );
   engine->setFlag( gfx::Engine::debugInfo, true );
   engine->setFlag( gfx::Engine::batching, false );
   engine->init();
@@ -365,39 +364,38 @@ int main(int argc, char* argv[])
   SDL_Event event;
 
   bool gray = true;
+  bool ygray = true;
   gfx::Picture bg( engine->screenSize(), 0, true );
   int offset = 10;
   for( int x=0; x < bg.width(); x+= offset )
   {
+    ygray = !ygray;
+    gray = ygray;
     for( int y=0; y < bg.height(); y+= offset )
     {
       bg.fill( gray ? DefaultColors::darkSlateGray : DefaultColors::lightSlateGray, Rect( x, y, x+offset, y+offset ) );
       gray = !gray;
-    }
-    gray = !gray;
+    }    
   }
   bg.update();
 
+  int index = 0;
   while(running)
   {
-    static unsigned int lastTimeUpdate = DebugTimer::ticks();
+    static unsigned int lastTimeUpdate = DebugTimer::ticks();    
     while(SDL_PollEvent(&event) != 0)
     {
       if(event.type == SDL_QUIT) running = false;
+      if(event.type == SDL_KEYUP) index++;
+      if(event.type == SDL_KEYDOWN) index--;
     }
 
+    index = math::clamp<int>( index, 0, atlasGenerator.textures.size() );
     engine->startRenderFrame();
 
     engine->draw( bg, Point() );
-    for( Texture* tx : atlasGenerator.textures )
-    {
-      for( auto pair : tx->rectangleMap )
-      {
-        Texture::Node* node = pair.second;
-        node->image.save( "1.png" );
-        engine->draw( node->image, node->rect.lefttop() );
-      }
-    }
+    gfx::Picture pic = atlasGenerator.textures[ index ]->image;
+    engine->draw( pic, Rect( Point(), pic.size()), Rect( Point(), Size(800) ) );
     engine->endRenderFrame();
 
     int delayTicks = DebugTimer::ticks() - lastTimeUpdate;
