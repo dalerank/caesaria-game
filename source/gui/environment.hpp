@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_GUIENVIRONMENT_INCLUDE_
 #define __CAESARIA_GUIENVIRONMENT_INCLUDE_
@@ -67,7 +67,6 @@ private:
   virtual void draw( gfx::Engine& painter );
   virtual bool isHovered() const;
 
-  void _drawTooltip( unsigned int time );
   void _updateHovered( const Point& mousePos);
   Widget* next(bool reverse, bool group);
 

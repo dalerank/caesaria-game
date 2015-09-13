@@ -22,6 +22,7 @@
 #include "picturesarray.hpp"
 #include "core/size.hpp"
 #include "core/rect_array.hpp"
+#include "core/position_array.hpp"
 #include "batch.hpp"
 #include <map>
 
@@ -53,6 +54,7 @@ public:
   bool isFullscreen() const;
   void setFullscreen(bool enabled );
 
+  virtual void setTitle( const std::string& title );
   virtual void setFlag( int flag, int value );
   virtual int getFlag( int flag ) const;
 
@@ -75,6 +77,7 @@ public:
   virtual void draw(const Batch& batch, Rect* clipRect=0 ) = 0;
 
   virtual void drawLine( const NColor& color, const Point& p1, const Point& p2 ) = 0;
+  virtual void drawLines( const NColor& color, const PointsArray& points ) = 0;
 
   virtual void setColorMask( int rmask, int gmask, int bmask, int amask ) = 0;
   virtual void resetColorMask() = 0;

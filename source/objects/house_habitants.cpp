@@ -87,33 +87,33 @@ void Habitants::load(const VariantMap& stream)
   CitizenGroup::load( stream.get( "groups").toList() );
 }
 
-void Habitants::makeGeneration(House& h)
+void Habitants::makeGeneration(House& house)
 {
   CitizenGroup nextGeneration = *this;
   nextGeneration.makeOld();
 
-  unsigned int houseHealth = h.state( pr::health );
+  unsigned int healthValue = house.state( pr::health );
 
   nextGeneration[ CitizenGroup::longliver ] = 0; //death-health function from oldest habitants count
-  unsigned int peoples2remove = math::random( nextGeneration.aged_n() * ( 100 - houseHealth ) / 100 );
+  unsigned int peoples2remove = math::random( nextGeneration.aged_n() * ( 100 - healthValue ) / 100 );
   nextGeneration.retrieve( CitizenGroup::aged, peoples2remove+1 );
 
-  unsigned int students = nextGeneration.count( 10, 19 );
-  unsigned int youngs = nextGeneration.count( 20, 29);
-  unsigned int matures = nextGeneration.count( 30, 39 );
-  unsigned int olders = nextGeneration.count( 40, 49 );
-  unsigned int newborns = students * math::random( 3 ) / 100 +    //at 3% of student add newborn
-                          youngs   * math::random( 16) / 100 +    //at 16% of young people add newborn
-                          matures  * math::random( 9 ) / 100 +    //at 9% of matures add newborn
-                          olders   * math::random( 2 ) / 100;   //at 2% of aged peoples add newborn
+  unsigned int students_n = nextGeneration.count( 10, 19 );
+  unsigned int youngs_n = nextGeneration.count( 20, 29);
+  unsigned int matures_n = nextGeneration.count( 30, 39 );
+  unsigned int olders_n = nextGeneration.count( 40, 49 );
+  unsigned int newborns_n = students_n * math::random( 3 ) / 100 +    //at 3% of student add newborn
+                            youngs_n   * math::random( 16) / 100 +    //at 16% of young people add newborn
+                            matures_n  * math::random( 9 ) / 100 +    //at 9% of matures add newborn
+                            olders_n   * math::random( 2 ) / 100;   //at 2% of aged peoples add newborn
 
-  newborns = newborns * houseHealth / 100 ;  //house health add compensation for newborn citizens
+  newborns_n = newborns_n * healthValue / 100 ;  //house health add compensation for newborn citizens
 
-  unsigned int vacantRoom = h.capacity() - nextGeneration.count();
-  newborns = math::clamp( newborns, 0u, vacantRoom );
+  unsigned int vacantRoom = house.capacity() - nextGeneration.count();
+  newborns_n = math::clamp( newborns_n, 0u, vacantRoom );
 
-  nextGeneration[ CitizenGroup::newborn ] = newborns; //birth+health function from mature habitants count
-  update( h, nextGeneration );
+  nextGeneration[ CitizenGroup::newborn ] = newborns_n; //birth+health function from mature habitants count
+  update( house, nextGeneration );
 }
 
 
@@ -123,5 +123,5 @@ int RecruterService::max() const { return _habitants.workers.max; }
 
 void RecruterService::setMax(int)
 {
-  Logger::warning( "WARNING !!! RecruterService::setMax blocked. Max value drive by Habitants class." );
+  Logger::warning( "!!!Warning: RecruterService::setMax blocked. Max value drive by Habitants class." );
 }

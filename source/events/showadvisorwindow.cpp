@@ -76,8 +76,8 @@ void ShowAdvisorWindow::_exec(Game& game, unsigned int)
     return;
   }
 
-  SenateList senates = city::statistic::getObjects<Senate>( game.city(), object::senate );
-  if( senates.empty() )
+  bool haveSenate = game.city()->statistic().objects.count( object::senate ) > 0;
+  if( !haveSenate )
   {
     GameEventPtr e = WarningMessage::create( "##build_senate_for_advisors##", 1 );
     e->dispatch();

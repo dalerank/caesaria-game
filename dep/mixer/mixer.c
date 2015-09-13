@@ -48,6 +48,7 @@
 #define WAVE        0x45564157      /* "WAVE" */
 #define FORM        0x4d524f46      /* "FORM" */
 #define OGGS        0x5367674f      /* "OggS" */
+#define SGGS        0x53676753      /* "SggS" */
 #define CREA        0x61657243      /* "Crea" */
 #define FLAC        0x43614C66      /* "fLaC" */
 
@@ -614,6 +615,7 @@ Mix_Chunk *Mix_LoadWAV_RW(SDL_RWops *src, int freesrc)
             break;
 #ifdef OGG_MUSIC
         case OGGS:
+        case SGGS:
             loaded = Mix_LoadOGG_RW(src, freesrc, &wavespec,
                     (Uint8 **)&chunk->abuf, &chunk->alen);
             break;

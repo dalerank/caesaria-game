@@ -94,7 +94,7 @@ void Protestor::timeStep(const unsigned long time)
   {
   case Impl::searchHouse:
   {
-    HouseList houses = city::statistic::getHouses( _city() );
+    HouseList houses = _city()->statistic().houses.find();
     for( HouseList::iterator it=houses.begin(); it != houses.end(); )
     {
       if( (*it)->spec().level() <= _d->houseLevel ) { it=houses.erase( it ); }
@@ -119,7 +119,7 @@ void Protestor::timeStep(const unsigned long time)
 
   case Impl::searchAnyBuilding:
   {
-    HouseList houses = city::statistic::getHouses( _city() );
+    HouseList houses = _city()->statistic().houses.find();
 
     Pathway pathway = _d->findHouse( _city(), houses, pos() );
     if( pathway.isValid() )
@@ -162,8 +162,7 @@ void Protestor::timeStep(const unsigned long time)
   {
     if( game::Date::isDayChanged() )
     {
-      HouseList constructions = city::statistic::getObjects<House>( _city(),
-                                                                    object::house,
+      HouseList constructions = _city()->statistic().objects.find<House>( object::house,
                                                                     pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
 
       if( constructions.empty() )
@@ -175,11 +174,11 @@ void Protestor::timeStep(const unsigned long time)
       else
       {
         HouseList houses = constructions.select<House>();
-        foreach( it, houses )
+        for( auto house : houses )
         {
-          if( (*it)->state( pr::happiness ) > 20 )
+          if( house->state( pr::happiness ) > 20 )
           {
-            (*it)->updateState( pr::happiness, -0.5 );
+            house->updateState( pr::happiness, -0.5 );
           }
           break;
         }

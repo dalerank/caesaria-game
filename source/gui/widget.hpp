@@ -59,13 +59,13 @@ public:
   List< T > findChildren( bool indepth=false )
   {
     List< T > ret;
-    foreach( it, children() )
+    for( auto child : children() )
     {
-      if( T elm = safety_cast< T >( *it ) )
+      if( T elm = safety_cast< T >( child ) )
           ret.push_back( elm );
 
       if( indepth )
-        ret.append( (*it)->findChildren<T>( indepth ) );
+        ret.append( child->findChildren<T>( indepth ) );
     }
 
     return ret;
@@ -196,7 +196,7 @@ public:
   //! If set to true, the focus will visit this element when using the tab key to cycle through elements.
   /** If this element is a tab group (see isTabGroup/setTabGroup) then
   ctrl+tab will be used instead. */
-  virtual void setTabStop(bool enable);
+  virtual void setTabstop(bool enable);
 
   //! Returns true if this element can be focused by navigating with the tab key
   virtual bool isTabStop() const;
@@ -204,7 +204,7 @@ public:
   //! Sets the priority of focus when using the tab key to navigate between a group of elements.
   /** See setTabGroup, isTabGroup and getTabGroup for information on tab groups.
   Elements with a lower number are focused first */
-  virtual void setTabOrder( int index );
+  virtual void setTaborder( int index );
 
   //! Returns the number in the tab order sequence
   virtual int tabOrder() const;

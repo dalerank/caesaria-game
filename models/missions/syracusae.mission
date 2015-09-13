@@ -636,6 +636,7 @@
       wheat_farm : true
       vegetable_farm : true
       olive_farm : true
+      roadBlock : true
     }
   }
 }

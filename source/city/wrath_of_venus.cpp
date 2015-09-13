@@ -18,7 +18,6 @@
 #include "wrath_of_venus.hpp"
 #include "game/game.hpp"
 #include "objects/construction.hpp"
-#include "helper.hpp"
 #include "city.hpp"
 #include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
@@ -62,14 +61,11 @@ void WrathOfVenus::timeStep( const unsigned int time)
 
     Logger::warning( "WrathOfVenus: execute service" );
 
-    HumanList citizens = statistic::getWalkers<Human>( _city() );
+    HumanList citizens = _city()->statistic().walkers.find<Human>();
+    citizens = citizens.random( _d->strong );
 
-    for( int i=0; i < _d->strong; i++ )
-    {
-      HumanPtr ptr = citizens.random();
-      citizens.remove( ptr );
-      ptr->die();
-    }
+    for( auto wlk : citizens )
+      wlk->die();
   }
 }
 

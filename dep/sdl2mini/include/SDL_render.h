@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -81,8 +81,8 @@ typedef struct SDL_RendererInfo
     Uint32 flags;               /**< Supported ::SDL_RendererFlags */
     Uint32 num_texture_formats; /**< The number of available texture formats */
     Uint32 texture_formats[16]; /**< The available texture formats */
-    int max_texture_width;      /**< The maximimum texture width */
-    int max_texture_height;     /**< The maximimum texture height */
+    int max_texture_width;      /**< The maximum texture width */
+    int max_texture_height;     /**< The maximum texture height */
 } SDL_RendererInfo;
 
 /**
@@ -136,7 +136,6 @@ struct SDL_Batch
     unsigned int size;
 };
 typedef struct SDL_Batch SDL_Batch;
-
 /* Function prototypes */
 
 /**
@@ -380,7 +379,7 @@ extern DECLSPEC int SDLCALL SDL_GetTextureBlendMode(SDL_Texture * texture,
  *  \param rect      A pointer to the rectangle of pixels to update, or NULL to
  *                   update the entire texture.
  *  \param pixels    The raw pixel data.
- *  \param pitch     The number of bytes between rows of pixel data.
+ *  \param pitch     The number of bytes in a row of pixel data, including padding between lines.
  *
  *  \return 0 on success, or -1 if the texture is not valid.
  *
@@ -389,6 +388,31 @@ extern DECLSPEC int SDLCALL SDL_GetTextureBlendMode(SDL_Texture * texture,
 extern DECLSPEC int SDLCALL SDL_UpdateTexture(SDL_Texture * texture,
                                               const SDL_Rect * rect,
                                               const void *pixels, int pitch);
+
+/**
+ *  \brief Update a rectangle within a planar YV12 or IYUV texture with new pixel data.
+ *
+ *  \param texture   The texture to update
+ *  \param rect      A pointer to the rectangle of pixels to update, or NULL to
+ *                   update the entire texture.
+ *  \param Yplane    The raw pixel data for the Y plane.
+ *  \param Ypitch    The number of bytes between rows of pixel data for the Y plane.
+ *  \param Uplane    The raw pixel data for the U plane.
+ *  \param Upitch    The number of bytes between rows of pixel data for the U plane.
+ *  \param Vplane    The raw pixel data for the V plane.
+ *  \param Vpitch    The number of bytes between rows of pixel data for the V plane.
+ *
+ *  \return 0 on success, or -1 if the texture is not valid.
+ *
+ *  \note You can use SDL_UpdateTexture() as long as your pixel data is
+ *        a contiguous block of Y and U/V planes in the proper order, but
+ *        this function is available if your pixel data is not contiguous.
+ */
+extern DECLSPEC int SDLCALL SDL_UpdateYUVTexture(SDL_Texture * texture,
+                                                 const SDL_Rect * rect,
+                                                 const Uint8 *Yplane, int Ypitch,
+                                                 const Uint8 *Uplane, int Upitch,
+                                                 const Uint8 *Vplane, int Vpitch);
 
 /**
  *  \brief Lock a portion of the texture for write-only pixel access.
@@ -536,6 +560,16 @@ extern DECLSPEC void SDLCALL SDL_RenderGetClipRect(SDL_Renderer * renderer,
                                                    SDL_Rect * rect);
 
 /**
+ *  \brief Get whether clipping is enabled on the given renderer.
+ *
+ *  \param renderer The renderer from which clip state should be queried.
+ *
+ *  \sa SDL_RenderGetClipRect()
+ */
+extern DECLSPEC SDL_bool SDLCALL SDL_RenderIsClipEnabled(SDL_Renderer * renderer);
+
+
+/**
  *  \brief Set the drawing scale for rendering on the current target.
  *
  *  \param renderer The renderer for which the drawing scale should be set.
@@ -580,7 +614,7 @@ extern DECLSPEC void SDLCALL SDL_RenderGetScale(SDL_Renderer * renderer,
  *
  *  \return 0 on success, or -1 on error
  */
-extern DECLSPEC int SDL_SetRenderDrawColor(SDL_Renderer * renderer,
+extern DECLSPEC int SDLCALL SDL_SetRenderDrawColor(SDL_Renderer * renderer,
                                            Uint8 r, Uint8 g, Uint8 b,
                                            Uint8 a);
 
@@ -596,7 +630,7 @@ extern DECLSPEC int SDL_SetRenderDrawColor(SDL_Renderer * renderer,
  *
  *  \return 0 on success, or -1 on error
  */
-extern DECLSPEC int SDL_GetRenderDrawColor(SDL_Renderer * renderer,
+extern DECLSPEC int SDLCALL SDL_GetRenderDrawColor(SDL_Renderer * renderer,
                                            Uint8 * r, Uint8 * g, Uint8 * b,
                                            Uint8 * a);
 
@@ -805,7 +839,7 @@ extern DECLSPEC int SDLCALL SDL_RenderBatch(SDL_Renderer * renderer,
  *  \param dstrect   A pointer to the destination rectangle, or NULL for the
  *                   entire rendering target.
  *  \param angle    An angle in degrees that indicates the rotation that will be applied to dstrect
- *  \param center   A pointer to a point indicating the point around which dstrect will be rotated (if NULL, rotation will be done aroud dstrect.w/2, dstrect.h/2)
+ *  \param center   A pointer to a point indicating the point around which dstrect will be rotated (if NULL, rotation will be done around dstrect.w/2, dstrect.h/2).
  *  \param flip     An SDL_RendererFlip value stating which flipping actions should be performed on the texture
  *
  *  \return 0 on success, or -1 on error

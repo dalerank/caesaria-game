@@ -78,7 +78,7 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
   _d->scrollBar->setNotClipped( false );
   _d->scrollBar->setSubElement(true);
   _d->scrollBar->setVisibleFilledArea( false );
-  _d->scrollBar->setTabStop(false);
+  _d->scrollBar->setTabstop(false);
   _d->scrollBar->setAlignment( align::lowerRight, align::lowerRight, align::upperLeft, align::lowerRight);
   _d->scrollBar->setVisible(false);
   _d->scrollBar->setValue(0);
@@ -86,8 +86,8 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
   setNotClipped(!clip);
 
   // this element can be tabbed to
-  setTabStop(true);
-  setTabOrder(-1);
+  setTabstop(true);
+  setTaborder(-1);
 
   updateAbsolutePosition();
 
@@ -132,7 +132,7 @@ void ListBox::_recalculateItemHeight( const Font& defaulFont, int h )
 ListBox::~ListBox() {}
 
 //! returns amount of list items
-unsigned int ListBox::itemCount() const {  return _d->items.size(); }
+unsigned int ListBox::itemsCount() const {  return _d->items.size(); }
 
 //! returns string of a list item. the may be a value from 0 to itemCount-1
 ListBoxItem& ListBox::item(unsigned int id)
@@ -920,10 +920,8 @@ void ListBox::fitText(const std::string& text)
 
 void ListBox::addItems(const StringArray& strings)
 {
-  foreach( it, strings )
+  for( auto line : strings )
   {
-    const std::string& line = *it;
-
     if( line.find( "\tc" ) != std::string::npos )
     {
       std::string nLine = utils::replace( line, "\tc", "" );

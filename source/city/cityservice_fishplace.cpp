@@ -25,6 +25,7 @@
 #include "walker/fish_place.hpp"
 #include "game/gamedate.hpp"
 #include "cityservice_factory.hpp"
+#include "core/common.hpp"
 #include "core/tilepos_array.hpp"
 
 namespace city
@@ -66,19 +67,15 @@ void Fishery::timeStep(const unsigned int time )
 
   if( _d->places.empty() )
   {
-    _d->places = city::statistic::getWalkers<FishPlace>( _city(), walker::fishPlace, TilePos(-1, -1) );
+    _d->places = _city()->statistic().walkers.find<FishPlace>( walker::fishPlace );
   }
 
   while( _d->places.size() < _d->maxFishPlace )
   {
     FishPlacePtr fishplace = FishPlace::create( _city() );
-    TilePos travelingPoint = _city()->borderInfo().boatExit;
-    if( !_d->locations.empty() )
-    {
-      travelingPoint = _d->locations.size() > 1
-                         ? _d->locations[ math::random( _d->locations.size() ) ]
-                         : _d->locations.front();
-    }
+    TilePos travelingPoint = _d->locations.empty()
+                               ? _city()->borderInfo().boatExit
+                               : _d->locations.random();
 
     fishplace->send2city( _city()->borderInfo().boatEntry, travelingPoint );
 
@@ -91,7 +88,7 @@ void Fishery::timeStep(const unsigned int time )
     _d->places.push_back( ptr_cast<FishPlace>( fishplace ) );
   }
 
-  utils::eraseDeletedElements( _d->places );
+  utils::eraseIfDeleted( _d->places );
 }
 
 bool Fishery::isDeleted() const { return _d->nFailed > 3; }
@@ -106,9 +103,9 @@ void Fishery::load(const VariantMap& stream)
   Srvc::load( stream );
 
   VariantMap locations = stream.get( "locations" ).toMap();
-  foreach( it, locations )
+  for( auto location : locations )
   {
-    addLocation( it->second.toTilePos() );
+    addLocation( location.second.toTilePos() );
   }
 }
 
@@ -118,9 +115,9 @@ VariantMap Fishery::save() const
 
   VariantMap locationsVm;
   int index = 0;
-  foreach( it, _d->locations )
+  for( auto location : _d->locations )
   {
-    locationsVm[ utils::format( 0xff, "fp_%d", index++ ) ] = *it;
+    locationsVm[ utils::format( 0xff, "fp_%d", index++ ) ] = location;
   }
 
   ret[ "locations" ] = locationsVm;

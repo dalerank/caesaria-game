@@ -328,7 +328,7 @@ static void TTF_SetFTError(const char *msg, FT_Error error)
     sprintf(buffer, "%s: %s", msg, err_msg);
     TTF_SetError(buffer);
 #else
-    TTF_SetError(msg);
+    TTF_SetError( "%s", msg);
 #endif /* USE_FREETYPE_ERRORS */
 }
 
@@ -549,7 +549,7 @@ TTF_Font* TTF_OpenFontIndex( const char *file, int ptsize, long index )
 {
     SDL_RWops *rw = SDL_RWFromFile(file, "rb");
     if ( rw == NULL ) {
-        TTF_SetError(SDL_GetError());
+        TTF_SetError( "%s", SDL_GetError());
         return NULL;
     }
     return TTF_OpenFontIndexRW(rw, 1, ptsize, index);

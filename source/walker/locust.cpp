@@ -17,11 +17,11 @@
 
 #include "locust.hpp"
 #include "core/variant_map.hpp"
-#include "city/helper.hpp"
 #include "core/gettext.hpp"
 #include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
+#include "city/city.hpp"
 #include "game/gamedate.hpp"
 #include "objects/farm.hpp"
 
@@ -77,7 +77,7 @@ void Locust::timeStep(const unsigned long time)
 
   if( game::Date::isWeekChanged() )
   {
-    FarmPtr farm = _city()->getOverlay( pos() ).as<Farm>();
+    FarmPtr farm = _map().overlay( pos() ).as<Farm>();
     if( farm.isValid() && farm->type() != object::meat_farm )
     {
       farm->updateProgress( -50 );

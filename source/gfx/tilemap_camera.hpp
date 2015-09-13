@@ -54,6 +54,7 @@ public:
   virtual void setCenter(TilePos pos, bool checkCorner);
   virtual const TilesArray& tiles() const;
   virtual const TilesArray& flatTiles() const;
+  virtual const TilesArray& groundTiles() const;
 
   int centerX() const;
   int centerZ() const;

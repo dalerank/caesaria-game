@@ -26,7 +26,6 @@
 #include "core/gettext.hpp"
 #include "objects/construction.hpp"
 #include "city/statistic.hpp"
-#include "core/foreach.hpp"
 #include "objects/house.hpp"
 #include "texturedbutton.hpp"
 #include "objects/constants.hpp"
@@ -40,14 +39,18 @@
 using namespace gfx;
 using namespace city;
 
-struct HealthDescription
+struct HealthcareInfo
 {
   object::Type type;
   std::string building;
   std::string people;
+  int buildingCount;
+  int buildingWork;
+  int peoplesServed;
+  int needService;
 };
 
-static HealthDescription healthDescrs[] = {
+static HealthcareInfo healthDescrs[] = {
   { object::baths, "##bath##", "##peoples##" },
   { object::barber, "##barber##", "##peoples##" },
   { object::hospital, "##hospital##", "##patients##" },
@@ -64,7 +67,7 @@ namespace gui
 namespace advisorwnd
 {
 
-static HealthDescription findInfo( const object::Type service )
+static HealthcareInfo findInfo( const object::Type service )
 {
   for( int index=0; healthDescrs[index].type != object::unknown; index++ )
   {
@@ -72,16 +75,8 @@ static HealthDescription findInfo( const object::Type service )
         return healthDescrs[index];
   }
 
-  return HealthDescription();
+  return HealthcareInfo();
 }
-
-struct HealthcareInfo
-{
-  int buildingCount;
-  int buildingWork;
-  int peoplesServed;
-  int needService;
-};
 
 class HealthInfoLabel : public Label
 {
@@ -100,7 +95,7 @@ public:
   {
     Label::_updateTexture( painter );
 
-    HealthDescription info = findInfo( _service );
+    HealthcareInfo info = findInfo( _service );
 
     Picture& texture = _textPicture();
     Font rfont = font();
@@ -184,20 +179,20 @@ HealthcareInfo Health::Impl::getInfo(PlayerCityPtr city, const object::Type obje
   ret.buildingCount = 0;
   ret.needService = 0;
 
-  HealthBuildingList srvBuildings = statistic::getObjects<HealthBuilding>( city, objectType );
-  foreach( b, srvBuildings )
+  HealthBuildingList srvBuildings = city->statistic().objects.find<HealthBuilding>( objectType );
+  for( auto b : srvBuildings )
   {
-    ret.buildingWork += (*b)->numberWorkers() > 0 ? 1 : 0;
-    ret.peoplesServed += (*b)->patientsNumber();
+    ret.buildingWork += b->numberWorkers() > 0 ? 1 : 0;
+    ret.peoplesServed += b->patientsNumber();
     ret.buildingCount++;
   }
 
-  HouseList houses = statistic::getHouses( city );
+  HouseList houses = city->statistic().houses.find();
   Service::Type serviceType = ServiceHelper::fromObject( objectType );
-  foreach( h, houses )
+  for( auto h : houses )
   {
-    if( (*h)->isHealthNeed( serviceType ) )
-    ret.needService += (*h)->habitants().count();
+    if( h->isHealthNeed( serviceType ) )
+    ret.needService += h->habitants().count();
   }
 
   return ret;
@@ -208,7 +203,7 @@ void Health::Impl::updateAdvice(PlayerCityPtr c)
   if( !lbAdvice )
     return;
 
-  HealthCarePtr hc = statistic::getService<HealthCare>( c );
+  HealthCarePtr hc = c->statistic().services.find<HealthCare>();
 
   StringArray outText;
 
@@ -227,15 +222,14 @@ void Health::Impl::updateAdvice(PlayerCityPtr c)
     }
     else
     {
-      HouseList houses =  city::statistic::getHouses( c );
+      HouseList houses = c->statistic().houses.find();
 
       unsigned int needBath = 0;
       unsigned int needBarbers = 0;
       unsigned int needDoctors = 0;
       unsigned int needHospital = 0;
-      foreach( it, houses )
+      for( auto house : houses )
       {
-        HousePtr house = *it;
         needBath += house->isHealthNeed( Service::baths ) ? 1 : 0;
         needDoctors += house->isHealthNeed( Service::doctor ) ? 1 : 0;
         needBarbers += house->isHealthNeed( Service::barber ) ? 1 : 0;

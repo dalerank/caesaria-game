@@ -40,12 +40,17 @@ class DrawOptions : public FlagHolder<int>
 public:
   typedef enum { drawGrid=0x1, shadowOverlay=0x2, showPath=0x4, windowActive=0x8, showRoads=0x10,
                  showObjectArea=0x20, showWalkableTiles=0x40, showLockedTiles=0x80, showFlatTiles=0x100,
-                 borderMoving=0x200, mayChangeLayer=0x400, oldGraphics=0x800, mmbMoving=0x1000
-               } Flags;
+                 borderMoving=0x200, mayChangeLayer=0x400, oldGraphics=0x800, mmbMoving=0x1000,
+                 showBuildings=0x2000, showTrees=0x4000, overdrawOnBuild=0x8000
+               } Flag;
   static DrawOptions& instance();
+  static bool getFlag( Flag flag );
+  static void takeFlag( Flag flag, int value );
+  static DrawOptions::Flag findFlag( const std::string& name );
 
 private:
-  DrawOptions() {}
+  DrawOptions();
+  EnumsHelper<int> _helper;
 };
 
 class Layer : public ReferenceCounted
@@ -71,6 +76,8 @@ public:
                         const std::string& resourceGroup, int tileId );
 
   virtual void drawLands( gfx::Engine& engine, gfx::Camera* camera );
+  virtual void drawLandTile(gfx::Engine& engine, gfx::Tile &tile, const Point& camOffset );
+  virtual void drawFlatTile( gfx::Engine& engine, gfx::Tile& tile, const Point& camOffset );
   virtual void drawWalkers( gfx::Engine& engine, const gfx::Tile& tile, const Point& camOffset );
   virtual void init( Point cursor );
   virtual void beforeRender( gfx::Engine& engine);

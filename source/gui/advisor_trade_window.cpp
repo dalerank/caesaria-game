@@ -28,7 +28,6 @@
 #include "core/gettext.hpp"
 #include "groupbox.hpp"
 #include "objects/factory.hpp"
-#include "city/helper.hpp"
 #include "city/trade_options.hpp"
 #include "objects/warehouse.hpp"
 #include "good/store.hpp"
@@ -76,26 +75,26 @@ void Trade::Impl::updateGoodsInfo()
 
   Widget::Widgets children = gbInfo->children();
 
-  foreach( child, children ) { (*child)->deleteLater(); }
+  for( auto&& child : children ) { child->deleteLater(); }
 
   Point startDraw( 0, 5 );
   Size btnSize( gbInfo->width(), 20 );
   trade::Options& copt = city->tradeOptions();
   int indexOffset=0;
-  foreach( gtype, good::all() )
+  for( auto gtype : good::all() )
   {
-    trade::Order tradeState = copt.getOrder( *gtype );
-    if( tradeState == trade::disabled || *gtype == good::none)
+    trade::Order tradeState = copt.getOrder( gtype );
+    if( tradeState == trade::disabled || gtype == good::none)
     {
       continue;
     }
 
-    bool workState = getWorkState( *gtype );
-    int exportQty = copt.tradeLimit( trade::exporting, *gtype ).ivalue();
-    int importQty = copt.tradeLimit( trade::importing, *gtype ).ivalue();
+    bool workState = getWorkState( gtype );
+    int exportQty = copt.tradeLimit( trade::exporting, gtype ).ivalue();
+    int importQty = copt.tradeLimit( trade::importing, gtype ).ivalue();
     
     TradeGoodInfo* btn = new TradeGoodInfo( gbInfo, Rect( startDraw + Point( 0, btnSize.height()) * indexOffset, btnSize ),
-                                            *gtype, allgoods[ *gtype ], workState, tradeState, exportQty, importQty );
+                                            gtype, allgoods[ gtype ], workState, tradeState, exportQty, importQty );
     indexOffset++;
     CONNECT( btn, onClickedA(), this, Impl::showGoodOrderManageWindow );
   } 
@@ -103,12 +102,10 @@ void Trade::Impl::updateGoodsInfo()
 
 bool Trade::Impl::getWorkState(good::Product gtype )
 {
-  city::Helper helper( city );
-
   bool industryActive = false;
-  FactoryList producers = helper.findProducers<Factory>( gtype );
+  FactoryList producers = city->statistic().objects.producers<Factory>( gtype );
 
-  foreach( it, producers ) { industryActive |= (*it)->isActive(); }
+  for( auto factory : producers ) { industryActive |= factory->isActive(); }
 
   return producers.empty() ? true : industryActive;
 }
@@ -117,8 +114,8 @@ void Trade::Impl::showGoodOrderManageWindow(good::Product type )
 {
   int gmode = GoodOrderManageWindow::gmUnknown;
   Widget* p = gbInfo->parent();
-  gmode |= (statistic::canImport( city, type ) ? GoodOrderManageWindow::gmImport : 0);
-  gmode |= (statistic::canProduce( city, type ) ? GoodOrderManageWindow::gmProduce : 0);
+  gmode |= (city->statistic().goods.canImport( type ) ? GoodOrderManageWindow::gmImport : 0);
+  gmode |= (city->statistic().goods.canProduce( type ) ? GoodOrderManageWindow::gmProduce : 0);
 
   GoodOrderManageWindow* wnd = new GoodOrderManageWindow( p, Rect( 0, 0, p->width() - 80, p->height() - 100 ),
                                                           city, type, allgoods[ type ], (GoodOrderManageWindow::GoodMode)gmode );
@@ -140,7 +137,7 @@ Trade::Trade(PlayerCityPtr city, Widget* parent, int id )
   setupUI( ":/gui/tradeadv.gui" );
 
   _d->city = city;
-  _d->allgoods = statistic::getProductMap( city, false );
+  _d->allgoods = city->statistic().goods.details( false );
 
   GET_DWIDGET_FROM_UI( _d, btnEmpireMap  )
   GET_DWIDGET_FROM_UI( _d, btnPrices )
@@ -170,6 +167,6 @@ void Trade::_showHelp()
   DictionaryWindow::show( this, "trade_advisor" );
 }
 
-}
+}//end namespace advisorwnd
 
 }//end namespace gui

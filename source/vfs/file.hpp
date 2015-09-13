@@ -27,6 +27,7 @@ class NFile : public Entity
 {
 public:	
   NFile( FSEntityPtr file );
+  NFile( const NFile& nfile );
 
   NFile();
 
@@ -41,8 +42,8 @@ public:
 
   ByteArray readAll();
 
-  int write(const void* buffer, unsigned int sizeToWrite);
-
+  int write( const void* buffer, unsigned int sizeToWrite );
+  int write( const std::string& str );
   int write( const ByteArray& bArray );
 
   //! changes position in file, returns true if successful
@@ -64,6 +65,8 @@ public:
 
   void flush();
 
+  virtual size_t lastModify() const;
+
   NFile& operator=(const NFile& other );
 
   static unsigned long size( vfs::Path filename );
@@ -71,7 +74,7 @@ public:
   static bool remove( Path filename );
   static bool rename( Path oldpath, Path newpath );
 
-private:
+private:  
   FSEntityPtr _entity;
 };
 

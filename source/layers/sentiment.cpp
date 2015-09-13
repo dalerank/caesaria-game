@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-20155 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "sentiment.hpp"
 #include "objects/constants.hpp"
@@ -66,7 +66,7 @@ void Sentiment::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( overlay->type() == object::house )
     {
-      HousePtr house = overlay.as<House>();
+      auto house = overlay.as<House>();
 
       sentimentLevel = (int)house->state( pr::happiness );
       needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();

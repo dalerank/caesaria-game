@@ -250,7 +250,7 @@ public:
 	void CheckLocalFiles();
 
 	// True if the local files are not up to date and downloads need to be started
-	bool LocalFilesNeedUpdate();
+	bool isLocalFilesNeedUpdate();
 
 	// Generates an internal TODO list needed to perform the update step
 	void PrepareUpdateStep(std::string prefix);
@@ -284,7 +284,7 @@ public:
 	void RemoveAllPackagesExceptUpdater();
 
 	// Re-launches the updater (starts update batch file in Win32 builds)
-	void RestartUpdater();
+  void restartUpdater();
 
 	// Cleanup (both after regular exit and user terminations)
 	void postUpdateCleanup();
@@ -298,8 +298,6 @@ public:
 	void setBinaryAsExecutable();
 
 	void removeDownload( std::string itemname );
-
-  static void markFileAsExecutable(vfs::Path path);
 
 private:
 	// Throws if mirrors are empty

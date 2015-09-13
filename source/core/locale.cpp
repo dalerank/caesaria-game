@@ -40,26 +40,28 @@ public:
 
   void loadTranslator( vfs::Path filename )
   {
-    VariantMap trs = config::load( directory/filename );
+    VariantMap items = config::load( directory/filename );
     Logger::warning( "Locale: load translation from " + (directory/filename).toString() );
 
-    foreach( it, trs )
+    for( auto item : items )
     {
-      int hash = Hash( it->first );
-      translator[ hash ].text = it->second.toString();
+      int hash = Hash( item.first );
+      translator[ hash ].text = item.second.toString();
     }
   }
+
+  LocaleImpl() {}
 
   void loadDefault()
   {
     vfs::Path filename( "caesar.en" );
-    VariantMap trs = config::load( directory/filename );
+    VariantMap items = config::load( directory/filename );
     Logger::warning( "Locale: load default translation from " + (directory/filename).toString() );
 
-    foreach( it, trs )
+    for( auto item : items )
     {
-      int hash = Hash( it->first );
-      translator[ hash ].def_text = it->second.toString();
+      int hash = Hash( item.first );
+      translator[ hash ].def_text = item.second.toString();
     }
   }
 };
@@ -77,9 +79,9 @@ void Locale::setLanguage(std::string language)
 {
   _llocale.currentLanguage = language;
 
-  foreach( it, _llocale.translator )
+  for( auto item : _llocale.translator )
   {
-    it->second.text.clear();
+    item.second.text.clear();
   }
 
   addTranslation( "caesar" );

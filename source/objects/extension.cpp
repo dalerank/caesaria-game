@@ -56,7 +56,7 @@ ConstructionExtensionPtr FactoryProgressUpdater::create()
 
 ConstructionExtensionPtr FactoryProgressUpdater::assignTo(FactoryPtr factory, float value, int week2finish)
 {
-  FactoryProgressUpdater* updater = new FactoryProgressUpdater();
+  auto updater = new FactoryProgressUpdater();
   updater->_options[ "value" ] = value;
 
   updater->_finishDate = game::Date::current();
@@ -68,7 +68,7 @@ ConstructionExtensionPtr FactoryProgressUpdater::assignTo(FactoryPtr factory, fl
   if( factory.isValid() ) { factory->addExtension( ret );  }
   else
   {
-    crashhandler::printstack();
+    crashhandler::printstack(false);
     Logger::warning( "WARNING!!! Factory not initialized" );
   }
 
@@ -80,7 +80,7 @@ ConstructionExtensionPtr FactoryProgressUpdater::uniqueTo(FactoryPtr factory, fl
   if( !factory.isValid() )
   {
     Logger::warning( "WARNING!!! Factory not initialized" );
-    crashhandler::printstack();
+    crashhandler::printstack(false);
     return ConstructionExtensionPtr();
   }
 
@@ -91,9 +91,9 @@ ConstructionExtensionPtr FactoryProgressUpdater::uniqueTo(FactoryPtr factory, fl
   }
 
   ConstructionExtensionList exts = factory->extensions();
-  foreach( it, exts )
+  for( auto it : exts )
   {
-    if( (*it)->name() == name )
+    if( it->name() == name )
       return ConstructionExtensionPtr();
   }
 
@@ -133,7 +133,7 @@ ConstructionExtensionPtr FortCurseByMars::create()
 
 ConstructionExtensionPtr FortCurseByMars::assignTo(FortPtr fort, unsigned int monthsCurse)
 {
-  FortCurseByMars* curse = new FortCurseByMars();
+  auto curse = new FortCurseByMars();
   DateTime gdate = game::Date::current();
   gdate.appendMonth( monthsCurse );
   curse->_finishDate = gdate;
@@ -160,9 +160,9 @@ void FortCurseByMars::timeStep(ConstructionPtr parent, unsigned int time)
 
     SoldierList sldrs = base->soldiers();
 
-    foreach( it, sldrs )
+    for( auto it : sldrs )
     {
-      (*it)->updateMorale( -100 );
+      it->updateMorale( -100 );
     }
   }
 
@@ -283,7 +283,7 @@ ConstructionExtensionPtr WarehouseBuff::uniqueTo(WarehousePtr warehouse, int gro
   if( ret.isValid() )
     return ret;
 
-  WarehouseBuff* buff = new WarehouseBuff();
+  auto buff = new WarehouseBuff();
   buff->_options[ "value" ] = value;
   buff->_options[ "group" ] = group;
   buff->_name = name;
@@ -317,7 +317,7 @@ ConstructionExtensionPtr ConstructionParamUpdater::create()
 
 ConstructionExtensionPtr ConstructionParamUpdater::assignTo(ConstructionPtr construction, Param paramName, bool relative, int value, int week2finish)
 {
-  ConstructionParamUpdater* buff = new ConstructionParamUpdater();
+  auto buff = new ConstructionParamUpdater();
   buff->_options[ "value" ] = value;
   buff->_options[ "relative" ] = relative;
   buff->_options[ "finishValue" ] = value;

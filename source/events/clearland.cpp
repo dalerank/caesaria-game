@@ -59,16 +59,15 @@ void ClearTile::_exec( Game& game, unsigned int )
 
     bool deleteRoad = cursorTile.getFlag( Tile::tlRoad );
 
-    ConstructionPtr constr = overlay.as<Construction>();
-    if( constr.isValid() && !constr->canDestroy() )
+    if( overlay.isValid() && !overlay->canDestroy() )
     {
-      GameEventPtr e = WarningMessage::create( _( constr->errorDesc() ), WarningMessage::neitral );
+      GameEventPtr e = WarningMessage::create( _( overlay->errorDesc() ), WarningMessage::neitral );
       e->dispatch();
 
-      const MetaData& md = MetaDataHolder::getData( constr->type() );
+      const MetaData& md = MetaDataHolder::find( overlay->type() );
       if( md.getOption( MetaDataOptions::requestDestroy, false ).toBool() )
       {
-        e = RequestDestroy::create( constr );
+        e = RequestDestroy::create( overlay );
         e->dispatch();
       }
       return;
@@ -82,9 +81,8 @@ void ClearTile::_exec( Game& game, unsigned int )
     }
 
     TilesArray clearedTiles = tmap.getArea( rPos, size );
-    foreach( it, clearedTiles )
+    for( auto tile : clearedTiles )
     {
-      Tile* tile = *it;
       tile->setMasterTile( NULL );
       tile->setFlag( Tile::tlTree, false);
       tile->setFlag( Tile::tlRoad, false);
@@ -109,7 +107,7 @@ void ClearTile::_exec( Game& game, unsigned int )
         // 30% => choose green_sth 62-119
         // 70% => choose green_flat 232-289
         int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
-        int imgId = math::random( 58 );
+        int imgId = math::random( 58-1 );
 
         Picture pic;
         pic.load( ResourceGroup::land1a, startOffset + imgId );

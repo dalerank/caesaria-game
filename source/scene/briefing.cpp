@@ -51,9 +51,9 @@ protected:
   virtual void _btnClicked()
   {
     Widgets widgets = parent()->children();
-    foreach( it, widgets)
+    for( auto widget : widgets)
     {
-      MissionButton* btn = safety_cast<MissionButton*>( *it );
+      MissionButton* btn = safety_cast<MissionButton*>( widget );
       if( btn && btn != this )
       {
         btn->setPressed( false );
@@ -113,7 +113,6 @@ Briefing::~Briefing() {}
 void Briefing::draw()
 {
   _d->game->gui()->beforeDraw();
-  //_d->engine->drawPicture(_d->bgPicture, 0, 0);
   _d->game->gui()->draw();
 }
 
@@ -133,6 +132,9 @@ void Briefing::initialize()
   if( Impl::currentVesion == vm[ "version" ].toInt() )
   {
     Picture pic( "mapback", 1 );
+    std::string briefingCaption = vm[ "title" ].toString();
+    if( briefingCaption.empty() )
+      briefingCaption = "##briefing_select_next_mission##";
     gui::Image* mapback = new gui::Image( _d->game->gui()->rootWidget(), Point(), pic );
     if( !pic.isValid() )
     {
@@ -167,7 +169,7 @@ void Briefing::initialize()
     _d->missionTitle->setFont( Font::create( FONT_5 ));
     _d->cityCaption = new gui::Label( mapback, Rect( 200, 600, 200 + textYOffset, 630 ) );
     _d->cityCaption->setFont( Font::create( FONT_2 ) );
-    _d->cityCaption->setText( _("##briefing_select_next_mission##") );
+    _d->cityCaption->setText( _(briefingCaption) );
 
     _d->btnContinue = new gui::TexturedButton( mapback, Point( 780, 560 ), Size( 27 ), -1, 179 );
     _d->btnContinue->setEnabled( false );

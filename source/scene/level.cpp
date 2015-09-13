@@ -88,6 +88,7 @@
 #include "city/active_points.hpp"
 #include "city/statistic.hpp"
 #include "events/loadgame.hpp"
+#include "sound/themeplayer.hpp"
 #include "city/states.hpp"
 
 using namespace gui;
@@ -220,9 +221,15 @@ void Level::Impl::installHandlers( Base* scene )
 
 void Level::Impl::initSound()
 {
-  SmartPtr<city::AmbientSound> sound = statistic::getService<city::AmbientSound>( game->city() );
+  auto sound = game->city()->statistic().services.find<city::AmbientSound>();
+  auto player = game->city()->statistic().services.find<audio::ThemePlayer>();
   if( sound.isValid() )
     sound->setCamera( renderer.camera() );
+
+  if( player.isValid() )
+  {
+    CONNECT( player, onSwitch(), this, Impl::resolveWarningMessage )
+  }
 }
 
 void Level::Impl::initTabletUI( Level* scene )
@@ -252,7 +259,6 @@ void Level::Impl::connectTopMenu2scene(Level* scene)
 void Level::initialize()
 {
   PlayerCityPtr city = _d->game->city();
-  gui::Ui& ui = *_d->game->gui();
 
   _d->initRender();
   _d->initMainUI();
@@ -305,11 +311,12 @@ void Level::initialize()
 
   CONNECT( &_d->dhandler, onWinMission(), _d.data(), Impl::checkWinMission )
   CONNECT( &_d->dhandler, onFailedMission(), _d.data(), Impl::checkFailedMission )
-#ifdef DEBUG  
-  _d->dhandler.setVisible( true );
-#endif
+
+  if( KILLSWITCH(debugMenu) )
+    _d->dhandler.setVisible( true );
 
 #ifdef CAESARIA_USE_STEAM
+  gui::Ui& ui = *_d->game->gui();
   dialog::Information( &ui, "Please note", "Black object are not done yet and will be added as soon as finished." );
 #endif
 }
@@ -451,9 +458,7 @@ void Level::Impl::extendReign(int years)
 
 void Level::Impl::handleDirectionChange(Direction direction)
 {
-  direction::Helper dHelper;
-
-  GameEventPtr e = WarningMessage::create( _("##" + dHelper.findName( direction ) + "##"), 1 );
+  GameEventPtr e = WarningMessage::create( _("##" + direction::Helper::instance().findName( direction ) + "##"), 1 );
   e->dispatch();
 }
 
@@ -582,8 +587,8 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
   PlayerCityPtr pcity = game->city();
 
   const city::VictoryConditions& vc = pcity->victoryConditions();
-  MilitaryPtr mil = statistic::getService<city::Military>( pcity );
-  InfoPtr info = statistic::getService<city::Info>( pcity );
+  MilitaryPtr mil = pcity->statistic().services.find<Military>();
+  InfoPtr info = pcity->statistic().services.find<Info>();
 
   if( mil.isValid() && info.isValid()  )
   {
@@ -691,7 +696,7 @@ bool Level::_tryExecHotkey(NEvent &event)
       case KEY_KEY_E:
       {
         TilePos center = _d->renderer.camera()->center();
-        TileRect trect( center-TilePos(1,1), center+TilePos(1,1));
+        TileRect trect( center-tilemap::unitLocation(), center+tilemap::unitLocation());
         const BorderInfo& binfo = _d->game->city()->borderInfo();
         center = (trect.contain(binfo.roadEntry) ? binfo.roadExit : binfo.roadEntry);
         _d->renderer.camera()->setCenter( center, false );

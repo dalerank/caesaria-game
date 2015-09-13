@@ -26,7 +26,6 @@
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
 #include "objects/construction.hpp"
-#include "city/helper.hpp"
 #include "objects/house.hpp"
 #include "core/color.hpp"
 #include "gui/texturedbutton.hpp"
@@ -69,7 +68,7 @@ Finance::Finance(PlayerCityPtr city, Widget* parent, int id )
 
   _updateCityTreasure();
   _updateTaxRateNowLabel();
-  _updateRegPayers();
+  _updateRegisteredPayers();
   _initReportRows();
   _initTaxManager();
 }
@@ -107,14 +106,14 @@ void Finance::_drawReportRow(const Point& pos, const std::string& title, int typ
   int tyvalue = _city->treasury().getIssueValue( (econ::Issue::Type)type, econ::Treasury::thisYear );
 
   Size size( 100, 20 );
-  Label* lb = new Label( this, Rect( pos, size), title );
-  lb->setFont( font );
+  Label* lbTitle = new Label( this, Rect( pos, size), _(title) );
+  lbTitle->setFont( font );
 
-  lb = new Label( this, Rect( pos + Point( 215, 0), size), utils::i2str( lyvalue ) );
-  lb->setFont( font );
+  lbTitle = new Label( this, Rect( pos + Point( 215, 0), size), utils::i2str( lyvalue ) );
+  lbTitle->setFont( font );
 
-  lb = new Label( this, Rect( pos + Point( 355, 0), size), utils::i2str( tyvalue ) );
-  lb->setFont( font );
+  lbTitle = new Label( this, Rect( pos + Point( 355, 0), size), utils::i2str( tyvalue ) );
+  lbTitle->setFont( font );
 }
 
 void Finance::_updateTaxRateNowLabel()
@@ -123,7 +122,7 @@ void Finance::_updateTaxRateNowLabel()
   if( !lbTaxRateNow )
     return;
 
-  int taxValue = statistic::getTaxValue( _city );
+  int taxValue = _city->statistic().tax.possible();
   std::string strCurretnTax = utils::format( 0xff, "%d%% %s %d %s",
                                                     _city->treasury().taxRate(), _("##may_collect_about##"),
                                                     taxValue, _("##denaries##") );
@@ -145,26 +144,26 @@ void Finance::_increaseTax()
 void Finance::_initReportRows()
 {
   Point sp = startPoint;
-  _drawReportRow( sp,                             _("##taxes##"),     econ::Issue::taxIncome );
-  _drawReportRow( sp + offset,                    _("##trade##"),     econ::Issue::exportGoods );
-  _drawReportRow( sp + offset * rowDonation,      _("##donations##"), econ::Issue::donation );
-  _drawReportRow( sp + offset * rowDebt,          _("##debet##"),     econ::Issue::debet );
+  _drawReportRow( sp,                             "##taxes##",     econ::Issue::taxIncome );
+  _drawReportRow( sp + offset,                    "##trade##",     econ::Issue::exportGoods );
+  _drawReportRow( sp + offset * rowDonation,      "##donations##", econ::Issue::donation );
+  _drawReportRow( sp + offset * rowDebt,          "##debet##",     econ::Issue::debet );
 
   sp += Point( 0, 6 );
-  _drawReportRow( sp + offset * rowImports,       _("##import_fn##"), econ::Issue::importGoods );
-  _drawReportRow( sp + offset * rowWages,         _("##wages##"),     econ::Issue::workersWages );
-  _drawReportRow( sp + offset * rowConstructions, _("##buildings##"), econ::Issue::buildConstruction );
-  _drawReportRow( sp + offset * rowCredit,        _("##percents##"),  econ::Issue::creditPercents );
-  _drawReportRow( sp + offset * rowSalary,        _("##pn_salary##"), econ::Issue::playerSalary );
-  _drawReportRow( sp + offset * rowSundries,      _("##other##"),     econ::Issue::sundries );
-  _drawReportRow( sp + offset * rowEmpireTax,     _("##empire_tax##"),econ::Issue::empireTax );
-  _drawReportRow( sp + offset * rowExpensive,     _("##credit##"),    econ::Issue::credit );
+  _drawReportRow( sp + offset * rowImports,       "##import_fn##", econ::Issue::importGoods );
+  _drawReportRow( sp + offset * rowWages,         "##wages##",     econ::Issue::workersWages );
+  _drawReportRow( sp + offset * rowConstructions, "##buildings##", econ::Issue::buildConstruction );
+  _drawReportRow( sp + offset * rowCredit,        "##percents##",  econ::Issue::creditPercents );
+  _drawReportRow( sp + offset * rowSalary,        "##pn_salary##", econ::Issue::playerSalary );
+  _drawReportRow( sp + offset * rowSundries,      "##other##",     econ::Issue::sundries );
+  _drawReportRow( sp + offset * rowEmpireTax,     "##empire_tax##",econ::Issue::empireTax );
+  _drawReportRow( sp + offset * rowExpensive,     "##credit##",    econ::Issue::credit );
 
   sp += Point( 0, 6 );
-  _drawReportRow( sp + offset * rowProfit,        _("##profit##"),    econ::Issue::cityProfit );
+  _drawReportRow( sp + offset * rowProfit,        "##profit##",    econ::Issue::cityProfit );
 
   sp += Point( 0, 6 );
-  _drawReportRow( sp + offset * rowBalance,       _("##balance##"),   econ::Issue::balance );
+  _drawReportRow( sp + offset * rowBalance,       "##balance##",   econ::Issue::balance );
 }
 
 void Finance::_initTaxManager()
@@ -178,9 +177,9 @@ void Finance::_initTaxManager()
   CONNECT( btnHelp,        onClicked(), this, Finance::_showHelp );
 }
 
-void Finance::_updateRegPayers()
+void Finance::_updateRegisteredPayers()
 {
-  unsigned int regTaxPayers = statistic::getTaxPayersPercent( _city );
+  unsigned int regTaxPayers = _city->statistic().tax.payersPercent();
   std::string strRegPaeyrs = utils::format( 0xff, "%d%% %s", regTaxPayers, _("##population_registered_as_taxpayers##") );
   INIT_WIDGET_FROM_UI( Label*, lbRegPayers )
   if( lbRegPayers )

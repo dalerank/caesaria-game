@@ -49,7 +49,7 @@ namespace utils
 
   int toInt(const char* in, const char** out=0);
 
-  int toInt(const std::string& number );
+  int toInt(const std::string& number, int base=10);
 
   //! Converts a sequence of digits into a whole positive floating point value.
   /** Only digits 0 to 9 are parsed.  Parsing stops at any other character,
@@ -82,22 +82,14 @@ namespace utils
 
   std::string i2str( int valie );
 
-  template< class Item >
-  SmartList<Item>& eraseDeletedElements( SmartList<Item>& items )
-  {
-    for( typename SmartList<Item>::iterator it=items.begin(); it != items.end(); )
-    {
-      if( (*it)->isDeleted() ) { it = items.erase( it ); }
-      else { ++it; }
-    }
-
-    return items;
-  }
-
   VariantList toVList( const StringArray& items );
 
+  std::string toRoman( int value );
+
+  bool endsWith( const std::string& text, const std::string& which );
+
   float eventProbability(float probability, int k, int n);  
-  std::wstring utf8toWString(const char* src, int size);
+  std::wstring utf8toWString(const char* src, size_t size);
 }
 
 #endif //__CAESARIA_STRING_UTILS_H_INCLUDED__

@@ -81,7 +81,7 @@ void EarthQuake::_exec( Game& game, unsigned int time)
     if( currentTile )
     {
       bool mayDestruct = currentTile->getFlag( Tile::isConstructible );
-      mayDestruct |= is_kind_of<Construction>( currentTile->overlay() );
+      mayDestruct |= currentTile->overlay().is<Construction>();
 
       if( mayDestruct )
       {
@@ -97,7 +97,7 @@ void EarthQuake::_exec( Game& game, unsigned int time)
     for( TilesArray::iterator it=nextPoints.begin(); it != nextPoints.end(); )
     {
       bool mayDestruct = (*it)->getFlag( Tile::isConstructible );
-      mayDestruct |= is_kind_of<Construction>( (*it)->overlay() );
+      mayDestruct |= (*it)->overlay().is<Construction>();
       int curDst = (*it)->pos().getDistanceFromSQ(_d->end);
 
       if( !mayDestruct || (curDst > lastDst) ) { it = nextPoints.erase( it ); }

@@ -61,6 +61,7 @@ protected:
   ComputerCity( EmpirePtr empire, const std::string& name );
   bool _mayTrade() const;
   void _initTextures();
+  void _resetGoodState(good::Product pr );
   void _checkMerchantsDeadline();
 
 private:

@@ -64,6 +64,7 @@ public:
   virtual void load(const VariantMap &stream);
 
   virtual SoldierList soldiers() const;
+  virtual int soldiers_n() const;
   virtual void returnSoldiers();
 
   virtual world::PlayerArmyPtr expedition() const;

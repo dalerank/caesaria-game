@@ -24,6 +24,7 @@
 #include "gfx/camera.hpp"
 #include "gui/senate_popup_info.hpp"
 #include "objects/senate.hpp"
+#include "core/spring.hpp"
 
 using namespace gfx;
 
@@ -43,6 +44,7 @@ public:
   {
     bool any,
          may;
+    math::SpringI alpha;
   } highlight;
 };
 
@@ -64,7 +66,11 @@ void Simple::drawTile(Engine& engine, Tile& tile, const Point& offset)
   {
     bool blowTile = (curOverlay.isValid() && curOverlay == _d->lastOverlay) && _d->highlight.any;
     if( blowTile )
-      engine.setColorMask( 0x007f0000, 0x00007f00, 0x0000007f, 0xff000000 );
+    {
+      _d->highlight.alpha.update();
+      int value = _d->highlight.alpha.value();
+      engine.setColorMask( value << 16, value << 8, value, 0xff000000 );
+    }
 
     Layer::drawTile(engine, tile, offset);
 
@@ -106,8 +112,7 @@ void Simple::renderUi(Engine &engine)
   Tile* lastTile = _currentTile();
   if( lastTile )
   {
-    OverlayPtr ov = lastTile->overlay();
-    SenatePtr senate = ptr_cast<Senate>( ov );
+    SenatePtr senate = lastTile->overlay().as<Senate>();
     if( senate.isValid() )
     {
       _d->senateInfo.draw( _lastCursorPos(), Engine::instance(), senate );
@@ -121,6 +126,7 @@ Simple::Simple( Camera& camera, PlayerCityPtr city)
   _addWalkerType( walker::all );
 
   _d->ticks = 0;
+  _d->highlight.alpha.setCondition( 180, 254, 2 );
   _d->inacceptable << object::fortification << object::wall;
 }
 

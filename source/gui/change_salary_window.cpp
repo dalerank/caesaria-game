@@ -56,14 +56,14 @@ ChangeSalary::ChangeSalary(Widget* p, unsigned int salary)
   if( lbxTitles )
   {
     world::GovernorRanks ranks = world::EmpireHelper::ranks();
-    foreach( i, ranks )
+    for( auto rank : ranks )
     {
-      std::string salaryStr = _( "##" + (*i).rankName + "_salary##" );
-      ListBoxItem& item = lbxTitles->addItem( salaryStr + "   " + utils::i2str( (*i).salary ) );
-      item.setTag( (*i).salary );
-      if( (*i).salary == salary )
+      std::string salaryStr = _( "##" + rank.rankName + "_salary##" );
+      ListBoxItem& item = lbxTitles->addItem( salaryStr + "   " + utils::i2str( rank.salary ) );
+      item.setTag( rank.salary );
+      if( rank.salary == salary )
       {
-        lbxTitles->setSelected( std::distance( ranks.begin(), i ) );
+        lbxTitles->setSelected( lbxTitles->itemsCount() - 1 );
       }
     }
   }

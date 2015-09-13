@@ -18,6 +18,7 @@
 #include "desirability.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/camera.hpp"
+#include "objects/construction.hpp"
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"
 #include "city/statistic.hpp"
@@ -52,7 +53,6 @@ int Desirability::type() const {  return citylayer::desirability; }
 
 void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
 {
-  //Tilemap& tilemap = _city->getTilemap();
   Point screenPos = tile.mappos() + offset;
 
   int desirability = tile.param( Tile::pDesirability );
@@ -68,14 +68,13 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
     }
     else
     {
-      //engine.draw( tile.picture(), screenPos );
       drawPass( engine, tile, offset, Renderer::ground );
       drawPass( engine, tile, offset, Renderer::groundAnimation );
     }
   }
   else
   {
-    OverlayPtr overlay = tile.overlay();
+    auto overlay = tile.overlay();
     if( _isVisibleObject( overlay->type() ) )
     {
       // Base set of visible objects
@@ -90,9 +89,9 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
 
       TilesArray tiles4clear = overlay->area();
 
-      foreach( tile, tiles4clear )
+      for( auto tile : tiles4clear )
       {
-        engine.draw( pic, (*tile)->mappos() + offset );
+        engine.draw( pic, tile->mappos() + offset );
       }
     }
   }

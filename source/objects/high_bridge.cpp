@@ -408,7 +408,7 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
 
   {
     TilesArea tiles( tilemap, curPos - TilePos( 10, 0), curPos - TilePos(1, 0) );
-    for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
+    for( auto it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
 
       if( __isFlatCoastTile( **it ) )
@@ -520,7 +520,7 @@ bool HighBridge::canDestroy() const
 {
   foreach( subtile, _d->subtiles )
   {
-    WalkerList walkers = city::statistic::getWalkers<Walker>( _city(), walker::any, pos() + (*subtile)->pos() );
+    WalkerList walkers = _city()->statistic().walkers.find<Walker>( walker::any, pos() + (*subtile)->pos() );
     if( !walkers.empty() )
     {
       _d->error = "##cant_demolish_bridge_with_people##";

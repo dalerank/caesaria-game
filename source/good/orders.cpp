@@ -14,7 +14,6 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "orders.hpp"
-#include "core/foreach.hpp"
 #include <map>
 
 namespace good
@@ -39,11 +38,11 @@ Orders::Orders() : _d( new Impl )
 
 void Orders::set( Order rule )
 {
-  foreach( item, _d->orders )
+  for( auto&& order : _d->orders )
   {
-    if( item->second != Orders::none )
+    if( order.second != Orders::none )
     {
-      item->second = rule;
+      order.second = rule;
     }
   }
 }

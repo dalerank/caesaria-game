@@ -116,12 +116,11 @@ ProsperityRating::ProsperityRating(PlayerCityPtr city)
 
 void ProsperityRating::_checkStats()
 {
-  HouseList houses = statistic::getHouses( _city() );
+  HouseList houses = _city()->statistic().houses.find();
 
   int prosperityCap = 0;
-  foreach( it, houses)
+  for( auto house : houses)
   {
-    HousePtr house = *it;
     prosperityCap += house->spec().prosperity();
     _d->now.patricianCount += house->spec().isPatrician() ? house->habitants().count() : 0;
     _d->now.plebsCount += house->spec().level() < HouseLevel::plebsLevel ? house->habitants().count() : 0;
@@ -169,10 +168,10 @@ void ProsperityRating::timeStep(const unsigned int time )
     _d->now.percentPlebs = math::percentage( _d->now.plebsCount, population );
     _d->prosperityExtend += (_d->now.percentPlebs < prosperity::normalPlebsInCityPercent ? prosperity::award : 0);
 
-    bool haveHippodrome = !statistic::getObjects<Hippodrome>( _city(), object::hippodrome ).empty();
+    bool haveHippodrome = _city()->statistic().objects.count( object::hippodrome ) > 0;
     _d->prosperityExtend += (haveHippodrome ? prosperity::award : 0);
 
-    _d->now.workless = statistic::getWorklessPercent( _city() );
+    _d->now.workless = _city()->statistic().workers.worklessPercent();
     bool unemploymentLess5percent = _d->now.workless < prosperity::normalWorklesPercent;
     bool unemploymentMore15percent = _d->now.workless > workless::high;
 

@@ -38,8 +38,6 @@ void Religion::drawTile(Engine& engine, Tile& tile, const Point& offset)
 
   if( tile.overlay().isNull() )
   {
-    //draw background
-    //engine.draw( tile.picture(), screenPos );
     drawPass( engine, tile, offset, Renderer::ground );
     drawPass( engine, tile, offset, Renderer::groundAnimation );
   }
@@ -56,7 +54,7 @@ void Religion::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( overlay->type() == object::house )
     {
-      HousePtr house = ptr_cast<House>( overlay );
+      auto house = overlay.as<House>();
       religionLevel = (int) house->getServiceValue(Service::religionMercury);
       religionLevel += house->getServiceValue(Service::religionVenus);
       religionLevel += house->getServiceValue(Service::religionMars);
@@ -101,7 +99,7 @@ void Religion::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        HousePtr house = ptr_cast<House>( tile->overlay() );
+        auto house = tile->overlay().as<House>();
         if( house.isValid() )
         {
           int templeAccess = house->spec().computeReligionLevel( house );

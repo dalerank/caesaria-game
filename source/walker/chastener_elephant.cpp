@@ -63,10 +63,9 @@ Pathway ChastenerElephant::_findPathway2NearestConstruction( unsigned int range 
   {
     ConstructionList constructions = _findContructionsInRange( tmpRange );
 
-    foreach( it, constructions )
+    for( auto construction : constructions )
     {
-      ConstructionPtr c = ptr_cast<Construction>( *it );
-      ret = PathwayHelper::create( pos(), c->pos(), makeDelegate( _d.data(), &Impl::mayMove ) );
+      ret = PathwayHelper::create( pos(), construction->pos(), makeDelegate( _d.data(), &Impl::mayMove ) );
       if( ret.isValid() )
       {
         return ret;
@@ -80,10 +79,11 @@ Pathway ChastenerElephant::_findPathway2NearestConstruction( unsigned int range 
 bool ChastenerElephant::_tryAttack()
 {
   Tilemap& tmap = _city()->tilemap();
-  TilesArray tiles = tmap.getNeighbors( pos() );
-  foreach( it, tiles )
+  ConstructionList constructions = tmap.getNeighbors( pos() )
+                                       .overlays()
+                                       .select<Construction>();
+  for( auto ov : constructions )
   {
-    ConstructionPtr ov = ptr_cast<Construction>( (*it)->overlay() );
     if( ov.isValid() && !_excludeAttack().count( ov->group() ) )
     {
       ov->collapse();

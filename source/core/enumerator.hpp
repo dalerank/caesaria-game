@@ -17,7 +17,6 @@
 #define __CAESARIA_ENUMS_HELPER_H_INCLUDED__
 
 #include "core/requirements.hpp"
-#include "core/foreach.hpp"
 #include <map>
 #include <string>
 
@@ -28,11 +27,11 @@ public:
   const std::string noText;
   T findType( const std::string& name ) const
   {
-    foreach( it, _equales )
+    for( auto&& it : _equales )
     {
-      if( name == it->second )
+      if( name == it.second )
       {
-        return it->first;
+        return it.first;
       }
     }
 

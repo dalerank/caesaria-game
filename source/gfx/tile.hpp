@@ -37,7 +37,7 @@ public:
   typedef enum { tlRoad=0, tlWater, tlTree, tlMeadow, tlRock, tlOverlay,
                  tlGarden, tlElevation, tlWall, tlDeepWater, tlRubble,
                  isConstructible, isDestructible, tlRift, tlCoast, tlGrass, clearAll,
-                 wasDrawn } Type;
+                 wasDrawn, tlUnknown } Type;
 
 public:
   explicit Tile(const TilePos& pos);
@@ -84,7 +84,6 @@ public:
   bool getFlag( Type type ) const;
   void setFlag( Type type, bool value );
 
-  OverlayPtr overlay() const;
   void setOverlay( OverlayPtr overlay );
   inline unsigned int originalImgId() const { return _terrain.imgid;}
   void setOriginalImgId( unsigned short int id );
@@ -95,6 +94,10 @@ public:
   void setParam( Param param, int value );
   void changeParam( Param param, int value );
   int param( Param param ) const;
+
+  template<class T>
+  SmartPtr<T> overlay() { return ptr_cast<T>( _overlay ); }
+  OverlayPtr overlay() const;
 
 private:
   struct Terrain

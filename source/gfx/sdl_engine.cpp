@@ -37,10 +37,8 @@
 #include "core/utils.hpp"
 #include "core/font.hpp"
 #include "core/eventconverter.hpp"
-#include "core/foreach.hpp"
-#include "gfx/decorator.hpp"
-#include "game/settings.hpp"
 #include "core/timer.hpp"
+#include "core/debug_timer.hpp"
 #include "sdl_batcher.hpp"
 
 #ifdef CAESARIA_PLATFORM_MACOSX
@@ -90,7 +88,6 @@ public:
   void renderOnce(const Picture& pic, const Rect& src, const Rect& dstRect,
                   const Rect* clipRect, bool useTxOffset);
 };
-
 
 Picture& SdlEngine::screen(){  return _d->screen; }
 
@@ -146,7 +143,7 @@ SDL_Batch* __createBatch( SDL_Renderer* render, const Picture& pic, const Rects&
 
 Batch SdlEngine::loadBatch(const Picture &pic, const Rects &srcRects, const Rects &dstRects, const Rect *clipRect)
 {
-  if( !pic.isValid() )
+  if( !pic.isValid() || !_d->batcher.active() )
     return Batch();
 
   Batch ret;
@@ -231,10 +228,10 @@ void SdlEngine::init()
   else
   {
     window = SDL_CreateWindow("CaesariA",
-        SDL_WINDOWPOS_CENTERED,
-        SDL_WINDOWPOS_CENTERED,
-        _srcSize.width(), _srcSize.height(),
-        flags);
+                              SDL_WINDOWPOS_CENTERED,
+                              SDL_WINDOWPOS_CENTERED,
+                              _srcSize.width(), _srcSize.height(),
+                              flags);
   }
 
   if (window == NULL)
@@ -246,8 +243,8 @@ void SdlEngine::init()
   Logger::warning("SDLGraficEngine: init successfull");
 #endif
 
-  int render_version = math::clamp( game::Settings::get( "render_mode" ).toInt(), 0, SDL_GetNumRenderDrivers());
-  SDL_Renderer *renderer = SDL_CreateRenderer(window, render_version-1, SDL_RENDERER_ACCELERATED );
+  //int render_version = math::clamp( game::Settings::get( "render_mode" ).toInt(), 0, SDL_GetNumRenderDrivers());
+  SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
 
   if (renderer == NULL)
   {
@@ -269,6 +266,7 @@ void SdlEngine::init()
   }
 
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+  SDL_SetRenderDrawBlendMode( renderer, SDL_BLENDMODE_BLEND );
   SDL_RenderClear(renderer);
   SDL_RenderPresent(renderer);
 
@@ -281,7 +279,9 @@ void SdlEngine::init()
 
   SDL_GetRendererInfo( renderer, &info );  
   int gl_version;
-  SDL_GL_GetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, &gl_version );
+  SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+  SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 16);
+  SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &gl_version );
   Logger::warning( "SDLGraficEngine: init render %s ", info.name );
   Logger::warning( "SDLGraficEngine: using OpenGL %d ", gl_version );
 
@@ -475,9 +475,9 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
 
   if( getFlag( Engine::batching ) )
   {
-    foreach( it, pictures )
+    for( auto&& pic : pictures )
     {
-      bool batched = _d->batcher.append( *it, pos, clipRect );
+      bool batched = _d->batcher.append( pic, pos, clipRect );
       if( !batched )
         _d->renderState();
     }
@@ -494,9 +494,8 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
     }
 
     const Impl::MaskInfo& mask = _d->mask;
-    foreach( it, pictures )
+    for( const Picture& picture : pictures )
     {
-      const Picture& picture = *it;
       SDL_Texture* ptx = picture.texture();
       const Rect& orect = picture.originRect();
       Size size = orect.size();
@@ -596,12 +595,36 @@ void SdlEngine::draw(const Batch &batch, Rect *clipRect)
 
 void SdlEngine::drawLine(const NColor &color, const Point &p1, const Point &p2)
 {
-  _d->batcher.finish();
-  _d->renderState();
+  bool needDraw = _d->batcher.finish();
+  if( needDraw )
+    _d->renderState();
+
   _d->drawCall++;
 
   SDL_SetRenderDrawColor( _d->renderer, color.red(), color.green(), color.blue(), color.alpha() );
   SDL_RenderDrawLine( _d->renderer, p1.x(), p1.y(), p2.x(), p2.y() );
+
+  SDL_SetRenderDrawColor( _d->renderer, 0, 0, 0, 0 );
+}
+
+void SdlEngine::drawLines(const NColor &color, const PointsArray& points)
+{
+  bool needDraw = _d->batcher.finish();
+  if( needDraw )
+    _d->renderState();
+
+  _d->drawCall++;
+
+  SDL_SetRenderDrawColor( _d->renderer, color.red(), color.green(), color.blue(), color.alpha() );
+  std::vector<SDL_Point> _points;
+  _points.reserve( points.size() );
+  for( auto& p : points )
+  {
+    SDL_Point ps = { p.x(), p.y() };
+    _points.push_back( ps );
+  }
+
+  SDL_RenderDrawLines( _d->renderer, _points.data(), _points.size() );
 
   SDL_SetRenderDrawColor( _d->renderer, 0, 0, 0, 0 );
 }
@@ -636,6 +659,12 @@ void SdlEngine::resetColorMask()
   _d->mask.reset();
 }
 
+void SdlEngine::setTitle(const std::string& title)
+{
+  if( _d->window )
+    SDL_SetWindowTitle( _d->window, title.c_str() );
+}
+
 void SdlEngine::setScale( float scale )
 {
   bool needDraw = _d->batcher.finish();
@@ -659,25 +688,38 @@ void SdlEngine::createScreenshot( const std::string& filename )
 
 Engine::Modes SdlEngine::modes() const
 {
-  Modes ret;
-
   /* Get available fullscreen/hardware modes */
   int num = SDL_GetNumDisplayModes(0);
 
   std::set<unsigned int> uniqueModes;
+#define ADD_RESOLUTION(w,h) uniqueModes.insert( (w<<16) + h);
+  ADD_RESOLUTION(1920,1080)
+  ADD_RESOLUTION(1600,900)
+  ADD_RESOLUTION(1440,800)
+  ADD_RESOLUTION(1280,1024)
+  ADD_RESOLUTION(1024,768)
+  ADD_RESOLUTION(800,600)
+#undef ADD_RESOLUTION
 
+  int maxWidth = 0;
   for (int i = 0; i < num; ++i)
   {
     SDL_DisplayMode mode;
     if (SDL_GetDisplayMode(0, i, &mode) == 0 && mode.w > 640 )
     {
+      maxWidth = math::max( mode.w, maxWidth );
       unsigned int modeHash = (mode.w << 16) + mode.h;
       if( uniqueModes.count( modeHash ) == 0)
-      {
-        ret.push_back(Size(mode.w, mode.h));
         uniqueModes.insert( modeHash );
-      }
     }
+  }
+
+  Modes ret;
+  for( auto mode : uniqueModes )
+  {
+    int width = (mode >> 16)&0xffff;
+    if( width <= maxWidth )
+      ret.insert( ret.begin(), Size( width, mode&0xffff));
   }
 
   return ret;

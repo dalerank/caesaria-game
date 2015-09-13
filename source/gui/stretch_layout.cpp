@@ -101,6 +101,8 @@ void Layout::beforeDraw( gfx::Engine& painter )
   Widget::beforeDraw( painter );
 }
 
+bool Layout::full() const { return false; }
+
 void Layout::setupUI(const VariantMap &stream)
 {
   _side = stream.get( "side" );
@@ -152,6 +154,17 @@ VLayout::VLayout(Widget *parent) : Layout( parent, Rect(), true ) {}
 VLayout::VLayout(Widget *parent, const Rect &rect, int id) : Layout( parent, rect, true, id )
 {
 
+}
+
+bool VLayout::full() const
+{
+  for( auto widget : children() )
+  {
+    if( widget->bottom() > (int)height() )
+      return true;
+  }
+
+  return false;
 }
 
 }//end namespac gui

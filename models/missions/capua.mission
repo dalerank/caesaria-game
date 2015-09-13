@@ -240,6 +240,7 @@
       market : true
       oil_workshop : true
       lumber_mill : true
+      roadBlock : true
       furniture_workshop : true
       granery : true
       warehouse : true

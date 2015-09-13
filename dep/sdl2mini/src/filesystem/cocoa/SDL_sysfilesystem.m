@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -18,7 +18,7 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../../SDL_internal.h"
 
 #ifdef SDL_FILESYSTEM_COCOA
 
@@ -35,23 +35,25 @@
 
 char *
 SDL_GetBasePath(void)
+{ @autoreleasepool
 {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     NSBundle *bundle = [NSBundle mainBundle];
     const char* baseType = [[[bundle infoDictionary] objectForKey:@"SDL_FILESYSTEM_BASE_DIR_TYPE"] UTF8String];
     const char *base = NULL;
     char *retval = NULL;
+
     if (baseType == NULL) {
         baseType = "resource";
     }
     if (SDL_strcasecmp(baseType, "bundle")==0) {
-        base = [[bundle bundlePath] UTF8String];
+        base = [[bundle bundlePath] fileSystemRepresentation];
     } else if (SDL_strcasecmp(baseType, "parent")==0) {
-        base = [[[bundle bundlePath] stringByDeletingLastPathComponent] UTF8String];
+        base = [[[bundle bundlePath] stringByDeletingLastPathComponent] fileSystemRepresentation];
     } else {
         /* this returns the exedir for non-bundled  and the resourceDir for bundled apps */
-        base = [[bundle resourcePath] UTF8String];
+        base = [[bundle resourcePath] fileSystemRepresentation];
     }
+
     if (base) {
         const size_t len = SDL_strlen(base) + 2;
         retval = (char *) SDL_malloc(len);
@@ -62,30 +64,28 @@ SDL_GetBasePath(void)
         }
     }
 
-    [pool release];
     return retval;
-}
+}}
 
 char *
 SDL_GetPrefPath(const char *org, const char *app)
+{ @autoreleasepool
 {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    NSArray *array = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
     char *retval = NULL;
 
-    (void) org;  // unused on Mac OS X and iOS.
+    NSArray *array = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
 
-    if ([array count] > 0) {  // we only want the first item in the list.
+    if ([array count] > 0) {  /* we only want the first item in the list. */
         NSString *str = [array objectAtIndex:0];
-        const char *base = [str UTF8String];
+        const char *base = [str fileSystemRepresentation];
         if (base) {
-            const size_t len = SDL_strlen(base) + SDL_strlen(app) + 3;
+            const size_t len = SDL_strlen(base) + SDL_strlen(org) + SDL_strlen(app) + 4;
             retval = (char *) SDL_malloc(len);
             if (retval == NULL) {
                 SDL_OutOfMemory();
             } else {
                 char *ptr;
-                SDL_snprintf(retval, len, "%s/%s/", base, app);
+                SDL_snprintf(retval, len, "%s/%s/%s/", base, org, app);
                 for (ptr = retval+1; *ptr; ptr++) {
                     if (*ptr == '/') {
                         *ptr = '\0';
@@ -98,9 +98,8 @@ SDL_GetPrefPath(const char *org, const char *app)
         }
     }
 
-    [pool release];
     return retval;
-}
+}}
 
 #endif /* SDL_FILESYSTEM_COCOA */
 

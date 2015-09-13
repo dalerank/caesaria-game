@@ -28,6 +28,7 @@
 #include "objects/house_spec.hpp"
 #include "core/logger.hpp"
 #include "core/utils.hpp"
+#include "gfx/tilemap.hpp"
 #include "core/variant_map.hpp"
 #include <game/settings.hpp>
 #include "walkers_factory.hpp"
@@ -40,27 +41,23 @@ public:
   float money;
   bool return2base;
 
-  std::map< std::string, float > history;
+  std::map< TilePos, float > history;
 };
 
 void TaxCollector::_centerTile()
 {
   Walker::_centerTile();
 
-  ReachedBuildings buildings = getReachedBuildings( pos() );
-  foreach( it, buildings )
+  UqBuildings<House> houses = getReachedBuildings( pos() ).select<House>();
+  for( auto house : houses )
   {
-    HousePtr house = ptr_cast<House>( *it );
+    if( house->isDeleted() || _d->history.count( house->pos() ) > 0 )
+      continue;
 
-    if( house.isValid() )
-    {
-      float tax = house->collectTaxes();
-      _d->money += tax;
-      house->applyService( this );
-
-      std::string posStr = utils::format( 0xff, "%02dx%02d", house->pos().i(), house->pos().j() );
-      _d->history[ posStr ] += tax;
-    }
+    float tax = house->collectTaxes();
+    _d->money += tax;
+    house->applyService( this );
+    _d->history[ house->pos() ] += tax;
   }
 }
 
@@ -69,20 +66,19 @@ std::string TaxCollector::thoughts(Thought th) const
   if( th == thCurrent )
   {
     TilePos offset( 2, 2 );
-    HouseList houses = city::statistic::getObjects<House>( _city(), object::house, pos() - offset, pos() + offset );
+    HouseList houses = _city()->statistic().objects.find<House>( object::house, pos() - offset, pos() + offset );
     unsigned int poorHouseCounter=0;
     unsigned int richHouseCounter=0;
 
-    foreach( h, houses )
+    for( auto house : houses )
     {
-      HouseLevel::ID level = (HouseLevel::ID)(*h)->spec().level();
+      HouseLevel::ID level = (HouseLevel::ID)house->spec().level();
       if( level < HouseLevel::bigDomus ) poorHouseCounter++;
       else if( level >= HouseLevel::smallVilla ) richHouseCounter++;
     }
 
     if( poorHouseCounter > houses.size() / 2 ) { return "##tax_collector_very_little_tax##";  }
     if( richHouseCounter > houses.size() / 2 ) { return "##tax_collector_high_tax##";  }
-
   }
 
   return ServiceWalker::thoughts(th);
@@ -90,7 +86,7 @@ std::string TaxCollector::thoughts(Thought th) const
 
 BuildingPtr TaxCollector::base() const
 {
-  return ptr_cast<Building>( _city()->getOverlay( baseLocation() ) );
+  return _map().overlay( baseLocation() ).as<Building>();
 }
 
 TaxCollectorPtr TaxCollector::create(PlayerCityPtr city )
@@ -127,10 +123,9 @@ void TaxCollector::_reachedPathway()
     }
 
     Logger::warning( "TaxCollector: path history" );
-    foreach( it, _d->history )
-    {
-      Logger::warning( "       [%s]:%f", it->first.c_str(), it->second );
-    }
+    for( auto step : _d->history )
+      Logger::warning( "       [%02dx%02d]:%f", step.first.i(), step.first.j(), step.second );
+
     deleteLater();
     return;
   }

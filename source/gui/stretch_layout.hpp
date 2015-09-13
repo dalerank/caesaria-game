@@ -37,6 +37,7 @@ public:
 
   virtual void updateLayout();
   virtual void beforeDraw(gfx::Engine &painter);
+  virtual bool full() const;
   virtual void setupUI( const VariantMap& stream );
 
 protected:
@@ -63,6 +64,8 @@ class VLayout : public Layout
 public:
   VLayout( Widget* parent );
   VLayout( Widget* parent, const Rect& rect, int id );
+
+  virtual bool full() const;
 };
 
 }// end namespace gui

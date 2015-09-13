@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -18,7 +18,7 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../../SDL_internal.h"
 
 #if SDL_AUDIO_DRIVER_ALSA
 
@@ -241,25 +241,25 @@ ALSA_WaitDevice(_THIS)
         tmp = ptr[3]; ptr[3] = ptr[5]; ptr[5] = tmp; \
     }
 
-static __inline__ void
+static SDL_INLINE void
 swizzle_alsa_channels_6_64bit(_THIS)
 {
     SWIZ6(Uint64);
 }
 
-static __inline__ void
+static SDL_INLINE void
 swizzle_alsa_channels_6_32bit(_THIS)
 {
     SWIZ6(Uint32);
 }
 
-static __inline__ void
+static SDL_INLINE void
 swizzle_alsa_channels_6_16bit(_THIS)
 {
     SWIZ6(Uint16);
 }
 
-static __inline__ void
+static SDL_INLINE void
 swizzle_alsa_channels_6_8bit(_THIS)
 {
     SWIZ6(Uint8);
@@ -272,7 +272,7 @@ swizzle_alsa_channels_6_8bit(_THIS)
  * Called right before feeding this->hidden->mixbuf to the hardware. Swizzle
  *  channels from Windows/Mac order to the format alsalib will want.
  */
-static __inline__ void
+static SDL_INLINE void
 swizzle_alsa_channels(_THIS)
 {
     if (this->spec.channels == 6) {
@@ -320,7 +320,7 @@ ALSA_PlayDevice(_THIS)
                 /* Hmm, not much we can do - abort */
                 fprintf(stderr, "ALSA write failed (unrecoverable): %s\n",
                         ALSA_snd_strerror(status));
-                this->enabled = 0;
+                SDL_OpenedAudioDeviceDisconnected(this);
                 return;
             }
             continue;
@@ -465,7 +465,7 @@ ALSA_set_buffer_size(_THIS, snd_pcm_hw_params_t *params, int override)
 }
 
 static int
-ALSA_OpenDevice(_THIS, const char *devname, int iscapture)
+ALSA_OpenDevice(_THIS, void *handle, const char *devname, int iscapture)
 {
     int status = 0;
     snd_pcm_t *pcm_handle = NULL;

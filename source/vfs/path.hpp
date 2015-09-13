@@ -63,6 +63,7 @@ public:
 
   std::string extension() const;
   bool haveExtension() const;
+  unsigned int hash() const;
   std::string removeExtension() const;
   Path changeExtension( const std::string& newExtension ) const;
   bool isMyExtension( const std::string& ext, bool checkCase=true ) const;

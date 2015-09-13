@@ -210,8 +210,8 @@ void Chief::Impl::drawReportRow( AdviceType type, std::string text, NColor color
 
 void Chief::Impl::drawEmploymentState()
 {
-  statistic::WorkersInfo wInfo = statistic::getWorkersNumber( city );
-  int workless = statistic::getWorklessPercent( city );
+  Statistic::WorkersInfo wInfo = city->statistic().workers.details();
+  int workless = city->statistic().workers.worklessPercent();
   std::string text;
   NColor color = DefaultColors::black;
 
@@ -252,7 +252,7 @@ void Chief::Impl::drawProfitState()
 
 void Chief::Impl::drawMigrationState()
 {
-  city::MigrationPtr migration = ptr_cast<Migration>( city->findService( Migration::defaultName() ) );
+  MigrationPtr migration = city->statistic().services.find<Migration>();
 
   std::string text = _("##migration_unknown_reason##");
   if( migration.isValid() )
@@ -264,18 +264,8 @@ void Chief::Impl::drawMigrationState()
 }
 
 void Chief::Impl::drawFoodStockState()
-{ 
-  SmartList<GoodsUpdater> goodsUpdaters;
-  goodsUpdaters << city->services();
-
-  bool romeSendWheat = false;
-  foreach( it, goodsUpdaters )
-  {
-    if( (*it)->goodType() == good::wheat )
-    {
-      romeSendWheat = true;
-    }
-  }
+{   
+  bool romeSendWheat = city->statistic().goods.isRomeSend( good::wheat );
 
   std::string text = _("##food_stock_unknown_reason##");
   if( romeSendWheat )
@@ -284,8 +274,7 @@ void Chief::Impl::drawFoodStockState()
   }
   else
   {
-    InfoPtr info;
-    info << city->findService( city::Info::defaultName() );
+    InfoPtr info = city->statistic().services.find<Info>();
 
     if( info.isValid() )
     {
@@ -319,8 +308,7 @@ void Chief::Impl::drawFoodStockState()
 void Chief::Impl::drawFoodConsumption()
 {
   std::string text;
-  city::InfoPtr info;
-  info << city->findService( Info::defaultName() );
+  city::InfoPtr info = city->statistic().services.find<Info>();
 
   int fk = info->lastParams()[ Info::foodKoeff ];
 
@@ -351,8 +339,7 @@ void Chief::Impl::drawFoodConsumption()
 void Chief::Impl::drawMilitary()
 {
   StringArray reasons;
-  city::MilitaryPtr mil;
-  mil << city->findService( city::Military::defaultName() );
+  MilitaryPtr mil = city->statistic().services.find<Military>();
   bool isBesieged = false;
 
   if( mil.isValid() )
@@ -374,15 +361,15 @@ void Chief::Impl::drawMilitary()
     {
       int minDistance = infinteDistance;
       world::ObjectPtr maxThreat;
-      foreach( i, objs )
+      for( auto obj : objs )
       {
-        if( is_kind_of<world::Barbarian>( *i ) ||
-            is_kind_of<world::RomeChastenerArmy>( *i ) )
+        if( is_kind_of<world::Barbarian>( obj ) ||
+            is_kind_of<world::RomeChastenerArmy>( obj ) )
         {
-          int distance = city->location().distanceTo( (*i)->location() );
+          int distance = city->location().distanceTo( obj->location() );
           if( minDistance > distance )
           {
-            maxThreat = *i;
+            maxThreat = obj;
             minDistance = distance;
           }
         }
@@ -409,12 +396,12 @@ void Chief::Impl::drawMilitary()
 
   if( reasons.empty() )
   {
-    BarracksList barracks = statistic::getObjects<Barracks>( city, object::barracks );
+    BarracksList barracks = city->statistic().objects.find<Barracks>();
 
     bool needWeapons = false;
-    foreach( it, barracks )
+    for( auto barrack : barracks )
     {
-      if( (*it)->isNeedWeapons() )
+      if( barrack->isNeedWeapons() )
       {
         needWeapons = true;
         break;
@@ -439,7 +426,7 @@ void Chief::Impl::drawCrime()
 {
   std::string text;
 
-  DisorderPtr ds = statistic::getService<Disorder>( city );
+  DisorderPtr ds = city->statistic().services.find<Disorder>();
   if( ds.isValid() )
   {
     text = ds->reason();
@@ -454,7 +441,7 @@ void Chief::Impl::drawHealth()
 {
   std::string text;
 
-  HealthCarePtr cityHealth = statistic::getService<HealthCare>( city );
+  HealthCarePtr cityHealth = city->statistic().services.find<HealthCare>();
   if( cityHealth.isValid() )
   {
     text = cityHealth->reason();
@@ -476,7 +463,7 @@ void Chief::Impl::drawEducation()
 
   for( int i=0; avTypes[i] != object::unknown; i++ )
   {
-    HouseList houses = statistic::getEvolveHouseReadyBy( city, avTypes[ i ] );
+    HouseList houses = city->statistic().houses.ready4evolve( avTypes[ i ] );
     if( houses.size() > 0 )
     {
       reasons << avReasons[i];
@@ -494,7 +481,7 @@ void Chief::Impl::drawEducation()
 void Chief::Impl::drawReligion()
 {
   std::string text = "##advchief_religion_unknown##";
-  ReligionPtr srvc = statistic::getService<Religion>( city );
+  ReligionPtr srvc = city->statistic().services.find<Religion>();
   if( srvc.isValid() )
   {
 
@@ -506,7 +493,7 @@ void Chief::Impl::drawEntertainment()
 {
   StringArray reasons;
 
-  FestivalPtr srvc = statistic::getService<Festival>( city );
+  FestivalPtr srvc = city->statistic().services.find<Festival>();
   if( srvc.isValid() )
   {
     int monthFromLastFestival = srvc->lastFestival().monthsTo( game::Date::current() );
@@ -516,7 +503,7 @@ void Chief::Impl::drawEntertainment()
     }
   }
 
-  CultureRatingPtr cltr = statistic::getService<CultureRating>( city );
+  CultureRatingPtr cltr = city->statistic().services.find<CultureRating>();
   if( cltr.isValid() )
   {
     int theaterCoverage = cltr->coverage( CultureRating::covTheatres );
@@ -526,7 +513,7 @@ void Chief::Impl::drawEntertainment()
     }
   }
 
-  int hippodromeCoverage = statistic::getEntertainmentCoverage( city, Service::hippodrome );
+  int hippodromeCoverage = city->statistic().entertainment.coverage( Service::hippodrome );
   if( hippodromeCoverage >= serviceAwesomeCoverage )
   {
     reasons << "##current_races_runs_for_another##";
@@ -537,7 +524,7 @@ void Chief::Impl::drawEntertainment()
 
 void Chief::Impl::drawSentiment()
 {
-  SentimentPtr sentiment = statistic::getService<Sentiment>( city );
+  SentimentPtr sentiment = city->statistic().services.find<Sentiment>();
 
   std::string text = sentiment.isValid()
                      ? sentiment->reason()

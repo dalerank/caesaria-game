@@ -221,7 +221,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
     if( oTile.overlay().isValid() )
       return;
 
-    city::AreaInfo info = { city, oTile.pos(), TilesArray() };
+    city::AreaInfo info( city, oTile.pos() );
     overlay->build( info );
     city->addOverlay( overlay );
   }  

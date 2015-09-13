@@ -129,9 +129,9 @@ bool Mission::load( const std::string& filename, Game& game )
     game::Date::instance().init( vm[ "date" ].toDateTime() );
 
     VariantMap vm_events = vm.get( "events" ).toMap();
-    foreach( it, vm_events )
+    for( auto&& item : vm_events )
     {
-      GameEventPtr e = PostponeEvent::create( it->first, it->second.toMap() );
+      GameEventPtr e = PostponeEvent::create( item.first, item.second.toMap() );
       e->dispatch();
     }
 
@@ -153,9 +153,9 @@ bool Mission::load( const std::string& filename, Game& game )
     game.empire()->emperor().updateRelation( city->name(), 50 );
 
     VariantMap fishpointsVm = vm.get( "fishpoints" ).toMap();
-    foreach( it, fishpointsVm )
+    for( auto&& item : fishpointsVm )
     {
-      GameEventPtr e = ChangeFishery::create( it->second.toTilePos(), ChangeFishery::add );
+      GameEventPtr e = ChangeFishery::create( item.second.toTilePos(), ChangeFishery::add );
       e->dispatch();
     }
 
@@ -165,9 +165,9 @@ bool Mission::load( const std::string& filename, Game& game )
 
     //reseting divinities festival date
     DivinityList gods = rome::Pantheon::instance().all();
-    foreach( it, gods )
+    for( auto it : gods )
     {
-      rome::Pantheon::doFestival( (*it)->name(), 0 );
+      rome::Pantheon::doFestival( it->name(), 0 );
     }
 
     return true;

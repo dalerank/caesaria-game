@@ -18,8 +18,6 @@
 #ifndef _CAESARIA_STEAM_HANDLER_INCLUDE_H_
 #define _CAESARIA_STEAM_HANDLER_INCLUDE_H_
 
-#ifdef CAESARIA_USE_STEAM
-
 #include <string>
 #include "gfx/picture.hpp"
 #include "core/signals.hpp"
@@ -34,6 +32,8 @@ enum AchievementType
   achievementFirstWin = 2,
   achv_count
 };
+
+bool available();
 
 bool checkSteamRunning();
 bool connect();
@@ -53,7 +53,5 @@ std::string userName();
 const gfx::Picture& userImage();
 
 }
-
-#endif  //CAESARIA_USE_STEAM
 
 #endif  //_CAESARIA_STEAM_HANDLER_INCLUDE_H_

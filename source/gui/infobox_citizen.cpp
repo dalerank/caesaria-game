@@ -24,7 +24,6 @@
 #include "walker/constants.hpp"
 #include "walker/helper.hpp"
 #include "gfx/picture.hpp"
-#include "city/helper.hpp"
 #include "core/gettext.hpp"
 #include "good/productmap.hpp"
 #include "events/playsound.hpp"
@@ -36,6 +35,7 @@
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
 #include "gfx/helper.hpp"
+#include "gfx/tilemap.hpp"
 #include "core/metric.hpp"
 #include "events/movecamera.hpp"
 

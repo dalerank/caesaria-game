@@ -72,7 +72,7 @@ void Crime::drawTile( Engine& engine, Tile& tile, const Point& offset)
     }
     else if( overlay->type() == object::house )
     {
-      HousePtr house = ptr_cast<House>( overlay );
+      auto house = overlay.as<House>();
       crime = (int)house->getServiceValue( Service::crime );
       needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty(); // In case of vacant terrain
 
@@ -117,7 +117,7 @@ void Crime::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        HousePtr house = ptr_cast<House>( tile->overlay() );
+        auto house = tile->overlay().as<House>();
         if( house != 0 )
         {
           int crime = (int)house->getServiceValue( Service::crime );

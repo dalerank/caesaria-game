@@ -21,7 +21,6 @@
 #include "gfx/tile.hpp"
 #include "core/utils.hpp"
 #include "core/gettext.hpp"
-#include "city/helper.hpp"
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "walker/walker.hpp"

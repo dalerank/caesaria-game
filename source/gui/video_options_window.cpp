@@ -39,12 +39,15 @@ class VideoOptions::Impl
 {
 public:
   GameAutoPause locker;
-  Signal1<Size> onScreenSizeChangeSignal;
-  Signal1<bool> onFullScreeChangeSignal;
-  Signal0<> onCloseSignal;
   PushButton* btnSwitchMode;
   bool fullScreen;
   bool haveChanges;
+
+  struct {
+    Signal1<Size> onScreenSizeChange;
+    Signal1<bool> onFullScreeChange;
+    Signal0<> onClose;
+  } signal;
 };
 
 VideoOptions::VideoOptions(Widget* parent, gfx::Engine::Modes modes, bool fullscreen )
@@ -63,11 +66,13 @@ VideoOptions::VideoOptions(Widget* parent, gfx::Engine::Modes modes, bool fullsc
   if( lbxModes )
   {
     std::string modeStr;
-    foreach( mode, modes )
+
+    for( auto mode : modes )
     {
-      modeStr = utils::format( 0xff, "%dx%d", mode->width(), mode->height() );
+      modeStr = utils::format( 0xff, "%dx%d", mode.width(), mode.height() );
       ListBoxItem& item = lbxModes->addItem( modeStr );
-      item.setTag( (mode->width() << 16) + mode->height());
+      item.setTag( (mode.width() << 16) + mode.height());
+      item.setTextAlignment( align::center, align::center );
     }
   }
 
@@ -83,55 +88,56 @@ VideoOptions::~VideoOptions( void ){}
 bool VideoOptions::onEvent(const NEvent& event)
 {
   if( event.EventType == sEventGui )
-
-  switch( event.gui.type )
   {
-  case guiButtonClicked:
-  {
-    switch( event.gui.caller->ID() )
+    switch( event.gui.type )
     {
-    case 1:
+    case guiButtonClicked:
     {
-      _d->fullScreen = !_d->fullScreen;
-      _d->onFullScreeChangeSignal( _d->fullScreen );
-      _d->haveChanges = true;
-      _update();
-    }
-    break;
-
-    default:
-      if( _d->haveChanges )
+      switch( event.gui.caller->ID() )
       {
-        dialog::Information( ui(), "", _("##need_restart_for_apply_changes##"));
+      case 1:
+      {
+        _d->fullScreen = !_d->fullScreen;
+        emit _d->signal.onFullScreeChange( _d->fullScreen );
+        _d->haveChanges = true;
+        _update();
       }
-      deleteLater();
-    break;
+      break;
+
+      default:
+        if( _d->haveChanges )
+        {
+          dialog::Information( ui(), "", _("##need_restart_for_apply_changes##"));
+        }
+        deleteLater();
+      break;
+      }
+
+      return true;
     }
+    break;
 
-    return true;
-  }
-  break;
+    case guiListboxChanged:
+    {
+      _d->haveChanges = true;
+      ListBox* lbx = safety_cast< ListBox* >( event.gui.caller );
 
-  case guiListboxChanged:
-  {
-    _d->haveChanges = true;
-    ListBox* lbx = safety_cast< ListBox* >( event.gui.caller );
+      int tag = lbx->selectedItem().tag();
 
-    int tag = lbx->selectedItem().tag();
+      emit _d->signal.onScreenSizeChange( Size( (tag>>16) & 0xffff, tag & 0xffff ) );
+    }
+    break;
 
-    emit _d->onScreenSizeChangeSignal( Size( (tag>>16) & 0xffff, tag & 0xffff ) );
-  }
-  break;
-
-  default: break;
+    default: break;
+    }
   }
 
   return Widget::onEvent( event );
 }
 
-Signal1<Size>& VideoOptions::onSreenSizeChange() {  return _d->onScreenSizeChangeSignal; }
-Signal1<bool>& VideoOptions::onFullScreenChange(){  return _d->onFullScreeChangeSignal; }
-Signal0<>& VideoOptions::onClose(){  return _d->onCloseSignal; }
+Signal1<Size>& VideoOptions::onSreenSizeChange() {  return _d->signal.onScreenSizeChange; }
+Signal1<bool>& VideoOptions::onFullScreenChange(){  return _d->signal.onFullScreeChange; }
+Signal0<>& VideoOptions::onClose(){  return _d->signal.onClose; }
 
 void VideoOptions::_update()
 {

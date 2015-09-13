@@ -21,7 +21,7 @@
 unsigned int CitizenGroup::count() const
 {
   unsigned int ret = 0;
-  foreach( t,_peoples) { ret += *t; }
+  for( auto&& item : _peoples) { ret += item; }
   return ret;
 }
 
@@ -184,7 +184,7 @@ CitizenGroup CitizenGroup::operator+(const CitizenGroup &b) const
 }
 
 bool CitizenGroup::empty() const {  return (_peoples.empty() || (0 == count())); }
-void CitizenGroup::clear() { foreach( t,_peoples ) (*t) = 0; }
+void CitizenGroup::clear() { for( auto&& item :_peoples ) item = 0; }
 void CitizenGroup::set(const CitizenGroup& b) { _peoples = b._peoples; }
 
 void CitizenGroup::makeOld()
@@ -204,13 +204,13 @@ VariantList CitizenGroup::save() const
   VariantList ret;
 
   int index=0;
-  foreach( g,_peoples )
+  for( auto&& g :_peoples )
   {
-    if( *g > 0 )
+    if( g > 0 )
     {
       VariantList gv;
       gv.push_back( index );
-      gv.push_back( *g );
+      gv.push_back( g );
       ret.push_back( gv );
     }
     index++;
@@ -221,9 +221,9 @@ VariantList CitizenGroup::save() const
 
 void CitizenGroup::load(const VariantList& stream)
 {
-  foreach( g, stream )
+  for( auto&& g : stream )
   {
-    VariantList gv = g->toList();
+    VariantList gv = g.toList();
     unsigned int age = gv.get( 0, 0u );
     unsigned int count = gv.get( 1, 0u );
     _peoples[ age ] = count;

@@ -46,7 +46,7 @@ public:
 
   virtual void setColorMask( int rmask, int gmask, int bmask, int amask );
   virtual void resetColorMask();
-
+  virtual void setTitle(const std::string &title);
   virtual void setScale( float scale );
 
   virtual Batch loadBatch(const Picture& pic, const Rects& srcRects, const Rects& dstRects, const Rect* clipRect);
@@ -63,6 +63,7 @@ public:
   virtual void draw(const Batch& batch, Rect* clipRect);
 
   virtual void drawLine(const NColor &color, const Point &p1, const Point &p2);
+  virtual void drawLines(const NColor& color, const PointsArray& points);
 
   virtual unsigned int fps() const;
   virtual void createScreenshot( const std::string& filename );

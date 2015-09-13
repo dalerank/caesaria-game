@@ -27,6 +27,8 @@ struct DirectedAction
 
   DirectedAction(int a=0, Direction d=direction::none) : action(a), direction(d) {}
 
+  bool valid() const { return direction::none != direction; }
+
   inline bool operator<( const DirectedAction &a ) const
   {
     return ( action != a.action

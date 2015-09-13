@@ -27,7 +27,7 @@
 #include "core/color.hpp"
 #include "vfs/directory.hpp"
 #include "vfs/memfile.hpp"
-#include "core/timer.hpp"
+#include "core/debug_timer.hpp"
 
 #include <sstream>
 #include <iomanip>

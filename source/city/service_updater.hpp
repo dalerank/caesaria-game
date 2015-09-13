@@ -34,6 +34,8 @@ public:
   virtual void load(const VariantMap &stream);
   virtual VariantMap save() const;
 
+  virtual ~ServiceUpdater();
+
 private:
   ServiceUpdater( PlayerCityPtr city );
 

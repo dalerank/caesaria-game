@@ -21,6 +21,7 @@
 #include <string>
 #include "referencecounted.hpp"
 #include "smartptr.hpp"
+#include "singleton.hpp"
 #include "scopedptr.hpp"
 
 class LogWriter : public ReferenceCounted
@@ -32,8 +33,56 @@ public:
 
 typedef SmartPtr<LogWriter> LogWriterPtr;
 
-class Logger
+class SimpleLogger {
+public:
+  SimpleLogger(const std::string& category);
+
+  bool isDebugEnabled() const;
+
+  void debug(const char *fmt, ...);
+
+  void debug(const std::string &text);
+
+  void info(const char *fmt, ...);
+
+  void info(const std::string &text);
+
+  void warn(const char *fmt, ...);
+
+  void warn(const std::string &text);
+
+  void error(const char *fmt, ...);
+
+  void error(const std::string &text);
+
+  void fatal(const char *fmt, ...);
+
+  void fatal(const std::string &text);
+
+private:
+  SimpleLogger() {}
+  void write(const std::string &message, bool newline = true);
+
+  std::string _category;
+
+  enum class Severity : unsigned short {
+    DBG,
+    INFO,
+    WARN,
+    ERR,
+    FATAL
+  };
+
+  void log(Severity, const char *fmt, ...);
+  void llog(Severity, const std::string &text);
+  void vlog(Severity severity, const char *fmt, va_list args);
+
+  const std::string toS(Severity severity);
+};
+
+class Logger : public StaticSingleton<Logger>
 {
+  SET_STATICSINGLETON_FRIEND_FOR(Logger)
 public:
   typedef enum { consolelog=0, filelog, count } Type;
   static void warning( const char* fmt, ...);

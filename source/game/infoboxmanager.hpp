@@ -81,7 +81,7 @@ public:
 
 class Manager : public StaticSingleton<Manager>
 {
-  friend class StaticSingleton;
+  SET_STATICSINGLETON_FRIEND_FOR(Manager)
 public:
   void showHelp( PlayerCityPtr city, gui::Ui* gui, TilePos tile );
   void setShowDebugInfo( const bool showInfo );

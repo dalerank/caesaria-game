@@ -61,10 +61,7 @@ void Relation::update(const Gift &gift)
   change( favourUpdate );
 }
 
-void Relation::change(float delta)
-{
-  _value += delta;
-}
+void Relation::change(float delta) { _value += delta; }
 
 void Relation::reset()
 {
@@ -110,13 +107,13 @@ void Relation::load(const VariantMap &stream)
 VariantMap Relations::save() const
 {
   VariantMap ret;
-  foreach( it, *this )
-    ret[ it->first ] = it->second.save();
+  for( auto it : *this )
+    ret[ it.first ] = it.second.save();
 
   return ret;
 }
 
-const Relation &Relations::get(const std::string &name) const
+const Relation& Relations::get(const std::string &name) const
 {
   static const Relation invalid;
 
@@ -126,13 +123,13 @@ const Relation &Relations::get(const std::string &name) const
 
 void Relations::load(const VariantMap &stream)
 {
-  foreach( it, stream )
-    {
-      Relation r;
-      r.load( it->second.toMap() );
+  for( auto item : stream )
+  {
+    Relation r;
+    r.load( item.second.toMap() );
 
-      (*this)[ it->first ] = r;
-    }
+    (*this)[ item.first ] = r;
+  }
 }
 
 }//end namespace world

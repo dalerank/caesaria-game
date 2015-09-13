@@ -127,8 +127,8 @@ void Decorator::basicText(Picture& dstpic, const Point& pos, const std::string& 
 
 void Decorator::reverseYoffset(Pictures& stack)
 {
-  foreach( it, stack )
-    it->setOffset( Point( it->offset().x(), -it->offset().y() ) );
+  for( auto&& pic : stack )
+    pic.setOffset( Point( pic.offset().x(), -pic.offset().y() ) );
 }
 
 void Decorator::drawPanel( Pictures& stack, const Rect& rectangle, int picId )
@@ -196,7 +196,7 @@ void Decorator::draw( Picture& dstpic, const Rect& rectangle, Mode mode, bool us
   break;
 
   default:
-    Logger::warning( "WARNING !!!: Unsupport draw instuctions" );
+    Logger::warning( "!!!Warning: Unsupport draw instuctions" );
   break;
   }
 

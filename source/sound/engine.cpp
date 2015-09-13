@@ -27,7 +27,6 @@
 #include <SDL_mixer.h>
 #include "game/settings.hpp"
 #include "core/exception.hpp"
-#include "thread/mutex.hpp"
 #include "core/logger.hpp"
 #include "vfs/directory.hpp"
 #include "core/foreach.hpp"
@@ -58,13 +57,13 @@ struct Sample
 
   void setVolume( int game, int type )
   {
-    if( channel >= 0 )
+    if( chunk )
     {
       float result = math::clamp<int>( volume, 0, 100 ) / 100.f;
 
-      result = ( result * (type/100.f) * (game/100.f) ) * ( 2 * MIX_MAX_VOLUME );
+      result = ( result * (type/100.f) * (game/100.f) ) * MIX_MAX_VOLUME;
 
-      Mix_Volume( channel, (int)result );
+      Mix_VolumeChunk( chunk, (int)result );
     }
   }
 
@@ -72,6 +71,7 @@ struct Sample
   {
     if( channel >= 0 )
       Mix_FreeChunk( chunk );
+    chunk = 0;
   }
 };
 
@@ -84,7 +84,7 @@ public:
 class Engine::Impl
 {
 public:
-  static const int maxSamplesNumner = 64;
+  static const int maxSamplesNumber = 64;
   bool useSound;
 
   typedef std::map< audio::SoundType, int > Volumes;
@@ -107,12 +107,6 @@ public:
   vfs::Path findFullPath(const std::string& sampleName );
 };
 
-Engine& Engine::instance()
-{
-  static Engine _instance;
-  return _instance;
-}
-
 void Engine::setVolume( audio::SoundType type, int value)
 {
   _d->volumes[ type ] = value;
@@ -122,9 +116,9 @@ void Engine::setVolume( audio::SoundType type, int value)
 void Engine::loadAlias(const vfs::Path& filename)
 {
   VariantMap alias = config::load( filename );
-  foreach( it, alias )
+  for( auto item : alias )
   {
-    _d->aliases[ Hash( it->first ) ] = it->second.toString();
+    _d->aliases[ Hash( item.first ) ] = item.second.toString();
   }
 }
 
@@ -145,6 +139,8 @@ Engine::Engine() : _d( new Impl )
   _d->volumes[ theme ] = maxVolumeValue() / 2;
   _d->volumes[ ambient ] = maxVolumeValue() / 4;
   _d->volumes[ speech ] = maxVolumeValue() / 2;
+  _d->volumes[ effects ] = maxVolumeValue() / 2;
+  _d->volumes[ infobox ] = maxVolumeValue() / 2;
 
   _d->extensions << ".ogg" << ".wav";
   addFolder( Directory() );
@@ -222,15 +218,15 @@ Path Engine::Impl::findFullPath( const std::string& sampleName )
   if( sPath.extension().empty() )
   {
     Path fPath;
-    foreach( it, extensions )
+    for( auto ext : extensions )
     {
-      fPath = sPath.toString() + *it;
+      fPath = sPath.toString() + ext;
       if( fPath.exist() )
         return fPath;
 
-      foreach( dirIt, folders )
+      for( auto folder : folders )
       {
-        rPath = dirIt->find( fPath, Path::ignoreCase );
+        rPath = folder.find( fPath, Path::ignoreCase );
         if( !rPath.empty() )
           return rPath;
       }
@@ -241,9 +237,9 @@ Path Engine::Impl::findFullPath( const std::string& sampleName )
     if( sPath.exist() )
       return sPath;
 
-    foreach( dirIt, folders )
+    for( auto folder : folders )
     {
-      rPath = dirIt->find( sPath, Path::ignoreCase );
+      rPath = folder.find( sPath, Path::ignoreCase );
       if( !rPath.empty() )
         return rPath;
     }
@@ -259,20 +255,23 @@ unsigned int Engine::_loadSound(const std::string& sampleName)
 
   std::string sampleCanonical = utils::localeLower( sampleName );
 
-  unsigned int sampleHash = Hash( sampleCanonical );
-  if( _d->samples.size()<Impl::maxSamplesNumner )
+  if( _d->samples.size()<Impl::maxSamplesNumber )
   {
+    unsigned int sampleHash = Hash( sampleCanonical );
     Samples::iterator i = _d->samples.find( sampleHash );
 
     if( i != _d->samples.end() )
     {
-      return true;
+      return sampleHash;
     }
 
     vfs::Path realPath = _d->findFullPath( sampleCanonical );
 
     if( realPath.toString().empty() )
-      return false;
+    {
+      Logger::warning( "SoundEngine: could not find sound %s", sampleName.c_str() );
+      return 0;
+    }
 
     Sample sample;
 
@@ -282,7 +281,8 @@ unsigned int Engine::_loadSound(const std::string& sampleName)
 
     if( data.empty() )
     {
-      return false;
+      Logger::warning( "SoundEngine: could not load sound (%s)", realPath.toCString() );
+      return 0;
     }
 
     sample.channel = -1;
@@ -290,17 +290,18 @@ unsigned int Engine::_loadSound(const std::string& sampleName)
     sample.sound = realPath.toString();
     if(sample.chunk == NULL)
     {
-      Logger::warning( "SoundEngine: could not load sound (%s)", SDL_GetError() );
-      return false;
+      Logger::warning( "SoundEngine: could not load sound (%s) with error:%s", realPath.toCString(), SDL_GetError() );
+      return 0;
     }
 
     _d->samples[ sampleHash ] = sample;
+    return sampleHash;
   }
 
-  return sampleHash;
+  return 0;
 }
 
-int Engine::play( std::string sampleName, int volValue, SoundType type )
+int Engine::play(std::string sampleName, int volValue, SoundType type, bool force)
 {
   if(!_d->useSound )
     return -1;
@@ -325,7 +326,8 @@ int Engine::play( std::string sampleName, int volValue, SoundType type )
       return -1;
     }
 
-    if( (i->second.channel == -1 )
+    if( force
+        || (i->second.channel == -1 )
         || (i->second.channel >= 0 && Mix_Playing( i->second.channel ) <= 0) )
     {
 
@@ -347,7 +349,7 @@ int Engine::play( std::string sampleName, int volValue, SoundType type )
   return -1;
 }
 
-int Engine::play(const std::string &rc, int index, int volume, SoundType type)
+int Engine::play(const std::string &rc, int index, int volume, SoundType type, bool force)
 {
   std::string filename = utils::format( 0xff, "%s_%05d", rc.c_str(), index );
   return play( filename, volume, type );
@@ -393,11 +395,11 @@ void Engine::stop(int channel)
   if( !_d->useSound )
     return;
 
-  foreach( it,_d->samples )
+  for( auto sample :_d->samples )
   {
-    if( it->second.channel == channel )
+    if( sample.second.channel == channel )
     {
-      it->second.finished = true;
+      sample.second.finished = true;
       return;
     }
   }
@@ -410,11 +412,10 @@ void Engine::_updateSamplesVolume()
 
   int gameLvl = volume( audio::game );
 
-  foreach( it, _d->samples )
+  for( auto sample : _d->samples )
   {
-    Sample& sample = it->second;
-    int typeVlm = volume( sample.typeSound );
-    sample.setVolume( gameLvl, typeVlm );
+    int typeVlm = volume( sample.second.typeSound );
+    sample.second.setVolume( gameLvl, typeVlm );
   }
 }
 

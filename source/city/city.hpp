@@ -31,6 +31,7 @@ namespace city
 class VictoryConditions;
 class Scribes;
 class ActivePoints;
+class Statistic;
 namespace trade { class Options; }
 namespace development { class Options; }
 }
@@ -49,16 +50,14 @@ public:
   typedef enum { adviserEnabled=0, godEnabled, fishPlaceEnabled, updateRoads,
                  forceBuild, warningsEnabled, updateTiles, zoomEnabled, zoomInvert,
                  fireKoeff, barbarianAttack, c3gameplay, difficulty, legionAttack, climateType,
-                 collapseKoeff, highlightBuilding, destroyEpidemicHouses } OptionType;
+                 collapseKoeff, highlightBuilding, destroyEpidemicHouses, forestFire,
+                 forestGrow, warfNeedTimber } OptionType;
 
   static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr mayor );
   virtual ~PlayerCity();
 
   /** Call every step */
   virtual void timeStep(unsigned int time);  // performs one simulation step
-
-  /** Return array of walkers with current type */
-  const WalkerList& walkers(walker::Type type );
 
   /** Return array of walkers in current tile */
   const WalkerList& walkers(const TilePos& pos);
@@ -114,7 +113,6 @@ public:
   OverlayPtr getOverlay( const TilePos& pos ) const;
 
   /** Get all static objects in city */
-  OverlayList& overlays();
   const OverlayList& overlays() const;
 
   city::ActivePoints& activePoints();
@@ -156,6 +154,8 @@ public:
 
   /** Change tile map in city */
   void resize(unsigned int size );
+
+  const city::Statistic& statistic() const;
    
 signals public:
   Signal1<int>& onPopulationChanged();

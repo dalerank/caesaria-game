@@ -27,6 +27,7 @@
 #include "core/variant_map.hpp"
 #include "objects/building.hpp"
 #include "gfx/helper.hpp"
+#include "gfx/tilemap.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "walkers_factory.hpp"
 
@@ -95,7 +96,7 @@ void TraineeWalker::setBase(BuildingPtr originBuilding)
 
 BuildingPtr TraineeWalker::receiver() const
 {
-  return ptr_cast<Building>( _city()->getOverlay( _d->destLocation ) );
+  return _map().overlay( _d->destLocation ).as<Building>();
 }
 
 void TraineeWalker::_computeWalkerPath( bool roadOnly )
@@ -107,7 +108,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
     return;
   }
 
-  BuildingPtr base = ptr_cast<Building>( _city()->getOverlay( _d->baseLocation ) );
+  BuildingPtr base = ( _city()->getOverlay( _d->baseLocation ).as<Building>());
   if( !base.isValid() )
   {
     Logger::warning( "!!! WARNING: trainee walker base is null at [%d,%d]", _d->baseLocation.i(), _d->baseLocation.j() );
@@ -120,11 +121,8 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   Pathway finalPath;
 
   BuildingList buildings;
-  foreach( buildingType, _d->necBuildings )
-  {
-    BuildingList tmpBuildings = city::statistic::getObjects<Building>( _city(), *buildingType );
-    buildings.insert( buildings.end(), tmpBuildings.begin(), tmpBuildings.end() );
-  }
+  for( auto buildingType : _d->necBuildings )
+    buildings.append( _city()->statistic().objects.find<Building>( buildingType ) );
 
   TilesArray startArea = roadOnly ? base->roadside() : base->enterArea();
 
@@ -133,9 +131,8 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   unsigned int minDistance = _d->maxDistance;
 
   bool isNeedTrainee = false;
-  foreach( it, buildings )
+  for( auto bld : buildings )
   {
-    BuildingPtr bld = *it;
     float howMuchNeedMyService = bld->evaluateTrainee( type() );
     if( howMuchNeedMyService > 0 )
     {
@@ -153,15 +150,13 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
 
   std::set<BuildingPtr> checkedBuilding;
 
-  foreach( itile, startArea )
+  for( auto itile : startArea )
   {
-    TilePos startPos = (*itile)->pos();
+    TilePos startPos = itile->pos();
 
-    foreach( it, buildings )
+    for( auto bld : buildings )
     {
-      BuildingPtr bld = *it;
-
-      bool buildingAlsoServicing = checkedBuilding.count( *it ) > 0;
+      bool buildingAlsoServicing = checkedBuilding.count( bld ) > 0;
       if( buildingAlsoServicing )
         continue;
 
@@ -204,10 +199,10 @@ void TraineeWalker::_checkDestination(const object::Type buildingType, Propagato
 {
   DirectPRoutes pathWayList = pathPropagator.getRoutes( buildingType );
 
-  foreach( item, pathWayList )
+  for( auto item : pathWayList )
   {
     // for every building within range
-    BuildingPtr building = ptr_cast<Building>( item->first );
+    BuildingPtr building = item.first.as<Building>();
 
     float need = building->evaluateTrainee( type() );
     if (need > _d->maxNeed)
@@ -245,7 +240,7 @@ void TraineeWalker::_reachedPathway()
   Walker::_reachedPathway();
   deleteLater();
 
-  BuildingPtr dest = ptr_cast<Building>( _city()->getOverlay( _d->destLocation ) );
+  BuildingPtr dest = _map().overlay( _d->destLocation ).as<Building>();
   if( dest.isValid() )
   {
     dest->updateTrainee( this );
