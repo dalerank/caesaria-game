@@ -14,6 +14,8 @@ set( TILESET_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/core/bytearray.cpp"
       "${BASE_SOURCE_DIR}/core/logger.cpp"
       "${BASE_SOURCE_DIR}/core/time.cpp"
+      "${BASE_SOURCE_DIR}/core/json.cpp"
+      "${BASE_SOURCE_DIR}/core/saveadapter.cpp"
       "${BASE_SOURCE_DIR}/thread/thread.cpp"
       "${BASE_SOURCE_DIR}/thread/threadevent.cpp"
       "${BASE_SOURCE_DIR}/thread/threadtask.cpp"
@@ -39,6 +41,7 @@ set( TILESET_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/vfs/filenative_impl.cpp"
       "${BASE_SOURCE_DIR}/core/stacktrace.cpp"
       "${BASE_SOURCE_DIR}/core/osystem.cpp"
+      "tileset.model"
 )
 
 include_directories( ${BASE_SOURCE_DIR} )
@@ -102,6 +105,12 @@ ADD_CUSTOM_COMMAND(
     TARGET ${PROJECT_NAME}
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${TILESET_BINARY_FILENAME}" "${WORK_DIR}/tools/tileset/${TILESET_BINARY_FILENAME}"
+)
+
+ADD_CUSTOM_COMMAND(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/tileset/tileset.model" "${WORK_DIR}/tools/tileset"
 )
 
 if(EXT_BINDIR)

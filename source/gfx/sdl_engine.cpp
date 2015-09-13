@@ -659,6 +659,12 @@ void SdlEngine::resetColorMask()
   _d->mask.reset();
 }
 
+void SdlEngine::setTitle(const std::string& title)
+{
+  if( _d->window )
+    SDL_SetWindowTitle( _d->window, title.c_str() );
+}
+
 void SdlEngine::setScale( float scale )
 {
   bool needDraw = _d->batcher.finish();

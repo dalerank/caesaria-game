@@ -20,7 +20,9 @@
 #include "vfs/file.hpp"
 #include "gfx/IMG_savepng.h"
 #include "core/logger.hpp"
+#include "core/saveadapter.hpp"
 #include "gfx/loader.hpp"
+#include "core/variant_map.hpp"
 #include "core/debug_timer.hpp"
 #include "gfx/sdl_engine.hpp"
 #include "core/stringarray.hpp"
@@ -227,9 +229,11 @@ class AtlasGenerator
 public:
   std::vector<Texture*> textures;
 
-  void run(std::string name, int width, int height, int padding, bool fileNameOnly, bool unitCoordinates, const StringArray& dirs)
+  void run(const std::string& name, int width, int height, int padding, bool fileNameOnly, bool unitCoordinates,
+           const StringArray& dirs, const StringArray& files = StringArray())
 	{
     StringArray imageFiles;
+    imageFiles << files;
 
     for( auto str : dirs )
 		{
@@ -324,6 +328,208 @@ public:
   }
 };
 
+struct ArchiveConfig
+{
+  struct Item
+  {
+    typedef enum { atlas, file } Type;
+    const std::string& repo;
+    Type type;
+    std::string folder;
+    StringArray files;
+
+    Item( const std::string& refrepo ) :
+      repo( refrepo )
+    {
+
+    }
+
+    void load( const VariantMap& vm )
+    {
+      std::string typestr = vm.get( "type" ).toString();
+      type = (typestr == "atlas" ? atlas : file);
+      VARIANT_LOAD_STR( folder, vm );
+
+      StringArray rfiles = vm.get( "files" ).toStringArray();
+      vfs::Directory repoFolder( repo );
+      vfs::Directory addFolder( folder );
+
+      vfs::Directory mainFolder( repoFolder/addFolder );
+
+      if( !mainFolder.exist() )
+        return;
+
+      const vfs::Entries entries = mainFolder.entries();
+      for( auto& str : rfiles )
+      {
+        if( str.back() == '*' )
+        {
+          std::string templateStr = str;
+          templateStr.resize( str.size() - 1 );
+
+          for( auto& item : entries.items() )
+          {
+            if( item.name.toString().compare(0, templateStr.size(), templateStr) == 0 )
+            {
+              files.push_back( item.fullpath.toString() );
+            }
+          }
+        }
+        else
+        {
+          vfs::Path filepath( str );
+          files.push_back( (mainFolder/filepath).toString() );
+        }
+      }
+    }
+  };
+
+  struct Items : public std::vector<Item>
+  {
+    const std::string& repo;
+
+    Items( const std::string& refrepo )
+     : repo( refrepo )
+    {
+
+    }
+
+    void add()
+    {
+      push_back( Item( repo ) );
+    }
+
+    void load( const VariantMap& vm )
+    {
+      for( auto& i : vm )
+      {
+        push_back( Item( repo ) );
+        back().load( i.second.toMap() );
+      }
+    }
+  };
+
+  ArchiveConfig( const std::string& refRepo ) :
+    items( refRepo )
+  {
+
+  }
+
+  //const std::string& repo;
+  std::string name;
+  std::string archive;
+  int margin;
+  bool ignorePath;
+  bool floatCoordinates;
+  Size size;
+  Items items;
+
+  void add()
+  {
+    items.add();
+  }
+
+  void load( const VariantMap& vm )
+  {
+    VARIANT_LOAD_STR( name, vm )
+    VARIANT_LOAD_STR( archive, vm )
+    VARIANT_LOAD_ANY( size, vm )
+    VARIANT_LOAD_ANY( floatCoordinates, vm )
+    VARIANT_LOAD_ANY( margin, vm )
+    VARIANT_LOAD_ANY( ignorePath, vm )
+    VARIANT_LOAD_CLASS( items, vm )
+  }
+};
+
+struct Config
+{
+  struct Archives : public std::vector<ArchiveConfig>
+  {
+    const std::string& repo;
+
+    Archives( const std::string& refRepo ) :
+       repo( refRepo )
+    {
+
+    }
+
+    void add()
+    {
+      push_back( ArchiveConfig( repo ) );
+    }
+
+    void load( const VariantMap& vm )
+    {
+      for( auto& item : vm )
+      {
+        push_back( ArchiveConfig( repo ) );
+        back().load( item.second.toMap() );
+      }
+    }
+  };
+
+  std::string repository;
+  Archives archives;
+
+  Config() :
+    archives( repository )
+  {
+
+  }
+
+  void load( const VariantMap& vm )
+  {
+    VARIANT_LOAD_STR( repository, vm )
+    VARIANT_LOAD_CLASS( archives, vm )
+  }
+
+  void once(const std::string& name, int width, int height, int padding, bool fileNameOnly, bool unitCoordinates, const StringArray& dirs)
+  {
+    repository = "";
+    archives.add();
+
+    ArchiveConfig& arch = archives.back();
+    arch.name = name;
+    arch.size = Size( width, height );
+    arch.margin = padding;
+    arch.ignorePath = fileNameOnly;
+    arch.floatCoordinates = unitCoordinates;
+  }
+};
+
+class Atlases : public std::vector<AtlasGenerator*>
+{
+public:
+  gfx::Picture findByIndex( int index )
+  {
+    gfx::Picture ret = gfx::Picture::getInvalid();
+    int currentStart = 0;
+    for( auto&& a : *this )
+    {
+      if( index >= currentStart &&
+          index < currentStart + a->textures.size() )
+      {
+        ret = a->textures[ index - currentStart ]->image;
+      }
+      else
+      {
+        currentStart += a->textures.size();
+      }
+    }
+
+    return ret;
+  }
+
+  int max() const
+  {
+    int result = 0;
+    for( auto&& a : *this )
+      result += a->textures.size();
+
+    return result;
+  }
+};
+
 int main(int argc, char* argv[])
 {
   Logger::registerWriter( Logger::consolelog, "" );
@@ -333,6 +539,7 @@ int main(int argc, char* argv[])
   engine->setScreenSize( Size( 800, 800 ) );
   engine->setFlag( gfx::Engine::debugInfo, true );
   engine->setFlag( gfx::Engine::batching, false );
+  engine->setTitle( "CaesarIA: tileset packer" );
   engine->init();
 
   if(argc < 5)
@@ -346,19 +553,51 @@ int main(int argc, char* argv[])
     return 0;
   }
 
-  AtlasGenerator atlasGenerator;
-  StringArray dirs;
+  Config config;
 
-  for(int i = 7; i < argc; ++i)
-    dirs << argv[i];
+  Atlases gens;
 
-  atlasGenerator.run(argv[1],
-                     utils::toInt(argv[2]),
-                     utils::toInt(argv[3]),
-                     utils::toInt(argv[4]),
-                     utils::toInt(argv[5]) != 0,
-                     utils::toInt(argv[6]) != 0,
-                     dirs);
+  vfs::Path path( "tileset.model" );
+  if( path.exist() )
+  {
+    VariantMap vm = config::load( path );
+    config.load( vm );
+  }
+  else
+  {
+    StringArray dirs;
+    for(int i = 7; i < argc; ++i)
+      dirs << argv[i];
+
+    config.once( argv[1],
+                 utils::toInt(argv[2]),
+                 utils::toInt(argv[3]),
+                 utils::toInt(argv[4]),
+                 utils::toInt(argv[5]) != 0,
+                 utils::toInt(argv[6]) != 0,
+                 dirs );
+  }
+
+  for( auto& archiveIt : config.archives )
+  {
+    StringArray allFiles;
+    for( const ArchiveConfig::Item& item : archiveIt.items)
+    {
+       if( item.type == ArchiveConfig::Item::atlas )
+         allFiles << item.files;
+    }
+
+    auto gen = new AtlasGenerator();
+    gen->run( archiveIt.name,
+              archiveIt.size.width(),
+              archiveIt.size.height(),
+              archiveIt.margin,
+              archiveIt.ignorePath,
+              archiveIt.floatCoordinates,
+              StringArray(),
+              allFiles );
+    gens.push_back( gen );
+  }
 
   bool running = true;
   SDL_Event event;
@@ -386,15 +625,18 @@ int main(int argc, char* argv[])
     while(SDL_PollEvent(&event) != 0)
     {
       if(event.type == SDL_QUIT) running = false;
-      if(event.type == SDL_KEYUP) index++;
-      if(event.type == SDL_KEYDOWN) index--;
+      if(event.type == SDL_KEYUP)
+      {
+        if( event.key.keysym.sym == SDLK_UP ) index++;
+        if( event.key.keysym.sym == SDLK_DOWN) index--;
+      }
     }
 
-    index = math::clamp<int>( index, 0, atlasGenerator.textures.size() );
+    index = math::clamp<int>( index, 0, gens.max() );
     engine->startRenderFrame();
 
     engine->draw( bg, Point() );
-    gfx::Picture pic = atlasGenerator.textures[ index ]->image;
+    gfx::Picture pic = gens.findByIndex(index);
     engine->draw( pic, Rect( Point(), pic.size()), Rect( Point(), Size(800) ) );
     engine->endRenderFrame();
 

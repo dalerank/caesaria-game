@@ -202,13 +202,13 @@ void StartMenu::Impl::reload()
 void StartMenu::Impl::restart()
 {
   std::string filename;
-#ifdef CAESARIA_PLATFORM_LINUX
-  filename = "caesaria.linux";
-#elif defined(CAESARIA_PLATFORM_WIN)
-  filename = "caesaria.exe";
-#elif defined(CAESARIA_PLATFORM_MACOSX)
-  filename = "caesaria.macos";
-#endif
+
+  if( OSystem::isLinux() )
+    filename = "caesaria.linux";
+  else if( OSystem::isWindows() )
+    filename = "caesaria.exe";
+  else if( OSystem::isMac() )
+    filename = "caesaria.macos";
 
   vfs::Directory appDir = vfs::Directory::applicationDir();
   vfs::Path appFile = appDir/vfs::Path(filename);
@@ -323,6 +323,7 @@ void StartMenu::Impl::showCredits()
                          "Jennifer Kin (empire map, icons)",
                          "Andre Lisket (school, theater, baths and others)",
                          "Il'ya Korchagin (grape farm tiles)",
+                         "Pietro Chiovaro (Hoispital)",
                          " ",
                          _("##music##"),
                          " ",

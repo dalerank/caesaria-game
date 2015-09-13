@@ -46,7 +46,7 @@ public:
 
   virtual void setColorMask( int rmask, int gmask, int bmask, int amask );
   virtual void resetColorMask();
-
+  virtual void setTitle(const std::string &title);
   virtual void setScale( float scale );
 
   virtual Batch loadBatch(const Picture& pic, const Rects& srcRects, const Rects& dstRects, const Rect* clipRect);

@@ -249,7 +249,7 @@ int toInt( const std::string& number, int base )
   switch( base )
   {
   case 16:
-    return std::stoul( number, nullptr, 16);
+    return strtoul( number.c_str(), nullptr, 16);
 
   default:
     return toInt( number.c_str() );

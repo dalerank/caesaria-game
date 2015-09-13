@@ -54,6 +54,7 @@ public:
   bool isFullscreen() const;
   void setFullscreen(bool enabled );
 
+  virtual void setTitle( const std::string& title );
   virtual void setFlag( int flag, int value );
   virtual int getFlag( int flag ) const;
 

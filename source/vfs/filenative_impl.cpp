@@ -238,7 +238,9 @@ bool FileNative::isOpen() const { return _file != 0;}
 
 size_t FileNative::lastModify() const
 {
-#ifdef CAESARIA_PLATFORM_UNIX
+#ifdef CAESARIA_PLATFORM_ANDROID
+  return 0;
+#elif defined(CAESARIA_PLATFORM_UNIX)
   struct stat attr;
   stat(_name.toCString(), &attr);
   return attr.st_mtime;
