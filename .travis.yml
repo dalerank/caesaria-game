@@ -22,7 +22,7 @@ before_install:
 #unzip -o -qq $$ARCHIVE; \
  - echo "Configure paths...";
 #- export ANDROID_SDK=~/adt-bundle-linux-$$ARCH-$$SDK_VERSION/sdk
- - export ANDROID_NDK=~/android-ndk-$NDK_VERSION
+ - export ANDROID_NDK=`pwd`/android-ndk-$NDK_VERSION
  - export NDK_ROOT=$ANDROID_NDK
 #- export PATH=\$$PATH:\$$ANDROID_NDK:\$$ANDROID_SDK/tools:\$$ANDROID_SDK/platform-tools
  - export PATH=$PATH:$ANDROID_NDK
