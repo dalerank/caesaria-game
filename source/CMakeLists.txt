@@ -53,6 +53,9 @@ target_link_libraries(${PROJECT_NAME} ${SDL2MINI_LIBRARY})
 include_directories(${MIXER_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${MIXER_LIBRARY})
 
+include_directories(${PNG_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} ${PNG_LIBRARY})
+
 include_directories(${ZLIB_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARY})
 
@@ -70,9 +73,6 @@ target_link_libraries(${PROJECT_NAME} ${SMK_LIBRARY})
 
 include_directories(${SDL2_TTF_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${SDL2_TTF_LIBRARY})
-
-include_directories(${PNG_INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME} ${PNG_LIBRARY})
 
 if(BUILD_GL_FRAMEBUFFER)
 add_definitions( -DCAESARIA_USE_FRAMEBUFFER )

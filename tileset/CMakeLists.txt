@@ -46,14 +46,16 @@ set( TILESET_DEP_SOURCES_LIST
 
 include_directories( ${BASE_SOURCE_DIR} )
 include_directories( ${DEP_DIR} )
-include_directories( ${SDL2MINI_INCLUDE_DIR} )
+include_directories( ${SDL2MINI_INCLUDE_DIR})
 include_directories( ${PNG_INCLUDE_DIR})
 include_directories( ${SDL2_TTF_INCLUDE_DIR})
+include_directories( ${ZLIB_INCLUDE_DIR})
 
 add_executable(${PROJECT_NAME}
                ${TILESET_SRC_LIST} ${TILESET_INC_LIST}
                ${TILESET_DEP_SOURCES_LIST} )
 
+target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARY})
 target_link_libraries(${PROJECT_NAME} ${PNG_LIBRARY})
 target_link_libraries(${PROJECT_NAME} ${SDL2MINI_LIBRARY})
 target_link_libraries(${PROJECT_NAME} ${SDL2_TTF_LIBRARY})

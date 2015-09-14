@@ -29,6 +29,7 @@
 #include "core/utils.hpp"
 #include "gfx/picture.hpp"
 #include "vfs/directory.hpp"
+#include "zlib.h"
 
 #ifdef CAESARIA_PLATFORM_WIN
   #undef main
@@ -228,6 +229,7 @@ class AtlasGenerator
 {	
 public:
   std::vector<Texture*> textures;
+  StringArray names;
 
   void run(const std::string& name, int width, int height, int padding, bool fileNameOnly, bool unitCoordinates,
            const StringArray& dirs, const StringArray& files = StringArray())
@@ -306,7 +308,9 @@ public:
     for(Texture* texture : textures)
 		{
       Logger::warning( "Writing atlas: " + name + utils::i2str(++count));
-      texture->write(name + utils::i2str(count), fileNameOnly, unitCoordinates, width, height);
+      std::string txName = name + utils::i2str(count);
+      texture->write(txName, fileNameOnly, unitCoordinates, width, height);
+      names.push_back( txName + ".png" );
 		}
 	}
 	
@@ -530,6 +534,44 @@ public:
   }
 };
 
+void createSet( const ArchiveConfig& archive, const StringArray& names )
+{
+  vfs::Path arcName( archive.name );
+  arcName.changeExtension( "zip" );
+  gzFile* out = (gzFile*)gzopen( arcName.toCString(), "wb");
+
+  if (!out)
+  {
+     /* Handle error */
+     Logger::warning( "Unable to open %s for writing\n", arcName.toCString() );
+     return;
+  }
+
+  const unsigned int bufferSize = 1024;
+  char buf[bufferSize] = { 0 };
+  size_t bytes_read = 0;
+
+  for( auto& filename : names )
+  {
+    vfs::NFile nfile = vfs::NFile::open( filename );
+    bytes_read = nfile.read( buf, bufferSize );
+    while (bytes_read > 0)
+    {
+       int bytes_written = gzwrite( out, buf, bytes_read);
+       if (bytes_written == 0)
+       {
+          int err_no = 0;
+          Logger::warning( "Error during compression: %s", gzerror(out, &err_no) );
+          gzclose(out);
+          return;
+       }
+       bytes_read = nfile.read(buf, bufferSize);
+    }
+  }
+
+  gzclose(out);
+}
+
 int main(int argc, char* argv[])
 {
   Logger::registerWriter( Logger::consolelog, "" );
@@ -597,6 +639,8 @@ int main(int argc, char* argv[])
               StringArray(),
               allFiles );
     gens.push_back( gen );
+
+    createSet( archiveIt, gen->names );
   }
 
   bool running = true;
@@ -632,7 +676,7 @@ int main(int argc, char* argv[])
       }
     }
 
-    index = math::clamp<int>( index, 0, gens.max() );
+    index = math::clamp<int>( index, 0, gens.max()-1 );
     engine->startRenderFrame();
 
     engine->draw( bg, Point() );
