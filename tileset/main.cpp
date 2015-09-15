@@ -30,6 +30,7 @@
 #include "gfx/picture.hpp"
 #include "vfs/directory.hpp"
 #include "zlib.h"
+#include "zip.h"
 
 #ifdef CAESARIA_PLATFORM_WIN
   #undef main
@@ -311,6 +312,7 @@ public:
       std::string txName = name + utils::i2str(count);
       texture->write(txName, fileNameOnly, unitCoordinates, width, height);
       names.push_back( txName + ".png" );
+      names.push_back( txName + ".atlas" );
 		}
 	}
 	
@@ -332,18 +334,24 @@ public:
   }
 };
 
+struct ArchPath
+{
+  std::string repo;
+  std::string output;
+};
+
 struct ArchiveConfig
 {
   struct Item
   {
     typedef enum { atlas, file } Type;
-    const std::string& repo;
+    const ArchPath& archpath;
     Type type;
     std::string folder;
     StringArray files;
 
-    Item( const std::string& refrepo ) :
-      repo( refrepo )
+    Item( const ArchPath& arch ) :
+      archpath( arch )
     {
 
     }
@@ -355,7 +363,7 @@ struct ArchiveConfig
       VARIANT_LOAD_STR( folder, vm );
 
       StringArray rfiles = vm.get( "files" ).toStringArray();
-      vfs::Directory repoFolder( repo );
+      vfs::Directory repoFolder( archpath.repo );
       vfs::Directory addFolder( folder );
 
       vfs::Directory mainFolder( repoFolder/addFolder );
@@ -381,8 +389,8 @@ struct ArchiveConfig
         }
         else
         {
-          vfs::Path filepath( str );
-          files.push_back( (mainFolder/filepath).toString() );
+          vfs::Path fpath( mainFolder/str );
+          files.push_back( fpath.absolutePath().toString() );
         }
       }
     }
@@ -390,31 +398,31 @@ struct ArchiveConfig
 
   struct Items : public std::vector<Item>
   {
-    const std::string& repo;
+    const ArchPath& archpath;
 
-    Items( const std::string& refrepo )
-     : repo( refrepo )
+    Items( const ArchPath& arch )
+     : archpath( arch )
     {
 
     }
 
     void add()
     {
-      push_back( Item( repo ) );
+      push_back( Item( archpath ) );
     }
 
     void load( const VariantMap& vm )
     {
       for( auto& i : vm )
       {
-        push_back( Item( repo ) );
+        push_back( Item( archpath ) );
         back().load( i.second.toMap() );
       }
     }
   };
 
-  ArchiveConfig( const std::string& refRepo ) :
-    items( refRepo )
+  ArchiveConfig( const ArchPath& arch ) :
+    archpath( arch ), items( arch )
   {
 
   }
@@ -422,6 +430,7 @@ struct ArchiveConfig
   //const std::string& repo;
   std::string name;
   std::string archive;
+  const ArchPath& archpath;
   int margin;
   bool ignorePath;
   bool floatCoordinates;
@@ -449,47 +458,49 @@ struct Config
 {
   struct Archives : public std::vector<ArchiveConfig>
   {
-    const std::string& repo;
+    const ArchPath& archpath;
 
-    Archives( const std::string& refRepo ) :
-       repo( refRepo )
+    Archives( const ArchPath& arch ) :
+       archpath( arch )
     {
 
     }
 
     void add()
     {
-      push_back( ArchiveConfig( repo ) );
+      push_back( ArchiveConfig( archpath ) );
     }
 
     void load( const VariantMap& vm )
     {
       for( auto& item : vm )
       {
-        push_back( ArchiveConfig( repo ) );
+        push_back( ArchiveConfig( archpath ) );
         back().load( item.second.toMap() );
       }
     }
   };
 
-  std::string repository;
+  ArchPath archpath;
   Archives archives;
 
   Config() :
-    archives( repository )
+    archives( archpath )
   {
 
   }
 
   void load( const VariantMap& vm )
   {
-    VARIANT_LOAD_STR( repository, vm )
+    archpath.repo = vm.get( "repository" ).toString();
+    archpath.output = vm.get( "output" ).toString();
     VARIANT_LOAD_CLASS( archives, vm )
   }
 
   void once(const std::string& name, int width, int height, int padding, bool fileNameOnly, bool unitCoordinates, const StringArray& dirs)
   {
-    repository = "";
+    archpath.output = "";
+    archpath.output = ".";
     archives.add();
 
     ArchiveConfig& arch = archives.back();
@@ -536,11 +547,21 @@ public:
 
 void createSet( const ArchiveConfig& archive, const StringArray& names )
 {
-  vfs::Path arcName( archive.name );
-  arcName.changeExtension( "zip" );
-  gzFile* out = (gzFile*)gzopen( arcName.toCString(), "wb");
+  vfs::Directory outputDir( archive.archpath.output );
+  vfs::Path relativePath( archive.archive );
+  relativePath = relativePath.changeExtension( "zip" );
+  vfs::Path arcName = outputDir/relativePath;
+  vfs::Directory realDir = arcName.directory();
 
-  if (!out)
+  if( !realDir.exist() )
+    vfs::Directory::createByPath( realDir );
+
+  int createMode = APPEND_STATUS_CREATE;
+  if( arcName.exist() )
+    createMode = APPEND_STATUS_ADDINZIP;
+
+  zipFile zf = zipOpen( arcName.toCString(), createMode );
+  if ( zf == nullptr )
   {
      /* Handle error */
      Logger::warning( "Unable to open %s for writing\n", arcName.toCString() );
@@ -551,25 +572,43 @@ void createSet( const ArchiveConfig& archive, const StringArray& names )
   char buf[bufferSize] = { 0 };
   size_t bytes_read = 0;
 
+  int opt_compress_level=Z_DEFAULT_COMPRESSION;
   for( auto& filename : names )
   {
     vfs::NFile nfile = vfs::NFile::open( filename );
+
+    zip_fileinfo zi;
+
+    zi.tmz_date.tm_sec = zi.tmz_date.tm_min = zi.tmz_date.tm_hour =
+    zi.tmz_date.tm_mday = zi.tmz_date.tm_mon = zi.tmz_date.tm_year = 0;
+    zi.dosDate = 0;
+    zi.internal_fa = 0;
+    zi.external_fa = 0;
+    zipFiletime(filename.c_str(),&zi.tmz_date,&zi.dosDate);
+
+    std::string basename = vfs::Path( filename ).baseName().toString();
+    int err = zipOpenNewFileInZip(zf,basename.c_str(),&zi,
+                              NULL,0,NULL,0,NULL,
+                              (opt_compress_level != 0) ? Z_DEFLATED : 0,
+                              opt_compress_level);
+
     bytes_read = nfile.read( buf, bufferSize );
     while (bytes_read > 0)
     {
-       int bytes_written = gzwrite( out, buf, bytes_read);
-       if (bytes_written == 0)
+       err = zipWriteInFileInZip (zf,buf,bytes_read);
+       if (err != ZIP_OK)
        {
-          int err_no = 0;
-          Logger::warning( "Error during compression: %s", gzerror(out, &err_no) );
-          gzclose(out);
-          return;
+          Logger::warning( "Error during compression with file " + filename );
+          err = zipCloseFileInZip(zf);
+          break;
        }
        bytes_read = nfile.read(buf, bufferSize);
     }
+
+    err = zipCloseFileInZip(zf);
   }
 
-  gzclose(out);
+  int errclose = zipClose(zf,NULL);
 }
 
 int main(int argc, char* argv[])
@@ -581,8 +620,8 @@ int main(int argc, char* argv[])
   engine->setScreenSize( Size( 800, 800 ) );
   engine->setFlag( gfx::Engine::debugInfo, true );
   engine->setFlag( gfx::Engine::batching, false );
-  engine->setTitle( "CaesarIA: tileset packer" );
   engine->init();
+  engine->setTitle( "CaesarIA: tileset packer" );
 
   if(argc < 5)
   {
@@ -622,11 +661,14 @@ int main(int argc, char* argv[])
 
   for( auto& archiveIt : config.archives )
   {
+    StringArray atlasFiles;
     StringArray allFiles;
     for( const ArchiveConfig::Item& item : archiveIt.items)
     {
-       if( item.type == ArchiveConfig::Item::atlas )
-         allFiles << item.files;
+      if( item.type == ArchiveConfig::Item::atlas )
+        atlasFiles << item.files;
+      else
+        allFiles << item.files;
     }
 
     auto gen = new AtlasGenerator();
@@ -637,10 +679,11 @@ int main(int argc, char* argv[])
               archiveIt.ignorePath,
               archiveIt.floatCoordinates,
               StringArray(),
-              allFiles );
+              atlasFiles );
     gens.push_back( gen );
 
-    createSet( archiveIt, gen->names );
+    allFiles << gen->names;
+    createSet( archiveIt, allFiles );
   }
 
   bool running = true;

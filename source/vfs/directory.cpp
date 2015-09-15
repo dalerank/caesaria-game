@@ -80,7 +80,8 @@ bool Directory::createByPath( Directory dir )
   try
   {
 #if  defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
-    switchTo( "/" );
+    if( dir.toString().front() == '/' )
+      switchTo( "/" );
 #endif
 
     foreach( iter, path )
