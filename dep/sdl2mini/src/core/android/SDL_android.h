@@ -28,6 +28,7 @@ extern "C" {
 #endif
 
 #include <EGL/eglplatform.h>
+#include <EGL/egl.h>
 #include <android/native_window_jni.h>
 
 #include "SDL_rect.h"

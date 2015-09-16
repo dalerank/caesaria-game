@@ -60,9 +60,6 @@ void Entertainment::drawTile(Engine& engine, Tile& tile, const Point& offset)
 
   if( tile.overlay().isNull() )
   {
-    //draw background
-    //engine.draw( tile.picture(), screenPos );
-
     drawPass( engine, tile, offset, Renderer::ground );
     drawPass( engine, tile, offset, Renderer::groundAnimation );
   }
@@ -80,15 +77,10 @@ void Entertainment::drawTile(Engine& engine, Tile& tile, const Point& offset)
     else if( _flags.count( overlay->type() ) > 0 )
     {
       needDrawAnimations = true;
-      //if( !needDrawAnimations )
-      //{
-      //  city::Helper helper( _city() );
-      //  drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
-      //}
     }
     else if( overlay->type() == object::house )
     {
-      HousePtr house = ptr_cast<House>( overlay );
+      auto house = overlay.as<House>();
       entertainmentLevel = _getLevelValue( house );
 
       needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());

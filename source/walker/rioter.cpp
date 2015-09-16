@@ -53,7 +53,7 @@ public:
   object::GroupSet excludeGroups;
 
 public:
-  Pathway findTarget( PlayerCityPtr city, ConstructionList constructions, TilePos pos );
+  Pathway findTarget(PlayerCityPtr city, const ConstructionList& items, TilePos pos );
 };
 
 Rioter::Rioter(PlayerCityPtr city) : Human( city ), _d( new Impl )
@@ -275,11 +275,11 @@ void Rioter::load(const VariantMap& stream)
 int Rioter::agressive() const { return 1; }
 void Rioter::excludeAttack(object::Group group) { _d->excludeGroups << group; }
 
-Pathway Rioter::Impl::findTarget(PlayerCityPtr city, ConstructionList constructions, TilePos pos )
+Pathway Rioter::Impl::findTarget(PlayerCityPtr city, const ConstructionList& items, TilePos pos )
 {    
-  if( !constructions.empty() )
+  if( !items.empty() )
   {
-    constructions = constructions.random( 10 );
+    auto constructions = items.random( 10 );
     Pathway pathway;
     for( auto c : constructions )
     {

@@ -466,7 +466,7 @@ void House::_settleVacantLotIfNeed()
     _update( true );
 
     Desirability::update( _city(), this, Desirability::on );
-    }
+  }
 }
 
 void House::_updateConsumptions( const unsigned long time )
@@ -549,7 +549,7 @@ bool House::_tryEvolve_1_to_12_lvl( int level4grow, int growSize, const char des
         break;
       }
 
-      HousePtr house = tile->overlay().as<House>();
+      auto house = tile->overlay<House>();
       if( house != NULL &&
           (house->spec().level() == level4grow || house->habitants().count() == 0) )
       {
@@ -571,14 +571,14 @@ bool House::_tryEvolve_1_to_12_lvl( int level4grow, int growSize, const char des
       CitizenGroup sumHabitants = habitants();
       int sumFreeWorkers = getServiceValue( Service::recruter );
       TilesArray::iterator delIt=area.begin();
-      HousePtr selfHouse = (*delIt)->overlay().as<House>( );
+      auto selfHouse = (*delIt)->overlay<House>( );
 
       _d->initGoodStore( Size( growSize ).area() );
 
       ++delIt; //don't remove himself
       for( ; delIt != area.end(); ++delIt )
       {
-        HousePtr house = (*delIt)->overlay().as<House>();
+        auto house = (*delIt)->overlay<House>();
         if( house.isValid() )
         {          
           sumHabitants += house->habitants();
@@ -810,10 +810,10 @@ void House::_tryDegrade_20_to_12_lvl( int rsize, const char desirability )
     }
 
     TilesArray lastArea = area();
-    foreach( tile, lastArea )
+    for( auto tile : lastArea )
     {
-      (*tile)->setMasterTile( 0 );
-      (*tile)->setOverlay( 0 );
+      tile->setMasterTile( 0 );
+      tile->setOverlay( 0 );
     }
 
     setSize( Size( rsize ) );
@@ -924,22 +924,22 @@ void House::buyMarket( ServiceWalkerPtr walker )
   good::Store& marketStore = market->goodStore();
 
   good::Store& houseStore = goodStore();
-  foreach( goodType, good::all() )
+  for( auto goodType : good::all() )
   {
-    int houseQty = houseStore.qty(*goodType);
-    int houseSafeQty = _d->spec.computeMonthlyGoodConsumption( this, *goodType, false )
-                       + _d->spec.next().computeMonthlyGoodConsumption( this, *goodType, false );
+    int houseQty = houseStore.qty(goodType);
+    int houseSafeQty = _d->spec.computeMonthlyGoodConsumption( this, goodType, false )
+                       + _d->spec.next().computeMonthlyGoodConsumption( this, goodType, false );
     houseSafeQty *= 6;
 
-    int marketQty = marketStore.qty(*goodType);
+    int marketQty = marketStore.qty(goodType);
     if( houseQty < houseSafeQty && marketQty > 0  )
     {
        int qty = std::min( houseSafeQty - houseQty, marketQty);
-       qty = math::clamp( qty, 0, houseStore.freeQty( *goodType ) );
+       qty = math::clamp( qty, 0, houseStore.freeQty( goodType ) );
 
        if( qty > 0 )
        {
-         good::Stock stock( *goodType, qty);
+         good::Stock stock( goodType, qty);
          marketStore.retrieve(stock, qty);
 
          stock.setCapacity( qty );

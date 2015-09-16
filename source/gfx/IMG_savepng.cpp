@@ -39,6 +39,7 @@ extern "C" {
 
 #include <stdlib.h>
 #include <png.h>
+#include <memory.h>
 #include "IMG_savepng.h"
 #include "IMG_saveend.h"
 

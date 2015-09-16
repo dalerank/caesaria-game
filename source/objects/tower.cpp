@@ -180,7 +180,7 @@ void Tower::deliverService()
     Impl::PatrolWays::iterator it = _d->patrolWays.begin();
     std::advance( it, rand() % _d->patrolWays.size() );
 
-    WallGuardPtr guard = WallGuard::create( _city(), walker::romeGuard );
+    auto guard = WallGuard::create( _city(), walker::romeGuard );
     guard->send2city( this, *it );
 
     addWalker( guard.object() );
@@ -208,7 +208,7 @@ TilesArray Tower::enterArea() const
 
   for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); )
   {
-    FortificationPtr wall = (*it)->overlay().as<Fortification>();
+    auto wall = (*it)->overlay<Fortification>();
     if( wall.isValid() && wall->isTowerEnter() ) { ++it; }
     else { it = tiles.erase( it ); }
   }
@@ -226,9 +226,9 @@ Point Tower::offset(const Tile& tile, const Point& subpos) const
 PathwayList Tower::getWays(TilePos start, FortificationList dest)
 {
   PathwayList ret;
-  foreach( wall, dest )
+  for( auto wall : dest )
   {
-    Pathway tmp = PathwayHelper::create( start, (*wall)->pos(), makeDelegate( _d.data(), &Impl::mayPatroling ) );
+    Pathway tmp = PathwayHelper::create( start, wall->pos(), makeDelegate( _d.data(), &Impl::mayPatroling ) );
     if( tmp.isValid() )
     {    
       ret.push_back( PathwayPtr( new Pathway( tmp ) ) );

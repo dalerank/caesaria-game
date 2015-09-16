@@ -36,8 +36,8 @@ public:
   {
     VariantList ret;
 
-    foreach( it, *this )
-      ret << it->first << it->second;
+    for( auto&& it : *this )
+      ret << it.first << it.second;
 
     return ret;
   }

@@ -137,7 +137,6 @@ void Build::_checkPreviewBuild(TilePos pos)
   city::AreaInfo areaInfo( _city(), pos, &d->buildTiles );
   if( !walkersOnTile && overlay->canBuild( areaInfo ) )
   {
-    //bldCommand->setCanBuild(true);
     Tilemap& tmap = _city()->tilemap();
     Tile *masterTile=0;
     d->money4Construction += cost;
@@ -269,13 +268,15 @@ void Build::_updatePreviewTiles( bool force )
     }
 
     pathWay = ret;
-    for( auto tile : pathWay ) _checkPreviewBuild( tile->epos() );
+    for( auto tile : pathWay )
+      _checkPreviewBuild( tile->epos() );
   }
   else
   {
     TilesArray tiles = _getSelectedArea( d->startTilePos );
 
-    for( auto tile : tiles ) { _checkPreviewBuild( tile->epos() ); }
+    for( auto tile : tiles )
+      _checkPreviewBuild( tile->epos() );
   }  
 
   d->sortBuildTiles();

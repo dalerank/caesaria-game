@@ -67,7 +67,7 @@ void Fishery::timeStep(const unsigned int time )
 
   if( _d->places.empty() )
   {
-    _d->places = _city()->statistic().walkers.find<FishPlace>( walker::fishPlace, TilePos(-1, -1) );
+    _d->places = _city()->statistic().walkers.find<FishPlace>( walker::fishPlace );
   }
 
   while( _d->places.size() < _d->maxFishPlace )

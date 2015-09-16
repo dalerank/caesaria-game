@@ -105,14 +105,13 @@ void RomeSoldier::timeStep(const unsigned long time)
   {
   case fightEnemy:
   {
-    WalkerList enemies = _findEnemiesInRange( attackDistance() );
+    WalkerPtr enemy = _findEnemiesInRange( attackDistance() ).valueOrEmpty(0);
 
-    if( !enemies.empty() )
+    if( !enemy.isValid() )
     {
-      WalkerPtr p = enemies.front();
-      turn( p->pos() );
-      p->updateHealth( -3 );
-      p->acceptAction( Walker::acFight, pos() );
+      turn( enemy->pos() );
+      enemy->updateHealth( -3 );
+      enemy->acceptAction( Walker::acFight, pos() );
     }
     else
     {
@@ -148,7 +147,7 @@ void RomeSoldier::save(VariantMap& stream) const
   stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(RomeSoldier) ) );
 }
 
-FortPtr RomeSoldier::base() const { return ptr_cast<Fort>( _city()->getOverlay( _d->basePos ) ); }
+FortPtr RomeSoldier::base() const { return _map().overlay( _d->basePos ).as<Fort>(); }
 
 void RomeSoldier::load(const VariantMap& stream)
 {

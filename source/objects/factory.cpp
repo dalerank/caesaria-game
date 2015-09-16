@@ -181,7 +181,7 @@ void Factory::_weekUpdate(unsigned int time)
     {
       _reachUnworkingTreshold();
     }
-    }
+  }
 }
 
 void Factory::_setConsumeGoodType(int, good::Product product)
@@ -224,7 +224,8 @@ void Factory::timeStep(const unsigned long time)
     {
       _d->produceGood = true;
     }
-    else if( _d->goodStore.qty( _d->inGoodType ) >= consumeQty && _d->goodStore.qty( _d->outGoodType ) < 100 )
+    else if( _d->goodStore.qty( _d->inGoodType ) >= consumeQty
+            && _d->goodStore.qty( _d->outGoodType ) < 100 )
     {
       _d->produceGood = true;
       //gcc fix temporaly ref object error
@@ -240,21 +241,21 @@ void Factory::deliverGood()
   int qty = _d->goodStore.qty( _d->outGoodType );
   if( _mayDeliverGood() && qty >= 100 )
   {      
-    CartPusherPtr walker = CartPusher::create( _city() );
+    auto cartPusher = CartPusher::create( _city() );
 
     good::Stock pusherStock( _d->outGoodType, qty, 0 );
     _d->goodStore.retrieve( pusherStock, math::clamp( qty, 0, 400 ) );
 
-    walker->send2city( BuildingPtr( this ), pusherStock );
+    cartPusher->send2city( this, pusherStock );
 
     //success to send cartpusher
-    if( !walker->isDeleted() )
+    if( !cartPusher->isDeleted() )
     {
-      addWalker( walker.object() );
+      addWalker( cartPusher.object() );
     }
     else
     {
-      _d->goodStore.store( walker->stock(), walker->stock().qty() );
+      _d->goodStore.store( cartPusher->stock(), cartPusher->stock().qty() );
     }
   }
 }
@@ -315,21 +316,18 @@ unsigned int Factory::getConsumeQty()  const{ return 100;}
 
 std::string Factory::cartStateDesc() const
 {
-  if( walkers().size() > 0 )
+  auto cartPusher = walkers().valueOrEmpty(0).as<CartPusher>();
+  if( cartPusher.isValid() )
   {
-    CartPusherPtr cart = ptr_cast<CartPusher>( walkers().front() );
-    if( cart.isValid() )
+    if( cartPusher->pathway().isValid() )
     {
-      if( cart->pathway().isValid() )
-      {
-        return cart->pathway().isReverse()
-                 ? "##factory_cart_returning_from_delivery##"
-                 : "##factory_cart_taking_goods##";
-      }
-      else
-      {
-        return "##factory_cart_wait##";
-      }
+      return cartPusher->pathway().isReverse()
+               ? "##factory_cart_returning_from_delivery##"
+               : "##factory_cart_taking_goods##";
+    }
+    else
+    {
+      return "##factory_cart_wait##";
     }
   }
 
@@ -358,14 +356,14 @@ void Factory::receiveGood()
   if( consumeGoodType() == good::none )
     return;
 
-  unsigned int qty = _d->goodStore.getMaxStore( consumeGoodType() );
-  qty = math::clamp<unsigned int>( qty, 0, 100 );
-  if( _mayDeliverGood() && qty > 0 )
+  unsigned int mayStoreQty = _d->goodStore.getMaxStore( consumeGoodType() );
+  mayStoreQty = math::clamp<unsigned int>( mayStoreQty, 0, 100 );
+  if( _mayDeliverGood() && mayStoreQty > 0 )
   {
-    CartSupplierPtr walker = CartSupplier::create( _city() );
-    walker->send2city( this, consumeGoodType(), qty );
+    auto cartSupplier = CartSupplier::create( _city() );
+    cartSupplier->send2city( this, consumeGoodType(), mayStoreQty );
 
-    addWalker( walker.object() );
+    addWalker( cartSupplier.object() );
   }
 }
 
@@ -391,7 +389,9 @@ bool Creamery::build( const city::AreaInfo& info )
 {
   Factory::build( info );
 
-  bool haveOliveFarm = !info.city->statistic().objects.find<Building>( object::olive_farm ).empty();
+  bool haveOliveFarm = info.city->statistic()
+                                  .objects
+                                  .count( object::olive_farm ) > 0;
 
   _setError( haveOliveFarm ? "" : _("##need_olive_for_work##") );
 
@@ -416,7 +416,7 @@ void Factory::_productReady()
     //gcc fix for temporaly ref object
     good::Stock tmpStock( _d->outGoodType, qty, qty );
     _d->goodStore.store( tmpStock, qty );
-    }
+  }
 }
 
 void Factory::_productProgress()

@@ -54,7 +54,7 @@ void Aborigens::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( overlay->type() == object::native_hut )
     {
-      NativeHutPtr hut = ptr_cast<NativeHut>( overlay );
+      NativeHutPtr hut = overlay.as<NativeHut>();
       discontentLevel = (int)hut->discontent();
       needDrawAnimations = false;
 

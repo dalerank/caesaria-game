@@ -41,6 +41,7 @@
 #include "config.hpp"
 
 using namespace gfx;
+using namespace events;
 using namespace config;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::cartPusher, CartPusher)
@@ -377,8 +378,7 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropa
    BuildingPtr res;
 
    good::Product p = stock.type();
-   if( !(p == good::wheat || p == good::fish
-         || p == good::meat || p == good::fruit || p == good::vegetable))
+   if( !good::foods().contain( p ) )
    {
       // this good cannot be stored in a granary
       return BuildingPtr();
@@ -443,9 +443,9 @@ void CartPusher::load( const VariantMap& stream )
   _d->stock.load( stream.get( literals::stock ).toList() );
 
   TilePos prPos( stream.get( literals::producerPos ).toTilePos() );
-  _d->producerBuilding = ptr_cast<Building>( _city()->getOverlay( prPos ));
+  _d->producerBuilding = _city()->getOverlay( prPos ).as<Building>();
 
-  if( is_kind_of<WorkingBuilding>( _d->producerBuilding ) )
+  if( _d->producerBuilding.is<WorkingBuilding>() )
   {
     WorkingBuildingPtr wb = ptr_cast<WorkingBuilding>( _d->producerBuilding );
     wb->addWalker( this );
@@ -456,7 +456,7 @@ void CartPusher::load( const VariantMap& stream )
   }
 
   TilePos cnsmPos( stream.get( literals::consumerPos ).toTilePos() );
-  _d->consumerBuilding = ptr_cast<Building>( _city()->getOverlay( cnsmPos ) );
+  _d->consumerBuilding = _city()->getOverlay( cnsmPos ).as<Building>();
 
   VARIANT_LOAD_ANY_D( _d, maxDistance, stream )
   VARIANT_LOAD_ANY_D( _d, cantUnloadGoods, stream )
@@ -467,7 +467,7 @@ bool CartPusher::die()
 {
   bool created = Walker::die();
 
-  events::GameEventPtr e = events::RemoveCitizens::create( pos(), CitizenGroup( CitizenGroup::mature, 1) );
+  GameEventPtr e = RemoveCitizens::create( pos(), CitizenGroup( CitizenGroup::mature, 1) );
   e->dispatch();
 
   if( !created )
@@ -492,7 +492,7 @@ std::string CartPusher::thoughts( Thought th ) const
     {
       if( pathway().isReverse() && _d->cantUnloadGoods )
       {
-        if( is_kind_of<Factory>( _d->consumerBuilding ) )
+        if( _d->consumerBuilding.is<Factory>() )
         {
           return "##cartpusher_cant_unload_goods_in_factory##";
         }

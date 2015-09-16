@@ -168,7 +168,7 @@ void Game::Impl::initVideo()
   engine->setScreenSize( SETTINGS_VALUE( resolution ).toSize() );
   engine->setFlag( Engine::batching, batchTexures ? 1 : 0 );
 
-  bool fullscreen = SETTINGS_VALUE( fullscreen );
+  bool fullscreen = KILLSWITCH( fullscreen );
   if( fullscreen )
   {
     Logger::warning( "GraficEngine: try set fullscreen mode" );
@@ -371,7 +371,7 @@ bool Game::load(std::string filename)
   scene::SplashScreen screen;
 
   screen.initialize();
-  bool usingOldgfx = SETTINGS_VALUE( oldgfx ) || !SETTINGS_VALUE( c3gfx ).toString().empty();
+  bool usingOldgfx = KILLSWITCH( oldgfx ) || !SETTINGS_VALUE( c3gfx ).toString().empty();
   screen.setImage( usingOldgfx ? "load4" : "freska", 1 );
   screen.update( *_d->engine );
 
@@ -504,7 +504,7 @@ void Game::initialize()
 
   screen.setText( "##initialize_names##" );
   NameGenerator::instance().initialize( SETTINGS_RC_PATH( ctNamesModel ) );
-  NameGenerator::instance().setLanguage( SETTINGS_VALUE( language ).toString() );
+  NameGenerator::instance().setLanguage( SETTINGS_STR( language ) );
 
   screen.setText( "##initialize_house_specification##" );
   HouseSpecHelper::instance().initialize( SETTINGS_RC_PATH( houseModel ) );

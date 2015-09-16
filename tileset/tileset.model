@@ -1,0 +1,38 @@
+{
+  repository : "../../../caesaria"
+  output : "."
+  archives :
+  {
+    houses :
+    {
+      size : [ 2048, 2048 ]
+      margin : 2
+      ignorePath : true
+      floatCoordinates : false
+      name : "houses"
+      archive : "resources/gfx/pics_house"
+
+      info : {
+        atlas : [ "housng1a1.atlas" ]
+      }
+
+      items :
+      {
+        atlas :
+        {
+          type : "atlas"
+          folder : "/resources/houses"
+          files : [ "housng1a_*" ]
+        }
+
+        once :
+        {
+          type : "file"
+          folder : "/resources/houses"
+          files : [ "housgn1a1.atlas"
+                    "housgn1a1.png" ]
+        }
+      }
+    }
+  }
+}

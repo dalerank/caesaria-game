@@ -40,7 +40,7 @@ void MissionaryPost::deliverService()
   {
     ServiceBuilding::deliverService();
 
-    WalkerList ws = walkers();
+    const WalkerList& ws = walkers();
     if( !ws.empty() )
     {
       if( ws.front()->type() == walker::missioner )

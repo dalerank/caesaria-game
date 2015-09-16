@@ -321,7 +321,7 @@ void MetaDataHolder::initialize( vfs::Path filename )
 
   VariantMap constructions = config::load( filename );
 
-  for( auto kv : constructions )
+  for( auto&& kv : constructions )
   {
     const object::Type btype = object::findType( kv.first );
 

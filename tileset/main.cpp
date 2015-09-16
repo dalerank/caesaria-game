@@ -20,12 +20,17 @@
 #include "vfs/file.hpp"
 #include "gfx/IMG_savepng.h"
 #include "core/logger.hpp"
-#include "gfx/loader_png.hpp"
+#include "core/saveadapter.hpp"
+#include "gfx/loader.hpp"
+#include "core/variant_map.hpp"
+#include "core/debug_timer.hpp"
 #include "gfx/sdl_engine.hpp"
 #include "core/stringarray.hpp"
 #include "core/utils.hpp"
 #include "gfx/picture.hpp"
 #include "vfs/directory.hpp"
+#include "zlib.h"
+#include "zip.h"
 
 #ifdef CAESARIA_PLATFORM_WIN
   #undef main
@@ -170,7 +175,7 @@ public:
     }
 
     rectangleMap[name] = node;
-    rimage.draw( node->image, node->rect.lefttop(), rimage.size() );
+    image.draw( rimage, node->rect.lefttop(), rimage.size() );
 
     return true;
   }
@@ -225,10 +230,13 @@ class AtlasGenerator
 {	
 public:
   std::vector<Texture*> textures;
+  StringArray names;
 
-  void run(std::string name, int width, int height, int padding, bool fileNameOnly, bool unitCoordinates, const StringArray& dirs)
+  void run(const std::string& name, int width, int height, int padding, bool fileNameOnly, bool unitCoordinates,
+           const StringArray& dirs, const StringArray& files = StringArray())
 	{
     StringArray imageFiles;
+    imageFiles << files;
 
     for( auto str : dirs )
 		{
@@ -245,14 +253,13 @@ public:
     Logger::warning( "Found %d images", imageFiles.size() );
 
     std::set<ImageName> imageNameSet;
-    PictureLoaderPng pngLoader;
 
     for( const std::string& filename : imageFiles)
 		{
 			try
 			{
         vfs::NFile file = vfs::NFile::open( filename );
-        gfx::Picture image = pngLoader.load( file, true );
+        gfx::Picture image = PictureLoader::instance().load( file, true );
 
         if(image.width() > width || image.height() > height)
 				{
@@ -274,7 +281,7 @@ public:
     textures.push_back( tx );
 		int count = 0;
 		
-    for(auto&& imageName : imageNameSet)
+    for( auto&& imageName : imageNameSet )
 		{
       bool added = false;
 			
@@ -302,7 +309,10 @@ public:
     for(Texture* texture : textures)
 		{
       Logger::warning( "Writing atlas: " + name + utils::i2str(++count));
-      texture->write(name + utils::i2str(count), fileNameOnly, unitCoordinates, width, height);
+      std::string txName = name + utils::i2str(count);
+      texture->write(txName, fileNameOnly, unitCoordinates, width, height);
+      names.push_back( txName + ".png" );
+      names.push_back( txName + ".atlas" );
 		}
 	}
 	
@@ -324,14 +334,304 @@ public:
   }
 };
 
+struct ArchPath
+{
+  std::string repo;
+  std::string output;
+};
+
+struct ArchiveConfig
+{
+  struct Item
+  {
+    typedef enum { atlas, file } Type;
+    const ArchPath& archpath;
+    Type type;
+    std::string folder;
+    StringArray files;
+
+    Item( const ArchPath& arch ) :
+      archpath( arch )
+    {
+
+    }
+
+    void load( const VariantMap& vm )
+    {
+      std::string typestr = vm.get( "type" ).toString();
+      type = (typestr == "atlas" ? atlas : file);
+      VARIANT_LOAD_STR( folder, vm );
+
+      StringArray rfiles = vm.get( "files" ).toStringArray();
+      vfs::Directory repoFolder( archpath.repo );
+      vfs::Directory addFolder( folder );
+
+      vfs::Directory mainFolder( repoFolder/addFolder );
+
+      if( !mainFolder.exist() )
+        return;
+
+      const vfs::Entries entries = mainFolder.entries();
+      for( auto& str : rfiles )
+      {
+        if( str.back() == '*' )
+        {
+          std::string templateStr = str;
+          templateStr.resize( str.size() - 1 );
+
+          for( auto& item : entries.items() )
+          {
+            if( item.name.toString().compare(0, templateStr.size(), templateStr) == 0 )
+            {
+              files.push_back( item.fullpath.toString() );
+            }
+          }
+        }
+        else
+        {
+          vfs::Path fpath( mainFolder/str );
+          files.push_back( fpath.absolutePath().toString() );
+        }
+      }
+    }
+  };
+
+  struct Items : public std::vector<Item>
+  {
+    const ArchPath& archpath;
+
+    Items( const ArchPath& arch )
+     : archpath( arch )
+    {
+
+    }
+
+    void add()
+    {
+      push_back( Item( archpath ) );
+    }
+
+    void load( const VariantMap& vm )
+    {
+      for( auto& i : vm )
+      {
+        push_back( Item( archpath ) );
+        back().load( i.second.toMap() );
+      }
+    }
+  };
+
+  ArchiveConfig( const ArchPath& arch ) :
+    archpath( arch ), items( arch )
+  {
+
+  }
+
+  //const std::string& repo;
+  std::string name;
+  std::string archive;
+  const ArchPath& archpath;
+  VariantMap info;
+  int margin;
+  bool ignorePath;
+  bool floatCoordinates;
+  Size size;
+  Items items;
+
+  void add()
+  {
+    items.add();
+  }
+
+  void load( const VariantMap& vm )
+  {
+    VARIANT_LOAD_STR( name, vm )
+    VARIANT_LOAD_STR( archive, vm )
+    VARIANT_LOAD_ANY( size, vm )
+    VARIANT_LOAD_VMAP( info, vm )
+    VARIANT_LOAD_ANY( floatCoordinates, vm )
+    VARIANT_LOAD_ANY( margin, vm )
+    VARIANT_LOAD_ANY( ignorePath, vm )
+    VARIANT_LOAD_CLASS( items, vm )
+  }
+};
+
+struct Config
+{
+  struct Archives : public std::vector<ArchiveConfig>
+  {
+    const ArchPath& archpath;
+
+    Archives( const ArchPath& arch ) :
+       archpath( arch )
+    {
+
+    }
+
+    void add()
+    {
+      push_back( ArchiveConfig( archpath ) );
+    }
+
+    void load( const VariantMap& vm )
+    {
+      for( auto& item : vm )
+      {
+        push_back( ArchiveConfig( archpath ) );
+        back().load( item.second.toMap() );
+      }
+    }
+  };
+
+  ArchPath archpath;
+  Archives archives;
+
+  Config() :
+    archives( archpath )
+  {
+
+  }
+
+  void load( const VariantMap& vm )
+  {
+    archpath.repo = vm.get( "repository" ).toString();
+    archpath.output = vm.get( "output" ).toString();
+    VARIANT_LOAD_CLASS( archives, vm )
+  }
+
+  void once(const std::string& name, int width, int height, int padding, bool fileNameOnly, bool unitCoordinates, const StringArray& dirs)
+  {
+    archpath.output = "";
+    archpath.output = ".";
+    archives.add();
+
+    ArchiveConfig& arch = archives.back();
+    arch.name = name;
+    arch.size = Size( width, height );
+    arch.margin = padding;
+    arch.ignorePath = fileNameOnly;
+    arch.floatCoordinates = unitCoordinates;
+  }
+};
+
+class Atlases : public std::vector<AtlasGenerator*>
+{
+public:
+  gfx::Picture findByIndex( int index )
+  {
+    gfx::Picture ret = gfx::Picture::getInvalid();
+    int currentStart = 0;
+    for( auto&& a : *this )
+    {
+      if( index >= currentStart &&
+          index < currentStart + a->textures.size() )
+      {
+        ret = a->textures[ index - currentStart ]->image;
+      }
+      else
+      {
+        currentStart += a->textures.size();
+      }
+    }
+
+    return ret;
+  }
+
+  int max() const
+  {
+    int result = 0;
+    for( auto&& a : *this )
+      result += a->textures.size();
+
+    return result;
+  }
+};
+
+void createSet( const ArchiveConfig& archive, const StringArray& names )
+{
+  vfs::Directory outputDir( archive.archpath.output );
+  vfs::Path relativePath( archive.archive );
+  relativePath = relativePath.changeExtension( "zip" );
+  vfs::Path arcName = outputDir/relativePath;
+  vfs::Directory realDir = arcName.directory();
+
+  if( !realDir.exist() )
+    vfs::Directory::createByPath( realDir );
+
+  int createMode = APPEND_STATUS_CREATE;
+  if( arcName.exist() )
+    createMode = APPEND_STATUS_ADDINZIP;
+
+  zipFile zf = zipOpen( arcName.toCString(), createMode );
+  if ( zf == nullptr )
+  {
+     /* Handle error */
+     Logger::warning( "Unable to open %s for writing\n", arcName.toCString() );
+     return;
+  }
+
+  const unsigned int bufferSize = 1024;
+  char buf[bufferSize] = { 0 };
+  size_t bytes_read = 0;
+  int err;
+  zip_fileinfo zi;
+
+  int opt_compress_level=Z_DEFAULT_COMPRESSION;
+  for( auto& filename : names )
+  {
+    vfs::NFile nfile = vfs::NFile::open( filename );
+
+    zi.tmz_date.tm_sec = zi.tmz_date.tm_min = zi.tmz_date.tm_hour =
+    zi.tmz_date.tm_mday = zi.tmz_date.tm_mon = zi.tmz_date.tm_year = 0;
+    zi.dosDate = 0;
+    zi.internal_fa = 0;
+    zi.external_fa = 0;
+    zipFiletime(filename.c_str(),&zi.tmz_date,&zi.dosDate);
+
+    std::string basename = vfs::Path( filename ).baseName().toString();
+    err = zipOpenNewFileInZip(zf,basename.c_str(),&zi,
+                              NULL,0,NULL,0,NULL,
+                              (opt_compress_level != 0) ? Z_DEFLATED : 0,
+                              opt_compress_level);
+
+    bytes_read = nfile.read( buf, bufferSize );
+    while (bytes_read > 0)
+    {
+       err = zipWriteInFileInZip (zf,buf,bytes_read);
+       if (err != ZIP_OK)
+       {
+          Logger::warning( "Error during compression with file " + filename );
+          err = zipCloseFileInZip(zf);
+          break;
+       }
+       bytes_read = nfile.read(buf, bufferSize);
+    }
+
+    err = zipCloseFileInZip(zf);
+  }
+
+  ByteArray data;
+  data = config::save( archive.info );
+  err = zipOpenNewFileInZip( zf, "info", &zi,
+                             NULL,0,NULL,0,NULL,
+                             (opt_compress_level != 0) ? Z_DEFLATED : 0,
+                             opt_compress_level);
+  zipWriteInFileInZip( zf, data.data(), data.size() );
+
+  zipClose(zf,NULL);
+}
+
 int main(int argc, char* argv[])
 {
   Logger::registerWriter( Logger::consolelog, "" );
   gfx::Engine* engine = new gfx::SdlEngine();
 
   Logger::warning( "GraficEngine: set size" );  
-  engine->setScreenSize( Size( 800, 600 ) );
+  engine->setScreenSize( Size( 800, 800 ) );
+  engine->setFlag( gfx::Engine::debugInfo, true );
+  engine->setFlag( gfx::Engine::batching, false );
   engine->init();
+  engine->setTitle( "CaesarIA: tileset packer" );
 
   if(argc < 5)
   {
@@ -344,55 +644,112 @@ int main(int argc, char* argv[])
     return 0;
   }
 
-  AtlasGenerator atlasGenerator;
-  StringArray dirs;
+  Config config;
 
-  for(int i = 7; i < argc; ++i)
-    dirs << argv[i];
+  Atlases gens;
 
-  atlasGenerator.run(argv[1],
-                     utils::toInt(argv[2]),
-                     utils::toInt(argv[3]),
-                     utils::toInt(argv[4]),
-                     utils::toInt(argv[5]) != 0,
-                     utils::toInt(argv[6]) != 0,
-                     dirs);
+  vfs::Path path( "tileset.model" );
+  if( path.exist() )
+  {
+    VariantMap vm = config::load( path );
+    config.load( vm );
+  }
+  else
+  {
+    StringArray dirs;
+    for(int i = 7; i < argc; ++i)
+      dirs << argv[i];
+
+    config.once( argv[1],
+                 utils::toInt(argv[2]),
+                 utils::toInt(argv[3]),
+                 utils::toInt(argv[4]),
+                 utils::toInt(argv[5]) != 0,
+                 utils::toInt(argv[6]) != 0,
+                 dirs );
+  }
+
+  for( auto& archiveIt : config.archives )
+  {
+    StringArray atlasFiles;
+    StringArray allFiles;
+    for( const ArchiveConfig::Item& item : archiveIt.items)
+    {
+      if( item.type == ArchiveConfig::Item::atlas )
+        atlasFiles << item.files;
+      else
+        allFiles << item.files;
+    }
+
+    auto gen = new AtlasGenerator();
+    gen->run( archiveIt.name,
+              archiveIt.size.width(),
+              archiveIt.size.height(),
+              archiveIt.margin,
+              archiveIt.ignorePath,
+              archiveIt.floatCoordinates,
+              StringArray(),
+              atlasFiles );
+    gens.push_back( gen );
+
+    StringArray info = archiveIt.info[ "atlas" ].toStringArray();
+    for( auto& name : gen->names )
+    {
+      if( name.find( ".atlas" ) != std::string::npos )
+        info.push_back( name );
+    }
+    archiveIt.info[ "atlas" ] = info;
+
+    allFiles << gen->names;
+    createSet( archiveIt, allFiles );
+  }
 
   bool running = true;
   SDL_Event event;
 
   bool gray = true;
+  bool ygray = true;
   gfx::Picture bg( engine->screenSize(), 0, true );
-  for( int x=0; x < bg.width(); x+= 5 )
+  int offset = 10;
+  for( int x=0; x < bg.width(); x+= offset )
   {
-    for( int y=0; y < bg.height(); y+= 5 )
+    ygray = !ygray;
+    gray = ygray;
+    for( int y=0; y < bg.height(); y+= offset )
     {
-      bg.fill( gray ? DefaultColors::darkSlateGray : DefaultColors::dimGrey, Rect( x, y, x+5, y+5 ) );
-    }
+      bg.fill( gray ? DefaultColors::darkSlateGray : DefaultColors::lightSlateGray, Rect( x, y, x+offset, y+offset ) );
+      gray = !gray;
+    }    
   }
   bg.update();
 
+  int index = 0;
   while(running)
   {
-    engine->startRenderFrame();
-
+    static unsigned int lastTimeUpdate = DebugTimer::ticks();    
     while(SDL_PollEvent(&event) != 0)
     {
       if(event.type == SDL_QUIT) running = false;
-    }
-
-    engine->draw( bg, Point() );
-    for( Texture* tx : atlasGenerator.textures )
-    {
-      for( auto pair : tx->rectangleMap )
+      if(event.type == SDL_KEYUP)
       {
-        Texture::Node* node = pair.second;
-
-        engine->draw( node->image, node->rect.lefttop() );
+        if( event.key.keysym.sym == SDLK_UP ) index++;
+        if( event.key.keysym.sym == SDLK_DOWN) index--;
       }
     }
 
-    engine->delay( 10 );
+    index = math::clamp<int>( index, 0, gens.max()-1 );
+    engine->startRenderFrame();
+
+    engine->draw( bg, Point() );
+    gfx::Picture pic = gens.findByIndex(index);
+    engine->draw( pic, Rect( Point(), pic.size()), Rect( Point(), Size(800) ) );
     engine->endRenderFrame();
+
+    int delayTicks = DebugTimer::ticks() - lastTimeUpdate;
+    if( delayTicks < 33 )
+    {
+      engine->delay( std::max<int>( 33 - delayTicks, 0 ) );
+    }
+    lastTimeUpdate = DebugTimer::ticks();
   }
 }

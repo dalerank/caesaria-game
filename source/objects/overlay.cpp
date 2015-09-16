@@ -84,6 +84,15 @@ void Overlay::changeDirection( Tile* masterTile, Direction direction)
   _d->masterTile = masterTile;
 }
 
+Tilemap& Overlay::_map() const
+{
+  if( _city().isValid() )
+    return _city()->tilemap();
+
+  Logger::warning( "!!! WARNING: City is null at Overlay::_map()" );
+  return gfx::tilemap::getInvalid();
+}
+
 void Overlay::setPicture(Picture picture)
 {
   _d->picture = picture;

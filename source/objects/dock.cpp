@@ -148,7 +148,8 @@ bool Dock::build( const city::AreaInfo& info )
 
   TilesArea area(  info.city->tilemap(), info.pos, size() );
 
-  for( auto tile : area ) { _d->saved_tile.push_back( tile::encode( *tile ) ); }
+  for( auto tile : area )
+     _d->saved_tile.push_back( tile::encode( *tile ) );
 
   WorkingBuilding::build( info );
 
@@ -167,7 +168,8 @@ void Dock::destroy()
   TilesArray tiles = area();
 
   int index=0;
-  for( auto tile : tiles ) { tile::decode( *tile, _d->saved_tile[ index++ ] ); }
+  for( auto tile : tiles )
+   tile::decode( *tile, _d->saved_tile[ index++ ] );
 
   WorkingBuilding::destroy();
 }
@@ -441,22 +443,22 @@ void Dock::_tryDeliverGoods()
 
     if( qty > 0 )
     {
-      CartPusherPtr walker = CartPusher::create( _city() );
+      auto cartPusher = CartPusher::create( _city() );
       good::Stock pusherStock( gtype, qty, 0 );
       _d->goods.importing.retrieve( pusherStock, qty );
-      walker->send2city( BuildingPtr( this ), pusherStock );
+      cartPusher->send2city( BuildingPtr( this ), pusherStock );
 
       //success to send cartpusher
-      if( !walker->isDeleted() )
+      if( !cartPusher->isDeleted() )
       {
-        if( walker->pathway().isValid() )
+        if( cartPusher->pathway().isValid() )
         {
-          addWalker( walker.object() );
+          addWalker( cartPusher.object() );
         }
         else
         {
           _d->goods.importing.store( pusherStock, qty );
-          walker->deleteLater();
+          cartPusher->deleteLater();
         }
       }
       else
@@ -478,13 +480,13 @@ void Dock::_tryReceiveGoods()
   {
     if( _d->goods.requested.qty( gtype ) > 0 )
     {
-      CartSupplierPtr cart = CartSupplier::create( _city() );
+      auto cartSupplier = CartSupplier::create( _city() );
       int qty = std::min( 400, _d->goods.requested.getMaxRetrieve( gtype ) );
-      cart->send2city( this, gtype, qty );
+      cartSupplier->send2city( this, gtype, qty );
 
-      if( !cart->isDeleted() )
+      if( !cartSupplier->isDeleted() )
       {
-        addWalker( cart.object() );
+        addWalker( cartSupplier.object() );
         good::Stock tmpStock( gtype, qty, 0 );
         _d->goods.requested.retrieve( tmpStock, qty );
         return;

@@ -54,9 +54,6 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
 
   if( tile.overlay().isNull() )
   {
-    //draw background    
-    //engine.draw( tile.picture(), screenPos );
-
     drawPass( engine, tile, offset, Renderer::ground );
     drawPass( engine, tile, offset, Renderer::groundAnimation );
   }
@@ -77,11 +74,11 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
 
       if ( overlay->type() == object::house )
       {
-        HousePtr h = overlay.as<House>();
-        needDrawAnimations = (h->spec().level() == HouseLevel::hovel) && h->habitants().empty();
+        auto house = overlay.as<House>();
+        needDrawAnimations = (house->spec().level() == HouseLevel::hovel) && house->habitants().empty();
 
         tileNumber = OverlayPic::inHouse;
-        haveWater = haveWater || h->hasServiceAccess(Service::fountain) || h->hasServiceAccess(Service::well);
+        haveWater = haveWater || house->hasServiceAccess(Service::fountain) || house->hasServiceAccess(Service::well);
       }
 
       if( !needDrawAnimations )
@@ -101,18 +98,19 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
 
       if( _d->showWaterValue )
       {
-        AqueductPtr aq = ptr_cast<Aqueduct>( tile.overlay() );
-        if( aq.isValid() )
+        auto aqueduct = tile.overlay().as<Aqueduct>();
+        if( aqueduct.isValid() )
         {
           Font f = Font::create( FONT_2 );
           f.setColor( 0xffff0000 );
-          int df = aq->water();
+          int df = aqueduct->water();
           f.draw( engine.screen(), utils::format( 0xff, "%x", df), screenPos + Point( 20, -80 ), false );
         }
 
         int wellValue = tile.param( Tile::pWellWater );
         int fountainValue = tile.param( Tile::pFountainWater );
         int reservoirWater = tile.param( Tile::pReservoirWater );
+
         if( wellValue > 0 || fountainValue > 0 || reservoirWater > 0 )
         {
           std::string text = utils::format( 0xff, "%d/%d/%d", wellValue, fountainValue, reservoirWater );
@@ -138,9 +136,8 @@ void Water::_drawLandTile( Engine& engine, Tile& tile, const Point& offset, cons
   Tilemap& tilemap = _city()->tilemap();
   TilesArray area = tilemap.getArea( tile.epos(), areaSize );
 
-  foreach( it, area )
+  for( auto rtile : area )
   {
-    Tile* rtile = *it;
     int reservoirWater = rtile->param( Tile::pReservoirWater );
     int fontainWater = rtile->param( Tile::pFountainWater );
 

@@ -66,7 +66,7 @@ void Sentiment::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( overlay->type() == object::house )
     {
-      HousePtr house = overlay.as<House>();
+      auto house = overlay.as<House>();
 
       sentimentLevel = (int)house->state( pr::happiness );
       needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();

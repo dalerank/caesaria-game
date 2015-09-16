@@ -246,7 +246,7 @@ void Destroy::init(Point cursor)
   LayerPtr layer = _d->renderer->currentLayer();
   if( layer.isValid() )
   {
-    SmartPtr<Build> buildLayer = ptr_cast<Build>( layer );
+    auto buildLayer = layer.as<Build>();
     if( buildLayer.isValid() )
     {
       _d->lastLayer = buildLayer->drawLayer();

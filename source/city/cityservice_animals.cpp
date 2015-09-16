@@ -85,8 +85,8 @@ void Animals::timeStep(const unsigned int time)
 
     if( maxAnimalInCity > 0 )
     {
-      const WalkerList& animals = _city()->statistic().walkers.find( walkerType );
-      if( animals.size() < maxAnimalInCity )
+      int animals_n = _city()->statistic().walkers.count( walkerType );
+      if( animals_n < (int)maxAnimalInCity )
       {
         AnimalPtr animal = WalkerManager::instance().create<Animal>( walkerType, _city() );
         if( animal.isValid() )

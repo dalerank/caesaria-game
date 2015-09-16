@@ -269,7 +269,7 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
       if( warehouse.isValid() )
       {
         float tradeKoeff = warehouse->tradeBuff( Warehouse::sellGoodsBuff );
-        good::ProductMap cityGoodsAvailable = city->statistic().goods.details( false );
+        good::ProductMap cityGoodsAvailable = city->statistic().goods.inWarehouses();
 
         trade::Options& options = city->tradeOptions();
         good::Store& whStore = warehouse->store();
@@ -355,7 +355,7 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
 
     if( warehouse.isValid() )
     {
-      good::ProductMap storedGoods = city->statistic().goods.details( false );
+      good::ProductMap storedGoods = city->statistic().goods.inWarehouses();
       trade::Options& options = city->tradeOptions();
       //try sell goods
 

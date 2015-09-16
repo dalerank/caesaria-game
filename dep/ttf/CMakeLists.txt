@@ -16,10 +16,10 @@ if (${FREETYPE_INCLUDE_DIR_ft2build})
     include_directories(${FREETYPE_INCLUDE_DIR_ft2build})
 endif()
 
-add_library(${PROJECT_NAME} ${TTF_SOURCES_LIST})
+add_library(${PROJECT_NAME} STATIC ${TTF_SOURCES_LIST})
 
 target_link_libraries(${PROJECT_NAME} ${FREETYPE_LIBRARY})
-target_link_libraries(${PROJECT_NAME} ${PNG_LIBRARY})
+#target_link_libraries(${PROJECT_NAME} ${PNG_LIBRARY})
 
 # Required on Unix OS family to be able to be linked into shared libraries.
 set_target_properties(${PROJECT_NAME}

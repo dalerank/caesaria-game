@@ -27,6 +27,7 @@
 #include "core/variant_map.hpp"
 #include "objects/building.hpp"
 #include "gfx/helper.hpp"
+#include "gfx/tilemap.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "walkers_factory.hpp"
 
@@ -95,7 +96,7 @@ void TraineeWalker::setBase(BuildingPtr originBuilding)
 
 BuildingPtr TraineeWalker::receiver() const
 {
-  return _city()->getOverlay( _d->destLocation ).as<Building>();
+  return _map().overlay( _d->destLocation ).as<Building>();
 }
 
 void TraineeWalker::_computeWalkerPath( bool roadOnly )
@@ -239,7 +240,7 @@ void TraineeWalker::_reachedPathway()
   Walker::_reachedPathway();
   deleteLater();
 
-  BuildingPtr dest = _city()->getOverlay( _d->destLocation ).as<Building>();
+  BuildingPtr dest = _map().overlay( _d->destLocation ).as<Building>();
   if( dest.isValid() )
   {
     dest->updateTrainee( this );

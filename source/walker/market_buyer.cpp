@@ -134,7 +134,7 @@ void MarketBuyer::computeWalkerDestination( MarketPtr market )
     // get the list of buildings within reach
     Pathway pathWay;
     Propagator pathPropagator( _city() );
-    pathPropagator.init( ptr_cast<Construction>( _d->market ) );
+    pathPropagator.init( _d->market.as<Construction>() );
     pathPropagator.setAllDirections( false );
     pathPropagator.propagate( _d->maxDistance);
 
@@ -143,9 +143,7 @@ void MarketBuyer::computeWalkerDestination( MarketPtr market )
     {
       _d->priorityGood = goodType;
 
-      if( _d->priorityGood == good::wheat || _d->priorityGood == good::fish
-          || _d->priorityGood == good::meat || _d->priorityGood == good::fruit
-          || _d->priorityGood == good::vegetable)
+      if( good::isFood( _d->priorityGood ) )
       {
         // try get that good from a granary
         _d->destBuildingPos = getWalkerDestination2<Granary>( pathPropagator, object::granery, _d->market,
@@ -169,7 +167,7 @@ void MarketBuyer::computeWalkerDestination( MarketPtr market )
         // we found a destination!
         setPos( pathWay.startPos() );
         setPathway( pathWay );
-         break;
+        break;
       }
     }
   }
@@ -233,7 +231,7 @@ void MarketBuyer::_reachedPathway()
    else
    {
       // get goods from destination building
-      OverlayPtr building = _city()->tilemap().at( _d->destBuildingPos ).overlay();
+      OverlayPtr building = _map().overlay( _d->destBuildingPos );
       
       if( building.is<Granary>() )
       {
@@ -241,6 +239,7 @@ void MarketBuyer::_reachedPathway()
         // this is a granary!
         // std::cout << "MarketLady arrives at granary, res=" << _reservationID << std::endl;
         granary->store().applyRetrieveReservation(_d->basket, _d->reservationID);
+
         good::Products foods = good::foods();
         foods.exclude( _city()->tradeOptions().locked() );
 
@@ -262,11 +261,12 @@ void MarketBuyer::_reachedPathway()
           }
         }
       }
-      else if( is_kind_of<Warehouse>( building ) )
+      else if( building.is<Warehouse>() )
       {
         WarehousePtr warehouse = ptr_cast<Warehouse>( building );
         // this is a warehouse!
         warehouse->store().applyRetrieveReservation(_d->basket, _d->reservationID);
+
         good::Products products = good::all();
         products.exclude( _city()->tradeOptions().locked() );
 

@@ -61,6 +61,14 @@ public:
                          TilePos start=gfx::tilemap::invalidLocation(),
                          TilePos stop=gfx::tilemap::invalidLocation() ) const;
 
+    template< class T >
+    int count( TilePos start=gfx::tilemap::invalidLocation(),
+               TilePos stop=gfx::tilemap::invalidLocation() ) const;
+
+    int count( walker::Type type,
+               TilePos start=gfx::tilemap::invalidLocation(),
+               TilePos stop=gfx::tilemap::invalidLocation() ) const;
+
 
     Statistic& _parent;
     std::map<int, WalkerList> cached;
@@ -82,6 +90,11 @@ public:
 
     template< class T >
     SmartList< T > find( object::Type type ) const;
+
+    template< class T >
+    int count() const;
+
+    int count( object::Type type ) const;
 
     template< class T >
     SmartList< T > find( object::TypeSet types ) const;
@@ -192,6 +205,9 @@ public:
   struct _Goods
   {
     good::ProductMap details(bool includeGranary) const;
+    good::ProductMap inCity() const;
+    good::ProductMap inWarehouses() const;
+
     bool canImport( good::Product type ) const;
     bool canProduce( good::Product type ) const;
     bool isRomeSend( good::Product type ) const;
@@ -243,7 +259,7 @@ public:
 
   struct _Entertainment
   {
-    int coverage(Service::Type service ) const;
+    int coverage(Service::Type service) const;
 
     Statistic& _parent;
   } entertainment;
@@ -337,7 +353,7 @@ inline Pathway Statistic::_Walkers::freeTile( TilePos target, TilePos currentPos
 
 template< class T >
 inline SmartList<T> Statistic::_Walkers::find( walker::Type type,
-                      TilePos start, TilePos stop ) const
+                                               TilePos start, TilePos stop ) const
 {
   WalkerList walkersInArea;
 
@@ -368,6 +384,35 @@ inline SmartList<T> Statistic::_Walkers::find( walker::Type type,
   {
     if( w->type() == type || type == walker::any )
       result.addIfValid( w.as<T>() );
+  }
+
+  return result;
+}
+
+template< class T >
+inline int Statistic::_Walkers::count( TilePos start, TilePos stop ) const
+{
+  int result = 0;
+  TilePos stopPos = stop;
+
+  if( start == gfx::tilemap::invalidLocation() )
+  {
+    const WalkerList& all =_parent.rcity.walkers();
+    result = all.count<T>();
+  }
+  else if( stopPos == gfx::tilemap::invalidLocation() )
+  {
+    const WalkerList& wlkOnTile = _parent.rcity.walkers( start );
+    result = wlkOnTile.count<T>();
+  }
+  else
+  {
+    gfx::TilesArea area( _parent.rcity.tilemap(), start, stop );
+    for( auto tile : area)
+    {
+      const WalkerList& wlkOnTile = _parent.rcity.walkers( tile->pos() );
+      result += wlkOnTile.count<T>();
+    }
   }
 
   return result;
@@ -449,6 +494,20 @@ inline SmartList< T > Statistic::_Objects::find( object::TypeSet types ) const
   }
 
   return ret;
+}
+
+template< class T >
+inline int Statistic::_Objects::count() const
+{
+  int result = 0;
+  const OverlayList& buildings = _parent.rcity.overlays();
+  for( auto bld : buildings )
+  {
+    if( is_kind_of<T>( bld ) )
+      result++;
+  }
+
+  return result;
 }
 
 template< class T >

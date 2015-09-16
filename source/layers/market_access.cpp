@@ -62,7 +62,7 @@ void MarketAccess::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( overlay->type() == object::house )
     {
-      HousePtr house = overlay.as<House>();
+      auto house = overlay.as<House>();
       accessLevel = (int)house->getServiceValue( Service::market );
       needDrawAnimations = (house->spec().level() <= HouseLevel::hovel) && house->habitants().empty();
 

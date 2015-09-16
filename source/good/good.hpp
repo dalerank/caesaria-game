@@ -64,6 +64,11 @@ public:
     return *this;
   }
 
+  inline bool contain( const Product& type ) const
+  {
+    return this->count( type ) > 0;
+  }
+
   Products& exclude( const Products& types)
   {
     for( auto goodType : types )
@@ -81,6 +86,7 @@ const Products& foods();
 inline bool isFood( const Product& p ) { return foods().count( p ) > 0; }
 const Products& materials();
 const Products& all();
+
 Product getMaterial( const Product& pr );
 
 class Stock;

@@ -115,9 +115,9 @@ void WallGuard::timeStep(const unsigned long time)
 
   case check4attack:
   {
-    EnemySoldierList enemies = _findEnemiesInRange( attackDistance() ).select<EnemySoldier>();
+    bool haveEnemies = _findEnemiesInRange( attackDistance() ).count<EnemySoldier>() > 0;
 
-    if( !enemies.empty() )
+    if( haveEnemies )
     {    
       fight();      
     }
@@ -193,8 +193,8 @@ std::string WallGuard::thoughts(Thought th) const
   case thCurrent:
   {
     TilePos offset( 10, 10 );
-    EnemySoldierList enemies = _city()->statistic().walkers.find<EnemySoldier>( walker::any, pos() - offset, pos() + offset );
-    if( enemies.empty() )
+    int enemies_n = _city()->statistic().walkers.count( walker::any, pos() - offset, pos() + offset );
+    if( enemies_n > 0 )
     {
       return Soldier::thoughts(th);
     }

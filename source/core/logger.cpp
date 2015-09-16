@@ -101,9 +101,10 @@ class ConsoleLogWriter : public LogWriter
 public:
   virtual void write( const std::string& str, bool newline )
   {
-#ifdef CAESARIA_PLATFORM_ANDROID
-    str.append( newline ? "\n" : "" );
+#ifdef CAESARIA_PLATFORM_ANDROID    
     __android_log_print(ANDROID_LOG_DEBUG, CAESARIA_PLATFORM_NAME, "%s", str.c_str() );
+    if( newline )
+      __android_log_print(ANDROID_LOG_DEBUG, CAESARIA_PLATFORM_NAME, "\n" );
 #else
     std::cout << str;
     if( newline ) std::cout << std::endl;

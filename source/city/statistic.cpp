@@ -27,6 +27,7 @@
 #include "gfx/tilemap.hpp"
 #include "goods_updater.hpp"
 #include "game/funds.hpp"
+#include "core/common.hpp"
 #include "cityservice_workershire.hpp"
 #include "objects/farm.hpp"
 #include "world/empire.hpp"
@@ -158,6 +159,34 @@ const WalkerList& Statistic::_Walkers::find(walker::Type type) const
   }
 
   return wl;
+}
+
+int Statistic::_Walkers::count(walker::Type type, TilePos start, TilePos stop) const
+{
+  int result = 0;
+  TilePos stopPos = stop;
+
+  if( start == gfx::tilemap::invalidLocation() )
+  {
+    const WalkerList& all =_parent.rcity.walkers();
+    result = utils::countByType( all, type );
+  }
+  else if( stopPos == gfx::tilemap::invalidLocation() )
+  {
+    const WalkerList& wlkOnTile = _parent.rcity.walkers( start );
+    result = utils::countByType( wlkOnTile, type );
+  }
+  else
+  {
+    gfx::TilesArea area( _parent.rcity.tilemap(), start, stop );
+    for( auto tile : area)
+    {
+      const WalkerList& wlkOnTile = _parent.rcity.walkers( tile->pos() );
+      result += utils::countByType( wlkOnTile, type );
+    }
+  }
+
+  return result;
 }
 
 unsigned int Statistic::_Tax::possible() const
@@ -292,6 +321,19 @@ unsigned int Statistic::_Workers::available() const
   return workersNumber;
 }
 
+int Statistic::_Objects::count(object::Type type) const
+{
+  int ret;
+  const OverlayList& buildings = _parent.rcity.overlays();
+  for( auto bld : buildings )
+  {
+    if( bld.isValid() && bld->type() == type )
+      ret++;
+  }
+
+  return ret;
+}
+
 OverlayList Statistic::_Objects::neighbors(OverlayPtr overlay, bool v) const
 {
   if( overlay.isNull() )
@@ -400,6 +442,9 @@ unsigned int Statistic::_Festival::calcCost(FestivalType type) const
 
   return 0;
 }
+
+good::ProductMap Statistic::_Goods::inCity() const { return details( true ); }
+good::ProductMap Statistic::_Goods::inWarehouses() const { return details( false ); }
 
 good::ProductMap Statistic::_Goods::details(bool includeGranary) const
 {
