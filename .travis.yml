@@ -1,18 +1,19 @@
 language: android
 android:
  components:
-  - build-tools-19.1.0
-  - android-19
+  - build-tools-20.0.0
+  - android-18
 before_install:
  - sudo apt-get install -qq wget sshpass
  - ARCH=x86_64
- - NDK_VERSION=r9
+ - NDK_VERSION=r10e
 #SDK_VERSION=20130729;
 #[ $(TARGET_ARCH) = "i386" ] && ARCH=x86;
  - echo "Downloading the ndk...";
- - wget --quiet --continue http://dl.google.com/android/ndk/android-ndk-$NDK_VERSION-linux-$ARCH.tar.bz2
+ - wget --quiet --continue http://dl.google.com/android/ndk/android-ndk-$NDK_VERSION-linux-$ARCH.bin
+ - sudo chmod a+x android-ndk-$NDK_VERSION-linux-$ARCH.bin
  - echo "Extracting the ndk...";
- - tar -xjf android-ndk-$NDK_VERSION-linux-$ARCH.tar.bz2 -C ~/
+ - ./android-ndk-$NDK_VERSION-linux-$ARCH.bin -y | grep -v Extracting
 #echo "Downloading the sdk..."; \
 #wget --quiet --continue http://dl.google.com/android/adt/adt-bundle-linux-$$ARCH-$$SDK_VERSION.zip; \
 #echo "Extracting the sdk..."; \
@@ -21,7 +22,7 @@ before_install:
 #unzip -o -qq $$ARCHIVE; \
  - echo "Configure paths...";
 #- export ANDROID_SDK=~/adt-bundle-linux-$$ARCH-$$SDK_VERSION/sdk
- - export ANDROID_NDK=~/android-ndk-$NDK_VERSION
+ - export ANDROID_NDK=`pwd`/android-ndk-$NDK_VERSION
  - export NDK_ROOT=$ANDROID_NDK
 #- export PATH=\$$PATH:\$$ANDROID_NDK:\$$ANDROID_SDK/tools:\$$ANDROID_SDK/platform-tools
  - export PATH=$PATH:$ANDROID_NDK
