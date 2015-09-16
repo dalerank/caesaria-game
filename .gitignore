@@ -21,7 +21,6 @@ cmake_install.cmake
 .cproject
 
 build/*
-resources/*
 dependencies/*
 application/*
 en/*
