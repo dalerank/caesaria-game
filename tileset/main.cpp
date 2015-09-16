@@ -431,6 +431,7 @@ struct ArchiveConfig
   std::string name;
   std::string archive;
   const ArchPath& archpath;
+  VariantMap info;
   int margin;
   bool ignorePath;
   bool floatCoordinates;
@@ -447,6 +448,7 @@ struct ArchiveConfig
     VARIANT_LOAD_STR( name, vm )
     VARIANT_LOAD_STR( archive, vm )
     VARIANT_LOAD_ANY( size, vm )
+    VARIANT_LOAD_VMAP( info, vm )
     VARIANT_LOAD_ANY( floatCoordinates, vm )
     VARIANT_LOAD_ANY( margin, vm )
     VARIANT_LOAD_ANY( ignorePath, vm )
@@ -681,6 +683,14 @@ int main(int argc, char* argv[])
               StringArray(),
               atlasFiles );
     gens.push_back( gen );
+
+    StringArray info = archiveIt.info[ "atlas" ].toStringArray();
+    for( auto& name : gen->names )
+    {
+      if( name.find( ".atlas" ) != std::string::npos )
+        info.push_back( name );
+    }
+    archiveIt.info[ "atlas" ] = info;
 
     allFiles << gen->names;
     createSet( archiveIt, allFiles );
