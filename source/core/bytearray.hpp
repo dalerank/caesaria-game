@@ -28,6 +28,7 @@ public:
   ByteArray();
 
   explicit ByteArray( unsigned int cap );
+  explicit ByteArray( const std::string& str );
 
   ByteArray& operator=( const std::string& str );
 

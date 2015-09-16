@@ -573,13 +573,13 @@ void createSet( const ArchiveConfig& archive, const StringArray& names )
   const unsigned int bufferSize = 1024;
   char buf[bufferSize] = { 0 };
   size_t bytes_read = 0;
+  int err;
+  zip_fileinfo zi;
 
   int opt_compress_level=Z_DEFAULT_COMPRESSION;
   for( auto& filename : names )
   {
     vfs::NFile nfile = vfs::NFile::open( filename );
-
-    zip_fileinfo zi;
 
     zi.tmz_date.tm_sec = zi.tmz_date.tm_min = zi.tmz_date.tm_hour =
     zi.tmz_date.tm_mday = zi.tmz_date.tm_mon = zi.tmz_date.tm_year = 0;
@@ -589,7 +589,7 @@ void createSet( const ArchiveConfig& archive, const StringArray& names )
     zipFiletime(filename.c_str(),&zi.tmz_date,&zi.dosDate);
 
     std::string basename = vfs::Path( filename ).baseName().toString();
-    int err = zipOpenNewFileInZip(zf,basename.c_str(),&zi,
+    err = zipOpenNewFileInZip(zf,basename.c_str(),&zi,
                               NULL,0,NULL,0,NULL,
                               (opt_compress_level != 0) ? Z_DEFLATED : 0,
                               opt_compress_level);
@@ -610,7 +610,15 @@ void createSet( const ArchiveConfig& archive, const StringArray& names )
     err = zipCloseFileInZip(zf);
   }
 
-  int errclose = zipClose(zf,NULL);
+  ByteArray data;
+  data = config::save( archive.info );
+  err = zipOpenNewFileInZip( zf, "info", &zi,
+                             NULL,0,NULL,0,NULL,
+                             (opt_compress_level != 0) ? Z_DEFLATED : 0,
+                             opt_compress_level);
+  zipWriteInFileInZip( zf, data.data(), data.size() );
+
+  zipClose(zf,NULL);
 }
 
 int main(int argc, char* argv[])
