@@ -5,8 +5,8 @@ android:
   - android-18
 before_install:
  - sudo apt-get install -qq wget sshpass ant ia32-libs ia32-libs-multiarch
- - ARCH=x86_64
- - NDK_VERSION=r10
+ - ARCH=x86
+ - NDK_VERSION=r10d
 #SDK_VERSION=20130729;
 #[ $(TARGET_ARCH) = "i386" ] && ARCH=x86;
  - echo "Downloading the ndk...";
