@@ -6,7 +6,7 @@ android:
 before_install:
  - sudo apt-get install -qq wget sshpass
  - ARCH=x86
- - NDK_VERSION=r10e
+ - NDK_VERSION=r9e
 #SDK_VERSION=20130729;
 #[ $(TARGET_ARCH) = "i386" ] && ARCH=x86;
  - echo "Downloading the ndk...";
