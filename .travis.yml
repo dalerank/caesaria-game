@@ -4,7 +4,7 @@ android:
   - build-tools-22.0.1
   - android-18
 before_install:
- - sudo apt-get install -qq wget sshpass ant ia32-libs ia32-libs-multiarch
+ - sudo apt-get install -qq wget sshpass ant ia32-libs
  - ARCH=x86
  - NDK_VERSION=r10d
 #SDK_VERSION=20130729;
