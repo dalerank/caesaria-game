@@ -276,6 +276,10 @@ static void GLES2_WindowEvent(SDL_Renderer * renderer,
 static int GLES2_UpdateViewport(SDL_Renderer * renderer);
 static void GLES2_DestroyRenderer(SDL_Renderer *renderer);
 static int GLES2_SetOrthographicProjection(SDL_Renderer *renderer);
+static int GLES2_CreateBatch(SDL_Renderer * renderer, SDL_Batch* batch, SDL_Texture * texture,
+                             const SDL_Rect * srcrect, const SDL_Rect* dstrect, unsigned int size);
+static int GLES2_RenderBatch(SDL_Renderer * renderer, SDL_Batch * batch);
+static int GLES2_DestroyBatch(SDL_Renderer * renderer, SDL_Batch * batch);
 
 
 static SDL_GLContext SDL_CurrentContext = NULL;
@@ -2088,6 +2092,9 @@ GLES2_CreateRenderer(SDL_Window *window, Uint32 flags)
     renderer->RenderDrawLines     = &GLES2_RenderDrawLines;
     renderer->RenderFillRects     = &GLES2_RenderFillRects;
     renderer->RenderCopy          = &GLES2_RenderCopy;
+    renderer->RenderBatch         = &GLES2_RenderBatch;
+    renderer->CreateBatch         = &GLES2_CreateBatch;
+    renderer->DestroyBatch        = &GLES2_DestroyBatch;
     renderer->RenderCopyEx        = &GLES2_RenderCopyEx;
     renderer->RenderReadPixels    = &GLES2_RenderReadPixels;
     renderer->RenderPresent       = &GLES2_RenderPresent;
@@ -2114,6 +2121,161 @@ error:
         SDL_RecreateWindow(window, window_flags);
     }
     return NULL;
+}
+
+static int
+GLES2_CreateBatch(SDL_Renderer * renderer, SDL_Batch* batch, SDL_Texture * texture,
+            const SDL_Rect * srcrect, const SDL_Rect * dstrect, unsigned int size)
+{
+  SDL_Rect textureRect = { 0, 0, 0, 0 };
+  SDL_Rect renderingRect = { 0, 0, 0, 0 };
+  SDL_Rect tmp_srcrect = { 0, 0, 0, 0 };
+  SDL_Rect tmp_dstrect = { 0, 0, 0, 0 };
+  int i = 0;
+  GLfloat* TexCoord = 0;
+  GLfloat* vertices = 0;
+  GLushort* indices = 0;
+  SDL_FRect frect;
+  unsigned int iTx = 0;
+  unsigned int iRtx= 0;
+
+  if( batch == 0 )
+    return -1;
+
+  GLES2_TextureData *texturedata = (GLES2_TextureData *) texture->driverdata;
+  GLfloat minx, miny, maxx, maxy;
+  GLfloat minu, maxu, minv, maxv;
+
+  textureRect.x = 0;
+  textureRect.y = 0;
+  textureRect.w = texture->w;
+  textureRect.h = texture->h;
+
+  SDL_RenderGetViewport(renderer, &renderingRect);
+  renderingRect.x = 0;
+  renderingRect.y = 0;
+
+  batch->texture     = texture;
+  if (texture->native)
+  {
+      texture = texture->native;
+  }
+
+  batch->vertices    = SDL_malloc( sizeof(GLfloat) * 4 * 3 * size );
+  batch->coordinates = SDL_malloc( sizeof(GLfloat) * 4 * 2 * size );
+  batch->indices     = SDL_malloc( sizeof(GLushort) * 2 * 3 * size ); 
+
+  TexCoord = (GLfloat*)batch->coordinates;
+  vertices = (GLfloat*)batch->vertices;
+  indices = (GLushort*)batch->indices;
+
+  for( ; iTx < size; iTx++ )
+  {
+    tmp_srcrect = srcrect[ iTx ];
+    tmp_dstrect = dstrect[ iTx ];
+    if (tmp_srcrect.h>0 || tmp_srcrect.y>0)
+    {
+        if (!SDL_IntersectRect(&tmp_srcrect, &textureRect, &tmp_srcrect))
+        {
+            continue;
+        }
+    }
+
+    if (tmp_dstrect.h>0 || tmp_dstrect.w>0)
+    {
+        if (!SDL_HasIntersection(&renderingRect, &tmp_dstrect))
+        {
+            continue;
+        }
+    }
+
+    frect.x = tmp_dstrect.x * renderer->scale.x;
+    frect.y = tmp_dstrect.y * renderer->scale.y;
+    frect.w = tmp_dstrect.w * renderer->scale.x;
+    frect.h = tmp_dstrect.h * renderer->scale.y;
+
+    minx = frect.x;
+    miny = frect.y;
+    maxx = frect.x + frect.w;
+    maxy = frect.y + frect.h;
+
+    minu = tmp_srcrect.x / (GLfloat)texture->w;
+    maxu = (tmp_srcrect.x + tmp_srcrect.w) / (GLfloat)texture->w;
+    minv = tmp_srcrect.y / (GLfloat)texture->h;
+    maxv = (tmp_srcrect.y + tmp_srcrect.h) / (GLfloat)texture->h;
+
+    i = iRtx;
+    TexCoord[ i * 8 + 0 ] = minu; TexCoord[ i * 8 + 1 ] = minv;
+    TexCoord[ i * 8 + 2 ] = maxu; TexCoord[ i * 8 + 3 ] = minv;
+    TexCoord[ i * 8 + 4 ] = maxu; TexCoord[ i * 8 + 5 ] = maxv;
+    TexCoord[ i * 8 + 6 ] = minu; TexCoord[ i * 8 + 7 ] = maxv;
+
+    vertices[ i * 12 + 0 ] = minx; vertices[ i * 12 + 1 ] = miny;  vertices[ i * 12 + 2 ] = 0;
+    vertices[ i * 12 + 3 ] = maxx; vertices[ i * 12 + 4 ] = miny;  vertices[ i * 12 + 5 ] = 0;
+    vertices[ i * 12 + 6 ] = maxx; vertices[ i * 12 + 7 ] = maxy;  vertices[ i * 12 + 8 ] = 0;
+    vertices[ i * 12 + 9 ] = minx; vertices[ i * 12 + 10 ] = maxy; vertices[ i * 12 + 11 ] = 0;
+
+    indices[ i * 6 + 0 ] = i * 4; indices[ i * 6 + 1 ] = i * 4 + 1; indices[ i * 6 + 2 ] = i * 4 + 2;
+    indices[ i * 6 + 3 ] = i * 4; indices[ i * 6 + 4 ] = i * 4 + 2; indices[ i * 6 + 5 ] = i * 4 + 3;
+    iRtx++;
+  }
+
+   batch->size = iRtx;
+
+  return 0;
+}
+
+static int
+GLES2_DestroyBatch(SDL_Renderer *renderer, SDL_Batch *batch)
+{
+  if( batch == 0 )
+    return -1;
+
+  if( batch->vertices != 0)
+      SDL_free( batch->vertices );
+
+  if( batch->coordinates != 0 )
+      SDL_free( batch->coordinates );
+
+  if( batch->indices != 0 )
+      SDL_free( batch->indices );
+
+  return 0;
+}
+
+static int
+GLES2_RenderBatch(SDL_Renderer * renderer, SDL_Batch * batch)
+{
+  if( batch == 0 )
+    return -1;
+
+  if( batch->size == 0 || batch->texture == 0 )
+    return -1;
+
+  GLES2_DriverContext *rdata = (GLES2_DriverContext *) renderer->driverdata;
+  GLES2_TextureData *tdata = (GLES2_TextureData *) batch->texture->driverdata;
+  SDL_Texture* texture = batch->texture;
+  GLuint locTexture;
+  GLuint locModulation;
+  GLES2_ImageSource sourceType = GLES2_IMAGESOURCE_TEXTURE_ABGR;
+  SDL_BlendMode blendMode = texture->blendMode;
+
+  ////!!!!!!!!!!!!!!!!!!!
+  GLES2_ActivateRenderer(renderer);
+ 
+  if (GLES2_SetupCopy(renderer, texture) < 0) {
+        return -1;
+    }
+ 
+  rdata->glVertexAttribPointer(GLES2_ATTRIBUTE_POSITION, 3, GL_FLOAT, GL_FALSE, 0, batch->vertices);
+  rdata->glVertexAttribPointer(GLES2_ATTRIBUTE_TEXCOORD, 2, GL_FLOAT, GL_FALSE, 0, batch->coordinates);
+
+  rdata->glDrawElements(GL_TRIANGLES, 6 * batch->size, GL_UNSIGNED_SHORT, batch->indices);
+
+  if (rdata->glGetError() != GL_NO_ERROR) {
+        return SDL_SetError("Failed to render texture");
+  }
+  return 0;
 }
 
 #endif /* SDL_VIDEO_RENDER_OGL_ES2 && !SDL_RENDER_DISABLED */
