@@ -48,8 +48,8 @@ LOCAL_SRC_FILES := $(SDL_PATH)/src/main/android/SDL_android_main.c \
   $(wildcard $(GAME_PATH)/sound/*.cpp) \
   $(wildcard $(GAME_PATH)/game/*.cpp) \
   $(wildcard $(LOCAL_PATH)/$(STEAM_PATH)/*.cpp) \
-  $(wildcard $(GAME_PATH)/layers/*.cpp)) 
-  
+  $(wildcard $(GAME_PATH)/layers/*.cpp) \
+  $(wildcard $(SDL_PATH)/src/main/android/SDL_android_main.c) )
   
 LOCAL_SHARED_LIBRARIES := SDL2 SDL2_mixer SDL2_net sdl_ttf pnggo lzma bzip2 aes smk
 LOCAL_CPP_FEATURES += exceptions
