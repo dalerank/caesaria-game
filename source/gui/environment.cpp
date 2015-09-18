@@ -93,6 +93,8 @@ Ui::Ui(Engine& painter )
 
   _d->consoleId = Hash( CAESARIA_STR_EXT(Console) );
   _d->console = 0;//new Console( this, _d->consoleId, Rect() );
+
+  setFlag( buttonShowDebugArea, 1 );
 }
 
 //! Returns if the element has focus
@@ -262,6 +264,11 @@ Widget* Ui::createWidget(const std::string& type, Widget* parent)
 void Ui::setFlag(Ui::Flag name, int value)
 {
   _d->flags[ name ] = value;
+}
+
+bool Ui::hasFlag(Ui::Flag name)
+{
+  return _d->flags[ name ];
 }
 
 void Ui::_updateHovered( const Point& mousePos )

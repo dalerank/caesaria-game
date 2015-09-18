@@ -914,6 +914,11 @@ void GlEngine::drawLine(const NColor& color, const Point& p1, const Point& p2)
   //  int i=0;
 }
 
+void GlEngine::fillRect(const NColor& color, const Rect& rect)
+{
+
+}
+
 void GlEngine::drawLines(const NColor& color, const PointsArray& p1)
 {
 

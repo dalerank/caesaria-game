@@ -200,18 +200,12 @@ void SdlEngine::init()
   //_srcSize = Size( mode.w, mode.h );
   Logger::warning( utils::format( 0xff, "SDLGraficEngine: Android set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
 
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
   window = SDL_CreateWindow( "CaesarIA:android", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _srcSize.width(), _srcSize.height(),
            SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
 
   Logger::warning("SDLGraficEngine:Android init successfull");
-
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
-
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 #else
   unsigned int flags = SDL_WINDOW_OPENGL;
   Logger::warning( utils::format( 0xff, "SDLGraficEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
@@ -284,6 +278,7 @@ void SdlEngine::init()
   SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &gl_version );
   Logger::warning( "SDLGraficEngine: init render %s ", info.name );
   Logger::warning( "SDLGraficEngine: using OpenGL %d ", gl_version );
+  Logger::warning( "SDLGraficEngine: max texture size is [%dx%d]", info.max_texture_width, info.max_texture_height );
 
   SDL_Texture *screenTexture = SDL_CreateTexture(renderer,
                                                  SDL_PIXELFORMAT_ARGB8888,
@@ -300,8 +295,8 @@ void SdlEngine::init()
   }
 
   Logger::warning( "SDLGraficEngine: set caption");
-  std::string versionStr = utils::format( 0xff, "CaesarIA: SDL build %d [%s:%s]",
-                                          CAESARIA_BUILD_NUMBER, CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
+  Logger::warning( "SDLGraphicEngine: version:%s compiler:%s", CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
+  std::string versionStr = utils::format( 0xff, "CaesarIA (b%d)", CAESARIA_BUILD_NUMBER );
   SDL_SetWindowTitle( window, versionStr.c_str() );
 
   _d->window = window;
@@ -605,6 +600,11 @@ void SdlEngine::drawLine(const NColor &color, const Point &p1, const Point &p2)
   SDL_RenderDrawLine( _d->renderer, p1.x(), p1.y(), p2.x(), p2.y() );
 
   SDL_SetRenderDrawColor( _d->renderer, 0, 0, 0, 0 );
+}
+
+void SdlEngine::fillRect(const NColor& color, const Rect& rect)
+{
+
 }
 
 void SdlEngine::drawLines(const NColor &color, const PointsArray& points)
