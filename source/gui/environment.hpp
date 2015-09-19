@@ -28,7 +28,7 @@ namespace gui
 class Ui : Widget
 {
 public:
-  typedef enum { showTooltips=0 } Flag;
+  typedef enum { showTooltips=0, buttonShowDebugArea=1 } Flag;
   Ui( gfx::Engine& painter );
 
   virtual ~Ui();
@@ -58,6 +58,7 @@ public:
   Widget* createWidget( const std::string& type, Widget* parent );
 
   void setFlag( Flag name, int value );
+  bool hasFlag( Flag name );
   void clear();
    
 private:    

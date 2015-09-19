@@ -12,6 +12,6 @@ public class CaesarIA extends SDLActivity {
     System.loadLibrary( "sdl_ttf" );
     System.loadLibrary( "smk" );
     System.loadLibrary( "application" );
-    System.loadLibrary( "main" ); 	 	
+    //System.loadLibrary( "main" ); 	 	
   }
 }

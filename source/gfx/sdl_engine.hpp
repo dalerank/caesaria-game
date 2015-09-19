@@ -63,6 +63,7 @@ public:
   virtual void draw(const Batch& batch, Rect* clipRect);
 
   virtual void drawLine(const NColor &color, const Point &p1, const Point &p2);
+  virtual void fillRect( const NColor& color, const Rect& rect );
   virtual void drawLines(const NColor& color, const PointsArray& points);
 
   virtual unsigned int fps() const;
