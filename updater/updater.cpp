@@ -412,15 +412,12 @@ void Updater::PerformSingleMirroredDownload(const DownloadPtr& download)
 
   while( _downloadManager->HasPendingDownloads() )
   {
-    //boost::this_thread::interruption_point();
-
     _downloadManager->ProcessDownloads();
 
     NotifyDownloadProgress();
 
     for (int i = 0; i < 50; ++i)
     {
-        //boost::this_thread::interruption_point();
         Util::Wait(10);
     }
   }
@@ -498,8 +495,6 @@ bool Updater::isIgnored(std::string name)
 
 bool Updater::CheckLocalFile(vfs::Path installPath, const ReleaseFile& releaseFile)
 {
-  //boost::this_thread::interruption_point();
-
   vfs::Path localFile = vfs::Directory(installPath).getFilePath(releaseFile.file);
 
   //Logger::warning( " Checking for file " + releaseFile.file.toString() + ": ");
@@ -572,8 +567,6 @@ void Updater::PerformUpdateStep()
   while (_downloadManager->HasPendingDownloads())
   {
     // For catching terminations
-    //boost::this_thread::interruption_point();
-
     _downloadManager->ProcessDownloads();
 
     if (_downloadManager->HasFailedDownloads())
@@ -611,8 +604,6 @@ void Updater::NotifyFullUpdateProgress()
 
   for (ReleaseFileSet::iterator i = _downloadQueue.begin(); i != _downloadQueue.end(); ++i)
   {
-    //boost::this_thread::interruption_point();
-
     if (i->second.downloadId == -1)
     {
         continue;

@@ -88,6 +88,8 @@ int main(int argc, char* argv[])
     Game game;
     game.initialize();
     while( game.exec() );
+
+    game.destroy();
   }
   catch( Exception& e )
   {

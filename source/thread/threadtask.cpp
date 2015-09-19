@@ -18,6 +18,9 @@
 
 #include <string.h>
 
+namespace threading
+{
+
 void ThreadTask::setTaskStatus(TaskStatus_t state)
 {
 	m_mutex.lock();
@@ -66,3 +69,5 @@ ThreadTask::ThreadTask()
 	m_state=TaskStatusNotSubmitted;
   memset(&m_dwThread,0,sizeof(std::thread::id));
 }
+
+}//end namespace threading

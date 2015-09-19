@@ -24,6 +24,7 @@
 #include "threadtask.hpp"
 #include "core/predefinitions.hpp"
 #include "core/platform.hpp"
+#include "core/scopedptr.hpp"
 #include "core/smartptr.hpp"
 #include "core/referencecounted.hpp"
 
@@ -48,6 +49,9 @@
 #define QUEUE_SIZE 100
 #define DEFAULT_STACK_SIZE 0
 
+namespace threading
+{
+
 typedef enum
 {
 	ThreadStateBusy,               // thread is currently handling a task
@@ -60,17 +64,19 @@ typedef enum
 
 typedef enum
 {
-	ThreadTypeHomogeneous,
-	ThreadTypeSpecialized,
-	ThreadTypeIntervalDriven,
-	ThreadTypeNotDefined
-} ThreadType_t;
+  TypeHomogeneous,
+  TypeSpecialized,
+  TypeIntervalDriven,
+  TypeNotDefined
+} Type_t;
 
 class Thread : public ReferenceCounted
 {
 private:
-  ThreadEvent   m_event;         // event controller
-	int           m_StopTimeout;   // specifies a timeout value for stop
+  class Impl;
+  ScopedPtr<Impl> _d;
+
+  int           m_StopTimeout;   // specifies a timeout value for stop
 																 // if a thread fails to stop within m_StopTimeout
 																 // seconds an exception is thrown
   bool		     _bRunning;					// set to TRUE if thread is running
@@ -84,7 +90,7 @@ private:
   ThreadState_t _state;         // current state of thread see thread state data
 																 // structure.
   unsigned int  _dwIdle;        // used for Sleep periods
-  ThreadType_t  _type;
+  Type_t  _type;
   unsigned int  _stackSize;     // thread stack size
 #define NO_ERRORS			       0
 #define MUTEX_CREATION		       0x01
@@ -102,19 +108,17 @@ private:
 	bool		  push(void* lpv);
 	bool		  pop();
 	bool		  empty();
+
 public:
-	/**
-	 *
-	 * user definable member functions
-	 *
-	 **/
-  std::mutex	  _mutex;         // mutex that protects threads internal data
+
+  bool wait();
+  void resetEvent();
 
 	virtual bool OnTask(void* lpvData);     // called when an event occurs
 	virtual bool OnTask();                   // called when a time interval has elapsed
 
 	Thread(void);
-	~Thread(void);
+  virtual ~Thread(void);
 
 	static void	msleep(unsigned int milli);
   friend void _THKERNEL( void* lpvData );
@@ -134,14 +138,15 @@ public:
 	bool		PingThread(unsigned int dwTimeout=0);
 	bool    AtCapacity();
 	unsigned int GetErrorFlags() { return m_dwObjectCondition; } // returns state of object
-	void		SetThreadType(ThreadType_t typ=ThreadTypeNotDefined,unsigned int dwIdle=100);
+  void		SetThreadType(Type_t typ=TypeNotDefined,unsigned int dwIdle=100);
 	void		SetIdle(unsigned int dwIdle=100);
 	unsigned int GetEventsPending();
   static bool threadIdsEqual(std::thread::id *p1, std::thread::id *p2);
 
   static std::thread::id getID();
-
 };
 
 typedef SmartPtr<Thread> ThreadPtr;
+
+}//end namespace threading
 #endif

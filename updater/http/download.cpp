@@ -92,9 +92,8 @@ void Download::Start()
 	//Logger::warning(  "Downloading to temporary file " + _tempFilename.toString() );
 
 	_status = IN_PROGRESS;
-	ExceptionSafeThreadPtr p( new ExceptionSafeThread( Delegate0<>( this, &Download::perform ) ) );
-	p->SetThreadType( ThreadTypeIntervalDriven, 0 );
-	p->drop();
+  auto p = threading::SafeThread::create( makeDelegate( this, &Download::perform ) );
+  p->SetThreadType( threading::TypeIntervalDriven, 0 );
 	_thread = p;
 }
 
@@ -109,7 +108,7 @@ void Download::Stop()
 		// Cancel the request
 		_request->Cancel();
 
-		_thread = ExceptionSafeThreadPtr();
+    _thread = threading::SafeThreadPtr();
 		_request = HttpRequestPtr();
 
 		// Don't reset successful stati

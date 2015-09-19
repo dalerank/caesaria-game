@@ -21,7 +21,7 @@
 #include "updatecontroller.hpp"
 #include "updateview.hpp"
 #include "core/logger.hpp"
-#include "exceptionsafethread.hpp"
+#include "thread/safethread.hpp"
 #include <signal.h>
 
 namespace updater

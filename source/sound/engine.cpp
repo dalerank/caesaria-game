@@ -23,6 +23,7 @@
 #include <set>
 #include <sstream>
 #include <iostream>
+#include <mutex>
 #include <SDL.h>
 #include <SDL_mixer.h>
 #include "game/settings.hpp"
@@ -32,6 +33,7 @@
 #include "core/foreach.hpp"
 #include "core/utils.hpp"
 #include "vfs/filesystem.hpp"
+#include "thread/safethread.hpp"
 #include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
 #include "vfs/file.hpp"
@@ -81,6 +83,14 @@ public:
 
 };
 
+struct SampleInfo
+{
+  std::string name;
+  int volume;
+  SoundType type;
+  bool force;
+};
+
 class Engine::Impl
 {
 public:
@@ -91,6 +101,7 @@ public:
   typedef std::map< unsigned int, std::string > Aliases;
   typedef std::list< Directory > Folders;
   typedef std::map< unsigned int, ByteArray > SoundCache;
+  typedef std::list<SampleInfo> SamplesInfo;
 
   Samples samples;
   Aliases aliases;
@@ -99,8 +110,17 @@ public:
   SoundCache cachedSounds;
   StringArray extensions;
   std::string currentTheme;
+  threading::SafeThreadPtr thread;
+
+  std::recursive_mutex mutex;
+  SamplesInfo needLoad;
+  bool running;
 
 public:
+  void nextLoad();
+  unsigned int volume( SoundType type );
+  unsigned int loadSound( const std::string& filename );
+  void stop( const std::string& name );
   void clearFinishedChannels();
   void resetIfalias( std::string& sampleName );
 
@@ -123,12 +143,7 @@ void Engine::loadAlias(const vfs::Path& filename)
 }
 
 void Engine::addFolder(Directory dir) {  _d->folders.push_back( dir ); }
-
-int Engine::volume(audio::SoundType type) const
-{
-  Impl::Volumes::const_iterator it = _d->volumes.find( type );
-  return it != _d->volumes.end() ? it->second : 0;
-}
+int Engine::volume(audio::SoundType type) const { return _d->volume( type ); }
 
 int Engine::maxVolumeValue() const { return 100; }
 
@@ -143,6 +158,7 @@ Engine::Engine() : _d( new Impl )
   _d->volumes[ infobox ] = maxVolumeValue() / 2;
 
   _d->extensions << ".ogg" << ".wav";
+  _d->running = true;
   addFolder( Directory() );
 }
 
@@ -205,10 +221,18 @@ void Engine::init()
 
   Logger::warning( "Game: sound initialization ok" );
   _d->useSound = sound_ok;
+
+  _d->thread = threading::SafeThread::create( threading::SafeThread::WorkFunction( this, &Engine::run ) );
+  _d->thread->setDelay( 100 );
+  //_d->thread->join();
 }
 
-
-void Engine::exit() {  Mix_CloseAudio(); }
+void Engine::exit()
+{
+  _d->running = false;
+  _d->thread->join();
+  Mix_CloseAudio();
+}
 
 Path Engine::Impl::findFullPath( const std::string& sampleName )
 {
@@ -248,24 +272,24 @@ Path Engine::Impl::findFullPath( const std::string& sampleName )
   return Path();
 }
 
-unsigned int Engine::_loadSound(const std::string& sampleName)
+unsigned int Engine::Impl::loadSound(const std::string& sampleName)
 {
-  if(!_d->useSound)
+  if(!useSound)
     return 0;
 
   std::string sampleCanonical = utils::localeLower( sampleName );
 
-  if( _d->samples.size()<Impl::maxSamplesNumber )
+  if( samples.size() < maxSamplesNumber )
   {
     unsigned int sampleHash = Hash( sampleCanonical );
-    Samples::iterator i = _d->samples.find( sampleHash );
+    Samples::iterator i = samples.find( sampleHash );
 
-    if( i != _d->samples.end() )
+    if( i != samples.end() )
     {
       return sampleHash;
     }
 
-    vfs::Path realPath = _d->findFullPath( sampleCanonical );
+    vfs::Path realPath = findFullPath( sampleCanonical );
 
     if( realPath.toString().empty() )
     {
@@ -294,65 +318,29 @@ unsigned int Engine::_loadSound(const std::string& sampleName)
       return 0;
     }
 
-    _d->samples[ sampleHash ] = sample;
+    samples[ sampleHash ] = sample;
     return sampleHash;
   }
 
   return 0;
 }
 
-int Engine::play(std::string sampleName, int volValue, SoundType type, bool force)
+void Engine::play(std::string sampleName, int volValue, SoundType type, bool force)
 {
   if(!_d->useSound )
-    return -1;
+    return;
 
-  _d->clearFinishedChannels();
-  _d->resetIfalias( sampleName );
+  _d->mutex.lock();
+  SampleInfo info = {sampleName, volValue, type, force };
+  _d->needLoad.push_back( info );
 
-  if( type == theme )
-  {
-    stop( _d->currentTheme );
-    _d->currentTheme = sampleName;
-  }
-
-  unsigned int sampleHash = _loadSound( sampleName );
-
-  if( sampleHash != 0 )
-  {
-    Samples::iterator i = _d->samples.find( sampleHash );
-
-    if( i == _d->samples.end() )
-    {
-      return -1;
-    }
-
-    if( force
-        || (i->second.channel == -1 )
-        || (i->second.channel >= 0 && Mix_Playing( i->second.channel ) <= 0) )
-    {
-
-      // sdl_mixer finds free channel, we then play at correct volume
-      i->second.channel = Mix_PlayChannel(-1, i->second.chunk, 0);
-    }
-
-    i->second.typeSound = type;
-    i->second.volume = volValue;
-    i->second.finished = false;
-
-    int typeVolume = volume( type );
-    int gameVolume = volume( audio::game );
-    i->second.setVolume( gameVolume, typeVolume );
-
-    return i->second.channel;
-  }
-
-  return -1;
+  _d->mutex.unlock();
 }
 
-int Engine::play(const std::string &rc, int index, int volume, SoundType type, bool force)
+void Engine::play(const std::string &rc, int index, int volume, SoundType type, bool force)
 {
   std::string filename = utils::format( 0xff, "%s_%05d", rc.c_str(), index );
-  return play( filename, volume, type );
+  play( filename, volume, type );
 }
 
 bool Engine::isPlaying(const std::string& sampleName) const
@@ -374,20 +362,7 @@ bool Engine::isPlaying(const std::string& sampleName) const
 
 void Engine::stop(const std::string& sampleName) const
 {
-  if( !_d->useSound )
-    return;
-
-  std::string rname = utils::localeLower( sampleName );
-  _d->resetIfalias( rname );
-
-  Samples::iterator i = _d->samples.find( Hash( rname ) );
-
-  if( i == _d->samples.end() )
-  {
-    return;
-  }
-
-  Mix_HaltChannel( i->second.channel );
+  _d->stop( sampleName );
 }
 
 void Engine::stop(int channel)
@@ -403,6 +378,12 @@ void Engine::stop(int channel)
       return;
     }
   }
+}
+
+void Engine::run( bool& continues )
+{
+  _d->nextLoad();
+  continues = _d->running;
 }
 
 void Engine::_updateSamplesVolume()
@@ -427,6 +408,81 @@ void Helper::initTalksArchive(const vfs::Path& filename)
 
   saveFilename = filename;
   FileSystem::instance().mountArchive( saveFilename );
+}
+
+void Engine::Impl::nextLoad()
+{
+  if( needLoad.empty() )
+    return;
+
+  mutex.lock();
+
+  SampleInfo info = needLoad.front();
+  needLoad.pop_front();
+
+  mutex.unlock();
+
+  clearFinishedChannels();
+  resetIfalias( info.name );
+
+  if( info.type == theme )
+  {
+    stop( currentTheme );
+    currentTheme = info.name;
+  }
+
+  unsigned int sampleHash = loadSound( info.name );
+
+  if( sampleHash != 0 )
+  {
+    Samples::iterator i = samples.find( sampleHash );
+
+    if( i == samples.end() )
+    {
+      return;
+    }
+
+    if( info.force
+        || (i->second.channel == -1 )
+        || (i->second.channel >= 0 && Mix_Playing( i->second.channel ) <= 0) )
+    {
+
+      // sdl_mixer finds free channel, we then play at correct volume
+      i->second.channel = Mix_PlayChannel(-1, i->second.chunk, 0);
+    }
+
+    i->second.typeSound = info.type;
+    i->second.volume = info.volume;
+    i->second.finished = false;
+
+    int typeVolume = volume( info.type );
+    int gameVolume = volume( audio::game );
+    i->second.setVolume( gameVolume, typeVolume );
+
+    return;//i->second.channel;
+  }
+}
+
+unsigned int Engine::Impl::volume(SoundType type)
+{
+  Impl::Volumes::const_iterator it = volumes.find( type );
+  return it != volumes.end() ? it->second : 0;
+}
+
+void Engine::Impl::stop(const std::string& name)
+{
+  if( !useSound )
+    return;
+
+  std::string rname = utils::localeLower( name );
+  resetIfalias( rname );
+
+  Samples::iterator i = samples.find( Hash( rname ) );
+
+  if( i != samples.end() )
+  {
+    Mix_HaltChannel( i->second.channel );
+  }
 }
 
 void Engine::Impl::clearFinishedChannels()
@@ -458,8 +514,8 @@ void Muter::activate(int value)
 Muter::~Muter()
 {
   Engine& ae = Engine::instance();
-  foreach( it, _states )
-    ae.setVolume( it->first, it->second );
+  for( auto& it : _states )
+    ae.setVolume( it.first, it.second );
 }
 
 SampleDeleter::~SampleDeleter()

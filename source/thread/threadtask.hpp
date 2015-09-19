@@ -20,6 +20,9 @@
 #include <mutex>
 #include <thread>
 
+namespace threading
+{
+
 typedef enum
 {
 	TaskStatusNotSubmitted,
@@ -65,6 +68,8 @@ public:
   virtual ~ThreadTask(){}
 	virtual bool task()=0;
 };
+
+}//end namespace threading
 
 #endif
 

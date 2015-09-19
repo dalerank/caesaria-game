@@ -13,16 +13,18 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef __CAESARIA_EXCEPTIONSAFETHREAD_H_INLCUDE__
-#define __CAESARIA_EXCEPTIONSAFETHREAD_H_INLCUDE__
+#ifndef __CAESARIA_THREADING_SAFETHREAD_H_INLCUDE__
+#define __CAESARIA_THREADING_SAFETHREAD_H_INLCUDE__
 
 #include <stdexcept>
 #include <string>
+#include "core/referencecounted.hpp"
+#include "core/smartptr.hpp"
+#include "core/scopedptr.hpp"
 #include "core/delegate.hpp"
-#include "thread/thread.hpp"
 #include "thread/threadtask.hpp"
 
-namespace updater
+namespace threading
 {
 
 // Thrown to the calling thread if the user hits Ctrl-C
@@ -41,59 +43,34 @@ public:
  * error message locally. After joining the thread the exception is 
  * re-generated such that the calling thread gets a chance to catch it.
  */
-class ExceptionSafeThread : public Thread
+class SafeThread : public ReferenceCounted
 {
-private:
-	// The function object to call
-	Delegate0<> _function;
-
-	// The error message which is filled when exceptions are thrown within the thread
-	std::string _errMsg;
-
-	Delegate0<> _onFinish;
-
+  friend void _THKERNEL(SafeThread*);
 public:
-	ExceptionSafeThread(const Delegate0<>& function) :
-		_function(function)
-	{}
+  typedef Delegate1<bool&> WorkFunction;
+  typedef Delegate0<> StopFunction;
+  static SmartPtr<SafeThread> create( WorkFunction function);
 
 	// Construct this thread with a callback which will be invoked when the thread is done (failure or not)
-	ExceptionSafeThread(const Delegate0<>& function, const Delegate0<>& callbackOnFinish) :
-		_function(function),		
-		_onFinish(callbackOnFinish)
-	{}
+  SafeThread( WorkFunction function, StopFunction callbackOnFinish);
 
 	// Returns true if the worker thread threw an exception
-	bool failed() const
-	{
-		return !_errMsg.empty();
-	}
+  bool failed() const;
 
-	const std::string& GetErrorMessage() const
-	{
-		return _errMsg;
-	}
+  const std::string& errorMessage() const;
+  void join();
+  void abort();
+  void setDelay(int ms);
+  bool running() const;
 
 private:
-	bool OnTask()
-	{
-		try
-		{
-			if( !_function.empty() )
-			{
-				_function();
-			}
-		}
-		catch( std::runtime_error& ex )
-		{
-			_errMsg = ex.what();
-		}
+  SafeThread(WorkFunction function);
 
-		return false;
-	}
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
-typedef SmartPtr<ExceptionSafeThread> ExceptionSafeThreadPtr;
+typedef SmartPtr<SafeThread> SafeThreadPtr;
 
-} // namespace
+} // threading
 
-#endif //__CAESARIA_EXCEPTIONSAFETHREAD_H_INLCUDE__
+#endif //__CAESARIA_THREADING_SAFETHREAD_H_INLCUDE__

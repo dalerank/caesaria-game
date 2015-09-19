@@ -57,9 +57,7 @@ void UpdateController::StartOrContinue()
 
   if( _synchronizer.isNull() )
   {
-     ExceptionSafeThreadPtr p( new ExceptionSafeThread( makeDelegate( this, &UpdateController::run )) );
-     p->SetThreadType( ThreadTypeIntervalDriven );
-     p->drop();
+     auto p = threading::SafeThread::create( Delegate0<>( this, &UpdateController::run ) );
      _synchronizer = p;
   }
 }

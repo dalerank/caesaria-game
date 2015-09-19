@@ -20,8 +20,7 @@
 #include "httprequest.hpp"
 #include "vfs/path.hpp"
 #include "core/smartptr.hpp"
-#include "../updater/exceptionsafethread.hpp"
-
+#include "thread/safethread.hpp"
 
 namespace updater
 {
@@ -77,7 +76,7 @@ protected:
 	// The corresponding HTTP request
 	HttpRequestPtr _request;
 
-	ExceptionSafeThreadPtr _thread;
+  threading::SafeThreadPtr _thread;
 
 	bool _crcCheckEnabled;
 	bool _filesizeCheckEnabled;

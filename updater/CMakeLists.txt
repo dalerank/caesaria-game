@@ -14,6 +14,7 @@ set( UPD_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/core/logger.cpp"
       "${BASE_SOURCE_DIR}/core/time.cpp"
       "${BASE_SOURCE_DIR}/thread/thread.cpp"
+      "${BASE_SOURCE_DIR}/thread/safethread.cpp"
       "${BASE_SOURCE_DIR}/thread/threadevent.cpp"
       "${BASE_SOURCE_DIR}/thread/threadtask.cpp"
       "${BASE_SOURCE_DIR}/core/variant.cpp"

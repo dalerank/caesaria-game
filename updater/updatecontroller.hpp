@@ -20,7 +20,7 @@
 #include "updater.hpp"
 #include "updateview.hpp"
 #include "updateroptions.hpp"
-#include "exceptionsafethread.hpp"
+#include "thread/safethread.hpp"
 #include "core/logger.hpp"
 #include "progresshandler.hpp"
 
@@ -51,7 +51,7 @@ private:
 
 	// The main worker thread. A new one is created each time 
 	// StartOrContinue is called.
-	ExceptionSafeThreadPtr _synchronizer;
+  threading::SafeThreadPtr _synchronizer;
 
 	// The main updater object (containing the non-threaded methods)
 	Updater _updater;

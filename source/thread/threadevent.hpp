@@ -21,24 +21,28 @@
 #include <mutex>
 #include <thread>
 #include <condition_variable>
+#include "core/scopedptr.hpp"
 
-class ThreadEvent
+namespace threading
+{
+
+class Event
 {
 private:
-  std::thread::id _owner;
-
-  std::condition_variable _ready;
-  std::mutex _lock;
+  class Impl;
+  ScopedPtr<Impl> _d;
 
 public:
-	bool m_bCreated;
 	void set();
 	bool wait();
+  bool created() const;
 	void reset();
 
-  ThreadEvent(void);
-  ~ThreadEvent(void);
+  Event(void);
+  ~Event(void);
 };
+
+}//end namespace threading
 
 #endif //_CAESARIA_THREADEVENT_H_INCLUDE_
 

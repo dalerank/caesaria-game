@@ -614,5 +614,10 @@ void Game::clear()
 #endif
 }
 
+void Game::destroy()
+{
+  audio::Engine::instance().exit();
+}
+
 void Game::setNextScreen(ScreenType screen) { _d->nextScreen = screen;}
 

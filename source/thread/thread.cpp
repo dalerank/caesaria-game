@@ -17,52 +17,56 @@
 
 #include "thread.hpp"
 #include "core/requirements.hpp"
+#include "threadevent.hpp"
 #include "core/osystem.hpp"
 
 #include <memory.h>
 #include <errno.h>
 
-void Thread::msleep( unsigned int milli )
-{
-  std::this_thread::sleep_for(std::chrono::milliseconds(milli));
-}
-
 #include <iostream>
 using namespace std;
 
+namespace threading
+{
+
+class Thread::Impl
+{
+public:
+  threading::Event event;         // event controller
+  std::mutex	     mutex;         // mutex that protects threads internal data
+};
+
+void Thread::msleep( unsigned int milli )
+{
+  this_thread::sleep_for(chrono::milliseconds(milli));
+}
+
 /**
- * 
  * _THKERNEL
  * thread callback function used by CreateThread
- *
- *
  **/
 void _THKERNEL( void* lpvData )
 {
 	Thread *pThread = (Thread *)lpvData;
-	/*
-	 *
-	 * initialization
-	 *
-	 */
 
-  pThread->_mutex.lock();
+  pThread->_d->mutex.lock();
   pThread->_state = ThreadStateWaiting;
   pThread->_bRunning = true;
   pThread->_dwId = Thread::getID();
-  pThread->_mutex.unlock();
+  pThread->_d->mutex.unlock();
 	
 	while( true )
 	{
-    ThreadType_t  lastType = pThread->_type;
+    Type_t  lastType = pThread->_type;
 
-		if( lastType == ThreadTypeHomogeneous ||
-			lastType == ThreadTypeSpecialized ||
-			lastType == ThreadTypeNotDefined )
+    if( lastType == TypeHomogeneous ||
+      lastType == TypeSpecialized ||
+      lastType == TypeNotDefined )
 		{
-			if( ! pThread->m_event.wait()  )  // wait for a message
+      if( ! pThread->wait() )  // wait for a message
 					break;
-			pThread->m_event.reset(); // message recieved
+
+      pThread->resetEvent(); // message recieved
 		}
 	
 		if( ! pThread->KernelProcess() ) 
@@ -76,17 +80,17 @@ void _THKERNEL( void* lpvData )
 			pThread->m_event.Reset();
 		}*/
 
-    if( pThread->_type == ThreadTypeIntervalDriven )
+    if( pThread->_type == TypeIntervalDriven )
 		{
       Thread::msleep(pThread->_dwIdle);
 		}
 	}
 
 
-  pThread->_mutex.lock();
+  pThread->_d->mutex.lock();
   pThread->_state = ThreadStateDown;
   pThread->_bRunning = false;
-  pThread->_mutex.unlock();
+  pThread->_d->mutex.unlock();
 
   return;
 }
@@ -113,9 +117,9 @@ bool Thread::FromSameThread()
  **/
 bool Thread::OnTask( void* lpvData )
 {
-  _CAESARIA_DEBUG_BREAK_IF(lpvData && _type == ThreadTypeHomogeneous);
+  _CAESARIA_DEBUG_BREAK_IF(lpvData && _type == TypeHomogeneous);
 
-  if( _type != ThreadTypeHomogeneous )
+  if( _type != TypeHomogeneous )
 	{
 		cerr << "Warning CThread::OnTask:\n\tOnTask(LPVOID) called for a non-homogeneous thread!\n";
 		return false;
@@ -137,9 +141,9 @@ bool Thread::OnTask( void* lpvData )
  **/
 bool Thread::OnTask()
 {
-  _CAESARIA_DEBUG_BREAK_IF(_type == ThreadTypeIntervalDriven);
+  _CAESARIA_DEBUG_BREAK_IF(_type == TypeIntervalDriven);
 
-  if( _type != ThreadTypeIntervalDriven )
+  if( _type != TypeIntervalDriven )
 	{
 		cerr << "Warning CThread::OnTask:\n\tOnTask() called for a non-event driven thread!\n";
 		return false;
@@ -159,10 +163,10 @@ bool Thread::OnTask()
  **/
 bool Thread::Event(ThreadTask *pvTask )
 {
-  _mutex.lock();
+  _d->mutex.lock();
 
-  _CAESARIA_DEBUG_BREAK_IF(_type == ThreadTypeHomogeneous ||
-                           _type == ThreadTypeNotDefined );
+  _CAESARIA_DEBUG_BREAK_IF(_type == TypeHomogeneous ||
+                           _type == TypeNotDefined );
 
 	try 
 	{
@@ -175,13 +179,13 @@ bool Thread::Event(ThreadTask *pvTask )
 		// make sure that the thread is running 
     if( !_bRunning && m_dwObjectCondition == NO_ERRORS )
 		{
-      _mutex.unlock();
+      _d->mutex.unlock();
       PingThread(_dwIdle*2); // wait two idle cycles for it to start
-      _mutex.lock();
+      _d->mutex.lock();
 		}
     if( !_bRunning ) // if it is not running return FALSE;
 		{
-      _mutex.unlock();
+      _d->mutex.unlock();
 			return false;
 		}
 
@@ -191,10 +195,10 @@ bool Thread::Event(ThreadTask *pvTask )
 		if( m_dwObjectCondition & EVENT_AND_TYPE_DONT_MATCH)
 			m_dwObjectCondition = m_dwObjectCondition ^ EVENT_AND_TYPE_DONT_MATCH;
 
-    if( _type != ThreadTypeHomogeneous &&
-      _type != ThreadTypeNotDefined    )
+    if( _type != TypeHomogeneous &&
+      _type != TypeNotDefined    )
 		{
-      _mutex.unlock();
+      _d->mutex.unlock();
 			m_dwObjectCondition |= ILLEGAL_USE_OF_EVENT;
 			m_dwObjectCondition |= EVENT_AND_TYPE_DONT_MATCH;
       _state = ThreadStateFault;
@@ -203,15 +207,15 @@ bool Thread::Event(ThreadTask *pvTask )
 			return false;
 		}
 
-    _type = ThreadTypeHomogeneous;
-    _mutex.unlock();
+    _type = TypeHomogeneous;
+    _d->mutex.unlock();
 
     pvTask->setId(&_dwId);
 		if( !push((void*)pvTask) )
 			return false;
 
 		pvTask->setTaskStatus(TaskStatusWaitingOnQueue);
-		m_event.set();
+    _d->event.set();
 
 	}
 	catch (char *psz)
@@ -230,9 +234,9 @@ bool Thread::Event(ThreadTask *pvTask )
  **/
 bool Thread::Event(void* lpvData )
 {
-  _mutex.lock();
-  _CAESARIA_DEBUG_BREAK_IF( _type == ThreadTypeSpecialized ||
-                            _type == ThreadTypeNotDefined );
+  _d->mutex.lock();
+  _CAESARIA_DEBUG_BREAK_IF( _type == TypeSpecialized ||
+                            _type == TypeNotDefined );
 	try 
 	{
 		if( FromSameThread() )
@@ -248,13 +252,13 @@ bool Thread::Event(void* lpvData )
 	// make sure that the thread is running 
   if( !_bRunning && m_dwObjectCondition == NO_ERRORS )
 	{
-    _mutex.unlock();
+    _d->mutex.unlock();
     PingThread(_dwIdle*2); // wait two idle cycles for it to start
-    _mutex.lock();
+    _d->mutex.lock();
 	}
   if( !_bRunning ) // if it is not running return FALSE;
 	{
-    _mutex.unlock();
+    _d->mutex.unlock();
 		return false;
 	}
 
@@ -268,23 +272,23 @@ bool Thread::Event(void* lpvData )
 		m_dwObjectCondition = m_dwObjectCondition ^ EVENT_AND_TYPE_DONT_MATCH;
 	}
 
-  if( _type != ThreadTypeSpecialized && _type != ThreadTypeNotDefined )
+  if( _type != TypeSpecialized && _type != TypeNotDefined )
 	{
 		m_dwObjectCondition |= ILLEGAL_USE_OF_EVENT;
 		m_dwObjectCondition |= EVENT_AND_TYPE_DONT_MATCH;
 		cerr << "Warning: invalid call to CEvent::Event(LPVOID), thread type is not specialized\n";
-    _mutex.unlock();
+    _d->mutex.unlock();
 		return false;
 	}
-  _type = ThreadTypeSpecialized;
+  _type = TypeSpecialized;
 
-  _mutex.unlock();
+  _d->mutex.unlock();
 	if( !push(lpvData) )
 	{
 		return false;
 	}
 
-	m_event.set();
+  _d->event.set();
 
 	return true;
 }
@@ -297,15 +301,15 @@ bool Thread::Event(void* lpvData )
  **/
 bool Thread::KernelProcess()
 {
-  _mutex.lock();
+  _d->mutex.lock();
   _state = ThreadStateBusy;
   if( !_bRunning )
 	{
     _state = ThreadStateShuttingDown;
-    _mutex.unlock();
+    _d->mutex.unlock();
 		return false;
 	}
-  _mutex.unlock();
+  _d->mutex.unlock();
 
 	if( !empty() )
 	{
@@ -314,14 +318,14 @@ bool Thread::KernelProcess()
 			pop();
       if( !OnTask(_lpvProcessor) )
 			{
-        _mutex.lock();
+        _d->mutex.lock();
         _lpvProcessor = NULL;
         _state = ThreadStateShuttingDown;
-        _mutex.unlock();
+        _d->mutex.unlock();
 				return false;
 			}
 		}
-    _mutex.lock();
+    _d->mutex.lock();
     _lpvProcessor = NULL;
     _state = ThreadStateWaiting;
 	}
@@ -329,16 +333,16 @@ bool Thread::KernelProcess()
 	{
 		if( !OnTask() )
 		{
-      _mutex.lock();
+      _d->mutex.lock();
       _state = ThreadStateShuttingDown;
-      _mutex.unlock();
+      _d->mutex.unlock();
 			return false;
 		}
-    _mutex.lock();
+    _d->mutex.lock();
     _state = ThreadStateWaiting;
 	}
 
-  _mutex.unlock();
+  _d->mutex.unlock();
 
 	return true;
 }
@@ -354,9 +358,9 @@ unsigned int Thread::GetEventsPending()
 {
 	unsigned int chEventsWaiting;
 
-  _mutex.lock();
+  _d->mutex.lock();
   chEventsWaiting = _queuePos;
-  _mutex.unlock();
+  _d->mutex.unlock();
 
 	return chEventsWaiting;
 }
@@ -369,7 +373,8 @@ unsigned int Thread::GetEventsPending()
  *
  **/
 Thread::Thread(void)
-:m_StopTimeout(30)
+: _d( new Impl )
+, m_StopTimeout(30)
 ,_bRunning(false)
 ,_lppvQueue(NULL)
 ,_chQueue(QUEUE_SIZE)
@@ -377,7 +382,7 @@ Thread::Thread(void)
 ,_lpvProcessor(NULL)
 ,_state(ThreadStateDown)
 ,_dwIdle(100)
-,_type(ThreadTypeNotDefined)
+,_type(TypeNotDefined)
 ,_stackSize(DEFAULT_STACK_SIZE)
 {
 
@@ -392,7 +397,7 @@ Thread::Thread(void)
 		return;
 	}
 
-	if( !m_event.m_bCreated )
+  if( !_d->event.created() )
 	{
 		perror("event creation failed");
 		m_dwObjectCondition |= EVENT_CREATION;
@@ -415,9 +420,9 @@ float
 Thread::PercentCapacity()
 {
 	float fValue = 0;
-  _mutex.lock();
+  _d->mutex.lock();
     fValue = (float)_queuePos/_chQueue;
-  _mutex.unlock();
+  _d->mutex.unlock();
 	return fValue;
 }
 
@@ -431,13 +436,13 @@ bool Thread::SetQueueSize( unsigned int ch )
 {
 	void** newQueue = NULL;
 
-  _mutex.lock();
+  _d->mutex.lock();
   _CAESARIA_DEBUG_BREAK_IF(ch > _queuePos);
 
   if( ch <= _queuePos )
 	{
 		cerr << "Warning CThread::SetQueueSize:\n\tthe new queue size is less than the number of tasks on a non-empty queue! Request ignored.\n";
-    _mutex.unlock();
+    _d->mutex.unlock();
 		return false;
 	}
 
@@ -445,7 +450,7 @@ bool Thread::SetQueueSize( unsigned int ch )
 	if(  !newQueue )
 	{
 		cerr << "Warning CThread::SetQueueSize:\n\ta low memory, could not reallocate queue!\n";
-    _mutex.unlock();
+    _d->mutex.unlock();
 		return false;
 	}
 
@@ -458,7 +463,7 @@ bool Thread::SetQueueSize( unsigned int ch )
   _chQueue = ch;
   _lppvQueue = newQueue;
 
-  _mutex.unlock();
+  _d->mutex.unlock();
 
 	return true;
 }
@@ -474,17 +479,25 @@ bool Thread::SetQueueSize( unsigned int ch )
  **/
 bool Thread::empty()
 {
-  _mutex.lock();
+  _d->mutex.lock();
   if( _queuePos <= 0 )
 	{
-    _mutex.unlock();
+    _d->mutex.unlock();
 		return true;
 	}
-  _mutex.unlock();
-	return false;
+  _d->mutex.unlock();
+  return false;
 }
 
+bool Thread::wait()
+{
+  return _d->event.wait();
+}
 
+void Thread::resetEvent()
+{
+  _d->event.reset();
+}
 
 /**
  *
@@ -496,12 +509,12 @@ bool Thread::push(void* lpv )
 {
 	if( !lpv ) return true;
 
-  _mutex.lock();
+  _d->mutex.lock();
 
   if( _queuePos+1 >= _chQueue )
 	{
 		m_dwObjectCondition |= STACK_OVERFLOW;
-    _mutex.unlock();
+    _d->mutex.unlock();
 		return false;
 	}
 
@@ -517,7 +530,7 @@ bool Thread::push(void* lpv )
   if( _queuePos+1 >= _chQueue )
 		m_dwObjectCondition |= STACK_FULL;
 
-  _mutex.unlock();
+  _d->mutex.unlock();
 	return true;
 }
 
@@ -530,12 +543,12 @@ bool Thread::push(void* lpv )
  **/
 bool Thread::pop()
 {
-  _mutex.lock();
+  _d->mutex.lock();
   if( _queuePos-1 < 0 )
 	{
     _queuePos = 0;
 		m_dwObjectCondition |= STACK_EMPTY;
-    _mutex.unlock();
+    _d->mutex.unlock();
 		return false;
 	}
 	if( m_dwObjectCondition & STACK_EMPTY )
@@ -547,7 +560,7 @@ bool Thread::pop()
 
   _queuePos--;
   _lpvProcessor = _lppvQueue[_queuePos];
-  _mutex.unlock();
+  _d->mutex.unlock();
 	return true;
 }
 
@@ -566,7 +579,7 @@ bool Thread::pop()
  *
  **/
 void
-Thread::SetThreadType(ThreadType_t typ, unsigned int dwIdle)
+Thread::SetThreadType(Type_t typ, unsigned int dwIdle)
 {
 	try 
 	{
@@ -576,12 +589,13 @@ Thread::SetThreadType(ThreadType_t typ, unsigned int dwIdle)
 		}
 
 
-    _mutex.lock();
+    _d->mutex.lock();
     _dwIdle = dwIdle;
 
 
-    if( _type == typ ) {
-      _mutex.unlock();
+    if( _type == typ )
+    {
+      _d->mutex.unlock();
 			return;
 		}
 		if( m_dwObjectCondition & ILLEGAL_USE_OF_EVENT )
@@ -592,8 +606,8 @@ Thread::SetThreadType(ThreadType_t typ, unsigned int dwIdle)
     _type = typ;
 
 
-    _mutex.unlock();
-		m_event.set();
+    _d->mutex.unlock();
+    _d->event.set();
 	}
 	catch (char *psz)
 	{
@@ -617,10 +631,10 @@ bool Thread::Stop()
 			throw "\n\tit is illegal for a thread to attempt to signal itself to stop!\n";
 		}
 
-    _mutex.lock();
+    _d->mutex.lock();
     _bRunning = false;
-    _mutex.unlock();
-		m_event.set();
+    _d->mutex.unlock();
+    _d->event.set();
 
 		int ticks = (m_StopTimeout*1000)/100;
 
@@ -628,13 +642,13 @@ bool Thread::Stop()
 		{
 			msleep(100);
 
-      _mutex.lock();
+      _d->mutex.lock();
       if( _state == ThreadStateDown )
 			{
-        _mutex.unlock();
+        _d->mutex.unlock();
 				return true;
 			}
-      _mutex.unlock();
+      _d->mutex.unlock();
 		} 
 	}
 	catch (char *psz)
@@ -653,9 +667,9 @@ bool Thread::Stop()
  **/
 void Thread::SetIdle(unsigned int dwIdle)
 {
-  _mutex.lock();
+  _d->mutex.lock();
   _dwIdle = dwIdle;
-  _mutex.unlock();
+  _d->mutex.unlock();
 }
 
 /**
@@ -674,14 +688,14 @@ bool Thread::Start()
 		}
 
 
-    _mutex.lock();
+    _d->mutex.lock();
     if( _bRunning )
 		{
-      _mutex.unlock();
+      _d->mutex.unlock();
 			return true;
 		}
 
-    _mutex.unlock();
+    _d->mutex.unlock();
 
 
 		if( m_dwObjectCondition & THREAD_CREATION )
@@ -693,15 +707,6 @@ bool Thread::Start()
 		{
 			m_dwObjectCondition |= THREAD_CREATION;
       _state = ThreadStateFault;
-
-      /*switch(error)// show the thread error
-			{
-			case EINVAL: cerr << "error: attr in an invalid thread attributes object\n";	break;
-			case EAGAIN: cerr << "error: the necessary resources to create a thread are not available.\n";	break;
-			case EPERM:	cerr << "error: the caller does not have the privileges to create the thread with the specified attr object.\n"; break;
-			default: cerr << "error: an unknown error was encountered attempting to create the requested thread.\n"; break;
-      }*/
-
 			return false;
 		}
 
@@ -729,15 +734,15 @@ void Thread::getID(std::thread::id* pId)
  **/
 bool Thread::AtCapacity()
 {
-  _mutex.lock();
+  _d->mutex.lock();
   if( ((m_dwObjectCondition & STACK_OVERFLOW ||
       m_dwObjectCondition & STACK_FULL ) &&
       _state == ThreadStateBusy) || !_bRunning)
   {
-    _mutex.unlock();
+    _d->mutex.unlock();
     return true;
   }
-  _mutex.unlock();
+  _d->mutex.unlock();
 	return false;
 }
 
@@ -751,9 +756,9 @@ ThreadState_t
 Thread::ThreadState()
 {
 	ThreadState_t currentState;
-  _mutex.lock();
+  _d->mutex.lock();
     currentState = _state;
-  _mutex.unlock();
+  _d->mutex.unlock();
 	return currentState;
 }
 
@@ -798,14 +803,14 @@ bool Thread::PingThread(unsigned int milli )
 	{
 		if( dwTotal > milli && milli > 0 )
 			return false;
-    _mutex.lock();
+    _d->mutex.lock();
     if( _bRunning )
 		{
-      _mutex.unlock();
+      _d->mutex.unlock();
 			return true;
 		}
     dwTotal += _dwIdle;
-    _mutex.unlock();
+    _d->mutex.unlock();
     msleep(_dwIdle);
 	}
 
@@ -854,3 +859,5 @@ std::thread::id Thread::getID()
   std::thread::id thisThreadsId = std::this_thread::get_id();
 	return thisThreadsId;
 }
+
+}//end namespace threading
