@@ -21,6 +21,7 @@
 #include "smartptr.hpp"
 #include "core/math.hpp"
 #include <vector>
+#include <functional>
 #include <deque>
 
 template <class T>
