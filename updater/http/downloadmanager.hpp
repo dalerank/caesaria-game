@@ -48,12 +48,12 @@ private:
 public:
 	DownloadManager();
 
-	void ProcessDownloads();
+	void process();
 
 	void clearDownloads();
 
-	int AddDownload(const DownloadPtr& download);
-	void RemoveDownload(int id);
+	int add(const DownloadPtr& download);
+	void remove(int id);
 
 	DownloadPtr GetDownload(int id);
 
@@ -67,7 +67,7 @@ public:
 	bool DownloadInProgress();
 
 	// Returns true if there is a download in progress or waiting for start
-	bool HasPendingDownloads();
+	bool hasPendingDownloads();
 
 	// Returns true if one or more downloads have failed status
 	bool HasFailedDownloads();

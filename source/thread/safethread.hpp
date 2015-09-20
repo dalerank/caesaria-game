@@ -22,7 +22,6 @@
 #include "core/smartptr.hpp"
 #include "core/scopedptr.hpp"
 #include "core/delegate.hpp"
-#include "thread/threadtask.hpp"
 
 namespace threading
 {

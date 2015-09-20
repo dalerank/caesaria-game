@@ -109,16 +109,16 @@ public:
 	void Stop();
 
 	// Enable or disable CRC validation after download
-	void EnableCrcCheck(bool enable);
+  void enableCrcCheck(bool enable);
 
 	// Enable or disable the filesize check after download
-	void EnableFilesizeCheck(bool enable);
+  void enableFilesizeCheck(bool enable);
 
 	// Set the required CRC for this download
-	void SetRequiredCrc(unsigned int requiredCrc);
+  void setRequiredCrc(unsigned int requiredCrc);
 
 	// Set the required filesize for this download
-	void SetRequiredFilesize(std::size_t requiredSize);
+  void setRequiredFilesize(std::size_t requiredSize);
 	
 	// The current status of this download
 	DownloadStatus GetStatus();
@@ -143,7 +143,7 @@ public:
 
 protected:
 	// Thread entry point
-	void perform();
+  void perform(bool& continues);
 
 	// Check method
 	bool checkIntegrity();

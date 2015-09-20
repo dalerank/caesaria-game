@@ -144,8 +144,8 @@ message("")
 message("\nBuilding CaesarIA-game")
 add_subdirectory(source source)
 
-#message("\nBuilding CaesarIA-updater")
-#add_subdirectory(updater updater)
+message("\nBuilding CaesarIA-updater")
+add_subdirectory(updater updater)
 
 message("\nBuilding AveC3-addon")
 add_subdirectory(addon/ave_c3 addon/ave_c3)

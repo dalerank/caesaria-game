@@ -14,6 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "safethread.hpp"
+#include <thread>
 
 namespace threading
 {
@@ -32,6 +33,7 @@ public:
   int delay;
 
   bool running;
+  bool abortFlag;
 
   void onTask();
 };
@@ -42,6 +44,9 @@ void _THKERNEL(SafeThread* ptr)
   {
     ptr->_d->onTask();
     std::this_thread::sleep_for( std::chrono::milliseconds( ptr->_d->delay ) );
+
+    if( ptr->_d->abortFlag )
+      break;
   }
   while( ptr->running() );
 
@@ -55,6 +60,7 @@ SafeThread::SafeThread(WorkFunction function) : _d( new Impl )
   _d->function = function;
   _d->thread = std::thread(_THKERNEL,this);
   _d->delay = 0;
+  _d->abortFlag = false;
   _d->running = true;
 }
 
@@ -73,6 +79,7 @@ SafeThread::SafeThread(WorkFunction function, StopFunction callbackOnFinish) :
   _d->thread = std::thread(_THKERNEL,this);
   _d->running = true;
   _d->delay = 0;
+  _d->abortFlag = false;
   _d->function = function;
 }
 
@@ -90,6 +97,11 @@ void SafeThread::join()
 {
   if( _d->thread.joinable() )
     _d->thread.join();
+}
+
+void SafeThread::abort()
+{
+  _d->abortFlag = true;
 }
 
 void SafeThread::setDelay(int ms)

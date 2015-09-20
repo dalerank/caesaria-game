@@ -100,7 +100,7 @@ void HttpRequest::InitRequest()
 	}
 }
 
-void HttpRequest::Perform()
+void HttpRequest::execute()
 {
 	_errorMessage.clear();
 
@@ -154,20 +154,22 @@ void HttpRequest::Perform()
 	_handle = NULL;
 }
 
-void HttpRequest::Cancel()
+void HttpRequest::cancel()
 {
 	// The memory callback will catch this flag
 	_cancelFlag = true;
 }
 
-HttpRequest::RequestStatus HttpRequest::GetStatus()
-{
-	return _status;
-}
+HttpRequest::RequestStatus HttpRequest::status() const {	return _status; }
 
 std::string HttpRequest::GetErrorMessage()
 {
-	return _errorMessage;
+  return _errorMessage;
+}
+
+bool HttpRequest::isOk() const
+{
+  return status() == HttpRequest::OK;
 }
 
 double HttpRequest::GetProgressFraction()

@@ -27,7 +27,13 @@
 namespace updater
 {
 
+class Updater::Impl
+{
+public:
+};
+
 Updater::Updater(const UpdaterOptions& options, vfs::Path executable) :
+  _d( new Impl ),
 	_options(options),
 	_downloadManager(new DownloadManager),
 	_executable( executable ), // convert that file to lower to be sure
@@ -56,6 +62,11 @@ Updater::Updater(const UpdaterOptions& options, vfs::Path executable) :
 #endif
 }
 
+Updater::~Updater()
+{
+
+}
+
 void Updater::setBinaryAsExecutable()
 {
   std::vector<vfs::Path> executableNames;
@@ -70,9 +81,9 @@ void Updater::setBinaryAsExecutable()
   executableNames.push_back( "caesaria.haiku" );
 #endif
 
-  foreach( it, executableNames )
+  for( auto name : executableNames )
   {
-    vfs::Path path2exe = getTargetDir()/(*it);
+    vfs::Path path2exe = getTargetDir()/name;
     if( path2exe.exist() )
     {
       // set the executable bit on binary
@@ -86,13 +97,13 @@ void Updater::removeDownload(std::string itemname)
 	_downloadQueue.removeItem( itemname );
 }
 
-void Updater::CleanupPreviousSession()
+void Updater::cleanupPreviousSession()
 {
   // Remove batch file from previous run
   vfs::NFile::remove( getTargetDir()/UPDATE_UPDATER_BATCH_FILE );
 }
 
-bool Updater::isMirrorsNeedUpdate()
+bool Updater::isNeedLoadMirrorsFromServer()
 {
   vfs::Directory folder = getTargetDir();
   vfs::Path mirrorPath = folder/CAESARIA_MIRRORS_INFO;
@@ -115,21 +126,19 @@ bool Updater::isMirrorsNeedUpdate()
   return true;
 }
 
-void Updater::updateMirrors()
+void Updater::downloadNewMirrors()
 {
   std::string mirrorsUrl = CAESARIA_MAIN_SERVER;
   mirrorsUrl += CAESARIA_MIRRORS_INFO;
 
-  //Logger::warning( utils::format( 0xff, "Downloading mirror list from %s...", mirrorsUrl.c_str() ) ); // grayman - fixed
+  Logger::warning( utils::format( 0xff, "Downloading mirror list from %s...", mirrorsUrl.c_str() ) ); // grayman - fixed
 
-  vfs::Directory folder = getTargetDir();
-  vfs::Path mirrorPath = folder/CAESARIA_MIRRORS_INFO;
+  vfs::Path mirrorPath = getTargetDir()/CAESARIA_MIRRORS_INFO;
 
-  HttpRequestPtr request = _conn->createRequest( mirrorsUrl, mirrorPath.toString());
+  auto request = _conn->request( mirrorsUrl, mirrorPath.toString());
+  request->execute();
 
-  request->Perform();
-
-  if (request->GetStatus() == HttpRequest::OK)
+  if( request->isOk() )
   {
     // Load the mirrors from the file
     loadMirrors();
@@ -145,55 +154,53 @@ void Updater::loadMirrors()
   vfs::Directory folder = getTargetDir();
   vfs::Path mirrorPath = folder.getFilePath( CAESARIA_MIRRORS_INFO );
 
-  // Load the tdm_mirrors.txt into an INI file
-  IniFilePtr mirrorsIni = IniFile::ConstructFromFile(mirrorPath);
+  // Load the mirrors.txt into an INI file
+  IniFilePtr mirrorsIni = IniFile::fromFile(mirrorPath);
 
   // Interpret the info and build the mirror list
   _mirrors = MirrorList( mirrorsIni );
-
-  //Logger::warning( "Found %d mirrors.", _mirrors.size() );
 }
 
-std::size_t Updater::GetNumMirrors()
+std::size_t Updater::mirrors_n()
 {
   return _mirrors.size();
 }
 
-void Updater::GetStableVersionFromServer()
+void Updater::downloadStableVersion()
 {
-  PerformSingleMirroredDownload(STABLE_VERSION_FILE);
+  downloadSingleFile(STABLE_VERSION_FILE);
 
   // Parse this file
   vfs::Directory folder = getTargetDir();
-  IniFilePtr releaseIni = IniFile::ConstructFromFile(folder.getFilePath( STABLE_VERSION_FILE ) );
+  vfs::Path filename = folder.getFilePath( STABLE_VERSION_FILE );
+  auto inifile = IniFile::fromFile( filename );
 
-  if (releaseIni == NULL)
+  if (inifile == NULL)
   {
     throw FailureException("Could not download current version info file from server.");
   }
 
   // Build the release file set
-  _latestRelease = ReleaseFileSet::LoadFromIniFile( releaseIni );
+  _latestRelease = ReleaseFileSet::LoadFromIniFile( inifile );
 }
 
-void Updater::GetVersionInfoFromServer()
+void Updater::downloadCurrentVersion()
 {
   Logger::warning( " Downloading version information...");
 
-  PerformSingleMirroredDownload(UPDATE_VERSION_FILE);
+  downloadSingleFile(UPDATE_VERSION_FILE);
 
   // Parse this downloaded file
   vfs::Directory folder = getTargetDir();
-  IniFilePtr versionInfo = IniFile::ConstructFromFile( folder.getFilePath( UPDATE_VERSION_FILE ) );
+  auto inifile = IniFile::fromFile( folder.getFilePath( UPDATE_VERSION_FILE ) );
 
-  if (versionInfo == NULL)
+  if (inifile == NULL)
   {
     Logger::warning( "Cannot find downloaded version info file: %s", folder.getFilePath(UPDATE_VERSION_FILE).toCString() );
     return;
   }
 
-  _releaseVersions.LoadFromIniFile( versionInfo );
-  //_updatePackages.LoadFromIniFile( versionInfo );
+  _releaseVersions.LoadFromIniFile( inifile );
 }
 
 void Updater::NotifyFileProgress(vfs::Path file, CurFileInfo::Operation op, double fraction)
@@ -205,7 +212,7 @@ void Updater::NotifyFileProgress(vfs::Path file, CurFileInfo::Operation op, doub
     info.file = file;
     info.progressFraction = fraction;
 
-    _fileProgressCallback->OnFileOperationProgress(info);
+    _fileProgressCallback->onFileOperationProgress(info);
   }
 }
 
@@ -221,30 +228,28 @@ void Updater::DetermineLocalVersion()
   std::size_t totalItems = 0;
 
   // Get the total count of version information items, for calculating the progress
-  foreach( v, _releaseVersions )
-  {
-    totalItems += v->second.size();
-  }
+  for( auto& v : _releaseVersions )
+    totalItems += v.second.size();
 
   std::size_t curItem = 0;
 
-  foreach( v, _releaseVersions )
+  for( auto& version : _releaseVersions )
   {
-    Logger::warning( "Trying to match against version: " + v->first );
+    Logger::warning( "Trying to match against version: " + version.first );
 
-    const ReleaseFileSet& set = v->second;
+    const ReleaseFileSet& set = version.second;
 
     // Will be true on first mismatching file
     bool mismatch = false;
 
-    foreach( f, set )
+    for( auto& item : set )
     {
-      NotifyFileProgress(f->second.file, CurFileInfo::Check, static_cast<double>(curItem) / totalItems);
+      NotifyFileProgress(item.second.file, CurFileInfo::Check, static_cast<double>(curItem) / totalItems);
 
       curItem++;
 
       vfs::Directory folder = getTargetDir();
-      vfs::Path candidate = folder.getFilePath( f->second.file );
+      vfs::Path candidate = folder.getFilePath( item.second.file );
 
       bool filesEquale = utils::isEquale( candidate.baseName().toString(), _executable.baseName().toString(), utils::equaleIgnoreCase );
       if( filesEquale )
@@ -260,7 +265,7 @@ void Updater::DetermineLocalVersion()
         continue;
       }
 
-      if (f->second.localChangesAllowed)
+      if (item.second.localChangesAllowed)
       {
         Logger::warning( "File %s exists, local changes are allowed, skipping.", candidate.toCString() );
         continue;
@@ -268,9 +273,9 @@ void Updater::DetermineLocalVersion()
 
       std::size_t candidateFilesize = vfs::NFile::size( candidate );
 
-      if (candidateFilesize != f->second.filesize)
+      if (candidateFilesize != item.second.filesize)
       {
-        Logger::warning( "WRONG SIZE[need=%d  have=%d]", f->second.filesize, candidateFilesize );
+        Logger::warning( "WRONG SIZE[need=%d  have=%d]", item.second.filesize, candidateFilesize );
         mismatch = true;
         continue;
       }
@@ -280,37 +285,37 @@ void Updater::DetermineLocalVersion()
       {
         unsigned int crc = CRC::GetCrcForFile(candidate);
 
-        if (crc != f->second.crc)
+        if (crc != item.second.crc)
         {
-          Logger::warning("WRONG CRC[need=%x have=%x]", f->second.crc, crc);
+          Logger::warning("WRONG CRC[need=%x have=%x]", item.second.crc, crc);
           mismatch = true;
           continue;
         }
       }
 
       // The file is matching - record this version
-      Logger::warning( f->second.isWrongOS() ? "SKIP [WRONG OS]" : "NOT NEED UPDATE" );
+      Logger::warning( item.second.isWrongOS() ? "SKIP [WRONG OS]" : "NOT NEED UPDATE" );
 
-      _fileVersions[candidate.toString()] = v->first;
+      _fileVersions[candidate.toString()] = version.first;
     }
 
     // All files passed the check?
     if (!mismatch)
     {
-      _pureLocalVersion = v->first;
+      _pureLocalVersion = version.first;
       Logger::warning( " Local installation matches version: " + _pureLocalVersion );
     }
   }
 
   // Sum up the totals for all files, each file has exactly one version
-  foreach( i, _fileVersions )
+  for( auto& i : _fileVersions )
   {
     // sum up the totals for this version
-    const std::string& version = i->second;
-    VersionTotal& total = _localVersions.insert(LocalVersionBreakdown::value_type(version, VersionTotal())).first->second;
+    const std::string& version = i.second;
+    VersionTotal& total = _localVersions.insert( LocalVersionBreakdown::value_type(version, VersionTotal()) ).first->second;
 
     total.numFiles++;
-    total.filesize += vfs::NFile::size( i->first );
+    total.filesize += vfs::NFile::size( i.first );
   }
 
   Logger::warning( "The local files are matching %d different versions.", _localVersions.size() );
@@ -354,7 +359,7 @@ bool Updater::DifferentialUpdateAvailable()
 
 std::string Updater::getNewestVersion()
 {
-  for( ReleaseVersions::reverse_iterator i = _releaseVersions.rbegin();
+  for( auto i = _releaseVersions.rbegin();
        i != _releaseVersions.rend(); ++i)
   {
    return i->first;
@@ -370,7 +375,8 @@ std::string Updater::getDeterminedLocalVersion()
 
 DownloadPtr Updater::prepareMirroredDownload(const std::string& remoteFile)
 {
-  AssertMirrorsNotEmpty();
+  if (_mirrors.empty())
+    throw FailureException("No mirror information, cannot continue.");
 
   vfs::Directory dir = getTargetDir();
   vfs::Path targetPath =  dir.getFilePath( remoteFile );
@@ -379,55 +385,51 @@ DownloadPtr Updater::prepareMirroredDownload(const std::string& remoteFile)
   vfs::NFile::remove( targetPath );
 
   // Create a mirrored download
-  DownloadPtr download(new MirrorDownload(_conn, _mirrors, remoteFile, targetPath));
-
-  return download;
+  return MirrorDownload::create(_conn, _mirrors, remoteFile, targetPath);
 }
 
-void Updater::PerformSingleMirroredDownload(const std::string& remoteFile)
+void Updater::downloadSingleFile(const std::string& remoteFile)
 {
   // Create a mirrored download
   DownloadPtr download = prepareMirroredDownload(remoteFile);
 
   // Perform and wait for completion
-  PerformSingleMirroredDownload(download);
+  downloadSingleFile(download);
 }
 
-void Updater::PerformSingleMirroredDownload(const std::string& remoteFile, std::size_t requiredSize, unsigned int requiredCrc)
+void Updater::downloadSingleFile(const std::string& remoteFile, std::size_t requiredSize, unsigned int requiredCrc)
 {
   DownloadPtr download = prepareMirroredDownload(remoteFile);
 
-  download->EnableCrcCheck(!_options.isSet("no-crc"));
-  download->EnableFilesizeCheck(true);
-  download->SetRequiredCrc(requiredCrc);
-  download->SetRequiredFilesize(requiredSize);
+  download->enableCrcCheck(!_options.isSet("no-crc"));
+  download->enableFilesizeCheck(true);
+  download->setRequiredCrc(requiredCrc);
+  download->setRequiredFilesize(requiredSize);
 
   // Perform and wait for completion
-  PerformSingleMirroredDownload(download);
+  downloadSingleFile(download);
 }
 
-void Updater::PerformSingleMirroredDownload(const DownloadPtr& download)
+void Updater::downloadSingleFile(const DownloadPtr& download)
 {
-  int downloadId = _downloadManager->AddDownload(download);
+  int downloadId = _downloadManager->add(download);
 
-  while( _downloadManager->HasPendingDownloads() )
+  while( _downloadManager->hasPendingDownloads() )
   {
-    _downloadManager->ProcessDownloads();
+    _downloadManager->process();
 
-    NotifyDownloadProgress();
+    notifyDownloadProgress();
 
     for (int i = 0; i < 50; ++i)
-    {
         Util::Wait(10);
-    }
   }
 
   if( _downloadProgressCallback.isValid() )
   {
-    _downloadProgressCallback->OnDownloadFinish();
+    _downloadProgressCallback->onDownloadFinish();
   }
 
-  _downloadManager->RemoveDownload(downloadId);
+  _downloadManager->remove(downloadId);
 }
 
 vfs::Directory Updater::getTargetDir()
@@ -444,7 +446,7 @@ vfs::Directory Updater::getTargetDir()
   return targetPath;
 }
 
-void Updater::CheckLocalFiles()
+void Updater::checkLocalFiles()
 {
   _downloadQueue.clear();
 
@@ -454,23 +456,23 @@ void Updater::CheckLocalFiles()
   Logger::warning( "Checking target folder: " + targetDir.toString() );
 
   std::size_t count = 0;
-  foreach( i, _latestRelease )
+  for( auto& item : _latestRelease )
   {
     if (_fileProgressCallback != NULL)
     {
       CurFileInfo info;
       info.operation = CurFileInfo::Check;
-      info.file = i->second.file;
+      info.file = item.second.file;
       info.progressFraction = static_cast<double>(count) / _latestRelease.size();
 
-      _fileProgressCallback->OnFileOperationProgress(info);
+      _fileProgressCallback->onFileOperationProgress(info);
     }
 
     //Logger::warning( "Checking for file: " + i->second.file.toString() + "...");
-    if( !CheckLocalFile(targetDir, i->second) )
+    if( !checkLocalFile(targetDir, item.second) )
     {
       // A member is missing or out of date, mark the archive for download
-      _downloadQueue.insert(*i);
+      _downloadQueue.insert(item);
     }
 
     count++;
@@ -484,7 +486,7 @@ void Updater::CheckLocalFiles()
   if (NewUpdaterAvailable())
   {
     // Remove all download packages from the queue, except the one containing the updater
-    RemoveAllPackagesExceptUpdater();
+    removeAllPackagesExceptUpdater();
   }
 }
 
@@ -493,7 +495,7 @@ bool Updater::isIgnored(std::string name)
   return _ignoreList.find(name) != _ignoreList.end();
 }
 
-bool Updater::CheckLocalFile(vfs::Path installPath, const ReleaseFile& releaseFile)
+bool Updater::checkLocalFile(vfs::Path installPath, const ReleaseFile& releaseFile)
 {
   vfs::Path localFile = vfs::Directory(installPath).getFilePath(releaseFile.file);
 
@@ -538,43 +540,46 @@ bool Updater::CheckLocalFile(vfs::Path installPath, const ReleaseFile& releaseFi
   return true;
 }
 
-bool Updater::isLocalFilesNeedUpdate()
+bool Updater::isDownloadQueueFull()
 {
   return !_downloadQueue.empty();
 }
 
-void Updater::PrepareUpdateStep(std::string prefix)
+void Updater::prepareUpdateStep(const std::string& prefix)
 {
   vfs::Directory targetdir = getTargetDir();
 
   // Create a download for each of the files
-  foreach( i, _downloadQueue )
+  bool checkCrc = !_options.isSet("no-crc");
+  for( auto& item : _downloadQueue )
   {
-    DownloadPtr download(new MirrorDownload(_conn, _mirrors, i->second.file.toString(), targetdir.getFilePath(prefix+i->second.file.toString() ) )) ;
+    auto download = MirrorDownload::create(_conn, _mirrors,
+                                           item.second.file.toString(),
+                                           targetdir.getFilePath(prefix+item.second.file.toString() ) );
 
-    download->EnableCrcCheck(!_options.isSet("no-crc"));
-    download->EnableFilesizeCheck( true );
-    download->SetRequiredCrc( i->second.crc );
-    download->SetRequiredFilesize( i->second.filesize );
+    download->enableCrcCheck( checkCrc );
+    download->enableFilesizeCheck( true );
+    download->setRequiredCrc( item.second.crc );
+    download->setRequiredFilesize( item.second.filesize );
 
-    i->second.downloadId = _downloadManager->AddDownload(download);
+    item.second.downloadId = _downloadManager->add(download);
   }
 }
 
 void Updater::PerformUpdateStep()
 {
 	// Wait until the download is done
-  while (_downloadManager->HasPendingDownloads())
+  while (_downloadManager->hasPendingDownloads())
   {
     // For catching terminations
-    _downloadManager->ProcessDownloads();
+    _downloadManager->process();
 
     if (_downloadManager->HasFailedDownloads())
     {
       // Lets continue downloading. Fetch as much as we can.
     }
 
-    NotifyDownloadProgress();
+    notifyDownloadProgress();
     NotifyFullUpdateProgress();
     Util::Wait(100);
   }
@@ -588,7 +593,7 @@ void Updater::PerformUpdateStep()
 
   if (_downloadProgressCallback.isValid())
   {
-    _downloadProgressCallback->OnDownloadFinish();
+    _downloadProgressCallback->onDownloadFinish();
   }
 }
 
@@ -602,20 +607,20 @@ void Updater::NotifyFullUpdateProgress()
   std::size_t totalDownloadSize = GetTotalDownloadSize();
   std::size_t totalBytesDownloaded = 0;
 
-  for (ReleaseFileSet::iterator i = _downloadQueue.begin(); i != _downloadQueue.end(); ++i)
+  for( auto& i : _downloadQueue )
   {
-    if (i->second.downloadId == -1)
+    if (i.second.downloadId == -1)
     {
         continue;
     }
 
-    DownloadPtr download = _downloadManager->GetDownload(i->second.downloadId);
+    DownloadPtr download = _downloadManager->GetDownload(i.second.downloadId);
 
     if (download == NULL) continue;
 
     if (download->GetStatus() == Download::SUCCESS)
     {
-        totalBytesDownloaded += i->second.filesize;
+        totalBytesDownloaded += i.second.filesize;
     }
     else if (download->GetStatus() == Download::IN_PROGRESS)
     {
@@ -640,7 +645,7 @@ void Updater::NotifyFullUpdateProgress()
   _downloadProgressCallback->OnOverallProgress(info);
 }
 
-void Updater::NotifyDownloadProgress()
+void Updater::notifyDownloadProgress()
 {
   int curDownloadId = _downloadManager->GetCurrentDownloadId();
 
@@ -670,19 +675,12 @@ void Updater::cleanupUpdateStep()
 {
   for (ReleaseFileSet::iterator i = _downloadQueue.begin(); i != _downloadQueue.end(); ++i)
   {
-    _downloadManager->RemoveDownload(i->second.downloadId);
+    _downloadManager->remove(i->second.downloadId);
   }
 
   _downloadQueue.clear();
 }
 
-void Updater::AssertMirrorsNotEmpty()
-{
-  if (_mirrors.empty())
-  {
-    throw FailureException("No mirror information, cannot continue.");
-  }
-}
 
 std::size_t Updater::GetNumFilesToBeUpdated()
 {
@@ -761,7 +759,7 @@ bool Updater::NewUpdaterAvailable()
   return false;
 }
 
-void Updater::RemoveAllPackagesExceptUpdater()
+void Updater::removeAllPackagesExceptUpdater()
 {
   Logger::warning("Removing all packages, except the one containing the updater");
 
@@ -791,12 +789,12 @@ void Updater::restartUpdater()
 void Updater::postUpdateCleanup()
 {
   vfs::Directory pdir =  getTargetDir();
-  vfs::Entries dir = pdir.entries();
-  foreach( i, dir )
+  vfs::Entries entries = pdir.entries();
+  for( auto& entry : entries )
   {
-    if( utils::startsWith( i->name.toString(), TEMP_FILE_PREFIX) )
+    if( utils::startsWith( entry.name.toString(), TEMP_FILE_PREFIX) )
     {
-      vfs::NFile::remove( i->fullpath );
+      vfs::NFile::remove( entry.fullpath );
     }
   }
 }
