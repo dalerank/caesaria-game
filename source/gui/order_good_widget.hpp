@@ -15,36 +15,38 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_SPECIAL_ORDERS_WINDOW_H_INCLUDED__
-#define __CAESARIA_SPECIAL_ORDERS_WINDOW_H_INCLUDED__
+#ifndef __CAESARIA_GOOD_ORDERS_WIDGET_H_INCLUDED__
+#define __CAESARIA_GOOD_ORDERS_WIDGET_H_INCLUDED__
 
-#include "window.hpp"
-#include "objects/predefinitions.hpp"
+#include "label.hpp"
+#include "good/store.hpp"
 
 namespace gui
 {
 
 class PushButton;
+class VolumeButton;
 
-class BaseSpecialOrdersWindow : public Window
+class OrderGoodWidget : public Label
 {
 public:
-  virtual void draw( gfx::Engine& engine );  // draw on screen
+  static OrderGoodWidget* create( const int index, const good::Product good, Widget* parent, good::Store& storage );
 
-  virtual bool onEvent( const NEvent& event);
+  void changeCapacity( float fillingPercentage );
+  void updateBtnText();
+  void changeRule();
+  void draw(gfx::Engine& painter);
 
-  virtual bool isPointInside(const Point& point) const;
-
-  virtual void setTitle( const std::string& text );
-
-  virtual ~BaseSpecialOrdersWindow();
 protected:
-  Widget* _ordersArea();
-  BaseSpecialOrdersWindow(Widget* parent, const Point& pos , int height);
+  OrderGoodWidget( Widget* parent, const Rect& rect, good::Product good, good::Store& storage );
+  virtual void _updateTexture( gfx::Engine& painter );
 
-  class Impl;
-  ScopedPtr< Impl > _d;
+private:
+  good::Product _type;
+  good::Store& _storage;
+  PushButton* _btnChangeRule;
+  VolumeButton* _btnVolume;
 };
 
 }//end namesapce gui
-#endif //__CAESARIA_SPECIAL_ORDERS_WINDOW_H_INCLUDED__
+#endif //__CAESARIA_GOOD_ORDERS_WIDGET_H_INCLUDED__

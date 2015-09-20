@@ -15,36 +15,27 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_SPECIAL_ORDERS_WINDOW_H_INCLUDED__
-#define __CAESARIA_SPECIAL_ORDERS_WINDOW_H_INCLUDED__
+#ifndef __CAESARIA_GRANARY_ORDERS_WINDOW_H_INCLUDED__
+#define __CAESARIA_GRANARY_ORDERS_WINDOW_H_INCLUDED__
 
-#include "window.hpp"
-#include "objects/predefinitions.hpp"
+#include "special_orders_window.hpp"
 
 namespace gui
 {
 
-class PushButton;
-
-class BaseSpecialOrdersWindow : public Window
+class GranarySpecialOrdersWindow : public BaseSpecialOrdersWindow
 {
 public:
-  virtual void draw( gfx::Engine& engine );  // draw on screen
+  static const int defaultHeight = 250;
+  GranarySpecialOrdersWindow( Widget* parent, const Point& pos, GranaryPtr granary );
+  ~GranarySpecialOrdersWindow();
 
-  virtual bool onEvent( const NEvent& event);
+  void toggleDevastation();
+private:
+  void _updateBtnDevastation();
 
-  virtual bool isPointInside(const Point& point) const;
-
-  virtual void setTitle( const std::string& text );
-
-  virtual ~BaseSpecialOrdersWindow();
-protected:
-  Widget* _ordersArea();
-  BaseSpecialOrdersWindow(Widget* parent, const Point& pos , int height);
-
-  class Impl;
-  ScopedPtr< Impl > _d;
+  __DECLARE_IMPL(GranarySpecialOrdersWindow)
 };
 
 }//end namesapce gui
-#endif //__CAESARIA_SPECIAL_ORDERS_WINDOW_H_INCLUDED__
+#endif //__CAESARIA_GRANARY_ORDERS_WINDOW_H_INCLUDED__

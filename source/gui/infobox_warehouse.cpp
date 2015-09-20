@@ -21,7 +21,7 @@
 #include "objects/warehouse.hpp"
 #include "label.hpp"
 #include "good/helper.hpp"
-#include "special_orders_window.hpp"
+#include "warehouse_orders_window.hpp"
 #include "good/store.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"

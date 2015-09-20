@@ -15,36 +15,25 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_SPECIAL_ORDERS_WINDOW_H_INCLUDED__
-#define __CAESARIA_SPECIAL_ORDERS_WINDOW_H_INCLUDED__
+#ifndef __CAESARIA_WAREHOUSE_ORDERS_WINDOW_H_INCLUDED__
+#define __CAESARIA_WAREHOUSE_ORDERS_WINDOW_H_INCLUDED__
 
-#include "window.hpp"
+#include "special_orders_window.hpp"
 #include "objects/predefinitions.hpp"
 
 namespace gui
 {
 
-class PushButton;
-
-class BaseSpecialOrdersWindow : public Window
+class WarehouseSpecialOrdersWindow : public BaseSpecialOrdersWindow
 {
 public:
-  virtual void draw( gfx::Engine& engine );  // draw on screen
+  static const int defaultHeight = 550;
+  WarehouseSpecialOrdersWindow( Widget* parent, const Point& pos, WarehousePtr warehouse );
+  ~WarehouseSpecialOrdersWindow();
 
-  virtual bool onEvent( const NEvent& event);
-
-  virtual bool isPointInside(const Point& point) const;
-
-  virtual void setTitle( const std::string& text );
-
-  virtual ~BaseSpecialOrdersWindow();
-protected:
-  Widget* _ordersArea();
-  BaseSpecialOrdersWindow(Widget* parent, const Point& pos , int height);
-
-  class Impl;
-  ScopedPtr< Impl > _d;
+private:
+  __DECLARE_IMPL(WarehouseSpecialOrdersWindow)
 };
 
 }//end namesapce gui
-#endif //__CAESARIA_SPECIAL_ORDERS_WINDOW_H_INCLUDED__
+#endif //__CAESARIA_WAREHOUSE_ORDERS_WINDOW_H_INCLUDED__
