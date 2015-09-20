@@ -96,7 +96,7 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
 {
   setupUI( ":/gui/infoboxhouse.gui" );
 
-  _house = tile.overlay().as<House>();
+  _house = tile.overlay<House>();
 
   if( _house.isNull() )
   {

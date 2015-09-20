@@ -153,6 +153,10 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   dopts.setFlag( DrawOptions::showTrees, true );
   dopts.setFlag( DrawOptions::mmbMoving, SETTINGS_VALUE( mmb_moving ) );
   dopts.setFlag( DrawOptions::overdrawOnBuild, false );
+  dopts.setFlag( DrawOptions::rotateEnabled, false );
+#ifdef DEBUG
+  dopts.setFlag( DrawOptions::rotateEnabled, true );
+#endif
 
   _d->setLayer( citylayer::simple );
 }

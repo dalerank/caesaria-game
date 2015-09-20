@@ -57,7 +57,7 @@ void FireWorkers::_exec(Game& game, unsigned int)
                                                 _center + range );
     for( auto&& tile : perimetr )
     {
-      WorkingBuildingPtr wrkBuilding = tile->overlay().as<WorkingBuilding>();
+      WorkingBuildingPtr wrkBuilding = tile->overlay<WorkingBuilding>();
       if( wrkBuilding.isValid() )
       {
         int removedFromWb = wrkBuilding->removeWorkers( _workers );

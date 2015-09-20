@@ -62,7 +62,7 @@ public:
 public:
   void mayWalk( const Tile* tile, bool& ret )
   {
-    HousePtr f = tile->overlay().as<House>();
+    HousePtr f = tile->overlay<House>();
     ret = ( tile->isWalkable( true ) || f.isValid() );
   }  
 };

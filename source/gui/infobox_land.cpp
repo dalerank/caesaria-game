@@ -97,7 +97,7 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
     else if( ovType == object::road )
     {
       _helpUri = "paved_road";
-      RoadPtr road = ptr_cast<Road>( tile.overlay() );
+      auto road = tile.overlay<Road>();
       title = road->pavedValue() > 0 ? "##road_paved_caption##" : "##road_caption##";
       if( tile.pos() == city->borderInfo().roadEntry ) { text = "##road_from_rome##"; }
       else if( tile.pos() == city->borderInfo().roadExit ) { text = "##road_to_distant_region##"; }
@@ -150,7 +150,7 @@ AboutFreeHouse::AboutFreeHouse( Widget* parent, PlayerCityPtr city, const Tile& 
 {
   setTitle( _("##freehouse_caption##") );
 
-  ConstructionPtr cnst = tile.overlay().as<Construction>();
+  ConstructionPtr cnst = tile.overlay<Construction>();
   if( cnst.isValid() )
   {
       setText( cnst->roadside().size() == 0

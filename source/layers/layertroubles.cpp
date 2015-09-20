@@ -103,7 +103,7 @@ void Troubles::handleEvent(NEvent& event)
 
       if( tile != 0 )
       {
-        auto constr = tile->overlay().as<Construction>();
+        auto constr = tile->overlay<Construction>();
         if( constr.isValid() )
         {
           text = constr->troubleDesc();

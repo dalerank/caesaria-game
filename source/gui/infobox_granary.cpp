@@ -47,7 +47,7 @@ AboutGranary::AboutGranary(Widget* parent, PlayerCityPtr city, const Tile& tile 
 {
   setupUI( ":/gui/granaryinfo.gui" );
 
-  _granary = ptr_cast<Granary>( tile.overlay() );
+  _granary = tile.overlay<Granary>();
 
   setBase( _granary );
   _setWorkingVisible( true );

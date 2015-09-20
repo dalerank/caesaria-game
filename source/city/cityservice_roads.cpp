@@ -132,7 +132,7 @@ void Roads::Impl::updateRoadsAround( Propagator& propagator, UpdateInfo info )
     const TilesArray& tiles = path->allTiles();
     for( auto tile : tiles )
     {
-      RoadPtr road = tile->overlay().as<Road>();
+      RoadPtr road = tile->overlay<Road>();
       if( road.isValid() )
       {
         road->appendPaved( defaultIncreasePaved );

@@ -149,7 +149,7 @@ void Education::handleEvent(NEvent& event)
       std::string levelName = "";      
       if( tile != 0 )
       {
-        auto house = tile->overlay().as<House>();
+        auto house = tile->overlay<House>();
         if( house != 0 )
         {
           std::string typeName;

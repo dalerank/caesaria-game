@@ -410,7 +410,7 @@ void Plaza::updatePicture()
   bool canGrow2squarePlaza = ( nearTiles.size() == 4 ); // be carefull on map edges
   for( auto tile : nearTiles )
   {
-    PlazaPtr garden = tile->overlay().as<Plaza>();
+    PlazaPtr garden = tile->overlay<Plaza>();
     canGrow2squarePlaza &= (garden.isValid() && garden->size().area() <= 2 );
   }
 

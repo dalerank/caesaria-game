@@ -116,7 +116,7 @@ void Damage::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        auto construction = tile->overlay().as<Construction>();
+        auto construction = tile->overlay<Construction>();
         if( construction.isValid() )
         {
           int damageLevel = math::clamp<int>( construction->state( pr::damage ) / maxDamageLevel, 0, maxDamageLevel-1 );

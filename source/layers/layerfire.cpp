@@ -104,7 +104,7 @@ void Fire::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        auto construction = tile->overlay().as<Construction>();
+        auto construction = tile->overlay<Construction>();
         if( construction != 0 )
         {
           int fireLevel = math::clamp<int>( construction->state( pr::fire ), 0, 100 );

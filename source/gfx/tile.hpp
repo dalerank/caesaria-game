@@ -96,7 +96,7 @@ public:
   int param( Param param ) const;
 
   template<class T>
-  SmartPtr<T> overlay() { return ptr_cast<T>( _overlay ); }
+  SmartPtr<T> overlay() const { return ptr_cast<T>( _overlay ); }
   OverlayPtr overlay() const;
 
 private:
