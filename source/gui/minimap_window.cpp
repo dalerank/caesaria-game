@@ -568,9 +568,9 @@ bool Minimap::onEvent(const NEvent& event)
            && guiButtonClicked == event.gui.type )
   {
     if( event.gui.caller == _d->btnZoomIn )
-      emit _d->onZoomChangeSignal( -10 );
-    else if( event.gui.caller == _d->btnZoomOut )
       emit _d->onZoomChangeSignal( +10 );
+    else if( event.gui.caller == _d->btnZoomOut )
+      emit _d->onZoomChangeSignal( -10 );
     return true;
   }
 
