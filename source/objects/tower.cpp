@@ -202,6 +202,11 @@ void Tower::deliverService()
   }
 }
 
+void Tower::burn()
+{
+  Logger::warning( "WARNING: Tower cant be burn. Ignore." );
+}
+
 TilesArray Tower::enterArea() const
 {
   TilesArray tiles = _city()->statistic().map.around( this );

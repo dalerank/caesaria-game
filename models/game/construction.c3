@@ -52,7 +52,9 @@
     desirability : 12,
     range : 0,
     class : "wall"
-    cost : 10
+    cost : 10    
+    inflammability : 0
+    collapsibility : 0
   },
 
   fortification : {
@@ -60,6 +62,8 @@
     range : 0
     class : "wall"
     cost : 20
+    inflammability : 0
+    collapsibility : 0
   }
   
   aqueduct : {
@@ -186,6 +190,8 @@
     class : "military"
     sound : [ "fort", 1 ]
     requestDestroy : true
+    inflammability : 0
+    collapsibility : 0
   },
 
   missionaryPost : {
@@ -221,6 +227,8 @@
     desirability : { base :-20,	range : 10,	step : 2 }
     employers : 16
     class : "military"
+    inflammability : 0
+    collapsibility : 0
     requestDestroy : true
   }, 
 
@@ -230,6 +238,8 @@
     employers : 16
     class : "military"
     requestDestroy : true
+    inflammability : 0
+    collapsibility : 0
   }, 
 
   clinic : {
@@ -322,6 +332,8 @@
     step : -1,
     employers : 3
     class : "gate"
+    inflammability : 0
+    collapsibility : 0
   },  
 
   tower : {
@@ -329,6 +341,8 @@
     desirability : { base :-8,	range : 4,	step : -2 }
     employers : 6
     class : "tower"
+    inflammability : 0
+    collapsibility : 0
   },  
   
   small_ceres_temple : {
