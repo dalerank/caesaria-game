@@ -553,7 +553,7 @@ void PushButton::draw( gfx::Engine& painter )
     painter.draw( _d->textPicture, screenLeft(), screenTop(), &absoluteClippingRectRef() );
   }
 
-//#ifdef DEBUG
+#ifdef DEBUG
   if( ui()->hasFlag( Ui::buttonShowDebugArea ) )
   {
     painter.drawLine( DefaultColors::red, absoluteRect().lefttop(), absoluteRect().righttop() );
@@ -567,7 +567,7 @@ void PushButton::draw( gfx::Engine& painter )
       painter.drawLine( DefaultColors::red, absoluteRect().leftbottom(), absoluteRect().righttop() );
     }
   }
-//#endif
+#endif
 
   drawIcon( painter );
 

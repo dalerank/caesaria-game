@@ -77,6 +77,7 @@ public:
   SdlBatcher batcher;
 
   MaskInfo mask;
+  int sheigth;
   unsigned int fps, lastFps;
   unsigned int lastUpdateFps;
   unsigned int drawCall;
@@ -85,6 +86,7 @@ public:
 public:
   void renderState(const Batch &batch, const Rect *clip);
   void renderState();
+  void setClip( const Rect& clip );
   void renderOnce(const Picture& pic, const Rect& src, const Rect& dstRect,
                   const Rect* clipRect, bool useTxOffset);
 };
@@ -197,7 +199,8 @@ void SdlEngine::init()
   SDL_Window *window;
 
 #ifdef CAESARIA_PLATFORM_ANDROID
-  //_srcSize = Size( mode.w, mode.h );
+  auto mode = modes().front();
+  _srcSize = Size( mode.width(), mode.height() );
   Logger::warning( utils::format( 0xff, "SDLGraficEngine: Android set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
 
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -300,6 +303,7 @@ void SdlEngine::init()
   SDL_SetWindowTitle( window, versionStr.c_str() );
 
   _d->window = window;
+  _d->sheigth = _srcSize.height();
   _d->renderer = renderer;
 
   _d->fpsTx = Picture( Size( 200, 20 ), 0, true );
@@ -422,10 +426,7 @@ void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* c
     _d->drawCall++;
 
     if( clipRect != 0 )
-    {
-      SDL_Rect r = { clipRect->left(), clipRect->top(), clipRect->width(), clipRect->height() };
-      SDL_RenderSetClipRect( _d->renderer, &r );
-    }
+      _d->setClip( *clipRect );
 
     const Impl::MaskInfo& mask = _d->mask;
     SDL_Texture* ptx = picture.texture();
@@ -451,9 +452,8 @@ void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* c
     }
 
     if( clipRect != 0 )
-    {
       SDL_RenderSetClipRect( _d->renderer, 0 );
-    }
+
     drawTime += DateTime::elapsedTime() - t;
   }
 }
@@ -483,10 +483,7 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
     _d->drawCall+=pictures.size();
 
     if( clipRect != 0 )
-    {
-      SDL_Rect r = { clipRect->left(), clipRect->top(), clipRect->width(), clipRect->height() };
-      SDL_RenderSetClipRect( _d->renderer, &r );
-    }
+      _d->setClip( *clipRect );
 
     const Impl::MaskInfo& mask = _d->mask;
     for( const Picture& picture : pictures )
@@ -515,9 +512,8 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
     }
 
     if( clipRect != 0 )
-    {
       SDL_RenderSetClipRect( _d->renderer, 0 );
-    }
+
     drawTimeBatch += DateTime::elapsedTime() - t;
   }
 }
@@ -574,17 +570,12 @@ void SdlEngine::draw(const Batch &batch, Rect *clipRect)
   {
     _d->drawCall++;
     if( clipRect != 0 )
-    {
-      SDL_Rect r = { clipRect->left(), clipRect->top(), clipRect->width(), clipRect->height() };
-      SDL_RenderSetClipRect( _d->renderer, &r );
-    }
+      _d->setClip( *clipRect );
 
     SDL_RenderBatch( _d->renderer, batch.native() );
 
     if( clipRect != 0 )
-    {
       SDL_RenderSetClipRect( _d->renderer, 0 );
-    }
   }
 }
 
@@ -762,6 +753,17 @@ bool SdlEngine::haveEvent( NEvent& event )
   return false;
 }
 
+void SdlEngine::Impl::setClip( const Rect& clip )
+{
+  static SDL_Rect r;
+  r.x = clip.left();
+  r.y = sheigth - clip.top() - clip.height();
+  r.w = clip.width();
+  r.h = clip.height();
+
+  SDL_RenderSetClipRect( renderer, &r );
+}
+
 void SdlEngine::Impl::renderState( const Batch& batch, const Rect* clip )
 {
   if(!batch.valid())
@@ -770,10 +772,7 @@ void SdlEngine::Impl::renderState( const Batch& batch, const Rect* clip )
   drawCall++;
   bool clipped = ( clip && clip->width() > 0 );
   if( clipped )
-  {
-    SDL_Rect r = { clip->left(), clip->top(), clip->width(), clip->height() };
-    SDL_RenderSetClipRect( renderer, &r );
-  }
+    setClip( *clip );
 
   SDL_Texture* ptx = batch.native()->texture;
   if( mask.enabled )
@@ -791,9 +790,7 @@ void SdlEngine::Impl::renderState( const Batch& batch, const Rect* clip )
   }
 
   if( clipped )
-  {
     SDL_RenderSetClipRect( renderer, 0 );
-  }
 }
 
 void SdlEngine::Impl::renderState()
@@ -820,10 +817,7 @@ void SdlEngine::Impl::renderOnce(const Picture &pic, const Rect& srcRect, const 
   drawCall++;
 
   if( clipRect != 0 )
-  {
-    SDL_Rect r = { clipRect->left(), clipRect->top(), clipRect->width(), clipRect->height() };
-    SDL_RenderSetClipRect( renderer, &r );
-  }
+    setClip(*clipRect);
 
   if( mask.enabled )
   {
@@ -845,9 +839,7 @@ void SdlEngine::Impl::renderOnce(const Picture &pic, const Rect& srcRect, const 
   }
 
   if( clipRect != 0 )
-  {
     SDL_RenderSetClipRect( renderer, 0 );
-  }
 
   drawTime += DateTime::elapsedTime() - t;
 }

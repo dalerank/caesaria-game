@@ -70,6 +70,7 @@ class StartMenu::Impl
 {
 public:
   Picture bgPicture;
+  Point bgOffset;
   gui::StartMenu* menu;         // menu to display
   bool isStopped;
   Game* game;
@@ -536,9 +537,7 @@ StartMenu::~StartMenu() {}
 void StartMenu::draw()
 {
   _d->game->gui()->beforeDraw();
-
-  _d->engine->draw(_d->bgPicture,0,0);
-
+  _d->engine->draw(_d->bgPicture, _d->bgOffset);
   _d->game->gui()->draw();
 
   if( steamapi::available() )
@@ -566,7 +565,7 @@ void StartMenu::initialize()
 
   // center the bgPicture on the screen
   Size tmpSize = (_d->engine->virtualSize() - _d->bgPicture.size())/2;
-  _d->bgPicture.setOffset( Point( tmpSize.width(), -tmpSize.height() ) );
+  _d->bgOffset = Point( tmpSize.width(), tmpSize.height() );
 
   _d->game->gui()->clear();
 

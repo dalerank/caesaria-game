@@ -94,7 +94,7 @@ Ui::Ui(Engine& painter )
   _d->consoleId = Hash( CAESARIA_STR_EXT(Console) );
   _d->console = 0;//new Console( this, _d->consoleId, Rect() );
 
-  setFlag( buttonShowDebugArea, 1 );
+  setFlag( buttonShowDebugArea, 0 );
 }
 
 //! Returns if the element has focus

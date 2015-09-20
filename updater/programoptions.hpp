@@ -40,6 +40,9 @@ public:
 
   void parse(int argc, char* argv[])
 	{
+    if( argc == 0 )
+      return;
+
 		_runPath = argv[0];
 
 		for (int i = 0; i < argc; i++)

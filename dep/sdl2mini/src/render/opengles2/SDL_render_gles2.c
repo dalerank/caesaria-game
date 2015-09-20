@@ -420,9 +420,12 @@ GLES2_UpdateClipRect(SDL_Renderer * renderer)
             data->glScissor(renderer->viewport.x + rect->x, renderer->viewport.y + rect->y, rect->w, rect->h);
         } else {
             int w, h;
-
             SDL_GetRendererOutputSize(renderer, &w, &h);
-            data->glScissor(renderer->viewport.x + rect->x, (h - renderer->viewport.y - renderer->viewport.h) + rect->y, rect->w, rect->h);
+            data->glScissor(renderer->viewport.x + rect->x, renderer->viewport.y + rect->y, rect->w, rect->h);
+
+            SDL_Log( "----------> vx:%d vy:%d w:%d h:%d", renderer->viewport.x + rect->x,
+                                                                                       renderer->viewport.y + rect->y,
+                                                                                       rect->w, rect->h );
         }
     } else {
         data->glDisable(GL_SCISSOR_TEST);
