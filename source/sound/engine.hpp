@@ -47,16 +47,17 @@ public:
   void init();
   void exit();
 
-  int play( std::string sampleName, int volume, SoundType type, bool force=false);
-  int play(const std::string& rc, int index, int volume, SoundType type, bool force=false);
+  void play( std::string sampleName, int volume, SoundType type, bool force=false);
+  void play(const std::string& rc, int index, int volume, SoundType type, bool force=false);
 
   bool isPlaying(const std::string& sampleName ) const;
 
   void stop(const std::string& sampleName ) const;
   void stop( int channel );
+
+  void run( bool& );
 private:
   Engine();
-  unsigned int _loadSound( const std::string& filename );
   void _updateSamplesVolume();
 
   class Impl;

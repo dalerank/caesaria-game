@@ -38,7 +38,8 @@ if(UNIX AND NOT APPLE)
   file(GLOB FILESYSTEM_SOURCES_LIST "src/filesystem/unix/*.c")
 
   add_definitions(-DSDL_TIMER_UNIX)
-  add_definitions(-DSDL_VIDEO_DRIVER_X11)
+  add_definitions(-DSDL_VIDEO_DRIVER_X11=1)
+  add_definitions(-DSDL_VIDEO_DRIVER_X11_XVIDMODE=1)
   add_definitions(-DSDL_VIDEO_DRIVER_X11_SUPPORTS_GENERIC_EVENTS)
   add_definitions(-DSDL_VIDEO_OPENGL_GLX=1)
   add_definitions(-DSDL_THREAD_PTHREAD=1)
@@ -77,7 +78,7 @@ if(UNIX AND NOT APPLE)
   set_target_properties(${PROJECT_NAME}
                         PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
-  target_link_libraries( ${PROJECT_NAME} pthread Xext X11 GL GLU asound)
+  target_link_libraries( ${PROJECT_NAME} pthread Xxf86vm Xext X11 GL GLU asound)
 endif()
 
 if(APPLE)

@@ -140,6 +140,26 @@ namespace
 
 } // namespace
 
+std::string Util::getHumanReadableBytes(std::size_t size)
+{
+  if (size > GbBts)
+  {
+    return utils::format( 0xff, "%0.2f GB", size / (float)GbBts );
+  }
+  else if (size > MbBts)
+  {
+    return  utils::format( 0xff, "%0.1f MB", size / (float)MbBts );
+  }
+  else if (size > KbBts)
+  {
+    return  utils::format( 0xff, "%0.0f kB", size / (float)KbBts );
+  }
+  else
+  {
+    return  utils::format( 0xff, "%d bytes", size);
+  }
+}
+
 bool Util::caesariaIsRunning()
 {
   // Traverse the /proc folder, this sets the flag to TRUE if the process was found
@@ -152,7 +172,7 @@ bool Util::caesariaIsRunning()
       return true;
     }
   }
-	
+
   return false;
 }
 

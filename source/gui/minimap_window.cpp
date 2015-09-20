@@ -205,6 +205,24 @@ void Minimap::Impl::getObjectColours(const Tile& tile, int &c1, int &c2)
     colorFound = true;
   }
   break;
+
+  case object::burning_ruins:
+  {
+    c1 = DefaultColors::red.color;
+    c2 = DefaultColors::red.color;
+    colorFound = true;
+  }
+  break;
+
+  case object::burned_ruins:
+  case object::collapsed_ruins:
+  {
+    c1 = DefaultColors::grey.color;
+    c2 = DefaultColors::grey.color;
+    colorFound = true;
+  }
+  break;
+
   case object::reservoir:
   case object::aqueduct:
   {
