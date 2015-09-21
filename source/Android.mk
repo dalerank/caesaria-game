@@ -2,8 +2,7 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := main
-LOCAL_SHORT_COMMANDS := true
+LOCAL_MODULE := application
 
 STEAM_PATH     := ../steam
 GAME_PATH := $(LOCAL_PATH)
@@ -29,8 +28,7 @@ LOCAL_C_INCLUDES := \
   $(LOCAL_PATH)/$(DEP_PATH)/libpng
 
 # Add your application source files here...
-LOCAL_SRC_FILES := $(SDL_PATH)/src/main/android/SDL_android_main.c \
-  $(subst $(LOCAL_PATH)/,, \
+LOCAL_SRC_FILES := $(subst $(LOCAL_PATH)/,, \
   $(wildcard $(GAME_PATH)/*.cpp) \
   $(wildcard $(GAME_PATH)/core/*.cpp) \
   $(wildcard $(GAME_PATH)/vfs/*.cpp) \
