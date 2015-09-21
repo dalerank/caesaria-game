@@ -687,6 +687,65 @@ static void __createRoad(Game& game )
   oCity->setBorderInfo( borderInfo );
 }
 
+TilesArray& addTileIfValid( TilesArray& tiles, int i, int j, Tilemap& tmap )
+{
+  Tile& t = tmap.at( i, j );
+  if( tilemap::isValidLocation( t.epos() ) )
+    tiles.push_back( &t );
+
+  return tiles;
+}
+
+TilesArray getTmapEllipse(int x, int y, int a, int b, Tilemap& tmap)
+{
+  TilesArray tiles;
+  int col,row;
+  long a_square,b_square,two_a_square,two_b_square,four_a_square,four_b_square,d;
+
+  b_square=b*b;
+  a_square=a*a;
+  row=b;
+  col=0;
+  two_a_square=a_square<<1;
+  four_a_square=a_square<<2;
+  four_b_square=b_square<<2;
+  two_b_square=b_square<<1;
+
+  d=two_a_square*((row-1)*(row))+a_square+two_b_square*(1-a_square);
+  while(a_square*(row)>b_square*(col))
+  {
+    addTileIfValid( tiles, col+x,row+y, tmap);
+    addTileIfValid( tiles, col+x,y-row, tmap);
+    addTileIfValid( tiles, x-col,row+y, tmap);
+    addTileIfValid( tiles, x-col,y-row, tmap);
+    if (d>=0)
+    {
+      row--;
+      d-=four_a_square*(row);
+    }
+    d+=two_b_square*(3+(col<<1));
+    col++;
+  }
+
+  d=two_b_square*(col+1)*col+two_a_square*(row*(row-2)+1)+(1-two_a_square)*b_square;
+  while ((row) + 1)
+  {
+    addTileIfValid( tiles, col+x,row+y, tmap);
+    addTileIfValid( tiles, col+x,y-row, tmap);
+    addTileIfValid( tiles, x-col,row+y, tmap);
+    addTileIfValid( tiles, x-col,y-row, tmap);
+    if (d<=0)
+    {
+      col++;
+      d+=four_b_square*col;
+    }
+    row--;
+    d+=two_a_square*(3-(row <<1));
+  }
+
+  return tiles;
+}
+
 TilesArray getTmapCircle(int rx, int ry, int r, Tilemap& tmap )
 {
   TilesArray ret;
@@ -715,7 +774,8 @@ void __createMeadows( Game& game )
   {
     Tile* tile = tiles.random();
 
-    TilesArray meadows = getTmapCircle( tile->i(), tile->j(), math::random( fieldSize-1 ), oTilemap );
+    //TilesArray meadows = getTmapCircle( tile->i(), tile->j(), math::random( fieldSize-1 ), oTilemap );
+    TilesArray meadows = getTmapEllipse( tile->i(), tile->j(), fieldSize, fieldSize/2, oTilemap );
     meadows = meadows.terrains();
 
     for( auto tile : meadows )
