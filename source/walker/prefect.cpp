@@ -445,7 +445,7 @@ void Prefect::_noWay()
 
 static BuildingPtr isBurningRuins( const Tile& tile, bool& inFire )
 {
-  BuildingPtr building = tile.overlay().as<Building>();
+  BuildingPtr building = tile.overlay<Building>();
   inFire = (building.isValid() && building->type() == object::burning_ruins );
 
   return inFire ? building : BuildingPtr();

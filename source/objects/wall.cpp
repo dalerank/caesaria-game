@@ -81,6 +81,11 @@ void Wall::destroy()
   }
 }
 
+void Wall::burn()
+{
+  Logger::warning( "WARNING: Wall cant be burn. Ignore." );
+}
+
 void Wall::initTerrain(Tile &terrain)
 {
   bool isMeadow = terrain.getFlag( Tile::tlMeadow );

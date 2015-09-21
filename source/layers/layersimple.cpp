@@ -112,7 +112,7 @@ void Simple::renderUi(Engine &engine)
   Tile* lastTile = _currentTile();
   if( lastTile )
   {
-    SenatePtr senate = lastTile->overlay().as<Senate>();
+    SenatePtr senate = lastTile->overlay<Senate>();
     if( senate.isValid() )
     {
       _d->senateInfo.draw( _lastCursorPos(), Engine::instance(), senate );

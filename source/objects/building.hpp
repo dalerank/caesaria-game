@@ -57,7 +57,7 @@ public:
 
   virtual void updateTrainee( TraineeWalkerPtr walker ); // trainee arrives
   virtual void setTraineeValue( walker::Type type, int value ); // trainee arrives
-  virtual void initialize(const MetaData &mdata);
+  virtual void initialize(const MetaData& mdata);
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);

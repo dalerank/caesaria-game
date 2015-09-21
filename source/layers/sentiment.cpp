@@ -115,7 +115,7 @@ void Sentiment::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        HousePtr house = tile->overlay().as<House>();
+        HousePtr house = tile->overlay<House>();
         if( house.isValid() )
         {
           int happiness = math::clamp<int>( house->state( pr::happiness ) / maxSentimentLevel, 0, maxSentimentLevel-1 );

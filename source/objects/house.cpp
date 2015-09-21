@@ -651,18 +651,18 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
         else { ++it; }
       }
 
-      foreach( it, area )
+      for( auto& tile : area )
       {
-        if( *it == NULL )
+        if( tile == NULL )
         {
           mayGrow = false;   //some broken, can't grow
           break;
         }
 
-        OverlayPtr overlay = (*it)->overlay();
+        OverlayPtr overlay = tile->overlay();
         if( overlay.isNull() )
         {
-          if( !(*it)->getFlag( Tile::isConstructible ) )
+          if( !tile->getFlag( Tile::isConstructible ) )
           {
             mayGrow = false; //not constuctible, can't grow
             break;

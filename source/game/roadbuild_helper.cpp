@@ -39,7 +39,7 @@ void RoadPropagator::canBuildRoad(const gfx::Tile* tile, bool& ret)
   }
   else
   {
-    AqueductPtr aq = tile->overlay().as<Aqueduct>();
+    AqueductPtr aq = tile->overlay<Aqueduct>();
     if( aq.isValid() )
     {     
       ret = aq->canAddRoad( PlayerCityPtr(), tile->pos() );

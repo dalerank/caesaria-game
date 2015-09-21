@@ -25,8 +25,6 @@
 #include "core/gettext.hpp"
 #include "gfx/decorator.hpp"
 #include "core/event.hpp"
-#include "objects/granary.hpp"
-#include "objects/warehouse.hpp"
 #include "core/priorities.hpp"
 #include "good/helper.hpp"
 #include "good/store.hpp"
@@ -41,145 +39,6 @@ using namespace gfx;
 namespace gui
 {
 
-class VolumeButton : public PushButton
-{
-public:
-  VolumeButton( Widget* );
-
-  //! constructor
-  VolumeButton( Widget* parent,
-                const Rect& rectangle,
-                int roomCap, int warehouseCap )
-          : PushButton( parent, rectangle )
-  {
-    float prc = roomCap / (float)warehouseCap;
-    if( prc <= 0.25 ) { _step = 1; }
-    else if( prc <= 0.50 ) { _step = 2; }
-    else if( prc <= 0.75 ) { _step = 3; }
-    else _step =0;
-
-    _icon.load( "whblock", 1 );
-    setBackgroundStyle( PushButton::blackBorderUp );
-    setFont( Font::create( FONT_2_WHITE ) );
-    _updateText();
-  }
-
-  virtual void draw( gfx::Engine& painter )
-  {
-    if( !visible() )
-      return;
-
-    PushButton::draw( painter );
-
-    //for( int i=0; i < step; i++ )
-    //  painter.draw( icon, absoluteRect().lefttop() + Point( 6 + i * icon.width()/2, 0)/*, &absoluteClippingRectRef() */ );
-  }
-
-  Signal1<float>& onChange() { return _onChangeSignal; }
-
-protected:
-
-  void _updateText()
-  {
-    _step = _step % 4;
-    setText( _step == 0 ? "Any" : utils::format( 0xff, "%d/4", _step ) );
-  }
-
-  //! when some mouse button clicked
-  virtual void _btnClicked()
-  {
-    PushButton::_btnClicked();
-
-    _step = (_step+1) % 4;
-    _updateText();
-    emit _onChangeSignal( _step / 4.f );
-  }
-
-  int _step;
-  Picture _icon;
-  Signal1<float> _onChangeSignal;
-};
-
-template< class T >
-class OrderGoodWidget : public Label
-{
-public:
-  OrderGoodWidget( Widget* parent, const Rect& rect, good::Product good, T storageBuilding )
-    : Label( parent, rect, "" )
-  {
-    _type = good;
-    _storageBuilding = storageBuilding;
-    setFont( Font::create( FONT_1_WHITE ) );
-
-    good::Store& store = _storageBuilding->store();
-
-    _btnChangeRule = new PushButton( this, Rect( 140, 0, 140 + 240, height() ), "", -1, false, PushButton::blackBorderUp );
-    _btnVolume = new VolumeButton( this, Rect( _btnChangeRule->righttop(), Size( 40, height() ) ),
-                                   store.capacity( good ), store.capacity() );
-
-    _btnChangeRule->setFont( Font::create( FONT_1_WHITE ) );
-    updateBtnText();
-
-    CONNECT( _btnChangeRule, onClicked(), this, OrderGoodWidget::changeRule );
-    CONNECT( _btnVolume, onChange(), this, OrderGoodWidget::changeCapacity );
-  }
-
-  virtual void _updateTexture( gfx::Engine& painter )
-  {
-    Label::_updateTexture( painter );
-
-    std::string goodName = _( "##" + good::Helper::getTypeName( _type ) + "##" );
-
-    if( _textPicture().isValid() )
-    {
-      Font rfont = font();
-      rfont.draw( _textPicture(), goodName, 55, 0 );
-    }
-  }
-
-  void draw(Engine &painter)
-  {
-    Label::draw( painter );
-
-    Picture goodIcon = good::Helper::picture( _type );
-    painter.draw( goodIcon, absoluteRect().lefttop() + Point( 15, 0 ), &absoluteClippingRectRef() );
-    painter.draw( goodIcon, absoluteRect().righttop() - Point( 35, 0 ), &absoluteClippingRectRef() );
-  }
-
-  void changeCapacity( float fillingPercentage )
-  {
-    int storeCap = _storageBuilding->store().capacity();
-    _storageBuilding->store().setCapacity( _type, storeCap * fillingPercentage );
-  }
-
-  void updateBtnText()
-  {
-    good::Orders::Order rule = _storageBuilding->store().getOrder( _type );
-    if( rule > good::Orders::none )
-    {
-      Logger::warning( "OrderGoodWidget: unknown rule %d", (int)rule );
-      return;
-    }
-
-    const char* ruleName[] = { "##accept##", "##reject##", "##deliver##", "##none##" };
-    _btnChangeRule->setFont( Font::create( rule == good::Orders::reject ? FONT_1_RED : FONT_1_WHITE ) );
-    _btnChangeRule->setText( _(ruleName[ rule ]) );
-  }
-
-  void changeRule()
-  {
-    good::Orders::Order rule = _storageBuilding->store().getOrder( _type );
-    _storageBuilding->store().setOrder( _type, good::Orders::Order( (rule+1) % (good::Orders::none)) );
-    updateBtnText();
-  }
-
-private:
-  good::Product _type;
-  T _storageBuilding;
-  PushButton* _btnChangeRule;
-  VolumeButton* _btnVolume;
-};
-
 class BaseSpecialOrdersWindow::Impl
 {
 public:
@@ -191,14 +50,6 @@ public:
   PushButton* btnHelp;
   PushButton* btnEmpty;
 };
-
-template< class T >
-void addOrderWidget( const int index, const good::Product good, Widget* area, T storageBuiding )
-{
-  Point offset( 0, 25 );
-  Size wdgSize( area->width(), 25 );
-  new OrderGoodWidget<T>( area, Rect( offset * index, wdgSize), good, storageBuiding );
-}
 
 BaseSpecialOrdersWindow::BaseSpecialOrdersWindow( Widget* parent, const Point& pos, int h )
   : Window( parent, Rect( pos, Size( 510, h ) ), "" ), _d( new Impl )
@@ -217,9 +68,8 @@ BaseSpecialOrdersWindow::BaseSpecialOrdersWindow( Widget* parent, const Point& p
   _d->gbOrders = new GroupBox( this, Rect( 17, 42, width() - 17, height() - 70), -1, GroupBox::blackFrame );
   _d->gbOrdersInsideArea = new Widget( _d->gbOrders, -1, Rect( 5, 5, _d->gbOrders->width() -5, _d->gbOrders->height() -5 ) );
 
-  CONNECT( _d->btnExit, onClicked(), this, GranarySpecialOrdersWindow::deleteLater );
+  CONNECT( _d->btnExit, onClicked(), this, BaseSpecialOrdersWindow::deleteLater );
 }
-
 
 BaseSpecialOrdersWindow::~BaseSpecialOrdersWindow() {}
 
@@ -253,7 +103,7 @@ bool BaseSpecialOrdersWindow::onEvent( const NEvent& event)
     {
       return true;
     }
-    break;
+  break;
 
   default:
   break;
@@ -263,133 +113,5 @@ bool BaseSpecialOrdersWindow::onEvent( const NEvent& event)
 }
 
 void BaseSpecialOrdersWindow::setTitle( const std::string& text ){  _d->lbTitle->setText( text );}
-
-class GranarySpecialOrdersWindow::Impl
-{
-public:
-  GranaryPtr granary;
-  PushButton* btnToggleDevastation;
-};
-
-GranarySpecialOrdersWindow::GranarySpecialOrdersWindow( Widget* parent, const Point& pos, GranaryPtr granary )
-: BaseSpecialOrdersWindow( parent, pos, defaultHeight ), __INIT_IMPL(GranarySpecialOrdersWindow)
-{
-  __D_IMPL(d, GranarySpecialOrdersWindow)
-
-  setupUI( ":/gui/granaryspecial.gui" );
-
-  setTitle( _("##granary_orders##") );
-  int index=0;
-  d->granary = granary;
-  foreach( goodType, good::foods() )
-  {
-    const good::Orders::Order rule = granary->store().getOrder( *goodType );
-    
-    if( rule != good::Orders::none )
-    {
-      addOrderWidget<GranaryPtr>( index, *goodType, _ordersArea(), granary );
-      index++;
-    }
-  }
-
-  d->btnToggleDevastation = new PushButton( this, Rect( 80, height() - 45, width() - 80, height() - 25 ),
-                                             "", -1, false, PushButton::whiteBorderUp );
-
-  CONNECT( d->btnToggleDevastation, onClicked(), this, GranarySpecialOrdersWindow::toggleDevastation );
-  _updateBtnDevastation();
-}
-
-GranarySpecialOrdersWindow::~GranarySpecialOrdersWindow() {}
-
-void GranarySpecialOrdersWindow::toggleDevastation()
-{
-  __D_IMPL(d, GranarySpecialOrdersWindow)
-  d->granary->store().setDevastation( !d->granary->store().isDevastation() );
-  _updateBtnDevastation();
-}
-
-void GranarySpecialOrdersWindow::_updateBtnDevastation()
-{
-  __D_IMPL(d, GranarySpecialOrdersWindow)
-  d->btnToggleDevastation->setText( d->granary->store().isDevastation()
-                                    ? _("##stop_granary_devastation##")
-                                    : _("##devastate_granary##") );
-}
-
-class WarehouseSpecialOrdersWindow::Impl
-{
-public:
-  WarehousePtr warehouse;
-  PushButton* btnToggleDevastation;
-  PushButton* btnTradeCenter;
-
-public:
-  void update();
-  void toggleTradeCenter();
-  void toggleDevastation();
-};
-
-WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, const Point& pos, WarehousePtr warehouse )
-: BaseSpecialOrdersWindow( parent, pos, defaultHeight ), __INIT_IMPL(WarehouseSpecialOrdersWindow)
-{
-  __D_IMPL(d, WarehouseSpecialOrdersWindow)
-
-  setupUI( ":/gui/warehousespecial.gui");
-  setTitle( _("##warehouse_orders##") );
-
-  std::set<good::Product> excludeGoods;
-  excludeGoods << good::none << good::denaries;
-
-  d->warehouse = warehouse;
-  int index=0;
-  foreach( goodType, good::all() )
-  {
-    if( excludeGoods.count( *goodType ) > 0 )
-      continue;
-
-    const good::Orders::Order rule = d->warehouse->store().getOrder( *goodType );
-
-    if( rule != good::Orders::none )
-    {
-      addOrderWidget<WarehousePtr>( index, *goodType, _ordersArea(), d->warehouse );
-      index++;
-    }
-  }
-
-  GET_DWIDGET_FROM_UI( d, btnToggleDevastation )
-  GET_DWIDGET_FROM_UI( d, btnTradeCenter )
-
-  CONNECT( d->btnToggleDevastation, onClicked(), d.data(), Impl::toggleDevastation );
-  CONNECT( d->btnTradeCenter,       onClicked(), d.data(), Impl::toggleTradeCenter );
-
-  d->update();
-}
-
-WarehouseSpecialOrdersWindow::~WarehouseSpecialOrdersWindow() {}
-
-void WarehouseSpecialOrdersWindow::Impl::toggleTradeCenter()
-{
-  warehouse->setTradeCenter( !warehouse->isTradeCenter() );
-  update();
-}
-
-void WarehouseSpecialOrdersWindow::Impl::toggleDevastation()
-{
-  warehouse->store().setDevastation( !warehouse->store().isDevastation() );
-  update();
-}
-
-void WarehouseSpecialOrdersWindow::Impl::update()
-{
-  if( btnToggleDevastation )
-    btnToggleDevastation->setText( warehouse->store().isDevastation()
-                                   ? _("##stop_warehouse_devastation##")
-                                   : _("##devastate_warehouse##") );
-
-  if( btnTradeCenter )
-    btnTradeCenter->setText( warehouse->isTradeCenter()
-                             ? _("##stop_warehouse_tradepost##")
-                             : _("##tradepost_warehouse##") );
-}
 
 }//end namespace gui

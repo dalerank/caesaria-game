@@ -53,7 +53,7 @@ AboutSenate::AboutSenate(Widget* parent, PlayerCityPtr city, const Tile& tile )
 {
   setupUI( ":/gui/infoboxsenate.gui" );
 
-  SenatePtr senate = tile.overlay().as<Senate>();
+  SenatePtr senate = tile.overlay<Senate>();
   if( senate.isNull() )
     return;
 

@@ -60,6 +60,7 @@
 #include "game/settings.hpp"
 #include "core/timer.hpp"
 #include "pathway/pathway.hpp"
+#include "gui/dialogbox.hpp"
 
 using namespace citylayer;
 
@@ -88,6 +89,7 @@ public:
   void setLayer( int type );
   void resetWalkersAfterTurn();
   void saveSettings();
+  void awareExerimental();
 
 public signals:
   Signal1<int> onLayerSwitchSignal;
@@ -153,6 +155,10 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   dopts.setFlag( DrawOptions::showTrees, true );
   dopts.setFlag( DrawOptions::mmbMoving, SETTINGS_VALUE( mmb_moving ) );
   dopts.setFlag( DrawOptions::overdrawOnBuild, false );
+  dopts.setFlag( DrawOptions::rotateEnabled, false );
+#ifdef DEBUG
+  dopts.setFlag( DrawOptions::rotateEnabled, true );
+#endif
 
   _d->setLayer( citylayer::simple );
 }
@@ -171,6 +177,18 @@ void CityRenderer::Impl::saveSettings()
 {
   DrawOptions& dopts = DrawOptions::instance();
   SETTINGS_SET_VALUE( mmb_moving, dopts.isFlag( DrawOptions::mmbMoving ) );
+}
+
+void CityRenderer::Impl::awareExerimental()
+{
+#ifdef DEBUG
+  return;
+#endif
+  if( city->tilemap().direction() != direction::north )
+  {
+    auto dlg = gui::dialog::Information( guienv, "Note", "Sorry, rotated map yet expiremental mode\ngame may work incorrect." );
+    dlg->show();
+  }
 }
 
 void CityRenderer::Impl::setLayer(int type)
@@ -298,6 +316,7 @@ void CityRenderer::rotateRight()
   _d->camera.refresh();
   _d->camera.tiles();
   _d->resetWalkersAfterTurn();  
+  _d->awareExerimental();
 }
 
 void CityRenderer::rotateLeft()
@@ -306,6 +325,7 @@ void CityRenderer::rotateLeft()
   _d->camera.refresh();
   _d->camera.tiles();
   _d->resetWalkersAfterTurn();
+  _d->awareExerimental();
 }
 
 void CityRenderer::setLayer(int layertype)

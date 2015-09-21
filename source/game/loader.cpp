@@ -111,6 +111,7 @@ void Loader::Impl::initTilesAnimation( Tilemap& tmap )
 {
   TilesArray area = tmap.allTiles();
 
+  const Animation& meadow = AnimationBank::simple( AnimationBank::animMeadow );
   for( auto tile : area )
   {
     int rId = tile->originalImgId() - 364;
@@ -124,13 +125,17 @@ void Loader::Impl::initTilesAnimation( Tilemap& tmap )
 
     if( tile->getFlag( Tile::tlMeadow ) )
     {
-      const Animation& meadow = AnimationBank::simple( AnimationBank::animMeadow );
+      Animation meadowAnim;
+      int index = math::random( meadow.size()-1 );
+      meadowAnim.addFrame( meadow.frame( index ) );
+      meadowAnim.setDelay( 10 );
+
       if( !tile->picture().isValid() )
       {
         Picture pic = MetaDataHolder::randomPicture( object::terrain, Size(1) );
         tile->setPicture( pic );
       }
-      tile->setAnimation( meadow );
+      tile->setAnimation( meadowAnim );
     }
   }
 }

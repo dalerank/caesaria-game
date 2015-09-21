@@ -98,7 +98,7 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
 
       if( _d->showWaterValue )
       {
-        auto aqueduct = tile.overlay().as<Aqueduct>();
+        auto aqueduct = tile.overlay<Aqueduct>();
         if( aqueduct.isValid() )
         {
           Font f = Font::create( FONT_2 );

@@ -47,6 +47,7 @@ LOCAL_SRC_FILES := $(SDL_PATH)/src/main/android/SDL_android_main.c \
   $(wildcard $(GAME_PATH)/scene/*.cpp) \
   $(wildcard $(GAME_PATH)/sound/*.cpp) \
   $(wildcard $(GAME_PATH)/game/*.cpp) \
+  $(wildcard $(GAME_PATH)/thread/*.cpp) \
   $(wildcard $(LOCAL_PATH)/$(STEAM_PATH)/*.cpp) \
   $(wildcard $(GAME_PATH)/layers/*.cpp) \
   $(wildcard $(SDL_PATH)/src/main/android/SDL_android_main.c) )

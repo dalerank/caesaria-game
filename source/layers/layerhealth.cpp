@@ -121,7 +121,7 @@ void Health::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        auto house = tile->overlay().as<House>();
+        auto house = tile->overlay<House>();
         if( house != 0 )
         {
           std::string typeName;

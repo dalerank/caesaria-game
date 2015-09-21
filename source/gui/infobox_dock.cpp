@@ -43,7 +43,7 @@ AboutDock::AboutDock(Widget* parent, PlayerCityPtr city, const Tile& tile )
 {
   setupUI( ":/gui/infoboxdock.gui" );
 
-  DockPtr dock = tile.overlay().as<Dock>();
+  DockPtr dock = tile.overlay<Dock>();
 
   if( !dock.isValid() )
   {

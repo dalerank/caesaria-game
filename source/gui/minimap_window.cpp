@@ -205,6 +205,24 @@ void Minimap::Impl::getObjectColours(const Tile& tile, int &c1, int &c2)
     colorFound = true;
   }
   break;
+
+  case object::burning_ruins:
+  {
+    c1 = DefaultColors::red.color;
+    c2 = DefaultColors::red.color;
+    colorFound = true;
+  }
+  break;
+
+  case object::burned_ruins:
+  case object::collapsed_ruins:
+  {
+    c1 = DefaultColors::grey.color;
+    c2 = DefaultColors::grey.color;
+    colorFound = true;
+  }
+  break;
+
   case object::reservoir:
   case object::aqueduct:
   {
@@ -550,9 +568,9 @@ bool Minimap::onEvent(const NEvent& event)
            && guiButtonClicked == event.gui.type )
   {
     if( event.gui.caller == _d->btnZoomIn )
-      emit _d->onZoomChangeSignal( -10 );
-    else if( event.gui.caller == _d->btnZoomOut )
       emit _d->onZoomChangeSignal( +10 );
+    else if( event.gui.caller == _d->btnZoomOut )
+      emit _d->onZoomChangeSignal( -10 );
     return true;
   }
 

@@ -36,7 +36,7 @@ namespace infobox
 REGISTER_OBJECT_BASEINFOBOX(theater,AboutTheater)
 
 AboutTheater::AboutTheater(Widget *parent, PlayerCityPtr city, const Tile &tile)
-  : AboutWorkingBuilding( parent, tile.overlay().as<WorkingBuilding>() )
+  : AboutWorkingBuilding( parent, tile.overlay<WorkingBuilding>() )
 {
   setupUI( ":/gui/infoboxtheater.gui" );
 

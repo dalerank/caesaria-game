@@ -12,13 +12,28 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_PROJECT_VERSION_INCLUDE_H_
-#define __CAESARIA_PROJECT_VERSION_INCLUDE_H_
+#ifndef __CAESARIA_WAREHOUSE_ORDERS_WINDOW_H_INCLUDED__
+#define __CAESARIA_WAREHOUSE_ORDERS_WINDOW_H_INCLUDED__
 
-#define CAESARIA_VERSION_MAJOR 0
-#define CAESARIA_VERSION_MINOR 5
-#define CAESARIA_VERSION_REVSN @rev_number@
-#define CAESARIA_BUILD_NUMBER  69
+#include "special_orders_window.hpp"
+#include "objects/predefinitions.hpp"
 
-#endif
+namespace gui
+{
+
+class WarehouseSpecialOrdersWindow : public BaseSpecialOrdersWindow
+{
+public:
+  static const int defaultHeight = 550;
+  WarehouseSpecialOrdersWindow( Widget* parent, const Point& pos, WarehousePtr warehouse );
+  ~WarehouseSpecialOrdersWindow();
+
+private:
+  __DECLARE_IMPL(WarehouseSpecialOrdersWindow)
+};
+
+}//end namesapce gui
+#endif //__CAESARIA_WAREHOUSE_ORDERS_WINDOW_H_INCLUDED__

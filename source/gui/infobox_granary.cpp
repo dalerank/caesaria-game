@@ -25,7 +25,7 @@
 #include "core/utils.hpp"
 #include "good/store.hpp"
 #include "core/logger.hpp"
-#include "special_orders_window.hpp"
+#include "granary_orders_window.hpp"
 #include "good/helper.hpp"
 #include "game/infoboxmanager.hpp"
 #include "widget_helper.hpp"
@@ -47,7 +47,7 @@ AboutGranary::AboutGranary(Widget* parent, PlayerCityPtr city, const Tile& tile 
 {
   setupUI( ":/gui/granaryinfo.gui" );
 
-  _granary = ptr_cast<Granary>( tile.overlay() );
+  _granary = tile.overlay<Granary>();
 
   setBase( _granary );
   _setWorkingVisible( true );

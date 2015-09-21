@@ -202,8 +202,9 @@ void Infobox::_updateWorkersLabel(const Point &pos, int picId, int need, int hav
 InfoboxBuilding::InfoboxBuilding( Widget* parent, const Tile& tile )
   : Infobox( parent, Rect( 0, 0, 450, 220 ), Rect( 16, 60, 450 - 16, 60 + 50) )
 {
-  BuildingPtr building = ptr_cast<Building>( tile.overlay() );
-  setTitle( MetaDataHolder::findPrettyName( building->type() ) );
+  auto building = tile.overlay<Building>();
+  if( building.isValid() )
+    setTitle( MetaDataHolder::findPrettyName( building->type() ) );
 }
 
 }

@@ -25,10 +25,12 @@
 typedef HINSTANCE addon_lib_t;
 #define __freeLibrary(a) ::FreeLibrary(a)
 #define __loadLibrary(a) ::LoadLibraryA(a)
+#define __loadfunction(lib,name) ::GetProcAddress(lib,name)
 #else
 #include <dlfcn.h>
 #define __freeLibrary(a) ::dlclose(a)
 #define __loadLibrary(a) ::dlopen(a, RTLD_LAZY)
+#define __loadfunction(lib,name) ::dlsym(lib,name)
 typedef void* addon_lib_t;
 #endif
 
@@ -53,11 +55,7 @@ public:
   template<class T>
   T initFunction( const char* funcName )
   {
-# ifdef CAESARIA_PLATFORM_WIN
-  return (T)::GetProcAddress(library, funcName);
-# else
-  return (T)::dlsym(library, funcName);
-# endif
+    return (T)__loadfunction(library, funcName);
   }
 };
 
@@ -129,9 +127,9 @@ void Manager::load(vfs::Directory folder)
 
   flist = flist.filter( vfs::Entries::file | vfs::Entries::extFilter, addonExtension );
 
-  foreach( it, flist )
+  for( auto& path : flist )
   {
-    load( it->fullpath, true );
+    load( path.fullpath, true );
   }
 }
 
@@ -154,11 +152,11 @@ void Manager::load(vfs::Path path, bool ls)
 
 void Manager::initAddons4level( addon::Type type )
 {
-  foreach( it, _d->addons )
+  for( auto&& addon : _d->addons )
   {
-    int level = (*it)->level();
+    int level = addon->level();
     if( type == level )
-      (*it)->initialize();
+      addon->initialize();
   }
 }
 

@@ -54,7 +54,7 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
 {  
   Widget::setupUI( ":/gui/infoboxraw.gui" );
 
-  FactoryPtr rawmb = tile.overlay().as<Factory>();
+  FactoryPtr rawmb = tile.overlay<Factory>();
   _type = rawmb->type();
 
   setBase( rawmb );

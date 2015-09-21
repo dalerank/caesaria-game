@@ -21,7 +21,7 @@
 #include "objects/warehouse.hpp"
 #include "label.hpp"
 #include "good/helper.hpp"
-#include "special_orders_window.hpp"
+#include "warehouse_orders_window.hpp"
 #include "good/store.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"
@@ -43,9 +43,9 @@ AboutWarehouse::AboutWarehouse(Widget* parent, PlayerCityPtr city, const Tile& t
 {
   setupUI( ":/gui/warehouseinfo.gui" );
 
-  _warehouse = ptr_cast<Warehouse>( tile.overlay() );
+  _warehouse = tile.overlay<Warehouse>();
 
-  setBase( ptr_cast<Construction>( _warehouse ) );
+  setBase( _warehouse );
   _setWorkingVisible( true );
 
   /*StringArray warnings;

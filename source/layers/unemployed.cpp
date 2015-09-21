@@ -113,8 +113,8 @@ void Unemployed::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        auto house = tile->overlay().as<House>();
-        auto working = tile->overlay().as<WorkingBuilding>();
+        auto house = tile->overlay<House>();
+        auto working = tile->overlay<WorkingBuilding>();
 
         if( house.isValid() )
         {

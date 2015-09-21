@@ -476,4 +476,27 @@ bool endsWith(const std::string& text, const std::string& which)
   return true;
 }
 
+std::string toShortString(const std::string& input, std::size_t maxLength)
+{
+  if (input.length() > maxLength)
+  {
+    if (maxLength == 0)
+    {
+      return "";
+    }
+    else if (maxLength < 3)
+    {
+      return std::string(maxLength, '.');
+    }
+
+    std::size_t diff = input.length() - maxLength + 3; // 3 chars for the ellipsis
+    std::size_t curLength = input.length();
+
+    return input.substr(0, (curLength - diff) / 2) + "..." +
+        input.substr((curLength + diff) / 2);
+  }
+
+  return input;
+}
+
 }//end namespace utils

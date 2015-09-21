@@ -687,21 +687,99 @@ static void __createRoad(Game& game )
   oCity->setBorderInfo( borderInfo );
 }
 
+TilesArray& addTileIfValid( TilesArray& tiles, int i, int j, Tilemap& tmap )
+{
+  Tile& t = tmap.at( i, j );
+  if( tilemap::isValidLocation( t.epos() ) )
+    tiles.push_back( &t );
+
+  return tiles;
+}
+
+TilesArray getTmapEllipse(int x, int y, int a, int b, Tilemap& tmap)
+{
+  TilesArray tiles;
+  int col,row;
+  long a_square,b_square,two_a_square,two_b_square,four_a_square,four_b_square,d;
+
+  b_square=b*b;
+  a_square=a*a;
+  row=b;
+  col=0;
+  two_a_square=a_square<<1;
+  four_a_square=a_square<<2;
+  four_b_square=b_square<<2;
+  two_b_square=b_square<<1;
+
+  d=two_a_square*((row-1)*(row))+a_square+two_b_square*(1-a_square);
+  while(a_square*(row)>b_square*(col))
+  {
+    addTileIfValid( tiles, col+x,row+y, tmap);
+    addTileIfValid( tiles, col+x,y-row, tmap);
+    addTileIfValid( tiles, x-col,row+y, tmap);
+    addTileIfValid( tiles, x-col,y-row, tmap);
+    if (d>=0)
+    {
+      row--;
+      d-=four_a_square*(row);
+    }
+    d+=two_b_square*(3+(col<<1));
+    col++;
+  }
+
+  d=two_b_square*(col+1)*col+two_a_square*(row*(row-2)+1)+(1-two_a_square)*b_square;
+  while ((row) + 1)
+  {
+    addTileIfValid( tiles, col+x,row+y, tmap);
+    addTileIfValid( tiles, col+x,y-row, tmap);
+    addTileIfValid( tiles, x-col,row+y, tmap);
+    addTileIfValid( tiles, x-col,y-row, tmap);
+    if (d<=0)
+    {
+      col++;
+      d+=four_b_square*col;
+    }
+    row--;
+    d+=two_a_square*(3-(row <<1));
+  }
+
+  return tiles;
+}
+
+TilesArray getTmapCircle(int rx, int ry, int r, Tilemap& tmap )
+{
+  TilesArray ret;
+  int x,y;
+  int rsqr = pow(r,2);
+  for(x=rx-r; x<=rx+r; x++)
+    for(y=ry-r; y<=ry+r; y++)
+      if( ( pow(x-rx,2)+pow(y-ry,2) )< rsqr)
+      {
+        Tile& t = tmap.at( x,y );
+        if( tilemap::isValidLocation( t.epos() ) )
+          ret.push_back( &t );
+      }
+
+  return ret;
+}
+
 void __createMeadows( Game& game )
 {
   PlayerCityPtr oCity = game.city();
   Tilemap& oTilemap = oCity->tilemap();
 
   TilesArray tiles = oTilemap.allTiles();
-  int fieldSize = math::max<int>( tiles.size() / 10000.f, 1 );
-  int maxMeadowTiles = pow( fieldSize, 2);
-  for( int k=0; k < maxMeadowTiles; k++ )
+  int fieldSize = math::max<int>( tiles.size() / 7000.f, 20 );
+  for( int k=0; k < fieldSize; k++ )
   {
     Tile* tile = tiles.random();
-    TilesArray meadows = oTilemap.getArea( math::random( fieldSize-1 ), tile->pos() );
+
+    //TilesArray meadows = getTmapCircle( tile->i(), tile->j(), math::random( fieldSize-1 ), oTilemap );
+    TilesArray meadows = getTmapEllipse( tile->i(), tile->j(), fieldSize, fieldSize/2, oTilemap );
     meadows = meadows.terrains();
 
-    for( auto tile : meadows ) tile->setFlag( Tile::tlMeadow, true );
+    for( auto tile : meadows )
+      tile->setFlag( Tile::tlMeadow, true );
   }
 }
 

@@ -596,6 +596,15 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
 
       if( _d->flags.isFlag( showCityInfo ) )
         _d->checkCityOnMap( _d->drag.start );
+
+#ifdef DEBUG
+    {
+      std::string text = _d->lbTitle->text();
+      _d->lbTitle->setText( text + utils::format( 0xff, " [%d,%d]",
+                                                  - _d->offset.x() + _d->drag.start.x(),
+                                                  - _d->offset.y() + _d->drag.start.y() ) );
+    }
+#endif
     break;
 
     case mouseRbtnRelease:

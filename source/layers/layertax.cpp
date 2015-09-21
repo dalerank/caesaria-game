@@ -109,7 +109,7 @@ void Tax::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        auto building = tile->overlay().as<Building>();
+        auto building = tile->overlay<Building>();
 
         if( building.isNull() )
         {
@@ -117,7 +117,7 @@ void Tax::handleEvent(NEvent& event)
         }
         else
         {
-          auto house = tile->overlay().as<House>();
+          auto house = tile->overlay<House>();
           if( house.isValid() )
           {
             bool lastTaxationTooOld = house->lastTaxationDate().monthsTo( game::Date::current() ) > DateTime::monthsInYear / 2;

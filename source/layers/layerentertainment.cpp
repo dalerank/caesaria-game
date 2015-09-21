@@ -125,7 +125,7 @@ void Entertainment::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        HousePtr house = ptr_cast<House>( tile->overlay() );
+        HousePtr house = tile->overlay<House>();
         if( house != 0 )
         {
           std::string typeName;

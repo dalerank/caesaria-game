@@ -440,7 +440,7 @@ void Build::_drawBuildTile( Engine& engine, Tile* tile, const Point& offset )
   if( postTile->masterTile() )
     postTile = postTile->masterTile();
 
-  ConstructionPtr construction = postTile->overlay().as<Construction>();
+  ConstructionPtr construction = postTile->overlay<Construction>();
   engine.resetColorMask();
 
   areaInfo.pos = postTile->epos();
@@ -502,7 +502,7 @@ void Build::drawTile( Engine& engine, Tile& tile, const Point& offset )
   __D_IMPL(_d,Build);
   Point screenPos = tile.mappos() + offset;
 
-  ConstructionPtr cntr = tile.overlay().as<Construction>();
+  ConstructionPtr cntr = tile.overlay<Construction>();
   city::AreaInfo info( _city(), tile.epos(), &_d->buildTiles );
 
   const Picture* picBasic = 0;

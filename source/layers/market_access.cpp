@@ -110,7 +110,7 @@ void MarketAccess::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        HousePtr house = tile->overlay().as<House>();
+        HousePtr house = tile->overlay<House>();
         if( house.isValid() )
         {
           int accessLevel = house->getServiceValue( Service::market );

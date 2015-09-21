@@ -254,7 +254,7 @@ void WaterSource::_produceWater(const TilePos* points, const int size)
     TilePos p = pos() + points[index];
     if( tilemap.isInside( p ) )
     {
-      SmartPtr<WaterSource> ws = ptr_cast<WaterSource>( tilemap.at( p ).overlay() );
+      auto ws = tilemap.at( p ).overlay<WaterSource>();
     
       if( ws.isValid() )
       {
@@ -278,14 +278,14 @@ void WaterSource::broke()
 
   int saveWater = water();
   _d->water = 0;
-  foreach( it, tiles )
+  for( auto tile : tiles )
   {
-    SmartPtr<WaterSource> ws = ptr_cast<WaterSource>( (*it)->overlay() );
+    auto waterSource = tile->overlay<WaterSource>();
 
-    if( ws.isValid() )
+    if( waterSource.isValid() )
     {
-      if( ws->water() > 0 && ws->water() < saveWater )
-          ws->broke();
+      if( waterSource->water() > 0 && waterSource->water() < saveWater )
+          waterSource->broke();
     }
   }
 }

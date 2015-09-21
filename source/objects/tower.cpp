@@ -23,6 +23,7 @@
 #include "fortification.hpp"
 #include "core/direction.hpp"
 #include "walker/wallguard.hpp"
+#include "core/logger.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "walker/trainee.hpp"
 #include "walker/balista.hpp"
@@ -46,7 +47,7 @@ public:
 
   void mayPatroling( const Tile* tile, bool& ret )
   {
-    FortificationPtr f = ptr_cast<Fortification>( tile->overlay() );
+    FortificationPtr f = tile->overlay<Fortification>();
     ret = ( f.isValid() && f->mayPatrol() );
   }
 };
@@ -200,6 +201,11 @@ void Tower::deliverService()
   {
     _d->catapult->setActive( trValue > 1 );
   }
+}
+
+void Tower::burn()
+{
+  Logger::warning( "WARNING: Tower cant be burn. Ignore." );
 }
 
 TilesArray Tower::enterArea() const

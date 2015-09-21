@@ -58,14 +58,14 @@ bool Aqueduct::build( const city::AreaInfo& info )
   Tile& terrain = tilemap.at( info.pos );
 
   // we can't build if already have aqueduct here
-  AqueductPtr aqueveduct = terrain.overlay().as<Aqueduct>();
+  AqueductPtr aqueveduct = terrain.overlay<Aqueduct>();
   if( aqueveduct.isValid() )
   {
     return false;
   }
 
   _setIsRoad( terrain.getFlag( Tile::tlRoad ) );
-  RoadPtr road = terrain.overlay().as<Road>();
+  RoadPtr road = terrain.overlay<Road>();
   if( road.isValid() )
   {
     road->setState( pr::lockTerrain, 1 );
@@ -157,7 +157,7 @@ bool Aqueduct::canBuild( const city::AreaInfo& areaInfo) const
       {
         if( aTile->pos() == tile->pos() )
         {
-          bldAqueduct = aTile->overlay().as<Aqueduct>();
+          bldAqueduct = aTile->overlay<Aqueduct>();
           break;
         }
       }

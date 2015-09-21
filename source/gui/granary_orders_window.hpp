@@ -12,13 +12,30 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_PROJECT_VERSION_INCLUDE_H_
-#define __CAESARIA_PROJECT_VERSION_INCLUDE_H_
+#ifndef __CAESARIA_GRANARY_ORDERS_WINDOW_H_INCLUDED__
+#define __CAESARIA_GRANARY_ORDERS_WINDOW_H_INCLUDED__
 
-#define CAESARIA_VERSION_MAJOR 0
-#define CAESARIA_VERSION_MINOR 5
-#define CAESARIA_VERSION_REVSN @rev_number@
-#define CAESARIA_BUILD_NUMBER  69
+#include "special_orders_window.hpp"
 
-#endif
+namespace gui
+{
+
+class GranarySpecialOrdersWindow : public BaseSpecialOrdersWindow
+{
+public:
+  static const int defaultHeight = 250;
+  GranarySpecialOrdersWindow( Widget* parent, const Point& pos, GranaryPtr granary );
+  ~GranarySpecialOrdersWindow();
+
+  void toggleDevastation();
+private:
+  void _updateBtnDevastation();
+
+  __DECLARE_IMPL(GranarySpecialOrdersWindow)
+};
+
+}//end namesapce gui
+#endif //__CAESARIA_GRANARY_ORDERS_WINDOW_H_INCLUDED__
