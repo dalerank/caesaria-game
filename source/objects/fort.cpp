@@ -575,10 +575,10 @@ bool Fort::canBuild( const city::AreaInfo& areaInfo ) const
 
 bool Fort::build( const city::AreaInfo& info )
 {
-  FortList forts = info.city->statistic().objects.find<Fort>( object::any );
+  int forts_n = info.city->statistic().objects.count<Fort>();
 
   const city::development::Options& bOpts = info.city->buildOptions();
-  if( forts.size() >= bOpts.maximumForts() )
+  if( forts_n >= bOpts.maximumForts() )
   {
     _setError( "##not_enought_place_for_legion##" );
     return false;

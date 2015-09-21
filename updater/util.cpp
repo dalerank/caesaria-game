@@ -80,17 +80,12 @@ bool Util::caesariaIsRunning()
   return false;
 }
     
-} // namespace
-
 #elif defined(CAESARIA_PLATFORM_LINUX) || defined(CAESARIA_PLATFORM_HAIKU)
 // Linux implementation
 
 #include <iostream>
 #include <fstream>
 #include <string>
-
-namespace updater
-{
 
 namespace
 {
@@ -139,26 +134,6 @@ namespace
 	}
 
 } // namespace
-
-std::string Util::getHumanReadableBytes(std::size_t size)
-{
-  if (size > GbBts)
-  {
-    return utils::format( 0xff, "%0.2f GB", size / (float)GbBts );
-  }
-  else if (size > MbBts)
-  {
-    return  utils::format( 0xff, "%0.1f MB", size / (float)MbBts );
-  }
-  else if (size > KbBts)
-  {
-    return  utils::format( 0xff, "%0.0f kB", size / (float)KbBts );
-  }
-  else
-  {
-    return  utils::format( 0xff, "%d bytes", size);
-  }
-}
 
 bool Util::caesariaIsRunning()
 {
@@ -242,8 +217,28 @@ bool Util::caesariaIsRunning()
 	return FindProcessByName("caesaria.macosx"); // grayman - look for caesaria
 }
 
-} // namespace
-
 #else
 #error Unsupported Platform
 #endif
+
+std::string Util::getHumanReadableBytes(std::size_t size)
+{
+  if (size > GbBts)
+  {
+    return utils::format( 0xff, "%0.2f GB", size / (float)GbBts );
+  }
+  else if (size > MbBts)
+  {
+    return  utils::format( 0xff, "%0.1f MB", size / (float)MbBts );
+  }
+  else if (size > KbBts)
+  {
+    return  utils::format( 0xff, "%0.0f kB", size / (float)KbBts );
+  }
+  else
+  {
+    return  utils::format( 0xff, "%d bytes", size);
+  }
+}
+
+} //end namespace updater

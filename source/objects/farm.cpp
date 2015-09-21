@@ -254,7 +254,7 @@ void Farm::computePictures()
 
 void Farm::assignTile(const TilePos &pos)
 {
-  _d->sublocs.addIfNot( pos );
+  _d->sublocs.addUnique( pos );
 }
 
 void Farm::timeStep(const unsigned long time)

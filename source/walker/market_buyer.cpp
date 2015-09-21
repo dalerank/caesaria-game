@@ -57,7 +57,7 @@ MarketBuyer::MarketBuyer(PlayerCityPtr city )
   : Human( city ), _d( new Impl )
 {
    _setType( walker::marketBuyer );
-   _d->maxDistance = 25;
+   _d->maxDistance = MarketBuyer::maxBuyDistance();
    _d->basket.setCapacity(maxCapacity);  // this is a big basket!
 
    _d->basket.setCapacity(good::wheat, foodCapacity);
@@ -350,6 +350,8 @@ void MarketBuyer::load( const VariantMap& stream)
   VARIANT_LOAD_ANY_D( _d, maxDistance, stream )
   VARIANT_LOAD_ANY_D( _d, reservationID, stream )
 }
+
+unsigned int MarketBuyer::maxBuyDistance() { return 25; }
 
 MarketBuyerPtr MarketBuyer::create( PlayerCityPtr city )
 {
