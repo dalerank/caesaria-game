@@ -10,6 +10,7 @@ public class CaesarIA extends SDLActivity {
             "bzip2",
             "lzma",
             "pnggo",
+            "SDL2_mixer",
             "sdl_ttf",
             "smk",
             "main"
