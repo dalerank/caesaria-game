@@ -82,7 +82,7 @@ public:
   VariantMap save() const
   {
     VariantMap ret;
-    for( auto gtype : good::all() )
+    for( auto& gtype : good::all() )
     {
       std::string tname = good::Helper::getTypeName( gtype );
       int ncapacity = capacity( gtype );
@@ -106,7 +106,7 @@ public:
 
   void load( const VariantMap& stream )
   {
-    for( auto item : stream )
+    for( auto& item : stream )
     {
       good::Product gtype = good::Helper::getType( item.first );
       Variant value = item.second;
@@ -215,7 +215,7 @@ public:
   int count( object::Type type )
   {
     int ret = 0;
-    for( auto item : *this )
+    for( auto& item : *this )
       ret += (item.type == type ? 1 : 0);
 
     return ret;
@@ -311,10 +311,10 @@ void ComputerCity::Impl::updateWorkersInBuildings()
   int workersCount = peoples.count( CitizenGroup::mature );
 
   int workersNeed = 0;
-  foreach( it, buildings )
+  for( auto& it : buildings )
   {
-    it->workersNumber = 0;
-    workersNeed += it->maxWorkersNumber;
+    it.workersNumber = 0;
+    workersNeed += it.maxWorkersNumber;
   }
 
   float koeffLabor = workersCount / (float)workersNeed;
@@ -386,9 +386,8 @@ void ComputerCity::Impl::citizensConsumeServices()
   ServiceInfo mayServe;
   ServiceInfo idle;
 
-  foreach( it, buildings )
+  for( auto&& info : buildings )
   {
-    BuildingInfo& info = *it;
     idle.type[info.type] &= (info.workersNumber < info.maxWorkersNumber);
     if( info.maxWorkersNumber > 0 )
     {
@@ -406,10 +405,8 @@ void ComputerCity::Impl::citizensConsumeServices()
              << CheckType( object::small_neptune_temple, object::big_neptune_temple, CitizenGroup::any, 4 )
              << CheckType( object::small_venus_temple, object::big_venus_temple, CitizenGroup::any, 4 );
 
-  foreach( it, checkTypes )
+  for( auto& check : checkTypes )
   {
-    const CheckType& check = *it;
-
     int addServe = 0;
     if( check.building2 )
       addServe = mayServe.type[ check.building2 ];
@@ -431,9 +428,8 @@ void ComputerCity::Impl::citizensConsumeServices()
 void ComputerCity::Impl::updateWorkingWarehouse()
 {
   int workingWarehouse = 0;
-  foreach( it, buildings )
+  for( auto&& info : buildings )
   {
-    BuildingInfo& info = *it;
     if( info.type == object::warehouse )
     {
       if( info.workersNumber >= info.maxWorkersNumber / 2 )
@@ -450,16 +446,16 @@ void ComputerCity::Impl::updateWorkingWarehouse()
     products << good::foods() << good::materials();
 
     std::vector<good::Product> revProducts;
-    foreach( it, products )
-      revProducts.insert( revProducts.begin(), *it );
+    for( auto& it : products )
+      revProducts.insert( revProducts.begin(), it );
 
     int leftQty = futureCityCapacity;
-    foreach( it, revProducts )
+    for( auto& goodType : revProducts )
     {
-      int qty = internalGoods.qty( *it );
+      int qty = internalGoods.qty( goodType );
       if( leftQty < qty )
       {
-        internalGoods.setQty( *it, leftQty );
+        internalGoods.setQty( goodType, leftQty );
         break;
       }
 
