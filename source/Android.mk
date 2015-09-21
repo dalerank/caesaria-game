@@ -2,7 +2,7 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := application
+LOCAL_MODULE := main
 
 STEAM_PATH     := ../steam
 GAME_PATH := $(LOCAL_PATH)
