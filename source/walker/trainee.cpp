@@ -121,7 +121,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   Pathway finalPath;
 
   BuildingList buildings;
-  for( auto buildingType : _d->necBuildings )
+  for( auto& buildingType : _d->necBuildings )
     buildings.append( _city()->statistic().objects.find<Building>( buildingType ) );
 
   TilesArray startArea = roadOnly ? base->roadside() : base->enterArea();

@@ -159,7 +159,7 @@ std::string Construction::troubleDesc() const
   return "";
 }
 
-TilesArray Construction::roadside() const { return _d->accessRoads; }
+const TilesArray& Construction::roadside() const { return _d->accessRoads; }
 void Construction::destroy() { Overlay::destroy(); }
 bool Construction::isNeedRoad() const{ return true; }
 Construction::~Construction() {}

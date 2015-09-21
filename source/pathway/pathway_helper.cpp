@@ -108,36 +108,62 @@ Pathway PathwayHelper::create(TilePos startPos, TilePos stopPos, const TilePossi
   return Pathfinder::instance().getPath( startPos, stopPos, Pathfinder::customCondition );
 }
 
-DirectRoute PathwayHelper::shortWay(PlayerCityPtr city, TilePos startPos, object::Type buildingType, PathwayHelper::WayType type)
+DirectRoute PathwayHelper::shortWay(const TilePos& startPos, ConstructionList buildings, WayType type)
 {
-  DirectRoute ret;
-  ConstructionList constructions = city->statistic().objects.find<Construction>( buildingType );
-
-  for( auto it : constructions )
+  DirectRoute route;
+  for( auto it : buildings )
   {
     Pathway path = create( startPos, it, type );
     if( path.isValid() )
     {
-      if( !ret.way().isValid() )
+      if( !route.isValid() )
       {
-        ret.second = path;
-        ret.first = it;
+        route.set( it, path );
       }
       else
       {
-        if( ret.way().length() > path.length() )
+        if( route.length() > path.length() )
         {
-          ret.second = path;
-          ret.first = it;
+          route.set( it, path );
         }
       }
     }
   }
 
-  return ret;
+  return route;
 }
 
-Pathway PathwayHelper::randomWay( PlayerCityPtr city, TilePos startPos, int walkRadius)
+DirectRoute PathwayHelper::shortWay(PlayerCityPtr city, const TilePos& startPos, object::Type buildingType, WayType type)
+{  
+  ConstructionList constructions = city->statistic().objects.find<Construction>( buildingType );
+  return shortWay( startPos, constructions, type );
+}
+
+DirectRoute PathwayHelper::shortWay(PlayerCityPtr city, const TilePosArray& area, object::Type buildingType, WayType type)
+{
+  TilePosArray locations( area );
+  ConstructionList constructions = city->statistic().objects.find<Construction>( buildingType );
+
+  DirectRoute shortestWay;
+  while( !locations.empty() )
+  {
+    DirectRoute route = shortWay( locations.front(), constructions, type );
+    if( !shortestWay.isValid() )
+    {
+      shortestWay = route;
+    }
+    else if( shortestWay.length() > route.length() )
+    {
+      shortestWay = route;
+    }
+
+    locations.pop_front();
+  }
+
+  return shortestWay;
+}
+
+Pathway PathwayHelper::randomWay(PlayerCityPtr city, const TilePos& startPos, int walkRadius)
 {
   TilePos offset( walkRadius / 2, walkRadius / 2 );
   TilesArray tiles = city->tilemap().getArea( startPos - offset, startPos + offset );
@@ -162,7 +188,7 @@ Pathway PathwayHelper::randomWay( PlayerCityPtr city, TilePos startPos, int walk
   return Pathway();
 }
 
-Pathway PathwayHelper::way2border(PlayerCityPtr city, TilePos pos)
+Pathway PathwayHelper::way2border(PlayerCityPtr city, const TilePos& pos)
 {
   Tilemap& tmap = city->tilemap();
 

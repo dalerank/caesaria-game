@@ -309,7 +309,7 @@ void House::_checkPatricianDeals()
   if( !spec().isPatrician() )
     return;
 
-  TilesArray roads = roadside();
+  const TilesArray& roads = roadside();
   if( !roads.empty() )
   {
     PatricianPtr patric = Patrician::create( _city() );
@@ -800,7 +800,7 @@ void House::_tryDegrade_20_to_12_lvl( int rsize, const char desirability )
   TilePos bpos = pos();
   if( bigSize )
   {
-    TilesArray roads = roadside();
+    const TilesArray& roads = roadside();
     TilePos moveVector = TilePos( 1, 1 );
     if( !roads.empty() )
     {
