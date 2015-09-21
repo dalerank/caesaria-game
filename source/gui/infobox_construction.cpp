@@ -129,6 +129,6 @@ void AboutConstruction::_switch(int flag)
   }
 }
 
-}
+}//end namespace infobox
 
 }//end namespace gui

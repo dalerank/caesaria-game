@@ -57,7 +57,7 @@ private:
   PushButton* _btnToggleWorking;
 };
 
-}
+}//end namespace infogbox
 
 }//end namespace gui
 #endif //_CAESARIA_INFOBOX_CONSTRUCTION_H_INCLUDE_

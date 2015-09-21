@@ -119,6 +119,6 @@ void AboutGranary::drawGood(good::Product goodType, int col, int paintY)
   lb->setTextOffset( Point( 30, 0 ) );
 }
 
-}
+}//end namespace infobox
 
 }//end namespace gui
