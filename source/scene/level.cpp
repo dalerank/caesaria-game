@@ -568,7 +568,8 @@ void Level::handleEvent( NEvent& event )
   if( !eventResolved )
   {
     _d->renderer.handleEvent( event );
-    _d->selectedTilePos = _d->renderer.screen2tilepos( event.mouse.pos() );
+    if( event.EventType == sEventMouse )
+      _d->selectedTilePos = _d->renderer.screen2tilepos( event.mouse.pos() );
   }
 }
 
