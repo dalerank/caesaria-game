@@ -69,7 +69,7 @@ LegionEmblem LegionEmblem::findFree( PlayerCityPtr city )
   std::vector<LegionEmblem> availableEmblems;
 
   VariantMap emblemsModel = config::load( SETTINGS_RC_PATH( emblemsModel ) );
-  for( auto it : emblemsModel )
+  for( auto& it : emblemsModel )
   {
     VariantMap vm_emblem = it.second.toMap();
     LegionEmblem newEmblem;
@@ -113,7 +113,7 @@ public:
 
   bool contain( unsigned int uid ) const
   {
-    for( auto it : points )
+    for( auto& it : points )
      if( it.uid == uid )
        return true;
 
@@ -122,7 +122,7 @@ public:
 
   TilePos getPos( unsigned int uid ) const
   {
-    for( auto it : points )
+    for( auto& it : points )
       if( it.uid == uid )
         return lastPos + it.offset;
 
@@ -219,7 +219,7 @@ public:
     points.clear();
 
     TilePosArray locations = area.walkables( true ).locations();
-    for( auto location : locations )
+    for( auto& location : locations )
     {
       PAPoint point = { 0, location };
       points.push_back( point );

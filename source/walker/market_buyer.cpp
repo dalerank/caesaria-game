@@ -139,7 +139,7 @@ void MarketBuyer::computeWalkerDestination( MarketPtr market )
     pathPropagator.propagate( _d->maxDistance);
 
     // try to find the most needed good
-    for( auto goodType : priorityGoods )
+    for( auto& goodType : priorityGoods )
     {
       _d->priorityGood = goodType;
 
@@ -244,7 +244,7 @@ void MarketBuyer::_reachedPathway()
         foods.exclude( _city()->tradeOptions().locked() );
 
         // take other goods if possible
-        for( auto goodType : foods )
+        for( auto& goodType : foods )
         {
           // for all types of good (except G_NONE)
           int qty = _d->market->getGoodDemand(goodType) - _d->basket.qty(goodType);
@@ -271,7 +271,7 @@ void MarketBuyer::_reachedPathway()
         products.exclude( _city()->tradeOptions().locked() );
 
         // take other goods if possible
-        for( auto goodType : products )
+        for( auto& goodType : products )
         {
           // for all types of good (except G_NONE)
           int qty = _d->market->getGoodDemand(goodType) - _d->basket.qty(goodType);
@@ -293,7 +293,7 @@ void MarketBuyer::_reachedPathway()
 
       while( _d->basket.qty() > MarketKid::defaultCapacity )
       {
-        for( auto gtype : good::all() )
+        for( auto& gtype : good::all() )
         {
           good::Stock& currentStock = _d->basket.getStock( gtype );
           if( currentStock.qty() > 0 )

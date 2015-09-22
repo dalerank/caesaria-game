@@ -199,8 +199,8 @@ void Emperor::_updateRequests()
 {
   Rect reqsRect( Point( 32, 91 ), Size( 570, 220 ) );
 
-  List<RequestButton*> btns = findChildren<RequestButton*>();
-  for( auto btn : btns )
+  auto buttons = findChildren<RequestButton*>();
+  for( auto btn : buttons )
     btn->deleteLater();
 
   request::RequestList requests;

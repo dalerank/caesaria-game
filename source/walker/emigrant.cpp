@@ -229,7 +229,7 @@ bool Emigrant::_checkNearestHouse()
       vacantRoomPriority[ 1000 - freeRoom ] = house;
     }
 
-    for( auto&& item : vacantRoomPriority )  //have destination
+    for( auto& item : vacantRoomPriority )  //have destination
     {
       int freeRoom = item.second->capacity() - item.second->habitants().count();
       if( freeRoom > 0 )

@@ -721,15 +721,15 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
     return;
   }
 
-  for( auto item : houseSpecs )
+  for( auto& specConfig : houseSpecs )
   {
     // this is not a comment (comments start by #)
     // std::cout << "Line #" << linenum << ":" << line << std::endl;
-    VariantMap hSpec = item.second.toMap();
+    VariantMap hSpec = specConfig.second.toMap();
 
     HouseSpecification spec;
     spec._d->houseLevel = hSpec[ "level" ];
-    spec._d->internalName = item.first;
+    spec._d->internalName = specConfig.first;
     spec._d->levelName = hSpec[ "title" ].toString();
     spec._d->tileCapacity = hSpec.get( "habitants" ).toInt();
     spec._d->minDesirability = hSpec.get( "minDesirability" ).toInt();  // min desirability
@@ -754,26 +754,26 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
     spec._d->prosperity = hSpec.get( "prosperity" ).toInt();  // prosperity
     spec._d->taxRate = hSpec.get( "tax" ).toInt();// tax_rate
 
-    for( auto goodType : good::all() )
+    for( auto& goodType : good::all() )
     {
       spec._d->consumptionMuls[ goodType ] = 1;
     }
 
     //load consumption goods koefficient
     VariantMap varConsumptions = hSpec.get( "consumptionkoeff" ).toMap();
-    for( auto v : varConsumptions )
+    for( auto& v : varConsumptions )
     {
       spec._d->consumptionMuls[ good::Helper::getType( v.first ) ] = (float)v.second;
     }
 
     VariantMap vmTextures = hSpec.get( "txs" ).toMap();
-    for( auto it : vmTextures )
+    for( auto& it : vmTextures )
     {
       std::string arName = utils::format( 0xff, "h%d_%s", spec._d->houseLevel, it.first.c_str() );
       StringArray txNames = it.second.toStringArray();
 
       StringArray& hSizeTxs = _d->houseTextures[ arName ];
-      for( auto tx : txNames )
+      for( auto& tx : txNames )
       {
         Picture pic( tx );
         if( pic.isValid() )

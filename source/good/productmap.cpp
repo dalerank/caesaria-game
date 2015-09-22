@@ -25,7 +25,7 @@ namespace good
 
 ProductMap& ProductMap::operator+=(const ProductMap& other)
 {
-  for( auto&& it : other )
+  for( auto& it : other )
     (*this)[ it.first ] += it.second;
 
   return *this;
@@ -34,7 +34,7 @@ ProductMap& ProductMap::operator+=(const ProductMap& other)
 VariantList ProductMap::save() const
 {
   VariantList ret;
-  for( auto&& it : *this )
+  for( auto& it : *this )
     ret << Point( it.first, it.second );
 
   return ret;
@@ -42,7 +42,7 @@ VariantList ProductMap::save() const
 
 void ProductMap::load(const VariantList &stream)
 {
-  for( auto&& it : stream )
+  for( auto& it : stream )
   {
     Point t = it.toPoint();
     (*this)[ (Product)t.x() ] = t.y();

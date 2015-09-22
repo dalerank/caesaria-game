@@ -121,15 +121,15 @@ DlcFolderViewer::DlcFolderViewer(Widget* parent, Directory folder )
   if( configFile.exist() )
   {
     VariantList list = config::load( configFile.toString() ).get( "items" ).toList();
-    for( auto item : list )
+    for( auto& item : list )
     {
-      items.push_back( folder/Path(item.toString()) );
+      items.push_back( folder/item.toString() );
     }
   }
   else
   {
     vfs::Entries::Items entries = folder.entries().items();
-    for( auto item : entries )
+    for( auto& item : entries )
     {
       if( _d->exclude.contains( item.name.toString() ) )
         continue;

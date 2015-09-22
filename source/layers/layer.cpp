@@ -202,7 +202,7 @@ TilesArray Layer::_getSelectedArea( TilePos startPos )
   outStartPos = TilePos( std::min<int>( startPosTmp.i(), stopPosTmp.i() ), std::min<int>( startPosTmp.j(), stopPosTmp.j() ) );
   outStopPos  = TilePos( std::max<int>( startPosTmp.i(), stopPosTmp.i() ), std::max<int>( startPosTmp.j(), stopPosTmp.j() ) );
 
-  return _city()->tilemap().getArea( outStartPos, outStopPos );
+  return _city()->tilemap().area( outStartPos, outStopPos );
 }
 
 void Layer::drawPass( Engine& engine, Tile& tile, const Point& offset, Renderer::Pass pass)
@@ -321,7 +321,7 @@ void Layer::render( Engine& engine)
   {
     WalkerList overDrawWalkers;
 
-    const WalkerList& walkers = _city()->statistic().walkers.find( walker::all );
+    const WalkerList& walkers = _city()->walkers();
     for( auto wlk : walkers )
     {
       if( wlk->getFlag( Walker::showPath ) )
@@ -636,7 +636,7 @@ void Layer::_initialize()
 {
   const VariantMap& vm = citylayer::Helper::getConfig( (citylayer::Type)type() );
   StringArray vl = vm.get( "visibleObjects" ).toStringArray();
-  for( auto it : vl )
+  for( auto& it : vl )
   {
     object::Type ovType = object::findType( it );
     if( ovType != object::unknown )

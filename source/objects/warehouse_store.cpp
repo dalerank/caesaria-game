@@ -30,7 +30,7 @@ WarehouseStore::WarehouseStore()
 {
   _warehouse = NULL;
 
-  for( auto goodType : good::all() )
+  for( auto& goodType : good::all() )
   {
     setOrder( goodType, good::Orders::accept );
     _capacities[ goodType ] = 9999;
@@ -46,7 +46,7 @@ int WarehouseStore::qty(const good::Product &goodType) const
 
   int amount = 0;
 
-  for( auto&& room : _warehouse->rooms() )
+  for( auto& room : _warehouse->rooms() )
   {
     if ( room.type() == goodType || goodType == good::any() )
     {
@@ -70,19 +70,19 @@ int WarehouseStore::getMaxStore(const good::Product goodType)
   good::ProductMap maxStore;
 
   // init the map
-  for( auto i : good::all() )
+  for( auto& i : good::all() )
   {
     maxStore[ i ] = 0;
   }
   // put current stock in the map
-  for( auto&& room : _warehouse->rooms() )
+  for( auto& room : _warehouse->rooms() )
   {
     maxStore[ room.type() ] += room.qty();
   }
 
   // add reservations
   good::Reservations& reservations = _getStoreReservations();
-  for( auto&& i: reservations )
+  for( auto& i: reservations )
   {
     const good::Stock& reservationStock = i.stock;
     maxStore[ reservationStock.type() ] += reservationStock.qty();
@@ -93,7 +93,7 @@ int WarehouseStore::getMaxStore(const good::Product goodType)
 
   // compute number of free tiles
   int nbFreeTiles = _warehouse->rooms().size();
-  for( auto&& mapItem : maxStore )
+  for( auto& mapItem : maxStore )
   {
     good::Product otherGoodType = mapItem.first;
     if (otherGoodType == goodType)
@@ -258,7 +258,7 @@ good::ProductMap WarehouseStore::details() const
 {
   good::ProductMap ret;
 
-  for( auto room : _warehouse->rooms() )
+  for( auto& room : _warehouse->rooms() )
   {
     ret[ room.type() ] += room.qty();
   }

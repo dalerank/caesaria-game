@@ -38,7 +38,7 @@ public:
   VariantMap save() const
   {
     VariantMap ret;
-    for( auto it : *this )
+    for( auto& it : *this )
     {
       VariantList tmp( it.second.buy, it.second.sell );
       ret[ good::Helper::getTypeName( it.first ) ] = tmp;
@@ -49,7 +49,7 @@ public:
 
   void load( const VariantMap& stream )
   {
-    for( auto it : stream )
+    for( auto& it : stream )
     {
       good::Product gtype = good::Helper::getType( it.first );
       if( gtype != good::none )
@@ -73,7 +73,7 @@ public:
   VariantMap save() const
   {
     VariantMap ret;
-    for( auto it : *this )
+    for( auto& it : *this )
       ret[ it.second->name() ] = it.second->save();
 
     return ret;
@@ -81,7 +81,7 @@ public:
 
   void load( Trading& trading, const VariantMap& stream )
   {
-    for( auto it : stream )
+    for( auto& it : stream )
     {
       StringArray cityNames = utils::split( it.first,"<->" );
       if( !cityNames.empty() )
@@ -126,7 +126,7 @@ void Trading::timeStep( unsigned int time )
 {
   if( game::Date::isDayChanged() )
   {
-    for( auto it :_d->routes )
+    for( auto& it : _d->routes )
       it.second->timeStep( time );
   }
 }
@@ -235,7 +235,7 @@ TraderouteList Trading::routes( const std::string& begin )
 
   CityPtr city = _d->empire->findCity( begin );
 
-  for( auto route : _d->routes )
+  for( auto& route : _d->routes )
   {
     if( route.second->beginCity() == city || route.second->endCity() == city )
     {

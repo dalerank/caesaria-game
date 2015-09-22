@@ -518,10 +518,10 @@ public:
     int mapSize = oTilemap.size();
     switch( side % 4 )
     {
-    case 0: return oTilemap.getArea( TilePos( 0, 0), TilePos( 0, mapSize-1 ) );
-    case 1: return oTilemap.getArea( TilePos( 0, mapSize-1), TilePos( mapSize-1, mapSize-1 ) );
-    case 2: return oTilemap.getArea( TilePos( mapSize-1, mapSize-1), TilePos( mapSize-1, 0 ) );
-    case 3: return oTilemap.getArea( TilePos( mapSize-1, 0), TilePos( 0, 0 ) );
+    case 0: return oTilemap.area( TilePos( 0, 0), TilePos( 0, mapSize-1 ) );
+    case 1: return oTilemap.area( TilePos( 0, mapSize-1), TilePos( mapSize-1, mapSize-1 ) );
+    case 2: return oTilemap.area( TilePos( mapSize-1, mapSize-1), TilePos( mapSize-1, 0 ) );
+    case 3: return oTilemap.area( TilePos( mapSize-1, 0), TilePos( 0, 0 ) );
     }
 
     return TilesArray();
@@ -555,7 +555,7 @@ static void __createRivers(Game& game )
     Pathway way;
     for( int range=0; range < 99; range++ )
     {
-      TilesArray perimeter = oTilemap.getRectangle( range, centertile->pos() );
+      TilesArray perimeter = oTilemap.rect( range, centertile->pos() );
       for( auto currentTile : perimeter )
       {
         if( currentTile->getFlag( Tile::tlWater ) )
@@ -644,11 +644,11 @@ static void __createRoad(Game& game )
       if( way.isValid() )
         break;
 
-      TilesArray around = oTilemap.getArea( 3, borderInfo.roadEntry );
+      TilesArray around = oTilemap.area( 3, borderInfo.roadEntry );
       for( auto tile : around )
         sterrain.remove( tile->pos() );
 
-      around = oTilemap.getArea( 3, borderInfo.roadExit );
+      around = oTilemap.area( 3, borderInfo.roadExit );
       for( auto tile : around )
         eterrain.remove( tile->pos() );
     }

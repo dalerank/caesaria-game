@@ -99,7 +99,7 @@ void Mugger::timeStep(const unsigned long time)
       houseEpxens[ money ] << house;
     }
 
-    for( std::map< int, HouseList >::reverse_iterator expHList = houseEpxens.rbegin();
+    for( auto expHList = houseEpxens.rbegin();
          expHList != houseEpxens.rend(); ++expHList )
     {
       HouseList& hlist = expHList->second;

@@ -124,7 +124,7 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
       area.cropCorners();
 
       _d->addSpan( area.back()->pos() - startPos + TilePos( 0, 1 ), LowBridgeSubTile::liftingNorth );
-      for( TilesArray::reverse_iterator it=area.rbegin(); it != area.rend(); ++it )
+      for( auto it=area.rbegin(); it != area.rend(); ++it )
       {
         _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanNorth );
       }
@@ -160,7 +160,7 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
       area.cropCorners();
 
       _d->addSpan( area.back()->pos() - startPos + TilePos( 0, 1 ), LowBridgeSubTile::liftingNorth );
-      for( TilesArray::reverse_iterator it=area.rbegin(); it != area.rend(); ++it )
+      for( auto it=area.rbegin(); it != area.rend(); ++it )
       {
         _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanNorth );
       }

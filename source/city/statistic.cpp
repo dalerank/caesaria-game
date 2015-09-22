@@ -79,21 +79,17 @@ int Statistic::_Entertainment::coverage(Service::Type service) const
 
 HouseList Statistic::_Houses::ready4evolve(const object::TypeSet& checkTypes ) const
 {
-  HouseList ret;
-
   HouseList houses = find();
 
-  for( auto it : houses )
+  for( auto it=houses.begin(); it != houses.end(); )
   {
     object::Type btype;
-    it->spec().next().checkHouse( it, NULL, &btype );
-    if( checkTypes.count( btype ) )
-    {    
-      ret.push_back( it );
-    }
+    (*it)->spec().next().checkHouse( *it, nullptr, &btype );
+    if( checkTypes.count( btype ) ) it = houses.erase( it );
+    else ++it;
   }
 
-  return ret;
+  return houses;
 }
 
 HouseList Statistic::_Houses::ready4evolve( const object::Type checkType ) const
@@ -101,6 +97,19 @@ HouseList Statistic::_Houses::ready4evolve( const object::Type checkType ) const
   object::TypeSet checkTypes;
   checkTypes.insert( checkType );
   return ready4evolve( checkTypes );
+}
+
+HouseList Statistic::_Houses::habitable() const
+{
+  HouseList houses = find();
+
+  for( auto it=houses.begin(); it != houses.end(); )
+  {
+    if( (*it)->habitants().count() > 0 ) ++it;
+    else it = houses.erase( it );
+  }
+
+  return houses;
 }
 
 #if _MSC_VER >= 1300
@@ -212,7 +221,7 @@ unsigned int Statistic::_Tax::possible() const
 
 gfx::TilesArray Statistic::_Map::perimetr(const TilePos& lu, const TilePos& rb) const
 {
-  return _parent.rcity.tilemap().getRectangle( lu, rb );
+  return _parent.rcity.tilemap().rect( lu, rb );
 }
 
 void Statistic::_Map::updateTilePics() const
@@ -343,7 +352,7 @@ OverlayList Statistic::_Objects::neighbors(OverlayPtr overlay, bool v) const
   TilePos start = overlay->pos() - gfx::tilemap::unitLocation();
   TilePos stop = start + TilePos( size.width(), size.height() );
   OverlayList ret;
-  gfx::TilesArray tiles = _parent.rcity.tilemap().getRectangle( start, stop );
+  gfx::TilesArray tiles = _parent.rcity.tilemap().rect( start, stop );
   std::set<OverlayPtr> checked;
   for( auto tile : tiles )
   {

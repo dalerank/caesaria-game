@@ -134,7 +134,7 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
 void Water::_drawLandTile( Engine& engine, Tile& tile, const Point& offset, const Size& areaSize )
 {
   Tilemap& tilemap = _city()->tilemap();
-  TilesArray area = tilemap.getArea( tile.epos(), areaSize );
+  TilesArray area = tilemap.area( tile.epos(), areaSize );
 
   for( auto rtile : area )
   {

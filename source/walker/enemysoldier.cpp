@@ -147,7 +147,7 @@ WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
 
   for( unsigned int k=0; k <= range; k ++ )
   {
-    TilesArray tiles = tmap.getRectangle( k, pos() );
+    TilesArray tiles = tmap.rect( k, pos() );
 
     walker::Type rtype;
     for( auto tile : tiles )
@@ -231,7 +231,7 @@ ConstructionList EnemySoldier::_findContructionsInRange( unsigned int range )
 
   for( unsigned int k=0; k <= range; k++ )
   {
-    ConstructionList blds = tmap.getRectangle( k, pos() )
+    ConstructionList blds = tmap.rect( k, pos() )
                                 .overlays()
                                 .select<Construction>();
 

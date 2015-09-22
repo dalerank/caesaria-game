@@ -521,7 +521,7 @@ void ServiceWalker::initialize(const VariantMap& options)
   Human::initialize( options );
 
   VariantList oboletesOvs = options.get( "obsoleteOverlays" ).toList();
-  for( auto it : oboletesOvs )
+  for( auto& it : oboletesOvs )
   {
     object::Type ovType = object::findType( it.toString() );
     if( ovType != object::unknown )
@@ -562,7 +562,7 @@ WalkerPtr ServicemanCreator::create(PlayerCityPtr city) { return ServiceWalker::
 
 bool ReachedBuildings::contain(object::Type type) const
 {
-  for( auto i : *this )
+  for( auto& i : *this )
     if( i->type() == type )
       return true;
 
@@ -571,7 +571,7 @@ bool ReachedBuildings::contain(object::Type type) const
 
 BuildingPtr ReachedBuildings::firstOf(object::Type type) const
 {
-  for( auto i : *this )
+  for( auto& i : *this )
     if( i->type() == type )
       return i;
 

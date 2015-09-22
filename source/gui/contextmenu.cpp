@@ -85,7 +85,7 @@ ContextMenuItem* ContextMenu::addItem( const std::string& path, const std::strin
   }
 
   items.erase( items.begin() );
-  for( auto&& item : items )
+  for( auto& item : items )
   {
     if( lastItem->subMenu() == NULL )
     {

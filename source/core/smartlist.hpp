@@ -71,7 +71,7 @@ public:
 
   SmartList& for_each( std::function<void (SmartPtr<T>)> func_pointer )
   {
-    for( auto&& item : *this )
+    for( auto& item : *this )
       func_pointer( item );
 
     return *this;
@@ -79,7 +79,7 @@ public:
 
   SmartPtr<T> find( std::function<bool (SmartPtr<T>)> func_compare ) const
   {
-    for( auto&& item : *this )
+    for( auto& item : *this )
       if( func_compare( item ) )
         return item;
 
@@ -103,7 +103,7 @@ public:
   Q summ( const Q& initial, std::function<Q (SmartPtr<T>)> func_summ ) const
   {
     Q ret = initial;
-    for( auto&& item : *this )
+    for( auto& item : *this )
       ret += func_summ( item );
 
     return ret;

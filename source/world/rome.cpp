@@ -97,7 +97,7 @@ void Rome::addObject(ObjectPtr obj)
     GoodCaravanPtr caravan = obj.as<GoodCaravan>();
 
     good::Product gtype = good::none;
-    for( auto i : good::all())
+    for( auto& i : good::all())
     {
       if( caravan->store().qty( i ) > 0 )
       {

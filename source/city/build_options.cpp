@@ -85,7 +85,7 @@ public:
   VariantMap saveRules() const
   {
     VariantMap ret;
-    for( auto it : *this )
+    for( auto& it : *this )
       ret[ object::toString( it.first ) ] = it.second.mayBuild;
 
     return ret;

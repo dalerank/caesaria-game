@@ -528,7 +528,7 @@ void Level::animate( unsigned int time )
   if( game::Date::isMonthChanged() )
   {
     int autosaveInterval = SETTINGS_VALUE( autosaveInterval );
-    if( game::Date::current().month() % autosaveInterval == 0 )
+    if( (int)game::Date::current().month() % autosaveInterval == 0 )
     {
       static int rotate = 0;
       rotate = (rotate + 1) % 3;
@@ -551,7 +551,7 @@ void Level::handleEvent( NEvent& event )
     return;
   }
 
-  for( EventHandlers::iterator it=_d->eventHandlers.begin(); it != _d->eventHandlers.end(); )
+  for( auto it=_d->eventHandlers.begin(); it != _d->eventHandlers.end(); )
   {
     (*it)->handleEvent( event );
     if( (*it)->finished() ) { it = _d->eventHandlers.erase( it ); }

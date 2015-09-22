@@ -706,7 +706,7 @@ Engine::Modes SdlEngine::modes() const
   }
 
   Modes ret;
-  for( auto mode : uniqueModes )
+  for( auto& mode : uniqueModes )
   {
     int width = (mode >> 16)&0xffff;
     if( width <= maxWidth )

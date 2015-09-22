@@ -36,7 +36,7 @@ public:
   {
     VariantList ret;
 
-    for( auto&& it : *this )
+    for( auto& it : *this )
       ret << it.first << it.second;
 
     return ret;

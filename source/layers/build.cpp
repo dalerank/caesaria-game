@@ -121,7 +121,7 @@ void Build::_checkPreviewBuild(TilePos pos)
   bool walkersOnTile = false;
   if( bldCommand->flag( LayerMode::checkWalkers ) )
   {
-    TilesArray tiles = _city()->tilemap().getArea( pos, size );
+    TilesArray tiles = _city()->tilemap().area( pos, size );
     for( auto tile : tiles )
     {
       const WalkerList& walkers = _city()->walkers( tile->epos() );
@@ -457,7 +457,7 @@ void Build::_drawBuildTile( Engine& engine, Tile* tile, const Point& offset )
 
   if( postTile == tile && maskSet )
   {
-    TilesArray area = _city()->tilemap().getArea( areaInfo.pos, size );
+    TilesArray area = _city()->tilemap().area( areaInfo.pos, size );
     for( auto gtile : area )
     {
       drawPass( engine, *gtile, offset, Renderer::ground );

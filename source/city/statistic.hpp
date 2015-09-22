@@ -252,6 +252,7 @@ public:
     HouseList find( std::set<int> levels=std::set<int>() ) const;
     HouseList ready4evolve(const object::TypeSet& checkTypes) const;
     HouseList ready4evolve(const object::Type checkTypes) const;
+    HouseList habitable() const;
     unsigned int terribleNumber() const;
 
     Statistic& _parent;

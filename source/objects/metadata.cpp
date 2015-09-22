@@ -127,7 +127,7 @@ void MetaData::initialize(const VariantMap& options )
   }
 
   VariantMap extPics = options.get( "image.ext" ).toMap();
-  for( auto config : extPics )
+  for( auto& config : extPics )
   {
     VariantMap info = config.second.toMap();
     VARIANT_INIT_ANY( int, size, info )
@@ -271,7 +271,7 @@ bool MetaDataHolder::hasData(const object::Type buildingType) const
 object::Types MetaDataHolder::availableTypes() const
 {
   object::Types ret;
-  for( auto info : _d->objectsInfo ) { ret.push_back( info.first );  }
+  for( auto& info : _d->objectsInfo ) { ret.push_back( info.first );  }
   return ret;
 }
 
@@ -321,7 +321,7 @@ void MetaDataHolder::initialize( vfs::Path filename )
 
   VariantMap constructions = config::load( filename );
 
-  for( auto&& kv : constructions )
+  for( auto& kv : constructions )
   {
     const object::Type btype = object::findType( kv.first );
 

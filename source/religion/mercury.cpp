@@ -68,7 +68,7 @@ void __filchGoods( const std::string& title, PlayerCityPtr city, bool showMessag
   for( auto building : buildings )
   {
     good::Store& store = building->store();
-    for( auto gtype : good::all() )
+    for( auto& gtype : good::all() )
     {
       int goodQty = math::random( (store.qty( gtype ) + 99) / 100 ) * 100;
       if( goodQty > 0 )

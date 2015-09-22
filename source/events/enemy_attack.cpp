@@ -81,7 +81,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
     return;
 
   _d->isDeleted = true;
-  for( auto item : _d->items )
+  for( auto& item : _d->items )
   {
     VariantMap soldiers = item.second.toMap();
 
@@ -101,7 +101,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
     {
       Tilemap& tmap = game.city()->tilemap();
       int lastIndex = tmap.size();
-      TilesArray tiles = tmap.getRectangle( TilePos( 0, 0), TilePos(lastIndex, lastIndex) );
+      TilesArray tiles = tmap.rect( TilePos( 0, 0), TilePos(lastIndex, lastIndex) );
 
       tiles = tiles.walkables( true );
 

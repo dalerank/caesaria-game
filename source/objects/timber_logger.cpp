@@ -43,7 +43,7 @@ bool TimberLogger::canBuild( const city::AreaInfo& areaInfo ) const
    bool near_forest = false;  // tells if the factory is next to a forest
 
    Tilemap& tilemap = areaInfo.city->tilemap();
-   TilesArray area = tilemap.getRectangle( areaInfo.pos + TilePos( -1, -1 ), size() + Size( 2 ), Tilemap::checkCorners );
+   TilesArray area = tilemap.rect( areaInfo.pos + TilePos( -1, -1 ), size() + Size( 2 ), Tilemap::checkCorners );
    for( auto tile : area )
    {
      near_forest |= tile->getFlag( Tile::tlTree );

@@ -48,7 +48,7 @@ void initialize(ClimateType climate)
 
   StringArray archives = climateArchives.get( optName ).toStringArray();
 
-  for( auto str : archives )
+  for( auto& str : archives )
   {
     Path archivePath = str;
     Directory dir = archivePath.directory();

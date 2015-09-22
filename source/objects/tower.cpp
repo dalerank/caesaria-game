@@ -130,7 +130,7 @@ void Tower::_rebuildWays()
   for( int range = Impl::maxPatrolRange; range > 0; range-- )
   {
     TilePos offset( range, range );
-    TilesArray tiles = _city()->tilemap().getRectangle( pos() - offset,
+    TilesArray tiles = _city()->tilemap().rect( pos() - offset,
                                                               pos() + offset );
     for( auto tile : tiles )
     {
@@ -212,7 +212,7 @@ TilesArray Tower::enterArea() const
 {
   TilesArray tiles = _city()->statistic().map.around( this );
 
-  for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); )
+  for( auto it=tiles.begin(); it != tiles.end(); )
   {
     auto wall = (*it)->overlay<Fortification>();
     if( wall.isValid() && wall->isTowerEnter() ) { ++it; }

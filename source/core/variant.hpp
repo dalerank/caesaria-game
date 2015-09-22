@@ -254,7 +254,7 @@ class Variant
   RectF toRectf() const;
 
   template<class T>
-  inline T toEnum() { return (T)toInt(); }
+  inline T toEnum() const { return (T)toInt(); }
 
   operator unsigned int() const { return toUInt(); }
   operator int() const { return toInt(); }

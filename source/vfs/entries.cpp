@@ -352,7 +352,7 @@ StringArray vfs::Entries::Items::files(const std::string& ext) const
 {
   StringArray ret;
 
-  for( auto&& item : *this )
+  for( auto& item : *this )
   {
     if( item.fullpath.isMyExtension( ext ) )
       ret << item.fullpath.toString();
@@ -365,7 +365,7 @@ StringArray Entries::Items::folders() const
 {
   StringArray ret;
 
-  for( auto&& item : *this )
+  for( auto& item : *this )
   {
     if( item.isDirectory )
       ret << item.fullpath.toString();

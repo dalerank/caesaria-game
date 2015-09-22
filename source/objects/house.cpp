@@ -633,13 +633,13 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
     std::map<TilePos, TilesArray> possibleAreas;
 
     TilePos sPos = tile().pos();
-    possibleAreas[ sPos ] = tmap.getArea( sPos, Size(minSize) );
+    possibleAreas[ sPos ] = tmap.area( sPos, Size(minSize) );
     sPos = tile().pos() - TilePos( 1, 0 );
-    possibleAreas[ sPos ] = tmap.getArea( sPos, Size(minSize) );
+    possibleAreas[ sPos ] = tmap.area( sPos, Size(minSize) );
     sPos = tile().pos() - TilePos( 1, 1 );
-    possibleAreas[ sPos ] = tmap.getArea( sPos, Size(minSize) );
+    possibleAreas[ sPos ] = tmap.area( sPos, Size(minSize) );
     sPos = tile().pos() - TilePos( 0, 1 );
-    possibleAreas[ sPos ] = tmap.getArea( sPos, Size(minSize) );
+    possibleAreas[ sPos ] = tmap.area( sPos, Size(minSize) );
 
     foreach( itArea, possibleAreas )
     {
@@ -873,7 +873,7 @@ void House::_levelDown()
 
     if( size().area() > 1 )
     {
-      TilesArray perimetr = tmap.getArea( pos(), Size(2) );
+      TilesArray perimetr = tmap.area( pos(), Size(2) );
       int peoplesPerHouse = habitants().count() / 4;
       foreach( tile, perimetr )
       {
@@ -924,7 +924,7 @@ void House::buyMarket( ServiceWalkerPtr walker )
   good::Store& marketStore = market->goodStore();
 
   good::Store& houseStore = goodStore();
-  for( auto goodType : good::all() )
+  for( auto& goodType : good::all() )
   {
     int houseQty = houseStore.qty(goodType);
     int houseSafeQty = _d->spec.computeMonthlyGoodConsumption( this, goodType, false )

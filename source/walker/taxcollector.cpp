@@ -123,7 +123,7 @@ void TaxCollector::_reachedPathway()
     }
 
     Logger::warning( "TaxCollector: path history" );
-    for( auto step : _d->history )
+    for( auto& step : _d->history )
       Logger::warning( "       [%02dx%02d]:%f", step.first.i(), step.first.j(), step.second );
 
     deleteLater();
