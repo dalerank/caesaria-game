@@ -342,7 +342,7 @@ EnemySoldierPtr DebugHandler::Impl::makeEnemy( walker::Type type )
 
 void DebugHandler::Impl::addGoods2Wh(good::Product type)
 {
-  WarehouseList whList = game->city()->statistic().objects.find<Warehouse>( object::warehouse );
+  WarehouseList whList = game->city()->statistic().objects.find<Warehouse>();
   for( auto warehouse : whList)
   {
     good::Stock stock(type, 400, 400 );

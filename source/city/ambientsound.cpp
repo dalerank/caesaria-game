@@ -67,7 +67,7 @@ struct AmbientEmitter
   void initialize( const vfs::Path& filename )
   {
     VariantMap types = config::load( filename );
-    for( auto&& rtype : types )
+    for( auto& rtype : types )
     {
       Tile::Type type = gfx::tile::findType( rtype.first );
       if( type != Tile::tlUnknown )

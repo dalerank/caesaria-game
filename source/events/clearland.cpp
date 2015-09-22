@@ -80,7 +80,7 @@ void ClearTile::_exec( Game& game, unsigned int )
       overlay->deleteLater();
     }
 
-    TilesArray clearedTiles = tmap.getArea( rPos, size );
+    TilesArray clearedTiles = tmap.area( rPos, size );
     for( auto tile : clearedTiles )
     {
       tile->setMasterTile( NULL );

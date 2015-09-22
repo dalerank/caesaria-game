@@ -149,7 +149,7 @@ void Barbarian::_check4attack()
        citymap[ month2lastAttack * 100 + (int)distance ] = city;
      }
 
-     for( auto item : citymap )
+     for( auto& item : citymap )
      {
        bool validWay = _findWay( location(), item.second->location() );
        if( validWay )

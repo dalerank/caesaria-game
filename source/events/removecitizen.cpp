@@ -44,16 +44,13 @@ void RemoveCitizens::_exec(Game& game, unsigned int time)
   Tilemap& tilemap = game.city()->tilemap();
   for( int curRange=1; curRange < defaultReturnWorkersDistance; curRange++ )
   {
-    HouseList hList = tilemap.getRectangle( curRange, _center ).overlays().select<House>();
+    HouseList hList = tilemap.rect( curRange, _center ).overlays().select<House>();
 
     for( auto house : hList )
     {
-      if( house.isValid() )
-      {
-        house->removeHabitants( _group );
-        if( _group.empty() )
-          break;
-      }
+      house->removeHabitants( _group );
+      if( _group.empty() )
+        break;
     }
   }
 }

@@ -161,7 +161,7 @@ void PictureInfoBank::initialize(vfs::Path filename)
 
   std::string rc;
   rc.reserve(256);
-  for( auto&& item : configVm )
+  for( auto& item : configVm )
   {
     Variant v = item.second;
     Logger::warning( "Set offset for " + item.first );

@@ -21,7 +21,7 @@
 unsigned int CitizenGroup::count() const
 {
   unsigned int ret = 0;
-  for( auto&& item : _peoples) { ret += item; }
+  for( auto& item : _peoples) { ret += item; }
   return ret;
 }
 
@@ -204,7 +204,7 @@ VariantList CitizenGroup::save() const
   VariantList ret;
 
   int index=0;
-  for( auto&& g :_peoples )
+  for( auto& g :_peoples )
   {
     if( g > 0 )
     {
@@ -221,7 +221,7 @@ VariantList CitizenGroup::save() const
 
 void CitizenGroup::load(const VariantList& stream)
 {
-  for( auto&& g : stream )
+  for( auto& g : stream )
   {
     VariantList gv = g.toList();
     unsigned int age = gv.get( 0, 0u );

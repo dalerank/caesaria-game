@@ -129,7 +129,7 @@ bool Mission::load( const std::string& filename, Game& game )
     game::Date::instance().init( vm[ "date" ].toDateTime() );
 
     VariantMap vm_events = vm.get( "events" ).toMap();
-    for( auto&& item : vm_events )
+    for( auto& item : vm_events )
     {
       GameEventPtr e = PostponeEvent::create( item.first, item.second.toMap() );
       e->dispatch();
@@ -153,7 +153,7 @@ bool Mission::load( const std::string& filename, Game& game )
     game.empire()->emperor().updateRelation( city->name(), 50 );
 
     VariantMap fishpointsVm = vm.get( "fishpoints" ).toMap();
-    for( auto&& item : fishpointsVm )
+    for( auto& item : fishpointsVm )
     {
       GameEventPtr e = ChangeFishery::create( item.second.toTilePos(), ChangeFishery::add );
       e->dispatch();

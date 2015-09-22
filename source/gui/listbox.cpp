@@ -920,7 +920,7 @@ void ListBox::fitText(const std::string& text)
 
 void ListBox::addItems(const StringArray& strings)
 {
-  for( auto line : strings )
+  for( auto& line : strings )
   {
     if( line.find( "\tc" ) != std::string::npos )
     {

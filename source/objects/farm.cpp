@@ -141,7 +141,7 @@ Farm::Farm(const good::Product outGood, const object::Type farmType )
   mainPic.addOffset( tile::tilepos2screen( TilePos( 0, 1) ) );
   _fgPictures().push_back( mainPic );  // farm building
 
-  for( auto pos : _d->sublocs )
+  for( auto& pos : _d->sublocs )
   {
     Picture tPic = FarmTile::computePicture( outGood, 0 );
     tPic.addOffset( tile::tilepos2screen( pos ) );
@@ -172,7 +172,7 @@ bool Farm::canBuild( const city::AreaInfo& areaInfo ) const
 void Farm::burn()
 {
   Factory::burn();
-  for( auto pos : _d->sublocs )
+  for( auto& pos : _d->sublocs )
   {
     OverlayPtr ov = _city()->getOverlay( pos );
     if( ov.isValid() )
@@ -183,7 +183,7 @@ void Farm::burn()
 void Farm::collapse()
 {
   Factory::collapse();
-  for( auto pos : _d->sublocs )
+  for( auto& pos : _d->sublocs )
   {
     OverlayPtr ov = _city()->getOverlay( pos );
     if( ov.isValid() )
@@ -193,7 +193,7 @@ void Farm::collapse()
 
 void Farm::destroy()
 {
-  for( auto pos : _d->sublocs )
+  for( auto& pos : _d->sublocs )
   {
     OverlayPtr ov = _city()->getOverlay( pos );
     if( ov.isValid() && ov->type() == object::farmtile )
@@ -210,7 +210,7 @@ void Farm::computeRoadside()
 {
   Factory::computeRoadside();
 
-  for( auto pos : _d->sublocs )
+  for( auto& pos : _d->sublocs )
   {
     ConstructionPtr ov = _city()->getOverlay( pos ).as<Construction>();
     if( ov.isValid() && ov->type() == object::farmtile )

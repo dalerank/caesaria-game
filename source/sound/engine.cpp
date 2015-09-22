@@ -136,7 +136,7 @@ void Engine::setVolume( audio::SoundType type, int value)
 void Engine::loadAlias(const vfs::Path& filename)
 {
   VariantMap alias = config::load( filename );
-  for( auto item : alias )
+  for( auto& item : alias )
   {
     _d->aliases[ Hash( item.first ) ] = item.second.toString();
   }
@@ -242,13 +242,13 @@ Path Engine::Impl::findFullPath( const std::string& sampleName )
   if( sPath.extension().empty() )
   {
     Path fPath;
-    for( auto ext : extensions )
+    for( auto& ext : extensions )
     {
       fPath = sPath.toString() + ext;
       if( fPath.exist() )
         return fPath;
 
-      for( auto folder : folders )
+      for( auto& folder : folders )
       {
         rPath = folder.find( fPath, Path::ignoreCase );
         if( !rPath.empty() )
@@ -261,7 +261,7 @@ Path Engine::Impl::findFullPath( const std::string& sampleName )
     if( sPath.exist() )
       return sPath;
 
-    for( auto folder : folders )
+    for( auto& folder : folders )
     {
       rPath = folder.find( sPath, Path::ignoreCase );
       if( !rPath.empty() )
@@ -368,7 +368,7 @@ void Engine::stop(int channel)
   if( !_d->useSound )
     return;
 
-  for( auto sample :_d->samples )
+  for( auto&& sample : _d->samples )
   {
     if( sample.second.channel == channel )
     {
@@ -391,7 +391,7 @@ void Engine::_updateSamplesVolume()
 
   int gameLvl = volume( audio::game );
 
-  for( auto sample : _d->samples )
+  for( auto&& sample : _d->samples )
   {
     int typeVlm = volume( sample.second.typeSound );
     sample.second.setVolume( gameLvl, typeVlm );
@@ -483,7 +483,7 @@ void Engine::Impl::stop(const std::string& name)
 
 void Engine::Impl::clearFinishedChannels()
 {
-  for( Samples::iterator it=samples.begin(); it != samples.end();  )
+  for( auto it=samples.begin(); it != samples.end();  )
   {
     if( it->second.finished ) { it->second.destroy(); samples.erase( it++ ); }
     else { ++it; }

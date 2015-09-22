@@ -267,7 +267,7 @@ void AnimationBank::Impl::loadStage( unsigned int type, const std::string& stage
 
 void AnimationBank::Impl::loadGroup( unsigned int type, const VariantMap& desc, LoadingStage stage )
 {  
-  for( auto&& stateConfig : desc )
+  for( auto& stateConfig : desc )
   {   
     loadStage( type, stateConfig.first, stateConfig.second.toMap(), stage );
   }
@@ -322,7 +322,7 @@ void AnimationBank::loadAnimation(vfs::Path model, vfs::Path basic)
 
   VariantMap items = config::load( model );
 
-  for( auto&& i : items )
+  for( auto& i : items )
   {
     walker::Type wtype = WalkerHelper::getType( i.first );
     if( wtype != walker::unknown )

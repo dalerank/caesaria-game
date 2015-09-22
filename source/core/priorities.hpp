@@ -32,7 +32,7 @@ inline std::set<T>& operator<<(std::set<T>& which, const T& value)
 template<class T>
 inline std::set<T>& operator<<(std::set<T>& which, const VariantList& values)
 {
-  for( auto item : values )
+  for( auto& item : values )
     which.insert( item );
 
   return which;
@@ -51,7 +51,7 @@ public:
   VariantList save() const
   {
     VariantList vl;
-    for( auto item : *this ) { vl.push_back( Variant( item ) ); }
+    for( auto& item : *this ) { vl.push_back( Variant( item ) ); }
 
     return vl;
   }
@@ -63,14 +63,14 @@ public:
 
   bool contain( const T& v ) const
   {
-    for( auto item : *this ) { if( item == v ) return true; }
+    for( auto& item : *this ) { if( item == v ) return true; }
 
     return false;
   }
 
   Priorities& operator << ( const VariantList& vl )
   {
-    for( auto i : vl ) { this->push_back( (T)i.toInt() ); }
+    for( auto& i : vl ) { this->push_back( (T)i.toInt() ); }
 
     return *this;
   }

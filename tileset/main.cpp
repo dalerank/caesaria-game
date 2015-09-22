@@ -191,7 +191,7 @@ public:
 
       atlas.write( "{\ntexture: \"" + name + ".png\" \n" );
       atlas.write( "  frames: {\n" );
-      for( auto&& e : rectangleMap )
+      for( auto& e : rectangleMap )
       {
         Rect r = e.second->rect;
         std::string keyVal = e.first;

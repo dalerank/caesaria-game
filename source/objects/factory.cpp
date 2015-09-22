@@ -161,7 +161,7 @@ void Factory::_weekUpdate(unsigned int time)
     deliverGood();
   }
 
-  if( game::Date::current().month() % 3 == 1 )
+  if( (int)game::Date::current().month() % 3 == 1 )
   {
     _removeSpoiledGoods();
   }

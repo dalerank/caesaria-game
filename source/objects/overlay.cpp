@@ -255,7 +255,7 @@ TilesArray Overlay::area() const
     return gfx::TilesArray();
   }
 
-  return _city()->tilemap().getArea( pos(), size() );
+  return _city()->tilemap().area( pos(), size() );
 }
 
 Overlay::~Overlay()

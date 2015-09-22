@@ -1852,10 +1852,8 @@ Variant2Handler::Variant2Handler()
 
 StringArray& operator<<(StringArray &strlist, const VariantList &vars)
 {
-  for( VariantList::const_iterator it=vars.begin(); it != vars.end(); ++it )
-  {
-    strlist.push_back( (*it).toString() );
-  }
+  for( auto& var : vars )
+    strlist.push_back( var.toString() );
 
   return strlist;
 }

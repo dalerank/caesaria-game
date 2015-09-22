@@ -211,7 +211,7 @@ Signal1<Issue::Type>& Treasury::onNewIssue(){ return _d->signal.onNewIssue; }
 VariantList IssuesHistory::save() const
 {
   VariantList ret;
-  for( auto&& step : *this )
+  for( auto& step : *this )
     ret.push_back( step.save() );
 
   return ret;
@@ -220,7 +220,7 @@ VariantList IssuesHistory::save() const
 void IssuesHistory::load(const VariantList& stream)
 {
   clear();
-  for( auto it : stream )
+  for( auto& it : stream )
   {
     push_back( IssuesValue() );
     IssuesValue& last = back();
@@ -257,7 +257,7 @@ IssuesDetailedHistory::~IssuesDetailedHistory() {}
 VariantList IssuesDetailedHistory::save() const
 {
   VariantList ret;
-  for( auto it : _d->issues )
+  for( auto& it : _d->issues )
     ret.push_back( it.save() );
 
   return ret;
@@ -266,7 +266,7 @@ VariantList IssuesDetailedHistory::save() const
 void IssuesDetailedHistory::load(const VariantList& stream)
 {
   _d->issues.clear();
-  for( auto it : stream )
+  for( auto& it : stream )
   {
     DateIssue dIssue;
     dIssue.load( it.toList() );
@@ -291,7 +291,7 @@ void IssuesDetailedHistory::DateIssue::load(const VariantList& stream)
 VariantList IssuesValue::save() const
 {
   VariantList ret;
-  for( auto it  : *this )
+  for( auto& it  : *this )
     ret << it.first << it.second;
 
   return ret;

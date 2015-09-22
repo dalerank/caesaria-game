@@ -81,7 +81,7 @@ void Trade::Impl::updateGoodsInfo()
   Size btnSize( gbInfo->width(), 20 );
   trade::Options& copt = city->tradeOptions();
   int indexOffset=0;
-  for( auto gtype : good::all() )
+  for( auto& gtype : good::all() )
   {
     trade::Order tradeState = copt.getOrder( gtype );
     if( tradeState == trade::disabled || gtype == good::none)

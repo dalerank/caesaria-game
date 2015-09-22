@@ -88,7 +88,7 @@ bool Batch::load(const Pictures &pics, const Rects& dstrects)
 bool Batch::load(const Pictures& pics, const Point& pos)
 {
   Rects rects;
-  for( auto&& pic : pics )
+  for( auto& pic : pics )
   {
     rects.push_back( Rect( pos + pic.offset(), pic.size() ) );
   }

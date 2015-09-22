@@ -84,7 +84,7 @@ DirectRoute get4Buys( Propagator &pathPropagator, good::Storage& basket, PlayerC
     // for every warehouse within range
     WarehousePtr warehouse = routeIt->first.as<Warehouse>();
     int rating = 0;
-    for( auto gtype : good::all() )
+    for( auto& gtype : good::all() )
     {
       if (!options.isExporting( gtype ) )
       {
@@ -274,7 +274,7 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
         trade::Options& options = city->tradeOptions();
         good::Store& whStore = warehouse->store();
         //try buy goods
-        for( auto goodType : good::all() )
+        for( auto& goodType : good::all() )
         {
           if (!options.isExporting(goodType))
           {
@@ -359,7 +359,7 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
       trade::Options& options = city->tradeOptions();
       //try sell goods
 
-      for( auto goodType : good::all() )
+      for( auto& goodType : good::all() )
       {
         if (!options.isImporting(goodType))
         {

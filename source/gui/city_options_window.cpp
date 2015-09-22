@@ -91,7 +91,7 @@ public:
     setText( "##" + basicName + "_mode##" );
 
     VariantMap vstates = ui.get( "states" ).toMap();
-    for( auto st : vstates )
+    for( auto& st : vstates )
       states[ st.second.toInt() ] = st.first;
 
     VariantList vlink = ui.get( "link" ).toList();
@@ -102,7 +102,7 @@ public:
   void update(int value)
   {
     index = 0;
-    for( auto item : states )
+    for( auto& item : states )
     {
       if( item.first == value )
       {
@@ -365,17 +365,11 @@ void CityOptions::Impl::toggleUseBatching()
 
 Widget* CityOptions::Impl::findDebugMenu( Ui* ui )
 {
-  const Widgets& children = ui->rootWidget()->children();
-  for( auto w : children )
-  {
-    TopMenu* ret = safety_cast<TopMenu*>( w );
-    if( ret != 0 )
-    {
-      return ret->findItem( "Debug" );
-    }
-  }
+  auto topmenu = ui->rootWidget()->children().select<TopMenu>();
+  for( auto w : topmenu )
+    return w->findItem( "Debug" );
 
-  return 0;
+  return nullptr;
 }
 
 void CityOptions::Impl::update()

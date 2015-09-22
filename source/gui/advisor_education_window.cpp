@@ -245,17 +245,13 @@ EntertInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Type bType
     }
   }
 
-  HouseList houses = city->statistic().houses.find();
+  auto habitable = city->statistic().houses.habitable();
   int minAccessLevel = awesomeAccessValue;
-  for( auto house : houses )
+  for( auto house : habitable )
   {
-    int habitantsCount = house->habitants().count();
-    if( habitantsCount > 0 )
-    {
-      ret.need += ( house->habitants().count( ret.age ) * ( house->isEducationNeed( ret.service ) ? 1 : 0 ) );
-      ret.nextLevel += (house->spec().next().evaluateEducationNeed( house, ret.service ) == awesomeAccessValue ? 1 : 0);
-      minAccessLevel = std::min<int>( house->getServiceValue( ret.service ), minAccessLevel );
-    }
+    ret.need += ( house->habitants().count( ret.age ) * ( house->isEducationNeed( ret.service ) ? 1 : 0 ) );
+    ret.nextLevel += (house->spec().next().evaluateEducationNeed( house, ret.service ) == awesomeAccessValue ? 1 : 0);
+    minAccessLevel = std::min<int>( house->getServiceValue( ret.service ), minAccessLevel );
   }
 
   ret.coverage = ret.need == 0

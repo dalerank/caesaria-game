@@ -61,7 +61,7 @@ public:
   VariantList save() const
   {
     VariantList ret;
-    for( auto item : *this )
+    for( auto& item : *this )
       ret.emplace_back( VariantList(item.first, item.second) );
 
     return ret;
@@ -69,7 +69,7 @@ public:
 
   void load( const VariantList& stream )
   {
-    for( auto item : stream )
+    for( auto& item : stream )
     {
       VariantList vl = item.toList();
       Service::Type stype = vl.get( 0 ).toEnum<Service::Type>();
@@ -100,7 +100,7 @@ public:
   VariantList save() const
   {
     VariantList ret;
-    for( auto item : *this )
+    for( auto& item : *this )
       ret.emplace_back( VariantList(item.first, item.second) );
 
     return ret;
@@ -108,7 +108,7 @@ public:
 
   void load( const VariantList& stream )
   {
-    for( auto item : stream )
+    for( auto& item : stream )
     {
       VariantList vl = item.toList();
       walker::Type wtype = vl.get( 0 ).toEnum<walker::Type>();

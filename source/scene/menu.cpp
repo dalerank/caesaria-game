@@ -453,7 +453,7 @@ void StartMenu::Impl::showAdvancedMaterials()
   StringArray excludeFolders;
   excludeFolders << vfs::Path::firstEntry << vfs::Path::secondEntry;
   vfs::Entries::Items entries = dir.entries().items();
-  for( auto it : entries )
+  for( auto& it : entries )
   {
     if( it.isDirectory )
     {

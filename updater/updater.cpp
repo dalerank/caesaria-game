@@ -81,7 +81,7 @@ void Updater::setBinaryAsExecutable()
   executableNames.push_back( "caesaria.haiku" );
 #endif
 
-  for( auto name : executableNames )
+  for( auto& name : executableNames )
   {
     vfs::Path path2exe = getTargetDir()/name;
     if( path2exe.exist() )
@@ -763,7 +763,7 @@ void Updater::removeAllPackagesExceptUpdater()
 {
   Logger::warning("Removing all packages, except the one containing the updater");
 
-  for( ReleaseFileSet::iterator i = _downloadQueue.begin(); i != _downloadQueue.end(); /* in-loop */ )
+  for( auto i = _downloadQueue.begin(); i != _downloadQueue.end(); /* in-loop */ )
   {
     if (i->second.isUpdater(_executable.toString()))
     {

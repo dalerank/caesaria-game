@@ -338,7 +338,7 @@ void CityRenderer::setLayer(int layertype)
 
 LayerPtr CityRenderer::getLayer(int type) const
 {
-  for( auto layer : _d->layers)
+  for( auto& layer : _d->layers)
   {
     if( layer->type() == type )
       return layer;

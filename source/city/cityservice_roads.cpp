@@ -85,7 +85,7 @@ void Roads::timeStep( const unsigned int time )
   _d->lastTimeUpdate = game::Date::current();  
 
   Impl::Updates positions;
-  for( auto type : _d->btypes )
+  for( auto& type : _d->btypes )
   {
     BuildingList tmp = _city()->statistic().objects.find<Building>( type.first );
 
@@ -105,12 +105,12 @@ void Roads::timeStep( const unsigned int time )
   }
 
   Propagator propagator( _city() );
-  for( auto&& upos : positions )
+  for( auto& upos : positions )
   {
     _d->updateRoadsAround( propagator, upos );
   }
 
-  if( _d->lastTimeUpdate.month() % 3 == 1 )
+  if( (int)_d->lastTimeUpdate.month() % 3 == 1 )
   {
     RoadList roads = _city()->statistic().objects.find<Road>( object::road );
     for( auto road : roads )
@@ -127,7 +127,7 @@ void Roads::Impl::updateRoadsAround( Propagator& propagator, UpdateInfo info )
   propagator.init( info.first );
   PathwayList pathWayList = propagator.getWays( info.second );
 
-  for( auto&& path : pathWayList )
+  for( auto& path : pathWayList )
   {
     const TilesArray& tiles = path->allTiles();
     for( auto tile : tiles )

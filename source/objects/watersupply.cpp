@@ -134,7 +134,7 @@ bool Reservoir::_isNearWater(PlayerCityPtr city, const TilePos& pos ) const
   bool near_water = false;  // tells if the factory is next to a mountain
 
   Tilemap& tilemap = city->tilemap();
-  TilesArray perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), size() + Size( 2 ), !Tilemap::checkCorners );
+  TilesArray perimetr = tilemap.rect( pos + TilePos( -1, -1 ), size() + Size( 2 ), !Tilemap::checkCorners );
 
   foreach( tile, perimetr) { near_water |= (*tile)->getFlag( Tile::tlWater ); }
 
@@ -274,7 +274,7 @@ void WaterSource::_setError(const std::string& error){  _d->errorStr = error;}
 void WaterSource::broke()
 {
   Tilemap& tilemap = _city()->tilemap();
-  TilesArray tiles = tilemap.getRectangle( pos() - TilePos( 1, 1), size() + Size(2) );
+  TilesArray tiles = tilemap.rect( pos() - TilePos( 1, 1), size() + Size(2) );
 
   int saveWater = water();
   _d->water = 0;

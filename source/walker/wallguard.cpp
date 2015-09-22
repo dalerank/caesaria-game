@@ -238,7 +238,7 @@ FortificationList WallGuard::_findNearestWalls( EnemySoldierPtr enemy )
   {
     TilePos offset( range, range );
     TilePos ePos = enemy->pos();
-    TilesArray tiles = tmap.getRectangle( ePos - offset, ePos + offset );
+    TilesArray tiles = tmap.rect( ePos - offset, ePos + offset );
     FortificationList walls = tiles.overlays().select<Fortification>();
 
     for( auto wall : walls )

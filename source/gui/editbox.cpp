@@ -103,7 +103,7 @@ signals public:
 std::string __ucs2utf8( const std::wstring& text )
 {
   std::string ret;
-  for( auto symbol : text )
+  for( auto& symbol : text )
   {
     if( (unsigned short)symbol < 0x80 )
     {

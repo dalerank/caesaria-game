@@ -42,7 +42,7 @@ public:
   Widget* parent;
 
 	//! List of all children of this element
-  List<Widget*> children;
+  Widget::Widgets children;
 
 	//! relative rect of element
 	Rect relativeRect;

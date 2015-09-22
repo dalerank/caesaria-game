@@ -496,7 +496,7 @@ void ComputerCity::_checkMerchantsDeadline()
     sellGoods.setCapacity( Merchant::defaultCapacity );
     buyGoods.setCapacity( Merchant::defaultCapacity );
 
-    for( auto gtype : good::all() )
+    for( auto& gtype : good::all() )
     {
       buyGoods.setCapacity( gtype, _d->buys.capacity( gtype ) );
 
@@ -847,7 +847,7 @@ void ComputerCity::load( const VariantMap& options )
   VARIANT_LOAD_ANYDEF_D( _d, sentiment,         50, options )
   VARIANT_LOAD_ANYDEF_D( _d, states.population, _d->states.population, options )
 
-  for( auto i : good::all() )
+  for( auto& i : good::all() )
     _resetGoodState( i );
 
   VARIANT_LOAD_CLASS_D( _d, targets,options )
@@ -860,7 +860,7 @@ void ComputerCity::load( const VariantMap& options )
 
   if( _d->realSells.empty() )
   {
-    for( auto it : good::all() )
+    for( auto& it : good::all() )
     {
       _d->realSells.setCapacity( it, _d->sells.capacity( it ) );
     }
@@ -901,7 +901,7 @@ void ComputerCity::addObject(ObjectPtr object )
 
     _d->buys.storeAll( buyGoods );
 
-    for( auto gtype : good::all() )
+    for( auto& gtype : good::all() )
     {
       int qty = sellGoods.freeQty( gtype );
       good::Stock stock( gtype, qty, qty );
@@ -935,7 +935,7 @@ void ComputerCity::addObject(ObjectPtr object )
 void ComputerCity::changeTradeOptions(const VariantMap& stream)
 {
   VariantMap sells_vm = stream.get( "sells" ).toMap();
-  for( auto it : sells_vm )
+  for( auto& it : sells_vm )
   {
     good::Product gtype = good::Helper::getType( it.first );
     _d->sells.setCapacity( gtype, Unit::fromValue( it.second ).toQty() );
@@ -943,7 +943,7 @@ void ComputerCity::changeTradeOptions(const VariantMap& stream)
   }
 
   VariantMap buys_vm = stream.get( "buys" ).toMap();
-  for( auto it : buys_vm )
+  for( auto& it : buys_vm )
   {
     good::Product gtype = good::Helper::getType( it.first );
     _d->buys.setCapacity( gtype, Unit::fromValue( it.second ).toQty() );
@@ -983,7 +983,7 @@ void ComputerCity::timeStep( unsigned int time )
     _d->trade.merchants_n = math::clamp<int>( _d->trade.merchants_n-1, 0, config::trade::maxMerchantsInRoute );
     _d->lasttime.update = game::Date::current();
 
-    for( auto i : good::all() )
+    for( auto& i : good::all() )
       _resetGoodState( i );
   }
 

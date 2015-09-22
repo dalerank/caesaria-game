@@ -57,7 +57,7 @@ void Array::eraseOld(const DateTime& date, int ageMonth)
 
 bool Array::contain(Base::Type type) const
 {
-  for( auto notification : *this )
+  for( auto& notification : *this )
   {
     if( notification.type == type )
       return true;

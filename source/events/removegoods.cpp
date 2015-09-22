@@ -45,7 +45,7 @@ void _removeGoodFrom( PlayerCityPtr city, object::Type btype, good::Product what
 #else
   bList = city->statistic().objects.find<T>( btype );
 #endif
-  for( auto&& building : bList )
+  for( auto building : bList )
   {
     if( qty <= 0 )
       break;
