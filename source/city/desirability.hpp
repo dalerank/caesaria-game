@@ -23,14 +23,11 @@
 
 struct Desirability
 {
+  int base  = 0;
+  int range = 0;
+  int step  = 0;
+
   enum { off=false, on=true };
-
-  Desirability() : base( 0 ), range( 0 ), step( 0 ) {}
-
-  int base;
-  int range;
-  int step;
-
   static void update( PlayerCityPtr r, OverlayPtr ov, bool on );
 };
 

@@ -119,7 +119,7 @@ bool Mission::load( const std::string& filename, Game& game )
       city->setName( cityName );
     }
 
-    city->mayor()->setRank( vm.get( "player.rank", 0 ) );
+    city->mayor()->setRank( vm.get( "player.rank", 0 ).toEnum<world::GovernorRank::Level>() );
     city->treasury().resolveIssue( econ::Issue( econ::Issue::donation, vm.get( "funds" ).toInt() ) );
 
     Logger::warning( "GameLoaderMission: load city options ");

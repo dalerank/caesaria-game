@@ -230,10 +230,7 @@ void IssuesHistory::load(const VariantList& stream)
 
 void IssuesDetailedHistory::addIssue(Issue issue)
 {
-  DateIssue dIssue;
-  dIssue.type = issue.type;
-  dIssue.money = issue.money;
-  dIssue.time = game::Date::current();
+  DateIssue dIssue( issue.type, issue.money, game::Date::current() );
   _d->issues.push_back( dIssue );
   if( _d->issues.size() > 1 )
   {

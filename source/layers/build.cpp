@@ -41,6 +41,7 @@
 #include "gfx/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "city/statistic.hpp"
+#include "core/osystem.hpp"
 
 using namespace gui;
 using namespace gfx;
@@ -71,6 +72,7 @@ public:
   std::string resForbiden;
   Picture grnPicture;
   Picture redPicture;
+  bool readyForExit;
 
   struct {
     Font font;
@@ -341,6 +343,7 @@ void Build::_exitBuildMode()
   __D_IMPL(_d,Build);
   DrawOptions::instance().setFlag( DrawOptions::mayChangeLayer, true );
   _setNextLayer( _d->lastLayer.isValid() ? _d->lastLayer->type() : citylayer::simple );
+  _setStartCursorPos( Point(-1, -1) );
   _discardPreview();
 }
 
@@ -351,7 +354,10 @@ void Build::handleEvent(NEvent& event)
   {
     _d->kbShift = event.mouse.shift;
     _d->kbCtrl = event.mouse.control;
-    _d->lmbPressed = event.mouse.isLeftPressed();
+    _d->readyForExit = false;
+
+    if( !OSystem::isAndroid() )
+      _d->lmbPressed = event.mouse.isLeftPressed();
 
     switch( event.mouse.type  )
     {
@@ -366,6 +372,7 @@ void Build::handleEvent(NEvent& event)
     case mouseLbtnPressed:
     {
       _updatePreviewTiles( false );
+      _d->lmbPressed = true;
     }
     break;
 
@@ -377,9 +384,8 @@ void Build::handleEvent(NEvent& event)
         break;
       }
 
-#ifndef CAESARIA_PLATFORM_ANDROID
-      _finishBuild();
-#endif
+      if( !OSystem::isAndroid() )
+        _finishBuild();
     }
     break;
 
@@ -394,11 +400,30 @@ void Build::handleEvent(NEvent& event)
     _d->kbShift = event.keyboard.shift;
     _d->kbCtrl = event.keyboard.control;
 
-    if( !handled )
+    if( !handled && !event.keyboard.pressed )
     {
       switch( event.keyboard.key )
       {
-      case KEY_ESCAPE: _exitBuildMode(); break;
+      case KEY_ESCAPE:
+      {
+        if( OSystem::isAndroid() )
+        {
+          if( !_d->readyForExit )
+          {
+            _setStartCursorPos( Point(-1, -1) );
+            _d->startTilePos = tilemap::invalidLocation();
+            _d->lastTilePos = tilemap::invalidLocation();
+            _d->needUpdateTiles = true;
+            _d->lmbPressed = false;
+            _d->readyForExit = true;
+            break;
+          }
+        }
+
+        _exitBuildMode();
+      }
+      break;
+
       case KEY_RETURN:
       {
         if( !event.keyboard.pressed )  //button was left up
@@ -407,6 +432,7 @@ void Build::handleEvent(NEvent& event)
         }
       }
       break;
+
       default: break;
       }
     }
@@ -422,6 +448,7 @@ void Build::_finishBuild()
   _buildAll();
   _setStartCursorPos( _lastCursorPos() );
   _updatePreviewTiles( true );
+  _dfunc()->lmbPressed = false;
 }
 
 int Build::type() const {  return citylayer::build; }
@@ -573,12 +600,19 @@ void Build::init(Point cursor)
 
   _d->lastTilePos = tilemap::invalidLocation();
   _d->startTilePos = tilemap::invalidLocation();
+  _d->readyForExit = false;
   _d->kbShift = false;
   _d->kbCtrl = false;
 
   changeLayer( _d->renderer->currentLayer()->type() );
 
   DrawOptions::instance().setFlag( DrawOptions::mayChangeLayer, false );
+
+  if( OSystem::isAndroid() )
+  {
+    auto message = WarningMessage::create( "Press red cross for break/exit, stamp for build", WarningMessage::neitral );
+    message->dispatch();
+  }
 }
 
 void Build::beforeRender(Engine& engine)
@@ -605,7 +639,11 @@ void Build::afterRender(Engine& engine)
   __D_IMPL(_d,Build);
   if( _d->needUpdateTiles )
   {
-    _setLastCursorPos( engine.cursorPos() );
+   if( !OSystem::isAndroid() )
+   {
+      _setLastCursorPos( engine.cursorPos() );
+   }
+
     _checkBuildArea();
     _updatePreviewTiles( false );
   }
@@ -674,12 +712,12 @@ Build::Build( Renderer& renderer, PlayerCityPtr city)
   d->resForbiden = SETTINGS_STR( forbidenTile );
   d->startTilePos = gfx::tilemap::invalidLocation();
   d->text.font = Font::create( FONT_5 );
+  d->readyForExit = false;
   d->text.image = Picture( Size( 100, 30 ), 0, true );
   _addWalkerType( walker::all );
 
   d->grnPicture.load( d->resForbiden, 1 );
   d->redPicture.load( d->resForbiden, 2 );
-
 }
 
 void Build::Impl::sortBuildTiles()

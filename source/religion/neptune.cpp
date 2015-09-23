@@ -56,11 +56,10 @@ void Neptune::_doWrath(PlayerCityPtr city)
                                             "god_neptune");
   event->dispatch();
 
-  ShipList boats;
-  boats << city->walkers();
+  auto boats = city->walkers().select<Ship>();
 
   ShipList destroyBoats = boats.random( 5 );
-  for( auto ship : destroyBoats )
+  for( auto&& ship : destroyBoats )
   {
     ship->die();
   }

@@ -209,8 +209,7 @@ bool PlayerArmy::_isAgressiveArmy(ArmyPtr other) const
 
 void PlayerArmy::_check4attack()
 {
-  MovableObjectList mobjects;
-  mobjects << empire()->objects();
+  auto mobjects = empire()->objects().select<MovableObject>();
   mobjects.remove( this );
 
   std::map< int, MovableObjectPtr > distanceMap;

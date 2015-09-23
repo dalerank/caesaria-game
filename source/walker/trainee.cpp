@@ -35,7 +35,7 @@ using namespace gfx;
 
 REGISTER_TRAINEEMAN_IN_WALKERFACTORY(walker::trainee, 0, trainee)
 
-typedef Priorities<object::Type> NecessaryBuildings;
+typedef Vector<object::Type> NecessaryBuildings;
 
 class TraineeWalker::Impl
 {
@@ -60,16 +60,16 @@ void TraineeWalker::_init(walker::Type traineeType)
   switch( traineeType )
   {
   case walker::actor:      _d->necBuildings << object::theater
-                                           << object::amphitheater;  break;
+                                            << object::amphitheater;  break;
   case walker::gladiator:  _d->necBuildings << object::amphitheater
-                                              << object::colloseum;  break;
+                                            << object::colloseum;  break;
   case walker::lionTamer:  _d->necBuildings << object::colloseum;  break;
   case walker::soldier:    _d->necBuildings << object::military_academy
                                             << object::fort_legionaries
                                             << object::fort_horse
                                             << object::fort_javelin
                                             << object::tower;  break;
-  case walker::charioteer:  _d->necBuildings << object::hippodrome;  break;
+  case walker::charioteer: _d->necBuildings << object::hippodrome;  break;
   default: break;
   }
 
