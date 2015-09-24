@@ -49,10 +49,10 @@ void ChangeTradingOptions::_exec(Game& game, unsigned int)
     world::CityPtr cityp = game.empire()->findCity( it.first );
     if( cityp.isNull() )
     {
-      int trade_delay = it.second.toMap().get( "delay_trade" );
-      if( trade_delay > 0 )
+      unsigned int tradeDelayMnt = it.second.toMap().get( "delay_trade" );
+      if( tradeDelayMnt > 0 )
       {
-        cityp->delayTrade( trade_delay );
+        cityp->delayTrade( tradeDelayMnt );
       }
 
       world::ComputerCityPtr ccity = cityp.as<world::ComputerCity>();

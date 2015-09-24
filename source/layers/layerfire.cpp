@@ -89,7 +89,7 @@ void Fire::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 void Fire::handleEvent(NEvent& event)

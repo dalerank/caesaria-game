@@ -44,6 +44,7 @@ private:
   Destroy(gfx::Renderer &renderer, PlayerCityPtr city );
 
   void _clearAll();
+  void _executeClear();
   void _exitDestroyTool();
   unsigned int _checkMoney4destroy( const gfx::Tile& tile );
 

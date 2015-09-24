@@ -92,7 +92,7 @@ void Sentiment::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 LayerPtr Sentiment::create( Camera& camera, PlayerCityPtr city)

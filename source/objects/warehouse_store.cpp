@@ -140,7 +140,7 @@ void WarehouseStore::applyStorageReservation( good::Stock &stock, const int rese
       {
         int tileAmount = std::min(amount, room.freeQty());
         // std::cout << "put in half filled" << std::endl;
-        room.append(stock, tileAmount);
+        room.takeFrom(stock, tileAmount);
         amount -= tileAmount;
       }
     }
@@ -152,7 +152,7 @@ void WarehouseStore::applyStorageReservation( good::Stock &stock, const int rese
       {
         int tileAmount = std::min(amount, room.capacity() );
         // std::cout << "put in empty tile" << std::endl;
-        room.append(stock, tileAmount);
+        room.takeFrom(stock, tileAmount);
         amount -= tileAmount;
       }
     }
@@ -194,7 +194,7 @@ void WarehouseStore::applyRetrieveReservation(good::Stock& stock, const int rese
     {
       int tileAmount = std::min(amount, room.qty());
       // std::cout << "retrieve from half filled" << std::endl;
-      stock.append( room, tileAmount);
+      stock.takeFrom( room, tileAmount);
       if( room.empty() )
         room.setType( good::none );
 
@@ -214,7 +214,7 @@ void WarehouseStore::applyRetrieveReservation(good::Stock& stock, const int rese
     {
       int tileAmount = std::min(amount, room.qty());
       // std::cout << "retrieve from filled" << std::endl;
-      stock.append( room, tileAmount);
+      stock.takeFrom( room, tileAmount);
       amount -= tileAmount;
     }
   }

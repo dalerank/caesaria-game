@@ -80,7 +80,7 @@ void Food::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 void Food::drawWalkers(Engine &engine, const Tile &tile, const Point &camOffset)

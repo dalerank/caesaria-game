@@ -91,8 +91,8 @@ public:
     if( _index == descentNorth )
     {
       Tile& mt = info.city->tilemap().at( pos + TilePos( 0, 1 ) );
-      info.city->tilemap().at( pos + TilePos( 0, 1 ) ).setMasterTile( 0 );
-      info.city->tilemap().at( pos ).setMasterTile( &mt );
+      info.city->tilemap().at( pos + TilePos( 0, 1 ) ).setMaster( 0 );
+      info.city->tilemap().at( pos ).setMaster( &mt );
 
       pic.addOffset( -30, -15 );
       _fgPictures().push_back( pic );
@@ -503,7 +503,7 @@ bool HighBridge::build( const city::AreaInfo& info  )
       TilePos buildPos = info.pos + subtile->_pos;
       Tile& tile = tilemap.at( buildPos );
       //subtile->setPicture( tile.picture() );
-      subtile->_imgId = tile.originalImgId();
+      subtile->_imgId = tile.ImgId();
       subtile->_info = tile::encode( tile );
       subtile->_parent = this;
       

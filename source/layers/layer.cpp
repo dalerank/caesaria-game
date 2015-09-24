@@ -344,7 +344,7 @@ void Layer::render( Engine& engine)
 
 void Layer::drawWalkerOverlap( Engine& engine, Tile& tile, const Point& offset, const int depth)
 {
-  Tile* master = tile.masterTile();
+  Tile* master = tile.master();
 
   // multi-tile: draw the master tile.
   // single-tile: draw current tile
@@ -364,7 +364,7 @@ void Layer::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, 
     return;  // tile has already been drawn!
   }
 
-  Tile* master = tile.masterTile();
+  Tile* master = tile.master();
 
   if( 0 == master )    // single-tile
   {
@@ -374,7 +374,7 @@ void Layer::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, 
 
   // multi-tile: draw the master tile.
   // and it is time to draw the master tile
-  if( !master->rwd() && master == &tile )
+  if( !master->rendered() && master == &tile )
   {
     drawTile( engine, *master, offset );
   }
@@ -382,7 +382,7 @@ void Layer::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, 
 
 void Layer::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
-  if( !tile.rwd() )
+  if( !tile.rendered() )
   {
     if( tile.rov().isValid() )
     {
@@ -404,7 +404,7 @@ void Layer::drawTile(Engine& engine, Tile& tile, const Point& offset)
       drawPass( engine, tile, offset, Renderer::groundAnimation );
     }
 
-    tile.setWasDrawn();
+    tile.setRendered();
   }
 }
 
@@ -598,10 +598,10 @@ void Layer::afterRender( Engine& engine)
       size = ov->size();
       pos = ov->tile().mappos();
     }
-    else if( tile->masterTile() != 0 )
+    else if( tile->master() != 0 )
     {
-      pos = tile->masterTile()->mappos();
-      size = Size( (tile->masterTile()->picture().width() + 2) / rwidth );
+      pos = tile->master()->mappos();
+      size = Size( (tile->master()->picture().width() + 2) / rwidth );
     }
 
     pos += offset;

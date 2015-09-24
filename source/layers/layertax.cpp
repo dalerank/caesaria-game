@@ -86,7 +86,7 @@ void Tax::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 LayerPtr Tax::create( Camera& camera, PlayerCityPtr city )

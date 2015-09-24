@@ -84,7 +84,7 @@ void Religion::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 void Religion::handleEvent(NEvent& event)

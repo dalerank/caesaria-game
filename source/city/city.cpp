@@ -426,9 +426,9 @@ void PlayerCity::load( const VariantMap& stream )
   for (auto item : walkers)
   {
     VariantMap walkerInfo = item.second.toMap();
-    int walkerType = (int)walkerInfo.get( "type", walker::unknown );
+    walker::Type walkerType = walkerInfo.get( "type", (int)walker::unknown ).toEnum<walker::Type>();
 
-    WalkerPtr walker = WalkerManager::instance().create( walker::Type( walkerType ), this );
+    WalkerPtr walker = WalkerManager::instance().create( walkerType, this );
     if( walker.isValid() )
     {
       walker->load( walkerInfo );
@@ -442,7 +442,7 @@ void PlayerCity::load( const VariantMap& stream )
 
   LOG_CITY.info( "Load service info" );
   VariantMap services = stream.get( "services" ).toMap();
-  for (auto item : services)
+  for(auto& item : services)
   {
     VariantMap servicesSave = item.second.toMap();
 

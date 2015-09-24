@@ -76,7 +76,7 @@ void Aborigens::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 LayerPtr Aborigens::create( Camera& camera, PlayerCityPtr city)

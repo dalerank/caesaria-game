@@ -432,8 +432,8 @@ void Level::Impl::makeFullScreenshot()
   foreach( tile, ret )
   {
     Tile* t = *tile;
-    if( t->masterTile() )
-      t = t->masterTile();       
+    if( t->master() )
+      t = t->master();       
 
     const Picture& tpic = t->overlay().isValid()
                             ? t->overlay()->picture()

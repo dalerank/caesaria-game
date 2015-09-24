@@ -128,7 +128,7 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
     _drawLandTile( engine, tile, offset, areaSize );
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 void Water::_drawLandTile( Engine& engine, Tile& tile, const Point& offset, const Size& areaSize )

@@ -93,7 +93,7 @@ void Damage::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 LayerPtr Damage::create( Camera& camera, PlayerCityPtr city)

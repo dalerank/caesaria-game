@@ -92,7 +92,7 @@ void Tree::initTerrain(Tile& terrain)
 
 bool Tree::build( const city::AreaInfo& info )
 {
-  std::string picname = imgid::toResource( info.city->tilemap().at( info.pos ).originalImgId() );
+  std::string picname = imgid::toResource( info.city->tilemap().at( info.pos ).ImgId() );
   _picture().load( picname );
   _d->flat = (picture().height() <= tilemap::cellPicSize().height());
   return Overlay::build( info );

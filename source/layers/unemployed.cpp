@@ -90,7 +90,7 @@ void Unemployed::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 LayerPtr Unemployed::create( Camera& camera, PlayerCityPtr city)

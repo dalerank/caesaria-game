@@ -44,7 +44,6 @@ enum { maxLevel=10, protestorCost=15, muggerCost=20, rioterCost=30,
 namespace festival
 {
 enum { prepareMonthsDelay=2 };
-typedef enum { none=0, small, middle, big, count } Type;
 }
 
 namespace health

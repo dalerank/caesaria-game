@@ -115,7 +115,7 @@ void Education::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 LayerPtr Education::create( Camera& camera, PlayerCityPtr city, int type )

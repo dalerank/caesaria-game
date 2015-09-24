@@ -83,7 +83,7 @@ void ClearTile::_exec( Game& game, unsigned int )
     TilesArray clearedTiles = tmap.area( rPos, size );
     for( auto tile : clearedTiles )
     {
-      tile->setMasterTile( NULL );
+      tile->setMaster( NULL );
       tile->setFlag( Tile::tlTree, false);
       tile->setFlag( Tile::tlRoad, false);
       tile->setFlag( Tile::tlGarden, false);
@@ -112,7 +112,7 @@ void ClearTile::_exec( Game& game, unsigned int )
         Picture pic;
         pic.load( ResourceGroup::land1a, startOffset + imgId );
         tile->setPicture( pic );
-        tile->setOriginalImgId( imgid::fromResource( pic.name() ) );
+        tile->setImgId( imgid::fromResource( pic.name() ) );
       }
     }
 
