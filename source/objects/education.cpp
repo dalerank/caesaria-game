@@ -71,7 +71,7 @@ void School::buildingsServed(const std::set<BuildingPtr>& buildings, ServiceWalk
   if( walker->pathway().isReverse() )
     return;
 
-  std::set<HousePtr> houses = utils::select<House>( buildings );
+  auto houses = utils::uniques<House>( buildings );
   for( auto house : houses )
   {
     unsigned int posHash = gfx::tile::hash(house->pos());
@@ -127,7 +127,9 @@ std::string Academy::sound() const
 void EducationBuilding::initialize(const MetaData& mdata)
 {
   ServiceBuilding::initialize( mdata );
-  _d->maxMonthVisitors = mdata.getOption( "maxServe" );
+  int maxServe = mdata.getOption( "maxServe" );
+  if( maxServe > 0 )
+    _d->maxMonthVisitors = maxServe;
 }
 
 EducationBuilding::EducationBuilding(const Service::Type service, const object::Type type, const Size& size)

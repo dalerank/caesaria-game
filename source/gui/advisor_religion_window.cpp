@@ -210,10 +210,10 @@ void Religion::Impl::updateReligionAdvice(PlayerCityPtr city)
   int needBasicReligion = 0;
   int needSecondReligion = 0;
   int needThirdReligion = 0;
-  foreach( it, houses )
+  for( auto house : houses )
   {
-    const HouseSpecification& spec = (*it)->spec();
-    int curLevel = spec.computeReligionLevel( *it );
+    const HouseSpecification& spec = house->spec();
+    int curLevel = spec.computeReligionLevel( house );
     int needLevel = spec.minReligionLevel();
 
     switch( needLevel )
@@ -249,9 +249,9 @@ void Religion::Impl::updateReligionAdvice(PlayerCityPtr city)
     DivinityList gods = rome::Pantheon::instance().all();
 
     bool haveDispleasengGod = false;
-    foreach( it, gods )
+    for( auto god : gods )
     {
-      if( (*it)->relation() < 75 )
+      if( god->relation() < 75 )
       {
         haveDispleasengGod = true;
         break;

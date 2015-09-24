@@ -44,7 +44,7 @@ void Desirability::update( PlayerCityPtr r, OverlayPtr overlay, bool onBuild )
   int current = mul * dsrbl.base;
   for( int curRange=1; curRange <= dsrbl.range; curRange++ )
   {
-    TilesArray perimetr = tilemap.getRectangle( overlay->pos() - TilePos( curRange, curRange ),
+    TilesArray perimetr = tilemap.rect( overlay->pos() - TilePos( curRange, curRange ),
                                                 overlay->size() + Size( 2 * curRange ) );
     for( auto tile : perimetr )
     {
@@ -54,3 +54,4 @@ void Desirability::update( PlayerCityPtr r, OverlayPtr overlay, bool onBuild )
     current += mul * dsrbl.step;
   }
 }
+

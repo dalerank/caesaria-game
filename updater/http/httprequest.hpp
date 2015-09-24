@@ -87,12 +87,12 @@ public:
 	static size_t WriteMemoryCallback(void* ptr, size_t size, size_t nmemb, HttpRequest* self);
 	static size_t WriteFileCallback(void* ptr, size_t size, size_t nmemb, HttpRequest* self);
 
-	RequestStatus GetStatus();
+  RequestStatus status() const;
 
 	// Perform the request
-	void Perform();
+	void execute();
 
-	void Cancel();
+  void cancel();
 
 	// Between 0.0 and 1.0
 	double GetProgressFraction();
@@ -108,6 +108,8 @@ public:
 
 	// If GetStatus == FAILED, this holds the curl error
 	std::string GetErrorMessage();
+
+  bool isOk() const;
 
 private:
 	void InitRequest();

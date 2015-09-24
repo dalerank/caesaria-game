@@ -45,7 +45,7 @@ AboutBarracks::AboutBarracks(Widget* parent, PlayerCityPtr city, const Tile& til
 {
   setupUI( ":/gui/barracsopts.gui" );
 
-  BarracksPtr barracks = tile.overlay().as<Barracks>();
+  BarracksPtr barracks = tile.overlay<Barracks>();
 
   if( !barracks.isValid() )
   {

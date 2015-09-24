@@ -54,7 +54,7 @@ AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
 {
   setupUI( ":/gui/infoboxfactory.gui" );
 
-  FactoryPtr factory = tile.overlay().as<Factory>();
+  FactoryPtr factory = tile.overlay<Factory>();
   setBase( ptr_cast<Construction>( factory ) );
   _type = factory->type();
   std::string  title = MetaDataHolder::findPrettyName( factory->type() );
@@ -120,7 +120,7 @@ void AboutFactory::_showHelp()
 AboutShipyard::AboutShipyard(Widget* parent, PlayerCityPtr city, const Tile& tile)
   : AboutFactory( parent, city, tile )
 {
-  ShipyardPtr shipyard = ptr_cast<Shipyard>( tile.overlay() );
+  auto shipyard = tile.overlay<Shipyard>();
 
   int progressCount = shipyard->progress();
   if( progressCount > 1 && progressCount < 100 )
@@ -137,7 +137,7 @@ AboutShipyard::AboutShipyard(Widget* parent, PlayerCityPtr city, const Tile& til
 AboutWharf::AboutWharf(Widget* parent, PlayerCityPtr city, const Tile& tile)
   : AboutFactory( parent, city, tile )
 {
-  WharfPtr wharf = ptr_cast<Wharf>( tile.overlay() );
+  auto wharf = tile.overlay<Wharf>();
 
   if( wharf->getBoat().isNull() )
   {

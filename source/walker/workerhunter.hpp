@@ -20,9 +20,7 @@
 
 #include "serviceman.hpp"
 #include "city/industry.hpp"
-
-class Recruter;
-typedef SmartPtr<Recruter> RecruterPtr;
+#include "walker/predefinitions.hpp"
 
 class Recruter : public ServiceWalker
 {

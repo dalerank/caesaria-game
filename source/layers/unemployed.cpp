@@ -59,7 +59,7 @@ void Unemployed::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( overlay->type() == object::house )
     {
-      HousePtr house = overlay.as<House>();
+      auto house = overlay.as<House>();
 
       int worklessNumber = (int)house->getServiceValue( Service::recruter );
       int matureNumber = (int)house->habitants().mature_n();
@@ -113,8 +113,8 @@ void Unemployed::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        HousePtr house = tile->overlay().as<House>();
-        WorkingBuildingPtr workBuilding = tile->overlay().as<WorkingBuilding>();
+        auto house = tile->overlay<House>();
+        auto working = tile->overlay<WorkingBuilding>();
 
         if( house.isValid() )
         {
@@ -125,9 +125,9 @@ void Unemployed::handleEvent(NEvent& event)
           else
             text = "##this_house_haveno_unemployers##";
         }
-        else if( workBuilding.isValid() )
+        else if( working.isValid() )
         {
-          int need = workBuilding->needWorkers();
+          int need = working->needWorkers();
 
           if( need > 0 )
             text = utils::format( 0xff, "%s %d %s", _("##this_building_need##"), need, _("##workers##") );

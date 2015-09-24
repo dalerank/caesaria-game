@@ -48,11 +48,14 @@ REGISTER_SERVICE_IN_FACTORY(Religion,religion)
 
 struct CoverageInfo
 {
-  int smallTempleNum;
-  int bigTempleNum;
+  struct {
+    int small_n;
+    int big_n;
+  } temples;
+
   int parishionerNumber;
 
-  CoverageInfo() : smallTempleNum( 0 ), bigTempleNum( 0 ), parishionerNumber( 0 ) {}
+  CoverageInfo() : temples({0,0}), parishionerNumber( 0 ) {}
 };
 
 class TemplesCoverity : public std::map< std::string, CoverageInfo >
@@ -64,8 +67,8 @@ public:
     {
       CoverageInfo& info = (*this)[ temple->divinity()->internalName() ];
 
-      if( temple.is<BigTemple>() ) { info.bigTempleNum++; }
-      else { info.smallTempleNum++; }
+      if( temple.is<BigTemple>() ) { info.temples.big_n++; }
+      else { info.temples.small_n++; }
 
       info.parishionerNumber += temple->currentVisitors();
     }
@@ -77,7 +80,7 @@ public:
     for (auto divinity : divinities)
     {
       CoverageInfo &cvInfo = (*this)[divinity->internalName()];
-      cvInfo.smallTempleNum = 0;
+      cvInfo.temples.small_n = 0;
     }
   }
 
@@ -160,7 +163,7 @@ void Religion::timeStep( const unsigned int time )
     for (auto coverity : _d->templesCoverity)
     {
       const CoverageInfo &info = coverity.second;
-      int maxTemples = info.bigTempleNum + info.smallTempleNum;
+      int maxTemples = info.temples.big_n + info.temples.small_n;
       templesByGod[maxTemples].push_back( coverity.first );
     }
 

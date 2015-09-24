@@ -65,14 +65,14 @@ Overlay::Overlay(const object::Type type, const Size& size)
 
 Desirability Overlay::desirability() const
 {
-  return MetaDataHolder::getData( type() ).desirability();
+  return MetaDataHolder::find( type() ).desirability();
 }
 
 void Overlay::setState(Param name, double value) {}
 
 void Overlay::setType(const object::Type type)
 {
-  const MetaData& bd = MetaDataHolder::getData( type );
+  const MetaData& bd = MetaDataHolder::find( type );
 
   _d->overlayType = type;
   _d->overlayClass = bd.group();
@@ -82,6 +82,15 @@ void Overlay::setType(const object::Type type)
 void Overlay::changeDirection( Tile* masterTile, Direction direction)
 {
   _d->masterTile = masterTile;
+}
+
+Tilemap& Overlay::_map() const
+{
+  if( _city().isValid() )
+    return _city()->tilemap();
+
+  Logger::warning( "!!! WARNING: City is null at Overlay::_map()" );
+  return gfx::tilemap::getInvalid();
 }
 
 void Overlay::setPicture(Picture picture)
@@ -124,7 +133,7 @@ Tile& Overlay::tile() const
 {
   if( !_d->masterTile )
   {
-    LOG_OVERLAY.warn( "Master tile can't be null. Problem in tile with type " + type());
+    LOG_OVERLAY.warn( "Master tile can't be null. Problem in tile with type " + object::toString( type() ) );
     static Tile invalid( gfx::tilemap::invalidLocation() );
     return invalid;
   }
@@ -149,7 +158,7 @@ void Overlay::save( VariantMap& stream ) const
 
   MetaDataHolder& md = MetaDataHolder::instance();
   config.push_back( md.hasData( _d->overlayType )
-                      ? Variant( md.getData( _d->overlayType ).name() )
+                      ? Variant( md.find( _d->overlayType ).name() )
                       : Variant( debugName() ) );
 
   config.push_back( tile().pos() );
@@ -193,7 +202,8 @@ void Overlay::initialize(const MetaData& mdata)
 
 void Overlay::timeStep(const unsigned long) {}
 void Overlay::reinit() {}
-void Overlay::burn() {} //nothing to do, neck for virtual function
+void Overlay::burn() {}
+void Overlay::collapse() {} //nothing to do, neck for virtual function
 bool Overlay::isWalkable() const{  return false;}
 bool Overlay::isDestructible() const { return true; }
 bool Overlay::isFlat() const { return false;}
@@ -225,7 +235,7 @@ TilePos Overlay::pos() const
 {
   if( !_d->masterTile )
   {
-    LOG_OVERLAY.warn( "Master tile can't be null. Problem in tile with type " + type());
+    LOG_OVERLAY.warn( "Master tile can't be null. Problem in tile with type " + object::toString( type() ) );
     return gfx::tilemap::invalidLocation();
   }
   return _d->masterTile->epos();
@@ -233,7 +243,7 @@ TilePos Overlay::pos() const
 
 std::string Overlay::sound() const
 {
-  const MetaData& md = MetaDataHolder::instance().getData( type() );
+  const MetaData& md = MetaDataHolder::instance().find( type() );
   return md.sound();
 }
 
@@ -241,11 +251,11 @@ TilesArray Overlay::area() const
 {
   if( _city().isNull() )
   {
-    LOG_OVERLAY.error( "In Overlay::area() city is null. Tile type is " + type() );
+    LOG_OVERLAY.error( "In Overlay::area() city is null. Tile type is " +object::toString( type() ) );
     return gfx::TilesArray();
   }
 
-  return _city()->tilemap().getArea( pos(), size() );
+  return _city()->tilemap().area( pos(), size() );
 }
 
 Overlay::~Overlay()

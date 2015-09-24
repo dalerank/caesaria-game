@@ -29,11 +29,11 @@ public:
     if( _willAdd.empty() )
       return;
 
-    *this << _willAdd;
+    this->append( _willAdd );
     _willAdd.clear();
   }
 
-  void postpone( SmartPtr<T> overlay ) { _willAdd << overlay; }
+  void postpone( SmartPtr<T> overlay ) { _willAdd.push_back(overlay); }
 
 private:
   SmartList<T> _willAdd;

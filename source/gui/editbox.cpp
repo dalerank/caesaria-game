@@ -103,7 +103,7 @@ signals public:
 std::string __ucs2utf8( const std::wstring& text )
 {
   std::string ret;
-  for( auto symbol : text )
+  for( auto& symbol : text )
   {
     if( (unsigned short)symbol < 0x80 )
     {
@@ -123,13 +123,13 @@ void EditBox::_init()
 {
   _d->lastBreakFont = activeFont();
 
-  #ifdef _DEBUG
-      setDebugName( "EditBox");
-  #endif
+#ifdef _DEBUG
+  setDebugName( "EditBox");
+#endif
 
   // this element can be tabbed to
-  setTabStop(true);
-  setTabOrder(-1);
+  setTabstop(true);
+  setTaborder(-1);
 
   _breakText();
 

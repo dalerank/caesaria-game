@@ -26,7 +26,6 @@
 #include "core/gettext.hpp"
 #include "objects/construction.hpp"
 #include "city/statistic.hpp"
-#include "core/foreach.hpp"
 #include "objects/house.hpp"
 #include "texturedbutton.hpp"
 #include "objects/constants.hpp"
@@ -40,14 +39,18 @@
 using namespace gfx;
 using namespace city;
 
-struct HealthDescription
+struct HealthcareInfo
 {
   object::Type type;
   std::string building;
   std::string people;
+  int buildingCount;
+  int buildingWork;
+  int peoplesServed;
+  int needService;
 };
 
-static HealthDescription healthDescrs[] = {
+static HealthcareInfo healthDescrs[] = {
   { object::baths, "##bath##", "##peoples##" },
   { object::barber, "##barber##", "##peoples##" },
   { object::hospital, "##hospital##", "##patients##" },
@@ -64,7 +67,7 @@ namespace gui
 namespace advisorwnd
 {
 
-static HealthDescription findInfo( const object::Type service )
+static HealthcareInfo findInfo( const object::Type service )
 {
   for( int index=0; healthDescrs[index].type != object::unknown; index++ )
   {
@@ -72,16 +75,8 @@ static HealthDescription findInfo( const object::Type service )
         return healthDescrs[index];
   }
 
-  return HealthDescription();
+  return HealthcareInfo();
 }
-
-struct HealthcareInfo
-{
-  int buildingCount;
-  int buildingWork;
-  int peoplesServed;
-  int needService;
-};
 
 class HealthInfoLabel : public Label
 {
@@ -100,7 +95,7 @@ public:
   {
     Label::_updateTexture( painter );
 
-    HealthDescription info = findInfo( _service );
+    HealthcareInfo info = findInfo( _service );
 
     Picture& texture = _textPicture();
     Font rfont = font();

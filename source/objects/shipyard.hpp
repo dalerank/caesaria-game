@@ -28,7 +28,7 @@ public:
 
   virtual void destroy();
   virtual void timeStep(const unsigned long time);
-
+  virtual bool build(const city::AreaInfo &info);
   virtual bool mayWork() const;
 
   virtual unsigned int getConsumeQty() const;

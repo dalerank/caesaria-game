@@ -22,6 +22,7 @@
 #include "core/position.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/safetycast.hpp"
+#include "watersupply.hpp"
 #include "objects/road.hpp"
 #include "gfx/tile.hpp"
 #include "walker/serviceman.hpp"
@@ -78,12 +79,13 @@ void Fountain::deliverService()
   if( !_d->haveReservoirWater )
     return;
 
-  ServiceWalkerPtr walker = ServiceWalker::create( _city(), serviceType() );
-  walker->setBase( BuildingPtr( this ) );
-  walker->setReachDistance( 4 );
-  ReachedBuildings reachedBuildings = walker->getReachedBuildings( tile().pos() );
+  auto serviceMan = ServiceWalker::create( _city(), serviceType() );
+  serviceMan->setBase( BuildingPtr( this ) );
+  serviceMan->setReachDistance( 4 );
+  ReachedBuildings reachedBuildings = serviceMan->getReachedBuildings( tile().pos() );
 
-  for( auto b : reachedBuildings ) { b->applyService( walker ); }
+  for( auto b : reachedBuildings )
+    b->applyService( serviceMan );
 }
 
 void Fountain::timeStep(const unsigned long time)
@@ -107,7 +109,7 @@ void Fountain::timeStep(const unsigned long time)
 
     if( needWorkers() > 0 )
     {
-      RecruterPtr recruter = Recruter::create( _city() );
+      auto recruter = Recruter::create( _city() );
       recruter->once( this, needWorkers(), _d->fillDistance * 2);
     }
   }  
@@ -154,24 +156,14 @@ bool Fountain::isNeedRoad() const { return false; }
 
 bool Fountain::haveReservoirAccess() const
 {
-  TilesArea reachedTiles( _city()->tilemap(), pos(), 10 );
-  for( auto tile : reachedTiles )
-  {
-    OverlayPtr overlay = tile->overlay();
-    if( overlay.isValid() && (object::reservoir == overlay->type()) )
-    {
-      return true;
-    }
-  }
-
-  return false;
+  return TilesArea( _city()->tilemap(), 10, pos() ).overlays().count<Reservoir>() > 0;
 }
 
 void Fountain::destroy()
 {
   ServiceBuilding::destroy();
 
-  TilesArea reachedTiles( _city()->tilemap(), pos(), _d->fillDistance );
+  TilesArea reachedTiles( _city()->tilemap(), _d->fillDistance, pos() );
 
   for( auto tile : reachedTiles )
     tile->setParam( Tile::pFountainWater, 0 );
@@ -221,7 +213,7 @@ void Fountain::_dayUpdate()
 
   if( mayWork() )
   {
-    TilesArea reachedTiles( _city()->tilemap(), pos(), _d->fillDistance );
+    TilesArea reachedTiles( _city()->tilemap(), _d->fillDistance, pos() );
 
     for( auto tile : reachedTiles )
     {

@@ -23,6 +23,7 @@
 #include "core/scopedptr.hpp"
 #include "predefinitions.hpp"
 #include "core/referencecounted.hpp"
+#include "world/empire.hpp"
 
 class NColor;
 
@@ -37,8 +38,8 @@ public:
   void setName( const std::string& name );
   std::string name() const;
 
-  void setRank( int rank );
-  int rank() const;
+  void setRank( world::GovernorRank::Level rank );
+  world::GovernorRank::Level rank() const;
 
   int salary() const;
   void setSalary( const int value );

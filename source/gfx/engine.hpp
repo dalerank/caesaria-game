@@ -54,6 +54,7 @@ public:
   bool isFullscreen() const;
   void setFullscreen(bool enabled );
 
+  virtual void setTitle( const std::string& title );
   virtual void setFlag( int flag, int value );
   virtual int getFlag( int flag ) const;
 
@@ -77,6 +78,8 @@ public:
 
   virtual void drawLine( const NColor& color, const Point& p1, const Point& p2 ) = 0;
   virtual void drawLines( const NColor& color, const PointsArray& points ) = 0;
+
+  virtual void fillRect( const NColor& color, const Rect& rect ) = 0;
 
   virtual void setColorMask( int rmask, int gmask, int bmask, int amask ) = 0;
   virtual void resetColorMask() = 0;

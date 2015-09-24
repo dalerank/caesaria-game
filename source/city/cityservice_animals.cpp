@@ -40,7 +40,7 @@ REGISTER_SERVICE_IN_FACTORY(Animals,animals)
 class Animals::Impl
 {
 public:
-  std::map< walker::Type, unsigned int > maxAnimal;
+  std::map< walker::Type, unsigned int > animalInfo;
   TilesArray cityBorder;
   TilesArray border;
 };
@@ -60,12 +60,13 @@ void Animals::timeStep(const unsigned int time)
   if( !game::Date::isMonthChanged() )
     return;
 
-  if( _d->maxAnimal.empty() )
+  //add default animals config for map
+  if( _d->animalInfo.empty() )
   {
     walker::Type currentTerrainAnimal = _city()->climate() == game::climate::desert
                                           ? walker::zebra
                                           : walker::sheep;
-    _d->maxAnimal[ currentTerrainAnimal ] = config::animals::defaultNumber;
+    _d->animalInfo[ currentTerrainAnimal ] = config::animals::defaultNumber;
   }
 
   //lazy initialize city border and cache border array
@@ -77,15 +78,15 @@ void Animals::timeStep(const unsigned int time)
 
   _d->border = _d->cityBorder.walkables( true );
 
-  for( auto winfo : _d->maxAnimal )
+  for( auto& animalInfo : _d->animalInfo )
   {
-    walker::Type walkerType = winfo.first;
-    unsigned int maxAnimalInCity = winfo.second;
+    walker::Type walkerType = animalInfo.first;
+    unsigned int maxAnimalInCity = animalInfo.second;
 
     if( maxAnimalInCity > 0 )
     {
-      const WalkerList& animals = _city()->statistic().walkers.find( walkerType );
-      if( animals.size() < maxAnimalInCity )
+      int animals_n = _city()->statistic().walkers.count( walkerType );
+      if( animals_n < (int)maxAnimalInCity )
       {
         AnimalPtr animal = WalkerManager::instance().create<Animal>( walkerType, _city() );
         if( animal.isValid() )
@@ -100,7 +101,7 @@ void Animals::timeStep(const unsigned int time)
 
 void Animals::setAnimalsNumber( walker::Type animal_type, unsigned int number)
 {
-  _d->maxAnimal[ animal_type ] = number;
+  _d->animalInfo[ animal_type ] = number;
 }
 
 VariantMap Animals::save() const
@@ -108,7 +109,7 @@ VariantMap Animals::save() const
   VariantMap ret = Srvc::save();
 
   VariantMap animalsVm;
-  for( auto winfo : _d->maxAnimal )
+  for( auto& winfo : _d->animalInfo )
     animalsVm[ WalkerHelper::getTypename( winfo.first ) ] = winfo.second;
 
   ret[ "animals" ] = animalsVm;
@@ -121,10 +122,10 @@ void Animals::load(const VariantMap& stream)
   Srvc::load( stream );
 
   VariantMap animalsVm = stream.get( "animals" ).toMap();
-  for( auto info : animalsVm )
+  for( auto& info : animalsVm )
   {
     walker::Type wtype = WalkerHelper::getType( info.first );
-    _d->maxAnimal[ wtype ] = info.second;
+    _d->animalInfo[ wtype ] = info.second;
   }
 }
 

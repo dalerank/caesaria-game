@@ -36,10 +36,9 @@
 #if defined(CAESARIA_PLATFORM_ANDROID)
 #include <SDL.h>
 #include <SDL_system.h>
-int SDL_main(int argc, char* argv[])
-#else
-int main(int argc, char* argv[])
 #endif
+
+int main(int argc, char* argv[])
 {
   crashhandler::install();
 
@@ -88,6 +87,8 @@ int main(int argc, char* argv[])
     Game game;
     game.initialize();
     while( game.exec() );
+
+    game.destroy();
   }
   catch( Exception& e )
   {

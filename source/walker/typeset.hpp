@@ -42,7 +42,7 @@ public:
   VariantList save() const
   {
     VariantList ret;
-    for( auto item : *this )
+    for( auto& item : *this )
       ret.emplace_back( item );
 
     return ret;
@@ -50,7 +50,7 @@ public:
 
   void load( const VariantList& stream )
   {
-    for( auto item : stream )
+    for( auto& item : stream )
       insert( item.toEnum<walker::Type>() );
   }
 };

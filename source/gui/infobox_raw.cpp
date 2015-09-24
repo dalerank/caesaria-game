@@ -27,6 +27,8 @@
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
 #include "game/infoboxmanager.hpp"
+#include "dialogbox.hpp"
+#include "texturedbutton.hpp"
 
 using namespace gfx;
 
@@ -52,15 +54,14 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
 {  
   Widget::setupUI( ":/gui/infoboxraw.gui" );
 
-  FactoryPtr rawmb = ptr_cast<Factory>( tile.overlay() );
+  FactoryPtr rawmb = tile.overlay<Factory>();
   _type = rawmb->type();
 
-  setBase( ptr_cast<Construction>( rawmb ) );
+  setBase( rawmb );
   _setWorkingVisible( true );
 
   INIT_WIDGET_FROM_UI( Label*, lbProductivity )
   INIT_WIDGET_FROM_UI( Label*, lbProgress )
-  INIT_WIDGET_FROM_UI( Label*, lbDamage )
 
   if( rawmb->produceGoodType() != good::none )
   {
@@ -69,14 +70,6 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
   }
 
   _updateWorkersLabel( Point( 32, 160 ), 542, rawmb->maximumWorkers(), rawmb->numberWorkers() );
-
-  if( lbDamage != NULL )
-  {
-    std::string text = utils::format( 0xff, "%d%% damage - %d%% fire",
-                                            (int)rawmb->state( pr::damage ),
-                                            (int)rawmb->state( pr::fire ) );
-    lbDamage->setText( text );
-  }
 
   if( lbProgress != NULL )
   {
@@ -94,6 +87,30 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
   if( lbProductivity != NULL )
   {
     lbProductivity->setText( _(text) );
+  }
+
+  INIT_WIDGET_FROM_UI( TexturedButton*, btnHelp )
+  if( btnHelp )
+  {
+    Rect rect = btnHelp->relativeRect();
+    rect += Point( btnHelp->width() + 5, 0 );
+    rect.rright() += 60;
+    PushButton* btn = new PushButton( this, rect, "Adv.Info", -1, false, PushButton::whiteBorderUp );
+    CONNECT( btn, onClicked(), this, AboutRawMaterial::_showAdvInfo )
+  }
+}
+
+void AboutRawMaterial::_showAdvInfo()
+{
+  FactoryPtr rawmb = base().as<Factory>();
+  if( rawmb.isValid() )
+  {
+    std::string workerState = utils::format( 0xff, "Damage=%d\nFire=%d\n",
+                                                  (int)rawmb->state( pr::damage ),
+                                                  (int)rawmb->state( pr::fire ) );
+
+    dialog::Dialog* dialog = dialog::Information( ui(), "Information", workerState );
+    dialog->setCenter( ui()->rootWidget()->center() );
   }
 }
 

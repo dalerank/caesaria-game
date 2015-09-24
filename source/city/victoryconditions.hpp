@@ -55,6 +55,8 @@ public:
   void addReignYears( int value );
   void decreaseReignYear();
 
+  void setMaxHouseLevel( int level );
+
   bool isSuccess( int culture, int prosperity,
                   int favour, int peace,
                   int population ) const;

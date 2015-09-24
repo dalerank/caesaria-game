@@ -74,7 +74,7 @@ void RoadBlock::appendPaved(int) {}
 
 bool RoadBlock::build( const city::AreaInfo& info )
 {
-  RoadPtr road = ptr_cast<Road>( info.city->getOverlay( info.pos ) );
+  RoadPtr road = info.city->getOverlay( info.pos ).as<Road>();
   if( road.isValid() )
   {
     road->setState( pr::lockTerrain, 1 );
@@ -99,7 +99,7 @@ void RoadBlock::load(const VariantMap& stream)
 
   if( size().area() > 1 )
   {
-    city::AreaInfo info = { _city(), pos(), TilesArray() };
+    city::AreaInfo info( _city(), pos() );
     Construction::build( info );
   }
 

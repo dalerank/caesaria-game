@@ -93,7 +93,7 @@ void Recruter::setPriority(const city::HirePriorities& priority)
   _d->priority = priority;
 
   int priorityLevel = 1;
-  for( auto priority : _d->priority )
+  for( auto& priority : _d->priority )
   {
     object::Groups groups = city::industry::toGroups( priority );
     for( auto group : groups )

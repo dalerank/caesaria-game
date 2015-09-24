@@ -52,9 +52,9 @@ Celebrates& Celebrates::instance()
 void Celebrates::load(vfs::Path path)
 {
   VariantMap conf = config::load( path );
-  foreach( it, conf )
+  for( auto& it : conf )
   {
-    VariantMap infoVm = it->second.toMap();
+    VariantMap infoVm = it.second.toMap();
     int day = infoVm.get( "day" );
     int month = infoVm.get( "month" );
     std::string description = infoVm.get( "desc" );
@@ -64,9 +64,9 @@ void Celebrates::load(vfs::Path path)
   }
 }
 
-std::string Celebrates::getDescription(int day, int month) const
+std::string Celebrates::getDescription(int day, Month month) const
 {
-  CelebrateInfo test = { month, day, "" };
+  CelebrateInfo test = { (int)month, day, "" };
   Items::iterator it = _d->items.find( test.hash() );
   if( it != _d->items.end() )
     return it->second.description;

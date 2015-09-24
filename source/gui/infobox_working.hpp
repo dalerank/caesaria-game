@@ -42,6 +42,7 @@ protected:
   virtual void _showHelp();
   void _drawWorkers( int );
   WorkingBuildingPtr _getBuilding();
+  void _showAdvInfo();
 
 private:
   WorkingBuildingPtr _working;

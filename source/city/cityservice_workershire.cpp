@@ -21,8 +21,8 @@
 #include "objects/engineer_post.hpp"
 #include "objects/prefecture.hpp"
 #include "walker/workerhunter.hpp"
-#include "core/foreach.hpp"
 #include "objects/constants.hpp"
+#include "core/foreach.hpp"
 #include "game/gamedate.hpp"
 #include "core/gettext.hpp"
 #include "objects/metadata.hpp"
@@ -54,7 +54,7 @@ class WorkersHire::Impl
 public:
   typedef std::map<object::Group, object::Types> GroupBuildings;
 
-  WalkerList hrInCity;
+  RecruterList recrutesInCity;
   unsigned int distance;
   DateTime lastMessageDate;
   HirePriorities priorities;
@@ -90,13 +90,13 @@ WorkersHire::WorkersHire(PlayerCityPtr city)
 
 void WorkersHire::Impl::fillIndustryMap()
 {
-  MetaDataHolder::OverlayTypes types = MetaDataHolder::instance().availableTypes();
+  object::Types types = MetaDataHolder::instance().availableTypes();
 
   industryBuildings.clear();
 
-  for( auto type : types)
+  for( auto& type : types)
   {
-    const MetaData& info = MetaDataHolder::getData( type );
+    const MetaData& info = MetaDataHolder::find( type );
     int workersNeed = info.getOption( literals::employers );
     if( workersNeed > 0 )
     {
@@ -107,14 +107,10 @@ void WorkersHire::Impl::fillIndustryMap()
 
 bool WorkersHire::Impl::haveRecruter( WorkingBuildingPtr building )
 {
-  for( auto wlk : hrInCity )
+  for( auto recruter : recrutesInCity )
   {
-    RecruterPtr hr = wlk.as<Recruter>();
-    if( hr.isValid() )
-    {
-      if( hr->baseLocation() == building->pos() )
+    if( recruter->baseLocation() == building->pos() )
         return true;
-    }
   }
 
   return false;
@@ -149,13 +145,16 @@ void WorkersHire::timeStep( const unsigned int time )
   if( _city()->states().population == 0 )
     return;
 
-  _d->hrInCity = _city()->statistic().walkers.find( walker::recruter );
+  _d->recrutesInCity = _city()->statistic().walkers
+                                           .find( walker::recruter )
+                                           .select<Recruter>();
 
-  WorkingBuildingList buildings = _city()->statistic().objects.find<WorkingBuilding>( object::any );
+  WorkingBuildingList buildings = _city()->statistic().objects
+                                                      .find<WorkingBuilding>();
 
   if( !_d->priorities.empty() )
   {
-    for( auto priority : _d->priorities )
+    for( auto& priority : _d->priorities )
     {
       object::Groups groups = industry::toGroups( priority );
 

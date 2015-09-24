@@ -49,9 +49,6 @@ Gatehouse::Gatehouse() : Building( object::gatehouse, Size( 2 ) ), _d( new Impl 
 {
   _picture().load( ResourceGroup::land2a, 150 );
   _d->gatehouseSprite.resize( 1 );
-
-  setState( pr::inflammability, 0 );
-  setState( pr::collapsibility, 0 );
 }
 
 bool Gatehouse::_update( const city::AreaInfo& areaInfo )
@@ -138,7 +135,7 @@ void Gatehouse::load(const VariantMap& stream)
   _d->updateSprite();
 }
 
-bool Gatehouse::isWalkable() const {  return true; }
+bool Gatehouse::isWalkable() const { return true; }
 Renderer::PassQueue Gatehouse::passQueue() const{  return gatehousePass;}
 
 const Pictures& Gatehouse::pictures(Renderer::Pass pass) const
@@ -161,7 +158,13 @@ void Gatehouse::destroy()
 {
   TilesArray tiles = area();
 
-  foreach( it, tiles ) (*it)->setFlag( Tile::tlRoad, false );
+  for( auto tile : tiles )
+    tile->setFlag( Tile::tlRoad, false );
+}
+
+void Gatehouse::burn()
+{
+  Logger::warning( "WARNING: Gatehouse cant be burn. Ignore." );
 }
 
 bool Gatehouse::build( const city::AreaInfo& info )
@@ -169,15 +172,9 @@ bool Gatehouse::build( const city::AreaInfo& info )
   _update( info );
   _d->updateSprite();
 
-  TilesArea tiles( info.city->tilemap(), info.pos, size() );
-  foreach( it, tiles )
-  {
-    RoadPtr road = ptr_cast<Road>( (*it)->overlay() );
-    if( road.isValid() )
-    {
-      road->setState( pr::lockTerrain, 1 );
-    }
-  }
+  auto roads = TilesArea( info.city->tilemap(), info.pos, size() ).overlays<Road>();
+  for( auto road : roads )
+    road->setState( pr::lockTerrain, 1 );
 
   return Building::build( info );
 }
@@ -186,7 +183,6 @@ bool Gatehouse::canBuild( const city::AreaInfo& areaInfo ) const
 {
   return const_cast< Gatehouse* >( this )->_update( areaInfo );
 }
-
 
 void Gatehouse::Impl::updateSprite()
 {

@@ -41,6 +41,8 @@ public:
 
   Directory operator/(const Directory& dir ) const;
   Path operator/(const Path& filename ) const;
+  Path operator/(const std::string& filename ) const;
+  Path operator/(const char* filename ) const;
 
   Entries entries() const;
   Path find( const Path& fileName, SensType sens = Path::nativeCase ) const;
@@ -54,9 +56,9 @@ public:
   static Directory userDir();
 
   static bool create( std::string dir );
-  static bool createByPath(Directory dir );
+  static bool createByPath( Directory dir );
 };
 
-}//end namespace io
+}//end namespace vfs
 
 #endif //__CAESARIA_DIRECTORY_H_INCLUDED__

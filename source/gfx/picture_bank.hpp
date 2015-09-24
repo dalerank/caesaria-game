@@ -28,7 +28,7 @@ namespace gfx
 
 class PictureBank : public StaticSingleton<PictureBank>
 {
-  friend class StaticSingleton;
+  SET_STATICSINGLETON_FRIEND_FOR(PictureBank)
 public:
   void reset();
 

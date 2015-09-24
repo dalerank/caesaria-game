@@ -50,7 +50,7 @@ AboutTemple::AboutTemple(Widget* parent, PlayerCityPtr city, const Tile& tile )
 {
   setupUI( ":/gui/infoboxtemple.gui" );
 
-  TemplePtr temple = ptr_cast<Temple>( tile.overlay() );
+  TemplePtr temple = tile.overlay<Temple>();
   setBase( temple );
 
   std::string shortDesc;

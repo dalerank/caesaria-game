@@ -82,7 +82,7 @@ private:
 
 class Logger : public StaticSingleton<Logger>
 {
-  friend class StaticSingleton;
+  SET_STATICSINGLETON_FRIEND_FOR(Logger)
 public:
   typedef enum { consolelog=0, filelog, count } Type;
   static void warning( const char* fmt, ...);

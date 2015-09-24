@@ -29,7 +29,6 @@
 #include "gfx/tilesarray.hpp"
 #include "city/cityservice_peace.hpp"
 #include "build.hpp"
-#include "core/foreach.hpp"
 #include "gfx/tilearea.hpp"
 
 using namespace gfx;

@@ -28,10 +28,12 @@ namespace city
 
 class Timers : public StaticSingleton<Timers>
 {
-  friend class StaticSingleton;
+  SET_STATICSINGLETON_FRIEND_FOR(Timers)
 public:
   void update( const unsigned int time );
   void addTimer( TimerPtr timer );
+  void reset();
+  TimerPtr find( int id ) const;
 
   ~Timers();
 private:

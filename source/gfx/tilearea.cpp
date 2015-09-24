@@ -23,23 +23,23 @@ namespace gfx
 
 TilesArea::TilesArea(const Tilemap &tmap, const TilePos& leftup, const TilePos& rightdown)
 {
-  append( tmap.getArea( leftup, rightdown ) );
+  append( tmap.area( leftup, rightdown ) );
 }
 
-TilesArea::TilesArea(const Tilemap &tmap, const TilePos& center, int distance)
+TilesArea::TilesArea(const Tilemap &tmap, int distance, const TilePos& center)
 {
-  reset( tmap, center, distance );
+  add( tmap, center, distance );
 }
 
 TilesArea::TilesArea(const Tilemap &tmap, const TilePos& leftup, const Size& size)
 {
-  append( tmap.getArea( leftup, size ) );
+  append( tmap.area( leftup, size ) );
 }
 
-void TilesArea::reset(const Tilemap& tmap, const TilePos& center, int distance)
+void TilesArea::add(const Tilemap& tmap, const TilePos& center, int distance)
 {
   TilePos offset( distance, distance );
-  append( tmap.getArea( center - offset, center + offset ) );
+  append( tmap.area( center - offset, center + offset ) );
 }
 
 TilesArea& TilesArea::operator=(const TilesArray& other)

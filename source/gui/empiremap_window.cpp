@@ -211,7 +211,7 @@ void EmpireMapWindow::Impl::drawStatic(Engine& painter)
 void EmpireMapWindow::Impl::drawTradeRoutes(Engine& painter)
 {
   world::TraderouteList routes = city->empire()->tradeRoutes();
-  for( auto route : routes )
+  for( auto& route : routes )
   {
     const PointsArray& points = route->points();
     const Pictures& pictures = route->pictures();
@@ -415,7 +415,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
 
   const good::Store& sellgoods = currentCity->sells();
   int k=0;
-  for( auto product : good::all() )
+  for( auto& product : good::all() )
   {
     if( sellgoods.capacity( product ) > 0  )
     {
@@ -431,7 +431,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
 
   const good::Store& buygoods = currentCity->buys();
   k=0;
-  for( auto product : good::all() )
+  for( auto& product : good::all() )
   {
     if( buygoods.capacity( product ) > 0  )
     {
@@ -459,7 +459,7 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
 
   const good::Store& sellgoods = currentCity->sells();
   int k=0;
-  for( auto product : good::all() )
+  for( auto& product : good::all() )
   {
     Unit maxsell = Unit::fromQty( sellgoods.capacity( product ) );
     Unit cursell = Unit::fromQty( sellgoods.qty( product ) );
@@ -479,7 +479,7 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
 
   const good::Store& buygoods = currentCity->buys();
   k=0;
-  for( auto product : good::all() )
+  for( auto& product : good::all() )
   {
     Unit maxbuy = Unit::fromQty( buygoods.capacity( product ) );
     Unit curbuy = Unit::fromQty( buygoods.qty( product ) );
@@ -596,6 +596,15 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
 
       if( _d->flags.isFlag( showCityInfo ) )
         _d->checkCityOnMap( _d->drag.start );
+
+#ifdef DEBUG
+    {
+      std::string text = _d->lbTitle->text();
+      _d->lbTitle->setText( text + utils::format( 0xff, " [%d,%d]",
+                                                  - _d->offset.x() + _d->drag.start.x(),
+                                                  - _d->offset.y() + _d->drag.start.y() ) );
+    }
+#endif
     break;
 
     case mouseRbtnRelease:
@@ -666,7 +675,7 @@ void EmpireMapWindow::_changePosition()
     world::EmpirePtr empire = _d->city->empire();
     world::TraderouteList routes = empire->tradeRoutes();
 
-    for( auto route : routes )
+    for( auto& route : routes )
     {
       if( route->containPoint( -_d->offset + cursorPos, 4 ) )
       {

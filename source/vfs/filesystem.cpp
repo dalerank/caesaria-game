@@ -605,6 +605,10 @@ Entries FileSystem::getFileList()
 			{
 				do
 				{
+          if(!strcmp( c_file.name, ".") || !strcmp( c_file.name, ".."))
+          {
+            continue;
+          }
 					ret.addItem( Path( rpath.toString() + c_file.name ), 0, c_file.size, (_A_SUBDIR & c_file.attrib) != 0, 0);
 				}
 				while( _findnext( hFile, &c_file ) == 0 );
@@ -632,10 +636,10 @@ Entries FileSystem::getFileList()
 					unsigned int size = 0;
 					bool isDirectory = false;
 
-					if((strcmp(dirEntry->d_name, ".")==0) || (strcmp(dirEntry->d_name, "..")==0))
+          if((strcmp(dirEntry->d_name, ".")==0) || (strcmp(dirEntry->d_name, "..")==0))
 					{
 						continue;
-					}
+          }
 					struct stat buf;
 					if (stat(dirEntry->d_name, &buf)==0)
 					{

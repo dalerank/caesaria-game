@@ -27,7 +27,7 @@ namespace game
 
 class Date : public StaticSingleton<Date>
 {
-  friend class StaticSingleton;
+  SET_STATICSINGLETON_FRIEND_FOR(Date)
 public:
   void timeStep( unsigned int time );
 

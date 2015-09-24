@@ -19,7 +19,6 @@
 #include "game/gamedate.hpp"
 #include "game/game.hpp"
 #include "city/city.hpp"
-#include "core/foreach.hpp"
 #include "dispatcher.hpp"
 #include "core/variant_map.hpp"
 #include "city/requestdispatcher.hpp"

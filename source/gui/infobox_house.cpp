@@ -57,6 +57,7 @@
 #include "dictionary.hpp"
 #include "pushbutton.hpp"
 #include "environment.hpp"
+#include "core/gettext.hpp"
 #include "dialogbox.hpp"
 #include "game/infoboxmanager.hpp"
 #include "events/playsound.hpp"
@@ -95,7 +96,7 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
 {
   setupUI( ":/gui/infoboxhouse.gui" );
 
-  _house = tile.overlay().as<House>();
+  _house = tile.overlay<House>();
 
   if( _house.isNull() )
   {
@@ -138,18 +139,19 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
         OverlayPtr overlay = city->getOverlay( rPos );
         if( overlay.isValid() )
         {
-          std::string type;
+          std::string housePrettyType;
           if( overlay->type() == object::house )
           {
             HousePtr house = overlay.as<House>();
-            type = house.isValid() ? house->levelName() : "##unknown_house_type##";
+            housePrettyType = house.isValid() ? house->levelName() : "##unknown_house_type##";
           }
           else
           {
-            type = overlay.isValid() ? MetaDataHolder::findPrettyName( overlay->type() ) : "";
+            housePrettyType = overlay.isValid() ? MetaDataHolder::findPrettyName( overlay->type() ) : "";
           }
 
-          text = utils::replace( text, "{0}", "( " + type + " )" );
+          housePrettyType = utils::format( 0xff, "(%s)", _(housePrettyType) );
+          text = utils::replace( text, "{0}", housePrettyType );
         }
       }
     }

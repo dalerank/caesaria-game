@@ -35,7 +35,7 @@ public:
 
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
-
+  virtual bool build(const city::AreaInfo &info);
   virtual void timeStep(const unsigned long time);
 
   virtual void deliverService();

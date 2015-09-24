@@ -16,7 +16,7 @@
 #include "eventconverter.hpp"
 #include "time.hpp"
 #include "SDL_version.h"
-#include <SDL_events.h>
+#include "SDL_events.h"
 #include "logger.hpp"
 #include <map>
 #include <cstring>
@@ -63,6 +63,7 @@ void EventConverter::Impl::createKeyMap()
 
     // combined modifiers missing
     init_key( SDLK_PAUSE, KEY_PAUSE );
+    init_key( SDLK_BACKQUOTE, KEY_TILDA );
     init_key( SDLK_CAPSLOCK, KEY_CAPITAL );
 
     init_key( SDLK_ESCAPE, KEY_ESCAPE );
@@ -222,26 +223,6 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
   /*case SDL_FINGERUP:
   case SDL_FINGERDOWN:
   {
-     ret.EventType = sEventMouse;
-     SDL_Keymod mods = SDL_GetModState();
-
-     ret.mouse.x = sdlEvent.button.x;
-     ret.mouse.y = sdlEvent.button.y;
-
-     ret.mouse.control = mods & KMOD_CTRL;
-     ret.mouse.shift = mods & KMOD_SHIFT;
-     ret.mouse.type = mouseMoved;
-
-     if(sdlEvent.type == SDL_FINGERDOWN)
-     {
-       ret.mouse.type = mouseLbtnPressed;
-       _d->mouseButtonStates |= mbsmLeft;
-     }
-     else
-     {
-       ret.mouse.type = mouseLbtnRelease;
-       _d->mouseButtonStates &= ~mbsmLeft;
-     }
   }
   break;*/
 
@@ -352,7 +333,7 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
     ret.keyboard.pressed = (sdlEvent.type == SDL_KEYDOWN);
     ret.keyboard.shift = (sdlEvent.key.keysym.mod & KMOD_SHIFT) != 0;
     ret.keyboard.control = (sdlEvent.key.keysym.mod & KMOD_CTRL ) != 0;
-    ret.keyboard.symbol = 0;
+    ret.keyboard.symbol = sdlEvent.key.keysym.sym;
   }
   break;
 

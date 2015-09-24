@@ -29,10 +29,10 @@ namespace city
 namespace request
 {
 
-class Request : public ReferenceCounted
+class RqBase : public ReferenceCounted
 {
 public:
-  virtual ~Request() {}
+  virtual ~RqBase() {}
 
   virtual bool isReady( PlayerCityPtr ) const { return false; }
   virtual void exec( PlayerCityPtr ) {}
@@ -53,10 +53,10 @@ protected:
   bool _isDeleted, _isAnnounced;
   DateTime _finishDate, _startDate;
 
-  Request( DateTime finish );
+  RqBase( DateTime finish );
 };
 
-class RqGood : public Request
+class RqGood : public RqBase
 {
 public:
   static RequestPtr create( const VariantMap& stream );

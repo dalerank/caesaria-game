@@ -33,6 +33,7 @@
 #include "walker/fish_place.hpp"
 #include "gfx/tilesarray.hpp"
 #include "game/gamedate.hpp"
+#include "gfx/tilemap.hpp"
 #include "walkers_factory.hpp"
 #include "gfx/helper.hpp"
 
@@ -55,7 +56,7 @@ void FishingBoat::save( VariantMap& stream ) const
   Ship::save( stream );
 
   VARIANT_SAVE_ANY_D( stream, _d, destination )
-  stream[ "stock" ] = _d->stock.save();
+  VARIANT_SAVE_CLASS_D( stream, _d, stock )
   stream[ "mode" ] = (int)_d->mode;
   stream[ "base" ] = _d->base.isValid() ? _d->base->pos() : gfx::tilemap::invalidLocation();
 }
@@ -64,10 +65,11 @@ void FishingBoat::load( const VariantMap& stream )
 {
   Ship::load( stream );
   VARIANT_LOAD_ANY_D( _d, destination, stream )
-  _d->stock.load( stream.get( "stock" ).toList() );
+  VARIANT_LOAD_CLASS_D_LIST( _d, stock, stream )
   _d->mode = (State)stream.get( "mode", (int)wait ).toInt();
 
-  _d->base = ptr_cast<CoastalFactory>(_city()->getOverlay( (TilePos)stream.get( "base" ) ) );
+  TilePos basepos = stream.get( "base" );
+  _d->base = _map().overlay( basepos ).as<CoastalFactory>();
   if( _d->base.isValid() )
   {
     _d->base->assignBoat( this );

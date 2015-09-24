@@ -37,6 +37,7 @@ public:
   };
 
   bool contain( const TilePos& tilePos ) const;
+  Tile* find( const TilePos& tilePos ) const;
 
   TilesArray() {}
 
@@ -61,14 +62,20 @@ public:
 
   TilesArray waters() const;
 
-  TilesArray& remove(const TilePos &pos );
+  TilesArray& remove(const TilePos& pos );
   TilePosArray locations() const;
 
   OverlayList overlays() const;
 
+  template<class T>
+  SmartList<T> overlays() const { return overlays().select<T>(); }
+
   void pop_front();
 
   Tile* random() const;
+
+  template< class T >
+  SmartList<T> overlays() { return overlays().select<T>(); }
 };
 
 }//end namespace

@@ -52,18 +52,34 @@ static const Points libraries = { {1.0,20}, {0.86,14}, {0.71,8},  {0.51,4}, {0.3
 static const Points schools =   { {1.0,15}, {0.86,10}, {0.71,6},  {0.51,4}, {0.31,1}, {0.0,0} };
 static const Points academies = { {1.0,10}, {0.86,7},  {0.71,4},  {0.51,2}, {0.31,1}, {0.0,0} };
 
-template<class T, class objsType=object::Type>
+/**
+ * Part of culture rating
+ */
+template<class T, class WhatFind=object::Type>
 struct SubRating
 {
   const Points& intervals;
-  objsType objType;
+  WhatFind whatFind;
   int coverage;
   int value;
   int visitors;
 
-  SubRating( const Points& v, objsType otype)
-    : intervals(v), objType(otype), coverage(0), value(0)
+  SubRating( const Points& points, WhatFind otype)
+    : intervals(points), whatFind(otype), coverage(0), value(0)
   {}
+
+  int coverage2rating( float value )
+  {
+    for( int i=0; i < coverage::levelNumber; i++ )
+    {
+      if( value >= intervals[ i ].coverage )
+      {
+        return (int) (intervals[ i ].points * value);
+      }
+    }
+
+    return 0;
+  }
 
   virtual float calcCoverage( PlayerCityPtr rcity )
   {
@@ -73,8 +89,11 @@ struct SubRating
     {
       return 0;
     }
-    SmartList<T> list = rcity->statistic().objects.find<T>( (object::Type)objType );
-    for( auto it : list) { visitors += it->currentVisitors(); }
+    /** buildings which we need check **/
+    rcity->statistic().objects
+                      .find<T>( whatFind )
+                      .for_each( [this](SmartPtr<T> r){ visitors += r->currentVisitors(); } );
+
     float coverage = visitors / population;
 
     return coverage;
@@ -82,19 +101,14 @@ struct SubRating
 
   void update( PlayerCityPtr rcity )
   {
-    float coverageValue = calcCoverage( rcity );
+    /** current coverage in percents **/
+    float coveragePercent = calcCoverage( rcity );
 
     value = 0;
-    coverageValue = math::clamp<float>(coverageValue, 0.f, 1.0f );
-    coverage = (int) (coverageValue * 100);
-    for( int i=0; i < coverage::levelNumber; i++ )
-    {
-      if( coverageValue >= intervals[ i ].coverage )
-      {
-        value = (int) (intervals[ i ].points * coverageValue);
-        break;
-      }
-    }
+    /** get points of culture for current coverage **/
+    coveragePercent = math::clamp<float>(coveragePercent, 0.f, 1.0f );
+    coverage = (int) (coveragePercent * 100);
+    value = coverage2rating( coveragePercent );
   }
 };
 

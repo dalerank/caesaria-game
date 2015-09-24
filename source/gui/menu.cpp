@@ -327,13 +327,11 @@ void Menu::maximize()
 bool Menu::unselectAll()
 {
   bool anyPressed = false;
-  for( auto item : children() )
+  auto buttons = children().select<PushButton>();
+  for( auto btn : buttons )
   {
-    if( PushButton* btn = safety_cast< PushButton* >( item ) )
-    {
-      anyPressed |= btn->isPressed();
-      btn->setPressed( false );
-    }
+    anyPressed |= btn->isPressed();
+    btn->setPressed( false );
   }
 
   return anyPressed;
@@ -341,7 +339,7 @@ bool Menu::unselectAll()
 
 void Menu::_createBuildMenu( int type, Widget* parent )
 {
-   List< BuildMenu* > menus = findChildren<BuildMenu*>();
+   auto menus = findChildren<BuildMenu*>();
    for( auto m : menus ) { m->deleteLater(); }
 
    BuildMenu* buildMenu = BuildMenu::create( (development::Branch)type, this,

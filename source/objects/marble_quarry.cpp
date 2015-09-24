@@ -48,10 +48,10 @@ bool MarbleQuarry::canBuild( const city::AreaInfo& areaInfo ) const
   bool near_mountain = false;  // tells if the factory is next to a mountain
 
   Tilemap& tilemap = areaInfo.city->tilemap();
-  TilesArray perimetr = tilemap.getRectangle( areaInfo.pos + TilePos( -1, -1 ), size() + Size( 2 ), Tilemap::checkCorners);
-  foreach( tile, perimetr )
+  TilesArray perimetr = tilemap.rect( areaInfo.pos + TilePos( -1, -1 ), size() + Size( 2 ), Tilemap::checkCorners);
+  for( auto tile : perimetr )
   {
-    near_mountain |= (*tile)->getFlag( Tile::tlRock );
+    near_mountain |= tile->getFlag( Tile::tlRock );
   }
 
   const_cast< MarbleQuarry* >( this )->_setError( near_mountain ? "" : _("##build_near_mountain_only##") );

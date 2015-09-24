@@ -553,6 +553,22 @@ void PushButton::draw( gfx::Engine& painter )
     painter.draw( _d->textPicture, screenLeft(), screenTop(), &absoluteClippingRectRef() );
   }
 
+#ifdef DEBUG
+  if( ui()->hasFlag( Ui::buttonShowDebugArea ) )
+  {
+    painter.drawLine( DefaultColors::red, absoluteRect().lefttop(), absoluteRect().righttop() );
+    painter.drawLine( DefaultColors::red, absoluteRect().righttop(), absoluteRect().rightbottom() );
+    painter.drawLine( DefaultColors::red, absoluteRect().rightbottom(), absoluteRect().leftbottom() );
+    painter.drawLine( DefaultColors::red, absoluteRect().leftbottom(), absoluteRect().lefttop() );
+
+    if( _d->currentButtonState == stPressed )
+    {
+      painter.drawLine( DefaultColors::red, absoluteRect().lefttop(), absoluteRect().rightbottom() );
+      painter.drawLine( DefaultColors::red, absoluteRect().leftbottom(), absoluteRect().righttop() );
+    }
+  }
+#endif
+
   drawIcon( painter );
 
   Widget::draw( painter );

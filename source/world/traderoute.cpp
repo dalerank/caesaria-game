@@ -43,7 +43,7 @@ public:
   VariantMap save() const
   {
     VariantMap ret;
-    for( auto m : *this )
+    for( auto& m : *this )
     {
       VariantMap saveRoute;
       m->save( saveRoute );
@@ -80,7 +80,7 @@ public:
 
   void update( unsigned int time )
   {
-    for( auto it : *this ) it->timeStep( time );
+    for( auto&& it : *this ) it->timeStep( time );
     utils::eraseIfDeleted( *this );
     merge();
   }
@@ -137,7 +137,7 @@ bool Traderoute::containPoint( const Point& pos, int devianceDistance)
   if( !_d->boundingBox.isPointInside( pos ) )
     return false;
 
-  for( auto it : _d->points )
+  for( auto& it : _d->points )
   {
     if( it.distanceTo( pos ) < devianceDistance )
       return true;
@@ -241,7 +241,7 @@ void Traderoute::Impl::updateBoundingBox()
   }
 
   boundingBox = Rect( points.front(), points.front() );
-  for( auto it : points )
+  for( auto& it : points )
     boundingBox.addInternalPoint( it.x(), it.y() );
 }
 

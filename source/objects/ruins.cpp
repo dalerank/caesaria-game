@@ -70,15 +70,19 @@ void BurningRuins::timeStep(const unsigned long time)
       OverlayList overlays = _city()->tilemap().getNeighbors( pos() ).overlays();
 
       setState( pr::spreadFire, 1 );
-      for( auto overlay : overlays)
+      for( unsigned int i=0; i < overlays.size(); ++i )
       {
+        auto overlay = overlays.random();
         if( overlay->group() != object::group::disaster )
         {
           BuildingPtr building = overlay.as<Building>();
           float fireValue = building.isValid() ? building->state( pr::fire ) : 50;
           float chanceFire = fireValue/100.f * (_city()->getOption( PlayerCity::fireKoeff )/100.f);
           if( math::probably( chanceFire ) )
+          {
             overlay->burn();
+            break;
+          }
         }
       }
     }
@@ -136,7 +140,10 @@ void BurningRuins::burn(){}
 
 bool BurningRuins::build( const city::AreaInfo& info)
 {
-  Building::build( info );
+  bool built = Ruins::build( info );
+  if( !built )
+    return false;
+
   //while burning can't remove it
   tile().setFlag( Tile::tlTree, false );
   tile().setFlag( Tile::tlRoad, false );
@@ -186,7 +193,10 @@ BurnedRuins::BurnedRuins() : Ruins( object::burned_ruins )
 
 bool BurnedRuins::build( const city::AreaInfo& info )
 {
-  Building::build( info );
+  bool built = Ruins::build( info );
+
+  if( !built )
+    return false;
 
   tile().setFlag( Tile::tlRock, false );
   return true;
@@ -213,8 +223,10 @@ CollapsedRuins::CollapsedRuins() : Ruins(object::collapsed_ruins)
 void CollapsedRuins::burn() {}
 
 bool CollapsedRuins::build( const city::AreaInfo& info )
-{
-  Building::build( info );
+{  
+  bool built = Ruins::build( info );
+  if( !built )
+    return false;
 
   tile().setFlag( Tile::tlTree, false );
   tile().setFlag( Tile::tlRoad, false );
@@ -294,7 +306,10 @@ bool PlagueRuins::isDestructible() const { return isWalkable(); }
 
 bool PlagueRuins::build( const city::AreaInfo& info )
 {
-  Building::build( info );
+  bool built = Ruins::build( info );
+  if( !built )
+    return false;
+
   //while burning can't remove it
   tile().setFlag( Tile::tlTree, false );
   tile().setFlag( Tile::tlRoad, false );
@@ -324,4 +339,14 @@ void Ruins::load(const VariantMap& stream)
   Building::load( stream );
 
   _parent = stream.get( "text" ).toString();
+}
+
+bool Ruins::build(const city::AreaInfo& info)
+{
+  if( info.city->tilemap().at( info.pos ).getFlag( Tile::tlCoast ) )
+  {
+    return false;
+  }
+
+  return Building::build( info );
 }

@@ -94,7 +94,7 @@ unsigned int Destroy::_checkMoney4destroy(const Tile& tile)
   int baseValue = 0;
   if( overlay.isValid() )
   {
-    const MetaData& mdata = MetaDataHolder::getData( overlay->type() );
+    const MetaData& mdata = MetaDataHolder::find( overlay->type() );
     baseValue = mdata.getOption( MetaDataOptions::cost ).toInt() / 2;
   }
 
@@ -246,7 +246,7 @@ void Destroy::init(Point cursor)
   LayerPtr layer = _d->renderer->currentLayer();
   if( layer.isValid() )
   {
-    SmartPtr<Build> buildLayer = ptr_cast<Build>( layer );
+    auto buildLayer = layer.as<Build>();
     if( buildLayer.isValid() )
     {
       _d->lastLayer = buildLayer->drawLayer();

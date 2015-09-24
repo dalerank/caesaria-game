@@ -48,6 +48,7 @@ const Size& Engine::virtualSize() const { return _virtualSize; }
 bool Engine::isFullscreen() const{ return getFlag( fullscreen ) > 0; }
 void Engine::setFullscreen(bool enabled){ setFlag( fullscreen, enabled ? 1 : 0 ); }
 const Size& Engine::screenSize() const  { return _srcSize; }
+void Engine::setTitle( const std::string& title ) {}
 void Engine::setFlag( int flag, int value ) { _flags[ flag ] = value;}
 
 int Engine::getFlag(int flag) const

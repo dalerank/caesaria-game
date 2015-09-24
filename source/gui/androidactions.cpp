@@ -91,9 +91,13 @@ bool ActionsBar::onEvent(const NEvent &event)
   {
     if( event.gui.caller == _d->btnZoomIn || event.gui.caller == _d->btnZoomOut )
     {
-      emit _d->onChangeZoomSignal( event.gui.caller == _d->btnZoomIn ? -10 : 10 );
+      emit _d->onChangeZoomSignal( event.gui.caller == _d->btnZoomIn ? +10 : -10 );
       return true;
     }
+  }
+  else if( event.EventType == sEventMouse && event.mouse.type == mouseMoved )
+  {
+    return true;
   }
 
   return Window::onEvent( event );

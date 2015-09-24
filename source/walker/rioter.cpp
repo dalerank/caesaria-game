@@ -53,7 +53,7 @@ public:
   object::GroupSet excludeGroups;
 
 public:
-  Pathway findTarget( PlayerCityPtr city, ConstructionList constructions, TilePos pos );
+  Pathway findTarget(PlayerCityPtr city, const ConstructionList& items, TilePos pos );
 };
 
 Rioter::Rioter(PlayerCityPtr city) : Human( city ), _d( new Impl )
@@ -101,7 +101,7 @@ void Rioter::timeStep(const unsigned long time)
   case Impl::searchHouse:
   {
     ConstructionList constructions = _city()->statistic().objects.find<Construction>( object::house );
-    for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
+    for( auto it=constructions.begin(); it != constructions.end(); )
     {
       HousePtr h = (*it).as<House>();
       if( h->spec().level() <= _d->houseLevel ) { it=constructions.erase( it ); }
@@ -128,7 +128,7 @@ void Rioter::timeStep(const unsigned long time)
   {
     ConstructionList constructions = _city()->statistic().objects.find<Construction>( object::house );
 
-    for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
+    for( auto it=constructions.begin(); it != constructions.end(); )
     {
       object::Type type = (*it)->type();
       object::Group group = (*it)->group();
@@ -182,7 +182,7 @@ void Rioter::timeStep(const unsigned long time)
                                                                                         pos() - TilePos( 1, 1),
                                                                                         pos() + TilePos( 1, 1) );
 
-      for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
+      for( auto it=constructions.begin(); it != constructions.end(); )
       {
         if( (*it)->type() == object::road || _d->excludeGroups.count( (*it)->group() ) > 0  )
         { it=constructions.erase( it ); }
@@ -275,11 +275,11 @@ void Rioter::load(const VariantMap& stream)
 int Rioter::agressive() const { return 1; }
 void Rioter::excludeAttack(object::Group group) { _d->excludeGroups << group; }
 
-Pathway Rioter::Impl::findTarget(PlayerCityPtr city, ConstructionList constructions, TilePos pos )
+Pathway Rioter::Impl::findTarget(PlayerCityPtr city, const ConstructionList& items, TilePos pos )
 {    
-  if( !constructions.empty() )
+  if( !items.empty() )
   {
-    constructions = constructions.random( 10 );
+    auto constructions = items.random( 10 );
     Pathway pathway;
     for( auto c : constructions )
     {

@@ -103,29 +103,27 @@ bool Barbarian::_isAgressiveArmy(ArmyPtr other) const
 
 void Barbarian::_check4attack()
 {
-  MovableObjectList mobjects;
-  mobjects << empire()->objects();
-
-  mobjects.remove( this );
+  auto movables = empire()->objects().select<MovableObject>();
+  movables.remove( this );
 
   std::map< int, MovableObjectPtr > distanceMap;
 
-  for( auto obj : mobjects )
+  for( auto obj : movables )
   {
     float distance = location().distanceTo( obj->location() );
     distanceMap[ (int)distance ] = obj;
   }
 
-  for( auto distance : distanceMap )
+  for( auto& item : distanceMap )
   {
-    if( distance.first < config::barbarian::attackRange )
+    if( item.first < config::barbarian::attackRange )
     {
-      _attackObject( distance.second.as<Object>() );
+      _attackObject( item.second.as<Object>() );
       break;
     }
-    else if( distance.first < viewDistance() )
+    else if( item.first < viewDistance() )
     {
-      bool validWay = _findWay( location(), distance.second->location() );
+      bool validWay = _findWay( location(), item.second->location() );
       if( validWay )
       {
         _d->mode = Impl::go2object;
@@ -151,7 +149,7 @@ void Barbarian::_check4attack()
        citymap[ month2lastAttack * 100 + (int)distance ] = city;
      }
 
-     for( auto item : citymap )
+     for( auto& item : citymap )
      {
        bool validWay = _findWay( location(), item.second->location() );
        if( validWay )

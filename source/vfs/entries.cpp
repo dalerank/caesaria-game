@@ -18,6 +18,7 @@
 #include "entries.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
+#include "core/osystem.hpp"
 #include "core/utils.hpp"
 
 #include <map>
@@ -41,25 +42,7 @@ public:
   HashedIndex hashedIndex;
   HashedIndex hashedIcIndex;
 
-  Path checkCase( Path p )
-  {
-    switch( sensType )
-    {
-    case Path::ignoreCase:
-      return utils::localeLower( p.toString() );
-      break;
-    case Path::equaleCase: break;
-    case Path::nativeCase:
-  #ifdef CAESARIA_PLATFORM_WIN
-      return utils::localeLower( p.toString() );
-  #elif defined(CAESARIA_PLATFORM_UNIX)
-      return p;
-  #endif
-    break;
-    }
-
-    return p;
-  }
+  Path checkCase(const Path& p );
 };
 
 Entries::Entries( const Path& path, Path::SensType type, bool ignorePaths )
@@ -107,9 +90,9 @@ void Entries::_updateCache()
   foreach( it, _d->files )
   {
     EntryInfo& info = *it;
-    info.fphash = Hash( info.fullpath.toString() );
-    info.nhash = Hash( info.name.toString() );
-    info.nihash = Hash( utils::localeLower( info.name.toString() ) );
+    info.fphash = info.fullpath.hash();
+    info.nhash = info.name.hash();
+    info.nihash = info.name.canonical().hash();
 
     _d->hashedIndex[ info.nhash ] = k;
     _d->hashedIcIndex[ info.nihash ] = k;
@@ -340,6 +323,55 @@ const Entries::Items& Entries::items() const {  return _d->files; }
 const EntryInfo& Entries::item(unsigned int index) const
 {
   return _d->files[ index ];
+}
+
+Path Entries::Impl::checkCase( const Path& p)
+{
+  switch( sensType )
+  {
+  case Path::ignoreCase:
+    return p.canonical();
+  break;
+  case Path::equaleCase: break;
+  case Path::nativeCase:
+    if( OSystem::isWindows() )
+    {
+      return p.canonical();
+    }
+    else if( OSystem::isUnix() )
+    {
+      return p;
+    }
+  break;
+  }
+
+  return p;
+}
+
+StringArray vfs::Entries::Items::files(const std::string& ext) const
+{
+  StringArray ret;
+
+  for( auto& item : *this )
+  {
+    if( item.fullpath.isMyExtension( ext ) )
+      ret << item.fullpath.toString();
+  }
+
+  return ret;
+}
+
+StringArray Entries::Items::folders() const
+{
+  StringArray ret;
+
+  for( auto& item : *this )
+  {
+    if( item.isDirectory )
+      ret << item.fullpath.toString();
+  }
+
+  return ret;
 }
 
 } //end namespace io

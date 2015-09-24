@@ -81,6 +81,7 @@ private:
   void _loadObjects(const VariantMap& objects );
   void _initializeObjects(vfs::Path filename);
   void _initializeCities( vfs::Path filename );
+  void _initializeCapital();
 
   class Impl;
   ScopedPtr< Impl > _d;
@@ -88,10 +89,14 @@ private:
 
 struct GovernorRank
 {
+  typedef enum { citizen=0, clerk, engineer,
+                 architect, questor, procurate,
+                 aedil, preator, consul, proconsul,
+                 caesar } Level;
   std::string rankName;
   std::string pretty;
-  unsigned int salary;
-  unsigned int level;
+  unsigned int salary = 0;
+  Level level = citizen;
 
   void load( const std::string& name, const VariantMap& vm );
 };
@@ -104,7 +109,7 @@ public:
   static unsigned int getTradeRouteOpenCost( EmpirePtr empire, const std::string& start, const std::string& stop );
   static float governorSalaryKoeff( CityPtr city );
   static GovernorRanks ranks();
-  static GovernorRank getRank( unsigned int name );
+  static GovernorRank getRank(GovernorRank::Level level);
 };
 
 }//end namespace world

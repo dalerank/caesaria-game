@@ -88,6 +88,7 @@
 #include "city/active_points.hpp"
 #include "city/statistic.hpp"
 #include "events/loadgame.hpp"
+#include "sound/themeplayer.hpp"
 #include "city/states.hpp"
 
 using namespace gui;
@@ -220,9 +221,15 @@ void Level::Impl::installHandlers( Base* scene )
 
 void Level::Impl::initSound()
 {
-  SmartPtr<city::AmbientSound> sound = game->city()->statistic().services.find<city::AmbientSound>();
+  auto sound = game->city()->statistic().services.find<city::AmbientSound>();
+  auto player = game->city()->statistic().services.find<audio::ThemePlayer>();
   if( sound.isValid() )
     sound->setCamera( renderer.camera() );
+
+  if( player.isValid() )
+  {
+    CONNECT( player, onSwitch(), this, Impl::resolveWarningMessage )
+  }
 }
 
 void Level::Impl::initTabletUI( Level* scene )
@@ -304,9 +311,9 @@ void Level::initialize()
 
   CONNECT( &_d->dhandler, onWinMission(), _d.data(), Impl::checkWinMission )
   CONNECT( &_d->dhandler, onFailedMission(), _d.data(), Impl::checkFailedMission )
-#ifdef DEBUG  
-  _d->dhandler.setVisible( true );
-#endif
+
+  if( KILLSWITCH(debugMenu) )
+    _d->dhandler.setVisible( true );
 
 #ifdef CAESARIA_USE_STEAM
   gui::Ui& ui = *_d->game->gui();
@@ -521,7 +528,7 @@ void Level::animate( unsigned int time )
   if( game::Date::isMonthChanged() )
   {
     int autosaveInterval = SETTINGS_VALUE( autosaveInterval );
-    if( game::Date::current().month() % autosaveInterval == 0 )
+    if( (int)game::Date::current().month() % autosaveInterval == 0 )
     {
       static int rotate = 0;
       rotate = (rotate + 1) % 3;
@@ -544,7 +551,7 @@ void Level::handleEvent( NEvent& event )
     return;
   }
 
-  for( EventHandlers::iterator it=_d->eventHandlers.begin(); it != _d->eventHandlers.end(); )
+  for( auto it=_d->eventHandlers.begin(); it != _d->eventHandlers.end(); )
   {
     (*it)->handleEvent( event );
     if( (*it)->finished() ) { it = _d->eventHandlers.erase( it ); }
@@ -561,7 +568,8 @@ void Level::handleEvent( NEvent& event )
   if( !eventResolved )
   {
     _d->renderer.handleEvent( event );
-    _d->selectedTilePos = _d->renderer.screen2tilepos( event.mouse.pos() );
+    if( event.EventType == sEventMouse )
+      _d->selectedTilePos = _d->renderer.screen2tilepos( event.mouse.pos() );
   }
 }
 

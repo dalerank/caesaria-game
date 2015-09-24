@@ -33,14 +33,14 @@ public:
 
   bool contains( const std::string& str )
   {
-    for( auto item : *this )
+    for( auto& item : *this )
     {
       if( item == str )
         return true;
     }
 
     return false;
-  }
+  }  
 
   std::string valueOrEmpty( unsigned int index ) const
   {
@@ -64,6 +64,14 @@ public:
   inline StringArray& operator << ( const std::string& a )
   {
     push_back( a );
+    return *this;
+  }
+
+  inline StringArray& operator << ( const StringArray& a )
+  {
+    for( auto& item : a )
+      push_back( item );
+
     return *this;
   }
 };

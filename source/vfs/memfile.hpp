@@ -52,6 +52,8 @@ public:
 
   virtual int write(const ByteArray& array);
 
+  virtual size_t lastModify() const;
+
   virtual ByteArray read(unsigned int sizeToRead);
 
   //! returns where in the file we are.

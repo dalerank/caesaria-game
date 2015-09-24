@@ -28,6 +28,7 @@
 #include "objects/house_spec.hpp"
 #include "core/logger.hpp"
 #include "core/utils.hpp"
+#include "gfx/tilemap.hpp"
 #include "core/variant_map.hpp"
 #include <game/settings.hpp>
 #include "walkers_factory.hpp"
@@ -85,7 +86,7 @@ std::string TaxCollector::thoughts(Thought th) const
 
 BuildingPtr TaxCollector::base() const
 {
-  return ptr_cast<Building>( _city()->getOverlay( baseLocation() ) );
+  return _map().overlay( baseLocation() ).as<Building>();
 }
 
 TaxCollectorPtr TaxCollector::create(PlayerCityPtr city )
@@ -122,7 +123,7 @@ void TaxCollector::_reachedPathway()
     }
 
     Logger::warning( "TaxCollector: path history" );
-    for( auto step : _d->history )
+    for( auto& step : _d->history )
       Logger::warning( "       [%02dx%02d]:%f", step.first.i(), step.first.j(), step.second );
 
     deleteLater();

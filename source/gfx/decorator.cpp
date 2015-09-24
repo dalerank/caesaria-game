@@ -127,8 +127,8 @@ void Decorator::basicText(Picture& dstpic, const Point& pos, const std::string& 
 
 void Decorator::reverseYoffset(Pictures& stack)
 {
-  foreach( it, stack )
-    it->setOffset( Point( it->offset().x(), -it->offset().y() ) );
+  for( auto&& pic : stack )
+    pic.setOffset( Point( pic.offset().x(), -pic.offset().y() ) );
 }
 
 void Decorator::drawPanel( Pictures& stack, const Rect& rectangle, int picId )

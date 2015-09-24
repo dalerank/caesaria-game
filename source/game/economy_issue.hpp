@@ -32,10 +32,9 @@ struct Issue
               overduePayment, overdueEmpireTax,
               balance, caesarsHelp,
               issueTypeCount };
-  Type type;
-  int money;
+  Type type = unknown;
+  int money = 0;
 
-  Issue() : type( unknown ), money( 0 ) {}
   Issue( Type t, int m ) : type( t ), money( m ) {}
 };
 

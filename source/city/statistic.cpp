@@ -27,6 +27,7 @@
 #include "gfx/tilemap.hpp"
 #include "goods_updater.hpp"
 #include "game/funds.hpp"
+#include "core/common.hpp"
 #include "cityservice_workershire.hpp"
 #include "objects/farm.hpp"
 #include "world/empire.hpp"
@@ -78,21 +79,17 @@ int Statistic::_Entertainment::coverage(Service::Type service) const
 
 HouseList Statistic::_Houses::ready4evolve(const object::TypeSet& checkTypes ) const
 {
-  HouseList ret;
-
   HouseList houses = find();
 
-  for( auto it : houses )
+  for( auto it=houses.begin(); it != houses.end(); )
   {
     object::Type btype;
-    it->spec().next().checkHouse( it, NULL, &btype );
-    if( checkTypes.count( btype ) )
-    {    
-      ret.push_back( it );
-    }
+    (*it)->spec().next().checkHouse( *it, nullptr, &btype );
+    if( checkTypes.count( btype ) ) it = houses.erase( it );
+    else ++it;
   }
 
-  return ret;
+  return houses;
 }
 
 HouseList Statistic::_Houses::ready4evolve( const object::Type checkType ) const
@@ -102,23 +99,41 @@ HouseList Statistic::_Houses::ready4evolve( const object::Type checkType ) const
   return ready4evolve( checkTypes );
 }
 
+HouseList Statistic::_Houses::habitable() const
+{
+  HouseList houses = find();
+
+  for( auto it=houses.begin(); it != houses.end(); )
+  {
+    if( (*it)->habitants().count() > 0 ) ++it;
+    else it = houses.erase( it );
+  }
+
+  return houses;
+}
+
+#if _MSC_VER >= 1300
+#define INIT_SUBSTAT(a) a({*this})
+#else
+#define INIT_SUBSTAT(a) a{*this}
+#endif
 Statistic::Statistic(PlayerCity& c)
-  : walkers{ *this },
-    objects{ *this },
-    tax{ *this },
-    workers{ *this },
-    population{ *this },
-    food{ *this },
-    services{ *this },
-    festival{ *this },
-    crime{ *this },
-    goods{ *this },
-    health{ *this },
-    military{ *this },
-    map{ *this },
-    houses{ *this },
-    entertainment{ *this },
-    balance{ *this },
+    : INIT_SUBSTAT(walkers),
+    INIT_SUBSTAT(objects),
+    INIT_SUBSTAT(tax),
+    INIT_SUBSTAT(workers),
+    INIT_SUBSTAT(population),
+    INIT_SUBSTAT(food),
+    INIT_SUBSTAT(services),
+    INIT_SUBSTAT(festival),
+    INIT_SUBSTAT(crime),
+    INIT_SUBSTAT(goods),
+    INIT_SUBSTAT(health),
+    INIT_SUBSTAT(military),
+    INIT_SUBSTAT(map),
+    INIT_SUBSTAT(houses),
+    INIT_SUBSTAT(entertainment),
+    INIT_SUBSTAT(balance),
     rcity( c )
 {
 
@@ -155,6 +170,34 @@ const WalkerList& Statistic::_Walkers::find(walker::Type type) const
   return wl;
 }
 
+int Statistic::_Walkers::count(walker::Type type, TilePos start, TilePos stop) const
+{
+  int result = 0;
+  TilePos stopPos = stop;
+
+  if( start == gfx::tilemap::invalidLocation() )
+  {
+    const WalkerList& all =_parent.rcity.walkers();
+    result = utils::countByType( all, type );
+  }
+  else if( stopPos == gfx::tilemap::invalidLocation() )
+  {
+    const WalkerList& wlkOnTile = _parent.rcity.walkers( start );
+    result = utils::countByType( wlkOnTile, type );
+  }
+  else
+  {
+    gfx::TilesArea area( _parent.rcity.tilemap(), start, stop );
+    for( auto tile : area)
+    {
+      const WalkerList& wlkOnTile = _parent.rcity.walkers( tile->pos() );
+      result += utils::countByType( wlkOnTile, type );
+    }
+  }
+
+  return result;
+}
+
 unsigned int Statistic::_Tax::possible() const
 {
   HouseList houses = _parent.houses.find();
@@ -178,7 +221,7 @@ unsigned int Statistic::_Tax::possible() const
 
 gfx::TilesArray Statistic::_Map::perimetr(const TilePos& lu, const TilePos& rb) const
 {
-  return _parent.rcity.tilemap().getRectangle( lu, rb );
+  return _parent.rcity.tilemap().rect( lu, rb );
 }
 
 void Statistic::_Map::updateTilePics() const
@@ -287,6 +330,19 @@ unsigned int Statistic::_Workers::available() const
   return workersNumber;
 }
 
+int Statistic::_Objects::count(object::Type type) const
+{
+  int ret;
+  const OverlayList& buildings = _parent.rcity.overlays();
+  for( auto bld : buildings )
+  {
+    if( bld.isValid() && bld->type() == type )
+      ret++;
+  }
+
+  return ret;
+}
+
 OverlayList Statistic::_Objects::neighbors(OverlayPtr overlay, bool v) const
 {
   if( overlay.isNull() )
@@ -296,7 +352,7 @@ OverlayList Statistic::_Objects::neighbors(OverlayPtr overlay, bool v) const
   TilePos start = overlay->pos() - gfx::tilemap::unitLocation();
   TilePos stop = start + TilePos( size.width(), size.height() );
   OverlayList ret;
-  gfx::TilesArray tiles = _parent.rcity.tilemap().getRectangle( start, stop );
+  gfx::TilesArray tiles = _parent.rcity.tilemap().rect( start, stop );
   std::set<OverlayPtr> checked;
   for( auto tile : tiles )
   {
@@ -396,6 +452,9 @@ unsigned int Statistic::_Festival::calcCost(FestivalType type) const
   return 0;
 }
 
+good::ProductMap Statistic::_Goods::inCity() const { return details( true ); }
+good::ProductMap Statistic::_Goods::inWarehouses() const { return details( false ); }
+
 good::ProductMap Statistic::_Goods::details(bool includeGranary) const
 {
   good::ProductMap cityGoodsAvailable;
@@ -433,7 +492,8 @@ int Statistic::_Objects::laborAccess(WorkingBuildingPtr wb) const
   float averageDistance = 0;
   for( auto it : houses )
   {
-    if( it->spec().level() < HouseLevel::smallVilla )
+    if( it->spec().level() > HouseLevel::vacantLot
+        && it->spec().level() < HouseLevel::smallVilla )
     {
       averageDistance += wbpos.distanceFrom( it->pos() );
     }

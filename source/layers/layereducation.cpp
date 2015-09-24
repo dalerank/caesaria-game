@@ -90,7 +90,7 @@ void Education::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( overlay->type() == object::house )
     {
-      HousePtr house = ptr_cast<House>( overlay );
+      auto house = overlay.as<House>();
 
       educationLevel = _getLevelValue( house );
 
@@ -149,7 +149,7 @@ void Education::handleEvent(NEvent& event)
       std::string levelName = "";      
       if( tile != 0 )
       {
-        HousePtr house = ptr_cast<House>( tile->overlay() );
+        auto house = tile->overlay<House>();
         if( house != 0 )
         {
           std::string typeName;

@@ -130,7 +130,7 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
 
 void Prefect::_back2Prefecture()
 {
-  PrefecturePtr base = _city()->getOverlay( baseLocation() ).as<Prefecture>();
+  PrefecturePtr base = _map().overlay( baseLocation() ).as<Prefecture>();
 
   if( base.isNull() )
   {
@@ -243,9 +243,9 @@ void Prefect::_setSubAction( const Prefect::SbAction action)
 
 bool Prefect::_figthFire()
 {
-  BuildingList buildings = _city()->tilemap().getNeighbors(pos(), Tilemap::AllNeighbors)
-                                             .overlays()
-                                             .select<Building>();
+  BuildingList buildings = _map().getNeighbors(pos(), Tilemap::AllNeighbors)
+                                 .overlays()
+                                 .select<Building>();
 
   for( auto building : buildings )
   {
@@ -278,7 +278,8 @@ bool Prefect::_findFire()
 
 void Prefect::_brokePathway(TilePos p)
 {
-  OverlayPtr overlay = _city()->getOverlay( p );
+  OverlayPtr overlay = _map().overlay( p );
+
   if( overlay.isValid() && overlay->type() == object::burning_ruins )
   {
     setSpeed( 0.f );
@@ -307,7 +308,7 @@ void Prefect::_brokePathway(TilePos p)
 void Prefect::_reachedPathway()
 {
   TilesArray area;
-  BuildingPtr base = _city()->getOverlay( baseLocation() ).as<Building>();
+  BuildingPtr base = _map().overlay( baseLocation() ).as<Building>();
   if( base.isValid() )
     area = base->enterArea();
 
@@ -444,7 +445,7 @@ void Prefect::_noWay()
 
 static BuildingPtr isBurningRuins( const Tile& tile, bool& inFire )
 {
-  BuildingPtr building = tile.overlay().as<Building>();
+  BuildingPtr building = tile.overlay<Building>();
   inFire = (building.isValid() && building->type() == object::burning_ruins );
 
   return inFire ? building : BuildingPtr();
@@ -652,7 +653,7 @@ void Prefect::load( const VariantMap& stream )
   _setSubAction( _d->prefectAction );
   _setAction( _d->water > 0 ? acDragWater : acMove );
 
-  PrefecturePtr prefecture = _city()->getOverlay( baseLocation() ).as<Prefecture>();
+  PrefecturePtr prefecture = _map().overlay( baseLocation() ).as<Prefecture>();
   if( prefecture.isValid() )
   {
     prefecture->addWalker( this );

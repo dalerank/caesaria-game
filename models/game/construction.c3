@@ -22,8 +22,9 @@
 
   roadBlock : {
     cost : 10
-    c3logic : false
+    c3logic : true
     class : "road"
+    checkWalkersOnBuild : false
     image : [ "roadBlock", 1 ]
   }
 
@@ -38,6 +39,7 @@
     cost : 4,
     desirability : { base : 1, range : 0, step : 0 }
     class : "road"
+    checkWalkersOnBuild : false
     image : [ "land2a", 44 ]
   },
 
@@ -50,7 +52,9 @@
     desirability : 12,
     range : 0,
     class : "wall"
-    cost : 10
+    cost : 10    
+    inflammability : 0
+    collapsibility : 0
   },
 
   fortification : {
@@ -58,6 +62,8 @@
     range : 0
     class : "wall"
     cost : 20
+    inflammability : 0
+    collapsibility : 0
   }
   
   aqueduct : {
@@ -116,6 +122,7 @@
     cost : 10,
     desirability : { base : -3, range : 3, step : 1 }
     employers : 0
+    checkWalkersOnBuild : false
     class : "house"
   }
 
@@ -153,6 +160,7 @@
     desirability : { base : 4, range : 2,	step : -2 }
     employers : 0
     class : "road"
+    checkWalkersOnBuild : false
     image : [ "entertainment", 102 ]
     image.ext : {
       type_1 : { size:1, rc : "entertainment", start : 102, count : 6 }
@@ -165,6 +173,7 @@
     cost : 12,
     desirability : { base :3,	range : 3,	step : -1 }
     employers : 0
+    checkWalkersOnBuild : false
     class : "garden"
     image : [ "entertainment", 110 ]
     image.ext : {
@@ -181,6 +190,8 @@
     class : "military"
     sound : [ "fort", 1 ]
     requestDestroy : true
+    inflammability : 0
+    collapsibility : 0
   },
 
   missionaryPost : {
@@ -216,6 +227,8 @@
     desirability : { base :-20,	range : 10,	step : 2 }
     employers : 16
     class : "military"
+    inflammability : 0
+    collapsibility : 0
     requestDestroy : true
   }, 
 
@@ -225,6 +238,8 @@
     employers : 16
     class : "military"
     requestDestroy : true
+    inflammability : 0
+    collapsibility : 0
   }, 
 
   clinic : {
@@ -317,6 +332,8 @@
     step : -1,
     employers : 3
     class : "gate"
+    inflammability : 0
+    collapsibility : 0
   },  
 
   tower : {
@@ -324,6 +341,8 @@
     desirability : { base :-8,	range : 4,	step : -2 }
     employers : 6
     class : "tower"
+    inflammability : 0
+    collapsibility : 0
   },  
   
   small_ceres_temple : {

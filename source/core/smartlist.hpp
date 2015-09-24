@@ -20,24 +20,27 @@
 
 #include "smartptr.hpp"
 #include "core/math.hpp"
+#include <vector>
+#include <functional>
 #include <deque>
 
 template <class T>
 class SmartList : public std::deque<SmartPtr< T > >
 {
 public:
-  template< class Src >
+/*  template< class Src >
   SmartList& operator<<( const SmartList<Src>& srcList )
   {
-    for( auto it : srcList )
+    for( auto& it : srcList )
       addIfValid( ptr_cast<T>( it ) );
 
     return *this;
   }
+  */
 
   SmartList& append( const SmartList<T>& other )
   {
-    for( auto it : other )
+    for( auto& it : other )
       addIfValid( it );
 
     return *this;
@@ -51,7 +54,7 @@ public:
 
   bool contain( SmartPtr<T> a ) const
   {
-    for( auto it : *this )
+    for( auto& it : *this )
       if( it == a ) return true;
 
     return false;
@@ -61,8 +64,48 @@ public:
   SmartList<Dst> select() const
   {
     SmartList<Dst> ret;
-    for( auto it : *this )
+    for( auto& it : *this )
       ret.addIfValid( ptr_cast<Dst>( it ) );
+
+    return ret;
+  }
+
+  SmartList& for_each( std::function<void (SmartPtr<T>)> func_pointer )
+  {
+    for( auto& item : *this )
+      func_pointer( item );
+
+    return *this;
+  }
+
+  SmartPtr<T> find( std::function<bool (SmartPtr<T>)> func_compare ) const
+  {
+    for( auto& item : *this )
+      if( func_compare( item ) )
+        return item;
+
+    return SmartPtr<T>();
+  }
+
+  template<class U>
+  SmartPtr<U> firstOrEmpty() const
+  {
+    for( auto& it : *this )
+    {
+      SmartPtr<U> ptr = ptr_cast<U>( it );
+      if( ptr.isValid() )
+        return ptr;
+    }
+
+    return SmartPtr<U>();
+  }
+
+  template< class Q >
+  Q summ( const Q& initial, std::function<Q (SmartPtr<T>)> func_summ ) const
+  {
+    Q ret = initial;
+    for( auto& item : *this )
+      ret += func_summ( item );
 
     return ret;
   }
@@ -94,8 +137,9 @@ public:
     if (this->size() <= count)
       return *this;
 
-    int rands[count];
-    math::random_values_of_range(rands, count, 0, this->size()-1);
+    std::vector<int> rands;
+    rands.resize(count);
+    math::random_values_of_range(rands.data(), count, 0, this->size()-1);
 
     SmartList<T> ret;
 
@@ -112,7 +156,7 @@ public:
 
   void remove( const SmartPtr< T >& a )
   {
-    for( typename SmartList<T>::iterator it = this->begin(); it != this->end(); )
+    for( auto it = this->begin(); it != this->end(); )
     {
       if( a == *it ) { it = this->erase( it ); }
       else { ++it; }
@@ -124,7 +168,7 @@ public:
     if( index >= this->size() )
       return SmartPtr<T>();
 
-    typename SmartList<T>::const_iterator it = this->begin();
+    auto it = this->begin();
     std::advance( it, index );
     return *it;
   }
@@ -134,16 +178,26 @@ public:
     if( index < this->size() )
       return;
 
-    typename SmartList<T>::const_iterator it = this->begin();
+    auto it = this->begin();
     std::advance( it, index );
     this->erase( it );
+  }
+
+  template< class W >
+  int count() const
+  {
+    int ret = 0;
+    for( auto& it : *this )
+      ret += (is_kind_of<W>( it ) ? 1 : 0);
+
+    return ret;
   }
 
   template< class W >
   SmartList<T> exclude() const
   {
     SmartList<T> ret;
-    for( auto it : *this )
+    for( auto& it : *this )
       if( !is_kind_of<W>( it ) )
         ret.push_back( it );
 

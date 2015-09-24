@@ -37,13 +37,13 @@ static std::string sanitizeString(std::string str)
 static std::string join(const StringArray& rlist, const std::string& sep)
 {
   std::string res;
-  for( StringArray::const_iterator it = rlist.begin(); it != rlist.end(); ++it )
+  for( auto& it : rlist )
   {
     if(!res.empty())
     {
       res.append( sep );
     }
-    res.append( *it );
+    res.append( it );
   }
   return res;
 }
@@ -108,7 +108,7 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
       const VariantList rlist = data.toList();
       std::string serializedValue;
       serializedValue.reserve( 512 );
-      for( auto item : rlist )
+      for( auto& item : rlist )
       {
         serializedValue = serialize( item, "" );
         if( serializedValue.empty() )
@@ -138,7 +138,7 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
         StringArray pairs;
         std::string serializedValue;
         serializedValue.reserve( 512 );
-        for( auto item : vmap )
+        for( auto& item : vmap )
         {        
           serializedValue = serialize( item.second, tab + "  ");
           if( serializedValue.empty())

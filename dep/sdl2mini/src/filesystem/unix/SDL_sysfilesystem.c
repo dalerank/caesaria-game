@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -18,7 +18,7 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../../SDL_internal.h"
 
 #ifdef SDL_FILESYSTEM_UNIX
 
@@ -178,14 +178,14 @@ SDL_GetPrefPath(const char *org, const char *app)
     if (envr[len - 1] == '/')
         append += 1;
 
-    len += SDL_strlen(append) + SDL_strlen(app) + 2;
+    len += SDL_strlen(append) + SDL_strlen(org) + SDL_strlen(app) + 3;
     retval = (char *) SDL_malloc(len);
     if (!retval) {
         SDL_OutOfMemory();
         return NULL;
     }
 
-    SDL_snprintf(retval, len, "%s%s%s/", envr, append, app);
+    SDL_snprintf(retval, len, "%s%s%s/%s/", envr, append, org, app);
 
     for (ptr = retval+1; *ptr; ptr++) {
         if (*ptr == '/') {
@@ -197,7 +197,7 @@ SDL_GetPrefPath(const char *org, const char *app)
     }
     if (mkdir(retval, 0700) != 0 && errno != EEXIST) {
 error:
-        SDL_SetError("Couldn't create directory '%s': ", retval, strerror(errno));
+        SDL_SetError("Couldn't create directory '%s': '%s'", retval, strerror(errno));
         SDL_free(retval);
         return NULL;
     }

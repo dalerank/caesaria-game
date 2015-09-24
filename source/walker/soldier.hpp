@@ -58,6 +58,7 @@ public:
 
   virtual unsigned int attackDistance() const;
   virtual void setAttackDistance( unsigned int distance );
+  virtual int experience() const;
   virtual bool isFriendTo( WalkerPtr wlk ) const;
   virtual void setTarget( TilePos location );
   TilePos target() const;

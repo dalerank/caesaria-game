@@ -80,7 +80,8 @@ bool Directory::createByPath( Directory dir )
   try
   {
 #if  defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
-    switchTo( "/" );
+    if( dir.toString().front() == '/' )
+      switchTo( "/" );
 #endif
 
     foreach( iter, path )
@@ -168,17 +169,31 @@ Path Directory::getFilePath( const Path& fileName )
   return Path( ret );
 }
 
+std::string _concat( const Path& p1, const Path& p2 )
+{
+  std::string p1str = p1.addEndSlash().toString();
+  std::string p2str = p2.removeBeginSlash().toString();
+  return p1str + p2str;
+}
+
 Directory Directory::operator/(const Directory& dir) const
 {
-  std::string dr = addEndSlash().toString();
-  return Directory( dr + dir.toString() );
+  return Directory( _concat( *this, dir ) );
 }
 
 Path Directory::operator/(const Path& filename) const
 {
-  std::string dr = addEndSlash().toString();
-  std::string fn = filename.removeBeginSlash().toString();
-  return Path( dr + fn );
+  return Path( _concat( *this, filename ) );
+}
+
+Path Directory::operator/(const std::string& filename) const
+{
+  return Path( _concat( *this, filename ) );
+}
+
+Path Directory::operator/(const char* filename) const
+{
+  return Path( _concat( *this, filename ) );
 }
 
 bool Directory::switchTo( const Path& dirName ){  return FileSystem::instance().changeWorkingDirectoryTo( dirName );}

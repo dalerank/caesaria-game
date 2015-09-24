@@ -19,7 +19,7 @@ TreeViewItem::TreeViewItem( TreeViewItem* parent )
 	init_();
     itemParent_ = parent;
     owner_ = parent->getParentTreeView();
-#ifdef _DEBUG
+#ifdef DEBUG
   setDebugName( "NrpTreeViewItem" );
 #endif
 }
@@ -30,8 +30,8 @@ TreeViewItem::TreeViewItem( TreeView* parent )
 	init_();
   owner_ = parent;
 
-#ifdef _DEBUG
-	setDebugName( L"NrpTreeViewItem" );
+#ifdef DEBUG
+  setDebugName( "NrpTreeViewItem" );
 #endif
 }
 
@@ -285,7 +285,7 @@ bool TreeViewItem::deleteChild( TreeViewItem* child )
 	TvIterator	itChild;
 	bool	deleted = false;
 
-	for( itChild = _d->Children.begin(); itChild != _d->Children.end(); itChild++ )
+  for( itChild = _d->Children.begin(); itChild != _d->Children.end(); ++itChild )
 	{
 		if( child == *itChild )
 		{
@@ -305,7 +305,7 @@ bool TreeViewItem::moveChildUp( TreeViewItem* child )
 	TreeViewItem*									nodeTmp;
 	bool													moved = false;
 
-	for( itChild = _d->Children.begin(); itChild != _d->Children.end(); itChild++ )
+  for( itChild = _d->Children.begin(); itChild != _d->Children.end(); ++itChild )
 	{
 		if( child == *itChild )
 		{

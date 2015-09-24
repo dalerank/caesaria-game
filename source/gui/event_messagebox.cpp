@@ -44,7 +44,7 @@ AboutEvent::AboutEvent(Widget* parent, const std::string& title,
   Rect rect = _lbTextRef()->relativeRect();
   rect._bottomright = Point( rect.width() / 2, rect.top() + 30 );
 
-  Label* lbTime = new Label( this, rect, util::date2str( time, true ) );
+  Label* lbTime = new Label( this, rect, utils::date2str( time, true ) );
   lbTime->setFont( Font::create( FONT_2_WHITE ) );
 
   if( !additional.empty() )
