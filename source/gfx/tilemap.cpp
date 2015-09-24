@@ -327,7 +327,7 @@ void Tilemap::save( VariantMap& stream ) const
   {
     bitsetInfo.push_back( tile::encode( *tile ) );
     desInfo.push_back( tile->param( Tile::pDesirability ) );
-    idInfo.push_back( tile->originalImgId() );
+    idInfo.push_back( tile->ImgId() );
   }
 
   ByteArray baBitset;
@@ -380,11 +380,11 @@ void Tilemap::load( const VariantMap& stream )
     tile->setParam( Tile::pDesirability, desAr[index] );
 
     int imgId = imgIdAr[index];
-    if( !tile->masterTile() && imgId != 0 )
+    if( !tile->master() && imgId != 0 )
     {
       Picture pic = imgid::toPicture( imgId );
 
-      tile->setOriginalImgId( imgId );
+      tile->setImgId( imgId );
 
       int tile_size = (pic.width()+2) / _d->virtWidth;  // size of the multi-tile. the multi-tile is a square.
 
@@ -400,7 +400,7 @@ void Tilemap::load( const VariantMap& stream )
         {
           // for each subcol of the multi-tile
           Tile &sub_tile = at( tile->pos() + TilePos( di, dj ) );
-          sub_tile.setMasterTile( master );
+          sub_tile.setMaster( master );
           sub_tile.setPicture( pic );
         }
       }
@@ -464,7 +464,7 @@ void Tilemap::turnRight()
       for( int j=0; j < pSize; j++ )
       {
         Tile* apTile = _d->ate( mTilePos + TilePos( i, j ) );
-        apTile->setMasterTile( mTile );
+        apTile->setMaster( mTile );
       }
     }
 
@@ -522,7 +522,7 @@ void Tilemap::turnLeft()
       for( int j=0; j < pSize; j++ )
       {
         Tile* apTile = _d->ate( mTilePos + TilePos( i, j ) );
-        apTile->setMasterTile( mTile );
+        apTile->setMaster( mTile );
       }
     }
 
@@ -596,7 +596,7 @@ void Tilemap::Impl::saveMasterTiles(Tilemap::Impl::MasterTiles &mtiles)
     for( int j=0; j < size; j++ )
     {
       tmp = ate( i, j );
-      Tile* masterTile = tmp->masterTile();
+      Tile* masterTile = tmp->master();
 
       if( masterTile )
       {        
@@ -620,7 +620,7 @@ void Tilemap::Impl::saveMasterTiles(Tilemap::Impl::MasterTiles &mtiles)
             for( int j=0; j < pSize; j++ )
             {
               Tile* apTile = ate( ti.tile->epos() + TilePos( i, j ) );
-              apTile->setMasterTile( 0 );
+              apTile->setMaster( 0 );
               apTile->setPicture( Picture::getInvalid() );
             }
           }

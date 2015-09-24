@@ -51,7 +51,7 @@ void Shoreline::Impl::checkMap( PlayerCityPtr city )
 
   for( auto tile : tiles )
   {
-    int imgId = tile->originalImgId();
+    int imgId = tile->ImgId();
     if( (imgId >= 372 && imgId <= 403) || (imgId>=414 && imgId<=418) || tile->getFlag( Tile::tlCoast ) )
     {
       slTiles.push_back( tile );
@@ -118,7 +118,7 @@ void Shoreline::timeStep( const unsigned int time )
     if( tile->overlay().isValid() )
       continue;
 
-    int picId = tile->originalImgId();
+    ImgID picId = tile->ImgId();
     if( tile->param( Tile::pDesirability ) > 10 )
     {
       switch( picId )

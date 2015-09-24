@@ -97,7 +97,7 @@ void getBuildingColours( const Tile& tile, int &c1, int &c2 );
 
 void Minimap::Impl::getTerrainColours( const Tile& tile, bool staticTiles, int& c1, int& c2 )
 {
-  int rndData = tile.originalImgId();
+  int rndData = tile.ImgId();
   int num3 = rndData & 0x3;
   int num7 = rndData & 0x7;
 
@@ -226,8 +226,8 @@ void Minimap::Impl::getObjectColours(const Tile& tile, int &c1, int &c2)
   case object::reservoir:
   case object::aqueduct:
   {
-    c1 = colors->colour(minimap::Colors::MAP_AQUA, tile.originalImgId() & 0x3);
-    c2 = colors->colour(minimap::Colors::MAP_AQUA, tile.originalImgId() & 0x7);
+    c1 = colors->colour(minimap::Colors::MAP_AQUA, tile.ImgId() & 0x3);
+    c2 = colors->colour(minimap::Colors::MAP_AQUA, tile.ImgId() & 0x7);
     colorFound = true;
   }
   break;

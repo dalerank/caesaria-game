@@ -74,7 +74,7 @@ bool Elevation::isDestructible() const { return false; }
 bool Elevation::build( const city::AreaInfo& info )
 {
   bool res = Overlay::build( info );
-  _d->basicImgId = info.city->tilemap().at( info.pos ).originalImgId();
+  _d->basicImgId = info.city->tilemap().at( info.pos ).ImgId();
 
   return res;
 }

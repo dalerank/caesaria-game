@@ -98,7 +98,7 @@ void Health::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 LayerPtr Health::create(TilemapCamera& camera, PlayerCityPtr city, int type )

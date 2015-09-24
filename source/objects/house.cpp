@@ -812,7 +812,7 @@ void House::_tryDegrade_20_to_12_lvl( int rsize, const char desirability )
     TilesArray lastArea = area();
     for( auto tile : lastArea )
     {
-      tile->setMasterTile( 0 );
+      tile->setMaster( 0 );
       tile->setOverlay( 0 );
     }
 

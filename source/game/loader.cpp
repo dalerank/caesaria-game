@@ -114,7 +114,7 @@ void Loader::Impl::initTilesAnimation( Tilemap& tmap )
   const Animation& meadow = AnimationBank::simple( AnimationBank::animMeadow );
   for( auto tile : area )
   {
-    int rId = tile->originalImgId() - 364;
+    int rId = tile->ImgId() - 364;
     if( rId >= 0 && rId < 8 )
     {
       Animation water = AnimationBank::simple( AnimationBank::animWater );

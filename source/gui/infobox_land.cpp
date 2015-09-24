@@ -128,7 +128,7 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
   text = _(text );
   text += utils::format( 0xff, "\nTile at: (%d,%d) ID:%04X",
                                            tile.i(), tile.j(),  
-                                          ((short int) tile.originalImgId() ) );
+                                          ((unsigned int) tile.ImgId() ) );
   
   setTitle( _( title ));
   setText( text );
@@ -164,6 +164,6 @@ void AboutFreeHouse::_showHelp()
   DictionaryWindow::show( this, "vacant_lot" );
 }
 
-}
+}//end namespace infobox
 
 }//end namespace gui

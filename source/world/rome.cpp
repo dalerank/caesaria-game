@@ -86,7 +86,7 @@ void Rome::timeStep(const unsigned int time)
 PlayerPtr Rome::mayor() const { return 0; }
 bool Rome::haveOverduePayment() const { return false; }
 const good::Store& Rome::buys() const{ return _d->gstore; }
-void Rome::delayTrade(unsigned int month) {}
+void Rome::delayTrade(unsigned int) {}
 void Rome::empirePricesChanged(good::Product, const PriceInfo&){}
 const good::Store& Rome::sells() const{ return _d->gstore; }
 

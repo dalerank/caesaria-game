@@ -102,7 +102,7 @@ void Entertainment::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 LayerPtr Entertainment::create(TilemapCamera& camera, PlayerCityPtr city, int type )

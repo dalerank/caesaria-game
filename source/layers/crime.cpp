@@ -94,7 +94,7 @@ void Crime::drawTile( Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 LayerPtr Crime::create(Camera& camera, PlayerCityPtr city)

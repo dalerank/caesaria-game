@@ -156,7 +156,7 @@ void Build::_checkPreviewBuild(TilePos pos)
           masterTile = tile;
         }
         tile->setPicture( tmap.at( pos + TilePos( di, dj ) ).picture() );
-        tile->setMasterTile( masterTile );
+        tile->setMaster( masterTile );
         tile->setOverlay( overlay.as<Overlay>() );
         d->buildTiles.push_back( tile );
       }
@@ -185,7 +185,7 @@ void Build::_checkPreviewBuild(TilePos pos)
         }
 
         tile->setPicture( (!walkersOnTile && isConstructible) ? d->grnPicture : d->redPicture );
-        tile->setMasterTile( 0 );
+        tile->setMaster( 0 );
         tile->setFlag( Tile::clearAll, true );
         tile->setOverlay( 0 );
         d->buildTiles.push_back( tile );
@@ -315,7 +315,7 @@ void Build::_buildAll()
   for( auto tile : d->buildTiles )
   {
     areaInfo.pos = tile->epos();
-    if( cnstr->canBuild( areaInfo ) && tile->isMasterTile())
+    if( cnstr->canBuild( areaInfo ) && tile->isMaster())
     {
       GameEventPtr event = BuildAny::create( tile->epos(), cnstr->type() );
       event->dispatch();
@@ -462,10 +462,10 @@ void Build::_drawBuildTile( Engine& engine, Tile* tile, const Point& offset )
   city::AreaInfo areaInfo( _city(), TilePos(), &_d->buildTiles );
 
   Tile* postTile = tile;
-  postTile->resetWasDrawn();
+  postTile->resetRendered();
 
-  if( postTile->masterTile() )
-    postTile = postTile->masterTile();
+  if( postTile->master() )
+    postTile = postTile->master();
 
   ConstructionPtr construction = postTile->overlay<Construction>();
   engine.resetColorMask();

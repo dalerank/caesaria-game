@@ -185,7 +185,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos& 
   Tilemap& tilemap = city->tilemap();
   Tile& tile = tilemap.at( curPos );
 
-  int imdId = tile.originalImgId();
+  int imdId = tile.ImgId();
   BridgeConfig& config = BridgeConfig::find( type() );
 
   if( config.isNorthA( imdId ) )
@@ -193,7 +193,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos& 
     TilesArea tiles( tilemap, curPos - TilePos( 10, 0), curPos - TilePos(1, 0) );
     for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
-      imdId = (*it)->originalImgId();
+      imdId = (*it)->ImgId();
       if( config.isNorthB( imdId ) )
       {
         stop = (*it)->pos();
@@ -210,16 +210,16 @@ void LowBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos& 
   else if( imdId == 376 || imdId == 377 || imdId == 378 || imdId == 379  )
   {
     TilesArea tiles( tilemap, curPos + TilePos(1, 0), curPos + TilePos( 10, 0) );
-    foreach( it, tiles )
+    for( auto tile : tiles )
     {
-      imdId = (*it)->originalImgId();
+      imdId = tile->ImgId();
       if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
       {
-        stop = (*it)->pos();
+        stop = tile->pos();
         direction = abs(stop.i() - start.i()) > 1 ? direction::southEast : direction::none;
         break;
       }
-      else if ((imdId > 372 && imdId < 445) || !((*it)->getFlag(Tile::tlWater) || (*it)->getFlag(Tile::tlDeepWater)))
+      else if ((imdId > 372 && imdId < 445) || !(tile->getFlag(Tile::tlWater) || tile->getFlag(Tile::tlDeepWater)))
       {
         direction = direction::none;
         break;
@@ -231,7 +231,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos& 
     TilesArea tiles( tilemap, curPos + TilePos(1, 0), curPos + TilePos( 0, 10) );
     foreach( it, tiles )
     {
-      imdId = (*it)->originalImgId();
+      imdId = (*it)->ImgId();
       if( imdId == 380 || imdId == 381 || imdId == 382 || imdId == 383 )
       {
         stop = (*it)->pos();
@@ -250,7 +250,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos& 
     TilesArea tiles( tilemap, curPos - TilePos( 0, 10 ), curPos - TilePos(0, 1) );
     for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
-      imdId = (*it)->originalImgId();
+      imdId = (*it)->ImgId();
       if( imdId == 372 || imdId == 373 || imdId == 374 || imdId == 375 )
       {
         stop = (*it)->pos();
@@ -322,7 +322,7 @@ bool LowBridge::build( const city::AreaInfo& info )
       TilePos buildPos = info.pos + subtile->_pos * signSum;
       Tile& tile = tilemap.at( buildPos );
       subtile->setPicture( tile.picture() );
-      subtile->_imgId = tile.originalImgId();
+      subtile->_imgId = tile.ImgId();
       subtile->_info = tile::encode( tile );
       subtile->_parent = this;
 

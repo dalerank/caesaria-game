@@ -110,7 +110,7 @@ bool Overlay::build(const city::AreaInfo &info)
     for (int di = 0; di < _d->size.width(); ++di)
     {
       Tile& tile = tilemap.at( info.pos + TilePos( di, dj ) );
-      tile.setMasterTile( _d->masterTile );
+      tile.setMaster( _d->masterTile );
 
       if( tile.overlay().isValid() && tile.overlay() != this )
       {

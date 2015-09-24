@@ -32,6 +32,7 @@
 #include "game/funds.hpp"
 #include "core/font.hpp"
 #include "gfx/tilearea.hpp"
+#include "core/osystem.hpp"
 #include "build.hpp"
 #include "objects/tree.hpp"
 #include "game/settings.hpp"
@@ -76,6 +77,7 @@ public:
   LayerPtr lastLayer;
   Renderer* renderer;
   Font textFont;
+  bool readyForExit;
 };
 
 void Destroy::_clearAll()
@@ -151,11 +153,11 @@ void Destroy::render( Engine& engine )
   // FIRST PART: draw all flat land (walkable/boatable)  
   for( auto ftile : flatTiles )
   {
-    Tile* master = ftile->masterTile();
+    Tile* master = ftile->master();
 
     ftile = (master == 0 ? ftile : master);
 
-    if( !ftile->rwd() )
+    if( !ftile->rendered() )
     {
       if( hashDestroyArea.inArea( ftile ) )
       {
@@ -288,10 +290,8 @@ void Destroy::handleEvent(NEvent& event)
 
     case mouseLbtnRelease:            // left button
     {
-      _clearAll();
-      _setStartCursorPos( _lastCursorPos() );
-      GameEventPtr e = Payment::create( econ::Issue::buildConstruction, -_d->money4destroy );
-      e->dispatch();      
+      if( !OSystem::isAndroid() )
+        _executeClear();
     }
     break;
 
@@ -311,11 +311,41 @@ void Destroy::handleEvent(NEvent& event)
     {
       switch( event.keyboard.key )
       {
-      case KEY_ESCAPE: _exitDestroyTool(); break;
+      case KEY_ESCAPE:
+      {
+        if( OSystem::isAndroid() )
+        {
+          if( !_d->readyForExit )
+          {
+            _setLastCursorPos( _startCursorPos() );
+            _d->readyForExit = true;
+            break;
+          }
+        }
+
+        _exitDestroyTool();
+      }
+      break;
+
+      case KEY_RETURN:
+      {
+        _executeClear();
+      }
+      break;
+
       default: break;
       }
     }
   }
+}
+
+void Destroy::_executeClear()
+{
+  _clearAll();
+  _setStartCursorPos( _lastCursorPos() );
+
+  GameEventPtr e = Payment::create( econ::Issue::buildConstruction, -_d->money4destroy );
+  e->dispatch();
 }
 
 int Destroy::type() const {  return citylayer::destroyd; }
