@@ -111,7 +111,7 @@ bool Spline::IsInputSane()
             continue;
         }
         first = false;
-        if( std::abs<float>( x - xold ) < 1 )
+        if( std::abs( x - xold ) < 1 )
         {
             myError = not_single_valued;
             return false;
