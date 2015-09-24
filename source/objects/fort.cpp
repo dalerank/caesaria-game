@@ -528,23 +528,22 @@ world::PlayerArmyPtr Fort::expedition() const
   return ret;
 }
 
-
 void Fort::sendExpedition(Point location)
 {
-  world::PlayerArmyPtr army = world::PlayerArmy::create( _city()->empire(), _city().as<world::City>() );
-  army->setFortPos( pos() );
+  auto playerArmy = world::PlayerArmy::create( _city()->empire(), _city().as<world::City>() );
+  playerArmy->setFortPos( pos() );
 
   auto soldiers = walkers().select<RomeSoldier>();
 
-  army->move2location( location );
-  army->addSoldiers( soldiers );
+  playerArmy->move2location( location );
+  playerArmy->addSoldiers( soldiers );
 
-  army->attach();
+  playerArmy->attach();
 
-  _d->expeditionName = army->name();
+  _d->expeditionName = playerArmy->name();
 
   for( auto it : soldiers )
-    it->send2expedition( army->name() );
+    it->send2expedition( playerArmy->name() );
 }
 
 void Fort::setAttackAnimals(bool value) { _d->attackAnimals = value; }

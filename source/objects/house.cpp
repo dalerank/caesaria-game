@@ -1008,7 +1008,7 @@ void House::applyService( ServiceWalkerPtr walker )
     if( !svalue )
       break;
 
-    RecruterPtr recuter = walker.as<Recruter>();
+    auto recuter = walker.as<Recruter>();
     if( recuter != NULL )
     {
       int hiredWorkers = math::min(svalue, recuter->needWorkers());

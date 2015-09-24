@@ -102,12 +102,12 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
 
 void AboutRawMaterial::_showAdvInfo()
 {
-  FactoryPtr rawmb = base().as<Factory>();
-  if( rawmb.isValid() )
+  auto miningBuilding = base().as<Factory>();
+  if( miningBuilding.isValid() )
   {
     std::string workerState = utils::format( 0xff, "Damage=%d\nFire=%d\n",
-                                                  (int)rawmb->state( pr::damage ),
-                                                  (int)rawmb->state( pr::fire ) );
+                                                  (int)miningBuilding->state( pr::damage ),
+                                                  (int)miningBuilding->state( pr::fire ) );
 
     dialog::Dialog* dialog = dialog::Information( ui(), "Information", workerState );
     dialog->setCenter( ui()->rootWidget()->center() );

@@ -40,7 +40,7 @@ AboutTheater::AboutTheater(Widget *parent, PlayerCityPtr city, const Tile &tile)
 {
   setupUI( ":/gui/infoboxtheater.gui" );
 
-  TheaterPtr theater = _getBuilding().as<Theater>();
+  auto theater = _getBuilding().as<Theater>();
   setTitle( _( MetaDataHolder::findPrettyName( theater->type() ) ) );
 
   _lbTextRef()->setTextAlignment( align::upperLeft, align::center);

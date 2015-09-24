@@ -895,7 +895,7 @@ void ComputerCity::addObject(ObjectPtr object )
 {
   if( object.is<Merchant>() )
   {
-    MerchantPtr merchant = object.as<Merchant>();
+    auto merchant = object.as<Merchant>();
     good::Store& sellGoods = merchant->sellGoods();
     good::Store& buyGoods = merchant->buyGoods();
 
@@ -914,20 +914,20 @@ void ComputerCity::addObject(ObjectPtr object )
   }
   else if( object.is<Barbarian>() )
   {
-    BarbarianPtr brb = object.as<Barbarian>();
+    auto barbarian = object.as<Barbarian>();
     _d->lasttime.attacked = game::Date::current();
-    int attack = std::max<int>( brb->strength() - strength(), 0 );
+    int attack = std::max<int>( barbarian->strength() - strength(), 0 );
     if( !attack ) attack = 10;
     _d->strength = math::clamp<int>( _d->strength - math::random( attack ), 0, 100 );
 
     if( _d->strength > 0 )
     {
-      int resist = std::max<int>( strength() - brb->strength(), 0 );
-      brb->updateStrength( math::random( resist ) );
+      int resist = std::max<int>( strength() - barbarian->strength(), 0 );
+      barbarian->updateStrength( math::random( resist ) );
     }
     else
     {
-      delayTrade( brb->strength() );
+      delayTrade( barbarian->strength() );
     }
   }
 }

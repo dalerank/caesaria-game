@@ -183,7 +183,7 @@ void Tree::grow()
         {
           _city()->addOverlay( overlay );
 
-          TreePtr newTree = overlay.as<Tree>();
+          auto newTree = overlay.as<Tree>();
           if( newTree.isValid() )
           {
             Picture pic = MetaDataHolder::randomPicture( type(), Size(1) );

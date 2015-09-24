@@ -119,8 +119,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
     walker::Type wtype = WalkerHelper::getType( soldierType );   
     for( int k=0; k < soldierNumber; k++ )
     {
-      WalkerPtr wlk = WalkerManager::instance().create( wtype, game.city() );
-      EnemySoldierPtr enemy = wlk.as<EnemySoldier>();
+      auto enemy = WalkerManager::instance().create<EnemySoldier>( wtype, game.city() );
       if( enemy.isValid() )
       {
         enemy->send2City( location );

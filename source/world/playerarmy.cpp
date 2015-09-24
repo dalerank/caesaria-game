@@ -288,7 +288,7 @@ void PlayerArmy::_reachedWay()
         walker->attach();
       }
 
-      FortPtr fort = pCity->getOverlay( _d->fortPos ).as<Fort>();
+      auto fort = pCity->getOverlay( _d->fortPos ).as<Fort>();
       if( fort.isValid() )
       {
         fort->returnSoldiers();

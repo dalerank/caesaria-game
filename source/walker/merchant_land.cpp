@@ -56,7 +56,7 @@ void checkForTradeCenters( DirectPRoutes& routes )
   DirectPRoutes tradecenterWayList;
   for( auto route : routes )
   {
-    WarehousePtr warehouse = route.first.as<Warehouse>();
+    auto warehouse = route.first.as<Warehouse>();
     if( warehouse->isTradeCenter() )
       tradecenterWayList[ route.first ] = route.second;
   }
@@ -82,7 +82,7 @@ DirectRoute get4Buys( Propagator &pathPropagator, good::Storage& basket, PlayerC
   while( routeIt != routes.end() )
   {
     // for every warehouse within range
-    WarehousePtr warehouse = routeIt->first.as<Warehouse>();
+    auto warehouse = routeIt->first.as<Warehouse>();
     int rating = 0;
     for( auto& gtype : good::all() )
     {
@@ -117,7 +117,7 @@ DirectRoute get4Sells( Propagator &pathPropagator, good::Storage& basket )
   while( pathWayIt != pathWayList.end() )
   {
     // for every warehouse within range
-    WarehousePtr warehouse = pathWayIt->first.as<Warehouse>();
+    auto warehouse = pathWayIt->first.as<Warehouse>();
 
     if( warehouse->store().freeQty() == 0 ) { pathWayList.erase( pathWayIt++ );}
     else { ++pathWayIt; }
@@ -264,7 +264,7 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
 
   case stBuyGoods:
     {
-      WarehousePtr warehouse = city->getOverlay( destination ).as<Warehouse>();
+      auto warehouse = city->getOverlay( destination ).as<Warehouse>();
 
       if( warehouse.isValid() )
       {
@@ -349,7 +349,7 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
 
   case stSellGoods:
   {
-    WarehousePtr warehouse = city->getOverlay( destination ).as<Warehouse>();
+    auto warehouse = city->getOverlay( destination ).as<Warehouse>();
 
     const good::Store& cityOrders = city->buys();
 

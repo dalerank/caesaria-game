@@ -461,10 +461,10 @@ void DebugHandler::Impl::handleEvent(int event)
     world::CityList cities = game->empire()->cities();
     for( auto acity : cities )
     {
-      world::ComputerCityPtr ccity = acity.as<world::ComputerCity>();
-      if( ccity.isValid() )
+      auto compCity = acity.as<world::ComputerCity>();
+      if( compCity.isValid() )
       {
-        ccity->__debugSendMerchant();
+        compCity->__debugSendMerchant();
       }
     }
   }

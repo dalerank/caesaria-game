@@ -78,9 +78,9 @@ CartSupplier::CartSupplier( PlayerCityPtr city )
 good::Store* CartSupplier::Impl::getStore( BuildingPtr building )
 {
     good::Store* storage = nullptr;
-    FactoryPtr factory = building.as<Factory>();
-    GranaryPtr granary = building.as<Granary>();
-    WarehousePtr warehouse = building.as<Warehouse>();
+    auto factory = building.as<Factory>();
+    auto granary = building.as<Granary>();
+    auto warehouse = building.as<Warehouse>();
 
     if( factory.isValid() ) { storage = &factory->store(); }
     else if( granary.isValid() ) { storage = &granary->store(); }

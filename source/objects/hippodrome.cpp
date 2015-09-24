@@ -101,8 +101,8 @@ void HippodromeSection::destroy()
 {
   Building::destroy();
 
-  auto hp = _map().overlay( _basepos ).as<Hippodrome>();
-  if( hp.isValid() )
+  auto hippodrome = _map().overlay( _basepos ).as<Hippodrome>();
+  if( hippodrome.isValid() )
   {
     GameEventPtr e = ClearTile::create( _basepos );
     e->dispatch();

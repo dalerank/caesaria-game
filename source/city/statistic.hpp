@@ -438,12 +438,7 @@ inline SmartList< T > Statistic::_Objects::find( std::set<object::Type> which ) 
 template< class T >
 inline SmartList<T> Statistic::_Objects::find() const
 {
-  SmartList<T> ret;
-  const OverlayList& buildings = _parent.rcity.overlays();
-  for( auto item : buildings )
-    ret.addIfValid( item.as<T>() );
-
-  return ret;
+  return _parent.rcity.overlays().select<T>();
 }
 
 template< class T >
@@ -455,7 +450,7 @@ inline SmartList< T > Statistic::_Objects::find( object::Group group, const Tile
 
   for( auto tile : area )
   {
-    SmartPtr<T> obj = tile->overlay().as<T>();
+    SmartPtr<T> obj = tile->overlay<T>();
     if( obj.isValid() && (obj->getClass() == group || group == object::group::any ) )
     {
       ret.push_back( obj );
@@ -640,13 +635,7 @@ inline gfx::TilesArray Statistic::_Map::around( T overlay ) const
 template<class T>
 inline SmartList<T> Statistic::_Walkers::find() const
 {
-  auto walkers = _parent.rcity.walkers();
-
-  SmartList< T > result;
-  for( auto w : walkers )
-    result.addIfValid( w.as<T>() );
-
-  return result;
+  return _parent.rcity.walkers().select<T>();
 }
 
 }//end namespace city

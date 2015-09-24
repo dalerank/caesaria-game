@@ -94,14 +94,13 @@ void GladiatorRevolt::_exec(Game& game, unsigned int)
 
     for( int k=0; k < _d->count; k++ )
     {
-      WalkerPtr wlk = WalkerManager::instance().create( walker::gladiatorRiot, game.city() );
-      EnemySoldierPtr enemy = wlk.as<EnemySoldier>();
-      if( enemy.isValid() )
+      auto rioter = WalkerManager::instance().create<EnemySoldier>( walker::gladiatorRiot, game.city() );
+      if( rioter.isValid() )
       {
-        enemy->send2City( location );
-        enemy->wait( math::random( k * 30 ) );
-        enemy->setAttackPriority( EnemySoldier::attackAll );
-        enemy->setSpeedMultiplier( 0.7 + math::random( 60 ) / 100.f  );
+        rioter->send2City( location );
+        rioter->wait( math::random( k * 30 ) );
+        rioter->setAttackPriority( EnemySoldier::attackAll );
+        rioter->setSpeedMultiplier( 0.7 + math::random( 60 ) / 100.f  );
       }
     }
   }

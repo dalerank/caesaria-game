@@ -137,7 +137,7 @@ Options::Options() : _d( new Impl )
 metric::Unit Options::tradeLimit( Order state, good::Product type) const
 {
   Impl::GoodsInfo::const_iterator it = _d->goods.find( type );
-  metric::Unit ret;
+  metric::Unit ret = metric::Unit::fromQty( 0 );
   if( it == _d->goods.end() )
     return ret;
 

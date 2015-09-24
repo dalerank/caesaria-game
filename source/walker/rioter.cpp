@@ -103,8 +103,8 @@ void Rioter::timeStep(const unsigned long time)
     ConstructionList constructions = _city()->statistic().objects.find<Construction>( object::house );
     for( auto it=constructions.begin(); it != constructions.end(); )
     {
-      HousePtr h = (*it).as<House>();
-      if( h->spec().level() <= _d->houseLevel ) { it=constructions.erase( it ); }
+      auto house = (*it).as<House>();
+      if( house->spec().level() <= _d->houseLevel ) { it=constructions.erase( it ); }
       else { ++it; }
     }
 

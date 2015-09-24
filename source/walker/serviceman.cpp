@@ -305,10 +305,10 @@ void ServiceWalker::send2City(BuildingPtr base, int orders)
     return;
   }
 
-  ServiceBuildingPtr servBuilding = base.as<ServiceBuilding>();
 
-  if( servBuilding.isValid() && _d->maxDistance <= defaultServiceDistance )
+  if( base.is<ServiceBuilding>() && _d->maxDistance <= defaultServiceDistance )
   {
+    auto servBuilding = base.as<ServiceBuilding>();
     Logger::warning( "!!!Warning: Base have short distance for walker. Parent [%d,%d] ", base->pos().i(), base->pos().j() );
     setMaxDistance( servBuilding->walkerDistance() );
   }
@@ -333,9 +333,9 @@ void ServiceWalker::_centerTile()
   for( auto b : reachedBuildings )
     b->applyService( this );
 
-  ServiceBuildingPtr servBuilding = base().as<ServiceBuilding>();
-  if( servBuilding.isValid() )
+  if( base().is<ServiceBuilding>() )
   {
+    auto servBuilding = base().as<ServiceBuilding>();
     servBuilding->buildingsServed( reachedBuildings, this );
   }
 

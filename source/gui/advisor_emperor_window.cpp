@@ -79,9 +79,9 @@ public:
   {
     _request = request;
 
-    GoodRequestPtr gr = _request.as<GoodRequest>();
-    if( gr.isValid() )
-      _goodPic = good::Helper::picture( gr->goodType() );
+    auto goodRequest = _request.as<GoodRequest>();
+    if( goodRequest.isValid() )
+      _goodPic = good::Helper::picture( goodRequest->goodType() );
 
     _finalizeResize();
 
@@ -96,15 +96,15 @@ public:
 
     Font font = Font::create( FONT_1_WHITE );
 
-    request::RqGoodPtr gr = _request.as<request::RqGood>();
-    if( gr.isValid() )
+    auto goodRequest = _request.as<request::RqGood>();
+    if( goodRequest.isValid() )
     {
-      font.draw( pic, utils::format( 0xff, "%d", gr->qty() ), 2, 2 );
-      font.draw( pic, good::Helper::getTypeName( gr->goodType() ), 60, 2 );
+      font.draw( pic, utils::format( 0xff, "%d", goodRequest->qty() ), 2, 2 );
+      font.draw( pic, good::Helper::getTypeName( goodRequest->goodType() ), 60, 2 );
 
-      int month2comply = game::Date::current().monthsTo( gr->finishedDate() );
+      int month2comply = game::Date::current().monthsTo( goodRequest->finishedDate() );
       font.draw( pic, utils::format( 0xff, "%d %s", month2comply, _( "##rqst_month_2_comply##") ), 250, 2 );
-      font.draw( pic, gr->description(), 5, pic.height() - 20 );
+      font.draw( pic, goodRequest->description(), 5, pic.height() - 20 );
     }
   }
 

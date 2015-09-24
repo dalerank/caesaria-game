@@ -238,15 +238,15 @@ void AboutPeople::_updateTitle()
     {
     case walker::merchant:
     {
-      MerchantPtr m = _d->object.as<Merchant>();
-      title = _("##trade_caravan_from##") + std::string(" ") + m->parentCity();
+      auto landMerchant = _d->object.as<Merchant>();
+      title = _("##trade_caravan_from##") + std::string(" ") + landMerchant->parentCity();
     }
     break;
 
     case walker::seaMerchant:
     {
-      SeaMerchantPtr m = _d->object.as<SeaMerchant>();
-      title = _("##trade_ship_from##") + std::string(" ") + m->parentCity();
+      auto seaMerchant = _d->object.as<SeaMerchant>();
+      title = _("##trade_ship_from##") + std::string(" ") + seaMerchant->parentCity();
     }
     break;
 

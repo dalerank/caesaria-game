@@ -91,17 +91,17 @@ void AboutConstruction::_setWorkingActive(bool working)
 
 void AboutConstruction::_updateWorkingText()
 {
-  WorkingBuildingPtr working = base().as<WorkingBuilding>();
-  _setWorkingActive( working.isValid() ? working->isActive() : false );
+  auto workingBuilding = base().as<WorkingBuilding>();
+  _setWorkingActive( workingBuilding.isValid() ? workingBuilding->isActive() : false );
 }
 
 void AboutConstruction::_resolveToggleWorking()
 {
-  WorkingBuildingPtr working = base().as<WorkingBuilding>();
-  if( working.isValid() )
+  auto workingBuilding = base().as<WorkingBuilding>();
+  if( workingBuilding.isValid() )
   {
-    working->setActive( !working->isActive() );
-    _setWorkingActive( working->isActive() );
+    workingBuilding->setActive( !workingBuilding->isActive() );
+    _setWorkingActive( workingBuilding->isActive() );
   }
 }
 

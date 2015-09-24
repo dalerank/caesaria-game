@@ -240,10 +240,10 @@ void TraineeWalker::_reachedPathway()
   Walker::_reachedPathway();
   deleteLater();
 
-  BuildingPtr dest = _map().overlay( _d->destLocation ).as<Building>();
-  if( dest.isValid() )
+  auto destidnationBuilding = _map().overlay( _d->destLocation ).as<Building>();
+  if( destidnationBuilding.isValid() )
   {
-    dest->updateTrainee( this );
+    destidnationBuilding->updateTrainee( this );
   }
 }
 

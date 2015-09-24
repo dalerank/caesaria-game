@@ -246,18 +246,18 @@ void EmpireMapWindow::Impl::drawMovable(Engine& painter)
   {
     if( obj->isMovable() )
     {
-      world::MovableObjectPtr mobj = obj.as<world::MovableObject>();
-      if( !mobj.isValid() )
+      auto movableObject = obj.as<world::MovableObject>();
+      if( !movableObject.isValid() )
       {
         Logger::warning( "Object %s not movable", obj->name().c_str() );
         continue;
       }
 
-      Point mappos = mobj->location();
-      painter.draw( mobj->pictures(), offset + mobj->location() );
+      Point mappos = movableObject->location();
+      painter.draw( movableObject->pictures(), offset + movableObject->location() );
 
 #ifdef DEBUG
-      int distance = mobj->viewDistance();
+      int distance = movableObject->viewDistance();
       if( distance > 0 )
       {
         Point lastPos( distance * sin( 0 ), distance * cos( 0 ) );
@@ -271,7 +271,7 @@ void EmpireMapWindow::Impl::drawMovable(Engine& painter)
         }
       }
 
-      const world::Route& way = mobj->way();
+      const world::Route& way = movableObject->way();
       if( !way.empty() )
       {
         Point lastPos = way[ way.step ];

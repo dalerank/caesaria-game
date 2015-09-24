@@ -181,10 +181,10 @@ ServiceInfoboxCreator::ServiceInfoboxCreator(const std::string &caption, const s
 Infobox* ServiceInfoboxCreator::create(PlayerCityPtr city, Widget *parent, TilePos pos)
 {
   Size  size = parent->size();
-  WorkingBuildingPtr building = city->getOverlay( pos ).as<WorkingBuilding>();
-  if( building.isValid() )
+  auto workBuilding = city->getOverlay( pos ).as<WorkingBuilding>();
+  if( workBuilding.isValid() )
   {
-    AboutWorkingBuilding* infoBox = new AboutWorkingBuilding( parent, building );
+    AboutWorkingBuilding* infoBox = new AboutWorkingBuilding( parent, workBuilding );
     infoBox->setPosition( Point( (size.width() - infoBox->width()) / 2, size.height() - infoBox->height()) );
 
     if( !title.empty() ) { infoBox->setTitle( title ); }

@@ -75,10 +75,10 @@ Recruter::Recruter(PlayerCityPtr city )
 
 void Recruter::hireWorkers( const int workers )
 {
-  WorkingBuildingPtr wbase = base().as<WorkingBuilding>();
-  if( wbase.isValid() ) 
+  auto parentBuilding = base().as<WorkingBuilding>();
+  if( parentBuilding.isValid() )
   {
-    unsigned int reallyHire = wbase->addWorkers( workers );
+    unsigned int reallyHire = parentBuilding->addWorkers( workers );
     _d->needWorkers -= reallyHire;
   }
   else
@@ -192,10 +192,10 @@ void Recruter::send2City( WorkingBuildingPtr building, const int workersNeeded )
 
 void Recruter::send2City(BuildingPtr base, int orders)
 {
-  WorkingBuildingPtr wb = base.as<WorkingBuilding>();
-  if( wb.isValid() )
+  auto parentBuilding = base.as<WorkingBuilding>();
+  if( parentBuilding.isValid() )
   {
-    send2City( wb, wb->needWorkers() );
+    send2City( parentBuilding, parentBuilding->needWorkers() );
   }
   else
   {

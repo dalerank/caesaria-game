@@ -249,7 +249,7 @@ const Picture& Aqueduct::picture( const city::AreaInfo& info ) const
     {
       if( isReservoirNear )
       {
-        ReservoirPtr reservoir = overlay_d[ i ].as<Reservoir>();
+        auto reservoir = overlay_d[ i ].as<Reservoir>();
         switch( i )
         {
         case north: directionFlags += ( reservoir->entry( south ) == p + TilePos( 0, 1 ) ? 1 : 0 ); break;
