@@ -60,7 +60,7 @@
 
 /* I've found an old Unix (a SunOS 4.1.3_U1) without all SEEK_* defined.... */
 
-#ifdef unix || __APPLE__
+#if defined(unix) || defined(__APPLE__)
 #  include <sys/stat.h>
 #endif
 #define MAXFILENAME (256)
