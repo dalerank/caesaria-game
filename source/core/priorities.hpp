@@ -39,10 +39,10 @@ inline std::set<T>& operator<<(std::set<T>& which, const VariantList& values)
 }
 
 template<class T>
-class Priorities : public std::vector< T >
+class Vector : public std::vector< T >
 {
 public:
-  inline Priorities& operator<<( const T& v )
+  inline Vector& operator<<( const T& v )
   {
     this->push_back( v );
     return *this;
@@ -63,15 +63,13 @@ public:
 
   bool contain( const T& v ) const
   {
-    for( auto& item : *this ) { if( item == v ) return true; }
-
-    return false;
+    auto it = std::find(this->begin(), this->end(), v);
+    return it != this->end();
   }
 
-  Priorities& operator << ( const VariantList& vl )
+  Vector& operator << ( const VariantList& vl )
   {
     for( auto& i : vl ) { this->push_back( (T)i.toInt() ); }
-
     return *this;
   }
 };

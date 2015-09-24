@@ -139,8 +139,7 @@ bool Colosseum::isNeedGladiators() const
 
 Service::Type Colosseum::_getServiceManType() const
 {
-  ServiceWalkerList servicemen;
-  servicemen << walkers();
+  auto servicemen = walkers().select<ServiceWalker>();
   return (!servicemen.empty() ? servicemen.front()->serviceType() : Service::srvCount);
 }
 

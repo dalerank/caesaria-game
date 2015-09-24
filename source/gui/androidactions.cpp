@@ -95,6 +95,10 @@ bool ActionsBar::onEvent(const NEvent &event)
       return true;
     }
   }
+  else if( event.EventType == sEventMouse && event.mouse.type == mouseMoved )
+  {
+    return true;
+  }
 
   return Window::onEvent( event );
 }

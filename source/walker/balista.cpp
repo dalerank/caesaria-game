@@ -59,13 +59,12 @@ void Balista::setActive(bool active)
 
 bool Balista::_tryAttack()
 {
-  EnemySoldierList enemies;
-  enemies << _findEnemiesInRange( attackDistance() );
+  auto enemies = _findEnemiesInRange( attackDistance() ).select<EnemySoldier>();
 
   if( !enemies.empty() )
   {
     //find nearest walkable wall
-    EnemySoldierPtr soldierInAttackRange = _findNearbyEnemy( enemies );
+    auto soldierInAttackRange = _findNearbyEnemy( enemies );
 
     if( soldierInAttackRange.isValid() )
     {

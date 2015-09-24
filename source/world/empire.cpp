@@ -610,10 +610,10 @@ GovernorRanks EmpireHelper::ranks()
   return ret;
 }
 
-GovernorRank EmpireHelper::getRank(unsigned int name)
+GovernorRank EmpireHelper::getRank(GovernorRank::Level level)
 {
   GovernorRanks ranks = world::EmpireHelper::ranks();
-  return ranks[ math::clamp<int>( name, 0, ranks.size() ) ];
+  return ranks[ math::clamp<int>( level, 0, ranks.size() ) ];
 }
 
 TraderouteList Empire::tradeRoutes(){  return _d->trading.routes();}
@@ -645,10 +645,8 @@ void Empire::Impl::checkLoans()
 
 void Empire::Impl::checkBarbarians( EmpirePtr empire )
 {
-  BarbarianList barbarians;
-  barbarians << objects;
-
-  bool needYetOneBarbarianGroup = barbarians.size() < maxBarbariansGroups;
+  unsigned int barbarians_n = objects.count<Barbarian>();
+  bool needYetOneBarbarianGroup = barbarians_n < maxBarbariansGroups;
 
   if( needYetOneBarbarianGroup )
   {
@@ -732,7 +730,7 @@ void GovernorRank::load( const std::string& name, const VariantMap &vm)
   rankName = name;
   VARIANT_LOAD_STR( pretty, vm );
   VARIANT_LOAD_ANY( salary, vm );
-  VARIANT_LOAD_ANY( level, vm );
+  VARIANT_LOAD_ENUM( level, vm );
 }
 
 }//end namespace world

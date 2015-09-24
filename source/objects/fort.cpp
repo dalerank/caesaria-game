@@ -419,16 +419,15 @@ TilePos Fort::freeSlot(WalkerPtr who) const
 
 void Fort::changePatrolArea()
 {
-  RomeSoldierList sldrs;
-  sldrs << walkers();
+  auto sldrs = walkers().select<RomeSoldier>();
 
   TroopsFormation formation = (patrolLocation() == _d->area->pos() + TilePos( 0, 3 )
                                          ? frmParade
                                          : _d->patrolArea.mode );
   _d->patrolArea.setMode( _city(), formation );
 
-  foreach( it, sldrs )
-    (*it)->send2patrol();
+  for( auto soldier : sldrs )
+    soldier->send2patrol();
 }
 
 TilePos Fort::patrolLocation() const

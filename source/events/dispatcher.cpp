@@ -74,7 +74,7 @@ void Dispatcher::update(Game& game, unsigned int time )
 
   if( !_d->newEvents.empty() )
   {
-    _d->events << _d->newEvents;
+    _d->events.append( _d->newEvents );
     _d->newEvents.clear();
   }
 }

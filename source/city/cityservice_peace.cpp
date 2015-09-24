@@ -60,7 +60,7 @@ public:
   bool significantBuildingsDestroyed;
   DateTime lastMessageDate;
 
-  Priorities<object::Type> unsignificantBuildings;
+  Vector<object::Type> unsignificantBuildings;
 };
 
 SrvcPtr Peace::create( PlayerCityPtr city )

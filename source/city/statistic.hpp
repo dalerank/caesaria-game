@@ -137,8 +137,8 @@ public:
 
   struct WorkersInfo
   {
-    int current;
-    int need;
+    int current = 0;
+    int need = 0;
   };
 
   struct _Workers
@@ -332,8 +332,7 @@ inline Pathway Statistic::_Walkers::freeTile( TilePos target, TilePos currentPos
     float crntDistance = target.distanceFrom( currentPos );
     for( auto tile : tiles )
     {
-      SmartList<T> eslist;
-      eslist << _parent.rcity.walkers( tile->pos() );
+      SmartList<T> eslist = _parent.rcity.walkers( tile->pos() ).select<T>();
 
       if( !eslist.empty() )
         continue;
@@ -593,21 +592,19 @@ SmartList<T> Statistic::_Objects::producers(const good::Product goodtype) const
 }
 
 template<class T, class B>
-SmartList<T> Statistic::_Objects::neighbors( SmartPtr<B> overlay) const
+SmartList<T> Statistic::_Objects::neighbors( SmartPtr<B> overlay ) const
 {
   OverlayList ovs = neighbors( ptr_cast<Overlay>( overlay ), true );
-  SmartList<T> ret;
-  ret << ovs;
-  return ret;
+  return ovs.select<T>();
 }
 
 template< class T >
 inline SmartList< T > Statistic::_Objects::findNotIn( const std::set<object::Group>& which ) const
 {
   SmartList< T > ret;
-  const OverlayList& ovs = _parent.rcity.overlays();
+  auto overlays = _parent.rcity.overlays();
 
-  for( auto ov : ovs )
+  for( auto ov : overlays )
   {
     if( which.count( ov->group() ) == 0 )
     {
@@ -622,8 +619,7 @@ template<class T>
 inline bool Statistic::_Map::isTileBusy( const TilePos& p, WalkerPtr caller, bool& needMeMove ) const
 {
   needMeMove = false;
-  SmartList<T> walkers;
-  walkers << _parent.rcity.walkers( p );
+  auto walkers = _parent.rcity.walkers( p ).select<T>();
 
   if( !walkers.empty() )
   {
@@ -644,7 +640,7 @@ inline gfx::TilesArray Statistic::_Map::around( T overlay ) const
 template<class T>
 inline SmartList<T> Statistic::_Walkers::find() const
 {
-  const WalkerList& walkers = _parent.rcity.walkers();
+  auto walkers = _parent.rcity.walkers();
 
   SmartList< T > result;
   for( auto w : walkers )

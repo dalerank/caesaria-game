@@ -44,7 +44,7 @@ typedef enum
 object::Groups toGroups(Type type);
 } //end namespace industry
 
-typedef Priorities<industry::Type> HirePriorities;
+typedef Vector<industry::Type> HirePriorities;
 
 } //end namespace city
 

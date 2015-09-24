@@ -151,7 +151,7 @@ bool Dispatcher::haveCanceledRequest() const
   return _d->lastRequestCancelDate.monthsTo( game::Date::current() ) < DateTime::monthsInYear;
 }
 
-RequestList Dispatcher::requests() const {  return _d->requests; }
+const RequestList& Dispatcher::requests() const {  return _d->requests; }
 
 void Dispatcher::Impl::updateRequests()
 {
@@ -159,7 +159,7 @@ void Dispatcher::Impl::updateRequests()
 
   if( !newRequests.empty() )
   {
-    requests << newRequests;
+    requests.append( newRequests );
     newRequests.clear();
   }
 }

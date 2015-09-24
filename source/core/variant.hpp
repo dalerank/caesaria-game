@@ -52,6 +52,8 @@ class NColor;
 
 #define VARIANT_SAVE_ENUM_D(vm,d,param) vm[ #param ] = (int)d->param;
 #define VARIANT_LOAD_ENUM_D(d,param,vm) d->param = (__typeof__(d->param))vm.get( #param ).toInt();
+#define VARIANT_SAVE_ENUM(vm,param) vm[ #param ] = (int)param;
+#define VARIANT_LOAD_ENUM(param,vm) param = (__typeof__(param))vm.get( #param ).toInt();
 
 #define VARIANT_LOAD_STR_D(d,param,vm) d->param = vm.get( #param ).toString();
 #define VARIANT_LOAD_STRDEF_D(d,param,def,vm) d->param = vm.get( #param, Variant(def) ).toString();

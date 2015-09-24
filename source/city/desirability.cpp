@@ -54,3 +54,4 @@ void Desirability::update( PlayerCityPtr r, OverlayPtr overlay, bool onBuild )
     current += mul * dsrbl.step;
   }
 }
+
