@@ -420,7 +420,7 @@ void StartMenu::Impl::showMainMenu()
 {
   menu->clear();
 
-  std::string lastGame = SETTINGS_VALUE( lastGame ).toString();
+  std::string lastGame = SETTINGS_STR( lastGame );
   if( !lastGame.empty() )
     ADD_MENU_BUTTON( "##mainmenu_continueplay##", Impl::continuePlay )
 

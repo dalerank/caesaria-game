@@ -89,6 +89,7 @@
 #include "city/statistic.hpp"
 #include "events/loadgame.hpp"
 #include "sound/themeplayer.hpp"
+#include "core/osystem.hpp"
 #include "city/states.hpp"
 
 using namespace gui;
@@ -118,6 +119,7 @@ public:
   TilePos selectedTilePos;
   citylayer::Type lastLayerId;
   DebugHandler dhandler;
+  bool simulationPaused;
 
   int result;
 
@@ -165,6 +167,7 @@ Level::Level(Game& game, gfx::Engine& engine ) : _d( new Impl )
 {
   _d->topMenu = NULL;
   _d->game = &game;
+  _d->simulationPaused = false;
   _d->engine = &engine;
 }
 
@@ -172,7 +175,7 @@ Level::~Level() {}
 
 void Level::Impl::initRender()
 {
-  bool oldGraphics = SETTINGS_VALUE( oldgfx ).toBool() || !SETTINGS_VALUE( c3gfx ).toString().empty();
+  bool oldGraphics = KILLSWITCH( oldgfx ) || !SETTINGS_VALUE( c3gfx ).toString().empty();
   renderer.initialize( game->city(), engine, game->gui(), oldGraphics );
   renderer.setViewport( engine->screenSize() );
   renderer.camera()->setScrollSpeed( SETTINGS_VALUE( scrollSpeed ) );
@@ -315,10 +318,11 @@ void Level::initialize()
   if( KILLSWITCH(debugMenu) )
     _d->dhandler.setVisible( true );
 
-#ifdef CAESARIA_USE_STEAM
-  gui::Ui& ui = *_d->game->gui();
-  dialog::Information( &ui, "Please note", "Black object are not done yet and will be added as soon as finished." );
-#endif
+  if( !OSystem::isAndroid() )
+  {
+    gui::Ui& ui = *_d->game->gui();
+    dialog::Information( &ui, "Please note", "Black object are not done yet and will be added as soon as finished." );
+  }
 }
 
 std::string Level::nextFilename() const{  return _d->mapToLoad;}
@@ -468,7 +472,7 @@ std::string Level::Impl::getScreenshotName()
   vfs::Path filename = utils::format( 0xff, "oc3_[%04d_%02d_%02d_%02d_%02d_%02d].png",
                                       time.year(), time.month(), time.day(),
                                       time.hour(), time.minutes(), time.seconds() );
-  vfs::Directory screenDir = SETTINGS_VALUE( screenshotDir ).toString();
+  vfs::Directory screenDir = SETTINGS_STR( screenshotDir );
   return (screenDir/filename).toString();
 }
 
@@ -482,13 +486,13 @@ void Level::loadStage( std::string filename )
 
 vfs::Path Level::Impl::createFastSaveName(const std::string& type, const std::string& postfix )
 {
-  std::string typesave = type.empty() ? SETTINGS_VALUE( fastsavePostfix ).toString() : type;
+  std::string typesave = type.empty() ? SETTINGS_STR( fastsavePostfix ) : type;
   vfs::Path filename = game->city()->name()
                        + typesave
                        + postfix
-                       + SETTINGS_VALUE( saveExt ).toString();
+                       + SETTINGS_STR( saveExt );
 
-  vfs::Directory saveDir = SETTINGS_VALUE( savedir ).toString();
+  vfs::Directory saveDir = SETTINGS_STR( savedir );
 
   return saveDir/filename;
 }
@@ -579,7 +583,7 @@ void Level::Impl::makeScreenShot()
   Logger::warning( "Level: create screenshot " + filename );
 
   Engine::instance().createScreenshot( filename );
-  GameEventPtr e = WarningMessage::create( "Screenshot save to " + filename, WarningMessage::neitral );
+  auto e = WarningMessage::create( "Screenshot save to " + filename, WarningMessage::neitral );
   e->dispatch();
 }
 
@@ -607,9 +611,9 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
       lb->setTextAlignment( align::center, align::center );
       lb->setFont( Font::create( FONT_6 ) );
 
-      PushButton* btnRestart = new PushButton( wnd, Rect( 20, 120, 380, 144), _("##restart_mission##") );
+      auto btnRestart = new PushButton( wnd, Rect( 20, 120, 380, 144), _("##restart_mission##") );
       btnRestart->setTooltipText( _("##restart_mission_tip##") );
-      PushButton* btnMenu = new PushButton( wnd, Rect( 20, 150, 380, 174), _("##exit_to_main_menu##") );
+      auto btnMenu = new PushButton( wnd, Rect( 20, 150, 380, 174), _("##exit_to_main_menu##") );
 
       wnd->setCenter( game->gui()->rootWidget()->center() );
       wnd->setModal();
@@ -623,30 +627,30 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
 void Level::Impl::checkWinMission( Level* lvl, bool force )
 {
   PlayerCityPtr city = game->city();
-  const VictoryConditions& wt = city->victoryConditions();
+  auto& conditions = city->victoryConditions();
 
   int culture = city->culture();
   int prosperity = city->prosperity();
   int favour = city->favour();
   int peace = city->peace();
   int population = city->states().population;
-  bool success = wt.isSuccess( culture, prosperity, favour, peace, population );
+  bool success = conditions.isSuccess( culture, prosperity, favour, peace, population );
 
   if( success || force )
   {
-    dialog::WinMission* wnd = new dialog::WinMission( game->gui()->rootWidget(),
-                                                      wt.newTitle(), wt.winText(),
-                                                      wt.winSpeech(), wt.mayContinue() );
+    auto winDialog = new dialog::WinMission( game->gui()->rootWidget(),
+                                             conditions.newTitle(), conditions.winText(),
+                                             conditions.winSpeech(), conditions.mayContinue() );
 
-    mapToLoad = wt.nextMission();
+    mapToLoad = conditions.nextMission();
 
-    CONNECT( wnd, onAcceptAssign(), lvl, Level::_resolveSwitchMap );
-    CONNECT( wnd, onContinueRules(), this, Impl::extendReign )
+    CONNECT( winDialog, onAcceptAssign(), lvl, Level::_resolveSwitchMap );
+    CONNECT( winDialog, onContinueRules(), this, Impl::extendReign )
   }
 
   if( success )
   {
-    GameEventPtr e = MissionWin::create( wt.name() );
+    auto e = MissionWin::create( conditions.name() );
     e->dispatch();
   }
 }
@@ -669,10 +673,10 @@ void Level::exit() { _d->result = Level::res_menu; stop(); }
 
 void Level::_requestExitGame()
 {
-  dialog::Dialog* dlg = dialog::Confirmation( _d->game->gui(),
+  auto dialog = dialog::Confirmation( _d->game->gui(),
                                               "", _("##exit_without_saving_question##"),
                                               dialog::Dialog::pauseGame );
-  CONNECT( dlg, onOk(), this, Level::_quit );
+  CONNECT( dialog, onOk(), this, Level::_quit );
 }
 
 bool Level::_tryExecHotkey(NEvent &event)
@@ -698,8 +702,8 @@ bool Level::_tryExecHotkey(NEvent &event)
       {
         TilePos center = _d->renderer.camera()->center();
         TileRect trect( center-tilemap::unitLocation(), center+tilemap::unitLocation());
-        const BorderInfo& binfo = _d->game->city()->borderInfo();
-        center = (trect.contain(binfo.roadEntry) ? binfo.roadExit : binfo.roadEntry);
+        auto& borderInfo = _d->game->city()->borderInfo();
+        center = (trect.contain(borderInfo.roadEntry) ? borderInfo.roadExit : borderInfo.roadEntry);
         _d->renderer.camera()->setCenter( center, false );
       }
       break;
@@ -721,7 +725,7 @@ bool Level::_tryExecHotkey(NEvent &event)
     case KEY_EQUALS:
     case KEY_ADD:
     {
-      GameEventPtr e = ChangeSpeed::create( (event.keyboard.key == KEY_MINUS || event.keyboard.key == KEY_SUBTRACT)
+      auto e = ChangeSpeed::create( (event.keyboard.key == KEY_MINUS || event.keyboard.key == KEY_SUBTRACT)
                                                             ? -10 : +10 );
       e->dispatch();
       handled = true;
@@ -730,7 +734,8 @@ bool Level::_tryExecHotkey(NEvent &event)
 
     case KEY_KEY_P:
     {
-      GameEventPtr e = Pause::create( Pause::toggle );
+      _d->simulationPaused =  !_d->simulationPaused;
+      auto e = Pause::create( _d->simulationPaused ? Pause::pause : Pause::play );
       e->dispatch();
       handled = true;
     }
@@ -739,7 +744,7 @@ bool Level::_tryExecHotkey(NEvent &event)
     case KEY_COMMA:
     case KEY_PERIOD:
     {
-      GameEventPtr e = Step::create( event.keyboard.key == KEY_COMMA ? 1 : 25);
+      auto e = Step::create( event.keyboard.key == KEY_COMMA ? 1 : 25);
       e->dispatch();
       handled = true;
     }

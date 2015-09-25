@@ -126,6 +126,7 @@ Helper::Helper() : EnumsHelper<Type>( Type(0) )
     __REG_TYPE( water )
     __REG_TYPE( meadow )
     __REG_TYPE( roadBlock )
+    __REG_TYPE( farmtile )
 
     append( object::unknown,        "" );
 #undef __REG_TYPE
