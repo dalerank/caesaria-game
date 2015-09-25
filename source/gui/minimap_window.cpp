@@ -342,9 +342,8 @@ void Minimap::Impl::drawObjectsMmap( Picture& canvas, bool clear, bool force )
       canvas.fill( DefaultColors::clear );
     lastObjectsCount = ovs.size();
 
-    foreach( it, ovs )
+    for( auto& overlay : ovs )
     {
-      OverlayPtr overlay = *it;
       const Tile& tile = overlay->tile();
 
       getObjectColours( tile, c1, c2);
