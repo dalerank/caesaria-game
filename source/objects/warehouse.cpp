@@ -195,6 +195,8 @@ void Warehouse::timeStep(const unsigned long time)
     {
       _resolveDeliverMode();
     }
+
+    _animationRef().setDelay( 4 + needWorkers() + math::random(2) );
   }
 
   WorkingBuilding::timeStep( time );

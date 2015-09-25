@@ -68,6 +68,7 @@ private:
   class Impl;
   ScopedPtr<Impl> _d;
 };
+
 typedef SmartPtr<SafeThread> SafeThreadPtr;
 
 } // threading

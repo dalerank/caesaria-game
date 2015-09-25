@@ -1,8 +1,10 @@
 #include <algorithm>
 #include <vector>
+
 using namespace std;
 
 #include "spline.hpp"
+#include "core/math.hpp"
 
 typedef std::vector< double > vd_t;
 
@@ -111,7 +113,7 @@ bool Spline::IsInputSane()
             continue;
         }
         first = false;
-        if( fabs( x - xold ) < 1 )
+        if( math::abs( x - xold ) < 1 )
         {
             myError = not_single_valued;
             return false;

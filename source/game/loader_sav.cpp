@@ -318,8 +318,8 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
 
     game.city()->setCameraPos( TilePos( size/2, size/2 ) );
 
-    bool oldgfx = !SETTINGS_VALUE( c3gfx ).toString().empty();
-    oldgfx |= SETTINGS_VALUE( oldgfx ).toBool();
+    bool oldgfx = !SETTINGS_STR( c3gfx ).empty();
+    oldgfx |= KILLSWITCH( oldgfx );
 
     for (int itA = 0; itA < size; ++itA)
     {

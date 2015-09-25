@@ -125,6 +125,8 @@ bool Mission::load( const std::string& filename, Game& game )
     Logger::warning( "GameLoaderMission: load city options ");
     city->setOption( PlayerCity::adviserEnabled, vm.get( CAESARIA_STR_A(adviserEnabled), 1 ) );
     city->setOption( PlayerCity::fishPlaceEnabled, vm.get( CAESARIA_STR_A(fishPlaceEnabled), 1 ) );
+    city->setOption( PlayerCity::collapseKoeff, vm.get( CAESARIA_STR_A(collapseKoeff), 100 ) );
+    city->setOption( PlayerCity::fireKoeff, vm.get( CAESARIA_STR_A(fireKoeff), 100 ) );
 
     game::Date::instance().init( vm[ "date" ].toDateTime() );
 

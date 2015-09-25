@@ -383,7 +383,7 @@ Destroy::Destroy( Renderer& renderer, PlayerCityPtr city)
 {
   _d->renderer = &renderer;
   _d->shovelPic.load( "shovel", 1 );
-  std::string rcLand = SETTINGS_VALUE( forbidenTile ).toString();
+  std::string rcLand = SETTINGS_STR( forbidenTile );
   _d->clearPic.load( rcLand, 2 );
   _d->textFont = Font::create( FONT_5 );
   _d->textPic = Picture( Size( 100, 30 ), 0, true );

@@ -679,6 +679,13 @@
     employers : 0
     class : "disaster"
   },
+
+  farmtile :
+  {
+    cost : 0
+    desirability : { base : 0, range : 0,	step : 0 }
+    class : "food"
+  }
   
   wheat_farm : 
   {

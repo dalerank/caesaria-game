@@ -600,7 +600,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case toggle_experimental_options:
   {
-    bool enable = SETTINGS_VALUE( experimental );
+    bool enable = KILLSWITCH( experimental );
     SETTINGS_SET_VALUE( experimental, !enable );
   }
   break;
