@@ -132,6 +132,8 @@ void Granary::timeStep(const unsigned long time)
   if( game::Date::isWeekChanged() )
   {
     _weekUpdate();
+    //animate workers need
+    _animationRef().setDelay( 4 + needWorkers() + math::random(2) );
   }
 }
 
