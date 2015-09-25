@@ -299,7 +299,7 @@ void Population::Impl::updateStates()
     int lowLevelHouses = 0;
     for( auto house : houses )
     {
-      int level = house->spec().level();
+      HouseLevel::ID level = house->level();
 
       if( level < HouseLevel::mansion )
       {

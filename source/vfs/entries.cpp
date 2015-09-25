@@ -348,13 +348,24 @@ Path Entries::Impl::checkCase( const Path& p)
   return p;
 }
 
-StringArray vfs::Entries::Items::files(const std::string& ext) const
+StringArray Entries::Items::names() const
 {
   StringArray ret;
 
   for( auto& item : *this )
+    ret << item.name.toString();
+
+  return ret;
+}
+
+StringArray Entries::Items::files(const std::string& ext) const
+{
+  StringArray ret;
+
+  bool any = ext.empty();
+  for( auto& item : *this )
   {
-    if( item.fullpath.isMyExtension( ext ) )
+    if( any || item.fullpath.isMyExtension( ext ) )
       ret << item.fullpath.toString();
   }
 

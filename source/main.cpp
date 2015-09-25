@@ -24,10 +24,7 @@
 #include "core/logger.hpp"
 #include "core/stacktrace.hpp"
 #include "core/osystem.hpp"
-
-#ifdef CAESARIA_USE_STEAM
-  #include "steam.hpp"
-#endif
+#include "steam.hpp"
 
 #if defined(CAESARIA_PLATFORM_WIN)
   #undef main
@@ -64,7 +61,7 @@ int main(int argc, char* argv[])
   options.checkCmdOptions( argv, argc );
   options.checkC3present();
 
-  std::string systemLang = SETTINGS_VALUE( language ).toString();
+  std::string systemLang = SETTINGS_STR( language );
 
   if( steamapi::available() )
   {
@@ -99,9 +96,8 @@ int main(int argc, char* argv[])
     crashhandler::printstack();
   }
 
-#ifdef CAESARIA_USE_STEAM
-  steamapi::close();
-#endif
+  if( steamapi::available() )
+    steamapi::close();
 
   crashhandler::remove();
 

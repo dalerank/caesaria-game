@@ -64,7 +64,7 @@ void Damage::drawTile(Engine& engine, Tile& tile, const Point& offset)
     {
       auto house = overlay.as<House>();
       damageLevel = (int)house->state( pr::damage );
-      needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
+      needDrawAnimations = (house->level() <= HouseLevel::hovel) && house->habitants().empty();
 
       if( !needDrawAnimations )
       {

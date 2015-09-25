@@ -74,7 +74,7 @@ void Crime::drawTile( Engine& engine, Tile& tile, const Point& offset)
     {
       auto house = overlay.as<House>();
       crime = (int)house->getServiceValue( Service::crime );
-      needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty(); // In case of vacant terrain
+      needDrawAnimations = (house->level() <= HouseLevel::hovel) && house->habitants().empty(); // In case of vacant terrain
 
       drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
     }

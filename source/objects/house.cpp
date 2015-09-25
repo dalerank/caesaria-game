@@ -402,7 +402,7 @@ void House::_updateCrime()
   int poverityHouse = _d->spec.level() > HouseLevel::hut ? -_d->poverity / 2 : 0;
   int desirabilityInfluence = 0;
 
-  if( spec().level() > HouseLevel::hut )
+  if( level() > HouseLevel::hut )
   {
     TilePos offset( 4, 4 );
     TilePos sizeOffset( size().width(), size().height() );
@@ -551,7 +551,7 @@ bool House::_tryEvolve_1_to_12_lvl( int level4grow, int growSize, const char des
 
       auto house = tile->overlay<House>();
       if( house != NULL &&
-          (house->spec().level() == level4grow || house->habitants().count() == 0) )
+          (house->level() == level4grow || house->habitants().count() == 0) )
       {
         if( house->size().width() > 1 )  //bigger house near, can't grow
         {
@@ -1441,6 +1441,7 @@ bool House::isFlat() const                                       { return _d->is
 const CitizenGroup& House::habitants() const                     { return _d->habitants; }
 good::Store& House::goodStore()                                  { return _d->goodstore; }
 const HouseSpecification& House::spec() const                    { return _d->spec; }
+HouseLevel::ID House::level() const                              { return spec().level(); }
 bool House::hasServiceAccess( Service::Type service)             { return getServiceValue(service) > 0; }
 float House::getServiceValue( Service::Type service)             { return _d->services.at(service)->value(); }
 void House::setServiceValue( Service::Type service, float value) { _d->services.at(service)->set( value ); }
@@ -1462,7 +1463,7 @@ std::string House::levelName() const
 {
   std::string ret = spec().levelName();
   bool big = false;
-  switch( spec().level() )
+  switch( level() )
   {
   case HouseLevel::hovel:
   case HouseLevel::tent:

@@ -161,7 +161,7 @@ void Peace::buildingDestroyed(OverlayPtr overlay, int why)
   }
 
   HousePtr house = overlay.as<House>();
-  if( house.isValid() && house->spec().level() > HouseLevel::tent )
+  if( house.isValid() && house->level() > HouseLevel::tent )
   {
     _d->significantBuildingsDestroyed = true;
   }

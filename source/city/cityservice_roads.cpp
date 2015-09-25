@@ -98,7 +98,7 @@ void Roads::timeStep( const unsigned int time )
   HouseList houses = _city()->statistic().houses.find();
   for( auto house : houses )
   {
-    if( house->spec().level() >= HouseLevel::bigMansion )
+    if( house->level() >= HouseLevel::bigMansion )
     {
       positions.push_back( Impl::UpdateInfo( house.object(), 5 ) );
     }

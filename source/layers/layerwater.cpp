@@ -75,7 +75,7 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
       if ( overlay->type() == object::house )
       {
         auto house = overlay.as<House>();
-        needDrawAnimations = (house->spec().level() == HouseLevel::hovel) && house->habitants().empty();
+        needDrawAnimations = (house->level() <= HouseLevel::hovel) && house->habitants().empty();
 
         tileNumber = OverlayPic::inHouse;
         haveWater = haveWater || house->hasServiceAccess(Service::fountain) || house->hasServiceAccess(Service::well);

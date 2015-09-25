@@ -92,9 +92,9 @@ public:
     SmartList< T > find( object::Type type ) const;
 
     template< class T >
-    int count() const;
+    size_t count() const;
 
-    int count( object::Type type ) const;
+    size_t count( object::Type type ) const;
 
     template< class T >
     SmartList< T > find( object::TypeSet types ) const;
@@ -144,11 +144,11 @@ public:
   struct _Workers
   {
     WorkersInfo details() const;
-    unsigned int need() const;
+    size_t need() const;
     int wagesDiff() const;
     unsigned int monthlyWages() const;
     float monthlyOneWorkerWages() const;
-    unsigned int available() const;
+    size_t available() const;
     unsigned int worklessPercent() const;
     unsigned int workless() const;
     HirePriorities hirePriorities() const;
@@ -166,9 +166,9 @@ public:
 
   struct _Food
   {
-    unsigned int inGranaries() const;
-    unsigned int monthlyConsumption() const;
-    unsigned int possibleProducing() const;
+    size_t inGranaries() const;
+    size_t monthlyConsumption() const;
+    size_t possibleProducing() const;
 
     Statistic& _parent;
   } food;
@@ -372,7 +372,7 @@ inline SmartList<T> Statistic::_Walkers::find( walker::Type type,
   else
   {
     gfx::TilesArea area( _parent.rcity.tilemap(), start, stop );
-    for( auto tile : area)
+    for( auto& tile : area)
     {
       const WalkerList& wlkOnTile = _parent.rcity.walkers( tile->pos() );
       walkersInArea.insert( walkersInArea.end(), wlkOnTile.begin(), wlkOnTile.end() );
@@ -380,7 +380,7 @@ inline SmartList<T> Statistic::_Walkers::find( walker::Type type,
   }
 
   SmartList< T > result;
-  for( auto w : walkersInArea )
+  for( auto& w : walkersInArea )
   {
     if( w->type() == type || type == walker::any )
       result.addIfValid( w.as<T>() );
@@ -422,7 +422,7 @@ template< class T >
 inline SmartList< T > Statistic::_Objects::find( std::set<object::Type> which ) const
 {
   SmartList< T > ret;
-  const OverlayList& ovs = _parent.rcity.overlays();
+  auto ovs = _parent.rcity.overlays();
 
   for( auto ov : ovs )
   {
@@ -464,7 +464,7 @@ template< class T >
 inline SmartList<T> Statistic::_Objects::find( object::Group group ) const
 {
   SmartList<T> ret;
-  const OverlayList& buildings = _parent.rcity.overlays();
+  auto buildings = _parent.rcity.overlays();
   for( auto item : buildings )
   {
     SmartPtr<T> b = item.as<T>();
@@ -481,7 +481,7 @@ template< class T >
 inline SmartList< T > Statistic::_Objects::find( object::TypeSet types ) const
 {
   SmartList< T > ret;
-  const OverlayList& buildings = _parent.rcity.overlays();
+  auto buildings = _parent.rcity.overlays();
   for( auto bld : buildings )
   {
     if( bld.isValid() && types.count( bld->type() ) > 0 )
@@ -492,10 +492,10 @@ inline SmartList< T > Statistic::_Objects::find( object::TypeSet types ) const
 }
 
 template< class T >
-inline int Statistic::_Objects::count() const
+inline size_t Statistic::_Objects::count() const
 {
-  int result = 0;
-  const OverlayList& buildings = _parent.rcity.overlays();
+  size_t result = 0;
+  auto buildings = _parent.rcity.overlays();
   for( auto bld : buildings )
   {
     if( is_kind_of<T>( bld ) )
@@ -509,7 +509,7 @@ template< class T >
 inline SmartList< T > Statistic::_Objects::find( object::Type type ) const
 {
   SmartList< T > ret;
-  const OverlayList& buildings = _parent.rcity.overlays();
+  auto buildings = _parent.rcity.overlays();
   for( auto bld : buildings )
   {
     if( bld.isValid() && (bld->type() == type || type == object::any) )
@@ -565,8 +565,7 @@ inline SmartPtr< T > Statistic::_Objects::next( SmartPtr< T > current ) const
 template<class T>
 inline SmartPtr<T> Statistic::_Services::find() const
 {
-  SrvcPtr ret = _parent.rcity.findService( T::defaultName() );
-  return ptr_cast<T>( ret );
+  return ptr_cast<T>( _parent.rcity.findService( T::defaultName() ) );
 }
 
 template< class T >
@@ -589,15 +588,15 @@ SmartList<T> Statistic::_Objects::producers(const good::Product goodtype) const
 template<class T, class B>
 SmartList<T> Statistic::_Objects::neighbors( SmartPtr<B> overlay ) const
 {
-  OverlayList ovs = neighbors( ptr_cast<Overlay>( overlay ), true );
-  return ovs.select<T>();
+  OverlayList overlays = neighbors( ptr_cast<Overlay>( overlay ), true );
+  return overlays.select<T>();
 }
 
 template< class T >
 inline SmartList< T > Statistic::_Objects::findNotIn( const std::set<object::Group>& which ) const
 {
   SmartList< T > ret;
-  auto overlays = _parent.rcity.overlays();
+  auto& overlays = _parent.rcity.overlays();
 
   for( auto ov : overlays )
   {

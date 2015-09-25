@@ -573,7 +573,7 @@ bool Fort::canBuild( const city::AreaInfo& areaInfo ) const
 
 bool Fort::build( const city::AreaInfo& info )
 {
-  int forts_n = info.city->statistic().objects.count<Fort>();
+  size_t forts_n = info.city->statistic().objects.count<Fort>();
 
   const city::development::Options& bOpts = info.city->buildOptions();
   if( forts_n >= bOpts.maximumForts() )

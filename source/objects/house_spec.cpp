@@ -41,7 +41,7 @@ using namespace gfx;
 class HouseSpecification::Impl
 {
 public:
-  int houseLevel;
+  HouseLevel::ID houseLevel;
   int tileCapacity;
   std::string levelName;
   std::string internalName;
@@ -67,7 +67,7 @@ public:
   GoodConsumptionMuls consumptionMuls;
 };
 
-int HouseSpecification::level() const {   return _d->houseLevel;}
+HouseLevel::ID HouseSpecification::level() const {   return _d->houseLevel;}
 const std::string& HouseSpecification::levelName() const{   return _d->levelName;}
 bool HouseSpecification::isPatrician() const{   return _d->houseLevel >= HouseLevel::smallVilla;}
 int HouseSpecification::tileCapacity() const{   return _d->tileCapacity; }
@@ -253,7 +253,7 @@ unsigned int HouseSpecification::consumptionInterval(HouseSpecification::Interva
 
 int HouseSpecification::findUnwishedBuildingNearby(HousePtr house, object::Type& rType, TilePos& refPos ) const
 {
-  int aresOffset = math::clamp<int>( house->spec().level() / 5, 1, 10 );
+  int aresOffset = math::clamp<int>( house->level() / 5, 1, 10 );
   TilePos offset( aresOffset, aresOffset );
   TilePos housePos = house->pos();
   int houseDesrbl = house->desirability().base;
@@ -278,7 +278,7 @@ int HouseSpecification::findUnwishedBuildingNearby(HousePtr house, object::Type&
 
 int HouseSpecification::findLowLevelHouseNearby(HousePtr house, TilePos& refPos ) const
 {
-  int aresOffset = math::clamp<int>( house->spec().level() / 5, 1, 10 );
+  int aresOffset = math::clamp<int>( house->level() / 5, 1, 10 );
   TilePos offset( aresOffset, aresOffset );
   TilePos housePos = house->pos();
   HouseList houses = house->_city()->statistic().objects.find<House>( object::house,
@@ -288,7 +288,7 @@ int HouseSpecification::findLowLevelHouseNearby(HousePtr house, TilePos& refPos 
   for( auto house : houses )
   {
     int pop = house->habitants().count();
-    int bLevel = house->spec().level();
+    HouseLevel::ID bLevel = house->level();
     if( pop > 0 && (_d->houseLevel - bLevel > 2) )
     {
       ret = 1;
@@ -728,7 +728,7 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
     VariantMap hSpec = specConfig.second.toMap();
 
     HouseSpecification spec;
-    spec._d->houseLevel = hSpec[ "level" ];
+    spec._d->houseLevel = hSpec[ "level" ].toEnum<HouseLevel::ID>();
     spec._d->internalName = specConfig.first;
     spec._d->levelName = hSpec[ "title" ].toString();
     spec._d->tileCapacity = hSpec.get( "habitants" ).toInt();

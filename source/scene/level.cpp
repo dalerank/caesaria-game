@@ -99,7 +99,7 @@ using namespace city;
 
 namespace scene
 {
-typedef std::vector< EventHandlerPtr > EventHandlers;
+typedef SmartList<EventHandler> EventHandlers;
 const int topMenuHeight = 23;
 
 class Level::Impl
@@ -175,7 +175,7 @@ Level::~Level() {}
 
 void Level::Impl::initRender()
 {
-  bool oldGraphics = KILLSWITCH( oldgfx ) || !SETTINGS_VALUE( c3gfx ).toString().empty();
+  bool oldGraphics = KILLSWITCH( oldgfx ) || !SETTINGS_STR( c3gfx ).empty();
   renderer.initialize( game->city(), engine, game->gui(), oldGraphics );
   renderer.setViewport( engine->screenSize() );
   renderer.camera()->setScrollSpeed( SETTINGS_VALUE( scrollSpeed ) );

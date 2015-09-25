@@ -64,7 +64,7 @@ void Unemployed::drawTile(Engine& engine, Tile& tile, const Point& offset)
       int worklessNumber = (int)house->getServiceValue( Service::recruter );
       int matureNumber = (int)house->habitants().mature_n();
       worklessPercent = math::percentage( worklessNumber, matureNumber );
-      needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
+      needDrawAnimations = (house->level() <= HouseLevel::hovel) && house->habitants().empty();
 
       if( !needDrawAnimations )
       {

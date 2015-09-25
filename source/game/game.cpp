@@ -371,7 +371,7 @@ bool Game::load(std::string filename)
   scene::SplashScreen screen;
 
   screen.initialize();
-  bool usingOldgfx = KILLSWITCH( oldgfx ) || !SETTINGS_VALUE( c3gfx ).toString().empty();
+  bool usingOldgfx = KILLSWITCH( oldgfx ) || !SETTINGS_STR( c3gfx ).empty();
   screen.setImage( usingOldgfx ? "load4" : "freska", 1 );
   screen.update( *_d->engine );
 

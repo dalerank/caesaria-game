@@ -83,7 +83,7 @@ void Entertainment::drawTile(Engine& engine, Tile& tile, const Point& offset)
       auto house = overlay.as<House>();
       entertainmentLevel = _getLevelValue( house );
 
-      needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
+      needDrawAnimations = (house->level() <= HouseLevel::hovel) && (house->habitants().empty());
       drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
     }
     else

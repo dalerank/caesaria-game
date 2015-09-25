@@ -62,7 +62,7 @@ void Tax::drawTile(Engine& engine, Tile& tile, const Point& offset)
       auto house = overlay.as<House>();
       int taxAccess = house->getServiceValue( Service::forum );
       taxLevel = math::clamp<int>( house->taxesThisYear(), 0, 100 );
-      needDrawAnimations = ((house->spec().level() == 1 && house->habitants().empty())
+      needDrawAnimations = ((house->level() <= HouseLevel::hovel && house->habitants().empty())
                             || taxAccess < 25);
 
       if( !needDrawAnimations )
