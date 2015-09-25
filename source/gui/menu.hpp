@@ -70,7 +70,7 @@ public:
   virtual void draw( gfx::Engine& engine );
 
   void toggleOverlayMenuVisible();
-
+  void resolveUndoChange( bool enabled );
   void setAlarmEnabled( bool enabled );
 
 slots public:

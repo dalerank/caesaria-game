@@ -34,6 +34,7 @@ public:
   static const char* requestDestroy;
   static const char* employers;
   static const char* c3logic;
+  static const char* precisionDestroy;
 };
 
 class MetaData
@@ -61,6 +62,7 @@ public:
   Desirability desirability() const;
 
   Variant getOption( const std::string& name, Variant defaultVal=Variant() ) const;
+  bool getFlag( const std::string& name, bool defValue ) const;
 
   MetaData& operator=( const MetaData& a );
 private:

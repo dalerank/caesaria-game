@@ -32,10 +32,13 @@
 
 using namespace gfx;
 
-const char* MetaDataOptions::cost = "cost";
-const char* MetaDataOptions::requestDestroy = "requestDestroy";
-const char* MetaDataOptions::employers = "employers";
-const char* MetaDataOptions::c3logic = "c3logic";
+#define __REG_MDOPTIONNAME(a) const char* MetaDataOptions::a = CAESARIA_STR_EXT(a);
+__REG_MDOPTIONNAME(cost)
+__REG_MDOPTIONNAME(requestDestroy)
+__REG_MDOPTIONNAME(employers)
+__REG_MDOPTIONNAME(c3logic)
+__REG_MDOPTIONNAME(precisionDestroy)
+#undef __REG_MDOPTIONNAME
 
 MetaData MetaData::invalid = MetaData( object::unknown, "unknown" );
 
@@ -44,30 +47,32 @@ class BuildingClassHelper : public EnumsHelper<object::Group>
 public:
   BuildingClassHelper() : EnumsHelper<object::Group>( object::group::unknown )
   {
-    append( object::group::industry, "industry" );
-    append( object::group::obtain, "rawmaterial" );
-    append( object::group::food, "food" );
-    append( object::group::disaster, "disaster" );
-    append( object::group::religion, "religion" );
-    append( object::group::military, "military" );
-    append( object::group::native, "native" );
-    append( object::group::water, "water" );
-    append( object::group::administration, "administration" );
-    append( object::group::bridge, "bridge" );
-    append( object::group::engineering, "engineer" );
-    append( object::group::trade, "trade" );
-    append( object::group::tower, "tower" );
-    append( object::group::gate, "gate" );
-    append( object::group::security, "security" );
-    append( object::group::education, "education" );
-    append( object::group::health, "health" );
-    append( object::group::sight, "sight" );
-    append( object::group::garden, "garden" );
-    append( object::group::road, "road" );
-    append( object::group::entertainment, "entertainment" );
-    append( object::group::house, "house" );
-    append( object::group::wall, "wall" );
+#define __REG_GROUPNAME(a) append( object::group::a, CAESARIA_STR_EXT(a) );
+    __REG_GROUPNAME(industry)
+    __REG_GROUPNAME(food)
+    __REG_GROUPNAME(disaster)
+    __REG_GROUPNAME(religion)
+    __REG_GROUPNAME(military)
+    __REG_GROUPNAME(native)
+    __REG_GROUPNAME(water)
+    __REG_GROUPNAME(administration)
+    __REG_GROUPNAME(bridge)
+    __REG_GROUPNAME(trade)
+    __REG_GROUPNAME(tower)
+    __REG_GROUPNAME(gate)
+    __REG_GROUPNAME(security)
+    __REG_GROUPNAME(education)
+    __REG_GROUPNAME(health)
+    __REG_GROUPNAME(sight)
+    __REG_GROUPNAME(garden)
+    __REG_GROUPNAME(road)
+    __REG_GROUPNAME(entertainment)
+    __REG_GROUPNAME(house)
+    __REG_GROUPNAME(wall)
+#undef __REG_GROUPNAME
     append( object::group::unknown, "" );
+    append( object::group::obtain, "rawmaterial" );
+    append( object::group::engineering, "engineer" );
   }
 };
 
@@ -108,7 +113,7 @@ void MetaData::initialize(const VariantMap& options )
   _d->prettyName = options.get( "prettyName", Variant( _d->prettyName ) ).toString();
 
   _d->group = MetaDataHolder::findGroup( options.get( "class" ).toString() );
-  _d->checkWalkersOnBuild = options.get( "checkWalkersOnBuild", true );
+  VARIANT_LOAD_ANYDEF_D( _d, checkWalkersOnBuild, true, options )
 
   VariantList basePic = options.get( "image" ).toList();
   if( !basePic.empty() )
@@ -184,6 +189,11 @@ Variant MetaData::getOption(const std::string &name, Variant defaultVal ) const
 {
   VariantMap::iterator it = _d->options.find( name );
   return it != _d->options.end() ? it->second : defaultVal;
+}
+
+bool MetaData::getFlag(const std::string& name, bool defValue) const
+{
+  return getOption( name, defValue ).toBool();
 }
 
 MetaData& MetaData::operator=(const MetaData &a)

@@ -515,6 +515,11 @@ void ExtentMenu::toggleOverlayMenuVisible()
   _d->overlaysMenu->setVisible( !_d->overlaysMenu->visible() );
 }
 
+void ExtentMenu::resolveUndoChange(bool enabled)
+{
+  _d->cancelButton->setEnabled( enabled );
+}
+
 void ExtentMenu::changeOverlay(int ovType)
 {
   std::string layerName = citylayer::Helper::prettyName( (citylayer::Type)ovType );

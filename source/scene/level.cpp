@@ -91,6 +91,7 @@
 #include "sound/themeplayer.hpp"
 #include "core/osystem.hpp"
 #include "city/states.hpp"
+#include "city/undo_stack.hpp"
 
 using namespace gui;
 using namespace events;
@@ -119,6 +120,7 @@ public:
   TilePos selectedTilePos;
   citylayer::Type lastLayerId;
   DebugHandler dhandler;
+  undo::UStack undoStack;
   bool simulationPaused;
 
   int result;
@@ -267,8 +269,9 @@ void Level::initialize()
   _d->initMainUI();
   _d->installHandlers( this );
   _d->initSound();
-  _d->initTabletUI( this );
+  _d->initTabletUI( this );  
   _d->connectTopMenu2scene( this );
+  _d->undoStack.init( city );
 
   //connect elements
 
@@ -306,14 +309,17 @@ void Level::initialize()
   CONNECT( &_d->renderer, onLayerSwitch(), _d->extMenu,              ExtentMenu::changeOverlay )
   CONNECT( &_d->renderer, onLayerSwitch(), _d.data(),                Impl::layerChanged )
 
+  CONNECT( _d->extMenu, onUndo(),                 &_d->undoStack,    undo::UStack::undo )
+  CONNECT( &_d->undoStack, onUndoChange(),        _d->extMenu,       ExtentMenu::resolveUndoChange )
+
   _d->showMissionTaretsWindow();
   _d->renderer.camera()->setCenter( city->cameraPos() );
 
   _d->dhandler.insertTo( _d->game, _d->topMenu );
   _d->dhandler.setVisible( false );
 
-  CONNECT( &_d->dhandler, onWinMission(), _d.data(), Impl::checkWinMission )
-  CONNECT( &_d->dhandler, onFailedMission(), _d.data(), Impl::checkFailedMission )
+  CONNECT( &_d->dhandler, onWinMission(),         _d.data(),        Impl::checkWinMission )
+  CONNECT( &_d->dhandler, onFailedMission(),      _d.data(),        Impl::checkFailedMission )
 
   if( KILLSWITCH(debugMenu) )
     _d->dhandler.setVisible( true );
