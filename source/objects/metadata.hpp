@@ -59,6 +59,7 @@ public:
   object::Type type() const;
   object::Group group() const;
   gfx::Picture picture( int size=0 ) const;
+  bool isMyPicture( const std::string& name ) const;
   Desirability desirability() const;
 
   Variant getOption( const std::string& name, Variant defaultVal=Variant() ) const;

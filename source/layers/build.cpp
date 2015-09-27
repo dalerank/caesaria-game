@@ -82,6 +82,7 @@ public:
   TilesArray buildTiles;  // these tiles have draw over "normal" tilemap tiles!
   CachedTiles cachedTiles;
 
+  Signal3<object::Type,TilePos,int> onBuildSignal;
 public:
   void sortBuildTiles();
 };
@@ -118,7 +119,7 @@ void Build::_checkPreviewBuild(TilePos pos)
   }
 
   Size size = overlay->size();
-  int cost = MetaDataHolder::find( overlay->type() ).getOption( MetaDataOptions::cost );
+  int cost = _getCost( overlay );
 
   bool walkersOnTile = false;
   if( bldCommand->flag( LayerMode::checkWalkers ) )
@@ -126,7 +127,7 @@ void Build::_checkPreviewBuild(TilePos pos)
     TilesArray tiles = _city()->tilemap().area( pos, size );
     for( auto tile : tiles )
     {
-      const WalkerList& walkers = _city()->walkers( tile->epos() );
+      auto walkers = _city()->walkers( tile->epos() );
 
       if( !walkers.empty() )
       {
@@ -238,12 +239,12 @@ void Build::_updatePreviewTiles( bool force )
     Tile* startTile = _camera()->at( d->startTilePos );  // tile under the cursor (or NULL)
     Tile* stopTile  = _camera()->at( _lastCursorPos(),  true );
 
-    TilesArray pathWay = RoadPropagator::createPath( _city()->tilemap(),
+    TilesArray pathTiles = RoadPropagator::createPath( _city()->tilemap(),
                                                      startTile->epos(), stopTile->epos(),
                                                      d->roadAssignment, d->kbShift );
     Tilemap& tmap = _city()->tilemap();
-    TilePos leftUpCorner = pathWay.leftUpCorner();
-    TilePos rigthDownCorner = pathWay.rightDownCorner();
+    TilePos leftUpCorner = pathTiles.leftUpCorner();
+    TilePos rigthDownCorner = pathTiles.rightDownCorner();
     TilePos leftDownCorner( leftUpCorner.i(), rigthDownCorner.j() );
     TilesArray ret;
 
@@ -254,7 +255,7 @@ void Build::_updatePreviewTiles( bool force )
       for( int t=0; t <= y; t++ )
       {
         TilePos tpos = leftDownCorner + TilePos( t, mmapSize - 1 - ( y - t ) );
-        if( pathWay.contain( tpos ) )
+        if( pathTiles.contain( tpos ) )
           ret.push_back( &tmap.at( tpos ) );
       }
     }
@@ -264,13 +265,13 @@ void Build::_updatePreviewTiles( bool force )
       for( int t=0; t < mmapSize-x; t++ )
       {
         TilePos tpos = leftDownCorner + TilePos( x + t, t );
-        if( pathWay.contain( tpos ) )
+        if( pathTiles.contain( tpos ) )
           ret.push_back( &tmap.at( tpos ) );
       }
     }
 
-    pathWay = ret;
-    for( auto tile : pathWay )
+    pathTiles = ret;
+    for( auto tile : pathTiles )
       _checkPreviewBuild( tile->epos() );
   }
   else
@@ -305,8 +306,8 @@ void Build::_buildAll()
 
   if( !_city()->treasury().haveMoneyForAction( 1 ) )
   {
-    GameEventPtr e = WarningMessage::create( "##out_of_credit##", 2 );
-    e->dispatch();
+    auto event = WarningMessage::create( "##out_of_credit##", 2 );
+    event->dispatch();
     return;
   }
 
@@ -317,9 +318,11 @@ void Build::_buildAll()
     areaInfo.pos = tile->epos();
     if( cnstr->canBuild( areaInfo ) && tile->isMaster())
     {
-      GameEventPtr event = BuildAny::create( tile->epos(), cnstr->type() );
+      auto event = BuildAny::create( tile->epos(), cnstr->type() );
       event->dispatch();
       buildOk = true;
+
+      emit d->onBuildSignal( cnstr->type(), tile->epos(), _getCost( cnstr ) );
     }
   }
 
@@ -345,6 +348,11 @@ void Build::_exitBuildMode()
   _setNextLayer( _d->lastLayer.isValid() ? _d->lastLayer->type() : citylayer::simple );
   _setStartCursorPos( Point(-1, -1) );
   _discardPreview();
+}
+
+int Build::_getCost( ConstructionPtr overlay)
+{
+  return MetaDataHolder::find( overlay->type() ).getOption( MetaDataOptions::cost );
 }
 
 void Build::handleEvent(NEvent& event)
@@ -676,7 +684,6 @@ void Build::changeLayer(int layer)
   {
     if( layer == citylayer::destroyd )
     {
-       //_d->lastLayer = LayerPtr();
        _exitBuildMode();
     }
     else
@@ -718,6 +725,11 @@ Build::Build( Renderer& renderer, PlayerCityPtr city)
 
   d->grnPicture.load( d->resForbiden, 1 );
   d->redPicture.load( d->resForbiden, 2 );
+}
+
+Signal3<object::Type,TilePos,int>& Build::onBuild()
+{
+  return _dfunc()->onBuildSignal;
 }
 
 void Build::Impl::sortBuildTiles()

@@ -86,7 +86,7 @@ public:
   void setFlag( Type type, bool value );
 
   void setOverlay( OverlayPtr overlay );
-  inline ImgID ImgId() const { return _terrain.imgid;}
+  inline ImgID imgId() const { return _terrain.imgid;}
   void setImgId( ImgID id );
 
   inline int height() const { return _height; }

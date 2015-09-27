@@ -327,7 +327,7 @@ void Tilemap::save( VariantMap& stream ) const
   {
     bitsetInfo.push_back( tile::encode( *tile ) );
     desInfo.push_back( tile->param( Tile::pDesirability ) );
-    idInfo.push_back( tile->ImgId() );
+    idInfo.push_back( tile->imgId() );
   }
 
   ByteArray baBitset;

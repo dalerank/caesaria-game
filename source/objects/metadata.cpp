@@ -181,8 +181,19 @@ Desirability MetaData::desirability() const{  return _d->desirability;}
 
 Picture MetaData::picture(int size) const
 {
-  StringArray& array = _d->pictures[ size ];
-  return Picture( array.random() );
+  return _d->pictures[ size ].random();
+}
+
+bool MetaData::isMyPicture(const std::string& name) const
+{
+  for( auto& pics : _d->pictures )
+  {
+    bool found = pics.second.contains( name );
+    if( found )
+      return true;
+  }
+
+  return false;
 }
 
 Variant MetaData::getOption(const std::string &name, Variant defaultVal ) const

@@ -22,31 +22,36 @@
 #include "events/fundissue.hpp"
 #include "city/economy.hpp"
 #include "objects/metadata.hpp"
+#include "events/build.hpp"
 
 namespace undo
 {
 
-PREDEFINE_CLASS_SMARTLIST(Action,List)
+PREDEFINE_CLASS_SMARTLIST(UndoAction,List)
 
-class UAction : public ReferenceCounted
+class UndoAction : public ReferenceCounted
 {
 public:
+  virtual ~UndoAction() {}
   virtual void undo( PlayerCityPtr city ) {}
-};
-
-class UBuild : public UAction
-{
-public:
   object::Type type;
   TilePos location;
   int money;
+};
 
-  UBuild( object::Type what, const TilePos& where, int dn )
-    : type( what ), location( where ), money(dn) {}
+class UndoBuild : public UndoAction
+{
+public:
+
+  UndoBuild( object::Type what, const TilePos& where, int dn )
+  {
+    type = what;
+    location = where;
+    money = dn;
+  }
 
   virtual void undo( PlayerCityPtr city )
   {
-    //const MetaData& md = MetaDataHolder::find( type );
     auto event = events::ClearTile::create( location );
     event->dispatch();
     auto refund = events::Payment::create( econ::Issue::buildConstruction, money );
@@ -54,13 +59,35 @@ public:
   }
 };
 
+class UndoDestroy : public UndoAction
+{
+public:
+  UndoDestroy( object::Type what, const TilePos& where, int dn )
+  {
+    type = what;
+    location = where;
+    money = dn;
+  }
+
+  virtual void undo( PlayerCityPtr city )
+  {
+    auto event = events::BuildAny::create( location, type );
+    event->dispatch();
+    auto fundIssue = events::Payment::create( econ::Issue::buildConstruction, money );
+    fundIssue->dispatch();
+  }
+};
+
 class UStack::Impl
 {
 public:
-  ActionList actions;
+  UndoActionList actions;
   PlayerCityPtr city;
+  bool  needClear;
 
   Signal1<bool> onUndoChangeSignal;
+
+  void checkFinished();
 };
 
 UStack::UStack() : _d( new Impl ) {}
@@ -70,20 +97,32 @@ Signal1<bool>& UStack::onUndoChange() { return _d->onUndoChangeSignal; }
 void UStack::init(PlayerCityPtr city)
 {
   _d->city = city;
+  _d->needClear = true;
 }
 
-void UStack::build(object::Type what, const TilePos& where, int money)
+void UStack::build(object::Type what, TilePos where, int money)
 {
-  _d->actions.emplace_back( new UBuild( what, where, money ) );
+  _d->checkFinished();
+
+  _d->actions.push_back( new UndoBuild( what, where, money ) );
   _d->actions.back()->drop();
 
   emit _d->onUndoChangeSignal( isAvailableUndo() );
 }
 
-void UStack::destroy(const TilePos& where)
+void UStack::destroy(object::Type what, TilePos where, int money )
 {
+  _d->checkFinished();
+
+  _d->actions.push_back( new UndoDestroy( what, where, money ) );
+  _d->actions.back()->drop();
 
   emit _d->onUndoChangeSignal( isAvailableUndo() );
+}
+
+void UStack::finished()
+{
+  _d->needClear = true;
 }
 
 void UStack::undo()
@@ -98,6 +137,14 @@ void UStack::undo()
 bool UStack::isAvailableUndo()
 {
   return !_d->actions.empty();
+}
+
+void UStack::Impl::checkFinished()
+{
+  if( needClear )
+    actions.clear();
+
+  needClear = false;
 }
 
 }//end namespace undo

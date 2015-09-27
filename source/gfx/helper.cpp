@@ -303,7 +303,7 @@ void clear(Tile& tile)
 
 void fixPlateauFlags(Tile& tile)
 {
-  int imgId = tile.ImgId();
+  int imgId = tile.imgId();
   bool plateau = (imgId > 200 && imgId < 245);
   bool l3aRocks = (imgId > 848 && imgId < 863);
   if( plateau || l3aRocks )

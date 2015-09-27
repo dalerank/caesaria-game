@@ -85,6 +85,7 @@ signals public:
   Signal0<>& onMessagesShow();
   Signal0<>& onRotateRight();
   Signal0<>& onRotateLeft();
+  Signal0<>& onUndo();
   Signal0<>& onMissionTargetsWindowShow();
 
 protected:

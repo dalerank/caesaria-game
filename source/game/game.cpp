@@ -164,8 +164,9 @@ void Game::Impl::initVideo()
 
   engine = new SdlEngine();
 
-  Logger::warning( "GraficEngine: set size" );
-  engine->setScreenSize( SETTINGS_VALUE( resolution ).toSize() );
+  Size size = SETTINGS_VALUE( resolution );
+  Logger::warning( "GraficEngine: set size [%dx%d]", size.width(), size.height() );
+  engine->setScreenSize( size );
   engine->setFlag( Engine::batching, batchTexures ? 1 : 0 );
 
   bool fullscreen = KILLSWITCH( fullscreen );

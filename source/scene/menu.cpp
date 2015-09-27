@@ -324,7 +324,7 @@ void StartMenu::Impl::showCredits()
                          "Jennifer Kin (empire map, icons)",
                          "Andre Lisket (school, theater, baths and others)",
                          "Il'ya Korchagin (grape farm tiles)",
-                         "Pietro Chiovaro (Hoispital)",
+                         "Pietro Chiovaro (Hospital)",
                          " ",
                          _("##music##"),
                          " ",
@@ -428,12 +428,12 @@ void StartMenu::Impl::showMainMenu()
   ADD_MENU_BUTTON( "##mainmenu_load##",           Impl::showLoadMenu )
   ADD_MENU_BUTTON( "##mainmenu_options##",        Impl::showOptionsMenu )
   ADD_MENU_BUTTON( "##mainmenu_credits##",        Impl::showCredits )
-//#ifdef CAESARIA_USE_STEAM
+
   if( vfs::Path( ":/dlc" ).exist() )
   {
     ADD_MENU_BUTTON( "##mainmenu_mcmxcviii##",    Impl::showAdvancedMaterials )
   }
-//#endif
+
   ADD_MENU_BUTTON( "##mainmenu_quit##",           Impl::quitGame )
 }
 

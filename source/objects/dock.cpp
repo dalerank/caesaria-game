@@ -365,7 +365,7 @@ void Dock::_setDirection(Direction direction)
 
 bool Dock::Impl::isFlatCoast(const Tile& tile) const
 {
-  int imgId = tile.ImgId();
+  int imgId = tile.imgId();
   return (imgId >= 372 && imgId <= 387);
 }
 

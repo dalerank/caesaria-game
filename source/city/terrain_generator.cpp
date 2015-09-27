@@ -213,7 +213,7 @@ static void __removeCorners(Game& game )
     {
       TilePos tpos = TilePos( i, j );
       Tile& wtile = oTilemap.at( tpos );
-      if( wtile.ImgId() == 0 ||
+      if( wtile.imgId() == 0 ||
           wtile.getFlag( Tile::tlWater ) || wtile.getFlag( Tile::tlDeepWater ) )
         continue;
 
@@ -264,7 +264,7 @@ static void __finalizeMap(Game& game, int pass )
     {
       TilePos tpos = TilePos( i, j );
       Tile& wtile = oTilemap.at( tpos );
-      if( wtile.ImgId() > 0 )
+      if( wtile.imgId() > 0 )
         continue;
 
       int direction = 0;

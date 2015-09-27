@@ -31,7 +31,8 @@
   tree : {
     class : "tree"
     image.ext : {
-      type_1 : { size:1, rc : "land1a", start : 10, count : 1 }
+      type_1 : { size:1, rc : "land1a", start : 10, count : 7 }
+      type_2 : { size:1, rc : "land1a", start : 33, count : 27 }
     }
   }
 

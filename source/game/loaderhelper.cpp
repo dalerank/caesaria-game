@@ -149,7 +149,7 @@ object::Type LoaderHelper::convImgId2ovrType( unsigned int imgId )
 void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int forceId )
 {
   int changeId = 0;
-  unsigned int imgId = oTile.ImgId();
+  unsigned int imgId = oTile.imgId();
   object::Type ovType = object::unknown;
   if( oTile.getFlag( Tile::tlRoad ) )   // road
   {
@@ -200,7 +200,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   }
   else
   {
-    unsigned id = forceId > 0 ? forceId : oTile.ImgId();
+    unsigned id = forceId > 0 ? forceId : oTile.imgId();
     ovType = convImgId2ovrType( id );
   }
 
@@ -211,7 +211,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   overlay = TileOverlayFactory::instance().create( ovType );
   if( ovType == object::elevation )
   {
-    std::string elevationPicName = imgid::toResource( oTile.ImgId() );
+    std::string elevationPicName = imgid::toResource( oTile.imgId() );
     overlay->setPicture( Picture( elevationPicName ) );
   }
 

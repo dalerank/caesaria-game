@@ -310,6 +310,8 @@ void Level::initialize()
   CONNECT( &_d->renderer, onLayerSwitch(), _d.data(),                Impl::layerChanged )
 
   CONNECT( _d->extMenu, onUndo(),                 &_d->undoStack,    undo::UStack::undo )
+  CONNECT( &_d->renderer, onBuilt(),              &_d->undoStack,    undo::UStack::build )
+  CONNECT( &_d->renderer, onDestroyed(),          &_d->undoStack,    undo::UStack::destroy )
   CONNECT( &_d->undoStack, onUndoChange(),        _d->extMenu,       ExtentMenu::resolveUndoChange )
 
   _d->showMissionTaretsWindow();
@@ -408,6 +410,7 @@ void Level::Impl::layerChanged(int layer)
   {
     lastLayerId = (citylayer::Type)layer;
   }
+  undoStack.finished();
 }
 
 void Level::Impl::makeFullScreenshot()

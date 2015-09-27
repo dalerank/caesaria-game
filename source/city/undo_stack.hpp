@@ -38,9 +38,10 @@ public:
 
   void init( PlayerCityPtr city );
 
-  void build(object::Type what, const TilePos& where , int money);
-  void destroy( const TilePos& where );
+  void build(object::Type what, TilePos where , int money);
+  void destroy(object::Type what, TilePos where, int money );
 
+  void finished();
   void clear();
 
   void undo();

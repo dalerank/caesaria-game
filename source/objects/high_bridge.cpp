@@ -503,7 +503,7 @@ bool HighBridge::build( const city::AreaInfo& info  )
       TilePos buildPos = info.pos + subtile->_pos;
       Tile& tile = tilemap.at( buildPos );
       //subtile->setPicture( tile.picture() );
-      subtile->_imgId = tile.ImgId();
+      subtile->_imgId = tile.imgId();
       subtile->_info = tile::encode( tile );
       subtile->_parent = this;
       

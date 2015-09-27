@@ -185,7 +185,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos& 
   Tilemap& tilemap = city->tilemap();
   Tile& tile = tilemap.at( curPos );
 
-  int imdId = tile.ImgId();
+  int imdId = tile.imgId();
   BridgeConfig& config = BridgeConfig::find( type() );
 
   if( config.isNorthA( imdId ) )
@@ -193,7 +193,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos& 
     TilesArea tiles( tilemap, curPos - TilePos( 10, 0), curPos - TilePos(1, 0) );
     for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
-      imdId = (*it)->ImgId();
+      imdId = (*it)->imgId();
       if( config.isNorthB( imdId ) )
       {
         stop = (*it)->pos();
@@ -212,7 +212,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos& 
     TilesArea tiles( tilemap, curPos + TilePos(1, 0), curPos + TilePos( 10, 0) );
     for( auto tile : tiles )
     {
-      imdId = tile->ImgId();
+      imdId = tile->imgId();
       if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
       {
         stop = tile->pos();
@@ -231,7 +231,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos& 
     TilesArea tiles( tilemap, curPos + TilePos(1, 0), curPos + TilePos( 0, 10) );
     foreach( it, tiles )
     {
-      imdId = (*it)->ImgId();
+      imdId = (*it)->imgId();
       if( imdId == 380 || imdId == 381 || imdId == 382 || imdId == 383 )
       {
         stop = (*it)->pos();
@@ -250,7 +250,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos& 
     TilesArea tiles( tilemap, curPos - TilePos( 0, 10 ), curPos - TilePos(0, 1) );
     for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
-      imdId = (*it)->ImgId();
+      imdId = (*it)->imgId();
       if( imdId == 372 || imdId == 373 || imdId == 374 || imdId == 375 )
       {
         stop = (*it)->pos();
@@ -322,7 +322,7 @@ bool LowBridge::build( const city::AreaInfo& info )
       TilePos buildPos = info.pos + subtile->_pos * signSum;
       Tile& tile = tilemap.at( buildPos );
       subtile->setPicture( tile.picture() );
-      subtile->_imgId = tile.ImgId();
+      subtile->_imgId = tile.imgId();
       subtile->_info = tile::encode( tile );
       subtile->_parent = this;
 

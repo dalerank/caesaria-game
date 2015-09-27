@@ -78,6 +78,7 @@ public:
   Renderer* renderer;
   Font textFont;
   bool readyForExit;
+  Signal3<object::Type,TilePos,int> onDestroySignal;
 };
 
 void Destroy::_clearAll()
@@ -85,8 +86,19 @@ void Destroy::_clearAll()
   TilesArray tiles4clear = _getSelectedArea( _d->startTilePos );
   for( auto tile : tiles4clear )
   {
-    GameEventPtr event = ClearTile::create( tile->epos() );
-    event->dispatch();
+    Tile* master = tile->master() ? tile->master() : tile;
+    if( tile == master )
+    {
+      auto event = ClearTile::create( tile->epos() );
+      event->dispatch();
+
+      if( tile->overlay().isValid() )
+      {
+        auto objectType = tile->overlay()->type();
+        int money = _checkMoney4destroy( *tile );
+        emit _d->onDestroySignal( objectType, tile->epos(), money);
+      }
+    }
   }
 }
 
@@ -101,7 +113,7 @@ unsigned int Destroy::_checkMoney4destroy(const Tile& tile)
   }
 
   baseValue += tile.getFlag( Tile::tlTree ) ? 6 : 0;
-  baseValue += tile.getFlag( Tile::tlRoad) ? 4 : 0;
+  baseValue += tile.getFlag( Tile::tlRoad ) ? 4 : 0;
 
   return baseValue;
 }
@@ -282,7 +294,7 @@ void Destroy::handleEvent(NEvent& event)
       {
         _setStartCursorPos( _lastCursorPos() );
 
-       Tile* tile = _camera()->at( _lastCursorPos(), true );
+        Tile* tile = _camera()->at( _lastCursorPos(), true );
         _d->startTilePos = tile ? tile->epos() : gfx::tilemap::invalidLocation();
       }
     }
@@ -337,6 +349,11 @@ void Destroy::handleEvent(NEvent& event)
       }
     }
   }
+}
+
+Signal3<object::Type,TilePos,int>& Destroy::onDestroy()
+{
+  return _d->onDestroySignal;
 }
 
 void Destroy::_executeClear()

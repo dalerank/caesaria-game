@@ -558,6 +558,7 @@ Signal0<>& ExtentMenu::onSwitchAlarm(){  return _d->disasterButton->onClicked();
 Signal0<>& ExtentMenu::onMessagesShow()  { return _d->messageButton->onClicked(); }
 Signal0<>& ExtentMenu::onRotateRight() { return _d->rotateRightButton->onClicked(); }
 Signal0<>& ExtentMenu::onRotateLeft() { return _d->rotateLeftButton->onClicked(); }
+Signal0<>& ExtentMenu::onUndo() { return _d->cancelButton->onClicked(); }
 Signal0<>& ExtentMenu::onMissionTargetsWindowShow(){  return _d->missionButton->onClicked(); }
 
 }//end namespace gui

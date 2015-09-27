@@ -128,7 +128,7 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
   text = _(text );
   text += utils::format( 0xff, "\nTile at: (%d,%d) ID:%04X",
                                            tile.i(), tile.j(),  
-                                          ((unsigned int) tile.ImgId() ) );
+                                          ((unsigned int) tile.imgId() ) );
   
   setTitle( _( title ));
   setText( text );
