@@ -48,7 +48,6 @@ public:
   virtual bool haveEvent( NEvent& event ) = 0;
 
   void setScreenSize( const Size& size );
-  const Size& virtualSize() const;
   const Size& screenSize() const;
 
   bool isFullscreen() const;
@@ -58,7 +57,6 @@ public:
   virtual void setFlag( int flag, int value );
   virtual int getFlag( int flag ) const;
   virtual void setViewport( const Rect& rect ) = 0;
-  virtual void setVirtualSize( const Size& size ) = 0;
   virtual void loadPicture( Picture& ioPicture, bool streaming ) = 0;
   virtual void unloadPicture( Picture& ioPicture) = 0;
 
@@ -94,7 +92,7 @@ public:
 protected:
   static Engine* _instance;
 
-  Size _srcSize, _virtualSize;
+  Size _srcSize;
   std::map< int, int > _flags;
 };
 

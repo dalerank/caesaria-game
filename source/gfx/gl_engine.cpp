@@ -570,7 +570,6 @@ void GlEngine::init()
 
   _d->throwIfnoWindow();
   _d->viewportSize = _srcSize;
-  _virtualSize = _srcSize;
   _d->useViewport = false;
 
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -823,11 +822,6 @@ void GlEngine::endRenderFrame()
   }
 
   _drawCall = 0;
-}
-
-void GlEngine::setVirtualSize(const Size& rect)
-{
-
 }
 
 void GlEngine::setScale( float scale )

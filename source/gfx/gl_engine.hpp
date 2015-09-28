@@ -57,7 +57,6 @@ public:
   virtual void setViewport( const Rect& rect );
   virtual void startRenderFrame();
   virtual void endRenderFrame();
-  virtual void setVirtualSize( const Size& rect );
   virtual void setScale( float scale);
 
   void draw(const Picture &picture, const int dx, const int dy, Rect* clipRect=0);

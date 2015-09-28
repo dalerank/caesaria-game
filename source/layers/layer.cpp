@@ -470,7 +470,7 @@ void Layer::afterRender( Engine& engine)
 {
   __D_IMPL(_d,Layer)
   Point cursorPos = engine.cursorPos();
-  Size screenSize = engine.virtualSize();
+  Size screenSize = engine.screenSize();
   Point offset = _d->camera->offset();
   Point moveValue;
 

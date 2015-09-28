@@ -77,7 +77,6 @@ public:
   SdlBatcher batcher;
 
   MaskInfo mask;
-  PointF koefs;
   int sheigth;
   unsigned int fps, lastFps;
   unsigned int lastUpdateFps;
@@ -211,26 +210,13 @@ void SdlEngine::init()
 
   Logger::warning("SDLGraficEngine:Android init successfull");
 #else
-  unsigned int flags = SDL_WINDOW_OPENGL;
   Logger::warning( utils::format( 0xff, "SDLGraficEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
 
-  if(isFullscreen())
-  {
-    window = SDL_CreateWindow("CaesariA",
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
-        0, 0,
-        flags | SDL_WINDOW_FULLSCREEN_DESKTOP);
-
-  }
-  else
-  {
-    window = SDL_CreateWindow("CaesariA",
-                              SDL_WINDOWPOS_CENTERED,
-                              SDL_WINDOWPOS_CENTERED,
-                              _srcSize.width(), _srcSize.height(),
-                              flags);
-  }
+  window = SDL_CreateWindow("CaesariA",
+                            SDL_WINDOWPOS_CENTERED,
+                            SDL_WINDOWPOS_CENTERED,
+                            _srcSize.width(), _srcSize.height(),
+                            SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
 
   if (window == NULL)
   {
@@ -239,6 +225,17 @@ void SdlEngine::init()
   }
 
   Logger::warning("SDLGraficEngine: init successfull");
+
+  if( isFullscreen() )
+  {
+    int idx = SDL_GetWindowDisplayIndex( window );
+    SDL_Rect bounds;
+    SDL_GetDisplayBounds( idx, &bounds );
+    SDL_SetWindowBordered( window, SDL_FALSE );
+    SDL_SetWindowPosition( window, bounds.x, bounds.y );
+    SDL_SetWindowSize( window, bounds.w, bounds.h );
+    _srcSize = Size( bounds.w, bounds.h );
+  }
 #endif
 
   SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
@@ -249,9 +246,6 @@ void SdlEngine::init()
     THROW("Failed to create renderer");
   }
 
-  _virtualSize = _srcSize;
-
-  SDL_RenderSetLogicalSize(renderer, _virtualSize.width(), _virtualSize.height() );
   SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");  // make the scaled rendering look smoother.
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
   SDL_SetRenderDrawBlendMode( renderer, SDL_BLENDMODE_BLEND );
@@ -667,23 +661,6 @@ void SdlEngine::setViewport(const Rect& rect)
     SDL_RenderSetViewport( _d->renderer, 0 );
 }
 
-void SdlEngine::setVirtualSize(const Size& size)
-{  
-  if( size.width() > 0 )
-  {
-    SDL_RenderSetLogicalSize(_d->renderer, size.width(), size.height() );
-    _virtualSize = size;
-  }
-  else
-  {
-    SDL_RenderSetLogicalSize(_d->renderer, _srcSize.width(), _srcSize.height() );
-    _virtualSize = _srcSize;
-  }
-
-  _d->koefs = PointF( _virtualSize.width() / (float)_srcSize.width(),
-                      _virtualSize.height() / (float)_srcSize.height() );
-}
-
 void SdlEngine::createScreenshot( const std::string& filename )
 {
   SDL_Surface* surface = SDL_CreateRGBSurface( 0, _srcSize.width(), _srcSize.height(), 24, 0, 0, 0, 0 );
@@ -776,10 +753,10 @@ void SdlEngine::Impl::setClip(const Rect& clip)
 {
   static SDL_Rect r;
 
-  r.x = clip.left() * koefs.x();
-  r.y = (sheigth - clip.top() - clip.height()) * koefs.y();
-  r.w = clip.width() * koefs.x();
-  r.h = clip.height() * koefs.y();
+  r.x = clip.left();
+  r.y = sheigth - clip.top() - clip.height();
+  r.w = clip.width();
+  r.h = clip.height();
 
   SDL_RenderSetClipRect( renderer, &r );
 }

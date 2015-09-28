@@ -534,7 +534,6 @@ StartMenu::~StartMenu() {}
 
 void StartMenu::draw()
 {
-  //_d->engine->setVirtualSize( Size( 1440, 800 ) /*_d->game->gui()->vsize() */ );
   _d->game->gui()->beforeDraw();
   _d->engine->draw(_d->bgPicture, _d->bgOffset);
   _d->game->gui()->draw();
@@ -543,7 +542,6 @@ void StartMenu::draw()
   {
     _d->engine->draw( _d->userImage, Point( 20, 20 ) );
   }
-  //_d->engine->setVirtualSize( Size(0,0) );
 }
 
 void StartMenu::handleEvent( NEvent& event )

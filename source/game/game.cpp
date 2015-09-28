@@ -267,9 +267,7 @@ void Game::Impl::initUI()
 {
   Logger::warning( "Game: initialize gui" );
 
-  Size scrSize = engine->screenSize();
-  engine->setVirtualSize( Size( 1200, 600 ) );
-  Size uiScreenSize = engine->virtualSize();
+  Size uiScreenSize = engine->screenSize();
   /*bool guiUseVirtualSize = KILLSWITCH( guiUseVirtualScreen );
   if( guiUseVirtualSize )
   {    
