@@ -191,10 +191,9 @@ void Level::Impl::initMainUI()
   ui.clear();
 
   Picture rPanelPic( ResourceGroup::panelBackground, PicID::rightPanelTx );
-  Engine& engine = Engine::instance();
 
-  Rect rPanelRect( engine.virtualSize().width() - rPanelPic.width(), topMenuHeight,
-                   engine.virtualSize().width(), engine.virtualSize().height() );
+  Rect rPanelRect( ui.vsize().width() - rPanelPic.width(), topMenuHeight,
+                   ui.vsize().width(), ui.vsize().height() );
 
   rightPanel = MenuRigthPanel::create( ui.rootWidget(), rPanelRect, rPanelPic);
 
@@ -203,11 +202,11 @@ void Level::Impl::initMainUI()
   topMenu->setFunds( game->city()->treasury().money() );
 
   menu = Menu::create( ui.rootWidget(), -1, city );
-  menu->setPosition( Point( engine.virtualSize().width() - rightPanel->width(),
-                                topMenu->height() ) );
+  menu->setPosition( Point( ui.vsize().width() - rightPanel->width(),
+                            topMenu->height() ) );
 
   extMenu = ExtentMenu::create( ui.rootWidget(), -1, city );
-  extMenu->setPosition( Point( engine.virtualSize().width() - extMenu->width() - rightPanel->width(),
+  extMenu->setPosition( Point( ui.vsize().width() - extMenu->width() - rightPanel->width(),
                                topMenu->height() ) );
 
   mmap = new Minimap( extMenu, Rect( Point( 8, 35), Size( 144, 110 ) ),
@@ -524,7 +523,6 @@ void Level::draw()
   _d->renderer.render();
 
   _d->game->gui()->beforeDraw();
-
   _d->game->gui()->draw();
 }
 

@@ -109,7 +109,7 @@ public:
   void initMovie();
   void initMetrics();
   void initCelebrations();
-  void initGuiEnvironment();
+  void initUI();
   void initArchiveLoaders();
   void initPantheon( vfs::Path filename );
   void initFontCollection( vfs::Path resourcePath );
@@ -263,11 +263,25 @@ void Game::Impl::createSaveDir()
   Logger::warningIf( !dirCreated, "Game: can't create save dir" );
 }
 
-void Game::Impl::initGuiEnvironment()
+void Game::Impl::initUI()
 {
   Logger::warning( "Game: initialize gui" );
-  gui = new gui::Ui( *engine );
 
+  Size scrSize = engine->screenSize();
+  engine->setVirtualSize( Size( 1200, 600 ) );
+  Size uiScreenSize = engine->virtualSize();
+  /*bool guiUseVirtualSize = KILLSWITCH( guiUseVirtualScreen );
+  if( guiUseVirtualSize )
+  {    
+    int height = 480;
+    if( scrSize.height() > height )
+    {
+      float koeff = height / (float)scrSize.height();
+      uiScreenSize = Size( koeff * scrSize.width(), height );
+    }
+  }*/
+
+  gui = new gui::Ui( *engine, uiScreenSize );
   gui::infobox::Manager::instance().setBoxLock( KILLSWITCH( lockInfobox ) );
 }
 
@@ -473,7 +487,7 @@ void Game::initialize()
   _d->initVideo();
   _d->initMovie();
   _d->initFontCollection( game::Settings::rcpath() );
-  _d->initGuiEnvironment();
+  _d->initUI();
   _d->initSound();
   _d->initHotkeys();
   _d->createSaveDir();

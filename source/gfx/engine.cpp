@@ -43,7 +43,7 @@ Engine::Engine()
 
 Engine::~Engine() {  _instance = NULL; }
 
-void Engine::setScreenSize( Size size ) { _srcSize = size; }
+void Engine::setScreenSize(const Size& size ) { _srcSize = size; }
 const Size& Engine::virtualSize() const { return _virtualSize; }
 bool Engine::isFullscreen() const{ return getFlag( fullscreen ) > 0; }
 void Engine::setFullscreen(bool enabled){ setFlag( fullscreen, enabled ? 1 : 0 ); }

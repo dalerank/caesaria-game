@@ -47,7 +47,7 @@ public:
   virtual void delay( const unsigned int msec ) = 0;
   virtual bool haveEvent( NEvent& event ) = 0;
 
-  void setScreenSize( Size size );
+  void setScreenSize( const Size& size );
   const Size& virtualSize() const;
   const Size& screenSize() const;
 
@@ -57,7 +57,8 @@ public:
   virtual void setTitle( const std::string& title );
   virtual void setFlag( int flag, int value );
   virtual int getFlag( int flag ) const;
-
+  virtual void setViewport( const Rect& rect ) = 0;
+  virtual void setVirtualSize( const Size& size ) = 0;
   virtual void loadPicture( Picture& ioPicture, bool streaming ) = 0;
   virtual void unloadPicture( Picture& ioPicture) = 0;
 

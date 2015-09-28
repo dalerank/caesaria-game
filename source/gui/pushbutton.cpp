@@ -542,9 +542,9 @@ void PushButton::draw( gfx::Engine& painter )
     else
     {
       if( state.style.valid() )
-        painter.draw( state.style, &absoluteClippingRectRef());
+        painter.draw( state.style, &absoluteClippingRectRef() );
       else
-        painter.draw( state.styleNb, absoluteRect().lefttop(), &absoluteClippingRectRef());
+        painter.draw( state.styleNb, absoluteRect().lefttop(), &absoluteClippingRectRef() );
     }
 	}
 

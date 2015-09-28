@@ -54,10 +54,10 @@ public:
   virtual void unloadPicture(Picture &ioPicture);
   virtual Batch loadBatch(const Picture& pic, const Rects& srcRects, const Rects& dstRects, const Rect* clipRect=0);
   virtual void unloadBatch( const Batch& batch );
-
+  virtual void setViewport( const Rect& rect );
   virtual void startRenderFrame();
   virtual void endRenderFrame();
-
+  virtual void setVirtualSize( const Size& rect );
   virtual void setScale( float scale);
 
   void draw(const Picture &picture, const int dx, const int dy, Rect* clipRect=0);

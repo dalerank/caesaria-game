@@ -711,6 +711,11 @@ void GlEngine::unloadBatch(const Batch &batch)
 
 }
 
+void GlEngine::setViewport(const Rect& rect)
+{
+
+}
+
 void GlEngine::loadPicture(Picture& ioPicture, bool streamed)
 {
   GLuint& texture( ioPicture.textureID() );
@@ -818,6 +823,11 @@ void GlEngine::endRenderFrame()
   }
 
   _drawCall = 0;
+}
+
+void GlEngine::setVirtualSize(const Size& rect)
+{
+
 }
 
 void GlEngine::setScale( float scale )

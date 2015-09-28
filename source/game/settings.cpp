@@ -107,6 +107,8 @@ __REG_PROPERTY(defaultFont)
 __REG_PROPERTY(celebratesConfig)
 __REG_PROPERTY(ambientsounds)
 __REG_PROPERTY(cntrGroupsModel)
+__REG_PROPERTY(guiUseVirtualScreen)
+__REG_PROPERTY(guiScreenSize)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -200,6 +202,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ oldgfx              ] = 1;
   _d->options[ showTabletMenu      ] = false;
   _d->options[ debugMenu           ] = false;
+  _d->options[ guiUseVirtualScreen ] = true;
 
 #ifdef DEBUG
   _d->options[ debugMenu           ] = true;
@@ -210,6 +213,7 @@ Settings::Settings() : _d( new Impl )
 #endif
 
 #ifdef CAESARIA_PLATFORM_ANDROID
+  _d->options[ guiUseVirtualScreen ] = true;
   _d->options[ needAcceptBuild     ] = true;
   _d->options[ showTabletMenu      ] = true;
 #endif

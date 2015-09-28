@@ -77,6 +77,7 @@ public:
   SdlBatcher batcher;
 
   MaskInfo mask;
+  PointF koefs;
   int sheigth;
   unsigned int fps, lastFps;
   unsigned int lastUpdateFps;
@@ -86,7 +87,7 @@ public:
 public:
   void renderState(const Batch &batch, const Rect *clip);
   void renderState();
-  void setClip( const Rect& clip );
+  void setClip(const Rect& clip);
   void renderOnce(const Picture& pic, const Rect& src, const Rect& dstRect,
                   const Rect* clipRect, bool useTxOffset);
 };
@@ -240,7 +241,6 @@ void SdlEngine::init()
   Logger::warning("SDLGraficEngine: init successfull");
 #endif
 
-  //int render_version = math::clamp( game::Settings::get( "render_mode" ).toInt(), 0, SDL_GetNumRenderDrivers());
   SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
 
   if (renderer == NULL)
@@ -250,18 +250,9 @@ void SdlEngine::init()
   }
 
   _virtualSize = _srcSize;
-  if( isFullscreen() )
-  {
-    SDL_DisplayMode mode;
-    SDL_GetDisplayMode(0, 0, &mode);
-    unsigned int fullscreenVirtualWidth = mode.w;
-    unsigned int fullscreenVirtualHeight = mode.h;
 
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");  // make the scaled rendering look smoother.
-    SDL_RenderSetLogicalSize(renderer, fullscreenVirtualWidth, fullscreenVirtualHeight );
-    _virtualSize = Size( fullscreenVirtualWidth, fullscreenVirtualHeight );
-  }
-
+  SDL_RenderSetLogicalSize(renderer, _virtualSize.width(), _virtualSize.height() );
+  SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");  // make the scaled rendering look smoother.
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
   SDL_SetRenderDrawBlendMode( renderer, SDL_BLENDMODE_BLEND );
   SDL_RenderClear(renderer);
@@ -665,6 +656,34 @@ void SdlEngine::setScale( float scale )
   SDL_RenderSetScale( _d->renderer, scale, scale );
 }
 
+void SdlEngine::setViewport(const Rect& rect)
+{
+  if( rect.width() > 0 )
+  {
+    SDL_Rect r = { rect.left(), rect.top(), rect.width(), rect.height() };
+    SDL_RenderSetViewport( _d->renderer, &r );
+  }
+  else
+    SDL_RenderSetViewport( _d->renderer, 0 );
+}
+
+void SdlEngine::setVirtualSize(const Size& size)
+{  
+  if( size.width() > 0 )
+  {
+    SDL_RenderSetLogicalSize(_d->renderer, size.width(), size.height() );
+    _virtualSize = size;
+  }
+  else
+  {
+    SDL_RenderSetLogicalSize(_d->renderer, _srcSize.width(), _srcSize.height() );
+    _virtualSize = _srcSize;
+  }
+
+  _d->koefs = PointF( _virtualSize.width() / (float)_srcSize.width(),
+                      _virtualSize.height() / (float)_srcSize.height() );
+}
+
 void SdlEngine::createScreenshot( const std::string& filename )
 {
   SDL_Surface* surface = SDL_CreateRGBSurface( 0, _srcSize.width(), _srcSize.height(), 24, 0, 0, 0, 0 );
@@ -753,13 +772,14 @@ bool SdlEngine::haveEvent( NEvent& event )
   return false;
 }
 
-void SdlEngine::Impl::setClip( const Rect& clip )
+void SdlEngine::Impl::setClip(const Rect& clip)
 {
   static SDL_Rect r;
-  r.x = clip.left();
-  r.y = sheigth - clip.top() - clip.height();
-  r.w = clip.width();
-  r.h = clip.height();
+
+  r.x = clip.left() * koefs.x();
+  r.y = (sheigth - clip.top() - clip.height()) * koefs.y();
+  r.w = clip.width() * koefs.x();
+  r.h = clip.height() * koefs.y();
 
   SDL_RenderSetClipRect( renderer, &r );
 }

@@ -122,13 +122,13 @@ void StartMenu::Impl::showSaveSelectDialog()
   vfs::Path savesPath = SETTINGS_STR( savedir );
 
   result = StartMenu::loadSavedGame;
-  gui::dialog::LoadGame* wnd = gui::dialog::LoadGame::create( parent, savesPath );
-  wnd->setShowExtension( false );
-  wnd->setMayDelete( true );
+  auto loadGameDialog = gui::dialog::LoadGame::create( parent, savesPath );
+  loadGameDialog->setShowExtension( false );
+  loadGameDialog->setMayDelete( true );
 
-  CONNECT( wnd, onSelectFile(), this, Impl::selectFile );
-  wnd->setTitle( _("##mainmenu_loadgame##") );
-  wnd->setText( _("##load_this_game##") );
+  CONNECT( loadGameDialog, onSelectFile(), this, Impl::selectFile );
+  loadGameDialog->setTitle( _("##mainmenu_loadgame##") );
+  loadGameDialog->setText( _("##load_this_game##") );
 
   changePlayerNameIfNeed();
 }
@@ -179,14 +179,14 @@ void StartMenu::Impl::resolveSteamStats()
     int offset = 0;
     for( int k=0; k < steamapi::achv_count; k++ )
     {
-      steamapi::AchievementType achivId = steamapi::AchievementType(k);
-      if( steamapi::isAchievementReached( achivId ) )
+      auto achieventId = steamapi::AchievementType(k);
+      if( steamapi::isAchievementReached( achieventId ) )
       {
-        gfx::Picture pic = steamapi::achievementImage( achivId );
+        gfx::Picture pic = steamapi::achievementImage( achieventId );
         if( pic.isValid() )
         {
           gui::Image* img = new gui::Image( game->gui()->rootWidget(), Point( 10, 100 + offset ), pic );
-          img->setTooltipText( steamapi::achievementCaption( achivId ) );
+          img->setTooltipText( steamapi::achievementCaption( achieventId ) );
           offset += 65;
         }
       }
@@ -204,12 +204,10 @@ void StartMenu::Impl::restart()
 {
   std::string filename;
 
-  if( OSystem::isLinux() )
-    filename = "caesaria.linux";
-  else if( OSystem::isWindows() )
-    filename = "caesaria.exe";
-  else if( OSystem::isMac() )
-    filename = "caesaria.macos";
+  if( OSystem::isLinux() ) filename = "caesaria.linux";
+  else if( OSystem::isWindows() ) filename = "caesaria.exe";
+  else if( OSystem::isMac() ) filename = "caesaria.macos";
+  else filename = "unknown";
 
   vfs::Directory appDir = vfs::Directory::applicationDir();
   vfs::Path appFile = appDir/vfs::Path(filename);
@@ -227,8 +225,8 @@ void StartMenu::Impl::openDlcDirectory(Widget* sender)
 
 void StartMenu::Impl::showSoundOptions()
 {
-  events::GameEventPtr e = events::ChangeSoundOptions::create();
-  e->dispatch();
+  auto event = events::ChangeSoundOptions::create();
+  event->dispatch();
 }
 
 void StartMenu::Impl::showLanguageOptions()
@@ -236,17 +234,17 @@ void StartMenu::Impl::showLanguageOptions()
   vfs::Path model = SETTINGS_RC_PATH( langModel );
   std::string currentLang = SETTINGS_STR( language );
   std::string dfFont = SETTINGS_STR( defaultFont );
-  dialog::LanguageSelect* dlg = new dialog::LanguageSelect( game->gui()->rootWidget(), model, currentLang );
-  dlg->setDefaultFont( dfFont );
+  auto languageSelectDlg = new dialog::LanguageSelect( game->gui()->rootWidget(), model, currentLang );
+  languageSelectDlg->setDefaultFont( dfFont );
 
-  CONNECT( dlg, onChange,   this, Impl::changeLanguage )
-  CONNECT( dlg, onContinue, this, Impl::reload         )
+  CONNECT( languageSelectDlg, onChange,   this, Impl::changeLanguage )
+  CONNECT( languageSelectDlg, onContinue, this, Impl::reload         )
 }
 
 void StartMenu::Impl::showPackageOptions()
 {
-  dialog::PackageOptions* dlg = new dialog::PackageOptions( game->gui()->rootWidget(), Rect() );
-  dlg->setModal();
+  auto packageOptionsDlg = new dialog::PackageOptions( game->gui()->rootWidget(), Rect() );
+  packageOptionsDlg->setModal();
 }
 
 void StartMenu::Impl::changeLanguage(std::string lang, std::string newFont, std::string sounds)
@@ -275,12 +273,12 @@ void StartMenu::Impl::handleStartCareer()
 
   std::string playerName = SETTINGS_STR( playerName );
 
-  dialog::ChangePlayerName* dlg = new dialog::ChangePlayerName( game->gui()->rootWidget() );
-  dlg->setName( playerName );
+  auto selectPlayerNameDlg = new dialog::ChangePlayerName( game->gui()->rootWidget() );
+  selectPlayerNameDlg->setName( playerName );
 
-  CONNECT( dlg, onNameChange(), this, Impl::setPlayerName );
-  CONNECT( dlg, onContinue(),   this, Impl::handleNewGame );
-  CONNECT( dlg, onClose(),      this, Impl::showMainMenu  );
+  CONNECT( selectPlayerNameDlg, onNameChange(), this, Impl::setPlayerName );
+  CONNECT( selectPlayerNameDlg, onContinue(),   this, Impl::handleNewGame );
+  CONNECT( selectPlayerNameDlg, onClose(),      this, Impl::showMainMenu  );
 }
 
 void StartMenu::Impl::handleNewGame()
@@ -293,7 +291,7 @@ void StartMenu::Impl::showCredits()
   audio::Engine::instance().play( "combat_long", 50, audio::theme );
   Widget* parent = game->gui()->rootWidget();
 
-  Size size = engine->screenSize();
+  Size size = parent->size();
   std::string strs[] = { _("##original_game##"),
                          "Caesar III (c)",
                          "Thank you, Impressions Games, for amazing game",
@@ -367,13 +365,13 @@ void StartMenu::Impl::showCredits()
     anim->setSpeed( PointF( 0, -0.5 ) );
   }
 
-  gui::PushButton* btn = new gui::PushButton( frame,
-                                              Rect( size.width() - 150, size.height() - 34, size.width() - 10, size.height() - 10 ),
-                                              _("##close##") );
+  auto buttonClose = new gui::PushButton( frame,
+                                          Rect( size.width() - 150, size.height() - 34, size.width() - 10, size.height() - 10 ),
+                                          _("##close##") );
   frame->setFocus();
 
-  CONNECT( btn, onClicked(), frame, gui::Label::deleteLater );
-  CONNECT( btn, onClicked(), this, Impl::playMenuSoundTheme );
+  CONNECT( buttonClose, onClicked(), frame, gui::Label::deleteLater );
+  CONNECT( buttonClose, onClicked(), this, Impl::playMenuSoundTheme );
 }
 
 #define ADD_MENU_BUTTON( text, slot) { PushButton* btn = menu->addButton( _(text),-1 ); CONNECT(btn, onClicked(), this, slot ); }
@@ -444,8 +442,8 @@ void StartMenu::Impl::showAdvancedMaterials()
   vfs::Directory dir( std::string( ":/dlc" ) );
   if( !dir.exist() )
   {
-    dialog::Dialog* dlg = dialog::Information( menu->ui(), _("##no_dlc_found_title##"), _("##no_dlc_found_text##"));
-    dlg->show();
+    auto infoDialog = dialog::Information( menu->ui(), _("##no_dlc_found_title##"), _("##no_dlc_found_text##"));
+    infoDialog->show();
     showMainMenu();
     return;
   }
@@ -474,7 +472,7 @@ void StartMenu::Impl::showAdvancedMaterials()
 
 void StartMenu::Impl::showVideoOptions()
 {
-  events::GameEventPtr event = events::SetVideoSettings::create();
+  auto event = events::SetVideoSettings::create();
   event->dispatch();
 }
 
@@ -509,16 +507,16 @@ void StartMenu::Impl::showMapSelectDialog()
 {
   Widget* parent = game->gui()->rootWidget();
 
-  dialog::LoadFile* wnd = dialog::LoadFile::create( parent,
-                                                    Rect(),
-                                                    vfs::Path( ":/maps/" ), ".map,.sav,.omap",
-                                                    -1 );
-  wnd->setMayDelete( false );
+  auto loadFileDialog = dialog::LoadFile::create( parent,
+                                                  Rect(),
+                                                  vfs::Path( ":/maps/" ), ".map,.sav,.omap",
+                                                  -1 );
+  loadFileDialog->setMayDelete( false );
 
   result = StartMenu::loadMap;
-  CONNECT( wnd, onSelectFile(), this, Impl::selectFile );
-  wnd->setTitle( _("##mainmenu_loadmap##") );
-  wnd->setText( _("##start_this_map##") );
+  CONNECT( loadFileDialog, onSelectFile(), this, Impl::selectFile );
+  loadFileDialog->setTitle( _("##mainmenu_loadmap##") );
+  loadFileDialog->setText( _("##start_this_map##") );
 
   changePlayerNameIfNeed();
 }
@@ -536,6 +534,7 @@ StartMenu::~StartMenu() {}
 
 void StartMenu::draw()
 {
+  //_d->engine->setVirtualSize( Size( 1440, 800 ) /*_d->game->gui()->vsize() */ );
   _d->game->gui()->beforeDraw();
   _d->engine->draw(_d->bgPicture, _d->bgOffset);
   _d->game->gui()->draw();
@@ -544,6 +543,7 @@ void StartMenu::draw()
   {
     _d->engine->draw( _d->userImage, Point( 20, 20 ) );
   }
+  //_d->engine->setVirtualSize( Size(0,0) );
 }
 
 void StartMenu::handleEvent( NEvent& event )
@@ -564,20 +564,21 @@ void StartMenu::initialize()
   _d->bgPicture.load( resName, 1);
 
   // center the bgPicture on the screen
-  Size tmpSize = (_d->engine->virtualSize() - _d->bgPicture.size())/2;
+  Size tmpSize = (_d->game->gui()->vsize() - _d->bgPicture.size())/2;
   _d->bgOffset = Point( tmpSize.width(), tmpSize.height() );
 
   _d->game->gui()->clear();
 
   _d->menu = new gui::StartMenu( _d->game->gui()->rootWidget() );
 
-  Size scrSize = _d->engine->virtualSize();
-  TexturedButton* btnHomePage = new TexturedButton( _d->game->gui()->rootWidget(),
-                                                    Point( scrSize.width() - 128, scrSize.height() - 100 ), Size( 128 ), -1,
-                                                    "logo_rdt", 1, 2, 2, 2 );
+  Size scrSize = _d->game->gui()->vsize();
+  auto btnHomePage = new TexturedButton( _d->game->gui()->rootWidget(),
+                                         Point( scrSize.width() - 128, scrSize.height() - 100 ), Size( 128 ), -1,
+                                         "logo_rdt", 1, 2, 2, 2 );
 
-  TexturedButton* btnSteamPage = new TexturedButton( _d->game->gui()->rootWidget(), Point( btnHomePage->left() - 128, scrSize.height() - 100 ),  Size( 128 ), -1,
-                                                     "steam_icon", 1, 2, 2, 2 );
+  auto btnSteamPage = new TexturedButton( _d->game->gui()->rootWidget(),
+                                          Point( btnHomePage->left() - 128, scrSize.height() - 100 ),  Size( 128 ), -1,
+                                          "steam_icon", 1, 2, 2, 2 );
 
   CONNECT( btnSteamPage, onClicked(), _d.data(), Impl::openSteamPage );
   CONNECT( btnHomePage, onClicked(), _d.data(), Impl::openHomePage );
