@@ -212,11 +212,11 @@ void SdlEngine::init()
 #else
   Logger::warning( utils::format( 0xff, "SDLGraficEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
 
-  window = SDL_CreateWindow("CaesariA",
-                            SDL_WINDOWPOS_CENTERED,
-                            SDL_WINDOWPOS_CENTERED,
-                            _srcSize.width(), _srcSize.height(),
-                            SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
+  window = SDL_CreateWindow( "CaesariA",
+                             SDL_WINDOWPOS_CENTERED,
+                             SDL_WINDOWPOS_CENTERED,
+                             _srcSize.width(), _srcSize.height(),
+                             SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
 
   if (window == NULL)
   {
@@ -246,7 +246,7 @@ void SdlEngine::init()
     THROW("Failed to create renderer");
   }
 
-  SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");  // make the scaled rendering look smoother.
+  SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");  // make the scaled rendering look smoother.
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
   SDL_SetRenderDrawBlendMode( renderer, SDL_BLENDMODE_BLEND );
   SDL_RenderClear(renderer);
