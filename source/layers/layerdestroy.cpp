@@ -84,12 +84,15 @@ public:
 void Destroy::_clearAll()
 {
   TilesArray tiles4clear = _getSelectedArea( _d->startTilePos );
+  std::set<TilePos> alsoDestroyed;
   for( auto tile : tiles4clear )
   {
     Tile* master = tile->master() ? tile->master() : tile;
-    if( tile == master )
+    if( alsoDestroyed.count( master->epos() ) == 0 )
     {
-      auto event = ClearTile::create( tile->epos() );
+      alsoDestroyed.insert( master->epos() );
+
+      auto event = ClearTile::create( master->epos() );
       event->dispatch();
 
       if( tile->overlay().isValid() )
