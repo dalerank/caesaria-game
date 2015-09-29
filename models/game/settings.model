@@ -1,5 +1,5 @@
 { 
-  fullscreen : false
+  fullscreen : true
   resolution : [ 1440, 800 ]
   /*language : "en"*/
   /*c3gfx : "./resources/gfx"*/

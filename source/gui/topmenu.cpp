@@ -85,7 +85,7 @@ signals public:
   Signal1<Advisor> onRequestAdvisorSignal;
 };
 
-void TopMenu::draw(gfx::Engine& engine )
+void TopMenu::draw(gfx::Engine& engine)
 {
   if( !visible() )
     return;

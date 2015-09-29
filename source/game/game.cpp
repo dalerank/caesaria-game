@@ -267,19 +267,7 @@ void Game::Impl::initUI()
 {
   Logger::warning( "Game: initialize gui" );
 
-  Size uiScreenSize = engine->screenSize();
-  /*bool guiUseVirtualSize = KILLSWITCH( guiUseVirtualScreen );
-  if( guiUseVirtualSize )
-  {    
-    int height = 480;
-    if( scrSize.height() > height )
-    {
-      float koeff = height / (float)scrSize.height();
-      uiScreenSize = Size( koeff * scrSize.width(), height );
-    }
-  }*/
-
-  gui = new gui::Ui( *engine, uiScreenSize );
+  gui = new gui::Ui( *engine, engine->screenSize() );
   gui::infobox::Manager::instance().setBoxLock( KILLSWITCH( lockInfobox ) );
 }
 

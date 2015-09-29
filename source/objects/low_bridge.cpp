@@ -33,7 +33,6 @@ using namespace gfx;
 using namespace events;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::low_bridge, LowBridge)
-
 PREDEFINE_CLASS_SMARTLIST(LowBridgeSubTile,List)
 
 namespace {
@@ -90,11 +89,11 @@ void LowBridge::initTerrain(Tile& terrain )
 {
 }
 
-void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, const TilePos& endPos, Direction dir )
+void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, const TilePos& endPos, Direction rdirection )
 {
   Tilemap& tilemap = city->tilemap();
   //Picture& water = Picture::load( "land1a", 120 );
-  switch( dir )
+  switch( rdirection )
   {
   case direction::northWest:
     {
@@ -106,10 +105,9 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
       area.cropCorners();
 
       _d->addSpan( area.front()->pos() - startPos - TilePos( 1, 0 ), LowBridgeSubTile::liftingWest );
-      foreach( it, area )
-      {
-        _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanWest );
-      }
+      for( auto tile : area )
+        _d->addSpan( tile->pos() - startPos, LowBridgeSubTile::spanWest );
+
       _d->addSpan( area.back()->pos() - startPos + TilePos( 1, 0 ), LowBridgeSubTile::descentWest );
     }
   break;
@@ -142,10 +140,9 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
       area.cropCorners();
 
       _d->addSpan( area.front()->pos() - startPos - TilePos( 1, 0 ), LowBridgeSubTile::liftingWest );
-      foreach( it, area )
-      {
-        _d->addSpan( (*it)->pos() - startPos, LowBridgeSubTile::spanWest );
-      }
+      for( auto tile : area )
+        _d->addSpan( tile->pos() - startPos, LowBridgeSubTile::spanWest );
+
       _d->addSpan( area.back()->pos() - startPos + TilePos( 1, 0 ), LowBridgeSubTile::descentWest );
     }
   break;
@@ -172,9 +169,9 @@ void LowBridge::_computePictures(PlayerCityPtr city, const TilePos& startPos, co
   break;
   }
 
-  foreach( it, _d->subtiles )
+  for( auto tile : _d->subtiles )
   {
-    _fgPictures().push_back( (*it)->_rpicture );
+    _fgPictures().push_back( tile->_rpicture );
   }
 }
 
@@ -191,7 +188,7 @@ void LowBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos& 
   if( config.isNorthA( imdId ) )
   {
     TilesArea tiles( tilemap, curPos - TilePos( 10, 0), curPos - TilePos(1, 0) );
-    for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
+    for( auto it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
       imdId = (*it)->imgId();
       if( config.isNorthB( imdId ) )
@@ -207,57 +204,57 @@ void LowBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos& 
       }
     }
   }
-  else if( imdId == 376 || imdId == 377 || imdId == 378 || imdId == 379  )
+  else if( config.isNorthB( imdId ) )
   {
     TilesArea tiles( tilemap, curPos + TilePos(1, 0), curPos + TilePos( 10, 0) );
     for( auto tile : tiles )
     {
       imdId = tile->imgId();
-      if( imdId == 384 || imdId == 385 || imdId == 386 || imdId == 387 )
+      if( config.isNorthA( imdId ) )
       {
         stop = tile->pos();
         direction = abs(stop.i() - start.i()) > 1 ? direction::southEast : direction::none;
         break;
       }
-      else if ((imdId > 372 && imdId < 445) || !(tile->getFlag(Tile::tlWater) || tile->getFlag(Tile::tlDeepWater)))
+      else if ( config.isForbiden( imdId ) || !(tile->getFlag(Tile::tlWater) || tile->getFlag(Tile::tlDeepWater)))
       {
         direction = direction::none;
         break;
       }
     }
   }
-  else if( imdId == 372 || imdId == 373 || imdId == 374 || imdId == 375  )
+  else if( config.isWestA( imdId )  )
   {
-    TilesArea tiles( tilemap, curPos + TilePos(1, 0), curPos + TilePos( 0, 10) );
-    foreach( it, tiles )
+    TilesArea tiles( tilemap, curPos + TilePos(0, 1), curPos + TilePos( 0, 10) );
+    for( auto tile : tiles )
     {
-      imdId = (*it)->imgId();
-      if( imdId == 380 || imdId == 381 || imdId == 382 || imdId == 383 )
+      imdId = tile->imgId();
+      if( config.isWestB( imdId ) )
       {
-        stop = (*it)->pos();
+        stop = tile->pos();
         direction = abs(stop.j() - start.j()) > 1 ? direction::northEast : direction::none;
         break;
       }
-      else if ((imdId > 372 && imdId < 445) || !((*it)->getFlag(Tile::tlWater) || (*it)->getFlag(Tile::tlDeepWater)))
+      else if ( config.isForbiden( imdId ) || !(tile->getFlag(Tile::tlWater) || tile->getFlag(Tile::tlDeepWater)))
       {
         direction = direction::none;
         break;
       }
     }
   }
-  else if( imdId == 380 || imdId == 381 || imdId == 382 || imdId == 383 )
+  else if( config.isWestB( imdId ) )
   {
     TilesArea tiles( tilemap, curPos - TilePos( 0, 10 ), curPos - TilePos(0, 1) );
     for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
       imdId = (*it)->imgId();
-      if( imdId == 372 || imdId == 373 || imdId == 374 || imdId == 375 )
+      if( config.isWestA( imdId ) )
       {
         stop = (*it)->pos();
         direction = abs(stop.j() - start.j()) > 1 ? direction::southWest : direction::none;
         break;
       }
-      else if ((imdId > 372 && imdId < 445) || !((*it)->getFlag(Tile::tlWater) || (*it)->getFlag(Tile::tlDeepWater)))
+      else if ( config.isForbiden( imdId ) || !((*it)->getFlag(Tile::tlWater) || (*it)->getFlag(Tile::tlDeepWater)))
       {
         direction = direction::none;
         break;
@@ -337,9 +334,9 @@ bool LowBridge::build( const city::AreaInfo& info )
 
 bool LowBridge::canDestroy() const
 {
-  foreach( subtile, _d->subtiles )
+  for( auto subtile : _d->subtiles )
   {
-    WalkerList walkers = _city()->statistic().walkers.find<Walker>( walker::any, pos() + (*subtile)->pos() );
+    WalkerList walkers = _city()->statistic().walkers.find<Walker>( walker::any, pos() + subtile->pos() );
     if( !walkers.empty() )
     {
       _d->error = "##cant_demolish_bridge_with_people##";
@@ -358,14 +355,14 @@ bool LowBridge::canDestroy() const
 
 void LowBridge::destroy()
 {
-  foreach( it, _d->subtiles )
+  for( auto tile : _d->subtiles )
   {
-    (*it)->_parent = 0;
-    GameEventPtr event = ClearTile::create( (*it)->_pos );
+    tile->_parent = 0;
+    GameEventPtr event = ClearTile::create( tile->_pos );
     event->dispatch();
 
-    Tile& mapTile = _city()->tilemap().at( (*it)->_pos );
-    tile::decode( mapTile, (*it)->_info );
+    Tile& mapTile = _city()->tilemap().at( tile->_pos );
+    tile::decode( mapTile, tile->_info );
   }
 }
 
@@ -377,9 +374,9 @@ void LowBridge::save(VariantMap& stream) const
   Construction::save( stream );
 
   VariantList vl_tinfo;
-  foreach( subtile, _d->subtiles )
+  for( auto& subtile : _d->subtiles )
   {
-    vl_tinfo.push_back( (*subtile)->_imgId );
+    vl_tinfo.push_back( subtile->_imgId );
   }
   stream[ "terraininfo" ] = vl_tinfo;
 }
