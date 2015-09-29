@@ -246,8 +246,11 @@ bool Menu::onEvent(const NEvent& event)
 
   if( event.EventType == sEventGui && event.gui.type == guiElementFocusLost )
   {
-    unselectAll();
-    _d->lastPressed = 0;
+    if( findChildren<BuildMenu*>().empty() )
+    {
+      unselectAll();
+      _d->lastPressed = 0;
+    }
   }
 
   if( event.EventType == sEventMouse )

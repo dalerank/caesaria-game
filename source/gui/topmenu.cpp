@@ -36,6 +36,7 @@
 #include "listbox.hpp"
 #include "core/metric.hpp"
 #include "city/config.hpp"
+#include "core/osystem.hpp"
 
 using namespace gfx;
 

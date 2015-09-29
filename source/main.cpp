@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
 
   options.changeSystemLang( systemLang );
 
-  LOG.info("Language is set to " + SETTINGS_STR(language));
+  LOG.info("Language set to " + SETTINGS_STR(language));
   LOG.info("Using native C3 resources from " + SETTINGS_STR(c3gfx));
   LOG.info("Cell width set to %d", SETTINGS_VALUE(cellw).toInt());
 
