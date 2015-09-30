@@ -67,6 +67,22 @@ public:
     {
       pics.push_back( pic );
       rects.push_back( r );
+
+      batch.destroy();
+      batch.load( pics, rects );
+    }
+
+    void update( const Point& move )
+    {
+      //no move, do nothing
+      if( move == Point( 0, 0) )
+        return;
+
+      for( auto&& r : rects )
+        r += move;
+
+      batch.destroy();
+      batch.load( pics, rects );
     }
   } bg;
 
@@ -97,19 +113,19 @@ public:
   PushButton* overlaysButton;
   Label* middleLabel;
   OverlaysMenu* overlaysMenu; 
+  float koeff;
   PlayerCityPtr city;
-
-
-  void initActionButton(PushButton* btn, const Point& pos,
-                        bool pushBtn=true);
-  void playSound(Widget* widget);
-  void updateBuildingOptions();
 
   struct {
     Signal1<int> onCreateConstruction;
     Signal0<> onRemoveTool;
     Signal0<> onHide;
   } signal;
+
+  void initActionButton(PushButton* btn, const Point& pos,
+                        bool pushBtn=true);
+  void playSound(Widget* widget);
+  void updateBuildingOptions();
 };
 
 Signal1<int>& Menu::onCreateConstruction(){  return _d->signal.onCreateConstruction;}
@@ -138,7 +154,10 @@ Menu::Menu( Widget* parent, int id, const Rect& rectangle )
   setupUI( ":/gui/shortmenu.gui" );
   _d->lastPressed = 0;
   _d->overlaysMenu = 0;
+}
 
+void Menu::_initializeButtons()
+{
   const bool haveSubMenu = true;
   _d->minimizeButton = _addButton( ResourceMenu::maximizeBtn, false, 0, MAXIMIZE_ID,
                                    !haveSubMenu, ResourceMenu::emptyMidPicId, "show_bigpanel" );
@@ -183,7 +202,15 @@ PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul,
 
   MenuButton* ret = new MenuButton( this, Point( 0, 0 ), -1, -1, startPic, pushBtn );
   ret->setID( id | ( haveSubmenu ? BuildMenu::subMenuCreateIdHigh : 0 ) );
-  ret->setPosition( offset + Point( 0, dy * yMul ) );
+  Point temp = offset + Point( 0, dy * yMul );
+  if( _d->koeff != 1 )
+  {
+    temp.setX( ceil( temp.x() * _d->koeff) );
+    temp.setY( temp.y() * _d->koeff );
+    ret->setWidth( ret->width() * _d->koeff );
+    ret->setHeight( ret->height() * _d->koeff );
+  }
+  ret->setPosition( temp );
   ret->setTooltipText( _( "##extm_"+ident+"_tlp##" ) );
   ret->setSound( "extm_" + ident );
   ret->setMidPicId( midPic );
@@ -197,9 +224,19 @@ void Menu::draw(gfx::Engine& painter)
   if( !visible() )
     return;
 
-  painter.draw( _d->bg.pics, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+  if( _d->bg.batch.valid() )
+    painter.draw( _d->bg.batch, &absoluteClippingRectRef() );
+  else
+    painter.draw( _d->bg.pics, absoluteRect().lefttop(), &absoluteClippingRectRef() );
     
   Widget::draw( painter );
+}
+
+void Menu::setPosition(const Point& relativePosition)
+{
+  Point oldPos = lefttop();
+  Widget::setPosition( relativePosition );
+  _d->bg.update( relativePosition - oldPos );
 }
 
 bool Menu::onEvent(const NEvent& event)
@@ -289,7 +326,7 @@ bool Menu::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-Menu* Menu::create(Widget* parent, int id, PlayerCityPtr city, int width )
+Menu* Menu::create(Widget* parent, int id, PlayerCityPtr city, bool fitToScreen )
 {
   VariantMap config = config::load( ":/menu.model" );
 
@@ -303,24 +340,29 @@ Menu* Menu::create(Widget* parent, int id, PlayerCityPtr city, int width )
   if( !bottom.isValid() )
     bottom.load( ResourceGroup::panelBackground, 21 );
 
-  if( width <= 0 )
-    width = background.width();
+  float scale = 1;
+  if( fitToScreen )
+    scale = (parent->height() * 0.9f) / (float)background.height();
+  int width = background.width() * scale;
 
   Menu* ret = new Menu( parent, id, Rect( 0, 0, width, parent->height() ) );
 
-  ret->_d->bg.add( background, Rect( Point(0, 0), background.size() ) );
+  Impl& d = *ret->_d.data();
+  d.city = city;
+  d.koeff = scale;
+  d.bg.add( background, Rect( Point(0, 0), background.size() * d.koeff ) );
 
-  unsigned int y = background.height();
+  unsigned int y = background.height() * d.koeff;
   while( y < parent->height() )
   {
-    ret->_d->bg.add( bottom, Rect( 0, y, bottom.width(), y + bottom.height() ) );
-    y += bottom.height() - 5;
+    d.bg.add( bottom, Rect( 0, y, width, y + bottom.height() * d.koeff ) );
+    y += bottom.height() * d.koeff - 5;
   }
 
-  ret->_d->city = city;  
-  ret->_d->updateBuildingOptions();
+  ret->_initializeButtons();
+  d.updateBuildingOptions();
 
-  CONNECT( city, onChangeBuildingOptions(), ret->_d.data(), Impl::updateBuildingOptions );
+  CONNECT( city, onChangeBuildingOptions(), &d, Impl::updateBuildingOptions );
 
   return ret;
 }
@@ -424,18 +466,21 @@ ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city )
 
   Picture bottom( ResourceGroup::panelBackground, 20 );
 
-  ret->_d->bg.pics.clear();
+  Impl& d = *ret->_d.data();
+  d.bg.pics.clear();
+  d.koeff = 1;
   ret->setID( Hash( CAESARIA_STR_A(ExtentMenu)) );
-  ret->_d->bg.pics.append( bground, Point( 0, 0 ) );
+  d.bg.pics.append( bground, Point( 0, 0 ) );
   unsigned int y = bground.height();
   while( y < parent->height() )
   {
-    ret->_d->bg.pics.append( bottom, Point( 0, -y ) );
+    d.bg.pics.append( bottom, Point( 0, -y ) );
     y += bottom.height() - 5;
   }
 
-  ret->_d->city = city;
-  ret->_d->updateBuildingOptions();
+  d.city = city;
+  ret->_initializeButtons();
+  d.updateBuildingOptions();
 
   CONNECT( city, onChangeBuildingOptions(), ret->_d.data(), Impl::updateBuildingOptions );
 
@@ -446,11 +491,16 @@ ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle )
     : Menu( p, id, rectangle )
 {
   setupUI( ":/gui/fullmenu.gui" );
+}
+
+void ExtentMenu::_initializeButtons()
+{
+  Menu::_initializeButtons();
 
   _d->minimizeButton->deleteLater();
   _d->minimizeButton = _addButton( 97, false, 0, MAXIMIZE_ID, false, ResourceMenu::emptyMidPicId, "hide_bigpanel" );
   _d->minimizeButton->setGeometry( Rect( Point( 127, 5 ), Size( 31, 20 ) ) );
-  CONNECT( _d->minimizeButton, onClicked(), this, ExtentMenu::minimize );  
+  CONNECT( _d->minimizeButton, onClicked(), this, ExtentMenu::minimize );
 
   _d->initActionButton( _d->houseButton, Point( 13, 277 ), false );
   _d->initActionButton( _d->clearButton, Point( 63, 277 ), false );
@@ -471,7 +521,7 @@ ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle )
 
   _d->empireButton = _addButton( 82, false, 0, -1, false, -1, "empire" );
   _d->empireButton->setGeometry( Rect( Point( 84, 155 ), Size( 71, 23 ) ) );
-  
+
   _d->missionButton = _addButton( 85, false, 0, -1, false, -1, "mission" );
   _d->missionButton->setGeometry( Rect( Point( 7, 184 ), Size( 33, 22 ) ) );
 
@@ -503,7 +553,7 @@ ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle )
 
   _d->overlaysButton = new PushButton( this, Rect( 4, 3, 122, 28 ), _("##ovrm_text##") );
   _d->overlaysButton->setTooltipText( _("##select_city_layer##") );
-  
+
   CONNECT( _d->overlaysButton, onClicked(), this, ExtentMenu::toggleOverlayMenuVisible );
   CONNECT( _d->overlaysMenu, onSelectOverlayType(), this, ExtentMenu::changeOverlay );
 }

@@ -503,6 +503,11 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
   }
 }
 
+void SdlEngine::draw(const Picture& pic, const Rect& dstRect, Rect* clipRect)
+{
+  draw( pic, Rect( 0, 0, pic.width(), pic.height()), dstRect, clipRect );
+}
+
 void SdlEngine::draw(const Picture& pic, const Rect& srcRect, const Rect& dstRect, Rect *clipRect)
 {
   if( !pic.isValid() )

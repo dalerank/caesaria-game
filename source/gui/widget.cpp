@@ -177,8 +177,8 @@ void Widget::setGeometry( const RectF& r, GeometryType mode )
   updateAbsolutePosition();
 }
 
-Rect Widget::absoluteRect() const { __D_IMPL_CONST(_d,Widget)   return _d->absoluteRect;}
-Rect Widget::absoluteClippingRect() const{ __D_IMPL_CONST(_d,Widget)   return _d->absoluteClippingRect;}
+Rect Widget::absoluteRect() const { return _dfunc()->absoluteRect;}
+Rect Widget::absoluteClippingRect() const{ return _dfunc()->absoluteClippingRect;}
 
 void Widget::setNotClipped( bool noClip )
 {

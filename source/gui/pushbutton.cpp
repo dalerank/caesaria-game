@@ -538,7 +538,7 @@ void PushButton::draw( gfx::Engine& painter )
   if( isBodyVisible() )
   {
     if( state.background.isValid() )
-      painter.draw( state.background, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+      painter.draw( state.background, absoluteRect(), &absoluteClippingRectRef() );
     else
     {
       if( state.style.valid() )

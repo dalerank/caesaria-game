@@ -70,6 +70,7 @@ public:
 
   virtual void draw(const Picture& pic, const int dx, const int dy, Rect* clipRect=0 ) = 0;
   virtual void draw(const Picture& pic, const Point& pos, Rect* clipRect=0 ) = 0;
+  virtual void draw(const Picture& pic, const Rect& dstRect, Rect *clipRect ) = 0;
   virtual void draw(const Picture& pic, const Rect& srcRect, const Rect& dstRect, Rect* clipRect=0 ) = 0;
   virtual void draw(const Pictures& pic, const Point& pos, Rect* clipRect=0 ) = 0;
   virtual void draw(const Picture& pic, const Rects& srcRects, const Rects& dstRects, Rect* clipRect=0 ) = 0;

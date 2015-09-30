@@ -63,6 +63,7 @@ public:
   struct {
     Batch batch;
     Pictures pics;
+    Rects rects;
   } bg;
 
 slots public:
@@ -164,8 +165,7 @@ void TopMenu::Impl::resolveExtentInfo(Widget *sender)
 
 void TopMenu::Impl::initBackground( const Size& size )
 {
-  Pictures p_marble, pics;
-  Rects rects;
+  Pictures p_marble;
   p_marble.load( ResourceGroup::panelBackground, 1, 12 );
 
   unsigned int i = 0;
@@ -175,19 +175,15 @@ void TopMenu::Impl::initBackground( const Size& size )
   while( x < size.width() )
   {
     const Picture& pic = p_marble[i%12];
-    pics.push_back( pic );
-    rects.push_back( Rect( Point( x, 0), pic.size() * ykoef ) );
+    bg.pics.push_back( pic );
+    bg.rects.push_back( Rect( Point( x, 0), pic.size() * ykoef ) );
     x += pic.width() * ykoef;
     i++;
   }
 
-  bool batchOk = bg.batch.load( pics, rects );
+  bool batchOk = bg.batch.load( bg.pics, bg.rects );
   if( !batchOk )
-  {
     bg.batch.destroy();
-    Decorator::reverseYoffset( pics );
-    bg.pics = pics;
-  }
 }
 
 void TopMenu::Impl::showAboutInfo()

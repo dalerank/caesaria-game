@@ -58,6 +58,7 @@ public:
   virtual void draw(const Picture& picture, const int dx, const int dy, Rect* clipRect);
   virtual void draw(const Picture& picture, const Point& pos, Rect* clipRect );
   virtual void draw(const Pictures& pictures, const Point& pos, Rect* clipRect);
+  virtual void draw(const Picture& pic, const Rect& dstRect, Rect *clipRect );
   virtual void draw(const Picture& pic, const Rect& srcRect, const Rect& dstRect, Rect *clipRect );
   virtual void draw(const Picture& pic, const Rects& srcRects, const Rects& dstRects, Rect* clipRect );
   virtual void draw(const Batch& batch, Rect* clipRect);

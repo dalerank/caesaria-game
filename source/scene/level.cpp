@@ -101,7 +101,7 @@ using namespace city;
 namespace scene
 {
 typedef SmartList<EventHandler> EventHandlers;
-const int topMenuHeight = 23;
+const int topMenuHeight = 24;
 
 class Level::Impl
 {
@@ -201,7 +201,8 @@ void Level::Impl::initMainUI()
   topMenu->setPopulation( game->city()->states().population );
   topMenu->setFunds( game->city()->treasury().money() );
 
-  menu = Menu::create( ui.rootWidget(), -1, city );
+  bool fitToHeidht = OSystem::isAndroid();
+  menu = Menu::create( ui.rootWidget(), -1, city, fitToHeidht );
   menu->setPosition( Point( ui.vsize().width() - rightPanel->width(),
                             topMenu->height() ) );
 

@@ -32,14 +32,14 @@ class PushButton;
 class Menu : public Widget
 {
 public:
-  static Menu* create(Widget* parent, int id, PlayerCityPtr city, int width=-1);
+  static Menu* create(Widget* parent, int id, PlayerCityPtr city, bool fitToScreen=false );
 
   // draw on screen
   virtual void minimize();
   virtual void maximize();
 
   virtual void draw( gfx::Engine& engine );
-
+  virtual void setPosition(const Point& relativePosition);
   virtual bool onEvent(const NEvent& event);
 
   bool unselectAll();
@@ -54,6 +54,7 @@ protected:
   ScopedPtr< Impl > _d;
 
   Menu( Widget* parent, int id, const Rect& rectangle );
+  virtual void _initializeButtons();
   void _createBuildMenu( int type, Widget* parent );
   PushButton* _addButton( int startPic, bool pushBtn, int yMul,
                           int id, bool haveSubmenu, int midPic,
@@ -90,6 +91,7 @@ signals public:
 
 protected:
   ExtentMenu( Widget* parent, int id, const Rect& rectangle );
+  virtual void _initializeButtons();
 };
 
 }//end namespace gui

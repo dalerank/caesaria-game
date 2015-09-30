@@ -63,6 +63,7 @@ public:
   void draw(const Picture &picture, const Point& pos, Rect* clipRect=0 );
   void draw(const Picture &picture, const Rect& src, const Rect& dst, Rect* clipRect=0 );
   void draw(const Pictures& pictures, const Point& pos, Rect* clipRect);
+  void draw(const Picture& pic, const Rect& dstRect, Rect *clipRect );
   void draw(const Picture& pic, const Rects& srcRects, const Rects& dstRects, Rect* clipRect=0 );
   void draw(const Batch& pic, Rect* clipRect=0 );
   void drawLine(const NColor &color, const Point &p1, const Point &p2);
