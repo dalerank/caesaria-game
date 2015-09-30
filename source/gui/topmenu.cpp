@@ -58,8 +58,11 @@ public:
   Label* lbDate;
   bool useIcon;
   ContextMenu* langSelect;
-  Batch background;
-  Pictures backgroundNb;
+
+  struct {
+    Batch batch;
+    Pictures pics;
+  } bg;
 
 slots public:
   void resolveSave();
@@ -92,10 +95,10 @@ void TopMenu::draw(gfx::Engine& engine)
 
   _d->updateDate();
 
-  if( _d->background.valid() )
-    engine.draw( _d->background, &absoluteClippingRectRef() );
+  if( _d->bg.batch.valid() )
+    engine.draw( _d->bg.batch, &absoluteClippingRectRef() );
   else
-    engine.draw( _d->backgroundNb, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+    engine.draw( _d->bg.pics, absoluteRect().lefttop(), &absoluteClippingRectRef() );
 
   MainMenu::draw( engine );
 }
@@ -137,14 +140,16 @@ void TopMenu::Impl::updateDate()
 void TopMenu::Impl::showShortKeyInfo()
 {
   Widget* parent = lbDate->ui()->rootWidget();
-  Widget* bg = new Label( parent, Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
-  bg->setupUI( ":/gui/shortkeys.gui" );
-  bg->setCenter( parent->center() );
+  Widget* shortKeyInfo = new Label( parent, Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
+  shortKeyInfo->setupUI( ":/gui/shortkeys.gui" );
+  shortKeyInfo->setCenter( parent->center() );
 
-  TexturedButton* btnExit = new TexturedButton( bg, Point( bg->width() - 34, bg->height() - 34 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
-  WidgetEscapeCloser::insertTo( bg );
+  auto btnExit = new TexturedButton( shortKeyInfo,
+                                     Point( shortKeyInfo->width() - 34, shortKeyInfo->height() - 34 ),
+                                     Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
+  WidgetEscapeCloser::insertTo( shortKeyInfo );
 
-  CONNECT( btnExit, onClicked(), bg, Label::deleteLater );
+  CONNECT( btnExit, onClicked(), shortKeyInfo, Label::deleteLater );
 }
 
 void TopMenu::Impl::resolveExtentInfo(Widget *sender)
@@ -159,25 +164,28 @@ void TopMenu::Impl::resolveExtentInfo(Widget *sender)
 void TopMenu::Impl::initBackground( const Size& size )
 {
   Pictures p_marble, pics;
-  p_marble.load( ResourceGroup::panelBackground, 1,12 );
+  Rects rects;
+  p_marble.load( ResourceGroup::panelBackground, 1, 12 );
 
   unsigned int i = 0;
   int x = 0;
 
+  float ykoef = size.height() / (float)p_marble.front().height();
   while( x < size.width() )
   {
-    pics.append( p_marble[i%12], Point() );
-    pics.back().setOffset( x, 0 );
-    x += p_marble[i%12].width();
+    const Picture& pic = p_marble[i%12];
+    pics.push_back( pic );
+    rects.push_back( Rect( Point( x, 0), pic.size() * ykoef ) );
+    x += pic.width() * ykoef;
     i++;
   }
 
-  bool batchOk = background.load( pics, Point() );
+  bool batchOk = bg.batch.load( pics, rects );
   if( !batchOk )
   {
-    background.destroy();
+    bg.batch.destroy();
     Decorator::reverseYoffset( pics );
-    backgroundNb = pics;
+    bg.pics = pics;
   }
 }
 

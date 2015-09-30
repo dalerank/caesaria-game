@@ -36,6 +36,10 @@ class VariantList;
 class VariantMap;
 class NColor;
 
+#ifdef _MSC_VER
+#define __typeof__ decltype
+#endif
+
 #define VARIANT_INIT_ANY( type, param, vm) type param = vm.get( #param );
 #define VARIANT_INIT_STR( param, vm) std::string param = vm.get( #param ).toString();
 

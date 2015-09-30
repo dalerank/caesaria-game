@@ -369,7 +369,7 @@ void PlayerCity::load( const VariantMap& stream )
   City::load( stream );
   _d->tilemap.load( stream.get( literals::tilemap ).toMap() );
   _d->walkers.grid.resize( Size( _d->tilemap.size() ) );
-  VARIANT_LOAD_ENUM_D( _d, walkers.idCount, stream )
+  VARIANT_LOAD_ENUM_D( _d, walkers.idCount, stream)
 
   LOG_CITY.info( "Parse main params" );
   _d->borderInfo.roadEntry = TilePos( stream.get( "roadEntry" ).toTilePos() );

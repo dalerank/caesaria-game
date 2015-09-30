@@ -105,7 +105,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
       Tilemap& tmap = game.city()->tilemap();
       TilesArray tiles = tmap.border().walkables( true );
 
-      bool tryCount = 0;
+      int tryCount = 0;
       for(; tryCount < 10; tryCount++ )
       {
         Tile* tile = tiles.random();
