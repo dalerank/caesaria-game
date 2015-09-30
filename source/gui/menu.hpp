@@ -32,7 +32,7 @@ class PushButton;
 class Menu : public Widget
 {
 public:
-  static Menu* create( Widget* parent, int id, PlayerCityPtr city );
+  static Menu* create(Widget* parent, int id, PlayerCityPtr city, int width=-1);
 
   // draw on screen
   virtual void minimize();

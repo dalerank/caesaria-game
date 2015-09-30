@@ -35,10 +35,13 @@
 #include "overlays_menu.hpp"
 #include "core/foreach.hpp"
 #include "core/utils.hpp"
+#include "core/variant_map.hpp"
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
 #include "city/city.hpp"
 #include "extented_date_info.hpp"
+#include "core/saveadapter.hpp"
+#include "core/osystem.hpp"
 #include "events/playsound.hpp"
 
 using namespace constants;
@@ -55,7 +58,17 @@ static const int MAXIMIZE_ID = REMOVE_TOOL_ID + 1;
 class Menu::Impl
 {
 public:
-  Pictures background;
+  struct {
+    Pictures pics;
+    Rects rects;
+    Batch batch;
+
+    void add( Picture pic, const Rect& r )
+    {
+      pics.push_back( pic );
+      rects.push_back( r );
+    }
+  } bg;
 
   Widget* lastPressed;
   PushButton* menuButton;
@@ -92,14 +105,15 @@ public:
   void playSound(Widget* widget);
   void updateBuildingOptions();
 
-signals public:
-  Signal1<int> onCreateConstructionSignal;
-  Signal0<> onRemoveToolSignal;
-  Signal0<> onHideSignal;
+  struct {
+    Signal1<int> onCreateConstruction;
+    Signal0<> onRemoveTool;
+    Signal0<> onHide;
+  } signal;
 };
 
-Signal1<int>& Menu::onCreateConstruction(){  return _d->onCreateConstructionSignal;}
-Signal0<>& Menu::onRemoveTool(){  return _d->onRemoveToolSignal;}
+Signal1<int>& Menu::onCreateConstruction(){  return _d->signal.onCreateConstruction;}
+Signal0<>& Menu::onRemoveTool(){  return _d->signal.onRemoveTool;}
 
 class MenuButton : public TexturedButton
 {
@@ -172,22 +186,18 @@ PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul,
   ret->setPosition( offset + Point( 0, dy * yMul ) );
   ret->setTooltipText( _( "##extm_"+ident+"_tlp##" ) );
   ret->setSound( "extm_" + ident );
-
-  if( MenuButton* btn = safety_cast< MenuButton* >( ret ) )
-  {
-    btn->setMidPicId( midPic );
-  }
+  ret->setMidPicId( midPic );
 
   return ret;
 }
 
 /* here will be helper functions for minimap generation */
-void Menu::draw(gfx::Engine& painter )
+void Menu::draw(gfx::Engine& painter)
 {
   if( !visible() )
     return;
 
-  painter.draw( _d->background, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+  painter.draw( _d->bg.pics, absoluteRect().lefttop(), &absoluteClippingRectRef() );
     
   Widget::draw( painter );
 }
@@ -204,13 +214,13 @@ bool Menu::onEvent(const NEvent& event)
     {
       _d->lastPressed = event.gui.caller;
       _createBuildMenu( -1, this );
-      emit _d->onCreateConstructionSignal( id );
+      emit _d->signal.onCreateConstruction( id );
     }
     else if( id == REMOVE_TOOL_ID )
     {
       _d->lastPressed = event.gui.caller;
       _createBuildMenu( -1, this );
-      emit _d->onRemoveToolSignal();
+      emit _d->signal.onRemoveTool();
     }
     else
     {
@@ -228,7 +238,7 @@ bool Menu::onEvent(const NEvent& event)
           }
           else
           {
-            emit _d->onCreateConstructionSignal( id );
+            emit _d->signal.onCreateConstruction( id );
             _createBuildMenu( -1, this );
             setFocus();
           }
@@ -276,21 +286,31 @@ bool Menu::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-Menu* Menu::create(Widget* parent, int id, PlayerCityPtr city )
+Menu* Menu::create(Widget* parent, int id, PlayerCityPtr city, int width )
 {
-  Picture bground( ResourceGroup::panelBackground, 16 );
+  VariantMap config = config::load( ":/menu.model" );
 
-  Menu* ret = new Menu( parent, id, Rect( 0, 0, bground.width(), parent->height() ) );
+  Picture background, bottom;
+  VARIANT_LOAD_PICTURE(bottom, config)
+  VARIANT_LOAD_PICTURE(background, config)
 
-  Picture bottom( ResourceGroup::panelBackground, 21 );
+  if( !background.isValid() )
+    background.load( ResourceGroup::panelBackground, 16 );
 
-  ret->_d->background.clear();
+  if( !bottom.isValid() )
+    bottom.load( ResourceGroup::panelBackground, 21 );
 
-  ret->_d->background.append( bground, Point( 0, 0 ) );
-  unsigned int y = bground.height();
+  if( width <= 0 )
+    width = background.width();
+
+  Menu* ret = new Menu( parent, id, Rect( 0, 0, width, parent->height() ) );
+
+  ret->_d->bg.add( background, Rect( Point(0, 0), background.size() ) );
+
+  unsigned int y = background.height();
   while( y < parent->height() )
   {
-    ret->_d->background.append( bottom, Point( 0, -y ) );
+    ret->_d->bg.add( bottom, Rect( 0, y, bottom.width(), y + bottom.height() ) );
     y += bottom.height() - 5;
   }
 
@@ -307,11 +327,11 @@ void Menu::minimize()
   _d->lastPressed = 0;
   _createBuildMenu( -1, this );
   Point stopPos = lefttop() + Point( width(), 0 );
-  PositionAnimator* anim = new PositionAnimator( this, WidgetAnimator::removeSelf, stopPos, 300 );
-  CONNECT( anim, onFinish(), &_d->onHideSignal, Signal0<>::_emit );
+  auto animator = new PositionAnimator( this, WidgetAnimator::removeSelf, stopPos, 300 );
+  CONNECT( animator, onFinish(), &_d->signal.onHide, Signal0<>::_emit );
 
-  GameEventPtr e = PlaySound::create( "panel", 3, 100 );
-  e->dispatch();
+  auto event = PlaySound::create( "panel", 3, 100 );
+  event->dispatch();
 }
 
 void Menu::maximize()
@@ -320,8 +340,8 @@ void Menu::maximize()
   show();
   new PositionAnimator( this, WidgetAnimator::showParent | WidgetAnimator::removeSelf, stopPos, 300 );
 
-  GameEventPtr e = PlaySound::create( "panel", 3, 100 );
-  e->dispatch();
+  auto event = PlaySound::create( "panel", 3, 100 );
+  event->dispatch();
 }
 
 bool Menu::unselectAll()
@@ -348,7 +368,6 @@ void Menu::_createBuildMenu( int type, Widget* parent )
    if( buildMenu != NULL )
    {
      buildMenu->setNotClipped( true );
-
      buildMenu->setBuildOptions( _d->city->buildOptions() );
      buildMenu->initialize();
 
@@ -357,7 +376,7 @@ void Menu::_createBuildMenu( int type, Widget* parent )
    }
 }
 
-Signal0<>& Menu::onHide() { return _d->onHideSignal; }
+Signal0<>& Menu::onHide() { return _d->signal.onHide; }
 
 void Menu::Impl::initActionButton(PushButton* btn, const Point& pos, bool pushBtn )
 {
@@ -376,8 +395,8 @@ void Menu::Impl::playSound( Widget* widget )
     index = math::random( 2 ) + 1;
   }
 
-  GameEventPtr e = PlaySound::create( sound, index, 100 );
-  e->dispatch();
+  auto event = PlaySound::create( sound, index, 100 );
+  event->dispatch();
 }
 
 void Menu::Impl::updateBuildingOptions()
@@ -402,13 +421,13 @@ ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city )
 
   Picture bottom( ResourceGroup::panelBackground, 20 );
 
-  ret->_d->background.clear();
+  ret->_d->bg.pics.clear();
   ret->setID( Hash( CAESARIA_STR_A(ExtentMenu)) );
-  ret->_d->background.append( bground, Point( 0, 0 ) );
+  ret->_d->bg.pics.append( bground, Point( 0, 0 ) );
   unsigned int y = bground.height();
   while( y < parent->height() )
   {
-    ret->_d->background.append( bottom, Point( 0, -y ) );
+    ret->_d->bg.pics.append( bottom, Point( 0, -y ) );
     y += bottom.height() - 5;
   }
 
@@ -433,7 +452,6 @@ ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle )
   _d->initActionButton( _d->houseButton, Point( 13, 277 ), false );
   _d->initActionButton( _d->clearButton, Point( 63, 277 ), false );
   _d->initActionButton( _d->roadButton, Point( 113, 277 ), false );
-
   _d->initActionButton( _d->waterButton, Point( 13, 313 ) );
   _d->initActionButton( _d->healthButton, Point( 63, 313 ) );
   _d->initActionButton( _d->templeButton, Point( 113, 313 ) );
@@ -491,7 +509,8 @@ bool ExtentMenu::onEvent(const NEvent& event)
 {
   if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
   {
-    if( MenuButton* btn = safety_cast< MenuButton* >( event.gui.caller ) )
+    MenuButton* btn = safety_cast< MenuButton* >( event.gui.caller );
+    if( btn )
     {
       int picId = btn->midPicId() > 0 ? btn->midPicId() : ResourceMenu::emptyMidPicId;
       _d->middleLabel->setBackgroundPicture( Picture( ResourceGroup::menuMiddleIcons, picId ) );
@@ -544,8 +563,8 @@ void ExtentMenu::setAlarmEnabled( bool enabled )
 {
   if( enabled )
   {
-    events::GameEventPtr e = events::PlaySound::create( "extm_alarm", 1, 100, audio::effects );
-    e->dispatch();
+    auto event = events::PlaySound::create( "extm_alarm", 1, 100, audio::effects );
+    event->dispatch();
   }
 
   _d->disasterButton->setEnabled( enabled );
