@@ -620,7 +620,7 @@ inline bool Statistic::_Map::isTileBusy( const TilePos& p, WalkerPtr caller, boo
     needMeMove = (caller.object() != walkers.front().object());
   }
 
-  return walkers.empty() > 1;
+  return walkers.size() > 1;
 }
 
 template< class T >
