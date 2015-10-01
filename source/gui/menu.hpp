@@ -31,7 +31,7 @@ class PushButton;
 
 class Menu : public Widget
 {
-public:
+public:  
   static Menu* create(Widget* parent, int id, PlayerCityPtr city, bool fitToScreen=false );
 
   // draw on screen
@@ -53,21 +53,26 @@ protected:
   class Impl;
   ScopedPtr< Impl > _d;
 
-  Menu( Widget* parent, int id, const Rect& rectangle );
-  virtual void _initializeButtons();
+  struct Config;
+
+  Menu( Widget* parent, int id, const Rect& rectangle, PlayerCityPtr city );
+  virtual void _updateButtons();
+  virtual void _initialize( const Config& config );
+  void _setChildGeometry(Widget* w, const Rect& r );
+  void _updateBuildOptions();
   void _createBuildMenu( int type, Widget* parent );
   PushButton* _addButton( int startPic, bool pushBtn, int yMul,
                           int id, bool haveSubmenu, int midPic,
-                          const std::string& tooltip="" );
+                          const std::string& tooltip="" ,
+                          const Rect& rect=Rect());
 };
 
 class ExtentMenu : public Menu
 {
 public:
-  static ExtentMenu* create( Widget* parent, int id, PlayerCityPtr city );
+  static ExtentMenu* create( Widget* parent, int id, PlayerCityPtr city, bool fitToScreen=false );
 
   virtual bool onEvent(const NEvent& event);
-
   virtual void draw( gfx::Engine& engine );
 
   void toggleOverlayMenuVisible();
@@ -90,8 +95,8 @@ signals public:
   Signal0<>& onMissionTargetsWindowShow();
 
 protected:
-  ExtentMenu( Widget* parent, int id, const Rect& rectangle );
-  virtual void _initializeButtons();
+  ExtentMenu(Widget* parent, int id, const Rect& rectangle , PlayerCityPtr city);
+  virtual void _updateButtons();
 };
 
 }//end namespace gui

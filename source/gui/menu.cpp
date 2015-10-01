@@ -35,6 +35,7 @@
 #include "overlays_menu.hpp"
 #include "core/foreach.hpp"
 #include "core/utils.hpp"
+#include "image.hpp"
 #include "core/variant_map.hpp"
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
@@ -54,6 +55,35 @@ namespace gui
 
 static const int REMOVE_TOOL_ID = 0xff00 + 1;
 static const int MAXIMIZE_ID = REMOVE_TOOL_ID + 1;
+
+struct Menu::Config
+{
+  typedef enum { smallMenu=0, bigMenu } MenuType;
+  Picture background, bottom;
+  int width;
+  float scale;
+  bool fitToScreen;
+
+  Config( Widget* parent, bool fit, const std::string& name, MenuType mode )
+   : fitToScreen( fit )
+  {
+    VariantMap config = config::load( name );
+
+    VARIANT_LOAD_PICTURE(bottom, config)
+    VARIANT_LOAD_PICTURE(background, config)
+
+    if( !background.isValid() )
+      background.load( ResourceGroup::panelBackground, mode == smallMenu ? 16 : 17 );
+
+    if( !bottom.isValid() )
+      bottom.load( ResourceGroup::panelBackground, mode == smallMenu ? 21 : 20 );
+
+    scale = 1;
+    if( fitToScreen )
+      scale = (parent->height() * 0.9f) / (float)background.height();
+    width = background.width() * scale;
+  }
+};
 
 class Menu::Impl
 {
@@ -111,7 +141,7 @@ public:
   PushButton* engineerButton;
   PushButton* cancelButton;
   PushButton* overlaysButton;
-  Label* middleLabel;
+  Image* middleLabel;
   OverlaysMenu* overlaysMenu; 
   float koeff;
   PlayerCityPtr city;
@@ -148,21 +178,21 @@ private:
   int _midIconId;
 };
 
-Menu::Menu( Widget* parent, int id, const Rect& rectangle )
+Menu::Menu(Widget* parent, int id, const Rect& rectangle , PlayerCityPtr city)
   : Widget( parent, id, rectangle ), _d( new Impl )
 {
   setupUI( ":/gui/shortmenu.gui" );
+  _d->city = city;
   _d->lastPressed = 0;
   _d->overlaysMenu = 0;
 }
 
-void Menu::_initializeButtons()
+void Menu::_updateButtons()
 {
   const bool haveSubMenu = true;
   _d->minimizeButton = _addButton( ResourceMenu::maximizeBtn, false, 0, MAXIMIZE_ID,
-                                   !haveSubMenu, ResourceMenu::emptyMidPicId, "show_bigpanel" );
-
-  _d->minimizeButton->setGeometry( Rect( Point( 6, 4 ), Size( 31, 20 ) ) );
+                                   !haveSubMenu, ResourceMenu::emptyMidPicId, "show_bigpanel",
+                                   Rect( Point( 6, 4 ), Size( 31, 20 ) ) );
 
   _d->houseButton = _addButton( ResourceMenu::houseBtnPicId, true, 0, object::house,
                                 !haveSubMenu, ResourceMenu::houseMidPicId, "housing" );
@@ -194,8 +224,36 @@ void Menu::_initializeButtons()
   CONNECT( _d->minimizeButton, onClicked(), this, Menu::minimize );
 }
 
+void Menu::_initialize( const Config& config )
+{
+  Impl& d = *_d.data();
+  d.koeff = config.scale;
+  d.bg.add( config.background, Rect( Point(0, 0), config.background.size() * config.scale ) );
+
+  unsigned int y = config.background.height() * config.scale;
+  while( y < parent()->height() )
+  {
+    d.bg.add( config.bottom, Rect( 0, y, config.width, y + config.bottom.height() * config.scale ) );
+    y += config.bottom.height() * config.scale - 5;
+  }
+}
+
+void Menu::_setChildGeometry( Widget* w, const Rect& r)
+{
+  if( !w )
+    return;
+
+  w->setGeometry( r * _d->koeff );
+}
+
+void Menu::_updateBuildOptions()
+{
+  _d->updateBuildingOptions();
+}
+
 PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul, 
-                              int id, bool haveSubmenu, int midPic, const std::string& ident )
+                              int id, bool haveSubmenu, int midPic,
+                              const std::string& ident, const Rect& rect )
 {
   Point offset( 1, 32 );
   int dy = 35;
@@ -207,13 +265,16 @@ PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul,
   {
     temp.setX( ceil( temp.x() * _d->koeff) );
     temp.setY( temp.y() * _d->koeff );
-    ret->setWidth( ret->width() * _d->koeff );
-    ret->setHeight( ret->height() * _d->koeff );
+    ret->setWidth( ceil( ret->width() * _d->koeff ) );
+    ret->setHeight( ceil( ret->height() * _d->koeff ) );
   }
   ret->setPosition( temp );
   ret->setTooltipText( _( "##extm_"+ident+"_tlp##" ) );
   ret->setSound( "extm_" + ident );
   ret->setMidPicId( midPic );
+
+  if( rect.width() > 0 )
+    _setChildGeometry( ret, rect );
 
   return ret;
 }
@@ -328,41 +389,15 @@ bool Menu::onEvent(const NEvent& event)
 
 Menu* Menu::create(Widget* parent, int id, PlayerCityPtr city, bool fitToScreen )
 {
-  VariantMap config = config::load( ":/menu.model" );
+  Config config( parent, fitToScreen, ":/menu.model", Config::smallMenu );
 
-  Picture background, bottom;
-  VARIANT_LOAD_PICTURE(bottom, config)
-  VARIANT_LOAD_PICTURE(background, config)
+  Menu* ret = new Menu( parent, id, Rect( 0, 0, config.width, parent->height() ), city );
 
-  if( !background.isValid() )
-    background.load( ResourceGroup::panelBackground, 16 );
+  ret->_initialize( config  );
+  ret->_updateButtons();
+  ret->_updateBuildOptions();
 
-  if( !bottom.isValid() )
-    bottom.load( ResourceGroup::panelBackground, 21 );
-
-  float scale = 1;
-  if( fitToScreen )
-    scale = (parent->height() * 0.9f) / (float)background.height();
-  int width = background.width() * scale;
-
-  Menu* ret = new Menu( parent, id, Rect( 0, 0, width, parent->height() ) );
-
-  Impl& d = *ret->_d.data();
-  d.city = city;
-  d.koeff = scale;
-  d.bg.add( background, Rect( Point(0, 0), background.size() * d.koeff ) );
-
-  unsigned int y = background.height() * d.koeff;
-  while( y < parent->height() )
-  {
-    d.bg.add( bottom, Rect( 0, y, width, y + bottom.height() * d.koeff ) );
-    y += bottom.height() * d.koeff - 5;
-  }
-
-  ret->_initializeButtons();
-  d.updateBuildingOptions();
-
-  CONNECT( city, onChangeBuildingOptions(), &d, Impl::updateBuildingOptions );
+  CONNECT( city, onChangeBuildingOptions(), ret, Menu::_updateBuildOptions );
 
   return ret;
 }
@@ -425,7 +460,7 @@ Signal0<>& Menu::onHide() { return _d->signal.onHide; }
 
 void Menu::Impl::initActionButton(PushButton* btn, const Point& pos, bool pushBtn )
 {
-  btn->setPosition( pos );
+  btn->setPosition( pos * koeff );
   btn->setIsPushButton( pushBtn );
   CONNECT( btn, onClickedEx(), this, Impl::playSound );
 }
@@ -458,48 +493,39 @@ void Menu::Impl::updateBuildingOptions()
   engineerButton->setEnabled( options.isGroupAvailable( development::engineering ));
 }
 
-ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city )
+ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city , bool fitToScreen)
 {
-  Picture bground( ResourceGroup::panelBackground, 17 );
+  fitToScreen = true;
+  Config config( parent, fitToScreen, ":/extmenu.model", Config::bigMenu );
 
-  ExtentMenu* ret = new ExtentMenu( parent, id, Rect( 0, 0, bground.width(), parent->height() ) );
-
-  Picture bottom( ResourceGroup::panelBackground, 20 );
-
-  Impl& d = *ret->_d.data();
-  d.bg.pics.clear();
-  d.koeff = 1;
+  ExtentMenu* ret = new ExtentMenu( parent, id, Rect( 0, 0, config.width, parent->height() ), city );
   ret->setID( Hash( CAESARIA_STR_A(ExtentMenu)) );
-  d.bg.pics.append( bground, Point( 0, 0 ) );
-  unsigned int y = bground.height();
-  while( y < parent->height() )
-  {
-    d.bg.pics.append( bottom, Point( 0, -y ) );
-    y += bottom.height() - 5;
-  }
 
-  d.city = city;
-  ret->_initializeButtons();
-  d.updateBuildingOptions();
+  ret->_initialize( config );
+  ret->_updateButtons();
+  ret->_updateBuildOptions();
 
-  CONNECT( city, onChangeBuildingOptions(), ret->_d.data(), Impl::updateBuildingOptions );
+  CONNECT( city, onChangeBuildingOptions(), ret, ExtentMenu::_updateBuildOptions );
 
   return ret;
 }
 
-ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle )
-    : Menu( p, id, rectangle )
+ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle, PlayerCityPtr city )
+    : Menu( p, id, rectangle, city )
 {
   setupUI( ":/gui/fullmenu.gui" );
+  _d->city = city;
 }
 
-void ExtentMenu::_initializeButtons()
+void ExtentMenu::_updateButtons()
 {
-  Menu::_initializeButtons();
+  Menu::_updateButtons();
 
   _d->minimizeButton->deleteLater();
-  _d->minimizeButton = _addButton( 97, false, 0, MAXIMIZE_ID, false, ResourceMenu::emptyMidPicId, "hide_bigpanel" );
-  _d->minimizeButton->setGeometry( Rect( Point( 127, 5 ), Size( 31, 20 ) ) );
+  _d->minimizeButton = _addButton( 97, false, 0, MAXIMIZE_ID, false, ResourceMenu::emptyMidPicId,
+                                   "hide_bigpanel" );
+  _setChildGeometry( _d->minimizeButton, Rect( Point( 127, 5 ), Size( 31, 20 ) ) );
+
   CONNECT( _d->minimizeButton, onClicked(), this, ExtentMenu::minimize );
 
   _d->initActionButton( _d->houseButton, Point( 13, 277 ), false );
@@ -517,41 +543,43 @@ void ExtentMenu::_initializeButtons()
 
   //header
   _d->senateButton = _addButton( 79, false, 0, -1, false, -1, "senate" );
-  _d->senateButton->setGeometry( Rect( Point( 7, 155 ), Size( 71, 23 ) ) );
+  _setChildGeometry( _d->senateButton, Rect( Point( 7, 155 ), Size( 71, 23 ) ) );
 
   _d->empireButton = _addButton( 82, false, 0, -1, false, -1, "empire" );
-  _d->empireButton->setGeometry( Rect( Point( 84, 155 ), Size( 71, 23 ) ) );
+  _setChildGeometry( _d->empireButton, Rect( Point( 84, 155 ), Size( 71, 23 ) ) );
 
   _d->missionButton = _addButton( 85, false, 0, -1, false, -1, "mission" );
-  _d->missionButton->setGeometry( Rect( Point( 7, 184 ), Size( 33, 22 ) ) );
+  _setChildGeometry( _d->missionButton, Rect( Point( 7, 184 ), Size( 33, 22 ) ) );
 
   _d->northButton = _addButton( 88, false, 0, -1, false, -1, "reorient_map_to_north" );
-  _d->northButton->setGeometry( Rect( Point( 46, 184 ), Size( 33, 22 ) ) );
+  _setChildGeometry( _d->northButton, Rect( Point( 46, 184 ), Size( 33, 22 ) ) );
 
   _d->rotateLeftButton = _addButton( 91, false, 0, -1, false, -1, "rotate_map_counter_clockwise" );
-  _d->rotateLeftButton->setGeometry( Rect( Point( 84, 184 ), Size( 33, 22 ) ) );
+  _setChildGeometry( _d->rotateLeftButton, Rect( Point( 84, 184 ), Size( 33, 22 ) ) );
 
   _d->rotateRightButton = _addButton( 94, false, 0, -1, false, -1, "rotate_map_clockwise" ) ;
-  _d->rotateRightButton->setGeometry( Rect( Point( 123, 184 ), Size( 33, 22 ) ) );
+  _setChildGeometry( _d->rotateRightButton, Rect( Point( 123, 184 ), Size( 33, 22 ) ) );
 
   _d->cancelButton = _addButton( 171, false, 0, -1, false, -1, "cancel" );
-  _d->cancelButton->setGeometry( Rect( Point( 13, 421 ), Size( 39, 22 ) ) );
+  _setChildGeometry( _d->cancelButton, Rect( Point( 13, 421 ), Size( 39, 22 ) ) );
   _d->cancelButton->setEnabled( false );
 
   _d->messageButton = _addButton( 115, false, 0, -1, false, -1, "message" );
-  _d->messageButton->setGeometry( Rect( Point( 63, 421 ), Size( 39, 22 ) ) );
+  _setChildGeometry( _d->messageButton, Rect( Point( 63, 421 ), Size( 39, 22 ) ) );
 
   _d->disasterButton = _addButton( 119, false, 0, -1, false, -1, "troubles" );
-  _d->disasterButton->setGeometry( Rect( Point( 113, 421 ), Size( 39, 22 ) ) );
+  _setChildGeometry( _d->disasterButton, Rect( Point( 113, 421 ), Size( 39, 22 ) ) );
   _d->disasterButton->setEnabled( false );
 
-  _d->middleLabel = new Label(this, Rect( Point( 7, 216 ), Size( 148, 52 )) );
-  _d->middleLabel->setBackgroundPicture( Picture( ResourceGroup::menuMiddleIcons, ResourceMenu::emptyMidPicId ) );
+  _d->middleLabel = new Image( this, Rect( 0, 0, 1, 1 ), Picture(), Image::fit );
+  _setChildGeometry( _d->middleLabel, Rect( Point( 7, 216 ), Size( 148, 52 )) );
+  _d->middleLabel->setPicture( Picture( ResourceGroup::menuMiddleIcons, ResourceMenu::emptyMidPicId ) );
 
   _d->overlaysMenu = new OverlaysMenu( parent(), Rect( 0, 0, 160, 1 ), -1 );
   _d->overlaysMenu->hide();
 
-  _d->overlaysButton = new PushButton( this, Rect( 4, 3, 122, 28 ), _("##ovrm_text##") );
+  _d->overlaysButton = new PushButton( this, Rect( 0, 0, 1, 1 ), _("##ovrm_text##") );
+  _setChildGeometry( _d->overlaysButton, Rect( 4, 3, 122, 28 ) );
   _d->overlaysButton->setTooltipText( _("##select_city_layer##") );
 
   CONNECT( _d->overlaysButton, onClicked(), this, ExtentMenu::toggleOverlayMenuVisible );
@@ -566,7 +594,7 @@ bool ExtentMenu::onEvent(const NEvent& event)
     if( btn )
     {
       int picId = btn->midPicId() > 0 ? btn->midPicId() : ResourceMenu::emptyMidPicId;
-      _d->middleLabel->setBackgroundPicture( Picture( ResourceGroup::menuMiddleIcons, picId ) );
+      _d->middleLabel->setPicture( Picture( ResourceGroup::menuMiddleIcons, picId ) );
     }
   }
 
