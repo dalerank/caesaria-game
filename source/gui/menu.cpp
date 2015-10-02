@@ -526,8 +526,6 @@ void ExtentMenu::_updateButtons()
                                    "hide_bigpanel" );
   _setChildGeometry( _d->minimizeButton, Rect( Point( 127, 5 ), Size( 31, 20 ) ) );
 
-  CONNECT( _d->minimizeButton, onClicked(), this, ExtentMenu::minimize );
-
   _d->initActionButton( _d->houseButton, Point( 13, 277 ), false );
   _d->initActionButton( _d->clearButton, Point( 63, 277 ), false );
   _d->initActionButton( _d->roadButton, Point( 113, 277 ), false );
@@ -582,6 +580,7 @@ void ExtentMenu::_updateButtons()
   _setChildGeometry( _d->overlaysButton, Rect( 4, 3, 122, 28 ) );
   _d->overlaysButton->setTooltipText( _("##select_city_layer##") );
 
+  CONNECT( _d->minimizeButton, onClicked(), this, ExtentMenu::minimize );
   CONNECT( _d->overlaysButton, onClicked(), this, ExtentMenu::toggleOverlayMenuVisible );
   CONNECT( _d->overlaysMenu, onSelectOverlayType(), this, ExtentMenu::changeOverlay );
 }

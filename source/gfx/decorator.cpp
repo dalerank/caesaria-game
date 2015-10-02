@@ -131,25 +131,42 @@ void Decorator::reverseYoffset(Pictures& stack)
     pic.setOffset( Point( pic.offset().x(), -pic.offset().y() ) );
 }
 
-void Decorator::drawPanel( Pictures& stack, const Rect& rectangle, int picId )
+void Decorator::drawPanel( Pictures& stack, const Rect& rectangle, int picId, Rects* rects )
 {
   // left side
-  Picture pic( ResourceGroup::panelBackground, picId);
+  Picture startpic( ResourceGroup::panelBackground, picId);
   if( !pic.isValid() )
     picId = 68;
 
-  stack.append( Picture( ResourceGroup::panelBackground, picId), rectangle.lefttop() );
+  float koeff = 1.f;
+  startpic.load( ResourceGroup::panelBackground, picId );
+  if( rects != nullptr )
+     koeff = rectangle.height() / (float)startpic;
+
+  int width = startpic.width() * koeff;
+
+  stack.append( startpic, rectangle.lefttop() );
+  if( rects != nullptr )
+    rects->push_back( Rect( rectangle.lefttop(), startpic.size() * koeff ) );
 
   // draws the inside
   Picture centerPic( ResourceGroup::panelBackground, picId+1);
-  for (int i = 0; i<(rectangle.width()/16-1); ++i)
+  for (int i = 0; i<(rectangle.width()/width-1); ++i)
   {
-    stack.append( centerPic, rectangle.lefttop() + Point( 16+16*i, 0 ) );
+    stack.append( centerPic, rectangle.lefttop() + Point( (i+1)*width, 0 ) );
+    if( rects != nullptr )
+      rects->push_back( Rect( rectangle.lefttop() + Point( (i+1)*width, 0 ),
+                              centerPic.size() * koeff ) );
   }
 
   // right side
-  stack.append( Picture( ResourceGroup::panelBackground, picId+2),
-                rectangle.lefttop() + Point( rectangle.width()-16, 0) );
+  Picture endpic( ResourceGroup::panelBackground, picId+2);
+  stack.append( endpic, rectangle.lefttop() + Point( rectangle.width()-width, 0) );
+  if( rects != nullptr )
+  {
+    rects->push_back( Rect( rectangle.lefttop() + Point( rectangle.width()-width, 0),
+                            endpic.size() * koeff ) );
+  }
 }
 
 void Decorator::draw( Picture& dstpic, const Rect& rectangle, Mode mode, bool useAlpha, bool updateTexture )
@@ -204,14 +221,14 @@ void Decorator::draw( Picture& dstpic, const Rect& rectangle, Mode mode, bool us
     dstpic.unlock();
 }
 
-void Decorator::draw( Pictures& stack, const Rect& rectangle, Decorator::Mode mode, bool negY )
+void Decorator::draw( Pictures& stack, const Rect& rectangle, Decorator::Mode mode, Rects* rects, bool negY )
 {
   switch( mode )
   {
   case whiteArea: drawArea( stack, rectangle, 348, 10, 12 ); break;
   case blackArea: drawArea( stack, rectangle, 487, 5, 7 ); break;
   case greyPanel: drawPanel( stack, rectangle, 25 ); break;
-  case lightgreyPanel: drawPanel( stack, rectangle, 22 ); break;
+  case lightgreyPanel: drawPanel( stack, rectangle, 22, rects ); break;
   case greyPanelBig: drawPanel( stack, rectangle, 631 ); break;
   case lightgreyPanelBig: drawPanel( stack, rectangle, 634 ); break;
   case greyPanelSmall: drawPanel( stack, rectangle, 68 ); break;
