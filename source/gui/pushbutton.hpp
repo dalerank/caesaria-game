@@ -32,7 +32,7 @@ class PushButton : public Widget
 public:
   typedef enum { greyBorderLine, greyBorderLineSmall, whiteBorderUp,
                  blackBorderUp, noBackground, greyBorderLineBig,
-                 flatBorderLine } BackgroundStyle;
+                 flatBorderLine, greyBorderLineFit } BackgroundStyle;
 
   PushButton( Widget* );
 

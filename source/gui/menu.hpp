@@ -78,6 +78,7 @@ public:
   void toggleOverlayMenuVisible();
   void resolveUndoChange( bool enabled );
   void setAlarmEnabled( bool enabled );
+  Rect getMinimapRect() const;
 
 slots public:
   void changeOverlay( int ovType );

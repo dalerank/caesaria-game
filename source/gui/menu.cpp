@@ -495,7 +495,6 @@ void Menu::Impl::updateBuildingOptions()
 
 ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city , bool fitToScreen)
 {
-  fitToScreen = true;
   Config config( parent, fitToScreen, ":/extmenu.model", Config::bigMenu );
 
   ExtentMenu* ret = new ExtentMenu( parent, id, Rect( 0, 0, config.width, parent->height() ), city );
@@ -576,7 +575,7 @@ void ExtentMenu::_updateButtons()
   _d->overlaysMenu = new OverlaysMenu( parent(), Rect( 0, 0, 160, 1 ), -1 );
   _d->overlaysMenu->hide();
 
-  _d->overlaysButton = new PushButton( this, Rect( 0, 0, 1, 1 ), _("##ovrm_text##") );
+  _d->overlaysButton = new PushButton( this, Rect( 0, 0, 1, 1 ), _("##ovrm_text##"), -1, false, PushButton::greyBorderLineFit );
   _setChildGeometry( _d->overlaysButton, Rect( 4, 3, 122, 28 ) );
   _d->overlaysButton->setTooltipText( _("##select_city_layer##") );
 
@@ -648,6 +647,12 @@ void ExtentMenu::setAlarmEnabled( bool enabled )
   }
 
   _d->disasterButton->setEnabled( enabled );
+}
+
+Rect ExtentMenu::getMinimapRect() const
+{
+  Rect r( Point( 8, 35), Size( 144, 110 ) );
+  return r * _d->koeff;
 }
 
 Signal1<int>& ExtentMenu::onSelectOverlayType() {  return _d->overlaysMenu->onSelectOverlayType(); }

@@ -206,13 +206,12 @@ void Level::Impl::initMainUI()
   menu->setPosition( Point( ui.vsize().width() - rightPanel->width(),
                             topMenu->height() ) );
 
-  extMenu = ExtentMenu::create( ui.rootWidget(), -1, city );
+  extMenu = ExtentMenu::create( ui.rootWidget(), -1, city, fitToHeidht );
   extMenu->setPosition( Point( ui.vsize().width() - extMenu->width() - rightPanel->width(),
                                topMenu->height() ) );
+  Rect minimapRect = extMenu->getMinimapRect();
 
-  mmap = new Minimap( extMenu, Rect( Point( 8, 35), Size( 144, 110 ) ),
-                      city,
-                      *renderer.camera() );
+  mmap = new Minimap( extMenu, minimapRect, city, *renderer.camera() );
 
   WindowMessageStack::create( ui.rootWidget() );
 

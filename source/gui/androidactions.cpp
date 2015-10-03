@@ -109,10 +109,10 @@ void ActionsHandler::assignTo(ActionsBar* parent, scene::Base* scene )
   if( androidBar && scene )
   {
     ActionsHandler* handler = new ActionsHandler( androidBar, scene );
-    CONNECT( androidBar, onRequestTileHelp(), handler,      ActionsHandler::_showTileHelp )
-    CONNECT( androidBar, onEscapeClicked(),   handler,      ActionsHandler::_resolveEscapeButton )
-    CONNECT( androidBar, onEnterClicked(),    handler,     ActionsHandler::_resolveEnterButton  )
-    CONNECT( androidBar, onRequestMenu(),     handler,     ActionsHandler::_showIngameMenu      )
+    CONNECT( androidBar, onRequestTileHelp(), handler,         ActionsHandler::_showTileHelp )
+    CONNECT( androidBar, onEscapeClicked(),   handler,         ActionsHandler::_resolveEscapeButton )
+    CONNECT( androidBar, onEnterClicked(),    handler,         ActionsHandler::_resolveEnterButton  )
+    CONNECT( androidBar, onRequestMenu(),     handler,         ActionsHandler::_showIngameMenu      )
     CONNECT( androidBar, onChangeZoom(),      scene->camera(), gfx::Camera::changeZoom )
   }
 }

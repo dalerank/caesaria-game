@@ -36,7 +36,8 @@ namespace gui
 class Minimap : public Widget
 {
 public:
-  Minimap(Widget* parent, Rect rect, PlayerCityPtr city, const gfx::Camera& camera );
+  Minimap( Widget* parent, const Rect& rect, PlayerCityPtr city,
+           const gfx::Camera& camera, const Size& size=Size() );
 
   void setCenter( Point pos );
 

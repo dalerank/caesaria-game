@@ -218,14 +218,14 @@ void Label::_updateBackground(Engine& painter, bool& useAlpha4Text )
     Decorator::draw( _d->textPicture, r, Decorator::lineWhiteBorder );
   break;
 
-  case bgWhite: Decorator::draw( pics, r, Decorator::whiteArea, Decorator::normalY ); break;
-  case bgBlack: Decorator::draw( pics, r, Decorator::blackArea, Decorator::normalY  ); break;
-  case bgBrown: Decorator::draw( pics, r, Decorator::brownBorder, Decorator::normalY  );  break;
-  case bgSmBrown: Decorator::draw( pics, r, Decorator::brownPanelSmall, Decorator::normalY  ); break;
-  case bgWhiteFrame: Decorator::draw( pics, r, Decorator::whiteFrame, Decorator::normalY  ); break;
-  case bgBlackFrame: Decorator::draw( pics, r, Decorator::blackFrame, Decorator::normalY  ); break;
+  case bgWhite: Decorator::draw( pics, r, Decorator::whiteArea, nullptr, Decorator::normalY ); break;
+  case bgBlack: Decorator::draw( pics, r, Decorator::blackArea, nullptr, Decorator::normalY  ); break;
+  case bgBrown: Decorator::draw( pics, r, Decorator::brownBorder, nullptr, Decorator::normalY  );  break;
+  case bgSmBrown: Decorator::draw( pics, r, Decorator::brownPanelSmall, nullptr, Decorator::normalY  ); break;
+  case bgWhiteFrame: Decorator::draw( pics, r, Decorator::whiteFrame, nullptr, Decorator::normalY  ); break;
+  case bgBlackFrame: Decorator::draw( pics, r, Decorator::blackFrame, nullptr, Decorator::normalY  ); break;
   case bgNone:  break;
-  case bgWhiteBorderA: Decorator::draw( pics, r, Decorator::whiteBorderA, Decorator::normalY  ); break;
+  case bgWhiteBorderA: Decorator::draw( pics, r, Decorator::whiteBorderA, nullptr, Decorator::normalY  ); break;
   }
 
   bool batchOk = _d->background.load( pics, absoluteRect().lefttop() );

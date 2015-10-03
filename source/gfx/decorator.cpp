@@ -135,15 +135,17 @@ void Decorator::drawPanel( Pictures& stack, const Rect& rectangle, int picId, Re
 {
   // left side
   Picture startpic( ResourceGroup::panelBackground, picId);
-  if( !pic.isValid() )
+  if( !startpic.isValid() )
     picId = 68;
 
   float koeff = 1.f;
   startpic.load( ResourceGroup::panelBackground, picId );
   if( rects != nullptr )
-     koeff = rectangle.height() / (float)startpic;
+     koeff = rectangle.height() / (float)startpic.height();
 
   int width = startpic.width() * koeff;
+  if( width == 0 )
+    width = 1;
 
   stack.append( startpic, rectangle.lefttop() );
   if( rects != nullptr )
@@ -155,8 +157,10 @@ void Decorator::drawPanel( Pictures& stack, const Rect& rectangle, int picId, Re
   {
     stack.append( centerPic, rectangle.lefttop() + Point( (i+1)*width, 0 ) );
     if( rects != nullptr )
+    {
       rects->push_back( Rect( rectangle.lefttop() + Point( (i+1)*width, 0 ),
                               centerPic.size() * koeff ) );
+    }
   }
 
   // right side
@@ -227,14 +231,14 @@ void Decorator::draw( Pictures& stack, const Rect& rectangle, Decorator::Mode mo
   {
   case whiteArea: drawArea( stack, rectangle, 348, 10, 12 ); break;
   case blackArea: drawArea( stack, rectangle, 487, 5, 7 ); break;
-  case greyPanel: drawPanel( stack, rectangle, 25 ); break;
+  case greyPanel: drawPanel( stack, rectangle, 25, rects ); break;
   case lightgreyPanel: drawPanel( stack, rectangle, 22, rects ); break;
-  case greyPanelBig: drawPanel( stack, rectangle, 631 ); break;
-  case lightgreyPanelBig: drawPanel( stack, rectangle, 634 ); break;
-  case greyPanelSmall: drawPanel( stack, rectangle, 68 ); break;
-  case brownPanelSmall: drawPanel( stack, rectangle, 65 ); break;
-  case greenPanelSmall: drawPanel( stack, rectangle, 62); break;
-  case redPanelSmall: drawPanel( stack, rectangle, 1165 ); break;
+  case greyPanelBig: drawPanel( stack, rectangle, 631, rects ); break;
+  case lightgreyPanelBig: drawPanel( stack, rectangle, 634, rects ); break;
+  case greyPanelSmall: drawPanel( stack, rectangle, 68, rects ); break;
+  case brownPanelSmall: drawPanel( stack, rectangle, 65, rects ); break;
+  case greenPanelSmall: drawPanel( stack, rectangle, 62, rects ); break;
+  case redPanelSmall: drawPanel( stack, rectangle, 1165, rects ); break;
   case whiteBorder: drawBorder( stack, rectangle, 336, 468, 347, 358, 10, 12, 335, 467, 346, 478 );  break;
   case blackBorder: drawBorder( stack, rectangle, 480, 522, 486, 492, 5, 7, 479, 521, 485, 527 ); break;
   case brownBorder: drawBorder(stack, rectangle, 555 ); break;

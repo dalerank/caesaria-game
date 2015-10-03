@@ -191,6 +191,7 @@ void PushButton::_updateBackground( ElementState state )
   // draw button background
   Decorator::Mode mode = Decorator::pure;
   Pictures pics;
+  bool fit = false;
   if( !_d->buttonStates[ state ].background.isValid() )
   {    
     switch( _d->bg.style )
@@ -212,10 +213,12 @@ void PushButton::_updateBackground( ElementState state )
     break;
 
     case greyBorderLine:
+    case greyBorderLineFit:
     {
       mode = (state == stNormal || state == stDisabled)
                                         ? Decorator::lightgreyPanel
                                         : Decorator::greyPanel;
+      fit = (_d->bg.style == greyBorderLineFit);
     }
     break;
 
@@ -246,9 +249,19 @@ void PushButton::_updateBackground( ElementState state )
     }
   }
 
-  Decorator::draw( pics, Rect( Point( 0, 0 ), size() ), mode, nullptr, Decorator::normalY );
+  bool batchOk;
   _d->buttonStates[ state ].style.destroy();
-  bool batchOk = _d->buttonStates[ state ].style.load( pics, absoluteRect().lefttop() );
+  if( fit )
+  {
+    Rects rects;
+    Decorator::draw( pics, absoluteRect(), mode, &rects, Decorator::normalY );
+    batchOk = _d->buttonStates[ state ].style.load( pics, rects );
+  }
+  else
+  {
+    Decorator::draw( pics, Rect( Point( 0, 0 ), size() ), mode, nullptr, Decorator::normalY );
+    batchOk = _d->buttonStates[ state ].style.load( pics, absoluteRect().lefttop() );
+  }
 
   if( !batchOk )
   {

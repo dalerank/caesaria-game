@@ -54,7 +54,7 @@ public:
   {
     bool errorsOnBatch = false;
     state.destroy();
-    Decorator::draw( images, area, style, negativeY  );
+    Decorator::draw( images, area, style, nullptr, negativeY  );
     errorsOnBatch = !state.load( images, lefttop );
 
     if( errorsOnBatch )
