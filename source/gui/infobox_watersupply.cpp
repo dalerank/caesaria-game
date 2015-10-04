@@ -47,8 +47,8 @@ AboutFontain::AboutFontain(Widget* parent, PlayerCityPtr city, const Tile& tile)
   setupUI( ":/gui/infoboxfountain.gui" );
   setTitle( _("##fountain##") );
 
-  _lbTextRef()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
-  _lbTextRef()->setWordwrap( true );
+  _lbText()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
+  _lbText()->setWordwrap( true );
 
   FountainPtr fountain = tile.overlay<Fountain>();
 
@@ -75,7 +75,7 @@ AboutFontain::AboutFontain(Widget* parent, PlayerCityPtr city, const Tile& tile)
     }
   }
 
-  _lbTextRef()->setText( _(text) );
+  _lbText()->setText( _(text) );
 }
 
 AboutFontain::~AboutFontain(){}
@@ -90,8 +90,8 @@ AboutReservoir::AboutReservoir(Widget* parent, PlayerCityPtr city, const Tile& t
 {
   setTitle( _("##reservoir##") );
 
-  _lbTextRef()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
-  _lbTextRef()->setWordwrap( true );
+  _lbText()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
+  _lbText()->setWordwrap( true );
 
   ReservoirPtr reservoir = tile.overlay<Reservoir>();
   setBase( reservoir );
@@ -104,7 +104,7 @@ AboutReservoir::AboutReservoir(Widget* parent, PlayerCityPtr city, const Tile& t
               : "##reservoir_no_water##";
   }
 
-  _lbTextRef()->setText( _(text) );
+  _lbText()->setText( _(text) );
 }
 
 AboutReservoir::~AboutReservoir() {}
@@ -119,8 +119,8 @@ AboutWell::AboutWell(Widget* parent, PlayerCityPtr city, const Tile& tile)
 {
   setTitle( _("##well##") );
 
-  _lbTextRef()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
-  _lbTextRef()->setWordwrap( true );
+  _lbText()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
+  _lbText()->setWordwrap( true );
 
   WellPtr well = tile.overlay<Well>();
   setBase( well );
@@ -169,7 +169,7 @@ AboutWell::AboutWell(Widget* parent, PlayerCityPtr city, const Tile& tile)
     }
   }
 
-  _lbTextRef()->setText( _(text) );
+  _lbText()->setText( _(text) );
 }
 
 AboutWell::~AboutWell() {}

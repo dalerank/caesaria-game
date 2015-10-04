@@ -131,7 +131,7 @@ public:
 Farm::Farm(const good::Product outGood, const object::Type farmType )
   : Factory( good::none, outGood, farmType, Size(3) ), _d( new Impl )
 {
-  outStockRef().setCapacity( 100 );
+  outStock().setCapacity( 100 );
 
   _d->lastProgress = 0;
   _d->sublocs << TilePos( 0, 0) << TilePos( 2, 2)

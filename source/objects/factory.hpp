@@ -30,11 +30,11 @@ public:
            const object::Type type, const Size& size );
   virtual ~Factory();
 
-  good::Stock& inStockRef();
-  const good::Stock& inStockRef() const;
+  good::Stock& inStock();
+  const good::Stock& inStock() const;
 
-  good::Stock& outStockRef();
-  const good::Stock& outStockRef() const;
+  good::Stock& outStock();
+  const good::Stock& outStock() const;
 
   good::Product consumeGoodType() const;
   good::Product produceGoodType() const;
