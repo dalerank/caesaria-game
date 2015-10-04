@@ -130,6 +130,7 @@ enum {
   crash_favor,
   add_scribe_messages,
   send_venus_smallcurse,
+  send_neptune_wrath,
   send_mars_spirit,
   run_script,
   show_fest,
@@ -228,6 +229,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( divinity, send_mars_wrath )
   ADD_DEBUG_EVENT( divinity, send_mars_spirit )
   ADD_DEBUG_EVENT( divinity, send_venus_wrath )
+  ADD_DEBUG_EVENT( divinity, send_neptune_wrath )
   ADD_DEBUG_EVENT( divinity, send_venus_smallcurse )
 
   ADD_DEBUG_EVENT( money, add_1000_dn )
@@ -396,6 +398,10 @@ void DebugHandler::Impl::handleEvent(int event)
   {
   case send_mars_wrath:
     religion::rome::Pantheon::mars()->updateRelation( religion::debug::doWrath, game->city() );
+  break;
+
+  case send_neptune_wrath:
+    religion::rome::Pantheon::neptune()->updateRelation( religion::debug::doWrath, game->city() );
   break;
 
   case add_1000_dn:
