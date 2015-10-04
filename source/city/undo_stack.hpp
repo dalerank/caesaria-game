@@ -38,7 +38,7 @@ public:
 
   void init( PlayerCityPtr city );
 
-  void build(object::Type what, TilePos where , int money);
+  void build(object::Type what, TilePos where, int money);
   void destroy(object::Type what, TilePos where, int money );
 
   void finished();

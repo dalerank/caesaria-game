@@ -18,8 +18,11 @@
 
 #include "undo_stack.hpp"
 #include "city/city.hpp"
+#include "core/logger.hpp"
+#include "game/gamedate.hpp"
 #include "events/clearland.hpp"
 #include "events/fundissue.hpp"
+#include "core/timer.hpp"
 #include "city/economy.hpp"
 #include "objects/metadata.hpp"
 #include "events/build.hpp"
@@ -28,6 +31,8 @@ namespace undo
 {
 
 PREDEFINE_CLASS_SMARTLIST(UndoAction,List)
+
+const int UndoTimerId = Hash(CAESARIA_STR_EXT(UStack));
 
 class UndoAction : public ReferenceCounted
 {
@@ -88,6 +93,8 @@ public:
   Signal1<bool> onUndoChangeSignal;
 
   void checkFinished();
+  void updateTimer();
+  void clear();
 };
 
 UStack::UStack() : _d( new Impl ) {}
@@ -125,6 +132,8 @@ void UStack::finished()
   _d->needClear = true;
 }
 
+void UStack::clear() { _d->clear(); }
+
 void UStack::undo()
 {
   for( auto action : _d->actions )
@@ -145,6 +154,19 @@ void UStack::Impl::checkFinished()
     actions.clear();
 
   needClear = false;
+}
+
+void UStack::Impl::updateTimer()
+{
+  Timer::destroy( UndoTimerId );
+  auto timer = Timer::create( game::Date::days2ticks( 15 ), Timer::singleShot, UndoTimerId );
+  CONNECT( timer, onTimeout(), this, Impl::clear );
+}
+
+void UStack::Impl::clear()
+{
+  actions.clear();
+  emit onUndoChangeSignal( false );
 }
 
 }//end namespace undo
