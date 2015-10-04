@@ -55,7 +55,7 @@ static std::map<good::Product, PicId> defaultsPicId = {
   { pottery  , { pottery,   25, 331 }},
   { denaries , { denaries,  26, 332 }},
   { prettyWine,{ prettyWine,17, 323 }},
-  { fish     , { fish,      27,   0 }}
+  { fish     , { fish,      27, 333 }}
 };
 
 class Helper::Impl : public EnumsHelper<good::Product>

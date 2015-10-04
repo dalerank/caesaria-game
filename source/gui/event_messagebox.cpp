@@ -37,11 +37,11 @@ AboutEvent::AboutEvent(Widget* parent, const std::string& title,
 
   setCenter( parent->center() );
 
-  _lbTextRef()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
-  _lbTextRef()->setWordwrap( true );
-  _lbTextRef()->setText( message );
+  _lbText()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
+  _lbText()->setWordwrap( true );
+  _lbText()->setText( message );
 
-  Rect rect = _lbTextRef()->relativeRect();
+  Rect rect = _lbText()->relativeRect();
   rect._bottomright = Point( rect.width() / 2, rect.top() + 30 );
 
   Label* lbTime = new Label( this, rect, utils::date2str( time, true ) );
@@ -54,12 +54,12 @@ AboutEvent::AboutEvent(Widget* parent, const std::string& title,
     lbAdditional->setTextOffset( Point( 30, 0 ) );
   }
 
-  _lbTextRef()->setTop( _lbTextRef()->top() + 30 );
+  _lbText()->setTop( _lbText()->top() + 30 );
 
   if( gtype != good::none )
   {
-    Rect rect = _lbTextRef()->relativeRect();
-    _lbTextRef()->move( Point( 0, 30 ) );
+    Rect rect = _lbText()->relativeRect();
+    _lbText()->move( Point( 0, 30 ) );
 
     rect.setBottom( rect.top() + 30 );
     rect.setLeft( rect.left() + 40 );

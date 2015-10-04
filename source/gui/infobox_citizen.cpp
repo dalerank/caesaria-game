@@ -149,8 +149,8 @@ void AboutPeople::_setWalker( WalkerPtr wlk )
   if( !thinks.empty() )
   {
     std::string sound = thinks.substr( 2, thinks.size() - 4 );
-    events::GameEventPtr e = events::PlaySound::create( sound, 100 );
-    e->dispatch();
+    auto event = events::PlaySound::create( sound, 100 );
+    event->dispatch();
   }
 
   _updateTitle();
@@ -171,12 +171,12 @@ void AboutPeople::_updateNeighbors()
 
   _d->screenshots.clear();
 
-  gfx::TilesArray tiles = _d->city->tilemap().getNeighbors( _d->object->pos(), gfx::Tilemap::AllNeighbors);
+  auto tiles = _d->city->tilemap().getNeighbors( _d->object->pos(), gfx::Tilemap::AllNeighbors);
   Rect lbRect( 25, 45, 25 + 52, 45 + 52 );
   Point lbOffset( 60, 0 );
-  foreach( itTile, tiles )
+  for( auto tile : tiles )
   {
-    const WalkerList& tileWalkers = _d->city->walkers( (*itTile)->pos() );
+    auto& tileWalkers = _d->city->walkers( tile->pos() );
     if( !tileWalkers.empty() )
     {
       //mini screenshot from citizen pos need here
@@ -200,6 +200,7 @@ void AboutPeople::_init( PlayerCityPtr city, const TilePos& pos, const std::stri
 
   _d->lbName = new Label( this, Rect( 90, 108, width() - 30, 108 + 20) );
   _d->lbName->setFont( Font::create( FONT_2 ));
+
   _d->lbType = new Label( this, Rect( 90, 128, width() - 30, 128 + 20) );
   _d->lbType->setFont( Font::create( FONT_1 ));
 
@@ -314,8 +315,8 @@ void AboutPeople::Impl::moveCamera2base()
 {
   if( baseBuildingPos != gfx::tilemap::invalidLocation() )
   {
-    events::GameEventPtr e = events::MoveCamera::create( baseBuildingPos );
-    e->dispatch();
+    auto event = events::MoveCamera::create( baseBuildingPos );
+    event->dispatch();
   }
 }
 
@@ -323,8 +324,8 @@ void AboutPeople::Impl::moveCamera2dst()
 {
   if( destinationPos != gfx::tilemap::invalidLocation() )
   {
-    events::GameEventPtr e = events::MoveCamera::create( destinationPos );
-    e->dispatch();
+    auto event = events::MoveCamera::create( destinationPos );
+    event->dispatch();
   }
 
   if( object.isValid() )

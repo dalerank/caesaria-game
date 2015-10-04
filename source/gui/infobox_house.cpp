@@ -110,7 +110,7 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
   setTitle( _(_house->levelName()) );
 
-  _btnExitRef()->setTooltipText( _("##advanced_houseinfo##") );
+  _btnExit()->setTooltipText( _("##advanced_houseinfo##") );
 
   Label* houseInfo = new Label( this, Rect( 30, 40, width() - 30, 40 + 100 ), "" );
   if( houseInfo )

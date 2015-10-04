@@ -78,7 +78,7 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
   }
 
   std::string title = MetaDataHolder::findPrettyName( rawmb->type() );
-  _lbTitleRef()->setText( _(title) );
+  _lbTitle()->setText( _(title) );
 
   std::string text = rawmb->workersProblemDesc();
   std::string cartInfo = rawmb->cartStateDesc();

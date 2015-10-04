@@ -178,11 +178,11 @@ void Infobox::setupUI(const vfs::Path& filename)
   Window::setupUI( filename );
 }
 
-Label* Infobox::_lbTitleRef(){  return _d->lbTitle;}
+Label* Infobox::_lbTitle(){  return _d->lbTitle;}
 
-Label* Infobox::_lbTextRef(){ return _d->lbText; }
+Label* Infobox::_lbText(){ return _d->lbText; }
 Label* Infobox::_lbBlackFrame(){  return _d->lbBlackFrame; }
-PushButton*Infobox::_btnExitRef() { return _d->btnExit; }
+PushButton*Infobox::_btnExit() { return _d->btnExit; }
 
 void Infobox::_updateWorkersLabel(const Point &pos, int picId, int need, int have )
 {
