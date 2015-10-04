@@ -701,7 +701,7 @@ void Empire::Impl::takeTaxes()
       {
         int minimumExpireTax =econ::calcTaxValue( city->states().population, defaultCityTaxKoeff ) + minimumCityTax;
         empireTax = math::clamp( profit / cityTaxLimiter, minimumExpireTax, 9999 );
-        emperor.citySentTax( city->name(), empireTax );
+        //emperor.citySentTax( city->name(), empireTax );
       }
 
       bool cityTooYoung4tax = city->states().age <= econ::cityAge4tax;
