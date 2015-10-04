@@ -102,7 +102,7 @@ void AboutWorkingBuilding::_showAdvInfo()
                                                   (int)_working->state( pr::fire ),
                                                   timeText.c_str() );
 
-  dialog::Dialog* dialog = dialog::Information( ui(), "Information", workerState );
+  auto dialog = dialog::Information( ui(), "Information", workerState );
   dialog->setCenter( ui()->rootWidget()->center() );
 }
 

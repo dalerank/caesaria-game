@@ -34,7 +34,7 @@ AboutConstruction::AboutConstruction( Widget* parent, Rect rect, Rect blackArea 
   : Infobox( parent, rect, blackArea )
 {
   setupUI( ":/gui/infoboxconstr.gui" );
-  _btnToggleWorking = 0;
+  _btnToggleWorking = nullptr;
 }
 
 AboutConstruction::~AboutConstruction() {}
@@ -63,7 +63,7 @@ bool AboutConstruction::onEvent(const NEvent& event)
   return Infobox::onEvent( event );
 }
 
-PushButton* AboutConstruction::_btnToggleWorkingRef() { return _btnToggleWorking; }
+PushButton* AboutConstruction::_buttonToggleWorking() { return _btnToggleWorking; }
 
 void AboutConstruction::_setWorkingVisible(bool show)
 {
@@ -110,8 +110,8 @@ void AboutConstruction::_baseAssigned()
   if( base().isValid() )
   {
     std::string typeName = object::toString( base()->type() );
-    events::GameEventPtr e = events::PlaySound::create( "bmsel_"+typeName, 1, 100, audio::infobox, true );
-    e->dispatch();
+    auto event = events::PlaySound::create( "bmsel_"+typeName, 1, 100, audio::infobox, true );
+    event->dispatch();
   }
 }
 

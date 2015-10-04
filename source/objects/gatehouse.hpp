@@ -23,6 +23,7 @@
 class Gatehouse : public Building
 {
 public:
+  typedef enum { autoToggle, closed, opened } Mode;
   Gatehouse();
 
   virtual void save(VariantMap &stream) const;
@@ -31,14 +32,16 @@ public:
   virtual bool isWalkable() const;
   virtual void destroy();
   virtual void burn();
+  virtual void timeStep(const unsigned long time);
+
+  void setMode( Mode mode );
+  Mode mode() const;
 
   virtual gfx::Renderer::PassQueue passQueue() const;
   virtual const gfx::Pictures& pictures(gfx::Renderer::Pass pass) const;
 
   virtual void initTerrain(gfx::Tile &terrain);
-
   virtual bool canBuild(const city::AreaInfo& areaInfo) const;
-
   virtual bool build(const city::AreaInfo &info);
 private:
   bool _update( const city::AreaInfo& areaInfo );

@@ -15,30 +15,33 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_TILEAREA_H_INCLUDED__
-#define __CAESARIA_TILEAREA_H_INCLUDED__
+#ifndef _CAESARIA_INFOBOX_GATEHOUSE_H_INCLUDE_
+#define _CAESARIA_INFOBOX_GATEHOUSE_H_INCLUDE_
 
-#include "tilesarray.hpp"
+#include "infobox_construction.hpp"
 
-namespace gfx
+namespace gui
 {
 
-class Tilemap;
+namespace infobox
+{
 
-class TilesArea : public TilesArray
+class AboutGatehouse : public AboutConstruction
 {
 public:
-  TilesArea();  
-  TilesArea( const Tilemap& tmap, const TilePos& leftup, const TilePos& rightdown );
-  TilesArea( const Tilemap& tmap, int distance, const TilePos& center );
-  TilesArea( const Tilemap& tmap, int distance, OverlayPtr overlay );
-  TilesArea( const Tilemap& tmap, const TilePos& leftup, const Size& size );
+  AboutGatehouse( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
+  virtual ~AboutGatehouse();
 
-  void add(const Tilemap& tmap, const TilePos& center, int distance );
+private:
+  virtual void _showHelp();
+  virtual void _resolveToggleWorking();
+  void _updateModeText();
 
-  TilesArea& operator=(const TilesArray& other);
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
-} //end namespace gfx
+}//end namespace infobox
 
-#endif //__CAESARIA_TILEAREA_H_INCLUDED__
+}//end namespace gui
+#endif //_CAESARIA_INFOBOX_GATEHOUSE_H_INCLUDE_
