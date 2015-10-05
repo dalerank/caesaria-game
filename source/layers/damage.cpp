@@ -47,9 +47,6 @@ void Damage::drawTile(Engine& engine, Tile& tile, const Point& offset)
 
   if( tile.overlay().isNull() )
   {
-    //draw background
-    //engine.draw( tile.picture(), screenPos );
-
     drawPass( engine, tile, offset, Renderer::ground );
     drawPass( engine, tile, offset, Renderer::groundAnimation );
   }
@@ -65,9 +62,9 @@ void Damage::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( overlay->type() == object::house )
     {
-      HousePtr house = ptr_cast<House>( overlay );
+      auto house = overlay.as<House>();
       damageLevel = (int)house->state( pr::damage );
-      needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
+      needDrawAnimations = (house->level() <= HouseLevel::hovel) && house->habitants().empty();
 
       if( !needDrawAnimations )
       {
@@ -76,7 +73,7 @@ void Damage::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else
     {
-      BuildingPtr building = ptr_cast<Building>( overlay );
+      auto building = overlay.as<Building>();
       if( building.isValid() )
       {
         damageLevel = (int)building->state( pr::damage );
@@ -92,11 +89,11 @@ void Damage::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( damageLevel >= 0 )
     {
-      _addColumn( screenPos, damageLevel );
+      drawColumn( engine, screenPos, damageLevel );
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 LayerPtr Damage::create( Camera& camera, PlayerCityPtr city)
@@ -119,7 +116,7 @@ void Damage::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        ConstructionPtr construction = ptr_cast<Construction>( tile->overlay() );
+        auto construction = tile->overlay<Construction>();
         if( construction.isValid() )
         {
           int damageLevel = math::clamp<int>( construction->state( pr::damage ) / maxDamageLevel, 0, maxDamageLevel-1 );

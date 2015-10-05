@@ -62,11 +62,6 @@
     govt : "enabled"
     engineering : "enabled"
     security : "enabled"
-    check_desirability : false
-                   
-    buildings : 
-    { 
-      well : true
-    }
+    check_desirability : false                  
   }
 }

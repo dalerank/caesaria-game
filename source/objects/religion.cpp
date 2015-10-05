@@ -16,7 +16,6 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "religion.hpp"
-#include "city/helper.hpp"
 #include "religion/pantheon.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/position.hpp"
@@ -77,8 +76,7 @@ void Temple::_changeAnimationState(bool value)
 
   if( !value )
   {
-    int index=0;
-    foreach( it, _td->fires )
+    for( int index=0; index < (int)_td->fires.size(); index++ )
       _fgPicture( 1 + index++ ) = gfx::Picture();
   }
 }
@@ -108,19 +106,17 @@ void Temple::_updateAnimation(const unsigned long time)
   if( _animationRef().isRunning() )
   {
     _td->fireAnimation.update( time );
-    int index = 0;
-    foreach( it, _td->fires )
+    for( int index=0; index < (int)_td->fires.size(); index++ )
     {
       _fgPicture( 1 + index ) = _td->fireAnimation.currentFrame();
-      _fgPicture( 1 + index ).setOffset( *it );
-      index++;
+      _fgPicture( 1 + index ).setOffset( _td->fires[index] );
     }
   }
 }
 
 DivinityPtr Temple::divinity() const {  return _td->divinity; }
 
-unsigned int Temple::parishionerNumber() const
+unsigned int Temple::currentVisitors() const
 {
   Logger::warning( "!!! WARNING: Basic temple shouldn't return parishionerNumber" );
   return 0;
@@ -162,14 +158,16 @@ void TempleCeres::_updateBuffs()
   if( _lastBuffDate().month() != game::Date::current().month() )
   {
     TilePos offset( 5, 5 );
-    FarmList farms = city::statistic::getObjects<Farm>( _city(), object::any,
-                                                        pos() - offset, pos() + offset + TilePos( size().width(), size().width() ) );
+    FarmList farms = _city()->statistic().objects.find<Farm>( object::any,
+                                                              pos() - offset,
+                                                              pos() + offset + TilePos( size().width(),
+                                                              size().width() ) );
 
     int multiplier = _relationMultiplier();
 
-    foreach( it, farms )
+    for( auto farm : farms )
     {
-      FactoryProgressUpdater::uniqueTo( ptr_cast<Factory>( *it ), _buffValue() * multiplier, 4, CAESARIA_STR_A(TempleCeres) );
+      FactoryProgressUpdater::uniqueTo( farm.as<Factory>(), _buffValue() * multiplier, 4, CAESARIA_STR_A(TempleCeres) );
     }
 
     SmallTemple::_updateBuffs();
@@ -214,15 +212,17 @@ void TempleMercury::_updateBuffs()
   if( _lastBuffDate().month() != game::Date::current().month() )
   {
     TilePos offset( 5, 5 );
-    WarehouseList warehouses = city::statistic::getObjects<Warehouse>( _city(), object::any,
-                                                                       pos() - offset, pos() + offset + TilePos( size().width(), size().width() ) );
+    WarehouseList warehouses = _city()->statistic().objects.find<Warehouse>( object::any,
+                                                                             pos() - offset,
+                                                                             pos() + offset + TilePos( size().width(),
+                                                                             size().width() ) );
 
     int multiplier = _relationMultiplier();
 
-    foreach( it, warehouses )
+    for( auto wh : warehouses )
     {
-      WarehouseBuff::uniqueTo( *it, Warehouse::sellGoodsBuff, _buffValue() * multiplier,  4, CAESARIA_STR_A(TempleMercury) );
-      WarehouseBuff::uniqueTo( *it, Warehouse::buyGoodsBuff, -_buffValue() * multiplier,  4, CAESARIA_STR_A(TempleMercury) );
+      WarehouseBuff::uniqueTo( wh, Warehouse::sellGoodsBuff, _buffValue() * multiplier,  4, CAESARIA_STR_A(TempleMercury) );
+      WarehouseBuff::uniqueTo( wh, Warehouse::buyGoodsBuff, -_buffValue() * multiplier,  4, CAESARIA_STR_A(TempleMercury) );
     }
 
     SmallTemple::_updateBuffs();
@@ -246,7 +246,7 @@ TempleOracle::TempleOracle() : BigTemple( DivinityPtr(), object::oracle, 55 )
   _fgPictures().resize(1);
 }
 
-unsigned int TempleOracle::parishionerNumber() const { return 500; }
+unsigned int TempleOracle::currentVisitors() const { return 500; }
 
 bool TempleOracle::build( const city::AreaInfo& info )
 {
@@ -267,7 +267,7 @@ SmallTemple::SmallTemple( DivinityPtr divinity, object::Type type, int imgId )
   setMaximumWorkers( 2 );
 }
 
-unsigned int SmallTemple::parishionerNumber() const { return 750; }
+unsigned int SmallTemple::currentVisitors() const { return 750; }
 
 BigTemple::BigTemple( DivinityPtr divinity, object::Type type, int imgId )
   : Temple( divinity, type, imgId, Size(3) )
@@ -275,7 +275,7 @@ BigTemple::BigTemple( DivinityPtr divinity, object::Type type, int imgId )
   setMaximumWorkers( 8 );
 }
 
-unsigned int BigTemple::parishionerNumber() const { return 1500; }
+unsigned int BigTemple::currentVisitors() const { return 1500; }
 
 bool BigTemple::build( const city::AreaInfo& info )
 {  
@@ -285,7 +285,7 @@ bool BigTemple::build( const city::AreaInfo& info )
     return true;
   }
 
-  good::ProductMap goods = city::statistic::getProductMap( info.city, false );
+  good::ProductMap goods = info.city->statistic().goods.details( false );
   if( goods[ good::marble ] >= 2 )
   {
     Temple::build( info );

@@ -18,7 +18,6 @@
 #include "loader.hpp"
 #include "loader_png.hpp"
 #include "loader_bmp.hpp"
-#include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "vfs/path.hpp"
 #include "core/time.hpp"
@@ -56,29 +55,28 @@ PictureLoader& PictureLoader::instance()
   return instanceLoader;
 }
 
-Picture PictureLoader::load( vfs::NFile file )
+Picture PictureLoader::load( vfs::NFile file, bool streaming )
 {
   if( !file.isOpen() )
      return Picture::getInvalid();
 
   // try to load file based on file extension
-  foreach( loader, _d->loaders )
+  for( auto loader : _d->loaders )
   {
-    if( (*loader)->isALoadableFileExtension(file.path()) )
+    if( loader->isALoadableFileExtension(file.path()) )
     {
       // reset file position which might have changed due to previous loadImage calls
       file.seek(0);
-      Picture ret = (*loader)->load( file );
-      return ret;
+      return loader->load( file, streaming );
     }
     else
     {
-      Logger::warning( "WARNING !!!: PictureLoader have unknown extension with " + file.path().absolutePath().toString() );
-      bool isMyFormat = (*loader)->isALoadableFileFormat(file);
+      Logger::warning( "!!!Warning: PictureLoader have unknown extension with " + file.path().absolutePath().toString() );
+      bool isMyFormat = loader->isALoadableFileFormat(file);
       if( isMyFormat )
       {
-         file.seek(0);
-        return (*loader)->load( file );
+        file.seek(0);
+        return loader->load( file, streaming );
       }
     }
   }

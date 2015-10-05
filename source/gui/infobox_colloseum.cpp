@@ -40,8 +40,8 @@ AboutColosseum::AboutColosseum(Widget *parent, PlayerCityPtr city, const Tile &t
 {
   setupUI( ":/gui/infoboxcolosseum.gui" );
 
-  ColosseumPtr coloseum = ptr_cast<Colosseum>(tile.overlay());
-  setBase( ptr_cast<Construction>( coloseum ) );
+  auto coloseum = tile.overlay<Colosseum>();
+  setBase( coloseum );
   _setWorkingVisible( true );
   setTitle( _( MetaDataHolder::findPrettyName( object::colloseum ) ) );
 

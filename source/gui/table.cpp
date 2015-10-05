@@ -4,6 +4,7 @@
 #include "pushbutton.hpp"
 #include "gfx/engine.hpp"
 #include "core/event.hpp"
+#include "core/spring.hpp"
 #include "core/flagholder.hpp"
 
 #define ARROW_PAD 15
@@ -22,7 +23,6 @@ public:
 
 	Widget* element;
 };
-
 
 struct Row
 {
@@ -86,6 +86,7 @@ public:
   ScrollBar* verticalScrollBar;
   ScrollBar* horizontalScrollBar;
   bool needRefreshCellsGeometry;
+  math::SpringColor spring;
   unsigned int  cellLastTimeClick;
 
   void insertRow( Row& row, int index )
@@ -119,9 +120,10 @@ Table::Table( Widget* parent,
   _currentOrdering( rowOrderingNone ),
 	_d( new Impl )
 {
-	#ifdef _DEBUG
-			setDebugName( L"NrpTable" );
-	#endif
+#ifdef DEBUG
+  setDebugName( "NrpTable" );
+#endif
+
   setDrawFlag( drawBorder );
   setDrawFlag( drawRows );
   setDrawFlag( drawColumns );
@@ -129,6 +131,8 @@ Table::Table( Widget* parent,
 
   _d->cellLastTimeClick = 0;
   _d->itemHeight = 0;
+  _d->spring.setColor( DefaultColors::red );
+  _d->spring.setDelta( 8 );
   _d->header = new HidingElement( this, Rect( 0, 0, width(), DEFAULT_SCROLLBAR_SIZE ) );
   _d->header->setAlignment( align::upperLeft, align::lowerRight, align::upperLeft, align::upperLeft );
   _d->header->setSubElement( true );
@@ -544,7 +548,7 @@ void Table::_recalculateScrollBars()
 	// needs horizontal scroll be visible?
   if( _totalItemWidth > tableRect.width() )
 	{
-		tableRect.LowerRightCorner.ry() -= _d->horizontalScrollBar->height();
+    tableRect.rbottom() -= _d->horizontalScrollBar->height();
 		_d->horizontalScrollBar->setVisible( true );
     _d->horizontalScrollBar->setMaxValue( math::max<int>(0,_totalItemWidth - tableRect.width() ) );
 	}
@@ -552,7 +556,7 @@ void Table::_recalculateScrollBars()
 	// needs vertical scroll be visible?
   if( _totalItemHeight > tableRect.height() )
 	{
-		tableRect.LowerRightCorner.rx() -= _d->verticalScrollBar->width();
+    tableRect.rright() -= _d->verticalScrollBar->width();
 		_d->verticalScrollBar->setVisible( true );
     _d->verticalScrollBar->setMaxValue( math::max<int>(0,_totalItemHeight - tableRect.height() + 2 * _d->verticalScrollBar->absoluteRect().width()));
 
@@ -561,7 +565,7 @@ void Table::_recalculateScrollBars()
 		{
       if( _totalItemWidth > tableRect.width() )
 			{
-				tableRect.LowerRightCorner.ry() -= _d->horizontalScrollBar->height();
+        tableRect.rbottom() -= _d->horizontalScrollBar->height();
 				_d->horizontalScrollBar->setVisible(true);
         _d->horizontalScrollBar->setMaxValue( math::max<int>(0,_totalItemWidth - tableRect.width() ) );
 			}
@@ -991,12 +995,11 @@ void Table::draw( gfx::Engine& painter )
 			//skin->DrawElement( this, cellStyle.Normal(), rowRect, &clientClip, 0 ) ;
 		}
 
-
     if( _d->isFlag( drawRows ) )
     {
       Rect lineRect( itRow->items[ 0 ]->absoluteRect() );
-      lineRect.UpperLeftCorner.ry() = lineRect.LowerRightCorner.y() - 1;
-      lineRect.LowerRightCorner.rx() = screenRight();
+      lineRect.setTop( lineRect.bottom() - 1 );
+      lineRect.setRight (screenRight());
       painter.drawLine( 0xffc0c0c0, lineRect.lefttop(), lineRect.rightbottom() );
     }
   }
@@ -1020,10 +1023,12 @@ void Table::draw( gfx::Engine& painter )
     if( cell )
     {
       Rect cellRect = cell->absoluteRect();
-      painter.drawLine( DefaultColors::red, cellRect.lefttop(), cellRect.righttop() );
-      painter.drawLine( DefaultColors::red, cellRect.lefttop(), cellRect.leftbottom() );
-      painter.drawLine( DefaultColors::red, cellRect.leftbottom(), cellRect.rightbottom() );
-      painter.drawLine( DefaultColors::red, cellRect.rightbottom(), cellRect.righttop() );
+      _d->spring.update();
+
+      painter.drawLine( _d->spring, cellRect.lefttop(), cellRect.righttop() );
+      painter.drawLine( _d->spring, cellRect.lefttop(), cellRect.leftbottom() );
+      painter.drawLine( _d->spring, cellRect.leftbottom(), cellRect.rightbottom() );
+      painter.drawLine( _d->spring, cellRect.rightbottom(), cellRect.righttop() );
     }
   }
 

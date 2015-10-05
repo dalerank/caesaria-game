@@ -21,12 +21,13 @@
 #include "vfs/directory.hpp"
 #include "core/variant_map.hpp"
 #include "core/utils.hpp"
-#include "core/foreach.hpp"
+#include "core/osystem.hpp"
 #include "core/metric.hpp"
 
 namespace game
 {
 
+#define _CONFIG_PATH(a) std::string( #a ".model");
 #define __REG_PROPERTY(a) const char* Settings::a = CAESARIA_STR_EXT(a);
 __REG_PROPERTY(localePath)
 __REG_PROPERTY(resourcePath )
@@ -70,6 +71,7 @@ __REG_PROPERTY(ranksModel)
 __REG_PROPERTY(autosaveInterval)
 __REG_PROPERTY(talksArchive)
 __REG_PROPERTY(render)
+__REG_PROPERTY(debugMenu)
 __REG_PROPERTY(empireObjectsModel)
 __REG_PROPERTY(pic_offsets)
 __REG_PROPERTY(picsArchive)
@@ -103,6 +105,8 @@ __REG_PROPERTY(ccUseAI)
 __REG_PROPERTY(metricSystem)
 __REG_PROPERTY(defaultFont)
 __REG_PROPERTY(celebratesConfig)
+__REG_PROPERTY(ambientsounds)
+__REG_PROPERTY(cntrGroupsModel)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -164,6 +168,8 @@ Settings::Settings() : _d( new Impl )
   _d->options[ soundAlias          ] = std::string( "sounds.model" );
   _d->options[ videoAlias          ] = std::string( "videos.model" );
   _d->options[ celebratesConfig    ] = std::string( "romancelebs.model" );
+  _d->options[ ambientsounds       ] = std::string( "ambientsounds.model" );
+  _d->options[ cntrGroupsModel     ] = std::string( "construction_groups.model" );
   _d->options[ screenshotDir       ] = vfs::Directory::userDir().toString();
   _d->options[ batchTextures       ] = true;
   _d->options[ experimental        ] = false;
@@ -193,6 +199,11 @@ Settings::Settings() : _d( new Impl )
   _d->options[ emigrantSalaryKoeff ] = 5.f;
   _d->options[ oldgfx              ] = 1;
   _d->options[ showTabletMenu      ] = false;
+  _d->options[ debugMenu           ] = false;
+
+#ifdef DEBUG
+  _d->options[ debugMenu           ] = true;
+#endif
 
 #ifdef CAESARIA_USE_STEAM
   _d->options[ oldgfx              ] = 0;
@@ -226,12 +237,16 @@ void Settings::setwdir( const std::string& wdirstr )
   _d->options[ savedir ] = Variant( (wdir/defaultSaveDir).toString() );
 
   vfs::Directory saveDir;
-#ifdef CAESARIA_PLATFORM_LINUX
-  vfs::Path dirName = vfs::Path( ".caesaria/" ) + defaultSaveDir;
-  saveDir = vfs::Directory::userDir()/dirName;
-#elif defined(CAESARIA_PLATFORM_WIN) || defined(CAESARIA_PLATFORM_HAIKU) || defined(CAESARIA_PLATFORM_MACOSX) || defined(CAESARIA_PLATFORM_ANDROID)
-  saveDir = wdir/defaultSaveDir;
-#endif
+  vfs::Path dirName;
+  if( OSystem::isLinux() )
+  {
+    dirName = vfs::Path( ".caesaria/" ) + defaultSaveDir;
+    saveDir = vfs::Directory::userDir()/dirName;
+  }
+  else
+  {
+    saveDir = wdir/defaultSaveDir;
+  }
   _d->options[ savedir ] = Variant( saveDir.toString() );
 }
 
@@ -283,26 +298,43 @@ void Settings::checkCmdOptions(char* argv[], int argc)
 void Settings::checkC3present()
 {
   std::string c3path = _d->options[ c3gfx ].toString();
-  int useOldGfx = _d->options[ oldgfx ];
-  if( !c3path.empty() || useOldGfx )
+  bool useOldGraphics = !c3path.empty() || KILLSWITCH(oldgfx);
+
+  typedef struct { std::string key; std::string value; } kv;
+  const kv items[] = {
+                       {houseModel, "house"},
+                       {constructionModel, "construction"},
+                       {citiesModel, "cities"},
+                       {climateModel, "climateModel"},
+                       {walkerModel, "walker"},
+                       {animationsModel, "animations"},
+                       {empireObjectsModel, "empire_objects"},
+                       {simpleAnimationModel, "basic_animations"},
+                       {cartsModel, "carts"},
+                       {worldModel, "worldmap"},
+                       {buildMenuModel, "build_menu"},
+                       {soundAlias, "sounds"},
+                       {videoAlias, "videos"},
+                       {pic_offsets, "offsets"},
+                       {"", ""} };
+
+  if( useOldGraphics )
   {
-    _d->options[ houseModel          ] = Variant( std::string( "/house.c3" ) );
-    _d->options[ constructionModel   ] = Variant( std::string( "/construction.c3" ) );
-    _d->options[ citiesModel         ] = Variant( std::string( "/cities.c3" ) );
-    _d->options[ climateModel        ] = Variant( std::string( "/climate.c3" ) );
-    _d->options[ walkerModel         ] = Variant( std::string( "/walker.c3" ) );
-    _d->options[ animationsModel     ] = Variant( std::string( "/animations.c3" ) );
-    _d->options[ empireObjectsModel  ] = Variant( std::string( "/empire_objects.c3" ) );
-    _d->options[ simpleAnimationModel] = Variant( std::string( "/basic_animations.c3" ) );
-    _d->options[ cartsModel          ] = Variant( std::string( "/carts.c3" ) );
-    _d->options[ worldModel          ] = Variant( std::string( "/worldmap.c3" ) );
-    _d->options[ buildMenuModel      ] = Variant( std::string( "/build_menu.c3" ) );
-    _d->options[ soundAlias          ] = Variant( std::string( "/sounds.c3" ) );
-    _d->options[ videoAlias          ] = Variant( std::string( "/videos.c3" ) );
-    _d->options[ pic_offsets         ] = Variant( std::string( "/offsets.c3" ) );
+    for( int index=0; !items[index].key.empty(); index++ )
+      _d->options[ items[index].key ] = items[ index ].value + ".c3";
+
     _d->options[ forbidenTile        ] = Variant( std::string( "org_land" ) );
     _d->options[ titleResource       ] = Variant( std::string( "title" ) );
     _d->options[ cellw ] = 30;
+  }
+  else
+  {
+    for( int index=0; !items[index].key.empty(); index++ )
+      _d->options[ items[index].key ] = items[ index ].value + ".model";
+
+    _d->options[ forbidenTile        ] = Variant( std::string( "oc3_land" ) );
+    _d->options[ titleResource       ] = Variant( std::string( "titlerm" ) );
+    _d->options[ cellw ] = 60;
   }
 }
 
@@ -341,7 +373,7 @@ void Settings::load()
 {
   VariantMap settings = config::load( rcpath( Settings::settingsPath ) );
 
-  foreach( v, settings ) { set( v->first, v->second ); }
+  for( auto& v : settings ) { set( v.first, v.second ); }
 }
 
 void Settings::save()

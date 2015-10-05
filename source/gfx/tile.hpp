@@ -28,6 +28,7 @@ namespace gfx
 {
 
 class Picture;
+typedef unsigned int ImgID;
 
 // a Tile in the Tilemap
 class Tile
@@ -37,7 +38,7 @@ public:
   typedef enum { tlRoad=0, tlWater, tlTree, tlMeadow, tlRock, tlOverlay,
                  tlGarden, tlElevation, tlWall, tlDeepWater, tlRubble,
                  isConstructible, isDestructible, tlRift, tlCoast, tlGrass, clearAll,
-                 wasDrawn } Type;
+                 isRendered, tlUnknown } Type;
 
 public:
   explicit Tile(const TilePos& pos);
@@ -63,17 +64,17 @@ public:
   // used for multi-tile graphics: current displayed picture
   // background of constructible tiles is 1x1 => master used for foreground
   // non-constructible tiles have no foreground => master used for background
-  inline Tile* masterTile() const {  return _master;}
-  void setMasterTile(Tile* master);
-  bool isMasterTile() const;
+  inline Tile* master() const {  return _master;}
+  void setMaster(Tile* master);
+  bool isMaster() const;
 
-  void changeDirection( Tile* masterTile, Direction newDirection);
+  void changeDirection( Tile* master, Direction newDirection);
 
   bool isFlat() const;  // returns true if the tile is walkable/boatable (for display purpose)
 
-  inline void resetWasDrawn() { _wasDrawn = false; }
-  inline void setWasDrawn()   { _wasDrawn = true;  }
-  inline bool rwd() const { return _wasDrawn; }
+  inline void resetRendered() { _rendered = false; }
+  inline void setRendered()   { _rendered = true;  }
+  inline bool rendered() const { return _rendered; }
 
   void animate( unsigned int time );
 
@@ -84,10 +85,9 @@ public:
   bool getFlag( Type type ) const;
   void setFlag( Type type, bool value );
 
-  OverlayPtr overlay() const;
   void setOverlay( OverlayPtr overlay );
-  inline unsigned int originalImgId() const { return _terrain.imgid;}
-  void setOriginalImgId( unsigned short int id );
+  inline ImgID imgId() const { return _terrain.imgid;}
+  void setImgId( ImgID id );
 
   inline int height() const { return _height; }
   void setHeight( int value ) { _height = value; }
@@ -95,6 +95,10 @@ public:
   void setParam( Param param, int value );
   void changeParam( Param param, int value );
   int param( Param param ) const;
+
+  template<class T>
+  SmartPtr<T> overlay() const { return ptr_cast<T>( _overlay ); }
+  OverlayPtr overlay() const;
 
 private:
   struct Terrain
@@ -114,7 +118,7 @@ private:
     /*
      * original tile information
      */
-    unsigned short int imgid;
+    ImgID imgid;
     unsigned short int terraininfo;
 
     void reset();
@@ -129,9 +133,9 @@ private:
   Tile* _master;  // left-most tile if multi-tile, or "this" if single-tile
   Terrain _terrain; // infos about the tile (building, tree, road, water, rock...)
   Picture _picture; // main picture
-  bool _wasDrawn;
+  bool _rendered;
   int _height;
-  gfx::Animation _animation;
+  Animation _animation;
   OverlayPtr _overlay;
 
 private:

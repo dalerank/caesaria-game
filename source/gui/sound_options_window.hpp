@@ -40,12 +40,12 @@ public:
   virtual bool onEvent(const NEvent &event);
 
 public signals:
-  Signal2<audio::SoundType, int >& onChange();
+  Signal2<audio::SoundType,audio::Volume>& onChange();
   Signal0<>& onApply();
   Signal0<>& onClose();
 
 public slots:
-  void update( audio::SoundType type, int value );
+  void update(audio::SoundType type, audio::Volume value );
 
 private:
   class Impl;

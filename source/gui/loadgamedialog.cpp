@@ -49,16 +49,14 @@ void LoadGame::_fillFiles()
   vfs::Entries flist = vfs::Directory( _directory() ).entries();
   flist = flist.filter( vfs::Entries::file | vfs::Entries::extFilter, _extensions() );
 
-  StringArray names;
-  foreach( it, flist )
-    names << (*it).fullpath.toString();
+  StringArray names = flist.items().files( "" );
 
   std::sort( names.begin(), names.end() );
 
-  foreach( it, names )
+  for( auto& path : names )
   {
-    ListBoxItem& item = lbxFiles->addItem( *it, Font(), DefaultColors::black.color );
-    vfs::Path imgpath = vfs::Path( *it ).changeExtension( "png" );
+    ListBoxItem& item = lbxFiles->addItem( path, Font(), DefaultColors::black.color );
+    vfs::Path imgpath = vfs::Path( path ).changeExtension( "png" );
     item.setData( "image", imgpath.toString() );
   }
 }

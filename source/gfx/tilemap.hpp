@@ -42,6 +42,10 @@ public:
 
   Tile& at( const int i, const int j );
   Tile& at( const TilePos& ij );
+
+  OverlayPtr overlay( const TilePos& ij );
+  template<class T>
+  SmartPtr<T> overlay(const TilePos &ij) { return ptr_cast<T>( overlay( ij ) ); }
   
   const Tile& at( const int i, const int j ) const;
   const Tile& at( const TilePos& ij ) const;
@@ -55,9 +59,9 @@ public:
   // (i1, j1) : left corner of the rectangle (minI, minJ)
   // (i2, j2) : right corner of the rectangle (maxI, maxJ)
   // corners  : if false, don't return corner tiles
-  TilesArray getRectangle(TilePos start, TilePos stop, const bool corners = true);
-  TilesArray getRectangle(TilePos pos, Size size, const bool corners = true );
-  TilesArray getRectangle(unsigned int range, TilePos center );
+  TilesArray rect(TilePos start, TilePos stop, const bool corners = true);
+  TilesArray rect(TilePos pos, Size size, const bool corners = true );
+  TilesArray rect(unsigned int range, TilePos center );
 
   enum TileNeighbors
   {
@@ -66,14 +70,14 @@ public:
     AllNeighbors
   };
 
-  TilesArray getNeighbors( TilePos pos, TileNeighbors type = AllNeighbors);
+  TilesArray getNeighbors(const TilePos& pos, TileNeighbors type = AllNeighbors);
 
   // returns all tiles in a rectangular area
   // (i1, j1) : left corner of the rectangle (minI, minJ)
   // (i2, j2) : right corner of the rectangle (maxI, maxJ)
-  TilesArray getArea(const TilePos& start, const TilePos& stop ) const;
-  TilesArray getArea(const TilePos& start, const Size& size ) const;
-  TilesArray getArea(int range, const TilePos& center ) const;
+  TilesArray area(const TilePos& start, const TilePos& stop ) const;
+  TilesArray area(const TilePos& start, const Size& size ) const;
+  TilesArray area(int range, const TilePos& center ) const;
 
   int size() const;
 
@@ -89,6 +93,7 @@ public:
 
   Tile* at(const Point& pos, bool overborder);
   TilePos p2tp( const Point& pos );
+
 private: 
   class Impl;
   ScopedPtr< Impl > _d;

@@ -17,7 +17,6 @@
 
 #include "dispatcher.hpp"
 #include "core/utils.hpp"
-#include "core/foreach.hpp"
 #include "postpone.hpp"
 #include "core/variant_map.hpp"
 #include "core/logger.hpp"
@@ -51,7 +50,6 @@ void Dispatcher::append(GameEventPtr event)
   else
   {
     Logger::warning( "EventsDispatcher: cant add event but is null" );
-    crashhandler::printstack();
   }
 }
 
@@ -76,7 +74,7 @@ void Dispatcher::update(Game& game, unsigned int time )
 
   if( !_d->newEvents.empty() )
   {
-    _d->events << _d->newEvents;
+    _d->events.append( _d->newEvents );
     _d->newEvents.clear();
   }
 }
@@ -85,9 +83,9 @@ VariantMap Dispatcher::save() const
 {
   VariantMap ret;
   int index = 0;
-  foreach( event, _d->events )
+  for( auto& event : _d->events )
   {
-    ret[ utils::format( 0xff, "event_%d", index++ ) ] = (*event)->save();
+    ret[ utils::format( 0xff, "event_%d", index++ ) ] = event->save();
   }
 
   return ret;
@@ -95,9 +93,9 @@ VariantMap Dispatcher::save() const
 
 void Dispatcher::load(const VariantMap& stream)
 {
-  foreach( it, stream )
+  for( auto& it : stream )
   {
-    GameEventPtr e = PostponeEvent::create( it->first, it->second.toMap() );
+    GameEventPtr e = PostponeEvent::create( it.first, it.second.toMap() );
 
     if( e.isValid() )
     {

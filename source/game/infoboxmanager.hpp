@@ -38,7 +38,7 @@ typedef SmartPtr< Manager > InfoBoxManagerPtr;
 class InfoboxCreator
 {
 public:
-  virtual gui::infobox::Infobox* create( PlayerCityPtr, gui::Widget*, TilePos ) = 0;
+  virtual infobox::Infobox* create( PlayerCityPtr, gui::Widget*, TilePos ) = 0;
 };
 
 template< class T >
@@ -81,7 +81,7 @@ public:
 
 class Manager : public StaticSingleton<Manager>
 {
-  friend class StaticSingleton;
+  SET_STATICSINGLETON_FRIEND_FOR(Manager)
 public:
   void showHelp( PlayerCityPtr city, gui::Ui* gui, TilePos tile );
   void setShowDebugInfo( const bool showInfo );

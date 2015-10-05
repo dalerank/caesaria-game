@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -18,7 +18,7 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../SDL_internal.h"
 
 /* This is the software implementation of the YUV texture support */
 
@@ -1185,6 +1185,61 @@ SDL_SW_UpdateYUVTexture(SDL_SW_YUVTexture * swdata, const SDL_Rect * rect,
 }
 
 int
+SDL_SW_UpdateYUVTexturePlanar(SDL_SW_YUVTexture * swdata, const SDL_Rect * rect,
+                              const Uint8 *Yplane, int Ypitch,
+                              const Uint8 *Uplane, int Upitch,
+                              const Uint8 *Vplane, int Vpitch)
+{
+    const Uint8 *src;
+    Uint8 *dst;
+    int row;
+    size_t length;
+
+    /* Copy the Y plane */
+    src = Yplane;
+    dst = swdata->pixels + rect->y * swdata->w + rect->x;
+    length = rect->w;
+    for (row = 0; row < rect->h; ++row) {
+        SDL_memcpy(dst, src, length);
+        src += Ypitch;
+        dst += swdata->w;
+    }
+
+    /* Copy the U plane */
+    src = Uplane;
+    if (swdata->format == SDL_PIXELFORMAT_IYUV) {
+        dst = swdata->pixels + swdata->h * swdata->w;
+    } else {
+        dst = swdata->pixels + swdata->h * swdata->w +
+              (swdata->h * swdata->w) / 4;
+    }
+    dst += rect->y/2 * swdata->w/2 + rect->x/2;
+    length = rect->w / 2;
+    for (row = 0; row < rect->h/2; ++row) {
+        SDL_memcpy(dst, src, length);
+        src += Upitch;
+        dst += swdata->w/2;
+    }
+
+    /* Copy the V plane */
+    src = Vplane;
+    if (swdata->format == SDL_PIXELFORMAT_YV12) {
+        dst = swdata->pixels + swdata->h * swdata->w;
+    } else {
+        dst = swdata->pixels + swdata->h * swdata->w +
+              (swdata->h * swdata->w) / 4;
+    }
+    dst += rect->y/2 * swdata->w/2 + rect->x/2;
+    length = rect->w / 2;
+    for (row = 0; row < rect->h/2; ++row) {
+        SDL_memcpy(dst, src, length);
+        src += Vpitch;
+        dst += swdata->w/2;
+    }
+    return 0;
+}
+
+int
 SDL_SW_LockYUVTexture(SDL_SW_YUVTexture * swdata, const SDL_Rect * rect,
                       void **pixels, int *pitch)
 {
@@ -1219,10 +1274,15 @@ SDL_SW_CopyYUVToRGB(SDL_SW_YUVTexture * swdata, const SDL_Rect * srcrect,
                     Uint32 target_format, int w, int h, void *pixels,
                     int pitch)
 {
+    const int targetbpp = SDL_BYTESPERPIXEL(target_format);
     int stretch;
     int scale_2x;
     Uint8 *lum, *Cr, *Cb;
     int mod;
+
+    if (targetbpp == 0) {
+        return SDL_SetError("Invalid target pixel format");
+    }
 
     /* Make sure we're set up to display in the desired format */
     if (target_format != swdata->target_format) {
@@ -1311,7 +1371,7 @@ SDL_SW_CopyYUVToRGB(SDL_SW_YUVTexture * swdata, const SDL_Rect * srcrect,
     default:
         return SDL_SetError("Unsupported YUV format in copy");
     }
-    mod = (pitch / SDL_BYTESPERPIXEL(target_format));
+    mod = (pitch / targetbpp);
 
     if (scale_2x) {
         mod -= (swdata->w * 2);

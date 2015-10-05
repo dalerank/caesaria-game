@@ -22,7 +22,6 @@
 #include "objects/house.hpp"
 #include "objects/house_spec.hpp"
 #include "gfx/tile.hpp"
-#include "city/helper.hpp"
 #include "good/helper.hpp"
 #include "core/utils.hpp"
 #include "game/gamedate.hpp"
@@ -137,10 +136,11 @@ VariantMap Scribes::Messages::save() const
   VariantMap ret;
   int step=0;
   std::string stepName;
-  foreach( i, *this )
+  stepName.reserve( 256 );
+  for( auto& i : *this )
   {
     stepName = utils::format( 0xff, "%04d", step++ );
-    ret[ stepName ] = i->save();
+    ret[ stepName ] = i.save();
   }
 
   return ret;
@@ -148,11 +148,11 @@ VariantMap Scribes::Messages::save() const
 
 void Scribes::Messages::load(const VariantMap &vm)
 {
-  foreach( i, vm )
+  for( auto& i : vm )
   {
     push_back( Message() );
-    back().load( i->second.toMap() );
-    }
+    back().load( i.second.toMap() );
+  }
 }
 
 Scribes::Message& Scribes::Messages::at(unsigned int index)

@@ -45,6 +45,7 @@ public:
     append( Label::bgNone, "none" );
     append( Label::bgWhiteFrame, "whiteFrame" );
     append( Label::bgBlackFrame, "blackFrame" );
+    append( Label::bgWhiteBorderA, "whiteBorder" );
   }
 };
 
@@ -217,14 +218,14 @@ void Label::_updateBackground(Engine& painter, bool& useAlpha4Text )
     Decorator::draw( _d->textPicture, r, Decorator::lineWhiteBorder );
   break;
 
-  case bgWhite: Decorator::draw( pics, r, Decorator::whiteArea, Decorator::normalY ); break;
-  case bgBlack: Decorator::draw( pics, r, Decorator::blackArea, Decorator::normalY  ); break;
-  case bgBrown: Decorator::draw( pics, r, Decorator::brownBorder, Decorator::normalY  );  break;
-  case bgSmBrown: Decorator::draw( pics, r, Decorator::brownPanelSmall, Decorator::normalY  ); break;
-  case bgWhiteFrame: Decorator::draw( pics, r, Decorator::whiteFrame, Decorator::normalY  ); break;
-  case bgBlackFrame: Decorator::draw( pics, r, Decorator::blackFrame, Decorator::normalY  ); break;
+  case bgWhite: Decorator::draw( pics, r, Decorator::whiteArea, nullptr, Decorator::normalY ); break;
+  case bgBlack: Decorator::draw( pics, r, Decorator::blackArea, nullptr, Decorator::normalY  ); break;
+  case bgBrown: Decorator::draw( pics, r, Decorator::brownBorder, nullptr, Decorator::normalY  );  break;
+  case bgSmBrown: Decorator::draw( pics, r, Decorator::brownPanelSmall, nullptr, Decorator::normalY  ); break;
+  case bgWhiteFrame: Decorator::draw( pics, r, Decorator::whiteFrame, nullptr, Decorator::normalY  ); break;
+  case bgBlackFrame: Decorator::draw( pics, r, Decorator::blackFrame, nullptr, Decorator::normalY  ); break;
   case bgNone:  break;
-  case bgWhiteBorderA: Decorator::draw( pics, r, Decorator::whiteBorderA, Decorator::normalY  ); break;
+  case bgWhiteBorderA: Decorator::draw( pics, r, Decorator::whiteBorderA, nullptr, Decorator::normalY  ); break;
   }
 
   bool batchOk = _d->background.load( pics, absoluteRect().lefttop() );
@@ -254,7 +255,7 @@ void Label::draw(gfx::Engine& painter )
   // draw background
   if( _d->bgPicture.isValid() )
   {
-    painter.draw( _d->bgPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+    painter.draw( _d->bgPicture, absoluteRect().lefttop(), &absoluteClippingRectRef() );
   }
   else
   {
@@ -266,12 +267,12 @@ void Label::draw(gfx::Engine& painter )
 
   if( _d->icon.isValid() )
   {
-    painter.draw( _d->icon, absoluteRect().UpperLeftCorner + _d->iconOffset, &absoluteClippingRectRef() );
+    painter.draw( _d->icon, absoluteRect().lefttop() + _d->iconOffset, &absoluteClippingRectRef() );
   }
 
   if( _d->textPicture.isValid() )
   {
-    painter.draw( _d->textPicture, absoluteRect().UpperLeftCorner, &absoluteClippingRectRef() );
+    painter.draw( _d->textPicture, absoluteRect().lefttop(), &absoluteClippingRectRef() );
   }
 
   Widget::draw( painter );

@@ -33,16 +33,22 @@ class ContextMenu::Impl
 public:
 	std::vector< ContextMenuItem* > items;
 
-  int highlihted;
-	int lastHighlihted;
-	unsigned int changeTime;
-	bool allowFocus;
+  struct {
+    int index;
+    int last;
+  } highlihted;
+
+  unsigned int changeTime;
 
 	Point pos;
 	Widget* eventParent;
 	Font lastFont;
 	CloseMode closeHandling;
-	bool needRecalculateItems;
+
+  struct {
+    bool invalidate;
+    bool allowFocus;
+  } flags;
 
 signals public:
   Signal1<int> onItemActionSignal;

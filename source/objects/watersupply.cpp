@@ -134,7 +134,7 @@ bool Reservoir::_isNearWater(PlayerCityPtr city, const TilePos& pos ) const
   bool near_water = false;  // tells if the factory is next to a mountain
 
   Tilemap& tilemap = city->tilemap();
-  TilesArray perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), size() + Size( 2 ), !Tilemap::checkCorners );
+  TilesArray perimetr = tilemap.rect( pos + TilePos( -1, -1 ), size() + Size( 2 ), !Tilemap::checkCorners );
 
   foreach( tile, perimetr) { near_water |= (*tile)->getFlag( Tile::tlWater ); }
 
@@ -254,7 +254,7 @@ void WaterSource::_produceWater(const TilePos* points, const int size)
     TilePos p = pos() + points[index];
     if( tilemap.isInside( p ) )
     {
-      SmartPtr<WaterSource> ws = ptr_cast<WaterSource>( tilemap.at( p ).overlay() );
+      auto ws = tilemap.at( p ).overlay<WaterSource>();
     
       if( ws.isValid() )
       {
@@ -274,18 +274,18 @@ void WaterSource::_setError(const std::string& error){  _d->errorStr = error;}
 void WaterSource::broke()
 {
   Tilemap& tilemap = _city()->tilemap();
-  TilesArray tiles = tilemap.getRectangle( pos() - TilePos( 1, 1), size() + Size(2) );
+  TilesArray tiles = tilemap.rect( pos() - TilePos( 1, 1), size() + Size(2) );
 
   int saveWater = water();
   _d->water = 0;
-  foreach( it, tiles )
+  for( auto tile : tiles )
   {
-    SmartPtr<WaterSource> ws = ptr_cast<WaterSource>( (*it)->overlay() );
+    auto waterSource = tile->overlay<WaterSource>();
 
-    if( ws.isValid() )
+    if( waterSource.isValid() )
     {
-      if( ws->water() > 0 && ws->water() < saveWater )
-          ws->broke();
+      if( waterSource->water() > 0 && waterSource->water() < saveWater )
+          waterSource->broke();
     }
   }
 }

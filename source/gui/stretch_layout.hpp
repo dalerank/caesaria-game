@@ -37,11 +37,14 @@ public:
 
   virtual void updateLayout();
   virtual void beforeDraw(gfx::Engine &painter);
+  virtual bool full() const;
   virtual void setupUI( const VariantMap& stream );
 
 protected:
   virtual void _finalizeResize();
+  virtual void removeChild(Widget *child);
 
+protected:
   bool _vertical;
   bool _needUpdate;
   unsigned int _offset;
@@ -61,6 +64,8 @@ class VLayout : public Layout
 public:
   VLayout( Widget* parent );
   VLayout( Widget* parent, const Rect& rect, int id );
+
+  virtual bool full() const;
 };
 
 }// end namespace gui

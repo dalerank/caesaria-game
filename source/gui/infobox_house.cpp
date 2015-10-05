@@ -57,8 +57,10 @@
 #include "dictionary.hpp"
 #include "pushbutton.hpp"
 #include "environment.hpp"
+#include "core/gettext.hpp"
 #include "dialogbox.hpp"
 #include "game/infoboxmanager.hpp"
+#include "events/playsound.hpp"
 #include "infobox_land.hpp"
 
 using namespace gfx;
@@ -94,11 +96,21 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
 {
   setupUI( ":/gui/infoboxhouse.gui" );
 
-  _house = ptr_cast<House>( tile.overlay() );
+  _house = tile.overlay<House>();
+
+  if( _house.isNull() )
+  {
+    Logger::warning( "!!! WARNING: Cant find house at [%d,%d]", tile.pos().i(), tile.pos().j() );
+    deleteLater();
+    return;
+  }
+
+  events::GameEventPtr e = events::PlaySound::create( "bmsel_house", 1, 100, audio::infobox, true );
+  e->dispatch();
 
   setTitle( _(_house->levelName()) );
 
-  _btnExitRef()->setTooltipText( _("##advanced_houseinfo##") );
+  _btnExit()->setTooltipText( _("##advanced_houseinfo##") );
 
   Label* houseInfo = new Label( this, Rect( 30, 40, width() - 30, 40 + 100 ), "" );
   if( houseInfo )
@@ -106,7 +118,7 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
     houseInfo->setWordwrap( true );
 
     std::string text = _house->evolveInfo();
-    if( _house->spec().level() == HouseLevel::greatPalace && text.empty() )
+    if( _house->level() == HouseLevel::greatPalace && text.empty() )
     {
       text =  "##greatPalace_info##";
     }
@@ -127,18 +139,19 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
         OverlayPtr overlay = city->getOverlay( rPos );
         if( overlay.isValid() )
         {
-          std::string type;
+          std::string housePrettyType;
           if( overlay->type() == object::house )
           {
             HousePtr house = overlay.as<House>();
-            type = house.isValid() ? house->levelName() : "##unknown_house_type##";
+            housePrettyType = house.isValid() ? house->levelName() : "##unknown_house_type##";
           }
           else
           {
-            type = overlay.isValid() ? MetaDataHolder::findPrettyName( overlay->type() ) : "";
+            housePrettyType = overlay.isValid() ? MetaDataHolder::findPrettyName( overlay->type() ) : "";
           }
 
-          text = utils::replace( text, "{0}", "( " + type + " )" );
+          housePrettyType = utils::format( 0xff, "(%s)", _(housePrettyType) );
+          text = utils::replace( text, "{0}", housePrettyType );
         }
       }
     }
@@ -190,7 +203,7 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
   Label* lbCrime = new Label( this, taxesLb->relativeRect() + Point( 0, 22 ), aboutCrimes );
 
   int startY = lbCrime->bottom() + 10;
-  if( _house->spec().level() > 2 )
+  if( _house->level() > HouseLevel::tent )
   {
     drawGood( _house, good::wheat, 0, 0, startY );
     drawGood( _house, good::fish, 1, 0, startY );
@@ -222,14 +235,14 @@ void AboutHouse::drawHabitants( HousePtr house )
   int picId = house->spec().isPatrician() ? 541 : 542;
    
   Picture citPic( ResourceGroup::panelBackground, picId );
-  _lbBlackFrameRef()->setIcon( citPic, Point( 15, 5 ) );
+  _lbBlackFrame()->setIcon( citPic, Point( 15, 5 ) );
 
   // number of habitants
   Label* lbHabitants = new Label( this, Rect( 60, 157, width() - 16, 157 + citPic.height() ) );
 
   std::string freeRoomText;
   int current = house->habitants().count();
-  int freeRoom = house->maxHabitants() - current;
+  int freeRoom = house->capacity() - current;
   if( freeRoom > 0 )
   {
     // there is some room for new habitants!

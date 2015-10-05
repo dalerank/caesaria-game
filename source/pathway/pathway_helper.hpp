@@ -20,6 +20,7 @@
 #include "city/predefinitions.hpp"
 #include "objects/predefinitions.hpp"
 #include "objects/constants.hpp"
+#include "core/tilepos_array.hpp"
 #include "route.hpp"
 
 class PathwayHelper
@@ -42,11 +43,13 @@ public:
   static Pathway create(TilePos statrPos, TilePos stopPos,
                         const TilePossibleCondition& condition );
 
-  static DirectRoute shortWay( PlayerCityPtr city, TilePos startPos, object::Type buildingType, WayType type );
+  static DirectRoute shortWay( PlayerCityPtr city, const TilePos& startPos, object::Type buildingType, WayType type );
+  static DirectRoute shortWay( const TilePos& startPos, ConstructionList buildings, WayType type);
+  static DirectRoute shortWay( PlayerCityPtr city, const TilePosArray& area, object::Type buildingType, WayType type );
 
-  static Pathway randomWay( PlayerCityPtr city, TilePos startPos, int walkRadius );
+  static Pathway randomWay( PlayerCityPtr city, const TilePos& startPos, int walkRadius );
 
-  static Pathway way2border( PlayerCityPtr city, TilePos startPos );
+  static Pathway way2border( PlayerCityPtr city, const TilePos& startPos );
 };
 
 #endif

@@ -333,6 +333,7 @@
     buildings : 
     { 
       engineering_post : true
+      roadBlock : true
       plaza : true
       garden : true
       low_bridge : true

@@ -24,6 +24,7 @@
 #include "core/smartptr.hpp"
 #include "vfs/path.hpp"
 #include "predefinitions.hpp"
+#include "house_level.hpp"
 #include "service.hpp"
 
 class HouseSpecification
@@ -31,10 +32,11 @@ class HouseSpecification
   friend class HouseSpecHelper;
 
 public:
+  typedef enum { intv_foods=0, intv_goods, intv_service, intv_count } IntervalName;
   enum { needTheater=1, needAmphitheater=2, needColosseum=3 };
 
-  int level() const;
-  int getMaxHabitantsByTile() const;
+  HouseLevel::ID level() const;
+  int tileCapacity() const;
   int taxRate() const;
   int prosperity() const;
   int crime() const;
@@ -50,9 +52,8 @@ public:
 
   bool checkHouse(HousePtr house, std::string* retMissing = 0,
                   object::Type* needBuilding = 0, TilePos *retPos=0) const;
-  unsigned int getServiceConsumptionInterval() const;
-  unsigned int foodConsumptionInterval() const;
-  unsigned int getGoodConsumptionInterval() const;
+
+  unsigned int consumptionInterval( IntervalName name ) const;
 
   int findLowLevelHouseNearby(HousePtr house, TilePos &refPos) const;
   int findUnwishedBuildingNearby(HousePtr house, object::Type& rType, TilePos &refPos) const;

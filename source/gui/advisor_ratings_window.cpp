@@ -102,7 +102,7 @@ void Ratings::Impl::updateColumn( const Point& center, const int value )
 
 void Ratings::Impl::checkCultureRating()
 {
-  CultureRatingPtr culture = statistic::getService<CultureRating>( city );
+  CultureRatingPtr culture = city->statistic().services.find<CultureRating>();
 
   if( culture.isValid() )
   {
@@ -130,7 +130,7 @@ void Ratings::Impl::checkCultureRating()
 
 void Ratings::Impl::checkProsperityRating()
 {
-  ProsperityRatingPtr prosperity = statistic::getService<ProsperityRating>( city );
+  ProsperityRatingPtr prosperity = city->statistic().services.find<ProsperityRating>();
 
   std::string text;
   if( prosperity != 0 )
@@ -143,7 +143,7 @@ void Ratings::Impl::checkProsperityRating()
       return;
     }
 
-    InfoPtr info = statistic::getService<Info>( city );
+    InfoPtr info = city->statistic().services.find<Info>();
 
     city::Info::Parameters current = info->lastParams();
     city::Info::Parameters lastYear = info->yearParams( 0 );
@@ -188,8 +188,8 @@ void Ratings::Impl::checkProsperityRating()
 void Ratings::Impl::checkPeaceRating()
 {
   StringArray advices;
-  MilitaryPtr ml = statistic::getService<Military>( city );
-  PeacePtr peaceRt = statistic::getService<Peace>( city );
+  MilitaryPtr ml = city->statistic().services.find<Military>();
+  PeacePtr peaceRt = city->statistic().services.find<Peace>();
 
   if( ml.isNull() || peaceRt.isNull() || !lbRatingInfo )
   {
@@ -234,8 +234,8 @@ void Ratings::Impl::checkPeaceRating()
 void Ratings::Impl::checkFavourRating()
 {
   StringArray problems;
-  request::DispatcherPtr rd = statistic::getService<request::Dispatcher>( city );
-  InfoPtr info = statistic::getService<Info>( city );
+  request::DispatcherPtr rd = city->statistic().services.find<request::Dispatcher>();
+  InfoPtr info = city->statistic().services.find<Info>();
 
   Info::Parameters current = info->lastParams();
   Info::Parameters lastYear = info->yearParams( 0 );

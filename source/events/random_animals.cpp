@@ -73,7 +73,7 @@ void RandomAnimals::_exec( Game& game, unsigned int time)
   if( _d->count > 0 )
   {
     Tilemap& tmap = game.city()->tilemap();
-    TilesArray border = tmap.getRectangle( TilePos( 0, 0 ), Size( tmap.size() ) );
+    TilesArray border = tmap.rect( TilePos( 0, 0 ), Size( tmap.size() ) );
     border = border.walkables( true );
 
     Tile* randomTile = border.random();
@@ -93,7 +93,7 @@ void RandomAnimals::_exec( Game& game, unsigned int time)
 
   if( _d->maxAnimals >= 0 )
   {
-    AnimalsPtr srvc = statistic::getService<Animals>( game.city() );
+    AnimalsPtr srvc = game.city()->statistic().services.find<Animals>();
 
     if( srvc.isValid() )
     {

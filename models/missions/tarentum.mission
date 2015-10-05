@@ -37,28 +37,31 @@
     {
       Brundisium :
       {
-        location : [ 940, 560 ]
         romecity : true
         sea : true
         land : true
         available : true
+
+        sells : {}
+        buys : { wheat : 40 }
       }
 
-      "Leptis Magna" : {
-        location : [ 820, 920 ]
-
+      "Leptis Magna" :
+      {
         sea : true
         land : true
         distant : true
-        available : true
+        available : false
+
+        sells : {}
+        buys : {}
 
         resources : [ "wheat", "vegetable", "olive", "fish",
                       "clay", "marble", "timber", "iron" ]
       }
 
-      Capua : {
-        location : [ 820, 560 ]
-
+      Capua :
+      {
         sea : true
         land : true
         available : true
@@ -67,25 +70,29 @@
         buys : { weapon : 25 }
       }
 
-      Carthago : {
-        location : [ 640, 760 ]
-
+      Carthago :
+      {
         sea : true
         land : true
         distant : true
-        available : true
+        available : false
+
+        sells : {}
+        buys : {}
 
         resources : [ "wheat", "olive", "wine", "fish",
                       "timber", "clay", "marble", "iron" ]
       }
 
-      Syracusae : {
-        location : [ 840, 720 ]
+      Syracusae :
+      {
         sells : { clay : 25, weapon : 20 }
         buys : { wine : 15, furniture : 25 }
+
         land : true
         sea : true
         available : true
+
         resources : [ "wheat", "vegetable", "fruit", "wine",
                       "fish", "timber", "clay" ]
       }
@@ -450,6 +457,7 @@
     buildings : 
     { 
       engineering_post : true
+      roadBlock : true
       plaza : true
       garden : true
       low_bridge : true

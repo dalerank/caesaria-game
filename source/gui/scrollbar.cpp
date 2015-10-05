@@ -56,8 +56,8 @@ ScrollBar::ScrollBar(  Widget* parent, const Rect& rectangle,
 	setNotClipped(noclip);
 
 	// this element can be tabbed to
-	setTabStop(true);
-	setTabOrder(-1);
+	setTabstop(true);
+	setTaborder(-1);
 
   setValue(0);
 }
@@ -277,18 +277,18 @@ void ScrollBar::beforeDraw(gfx::Engine& painter )
     if( _horizontal )
     {
         if( _d->upButton && _d->upButton->visible() )
-            _d->backgroundRect.UpperLeftCorner += Point( _d->upButton->width(), 0 );
+            _d->backgroundRect._lefttop += Point( _d->upButton->width(), 0 );
 
         if( _d->downButton && _d->downButton->visible() )
-            _d->backgroundRect.LowerRightCorner -= Point( _d->downButton->width(), 0 );
+            _d->backgroundRect._bottomright -= Point( _d->downButton->width(), 0 );
     }
     else
     {
         if( _d->upButton && _d->upButton->visible() )
-            _d->backgroundRect.UpperLeftCorner += Point( 0, _d->upButton->height() );
+            _d->backgroundRect._lefttop += Point( 0, _d->upButton->height() );
 
         if( _d->downButton && _d->downButton->visible() )
-            _d->backgroundRect.LowerRightCorner -= Point( 0, _d->downButton->height() );
+            _d->backgroundRect._bottomright -= Point( 0, _d->downButton->height() );
     }
   }
 
@@ -309,20 +309,20 @@ void ScrollBar::beforeDraw(gfx::Engine& painter )
       // recalculate slider rectangle
       if( _horizontal )
       {
-        _d->sliderRect.UpperLeftCorner.setX( screenLeft() + _lastSliderPos - _drawLenght/2 );
+        _d->sliderRect.setLeft( screenLeft() + _lastSliderPos - _drawLenght/2 );
         if( _d->upButton && _d->upButton->visible() )
-           _d->sliderRect.UpperLeftCorner += Point( _d->upButton->width(), 0 );
+           _d->sliderRect._lefttop += Point( _d->upButton->width(), 0 );
         
-        _d->sliderRect.LowerRightCorner.setX( _d->sliderRect.left() + _drawLenght );
+        _d->sliderRect.setRight( _d->sliderRect.left() + _drawLenght );
       }
       else
       {
-        _d->sliderRect.UpperLeftCorner = Point( screenLeft() + (width() - _d->sliderTexture.width()) / 2,
+        _d->sliderRect._lefttop = Point( screenLeft() + (width() - _d->sliderTexture.width()) / 2,
                                                 screenTop() + _lastSliderPos - _drawLenght/2 );
         if( _d->upButton && _d->upButton->visible() )
-            _d->sliderRect.UpperLeftCorner += Point( 0, _d->upButton->height() );
+            _d->sliderRect._lefttop += Point( 0, _d->upButton->height() );
 
-        _d->sliderRect.LowerRightCorner.setY( _d->sliderRect.top() + _drawLenght );
+        _d->sliderRect.setBottom( _d->sliderRect.top() + _drawLenght );
       }
     }
 
@@ -382,11 +382,11 @@ void ScrollBar::setValue(int pos)
   if( _horizontal )
 	{
     _drawLenght = height() * 3;
-    int borderMargin = -borderMarginRect.UpperLeftCorner.x();
-    borderMargin -= borderMarginRect.LowerRightCorner.x();
+    int borderMargin = -borderMarginRect.left();
+    borderMargin -= borderMarginRect.right();
 
     float f = ( width() + borderMargin - ( height()*2.0f + _drawLenght)) / getRange();
-    _sliderPos = (int)( ( ( _value - _minValue ) * f) + _drawLenght * 0.5f ) + borderMarginRect.UpperLeftCorner.x();
+    _sliderPos = (int)( ( ( _value - _minValue ) * f) + _drawLenght * 0.5f ) + borderMarginRect.left();
 	}
 	else
 	{
@@ -460,7 +460,7 @@ PushButton* ScrollBar::_createButton( const Rect& rectangle,
 {
     PushButton* btn = new PushButton( this, rectangle );
     btn->setSubElement(true);
-    btn->setTabStop(false);
+    btn->setTabstop(false);
     btn->setAlignment(left, rigth, top, bottom );
 
     switch( type )

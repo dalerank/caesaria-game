@@ -28,9 +28,12 @@
 #include "events/notification.hpp"
 #include "city/states.hpp"
 #include "config.hpp"
+#include "objects_factory.hpp"
 
 namespace world
 {
+
+REGISTER_CLASS_IN_WORLDFACTORY(Barbarian)
 
 const Point Barbarian::startLocation = Point( 1500, 0 );
 
@@ -100,29 +103,27 @@ bool Barbarian::_isAgressiveArmy(ArmyPtr other) const
 
 void Barbarian::_check4attack()
 {
-  MovableObjectList mobjects;
-  mobjects << empire()->objects();
-
-  mobjects.remove( this );
+  auto movables = empire()->objects().select<MovableObject>();
+  movables.remove( this );
 
   std::map< int, MovableObjectPtr > distanceMap;
 
-  foreach( it, mobjects )
+  for( auto obj : movables )
   {
-    float distance = location().distanceTo( (*it)->location() );    
-    distanceMap[ (int)distance ] = *it;
+    float distance = location().distanceTo( obj->location() );
+    distanceMap[ (int)distance ] = obj;
   }
 
-  foreach( it, distanceMap )
+  for( auto& item : distanceMap )
   {
-    if( it->first < config::barbarian::attackRange )
+    if( item.first < config::barbarian::attackRange )
     {
-      _attackObject( ptr_cast<Object>( it->second ) );
+      _attackObject( item.second.as<Object>() );
       break;
     }
-    else if( it->first < viewDistance() )
+    else if( item.first < viewDistance() )
     {
-      bool validWay = _findWay( location(), it->second->location() );
+      bool validWay = _findWay( location(), item.second->location() );
       if( validWay )
       {
         _d->mode = Impl::go2object;
@@ -138,24 +139,24 @@ void Barbarian::_check4attack()
 
      DateTime currentDate = game::Date::current();
 
-     foreach( it, cities )
+     for( auto city : cities )
      {
-       if( (*it)->states().population < (unsigned int)_d->minPop4attack )
+       if( city->states().population < (unsigned int)_d->minPop4attack )
          continue;
 
-       float distance = location().distanceTo( (*it)->location() );
-       int month2lastAttack = math::clamp<int>( DateTime::monthsInYear - (*it)->lastAttack().monthsTo( currentDate ), 0, DateTime::monthsInYear );
-       citymap[ month2lastAttack * 100 + (int)distance ] = *it;
+       float distance = location().distanceTo( city->location() );
+       int month2lastAttack = math::clamp<int>( DateTime::monthsInYear - city->lastAttack().monthsTo( currentDate ), 0, DateTime::monthsInYear );
+       citymap[ month2lastAttack * 100 + (int)distance ] = city;
      }
 
-     foreach( it, citymap )
+     for( auto& item : citymap )
      {
-       bool validWay = _findWay( location(), it->second->location() );
+       bool validWay = _findWay( location(), item.second->location() );
        if( validWay )
        {
          _d->mode = Impl::go2object;
 
-         events::GameEventPtr e = events::Notify::attack( it->second->name(), "##barbaria_attack_empire_city##", this );
+         events::GameEventPtr e = events::Notify::attack( item.second->name(), "##barbaria_attack_empire_city##", this );
          e->dispatch();
 
          break;
@@ -199,9 +200,9 @@ void Barbarian::_attackAny()
   objs.remove( this );
 
   bool successAttack = false;
-  foreach( i, objs )
+  for( auto object : objs )
   {
-    successAttack = _attackObject( *i );
+    successAttack = _attackObject( object );
     if( successAttack )
       break;
   }
@@ -212,17 +213,15 @@ void Barbarian::_attackAny()
 
 bool Barbarian::_attackObject(ObjectPtr obj)
 {
-  if( is_kind_of<Merchant>( obj ) )
+  if( obj.is<Merchant>() )
   {
     obj->deleteLater();
     return true;
   }
-  else if( is_kind_of<City>( obj ) )
+  else if( obj.is<City>() )
   {
-    CityPtr pcity = ptr_cast<City>( obj );
-
+    CityPtr pcity = obj.as<City>();
     pcity->addObject( this );
-
     return !pcity->strength();
   }
   //else if( )
@@ -241,5 +240,4 @@ Barbarian::Barbarian( EmpirePtr empire )
   _animation().load( "world_barbarian" );
 }
 
-
-}
+}//end namespace world

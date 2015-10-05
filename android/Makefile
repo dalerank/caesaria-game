@@ -54,7 +54,7 @@ android-update-project: $(ANDROID_PROJECT)/local.properties
 $(ANDROID_PROJECT)/local.properties:
 	@echo "===> ANDROID [update project]"
 	$(Q)cd $(ANDROID_PROJECT); SDK=`android  list sdk | grep "SDK Platform Android 2.3.3" | awk -F'-' ' { print $$1 }'`; [ -n "$$SDK" ] && android update sdk -u -s -t $$SDK || echo
-	$(Q)cd $(ANDROID_PROJECT) && android update project -p . -t android-15
+	$(Q)cd $(ANDROID_PROJECT) && android update project -p . -t android-18
 
 .PHONY: android-copy-assets
 android-copy-assets:

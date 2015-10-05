@@ -116,24 +116,23 @@ void Merchant::save(VariantMap& stream) const
   VARIANT_SAVE_ANY_D( stream, _d, step )
   VARIANT_SAVE_STR_D( stream, _d, baseCity )
   VARIANT_SAVE_STR_D( stream, _d, destCity )
-
-  stream[ "steps" ] = _d->steps.save();
+  VARIANT_SAVE_CLASS_D( stream, _d, steps )
 }
 
 void Merchant::load(const VariantMap& stream)
 {
   Object::load( stream );
+
   VARIANT_LOAD_CLASS_D( _d, sells, stream )
   VARIANT_LOAD_CLASS_D( _d, buys, stream )
   VARIANT_LOAD_ANY_D( _d, step, stream )
   VARIANT_LOAD_STR_D( _d, baseCity, stream )
   VARIANT_LOAD_STR_D( _d, destCity, stream )
-
-  _d->steps.load( stream.get( "steps" ).toList() );
+  VARIANT_LOAD_CLASS_D_LIST( _d, steps, stream )
 }
 
 std::string Merchant::baseCity() const{  return _d->baseCity;}
-good::Store& Merchant::sellGoods(){  return _d->sells;}
-good::Store &Merchant::buyGoods(){  return _d->buys;}
+good::Store& Merchant::sellGoods() { return _d->sells; }
+good::Store& Merchant::buyGoods() { return _d->buys; }
 
 }//end namespace world

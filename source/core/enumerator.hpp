@@ -17,7 +17,6 @@
 #define __CAESARIA_ENUMS_HELPER_H_INCLUDED__
 
 #include "core/requirements.hpp"
-#include "core/foreach.hpp"
 #include <map>
 #include <string>
 
@@ -25,23 +24,24 @@ template< class T >
 class EnumsHelper
 {
 public:
+  const std::string noText;
   T findType( const std::string& name ) const
   {
-    foreach( it, _equales )
+    for( auto& it : _equales )
     {
-      if( name == it->second )
+      if( name == it.second )
       {
-        return it->first;
+        return it.first;
       }
     }
 
     return getInvalid();
   }
 
-  std::string findName( const T& type ) const
+  const std::string& findName( const T& type ) const
   {
     typename Equales::const_iterator it = _equales.find( type );
-    return it != _equales.end() ? it->second : "";
+    return it != _equales.end() ? it->second : noText;
   }
 
   bool empty() const { return _equales.empty(); }

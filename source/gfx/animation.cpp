@@ -18,7 +18,6 @@
 #include "animation.hpp"
 #include "core/position.hpp"
 #include "core/variant_map.hpp"
-#include "core/foreach.hpp"
 #include "core/utils.hpp"
 #include "animation_bank.hpp"
 #include "core/logger.hpp"
@@ -50,12 +49,12 @@ unsigned int Animation::frameCount() const{  return _pictures.size();}
 
 void Animation::setOffset( const Point& offset )
 {
-  foreach( pic, _pictures ) { pic->setOffset( offset ); }
+  for( auto&& pic : _pictures ) { pic.setOffset( offset ); }
 }
 
 void Animation::addOffset(const Point& offset)
 {
-  foreach( pic, _pictures) { pic->addOffset( offset );}
+  for( auto&& pic : _pictures) { pic.addOffset( offset );}
 }
 
 Point Animation::offset() const
@@ -148,7 +147,7 @@ VariantMap Animation::save() const
   return ret;
 }
 
-void Animation::load(const VariantMap &stream)
+void Animation::load(const VariantMap& stream)
 {
   __D_IMPL(d,Animation)
   VARIANT_LOAD_ANY_D( d, index, stream )
@@ -162,7 +161,7 @@ void Animation::load(const VariantMap &stream)
     int start = range.get( "start" );
     int number = range.get( "number" );
     for( int k=0; k < number; k++ )
-      _pictures.push_back( Picture( rc, start + k ) );
+      _pictures.append( rc, start + k  );
   }
 
   _pictures.load( stream.get( "pictures" ).toStringArray() );

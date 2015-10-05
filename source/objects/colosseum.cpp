@@ -28,6 +28,7 @@
 #include "walker/serviceman.hpp"
 #include "game/gamedate.hpp"
 #include "walker/helper.hpp"
+#include "core/common.hpp"
 #include "objects_factory.hpp"
 
 using namespace gfx;
@@ -37,13 +38,16 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(object::colloseum, Colosseum)
 class Colosseum::Impl
 {
 public:
-  DateTime lastDateGl,
-           lastDateLion;
+  struct
+  {
+    DateTime glads;
+    DateTime lions;
+  } lastshow;
 };
 
 Colosseum::Colosseum() : EntertainmentBuilding(Service::colloseum, object::colloseum, Size(5) ), _d( new Impl )
 {
-  _picture().load( ResourceGroup::entertainment, 36 );
+  setPicture( ResourceGroup::entertainment, 36 );
 
   _animationRef().load( ResourceGroup::entertainment, 37, 13);
   _animationRef().setOffset( Point( 122, 81 ) );
@@ -68,7 +72,7 @@ void Colosseum::deliverService()
     if( saveWalkesNumber != currentWalkerNumber )
     {
       (lastSrvc == Service::colloseum
-        ? _d->lastDateGl : _d->lastDateLion) = game::Date::current();
+        ? _d->lastshow.glads : _d->lastshow.lions) = game::Date::current();
     }
   }
   else
@@ -88,11 +92,11 @@ bool Colosseum::build( const city::AreaInfo& info )
 {
   ServiceBuilding::build( info );
 
-  GladiatorSchoolList glSchools = city::statistic::getObjects<GladiatorSchool>( info.city, object::gladiatorSchool );
-  LionsNurseryList lionsNs = city::statistic::getObjects<LionsNursery>( info.city, object::lionsNursery );
+  GladiatorSchoolList glSchools = info.city->statistic().objects.find<GladiatorSchool>( object::gladiatorSchool );
+  LionsNurseryList lionsNs = info.city->statistic().objects.find<LionsNursery>( object::lionsNursery );
 
-  _d->lastDateGl = game::Date::current();
-  _d->lastDateLion = game::Date::current();
+  _d->lastshow.glads = game::Date::current();
+  _d->lastshow.lions = game::Date::current();
 
   if( glSchools.empty() )
   {
@@ -128,47 +132,42 @@ std::string Colosseum::troubleDesc() const
 
 bool Colosseum::isNeedGladiators() const
 {
-  GladiatorSchoolList colloseums = city::statistic::getObjects<GladiatorSchool>( _city(), object::gladiatorSchool );
+  GladiatorSchoolList colloseums = _city()->statistic().objects.find<GladiatorSchool>( object::gladiatorSchool );
 
   return colloseums.empty();
 }
 
 Service::Type Colosseum::_getServiceManType() const
 {
-  ServiceWalkerList servicemen;
-  servicemen << walkers();
+  auto servicemen = walkers().select<ServiceWalker>();
   return (!servicemen.empty() ? servicemen.front()->serviceType() : Service::srvCount);
 }
 
 bool Colosseum::isShowGladiatorBattles() const {  return _getServiceManType() == Service::amphitheater; }
 bool Colosseum::isShowLionBattles() const{  return _getServiceManType() == Service::colloseum; }
 int Colosseum::maxVisitors() const{ return 1500; }
-DateTime Colosseum::lastAnimalBoutDate() const { return _d->lastDateLion; }
-DateTime Colosseum::lastGladiatorBoutDate() const { return _d->lastDateGl; }
+DateTime Colosseum::lastAnimalBoutDate() const { return _d->lastshow.lions; }
+DateTime Colosseum::lastGladiatorBoutDate() const { return _d->lastshow.glads; }
 
 void Colosseum::save(VariantMap& stream) const
 {
   EntertainmentBuilding::save( stream );
-  stream[ "lastGdate" ] = _d->lastDateGl;
-  stream[ "lastLdate" ] = _d->lastDateLion;
+  VARIANT_SAVE_ANY_D( stream, _d, lastshow.glads )
+  VARIANT_SAVE_ANY_D( stream, _d, lastshow.lions )
 }
 
 void Colosseum::load(const VariantMap& stream)
 {
   EntertainmentBuilding::load( stream );
-  _d->lastDateGl = stream.get( "lastGdate" ).toDateTime();
-  _d->lastDateLion = stream.get( "lastLdate" ).toDateTime();
+  VARIANT_LOAD_TIME_D( _d, lastshow.glads, stream )
+  VARIANT_LOAD_TIME_D( _d, lastshow.lions, stream )
 }
 
 WalkerList Colosseum::_specificWorkers() const
 {
-  WalkerList ret;
-
-  foreach( i, walkers() )
-  {
-    if( (*i)->type() == walker::lionTamer || (*i)->type() == walker::gladiator )
-      ret << *i;
-  }
+  WalkerList ret = walkers();
+  utils::excludeByType( ret, WalkerTypeSet(walker::lionTamer,
+                                           walker::gladiator ) );
 
   return ret;
 }

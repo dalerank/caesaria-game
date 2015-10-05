@@ -65,13 +65,13 @@ CAESARIA_LITERALCONST(img)
 
 LegionEmblem LegionEmblem::findFree( PlayerCityPtr city )
 {
-  FortList forts = statistic::getObjects<Fort>( city, object::any );
+  FortList forts = city->statistic().objects.find<Fort>();
   std::vector<LegionEmblem> availableEmblems;
 
   VariantMap emblemsModel = config::load( SETTINGS_RC_PATH( emblemsModel ) );
-  foreach( it, emblemsModel )
+  for( auto& it : emblemsModel )
   {
-    VariantMap vm_emblem = it->second.toMap();
+    VariantMap vm_emblem = it.second.toMap();
     LegionEmblem newEmblem;
 
     newEmblem.name = vm_emblem[ literals::name ].toString();
@@ -83,11 +83,11 @@ LegionEmblem LegionEmblem::findFree( PlayerCityPtr city )
     }
   }
 
-  foreach( f, forts )
+  for( auto f : forts )
   {
     foreach( it, availableEmblems )
     {
-      if( (*f)->legionEmblem().name() == (*it).pic.name() )
+      if( f->legionEmblem().name() == (*it).pic.name() )
       {
         availableEmblems.erase( it );
         break;
@@ -96,7 +96,7 @@ LegionEmblem LegionEmblem::findFree( PlayerCityPtr city )
   }
 
   return availableEmblems.size() > 0
-                       ? availableEmblems[ math::random( availableEmblems.size() ) ]
+                       ? availableEmblems[ math::random( availableEmblems.size()-1 ) ]
                        : LegionEmblem();
 }
 
@@ -113,8 +113,8 @@ public:
 
   bool contain( unsigned int uid ) const
   {
-    foreach( it, points )
-     if( it->uid == uid )
+    for( auto& it : points )
+     if( it.uid == uid )
        return true;
 
     return false;
@@ -122,9 +122,9 @@ public:
 
   TilePos getPos( unsigned int uid ) const
   {
-    foreach( it, points )
-      if( it->uid == uid )
-        return lastPos + it->offset;
+    for( auto& it : points )
+      if( it.uid == uid )
+        return lastPos + it.offset;
 
     return gfx::tilemap::invalidLocation();
   }
@@ -139,11 +139,11 @@ public:
     int expandCounter = 0;
     do
     {
-      foreach( it, points )
-        if( it->uid == 0 )
+      for( auto&& it : points )
+        if( it.uid == 0 )
         {
-          it->uid = uid;
-          return lastPos + it->offset;
+          it.uid = uid;
+          return lastPos + it.offset;
         }
 
       expand();
@@ -161,7 +161,7 @@ public:
     switch( mode )
     {
     case Fort::frmOpen:
-      area = TilesArea( tmap, lastPos, 3 );
+      area = TilesArea( tmap, 3, lastPos );
     break;
 
     case Fort::frmWestLine:
@@ -212,16 +212,16 @@ public:
 
     case Fort::frmSquad:
     default:
-      area = TilesArea( tmap, lastPos, 3);
+      area = TilesArea( tmap, 3, lastPos );
     break;
     }
 
     points.clear();
 
     TilePosArray locations = area.walkables( true ).locations();
-    foreach( it, locations )
+    for( auto& location : locations )
     {
-      PAPoint point = { 0, *it };
+      PAPoint point = { 0, location };
       points.push_back( point );
     }
   }
@@ -297,7 +297,7 @@ void FortArea::setBase(FortPtr base)
 
 FortPtr FortArea::base() const
 {
-  return ptr_cast<Fort>( _city()->getOverlay( _d->basePos ) );
+  return _map().overlay( _d->basePos ).as<Fort>();
 }
 
 Fort::Fort(object::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) ),
@@ -325,6 +325,18 @@ Fort::Fort(object::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) ),
   setState( pr::destroyable, 0 );
 }
 
+void Fort::_check4newSoldier()
+{
+  int traineeLevel = traineeValue( walker::soldier );
+  bool canProduceNewSoldier = (traineeLevel > 100);
+  bool haveRoom4newSoldier = (walkers().size() < _d->maxSoldier);
+  // all trainees are there for the create soldier!
+  if( canProduceNewSoldier && haveRoom4newSoldier )
+  {
+     _readyNewSoldier();
+     setTraineeValue( walker::soldier, math::clamp<int>( traineeLevel - 100, 0, _d->maxSoldier * 100 ) );
+  }
+}
 float Fort::evaluateTrainee(walker::Type traineeType)
 {
   int currentForce = walkers().size() * 100;
@@ -354,7 +366,7 @@ TilesArray Fort::enterArea() const
 {
   TilesArray tiles = WorkingBuilding::enterArea();
 
-  Tile& rtile = _city()->tilemap().at( pos() + TilePos( 1, -1 ) );
+  Tile& rtile = _map().at( pos() + TilePos( 1, -1 ) );
   if( rtile.isWalkable( true ) )
   {
     tiles.insert( tiles.begin(), &rtile );
@@ -407,16 +419,15 @@ TilePos Fort::freeSlot(WalkerPtr who) const
 
 void Fort::changePatrolArea()
 {
-  RomeSoldierList sldrs;
-  sldrs << walkers();
+  auto sldrs = walkers().select<RomeSoldier>();
 
   TroopsFormation formation = (patrolLocation() == _d->area->pos() + TilePos( 0, 3 )
                                          ? frmParade
                                          : _d->patrolArea.mode );
   _d->patrolArea.setMode( _city(), formation );
 
-  foreach( it, sldrs )
-    (*it)->send2patrol();
+  for( auto soldier : sldrs )
+    soldier->send2patrol();
 }
 
 TilePos Fort::patrolLocation() const
@@ -426,7 +437,7 @@ TilePos Fort::patrolLocation() const
   {
     Logger::warning( "!!! WARNING: Fort::patrolLocation(): not patrol point assign in fort [%d,%d]", pos().i(), pos().j() );
     patrolPos = _d->area->pos() + TilePos( 0, 3 );
-    crashhandler::printstack();
+    crashhandler::printstack(false);
   }
   else
   {
@@ -447,7 +458,7 @@ unsigned int Fort::legionHealth() const
     return 0;
 
   unsigned int health = 0;
-  foreach( it, sldrs) { health += (*it)->health(); }
+  for( auto sldr : sldrs) { health += sldr->health(); }
   return health / sldrs.size();
 }
 
@@ -458,7 +469,7 @@ unsigned int Fort::legionTrained() const
     return 0;
 
   unsigned int trained = 0;
-  foreach( it, sldrs) { trained += (*it)->health(); }
+  for( auto sldr : sldrs) { trained += sldr->experience(); }
   return trained / sldrs.size();
 }
 
@@ -469,7 +480,7 @@ int Fort::legionMorale() const
     return 0;
 
   int morale = 0;
-  foreach( it, sldrs) { morale += (*it)->morale(); }
+  for( auto sldr : sldrs) { morale += sldr->morale(); }
   return morale / sldrs.size();
 }
 
@@ -497,13 +508,8 @@ void Fort::load(const VariantMap& stream)
   _d->patrolPoint->setPos( _d->patrolArea.lastPos );
 }
 
-SoldierList Fort::soldiers() const
-{
-  SoldierList soldiers;
-  soldiers << walkers();
-
-  return soldiers;
-}
+SoldierList Fort::soldiers() const {  return walkers().select<Soldier>(); }
+int Fort::soldiers_n() const { return walkers().count<Soldier>(); }
 
 void Fort::returnSoldiers()
 {
@@ -512,7 +518,6 @@ void Fort::returnSoldiers()
     _d->patrolPoint->setPos( _d->area->pos() + TilePos( 0, 3 ) );
     changePatrolArea();
   }
-
 }
 
 world::PlayerArmyPtr Fort::expedition() const
@@ -523,26 +528,22 @@ world::PlayerArmyPtr Fort::expedition() const
   return ret;
 }
 
-
 void Fort::sendExpedition(Point location)
 {
-  world::PlayerArmyPtr army = world::PlayerArmy::create( _city()->empire(), ptr_cast<world::City>( _city() ) );
-  army->setFortPos( pos() );
+  auto playerArmy = world::PlayerArmy::create( _city()->empire(), _city().as<world::City>() );
+  playerArmy->setFortPos( pos() );
 
-  RomeSoldierList soldiers;
-  soldiers << walkers();
+  auto soldiers = walkers().select<RomeSoldier>();
 
-  army->move2location( location );
-  army->addSoldiers( soldiers );
+  playerArmy->move2location( location );
+  playerArmy->addSoldiers( soldiers );
 
-  army->attach();
+  playerArmy->attach();
 
-  _d->expeditionName = army->name();
+  _d->expeditionName = playerArmy->name();
 
-  foreach( it, soldiers )
-  {
-    (*it)->send2expedition( army->name() );
-  }
+  for( auto it : soldiers )
+    it->send2expedition( playerArmy->name() );
 }
 
 void Fort::setAttackAnimals(bool value) { _d->attackAnimals = value; }
@@ -572,10 +573,10 @@ bool Fort::canBuild( const city::AreaInfo& areaInfo ) const
 
 bool Fort::build( const city::AreaInfo& info )
 {
-  FortList forts = statistic::getObjects<Fort>( info.city, object::any );
+  size_t forts_n = info.city->statistic().objects.count<Fort>();
 
   const city::development::Options& bOpts = info.city->buildOptions();
-  if( forts.size() >= bOpts.maximumForts() )
+  if( forts_n >= bOpts.maximumForts() )
   {
     _setError( "##not_enought_place_for_legion##" );
     return false;
@@ -594,9 +595,9 @@ bool Fort::build( const city::AreaInfo& info )
 
   _fgPictures().resize(1);
 
-  BarracksList barracks = statistic::getObjects<Barracks>( info.city, object::barracks );
+  int barracks_n = info.city->statistic().objects.count<Barracks>();
 
-  if( barracks.empty() )
+  if( !barracks_n )
   {
     _setError( "##need_barracks_for_work##" );
   }

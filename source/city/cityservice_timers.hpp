@@ -21,19 +21,21 @@
 
 #include "cityservice.hpp"
 #include "core/timer.hpp"
+#include "core/singleton.hpp"
 
 namespace city
 {
 
-class Timers
+class Timers : public StaticSingleton<Timers>
 {
+  SET_STATICSINGLETON_FRIEND_FOR(Timers)
 public:
-  static Timers& instance();
-
   void update( const unsigned int time );
   void addTimer( TimerPtr timer );
+  void reset();
+  TimerPtr find( int id ) const;
 
-  virtual ~Timers();
+  ~Timers();
 private:
   Timers();
 

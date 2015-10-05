@@ -77,15 +77,9 @@ AboutFort::AboutFort(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
   if( _d->fort.isValid() )
   {
-    const ConstructionExtensionList& exts = _d->fort->extensions();
-    foreach( i, exts )
-    {
-      if( is_kind_of<FortCurseByMars>( *i ) )
-      {
+    int fortCursed = _d->fort->extensions().count<FortCurseByMars>() ;
+    if( fortCursed > 0 )
         text = "##fort_has_been_cursed_by_mars##";
-        break;
-      }
-    }
   }
 
   _d->lbText = new Label( this, Rect( 20, 20, width() - 20, 120 ), text );

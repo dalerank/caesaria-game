@@ -21,6 +21,7 @@
 #include "gfx/picture.hpp"
 #include "city/statistic.hpp"
 #include "core/logger.hpp"
+#include "gfx/tilemap.hpp"
 #include "events/event.hpp"
 #include "walker/walker.hpp"
 #include "events/clearland.hpp"
@@ -29,6 +30,7 @@
 #include "objects_factory.hpp"
 
 using namespace gfx;
+using namespace events;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::hippodrome, Hippodrome)
 
@@ -99,10 +101,10 @@ void HippodromeSection::destroy()
 {
   Building::destroy();
 
-  HippodromePtr hp = ptr_cast<Hippodrome>( _city()->getOverlay( _basepos ) );
-  if( hp.isValid() )
+  auto hippodrome = _map().overlay( _basepos ).as<Hippodrome>();
+  if( hippodrome.isValid() )
   {
-    events::GameEventPtr e = events::ClearTile::create( _basepos );
+    GameEventPtr e = ClearTile::create( _basepos );
     e->dispatch();
     _basepos = gfx::tilemap::invalidLocation();
   }
@@ -183,8 +185,8 @@ bool Hippodrome::canBuild( const city::AreaInfo& areaInfo ) const
     const_cast<Hippodrome*>( this )->_init();
   }
 
-  HippodromeList hpList = city::statistic::getObjects<Hippodrome>( areaInfo.city, object::hippodrome );
-  if( !hpList.empty() )
+  int hp_n = areaInfo.city->statistic().objects.count<Hippodrome>();
+  if( hp_n > 0 )
   {
     const_cast<Hippodrome*>( this )->_setError( "##may_build_only_once_hippodrome##");
     return false;
@@ -234,8 +236,8 @@ bool Hippodrome::build( const city::AreaInfo& info )
   _d->sectionMiddle->setAnimationVisible( false );
   _animationRef().start();
 
-  WalkerPtr wlk = CircusCharioter::create( _city(), this );
-  _d->charioters.push_back( wlk );
+  auto charioter = CircusCharioter::create( _city(), this );
+  _d->charioters.push_back( charioter );
 
   return true;
 }
@@ -246,14 +248,14 @@ void Hippodrome::destroy()
 
   if( _d->sectionEnd.isValid() )
   {
-    events::GameEventPtr e = events::ClearTile::create( _d->sectionEnd->pos() );
+    GameEventPtr e = ClearTile::create( _d->sectionEnd->pos() );
     e->dispatch();
     _d->sectionEnd = 0;
   }
 
   if( _d->sectionMiddle.isValid() )
   {
-    events::GameEventPtr e = events::ClearTile::create( _d->sectionMiddle->pos() );
+    GameEventPtr e = ClearTile::create( _d->sectionMiddle->pos() );
     e->dispatch();
     _d->sectionMiddle = 0;
   }
@@ -333,7 +335,7 @@ void Hippodrome::_init( bool onBuild )
 HippodromeSectionPtr Hippodrome::_addSection(HippodromeSection::Type type, TilePos offset )
 {
   HippodromeSectionPtr ret = new HippodromeSection( *this, _d->direction, type );
-  city::AreaInfo info = { _city(), pos() + offset, TilesArray() };
+  city::AreaInfo info( _city(), pos() + offset );
   ret->build( info );
   ret->drop();
 

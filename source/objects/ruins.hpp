@@ -30,6 +30,7 @@ public:
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
+  virtual bool build(const city::AreaInfo &info);
   void afterBuild() { _alsoBuilt=false; }
 
 protected:

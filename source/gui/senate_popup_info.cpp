@@ -36,6 +36,7 @@ public:
   Point startPos;
   Point ratingStartPos;
   Point offset;
+  gui::Widget* extentMenu;
   Font font;
   gfx::Renderer* cityRenderer;
   Picture background;
@@ -62,6 +63,7 @@ SenatePopupInfo::SenatePopupInfo() : _d( new Impl )
   _d->ratingStartPos = Point( 186, 6 );
   _d->offset = Point( 0, 14 );
   _d->lastUpdateTime = 0;
+  _d->extentMenu = 0;
   _d->background = Picture( Size( 240, 80 ), 0, true );
 
   _d->background.fill( 0xff000000, Rect( Point( 0, 0 ), _d->background.size() ) );
@@ -86,7 +88,13 @@ void SenatePopupInfo::draw( const Point& cursorPos, gfx::Engine& painter, Senate
     {
       _d->updateRatings( senate );
     }
-    painter.draw( _d->background, cursorPos );
+
+    Rect screen( Point( 0, 0), painter.screenSize() );
+    Rect rect( cursorPos, _d->background.size() );
+
+    rect.constrainTo( screen );
+
+    painter.draw( _d->background, rect.lefttop() );
   }
 }
 

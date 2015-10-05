@@ -21,6 +21,7 @@
 #include "game/predefinitions.hpp"
 #include "vfs/path.hpp"
 #include "romedivinity.hpp"
+#include "core/singleton.hpp"
 #include "core/variant.hpp"
 
 namespace religion
@@ -29,11 +30,10 @@ namespace religion
 namespace rome
 {
 
-class Pantheon
+class Pantheon : public StaticSingleton<Pantheon>
 {
+  SET_STATICSINGLETON_FRIEND_FOR(Pantheon)
 public:
-  static Pantheon& instance();
-
   void load(const VariantMap& stream );
   void save(VariantMap& stream);
 
@@ -49,6 +49,8 @@ public:
 
   static DivinityPtr get( RomeDivinityType name );
   static DivinityPtr get( const std::string& name );
+
+  virtual ~Pantheon();
 
 private:
   Pantheon();

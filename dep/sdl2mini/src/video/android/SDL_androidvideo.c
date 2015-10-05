@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -18,7 +18,7 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../../SDL_internal.h"
 
 #if SDL_VIDEO_DRIVER_ANDROID
 
@@ -36,6 +36,7 @@
 #include "SDL_androidclipboard.h"
 #include "SDL_androidevents.h"
 #include "SDL_androidkeyboard.h"
+#include "SDL_androidtouch.h"
 #include "SDL_androidwindow.h"
 
 #define ANDROID_VID_DRIVER_NAME "Android"
@@ -44,7 +45,7 @@
 static int Android_VideoInit(_THIS);
 static void Android_VideoQuit(_THIS);
 
-#include "../SDL_egl.h"
+#include "../SDL_egl_c.h"
 /* GL functions (SDL_androidgl.c) */
 extern SDL_GLContext Android_GLES_CreateContext(_THIS, SDL_Window * window);
 extern int Android_GLES_MakeCurrent(_THIS, SDL_Window * window, SDL_GLContext context);
@@ -63,6 +64,8 @@ extern int Android_GLES_LoadLibrary(_THIS, const char *path);
 int Android_ScreenWidth = 0;
 int Android_ScreenHeight = 0;
 Uint32 Android_ScreenFormat = SDL_PIXELFORMAT_UNKNOWN;
+int Android_ScreenRate = 0;
+
 SDL_sem *Android_PauseSem = NULL, *Android_ResumeSem = NULL;
 
 /* Currently only one window */
@@ -75,8 +78,15 @@ Android_Available(void)
 }
 
 static void
+Android_SuspendScreenSaver(_THIS)
+{
+    Android_JNI_SuspendScreenSaver(_this->suspend_screensaver);
+}
+
+static void
 Android_DeleteDevice(SDL_VideoDevice * device)
 {
+    SDL_free(device->driverdata);
     SDL_free(device);
 }
 
@@ -110,6 +120,7 @@ Android_CreateDevice(int devindex)
     device->CreateWindow = Android_CreateWindow;
     device->SetWindowTitle = Android_SetWindowTitle;
     device->DestroyWindow = Android_DestroyWindow;
+    device->GetWindowWMInfo = Android_GetWindowWMInfo;
 
     device->free = Android_DeleteDevice;
 
@@ -123,6 +134,9 @@ Android_CreateDevice(int devindex)
     device->GL_GetSwapInterval = Android_GLES_GetSwapInterval;
     device->GL_SwapWindow = Android_GLES_SwapWindow;
     device->GL_DeleteContext = Android_GLES_DeleteContext;
+
+    /* Screensaver */
+    device->SuspendScreenSaver = Android_SuspendScreenSaver;
 
     /* Text input */
     device->StartTextInput = Android_StartTextInput;
@@ -155,7 +169,7 @@ Android_VideoInit(_THIS)
     mode.format = Android_ScreenFormat;
     mode.w = Android_ScreenWidth;
     mode.h = Android_ScreenHeight;
-    mode.refresh_rate = 0;
+    mode.refresh_rate = Android_ScreenRate;
     mode.driverdata = NULL;
     if (SDL_AddBasicVideoDisplay(&mode) < 0) {
         return -1;
@@ -165,6 +179,8 @@ Android_VideoInit(_THIS)
 
     Android_InitKeyboard();
 
+    Android_InitTouch();
+
     /* We're done! */
     return 0;
 }
@@ -172,15 +188,17 @@ Android_VideoInit(_THIS)
 void
 Android_VideoQuit(_THIS)
 {
+    Android_QuitTouch();
 }
 
 /* This function gets called before VideoInit() */
 void
-Android_SetScreenResolution(int width, int height, Uint32 format)
+Android_SetScreenResolution(int width, int height, Uint32 format, float rate)
 {
     Android_ScreenWidth = width;
     Android_ScreenHeight = height;
     Android_ScreenFormat = format;
+    Android_ScreenRate = rate;
 
     if (Android_Window) {
         SDL_SendWindowEvent(Android_Window, SDL_WINDOWEVENT_RESIZED, width, height);

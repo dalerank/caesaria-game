@@ -30,25 +30,17 @@ public:
   LowBridgeSubTile( const TilePos& pos, int index );
 
   virtual ~LowBridgeSubTile();
+  virtual void setState( Param name, double value);
 
   std::string errorDesc() const;
   bool isWalkable() const;
   bool isNeedRoad() const;
-
   bool build( const city::AreaInfo& info );
-
-  virtual void setState( Param name, double value);
-
   void hide();
-
   void initTerrain( gfx::Tile& terrain );
-
   bool canDestroy() const;
-
   void destroy();
-
   void save(VariantMap &stream) const;
-
   Point offset( const gfx::Tile& , const Point& subpos ) const;
 
 private:
@@ -78,7 +70,7 @@ public:
   void hide();
 
 private:
-  void _computePictures( PlayerCityPtr city, const TilePos& startPos, const TilePos& endPos, Direction dir );
+  void _computePictures(PlayerCityPtr city, const TilePos& startPos, const TilePos& endPos, Direction rdirection );
   void _checkParams( PlayerCityPtr city, Direction& direction, TilePos& start, TilePos& stop, const TilePos& curPos ) const;
 
   class Impl;

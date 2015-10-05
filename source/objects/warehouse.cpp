@@ -195,6 +195,8 @@ void Warehouse::timeStep(const unsigned long time)
     {
       _resolveDeliverMode();
     }
+
+    _animationRef().setDelay( 4 + needWorkers() + math::random(2) );
   }
 
   WorkingBuilding::timeStep( time );
@@ -226,7 +228,8 @@ void Warehouse::save( VariantMap& stream ) const
   VARIANT_SAVE_ANY_D( stream, _d, isTradeCenter)
 
   VariantList vm_tiles;
-  foreach( room, _d->rooms ) { vm_tiles.push_back( room->save() ); }
+  for( auto& room : _d->rooms )
+    vm_tiles.push_back( room.save() );
 
   stream[ literals::tiles ] = vm_tiles;
 }
@@ -239,9 +242,9 @@ void Warehouse::load( const VariantMap& stream )
   
   VariantList vm_tiles = stream.get( literals::tiles ).toList();
   int tileIndex = 0;
-  foreach( it, vm_tiles )
+  for( auto& it : vm_tiles )
   {
-    _d->rooms[ tileIndex ].load( it->toList() );
+    _d->rooms[ tileIndex ].load( it.toList() );
     tileIndex++;
   }
 
@@ -262,9 +265,9 @@ void Warehouse::setTradeCenter(bool enabled)
 
 bool Warehouse::isGettingFull() const
 {
-  foreach( room, _d->rooms )
+  for( auto& room : _d->rooms )
   {
-    if( room->qty() == 0 )
+    if( room.qty() == 0 )
       return false;
   }
 
@@ -273,13 +276,13 @@ bool Warehouse::isGettingFull() const
 
 float Warehouse::tradeBuff(Warehouse::Buff type) const
 {
-  SmartList<WarehouseBuff> buffs = extensions().select<WarehouseBuff>();
+  auto buffs = extensions().select<WarehouseBuff>();
 
   float res = 0;
-  foreach( it, buffs )
+  for( auto& buff : buffs )
   {
-    if( (*it)->group() == type )
-      res += (*it)->value();
+    if( buff->group() == type )
+      res += buff->value();
   }
 
   return res;
@@ -311,19 +314,19 @@ void Warehouse::_resolveDeliverMode()
     return;
   }
   //if warehouse in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
-  foreach( gType, good::all() )
+  for( auto& gType : good::all() )
   {
-    good::Orders::Order order = _d->goodStore.getOrder( *gType );
-    int goodFreeQty = math::clamp<int>( _d->goodStore.freeQty( *gType ), 0, Room::basicCapacity );
+    good::Orders::Order order = _d->goodStore.getOrder( gType );
+    int goodFreeQty = math::clamp<int>( _d->goodStore.freeQty( gType ), 0, Room::basicCapacity );
 
     if( good::Orders::deliver == order && goodFreeQty > 0 )
     {
-      CartSupplierPtr walker = CartSupplier::create( _city() );
-      walker->send2city( BuildingPtr( this ), *gType, goodFreeQty );
+      auto supplier = CartSupplier::create( _city() );
+      supplier->send2city( BuildingPtr( this ), gType, goodFreeQty );
 
-      if( !walker->isDeleted() )
+      if( !supplier->isDeleted() )
       {
-        addWalker( walker.object() );
+        addWalker( supplier.object() );
         return;
       }
     }
@@ -336,23 +339,24 @@ void Warehouse::_resolveDevastationMode()
   if( (_d->goodStore.qty() > 0) && walkers().empty() )
   {
     const int maxCapacity = CartPusher::megaCart;
-    foreach( goodType, good::all() )
+    for( auto& goodType : good::all() )
     {
-      int goodQty = _d->goodStore.qty( *goodType );
+      int goodQty = _d->goodStore.qty( goodType );
       goodQty = math::clamp( goodQty, 0, maxCapacity);
 
       if( goodQty > 0 )
       {
-        good::Stock stock( *goodType, goodQty, goodQty);
-        CartPusherPtr cart = CartPusher::create( _city() );
-        cart->stock().setCapacity( maxCapacity );
-        cart->send2city( BuildingPtr( this ), stock );
+        good::Stock stock( goodType, goodQty, goodQty);
+        auto pusher = CartPusher::create( _city() );
+        pusher->stock().setCapacity( maxCapacity );
+        pusher->send2city( BuildingPtr( this ), stock );
 
-        if( !cart->isDeleted() )
+        if( !pusher->isDeleted() )
         {
-          good::Stock tmpStock( *goodType, goodQty );;
+          good::Stock tmpStock( goodType, goodQty );;
           _d->goodStore.retrieve( tmpStock, goodQty );
-          addWalker( cart.object() );
+          addWalker( pusher.object() );
+          break;
         }
       }
     }   

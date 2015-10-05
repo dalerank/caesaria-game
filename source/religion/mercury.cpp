@@ -63,17 +63,17 @@ void __filchGoods( const std::string& title, PlayerCityPtr city, bool showMessag
     event->dispatch();
   }
 
-  SmartList<T> buildings = city::statistic::getObjects<T>( city );
+  SmartList<T> buildings = city->statistic().objects.find<T>();
 
-  foreach( it, buildings )
+  for( auto building : buildings )
   {
-    good::Store& store = (*it)->store();
-    foreach( gtype, good::all() )
+    good::Store& store = building->store();
+    for( auto& gtype : good::all() )
     {
-      int goodQty = math::random( (store.qty( *gtype ) + 99) / 100 ) * 100;
+      int goodQty = math::random( (store.qty( gtype ) + 99) / 100 ) * 100;
       if( goodQty > 0 )
       {
-        good::Stock rmStock( *gtype, goodQty );
+        good::Stock rmStock( gtype, goodQty );
         store.retrieve( rmStock, goodQty );
       }
     }
@@ -92,22 +92,21 @@ void Mercury::_doSmallCurse(PlayerCityPtr city)
                                                             _("##smallcurse_of_mercury_description##") );
   event->dispatch();
 
-  FactoryList factories = city::statistic::getObjects<Factory>( city );
+  FactoryList factories = city->overlays().select<Factory>();
 
-  foreach( it, factories )
+  for( auto factory : factories )
   {
-    FactoryProgressUpdater::assignTo( *it, -5, 4 * 12 );
+    FactoryProgressUpdater::assignTo( factory, -5, 4 * 12 );
   }
 }
 
 void Mercury::_doBlessing(PlayerCityPtr city)
 {
-  WarehouseList whList;
-  whList << city->overlays();
+  auto warehouses = city->overlays().select<Warehouse>();
 
-  foreach( it, whList )
+  for( auto wh : warehouses )
   {
-    WarehouseBuff::assignTo( *it, Warehouse::sellGoodsBuff, 0.2, 4 * 12 );
+    WarehouseBuff::assignTo( wh, Warehouse::sellGoodsBuff, 0.2, 4 * 12 );
   }
 }
 

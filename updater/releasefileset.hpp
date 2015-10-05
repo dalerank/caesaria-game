@@ -143,7 +143,7 @@ public:
 			_set(set)
 		{}
 
-			void VisitSection(const IniFile& iniFile, const std::string& section);
+    void VisitSection(const IniFile& iniFile, const std::string& section);
 	};
 
 	void removeItem( const std::string& itemName )

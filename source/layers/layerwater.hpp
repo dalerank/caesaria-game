@@ -29,14 +29,19 @@ class Water : public Layer
 public:
   virtual int type() const;
   virtual void drawTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
+  virtual void drawPass( gfx::Engine &engine, gfx::Tile& tile, const Point& offset, gfx::Renderer::Pass pass);
   virtual void drawWalkerOverlap(gfx::Engine &engine, gfx::Tile &tile, const Point& offset, const int depth);
 
   static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
   virtual void handleEvent(NEvent& event);
+
 private:
+  void _drawLandTile( gfx::Engine &engine, gfx::Tile &tile, const Point &offset, const Size &areaSize);
+
+  class Impl;
+  ScopedPtr<Impl> _d;
+
   Water( gfx::Camera& camera, PlayerCityPtr city );
-  std::set<int> _flags;
-  bool _showWaterValue;
 };
 
 }//end namespace citylayer

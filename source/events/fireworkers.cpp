@@ -22,7 +22,6 @@
 #include "objects/working.hpp"
 #include "gfx/tile.hpp"
 #include "city/city.hpp"
-#include "core/foreach.hpp"
 
 using namespace gfx;
 
@@ -54,11 +53,11 @@ void FireWorkers::_exec(Game& game, unsigned int)
   for( int curRange=1; curRange < defaultReturnWorkersDistance; curRange++ )
   {
     TilePos range( curRange, curRange );
-    TilesArray perimetr = tilemap.getRectangle( _center - range,
+    TilesArray perimetr = tilemap.rect( _center - range,
                                                 _center + range );
-    foreach( it, perimetr )
+    for( auto& tile : perimetr )
     {
-      WorkingBuildingPtr wrkBuilding = (*it)->overlay().as<WorkingBuilding>();
+      WorkingBuildingPtr wrkBuilding = tile->overlay<WorkingBuilding>();
       if( wrkBuilding.isValid() )
       {
         int removedFromWb = wrkBuilding->removeWorkers( _workers );
@@ -72,10 +71,10 @@ void FireWorkers::_exec(Game& game, unsigned int)
 
   if( _workers > 0 )
   {
-    WorkingBuildingList wb = city::statistic::getObjects<WorkingBuilding>( game.city(), object::any );
-    foreach( it, wb )
+    WorkingBuildingList buildings = game.city()->statistic().objects.find<WorkingBuilding>( object::any );
+    for( auto&& building : buildings )
     {
-      int removedFromWb = (*it)->removeWorkers( _workers );
+      int removedFromWb = building->removeWorkers( _workers );
       _workers -= removedFromWb;
 
       if( !_workers )

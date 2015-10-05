@@ -28,7 +28,6 @@
 #include "objects/house.hpp"
 #include "dictionary.hpp"
 #include "texturedbutton.hpp"
-#include "core/foreach.hpp"
 #include "objects/house_spec.hpp"
 #include "objects/constants.hpp"
 #include "objects/service.hpp"
@@ -39,7 +38,7 @@
 using namespace gfx;
 using namespace city;
 
-struct SrvcInfo
+struct EntertInfo
 {
   object::Type type;
   std::string building;
@@ -47,9 +46,16 @@ struct SrvcInfo
   Service::Type service;
   int maxStudy;
   CitizenGroup::Age age;
+  int buildingCount;
+  int buildingWork;
+  int peoplesStuding;
+  int need;
+  int nextLevel;
+  int coverage;
+  int minAccessLevel;
 };
 
-static SrvcInfo services[] = {
+static EntertInfo enterInfos[] = {
                                {object::school, "##schools##", "##children##", Service::school, 75, CitizenGroup::scholar},
                                {object::academy, "##colleges##", "##students##", Service::academy, 100, CitizenGroup::student},
                                {object::library, "##libraries##", "##peoples##", Service::library, 800, CitizenGroup::mature},
@@ -73,28 +79,15 @@ namespace gui
 namespace advisorwnd
 {
 
-namespace {
-  struct InfrastructureInfo
-  {
-    int buildingCount;
-    int buildingWork;
-    int peoplesStuding;
-    int need;
-    int nextLevel;
-    int coverage;
-    int minAccessLevel;
-  };
-}
-
-static SrvcInfo findInfo( const object::Type service )
+static EntertInfo findInfo( const object::Type service )
 {
-  for( int index=0; services[index].type != object::unknown; index++ )
+  for( int index=0; enterInfos[index].type != object::unknown; index++ )
   {
-    if( service == services[index].type )
-        return services[index];
+    if( service == enterInfos[index].type )
+        return enterInfos[index];
   }
 
-  SrvcInfo ret;
+  EntertInfo ret;
   ret.service = Service::srvCount;
   return ret;
 }
@@ -103,19 +96,19 @@ class EducationInfoLabel : public Label
 {
 public:
   EducationInfoLabel( Widget* parent, const Rect& rect, const object::Type service,
-                      const InfrastructureInfo& info )
+                      const EntertInfo& info )
     : Label( parent, rect ), _service( service ), _info( info )
   {
     setFont( Font::create( FONT_1_WHITE ) );
   }
 
-  const InfrastructureInfo& getInfo() const   {    return _info;  }
+  const EntertInfo& getInfo() const   {    return _info;  }
 
   virtual void _updateTexture( gfx::Engine& painter )
   {
     Label::_updateTexture( painter );
 
-    SrvcInfo info = findInfo( _service );
+    EntertInfo info = findInfo( _service );
 
     Picture& texture = _textPicture();
     Font rfont = font();
@@ -136,7 +129,7 @@ public:
 
 private:
   object::Type _service;
-  InfrastructureInfo _info;
+  EntertInfo _info;
 };
 
 class Education::Impl
@@ -150,9 +143,50 @@ public:
   EducationInfoLabel* lbCollegeInfo;
   EducationInfoLabel* lbLibraryInfo;
 
-  InfrastructureInfo getInfo( PlayerCityPtr city, const object::Type service );
+public:
   std::string getTrouble( PlayerCityPtr city );
+  EntertInfo getInfo( PlayerCityPtr city, const object::Type service );
+  void initUI(Education* parent, PlayerCityPtr city);
+  void updateCityInfo( PlayerCityPtr city );
 };
+
+void Education::Impl::initUI( Education* parent, PlayerCityPtr city )
+{
+  Point startPoint( 2, 2 );
+  Size labelSize( 550, 20 );
+  EntertInfo info;
+  info = getInfo( city, object::school );
+  lbSchoolInfo = new EducationInfoLabel( lbBlackframe, Rect( startPoint, labelSize ), object::school, info );
+
+  info = getInfo( city, object::academy );
+  lbCollegeInfo = new EducationInfoLabel( lbBlackframe, Rect( startPoint + Point( 0, 20), labelSize), object::academy, info );
+
+  info = getInfo( city, object::library );
+  lbLibraryInfo = new EducationInfoLabel( lbBlackframe, Rect( startPoint + Point( 0, 40), labelSize), object::library, info );
+
+  TexturedButton* btnHelp = new TexturedButton( parent, Point( 12, parent->height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  CONNECT( btnHelp, onClicked(), parent, Education::_showHelp );
+}
+
+void Education::Impl::updateCityInfo(PlayerCityPtr city)
+{
+  int sumScholars = 0;
+  int sumStudents = 0;
+  HouseList houses = city->statistic().houses.find();
+  for( auto house : houses )
+  {
+    sumScholars += house->habitants().scholar_n();
+    sumStudents += house->habitants().student_n();
+  }
+
+  std::string cityInfoStr = utils::format( 0xff, "%d %s, %d %s, %d %s",
+                                                  city->states().population, _("##people##"),
+                                                  sumScholars, _("##scholars##"), sumStudents, _("##students##") );
+  if( lbCityInfo ) { lbCityInfo->setText( cityInfoStr ); }
+
+  std::string advice = getTrouble( city );
+  if( lbTroubleInfo ) { lbTroubleInfo->setText( _(advice) ); }
+}
 
 Education::Education(PlayerCityPtr city, Widget* parent, int id )
 : Base( parent, city, id ),
@@ -166,38 +200,8 @@ Education::Education(PlayerCityPtr city, Widget* parent, int id )
   GET_DWIDGET_FROM_UI( _d, lbCityInfo )
   GET_DWIDGET_FROM_UI( _d, lbTroubleInfo )
 
-  Point startPoint( 2, 2 );
-  Size labelSize( 550, 20 );
-  InfrastructureInfo info;
-  info = _d->getInfo( city, object::school );
-  _d->lbSchoolInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint, labelSize ), object::school, info );
-
-  info = _d->getInfo( city, object::academy );
-  _d->lbCollegeInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 20), labelSize), object::academy, info );
-
-  info = _d->getInfo( city, object::library );
-  _d->lbLibraryInfo = new EducationInfoLabel( _d->lbBlackframe, Rect( startPoint + Point( 0, 40), labelSize), object::library, info );
-
-
-  int sumScholars = 0;
-  int sumStudents = 0;
-  HouseList houses = city::statistic::getHouses( city );
-  foreach( house, houses )
-  {
-    sumScholars += (*house)->habitants().scholar_n();
-    sumStudents += (*house)->habitants().student_n();
-  }
-
-  std::string cityInfoStr = utils::format( 0xff, "%d %s, %d %s, %d %s",
-                                                  city->states().population, _("##people##"),
-                                                  sumScholars, _("##scholars##"), sumStudents, _("##students##") );
-  if( _d->lbCityInfo ) { _d->lbCityInfo->setText( cityInfoStr ); }
-
-  std::string advice = _d->getTrouble( city );
-  if( _d->lbTroubleInfo ) { _d->lbTroubleInfo->setText( _(advice) ); }
-
-  TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
-  CONNECT( btnHelp, onClicked(), this, Education::_showHelp );
+  _d->initUI( this, city );
+  _d->updateCityInfo( city );
 }
 
 void Education::draw( gfx::Engine& painter )
@@ -213,9 +217,9 @@ void Education::_showHelp()
   DictionaryWindow::show( this, "education_advisor" );
 }
 
-InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Type bType)
+EntertInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Type bType)
 {
-  InfrastructureInfo ret;
+  EntertInfo ret = findInfo( bType );
 
   ret.buildingWork = 0;
   ret.peoplesStuding = 0;
@@ -224,37 +228,30 @@ InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Ty
   ret.nextLevel = 0;
   ret.coverage = 0;
 
-  ServiceBuildingList servBuildings = statistic::getObjects<ServiceBuilding>( city, bType );
+  ServiceBuildingList servBuildings = city->statistic().objects.find<ServiceBuilding>( bType );
 
   ret.buildingCount = servBuildings.size();
-  SrvcInfo info = findInfo( bType );
-  if( info.service == Service::srvCount )
+  if( ret.service == Service::srvCount )
   {
     Logger::warning( "AdvisorEducationWindow: unknown building type %d", bType );
   }
 
-  foreach( it, servBuildings )
+  for( auto serv : servBuildings )
   {
-    ServiceBuildingPtr serv = *it;
     if( serv->numberWorkers() > 0 )
     {
       ret.buildingWork++;
-      ret.peoplesStuding += info.maxStudy * serv->numberWorkers() / serv->maximumWorkers();
+      ret.peoplesStuding += ret.maxStudy * serv->numberWorkers() / serv->maximumWorkers();
     }
   }
 
-  HouseList houses = statistic::getHouses( city );
+  auto habitable = city->statistic().houses.habitable();
   int minAccessLevel = awesomeAccessValue;
-  foreach( it, houses )
+  for( auto house : habitable )
   {
-    HousePtr house = *it;
-    int habitantsCount = house->habitants().count();
-    if( habitantsCount > 0 )
-    {
-      ret.need += ( house->habitants().count( info.age ) * ( house->isEducationNeed( info.service ) ? 1 : 0 ) );
-      ret.nextLevel += (house->spec().next().evaluateEducationNeed( house, info.service ) == awesomeAccessValue ? 1 : 0);
-      minAccessLevel = std::min<int>( house->getServiceValue( info.service ), minAccessLevel );
-    }
+    ret.need += ( house->habitants().count( ret.age ) * ( house->isEducationNeed( ret.service ) ? 1 : 0 ) );
+    ret.nextLevel += (house->spec().next().evaluateEducationNeed( house, ret.service ) == awesomeAccessValue ? 1 : 0);
+    minAccessLevel = std::min<int>( house->getServiceValue( ret.service ), minAccessLevel );
   }
 
   ret.coverage = ret.need == 0
@@ -266,9 +263,9 @@ InfrastructureInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Ty
 std::string Education::Impl::getTrouble(PlayerCityPtr city)
 {
   StringArray advices;
-  const InfrastructureInfo& schInfo = lbSchoolInfo->getInfo();
-  const InfrastructureInfo& clgInfo = lbCollegeInfo->getInfo();
-  const InfrastructureInfo& lbrInfo = lbLibraryInfo->getInfo();
+  const EntertInfo& schInfo = lbSchoolInfo->getInfo();
+  const EntertInfo& clgInfo = lbCollegeInfo->getInfo();
+  const EntertInfo& lbrInfo = lbLibraryInfo->getInfo();
   if( schInfo.need == 0 && clgInfo.need == 0 && lbrInfo.need == 0 )
   {
     return "##not_need_education##";
@@ -305,6 +302,6 @@ std::string Education::Impl::getTrouble(PlayerCityPtr city)
   return advices.empty() ? "##education_awesome##" : advices.random();
 }
 
-}
+} //end namespace advisor
 
 } //end namespace gui
