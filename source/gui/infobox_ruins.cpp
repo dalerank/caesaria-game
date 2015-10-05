@@ -43,7 +43,7 @@ REGISTER_OBJECT_BASEINFOBOX(plague_ruins,AboutRuins)
 AboutRuins::AboutRuins( Widget* parent, PlayerCityPtr city, const Tile& tile )
   : Infobox( parent, Rect( 0, 0, 510, 350 ) )
 {
-  RuinsPtr ruin = tile.overlay().as<Ruins>();
+  RuinsPtr ruin = tile.overlay<Ruins>();
   if( ruin.isNull() )
   {
     Logger::warning( "AbourRuins: tile overlay at [%d,%d] not ruin", tile.i(), tile.j() );

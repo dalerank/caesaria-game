@@ -24,7 +24,7 @@ class Hash
 {
   unsigned int _value;
 public:
-  Hash( const std::string& text );
+  explicit Hash( const std::string& text );
   operator unsigned int() const { return _value; }
 };
 

@@ -2,6 +2,7 @@
 #include "core/logger.hpp"
 #include "vfs/path.hpp"
 #include <png.h>
+#include <SDL.h>
 
 using namespace gfx;
 
@@ -21,17 +22,8 @@ static void png_cpexcept_warn(png_structp png_ptr, png_const_charp msg)
 // PNG function for file reading
 void PNGAPI user_read_data_fcn(png_structp png_ptr, png_bytep data, png_size_t length)
 {
-  png_size_t check;
-
-  // changed by zola {
   vfs::NFile* file = (vfs::NFile*)png_get_io_ptr(png_ptr);
-  check=(png_size_t)file->read((void*)data,(unsigned int)length);
-  // }
-
-  if( check != length )
-  {
-    png_error(png_ptr, "Read Error");
-  }
+  file->read((void*)data,(unsigned int)length);
 }
 
 //! returns true if the file maybe is able to be loaded by this class
@@ -40,7 +32,6 @@ bool PictureLoaderPng::isALoadableFileExtension(const vfs::Path& filename) const
 {
   return filename.isMyExtension( ".png" );
 }
-
 
 //! returns true if the file maybe is able to be loaded by this class
 bool PictureLoaderPng::isALoadableFileFormat( vfs::NFile file) const
@@ -57,9 +48,8 @@ bool PictureLoaderPng::isALoadableFileFormat( vfs::NFile file) const
   return !png_sig_cmp(buffer, 0, 8);
 }
 
-
 // load in the image data
-Picture PictureLoaderPng::load( vfs::NFile file ) const
+Picture PictureLoaderPng::load(vfs::NFile file, bool streaming) const
 {
   if(!file.isOpen())
   {
@@ -96,7 +86,7 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   png_infop info_ptr = png_create_info_struct(png_ptr);
   if (!info_ptr)
   {
-    Logger::warning( "LOAD PNG: Internal PNG create info struct failure " + file.path().toString() );
+    Logger::warning( "LOAD PNG: Couldn't create image information for PNG file " + file.path().toString() );
     png_destroy_read_struct(&png_ptr, NULL, NULL);
     return Picture::getInvalid();
   }
@@ -105,6 +95,7 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   if (setjmp(png_jmpbuf(png_ptr)))
   {
     png_destroy_read_struct(&png_ptr, &info_ptr, NULL);
+    Logger::warning( "LOAD PNG: Error reading the PNG file. " + file.path().toString() );
     return Picture::getInvalid();
   }
 
@@ -200,14 +191,14 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   int pixelSize = (ColorType==PNG_COLOR_TYPE_RGB_ALPHA ? 4 : 3);
   bytes.resize( Width * Height * pixelSize );
 
-  ScopedArrayPtr<unsigned char*> RowPointers( (unsigned char**)new png_bytep[ Height ] );
+  ScopedArrayPtr<unsigned char*> rowPointers( (unsigned char**)new png_bytep[ Height ] );
 
   // Fill array of pointers to rows in image data
   unsigned char* data = &bytes[0];
 
   for(unsigned int i=0; i<Height; ++i)
   {
-    RowPointers.data()[i] = data;
+    rowPointers.data()[i] = data;
     data += Width * pixelSize;
   }
 
@@ -219,7 +210,7 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   }
 
   // Read data using the library function that handles all transformations including interlacing
-  png_read_image( png_ptr, RowPointers.data() );
+  png_read_image( png_ptr, rowPointers.data() );
 
   png_read_end( png_ptr, NULL );
   png_destroy_read_struct( &png_ptr, &info_ptr, 0 ); // Clean up memory
@@ -228,7 +219,7 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
   Picture pic;
   if( ColorType==PNG_COLOR_TYPE_RGB_ALPHA )
   {
-    pic = Picture( Size( Width, Height ), bytes.data() );
+    pic = Picture( Size( Width, Height ), bytes.data(), streaming );
   }
   else
   {
@@ -243,7 +234,7 @@ Picture PictureLoaderPng::load( vfs::NFile file ) const
       b4[ index*4+2 ] = bytes[index*3+0];
     }
 
-    pic = Picture( Size( Width, Height ), b4.data() );
+    pic = Picture( Size( Width, Height ), b4.data(), streaming );
   }
   return pic;
 }

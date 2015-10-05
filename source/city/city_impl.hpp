@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_CITYIMPL_H_INCLUDED__
 #define __CAESARIA_CITYIMPL_H_INCLUDED__
@@ -31,8 +31,9 @@ class Services : public city::SrvcList
 {
 public:
   /** Call every frame */
-  void timeStep( PlayerCityPtr city, unsigned int time);
+  void update( PlayerCityPtr city, unsigned int time);
   void initialize( PlayerCityPtr city, const std::string& model );
+  void destroyAll();
 };
 
 /**  */
@@ -40,7 +41,7 @@ class Overlays : public FlowList<Overlay>
 {
 public:
   void update( PlayerCityPtr city, unsigned int time );
-
+  void recalcRoadAccess();
   void onDestroyOverlay( PlayerCityPtr city, OverlayPtr overlay );
 };
 
@@ -59,15 +60,9 @@ public:
 
   inline const WalkerList& at( const TilePos& pos ) { return grid.at( pos ); }
 
-  void update( PlayerCityPtr, unsigned int time );
-};
+  VariantMap save() const;
 
-class Options : public std::map<int, int>
-{
-public:
-  VariantList save() const;
-  void load(const VariantList &stream );
-  void resetIfNot( int name, int value );
+  void update( PlayerCityPtr, unsigned int time );
 };
 
 }//end namespace city

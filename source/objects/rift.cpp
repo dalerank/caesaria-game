@@ -44,10 +44,8 @@ bool Rift::build( const city::AreaInfo& info )
   setPicture( computePicture() );
 
   RiftList rifts = neighbors();
-  foreach( it, rifts )
-  {
-    (*it)->updatePicture();
-  }
+  for( auto rift : rifts )
+    rift->updatePicture();
 
   DustCloud::create( info.city, info.pos, 5 );
 
@@ -63,20 +61,10 @@ void Rift::initTerrain(Tile& terrain)
 
 RiftList Rift::neighbors() const
 {
-  RiftList ret;
+  return  _city()->tilemap()
+                  .getNeighbors(pos(), Tilemap::FourNeighbors)
+                  .overlays<Rift>();
 
-  TilesArray tiles = _city()->tilemap().getNeighbors(pos(), Tilemap::FourNeighbors);
-
-  foreach( it, tiles )
-  {
-    RiftPtr rt = ptr_cast<Rift>( (*it)->overlay() );
-    if( rt.isValid() )
-    {
-      ret.push_back( rt );
-    }
-  }
-
-  return ret;
 }
 
 Picture Rift::computePicture()
@@ -87,13 +75,13 @@ Picture Rift::computePicture()
   RiftList neigs = neighbors();
 
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
-  foreach( it, neigs )
+  for( auto rift : neigs )
   {
-    Tile* tile = &(*it)->tile();
-    if (tile->j() > j)      { directionFlags += 1; } // road to the north
-    else if (tile->j() < j) { directionFlags += 4; } // road to the south
-    else if (tile->i() > i) { directionFlags += 2; } // road to the east
-    else if (tile->i() < i) { directionFlags += 8; } // road to the west
+    TilePos p = rift->tile().epos();
+    if (p.j() > j)      { directionFlags += 1; } // road to the north
+    else if (p.j() < j) { directionFlags += 4; } // road to the south
+    else if (p.i() > i) { directionFlags += 2; } // road to the east
+    else if (p.i() < i) { directionFlags += 8; } // road to the west
   }
 
   // std::cout << "direction flags=" << directionFlags << std::endl;

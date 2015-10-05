@@ -30,6 +30,8 @@ public:
   std::string name;
 };
 
+void Srvc::timeStep(const unsigned int time) {}
+
 std::string Srvc::name() const { return _d->name; }
 
 void Srvc::setName(const std::string& name) { _d->name = name; }

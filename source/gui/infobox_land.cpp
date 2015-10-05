@@ -97,7 +97,7 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
     else if( ovType == object::road )
     {
       _helpUri = "paved_road";
-      RoadPtr road = ptr_cast<Road>( tile.overlay() );
+      auto road = tile.overlay<Road>();
       title = road->pavedValue() > 0 ? "##road_paved_caption##" : "##road_caption##";
       if( tile.pos() == city->borderInfo().roadEntry ) { text = "##road_from_rome##"; }
       else if( tile.pos() == city->borderInfo().roadExit ) { text = "##road_to_distant_region##"; }
@@ -126,10 +126,11 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
   //int index = (size - tile.getJ() - 1 + border_size) * 162 + tile.getI() + border_size;
 
   text = _(text );
+#ifdef DEBUG
   text += utils::format( 0xff, "\nTile at: (%d,%d) ID:%04X",
                                            tile.i(), tile.j(),  
-                                          ((short int) tile.originalImgId() ) );
-  
+                                          ((unsigned int) tile.imgId() ) );
+#endif
   setTitle( _( title ));
   setText( text );
 }
@@ -150,10 +151,10 @@ AboutFreeHouse::AboutFreeHouse( Widget* parent, PlayerCityPtr city, const Tile& 
 {
   setTitle( _("##freehouse_caption##") );
 
-  ConstructionPtr cnst = tile.overlay().as<Construction>();
+  auto cnst = tile.overlay<Construction>();
   if( cnst.isValid() )
   {
-      setText( cnst->roadside().size() == 0
+      setText( cnst->roadside().empty()
                   ? _("##freehouse_text_noroad##")
                   : _("##freehouse_text##") );
   }
@@ -164,6 +165,6 @@ void AboutFreeHouse::_showHelp()
   DictionaryWindow::show( this, "vacant_lot" );
 }
 
-}
+}//end namespace infobox
 
 }//end namespace gui

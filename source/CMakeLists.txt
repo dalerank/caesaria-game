@@ -34,6 +34,7 @@ file(GLOB MISSIONS_LIST "${GAME_CONFIG_DIR}/missions/*.*")
 file(GLOB HELP_LIST "${GAME_CONFIG_DIR}/help/*.*")
 file(GLOB SHADERS_LIST "${GAME_CONFIG_DIR}/shaders/*.*")
 file(GLOB SCENES_LIST "${CMAKE_CURRENT_SOURCE_DIR}/scene/*.*")
+file(GLOB THREAD_LIST "${CMAKE_CURRENT_SOURCE_DIR}/thread/*.*")
 file(GLOB LAYERS_LIST "${CMAKE_CURRENT_SOURCE_DIR}/layers/*.*")
 file(GLOB RELIGION_LIST "${CMAKE_CURRENT_SOURCE_DIR}/religion/*.*")
 file(GLOB STEAM_SOURCES_LIST "${STEAM_API_DIR}/*.*")
@@ -45,13 +46,16 @@ add_executable(${PROJECT_NAME} ${SRC_LIST} ${INC_LIST}
                ${PATHWAY_SOURCES_LIST} ${CITY_SOURCES_LIST} ${GOOD_SOURCES_LIST}
                ${GFX_SOURCES_LIST} ${SOURCES_LIST} ${SOUND_SOURCES_LIST} ${WORLD_SOURCES_LIST}
                ${MISSIONS_LIST} ${TUTORIAL_MODELS_LIST} ${SCENES_LIST} ${RELIGION_LIST} ${SHADERS_LIST}
-               ${STEAM_SOURCES_LIST} ${HELP_LIST} ${LAYERS_LIST} )
+               ${STEAM_SOURCES_LIST} ${HELP_LIST} ${LAYERS_LIST} ${THREAD_LIST} )
 
 include_directories(${SDL2MINI_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${SDL2MINI_LIBRARY})
 
 include_directories(${MIXER_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${MIXER_LIBRARY})
+
+include_directories(${PNG_INCLUDE_DIR})
+target_link_libraries(${PROJECT_NAME} ${PNG_LIBRARY})
 
 include_directories(${ZLIB_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARY})
@@ -70,9 +74,6 @@ target_link_libraries(${PROJECT_NAME} ${SMK_LIBRARY})
 
 include_directories(${SDL2_TTF_INCLUDE_DIR})
 target_link_libraries(${PROJECT_NAME} ${SDL2_TTF_LIBRARY})
-
-include_directories(${PNG_INCLUDE_DIR})
-target_link_libraries(${PROJECT_NAME} ${PNG_LIBRARY})
 
 if(BUILD_GL_FRAMEBUFFER)
 add_definitions( -DCAESARIA_USE_FRAMEBUFFER )
@@ -162,19 +163,16 @@ if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   endif(HAIKU)
 endif()
 
-# tests for C++11 suport
+# Enforce C++11
+set(USE_CPP11 ON)
+
+# Check for C++11 suport
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)
 if(COMPILER_SUPPORTS_CXX11)
-  if(USE_CPP11)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-  endif()
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 else()
-  if(USE_CPP11)
-    message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support. Use proper compiler or disable USE_CPP11 option.")
-  else()
-    message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support.")
-  endif()
+  message(STATUS "The compiler ${CMAKE_CXX_COMPILER} has no C++11 support.")
 endif()
 
 if(WIN32)
@@ -285,29 +283,3 @@ if(EXT_BINDIR)
       COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${GAME_BINARY_FILENAME}" "${CMAKE_SOURCE_DIR}/${EXT_BINDIR}/${GAME_BINARY_FILENAME}"
   )
 endif(EXT_BINDIR)
-
-
-
-# Copy DLL to build output directory
-if(WIN32)
-  set(_LIBS_FOR_DLL_SOURCE
-    ${SDL2_LIBRARY}
-    ${SDL2_MIXER_LIBRARY}
-    ${SDL2_TTF_LIBRARY}
-  )
-
-  foreach(_lib ${_LIBS_FOR_DLL_SOURCE})
-    GET_FILENAME_COMPONENT(_lib_abs ${_lib} ABSOLUTE)
-    GET_FILENAME_COMPONENT(_lib_path ${_lib} PATH)
-
-    # Gather list of all .xml and .conf files in "/config"
-    file(GLOB DLLs ${_lib_path}/*.dll
-      ${_lib_path}/../bin/*.dll)
-
-    foreach(dll ${DLLs})
-      add_custom_command( TARGET ${PROJECT_NAME}
-                          POST_BUILD
-                          COMMAND ${CMAKE_COMMAND} -E copy ${dll} ${WORK_DIR})
-    endforeach()
-  endforeach(_lib)
-endif(WIN32)

@@ -1626,7 +1626,8 @@ static const unsigned int CanConvertMatrix[Variant::LastCoreType + 1] =
 
 /*LineF*/        1 << Variant::Line,
 
-/*Point*/        1 << Variant::NPointF,
+                // TODO: Fix narrowing, remove cast
+/*Point*/        (const unsigned int) (1 << Variant::NPointF),
 
 /*PointF*/       1 << Variant::NPoint
 
@@ -1851,10 +1852,8 @@ Variant2Handler::Variant2Handler()
 
 StringArray& operator<<(StringArray &strlist, const VariantList &vars)
 {
-  for( VariantList::const_iterator it=vars.begin(); it != vars.end(); ++it )
-  {
-    strlist.push_back( (*it).toString() );
-  }
+  for( auto& var : vars )
+    strlist.push_back( var.toString() );
 
   return strlist;
 }

@@ -78,7 +78,7 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
   _d->scrollBar->setNotClipped( false );
   _d->scrollBar->setSubElement(true);
   _d->scrollBar->setVisibleFilledArea( false );
-  _d->scrollBar->setTabStop(false);
+  _d->scrollBar->setTabstop(false);
   _d->scrollBar->setAlignment( align::lowerRight, align::lowerRight, align::upperLeft, align::lowerRight);
   _d->scrollBar->setVisible(false);
   _d->scrollBar->setValue(0);
@@ -86,8 +86,8 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
   setNotClipped(!clip);
 
   // this element can be tabbed to
-  setTabStop(true);
-  setTabOrder(-1);
+  setTabstop(true);
+  setTaborder(-1);
 
   updateAbsolutePosition();
 
@@ -132,7 +132,7 @@ void ListBox::_recalculateItemHeight( const Font& defaulFont, int h )
 ListBox::~ListBox() {}
 
 //! returns amount of list items
-unsigned int ListBox::itemCount() const {  return _d->items.size(); }
+unsigned int ListBox::itemsCount() const {  return _d->items.size(); }
 
 //! returns string of a list item. the may be a value from 0 to itemCount-1
 ListBoxItem& ListBox::item(unsigned int id)
@@ -591,7 +591,7 @@ void ListBox::_drawItemText( Engine& painter, ListBoxItem& item, const Point& po
 
 void ListBox::_updateItemText(Engine& painter, ListBoxItem& item, const Rect& textRect, Font font, const Rect& frameRect)
 {
-  item.updateText( textRect.UpperLeftCorner, font, frameRect.size() );
+  item.updateText( textRect.lefttop(), font, frameRect.size() );
 }
 
 void ListBox::beforeDraw(gfx::Engine& painter)
@@ -638,7 +638,7 @@ void ListBox::beforeDraw(gfx::Engine& painter)
         Rect textRect = currentFont.getTextRect( refItem.text(), Rect( Point(0, 0), frameRect.size() ),
                                                  itemTextHorizontalAlign, itemTextVerticalAlign );
 
-        textRect.UpperLeftCorner += Point( _d->itemsIconWidth+3, 0 );
+        textRect._lefttop += Point( _d->itemsIconWidth+3, 0 );
 
         _updateItemText( painter, refItem, textRect, currentFont, frameRect);
       }
@@ -675,8 +675,8 @@ void ListBox::draw( gfx::Engine& painter )
   const Point& widgetLeftup = absoluteRect().lefttop();
 
   Rect clipRect = absoluteClippingRectRef();
-  clipRect.UpperLeftCorner += Point( 3, 3 );
-  clipRect.LowerRightCorner -= Point( 3, 3 );
+  clipRect._lefttop += Point( 3, 3 );
+  clipRect._bottomright -= Point( 3, 3 );
 
   for( unsigned int i = 0; i < _d->items.size();  i++ )
   {
@@ -740,7 +740,7 @@ void ListBox::_updateBackground( int scrollbarWidth)
   Pictures pics;
 
   Decorator::draw( pics, Rect( 0, 0, width() - scrollbarWidth, height() ), Decorator::blackFrame );
-  Decorator::draw( pics, Rect( width() - scrollbarWidth, 0, width(), height() ), Decorator::whiteArea, Decorator::normalY  );
+  Decorator::draw( pics, Rect( width() - scrollbarWidth, 0, width(), height() ), Decorator::whiteArea, nullptr, Decorator::normalY  );
 
   bool batchOk = _d->background.load( pics, absoluteRect().lefttop() );
   if( !batchOk )
@@ -920,10 +920,8 @@ void ListBox::fitText(const std::string& text)
 
 void ListBox::addItems(const StringArray& strings)
 {
-  foreach( it, strings )
+  for( auto& line : strings )
   {
-    const std::string& line = *it;
-
     if( line.find( "\tc" ) != std::string::npos )
     {
       std::string nLine = utils::replace( line, "\tc", "" );

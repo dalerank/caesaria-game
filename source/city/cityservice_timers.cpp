@@ -31,34 +31,39 @@ public:
   TimerList timers;
 };
 
-Timers& Timers::instance()
-{
-  static Timers inst;
-  return inst;
-}
-
 Timers::Timers() : _d( new Impl )
 { 
 }
 
 void Timers::update( const unsigned int time )
 {
-  TimerList::iterator it=_d->timers.begin();
-  while( it != _d->timers.end() )
+  auto timerIt=_d->timers.begin();
+  while( timerIt != _d->timers.end() )
   { 
-    if( !(*it)->isActive() )
+    if( !(*timerIt)->isActive() )
     {
-      it = _d->timers.erase( it );      
+      timerIt = _d->timers.erase( timerIt );
     }
     else
     {
-      (*it)->update( time );
-      ++it;
+      (*timerIt)->update( time );
+      ++timerIt;
     }
   }
 }
 
 void Timers::addTimer( TimerPtr timer ) {  _d->timers.push_back( timer ); }
+void Timers::reset() { _d->timers.clear(); }
+
+TimerPtr Timers::find(int id) const
+{
+  for( auto&& timer : _d->timers )
+    if( timer->id() == id )
+      return timer;
+
+  return TimerPtr();
+}
+
 Timers::~Timers() {}
 
 }//end namespace city

@@ -32,18 +32,21 @@ namespace city
 class AmbientSound : public Srvc
 {
 public:
-
+  /** constructor **/
   static SrvcPtr create( PlayerCityPtr city );
-  virtual ~AmbientSound();
+
+  /** Call before destructor */
+  virtual void destroy();
 
   /** Call every frame */
   virtual void timeStep( const unsigned int time );
 
-  /** Call before destructor */
-  virtual void destroy();
   void setCamera( gfx::Camera* camera );
 
+  /** name of this service **/
   static std::string defaultName();
+
+  virtual ~AmbientSound();
 private:
   AmbientSound( PlayerCityPtr city );
 

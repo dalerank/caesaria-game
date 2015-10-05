@@ -40,10 +40,14 @@ public:
 
   static LayerPtr create( gfx::Renderer& renderer, PlayerCityPtr city );
 
+public signals:
+  Signal3<object::Type,TilePos,int>& onDestroy();
+
 private:
   Destroy(gfx::Renderer &renderer, PlayerCityPtr city );
 
   void _clearAll();
+  void _executeClear();
   void _exitDestroyTool();
   unsigned int _checkMoney4destroy( const gfx::Tile& tile );
 

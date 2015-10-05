@@ -26,9 +26,23 @@ public:
   DirectRoute() {}
   DirectRoute( ConstructionPtr dst, const Pathway& way )
   {
+    set( dst, way );
+  }
+
+  DirectRoute& operator=( const DirectRoute& a )
+  {
+    set( a.dst(), a.way());
+    return *this;
+  }
+
+  void set( ConstructionPtr dst, const Pathway& way )
+  {
     first = dst;
     second = way;
   }
+
+  unsigned int length() const { return way().length(); }
+  bool isValid() const { return way().isValid(); }
 
   ConstructionPtr dst() const { return first; }
   const Pathway& way() const { return second; }

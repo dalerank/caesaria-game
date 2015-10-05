@@ -46,7 +46,7 @@ enum Type
   helveti,
   count
 };
-}
+}//end namespace nation
 
 typedef nation::Type Nation;
 

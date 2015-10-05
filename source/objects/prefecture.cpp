@@ -22,9 +22,10 @@
 #include "walker/prefect.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "gfx/tile.hpp"
+#include "city/city.hpp"
 #include "pathway/path_finding.hpp"
+#include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
-#include "city/helper.hpp"
 #include "city/cityservice_fire.hpp"
 #include "objects/constants.hpp"
 #include "gfx/helper.hpp"
@@ -110,20 +111,19 @@ TilePos Prefecture::Impl::checkFireDetect( PlayerCityPtr city, const TilePos& po
   if( fireDetect.i() >= 0 )
     return fireDetect;
 
-  city::FirePtr fire;
-  fire << city->findService( city::Fire::defaultName() );
+  city::FirePtr fire = city->statistic().services.find<city::Fire>();
 
   fireDetect = gfx::tilemap::invalidLocation();
   if( city.isValid() )
   {
     int minDistance = 9999;
-    foreach ( it, fire->locations() )
+    for( auto& location : fire->locations() )
     {
-      int currentDistance = pos.distanceFrom( *it );
+      int currentDistance = pos.distanceFrom( location );
       if( currentDistance < minDistance )
       {
         minDistance = currentDistance;
-        fireDetect = *it;
+        fireDetect = location;
       }
     }
   }

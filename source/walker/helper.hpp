@@ -22,6 +22,7 @@
 #include "vfs/path.hpp"
 #include "core/variant.hpp"
 #include "world/nation.hpp"
+#include "typeset.hpp"
 #include "walker.hpp"
 
 class WalkerHelper
@@ -34,7 +35,7 @@ public:
   static std::string getPrettyTypename( walker::Type type );
   static std::string getNationName( world::Nation type );
   static world::Nation getNation( const std::string& name );
-  static gfx::Picture getBigPicture( walker::Type type );
+  static gfx::Picture bigPicture( walker::Type type );
   static VariantMap getOptions( const std::string& name );
   static VariantMap getOptions( const walker::Type type );
   static bool isHuman( WalkerPtr wlk );
@@ -77,24 +78,5 @@ private:
   class Impl;
   ScopedPtr<Impl> _d;
 };
-
-template< class Wlk >
-SmartPtr<Wlk> findNearestWalker( TilePos pos, const SmartList<Wlk>& walkers )
-{
-  SmartPtr< Wlk > p;
-
-  int minDistance=99;
-  foreach( it, walkers )
-  {
-    int distance = (*it)->pos().distanceFrom( pos );
-    if( distance < minDistance )
-    {
-      minDistance =  distance;
-      p = *it;
-    }
-  }
-
-  return p;
-}
 
 #endif //_CAESARIA_WALKERHELPER_H_INCLUDE_

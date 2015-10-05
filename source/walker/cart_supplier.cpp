@@ -19,11 +19,11 @@
 
 #include "objects/metadata.hpp"
 #include "core/exception.hpp"
-#include "city/helper.hpp"
 #include "core/position.hpp"
 #include "objects/granary.hpp"
 #include "objects/warehouse.hpp"
 #include "gfx/tile.hpp"
+#include "city/city.hpp"
 #include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
 #include "good/helper.hpp"
@@ -32,6 +32,7 @@
 #include "objects/factory.hpp"
 #include "name_generator.hpp"
 #include "good/store.hpp"
+#include "core/variant_list.hpp"
 #include "objects/constants.hpp"
 #include "events/removecitizen.hpp"
 #include "city/trade_options.hpp"
@@ -58,6 +59,8 @@ public:
   int maxDistance;
   long rcvReservationID;
   long reservationID;
+
+  good::Store* getStore(BuildingPtr building );
 };
 
 CartSupplier::CartSupplier( PlayerCityPtr city )
@@ -72,10 +75,23 @@ CartSupplier::CartSupplier( PlayerCityPtr city )
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
+good::Store* CartSupplier::Impl::getStore( BuildingPtr building )
+{
+    good::Store* storage = nullptr;
+    auto factory = building.as<Factory>();
+    auto granary = building.as<Granary>();
+    auto warehouse = building.as<Warehouse>();
+
+    if( factory.isValid() ) { storage = &factory->store(); }
+    else if( granary.isValid() ) { storage = &granary->store(); }
+    else if( warehouse.isValid() ){ storage = &warehouse->store(); }
+
+    return storage;
+}
+
 void CartSupplier::_reachedPathway()
 {
   Walker::_reachedPathway();
-  city::Helper helper( _city() );
 
   if( _pathway().isReverse() )
   {
@@ -85,13 +101,7 @@ void CartSupplier::_reachedPathway()
     BuildingPtr building;
     building << _city()->getOverlay( _d->baseBuildingPos );
 
-    good::Store* storage = 0;
-    FactoryPtr f = ptr_cast<Factory>( building );
-    GranaryPtr g = ptr_cast<Granary>( building );
-    WarehousePtr w = ptr_cast<Warehouse>( building );
-    if( f.isValid() ) { storage = &f->store(); }
-    else if( g.isValid() ) { storage = &g->store(); }
-    else if( w.isValid() ){ storage = &w->store(); }
+    good::Store* storage = _d->getStore( building );
 
     if( storage )
     {
@@ -112,13 +122,7 @@ void CartSupplier::_reachedPathway()
     BuildingPtr building;
     building << _city()->getOverlay( _d->storageBuildingPos );
 
-    good::Store* storage = 0;
-    FactoryPtr f = ptr_cast<Factory>( building );
-    GranaryPtr g = ptr_cast<Granary>( building );
-    WarehousePtr w = ptr_cast<Warehouse>( building );
-    if( f.isValid() ) { storage = &f->store(); }
-    else if( g.isValid() ) { storage = &g->store(); }
-    else if( w.isValid() ){ storage = &w->store(); }
+    good::Store* storage = _d->getStore( building );
 
     if( storage )
     {
@@ -135,7 +139,6 @@ void CartSupplier::_reachedPathway()
     go();
   }
 }
-
 
 const gfx::CartAnimation& CartSupplier::_cart()
 {
@@ -155,35 +158,35 @@ void CartSupplier::_changeDirection()
 
 void CartSupplier::getPictures( Pictures& oPics)
 {
-   oPics.clear();
+  oPics.clear();
 
-   // depending on the walker direction, the cart is ahead or behind
-   switch (direction())
-   {
-   case direction::west:
-   case direction::northWest:
-   case direction::north:
-   case direction::northEast:
-      oPics.push_back( _cart().currentFrame() );
-      oPics.push_back( getMainPicture() );
-   break;
+  // depending on the walker direction, the cart is ahead or behind
+  switch (direction())
+  {
+  case direction::west:
+  case direction::northWest:
+  case direction::north:
+  case direction::northEast:
+     oPics.push_back( _cart().currentFrame() );
+     oPics.push_back( getMainPicture() );
+  break;
 
-   case direction::east:
-   case direction::southEast:
-   case direction::south:
-   case direction::southWest:
-      oPics.push_back( getMainPicture() );
-      oPics.push_back( _cart().currentFrame() );
-   break;
+  case direction::east:
+  case direction::southEast:
+  case direction::south:
+  case direction::southWest:
+     oPics.push_back( getMainPicture() );
+     oPics.push_back( _cart().currentFrame() );
+  break;
 
-   default:
-   break;
-   }
+  default:
+  break;
+  }
 
-   if( _d->anim.isBack() )
-   {
-     std::iter_swap( oPics.begin(), oPics.begin() + 1);
-   }
+  if( _d->anim.isBack() )
+  {
+    std::iter_swap( oPics.begin(), oPics.begin() + 1);
+  }
 }
 
 template< class T >
@@ -201,10 +204,10 @@ TilePos getSupplierDestination2( Propagator &pathPropagator, const object::Type 
   foreach( pathWayIt, pathWayList )
   {
     // for every warehouse within range
-    BuildingPtr building= ptr_cast<Building>( pathWayIt->first );
+    BuildingPtr building= pathWayIt->first.as<Building>();
     PathwayPtr pathWay= pathWayIt->second;
 
-    SmartPtr< T > destBuilding = ptr_cast<T>( building );
+    SmartPtr< T > destBuilding = building.as<T>();
     int qty = destBuilding->store().getMaxRetrieve( what );
     if( qty > max_qty )
     {
@@ -239,7 +242,7 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const good::Pr
   // get the list of buildings within reach
   Pathway pathWay;
   Propagator pathPropagator( _city() );
-  pathPropagator.init( ptr_cast<Construction>( building ) );
+  pathPropagator.init( building.as<Construction>() );
   pathPropagator.setAllDirections( false );
   pathPropagator.propagate( _d->maxDistance);
 
@@ -280,16 +283,10 @@ void CartSupplier::send2city( BuildingPtr building, good::Product what, const in
 
 void CartSupplier::_reserveStorage()
 {
-  BuildingPtr b;
-  b << _city()->getOverlay( _d->baseBuildingPos );
+  BuildingPtr building;
+  building << _city()->getOverlay( _d->baseBuildingPos );
 
-  good::Store* storage = 0;
-  FactoryPtr f = ptr_cast<Factory>( b );
-  GranaryPtr g = ptr_cast<Granary>( b );
-  WarehousePtr w = ptr_cast<Warehouse>( b );
-  if( f.isValid() ) { storage = &f->store(); }
-  else if( g.isValid() ) { storage = &g->store(); }
-  else if( w.isValid() ){ storage = &w->store(); }
+  good::Store* storage = _d->getStore( building );
 
   if( storage != 0 )
   {

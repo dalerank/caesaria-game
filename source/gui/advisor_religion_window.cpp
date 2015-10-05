@@ -81,7 +81,7 @@ public:
       rfont.draw( texture, utils::i2str( _bigTempleCount ), 280, 0 );
 
 #ifdef DEBUG
-      rfont.draw( texture, utils::format( 0xff, "%d/f_%d", _lastFestival, _divinity->relation() ), 350, 0 );
+      rfont.draw( texture, utils::format( 0xff, "f%d/r%d", _lastFestival, (int)_divinity->relation() ), 320, 0 );
 #else
       rfont.draw( texture, utils::i2str( _lastFestival ), 350, 0 );
 #endif
@@ -140,8 +140,8 @@ public:
   {
     InfrastructureInfo ret;
 
-    ret.smallTemplCount = city::statistic::getObjects<ServiceBuilding>( city, small ).size();
-    ret.bigTempleCount = city::statistic::getObjects<ServiceBuilding>( city, big ).size();
+    ret.smallTemplCount = city->statistic().objects.find<ServiceBuilding>( small ).size();
+    ret.bigTempleCount = city->statistic().objects.find<ServiceBuilding>( big ).size();
 
     return ret;
   }
@@ -205,15 +205,15 @@ void Religion::_showHelp()
 void Religion::Impl::updateReligionAdvice(PlayerCityPtr city)
 {
   StringArray advices;
-  HouseList houses = city::statistic::getHouses( city );
+  HouseList houses = city->statistic().houses.find();
 
   int needBasicReligion = 0;
   int needSecondReligion = 0;
   int needThirdReligion = 0;
-  foreach( it, houses )
+  for( auto house : houses )
   {
-    const HouseSpecification& spec = (*it)->spec();
-    int curLevel = spec.computeReligionLevel( *it );
+    const HouseSpecification& spec = house->spec();
+    int curLevel = spec.computeReligionLevel( house );
     int needLevel = spec.minReligionLevel();
 
     switch( needLevel )
@@ -249,9 +249,9 @@ void Religion::Impl::updateReligionAdvice(PlayerCityPtr city)
     DivinityList gods = rome::Pantheon::instance().all();
 
     bool haveDispleasengGod = false;
-    foreach( it, gods )
+    for( auto god : gods )
     {
-      if( (*it)->relation() < 75 )
+      if( god->relation() < 75 )
       {
         haveDispleasengGod = true;
         break;

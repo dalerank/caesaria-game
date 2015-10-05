@@ -21,6 +21,7 @@
 #include "core/scopedptr.hpp"
 #include "gui/mainmenu.hpp"
 #include "scene/level.hpp"
+#include "vfs/file.hpp"
 #include "game.hpp"
 
 class DebugHandler
@@ -39,6 +40,20 @@ public signals:
 private:
   class Impl;
   ScopedPtr<Impl> _d;
+};
+
+class FileChangeObserver
+{
+public:
+  Signal0<> onChange;
+  std::string filename;
+  unsigned int lastModify;
+  vfs::NFile file;
+
+  ~FileChangeObserver();
+
+  void check();
+  void setFilename( const std::string& fname );
 };
 
 #endif //_CAESARIA_DEBUGHANDLER_INCLUDE_H_

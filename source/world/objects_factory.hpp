@@ -19,6 +19,7 @@
 #define __CAESARIA_EMPIRE_OBJECTSFACTORY_H_INCLUDED__
 
 #include "core/scopedptr.hpp"
+#include "core/singleton.hpp"
 #include "predefinitions.hpp"
 #include <string>
 
@@ -31,11 +32,20 @@ public:
   virtual ObjectPtr create( EmpirePtr city ) = 0;
 };
 
-class ObjectsFactory
+template< class T >
+class BaseObjectCreator : public ObjectCreator
 {
 public:
-  static ObjectsFactory& instance();
+  virtual ObjectPtr create( EmpirePtr empire )
+  {
+    return T::create( empire ).object();
+  }
+};
 
+class ObjectsFactory : public StaticSingleton<ObjectsFactory>
+{
+  SET_STATICSINGLETON_FRIEND_FOR(ObjectsFactory)
+public:
   bool canCreate( const std::string& type ) const;
 
   void addCreator( const std::string& type, ObjectCreator* ctor );
@@ -50,6 +60,12 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
+
+#define REGISTER_CLASS_IN_WORLDFACTORY(a) \
+namespace { \
+struct Registrator_##a { Registrator_##a() { ObjectsFactory::instance().addCreator( #a, new BaseObjectCreator<a>() ); }}; \
+static Registrator_##a rtor_##a; \
+}
 
 }//end namespace world
 

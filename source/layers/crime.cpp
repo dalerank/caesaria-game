@@ -72,9 +72,9 @@ void Crime::drawTile( Engine& engine, Tile& tile, const Point& offset)
     }
     else if( overlay->type() == object::house )
     {
-      HousePtr house = ptr_cast<House>( overlay );
+      auto house = overlay.as<House>();
       crime = (int)house->getServiceValue( Service::crime );
-      needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty(); // In case of vacant terrain
+      needDrawAnimations = (house->level() <= HouseLevel::hovel) && house->habitants().empty(); // In case of vacant terrain
 
       drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
     }
@@ -90,11 +90,11 @@ void Crime::drawTile( Engine& engine, Tile& tile, const Point& offset)
     }
     else if( crime >= 0)
     {
-      _addColumn( screenPos, crime );
+      drawColumn( engine, screenPos, crime );
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 LayerPtr Crime::create(Camera& camera, PlayerCityPtr city)
@@ -117,7 +117,7 @@ void Crime::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        HousePtr house = ptr_cast<House>( tile->overlay() );
+        auto house = tile->overlay<House>();
         if( house != 0 )
         {
           int crime = (int)house->getServiceValue( Service::crime );

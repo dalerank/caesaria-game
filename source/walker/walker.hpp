@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_WALKER_H_INCLUDE_
 #define _CAESARIA_WALKER_H_INCLUDE_
@@ -35,7 +35,7 @@
 #include "predefinitions.hpp"
 
 class Pathway;
-namespace gfx { class Tile; class Animation; }
+namespace gfx { class Tile; class Animation; class Tilemap; }
 
 class Walker : public Serializable, public ReferenceCounted
 {
@@ -145,6 +145,7 @@ protected:
   void _setLocation( gfx::Tile* tile );
   void _setType( walker::Type type );
   PlayerCityPtr _city() const;
+  gfx::Tilemap& _map() const;
   void _setHealth( double value );
   void _updateAnimation(const unsigned int time);
   void _setWpos(const Point &pos );

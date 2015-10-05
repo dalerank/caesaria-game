@@ -32,4 +32,7 @@ after_success:
 - sshpass -p "$SCP_PASS" scp -v *.macos dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/stuff/
 env:
 notifications:
-    slack: caesariagame:m3lwdYPWqeCOn0zWs0rjX5KY
+    slack:
+        - caesariagame:m3lwdYPWqeCOn0zWs0rjX5KY
+    on_failure: always
+    on_success: never

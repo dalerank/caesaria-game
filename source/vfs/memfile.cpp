@@ -195,6 +195,11 @@ int MemoryFile::write(const ByteArray &array )
     return _pos - savePos;
 }
 
+size_t MemoryFile::lastModify() const
+{
+  return 0;
+}
+
 ByteArray MemoryFile::read(unsigned int sizeToRead)
 {
     ByteArray ret;

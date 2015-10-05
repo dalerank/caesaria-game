@@ -743,7 +743,7 @@
       low_bridge : true
       high_bridge : true
       clay_pit : true
-
+      roadBlock : true
       dock : true
       hippodrome : false
       charioter_school : false

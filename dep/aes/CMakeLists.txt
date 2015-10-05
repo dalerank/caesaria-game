@@ -3,7 +3,7 @@ project(aes)
 file(GLOB AES_HEADERS_LIST "*.h")
 file(GLOB AES_SOURCES_LIST "*.cpp")
 
-add_library(${PROJECT_NAME} ${AES_SOURCES_LIST})
+add_library(${PROJECT_NAME} STATIC ${AES_SOURCES_LIST})
 
 # Required on Unix OS family to be able to be linked into shared libraries.
 set_target_properties(${PROJECT_NAME}

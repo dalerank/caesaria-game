@@ -25,8 +25,9 @@ namespace gui
 class PositionAnimator::Impl
 {
 public:
-	Point stopPos, startPos;
-	PointF currentPos;
+  struct { Point  stop,
+                  start;
+           PointF current; } pos;
 	int time;
   int lastTimeUpdate;
   PointF speed;
@@ -41,7 +42,7 @@ PositionAnimator::PositionAnimator( Widget* node,
   //"parent must be exist"
   _CAESARIA_DEBUG_BREAK_IF( !node );
 
-	_d->stopPos = stopPos;
+  _d->pos.stop = stopPos;
   _d->time = time;
   _d->lastTimeUpdate = DateTime::elapsedTime();
 
@@ -50,28 +51,28 @@ PositionAnimator::PositionAnimator( Widget* node,
 
 void PositionAnimator::restart()
 {
-	_d->startPos = parent() ? parent()->relativeRect().UpperLeftCorner : Point( 0, 0 );
-	_d->currentPos = _d->startPos.toPointF();
+  _d->pos.start = parent() ? parent()->relativeRect().lefttop() : Point( 0, 0 );
+  _d->pos.current = _d->pos.start.toPointF();
 }
 
 void PositionAnimator::beforeDraw(gfx::Engine& painter )
 {
 	if( enabled() && parent() && isFlag( isActive ) )
 	{
-    if( fabs(_d->currentPos.x() - _d->stopPos.x() ) > 0.5f 
-        || fabs( _d->currentPos.y() - _d->stopPos.y() ) > 0.5f )
+    if( fabs(_d->pos.current.x() - _d->pos.stop.x() ) > 0.5f
+        || fabs( _d->pos.current.y() - _d->pos.stop.y() ) > 0.5f )
 		{
-			if( _d->stopPos.x() == ANIMATOR_UNUSE_VALUE )
-				_d->stopPos.setX( int(_d->currentPos.x() ) );
-			if( _d->stopPos.y() == ANIMATOR_UNUSE_VALUE )
-				_d->stopPos.setY( int(_d->currentPos.y() ) );
+      if( _d->pos.stop.x() == ANIMATOR_UNUSE_VALUE )
+        _d->pos.stop.setX( int(_d->pos.current.x() ) );
+      if( _d->pos.stop.y() == ANIMATOR_UNUSE_VALUE )
+        _d->pos.stop.setY( int(_d->pos.current.y() ) );
 
       float fps = 1000.f / float( DateTime::elapsedTime() - _d->lastTimeUpdate + 1 );
       _d->lastTimeUpdate = DateTime::elapsedTime();
-			float step = _d->stopPos.getDistanceFrom( _d->startPos ) / float( fps * ( _d->time / 1000.f ) );
-			float offsetX = _d->stopPos.x() - _d->currentPos.x();
+      float step = _d->pos.stop.getDistanceFrom( _d->pos.start ) / float( fps * ( _d->time / 1000.f ) );
+      float offsetX = _d->pos.stop.x() - _d->pos.current.x();
 			float signX = offsetX < 0 ? -1.f : 1.f;
-			float offsetY = _d->stopPos.y() - _d->currentPos.y();
+      float offsetY = _d->pos.stop.y() - _d->pos.current.y();
 			float signY = offsetY < 0 ? -1.f : 1.f;
 
       if( _d->speed.x() != 0 || _d->speed.y() != 0 )
@@ -80,10 +81,10 @@ void PositionAnimator::beforeDraw(gfx::Engine& painter )
         offsetY = _d->speed.y();
       }
 
-      _d->currentPos += PointF( signX * std::min<float>( step, fabs( offsetX ) ),
-                                signY * std::min<float>( step, fabs( offsetY ) ) );
+      _d->pos.current += PointF( signX * std::min<float>( step, fabs( offsetX ) ),
+                                 signY * std::min<float>( step, fabs( offsetY ) ) );
 
-			parent()->setPosition( _d->currentPos.toPoint() );
+      parent()->setPosition( _d->pos.current.toPoint() );
 		}
 		else
 		{
@@ -91,7 +92,7 @@ void PositionAnimator::beforeDraw(gfx::Engine& painter )
 
 			if( isFlag( debug ) )
 			{
-				parent()->setPosition( _d->startPos );
+        parent()->setPosition( _d->pos.start );
         return;
 			}
 
@@ -104,11 +105,11 @@ void PositionAnimator::beforeDraw(gfx::Engine& painter )
 }
 
 PositionAnimator::~PositionAnimator( void ) {}
-void PositionAnimator::setStartPos( const Point& p ){	_d->startPos = p;}
-void PositionAnimator::setStopPos( const Point& p ){	_d->stopPos = p;}
-Point PositionAnimator::getStartPos() const{	return _d->startPos;}
+void PositionAnimator::setStartPos( const Point& p ){	_d->pos.start = p;}
+void PositionAnimator::setStopPos( const Point& p ){	_d->pos.stop = p;}
+Point PositionAnimator::getStartPos() const{	return _d->pos.start;}
 void PositionAnimator::setTime( int time ){	_d->time = time;}
 void PositionAnimator::setSpeed(PointF speed) { _d->speed = speed; }
-Point PositionAnimator::getStopPos() const{	return _d->stopPos; }
+Point PositionAnimator::getStopPos() const{	return _d->pos.stop; }
 
 }//end namespace gui

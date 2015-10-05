@@ -7,6 +7,8 @@
   date : "-350.01.01"
   adviserEnabled : false
   fishPlaceEnabled : false
+  collapseKoeff : 10
+  fireKoeff : 10
   climate : 0
 	
   win :
@@ -118,7 +120,7 @@
                    
     buildings : 
     { 
-      well : true
+      well : true     
     }
   }
 }

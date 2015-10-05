@@ -651,7 +651,7 @@
       fort_horse : true
       military_academy : true
       barracks : true
-
+      roadBlock : true
       quarry : true
       lumber_mill : true
       iron_mine : true

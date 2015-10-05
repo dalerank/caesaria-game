@@ -104,6 +104,9 @@ public:
   __GS_PROPERTY(metricSystem)
   __GS_PROPERTY(defaultFont)
   __GS_PROPERTY(celebratesConfig)
+  __GS_PROPERTY(ambientsounds)
+  __GS_PROPERTY(debugMenu)
+  __GS_PROPERTY(cntrGroupsModel)
 #undef __GS_PROPERTY
 
   static Settings& instance();
@@ -133,6 +136,7 @@ private:
 
 #define SETTINGS_RC_PATH(a) game::Settings::rcpath( game::Settings::a )
 #define SETTINGS_VALUE(a) game::Settings::get( game::Settings::a )
+#define SETTINGS_STR(a) game::Settings::get( game::Settings::a ).toString()
 #define KILLSWITCH(a) game::Settings::get( game::Settings::a ).toBool()
 #define SETTINGS_SET_VALUE(a, value) game::Settings::set( game::Settings::a, value )
 

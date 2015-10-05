@@ -113,13 +113,13 @@ AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos 
       //_d->gbLegionParams2->hide();
       _d->btnReturn->hide();
 
-      BuildingList barracks = city::statistic::getObjects<Building>( city, object::barracks );
+      BuildingList barracks = city->statistic().objects.find<Building>( object::barracks );
 
       std::string text = barracks.empty()
                           ? "##legion_haveho_soldiers_and_barracks##"
                           : "##legion_haveho_soldiers##";
 
-      _lbTextRef()->move( Point( 0, 20 ));
+      _lbText()->move( Point( 0, 20 ));
       setText( _( text ) );
     }
     else

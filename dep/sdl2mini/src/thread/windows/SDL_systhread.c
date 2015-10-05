@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -18,7 +18,7 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../../SDL_internal.h"
 
 #if SDL_THREAD_WINDOWS
 
@@ -116,8 +116,8 @@ SDL_SYS_CreateThread(SDL_Thread * thread, void *args)
 int
 SDL_SYS_CreateThread(SDL_Thread * thread, void *args)
 {
-    pfnSDL_CurrentBeginThread pfnBeginThread = _beginthreadex;
-    pfnSDL_CurrentEndThread pfnEndThread = _endthreadex;
+    pfnSDL_CurrentBeginThread pfnBeginThread = (pfnSDL_CurrentBeginThread)_beginthreadex;
+    pfnSDL_CurrentEndThread pfnEndThread = (pfnSDL_CurrentEndThread)_endthreadex;
 #endif /* SDL_PASSED_BEGINTHREAD_ENDTHREAD */
     pThreadStartParms pThreadParms =
         (pThreadStartParms) SDL_malloc(sizeof(tThreadStartParms));
@@ -145,6 +145,7 @@ SDL_SYS_CreateThread(SDL_Thread * thread, void *args)
     return 0;
 }
 
+#if 0  /* !!! FIXME: revisit this later. See https://bugzilla.libsdl.org/show_bug.cgi?id=2089 */
 #ifdef _MSC_VER
 #pragma warning(disable : 4733)
 #pragma pack(push,8)
@@ -163,11 +164,13 @@ ignore_exception(void *a, void *b, void *c, void *d)
     return ExceptionContinueExecution;
 }
 #endif
+#endif
 
 void
 SDL_SYS_SetupThread(const char *name)
 {
     if (name != NULL) {
+        #if 0 /* !!! FIXME: revisit this later. See https://bugzilla.libsdl.org/show_bug.cgi?id=2089 */
         #if (defined(_MSC_VER) && defined(_M_IX86))
         /* This magic tells the debugger to name a thread if it's listening.
             The inline asm sets up SEH (__try/__except) without C runtime
@@ -195,6 +198,7 @@ SDL_SYS_SetupThread(const char *name)
             mov fs:[0], eax
             add esp, 8
         }
+        #endif
         #endif
     }
 }
@@ -227,6 +231,12 @@ void
 SDL_SYS_WaitThread(SDL_Thread * thread)
 {
     WaitForSingleObject(thread->handle, INFINITE);
+    CloseHandle(thread->handle);
+}
+
+void
+SDL_SYS_DetachThread(SDL_Thread * thread)
+{
     CloseHandle(thread->handle);
 }
 

@@ -44,7 +44,7 @@ public:
   virtual void applyStorageReservation(good::Stock& stock, const int reservationID);
   virtual void applyRetrieveReservation(good::Stock& stock, const int reservationID);
 
-  virtual void retrieve( good::Stock& stock, const int amount);
+  virtual void retrieve( good::Stock& stock, const int amounts);
   virtual VariantMap save() const;
   virtual void load(const VariantMap &stream);
 

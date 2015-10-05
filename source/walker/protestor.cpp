@@ -46,7 +46,7 @@ class Protestor::Impl
 public:
   typedef enum { searchHouse=0, go2destination, searchAnyBuilding,
                  decreaseSentiment, go2anyplace, gooutFromCity, wait } State;
-  int houseLevel;
+  HouseLevel::ID houseLevel;
   State state;
 
 public:
@@ -94,10 +94,10 @@ void Protestor::timeStep(const unsigned long time)
   {
   case Impl::searchHouse:
   {
-    HouseList houses = city::statistic::getHouses( _city() );
-    for( HouseList::iterator it=houses.begin(); it != houses.end(); )
+    HouseList houses = _city()->statistic().houses.find();
+    for( auto it=houses.begin(); it != houses.end(); )
     {
-      if( (*it)->spec().level() <= _d->houseLevel ) { it=houses.erase( it ); }
+      if( (*it)->level() <= _d->houseLevel ) { it=houses.erase( it ); }
       else { ++it; }
     }
 
@@ -119,7 +119,7 @@ void Protestor::timeStep(const unsigned long time)
 
   case Impl::searchAnyBuilding:
   {
-    HouseList houses = city::statistic::getHouses( _city() );
+    HouseList houses = _city()->statistic().houses.find();
 
     Pathway pathway = _d->findHouse( _city(), houses, pos() );
     if( pathway.isValid() )
@@ -162,8 +162,7 @@ void Protestor::timeStep(const unsigned long time)
   {
     if( game::Date::isDayChanged() )
     {
-      HouseList constructions = city::statistic::getObjects<House>( _city(),
-                                                                    object::house,
+      HouseList constructions = _city()->statistic().objects.find<House>( object::house,
                                                                     pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
 
       if( constructions.empty() )
@@ -175,11 +174,11 @@ void Protestor::timeStep(const unsigned long time)
       else
       {
         HouseList houses = constructions.select<House>();
-        foreach( it, houses )
+        for( auto house : houses )
         {
-          if( (*it)->state( pr::happiness ) > 20 )
+          if( house->state( pr::happiness ) > 20 )
           {
-            (*it)->updateState( pr::happiness, -0.5 );
+            house->updateState( pr::happiness, -0.5 );
           }
           break;
         }
@@ -208,12 +207,11 @@ void Protestor::send2City( BuildingPtr bld )
     return;
 
   setPos( tiles.random()->pos() );
-  _d->houseLevel = 0;
+  _d->houseLevel = HouseLevel::vacantLot;
 
   if( bld.is<House>() )
   {
-    HousePtr house = ptr_cast<House>( bld );
-    _d->houseLevel = house->spec().level();
+    _d->houseLevel = bld.as<House>()->level();
   }
 
   _d->state = Impl::searchHouse;
@@ -238,15 +236,15 @@ void Protestor::save(VariantMap& stream) const
 {
   Human::save( stream );
 
-  VARIANT_SAVE_ANY_D( stream, _d, houseLevel )
-  VARIANT_SAVE_ANY_D( stream, _d, state )
+  VARIANT_SAVE_ENUM_D( stream, _d, houseLevel )
+  VARIANT_SAVE_ENUM_D( stream, _d, state )
 }
 
 void Protestor::load(const VariantMap& stream)
 {
   Human::load( stream );
 
-  VARIANT_LOAD_ANY_D( _d, houseLevel, stream )
+  VARIANT_LOAD_ENUM_D( _d, houseLevel, stream )
   VARIANT_LOAD_ENUM_D( _d, state, stream )
 }
 

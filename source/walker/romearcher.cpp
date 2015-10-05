@@ -13,11 +13,13 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "romearcher.hpp"
-#include "city/helper.hpp"
 #include "spear.hpp"
+#include "city/city.hpp"
+#include "gfx/animation.hpp"
+#include "objects/construction.hpp"
 #include "game/gamedate.hpp"
 #include "walkers_factory.hpp"
 
@@ -53,16 +55,15 @@ void RomeArcher::timeStep(const unsigned long time)
   {
   case Soldier::fightEnemy:
   {
-    WalkerList enemies = _findEnemiesInRange( attackDistance() );
+    WalkerPtr enemy = _findEnemiesInRange( attackDistance() ).valueOrEmpty(0);
 
-    if( !enemies.empty() )
+    if( !enemy.isValid() )
     {
-      WalkerPtr p = enemies.front();
-      turn( p->pos() );
+      turn( enemy->pos() );
 
       if( _animation().index() == (int)(_animation().frameCount()-1) )
       {
-        _fire( p->pos() );
+        _fire( enemy->pos() );
         _updateAnimation( time+1 );
       }
     }
@@ -76,16 +77,15 @@ void RomeArcher::timeStep(const unsigned long time)
 
   case Soldier::destroyBuilding:
   {
-    ConstructionList constructions = _findContructionsInRange( attackDistance() );
+    ConstructionPtr construction = _findContructionsInRange( attackDistance() ).valueOrEmpty(0);
 
-    if( !constructions.empty() )
+    if( !construction.isValid() )
     {
-      ConstructionPtr b = constructions.front();
-      turn( b->pos() );
+      turn( construction->pos() );
 
       if( _animation().index() == (int)(_animation().frameCount()-1) )
       {
-        _fire( b->pos() );
+        _fire( construction->pos() );
         _updateAnimation( time+1 );
       }
     }

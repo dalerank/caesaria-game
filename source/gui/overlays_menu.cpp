@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "overlays_menu.hpp"
 #include "core/gettext.hpp"
@@ -27,10 +27,21 @@
 namespace gui
 {
 
+class SubmenuButtons : public std::vector<PushButton*>
+{
+public:
+  void reset()
+  {
+    foreach( it, *this )
+      (*it)->deleteLater();
+
+    clear();
+  }
+};
+
 class OverlaysMenu::Impl
 {
 public:
-  typedef std::vector< PushButton* > SubmenuButtons;
   SubmenuButtons buttons;
 
 signals public:
@@ -72,6 +83,7 @@ void OverlaysMenu::_addButtons(const int type )
     _addButton( citylayer::crime, startPos+=offset );
     _addButton( citylayer::aborigen, startPos+=offset );
     _addButton( citylayer::troubles, startPos+=offset );
+    _addButton( citylayer::sentiment, startPos+=offset );
     break;
 
   case citylayer::entertainments:
@@ -102,6 +114,7 @@ void OverlaysMenu::_addButtons(const int type )
     _addButton( citylayer::food, startPos+=offset );
     _addButton( citylayer::market, startPos+=offset );
     _addButton( citylayer::desirability, startPos+=offset );
+    _addButton( citylayer::unemployed, startPos+=offset );
     break;
 
   default: break;
@@ -140,9 +153,7 @@ bool OverlaysMenu::onEvent( const NEvent& event )
       case citylayer::healthAll:
       case citylayer::commerce:
         {
-          foreach( item, _d->buttons )  { (*item)->deleteLater(); }
-
-          _d->buttons.clear();
+          _d->buttons.reset();
 
           _addButtons( event.gui.caller->ID() );
           return true;
@@ -153,9 +164,7 @@ bool OverlaysMenu::onEvent( const NEvent& event )
       case citylayer::water:
       case citylayer::religion:
         {
-          foreach( item, _d->buttons )  { (*item)->deleteLater(); }
-
-          _d->buttons.clear();
+          _d->buttons.reset();
           return true;
         }
       break;
@@ -167,9 +176,7 @@ bool OverlaysMenu::onEvent( const NEvent& event )
 
     case guiButtonClicked:
       {
-        foreach( it, _d->buttons) { (*it)->deleteLater(); }
-
-        _d->buttons.clear();
+        _d->buttons.reset();
                 
         emit _d->onSelectOverlayTypeSignal( event.gui.caller->ID() );
         hide();

@@ -22,9 +22,11 @@
   #include <wspiapi.h>
 #endif
 
-#include "thread/mutex.hpp"
 #include <curl/curl.h>
+//#include "thread/thread.hpp"
 #include "vfs/path.hpp"
+#include "thread/safethread.hpp"
+#include <mutex>
 
 namespace updater
 {
@@ -33,7 +35,7 @@ class HttpConnection::Impl
 {
 public:
 	// The mutex for managing access to the counter above
-	Mutex bytesDownloadedMutex;
+  std::mutex bytesDownloadedMutex;
 };
 
 HttpConnection::HttpConnection() : _d( new Impl ),
@@ -83,12 +85,15 @@ void HttpConnection::SetProxyPassword(const std::string& pass)
 	_proxyPass = pass;
 }
 
-HttpRequestPtr HttpConnection::createRequest(const std::string& url)
+HttpRequestPtr HttpConnection::request(const std::string& url)
 {
-	return HttpRequestPtr(new HttpRequest(*this, url));
+  HttpRequestPtr ret(new HttpRequest(*this, url));
+  ret->drop();
+
+  return ret;
 }
 
-HttpRequestPtr HttpConnection::createRequest(const std::string& url, vfs::Path destFilename)
+HttpRequestPtr HttpConnection::request(const std::string& url, vfs::Path destFilename)
 {
 	return HttpRequestPtr(new HttpRequest(*this, url, destFilename));
 }
@@ -96,7 +101,8 @@ HttpRequestPtr HttpConnection::createRequest(const std::string& url, vfs::Path d
 void HttpConnection::AddBytesDownloaded(std::size_t bytes)
 {
 	// Make sure only one thread is accessing the counter at a time
-	MutexLocker locker(&_d->bytesDownloadedMutex);
+  std::unique_lock<std::mutex> locker(_d->bytesDownloadedMutex);
+  locker;
 
 	_bytesDownloaded += bytes;
 }

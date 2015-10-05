@@ -175,8 +175,8 @@ void ModalScreen::draw(gfx::Engine& painter )
 			if( (*w)->visible())
 			{
 				r = (*w)->absoluteRect();
-				r.LowerRightCorner += Point( 1, 1 );
-				r.UpperLeftCorner -= Point( 1, 1 );
+        r._bottomright += Point( 1, 1 );
+        r._lefttop -= Point( 1, 1 );
 
 				//painter.drawRectangle( 0xffc0c0c0, r, &getAbsoluteClippingRectRef() );
 			}
@@ -188,11 +188,11 @@ void ModalScreen::draw(gfx::Engine& painter )
 
 void ModalScreen::beforeDraw(gfx::Engine& painter)
 {
-  const Size& screenSize = painter.screenSize();
-  if( right() != screenSize.width() || bottom() != screenSize.height() )
+  const Size& size = ui()->vsize();
+  if( right() != size.width() || bottom() != size.height() )
   {
     // resize gui environment
-    setGeometry( Rect( Point( 0, 0 ), screenSize ) );
+    setGeometry( Rect( Point( 0, 0 ), size ) );
   }
 
   Widget::beforeDraw( painter );

@@ -48,8 +48,11 @@
 #include "layers/crime.hpp"
 #include "layers/layerdestroy.hpp"
 #include "layers/layertroubles.hpp"
-#include "layers/layerindigene.hpp"
+#include "layers/aborigens.hpp"
 #include "layers/layereducation.hpp"
+#include "layers/unemployed.hpp"
+#include "layers/sentiment.hpp"
+#include "layers/market_access.hpp"
 #include "walker/walker.hpp"
 #include "objects/aqueduct.hpp"
 #include "tilemap_camera.hpp"
@@ -57,6 +60,7 @@
 #include "game/settings.hpp"
 #include "core/timer.hpp"
 #include "pathway/pathway.hpp"
+#include "gui/dialogbox.hpp"
 
 using namespace citylayer;
 
@@ -85,6 +89,7 @@ public:
   void setLayer( int type );
   void resetWalkersAfterTurn();
   void saveSettings();
+  void awareExerimental();
 
 public signals:
   Signal1<int> onLayerSwitchSignal;
@@ -104,10 +109,10 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   _d->city = city;
   _d->tilemap = &city->tilemap();
   _d->guienv = guienv;
-  _d->camera.init( *_d->tilemap, engine->virtualSize() );
+  _d->camera.init( *_d->tilemap, engine->screenSize() );
   _d->engine = engine;
   _d->lastZoom = _d->camera.zoom();
-  _d->engine->initViewport( 0, _d->engine->screenSize() );
+  _d->engine->setScale( 1.f );
 
   addLayer( Simple::create( _d->camera, city ) );
   addLayer( Water::create( _d->camera, city ) );
@@ -120,6 +125,8 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   addLayer( Health::create( _d->camera, city, citylayer::baths ));
   addLayer( Religion::create( _d->camera, city ) );
   addLayer( Damage::create( _d->camera, city ) );
+  addLayer( Sentiment::create( _d->camera, city ) );
+  addLayer( Unemployed::create( _d->camera, city ) );
   addLayer( citylayer::Desirability::create( _d->camera, city ) );
   addLayer( Entertainment::create( _d->camera, city, citylayer::entertainment ) );
   addLayer( Entertainment::create( _d->camera, city, citylayer::theater ) );
@@ -127,7 +134,6 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   addLayer( Entertainment::create( _d->camera, city, citylayer::colloseum ) );
   addLayer( Entertainment::create( _d->camera, city, citylayer::hippodrome ) );
   addLayer( Crime::create( _d->camera, city ) ) ;
-  addLayer( Build::create( *this, city ) );
   addLayer( Destroy::create( *this, city ) );
   addLayer( Tax::create( _d->camera, city ) );
   addLayer( Education::create( _d->camera, city, citylayer::education ) );
@@ -136,14 +142,24 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   addLayer( Education::create( _d->camera, city, citylayer::academy ) );
   addLayer( Troubles::create( _d->camera, city, citylayer::risks ) );
   addLayer( Troubles::create( _d->camera, city, citylayer::troubles ) );
-  addLayer( citylayer::Indigene::create( _d->camera, city ) );
+  addLayer( Aborigens::create( _d->camera, city ) );
+  addLayer( MarketAccess::create( _d->camera, city ) );
+  addLayer( Build::create( *this, city ) );
 
   DrawOptions& dopts = DrawOptions::instance();
   dopts.setFlag( DrawOptions::borderMoving, engine->isFullscreen() );
   dopts.setFlag( DrawOptions::windowActive, true );
   dopts.setFlag( DrawOptions::mayChangeLayer, true );
   dopts.setFlag( DrawOptions::oldGraphics, oldGraphic );
-  dopts.setFlag( DrawOptions::mmbMoving, SETTINGS_VALUE( mmb_moving ) );
+  dopts.setFlag( DrawOptions::showBuildings, true );
+  dopts.setFlag( DrawOptions::showTrees, true );
+  dopts.setFlag( DrawOptions::mmbMoving, KILLSWITCH( mmb_moving ) );
+  dopts.setFlag( DrawOptions::overdrawOnBuild, false );
+  dopts.setFlag( DrawOptions::rotateEnabled, false );
+
+#ifdef DEBUG
+  dopts.setFlag( DrawOptions::rotateEnabled, true );
+#endif
 
   _d->setLayer( citylayer::simple );
 }
@@ -152,10 +168,9 @@ void CityRenderer::Impl::resetWalkersAfterTurn()
 {
   const WalkerList& walkers = city->walkers();
 
-  foreach( it, walkers )
+  for( auto wlk : walkers )
   {
-    WalkerPtr w = *it;
-    w->setPos( w->tile().epos() );
+    wlk->setPos( wlk->tile().epos() );
   }
 }
 
@@ -163,6 +178,18 @@ void CityRenderer::Impl::saveSettings()
 {
   DrawOptions& dopts = DrawOptions::instance();
   SETTINGS_SET_VALUE( mmb_moving, dopts.isFlag( DrawOptions::mmbMoving ) );
+}
+
+void CityRenderer::Impl::awareExerimental()
+{
+#ifdef DEBUG
+  return;
+#endif
+  if( city->tilemap().direction() != direction::north )
+  {
+    auto dlg = gui::dialog::Information( guienv, "Note", "Sorry, rotated map yet expiremental mode\ngame may work incorrect." );
+    dlg->show();
+  }
 }
 
 void CityRenderer::Impl::setLayer(int type)
@@ -178,11 +205,11 @@ void CityRenderer::Impl::setLayer(int type)
   }
 
   LayerPtr newLayer;
-  foreach( it, layers )
+  for( auto layer : layers )
   {
-    if( (*it)->type() == type )
+    if( layer->type() == type )
     {
-      newLayer = *it;
+      newLayer = layer;
       break;
     }
   }
@@ -199,15 +226,17 @@ void CityRenderer::Impl::setLayer(int type)
 
 void CityRenderer::render()
 {  
-  bool zoomChanged = _d->lastZoom != _d->camera.zoom();
-  if( zoomChanged )
+  LayerPtr layer = _d->currentLayer;
+  Engine& engine = *_d->engine;
+
+  if( _d->lastZoom != _d->camera.zoom() )
   {
     _d->lastZoom = _d->camera.zoom();
 
-    Size s = _d->engine->screenSize() * _d->lastZoom / _d->camera.maxZoom();
-    bool zoomOk = _d->engine->initViewport( 0, s );
-    if( zoomOk )
-      _d->camera.setViewport( s );
+    float fzoom = _d->lastZoom / 100.f;
+    Size s = engine.screenSize() * (1/fzoom);
+    engine.setScale( fzoom );
+    _d->camera.setViewport( s );
   }
 
   if( _d->city->getOption( PlayerCity::updateTiles ) > 0 )
@@ -216,22 +245,18 @@ void CityRenderer::render()
     _d->city->setOption( PlayerCity::updateTiles, 0 );
   }
 
-  LayerPtr layer = _d->currentLayer;
-  Engine& engine = *_d->engine;
-
   if( layer.isNull() )
   {
     return;
   }
 
-  engine.setViewport(0, true );
+  engine.setScale( _d->lastZoom / 100.f );
 
   layer->beforeRender( engine );
   layer->render( engine );
   layer->afterRender( engine );
 
-  engine.setViewport( 0, false );
-  engine.drawViewport( 0, Rect() );
+  engine.setScale( 1.f );
 
   layer->renderUi( engine );
 
@@ -282,10 +307,8 @@ void CityRenderer::animate(unsigned int time)
 {
   const TilesArray& visibleTiles = _d->camera.tiles();
 
-  foreach( i, visibleTiles )
-  {
-    (*i)->animate( time );
-  }
+  for( auto&& tile : visibleTiles )
+    tile->animate( time );
 }
 
 void CityRenderer::rotateRight()
@@ -294,6 +317,7 @@ void CityRenderer::rotateRight()
   _d->camera.refresh();
   _d->camera.tiles();
   _d->resetWalkersAfterTurn();  
+  _d->awareExerimental();
 }
 
 void CityRenderer::rotateLeft()
@@ -302,6 +326,7 @@ void CityRenderer::rotateLeft()
   _d->camera.refresh();
   _d->camera.tiles();
   _d->resetWalkersAfterTurn();
+  _d->awareExerimental();
 }
 
 void CityRenderer::setLayer(int layertype)
@@ -314,10 +339,10 @@ void CityRenderer::setLayer(int layertype)
 
 LayerPtr CityRenderer::getLayer(int type) const
 {
-  foreach( it, _d->layers)
+  for( auto& layer : _d->layers)
   {
-    if( (*it)->type() == type )
-      return *it;
+    if( layer->type() == type )
+      return layer;
   }
 
   return LayerPtr();
@@ -329,7 +354,20 @@ Camera* CityRenderer::camera() {  return &_d->camera; }
 Renderer::ModePtr CityRenderer::mode() const {  return _d->changeCommand;}
 void CityRenderer::addLayer( LayerPtr layer){  _d->layers.push_back( layer ); }
 LayerPtr CityRenderer::currentLayer() const { return _d->currentLayer; }
-void CityRenderer::setViewport(const Size& size){ _d->camera.setViewport( size ); }
+void CityRenderer::setViewport(const Size& size) { _d->camera.setViewport( size ); }
 Signal1<int>& CityRenderer::onLayerSwitch() { return _d->onLayerSwitchSignal; }
+
+Signal3<object::Type,TilePos,int>& CityRenderer::onBuilt()
+{
+  auto buildLayer = getLayer( citylayer::build ).as<Build>();
+  return buildLayer->onBuild();
+}
+
+Signal3<object::Type,TilePos,int>& CityRenderer::onDestroyed()
+{
+  auto buildLayer = getLayer( citylayer::destroyd ).as<Destroy>();
+  return buildLayer->onDestroy();
+}
+
 
 }//end namespace gfx

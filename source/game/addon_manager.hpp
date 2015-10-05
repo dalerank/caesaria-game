@@ -44,7 +44,7 @@ private:
 
 class Manager : public StaticSingleton<Manager>
 {
-  friend class StaticSingleton;
+  SET_STATICSINGLETON_FRIEND_FOR(Manager)
 public:
   ~Manager();
 

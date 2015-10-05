@@ -24,6 +24,7 @@
 #include "gfx/camera.hpp"
 #include "gui/senate_popup_info.hpp"
 #include "objects/senate.hpp"
+#include "core/spring.hpp"
 
 using namespace gfx;
 
@@ -38,7 +39,13 @@ public:
   Picture selectedBuildingPic;
   OverlayPtr lastOverlay;
   object::TypeSet inacceptable;
-  bool highlightAny, mayHighlight;
+
+  struct
+  {
+    bool any,
+         may;
+    math::SpringI alpha;
+  } highlight;
 };
 
 int Simple::type() const { return citylayer::simple; }
@@ -55,11 +62,15 @@ void Simple::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
   OverlayPtr curOverlay = tile.overlay();
 
-  if( _d->mayHighlight )
+  if( _d->highlight.may )
   {
-    bool blowTile = (curOverlay.isValid() && curOverlay == _d->lastOverlay) && _d->highlightAny;
+    bool blowTile = (curOverlay.isValid() && curOverlay == _d->lastOverlay) && _d->highlight.any;
     if( blowTile )
-      engine.setColorMask( 0x007f0000, 0x00007f00, 0x0000007f, 0xff000000 );
+    {
+      _d->highlight.alpha.update();
+      int value = _d->highlight.alpha.value();
+      engine.setColorMask( value << 16, value << 8, value, 0xff000000 );
+    }
 
     Layer::drawTile(engine, tile, offset);
 
@@ -81,16 +92,16 @@ void Simple::afterRender(Engine& engine)
   if( tile )
   {
     _d->lastOverlay = tile->overlay();
-    _d->highlightAny = false;
+    _d->highlight.any = false;
 
-    if( is_kind_of<Building>( tile->overlay() )
+    if( tile->overlay().is<Building>()
         && !_d->inacceptable.count( tile->overlay()->type() ) )
-      _d->highlightAny = true;
+      _d->highlight.any = true;
   }
 
   if( (_d->ticks++ % 30) == 0 )
   {
-    _d->mayHighlight = _city()->getOption( PlayerCity::highlightBuilding );
+    _d->highlight.may = _city()->getOption( PlayerCity::highlightBuilding );
   }
 }
 
@@ -101,8 +112,7 @@ void Simple::renderUi(Engine &engine)
   Tile* lastTile = _currentTile();
   if( lastTile )
   {
-    OverlayPtr ov = lastTile->overlay();
-    SenatePtr senate = ptr_cast<Senate>( ov );
+    SenatePtr senate = lastTile->overlay<Senate>();
     if( senate.isValid() )
     {
       _d->senateInfo.draw( _lastCursorPos(), Engine::instance(), senate );
@@ -116,6 +126,7 @@ Simple::Simple( Camera& camera, PlayerCityPtr city)
   _addWalkerType( walker::all );
 
   _d->ticks = 0;
+  _d->highlight.alpha.setCondition( 180, 254, 2 );
   _d->inacceptable << object::fortification << object::wall;
 }
 

@@ -78,7 +78,7 @@ static const char *ExceptionName(DWORD exceptionCode)
 /** Print out a stacktrace. */
 static void Stacktrace(LPEXCEPTION_POINTERS e)
 {
-	PIMAGEHLP_SYMBOL pSym;
+  /*PIMAGEHLP_SYMBOL pSym;
 	STACKFRAME sf;
 	HANDLE process, thread;
 	DWORD dwModBase, Disp;
@@ -135,23 +135,19 @@ static void Stacktrace(LPEXCEPTION_POINTERS e)
 		}
 		++count;
 	}
-	GlobalFree(pSym);
+  GlobalFree(pSym);*/
 }
 
 /** Callback for SymEnumerateModules */
 #if _MSC_VER >= 1500
 static BOOL CALLBACK EnumModules(PCSTR moduleName, ULONG baseOfDll, PVOID userContext)
-{
-	PRINT("0x%08x\t%s\n", baseOfDll, moduleName);
-	return TRUE;
-}
 #else
 static BOOL CALLBACK EnumModules(LPSTR moduleName, DWORD baseOfDll, PVOID userContext)
+#endif
 {
 	Logger::warning("0x%08x\t%s\n", baseOfDll, moduleName);
 	return TRUE;
 }
-#endif
 
 /** Called by windows if an exception happens. */
 static LONG CALLBACK ExceptionHandler(LPEXCEPTION_POINTERS e)
@@ -202,15 +198,18 @@ static LONG CALLBACK ExceptionHandler(LPEXCEPTION_POINTERS e)
 #endif
 
 /** Print a demangled stack backtrace of the caller function to FILE* out. */
-void printstack(unsigned int starting_frame, unsigned int max_frames)
+void printstack( bool showMessage, unsigned int starting_frame, unsigned int max_frames )
 {
 #if !defined(CAESARIA_PLATFORM_WIN) && !defined(CAESARIA_PLATFORM_ANDROID)
-  std::string dir = vfs::Directory::applicationDir().toString();
-  std::string msg = utils::format( 0xff,
-                                   "CaesarIA has crashed.\n\n"
-                                   "A stacktrace has been written to:\n"
-                                   "%s\\stdout.txt", dir.c_str() );
-  OSystem::error( "CaesarIA: Unhandled exception", msg );
+  if (showMessage)
+  {
+    std::string file = vfs::Directory::applicationDir().getFilePath("stdout.txt").toString();
+    std::string msg = utils::format( 0xff,
+                                     "CaesarIA has crashed.\n\n"
+                                         "A stacktrace has been written to:\n"
+                                         "%s", file.c_str());
+    OSystem::error( "CaesarIA: Unhandled exception", msg );
+  }
 
   Logger::warning("Stacktrace::begin :");
 
@@ -308,7 +307,7 @@ void CrashHandler_handleCrash(int signum)
     case SIGFPE: Logger::warning("SIGFPE: Illegal floating point instruction (possibly division by zero)."); break;
   }
 
-  printstack(0, 63);
+  printstack();
   exit(signum);
 }
 

@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -18,7 +18,7 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../../SDL_internal.h"
 
 /* Set up for C function definitions, even when using C++ */
 #ifdef __cplusplus
@@ -28,6 +28,7 @@ extern "C" {
 #endif
 
 #include <EGL/eglplatform.h>
+#include <EGL/egl.h>
 #include <android/native_window_jni.h>
 
 #include "SDL_rect.h"
@@ -35,18 +36,18 @@ extern "C" {
 /* Interface from the SDL library into the Android Java activity */
 /* extern SDL_bool Android_JNI_CreateContext(int majorVersion, int minorVersion, int red, int green, int blue, int alpha, int buffer, int depth, int stencil, int buffers, int samples);
 extern SDL_bool Android_JNI_DeleteContext(void); */
-extern void Android_JNI_SwapWindow();
+extern void Android_JNI_SwapWindow(void);
 extern void Android_JNI_SetActivityTitle(const char *title);
 extern SDL_bool Android_JNI_GetAccelerometerValues(float values[3]);
 extern void Android_JNI_ShowTextInput(SDL_Rect *inputRect);
-extern void Android_JNI_HideTextInput();
+extern void Android_JNI_HideTextInput(void);
 extern ANativeWindow* Android_JNI_GetNativeWindow(void);
 
 /* Audio support */
 extern int Android_JNI_OpenAudioDevice(int sampleRate, int is16Bit, int channelCount, int desiredBufferFrames);
-extern void* Android_JNI_GetAudioBuffer();
-extern void Android_JNI_WriteAudioBuffer();
-extern void Android_JNI_CloseAudioDevice();
+extern void* Android_JNI_GetAudioBuffer(void);
+extern void Android_JNI_WriteAudioBuffer(void);
+extern void Android_JNI_CloseAudioDevice(void);
 
 #include "SDL_rwops.h"
 
@@ -59,16 +60,26 @@ int Android_JNI_FileClose(SDL_RWops* ctx);
 
 /* Clipboard support */
 int Android_JNI_SetClipboardText(const char* text);
-char* Android_JNI_GetClipboardText();
-SDL_bool Android_JNI_HasClipboardText();
+char* Android_JNI_GetClipboardText(void);
+SDL_bool Android_JNI_HasClipboardText(void);
 
 /* Power support */
 int Android_JNI_GetPowerInfo(int* plugged, int* charged, int* battery, int* seconds, int* percent);
+    
+/* Joystick support */
+void Android_JNI_PollInputDevices(void);
+
+/* Video */
+void Android_JNI_SuspendScreenSaver(SDL_bool suspend);
+
+/* Touch support */
+int Android_JNI_GetTouchDeviceIds(int **ids);
 
 /* Threads */
 #include <jni.h>
 JNIEnv *Android_JNI_GetEnv(void);
 int Android_JNI_SetupThread(void);
+jclass Android_JNI_GetActivityClass(void);
 
 /* Generic messages */
 int Android_JNI_SendMessage(int command, int param);

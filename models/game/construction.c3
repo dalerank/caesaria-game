@@ -22,15 +22,17 @@
 
   roadBlock : {
     cost : 10
-    c3logic : false
+    c3logic : true
     class : "road"
+    checkWalkersOnBuild : false
     image : [ "roadBlock", 1 ]
   }
 
   tree : {
     class : "tree"
     image.ext : {
-      type_1 : { size:1, rc : "land1a", start : 10, count : 1 }
+      type_1 : { size:1, rc : "land1a", start : 10, count : 7 }
+      type_2 : { size:1, rc : "land1a", start : 33, count : 27 }
     }
   }
 
@@ -38,6 +40,7 @@
     cost : 4,
     desirability : { base : 1, range : 0, step : 0 }
     class : "road"
+    checkWalkersOnBuild : false
     image : [ "land2a", 44 ]
   },
 
@@ -50,7 +53,9 @@
     desirability : 12,
     range : 0,
     class : "wall"
-    cost : 10
+    cost : 10    
+    inflammability : 0
+    collapsibility : 0
   },
 
   fortification : {
@@ -58,6 +63,8 @@
     range : 0
     class : "wall"
     cost : 20
+    inflammability : 0
+    collapsibility : 0
   }
   
   aqueduct : {
@@ -116,6 +123,7 @@
     cost : 10,
     desirability : { base : -3, range : 3, step : 1 }
     employers : 0
+    checkWalkersOnBuild : false
     class : "house"
   }
 
@@ -153,6 +161,7 @@
     desirability : { base : 4, range : 2,	step : -2 }
     employers : 0
     class : "road"
+    checkWalkersOnBuild : false
     image : [ "entertainment", 102 ]
     image.ext : {
       type_1 : { size:1, rc : "entertainment", start : 102, count : 6 }
@@ -165,6 +174,7 @@
     cost : 12,
     desirability : { base :3,	range : 3,	step : -1 }
     employers : 0
+    checkWalkersOnBuild : false
     class : "garden"
     image : [ "entertainment", 110 ]
     image.ext : {
@@ -181,6 +191,8 @@
     class : "military"
     sound : [ "fort", 1 ]
     requestDestroy : true
+    inflammability : 0
+    collapsibility : 0
   },
 
   missionaryPost : {
@@ -216,6 +228,8 @@
     desirability : { base :-20,	range : 10,	step : 2 }
     employers : 16
     class : "military"
+    inflammability : 0
+    collapsibility : 0
     requestDestroy : true
   }, 
 
@@ -225,6 +239,8 @@
     employers : 16
     class : "military"
     requestDestroy : true
+    inflammability : 0
+    collapsibility : 0
   }, 
 
   clinic : {
@@ -317,6 +333,8 @@
     step : -1,
     employers : 3
     class : "gate"
+    inflammability : 0
+    collapsibility : 0
   },  
 
   tower : {
@@ -324,6 +342,8 @@
     desirability : { base :-8,	range : 4,	step : -2 }
     employers : 6
     class : "tower"
+    inflammability : 0
+    collapsibility : 0
   },  
   
   small_ceres_temple : {
@@ -459,6 +479,27 @@
     desirability : { base : 8, 	range : 4,	step : -2 }
     employers : 12
     class : "trade"
+
+    image.north : {
+      image : [ "transport", 5 ]
+      animation : { rc : "transport", start : 6, count : 10, delay : 4, offset : [ 107, 61 ], pingpong : true }
+    }
+
+    image.east : {
+      image : [ "transport", 17 ]
+      animation : { rc : "transport", start : 18, count : 10, delay : 4, offset : [ 62, 36 ], pingpong : true }
+    }
+
+    image.south : {
+      image : [ "transport", 29 ]
+      animation : { rc : "transport", start : 30, count : 10, delay : 4, offset : [ 35, 51 ], pingpong : true }
+    }
+
+    image.west : {
+      image : [ "transport", 41 ]
+      animation : { rc : "transport", start : 42, count : 10, delay : 4, offset : [ 48, 70 ], pingpong : true }
+    }
+
     sound : [ "dock", 1 ]
   }, 
 
@@ -506,7 +547,7 @@
     employers : 0
     class : "bridge"
     requestDestroy : true
-    subtileOffset : [ 10, -12 ]
+    subtileOffset : [ 8, -10 ]
   }, 
   
   high_bridge : {
@@ -577,9 +618,6 @@
     employers : 0,
     pretty : "Well",
     image : [ "utilitya", 1 ]
-    image.ext : {
-      type_1 : { size:1, rc : "well", start : 1, count : 4 }
-    }
     class : "water"
     sound : [ "well", 1 ]
   }, 
@@ -642,6 +680,13 @@
     employers : 0
     class : "disaster"
   },
+
+  farmtile :
+  {
+    cost : 0
+    desirability : { base : 0, range : 0,	step : 0 }
+    class : "food"
+  }
   
   wheat_farm : 
   {

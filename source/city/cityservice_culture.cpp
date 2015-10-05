@@ -52,28 +52,63 @@ static const Points libraries = { {1.0,20}, {0.86,14}, {0.71,8},  {0.51,4}, {0.3
 static const Points schools =   { {1.0,15}, {0.86,10}, {0.71,6},  {0.51,4}, {0.31,1}, {0.0,0} };
 static const Points academies = { {1.0,10}, {0.86,7},  {0.71,4},  {0.51,2}, {0.31,1}, {0.0,0} };
 
+/**
+ * Part of culture rating
+ */
+template<class T, class WhatFind=object::Type>
 struct SubRating
 {
   const Points& intervals;
+  WhatFind whatFind;
   int coverage;
   int value;
   int visitors;
 
-  SubRating( const Points& v) : intervals(v), coverage(0), value(0) {}
+  SubRating( const Points& points, WhatFind otype)
+    : intervals(points), whatFind(otype), coverage(0), value(0)
+  {}
 
-  void update( double coverageValue )
+  int coverage2rating( float value )
   {
-    value = 0;
-    coverageValue = std::min( coverageValue, 1.0 );
-    coverage = coverageValue * 100;
     for( int i=0; i < coverage::levelNumber; i++ )
     {
-      if( coverageValue >= intervals[ i ].coverage )
+      if( value >= intervals[ i ].coverage )
       {
-        value = intervals[ i ].points * coverageValue;
-        break;
+        return (int) (intervals[ i ].points * value);
       }
     }
+
+    return 0;
+  }
+
+  virtual float calcCoverage( PlayerCityPtr rcity )
+  {
+    visitors = 0;
+    unsigned int population = rcity->states().population;
+    if (population == 0)
+    {
+      return 0;
+    }
+    /** buildings which we need check **/
+    rcity->statistic().objects
+                      .find<T>( whatFind )
+                      .for_each( [this](SmartPtr<T> r){ visitors += r->currentVisitors(); } );
+
+    float coverage = visitors / population;
+
+    return coverage;
+  }
+
+  void update( PlayerCityPtr rcity )
+  {
+    /** current coverage in percents **/
+    float coveragePercent = calcCoverage( rcity );
+
+    value = 0;
+    /** get points of culture for current coverage **/
+    coveragePercent = math::clamp<float>(coveragePercent, 0.f, 1.0f );
+    coverage = (int) (coveragePercent * 100);
+    value = coverage2rating( coveragePercent );
   }
 };
 
@@ -84,20 +119,20 @@ class CultureRating::Impl
 public:
   DateTime lastDate;
   int culture;
-  coverage::SubRating religion;
-  coverage::SubRating theaters;
-  coverage::SubRating libraries;
-  coverage::SubRating schools;
-  coverage::SubRating academies;
+  coverage::SubRating<Temple,object::Group> religion;
+  coverage::SubRating<Theater> theaters;
+  coverage::SubRating<Library> libraries;
+  coverage::SubRating<School> schools;
+  coverage::SubRating<Academy> academies;
   float hippodromeCoverage;
 
   int collegePoints;
 
-  Impl() : religion(coverage::religion),
-           theaters(coverage::theatres),
-           libraries(coverage::libraries),
-           schools(coverage::schools),
-           academies(coverage::academies)
+  Impl() : religion(coverage::religion,object::group::religion),
+           theaters(coverage::theatres,object::theater),
+           libraries(coverage::libraries,object::library),
+           schools(coverage::schools,object::school),
+           academies(coverage::academies,object::academy)
            {}
 };
 
@@ -124,33 +159,12 @@ void CultureRating::timeStep(const unsigned int time )
   if( _d->lastDate.monthsTo( game::Date::current() ) > 0 )
   {
     _d->lastDate = game::Date::current();
-    _d->religion.visitors = 0;
-    _d->theaters.visitors = 0;
-    _d->libraries.visitors = 0;
-    _d->schools.visitors = 0;
-    _d->academies.visitors = 0;
-    int cityPopulation = _city()->states().population;
 
-    TempleList temples = city::statistic::getObjects<Temple>( _city(), object::group::religion );
-    foreach( temple, temples ) { _d->religion.visitors += (*temple)->parishionerNumber(); }
-    _d->religion.update( _d->religion.visitors / (float)cityPopulation );
-
-    TheaterList theaters = city::statistic::getObjects<Theater>( _city(), object::theater );
-    foreach( theater, theaters ) { _d->theaters.visitors += (*theater)->currentVisitors(); }
-    _d->theaters.update( _d->theaters.visitors / (float)cityPopulation );
-
-    LibraryList libraries = city::statistic::getObjects<Library>( _city(), object::library );
-    foreach( library, libraries ) { _d->libraries.visitors += (*library)->currentVisitors(); }
-    _d->libraries.update( _d->libraries.visitors / (float)cityPopulation );
-
-    SchoolList schools = city::statistic::getObjects<School>( _city(), object::school );
-    foreach( school, schools ) { _d->schools.visitors += (*school)->currentVisitors(); }
-
-    _d->schools.update( _d->schools.visitors / (float)cityPopulation );
-
-    AcademyList colleges = city::statistic::getObjects<Academy>( _city(), object::academy );
-    foreach( college, colleges ) { _d->academies.visitors += (*college)->currentVisitors(); }
-    _d->academies.update( _d->academies.visitors / (float)cityPopulation );
+    _d->religion.update( _city() );
+    _d->theaters.update( _city() );
+    _d->libraries.update( _city() );
+    _d->schools.update( _city() );
+    _d->academies.update( _city() );
 
     _d->culture = ( _d->culture + _d->religion.value + _d->theaters.value +
                     _d->libraries.value + _d->schools.value + _d->academies.value ) / 2;

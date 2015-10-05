@@ -65,7 +65,7 @@ void RandomDamage::_exec( Game& game, unsigned int time )
 
     if( _d->priority != object::group::unknown )
     {
-      ctrs = statistic::getObjects<Construction>( game.city(), _d->priority );
+      ctrs = game.city()->statistic().objects.find<Construction>( _d->priority );
     }
     else
     {
@@ -74,7 +74,7 @@ void RandomDamage::_exec( Game& game, unsigned int time )
               << object::group::road
               << object::group::disaster;
 
-      ctrs = statistic::getObjectsNotIs<Construction>( game.city(), exclude );
+      ctrs = game.city()->statistic().objects.findNotIn<Construction>( exclude );
     }
 
     unsigned int number4burn = math::clamp<unsigned int>( (ctrs.size() * _d->strong / 100), 1u, 100u );

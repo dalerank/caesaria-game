@@ -25,13 +25,10 @@ namespace city
 
 struct States
 {
-  unsigned int age;
-  world::Nation nation;
-  unsigned int population;
-  bool romeCity;
-
-  States() : age(0)
-  {}
+  unsigned int age = 0;
+  world::Nation nation = world::nation::unknown;
+  unsigned int population = 0;
+  bool romeCity = false;
 };
 
 }//end namespace city

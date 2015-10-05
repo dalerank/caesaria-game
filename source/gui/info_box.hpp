@@ -64,10 +64,10 @@ protected:
   virtual void _showHelp() {}
   gfx::Picture& _background();
   virtual void _afterCreate() {}
-  Label* _lbTitleRef();
-  Label* _lbTextRef();
-  Label* _lbBlackFrameRef();
-  PushButton* _btnExitRef();
+  Label* _lbTitle();
+  Label* _lbText();
+  Label* _lbBlackFrame();
+  PushButton* _btnExit();
 
   virtual void _updateWorkersLabel( const Point& pos, int picId, int need, int have );
 

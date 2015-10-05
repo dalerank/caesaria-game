@@ -2591,7 +2591,7 @@ int _aalineColor(SDL_Surface * dst, Sint16 x1, Sint16 y1, Sint16 x2, Sint16 y2, 
 	Sint32 xx0, yy0, xx1, yy1;
 	int result;
 	Uint32 intshift, erracc, erradj;
-	Uint32 erracctmp, wgt, wgtcompmask;
+  Uint32 erracctmp, wgt, wgtcompmask;
 	int dx, dy, tmp, xdir, y0p1, x0pxdir;
 
 	/*

@@ -111,8 +111,8 @@ int C3Sav::climateType(const std::string& filename)
   char climateType=-1;
   try
   {
-    uint32_t tmp;
-    uint32_t lengthPkBlock;
+//    uint32_t tmp;
+//    uint32_t lengthPkBlock;
     f.seekg( 8, std::ios::cur ); // read dummy
     SkipCompressed(f); // skip graphic ids
     SkipCompressed(f); // skip edge ids
@@ -318,8 +318,8 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
 
     game.city()->setCameraPos( TilePos( size/2, size/2 ) );
 
-    bool oldgfx = !SETTINGS_VALUE( c3gfx ).toString().empty();
-    oldgfx |= SETTINGS_VALUE( oldgfx ).toBool();
+    bool oldgfx = !SETTINGS_STR( c3gfx ).empty();
+    oldgfx |= KILLSWITCH( oldgfx );
 
     for (int itA = 0; itA < size; ++itA)
     {
@@ -338,7 +338,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
         if( pic.isValid() )
         {
           currentTile.setPicture( pic );
-          currentTile.setOriginalImgId( imgId );
+          currentTile.setImgId( imgId );
         }
         else
         {
@@ -357,7 +357,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
              {
                Picture pic = MetaDataHolder::randomPicture( oldgfx ? object::meadow : object::terrain, Size(1) );
                currentTile.setPicture( pic );
-               currentTile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+               currentTile.setImgId( imgid::fromResource( pic.name() ) );
                currentTile.setFlag( Tile::clearAll, true );
                currentTile.setFlag( Tile::tlMeadow, true );
              }
@@ -366,7 +366,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
           baseBuildings[ currentTile.pos() ] = imgId;
           pic.load( ResourceGroup::land1a, 230 + math::random( 57 ) );
           currentTile.setPicture( pic );
-          currentTile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+          currentTile.setImgId( imgid::fromResource( pic.name() ) );
         }
 
         edgeData[ i ][ j ] = edgeGrid[index];
@@ -413,7 +413,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
           {
             for (int dj = 0; dj < size; ++dj)
             {
-              oTilemap.at(master.i() + di, master.j() + dj).setMasterTile(&master);
+              oTilemap.at(master.i() + di, master.j() + dj).setMaster(&master);
             }
           }
         }
@@ -424,7 +424,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
         unsigned int bbImgId = bbIt == baseBuildings.end() ? 0 : bbIt->second;
 
         Tile& tile = oTilemap.at( i, j );
-        Tile* masterTile = tile.masterTile();
+        Tile* masterTile = tile.master();
         if( !masterTile )
           masterTile = &tile;
 

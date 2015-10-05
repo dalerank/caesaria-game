@@ -44,7 +44,7 @@ bool Winery::build( const city::AreaInfo& info )
 {
   Factory::build( info );
 
-  bool haveVinegrad = !city::statistic::getObjects<Building>( info.city, object::vinard ).empty();
+  bool haveVinegrad = !info.city->statistic().objects.find<Building>( object::vinard ).empty();
 
   _setError( haveVinegrad ? "" : "##need_grape##" );
 
@@ -53,6 +53,6 @@ bool Winery::build( const city::AreaInfo& info )
 
 void Winery::_storeChanged()
 {
-  _fgPicture(1) = inStockRef().empty() ? Picture() : Picture( ResourceGroup::commerce, 153 );
+  _fgPicture(1) = inStock().empty() ? Picture() : Picture( ResourceGroup::commerce, 153 );
   _fgPicture(1).setOffset( 40, -10 );
 }

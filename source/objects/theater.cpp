@@ -38,12 +38,10 @@ bool Theater::build( const city::AreaInfo& info )
 {
   ServiceBuilding::build( info );
 
-  ActorColonyList actors = city::statistic::getObjects<ActorColony>( info.city, object::actorColony );
+  int actors_n = info.city->statistic().objects.count<ActorColony>();
 
-  if( actors.empty() )
-  {
+  if( !actors_n )
     _setError( "##need_actor_colony##" );
-  }
 
   return true;
 }
@@ -73,10 +71,10 @@ WalkerList Theater::_specificWorkers() const
 {
   WalkerList ret;
 
-  foreach( i, walkers() )
+  for( auto wlk : walkers() )
   {
-    if( (*i)->type() == walker::actor )
-      ret << *i;
+    if( wlk->type() == walker::actor )
+      ret << wlk;
   }
 
   return ret;

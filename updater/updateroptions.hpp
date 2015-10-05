@@ -21,20 +21,24 @@
 namespace updater
 {
 
-class UpdaterOptions :
-	public ProgramOptions
+class UpdaterOptions : public ProgramOptions
 {
 public:
   UpdaterOptions()
   {
-    SetupDescription();
+    reset( 0, 0 );
   }
 
   // Construct options from command line arguments
   UpdaterOptions(int argc, char* argv[])
+  {     
+    reset( argc, argv );
+  }
+
+  void reset(int argc, char* argv[])
   {
     SetupDescription();
-    ParseFromCommandLine(argc, argv);
+    parse(argc, argv);
 
     for (int i = 1; i < argc; ++i)
     {

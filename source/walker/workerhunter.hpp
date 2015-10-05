@@ -20,9 +20,7 @@
 
 #include "serviceman.hpp"
 #include "city/industry.hpp"
-
-class Recruter;
-typedef SmartPtr<Recruter> RecruterPtr;
+#include "walker/predefinitions.hpp"
 
 class Recruter : public ServiceWalker
 {
@@ -46,6 +44,7 @@ public:
   virtual bool die();
 
 protected:
+  virtual void _reachedPathway();
   virtual void _centerTile();
   virtual void _noWay();
 

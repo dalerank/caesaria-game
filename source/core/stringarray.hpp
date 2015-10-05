@@ -28,19 +28,14 @@ class StringArray : public std::vector<std::string>
 public:
   inline std::string random() const
   {
-    return empty() ? "" : (*this)[ (int)math::random( size() ) ];
+    return empty() ? "" : (*this)[ (int)math::random( size()-1 ) ];
   }
 
   bool contains( const std::string& str )
   {
-    foreach( it, *this )
-    {
-      if( *it == str )
-        return true;
-    }
-
-    return false;
-  }
+    auto it = std::find( this->begin(), this->end(), str );
+    return it != this->end();
+  }  
 
   std::string valueOrEmpty( unsigned int index ) const
   {
@@ -64,6 +59,14 @@ public:
   inline StringArray& operator << ( const std::string& a )
   {
     push_back( a );
+    return *this;
+  }
+
+  inline StringArray& operator << ( const StringArray& a )
+  {
+    for( auto& item : a )
+      push_back( item );
+
     return *this;
   }
 };

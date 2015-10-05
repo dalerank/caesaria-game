@@ -35,6 +35,14 @@ using namespace gfx;
 namespace citylayer
 {
 
+class Water::Impl
+{
+public:
+  std::set<int> flags;
+  bool showWaterValue;
+  std::map<int, Picture> pics;
+};
+
 int Water::type() const{  return citylayer::water;}
 
 void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
@@ -46,9 +54,6 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
 
   if( tile.overlay().isNull() )
   {
-    //draw background    
-    //engine.draw( tile.picture(), screenPos );
-
     drawPass( engine, tile, offset, Renderer::ground );
     drawPass( engine, tile, offset, Renderer::groundAnimation );
   }
@@ -69,11 +74,11 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
 
       if ( overlay->type() == object::house )
       {
-        HousePtr h = ptr_cast<House>( overlay );
-        needDrawAnimations = (h->spec().level() == HouseLevel::hovel) && h->habitants().empty();
+        auto house = overlay.as<House>();
+        needDrawAnimations = (house->level() <= HouseLevel::hovel) && house->habitants().empty();
 
         tileNumber = OverlayPic::inHouse;
-        haveWater = haveWater || h->hasServiceAccess(Service::fountain) || h->hasServiceAccess(Service::well);
+        haveWater = haveWater || house->hasServiceAccess(Service::fountain) || house->hasServiceAccess(Service::well);
       }
 
       if( !needDrawAnimations )
@@ -83,7 +88,7 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
 
         drawArea( engine, overlay->area(), offset, ResourceGroup::waterOverlay, OverlayPic::base + tileNumber );
 
-        areaSize = 0;
+        areaSize = Size( 0 );
       }
     }
 
@@ -91,20 +96,21 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
     {
       Layer::drawTile( engine, tile, offset );
 
-      if( _showWaterValue )
+      if( _d->showWaterValue )
       {
-        AqueductPtr aq = ptr_cast<Aqueduct>( tile.overlay() );
-        if( aq.isValid() )
+        auto aqueduct = tile.overlay<Aqueduct>();
+        if( aqueduct.isValid() )
         {
           Font f = Font::create( FONT_2 );
           f.setColor( 0xffff0000 );
-          int df = aq->water();
+          int df = aqueduct->water();
           f.draw( engine.screen(), utils::format( 0xff, "%x", df), screenPos + Point( 20, -80 ), false );
         }
 
         int wellValue = tile.param( Tile::pWellWater );
         int fountainValue = tile.param( Tile::pFountainWater );
         int reservoirWater = tile.param( Tile::pReservoirWater );
+
         if( wellValue > 0 || fountainValue > 0 || reservoirWater > 0 )
         {
           std::string text = utils::format( 0xff, "%d/%d/%d", wellValue, fountainValue, reservoirWater );
@@ -119,26 +125,38 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
 
   if( !needDrawAnimations && ( tile.isWalkable(true) || tile.getFlag( Tile::tlOverlay ) ) )
   {
-    Tilemap& tilemap = _city()->tilemap();
-    TilesArray area = tilemap.getArea( tile.epos(), areaSize );
-
-    foreach( it, area )
-    {
-      Tile* rtile = *it;
-      int reservoirWater = rtile->param( Tile::pReservoirWater );
-      int fontainWater = rtile->param( Tile::pFountainWater );
-
-      if( (reservoirWater + fontainWater > 0) && ! rtile->getFlag( Tile::tlWater ) && rtile->overlay().isNull() )
-      {
-        int picIndex = reservoirWater ? OverlayPic::reservoirRange : 0;
-        picIndex |= fontainWater > 0 ? OverlayPic::haveWater : 0;
-        picIndex |= OverlayPic::skipLeftBorder | OverlayPic::skipRightBorder;
-        engine.draw( Picture( ResourceGroup::waterOverlay, picIndex + OverlayPic::base ), rtile->mappos() + offset );
-      }
-    }
+    _drawLandTile( engine, tile, offset, areaSize );
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
+}
+
+void Water::_drawLandTile( Engine& engine, Tile& tile, const Point& offset, const Size& areaSize )
+{
+  Tilemap& tilemap = _city()->tilemap();
+  TilesArray area = tilemap.area( tile.epos(), areaSize );
+
+  for( auto rtile : area )
+  {
+    int reservoirWater = rtile->param( Tile::pReservoirWater );
+    int fontainWater = rtile->param( Tile::pFountainWater );
+
+    if( (reservoirWater + fontainWater > 0) && ! rtile->getFlag( Tile::tlWater ) && rtile->overlay().isNull() )
+    {
+      int picIndex = reservoirWater ? OverlayPic::reservoirRange : 0;
+      picIndex |= fontainWater > 0 ? OverlayPic::haveWater : 0;
+      picIndex |= OverlayPic::skipLeftBorder | OverlayPic::skipRightBorder;
+      engine.draw( _d->pics[ picIndex + OverlayPic::base ], rtile->mappos() + offset );
+    }
+  }
+}
+
+void Water::drawPass(Engine& engine, Tile& tile, const Point& offset, Renderer::Pass pass)
+{
+  if( pass == Renderer::groundAnimation )
+    _drawLandTile( engine, tile, offset, Size( 1 ) );
+  else
+    Layer::drawPass( engine, tile, offset, pass );
 }
 
 void Water::drawWalkerOverlap(Engine& engine, Tile& tile, const Point& offset, const int depth)
@@ -152,7 +170,7 @@ void Water::handleEvent(NEvent& event)
   {
     if( event.keyboard.control && !event.keyboard.pressed && event.keyboard.key == KEY_KEY_E )
     {
-      _showWaterValue = !_showWaterValue;
+      _d->showWaterValue = !_d->showWaterValue;
     }
   }
 
@@ -205,10 +223,13 @@ LayerPtr Water::create( Camera& camera, PlayerCityPtr city)
 }
 
 Water::Water( Camera& camera, PlayerCityPtr city)
-  : Layer( &camera, city )
+  : Layer( &camera, city ), _d( new Impl )
 {
-  _showWaterValue = false;
+  _d->showWaterValue = false;
   _initialize();
+
+  for( int i=1; i < 32; i++ )
+    _d->pics[ i ] = Picture( ResourceGroup::waterOverlay, i );
 }
 
 }//end namespace citylayer

@@ -53,16 +53,16 @@ void _decreaseHousesHealth( object::Type btype, PlayerCityPtr city, int value )
 
   const OverlayList& buildings = city->overlays();
 
-  foreach( itB, buildings )
+  for( auto building : buildings )
   {
-    if( (*itB)->type() != btype )
+    if( building->type() != btype )
         continue;
 
-    HouseList houses = city::statistic::getObjects<House>( city, object::house, (*itB)->pos() - offset, (*itB)->pos() + offset );
+    HouseList houses = city->statistic().objects.find<House>( object::house, building->pos() - offset, building->pos() + offset );
 
-    foreach( itHouse, houses )
+    for( auto house : houses )
     {
-      (*itHouse)->updateState( pr::health, value );
+      house->updateState( pr::health, value );
     }
   }
 }

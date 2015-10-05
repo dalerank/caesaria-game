@@ -46,9 +46,8 @@ void Water::timeStep( const unsigned int time )
   if( time % waterDecreaseInterval == 0 )
   {
     const TilesArray& tiles = _city()->tilemap().allTiles();
-    foreach( it, tiles )
+    for( auto tile : tiles )
     {
-      Tile* tile = *it;
       int value = tile->param( Tile::pFountainWater );
       if( value > 0 )
         tile->setParam( Tile::pFountainWater, math::max( 0, value-1) );

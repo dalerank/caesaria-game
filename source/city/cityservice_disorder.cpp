@@ -21,7 +21,6 @@
 #include "objects/constants.hpp"
 #include "game/funds.hpp"
 #include "core/variant_list.hpp"
-#include "core/foreach.hpp"
 #include "objects/house.hpp"
 #include "walker/rioter.hpp"
 #include "core/variant_map.hpp"
@@ -45,9 +44,9 @@ const int minSentiment4protest = 60;
 const int minSentiment4mugger = 30;
 
 std::string crimeDesc[ crime::maxLevel ] = { "##advchief_no_crime##", "##advchief_very_low_crime##", "##advchief_low_crime##",
-                                              "##advchief_some_crime##", "##advchief_which_crime##", "##advchief_more_crime##",
-                                              "##advchief_simple_crime##", "##advchief_average_crime##", "##advchief_high_crime##",
-                                              "##advchief_veryhigh_crime##" };
+                                             "##advchief_some_crime##", "##advchief_which_crime##", "##advchief_more_crime##",
+                                             "##advchief_simple_crime##", "##advchief_average_crime##", "##advchief_high_crime##",
+                                             "##advchief_veryhigh_crime##" };
 }
 
 namespace city
@@ -105,6 +104,7 @@ struct CityCrime
 {
   CrimeLevel level;
   CrimelInfo rioters;
+  CrimelInfo muggers;
   CrimelInfo protestor;
 
   VariantMap save() const
@@ -112,6 +112,7 @@ struct CityCrime
     VariantMap ret;
     VARIANT_SAVE_CLASS( ret, rioters )
     VARIANT_SAVE_CLASS( ret, protestor )
+    VARIANT_SAVE_CLASS( ret, muggers )
     VARIANT_SAVE_CLASS( ret, level )
 
     return ret;
@@ -121,6 +122,7 @@ struct CityCrime
   {
     VARIANT_LOAD_CLASS_LIST( rioters, stream )
     VARIANT_LOAD_CLASS_LIST( protestor, stream )
+    VARIANT_LOAD_CLASS_LIST( muggers, stream )
     VARIANT_LOAD_CLASS_LIST( level, stream )
   }
 };
@@ -160,20 +162,20 @@ Disorder::Disorder( PlayerCityPtr city )
 
 void Disorder::Impl::weekUpdate( unsigned int time, PlayerCityPtr rcity )
 {
-  HouseList houses = city::statistic::getHouses( rcity );
+  HouseList houses = rcity->statistic().houses.find();
 
-  const WalkerList& walkers = rcity->walkers( walker::protestor );
+  int protestor_n = rcity->statistic().walkers.count( walker::protestor );
 
   HouseList criminalizedHouse;
   crime.level.current = 0;
   crime.level.maximum = 0;
 
-  foreach( house, houses )
+  for( auto house : houses )
   {
-    int currentValue = (*house)->getServiceValue( Service::crime )+1;
+    int currentValue = house->getServiceValue( Service::crime )+1;
     if( currentValue >= crime.level.minimum )
     {
-      criminalizedHouse.push_back( *house );
+      criminalizedHouse.push_back( house );
     }
 
     crime.level.current += currentValue;
@@ -183,12 +185,10 @@ void Disorder::Impl::weekUpdate( unsigned int time, PlayerCityPtr rcity )
   if( houses.size() > 0 )
     crime.level.current /= houses.size();
 
-  if( criminalizedHouse.size() > walkers.size() )
+  if( (int)criminalizedHouse.size() > protestor_n )
   {
-    HouseList::iterator it = criminalizedHouse.begin();
-    std::advance( it, math::random(criminalizedHouse.size()));
-
-    int hCrimeLevel = (*it)->getServiceValue( Service::crime );
+    HousePtr house = criminalizedHouse.random();
+    int hCrimeLevel = house->getServiceValue( Service::crime );
 
     int sentiment = rcity->sentiment();
     int randomValue = math::random( crime::maxValue );
@@ -198,7 +198,7 @@ void Disorder::Impl::weekUpdate( unsigned int time, PlayerCityPtr rcity )
       {
         if ( hCrimeLevel > crime::level4protestor )
         {
-          generateProtestor( rcity, *it );
+          generateProtestor( rcity, house );
         }
       }
     }
@@ -208,11 +208,11 @@ void Disorder::Impl::weekUpdate( unsigned int time, PlayerCityPtr rcity )
       {
         if ( hCrimeLevel >= crime::level4mugger )
         {
-          generateMugger( rcity, *it );
+          generateMugger( rcity, house );
         }
         else if ( hCrimeLevel > crime::level4protestor )
         {
-          generateProtestor( rcity, *it );
+          generateProtestor( rcity, house );
         }
       }
     }
@@ -220,9 +220,9 @@ void Disorder::Impl::weekUpdate( unsigned int time, PlayerCityPtr rcity )
     {
       if ( randomValue >= sentiment + 50 )
       {
-        if ( hCrimeLevel >= crime::level4rioter ) { generateRioter( rcity, *it ); }
-        else if ( hCrimeLevel >= crime::level4mugger ) { generateMugger( rcity, *it ); }
-        else if ( hCrimeLevel > crime::level4protestor ) { generateProtestor( rcity, *it ); }
+        if ( hCrimeLevel >= crime::level4rioter ) { generateRioter( rcity, house ); }
+        else if ( hCrimeLevel >= crime::level4mugger ) { generateMugger( rcity, house ); }
+        else if ( hCrimeLevel > crime::level4protestor ) { generateProtestor( rcity, house ); }
       }
     }
   }
@@ -275,8 +275,6 @@ void Disorder::load(const VariantMap &stream)
 
 void Disorder::Impl::generateMugger(PlayerCityPtr city, HousePtr house )
 {
-  house->appendServiceValue( Service::crime, -crime::defaultValue / 2 );
-
   int taxesThisYear = city->treasury().getIssueValue( econ::Issue::taxIncome );
   int maxMoneyStolen = city->states().population / 10;
 
@@ -295,6 +293,9 @@ void Disorder::Impl::generateMugger(PlayerCityPtr city, HousePtr house )
   }
 
   crime.level.current++;
+  crime.muggers.thisYear++;
+  //house->appendServiceValue( Service::crime, -crime::defaultValue / 2 );
+  changeCrimeLevel( city, -crime::muggerCost );
 }
 
 void Disorder::Impl::generateRioter(PlayerCityPtr city, HousePtr house)
@@ -305,7 +306,7 @@ void Disorder::Impl::generateRioter(PlayerCityPtr city, HousePtr house)
   crime.rioters.thisYear++;
 
   RioterPtr rioter = Rioter::create( city );
-  rioter->send2City( ptr_cast<Building>( house ) );
+  rioter->send2City( house.as<Building>() );
 
   changeCrimeLevel( city, -crime::rioterCost );
 }
@@ -322,12 +323,14 @@ void Disorder::Impl::generateProtestor(PlayerCityPtr city, HousePtr house)
 
 void Disorder::Impl::changeCrimeLevel(PlayerCityPtr city, int delta )
 {
-  HouseList houses = statistic::getHouses( city );
-
-  foreach( it, houses )
-  {
-    (*it)->appendServiceValue( Service::crime, delta );
-  }
+  city->statistic().houses
+                   .find()
+                   .for_each(
+                              [delta](HousePtr house)
+                              {
+                                house->appendServiceValue( Service::crime, delta );
+                              }
+                            );
 }
 
 }//end namespace city

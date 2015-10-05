@@ -21,6 +21,11 @@
 #include "dictionary.hpp"
 #include "environment.hpp"
 #include "core/utils.hpp"
+#include "widget_helper.hpp"
+#include "game/datetimehelper.hpp"
+#include "texturedbutton.hpp"
+#include "core/logger.hpp"
+#include "dialogbox.hpp"
 
 namespace gui
 {
@@ -47,17 +52,15 @@ AboutWorkingBuilding::AboutWorkingBuilding( Widget* parent, WorkingBuildingPtr b
 
   setText( "" );
 
-  std::string text = utils::format( 0xff, "%d%% damage - %d%% fire",
-                                           (int)_working->state( pr::damage ),
-                                           (int)_working->state( pr::fire ));
-  if( is_kind_of<ServiceBuilding>( _working ) )
+  INIT_WIDGET_FROM_UI( TexturedButton*, btnHelp )
+  if( btnHelp )
   {
-    ServiceBuildingPtr srvc = ptr_cast<ServiceBuilding>( _working );
-    DateTime time = srvc->lastSendService();
-    text += utils::format( 0xff, " Srvc: %04d.%02d.%02d", time.year(), time.month(), time.day() );
+    Rect rect = btnHelp->relativeRect();
+    rect += Point( btnHelp->width() + 5, 0 );
+    rect.rright() += 60;
+    PushButton* btn = new PushButton( this, rect, "Adv.Info", -1, false, PushButton::whiteBorderUp );
+    CONNECT( btn, onClicked(), this, AboutWorkingBuilding::_showAdvInfo )
   }
-
-  new Label( this, Rect( 50, height() - 30, width() - 50, height() - 10 ), text );
 }
 
 void AboutWorkingBuilding::setText(const std::string& text)
@@ -82,11 +85,27 @@ void AboutWorkingBuilding::_showHelp()
   DictionaryWindow::show( this, _working->type() );
 }
 
-WorkingBuildingPtr AboutWorkingBuilding::_getBuilding()
+WorkingBuildingPtr AboutWorkingBuilding::_getBuilding() { return _working; }
+
+void AboutWorkingBuilding::_showAdvInfo()
 {
-  return _working;
+  auto serviceBuilding = _working.as<ServiceBuilding>();
+  std::string timeText;
+  if( serviceBuilding.isValid() )
+  {
+    DateTime time = serviceBuilding->lastSendService();
+    timeText = utils::date2str( time, true );
+  }
+
+  std::string workerState = utils::format( 0xff, "Damage=%d\nFire=%d\nService=%s\n",
+                                                  (int)_working->state( pr::damage ),
+                                                  (int)_working->state( pr::fire ),
+                                                  timeText.c_str() );
+
+  auto dialog = dialog::Information( ui(), "Information", workerState );
+  dialog->setCenter( ui()->rootWidget()->center() );
 }
 
-}
+}//end namespace infobox
 
 }//end namespace gui
