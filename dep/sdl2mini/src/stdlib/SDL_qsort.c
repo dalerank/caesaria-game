@@ -41,7 +41,12 @@
  *
  * Gareth McCaughan   Peterhouse   Cambridge   1998
  */
-#include "SDL_config.h"
+
+#if defined(__clang_analyzer__) && !defined(SDL_DISABLE_ANALYZE_MACROS)
+#define SDL_DISABLE_ANALYZE_MACROS 1
+#endif
+
+#include "../SDL_internal.h"
 
 /*
 #include <assert.h>

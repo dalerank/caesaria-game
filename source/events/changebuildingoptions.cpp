@@ -55,4 +55,4 @@ void ChangeBuildingOptions::_exec(Game& game, unsigned int)
   game.city()->setBuildOptions( options );
 }
 
-}
+}//end namespace events

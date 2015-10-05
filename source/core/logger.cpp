@@ -101,9 +101,10 @@ class ConsoleLogWriter : public LogWriter
 public:
   virtual void write( const std::string& str, bool newline )
   {
-#ifdef CAESARIA_PLATFORM_ANDROID
-    str.append( newline ? "\n" : "" );
+#ifdef CAESARIA_PLATFORM_ANDROID    
     __android_log_print(ANDROID_LOG_DEBUG, CAESARIA_PLATFORM_NAME, "%s", str.c_str() );
+    if( newline )
+      __android_log_print(ANDROID_LOG_DEBUG, CAESARIA_PLATFORM_NAME, "\n" );
 #else
     std::cout << str;
     if( newline ) std::cout << std::endl;
@@ -128,9 +129,9 @@ public:
   {
     // Check for filter pass
     bool pass = filters.size() == 0;
-    foreach ( filter, filters )
+    for( auto& filter : filters )
     {
-      if (message.compare( 0, filter->length(), *filter ) == 0)
+      if (message.compare( 0, filter.length(), filter ) == 0)
       {
         pass = true;
         break;
@@ -138,11 +139,11 @@ public:
     }
     if (!pass) return;
 
-    foreach( i, writers )
+    for( auto&& item : writers )
     {
-      if( i->second.isValid() )
+      if( item.second.isValid() )
       {
-        i->second->write( message, newline );
+        item.second->write( message, newline );
       }
     }
   }
@@ -175,9 +176,9 @@ void Logger::addFilter(const std::string& text)
 
 bool Logger::hasFilter(const std::string& text)
 {
-  foreach(filter, instance()._d->filters)
+  for( auto& filter : instance()._d->filters)
   {
-    if (*filter == text) return true;
+    if (filter == text) return true;
   }
   return false;
 }

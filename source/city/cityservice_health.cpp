@@ -107,26 +107,23 @@ std::string HealthCare::reason() const
 
 void HealthCare::Impl::updateValue(PlayerCityPtr city)
 {
-  HouseList houses = city->statistic().houses.find();
+  HouseList habitable = city->statistic().houses.habitable();
 
   value = 0;
   avgMinHealth = 100;
   int houseWithBadHealth = 0;
-  for( auto house : houses )
+  for( auto house : habitable )
   {
     unsigned int hLvl = house->state( pr::health );
-    if( house->habitants().count() > 0 )
+    value += hLvl;
+    if( hLvl < health::bad )
     {
-      value += hLvl;
-      if( hLvl < health::bad )
-      {
-        avgMinHealth += hLvl;
-        houseWithBadHealth++;
-      }
+      avgMinHealth += hLvl;
+      houseWithBadHealth++;
     }
   }
 
-  value /= (houses.size()+1);
+  value /= (habitable.size()+1);
   avgMinHealth /= (houseWithBadHealth+1);
 }
 
@@ -135,9 +132,9 @@ void HealthCare::Impl::updateReasons( PlayerCityPtr city )
   int lvl = math::clamp<int>( value / (health::maxValue/health::levelNumber), 0, health::levelNumber-1 );
   std::string mainReason = healthDescription[ lvl ];
 
-  BuildingList clinics = city->statistic().objects.find<Building>( object::clinic );
+  int clinics_n = city->statistic().objects.count( object::clinic );
 
-  mainReason += clinics.size() > 0 ? "_clinic##" : "##";
+  mainReason += clinics_n > 0 ? "_clinic##" : "##";
 
   reasons << mainReason;
   if( lvl > health::levelNumber / 3 )

@@ -157,14 +157,14 @@ enum { idxIndex=0, idxXOffset, idxYOffset };
 void PictureInfoBank::initialize(vfs::Path filename)
 {
   Logger::warning( "PictureInfoBank: start load offsets from " + filename.toString() );
-  VariantMap m = config::load( filename );
+  VariantMap configVm = config::load( filename );
 
   std::string rc;
   rc.reserve(256);
-  foreach( it, m )
+  for( auto& item : configVm )
   {
-    Variant v = it->second;
-    Logger::warning( "Set offset for " + it->first );
+    Variant v = item.second;
+    Logger::warning( "Set offset for " + item.first );
     if( v.type() == Variant::Map )
     {
       VariantMap vm = v.toMap();
@@ -172,12 +172,12 @@ void PictureInfoBank::initialize(vfs::Path filename)
       int stopIndex = vm[ "stop" ];
       rc = vm[ "rc" ].toString();
       Point offset = vm[ "offset" ].toPoint();
-      _d->setRange( rc.empty() ? it->first : rc, startIndex, stopIndex, offset );
+      _d->setRange( rc.empty() ? item.first : rc, startIndex, stopIndex, offset );
     }
     else if( v.type() == Variant::List )
     {
       VariantList vl = v.toList();
-      _d->setOne( it->first, vl.get( idxIndex ), vl.get( idxXOffset ), vl.get( idxYOffset ) );
+      _d->setOne( item.first, vl.get( idxIndex ), vl.get( idxXOffset ), vl.get( idxYOffset ) );
     }
   }
 }

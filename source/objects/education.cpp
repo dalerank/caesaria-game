@@ -71,7 +71,7 @@ void School::buildingsServed(const std::set<BuildingPtr>& buildings, ServiceWalk
   if( walker->pathway().isReverse() )
     return;
 
-  std::set<HousePtr> houses = utils::select<House>( buildings );
+  auto houses = utils::uniques<House>( buildings );
   for( auto house : houses )
   {
     unsigned int posHash = gfx::tile::hash(house->pos());

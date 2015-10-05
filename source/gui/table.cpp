@@ -120,9 +120,10 @@ Table::Table( Widget* parent,
   _currentOrdering( rowOrderingNone ),
 	_d( new Impl )
 {
-	#ifdef _DEBUG
-			setDebugName( L"NrpTable" );
-	#endif
+#ifdef DEBUG
+  setDebugName( "NrpTable" );
+#endif
+
   setDrawFlag( drawBorder );
   setDrawFlag( drawRows );
   setDrawFlag( drawColumns );

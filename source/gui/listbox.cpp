@@ -132,7 +132,7 @@ void ListBox::_recalculateItemHeight( const Font& defaulFont, int h )
 ListBox::~ListBox() {}
 
 //! returns amount of list items
-unsigned int ListBox::itemCount() const {  return _d->items.size(); }
+unsigned int ListBox::itemsCount() const {  return _d->items.size(); }
 
 //! returns string of a list item. the may be a value from 0 to itemCount-1
 ListBoxItem& ListBox::item(unsigned int id)
@@ -740,7 +740,7 @@ void ListBox::_updateBackground( int scrollbarWidth)
   Pictures pics;
 
   Decorator::draw( pics, Rect( 0, 0, width() - scrollbarWidth, height() ), Decorator::blackFrame );
-  Decorator::draw( pics, Rect( width() - scrollbarWidth, 0, width(), height() ), Decorator::whiteArea, Decorator::normalY  );
+  Decorator::draw( pics, Rect( width() - scrollbarWidth, 0, width(), height() ), Decorator::whiteArea, nullptr, Decorator::normalY  );
 
   bool batchOk = _d->background.load( pics, absoluteRect().lefttop() );
   if( !batchOk )
@@ -920,10 +920,8 @@ void ListBox::fitText(const std::string& text)
 
 void ListBox::addItems(const StringArray& strings)
 {
-  foreach( it, strings )
+  for( auto& line : strings )
   {
-    const std::string& line = *it;
-
     if( line.find( "\tc" ) != std::string::npos )
     {
       std::string nLine = utils::replace( line, "\tc", "" );

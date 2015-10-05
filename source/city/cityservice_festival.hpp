@@ -21,29 +21,26 @@
 #include "cityservice.hpp"
 #include "religion/romedivinity.hpp"
 
-namespace config
-{
-
-namespace festival
-{
-  struct Info
-  {
-    DateTime date;
-    religion::RomeDivinityType divinity;
-    int size;
-  };
-}
-
-}
-
 namespace city
 {
+
+struct FestivalInfo
+{
+  typedef enum { none=0, small, middle, big, count } Type;
+  DateTime date;
+  religion::RomeDivinityType divinity;
+  Type size;
+
+  VariantList save() const;
+  void load( const VariantList& stream );
+};
 
 PREDEFINE_CLASS_SMARTPOINTER(Festival)
 
 class Festival : public Srvc
 {
 public:
+
   static SrvcPtr create(PlayerCityPtr city);
   static std::string defaultName();
 
@@ -58,6 +55,7 @@ public:
   virtual void load(const VariantMap& stream );  
 
 private:
+  void _doFestival();
   Festival( PlayerCityPtr city );
 
   class Impl;

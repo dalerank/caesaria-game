@@ -26,6 +26,9 @@ namespace gui
 namespace advisorwnd
 {
 
+/**
+ * @brief Finance advisor window class
+ */
 class Finance : public Base
 {
 public:
@@ -34,14 +37,30 @@ public:
   virtual void draw( gfx::Engine& painter );
 
 private:
+  /**
+   * @brief Calls when player press help button
+   */
   void _showHelp();
   void _drawReportRow( const Point& pos, const std::string& title, int type );
   void _updateTaxRateNowLabel();
+
+  /**
+   * @brief Decrease/Increase city tax rate
+   */
   void _decreaseTax();
   void _increaseTax();
+
   void _initReportRows();
   void _initTaxManager();
+
+  /**
+   * @brief Update text for registered tax payers value
+   */
   void _updateRegisteredPayers();
+
+  /**
+   * @brief Update text for city treasure value
+   */
   void _updateCityTreasure();
   int  _calculateTaxValue();
 

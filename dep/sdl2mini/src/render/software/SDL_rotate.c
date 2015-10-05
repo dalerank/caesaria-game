@@ -28,10 +28,10 @@ freely, subject to the following restrictions:
 Andreas Schiffler -- aschiffler at ferzkopp dot net
 
 */
-#include "SDL_config.h"
+#include "../../SDL_internal.h"
 
-#ifdef WIN32
-#include <windows.h>
+#if defined(__WIN32__)
+#include "../../core/windows/SDL_windows.h"
 #endif
 
 #include <stdlib.h>
@@ -84,7 +84,8 @@ to a situation where the program can segfault.
 /* !
 \brief Returns colorkey info for a surface
 */
-Uint32 _colorkey(SDL_Surface *src)
+static Uint32
+_colorkey(SDL_Surface *src)
 {
     Uint32 key = 0;
     SDL_GetColorKey(src, &key);
@@ -104,9 +105,10 @@ Uint32 _colorkey(SDL_Surface *src)
 \param sangle The cosine of the angle
 
 */
-void _rotozoomSurfaceSizeTrig(int width, int height, double angle,
-                              int *dstwidth, int *dstheight,
-                              double *cangle, double *sangle)
+void
+SDLgfx_rotozoomSurfaceSizeTrig(int width, int height, double angle,
+                               int *dstwidth, int *dstheight,
+                               double *cangle, double *sangle)
 {
     double x, y, cx, cy, sx, sy;
     double radangle;
@@ -153,7 +155,8 @@ Assumes dst surface was allocated with the correct dimensions.
 \param flipy Flag indicating vertical mirroring should be applied.
 \param smooth Flag indicating anti-aliasing should be used.
 */
-void _transformSurfaceRGBA(SDL_Surface * src, SDL_Surface * dst, int cx, int cy, int isin, int icos, int flipx, int flipy, int smooth)
+static void
+_transformSurfaceRGBA(SDL_Surface * src, SDL_Surface * dst, int cx, int cy, int isin, int icos, int flipx, int flipy, int smooth)
 {
     int x, y, t1, t2, dx, dy, xd, yd, sdx, sdy, ax, ay, ex, ey, sw, sh;
     tColorRGBA c00, c01, c10, c11, cswap;
@@ -185,10 +188,8 @@ void _transformSurfaceRGBA(SDL_Surface * src, SDL_Surface * dst, int cx, int cy,
                 dy = (sdy >> 16);
                 if (flipx) dx = sw - dx;
                 if (flipy) dy = sh - dy;
-                if ((dx > -1) && (dy > -1) && (dx < (src->w-1)) && (dy < (src->h-1))) {
-                    sp = (tColorRGBA *)src->pixels;;
-                    sp += ((src->pitch/4) * dy);
-                    sp += dx;
+                if ((unsigned)dx < (unsigned)sw && (unsigned)dy < (unsigned)sh) {
+                    sp = (tColorRGBA *) ((Uint8 *) src->pixels + src->pitch * dy) + dx;
                     c00 = *sp;
                     sp += 1;
                     c01 = *sp;
@@ -234,14 +235,12 @@ void _transformSurfaceRGBA(SDL_Surface * src, SDL_Surface * dst, int cx, int cy,
             sdx = (ax + (isin * dy)) + xd;
             sdy = (ay - (icos * dy)) + yd;
             for (x = 0; x < dst->w; x++) {
-                dx = (short) (sdx >> 16);
-                dy = (short) (sdy >> 16);
-                if (flipx) dx = (src->w-1)-dx;
-                if (flipy) dy = (src->h-1)-dy;
-                if ((dx >= 0) && (dy >= 0) && (dx < src->w) && (dy < src->h)) {
-                    sp = (tColorRGBA *) ((Uint8 *) src->pixels + src->pitch * dy);
-                    sp += dx;
-                    *pc = *sp;
+                dx = (sdx >> 16);
+                dy = (sdy >> 16);
+                if ((unsigned)dx < (unsigned)src->w && (unsigned)dy < (unsigned)src->h) {
+                    if(flipx) dx = sw - dx;
+                    if(flipy) dy = sh - dy;
+                    *pc = *((tColorRGBA *)((Uint8 *)src->pixels + src->pitch * dy) + dx);
                 }
                 sdx += icos;
                 sdy += isin;
@@ -270,10 +269,11 @@ Assumes dst surface was allocated with the correct dimensions.
 \param flipx Flag indicating horizontal mirroring should be applied.
 \param flipy Flag indicating vertical mirroring should be applied.
 */
-void transformSurfaceY(SDL_Surface * src, SDL_Surface * dst, int cx, int cy, int isin, int icos, int flipx, int flipy)
+static void
+transformSurfaceY(SDL_Surface * src, SDL_Surface * dst, int cx, int cy, int isin, int icos, int flipx, int flipy)
 {
     int x, y, dx, dy, xd, yd, sdx, sdy, ax, ay;
-    tColorY *pc, *sp;
+    tColorY *pc;
     int gap;
 
     /*
@@ -297,14 +297,12 @@ void transformSurfaceY(SDL_Surface * src, SDL_Surface * dst, int cx, int cy, int
         sdx = (ax + (isin * dy)) + xd;
         sdy = (ay - (icos * dy)) + yd;
         for (x = 0; x < dst->w; x++) {
-            dx = (short) (sdx >> 16);
-            dy = (short) (sdy >> 16);
-            if (flipx) dx = (src->w-1)-dx;
-            if (flipy) dy = (src->h-1)-dy;
-            if ((dx >= 0) && (dy >= 0) && (dx < src->w) && (dy < src->h)) {
-                sp = (tColorY *) (src->pixels);
-                sp += (src->pitch * dy + dx);
-                *pc = *sp;
+            dx = (sdx >> 16);
+            dy = (sdy >> 16);
+            if ((unsigned)dx < (unsigned)src->w && (unsigned)dy < (unsigned)src->h) {
+                if (flipx) dx = (src->w-1)-dx;
+                if (flipy) dy = (src->h-1)-dy;
+                *pc = *((tColorY *)src->pixels + src->pitch * dy + dx);
             }
             sdx += icos;
             sdy += isin;
@@ -313,8 +311,6 @@ void transformSurfaceY(SDL_Surface * src, SDL_Surface * dst, int cx, int cy, int
         pc += gap;
     }
 }
-
-
 
 
 /* !
@@ -340,12 +336,13 @@ or 32bit RGBA/ABGR it will be converted into a 32bit RGBA format on the fly.
 
 */
 
-SDL_Surface *_rotateSurface(SDL_Surface * src, double angle, int centerx, int centery, int smooth, int flipx, int flipy, int dstwidth, int dstheight, double cangle, double sangle)
+SDL_Surface *
+SDLgfx_rotateSurface(SDL_Surface * src, double angle, int centerx, int centery, int smooth, int flipx, int flipy, int dstwidth, int dstheight, double cangle, double sangle)
 {
     SDL_Surface *rz_src;
     SDL_Surface *rz_dst;
     int is32bit;
-    int i, src_converted;
+    int i;
     Uint8 r,g,b;
     Uint32 colorkey = 0;
     int colorKeyAvailable = 0;
@@ -372,27 +369,15 @@ SDL_Surface *_rotateSurface(SDL_Surface * src, double angle, int centerx, int ce
         * Use source surface 'as is'
         */
         rz_src = src;
-        src_converted = 0;
     } else {
-        /*
-        * New source surface is 32bit with a defined RGBA ordering
-        */
-        rz_src =
-            SDL_CreateRGBSurface(SDL_SWSURFACE, src->w, src->h, 32,
+        Uint32 format = SDL_MasksToPixelFormatEnum(32,
 #if SDL_BYTEORDER == SDL_LIL_ENDIAN
             0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000
 #else
             0xff000000,  0x00ff0000, 0x0000ff00, 0x000000ff
 #endif
-            );
-        if(colorKeyAvailable)
-            SDL_SetColorKey(src, 0, 0);
-
-        SDL_BlitSurface(src, NULL, rz_src, NULL);
-
-        if(colorKeyAvailable)
-            SDL_SetColorKey(src, SDL_TRUE /* SDL_SRCCOLORKEY */, colorkey);
-        src_converted = 1;
+        );
+        rz_src = SDL_ConvertSurfaceFormat(src, format, src->flags);
         is32bit = 1;
     }
 
@@ -477,6 +462,19 @@ SDL_Surface *_rotateSurface(SDL_Surface * src, double angle, int centerx, int ce
             flipx, flipy);
         SDL_SetColorKey(rz_dst, /* SDL_SRCCOLORKEY */ SDL_TRUE | SDL_RLEACCEL, _colorkey(rz_src));
     }
+
+    /* copy alpha mod, color mod, and blend mode */
+    {
+      SDL_BlendMode blendMode;
+      Uint8 alphaMod, cr, cg, cb;
+      SDL_GetSurfaceAlphaMod(src, &alphaMod);
+      SDL_GetSurfaceBlendMode(src, &blendMode);
+      SDL_GetSurfaceColorMod(src, &cr, &cg, &cb);
+      SDL_SetSurfaceAlphaMod(rz_dst, alphaMod);
+      SDL_SetSurfaceBlendMode(rz_dst, blendMode);
+      SDL_SetSurfaceColorMod(rz_dst, cr, cg, cb);
+    }
+
     /*
     * Unlock source surface
     */
@@ -487,7 +485,7 @@ SDL_Surface *_rotateSurface(SDL_Surface * src, double angle, int centerx, int ce
     /*
     * Cleanup temp surface
     */
-    if (src_converted) {
+    if (rz_src != src) {
         SDL_FreeSurface(rz_src);
     }
 
@@ -496,4 +494,3 @@ SDL_Surface *_rotateSurface(SDL_Surface * src, double angle, int centerx, int ce
     */
     return (rz_dst);
 }
-

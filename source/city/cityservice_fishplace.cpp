@@ -67,7 +67,7 @@ void Fishery::timeStep(const unsigned int time )
 
   if( _d->places.empty() )
   {
-    _d->places = _city()->statistic().walkers.find<FishPlace>( walker::fishPlace, TilePos(-1, -1) );
+    _d->places = _city()->statistic().walkers.find<FishPlace>( walker::fishPlace );
   }
 
   while( _d->places.size() < _d->maxFishPlace )
@@ -103,7 +103,7 @@ void Fishery::load(const VariantMap& stream)
   Srvc::load( stream );
 
   VariantMap locations = stream.get( "locations" ).toMap();
-  for( auto location : locations )
+  for( auto& location : locations )
   {
     addLocation( location.second.toTilePos() );
   }
@@ -115,7 +115,7 @@ VariantMap Fishery::save() const
 
   VariantMap locationsVm;
   int index = 0;
-  for( auto location : _d->locations )
+  for( auto& location : _d->locations )
   {
     locationsVm[ utils::format( 0xff, "fp_%d", index++ ) ] = location;
   }

@@ -65,6 +65,7 @@
 #include "gui/property_workspace.hpp"
 #include "objects/factory.hpp"
 #include "events/warningmessage.hpp"
+#include "sound/themeplayer.hpp"
 #include "objects/house_spec.hpp"
 
 using namespace gfx;
@@ -84,7 +85,8 @@ enum {
   in_city,
   options,
   house,
-  draw
+  draw,
+  empire
 };
 
 enum {
@@ -120,7 +122,7 @@ enum {
   earthquake,
   toggle_experimental_options,
   kill_all_enemies,
-  send_exporter,
+  send_merchants,
   random_fire,
   random_collapse,
   random_plague,
@@ -128,6 +130,7 @@ enum {
   crash_favor,
   add_scribe_messages,
   send_venus_smallcurse,
+  send_neptune_wrath,
   send_mars_spirit,
   run_script,
   show_fest,
@@ -173,7 +176,8 @@ enum {
   forest_fire,
   forest_grow,
   increase_max_level,
-  decrease_max_level
+  decrease_max_level,
+  next_theme
 };
 
 class DebugHandler::Impl
@@ -186,12 +190,18 @@ public:
   void setFactoryReady(object::Type type);
   void updateSentiment( int delta );
   void addGoods2Wh( good::Product type );
+  void reloadConfigs();
   void runScript(std::string filename);
   gui::ContextMenu* debugMenu;
 
-public signals:
-  Signal2<scene::Level*, bool> failedMissionSignal;
-  Signal2<scene::Level*, bool> winMissionSignal;
+#ifdef DEBUG
+  FileChangeObserver configUpdater;
+#endif
+
+  struct {
+    Signal2<scene::Level*, bool> failedMission;
+    Signal2<scene::Level*, bool> winMission;
+  } signal;
 };
 
 void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
@@ -219,6 +229,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( divinity, send_mars_wrath )
   ADD_DEBUG_EVENT( divinity, send_mars_spirit )
   ADD_DEBUG_EVENT( divinity, send_venus_wrath )
+  ADD_DEBUG_EVENT( divinity, send_neptune_wrath )
   ADD_DEBUG_EVENT( divinity, send_venus_smallcurse )
 
   ADD_DEBUG_EVENT( money, add_1000_dn )
@@ -258,6 +269,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
 
   ADD_DEBUG_EVENT( other, send_player_army )
   ADD_DEBUG_EVENT( other, screenshot )
+  ADD_DEBUG_EVENT( other, next_theme )
 
   ADD_DEBUG_EVENT( disaster, random_fire )
   ADD_DEBUG_EVENT( disaster, random_collapse )
@@ -270,12 +282,12 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( level, change_emperor )
   ADD_DEBUG_EVENT( level, property_browser )
 
+  ADD_DEBUG_EVENT( empire, send_merchants )
+
   ADD_DEBUG_EVENT( in_city, add_soldiers_in_fort )
   ADD_DEBUG_EVENT( in_city, add_city_border )
-  ADD_DEBUG_EVENT( in_city, send_exporter )
   ADD_DEBUG_EVENT( in_city, crash_favor )
   ADD_DEBUG_EVENT( in_city, add_scribe_messages )
-  ADD_DEBUG_EVENT( in_city, run_script )
   ADD_DEBUG_EVENT( in_city, show_fest )
   ADD_DEBUG_EVENT( in_city, add_favor )
   ADD_DEBUG_EVENT( in_city, remove_favor )
@@ -287,6 +299,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( house, increase_max_level )
   ADD_DEBUG_EVENT( house, decrease_max_level )
 
+  ADD_DEBUG_EVENT( options, run_script )
   ADD_DEBUG_EVENT( options, all_sound_off )
   ADD_DEBUG_EVENT( options, reload_aqueducts )
   ADD_DEBUG_EVENT( options, toggle_experimental_options )
@@ -303,6 +316,11 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( draw, toggle_show_locked_tiles )
   ADD_DEBUG_EVENT( draw, toggle_show_flat_tiles )
 #undef ADD_DEBUG_EVENT
+
+#ifdef DEBUG
+  _d->configUpdater.setFilename( ":/construction.model" );
+  CONNECT( &_d->configUpdater, onChange, _d.data(), Impl::reloadConfigs );
+#endif
 }
 
 void DebugHandler::setVisible(bool visible)
@@ -326,7 +344,7 @@ EnemySoldierPtr DebugHandler::Impl::makeEnemy( walker::Type type )
 
 void DebugHandler::Impl::addGoods2Wh(good::Product type)
 {
-  WarehouseList whList = game->city()->statistic().objects.find<Warehouse>( object::warehouse );
+  WarehouseList whList = game->city()->statistic().objects.find<Warehouse>();
   for( auto warehouse : whList)
   {
     good::Stock stock(type, 400, 400 );
@@ -334,13 +352,20 @@ void DebugHandler::Impl::addGoods2Wh(good::Product type)
   }
 }
 
+void DebugHandler::Impl::reloadConfigs()
+{
+  OverlayList ovs = game->city()->overlays();
+  for( auto overlay : ovs )
+    overlay->reinit();
+}
+
 void DebugHandler::Impl::runScript(std::string filename)
 {
   events::Dispatcher::instance().load( filename );
 }
 
-Signal2<scene::Level*,bool>& DebugHandler::onFailedMission() { return _d->failedMissionSignal; }
-Signal2<scene::Level*,bool>& DebugHandler::onWinMission() { return _d->winMissionSignal; }
+Signal2<scene::Level*,bool>& DebugHandler::onFailedMission() { return _d->signal.failedMission; }
+Signal2<scene::Level*,bool>& DebugHandler::onWinMission() { return _d->signal.winMission; }
 
 DebugHandler::DebugHandler() : _d(new Impl)
 {
@@ -375,6 +400,10 @@ void DebugHandler::Impl::handleEvent(int event)
     religion::rome::Pantheon::mars()->updateRelation( religion::debug::doWrath, game->city() );
   break;
 
+  case send_neptune_wrath:
+    religion::rome::Pantheon::neptune()->updateRelation( religion::debug::doWrath, game->city() );
+  break;
+
   case add_1000_dn:
     game->city()->treasury().resolveIssue(econ::Issue(econ::Issue::donation, 1000));
   break;
@@ -399,6 +428,16 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
 
+  case next_theme:
+  {
+    auto player = game->city()->statistic().services.find<audio::ThemePlayer>();
+    if( player.isValid() )
+    {
+      player->next();
+    }
+  }
+  break;
+
   case property_browser:
   {
     int hash = Hash( CAESARIA_STR_A(PropertyWorkspace) );
@@ -412,13 +451,7 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
 
-  case reload_buildings_config:
-  {
-    OverlayList ovs = game->city()->overlays();
-    for( auto overlay : ovs )
-      overlay->reinit();
-  }
-  break;
+  case reload_buildings_config: reloadConfigs(); break;
 
   case forest_fire:
   {
@@ -429,15 +462,15 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
 
-  case send_exporter:
+  case send_merchants:
   {
     world::CityList cities = game->empire()->cities();
     for( auto acity : cities )
     {
-      world::ComputerCityPtr ccity = acity.as<world::ComputerCity>();
-      if( ccity.isValid() )
+      auto compCity = acity.as<world::ComputerCity>();
+      if( compCity.isValid() )
       {
-        ccity->__debugSendMerchant();
+        compCity->__debugSendMerchant();
       }
     }
   }
@@ -534,8 +567,8 @@ void DebugHandler::Impl::handleEvent(int event)
     scene::Level* l = safety_cast<scene::Level*>( game->scene() );
     if( l )
     {
-      Signal2<scene::Level*,bool>& signal = (event == win_mission ? winMissionSignal : failedMissionSignal);
-      emit signal( l, true);
+      Signal2<scene::Level*,bool>& foremit = (event == win_mission ? signal.winMission : signal.failedMission);
+      emit foremit( l, true);
     }
   }
   break;
@@ -573,7 +606,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case toggle_experimental_options:
   {
-    bool enable = SETTINGS_VALUE( experimental );
+    bool enable = KILLSWITCH( experimental );
     SETTINGS_SET_VALUE( experimental, !enable );
   }
   break;
@@ -721,4 +754,34 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
   }
+}
+
+FileChangeObserver::~FileChangeObserver()
+{
+  Timer::destroy( Hash(filename) );
+}
+
+void FileChangeObserver::check()
+{
+  if( !file.isOpen() && !filename.empty() )
+  {
+    file = vfs::NFile::open( filename );
+    lastModify = file.lastModify();
+  }
+
+  unsigned int modifyTime = file.lastModify();
+  if( lastModify != modifyTime )
+  {
+    lastModify = modifyTime;
+    emit onChange();
+  }
+}
+
+void FileChangeObserver::setFilename(const std::string& fname)
+{
+  Timer::destroy( Hash(filename) );
+
+  filename = fname;
+  TimerPtr timer = Timer::create( 25, true, Hash(fname) );
+  CONNECT( timer, onTimeout(), this, FileChangeObserver::check )
 }

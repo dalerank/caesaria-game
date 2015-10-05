@@ -59,10 +59,10 @@ void Tax::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( overlay->type() == object::house )
     {
-      HousePtr house = ptr_cast<House>( overlay );
+      auto house = overlay.as<House>();
       int taxAccess = house->getServiceValue( Service::forum );
       taxLevel = math::clamp<int>( house->taxesThisYear(), 0, 100 );
-      needDrawAnimations = ((house->spec().level() == 1 && house->habitants().empty())
+      needDrawAnimations = ((house->level() <= HouseLevel::hovel && house->habitants().empty())
                             || taxAccess < 25);
 
       if( !needDrawAnimations )
@@ -86,7 +86,7 @@ void Tax::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 LayerPtr Tax::create( Camera& camera, PlayerCityPtr city )
@@ -109,15 +109,15 @@ void Tax::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        BuildingPtr bld = ptr_cast<Building>( tile->overlay() );
+        auto building = tile->overlay<Building>();
 
-        if( bld.isNull() )
+        if( building.isNull() )
         {
           text = "##no_people_in_this_locality##";
         }
         else
         {
-          HousePtr house = tile->overlay().as<House>();
+          auto house = tile->overlay<House>();
           if( house.isValid() )
           {
             bool lastTaxationTooOld = house->lastTaxationDate().monthsTo( game::Date::current() ) > DateTime::monthsInYear / 2;

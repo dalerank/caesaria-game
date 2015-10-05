@@ -24,7 +24,6 @@
 #include "core/utils.hpp"
 #include "objects/construction.hpp"
 #include "gfx/engine.hpp"
-#include "core/foreach.hpp"
 #include "city/statistic.hpp"
 #include "game/funds.hpp"
 #include "world/empire.hpp"
@@ -233,14 +232,14 @@ void Employer::Impl::setIndustryPriority( industry::Type industry, int priority)
 
 void Employer::Impl::update()
 {
-  WorkersHirePtr wh = city->statistic().services.find<WorkersHire>();
+  auto recruter = city->statistic().services.find<WorkersHire>();
 
-  if( wh.isNull() )
+  if( recruter.isNull() )
     return;
 
   for( auto button : empButtons )
   {
-    int priority = wh->getPriority( (industry::Type)button->ID() );
+    int priority = recruter->getPriority( (industry::Type)button->ID() );
     button->setPriority( priority );
   }
 }
@@ -264,7 +263,7 @@ Employer::Impl::EmployersInfo Employer::Impl::getEmployersInfo(industry::Type ty
   object::Groups groups = industry::toGroups( type );
 
   WorkingBuildingList buildings;
-  for( auto gr : groups )
+  for( auto& gr : groups )
   {
     WorkingBuildingList sectorBuildings = city->statistic().objects.find<WorkingBuilding>( gr );
     buildings.insert( buildings.begin(), sectorBuildings.begin(), sectorBuildings.end() );

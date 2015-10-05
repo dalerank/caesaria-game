@@ -74,14 +74,14 @@ namespace {
 class RequestButton : public PushButton
 {
 public:
-  RequestButton( Widget* parent, const Point& pos, int index, request::RequestPtr request )
+  RequestButton( Widget* parent, const Point& pos, int index, RequestPtr request )
     : PushButton( parent, Rect( pos + requestButtonOffset * index, requestButtonSize), "", -1, false, PushButton::blackBorderUp )
   {
     _request = request;
 
-    request::RqGoodPtr gr = _request.as<request::RqGood>();
-    if( gr.isValid() )
-      _goodPic = good::Helper::picture( gr->goodType() );
+    auto goodRequest = _request.as<GoodRequest>();
+    if( goodRequest.isValid() )
+      _goodPic = good::Helper::picture( goodRequest->goodType() );
 
     _finalizeResize();
 
@@ -96,15 +96,15 @@ public:
 
     Font font = Font::create( FONT_1_WHITE );
 
-    request::RqGoodPtr gr = _request.as<request::RqGood>();
-    if( gr.isValid() )
+    auto goodRequest = _request.as<request::RqGood>();
+    if( goodRequest.isValid() )
     {
-      font.draw( pic, utils::format( 0xff, "%d", gr->qty() ), 2, 2 );
-      font.draw( pic, good::Helper::getTypeName( gr->goodType() ), 60, 2 );
+      font.draw( pic, utils::format( 0xff, "%d", goodRequest->qty() ), 2, 2 );
+      font.draw( pic, good::Helper::getTypeName( goodRequest->goodType() ), 60, 2 );
 
-      int month2comply = game::Date::current().monthsTo( gr->finishedDate() );
+      int month2comply = game::Date::current().monthsTo( goodRequest->finishedDate() );
       font.draw( pic, utils::format( 0xff, "%d %s", month2comply, _( "##rqst_month_2_comply##") ), 250, 2 );
-      font.draw( pic, gr->description(), 5, pic.height() - 20 );
+      font.draw( pic, goodRequest->description(), 5, pic.height() - 20 );
     }
   }
 
@@ -115,7 +115,7 @@ public:
   }
 
 public signals:
-  Signal1<request::RequestPtr>& onExecRequest() { return _onExecRequestSignal; }
+  Signal1<RequestPtr>& onExecRequest() { return _onExecRequestSignal; }
 
 private:
   void _acceptRequest()  { emit _onExecRequestSignal( _request );  }
@@ -126,8 +126,8 @@ private:
     CONNECT( dialog, onOk(), this, RequestButton::_acceptRequest );
   }
 
-  Signal1<request::RequestPtr> _onExecRequestSignal;
-  request::RequestPtr _request;
+  Signal1<RequestPtr> _onExecRequestSignal;
+  RequestPtr _request;
   Picture _goodPic;
 };
 
@@ -148,7 +148,7 @@ public:
   void sendMoney( int money );
   void sendGift( int money );
   void changeSalary(int money );
-  void resolveRequest( request::RequestPtr request );
+  void resolveRequest( RequestPtr request );
 
   std::string getEmperorFavourStr()
   {
@@ -199,11 +199,11 @@ void Emperor::_updateRequests()
 {
   Rect reqsRect( Point( 32, 91 ), Size( 570, 220 ) );
 
-  List<RequestButton*> btns = findChildren<RequestButton*>();
-  for( auto btn : btns )
+  auto buttons = findChildren<RequestButton*>();
+  for( auto btn : buttons )
     btn->deleteLater();
 
-  request::RequestList requests;
+  RequestList requests;
   request::DispatcherPtr dispatcher = _d->city->statistic().services.find<request::Dispatcher>();
 
   if( dispatcher.isValid() )
@@ -327,7 +327,7 @@ void Emperor::Impl::changeSalary( int money )
   }
 }
 
-void Emperor::Impl::resolveRequest(request::RequestPtr request)
+void Emperor::Impl::resolveRequest(RequestPtr request)
 {
   if( request.isValid() )
   {

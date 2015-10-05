@@ -48,12 +48,12 @@ class Rioter::Impl
 public:
   typedef enum { searchHouse=0, go2destination, searchAnyBuilding,
                  destroyConstruction, go2anyplace, gooutFromCity, wait } State;
-  int houseLevel;
+  HouseLevel::ID houseLevel;
   State state;
   object::GroupSet excludeGroups;
 
 public:
-  Pathway findTarget( PlayerCityPtr city, ConstructionList constructions, TilePos pos );
+  Pathway findTarget(PlayerCityPtr city, const ConstructionList& items, TilePos pos );
 };
 
 Rioter::Rioter(PlayerCityPtr city) : Human( city ), _d( new Impl )
@@ -101,10 +101,10 @@ void Rioter::timeStep(const unsigned long time)
   case Impl::searchHouse:
   {
     ConstructionList constructions = _city()->statistic().objects.find<Construction>( object::house );
-    for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
+    for( auto it=constructions.begin(); it != constructions.end(); )
     {
-      HousePtr h = (*it).as<House>();
-      if( h->spec().level() <= _d->houseLevel ) { it=constructions.erase( it ); }
+      auto house = (*it).as<House>();
+      if( house->level() <= _d->houseLevel ) { it=constructions.erase( it ); }
       else { ++it; }
     }
 
@@ -128,7 +128,7 @@ void Rioter::timeStep(const unsigned long time)
   {
     ConstructionList constructions = _city()->statistic().objects.find<Construction>( object::house );
 
-    for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
+    for( auto it=constructions.begin(); it != constructions.end(); )
     {
       object::Type type = (*it)->type();
       object::Group group = (*it)->group();
@@ -182,7 +182,7 @@ void Rioter::timeStep(const unsigned long time)
                                                                                         pos() - TilePos( 1, 1),
                                                                                         pos() + TilePos( 1, 1) );
 
-      for( ConstructionList::iterator it=constructions.begin(); it != constructions.end(); )
+      for( auto it=constructions.begin(); it != constructions.end(); )
       {
         if( (*it)->type() == object::road || _d->excludeGroups.count( (*it)->group() ) > 0  )
         { it=constructions.erase( it ); }
@@ -233,10 +233,10 @@ void Rioter::send2City( BuildingPtr bld )
     return;
 
   setPos( tiles.random()->pos() );
-  _d->houseLevel = 0;
+  _d->houseLevel = HouseLevel::vacantLot;
 
   if( bld.is<House>() )
-    _d->houseLevel = bld.as<House>()->spec().level();
+    _d->houseLevel = bld.as<House>()->level();
 
   _d->state = Impl::searchHouse;
 
@@ -260,26 +260,26 @@ void Rioter::save(VariantMap& stream) const
 {
   Walker::save( stream );
 
-  VARIANT_SAVE_ANY_D( stream, _d, houseLevel )
-  VARIANT_SAVE_ANY_D( stream, _d, state )
+  VARIANT_SAVE_ENUM_D( stream, _d, houseLevel )
+  VARIANT_SAVE_ENUM_D( stream, _d, state )
 }
 
 void Rioter::load(const VariantMap& stream)
 {
   Walker::load( stream );
 
-  VARIANT_LOAD_ANY_D( _d, houseLevel, stream )
+  VARIANT_LOAD_ENUM_D( _d, houseLevel, stream )
   VARIANT_LOAD_ENUM_D( _d, state, stream )
 }
 
 int Rioter::agressive() const { return 1; }
 void Rioter::excludeAttack(object::Group group) { _d->excludeGroups << group; }
 
-Pathway Rioter::Impl::findTarget(PlayerCityPtr city, ConstructionList constructions, TilePos pos )
+Pathway Rioter::Impl::findTarget(PlayerCityPtr city, const ConstructionList& items, TilePos pos )
 {    
-  if( !constructions.empty() )
+  if( !items.empty() )
   {
-    constructions = constructions.random( 10 );
+    auto constructions = items.random( 10 );
     Pathway pathway;
     for( auto c : constructions )
     {

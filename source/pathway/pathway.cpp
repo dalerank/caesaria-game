@@ -185,7 +185,7 @@ bool Pathway::contains(const Tile& tile)
 {
   // search in reverse direction, because usually the last tile matches
   bool res = false;
-  for( TilesArray::reverse_iterator itTile = _d->tiles.rbegin();
+  for( auto itTile = _d->tiles.rbegin();
        itTile != _d->tiles.rend(); ++itTile)
   {
     if (*itTile == &tile)

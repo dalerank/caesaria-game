@@ -45,12 +45,12 @@ void _removeGoodFrom( PlayerCityPtr city, object::Type btype, good::Product what
 #else
   bList = city->statistic().objects.find<T>( btype );
 #endif
-  foreach( it, bList )
+  for( auto building : bList )
   {
     if( qty <= 0 )
       break;
 
-    good::Store& store = (*it)->store();
+    good::Store& store = building->store();
     int maxQty = std::min( store.getMaxRetrieve( what ), qty );
 
     if( maxQty > 0 )

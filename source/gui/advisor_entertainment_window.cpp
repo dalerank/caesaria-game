@@ -26,7 +26,6 @@
 #include "gfx/engine.hpp"
 #include "core/gettext.hpp"
 #include "city/statistic.hpp"
-#include "core/foreach.hpp"
 #include "objects/house.hpp"
 #include "festival_planing_window.hpp"
 #include "objects/house_spec.hpp"
@@ -47,15 +46,22 @@ struct EntertInfo
   object::Type type;
   std::string building;
   std::string people;
+  int peoplesServed;
+  int buildingCount;
+  int buildingWork;
+  int buildingShow;
+  int coverity;
+  int partlyWork;
 };
 
 static EntertInfo infos[] = {
                               { object::theater, "##theaters##", "##peoples##" },
-                              { object::amphitheater, "##amphitheaters##" "##peoples##" },
+                              { object::amphitheater, "##amphitheaters##", "##peoples##" },
                               { object::colloseum, "##colloseum##", "##peoples##" },
                               { object::hippodrome, "##hippodromes##",  "-" },
                               { object::unknown, "", "" }
                             };
+
 
 enum { idxTheater=0, idxAmph=1, idxColosseum=2, idxHippodrome=3,
        rowOffset=20,
@@ -63,22 +69,13 @@ enum { idxTheater=0, idxAmph=1, idxColosseum=2, idxHippodrome=3,
        badCoverage=50, normalCoverage=80, maxCoverage=100,
        maxServiceValue=100 };
 
-enum { ofNumberInCity=0, ofWorkInCity=165, ofHaveShow=245, ofHowmuchServed=305 };
+enum { ofNumberInCity=10, ofWorkInCity=165, ofHaveShow=245, ofHowmuchServed=305, ofCoverity=445 };
 
 namespace gui
 {
 
 namespace advisorwnd
 {
-
-struct HealthcareInfo
-{
-  int buildingCount;
-  int partlyWork;
-  int buildingWork;
-  int buildingShow;
-  int peoplesServed;
-};
 
 static EntertInfo findInfo( const object::Type service )
 {
@@ -95,7 +92,7 @@ class EntertainmentInfoLabel : public Label
 {
 public:
   EntertainmentInfoLabel( Widget* parent, const Rect& rect,
-                          const object::Type service, HealthcareInfo info  )
+                          const object::Type service, EntertInfo info  )
     : Label( parent, rect ),
       _service( service ),
       _info( info )
@@ -103,10 +100,7 @@ public:
     setFont( Font::create( FONT_1_WHITE ) );
   }
 
-  const HealthcareInfo& getInfo() const
-  {
-    return _info;
-  }
+  const EntertInfo& getInfo() const { return _info; }
 
   virtual void _updateTexture( gfx::Engine& painter )
   {
@@ -116,15 +110,21 @@ public:
 
     Picture& texture = _textPicture();
     Font rfont = font();
-    rfont.draw( texture, utils::i2str( _info.buildingCount ) + _( info.building ), ofNumberInCity, 0 );
+    rfont.draw( texture, utils::format( 0xff, "%d %s", _info.buildingCount, _(info.building)), ofNumberInCity, 0 );
     rfont.draw( texture, utils::i2str( _info.buildingWork ), ofWorkInCity, 0 );
     rfont.draw( texture, utils::i2str( _info.buildingShow ), ofHaveShow, 0 );
-    rfont.draw( texture, utils::i2str( _info.peoplesServed ) + _(info.people), ofHowmuchServed, 0 );
+    rfont.draw( texture, utils::format( 0xff, "%d %s",_info.peoplesServed, _(info.people)), ofHowmuchServed, 0 );
+
+    std::string coverityText = "none";
+    if( _info.buildingCount > 0 )
+      utils::format( 0xff, "%d %%", _info.coverity );
+
+    rfont.draw( texture, coverityText, ofCoverity, 0 );
   }
 
 private:
   object::Type _service;
-  HealthcareInfo _info;
+  EntertInfo _info;
 };
 
 class Entertainment::Impl
@@ -145,7 +145,7 @@ public:
   int monthFromLastFestival;
 
 public:
-  HealthcareInfo getInfo(const object::Type service );
+  EntertInfo getInfo(const object::Type service );
   void updateInfo();
   void updateFestivalInfo();
   void initUI(Entertainment* parent);
@@ -187,9 +187,9 @@ void Entertainment::_showFestivalWindow()
   CONNECT( wnd, onFestivalAssign(), this, Entertainment::_assignFestival );
 }
 
-HealthcareInfo Entertainment::Impl::getInfo( const object::Type service)
+EntertInfo Entertainment::Impl::getInfo( const object::Type service)
 {
-  HealthcareInfo ret;
+  EntertInfo ret = findInfo( service );
 
   ret.buildingWork = 0;
   ret.peoplesServed = 0;
@@ -229,9 +229,9 @@ void Entertainment::Impl::updateInfo()
   if( !lbTroubleInfo )
     return;
 
-  const HealthcareInfo& thInfo = lbTheatresInfo->getInfo();
-  const HealthcareInfo& amthInfo = lbAmphitheatresInfo->getInfo();
-  const HealthcareInfo& clsInfo = lbColisseumInfo->getInfo();
+  const EntertInfo& thInfo = lbTheatresInfo->getInfo();
+  const EntertInfo& amthInfo = lbAmphitheatresInfo->getInfo();
+  const EntertInfo& clsInfo = lbColisseumInfo->getInfo();
   //const InfrastructureInfo& hpdInfo = lbHippodromeInfo->getInfo();
 
   int theatersNeed = 0, amptNeed = 0, clsNeed = 0, hpdNeed = 0;
@@ -245,7 +245,7 @@ void Entertainment::Impl::updateInfo()
   HouseList houses = city->statistic().houses.find();
   for( auto house : houses )
   {
-    maxHouseLevel = std::max<int>( maxHouseLevel, house->spec().level() );
+    maxHouseLevel = std::max<int>( maxHouseLevel, house->level() );
     int habitants = house->habitants().mature_n();
 
     const HouseSpecification& lspec = house->spec();
@@ -368,7 +368,7 @@ void Entertainment::Impl::initUI( Entertainment* parent )
 {
   Point startPoint( 2, 2 );
   Size labelSize( 550, 20 );
-  HealthcareInfo info;
+  EntertInfo info;
   info = getInfo( object::theater );
   lbTheatresInfo = new EntertainmentInfoLabel( lbBlackframe, Rect( startPoint, labelSize ), object::theater, info );
 

@@ -40,7 +40,7 @@ AboutAmphitheater::AboutAmphitheater(Widget *parent, PlayerCityPtr city, const T
 {
   setupUI( ":/gui/infoboxapmhitheater.gui" );
 
-  AmphitheaterPtr amph = tile.overlay().as<Amphitheater>();
+  AmphitheaterPtr amph = tile.overlay<Amphitheater>();
   if( !amph.isValid() )
     return;
 

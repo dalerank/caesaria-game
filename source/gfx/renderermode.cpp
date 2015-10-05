@@ -81,17 +81,19 @@ Renderer::ModePtr BuildMode::create(object::Type type )
 {
   BuildMode* newCommand = new BuildMode();
   OverlayPtr overlay = TileOverlayFactory::instance().create( type );
-  newCommand->_d->construction = ptr_cast<Construction>( overlay );
+
+  const MetaData& md = MetaDataHolder::find( type );
+
+  newCommand->_d->construction = overlay.as<Construction>();
   newCommand->_setFlag( multibuild, false );
   newCommand->_setFlag( border, false );
   newCommand->_setFlag( assign2road, false );
-  newCommand->_setFlag( checkWalkers, true );
+  newCommand->_setFlag( checkWalkers, md.checkWalkersOnBuild() );
 
   if( type == object::road )
   {
     newCommand->_setFlag( border, true );
     newCommand->_setFlag( multibuild, true );
-    newCommand->_setFlag( checkWalkers, false );
     newCommand->_setFlag( assign2road, false );
   }
   else if( type == object::aqueduct ||
@@ -104,12 +106,10 @@ Renderer::ModePtr BuildMode::create(object::Type type )
   else if( type == object::garden )
   {
     newCommand->_setFlag( multibuild, true );
-    newCommand->_setFlag( checkWalkers, true );
   }
   else if( type == object::house || type == object::plaza )
   {
     newCommand->_setFlag( multibuild, true );
-    newCommand->_setFlag( checkWalkers, false );
   }
 
   Renderer::ModePtr ret( newCommand );

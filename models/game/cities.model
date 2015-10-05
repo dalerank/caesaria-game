@@ -97,7 +97,7 @@
 	}
   
   Carthago : {
-    location : [ 970, 570 ]
+    location : [ 970, 1160 ]
     
     sea : true
     land : true
@@ -218,7 +218,7 @@
 	}
 	
 	"Leptis Magna" : {
-    location : [ 1140, 1300 ]
+    location : [ 860, 920 ]
     
     sea : true
     land : true

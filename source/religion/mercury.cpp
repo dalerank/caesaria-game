@@ -68,7 +68,7 @@ void __filchGoods( const std::string& title, PlayerCityPtr city, bool showMessag
   for( auto building : buildings )
   {
     good::Store& store = building->store();
-    for( auto gtype : good::all() )
+    for( auto& gtype : good::all() )
     {
       int goodQty = math::random( (store.qty( gtype ) + 99) / 100 ) * 100;
       if( goodQty > 0 )
@@ -92,7 +92,7 @@ void Mercury::_doSmallCurse(PlayerCityPtr city)
                                                             _("##smallcurse_of_mercury_description##") );
   event->dispatch();
 
-  FactoryList factories = city->statistic().objects.find<Factory>();
+  FactoryList factories = city->overlays().select<Factory>();
 
   for( auto factory : factories )
   {
@@ -102,10 +102,9 @@ void Mercury::_doSmallCurse(PlayerCityPtr city)
 
 void Mercury::_doBlessing(PlayerCityPtr city)
 {
-  WarehouseList whList;
-  whList << city->overlays();
+  auto warehouses = city->overlays().select<Warehouse>();
 
-  for( auto wh : whList )
+  for( auto wh : warehouses )
   {
     WarehouseBuff::assignTo( wh, Warehouse::sellGoodsBuff, 0.2, 4 * 12 );
   }

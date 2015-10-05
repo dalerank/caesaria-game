@@ -123,7 +123,7 @@ void ProsperityRating::_checkStats()
   {
     prosperityCap += house->spec().prosperity();
     _d->now.patricianCount += house->spec().isPatrician() ? house->habitants().count() : 0;
-    _d->now.plebsCount += house->spec().level() < HouseLevel::plebsLevel ? house->habitants().count() : 0;
+    _d->now.plebsCount += house->level() < HouseLevel::plebsLevel ? house->habitants().count() : 0;
   }
 
   if( houses.size() > 0 )
@@ -168,7 +168,7 @@ void ProsperityRating::timeStep(const unsigned int time )
     _d->now.percentPlebs = math::percentage( _d->now.plebsCount, population );
     _d->prosperityExtend += (_d->now.percentPlebs < prosperity::normalPlebsInCityPercent ? prosperity::award : 0);
 
-    bool haveHippodrome = !_city()->statistic().objects.find<Hippodrome>( object::hippodrome ).empty();
+    bool haveHippodrome = _city()->statistic().objects.count( object::hippodrome ) > 0;
     _d->prosperityExtend += (haveHippodrome ? prosperity::award : 0);
 
     _d->now.workless = _city()->statistic().workers.worklessPercent();

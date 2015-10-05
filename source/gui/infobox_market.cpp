@@ -41,7 +41,7 @@ AboutMarket::AboutMarket(Widget* parent, PlayerCityPtr city, const Tile& tile )
 {
   setupUI( ":/gui/infoboxmarket.gui" );
 
-  MarketPtr market = tile.overlay().as<Market>();
+  MarketPtr market = tile.overlay<Market>();
 
   if( !market.isValid() )
   {

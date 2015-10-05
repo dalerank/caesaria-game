@@ -29,7 +29,6 @@
 #include "core/utils.hpp"
 #include "objects/metadata.hpp"
 #include "city/build_options.hpp"
-#include "core/foreach.hpp"
 #include "objects/constants.hpp"
 #include "events/playsound.hpp"
 #include "core/logger.hpp"
@@ -118,9 +117,9 @@ void BuildMenu::initialize()
   VariantList submenu = config.get( "submenu" ).toList();
   VariantList buildings = config.get( "buildings" ).toList();
 
-  for( auto item : submenu )
+  for( auto& item : submenu )
   {
-    development::Branch branch = development::toBranch( item.toString() );
+    development::Branch branch = development::findBranch( item.toString() );
     if( branch != development::unknown )
     {
       std::string title = utils::format( 0xff, "##bldm_%s##", item.toString().c_str() );
@@ -128,38 +127,29 @@ void BuildMenu::initialize()
     }
   }
 
-  for( auto item : buildings )
+  for( auto& item : buildings )
   {
-    object::Type bType = object::toType( item.toString() );
+    object::Type bType = object::findType( item.toString() );
     if( bType != object::unknown )
     {
       addBuildButton( bType );
     }
   }
 
-  for( auto widget : children() )
+  auto buildButtons = children().select<BuildButton>();
+  for( auto bbutton : buildButtons )
   {
-    BuildButton *button = safety_cast< BuildButton* >( widget );
-    if( button )
-    {
-      textSize = font.getTextSize( button->text());
-      max_text_width = std::max(max_text_width, textSize.width() );
-      textSize = font.getTextSize( utils::i2str( button->cost() ) );
-      max_cost_width = std::max(max_cost_width, textSize.width());
-    }
+    textSize = font.getTextSize( bbutton->text());
+    max_text_width = std::max(max_text_width, textSize.width() );
+    textSize = font.getTextSize( utils::i2str( bbutton->cost() ) );
+    max_cost_width = std::max(max_cost_width, textSize.width());
   }
 
   setWidth( std::max(150, max_text_width + max_cost_width + 30) );
 
   // set the same size for all buttons
-  for( auto widget : children() )
-  {
-    BuildButton *button = safety_cast< BuildButton* >( widget );
-    if( button )
-    {
-      button->setWidth( width() );
-    }
-  }
+  for( auto button : buildButtons )
+    button->setWidth( width() );
 }
 
 BuildMenu::~BuildMenu() {}
@@ -182,10 +172,10 @@ void BuildMenu::addSubmenuButton(const city::development::Branch menuType, const
 void BuildMenu::addBuildButton(const object::Type buildingType )
 {
   //int t = DateTime::getElapsedTime();
-  const MetaData& buildingData = MetaDataHolder::instance().getData( buildingType );
+  const MetaData& buildingData = MetaDataHolder::instance().find( buildingType );
 
   int cost = buildingData.getOption( MetaDataOptions::cost );
-  bool mayBuildInCity = _options.isBuildingAvailble( buildingType );
+  bool mayBuildInCity = _options.isBuildingAvailable( buildingType );
   if( _c3gameplay )
   {
     mayBuildInCity &= buildingData.getOption( MetaDataOptions::c3logic, true ).toBool();

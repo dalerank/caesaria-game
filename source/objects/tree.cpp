@@ -75,8 +75,10 @@ void Tree::timeStep( const unsigned long time )
   {
     _d->health = math::clamp( _d->health+5, 0, 100 );
     bool mayHealth4grow = _d->health > 50;
-    bool growLast2years = _d->lastTimeGrow.monthsTo( game::Date::current() ) < DateTime::monthsInYear * 2;
-    if(mayHealth4grow && !growLast2years)
+    bool growLast5years = _d->lastTimeGrow.monthsTo( game::Date::current() ) < DateTime::monthsInYear * 5;
+    bool haveRuleToGrow = _city()->getOption( PlayerCity::forestGrow );
+
+    if( haveRuleToGrow && mayHealth4grow && !growLast5years)
       grow();
   }
 }
@@ -90,8 +92,16 @@ void Tree::initTerrain(Tile& terrain)
 
 bool Tree::build( const city::AreaInfo& info )
 {
-  std::string picname = imgid::toResource( info.city->tilemap().at( info.pos ).originalImgId() );
-  _picture().load( picname );
+  std::string picname = imgid::toResource( info.city->tilemap().at( info.pos ).imgId() );
+  auto& md = MetaDataHolder::find( object::tree );
+  if( md.isMyPicture( picname ) )
+  {
+    _picture().load( picname );
+  }
+  else
+  {
+    setPicture( md.picture(1) );
+  }
   _d->flat = (picture().height() <= tilemap::cellPicSize().height());
   return Overlay::build( info );
 }
@@ -154,9 +164,9 @@ void Tree::_burnAround()
 {
    _d->spreadFire = true;
 
-  OverlayList ovs = _city()->tilemap().getNeighbors( pos() )
-                                      .overlays();
-  for( auto overlay : ovs )
+  auto ovelrays = _city()->tilemap().getNeighbors( pos() )
+                                    .overlays();
+  for( auto overlay : ovelrays )
   {
     if( math::probably( 0.5f ) )
       overlay->burn();
@@ -167,26 +177,28 @@ void Tree::grow()
 {
   TilesArray tiles = _city()->tilemap().getNeighbors( pos() );
   _d->lastTimeGrow = game::Date::current();
-  for( auto tile : tiles )
+  for( unsigned int i=0; i < tiles.size(); ++i )
   {
-    if( math::probably( 0.3f ) && tile->getFlag( Tile::isConstructible ) )
+    auto tile = tiles.random();
+    if( math::probably( 0.1f ) && tile->getFlag( Tile::isConstructible ) )
     {
       OverlayPtr overlay = TileOverlayFactory::instance().create( type() );
       if( overlay.isValid()  )
       {
-        city::AreaInfo info = { _city(), tile->pos(), TilesArray() };
+        city::AreaInfo info( _city(), tile->pos() );
         bool buildOk = overlay->build( info );
         if( buildOk )
         {
           _city()->addOverlay( overlay );
 
-          TreePtr newTree = overlay.as<Tree>();
+          auto newTree = overlay.as<Tree>();
           if( newTree.isValid() )
           {
             Picture pic = MetaDataHolder::randomPicture( type(), Size(1) );
             newTree->setPicture( pic );
-            newTree->_d->flat = pic.height() > pic.width() / 2;
+            newTree->_d->flat = pic.height() < pic.width() / 2;
             newTree->_d->health = 10;
+            break;
           }
         }
       }

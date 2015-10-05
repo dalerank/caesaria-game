@@ -32,7 +32,7 @@ namespace rome
 
 class Pantheon : public StaticSingleton<Pantheon>
 {
-  friend class StaticSingleton;
+  SET_STATICSINGLETON_FRIEND_FOR(Pantheon)
 public:
   void load(const VariantMap& stream );
   void save(VariantMap& stream);

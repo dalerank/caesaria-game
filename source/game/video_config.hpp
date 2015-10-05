@@ -27,7 +27,7 @@ namespace movie
 
 class Config : public StaticSingleton<Config>
 {
-  friend class StaticSingleton;
+  SET_STATICSINGLETON_FRIEND_FOR(Config)
 public:
   void loadAlias( vfs::Path filename );
   void addFolder( vfs::Directory dir );

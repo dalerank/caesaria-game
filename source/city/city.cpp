@@ -81,7 +81,9 @@
 #include "core/requirements.hpp"
 #include "cityservice_prosperity.hpp"
 #include "cityservice_culture.hpp"
+#include "events/warningmessage.hpp"
 #include "cityservice_peace.hpp"
+#include "city_option.hpp"
 #include "ambientsound.hpp"
 
 #include <set>
@@ -176,6 +178,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( difficulty, game::difficulty::usual );
   setOption( forestFire, 1 );
   setOption( forestGrow, 0 );
+  setOption( warfNeedTimber, 1 );
 
   _d->states.nation = world::nation::rome;
 }
@@ -221,22 +224,13 @@ void PlayerCity::timeStep(unsigned int time)
   _d->statistic->update( time );
   _d->walkers.update( this, time );
   _d->overlays.update( this, time );
-  _d->services.timeStep( this, time );
+  _d->services.update( this, time );
   city::Timers::instance().update( time );
 
   if( getOption( updateRoads ) > 0 )
   {
     setOption( updateRoads, 0 );
-    // for each overlay
-    for (auto it : _d->overlays)
-    {
-      ConstructionPtr construction = it.as<Construction>();
-      if( construction != NULL )
-      {
-        // overlay matches the filter
-        construction->computeRoadside();
-      }
-    }   
+    _d->overlays.recalcRoadAccess();
   }
 }
 
@@ -277,20 +271,13 @@ Picture PlayerCity::picture() const              { return _d->empMapPicture; }
 bool PlayerCity::isPaysTaxes() const             { return _d->economy.getIssueValue( econ::Issue::empireTax, econ::Treasury::lastYear ) > 0; }
 bool PlayerCity::haveOverduePayment() const      { return _d->economy.getIssueValue( econ::Issue::overduePayment, econ::Treasury::thisYear ) > 0; }
 Tilemap& PlayerCity::tilemap()                   { return _d->tilemap; }
-econ::Treasury& PlayerCity::treasury()           { return _d->economy;   }
+econ::Treasury& PlayerCity::treasury()           { return _d->economy; }
 
 int PlayerCity::strength() const
 {
-  FortList forts = statistic().objects.find<Fort>();
-
-  int ret = 0;
-  for (auto fort : forts)
-  {
-    SoldierList soldiers = fort->soldiers();
-    ret += soldiers.size();
-  }
-
-  return ret;
+  return statistic().objects
+                    .find<Fort>()
+                    .summ<int>(0, [](FortPtr f) { return f->soldiers_n(); } );
 }
 
 DateTime PlayerCity::lastAttack() const
@@ -334,7 +321,7 @@ void PlayerCity::save( VariantMap& stream) const
 
   LOG_CITY.info( "Save overlays information" );
   VariantMap vm_overlays;
-  for (auto overlay : _d->overlays)
+  for( auto overlay : _d->overlays )
   {
     VariantMap vm_overlay;
     object::Type otype = object::unknown;
@@ -382,7 +369,7 @@ void PlayerCity::load( const VariantMap& stream )
   City::load( stream );
   _d->tilemap.load( stream.get( literals::tilemap ).toMap() );
   _d->walkers.grid.resize( Size( _d->tilemap.size() ) );
-  VARIANT_LOAD_ENUM_D( _d, walkers.idCount, stream )
+  VARIANT_LOAD_ENUM_D( _d, walkers.idCount, stream)
 
   LOG_CITY.info( "Parse main params" );
   _d->borderInfo.roadEntry = TilePos( stream.get( "roadEntry" ).toTilePos() );
@@ -419,7 +406,7 @@ void PlayerCity::load( const VariantMap& stream )
     OverlayPtr overlay = TileOverlayFactory::instance().create( overlayType );
     if( overlay.isValid() && gfx::tilemap::isValidLocation( pos ) )
     {
-      city::AreaInfo info = { this, pos, TilesArray() };
+      city::AreaInfo info( this, pos );
       overlay->build( info );
       overlay->load( overlayParams );      
       //support old formats
@@ -439,9 +426,9 @@ void PlayerCity::load( const VariantMap& stream )
   for (auto item : walkers)
   {
     VariantMap walkerInfo = item.second.toMap();
-    int walkerType = (int)walkerInfo.get( "type", walker::unknown );
+    walker::Type walkerType = walkerInfo.get( "type", (int)walker::unknown ).toEnum<walker::Type>();
 
-    WalkerPtr walker = WalkerManager::instance().create( walker::Type( walkerType ), this );
+    WalkerPtr walker = WalkerManager::instance().create( walkerType, this );
     if( walker.isValid() )
     {
       walker->load( walkerInfo );
@@ -455,7 +442,7 @@ void PlayerCity::load( const VariantMap& stream )
 
   LOG_CITY.info( "Load service info" );
   VariantMap services = stream.get( "services" ).toMap();
-  for (auto item : services)
+  for(auto& item : services)
   {
     VariantMap servicesSave = item.second.toMap();
 
@@ -491,7 +478,7 @@ void PlayerCity::load( const VariantMap& stream )
 
 void PlayerCity::addOverlay( OverlayPtr overlay ) { _d->overlays.postpone( overlay ); }
 
-PlayerCity::~PlayerCity() {}
+PlayerCity::~PlayerCity(){}
 
 void PlayerCity::addWalker( WalkerPtr walker )
 {
@@ -539,7 +526,23 @@ Signal1<int>& PlayerCity::onFundsChanged()                  { return _d->economy
 void PlayerCity::setCameraPos(const TilePos pos)            { _d->cameraStart = pos; }
 TilePos PlayerCity::cameraPos() const                       { return _d->cameraStart; }
 void PlayerCity::addService( city::SrvcPtr service )        { _d->services.push_back( service ); }
-void PlayerCity::setOption(PlayerCity::OptionType opt, int value) { _d->options[ opt ] = value; }
+
+void PlayerCity::setOption(PlayerCity::OptionType opt, int value)
+{
+  _d->options[ opt ] = value;
+  if( opt == c3gameplay && value )
+  {
+    _d->options[ warfNeedTimber ] = false;
+    _d->options[ forestFire ] = false;
+    _d->options[ forestGrow ] = false;
+    _d->options[ forestGrow ] = false;
+    _d->options[ highlightBuilding ] = false;
+    _d->options[ destroyEpidemicHouses ] = false;
+
+    GameEventPtr e = WarningMessage::create( "WARNING: enabled C3 gameplay only!", WarningMessage::negative );
+    e->dispatch();
+  }
+}
 
 int PlayerCity::prosperity() const
 {
@@ -555,13 +558,10 @@ int PlayerCity::getOption(PlayerCity::OptionType opt) const
 
 void PlayerCity::clean()
 {
-  for (auto it : _d->services)
-  {
-    it->destroy();
-  }
-
+  _d->services.destroyAll();
   _d->services.clear();
   _d->walkers.clear();
+  city::Timers::instance().reset();
   _d->overlays.clear();
   _d->tilemap.resize( 0 );
 }
@@ -585,16 +585,14 @@ PlayerCityPtr PlayerCity::create( world::EmpirePtr empire, PlayerPtr player )
 
 int PlayerCity::culture() const
 {
-  city::CultureRatingPtr csClt;
-  csClt << findService( city::CultureRating::defaultName() );
-  return csClt.isValid() ? csClt->value() : 0;
+  city::CultureRatingPtr culture = statistic().services.find<city::CultureRating>();
+  return culture.isValid() ? culture->value() : 0;
 }
 
 int PlayerCity::peace() const
 {
-  city::PeacePtr p;
-  p << findService( city::Peace::defaultName() );
-  return p.isValid() ? p->value() : 0;
+  city::PeacePtr peace = statistic().services.find<city::Peace>();
+  return peace.isValid() ? peace->value() : 0;
 }
 
 int PlayerCity::sentiment() const {  return _d->sentiment; }

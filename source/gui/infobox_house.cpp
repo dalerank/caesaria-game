@@ -96,7 +96,7 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
 {
   setupUI( ":/gui/infoboxhouse.gui" );
 
-  _house = tile.overlay().as<House>();
+  _house = tile.overlay<House>();
 
   if( _house.isNull() )
   {
@@ -110,7 +110,7 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
   setTitle( _(_house->levelName()) );
 
-  _btnExitRef()->setTooltipText( _("##advanced_houseinfo##") );
+  _btnExit()->setTooltipText( _("##advanced_houseinfo##") );
 
   Label* houseInfo = new Label( this, Rect( 30, 40, width() - 30, 40 + 100 ), "" );
   if( houseInfo )
@@ -118,7 +118,7 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
     houseInfo->setWordwrap( true );
 
     std::string text = _house->evolveInfo();
-    if( _house->spec().level() == HouseLevel::greatPalace && text.empty() )
+    if( _house->level() == HouseLevel::greatPalace && text.empty() )
     {
       text =  "##greatPalace_info##";
     }
@@ -203,7 +203,7 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
   Label* lbCrime = new Label( this, taxesLb->relativeRect() + Point( 0, 22 ), aboutCrimes );
 
   int startY = lbCrime->bottom() + 10;
-  if( _house->spec().level() > 2 )
+  if( _house->level() > HouseLevel::tent )
   {
     drawGood( _house, good::wheat, 0, 0, startY );
     drawGood( _house, good::fish, 1, 0, startY );

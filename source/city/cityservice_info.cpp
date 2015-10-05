@@ -27,7 +27,6 @@
 #include "game/gamedate.hpp"
 #include "world/empire.hpp"
 #include "game/funds.hpp"
-#include "core/foreach.hpp"
 #include "sentiment.hpp"
 #include "cityservice_peace.hpp"
 #include "core/variant_map.hpp"
@@ -56,7 +55,7 @@ VariantMap Info::History::save() const
 
   int step=0;
   std::string stepName;
-  for( auto item : *this )
+  for( auto& item : *this )
   {
     stepName = utils::format( 0xff, "%04d", step++ );
     currentVm[ stepName ] = item.save();
@@ -67,10 +66,10 @@ VariantMap Info::History::save() const
 
 void Info::History::load(const VariantMap &vm)
 {
-  for( auto i : vm )
+  for( auto& item : vm )
   {
     push_back( Parameters() );
-    back().load( i.second.toList() );
+    back().load( item.second.toList() );
   }
 }
 
@@ -92,7 +91,7 @@ VariantMap Info::MaxParameters::save() const
 void Info::MaxParameters::load(const VariantMap &vm)
 {
   resize( paramsCount );
-  for( auto item : vm )
+  for( auto& item : vm )
   {
     int index = utils::toInt( item.first );
     DateTime date = item.second.toList().get( 0 ).toDateTime();
@@ -175,19 +174,16 @@ void Info::timeStep(const unsigned int time )
       last[ Info::milthreat ] = mil->threatValue();
     }
 
-    HouseList houses = _city()->statistic().houses.find();
+    auto habitable = _city()->statistic().houses.habitable();
 
     last[ houseNumber ] = 0;
     last[ shackNumber ] = 0;
-    for( auto house : houses )
+    for( auto house : habitable )
     {
-      if( house->habitants().count() > 0 )
-      {
-        int hLvl = house->spec().level();
-        last[ slumNumber ] += ( hLvl == HouseLevel::hovel || hLvl == HouseLevel::tent ? 1 : 0);
-        last[ shackNumber ] += ( hLvl >= HouseLevel::shack || hLvl < HouseLevel::hut ? 1 : 0);
-        last[ houseNumber ]++;
-      }
+      HouseLevel::ID hLvl = house->level();
+      last[ slumNumber ] += ( hLvl == HouseLevel::hovel || hLvl == HouseLevel::tent ? 1 : 0);
+      last[ shackNumber ] += ( hLvl >= HouseLevel::shack || hLvl < HouseLevel::hut ? 1 : 0);
+      last[ houseNumber ]++;
     }
 
     SentimentPtr sentimentSrvc = _city()->statistic().services.find<Sentiment>();
@@ -286,7 +282,7 @@ VariantList Info::Parameters::save() const
 void Info::Parameters::load(const VariantList& stream)
 {
   int k=0;
-  for( auto it : stream )
+  for( auto& it : stream )
   {
     (*this)[ k ] = it;
     k++;

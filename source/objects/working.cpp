@@ -80,7 +80,7 @@ void WorkingBuilding::load( const VariantMap& stream)
 
   if( !_d->workers.maximum )
   {
-    _d->workers.maximum = MetaDataHolder::getData( type() ).getOption( MetaDataOptions::employers );
+    _d->workers.maximum = MetaDataHolder::find( type() ).getOption( MetaDataOptions::employers );
   }
 }
 

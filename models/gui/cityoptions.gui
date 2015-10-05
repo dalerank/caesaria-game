@@ -14,9 +14,19 @@
     geometry : [ 16, 50, "pw-16", "ph-30" ]
 
     columnA#VLayout : {
-      btnGodEnabled#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_god_mode##"       }
-      btnC3Gameplay#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_c3city_mode##"       }
+      btnCityGods#OptionButton : { base : "city_opts_god", states : { off:0, on:1 }, link : [ "city", "godEnabled" ] }
+      btnWarnings#OptionButton : { base : "city_warnings", states : { off:0, on:1 }, link : [ "city", "warningsEnabled" ] }
+      btnZoom#OptionButton     : { base : "city_zoom",     states : { off:0, on:1 }, link : [ "city", "zoomEnabled" ] }
+      btnInvertZoom#OptionButton :{base : "city_zoominv",  states : { off:0, on:1 }, link : [ "city", "zoomInvert" ] }
+      btnLockInfobox#OptionButton:{base : "city_lockinfo", states : { off:0, on:1 }, link : [ "game", "lockInfobox" ] }
+      btnBarbarian#OptionButton : {base : "city_barbarian",states : { off:0, on:1 }, link : [ "city", "barbarianAttack" ] }      
+      btnShowTooltips#OptionButton:{base: "city_tooltips", states : { off:0, on:1 }, link : [ "game", "tooltipEnabled" ] }
+      btnBuildOverDraw#OptionButton:{base:"city_buildoverdraw",states:{off:0,on:1 }, link : [ "draw", "overdrawOnBuild" ] }
+      btnWarfNeedTimber#OptionButton:{base:"city_warf_timber",states:{off:0,on:1 }, link : [ "city", "warfNeedTimber" ] }
+
+      btnC3Gameplay#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_c3rules_mode##" }
       btnDifficulty#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_barbarian_mode##" }
+      btnRoadBlocks#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_roadblock_mode##" }
 
       firerisk#HLayout : {
         maximumSize : [ 0, 24 ]
@@ -57,27 +67,23 @@
           disabled : [ "paneling", 304 ]
         }
       }
-
-      btnBarbarianMayAttack#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_barbarian_mode##" }
-      btnLegionMayAttack#PushButton    : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_barbarian_mode##" }
     }
 
-    columnB#VLayout : {
-      btnShowTooltips#PushButton    : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_showtooltip_mode##" }
-      btnWarningsEnabled#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_warnings_mode##"    }
-      btnZoomEnabled#PushButton     : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_zoom_mode##"        }
-      btnInvertZoom#PushButton      : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_zoominv_mode##"     }
-      btnDebugEnabled#PushButton    : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_debug_mode##"       }
-      btnMmbMoving#PushButton       : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_mmbmoving_mode##"   }
-      btnLockInfobox#PushButton     : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_lockinfo_mode##"    }
-      btnAnroidBarEnabled#PushButton: { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_androidbar_mode##"  }
+    columnB#VLayout :
+    {
+      btnMmbMoving#OptionButton       : { base : "city_mapmoving", states : { lmb:0, mmb:1},  link : [ "draw", "mmbMoving" ] }
+      btnDebugEnabled#OptionButton    : { base : "city_debug",     states : { off:0, on:1 },  link : [ "game", "debugMenu" ] }
+      btnLegionMayAttack#OptionButton : { base : "city_chastener", states : { off:0, on:1 },  link : [ "city", "legionAttack" ] }
+      btnAnroidBarEnabled#OptionButton: { base : "city_androidbar",states : { off:0, on:1 },  link : [ "game", "showTabletMenu" ] }
+      btnToggleCcUseAI#OptionButton   : { base : "city_ccuseai"    states : { off:0, on:1 },  link : [ "game", "ccUseAI" ] }
+      btnHighlightBuilding#OptionButton:{ base : "city_highlight_bld",states:{off:0, on:1 },  link : [ "city", "highlightBuilding" ] }
+      btnDetroyEpidemicHouses#OptionButton:{base:"city_destroy_epdh",states:{ off:0, on:1 },  link : [ "city", "destroyEpidemicHouses" ] }
+      btnBorderMoving#OptionButton    : { base : "city_border",    states : { off:0, on:1 },  link : [ "draw", "borderMoving" ] }
+      btnForestFire#OptionButton      : { base : "city_forest_fire",states: { off:0, on:1 },  link : [ "city", "forestFire" ] }
+      btnForestGrow#OptionButton      : { base : "city_forest_grow",states: { off:0, on:1 },  link : [ "city", "forestGrow" ] }
+
       btnToggleBatching#PushButton  : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_batching_mode##"    }
-      btnToggleCcUseAI#PushButton   : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_batching_mode##"    }
       btnMetrics#PushButton         : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_metrics_mode##"     }
-      btnHighlightBuilding#PushButton:{ maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_highlight_mode##"   }
-      btnDetroyEpidemicHouses#PushButton:{maximumSize:[ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_destroy_epdh##"     }
-      btnForestFire#PushButton      : {maximumSize  :[ 0, 24 ],  bgtype : "smallGrayBorderLine", text : "##city_forest_fire##"      }
-      btnForestGrow#PushButton      : {maximumSize  :[ 0, 24 ],  bgtype : "smallGrayBorderLine", text : "##city_forest_grow##"      }
     }
   }
 

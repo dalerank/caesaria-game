@@ -31,10 +31,8 @@ unsigned int WalkersGrid::_offset( const TilePos& pos )
 
 void WalkersGrid::clear()
 {
-  foreach(it, _grid)
-  {
-    (*it).clear();
-  }
+  for( auto&& cell : _grid)
+    cell.clear();
 }
 
 void WalkersGrid::append( WalkerPtr a )
@@ -64,21 +62,14 @@ void WalkersGrid::remove( WalkerPtr a)
   if( offset < _gsize )
   {
     WalkerList& walkers = _grid[ offset ];
-    foreach( wlk, walkers )
-    {
-      if( *wlk == a )
-      {
-        walkers.erase( wlk );
-        return;
-      }
-    }
+    walkers.remove( a );
   }
 }
 
 void WalkersGrid::update(const WalkerList& walkers)
 {
   clear();
-  for( auto wlk : walkers )
+  for( auto&& wlk : walkers )
     append( wlk );
 }
 
@@ -91,7 +82,7 @@ bool compare_zvalue(const WalkerPtr& one, const WalkerPtr& two)
 
 void WalkersGrid::sort()
 {
-  for( auto cell : _grid )
+  for( auto&& cell : _grid )
   {
     if( cell.size() > 1 )
     {

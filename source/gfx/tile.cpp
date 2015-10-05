@@ -61,7 +61,7 @@ Tile::Tile( const TilePos& pos) //: _terrain( 0, 0, 0, 0, 0, 0 )
 {
   _pos = pos;
   _master = NULL;
-  _wasDrawn = false;
+  _rendered = false;
   _overlay = NULL;
   _terrain.reset();
   _terrain.imgid = 0;
@@ -72,7 +72,7 @@ Tile::Tile( const TilePos& pos) //: _terrain( 0, 0, 0, 0, 0, 0 )
 void Tile::setPicture(const Picture& picture) {  _picture = picture; }
 void Tile::setPicture(const char* rc, const int index){ _picture.load( rc, index );}
 void Tile::setPicture(const std::string& name){ _picture.load( name );}
-void Tile::setMasterTile(Tile* master){  _master = master; }
+void Tile::setMaster(Tile* master){  _master = master; }
 
 bool Tile::isFlat() const
 {
@@ -88,7 +88,7 @@ bool Tile::isFlat() const
 
 
 Point Tile::center() const {  return Point( _epos.i(), _epos.j() ) * tilemap::cellSize().height() + tilemap::cellCenter(); }
-bool Tile::isMasterTile() const{  return (_master == this);}
+bool Tile::isMaster() const{  return (_master == this);}
 void Tile::setEPos(const TilePos& epos)
 {
   _epos = epos;
@@ -163,7 +163,7 @@ bool Tile::getFlag(Tile::Type type) const
   case tlGarden: return _terrain.garden;
   case tlElevation: return _terrain.elevation;
   case tlWall: return _terrain.wall;
-  case wasDrawn: return _wasDrawn;
+  case isRendered: return _rendered;
   case tlDeepWater: return _terrain.deepWater;
   default: break;
   }
@@ -186,7 +186,7 @@ void Tile::setFlag(Tile::Type type, bool value)
   case tlRubble: _terrain.rubble = value; break;
   case clearAll: _terrain.clearFlags(); break;
   case tlWall: _terrain.wall = value; break;
-  case wasDrawn: _wasDrawn = value; break;
+  case isRendered: _rendered = value; break;
   case tlDeepWater: _terrain.deepWater = value; break;
   default: break;
   }
@@ -194,9 +194,9 @@ void Tile::setFlag(Tile::Type type, bool value)
 
 OverlayPtr Tile::overlay() const  { return _overlay;}
 void Tile::setOverlay(OverlayPtr overlay){  _overlay = overlay;}
-void Tile::setOriginalImgId(unsigned short id){  _terrain.imgid = id;}
-void Tile::setParam( Param param, int value) { _terrain.params[ param ] = value; }
-void Tile::changeParam( Param param, int value) { _terrain.params[ param ] += value; }
+void Tile::setImgId(ImgID id){  _terrain.imgid = id;}
+void Tile::setParam(Param param, int value) { _terrain.params[ param ] = value; }
+void Tile::changeParam(Param param, int value) { _terrain.params[ param ] += value; }
 
 int Tile::param( Param param) const
 {

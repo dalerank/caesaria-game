@@ -56,7 +56,7 @@ void SplashScreen::initialize()
   Engine& engine = Engine::instance();
 
   _d->textPic = Picture( Size( 800, 30 ), 0, true );
-  _d->fadetx = Picture( engine.virtualSize(), 0, true );
+  _d->fadetx = Picture( engine.screenSize(), 0, true );
   _d->fadetx.fill( NColor(0xff, 0, 0, 0), Rect() );
 
   setImage( "logo", 1 );
@@ -91,10 +91,10 @@ void SplashScreen::setImage(const std::string &image, int index)
     _d->background.load( "logo", 1 );
 
   // center the background on the screen
-  Size s = (engine.virtualSize() - _d->background.size()) / 2;
+  Size s = (engine.screenSize() - _d->background.size()) / 2;
   _d->background.setOffset( Point( s.width(), -s.height() ) );
 
-  _d->textPic.setOffset( Point( (engine.virtualSize().width() - _d->textPic.width()) / 2,
+  _d->textPic.setOffset( Point( (engine.screenSize().width() - _d->textPic.width()) / 2,
                                   _d->background.offset().y() - _d->background.height() - 5 ) );
 }
 

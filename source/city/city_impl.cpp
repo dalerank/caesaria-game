@@ -26,13 +26,14 @@
 #include "cityservice_factory.hpp"
 #include "city.hpp"
 #include "core/logger.hpp"
+#include "objects/construction.hpp"
 #include "walker/helper.hpp"
 #include "game/difficulty.hpp"
 
 namespace city
 {
 
-void Services::timeStep(PlayerCityPtr city, unsigned int time)
+void Services::update(PlayerCityPtr, unsigned int time)
 {
   iterator serviceIt = begin();
   while( serviceIt != end() )
@@ -85,6 +86,13 @@ void Overlays::update(PlayerCityPtr city, unsigned int time)
   merge();
 }
 
+void Overlays::recalcRoadAccess()
+{
+  // for each overlay
+  this->select<Construction>()
+        .for_each( [](ConstructionPtr ptr){ ptr->computeRoadside();} );
+}
+
 void Overlays::onDestroyOverlay(PlayerCityPtr city, OverlayPtr overlay)
 {
   Desirability::update( city, overlay, Desirability::off );
@@ -106,8 +114,8 @@ void Walkers::clear()
 VariantMap Walkers::save() const
 {
   VariantMap ret;
-  int walkedId = 0;
-  for (auto w : *this)
+  Walker::UniqueId walkedId = 0;
+  for(auto& w : *this)
   {
     VariantMap vm_walker;
     walker::Type wtype = walker::unknown;
@@ -130,18 +138,18 @@ VariantMap Walkers::save() const
 
 void Walkers::update(PlayerCityPtr, unsigned int time)
 {
-  WalkerList::iterator it = begin();
-  while( it != end() )
+  auto wlkIt = begin();
+  while( wlkIt != end() )
   {
-    WalkerPtr walker = *it;
+    WalkerPtr walker = *wlkIt;
     walker->timeStep( time );
     if( walker->isDeleted() )
     {
       // remove the walker from the walkers list
       //grid.remove( *it );
-      it = erase(it);
+      wlkIt = erase(wlkIt);
     }
-    else { ++it; }
+    else { ++wlkIt; }
   }
 
   merge();
@@ -150,42 +158,10 @@ void Walkers::update(PlayerCityPtr, unsigned int time)
   grid.sort();
 }
 
-VariantList Options::save() const
+void city::Services::destroyAll()
 {
-  VariantList ret;
-  for (auto it : *this)
-  {
-    ret << Point(it.first, it.second);
-  }
-  return ret;
-}
-
-void Options::load(const VariantList& stream)
-{
-  for (auto it : stream)
-  {
-    Point tmp = it;
-    (*this)[ (PlayerCity::OptionType)tmp.x() ] = tmp.y();
-  }
-
-  resetIfNot( PlayerCity::climateType, game::climate::central );
-  resetIfNot( PlayerCity::adviserEnabled, 1 );
-  resetIfNot( PlayerCity::fishPlaceEnabled, 1 );
-  resetIfNot( PlayerCity::godEnabled, 1 );
-  resetIfNot( PlayerCity::zoomEnabled, 1 );
-  resetIfNot( PlayerCity::zoomInvert, 1 );
-  resetIfNot( PlayerCity::fireKoeff, 100 );
-  resetIfNot( PlayerCity::collapseKoeff, 100 );
-  resetIfNot( PlayerCity::barbarianAttack, 1 );
-  resetIfNot( PlayerCity::legionAttack, 1 );
-  resetIfNot( PlayerCity::c3gameplay, 0 );
-  resetIfNot( PlayerCity::difficulty, game::difficulty::usual );
-}
-
-void Options::resetIfNot( int name, int value)
-{
-  if( !count( name ) )
-    (*this)[ name ] = value;
+  for (auto srvc : *this)
+    srvc->destroy();
 }
 
 }//end namespace city

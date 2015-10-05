@@ -30,9 +30,14 @@ PREDEFINE_CLASS_SMARTPOINTER(Animals)
 class Animals : public Srvc
 {
 public:
+  /** Constructor **/
   static SrvcPtr create( PlayerCityPtr city );
+
   static std::string defaultName();
+
+  /** Calls every frame **/
   virtual void timeStep( const unsigned int time );
+
   void setAnimalsNumber( walker::Type animal_type, unsigned int number );
 
   virtual VariantMap save() const;

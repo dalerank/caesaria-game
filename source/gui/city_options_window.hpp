@@ -35,6 +35,7 @@ public:
   CityOptions( Widget* parent, PlayerCityPtr city );
 
   virtual ~CityOptions();
+  virtual void setupUI(const VariantMap &ui);
 
 private:
   class Impl;

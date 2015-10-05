@@ -37,6 +37,9 @@ public:
   virtual void draw( gfx::Engine& painter );
 
 private:
+  /**
+   * @brief Calls when player press help button
+   */
   void _showHelp();
 
   class Impl;

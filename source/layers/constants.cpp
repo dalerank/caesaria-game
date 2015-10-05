@@ -94,7 +94,7 @@ Helper::Helper()
 #undef LAYER
 
   VariantMap vm = config::load( SETTINGS_RC_PATH(layersOptsModel) );
-  for( auto it : vm )
+  for( auto& it : vm )
   {
     Type layerType = findType( it.first );
     if( layerType != count )

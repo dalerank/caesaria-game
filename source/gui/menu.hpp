@@ -31,15 +31,15 @@ class PushButton;
 
 class Menu : public Widget
 {
-public:
-  static Menu* create( Widget* parent, int id, PlayerCityPtr city );
+public:  
+  static Menu* create(Widget* parent, int id, PlayerCityPtr city, bool fitToScreen=false );
 
   // draw on screen
   virtual void minimize();
   virtual void maximize();
 
   virtual void draw( gfx::Engine& engine );
-
+  virtual void setPosition(const Point& relativePosition);
   virtual bool onEvent(const NEvent& event);
 
   bool unselectAll();
@@ -53,25 +53,32 @@ protected:
   class Impl;
   ScopedPtr< Impl > _d;
 
-  Menu( Widget* parent, int id, const Rect& rectangle );
+  struct Config;
+
+  Menu( Widget* parent, int id, const Rect& rectangle, PlayerCityPtr city );
+  virtual void _updateButtons();
+  virtual void _initialize( const Config& config );
+  void _setChildGeometry(Widget* w, const Rect& r );
+  void _updateBuildOptions();
   void _createBuildMenu( int type, Widget* parent );
   PushButton* _addButton( int startPic, bool pushBtn, int yMul,
                           int id, bool haveSubmenu, int midPic,
-                          const std::string& tooltip="" );
+                          const std::string& tooltip="" ,
+                          const Rect& rect=Rect());
 };
 
 class ExtentMenu : public Menu
 {
 public:
-  static ExtentMenu* create( Widget* parent, int id, PlayerCityPtr city );
+  static ExtentMenu* create( Widget* parent, int id, PlayerCityPtr city, bool fitToScreen=false );
 
   virtual bool onEvent(const NEvent& event);
-
   virtual void draw( gfx::Engine& engine );
 
   void toggleOverlayMenuVisible();
-
+  void resolveUndoChange( bool enabled );
   void setAlarmEnabled( bool enabled );
+  Rect getMinimapRect() const;
 
 slots public:
   void changeOverlay( int ovType );
@@ -85,10 +92,12 @@ signals public:
   Signal0<>& onMessagesShow();
   Signal0<>& onRotateRight();
   Signal0<>& onRotateLeft();
+  Signal0<>& onUndo();
   Signal0<>& onMissionTargetsWindowShow();
 
 protected:
-  ExtentMenu( Widget* parent, int id, const Rect& rectangle );
+  ExtentMenu(Widget* parent, int id, const Rect& rectangle , PlayerCityPtr city);
+  virtual void _updateButtons();
 };
 
 }//end namespace gui

@@ -109,15 +109,16 @@ public:
     painter.draw( _fort->legionEmblem(), absoluteRect().lefttop() + Point( 6, 4 ), &absoluteClippingRectRef() );
   }
 
-public signals:
-  Signal1<FortPtr> onShowLegionSignal;
-  Signal1<FortPtr> onLegionRetreatSignal;
-  Signal1<FortPtr> onEmpireServiceSignal;
+  struct {
+    Signal1<FortPtr> onShowLegion;
+    Signal1<FortPtr> onLegionRetreat;
+    Signal1<FortPtr> onEmpireService;
+  } signal;
 
 private slots:
-  void _resolveMove2Legion() { emit onShowLegionSignal( _fort ); }
-  void _resolveReturnLegion2Fort() { emit onLegionRetreatSignal( _fort ); }
-  void _resolveEmpireService() { emit onEmpireServiceSignal( _fort ); }
+  void _resolveMove2Legion() { emit signal.onShowLegion( _fort ); }
+  void _resolveReturnLegion2Fort() { emit signal.onLegionRetreat( _fort ); }
+  void _resolveEmpireService() { emit signal.onEmpireService( _fort ); }
 
 private:
   FortPtr _fort;
@@ -155,9 +156,9 @@ Legion::Legion( Widget* parent, int id, PlayerCityPtr city, FortList forts )
   {
     LegionButton* btn = new LegionButton( this, startLegionArea + legionButtonOffset, index++, fort );
 
-    CONNECT( btn, onShowLegionSignal, this, Legion::_handleMove2Legion );
-    CONNECT( btn, onLegionRetreatSignal, this, Legion::_handleRetreaLegion );
-    CONNECT( btn, onEmpireServiceSignal, this, Legion::_handleServiceEmpire );
+    CONNECT( btn, signal.onShowLegion, this, Legion::_handleMove2Legion );
+    CONNECT( btn, signal.onLegionRetreat, this, Legion::_handleRetreaLegion );
+    CONNECT( btn, signal.onEmpireService, this, Legion::_handleServiceEmpire );
   }
 
   if( _d->lbBlackframe && forts.empty() )
@@ -229,10 +230,10 @@ void Legion::Impl::updateAlarms(PlayerCityPtr city)
 {
   MilitaryPtr mil = city->statistic().services.find<Military>();
 
-  WalkerList chasteners = city->statistic().walkers.find( walker::romeChastenerSoldier );
-  WalkerList elephants = city->statistic().walkers.find( walker::romeChastenerElephant );
+  int chasteners_n = city->statistic().walkers.count( walker::romeChastenerSoldier );
+  int elephants_n = city->statistic().walkers.count( walker::romeChastenerElephant );
 
-  if( chasteners.size() || elephants.size() )
+  if( chasteners_n > 0 || elephants_n > 0 )
   {
     lbAlarm->setText( _("##emperror_legion_at_out_gates##") );
     return;

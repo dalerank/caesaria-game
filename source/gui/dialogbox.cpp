@@ -43,11 +43,13 @@ class Dialog::Impl
 {
 public:
   GameAutoPause locker;
-signals public:
-  Signal1<int> onResultSignal;
-  Signal0<> onOkSignal;
-  Signal0<> onCancelSignal;
-  Signal0<> onNeverSignal;
+
+  struct {
+    Signal1<int> onResult;
+    Signal0<> onOk;
+    Signal0<> onCancel;
+    Signal0<> onNever;
+  } signal;
 };
 
 Dialog::Dialog(Ui *ui, const Rect& rectangle, const std::string& title,
@@ -119,7 +121,7 @@ Dialog::Dialog(Ui *ui, const Rect& rectangle, const std::string& title,
 
 Signal1<int>& Dialog::onResult()
 {
-  return _d->onResultSignal;
+  return _d->signal.onResult;
 }
 
 bool Dialog::onEvent( const NEvent& event )
@@ -130,13 +132,13 @@ bool Dialog::onEvent( const NEvent& event )
       if( event.gui.type == guiButtonClicked )
       {
         int id = event.gui.caller->ID();
-        emit _d->onResultSignal( id );
+        emit _d->signal.onResult( id );
 
         switch( id )
         {
-        case btnOk: emit _d->onOkSignal(); break;
-        case btnCancel: emit _d->onCancelSignal(); break;
-        case btnNever: emit _d->onNeverSignal(); break;
+        case btnOk: emit _d->signal.onOk(); break;
+        case btnCancel: emit _d->signal.onCancel(); break;
+        case btnNever: emit _d->signal.onNever(); break;
         }
 
         return true;
@@ -147,8 +149,8 @@ bool Dialog::onEvent( const NEvent& event )
     {
       switch( event.keyboard.key )
       {
-      case KEY_ESCAPE: emit _d->onCancelSignal(); break;
-      case KEY_RETURN: emit _d->onOkSignal(); break;
+      case KEY_ESCAPE: emit _d->signal.onCancel(); break;
+      case KEY_RETURN: emit _d->signal.onOk(); break;
       default: break;
       }
 
@@ -163,9 +165,9 @@ bool Dialog::onEvent( const NEvent& event )
   return Widget::onEvent( event );
 }
 
-Signal0<>& Dialog::onOk() {  return _d->onOkSignal;}
-Signal0<>& Dialog::onCancel(){  return _d->onCancelSignal;}
-Signal0<>& Dialog::onNever() { return _d->onNeverSignal; }
+Signal0<>& Dialog::onOk() {  return _d->signal.onOk;}
+Signal0<>& Dialog::onCancel(){  return _d->signal.onCancel;}
+Signal0<>& Dialog::onNever() { return _d->signal.onNever; }
 
 void Dialog::draw(gfx::Engine& painter )
 {

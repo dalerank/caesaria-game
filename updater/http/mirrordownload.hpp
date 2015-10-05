@@ -49,6 +49,11 @@ public:
 				   const MirrorList& mirrors, 
 				   const std::string& srcFilename,
 					 vfs::Path destFilename);
+
+  static DownloadPtr create( const HttpConnectionPtr& conn,
+                             const MirrorList& mirrors,
+                             const std::string& srcFilename,
+                             vfs::Path destFilename );
 	
 	// Get the display name of the currently chosen mirror
 	std::string GetCurrentMirrorName();

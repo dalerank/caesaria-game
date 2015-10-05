@@ -23,7 +23,6 @@
 #include "SDL_version.h"
 #include "color.hpp"
 #include "vfs/directory.hpp"
-#include "game/settings.hpp"
 #include "core/osystem.hpp"
 #include "gfx/engine.hpp"
 #include <map>
@@ -249,19 +248,19 @@ Font& Font::operator=( const Font& other )
 
 Font Font::create(FontType type)
 {
-  return FontCollection::instance().getFont_( type );
+  return FontCollection::instance()._getFont( type );
 }
 
 Font Font::create(FontType type, NColor color)
 {
-  Font ret = FontCollection::instance().getFont_( type );
+  Font ret = FontCollection::instance()._getFont( type );
   ret.setColor( color );
   return ret;
 }
 
 Font Font::create(const std::string& type)
 {
-  return FontCollection::instance().getFont_( type );
+  return FontCollection::instance()._getFont( type );
 }
 
 class FontTypeHelper : public EnumsHelper<int>
@@ -286,14 +285,14 @@ FontCollection& FontCollection::instance()
 FontCollection::FontCollection() : _d( new Impl )
 { }
 
-Font& FontCollection::getFont_(const std::string& name)
+Font& FontCollection::_getFont(const std::string& name)
 {
   int type = _d->fhelper.findType( name );
 
-  return getFont_( type );
+  return _getFont( type );
 }
 
-Font& FontCollection::getFont_(const int key)
+Font& FontCollection::_getFont(const int key)
 {
   std::map<int, Font>::iterator it = _d->collection.find(key);
   if (it == _d->collection.end())
@@ -325,9 +324,10 @@ void FontCollection::addFont(const int key, const std::string& name, vfs::Path p
   if( ttf == NULL )
   {
     std::string errorStr( TTF_GetError() );
-#ifdef CAESARIA_PLATFORM_WIN
-    errorStr += "\n Is it only latin symbols in path to game?";
-#endif
+
+    if( OSystem::isWindows() )
+      errorStr += "\n Is it only latin symbols in path to game?";
+
     OSystem::error( "CRITICAL!!! ", errorStr );
     THROW( errorStr );
   }
@@ -340,12 +340,12 @@ void FontCollection::addFont(const int key, const std::string& name, vfs::Path p
   setFont( key, name, font0);
 }
 
-void FontCollection::initialize(const std::string& resourcePath)
+void FontCollection::initialize(const std::string& resourcePath, const std::string& family)
 {
   _d->collection.clear();
 
   vfs::Directory resDir( resourcePath );
-  vfs::Path fontFilename = SETTINGS_VALUE( font ).toString();
+  vfs::Path fontFilename = family;
   vfs::Path absolutFontfilename = resDir/fontFilename;
 
   addFont( FONT_0,       CAESARIA_STR_EXT(FONT_0),      absolutFontfilename, 12, DefaultColors::black );

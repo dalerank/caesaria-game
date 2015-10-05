@@ -65,6 +65,7 @@ public:
   virtual gfx::TilesArray area() const;
 
   virtual void burn();
+  virtual void collapse();
 
   virtual Point offset(const gfx::Tile &tile, const Point& subpos ) const;
   virtual void timeStep(const unsigned long time);  // perform one simulation step
@@ -105,6 +106,7 @@ protected:
   gfx::Animation& _animationRef();
   gfx::Tile* _masterTile();
   PlayerCityPtr _city() const;
+  gfx::Tilemap& _map() const;
   gfx::Pictures& _fgPictures();
   gfx::Picture& _fgPicture(unsigned int index);
   const gfx::Picture &_fgPicture(unsigned int index) const;

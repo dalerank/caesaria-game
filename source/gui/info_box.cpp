@@ -178,11 +178,11 @@ void Infobox::setupUI(const vfs::Path& filename)
   Window::setupUI( filename );
 }
 
-Label* Infobox::_lbTitleRef(){  return _d->lbTitle;}
+Label* Infobox::_lbTitle(){  return _d->lbTitle;}
 
-Label* Infobox::_lbTextRef(){ return _d->lbText; }
+Label* Infobox::_lbText(){ return _d->lbText; }
 Label* Infobox::_lbBlackFrame(){  return _d->lbBlackFrame; }
-PushButton*Infobox::_btnExitRef() { return _d->btnExit; }
+PushButton*Infobox::_btnExit() { return _d->btnExit; }
 
 void Infobox::_updateWorkersLabel(const Point &pos, int picId, int need, int have )
 {
@@ -202,8 +202,9 @@ void Infobox::_updateWorkersLabel(const Point &pos, int picId, int need, int hav
 InfoboxBuilding::InfoboxBuilding( Widget* parent, const Tile& tile )
   : Infobox( parent, Rect( 0, 0, 450, 220 ), Rect( 16, 60, 450 - 16, 60 + 50) )
 {
-  BuildingPtr building = ptr_cast<Building>( tile.overlay() );
-  setTitle( MetaDataHolder::findPrettyName( building->type() ) );
+  auto building = tile.overlay<Building>();
+  if( building.isValid() )
+    setTitle( MetaDataHolder::findPrettyName( building->type() ) );
 }
 
 }

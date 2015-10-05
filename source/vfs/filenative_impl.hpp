@@ -54,6 +54,8 @@ public:
   //! returns if file is open
   virtual bool isOpen() const;
 
+  virtual size_t lastModify() const;
+
   //! returns where in the file we are.
   virtual long getPos() const;
 

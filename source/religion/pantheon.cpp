@@ -23,6 +23,7 @@
 #include "divinities.hpp"
 #include "ceres.hpp"
 #include "neptune.hpp"
+#include "city/city.hpp"
 #include "venus.hpp"
 #include "mercury.hpp"
 #include "core/variant_map.hpp"
@@ -57,7 +58,7 @@ DivinityPtr Pantheon::get( RomeDivinityType name )
 DivinityPtr Pantheon::get( const std::string& name)
 {
   DivinityList divines = instance().all();
-  for( auto current : divines )
+  for( auto& current : divines )
   {
     if( current->name() == name || current->internalName() == name )
       return current;

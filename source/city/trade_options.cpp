@@ -85,7 +85,7 @@ public:
 
   void updateLists()
   {
-    for( auto gtype : good::all() )
+    for( auto& gtype : good::all() )
     {
       const GoodInfo& info = goods[ gtype ];
 
@@ -115,7 +115,7 @@ public:
   {
     buys.setCapacity( 9999 );
     sells.setCapacity( 9999 );
-    for( auto gtype : good::all() )
+    for( auto& gtype : good::all() )
     {
       goods[ gtype  ].stacking = false;
       goods[ gtype  ].order = trade::noTrade;
@@ -137,7 +137,7 @@ Options::Options() : _d( new Impl )
 metric::Unit Options::tradeLimit( Order state, good::Product type) const
 {
   Impl::GoodsInfo::const_iterator it = _d->goods.find( type );
-  metric::Unit ret;
+  metric::Unit ret = metric::Unit::fromQty( 0 );
   if( it == _d->goods.end() )
     return ret;
 
@@ -215,7 +215,7 @@ bool Options::isStacking( good::Product type )
 good::Products Options::locked() const
 {
   good::Products ret;
-  for( auto g : _d->goods )
+  for( auto& g : _d->goods )
   {
     if( g.second.stacking )
       ret.insert( g.first );
@@ -301,7 +301,7 @@ void Options::setOrder( good::Product type, Order order )
 
 void Options::load( const VariantMap& stream )
 {
-  for( auto it : stream )
+  for( auto& it : stream )
   {
     good::Product gtype = good::Helper::getType( it.first );
 
@@ -321,7 +321,7 @@ VariantMap Options::save() const
 {
   VariantMap ret;
 
-  for( auto product : _d->goods )
+  for( auto& product : _d->goods )
   {
     ret[ good::Helper::getTypeName( product.first ) ] = product.second.save();
   }

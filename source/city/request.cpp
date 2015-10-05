@@ -171,7 +171,7 @@ std::string RqGood::typeName() {  return "good_request";}
 
 VariantMap RqGood::save() const
 {
-  VariantMap ret = Request::save();
+  VariantMap ret = RqBase::save();
 
   ret[ "reqtype" ] = Variant( typeName() );
   ret[ "month" ] = _d->months2comply;
@@ -186,7 +186,7 @@ VariantMap RqGood::save() const
 
 void RqGood::load(const VariantMap& stream)
 {
-  Request::load( stream );
+  RqBase::load( stream );
   _d->months2comply = (int)stream.get( "month" );
 
   Variant vm_goodt = stream.get( "good" );
@@ -218,7 +218,7 @@ void RqGood::load(const VariantMap& stream)
 
 void RqGood::success( PlayerCityPtr city )
 {
-  Request::success( city );
+  RqBase::success( city );
   _d->complyRequest.apply( city );
 }
 
@@ -240,7 +240,7 @@ void RqGood::fail( PlayerCityPtr city )
   }
   else
   {
-    Request::fail( city );
+    RqBase::fail( city );
 
     auto e = ShowInfobox::create( _("##emperor_anger##"), _("##request_faild_text##") );
     e->dispatch();
@@ -249,7 +249,7 @@ void RqGood::fail( PlayerCityPtr city )
 
 void RqGood::update()
 {
-  Request::update();
+  RqBase::update();
 
   if( !_d->alsoRemind && (_startDate.monthsTo( game::Date::current() ) > DateTime::monthsInYear ) )
   {
@@ -264,12 +264,12 @@ std::string RqGood::description() const {  return _d->description; }
 int RqGood::qty() const { return _d->stock.capacity(); }
 good::Product RqGood::goodType() const { return _d->stock.type(); }
 
-RqGood::RqGood() : Request( DateTime() ), _d( new Impl )
+RqGood::RqGood() : RqBase( DateTime() ), _d( new Impl )
 {
   _d->alsoRemind = false;
 }
 
-VariantMap Request::save() const
+VariantMap RqBase::save() const
 {
   VariantMap ret;
   ret[ "deleted" ] = _isDeleted;
@@ -280,7 +280,7 @@ VariantMap Request::save() const
   return ret;
 }
 
-void Request::load(const VariantMap& stream)
+void RqBase::load(const VariantMap& stream)
 {
   _isDeleted = stream.get( "deleted" );
   _isAnnounced = stream.get( "announced" );
@@ -292,7 +292,7 @@ void Request::load(const VariantMap& stream)
   _startDate = vStart.isNull() ? game::Date::current() : vStart.toDateTime();
 }
 
-Request::Request(DateTime finish) : _isDeleted( false ), _isAnnounced( false ), _finishDate( finish )
+RqBase::RqBase(DateTime finish) : _isDeleted( false ), _isAnnounced( false ), _finishDate( finish )
 {
 
 }

@@ -49,7 +49,7 @@ public:
   template<class Dst>
   bool contain() const
   {
-    for( auto i : *this )
+    for( auto& i : *this )
       if( is_kind_of<Dst>( i ) )
         return true;
 

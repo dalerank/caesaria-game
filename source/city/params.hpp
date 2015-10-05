@@ -27,28 +27,31 @@ namespace city
 namespace params
 {
 
-DEFINE_NAMEDTYPE(Param, unknown)
-REGISTER_NAMEDTYPE(Param,culture,1)
-REGISTER_NAMEDTYPE(Param,empireTaxPayed,2)
-REGISTER_NAMEDTYPE(Param,overduePayment,3)
-REGISTER_NAMEDTYPE(Param,maxForts,4)
+BEGIN_NAMEDTYPE(Type, unknown)
+APPEND_NAMEDTYPE(culture)
+APPEND_NAMEDTYPE(empireTaxPayed)
+APPEND_NAMEDTYPE(overduePayment)
+APPEND_NAMEDTYPE(maxForts)
+END_NAMEDTYPE(Type)
 
 class Params : public std::map<int, int>
 {
 public:
-  int get( Param name ) const
+  int get( Type name ) const
   {
     const_iterator it = find( name );
     return it != end() ? it->second : 0;
   }
 
-  void set( Param name, int value )
+  void set( Type name, int value )
   {
     (*this)[ name ] = value;
   }
 };
 
 }//end namespace params
+
+typedef params::Type Param;
 
 }//end namespace city
 

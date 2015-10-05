@@ -52,9 +52,6 @@ void Health::drawTile(Engine& engine, Tile& tile, const Point& offset)
 
   if( tile.overlay().isNull() )
   {
-    //draw background
-    //engine.draw( tile.picture(), screenPos );
-
     drawPass( engine, tile, offset, Renderer::ground );
     drawPass( engine, tile, offset, Renderer::groundAnimation );
   }
@@ -72,15 +69,13 @@ void Health::drawTile(Engine& engine, Tile& tile, const Point& offset)
     else if( _flags.count( overlay->type() ) )
     {
       needDrawAnimations = true;
-      //city::Helper helper( _city() );
-      //drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
     }
     else if( overlay->type() == object::house )
     {
-      HousePtr house = ptr_cast<House>( overlay );
+      auto house = overlay.as<House>();
       healthLevel = _getLevelValue( house );
 
-      needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
+      needDrawAnimations = (house->level() <= HouseLevel::hovel) && (house->habitants().empty());
 
       if( !needDrawAnimations )
       {
@@ -103,7 +98,7 @@ void Health::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 LayerPtr Health::create(TilemapCamera& camera, PlayerCityPtr city, int type )
@@ -126,7 +121,7 @@ void Health::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        HousePtr house = ptr_cast<House>( tile->overlay() );
+        auto house = tile->overlay<House>();
         if( house != 0 )
         {
           std::string typeName;

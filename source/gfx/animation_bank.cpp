@@ -267,9 +267,9 @@ void AnimationBank::Impl::loadStage( unsigned int type, const std::string& stage
 
 void AnimationBank::Impl::loadGroup( unsigned int type, const VariantMap& desc, LoadingStage stage )
 {  
-  foreach( ac, desc )
+  for( auto& stateConfig : desc )
   {   
-    loadStage( type, ac->first, ac->second.toMap(), stage );
+    loadStage( type, stateConfig.first, stateConfig.second.toMap(), stage );
   }
 }
 
@@ -322,17 +322,17 @@ void AnimationBank::loadAnimation(vfs::Path model, vfs::Path basic)
 
   VariantMap items = config::load( model );
 
-  foreach( i, items )
+  for( auto& i : items )
   {
-    walker::Type wtype = WalkerHelper::getType( i->first );
+    walker::Type wtype = WalkerHelper::getType( i.first );
     if( wtype != walker::unknown )
     {
-      Logger::warning( "Load config animations for " + i->first );
-      _d->animConfigs[ wtype ] = i->second.toMap();
+      Logger::warning( "Load config animations for " + i.first );
+      _d->animConfigs[ wtype ] = i.second.toMap();
     }
     else
     {
-      Logger::warning( "AnimationBank: cannot find type " + i->first );
+      Logger::warning( "AnimationBank: cannot find type " + i.first );
     }
   }
 

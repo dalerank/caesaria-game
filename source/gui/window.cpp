@@ -54,7 +54,7 @@ public:
   {
     bool errorsOnBatch = false;
     state.destroy();
-    Decorator::draw( images, area, style, negativeY  );
+    Decorator::draw( images, area, style, nullptr, negativeY  );
     errorsOnBatch = !state.load( images, lefttop );
 
     if( errorsOnBatch )
@@ -372,7 +372,7 @@ void Window::setupUI(const VariantMap &ui)
   StringArray buttons = ui.get( "buttons" ).toStringArray();  
   if( buttons.empty() || buttons.front() == "off" )
   {
-    for( auto button : _d->buttons )
+    for( auto& button : _d->buttons )
        button->hide();
   }
 

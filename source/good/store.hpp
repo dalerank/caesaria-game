@@ -33,6 +33,9 @@ struct ReserveInfo
   DateTime time;
   unsigned int id;
 
+  int qty() const { return stock.qty(); }
+  good::Product type() const { return stock.type(); }
+
   bool operator<(const ReserveInfo& a ) const
   {
     return id < a.id;
@@ -113,7 +116,7 @@ public:
   virtual void retrieve( good::Stock& stock, const int amounts);
 
   // store all goods from the given goodStore
-  virtual void storeAll( Store &goodStore);
+  virtual void storeAll( Store& goodStore);
 
   virtual bool isDevastation() const;
   virtual void setDevastation( bool value );

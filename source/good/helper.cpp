@@ -29,45 +29,34 @@ using namespace metric;
 namespace good
 {
 
-static const int empPicId[ 20 ] = { PicID::bad,
-                                       /*G_WHEAT*/11, 
-                                       /*G_FISH*/27,
-                                       /*G_MEAT*/16, 
-                                       /*G_FRUIT*/13, 
-                                       /*G_VEGETABLE*/12,                           
-                                       /*G_OLIVE*/14, 
-                                       /*G_OIL*/18,
-                                       /*G_GRAPE*/15,                           
-                                       /*G_WINE*/17, 
-                                       /*G_TIMBER*/20, 
-                                       /*G_FURNITURE*/24,
-                                       /*G_CLAY*/21,
-                                       /*G_POTTERY*/25, 
-                                       /*G_IRON*/19, 
-                                       /*G_WEAPON*/23,                                                   
-                                       /*G_MARBLE*/22,                                                    
-                                       /*G_DENARIES*/26,                            
-                                       PicID::bad };
+struct PicId
+{
+  Product type ;
+  int emp ;
+  int local;
+};
 
- static const int localPicId[ 20 ] = { PicID::bad,
-                                          /*G_WHEAT*/317, 
-                                          /*G_FISH*/333,
-                                          /*G_MEAT*/322,
-                                          /*G_FRUIT*/319,
-                                          /*G_VEGETABLE*/318,
-                                          /*G_OLIVE*/320,
-                                          /*G_OIL*/324,
-                                          /*G_GRAPE*/321,   
-                                          /*G_WINE*/323, 
-                                          /*G_TIMBER*/326,
-                                          /*G_FURNITURE*/330,
-                                          /*G_CLAY*/327,
-                                          /*G_POTTERY*/331,
-                                          /*G_IRON*/325,  
-                                          /*G_WEAPON*/329, 
-                                          /*G_MARBLE*/328, 
-                                          /*G_DENARIES*/332,
-                                          PicID::bad };
+static std::map<good::Product, PicId> defaultsPicId = {
+  { none     , { none,       0,   0 }},
+  { wheat    , { wheat,     11, 317 }},
+  { vegetable, { vegetable, 12, 318 }},
+  { fruit    , { fruit,     13, 319 }},
+  { olive    , { olive,     14, 320 }},
+  { grape    , { grape,     15, 321 }},
+  { meat     , { meat,      16, 322 }},
+  { wine     , { wine,      17, 323 }},
+  { oil      , { oil,       18, 324 }},
+  { iron     , { iron,      19, 325 }},
+  { timber   , { timber,    20, 326 }},
+  { clay     , { clay,      21, 327 }},
+  { marble   , { marble,    22, 328 }},
+  { weapon   , { weapon,    23, 329 }},
+  { furniture, { furniture, 24, 330 }},
+  { pottery  , { pottery,   25, 331 }},
+  { denaries , { denaries,  26, 332 }},
+  { prettyWine,{ prettyWine,17, 323 }},
+  { fish     , { fish,      27, 333 }}
+};
 
 class Helper::Impl : public EnumsHelper<good::Product>
 {
@@ -120,16 +109,9 @@ Helper::Helper() : _d( new Impl )
 
 Picture Helper::picture(Product type, bool emp )
 {
-  int picId;
+  const PicId& info = defaultsPicId[ type ];
 
-  if( emp )
-  {
-    picId = empPicId[ type ];
-  }
-  else
-  {
-    picId = localPicId[ type ];
-  }
+  int picId = emp ? info.emp : info.local;
   
   if( picId > 0 )
   {

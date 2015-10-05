@@ -92,9 +92,7 @@ void Download::Start()
 	//Logger::warning(  "Downloading to temporary file " + _tempFilename.toString() );
 
 	_status = IN_PROGRESS;
-	ExceptionSafeThreadPtr p( new ExceptionSafeThread( Delegate0<>( this, &Download::perform ) ) );
-	p->SetThreadType( ThreadTypeIntervalDriven, 0 );
-	p->drop();
+  auto p = threading::SafeThread::create( threading::SafeThread::WorkFunction( this, &Download::perform ) );
 	_thread = p;
 }
 
@@ -107,9 +105,9 @@ void Download::Stop()
 		_curUrl = _urls.size();
 
 		// Cancel the request
-		_request->Cancel();
+    _request->cancel();
 
-		_thread = ExceptionSafeThreadPtr();
+    _thread = threading::SafeThreadPtr();
 		_request = HttpRequestPtr();
 
 		// Don't reset successful stati
@@ -138,27 +136,27 @@ std::size_t Download::GetDownloadedBytes()
 	return _request != NULL ? _request->GetDownloadedBytes() : 0;
 }
 
-void Download::EnableCrcCheck(bool enable)
+void Download::enableCrcCheck(bool enable)
 {
 	_crcCheckEnabled = enable;
 }
 
-void Download::EnableFilesizeCheck(bool enable)
+void Download::enableFilesizeCheck(bool enable)
 {
 	_filesizeCheckEnabled = enable;
 }
 
-void Download::SetRequiredCrc(unsigned int requiredCrc)
+void Download::setRequiredCrc(unsigned int requiredCrc)
 {
 	_requiredCrc = requiredCrc;
 }
 
-void Download::SetRequiredFilesize(std::size_t requiredSize)
+void Download::setRequiredFilesize(std::size_t requiredSize)
 {
 	_requiredFilesize = requiredSize;
 }
 
-void Download::perform()
+void Download::perform( bool& continues )
 {
 	while (_curUrl < _urls.size())
 	{
@@ -168,12 +166,12 @@ void Download::perform()
 		const std::string& url = _urls[_curUrl];
 
 		// Create a new request
-		_request = _conn->createRequest(url, _tempFilename.toString());
+    _request = _conn->request(url, _tempFilename.toString());
 	
 		// Start the download, blocks until finished or aborted
-		_request->Perform();
+    _request->execute();
 
-		if (_request->GetStatus() == HttpRequest::OK)
+    if (_request->status() == HttpRequest::OK)
 		{
 			// Check the downloaded file
 			bool valid = checkIntegrity();
@@ -211,7 +209,7 @@ void Download::perform()
 		else 
 		{
 			// Download error
-			if (_request->GetStatus() == HttpRequest::ABORTED)
+      if (_request->status() == HttpRequest::ABORTED)
 			{
 				Logger::warning(  "Download aborted.");
 			}
@@ -231,6 +229,8 @@ void Download::perform()
 		// This was our last URL, set the status to FAILED
 		_status = FAILED;
 	}
+
+  continues = false;
 }
 
 vfs::Path Download::GetDestFilename() const

@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "environment.hpp"
 
@@ -24,7 +24,9 @@
 #include "core/time.hpp"
 #include "core/foreach.hpp"
 #include "widget_factory.hpp"
+#include "console.hpp"
 #include "core/logger.hpp"
+#include "core/hash.hpp"
 
 using namespace gfx;
 
@@ -35,10 +37,10 @@ typedef std::map<Ui::Flag, int> Flags;
 struct UiTooltipWorker
 {
   WidgetPtr element;
-  unsigned int LastTime;
-  unsigned int EnterTime;
-  unsigned int LaunchTime;
-  unsigned int RelaunchTime;
+  unsigned int lastTime;
+  unsigned int enterTime;
+  unsigned int launchTime;
+  unsigned int relaunchTime;
 
   Widget* standart(Widget& parent , Widget *hovered, Point cursor);
   void update( unsigned int time, Widget& rootWidget, bool showTooltips,
@@ -63,29 +65,38 @@ public:
   Widget::Widgets deletionQueue;
 
   gfx::Engine* engine;
+  Size size;
   Point cursorPos;
   Flags flags;
+  int consoleId;
+  Console* console;
 
 public:
   void threatDeletionQueue();
 };
 
-Ui::Ui(Engine& painter )
+Ui::Ui(Engine& painter , const Size& size)
   : Widget( 0, -1, Rect() ), _d( new Impl )
 {
   setDebugName( "Ui" );
 
   _d->preRenderFunctionCalled = false;
   _d->focusedElement = 0;
+  _d->size = size;
   _d->engine = &painter;
   _environment = this;
   _d->tooltip.element;
-  _d->tooltip.LastTime = 0;
-  _d->tooltip.EnterTime = 0;
-  _d->tooltip.LaunchTime = 1000;
-  _d->tooltip.RelaunchTime = 500;
+  _d->tooltip.lastTime = 0;
+  _d->tooltip.enterTime = 0;
+  _d->tooltip.launchTime = 1000;
+  _d->tooltip.relaunchTime = 500;
 
-  setGeometry( Rect( Point(), painter.virtualSize() ) );
+  setGeometry( Rect( Point(), _d->size ) );
+
+  _d->consoleId = Hash( CAESARIA_STR_EXT(Console) );
+  _d->console = 0;//new Console( this, _d->consoleId, Rect() );
+
+  setFlag( buttonShowDebugArea, 0 );
 }
 
 //! Returns if the element has focus
@@ -117,7 +128,10 @@ void Ui::clear()
   _updateHovered( Point( -9999, -9999 ) );
 
   for( auto widget : children() )
-    deleteLater( widget );
+  {
+    if( widget != _d->console )
+      deleteLater( widget );
+  }
 }
 
 void Ui::setFocus() {}
@@ -254,6 +268,11 @@ void Ui::setFlag(Ui::Flag name, int value)
   _d->flags[ name ] = value;
 }
 
+bool Ui::hasFlag(Ui::Flag name)
+{
+  return _d->flags[ name ];
+}
+
 void Ui::_updateHovered( const Point& mousePos )
 {
   WidgetPtr lastHovered = _d->hovered.current;
@@ -310,7 +329,7 @@ void Ui::_updateHovered( const Point& mousePos )
 
     if( _d->hovered.noSubelement.isValid() )
     {
-      _d->tooltip.EnterTime = DateTime::elapsedTime();
+      _d->tooltip.enterTime = DateTime::elapsedTime();
     }
   }
 }
@@ -429,19 +448,22 @@ bool Ui::handleEvent( const NEvent& event )
     case sTextInput:
     case sEventKeyboard:
         {
-          /*if( _console && _console->InitKey() == (int)event.KeyboardEvent.Char )							//
+          if( _d->console )
           {
-              if( _console && !event.KeyboardEvent.Control && event.KeyboardEvent.PressedDown )
-                  _console->ToggleVisible();
+            if(  _d->console->initKey() == (int)event.keyboard.symbol )
+            {
+              if( _d->console && !event.keyboard.control && event.keyboard.pressed )
+                  _d->console->toggleVisible();
 
               return true;
-          }*/
+            }
 
-          /*if( _console && _console->isVisible() && !event.KeyboardEvent.Control && event.KeyboardEvent.PressedDown )						//
-          {																//
-              _console->KeyPress( event );
+            if( _d->console->visible() && !event.keyboard.control && event.keyboard.pressed )
+            {
+              _d->console->keyPress( event );
               return true;
-          }*/
+            }
+          }
 
           if( getFocus() && getFocus()->onEvent(event))
             return true;
@@ -465,17 +487,16 @@ bool Ui::handleEvent( const NEvent& event )
         break;
   } // end switch
 
-
   return false;
 }
 
 Widget* Ui::hovered() const { return _d->hovered.current.object(); }
 
 void Ui::beforeDraw()
-{
-  const Size screenSize( _d->engine->virtualSize() );
+{  
+  const Size& screenSize = _d->size;
   const Point& rigthDown = rootWidget()->absoluteRect().rightbottom();
-  
+
   if( rigthDown.x() != screenSize.width() || rigthDown.y() != screenSize.height() )
   {
     // resize gui environment
@@ -522,6 +543,7 @@ void Ui::animate( unsigned int time )
   Widget::animate( time );
 }
 
+const Size& Ui::vsize() const {  return _d->size; }
 Point Ui::cursorPos() const {  return _d->cursorPos; }
 
 Widget* UiTooltipWorker::standart(Widget& parent, Widget* hovered, Point cursor)
@@ -533,11 +555,11 @@ Widget* UiTooltipWorker::standart(Widget& parent, Widget* hovered, Point cursor)
 
   Size tooltipSize( elm->textWidth() + 20, elm->textHeight() + 2 );
   if( tooltipSize.width() > parent.width() * 0.75 )
-    {
-      tooltipSize.setWidth( parent.width() * 0.5 );
-      tooltipSize.setHeight( elm->textHeight() * 2 + 10 );
-      elm->setWordwrap( true );
-    }
+  {
+    tooltipSize.setWidth( parent.width() * 0.5 );
+    tooltipSize.setHeight( elm->textHeight() * 2 + 10 );
+    elm->setWordwrap( true );
+  }
 
   Rect rect( cursor, tooltipSize );
 
@@ -553,8 +575,8 @@ void UiTooltipWorker::update( unsigned int time, Widget& rootWidget, bool showTo
   // launch tooltip
   if( element.isNull()
       && hovered.isValid() && hovered.object() != &rootWidget
-      && (time - EnterTime >= LaunchTime
-      || (time - LastTime >= RelaunchTime && time - LastTime < LaunchTime))
+      && (time - enterTime >= launchTime
+      || (time - lastTime >= relaunchTime && time - lastTime < launchTime))
       && hovered->tooltipText().size()
     )
   {
@@ -579,7 +601,7 @@ void UiTooltipWorker::update( unsigned int time, Widget& rootWidget, bool showTo
 
   if( element.isValid() && element->visible() )	// (isVisible() check only because we might use visibility for ToolTip one day)
   {
-    LastTime = time;
+    lastTime = time;
 
     // got invisible or removed in the meantime?
     if( hovered.isNull()

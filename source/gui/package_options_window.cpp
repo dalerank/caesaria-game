@@ -88,7 +88,7 @@ void PackageOptions::_close()
     dlg->show();
   }
 
-  vfs::Directory screenDir = SETTINGS_VALUE( screenshotDir ).toString();
+  vfs::Directory screenDir = SETTINGS_STR( screenshotDir );
   if( !screenDir.exist() )
     vfs::Directory::createByPath( screenDir );
 
@@ -121,17 +121,17 @@ void PackageOptions::_update()
 {
   if( _d->edResourcesPath )
   {
-    _d->edResourcesPath->setText( SETTINGS_VALUE( resourcePath ).toString() );
+    _d->edResourcesPath->setText( SETTINGS_STR( resourcePath ) );
   }
 
   if( _d->edCaesar3Path )
   {
-    _d->edCaesar3Path->setText( SETTINGS_VALUE( c3gfx ).toString() );
+    _d->edCaesar3Path->setText( SETTINGS_STR( c3gfx ) );
   }
 
   if( _d->edScreenshots )
   {
-    _d->edScreenshots->setText( SETTINGS_VALUE( screenshotDir ).toString() );
+    _d->edScreenshots->setText( SETTINGS_STR( screenshotDir ) );
   }
 
   _updateC3paths();
@@ -141,12 +141,12 @@ void PackageOptions::_updateC3paths()
 {
   if( _d->edCaesar3Music )
   {
-    _d->edCaesar3Music->setText( SETTINGS_VALUE( c3music ).toString() );
+    _d->edCaesar3Music->setText( SETTINGS_STR( c3music ) );
   }
 
   if( _d->edCaesar3Video )
   {
-    _d->edCaesar3Video->setText( SETTINGS_VALUE( c3video ).toString() );
+    _d->edCaesar3Video->setText( SETTINGS_STR( c3video ) );
   }
 }
 

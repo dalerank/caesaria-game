@@ -18,7 +18,7 @@
 
   engineering : {
     buildings : [ "engineering_post", "low_bridge", "high_bridge", "dock",
-                  "shipyard", "wharf", "triumphal_arch", "garden", "plaza" ]
+                  "shipyard", "wharf", "triumphal_arch", "garden", "plaza", "roadBlock" ]
   }
 
   administration : {

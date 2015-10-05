@@ -41,7 +41,7 @@ public:
   VariantList save() const
   {
     VariantList ret;
-    for( auto item : *this )
+    for( auto& item : *this )
       ret.push_back( VariantList( item.first, item.second ) );
 
     return ret;
@@ -49,7 +49,7 @@ public:
 
   void load( const VariantList& stream )
   {
-    for( auto item : stream )
+    for( auto& item : stream )
     {
       const VariantList& vl = item.toList();
       Param param = (Param)vl.get( 0 ).toInt();
@@ -66,7 +66,7 @@ public:
   {
     VariantMap ret;
     int extIndex = 0;
-    for( auto ext : *this )
+    for( auto& ext : *this )
     {
       VariantMap vmExt;
       ext->save( vmExt );
@@ -78,7 +78,7 @@ public:
 
   void load( const VariantMap& stream )
   {
-    for( auto item : stream )
+    for( auto& item : stream )
     {
       ConstructionExtensionPtr extension = ExtensionsFactory::instance().create( item.second.toMap() );
       if( extension.isValid() )
@@ -159,7 +159,7 @@ std::string Construction::troubleDesc() const
   return "";
 }
 
-TilesArray Construction::roadside() const { return _d->accessRoads; }
+const TilesArray& Construction::roadside() const { return _d->accessRoads; }
 void Construction::destroy() { Overlay::destroy(); }
 bool Construction::isNeedRoad() const{ return true; }
 Construction::~Construction() {}
@@ -191,9 +191,9 @@ void Construction::computeRoadside()
   int s = size().width();
   for( int dst=1; dst <= roadsideDistance(); dst++ )
   {
-    TilesArray tiles = tilemap.getRectangle( pos() + TilePos( -dst, -dst ),
-                                             pos() + TilePos( s+dst-1, s+dst-1 ),
-                                             !Tilemap::checkCorners );
+    TilesArray tiles = tilemap.rect( pos() + TilePos( -dst, -dst ),
+                                     pos() + TilePos( s+dst-1, s+dst-1 ),
+                                     !Tilemap::checkCorners );
 
     _d->accessRoads.append( tiles.select( Tile::tlRoad ) );
   }
@@ -294,9 +294,9 @@ double Construction::state(Param param) const { return _d->states[ param ]; }
 TilesArray Construction::enterArea() const
 {
   int s = size().width();
-  TilesArray near = _city()->tilemap().getRectangle( pos() - TilePos(1, 1),
-                                                     pos() + TilePos(s, s),
-                                                     !Tilemap::checkCorners );
+  TilesArray near = _city()->tilemap().rect( pos() - TilePos(1, 1),
+                                             pos() + TilePos(s, s),
+                                             !Tilemap::checkCorners );
 
   return near.walkables( true );
 }

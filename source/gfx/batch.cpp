@@ -59,36 +59,37 @@ bool Batch::load(const Pictures &pics, const Rects& dstrects)
   SDL_Texture* tx = pics.at( 0 ).texture();
   Rects srcrects;
   bool haveErrors = false;
-  foreach( it, pics )
+  for( auto& pic : pics )
   {
-    if( it->texture() == 0 || it->width() == 0 || it->height() == 0 )
+    if( pic.texture() == 0 || pic.width() == 0 || pic.height() == 0 )
     {
-      srcrects.push_back( Rect( Point( 0, 0), it->size() ) );
+      srcrects.push_back( Rect( Point( 0, 0), pic.size() ) );
       continue;
     }
 
-    if( it->texture() != tx )
+    if( pic.texture() != tx )
     {
-      Logger::warning( "!!! WARNING: Cant create batch from pictures " + pics.at( 0 ).name() + " to " + it->name() );
-      srcrects.push_back( Rect( Point( 0, 0), it->size() ) );
+      Logger::warning( "!!! WARNING: Cant create batch from pictures " + pics.at( 0 ).name() + " to " + pic.name() );
+      srcrects.push_back( Rect( Point( 0, 0), pic.size() ) );
       haveErrors = true;
       continue;
     }
 
-    srcrects.push_back( it->originRect() );
+    srcrects.push_back( pic.originRect() );
   }
 
   *this = Engine::instance().loadBatch( pics.at( 0 ), srcrects, dstrects);
+  if( _batch == 0 )
+    haveErrors = true;
+
   return !haveErrors;
 }
 
 bool Batch::load(const Pictures& pics, const Point& pos)
 {
   Rects rects;
-  foreach( it, pics )
-  {
-    rects.push_back( Rect( pos + (*it).offset(), (*it).size() ) );
-  }
+  for( auto& pic : pics )
+    rects.push_back( Rect( pos + pic.offset(), pic.size() ) );
 
   bool isOk = load( pics, rects );
   return isOk;

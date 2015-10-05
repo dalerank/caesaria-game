@@ -135,14 +135,14 @@ void Emperor::Impl::updateRelation( CityPtr cityp )
 CityList Emperor::Impl::findTroubleCities()
 {
   CityList ret;
-  for( auto it : relations )
+  for( auto&& item : relations )
   {
-    CityPtr city = empire->findCity( it.first );
-    Relation& relation = relations[ it.first ];
+    CityPtr city = empire->findCity( item.first );
+    Relation& relation = item.second;
 
     if( !city.isValid() )
     {
-      Logger::warning( "!!! WARNING: city not availaible " + it.first );
+      Logger::warning( "!!! WARNING: city not availaible " + item.first );
       continue;
     }
 
@@ -180,9 +180,9 @@ void Emperor::timeStep(unsigned int time)
 
 void Emperor::Impl::resolveTroubleCities( const CityList& cities )
 {
-  foreach( it, cities )
+  for( auto& city : cities )
   {
-    Relation& relation = relations[ (*it)->name() ];
+    Relation& relation = relations[ city->name() ];
     float rule2destroy = utils::eventProbability( math::clamp( relation.wrathPoint / 100.f, 0.f, 1.f ),
                                                   math::clamp<int>( relation.tryCount, 0, DateTime::monthsInYear ),
                                                   DateTime::monthsInYear );
@@ -203,7 +203,7 @@ void Emperor::Impl::resolveTroubleCities( const CityList& cities )
     army->setCheckFavor( true );
     army->setBase( empire->rome() );
     army->setSoldiersNumber( sldrNumber );
-    army->attack( ptr_cast<Object>( *it ) );
+    army->attack( ptr_cast<Object>( city ) );
 
     if( !army->isDeleted() )
     {

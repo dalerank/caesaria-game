@@ -103,7 +103,7 @@ signals public:
 std::string __ucs2utf8( const std::wstring& text )
 {
   std::string ret;
-  for( auto symbol : text )
+  for( auto& symbol : text )
   {
     if( (unsigned short)symbol < 0x80 )
     {
@@ -791,7 +791,7 @@ void EditBox::beforeDraw(Engine& painter)
       _d->background.destroy();
 
       Pictures pics;
-      Decorator::draw( pics, Rect( 0, 0, width(), height() ), Decorator::blackFrame, Decorator::normalY );
+      Decorator::draw( pics, Rect( 0, 0, width(), height() ), Decorator::blackFrame, nullptr, Decorator::normalY );
       bool batchOk = _d->background.load( pics, absoluteRect().lefttop() );
       if( !batchOk )
       {

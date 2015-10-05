@@ -28,23 +28,20 @@ class Unit;
 
 class Qty
 {
+  unsigned int _value = 0;
 public:
-  Qty() { _value = 0; }
   Qty( const Qty& other ) { *this = other; }
   explicit Qty( unsigned int value ) : _value( value ) {}
 
   inline operator unsigned int() const { return _value; }
   inline Qty& operator=( const Qty& other ) {_value = other._value; return *this; }
   Unit toUnits() const;
-
-private:
-  unsigned int _value;
 };
 
 class Unit
 {
+  float _value = 0.f;
 public:
-  Unit() { _value = 0; }
   Unit( const Qty& qty ) { _value = (unsigned int)qty / unit2QtyLimiter; }
   Unit( const Unit& unit ) { *this = unit; }
   static Unit fromQty( unsigned int value ) { return Unit( value / unit2QtyLimiter ); }
@@ -59,12 +56,11 @@ public:
 private:
   explicit Unit( unsigned int value) : _value( value ) {}
 
-  float _value;
 };
 
 class Measure : public StaticSingleton<Measure>
 {
-  friend class StaticSingleton;
+  SET_STATICSINGLETON_FRIEND_FOR(Measure)
 public:
   typedef enum { native=0, metric, roman, count } Mode;
 
@@ -75,6 +71,7 @@ public:
   static int convQty( int qty );
 
   static Mode mode() { return instance()._mode; }
+  static bool isRoman() { return instance()._mode == roman; }
 
 private:
   Measure() : _mode( native ) {}

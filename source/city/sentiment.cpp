@@ -71,7 +71,7 @@ public:
   VariantList save() const
   {
     VariantList vlBuffs;
-    for( auto item : *this )
+    for( auto& item : *this )
       vlBuffs.push_back( item.save() );
 
     return vlBuffs;
@@ -79,7 +79,7 @@ public:
 
   void load( const VariantList& vl )
   {
-    for( auto item : vl )
+    for( auto& item : vl )
     {
       BuffInfo buff;
       buff.load( item.toMap() );

@@ -65,8 +65,8 @@ void BuildAny::_exec( Game& game, unsigned int )
   }
 
   TilePos offset(10, 10);
-  EnemySoldierList enemies =  game.city()->statistic().walkers.find<EnemySoldier>( walker::any, _pos - offset, _pos + offset );
-  if( !enemies.empty() && _overlay->group() != object::group::disaster)
+  int enemies_n =  game.city()->statistic().walkers.count<EnemySoldier>( _pos - offset, _pos + offset );
+  if( enemies_n > 0 && _overlay->group() != object::group::disaster)
   {
     GameEventPtr e = WarningMessage::create( "##too_close_to_enemy_troops##", 2 );
     e->dispatch();
@@ -75,7 +75,7 @@ void BuildAny::_exec( Game& game, unsigned int )
 
   if( !_overlay->isDeleted() && mayBuild )
   {
-    city::AreaInfo info = { game.city(), _pos, TilesArray() };
+    city::AreaInfo info( game.city(), _pos );
     bool buildOk = _overlay->build( info );
 
     if( !buildOk )
@@ -90,7 +90,7 @@ void BuildAny::_exec( Game& game, unsigned int )
     ConstructionPtr construction = _overlay.as<Construction>();
     if( construction.isValid() )
     {
-      const MetaData& buildingData = MetaDataHolder::getData( _overlay->type() );
+      const MetaData& buildingData = MetaDataHolder::find( _overlay->type() );
       game.city()->treasury().resolveIssue( econ::Issue( econ::Issue::buildConstruction,
                                                          -(int)buildingData.getOption( MetaDataOptions::cost ) ) );
 

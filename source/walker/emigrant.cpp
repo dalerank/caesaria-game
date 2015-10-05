@@ -62,7 +62,7 @@ public:
 public:
   void mayWalk( const Tile* tile, bool& ret )
   {
-    HousePtr f = ptr_cast<House>( tile->overlay() );
+    HousePtr f = tile->overlay<House>();
     ret = ( tile->isWalkable( true ) || f.isValid() );
   }  
 };
@@ -84,7 +84,7 @@ void Emigrant::_lockHouse( HousePtr house )
 {
   if( _d->housePosLock.i() >= 0 )
   {
-    HousePtr oldHouse = ptr_cast<House>( _city()->tilemap().at( _d->housePosLock ).overlay() );
+    auto oldHouse = _map().overlay( _d->housePosLock ).as<House>();
     if( oldHouse.isValid() )
     {
       _d->housePosLock = gfx::tilemap::invalidLocation();
@@ -161,8 +161,7 @@ void Emigrant::_reachedPathway()
 
   if( pos() == _city()->borderInfo().roadExit )
   {
-    city::MigrationPtr migration;
-    migration << _city()->findService( city::Migration::defaultName() );
+    auto migration = _city()->statistic().services.find<city::Migration>();
 
     if( migration.isValid() )
     {
@@ -173,7 +172,7 @@ void Emigrant::_reachedPathway()
     return;
   }
 
-  HousePtr house = ptr_cast<House>( _city()->getOverlay( pos() ) );
+  auto house = _city()->getOverlay( pos() ).as<House>();
   if( house.isValid() )
   {
     _append2house( house );
@@ -230,7 +229,7 @@ bool Emigrant::_checkNearestHouse()
       vacantRoomPriority[ 1000 - freeRoom ] = house;
     }
 
-    for( auto item : vacantRoomPriority )  //have destination
+    for( auto& item : vacantRoomPriority )  //have destination
     {
       int freeRoom = item.second->capacity() - item.second->habitants().count();
       if( freeRoom > 0 )
@@ -385,7 +384,7 @@ EmigrantPtr Emigrant::create(PlayerCityPtr city )
 }
 
 EmigrantPtr Emigrant::send2city( PlayerCityPtr city, const CitizenGroup& peoples,
-                                   const Tile& startTile, std::string thinks )
+                                 const Tile& startTile, std::string thinks )
 {
   if( peoples.count() > 0 )
   {

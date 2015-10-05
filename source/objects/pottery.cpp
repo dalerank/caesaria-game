@@ -42,7 +42,7 @@ bool Pottery::canBuild( const city::AreaInfo& areaInfo ) const
 bool Pottery::build( const city::AreaInfo& info )
 {
   Factory::build( info );
-  bool haveClaypit = !info.city->statistic().objects.find<Building>( object::clay_pit ).empty();
+  bool haveClaypit = !info.city->statistic().objects.count( object::clay_pit );
 
   _setError( haveClaypit ? "" : "##need_clay_pit##" );
 
@@ -61,6 +61,6 @@ void Pottery::deliverGood()
 
 void Pottery::_storeChanged()
 {
-  _fgPicture(1) = inStockRef().empty() ? Picture() : Picture( ResourceGroup::commerce, 157 );
+  _fgPicture(1) = inStock().empty() ? Picture() : Picture( ResourceGroup::commerce, 157 );
   _fgPicture(1).setOffset( 45, -10 );
 }

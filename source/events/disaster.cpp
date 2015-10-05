@@ -29,7 +29,6 @@
 #include "gfx/tilesarray.hpp"
 #include "city/cityservice_peace.hpp"
 #include "build.hpp"
-#include "core/foreach.hpp"
 #include "gfx/tilearea.hpp"
 
 using namespace gfx;
@@ -62,7 +61,7 @@ GameEventPtr Disaster::create( const Tile& tile, Type type )
     HousePtr house = overlay.as<House>();
     if( house.isValid() )
     {
-      event->_d->infoType = houseOffset + house->spec().level();
+      event->_d->infoType = houseOffset + house->level();
     }
     else
     {

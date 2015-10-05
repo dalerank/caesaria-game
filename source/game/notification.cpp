@@ -46,5 +46,25 @@ Notification create(const VariantList &stream)
   return ret;
 }
 
+void Array::eraseOld(const DateTime& date, int ageMonth)
+{
+  for( auto it=begin(); it != end(); )
+  {
+    if( it->date.monthsTo( date ) > ageMonth ) { it = erase( it ); }
+    else { ++it; }
+  }
+}
+
+bool Array::contain(Base::Type type) const
+{
+  for( auto& notification : *this )
+  {
+    if( notification.type == type )
+      return true;
+  }
+
+  return false;
+}
+
 }//end namespace notification
 

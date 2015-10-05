@@ -1,4 +1,5 @@
 {
+  housng1a : { start : 1, stop : 45, offset : [-1,-1] }
   housng1b : { start : 1, stop : 45, offset : [-1,-1] }
   housng1c : { start : 1, stop : 45, offset : [-1,-1] }
   housng1d : { start : 1, stop : 45, offset : [-1,-1] }
@@ -25,6 +26,7 @@
   prefectdw  : { start : 1, stop : 200, offset : [ -2, -2 ] }
   prefectff : { start : 1, stop : 200, offset : [ -2, -2 ] }
   priest : { start : 1, stop : 200, offset : [ -2, -2 ] }
+  fboat : { start : 1, stop : 30, offset : [ -2, -2 ] }
   sheep : { start : 1, stop : 120, offset : [ -2, -2 ] }
   marketkid : { start : 1, stop : 200, offset : [ -2, -2 ] }
   circus_horses : { rc : "carts", start : 537, stop : 600, offset : [ -2, -2 ] }
