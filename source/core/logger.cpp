@@ -129,7 +129,7 @@ public:
   {
     // Check for filter pass
     bool pass = filters.size() == 0;
-    for( auto&& filter : filters )
+    for( auto& filter : filters )
     {
       if (message.compare( 0, filter.length(), filter ) == 0)
       {
@@ -176,7 +176,7 @@ void Logger::addFilter(const std::string& text)
 
 bool Logger::hasFilter(const std::string& text)
 {
-  for( auto&& filter : instance()._d->filters)
+  for( auto& filter : instance()._d->filters)
   {
     if (filter == text) return true;
   }

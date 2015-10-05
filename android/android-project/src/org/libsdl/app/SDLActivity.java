@@ -669,7 +669,7 @@ public class SDLActivity extends Activity {
         }
     }
 
-    // APK expansion files support
+    // APK extension files support
 
     /** com.android.vending.expansion.zipfile.ZipResourceFile object or null. */
     private Object expansionFile;
@@ -678,43 +678,16 @@ public class SDLActivity extends Activity {
     private Method expansionFileMethod;
 
     /**
-     * This method was called by SDL using JNI.
-     * @deprecated because of an incorrect name
-     */
-    @Deprecated
-    public InputStream openAPKExtensionInputStream(String fileName) throws IOException {
-        return openAPKExpansionInputStream(fileName);
-    }
-
-    /**
      * This method is called by SDL using JNI.
-     * @return an InputStream on success or null if no expansion file was used.
-     * @throws IOException on errors. Message is set for the SDL error message.
      */
-    public InputStream openAPKExpansionInputStream(String fileName) throws IOException {
+    public InputStream openAPKExtensionInputStream(String fileName) throws IOException {
         // Get a ZipResourceFile representing a merger of both the main and patch files
         if (expansionFile == null) {
-            String mainHint = nativeGetHint("SDL_ANDROID_APK_EXPANSION_MAIN_FILE_VERSION");
-            if (mainHint == null) {
-                return null; // no expansion use if no main version was set
-            }
-            String patchHint = nativeGetHint("SDL_ANDROID_APK_EXPANSION_PATCH_FILE_VERSION");
-            if (patchHint == null) {
-                return null; // no expansion use if no patch version was set
-            }
-
-            Integer mainVersion;
-            Integer patchVersion;
-            try {
-                mainVersion = Integer.valueOf(mainHint);
-                patchVersion = Integer.valueOf(patchHint);
-            } catch (NumberFormatException ex) {
-                ex.printStackTrace();
-                throw new IOException("No valid file versions set for APK expansion files", ex);
-            }
+            Integer mainVersion = Integer.valueOf(nativeGetHint("SDL_ANDROID_APK_EXPANSION_MAIN_FILE_VERSION"));
+            Integer patchVersion = Integer.valueOf(nativeGetHint("SDL_ANDROID_APK_EXPANSION_PATCH_FILE_VERSION"));
 
             try {
-                // To avoid direct dependency on Google APK expansion library that is
+                // To avoid direct dependency on Google APK extension library that is
                 // not a part of Android SDK we access it using reflection
                 expansionFile = Class.forName("com.android.vending.expansion.zipfile.APKExpansionSupport")
                     .getMethod("getAPKExpansionZipFile", Context.class, int.class, int.class)
@@ -726,7 +699,6 @@ public class SDLActivity extends Activity {
                 ex.printStackTrace();
                 expansionFile = null;
                 expansionFileMethod = null;
-                throw new IOException("Could not access APK expansion support library", ex);
             }
         }
 
@@ -735,14 +707,12 @@ public class SDLActivity extends Activity {
         try {
             fileStream = (InputStream)expansionFileMethod.invoke(expansionFile, fileName);
         } catch (Exception ex) {
-            // calling "getInputStream" failed
             ex.printStackTrace();
-            throw new IOException("Could not open stream from APK expansion file", ex);
+            fileStream = null;
         }
 
         if (fileStream == null) {
-            // calling "getInputStream" was successful but null was returned
-            throw new IOException("Could not find path in APK expansion file");
+            throw new IOException();
         }
 
         return fileStream;
@@ -1165,6 +1135,11 @@ class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
             SDLActivity.handleResume();
         }
     }
+
+    // unused
+    @Override
+    public void onDraw(Canvas canvas) {}
+
 
     // Key events
     @Override

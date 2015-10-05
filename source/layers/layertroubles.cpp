@@ -79,7 +79,7 @@ void Troubles::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 LayerPtr Troubles::create(Camera& camera, PlayerCityPtr city , int type)

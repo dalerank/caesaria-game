@@ -61,7 +61,7 @@ void Religion::drawTile(Engine& engine, Tile& tile, const Point& offset)
       religionLevel += house->getServiceValue(Service::religionNeptune);
       religionLevel += house->getServiceValue(Service::religionCeres);
       religionLevel = math::clamp( religionLevel / (house->spec().minReligionLevel()+1), 0, 100 );
-      needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
+      needDrawAnimations = (house->level() <= HouseLevel::hovel) && house->habitants().empty();
 
       if( !needDrawAnimations )
       {
@@ -84,7 +84,7 @@ void Religion::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 void Religion::handleEvent(NEvent& event)

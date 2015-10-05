@@ -305,10 +305,10 @@ void ServiceWalker::send2City(BuildingPtr base, int orders)
     return;
   }
 
-  ServiceBuildingPtr servBuilding = base.as<ServiceBuilding>();
 
-  if( servBuilding.isValid() && _d->maxDistance <= defaultServiceDistance )
+  if( base.is<ServiceBuilding>() && _d->maxDistance <= defaultServiceDistance )
   {
+    auto servBuilding = base.as<ServiceBuilding>();
     Logger::warning( "!!!Warning: Base have short distance for walker. Parent [%d,%d] ", base->pos().i(), base->pos().j() );
     setMaxDistance( servBuilding->walkerDistance() );
   }
@@ -333,9 +333,9 @@ void ServiceWalker::_centerTile()
   for( auto b : reachedBuildings )
     b->applyService( this );
 
-  ServiceBuildingPtr servBuilding = base().as<ServiceBuilding>();
-  if( servBuilding.isValid() )
+  if( base().is<ServiceBuilding>() )
   {
+    auto servBuilding = base().as<ServiceBuilding>();
     servBuilding->buildingsServed( reachedBuildings, this );
   }
 
@@ -521,7 +521,7 @@ void ServiceWalker::initialize(const VariantMap& options)
   Human::initialize( options );
 
   VariantList oboletesOvs = options.get( "obsoleteOverlays" ).toList();
-  for( auto it : oboletesOvs )
+  for( auto& it : oboletesOvs )
   {
     object::Type ovType = object::findType( it.toString() );
     if( ovType != object::unknown )
@@ -562,7 +562,7 @@ WalkerPtr ServicemanCreator::create(PlayerCityPtr city) { return ServiceWalker::
 
 bool ReachedBuildings::contain(object::Type type) const
 {
-  for( auto i : *this )
+  for( auto& i : *this )
     if( i->type() == type )
       return true;
 
@@ -571,7 +571,7 @@ bool ReachedBuildings::contain(object::Type type) const
 
 BuildingPtr ReachedBuildings::firstOf(object::Type type) const
 {
-  for( auto i : *this )
+  for( auto& i : *this )
     if( i->type() == type )
       return i;
 

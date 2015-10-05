@@ -45,6 +45,9 @@ public:
   static LayerPtr create(gfx::Renderer &renderer, PlayerCityPtr city );
 
   virtual ~Build();
+public signals:
+  Signal3<object::Type,TilePos,int>& onBuild();
+
 private:
   void _updatePreviewTiles(bool force);
   void _checkPreviewBuild(TilePos pos);
@@ -57,6 +60,7 @@ private:
   void _drawBuildTile( gfx::Engine& engine, gfx::Tile* tile, const Point& offset );
   void _tryDrawBuildTile(gfx::Engine& engine, gfx::Tile& tile, const Point &camOffset);
   void _exitBuildMode();
+  int  _getCost(ConstructionPtr overlay );
 
   Build( gfx::Renderer& renderer, PlayerCityPtr city );
 

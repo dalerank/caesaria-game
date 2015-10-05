@@ -41,7 +41,7 @@ public:
 void Config::loadAlias(vfs::Path filename)
 {
   VariantMap alias = config::load( filename );
-  for( auto&& it : alias )
+  for( auto& it : alias )
   {
     _d->aliases[ Hash( it.first ) ] = it.second.toString();
   }

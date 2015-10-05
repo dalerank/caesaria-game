@@ -64,7 +64,7 @@ void MarketAccess::drawTile(Engine& engine, Tile& tile, const Point& offset)
     {
       auto house = overlay.as<House>();
       accessLevel = (int)house->getServiceValue( Service::market );
-      needDrawAnimations = (house->spec().level() <= HouseLevel::hovel) && house->habitants().empty();
+      needDrawAnimations = (house->level() <= HouseLevel::hovel) && house->habitants().empty();
 
       if( !needDrawAnimations )
       {
@@ -87,7 +87,7 @@ void MarketAccess::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 LayerPtr MarketAccess::create( Camera& camera, PlayerCityPtr city)

@@ -127,7 +127,7 @@ void River::updatePicture()
 {
   setPicture( computePicture() );
   tile().setPicture( picture() );
-  tile().setOriginalImgId( directionFlags );
+  tile().setImgId( directionFlags );
 }
 
 void River::load(const VariantMap& stream)

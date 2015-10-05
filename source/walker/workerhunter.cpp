@@ -75,10 +75,10 @@ Recruter::Recruter(PlayerCityPtr city )
 
 void Recruter::hireWorkers( const int workers )
 {
-  WorkingBuildingPtr wbase = base().as<WorkingBuilding>();
-  if( wbase.isValid() ) 
+  auto parentBuilding = base().as<WorkingBuilding>();
+  if( parentBuilding.isValid() )
   {
-    unsigned int reallyHire = wbase->addWorkers( workers );
+    unsigned int reallyHire = parentBuilding->addWorkers( workers );
     _d->needWorkers -= reallyHire;
   }
   else
@@ -93,7 +93,7 @@ void Recruter::setPriority(const city::HirePriorities& priority)
   _d->priority = priority;
 
   int priorityLevel = 1;
-  for( auto priority : _d->priority )
+  for( auto& priority : _d->priority )
   {
     object::Groups groups = city::industry::toGroups( priority );
     for( auto group : groups )
@@ -192,10 +192,10 @@ void Recruter::send2City( WorkingBuildingPtr building, const int workersNeeded )
 
 void Recruter::send2City(BuildingPtr base, int orders)
 {
-  WorkingBuildingPtr wb = base.as<WorkingBuilding>();
-  if( wb.isValid() )
+  auto parentBuilding = base.as<WorkingBuilding>();
+  if( parentBuilding.isValid() )
   {
-    send2City( wb, wb->needWorkers() );
+    send2City( parentBuilding, parentBuilding->needWorkers() );
   }
   else
   {

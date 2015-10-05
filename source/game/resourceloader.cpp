@@ -48,7 +48,7 @@ ResourceLoader::~ResourceLoader(){  }
 void ResourceLoader::loadFromModel( Path path2model, const Directory dir )
 {
   VariantMap archives = config::load( path2model );
-  for( auto&& entry : archives )
+  for( auto& entry : archives )
   {
     Path absArchivePath( entry.second.toString() );
 

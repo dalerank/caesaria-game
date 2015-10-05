@@ -58,8 +58,8 @@ bool Road::build( const city::AreaInfo& info )
 
   if( overlay.is<Aqueduct>() )
   {
-    AqueductPtr aq = overlay.as<Aqueduct>();
-    aq->addRoad();
+    auto aqueduct = overlay.as<Aqueduct>();
+    aqueduct->addRoad();
 
     return false;
   }

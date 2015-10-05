@@ -58,7 +58,7 @@ public:
 
   inline Products& operator<<(const Products& other)
   {
-    for( auto goodType : other )
+    for( auto& goodType : other )
       this->insert( goodType );
 
     return *this;
@@ -71,7 +71,7 @@ public:
 
   Products& exclude( const Products& types)
   {
-    for( auto goodType : types )
+    for( auto& goodType : types )
     {
       if( this->count( goodType ) )
         this->erase( goodType );

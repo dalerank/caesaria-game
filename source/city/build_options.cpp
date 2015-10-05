@@ -33,8 +33,8 @@ namespace development
 {
 
 CAESARIA_LITERALCONST(farm)
+CAESARIA_LITERALCONST(disable_all)
 
-static const char* disable_all = "disable_all";
 enum { maxLimit=999 };
 
 struct BuildingRule
@@ -85,7 +85,7 @@ public:
   VariantMap saveRules() const
   {
     VariantMap ret;
-    for( auto it : *this )
+    for( auto& it : *this )
       ret[ object::toString( it.first ) ] = it.second.mayBuild;
 
     return ret;
@@ -164,7 +164,7 @@ void Options::setGroupAvailable( const development::Branch type, Variant vmb )
   if( vmb.isNull() )
     return;
 
-  bool mayBuild = (vmb.toString() != disable_all);
+  bool mayBuild = (vmb.toString() != literals::disable_all);
   Range range = Range::fromBranch( type );
 
   for( auto& i : range )

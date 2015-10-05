@@ -25,7 +25,7 @@ public:
   VariantList save() const
   {
     VariantList ret;
-    for( auto item : *this ) ret << item;
+    for( auto& item : *this ) ret << item;
     return ret;
   }
 
@@ -42,7 +42,7 @@ public:
 
   PointsArray& load( const VariantList& vl )
   {
-    for( auto item : vl ) { push_back( item ); }
+    for( auto& item : vl ) { push_back( item ); }
     return *this;
   }
 };

@@ -40,8 +40,8 @@ GameEventPtr ShowSaveDialog::create()
 
 void ShowSaveDialog::_exec(Game& game, unsigned int)
 {
-  vfs::Directory saveDir = SETTINGS_VALUE( savedir ).toString();
-  std::string defaultExt = SETTINGS_VALUE( saveExt ).toString();
+  vfs::Directory saveDir = SETTINGS_STR( savedir );
+  std::string defaultExt = SETTINGS_STR( saveExt );
 
   if( !saveDir.exist() )
   {

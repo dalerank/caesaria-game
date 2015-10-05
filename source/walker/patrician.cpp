@@ -77,7 +77,7 @@ void Patrician::_findNewWay( const TilePos& start )
 
   for( auto it : bTypes )
   {
-    buildings << _city()->statistic().objects.find<Construction>( it );
+    buildings.append( _city()->statistic().objects.find<Construction>( it ) );
   }
 
   Pathway pathway;

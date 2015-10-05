@@ -65,6 +65,7 @@ EnemySoldier::EnemySoldier( PlayerCityPtr city, walker::Type type )
              << object::group::garden;
 
   addFriend( type );
+  _failedWayCounter = 0;
 }
 
 object::GroupSet& EnemySoldier::_excludeAttack() {  return _atExclude; }
@@ -147,7 +148,7 @@ WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
 
   for( unsigned int k=0; k <= range; k ++ )
   {
-    TilesArray tiles = tmap.getRectangle( k, pos() );
+    TilesArray tiles = tmap.rect( k, pos() );
 
     walker::Type rtype;
     for( auto tile : tiles )
@@ -208,6 +209,12 @@ void EnemySoldier::_check4attack()
   {
     pathway = PathwayHelper::randomWay( _city(), pos(), 10 );
     setTarget( TilePos( -1, -1) );
+    _failedWayCounter++;
+  }
+
+  if( _failedWayCounter > 4 )
+  {
+    pathway = Pathway();
   }
 
   if( pathway.isValid() )
@@ -231,7 +238,7 @@ ConstructionList EnemySoldier::_findContructionsInRange( unsigned int range )
 
   for( unsigned int k=0; k <= range; k++ )
   {
-    ConstructionList blds = tmap.getRectangle( k, pos() )
+    ConstructionList blds = tmap.rect( k, pos() )
                                 .overlays()
                                 .select<Construction>();
 
@@ -461,12 +468,15 @@ void EnemySoldier::acceptAction(Walker::Action action, TilePos pos)
 void EnemySoldier::load( const VariantMap& stream )
 {
   Soldier::load( stream );
+
+  VARIANT_LOAD_ANY( _failedWayCounter, stream )
 }
 
 void EnemySoldier::save( VariantMap& stream ) const
 {
   Soldier::save( stream );
 
+  VARIANT_SAVE_ANY( stream, _failedWayCounter )
   stream[ "type" ] = (int)type();
   stream[ "__debug_typeName" ] = Variant( WalkerHelper::getTypename( type() ) );
 }

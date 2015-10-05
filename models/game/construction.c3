@@ -31,7 +31,8 @@
   tree : {
     class : "tree"
     image.ext : {
-      type_1 : { size:1, rc : "land1a", start : 10, count : 1 }
+      type_1 : { size:1, rc : "land1a", start : 10, count : 7 }
+      type_2 : { size:1, rc : "land1a", start : 33, count : 27 }
     }
   }
 
@@ -546,7 +547,7 @@
     employers : 0
     class : "bridge"
     requestDestroy : true
-    subtileOffset : [ 10, -12 ]
+    subtileOffset : [ 8, -10 ]
   }, 
   
   high_bridge : {
@@ -679,6 +680,13 @@
     employers : 0
     class : "disaster"
   },
+
+  farmtile :
+  {
+    cost : 0
+    desirability : { base : 0, range : 0,	step : 0 }
+    class : "food"
+  }
   
   wheat_farm : 
   {

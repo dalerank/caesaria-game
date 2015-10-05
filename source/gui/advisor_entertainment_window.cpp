@@ -245,7 +245,7 @@ void Entertainment::Impl::updateInfo()
   HouseList houses = city->statistic().houses.find();
   for( auto house : houses )
   {
-    maxHouseLevel = std::max<int>( maxHouseLevel, house->spec().level() );
+    maxHouseLevel = std::max<int>( maxHouseLevel, house->level() );
     int habitants = house->habitants().mature_n();
 
     const HouseSpecification& lspec = house->spec();

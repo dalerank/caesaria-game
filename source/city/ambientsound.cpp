@@ -67,7 +67,7 @@ struct AmbientEmitter
   void initialize( const vfs::Path& filename )
   {
     VariantMap types = config::load( filename );
-    for( auto&& rtype : types )
+    for( auto& rtype : types )
     {
       Tile::Type type = gfx::tile::findType( rtype.first );
       if( type != Tile::tlUnknown )
@@ -143,9 +143,14 @@ struct SoundEmitter
     return "";
   }
 
-  float distance( TilePos p ) const
+  float distance( const TilePos& p ) const
   {
     return tile->pos().distanceFrom( p );
+  }
+
+  float distancef( const Point& p ) const
+  {
+    return tile->mappos().distanceTo( p );
   }
 
   bool isValid() const
@@ -230,7 +235,7 @@ void AmbientSound::timeStep( const unsigned int time )
 
   std::string resourceName;
   resourceName.reserve(256);
-  for( Emitters::reverse_iterator i=_d->emitters.rbegin(); i != _d->emitters.rend(); ++i )
+  for( auto i=_d->emitters.rbegin(); i != _d->emitters.rend(); ++i )
   {
     resourceName = i->sound( time );
 

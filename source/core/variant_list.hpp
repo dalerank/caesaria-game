@@ -44,7 +44,7 @@ public:
 
   void visitEach( Visitor visitor )
   {
-    for( auto item : *this )
+    for( auto&& item : *this )
       visitor( item );
   }
 
@@ -58,7 +58,7 @@ public:
   VariantList( const std::vector<T>& array )
   {
     //typename std::vector<T>::iterator it = array.begin();
-    for( auto item : array )
+    for( auto& item : array )
     {
       push_back( Variant(item) );
     }
@@ -106,7 +106,7 @@ private:
 template<class T>
 typename std::vector<T>& operator<<(std::vector<T>& v, const VariantList& vars)
 {
-  for( auto it : vars )
+  for( auto& it : vars )
     v.push_back( (T)it );
 
   return v;

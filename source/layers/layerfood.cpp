@@ -58,7 +58,7 @@ void Food::drawTile(Engine& engine, Tile& tile, const Point& offset)
     {
       auto house = overlay.as<House>();
       foodLevel = (int) house->state( pr::food );
-      needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
+      needDrawAnimations = (house->level() <= HouseLevel::hovel) && (house->habitants().empty());
       if( !needDrawAnimations )
       {
         drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
@@ -80,7 +80,7 @@ void Food::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 void Food::drawWalkers(Engine &engine, const Tile &tile, const Point &camOffset)

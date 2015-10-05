@@ -166,8 +166,9 @@ DirectRoute PathwayHelper::shortWay(PlayerCityPtr city, const TilePosArray& area
 Pathway PathwayHelper::randomWay(PlayerCityPtr city, const TilePos& startPos, int walkRadius)
 {
   TilePos offset( walkRadius / 2, walkRadius / 2 );
-  TilesArray tiles = city->tilemap().getArea( startPos - offset, startPos + offset );
+  TilesArray tiles = city->tilemap().area( startPos - offset, startPos + offset );
   tiles = tiles.walkables( true );
+  tiles.remove(startPos);
 
   int loopCounter = 0; //loop limiter
   if( !tiles.empty() )
@@ -202,11 +203,10 @@ Pathway PathwayHelper::way2border(PlayerCityPtr city, const TilePos& pos)
     if( start == lastStart && stop == lastStop )
       break;
 
-    TilesArray border = tmap.getRectangle( start, stop );
+    TilesArray border = tmap.rect( start, stop );
     border = border.walkables( true );
-    foreach( it, border )
+    for( auto& tile : border )
     {
-      Tile* tile = *it;
       Pathway pw = create( pos, tile->pos(), PathwayHelper::allTerrain );
 
       if( pw.isValid() )

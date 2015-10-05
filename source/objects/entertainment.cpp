@@ -82,7 +82,7 @@ void EntertainmentBuilding::deliverService()
     _animationRef().stop(); //have no actors for the show
   }
 
-  for( auto item : _d->necWalkers )
+  for( auto& item : _d->necWalkers )
   {
     int level = traineeValue( item );
     setTraineeValue( item, math::clamp( level - decreaseLevel, 0, 100) );
@@ -122,7 +122,7 @@ std::string EntertainmentBuilding::troubleDesc() const
 
   if( ret.empty() )
   {
-    for( auto item : _d->necWalkers )
+    for( auto& item : _d->necWalkers )
     {
       int level = traineeValue( item );
       if( level == 0 )

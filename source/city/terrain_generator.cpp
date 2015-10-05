@@ -24,6 +24,7 @@
 #include "city/city.hpp"
 #include "vfs/file.hpp"
 #include "vfs/path.hpp"
+#include "core/spline.hpp"
 #include "core/direction.hpp"
 #include "objects/objects_factory.hpp"
 #include "pathway/astarpathfinding.hpp"
@@ -36,20 +37,21 @@ using namespace gfx;
 namespace terrain
 {
 
-MidpointDisplacement::MidpointDisplacement(int n, int wmult, int hmult, float smoothness, float terrainSquare)
+MidpointDisplacement::MidpointDisplacement(int n, int wmult, int hmult, float smoothness, float terrSquare)
 {
   n_ = n;
   wmult_ = wmult;
   hmult_ = hmult;
   smoothness_ = smoothness;
-  _terrainSquare = terrainSquare;
-  grass_threshold_ = 1.25;
+  terrainSquare = terrSquare;
+  grass_threshold_ = 2.25;
   water_threshold_ = 0.55;
   sand_threshold_ = 0.70;
   deep_water_threshold_ = 0.0001;
-  hills_threshold_ = 2.60;
-  shallow_mountains_threshold_ = 2.92;
-  high_mountains_threshold_ = 0;
+  hills_threshold_ = 3.75;
+  trees_treshold = 4.0;
+  shmountains_threshold = 4.90;
+  overall_treshold = 0;
   random_ = Random();
 }
 
@@ -88,7 +90,7 @@ std::vector<int> MidpointDisplacement::map()
   float sum;
   int count;
 
-  float h = _terrainSquare;
+  float h = terrainSquare;
 
   for (int i = 0; i < width_; i += 2 * step) {
     for (int j = 0; j < height_; j+= 2 * step) {
@@ -176,7 +178,8 @@ map.at(CoordinatesToVectorIndex((width_ - 1) / 2, (height_ - 1) / 2)) = 3;*/
     }
   }
 
-  for (unsigned int i = 0; i < map.size(); i++) {
+  for (unsigned int i = 0; i < map.size(); i++)
+  {
     //std::cout << map.at(i);
     //map.at(i) = (map.at(i) - min) / (max - min);
     //std::cout << map.at(i);
@@ -186,10 +189,10 @@ map.at(CoordinatesToVectorIndex((width_ - 1) / 2, (height_ - 1) / 2)) = 3;*/
     else if (value < water_threshold_) {      new_value = water;    }
     else if (value < sand_threshold_) {      new_value = coast;    }
     else if (value < grass_threshold_) {      new_value = grass;    }
-    else if (value < hills_threshold_) {      new_value = trees;    }
-    else if (value < shallow_mountains_threshold_) {      new_value = shallowMountain;    }
-    else if (value < high_mountains_threshold_) {      new_value = highMountain;    }
-    else {      new_value = highMountain;    }
+    else if (value < hills_threshold_) {      new_value = hills;    }
+    else if (value < trees_treshold) {      new_value = trees;    }
+    else if (value < shmountains_threshold ) {      new_value = shallowMountain;    }
+    else {      new_value = ground;    }
    // new_value = (value * 255) + 255;
     return_map[ i ] = new_value;
   }
@@ -210,7 +213,7 @@ static void __removeCorners(Game& game )
     {
       TilePos tpos = TilePos( i, j );
       Tile& wtile = oTilemap.at( tpos );
-      if( wtile.originalImgId() == 0 ||
+      if( wtile.imgId() == 0 ||
           wtile.getFlag( Tile::tlWater ) || wtile.getFlag( Tile::tlDeepWater ) )
         continue;
 
@@ -221,7 +224,7 @@ static void __removeCorners(Game& game )
         if( isWater )
         {
           wtile.setFlag( Tile::clearAll, true );
-          wtile.setOriginalImgId( 0 );
+          wtile.setImgId( 0 );
           wtile.setPicture( Picture() );
           break;
         }
@@ -261,7 +264,7 @@ static void __finalizeMap(Game& game, int pass )
     {
       TilePos tpos = TilePos( i, j );
       Tile& wtile = oTilemap.at( tpos );
-      if( wtile.originalImgId() > 0 )
+      if( wtile.imgId() > 0 )
         continue;
 
       int direction = 0;
@@ -395,14 +398,14 @@ static void __finalizeMap(Game& game, int pass )
           Picture pic( ResourceGroup::land1a, 62 + math::random( 56 ) );
           wtile.setPicture( pic );
           //wtile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
-          wtile.setOriginalImgId( direction );
+          wtile.setImgId( direction );
         }
         break;
         }
       break;
 
       case 0xff:
-        wtile.setOriginalImgId( direction );
+        wtile.setImgId( direction );
       break;
       }
 
@@ -415,7 +418,7 @@ static void __finalizeMap(Game& game, int pass )
         wtile.setFlag( Tile::tlCoast, true );
         Picture pic( ResourceGroup::land1a, start + rnd );
         wtile.setPicture( pic );
-        wtile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+        wtile.setImgId( imgid::fromResource( pic.name() ) );
       }
     }
 }
@@ -515,10 +518,10 @@ public:
     int mapSize = oTilemap.size();
     switch( side % 4 )
     {
-    case 0: return oTilemap.getArea( TilePos( 0, 0), TilePos( 0, mapSize-1 ) );
-    case 1: return oTilemap.getArea( TilePos( 0, mapSize-1), TilePos( mapSize-1, mapSize-1 ) );
-    case 2: return oTilemap.getArea( TilePos( mapSize-1, mapSize-1), TilePos( mapSize-1, 0 ) );
-    case 3: return oTilemap.getArea( TilePos( mapSize-1, 0), TilePos( 0, 0 ) );
+    case 0: return oTilemap.area( TilePos( 0, 0), TilePos( 0, mapSize-1 ) );
+    case 1: return oTilemap.area( TilePos( 0, mapSize-1), TilePos( mapSize-1, mapSize-1 ) );
+    case 2: return oTilemap.area( TilePos( mapSize-1, mapSize-1), TilePos( mapSize-1, 0 ) );
+    case 3: return oTilemap.area( TilePos( mapSize-1, 0), TilePos( 0, 0 ) );
     }
 
     return TilesArray();
@@ -552,7 +555,7 @@ static void __createRivers(Game& game )
     Pathway way;
     for( int range=0; range < 99; range++ )
     {
-      TilesArray perimeter = oTilemap.getRectangle( range, centertile->pos() );
+      TilesArray perimeter = oTilemap.rect( range, centertile->pos() );
       for( auto currentTile : perimeter )
       {
         if( currentTile->getFlag( Tile::tlWater ) )
@@ -572,19 +575,18 @@ static void __createRivers(Game& game )
     if( way.isValid() )
     {
       TilesArray wayTiles = way.allTiles();
-
       for( auto tile : wayTiles )
       {
         OverlayPtr overlay = TileOverlayFactory::instance().create( object::river );
 
-        //Picture pic = Picture::load( ResourceGroup::land1a, 62 + math::random( 57 ) );
         tile->setPicture( Picture::getInvalid() );
-        //(*it)->setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
-        tile->setOriginalImgId( 0 );
+        tile->setImgId( 0 );
 
         bool isWater = tile->getFlag( Tile::tlWater );
 
-        city::AreaInfo info( oCity, tile->epos() );
+        TilePos epos = tile->epos();
+
+        city::AreaInfo info( oCity, epos );
         overlay->build( info );
         oCity->addOverlay( overlay );
 
@@ -642,11 +644,11 @@ static void __createRoad(Game& game )
       if( way.isValid() )
         break;
 
-      TilesArray around = oTilemap.getArea( 3, borderInfo.roadEntry );
+      TilesArray around = oTilemap.area( 3, borderInfo.roadEntry );
       for( auto tile : around )
         sterrain.remove( tile->pos() );
 
-      around = oTilemap.getArea( 3, borderInfo.roadExit );
+      around = oTilemap.area( 3, borderInfo.roadExit );
       for( auto tile : around )
         eterrain.remove( tile->pos() );
     }
@@ -662,7 +664,7 @@ static void __createRoad(Game& game )
 
       Picture pic( ResourceGroup::land1a, PicID::grassPic + math::random( PicID::grassPicsNumber-1 ) );
       tile->setPicture( pic );
-      tile->setOriginalImgId( imgid::fromResource( pic.name() ) );
+      tile->setImgId( imgid::fromResource( pic.name() ) );
 
       city::AreaInfo info( oCity, tile->epos() );
       overlay->build( info );
@@ -696,51 +698,22 @@ TilesArray& addTileIfValid( TilesArray& tiles, int i, int j, Tilemap& tmap )
   return tiles;
 }
 
-TilesArray getTmapEllipse(int x, int y, int a, int b, Tilemap& tmap)
+TilesArray getTmapEllipse(int ox, int oy, int width, int height, double angle, Tilemap& tmap)
 {
   TilesArray tiles;
-  int col,row;
-  long a_square,b_square,two_a_square,two_b_square,four_a_square,four_b_square,d;
-
-  b_square=b*b;
-  a_square=a*a;
-  row=b;
-  col=0;
-  two_a_square=a_square<<1;
-  four_a_square=a_square<<2;
-  four_b_square=b_square<<2;
-  two_b_square=b_square<<1;
-
-  d=two_a_square*((row-1)*(row))+a_square+two_b_square*(1-a_square);
-  while(a_square*(row)>b_square*(col))
+  double c = cos( angle * math::DEGTORAD );
+  double s = sin( angle * math::DEGTORAD );
+  for(int y=-height; y<=height; y++)
   {
-    addTileIfValid( tiles, col+x,row+y, tmap);
-    addTileIfValid( tiles, col+x,y-row, tmap);
-    addTileIfValid( tiles, x-col,row+y, tmap);
-    addTileIfValid( tiles, x-col,y-row, tmap);
-    if (d>=0)
-    {
-      row--;
-      d-=four_a_square*(row);
-    }
-    d+=two_b_square*(3+(col<<1));
-    col++;
-  }
-
-  d=two_b_square*(col+1)*col+two_a_square*(row*(row-2)+1)+(1-two_a_square)*b_square;
-  while ((row) + 1)
-  {
-    addTileIfValid( tiles, col+x,row+y, tmap);
-    addTileIfValid( tiles, col+x,y-row, tmap);
-    addTileIfValid( tiles, x-col,row+y, tmap);
-    addTileIfValid( tiles, x-col,y-row, tmap);
-    if (d<=0)
-    {
-      col++;
-      d+=four_b_square*col;
-    }
-    row--;
-    d+=two_a_square*(3-(row <<1));
+      for(int x=-width; x<=width; x++)
+      {
+          if(x*x*height*height+y*y*width*width <= height*height*width*width)
+          {
+            int xt = c*x + s*y;
+            int yt = -s*x + c*y;
+            addTileIfValid( tiles, ox+xt, oy+yt, tmap );
+          }
+      }
   }
 
   return tiles;
@@ -754,11 +727,7 @@ TilesArray getTmapCircle(int rx, int ry, int r, Tilemap& tmap )
   for(x=rx-r; x<=rx+r; x++)
     for(y=ry-r; y<=ry+r; y++)
       if( ( pow(x-rx,2)+pow(y-ry,2) )< rsqr)
-      {
-        Tile& t = tmap.at( x,y );
-        if( tilemap::isValidLocation( t.epos() ) )
-          ret.push_back( &t );
-      }
+        addTileIfValid( ret, x, y, tmap);
 
   return ret;
 }
@@ -775,7 +744,7 @@ void __createMeadows( Game& game )
     Tile* tile = tiles.random();
 
     //TilesArray meadows = getTmapCircle( tile->i(), tile->j(), math::random( fieldSize-1 ), oTilemap );
-    TilesArray meadows = getTmapEllipse( tile->i(), tile->j(), fieldSize, fieldSize/2, oTilemap );
+    TilesArray meadows = getTmapEllipse( tile->i(), tile->j(), fieldSize, fieldSize/2, math::random(180), oTilemap );
     meadows = meadows.terrains();
 
     for( auto tile : meadows )
@@ -837,7 +806,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
         tile.setFlag( Tile::tlDeepWater, true );
         Picture pic( ResourceGroup::land1a, 120 );
         tile.setPicture( pic );
-        tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+        tile.setImgId( imgid::fromResource( pic.name() ) );
       }
       break;
 
@@ -847,7 +816,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
         tile.setFlag( Tile::tlDeepWater, true );
         Picture pic( ResourceGroup::land1a, 120 );
         tile.setPicture( pic );
-        tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+        tile.setImgId( imgid::fromResource( pic.name() ) );
       }
       break;
 
@@ -857,7 +826,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
         tile.setFlag( Tile::tlWater, true );
         Picture pic( ResourceGroup::land1a, 120 );
         tile.setPicture( pic );
-        tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+        tile.setImgId( imgid::fromResource( pic.name() ) );
       }
       break;
 
@@ -871,10 +840,11 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
         color = NColor( 255, 7, 192, 53);
         Picture pic( ResourceGroup::land1a, 62 + math::random( 56 ) );
         tile.setPicture( pic );
-        tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+        tile.setImgId( imgid::fromResource( pic.name() ) );
       }
       break;
 
+      case MidpointDisplacement::hills:
       case MidpointDisplacement::trees:
       {
         color = NColor( 255, 32, 139, 58);
@@ -899,7 +869,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
         tile.setPicture( land );
 
         Picture tree( ResourceGroup::land1a, start + math::random( rnd ) );
-        tile.setOriginalImgId( imgid::fromResource( tree.name() ) );
+        tile.setImgId( imgid::fromResource( tree.name() ) );
 
         OverlayPtr overlay = TileOverlayFactory::instance().create( object::tree );
         if( overlay != NULL )
@@ -911,27 +881,29 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
       }
       break;
 
-      case MidpointDisplacement::shallowMountain: {
-        color = NColor( 255, 147, 188, 157 );
-        Picture pic( ResourceGroup::land1a, 290 + math::random( 6 ) );
-        tile.setFlag( Tile::tlRock, true );
-        tile.setPicture( pic );
-        tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
-      }
-      break;
-
-      case MidpointDisplacement::highMountain: {
+      case MidpointDisplacement::ground:
+      {
         color = NColor( 255, 129, 141, 132);
         Picture pic( ResourceGroup::land1a, 62 + math::random( 56 ) );
         //Picture::load( ResourceGroup::land1a, 230 + math::random( 59 ) );
         //tile.setFlag( Tile::tlRock, true );
         tile.setPicture( pic );
         //tile.setHeight( 1 );
-        tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+        tile.setImgId( imgid::fromResource( pic.name() ) );
       }
       break;
 
-      case 8: {
+      case MidpointDisplacement::shallowMountain:
+      {
+        color = NColor( 255, 147, 188, 157 );
+        Picture pic( ResourceGroup::land1a, 290 + math::random( 6 ) );
+        tile.setFlag( Tile::tlRock, true );
+        tile.setPicture( pic );
+        tile.setImgId( imgid::fromResource( pic.name() ) );
+      }
+      break;
+
+      case 9: {
         color = DefaultColors::white;
       }
       break;

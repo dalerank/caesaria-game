@@ -50,18 +50,19 @@ struct CityKoeffs
   CityKoeffs() : fireRisk( 1.f), collapseRisk( 1.f ) {}
 };
 
-class ReservedServices : public std::map<Service::Type, DateTime>
+template<class T>
+class ExpiredMap : public std::map<T, DateTime>
 {
 public:
-  bool contain( Service::Type type ) const
+  bool contain( T type ) const
   {
-    return count( type ) > 0;
+    return this->count( type ) > 0;
   }
 
   VariantList save() const
   {
     VariantList ret;
-    for( auto item : *this )
+    for( auto& item : *this )
       ret.emplace_back( VariantList(item.first, item.second) );
 
     return ret;
@@ -69,30 +70,30 @@ public:
 
   void load( const VariantList& stream )
   {
-    for( auto item : stream )
+    for( auto& item : stream )
     {
       VariantList vl = item.toList();
-      Service::Type stype = vl.get( 0 ).toEnum<Service::Type>();
-      DateTime value = vl.get( 1 ).toDateTime();
-      (*this)[ stype ] = value;
+      T stype = vl.get( 0 ).toEnum<T>();
+      (*this)[ stype ] = vl.get( 1 ).toDateTime();
     }
   }
 
-  void reserve( Service::Type type )
+  void reserve( T type )
   {
     (*this)[ type ] = game::Date::current();
   }
 
-  void removeExpired( int days=1 )
+  void removeExpired( int days )
   {
     DateTime current = game::Date::current();
-    for( iterator it = begin(); it != end(); )
+    for( auto it = this->begin(); it != this->end(); )
     {
-      if( it->second.daysTo( current ) > days ) { it = erase( it );}
+      if( it->second.daysTo( current ) > days ) { it = this->erase( it );}
       else { ++it; }
     }
   }
 };
+
 
 class TraineeMap : public std::map<walker::Type,int>
 {
@@ -100,7 +101,7 @@ public:
   VariantList save() const
   {
     VariantList ret;
-    for( auto item : *this )
+    for( auto& item : *this )
       ret.emplace_back( VariantList(item.first, item.second) );
 
     return ret;
@@ -108,7 +109,7 @@ public:
 
   void load( const VariantList& stream )
   {
-    for( auto item : stream )
+    for( auto& item : stream )
     {
       VariantList vl = item.toList();
       walker::Type wtype = vl.get( 0 ).toEnum<walker::Type>();
@@ -118,12 +119,18 @@ public:
   }
 };
 
+typedef ExpiredMap<walker::Type> ReservedTrainee;
+typedef ExpiredMap<Service::Type> ReservedServices;
+
 class Building::Impl
 {
 public:
   TraineeMap trainees;  // current level of trainees working in the building (0..200)
-  WalkerTypeSet reservedTrainees;  // a trainee is on the way
-  ReservedServices reservedServices;  // a serviceWalker is on the way
+  struct
+  {
+    ReservedTrainee trainees;  // a trainee is on the way
+    ReservedServices services;  // a serviceWalker is on the way
+  } reserved;
 
   int stateDecreaseInterval;
   CityKoeffs cityKoeffs;
@@ -134,6 +141,7 @@ Building::Building(const object::Type type, const Size& size )
 {
   setState( pr::inflammability, 1 );
   setState( pr::collapsibility, 1 );
+  setState( pr::reserveExpires, 60 );
   _d->stateDecreaseInterval = game::Date::days2ticks( 1 );
 }
 
@@ -146,6 +154,10 @@ void Building::timeStep(const unsigned long time)
   if( game::Date::isWeekChanged() )
   {
     _updateBalanceKoeffs();
+
+    int daysToStart = state( pr::reserveExpires );
+    _d->reserved.services.removeExpired( daysToStart );
+    _d->reserved.trainees.removeExpired( daysToStart );
   }
 
   if( time % _d->stateDecreaseInterval == 1 )
@@ -168,7 +180,7 @@ float Building::evaluateService(ServiceWalkerPtr walker)
 {
    float res = 0.0;
    Service::Type service = walker->serviceType();
-   if(_d->reservedServices.contain(service))
+   if(_d->reserved.services.contain(service))
    {
       // service is already reserved
       return 0.0;
@@ -199,16 +211,16 @@ bool Building::build( const city::AreaInfo& info )
   return true;
 }
 
-void Building::reserveService(const Service::Type service) { _d->reservedServices.reserve(service); }
-bool Building::isServiceReserved( const Service::Type service ) { return _d->reservedServices.contain(service); }
-void Building::cancelService(const Service::Type service){ _d->reservedServices.erase(service);}
+void Building::reserveService(const Service::Type service) { _d->reserved.services.reserve(service); }
+bool Building::isServiceReserved( const Service::Type service ) { return _d->reserved.services.contain(service); }
+void Building::cancelService(const Service::Type service){ _d->reserved.services.erase(service);}
 
 void Building::applyService( ServiceWalkerPtr walker)
 {
   // std::cout << "apply service" << std::endl;
   // remove service reservation
   Service::Type service = walker->serviceType();
-  _d->reservedServices.erase(service);
+  _d->reserved.services.erase(service);
 
   switch( service )
   {
@@ -222,7 +234,7 @@ float Building::evaluateTrainee(walker::Type traineeType)
 {
    float res = 0.0;
 
-   if( _d->reservedTrainees.count(traineeType) == 1 )
+   if( _d->reserved.trainees.contain(traineeType) )
    {
       // don't allow two reservations of the same type
       return 0.0;
@@ -237,12 +249,12 @@ float Building::evaluateTrainee(walker::Type traineeType)
    return res;
 }
 
-void Building::reserveTrainee(walker::Type traineeType) { _d->reservedTrainees.insert(traineeType); }
-void Building::cancelTrainee(walker::Type traineeType) { _d->reservedTrainees.erase(traineeType);}
+void Building::reserveTrainee(walker::Type traineeType) { _d->reserved.trainees.reserve(traineeType); }
+void Building::cancelTrainee(walker::Type traineeType) { _d->reserved.trainees.erase(traineeType);}
 
 void Building::updateTrainee(  TraineeWalkerPtr walker )
 {
-   _d->reservedTrainees.erase( walker->type() );
+   _d->reserved.trainees.erase( walker->type() );
    _d->trainees[ walker->type() ] += walker->value() ;
 }
 
@@ -266,16 +278,16 @@ void Building::save(VariantMap& stream) const
 {
   Construction::save( stream );
   VARIANT_SAVE_CLASS_D( stream, _d, trainees )
-  VARIANT_SAVE_CLASS_D( stream, _d, reservedTrainees )
-  VARIANT_SAVE_CLASS_D( stream, _d, reservedServices )
+  VARIANT_SAVE_CLASS_D( stream, _d, reserved.trainees )
+  VARIANT_SAVE_CLASS_D( stream, _d, reserved.services )
 }
 
 void Building::load(const VariantMap& stream)
 {
   Construction::load( stream );
   VARIANT_LOAD_CLASS_D_LIST( _d, trainees, stream )
-  VARIANT_LOAD_CLASS_D_LIST( _d, reservedTrainees, stream )
-  VARIANT_LOAD_CLASS_D_LIST( _d, reservedServices, stream )
+  VARIANT_LOAD_CLASS_D_LIST( _d, reserved.trainees, stream )
+  VARIANT_LOAD_CLASS_D_LIST( _d, reserved.services, stream )
 }
 
 int Building::traineeValue(walker::Type traineeType) const

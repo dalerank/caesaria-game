@@ -43,9 +43,23 @@ class Ui;
 class Widget : public virtual ReferenceCounted
 {
 public:       
-  typedef List<Widget*> Widgets;
-  typedef Widgets::iterator ChildIterator;
-  typedef Widgets::const_iterator ConstChildIterator;
+  class Widgets : public List<Widget*>
+  {
+  public:
+    template<class T>
+    List<T*> select() const
+    {
+      List<T*> ret;
+      for( auto item : *this )
+      {
+        T* ptr = safety_cast<T*>( item );
+        if( ptr )
+          ret.push_back( ptr );
+      }
+
+      return ret;
+    }
+  };
 
   typedef enum { RelativeGeometry=0, AbsoluteGeometry, ProportionalGeometry } GeometryType;
   enum { noId=-1 };

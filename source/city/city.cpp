@@ -271,7 +271,7 @@ Picture PlayerCity::picture() const              { return _d->empMapPicture; }
 bool PlayerCity::isPaysTaxes() const             { return _d->economy.getIssueValue( econ::Issue::empireTax, econ::Treasury::lastYear ) > 0; }
 bool PlayerCity::haveOverduePayment() const      { return _d->economy.getIssueValue( econ::Issue::overduePayment, econ::Treasury::thisYear ) > 0; }
 Tilemap& PlayerCity::tilemap()                   { return _d->tilemap; }
-econ::Treasury& PlayerCity::treasury()           { return _d->economy;   }
+econ::Treasury& PlayerCity::treasury()           { return _d->economy; }
 
 int PlayerCity::strength() const
 {
@@ -369,7 +369,7 @@ void PlayerCity::load( const VariantMap& stream )
   City::load( stream );
   _d->tilemap.load( stream.get( literals::tilemap ).toMap() );
   _d->walkers.grid.resize( Size( _d->tilemap.size() ) );
-  VARIANT_LOAD_ENUM_D( _d, walkers.idCount, stream )
+  VARIANT_LOAD_ENUM_D( _d, walkers.idCount, stream)
 
   LOG_CITY.info( "Parse main params" );
   _d->borderInfo.roadEntry = TilePos( stream.get( "roadEntry" ).toTilePos() );
@@ -426,9 +426,9 @@ void PlayerCity::load( const VariantMap& stream )
   for (auto item : walkers)
   {
     VariantMap walkerInfo = item.second.toMap();
-    int walkerType = (int)walkerInfo.get( "type", walker::unknown );
+    walker::Type walkerType = walkerInfo.get( "type", (int)walker::unknown ).toEnum<walker::Type>();
 
-    WalkerPtr walker = WalkerManager::instance().create( walker::Type( walkerType ), this );
+    WalkerPtr walker = WalkerManager::instance().create( walkerType, this );
     if( walker.isValid() )
     {
       walker->load( walkerInfo );
@@ -442,7 +442,7 @@ void PlayerCity::load( const VariantMap& stream )
 
   LOG_CITY.info( "Load service info" );
   VariantMap services = stream.get( "services" ).toMap();
-  for (auto item : services)
+  for(auto& item : services)
   {
     VariantMap servicesSave = item.second.toMap();
 

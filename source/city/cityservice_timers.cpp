@@ -37,17 +37,17 @@ Timers::Timers() : _d( new Impl )
 
 void Timers::update( const unsigned int time )
 {
-  TimerList::iterator it=_d->timers.begin();
-  while( it != _d->timers.end() )
+  auto timerIt=_d->timers.begin();
+  while( timerIt != _d->timers.end() )
   { 
-    if( !(*it)->isActive() )
+    if( !(*timerIt)->isActive() )
     {
-      it = _d->timers.erase( it );      
+      timerIt = _d->timers.erase( timerIt );
     }
     else
     {
-      (*it)->update( time );
-      ++it;
+      (*timerIt)->update( time );
+      ++timerIt;
     }
   }
 }

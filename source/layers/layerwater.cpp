@@ -75,7 +75,7 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
       if ( overlay->type() == object::house )
       {
         auto house = overlay.as<House>();
-        needDrawAnimations = (house->spec().level() == HouseLevel::hovel) && house->habitants().empty();
+        needDrawAnimations = (house->level() <= HouseLevel::hovel) && house->habitants().empty();
 
         tileNumber = OverlayPic::inHouse;
         haveWater = haveWater || house->hasServiceAccess(Service::fountain) || house->hasServiceAccess(Service::well);
@@ -128,13 +128,13 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
     _drawLandTile( engine, tile, offset, areaSize );
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 void Water::_drawLandTile( Engine& engine, Tile& tile, const Point& offset, const Size& areaSize )
 {
   Tilemap& tilemap = _city()->tilemap();
-  TilesArray area = tilemap.getArea( tile.epos(), areaSize );
+  TilesArray area = tilemap.area( tile.epos(), areaSize );
 
   for( auto rtile : area )
   {

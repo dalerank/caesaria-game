@@ -36,6 +36,7 @@
 #include "constants.hpp"
 #include "gfx/decorator.hpp"
 #include "core/utils.hpp"
+#include "core/osystem.hpp"
 #include "gfx/walker_debuginfo.hpp"
 #include "core/timer.hpp"
 #include "core/logger.hpp"
@@ -202,7 +203,7 @@ TilesArray Layer::_getSelectedArea( TilePos startPos )
   outStartPos = TilePos( std::min<int>( startPosTmp.i(), stopPosTmp.i() ), std::min<int>( startPosTmp.j(), stopPosTmp.j() ) );
   outStopPos  = TilePos( std::max<int>( startPosTmp.i(), stopPosTmp.i() ), std::max<int>( startPosTmp.j(), stopPosTmp.j() ) );
 
-  return _city()->tilemap().getArea( outStartPos, outStopPos );
+  return _city()->tilemap().area( outStartPos, outStopPos );
 }
 
 void Layer::drawPass( Engine& engine, Tile& tile, const Point& offset, Renderer::Pass pass)
@@ -321,7 +322,7 @@ void Layer::render( Engine& engine)
   {
     WalkerList overDrawWalkers;
 
-    const WalkerList& walkers = _city()->statistic().walkers.find( walker::all );
+    const WalkerList& walkers = _city()->walkers();
     for( auto wlk : walkers )
     {
       if( wlk->getFlag( Walker::showPath ) )
@@ -344,7 +345,7 @@ void Layer::render( Engine& engine)
 
 void Layer::drawWalkerOverlap( Engine& engine, Tile& tile, const Point& offset, const int depth)
 {
-  Tile* master = tile.masterTile();
+  Tile* master = tile.master();
 
   // multi-tile: draw the master tile.
   // single-tile: draw current tile
@@ -364,7 +365,7 @@ void Layer::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, 
     return;  // tile has already been drawn!
   }
 
-  Tile* master = tile.masterTile();
+  Tile* master = tile.master();
 
   if( 0 == master )    // single-tile
   {
@@ -374,7 +375,7 @@ void Layer::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, 
 
   // multi-tile: draw the master tile.
   // and it is time to draw the master tile
-  if( !master->rwd() && master == &tile )
+  if( !master->rendered() && master == &tile )
   {
     drawTile( engine, *master, offset );
   }
@@ -382,7 +383,7 @@ void Layer::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, 
 
 void Layer::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
-  if( !tile.rwd() )
+  if( !tile.rendered() )
   {
     if( tile.rov().isValid() )
     {
@@ -404,7 +405,7 @@ void Layer::drawTile(Engine& engine, Tile& tile, const Point& offset)
       drawPass( engine, tile, offset, Renderer::groundAnimation );
     }
 
-    tile.setWasDrawn();
+    tile.setRendered();
   }
 }
 
@@ -466,11 +467,11 @@ void Layer::beforeRender(Engine&)
 {
 }
 
-void Layer::afterRender( Engine& engine)
+void Layer::afterRender(Engine& engine)
 {
   __D_IMPL(_d,Layer)
   Point cursorPos = engine.cursorPos();
-  Size screenSize = engine.virtualSize();
+  Size screenSize = engine.screenSize();
   Point offset = _d->camera->offset();
   Point moveValue;
 
@@ -598,10 +599,10 @@ void Layer::afterRender( Engine& engine)
       size = ov->size();
       pos = ov->tile().mappos();
     }
-    else if( tile->masterTile() != 0 )
+    else if( tile->master() != 0 )
     {
-      pos = tile->masterTile()->mappos();
-      size = Size( (tile->masterTile()->picture().width() + 2) / rwidth );
+      pos = tile->master()->mappos();
+      size = Size( (tile->master()->picture().width() + 2) / rwidth );
     }
 
     pos += offset;
@@ -609,7 +610,17 @@ void Layer::afterRender( Engine& engine)
     engine.drawLine( DefaultColors::red, pos + Point( halfRWidth, halfRWidth/2 ) * size.width(), pos + Point( rwidth, 0) * size.height() );
     engine.drawLine( DefaultColors::red, pos + Point( rwidth, 0) * size.width(), pos + Point( halfRWidth, -halfRWidth/2 ) * size.height() );
     engine.drawLine( DefaultColors::red, pos + Point( halfRWidth, -halfRWidth/2 ) * size.width(), pos );
+
+    static int t=0;
+    int a = (t++ % 40)/5;
+    engine.drawLine( DefaultColors::red, pos-Point(a,0), pos + Point( halfRWidth, (halfRWidth+a)/2 ) * size.height() );
+    engine.drawLine( DefaultColors::red, pos + Point( halfRWidth, (halfRWidth+a)/2 ) * size.width(), pos + Point( rwidth, 0) * size.height() + Point(a, 0) );
+    engine.drawLine( DefaultColors::red, pos + Point( rwidth, 0) * size.width() + Point(a,0), pos + Point( halfRWidth, (-a-halfRWidth)/2 ) * size.height() );
+    engine.drawLine( DefaultColors::red, pos + Point( halfRWidth, (-a-halfRWidth)/2 ) * size.width(), pos - Point(a,0) );
+
+#ifdef DEBUG
     engine.draw( _d->tilePosText, pos );
+#endif
   }
 }
 
@@ -625,6 +636,9 @@ Layer::Layer( Camera* camera, PlayerCityPtr city )
   _d->posMode = 0;
   _d->terraintPic = MetaDataHolder::randomPicture( object::terrain, Size( 1 ) );
   _d->tilePosText = Picture( Size( 240, 80 ), 0, true );
+
+  if( OSystem::isAndroid() )
+    DrawOptions::instance().setFlag( DrawOptions::showObjectArea, true );
 }
 
 void Layer::_addWalkerType(walker::Type wtype)
@@ -636,7 +650,7 @@ void Layer::_initialize()
 {
   const VariantMap& vm = citylayer::Helper::getConfig( (citylayer::Type)type() );
   StringArray vl = vm.get( "visibleObjects" ).toStringArray();
-  for( auto it : vl )
+  for( auto& it : vl )
   {
     object::Type ovType = object::findType( it );
     if( ovType != object::unknown )

@@ -109,7 +109,7 @@ public:
   void initMovie();
   void initMetrics();
   void initCelebrations();
-  void initGuiEnvironment();
+  void initUI();
   void initArchiveLoaders();
   void initPantheon( vfs::Path filename );
   void initFontCollection( vfs::Path resourcePath );
@@ -164,8 +164,9 @@ void Game::Impl::initVideo()
 
   engine = new SdlEngine();
 
-  Logger::warning( "GraficEngine: set size" );
-  engine->setScreenSize( SETTINGS_VALUE( resolution ).toSize() );
+  Size size = SETTINGS_VALUE( resolution );
+  Logger::warning( "GraficEngine: set size [%dx%d]", size.width(), size.height() );
+  engine->setScreenSize( size );
   engine->setFlag( Engine::batching, batchTexures ? 1 : 0 );
 
   bool fullscreen = KILLSWITCH( fullscreen );
@@ -262,11 +263,11 @@ void Game::Impl::createSaveDir()
   Logger::warningIf( !dirCreated, "Game: can't create save dir" );
 }
 
-void Game::Impl::initGuiEnvironment()
+void Game::Impl::initUI()
 {
   Logger::warning( "Game: initialize gui" );
-  gui = new gui::Ui( *engine );
 
+  gui = new gui::Ui( *engine, engine->screenSize() );
   gui::infobox::Manager::instance().setBoxLock( KILLSWITCH( lockInfobox ) );
 }
 
@@ -371,7 +372,7 @@ bool Game::load(std::string filename)
   scene::SplashScreen screen;
 
   screen.initialize();
-  bool usingOldgfx = KILLSWITCH( oldgfx ) || !SETTINGS_VALUE( c3gfx ).toString().empty();
+  bool usingOldgfx = KILLSWITCH( oldgfx ) || !SETTINGS_STR( c3gfx ).empty();
   screen.setImage( usingOldgfx ? "load4" : "freska", 1 );
   screen.update( *_d->engine );
 
@@ -472,7 +473,7 @@ void Game::initialize()
   _d->initVideo();
   _d->initMovie();
   _d->initFontCollection( game::Settings::rcpath() );
-  _d->initGuiEnvironment();
+  _d->initUI();
   _d->initSound();
   _d->initHotkeys();
   _d->createSaveDir();

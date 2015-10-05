@@ -130,6 +130,7 @@ enum {
   crash_favor,
   add_scribe_messages,
   send_venus_smallcurse,
+  send_neptune_wrath,
   send_mars_spirit,
   run_script,
   show_fest,
@@ -228,6 +229,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( divinity, send_mars_wrath )
   ADD_DEBUG_EVENT( divinity, send_mars_spirit )
   ADD_DEBUG_EVENT( divinity, send_venus_wrath )
+  ADD_DEBUG_EVENT( divinity, send_neptune_wrath )
   ADD_DEBUG_EVENT( divinity, send_venus_smallcurse )
 
   ADD_DEBUG_EVENT( money, add_1000_dn )
@@ -342,7 +344,7 @@ EnemySoldierPtr DebugHandler::Impl::makeEnemy( walker::Type type )
 
 void DebugHandler::Impl::addGoods2Wh(good::Product type)
 {
-  WarehouseList whList = game->city()->statistic().objects.find<Warehouse>( object::warehouse );
+  WarehouseList whList = game->city()->statistic().objects.find<Warehouse>();
   for( auto warehouse : whList)
   {
     good::Stock stock(type, 400, 400 );
@@ -396,6 +398,10 @@ void DebugHandler::Impl::handleEvent(int event)
   {
   case send_mars_wrath:
     religion::rome::Pantheon::mars()->updateRelation( religion::debug::doWrath, game->city() );
+  break;
+
+  case send_neptune_wrath:
+    religion::rome::Pantheon::neptune()->updateRelation( religion::debug::doWrath, game->city() );
   break;
 
   case add_1000_dn:
@@ -461,10 +467,10 @@ void DebugHandler::Impl::handleEvent(int event)
     world::CityList cities = game->empire()->cities();
     for( auto acity : cities )
     {
-      world::ComputerCityPtr ccity = acity.as<world::ComputerCity>();
-      if( ccity.isValid() )
+      auto compCity = acity.as<world::ComputerCity>();
+      if( compCity.isValid() )
       {
-        ccity->__debugSendMerchant();
+        compCity->__debugSendMerchant();
       }
     }
   }
@@ -600,7 +606,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case toggle_experimental_options:
   {
-    bool enable = SETTINGS_VALUE( experimental );
+    bool enable = KILLSWITCH( experimental );
     SETTINGS_SET_VALUE( experimental, !enable );
   }
   break;

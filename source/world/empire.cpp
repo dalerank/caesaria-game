@@ -114,7 +114,7 @@ public:
       setAvailable( allCities == "enabled" );
     }
 
-    for( auto item : stream )
+    for( auto& item : stream )
     {
       CityPtr city = find( item.first );
       if( city.isValid() )
@@ -136,7 +136,7 @@ public:
 
   void update( unsigned int time )
   {
-    for( auto obj : *this ) obj->timeStep( time );
+    for( auto&& obj : *this ) obj->timeStep( time );
     utils::eraseIfDeleted( *this );
     merge();
   }
@@ -144,7 +144,7 @@ public:
   VariantMap save() const
   {
     VariantMap ret;
-    for( auto obj : *this)
+    for( auto& obj : *this)
     {
       VariantMap objSave;
       obj->save( objSave );
@@ -156,7 +156,7 @@ public:
 
   void load( const VariantMap& stream, EmpirePtr empire )
   {
-    for( auto item : stream )
+    for( auto& item : stream )
     {
       const VariantMap& vm = item.second.toMap();
       std::string objectType = vm.get( "type" ).toString();
@@ -499,7 +499,7 @@ CityPtr Empire::initPlayerCity( CityPtr city )
   _d->cities.push_back( city );
   _d->cities.playerCity = city->name();
 
-  for( auto product : good::all() )
+  for( auto& product : good::all() )
   {
     world::PriceInfo prices = getPrice( product );
     city->empirePricesChanged( product, prices );
@@ -596,7 +596,7 @@ GovernorRanks EmpireHelper::ranks()
   std::map<unsigned int, GovernorRank> sortRanks;
 
   VariantMap vm = config::load( SETTINGS_RC_PATH( ranksModel ) );
-  for( auto item : vm )
+  for( auto& item : vm )
   {
     GovernorRank rank;
     rank.load( item.first, item.second.toMap() );
@@ -604,16 +604,16 @@ GovernorRanks EmpireHelper::ranks()
   }
 
   GovernorRanks ret;
-  for( auto rank : sortRanks )
+  for( auto& rank : sortRanks )
     ret.push_back( rank.second );
 
   return ret;
 }
 
-GovernorRank EmpireHelper::getRank(unsigned int name)
+GovernorRank EmpireHelper::getRank(GovernorRank::Level level)
 {
   GovernorRanks ranks = world::EmpireHelper::ranks();
-  return ranks[ math::clamp<int>( name, 0, ranks.size() ) ];
+  return ranks[ math::clamp<int>( level, 0, ranks.size() ) ];
 }
 
 TraderouteList Empire::tradeRoutes(){  return _d->trading.routes();}
@@ -645,10 +645,8 @@ void Empire::Impl::checkLoans()
 
 void Empire::Impl::checkBarbarians( EmpirePtr empire )
 {
-  BarbarianList barbarians;
-  barbarians << objects;
-
-  bool needYetOneBarbarianGroup = barbarians.size() < maxBarbariansGroups;
+  unsigned int barbarians_n = objects.count<Barbarian>();
+  bool needYetOneBarbarianGroup = barbarians_n < maxBarbariansGroups;
 
   if( needYetOneBarbarianGroup )
   {
@@ -703,7 +701,7 @@ void Empire::Impl::takeTaxes()
       {
         int minimumExpireTax =econ::calcTaxValue( city->states().population, defaultCityTaxKoeff ) + minimumCityTax;
         empireTax = math::clamp( profit / cityTaxLimiter, minimumExpireTax, 9999 );
-        emperor.citySentTax( city->name(), empireTax );
+        //emperor.citySentTax( city->name(), empireTax );
       }
 
       bool cityTooYoung4tax = city->states().age <= econ::cityAge4tax;
@@ -732,7 +730,7 @@ void GovernorRank::load( const std::string& name, const VariantMap &vm)
   rankName = name;
   VARIANT_LOAD_STR( pretty, vm );
   VARIANT_LOAD_ANY( salary, vm );
-  VARIANT_LOAD_ANY( level, vm );
+  VARIANT_LOAD_ENUM( level, vm );
 }
 
 }//end namespace world

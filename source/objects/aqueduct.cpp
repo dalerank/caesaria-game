@@ -74,8 +74,8 @@ bool Aqueduct::build( const city::AreaInfo& info )
   WaterSource::build( info );
 
   TilePos offset( 2, 2 );
-  AqueductList aqueducts = _city()->statistic().objects.find<Aqueduct>( object::aqueduct,
-                                                                        info.pos - offset, info.pos + offset );
+  auto aqueducts = _city()->tilemap().area( info.pos - offset, info.pos + offset )
+                                             .overlays<Aqueduct>();
 
   for( auto aqueduct : aqueducts ) { aqueduct->updatePicture( info.city ); }
   return true;
@@ -149,7 +149,7 @@ bool Aqueduct::canBuild( const city::AreaInfo& areaInfo) const
     if (!tilemap.isInside(tp_to))
       tp_to = areaInfo.pos;
 
-    TilesArray perimetr = tilemap.getRectangle(tp_from, tp_to, !Tilemap::checkCorners);
+    TilesArray perimetr = tilemap.rect(tp_from, tp_to, !Tilemap::checkCorners);
     for( auto tile : perimetr )
     {
       AqueductPtr bldAqueduct;
@@ -249,7 +249,7 @@ const Picture& Aqueduct::picture( const city::AreaInfo& info ) const
     {
       if( isReservoirNear )
       {
-        ReservoirPtr reservoir = overlay_d[ i ].as<Reservoir>();
+        auto reservoir = overlay_d[ i ].as<Reservoir>();
         switch( i )
         {
         case north: directionFlags += ( reservoir->entry( south ) == p + TilePos( 0, 1 ) ? 1 : 0 ); break;

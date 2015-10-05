@@ -38,7 +38,6 @@ struct Base
 
   VariantList save() const;
   void load(const VariantList &stream);
-
 };
 
 class Array : public std::vector< Base >

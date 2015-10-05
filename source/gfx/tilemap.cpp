@@ -88,7 +88,7 @@ Tilemap::Tilemap() : _d( new Impl )
 void Tilemap::resize( const unsigned int size )
 {
   _d->resize( size );
-  _d->mapBorder = getRectangle( TilePos( 0, 0), TilePos( size-1, size-1 ) );
+  _d->mapBorder = rect( TilePos( 0, 0), TilePos( size-1, size-1 ) );
 }
 
 bool Tilemap::isInside(const TilePos& pos ) const
@@ -197,17 +197,17 @@ TilesArray Tilemap::getNeighbors( const TilePos& pos, TileNeighbors type)
   switch (type)
   {
   case AllNeighbors:
-    return getRectangle(pos - offset, pos + offset, checkCorners);
+    return rect(pos - offset, pos + offset, checkCorners);
 
   case FourNeighbors:
-    return getRectangle(pos - offset, pos + offset, !checkCorners);
+    return rect(pos - offset, pos + offset, !checkCorners);
   }
 
   Logger::warning( "CRITICAL: Unexpected type %d in Tilemap::getNeighbors", type );
   return TilesArray();
 }
 
-TilesArray Tilemap::getRectangle( TilePos start, TilePos stop, const bool corners /*= true*/ )
+TilesArray Tilemap::rect( TilePos start, TilePos stop, const bool corners /*= true*/ )
 {
   TilesArray res;
 
@@ -264,19 +264,19 @@ TilesArray Tilemap::getRectangle( TilePos start, TilePos stop, const bool corner
   return res;
 }
 
-TilesArray Tilemap::getRectangle( TilePos pos, Size size, const bool corners /*= true */ )
+TilesArray Tilemap::rect( TilePos pos, Size size, const bool corners /*= true */ )
 {
-  return getRectangle( pos, pos + TilePos( size.width()-1, size.height()-1), corners );
+  return rect( pos, pos + TilePos( size.width()-1, size.height()-1), corners );
 }
 
-TilesArray Tilemap::getRectangle(unsigned int range, TilePos center)
+TilesArray Tilemap::rect(unsigned int range, TilePos center)
 {
   TilePos offset( range, range );
-  return getRectangle( center - offset, center + offset );
+  return rect( center - offset, center + offset );
 }
 
 // Get tiles inside of rectangle
-TilesArray Tilemap::getArea(const TilePos& start, const TilePos& stop ) const
+TilesArray Tilemap::area(const TilePos& start, const TilePos& stop ) const
 {
   TilesArray res;
   int expected = math::min((abs(stop.i() - start.i()) + 1) * (abs(stop.j() - start.j()) + 1), 100);
@@ -301,18 +301,18 @@ TilesArray Tilemap::getArea(const TilePos& start, const TilePos& stop ) const
   return res;
 }
 
-TilesArray Tilemap::getArea(const TilePos& start, const Size& size ) const
+TilesArray Tilemap::area(const TilePos& start, const Size& size ) const
 {
   TilePos stop = start;
   stop.ri() += math::max( size.width()-1, 0 );
   stop.rj() += math::max( size.height()-1, 0 );
-  return getArea( start, stop );
+  return area( start, stop );
 }
 
-TilesArray Tilemap::getArea(int range, const TilePos& center) const
+TilesArray Tilemap::area(int range, const TilePos& center) const
 {
   TilePos offset(range,range);
-  return getArea( center - offset, center + offset );
+  return area( center - offset, center + offset );
 }
 
 void Tilemap::save( VariantMap& stream ) const
@@ -327,7 +327,7 @@ void Tilemap::save( VariantMap& stream ) const
   {
     bitsetInfo.push_back( tile::encode( *tile ) );
     desInfo.push_back( tile->param( Tile::pDesirability ) );
-    idInfo.push_back( tile->originalImgId() );
+    idInfo.push_back( tile->imgId() );
   }
 
   ByteArray baBitset;
@@ -380,11 +380,11 @@ void Tilemap::load( const VariantMap& stream )
     tile->setParam( Tile::pDesirability, desAr[index] );
 
     int imgId = imgIdAr[index];
-    if( !tile->masterTile() && imgId != 0 )
+    if( !tile->master() && imgId != 0 )
     {
       Picture pic = imgid::toPicture( imgId );
 
-      tile->setOriginalImgId( imgId );
+      tile->setImgId( imgId );
 
       int tile_size = (pic.width()+2) / _d->virtWidth;  // size of the multi-tile. the multi-tile is a square.
 
@@ -400,7 +400,7 @@ void Tilemap::load( const VariantMap& stream )
         {
           // for each subcol of the multi-tile
           Tile &sub_tile = at( tile->pos() + TilePos( di, dj ) );
-          sub_tile.setMasterTile( master );
+          sub_tile.setMaster( master );
           sub_tile.setPicture( pic );
         }
       }
@@ -464,7 +464,7 @@ void Tilemap::turnRight()
       for( int j=0; j < pSize; j++ )
       {
         Tile* apTile = _d->ate( mTilePos + TilePos( i, j ) );
-        apTile->setMasterTile( mTile );
+        apTile->setMaster( mTile );
       }
     }
 
@@ -522,7 +522,7 @@ void Tilemap::turnLeft()
       for( int j=0; j < pSize; j++ )
       {
         Tile* apTile = _d->ate( mTilePos + TilePos( i, j ) );
-        apTile->setMasterTile( mTile );
+        apTile->setMaster( mTile );
       }
     }
 
@@ -596,7 +596,7 @@ void Tilemap::Impl::saveMasterTiles(Tilemap::Impl::MasterTiles &mtiles)
     for( int j=0; j < size; j++ )
     {
       tmp = ate( i, j );
-      Tile* masterTile = tmp->masterTile();
+      Tile* masterTile = tmp->master();
 
       if( masterTile )
       {        
@@ -620,7 +620,7 @@ void Tilemap::Impl::saveMasterTiles(Tilemap::Impl::MasterTiles &mtiles)
             for( int j=0; j < pSize; j++ )
             {
               Tile* apTile = ate( ti.tile->epos() + TilePos( i, j ) );
-              apTile->setMasterTile( 0 );
+              apTile->setMaster( 0 );
               apTile->setPicture( Picture::getInvalid() );
             }
           }

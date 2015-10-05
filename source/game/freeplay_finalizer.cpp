@@ -36,7 +36,7 @@ namespace freeplay
 
 void __loadEventsFromSection( const VariantMap& vm )
 {
-  for( auto&& it : vm )
+  for( auto& it : vm )
   {
     events::GameEventPtr e = events::PostponeEvent::create( it.first, it.second.toMap() );
     e->dispatch();

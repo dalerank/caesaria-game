@@ -34,11 +34,11 @@ class Engine : public StaticSingleton<Engine>
 {
   SET_STATICSINGLETON_FRIEND_FOR(Engine)
 public:
-  void setVolume( SoundType type, int value);
+  void setVolume( SoundType type, Volume value);
   void loadAlias(const vfs::Path& filename );
   void addFolder( vfs::Directory dir );
 
-  int volume( SoundType type ) const;
+  Volume volume( SoundType type ) const;
 
   int maxVolumeValue() const;
 

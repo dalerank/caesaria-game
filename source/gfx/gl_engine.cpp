@@ -570,7 +570,6 @@ void GlEngine::init()
 
   _d->throwIfnoWindow();
   _d->viewportSize = _srcSize;
-  _virtualSize = _srcSize;
   _d->useViewport = false;
 
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -707,6 +706,11 @@ Batch GlEngine::loadBatch(const Picture &pic, const Rects &srcRects, const Rects
 }
 
 void GlEngine::unloadBatch(const Batch &batch)
+{
+
+}
+
+void GlEngine::setViewport(const Rect& rect)
 {
 
 }
@@ -907,6 +911,11 @@ void GlEngine::draw(const Pictures& pictures, const Point& pos, Rect* clipRect)
   {
     draw( *it, pos, clipRect );
   }
+}
+
+void GlEngine::draw(const Picture& pic, const Rect& dstRect, Rect* clipRect)
+{
+
 }
 
 void GlEngine::drawLine(const NColor& color, const Point& p1, const Point& p2)

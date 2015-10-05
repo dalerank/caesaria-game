@@ -126,6 +126,7 @@ Helper::Helper() : EnumsHelper<Type>( Type(0) )
     __REG_TYPE( water )
     __REG_TYPE( meadow )
     __REG_TYPE( roadBlock )
+    __REG_TYPE( farmtile )
 
     append( object::unknown,        "" );
 #undef __REG_TYPE
@@ -154,7 +155,7 @@ std::string toString( const Group& g)
 VariantList TypeSet::save() const
 {
   StringArray ret;
-  for( auto type : *this )
+  for( auto& type : *this )
     ret.push_back( toString( type ) );
 
   return ret;
@@ -164,7 +165,7 @@ void TypeSet::load(const VariantList& stream)
 {
   StringArray names;
   names << stream;
-  for( auto typeStr : names )
+  for( auto& typeStr : names )
   {
     object::Type type = findType( typeStr );
     if( type != object::unknown )

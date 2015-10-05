@@ -40,10 +40,10 @@ AboutTheater::AboutTheater(Widget *parent, PlayerCityPtr city, const Tile &tile)
 {
   setupUI( ":/gui/infoboxtheater.gui" );
 
-  TheaterPtr theater = _getBuilding().as<Theater>();
+  auto theater = _getBuilding().as<Theater>();
   setTitle( _( MetaDataHolder::findPrettyName( theater->type() ) ) );
 
-  _lbTextRef()->setTextAlignment( align::upperLeft, align::center);
+  _lbText()->setTextAlignment( align::upperLeft, align::center);
   _updateWorkersLabel( Point( 40, 150), 542, theater->maximumWorkers(), theater->numberWorkers() );
   
   if( theater->showsCount() == 0 )

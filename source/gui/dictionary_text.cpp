@@ -63,7 +63,7 @@ struct Tokens : std::vector<TextToken>
   const std::string text() const
   {
     std::string ret;
-    for( auto token : *this ) { ret += token.text; }
+    for( auto& token : *this ) { ret += token.text; }
     return ret;
   }
 };
@@ -198,7 +198,7 @@ void DictionaryText::_updateTexture( gfx::Engine& painter )
         r -= Point( 0, height * _d->brokenText.size() / 2 );
       }
 
-      for( auto tokens : _d->brokenText )
+      for( auto& tokens : _d->brokenText )
       {
         std::string tmpString = tokens.text();
 
@@ -206,7 +206,7 @@ void DictionaryText::_updateTexture( gfx::Engine& painter )
         textRect += _d->text.offset;
 
         int offset = 0;
-        for( auto chunk : tokens )
+        for( auto& chunk : tokens )
         {
           chunk.font.draw( _d->text.tx, chunk.text,
                            textRect.lefttop() + Point( offset + chunk.offset, 0 ),

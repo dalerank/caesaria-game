@@ -298,12 +298,12 @@ void clear(Tile& tile)
 
   Picture pic( ResourceGroup::land1a, startOffset + imgId );
   tile.setPicture( ResourceGroup::land1a, startOffset + imgId );
-  tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+  tile.setImgId( imgid::fromResource( pic.name() ) );
 }
 
 void fixPlateauFlags(Tile& tile)
 {
-  int imgId = tile.originalImgId();
+  int imgId = tile.imgId();
   bool plateau = (imgId > 200 && imgId < 245);
   bool l3aRocks = (imgId > 848 && imgId < 863);
   if( plateau || l3aRocks )

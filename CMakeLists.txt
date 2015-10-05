@@ -19,7 +19,6 @@ option( BUILD_TTF   "Static ttf"     ON )
 option( BUILD_GL_FRAMEBUFFER "Opengl framebuffer"     ON )
 option( BUILD_AUDIO "Use sdl_mixer"  ON )
 option( DEBUG_TIMERS "Show debug timers" ON)
-option( USE_CPP11 "Build with c++11 standard" OFF)
 option( USE_STEAM "Build steam" OFF)
 option( SYSTEM_DEPS "Use system-installed dependencies (if found)" OFF)
 

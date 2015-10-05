@@ -116,7 +116,7 @@ public:
   virtual void retrieve( good::Stock& stock, const int amounts);
 
   // store all goods from the given goodStore
-  virtual void storeAll( Store &goodStore);
+  virtual void storeAll( Store& goodStore);
 
   virtual bool isDevastation() const;
   virtual void setDevastation( bool value );

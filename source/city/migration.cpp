@@ -400,8 +400,7 @@ void Migration::Impl::createMigrationToCity( PlayerCityPtr city )
     return;
   }
 
-  EmigrantList migrants;
-  migrants << city->walkers();
+  auto migrants = city->walkers().select<Emigrant>();
 
   if( vh <= migrants.size() * 5 )
   {
@@ -426,12 +425,12 @@ void Migration::Impl::createMigrationFromCity( PlayerCityPtr city )
 {
   HouseList houses = city->statistic().houses.find();
   const int minWorkersNumber = 4;
-  for( HouseList::iterator i=houses.begin(); i != houses.end(); )
+  for( auto itHouse=houses.begin(); itHouse != houses.end(); )
   {
-    int houseWorkless = (*i)->unemployed();
+    int houseWorkless = (*itHouse)->unemployed();
 
-    if( !(*i)->enterArea().empty() && houseWorkless > minWorkersNumber ) { ++i; }
-    else { i = houses.erase( i ); }
+    if( !(*itHouse)->enterArea().empty() && houseWorkless > minWorkersNumber ) { ++itHouse; }
+    else { itHouse = houses.erase( itHouse ); }
   }
 
   if( !houses.empty() )

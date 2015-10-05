@@ -285,7 +285,7 @@ bool TreeViewItem::deleteChild( TreeViewItem* child )
 	TvIterator	itChild;
 	bool	deleted = false;
 
-	for( itChild = _d->Children.begin(); itChild != _d->Children.end(); itChild++ )
+  for( itChild = _d->Children.begin(); itChild != _d->Children.end(); ++itChild )
 	{
 		if( child == *itChild )
 		{
@@ -305,7 +305,7 @@ bool TreeViewItem::moveChildUp( TreeViewItem* child )
 	TreeViewItem*									nodeTmp;
 	bool													moved = false;
 
-	for( itChild = _d->Children.begin(); itChild != _d->Children.end(); itChild++ )
+  for( itChild = _d->Children.begin(); itChild != _d->Children.end(); ++itChild )
 	{
 		if( child == *itChild )
 		{

@@ -86,7 +86,7 @@ public:
 public:
   void renderState(const Batch &batch, const Rect *clip);
   void renderState();
-  void setClip( const Rect& clip );
+  void setClip(const Rect& clip);
   void renderOnce(const Picture& pic, const Rect& src, const Rect& dstRect,
                   const Rect* clipRect, bool useTxOffset);
 };
@@ -210,26 +210,13 @@ void SdlEngine::init()
 
   Logger::warning("SDLGraficEngine:Android init successfull");
 #else
-  unsigned int flags = SDL_WINDOW_OPENGL;
   Logger::warning( utils::format( 0xff, "SDLGraficEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
 
-  if(isFullscreen())
-  {
-    window = SDL_CreateWindow("CaesariA",
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
-        0, 0,
-        flags | SDL_WINDOW_FULLSCREEN_DESKTOP);
-
-  }
-  else
-  {
-    window = SDL_CreateWindow("CaesariA",
-                              SDL_WINDOWPOS_CENTERED,
-                              SDL_WINDOWPOS_CENTERED,
-                              _srcSize.width(), _srcSize.height(),
-                              flags);
-  }
+  window = SDL_CreateWindow( "CaesariA",
+                             SDL_WINDOWPOS_CENTERED,
+                             SDL_WINDOWPOS_CENTERED,
+                             _srcSize.width(), _srcSize.height(),
+                             SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
 
   if (window == NULL)
   {
@@ -238,9 +225,19 @@ void SdlEngine::init()
   }
 
   Logger::warning("SDLGraficEngine: init successfull");
+
+  if( isFullscreen() )
+  {
+    int idx = SDL_GetWindowDisplayIndex( window );
+    SDL_Rect bounds;
+    SDL_GetDisplayBounds( idx, &bounds );
+    SDL_SetWindowBordered( window, SDL_FALSE );
+    SDL_SetWindowPosition( window, bounds.x, bounds.y );
+    SDL_SetWindowSize( window, bounds.w, bounds.h );
+    _srcSize = Size( bounds.w, bounds.h );
+  }
 #endif
 
-  //int render_version = math::clamp( game::Settings::get( "render_mode" ).toInt(), 0, SDL_GetNumRenderDrivers());
   SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
 
   if (renderer == NULL)
@@ -249,19 +246,7 @@ void SdlEngine::init()
     THROW("Failed to create renderer");
   }
 
-  _virtualSize = _srcSize;
-  if( isFullscreen() )
-  {
-    SDL_DisplayMode mode;
-    SDL_GetDisplayMode(0, 0, &mode);
-    unsigned int fullscreenVirtualWidth = mode.w;
-    unsigned int fullscreenVirtualHeight = mode.h;
-
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");  // make the scaled rendering look smoother.
-    SDL_RenderSetLogicalSize(renderer, fullscreenVirtualWidth, fullscreenVirtualHeight );
-    _virtualSize = Size( fullscreenVirtualWidth, fullscreenVirtualHeight );
-  }
-
+  SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");  // make the scaled rendering look smoother.
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
   SDL_SetRenderDrawBlendMode( renderer, SDL_BLENDMODE_BLEND );
   SDL_RenderClear(renderer);
@@ -518,6 +503,11 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
   }
 }
 
+void SdlEngine::draw(const Picture& pic, const Rect& dstRect, Rect* clipRect)
+{
+  draw( pic, Rect( 0, 0, pic.width(), pic.height()), dstRect, clipRect );
+}
+
 void SdlEngine::draw(const Picture& pic, const Rect& srcRect, const Rect& dstRect, Rect *clipRect)
 {
   if( !pic.isValid() )
@@ -665,6 +655,17 @@ void SdlEngine::setScale( float scale )
   SDL_RenderSetScale( _d->renderer, scale, scale );
 }
 
+void SdlEngine::setViewport(const Rect& rect)
+{
+  if( rect.width() > 0 )
+  {
+    SDL_Rect r = { rect.left(), rect.top(), rect.width(), rect.height() };
+    SDL_RenderSetViewport( _d->renderer, &r );
+  }
+  else
+    SDL_RenderSetViewport( _d->renderer, 0 );
+}
+
 void SdlEngine::createScreenshot( const std::string& filename )
 {
   SDL_Surface* surface = SDL_CreateRGBSurface( 0, _srcSize.width(), _srcSize.height(), 24, 0, 0, 0, 0 );
@@ -706,7 +707,7 @@ Engine::Modes SdlEngine::modes() const
   }
 
   Modes ret;
-  for( auto mode : uniqueModes )
+  for( auto& mode : uniqueModes )
   {
     int width = (mode >> 16)&0xffff;
     if( width <= maxWidth )
@@ -753,9 +754,10 @@ bool SdlEngine::haveEvent( NEvent& event )
   return false;
 }
 
-void SdlEngine::Impl::setClip( const Rect& clip )
+void SdlEngine::Impl::setClip(const Rect& clip)
 {
   static SDL_Rect r;
+
   r.x = clip.left();
   r.y = sheigth - clip.top() - clip.height();
   r.w = clip.width();

@@ -33,13 +33,8 @@ public:
 
   bool contains( const std::string& str )
   {
-    for( auto& item : *this )
-    {
-      if( item == str )
-        return true;
-    }
-
-    return false;
+    auto it = std::find( this->begin(), this->end(), str );
+    return it != this->end();
   }  
 
   std::string valueOrEmpty( unsigned int index ) const

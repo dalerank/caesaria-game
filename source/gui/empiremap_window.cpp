@@ -211,7 +211,7 @@ void EmpireMapWindow::Impl::drawStatic(Engine& painter)
 void EmpireMapWindow::Impl::drawTradeRoutes(Engine& painter)
 {
   world::TraderouteList routes = city->empire()->tradeRoutes();
-  for( auto route : routes )
+  for( auto& route : routes )
   {
     const PointsArray& points = route->points();
     const Pictures& pictures = route->pictures();
@@ -246,18 +246,18 @@ void EmpireMapWindow::Impl::drawMovable(Engine& painter)
   {
     if( obj->isMovable() )
     {
-      world::MovableObjectPtr mobj = obj.as<world::MovableObject>();
-      if( !mobj.isValid() )
+      auto movableObject = obj.as<world::MovableObject>();
+      if( !movableObject.isValid() )
       {
         Logger::warning( "Object %s not movable", obj->name().c_str() );
         continue;
       }
 
-      Point mappos = mobj->location();
-      painter.draw( mobj->pictures(), offset + mobj->location() );
+      Point mappos = movableObject->location();
+      painter.draw( movableObject->pictures(), offset + movableObject->location() );
 
 #ifdef DEBUG
-      int distance = mobj->viewDistance();
+      int distance = movableObject->viewDistance();
       if( distance > 0 )
       {
         Point lastPos( distance * sin( 0 ), distance * cos( 0 ) );
@@ -271,7 +271,7 @@ void EmpireMapWindow::Impl::drawMovable(Engine& painter)
         }
       }
 
-      const world::Route& way = mobj->way();
+      const world::Route& way = movableObject->way();
       if( !way.empty() )
       {
         Point lastPos = way[ way.step ];
@@ -381,8 +381,8 @@ void EmpireMapWindow::Impl::createTradeRoute()
     if( city.isValid() && route.isValid() && route->isSeaRoute() )
     {
       unsigned int cost = world::EmpireHelper::getTradeRouteOpenCost( empire, city->name(), currentCity->name() );
-      GameEventPtr e = Payment::create( econ::Issue::sundries, -(int)cost );
-      e->dispatch();
+      auto event = Payment::create( econ::Issue::sundries, -(int)cost );
+      event->dispatch();
 
       DockList docks = city->statistic().objects.find<Dock>( object::dock );
       if( docks.empty() )
@@ -415,7 +415,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
 
   const good::Store& sellgoods = currentCity->sells();
   int k=0;
-  for( auto product : good::all() )
+  for( auto& product : good::all() )
   {
     if( sellgoods.capacity( product ) > 0  )
     {
@@ -431,7 +431,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
 
   const good::Store& buygoods = currentCity->buys();
   k=0;
-  for( auto product : good::all() )
+  for( auto& product : good::all() )
   {
     if( buygoods.capacity( product ) > 0  )
     {
@@ -459,7 +459,7 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
 
   const good::Store& sellgoods = currentCity->sells();
   int k=0;
-  for( auto product : good::all() )
+  for( auto& product : good::all() )
   {
     Unit maxsell = Unit::fromQty( sellgoods.capacity( product ) );
     Unit cursell = Unit::fromQty( sellgoods.qty( product ) );
@@ -479,7 +479,7 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
 
   const good::Store& buygoods = currentCity->buys();
   k=0;
-  for( auto product : good::all() )
+  for( auto& product : good::all() )
   {
     Unit maxbuy = Unit::fromQty( buygoods.capacity( product ) );
     Unit curbuy = Unit::fromQty( buygoods.qty( product ) );
@@ -675,7 +675,7 @@ void EmpireMapWindow::_changePosition()
     world::EmpirePtr empire = _d->city->empire();
     world::TraderouteList routes = empire->tradeRoutes();
 
-    for( auto route : routes )
+    for( auto& route : routes )
     {
       if( route->containPoint( -_d->offset + cursorPos, 4 ) )
       {

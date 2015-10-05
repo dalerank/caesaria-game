@@ -142,7 +142,7 @@ void Widget::setGeometry( const Rect& r, GeometryType mode )
 void Widget::_finalizeResize() {}
 void Widget::_finalizeMove() {}
 
-Widget::Widgets& Widget::_getChildren() {  return _dfunc()->children;}
+Widget::Widgets& Widget::_getChildren() { return _dfunc()->children;}
 
 void Widget::setPosition( const Point& position )
 {
@@ -177,8 +177,8 @@ void Widget::setGeometry( const RectF& r, GeometryType mode )
   updateAbsolutePosition();
 }
 
-Rect Widget::absoluteRect() const { __D_IMPL_CONST(_d,Widget)   return _d->absoluteRect;}
-Rect Widget::absoluteClippingRect() const{ __D_IMPL_CONST(_d,Widget)   return _d->absoluteClippingRect;}
+Rect Widget::absoluteRect() const { return _dfunc()->absoluteRect;}
+Rect Widget::absoluteClippingRect() const{ return _dfunc()->absoluteClippingRect;}
 
 void Widget::setNotClipped( bool noClip )
 {
@@ -249,7 +249,7 @@ Widget* Widget::getElementFromPoint( const Point& point )
   // we have to search from back to front, because later children
   // might be drawn over the top of earlier ones.
 
-  ChildIterator it = _d->children.getLast();
+  auto it = _d->children.getLast();
 
   if (visible())
   {
@@ -306,8 +306,8 @@ void Widget::draw(gfx::Engine& painter )
 {
   if ( visible() )
   {
-    Widgets& children = _getChildren();
-    for( auto child : children ) { child->draw( painter ); }
+    for( auto child : _dfunc()->children )
+      child->draw( painter );
   }
 }
 
@@ -391,7 +391,7 @@ bool Widget::bringChildToFront( Widget* element )
 bool Widget::sendChildToBack( Widget* child )
 {
   Widgets& children = _getChildren();
-  ChildIterator it = children.begin();
+  auto it = children.begin();
   if (child == (*it))	// already there
       return true;
 
@@ -422,8 +422,7 @@ Widget* Widget::findChild( int id, bool searchchildren/*=false*/ ) const
 {
   Widget* e = 0;
 
-  __D_IMPL_CONST(_d,Widget)
-  for( auto child : _d->children )
+  for( auto child : _dfunc()->children )
   {
     if( child->ID() == id)
     {
@@ -452,7 +451,7 @@ bool Widget::next( int startOrder, bool reverse, bool group, Widget*& first, Wid
         wanted = 1073741824; // maximum int
 
     __D_IMPL_CONST(_d,Widget)
-    ConstChildIterator it = _d->children.begin();
+    auto it = _d->children.begin();
 
     int closestOrder, currentOrder;
 
@@ -592,7 +591,7 @@ void Widget::setupUI( const VariantMap& options )
 
   setNotClipped( options.get( "noclipped", false ).toBool() );
 
-  for( auto item : options )
+  for( auto& item : options )
   {
     if( item.second.type() != Variant::Map )
       continue;
@@ -765,7 +764,8 @@ void Widget::animate( unsigned int timeMs )
   if( !visible() )
     return;
 
-  for( auto child : _getChildren() ) { child->animate( timeMs ); }
+  for( auto child : _dfunc()->children )
+    child->animate( timeMs );
 }
 
 void Widget::remove()

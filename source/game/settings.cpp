@@ -373,7 +373,7 @@ void Settings::load()
 {
   VariantMap settings = config::load( rcpath( Settings::settingsPath ) );
 
-  for( auto&& v : settings ) { set( v.first, v.second ); }
+  for( auto& v : settings ) { set( v.first, v.second ); }
 }
 
 void Settings::save()

@@ -32,24 +32,21 @@ public:
 
   ServiceCreatorPtr find( const std::string& name )
   {
-    for( auto creator : creators )
-    {
-      if( name == creator->serviceName() )
-        return creator;
-    }
-
-    return ServiceCreatorPtr();
+    auto it = std::find_if(creators.begin(),
+                           creators.end(),
+                           [name](ServiceCreatorPtr a) { return a->serviceName() == name; } );
+    return it != creators.end() ? *it : ServiceCreatorPtr();
   }
 };
 
 SrvcPtr ServiceFactory::create( PlayerCityPtr city, const std::string& name )
 {
-  std::string::size_type sharpPos = name.find( "#" );
-  const std::string srvcType = sharpPos != std::string::npos ? name.substr( sharpPos+1 ) : name;
+  auto sharpPos = name.find( "#" );
+  const std::string serviceTypename = sharpPos != std::string::npos ? name.substr( sharpPos+1 ) : name;
 
-  Logger::warning( "CityServiceFactory: try find creator for service " + srvcType );
+  Logger::warning( "CityServiceFactory: try find creator for service " + serviceTypename );
 
-  auto creator = instance()._d->find( srvcType );
+  auto creator = instance()._d->find( serviceTypename );
   if( creator.isValid() )
   {
     city::SrvcPtr srvc = creator->create( city );

@@ -69,7 +69,7 @@ Fortification::~Fortification() {}
 bool Fortification::build( const city::AreaInfo& info )
 {
   // we can't build if already have wall here
-  WallPtr wall = info.city->getOverlay( info.pos ).as<Wall>();
+  auto wall = info.city->getOverlay( info.pos ).as<Wall>();
   if( wall.isValid() )
   {
     return false;

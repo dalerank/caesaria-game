@@ -46,9 +46,9 @@ public:
 
   virtual void setColorMask( int rmask, int gmask, int bmask, int amask );
   virtual void resetColorMask();
-  virtual void setTitle(const std::string &title);
+  virtual void setTitle( const std::string &title );
   virtual void setScale( float scale );
-
+  virtual void setViewport( const Rect& rect );
   virtual Batch loadBatch(const Picture& pic, const Rects& srcRects, const Rects& dstRects, const Rect* clipRect);
   virtual void unloadBatch( const Batch& batch );
 
@@ -58,6 +58,7 @@ public:
   virtual void draw(const Picture& picture, const int dx, const int dy, Rect* clipRect);
   virtual void draw(const Picture& picture, const Point& pos, Rect* clipRect );
   virtual void draw(const Pictures& pictures, const Point& pos, Rect* clipRect);
+  virtual void draw(const Picture& pic, const Rect& dstRect, Rect *clipRect );
   virtual void draw(const Picture& pic, const Rect& srcRect, const Rect& dstRect, Rect *clipRect );
   virtual void draw(const Picture& pic, const Rects& srcRects, const Rects& dstRects, Rect* clipRect );
   virtual void draw(const Batch& batch, Rect* clipRect);

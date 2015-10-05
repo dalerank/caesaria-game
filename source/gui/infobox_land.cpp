@@ -126,10 +126,11 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
   //int index = (size - tile.getJ() - 1 + border_size) * 162 + tile.getI() + border_size;
 
   text = _(text );
+#ifdef DEBUG
   text += utils::format( 0xff, "\nTile at: (%d,%d) ID:%04X",
                                            tile.i(), tile.j(),  
-                                          ((short int) tile.originalImgId() ) );
-  
+                                          ((unsigned int) tile.imgId() ) );
+#endif
   setTitle( _( title ));
   setText( text );
 }
@@ -150,7 +151,7 @@ AboutFreeHouse::AboutFreeHouse( Widget* parent, PlayerCityPtr city, const Tile& 
 {
   setTitle( _("##freehouse_caption##") );
 
-  ConstructionPtr cnst = tile.overlay<Construction>();
+  auto cnst = tile.overlay<Construction>();
   if( cnst.isValid() )
   {
       setText( cnst->roadside().empty()
@@ -164,6 +165,6 @@ void AboutFreeHouse::_showHelp()
   DictionaryWindow::show( this, "vacant_lot" );
 }
 
-}
+}//end namespace infobox
 
 }//end namespace gui

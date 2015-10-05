@@ -49,7 +49,7 @@ void Well::deliverService()
   for( auto bld : reachedBuildings)
   {
     bld->applyService( walker );
-    HousePtr house = bld.as<House>();
+    auto house = bld.as<House>();
     if( house.isValid() )
     {
       lowHealth = std::min<unsigned int>( lowHealth, house->state(pr::health ) );

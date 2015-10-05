@@ -46,7 +46,7 @@ public:
 
   GranaryStore()
   {
-    for( auto gtype : good::foods() )
+    for( auto& gtype : good::foods() )
       setOrder( gtype, good::Orders::accept );
 
     setOrder( good::fish, good::Orders::none );
@@ -126,12 +126,14 @@ Granary::Granary() : WorkingBuilding( object::granery, Size(3) ), _d( new Impl )
 void Granary::timeStep(const unsigned long time)
 {
   WorkingBuilding::timeStep( time );
-  if( !mayWork() )
+  if( !(mayWork() && isActive()) )
     return;
 
   if( game::Date::isWeekChanged() )
   {
     _weekUpdate();
+    //animate workers need
+    _animationRef().setDelay( 4 + needWorkers() + math::random(2) );
   }
 }
 
@@ -241,7 +243,7 @@ void Granary::_resolveDeliverMode()
     return;
   }
   //if warehouse in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
-  for( auto gType : good::foods() )
+  for( auto& gType : good::foods() )
   {
     good::Orders::Order order = _d->store.getOrder( gType );
     int goodFreeQty = math::clamp( _d->store.freeQty( gType ), 0, 400 );
@@ -296,7 +298,7 @@ void Granary::_tryDevastateGranary()
 {
   //if granary in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
   const int maxSentTry = 3;
-  for( auto goodType : good::foods() )
+  for( auto& goodType : good::foods() )
   {
     int trySentQty[maxSentTry] = { 400, 200, 100 };
 

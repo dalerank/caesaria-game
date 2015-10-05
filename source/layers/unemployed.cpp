@@ -50,7 +50,7 @@ void Unemployed::drawTile(Engine& engine, Tile& tile, const Point& offset)
   {
     bool needDrawAnimations = false;
     OverlayPtr overlay = tile.overlay();
-    WorkingBuildingPtr workBuilding = overlay.as<WorkingBuilding>();
+    auto workingBuilding = overlay.as<WorkingBuilding>();
     int worklessPercent = 0;
 
     if( _isVisibleObject( overlay->type() ) )
@@ -64,17 +64,17 @@ void Unemployed::drawTile(Engine& engine, Tile& tile, const Point& offset)
       int worklessNumber = (int)house->getServiceValue( Service::recruter );
       int matureNumber = (int)house->habitants().mature_n();
       worklessPercent = math::percentage( worklessNumber, matureNumber );
-      needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
+      needDrawAnimations = (house->level() <= HouseLevel::hovel) && house->habitants().empty();
 
       if( !needDrawAnimations )
       {
         drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
       }
     }
-    else if( workBuilding.isValid() )
+    else if( workingBuilding.isValid() )
     {
-      worklessPercent = math::percentage( workBuilding->needWorkers(), workBuilding->maximumWorkers() );
-      needDrawAnimations = workBuilding->needWorkers() > 0;
+      worklessPercent = math::percentage( workingBuilding->needWorkers(), workingBuilding->maximumWorkers() );
+      needDrawAnimations = workingBuilding->needWorkers() > 0;
       if( !needDrawAnimations )
         drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base );
     }
@@ -90,7 +90,7 @@ void Unemployed::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 LayerPtr Unemployed::create( Camera& camera, PlayerCityPtr city)

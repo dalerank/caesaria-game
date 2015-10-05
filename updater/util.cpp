@@ -20,15 +20,18 @@
 #include "vfs/entries.hpp"
 #include "vfs/directory.hpp"
 #include "core/foreach.hpp"
+#include <iostream>
+#include <fstream>
+#include <string>
+
+namespace updater
+{
 
 #ifdef CAESARIA_PLATFORM_WIN
 
 #include <string>
 #include <windows.h>
 #include <psapi.h>
-
-namespace updater
-{
 
 bool Util::caesariaIsRunning()
 {
@@ -83,58 +86,60 @@ bool Util::caesariaIsRunning()
 #elif defined(CAESARIA_PLATFORM_LINUX) || defined(CAESARIA_PLATFORM_HAIKU)
 // Linux implementation
 
-#include <iostream>
-#include <fstream>
-#include <string>
+const std::string systemProcFolder("/proc/");
+const std::string caesariaProcessName("caesaria.linux"); // grayman - looking for tdm now instead of doom3
 
+<<<<<<< HEAD
 namespace
 {
 	const std::string systemProcFolder("/proc/");
 	const std::string caesariaProcessName("caesaria.linux"); // grayman - looking for tdm now instead of doom3
+=======
+bool CheckProcessFile(const std::string& name, const std::string& processName)
+{
+  // Try to cast the filename to an integer number (=PID)
+  try
+  {
+    unsigned long pid = utils::toUint( name );
 
-	bool CheckProcessFile(const std::string& name, const std::string& processName)
-	{
-		// Try to cast the filename to an integer number (=PID)
-		try
-		{
-			unsigned long pid = utils::toUint( name );
-		
-			// Was the PID read correctly?
-			if (pid == 0)
-			{
-				return false;
-			}
-			
-			const std::string cmdLineFileName = systemProcFolder + name + "/cmdline";
-			
-			std::ifstream cmdLineFile(cmdLineFileName.c_str());
+    // Was the PID read correctly?
+    if (pid == 0)
+    {
+      return false;
+    }
+>>>>>>> master
 
-			if (cmdLineFile.is_open())
-			{
-				// Read the command line from the process file
-				std::string cmdLine;
-				getline(cmdLineFile, cmdLine);
-				
-				if (cmdLine.find(processName) != std::string::npos)
-				{
-					// Process found, return success
-					return true;
-				}
-			}
-			
-			// Close the file
-			cmdLineFile.close();
-		}
-		catch( ... )
-		{
-			// Cast to int failed, no PID
-		}
+    const std::string cmdLineFileName = systemProcFolder + name + "/cmdline";
 
-		return false;
-	}
+    std::ifstream cmdLineFile(cmdLineFileName.c_str());
 
-} // namespace
+    if (cmdLineFile.is_open())
+    {
+      // Read the command line from the process file
+      std::string cmdLine;
+      getline(cmdLineFile, cmdLine);
 
+<<<<<<< HEAD
+=======
+      if (cmdLine.find(processName) != std::string::npos)
+      {
+        // Process found, return success
+        return true;
+      }
+    }
+
+    // Close the file
+    cmdLineFile.close();
+  }
+  catch( ... )
+  {
+    // Cast to int failed, no PID
+  }
+
+  return false;
+}
+
+>>>>>>> master
 bool Util::caesariaIsRunning()
 {
   // Traverse the /proc folder, this sets the flag to TRUE if the process was found
@@ -151,8 +156,6 @@ bool Util::caesariaIsRunning()
   return false;
 }
 
-} // namespace
-
 #elif defined(CAESARIA_PLATFORM_MACOSX)
 // Mac OS X
 #include <assert.h>
@@ -162,9 +165,6 @@ bool Util::caesariaIsRunning()
 #include <stdio.h>
 #include "core/logger.hpp"
 #include <sys/sysctl.h>
-
-namespace updater
-{
 
 // greebo: Checks for a named process, modeled loosely after
 // http://developer.apple.com/library/mac/#qa/qa2001/qa1123.html

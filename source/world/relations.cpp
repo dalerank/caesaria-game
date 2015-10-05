@@ -107,7 +107,7 @@ void Relation::load(const VariantMap &stream)
 VariantMap Relations::save() const
 {
   VariantMap ret;
-  for( auto it : *this )
+  for( auto& it : *this )
     ret[ it.first ] = it.second.save();
 
   return ret;
@@ -123,7 +123,7 @@ const Relation& Relations::get(const std::string &name) const
 
 void Relations::load(const VariantMap &stream)
 {
-  for( auto item : stream )
+  for( auto& item : stream )
   {
     Relation r;
     r.load( item.second.toMap() );

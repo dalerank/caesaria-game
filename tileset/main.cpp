@@ -191,7 +191,7 @@ public:
 
       atlas.write( "{\ntexture: \"" + name + ".png\" \n" );
       atlas.write( "  frames: {\n" );
-      for( auto&& e : rectangleMap )
+      for( auto& e : rectangleMap )
       {
         Rect r = e.second->rect;
         std::string keyVal = e.first;
@@ -610,13 +610,13 @@ void createSet( const ArchiveConfig& archive, const StringArray& names )
     err = zipCloseFileInZip(zf);
   }
 
-  ByteArray data;
-  data = config::save( archive.info );
+  std::string data = config::save( archive.info );
   err = zipOpenNewFileInZip( zf, "info", &zi,
                              NULL,0,NULL,0,NULL,
                              (opt_compress_level != 0) ? Z_DEFLATED : 0,
                              opt_compress_level);
-  zipWriteInFileInZip( zf, data.data(), data.size() );
+  zipWriteInFileInZip( zf, data.c_str(), data.size() );
+  zipCloseFileInZip(zf);
 
   zipClose(zf,NULL);
 }
@@ -633,19 +633,8 @@ int main(int argc, char* argv[])
   engine->init();
   engine->setTitle( "CaesarIA: tileset packer" );
 
-  if(argc < 5)
-  {
-    Logger::warning("CaesarIA texture atlas generator by Dalerank(java code Lukasz Bruun)");
-    Logger::warning("\tUsage: AtlasGenerator <name> <width> <height> <padding> <ignorePaths> <unitCoordinates> <directory> [<directory> ...]");
-    Logger::warning("\t\t<padding>: Padding between images in the final texture atlas.");
-    Logger::warning("\t\t<ignorePaths>: Only writes out the file name without the path of it to the atlas txt file.");
-    Logger::warning("\t\t<unitCoordinates>: Coordinates will be written to atlas json file in 0..1 range instead of 0..width, 0..height range");
-    Logger::warning("\tExample: tileset atlas 2048 2048 5 1 1 images");
-    return 0;
-  }
 
   Config config;
-
   Atlases gens;
 
   vfs::Path path( "tileset.model" );
@@ -656,6 +645,17 @@ int main(int argc, char* argv[])
   }
   else
   {
+    if(argc < 5)
+    {
+      Logger::warning("CaesarIA texture atlas generator by Dalerank(java code Lukasz Bruun)");
+      Logger::warning("\tUsage: AtlasGenerator <name> <width> <height> <padding> <ignorePaths> <unitCoordinates> <directory> [<directory> ...]");
+      Logger::warning("\t\t<padding>: Padding between images in the final texture atlas.");
+      Logger::warning("\t\t<ignorePaths>: Only writes out the file name without the path of it to the atlas txt file.");
+      Logger::warning("\t\t<unitCoordinates>: Coordinates will be written to atlas json file in 0..1 range instead of 0..width, 0..height range");
+      Logger::warning("\tExample: tileset atlas 2048 2048 5 1 1 images");
+      return 0;
+    }
+
     StringArray dirs;
     for(int i = 7; i < argc; ++i)
       dirs << argv[i];

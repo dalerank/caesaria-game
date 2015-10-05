@@ -74,7 +74,7 @@ void RoadBlock::appendPaved(int) {}
 
 bool RoadBlock::build( const city::AreaInfo& info )
 {
-  RoadPtr road = info.city->getOverlay( info.pos ).as<Road>();
+  auto road = info.city->getOverlay( info.pos ).as<Road>();
   if( road.isValid() )
   {
     road->setState( pr::lockTerrain, 1 );

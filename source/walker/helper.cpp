@@ -263,6 +263,8 @@ Picture WalkerHelper::bigPicture(walker::Type type)
   case walker::engineer: index=7; break;
   case walker::taxCollector: index=6; break;
   case walker::sheep: index = 54; break;
+  case walker::seaMerchant: index = 61; break;
+  case walker::merchantCamel : index = 25; break;
   case walker::recruter: index=13; break;
   case walker::lionTamer: index=11; break;
   default: index=8; break;

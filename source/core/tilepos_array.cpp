@@ -56,7 +56,7 @@ TilePosArray&TilePosArray::pop_front()
 VariantList TilePosArray::save() const
 {
   VariantList ret;
-  for( auto pos : *this ) { ret << pos; }
+  for( auto& pos : *this ) { ret << pos; }
   return ret;
 }
 
