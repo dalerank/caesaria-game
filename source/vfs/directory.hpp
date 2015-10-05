@@ -41,6 +41,8 @@ public:
 
   Directory operator/(const Directory& dir ) const;
   Path operator/(const Path& filename ) const;
+  Path operator/(const std::string& filename ) const;
+  Path operator/(const char* filename ) const;
 
   Entries entries() const;
   Path find( const Path& fileName, SensType sens = Path::nativeCase ) const;

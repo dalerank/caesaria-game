@@ -24,7 +24,7 @@
 namespace events
 {
 
-GameEventPtr ShowRequestInfo::create( city::request::RequestPtr request, bool available4exec,
+GameEventPtr ShowRequestInfo::create( city::RequestPtr request, bool available4exec,
                                       const std::string& message, const std::string& video,
                                       const std::string& title )
 {

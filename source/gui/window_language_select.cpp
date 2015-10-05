@@ -61,7 +61,7 @@ LanguageSelect::LanguageSelect(gui::Widget* parent, vfs::Path model, const std::
   VariantMap languages = config::load( _d->model );
 
   int currentIndex = -1;
-  for( auto it : languages )
+  for( auto& it : languages )
   {
     lbx->addItem( it.first );
     std::string ext = it.second.toMap().get( literals::ext ).toString();
@@ -85,7 +85,7 @@ void LanguageSelect::setDefaultFont(const std::string& fontname)
 void LanguageSelect::_changeLanguage(const gui::ListBoxItem& item)
 {
   VariantMap languages = config::load( _d->model );
-  for( auto it : languages )
+  for( auto& it : languages )
   {
     if( item.text() == it.first )
     {

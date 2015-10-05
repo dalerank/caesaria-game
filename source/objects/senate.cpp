@@ -120,10 +120,10 @@ void Senate::applyService(ServiceWalkerPtr walker)
   {
   case walker::taxCollector:
   {
-    TaxCollectorPtr txcl = ptr_cast<TaxCollector>( walker );
-    if( txcl.isValid() )
+    auto taxCollectir = walker.as<TaxCollector>();
+    if( taxCollectir.isValid() )
     {
-      float tax = txcl->takeMoney();;
+      float tax = taxCollectir->takeMoney();;
       _d->taxValue += tax;
       Logger::warning( "Senate: collect money %f. All money %f", tax, _d->taxValue );
     }

@@ -45,11 +45,11 @@ public:
 
 protected:
   void _setWorkingVisible( bool show );
-  void _setWorkingActive( bool working );
+  virtual void _setWorkingActive( bool working );
   void _updateWorkingText();
-  void _resolveToggleWorking();
+  virtual void _resolveToggleWorking();
   virtual void _baseAssigned();
-  PushButton* _btnToggleWorkingRef();
+  PushButton* _buttonToggleWorking();
 
 private:
   void _switch( int flag );
@@ -57,7 +57,7 @@ private:
   PushButton* _btnToggleWorking;
 };
 
-}
+}//end namespace infogbox
 
 }//end namespace gui
 #endif //_CAESARIA_INFOBOX_CONSTRUCTION_H_INCLUDE_

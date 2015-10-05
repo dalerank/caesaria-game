@@ -45,7 +45,6 @@ REGISTER_OBJECT_STATICINFOBOX(statue_small,"", "##statue_small_info##")
 REGISTER_OBJECT_STATICINFOBOX(statue_middle,"", "##statue_middle_info##")
 REGISTER_OBJECT_STATICINFOBOX(statue_big,"", "##statue_big_info##")
 REGISTER_OBJECT_STATICINFOBOX(native_hut,"", "##nativeHut_info##")
-REGISTER_OBJECT_STATICINFOBOX(gatehouse,"", "##gatehouse_info##")
 REGISTER_OBJECT_STATICINFOBOX(native_field,"", "##nativeField_info##")
 REGISTER_OBJECT_STATICINFOBOX(native_center,"", "##nativeCenter_info##")
 REGISTER_OBJECT_STATICINFOBOX(high_bridge,"", "##high_bridge_info##")
@@ -181,10 +180,10 @@ ServiceInfoboxCreator::ServiceInfoboxCreator(const std::string &caption, const s
 Infobox* ServiceInfoboxCreator::create(PlayerCityPtr city, Widget *parent, TilePos pos)
 {
   Size  size = parent->size();
-  WorkingBuildingPtr building = city->getOverlay( pos ).as<WorkingBuilding>();
-  if( building.isValid() )
+  auto workBuilding = city->getOverlay( pos ).as<WorkingBuilding>();
+  if( workBuilding.isValid() )
   {
-    AboutWorkingBuilding* infoBox = new AboutWorkingBuilding( parent, building );
+    AboutWorkingBuilding* infoBox = new AboutWorkingBuilding( parent, workBuilding );
     infoBox->setPosition( Point( (size.width() - infoBox->width()) / 2, size.height() - infoBox->height()) );
 
     if( !title.empty() ) { infoBox->setTitle( title ); }

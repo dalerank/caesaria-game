@@ -59,7 +59,7 @@ bool Batch::load(const Pictures &pics, const Rects& dstrects)
   SDL_Texture* tx = pics.at( 0 ).texture();
   Rects srcrects;
   bool haveErrors = false;
-  for( auto&& pic : pics )
+  for( auto& pic : pics )
   {
     if( pic.texture() == 0 || pic.width() == 0 || pic.height() == 0 )
     {
@@ -88,10 +88,8 @@ bool Batch::load(const Pictures &pics, const Rects& dstrects)
 bool Batch::load(const Pictures& pics, const Point& pos)
 {
   Rects rects;
-  for( auto&& pic : pics )
-  {
+  for( auto& pic : pics )
     rects.push_back( Rect( pos + pic.offset(), pic.size() ) );
-  }
 
   bool isOk = load( pics, rects );
   return isOk;

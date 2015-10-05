@@ -34,6 +34,7 @@ public:
   static const char* requestDestroy;
   static const char* employers;
   static const char* c3logic;
+  static const char* precisionDestroy;
 };
 
 class MetaData
@@ -58,9 +59,11 @@ public:
   object::Type type() const;
   object::Group group() const;
   gfx::Picture picture( int size=0 ) const;
+  bool isMyPicture( const std::string& name ) const;
   Desirability desirability() const;
 
   Variant getOption( const std::string& name, Variant defaultVal=Variant() ) const;
+  bool getFlag( const std::string& name, bool defValue ) const;
 
   MetaData& operator=( const MetaData& a );
 private:

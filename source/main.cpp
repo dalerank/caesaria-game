@@ -24,10 +24,7 @@
 #include "core/logger.hpp"
 #include "core/stacktrace.hpp"
 #include "core/osystem.hpp"
-
-#ifdef CAESARIA_USE_STEAM
-  #include "steam.hpp"
-#endif
+#include "steam.hpp"
 
 #if defined(CAESARIA_PLATFORM_WIN)
   #undef main
@@ -36,10 +33,9 @@
 #if defined(CAESARIA_PLATFORM_ANDROID)
 #include <SDL.h>
 #include <SDL_system.h>
-int SDL_main(int argc, char* argv[])
-#else
-int main(int argc, char* argv[])
 #endif
+
+int main(int argc, char* argv[])
 {
   crashhandler::install();
 
@@ -58,29 +54,31 @@ int main(int argc, char* argv[])
 
   SimpleLogger LOG("Game");
 
-  LOG.info("Setting workdir to " + SETTINGS_VALUE(workDir).toString());
+  LOG.info("Setting workdir to " + SETTINGS_STR(workDir));
 
   LOG.info("Loading game settings");
   options.load();
   options.checkCmdOptions( argv, argc );
   options.checkC3present();
 
-  std::string systemLang = SETTINGS_VALUE( language ).toString();
-#ifdef CAESARIA_USE_STEAM
-  if( !steamapi::connect() )
-  {
-    LOG.fatal("Failed to connect to steam");
-    return EXIT_FAILURE;
-  }
+  std::string systemLang = SETTINGS_STR( language );
 
-  if( systemLang.empty() )
-    systemLang = steamapi::language();
-#endif
+  if( steamapi::available() )
+  {
+    if( !steamapi::connect() )
+    {
+      LOG.fatal("Failed to connect to steam");
+      return EXIT_FAILURE;
+    }
+
+    if( systemLang.empty() )
+      systemLang = steamapi::language();
+  }
 
   options.changeSystemLang( systemLang );
 
-  LOG.info("Language is set to " + SETTINGS_VALUE(language).toString());
-  LOG.info("Using native C3 resources from " + SETTINGS_VALUE(c3gfx).toString());
+  LOG.info("Language set to " + SETTINGS_STR(language));
+  LOG.info("Using native C3 resources from " + SETTINGS_STR(c3gfx));
   LOG.info("Cell width set to %d", SETTINGS_VALUE(cellw).toInt());
 
   try
@@ -88,6 +86,8 @@ int main(int argc, char* argv[])
     Game game;
     game.initialize();
     while( game.exec() );
+
+    game.destroy();
   }
   catch( Exception& e )
   {
@@ -96,9 +96,8 @@ int main(int argc, char* argv[])
     crashhandler::printstack();
   }
 
-#ifdef CAESARIA_USE_STEAM
-  steamapi::close();
-#endif
+  if( steamapi::available() )
+    steamapi::close();
 
   crashhandler::remove();
 

@@ -68,14 +68,13 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
     }
     else
     {
-      //engine.draw( tile.picture(), screenPos );
       drawPass( engine, tile, offset, Renderer::ground );
       drawPass( engine, tile, offset, Renderer::groundAnimation );
     }
   }
   else
   {
-    OverlayPtr overlay = tile.overlay();
+    auto overlay = tile.overlay();
     if( _isVisibleObject( overlay->type() ) )
     {
       // Base set of visible objects
@@ -105,7 +104,7 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
     _addPicture( tile.mappos() + Point( 20, -15 ), tx );
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 void Desirability::beforeRender( Engine& engine )

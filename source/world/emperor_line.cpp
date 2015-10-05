@@ -52,7 +52,7 @@ EmperorLine& EmperorLine::instance()
 
 std::string EmperorLine::getEmperor(DateTime time)
 {
-  for( auto it : _d->changes )
+  for( auto& it : _d->changes )
   {
     if( it.first >= time )
       return it.second.name;
@@ -63,7 +63,7 @@ std::string EmperorLine::getEmperor(DateTime time)
 
 VariantMap EmperorLine::getInfo( const std::string& name) const
 {
-  for( auto it : _d->changes )
+  for( auto& it : _d->changes )
   {
     if( name == it.second.name )
       return it.second.options;
@@ -77,7 +77,7 @@ void EmperorLine::load(vfs::Path filename)
   _d->changes.clear();
 
   VariantMap opts = config::load( filename );
-  for( auto it : opts )
+  for( auto& it : opts )
   {
     EmperorInfo info;
     info.load( it.second.toMap() );

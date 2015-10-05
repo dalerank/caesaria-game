@@ -17,13 +17,14 @@
 
 #include "tilearea.hpp"
 #include "tilemap.hpp"
+#include "objects/overlay.hpp"
 
 namespace gfx
 {
 
 TilesArea::TilesArea(const Tilemap &tmap, const TilePos& leftup, const TilePos& rightdown)
 {
-  append( tmap.getArea( leftup, rightdown ) );
+  append( tmap.area( leftup, rightdown ) );
 }
 
 TilesArea::TilesArea(const Tilemap &tmap, int distance, const TilePos& center)
@@ -31,15 +32,26 @@ TilesArea::TilesArea(const Tilemap &tmap, int distance, const TilePos& center)
   add( tmap, center, distance );
 }
 
+TilesArea::TilesArea(const Tilemap& tmap, int distance, OverlayPtr overlay)
+{
+  if( overlay.isNull() )
+    return;
+
+  TilePos offset( distance, distance  );
+  TilePos size( overlay->size().width(), overlay->size().height() );
+  TilePos start = overlay->tile().epos();
+  append( tmap.area( start - offset, start + size + offset ) );
+}
+
 TilesArea::TilesArea(const Tilemap &tmap, const TilePos& leftup, const Size& size)
 {
-  append( tmap.getArea( leftup, size ) );
+  append( tmap.area( leftup, size ) );
 }
 
 void TilesArea::add(const Tilemap& tmap, const TilePos& center, int distance)
 {
   TilePos offset( distance, distance );
-  append( tmap.getArea( center - offset, center + offset ) );
+  append( tmap.area( center - offset, center + offset ) );
 }
 
 TilesArea& TilesArea::operator=(const TilesArray& other)

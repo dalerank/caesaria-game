@@ -58,8 +58,8 @@ bool Road::build( const city::AreaInfo& info )
 
   if( overlay.is<Aqueduct>() )
   {
-    AqueductPtr aq = overlay.as<Aqueduct>();
-    aq->addRoad();
+    auto aqueduct = overlay.as<Aqueduct>();
+    aqueduct->addRoad();
 
     return false;
   }
@@ -368,15 +368,11 @@ bool Plaza::build( const city::AreaInfo& info )
 
   if( size().area() == 1 )
   {
-    TilesArray tilesAround = info.city->tilemap().getNeighbors( pos(), Tilemap::AllNeighbors);
-    foreach( tile, tilesAround )
-    {
-      PlazaPtr plaza = ptr_cast<Plaza>( (*tile)->overlay() );
-      if( plaza.isValid() )
-      {
-        plaza->updatePicture();
-      }
-    }
+    auto plazas = info.city->tilemap()
+                               .getNeighbors( pos(), Tilemap::AllNeighbors)
+                               .overlays<Plaza>();
+    for( auto plaza : plazas )
+      plaza->updatePicture();
   }
 
   return true;
@@ -412,9 +408,9 @@ void Plaza::updatePicture()
   TilesArea nearTiles( _city()->tilemap(), pos(), Size(2) );
 
   bool canGrow2squarePlaza = ( nearTiles.size() == 4 ); // be carefull on map edges
-  foreach( tile, nearTiles )
+  for( auto tile : nearTiles )
   {
-    PlazaPtr garden = ptr_cast<Plaza>( (*tile)->overlay() );
+    PlazaPtr garden = tile->overlay<Plaza>();
     canGrow2squarePlaza &= (garden.isValid() && garden->size().area() <= 2 );
   }
 

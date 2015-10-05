@@ -33,13 +33,8 @@ public:
 
   bool contains( const std::string& str )
   {
-    for( auto item : *this )
-    {
-      if( item == str )
-        return true;
-    }
-
-    return false;
+    auto it = std::find( this->begin(), this->end(), str );
+    return it != this->end();
   }  
 
   std::string valueOrEmpty( unsigned int index ) const
@@ -69,7 +64,7 @@ public:
 
   inline StringArray& operator << ( const StringArray& a )
   {
-    for( auto&& item : a )
+    for( auto& item : a )
       push_back( item );
 
     return *this;

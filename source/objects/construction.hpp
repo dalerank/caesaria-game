@@ -39,7 +39,7 @@ public:
   virtual void collapse();
   virtual const gfx::Picture& picture() const;
   virtual bool isNeedRoad() const;
-  virtual gfx::TilesArray roadside() const;  // return all road tiles adjacent to the construction
+  virtual const gfx::TilesArray& roadside() const;  // return all road tiles adjacent to the construction
   virtual void computeRoadside();
   virtual int  roadsideDistance() const; // virtual because HOUSE has different behavior
   virtual gfx::TilesArray enterArea() const;

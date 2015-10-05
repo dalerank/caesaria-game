@@ -89,11 +89,11 @@ WorkingBuildingPtr AboutWorkingBuilding::_getBuilding() { return _working; }
 
 void AboutWorkingBuilding::_showAdvInfo()
 {
-  ServiceBuildingPtr srvc = _working.as<ServiceBuilding>();
+  auto serviceBuilding = _working.as<ServiceBuilding>();
   std::string timeText;
-  if( srvc.isValid() )
+  if( serviceBuilding.isValid() )
   {
-    DateTime time = srvc->lastSendService();
+    DateTime time = serviceBuilding->lastSendService();
     timeText = utils::date2str( time, true );
   }
 
@@ -102,7 +102,7 @@ void AboutWorkingBuilding::_showAdvInfo()
                                                   (int)_working->state( pr::fire ),
                                                   timeText.c_str() );
 
-  dialog::Dialog* dialog = dialog::Information( ui(), "Information", workerState );
+  auto dialog = dialog::Information( ui(), "Information", workerState );
   dialog->setCenter( ui()->rootWidget()->center() );
 }
 

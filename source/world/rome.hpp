@@ -44,7 +44,7 @@ public:
   virtual void addObject(ObjectPtr);
   virtual DateTime lastAttack() const;
   virtual int strength() const;
-  virtual void delayTrade( unsigned int month );
+  virtual void delayTrade(unsigned int);
   virtual void empirePricesChanged( good::Product gtype, const PriceInfo& prices );
   virtual const good::Store& sells() const;
   virtual const good::Store& buys() const;

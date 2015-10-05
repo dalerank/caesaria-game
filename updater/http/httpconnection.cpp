@@ -23,8 +23,10 @@
 #endif
 
 #include <curl/curl.h>
-#include "thread/thread.hpp"
+//#include "thread/thread.hpp"
 #include "vfs/path.hpp"
+#include "thread/safethread.hpp"
+#include <mutex>
 
 namespace updater
 {
@@ -83,12 +85,15 @@ void HttpConnection::SetProxyPassword(const std::string& pass)
 	_proxyPass = pass;
 }
 
-HttpRequestPtr HttpConnection::createRequest(const std::string& url)
+HttpRequestPtr HttpConnection::request(const std::string& url)
 {
-	return HttpRequestPtr(new HttpRequest(*this, url));
+  HttpRequestPtr ret(new HttpRequest(*this, url));
+  ret->drop();
+
+  return ret;
 }
 
-HttpRequestPtr HttpConnection::createRequest(const std::string& url, vfs::Path destFilename)
+HttpRequestPtr HttpConnection::request(const std::string& url, vfs::Path destFilename)
 {
 	return HttpRequestPtr(new HttpRequest(*this, url, destFilename));
 }

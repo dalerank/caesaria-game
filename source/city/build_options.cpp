@@ -33,8 +33,8 @@ namespace development
 {
 
 CAESARIA_LITERALCONST(farm)
+CAESARIA_LITERALCONST(disable_all)
 
-static const char* disable_all = "disable_all";
 enum { maxLimit=999 };
 
 struct BuildingRule
@@ -85,7 +85,7 @@ public:
   VariantMap saveRules() const
   {
     VariantMap ret;
-    for( auto it : *this )
+    for( auto& it : *this )
       ret[ object::toString( it.first ) ] = it.second.mayBuild;
 
     return ret;
@@ -94,7 +94,7 @@ public:
   VariantMap saveQuotes() const
   {
     VariantMap ret;
-    for( auto it : *this )
+    for( auto& it : *this )
       ret[ object::toString( it.first ) ] = it.second.quotes;
 
     return ret;
@@ -102,7 +102,7 @@ public:
 
   void loadRules( const VariantMap& stream )
   {
-    for( auto item : stream )
+    for( auto& item : stream )
     {
       object::Type btype = object::findType( item.first );
       (*this)[ btype ].mayBuild = item.second.toBool();
@@ -111,7 +111,7 @@ public:
 
   void loadQuotes( const VariantMap& stream )
   {
-    for( auto item : stream )
+    for( auto& item : stream )
     {
       object::Type btype = object::findType( item.first );
       (*this)[ btype ].quotes = item.second.toInt();
@@ -143,14 +143,14 @@ void Options::setBuildingAvailable( const object::Type type, bool mayBuild )
 
 void Options::setBuildingAvailable( const Range& range, bool mayBuild )
 {
-  for( auto i : range )
+  for( auto& i : range )
     _d->rules[ i ].mayBuild = mayBuild;
 }
 
 bool Options::isBuildingsAvailable(const Range& range) const
 {
   bool mayBuild = false;
-  for( auto i : range )
+  for( auto& i : range )
     mayBuild |= _d->rules[ i ].mayBuild;
 
   return mayBuild;
@@ -164,10 +164,10 @@ void Options::setGroupAvailable( const development::Branch type, Variant vmb )
   if( vmb.isNull() )
     return;
 
-  bool mayBuild = (vmb.toString() != disable_all);
+  bool mayBuild = (vmb.toString() != literals::disable_all);
   Range range = Range::fromBranch( type );
 
-  for( auto i : range )
+  for( auto& i : range )
     setBuildingAvailable( i, mayBuild );
 }
 
@@ -244,7 +244,7 @@ void loadBranchOptions( vfs::Path filename )
   VariantMap vm = config::load( filename );
   BranchHelper::Config& conf = helper.config;
 
-  for( auto it : vm )
+  for( auto& it : vm )
   {
     Branch branch = helper.findType( it.first );
     if( branch != development::unknown )
@@ -252,7 +252,7 @@ void loadBranchOptions( vfs::Path filename )
       BranchHelper::Types& branchData = conf[ branch ];
       VariantList vmTypes = it.second.toList();
 
-      for( auto bIt : vmTypes )
+      for( auto& bIt : vmTypes )
       {
         object::Type ovType = object::findType( bIt.toString() );
         if( ovType != object::unknown )
@@ -270,7 +270,7 @@ Range Range::fromBranch(const Branch branch)
 
   if( !conf[ branch ].empty() )
   {
-    for( auto type : conf[ branch ] )
+    for( auto& type : conf[ branch ] )
       ret << type;
 
     return ret;
@@ -323,8 +323,8 @@ Range Range::_defaultRange(const Branch branch)
   case development::all:
   {
     object::Types types = MetaDataHolder::instance().availableTypes();
-    for( auto type : types )
-      ret << type;
+    for( auto& type : types )
+      ret.insert( type );
   }
   break;
 

@@ -65,6 +65,7 @@ public:
   Widget::Widgets deletionQueue;
 
   gfx::Engine* engine;
+  Size size;
   Point cursorPos;
   Flags flags;
   int consoleId;
@@ -74,13 +75,14 @@ public:
   void threatDeletionQueue();
 };
 
-Ui::Ui(Engine& painter )
+Ui::Ui(Engine& painter , const Size& size)
   : Widget( 0, -1, Rect() ), _d( new Impl )
 {
   setDebugName( "Ui" );
 
   _d->preRenderFunctionCalled = false;
   _d->focusedElement = 0;
+  _d->size = size;
   _d->engine = &painter;
   _environment = this;
   _d->tooltip.element;
@@ -89,10 +91,12 @@ Ui::Ui(Engine& painter )
   _d->tooltip.launchTime = 1000;
   _d->tooltip.relaunchTime = 500;
 
-  setGeometry( Rect( Point(), painter.virtualSize() ) );
+  setGeometry( Rect( Point(), _d->size ) );
 
   _d->consoleId = Hash( CAESARIA_STR_EXT(Console) );
   _d->console = 0;//new Console( this, _d->consoleId, Rect() );
+
+  setFlag( buttonShowDebugArea, 0 );
 }
 
 //! Returns if the element has focus
@@ -262,6 +266,11 @@ Widget* Ui::createWidget(const std::string& type, Widget* parent)
 void Ui::setFlag(Ui::Flag name, int value)
 {
   _d->flags[ name ] = value;
+}
+
+bool Ui::hasFlag(Ui::Flag name)
+{
+  return _d->flags[ name ];
 }
 
 void Ui::_updateHovered( const Point& mousePos )
@@ -484,10 +493,10 @@ bool Ui::handleEvent( const NEvent& event )
 Widget* Ui::hovered() const { return _d->hovered.current.object(); }
 
 void Ui::beforeDraw()
-{
-  const Size screenSize( _d->engine->virtualSize() );
+{  
+  const Size& screenSize = _d->size;
   const Point& rigthDown = rootWidget()->absoluteRect().rightbottom();
-  
+
   if( rigthDown.x() != screenSize.width() || rigthDown.y() != screenSize.height() )
   {
     // resize gui environment
@@ -534,6 +543,7 @@ void Ui::animate( unsigned int time )
   Widget::animate( time );
 }
 
+const Size& Ui::vsize() const {  return _d->size; }
 Point Ui::cursorPos() const {  return _d->cursorPos; }
 
 Widget* UiTooltipWorker::standart(Widget& parent, Widget* hovered, Point cursor)
@@ -545,11 +555,11 @@ Widget* UiTooltipWorker::standart(Widget& parent, Widget* hovered, Point cursor)
 
   Size tooltipSize( elm->textWidth() + 20, elm->textHeight() + 2 );
   if( tooltipSize.width() > parent.width() * 0.75 )
-    {
-      tooltipSize.setWidth( parent.width() * 0.5 );
-      tooltipSize.setHeight( elm->textHeight() * 2 + 10 );
-      elm->setWordwrap( true );
-    }
+  {
+    tooltipSize.setWidth( parent.width() * 0.5 );
+    tooltipSize.setHeight( elm->textHeight() * 2 + 10 );
+    elm->setWordwrap( true );
+  }
 
   Rect rect( cursor, tooltipSize );
 

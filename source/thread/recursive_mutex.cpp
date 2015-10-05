@@ -13,8 +13,8 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "mutex.hpp"
-#include "thread.hpp"
+#include "recursive_mutex.hpp"
+//#include "thread.hpp"
 
 #include <memory.h>
 #include <iostream>

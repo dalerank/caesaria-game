@@ -62,9 +62,9 @@ void MarketAccess::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( overlay->type() == object::house )
     {
-      HousePtr house = overlay.as<House>();
+      auto house = overlay.as<House>();
       accessLevel = (int)house->getServiceValue( Service::market );
-      needDrawAnimations = (house->spec().level() <= HouseLevel::hovel) && house->habitants().empty();
+      needDrawAnimations = (house->level() <= HouseLevel::hovel) && house->habitants().empty();
 
       if( !needDrawAnimations )
       {
@@ -87,7 +87,7 @@ void MarketAccess::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 LayerPtr MarketAccess::create( Camera& camera, PlayerCityPtr city)
@@ -110,7 +110,7 @@ void MarketAccess::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        HousePtr house = tile->overlay().as<House>();
+        HousePtr house = tile->overlay<House>();
         if( house.isValid() )
         {
           int accessLevel = house->getServiceValue( Service::market );

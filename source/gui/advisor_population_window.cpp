@@ -270,7 +270,7 @@ void Population::Impl::updateStates()
     good::ProductMap goods = city->statistic().goods.details( true );
     int foodLevel = 0;
 
-    for( auto goodType : good::foods() )
+    for( auto& goodType : good::foods() )
     {
       foodLevel += (goods[ goodType ] > 0 ? 1 : 0);
     }
@@ -299,7 +299,7 @@ void Population::Impl::updateStates()
     int lowLevelHouses = 0;
     for( auto house : houses )
     {
-      int level = house->spec().level();
+      HouseLevel::ID level = house->level();
 
       if( level < HouseLevel::mansion )
       {
@@ -440,7 +440,7 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
       {
         _x.min = levelPopulations.begin()->second;
         _x.max = levelPopulations.rbegin()->second;
-        for( auto it : levelPopulations )
+        for( auto& it : levelPopulations )
         {
           _values.push_back( it.second );
         }
@@ -482,7 +482,7 @@ void CityChart::draw(Engine &painter)
   pic.fill( 0, Rect() );
   int index=0;
   unsigned int maxHeight = std::min( rpic.height(), pic.height() );
-  for( auto value : _values )
+  for( auto& value : _values )
   {
     int y = maxHeight - value * maxHeight / _maxValue;
     painter.draw( rpic, Rect( 0, y, rpic.width(), maxHeight),

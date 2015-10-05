@@ -20,7 +20,7 @@
 #include "updater.hpp"
 #include "updateview.hpp"
 #include "updateroptions.hpp"
-#include "exceptionsafethread.hpp"
+#include "thread/safethread.hpp"
 #include "core/logger.hpp"
 #include "progresshandler.hpp"
 
@@ -51,7 +51,7 @@ private:
 
 	// The main worker thread. A new one is created each time 
 	// StartOrContinue is called.
-	ExceptionSafeThreadPtr _synchronizer;
+  threading::SafeThreadPtr _synchronizer;
 
 	// The main updater object (containing the non-threaded methods)
 	Updater _updater;
@@ -82,47 +82,47 @@ public:
 	// the next interruption point is reached. Calling StartOrContinue()
 	// after reaching an interruption point will resume the update process.
 	// Calling this method while the Controller is still active will do nothing.
-	void StartOrContinue();
+  void start();
 
 	// Calling abort will try to terminate the update process in a controlled fashion.
 	// Does not block execution, you'll need to query AllThreadsDone() to check whether
 	// all worker threads have been terminated
-	void Abort();
+  void abort();
 
 	// Returns true if the controller has no more running threads
-	bool AllThreadsDone();
+  bool allThreadsDone();
 
 	// Used by the console updater on Ctrl-C, should not be called by regular GUIs
-	void PerformPostUpdateCleanup();
+  void doPostUpdateCleanup();
 
 	// Status query
-	std::size_t GetNumMirrors();
+  std::size_t mirrors_n();
 
 	// Returns true if a new updater is available for download
-	bool NewUpdaterAvailable();
+  bool haveNewUpdater();
 
 	// Returns true if any files need to be updated
-	bool LocalFilesNeedUpdate();
+  bool haveNewFiles();
 
-	std::size_t GetTotalDownloadSize();
-	std::size_t GetTotalBytesDownloaded();
-	std::size_t GetNumFilesToBeUpdated();
+  std::size_t totalDownloadSize();
+  std::size_t totalDownloadedBytes();
+  std::size_t flesToBeUpdated_n();
 
 	// True if the update process has reached the end of the sequence
-	bool IsDone();
+  bool isDone();
 
 	bool DifferentialUpdateAvailable();
 
-	std::string GetLocalVersion();
-	std::string GetNewestVersion();
+  std::string localVersion();
+  std::string farVersion();
 
-	void removeDownload( std::string itemname );
+  void removeDownload(const std::string& itemname );
 
 private:
-	void run();
+  void run(bool& b);
 
 	// The entry point for the worker thread
-	void performStep(int step);
+  void doStep(int step);
 
 	// Invoked by the ExceptionSafeThread when a step is done, do some error handling here
 	void finalizeStep(int step);

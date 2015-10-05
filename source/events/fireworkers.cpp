@@ -53,11 +53,11 @@ void FireWorkers::_exec(Game& game, unsigned int)
   for( int curRange=1; curRange < defaultReturnWorkersDistance; curRange++ )
   {
     TilePos range( curRange, curRange );
-    TilesArray perimetr = tilemap.getRectangle( _center - range,
+    TilesArray perimetr = tilemap.rect( _center - range,
                                                 _center + range );
-    for( auto&& tile : perimetr )
+    for( auto& tile : perimetr )
     {
-      WorkingBuildingPtr wrkBuilding = tile->overlay().as<WorkingBuilding>();
+      WorkingBuildingPtr wrkBuilding = tile->overlay<WorkingBuilding>();
       if( wrkBuilding.isValid() )
       {
         int removedFromWb = wrkBuilding->removeWorkers( _workers );
@@ -71,10 +71,10 @@ void FireWorkers::_exec(Game& game, unsigned int)
 
   if( _workers > 0 )
   {
-    WorkingBuildingList wb = game.city()->statistic().objects.find<WorkingBuilding>( object::any );
-    for( auto&& tile : wb )
+    WorkingBuildingList buildings = game.city()->statistic().objects.find<WorkingBuilding>( object::any );
+    for( auto&& building : buildings )
     {
-      int removedFromWb = tile->removeWorkers( _workers );
+      int removedFromWb = building->removeWorkers( _workers );
       _workers -= removedFromWb;
 
       if( !_workers )

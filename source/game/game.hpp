@@ -44,6 +44,7 @@ public:
   void reset();
   void pause();
   void clear();
+  void destroy();
 
   PlayerPtr        player() const;
   PlayerCityPtr    city() const;

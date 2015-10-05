@@ -91,8 +91,8 @@ public:
     if( _index == descentNorth )
     {
       Tile& mt = info.city->tilemap().at( pos + TilePos( 0, 1 ) );
-      info.city->tilemap().at( pos + TilePos( 0, 1 ) ).setMasterTile( 0 );
-      info.city->tilemap().at( pos ).setMasterTile( &mt );
+      info.city->tilemap().at( pos + TilePos( 0, 1 ) ).setMaster( 0 );
+      info.city->tilemap().at( pos ).setMaster( &mt );
 
       pic.addOffset( -30, -15 );
       _fgPictures().push_back( pic );
@@ -311,7 +311,7 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
       _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), HighBridgeSubTile::liftingNorth );
       _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 2 ), HighBridgeSubTile::liftingNorthL );
 
-      for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
+      for( auto it=tiles.rbegin(); it != tiles.rend(); ++it )
       {
         _d->addSpan( (*it)->pos() - startPos, HighBridgeSubTile::spanNorth );
       }
@@ -356,7 +356,7 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
 
       _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 1 ), HighBridgeSubTile::liftingNorth );
       _d->addSpan( tiles.back()->pos() - startPos + TilePos( 0, 2 ), HighBridgeSubTile::liftingNorthL );
-      for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
+      for( auto it=tiles.rbegin(); it != tiles.rend(); ++it )
       {        
         _d->addSpan( (*it)->pos() - startPos, HighBridgeSubTile::spanNorth );
       }
@@ -408,12 +408,11 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
 
   {
     TilesArea tiles( tilemap, curPos - TilePos( 10, 0), curPos - TilePos(1, 0) );
-    for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
+    for( auto tile : tiles )
     {
-
-      if( __isFlatCoastTile( **it ) )
+      if( __isFlatCoastTile( *tile ) )
       {
-        stop = (*it)->pos();
+        stop = tile->pos();
         direction = abs( stop.i() - start.i() ) > 3 ? direction::northWest : direction::none;
         break;
       }      
@@ -427,11 +426,11 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
   if( direction == direction::none )
   {
     TilesArea tiles( tilemap, curPos + TilePos(1, 0), curPos + TilePos( 10, 0) );
-    foreach( it, tiles )
+    for( auto tile : tiles )
     {
-      if( __isFlatCoastTile( **it ) )
+      if( __isFlatCoastTile( *tile ) )
       {
-        stop = (*it)->pos();
+        stop = tile->pos();
         direction = abs( stop.i() - start.i() ) > 3 ? direction::southEast : direction::none;
         break;
       }
@@ -463,7 +462,7 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
   if( direction == direction::none )
   {
     TilesArea tiles( tilemap, curPos - TilePos( 0, 10), curPos - TilePos(0, 1) );
-    for( TilesArray::reverse_iterator it=tiles.rbegin(); it != tiles.rend(); ++it )
+    for( auto it=tiles.rbegin(); it != tiles.rend(); ++it )
     {
       if( __isFlatCoastTile( **it ) )
       {
@@ -504,7 +503,7 @@ bool HighBridge::build( const city::AreaInfo& info  )
       TilePos buildPos = info.pos + subtile->_pos;
       Tile& tile = tilemap.at( buildPos );
       //subtile->setPicture( tile.picture() );
-      subtile->_imgId = tile.originalImgId();
+      subtile->_imgId = tile.imgId();
       subtile->_info = tile::encode( tile );
       subtile->_parent = this;
       
@@ -568,9 +567,9 @@ void HighBridge::save(VariantMap& stream) const
   Construction::save( stream );
 
   VariantList vl_tinfo;
-  foreach( subtile,  _d->subtiles )
+  for( auto& subtile :  _d->subtiles )
   {
-    vl_tinfo.push_back( (*subtile)->_imgId );
+    vl_tinfo.push_back( subtile->_imgId );
   }
 
   stream[ "terraininfo" ] = vl_tinfo;
@@ -590,8 +589,8 @@ void HighBridge::load(const VariantMap& stream)
 void HighBridge::hide()
 {
   setState( pr::destroyable, 1);
-  foreach( it, _d->subtiles )
+  for( auto&& tile : _d->subtiles )
   {
-    (*it)->hide();
+    tile->hide();
   }
 }

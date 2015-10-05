@@ -37,6 +37,7 @@ public:
   class Items : public std::vector< EntryInfo >
   {
   public:
+    StringArray names() const;
     StringArray files( const std::string& ext ) const;
     StringArray folders() const;
   };
@@ -118,9 +119,9 @@ private:
 inline StringArray& operator<<( StringArray& array, const vfs::Entries& flist )
 {
   const vfs::Entries::Items& items = flist.items();
-  for( vfs::Entries::ConstItemIt it=items.begin(); it != items.end(); ++it)
+  for( auto item : items)
   {
-    array.push_back( (*it).name.toString() );
+    array.push_back( item.name.toString() );
   }
 
   return array;

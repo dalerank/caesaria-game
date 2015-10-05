@@ -34,11 +34,11 @@ class Engine : public StaticSingleton<Engine>
 {
   SET_STATICSINGLETON_FRIEND_FOR(Engine)
 public:
-  void setVolume( SoundType type, int value);
+  void setVolume( SoundType type, Volume value);
   void loadAlias(const vfs::Path& filename );
   void addFolder( vfs::Directory dir );
 
-  int volume( SoundType type ) const;
+  Volume volume( SoundType type ) const;
 
   int maxVolumeValue() const;
 
@@ -47,16 +47,17 @@ public:
   void init();
   void exit();
 
-  int play( std::string sampleName, int volume, SoundType type, bool force=false);
-  int play(const std::string& rc, int index, int volume, SoundType type, bool force=false);
+  void play( std::string sampleName, int volume, SoundType type, bool force=false);
+  void play(const std::string& rc, int index, int volume, SoundType type, bool force=false);
 
   bool isPlaying(const std::string& sampleName ) const;
 
   void stop(const std::string& sampleName ) const;
   void stop( int channel );
+
+  void run( bool& );
 private:
   Engine();
-  unsigned int _loadSound( const std::string& filename );
   void _updateSamplesVolume();
 
   class Impl;

@@ -101,9 +101,10 @@ class ConsoleLogWriter : public LogWriter
 public:
   virtual void write( const std::string& str, bool newline )
   {
-#ifdef CAESARIA_PLATFORM_ANDROID
-    str.append( newline ? "\n" : "" );
+#ifdef CAESARIA_PLATFORM_ANDROID    
     __android_log_print(ANDROID_LOG_DEBUG, CAESARIA_PLATFORM_NAME, "%s", str.c_str() );
+    if( newline )
+      __android_log_print(ANDROID_LOG_DEBUG, CAESARIA_PLATFORM_NAME, "\n" );
 #else
     std::cout << str;
     if( newline ) std::cout << std::endl;
@@ -128,7 +129,7 @@ public:
   {
     // Check for filter pass
     bool pass = filters.size() == 0;
-    for( auto&& filter : filters )
+    for( auto& filter : filters )
     {
       if (message.compare( 0, filter.length(), filter ) == 0)
       {
@@ -175,7 +176,7 @@ void Logger::addFilter(const std::string& text)
 
 bool Logger::hasFilter(const std::string& text)
 {
-  for( auto&& filter : instance()._d->filters)
+  for( auto& filter : instance()._d->filters)
   {
     if (filter == text) return true;
   }

@@ -25,6 +25,7 @@
 #include "core/variant_map.hpp"
 #include "name_generator.hpp"
 #include "constants.hpp"
+#include "gfx/tilemap.hpp"
 #include "corpse.hpp"
 #include "thinks.hpp"
 #include "walkers_factory.hpp"
@@ -126,7 +127,7 @@ void MarketKid::_reachedPathway()
 
   deleteLater();
 
-  auto market = _city()->getOverlay( _d->marketPos ).as<Market>();
+  auto market = _map().overlay( _d->marketPos ).as<Market>();
   if( market.isValid() )
   {
     market->goodStore().store( _d->basket, _d->basket.qty() );

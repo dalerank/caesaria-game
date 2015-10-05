@@ -92,8 +92,16 @@ void Tree::initTerrain(Tile& terrain)
 
 bool Tree::build( const city::AreaInfo& info )
 {
-  std::string picname = imgid::toResource( info.city->tilemap().at( info.pos ).originalImgId() );
-  _picture().load( picname );
+  std::string picname = imgid::toResource( info.city->tilemap().at( info.pos ).imgId() );
+  auto& md = MetaDataHolder::find( object::tree );
+  if( md.isMyPicture( picname ) )
+  {
+    _picture().load( picname );
+  }
+  else
+  {
+    setPicture( md.picture(1) );
+  }
   _d->flat = (picture().height() <= tilemap::cellPicSize().height());
   return Overlay::build( info );
 }
@@ -156,9 +164,9 @@ void Tree::_burnAround()
 {
    _d->spreadFire = true;
 
-  OverlayList ovs = _city()->tilemap().getNeighbors( pos() )
-                                      .overlays();
-  for( auto overlay : ovs )
+  auto ovelrays = _city()->tilemap().getNeighbors( pos() )
+                                    .overlays();
+  for( auto overlay : ovelrays )
   {
     if( math::probably( 0.5f ) )
       overlay->burn();
@@ -183,7 +191,7 @@ void Tree::grow()
         {
           _city()->addOverlay( overlay );
 
-          TreePtr newTree = overlay.as<Tree>();
+          auto newTree = overlay.as<Tree>();
           if( newTree.isValid() )
           {
             Picture pic = MetaDataHolder::randomPicture( type(), Size(1) );

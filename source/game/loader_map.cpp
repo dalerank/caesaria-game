@@ -209,7 +209,7 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
 
       Tile& tile = oTilemap.at(i, j);
       tile.setPicture( imgid::toResource( pGraphicGrid.data()[index] ) );
-      tile.setOriginalImgId( pGraphicGrid.data()[index] );
+      tile.setImgId( pGraphicGrid.data()[index] );
       //tile.setHeight( pElevationGrid.data()[ index ] );
 
       edgeData[ i ][ j ] =  pEdgeGrid.data()[index];
@@ -254,7 +254,7 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
         {
           for (int dj = 0; dj < size; ++dj)
           {
-            oTilemap.at(master.pos() + TilePos( di, dj ) ).setMasterTile(&master);
+            oTilemap.at(master.pos() + TilePos( di, dj ) ).setMaster(&master);
           }
         }
       }

@@ -188,11 +188,11 @@ void ModalScreen::draw(gfx::Engine& painter )
 
 void ModalScreen::beforeDraw(gfx::Engine& painter)
 {
-  const Size& screenSize = painter.screenSize();
-  if( right() != screenSize.width() || bottom() != screenSize.height() )
+  const Size& size = ui()->vsize();
+  if( right() != size.width() || bottom() != size.height() )
   {
     // resize gui environment
-    setGeometry( Rect( Point( 0, 0 ), screenSize ) );
+    setGeometry( Rect( Point( 0, 0 ), size ) );
   }
 
   Widget::beforeDraw( painter );

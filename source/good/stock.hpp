@@ -31,7 +31,7 @@ class Stock
 {
 public:
   Stock();
-  Stock(const Product& which, const int maxQty, const int currentQty=0);
+  Stock(const Product& which, const int capacity, const int qty=0);
   ~Stock();
 
   void setType( Product goodType );
@@ -49,7 +49,7 @@ public:
   void pop( const int qty );
 
   /** amount: if -1, amount=stock._currentQty */
-  void append( Stock& stock, const int amount = -1);
+  void takeFrom( Stock& stock, const int amount = -1);
 
   VariantList save() const;
   void load( const VariantList& options );

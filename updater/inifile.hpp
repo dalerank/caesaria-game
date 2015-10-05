@@ -51,7 +51,7 @@ public:
 
 	// Construct an INI file from the given filename
 	// Can return NULL if the given file cannot be read
-	static IniFilePtr ConstructFromFile(vfs::Path filename);
+	static IniFilePtr fromFile(vfs::Path filename);
 
 	// Construct an INI file from the given input stream
 	// Always returns non-NULL

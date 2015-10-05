@@ -56,11 +56,10 @@ void Neptune::_doWrath(PlayerCityPtr city)
                                             "god_neptune");
   event->dispatch();
 
-  ShipList boats;
-  boats << city->walkers();
+  auto boats = city->walkers().select<Ship>();
 
   ShipList destroyBoats = boats.random( 5 );
-  for( auto ship : destroyBoats )
+  for( auto&& ship : destroyBoats )
   {
     ship->die();
   }
@@ -70,7 +69,8 @@ void Neptune::_doSmallCurse(PlayerCityPtr city)
 {
   GameEventPtr event = ShowInfobox::create( _("##smallcurse_of_neptune_title##"),
                                             _("##smallcurse_of_neptune_description##"),
-                                            ShowInfobox::send2scribe );
+                                            ShowInfobox::send2scribe,
+                                            "god_neptune" );
   event->dispatch();
 
   DockList docks = city->statistic().objects.find<Dock>();

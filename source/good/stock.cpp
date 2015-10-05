@@ -34,18 +34,18 @@ Stock::Stock()
   _qty = 0;
 }
 
-Stock::Stock(const Product& which, const int maxQty, const int currentQty)
+Stock::Stock(const Product& which, const int capacity, const int qty)
   : _type( which )
 {
-  _capacity = maxQty;
-  _qty = currentQty;
+  _capacity = capacity;
+  _qty = qty;
 }
 
 Stock::~Stock() {}
 
 const Product& Stock::type() const { return _type; }
 
-void Stock::append(good::Stock& stock, const int iAmount)
+void Stock::takeFrom(good::Stock& stock, const int iAmount)
 {
   if (stock.type() == none)
   {

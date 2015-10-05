@@ -41,8 +41,8 @@ bool River::build( const city::AreaInfo& info )
   Overlay::build( info );
   setPicture( computePicture() );
 
-  RiverList rifts = neighbors();
-  for( auto tile : rifts )
+  RiverList rivers = neighbors();
+  for( auto tile : rivers )
     tile->updatePicture();
 
   return true;
@@ -56,8 +56,9 @@ void River::initTerrain(Tile& terrain)
 
 RiverList River::neighbors() const
 {
-  TilesArray tiles = _city()->tilemap().getNeighbors(pos(), Tilemap::FourNeighbors);
-  return tiles.overlays().select<River>();
+  return _city()->tilemap()
+                  .getNeighbors(pos(), Tilemap::FourNeighbors)
+                  .overlays<River>();
 }
 
 Picture River::computePicture()
@@ -126,7 +127,7 @@ void River::updatePicture()
 {
   setPicture( computePicture() );
   tile().setPicture( picture() );
-  tile().setOriginalImgId( directionFlags );
+  tile().setImgId( directionFlags );
 }
 
 void River::load(const VariantMap& stream)

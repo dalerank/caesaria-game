@@ -775,6 +775,7 @@ void init() {}
 std::string userName(){ return ""; }
 void update(){}
 std::string achievementCaption(AchievementType achivId) { return ""; }
+std::string language() { return "en"; }
 const gfx::Picture&userImage() { return gfx::Picture::getInvalid(); }
 bool isStatsReceived() { return false; }
 

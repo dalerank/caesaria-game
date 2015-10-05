@@ -44,15 +44,15 @@ void ChangeTradingOptions::load(const VariantMap& stream)
 void ChangeTradingOptions::_exec(Game& game, unsigned int)
 {
   VariantMap citiesVm = _options.get( "cities" ).toMap();
-  for( auto&& it : citiesVm )
+  for( auto& it : citiesVm )
   {
     world::CityPtr cityp = game.empire()->findCity( it.first );
     if( cityp.isNull() )
     {
-      int trade_delay = it.second.toMap().get( "delay_trade" );
-      if( trade_delay > 0 )
+      unsigned int tradeDelayMnt = it.second.toMap().get( "delay_trade" );
+      if( tradeDelayMnt > 0 )
       {
-        cityp->delayTrade( trade_delay );
+        cityp->delayTrade( tradeDelayMnt );
       }
 
       world::ComputerCityPtr ccity = cityp.as<world::ComputerCity>();
@@ -64,7 +64,7 @@ void ChangeTradingOptions::_exec(Game& game, unsigned int)
   }
 
   VariantMap goodsVm = _options.get( "goods" ).toMap();
-  for( auto&& it : goodsVm )
+  for( auto& it : goodsVm )
   {
     good::Product gtype = good::Helper::getType( it.first );
     if( gtype != good::none )

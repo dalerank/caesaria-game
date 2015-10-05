@@ -56,7 +56,7 @@ ChangeSalary::ChangeSalary(Widget* p, unsigned int salary)
   if( lbxTitles )
   {
     world::GovernorRanks ranks = world::EmpireHelper::ranks();
-    for( auto rank : ranks )
+    for( auto& rank : ranks )
     {
       std::string salaryStr = _( "##" + rank.rankName + "_salary##" );
       ListBoxItem& item = lbxTitles->addItem( salaryStr + "   " + utils::i2str( rank.salary ) );

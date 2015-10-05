@@ -27,6 +27,7 @@
 #include "core/variant_map.hpp"
 #include "objects/building.hpp"
 #include "gfx/helper.hpp"
+#include "gfx/tilemap.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "walkers_factory.hpp"
 
@@ -34,7 +35,7 @@ using namespace gfx;
 
 REGISTER_TRAINEEMAN_IN_WALKERFACTORY(walker::trainee, 0, trainee)
 
-typedef Priorities<object::Type> NecessaryBuildings;
+typedef Vector<object::Type> NecessaryBuildings;
 
 class TraineeWalker::Impl
 {
@@ -59,16 +60,16 @@ void TraineeWalker::_init(walker::Type traineeType)
   switch( traineeType )
   {
   case walker::actor:      _d->necBuildings << object::theater
-                                           << object::amphitheater;  break;
+                                            << object::amphitheater;  break;
   case walker::gladiator:  _d->necBuildings << object::amphitheater
-                                              << object::colloseum;  break;
+                                            << object::colloseum;  break;
   case walker::lionTamer:  _d->necBuildings << object::colloseum;  break;
   case walker::soldier:    _d->necBuildings << object::military_academy
                                             << object::fort_legionaries
                                             << object::fort_horse
                                             << object::fort_javelin
                                             << object::tower;  break;
-  case walker::charioteer:  _d->necBuildings << object::hippodrome;  break;
+  case walker::charioteer: _d->necBuildings << object::hippodrome;  break;
   default: break;
   }
 
@@ -95,7 +96,7 @@ void TraineeWalker::setBase(BuildingPtr originBuilding)
 
 BuildingPtr TraineeWalker::receiver() const
 {
-  return _city()->getOverlay( _d->destLocation ).as<Building>();
+  return _map().overlay( _d->destLocation ).as<Building>();
 }
 
 void TraineeWalker::_computeWalkerPath( bool roadOnly )
@@ -120,7 +121,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   Pathway finalPath;
 
   BuildingList buildings;
-  for( auto buildingType : _d->necBuildings )
+  for( auto& buildingType : _d->necBuildings )
     buildings.append( _city()->statistic().objects.find<Building>( buildingType ) );
 
   TilesArray startArea = roadOnly ? base->roadside() : base->enterArea();
@@ -239,10 +240,10 @@ void TraineeWalker::_reachedPathway()
   Walker::_reachedPathway();
   deleteLater();
 
-  BuildingPtr dest = _city()->getOverlay( _d->destLocation ).as<Building>();
-  if( dest.isValid() )
+  auto destidnationBuilding = _map().overlay( _d->destLocation ).as<Building>();
+  if( destidnationBuilding.isValid() )
   {
-    dest->updateTrainee( this );
+    destidnationBuilding->updateTrainee( this );
   }
 }
 

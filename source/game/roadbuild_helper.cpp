@@ -39,7 +39,7 @@ void RoadPropagator::canBuildRoad(const gfx::Tile* tile, bool& ret)
   }
   else
   {
-    AqueductPtr aq = tile->overlay().as<Aqueduct>();
+    AqueductPtr aq = tile->overlay<Aqueduct>();
     if( aq.isValid() )
     {     
       ret = aq->canAddRoad( PlayerCityPtr(), tile->pos() );
@@ -72,7 +72,7 @@ TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePo
 
   if( returnRect )
   {
-    ret = tileMap.getRectangle( startPos, stopPos );
+    ret = tileMap.rect( startPos, stopPos );
   }
   else
   {
@@ -86,13 +86,13 @@ TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePo
 
     if( yMoveFirst )
     {      
-      ret.append( tileMap.getRectangle( startPos, midlPos ) );
-      ret.append( tileMap.getRectangle( midlPos, stopPos ) );
+      ret.append( tileMap.rect( startPos, midlPos ) );
+      ret.append( tileMap.rect( midlPos, stopPos ) );
     }
     else
     {
-      ret.append( tileMap.getRectangle( stopPos, midlPos ) );
-      ret.append( tileMap.getRectangle( midlPos, startPos ) );
+      ret.append( tileMap.rect( stopPos, midlPos ) );
+      ret.append( tileMap.rect( midlPos, startPos ) );
     }
 
     if( !__checkWalkables( ret ) )

@@ -54,8 +54,8 @@ AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
 {
   setupUI( ":/gui/infoboxfactory.gui" );
 
-  FactoryPtr factory = tile.overlay().as<Factory>();
-  setBase( ptr_cast<Construction>( factory ) );
+  auto factory = tile.overlay<Factory>();
+  setBase( factory );
   _type = factory->type();
   std::string  title = MetaDataHolder::findPrettyName( factory->type() );
   setTitle( _(title) );
@@ -71,7 +71,7 @@ AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
   // paint progress
   std::string text = utils::format( 0xff, "%s %d%%", _("##rawm_production_complete_m##"), factory->progress() );
   Size lbSize( (width() - 20) / 2, 25 );
-  _lbProduction = new Label( this, Rect( _lbTitleRef()->leftbottom() + Point( 10, 0 ), lbSize ), text );
+  _lbProduction = new Label( this, Rect( _lbTitle()->leftbottom() + Point( 10, 0 ), lbSize ), text );
   _lbProduction->setFont( Font::create( FONT_2 ) );
 
   std::string effciencyText = utils::format( 0xff, "%s %d%%", _("##effciency##"), factory->effciency() );
@@ -85,24 +85,25 @@ AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
   }
 
   // paint picture of in good
-  if( factory->inStockRef().type() != good::none )
+  if( factory->inStock().type() != good::none )
   {
-    Label* lbStockInfo = new Label( this, Rect( _lbTitleRef()->leftbottom() + Point( 0, 25 ), Size( width() - 32, 25 ) ) );
-    lbStockInfo->setIcon( good::Helper::picture( factory->inStockRef().type() ) );
+    Label* lbStockInfo = new Label( this, Rect( _lbTitle()->leftbottom() + Point( 0, 25 ), Size( width() - 32, 25 ) ) );
+    lbStockInfo->setIcon( good::Helper::picture( factory->inStock().type() ) );
 
-    std::string whatStock = utils::format( 0xff, "##%s_factory_stock##", good::Helper::getTypeName( factory->inStockRef().type() ).c_str() );
-    std::string text = utils::format( 0xff, "%d %s %s %d",
-                                             factory->inStockRef().qty() / 100,
+    std::string whatStock = utils::format( 0xff, "##%s_factory_stock##", good::Helper::getTypeName( factory->consumeGoodType() ).c_str() );
+    std::string typeOut = utils::format( 0xff, "##%s_factory_stock##", good::Helper::getTypeName( factory->produceGoodType() ).c_str() );
+    std::string text = utils::format( 0xff, "%d %s %d %s",
+                                             factory->inStock().qty() / 100,
                                              _(whatStock),
-                                             _("##factory_units##"),
-                                             factory->outStockRef().qty() / 100 );
+                                             factory->outStock().qty() / 100,
+                                             _(typeOut) );
 
     lbStockInfo->setText( text );
     lbStockInfo->setTextOffset( Point( 30, 0 ) );
 
-    _lbTextRef()->setGeometry( Rect( lbStockInfo->leftbottom() + Point( 0, 5 ),
+    _lbText()->setGeometry( Rect( lbStockInfo->leftbottom() + Point( 0, 5 ),
                                      _lbBlackFrame()->righttop() - Point( 0, 5 ) ) );
-    _lbTextRef()->setFont( Font::create( FONT_1 ) );
+    _lbText()->setFont( Font::create( FONT_1 ) );
   }
 
   std::string workInfo = factory->workersProblemDesc();
@@ -120,7 +121,7 @@ void AboutFactory::_showHelp()
 AboutShipyard::AboutShipyard(Widget* parent, PlayerCityPtr city, const Tile& tile)
   : AboutFactory( parent, city, tile )
 {
-  ShipyardPtr shipyard = ptr_cast<Shipyard>( tile.overlay() );
+  auto shipyard = tile.overlay<Shipyard>();
 
   int progressCount = shipyard->progress();
   if( progressCount > 1 && progressCount < 100 )
@@ -129,7 +130,7 @@ AboutShipyard::AboutShipyard(Widget* parent, PlayerCityPtr city, const Tile& til
                            Rect( _lbProduction->leftbottom() + Point( 0, 5 ), Size( width() - 90, 25 ) ),
                            _("##build_fishing_boat##") );
     lb->setTextAlignment( align::upperLeft, align::upperLeft );
-    _lbTextRef()->setPosition( lb->leftbottom() + Point( 0, 5 ) );
+    _lbText()->setPosition( lb->leftbottom() + Point( 0, 5 ) );
   }
 }
 
@@ -137,7 +138,7 @@ AboutShipyard::AboutShipyard(Widget* parent, PlayerCityPtr city, const Tile& til
 AboutWharf::AboutWharf(Widget* parent, PlayerCityPtr city, const Tile& tile)
   : AboutFactory( parent, city, tile )
 {
-  WharfPtr wharf = ptr_cast<Wharf>( tile.overlay() );
+  auto wharf = tile.overlay<Wharf>();
 
   if( wharf->getBoat().isNull() )
   {
@@ -146,7 +147,7 @@ AboutWharf::AboutWharf(Widget* parent, PlayerCityPtr city, const Tile& tile)
                            _("##wait_for_fishing_boat##") );
     lb->setTextAlignment( align::upperLeft, align::upperLeft );
     lb->setWordwrap( true );
-    _lbTextRef()->setPosition( lb->leftbottom() + Point( 0, 10 ) );
+    _lbText()->setPosition( lb->leftbottom() + Point( 0, 10 ) );
   }
 }
 

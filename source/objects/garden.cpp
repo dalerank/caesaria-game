@@ -53,15 +53,12 @@ bool Garden::build( const city::AreaInfo& info )
 
   if( size().area() == 1 )
   {
-    TilesArray tilesAround = info.city->tilemap().getNeighbors(pos(), Tilemap::AllNeighbors);
-    foreach( tile, tilesAround )
-    {
-      GardenPtr garden = ptr_cast<Garden>( (*tile)->overlay() );
-      if( garden.isValid() )
-      {
-        garden->update();
-      }
-    }
+    auto gardens = info.city->tilemap()
+                              .getNeighbors(pos(), Tilemap::AllNeighbors)
+                              .overlays()
+                              .select<Garden>();
+    for( auto garden : gardens )
+      garden->update();
   }
 
   return true;
@@ -107,7 +104,8 @@ std::string Garden::sound() const
 void Garden::destroy()
 {
   TilesArray tiles = area();
-  foreach( it, tiles ) (*it)->setFlag( Tile::tlGarden, false );
+  for( auto tile : tiles )
+    tile->setFlag( Tile::tlGarden, false );
 }
 
 void Garden::setPicture(Picture picture)
@@ -121,17 +119,17 @@ void Garden::update()
   TilesArea nearTiles( _city()->tilemap(), pos(), Size(2) );
 
   bool canGrow2squareGarden = ( nearTiles.size() == 4 ); // be carefull on map edges
-  foreach( tile, nearTiles )
+  for( auto tile : nearTiles )
   {
-    GardenPtr garden = ptr_cast<Garden>( (*tile)->overlay() );
+    auto garden = tile->overlay<Garden>();
     canGrow2squareGarden &= (garden.isValid() && garden->size().area() <= 2 );
   }
 
   if( canGrow2squareGarden )
   {   
-    foreach( tile, nearTiles )
+    for( auto tile : nearTiles )
     {
-      OverlayPtr overlay = (*tile)->overlay();
+      OverlayPtr overlay = tile->overlay();
 
       //not delete himself
       if( overlay != this && overlay.isValid() )

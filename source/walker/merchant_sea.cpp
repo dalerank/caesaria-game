@@ -166,9 +166,9 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     if( myDock.isValid() && emptyDock )
     {
       trade::Options& options = city->tradeOptions();
-      good::ProductMap cityGoodsAvailable = city->statistic().goods.details( false );
+      good::ProductMap cityGoodsAvailable = city->statistic().goods.inWarehouses();
       //request goods
-      for( auto goodType : good::all() )
+      for( auto& goodType : good::all() )
       {
         int needQty = buy.freeQty( goodType );
         if (!options.isExporting( goodType) )
@@ -205,7 +205,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     {
       trade::Options& options = city->tradeOptions();
       //try buy goods
-      for( auto goodType : good::all() )
+      for( auto& goodType : good::all() )
       {
         if (!options.isExporting( goodType))
         {
@@ -278,7 +278,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
       trade::Options& options = city->tradeOptions();
       const good::Store& importing = options.buys();
       //try sell goods
-      for( auto goodType : good::all() )
+      for( auto& goodType : good::all() )
       {
         if (!options.isImporting(goodType))
         {

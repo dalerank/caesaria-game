@@ -1058,708 +1058,707 @@ GL_UpdateClipRect(SDL_Renderer * renderer)
         if (renderer->target) {
             data->glScissor(renderer->viewport.x + rect->x, renderer->viewport.y + rect->y, rect->w, rect->h);
         } else {
-           /* int w, h;
-
-            SDL_GetRendererOutputSize(renderer, &w, &h);*/
-            data->glScissor(renderer->viewport.x + rect->x, renderer->viewport.h - rect->y - rect->h, rect->w, rect->h);
-        }
-    } else {
-        data->glDisable(GL_SCISSOR_TEST);
-    }
-    return 0;
+          int w, h;
+          SDL_GetRendererOutputSize(renderer, &w, &h);
+          data->glScissor(renderer->viewport.x + rect->x, (h - renderer->viewport.y - renderer->viewport.h) + rect->y, rect->w, rect->h);
+      }
+  } else {
+      data->glDisable(GL_SCISSOR_TEST);
+  }
+  return 0;
 }
 
 static void
 GL_SetShader(GL_RenderData * data, GL_Shader shader)
 {
-    if (data->shaders && shader != data->current.shader) {
-        GL_SelectShader(data->shaders, shader);
-        data->current.shader = shader;
-    }
+  if (data->shaders && shader != data->current.shader) {
+      GL_SelectShader(data->shaders, shader);
+      data->current.shader = shader;
+  }
 }
 
 static void
 GL_SetColor(GL_RenderData * data, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
-    Uint32 color = ((a << 24) | (r << 16) | (g << 8) | b);
+  Uint32 color = ((a << 24) | (r << 16) | (g << 8) | b);
 
-    if (color != data->current.color) {
-        data->glColor4f((GLfloat) r * inv255f,
-                        (GLfloat) g * inv255f,
-                        (GLfloat) b * inv255f,
-                        (GLfloat) a * inv255f);
-        data->current.color = color;
-    }
+  if (color != data->current.color) {
+      data->glColor4f((GLfloat) r * inv255f,
+                      (GLfloat) g * inv255f,
+                      (GLfloat) b * inv255f,
+                      (GLfloat) a * inv255f);
+      data->current.color = color;
+  }
 }
 
 static void
 GL_SetBlendMode(GL_RenderData * data, int blendMode)
 {
-    if (blendMode != data->current.blendMode) {
-        switch (blendMode) {
-        case SDL_BLENDMODE_NONE:
-            data->glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-            data->glDisable(GL_BLEND);
-            break;
-        case SDL_BLENDMODE_BLEND:
-            data->glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-            data->glEnable(GL_BLEND);
-            data->glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-            break;
-        case SDL_BLENDMODE_ADD:
-            data->glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-            data->glEnable(GL_BLEND);
-            data->glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE, GL_ZERO, GL_ONE);
-            break;
-        case SDL_BLENDMODE_MOD:
-            data->glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-            data->glEnable(GL_BLEND);
-            data->glBlendFuncSeparate(GL_ZERO, GL_SRC_COLOR, GL_ZERO, GL_ONE);
-            break;
-        }
-        data->current.blendMode = blendMode;
-    }
+  if (blendMode != data->current.blendMode) {
+      switch (blendMode) {
+      case SDL_BLENDMODE_NONE:
+          data->glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+          data->glDisable(GL_BLEND);
+          break;
+      case SDL_BLENDMODE_BLEND:
+          data->glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+          data->glEnable(GL_BLEND);
+          data->glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+          break;
+      case SDL_BLENDMODE_ADD:
+          data->glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+          data->glEnable(GL_BLEND);
+          data->glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE, GL_ZERO, GL_ONE);
+          break;
+      case SDL_BLENDMODE_MOD:
+          data->glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+          data->glEnable(GL_BLEND);
+          data->glBlendFuncSeparate(GL_ZERO, GL_SRC_COLOR, GL_ZERO, GL_ONE);
+          break;
+      }
+      data->current.blendMode = blendMode;
+  }
 }
 
 static void
 GL_SetDrawingState(SDL_Renderer * renderer)
 {
-    GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
+  GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
 
-    GL_ActivateRenderer(renderer);
+  GL_ActivateRenderer(renderer);
 
-    GL_SetColor(data, renderer->r,
-                      renderer->g,
-                      renderer->b,
-                      renderer->a);
+  GL_SetColor(data, renderer->r,
+                    renderer->g,
+                    renderer->b,
+                    renderer->a);
 
-    GL_SetBlendMode(data, renderer->blendMode);
+  GL_SetBlendMode(data, renderer->blendMode);
 
-    GL_SetShader(data, SHADER_SOLID);
+  GL_SetShader(data, SHADER_SOLID);
 }
 
 static int
 GL_RenderClear(SDL_Renderer * renderer)
 {
-    GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
+  GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
 
-    GL_ActivateRenderer(renderer);
+  GL_ActivateRenderer(renderer);
 
-    data->glClearColor((GLfloat) renderer->r * inv255f,
-                       (GLfloat) renderer->g * inv255f,
-                       (GLfloat) renderer->b * inv255f,
-                       (GLfloat) renderer->a * inv255f);
+  data->glClearColor((GLfloat) renderer->r * inv255f,
+                     (GLfloat) renderer->g * inv255f,
+                     (GLfloat) renderer->b * inv255f,
+                     (GLfloat) renderer->a * inv255f);
 
-    data->glClear(GL_COLOR_BUFFER_BIT);
+  data->glClear(GL_COLOR_BUFFER_BIT);
 
-    return 0;
+  return 0;
 }
 
 static int
 GL_RenderDrawPoints(SDL_Renderer * renderer, const SDL_FPoint * points,
-                    int count)
+                  int count)
 {
-    GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
-    int i;
+  GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
+  int i;
 
-    GL_SetDrawingState(renderer);
+  GL_SetDrawingState(renderer);
 
-    data->glBegin(GL_POINTS);
-    for (i = 0; i < count; ++i) {
-        data->glVertex2f(0.5f + points[i].x, 0.5f + points[i].y);
-    }
-    data->glEnd();
+  data->glBegin(GL_POINTS);
+  for (i = 0; i < count; ++i) {
+      data->glVertex2f(0.5f + points[i].x, 0.5f + points[i].y);
+  }
+  data->glEnd();
 
-    return 0;
+  return 0;
 }
 
 static int
 GL_RenderDrawLines(SDL_Renderer * renderer, const SDL_FPoint * points,
-                   int count)
+                 int count)
 {
-    GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
-    int i;
+  GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
+  int i;
 
-    GL_SetDrawingState(renderer);
+  GL_SetDrawingState(renderer);
 
-    if (count > 2 &&
-        points[0].x == points[count-1].x && points[0].y == points[count-1].y) {
-        data->glBegin(GL_LINE_LOOP);
-        /* GL_LINE_LOOP takes care of the final segment */
-        --count;
-        for (i = 0; i < count; ++i) {
-            data->glVertex2f(0.5f + points[i].x, 0.5f + points[i].y);
-        }
-        data->glEnd();
-    } else {
+  if (count > 2 &&
+      points[0].x == points[count-1].x && points[0].y == points[count-1].y) {
+      data->glBegin(GL_LINE_LOOP);
+      /* GL_LINE_LOOP takes care of the final segment */
+      --count;
+      for (i = 0; i < count; ++i) {
+          data->glVertex2f(0.5f + points[i].x, 0.5f + points[i].y);
+      }
+      data->glEnd();
+  } else {
 #if defined(__MACOSX__) || defined(__WIN32__)
 #else
-        int x1, y1, x2, y2;
+      int x1, y1, x2, y2;
 #endif
 
-        data->glBegin(GL_LINE_STRIP);
-        for (i = 0; i < count; ++i) {
-            data->glVertex2f(0.5f + points[i].x, 0.5f + points[i].y);
-        }
-        data->glEnd();
+      data->glBegin(GL_LINE_STRIP);
+      for (i = 0; i < count; ++i) {
+          data->glVertex2f(0.5f + points[i].x, 0.5f + points[i].y);
+      }
+      data->glEnd();
 
-        /* The line is half open, so we need one more point to complete it.
-         * http://www.opengl.org/documentation/specs/version1.1/glspec1.1/node47.html
-         * If we have to, we can use vertical line and horizontal line textures
-         * for vertical and horizontal lines, and then create custom textures
-         * for diagonal lines and software render those.  It's terrible, but at
-         * least it would be pixel perfect.
-         */
-        data->glBegin(GL_POINTS);
+      /* The line is half open, so we need one more point to complete it.
+       * http://www.opengl.org/documentation/specs/version1.1/glspec1.1/node47.html
+       * If we have to, we can use vertical line and horizontal line textures
+       * for vertical and horizontal lines, and then create custom textures
+       * for diagonal lines and software render those.  It's terrible, but at
+       * least it would be pixel perfect.
+       */
+      data->glBegin(GL_POINTS);
 #if defined(__MACOSX__) || defined(__WIN32__)
-        /* Mac OS X and Windows seem to always leave the last point open */
-        data->glVertex2f(0.5f + points[count-1].x, 0.5f + points[count-1].y);
+      /* Mac OS X and Windows seem to always leave the last point open */
+      data->glVertex2f(0.5f + points[count-1].x, 0.5f + points[count-1].y);
 #else
-        /* Linux seems to leave the right-most or bottom-most point open */
-        x1 = points[0].x;
-        y1 = points[0].y;
-        x2 = points[count-1].x;
-        y2 = points[count-1].y;
+      /* Linux seems to leave the right-most or bottom-most point open */
+      x1 = points[0].x;
+      y1 = points[0].y;
+      x2 = points[count-1].x;
+      y2 = points[count-1].y;
 
-        if (x1 > x2) {
-            data->glVertex2f(0.5f + x1, 0.5f + y1);
-        } else if (x2 > x1) {
-            data->glVertex2f(0.5f + x2, 0.5f + y2);
-        }
-        if (y1 > y2) {
-            data->glVertex2f(0.5f + x1, 0.5f + y1);
-        } else if (y2 > y1) {
-            data->glVertex2f(0.5f + x2, 0.5f + y2);
-        }
+      if (x1 > x2) {
+          data->glVertex2f(0.5f + x1, 0.5f + y1);
+      } else if (x2 > x1) {
+          data->glVertex2f(0.5f + x2, 0.5f + y2);
+      }
+      if (y1 > y2) {
+          data->glVertex2f(0.5f + x1, 0.5f + y1);
+      } else if (y2 > y1) {
+          data->glVertex2f(0.5f + x2, 0.5f + y2);
+      }
 #endif
-        data->glEnd();
-    }
-    return GL_CheckError("", renderer);
+      data->glEnd();
+  }
+  return GL_CheckError("", renderer);
 }
 
 static int
 GL_RenderFillRects(SDL_Renderer * renderer, const SDL_FRect * rects, int count)
 {
-    GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
-    int i;
+  GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
+  int i;
 
-    GL_SetDrawingState(renderer);
+  GL_SetDrawingState(renderer);
 
-    for (i = 0; i < count; ++i) {
-        const SDL_FRect *rect = &rects[i];
+  for (i = 0; i < count; ++i) {
+      const SDL_FRect *rect = &rects[i];
 
-        data->glRectf(rect->x, rect->y, rect->x + rect->w, rect->y + rect->h);
-    }
-    return GL_CheckError("", renderer);
+      data->glRectf(rect->x, rect->y, rect->x + rect->w, rect->y + rect->h);
+  }
+  return GL_CheckError("", renderer);
 }
 
 static int
 GL_CreateBatch(SDL_Renderer * renderer, SDL_Batch* batch, SDL_Texture * texture,
-            const SDL_Rect * srcrect, const SDL_Rect * dstrect, unsigned int size)
+          const SDL_Rect * srcrect, const SDL_Rect * dstrect, unsigned int size)
 {
-  SDL_Rect textureRect = { 0, 0, 0, 0 };
-  SDL_Rect renderingRect = { 0, 0, 0, 0 };
-  SDL_Rect tmp_srcrect = { 0, 0, 0, 0 };
-  SDL_Rect tmp_dstrect = { 0, 0, 0, 0 };
-  int i = 0;
-  GLfloat* TexCoord = 0;
-  GLfloat* vertices = 0;
-  GLushort* indices = 0;
-  SDL_FRect frect;
-  unsigned int iTx = 0;
-  unsigned int iRtx= 0;
+SDL_Rect textureRect = { 0, 0, 0, 0 };
+SDL_Rect renderingRect = { 0, 0, 0, 0 };
+SDL_Rect tmp_srcrect = { 0, 0, 0, 0 };
+SDL_Rect tmp_dstrect = { 0, 0, 0, 0 };
+int i = 0;
+GLfloat* TexCoord = 0;
+GLfloat* vertices = 0;
+GLushort* indices = 0;
+SDL_FRect frect;
+unsigned int iTx = 0;
+unsigned int iRtx= 0;
 
-  if( batch == 0 )
-    return -1;
+if( batch == 0 )
+  return -1;
 
-  batch->vertices    = 0;
-  batch->coordinates = 0;
-  batch->indices     = 0;
-  batch->texture     = 0;
+batch->vertices    = 0;
+batch->coordinates = 0;
+batch->indices     = 0;
+batch->texture     = 0;
 
-  GL_TextureData *texturedata = (GL_TextureData *) texture->driverdata;
+GL_TextureData *texturedata = (GL_TextureData *) texture->driverdata;
 
-  if( texturedata == 0 )
+if( texturedata == 0 )
+{
+  return -1;
+}
+
+GLfloat minx, miny, maxx, maxy;
+GLfloat minu, maxu, minv, maxv;
+
+textureRect.x = 0;
+textureRect.y = 0;
+textureRect.w = texture->w;
+textureRect.h = texture->h;
+
+SDL_RenderGetViewport(renderer, &renderingRect);
+renderingRect.x = 0;
+renderingRect.y = 0;
+
+batch->texture     = texture;
+if (texture->native)
+{
+    texture = texture->native;
+}
+
+batch->vertices    = SDL_malloc( sizeof(GLfloat) * 4 * 3 * size );
+batch->coordinates = SDL_malloc( sizeof(GLfloat) * 4 * 2 * size );
+batch->indices     = SDL_malloc( sizeof(GLushort) * 2 * 3 * size );
+
+TexCoord = (GLfloat*)batch->coordinates;
+vertices = (GLfloat*)batch->vertices;
+indices = (GLushort*)batch->indices;
+
+for( ; iTx < size; iTx++ )
+{
+  tmp_srcrect = srcrect[ iTx ];
+  tmp_dstrect = dstrect[ iTx ];
+  if (tmp_srcrect.h>0 || tmp_srcrect.y>0)
   {
-    return -1;
+      if (!SDL_IntersectRect(&tmp_srcrect, &textureRect, &tmp_srcrect))
+      {
+          continue;
+      }
   }
 
-  GLfloat minx, miny, maxx, maxy;
-  GLfloat minu, maxu, minv, maxv;
-
-  textureRect.x = 0;
-  textureRect.y = 0;
-  textureRect.w = texture->w;
-  textureRect.h = texture->h;
-
-  SDL_RenderGetViewport(renderer, &renderingRect);
-  renderingRect.x = 0;
-  renderingRect.y = 0;
-
-  batch->texture     = texture;
-  if (texture->native)
+  if (tmp_dstrect.h>0 || tmp_dstrect.w>0)
   {
-      texture = texture->native;
+      if (!SDL_HasIntersection(&renderingRect, &tmp_dstrect))
+      {
+          continue;
+      }
   }
 
-  batch->vertices    = SDL_malloc( sizeof(GLfloat) * 4 * 3 * size );
-  batch->coordinates = SDL_malloc( sizeof(GLfloat) * 4 * 2 * size );
-  batch->indices     = SDL_malloc( sizeof(GLushort) * 2 * 3 * size );
+  frect.x = tmp_dstrect.x * renderer->scale.x;
+  frect.y = tmp_dstrect.y * renderer->scale.y;
+  frect.w = tmp_dstrect.w * renderer->scale.x;
+  frect.h = tmp_dstrect.h * renderer->scale.y;
 
-  TexCoord = (GLfloat*)batch->coordinates;
-  vertices = (GLfloat*)batch->vertices;
-  indices = (GLushort*)batch->indices;
+  minx = frect.x;
+  miny = frect.y;
+  maxx = frect.x + frect.w;
+  maxy = frect.y + frect.h;
 
-  for( ; iTx < size; iTx++ )
-  {
-    tmp_srcrect = srcrect[ iTx ];
-    tmp_dstrect = dstrect[ iTx ];
-    if (tmp_srcrect.h>0 || tmp_srcrect.y>0)
-    {
-        if (!SDL_IntersectRect(&tmp_srcrect, &textureRect, &tmp_srcrect))
-        {
-            continue;
-        }
-    }
+  minu = (GLfloat) tmp_srcrect.x / texture->w;
+  minu *= texturedata->texw;
+  maxu = (GLfloat) (tmp_srcrect.x + tmp_srcrect.w) / texture->w;
+  maxu *= texturedata->texw;
+  minv = (GLfloat) tmp_srcrect.y / texture->h;
+  minv *= texturedata->texh;
+  maxv = (GLfloat) (tmp_srcrect.y + tmp_srcrect.h) / texture->h;
+  maxv *= texturedata->texh;
 
-    if (tmp_dstrect.h>0 || tmp_dstrect.w>0)
-    {
-        if (!SDL_HasIntersection(&renderingRect, &tmp_dstrect))
-        {
-            continue;
-        }
-    }
+  i = iRtx;
+  TexCoord[ i * 8 + 0 ] = minu; TexCoord[ i * 8 + 1 ] = minv;
+  TexCoord[ i * 8 + 2 ] = maxu; TexCoord[ i * 8 + 3 ] = minv;
+  TexCoord[ i * 8 + 4 ] = maxu; TexCoord[ i * 8 + 5 ] = maxv;
+  TexCoord[ i * 8 + 6 ] = minu; TexCoord[ i * 8 + 7 ] = maxv;
 
-    frect.x = tmp_dstrect.x * renderer->scale.x;
-    frect.y = tmp_dstrect.y * renderer->scale.y;
-    frect.w = tmp_dstrect.w * renderer->scale.x;
-    frect.h = tmp_dstrect.h * renderer->scale.y;
+  vertices[ i * 12 + 0 ] = minx; vertices[ i * 12 + 1 ] = miny;  vertices[ i * 12 + 2 ] = 0;
+  vertices[ i * 12 + 3 ] = maxx; vertices[ i * 12 + 4 ] = miny;  vertices[ i * 12 + 5 ] = 0;
+  vertices[ i * 12 + 6 ] = maxx; vertices[ i * 12 + 7 ] = maxy;  vertices[ i * 12 + 8 ] = 0;
+  vertices[ i * 12 + 9 ] = minx; vertices[ i * 12 + 10 ] = maxy; vertices[ i * 12 + 11 ] = 0;
 
-    minx = frect.x;
-    miny = frect.y;
-    maxx = frect.x + frect.w;
-    maxy = frect.y + frect.h;
+  indices[ i * 6 + 0 ] = i * 4; indices[ i * 6 + 1 ] = i * 4 + 1; indices[ i * 6 + 2 ] = i * 4 + 2;
+  indices[ i * 6 + 3 ] = i * 4; indices[ i * 6 + 4 ] = i * 4 + 2; indices[ i * 6 + 5 ] = i * 4 + 3;
+  iRtx++;
+}
 
-    minu = (GLfloat) tmp_srcrect.x / texture->w;
-    minu *= texturedata->texw;
-    maxu = (GLfloat) (tmp_srcrect.x + tmp_srcrect.w) / texture->w;
-    maxu *= texturedata->texw;
-    minv = (GLfloat) tmp_srcrect.y / texture->h;
-    minv *= texturedata->texh;
-    maxv = (GLfloat) (tmp_srcrect.y + tmp_srcrect.h) / texture->h;
-    maxv *= texturedata->texh;
+batch->size = iRtx;
 
-    i = iRtx;
-    TexCoord[ i * 8 + 0 ] = minu; TexCoord[ i * 8 + 1 ] = minv;
-    TexCoord[ i * 8 + 2 ] = maxu; TexCoord[ i * 8 + 3 ] = minv;
-    TexCoord[ i * 8 + 4 ] = maxu; TexCoord[ i * 8 + 5 ] = maxv;
-    TexCoord[ i * 8 + 6 ] = minu; TexCoord[ i * 8 + 7 ] = maxv;
-
-    vertices[ i * 12 + 0 ] = minx; vertices[ i * 12 + 1 ] = miny;  vertices[ i * 12 + 2 ] = 0;
-    vertices[ i * 12 + 3 ] = maxx; vertices[ i * 12 + 4 ] = miny;  vertices[ i * 12 + 5 ] = 0;
-    vertices[ i * 12 + 6 ] = maxx; vertices[ i * 12 + 7 ] = maxy;  vertices[ i * 12 + 8 ] = 0;
-    vertices[ i * 12 + 9 ] = minx; vertices[ i * 12 + 10 ] = maxy; vertices[ i * 12 + 11 ] = 0;
-
-    indices[ i * 6 + 0 ] = i * 4; indices[ i * 6 + 1 ] = i * 4 + 1; indices[ i * 6 + 2 ] = i * 4 + 2;
-    indices[ i * 6 + 3 ] = i * 4; indices[ i * 6 + 4 ] = i * 4 + 2; indices[ i * 6 + 5 ] = i * 4 + 3;
-    iRtx++;
-  }
-
-  batch->size = iRtx;
-
-  return 0;
+return 0;
 }
 
 static int
 GL_DestroyBatch(SDL_Renderer *renderer, SDL_Batch *batch)
 {
-  if( batch == 0 )
-    return -1;
+if( batch == 0 )
+  return -1;
 
-  if( batch->vertices != 0)
-      SDL_free( batch->vertices );
+if( batch->vertices != 0)
+    SDL_free( batch->vertices );
 
-  if( batch->coordinates != 0 )
-      SDL_free( batch->coordinates );
+if( batch->coordinates != 0 )
+    SDL_free( batch->coordinates );
 
-  if( batch->indices != 0 )
-      SDL_free( batch->indices );
+if( batch->indices != 0 )
+    SDL_free( batch->indices );
 
-  return 0;
+return 0;
 }
 
 static int
 GL_SetupCopy(SDL_Renderer * renderer, SDL_Texture * texture)
 {
-    GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
-    GL_TextureData *texturedata = (GL_TextureData *) texture->driverdata;
+  GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
+  GL_TextureData *texturedata = (GL_TextureData *) texture->driverdata;
 
-    data->glEnable(texturedata->type);
-    if (texturedata->yuv) {
-        data->glActiveTextureARB(GL_TEXTURE2_ARB);
-        data->glBindTexture(texturedata->type, texturedata->vtexture);
+  data->glEnable(texturedata->type);
+  if (texturedata->yuv) {
+      data->glActiveTextureARB(GL_TEXTURE2_ARB);
+      data->glBindTexture(texturedata->type, texturedata->vtexture);
 
-        data->glActiveTextureARB(GL_TEXTURE1_ARB);
-        data->glBindTexture(texturedata->type, texturedata->utexture);
+      data->glActiveTextureARB(GL_TEXTURE1_ARB);
+      data->glBindTexture(texturedata->type, texturedata->utexture);
 
-        data->glActiveTextureARB(GL_TEXTURE0_ARB);
-    }
-    if (texturedata->nv12) {
-        data->glActiveTextureARB(GL_TEXTURE1_ARB);
-        data->glBindTexture(texturedata->type, texturedata->utexture);
+      data->glActiveTextureARB(GL_TEXTURE0_ARB);
+  }
+  if (texturedata->nv12) {
+      data->glActiveTextureARB(GL_TEXTURE1_ARB);
+      data->glBindTexture(texturedata->type, texturedata->utexture);
 
-        data->glActiveTextureARB(GL_TEXTURE0_ARB);
-    }
-    data->glBindTexture(texturedata->type, texturedata->texture);
+      data->glActiveTextureARB(GL_TEXTURE0_ARB);
+  }
+  data->glBindTexture(texturedata->type, texturedata->texture);
 
-    if (texture->modMode) {
-        GL_SetColor(data, texture->r, texture->g, texture->b, texture->a);
-    } else {
-        GL_SetColor(data, 255, 255, 255, 255);
-    }
+  if (texture->modMode) {
+      GL_SetColor(data, texture->r, texture->g, texture->b, texture->a);
+  } else {
+      GL_SetColor(data, 255, 255, 255, 255);
+  }
 
-    GL_SetBlendMode(data, texture->blendMode);
+  GL_SetBlendMode(data, texture->blendMode);
 
-    if (texturedata->yuv) {
-        GL_SetShader(data, SHADER_YUV);
-    } else if (texturedata->nv12) {
-        if (texture->format == SDL_PIXELFORMAT_NV12) {
-            GL_SetShader(data, SHADER_NV12);
-        } else {
-            GL_SetShader(data, SHADER_NV21);
-        }
-    } else {
-        GL_SetShader(data, SHADER_RGB);
-    }
-    return 0;
+  if (texturedata->yuv) {
+      GL_SetShader(data, SHADER_YUV);
+  } else if (texturedata->nv12) {
+      if (texture->format == SDL_PIXELFORMAT_NV12) {
+          GL_SetShader(data, SHADER_NV12);
+      } else {
+          GL_SetShader(data, SHADER_NV21);
+      }
+  } else {
+      GL_SetShader(data, SHADER_RGB);
+  }
+  return 0;
 }
 
 static int
 GL_RenderCopy(SDL_Renderer * renderer, SDL_Texture * texture,
-              const SDL_Rect * srcrect, const SDL_FRect * dstrect)
+            const SDL_Rect * srcrect, const SDL_FRect * dstrect)
 {
-    GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
-    GL_TextureData *texturedata = (GL_TextureData *) texture->driverdata;
-    GLfloat minx, miny, maxx, maxy;
-    GLfloat minu, maxu, minv, maxv;
-
-    GL_ActivateRenderer(renderer);
-
-    if (GL_SetupCopy(renderer, texture) < 0) {
-        return -1;
-    }
-
-    minx = dstrect->x;
-    miny = dstrect->y;
-    maxx = dstrect->x + dstrect->w;
-    maxy = dstrect->y + dstrect->h;
-
-    minu = (GLfloat) srcrect->x / texture->w;
-    minu *= texturedata->texw;
-    maxu = (GLfloat) (srcrect->x + srcrect->w) / texture->w;
-    maxu *= texturedata->texw;
-    minv = (GLfloat) srcrect->y / texture->h;
-    minv *= texturedata->texh;
-    maxv = (GLfloat) (srcrect->y + srcrect->h) / texture->h;
-    maxv *= texturedata->texh;
-
-    data->glBegin(GL_TRIANGLE_STRIP);
-    data->glTexCoord2f(minu, minv);
-    data->glVertex2f(minx, miny);
-    data->glTexCoord2f(maxu, minv);
-    data->glVertex2f(maxx, miny);
-    data->glTexCoord2f(minu, maxv);
-    data->glVertex2f(minx, maxy);
-    data->glTexCoord2f(maxu, maxv);
-    data->glVertex2f(maxx, maxy);
-    data->glEnd();
-
-    data->glDisable(texturedata->type);
-
-    return GL_CheckError("", renderer);
-}
-
-static int
-GL_RenderCopyEx(SDL_Renderer * renderer, SDL_Texture * texture,
-              const SDL_Rect * srcrect, const SDL_FRect * dstrect,
-              const double angle, const SDL_FPoint *center, const SDL_RendererFlip flip)
-{
-    GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
-    GL_TextureData *texturedata = (GL_TextureData *) texture->driverdata;
-    GLfloat minx, miny, maxx, maxy;
-    GLfloat centerx, centery;
-    GLfloat minu, maxu, minv, maxv;
-
-    GL_ActivateRenderer(renderer);
-
-    if (GL_SetupCopy(renderer, texture) < 0) {
-        return -1;
-    }
-
-    centerx = center->x;
-    centery = center->y;
-
-    if (flip & SDL_FLIP_HORIZONTAL) {
-        minx =  dstrect->w - centerx;
-        maxx = -centerx;
-    }
-    else {
-        minx = -centerx;
-        maxx =  dstrect->w - centerx;
-    }
-
-    if (flip & SDL_FLIP_VERTICAL) {
-        miny =  dstrect->h - centery;
-        maxy = -centery;
-    }
-    else {
-        miny = -centery;
-        maxy =  dstrect->h - centery;
-    }
-
-    minu = (GLfloat) srcrect->x / texture->w;
-    minu *= texturedata->texw;
-    maxu = (GLfloat) (srcrect->x + srcrect->w) / texture->w;
-    maxu *= texturedata->texw;
-    minv = (GLfloat) srcrect->y / texture->h;
-    minv *= texturedata->texh;
-    maxv = (GLfloat) (srcrect->y + srcrect->h) / texture->h;
-    maxv *= texturedata->texh;
-
-    /* Translate to flip, rotate, translate to position */
-    data->glPushMatrix();
-    data->glTranslatef((GLfloat)dstrect->x + centerx, (GLfloat)dstrect->y + centery, (GLfloat)0.0);
-    data->glRotated(angle, (GLdouble)0.0, (GLdouble)0.0, (GLdouble)1.0);
-
-    data->glBegin(GL_TRIANGLE_STRIP);
-    data->glTexCoord2f(minu, minv);
-    data->glVertex2f(minx, miny);
-    data->glTexCoord2f(maxu, minv);
-    data->glVertex2f(maxx, miny);
-    data->glTexCoord2f(minu, maxv);
-    data->glVertex2f(minx, maxy);
-    data->glTexCoord2f(maxu, maxv);
-    data->glVertex2f(maxx, maxy);
-    data->glEnd();
-    data->glPopMatrix();
-
-    data->glDisable(texturedata->type);
-
-    return GL_CheckError("", renderer);
-}
-
-static int
-GL_RenderBatch(SDL_Renderer * renderer, SDL_Batch * batch)
-{
-  if( batch == 0 )
-    return -1;
-
-  if( batch->size == 0 || batch->texture == 0 )
-    return -1;
-
   GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
-  GL_TextureData *texturedata = (GL_TextureData *) batch->texture->driverdata;
-  SDL_Texture* texture = batch->texture;
+  GL_TextureData *texturedata = (GL_TextureData *) texture->driverdata;
+  GLfloat minx, miny, maxx, maxy;
+  GLfloat minu, maxu, minv, maxv;
 
-  if ( texture->native)
-  {
-      texture = texture->native;
-  }
-
-  ////!!!!!!!!!!!!!!!!!!!
   GL_ActivateRenderer(renderer);
 
   if (GL_SetupCopy(renderer, texture) < 0) {
       return -1;
   }
 
-  data->glEnableClientState(GL_VERTEX_ARRAY);
-  data->glVertexPointer(3, GL_FLOAT, 0, batch->vertices);
+  minx = dstrect->x;
+  miny = dstrect->y;
+  maxx = dstrect->x + dstrect->w;
+  maxy = dstrect->y + dstrect->h;
 
-  data->glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-  data->glTexCoordPointer(2, GL_FLOAT, 0, batch->coordinates);
+  minu = (GLfloat) srcrect->x / texture->w;
+  minu *= texturedata->texw;
+  maxu = (GLfloat) (srcrect->x + srcrect->w) / texture->w;
+  maxu *= texturedata->texw;
+  minv = (GLfloat) srcrect->y / texture->h;
+  minv *= texturedata->texh;
+  maxv = (GLfloat) (srcrect->y + srcrect->h) / texture->h;
+  maxv *= texturedata->texh;
 
-  data->glDrawElements(GL_TRIANGLES, 6 * batch->size, GL_UNSIGNED_SHORT, batch->indices);
-
-  data->glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-  data->glDisableClientState(GL_VERTEX_ARRAY);
+  data->glBegin(GL_TRIANGLE_STRIP);
+  data->glTexCoord2f(minu, minv);
+  data->glVertex2f(minx, miny);
+  data->glTexCoord2f(maxu, minv);
+  data->glVertex2f(maxx, miny);
+  data->glTexCoord2f(minu, maxv);
+  data->glVertex2f(minx, maxy);
+  data->glTexCoord2f(maxu, maxv);
+  data->glVertex2f(maxx, maxy);
+  data->glEnd();
 
   data->glDisable(texturedata->type);
 
   return GL_CheckError("", renderer);
 }
 
+static int
+GL_RenderCopyEx(SDL_Renderer * renderer, SDL_Texture * texture,
+            const SDL_Rect * srcrect, const SDL_FRect * dstrect,
+            const double angle, const SDL_FPoint *center, const SDL_RendererFlip flip)
+{
+  GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
+  GL_TextureData *texturedata = (GL_TextureData *) texture->driverdata;
+  GLfloat minx, miny, maxx, maxy;
+  GLfloat centerx, centery;
+  GLfloat minu, maxu, minv, maxv;
+
+  GL_ActivateRenderer(renderer);
+
+  if (GL_SetupCopy(renderer, texture) < 0) {
+      return -1;
+  }
+
+  centerx = center->x;
+  centery = center->y;
+
+  if (flip & SDL_FLIP_HORIZONTAL) {
+      minx =  dstrect->w - centerx;
+      maxx = -centerx;
+  }
+  else {
+      minx = -centerx;
+      maxx =  dstrect->w - centerx;
+  }
+
+  if (flip & SDL_FLIP_VERTICAL) {
+      miny =  dstrect->h - centery;
+      maxy = -centery;
+  }
+  else {
+      miny = -centery;
+      maxy =  dstrect->h - centery;
+  }
+
+  minu = (GLfloat) srcrect->x / texture->w;
+  minu *= texturedata->texw;
+  maxu = (GLfloat) (srcrect->x + srcrect->w) / texture->w;
+  maxu *= texturedata->texw;
+  minv = (GLfloat) srcrect->y / texture->h;
+  minv *= texturedata->texh;
+  maxv = (GLfloat) (srcrect->y + srcrect->h) / texture->h;
+  maxv *= texturedata->texh;
+
+  /* Translate to flip, rotate, translate to position */
+  data->glPushMatrix();
+  data->glTranslatef((GLfloat)dstrect->x + centerx, (GLfloat)dstrect->y + centery, (GLfloat)0.0);
+  data->glRotated(angle, (GLdouble)0.0, (GLdouble)0.0, (GLdouble)1.0);
+
+  data->glBegin(GL_TRIANGLE_STRIP);
+  data->glTexCoord2f(minu, minv);
+  data->glVertex2f(minx, miny);
+  data->glTexCoord2f(maxu, minv);
+  data->glVertex2f(maxx, miny);
+  data->glTexCoord2f(minu, maxv);
+  data->glVertex2f(minx, maxy);
+  data->glTexCoord2f(maxu, maxv);
+  data->glVertex2f(maxx, maxy);
+  data->glEnd();
+  data->glPopMatrix();
+
+  data->glDisable(texturedata->type);
+
+  return GL_CheckError("", renderer);
+}
+
+static int
+GL_RenderBatch(SDL_Renderer * renderer, SDL_Batch * batch)
+{
+if( batch == 0 )
+  return -1;
+
+if( batch->size == 0 || batch->texture == 0 )
+  return -1;
+
+GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
+GL_TextureData *texturedata = (GL_TextureData *) batch->texture->driverdata;
+SDL_Texture* texture = batch->texture;
+
+if ( texture->native)
+{
+    texture = texture->native;
+}
+
+////!!!!!!!!!!!!!!!!!!!
+GL_ActivateRenderer(renderer);
+
+if (GL_SetupCopy(renderer, texture) < 0) {
+    return -1;
+}
+
+data->glEnableClientState(GL_VERTEX_ARRAY);
+data->glVertexPointer(3, GL_FLOAT, 0, batch->vertices);
+
+data->glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+data->glTexCoordPointer(2, GL_FLOAT, 0, batch->coordinates);
+
+data->glDrawElements(GL_TRIANGLES, 6 * batch->size, GL_UNSIGNED_SHORT, batch->indices);
+
+data->glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+data->glDisableClientState(GL_VERTEX_ARRAY);
+
+data->glDisable(texturedata->type);
+
+return GL_CheckError("", renderer);
+}
+
 
 static int
 GL_RenderReadPixels(SDL_Renderer * renderer, const SDL_Rect * rect,
-                    Uint32 pixel_format, void * pixels, int pitch)
+                  Uint32 pixel_format, void * pixels, int pitch)
 {
-    GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
-    Uint32 temp_format = SDL_PIXELFORMAT_ARGB8888;
-    void *temp_pixels;
-    int temp_pitch;
-    GLint internalFormat;
-    GLenum format, type;
-    Uint8 *src, *dst, *tmp;
-    int w, h, length, rows;
-    int status;
+  GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
+  Uint32 temp_format = SDL_PIXELFORMAT_ARGB8888;
+  void *temp_pixels;
+  int temp_pitch;
+  GLint internalFormat;
+  GLenum format, type;
+  Uint8 *src, *dst, *tmp;
+  int w, h, length, rows;
+  int status;
 
-    GL_ActivateRenderer(renderer);
+  GL_ActivateRenderer(renderer);
 
-    temp_pitch = rect->w * SDL_BYTESPERPIXEL(temp_format);
-    temp_pixels = SDL_malloc(rect->h * temp_pitch);
-    if (!temp_pixels) {
-        return SDL_OutOfMemory();
-    }
+  temp_pitch = rect->w * SDL_BYTESPERPIXEL(temp_format);
+  temp_pixels = SDL_malloc(rect->h * temp_pitch);
+  if (!temp_pixels) {
+      return SDL_OutOfMemory();
+  }
 
-    convert_format(data, temp_format, &internalFormat, &format, &type);
+  convert_format(data, temp_format, &internalFormat, &format, &type);
 
-    SDL_GetRendererOutputSize(renderer, &w, &h);
+  SDL_GetRendererOutputSize(renderer, &w, &h);
 
-    data->glPixelStorei(GL_PACK_ALIGNMENT, 1);
-    data->glPixelStorei(GL_PACK_ROW_LENGTH,
-                        (temp_pitch / SDL_BYTESPERPIXEL(temp_format)));
+  data->glPixelStorei(GL_PACK_ALIGNMENT, 1);
+  data->glPixelStorei(GL_PACK_ROW_LENGTH,
+                      (temp_pitch / SDL_BYTESPERPIXEL(temp_format)));
 
-    data->glReadPixels(rect->x, (h-rect->y)-rect->h, rect->w, rect->h,
-                       format, type, temp_pixels);
+  data->glReadPixels(rect->x, (h-rect->y)-rect->h, rect->w, rect->h,
+                     format, type, temp_pixels);
 
-    if (GL_CheckError("glReadPixels()", renderer) < 0) {
-        SDL_free(temp_pixels);
-        return -1;
-    }
+  if (GL_CheckError("glReadPixels()", renderer) < 0) {
+      SDL_free(temp_pixels);
+      return -1;
+  }
 
-    /* Flip the rows to be top-down */
-    length = rect->w * SDL_BYTESPERPIXEL(temp_format);
-    src = (Uint8*)temp_pixels + (rect->h-1)*temp_pitch;
-    dst = (Uint8*)temp_pixels;
-    tmp = SDL_stack_alloc(Uint8, length);
-    rows = rect->h / 2;
-    while (rows--) {
-        SDL_memcpy(tmp, dst, length);
-        SDL_memcpy(dst, src, length);
-        SDL_memcpy(src, tmp, length);
-        dst += temp_pitch;
-        src -= temp_pitch;
-    }
-    SDL_stack_free(tmp);
+  /* Flip the rows to be top-down */
+  length = rect->w * SDL_BYTESPERPIXEL(temp_format);
+  src = (Uint8*)temp_pixels + (rect->h-1)*temp_pitch;
+  dst = (Uint8*)temp_pixels;
+  tmp = SDL_stack_alloc(Uint8, length);
+  rows = rect->h / 2;
+  while (rows--) {
+      SDL_memcpy(tmp, dst, length);
+      SDL_memcpy(dst, src, length);
+      SDL_memcpy(src, tmp, length);
+      dst += temp_pitch;
+      src -= temp_pitch;
+  }
+  SDL_stack_free(tmp);
 
-    status = SDL_ConvertPixels(rect->w, rect->h,
-                               temp_format, temp_pixels, temp_pitch,
-                               pixel_format, pixels, pitch);
-    SDL_free(temp_pixels);
+  status = SDL_ConvertPixels(rect->w, rect->h,
+                             temp_format, temp_pixels, temp_pitch,
+                             pixel_format, pixels, pitch);
+  SDL_free(temp_pixels);
 
-    return status;
+  return status;
 }
 
 static void
 GL_RenderPresent(SDL_Renderer * renderer)
 {
-    GL_ActivateRenderer(renderer);
+  GL_ActivateRenderer(renderer);
 
-    SDL_GL_SwapWindow(renderer->window);
+  SDL_GL_SwapWindow(renderer->window);
 }
 
 static void
 GL_DestroyTexture(SDL_Renderer * renderer, SDL_Texture * texture)
 {
-    GL_RenderData *renderdata = (GL_RenderData *) renderer->driverdata;
-    GL_TextureData *data = (GL_TextureData *) texture->driverdata;
+  GL_RenderData *renderdata = (GL_RenderData *) renderer->driverdata;
+  GL_TextureData *data = (GL_TextureData *) texture->driverdata;
 
-    GL_ActivateRenderer(renderer);
+  GL_ActivateRenderer(renderer);
 
-    if (!data) {
-        return;
-    }
-    if (data->texture) {
-        renderdata->glDeleteTextures(1, &data->texture);
-    }
-    if (data->yuv) {
-        renderdata->glDeleteTextures(1, &data->utexture);
-        renderdata->glDeleteTextures(1, &data->vtexture);
-    }
-    SDL_free(data->pixels);
-    SDL_free(data);
-    texture->driverdata = NULL;
+  if (!data) {
+      return;
+  }
+  if (data->texture) {
+      renderdata->glDeleteTextures(1, &data->texture);
+  }
+  if (data->yuv) {
+      renderdata->glDeleteTextures(1, &data->utexture);
+      renderdata->glDeleteTextures(1, &data->vtexture);
+  }
+  SDL_free(data->pixels);
+  SDL_free(data);
+  texture->driverdata = NULL;
 }
 
 static void
 GL_DestroyRenderer(SDL_Renderer * renderer)
 {
-    GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
+  GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
 
-    if (data) {
-        GL_ClearErrors(renderer);
-        if (data->GL_ARB_debug_output_supported) {
-            PFNGLDEBUGMESSAGECALLBACKARBPROC glDebugMessageCallbackARBFunc = (PFNGLDEBUGMESSAGECALLBACKARBPROC) SDL_GL_GetProcAddress("glDebugMessageCallbackARB");
+  if (data) {
+      GL_ClearErrors(renderer);
+      if (data->GL_ARB_debug_output_supported) {
+          PFNGLDEBUGMESSAGECALLBACKARBPROC glDebugMessageCallbackARBFunc = (PFNGLDEBUGMESSAGECALLBACKARBPROC) SDL_GL_GetProcAddress("glDebugMessageCallbackARB");
 
-            /* Uh oh, we don't have a safe way of removing ourselves from the callback chain, if it changed after we set our callback. */
-            /* For now, just always replace the callback with the original one */
-            glDebugMessageCallbackARBFunc(data->next_error_callback, data->next_error_userparam);
-        }
-        if (data->shaders) {
-            GL_DestroyShaderContext(data->shaders);
-        }
-        if (data->context) {
-            while (data->framebuffers) {
-                GL_FBOList *nextnode = data->framebuffers->next;
-                /* delete the framebuffer object */
-                data->glDeleteFramebuffersEXT(1, &data->framebuffers->FBO);
-                GL_CheckError("", renderer);
-                SDL_free(data->framebuffers);
-                data->framebuffers = nextnode;
-            }
-            SDL_GL_DeleteContext(data->context);
-        }
-        SDL_free(data);
-    }
-    SDL_free(renderer);
+          /* Uh oh, we don't have a safe way of removing ourselves from the callback chain, if it changed after we set our callback. */
+          /* For now, just always replace the callback with the original one */
+          glDebugMessageCallbackARBFunc(data->next_error_callback, data->next_error_userparam);
+      }
+      if (data->shaders) {
+          GL_DestroyShaderContext(data->shaders);
+      }
+      if (data->context) {
+          while (data->framebuffers) {
+              GL_FBOList *nextnode = data->framebuffers->next;
+              /* delete the framebuffer object */
+              data->glDeleteFramebuffersEXT(1, &data->framebuffers->FBO);
+              GL_CheckError("", renderer);
+              SDL_free(data->framebuffers);
+              data->framebuffers = nextnode;
+          }
+          SDL_GL_DeleteContext(data->context);
+      }
+      SDL_free(data);
+  }
+  SDL_free(renderer);
 }
 
 static int
 GL_BindTexture (SDL_Renderer * renderer, SDL_Texture *texture, float *texw, float *texh)
 {
-    GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
-    GL_TextureData *texturedata = (GL_TextureData *) texture->driverdata;
-    GL_ActivateRenderer(renderer);
+  GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
+  GL_TextureData *texturedata = (GL_TextureData *) texture->driverdata;
+  GL_ActivateRenderer(renderer);
 
-    data->glEnable(texturedata->type);
-    if (texturedata->yuv) {
-        data->glActiveTextureARB(GL_TEXTURE2_ARB);
-        data->glBindTexture(texturedata->type, texturedata->vtexture);
+  data->glEnable(texturedata->type);
+  if (texturedata->yuv) {
+      data->glActiveTextureARB(GL_TEXTURE2_ARB);
+      data->glBindTexture(texturedata->type, texturedata->vtexture);
 
-        data->glActiveTextureARB(GL_TEXTURE1_ARB);
-        data->glBindTexture(texturedata->type, texturedata->utexture);
+      data->glActiveTextureARB(GL_TEXTURE1_ARB);
+      data->glBindTexture(texturedata->type, texturedata->utexture);
 
-        data->glActiveTextureARB(GL_TEXTURE0_ARB);
-    }
-    data->glBindTexture(texturedata->type, texturedata->texture);
+      data->glActiveTextureARB(GL_TEXTURE0_ARB);
+  }
+  data->glBindTexture(texturedata->type, texturedata->texture);
 
-    if(texw) *texw = (float)texturedata->texw;
-    if(texh) *texh = (float)texturedata->texh;
+  if(texw) *texw = (float)texturedata->texw;
+  if(texh) *texh = (float)texturedata->texh;
 
-    return 0;
+  return 0;
 }
 
 static int
 GL_UnbindTexture (SDL_Renderer * renderer, SDL_Texture *texture)
 {
-    GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
-    GL_TextureData *texturedata = (GL_TextureData *) texture->driverdata;
-    GL_ActivateRenderer(renderer);
+  GL_RenderData *data = (GL_RenderData *) renderer->driverdata;
+  GL_TextureData *texturedata = (GL_TextureData *) texture->driverdata;
+  GL_ActivateRenderer(renderer);
 
-    if (texturedata->yuv) {
-        data->glActiveTextureARB(GL_TEXTURE2_ARB);
-        data->glDisable(texturedata->type);
+  if (texturedata->yuv) {
+      data->glActiveTextureARB(GL_TEXTURE2_ARB);
+      data->glDisable(texturedata->type);
 
-        data->glActiveTextureARB(GL_TEXTURE1_ARB);
-        data->glDisable(texturedata->type);
+      data->glActiveTextureARB(GL_TEXTURE1_ARB);
+      data->glDisable(texturedata->type);
 
-        data->glActiveTextureARB(GL_TEXTURE0_ARB);
-    }
+      data->glActiveTextureARB(GL_TEXTURE0_ARB);
+  }
 
-    data->glDisable(texturedata->type);
+  data->glDisable(texturedata->type);
 
-    return 0;
+  return 0;
 }
 
 #endif /* SDL_VIDEO_RENDER_OGL && !SDL_RENDER_DISABLED */

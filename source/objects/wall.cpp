@@ -44,7 +44,7 @@ bool Wall::build( const city::AreaInfo& info )
   Tile& terrain = tilemap.at( info.pos );
 
   // we can't build if already have wall here
-  WallPtr wall = ptr_cast<Wall>( terrain.overlay() );
+  WallPtr wall = terrain.overlay<Wall>();
   if( wall.isValid() )
   {
     return false;
@@ -52,9 +52,10 @@ bool Wall::build( const city::AreaInfo& info )
 
   Construction::build( info );
 
-  WallList walls = info.city->statistic().objects.find<Wall>( object::wall );
+  auto walls = info.city->statistic().objects.find<Wall>( object::wall );
 
-  for( auto wall : walls ) { wall->updatePicture( info.city ); }
+  for( auto wall : walls )
+    wall->updatePicture( info.city );
 
   updatePicture( info.city );
 
@@ -69,15 +70,20 @@ void Wall::destroy()
   {
     TilesArea area( _city()->tilemap(), pos() - TilePos( 2, 2), Size( 5 ) );
 
-    foreach( tile, area )
+    for( auto tile : area )
     {
-      WallPtr wall = ptr_cast<Wall>( (*tile)->overlay() );
+      WallPtr wall = tile->overlay<Wall>();
       if( wall.isValid()  )
       {
         wall->updatePicture( _city() );
       }
     }
   }
+}
+
+void Wall::burn()
+{
+  Logger::warning( "WARNING: Wall cant be burn. Ignore." );
 }
 
 void Wall::initTerrain(Tile &terrain)

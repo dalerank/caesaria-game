@@ -49,6 +49,8 @@
     range : 0,
     class : "wall"
     cost : 10
+    inflammability : 0
+    collapsibility : 0
   },
 
   fortification : {
@@ -56,6 +58,8 @@
     range : 0
     class : "wall"
     cost : 20
+    inflammability : 0
+    collapsibility : 0
   }
   
   aqueduct : {
@@ -191,6 +195,8 @@
     sound : [ "fort", 1 ]
     image : [ "fortlegioner", 1 ]
     requestDestroy : true
+    inflammability : 0
+    collapsibility : 0
   },
 
   missionaryPost : {
@@ -228,6 +234,8 @@
     class : "military"
     image : [ "fortspear", 1 ]
     requestDestroy : true
+    inflammability : 0
+    collapsibility : 0
   }, 
 
   fort_horse : {
@@ -237,6 +245,8 @@
     class : "military"
     image : [ "fortmount", 1 ]
     requestDestroy : true
+    inflammability : 0
+    collapsibility : 0
   }, 
 
   clinic : {
@@ -335,6 +345,8 @@
     step : -1,
     employers : 3
     class : "gate"
+    inflammability : 0
+    collapsibility : 0
   },  
 
   tower : {
@@ -342,6 +354,8 @@
     desirability : { base :-8,	range : 4,	step : -2 }
     employers : 6
     class : "tower"
+    inflammability : 0
+    collapsibility : 0
   },  
   
   small_ceres_temple : {
@@ -695,6 +709,13 @@
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 0
     class : "disaster"
+  },
+
+  farmtile :
+  {
+    cost : 0
+    desirability : { base : 0, range : 0,	step : 0 }
+    class : "food"
   },
   
   wheat_farm : 

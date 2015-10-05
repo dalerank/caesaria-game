@@ -18,12 +18,7 @@
 
 #include "core/platform.hpp"
 #include "core/predefinitions.hpp"
-
-#ifdef CAESARIA_PLATFORM_UNIX
-	#include <pthread.h>
-#elif defined(CAESARIA_PLATFORM_WIN)
-	#include <windows.h>
-#endif
+#include <mutex>
 
 class RecursiveMutex
 {

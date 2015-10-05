@@ -20,6 +20,7 @@
 #include "objects/building.hpp"
 #include "objects/overlay.hpp"
 #include "animation_bank.hpp"
+#include "tilemap.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
 #include "picture_bank.hpp"
@@ -31,6 +32,8 @@ using namespace direction;
 
 namespace gfx
 {
+
+static Tilemap invalidTmap;
 
 namespace tilemap
 {
@@ -70,6 +73,7 @@ Direction getDirection(const TilePos& b, const TilePos& e)
 const TilePos& invalidLocation() { return tileInvalidLocation; }
 bool isValidLocation(const TilePos &pos) { return pos.i() >= 0 && pos.j() >=0; }
 const TilePos& unitLocation(){ return tilePosLocation; }
+Tilemap& getInvalid() { return invalidTmap; }
 
 }
 
@@ -294,12 +298,12 @@ void clear(Tile& tile)
 
   Picture pic( ResourceGroup::land1a, startOffset + imgId );
   tile.setPicture( ResourceGroup::land1a, startOffset + imgId );
-  tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+  tile.setImgId( imgid::fromResource( pic.name() ) );
 }
 
 void fixPlateauFlags(Tile& tile)
 {
-  int imgId = tile.originalImgId();
+  int imgId = tile.imgId();
   bool plateau = (imgId > 200 && imgId < 245);
   bool l3aRocks = (imgId > 848 && imgId < 863);
   if( plateau || l3aRocks )

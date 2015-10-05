@@ -41,9 +41,6 @@ void Food::drawTile(Engine& engine, Tile& tile, const Point& offset)
 
   if( tile.overlay().isNull() )
   {
-    //draw background
-    //engine.draw( tile.picture(), screenPos );
-
     drawPass( engine, tile, offset, Renderer::ground );
     drawPass( engine, tile, offset, Renderer::groundAnimation );
   }
@@ -59,9 +56,9 @@ void Food::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( overlay->type() == object::house )
     {
-      HousePtr house = ptr_cast<House>( overlay );
+      auto house = overlay.as<House>();
       foodLevel = (int) house->state( pr::food );
-      needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
+      needDrawAnimations = (house->level() <= HouseLevel::hovel) && (house->habitants().empty());
       if( !needDrawAnimations )
       {
         drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
@@ -83,7 +80,7 @@ void Food::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 void Food::drawWalkers(Engine &engine, const Tile &tile, const Point &camOffset)
@@ -91,19 +88,18 @@ void Food::drawWalkers(Engine &engine, const Tile &tile, const Point &camOffset)
   Pictures pics;
   const WalkerList& walkers = _city()->walkers( tile.pos() );
 
-  foreach( w, walkers )
+  for( auto wlk : walkers )
   {
-    WalkerPtr wlk = *w;
     if( wlk->type() == walker::cartPusher )
     {
-      CartPusherPtr cartp = ptr_cast<CartPusher>( wlk );
-      good::Product gtype = cartp->stock().type();
+      auto cartPusher = wlk.as<CartPusher>();
+      good::Product gtype = cartPusher->stock().type();
       if( gtype == good::none || gtype > good::vegetable )
         continue;
     }
     pics.clear();
-    (*w)->getPictures( pics );
-    engine.draw( pics, (*w)->mappos() + camOffset );
+    wlk->getPictures( pics );
+    engine.draw( pics, wlk->mappos() + camOffset );
   }
 }
 
@@ -119,7 +115,7 @@ void Food::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        HousePtr house = ptr_cast<House>( tile->overlay() );
+        auto house = tile->overlay<House>();
         if( house.isValid() )
         {
           int houseHabitantsCount = house->habitants().count();

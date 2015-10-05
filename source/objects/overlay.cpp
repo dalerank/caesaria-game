@@ -84,6 +84,15 @@ void Overlay::changeDirection( Tile* masterTile, Direction direction)
   _d->masterTile = masterTile;
 }
 
+Tilemap& Overlay::_map() const
+{
+  if( _city().isValid() )
+    return _city()->tilemap();
+
+  Logger::warning( "!!! WARNING: City is null at Overlay::_map()" );
+  return gfx::tilemap::getInvalid();
+}
+
 void Overlay::setPicture(Picture picture)
 {
   _d->picture = picture;
@@ -101,7 +110,7 @@ bool Overlay::build(const city::AreaInfo &info)
     for (int di = 0; di < _d->size.width(); ++di)
     {
       Tile& tile = tilemap.at( info.pos + TilePos( di, dj ) );
-      tile.setMasterTile( _d->masterTile );
+      tile.setMaster( _d->masterTile );
 
       if( tile.overlay().isValid() && tile.overlay() != this )
       {
@@ -246,7 +255,7 @@ TilesArray Overlay::area() const
     return gfx::TilesArray();
   }
 
-  return _city()->tilemap().getArea( pos(), size() );
+  return _city()->tilemap().area( pos(), size() );
 }
 
 Overlay::~Overlay()
