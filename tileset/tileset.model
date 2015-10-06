@@ -34,5 +34,25 @@
         }
       }
     }
+
+    carts:
+    {
+      size : [ 2048, 2048 ]
+      margin : 1
+      ignorePath : true
+      floatCoordinates : false
+      name : "carts"
+      archive : "resources/gfx/pics_carts"
+
+      items :
+      {
+        clay :
+        {
+          type : "atlas"
+          folder : "/resources/carts/clay"
+          files : [ "cartclay_*" ]
+        }
+      }
+    }
   }
 }

@@ -272,13 +272,16 @@ std::string Migration::reason() const
     }
     else
     {
-      if( params[ Info::workless ] > 20 ) { troubles << "##migration_broke_workless##"; }
-      else if( params[ Info::workless ] > 10 ) { troubles << "##migration_middle_lack_workless##"; }
-      else if( params[ Info::workless ] > 5 ) { troubles << "##migration_lack_workless##"; }
+      int value = params[ Info::workless ];
+      if( value > 25 ) { troubles << "##migration_broke_workless##"; }
+      else if( value > 17  ) { troubles << "##migration_high_lack_workless##"; }
+      else if( value > 10 ) { troubles << "##migration_middle_lack_workless##"; }
+      else if( value > 5 ) { troubles << "##migration_lack_workless##"; }
     }
 
     int diffWages = params[ Info::romeWages ] - params[ Info::cityWages ];
     if( diffWages > 5 ) { troubles << "##low_wage_broke_migration##"; }
+    else if( diffWages > 2 ) { troubles << "##low_wage_midlle_migration##"; }
     else if( diffWages > 1 ) { troubles <<  "##low_wage_lack_migration##"; }
 
     if( params[ Info::crimeLevel ] > 25 ) { troubles << "##migration_lack_crime##"; }

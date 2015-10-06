@@ -312,10 +312,13 @@ void Build::_buildAll()
   }
 
   bool buildOk = false;  
+  bool tileBusyBuilding = false;
   city::AreaInfo areaInfo( _city(), TilePos() );
   for( auto tile : d->buildTiles )
   {
     areaInfo.pos = tile->epos();
+    tileBusyBuilding |= tile->overlay().is<Building>();
+
     if( cnstr->canBuild( areaInfo ) && tile->isMaster())
     {
       auto event = BuildAny::create( tile->epos(), cnstr->type() );
@@ -331,10 +334,11 @@ void Build::_buildAll()
   if( !buildOk )
   {
     std::string errorStr = cnstr->errorDesc();
-
-    GameEventPtr event = WarningMessage::create( errorStr.empty()
-                                                   ? "##need_build_on_cleared_area##"
-                                                   : errorStr, WarningMessage::neitral );
+    std::string busyText = tileBusyBuilding
+                              ? "##need_build_on_free_area##"
+                              : "##need_build_on_cleared_area##";
+    auto event = WarningMessage::create( errorStr.empty() ? busyText : errorStr,
+                                         WarningMessage::neitral );
     event->dispatch();
   }
 

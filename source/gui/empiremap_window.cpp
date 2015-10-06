@@ -576,6 +576,8 @@ void EmpireMapWindow::beforeDraw(Engine& painter)
 {
   _d->lines.clear();
   Widget::beforeDraw( painter );
+
+  //"##click_on_city_for_info_tlp##";
 }
 
 void EmpireMapWindow::setFlag(EmpireMapWindow::Flag flag, bool value)

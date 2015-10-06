@@ -43,7 +43,8 @@ static const std::string crimeDesc[] =
   "##several_crimes_but_area_secure##",
   "##dangerous_crime_risk##"
   "##averange_crime_risk##",
-  "##high_crime_risk##"
+  "##high_crime_risk##",
+  "##extreme_crime_risk##"
 };
 
 int Crime::type() const { return citylayer::crime; }
