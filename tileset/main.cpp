@@ -517,16 +517,19 @@ struct Config
 class Atlases : public std::vector<AtlasGenerator*>
 {
 public:
-  gfx::Picture findByIndex( int index )
+  gfx::Picture findByIndex( int index, std::string& name )
   {
     gfx::Picture ret = gfx::Picture::getInvalid();
     int currentStart = 0;
-    for( auto&& a : *this )
+    for( auto& a : *this )
     {
       if( index >= currentStart &&
           index < currentStart + a->textures.size() )
       {
-        ret = a->textures[ index - currentStart ]->image;
+        int tI = index - currentStart;
+        ret = a->textures[ tI ]->image;
+        name = a->names[ tI ];
+        break;
       }
       else
       {
@@ -724,6 +727,10 @@ int main(int argc, char* argv[])
   bg.update();
 
   int index = 0;
+  std::string picName;
+  gfx::Picture pic = gens.findByIndex(index, picName);
+  engine->setTitle( picName );
+
   while(running)
   {
     static unsigned int lastTimeUpdate = DebugTimer::ticks();    
@@ -734,14 +741,16 @@ int main(int argc, char* argv[])
       {
         if( event.key.keysym.sym == SDLK_UP ) index++;
         if( event.key.keysym.sym == SDLK_DOWN) index--;
+
+        pic = gens.findByIndex(index, picName);
+        engine->setTitle( picName );
       }
     }
 
     index = math::clamp<int>( index, 0, gens.max()-1 );
     engine->startRenderFrame();
 
-    engine->draw( bg, Point() );
-    gfx::Picture pic = gens.findByIndex(index);
+    engine->draw( bg, Point() );    
     engine->draw( pic, Rect( Point(), pic.size()), Rect( Point(), Size(800) ) );
     engine->endRenderFrame();
 

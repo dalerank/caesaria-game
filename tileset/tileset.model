@@ -59,6 +59,13 @@
           folder : "/resources/carts/fish"
           files : [ "cartfish_*" ]
         }
+
+        fruit :
+        {
+          type : "atlas"
+          folder : "/resources/carts/fruit"
+          files : [ "cartfruit_*" ]
+        }
       }
     }
   }
