@@ -190,7 +190,7 @@ void Window::_updateBackground()
 
 Window::~Window()
 {
-  Logger::warning( "Window ID=%d was removed", ID() );
+  Logger::warning( "Window ID={0} was removed", ID() );
 }
 
 //! called if an event happened.

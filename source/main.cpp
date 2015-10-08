@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
 
   LOG.info("Language set to " + SETTINGS_STR(language));
   LOG.info("Using native C3 resources from " + SETTINGS_STR(c3gfx));
-  LOG.info("Cell width set to %d", SETTINGS_VALUE(cellw).toInt());
+  LOG.info("Cell width set to {0}", SETTINGS_VALUE(cellw).toInt());
 
   try
   {

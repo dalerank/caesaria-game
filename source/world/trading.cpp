@@ -95,8 +95,8 @@ public:
         }
         else
         {
-          Logger::warning( "WARNING!!! Trading::load cant create route from %s to %s",
-                           beginCity.c_str(), endCity.c_str() );
+          Logger::warning( "WARNING!!! Trading::load cant create route from {0} to {1}",
+                           beginCity, endCity );
         }
       }
       else
@@ -162,7 +162,7 @@ void Trading::sendMerchant( const std::string& begin, const std::string& end,
   TraderoutePtr route = findRoute( begin, end );
   if( !route.isValid() )
   {
-    Logger::warning( "Trade route no exist [%s to %s]", begin.c_str(), end.c_str() );
+    Logger::warning( "Trade route no exist [{0} to {1}]", begin, end );
     return;
   }
 
@@ -176,7 +176,7 @@ TraderoutePtr Trading::findRoute( const std::string& begin, const std::string& e
   TradeRoutes::iterator it = _d->routes.find( routeId );
   if( it == _d->routes.end() )
   {
-    Logger::warning( "!!! WARNING: Trade route no exist [%s to %s]", begin.c_str(), end.c_str() );
+    Logger::warning( "!!! WARNING: Trade route no exist [{0} to {1}]", begin, end );
     return TraderoutePtr();
   }
 
@@ -199,7 +199,7 @@ TraderoutePtr Trading::createRoute( const std::string& begin, const std::string&
   TraderoutePtr route = findRoute( begin, end );
   if( route.isValid() )
   {
-    Logger::warning( "!!!WARNING: Want create route, but it exist [%s to %s]", begin.c_str(), end.c_str() );
+    Logger::warning( "!!!WARNING: Want create route, but it exist [{0} to {1}]", begin, end );
     return route;
   }
 

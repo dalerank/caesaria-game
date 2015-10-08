@@ -170,8 +170,8 @@ void Building::timeStep(const unsigned long time)
 void Building::storeGoods(good::Stock &stock, const int amount)
 {
   std::string bldType = debugName();
-  Logger::warning( "This building should not store any goods %s at [%d,%d]",
-                   bldType.c_str(), pos().i(), pos().j() );
+  Logger::warning( "This building should not store any goods {0} at [{1},{2}]",
+                   bldType, pos().i(), pos().j() );
 }
 
 float Building::evaluateService(ServiceWalkerPtr walker)

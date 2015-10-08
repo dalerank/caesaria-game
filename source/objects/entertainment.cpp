@@ -127,7 +127,7 @@ std::string EntertainmentBuilding::troubleDesc() const
       int level = traineeValue( item );
       if( level == 0 )
       {
-        ret = utils::format( 0xff, "##need_trainee_%s##", WalkerHelper::getTypename( item ).c_str() );
+        ret = fmt::format( "##need_trainee_{0}##", WalkerHelper::getTypename( item ));
         break;
       }
     }

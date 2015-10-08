@@ -67,7 +67,7 @@ AboutFort::AboutFort(Widget* parent, PlayerCityPtr city, const Tile& tile )
   else
   {
     deleteLater();
-    Logger::warning( "AboutFort: cant find fort for [%d,%d]", tile.i(), tile.j() );
+    Logger::warning( "AboutFort: cant find fort for [{0},{1}]", tile.i(), tile.j() );
     return;
   }
 

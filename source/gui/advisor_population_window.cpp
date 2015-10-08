@@ -208,18 +208,18 @@ void Population::Impl::switch2nextChart( int change )
     chartCurrent->update( city, (CityChart::DrawMode)(chartCurrent->mode()+change) );
     int mode = chartCurrent->mode();
     std::string modeName = cmHelper.findName( (CityChart::DrawMode)mode );
-    std::string text = utils::format( 0xff, "##citychart_%s##", modeName.c_str() );
+    std::string text = fmt::format( "##citychart_{0}##", modeName );
     lbTitle->setText( _( text ) );
 
     mode = chartCurrent->fit( (CityChart::DrawMode)(chartCurrent->mode() + 1) );
     modeName = cmHelper.findName( (CityChart::DrawMode)mode );
-    text = utils::format( 0xff, "##citychart_%s##", modeName.c_str() );
+    text = fmt::format( "##citychart_{0}##", modeName );
     lbNextChart->setText(  _( text ) );
     chartNext->update( city, (CityChart::DrawMode)mode );
 
     mode = chartCurrent->fit( (CityChart::DrawMode)(chartCurrent->mode() - 1) );
     modeName = cmHelper.findName( (CityChart::DrawMode)mode );
-    text = utils::format( 0xff, "##citychart_%s##", modeName.c_str() );
+    text = fmt::format( "##citychart_{0}##", modeName );
     lbPrevChart->setText( _( text ) );
     chartPrev->update( city, (CityChart::DrawMode)mode );
   }

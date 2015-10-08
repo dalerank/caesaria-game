@@ -50,7 +50,7 @@ AboutGatehouse::AboutGatehouse(Widget* parent, PlayerCityPtr city, const Tile& t
   if( !_d->gates.isValid() )
   {
     deleteLater();
-    Logger::warning( "AboutGatehouse: cant find fort for [%d,%d]", tile.i(), tile.j() );
+    Logger::warning( "AboutGatehouse: cant find fort for [{0},{1}]", tile.i(), tile.j() );
     return;
   }
 

@@ -242,7 +242,7 @@ const Picture& Wall::picture(const city::AreaInfo& areaInfo) const
 
   default:
     index = 178; // it's impossible, but ...
-    Logger::warning( "Impossible direction on wall building [%d,%d]", areaInfo.pos.i(), areaInfo.pos.j() );
+    Logger::warning( "Impossible direction on wall building [{0},{1}]", areaInfo.pos.i(), areaInfo.pos.j() );
   }
 
   static Picture ret;

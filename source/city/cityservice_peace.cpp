@@ -147,7 +147,7 @@ void Peace::addCriminal( WalkerPtr wlk )
   else if( wlk .is<Mugger>() ) { _d->threats.mugger = true; }
   else
   {
-    Logger::warning( "Peace: addCriminal unknown walker %d", wlk->type() );
+    Logger::warning( "Peace: addCriminal unknown walker {0}", wlk->type() );
     _d->threats.criminal = true;
   }
 }

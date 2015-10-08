@@ -101,7 +101,7 @@ void Manager::showHelp( PlayerCityPtr city, Ui* gui, TilePos pos )
 
   if( _d->showDebugInfo )
   {
-    Logger::warning( "Tile debug info: dsrbl=%d", tile.param( Tile::pDesirability ) );
+    Logger::warning( "Tile debug info: dsrbl={0}", tile.param( Tile::pDesirability ) );
   }
 
   type = overlay.isNull() ? object::unknown : overlay->type();

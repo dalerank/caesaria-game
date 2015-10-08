@@ -63,7 +63,7 @@ static void _setAutoText(Widget *widget, const std::string& text)
 
 static void _setAutoText(Widget *widget, const std::string& text, bool enabled )
 {
-  _setAutoText( widget, utils::format( 0xff, "##%s_%s##", text.c_str(), enabled ? "on" : "off" ) );
+  _setAutoText( widget, fmt::format( "##{0}_{1}##", text, enabled ? "on" : "off" ) );
 }
 
 class OptionButton : public PushButton
@@ -106,7 +106,7 @@ public:
     {
       if( item.first == value )
       {
-        std::string text = utils::format( 0xff, "##%s_%s##", basicName.c_str(), item.second.c_str() );
+        std::string text = fmt::format( "##{0}_{1}##", basicName, item.second );
         setText( _(text) );
         _setAutoText( this, text );
         break;
@@ -404,7 +404,7 @@ void CityOptions::Impl::update()
   if( lbFireRisk )
   {
     int value = city->getOption( PlayerCity::fireKoeff );
-    lbFireRisk->setText( utils::format( 0xff, "%s %d %%", "Fire risk", value ) );
+    lbFireRisk->setText( fmt::format( "{0} {1} %", "Fire risk", value ) );
   }
 
   if( lbCollapseRisk )

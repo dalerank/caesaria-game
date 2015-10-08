@@ -202,10 +202,10 @@ public:
         if (unitCoordinates)
         {
           std::string str = utils::format( 0xff, "    %s %f %f %f %f", keyVal.c_str(),
-                                                           r.left()/(float)width,
-                                                           r.top()/(float)height,
-                                                           r.width()/(float)width,
-                                                           r.height()/(float)height );
+                                           r.left()/(float)width,
+                                           r.top()/(float)height,
+                                           r.width()/(float)width,
+                                           r.height()/(float)height );
           atlas.write( str );
         }
         else
@@ -243,7 +243,7 @@ public:
       vfs::Path path(str);
       if(!path.exist() || !path.isFolder())
 			{
-        Logger::warning("Error: Could not find directory '" + path.toString() + "'");
+        Logger::warning("Error: Could not find directory '{0}'", path.toString());
 				return;
 			}
 
@@ -263,8 +263,8 @@ public:
 
         if(image.width() > width || image.height() > height)
 				{
-          Logger::warning( "Error: '%s' (%dx%d) ) is larger than the atlas (%dx%d)",
-                           filename.c_str(), image.width(), image.height(), width, height );
+          Logger::warning( "Error: '{0}' ({1}x{2}) ) is larger than the atlas ({3}x{4}})",
+                           filename, image.width(), image.height(), width, height );
 					return;
 				}			        
 				

@@ -1122,7 +1122,7 @@ void House::_update( bool needChangeTexture )
   {
     if( !pic.isValid() )
     {
-      Logger::warning( "WARNING!!! House: failed change texture for size %d", size().width() );
+      Logger::warning( "WARNING!!! House: failed change texture for size {0}", size().width() );
       pic = Picture::getInvalid();
     }
 
@@ -1576,6 +1576,6 @@ void House::Impl::consumeFoods(HousePtr house)
 
   if( !haveFoods4Eating )
   {
-    Logger::warning( "House: [%dx%d] have no food for habitants", house->pos().i(), house->pos().j() );
+    Logger::warning( "House: [{0},{1}] have no food for habitants", house->pos().i(), house->pos().j() );
   }
 }

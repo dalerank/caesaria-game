@@ -176,7 +176,7 @@ void SdlEngine::init()
   int rc = SDL_Init(SDL_INIT_VIDEO);
   if (rc != 0)
   {
-    Logger::warning( utils::format( 0xff, "CRITICAL!!! Unable to initialize SDL: %s", SDL_GetError() ) );
+    Logger::warning( "CRITICAL!!! Unable to initialize SDL: {0}", SDL_GetError() );
     THROW("SDLGraficEngine: Unable to initialize SDL: " << SDL_GetError());
   }
 
@@ -184,7 +184,7 @@ void SdlEngine::init()
   rc = TTF_Init();
   if (rc != 0)
   {
-    Logger::warning( utils::format( 0xff, "CRITICAL!!! Unable to initialize ttf: %s", SDL_GetError() ) );
+    Logger::warning( "CRITICAL!!! Unable to initialize ttf: {0}", SDL_GetError() );
     THROW("SDLGraficEngine: Unable to initialize SDL: " << SDL_GetError());
   }
 
@@ -201,7 +201,7 @@ void SdlEngine::init()
 #ifdef CAESARIA_PLATFORM_ANDROID
   auto mode = modes().front();
   _srcSize = Size( mode.width(), mode.height() );
-  Logger::warning( utils::format( 0xff, "SDLGraficEngine: Android set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
+  Logger::warning( "SDLGraficEngine: Android set mode {0}x{0}",  _srcSize.width(), _srcSize.height() );
 
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
@@ -210,7 +210,7 @@ void SdlEngine::init()
 
   Logger::warning("SDLGraficEngine:Android init successfull");
 #else
-  Logger::warning( utils::format( 0xff, "SDLGraficEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
+  Logger::warning( "SDLGraficEngine: set mode {0}x{0}",  _srcSize.width(), _srcSize.height() );
 
   window = SDL_CreateWindow( "CaesariA",
                              SDL_WINDOWPOS_CENTERED,
@@ -220,7 +220,7 @@ void SdlEngine::init()
 
   if (window == NULL)
   {
-    Logger::warning( utils::format( 0xff, "CRITICAL!!! Unable to create SDL-window: %s", SDL_GetError() ) );
+    Logger::warning( "CRITICAL!!! Unable to create SDL-window: {0}", SDL_GetError() );
     THROW("Failed to create window");
   }
 
@@ -242,7 +242,7 @@ void SdlEngine::init()
 
   if (renderer == NULL)
   {
-    Logger::warning( utils::format( 0xff, "CRITICAL!!! Unable to create renderer: %s", SDL_GetError() ) );
+    Logger::warning( "CRITICAL!!! Unable to create renderer: {0}", SDL_GetError() );
     THROW("Failed to create renderer");
   }
 
@@ -256,7 +256,7 @@ void SdlEngine::init()
   for( int k=0; k < SDL_GetNumRenderDrivers(); k++ )
   {
     SDL_GetRenderDriverInfo( k, &info );
-    Logger::warning( "SDLGraficEngine: availabe render %s ", info.name );
+    Logger::warning( "SDLGraficEngine: availabe render {0}", info.name );
   }
 
   SDL_GetRendererInfo( renderer, &info );  
@@ -264,9 +264,9 @@ void SdlEngine::init()
   SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
   SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 16);
   SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &gl_version );
-  Logger::warning( "SDLGraficEngine: init render %s ", info.name );
-  Logger::warning( "SDLGraficEngine: using OpenGL %d ", gl_version );
-  Logger::warning( "SDLGraficEngine: max texture size is [%dx%d]", info.max_texture_width, info.max_texture_height );
+  Logger::warning( "SDLGraficEngine: init render {0}", info.name );
+  Logger::warning( "SDLGraficEngine: using OpenGL {0}", gl_version );
+  Logger::warning( "SDLGraficEngine: max texture size is [{0}x{1}]", info.max_texture_width, info.max_texture_height );
 
   SDL_Texture *screenTexture = SDL_CreateTexture(renderer,
                                                  SDL_PIXELFORMAT_ARGB8888,
@@ -283,8 +283,8 @@ void SdlEngine::init()
   }
 
   Logger::warning( "SDLGraficEngine: set caption");
-  Logger::warning( "SDLGraphicEngine: version:%s compiler:%s", CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
-  std::string versionStr = utils::format( 0xff, "CaesarIA (b%d)", CAESARIA_BUILD_NUMBER );
+  Logger::warning( "SDLGraphicEngine: version:%s compiler:{0}", CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
+  std::string versionStr = fmt::format( "CaesarIA (b{0}})", CAESARIA_BUILD_NUMBER );
   SDL_SetWindowTitle( window, versionStr.c_str() );
 
   _d->window = window;
@@ -305,7 +305,7 @@ void SdlEngine::loadPicture(Picture& ioPicture, bool streaming)
   if( !ioPicture.surface() )
   {
     Size size = ioPicture.size();
-    Logger::warning( utils::format( 0xff, "SdlEngine:: can't make surface, size=%dx%d", size.width(), size.height() ) );
+    Logger::warning( "SdlEngine:: can't make surface, size={0}x{1}]", size.width(), size.height() );
   }
 
   SDL_Texture* tx = 0;
@@ -370,7 +370,7 @@ void SdlEngine::endRenderFrame()
       _d->debugFont.draw( _d->fpsTx, _d->debugTextStr, Point( 0, 0 ) );
       timeCount = DebugTimer::ticks();
 #ifdef SHOW_FPS_IN_LOG
-      Logger::warning( "FPS: %d", _d->fps );
+      Logger::warning( "FPS: {0}", _d->fps );
 #endif
     }
     draw( _d->fpsTx, Point( _d->screen.width() / 2, 2 ), 0 );

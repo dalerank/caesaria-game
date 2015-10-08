@@ -47,7 +47,7 @@ AboutDock::AboutDock(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
   if( !dock.isValid() )
   {
-    Logger::warning( "AboutMarket: market is null tile at [d,%d]", tile.i(), tile.j() );
+    Logger::warning( "AboutMarket: market is null tile at [{0},{1}]", tile.i(), tile.j() );
     return;
   }
 
@@ -76,7 +76,7 @@ void AboutDock::drawGood( DockPtr dock, const good::Product &goodType, int index
   int offset = ( width() - startOffset * 2 ) / 6;
   //std::string goodName = good::Helper::name( goodType );
   int qty = dock->exportStore().qty( goodType );
-  std::string outText = utils::format( 0xff, "%d", metric::Measure::convQty( qty ) );
+  std::string outText = utils::i2str( metric::Measure::convQty( qty ) );
 
   // pictures of goods
   Picture pic = good::Helper::picture( goodType );

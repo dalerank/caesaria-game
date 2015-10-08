@@ -21,17 +21,37 @@
 #include "variant_list.hpp"
 
 static std::string lastParsedObjectName;
-static std::string sanitizeString(std::string str)
+static std::string sanitizeString( const std::string& str)
 {
-  str = utils::replace( str, "\\", "\\\\");
+  std::string output;
+  output.reserve(str.length());
+  output += "\"";
+
+  for (std::string::size_type i = 0; i < str.length(); ++i)
+  {
+      switch (str[i])
+      {
+      case '"':              output += "\\\"";              break;
+      case '/':              output += "\\/";               break;
+      case '\b':             output += "\\b";               break;
+      case '\f':             output += "\\f";               break;
+      case '\n':             output += "\\n";               break;
+      case '\r':             output += "\\r";               break;
+      case '\t':             output += "\\t";               break;
+      case '\\':             output += "\\\\";              break;
+      default:               output += str[i];            break;
+      }
+  }
+
+  /*str = utils::replace( str, "\\", "\\\\");
   str = utils::replace( str, "\"", "\\\"");
   str = utils::replace( str, "\b", "\\b");
   str = utils::replace( str, "\f", "\\f");
   str = utils::replace( str, "\n", "\\n");
   str = utils::replace( str, "\r", "\\r");
-  str = utils::replace( str, "\t", "\\t");
-  
-  return std::string( "\"" ) + str + std::string("\"");
+  str = utils::replace( str, "\t", "\\t");*/
+  output += "\"";
+  return output;
 }
 
 static std::string join(const StringArray& rlist, const std::string& sep)
@@ -85,8 +105,19 @@ Variant Json::parse(const std::string& json, bool &success )
 
 std::string Json::serialize(const Variant &data, const std::string& tab)
 {
-        bool success = true;
-        return Json::serialize(data, success, tab);
+   bool success = true;
+   return Json::serialize(data, success, tab);
+}
+
+namespace {
+  StringArray values;
+  std::string serializedValue;
+}
+
+void Json::resetInternalData()
+{
+  values.reserve( 20 );
+  serializedValue.reserve( 512 );
 }
 
 std::string Json::serialize(const Variant &data, bool &success, const std::string& tab)
@@ -104,10 +135,9 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
     case Variant::List:
     case Variant::NStringArray: // variant is a list?
     {
-      StringArray values;
+      values.clear();
       const VariantList rlist = data.toList();
-      std::string serializedValue;
-      serializedValue.reserve( 512 );
+
       for( auto& item : rlist )
       {
         serializedValue = serialize( item, "" );

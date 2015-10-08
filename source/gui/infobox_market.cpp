@@ -45,7 +45,7 @@ AboutMarket::AboutMarket(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
   if( !market.isValid() )
   {
-    Logger::warning( "AboutMarket: market is null tile at [d,%d]", tile.i(), tile.j() );
+    Logger::warning( "AboutMarket: market is null tile at [{0},{1}]", tile.i(), tile.j() );
     return;
   }
 
@@ -112,7 +112,7 @@ void AboutMarket::drawGood( MarketPtr market, const good::Product &goodType, int
   int offset = ( width() - startOffset * 2 ) / 5;
   //std::string goodName = good::Helper::name( goodType );
   int qty = market->goodStore().qty( goodType );
-  std::string outText = utils::format( 0xff, "%d", metric::Measure::convQty( qty ) );
+  std::string outText = utils::i2str( metric::Measure::convQty( qty ) );
 
   // pictures of goods
   Picture pic = good::Helper::picture( goodType );

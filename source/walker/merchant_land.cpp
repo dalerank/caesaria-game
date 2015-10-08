@@ -305,7 +305,7 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
 
       if( buy.qty() == 0 )
       {
-        Logger::warning( "LandMerchant: [%d,%d] wait while store buying goods on my animals", position.i(), position.j() );
+        Logger::warning( "LandMerchant: [{0},{1}] wait while store buying goods on my animals", position.i(), position.j() );
         wlk->setThinks( "##landmerchant_say_about_store_goods##" );
         waitInterval = game::Date::days2ticks( 7 );
         setCamelsGo( waitInterval );

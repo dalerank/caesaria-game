@@ -505,7 +505,7 @@ public:
   {
     if (window == NULL)
     {
-      Logger::warning( utils::format( 0xff, "CRITICAL!!! Unable to create SDL-window: %s", SDL_GetError() ) );
+      Logger::warning( "CRITICAL!!! Unable to create SDL-window: {0}", SDL_GetError() );
       THROW("Failed to create window");
     }
   }
@@ -527,7 +527,7 @@ void GlEngine::init()
   rc = TTF_Init();
   if (rc != 0) THROW("Unable to initialize SDL: " << SDL_GetError());
 
-  Logger::warning( utils::format( 0xff, "SDLGraficEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
+  Logger::warning( "SDLGraficEngine: set mode {0}x{1}",  _srcSize.width(), _srcSize.height() );
 
 #ifdef USE_GLES
   //_srcSize = Size( mode.w, mode.h );
@@ -635,8 +635,8 @@ void GlEngine::init()
 
   Logger::warning( "GrafixEngine: set caption");
   std::string versionStr = utils::format(0xff, "CaesarIA: OpenGL %d.%d R%d [%s:%s]",
-                                                 CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR, CAESARIA_VERSION_REVSN,
-                                                 CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
+                                               CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR, CAESARIA_VERSION_REVSN,
+                                               CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
   SDL_SetWindowTitle( _d->window, versionStr.c_str() );
 
   //!!!!!

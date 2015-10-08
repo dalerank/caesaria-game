@@ -783,7 +783,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
 
   oCity->resize( mapSize );
 
-  Logger::warning( "W:%d H:%d", diamond_square.width(), diamond_square.height() );
+  Logger::warning( "W:{0} H:{1}", diamond_square.width(), diamond_square.height() );
 
   for( unsigned int index = 0; index < map.size(); index++)
   {

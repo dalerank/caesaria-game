@@ -249,7 +249,7 @@ void EmpireMapWindow::Impl::drawMovable(Engine& painter)
       auto movableObject = obj.as<world::MovableObject>();
       if( !movableObject.isValid() )
       {
-        Logger::warning( "Object %s not movable", obj->name().c_str() );
+        Logger::warning( "Object {0} not movable", obj->name() );
         continue;
       }
 

@@ -623,7 +623,7 @@ void StartMenu::initialize()
       return;
     }
 
-    std::string text = utils::format( 0xff, "Build %d\n%s", CAESARIA_BUILD_NUMBER, steamName.c_str() );
+    std::string text = fmt::format( "Build {0}\n{1}", CAESARIA_BUILD_NUMBER, steamName );
     _d->lbSteamName = new Label( _d->game->gui()->rootWidget(), Rect( 100, 10, 400, 80 ), text );
     _d->lbSteamName->setTextAlignment( align::upperLeft, align::center );
     _d->lbSteamName->setWordwrap( true );

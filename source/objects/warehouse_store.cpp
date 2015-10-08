@@ -174,8 +174,8 @@ void WarehouseStore::applyRetrieveReservation(good::Stock& stock, const int rese
   }
   if( stock.capacity() < stock.qty() + reservedStock.qty() )
   {
-    Logger::warning( "Warehouse: Retrieve stock[%s] less reserve qty, decrease from %d to &%d",
-                     good::Helper::name(stock.type()).c_str(),
+    Logger::warning( "Warehouse: Retrieve stock[{0}] less reserve qty, decrease from {1} to {2}",
+                     good::Helper::name(stock.type()),
                      reservedStock.qty(), stock.freeQty() );
     reservedStock.setQty( stock.freeQty() );
   }

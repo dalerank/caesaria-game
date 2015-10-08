@@ -82,7 +82,7 @@ void AboutMerchant::_drawGood( const good::Product& goodType, int qty, int index
 
   int offset = ( width() - startOffset * 2 ) / 4;
   //std::string goodName = good::Helper::name( goodType );
-  std::string outText = utils::format( 0xff, "%d", metric::Measure::convQty( qty ) );
+  std::string outText = utils::i2str( metric::Measure::convQty( qty ) );
 
   // pictures of goods
   gfx::Picture pic = good::Helper::picture( goodType );

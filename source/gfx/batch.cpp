@@ -69,7 +69,7 @@ bool Batch::load(const Pictures &pics, const Rects& dstrects)
 
     if( pic.texture() != tx )
     {
-      Logger::warning( "!!! WARNING: Cant create batch from pictures " + pics.at( 0 ).name() + " to " + pic.name() );
+      Logger::warning( "!!! WARNING: Cant create batch from pictures {0} to {1}", pics.at( 0 ).name(), pic.name() );
       srcrects.push_back( Rect( Point( 0, 0), pic.size() ) );
       haveErrors = true;
       continue;

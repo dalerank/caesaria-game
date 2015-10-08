@@ -437,7 +437,7 @@ bool FileSystem::unmountArchive(unsigned int index)
   bool ret = false;
   if (index < _d->openArchives.size())
   {
-    Logger::warning( "FileSystem: unmountArchive %d", index );
+    Logger::warning( "FileSystem: unmountArchive {0}", index );
     _d->openArchives.erase( _d->openArchives.begin() + index );
     ret = true;
   }

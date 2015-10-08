@@ -110,14 +110,14 @@ public:
 
     Picture& texture = _textPicture();
     Font rfont = font();
-    rfont.draw( texture, utils::format( 0xff, "%d %s", _info.buildingCount, _(info.building)), ofNumberInCity, 0 );
+    rfont.draw( texture, fmt::format( "{0} {1}", _info.buildingCount, _(info.building)), ofNumberInCity, 0 );
     rfont.draw( texture, utils::i2str( _info.buildingWork ), ofWorkInCity, 0 );
     rfont.draw( texture, utils::i2str( _info.buildingShow ), ofHaveShow, 0 );
-    rfont.draw( texture, utils::format( 0xff, "%d %s",_info.peoplesServed, _(info.people)), ofHowmuchServed, 0 );
+    rfont.draw( texture, fmt::format( "{0} {1}",_info.peoplesServed, _(info.people)), ofHowmuchServed, 0 );
 
     std::string coverityText = "none";
     if( _info.buildingCount > 0 )
-      utils::format( 0xff, "%d %%", _info.coverity );
+      coverityText = fmt::format( "{0}%", _info.coverity );
 
     rfont.draw( texture, coverityText, ofCoverity, 0 );
   }
@@ -359,7 +359,7 @@ void Entertainment::Impl::updateFestivalInfo()
                                        24, 24, 31, 31 };
 
     int currentThinkIndex = math::clamp<int>( monthFromLastFestival, 0, maxFestivalDelay-1);
-    text = utils::format( 0xff, "##more_%d_month_from_festival##", strIndex[ currentThinkIndex ] );
+    text = fmt::format( "##more_{0}_month_from_festival##", strIndex[ currentThinkIndex ] );
     lbInfoAboutLastFestival->setText( _( text ) );
     }
 }

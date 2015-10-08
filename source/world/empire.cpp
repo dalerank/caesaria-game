@@ -308,7 +308,7 @@ CityPtr Empire::addCity( CityPtr city )
 
   if( ret.isValid() )
   {
-    Logger::warning( "Empire: city %s already exist", city->name().c_str() );
+    Logger::warning( "Empire: city {0} already exist", city->name() );
     //_CAESARIA_DEBUG_BREAK_IF( "City already exist" );
     return ret;
   }
@@ -396,8 +396,8 @@ TraderoutePtr Empire::createTradeRoute(std::string start, std::string stop )
     TraderoutePtr route = _d->trading.createRoute( start, stop );
     if( !route.isValid() )
     {
-      Logger::warning( "WARNING!!! Trading::load cant create route from %s to %s",
-                       start.c_str(), stop.c_str() );
+      Logger::warning( "WARNING!!! Trading::load cant create route from {0} to {1}",
+                       start, stop );
       return route;
     }
 
@@ -446,7 +446,7 @@ TraderoutePtr Empire::createTradeRoute(std::string start, std::string stop )
   }
   else
   {
-    Logger::warning( "!!! WARNING: Cant create road from %s to %s", start.c_str(), stop.c_str() );
+    Logger::warning( "!!! WARNING: Cant create road from {0} to {1}", start, stop );
   }
 
   return TraderoutePtr();
@@ -490,7 +490,7 @@ CityPtr Empire::initPlayerCity( CityPtr city )
 
   if( ret.isNull() )
   {
-    Logger::warning("Empire: can't init player city, city with name %s no exist", city->name().c_str() );
+    Logger::warning("Empire: can't init player city, city with name {0} no exist", city->name() );
     return CityPtr();
   }
 

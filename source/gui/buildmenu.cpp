@@ -122,7 +122,7 @@ void BuildMenu::initialize()
     development::Branch branch = development::findBranch( item.toString() );
     if( branch != development::unknown )
     {
-      std::string title = utils::format( 0xff, "##bldm_%s##", item.toString().c_str() );
+      std::string title = fmt::format( "##bldm_{0}##", item.toString() );
       addSubmenuButton( branch, title );
     }
   }

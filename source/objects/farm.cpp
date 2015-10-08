@@ -306,7 +306,7 @@ void Farm::load( const VariantMap& stream )
 
   if( _d->sublocs.empty() )
   {
-    Logger::warning( "!!! WARNING: Farm [%d,%d] lost tiles. Will add default locations", pos().i(), pos().j() );
+    Logger::warning( "!!! WARNING: Farm [{0},{1}] lost tiles. Will add default locations", pos().i(), pos().j() );
     _d->sublocs << TilePos(0, 0) << TilePos( 1, 0 )
                 << TilePos(2, 0) << TilePos( 2, 1 ) << TilePos( 2, 2);
     foreach( it, _d->sublocs )

@@ -84,7 +84,7 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::RequestPtr r
     GET_WIDGET_FROM_UI( smkViewer )
     GET_WIDGET_FROM_UI( lbTitle )
 
-    if( lbQty ) { lbQty->setText( utils::format( 0xff, "%d", gr->qty() ) ); }
+    if( lbQty ) { lbQty->setText( utils::i2str( gr->qty() ) ); }
     if( imgIcon ) { imgIcon->setPicture( good::Helper::picture( gr->goodType() )); }
 
     std::string title, text, video;

@@ -179,7 +179,7 @@ void Overlay::load( const VariantMap& stream )
   _d->picture.load( pictureName );
   if( !_d->picture.isValid() )
   {
-    LOG_OVERLAY.warn( "Invalid picture for building [%d,%d] with name %s", pos().i(), pos().j(), pictureName.c_str());
+    LOG_OVERLAY.warn( "Invalid picture for building {0}{1} with name {2}", pos().i(), pos().j(), pictureName);
   }
   _d->picture.setOffset( stream.get( "pictureOffset" ).toPoint() );
   VARIANT_LOAD_ANYDEF_D( _d, isDeleted, false, stream )

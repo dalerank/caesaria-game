@@ -289,8 +289,13 @@ Ratings::Ratings(Widget* parent, int id, const PlayerCityPtr city )
 
   const city::VictoryConditions& targets = city->victoryConditions();
 
-  if( lbNeedPopulation ) lbNeedPopulation->setText( utils::format( 0xff, "%s %d (%d %s", _("##population##"), city->states().population,
-                                                                                          targets.needPopulation(), ("##need_population##")  ) );
+  if( lbNeedPopulation )
+  {
+    std::string text = fmt::format( "{0} {1} ({2} {3}",
+                                    _("##population##"), city->states().population,
+                                    targets.needPopulation(), ("##need_population##")  );
+    lbNeedPopulation->setText( text );
+  }
 
   GET_DWIDGET_FROM_UI( _d, btnCulture )
   if( _d->btnCulture )

@@ -574,7 +574,7 @@ void Widget::setupUI( const VariantMap& options )
     if( r.width() > 1 && r.height() > 1)
     {
       r = RectF( 0, 0, 1, 1 );
-      Logger::warning( "Incorrect geometryf values [%f, %f, %f, %f]",
+      Logger::warning( "Incorrect geometryf values [{0}, {1}, {2}, {3}]",
                        r.left(), r.top(), r.right(), r.bottom() );
     }
 
