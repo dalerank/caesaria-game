@@ -59,7 +59,7 @@ AboutBarracks::AboutBarracks(Widget* parent, PlayerCityPtr city, const Tile& til
 
   GET_DWIDGET_FROM_UI( _d, lbWeaponQty )
 
-  setTitle( MetaDataHolder::findPrettyName( base()->type() ) );
+  setTitle( _( barracks->info().prettyName() ) );
   setText( _("##barracks_info##") );
 
   if( _d->lbWeaponQty )

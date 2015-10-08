@@ -84,7 +84,7 @@ void Reservoir::addWater(const WaterSource& source)
   WaterSource::addWater( source );
 }
 
-void Reservoir::initialize(const MetaData& mdata)
+void Reservoir::initialize(const object::Info& mdata)
 {
   WaterSource::initialize( mdata );
 
@@ -109,9 +109,9 @@ Reservoir::Reservoir()
   // utilitya 34      - empty reservoir
   // utilitya 35 ~ 42 - full reservoir animation
  
-  _animationRef().load( ResourceGroup::utilitya, 35, 8);
-  _animationRef().load( ResourceGroup::utilitya, 42, 7, Animation::reverse);
-  _animationRef().setDelay( 11 );
+  _animation().load( ResourceGroup::utilitya, 35, 8);
+  _animation().load( ResourceGroup::utilitya, 42, 7, Animation::reverse);
+  _animation().setDelay( 11 );
   //_animationRef().setOffset( Point( 47, 63 ) );
 
   _fgPictures().resize(1);
@@ -178,10 +178,10 @@ void Reservoir::timeStep(const unsigned long time)
     _produceWater(offsets, 4);
   }
 
-  _animationRef().update( time );
+  _animation().update( time );
   
   // takes current animation frame and put it into foreground
-  _fgPicture( 0 ) = _animationRef().currentFrame();
+  _fgPicture( 0 ) = _animation().currentFrame();
 }
 
 bool Reservoir::canBuild( const city::AreaInfo& areaInfo ) const

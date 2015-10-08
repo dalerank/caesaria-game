@@ -37,7 +37,6 @@ using namespace gfx;
 namespace events
 {
 
-CAESARIA_LITERALCONST(type)
 CAESARIA_LITERALCONST(items)
 CAESARIA_LITERALCONST(target)
 CAESARIA_LITERALCONST(count)
@@ -88,7 +87,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
     VariantMap soldiers = item.second.toMap();
     TilePos exitPos = game.city()->borderInfo().roadExit;
 
-    std::string soldierType = soldiers.get( literals::type ).toString();
+    std::string soldierType = soldiers.get( "type" ).toString();
     int soldierNumber = soldiers.get( literals::count );
 
     Variant vCityPop = soldiers.get( "city.pop" );

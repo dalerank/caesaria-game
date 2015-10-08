@@ -15,36 +15,24 @@
 //
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#include "engineer_post.hpp"
-#include "game/resourcegroup.hpp"
-#include "core/position.hpp"
-#include "constants.hpp"
-#include "objects_factory.hpp"
+#ifndef __CAESARIA_OBJECT_PARAMS_H_INCLUDED__
+#define __CAESARIA_OBJECT_PARAMS_H_INCLUDED__
 
-using namespace gfx;
+#include "param.hpp"
+#include "core/variant_map.hpp"
 
-REGISTER_CLASS_IN_OVERLAYFACTORY( object::engineering_post, EngineerPost)
-
-EngineerPost::EngineerPost() : ServiceBuilding( Service::engineer, object::engineering_post, Size(1) )
+namespace pr
 {
-  setPicture( info().randomPicture( size() ) );
-  _fgPictures().resize(1);
+
+class Array : public std::map<Param, double>
+{
+public:
+  VariantList save() const;
+  void load( const VariantList& stream );
+};
+
 }
 
-void EngineerPost::timeStep(const unsigned long time)
-{
-  ServiceBuilding::timeStep( time );
-}
+typedef pr::Array Params;
 
-void EngineerPost::deliverService()
-{
-  if( numberWorkers() > 0 && walkers().size() == 0 )
-  {
-    ServiceBuilding::deliverService();
-  }
-}
-
-unsigned int EngineerPost::walkerDistance() const
-{
-  return 26;
-}
+#endif //__CAESARIA_OBJECT_PARAMS_H_INCLUDED__

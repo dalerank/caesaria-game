@@ -119,7 +119,7 @@ void Build::_checkPreviewBuild(TilePos pos)
   }
 
   Size size = overlay->size();
-  int cost = _getCost( overlay );
+  int cost = overlay->info().cost();
 
   bool walkersOnTile = false;
   if( bldCommand->flag( LayerMode::checkWalkers ) )
@@ -325,7 +325,7 @@ void Build::_buildAll()
       event->dispatch();
       buildOk = true;
 
-      emit d->onBuildSignal( cnstr->type(), tile->epos(), _getCost( cnstr ) );
+      emit d->onBuildSignal( cnstr->type(), tile->epos(), cnstr->info().cost() );
     }
   }
 
@@ -352,11 +352,6 @@ void Build::_exitBuildMode()
   _setNextLayer( _d->lastLayer.isValid() ? _d->lastLayer->type() : citylayer::simple );
   _setStartCursorPos( Point(-1, -1) );
   _discardPreview();
-}
-
-int Build::_getCost( ConstructionPtr overlay)
-{
-  return MetaDataHolder::find( overlay->type() ).getOption( MetaDataOptions::cost );
 }
 
 void Build::handleEvent(NEvent& event)

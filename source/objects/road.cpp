@@ -355,20 +355,20 @@ const Picture& Plaza::picture(const city::AreaInfo& areaInfo) const
 
 void Plaza::appendPaved(int) {}
 
-bool Plaza::build( const city::AreaInfo& info )
+bool Plaza::build( const city::AreaInfo& areainfo )
 {
-  RoadPtr road = ptr_cast<Road>( info.city->getOverlay( info.pos ) );
+  RoadPtr road = areainfo.city->getOverlay( areainfo.pos ).as<Road>();
   if( road.isValid() )
   {
     road->setState( pr::lockTerrain, 1 );
   }
 
-  Construction::build( info );
-  setPicture( MetaDataHolder::randomPicture( type(), size() ) );
+  Construction::build( areainfo );
+  setPicture( info().randomPicture( size() ) );
 
   if( size().area() == 1 )
   {
-    auto plazas = info.city->tilemap()
+    auto plazas = areainfo.city->tilemap()
                                .getNeighbors( pos(), Tilemap::AllNeighbors)
                                .overlays<Plaza>();
     for( auto plaza : plazas )
@@ -427,9 +427,9 @@ void Plaza::updatePicture()
 
     Desirability::update( _city(), this, Desirability::off );
     setSize( Size( 2 ) );
-    city::AreaInfo info( _city(), pos() );
-    Construction::build( info );
-    setPicture( MetaDataHolder::randomPicture( type(), size() ) );
+    city::AreaInfo areainfo( _city(), pos() );
+    Construction::build( areainfo );
+    setPicture( info().randomPicture( size() ) );
     Desirability::update( _city(), this, Desirability::on );
   }
 }

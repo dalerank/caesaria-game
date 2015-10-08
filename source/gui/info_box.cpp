@@ -204,7 +204,7 @@ InfoboxBuilding::InfoboxBuilding( Widget* parent, const Tile& tile )
 {
   auto building = tile.overlay<Building>();
   if( building.isValid() )
-    setTitle( MetaDataHolder::findPrettyName( building->type() ) );
+    setTitle( building->info().prettyName() );
 }
 
 }

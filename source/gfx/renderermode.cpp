@@ -77,12 +77,12 @@ Renderer::ModePtr DestroyMode::create()
   return ret;
 }
 
-Renderer::ModePtr BuildMode::create(object::Type type )
+Renderer::ModePtr BuildMode::create(object::Type type)
 {
   BuildMode* newCommand = new BuildMode();
   OverlayPtr overlay = TileOverlayFactory::instance().create( type );
 
-  const MetaData& md = MetaDataHolder::find( type );
+  auto md = object::Info::find( type );
 
   newCommand->_d->construction = overlay.as<Construction>();
   newCommand->_setFlag( multibuild, false );

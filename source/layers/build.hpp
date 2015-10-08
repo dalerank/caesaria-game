@@ -60,7 +60,6 @@ private:
   void _drawBuildTile( gfx::Engine& engine, gfx::Tile* tile, const Point& offset );
   void _tryDrawBuildTile(gfx::Engine& engine, gfx::Tile& tile, const Point &camOffset);
   void _exitBuildMode();
-  int  _getCost(ConstructionPtr overlay );
 
   Build( gfx::Renderer& renderer, PlayerCityPtr city );
 

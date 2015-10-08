@@ -45,7 +45,7 @@ AboutAmphitheater::AboutAmphitheater(Widget *parent, PlayerCityPtr city, const T
     return;
 
   setBase( amph );
-  setTitle( _( MetaDataHolder::findPrettyName( object::amphitheater ) ) );
+  setTitle( _( amph->info().prettyName() ) );
   _setWorkingVisible( true );
 
   _updateWorkersLabel( Point( 40, 150), 542, amph->maximumWorkers(), amph->numberWorkers() );

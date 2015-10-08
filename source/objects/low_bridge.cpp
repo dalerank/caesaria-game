@@ -420,13 +420,12 @@ bool LowBridgeSubTile::isWalkable() const { return true;  }
 
 bool LowBridgeSubTile::isNeedRoad() const { return false; }
 
-bool LowBridgeSubTile::build(const city::AreaInfo &info)
+bool LowBridgeSubTile::build(const city::AreaInfo &areainfo)
 {
-  Construction::build( info );
+  Construction::build( areainfo );
   _fgPictures().clear();
-  _pos = info.pos;
-  const MetaData& md = MetaDataHolder::find( type() );
-  Point sbOffset = md.getOption( "subtileOffset" );
+  _pos = areainfo.pos;
+  Point sbOffset = info().getOption( "subtileOffset" );
   _rpicture.load( ResourceGroup::transport, _index );
   _rpicture.addOffset( sbOffset );
   _fgPictures().push_back( _rpicture );

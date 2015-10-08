@@ -147,7 +147,7 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
           }
           else
           {
-            housePrettyType = overlay.isValid() ? MetaDataHolder::findPrettyName( overlay->type() ) : "";
+            housePrettyType = overlay.isValid() ? overlay->info().prettyName() : "";
           }
 
           housePrettyType = utils::format( 0xff, "(%s)", _(housePrettyType) );

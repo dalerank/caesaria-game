@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "overlay.hpp"
-#include "objects/metadata.hpp"
+#include "objects/infodb.hpp"
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/variant_map.hpp"
@@ -29,7 +29,7 @@ using namespace gfx;
 namespace {
 static Renderer::PassQueue defaultPassQueue=Renderer::PassQueue(1,Renderer::overlayAnimation);
 static Pictures invalidPictures;
-static SimpleLogger LOG_OVERLAY( "Overlay" );
+static SimpleLogger LOG_OVERLAY(CAESARIA_STR_EXT(Overlay));
 }
 
 
@@ -65,18 +65,18 @@ Overlay::Overlay(const object::Type type, const Size& size)
 
 Desirability Overlay::desirability() const
 {
-  return MetaDataHolder::find( type() ).desirability();
+  return info().desirability();
 }
 
-void Overlay::setState(Param name, double value) {}
+void Overlay::setState(Param, double) {}
 
 void Overlay::setType(const object::Type type)
 {
-  const MetaData& bd = MetaDataHolder::find( type );
+  auto info = object::Info::find( type );
 
   _d->overlayType = type;
-  _d->overlayClass = bd.group();
-  _d->name = bd.name();
+  _d->overlayClass = info.group();
+  _d->name = info.name();
 }
 
 void Overlay::changeDirection( Tile* masterTile, Direction direction)
@@ -156,10 +156,8 @@ void Overlay::save( VariantMap& stream ) const
   VariantList config;
   config.push_back( _d->overlayType );
 
-  MetaDataHolder& md = MetaDataHolder::instance();
-  config.push_back( md.hasData( _d->overlayType )
-                      ? Variant( md.find( _d->overlayType ).name() )
-                      : Variant( debugName() ) );
+  std::string name = info().name();
+  config.push_back( Variant( name.empty() ? debugName() : name ) );
 
   config.push_back( tile().pos() );
 
@@ -188,17 +186,19 @@ void Overlay::load( const VariantMap& stream )
   tile().setHeight( stream.get( "height" ) );
 }
 
-void Overlay::initialize(const MetaData& mdata)
+void Overlay::initialize(const object::Info& mdata)
 {
   Size size = mdata.getOption( "size" );
   if( size.area() > 0 )
     setSize( size );
 
-  if( mdata.picture().isValid() )
+  if( mdata.randomPicture().isValid() )
   {
-    setPicture( mdata.picture() );  // default picture for build tool
+    setPicture( mdata.randomPicture() );  // default picture for build tool
   }
 }
+
+const object::Info& Overlay::info() const { return object::Info::find( type() ); }
 
 void Overlay::timeStep(const unsigned long) {}
 void Overlay::reinit() {}
@@ -211,7 +211,7 @@ void Overlay::debugLoadOld(int oldFormat, const VariantMap& stream) {}
 void Overlay::setName( const std::string& name ){ _d->name = name;}
 void Overlay::setSize( const Size& size ){  _d->size = size;}
 Point Overlay::offset( const Tile&, const Point& ) const{  return Point( 0, 0 );}
-Animation& Overlay::_animationRef(){  return _d->animation;}
+Animation& Overlay::_animation(){  return _d->animation;}
 Tile* Overlay::_masterTile(){  return _d->masterTile;}
 PlayerCityPtr Overlay::_city() const{ return _d->city;}
 gfx::Pictures& Overlay::_fgPictures(){  return _d->fgPictures; }
@@ -243,8 +243,7 @@ TilePos Overlay::pos() const
 
 std::string Overlay::sound() const
 {
-  const MetaData& md = MetaDataHolder::instance().find( type() );
-  return md.sound();
+  return info().sound();
 }
 
 TilesArray Overlay::area() const

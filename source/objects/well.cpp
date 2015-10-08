@@ -79,11 +79,11 @@ std::string Well::sound() const
   return ServiceBuilding::sound();
 }
 
-bool Well::build( const city::AreaInfo& info )
+bool Well::build( const city::AreaInfo& areainfo )
 {
-  ServiceBuilding::build( info );
+  ServiceBuilding::build( areainfo );
 
-  Picture rpic = MetaDataHolder::randomPicture( type(), size() );
+  Picture rpic = info().randomPicture( size() );
   if( !rpic.isValid() )
     rpic.load( ResourceGroup::utilitya, 1 );
 

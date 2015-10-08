@@ -334,7 +334,7 @@ std::string Factory::cartStateDesc() const
   return "";
 }
 
-void Factory::initialize(const MetaData& mdata)
+void Factory::initialize(const object::Info& mdata)
 {
   WorkingBuilding::initialize( mdata );
 
@@ -375,8 +375,8 @@ Creamery::Creamery() : Factory(good::olive, good::oil, object::oil_workshop, Siz
 {
   _picture().load( ResourceGroup::commerce, 99 );
 
-  _animationRef().load(ResourceGroup::commerce, 100, 8);
-  _animationRef().setDelay( 4 );
+  _animation().load(ResourceGroup::commerce, 100, 8);
+  _animation().setDelay( 4 );
   _fgPictures().resize( 3 );
 }
 

@@ -89,7 +89,7 @@ public:
     int count;
   };
 
-  void load( const MetaData& md, Direction dir )
+  void load( const object::Info& md, Direction dir )
   {
     std::string configName = "image." + direction::Helper::instance().findName( dir );
 
@@ -127,7 +127,7 @@ Dock::Dock(): WorkingBuilding( object::dock, Size(3) ), _d( new Impl )
 
   _d->initStores();
   _fgPictures().resize(1);
-  _animationRef().setDelay( 5 );
+  _animation().setDelay( 5 );
   _setClearAnimationOnStop( false );
 }
 
@@ -219,7 +219,7 @@ void Dock::load(const VariantMap& stream)
 
 void Dock::reinit()
 {
-  MetaDataHolder::instance().reload( type() );
+  info().reload();
   _updatePicture( _d->direction );
 }
 
@@ -348,10 +348,8 @@ Dock::~Dock(){}
 
 void Dock::_updatePicture(Direction direction)
 {
-  const MetaData& md = MetaDataHolder::find( type() );
-
   DockConfig config;
-  config.load( md, direction );
+  config.load( info(), direction );
 
   setPicture( config.image );
   setAnimation( config.animation );

@@ -90,9 +90,9 @@ HippodromeSection::HippodromeSection( Hippodrome& base, Direction direction, Typ
   _picture().load( ResourceGroup::hippodrome, pictureIndex );
   _picture().setOffset( Point( 0, _picture().height() / 2 ) + hippodromeSectionOffset[ pictureIndex ] );
 
-  _animationRef().addFrame( ResourceGroup::hippodrome, animIndex );
-  _animationRef().setOffset( hippodromeSectionOffset[ animIndex ]);
-  _animationRef().stop();
+  _animation().addFrame( ResourceGroup::hippodrome, animIndex );
+  _animation().setOffset( hippodromeSectionOffset[ animIndex ]);
+  _animation().stop();
 }
 
 HippodromeSection::~HippodromeSection(){}
@@ -234,7 +234,7 @@ bool Hippodrome::build( const city::AreaInfo& info )
 
   _d->sectionEnd->setAnimationVisible( false );
   _d->sectionMiddle->setAnimationVisible( false );
-  _animationRef().start();
+  _animation().start();
 
   auto charioter = CircusCharioter::create( _city(), this );
   _d->charioters.push_back( charioter );
@@ -289,7 +289,7 @@ void Hippodrome::_init( bool onBuild )
     _fgPicture( 1 ) = Picture::getInvalid();
   }
 
-  _animationRef().clear();
+  _animation().clear();
 
   switch( _d->direction )
   {

@@ -111,8 +111,7 @@ unsigned int Destroy::_checkMoney4destroy(const Tile& tile)
   int baseValue = 0;
   if( overlay.isValid() )
   {
-    const MetaData& mdata = MetaDataHolder::find( overlay->type() );
-    baseValue = mdata.getOption( MetaDataOptions::cost ).toInt() / 2;
+    baseValue = overlay->info().cost() / 2;
   }
 
   baseValue += tile.getFlag( Tile::tlTree ) ? 6 : 0;

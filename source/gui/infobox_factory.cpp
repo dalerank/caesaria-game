@@ -55,10 +55,17 @@ AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
   setupUI( ":/gui/infoboxfactory.gui" );
 
   auto factory = tile.overlay<Factory>();
+
+  if( factory.isNull() )
+  {
+    deleteLater();
+    return;
+  }
+
   setBase( factory );
   _type = factory->type();
-  std::string  title = MetaDataHolder::findPrettyName( factory->type() );
-  setTitle( _(title) );
+
+  setTitle( _( factory->info().prettyName() ) );
   _setWorkingVisible( true );
 
   if( !factory.isValid() )

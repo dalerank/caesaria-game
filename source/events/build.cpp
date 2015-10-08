@@ -90,27 +90,26 @@ void BuildAny::_exec( Game& game, unsigned int )
     ConstructionPtr construction = _overlay.as<Construction>();
     if( construction.isValid() )
     {
-      const MetaData& buildingData = MetaDataHolder::find( _overlay->type() );
-      game.city()->treasury().resolveIssue( econ::Issue( econ::Issue::buildConstruction,
-                                                         -(int)buildingData.getOption( MetaDataOptions::cost ) ) );
+      auto info = _overlay->info();
+      game.city()->treasury().resolveIssue( econ::Issue( econ::Issue::buildConstruction, -info.cost() ) );
 
       if( construction->group() != object::group::disaster )
       {
-        GameEventPtr e = PlaySound::create( "buildok", 1, 100 );
-        e->dispatch();
+        auto event = PlaySound::create( "buildok", 1, 100 );
+        event->dispatch();
       }
 
       if( construction->isNeedRoad() && construction->roadside().empty() )
       {
-        GameEventPtr e = WarningMessage::create( "##building_need_road_access##", 1 );
-        e->dispatch();
+        auto event = WarningMessage::create( "##building_need_road_access##", 1 );
+        event->dispatch();
       }
 
       std::string error = construction->errorDesc();
       if( !error.empty() )
       {
-        GameEventPtr e = WarningMessage::create( error, 1 );
-        e->dispatch();
+        auto event = WarningMessage::create( error, 1 );
+        event->dispatch();
       }
 
       WorkingBuildingPtr wb = construction.as<WorkingBuilding>();
@@ -119,26 +118,26 @@ void BuildAny::_exec( Game& game, unsigned int )
         unsigned int worklessCount = game.city()->statistic().workers.workless();
         if( worklessCount < wb->maximumWorkers() )
         {
-          GameEventPtr e = WarningMessage::create( "##city_need_more_workers##", 2 );
-          e->dispatch();
+          auto event = WarningMessage::create( "##city_need_more_workers##", 2 );
+          event->dispatch();
         }
 
         int laborAccessKoeff = wb->laborAccessPercent();
         if( laborAccessKoeff < 50 )
         {
-          GameEventPtr e = WarningMessage::create( "##working_build_poor_labor_warning##", 2 );
-          e->dispatch();
+          auto event = WarningMessage::create( "##working_build_poor_labor_warning##", 2 );
+          event->dispatch();
         }
       }
     }
   }
   else
   {
-    ConstructionPtr construction = _overlay.as<Construction>();
+    auto construction = _overlay.as<Construction>();
     if( construction.isValid() )
     {
-      GameEventPtr e = WarningMessage::create( construction->errorDesc(), 1 );
-      e->dispatch();
+      auto event = WarningMessage::create( construction->errorDesc(), 1 );
+      event->dispatch();
     }
   }
 }

@@ -15,36 +15,30 @@
 //
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#include "engineer_post.hpp"
-#include "game/resourcegroup.hpp"
-#include "core/position.hpp"
-#include "constants.hpp"
-#include "objects_factory.hpp"
+#include "params.hpp"
+#include "core/variant_list.hpp"
 
-using namespace gfx;
-
-REGISTER_CLASS_IN_OVERLAYFACTORY( object::engineering_post, EngineerPost)
-
-EngineerPost::EngineerPost() : ServiceBuilding( Service::engineer, object::engineering_post, Size(1) )
+namespace pr
 {
-  setPicture( info().randomPicture( size() ) );
-  _fgPictures().resize(1);
+
+VariantList Array::save() const
+{
+  VariantList ret;
+  for( auto& item : *this )
+    ret.push_back( VariantList( item.first, item.second ) );
+
+  return ret;
 }
 
-void EngineerPost::timeStep(const unsigned long time)
+void Array::load(const VariantList& stream)
 {
-  ServiceBuilding::timeStep( time );
-}
-
-void EngineerPost::deliverService()
-{
-  if( numberWorkers() > 0 && walkers().size() == 0 )
+  for( auto& item : stream )
   {
-    ServiceBuilding::deliverService();
+    const VariantList& vl = item.toList();
+    Param param = vl.get( 0 ).toEnum<Param>();
+    double value = vl.get( 1, 0.f ).toDouble();
+    (*this)[ param ] = value;
   }
 }
 
-unsigned int EngineerPost::walkerDistance() const
-{
-  return 26;
-}
+}//end namespace pr

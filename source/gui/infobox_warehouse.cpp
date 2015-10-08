@@ -61,7 +61,7 @@ AboutWarehouse::AboutWarehouse(Widget* parent, PlayerCityPtr city, const Tile& t
   INIT_WIDGET_FROM_UI( PushButton*, btnOrders );
   CONNECT( btnOrders, onClicked(), this, AboutWarehouse::showSpecialOrdersWindow );
 
-  std::string title = MetaDataHolder::findPrettyName( _warehouse->type() );
+  std::string title = _warehouse->info().prettyName();
   if( _warehouse->isTradeCenter() )
     title = "##trade_center##";
 

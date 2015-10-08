@@ -60,7 +60,7 @@ public:
   ConstructionExtensionPtr getExtension( const std::string& name );
   virtual const ConstructionExtensionList& extensions() const;  
 
-  virtual void initialize(const MetaData &mdata);
+  virtual void initialize(const object::Info& mdata);
 protected:
   Construction( const object::Type type, const Size& size );
   gfx::TilesArray& _roadside();

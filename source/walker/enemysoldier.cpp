@@ -46,13 +46,6 @@ REGISTER_SOLDIER_IN_WALKERFACTORY( walker::britonSoldier, walker::britonSoldier,
 REGISTER_SOLDIER_IN_WALKERFACTORY( walker::gladiatorRiot, walker::gladiatorRiot, EnemySoldier, glriot)
 REGISTER_SOLDIER_IN_WALKERFACTORY( walker::etruscanSoldier, walker::etruscanSoldier, EnemySoldier, etruscan)
 
-namespace {
-  static unsigned int __getCost( ConstructionPtr b )
-  {
-    return MetaDataHolder::find( b->type() ).getOption( MetaDataOptions::cost );
-  }
-}
-
 EnemySoldier::EnemySoldier( PlayerCityPtr city, walker::Type type )
 : Soldier( city, type )
 {
@@ -287,22 +280,22 @@ ConstructionList EnemySoldier::_findContructionsInRange( unsigned int range )
   case attackBestBuilding:
   {
     ConstructionPtr maxBuilding = ret.front();
-    unsigned int maxCost = __getCost( maxBuilding );
+    unsigned int maxCost = maxBuilding->info().cost();
 
-    foreach( it, ret )
+    for( auto& it : ret )
     {
-      unsigned int cost = __getCost( *it );
+      unsigned int cost = it->info().cost();
       if( cost > maxCost )
       {
         maxCost = cost;
-        maxBuilding = *it;
+        maxBuilding = it;
       }
     }
 
     if( maxBuilding.isValid() )
     {
       ret.clear();
-      ret << maxBuilding;
+      ret.push_back( maxBuilding );
       return ret;
     }
   }

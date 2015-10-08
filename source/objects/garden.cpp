@@ -45,15 +45,15 @@ bool Garden::isWalkable() const {  return _flat; }
 bool Garden::isFlat() const{ return _flat;}
 bool Garden::isNeedRoad() const{  return false;}
 
-bool Garden::build( const city::AreaInfo& info )
+bool Garden::build( const city::AreaInfo& areainfo )
 {
   // this is the same arrangement of garden tiles as existed in C3
-  Construction::build( info );
-  setPicture( MetaDataHolder::randomPicture( type(), size() ) );
+  Construction::build( areainfo );
+  setPicture( info().randomPicture( size() ) );
 
   if( size().area() == 1 )
   {
-    auto gardens = info.city->tilemap()
+    auto gardens = areainfo.city->tilemap()
                               .getNeighbors(pos(), Tilemap::AllNeighbors)
                               .overlays()
                               .select<Garden>();
@@ -141,9 +141,9 @@ void Garden::update()
     Desirability::update( _city(), this, Desirability::off );
 
     setSize( Size( 2 ) );
-    city::AreaInfo info( _city(), pos() );
-    Construction::build( info );
-    setPicture( MetaDataHolder::randomPicture( type(), size() ) );
+    city::AreaInfo areainfo( _city(), pos() );
+    Construction::build( areainfo );
+    setPicture( info().randomPicture( size() ) );
     Desirability::update( _city(), this, Desirability::on );
   }
 }

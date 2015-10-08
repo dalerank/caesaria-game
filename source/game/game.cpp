@@ -37,6 +37,7 @@
 #include "world/empire.hpp"
 #include "core/exception.hpp"
 #include "loader.hpp"
+#include "objects/infodb.hpp"
 #include "gamedate.hpp"
 #include "saver.hpp"
 #include "resourceloader.hpp"
@@ -511,7 +512,7 @@ void Game::initialize()
   HouseSpecHelper::instance().initialize( SETTINGS_RC_PATH( houseModel ) );
 
   screen.setText( "##initialize_constructions##" );
-  MetaDataHolder::instance().initialize( SETTINGS_RC_PATH( constructionModel ) );
+  object::InfoDB::instance().initialize( SETTINGS_RC_PATH( constructionModel ) );
 
   screen.setText( "##initialize_walkers##" );
   WalkerHelper::instance().load( SETTINGS_RC_PATH( walkerModel ) );

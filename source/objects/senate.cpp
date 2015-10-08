@@ -175,7 +175,7 @@ void Senate::timeStep(const unsigned long time)
   ServiceBuilding::timeStep( time );
 }
 
-void Senate::initialize(const MetaData& mdata)
+void Senate::initialize(const object::Info& mdata)
 {
   ServiceBuilding::initialize( mdata );
 

@@ -36,8 +36,8 @@ IronMine::IronMine()
 {
   _picture().load( ResourceGroup::commerce, 54 );
 
-  _animationRef().load( ResourceGroup::commerce, 55, 6 );
-  _animationRef().setDelay( 5 );
+  _animation().load( ResourceGroup::commerce, 55, 6 );
+  _animation().setDelay( 5 );
   _fgPictures().resize( 2 );
 
   _setUnworkingInterval( 12 );

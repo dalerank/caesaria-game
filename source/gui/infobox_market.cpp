@@ -57,8 +57,7 @@ AboutMarket::AboutMarket(Widget* parent, PlayerCityPtr city, const Tile& tile )
   lbAbout->setFont( Font::create( FONT_1 ) );
   lbAbout->setTextAlignment( align::upperLeft, align::upperLeft );
 
-  std::string title = MetaDataHolder::findPrettyName( market->type() );
-  setTitle( _( title ) );
+  setTitle( _( market->info().prettyName() ) );
 
   if( market->numberWorkers() > 0 )
   {

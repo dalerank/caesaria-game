@@ -71,7 +71,7 @@ AboutFort::AboutFort(Widget* parent, PlayerCityPtr city, const Tile& tile )
     return;
   }
 
-  setTitle( MetaDataHolder::findPrettyName( _d->fort->type() ) );
+  setTitle( _( _d->fort->info().prettyName() ) );
 
   std::string text = _("##fort_info##");
 

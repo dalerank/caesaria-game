@@ -109,13 +109,13 @@ Granary::Granary() : WorkingBuilding( object::granery, Size(3) ), _d( new Impl )
   _picture().load( ResourceGroup::commerce, 140 );
   _fgPictures().resize(6);  // 1 upper level + 4 windows + animation
 
-  _animationRef().load(ResourceGroup::commerce, 146, 7, Animation::straight);
+  _animation().load(ResourceGroup::commerce, 146, 7, Animation::straight);
   // do the animation in reverse
-  _animationRef().load(ResourceGroup::commerce, 151, 6, Animation::reverse);
-  _animationRef().setDelay( 4 );
+  _animation().load(ResourceGroup::commerce, 151, 6, Animation::reverse);
+  _animation().setDelay( 4 );
 
   _fgPicture( 0 ) = Picture( ResourceGroup::commerce, 141 );
-  _fgPicture( 5 ) = _animationRef().currentFrame();
+  _fgPicture( 5 ) = _animation().currentFrame();
   computePictures();
 
   _d->devastateThis = false;  
@@ -133,7 +133,7 @@ void Granary::timeStep(const unsigned long time)
   {
     _weekUpdate();
     //animate workers need
-    _animationRef().setDelay( 4 + needWorkers() + math::random(2) );
+    _animation().setDelay( 4 + needWorkers() + math::random(2) );
   }
 }
 

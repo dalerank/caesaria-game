@@ -321,7 +321,7 @@ unsigned int Farm::produceQty() const
   return productRate() * getFinishedQty() * numberWorkers() / maximumWorkers();
 }
 
-void Farm::initialize(const MetaData& mdata)
+void Farm::initialize(const object::Info& mdata)
 {
   Factory::initialize( mdata );
   //picture will be setting on build
@@ -330,8 +330,7 @@ void Farm::initialize(const MetaData& mdata)
 
 Picture Farm::_getMainPicture()
 {
-  const MetaData& md = MetaDataHolder::find( type() );
-  Picture ret = md.picture();
+  Picture ret = info().randomPicture();
   if( !ret.isValid() )
     ret.load(ResourceGroup::commerce, 12);
 

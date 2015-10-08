@@ -35,7 +35,7 @@ public:
   virtual OverlayPtr create()
   {
     OverlayPtr ret( new T() );
-    ret->initialize( MetaDataHolder::instance().find( ret->type() ) );
+    ret->initialize( object::Info::find( ret->type() ) );
     ret->drop();
 
     return ret;

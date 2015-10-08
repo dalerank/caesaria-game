@@ -32,7 +32,7 @@
 #include "param.hpp"
 #include "constants.hpp"
 
-class MetaData;
+namespace object{ class Info; }
 namespace ovconfig
 {
 enum { idxType=0, idxTypename, idxLocation, ixdCount };
@@ -96,14 +96,16 @@ public:
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream );
 
-  virtual void initialize( const MetaData& mdata );
+  virtual void initialize( const object::Info& mdata );
   virtual void reinit();
+
+  const object::Info& info() const;
 
   virtual void debugLoadOld( int oldFormat, const VariantMap& stream );
 
 protected:
   void setType(const object::Type type);
-  gfx::Animation& _animationRef();
+  gfx::Animation& _animation();
   gfx::Tile* _masterTile();
   PlayerCityPtr _city() const;
   gfx::Tilemap& _map() const;

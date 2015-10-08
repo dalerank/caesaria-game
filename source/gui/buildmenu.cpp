@@ -172,23 +172,23 @@ void BuildMenu::addSubmenuButton(const city::development::Branch menuType, const
 void BuildMenu::addBuildButton(const object::Type buildingType )
 {
   //int t = DateTime::getElapsedTime();
-  const MetaData& buildingData = MetaDataHolder::instance().find( buildingType );
+  auto info = object::Info::find( buildingType );
 
-  int cost = buildingData.getOption( MetaDataOptions::cost );
+  int cost = info .cost();
   bool mayBuildInCity = _options.isBuildingAvailable( buildingType );
   if( _c3gameplay )
   {
-    mayBuildInCity &= buildingData.getOption( MetaDataOptions::c3logic, true ).toBool();
+    mayBuildInCity &= info .c3logic( true );
   }
 
   if( cost > 0 && mayBuildInCity )
   {
     // building can be built
-    BuildButton* button = new BuildButton( this, _(buildingData.prettyName()),
-                                           Rect( 0, height(), width(), height() + 25 ), -1 );
+    auto button = new BuildButton( this, _(info .prettyName()),
+                                   Rect( 0, height(), width(), height() + 25 ), -1 );
     button->setCost(cost);
     button->setID( buildingType );
-    button->setSound( "bmsel_" + buildingData.name() );
+    button->setSound( "bmsel_" + info .name() );
 
     setHeight( height() + 30 );
 

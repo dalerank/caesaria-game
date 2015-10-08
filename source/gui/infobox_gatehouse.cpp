@@ -54,8 +54,7 @@ AboutGatehouse::AboutGatehouse(Widget* parent, PlayerCityPtr city, const Tile& t
     return;
   }
 
-  std::string title = MetaDataHolder::findPrettyName( _d->gates->type() );
-  setTitle( _( title ) );
+  setTitle( _( _d->gates->info().prettyName() ) );
 
   std::string text = _("##walls_need_a_gatehouse##");
 

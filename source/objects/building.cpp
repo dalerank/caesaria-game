@@ -139,8 +139,6 @@ public:
 Building::Building(const object::Type type, const Size& size )
 : Construction( type, size ), _d( new Impl )
 {
-  setState( pr::inflammability, 1 );
-  setState( pr::collapsibility, 1 );
   setState( pr::reserveExpires, 60 );
   _d->stateDecreaseInterval = game::Date::days2ticks( 1 );
 }
@@ -263,15 +261,9 @@ void Building::setTraineeValue(walker::Type type, int value)
   _d->trainees[ type ] = value;
 }
 
-void Building::initialize(const MetaData &mdata)
+void Building::initialize(const object::Info& mdata)
 {
   Construction::initialize( mdata );
-
-  Variant inflammabilityV = mdata.getOption( "inflammability" );
-  if( inflammabilityV.isValid() ) setState( pr::inflammability, inflammabilityV.toDouble() );
-
-  Variant collapsibilityV = mdata.getOption( "collapsibility" );
-  if( collapsibilityV.isValid() ) setState( pr::collapsibility, collapsibilityV.toDouble() );
 }
 
 void Building::save(VariantMap& stream) const

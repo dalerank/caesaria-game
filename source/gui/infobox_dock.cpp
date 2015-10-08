@@ -59,8 +59,7 @@ AboutDock::AboutDock(Widget* parent, PlayerCityPtr city, const Tile& tile )
   lbAbout->setFont( Font::create( FONT_1 ) );
   lbAbout->setTextAlignment( align::upperLeft, align::upperLeft );
 
-  std::string title = MetaDataHolder::findPrettyName( dock->type() );
-  setTitle( _( title ) );
+  setTitle( _( dock->info().prettyName() ) );
 
   lbAbout->setText( _( dock->numberWorkers() > 0 ? "##dock_about##" : "##dock_no_workers##" ) );
   updateStore( dock );

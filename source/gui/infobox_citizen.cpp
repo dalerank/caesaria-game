@@ -285,14 +285,14 @@ void AboutPeople::Impl::updateCurrentAction(const std::string& action, TilePos p
   OverlayPtr ov = city->getOverlay( pos );
   if( ov.isValid() )
   {
-    destBuildingName = MetaDataHolder::findPrettyName( ov->type() );
+    destBuildingName = ov->info().prettyName();
     if( btnMove2dst ) btnMove2dst->setVisible( !destBuildingName.empty() );
   }
 
   if( lbCurrentAction )
   {
     lbCurrentAction->setPrefixText( _("##wlk_state##") );
-    lbCurrentAction->setText( action + "(" + destBuildingName + ")" );
+    lbCurrentAction->setText( action + "(" + _(destBuildingName) + ")" );
   }
 }
 
@@ -304,7 +304,7 @@ void AboutPeople::Impl::updateBaseBuilding( TilePos pos )
 
   if( ov.isValid() )
   {
-    text = MetaDataHolder::findPrettyName( ov->type() );
+    text = ov->info().prettyName();
     if( lbBaseBuilding ) lbBaseBuilding->setText( text );    
   }
 

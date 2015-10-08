@@ -36,13 +36,18 @@ namespace infobox
 AboutWorkingBuilding::AboutWorkingBuilding( Widget* parent, WorkingBuildingPtr building)
   : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 136, 510 - 16, 136 + 62 ) )
 {
+  if( building.isNull() )
+  {
+    deleteLater();
+    return;
+  }
+
   _working = building;
 
   setBase( _working  );
   _setWorkingVisible( true );
 
-  std::string title = MetaDataHolder::findPrettyName( _working->type() );
-  setTitle( _(title) );
+  setTitle( _( _working->info().prettyName() ) );
 
   _updateWorkersLabel( Point( 32, 150 ), 542, _working->maximumWorkers(), _working->numberWorkers() );
 

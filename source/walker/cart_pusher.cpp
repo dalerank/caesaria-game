@@ -351,7 +351,8 @@ BuildingPtr reserveShortestPath( const object::Type buildingType,
 BuildingPtr CartPusher::Impl::getWalkerDestination_factory(Propagator &pathPropagator, Pathway& oPathWay)
 {
   BuildingPtr res;
-  object::Type buildingType = MetaDataHolder::instance().getConsumerType( stock.type() );
+  object::ProductConsumer info( stock.type() );
+  object::Type buildingType = info.consumer();
 
   if (buildingType == object::unknown)
   {

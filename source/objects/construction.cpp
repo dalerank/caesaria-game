@@ -29,35 +29,12 @@
 #include "extension.hpp"
 #include "gfx/tilearea.hpp"
 #include "core/json.hpp"
+#include "params.hpp"
 #include "core/flowlist.hpp"
 #include "core/common.hpp"
 
 using namespace gfx;
 using namespace events;
-
-class Params : public std::map<Param, double>
-{
-public:
-  VariantList save() const
-  {
-    VariantList ret;
-    for( auto& item : *this )
-      ret.push_back( VariantList( item.first, item.second ) );
-
-    return ret;
-  }
-
-  void load( const VariantList& stream )
-  {
-    for( auto& item : stream )
-    {
-      const VariantList& vl = item.toList();
-      Param param = (Param)vl.get( 0 ).toInt();
-      double value = vl.get( 1, 0.f ).toDouble();
-      (*this)[ param ] = value;
-    }
-  }
-};
 
 class Extensions : public FlowList<ConstructionExtension>
 {
@@ -104,8 +81,10 @@ public:
 Construction::Construction(const object::Type type, const Size& size)
   : Overlay( type, size ), _d( new Impl )
 {
-  _d->states[ pr::fire ] = 0;
-  _d->states[ pr::damage ] = 0;
+  setState( pr::fire, 0 );
+  setState( pr::damage, 0 );
+  setState( pr::inflammability, 1 );
+  setState( pr::collapsibility, 1 );
 }
 
 TilesArray& Construction::_roadside() { return _d->accessRoads; }
@@ -205,7 +184,7 @@ void Construction::burn()
 {
   deleteLater();
 
-  GameEventPtr event = Disaster::create( tile(), Disaster::fire );
+  auto event = Disaster::create( tile(), Disaster::fire );
   event->dispatch();
 
   Logger::warning( "Construction catch fire at %d,%d!", pos().i(), pos().j() );
@@ -264,9 +243,18 @@ ConstructionExtensionPtr Construction::getExtension(const std::string& name)
 
 const ConstructionExtensionList& Construction::extensions() const { return _d->extensions; }
 
-void Construction::initialize(const MetaData& mdata)
+void Construction::initialize(const object::Info& mdata)
 {
   Overlay::initialize( mdata );
+
+  double inflammability = mdata.getOption( "inflammability", 1. );
+  setState( pr::inflammability, inflammability );
+
+  double collapsibility = mdata.getOption( "collapsibility", 1. );
+  setState( pr::collapsibility, collapsibility );
+
+  bool mayBurn = mdata.getOption( "mayBurn", true );
+  setState( pr::mayBurn, mayBurn );
 
   VariantMap anMap = mdata.getOption( "animation" ).toMap();
   if( !anMap.empty() )

@@ -147,8 +147,8 @@ Warehouse::Warehouse() : WorkingBuilding( object::warehouse, Size( 3 )), _d( new
 
   _fgPictures().resize(12+1);  // 8 tiles + 4 + 1 animation slot
 
-  _animationRef().load( ResourceGroup::warehouse, 2, 16 );
-  _animationRef().setDelay( 4 );
+  _animation().load( ResourceGroup::warehouse, 2, 16 );
+  _animation().setDelay( 4 );
 
   _d->animFlag.load( ResourceGroup::warehouse, 84, 8 );
 
@@ -156,7 +156,7 @@ Warehouse::Warehouse() : WorkingBuilding( object::warehouse, Size( 3 )), _d( new
 
   _fgPictures()[ fgpic::idxMainPic ] = strafePic( ResourceGroup::warehouse, 1,  0, 2);
   _fgPictures()[ fgpic::idxWhRoof  ] = strafePic( ResourceGroup::warehouse, 18, 0, 2);
-  _fgPictures()[ fgpic::idxAnimWork] = _animationRef().currentFrame();
+  _fgPictures()[ fgpic::idxAnimWork] = _animation().currentFrame();
   _fgPictures()[ fgpic::idxAnimFlag] = _d->animFlag.currentFrame();
 
   // add subTiles in Z-order (from far to near)
@@ -196,7 +196,7 @@ void Warehouse::timeStep(const unsigned long time)
       _resolveDeliverMode();
     }
 
-    _animationRef().setDelay( 4 + needWorkers() + math::random(2) );
+    _animation().setDelay( 4 + needWorkers() + math::random(2) );
   }
 
   WorkingBuilding::timeStep( time );

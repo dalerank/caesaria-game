@@ -57,11 +57,10 @@ AboutSenate::AboutSenate(Widget* parent, PlayerCityPtr city, const Tile& tile )
   if( senate.isNull() )
     return;
 
-  events::GameEventPtr e = events::PlaySound::create( "bmsel_senate", 1, 100, audio::infobox, true );
-  e->dispatch();
+  auto event = events::PlaySound::create( "bmsel_senate", 1, 100, audio::infobox, true );
+  event->dispatch();
 
-  std::string title = MetaDataHolder::instance().find( object::senate ).prettyName();
-  setTitle( _(title) );
+  setTitle( _( senate->info().prettyName() ) );
 
   // number of workers
   _updateWorkersLabel( Point( 32, 136), 542, senate->maximumWorkers(), senate->numberWorkers() );

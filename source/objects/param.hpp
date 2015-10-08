@@ -26,22 +26,24 @@
 
 namespace pr
 {
-BEGIN_NAMEDTYPE(Type,none)
-APPEND_NAMEDTYPE(fire)
-APPEND_NAMEDTYPE(damage)
-APPEND_NAMEDTYPE(inflammability)
-APPEND_NAMEDTYPE(collapsibility)
-APPEND_NAMEDTYPE(destroyable)
-APPEND_NAMEDTYPE(health)
-APPEND_NAMEDTYPE(happiness)
-APPEND_NAMEDTYPE(happinessBuff)
-APPEND_NAMEDTYPE(healthBuff)
-APPEND_NAMEDTYPE(settleLock)
-APPEND_NAMEDTYPE(lockTerrain)
-APPEND_NAMEDTYPE(food)
-APPEND_NAMEDTYPE(reserveExpires)
-APPEND_NAMEDTYPE(paramCount)
-END_NAMEDTYPE(Type)
+typedef enum
+{
+  fire,
+  damage,
+  inflammability,
+  collapsibility,
+  destroyable,
+  health,
+  happiness,
+  happinessBuff,
+  healthBuff,
+  settleLock,
+  lockTerrain,
+  food,
+  reserveExpires,
+  mayBurn,
+  paramCount
+} Type;
 }
 
 typedef pr::Type Param;
