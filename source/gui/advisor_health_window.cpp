@@ -107,7 +107,7 @@ public:
     std::string peoplesStrT = _("##health_no_info##");
     if( _info.buildingCount > 0 )
     {
-      peoplesStrT = utils::format( 0xff, "%d (%d) %s", _info.peoplesServed, _info.needService, _(info.people) );
+      peoplesStrT = fmt::format( "{0} ({1}) {2}", _info.peoplesServed, _info.needService, _(info.people) );
     }
 
     rfont.draw( texture, peoplesStrT, 255, 0 );
@@ -118,7 +118,7 @@ public:
       int coveragePrcnt = _info.needService > 0
                             ? math::percentage( _info.peoplesServed, _info.needService )
                             : 100;
-      coverageStrT = utils::format( 0xff, "%d %%", coveragePrcnt );
+      coverageStrT = fmt::format( "{0} %", coveragePrcnt );
     }
     rfont.draw( texture, coverageStrT, 455, 0 );
   }

@@ -241,7 +241,7 @@ public:
     ObjectsMap::const_iterator mapIt = find( type );
     if( mapIt == end() )
     {
-      Logger::warning("MetaDataHolder::Unknown objects %d", type );
+      Logger::warning("MetaDataHolder::Unknown objects {0}", type );
       return MetaData::invalid;
     }
     return mapIt->second;
@@ -370,7 +370,7 @@ object::Group MetaDataHolder::findGroup( const std::string& name )
 
   if( type == instance()._d->classHelper.getInvalid() )
   {
-    Logger::warning( "!!! MetaDataHolder: can't find object class for className %s", name.c_str() );
+    Logger::warning( "!!! MetaDataHolder: can't find object class for className {0}", name );
     return object::group::unknown;
   }
 

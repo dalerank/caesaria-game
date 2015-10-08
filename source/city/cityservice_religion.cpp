@@ -177,7 +177,7 @@ void Religion::timeStep( const unsigned int time )
         if( god.isValid() )
         {
           god->setEffectPoint( award::admiredGod );
-          _d->reasons << utils::format( 0xff, "##%s_god_admired##", god->internalName().c_str() );
+          _d->reasons << fmt::format( "##{0}_god_admired##", god->internalName() );
         }
       }
 
@@ -191,7 +191,7 @@ void Religion::timeStep( const unsigned int time )
           if( god.isValid() )
           {
             god->setEffectPoint( -penalty::brokenGod );
-            _d->reasons << utils::format( 0xff, "##%s_god_broken##", god->internalName().c_str() );
+            _d->reasons << fmt::format( "##{0}_god_broken##", god->internalName() );
           }
         }
       }
@@ -223,12 +223,12 @@ void Religion::timeStep( const unsigned int time )
       if( god->wrathPoints() > 0 )
       {
         godsWrath[ god->wrathPoints() ].push_back( god );
-        _d->reasons << utils::format( 0xff, "##%s_god_wrath##", god->internalName().c_str() );
+        _d->reasons << fmt::format( "##{0}_god_wrath##", god->internalName() );
       }      
       else if( god->relation() < relation::minimum4wrath )
       {
         godsUnhappy[ god->relation() ].push_back( god );
-        _d->reasons << utils::format( 0xff, "##%s_god_unhappy##", god->internalName().c_str() );
+        _d->reasons << fmt::format( "##{0}_god_unhappy##", god->internalName() );
       }
     }       
 

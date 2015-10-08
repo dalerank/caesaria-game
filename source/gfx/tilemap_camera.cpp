@@ -117,7 +117,7 @@ void TilemapCamera::setViewport(Size newSize)
   _d->viewSize = Size( ( newSize.width() + (vpSize.width()-1)) / vpSize.width(),
                        ( newSize.height() + (vpSize.height()-1)) / vpSize.height() );
   
-  Logger::warning( "TilemapArea::setViewport w=%d h=%d", _d->viewSize.width(), _d->viewSize.height() );
+  Logger::warning( "TilemapArea::setViewport w={0} h={1}", _d->viewSize.width(), _d->viewSize.height() );
 }
 
 void TilemapCamera::setCenter(TilePos pos, bool checkCorner)

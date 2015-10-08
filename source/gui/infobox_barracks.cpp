@@ -50,7 +50,7 @@ AboutBarracks::AboutBarracks(Widget* parent, PlayerCityPtr city, const Tile& til
   if( !barracks.isValid() )
   {
     deleteLater();
-    Logger::warning( "AboutBarracs: cant find barracks at %d,%d", tile.i(), tile.j() );
+    Logger::warning( "AboutBarracs: cant find barracks at {0}x{1}", tile.i(), tile.j() );
     return;
   }
 

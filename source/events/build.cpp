@@ -80,7 +80,7 @@ void BuildAny::_exec( Game& game, unsigned int )
 
     if( !buildOk )
     {
-      Logger::warning( "BuildAny: some error when build [%d,%d] type:%s", _pos.i(), _pos.j(), _overlay->name().c_str() );
+      Logger::warning( "BuildAny: some error when build {0}{1} type:{2}", _pos.i(), _pos.j(), _overlay->name() );
       return;
     }
 

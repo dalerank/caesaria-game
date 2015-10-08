@@ -117,7 +117,7 @@ std::string toResource( const unsigned int imgId )
       res_id = 51;
     } // TERRIBLE HACK!
 
-    Logger::warning( "TileHelper: unknown image Id=%d ", imgId );
+    Logger::warning( "TileHelper: unknown image Id={0} ", imgId );
   }
 
   std::string ret_str = utils::format( 0xff, "%s_%05d", res_pfx.c_str(), res_id );

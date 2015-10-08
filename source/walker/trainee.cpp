@@ -103,7 +103,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
 {
   if( !gfx::tilemap::isValidLocation( _d->baseLocation ) )
   {
-    Logger::warning( "!!! WARNING: trainee walker baselocation is unaccessible at [%d,%d]", _d->baseLocation.i(), _d->baseLocation.j() );
+    Logger::warning( "!!! WARNING: trainee walker baselocation is unaccessible at [{0},{1}]", _d->baseLocation.i(), _d->baseLocation.j() );
     deleteLater();
     return;
   }
@@ -111,7 +111,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   BuildingPtr base = ( _city()->getOverlay( _d->baseLocation ).as<Building>());
   if( !base.isValid() )
   {
-    Logger::warning( "!!! WARNING: trainee walker base is null at [%d,%d]", _d->baseLocation.i(), _d->baseLocation.j() );
+    Logger::warning( "!!! WARNING: trainee walker base is null at [{0},{1}]", _d->baseLocation.i(), _d->baseLocation.j() );
     deleteLater();
     return;
   }
@@ -143,7 +143,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
 
   if( !isNeedTrainee )
   {
-    Logger::warning( "!!! WARNING: not need trainee walker from [%d,%d]", base->pos().i(), base->pos().j() );
+    Logger::warning( "!!! WARNING: not need trainee walker from [{0},{1}]", base->pos().i(), base->pos().j() );
     deleteLater();
     return;
   }

@@ -72,7 +72,7 @@ void Treasury::resolveIssue( econ::Issue issue )
   switch( issue.type )
   {
   case Issue::unknown:
-    Logger::warning( "Funds: wrong issue type %d", issue.type );
+    Logger::warning( "Funds: wrong issue type {0}", issue.type );
     return;
   break;
 

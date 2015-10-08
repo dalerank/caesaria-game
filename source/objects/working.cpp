@@ -24,6 +24,7 @@
 #include "game/gamedate.hpp"
 #include "objects/house.hpp"
 #include "objects/house_level.hpp"
+#include "core/format.hpp"
 #include "events/removecitizen.hpp"
 #include "core/common.hpp"
 #include "walker/typeset.hpp"
@@ -295,13 +296,13 @@ std::string WorkingBuildingHelper::productivity2desc( WorkingBuildingPtr w, cons
 
   if( prefix.empty() )
   {
-    return utils::format( 0xff, "##%s_%s##",
-                          factoryType.c_str(), productivityDescription[ workKoeff ] );
+    return fmt::format( "##{0}_{1}##",
+                        factoryType, productivityDescription[ workKoeff ] );
   }
   else
   {
-    return utils::format( 0xff, "##%s_%s_%s##",
-                          factoryType.c_str(), prefix.c_str(), productivityDescription[ workKoeff ] );
+    return fmt::format( "##{0}_{1}_{2}##",
+                        factoryType, prefix, productivityDescription[ workKoeff ] );
   }
 }
 

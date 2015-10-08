@@ -100,7 +100,7 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
   if( _house.isNull() )
   {
-    Logger::warning( "!!! WARNING: Cant find house at [%d,%d]", tile.pos().i(), tile.pos().j() );
+    Logger::warning( "!!! WARNING: Cant find house at [{0},{1}]", tile.pos().i(), tile.pos().j() );
     deleteLater();
     return;
   }
@@ -266,7 +266,7 @@ void AboutHouse::drawHabitants( HousePtr house )
 void AboutHouse::drawGood(HousePtr house, const good::Product& goodType, const int col, const int row, const int startY )
 {
   int qty = house->goodStore().qty( goodType );
-  std::string text = utils::format( 0xff, "%d", qty);
+  std::string text = utils::i2str(qty);
 
   // pictures of goods
   const Picture& pic = good::Helper::picture( goodType );

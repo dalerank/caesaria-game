@@ -180,8 +180,8 @@ void Education::Impl::updateCityInfo(PlayerCityPtr city)
   }
 
   std::string cityInfoStr = utils::format( 0xff, "%d %s, %d %s, %d %s",
-                                                  city->states().population, _("##people##"),
-                                                  sumScholars, _("##scholars##"), sumStudents, _("##students##") );
+                                           city->states().population, _("##people##"),
+                                           sumScholars, _("##scholars##"), sumStudents, _("##students##") );
   if( lbCityInfo ) { lbCityInfo->setText( cityInfoStr ); }
 
   std::string advice = getTrouble( city );
@@ -233,7 +233,7 @@ EntertInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Type bType
   ret.buildingCount = servBuildings.size();
   if( ret.service == Service::srvCount )
   {
-    Logger::warning( "AdvisorEducationWindow: unknown building type %d", bType );
+    Logger::warning( "AdvisorEducationWindow: unknown building type {0}", bType );
   }
 
   for( auto serv : servBuildings )

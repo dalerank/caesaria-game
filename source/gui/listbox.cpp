@@ -139,7 +139,7 @@ ListBoxItem& ListBox::item(unsigned int id)
 {
 	if( id >= _d->items.size() )
 	{
-		Logger::warning( "Index out of range ListBox::items [%d]", id );
+    Logger::warning( "Index out of range ListBox::items [{0}]", id );
 		return ListBoxItem::invalidItem();
 	}
 

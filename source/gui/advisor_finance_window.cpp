@@ -123,9 +123,9 @@ void Finance::_updateTaxRateNowLabel()
     return;
 
   int taxValue = _city->statistic().tax.possible();
-  std::string strCurretnTax = utils::format( 0xff, "%d%% %s %d %s",
-                                                    _city->treasury().taxRate(), _("##may_collect_about##"),
-                                                    taxValue, _("##denaries##") );
+  std::string strCurretnTax = fmt::format( "{0}% {1} {2} {3}",
+                                           _city->treasury().taxRate(), _("##may_collect_about##"),
+                                           taxValue, _("##denaries##") );
   lbTaxRateNow->setText( strCurretnTax );
 }
 
@@ -180,7 +180,7 @@ void Finance::_initTaxManager()
 void Finance::_updateRegisteredPayers()
 {
   unsigned int regTaxPayers = _city->statistic().tax.payersPercent();
-  std::string strRegPaeyrs = utils::format( 0xff, "%d%% %s", regTaxPayers, _("##population_registered_as_taxpayers##") );
+  std::string strRegPaeyrs = fmt::format( "{0}% {1}", regTaxPayers, _("##population_registered_as_taxpayers##") );
   INIT_WIDGET_FROM_UI( Label*, lbRegPayers )
   if( lbRegPayers )
     lbRegPayers->setText( strRegPaeyrs );
@@ -190,7 +190,7 @@ void Finance::_updateCityTreasure()
 {
   INIT_WIDGET_FROM_UI( Label*, lbCityHave )
   if( lbCityHave )
-    lbCityHave->setText( utils::format( 0xff, "%s %d %s", _("##city_have##"), _city->treasury().money(), _("##denaries##") ) );
+    lbCityHave->setText( fmt::format( "{0} {1} {2}", _("##city_have##"), _city->treasury().money(), _("##denaries##") ) );
 }
 
 }//end namespace advisorwnd

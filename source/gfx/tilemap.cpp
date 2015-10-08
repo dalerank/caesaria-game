@@ -368,7 +368,7 @@ void Tilemap::load( const VariantMap& stream )
 
   if( baBitset.empty() || baImgId.empty() || baDes.empty() )
   {
-    Logger::warning( "!!! Tilemap::load data's array is null %d/%d/%d", baBitset.size(), baImgId.size(), baDes.size() );
+    Logger::warning( "!!! Tilemap::load data's array is null {0}/{1}/{2}", baBitset.size(), baImgId.size(), baDes.size() );
     return;
   }
 
@@ -419,7 +419,7 @@ void Tilemap::turnRight()
   case east: _d->direction = north; break;
 
   default:
-    Logger::warning( "Tilemap::turnRight wrong direction %d", _d->direction );
+    Logger::warning( "Tilemap::turnRight wrong direction {0}", _d->direction );
   }
 
   Impl::MasterTiles masterTiles;
@@ -485,7 +485,7 @@ void Tilemap::turnLeft()
   case west: _d->direction = north; break;
 
   default:
-    Logger::warning( "Tilemap::turnLeft wrong direction %d", _d->direction );
+    Logger::warning( "Tilemap::turnLeft wrong direction {0}", _d->direction );
   }
 
   Impl::MasterTiles masterTiles;
@@ -558,8 +558,6 @@ Tile& Tilemap::Impl::at(const int i, const int j)
   {
     return *(*this)[i][j];
   }
-
-  //Logger::warning( "Need inside point current=[%d, %d]", i, j );
   return gfx::tile::getInvalidSafe();
 }
 

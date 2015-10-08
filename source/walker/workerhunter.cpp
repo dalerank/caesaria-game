@@ -83,7 +83,7 @@ void Recruter::hireWorkers( const int workers )
   }
   else
   {
-    Logger::warning( "!!! WARNING: Recruter base[%d,%d] is null. Stop working.", baseLocation().i(), baseLocation().j() );
+    Logger::warning( "!!! WARNING: Recruter base[{0},{1}] is null. Stop working.", baseLocation().i(), baseLocation().j() );
     return2Base();
   }
 }

@@ -21,6 +21,7 @@
 #include "game/gamedate.hpp"
 #include "core/gettext.hpp"
 #include "good/store.hpp"
+#include "core/format.hpp"
 #include "objects/extension.hpp"
 #include "objects/factory.hpp"
 #include "city/statistic.hpp"
@@ -53,8 +54,8 @@ void __filchGoods( const std::string& title, PlayerCityPtr city, bool showMessag
 {
   if( showMessage )
   {
-    std::string txt = utils::format( 0xff, "##%s_of_mercury_title##", title.c_str() );
-    std::string descr = utils::format( 0xff, "##%s_of_mercury_description##", title.c_str() );
+    std::string txt = fmt::format( "##{0}_of_mercury_title##", title );
+    std::string descr = fmt::format( "##{0}_of_mercury_description##", title );
 
     events::GameEventPtr event = events::ShowInfobox::create( _(txt),
                                                               _(descr),

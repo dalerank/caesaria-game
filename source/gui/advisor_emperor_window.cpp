@@ -99,11 +99,11 @@ public:
     auto goodRequest = _request.as<request::RqGood>();
     if( goodRequest.isValid() )
     {
-      font.draw( pic, utils::format( 0xff, "%d", goodRequest->qty() ), 2, 2 );
+      font.draw( pic, utils::i2str( goodRequest->qty() ), 2, 2 );
       font.draw( pic, good::Helper::getTypeName( goodRequest->goodType() ), 60, 2 );
 
       int month2comply = game::Date::current().monthsTo( goodRequest->finishedDate() );
-      font.draw( pic, utils::format( 0xff, "%d %s", month2comply, _( "##rqst_month_2_comply##") ), 250, 2 );
+      font.draw( pic, fmt::format( "{0} {1}", month2comply, _( "##rqst_month_2_comply##") ), 250, 2 );
       font.draw( pic, goodRequest->description(), 5, pic.height() - 20 );
     }
   }
@@ -260,7 +260,7 @@ Emperor::Emperor( PlayerCityPtr city, Widget* parent, int id )
   GET_DWIDGET_FROM_UI( _d, btnChangeSalary )
 
   if( _d->lbEmperorFavour )
-    _d->lbEmperorFavour->setText( utils::format( 0xff, "%s %d", _("##advemp_emperor_favour##"), _d->city->favour() ) );
+    _d->lbEmperorFavour->setText( fmt::format( "{0} {1}", _("##advemp_emperor_favour##"), _d->city->favour() ) );
 
   if( _d->lbEmperorFavourDesc )
     _d->lbEmperorFavourDesc->setText( _( _d->getEmperorFavourStr() ) );

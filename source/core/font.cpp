@@ -297,7 +297,7 @@ Font& FontCollection::_getFont(const int key)
   std::map<int, Font>::iterator it = _d->collection.find(key);
   if (it == _d->collection.end())
   {
-    Logger::warning( "Error, font is not initialized, key=%d", key );
+    Logger::warning( "Error, font is not initialized, key={0}", key );
     return _d->collection[ FONT_2 ];
   }
 
@@ -311,7 +311,7 @@ void FontCollection::setFont(const int key, const std::string& name, Font font)
   if( ret.second == false )
   {
     // no insert font (already exists)
-    Logger::warning( "WARNING!!! font already exists, key=%d", key );
+    Logger::warning( "WARNING!!! font already exists, key={0}", key );
     return;
   }
 

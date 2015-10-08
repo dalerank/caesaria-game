@@ -94,8 +94,8 @@ void Loader::Impl::initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city )
 
   Tile& signTile = tmap.at( tlPos + tlOffset );
 
-  Logger::warning( "(%d, %d)", tlPos.i(),    tlPos.j()    );
-  Logger::warning( "(%d, %d)", tlOffset.i(), tlOffset.j() );
+  Logger::warning( "({0}, {1})", tlPos.i(),    tlPos.j()    );
+  Logger::warning( "({0}, {1})", tlOffset.i(), tlOffset.j() );
 
   if( maySetSign( signTile ) )
   {

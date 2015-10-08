@@ -60,7 +60,7 @@ void GoodCaravan::sendTo(ObjectPtr obj)
     }
     else
     {
-      Logger::warning( "GoodCaravan: cannot find way from %s to %s", _d->base->name().c_str(), obj->name().c_str() );
+      Logger::warning( "GoodCaravan: cannot find way from {0} to {1}", _d->base->name(), obj->name() );
     }
   }
   else

@@ -29,6 +29,7 @@
 #include "gfx/tilesarray.hpp"
 #include "city/cityservice_peace.hpp"
 #include "build.hpp"
+#include "core/format.hpp"
 #include "gfx/tilearea.hpp"
 
 using namespace gfx;
@@ -140,7 +141,7 @@ void Disaster::_exec( Game& game, unsigned int )
           std::string typev = _d->infoType > houseOffset
                                 ? utils::format( 0xff, "house%02d", _d->infoType - houseOffset )
                                 : object::toString( object::Type( _d->infoType ) );
-          ruins->setInfo( utils::format( 0xff, "##ruins_%s_text##", typev.c_str() ) );
+          ruins->setInfo( fmt::format( "##ruins_{0}_text##", typev ) );
           ruins->afterBuild();
         }
       }

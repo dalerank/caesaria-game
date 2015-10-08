@@ -59,7 +59,7 @@ void Services::initialize(PlayerCityPtr city, const std::string& model)
     if( service.isValid() )
       city->addService( service );
     else
-      Logger::warning( "!!! WARNING: Cant initialize service %s on city create", it.first.c_str() );
+      Logger::warning( "!!! WARNING: Cant initialize service %s on city create {0}", it.first );
   }
 }
 
@@ -127,7 +127,7 @@ VariantMap Walkers::save() const
     }
     catch(...)
     {
-      Logger::warning( "!!! WARNING: Can't save walker type " + WalkerHelper::getTypename( wtype ));
+      Logger::warning( "!!! WARNING: Can't save walker type {0}", WalkerHelper::getTypename( wtype ));
     }
 
     walkedId++;

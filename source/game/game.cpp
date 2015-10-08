@@ -165,7 +165,7 @@ void Game::Impl::initVideo()
   engine = new SdlEngine();
 
   Size size = SETTINGS_VALUE( resolution );
-  Logger::warning( "GraficEngine: set size [%dx%d]", size.width(), size.height() );
+  Logger::warning( "GraficEngine: set size [{0}x{1}]", size.width(), size.height() );
   engine->setScreenSize( size );
   engine->setFlag( Engine::batching, batchTexures ? 1 : 0 );
 
@@ -419,7 +419,7 @@ bool Game::load(std::string filename)
   world::CityPtr city = _d->empire->initPlayerCity( ptr_cast<world::City>( _d->city ) );
   if( city.isNull() )
   {
-    Logger::warning( "INIT ERROR: can't initalize city %s in empire" + _d->city->name() );
+    Logger::warning( "INIT ERROR: can't initalize city {0} in empire" + _d->city->name() );
     return false;
   }
   _d->empire->emperor().checkCities();
@@ -540,7 +540,7 @@ bool Game::exec()
     return true;
   }    
 
-  Logger::warning( "game: exec switch to screen %d", _d->nextScreen );
+  Logger::warning( "game: exec switch to screen {0}", _d->nextScreen );
   addon::Manager& am = addon::Manager::instance();
   switch(_d->nextScreen)
   {
@@ -576,7 +576,7 @@ bool Game::exec()
     break;
 
     default:
-      Logger::warning( "game: unexpected next screen type %d", _d->nextScreen );
+      Logger::warning( "game: unexpected next screen type {0}", _d->nextScreen );
   }
 
   return _d->nextScreen != SCREEN_QUIT;

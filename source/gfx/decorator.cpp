@@ -83,7 +83,7 @@ void Decorator::drawBorder(Pictures& stack, const Rect& rectangle, const int off
 
   if( !sw || !sh )
   {
-    Logger::warning( "!!! WARNING: Cant draw border for sw=%d, sh=%d", sw, sh );
+    Logger::warning( "!!! WARNING: Cant draw border for sw={0}, sh={1}", sw, sh );
     return;
   }
 
@@ -277,7 +277,7 @@ void Decorator::drawBorder( Pictures& stack, const Rect& rectangle,
   const int sh = size.height();
   if( !sw || !sh )
   {
-    Logger::warning( "Decorator::drawBorder() can't finf texture %s %d", ResourceGroup::panelBackground, tp );
+    Logger::warning( "Decorator::drawBorder() can't finf texture {0} {1}", ResourceGroup::panelBackground, tp );
     return;
   }
 

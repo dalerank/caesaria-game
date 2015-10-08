@@ -245,14 +245,14 @@ void AnimationBank::Impl::loadStage( unsigned int type, const std::string& stage
       pib.setOffset( rc, start, frames * (step == 0 ? 1 : step), offset );
 
       std::string typeName = WalkerHelper::getTypename( (walker::Type)type );
-      Logger::warning( "AnimationBank: load animations for " + typeName + ":" + stageName );
+      Logger::warning( "AnimationBank: load animations for {0}:{1}", typeName, stageName );
       loadStage( objects, type, rc, start, frames, (Walker::Action)action, step, delay );
     }
   break;
 
   case stgCarts:
     {
-      Logger::warning( "AnimationBank: load animations for %d:%s", type, stageName.c_str() );
+      Logger::warning( "AnimationBank: load animations for {0}:{1}", type, stageName );
       loadStage( carts, type, rc, start, frames, Walker::acMove, step, delay );
 
       VARIANT_INIT_ANY( int, back, stageInfo )
@@ -286,7 +286,7 @@ const AnimationBank::MovementAnimation& AnimationBank::Impl::tryLoadAnimations( 
   DirectedAnimations::iterator it = objects.find( wtype );
   if( it == objects.end() )
   {
-    Logger::warning( "!!! WARNING: AnimationBank can't find config for type %d", wtype );
+    Logger::warning( "!!! WARNING: AnimationBank can't find config for type {0}", wtype );
     const AnimationBank::MovementAnimation& elMuleta = objects[ walker::unknown ].actions;
     objects[ wtype ].ownerType = wtype;
     objects[ wtype ].actions = elMuleta;

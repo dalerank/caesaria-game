@@ -97,7 +97,7 @@ public:
       fontB.draw( pic, qtyStr, 70, 22 );
 
       int moraleValue = _fort->legionMorale() / 10;
-      std::string moraleStr = utils::format( 0xff, "##legion_morale_%d##", moraleValue );
+      std::string moraleStr = fmt::format( "##legion_morale_{0}##", moraleValue );
       fontB.draw( pic, _( moraleStr ), 180, 15 );
     }    
   }

@@ -15,6 +15,7 @@ set( TILESET_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/core/logger.cpp"
       "${BASE_SOURCE_DIR}/core/time.cpp"
       "${BASE_SOURCE_DIR}/core/json.cpp"
+      "${BASE_SOURCE_DIR}/core/format.cpp"
       "${BASE_SOURCE_DIR}/core/saveadapter.cpp"
       "${BASE_SOURCE_DIR}/core/variant.cpp"
       "${BASE_SOURCE_DIR}/core/eventconverter.cpp"

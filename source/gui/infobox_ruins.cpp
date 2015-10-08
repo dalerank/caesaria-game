@@ -46,7 +46,7 @@ AboutRuins::AboutRuins( Widget* parent, PlayerCityPtr city, const Tile& tile )
   RuinsPtr ruin = tile.overlay<Ruins>();
   if( ruin.isNull() )
   {
-    Logger::warning( "AbourRuins: tile overlay at [%d,%d] not ruin", tile.i(), tile.j() );
+    Logger::warning( "AbourRuins: tile overlay at [{0},{1}] not ruin", tile.i(), tile.j() );
     return;
   }
 

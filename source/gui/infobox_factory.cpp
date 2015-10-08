@@ -63,7 +63,7 @@ AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
 
   if( !factory.isValid() )
   {
-    Logger::warning( "AboutFactory: cant convert base to factory at [%d,%d]", tile.i(), tile.j() );
+    Logger::warning( "AboutFactory: cant convert base to factory at [{0},{1}]", tile.i(), tile.j() );
     deleteLater();
     return;
   }
@@ -90,13 +90,13 @@ AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
     Label* lbStockInfo = new Label( this, Rect( _lbTitle()->leftbottom() + Point( 0, 25 ), Size( width() - 32, 25 ) ) );
     lbStockInfo->setIcon( good::Helper::picture( factory->inStock().type() ) );
 
-    std::string whatStock = utils::format( 0xff, "##%s_factory_stock##", good::Helper::getTypeName( factory->consumeGoodType() ).c_str() );
-    std::string typeOut = utils::format( 0xff, "##%s_factory_stock##", good::Helper::getTypeName( factory->produceGoodType() ).c_str() );
+    std::string whatStock = fmt::format( "##{0}_factory_stock##", good::Helper::getTypeName( factory->consumeGoodType() ) );
+    std::string typeOut = fmt::format( "##{0}_factory_stock##", good::Helper::getTypeName( factory->produceGoodType() ) );
     std::string text = utils::format( 0xff, "%d %s %d %s",
-                                             factory->inStock().qty() / 100,
-                                             _(whatStock),
-                                             factory->outStock().qty() / 100,
-                                             _(typeOut) );
+                                      factory->inStock().qty() / 100,
+                                      _(whatStock),
+                                      factory->outStock().qty() / 100,
+                                      _(typeOut) );
 
     lbStockInfo->setText( text );
     lbStockInfo->setTextOffset( Point( 30, 0 ) );
