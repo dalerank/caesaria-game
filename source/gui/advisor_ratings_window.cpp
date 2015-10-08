@@ -119,7 +119,7 @@ void Ratings::Impl::checkCultureRating()
       int coverage = culture->coverage( CultureRating::Coverage(k) );
       if( coverage < 100 )
       {
-        std::string troubleDesc = utils::format( 0xff, "##have_less_%s_in_city_%d##", cultureCoverageDesc[ k ], coverage / 50 );
+        std::string troubleDesc = fmt::format( "##have_less_{}_in_city_{}##", cultureCoverageDesc[ k ], coverage / 50 );
         troubles.push_back( troubleDesc );
       }
     }

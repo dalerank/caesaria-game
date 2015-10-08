@@ -569,7 +569,7 @@ void createSet( const ArchiveConfig& archive, const StringArray& names )
   if ( zf == nullptr )
   {
      /* Handle error */
-     Logger::warning( "Unable to open %s for writing\n", arcName.toCString() );
+     Logger::warning( "Unable to open {} for writing\n", arcName.toCString() );
      return;
   }
 

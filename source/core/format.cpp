@@ -1222,7 +1222,12 @@ void fmt::BasicFormatter<Char>::format(BasicCStringRef<Char> format_str) {
       continue;
     }
     if (c == '}')
-      FMT_THROW(FormatError("unmatched '}' in format string"));
+    {
+      ::fprintf(stderr, "%s", format_str.c_str() );
+      ::fprintf(stderr, "unmatched '}' in format string" );
+      return;
+    }
+
     write(writer_, start, s - 1);
     Arg arg = is_name_start(*s) ? parse_arg_name(s) : parse_arg_index(s);
     start = s = format(s, arg);

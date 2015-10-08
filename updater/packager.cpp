@@ -4,7 +4,7 @@
 #include "util.hpp"
 #include "inifile.hpp"
 #include "core/utils.hpp"
-
+#include "core/format.hpp"
 #include "vfs/file.hpp"
 #include "vfs/directory.hpp"
 #include "vfs/entries.hpp"
@@ -75,11 +75,11 @@ void Packager::createUpdate( bool release )
     std::string sectionName;
     if( release )
     {
-      sectionName = utils::format( 0xff, "File %s", baseName.c_str() );
+      sectionName = fmt::format( "File {}", baseName );
     }
     else
     {
-      sectionName = utils::format( 0xff, "Version%s File %s", _crver.c_str(), baseName.c_str() );
+      sectionName = fmt::format( "Version{} File {}", _crver, baseName );
     }
 
     ByteArray data = vfs::NFile::open( (*i).absolutePath() ).readAll();

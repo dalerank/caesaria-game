@@ -47,7 +47,7 @@ std::string _date2str(const T& time, bool drawDays, bool roman)
   else
     year = utils::toRoman( yearNum );
 
-  text = utils::format( 0xff, "%s %s %s %s", dayStr.c_str(), _( month ), year.c_str(), _( age ) );
+  text = fmt::format( "{} {} {} {}", dayStr, _( month ), year, _( age ) );
   return text;
 }
 

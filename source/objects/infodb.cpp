@@ -198,7 +198,7 @@ void InfoDB::initialize( vfs::Path filename )
 
     if( hasData( btype ) )
     {
-      Logger::warning( "!!!WARNING: type %s also initialized " + kv.first );
+      Logger::warning( "!!!WARNING: type {} also initialized ", kv.first );
       continue;
     }
 
@@ -214,7 +214,7 @@ object::Group InfoDB::findGroup( const std::string& name )
 
   if( type == instance()._d->classHelper.getInvalid() )
   {
-    Logger::warning( "!!! MetaDataHolder: can't find object class for className %s", name.c_str() );
+    Logger::warning( "!!! MetaDataHolder: can't find object class for className " + name );
     return object::group::unknown;
   }
 

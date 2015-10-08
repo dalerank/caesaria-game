@@ -274,9 +274,9 @@ void OverlayDebugQueue::print()
     foreach( it, inst._pointers )
     {
       Overlay* ov = (Overlay*)*it;
-      LOG_OVERLAY.debug( "%s - %s [%d,%d] ref:%d", ov->name().c_str(),
-                                          object::toString( ov->type() ).c_str(),
-                                          ov->pos().i(), ov->pos().j(), ov->rcount() );
+      LOG_OVERLAY.debug( "{} - {} [{},{}] ref:{}", ov->name(),
+                         object::toString( ov->type() ),
+                         ov->pos().i(), ov->pos().j(), ov->rcount() );
     }
   }
 }

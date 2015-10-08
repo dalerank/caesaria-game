@@ -210,7 +210,7 @@ void SdlEngine::init()
 
   Logger::warning("SDLGraficEngine:Android init successfull");
 #else
-  Logger::warning( "SDLGraficEngine: set mode {0}x{0}",  _srcSize.width(), _srcSize.height() );
+  Logger::warning( "SDLGraficEngine: set mode {0}x{1}",  _srcSize.width(), _srcSize.height() );
 
   window = SDL_CreateWindow( "CaesariA",
                              SDL_WINDOWPOS_CENTERED,
@@ -283,8 +283,8 @@ void SdlEngine::init()
   }
 
   Logger::warning( "SDLGraficEngine: set caption");
-  Logger::warning( "SDLGraphicEngine: version:%s compiler:{0}", CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
-  std::string versionStr = fmt::format( "CaesarIA (b{0}})", CAESARIA_BUILD_NUMBER );
+  Logger::warning( "SDLGraphicEngine: version:{0} compiler:{1}", CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
+  std::string versionStr = fmt::format( "CaesarIA (b{0})", CAESARIA_BUILD_NUMBER );
   SDL_SetWindowTitle( window, versionStr.c_str() );
 
   _d->window = window;

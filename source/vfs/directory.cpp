@@ -92,7 +92,7 @@ bool Directory::createByPath( Directory dir )
       {
         if( !path.isFolder() )
         {
-          Logger::warning( "Current path %s not a directory " + current );
+          Logger::warning( "Current path {} not a directory ", current );
           result = false;
           break;
         }

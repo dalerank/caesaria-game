@@ -293,7 +293,7 @@ void Religion::Impl::updateRelation( PlayerCityPtr city, DivinityPtr divinity )
     faithValue = math::clamp<unsigned int>( math::percentage( myTemples.parishionerNumber, city->states().population ), 0u, 100u );
   }
 
-  LOG.info( "Faith income for %s is %d [r=%f.2]", divinity->name().c_str(), faithValue, divinity->relation());
+  LOG.info( "Faith income for {0} is {1} [r={2:.2f}]", divinity->name(), faithValue, divinity->relation());
   divinity->updateRelation( faithValue, city );
 
   bool unhappy = divinity->relation() < relation::negative;

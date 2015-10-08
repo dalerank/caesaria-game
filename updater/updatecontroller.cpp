@@ -78,7 +78,7 @@ void UpdateController::abort()
     }
     catch (std::runtime_error& ex)
     {
-      Logger::warning( "Controller thread aborted. %s", ex.what() );
+      Logger::warning( "Controller thread aborted. {}", ex.what() );
     }
 
     _updater.cancelDownloads();

@@ -19,6 +19,7 @@
 #include "utils.hpp"
 #include "variant_map.hpp"
 #include "variant_list.hpp"
+#include "core/format.hpp"
 
 static std::string lastParsedObjectName;
 static std::string sanitizeString( const std::string& str)
@@ -234,7 +235,7 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
       // TODO: cheap hack - almost locale independent double formatting
       std::string posX = utils::replace(utils::format( 0xff, "%f", pos.x()), ",", ".");
       std::string posY = utils::replace(utils::format( 0xff, "%f", pos.y()), ",", ".");
-      str = utils::format( 0xff, "[ \"%s\", \"%s\" ]", posX.c_str(), posY.c_str() );
+      str = fmt::format( "[ {0}, {1} ]", posX, posY );
     }
     break;
 

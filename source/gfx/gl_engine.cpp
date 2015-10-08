@@ -612,11 +612,11 @@ void GlEngine::init()
 
   SDL_DisplayMode mode;
   SDL_GetCurrentDisplayMode(0, &mode);
-  Logger::warning( "Screen bpp: %d", SDL_BITSPERPIXEL(mode.format));
-  Logger::warning( "Vendor     : %s", glGetString(GL_VENDOR));
-  Logger::warning( "Renderer   : %s", glGetString(GL_RENDERER));
-  Logger::warning( "Version    : %s", glGetString(GL_VERSION));
-  Logger::warning( "Extensions : %n", glGetString(GL_EXTENSIONS));
+  Logger::warning( "Screen bpp: {}", SDL_BITSPERPIXEL(mode.format));
+  Logger::warning( "Vendor     : {}", glGetString(GL_VENDOR));
+  Logger::warning( "Renderer   : {}", glGetString(GL_RENDERER));
+  Logger::warning( "Version    : {}", glGetString(GL_VERSION));
+  Logger::warning( "Extensions : {}", glGetString(GL_EXTENSIONS));
 
   glEnable( GL_TEXTURE_2D );
   glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );

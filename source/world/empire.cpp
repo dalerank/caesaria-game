@@ -123,7 +123,7 @@ public:
       }
       else
       {
-        Logger::warning( "!!! WARNING: Cant find city %s on load", item.first.c_str() );
+        Logger::warning( "!!! WARNING: Cant find city {} on load", item.first );
       }
     }
   }

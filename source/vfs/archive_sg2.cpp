@@ -175,7 +175,7 @@ Sg2ArchiveReader::Sg2ArchiveReader(NFile file) : _file( file )
 
       if( !p555.exist() )
       {
-          Logger::warning("Cannot found 555 file for image %s in file %s", name.c_str(), p555.toCString() );
+          Logger::warning("Cannot found 555 file for image {} in file {}", name, p555.toString() );
           continue; // skip to next bitmap
       }
 
@@ -266,7 +266,7 @@ ByteArray Sg2ArchiveReader::_readData(const SgFileEntry& rec )
   FileNative z5file( filename, Entity::fmRead );
   if (!z5file.isOpen() )
   {
-    Logger::warning( "Unable to open 555 file %s", filename.c_str() );
+    Logger::warning( "Unable to open 555 file {}", filename );
     return ByteArray();
   }
 

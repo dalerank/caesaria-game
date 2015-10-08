@@ -213,7 +213,7 @@ void ConsoleUpdater::onFinishStep(UpdateStep step)
 
     std::size_t numMirrors = _d->controller->mirrors_n();
 
-		Logger::warning( "   Found %d mirror%s.", numMirrors, (numMirrors == 1 ? "" : "s") );
+    Logger::warning( "   Found {} mirror{}.", numMirrors, (numMirrors == 1 ? "" : "s") );
 
 		if( numMirrors == 0 )
 		{
@@ -402,12 +402,12 @@ void ConsoleUpdater::onProgressChange(const ProgressInfo& info)
       printProgress();
 
 			// Add a line break when a new file starts
-      Logger::warning( utils::format( 0xff, "\nDownloading from Mirror %s: %s", info.mirrorDisplayName.c_str(), info.file.toCString() ) );
+      Logger::warning( utils::format( 0xff, "\nDownloading from Mirror {}: {}", info.mirrorDisplayName.c_str(), info.file.toCString() ) );
 		}
     else if (_d->info.file.toString().empty())
 		{
 			// First file
-      Logger::warning( utils::format( 0xff, " Downloading from Mirror %s: %s", info.mirrorDisplayName.c_str(), info.file.toCString() ) );
+      Logger::warning( utils::format( 0xff, " Downloading from Mirror {}: {}", info.mirrorDisplayName.c_str(), info.file.toCString() ) );
 		}
 
     _d->info = info;
