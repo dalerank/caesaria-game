@@ -66,6 +66,20 @@
           folder : "/resources/carts/fruit"
           files : [ "cartfruit_*" ]
         }
+
+        furniture :
+        {
+          type : "atlas"
+          folder : "/resources/carts/furniture"
+          files : [ "cartfurniture_*" ]
+        }
+
+        grape :
+        {
+          type : "atlas"
+          folder : "/resources/carts/grape"
+          files : [ "cartgrape_*" ]
+        }
       }
     }
   }
