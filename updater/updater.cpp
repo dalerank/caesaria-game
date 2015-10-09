@@ -318,7 +318,7 @@ void Updater::DetermineLocalVersion()
     total.filesize += vfs::NFile::size( i.first );
   }
 
-  Logger::warning( "The local files are matching %d different versions.", _localVersions.size() );
+  Logger::warning( "The local files are matching {} different versions.", _localVersions.size() );
 
   if (_fileProgressCallback != NULL)
   {

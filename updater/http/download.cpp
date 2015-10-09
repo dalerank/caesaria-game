@@ -251,7 +251,7 @@ bool Download::checkIntegrity()
 
 		if( vfs::NFile::size(_tempFilename) != _requiredFilesize)
 		{
-			Logger::warning( "Downloaded file has the wrong size, expected %d but found %d",
+      Logger::warning( "Downloaded file has the wrong size, expected {} but found {}",
 											 _requiredFilesize,
 											 vfs::NFile::size(_tempFilename) );
 			return false; // failed the file size check
@@ -270,7 +270,7 @@ bool Download::checkIntegrity()
 
 		if (crc != _requiredCrc)
 		{
-			Logger::warning( "Downloaded file has the wrong crc, expected %x but found %x", _requiredCrc, crc );
+      Logger::warning( "Downloaded file has the wrong crc, expected {} but found {}", _requiredCrc, crc );
 			return false; // failed the crc check
 		}
 		else

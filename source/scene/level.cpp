@@ -803,9 +803,9 @@ bool Level::_tryExecHotkey(NEvent &event)
     case KEY_ESCAPE:
     {
       Widget::Widgets children = _d->game->gui()->rootWidget()->children();
-      foreach( it, children )
+      for( auto it : children )
       {
-        bool handled = (*it)->onEvent( event );
+        bool handled = it->onEvent( event );
         if( handled )
             break;
       }
@@ -826,7 +826,7 @@ void Level::Impl::showMissionTaretsWindow()
   Widget* wdg = game->gui()->findWidget( id );
   if( !wdg )
   {
-    dialog::MissionTargets* wnd = dialog::MissionTargets::create( game->gui()->rootWidget(), game->city() );
+    auto wnd = dialog::MissionTargets::create( game->gui()->rootWidget(), game->city() );
     wnd->show();
     wnd->setID( id );
   }

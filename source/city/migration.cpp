@@ -128,7 +128,7 @@ void Migration::timeStep( const unsigned int time )
 
   float migrationKoeff = _d->getMigrationKoeff( _city() );
   Info::Parameters params = _d->lastMonthParams( _city() );
-  LOG_MIGRATION.info( "Current migration factor is %f", migrationKoeff );
+  LOG_MIGRATION.info( "Current migration factor is {}", migrationKoeff );
 
   _d->emigrantsIndesirability = defaultEmIndesirability; //base undesirability value
   float emDesKoeff = math::clamp<float>( (float)SETTINGS_VALUE( emigrantSalaryKoeff ), 1.f, 99.f );
@@ -189,7 +189,7 @@ void Migration::timeStep( const unsigned int time )
 
   _d->emigrantsIndesirability *= migrationKoeff;
 
-  LOG_MIGRATION.info( "Current undesirability is %d", _d->emigrantsIndesirability );
+  LOG_MIGRATION.info( "Current undesirability is {}", _d->emigrantsIndesirability );
   if( warInfluence > warBlockedMigration )
   {
     LOG_MIGRATION.info( "Enemies in city: migration stopped" );
@@ -213,7 +213,7 @@ void Migration::timeStep( const unsigned int time )
     _d->lastMonthComing = 0;
     _d->lastMonthLeaving = 0;
 
-    LOG_MIGRATION.info( "Current workless=%f undesrbl=%f",
+    LOG_MIGRATION.info( "Current workless={} undesrbl={}",
                      curWorklessValue * migrationKoeff,
                      _d->emigrantsIndesirability * migrationKoeff );
   }

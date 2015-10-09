@@ -85,9 +85,9 @@ void WindowMessageStack::_update()
   Point offsetLb( width() / 2, 12 );
   Point offset( 0, 23 );
   Widgets wds = children();
-  foreach( widget, wds )
+  for( auto widget : wds )
   {
-    (*widget)->setCenter( offsetLb );
+    widget->setCenter( offsetLb );
     offsetLb += offset;
   }
 }
@@ -98,14 +98,14 @@ void WindowMessageStack::beforeDraw(gfx::Engine& painter)
   unsigned int myWidth = width();
   int speed = std::max<int>( 20, 2 * myWidth / (painter.fps()+1) );
 
-  foreach( widget, wds )
+  for( auto widget : wds )
   {    
-    unsigned int wd = (*widget)->width();
+    unsigned int wd = widget->width();
     if( wd != myWidth )
     {
-      Point center = (*widget)->center();
-      (*widget)->setWidth( math::clamp<unsigned int>( wd+speed, 0, myWidth ) );
-      (*widget)->setCenter( center );
+      Point center = widget->center();
+      widget->setWidth( math::clamp<unsigned int>( wd+speed, 0, myWidth ) );
+      widget->setCenter( center );
     }
   }
 

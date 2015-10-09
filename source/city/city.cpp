@@ -363,7 +363,7 @@ void PlayerCity::load( const VariantMap& stream )
 
   if( needLoadOld )
   {
-    LOG_CITY.warn( "Trying to load from format %d", saveFormat );
+    LOG_CITY.warn( "Trying to load from format {}", saveFormat );
   }
 
   City::load( stream );

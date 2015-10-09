@@ -114,7 +114,7 @@ void UpdateController::run(bool& continues)
 
 void UpdateController::doStep(int step)
 {
-  Logger::warning( "Step thread started: %d", step);
+  Logger::warning( "Step thread started: {}", step);
 
 	_view.onStartStep((UpdateStep)step);
 

@@ -85,7 +85,7 @@ public:
     ObjectsMap::const_iterator mapIt = find( type );
     if( mapIt == end() )
     {
-      Logger::warning("MetaDataHolder::Unknown objects %d", type );
+      Logger::warning("MetaDataHolder::Unknown objects {}", type );
       return Info::invalid;
     }
     return mapIt->second;

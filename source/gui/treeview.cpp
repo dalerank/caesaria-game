@@ -461,7 +461,6 @@ void TreeView::draw( gfx::Engine& painter )
 
 		if( node->hasChildren() )
 		{
-			//рамка для плюса
       Rect expanderRect( frameRect.lefttop() + Point( -_indentWidth + 2, ( _indentWidth - 4 ) / 2 ),
                          Size( _indentWidth - 4, _indentWidth - 4 ) );
 

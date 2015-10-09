@@ -672,7 +672,7 @@ Picture GlEngine::createPicture( const Size& size )
   SDL_Surface* img = SDL_CreateRGBSurface( 0, size.width(), size.height(), 32,
                                            0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
 
-  Logger::warningIf( NULL == img, utils::format( 0xff, "GlEngine:: can't make surface, size=%dx%d", size.width(), size.height() ) );
+  Logger::warningIf( NULL == img, utils::format( 0xff, "GlEngine:: can't make surface, size={}x{}", size.width(), size.height() ) );
 
   Picture pic;
   pic.init( 0, img, 0 );  // no offset

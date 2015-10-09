@@ -469,7 +469,7 @@ void unlockAchievement(AchievementType achivId)
   }
   else
   {
-    Logger::warning( "Unknown achievement ID:%d", achivId );
+    Logger::warning( "Unknown achievement ID:{}", achivId );
   }
 }
 
@@ -481,7 +481,7 @@ gfx::Picture achievementImage(AchievementType achivId)
   }
   else
   {
-    Logger::warning( "Unknown achievement ID:%d", achivId );
+    Logger::warning( "Unknown achievement ID:{}", achivId );
   }
 
   return gfx::Picture::getInvalid();
@@ -727,7 +727,7 @@ std::string achievementCaption(AchievementType achivId)
   }
   else
   {
-    Logger::warning( "Unknown achievement ID:%d", achivId );
+    Logger::warning( "Unknown achievement ID:{}", achivId );
   }
 
   return "unknown_achv";
@@ -741,7 +741,7 @@ bool isAchievementReached(AchievementType achivId)
   }
   else
   {
-    Logger::warning( "Unknown achievement ID:%d", achivId );    
+    Logger::warning( "Unknown achievement ID:{}", achivId );
   }
   return false;
 }

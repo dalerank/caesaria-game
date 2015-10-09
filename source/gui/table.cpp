@@ -460,8 +460,8 @@ void Table::clearRows()
   _selectedRow = -1;
 
 	const Widgets& tableAreaChilds = _d->itemsArea->children();
-  foreach( wit, tableAreaChilds )
-		(*wit)->deleteLater();
+  for( auto wit : tableAreaChilds )
+    wit->deleteLater();
 
 	_d->rows.clear();
 

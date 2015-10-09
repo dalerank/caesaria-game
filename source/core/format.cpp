@@ -631,8 +631,8 @@ FMT_FUNC fmt::internal::UTF8ToUTF16::UTF8ToUTF16(fmt::StringRef s) {
 }
 
 FMT_FUNC fmt::internal::UTF16ToUTF8::UTF16ToUTF8(fmt::WStringRef s) {
-  if (int error_code = convert(s)) {
-    FMT_PRINTERR("cannot convert string from UTF-16 to UTF-8"));
+  if( convert(s) != 0 ) {
+    FMT_PRINTERR("cannot convert string from UTF-16 to UTF-8");
   }
 }
 

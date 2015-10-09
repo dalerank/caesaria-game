@@ -54,7 +54,7 @@ void Stock::takeFrom(good::Stock& stock, const int iAmount)
   }
   if (type() != none && type() != stock.type() )
   {
-    std::string errorStr = fmt::format( "GoodTypes do not match: %d vs %d", _type, stock._type );
+    std::string errorStr = fmt::format( "GoodTypes do not match: {} vs {}", _type, stock._type );
     Logger::warning( errorStr );
     return;
   }

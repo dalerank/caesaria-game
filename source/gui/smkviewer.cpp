@@ -209,7 +209,7 @@ void SmkViewer::Impl::nextFrame()
     emit onFinishSignal();
   }
 
-  Logger::warning( " -> Frame %d...", currentFrame );
+  Logger::warning( " -> Frame {}...", currentFrame );
 
   /* Get the audio chunk for this frame from track 0 */
   /* printf("Audio info for track 0: bit-depth %u, channels %u, rate %u\n",

@@ -147,9 +147,9 @@ bool Construction::build( const city::AreaInfo& info )
 {
   Overlay::build( info );
 
-  std::string name =  utils::format( 0xff, "%s_%d_%d",
-                                     object::toString( type() ).c_str(),
-                                     info.pos.i(), info.pos.j() );
+  std::string name =  fmt::format( "{}_{}_{}",
+                                   object::toString( type() ),
+                                   info.pos.i(), info.pos.j() );
   setName( name );
 
   computeRoadside();

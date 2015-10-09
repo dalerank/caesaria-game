@@ -86,7 +86,7 @@ void Packager::createUpdate( bool release )
 
     unsigned int crc = data.crc32( 0 );
     vinfo->SetValue( sectionName, "crc", utils::format( 0xff, "%x", crc ) );
-    vinfo->SetValue( sectionName, "filesize", utils::format( 0xff, "%d", data.size() ) );
+    vinfo->SetValue( sectionName, "filesize", utils::i2str( data.size() ) );
     // Add platforms information info release file
     std::string platforms = getFilePlatforms(*i);
     if (!platforms.empty()) {

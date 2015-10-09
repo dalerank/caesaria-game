@@ -203,7 +203,7 @@ TilesArray Tilemap::getNeighbors( const TilePos& pos, TileNeighbors type)
     return rect(pos - offset, pos + offset, !checkCorners);
   }
 
-  Logger::warning( "CRITICAL: Unexpected type %d in Tilemap::getNeighbors", type );
+  Logger::warning( "CRITICAL: Unexpected type {} in Tilemap::getNeighbors", type );
   return TilesArray();
 }
 

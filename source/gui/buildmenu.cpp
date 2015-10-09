@@ -75,11 +75,10 @@ public:
 
     if( f.isValid() && _cost >= 0 )
     {           
-      char buffer[32];
-      sprintf( buffer, "%d", _cost );
-      Rect textRect = f.getTextRect( buffer, Rect( 5, 0, width()-10, height() ),
+      std::string text = utils::i2str( _cost );
+      Rect textRect = f.getTextRect( text, Rect( 5, 0, width()-10, height() ),
                                      align::lowerRight, verticalTextAlign() );
-      f.draw( _textPicture(), buffer, textRect.left(), textRect.top() );
+      f.draw( _textPicture(), text, textRect.left(), textRect.top() );
     }
   }
 

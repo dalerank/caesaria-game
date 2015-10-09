@@ -63,7 +63,7 @@ SoundOptions::SoundOptions(Widget* parent)
   INIT_WIDGET_FROM_UI( PushButton*, btnOk )
   if( btnOk ) btnOk->setFocus();
 
-  List<SpinBox*> widgets = findChildren<SpinBox*>( true );
+  auto widgets = findChildren<SpinBox*>( true );
   for( auto wdg : widgets )
     CONNECT( wdg, onChangeA(), _d.data(), Impl::resolveChange )
 }
@@ -103,7 +103,7 @@ Signal0<>& SoundOptions::onApply()                       { return _d->onApplySig
 
 void SoundOptions::update(audio::SoundType type, audio::Volume value)
 {
-  List<SpinBox*> widgets = findChildren<SpinBox*>( true );
+  auto widgets = findChildren<SpinBox*>( true );
 
   for( auto wdg : widgets )
   {
