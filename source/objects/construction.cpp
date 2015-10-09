@@ -182,12 +182,19 @@ int Construction::roadsideDistance() const{ return 1; }
 
 void Construction::burn()
 {
-  deleteLater();
+  if( !info().mayBurn() )
+  {
+    Logger::warning( "Construction {0} [{1},{2}] cant be fireed at !", info().name(), pos().i(), pos().j() );
+  }
+  else
+  {
+    deleteLater();
 
-  auto event = Disaster::create( tile(), Disaster::fire );
-  event->dispatch();
+    auto event = Disaster::create( tile(), Disaster::fire );
+    event->dispatch();
 
-  Logger::warning( "Construction catch fire at {0},{1}!", pos().i(), pos().j() );
+    Logger::warning( "Construction {0} catch fire at []{1},{2}]!", info().name(), pos().i(), pos().j() );
+  }
 }
 
 void Construction::collapse()
@@ -252,9 +259,6 @@ void Construction::initialize(const object::Info& mdata)
 
   double collapsibility = mdata.getOption( "collapsibility", 1. );
   setState( pr::collapsibility, collapsibility );
-
-  bool mayBurn = mdata.getOption( "mayBurn", true );
-  setState( pr::mayBurn, mayBurn );
 
   VariantMap anMap = mdata.getOption( "animation" ).toMap();
   if( !anMap.empty() )

@@ -149,13 +149,14 @@ void Market::load( const VariantMap& stream)
 
   VARIANT_LOAD_CLASS_D( _d, goodStore, stream )
 
-      _d->initStore();
+  _d->initStore();
 }
 
 bool Market::build(const city::AreaInfo& info)
 {
   bool isOk = ServiceBuilding::build( info );
-  if( isOk )
+  bool isLoadingMode = !info.city->getOption( PlayerCity::forceBuild );
+  if( isOk && !isLoadingMode )
   {
     TilePosArray locations = roadside().locations();
     bool accessGranary = _d->checkStorageInWorkRange( info.city, locations, object::granery );

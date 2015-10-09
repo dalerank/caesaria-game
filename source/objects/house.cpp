@@ -1348,13 +1348,13 @@ int House::Impl::getFoodLevel() const
   {
     good::Product maxFtype = good::none;
     int maxFoodQty = 0;
-    foreach( ft, foods )
+    for( auto goodType : foods )
     {
-      int tmpQty = goodstore.qty( *ft );
+      int tmpQty = goodstore.qty( goodType );
       if( tmpQty > maxFoodQty )
       {
         maxFoodQty = tmpQty;
-        maxFtype = *ft;
+        maxFtype = goodType;
       }
     }
 

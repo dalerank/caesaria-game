@@ -18,7 +18,6 @@
 #ifndef __CAESARIA_OBJECTPARAM_H_INCLUDED__
 #define __CAESARIA_OBJECTPARAM_H_INCLUDED__
 
-#include "core/namedtype.hpp"
 #include "core/hash.hpp"
 
 #define REGISTER_PARAM(name,id) namespace pr { static const Param name = Param(id); }
@@ -28,6 +27,7 @@ namespace pr
 {
 typedef enum
 {
+  unknown=0,
   fire,
   damage,
   inflammability,
@@ -41,7 +41,6 @@ typedef enum
   lockTerrain,
   food,
   reserveExpires,
-  mayBurn,
   paramCount
 } Type;
 }
