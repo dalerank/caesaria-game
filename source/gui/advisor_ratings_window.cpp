@@ -117,7 +117,13 @@ void Ratings::Impl::checkCultureRating()
     for( int k=CultureRating::covSchool; k < CultureRating::covCount; k++)
     {
       int coverage = culture->coverage( CultureRating::Coverage(k) );
-      if( coverage < 100 )
+      int objects_n = culture->objects_n( CultureRating::Coverage(k) );
+      if( objects_n == 0 )
+      {
+        std::string troubleDesc = fmt::format( "##haveno_{}_in_city##", cultureCoverageDesc[ k ] );
+        troubles.push_back( troubleDesc );
+      }
+      else if( coverage < 100 )
       {
         std::string troubleDesc = fmt::format( "##have_less_{}_in_city_{}##", cultureCoverageDesc[ k ], coverage / 50 );
         troubles.push_back( troubleDesc );
@@ -270,6 +276,7 @@ void Ratings::Impl::checkFavourRating()
     if( rd->haveCanceledRequest() )
     {
       problems << "##imperial_request_cance_badly_affected##";
+      problems << "##request_failed##";
     }
   }
 

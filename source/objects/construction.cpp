@@ -207,7 +207,7 @@ void Construction::collapse()
   GameEventPtr event = Disaster::create( tile(), Disaster::collapse );
   event->dispatch();
 
-  Logger::warning( "Construction collapsed at {0},{1}!", pos().i(), pos().j() );
+  Logger::warning( "Construction {0} collapsed at [{1},{2}]!", info().name(), pos().i(), pos().j() );
 }
 
 const Picture& Construction::picture() const { return Overlay::picture(); }
