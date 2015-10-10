@@ -86,7 +86,6 @@ public:
    static std::string serialize(const Variant &data, bool &success, const std::string& tab);
 
    static std::string lastParsedObject();
-   static void resetInternalData();
 
  private:
    /**

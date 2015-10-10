@@ -110,17 +110,6 @@ std::string Json::serialize(const Variant &data, const std::string& tab)
    return Json::serialize(data, success, tab);
 }
 
-namespace {
-  StringArray values;
-  std::string serializedValue;
-}
-
-void Json::resetInternalData()
-{
-  values.reserve( 20 );
-  serializedValue.reserve( 512 );
-}
-
 std::string Json::serialize(const Variant &data, bool &success, const std::string& tab)
 {
   std::string str;
@@ -136,22 +125,31 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
     case Variant::List:
     case Variant::NStringArray: // variant is a list?
     {
-      values.clear();
       const VariantList rlist = data.toList();
 
-      for( auto& item : rlist )
+      if( rlist.empty() )
       {
-        serializedValue = serialize( item, "" );
-        if( serializedValue.empty() )
+        str = "[]";
+      }
+      else
+      {
+        StringArray values;
+        std::string serializedValue;
+        serializedValue.reserve( 512 );
+        for( auto& item : rlist )
         {
-            success = false;
-            break;
+          serializedValue = serialize( item, "" );
+          if( serializedValue.empty() )
+          {
+              success = false;
+              break;
+          }
+
+          values.push_back( serializedValue );
         }
 
-        values.push_back( serializedValue );
+        str = "[ " + join( values, ", " ) + " ]";
       }
-
-      str = "[ " + join( values, ", " ) + " ]";
     }
     break;
 
@@ -174,7 +172,6 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
           serializedValue = serialize( item.second, tab + "  ");
           if( serializedValue.empty())
           {
-                  //success = false;
             pairs.push_back( tab + sanitizeString( item.first ) + std::string( " : \"nonSerializableValue\"" ) );
             continue;
           }
@@ -266,11 +263,11 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
     default:
       if ( data.canConvert( Variant::LongLong ) ) // any signed number?
       {
-        str = utils::format( 0xff, "%d", data.toLongLong() );
+        str = utils::i2str( data.toLongLong() );
       }
       else if (data.canConvert( Variant::Long ))
       {
-        str = utils::format( 0xff, "%d", data.toLongLong() );
+        str = utils::i2str( data.toLongLong() );
       }
       else if (data.canConvert( Variant::String ) ) // can value be converted to string?
       {
