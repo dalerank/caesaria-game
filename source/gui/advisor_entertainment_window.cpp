@@ -43,7 +43,6 @@ using namespace gfx;
 
 struct EntertInfo
 {
-  object::Type type;
   std::string building;
   std::string people;
   int peoplesServed;
@@ -54,13 +53,14 @@ struct EntertInfo
   int partlyWork;
 };
 
-static EntertInfo infos[] = {
-                              { object::theater, "##theaters##", "##peoples##" },
-                              { object::amphitheater, "##amphitheaters##", "##peoples##" },
-                              { object::colloseum, "##colloseum##", "##peoples##" },
-                              { object::hippodrome, "##hippodromes##",  "-" },
-                              { object::unknown, "", "" }
-                            };
+static std::map<object::Type,EntertInfo> infos =
+{
+  { object::theater, {"##theaters##", "##peoples##"} },
+  { object::amphitheater, {"##amphitheaters##", "##peoples##"} },
+  { object::colloseum, {"##colloseum##", "##peoples##"} },
+  { object::hippodrome, {"##hippodromes##",  "-"} },
+  { object::unknown, {"", ""} }
+};
 
 
 enum { idxTheater=0, idxAmph=1, idxColosseum=2, idxHippodrome=3,
@@ -79,13 +79,11 @@ namespace advisorwnd
 
 static EntertInfo findInfo( const object::Type service )
 {
-  for( int index=0; infos[index].type != object::unknown; index++ )
-  {
-    if( service == infos[index].type )
-        return infos[index];
-  }
+  auto it = infos.find( service );
+  if( it != infos.end() )
+    return it->second;
 
-  return EntertInfo();
+  return infos[ object::unknown ];
 }
 
 class EntertainmentInfoLabel : public Label

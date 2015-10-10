@@ -118,6 +118,7 @@ public:
       int coveragePrcnt = _info.needService > 0
                             ? math::percentage( _info.peoplesServed, _info.needService )
                             : 100;
+      math::clamp_to( coveragePrcnt, 0, 100 );
       coverageStrT = fmt::format( "{0} %", coveragePrcnt );
     }
     rfont.draw( texture, coverageStrT, 455, 0 );
