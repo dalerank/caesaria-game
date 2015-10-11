@@ -903,6 +903,8 @@ private:	// Invoker for static functions
 	return (*(m_Closure.GetStaticFunction()))(); }
 };
 
+typedef Delegate0<> Callback;
+
 //N=1
 template<class Param1, class RetType=detail::DefaultVoid>
 class Delegate1 {

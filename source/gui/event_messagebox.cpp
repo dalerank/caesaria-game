@@ -68,8 +68,9 @@ AboutEvent::AboutEvent(Widget* parent, const std::string& title,
     goodLabel->setTextAlignment( align::upperLeft, align::center );
     goodLabel->setTextOffset( Point( 30, 0 ) );
     goodLabel->setIcon( good::Helper::picture( gtype ), Point( 0, 7 ) );
-  }    
+  }
 }
+
 
 AboutEvent::~AboutEvent() {}
 

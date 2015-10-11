@@ -177,6 +177,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( destroyEpidemicHouses, 0 );
   setOption( difficulty, game::difficulty::usual );
   setOption( forestFire, 1 );
+  setOption( showGodsUnhappyWarn, 1 );
   setOption( forestGrow, 0 );
   setOption( warfNeedTimber, 1 );
 

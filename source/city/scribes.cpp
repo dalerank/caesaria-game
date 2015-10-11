@@ -150,7 +150,7 @@ void Scribes::Messages::load(const VariantMap &vm)
 {
   for( auto& i : vm )
   {
-    push_back( Message() );
+    push_front( Message() );
     back().load( i.second.toMap() );
   }
 }

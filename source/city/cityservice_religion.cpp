@@ -99,8 +99,6 @@ public:
   TemplesCoverity templesCoverity;
   DateTime lastMessageDate;
   StringArray reasons;
-
-  void updateRelation( PlayerCityPtr city, DivinityPtr divinity );
 };
 
 SrvcPtr Religion::create( PlayerCityPtr city )
@@ -197,10 +195,8 @@ void Religion::timeStep( const unsigned int time )
       }
     }
 
-    for (auto divinity : divinities)
-    {
-      _d->updateRelation( _city(), divinity );
-    }
+    for( auto divinity : divinities)
+      _updateRelation( divinity );
   }
 
   if( game::Date::isMonthChanged() )
@@ -273,12 +269,9 @@ std::string Religion::reason() const
   return _d->reasons.random();
 }
 
-Religion::~Religion()
-{
+Religion::~Religion() {}
 
-}
-
-void Religion::Impl::updateRelation( PlayerCityPtr city, DivinityPtr divinity )
+void Religion::_updateRelation( DivinityPtr divinity )
 {
   if (divinity.isNull())
   {
@@ -286,29 +279,39 @@ void Religion::Impl::updateRelation( PlayerCityPtr city, DivinityPtr divinity )
     return;
   }
 
-  CoverageInfo &myTemples = templesCoverity[divinity->internalName()];
+  CoverageInfo &myTemples = _d->templesCoverity[ divinity->internalName() ];
   unsigned int faithValue = 0;
-  if( city->states().population > 0 )
+  if( _city()->states().population > 0 )
   {
-    faithValue = math::clamp<unsigned int>( math::percentage( myTemples.parishionerNumber, city->states().population ), 0u, 100u );
+    faithValue = math::clamp<unsigned int>( math::percentage( myTemples.parishionerNumber, _city()->states().population ), 0u, 100u );
   }
 
   LOG.info( "Faith income for {0} is {1} [r={2:.2f}]", divinity->name(), faithValue, divinity->relation());
-  divinity->updateRelation( faithValue, city );
+  divinity->updateRelation( faithValue, _city() );
 
   bool unhappy = divinity->relation() < relation::negative;
-  bool maySendNotification = lastMessageDate.monthsTo( game::Date::current() ) > DateTime::monthsInYear/2;
+  bool maySendNotification = _d->lastMessageDate.monthsTo( game::Date::current() ) > DateTime::monthsInYear/2;
 
   if( unhappy && maySendNotification )
   {
-    lastMessageDate = game::Date::current();
-    std::string text = divinity->relation() < relation::wrathfull ? "##gods_wrathful_text##" : "##gods_unhappy_text##";
-    std::string title =
-        divinity->relation() < relation::wrathfull ? "##gods_wrathful_title##" : "##gods_unhappy_title##";
+    _d->lastMessageDate = game::Date::current();
+    bool wrathfull = divinity->relation() < relation::wrathfull;
+    std::string text = wrathfull ? "##gods_wrathful_text##" : "##gods_unhappy_text##";
+    std::string title = wrathfull ? "##gods_wrathful_title##" : "##gods_unhappy_title##";
 
-    GameEventPtr e = ShowInfobox::create( _(title), _(text), ShowInfobox::send2scribe );
-    e->dispatch();
+    auto event = ShowInfobox::create( _(title), _(text), ShowInfobox::send2scribe ).as<ShowInfobox>();
+
+    if( !wrathfull )
+    {
+      bool showWarn = _city()->getOption( PlayerCity::showGodsUnhappyWarn ) > 0;
+      event->setDialogVisible( showWarn );
+      event->addCallback( "##hide_godunhappy_warn##", makeDelegate( this, &Religion::_hideWarnings ) );
+    }
+
+    event->dispatch();
   }
 }
+
+void Religion::_hideWarnings() { _city()->setOption( PlayerCity::showGodsUnhappyWarn, 0 ); }
 
 }//end namespace city
