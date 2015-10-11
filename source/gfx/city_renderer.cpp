@@ -51,6 +51,7 @@
 #include "layers/aborigens.hpp"
 #include "layers/layereducation.hpp"
 #include "layers/unemployed.hpp"
+#include "layers/constructor.hpp"
 #include "layers/sentiment.hpp"
 #include "layers/market_access.hpp"
 #include "walker/walker.hpp"
@@ -89,7 +90,7 @@ public:
   void setLayer( int type );
   void resetWalkersAfterTurn();
   void saveSettings();
-  void awareExerimental();
+  void awareExperimental();
 
 public signals:
   Signal1<int> onLayerSwitchSignal;
@@ -145,6 +146,7 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   addLayer( Aborigens::create( _d->camera, city ) );
   addLayer( MarketAccess::create( _d->camera, city ) );
   addLayer( Build::create( *this, city ) );
+  addLayer( Constructor::create( *this, city ) );
 
   DrawOptions& dopts = DrawOptions::instance();
   dopts.setFlag( DrawOptions::borderMoving, engine->isFullscreen() );
@@ -180,7 +182,7 @@ void CityRenderer::Impl::saveSettings()
   SETTINGS_SET_VALUE( mmb_moving, dopts.isFlag( DrawOptions::mmbMoving ) );
 }
 
-void CityRenderer::Impl::awareExerimental()
+void CityRenderer::Impl::awareExperimental()
 {
 #ifdef DEBUG
   return;
@@ -317,7 +319,7 @@ void CityRenderer::rotateRight()
   _d->camera.refresh();
   _d->camera.tiles();
   _d->resetWalkersAfterTurn();  
-  _d->awareExerimental();
+  _d->awareExperimental();
 }
 
 void CityRenderer::rotateLeft()
@@ -326,7 +328,7 @@ void CityRenderer::rotateLeft()
   _d->camera.refresh();
   _d->camera.tiles();
   _d->resetWalkersAfterTurn();
-  _d->awareExerimental();
+  _d->awareExperimental();
 }
 
 void CityRenderer::setLayer(int layertype)

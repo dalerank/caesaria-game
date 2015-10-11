@@ -182,12 +182,12 @@ void Infobox::setupUI(const vfs::Path& filename)
 
 void Infobox::addCallback(const std::string& name, Callback callback)
 {
-  Point start = _d->btnHelp->absoluteRect().righttop();
+  //Point start = _d->btnHelp->absoluteRect().righttop();
   INIT_WIDGET_FROM_UI( VLayout*, layout )
   if( layout )
   {
     auto button = new PushButton( this, Rect(), name );
-    button->onClicked().connect( callback );
+    button->onClicked() += callback;
   }
 }
 

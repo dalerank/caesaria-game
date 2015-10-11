@@ -53,8 +53,15 @@ using namespace events;
 namespace gui
 {
 
-static const int REMOVE_TOOL_ID = 0xff00 + 1;
-static const int MAXIMIZE_ID = REMOVE_TOOL_ID + 1;
+enum class AdvToolMode
+{
+  removeTool = 0xff00 + 1,
+  terrainTool,
+  maximizeTool,
+  toolCount
+};
+
+enum { noSubMenu=0, haveSubMenu=1 };
 
 struct Menu::Config
 {
@@ -117,6 +124,8 @@ public:
   } bg;
 
   Widget* lastPressed;
+#define BUTTON(a) PushButton* a;
+  BUTTON(btnTerrain)
   PushButton* menuButton;
   PushButton* minimizeButton;
   PushButton* senateButton;
@@ -141,6 +150,8 @@ public:
   PushButton* engineerButton;
   PushButton* cancelButton;
   PushButton* overlaysButton;
+#undef BUTTON
+
   Image* middleLabel;
   OverlaysMenu* overlaysMenu; 
   float koeff;
@@ -189,18 +200,17 @@ Menu::Menu(Widget* parent, int id, const Rect& rectangle , PlayerCityPtr city)
 
 void Menu::_updateButtons()
 {
-  const bool haveSubMenu = true;
-  _d->minimizeButton = _addButton( ResourceMenu::maximizeBtn, false, 0, MAXIMIZE_ID,
-                                   !haveSubMenu, ResourceMenu::emptyMidPicId, "show_bigpanel",
+  _d->minimizeButton = _addButton( ResourceMenu::maximizeBtn, false, 0, (int)AdvToolMode::maximizeTool,
+                                   noSubMenu, ResourceMenu::emptyMidPicId, "show_bigpanel",
                                    Rect( Point( 6, 4 ), Size( 31, 20 ) ) );
 
   _d->houseButton = _addButton( ResourceMenu::houseBtnPicId, true, 0, object::house,
-                                !haveSubMenu, ResourceMenu::houseMidPicId, "housing" );
+                                noSubMenu, ResourceMenu::houseMidPicId, "housing" );
 
-  _d->clearButton = _addButton( 131, true, 1, REMOVE_TOOL_ID,
-                                !haveSubMenu, ResourceMenu::clearMidPicId, "clear_land" );
+  _d->clearButton = _addButton( 131, true, 1, (int)AdvToolMode::removeTool,
+                                noSubMenu, ResourceMenu::clearMidPicId, "clear_land" );
 
-  _d->roadButton = _addButton( 135, true, 2, object::road, !haveSubMenu, ResourceMenu::roadMidPicId, "road" );
+  _d->roadButton = _addButton( 135, true, 2, object::road, noSubMenu, ResourceMenu::roadMidPicId, "road" );
   _d->waterButton = _addButton( 127, true, 3, development::water, haveSubMenu, ResourceMenu::waterMidPicId, "water" );
   _d->healthButton = _addButton( 163, true, 4, development::health, haveSubMenu, ResourceMenu::healthMidPicId, "health" );
   _d->templeButton = _addButton( 151, true, 5, development::religion, haveSubMenu, ResourceMenu::religionMidPicId, "temples" );
@@ -314,7 +324,7 @@ bool Menu::onEvent(const NEvent& event)
       _createBuildMenu( -1, this );
       emit _d->signal.onCreateConstruction( id );
     }
-    else if( id == REMOVE_TOOL_ID )
+    else if( id == (int)AdvToolMode::removeTool )
     {
       _d->lastPressed = event.gui.caller;
       _createBuildMenu( -1, this );
@@ -514,6 +524,7 @@ ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle, PlayerCityPtr c
 {
   setupUI( ":/gui/fullmenu.gui" );
   _d->city = city;
+  _d->btnTerrain = nullptr;
 }
 
 void ExtentMenu::_updateButtons()
@@ -521,22 +532,22 @@ void ExtentMenu::_updateButtons()
   Menu::_updateButtons();
 
   _d->minimizeButton->deleteLater();
-  _d->minimizeButton = _addButton( 97, false, 0, MAXIMIZE_ID, false, ResourceMenu::emptyMidPicId,
+  _d->minimizeButton = _addButton( 97, false, 0, (int)AdvToolMode::maximizeTool, false, ResourceMenu::emptyMidPicId,
                                    "hide_bigpanel" );
   _setChildGeometry( _d->minimizeButton, Rect( Point( 127, 5 ), Size( 31, 20 ) ) );
 
-  _d->initActionButton( _d->houseButton, Point( 13, 277 ), false );
-  _d->initActionButton( _d->clearButton, Point( 63, 277 ), false );
-  _d->initActionButton( _d->roadButton, Point( 113, 277 ), false );
-  _d->initActionButton( _d->waterButton, Point( 13, 313 ) );
-  _d->initActionButton( _d->healthButton, Point( 63, 313 ) );
-  _d->initActionButton( _d->templeButton, Point( 113, 313 ) );
-  _d->initActionButton( _d->educationButton, Point(13, 349 ));
-  _d->initActionButton( _d->entertainmentButton, Point(63, 349 ) );
+  _d->initActionButton( _d->houseButton,          Point( 13,  277 ), false );
+  _d->initActionButton( _d->clearButton,          Point( 63,  277 ), false );
+  _d->initActionButton( _d->roadButton,           Point( 113, 277 ), false );
+  _d->initActionButton( _d->waterButton,          Point( 13,  313 ) );
+  _d->initActionButton( _d->healthButton,         Point( 63,  313 ) );
+  _d->initActionButton( _d->templeButton,         Point( 113, 313 ) );
+  _d->initActionButton( _d->educationButton,      Point( 13,  349 ));
+  _d->initActionButton( _d->entertainmentButton,  Point( 63,  349 ) );
   _d->initActionButton( _d->administrationButton, Point( 113, 349) );
-  _d->initActionButton( _d->engineerButton, Point( 13, 385 ) );
-  _d->initActionButton( _d->securityButton, Point( 63, 385 ) );
-  _d->initActionButton( _d->commerceButton, Point( 113, 385) );
+  _d->initActionButton( _d->engineerButton,       Point( 13,  385 ) );
+  _d->initActionButton( _d->securityButton,       Point( 63,  385 ) );
+  _d->initActionButton( _d->commerceButton,       Point( 113, 385) );
 
   //header
   _d->senateButton = _addButton( 79, false, 0, -1, false, -1, "senate" );
@@ -611,6 +622,34 @@ void ExtentMenu::toggleOverlayMenuVisible()
 {
   _d->overlaysMenu->setPosition( Point( screenLeft() - 170, 74 ) );
   _d->overlaysMenu->setVisible( !_d->overlaysMenu->visible() );
+}
+
+void ExtentMenu::setConstructorMode(bool enabled)
+{
+  PushButton* btns1[] = { _d->senateButton, _d->empireButton,
+                          _d->missionButton, _d->northButton,
+                          _d->rotateLeftButton, _d->rotateRightButton,
+                          _d->messageButton, _d->disasterButton };
+
+  for( auto btn : btns1 )
+    btn->setEnabled( !enabled );
+
+  PushButton* btns2[] = { _d->houseButton,  _d->clearButton,
+                          _d->roadButton,   _d->waterButton,
+                          _d->healthButton, _d->templeButton,
+                          _d->educationButton, _d->entertainmentButton,
+                          _d->administrationButton, _d->engineerButton,
+                          _d->securityButton, _d->commerceButton };
+
+  for( auto btn : btns2 )
+    btn->hide();
+
+  if( _d->btnTerrain == 0 )
+  {
+    _d->btnTerrain = _addButton( ResourceMenu::terrainBtnPicId, true, 0, object::terrain,
+                                 noSubMenu, ResourceMenu::clearMidPicId, "terrain" );
+    _d->initActionButton( _d->btnTerrain, Point( 13,  277 ), true );
+  }
 }
 
 void ExtentMenu::resolveUndoChange(bool enabled)

@@ -51,7 +51,7 @@ public:
                  forceBuild, warningsEnabled, updateTiles, zoomEnabled, zoomInvert,
                  fireKoeff, barbarianAttack, c3gameplay, difficulty, legionAttack, climateType,
                  collapseKoeff, highlightBuilding, destroyEpidemicHouses, forestFire,
-                 forestGrow, warfNeedTimber, showGodsUnhappyWarn } OptionType;
+                 forestGrow, warfNeedTimber, showGodsUnhappyWarn, constructorMode } OptionType;
 
   static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr mayor );
   virtual ~PlayerCity();
@@ -162,7 +162,7 @@ signals public:
   Signal1<int>& onFundsChanged();
   Signal1<std::string>& onWarningMessage();
   Signal2<TilePos,std::string>& onDisasterEvent();
-  Signal0<>& onChangeBuildingOptions();  
+  Signal0<>& onChangeBuildingOptions();
 
 private:
   PlayerCity( world::EmpirePtr empire );

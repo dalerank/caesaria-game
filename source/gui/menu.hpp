@@ -76,6 +76,7 @@ public:
   virtual void draw( gfx::Engine& engine );
 
   void toggleOverlayMenuVisible();
+  void setConstructorMode( bool enabled );
   void resolveUndoChange( bool enabled );
   void setAlarmEnabled( bool enabled );
   Rect getMinimapRect() const;

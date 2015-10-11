@@ -45,6 +45,12 @@ private:
 public:
   void connect( _Delegate delegate ) { delegateList.push_back( delegate ); }
 
+  Signal0& operator+=( _Delegate delegate )
+  {
+    delegateList.push_back( delegate );
+    return *this;
+  }
+
   template< class X, class Y >
   void connect( Y * obj, void (X::*func)() )
   {

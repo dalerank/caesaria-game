@@ -72,6 +72,7 @@ public:
     cancelBtnPicId = 243
   };
   static const int houseBtnPicId = 123;
+  static const int terrainBtnPicId = 183;
   static const int helpInfBtnPicId = 528;
   static const int exitInfBtnPicId = 532;
   static const int houseMidPicId = 1;

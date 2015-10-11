@@ -633,7 +633,7 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
 
 void Level::Impl::checkWinMission( Level* lvl, bool force )
 {
-  PlayerCityPtr city = game->city();
+  auto city = game->city();
   auto& conditions = city->victoryConditions();
 
   int culture = city->culture();
@@ -657,12 +657,20 @@ void Level::Impl::checkWinMission( Level* lvl, bool force )
 
   if( success )
   {
-    auto e = MissionWin::create( conditions.name() );
-    e->dispatch();
+    auto event = MissionWin::create( conditions.name() );
+    event->dispatch();
   }
 }
 
 bool Level::installEventHandler(EventHandlerPtr handler) { _d->eventHandlers.push_back( handler ); return true; }
+
+void Level::setConstructorMode(bool enabled)
+{
+  auto city = _d->game->city();
+  city->setOption( PlayerCity::constructorMode, enabled ? 1 : 0 );
+  _d->extMenu->setConstructorMode( enabled );
+}
+
 void Level::Impl::resolveCreateConstruction( int type ){  renderer.setMode( BuildMode::create( object::Type( type ) ) );}
 void Level::Impl::resolveRemoveTool(){  renderer.setMode( DestroyMode::create() );}
 void Level::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerMode::create( type ) );}

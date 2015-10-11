@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#include "build.hpp"
+#include "constructor.hpp"
 #include "objects/aqueduct.hpp"
 #include "constants.hpp"
 #include "walker/constants.hpp"
@@ -51,7 +51,7 @@ namespace citylayer
 {
 static const int frameCountLimiter=25;
 
-class Build::Impl
+class Constructor::Impl
 {
 public:
   typedef std::map<unsigned int, Tile*> CachedTiles;
@@ -87,9 +87,9 @@ public:
   void sortBuildTiles();
 };
 
-void Build::_discardPreview()
+void Constructor::_discardPreview()
 {
-  __D_IMPL(d,Build)
+  __D_IMPL(d,Constructor)
   for( auto tile : d->buildTiles )
   {
     if( tile->overlay().isValid() )
@@ -102,9 +102,9 @@ void Build::_discardPreview()
   d->cachedTiles.clear();
 }
 
-void Build::_checkPreviewBuild(TilePos pos)
+void Constructor::_checkPreviewBuild(TilePos pos)
 {
-  __D_IMPL(d,Build);
+  __D_IMPL(d,Constructor);
   BuildModePtr bldCommand =  d->renderer->mode().as<BuildMode>();
 
   if (bldCommand.isNull())
@@ -195,9 +195,9 @@ void Build::_checkPreviewBuild(TilePos pos)
   }
 }
 
-void Build::_checkBuildArea()
+void Constructor::_checkBuildArea()
 {
-  __D_IMPL(_d,Build);
+  __D_IMPL(_d,Constructor);
   if( !_d->lmbPressed || _startCursorPos().x() < 0 )
   {
     _setStartCursorPos( _lastCursorPos() );
@@ -212,9 +212,9 @@ static bool compare_tile(const Tile* one, const Tile* two)
   return one->pos().z() > two->pos().z();
 }
 
-void Build::_updatePreviewTiles( bool force )
+void Constructor::_updatePreviewTiles( bool force )
 {
-  __D_IMPL(d,Build);
+  __D_IMPL(d,Constructor);
   Tile* curTile = _camera()->at( _lastCursorPos(), true );
 
   if( !curTile )
@@ -289,9 +289,9 @@ void Build::_updatePreviewTiles( bool force )
   d->text.font.draw( d->text.image, utils::i2str( d->money4Construction ) + " Dn", Point() );
 }
 
-void Build::_buildAll()
+void Constructor::_buildAll()
 {
-  __D_IMPL(d,Build);
+  __D_IMPL(d,Constructor);
   BuildModePtr bldCommand = d->renderer->mode().as<BuildMode>();
   if( bldCommand.isNull() )
     return;
@@ -345,18 +345,18 @@ void Build::_buildAll()
   d->needUpdateTiles = true;
 }
 
-void Build::_exitBuildMode()
+void Constructor::_exitBuildMode()
 {
-  __D_IMPL(_d,Build);
+  __D_IMPL(_d,Constructor);
   DrawOptions::instance().setFlag( DrawOptions::mayChangeLayer, true );
   _setNextLayer( _d->lastLayer.isValid() ? _d->lastLayer->type() : citylayer::simple );
   _setStartCursorPos( Point(-1, -1) );
   _discardPreview();
 }
 
-void Build::handleEvent(NEvent& event)
+void Constructor::handleEvent(NEvent& event)
 {
-  __D_IMPL(_d,Build);
+  __D_IMPL(_d,Constructor);
   if( event.EventType == sEventMouse )
   {
     _d->kbShift = event.mouse.shift;
@@ -450,7 +450,7 @@ void Build::handleEvent(NEvent& event)
   }
 }
 
-void Build::_finishBuild()
+void Constructor::_finishBuild()
 {
   _buildAll();
   _setStartCursorPos( _lastCursorPos() );
@@ -458,14 +458,14 @@ void Build::_finishBuild()
   _dfunc()->lmbPressed = false;
 }
 
-int Build::type() const {  return citylayer::build; }
+int Constructor::type() const {  return citylayer::constructor; }
 
-void Build::_drawBuildTile( Engine& engine, Tile* tile, const Point& offset )
+void Constructor::_drawBuildTile( Engine& engine, Tile* tile, const Point& offset )
 {
   if( tile == nullptr )
     return;
 
-  __D_IMPL(_d,Build);
+  __D_IMPL(_d,Constructor);
   city::AreaInfo areaInfo( _city(), TilePos(), &_d->buildTiles );
 
   Tile* postTile = tile;
@@ -511,7 +511,7 @@ void Build::_drawBuildTile( Engine& engine, Tile* tile, const Point& offset )
   }
 }
 
-void Build::_tryDrawBuildTile( Engine& engine, Tile &tile, const Point& camOffset)
+void Constructor::_tryDrawBuildTile( Engine& engine, Tile &tile, const Point& camOffset)
 {
   Impl::CachedTiles& cache = _dfunc()->cachedTiles;
   auto it = cache.find( tile::hash( tile.epos() ) );
@@ -521,9 +521,9 @@ void Build::_tryDrawBuildTile( Engine& engine, Tile &tile, const Point& camOffse
   }
 }
 
-void Build::_drawBuildTiles( Engine& engine )
+void Constructor::_drawBuildTiles( Engine& engine )
 {
-  __D_IMPL(_d,Build);
+  __D_IMPL(_d,Constructor);
 
   Point offset = _camera()->offset();
 
@@ -531,9 +531,9 @@ void Build::_drawBuildTiles( Engine& engine )
     _drawBuildTile( engine, tile, offset );  
 }
 
-void Build::drawTile( Engine& engine, Tile& tile, const Point& offset )
+void Constructor::drawTile( Engine& engine, Tile& tile, const Point& offset )
 {
-  __D_IMPL(_d,Build);
+  __D_IMPL(_d,Constructor);
   Point screenPos = tile.mappos() + offset;
 
   ConstructionPtr cntr = tile.overlay<Construction>();
@@ -566,16 +566,16 @@ void Build::drawTile( Engine& engine, Tile& tile, const Point& offset )
     _tryDrawBuildTile( engine, tile, offset );
 }
 
-void Build::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, const int depth, bool force)
+void Constructor::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, const int depth, bool force)
 {
   Layer::drawProminentTile( engine, tile, offset, depth, force );
 
   _tryDrawBuildTile( engine, tile, offset );
 }
 
-void Build::render( Engine& engine)
+void Constructor::render( Engine& engine)
 {
-  __D_IMPL(d,Build);
+  __D_IMPL(d,Constructor);
   Layer::render( engine );
 
   if( ++d->frameCount >= frameCountLimiter)
@@ -589,9 +589,9 @@ void Build::render( Engine& engine)
     _drawBuildTiles( engine );
 }
 
-void Build::_initBuildMode()
+void Constructor::_initBuildMode()
 {
-  __D_IMPL(_d,Build);
+  __D_IMPL(_d,Constructor);
   BuildModePtr command = ptr_cast<BuildMode>( _d->renderer->mode() );
   Logger::warningIf( !command.isValid(), "LayerBuild: init unknown command" );
 
@@ -600,9 +600,9 @@ void Build::_initBuildMode()
   _d->borderBuilding = command.isValid() ? command->flag( LayerMode::border ) : false;
 }
 
-void Build::init(Point cursor)
+void Constructor::init(Point cursor)
 {
-  __D_IMPL(_d,Build);
+  __D_IMPL(_d,Constructor);
   Layer::init( cursor );
 
   _d->lastTilePos = tilemap::invalidLocation();
@@ -622,9 +622,9 @@ void Build::init(Point cursor)
   }
 }
 
-void Build::beforeRender(Engine& engine)
+void Constructor::beforeRender(Engine& engine)
 {
-  __D_IMPL(_d,Build);
+  __D_IMPL(_d,Constructor);
   _d->overdrawBuilding = DrawOptions::instance().isFlag( DrawOptions::overdrawOnBuild );
   if( _d->lastLayer.isValid() )
     _d->lastLayer->beforeRender( engine );
@@ -632,18 +632,18 @@ void Build::beforeRender(Engine& engine)
     Layer::beforeRender( engine );
 }
 
-void Build::drawPass(Engine& engine, Tile& tile, const Point& offset, Renderer::Pass pass)
+void Constructor::drawPass(Engine& engine, Tile& tile, const Point& offset, Renderer::Pass pass)
 {
-  __D_IMPL(_d,Build);
+  __D_IMPL(_d,Constructor);
   if( _d->lastLayer.isValid() )
     _d->lastLayer->drawPass( engine, tile, offset, pass );
   else
     Layer::drawPass( engine, tile, offset, pass );
 }
 
-void Build::afterRender(Engine& engine)
+void Constructor::afterRender(Engine& engine)
 {
-  __D_IMPL(_d,Build);
+  __D_IMPL(_d,Constructor);
   if( _d->needUpdateTiles )
   {
    if( !OSystem::isAndroid() )
@@ -661,24 +661,24 @@ void Build::afterRender(Engine& engine)
     Layer::afterRender( engine );
 }
 
-const Layer::WalkerTypes& Build::visibleTypes() const
+const Layer::WalkerTypes& Constructor::visibleTypes() const
 {
-  __D_IMPL_CONST(_d,Build);
+  __D_IMPL_CONST(_d,Constructor);
   if( _d->lastLayer.isValid() )
     return _d->lastLayer->visibleTypes();
 
   return Layer::visibleTypes();
 }
 
-void Build::renderUi(Engine &engine)
+void Constructor::renderUi(Engine &engine)
 {
   Layer::renderUi( engine );
   engine.draw( _dfunc()->text.image, engine.cursorPos() + Point( 10, 10 ));
 }
 
-void Build::changeLayer(int layer)
+void Constructor::changeLayer(int layer)
 {
-  __D_IMPL(_d,Build);
+  __D_IMPL(_d,Constructor);
   if( layer != type() )
   {
     if( layer == citylayer::destroyd )
@@ -696,22 +696,22 @@ void Build::changeLayer(int layer)
   _initBuildMode();
 }
 
-LayerPtr Build::create(Renderer& renderer, PlayerCityPtr city)
+LayerPtr Constructor::create(Renderer& renderer, PlayerCityPtr city)
 {
-  LayerPtr ret( new Build( renderer, city ) );
+  LayerPtr ret( new Constructor( renderer, city ) );
   ret->drop();
 
   return ret;
 }
 
-LayerPtr Build::drawLayer() const { return _dfunc()->lastLayer; }
-Build::~Build() {}
+LayerPtr Constructor::drawLayer() const { return _dfunc()->lastLayer; }
+Constructor::~Constructor() {}
 
-Build::Build( Renderer& renderer, PlayerCityPtr city)
+Constructor::Constructor( Renderer& renderer, PlayerCityPtr city)
   : Layer( renderer.camera(), city ),
-    __INIT_IMPL(Build)
+    __INIT_IMPL(Constructor)
 {
-  __D_IMPL(d,Build);
+  __D_IMPL(d,Constructor);
   d->renderer = &renderer;
   d->frameCount = 0;
   d->needUpdateTiles = false;
@@ -726,12 +726,12 @@ Build::Build( Renderer& renderer, PlayerCityPtr city)
   d->redPicture.load( d->resForbiden, 2 );
 }
 
-Signal3<object::Type,TilePos,int>& Build::onBuild()
+Signal3<object::Type,TilePos,int>& Constructor::onBuild()
 {
   return _dfunc()->onBuildSignal;
 }
 
-void Build::Impl::sortBuildTiles()
+void Constructor::Impl::sortBuildTiles()
 {
   std::sort( buildTiles.begin(), buildTiles.end(), compare_tile );
 

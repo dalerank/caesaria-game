@@ -471,6 +471,7 @@ void PlayerCity::load( const VariantMap& stream )
   }
 
   setOption( PlayerCity::forceBuild, 0 );
+  setOption( PlayerCity::constructorMode, 0 );
   VARIANT_LOAD_ANY_D( _d, states.age, stream )
   VARIANT_LOAD_CLASS_D_LIST( _d, activePoints, stream )
 
@@ -510,7 +511,7 @@ void PlayerCity::setBuildOptions(const city::development::Options& options)
 const city::States &PlayerCity::states() const              { return _d->states; }
 Signal1<std::string>& PlayerCity::onWarningMessage()        { return _d->signal.onWarningMessage; }
 Signal2<TilePos,std::string>& PlayerCity::onDisasterEvent() { return _d->signal.onDisasterEvent; }
-Signal0<>&PlayerCity::onChangeBuildingOptions()             { return _d->signal.onBuildingOptionsChanged; }
+Signal0<>& PlayerCity::onChangeBuildingOptions()             { return _d->signal.onBuildingOptionsChanged; }
 const city::development::Options& PlayerCity::buildOptions() const { return _d->buildOptions; }
 const city::VictoryConditions& PlayerCity::victoryConditions() const {   return _d->winTargets; }
 void PlayerCity::setVictoryConditions(const city::VictoryConditions& targets) { _d->winTargets = targets; }
@@ -540,8 +541,8 @@ void PlayerCity::setOption(PlayerCity::OptionType opt, int value)
     _d->options[ highlightBuilding ] = false;
     _d->options[ destroyEpidemicHouses ] = false;
 
-    GameEventPtr e = WarningMessage::create( "WARNING: enabled C3 gameplay only!", WarningMessage::negative );
-    e->dispatch();
+    auto event = WarningMessage::create( "WARNING: enabled C3 gameplay only!", WarningMessage::negative );
+    event->dispatch();
   }
 }
 
