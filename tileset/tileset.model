@@ -80,6 +80,20 @@
           folder : "/resources/carts/grape"
           files : [ "cartgrape_*" ]
         }
+
+        iron :
+        {
+          type : "atlas"
+          folder : "/resources/carts/iron"
+          files : [ "cartiron_*" ]
+        }
+
+        marble :
+        {
+          type : "atlas"
+          folder : "/resources/carts/marble"
+          files : [ "cartmarble_*" ]
+        }
       }
     }
   }
