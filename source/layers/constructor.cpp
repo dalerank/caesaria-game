@@ -58,6 +58,8 @@ public:
   bool multiBuilding;
   TilePos lastTilePos;
   TilePos startTilePos;
+  bool splineEnabled;
+  int drawRadius;
   bool kbShift, kbCtrl;
   bool lmbPressed;
   bool overdrawBuilding;
@@ -592,7 +594,7 @@ void Constructor::render( Engine& engine)
 void Constructor::_initBuildMode()
 {
   __D_IMPL(_d,Constructor);
-  BuildModePtr command = ptr_cast<BuildMode>( _d->renderer->mode() );
+  BuildModePtr command = _d->renderer->mode().as<BuildMode>();
   Logger::warningIf( !command.isValid(), "LayerBuild: init unknown command" );
 
   _d->multiBuilding = command.isValid() ? command->flag( LayerMode::multibuild ) : false;
@@ -719,6 +721,8 @@ Constructor::Constructor( Renderer& renderer, PlayerCityPtr city)
   d->startTilePos = gfx::tilemap::invalidLocation();
   d->text.font = Font::create( FONT_5 );
   d->readyForExit = false;
+  d->drawRadius = 1;
+  d->splineEnabled = false;
   d->text.image = Picture( Size( 100, 30 ), 0, true );
   _addWalkerType( walker::all );
 

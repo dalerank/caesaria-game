@@ -60,10 +60,11 @@ void LayerMode::_setFlag(LayerMode::Flag name, bool value)
 class BuildMode::Impl
 {
 public:
-  ConstructionPtr construction;
+  OverlayPtr overlay;
 };
 
-ConstructionPtr BuildMode::contruction() const{    return _d->construction;}
+ConstructionPtr BuildMode::contruction() const { return _d->overlay.as<Construction>(); }
+OverlayPtr BuildMode::overlay()          const { return _d->overlay; }
 
 DestroyMode::DestroyMode() : LayerMode( citylayer::destroyd )
 {
@@ -80,11 +81,10 @@ Renderer::ModePtr DestroyMode::create()
 Renderer::ModePtr BuildMode::create(object::Type type)
 {
   BuildMode* newCommand = new BuildMode();
-  OverlayPtr overlay = TileOverlayFactory::instance().create( type );
 
   auto md = object::Info::find( type );
 
-  newCommand->_d->construction = overlay.as<Construction>();
+  newCommand->_d->overlay = TileOverlayFactory::instance().create( type );
   newCommand->_setFlag( multibuild, false );
   newCommand->_setFlag( border, false );
   newCommand->_setFlag( assign2road, false );

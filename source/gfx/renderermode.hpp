@@ -60,6 +60,7 @@ public:
   static Renderer::ModePtr create( object::Type type );
 
   ConstructionPtr contruction() const;
+  OverlayPtr overlay() const;
 public:
   BuildMode();
 
