@@ -63,13 +63,32 @@ enum class AdvToolMode
 
 enum { noSubMenu=0, haveSubMenu=1 };
 
+struct Action
+{
+  typedef enum { buildHouse } Name;
+  Point pos;
+  int picId;
+  int index;
+  int mode;
+  int midPicID;
+  bool isPushBtn;
+  std::string sound;
+  PushButton* button;
+};
+
 struct Menu::Config
 {
   typedef enum { smallMenu=0, bigMenu } MenuType;
   Picture background, bottom;
   int width;
   float scale;
-  bool fitToScreen;
+  bool fitToScreen;  
+  std::map<Action::Name, Action> actions;
+
+  void initDefaultActions()
+  {
+    actions[ Action::buildHouse ] = { {}, };
+  }
 
   Config( Widget* parent, bool fit, const std::string& name, MenuType mode )
    : fitToScreen( fit )
@@ -89,6 +108,8 @@ struct Menu::Config
     if( fitToScreen )
       scale = (parent->height() * 0.9f) / (float)background.height();
     width = background.width() * scale;
+
+    initDefaultActions();
   }
 };
 
@@ -200,36 +221,36 @@ Menu::Menu(Widget* parent, int id, const Rect& rectangle , PlayerCityPtr city)
 
 void Menu::_updateButtons()
 {
-  _d->minimizeButton = _addButton( ResourceMenu::maximizeBtn, false, 0, (int)AdvToolMode::maximizeTool,
-                                   noSubMenu, ResourceMenu::emptyMidPicId, "show_bigpanel",
+  _d->minimizeButton = _addButton( config::id.menu.maximize, false, 0, (int)AdvToolMode::maximizeTool,
+                                   noSubMenu, config::id.middle.empty, "show_bigpanel",
                                    Rect( Point( 6, 4 ), Size( 31, 20 ) ) );
 
-  _d->houseButton = _addButton( ResourceMenu::houseBtnPicId, true, 0, object::house,
-                                noSubMenu, ResourceMenu::houseMidPicId, "housing" );
+  _d->houseButton = _addButton( config::id.menu.house, true, 0, object::house,
+                                noSubMenu, config::id.middle.house, "housing" );
 
   _d->clearButton = _addButton( 131, true, 1, (int)AdvToolMode::removeTool,
-                                noSubMenu, ResourceMenu::clearMidPicId, "clear_land" );
+                                noSubMenu, config::id.middle.clear, "clear_land" );
 
-  _d->roadButton = _addButton( 135, true, 2, object::road, noSubMenu, ResourceMenu::roadMidPicId, "road" );
-  _d->waterButton = _addButton( 127, true, 3, development::water, haveSubMenu, ResourceMenu::waterMidPicId, "water" );
-  _d->healthButton = _addButton( 163, true, 4, development::health, haveSubMenu, ResourceMenu::healthMidPicId, "health" );
-  _d->templeButton = _addButton( 151, true, 5, development::religion, haveSubMenu, ResourceMenu::religionMidPicId, "temples" );
-  _d->educationButton = _addButton( 147, true, 6, development::education, haveSubMenu, ResourceMenu::educationMidPicId, "education" );
+  _d->roadButton = _addButton( 135, true, 2, object::road, noSubMenu, config::id.middle.road, "road" );
+  _d->waterButton = _addButton( 127, true, 3, development::water, haveSubMenu, config::id.middle.water, "water" );
+  _d->healthButton = _addButton( 163, true, 4, development::health, haveSubMenu, config::id.middle.health, "health" );
+  _d->templeButton = _addButton( 151, true, 5, development::religion, haveSubMenu, config::id.middle.religion, "temples" );
+  _d->educationButton = _addButton( 147, true, 6, development::education, haveSubMenu, config::id.middle.education, "education" );
 
   _d->entertainmentButton = _addButton( 143, true, 7, development::entertainment, haveSubMenu,
-                                        ResourceMenu::entertainmentMidPicId, "entertainment" );
+                                        config::id.middle.entertainment, "entertainment" );
 
   _d->administrationButton = _addButton( 139, true, 8, development::administration, haveSubMenu,
-                                         ResourceMenu::administrationMidPicId, "administration" );
+                                         config::id.middle.administration, "administration" );
 
   _d->engineerButton = _addButton( 167, true, 9, development::engineering, haveSubMenu,
-                                   ResourceMenu::engineerMidPicId, "engineering" );
+                                   config::id.middle.engineer, "engineering" );
 
   _d->securityButton = _addButton( 159, true, 10, development::security, haveSubMenu,
-                                   ResourceMenu::securityMidPicId, "security" );
+                                   config::id.middle.security, "security" );
 
   _d->commerceButton = _addButton( 155, true, 11, development::commerce, haveSubMenu,
-                                   ResourceMenu::comerceMidPicId, "comerce" );
+                                   config::id.middle.comerce, "comerce" );
 
   CONNECT( _d->minimizeButton, onClicked(), this, Menu::minimize );
 }
@@ -532,7 +553,7 @@ void ExtentMenu::_updateButtons()
   Menu::_updateButtons();
 
   _d->minimizeButton->deleteLater();
-  _d->minimizeButton = _addButton( 97, false, 0, (int)AdvToolMode::maximizeTool, false, ResourceMenu::emptyMidPicId,
+  _d->minimizeButton = _addButton( 97, false, 0, (int)AdvToolMode::maximizeTool, false, config::id.middle.empty,
                                    "hide_bigpanel" );
   _setChildGeometry( _d->minimizeButton, Rect( Point( 127, 5 ), Size( 31, 20 ) ) );
 
@@ -581,7 +602,7 @@ void ExtentMenu::_updateButtons()
 
   _d->middleLabel = new Image( this, Rect( 0, 0, 1, 1 ), Picture(), Image::fit );
   _setChildGeometry( _d->middleLabel, Rect( Point( 7, 216 ), Size( 148, 52 )) );
-  _d->middleLabel->setPicture( Picture( ResourceGroup::menuMiddleIcons, ResourceMenu::emptyMidPicId ) );
+  _d->middleLabel->setPicture( Picture( ResourceGroup::menuMiddleIcons, config::id.middle.empty ) );
 
   _d->overlaysMenu = new OverlaysMenu( parent(), Rect( 0, 0, 160, 1 ), -1 );
   _d->overlaysMenu->hide();
@@ -602,7 +623,7 @@ bool ExtentMenu::onEvent(const NEvent& event)
     MenuButton* btn = safety_cast< MenuButton* >( event.gui.caller );
     if( btn )
     {
-      int picId = btn->midPicId() > 0 ? btn->midPicId() : ResourceMenu::emptyMidPicId;
+      int picId = btn->midPicId() > 0 ? btn->midPicId() : config::id.middle.empty;
       _d->middleLabel->setPicture( Picture( ResourceGroup::menuMiddleIcons, picId ) );
     }
   }
@@ -646,8 +667,8 @@ void ExtentMenu::setConstructorMode(bool enabled)
 
   if( _d->btnTerrain == 0 )
   {
-    _d->btnTerrain = _addButton( ResourceMenu::terrainBtnPicId, true, 0, object::terrain,
-                                 noSubMenu, ResourceMenu::clearMidPicId, "terrain" );
+    _d->btnTerrain = _addButton( config::id.menu.terrain, true, 0, object::terrain,
+                                 noSubMenu, config::id.middle.clear, "terrain" );
     _d->initActionButton( _d->btnTerrain, Point( 13,  277 ), true );
   }
 }

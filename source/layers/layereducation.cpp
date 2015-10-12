@@ -96,12 +96,12 @@ void Education::drawTile(Engine& engine, Tile& tile, const Point& offset)
 
       needDrawAnimations = (house->spec().level() <= HouseLevel::hovel) && (house->habitants().empty());
 
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
     }
     else
     {
       //other buildings
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.base );
     }
 
     if( needDrawAnimations )

@@ -190,7 +190,7 @@ void Level::Impl::initMainUI()
 
   ui.clear();
 
-  Picture rPanelPic( ResourceGroup::panelBackground, PicID::rightPanelTx );
+  Picture rPanelPic( ResourceGroup::panelBackground, config::id.empire.rightPanelTx );
 
   Rect rPanelRect( ui.vsize().width() - rPanelPic.width(), topMenuHeight,
                    ui.vsize().width(), ui.vsize().height() );

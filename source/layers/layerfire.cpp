@@ -65,7 +65,7 @@ void Fire::drawTile(Engine& engine, Tile& tile, const Point& offset)
       auto house = overlay.as<House>();
       fireLevel = (int)house->state( pr::fire );
       needDrawAnimations = (house->level() <= HouseLevel::hovel) && house->habitants().empty();
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.inHouseBase  );
     }
     else //other buildings
     {
@@ -75,7 +75,7 @@ void Fire::drawTile(Engine& engine, Tile& tile, const Point& offset)
         fireLevel = (int)constr->state( pr::fire );
       }
 
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base  );
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.base  );
     }
 
     if( needDrawAnimations )

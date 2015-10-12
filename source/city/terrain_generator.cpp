@@ -349,8 +349,8 @@ static void __finalizeMap(Game& game, int pass )
       case passCheckInsideCornerTiles:
         switch( direction )
         {
-        case drNE: start=PicID::coastNE; break;
-        case drSE: start=PicID::coastSE; break;
+        case drNE: start=config::id.empire.coastNE; break;
+        case drSE: start=config::id.empire.coastSE; break;
         case 0x40: start=152; break;
         case 0x80: start=156; break;
         }
@@ -662,7 +662,7 @@ static void __createRoad(Game& game )
     {
       OverlayPtr overlay = TileOverlayFactory::instance().create( object::road );
 
-      Picture pic( ResourceGroup::land1a, PicID::grassPic + math::random( PicID::grassPicsNumber-1 ) );
+      Picture pic( ResourceGroup::land1a, config::id.empire.grassPic + math::random( config::id.empire.grassPicsNumber-1 ) );
       tile->setPicture( pic );
       tile->setImgId( imgid::fromResource( pic.name() ) );
 

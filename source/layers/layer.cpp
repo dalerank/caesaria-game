@@ -422,8 +422,8 @@ void Layer::drawArea(Engine& engine, const TilesArray& area, const Point &offset
                           : baseTile->j();
   for( auto tile : area )
   {
-    int tileBorders = ( tile->i() == leftBorderAtI ? 0 : OverlayPic::skipLeftBorder )
-                      + ( tile->j() == rightBorderAtJ ? 0 : OverlayPic::skipRightBorder );
+    int tileBorders = ( tile->i() == leftBorderAtI ? 0 : config::id.overlay.skipLeftBorder )
+                      + ( tile->j() == rightBorderAtJ ? 0 : config::id.overlay.skipRightBorder );
     Picture pic(resourceGroup, tileBorders + tileId);
     engine.draw( pic, tile->mappos() + offset );
   }

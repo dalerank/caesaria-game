@@ -77,16 +77,16 @@ void Water::drawTile( Engine& engine, Tile& tile, const Point& offset)
         auto house = overlay.as<House>();
         needDrawAnimations = (house->level() <= HouseLevel::hovel) && house->habitants().empty();
 
-        tileNumber = OverlayPic::inHouse;
+        tileNumber = config::id.overlay.inHouse;
         haveWater = haveWater || house->hasServiceAccess(Service::fountain) || house->hasServiceAccess(Service::well);
       }
 
       if( !needDrawAnimations )
       {
-        tileNumber += (haveWater ? OverlayPic::haveWater : 0);
-        tileNumber += tile.param( Tile::pReservoirWater ) > 0 ? OverlayPic::reservoirRange : 0;
+        tileNumber += (haveWater ? config::id.overlay.haveWater : 0);
+        tileNumber += tile.param( Tile::pReservoirWater ) > 0 ? config::id.overlay.reservoirRange : 0;
 
-        drawArea( engine, overlay->area(), offset, ResourceGroup::waterOverlay, OverlayPic::base + tileNumber );
+        drawArea( engine, overlay->area(), offset, ResourceGroup::waterOverlay, config::id.overlay.base + tileNumber );
 
         areaSize = Size( 0 );
       }
@@ -143,10 +143,10 @@ void Water::_drawLandTile( Engine& engine, Tile& tile, const Point& offset, cons
 
     if( (reservoirWater + fontainWater > 0) && ! rtile->getFlag( Tile::tlWater ) && rtile->overlay().isNull() )
     {
-      int picIndex = reservoirWater ? OverlayPic::reservoirRange : 0;
-      picIndex |= fontainWater > 0 ? OverlayPic::haveWater : 0;
-      picIndex |= OverlayPic::skipLeftBorder | OverlayPic::skipRightBorder;
-      engine.draw( _d->pics[ picIndex + OverlayPic::base ], rtile->mappos() + offset );
+      int picIndex = reservoirWater ? config::id.overlay.reservoirRange : 0;
+      picIndex |= fontainWater > 0 ? config::id.overlay.haveWater : 0;
+      picIndex |= config::id.overlay.skipLeftBorder | config::id.overlay.skipRightBorder;
+      engine.draw( _d->pics[ picIndex + config::id.overlay.base ], rtile->mappos() + offset );
     }
   }
 }

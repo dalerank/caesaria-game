@@ -75,14 +75,14 @@ void Troubles::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else
     {
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.base );
     }
   }
 
   tile.setRendered();
 }
 
-LayerPtr Troubles::create(Camera& camera, PlayerCityPtr city , int type)
+LayerPtr Troubles::create(Camera& camera, PlayerCityPtr city, int type)
 {
   LayerPtr ret( new Troubles( camera, city, type ) );
   ret->drop();

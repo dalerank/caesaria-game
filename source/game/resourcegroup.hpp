@@ -18,10 +18,10 @@
 #ifndef __CAESARIA_RESOURCENAMES_H_INCLUDE_
 #define __CAESARIA_RESOURCENAMES_H_INCLUDE_
 
-#define __RCG_NAME static const char*
 class ResourceGroup
 {
 public:
+#define __RCG_NAME static const char*
   __RCG_NAME panelBackground;
   __RCG_NAME menuMiddleIcons;
   __RCG_NAME festivalimg;
@@ -63,64 +63,78 @@ public:
   __RCG_NAME tradecenter;
 };
 
-class ResourceMenu
+namespace config
 {
-public:
-  enum {
-    maximizeBtn = 101,
-    okBtnPicId = 239,
-    cancelBtnPicId = 243
-  };
-  static const int houseBtnPicId = 123;
-  static const int terrainBtnPicId = 183;
-  static const int helpInfBtnPicId = 528;
-  static const int exitInfBtnPicId = 532;
-  static const int houseMidPicId = 1;
-  static const int clearMidPicId = 12;
-  static const int roadMidPicId = 11;
-  static const int waterMidPicId = 4;
-  static const int healthMidPicId = 6;
-  static const int religionMidPicId = 2;
-  static const int educationMidPicId = 7;
-  static const int administrationMidPicId = 3;
-  static const int entertainmentMidPicId = 5;
-  static const int engineerMidPicId = 8;
-  static const int securityMidPicId = 9;
-  static const int comerceMidPicId = 10;
-  static const int emptyMidPicId = 13;
-};
 
-class PicID
+struct IDDB
 {
-public:
-  enum {
-  	bad = 0,
-    seaTradeRoute = 69,
-    landTradeRoute = 70,
-    romeCity=8,
-    distantCity=22,
-    rightPanelTx=14,
-    otherCity=15,
-    grassPic=62,
-    coastNE=144, coastSE=148
+  struct _Menu
+  {
+    int house = 123;
+    int terrain = 183;
+    int helpInf = 528;
+    int arrowDown = 601;
+    int arrowUp = 605;
+    int exitInf = 532;
+    int ok = 239;
+    int maximize = 101;
+    int cancel = 243;
   };
 
-  static const int empireStamp = 543;
-  static const int baseLocalGoodId = 316;
-  static const int baseEmpireGoodId = 10;
-  static const int grassPicsNumber = 57;
+  struct _Middle
+  {
+    int house = 1;
+    int clear = 12;
+    int road = 11;
+    int water = 4;
+    int health = 6;
+    int religion = 2;
+    int education = 7;
+    int administration = 3;
+    int entertainment = 5;
+    int engineer = 8;
+    int security = 9;
+    int comerce = 10;
+    int empty = 13;
+  };
+
+  struct _Empire
+  {
+    int	bad = 0;
+    int stamp = 543;
+    int baseLocalGoodId = 316;
+    int baseEmpireGoodId = 10;
+    int grassPicsNumber = 57;
+    int seaTradeRoute = 69;
+    int landTradeRoute = 70;
+    int romeCity=8;
+    int distantCity=22;
+    int rightPanelTx=14;
+    int otherCity=15;
+    int grassPic=62;
+    int coastNE=144;
+    int coastSE=148;
+  };
+
+  struct _Overlay
+  {
+    int base = 1;
+    int skipRightBorder = 1;
+    int skipLeftBorder = 2;
+    int inHouse = 4;
+    int inHouseBase = 5;
+    int reservoirRange = 8;
+    int haveWater = 16;
+  };
+
+  _Menu menu;
+  _Middle middle;
+  _Empire empire;
+  _Overlay overlay;
 };
 
-class OverlayPic
-{
-public:
-  static const int base = 1;
-  static const int skipRightBorder = 1;
-  static const int skipLeftBorder = 2;
-  static const int inHouse = 4;
-  static const int inHouseBase = 5;
-  static const int reservoirRange = 8;
-  static const int haveWater = 16;
-};
+static IDDB id;
+
+}
 
 #endif //__CAESARIA_RESOURCENAMES_H_INCLUDE_

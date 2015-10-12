@@ -56,8 +56,8 @@ private:
   void _buildAll();
   void _finishBuild();
   void _initBuildMode();
-  void _drawBuildTiles( gfx::Engine& engine );
-  void _drawBuildTile( gfx::Engine& engine, gfx::Tile* tile, const Point& offset );
+  void _drawBuildTiles(gfx::Engine& engine );
+  void _drawBuildTile(gfx::Engine& engine, gfx::Tile* tile, const Point& offset );
   void _tryDrawBuildTile(gfx::Engine& engine, gfx::Tile& tile, const Point &camOffset);
   void _exitBuildMode();
 

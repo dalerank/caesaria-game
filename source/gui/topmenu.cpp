@@ -148,7 +148,7 @@ void TopMenu::Impl::showShortKeyInfo()
 
   auto btnExit = new TexturedButton( shortKeyInfo,
                                      Point( shortKeyInfo->width() - 34, shortKeyInfo->height() - 34 ),
-                                     Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
+                                     Size( 24 ), -1, config::id.menu.exitInf );
   WidgetEscapeCloser::insertTo( shortKeyInfo );
 
   CONNECT( btnExit, onClicked(), shortKeyInfo, Label::deleteLater );
@@ -193,7 +193,7 @@ void TopMenu::Impl::showAboutInfo()
   bg->setupUI( ":/gui/about.gui" );
   bg->setCenter( parent->center() );
 
-  TexturedButton* btnExit = new TexturedButton( bg, Point( bg->width() - 34, bg->height() - 34 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
+  auto btnExit = new TexturedButton( bg, Point( bg->width() - 34, bg->height() - 34 ), Size( 24 ), -1, config::id.menu.exitInf );
   WidgetEscapeCloser::insertTo( bg );
 
   CONNECT( btnExit, onClicked(), bg, Label::deleteLater );

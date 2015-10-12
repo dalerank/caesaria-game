@@ -298,7 +298,7 @@ Ratings::Ratings(Widget* parent, int id, const PlayerCityPtr city )
 
   if( lbNeedPopulation )
   {
-    std::string text = fmt::format( "{0} {1} ({2} {3}",
+    std::string text = fmt::format( "{} {} ({} {}",
                                     _("##population##"), city->states().population,
                                     targets.needPopulation(), ("##need_population##")  );
     lbNeedPopulation->setText( text );
@@ -340,7 +340,7 @@ Ratings::Ratings(Widget* parent, int id, const PlayerCityPtr city )
   }
   CONNECT( _d->btnFavour, onClicked(), _d.data(), Impl::checkFavourRating );
 
-  _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
   CONNECT( _d->btnHelp, onClicked(), this, Ratings::_showHelp );
 }
 

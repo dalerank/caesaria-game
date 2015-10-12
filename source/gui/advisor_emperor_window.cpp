@@ -168,7 +168,7 @@ void Emperor::_showChangeSalaryWindow()
   auto dialog = new dialog::ChangeSalary( parent(), pl->salary() );
   dialog->show();
 
-  TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  auto btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.exitInf );
   CONNECT( btnHelp, onClicked(), this, Emperor::_showHelp );
   CONNECT( dialog, onChangeSalary(), _d.data(), Impl::changeSalary )
 }
@@ -213,9 +213,9 @@ void Emperor::_updateRequests()
 
   if( requests.empty() )
   {
-    Label* lb = new Label( this, reqsRect, _("##have_no_requests##") );
-    lb->setWordwrap( true );
-    lb->setTextAlignment( align::upperLeft, align::center );
+    auto label = new Label( this, reqsRect, _("##have_no_requests##") );
+    label->setWordwrap( true );
+    label->setTextAlignment( align::upperLeft, align::center );
   }
   else
   {

@@ -180,7 +180,7 @@ Population::Population(PlayerCityPtr city, Widget* parent, int id )
 
   _d->updateStates();
 
-  TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  auto btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
   CONNECT( btnHelp, onClicked(), this, Population::_showHelp );
   CONNECT( _d->lbNextChart, onClicked(), _d.data(), Impl::showNextChart );
   CONNECT( _d->lbPrevChart, onClicked(), _d.data(), Impl::showPrevChart );

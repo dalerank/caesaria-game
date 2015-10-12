@@ -1019,10 +1019,10 @@ int ComputerCity::strength() const { return _d->strength; }
 
 void ComputerCity::_initTextures()
 {
-  int index = PicID::otherCity;
+  int index = config::id.empire.otherCity;
 
-  if( _d->distantCity ) { index = PicID::distantCity; }
-  else if( _d->states.romeCity ) { index = PicID::romeCity; }
+  if( _d->distantCity ) { index = config::id.empire.distantCity; }
+  else if( _d->states.romeCity ) { index = config::id.empire.romeCity; }
 
   setPicture( Picture( ResourceGroup::empirebits, index ) );
   _animation().load( ResourceGroup::empirebits, index+1, 6 );

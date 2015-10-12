@@ -154,11 +154,11 @@ Legion::Legion( Widget* parent, int id, PlayerCityPtr city, FortList forts )
   int index=0;
   for( auto fort : forts )
   {
-    LegionButton* btn = new LegionButton( this, startLegionArea + legionButtonOffset, index++, fort );
+    auto buttonLegion = new LegionButton( this, startLegionArea + legionButtonOffset, index++, fort );
 
-    CONNECT( btn, signal.onShowLegion, this, Legion::_handleMove2Legion );
-    CONNECT( btn, signal.onLegionRetreat, this, Legion::_handleRetreaLegion );
-    CONNECT( btn, signal.onEmpireService, this, Legion::_handleServiceEmpire );
+    CONNECT( buttonLegion, signal.onShowLegion, this, Legion::_handleMove2Legion );
+    CONNECT( buttonLegion, signal.onLegionRetreat, this, Legion::_handleRetreaLegion );
+    CONNECT( buttonLegion, signal.onEmpireService, this, Legion::_handleServiceEmpire );
   }
 
   if( _d->lbBlackframe && forts.empty() )
@@ -168,7 +168,7 @@ Legion::Legion( Widget* parent, int id, PlayerCityPtr city, FortList forts )
 
   _d->updateAlarms( city );
 
-  TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  auto btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
   CONNECT( btnHelp, onClicked(), this, Legion::_showHelp );
 }
 

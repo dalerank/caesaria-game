@@ -53,7 +53,7 @@ protected:
     Pictures pics;
     Decorator::draw( pics, Rect( Point(), size() ), style );
 
-    Picture emlbPic( ResourceGroup::panelBackground, PicID::empireStamp );
+    Picture emlbPic( ResourceGroup::panelBackground, config::id.empire.stamp );
     pics.append( emlbPic, Point( 4, 2 ) );
     pics.append( emlbPic, Point( width() - emlbPic.width()-4, 2 ) );
 
@@ -128,8 +128,8 @@ void WindowMessageStack::addMessage( const std::string& text, MsgLevel lvl )
 
 WindowMessageStack* WindowMessageStack::create( Widget* parent )
 {
-  WindowMessageStack* wnd = new WindowMessageStack( parent, WindowMessageStack::defaultID,
-                                                    Rect( 0, 0, parent->width() / 2, 92 ) );
+  auto wnd = new WindowMessageStack( parent, WindowMessageStack::defaultID,
+                                     Rect( 0, 0, parent->width() / 2, 92 ) );
   wnd->setPosition( Point( parent->width() / 4, 33 ) );
   wnd->sendToBack();
 

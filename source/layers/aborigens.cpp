@@ -58,11 +58,11 @@ void Aborigens::drawTile(Engine& engine, Tile& tile, const Point& offset)
       discontentLevel = (int)nativeHut->discontent();
       needDrawAnimations = false;
 
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
     }
     else
     {
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.base );
     }
 
     if( needDrawAnimations )

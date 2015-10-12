@@ -160,7 +160,7 @@ void Education::Impl::initUI( Education* parent, PlayerCityPtr city )
   info = getInfo( city, object::library );
   lbLibraryInfo = new EducationInfoLabel( lbBlackframe, Rect( startPoint + Point( 0, 40), labelSize), object::library, info );
 
-  TexturedButton* btnHelp = new TexturedButton( parent, Point( 12, parent->height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  auto btnHelp = new TexturedButton( parent, Point( 12, parent->height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
   CONNECT( btnHelp, onClicked(), parent, Education::_showHelp );
 }
 
@@ -168,16 +168,17 @@ void Education::Impl::updateCityInfo(PlayerCityPtr city)
 {
   int sumScholars = 0;
   int sumStudents = 0;
-  HouseList houses = city->statistic().houses.find();
+  auto houses = city->statistic().houses.find();
   for( auto house : houses )
   {
     sumScholars += house->habitants().scholar_n();
     sumStudents += house->habitants().student_n();
   }
 
-  std::string cityInfoStr = utils::format( 0xff, "%d %s, %d %s, %d %s",
+  std::string cityInfoStr = fmt::format( "{} {}, {} {}, {} {}",
                                            city->states().population, _("##people##"),
-                                           sumScholars, _("##scholars##"), sumStudents, _("##students##") );
+                                           sumScholars, _("##scholars##"),
+                                           sumStudents, _("##students##") );
   if( lbCityInfo ) { lbCityInfo->setText( cityInfoStr ); }
 
   std::string advice = getTrouble( city );
