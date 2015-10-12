@@ -85,6 +85,7 @@
 #include "cityservice_peace.hpp"
 #include "city_option.hpp"
 #include "ambientsound.hpp"
+#include "core/osystem.hpp"
 
 #include <set>
 
@@ -164,7 +165,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( updateRoads, 0 );
   setOption( godEnabled, 1 );
   setOption( zoomEnabled, 1 );
-  setOption( zoomInvert, 1 );
+  setOption( zoomInvert, OSystem::isMac() ? 1 : 0 );
   setOption( warningsEnabled, 1 );
   setOption( fishPlaceEnabled, 1 );
   setOption( fireKoeff, 100 );
