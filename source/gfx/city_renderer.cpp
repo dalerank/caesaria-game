@@ -54,6 +54,7 @@
 #include "layers/constructor.hpp"
 #include "layers/sentiment.hpp"
 #include "layers/market_access.hpp"
+#include "layers/commodity_turnover.hpp"
 #include "walker/walker.hpp"
 #include "objects/aqueduct.hpp"
 #include "tilemap_camera.hpp"
@@ -145,6 +146,7 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   addLayer( Troubles::create( _d->camera, city, citylayer::troubles ) );
   addLayer( Aborigens::create( _d->camera, city ) );
   addLayer( MarketAccess::create( _d->camera, city ) );
+  addLayer( CommodityTurnover::create( _d->camera, city ) );
   addLayer( Build::create( *this, city ) );
   addLayer( Constructor::create( *this, city ) );
 
