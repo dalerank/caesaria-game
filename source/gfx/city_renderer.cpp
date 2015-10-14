@@ -61,6 +61,7 @@
 #include "game/settings.hpp"
 #include "core/timer.hpp"
 #include "pathway/pathway.hpp"
+#include "gui/environment.hpp"
 #include "gui/dialogbox.hpp"
 
 using namespace citylayer;
@@ -113,7 +114,7 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   _d->camera.init( *_d->tilemap, engine->screenSize() );
   _d->engine = engine;
   _d->lastZoom = _d->camera.zoom();
-  _d->engine->setScale( 1.f );
+  //_d->engine->setScale( 1.f );
 
   addLayer( Simple::create( _d->camera, city ) );
   addLayer( Water::create( _d->camera, city ) );
@@ -258,7 +259,7 @@ void CityRenderer::render()
   layer->render( engine );
   layer->afterRender( engine );
 
-  engine.setScale( 1.f );
+  engine.setVirtualSize( _d->guienv->vsize() );
 
   layer->renderUi( engine );
 

@@ -176,7 +176,7 @@ void SdlEngine::init()
   int rc = SDL_Init(SDL_INIT_VIDEO);
   if (rc != 0)
   {
-    Logger::warning( "CRITICAL!!! Unable to initialize SDL: {0}", SDL_GetError() );
+    Logger::warning( "CRITICAL!!! Unable to initialize SDL: {}", SDL_GetError() );
     THROW("SDLGraficEngine: Unable to initialize SDL: " << SDL_GetError());
   }
 
@@ -210,45 +210,48 @@ void SdlEngine::init()
 
   Logger::warning("SDLGraficEngine:Android init successfull");
 #else
-  Logger::warning( "SDLGraficEngine: set mode {0}x{1}",  _srcSize.width(), _srcSize.height() );
+  Logger::warning( "SDLGraficEngine: set mode {}x{}",  _srcSize.width(), _srcSize.height() );
 
-  window = SDL_CreateWindow( "CaesariA",
+  if( isFullscreen() )
+  {
+    window = SDL_CreateWindow("CaesariA",
+                              SDL_WINDOWPOS_UNDEFINED,
+                              SDL_WINDOWPOS_UNDEFINED,
+                              1600, 900,
+                              SDL_WINDOW_OPENGL|SDL_WINDOW_FULLSCREEN_DESKTOP|SDL_WINDOW_SHOWN );
+
+
+  }
+  else
+  {
+    window = SDL_CreateWindow( "CaesariA",
                              SDL_WINDOWPOS_CENTERED,
                              SDL_WINDOWPOS_CENTERED,
                              _srcSize.width(), _srcSize.height(),
                              SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
+  }
 
   if (window == NULL)
   {
-    Logger::warning( "CRITICAL!!! Unable to create SDL-window: {0}", SDL_GetError() );
+    Logger::warning( "CRITICAL!!! Unable to create SDL-window: {}", SDL_GetError() );
     THROW("Failed to create window");
   }
 
-  Logger::warning("SDLGraficEngine: init successfull");
-
-  if( isFullscreen() )
-  {
-    int idx = SDL_GetWindowDisplayIndex( window );
-    SDL_Rect bounds;
-    SDL_GetDisplayBounds( idx, &bounds );
-    SDL_SetWindowBordered( window, SDL_FALSE );
-    SDL_SetWindowPosition( window, bounds.x, bounds.y );
-    SDL_SetWindowSize( window, bounds.w, bounds.h );
-    _srcSize = Size( bounds.w, bounds.h );
-  }
+  Logger::warning("SDLGraficEngine: init successfull");  
 #endif
 
   SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
 
   if (renderer == NULL)
   {
-    Logger::warning( "CRITICAL!!! Unable to create renderer: {0}", SDL_GetError() );
+    Logger::warning( "CRITICAL!!! Unable to create renderer: {}", SDL_GetError() );
     THROW("Failed to create renderer");
   }
 
   SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");  // make the scaled rendering look smoother.
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
   SDL_SetRenderDrawBlendMode( renderer, SDL_BLENDMODE_BLEND );
+  SDL_RenderSetLogicalSize( renderer, _srcSize.width(), _srcSize.height() );
   SDL_RenderClear(renderer);
   SDL_RenderPresent(renderer);
 
@@ -256,17 +259,18 @@ void SdlEngine::init()
   for( int k=0; k < SDL_GetNumRenderDrivers(); k++ )
   {
     SDL_GetRenderDriverInfo( k, &info );
-    Logger::warning( "SDLGraficEngine: availabe render {0}", info.name );
+    Logger::warning( "SDLGraficEngine: availabe render {}", info.name );
   }
 
   SDL_GetRendererInfo( renderer, &info );  
   int gl_version;
   SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
   SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 16);
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
   SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &gl_version );
-  Logger::warning( "SDLGraficEngine: init render {0}", info.name );
-  Logger::warning( "SDLGraficEngine: using OpenGL {0}", gl_version );
-  Logger::warning( "SDLGraficEngine: max texture size is [{0}x{1}]", info.max_texture_width, info.max_texture_height );
+  Logger::warning( "SDLGraficEngine: init render {}", info.name );
+  Logger::warning( "SDLGraficEngine: using OpenGL {}", gl_version );
+  Logger::warning( "SDLGraficEngine: max texture size is {}x{}", info.max_texture_width, info.max_texture_height );
 
   SDL_Texture *screenTexture = SDL_CreateTexture(renderer,
                                                  SDL_PIXELFORMAT_ARGB8888,
@@ -283,8 +287,8 @@ void SdlEngine::init()
   }
 
   Logger::warning( "SDLGraficEngine: set caption");
-  Logger::warning( "SDLGraphicEngine: version:{0} compiler:{1}", CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
-  std::string versionStr = fmt::format( "CaesarIA (b{0})", CAESARIA_BUILD_NUMBER );
+  Logger::warning( "SDLGraphicEngine: version:{} compiler:{}", CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
+  std::string versionStr = fmt::format( "CaesarIA (WORK IN PROGRESS/Build {})", CAESARIA_BUILD_NUMBER );
   SDL_SetWindowTitle( window, versionStr.c_str() );
 
   _d->window = window;
@@ -655,15 +659,10 @@ void SdlEngine::setScale( float scale )
   SDL_RenderSetScale( _d->renderer, scale, scale );
 }
 
-void SdlEngine::setViewport(const Rect& rect)
+void SdlEngine::setVirtualSize( const Size& size )
 {
-  if( rect.width() > 0 )
-  {
-    SDL_Rect r = { rect.left(), rect.top(), rect.width(), rect.height() };
-    SDL_RenderSetViewport( _d->renderer, &r );
-  }
-  else
-    SDL_RenderSetViewport( _d->renderer, 0 );
+  const Size* s = size.width() > 0 ? &size : &_srcSize;
+  SDL_RenderSetLogicalSize( _d->renderer, s->width(), s->height() );
 }
 
 void SdlEngine::createScreenshot( const std::string& filename )
