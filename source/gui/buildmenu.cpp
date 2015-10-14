@@ -227,8 +227,8 @@ BuildMenu* BuildMenu::create(const city::development::Branch menuType, Widget* p
 
 bool BuildMenu::isPointInside( const Point& point ) const
 {
-  Rect clickedRect = _environment->rootWidget()->absoluteRect();
-  clickedRect._bottomright = Point( parent()->screenLeft(), _environment->rootWidget()->height() );
+  Rect clickedRect = ui()->rootWidget()->absoluteRect();
+  clickedRect._bottomright = Point( parent()->screenLeft(), ui()->rootWidget()->height() );
   return clickedRect.isPointInside( point );
 }
 

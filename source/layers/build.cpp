@@ -105,24 +105,24 @@ void Build::_discardPreview()
 void Build::_checkPreviewBuild(TilePos pos)
 {
   __D_IMPL(d,Build);
-  BuildModePtr bldCommand =  d->renderer->mode().as<BuildMode>();
+  auto command =  d->renderer->mode().as<BuildMode>();
 
-  if (bldCommand.isNull())
+  if (command.isNull())
     return;
 
   // TODO: do only when needed, when (i, j, _buildInstance) has changed
-  ConstructionPtr overlay = bldCommand->contruction();
+  ConstructionPtr construction = command->contruction();
 
-  if( !overlay.isValid() )
+  if( !construction.isValid() )
   {
     return;
   }
 
-  Size size = overlay->size();
-  int cost = overlay->info().cost();
+  Size size = construction->size();
+  int cost = construction->info().cost();
 
   bool walkersOnTile = false;
-  if( bldCommand->flag( LayerMode::checkWalkers ) )
+  if( command->flag( LayerMode::checkWalkers ) )
   {
     TilesArray tiles = _city()->tilemap().area( pos, size );
     for( auto tile : tiles )
@@ -138,7 +138,7 @@ void Build::_checkPreviewBuild(TilePos pos)
   }
 
   city::AreaInfo areaInfo( _city(), pos, &d->buildTiles );
-  if( !walkersOnTile && overlay->canBuild( areaInfo ) )
+  if( !walkersOnTile && construction->canBuild( areaInfo ) )
   {
     Tilemap& tmap = _city()->tilemap();
     Tile *masterTile=0;
@@ -158,7 +158,7 @@ void Build::_checkPreviewBuild(TilePos pos)
         }
         tile->setPicture( tmap.at( pos + TilePos( di, dj ) ).picture() );
         tile->setMaster( masterTile );
-        tile->setOverlay( overlay.as<Overlay>() );
+        tile->setOverlay( construction.as<Overlay>() );
         d->buildTiles.push_back( tile );
       }
     }
@@ -180,7 +180,7 @@ void Build::_checkPreviewBuild(TilePos pos)
         tile->setEPos( basicTile.epos() );
 
         walkersOnTile = false;
-        if( bldCommand->flag( LayerMode::checkWalkers ) )
+        if( command->flag( LayerMode::checkWalkers ) )
         {
           walkersOnTile = !_city()->walkers( rPos ).empty();
         }
@@ -292,13 +292,13 @@ void Build::_updatePreviewTiles( bool force )
 void Build::_buildAll()
 {
   __D_IMPL(d,Build);
-  BuildModePtr bldCommand = d->renderer->mode().as<BuildMode>();
-  if( bldCommand.isNull() )
+  auto command = d->renderer->mode().as<BuildMode>();
+  if( command.isNull() )
     return;
 
-  ConstructionPtr cnstr = bldCommand->contruction();
+  ConstructionPtr construction = command->contruction();
 
-  if( !cnstr.isValid() )
+  if( !construction.isValid() )
   {
     Logger::warning( "LayerBuild: No construction for build" );
     return;
@@ -319,13 +319,13 @@ void Build::_buildAll()
     areaInfo.pos = tile->epos();
     tileBusyBuilding |= tile->overlay().is<Building>();
 
-    if( cnstr->canBuild( areaInfo ) && tile->isMaster())
+    if( construction->canBuild( areaInfo ) && tile->isMaster())
     {
-      auto event = BuildAny::create( tile->epos(), cnstr->type() );
+      auto event = BuildAny::create( tile->epos(), construction->type() );
       event->dispatch();
       buildOk = true;
 
-      emit d->onBuildSignal( cnstr->type(), tile->epos(), cnstr->info().cost() );
+      emit d->onBuildSignal( construction->type(), tile->epos(), construction->info().cost() );
     }
   }
 
@@ -333,7 +333,7 @@ void Build::_buildAll()
 
   if( !buildOk )
   {
-    std::string errorStr = cnstr->errorDesc();
+    std::string errorStr = construction->errorDesc();
     std::string busyText = tileBusyBuilding
                               ? "##need_build_on_free_area##"
                               : "##need_build_on_cleared_area##";
@@ -592,7 +592,7 @@ void Build::render( Engine& engine)
 void Build::_initBuildMode()
 {
   __D_IMPL(_d,Build);
-  BuildModePtr command = ptr_cast<BuildMode>( _d->renderer->mode() );
+  auto command = _d->renderer->mode().as<BuildMode>();
   Logger::warningIf( !command.isValid(), "LayerBuild: init unknown command" );
 
   _d->multiBuilding = command.isValid() ? command->flag( LayerMode::multibuild ) : false;

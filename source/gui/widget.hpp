@@ -105,7 +105,7 @@ public:
   /** \return The override font (may be 0) */
   //virtual Font getFont( u32 index=0 ) const;
   
-  virtual Ui* ui();
+  virtual Ui* ui() const;
 
   //! Sets text justification mode
   /** \param horizontal: EGUIA_UPPERLEFT for left justified (default),
@@ -418,7 +418,6 @@ protected:
 
   Widgets& _getChildren();
 
-protected:
   // not virtual because needed in constructor
   void _addChild(Widget* child);
 
@@ -426,9 +425,6 @@ protected:
   void _recalculateAbsolutePosition(bool recursive);
 
   __DECLARE_IMPL(Widget)
-
-  //! GUI Environment
-  Ui* _environment;
 };
 
 typedef SmartPtr< Widget > WidgetPtr;

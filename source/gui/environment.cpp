@@ -27,6 +27,7 @@
 #include "console.hpp"
 #include "core/logger.hpp"
 #include "core/hash.hpp"
+#include "widgetprivate.hpp"
 
 using namespace gfx;
 
@@ -84,7 +85,7 @@ Ui::Ui(Engine& painter , const Size& size)
   _d->focusedElement = 0;
   _d->size = size;
   _d->engine = &painter;
-  _environment = this;
+  _dfunc()->environment = this;
   _d->tooltip.element;
   _d->tooltip.lastTime = 0;
   _d->tooltip.enterTime = 0;

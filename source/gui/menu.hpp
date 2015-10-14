@@ -46,6 +46,7 @@ public:
 
 signals public:
   Signal1<int>& onCreateConstruction();
+  Signal1<int>& onCreateObject();
   Signal0<>& onRemoveTool();
   Signal0<>& onHide();
 

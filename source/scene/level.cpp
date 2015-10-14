@@ -133,6 +133,7 @@ public:
   void showMissionTaretsWindow();
   void showTradeAdvisorWindow();
   void resolveCreateConstruction( int type );
+  void resolveCreateObject( int type );
   void resolveSelectLayer( int type );
   void checkFailedMission(Level *lvl, bool forceFailed=false);
   void checkWinMission(Level *lvl, bool forceWin=false);
@@ -284,6 +285,7 @@ void Level::initialize()
 
   CONNECT( _d->extMenu, onHide(),                 _d->menu,          Menu::maximize )
   CONNECT( _d->extMenu, onCreateConstruction(),   _d.data(),         Impl::resolveCreateConstruction )
+  CONNECT( _d->extMenu, onCreateObject(),         _d.data(),         Impl::resolveCreateObject )
   CONNECT( _d->extMenu, onRemoveTool(),           _d.data(),         Impl::resolveRemoveTool )
   CONNECT( _d->extMenu, onRotateRight(),          &_d->renderer,     CityRenderer::rotateRight )
   CONNECT( _d->extMenu, onRotateLeft(),           &_d->renderer,     CityRenderer::rotateLeft )
@@ -671,8 +673,10 @@ void Level::setConstructorMode(bool enabled)
   _d->extMenu->setConstructorMode( enabled );
 }
 
-void Level::Impl::resolveCreateConstruction( int type ){  renderer.setMode( BuildMode::create( object::Type( type ) ) );}
-void Level::Impl::resolveRemoveTool(){  renderer.setMode( DestroyMode::create() );}
+void Level::Impl::resolveCreateConstruction( int type ) { renderer.setMode( BuildMode::create( object::Type( type ) ) );}
+void Level::Impl::resolveCreateObject( int type ) { renderer.setMode( EditorMode::create( object::Type( type ) ) );}
+
+void Level::Impl::resolveRemoveTool() { renderer.setMode( DestroyMode::create() );}
 void Level::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerMode::create( type ) );}
 void Level::Impl::showAdvisorsWindow(){  showAdvisorsWindow( advisor::employers ); }
 void Level::Impl::showTradeAdvisorWindow(){  showAdvisorsWindow( advisor::trading ); }

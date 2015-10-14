@@ -80,7 +80,7 @@ Renderer::ModePtr DestroyMode::create()
 
 Renderer::ModePtr BuildMode::create(object::Type type)
 {
-  BuildMode* newCommand = new BuildMode();
+  BuildMode* newCommand = new BuildMode( citylayer::build );
 
   auto md = object::Info::find( type );
 
@@ -118,9 +118,36 @@ Renderer::ModePtr BuildMode::create(object::Type type)
   return ret;
 }
 
-BuildMode::BuildMode()
-  : LayerMode( citylayer::build ), _d( new Impl )
+BuildMode::BuildMode(int layer)
+  : LayerMode( layer ), _d( new Impl )
 {
+}
+
+Renderer::ModePtr EditorMode::create(object::Type type)
+{
+  EditorMode* newCommand = new EditorMode();
+
+  newCommand->_d->overlay = TileOverlayFactory::instance().create( type );
+  newCommand->_setFlag( multibuild, false );
+  newCommand->_setFlag( border, false );
+  newCommand->_setFlag( assign2road, false );
+  newCommand->_setFlag( checkWalkers, false );
+
+  if( type == object::terrain )
+  {
+    newCommand->_setFlag( multibuild, true );
+  }
+
+  Renderer::ModePtr ret( newCommand );
+  ret->drop();
+
+  return ret;
+}
+
+EditorMode::EditorMode()
+  : BuildMode( citylayer::constructor )
+{
+
 }
 
 }//end namespace gfx

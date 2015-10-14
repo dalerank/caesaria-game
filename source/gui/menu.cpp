@@ -180,6 +180,7 @@ public:
 
   struct {
     Signal1<int> onCreateConstruction;
+    Signal1<int> onCreateObject;
     Signal0<> onRemoveTool;
     Signal0<> onHide;
   } signal;
@@ -191,6 +192,7 @@ public:
 };
 
 Signal1<int>& Menu::onCreateConstruction(){  return _d->signal.onCreateConstruction;}
+Signal1<int>& Menu::onCreateObject(){  return _d->signal.onCreateObject;}
 Signal0<>& Menu::onRemoveTool(){  return _d->signal.onRemoveTool;}
 
 class MenuButton : public TexturedButton
@@ -345,6 +347,12 @@ bool Menu::onEvent(const NEvent& event)
       _createBuildMenu( -1, this );
       emit _d->signal.onCreateConstruction( id );
     }
+    else if( id == object::terrain )
+    {
+      _d->lastPressed = event.gui.caller;
+      _createBuildMenu( -1, this );
+      emit _d->signal.onCreateObject( id );
+    }
     else if( id == (int)AdvToolMode::removeTool )
     {
       _d->lastPressed = event.gui.caller;
@@ -482,7 +490,7 @@ void Menu::_createBuildMenu( int type, Widget* parent )
      buildMenu->setBuildOptions( _d->city->buildOptions() );
      buildMenu->initialize();
 
-     int y = math::clamp< int >( parent->screenTop() - screenTop(), 0, _environment->rootWidget()->height() - buildMenu->height() );
+     int y = math::clamp< int >( parent->screenTop() - screenTop(), 0, ui()->rootWidget()->height() - buildMenu->height() );
      buildMenu->setPosition( Point( -(int)buildMenu->width() - 5, y ) );
    }
 }
