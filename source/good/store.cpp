@@ -158,7 +158,7 @@ void Store::store( good::Stock& stock, const int amount)
   }
   else
   {
-    Logger::warning( "GoodStore: store impossible to store {0} of {1}",
+    Logger::warning( "GoodStore: store impossible to store {} of {}",
                      stock.qty(),
                      good::Helper::name( stock.type() ) );
   }
@@ -177,13 +177,13 @@ void Store::retrieve(good::Stock &stock, int amount)
   }
   else
   {
-    Logger::warning( "GoodStore:Impossible to retrieve {0} of {1}",
+    Logger::warning( "GoodStore:Impossible to retrieve {} of {}",
                      good::Helper::name( stock.type() ),
                      stock.qty() );
   }
 }
 
-void Store::storeAll( Store& goodStore)
+void Store::storeAll( Store& goodStore )
 {
   for( auto& goodType : good::all() )
   {

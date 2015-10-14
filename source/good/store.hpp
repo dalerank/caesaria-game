@@ -42,6 +42,21 @@ struct ReserveInfo
   }
 };
 
+struct TurnoverInfo
+{
+  good::Product product;
+  unsigned int qty;
+  TilePos location;
+  TilePos destination;
+};
+
+class ConsumersInfo : public std::vector<TurnoverInfo>
+{
+
+};
+
+typedef ConsumersInfo ProvidersInfo;
+
 class Reservations : public std::set<ReserveInfo>
 {
   static const ReserveInfo invalid;

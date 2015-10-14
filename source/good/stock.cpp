@@ -88,15 +88,20 @@ VariantList Stock::save() const
   stream << (int)_type
          << _capacity
          << _qty;
+  if( _info.sender > 0 )
+  {
+    stream << _info.sender
+           << _info.birth;
+  }
 
   return stream;
 }
 
-enum { idxType=0, idxCapacity, idxQty };
+enum { idxType=0, idxCapacity, idxQty, idxSender, idxBirth };
 
 void Stock::load( const VariantList& stream )
 {
-  if( stream.empty())
+  if( stream.empty() )
     return;
 
   _type = good::Product( stream.get( idxType ).toInt() );
@@ -108,9 +113,14 @@ void Stock::load( const VariantList& stream )
 
   _capacity = (int)stream.get( idxCapacity );
   _qty = math::clamp( (int)stream.get( idxQty ), 0, _capacity );
+  _info.sender = stream.get( idxSender, 0 );
+  if( _info.sender > 0 )
+    _info.birth = stream.get( idxBirth ).toDateTime();
 }
 
 bool Stock::empty() const {  return _qty == 0; }
+void Stock::setInfo(const Stock::Info& info) { _info = info; }
+const Stock::Info& Stock::info() const { return _info; }
 void Stock::setType( Product goodType ) { _type = goodType; }
 void Stock::setCapacity( const int maxQty ){  _capacity = maxQty;}
 int Stock::freeQty() const{  return std::max( _capacity - _qty, 0 );}

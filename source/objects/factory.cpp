@@ -43,10 +43,10 @@ using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::oil_workshop, Creamery)
 
-class FactoryStore : public good::Storage
+class FactoryStorage : public good::Storage
 {
 public:
-  FactoryStore() : factory( NULL ) {}
+  FactoryStorage() : factory( NULL ) {}
 
   virtual int getMaxStore(const good::Product goodType)
   {
@@ -58,15 +58,16 @@ public:
     return good::Storage::getMaxStore( goodType );
   }
 
-  virtual void applyStorageReservation( good::Stock &stock, const int reservationID )
+  virtual void applyStorageReservation( good::Stock& stock, const int reservationID )
   {
     good::Storage::applyStorageReservation( stock, reservationID );
     emit onChangeState();
   }
 
-  virtual void applyRetrieveReservation( good::Stock &stock, const int reservationID)
+  virtual void applyRetrieveReservation( good::Stock& stock, const int reservationID)
   {
     good::Storage::applyRetrieveReservation( stock, reservationID );
+    stock.setInfo( { tile::hash( factory->pos() ), game::Date::current() } );
     emit onChangeState();
   }
 
@@ -79,16 +80,15 @@ public signals:
 class Factory::Impl
 {
 public:
+  bool isActive;
   struct
   {
+    float rate;  // max production / year
+    float progress; // progress of the work, in percent (0-100).
+  } production;
 
-  };
-
-  bool isActive;
-  float productionRate;  // max production / year
-  float progress;  // progress of the work, in percent (0-100).
   Picture stockPicture; // stock of input good
-  FactoryStore goodStore;
+  FactoryStorage goodStore;
   good::Product inGoodType;
   unsigned int lowWorkerWeeksNumber;
   unsigned int maxUnworkingWeeks;
@@ -104,8 +104,8 @@ Factory::Factory(const good::Product inType, const good::Product outType,
                   const object::Type type, const Size& size )
 : WorkingBuilding( type, size ), _d( new Impl )
 {
-  _d->productionRate = 2.f;
-  _d->progress = 0.0f;
+  _d->production.rate = 2.f;
+  _d->production.progress = 0.0f;
   _d->isActive = true;
   _d->produceGood = false;
   _d->inGoodType = inType;
@@ -125,8 +125,8 @@ const good::Stock& Factory::inStock() const { return _d->goodStore.getStock(_d->
 good::Stock &Factory::outStock(){  return _d->goodStore.getStock(_d->outGoodType);}
 const good::Stock&Factory::outStock() const { return _d->goodStore.getStock(_d->outGoodType); }
 good::Product Factory::consumeGoodType() const{  return _d->inGoodType; }
-int Factory::progress(){  return math::clamp<int>( (int)_d->progress, 0, 100 );}
-void Factory::updateProgress(float value){  _d->progress = math::clamp<float>( _d->progress += value, 0.f, 101.f );}
+int Factory::progress(){ return math::clamp<int>( (int)_d->production.progress, 0, 100 );}
+void Factory::updateProgress(float value){  _d->production.progress = math::clamp<float>( _d->production.progress += value, 0.f, 101.f );}
 
 bool Factory::mayWork() const
 {
@@ -214,8 +214,8 @@ void Factory::timeStep(const unsigned long time)
     return;
   }
   
-  if( _d->progress >= 100.0 ) { _productReady();     }
-  else                        { _productProgress();  }
+  if( _d->production.progress >= 100.0 ) { _productReady();     }
+  else                                   { _productProgress();  }
 
   if( !_d->produceGood )
   {
@@ -260,7 +260,7 @@ void Factory::deliverGood()
   }
 }
 
-good::Store& Factory::store() {   return _d->goodStore; }
+good::Store& Factory::store() { return _d->goodStore; }
 
 std::string Factory::troubleDesc() const
 {
@@ -284,8 +284,8 @@ std::string Factory::troubleDesc() const
 void Factory::save( VariantMap& stream ) const
 {
   WorkingBuilding::save( stream );
-  VARIANT_SAVE_ANY_D( stream, _d, productionRate )
-  VARIANT_SAVE_ANY_D( stream, _d, progress )
+  VARIANT_SAVE_ANY_D( stream, _d, production.rate )
+  VARIANT_SAVE_ANY_D( stream, _d, production.progress )
   VARIANT_SAVE_ANY_D( stream, _d, lowWorkerWeeksNumber )
   VARIANT_SAVE_ANY_D( stream, _d, maxUnworkingWeeks )
   VARIANT_SAVE_CLASS_D( stream, _d, goodStore )
@@ -295,8 +295,8 @@ void Factory::load( const VariantMap& stream)
 {
   WorkingBuilding::load( stream );
   VARIANT_LOAD_CLASS_D( _d, goodStore, stream )
-  VARIANT_LOAD_ANYDEF_D( _d, progress, 0.f, stream )
-  VARIANT_LOAD_ANYDEF_D( _d, productionRate, 9.6f, stream )
+  VARIANT_LOAD_ANYDEF_D( _d, production.progress, 0.f, stream )
+  VARIANT_LOAD_ANYDEF_D( _d, production.rate, 9.6f, stream )
   VARIANT_LOAD_ANYDEF_D( _d, lowWorkerWeeksNumber, 0, stream )
   VARIANT_LOAD_ANYDEF_D( _d, maxUnworkingWeeks, 0, stream )
 
@@ -307,8 +307,8 @@ Factory::~Factory(){}
 bool Factory::_mayDeliverGood() const {  return ( !roadside().empty() ) && ( walkers().size() == 0 );}
 
 void Factory::_storeChanged(){}
-void Factory::setProductRate( const float rate ){  _d->productionRate = rate;}
-float Factory::productRate() const{  return _d->productionRate;}
+void Factory::setProductRate( const float rate ){  _d->production.rate = rate;}
+float Factory::productRate() const{  return _d->production.rate;}
 
 unsigned int Factory::effciency()      const { return laborAccessPercent() * productivity() / 100; }
 unsigned int Factory::getFinishedQty() const{ return _d->finishedQty;}
@@ -345,6 +345,15 @@ void Factory::initialize(const object::Info& mdata)
     good::Product pr = good::Helper::getType( outputProduct.toString() );
     if( pr != good::none )
       _d->outGoodType = pr;
+    }
+}
+
+void Factory::debugLoadOld(int oldFormat, const VariantMap& stream)
+{
+  if( oldFormat < 70 )
+  {
+     _d->production.rate = stream.get( "productionRate", 9.6f );
+     _d->production.progress = stream.get( "progress", 0.f );
   }
 }
 
@@ -411,7 +420,7 @@ void Factory::_productReady()
 
   if( _d->goodStore.qty( _d->outGoodType ) < _d->goodStore.capacity( _d->outGoodType )  )
   {
-    _d->progress -= 100.f;
+    _d->production.progress -= 100.f;
     unsigned int qty = getFinishedQty();
     //gcc fix for temporaly ref object
     good::Stock tmpStock( _d->outGoodType, qty, qty );
@@ -424,10 +433,10 @@ void Factory::_productProgress()
   if( _d->produceGood && game::Date::isDayChanged() )
   {
     //ok... factory is work, produce goods
-    float timeKoeff = _d->productionRate / 365.f;
+    float timeKoeff = _d->production.rate / 365.f;
     float laborAccessKoeff = laborAccessPercent() / 100.f;
     float dayProgress = productivity() * timeKoeff * laborAccessKoeff;  // work is proportional to time and factory speed
 
-    _d->progress += dayProgress;
+    _d->production.progress += dayProgress;
   }
 }

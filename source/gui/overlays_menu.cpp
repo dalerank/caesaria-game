@@ -74,7 +74,8 @@ void OverlaysMenu::_addButtons(const int type )
     _addButton( citylayer::healthAll, startPos+=offset );
     _addButton( citylayer::commerce, startPos+=offset );
     _addButton( citylayer::religion, startPos+=offset );
-    setHeight( 8 * offset.y() );
+    _addButton( citylayer::products, startPos+=offset );
+    setHeight( 9 * offset.y() );
   break;
 
   case citylayer::risks:

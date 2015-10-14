@@ -145,7 +145,7 @@ void RqGood::exec( PlayerCityPtr city )
     e->dispatch();
     success( city );
 
-    world::GoodCaravanPtr caravan = world::GoodCaravan::create( ptr_cast<world::City>( city ) );    
+    auto caravan = world::GoodCaravan::create( ptr_cast<world::City>( city ) );
     caravan->store().store( stock, -1 );
     caravan->sendTo( city->empire()->rome() );
   }

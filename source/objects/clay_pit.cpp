@@ -35,7 +35,6 @@ ClayPit::ClayPit()
   : Factory( good::none, good::clay, object::clay_pit, Size(2) )
 {
   _fgPictures().resize(2);
-
   _setUnworkingInterval( 12 );
 }
 
@@ -48,8 +47,8 @@ void ClayPit::_reachUnworkingTreshold()
 {
   Factory::_reachUnworkingTreshold();
 
-  GameEventPtr e = ShowInfobox::create( "##clay_pit_flooded##", "##clay_pit_flooded_by_low_support##");
-  e->dispatch();
+  auto event = ShowInfobox::create( "##clay_pit_flooded##", "##clay_pit_flooded_by_low_support##");
+  event->dispatch();
 
   collapse();
 }

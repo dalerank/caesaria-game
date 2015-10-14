@@ -71,7 +71,7 @@ public:
     good::Storage::store( stock, amount );
   }
 
-  virtual void applyStorageReservation(good::Stock &stock, const int reservationID)
+  virtual void applyStorageReservation(good::Stock& stock, const int reservationID)
   {
     good::Storage::applyStorageReservation( stock, reservationID );
 

@@ -37,6 +37,8 @@ public:
     OverlayPtr selected;
     OverlayPtr current;
   } overlay;
+
+  PointsArray points;
 };
 
 int CommodityTurnover::type() const {  return citylayer::comturnover; }
@@ -126,7 +128,7 @@ void CommodityTurnover::handleEvent(NEvent& event)
 }
 
 CommodityTurnover::CommodityTurnover( Camera& camera, PlayerCityPtr city)
-  : Info( camera, city, accessColumnIndex )
+  : Info( camera, city, 0 )
 {
   _addWalkerType( walker::cartPusher );
   _addWalkerType( walker::supplier );

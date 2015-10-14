@@ -60,7 +60,7 @@ public:
   virtual void timeStep(const unsigned long time);
 
   virtual void save( VariantMap& stream) const;
-  virtual void load( const VariantMap& stream);
+  virtual void load( const VariantMap& stream );
 
   virtual void setProductRate( const float rate );
   virtual float productRate() const;
@@ -69,8 +69,13 @@ public:
   virtual unsigned int getFinishedQty() const;
   virtual unsigned int getConsumeQty() const;
 
+  ConsumersInfo consumers() const;
+  ProvidersInfo providers() const;
+
   std::string cartStateDesc() const;
   virtual void initialize(const object::Info& mdata);
+
+  virtual void debugLoadOld( int oldFormat, const VariantMap& stream );
 
 protected:
   virtual bool _mayDeliverGood() const;
