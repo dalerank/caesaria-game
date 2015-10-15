@@ -103,6 +103,43 @@ namespace scene
 typedef SmartList<EventHandler> EventHandlers;
 const int topMenuHeight = 24;
 
+class MenuBreaker : public EventHandler
+{
+public:
+  Menu* _m1 = nullptr;
+  Menu* _m2 = nullptr;
+
+  MenuBreaker( Menu* m1, Menu* m2 )
+   : _m1(m1), _m2(m2)
+  {
+
+  }
+
+  static EventHandlerPtr create( Menu* m1, Menu* m2 )
+  {
+    EventHandlerPtr ret( new MenuBreaker( m1, m2 ) );
+    ret->drop();
+
+    return ret;
+  }
+
+  void handleEvent(NEvent &event)
+  {
+    bool rmbReleased = event.EventType == sEventMouse
+                       && event.mouse.type == mouseRbtnRelease;
+
+    bool escapePressed = event.EventType == sEventKeyboard
+                         && event.keyboard.key == KEY_ESCAPE;
+    if( rmbReleased || escapePressed )
+    {
+      if( _m1 ) _m1->cancel();
+      if( _m2 ) _m2->cancel();
+    }
+  }
+
+  bool finished() const { return false; }
+};
+
 class Level::Impl
 {
 public:
@@ -222,6 +259,7 @@ void Level::Impl::initMainUI()
 void Level::Impl::installHandlers( Base* scene )
 {
   scene->installEventHandler( PatrolPointEventHandler::create( *game, renderer ) );
+  scene->installEventHandler( MenuBreaker::create( extMenu, menu ) );
 }
 
 void Level::Impl::initSound()

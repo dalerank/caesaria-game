@@ -37,6 +37,7 @@ public:
   // draw on screen
   virtual void minimize();
   virtual void maximize();
+  virtual void cancel();
 
   virtual void draw( gfx::Engine& engine );
   virtual void setPosition(const Point& relativePosition);

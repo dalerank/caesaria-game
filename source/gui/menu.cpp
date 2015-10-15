@@ -104,7 +104,7 @@ struct Menu::Model
                                      noSubMenu, Rect(), "terrain", nullptr, "", Link::inEditor };
 
     actions[ Link::clearLand   ] = { Point( 63,  277 ), config::id.menu.clear, (int)AdvToolMode::removeTool, 1,
-                                     (int)AdvToolMode::removeTool, config::id.middle.clear, !pushButton,
+                                     (int)AdvToolMode::removeTool, config::id.middle.clear, pushButton,
                                      noSubMenu, Rect(), "clear_land", nullptr, "", Link::inGame };
 
     actions[ Link::editForest  ] = { Point( 63,  277 ), config::id.menu.forest, object::tree, 0,
@@ -112,15 +112,20 @@ struct Menu::Model
                                      noSubMenu, Rect(), "forest", nullptr, "", Link::inEditor };
   }
 
-  bool isLinkValid( Link::Name name )
+  bool isLinkValid( Link::Name name ) const
   {
-    return actions[ name ].button != nullptr;
+    auto it = actions.find( name );
+
+    if( it == actions.end() )
+      return false;
+
+    return it->second.button != nullptr;
   }
 
   void setConstructoMode( bool enabled )
   {
     Link::VisibleMode mode = enabled ? Link::inEditor : Link::inGame;
-    for( auto item : actions )
+    for( auto&& item : actions )
       item.second.button->setVisible( item.second.visibleMode == mode );
   }
 
@@ -397,7 +402,7 @@ bool Menu::onEvent(const NEvent& event)
       _createBuildMenu( -1, this );
       emit _d->signal.onCreateConstruction( id );
     }
-    else if( id == object::terrain )
+    else if( id == object::terrain || id == object::tree )
     {
       _d->lastPressed = event.gui.caller;
       _createBuildMenu( -1, this );
@@ -441,23 +446,13 @@ bool Menu::onEvent(const NEvent& event)
     return true;
   }
 
-  if( event.EventType == sEventGui && event.gui.type == guiElementFocusLost )
-  {
-    if( findChildren<BuildMenu*>().empty() )
-    {
-      unselectAll();
-      _d->lastPressed = 0;
-    }
-  }
-
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type )
     {
     case mouseRbtnRelease:
       _createBuildMenu( -1, this );
-      unselectAll();
-      _d->lastPressed = 0;
+     cancel();
     return true;
 
     case mouseLbtnPressed:
@@ -511,6 +506,12 @@ void Menu::maximize()
 
   auto event = PlaySound::create( "panel", 3, 100 );
   event->dispatch();
+}
+
+void Menu::cancel()
+{
+  unselectAll();
+  _d->lastPressed = 0;
 }
 
 bool Menu::unselectAll()
@@ -615,16 +616,16 @@ void ExtentMenu::_updateButtons()
 
   _setChildGeometry( _d->button.minimize, Rect( Point( 127, 5 ), Size( 31, 20 ) ) );
 
-  _d->initActionButton( _d->roadButton,           Point( 113, 277 ), false );
+  _d->initActionButton( _d->roadButton,           Point( 113, 277 ) );
   _d->initActionButton( _d->waterButton,          Point( 13,  313 ) );
   _d->initActionButton( _d->healthButton,         Point( 63,  313 ) );
   _d->initActionButton( _d->templeButton,         Point( 113, 313 ) );
-  _d->initActionButton( _d->educationButton,      Point( 13,  349 ));
+  _d->initActionButton( _d->educationButton,      Point( 13,  349 ) );
   _d->initActionButton( _d->entertainmentButton,  Point( 63,  349 ) );
-  _d->initActionButton( _d->administrationButton, Point( 113, 349) );
+  _d->initActionButton( _d->administrationButton, Point( 113, 349 ) );
   _d->initActionButton( _d->engineerButton,       Point( 13,  385 ) );
   _d->initActionButton( _d->securityButton,       Point( 63,  385 ) );
-  _d->initActionButton( _d->commerceButton,       Point( 113, 385) );
+  _d->initActionButton( _d->commerceButton,       Point( 113, 385 ) );
 
   //header
   _d->senateButton = _addButton( 79, false, 0, -1, false, -1, "senate" );
@@ -711,13 +712,13 @@ void ExtentMenu::setConstructorMode(bool enabled)
   for( auto btn : btns1 )
     btn->setEnabled( !enabled );
 
-  _d->model->setConstructoMode( true );
-
-  if( _d->model->isLinkValid( Link::editTerrain ) )
+  if( !_d->model->isLinkValid( Link::editTerrain ) )
   {
     _createLink( _d->model->actions[ Link::editTerrain ] );
     _createLink( _d->model->actions[ Link::editForest ] );
   }
+
+  _d->model->setConstructoMode( true );
 }
 
 void ExtentMenu::resolveUndoChange(bool enabled)
