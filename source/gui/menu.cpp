@@ -61,42 +61,78 @@ enum class AdvToolMode
   toolCount
 };
 
-enum { noSubMenu=0, haveSubMenu=1 };
+enum { noSubMenu=0, haveSubMenu=1, pushButton=1 };
 
-struct Action
+struct Menu::Link
 {
-  typedef enum { buildHouse } Name;
+  typedef enum { buildHouse, clearLand,
+                 editTerrain, editForest } Name;
+  typedef enum { inGame=0, inEditor=1 } VisibleMode;
   Point pos;
   int picId;
+  int guiId;
   int index;
   int mode;
   int midPicID;
   bool isPushBtn;
+  bool submenu;
+  Rect rect;
   std::string sound;
   PushButton* button;
+  std::string tooltip;
+  VisibleMode visibleMode;
 };
 
-struct Menu::Config
+struct Menu::Model
 {
   typedef enum { smallMenu=0, bigMenu } MenuType;
   Picture background, bottom;
   int width;
   float scale;
+  MenuType mtype;
   bool fitToScreen;  
-  std::map<Action::Name, Action> actions;
+  std::map<Link::Name, Menu::Link> actions;
 
   void initDefaultActions()
   {
-    actions[ Action::buildHouse ] = { {}, };
+    actions[ Link::buildHouse  ] = { Point( 13,  277 ), config::id.menu.house, object::house, 0,
+                                     object::house, config::id.middle.house, pushButton,
+                                     noSubMenu, Rect(), "housing", nullptr, "", Link::inGame };
+
+    actions[ Link::editTerrain ] = { Point( 13,  277 ), config::id.menu.terrain, object::terrain, 0,
+                                     object::terrain, config::id.middle.clear, pushButton,
+                                     noSubMenu, Rect(), "terrain", nullptr, "", Link::inEditor };
+
+    actions[ Link::clearLand   ] = { Point( 63,  277 ), config::id.menu.clear, (int)AdvToolMode::removeTool, 1,
+                                     (int)AdvToolMode::removeTool, config::id.middle.clear, !pushButton,
+                                     noSubMenu, Rect(), "clear_land", nullptr, "", Link::inGame };
+
+    actions[ Link::editForest  ] = { Point( 63,  277 ), config::id.menu.forest, object::tree, 0,
+                                     object::tree, config::id.middle.clear, pushButton,
+                                     noSubMenu, Rect(), "forest", nullptr, "", Link::inEditor };
   }
 
-  Config( Widget* parent, bool fit, const std::string& name, MenuType mode )
+  bool isLinkValid( Link::Name name )
+  {
+    return actions[ name ].button != nullptr;
+  }
+
+  void setConstructoMode( bool enabled )
+  {
+    Link::VisibleMode mode = enabled ? Link::inEditor : Link::inGame;
+    for( auto item : actions )
+      item.second.button->setVisible( item.second.visibleMode == mode );
+  }
+
+  Model( Widget* parent, bool fit, const std::string& name, MenuType mode )
    : fitToScreen( fit )
   {
     VariantMap config = config::load( name );
 
     VARIANT_LOAD_PICTURE(bottom, config)
     VARIANT_LOAD_PICTURE(background, config)
+
+    mtype = mode;
 
     if( !background.isValid() )
       background.load( ResourceGroup::panelBackground, mode == smallMenu ? 16 : 17 );
@@ -145,10 +181,14 @@ public:
   } bg;
 
   Widget* lastPressed;
-#define BUTTON(a) PushButton* a;
-  BUTTON(btnTerrain)
-  PushButton* menuButton;
-  PushButton* minimizeButton;
+
+  struct {
+    PushButton* forest;
+    PushButton* menu;
+    PushButton* minimize;
+
+  } button;
+
   PushButton* senateButton;
   PushButton* empireButton;
   PushButton* missionButton;
@@ -157,9 +197,7 @@ public:
   PushButton* rotateRightButton;
   PushButton* messageButton;
   PushButton* disasterButton;
-  PushButton* houseButton;
   PushButton* waterButton;
-  PushButton* clearButton;
   PushButton* roadButton;
   PushButton* administrationButton;
   PushButton* entertainmentButton;
@@ -171,12 +209,12 @@ public:
   PushButton* engineerButton;
   PushButton* cancelButton;
   PushButton* overlaysButton;
-#undef BUTTON
 
   Image* middleLabel;
   OverlaysMenu* overlaysMenu; 
   float koeff;
   PlayerCityPtr city;
+  ScopedPtr<Menu::Model> model;
 
   struct {
     Signal1<int> onCreateConstruction;
@@ -223,15 +261,12 @@ Menu::Menu(Widget* parent, int id, const Rect& rectangle , PlayerCityPtr city)
 
 void Menu::_updateButtons()
 {
-  _d->minimizeButton = _addButton( config::id.menu.maximize, false, 0, (int)AdvToolMode::maximizeTool,
-                                   noSubMenu, config::id.middle.empty, "show_bigpanel",
-                                   Rect( Point( 6, 4 ), Size( 31, 20 ) ) );
+  _d->button.minimize = _addButton( config::id.menu.maximize, false, 0, (int)AdvToolMode::maximizeTool,
+                                    noSubMenu, config::id.middle.empty, "show_bigpanel",
+                                    Rect( Point( 6, 4 ), Size( 31, 20 ) ) );
 
-  _d->houseButton = _addButton( config::id.menu.house, true, 0, object::house,
-                                noSubMenu, config::id.middle.house, "housing" );
-
-  _d->clearButton = _addButton( 131, true, 1, (int)AdvToolMode::removeTool,
-                                noSubMenu, config::id.middle.clear, "clear_land" );
+  _createLink( _d->model->actions[ Link::buildHouse ] );
+  _createLink( _d->model->actions[ Link::clearLand  ] );
 
   _d->roadButton = _addButton( 135, true, 2, object::road, noSubMenu, config::id.middle.road, "road" );
   _d->waterButton = _addButton( 127, true, 3, development::water, haveSubMenu, config::id.middle.water, "water" );
@@ -254,20 +289,21 @@ void Menu::_updateButtons()
   _d->commerceButton = _addButton( 155, true, 11, development::commerce, haveSubMenu,
                                    config::id.middle.comerce, "comerce" );
 
-  CONNECT( _d->minimizeButton, onClicked(), this, Menu::minimize );
+  CONNECT( _d->button.minimize, onClicked(), this, Menu::minimize );
 }
 
-void Menu::_initialize( const Config& config )
+void Menu::_setModel( Model* model )
 {
   Impl& d = *_d.data();
-  d.koeff = config.scale;
-  d.bg.add( config.background, Rect( Point(0, 0), config.background.size() * config.scale ) );
+  d.model.reset( model );
+  d.koeff = model->scale;
+  d.bg.add( model->background, Rect( Point(0, 0), model->background.size() * model->scale ) );
 
-  unsigned int y = config.background.height() * config.scale;
+  unsigned int y = model->background.height() * model->scale;
   while( y < parent()->height() )
   {
-    d.bg.add( config.bottom, Rect( 0, y, config.width, y + config.bottom.height() * config.scale ) );
-    y += config.bottom.height() * config.scale - 5;
+    d.bg.add( model->bottom, Rect( 0, y, model->width, y + model->bottom.height() * model->scale ) );
+    y += model->bottom.height() * model->scale - 5;
   }
 }
 
@@ -282,6 +318,20 @@ void Menu::_setChildGeometry( Widget* w, const Rect& r)
 void Menu::_updateBuildOptions()
 {
   _d->updateBuildingOptions();
+}
+
+void Menu::_createLink( Link& link )
+{
+  auto btn = _addButton( link.picId,   link.isPushBtn, link.index,
+                         link.guiId,   link.submenu,   link.midPicID,
+                         link.tooltip, link.rect );
+
+  if( _d->model->mtype == Model::bigMenu )
+  {
+    _d->initActionButton( btn, link.pos, link.isPushBtn );
+  }
+
+  link.button = btn;
 }
 
 PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul, 
@@ -428,11 +478,11 @@ bool Menu::onEvent(const NEvent& event)
 
 Menu* Menu::create(Widget* parent, int id, PlayerCityPtr city, bool fitToScreen )
 {
-  Config config( parent, fitToScreen, ":/menu.model", Config::smallMenu );
+  auto model = new Model( parent, fitToScreen, ":/menu.model", Model::smallMenu );
 
-  Menu* ret = new Menu( parent, id, Rect( 0, 0, config.width, parent->height() ), city );
+  Menu* ret = new Menu( parent, id, Rect( 0, 0, model->width, parent->height() ), city );
 
-  ret->_initialize( config  );
+  ret->_setModel( model );
   ret->_updateButtons();
   ret->_updateBuildOptions();
 
@@ -534,12 +584,12 @@ void Menu::Impl::updateBuildingOptions()
 
 ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city , bool fitToScreen)
 {
-  Config config( parent, fitToScreen, ":/extmenu.model", Config::bigMenu );
+  auto model = new Model( parent, fitToScreen, ":/extmenu.model", Model::bigMenu );
 
-  ExtentMenu* ret = new ExtentMenu( parent, id, Rect( 0, 0, config.width, parent->height() ), city );
+  ExtentMenu* ret = new ExtentMenu( parent, id, Rect( 0, 0, model->width, parent->height() ), city );
   ret->setID( Hash( CAESARIA_STR_A(ExtentMenu)) );
 
-  ret->_initialize( config );
+  ret->_setModel( model );
   ret->_updateButtons();
   ret->_updateBuildOptions();
 
@@ -553,20 +603,18 @@ ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle, PlayerCityPtr c
 {
   setupUI( ":/gui/fullmenu.gui" );
   _d->city = city;
-  _d->btnTerrain = nullptr;
 }
 
 void ExtentMenu::_updateButtons()
 {
   Menu::_updateButtons();
 
-  _d->minimizeButton->deleteLater();
-  _d->minimizeButton = _addButton( 97, false, 0, (int)AdvToolMode::maximizeTool, false, config::id.middle.empty,
+  _d->button.minimize->deleteLater();
+  _d->button.minimize = _addButton( 97, false, 0, (int)AdvToolMode::maximizeTool, false, config::id.middle.empty,
                                    "hide_bigpanel" );
-  _setChildGeometry( _d->minimizeButton, Rect( Point( 127, 5 ), Size( 31, 20 ) ) );
 
-  _d->initActionButton( _d->houseButton,          Point( 13,  277 ), false );
-  _d->initActionButton( _d->clearButton,          Point( 63,  277 ), false );
+  _setChildGeometry( _d->button.minimize, Rect( Point( 127, 5 ), Size( 31, 20 ) ) );
+
   _d->initActionButton( _d->roadButton,           Point( 113, 277 ), false );
   _d->initActionButton( _d->waterButton,          Point( 13,  313 ) );
   _d->initActionButton( _d->healthButton,         Point( 63,  313 ) );
@@ -619,7 +667,7 @@ void ExtentMenu::_updateButtons()
   _setChildGeometry( _d->overlaysButton, Rect( 4, 3, 122, 28 ) );
   _d->overlaysButton->setTooltipText( _("##select_city_layer##") );
 
-  CONNECT( _d->minimizeButton, onClicked(), this, ExtentMenu::minimize );
+  CONNECT( _d->button.minimize, onClicked(), this, ExtentMenu::minimize );
   CONNECT( _d->overlaysButton, onClicked(), this, ExtentMenu::toggleOverlayMenuVisible );
   CONNECT( _d->overlaysMenu, onSelectOverlayType(), this, ExtentMenu::changeOverlay );
 }
@@ -663,21 +711,12 @@ void ExtentMenu::setConstructorMode(bool enabled)
   for( auto btn : btns1 )
     btn->setEnabled( !enabled );
 
-  PushButton* btns2[] = { _d->houseButton,  _d->clearButton,
-                          _d->roadButton,   _d->waterButton,
-                          _d->healthButton, _d->templeButton,
-                          _d->educationButton, _d->entertainmentButton,
-                          _d->administrationButton, _d->engineerButton,
-                          _d->securityButton, _d->commerceButton };
+  _d->model->setConstructoMode( true );
 
-  for( auto btn : btns2 )
-    btn->hide();
-
-  if( _d->btnTerrain == 0 )
+  if( _d->model->isLinkValid( Link::editTerrain ) )
   {
-    _d->btnTerrain = _addButton( config::id.menu.terrain, true, 0, object::terrain,
-                                 noSubMenu, config::id.middle.clear, "terrain" );
-    _d->initActionButton( _d->btnTerrain, Point( 13,  277 ), true );
+    _createLink( _d->model->actions[ Link::editTerrain ] );
+    _createLink( _d->model->actions[ Link::editForest ] );
   }
 }
 

@@ -54,14 +54,16 @@ protected:
   class Impl;
   ScopedPtr< Impl > _d;
 
-  struct Config;
+  struct Model;
+  struct Link;
 
   Menu( Widget* parent, int id, const Rect& rectangle, PlayerCityPtr city );
   virtual void _updateButtons();
-  virtual void _initialize( const Config& config );
+  virtual void _setModel(Model* model );
   void _setChildGeometry(Widget* w, const Rect& r );
   void _updateBuildOptions();
   void _createBuildMenu( int type, Widget* parent );
+  void _createLink( Link& config);
   PushButton* _addButton( int startPic, bool pushBtn, int yMul,
                           int id, bool haveSubmenu, int midPic,
                           const std::string& tooltip="" ,
