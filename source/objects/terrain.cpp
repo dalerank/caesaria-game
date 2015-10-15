@@ -35,12 +35,14 @@ namespace {
 
 Terrain::Terrain() : Overlay( object::terrain, Size(1) )
 {
+  setPicture( computePicture() );
 }
 
 bool Terrain::build( const city::AreaInfo& info )
 {
   Overlay::build( info );
-  setPicture( computePicture() );
+  tile().setPicture( picture() );
+  deleteLater();
 
   return true;
 }
@@ -53,9 +55,6 @@ void Terrain::initTerrain(Tile& terrain)
 
 Picture Terrain::computePicture()
 {
-  int i = tile().i();
-  int j = tile().j();
-
   int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
   int imgId = math::random( 58-1 );
 

@@ -143,5 +143,5 @@ void HealthBuilding::initialize(const object::Info& mdata)
 
 HealthBuilding::~HealthBuilding() {}
 
-unsigned int HealthBuilding::patientsMax() const { _d->patients.max; }
+unsigned int HealthBuilding::patientsMax() const { return _d->patients.max; }
 unsigned int HealthBuilding::patientsCurrent() const { return _d->patients.current; }

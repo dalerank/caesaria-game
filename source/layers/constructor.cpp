@@ -140,9 +140,9 @@ void Constructor::_checkPreviewBuild(TilePos pos)
           // this is the masterTile
           masterTile = tile;
         }
+        auto clone = TileOverlayFactory::instance().create( overlay->type() );
         tile->setPicture( tmap.at( pos + TilePos( di, dj ) ).picture() );
         tile->setMaster( masterTile );
-        auto clone = TileOverlayFactory::instance().create( overlay->type() );
         tile->setOverlay( clone );
         d->buildTiles.push_back( tile );
       }
@@ -426,19 +426,19 @@ void Constructor::_drawBuildTile( Engine& engine, Tile* tile, const Point& offse
   if( postTile->master() )
     postTile = postTile->master();
 
-  ConstructionPtr construction = postTile->overlay<Construction>();
+  auto overlay = postTile->overlay();
   engine.resetColorMask();
 
   areaInfo.pos = postTile->epos();
   bool maskSet = false;
   Size size(1,1);
 
-  if( construction.isValid() && construction->canBuild( areaInfo ) )
+  if( overlay.isValid() )
   {
     engine.setColorMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
     maskSet = true;
 
-    size = construction->size();
+    size = overlay->size();
   }
 
   if( postTile == tile && maskSet )
@@ -456,7 +456,7 @@ void Constructor::_drawBuildTile( Engine& engine, Tile* tile, const Point& offse
 
   if( maskSet )
   {
-    const Picture& picOver = construction->picture( areaInfo );
+    const Picture& picOver = overlay->picture( areaInfo );
     engine.draw( picOver, postTile->mappos() + offset );
     drawPass( engine, *postTile, offset, Renderer::overlayAnimation );
     engine.resetColorMask();
@@ -488,15 +488,15 @@ void Constructor::drawTile( Engine& engine, Tile& tile, const Point& offset )
   __D_IMPL(_d,Constructor);
   Point screenPos = tile.mappos() + offset;
 
-  ConstructionPtr cntr = tile.overlay<Construction>();
+  auto overlay = tile.overlay();
   city::AreaInfo info( _city(), tile.epos(), &_d->buildTiles );
 
   const Picture* picBasic = 0;
   const Picture* picOver = 0;
-  if( cntr.isValid() && info.tiles().size() > 0 )
+  if( overlay.isValid() && info.tiles().size() > 0 )
   {
-    picBasic = &cntr->picture();
-    picOver = &cntr->picture( info );
+    picBasic = &overlay->picture();
+    picOver = &overlay->picture( info );
   }
 
   if( picOver && picBasic != picOver )
@@ -530,10 +530,10 @@ void Constructor::render( Engine& engine)
   __D_IMPL(d,Constructor);
   Layer::render( engine );
 
-  if( ++d->frameCount >= frameCountLimiter)
+  /*if( ++d->frameCount >= frameCountLimiter)
   {
     _updatePreviewTiles( true );
-  }
+  }*/
 
   d->frameCount %= frameCountLimiter;
 

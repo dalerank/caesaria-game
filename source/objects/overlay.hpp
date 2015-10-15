@@ -102,6 +102,7 @@ public:
   const object::Info& info() const;
 
   virtual void debugLoadOld( int oldFormat, const VariantMap& stream );
+  virtual const gfx::Picture& picture(const city::AreaInfo& info) const;
 
 protected:
   void setType(const object::Type type);
