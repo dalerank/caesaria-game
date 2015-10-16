@@ -62,7 +62,7 @@ bool ClayPit::canBuild( const city::AreaInfo& areaInfo ) const
     return false;
 
   Tilemap& tilemap = areaInfo.city->tilemap();
-  TilesArray perimetr = tilemap.getRectangle( areaInfo.pos + TilePos( -1, -1), size() + Size( 2 ), Tilemap::checkCorners );
+  TilesArray perimetr = tilemap.rect( areaInfo.pos + TilePos( -1, -1), size() + Size( 2 ), Tilemap::checkCorners );
 
   bool near_water = !perimetr.select( Tile::tlWater ).empty();
 

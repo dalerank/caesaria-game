@@ -75,14 +75,14 @@ void Troubles::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else
     {
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.base );
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
-LayerPtr Troubles::create(Camera& camera, PlayerCityPtr city , int type)
+LayerPtr Troubles::create(Camera& camera, PlayerCityPtr city, int type)
 {
   LayerPtr ret( new Troubles( camera, city, type ) );
   ret->drop();
@@ -103,7 +103,7 @@ void Troubles::handleEvent(NEvent& event)
 
       if( tile != 0 )
       {
-        auto constr = tile->overlay().as<Construction>();
+        auto constr = tile->overlay<Construction>();
         if( constr.isValid() )
         {
           text = constr->troubleDesc();

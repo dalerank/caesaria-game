@@ -27,7 +27,7 @@ namespace events
 class ShowRequestInfo : public GameEvent
 {
 public:
-  static GameEventPtr create( city::request::RequestPtr request,
+  static GameEventPtr create( city::RequestPtr request,
                               bool available4exec=false,
                               const std::string& message="",
                               const std::string& video="",
@@ -40,7 +40,7 @@ protected:
 private:
   ShowRequestInfo();
 
-  city::request::RequestPtr _request;
+  city::RequestPtr _request;
   bool _reqAvailable;
   std::string _message, _video, _title;
 };

@@ -49,7 +49,7 @@ void Well::deliverService()
   for( auto bld : reachedBuildings)
   {
     bld->applyService( walker );
-    HousePtr house = bld.as<House>();
+    auto house = bld.as<House>();
     if( house.isValid() )
     {
       lowHealth = std::min<unsigned int>( lowHealth, house->state(pr::health ) );
@@ -79,11 +79,11 @@ std::string Well::sound() const
   return ServiceBuilding::sound();
 }
 
-bool Well::build( const city::AreaInfo& info )
+bool Well::build( const city::AreaInfo& areainfo )
 {
-  ServiceBuilding::build( info );
+  ServiceBuilding::build( areainfo );
 
-  Picture rpic = MetaDataHolder::randomPicture( type(), size() );
+  Picture rpic = info().randomPicture( size() );
   if( !rpic.isValid() )
     rpic.load( ResourceGroup::utilitya, 1 );
 

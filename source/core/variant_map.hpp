@@ -35,7 +35,7 @@ public:
 
   VariantMap& operator+=(const VariantMap& other )
   {
-    for (auto it : other)
+    for (auto& it : other)
     {
       (*this)[ it.first ] = it.second;
     }
@@ -45,7 +45,7 @@ public:
 
   void visitEach( Visitor visitor )
   {
-    for (auto it : *this)
+    for (auto& it : *this)
     {
       visitor( it.first, it.second );
     }
@@ -55,7 +55,7 @@ public:
   {
     clear();
 
-    for( auto item : other)
+    for( auto& item : other)
     {
       (*this)[ item.first ] = item.second;
     }

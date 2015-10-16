@@ -152,7 +152,7 @@ bool ScrollBar::onEvent(const NEvent& event)
               _draggedBySlider = _d->sliderRect.isPointInside( _d->cursorPos - absoluteRect().lefttop() );
               _trayClick = !_draggedBySlider;
               _desiredPos = _getPosFromMousePos( _d->cursorPos );
-							_environment->setFocus ( this );
+              ui()->setFocus ( this );
 							return true;
 						}
 					}

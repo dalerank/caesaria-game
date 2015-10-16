@@ -37,7 +37,7 @@ class MidpointDisplacement
   int width() const { return width_; }
   int height() const { return height_; }
 
-  typedef enum { unknown=0, deepWater=1, water=2, coast=3, grass=4, trees=5, shallowMountain=6, highMountain=7 } TerrainType;
+  typedef enum { unknown=0, deepWater=1, water=2, coast=3, grass=4, hills=5, trees=6, ground=7, shallowMountain=8 } TerrainType;
 private:
 
   int CoordinatesToVectorIndex(int x, int y);
@@ -47,13 +47,14 @@ private:
   float sand_threshold_;
   float deep_water_threshold_;
   float hills_threshold_;
-  float shallow_mountains_threshold_;
-  float high_mountains_threshold_;
+  float trees_treshold;
+  float overall_treshold;
+  float shmountains_threshold;
   int n_;
   int wmult_;
   int hmult_;
   float smoothness_;
-  float _terrainSquare;
+  float terrainSquare;
   int width_;
   int height_;
   Random random_;

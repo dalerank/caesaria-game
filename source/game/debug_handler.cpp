@@ -130,6 +130,7 @@ enum {
   crash_favor,
   add_scribe_messages,
   send_venus_smallcurse,
+  send_neptune_wrath,
   send_mars_spirit,
   run_script,
   show_fest,
@@ -176,6 +177,7 @@ enum {
   forest_grow,
   increase_max_level,
   decrease_max_level,
+  enable_constructor_mode,
   next_theme
 };
 
@@ -228,6 +230,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( divinity, send_mars_wrath )
   ADD_DEBUG_EVENT( divinity, send_mars_spirit )
   ADD_DEBUG_EVENT( divinity, send_venus_wrath )
+  ADD_DEBUG_EVENT( divinity, send_neptune_wrath )
   ADD_DEBUG_EVENT( divinity, send_venus_smallcurse )
 
   ADD_DEBUG_EVENT( money, add_1000_dn )
@@ -267,6 +270,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
 
   ADD_DEBUG_EVENT( other, send_player_army )
   ADD_DEBUG_EVENT( other, screenshot )
+  ADD_DEBUG_EVENT( other, enable_constructor_mode )
   ADD_DEBUG_EVENT( other, next_theme )
 
   ADD_DEBUG_EVENT( disaster, random_fire )
@@ -342,7 +346,7 @@ EnemySoldierPtr DebugHandler::Impl::makeEnemy( walker::Type type )
 
 void DebugHandler::Impl::addGoods2Wh(good::Product type)
 {
-  WarehouseList whList = game->city()->statistic().objects.find<Warehouse>( object::warehouse );
+  WarehouseList whList = game->city()->statistic().objects.find<Warehouse>();
   for( auto warehouse : whList)
   {
     good::Stock stock(type, 400, 400 );
@@ -352,8 +356,8 @@ void DebugHandler::Impl::addGoods2Wh(good::Product type)
 
 void DebugHandler::Impl::reloadConfigs()
 {
-  OverlayList ovs = game->city()->overlays();
-  for( auto overlay : ovs )
+  auto overlays = game->city()->overlays();
+  for( auto overlay : overlays )
     overlay->reinit();
 }
 
@@ -372,7 +376,7 @@ DebugHandler::DebugHandler() : _d(new Impl)
 
 void DebugHandler::Impl::setFactoryReady( object::Type type )
 {
-  FactoryList factories = game->city()->statistic().objects.find<Factory>( type );
+  auto factories = game->city()->statistic().objects.find<Factory>( type );
   for( auto factory : factories )
   {
     if( factory->numberWorkers() > 0 )
@@ -385,7 +389,7 @@ void DebugHandler::Impl::setFactoryReady( object::Type type )
 
 void DebugHandler::Impl::updateSentiment(int delta)
 {
-  HouseList houses = game->city()->statistic().houses.find();
+  auto houses = game->city()->statistic().houses.find();
   for( auto house : houses )
     house->updateState( pr::happiness, delta );
 }
@@ -396,6 +400,10 @@ void DebugHandler::Impl::handleEvent(int event)
   {
   case send_mars_wrath:
     religion::rome::Pantheon::mars()->updateRelation( religion::debug::doWrath, game->city() );
+  break;
+
+  case send_neptune_wrath:
+    religion::rome::Pantheon::neptune()->updateRelation( religion::debug::doWrath, game->city() );
   break;
 
   case add_1000_dn:
@@ -432,6 +440,16 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
 
+  case enable_constructor_mode:
+  {
+    auto level = safety_cast<scene::Level*>( game->scene() );
+    if( level )
+    {
+      level->setConstructorMode( true );
+    }
+  }
+  break;
+
   case property_browser:
   {
     int hash = Hash( CAESARIA_STR_A(PropertyWorkspace) );
@@ -461,10 +479,10 @@ void DebugHandler::Impl::handleEvent(int event)
     world::CityList cities = game->empire()->cities();
     for( auto acity : cities )
     {
-      world::ComputerCityPtr ccity = acity.as<world::ComputerCity>();
-      if( ccity.isValid() )
+      auto compCity = acity.as<world::ComputerCity>();
+      if( compCity.isValid() )
       {
-        ccity->__debugSendMerchant();
+        compCity->__debugSendMerchant();
       }
     }
   }
@@ -600,7 +618,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case toggle_experimental_options:
   {
-    bool enable = SETTINGS_VALUE( experimental );
+    bool enable = KILLSWITCH( experimental );
     SETTINGS_SET_VALUE( experimental, !enable );
   }
   break;

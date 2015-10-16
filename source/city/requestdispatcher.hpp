@@ -43,7 +43,7 @@ public:
 
   bool haveCanceledRequest() const;
 
-  RequestList requests() const;
+  const RequestList& requests() const;
 
 private:
   Dispatcher(PlayerCityPtr city);

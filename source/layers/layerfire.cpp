@@ -64,8 +64,8 @@ void Fire::drawTile(Engine& engine, Tile& tile, const Point& offset)
     {
       auto house = overlay.as<House>();
       fireLevel = (int)house->state( pr::fire );
-      needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
+      needDrawAnimations = (house->level() <= HouseLevel::hovel) && house->habitants().empty();
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.inHouseBase  );
     }
     else //other buildings
     {
@@ -75,7 +75,7 @@ void Fire::drawTile(Engine& engine, Tile& tile, const Point& offset)
         fireLevel = (int)constr->state( pr::fire );
       }
 
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base  );
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.base  );
     }
 
     if( needDrawAnimations )
@@ -89,7 +89,7 @@ void Fire::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 void Fire::handleEvent(NEvent& event)
@@ -104,7 +104,7 @@ void Fire::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        auto construction = tile->overlay().as<Construction>();
+        auto construction = tile->overlay<Construction>();
         if( construction != 0 )
         {
           int fireLevel = math::clamp<int>( construction->state( pr::fire ), 0, 100 );

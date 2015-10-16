@@ -54,7 +54,7 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
 {  
   Widget::setupUI( ":/gui/infoboxraw.gui" );
 
-  FactoryPtr rawmb = tile.overlay().as<Factory>();
+  FactoryPtr rawmb = tile.overlay<Factory>();
   _type = rawmb->type();
 
   setBase( rawmb );
@@ -77,8 +77,7 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
     lbProgress->setText( text );
   }
 
-  std::string title = MetaDataHolder::findPrettyName( rawmb->type() );
-  _lbTitleRef()->setText( _(title) );
+  _lbTitle()->setText( _( rawmb->info().prettyName() ) );
 
   std::string text = rawmb->workersProblemDesc();
   std::string cartInfo = rawmb->cartStateDesc();
@@ -102,12 +101,12 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
 
 void AboutRawMaterial::_showAdvInfo()
 {
-  FactoryPtr rawmb = base().as<Factory>();
-  if( rawmb.isValid() )
+  auto miningBuilding = base().as<Factory>();
+  if( miningBuilding.isValid() )
   {
     std::string workerState = utils::format( 0xff, "Damage=%d\nFire=%d\n",
-                                                  (int)rawmb->state( pr::damage ),
-                                                  (int)rawmb->state( pr::fire ) );
+                                                  (int)miningBuilding->state( pr::damage ),
+                                                  (int)miningBuilding->state( pr::fire ) );
 
     dialog::Dialog* dialog = dialog::Information( ui(), "Information", workerState );
     dialog->setCenter( ui()->rootWidget()->center() );

@@ -182,10 +182,10 @@ void Employer::Impl::updateWorkersState()
   int worklessPercent = city->statistic().workers.worklessPercent();
   int withoutWork = city->statistic().workers.workless();
 
-  std::string strWorkerState = utils::format( 0xff, "%d %s     %d %s  ( %d%% )",
-                                              workers, _("##advemployer_panel_workers##"),
-                                              withoutWork, _("##advemployer_panel_workless##"),
-                                              worklessPercent );
+  std::string strWorkerState = fmt::format( "{0} {1}     {2} {3}  ( {4}% )",
+                                            workers, _("##advemployer_panel_workers##"),
+                                            withoutWork, _("##advemployer_panel_workless##"),
+                                            worklessPercent );
   lbWorkersState->setText( strWorkerState );
 }
 
@@ -195,7 +195,7 @@ void Employer::Impl::updateYearlyWages()
     return;
 
   int wages = city->statistic().workers.monthlyWages() * DateTime::monthsInYear;
-  std::string wagesStr = utils::format( 0xff, "%s %d", _("##workers_yearly_wages_is##"), wages );
+  std::string wagesStr = fmt::format( "{0} {1}", _("##workers_yearly_wages_is##"), wages );
 
   lbYearlyWages->setText( wagesStr );
 }
@@ -232,14 +232,14 @@ void Employer::Impl::setIndustryPriority( industry::Type industry, int priority)
 
 void Employer::Impl::update()
 {
-  WorkersHirePtr wh = city->statistic().services.find<WorkersHire>();
+  auto recruter = city->statistic().services.find<WorkersHire>();
 
-  if( wh.isNull() )
+  if( recruter.isNull() )
     return;
 
   for( auto button : empButtons )
   {
-    int priority = wh->getPriority( (industry::Type)button->ID() );
+    int priority = recruter->getPriority( (industry::Type)button->ID() );
     button->setPriority( priority );
   }
 }
@@ -248,9 +248,9 @@ void Employer::Impl::updateSalaryLabel()
 {
   int pay = city->treasury().workerSalary();
   int romePay = city->empire()->workerSalary();
-  std::string salaryString = utils::format( 0xff, "%s %d (%s %d)",
-                                            _("##advemployer_panel_denaries##"), pay,
-                                            _("##advemployer_panel_romepay##"), romePay );
+  std::string salaryString = fmt::format( "{0} {1} ({2} {3}})",
+                                          _("##advemployer_panel_denaries##"), pay,
+                                          _("##advemployer_panel_romepay##"), romePay );
 
   if( lbSalaries )
   {
@@ -263,7 +263,7 @@ Employer::Impl::EmployersInfo Employer::Impl::getEmployersInfo(industry::Type ty
   object::Groups groups = industry::toGroups( type );
 
   WorkingBuildingList buildings;
-  for( auto gr : groups )
+  for( auto& gr : groups )
   {
     WorkingBuildingList sectorBuildings = city->statistic().objects.find<WorkingBuilding>( gr );
     buildings.insert( buildings.begin(), sectorBuildings.begin(), sectorBuildings.end() );
@@ -324,7 +324,7 @@ Employer::Employer(PlayerCityPtr city, Widget* parent, int id )
   GET_DWIDGET_FROM_UI( _d, lbWorkersState )
   GET_DWIDGET_FROM_UI( _d, lbYearlyWages )
 
-  TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  auto btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
   CONNECT( btnHelp, onClicked(), this, Employer::_showHelp );
 
   _d->updateSalaryLabel();

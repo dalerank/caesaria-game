@@ -139,7 +139,7 @@ ListBoxItem& ListBox::item(unsigned int id)
 {
 	if( id >= _d->items.size() )
 	{
-		Logger::warning( "Index out of range ListBox::items [%d]", id );
+    Logger::warning( "Index out of range ListBox::items [{0}]", id );
 		return ListBoxItem::invalidItem();
 	}
 
@@ -740,7 +740,7 @@ void ListBox::_updateBackground( int scrollbarWidth)
   Pictures pics;
 
   Decorator::draw( pics, Rect( 0, 0, width() - scrollbarWidth, height() ), Decorator::blackFrame );
-  Decorator::draw( pics, Rect( width() - scrollbarWidth, 0, width(), height() ), Decorator::whiteArea, Decorator::normalY  );
+  Decorator::draw( pics, Rect( width() - scrollbarWidth, 0, width(), height() ), Decorator::whiteArea, nullptr, Decorator::normalY  );
 
   bool batchOk = _d->background.load( pics, absoluteRect().lefttop() );
   if( !batchOk )
@@ -920,7 +920,7 @@ void ListBox::fitText(const std::string& text)
 
 void ListBox::addItems(const StringArray& strings)
 {
-  for( auto line : strings )
+  for( auto& line : strings )
   {
     if( line.find( "\tc" ) != std::string::npos )
     {

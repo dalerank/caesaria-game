@@ -89,7 +89,7 @@ public:
     int count;
   };
 
-  void load( const MetaData& md, Direction dir )
+  void load( const object::Info& md, Direction dir )
   {
     std::string configName = "image." + direction::Helper::instance().findName( dir );
 
@@ -127,7 +127,7 @@ Dock::Dock(): WorkingBuilding( object::dock, Size(3) ), _d( new Impl )
 
   _d->initStores();
   _fgPictures().resize(1);
-  _animationRef().setDelay( 5 );
+  _animation().setDelay( 5 );
   _setClearAnimationOnStop( false );
 }
 
@@ -219,7 +219,7 @@ void Dock::load(const VariantMap& stream)
 
 void Dock::reinit()
 {
-  MetaDataHolder::instance().reload( type() );
+  info().reload();
   _updatePicture( _d->direction );
 }
 
@@ -348,10 +348,8 @@ Dock::~Dock(){}
 
 void Dock::_updatePicture(Direction direction)
 {
-  const MetaData& md = MetaDataHolder::find( type() );
-
   DockConfig config;
-  config.load( md, direction );
+  config.load( info(), direction );
 
   setPicture( config.image );
   setAnimation( config.animation );
@@ -365,7 +363,7 @@ void Dock::_setDirection(Direction direction)
 
 bool Dock::Impl::isFlatCoast(const Tile& tile) const
 {
-  int imgId = tile.originalImgId();
+  int imgId = tile.imgId();
   return (imgId >= 372 && imgId <= 387);
 }
 
@@ -374,26 +372,26 @@ Direction Dock::Impl::getDirection(PlayerCityPtr city, TilePos pos, Size size)
   Tilemap& tilemap = city->tilemap();
 
   int s = size.width();
-  TilesArray constructibleTiles = tilemap.getArea( pos + TilePos( 0, 1 ), pos + TilePos( s-1, s-1 ) );
-  TilesArray coastalTiles = tilemap.getArea( pos, pos + TilePos( s, 0 ) );
+  TilesArray constructibleTiles = tilemap.area( pos + TilePos( 0, 1 ), pos + TilePos( s-1, s-1 ) );
+  TilesArray coastalTiles = tilemap.area( pos, pos + TilePos( s, 0 ) );
 
   if( isConstructibleArea( constructibleTiles ) && isCoastalArea( coastalTiles ) )
   { return south; }
 
-  constructibleTiles = tilemap.getArea( pos, pos + TilePos( s-1, 1 ) );
-  coastalTiles = tilemap.getArea( pos + TilePos( 0, s-1 ), pos + TilePos( s-1, s-1 ) );
+  constructibleTiles = tilemap.area( pos, pos + TilePos( s-1, 1 ) );
+  coastalTiles = tilemap.area( pos + TilePos( 0, s-1 ), pos + TilePos( s-1, s-1 ) );
 
   if( isConstructibleArea( constructibleTiles ) && isCoastalArea( coastalTiles ) )
   { return north; }
 
-  constructibleTiles = tilemap.getArea( pos + TilePos( 1, 0 ), pos + TilePos( 2, 2 ) );
-  coastalTiles = tilemap.getArea( pos, pos + TilePos( 0, 2 ) );
+  constructibleTiles = tilemap.area( pos + TilePos( 1, 0 ), pos + TilePos( 2, 2 ) );
+  coastalTiles = tilemap.area( pos, pos + TilePos( 0, 2 ) );
 
   if( isConstructibleArea( constructibleTiles ) && isCoastalArea( coastalTiles ) )
   { return west; }
 
-  constructibleTiles = tilemap.getArea( pos, pos + TilePos( 1, 2 ) );
-  coastalTiles = tilemap.getArea( pos + TilePos( 2, 0), pos + TilePos( 2, 2 ) );
+  constructibleTiles = tilemap.area( pos, pos + TilePos( 1, 2 ) );
+  coastalTiles = tilemap.area( pos + TilePos( 2, 0), pos + TilePos( 2, 2 ) );
 
   if( isConstructibleArea( constructibleTiles ) && isCoastalArea( coastalTiles ) )
   { return east; }
@@ -437,7 +435,7 @@ void Dock::_tryDeliverGoods()
     return;
   }
 
-  for( auto gtype : good::all() )
+  for( auto& gtype : good::all() )
   {
     int qty = std::min( _d->goods.importing.getMaxRetrieve( gtype ), 400 );
 
@@ -476,7 +474,7 @@ void Dock::_tryReceiveGoods()
     return;
   }
 
-  for( auto gtype : good::all() )
+  for( auto& gtype : good::all() )
   {
     if( _d->goods.requested.qty( gtype ) > 0 )
     {

@@ -25,6 +25,7 @@ namespace gui
 {
 
 class Widget;
+class Ui;
 
 class Widget::Impl
 {
@@ -34,34 +35,37 @@ public:
   //! maximum and minimum size of the element
   struct
   {
-   Size maximimum;
-   Size mininimum;
+    Size maximimum;
+    Size mininimum;
   } size;
 
   //! Pointer to the parent
   Widget* parent;
 
 	//! List of all children of this element
-  List<Widget*> children;
+  Widget::Widgets children;
 
-	//! relative rect of element
-	Rect relativeRect;
+  struct {
+    //! relative rect of element
+    Rect relative;
 
-	//! absolute rect of element
-	Rect absoluteRect;
+    //! absolute rect of element
+    Rect absolute;
 
-	//! absolute clipping rect of element
-	Rect absoluteClippingRect;
+    //! absolute clipping rect of element
+    Rect clipping;
 
-	//! the rectangle the element would prefer to be,
-	//! if it was not constrained by parent or max/min size
-	Rect desiredRect;
+    //! the rectangle the element would prefer to be,
+    //! if it was not constrained by parent or max/min size
+    Rect desired;
 
-	//! for calculating the difference when resizing parent
-	Rect lastParentRect;
+    //! for calculating the difference when resizing parent
+    Rect lastParent;
 
-	//! relative scale of the element inside its parent
-	RectF scaleRect;
+    //! relative scale of the element inside its parent
+    RectF scale;
+  } rect;
+
 
 	Alignment textHorzAlign, textVertAlign;
 
@@ -91,10 +95,11 @@ public:
 
     //! is enabled?
     bool enabled;
+
+    //! is a part of a larger whole and should not be serialized?
+    bool internal;
   } flag;
 
-  //! is a part of a larger whole and should not be serialized?
-  bool isSubElement;
 
   //! does this element ignore its parent's clipping rectangle?
   bool noClip;
@@ -107,6 +112,9 @@ public:
 
   //runtime properties
   VariantMap properties;
+
+  //! GUI Environment
+  Ui* environment;
 };
 
 }//end namespace gui

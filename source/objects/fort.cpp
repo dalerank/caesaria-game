@@ -69,7 +69,7 @@ LegionEmblem LegionEmblem::findFree( PlayerCityPtr city )
   std::vector<LegionEmblem> availableEmblems;
 
   VariantMap emblemsModel = config::load( SETTINGS_RC_PATH( emblemsModel ) );
-  for( auto it : emblemsModel )
+  for( auto& it : emblemsModel )
   {
     VariantMap vm_emblem = it.second.toMap();
     LegionEmblem newEmblem;
@@ -113,7 +113,7 @@ public:
 
   bool contain( unsigned int uid ) const
   {
-    for( auto it : points )
+    for( auto& it : points )
      if( it.uid == uid )
        return true;
 
@@ -122,7 +122,7 @@ public:
 
   TilePos getPos( unsigned int uid ) const
   {
-    for( auto it : points )
+    for( auto& it : points )
       if( it.uid == uid )
         return lastPos + it.offset;
 
@@ -219,7 +219,7 @@ public:
     points.clear();
 
     TilePosArray locations = area.walkables( true ).locations();
-    for( auto location : locations )
+    for( auto& location : locations )
     {
       PAPoint point = { 0, location };
       points.push_back( point );
@@ -400,7 +400,7 @@ TilePos Fort::freeSlot(WalkerPtr who) const
   TilePos patrolPos;
   if( _d->patrolPoint.isNull()  )
   {
-    Logger::warning( "Not patrol point assign in fort [%d,%d]", pos().i(), pos().j() );
+    Logger::warning( "Not patrol point assign in fort [{0},{1}]", pos().i(), pos().j() );
     patrolPos = _d->area->pos() + TilePos( 0, 3 );
   }
   else
@@ -419,16 +419,15 @@ TilePos Fort::freeSlot(WalkerPtr who) const
 
 void Fort::changePatrolArea()
 {
-  RomeSoldierList sldrs;
-  sldrs << walkers();
+  auto sldrs = walkers().select<RomeSoldier>();
 
   TroopsFormation formation = (patrolLocation() == _d->area->pos() + TilePos( 0, 3 )
                                          ? frmParade
                                          : _d->patrolArea.mode );
   _d->patrolArea.setMode( _city(), formation );
 
-  foreach( it, sldrs )
-    (*it)->send2patrol();
+  for( auto soldier : sldrs )
+    soldier->send2patrol();
 }
 
 TilePos Fort::patrolLocation() const
@@ -436,7 +435,7 @@ TilePos Fort::patrolLocation() const
   TilePos patrolPos;
   if( _d->patrolPoint.isNull()  )
   {
-    Logger::warning( "!!! WARNING: Fort::patrolLocation(): not patrol point assign in fort [%d,%d]", pos().i(), pos().j() );
+    Logger::warning( "!!! WARNING: Fort::patrolLocation(): not patrol point assign in fort [{0},{1}]", pos().i(), pos().j() );
     patrolPos = _d->area->pos() + TilePos( 0, 3 );
     crashhandler::printstack(false);
   }
@@ -529,23 +528,22 @@ world::PlayerArmyPtr Fort::expedition() const
   return ret;
 }
 
-
 void Fort::sendExpedition(Point location)
 {
-  world::PlayerArmyPtr army = world::PlayerArmy::create( _city()->empire(), _city().as<world::City>() );
-  army->setFortPos( pos() );
+  auto playerArmy = world::PlayerArmy::create( _city()->empire(), _city().as<world::City>() );
+  playerArmy->setFortPos( pos() );
 
   auto soldiers = walkers().select<RomeSoldier>();
 
-  army->move2location( location );
-  army->addSoldiers( soldiers );
+  playerArmy->move2location( location );
+  playerArmy->addSoldiers( soldiers );
 
-  army->attach();
+  playerArmy->attach();
 
-  _d->expeditionName = army->name();
+  _d->expeditionName = playerArmy->name();
 
   for( auto it : soldiers )
-    it->send2expedition( army->name() );
+    it->send2expedition( playerArmy->name() );
 }
 
 void Fort::setAttackAnimals(bool value) { _d->attackAnimals = value; }
@@ -575,10 +573,10 @@ bool Fort::canBuild( const city::AreaInfo& areaInfo ) const
 
 bool Fort::build( const city::AreaInfo& info )
 {
-  FortList forts = info.city->statistic().objects.find<Fort>( object::any );
+  size_t forts_n = info.city->statistic().objects.count<Fort>();
 
   const city::development::Options& bOpts = info.city->buildOptions();
-  if( forts.size() >= bOpts.maximumForts() )
+  if( forts_n >= bOpts.maximumForts() )
   {
     _setError( "##not_enought_place_for_legion##" );
     return false;

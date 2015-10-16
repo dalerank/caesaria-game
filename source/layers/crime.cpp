@@ -43,7 +43,8 @@ static const std::string crimeDesc[] =
   "##several_crimes_but_area_secure##",
   "##dangerous_crime_risk##"
   "##averange_crime_risk##",
-  "##high_crime_risk##"
+  "##high_crime_risk##",
+  "##extreme_crime_risk##"
 };
 
 int Crime::type() const { return citylayer::crime; }
@@ -74,13 +75,13 @@ void Crime::drawTile( Engine& engine, Tile& tile, const Point& offset)
     {
       auto house = overlay.as<House>();
       crime = (int)house->getServiceValue( Service::crime );
-      needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty(); // In case of vacant terrain
+      needDrawAnimations = (house->level() <= HouseLevel::hovel) && house->habitants().empty(); // In case of vacant terrain
 
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.inHouseBase  );
     }
     else
     {
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base  );
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.base  );
     }
 
     if( needDrawAnimations )
@@ -94,7 +95,7 @@ void Crime::drawTile( Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 LayerPtr Crime::create(Camera& camera, PlayerCityPtr city)
@@ -117,7 +118,7 @@ void Crime::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        auto house = tile->overlay().as<House>();
+        auto house = tile->overlay<House>();
         if( house != 0 )
         {
           int crime = (int)house->getServiceValue( Service::crime );

@@ -191,7 +191,7 @@ public:
 
       atlas.write( "{\ntexture: \"" + name + ".png\" \n" );
       atlas.write( "  frames: {\n" );
-      for( auto&& e : rectangleMap )
+      for( auto& e : rectangleMap )
       {
         Rect r = e.second->rect;
         std::string keyVal = e.first;
@@ -202,10 +202,10 @@ public:
         if (unitCoordinates)
         {
           std::string str = utils::format( 0xff, "    %s %f %f %f %f", keyVal.c_str(),
-                                                           r.left()/(float)width,
-                                                           r.top()/(float)height,
-                                                           r.width()/(float)width,
-                                                           r.height()/(float)height );
+                                           r.left()/(float)width,
+                                           r.top()/(float)height,
+                                           r.width()/(float)width,
+                                           r.height()/(float)height );
           atlas.write( str );
         }
         else
@@ -243,7 +243,7 @@ public:
       vfs::Path path(str);
       if(!path.exist() || !path.isFolder())
 			{
-        Logger::warning("Error: Could not find directory '" + path.toString() + "'");
+        Logger::warning("Error: Could not find directory '{0}'", path.toString());
 				return;
 			}
 
@@ -263,8 +263,8 @@ public:
 
         if(image.width() > width || image.height() > height)
 				{
-          Logger::warning( "Error: '%s' (%dx%d) ) is larger than the atlas (%dx%d)",
-                           filename.c_str(), image.width(), image.height(), width, height );
+          Logger::warning( "Error: '{0}' ({1}x{2}) ) is larger than the atlas ({3}x{4}})",
+                           filename, image.width(), image.height(), width, height );
 					return;
 				}			        
 				
@@ -517,16 +517,19 @@ struct Config
 class Atlases : public std::vector<AtlasGenerator*>
 {
 public:
-  gfx::Picture findByIndex( int index )
+  gfx::Picture findByIndex( int index, std::string& name )
   {
     gfx::Picture ret = gfx::Picture::getInvalid();
     int currentStart = 0;
-    for( auto&& a : *this )
+    for( auto& a : *this )
     {
       if( index >= currentStart &&
           index < currentStart + a->textures.size() )
       {
-        ret = a->textures[ index - currentStart ]->image;
+        int tI = index - currentStart;
+        ret = a->textures[ tI ]->image;
+        name = a->names[ tI ];
+        break;
       }
       else
       {
@@ -566,7 +569,7 @@ void createSet( const ArchiveConfig& archive, const StringArray& names )
   if ( zf == nullptr )
   {
      /* Handle error */
-     Logger::warning( "Unable to open %s for writing\n", arcName.toCString() );
+     Logger::warning( "Unable to open {} for writing\n", arcName.toCString() );
      return;
   }
 
@@ -610,13 +613,13 @@ void createSet( const ArchiveConfig& archive, const StringArray& names )
     err = zipCloseFileInZip(zf);
   }
 
-  ByteArray data;
-  data = config::save( archive.info );
+  std::string data = config::save( archive.info );
   err = zipOpenNewFileInZip( zf, "info", &zi,
                              NULL,0,NULL,0,NULL,
                              (opt_compress_level != 0) ? Z_DEFLATED : 0,
                              opt_compress_level);
-  zipWriteInFileInZip( zf, data.data(), data.size() );
+  zipWriteInFileInZip( zf, data.c_str(), data.size() );
+  zipCloseFileInZip(zf);
 
   zipClose(zf,NULL);
 }
@@ -633,19 +636,8 @@ int main(int argc, char* argv[])
   engine->init();
   engine->setTitle( "CaesarIA: tileset packer" );
 
-  if(argc < 5)
-  {
-    Logger::warning("CaesarIA texture atlas generator by Dalerank(java code Lukasz Bruun)");
-    Logger::warning("\tUsage: AtlasGenerator <name> <width> <height> <padding> <ignorePaths> <unitCoordinates> <directory> [<directory> ...]");
-    Logger::warning("\t\t<padding>: Padding between images in the final texture atlas.");
-    Logger::warning("\t\t<ignorePaths>: Only writes out the file name without the path of it to the atlas txt file.");
-    Logger::warning("\t\t<unitCoordinates>: Coordinates will be written to atlas json file in 0..1 range instead of 0..width, 0..height range");
-    Logger::warning("\tExample: tileset atlas 2048 2048 5 1 1 images");
-    return 0;
-  }
 
   Config config;
-
   Atlases gens;
 
   vfs::Path path( "tileset.model" );
@@ -656,6 +648,17 @@ int main(int argc, char* argv[])
   }
   else
   {
+    if(argc < 5)
+    {
+      Logger::warning("CaesarIA texture atlas generator by Dalerank(java code Lukasz Bruun)");
+      Logger::warning("\tUsage: AtlasGenerator <name> <width> <height> <padding> <ignorePaths> <unitCoordinates> <directory> [<directory> ...]");
+      Logger::warning("\t\t<padding>: Padding between images in the final texture atlas.");
+      Logger::warning("\t\t<ignorePaths>: Only writes out the file name without the path of it to the atlas txt file.");
+      Logger::warning("\t\t<unitCoordinates>: Coordinates will be written to atlas json file in 0..1 range instead of 0..width, 0..height range");
+      Logger::warning("\tExample: tileset atlas 2048 2048 5 1 1 images");
+      return 0;
+    }
+
     StringArray dirs;
     for(int i = 7; i < argc; ++i)
       dirs << argv[i];
@@ -724,6 +727,10 @@ int main(int argc, char* argv[])
   bg.update();
 
   int index = 0;
+  std::string picName;
+  gfx::Picture pic = gens.findByIndex(index, picName);
+  engine->setTitle( picName );
+
   while(running)
   {
     static unsigned int lastTimeUpdate = DebugTimer::ticks();    
@@ -734,14 +741,16 @@ int main(int argc, char* argv[])
       {
         if( event.key.keysym.sym == SDLK_UP ) index++;
         if( event.key.keysym.sym == SDLK_DOWN) index--;
+
+        pic = gens.findByIndex(index, picName);
+        engine->setTitle( picName );
       }
     }
 
     index = math::clamp<int>( index, 0, gens.max()-1 );
     engine->startRenderFrame();
 
-    engine->draw( bg, Point() );
-    gfx::Picture pic = gens.findByIndex(index);
+    engine->draw( bg, Point() );    
     engine->draw( pic, Rect( Point(), pic.size()), Rect( Point(), Size(800) ) );
     engine->endRenderFrame();
 

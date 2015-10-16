@@ -130,16 +130,16 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
 
 void Prefect::_back2Prefecture()
 {
-  PrefecturePtr base = _map().overlay( baseLocation() ).as<Prefecture>();
+  auto prefecture = _map().overlay( baseLocation() ).as<Prefecture>();
 
-  if( base.isNull() )
+  if( prefecture.isNull() )
   {
     Logger::warning( "!!! WARNING: Prefect lost base " );
     deleteLater();
     return;
   }
 
-  TilesArray area = base->enterArea();
+  TilesArray area = prefecture->enterArea();
 
   if( area.contain( pos() ) )
   {
@@ -148,7 +148,7 @@ void Prefect::_back2Prefecture()
     return;
   }
 
-  Pathway pathway = PathwayHelper::create( pos(), base, PathwayHelper::roadFirst );
+  Pathway pathway = PathwayHelper::create( pos(), prefecture, PathwayHelper::roadFirst );
 
   if( pathway.isValid() )
   {
@@ -378,9 +378,9 @@ void Prefect::_centerTile()
       //on next deliverService
 
       //found fire, no water, go prefecture
-      PrefecturePtr ptr = _city()->getOverlay( baseLocation() ).as<Prefecture>();
-      if( ptr.isValid() )
-        ptr->fireDetect( firePos );
+      auto prefecture = _city()->getOverlay( baseLocation() ).as<Prefecture>();
+      if( prefecture.isValid() )
+        prefecture->fireDetect( firePos );
 
       _back2Prefecture();
     }
@@ -445,7 +445,7 @@ void Prefect::_noWay()
 
 static BuildingPtr isBurningRuins( const Tile& tile, bool& inFire )
 {
-  BuildingPtr building = tile.overlay().as<Building>();
+  BuildingPtr building = tile.overlay<Building>();
   inFire = (building.isValid() && building->type() == object::burning_ruins );
 
   return inFire ? building : BuildingPtr();
@@ -572,7 +572,7 @@ void Prefect::send2City(PrefecturePtr prefecture, Prefect::SbAction action, int 
 
 void Prefect::send2City(BuildingPtr base, int orders)
 {
-  PrefecturePtr prefecture = base.as<Prefecture>();
+  auto prefecture = base.as<Prefecture>();
 
   if( prefecture.isValid() )
   {
@@ -653,7 +653,7 @@ void Prefect::load( const VariantMap& stream )
   _setSubAction( _d->prefectAction );
   _setAction( _d->water > 0 ? acDragWater : acMove );
 
-  PrefecturePtr prefecture = _map().overlay( baseLocation() ).as<Prefecture>();
+  auto prefecture = _map().overlay( baseLocation() ).as<Prefecture>();
   if( prefecture.isValid() )
   {
     prefecture->addWalker( this );

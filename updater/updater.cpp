@@ -81,7 +81,7 @@ void Updater::setBinaryAsExecutable()
   executableNames.push_back( "caesaria.haiku" );
 #endif
 
-  for( auto name : executableNames )
+  for( auto& name : executableNames )
   {
     vfs::Path path2exe = getTargetDir()/name;
     if( path2exe.exist() )
@@ -131,7 +131,7 @@ void Updater::downloadNewMirrors()
   std::string mirrorsUrl = CAESARIA_MAIN_SERVER;
   mirrorsUrl += CAESARIA_MIRRORS_INFO;
 
-  Logger::warning( utils::format( 0xff, "Downloading mirror list from %s...", mirrorsUrl.c_str() ) ); // grayman - fixed
+  Logger::warning( "Downloading mirror list from {}...", mirrorsUrl  ); // grayman - fixed
 
   vfs::Path mirrorPath = getTargetDir()/CAESARIA_MIRRORS_INFO;
 
@@ -145,7 +145,7 @@ void Updater::downloadNewMirrors()
   }
   else
   {
-    Logger::warning( " Mirrors download failed: %s", request->GetErrorMessage().c_str() );
+    Logger::warning( " Mirrors download failed: {}", request->GetErrorMessage() );
   }
 }
 
@@ -196,7 +196,7 @@ void Updater::downloadCurrentVersion()
 
   if (inifile == NULL)
   {
-    Logger::warning( "Cannot find downloaded version info file: %s", folder.getFilePath(UPDATE_VERSION_FILE).toCString() );
+    Logger::warning( "Cannot find downloaded version info file: {}", folder.getFilePath(UPDATE_VERSION_FILE).toCString() );
     return;
   }
 
@@ -267,7 +267,7 @@ void Updater::DetermineLocalVersion()
 
       if (item.second.localChangesAllowed)
       {
-        Logger::warning( "File %s exists, local changes are allowed, skipping.", candidate.toCString() );
+        Logger::warning( "File {} exists, local changes are allowed, skipping.", candidate.toCString() );
         continue;
       }
 
@@ -275,7 +275,7 @@ void Updater::DetermineLocalVersion()
 
       if (candidateFilesize != item.second.filesize)
       {
-        Logger::warning( "WRONG SIZE[need=%d  have=%d]", item.second.filesize, candidateFilesize );
+        Logger::warning( "WRONG SIZE[need={}  have={}]", item.second.filesize, candidateFilesize );
         mismatch = true;
         continue;
       }
@@ -318,7 +318,7 @@ void Updater::DetermineLocalVersion()
     total.filesize += vfs::NFile::size( i.first );
   }
 
-  Logger::warning( "The local files are matching %d different versions.", _localVersions.size() );
+  Logger::warning( "The local files are matching {} different versions.", _localVersions.size() );
 
   if (_fileProgressCallback != NULL)
   {
@@ -336,7 +336,7 @@ void Updater::DetermineLocalVersion()
     {
       const std::string& version = i->first;
 
-      Logger::warning( "Files matching version %s: %d (size: %s)",
+      Logger::warning( "Files matching version {}: {} (size: {})",
                        version.c_str(),
                        i->second.numFiles,
                        Util::getHumanReadableBytes(i->second.filesize).c_str() );
@@ -763,7 +763,7 @@ void Updater::removeAllPackagesExceptUpdater()
 {
   Logger::warning("Removing all packages, except the one containing the updater");
 
-  for( ReleaseFileSet::iterator i = _downloadQueue.begin(); i != _downloadQueue.end(); /* in-loop */ )
+  for( auto i = _downloadQueue.begin(); i != _downloadQueue.end(); /* in-loop */ )
   {
     if (i->second.isUpdater(_executable.toString()))
     {

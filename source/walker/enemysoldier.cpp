@@ -46,13 +46,6 @@ REGISTER_SOLDIER_IN_WALKERFACTORY( walker::britonSoldier, walker::britonSoldier,
 REGISTER_SOLDIER_IN_WALKERFACTORY( walker::gladiatorRiot, walker::gladiatorRiot, EnemySoldier, glriot)
 REGISTER_SOLDIER_IN_WALKERFACTORY( walker::etruscanSoldier, walker::etruscanSoldier, EnemySoldier, etruscan)
 
-namespace {
-  static unsigned int __getCost( ConstructionPtr b )
-  {
-    return MetaDataHolder::find( b->type() ).getOption( MetaDataOptions::cost );
-  }
-}
-
 EnemySoldier::EnemySoldier( PlayerCityPtr city, walker::Type type )
 : Soldier( city, type )
 {
@@ -65,6 +58,7 @@ EnemySoldier::EnemySoldier( PlayerCityPtr city, walker::Type type )
              << object::group::garden;
 
   addFriend( type );
+  _failedWayCounter = 0;
 }
 
 object::GroupSet& EnemySoldier::_excludeAttack() {  return _atExclude; }
@@ -147,7 +141,7 @@ WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
 
   for( unsigned int k=0; k <= range; k ++ )
   {
-    TilesArray tiles = tmap.getRectangle( k, pos() );
+    TilesArray tiles = tmap.rect( k, pos() );
 
     walker::Type rtype;
     for( auto tile : tiles )
@@ -208,6 +202,12 @@ void EnemySoldier::_check4attack()
   {
     pathway = PathwayHelper::randomWay( _city(), pos(), 10 );
     setTarget( TilePos( -1, -1) );
+    _failedWayCounter++;
+  }
+
+  if( _failedWayCounter > 4 )
+  {
+    pathway = Pathway();
   }
 
   if( pathway.isValid() )
@@ -231,7 +231,7 @@ ConstructionList EnemySoldier::_findContructionsInRange( unsigned int range )
 
   for( unsigned int k=0; k <= range; k++ )
   {
-    ConstructionList blds = tmap.getRectangle( k, pos() )
+    ConstructionList blds = tmap.rect( k, pos() )
                                 .overlays()
                                 .select<Construction>();
 
@@ -280,22 +280,22 @@ ConstructionList EnemySoldier::_findContructionsInRange( unsigned int range )
   case attackBestBuilding:
   {
     ConstructionPtr maxBuilding = ret.front();
-    unsigned int maxCost = __getCost( maxBuilding );
+    unsigned int maxCost = maxBuilding->info().cost();
 
-    foreach( it, ret )
+    for( auto& it : ret )
     {
-      unsigned int cost = __getCost( *it );
+      unsigned int cost = it->info().cost();
       if( cost > maxCost )
       {
         maxCost = cost;
-        maxBuilding = *it;
+        maxBuilding = it;
       }
     }
 
     if( maxBuilding.isValid() )
     {
       ret.clear();
-      ret << maxBuilding;
+      ret.push_back( maxBuilding );
       return ret;
     }
   }
@@ -461,12 +461,15 @@ void EnemySoldier::acceptAction(Walker::Action action, TilePos pos)
 void EnemySoldier::load( const VariantMap& stream )
 {
   Soldier::load( stream );
+
+  VARIANT_LOAD_ANY( _failedWayCounter, stream )
 }
 
 void EnemySoldier::save( VariantMap& stream ) const
 {
   Soldier::save( stream );
 
+  VARIANT_SAVE_ANY( stream, _failedWayCounter )
   stream[ "type" ] = (int)type();
   stream[ "__debug_typeName" ] = Variant( WalkerHelper::getTypename( type() ) );
 }

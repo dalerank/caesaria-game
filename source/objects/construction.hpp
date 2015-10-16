@@ -39,7 +39,7 @@ public:
   virtual void collapse();
   virtual const gfx::Picture& picture() const;
   virtual bool isNeedRoad() const;
-  virtual gfx::TilesArray roadside() const;  // return all road tiles adjacent to the construction
+  virtual const gfx::TilesArray& roadside() const;  // return all road tiles adjacent to the construction
   virtual void computeRoadside();
   virtual int  roadsideDistance() const; // virtual because HOUSE has different behavior
   virtual gfx::TilesArray enterArea() const;
@@ -49,9 +49,7 @@ public:
   virtual void updateState( Param name, double value );
   virtual void setState( Param name, double value );
   virtual double state( Param name ) const;
-
   virtual void timeStep(const unsigned long time);
-  virtual const gfx::Picture& picture( const city::AreaInfo& areaInfo ) const;
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
@@ -60,7 +58,8 @@ public:
   ConstructionExtensionPtr getExtension( const std::string& name );
   virtual const ConstructionExtensionList& extensions() const;  
 
-  virtual void initialize(const MetaData &mdata);
+  virtual void initialize(const object::Info& mdata);
+  virtual const gfx::Picture& picture(const city::AreaInfo& info) const;
 protected:
   Construction( const object::Type type, const Size& size );
   gfx::TilesArray& _roadside();

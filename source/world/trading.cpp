@@ -38,7 +38,7 @@ public:
   VariantMap save() const
   {
     VariantMap ret;
-    for( auto it : *this )
+    for( auto& it : *this )
     {
       VariantList tmp( it.second.buy, it.second.sell );
       ret[ good::Helper::getTypeName( it.first ) ] = tmp;
@@ -49,7 +49,7 @@ public:
 
   void load( const VariantMap& stream )
   {
-    for( auto it : stream )
+    for( auto& it : stream )
     {
       good::Product gtype = good::Helper::getType( it.first );
       if( gtype != good::none )
@@ -73,7 +73,7 @@ public:
   VariantMap save() const
   {
     VariantMap ret;
-    for( auto it : *this )
+    for( auto& it : *this )
       ret[ it.second->name() ] = it.second->save();
 
     return ret;
@@ -81,7 +81,7 @@ public:
 
   void load( Trading& trading, const VariantMap& stream )
   {
-    for( auto it : stream )
+    for( auto& it : stream )
     {
       StringArray cityNames = utils::split( it.first,"<->" );
       if( !cityNames.empty() )
@@ -95,8 +95,8 @@ public:
         }
         else
         {
-          Logger::warning( "WARNING!!! Trading::load cant create route from %s to %s",
-                           beginCity.c_str(), endCity.c_str() );
+          Logger::warning( "WARNING!!! Trading::load cant create route from {0} to {1}",
+                           beginCity, endCity );
         }
       }
       else
@@ -126,7 +126,7 @@ void Trading::timeStep( unsigned int time )
 {
   if( game::Date::isDayChanged() )
   {
-    for( auto it :_d->routes )
+    for( auto& it : _d->routes )
       it.second->timeStep( time );
   }
 }
@@ -162,7 +162,7 @@ void Trading::sendMerchant( const std::string& begin, const std::string& end,
   TraderoutePtr route = findRoute( begin, end );
   if( !route.isValid() )
   {
-    Logger::warning( "Trade route no exist [%s to %s]", begin.c_str(), end.c_str() );
+    Logger::warning( "Trade route no exist [{0} to {1}]", begin, end );
     return;
   }
 
@@ -176,7 +176,7 @@ TraderoutePtr Trading::findRoute( const std::string& begin, const std::string& e
   TradeRoutes::iterator it = _d->routes.find( routeId );
   if( it == _d->routes.end() )
   {
-    Logger::warning( "!!! WARNING: Trade route no exist [%s to %s]", begin.c_str(), end.c_str() );
+    Logger::warning( "!!! WARNING: Trade route no exist [{0} to {1}]", begin, end );
     return TraderoutePtr();
   }
 
@@ -199,7 +199,7 @@ TraderoutePtr Trading::createRoute( const std::string& begin, const std::string&
   TraderoutePtr route = findRoute( begin, end );
   if( route.isValid() )
   {
-    Logger::warning( "!!!WARNING: Want create route, but it exist [%s to %s]", begin.c_str(), end.c_str() );
+    Logger::warning( "!!!WARNING: Want create route, but it exist [{0} to {1}]", begin, end );
     return route;
   }
 
@@ -235,7 +235,7 @@ TraderouteList Trading::routes( const std::string& begin )
 
   CityPtr city = _d->empire->findCity( begin );
 
-  for( auto route : _d->routes )
+  for( auto& route : _d->routes )
   {
     if( route.second->beginCity() == city || route.second->endCity() == city )
     {

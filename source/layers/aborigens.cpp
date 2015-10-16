@@ -54,15 +54,15 @@ void Aborigens::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( overlay->type() == object::native_hut )
     {
-      NativeHutPtr hut = overlay.as<NativeHut>();
-      discontentLevel = (int)hut->discontent();
+      auto nativeHut = overlay.as<NativeHut>();
+      discontentLevel = (int)nativeHut->discontent();
       needDrawAnimations = false;
 
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
     }
     else
     {
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.base );
     }
 
     if( needDrawAnimations )
@@ -76,7 +76,7 @@ void Aborigens::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 LayerPtr Aborigens::create( Camera& camera, PlayerCityPtr city)

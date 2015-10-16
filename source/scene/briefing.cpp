@@ -50,14 +50,11 @@ public:
 protected:
   virtual void _btnClicked()
   {
-    Widgets widgets = parent()->children();
-    for( auto widget : widgets)
+    auto buttons = parent()->children().select<MissionButton>();
+    for( auto button : buttons)
     {
-      MissionButton* btn = safety_cast<MissionButton*>( widget );
-      if( btn && btn != this )
-      {
-        btn->setPressed( false );
-      }
+      if( button != this )
+        button->setPressed( false );
     }
 
     emit onMissionSelect( _mission, _title );

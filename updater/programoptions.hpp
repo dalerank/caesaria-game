@@ -40,6 +40,9 @@ public:
 
   void parse(int argc, char* argv[])
 	{
+    if( argc == 0 )
+      return;
+
 		_runPath = argv[0];
 
 		for (int i = 0; i < argc; i++)
@@ -117,7 +120,7 @@ public:
   virtual void printHelp()
 	{
     for( auto i : _desc )
-      Logger::warning( "%s\t%s", i.first.c_str(), i.second.c_str() );
+      Logger::warning( "{}\t{}", i.first.c_str(), i.second.c_str() );
 	}
 
 protected:

@@ -147,8 +147,8 @@ Warehouse::Warehouse() : WorkingBuilding( object::warehouse, Size( 3 )), _d( new
 
   _fgPictures().resize(12+1);  // 8 tiles + 4 + 1 animation slot
 
-  _animationRef().load( ResourceGroup::warehouse, 2, 16 );
-  _animationRef().setDelay( 4 );
+  _animation().load( ResourceGroup::warehouse, 2, 16 );
+  _animation().setDelay( 4 );
 
   _d->animFlag.load( ResourceGroup::warehouse, 84, 8 );
 
@@ -156,7 +156,7 @@ Warehouse::Warehouse() : WorkingBuilding( object::warehouse, Size( 3 )), _d( new
 
   _fgPictures()[ fgpic::idxMainPic ] = strafePic( ResourceGroup::warehouse, 1,  0, 2);
   _fgPictures()[ fgpic::idxWhRoof  ] = strafePic( ResourceGroup::warehouse, 18, 0, 2);
-  _fgPictures()[ fgpic::idxAnimWork] = _animationRef().currentFrame();
+  _fgPictures()[ fgpic::idxAnimWork] = _animation().currentFrame();
   _fgPictures()[ fgpic::idxAnimFlag] = _d->animFlag.currentFrame();
 
   // add subTiles in Z-order (from far to near)
@@ -195,6 +195,8 @@ void Warehouse::timeStep(const unsigned long time)
     {
       _resolveDeliverMode();
     }
+
+    _animation().setDelay( 4 + needWorkers() + math::random(2) );
   }
 
   WorkingBuilding::timeStep( time );
@@ -240,7 +242,7 @@ void Warehouse::load( const VariantMap& stream )
   
   VariantList vm_tiles = stream.get( literals::tiles ).toList();
   int tileIndex = 0;
-  for( auto&& it : vm_tiles )
+  for( auto& it : vm_tiles )
   {
     _d->rooms[ tileIndex ].load( it.toList() );
     tileIndex++;
@@ -263,7 +265,7 @@ void Warehouse::setTradeCenter(bool enabled)
 
 bool Warehouse::isGettingFull() const
 {
-  for( auto&& room : _d->rooms )
+  for( auto& room : _d->rooms )
   {
     if( room.qty() == 0 )
       return false;
@@ -277,7 +279,7 @@ float Warehouse::tradeBuff(Warehouse::Buff type) const
   auto buffs = extensions().select<WarehouseBuff>();
 
   float res = 0;
-  for( auto&& buff : buffs )
+  for( auto& buff : buffs )
   {
     if( buff->group() == type )
       res += buff->value();
@@ -312,7 +314,7 @@ void Warehouse::_resolveDeliverMode()
     return;
   }
   //if warehouse in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
-  for( auto gType : good::all() )
+  for( auto& gType : good::all() )
   {
     good::Orders::Order order = _d->goodStore.getOrder( gType );
     int goodFreeQty = math::clamp<int>( _d->goodStore.freeQty( gType ), 0, Room::basicCapacity );
@@ -337,7 +339,7 @@ void Warehouse::_resolveDevastationMode()
   if( (_d->goodStore.qty() > 0) && walkers().empty() )
   {
     const int maxCapacity = CartPusher::megaCart;
-    for( auto goodType : good::all() )
+    for( auto& goodType : good::all() )
     {
       int goodQty = _d->goodStore.qty( goodType );
       goodQty = math::clamp( goodQty, 0, maxCapacity);

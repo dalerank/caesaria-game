@@ -36,13 +36,18 @@ namespace infobox
 AboutWorkingBuilding::AboutWorkingBuilding( Widget* parent, WorkingBuildingPtr building)
   : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 136, 510 - 16, 136 + 62 ) )
 {
+  if( building.isNull() )
+  {
+    deleteLater();
+    return;
+  }
+
   _working = building;
 
   setBase( _working  );
   _setWorkingVisible( true );
 
-  std::string title = MetaDataHolder::findPrettyName( _working->type() );
-  setTitle( _(title) );
+  setTitle( _( _working->info().prettyName() ) );
 
   _updateWorkersLabel( Point( 32, 150 ), 542, _working->maximumWorkers(), _working->numberWorkers() );
 
@@ -89,11 +94,11 @@ WorkingBuildingPtr AboutWorkingBuilding::_getBuilding() { return _working; }
 
 void AboutWorkingBuilding::_showAdvInfo()
 {
-  ServiceBuildingPtr srvc = _working.as<ServiceBuilding>();
+  auto serviceBuilding = _working.as<ServiceBuilding>();
   std::string timeText;
-  if( srvc.isValid() )
+  if( serviceBuilding.isValid() )
   {
-    DateTime time = srvc->lastSendService();
+    DateTime time = serviceBuilding->lastSendService();
     timeText = utils::date2str( time, true );
   }
 
@@ -102,7 +107,7 @@ void AboutWorkingBuilding::_showAdvInfo()
                                                   (int)_working->state( pr::fire ),
                                                   timeText.c_str() );
 
-  dialog::Dialog* dialog = dialog::Information( ui(), "Information", workerState );
+  auto dialog = dialog::Information( ui(), "Information", workerState );
   dialog->setCenter( ui()->rootWidget()->center() );
 }
 

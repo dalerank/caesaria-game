@@ -117,7 +117,7 @@ void TilemapCamera::setViewport(Size newSize)
   _d->viewSize = Size( ( newSize.width() + (vpSize.width()-1)) / vpSize.width(),
                        ( newSize.height() + (vpSize.height()-1)) / vpSize.height() );
   
-  Logger::warning( "TilemapArea::setViewport w=%d h=%d", _d->viewSize.width(), _d->viewSize.height() );
+  Logger::warning( "TilemapArea::setViewport w={0} h={1}", _d->viewSize.width(), _d->viewSize.height() );
 }
 
 void TilemapCamera::setCenter(TilePos pos, bool checkCorner)
@@ -298,7 +298,7 @@ const TilesArray& TilemapCamera::tiles() const
           _d->tiles.visible.push_back( tile );
         }
 
-        Tile* master = tile->masterTile();
+        Tile* master = tile->master();
         if( master != NULL )
         {
           Point pos = master->mappos() + _d->offset;
@@ -338,8 +338,8 @@ MovableOrders TilemapCamera::Impl::mayMove(PointF )
 
 void TilemapCamera::Impl::resetDrawn()
 {
-  for( auto i : tiles.visible ) { i->resetWasDrawn(); }
-  for( auto i : tiles.flat ) { i->resetWasDrawn(); }
+  for( auto i : tiles.visible ) { i->resetRendered(); }
+  for( auto i : tiles.flat ) { i->resetRendered(); }
 }
 
 Point TilemapCamera::Impl::getOffset(const PointF &center)
@@ -368,13 +368,13 @@ void TilemapCamera::Impl::updateFlatTiles()
   for( auto t : tiles.visible )
   {
     int z = t->epos().z();
-    Tile* tile = t->masterTile();
+    Tile* tile = t->master();
     if( !tile )
       tile = t;
 
-    if( tile->isFlat() && tile->epos().z() == z && !tile->rwd() )
+    if( tile->isFlat() && tile->epos().z() == z && !tile->rendered() )
     {
-      tile->setWasDrawn();
+      tile->setRendered();
       tiles.flat.push_back( tile );
     }
   }

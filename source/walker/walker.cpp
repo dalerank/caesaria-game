@@ -225,7 +225,7 @@ void Walker::_walk()
   break;
 
   default:
-     Logger::warning( "Walker: invalid move direction: %d", _d->action.direction );
+     Logger::warning( "Walker: invalid move direction: {0}", _d->action.direction );
      _d->action.action = acNone;
      _d->action.direction = direction::none;
      return;
@@ -540,14 +540,14 @@ void Walker::load( const VariantMap& stream)
 
   if( !_d->map.path.isValid() )
   {
-    Logger::warning( "WARNING!!! Walker: wrong way for %s:%s at [%d,%d]",
-                     WalkerHelper::getTypename( _d->type ).c_str(), _d->name.c_str(),
+    Logger::warning( "WARNING!!! Walker: wrong way for {0}:{1} at [{2},{3}]",
+                     WalkerHelper::getTypename( _d->type ), _d->name,
                      _d->map.tile->i(), _d->map.tile->j() );
   }
   
   if( _d->speed.multiplier < 0.1 ) //Sometime this have this error in save file
   {
-    Logger::warning( "WARNING!!!! Walker: Wrong speed multiplier for %d", _d->uid );
+    Logger::warning( "WARNING!!!! Walker: Wrong speed multiplier for {0}", _d->uid );
     _d->speed.multiplier = 1;
   }
 
@@ -639,9 +639,9 @@ void WalkerDebugQueue::print()
     foreach( it, inst._pointers )
     {
       Walker* wlk = (Walker*)*it;
-      Logger::warning( "%s - %s [%d,%d] ref:%d", wlk->name().c_str(),
-                                          WalkerHelper::getTypename( wlk->type() ).c_str(),
-                                          wlk->pos().i(), wlk->pos().j(), wlk->rcount() );
+      Logger::warning( "{0} - {1} [{2},{3}] ref:{4}", wlk->name(),
+                       WalkerHelper::getTypename( wlk->type() ),
+                       wlk->pos().i(), wlk->pos().j(), wlk->rcount() );
     }
   }
 }

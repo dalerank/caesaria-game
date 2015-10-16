@@ -29,9 +29,9 @@ TexturedButton::TexturedButton(Widget *parent, const Point &pos, const Size &siz
   : PushButton( parent, Rect( pos, size ), "", id, false, noBackground )
 {
   setPicture( ResourceGroup::panelBackground, normalTxIndex, stNormal );
-  setPicture( ResourceGroup::panelBackground, (hovTxIndex == -1) ? normalTxIndex+1 : hovTxIndex , stHovered );
-  setPicture( ResourceGroup::panelBackground, (prsTxIndex == -1) ? normalTxIndex+2 : prsTxIndex , stPressed );
-  setPicture( ResourceGroup::panelBackground, (dsbTxIndex == -1) ? normalTxIndex+3 : dsbTxIndex , stDisabled );
+  setPicture( ResourceGroup::panelBackground, (hovTxIndex == -1) ? normalTxIndex+1 : hovTxIndex, stHovered );
+  setPicture( ResourceGroup::panelBackground, (prsTxIndex == -1) ? normalTxIndex+2 : prsTxIndex, stPressed );
+  setPicture( ResourceGroup::panelBackground, (dsbTxIndex == -1) ? normalTxIndex+3 : dsbTxIndex, stDisabled );
   setTextVisible( false );
 }
 

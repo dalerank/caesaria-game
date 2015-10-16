@@ -131,7 +131,7 @@ void Army::attack(ObjectPtr obj)
 
     if( _way().empty() )
     {
-      Logger::warning( "Army: cannot find way from %s to %s", d->base.c_str(), obj->name().c_str() );
+      Logger::warning( "Army: cannot find way from {0} to {1}", d->base, obj->name() );
     }
 
     attach();
@@ -172,7 +172,7 @@ void Army::addObject(ObjectPtr obj )
 
     otherArmy->killSoldiers(attackersLoss);
     killSoldiers(selfLoss);
-    }
+  }
 }
 
 std::string Army::target() const { return _dfunc()->destination; }

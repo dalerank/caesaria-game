@@ -124,7 +124,7 @@ std::string Academy::sound() const
           : "");
 }
 
-void EducationBuilding::initialize(const MetaData& mdata)
+void EducationBuilding::initialize(const object::Info& mdata)
 {
   ServiceBuilding::initialize( mdata );
   int maxServe = mdata.getOption( "maxServe" );

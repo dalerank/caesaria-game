@@ -83,12 +83,12 @@ void Entertainment::drawTile(Engine& engine, Tile& tile, const Point& offset)
       auto house = overlay.as<House>();
       entertainmentLevel = _getLevelValue( house );
 
-      needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+      needDrawAnimations = (house->level() <= HouseLevel::hovel) && (house->habitants().empty());
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
     }
     else
     {
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.base );
     }
 
     if( needDrawAnimations )
@@ -102,7 +102,7 @@ void Entertainment::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 LayerPtr Entertainment::create(TilemapCamera& camera, PlayerCityPtr city, int type )
@@ -125,7 +125,7 @@ void Entertainment::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        HousePtr house = ptr_cast<House>( tile->overlay() );
+        HousePtr house = tile->overlay<House>();
         if( house != 0 )
         {
           std::string typeName;

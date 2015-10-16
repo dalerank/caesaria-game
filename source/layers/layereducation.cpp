@@ -94,14 +94,14 @@ void Education::drawTile(Engine& engine, Tile& tile, const Point& offset)
 
       educationLevel = _getLevelValue( house );
 
-      needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
+      needDrawAnimations = (house->spec().level() <= HouseLevel::hovel) && (house->habitants().empty());
 
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
     }
     else
     {
       //other buildings
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.base );
     }
 
     if( needDrawAnimations )
@@ -115,7 +115,7 @@ void Education::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 LayerPtr Education::create( Camera& camera, PlayerCityPtr city, int type )
@@ -149,7 +149,7 @@ void Education::handleEvent(NEvent& event)
       std::string levelName = "";      
       if( tile != 0 )
       {
-        auto house = tile->overlay().as<House>();
+        auto house = tile->overlay<House>();
         if( house != 0 )
         {
           std::string typeName;

@@ -131,7 +131,7 @@ public:
 Farm::Farm(const good::Product outGood, const object::Type farmType )
   : Factory( good::none, outGood, farmType, Size(3) ), _d( new Impl )
 {
-  outStockRef().setCapacity( 100 );
+  outStock().setCapacity( 100 );
 
   _d->lastProgress = 0;
   _d->sublocs << TilePos( 0, 0) << TilePos( 2, 2)
@@ -141,7 +141,7 @@ Farm::Farm(const good::Product outGood, const object::Type farmType )
   mainPic.addOffset( tile::tilepos2screen( TilePos( 0, 1) ) );
   _fgPictures().push_back( mainPic );  // farm building
 
-  for( auto pos : _d->sublocs )
+  for( auto& pos : _d->sublocs )
   {
     Picture tPic = FarmTile::computePicture( outGood, 0 );
     tPic.addOffset( tile::tilepos2screen( pos ) );
@@ -172,7 +172,7 @@ bool Farm::canBuild( const city::AreaInfo& areaInfo ) const
 void Farm::burn()
 {
   Factory::burn();
-  for( auto pos : _d->sublocs )
+  for( auto& pos : _d->sublocs )
   {
     OverlayPtr ov = _city()->getOverlay( pos );
     if( ov.isValid() )
@@ -183,7 +183,7 @@ void Farm::burn()
 void Farm::collapse()
 {
   Factory::collapse();
-  for( auto pos : _d->sublocs )
+  for( auto& pos : _d->sublocs )
   {
     OverlayPtr ov = _city()->getOverlay( pos );
     if( ov.isValid() )
@@ -193,7 +193,7 @@ void Farm::collapse()
 
 void Farm::destroy()
 {
-  for( auto pos : _d->sublocs )
+  for( auto& pos : _d->sublocs )
   {
     OverlayPtr ov = _city()->getOverlay( pos );
     if( ov.isValid() && ov->type() == object::farmtile )
@@ -210,7 +210,7 @@ void Farm::computeRoadside()
 {
   Factory::computeRoadside();
 
-  for( auto pos : _d->sublocs )
+  for( auto& pos : _d->sublocs )
   {
     ConstructionPtr ov = _city()->getOverlay( pos ).as<Construction>();
     if( ov.isValid() && ov->type() == object::farmtile )
@@ -254,7 +254,7 @@ void Farm::computePictures()
 
 void Farm::assignTile(const TilePos &pos)
 {
-  _d->sublocs.addIfNot( pos );
+  _d->sublocs.addUnique( pos );
 }
 
 void Farm::timeStep(const unsigned long time)
@@ -306,7 +306,7 @@ void Farm::load( const VariantMap& stream )
 
   if( _d->sublocs.empty() )
   {
-    Logger::warning( "!!! WARNING: Farm [%d,%d] lost tiles. Will add default locations", pos().i(), pos().j() );
+    Logger::warning( "!!! WARNING: Farm [{0},{1}] lost tiles. Will add default locations", pos().i(), pos().j() );
     _d->sublocs << TilePos(0, 0) << TilePos( 1, 0 )
                 << TilePos(2, 0) << TilePos( 2, 1 ) << TilePos( 2, 2);
     foreach( it, _d->sublocs )
@@ -321,7 +321,7 @@ unsigned int Farm::produceQty() const
   return productRate() * getFinishedQty() * numberWorkers() / maximumWorkers();
 }
 
-void Farm::initialize(const MetaData& mdata)
+void Farm::initialize(const object::Info& mdata)
 {
   Factory::initialize( mdata );
   //picture will be setting on build
@@ -330,8 +330,7 @@ void Farm::initialize(const MetaData& mdata)
 
 Picture Farm::_getMainPicture()
 {
-  const MetaData& md = MetaDataHolder::find( type() );
-  Picture ret = md.picture();
+  Picture ret = info().randomPicture();
   if( !ret.isValid() )
     ret.load(ResourceGroup::commerce, 12);
 

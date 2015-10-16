@@ -39,7 +39,15 @@ public:
 
     VariantList save() const;
     void load(const VariantList& stream);
+
+    DateIssue() : Issue( Issue::unknown, 0) {}
+    DateIssue( Issue::Type type, int money, const DateTime& time )
+     : Issue( type, money )
+    {
+      this->time = time;
+    }
   };
+
   typedef std::vector<DateIssue> DateIssues;
 
   void addIssue( Issue issue );

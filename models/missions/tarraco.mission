@@ -7,6 +7,9 @@
   player.rank : 3
   adviserEnabled : true
   fishPlaceEnabled : false
+  preview.text : "##tarraco_preview_mission##"
+  preview.title : "##tarraco_preview_title##"
+  preview.image : ""
 	
   win :
   {

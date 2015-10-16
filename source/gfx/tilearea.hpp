@@ -31,6 +31,7 @@ public:
   TilesArea();  
   TilesArea( const Tilemap& tmap, const TilePos& leftup, const TilePos& rightdown );
   TilesArea( const Tilemap& tmap, int distance, const TilePos& center );
+  TilesArea( const Tilemap& tmap, int distance, OverlayPtr overlay );
   TilesArea( const Tilemap& tmap, const TilePos& leftup, const Size& size );
 
   void add(const Tilemap& tmap, const TilePos& center, int distance );

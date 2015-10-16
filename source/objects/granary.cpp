@@ -46,7 +46,7 @@ public:
 
   GranaryStore()
   {
-    for( auto gtype : good::foods() )
+    for( auto& gtype : good::foods() )
       setOrder( gtype, good::Orders::accept );
 
     setOrder( good::fish, good::Orders::none );
@@ -109,13 +109,13 @@ Granary::Granary() : WorkingBuilding( object::granery, Size(3) ), _d( new Impl )
   _picture().load( ResourceGroup::commerce, 140 );
   _fgPictures().resize(6);  // 1 upper level + 4 windows + animation
 
-  _animationRef().load(ResourceGroup::commerce, 146, 7, Animation::straight);
+  _animation().load(ResourceGroup::commerce, 146, 7, Animation::straight);
   // do the animation in reverse
-  _animationRef().load(ResourceGroup::commerce, 151, 6, Animation::reverse);
-  _animationRef().setDelay( 4 );
+  _animation().load(ResourceGroup::commerce, 151, 6, Animation::reverse);
+  _animation().setDelay( 4 );
 
   _fgPicture( 0 ) = Picture( ResourceGroup::commerce, 141 );
-  _fgPicture( 5 ) = _animationRef().currentFrame();
+  _fgPicture( 5 ) = _animation().currentFrame();
   computePictures();
 
   _d->devastateThis = false;  
@@ -126,12 +126,14 @@ Granary::Granary() : WorkingBuilding( object::granery, Size(3) ), _d( new Impl )
 void Granary::timeStep(const unsigned long time)
 {
   WorkingBuilding::timeStep( time );
-  if( !mayWork() )
+  if( !(mayWork() && isActive()) )
     return;
 
   if( game::Date::isWeekChanged() )
   {
     _weekUpdate();
+    //animate workers need
+    _animation().setDelay( 4 + needWorkers() + math::random(2) );
   }
 }
 
@@ -241,7 +243,7 @@ void Granary::_resolveDeliverMode()
     return;
   }
   //if warehouse in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
-  for( auto gType : good::foods() )
+  for( auto& gType : good::foods() )
   {
     good::Orders::Order order = _d->store.getOrder( gType );
     int goodFreeQty = math::clamp( _d->store.freeQty( gType ), 0, 400 );
@@ -296,7 +298,7 @@ void Granary::_tryDevastateGranary()
 {
   //if granary in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
   const int maxSentTry = 3;
-  for( auto goodType : good::foods() )
+  for( auto& goodType : good::foods() )
   {
     int trySentQty[maxSentTry] = { 400, 200, 100 };
 

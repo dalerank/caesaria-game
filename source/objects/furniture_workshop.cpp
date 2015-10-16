@@ -53,6 +53,6 @@ FurnitureWorkshop::FurnitureWorkshop() : Factory(good::timber, good::furniture, 
 
 void FurnitureWorkshop::_storeChanged()
 {
-  _fgPictures()[1] = inStockRef().empty() ? Picture() : Picture( ResourceGroup::commerce, 155 );
+  _fgPictures()[1] = inStock().empty() ? Picture() : Picture( ResourceGroup::commerce, 155 );
   _fgPictures()[1].setOffset( 47, 0 );
 }

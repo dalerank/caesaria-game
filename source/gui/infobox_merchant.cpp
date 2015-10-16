@@ -53,20 +53,21 @@ void AboutMerchant::_updateExtInfo()
   case walker::merchant:
   case walker::seaMerchant:
   {
-    MerchantPtr m = wlk.as<Merchant>();
-    good::ProductMap mmap = m->bougth();
-    good::ProductMap bmap = m->mayBuy();
+    auto merchant = wlk.as<Merchant>();
+    good::ProductMap mmap = merchant->bougth();
+    good::ProductMap bmap = merchant->mayBuy();
 
     int index=0;
     new Label( this, Rect( Point( 16, _lbBlackFrame()->bottom() + 2 ), Size( 84, 24 ) ), _("##bougth##"));
-    foreach( it, bmap )
-      _drawGood( it->first, mmap[ it->first ], index++, _lbBlackFrame()->bottom() + 2 );
+    for( auto& it : bmap )
+      _drawGood( it.first, mmap[ it.first ], index++, _lbBlackFrame()->bottom() + 2 );
 
-    mmap = m->sold();
+    mmap = merchant->sold();
     index=0;
     new Label( this, Rect( Point( 16, _lbBlackFrame()->bottom() + 26 ), Size( 84, 24 ) ), _("##sold##"));
-    foreach( it, mmap )
-      _drawGood( it->first, it->second, index++, _lbBlackFrame()->bottom() + 26 );
+    for( auto& it : mmap )
+      if( it.second > 0 )
+        _drawGood( it.first, it.second, index++, _lbBlackFrame()->bottom() + 26 );
   }
   break;
 
@@ -81,17 +82,17 @@ void AboutMerchant::_drawGood( const good::Product& goodType, int qty, int index
 
   int offset = ( width() - startOffset * 2 ) / 4;
   //std::string goodName = good::Helper::name( goodType );
-  std::string outText = utils::format( 0xff, "%d", metric::Measure::convQty( qty ) );
+  std::string outText = utils::i2str( metric::Measure::convQty( qty ) );
 
   // pictures of goods
   gfx::Picture pic = good::Helper::picture( goodType );
   Point pos( index * offset + startOffset, paintY );
 
-  Label* lb = new Label( this, Rect( pos, pos + Point( 100, 24 )) );
-  lb->setFont( Font::create( FONT_2 ) );
-  lb->setIcon( pic );
-  lb->setText( outText );
-  lb->setTextOffset( Point( 30, 0 ) );
+  auto label = new Label( this, Rect( pos, pos + Point( 100, 24 )) );
+  label->setFont( Font::create( FONT_2 ) );
+  label->setIcon( pic );
+  label->setText( outText );
+  label->setTextOffset( Point( 30, 0 ) );
 }
 
 }//end namespace citizen

@@ -40,12 +40,12 @@ AboutAmphitheater::AboutAmphitheater(Widget *parent, PlayerCityPtr city, const T
 {
   setupUI( ":/gui/infoboxapmhitheater.gui" );
 
-  AmphitheaterPtr amph = tile.overlay().as<Amphitheater>();
+  AmphitheaterPtr amph = tile.overlay<Amphitheater>();
   if( !amph.isValid() )
     return;
 
   setBase( amph );
-  setTitle( _( MetaDataHolder::findPrettyName( object::amphitheater ) ) );
+  setTitle( _( amph->info().prettyName() ) );
   _setWorkingVisible( true );
 
   _updateWorkersLabel( Point( 40, 150), 542, amph->maximumWorkers(), amph->numberWorkers() );

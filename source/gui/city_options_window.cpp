@@ -63,7 +63,7 @@ static void _setAutoText(Widget *widget, const std::string& text)
 
 static void _setAutoText(Widget *widget, const std::string& text, bool enabled )
 {
-  _setAutoText( widget, utils::format( 0xff, "##%s_%s##", text.c_str(), enabled ? "on" : "off" ) );
+  _setAutoText( widget, fmt::format( "##{0}_{1}##", text, enabled ? "on" : "off" ) );
 }
 
 class OptionButton : public PushButton
@@ -91,7 +91,7 @@ public:
     setText( "##" + basicName + "_mode##" );
 
     VariantMap vstates = ui.get( "states" ).toMap();
-    for( auto st : vstates )
+    for( auto& st : vstates )
       states[ st.second.toInt() ] = st.first;
 
     VariantList vlink = ui.get( "link" ).toList();
@@ -102,11 +102,11 @@ public:
   void update(int value)
   {
     index = 0;
-    for( auto item : states )
+    for( auto& item : states )
     {
       if( item.first == value )
       {
-        std::string text = utils::format( 0xff, "##%s_%s##", basicName.c_str(), item.second.c_str() );
+        std::string text = fmt::format( "##{0}_{1}##", basicName, item.second );
         setText( _(text) );
         _setAutoText( this, text );
         break;
@@ -365,17 +365,11 @@ void CityOptions::Impl::toggleUseBatching()
 
 Widget* CityOptions::Impl::findDebugMenu( Ui* ui )
 {
-  const Widgets& children = ui->rootWidget()->children();
-  for( auto w : children )
-  {
-    TopMenu* ret = safety_cast<TopMenu*>( w );
-    if( ret != 0 )
-    {
-      return ret->findItem( "Debug" );
-    }
-  }
+  auto topmenu = ui->rootWidget()->children().select<TopMenu>();
+  for( auto w : topmenu )
+    return w->findItem( "Debug" );
 
-  return 0;
+  return nullptr;
 }
 
 void CityOptions::Impl::update()
@@ -410,7 +404,7 @@ void CityOptions::Impl::update()
   if( lbFireRisk )
   {
     int value = city->getOption( PlayerCity::fireKoeff );
-    lbFireRisk->setText( utils::format( 0xff, "%s %d %%", "Fire risk", value ) );
+    lbFireRisk->setText( fmt::format( "{0} {1} %", "Fire risk", value ) );
   }
 
   if( lbCollapseRisk )

@@ -150,15 +150,15 @@ void FortCurseByMars::timeStep(ConstructionPtr parent, unsigned int time)
 {
   if( game::Date::isWeekChanged() )
   {
-    FortPtr base = parent.as<Fort>();
-    if( !base.isValid() )
+    auto fort = parent.as<Fort>();
+    if( !fort.isValid() )
     {
       Logger::warning( "FortCurseByMars::run base is null ");
       _isDeleted = true;
       return;
     }
 
-    SoldierList sldrs = base->soldiers();
+    SoldierList sldrs = fort->soldiers();
 
     for( auto it : sldrs )
     {

@@ -200,11 +200,11 @@ void Fountain::save(VariantMap& stream) const
 
 void Fountain::_initAnimation()
 {
-  _animationRef().clear();
-  _animationRef().load( ResourceGroup::utilitya, _d->lastPicId+1, fontainSizeAnim );
-  _animationRef().setDelay( 2 );
+  _animation().clear();
+  _animation().load( ResourceGroup::utilitya, _d->lastPicId+1, fontainSizeAnim );
+  _animation().setDelay( 2 );
   _fgPicture( 0 ) = Picture::getInvalid();
-  _animationRef().stop();
+  _animation().stop();
 }
 
 void Fountain::_dayUpdate()

@@ -35,7 +35,7 @@ using namespace gfx;
 
 REGISTER_TRAINEEMAN_IN_WALKERFACTORY(walker::trainee, 0, trainee)
 
-typedef Priorities<object::Type> NecessaryBuildings;
+typedef Vector<object::Type> NecessaryBuildings;
 
 class TraineeWalker::Impl
 {
@@ -60,16 +60,16 @@ void TraineeWalker::_init(walker::Type traineeType)
   switch( traineeType )
   {
   case walker::actor:      _d->necBuildings << object::theater
-                                           << object::amphitheater;  break;
+                                            << object::amphitheater;  break;
   case walker::gladiator:  _d->necBuildings << object::amphitheater
-                                              << object::colloseum;  break;
+                                            << object::colloseum;  break;
   case walker::lionTamer:  _d->necBuildings << object::colloseum;  break;
   case walker::soldier:    _d->necBuildings << object::military_academy
                                             << object::fort_legionaries
                                             << object::fort_horse
                                             << object::fort_javelin
                                             << object::tower;  break;
-  case walker::charioteer:  _d->necBuildings << object::hippodrome;  break;
+  case walker::charioteer: _d->necBuildings << object::hippodrome;  break;
   default: break;
   }
 
@@ -103,7 +103,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
 {
   if( !gfx::tilemap::isValidLocation( _d->baseLocation ) )
   {
-    Logger::warning( "!!! WARNING: trainee walker baselocation is unaccessible at [%d,%d]", _d->baseLocation.i(), _d->baseLocation.j() );
+    Logger::warning( "!!! WARNING: trainee walker baselocation is unaccessible at [{0},{1}]", _d->baseLocation.i(), _d->baseLocation.j() );
     deleteLater();
     return;
   }
@@ -111,7 +111,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   BuildingPtr base = ( _city()->getOverlay( _d->baseLocation ).as<Building>());
   if( !base.isValid() )
   {
-    Logger::warning( "!!! WARNING: trainee walker base is null at [%d,%d]", _d->baseLocation.i(), _d->baseLocation.j() );
+    Logger::warning( "!!! WARNING: trainee walker base is null at [{0},{1}]", _d->baseLocation.i(), _d->baseLocation.j() );
     deleteLater();
     return;
   }
@@ -121,7 +121,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
   Pathway finalPath;
 
   BuildingList buildings;
-  for( auto buildingType : _d->necBuildings )
+  for( auto& buildingType : _d->necBuildings )
     buildings.append( _city()->statistic().objects.find<Building>( buildingType ) );
 
   TilesArray startArea = roadOnly ? base->roadside() : base->enterArea();
@@ -143,7 +143,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
 
   if( !isNeedTrainee )
   {
-    Logger::warning( "!!! WARNING: not need trainee walker from [%d,%d]", base->pos().i(), base->pos().j() );
+    Logger::warning( "!!! WARNING: not need trainee walker from [{0},{1}]", base->pos().i(), base->pos().j() );
     deleteLater();
     return;
   }
@@ -240,10 +240,10 @@ void TraineeWalker::_reachedPathway()
   Walker::_reachedPathway();
   deleteLater();
 
-  BuildingPtr dest = _map().overlay( _d->destLocation ).as<Building>();
-  if( dest.isValid() )
+  auto destidnationBuilding = _map().overlay( _d->destLocation ).as<Building>();
+  if( destidnationBuilding.isValid() )
   {
-    dest->updateTrainee( this );
+    destidnationBuilding->updateTrainee( this );
   }
 }
 

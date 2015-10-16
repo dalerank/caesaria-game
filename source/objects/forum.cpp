@@ -65,12 +65,12 @@ void Forum::applyService(ServiceWalkerPtr walker)
   {
   case walker::taxCollector:
   {
-    TaxCollectorPtr txcl = walker.as<TaxCollector>();
-    if( txcl.isValid() )
+    auto taxCollector = walker.as<TaxCollector>();
+    if( taxCollector.isValid() )
     {
-      float tax = txcl->takeMoney();;
+      float tax = taxCollector->takeMoney();;
       _d->taxValue += tax;
-      Logger::warning( "Forum: collect money %f. All money %f", tax, _d->taxValue );
+      Logger::warning( "Forum: collect money {0}. All money {1}", tax, _d->taxValue );
     }
   }
   break;

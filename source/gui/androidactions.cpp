@@ -39,6 +39,43 @@ namespace gui
 namespace tablet
 {
 
+class MouseEventHandler : scene::EventHandler
+{
+public:
+  Camera* camera;
+  Signal1<TilePos> onTileChange;
+  Rect forbidenArea;
+
+  void install( scene::Base* scene, const Rect& forbiden )
+  {
+    forbidenArea = forbiden;
+    scene->installEventHandler( this );
+    camera = scene->camera();
+    drop();
+  }
+
+  virtual void handleEvent( NEvent& event )
+  {
+    if( camera == nullptr )
+      return;
+
+    if( event.EventType == sEventMouse  )
+    {
+      if( event.mouse.type == mouseLbtnRelease )
+      {
+        if( forbidenArea.isPointInside( event.mouse.pos() ) )
+          return;
+
+        Tile* lastTile = camera->at( event.mouse.pos(), false );
+        if( lastTile != nullptr )
+          emit onTileChange( lastTile->epos() );
+      }
+    }
+  }
+
+  virtual bool finished() const { return false; }
+};
+
 class ActionsBar::Impl
 {
 public:
@@ -91,13 +128,18 @@ bool ActionsBar::onEvent(const NEvent &event)
   {
     if( event.gui.caller == _d->btnZoomIn || event.gui.caller == _d->btnZoomOut )
     {
-      emit _d->onChangeZoomSignal( event.gui.caller == _d->btnZoomIn ? -10 : 10 );
+      emit _d->onChangeZoomSignal( event.gui.caller == _d->btnZoomIn ? +10 : -10 );
       return true;
     }
+  }
+  else if( event.EventType == sEventMouse && event.mouse.type == mouseMoved )
+  {
+    return true;
   }
 
   return Window::onEvent( event );
 }
+
 
 void ActionsHandler::assignTo(ActionsBar* parent, scene::Base* scene )
 {
@@ -105,10 +147,14 @@ void ActionsHandler::assignTo(ActionsBar* parent, scene::Base* scene )
   if( androidBar && scene )
   {
     ActionsHandler* handler = new ActionsHandler( androidBar, scene );
-    CONNECT( androidBar, onRequestTileHelp(), handler,      ActionsHandler::_showTileHelp )
-    CONNECT( androidBar, onEscapeClicked(),   handler,      ActionsHandler::_resolveEscapeButton )
-    CONNECT( androidBar, onEnterClicked(),    handler,     ActionsHandler::_resolveEnterButton  )
-    CONNECT( androidBar, onRequestMenu(),     handler,     ActionsHandler::_showIngameMenu      )
+    auto eventHandler = new MouseEventHandler();
+    eventHandler->install( scene, androidBar->absoluteRect() );
+
+    CONNECT( eventHandler, onTileChange,      handler,         ActionsHandler::_setActiveTile )
+    CONNECT( androidBar, onRequestTileHelp(), handler,         ActionsHandler::_showTileHelp )
+    CONNECT( androidBar, onEscapeClicked(),   handler,         ActionsHandler::_resolveEscapeButton )
+    CONNECT( androidBar, onEnterClicked(),    handler,         ActionsHandler::_resolveEnterButton  )
+    CONNECT( androidBar, onRequestMenu(),     handler,         ActionsHandler::_showIngameMenu      )
     CONNECT( androidBar, onChangeZoom(),      scene->camera(), gfx::Camera::changeZoom )
   }
 }
@@ -119,6 +165,7 @@ ActionsHandler::ActionsHandler(Widget* parent, scene::Base* scene)
    _scene = scene;
 }
 
+void ActionsHandler::_setActiveTile(TilePos tilepos) {  _tilepos = tilepos; }
 void ActionsHandler::_resolveEnterButton() { _sendKeyboardEvent( KEY_RETURN ); }
 void ActionsHandler::_resolveEscapeButton() { _sendKeyboardEvent( KEY_ESCAPE ); }
 
@@ -185,14 +232,10 @@ void ActionsHandler::_showTileHelp()
   if( !_scene )
     return;
 
-  Tile* tile = _scene->camera()->at( ui()->cursorPos(), true );  // tile under the cursor (or NULL)
-  if( tile )
-  {
-    GameEventPtr e = ShowTileInfo::create( tile->pos() );
-    e->dispatch();
-  }
+  auto event = ShowTileInfo::create( _tilepos );
+  event->dispatch();
 }
 
-}//end namespace tabletS
+}//end namespace tablet
 
 }//end namespace gui

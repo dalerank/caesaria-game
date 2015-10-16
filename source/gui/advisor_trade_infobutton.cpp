@@ -19,6 +19,7 @@
 #include "good/helper.hpp"
 #include "gfx/decorator.hpp"
 #include "gfx/engine.hpp"
+#include "core/format.hpp"
 #include "core/gettext.hpp"
 #include "core/utils.hpp"
 
@@ -99,7 +100,7 @@ void TradeGoodInfo::_updateTextPic()
     Font f = font( _state() );
     Picture& textPic = _textPicture();
     f.draw( textPic, _( _d->good.name ), 55, 0, true, false );
-    f.draw( textPic, utils::format( 0xff, "%d", _d->qty.value / 100), 190, 0, true, false );
+    f.draw( textPic, utils::i2str(_d->qty.value / 100), 190, 0, true, false );
     f.draw( textPic, _d->enable ? "" : _("##disable##"), 260, 0, true, false );
 
     std::string ruleName[] = { "##import##", "", "##export##", "##stacking##" };
@@ -112,14 +113,14 @@ void TradeGoodInfo::_updateTextPic()
       if( _d->qty.importing == 0 )
         tradeStateText = _( ruleName[ _d->tradeOrder ] );
       else
-        tradeStateText = utils::format( 0xff, "%s %d", _( ruleName[ _d->tradeOrder ] ), _d->qty.importing );
+        tradeStateText = fmt::format( "{0} {1}", _( ruleName[ _d->tradeOrder ] ), _d->qty.importing );
     break;
 
     case trade::exporting:
       if( _d->qty.exporting == 0)
         tradeStateText = _( ruleName[ _d->tradeOrder ] );
       else
-        tradeStateText = utils::format( 0xff, "%s %d", _( ruleName[ _d->tradeOrder ] ), _d->qty.exporting );
+        tradeStateText = fmt::format( "{0} {1}", _( ruleName[ _d->tradeOrder ] ), _d->qty.exporting );
     break;
 
     default: break;

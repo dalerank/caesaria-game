@@ -142,7 +142,7 @@ void CartPusher::_brokePathway(TilePos pos)
     }
   }
 
-  Logger::warning( "CartPusher::_brokePathway not destination point [%d,%d]", pos.i(), pos.j() );
+  Logger::warning( "CartPusher::_brokePathway not destination point [{0},{1}]", pos.i(), pos.j() );
   deleteLater();
 }
 
@@ -351,7 +351,8 @@ BuildingPtr reserveShortestPath( const object::Type buildingType,
 BuildingPtr CartPusher::Impl::getWalkerDestination_factory(Propagator &pathPropagator, Pathway& oPathWay)
 {
   BuildingPtr res;
-  object::Type buildingType = MetaDataHolder::instance().getConsumerType( stock.type() );
+  object::ProductConsumer info( stock.type() );
+  object::Type buildingType = info.consumer();
 
   if (buildingType == object::unknown)
   {
@@ -391,7 +392,7 @@ BuildingPtr CartPusher::Impl::getWalkerDestination_granary(Propagator &pathPropa
 
 void CartPusher::send2city(BuildingPtr building, good::Stock &carry )
 {
-  _d->stock.append( carry );
+  _d->stock.takeFrom( carry );
   setProducerBuilding( building  );
 
   _computeWalkerDestination();
@@ -452,7 +453,7 @@ void CartPusher::load( const VariantMap& stream )
   }
   else
   {
-    Logger::warning( "WARNING: cartPusher producer building is NULL uid=[%d]", uniqueId() );
+    Logger::warning( "WARNING: cartPusher producer building is NULL uid=[{0}]", uniqueId() );
   }
 
   TilePos cnsmPos( stream.get( literals::consumerPos ).toTilePos() );

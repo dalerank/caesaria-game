@@ -43,9 +43,23 @@ class Ui;
 class Widget : public virtual ReferenceCounted
 {
 public:       
-  typedef List<Widget*> Widgets;
-  typedef Widgets::iterator ChildIterator;
-  typedef Widgets::const_iterator ConstChildIterator;
+  class Widgets : public List<Widget*>
+  {
+  public:
+    template<class T>
+    List<T*> select() const
+    {
+      List<T*> ret;
+      for( auto item : *this )
+      {
+        T* ptr = safety_cast<T*>( item );
+        if( ptr )
+          ret.push_back( ptr );
+      }
+
+      return ret;
+    }
+  };
 
   typedef enum { RelativeGeometry=0, AbsoluteGeometry, ProportionalGeometry } GeometryType;
   enum { noId=-1 };
@@ -91,7 +105,7 @@ public:
   /** \return The override font (may be 0) */
   //virtual Font getFont( u32 index=0 ) const;
   
-  virtual Ui* ui();
+  virtual Ui* ui() const;
 
   //! Sets text justification mode
   /** \param horizontal: EGUIA_UPPERLEFT for left justified (default),
@@ -404,7 +418,6 @@ protected:
 
   Widgets& _getChildren();
 
-protected:
   // not virtual because needed in constructor
   void _addChild(Widget* child);
 
@@ -412,9 +425,6 @@ protected:
   void _recalculateAbsolutePosition(bool recursive);
 
   __DECLARE_IMPL(Widget)
-
-  //! GUI Environment
-  Ui* _environment;
 };
 
 typedef SmartPtr< Widget > WidgetPtr;

@@ -34,18 +34,18 @@ Stock::Stock()
   _qty = 0;
 }
 
-Stock::Stock(const Product& which, const int maxQty, const int currentQty)
+Stock::Stock(const Product& which, const int capacity, const int qty)
   : _type( which )
 {
-  _capacity = maxQty;
-  _qty = currentQty;
+  _capacity = capacity;
+  _qty = qty;
 }
 
 Stock::~Stock() {}
 
 const Product& Stock::type() const { return _type; }
 
-void Stock::append(good::Stock& stock, const int iAmount)
+void Stock::takeFrom(good::Stock& stock, const int iAmount)
 {
   if (stock.type() == none)
   {
@@ -54,7 +54,7 @@ void Stock::append(good::Stock& stock, const int iAmount)
   }
   if (type() != none && type() != stock.type() )
   {
-    std::string errorStr = utils::format( 0xff, "GoodTypes do not match: %d vs %d", _type, stock._type );
+    std::string errorStr = fmt::format( "GoodTypes do not match: {} vs {}", _type, stock._type );
     Logger::warning( errorStr );
     return;
   }
@@ -102,7 +102,7 @@ void Stock::load( const VariantList& stream )
   _type = good::Product( stream.get( idxType ).toInt() );
   if( _type >= good::any() )
   {
-    Logger::warning( "GoodStock: wrong type of good %d", _type );
+    Logger::warning( "GoodStock: wrong type of good {0}", _type );
     _type = good::none;
   }
 

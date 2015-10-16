@@ -57,7 +57,7 @@ MarketBuyer::MarketBuyer(PlayerCityPtr city )
   : Human( city ), _d( new Impl )
 {
    _setType( walker::marketBuyer );
-   _d->maxDistance = 25;
+   _d->maxDistance = MarketBuyer::maxBuyDistance();
    _d->basket.setCapacity(maxCapacity);  // this is a big basket!
 
    _d->basket.setCapacity(good::wheat, foodCapacity);
@@ -139,7 +139,7 @@ void MarketBuyer::computeWalkerDestination( MarketPtr market )
     pathPropagator.propagate( _d->maxDistance);
 
     // try to find the most needed good
-    for( auto goodType : priorityGoods )
+    for( auto& goodType : priorityGoods )
     {
       _d->priorityGood = goodType;
 
@@ -235,7 +235,7 @@ void MarketBuyer::_reachedPathway()
       
       if( building.is<Granary>() )
       {
-        GranaryPtr granary = building.as<Granary>();
+        auto granary = building.as<Granary>();
         // this is a granary!
         // std::cout << "MarketLady arrives at granary, res=" << _reservationID << std::endl;
         granary->store().applyRetrieveReservation(_d->basket, _d->reservationID);
@@ -244,7 +244,7 @@ void MarketBuyer::_reachedPathway()
         foods.exclude( _city()->tradeOptions().locked() );
 
         // take other goods if possible
-        for( auto goodType : foods )
+        for( auto& goodType : foods )
         {
           // for all types of good (except G_NONE)
           int qty = _d->market->getGoodDemand(goodType) - _d->basket.qty(goodType);
@@ -263,7 +263,7 @@ void MarketBuyer::_reachedPathway()
       }
       else if( building.is<Warehouse>() )
       {
-        WarehousePtr warehouse = ptr_cast<Warehouse>( building );
+        auto warehouse = ptr_cast<Warehouse>( building );
         // this is a warehouse!
         warehouse->store().applyRetrieveReservation(_d->basket, _d->reservationID);
 
@@ -271,7 +271,7 @@ void MarketBuyer::_reachedPathway()
         products.exclude( _city()->tradeOptions().locked() );
 
         // take other goods if possible
-        for( auto goodType : products )
+        for( auto& goodType : products )
         {
           // for all types of good (except G_NONE)
           int qty = _d->market->getGoodDemand(goodType) - _d->basket.qty(goodType);
@@ -293,7 +293,7 @@ void MarketBuyer::_reachedPathway()
 
       while( _d->basket.qty() > MarketKid::defaultCapacity )
       {
-        for( auto gtype : good::all() )
+        for( auto& gtype : good::all() )
         {
           good::Stock& currentStock = _d->basket.getStock( gtype );
           if( currentStock.qty() > 0 )
@@ -350,6 +350,8 @@ void MarketBuyer::load( const VariantMap& stream)
   VARIANT_LOAD_ANY_D( _d, maxDistance, stream )
   VARIANT_LOAD_ANY_D( _d, reservationID, stream )
 }
+
+unsigned int MarketBuyer::maxBuyDistance() { return 25; }
 
 MarketBuyerPtr MarketBuyer::create( PlayerCityPtr city )
 {

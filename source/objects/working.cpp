@@ -24,6 +24,7 @@
 #include "game/gamedate.hpp"
 #include "objects/house.hpp"
 #include "objects/house_level.hpp"
+#include "core/format.hpp"
 #include "events/removecitizen.hpp"
 #include "core/common.hpp"
 #include "walker/typeset.hpp"
@@ -58,7 +59,7 @@ WorkingBuilding::WorkingBuilding(const object::Type type, const Size& size)
   _d->isActive = true;
   _d->clearAnimationOnStop = true;
   _d->laborAccessKoeff = 100;
-  _animationRef().stop();
+  _animation().stop();
 }
 
 void WorkingBuilding::save( VariantMap& stream ) const
@@ -80,7 +81,7 @@ void WorkingBuilding::load( const VariantMap& stream)
 
   if( !_d->workers.maximum )
   {
-    _d->workers.maximum = MetaDataHolder::find( type() ).getOption( MetaDataOptions::employers );
+    _d->workers.maximum = info().employers();
   }
 }
 
@@ -120,11 +121,11 @@ std::string WorkingBuilding::troubleDesc() const
   return trouble;
 }
 
-void WorkingBuilding::initialize(const MetaData& mdata)
+void WorkingBuilding::initialize(const object::Info& mdata)
 {
   Building::initialize( mdata );
 
-  setMaximumWorkers( (unsigned int)mdata.getOption( "employers" ) );
+  setMaximumWorkers( (unsigned int)mdata.employers() );
 }
 
 std::string WorkingBuilding::workersStateDesc() const { return ""; }
@@ -180,27 +181,27 @@ void WorkingBuilding::_updateAnimation(const unsigned long time )
   {
     if( mayWork() )
     {
-      if( _animationRef().isStopped() )
+      if( _animation().isStopped() )
       {
         _changeAnimationState( true );
       }      
     }
     else
     {
-      if( _animationRef().isRunning() )
+      if( _animation().isRunning() )
       {      
         _changeAnimationState( false );
       }
     }
   }
 
-  if( _animationRef().isRunning() )
+  if( _animation().isRunning() )
   {
-    _animationRef().update( time );
-    const Picture& pic = _animationRef().currentFrame();
+    _animation().update( time );
+    const Picture& pic = _animation().currentFrame();
     if( pic.isValid() && !_fgPictures().empty() )
     {
-      _fgPictures().back() = _animationRef().currentFrame();
+      _fgPictures().back() = _animation().currentFrame();
     }
   }
 }
@@ -208,10 +209,10 @@ void WorkingBuilding::_updateAnimation(const unsigned long time )
 void WorkingBuilding::_changeAnimationState(bool enabled)
 {
   if( enabled )
-    _animationRef().start();
+    _animation().start();
   else
   {
-    _animationRef().stop();
+    _animation().stop();
 
     if( _d->clearAnimationOnStop && !_fgPictures().empty() )
     {
@@ -295,13 +296,13 @@ std::string WorkingBuildingHelper::productivity2desc( WorkingBuildingPtr w, cons
 
   if( prefix.empty() )
   {
-    return utils::format( 0xff, "##%s_%s##",
-                          factoryType.c_str(), productivityDescription[ workKoeff ] );
+    return fmt::format( "##{0}_{1}##",
+                        factoryType, productivityDescription[ workKoeff ] );
   }
   else
   {
-    return utils::format( 0xff, "##%s_%s_%s##",
-                          factoryType.c_str(), prefix.c_str(), productivityDescription[ workKoeff ] );
+    return fmt::format( "##{0}_{1}_{2}##",
+                        factoryType, prefix, productivityDescription[ workKoeff ] );
   }
 }
 

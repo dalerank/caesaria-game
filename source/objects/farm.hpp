@@ -43,7 +43,7 @@ public:
   virtual void load(const VariantMap& stream);
 
   virtual unsigned int produceQty() const;
-  virtual void initialize(const MetaData &mdata);
+  virtual void initialize(const object::Info& mdata);
 
 protected:
   gfx::Picture _getMainPicture();

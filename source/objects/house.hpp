@@ -39,6 +39,7 @@ public:
 
   // return the current house level
   const HouseSpecification& spec() const;
+  HouseLevel::ID level() const;
 
   virtual void applyService(ServiceWalkerPtr walker);
   virtual float evaluateService(ServiceWalkerPtr walker);

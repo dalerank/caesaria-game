@@ -43,7 +43,7 @@ public:
     VariantMap items = config::load( directory/filename );
     Logger::warning( "Locale: load translation from " + (directory/filename).toString() );
 
-    for( auto item : items )
+    for( auto& item : items )
     {
       int hash = Hash( item.first );
       translator[ hash ].text = item.second.toString();
@@ -58,7 +58,7 @@ public:
     VariantMap items = config::load( directory/filename );
     Logger::warning( "Locale: load default translation from " + (directory/filename).toString() );
 
-    for( auto item : items )
+    for( auto& item : items )
     {
       int hash = Hash( item.first );
       translator[ hash ].def_text = item.second.toString();
@@ -79,7 +79,7 @@ void Locale::setLanguage(std::string language)
 {
   _llocale.currentLanguage = language;
 
-  for( auto item : _llocale.translator )
+  for( auto&& item : _llocale.translator )
   {
     item.second.text.clear();
   }

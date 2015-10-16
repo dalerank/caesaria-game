@@ -309,7 +309,7 @@ void House::_checkPatricianDeals()
   if( !spec().isPatrician() )
     return;
 
-  TilesArray roads = roadside();
+  const TilesArray& roads = roadside();
   if( !roads.empty() )
   {
     PatricianPtr patric = Patrician::create( _city() );
@@ -402,7 +402,7 @@ void House::_updateCrime()
   int poverityHouse = _d->spec.level() > HouseLevel::hut ? -_d->poverity / 2 : 0;
   int desirabilityInfluence = 0;
 
-  if( spec().level() > HouseLevel::hut )
+  if( level() > HouseLevel::hut )
   {
     TilePos offset( 4, 4 );
     TilePos sizeOffset( size().width(), size().height() );
@@ -551,7 +551,7 @@ bool House::_tryEvolve_1_to_12_lvl( int level4grow, int growSize, const char des
 
       auto house = tile->overlay<House>();
       if( house != NULL &&
-          (house->spec().level() == level4grow || house->habitants().count() == 0) )
+          (house->level() == level4grow || house->habitants().count() == 0) )
       {
         if( house->size().width() > 1 )  //bigger house near, can't grow
         {
@@ -633,13 +633,13 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
     std::map<TilePos, TilesArray> possibleAreas;
 
     TilePos sPos = tile().pos();
-    possibleAreas[ sPos ] = tmap.getArea( sPos, Size(minSize) );
+    possibleAreas[ sPos ] = tmap.area( sPos, Size(minSize) );
     sPos = tile().pos() - TilePos( 1, 0 );
-    possibleAreas[ sPos ] = tmap.getArea( sPos, Size(minSize) );
+    possibleAreas[ sPos ] = tmap.area( sPos, Size(minSize) );
     sPos = tile().pos() - TilePos( 1, 1 );
-    possibleAreas[ sPos ] = tmap.getArea( sPos, Size(minSize) );
+    possibleAreas[ sPos ] = tmap.area( sPos, Size(minSize) );
     sPos = tile().pos() - TilePos( 0, 1 );
-    possibleAreas[ sPos ] = tmap.getArea( sPos, Size(minSize) );
+    possibleAreas[ sPos ] = tmap.area( sPos, Size(minSize) );
 
     foreach( itArea, possibleAreas )
     {
@@ -651,18 +651,18 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
         else { ++it; }
       }
 
-      foreach( it, area )
+      for( auto& tile : area )
       {
-        if( *it == NULL )
+        if( tile == NULL )
         {
           mayGrow = false;   //some broken, can't grow
           break;
         }
 
-        OverlayPtr overlay = (*it)->overlay();
+        OverlayPtr overlay = tile->overlay();
         if( overlay.isNull() )
         {
-          if( !(*it)->getFlag( Tile::isConstructible ) )
+          if( !tile->getFlag( Tile::isConstructible ) )
           {
             mayGrow = false; //not constuctible, can't grow
             break;
@@ -800,7 +800,7 @@ void House::_tryDegrade_20_to_12_lvl( int rsize, const char desirability )
   TilePos bpos = pos();
   if( bigSize )
   {
-    TilesArray roads = roadside();
+    const TilesArray& roads = roadside();
     TilePos moveVector = TilePos( 1, 1 );
     if( !roads.empty() )
     {
@@ -812,7 +812,7 @@ void House::_tryDegrade_20_to_12_lvl( int rsize, const char desirability )
     TilesArray lastArea = area();
     for( auto tile : lastArea )
     {
-      tile->setMasterTile( 0 );
+      tile->setMaster( 0 );
       tile->setOverlay( 0 );
     }
 
@@ -873,7 +873,7 @@ void House::_levelDown()
 
     if( size().area() > 1 )
     {
-      TilesArray perimetr = tmap.getArea( pos(), Size(2) );
+      TilesArray perimetr = tmap.area( pos(), Size(2) );
       int peoplesPerHouse = habitants().count() / 4;
       foreach( tile, perimetr )
       {
@@ -924,7 +924,7 @@ void House::buyMarket( ServiceWalkerPtr walker )
   good::Store& marketStore = market->goodStore();
 
   good::Store& houseStore = goodStore();
-  for( auto goodType : good::all() )
+  for( auto& goodType : good::all() )
   {
     int houseQty = houseStore.qty(goodType);
     int houseSafeQty = _d->spec.computeMonthlyGoodConsumption( this, goodType, false )
@@ -1008,7 +1008,7 @@ void House::applyService( ServiceWalkerPtr walker )
     if( !svalue )
       break;
 
-    RecruterPtr recuter = walker.as<Recruter>();
+    auto recuter = walker.as<Recruter>();
     if( recuter != NULL )
     {
       int hiredWorkers = math::min(svalue, recuter->needWorkers());
@@ -1122,7 +1122,7 @@ void House::_update( bool needChangeTexture )
   {
     if( !pic.isValid() )
     {
-      Logger::warning( "WARNING!!! House: failed change texture for size %d", size().width() );
+      Logger::warning( "WARNING!!! House: failed change texture for size {0}", size().width() );
       pic = Picture::getInvalid();
     }
 
@@ -1348,13 +1348,13 @@ int House::Impl::getFoodLevel() const
   {
     good::Product maxFtype = good::none;
     int maxFoodQty = 0;
-    foreach( ft, foods )
+    for( auto goodType : foods )
     {
-      int tmpQty = goodstore.qty( *ft );
+      int tmpQty = goodstore.qty( goodType );
       if( tmpQty > maxFoodQty )
       {
         maxFoodQty = tmpQty;
-        maxFtype = *ft;
+        maxFtype = goodType;
       }
     }
 
@@ -1441,6 +1441,7 @@ bool House::isFlat() const                                       { return _d->is
 const CitizenGroup& House::habitants() const                     { return _d->habitants; }
 good::Store& House::goodStore()                                  { return _d->goodstore; }
 const HouseSpecification& House::spec() const                    { return _d->spec; }
+HouseLevel::ID House::level() const                              { return spec().level(); }
 bool House::hasServiceAccess( Service::Type service)             { return getServiceValue(service) > 0; }
 float House::getServiceValue( Service::Type service)             { return _d->services.at(service)->value(); }
 void House::setServiceValue( Service::Type service, float value) { _d->services.at(service)->set( value ); }
@@ -1462,7 +1463,7 @@ std::string House::levelName() const
 {
   std::string ret = spec().levelName();
   bool big = false;
-  switch( spec().level() )
+  switch( level() )
   {
   case HouseLevel::hovel:
   case HouseLevel::tent:
@@ -1575,6 +1576,6 @@ void House::Impl::consumeFoods(HousePtr house)
 
   if( !haveFoods4Eating )
   {
-    Logger::warning( "House: [%dx%d] have no food for habitants", house->pos().i(), house->pos().j() );
+    Logger::warning( "House: [{0},{1}] have no food for habitants", house->pos().i(), house->pos().j() );
   }
 }

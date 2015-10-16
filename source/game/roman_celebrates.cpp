@@ -24,11 +24,11 @@ namespace game
 
 struct CelebrateInfo
 {
-  int month;
+  Month month;
   int day;
   std::string description;
 
-  int hash() const { return month * 100 + day; }
+  int hash() const { return (int)month * 100 + day; }
   bool operator<(const CelebrateInfo& a)
   {
     return hash() < a.hash();
@@ -52,11 +52,11 @@ Celebrates& Celebrates::instance()
 void Celebrates::load(vfs::Path path)
 {
   VariantMap conf = config::load( path );
-  for( auto&& it : conf )
+  for( auto& it : conf )
   {
     VariantMap infoVm = it.second.toMap();
     int day = infoVm.get( "day" );
-    int month = infoVm.get( "month" );
+    Month month = infoVm.get( "month" ).toEnum<Month>();
     std::string description = infoVm.get( "desc" );
 
     CelebrateInfo info = { month, day, description };
@@ -64,7 +64,7 @@ void Celebrates::load(vfs::Path path)
   }
 }
 
-std::string Celebrates::getDescription(int day, int month) const
+std::string Celebrates::getDescription(int day, Month month) const
 {
   CelebrateInfo test = { month, day, "" };
   Items::iterator it = _d->items.find( test.hash() );

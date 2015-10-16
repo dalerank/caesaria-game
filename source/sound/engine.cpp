@@ -97,7 +97,7 @@ public:
   static const int maxSamplesNumber = 64;
   bool useSound;
 
-  typedef std::map< audio::SoundType, int > Volumes;
+  typedef std::map< audio::SoundType, Volume > Volumes;
   typedef std::map< unsigned int, std::string > Aliases;
   typedef std::list< Directory > Folders;
   typedef std::map< unsigned int, ByteArray > SoundCache;
@@ -118,7 +118,7 @@ public:
 
 public:
   void nextLoad();
-  unsigned int volume( SoundType type );
+  Volume volume( SoundType type );
   unsigned int loadSound( const std::string& filename );
   void stop( const std::string& name );
   void clearFinishedChannels();
@@ -127,7 +127,7 @@ public:
   vfs::Path findFullPath(const std::string& sampleName );
 };
 
-void Engine::setVolume( audio::SoundType type, int value)
+void Engine::setVolume(audio::SoundType type, Volume value)
 {
   _d->volumes[ type ] = value;
   _updateSamplesVolume();
@@ -136,14 +136,14 @@ void Engine::setVolume( audio::SoundType type, int value)
 void Engine::loadAlias(const vfs::Path& filename)
 {
   VariantMap alias = config::load( filename );
-  for( auto item : alias )
+  for( auto& item : alias )
   {
     _d->aliases[ Hash( item.first ) ] = item.second.toString();
   }
 }
 
 void Engine::addFolder(Directory dir) {  _d->folders.push_back( dir ); }
-int Engine::volume(audio::SoundType type) const { return _d->volume( type ); }
+Volume Engine::volume(audio::SoundType type) const { return _d->volume( type ); }
 
 int Engine::maxVolumeValue() const { return 100; }
 
@@ -242,13 +242,13 @@ Path Engine::Impl::findFullPath( const std::string& sampleName )
   if( sPath.extension().empty() )
   {
     Path fPath;
-    for( auto ext : extensions )
+    for( auto& ext : extensions )
     {
       fPath = sPath.toString() + ext;
       if( fPath.exist() )
         return fPath;
 
-      for( auto folder : folders )
+      for( auto& folder : folders )
       {
         rPath = folder.find( fPath, Path::ignoreCase );
         if( !rPath.empty() )
@@ -261,7 +261,7 @@ Path Engine::Impl::findFullPath( const std::string& sampleName )
     if( sPath.exist() )
       return sPath;
 
-    for( auto folder : folders )
+    for( auto& folder : folders )
     {
       rPath = folder.find( sPath, Path::ignoreCase );
       if( !rPath.empty() )
@@ -293,7 +293,7 @@ unsigned int Engine::Impl::loadSound(const std::string& sampleName)
 
     if( realPath.toString().empty() )
     {
-      Logger::warning( "SoundEngine: could not find sound %s", sampleName.c_str() );
+      Logger::warning( "SoundEngine: could not find sound {0}", sampleName );
       return 0;
     }
 
@@ -305,7 +305,7 @@ unsigned int Engine::Impl::loadSound(const std::string& sampleName)
 
     if( data.empty() )
     {
-      Logger::warning( "SoundEngine: could not load sound (%s)", realPath.toCString() );
+      Logger::warning( "SoundEngine: could not load sound {0}", realPath.toString() );
       return 0;
     }
 
@@ -314,7 +314,7 @@ unsigned int Engine::Impl::loadSound(const std::string& sampleName)
     sample.sound = realPath.toString();
     if(sample.chunk == NULL)
     {
-      Logger::warning( "SoundEngine: could not load sound (%s) with error:%s", realPath.toCString(), SDL_GetError() );
+      Logger::warning( "SoundEngine: could not load sound ({0}) with error:{1}", realPath.toString(), SDL_GetError() );
       return 0;
     }
 
@@ -330,11 +330,9 @@ void Engine::play(std::string sampleName, int volValue, SoundType type, bool for
   if(!_d->useSound )
     return;
 
-  _d->mutex.lock();
+  std::lock_guard<std::recursive_mutex> locker(_d->mutex);
   SampleInfo info = {sampleName, volValue, type, force };
-  _d->needLoad.push_back( info );
-
-  _d->mutex.unlock();
+  _d->needLoad.emplace_back( info );
 }
 
 void Engine::play(const std::string &rc, int index, int volume, SoundType type, bool force)
@@ -370,7 +368,7 @@ void Engine::stop(int channel)
   if( !_d->useSound )
     return;
 
-  for( auto sample :_d->samples )
+  for( auto&& sample : _d->samples )
   {
     if( sample.second.channel == channel )
     {
@@ -393,7 +391,7 @@ void Engine::_updateSamplesVolume()
 
   int gameLvl = volume( audio::game );
 
-  for( auto sample : _d->samples )
+  for( auto&& sample : _d->samples )
   {
     int typeVlm = volume( sample.second.typeSound );
     sample.second.setVolume( gameLvl, typeVlm );
@@ -415,12 +413,10 @@ void Engine::Impl::nextLoad()
   if( needLoad.empty() )
     return;
 
-  mutex.lock();
+  std::lock_guard<std::recursive_mutex> locker( mutex );
 
   SampleInfo info = needLoad.front();
   needLoad.pop_front();
-
-  mutex.unlock();
 
   clearFinishedChannels();
   resetIfalias( info.name );
@@ -487,7 +483,7 @@ void Engine::Impl::stop(const std::string& name)
 
 void Engine::Impl::clearFinishedChannels()
 {
-  for( Samples::iterator it=samples.begin(); it != samples.end();  )
+  for( auto it=samples.begin(); it != samples.end();  )
   {
     if( it->second.finished ) { it->second.destroy(); samples.erase( it++ ); }
     else { ++it; }

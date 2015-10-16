@@ -124,5 +124,4 @@ void SafeThread::Impl::onTask()
   }
 }
 
-
 } // threading

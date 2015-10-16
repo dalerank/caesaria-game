@@ -49,7 +49,7 @@ Merchant::Merchant( EmpirePtr empire )
   : Object( empire ), _d( new Impl )
 {
   //default picture
-  setPicture( gfx::Picture( ResourceGroup::empirebits, PicID::landTradeRoute ) );
+  setPicture( gfx::Picture( ResourceGroup::empirebits, config::id.empire.landTradeRoute ) );
 }
 
 MerchantPtr Merchant::create( EmpirePtr empire, TraderoutePtr route, const std::string& start,
@@ -83,7 +83,7 @@ MerchantPtr Merchant::create( EmpirePtr empire, TraderoutePtr route, const std::
   }
 
   ret->setPicture( gfx::Picture( ResourceGroup::empirebits,
-                                 route->isSeaRoute() ? PicID::seaTradeRoute : PicID::landTradeRoute ));
+                                 route->isSeaRoute() ? config::id.empire.seaTradeRoute : config::id.empire.landTradeRoute ));
   ret->setLocation( ret->_d->steps.front() );
   return ret;
 }

@@ -128,7 +128,7 @@ void Migration::timeStep( const unsigned int time )
 
   float migrationKoeff = _d->getMigrationKoeff( _city() );
   Info::Parameters params = _d->lastMonthParams( _city() );
-  LOG_MIGRATION.info( "Current migration factor is %f", migrationKoeff );
+  LOG_MIGRATION.info( "Current migration factor is {}", migrationKoeff );
 
   _d->emigrantsIndesirability = defaultEmIndesirability; //base undesirability value
   float emDesKoeff = math::clamp<float>( (float)SETTINGS_VALUE( emigrantSalaryKoeff ), 1.f, 99.f );
@@ -189,7 +189,7 @@ void Migration::timeStep( const unsigned int time )
 
   _d->emigrantsIndesirability *= migrationKoeff;
 
-  LOG_MIGRATION.info( "Current undesirability is %d", _d->emigrantsIndesirability );
+  LOG_MIGRATION.info( "Current undesirability is {}", _d->emigrantsIndesirability );
   if( warInfluence > warBlockedMigration )
   {
     LOG_MIGRATION.info( "Enemies in city: migration stopped" );
@@ -213,7 +213,7 @@ void Migration::timeStep( const unsigned int time )
     _d->lastMonthComing = 0;
     _d->lastMonthLeaving = 0;
 
-    LOG_MIGRATION.info( "Current workless=%f undesrbl=%f",
+    LOG_MIGRATION.info( "Current workless={} undesrbl={}",
                      curWorklessValue * migrationKoeff,
                      _d->emigrantsIndesirability * migrationKoeff );
   }
@@ -272,13 +272,16 @@ std::string Migration::reason() const
     }
     else
     {
-      if( params[ Info::workless ] > 20 ) { troubles << "##migration_broke_workless##"; }
-      else if( params[ Info::workless ] > 10 ) { troubles << "##migration_middle_lack_workless##"; }
-      else if( params[ Info::workless ] > 5 ) { troubles << "##migration_lack_workless##"; }
+      int value = params[ Info::workless ];
+      if( value > 25 ) { troubles << "##migration_broke_workless##"; }
+      else if( value > 17  ) { troubles << "##migration_high_lack_workless##"; }
+      else if( value > 10 ) { troubles << "##migration_middle_lack_workless##"; }
+      else if( value > 5 ) { troubles << "##migration_lack_workless##"; }
     }
 
     int diffWages = params[ Info::romeWages ] - params[ Info::cityWages ];
     if( diffWages > 5 ) { troubles << "##low_wage_broke_migration##"; }
+    else if( diffWages > 2 ) { troubles << "##low_wage_midlle_migration##"; }
     else if( diffWages > 1 ) { troubles <<  "##low_wage_lack_migration##"; }
 
     if( params[ Info::crimeLevel ] > 25 ) { troubles << "##migration_lack_crime##"; }
@@ -400,8 +403,7 @@ void Migration::Impl::createMigrationToCity( PlayerCityPtr city )
     return;
   }
 
-  EmigrantList migrants;
-  migrants << city->walkers();
+  auto migrants = city->walkers().select<Emigrant>();
 
   if( vh <= migrants.size() * 5 )
   {
@@ -426,12 +428,12 @@ void Migration::Impl::createMigrationFromCity( PlayerCityPtr city )
 {
   HouseList houses = city->statistic().houses.find();
   const int minWorkersNumber = 4;
-  for( HouseList::iterator i=houses.begin(); i != houses.end(); )
+  for( auto itHouse=houses.begin(); itHouse != houses.end(); )
   {
-    int houseWorkless = (*i)->unemployed();
+    int houseWorkless = (*itHouse)->unemployed();
 
-    if( !(*i)->enterArea().empty() && houseWorkless > minWorkersNumber ) { ++i; }
-    else { i = houses.erase( i ); }
+    if( !(*itHouse)->enterArea().empty() && houseWorkless > minWorkersNumber ) { ++itHouse; }
+    else { itHouse = houses.erase( itHouse ); }
   }
 
   if( !houses.empty() )

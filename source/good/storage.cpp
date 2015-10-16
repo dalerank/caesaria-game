@@ -50,7 +50,7 @@ public:
   void reset()
   {
     stocks.clear();
-    for( auto goodType : good::all() )
+    for( auto& goodType : good::all() )
     {
       stocks.push_back( SmStock::create( goodType ) );
     }
@@ -69,7 +69,7 @@ int Storage::capacity() const {  return _gsd->capacity; }
 int Storage::qty() const
 {
   int qty = 0;
-  for( auto&& stock : _gsd->stocks )
+  for( auto& stock : _gsd->stocks )
     qty += stock->qty();
 
   return qty;
@@ -80,7 +80,7 @@ good::Stock& Storage::getStock(const Product& goodType){  return *(_gsd->stocks[
 ProductMap Storage::details() const
 {
   ProductMap ret;
-  for( auto&& cstock : _gsd->stocks )
+  for( auto& cstock : _gsd->stocks )
     ret[ cstock->type() ] += cstock->qty();
 
   return ret;
@@ -93,7 +93,7 @@ void Storage::setCapacity(const good::Product& goodType, const int maxQty)
 {
   if( goodType == good::any() )
   {
-    for( auto&& gtype : good::all() )
+    for( auto& gtype : good::all() )
     {
       _gsd->stocks[ gtype ]->setCapacity( maxQty );
     }
@@ -117,7 +117,7 @@ int Storage::getMaxStore(const good::Product goodType)
     int goodFreeRoom = _gsd->stocks[ goodType ]->freeQty();
 
     // remove all storage reservations
-    for( auto&& reserved : _getStoreReservations() )
+    for( auto& reserved : _getStoreReservations() )
     {
       globalFreeRoom -= reserved.qty();
 
@@ -181,7 +181,7 @@ VariantMap Storage::save() const
   stream[ "max" ] = _gsd->capacity;
 
   VariantList stockSave;
-  for( auto&& stockInfo : _gsd->stocks )
+  for( auto& stockInfo : _gsd->stocks )
     stockSave.push_back( stockInfo->save() );
 
   stream[ "stock" ] = stockSave;
@@ -202,7 +202,7 @@ void Storage::load( const VariantMap& stream )
 
   _gsd->reset();
   VariantList stockSave = stream.get( "stock" ).toList();
-  for( auto&& sotckInfo : stockSave )
+  for( auto& sotckInfo : stockSave )
   {
     SmStock::Ptr stock = SmStock::create( good::none );
     stock->load( sotckInfo.toList() );
@@ -216,7 +216,7 @@ void Storage::resize(const Store &other )
 {
   setCapacity( other.capacity() );
 
-  for( auto&& goodType : good::all() )
+  for( auto& goodType : good::all() )
   {
     setCapacity( goodType, other.capacity( goodType ) );
   }

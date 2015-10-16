@@ -36,8 +36,8 @@ IronMine::IronMine()
 {
   _picture().load( ResourceGroup::commerce, 54 );
 
-  _animationRef().load( ResourceGroup::commerce, 55, 6 );
-  _animationRef().setDelay( 5 );
+  _animation().load( ResourceGroup::commerce, 55, 6 );
+  _animation().setDelay( 5 );
   _fgPictures().resize( 2 );
 
   _setUnworkingInterval( 12 );
@@ -49,7 +49,7 @@ bool IronMine::canBuild( const city::AreaInfo& areaInfo ) const
   bool near_mountain = false;  // tells if the factory is next to a mountain
 
   Tilemap& tilemap = areaInfo.city->tilemap();
-  TilesArray perimetr = tilemap.getRectangle( areaInfo.pos + TilePos( -1, -1 ),
+  TilesArray perimetr = tilemap.rect( areaInfo.pos + TilePos( -1, -1 ),
                                               areaInfo.pos + TilePos(3, 3), Tilemap::checkCorners );
 
   for( auto tile : perimetr )

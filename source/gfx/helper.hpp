@@ -26,7 +26,7 @@ namespace gfx
 class Tilemap;
 
 namespace imgid
-{
+{  
   std::string toResource( const unsigned int imgId );
   int fromResource( const std::string &pic_name);
   Picture toPicture( const unsigned int imgId );

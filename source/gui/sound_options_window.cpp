@@ -41,11 +41,11 @@ public:
   void resolveChange( SpinBox* who, int value )
   {
     int type = who->getProperty( "soundType" );
-    emit onSoundChangeSignal( audio::SoundType(type), value );
+    emit onSoundChangeSignal( audio::SoundType(type), audio::Volume(value) );
   }
 
 public signals:
-  Signal2<audio::SoundType, int> onSoundChangeSignal;
+  Signal2<audio::SoundType,audio::Volume> onSoundChangeSignal;
   Signal0<> onCloseSignal, onApplySignal, onRequestSignal;
 };
 
@@ -63,9 +63,9 @@ SoundOptions::SoundOptions(Widget* parent)
   INIT_WIDGET_FROM_UI( PushButton*, btnOk )
   if( btnOk ) btnOk->setFocus();
 
-  List<SpinBox*> widgets = findChildren<SpinBox*>( true );
-  foreach( it, widgets )
-    CONNECT( *it, onChangeA(), _d.data(), Impl::resolveChange )
+  auto widgets = findChildren<SpinBox*>( true );
+  for( auto wdg : widgets )
+    CONNECT( wdg, onChangeA(), _d.data(), Impl::resolveChange )
 }
 
 SoundOptions::~SoundOptions( void ) {}
@@ -97,19 +97,19 @@ bool SoundOptions::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-Signal2<audio::SoundType, int>& SoundOptions::onChange() { return _d->onSoundChangeSignal; }
+Signal2<audio::SoundType, audio::Volume>& SoundOptions::onChange() { return _d->onSoundChangeSignal; }
 Signal0<>& SoundOptions::onClose()                       { return _d->onCloseSignal; }
 Signal0<>& SoundOptions::onApply()                       { return _d->onApplySignal; }
 
-void SoundOptions::update(audio::SoundType type, int value)
+void SoundOptions::update(audio::SoundType type, audio::Volume value)
 {
-  List<SpinBox*> widgets = findChildren<SpinBox*>( true );
+  auto widgets = findChildren<SpinBox*>( true );
 
-  foreach( it, widgets )
+  for( auto wdg : widgets )
   {
-    if( (*it)->getProperty( "soundType" ).toInt() == type )
+    if( wdg->getProperty( "soundType" ).toInt() == type )
     {
-      (*it)->setValue( value );
+      wdg->setValue( value );
       return;
     }
   }

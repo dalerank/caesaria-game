@@ -21,6 +21,7 @@
 #include "game/gamedate.hpp"
 #include "core/gettext.hpp"
 #include "good/store.hpp"
+#include "core/format.hpp"
 #include "objects/extension.hpp"
 #include "objects/factory.hpp"
 #include "city/statistic.hpp"
@@ -53,8 +54,8 @@ void __filchGoods( const std::string& title, PlayerCityPtr city, bool showMessag
 {
   if( showMessage )
   {
-    std::string txt = utils::format( 0xff, "##%s_of_mercury_title##", title.c_str() );
-    std::string descr = utils::format( 0xff, "##%s_of_mercury_description##", title.c_str() );
+    std::string txt = fmt::format( "##{0}_of_mercury_title##", title );
+    std::string descr = fmt::format( "##{0}_of_mercury_description##", title );
 
     events::GameEventPtr event = events::ShowInfobox::create( _(txt),
                                                               _(descr),
@@ -68,7 +69,7 @@ void __filchGoods( const std::string& title, PlayerCityPtr city, bool showMessag
   for( auto building : buildings )
   {
     good::Store& store = building->store();
-    for( auto gtype : good::all() )
+    for( auto& gtype : good::all() )
     {
       int goodQty = math::random( (store.qty( gtype ) + 99) / 100 ) * 100;
       if( goodQty > 0 )
@@ -92,7 +93,7 @@ void Mercury::_doSmallCurse(PlayerCityPtr city)
                                                             _("##smallcurse_of_mercury_description##") );
   event->dispatch();
 
-  FactoryList factories = city->statistic().objects.find<Factory>();
+  FactoryList factories = city->overlays().select<Factory>();
 
   for( auto factory : factories )
   {
@@ -102,10 +103,9 @@ void Mercury::_doSmallCurse(PlayerCityPtr city)
 
 void Mercury::_doBlessing(PlayerCityPtr city)
 {
-  WarehouseList whList;
-  whList << city->overlays();
+  auto warehouses = city->overlays().select<Warehouse>();
 
-  for( auto wh : whList )
+  for( auto wh : warehouses )
   {
     WarehouseBuff::assignTo( wh, Warehouse::sellGoodsBuff, 0.2, 4 * 12 );
   }

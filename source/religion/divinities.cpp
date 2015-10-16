@@ -29,6 +29,7 @@
 #include "objects/warehouse.hpp"
 #include "core/utils.hpp"
 #include "core/variant_map.hpp"
+#include "core/format.hpp"
 #include "city/states.hpp"
 #include "core/variant_list.hpp"
 #include "config.hpp"
@@ -59,7 +60,7 @@ void RomeDivinity::load(const VariantMap& vm)
   _shortDesc = vm.get( "shortDesc" ).toString();
   if( _shortDesc.empty() )
   {
-    _shortDesc  = utils::format( 0xff, "##%s_desc##", internalName().c_str() );
+    _shortDesc  = fmt::format( "##{0}_desc##", internalName() );
   }
   _wrathPoints = vm.get( "wrath" );
   _blessingDone = vm.get( "blessingDone" );

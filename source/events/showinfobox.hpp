@@ -20,6 +20,7 @@
 
 #include "event.hpp"
 #include "good/good.hpp"
+#include "core/delegate.hpp"
 #include "core/scopedptr.hpp"
 
 namespace events
@@ -36,8 +37,11 @@ public:
   static GameEventPtr create(const std::string& title, const std::string& text,
                               bool send2scribe=false, const std::string &video="" );
 
-  virtual void load(const VariantMap &);
+  virtual void load(const VariantMap &);  
   virtual VariantMap save() const;
+
+  void setDialogVisible( bool visible );
+  void addCallback( const std::string& text, Callback callback );
 
 protected:
   virtual void _exec( Game& game, unsigned int );

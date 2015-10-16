@@ -26,10 +26,11 @@ class Ruins : public Building
 public:
   Ruins( object::Type type );
   void setInfo( std::string parent ) { _parent = parent; }
-  std::string info() const { return _parent; }
+  std::string pinfo() const { return _parent; }
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
+  virtual bool build(const city::AreaInfo &info);
   void afterBuild() { _alsoBuilt=false; }
 
 protected:

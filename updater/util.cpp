@@ -20,15 +20,18 @@
 #include "vfs/entries.hpp"
 #include "vfs/directory.hpp"
 #include "core/foreach.hpp"
+#include <iostream>
+#include <fstream>
+#include <string>
+
+namespace updater
+{
 
 #ifdef CAESARIA_PLATFORM_WIN
 
 #include <string>
 #include <windows.h>
 #include <psapi.h>
-
-namespace updater
-{
 
 bool Util::caesariaIsRunning()
 {
@@ -80,84 +83,51 @@ bool Util::caesariaIsRunning()
   return false;
 }
     
-} // namespace
-
 #elif defined(CAESARIA_PLATFORM_LINUX) || defined(CAESARIA_PLATFORM_HAIKU)
 // Linux implementation
 
-#include <iostream>
-#include <fstream>
-#include <string>
+const std::string systemProcFolder("/proc/");
+const std::string caesariaProcessName("caesaria.linux"); // grayman - looking for tdm now instead of doom3
 
-namespace updater
+bool CheckProcessFile(const std::string& name, const std::string& processName)
 {
-
-namespace
-{
-	const std::string systemProcFolder("/proc/");
-	const std::string caesariaProcessName("caesaria.linux"); // grayman - looking for tdm now instead of doom3
-
-	bool CheckProcessFile(const std::string& name, const std::string& processName)
-	{
-		// Try to cast the filename to an integer number (=PID)
-		try
-		{
-			unsigned long pid = utils::toUint( name );
-		
-			// Was the PID read correctly?
-			if (pid == 0)
-			{
-				return false;
-			}
-			
-			const std::string cmdLineFileName = systemProcFolder + name + "/cmdline";
-			
-			std::ifstream cmdLineFile(cmdLineFileName.c_str());
-
-			if (cmdLineFile.is_open())
-			{
-				// Read the command line from the process file
-				std::string cmdLine;
-				getline(cmdLineFile, cmdLine);
-				
-				if (cmdLine.find(processName) != std::string::npos)
-				{
-					// Process found, return success
-					return true;
-				}
-			}
-			
-			// Close the file
-			cmdLineFile.close();
-		}
-		catch( ... )
-		{
-			// Cast to int failed, no PID
-		}
-
-		return false;
-	}
-
-} // namespace
-
-std::string Util::getHumanReadableBytes(std::size_t size)
-{
-  if (size > GbBts)
+  // Try to cast the filename to an integer number (=PID)
+  try
   {
-    return utils::format( 0xff, "%0.2f GB", size / (float)GbBts );
+    unsigned long pid = utils::toUint( name );
+
+    // Was the PID read correctly?
+    if (pid == 0)
+    {
+      return false;
+    }
+
+    const std::string cmdLineFileName = systemProcFolder + name + "/cmdline";
+
+    std::ifstream cmdLineFile(cmdLineFileName.c_str());
+
+    if (cmdLineFile.is_open())
+    {
+      // Read the command line from the process file
+      std::string cmdLine;
+      getline(cmdLineFile, cmdLine);
+
+      if (cmdLine.find(processName) != std::string::npos)
+      {
+        // Process found, return success
+        return true;
+      }
+    }
+
+    // Close the file
+    cmdLineFile.close();
   }
-  else if (size > MbBts)
+  catch( ... )
   {
-    return  utils::format( 0xff, "%0.1f MB", size / (float)MbBts );
+    // Cast to int failed, no PID
   }
-  else if (size > KbBts)
-  {
-    return  utils::format( 0xff, "%0.0f kB", size / (float)KbBts );
-  }
-  else
-  {
-    return  utils::format( 0xff, "%d bytes", size);
-  }
+
+  return false;
 }
 
 bool Util::caesariaIsRunning()
@@ -176,8 +146,6 @@ bool Util::caesariaIsRunning()
   return false;
 }
 
-} // namespace
-
 #elif defined(CAESARIA_PLATFORM_MACOSX)
 // Mac OS X
 #include <assert.h>
@@ -187,9 +155,6 @@ bool Util::caesariaIsRunning()
 #include <stdio.h>
 #include "core/logger.hpp"
 #include <sys/sysctl.h>
-
-namespace updater
-{
 
 // greebo: Checks for a named process, modeled loosely after
 // http://developer.apple.com/library/mac/#qa/qa2001/qa1123.html
@@ -242,8 +207,28 @@ bool Util::caesariaIsRunning()
 	return FindProcessByName("caesaria.macosx"); // grayman - look for caesaria
 }
 
-} // namespace
-
 #else
 #error Unsupported Platform
 #endif
+
+std::string Util::getHumanReadableBytes(std::size_t size)
+{
+  if (size > GbBts)
+  {
+    return utils::format( 0xff, "%0.2f GB", size / (float)GbBts );
+  }
+  else if (size > MbBts)
+  {
+    return  utils::format( 0xff, "%0.1f MB", size / (float)MbBts );
+  }
+  else if (size > KbBts)
+  {
+    return  utils::format( 0xff, "%0.0f kB", size / (float)KbBts );
+  }
+  else
+  {
+    return  utils::format( 0xff, "%d bytes", size);
+  }
+}
+
+} //end namespace updater

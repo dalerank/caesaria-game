@@ -62,17 +62,17 @@ void Tax::drawTile(Engine& engine, Tile& tile, const Point& offset)
       auto house = overlay.as<House>();
       int taxAccess = house->getServiceValue( Service::forum );
       taxLevel = math::clamp<int>( house->taxesThisYear(), 0, 100 );
-      needDrawAnimations = ((house->spec().level() == 1 && house->habitants().empty())
+      needDrawAnimations = ((house->level() <= HouseLevel::hovel && house->habitants().empty())
                             || taxAccess < 25);
 
       if( !needDrawAnimations )
       {
-        drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+        drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
       }
     }
     else
     {
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.base );
     }
 
     if( needDrawAnimations )
@@ -86,7 +86,7 @@ void Tax::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 LayerPtr Tax::create( Camera& camera, PlayerCityPtr city )
@@ -109,7 +109,7 @@ void Tax::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        auto building = tile->overlay().as<Building>();
+        auto building = tile->overlay<Building>();
 
         if( building.isNull() )
         {
@@ -117,7 +117,7 @@ void Tax::handleEvent(NEvent& event)
         }
         else
         {
-          auto house = tile->overlay().as<House>();
+          auto house = tile->overlay<House>();
           if( house.isValid() )
           {
             bool lastTaxationTooOld = house->lastTaxationDate().monthsTo( game::Date::current() ) > DateTime::monthsInYear / 2;

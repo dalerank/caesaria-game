@@ -33,7 +33,7 @@
 namespace city
 {
 
-void Services::update(PlayerCityPtr city, unsigned int time)
+void Services::update(PlayerCityPtr, unsigned int time)
 {
   iterator serviceIt = begin();
   while( serviceIt != end() )
@@ -59,7 +59,7 @@ void Services::initialize(PlayerCityPtr city, const std::string& model)
     if( service.isValid() )
       city->addService( service );
     else
-      Logger::warning( "!!! WARNING: Cant initialize service %s on city create", it.first.c_str() );
+      Logger::warning( "!!! WARNING: Cant initialize service {0} on city create", it.first );
   }
 }
 
@@ -114,8 +114,8 @@ void Walkers::clear()
 VariantMap Walkers::save() const
 {
   VariantMap ret;
-  int walkedId = 0;
-  for (auto w : *this)
+  Walker::UniqueId walkedId = 0;
+  for(auto& w : *this)
   {
     VariantMap vm_walker;
     walker::Type wtype = walker::unknown;
@@ -127,7 +127,7 @@ VariantMap Walkers::save() const
     }
     catch(...)
     {
-      Logger::warning( "!!! WARNING: Can't save walker type " + WalkerHelper::getTypename( wtype ));
+      Logger::warning( "!!! WARNING: Can't save walker type {0}", WalkerHelper::getTypename( wtype ));
     }
 
     walkedId++;
@@ -138,18 +138,18 @@ VariantMap Walkers::save() const
 
 void Walkers::update(PlayerCityPtr, unsigned int time)
 {
-  WalkerList::iterator it = begin();
-  while( it != end() )
+  auto wlkIt = begin();
+  while( wlkIt != end() )
   {
-    WalkerPtr walker = *it;
+    WalkerPtr walker = *wlkIt;
     walker->timeStep( time );
     if( walker->isDeleted() )
     {
       // remove the walker from the walkers list
       //grid.remove( *it );
-      it = erase(it);
+      wlkIt = erase(wlkIt);
     }
-    else { ++it; }
+    else { ++wlkIt; }
   }
 
   merge();

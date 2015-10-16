@@ -104,7 +104,7 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
     _addPicture( tile.mappos() + Point( 20, -15 ), tx );
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 void Desirability::beforeRender( Engine& engine )

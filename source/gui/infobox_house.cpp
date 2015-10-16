@@ -96,11 +96,11 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
 {
   setupUI( ":/gui/infoboxhouse.gui" );
 
-  _house = tile.overlay().as<House>();
+  _house = tile.overlay<House>();
 
   if( _house.isNull() )
   {
-    Logger::warning( "!!! WARNING: Cant find house at [%d,%d]", tile.pos().i(), tile.pos().j() );
+    Logger::warning( "!!! WARNING: Cant find house at [{0},{1}]", tile.pos().i(), tile.pos().j() );
     deleteLater();
     return;
   }
@@ -110,7 +110,7 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
   setTitle( _(_house->levelName()) );
 
-  _btnExitRef()->setTooltipText( _("##advanced_houseinfo##") );
+  _btnExit()->setTooltipText( _("##advanced_houseinfo##") );
 
   Label* houseInfo = new Label( this, Rect( 30, 40, width() - 30, 40 + 100 ), "" );
   if( houseInfo )
@@ -118,7 +118,7 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
     houseInfo->setWordwrap( true );
 
     std::string text = _house->evolveInfo();
-    if( _house->spec().level() == HouseLevel::greatPalace && text.empty() )
+    if( _house->level() == HouseLevel::greatPalace && text.empty() )
     {
       text =  "##greatPalace_info##";
     }
@@ -147,7 +147,7 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
           }
           else
           {
-            housePrettyType = overlay.isValid() ? MetaDataHolder::findPrettyName( overlay->type() ) : "";
+            housePrettyType = overlay.isValid() ? overlay->info().prettyName() : "";
           }
 
           housePrettyType = utils::format( 0xff, "(%s)", _(housePrettyType) );
@@ -203,7 +203,7 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
   Label* lbCrime = new Label( this, taxesLb->relativeRect() + Point( 0, 22 ), aboutCrimes );
 
   int startY = lbCrime->bottom() + 10;
-  if( _house->spec().level() > 2 )
+  if( _house->level() > HouseLevel::tent )
   {
     drawGood( _house, good::wheat, 0, 0, startY );
     drawGood( _house, good::fish, 1, 0, startY );
@@ -266,7 +266,7 @@ void AboutHouse::drawHabitants( HousePtr house )
 void AboutHouse::drawGood(HousePtr house, const good::Product& goodType, const int col, const int row, const int startY )
 {
   int qty = house->goodStore().qty( goodType );
-  std::string text = utils::format( 0xff, "%d", qty);
+  std::string text = utils::i2str(qty);
 
   // pictures of goods
   const Picture& pic = good::Helper::picture( goodType );

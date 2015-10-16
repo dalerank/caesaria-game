@@ -120,10 +120,10 @@ Factory::Factory(const good::Product inType, const good::Product outType,
   CONNECT( &_d->goodStore, onChangeState, this, Factory::_storeChanged );
 }
 
-good::Stock& Factory::inStockRef(){   return _d->goodStore.getStock(_d->inGoodType);}
-const good::Stock& Factory::inStockRef() const { return _d->goodStore.getStock(_d->inGoodType);}
-good::Stock &Factory::outStockRef(){  return _d->goodStore.getStock(_d->outGoodType);}
-const good::Stock&Factory::outStockRef() const { return _d->goodStore.getStock(_d->outGoodType); }
+good::Stock& Factory::inStock(){   return _d->goodStore.getStock(_d->inGoodType);}
+const good::Stock& Factory::inStock() const { return _d->goodStore.getStock(_d->inGoodType);}
+good::Stock &Factory::outStock(){  return _d->goodStore.getStock(_d->outGoodType);}
+const good::Stock&Factory::outStock() const { return _d->goodStore.getStock(_d->outGoodType); }
 good::Product Factory::consumeGoodType() const{  return _d->inGoodType; }
 int Factory::progress(){  return math::clamp<int>( (int)_d->progress, 0, 100 );}
 void Factory::updateProgress(float value){  _d->progress = math::clamp<float>( _d->progress += value, 0.f, 101.f );}
@@ -134,7 +134,7 @@ bool Factory::mayWork() const
     return false;
 
   bool mayContinue = false;
-  if( inStockRef().type() == good::none )
+  if( inStock().type() == good::none )
   {
     mayContinue = true;
   }
@@ -143,7 +143,7 @@ bool Factory::mayWork() const
     mayContinue = ( haveMaterial() || _d->produceGood );
   }
 
-  mayContinue &= (outStockRef().freeQty() > 0);
+  mayContinue &= (outStock().freeQty() > 0);
 
   return mayContinue;
 }
@@ -161,7 +161,7 @@ void Factory::_weekUpdate(unsigned int time)
     deliverGood();
   }
 
-  if( game::Date::current().month() % 3 == 1 )
+  if( (int)game::Date::current().month() % 3 == 1 )
   {
     _removeSpoiledGoods();
   }
@@ -196,7 +196,7 @@ void Factory::_setUnworkingInterval(unsigned int weeks)
 
 void Factory::_reachUnworkingTreshold() {}
 
-bool Factory::haveMaterial() const {  return (consumeGoodType() != good::none && !inStockRef().empty()); }
+bool Factory::haveMaterial() const {  return (consumeGoodType() != good::none && !inStock().empty()); }
 
 void Factory::timeStep(const unsigned long time)
 {
@@ -269,13 +269,13 @@ std::string Factory::troubleDesc() const
   if( !isActive() )
   {
     std::string goodname = good::Helper::getTypeName( consumeGoodType() );
-    ret = utils::format( 0xff, "##trade_advisor_blocked_%s_production##", goodname.c_str() );
+    ret = fmt::format( "##trade_advisor_blocked_{0}_production##", goodname );
   }
 
   if( ret.empty() && !haveMaterial() && consumeGoodType() != good::none )
   {
     std::string goodname = good::Helper::getTypeName( consumeGoodType() );
-    ret = utils::format( 0xff, "##trouble_need_%s##", goodname.c_str() );
+    ret = fmt::format( "##trouble_need_{0}##", goodname );
   }
 
   return ret;
@@ -304,7 +304,7 @@ void Factory::load( const VariantMap& stream)
 }
 
 Factory::~Factory(){}
-bool Factory::_mayDeliverGood() const {  return ( roadside().size() > 0 ) && ( walkers().size() == 0 );}
+bool Factory::_mayDeliverGood() const {  return ( !roadside().empty() ) && ( walkers().size() == 0 );}
 
 void Factory::_storeChanged(){}
 void Factory::setProductRate( const float rate ){  _d->productionRate = rate;}
@@ -334,7 +334,7 @@ std::string Factory::cartStateDesc() const
   return "";
 }
 
-void Factory::initialize(const MetaData& mdata)
+void Factory::initialize(const object::Info& mdata)
 {
   WorkingBuilding::initialize( mdata );
 
@@ -375,8 +375,8 @@ Creamery::Creamery() : Factory(good::olive, good::oil, object::oil_workshop, Siz
 {
   _picture().load( ResourceGroup::commerce, 99 );
 
-  _animationRef().load(ResourceGroup::commerce, 100, 8);
-  _animationRef().setDelay( 4 );
+  _animation().load(ResourceGroup::commerce, 100, 8);
+  _animation().setDelay( 4 );
   _fgPictures().resize( 3 );
 }
 
@@ -400,7 +400,7 @@ bool Creamery::build( const city::AreaInfo& info )
 
 void Creamery::_storeChanged()
 {
-  _fgPicture(1) = inStockRef().empty() ? Picture() : Picture( ResourceGroup::commerce, 154 );
+  _fgPicture(1) = inStock().empty() ? Picture() : Picture( ResourceGroup::commerce, 154 );
   _fgPicture(1).setOffset( 40, -5 );
 }
 

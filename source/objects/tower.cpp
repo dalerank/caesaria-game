@@ -23,6 +23,7 @@
 #include "fortification.hpp"
 #include "core/direction.hpp"
 #include "walker/wallguard.hpp"
+#include "core/logger.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "walker/trainee.hpp"
 #include "walker/balista.hpp"
@@ -46,7 +47,7 @@ public:
 
   void mayPatroling( const Tile* tile, bool& ret )
   {
-    FortificationPtr f = ptr_cast<Fortification>( tile->overlay() );
+    FortificationPtr f = tile->overlay<Fortification>();
     ret = ( f.isValid() && f->mayPatrol() );
   }
 };
@@ -129,7 +130,7 @@ void Tower::_rebuildWays()
   for( int range = Impl::maxPatrolRange; range > 0; range-- )
   {
     TilePos offset( range, range );
-    TilesArray tiles = _city()->tilemap().getRectangle( pos() - offset,
+    TilesArray tiles = _city()->tilemap().rect( pos() - offset,
                                                               pos() + offset );
     for( auto tile : tiles )
     {
@@ -202,11 +203,16 @@ void Tower::deliverService()
   }
 }
 
+void Tower::burn()
+{
+  Logger::warning( "WARNING: Tower cant be burn. Ignore." );
+}
+
 TilesArray Tower::enterArea() const
 {
   TilesArray tiles = _city()->statistic().map.around( this );
 
-  for( TilesArray::iterator it=tiles.begin(); it != tiles.end(); )
+  for( auto it=tiles.begin(); it != tiles.end(); )
   {
     auto wall = (*it)->overlay<Fortification>();
     if( wall.isValid() && wall->isTowerEnter() ) { ++it; }

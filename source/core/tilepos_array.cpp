@@ -24,9 +24,9 @@ TilePosArray& TilePosArray::operator<<(const TilePos& pos)
   return *this;
 }
 
-TilePosArray& TilePosArray::addIfNot(const TilePos& pos)
+TilePosArray& TilePosArray::addUnique(const TilePos& pos)
 {
-  for( auto&& tpos : *this )
+  for( auto& tpos : *this )
     if( tpos == pos )
       return *this;
 
@@ -45,17 +45,25 @@ TilePos TilePosArray::valueOrEmpty(unsigned int index)
   return index < size() ? at( index ) : TilePos();
 }
 
+TilePosArray&TilePosArray::pop_front()
+{
+  if( !empty() )
+    erase( begin() );
+
+  return *this;
+}
+
 VariantList TilePosArray::save() const
 {
   VariantList ret;
-  for( auto pos : *this ) { ret << pos; }
+  for( auto& pos : *this ) { ret << pos; }
   return ret;
 }
 
 void TilePosArray::load(const VariantList &vlist)
 {
   clear();
-  for( auto&& it : vlist )
+  for( auto& it : vlist )
     push_back( it.toTilePos() );
 }
 

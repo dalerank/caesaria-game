@@ -41,7 +41,7 @@ class ChastenerElephant::Impl
 public:
   void mayMove( const Tile* tile, bool& ret )
   {
-    BuildingPtr f = ptr_cast<Building>( tile->overlay() );
+    BuildingPtr f = tile->overlay<Building>();
     ret = ( tile->isWalkable( true ) || f.isValid() );
   }
 };

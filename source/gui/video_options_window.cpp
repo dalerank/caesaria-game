@@ -67,7 +67,7 @@ VideoOptions::VideoOptions(Widget* parent, gfx::Engine::Modes modes, bool fullsc
   {
     std::string modeStr;
 
-    for( auto mode : modes )
+    for( auto& mode : modes )
     {
       modeStr = utils::format( 0xff, "%dx%d", mode.width(), mode.height() );
       ListBoxItem& item = lbxModes->addItem( modeStr );

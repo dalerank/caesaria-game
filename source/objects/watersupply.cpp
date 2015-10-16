@@ -84,7 +84,7 @@ void Reservoir::addWater(const WaterSource& source)
   WaterSource::addWater( source );
 }
 
-void Reservoir::initialize(const MetaData& mdata)
+void Reservoir::initialize(const object::Info& mdata)
 {
   WaterSource::initialize( mdata );
 
@@ -109,9 +109,9 @@ Reservoir::Reservoir()
   // utilitya 34      - empty reservoir
   // utilitya 35 ~ 42 - full reservoir animation
  
-  _animationRef().load( ResourceGroup::utilitya, 35, 8);
-  _animationRef().load( ResourceGroup::utilitya, 42, 7, Animation::reverse);
-  _animationRef().setDelay( 11 );
+  _animation().load( ResourceGroup::utilitya, 35, 8);
+  _animation().load( ResourceGroup::utilitya, 42, 7, Animation::reverse);
+  _animation().setDelay( 11 );
   //_animationRef().setOffset( Point( 47, 63 ) );
 
   _fgPictures().resize(1);
@@ -134,7 +134,7 @@ bool Reservoir::_isNearWater(PlayerCityPtr city, const TilePos& pos ) const
   bool near_water = false;  // tells if the factory is next to a mountain
 
   Tilemap& tilemap = city->tilemap();
-  TilesArray perimetr = tilemap.getRectangle( pos + TilePos( -1, -1 ), size() + Size( 2 ), !Tilemap::checkCorners );
+  TilesArray perimetr = tilemap.rect( pos + TilePos( -1, -1 ), size() + Size( 2 ), !Tilemap::checkCorners );
 
   foreach( tile, perimetr) { near_water |= (*tile)->getFlag( Tile::tlWater ); }
 
@@ -178,10 +178,10 @@ void Reservoir::timeStep(const unsigned long time)
     _produceWater(offsets, 4);
   }
 
-  _animationRef().update( time );
+  _animation().update( time );
   
   // takes current animation frame and put it into foreground
-  _fgPicture( 0 ) = _animationRef().currentFrame();
+  _fgPicture( 0 ) = _animation().currentFrame();
 }
 
 bool Reservoir::canBuild( const city::AreaInfo& areaInfo ) const
@@ -254,7 +254,7 @@ void WaterSource::_produceWater(const TilePos* points, const int size)
     TilePos p = pos() + points[index];
     if( tilemap.isInside( p ) )
     {
-      SmartPtr<WaterSource> ws = ptr_cast<WaterSource>( tilemap.at( p ).overlay() );
+      auto ws = tilemap.at( p ).overlay<WaterSource>();
     
       if( ws.isValid() )
       {
@@ -274,18 +274,18 @@ void WaterSource::_setError(const std::string& error){  _d->errorStr = error;}
 void WaterSource::broke()
 {
   Tilemap& tilemap = _city()->tilemap();
-  TilesArray tiles = tilemap.getRectangle( pos() - TilePos( 1, 1), size() + Size(2) );
+  TilesArray tiles = tilemap.rect( pos() - TilePos( 1, 1), size() + Size(2) );
 
   int saveWater = water();
   _d->water = 0;
-  foreach( it, tiles )
+  for( auto tile : tiles )
   {
-    SmartPtr<WaterSource> ws = ptr_cast<WaterSource>( (*it)->overlay() );
+    auto waterSource = tile->overlay<WaterSource>();
 
-    if( ws.isValid() )
+    if( waterSource.isValid() )
     {
-      if( ws->water() > 0 && ws->water() < saveWater )
-          ws->broke();
+      if( waterSource->water() > 0 && waterSource->water() < saveWater )
+          waterSource->broke();
     }
   }
 }

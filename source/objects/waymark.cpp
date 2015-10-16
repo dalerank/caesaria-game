@@ -72,10 +72,10 @@ bool Waymark::build( const city::AreaInfo& info )
   }
   else
   {
-    Picture pic = MetaDataHolder::randomPicture( object::terrain, Size(1) );
+    Picture pic = object::Info::find( object::terrain ).randomPicture( Size(1) );
     Tile& oTile = tmap.at( info.pos );
     oTile.setPicture( pic );
-    oTile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+    oTile.setImgId( imgid::fromResource( pic.name() ) );
     deleteLater();
   }
 

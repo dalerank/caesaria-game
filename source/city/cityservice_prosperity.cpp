@@ -122,8 +122,8 @@ void ProsperityRating::_checkStats()
   for( auto house : houses)
   {
     prosperityCap += house->spec().prosperity();
-    _d->now.patricianCount += house->spec().isPatrician() ? house->habitants().count() : 0;
-    _d->now.plebsCount += house->spec().level() < HouseLevel::plebsLevel ? house->habitants().count() : 0;
+    _d->now.patricianCount += (house->spec().isPatrician() ? house->habitants().count() : 0);
+    _d->now.plebsCount += ((int)house->level() < (int)HouseLevel::plebsLevel ? house->habitants().count() : 0);
   }
 
   if( houses.size() > 0 )
