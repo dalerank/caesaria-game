@@ -29,8 +29,7 @@ LOCAL_C_INCLUDES := \
   $(LOCAL_PATH)/$(DEP_PATH)/libpng
 
 # Add your application source files here...
-LOCAL_SRC_FILES := $(SDL_PATH)/src/main/android/SDL_android_main.c \
-  $(subst $(LOCAL_PATH)/,, \
+LOCAL_SRC_FILES := $(subst $(LOCAL_PATH)/,, \
   $(wildcard $(GAME_PATH)/*.cpp) \
   $(wildcard $(GAME_PATH)/core/*.cpp) \
   $(wildcard $(GAME_PATH)/vfs/*.cpp) \
@@ -49,10 +48,10 @@ LOCAL_SRC_FILES := $(SDL_PATH)/src/main/android/SDL_android_main.c \
   $(wildcard $(GAME_PATH)/game/*.cpp) \
   $(wildcard $(GAME_PATH)/thread/*.cpp) \
   $(wildcard $(LOCAL_PATH)/$(STEAM_PATH)/*.cpp) \
-  $(wildcard $(GAME_PATH)/layers/*.cpp)) \
-  $(wildcard $(SDL_PATH)/src/main/android/SDL_android_main.c )
+  $(wildcard $(GAME_PATH)/layers/*.cpp) \
+  $(wildcard $(SDL_PATH)/src/main/android/SDL_android_main.c) )
   
-LOCAL_SHARED_LIBRARIES := SDL2 SDL2_mixer SDL2_net sdl_ttf pnggo lzma bzip2 aes smk
+LOCAL_SHARED_LIBRARIES := SDL2 SDL2_mixer sdl_ttf pnggo lzma bzip2 aes smk
 LOCAL_CPP_FEATURES += exceptions
 LOCAL_CPP_FEATURES += rtti
 LOCAL_LDLIBS := -lGLESv1_CM -lGLESv2 -llog

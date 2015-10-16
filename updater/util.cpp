@@ -89,6 +89,12 @@ bool Util::caesariaIsRunning()
 const std::string systemProcFolder("/proc/");
 const std::string caesariaProcessName("caesaria.linux"); // grayman - looking for tdm now instead of doom3
 
+<<<<<<< HEAD
+namespace
+{
+	const std::string systemProcFolder("/proc/");
+	const std::string caesariaProcessName("caesaria.linux"); // grayman - looking for tdm now instead of doom3
+=======
 bool CheckProcessFile(const std::string& name, const std::string& processName)
 {
   // Try to cast the filename to an integer number (=PID)
@@ -101,6 +107,7 @@ bool CheckProcessFile(const std::string& name, const std::string& processName)
     {
       return false;
     }
+>>>>>>> master
 
     const std::string cmdLineFileName = systemProcFolder + name + "/cmdline";
 
@@ -112,6 +119,8 @@ bool CheckProcessFile(const std::string& name, const std::string& processName)
       std::string cmdLine;
       getline(cmdLineFile, cmdLine);
 
+<<<<<<< HEAD
+=======
       if (cmdLine.find(processName) != std::string::npos)
       {
         // Process found, return success
@@ -130,6 +139,7 @@ bool CheckProcessFile(const std::string& name, const std::string& processName)
   return false;
 }
 
+>>>>>>> master
 bool Util::caesariaIsRunning()
 {
   // Traverse the /proc folder, this sets the flag to TRUE if the process was found
