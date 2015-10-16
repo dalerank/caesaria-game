@@ -6,6 +6,7 @@ public class CaesarIA extends SDLActivity {
    protected String[] getLibraries() {
         return new String[] {
             "SDL2",
+            "SDL2_mixer",
             "aes",
             "bzip2",
             "lzma",
