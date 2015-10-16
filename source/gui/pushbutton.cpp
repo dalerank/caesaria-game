@@ -495,7 +495,7 @@ bool PushButton::_btnMouseUp( const NEvent& event )
 
 bool PushButton::_leftMouseBtnPressed( const NEvent& event )
 {
-  if( _environment->hasFocus(this) &&
+  if( ui()->hasFocus(this) &&
       !absoluteClippingRect().isPointInside( event.mouse.pos() ) )
   {
     removeFocus();

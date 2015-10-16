@@ -281,6 +281,11 @@ void Construction::initialize(const object::Info& mdata)
   }
 }
 
+const Picture&Construction::picture(const city::AreaInfo& info) const
+{
+  return Overlay::picture( info );
+}
+
 double Construction::state(Param param) const { return _d->states[ param ]; }
 
 TilesArray Construction::enterArea() const
@@ -303,10 +308,5 @@ void Construction::timeStep(const unsigned long time)
   _d->extensions.merge();
 
   Overlay::timeStep( time );
-}
-
-const Picture& Construction::picture(const city::AreaInfo& areaInfo) const
-{
-  return Overlay::picture();
 }
 

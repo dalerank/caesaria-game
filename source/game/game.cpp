@@ -268,7 +268,7 @@ void Game::Impl::initUI()
 {
   Logger::warning( "Game: initialize gui" );
 
-  gui = new gui::Ui( *engine, engine->screenSize() );
+  gui = new gui::Ui( *engine );
   gui::infobox::Manager::instance().setBoxLock( KILLSWITCH( lockInfobox ) );
 }
 

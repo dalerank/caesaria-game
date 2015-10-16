@@ -36,6 +36,7 @@
 #include "game/funds.hpp"
 #include "game/settings.hpp"
 #include "walker/walker.hpp"
+#include "objects/objects_factory.hpp"
 #include "gfx/tilearea.hpp"
 #include "gfx/city_renderer.hpp"
 #include "gfx/helper.hpp"
@@ -68,7 +69,6 @@ public:
   bool needUpdateTiles;
   int drawLayerIndex;
   int frameCount;
-  int money4Construction;
   Renderer* renderer;
   LayerPtr lastLayer;
   std::string resForbiden;
@@ -107,13 +107,13 @@ void Constructor::_discardPreview()
 void Constructor::_checkPreviewBuild(TilePos pos)
 {
   __D_IMPL(d,Constructor);
-  BuildModePtr bldCommand =  d->renderer->mode().as<BuildMode>();
+  auto command =  d->renderer->mode().as<EditorMode>();
 
-  if (bldCommand.isNull())
+  if (command.isNull())
     return;
 
   // TODO: do only when needed, when (i, j, _buildInstance) has changed
-  ConstructionPtr overlay = bldCommand->contruction();
+  OverlayPtr overlay = command->overlay();
 
   if( !overlay.isValid() )
   {
@@ -121,30 +121,12 @@ void Constructor::_checkPreviewBuild(TilePos pos)
   }
 
   Size size = overlay->size();
-  int cost = overlay->info().cost();
-
-  bool walkersOnTile = false;
-  if( bldCommand->flag( LayerMode::checkWalkers ) )
-  {
-    TilesArray tiles = _city()->tilemap().area( pos, size );
-    for( auto tile : tiles )
-    {
-      auto walkers = _city()->walkers( tile->epos() );
-
-      if( !walkers.empty() )
-      {
-        walkersOnTile = true;
-        break;
-      }
-    }
-  }
 
   city::AreaInfo areaInfo( _city(), pos, &d->buildTiles );
-  if( !walkersOnTile && overlay->canBuild( areaInfo ) )
+  //if( overlay->canBuild( areaInfo ) )
   {
     Tilemap& tmap = _city()->tilemap();
     Tile *masterTile=0;
-    d->money4Construction += cost;
     for (int dj = 0; dj < size.height(); ++dj)
     {
       for (int di = 0; di < size.width(); ++di)
@@ -158,14 +140,15 @@ void Constructor::_checkPreviewBuild(TilePos pos)
           // this is the masterTile
           masterTile = tile;
         }
+        auto clone = TileOverlayFactory::instance().create( overlay->type() );
         tile->setPicture( tmap.at( pos + TilePos( di, dj ) ).picture() );
         tile->setMaster( masterTile );
-        tile->setOverlay( overlay.as<Overlay>() );
+        tile->setOverlay( clone );
         d->buildTiles.push_back( tile );
       }
     }
   }
-  else
+  /*else
   {
     Tilemap& tmap = _city()->tilemap();
     for (int dj = 0; dj < size.height(); ++dj)
@@ -194,7 +177,7 @@ void Constructor::_checkPreviewBuild(TilePos pos)
         d->buildTiles.push_back( tile );
       }
     }
-  }
+  }*/
 }
 
 void Constructor::_checkBuildArea()
@@ -234,7 +217,6 @@ void Constructor::_updatePreviewTiles( bool force )
   d->lastTilePos = curTile->epos();
 
   _discardPreview();
-  d->money4Construction = 0;
 
   if( d->borderBuilding )
   {
@@ -286,64 +268,32 @@ void Constructor::_updatePreviewTiles( bool force )
 
   d->sortBuildTiles();
 
-  d->text.image.fill( 0x0, Rect() );
+  /*d->text.image.fill( 0x0, Rect() );
   d->text.font.setColor( 0xffff0000 );
-  d->text.font.draw( d->text.image, utils::i2str( d->money4Construction ) + " Dn", Point() );
+  d->text.font.draw( d->text.image, utils::i2str( d->money4Construction ) + " Dn", Point() );*/
 }
 
 void Constructor::_buildAll()
 {
   __D_IMPL(d,Constructor);
-  BuildModePtr bldCommand = d->renderer->mode().as<BuildMode>();
-  if( bldCommand.isNull() )
+  auto command = d->renderer->mode().as<EditorMode>();
+  if( command.isNull() )
     return;
 
-  ConstructionPtr cnstr = bldCommand->contruction();
-
-  if( !cnstr.isValid() )
+  if( d->buildTiles.empty() )
   {
-    Logger::warning( "LayerBuild: No construction for build" );
+    Logger::warning( "LayerEditor: No tiles for build" );
     return;
   }
 
-  if( !_city()->treasury().haveMoneyForAction( 1 ) )
-  {
-    auto event = WarningMessage::create( "##out_of_credit##", 2 );
-    event->dispatch();
-    return;
-  }
-
-  bool buildOk = false;  
-  bool tileBusyBuilding = false;
   city::AreaInfo areaInfo( _city(), TilePos() );
   for( auto tile : d->buildTiles )
   {
     areaInfo.pos = tile->epos();
-    tileBusyBuilding |= tile->overlay().is<Building>();
-
-    if( cnstr->canBuild( areaInfo ) && tile->isMaster())
-    {
-      auto event = BuildAny::create( tile->epos(), cnstr->type() );
-      event->dispatch();
-      buildOk = true;
-
-      emit d->onBuildSignal( cnstr->type(), tile->epos(), cnstr->info().cost() );
-    }
+    tile->overlay()->build( areaInfo );
   }
 
   d->startTilePos = d->lastTilePos;
-
-  if( !buildOk )
-  {
-    std::string errorStr = cnstr->errorDesc();
-    std::string busyText = tileBusyBuilding
-                              ? "##need_build_on_free_area##"
-                              : "##need_build_on_cleared_area##";
-    auto event = WarningMessage::create( errorStr.empty() ? busyText : errorStr,
-                                         WarningMessage::neitral );
-    event->dispatch();
-  }
-
   d->needUpdateTiles = true;
 }
 
@@ -476,19 +426,19 @@ void Constructor::_drawBuildTile( Engine& engine, Tile* tile, const Point& offse
   if( postTile->master() )
     postTile = postTile->master();
 
-  ConstructionPtr construction = postTile->overlay<Construction>();
+  auto overlay = postTile->overlay();
   engine.resetColorMask();
 
   areaInfo.pos = postTile->epos();
   bool maskSet = false;
   Size size(1,1);
 
-  if( construction.isValid() && construction->canBuild( areaInfo ) )
+  if( overlay.isValid() )
   {
     engine.setColorMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
     maskSet = true;
 
-    size = construction->size();
+    size = overlay->size();
   }
 
   if( postTile == tile && maskSet )
@@ -506,7 +456,7 @@ void Constructor::_drawBuildTile( Engine& engine, Tile* tile, const Point& offse
 
   if( maskSet )
   {
-    const Picture& picOver = construction->picture( areaInfo );
+    const Picture& picOver = overlay->picture( areaInfo );
     engine.draw( picOver, postTile->mappos() + offset );
     drawPass( engine, *postTile, offset, Renderer::overlayAnimation );
     engine.resetColorMask();
@@ -538,15 +488,15 @@ void Constructor::drawTile( Engine& engine, Tile& tile, const Point& offset )
   __D_IMPL(_d,Constructor);
   Point screenPos = tile.mappos() + offset;
 
-  ConstructionPtr cntr = tile.overlay<Construction>();
+  auto overlay = tile.overlay();
   city::AreaInfo info( _city(), tile.epos(), &_d->buildTiles );
 
   const Picture* picBasic = 0;
   const Picture* picOver = 0;
-  if( cntr.isValid() && info.tiles().size() > 0 )
+  if( overlay.isValid() && info.tiles().size() > 0 )
   {
-    picBasic = &cntr->picture();
-    picOver = &cntr->picture( info );
+    picBasic = &overlay->picture();
+    picOver = &overlay->picture( info );
   }
 
   if( picOver && picBasic != picOver )
@@ -580,10 +530,10 @@ void Constructor::render( Engine& engine)
   __D_IMPL(d,Constructor);
   Layer::render( engine );
 
-  if( ++d->frameCount >= frameCountLimiter)
+  /*if( ++d->frameCount >= frameCountLimiter)
   {
     _updatePreviewTiles( true );
-  }
+  }*/
 
   d->frameCount %= frameCountLimiter;
 
@@ -594,7 +544,7 @@ void Constructor::render( Engine& engine)
 void Constructor::_initBuildMode()
 {
   __D_IMPL(_d,Constructor);
-  BuildModePtr command = _d->renderer->mode().as<BuildMode>();
+  auto command = _d->renderer->mode().as<EditorMode>();
   Logger::warningIf( !command.isValid(), "LayerBuild: init unknown command" );
 
   _d->multiBuilding = command.isValid() ? command->flag( LayerMode::multibuild ) : false;

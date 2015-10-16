@@ -200,8 +200,10 @@ void SdlEngine::init()
 
 #ifdef CAESARIA_PLATFORM_ANDROID
   auto mode = modes().front();
-  _srcSize = Size( mode.width(), mode.height() );
-  Logger::warning( "SDLGraficEngine: Android set mode {0}x{0}",  _srcSize.width(), _srcSize.height() );
+  Size s( mode.width(), mode.height() );
+  Logger::warning( "SDLGraficEngine: Android set mode {0}x{0}",  s.width(), s.height() );
+
+  _srcSize = Size( s.width() * ( 768.f / s.height()), 768 );
 
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 

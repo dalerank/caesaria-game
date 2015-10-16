@@ -241,6 +241,11 @@ TilePos Overlay::pos() const
   return _d->masterTile->epos();
 }
 
+const Picture& Overlay::picture(const city::AreaInfo& areaInfo) const
+{
+  return picture();
+}
+
 std::string Overlay::sound() const
 {
   return info().sound();

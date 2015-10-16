@@ -71,7 +71,9 @@ struct IDDB
   struct _Menu
   {
     int house = 123;
+    int clear = 131;
     int terrain = 183;
+    int forest = 186;
     int helpInf = 528;
     int arrowDown = 601;
     int arrowUp = 605;
