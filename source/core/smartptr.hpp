@@ -122,7 +122,7 @@ public:
   }
 
   template<class Dst>
-  bool is()
+  bool is() const
   {
     return safety_cast<Dst*>( obj ) != 0;
   }

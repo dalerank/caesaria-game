@@ -137,6 +137,10 @@ Renderer::ModePtr EditorMode::create(object::Type type)
   {
     newCommand->_setFlag( multibuild, true );
   }
+  else if( type == object::tree )
+  {
+    newCommand->_setFlag( multibuild, true );
+  }
 
   Renderer::ModePtr ret( newCommand );
   ret->drop();

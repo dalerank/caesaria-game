@@ -56,7 +56,6 @@ public:
   virtual bool isDestructible() const;
   virtual bool isFlat() const;
   virtual void initTerrain( gfx::Tile& terrain ) = 0;
-
   virtual std::string errorDesc() const;
 
   virtual bool build( const city::AreaInfo& info );

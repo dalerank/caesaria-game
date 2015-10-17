@@ -13,9 +13,9 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#include "terrain.hpp"
+#include "coast.hpp"
 #include "gfx/tile.hpp"
 #include "game/resourcegroup.hpp"
 #include "city/city.hpp"
@@ -27,18 +27,18 @@
 
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(object::terrain, Terrain)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::coast, Coast)
 
 namespace {
   static Renderer::PassQueue riftPassQueue=Renderer::PassQueue(1,Renderer::ground);
 }
 
-Terrain::Terrain() : Overlay( object::terrain, Size(1) )
+Coast::Coast() : Overlay( object::terrain, Size(1) )
 {
   setPicture( computePicture() );
 }
 
-bool Terrain::build( const city::AreaInfo& info )
+bool Coast::build( const city::AreaInfo& info )
 {
   Overlay::build( info );
   tile().setPicture( picture() );
@@ -47,12 +47,13 @@ bool Terrain::build( const city::AreaInfo& info )
   return true;
 }
 
-void Terrain::initTerrain(Tile& terrain)
+void Coast::initTerrain(Tile& terrain)
 {
   terrain.setFlag( Tile::clearAll, true );
+  terrain.setFlag( Tile::tlWater, true );
 }
 
-Picture Terrain::computePicture()
+Picture Coast::computePicture()
 {
   int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
   int imgId = math::random( 58-1 );
@@ -60,13 +61,13 @@ Picture Terrain::computePicture()
   return Picture( ResourceGroup::land1a, startOffset + imgId );
 }
 
-bool Terrain::isWalkable() const{ return true;}
-bool Terrain::isFlat() const { return true;}
-void Terrain::destroy() {}
-bool Terrain::isDestructible() const { return false;}
-Renderer::PassQueue Terrain::passQueue() const {  return riftPassQueue; }
+bool Coast::isWalkable() const{ return true;}
+bool Coast::isFlat() const { return true;}
+void Coast::destroy() {}
+bool Coast::isDestructible() const { return false;}
+Renderer::PassQueue Coast::passQueue() const {  return riftPassQueue; }
 
-void Terrain::updatePicture()
+void Coast::updatePicture()
 {
   setPicture( computePicture() );
   tile().setPicture( picture() );

@@ -34,6 +34,7 @@
 #include "gfx/renderermode.hpp"
 #include "events/warningmessage.hpp"
 #include "game/funds.hpp"
+#include "objects/tree.hpp"
 #include "game/settings.hpp"
 #include "walker/walker.hpp"
 #include "objects/objects_factory.hpp"
@@ -87,6 +88,7 @@ public:
   Signal3<object::Type,TilePos,int> onBuildSignal;
 public:
   void sortBuildTiles();
+  bool canBuildOn( OverlayPtr overlay, city::AreaInfo& areaInfo);
 };
 
 void Constructor::_discardPreview()
@@ -104,7 +106,7 @@ void Constructor::_discardPreview()
   d->cachedTiles.clear();
 }
 
-void Constructor::_checkPreviewBuild(TilePos pos)
+void Constructor::_checkPreviewBuild(const TilePos& pos)
 {
   __D_IMPL(d,Constructor);
   auto command =  d->renderer->mode().as<EditorMode>();
@@ -123,7 +125,7 @@ void Constructor::_checkPreviewBuild(TilePos pos)
   Size size = overlay->size();
 
   city::AreaInfo areaInfo( _city(), pos, &d->buildTiles );
-  //if( overlay->canBuild( areaInfo ) )
+  if( d->canBuildOn( overlay, areaInfo ) )
   {
     Tilemap& tmap = _city()->tilemap();
     Tile *masterTile=0;
@@ -144,7 +146,11 @@ void Constructor::_checkPreviewBuild(TilePos pos)
         tile->setPicture( tmap.at( pos + TilePos( di, dj ) ).picture() );
         tile->setMaster( masterTile );
         tile->setOverlay( clone );
-        d->buildTiles.push_back( tile );
+        bool added = d->buildTiles.appendOnce( tile );
+        if( !added )
+        {
+          delete tile;
+        }
       }
     }
   }
@@ -263,8 +269,29 @@ void Constructor::_updatePreviewTiles( bool force )
     TilesArray tiles = _getSelectedArea( d->startTilePos );
 
     for( auto tile : tiles )
+    {
+      Size size;
+      Tile* master = tile->master() ? tile->master() : tile;
+      if( tile->overlay().isValid() )
+      {
+         size = tile->overlay()->size();
+      }
+      else
+      {
+         size = Size( gfx::tile::width2size( tile->picture().width() ) );
+      }
+
+      if( size.area() > 1 )
+      {
+        TilesArray apTiles = _city()->tilemap().area( master->epos(), size );
+        for( auto aptile : apTiles )
+          tiles.appendOnce( aptile );
+      }
+    }
+
+    for( auto tile : tiles )
       _checkPreviewBuild( tile->epos() );
-  }  
+  }
 
   d->sortBuildTiles();
 
@@ -284,11 +311,11 @@ void Constructor::_buildAll()
   {
     Logger::warning( "LayerEditor: No tiles for build" );
     return;
-  }
+  }  
 
   city::AreaInfo areaInfo( _city(), TilePos() );
   for( auto tile : d->buildTiles )
-  {
+  {    
     areaInfo.pos = tile->epos();
     tile->overlay()->build( areaInfo );
   }
@@ -444,15 +471,15 @@ void Constructor::_drawBuildTile( Engine& engine, Tile* tile, const Point& offse
   if( postTile == tile && maskSet )
   {
     TilesArray area = _city()->tilemap().area( areaInfo.pos, size );
-    for( auto gtile : area )
+    /*for( auto gtile : area )
     {
       drawPass( engine, *gtile, offset, Renderer::ground );
       drawPass( engine, *gtile, offset, Renderer::groundAnimation );
-    }
+    }*/
   }
 
-  drawPass( engine, *postTile, offset, Renderer::ground );
-  drawPass( engine, *postTile, offset, Renderer::groundAnimation );
+  //drawPass( engine, *postTile, offset, Renderer::ground );
+  //drawPass( engine, *postTile, offset, Renderer::groundAnimation );
 
   if( maskSet )
   {
@@ -507,7 +534,8 @@ void Constructor::drawTile( Engine& engine, Tile& tile, const Point& offset )
   }
   else if( _d->lastLayer.isValid() )
   {
-    _d->lastLayer->drawTile( engine, tile, offset );
+    if( _d->cachedTiles.count( tile::hash( tile.epos() ) ) == 0 )
+      _d->lastLayer->drawTile( engine, tile, offset );
   }
   else
   {
@@ -520,7 +548,8 @@ void Constructor::drawTile( Engine& engine, Tile& tile, const Point& offset )
 
 void Constructor::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, const int depth, bool force)
 {
-  Layer::drawProminentTile( engine, tile, offset, depth, force );
+  if( _dfunc()->cachedTiles.count( tile::hash( tile.epos() ) ) == 0 )
+    Layer::drawProminentTile( engine, tile, offset, depth, force );
 
   _tryDrawBuildTile( engine, tile, offset );
 }
@@ -692,6 +721,22 @@ void Constructor::Impl::sortBuildTiles()
   cachedTiles.clear();
   for( auto t : buildTiles )
     cachedTiles[ tile::hash( t->epos() ) ] = t;
+}
+
+bool Constructor::Impl::canBuildOn(OverlayPtr overlay, city::AreaInfo& areaInfo)
+{
+  if( overlay->type() == object::terrain )
+  {
+    return true;
+  }
+  else if( overlay->type() == object::tree )
+  {
+    bool walkable = areaInfo.tile().isWalkable( true );
+    bool isTree = is_kind_of<Tree>(areaInfo.tile().overlay());
+    return (walkable || isTree );
+  }
+
+  return false;
 }
 
 }//end namespace citylayer

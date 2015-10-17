@@ -53,6 +53,13 @@ private:
   EnumsHelper<int> _helper;
 };
 
+struct RenderInfo
+{
+  gfx::Engine& engine;
+  gfx::Tile& tile;
+  const Point& offset;
+};
+
 class Layer : public ReferenceCounted
 {
 public:
@@ -66,6 +73,7 @@ public:
 
   //draw gfx active tile
   virtual void drawTile(gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
+  virtual void drawOverlayedTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
 
   //draw gfx after walkers
   virtual void drawWalkerOverlap(gfx::Engine& engine, gfx::Tile& tile, const Point& offset, const int depth );

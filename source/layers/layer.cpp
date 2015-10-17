@@ -65,6 +65,11 @@ public:
   Picture outline;
 
   struct {
+    bool buildings;
+    bool trees;
+  } draw;
+
+  struct {
     Picture image;
     std::string text;
   } tooltip;
@@ -383,30 +388,33 @@ void Layer::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, 
 
 void Layer::drawTile(Engine& engine, Tile& tile, const Point& offset)
 {
+  __D_IMPL(_d,Layer)
   if( !tile.rendered() )
   {
     if( tile.rov().isValid() )
     {
       registerTileForRendering( tile );
 
-      bool breakBuilding = is_kind_of<Building>( tile.rov() ) && !DrawOptions::instance().isFlag( DrawOptions::showBuildings );
-      bool breakTree = is_kind_of<Tree>( tile.rov() ) && !DrawOptions::instance().isFlag( DrawOptions::showTrees );
+      bool breakBuilding = is_kind_of<Building>( tile.rov() ) && !_d->draw.buildings;
+      bool breakTree = is_kind_of<Tree>( tile.rov() ) && !_d->draw.trees;
 
       if( !(breakBuilding || breakTree) )
-      {
-        drawPass( engine, tile, offset, Renderer::overlayGround );
-        drawPass( engine, tile, offset, Renderer::overlay );
-        drawPass( engine, tile, offset, Renderer::overlayAnimation );
-      }
+        drawOverlayedTile( engine, tile, offset );
     }
     else
     {
-      drawPass( engine, tile, offset, Renderer::ground );
-      drawPass( engine, tile, offset, Renderer::groundAnimation );
+      drawLandTile( engine, tile, offset );
     }
 
     tile.setRendered();
   }
+}
+
+void Layer::drawOverlayedTile(Engine& engine, Tile& tile, const Point& offset)
+{
+  drawPass( engine, tile, offset, Renderer::overlayGround );
+  drawPass( engine, tile, offset, Renderer::overlay );
+  drawPass( engine, tile, offset, Renderer::overlayAnimation );
 }
 
 void Layer::drawArea(Engine& engine, const TilesArray& area, const Point &offset, const std::string &resourceGroup, int tileId)
@@ -465,6 +473,9 @@ void Layer::init( Point cursor )
 
 void Layer::beforeRender(Engine&)
 {
+  __D_IMPL(_d,Layer)
+  _d->draw.buildings = DrawOptions::instance().isFlag( DrawOptions::showBuildings );
+  _d->draw.trees = DrawOptions::instance().isFlag( DrawOptions::showTrees );
 }
 
 void Layer::afterRender(Engine& engine)
@@ -741,6 +752,7 @@ DrawOptions::DrawOptions() : _helper(0)
   _O(showBuildings)
   _O(showTrees)
   _O(overdrawOnBuild)
+  _O(rotateEnabled)
 #undef _O
 }
 

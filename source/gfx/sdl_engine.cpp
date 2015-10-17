@@ -216,13 +216,14 @@ void SdlEngine::init()
 
   if( isFullscreen() )
   {
+    auto mode = modes().front();
+    Size s( mode.width(), mode.height() );
+
     window = SDL_CreateWindow("CaesariA",
                               SDL_WINDOWPOS_UNDEFINED,
                               SDL_WINDOWPOS_UNDEFINED,
-                              1600, 900,
+                              s.width(), s.height(),
                               SDL_WINDOW_OPENGL|SDL_WINDOW_FULLSCREEN_DESKTOP|SDL_WINDOW_SHOWN );
-
-
   }
   else
   {

@@ -15,33 +15,28 @@
 //
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_CITYAREAINFO_H_INCLUDED__
-#define __CAESARIA_CITYAREAINFO_H_INCLUDED__
+#ifndef __CAESARIA_COAST_H_INCLUDE__
+#define __CAESARIA_COAST_H_INCLUDE__
 
-#include "predefinitions.hpp"
-#include "gfx/predefinitions.hpp"
-#include "core/position.hpp"
+#include "objects/overlay.hpp"
 
-namespace city
-{
-
-class AreaInfo
+class Coast : public Overlay
 {
 public:
-  PlayerCityPtr city;
-  TilePos pos;
+  Coast();
 
-  const gfx::TilesArray& tiles() const;
-  const gfx::Tile& tile() const;
+  virtual gfx::Picture computePicture();
+  void updatePicture();
+  RiverList neighbors() const;
 
-  AreaInfo(PlayerCityPtr rcity,
-           const TilePos& rpos,
-           const gfx::TilesArray* tiles = 0);
+  virtual bool build( const city::AreaInfo& info );
+  virtual void initTerrain( gfx::Tile &terrain);
+  virtual bool isWalkable() const;
+  virtual bool isFlat() const;
+  virtual void destroy();
+  virtual bool isDestructible() const;
 
-private:
-  const gfx::TilesArray* _tiles;
+  virtual gfx::Renderer::PassQueue passQueue() const;
 };
 
-}//end namespace city
-
-#endif //__CAESARIA_CITYAREAINFO_H_INCLUDED__
+#endif //__CAESARIA_COAST_H_INCLUDE__
