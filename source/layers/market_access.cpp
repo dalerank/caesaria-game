@@ -41,14 +41,12 @@ static const char* marketLevelName[maxAccessLevel] = {
 
 int MarketAccess::type() const {  return citylayer::market; }
 
-void MarketAccess::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void MarketAccess::drawTile(const RenderInfo& rinfo, Tile& tile)
 {
-  Point screenPos = tile.mappos() + offset;
-
   if( tile.overlay().isNull() )
   {
-    drawPass( engine, tile, offset, Renderer::ground );
-    drawPass( engine, tile, offset, Renderer::groundAnimation );
+    drawPass( rinfo, tile, Renderer::ground );
+    drawPass( rinfo, tile, Renderer::groundAnimation );
   }
   else
   {
@@ -68,22 +66,23 @@ void MarketAccess::drawTile(Engine& engine, Tile& tile, const Point& offset)
 
       if( !needDrawAnimations )
       {
-        drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
+        drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
       }
     }
     else
     {
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.base );
+      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base );
     }
 
     if( needDrawAnimations )
     {
-      Layer::drawTile( engine, tile, offset );
+      Layer::drawTile( rinfo, tile );
       registerTileForRendering( tile );
     }
     else if( accessLevel >= 0 )
     {
-      drawColumn( engine, screenPos, accessLevel );
+      Point screenPos = tile.mappos() + rinfo.offset;
+      drawColumn( rinfo, screenPos, accessLevel );
     }
   }
 
