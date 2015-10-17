@@ -48,8 +48,8 @@ void ShowLoadDialog::_exec(Game& game, unsigned int)
 
   Widget* parent = game.gui()->rootWidget();
 
-  vfs::Path savesPath = SETTINGS_VALUE( savedir ).toString();
-  std::string defaultExt = SETTINGS_VALUE( saveExt ).toString();
+  vfs::Path savesPath = SETTINGS_STR( savedir );
+  std::string defaultExt = SETTINGS_STR( saveExt );
   dialog::LoadFile* wnd = dialog::LoadFile::create( parent, Rect(), savesPath, defaultExt,-1 );
 
   CONNECT( wnd, onSelectFile(), lvl, scene::Level::loadStage );

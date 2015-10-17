@@ -29,6 +29,11 @@
     disabled : [ "paneling", 531 ]
   }
 
+  layoutCallbacks#HLayout :
+  {
+    geometry : [ 32, "ph-40", "pw-32", "ph-16" ]
+  }
+
   btnExit#TexturedButton :
   {
     tooltip : "##infobox_tooltip_exit##"

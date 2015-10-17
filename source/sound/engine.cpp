@@ -97,7 +97,7 @@ public:
   static const int maxSamplesNumber = 64;
   bool useSound;
 
-  typedef std::map< audio::SoundType, int > Volumes;
+  typedef std::map< audio::SoundType, Volume > Volumes;
   typedef std::map< unsigned int, std::string > Aliases;
   typedef std::list< Directory > Folders;
   typedef std::map< unsigned int, ByteArray > SoundCache;
@@ -118,7 +118,7 @@ public:
 
 public:
   void nextLoad();
-  unsigned int volume( SoundType type );
+  Volume volume( SoundType type );
   unsigned int loadSound( const std::string& filename );
   void stop( const std::string& name );
   void clearFinishedChannels();
@@ -127,7 +127,7 @@ public:
   vfs::Path findFullPath(const std::string& sampleName );
 };
 
-void Engine::setVolume( audio::SoundType type, int value)
+void Engine::setVolume(audio::SoundType type, Volume value)
 {
   _d->volumes[ type ] = value;
   _updateSamplesVolume();
@@ -143,7 +143,7 @@ void Engine::loadAlias(const vfs::Path& filename)
 }
 
 void Engine::addFolder(Directory dir) {  _d->folders.push_back( dir ); }
-int Engine::volume(audio::SoundType type) const { return _d->volume( type ); }
+Volume Engine::volume(audio::SoundType type) const { return _d->volume( type ); }
 
 int Engine::maxVolumeValue() const { return 100; }
 
@@ -293,7 +293,7 @@ unsigned int Engine::Impl::loadSound(const std::string& sampleName)
 
     if( realPath.toString().empty() )
     {
-      Logger::warning( "SoundEngine: could not find sound %s", sampleName.c_str() );
+      Logger::warning( "SoundEngine: could not find sound {0}", sampleName );
       return 0;
     }
 
@@ -305,7 +305,7 @@ unsigned int Engine::Impl::loadSound(const std::string& sampleName)
 
     if( data.empty() )
     {
-      Logger::warning( "SoundEngine: could not load sound (%s)", realPath.toCString() );
+      Logger::warning( "SoundEngine: could not load sound {0}", realPath.toString() );
       return 0;
     }
 
@@ -314,7 +314,7 @@ unsigned int Engine::Impl::loadSound(const std::string& sampleName)
     sample.sound = realPath.toString();
     if(sample.chunk == NULL)
     {
-      Logger::warning( "SoundEngine: could not load sound (%s) with error:%s", realPath.toCString(), SDL_GetError() );
+      Logger::warning( "SoundEngine: could not load sound ({0}) with error:{1}", realPath.toString(), SDL_GetError() );
       return 0;
     }
 

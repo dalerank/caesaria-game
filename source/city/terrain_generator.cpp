@@ -213,7 +213,7 @@ static void __removeCorners(Game& game )
     {
       TilePos tpos = TilePos( i, j );
       Tile& wtile = oTilemap.at( tpos );
-      if( wtile.originalImgId() == 0 ||
+      if( wtile.imgId() == 0 ||
           wtile.getFlag( Tile::tlWater ) || wtile.getFlag( Tile::tlDeepWater ) )
         continue;
 
@@ -224,7 +224,7 @@ static void __removeCorners(Game& game )
         if( isWater )
         {
           wtile.setFlag( Tile::clearAll, true );
-          wtile.setOriginalImgId( 0 );
+          wtile.setImgId( 0 );
           wtile.setPicture( Picture() );
           break;
         }
@@ -264,7 +264,7 @@ static void __finalizeMap(Game& game, int pass )
     {
       TilePos tpos = TilePos( i, j );
       Tile& wtile = oTilemap.at( tpos );
-      if( wtile.originalImgId() > 0 )
+      if( wtile.imgId() > 0 )
         continue;
 
       int direction = 0;
@@ -349,8 +349,8 @@ static void __finalizeMap(Game& game, int pass )
       case passCheckInsideCornerTiles:
         switch( direction )
         {
-        case drNE: start=PicID::coastNE; break;
-        case drSE: start=PicID::coastSE; break;
+        case drNE: start=config::id.empire.coastNE; break;
+        case drSE: start=config::id.empire.coastSE; break;
         case 0x40: start=152; break;
         case 0x80: start=156; break;
         }
@@ -398,14 +398,14 @@ static void __finalizeMap(Game& game, int pass )
           Picture pic( ResourceGroup::land1a, 62 + math::random( 56 ) );
           wtile.setPicture( pic );
           //wtile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
-          wtile.setOriginalImgId( direction );
+          wtile.setImgId( direction );
         }
         break;
         }
       break;
 
       case 0xff:
-        wtile.setOriginalImgId( direction );
+        wtile.setImgId( direction );
       break;
       }
 
@@ -418,7 +418,7 @@ static void __finalizeMap(Game& game, int pass )
         wtile.setFlag( Tile::tlCoast, true );
         Picture pic( ResourceGroup::land1a, start + rnd );
         wtile.setPicture( pic );
-        wtile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+        wtile.setImgId( imgid::fromResource( pic.name() ) );
       }
     }
 }
@@ -580,7 +580,7 @@ static void __createRivers(Game& game )
         OverlayPtr overlay = TileOverlayFactory::instance().create( object::river );
 
         tile->setPicture( Picture::getInvalid() );
-        tile->setOriginalImgId( 0 );
+        tile->setImgId( 0 );
 
         bool isWater = tile->getFlag( Tile::tlWater );
 
@@ -662,9 +662,9 @@ static void __createRoad(Game& game )
     {
       OverlayPtr overlay = TileOverlayFactory::instance().create( object::road );
 
-      Picture pic( ResourceGroup::land1a, PicID::grassPic + math::random( PicID::grassPicsNumber-1 ) );
+      Picture pic( ResourceGroup::land1a, config::id.empire.grassPic + math::random( config::id.empire.grassPicsNumber-1 ) );
       tile->setPicture( pic );
-      tile->setOriginalImgId( imgid::fromResource( pic.name() ) );
+      tile->setImgId( imgid::fromResource( pic.name() ) );
 
       city::AreaInfo info( oCity, tile->epos() );
       overlay->build( info );
@@ -783,7 +783,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
 
   oCity->resize( mapSize );
 
-  Logger::warning( "W:%d H:%d", diamond_square.width(), diamond_square.height() );
+  Logger::warning( "W:{0} H:{1}", diamond_square.width(), diamond_square.height() );
 
   for( unsigned int index = 0; index < map.size(); index++)
   {
@@ -806,7 +806,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
         tile.setFlag( Tile::tlDeepWater, true );
         Picture pic( ResourceGroup::land1a, 120 );
         tile.setPicture( pic );
-        tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+        tile.setImgId( imgid::fromResource( pic.name() ) );
       }
       break;
 
@@ -816,7 +816,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
         tile.setFlag( Tile::tlDeepWater, true );
         Picture pic( ResourceGroup::land1a, 120 );
         tile.setPicture( pic );
-        tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+        tile.setImgId( imgid::fromResource( pic.name() ) );
       }
       break;
 
@@ -826,7 +826,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
         tile.setFlag( Tile::tlWater, true );
         Picture pic( ResourceGroup::land1a, 120 );
         tile.setPicture( pic );
-        tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+        tile.setImgId( imgid::fromResource( pic.name() ) );
       }
       break;
 
@@ -840,7 +840,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
         color = NColor( 255, 7, 192, 53);
         Picture pic( ResourceGroup::land1a, 62 + math::random( 56 ) );
         tile.setPicture( pic );
-        tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+        tile.setImgId( imgid::fromResource( pic.name() ) );
       }
       break;
 
@@ -865,11 +865,11 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
           tile.setFlag( Tile::tlTree, true );
         }
 
-        Picture land = MetaDataHolder::randomPicture( object::terrain, Size(1) );
+        Picture land = object::Info::find( object::terrain ).randomPicture( Size(1) );
         tile.setPicture( land );
 
         Picture tree( ResourceGroup::land1a, start + math::random( rnd ) );
-        tile.setOriginalImgId( imgid::fromResource( tree.name() ) );
+        tile.setImgId( imgid::fromResource( tree.name() ) );
 
         OverlayPtr overlay = TileOverlayFactory::instance().create( object::tree );
         if( overlay != NULL )
@@ -889,7 +889,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
         //tile.setFlag( Tile::tlRock, true );
         tile.setPicture( pic );
         //tile.setHeight( 1 );
-        tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+        tile.setImgId( imgid::fromResource( pic.name() ) );
       }
       break;
 
@@ -899,7 +899,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
         Picture pic( ResourceGroup::land1a, 290 + math::random( 6 ) );
         tile.setFlag( Tile::tlRock, true );
         tile.setPicture( pic );
-        tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+        tile.setImgId( imgid::fromResource( pic.name() ) );
       }
       break;
 

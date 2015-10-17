@@ -140,7 +140,7 @@ void WarehouseStore::applyStorageReservation( good::Stock &stock, const int rese
       {
         int tileAmount = std::min(amount, room.freeQty());
         // std::cout << "put in half filled" << std::endl;
-        room.append(stock, tileAmount);
+        room.takeFrom(stock, tileAmount);
         amount -= tileAmount;
       }
     }
@@ -152,7 +152,7 @@ void WarehouseStore::applyStorageReservation( good::Stock &stock, const int rese
       {
         int tileAmount = std::min(amount, room.capacity() );
         // std::cout << "put in empty tile" << std::endl;
-        room.append(stock, tileAmount);
+        room.takeFrom(stock, tileAmount);
         amount -= tileAmount;
       }
     }
@@ -167,15 +167,15 @@ void WarehouseStore::applyRetrieveReservation(good::Stock& stock, const int rese
 
   if( stock.type() != reservedStock.type() )
   {   
-    Logger::warning( "Warehouse: GoodType does not match reservation need=%s have=%s",
-                     good::Helper::name(reservedStock.type()).c_str(),
-                     good::Helper::name(stock.type()).c_str() );
+    Logger::warning( "Warehouse: GoodType does not match reservation need={} have={}",
+                     good::Helper::name(reservedStock.type()),
+                     good::Helper::name(stock.type()) );
     return;
   }
   if( stock.capacity() < stock.qty() + reservedStock.qty() )
   {
-    Logger::warning( "Warehouse: Retrieve stock[%s] less reserve qty, decrease from %d to &%d",
-                     good::Helper::name(stock.type()).c_str(),
+    Logger::warning( "Warehouse: Retrieve stock[{0}] less reserve qty, decrease from {1} to {2}",
+                     good::Helper::name(stock.type()),
                      reservedStock.qty(), stock.freeQty() );
     reservedStock.setQty( stock.freeQty() );
   }
@@ -194,7 +194,7 @@ void WarehouseStore::applyRetrieveReservation(good::Stock& stock, const int rese
     {
       int tileAmount = std::min(amount, room.qty());
       // std::cout << "retrieve from half filled" << std::endl;
-      stock.append( room, tileAmount);
+      stock.takeFrom( room, tileAmount);
       if( room.empty() )
         room.setType( good::none );
 
@@ -214,7 +214,7 @@ void WarehouseStore::applyRetrieveReservation(good::Stock& stock, const int rese
     {
       int tileAmount = std::min(amount, room.qty());
       // std::cout << "retrieve from filled" << std::endl;
-      stock.append( room, tileAmount);
+      stock.takeFrom( room, tileAmount);
       amount -= tileAmount;
     }
   }

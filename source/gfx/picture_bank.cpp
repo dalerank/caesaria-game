@@ -273,7 +273,7 @@ Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
     return it->second;
   }
 
-  Logger::warning( "PictureBank: Unknown resource %s", name.c_str() );
+  Logger::warning( "PictureBank: Unknown resource {0}", name.c_str() );
   return Picture::getInvalid();
 }
 

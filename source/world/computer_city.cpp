@@ -338,15 +338,15 @@ void ComputerCity::Impl::placeNewBuilding(object::Type type)
   BuildingInfo info;
 
   info.type = type;
-  const  MetaData& md = MetaDataHolder::find( info.type );
+  auto md = object::Info::find( info.type );
   good::Product output = good::Helper::getType( md.getOption( "output" ).toString() );
   info.outgoods.setType( output );
   info.ingoods.setType( good::getMaterial( output ) );
-  info.maxWorkersNumber = md.getOption( "employers" );
-  info.maxService = md.getOption( "maxServe" );
+  info.maxWorkersNumber = md.employers();
+  info.maxService = md.maxServe();
   info.workersNumber = 0;
   info.progress = 0;
-  info.productively = md.getOption( "productRate" ).toFloat() / 12.f;
+  info.productively = md.productRate() / 12.f;
 
   buildings.push_back( info );
 }
@@ -895,7 +895,7 @@ void ComputerCity::addObject(ObjectPtr object )
 {
   if( object.is<Merchant>() )
   {
-    MerchantPtr merchant = object.as<Merchant>();
+    auto merchant = object.as<Merchant>();
     good::Store& sellGoods = merchant->sellGoods();
     good::Store& buyGoods = merchant->buyGoods();
 
@@ -914,20 +914,20 @@ void ComputerCity::addObject(ObjectPtr object )
   }
   else if( object.is<Barbarian>() )
   {
-    BarbarianPtr brb = object.as<Barbarian>();
+    auto barbarian = object.as<Barbarian>();
     _d->lasttime.attacked = game::Date::current();
-    int attack = std::max<int>( brb->strength() - strength(), 0 );
+    int attack = std::max<int>( barbarian->strength() - strength(), 0 );
     if( !attack ) attack = 10;
     _d->strength = math::clamp<int>( _d->strength - math::random( attack ), 0, 100 );
 
     if( _d->strength > 0 )
     {
-      int resist = std::max<int>( strength() - brb->strength(), 0 );
-      brb->updateStrength( math::random( resist ) );
+      int resist = std::max<int>( strength() - barbarian->strength(), 0 );
+      barbarian->updateStrength( math::random( resist ) );
     }
     else
     {
-      delayTrade( brb->strength() );
+      delayTrade( barbarian->strength() );
     }
   }
 }
@@ -1019,10 +1019,10 @@ int ComputerCity::strength() const { return _d->strength; }
 
 void ComputerCity::_initTextures()
 {
-  int index = PicID::otherCity;
+  int index = config::id.empire.otherCity;
 
-  if( _d->distantCity ) { index = PicID::distantCity; }
-  else if( _d->states.romeCity ) { index = PicID::romeCity; }
+  if( _d->distantCity ) { index = config::id.empire.distantCity; }
+  else if( _d->states.romeCity ) { index = config::id.empire.romeCity; }
 
   setPicture( Picture( ResourceGroup::empirebits, index ) );
   _animation().load( ResourceGroup::empirebits, index+1, 6 );

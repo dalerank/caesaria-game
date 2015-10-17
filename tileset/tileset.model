@@ -34,5 +34,67 @@
         }
       }
     }
+
+    carts:
+    {
+      size : [ 2048, 2048 ]
+      margin : 1
+      ignorePath : true
+      floatCoordinates : false
+      name : "carts"
+      archive : "resources/gfx/pics_carts"
+
+      items :
+      {
+        clay :
+        {
+          type : "atlas"
+          folder : "/resources/carts/clay"
+          files : [ "cartclay_*" ]
+        }
+
+        fish :
+        {
+          type : "atlas"
+          folder : "/resources/carts/fish"
+          files : [ "cartfish_*" ]
+        }
+
+        fruit :
+        {
+          type : "atlas"
+          folder : "/resources/carts/fruit"
+          files : [ "cartfruit_*" ]
+        }
+
+        furniture :
+        {
+          type : "atlas"
+          folder : "/resources/carts/furniture"
+          files : [ "cartfurniture_*" ]
+        }
+
+        grape :
+        {
+          type : "atlas"
+          folder : "/resources/carts/grape"
+          files : [ "cartgrape_*" ]
+        }
+
+        iron :
+        {
+          type : "atlas"
+          folder : "/resources/carts/iron"
+          files : [ "cartiron_*" ]
+        }
+
+        marble :
+        {
+          type : "atlas"
+          folder : "/resources/carts/marble"
+          files : [ "cartmarble_*" ]
+        }
+      }
+    }
   }
 }

@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "build_options.hpp"
-#include "objects/metadata.hpp"
+#include "objects/infodb.hpp"
 #include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
 #include "objects/constants.hpp"
@@ -33,8 +33,8 @@ namespace development
 {
 
 CAESARIA_LITERALCONST(farm)
+CAESARIA_LITERALCONST(disable_all)
 
-static const char* disable_all = "disable_all";
 enum { maxLimit=999 };
 
 struct BuildingRule
@@ -164,7 +164,7 @@ void Options::setGroupAvailable( const development::Branch type, Variant vmb )
   if( vmb.isNull() )
     return;
 
-  bool mayBuild = (vmb.toString() != disable_all);
+  bool mayBuild = (vmb.toString() != literals::disable_all);
   Range range = Range::fromBranch( type );
 
   for( auto& i : range )
@@ -322,7 +322,7 @@ Range Range::_defaultRange(const Branch branch)
   case development::big_temple: ret = Range::fromSequence( object::big_ceres_temple, object::big_venus_temple ); break;
   case development::all:
   {
-    object::Types types = MetaDataHolder::instance().availableTypes();
+    object::Types types = object::InfoDB::instance().availableTypes();
     for( auto& type : types )
       ret.insert( type );
   }

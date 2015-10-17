@@ -18,6 +18,7 @@
 #include "advisor_rating_button.hpp"
 #include "core/gettext.hpp"
 #include "core/utils.hpp"
+#include "core/format.hpp"
 #include "widget_factory.hpp"
 
 using namespace gfx;
@@ -58,7 +59,7 @@ void RatingButton::_updateTextPic()
     digitFont.draw( pic, utils::i2str( _value ), width() / 2 - 10, 17, true, false );
 
     Font targetFont = Font::create( FONT_1 );
-    targetFont.draw( pic, utils::format( 0xff, "%d %s", _target, _("##wndrt_need##") ), 10, height() - 20, true, false );
+    targetFont.draw( pic, fmt::format( "{0} {1}", _target, _("##wndrt_need##") ), 10, height() - 20, true, false );
 
     pic.update();
   }

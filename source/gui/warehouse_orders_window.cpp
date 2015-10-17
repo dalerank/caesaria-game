@@ -59,6 +59,12 @@ WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, cons
   excludeGoods << good::none << good::denaries;
 
   d->warehouse = warehouse;
+
+  if( warehouse->isTradeCenter() )
+  {
+    setTitle( "##trade_center##" );
+  }
+
   int index=0;
   foreach( goodType, good::all() )
   {
@@ -106,8 +112,8 @@ void WarehouseSpecialOrdersWindow::Impl::update()
 
   if( btnTradeCenter )
     btnTradeCenter->setText( warehouse->isTradeCenter()
-                             ? _("##stop_warehouse_tradepost##")
-                             : _("##tradepost_warehouse##") );
+                             ? _("##become_warehouse##")
+                             : _("##become_trade_center##") );
 }
 
 }//end namespace gui

@@ -32,6 +32,7 @@ public:
   TilePos pos;
 
   const gfx::TilesArray& tiles() const;
+  const gfx::Tile& tile() const;
 
   AreaInfo(PlayerCityPtr rcity,
            const TilePos& rpos,

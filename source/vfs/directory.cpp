@@ -52,7 +52,7 @@ bool Directory::create( std::string dir )
   Directory rdir( dir );
   if( rdir.exist() )
   {
-    Logger::warning( "Directory %s also exist", dir.c_str() );
+    Logger::warning( "Directory {0} also exist", dir );
     return false;
   }
 
@@ -65,7 +65,7 @@ bool Directory::create( std::string dir )
 
   if( result < 0 )
   {
-    Logger::warning( "Cannot create directory %s error=%d", dir.c_str(), result );
+    Logger::warning( "Cannot create directory {0} error={1}", dir, result );
   }
   return (result == 0);
 }
@@ -92,7 +92,7 @@ bool Directory::createByPath( Directory dir )
       {
         if( !path.isFolder() )
         {
-          Logger::warning( "Current path %s not a directory " + current );
+          Logger::warning( "Current path {} not a directory ", current );
           result = false;
           break;
         }

@@ -99,7 +99,7 @@ const WalkerList& WalkersGrid::at( const TilePos& pos)
     return _grid[ offset ];
   }
 
-  Logger::warning( "WalkersGrid incorrect at pos [%d,%d]", pos.i(), pos.j() );
+  Logger::warning( "WalkersGrid incorrect at pos [{0},{1}]", pos.i(), pos.j() );
   return invalidList;
 }
 

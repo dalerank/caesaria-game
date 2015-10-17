@@ -25,7 +25,7 @@
 #include "core/foreach.hpp"
 #include "game/gamedate.hpp"
 #include "core/gettext.hpp"
-#include "objects/metadata.hpp"
+#include "objects/infodb.hpp"
 #include "statistic.hpp"
 #include "events/showinfobox.hpp"
 #include "core/saveadapter.hpp"
@@ -90,13 +90,13 @@ WorkersHire::WorkersHire(PlayerCityPtr city)
 
 void WorkersHire::Impl::fillIndustryMap()
 {
-  object::Types types = MetaDataHolder::instance().availableTypes();
+  object::Types types = object::InfoDB::instance().availableTypes();
 
   industryBuildings.clear();
 
   for( auto& type : types)
   {
-    const MetaData& info = MetaDataHolder::find( type );
+    auto info = object::Info::find( type );
     int workersNeed = info.getOption( literals::employers );
     if( workersNeed > 0 )
     {

@@ -46,7 +46,7 @@ Pictures& Pictures::append(const Pictures& pics)
   return *this;
 }
 
-Pictures &Pictures::append(const std::string &rc, int index)
+Pictures& Pictures::append(const std::string &rc, int index)
 {
   this->push_back( Picture( rc, index ) );
   return *this;

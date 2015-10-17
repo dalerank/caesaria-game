@@ -51,10 +51,8 @@ namespace
 
 int Desirability::type() const {  return citylayer::desirability; }
 
-void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
+void Desirability::drawTile( const RenderInfo& rinfo, Tile& tile)
 {
-  Point screenPos = tile.mappos() + offset;
-
   int desirability = tile.param( Tile::pDesirability );
   if( tile.overlay().isNull() )
   {
@@ -64,12 +62,12 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
       int desIndex = __des2index( desirability );
       Picture pic( ResourceGroup::land2a, 37 + desIndex );
 
-      engine.draw( pic, screenPos );
+      rinfo.engine.draw( pic, tile.mappos() + rinfo.offset );
     }
     else
     {
-      drawPass( engine, tile, offset, Renderer::ground );
-      drawPass( engine, tile, offset, Renderer::groundAnimation );
+      drawPass( rinfo, tile, Renderer::ground );
+      drawPass( rinfo, tile, Renderer::groundAnimation );
     }
   }
   else
@@ -78,7 +76,7 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
     if( _isVisibleObject( overlay->type() ) )
     {
       // Base set of visible objects
-      Layer::drawTile( engine, tile, offset );
+      Layer::drawTile( rinfo, tile );
       registerTileForRendering( tile );
     }
     else
@@ -91,7 +89,7 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
 
       for( auto tile : tiles4clear )
       {
-        engine.draw( pic, tile->mappos() + offset );
+        rinfo.engine.draw( pic, tile->mappos() + rinfo.offset );
       }
     }
   }
@@ -104,7 +102,7 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
     _addPicture( tile.mappos() + Point( 20, -15 ), tx );
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 void Desirability::beforeRender( Engine& engine )

@@ -158,14 +158,14 @@ void RomeSoldier::load(const VariantMap& stream)
   VARIANT_LOAD_ANY_D( _d, patrolPosition, stream );
   VARIANT_LOAD_ANY_D( _d, basePos, stream );
 
-  FortPtr fort = _city()->getOverlay( _d->basePos ).as<Fort>();
+  auto fort = _city()->getOverlay( _d->basePos ).as<Fort>();
   if( fort.isValid() )
   {
     fort->addWalker( this );
   }
   else
   {
-    Logger::warning( "!!! WARNING: RomeSoldier cant find base for himself at [%d,%d]", _d->basePos.i(), _d->basePos.j() );
+    Logger::warning( "!!! WARNING: RomeSoldier cant find base for himself at [{0},{1}]", _d->basePos.i(), _d->basePos.j() );
     die();
   }
 }

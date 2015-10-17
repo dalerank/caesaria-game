@@ -82,7 +82,7 @@ void Wharf::timeStep(const unsigned long time)
   }
   else
   {
-    if( _d->boat.isValid() && !_d->boat->isBusy() && outStockRef().empty() )
+    if( _d->boat.isValid() && !_d->boat->isBusy() && outStock().empty() )
     {
       _d->boat->startCatch();
     }

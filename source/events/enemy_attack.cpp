@@ -26,6 +26,8 @@
 #include "walker/enemysoldier.hpp"
 #include "city/cityservice_military.hpp"
 #include "walker/walkers_factory.hpp"
+#include "pathway/pathway_helper.hpp"
+#include "objects/construction.hpp"
 #include "walker/helper.hpp"
 #include "city/states.hpp"
 #include "factory.hpp"
@@ -35,7 +37,6 @@ using namespace gfx;
 namespace events
 {
 
-CAESARIA_LITERALCONST(type)
 CAESARIA_LITERALCONST(items)
 CAESARIA_LITERALCONST(target)
 CAESARIA_LITERALCONST(count)
@@ -84,8 +85,9 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
   for( auto& item : _d->items )
   {
     VariantMap soldiers = item.second.toMap();
+    TilePos exitPos = game.city()->borderInfo().roadExit;
 
-    std::string soldierType = soldiers.get( literals::type ).toString();
+    std::string soldierType = soldiers.get( "type" ).toString();
     int soldierNumber = soldiers.get( literals::count );
 
     Variant vCityPop = soldiers.get( "city.pop" );
@@ -100,15 +102,23 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
     if( vLocation.toString() == literals::random )
     {
       Tilemap& tmap = game.city()->tilemap();
-      int lastIndex = tmap.size();
-      TilesArray tiles = tmap.rect( TilePos( 0, 0), TilePos(lastIndex, lastIndex) );
+      TilesArray tiles = tmap.border().walkables( true );
 
-      tiles = tiles.walkables( true );
-
-      Tile* tile = tiles.random();
-      if( tile )
+      int tryCount = 0;
+      for(; tryCount < 10; tryCount++ )
       {
-        location = tile->pos();
+        Tile* tile = tiles.random();
+        if( tile )
+          location = tile->pos();
+
+        Pathway path = PathwayHelper::create( location, exitPos, PathwayHelper::allTerrain );
+        if( path.isValid() )
+          break;
+     }
+
+      if( tryCount >= 10 )
+      {
+        location = game.city()->borderInfo().roadEntry;
       }
     }
     else
@@ -119,8 +129,7 @@ void EnemyAttack::_exec( Game& game, unsigned int time)
     walker::Type wtype = WalkerHelper::getType( soldierType );   
     for( int k=0; k < soldierNumber; k++ )
     {
-      WalkerPtr wlk = WalkerManager::instance().create( wtype, game.city() );
-      EnemySoldierPtr enemy = wlk.as<EnemySoldier>();
+      auto enemy = WalkerManager::instance().create<EnemySoldier>( wtype, game.city() );
       if( enemy.isValid() )
       {
         enemy->send2City( location );

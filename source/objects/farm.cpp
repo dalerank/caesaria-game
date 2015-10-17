@@ -131,7 +131,7 @@ public:
 Farm::Farm(const good::Product outGood, const object::Type farmType )
   : Factory( good::none, outGood, farmType, Size(3) ), _d( new Impl )
 {
-  outStockRef().setCapacity( 100 );
+  outStock().setCapacity( 100 );
 
   _d->lastProgress = 0;
   _d->sublocs << TilePos( 0, 0) << TilePos( 2, 2)
@@ -306,7 +306,7 @@ void Farm::load( const VariantMap& stream )
 
   if( _d->sublocs.empty() )
   {
-    Logger::warning( "!!! WARNING: Farm [%d,%d] lost tiles. Will add default locations", pos().i(), pos().j() );
+    Logger::warning( "!!! WARNING: Farm [{0},{1}] lost tiles. Will add default locations", pos().i(), pos().j() );
     _d->sublocs << TilePos(0, 0) << TilePos( 1, 0 )
                 << TilePos(2, 0) << TilePos( 2, 1 ) << TilePos( 2, 2);
     foreach( it, _d->sublocs )
@@ -321,7 +321,7 @@ unsigned int Farm::produceQty() const
   return productRate() * getFinishedQty() * numberWorkers() / maximumWorkers();
 }
 
-void Farm::initialize(const MetaData& mdata)
+void Farm::initialize(const object::Info& mdata)
 {
   Factory::initialize( mdata );
   //picture will be setting on build
@@ -330,8 +330,7 @@ void Farm::initialize(const MetaData& mdata)
 
 Picture Farm::_getMainPicture()
 {
-  const MetaData& md = MetaDataHolder::find( type() );
-  Picture ret = md.picture();
+  Picture ret = info().randomPicture();
   if( !ret.isValid() )
     ret.load(ResourceGroup::commerce, 12);
 

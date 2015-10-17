@@ -146,7 +146,7 @@ void gui::OrderGoodWidget::updateBtnText()
   good::Orders::Order rule = _storage.getOrder( _type );
   if( rule > good::Orders::none )
   {
-    Logger::warning( "OrderGoodWidget: unknown rule %d", (int)rule );
+    Logger::warning( "OrderGoodWidget: unknown rule {0}", (int)rule );
     return;
   }
 

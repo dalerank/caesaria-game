@@ -29,8 +29,8 @@ WidgetCalc::WidgetCalc(Widget& widget, const VariantMap& vars) : _widget( widget
   _alias[ "pw" ] = widget.parent()->width();
   _alias[ "ph" ] = widget.parent()->height();
 
-  foreach( it, vars )
-    _alias[ it->first ] = it->second.toInt();
+  for( auto& it : vars )
+    _alias[ it.first ] = it.second.toInt();
 }
 
 double WidgetCalc::eval(const std::string& str)
@@ -61,7 +61,7 @@ double WidgetCalc::_number(const std::string &str, unsigned *idx)
     }
     while( isalnum( str[*idx] ) );
 
-    std::map< std::string, int >::iterator it = _alias.find( name );
+    auto it = _alias.find( name );
     if( it == _alias.end() )
     {
       Logger::warning( "!!! WARNING: WidgetCalc cant find alias for " + name );

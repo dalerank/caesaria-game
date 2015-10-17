@@ -309,7 +309,7 @@ public:
   Rect() : RectT<int>( 0, 0, 0, 0 ) {}
   //! Constructor with upper left corner and dimension
   Rect(const Point& pos, const Size& size)
-    : RectT<int>( pos, Point( pos.x() + size.width(), pos.y() + size.height() ) ) {}
+    : RectT<int>( pos, pos + Point( size.width(), size.height() ) ) {}
 
   Rect( int x1, int y1, int x2, int y2 )
     : RectT<int>( x1, y1, x2, y2 ) {}
@@ -322,6 +322,12 @@ public:
   Rect operator-(const Point& offset ) const
   {
     return Rect( _lefttop - offset, _bottomright - offset );
+  }
+
+  Rect operator*(float delim) const
+  {
+    return Rect( left() * delim, top() * delim,
+                 right() * delim, bottom() * delim );
   }
   
   //! Get the dimensions of the rectangle

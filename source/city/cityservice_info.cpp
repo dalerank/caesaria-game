@@ -180,7 +180,7 @@ void Info::timeStep(const unsigned int time )
     last[ shackNumber ] = 0;
     for( auto house : habitable )
     {
-      int hLvl = house->spec().level();
+      HouseLevel::ID hLvl = house->level();
       last[ slumNumber ] += ( hLvl == HouseLevel::hovel || hLvl == HouseLevel::tent ? 1 : 0);
       last[ shackNumber ] += ( hLvl >= HouseLevel::shack || hLvl < HouseLevel::hut ? 1 : 0);
       last[ houseNumber ]++;

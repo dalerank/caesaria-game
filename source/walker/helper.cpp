@@ -169,7 +169,7 @@ VariantMap WalkerHelper::getOptions(const walker::Type type )
   VariantMap::iterator mapIt = instance()._d->options.find( tname );
   if( mapIt == instance()._d->options.end())
   {
-    Logger::warning( "Unknown walker info for type %d", type );
+    Logger::warning( "Unknown walker info for type {0}", type );
     return VariantMap();
   }
 
@@ -203,7 +203,7 @@ std::string WalkerHelper::getTypename( walker::Type type )
 
   if( name.empty() )
   {
-    Logger::warning( "WalkerHelper: can't find walker typeName for %d", type );
+    Logger::warning( "WalkerHelper: can't find walker typeName for {0}", type );
     //_CAESARIA_DEBUG_BREAK_IF( "Can't find walker typeName by WalkerType" );
   }
 
@@ -216,7 +216,7 @@ walker::Type WalkerHelper::getType(const std::string &name)
 
   if( type == instance()._d->htype.getInvalid() )
   {
-    Logger::warning( "Can't find walker type for %s", name.c_str());
+    Logger::warning( "Can't find walker type for {0}", name);
     //_CAESARIA_DEBUG_BREAK_IF( "Can't find walker type by typeName" );
   }
 
@@ -263,6 +263,8 @@ Picture WalkerHelper::bigPicture(walker::Type type)
   case walker::engineer: index=7; break;
   case walker::taxCollector: index=6; break;
   case walker::sheep: index = 54; break;
+  case walker::seaMerchant: index = 61; break;
+  case walker::merchantCamel : index = 25; break;
   case walker::recruter: index=13; break;
   case walker::lionTamer: index=11; break;
   default: index=8; break;
@@ -388,7 +390,7 @@ void __fillRelations( const std::string& name, const VariantMap& items, const st
 
     if( ftype == unknownType )
     {
-      Logger::warning( warnText.c_str(), itType->c_str(), name.c_str());
+      Logger::warning( warnText, *itType, name );
     }
     else
     {
@@ -406,12 +408,12 @@ void WalkerRelations::load(const VariantMap& stream)
     VariantMap item = it->second.toMap();
     __fillRelations<walker::Type>( it->first, item, "friend",
                                    &WalkerHelper::getType,
-                                   "WalkerRelations: unknown friend %s for type %s",
+                                   "WalkerRelations: unknown friend {0} for type {1}",
                                    &WalkerRelations::addFriend, walker::unknown );
 
     __fillRelations<walker::Type>( it->first, item, "enemy",
                                    &WalkerHelper::getType,
-                                   "WalkerRelations: unknown enemy %s for type %s",
+                                   "WalkerRelations: unknown enemy {0} for type {1}",
                                    &WalkerRelations::addEnemy, walker::unknown );
   }
 
@@ -421,12 +423,12 @@ void WalkerRelations::load(const VariantMap& stream)
     VariantMap item = it->second.toMap();
     __fillRelations<world::Nation>( it->first, item, "friend",
                                    &WalkerHelper::getNation,
-                                   "NationRelations: unknown friend %s for type %s",
+                                   "NationRelations: unknown friend {0} for type {1}",
                                    &WalkerRelations::addFriend, world::nation::unknown );
 
     __fillRelations<world::Nation>( it->first, item, "enemy",
                                    &WalkerHelper::getNation,
-                                   "NationRelations: unknown enemy %s for type %s",
+                                   "NationRelations: unknown enemy {0} for type {1}",
                                    &WalkerRelations::addEnemy, world::nation::unknown );
   }
 }

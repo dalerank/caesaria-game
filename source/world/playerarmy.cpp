@@ -131,7 +131,7 @@ void PlayerArmy::move2location(Point point)
   bool validWay = _findWay( location(), point);
   if( !validWay )
   {
-    Logger::warning( "PlayerArmy: cant find way to point [%d,%d]", point.x(), point.y()  );
+    Logger::warning( "PlayerArmy: cant find way to point [{0},{!}]", point.x(), point.y()  );
     deleteLater();
   }
 
@@ -288,7 +288,7 @@ void PlayerArmy::_reachedWay()
         walker->attach();
       }
 
-      FortPtr fort = pCity->getOverlay( _d->fortPos ).as<Fort>();
+      auto fort = pCity->getOverlay( _d->fortPos ).as<Fort>();
       if( fort.isValid() )
       {
         fort->returnSoldiers();

@@ -37,16 +37,14 @@ namespace citylayer
 
 int Troubles::type() const{ return _type;}
 
-void Troubles::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Troubles::drawTile( const RenderInfo& rinfo, Tile& tile)
 {
-  //Point screenPos = tile.mappos() + offset;
-
   if( tile.overlay().isNull() )
   {
     //draw background
     //engine.draw( tile.picture(), screenPos );
-    drawPass( engine, tile, offset, Renderer::ground );
-    drawPass( engine, tile, offset, Renderer::groundAnimation );
+    drawPass( rinfo, tile, Renderer::ground );
+    drawPass( rinfo, tile, Renderer::groundAnimation );
   }
   else
   {
@@ -70,19 +68,19 @@ void Troubles::drawTile(Engine& engine, Tile& tile, const Point& offset)
 
     if( needDrawAnimations )
     {
-      Layer::drawTile( engine, tile, offset );
+      Layer::drawTile( rinfo, tile );
       registerTileForRendering( tile );
     }
     else
     {
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base );
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
-LayerPtr Troubles::create(Camera& camera, PlayerCityPtr city , int type)
+LayerPtr Troubles::create(Camera& camera, PlayerCityPtr city, int type)
 {
   LayerPtr ret( new Troubles( camera, city, type ) );
   ret->drop();

@@ -65,6 +65,7 @@ private:
   Pathway _findPathway2NearestEnemy(unsigned int range);
 
   AttackPriority _atPriority;
+  int _failedWayCounter;
   object::GroupSet _atExclude;
 };
 

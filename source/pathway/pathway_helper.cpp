@@ -93,7 +93,7 @@ Pathway PathwayHelper::create( TilePos startPos, ConstructionPtr construction, P
 
     if( !way.isValid() )
     {
-      Logger::warning( "PathwayHelper: can't find way from [%d,%d] to construction: name=%s pos=[%d,%d]",
+      Logger::warning( "PathwayHelper: can't find way from [{0},{1}] to construction: name={2} pos=[{3},{4}]",
                        startPos.i(), startPos.j(), construction->name().c_str(),
                        construction->pos().i(), construction->pos().j() );
     }
@@ -168,6 +168,7 @@ Pathway PathwayHelper::randomWay(PlayerCityPtr city, const TilePos& startPos, in
   TilePos offset( walkRadius / 2, walkRadius / 2 );
   TilesArray tiles = city->tilemap().area( startPos - offset, startPos + offset );
   tiles = tiles.walkables( true );
+  tiles.remove(startPos);
 
   int loopCounter = 0; //loop limiter
   if( !tiles.empty() )
@@ -204,9 +205,8 @@ Pathway PathwayHelper::way2border(PlayerCityPtr city, const TilePos& pos)
 
     TilesArray border = tmap.rect( start, stop );
     border = border.walkables( true );
-    foreach( it, border )
+    for( auto& tile : border )
     {
-      Tile* tile = *it;
       Pathway pw = create( pos, tile->pos(), PathwayHelper::allTerrain );
 
       if( pw.isValid() )

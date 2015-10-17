@@ -51,6 +51,7 @@
 #include "layers/aborigens.hpp"
 #include "layers/layereducation.hpp"
 #include "layers/unemployed.hpp"
+#include "layers/constructor.hpp"
 #include "layers/sentiment.hpp"
 #include "layers/market_access.hpp"
 #include "walker/walker.hpp"
@@ -60,6 +61,7 @@
 #include "game/settings.hpp"
 #include "core/timer.hpp"
 #include "pathway/pathway.hpp"
+#include "gui/environment.hpp"
 #include "gui/dialogbox.hpp"
 
 using namespace citylayer;
@@ -89,7 +91,7 @@ public:
   void setLayer( int type );
   void resetWalkersAfterTurn();
   void saveSettings();
-  void awareExerimental();
+  void awareExperimental();
 
 public signals:
   Signal1<int> onLayerSwitchSignal;
@@ -109,10 +111,10 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   _d->city = city;
   _d->tilemap = &city->tilemap();
   _d->guienv = guienv;
-  _d->camera.init( *_d->tilemap, engine->virtualSize() );
+  _d->camera.init( *_d->tilemap, engine->screenSize() );
   _d->engine = engine;
   _d->lastZoom = _d->camera.zoom();
-  _d->engine->setScale( 1.f );
+  //_d->engine->setScale( 1.f );
 
   addLayer( Simple::create( _d->camera, city ) );
   addLayer( Water::create( _d->camera, city ) );
@@ -134,7 +136,6 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   addLayer( Entertainment::create( _d->camera, city, citylayer::colloseum ) );
   addLayer( Entertainment::create( _d->camera, city, citylayer::hippodrome ) );
   addLayer( Crime::create( _d->camera, city ) ) ;
-  addLayer( Build::create( *this, city ) );
   addLayer( Destroy::create( *this, city ) );
   addLayer( Tax::create( _d->camera, city ) );
   addLayer( Education::create( _d->camera, city, citylayer::education ) );
@@ -145,6 +146,8 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   addLayer( Troubles::create( _d->camera, city, citylayer::troubles ) );
   addLayer( Aborigens::create( _d->camera, city ) );
   addLayer( MarketAccess::create( _d->camera, city ) );
+  addLayer( Build::create( *this, city ) );
+  addLayer( Constructor::create( *this, city ) );
 
   DrawOptions& dopts = DrawOptions::instance();
   dopts.setFlag( DrawOptions::borderMoving, engine->isFullscreen() );
@@ -153,9 +156,10 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   dopts.setFlag( DrawOptions::oldGraphics, oldGraphic );
   dopts.setFlag( DrawOptions::showBuildings, true );
   dopts.setFlag( DrawOptions::showTrees, true );
-  dopts.setFlag( DrawOptions::mmbMoving, SETTINGS_VALUE( mmb_moving ) );
+  dopts.setFlag( DrawOptions::mmbMoving, KILLSWITCH( mmb_moving ) );
   dopts.setFlag( DrawOptions::overdrawOnBuild, false );
   dopts.setFlag( DrawOptions::rotateEnabled, false );
+
 #ifdef DEBUG
   dopts.setFlag( DrawOptions::rotateEnabled, true );
 #endif
@@ -179,7 +183,7 @@ void CityRenderer::Impl::saveSettings()
   SETTINGS_SET_VALUE( mmb_moving, dopts.isFlag( DrawOptions::mmbMoving ) );
 }
 
-void CityRenderer::Impl::awareExerimental()
+void CityRenderer::Impl::awareExperimental()
 {
 #ifdef DEBUG
   return;
@@ -255,7 +259,7 @@ void CityRenderer::render()
   layer->render( engine );
   layer->afterRender( engine );
 
-  engine.setScale( 1.f );
+  engine.setVirtualSize( _d->guienv->vsize() );
 
   layer->renderUi( engine );
 
@@ -316,7 +320,7 @@ void CityRenderer::rotateRight()
   _d->camera.refresh();
   _d->camera.tiles();
   _d->resetWalkersAfterTurn();  
-  _d->awareExerimental();
+  _d->awareExperimental();
 }
 
 void CityRenderer::rotateLeft()
@@ -325,7 +329,7 @@ void CityRenderer::rotateLeft()
   _d->camera.refresh();
   _d->camera.tiles();
   _d->resetWalkersAfterTurn();
-  _d->awareExerimental();
+  _d->awareExperimental();
 }
 
 void CityRenderer::setLayer(int layertype)
@@ -355,5 +359,18 @@ void CityRenderer::addLayer( LayerPtr layer){  _d->layers.push_back( layer ); }
 LayerPtr CityRenderer::currentLayer() const { return _d->currentLayer; }
 void CityRenderer::setViewport(const Size& size) { _d->camera.setViewport( size ); }
 Signal1<int>& CityRenderer::onLayerSwitch() { return _d->onLayerSwitchSignal; }
+
+Signal3<object::Type,TilePos,int>& CityRenderer::onBuilt()
+{
+  auto buildLayer = getLayer( citylayer::build ).as<Build>();
+  return buildLayer->onBuild();
+}
+
+Signal3<object::Type,TilePos,int>& CityRenderer::onDestroyed()
+{
+  auto buildLayer = getLayer( citylayer::destroyd ).as<Destroy>();
+  return buildLayer->onDestroy();
+}
+
 
 }//end namespace gfx

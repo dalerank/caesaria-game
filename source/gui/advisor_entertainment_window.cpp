@@ -43,7 +43,6 @@ using namespace gfx;
 
 struct EntertInfo
 {
-  object::Type type;
   std::string building;
   std::string people;
   int peoplesServed;
@@ -54,13 +53,14 @@ struct EntertInfo
   int partlyWork;
 };
 
-static EntertInfo infos[] = {
-                              { object::theater, "##theaters##", "##peoples##" },
-                              { object::amphitheater, "##amphitheaters##", "##peoples##" },
-                              { object::colloseum, "##colloseum##", "##peoples##" },
-                              { object::hippodrome, "##hippodromes##",  "-" },
-                              { object::unknown, "", "" }
-                            };
+static std::map<object::Type,EntertInfo> infos =
+{
+  { object::theater, {"##theaters##", "##peoples##"} },
+  { object::amphitheater, {"##amphitheaters##", "##peoples##"} },
+  { object::colloseum, {"##colloseum##", "##peoples##"} },
+  { object::hippodrome, {"##hippodromes##",  "-"} },
+  { object::unknown, {"", ""} }
+};
 
 
 enum { idxTheater=0, idxAmph=1, idxColosseum=2, idxHippodrome=3,
@@ -79,13 +79,11 @@ namespace advisorwnd
 
 static EntertInfo findInfo( const object::Type service )
 {
-  for( int index=0; infos[index].type != object::unknown; index++ )
-  {
-    if( service == infos[index].type )
-        return infos[index];
-  }
+  auto it = infos.find( service );
+  if( it != infos.end() )
+    return it->second;
 
-  return EntertInfo();
+  return infos[ object::unknown ];
 }
 
 class EntertainmentInfoLabel : public Label
@@ -110,14 +108,14 @@ public:
 
     Picture& texture = _textPicture();
     Font rfont = font();
-    rfont.draw( texture, utils::format( 0xff, "%d %s", _info.buildingCount, _(info.building)), ofNumberInCity, 0 );
+    rfont.draw( texture, fmt::format( "{0} {1}", _info.buildingCount, _(info.building)), ofNumberInCity, 0 );
     rfont.draw( texture, utils::i2str( _info.buildingWork ), ofWorkInCity, 0 );
     rfont.draw( texture, utils::i2str( _info.buildingShow ), ofHaveShow, 0 );
-    rfont.draw( texture, utils::format( 0xff, "%d %s",_info.peoplesServed, _(info.people)), ofHowmuchServed, 0 );
+    rfont.draw( texture, fmt::format( "{0} {1}",_info.peoplesServed, _(info.people)), ofHowmuchServed, 0 );
 
     std::string coverityText = "none";
     if( _info.buildingCount > 0 )
-      utils::format( 0xff, "%d %%", _info.coverity );
+      coverityText = fmt::format( "{0}%", _info.coverity );
 
     rfont.draw( texture, coverityText, ofCoverity, 0 );
   }
@@ -245,7 +243,7 @@ void Entertainment::Impl::updateInfo()
   HouseList houses = city->statistic().houses.find();
   for( auto house : houses )
   {
-    maxHouseLevel = std::max<int>( maxHouseLevel, house->spec().level() );
+    maxHouseLevel = std::max<int>( maxHouseLevel, house->level() );
     int habitants = house->habitants().mature_n();
 
     const HouseSpecification& lspec = house->spec();
@@ -359,7 +357,7 @@ void Entertainment::Impl::updateFestivalInfo()
                                        24, 24, 31, 31 };
 
     int currentThinkIndex = math::clamp<int>( monthFromLastFestival, 0, maxFestivalDelay-1);
-    text = utils::format( 0xff, "##more_%d_month_from_festival##", strIndex[ currentThinkIndex ] );
+    text = fmt::format( "##more_{0}_month_from_festival##", strIndex[ currentThinkIndex ] );
     lbInfoAboutLastFestival->setText( _( text ) );
     }
 }

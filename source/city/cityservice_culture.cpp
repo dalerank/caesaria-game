@@ -62,6 +62,7 @@ struct SubRating
   WhatFind whatFind;
   int coverage;
   int value;
+  int objects_n;
   int visitors;
 
   SubRating( const Points& points, WhatFind otype)
@@ -90,9 +91,14 @@ struct SubRating
       return 0;
     }
     /** buildings which we need check **/
-    rcity->statistic().objects
-                      .find<T>( whatFind )
-                      .for_each( [this](SmartPtr<T> r){ visitors += r->currentVisitors(); } );
+
+    auto objects = rcity->statistic()
+                          .objects
+                          .find<T>( whatFind );
+
+    objects_n = objects.size();
+
+    objects.for_each( [this](SmartPtr<T> r){ visitors += r->currentVisitors(); } );
 
     float coverage = visitors / population;
 
@@ -199,6 +205,19 @@ int CultureRating::coverage( Coverage type) const
   case covAcademy: return _d->academies.coverage * 100;
   case covReligion: return _d->religion.coverage * 100;
   case covTheatres: return _d->theaters.coverage * 100;
+  default: return 0;
+  }
+}
+
+int CultureRating::objects_n(CultureRating::Coverage type) const
+{
+  switch( type )
+  {
+  case covSchool: return _d->schools.objects_n;
+  case covLibrary: return _d->libraries.objects_n;
+  case covAcademy: return _d->academies.objects_n;
+  case covReligion: return _d->religion.objects_n;
+  case covTheatres: return _d->theaters.objects_n;
   default: return 0;
   }
 }

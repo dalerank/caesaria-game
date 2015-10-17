@@ -47,9 +47,9 @@ public:
   virtual void delay( const unsigned int msec ) = 0;
   virtual bool haveEvent( NEvent& event ) = 0;
 
-  void setScreenSize( Size size );
-  const Size& virtualSize() const;
+  void setScreenSize( const Size& size );
   const Size& screenSize() const;
+  virtual void setVirtualSize( const Size& rect ) = 0;
 
   bool isFullscreen() const;
   void setFullscreen(bool enabled );
@@ -57,7 +57,6 @@ public:
   virtual void setTitle( const std::string& title );
   virtual void setFlag( int flag, int value );
   virtual int getFlag( int flag ) const;
-
   virtual void loadPicture( Picture& ioPicture, bool streaming ) = 0;
   virtual void unloadPicture( Picture& ioPicture) = 0;
 
@@ -71,6 +70,7 @@ public:
 
   virtual void draw(const Picture& pic, const int dx, const int dy, Rect* clipRect=0 ) = 0;
   virtual void draw(const Picture& pic, const Point& pos, Rect* clipRect=0 ) = 0;
+  virtual void draw(const Picture& pic, const Rect& dstRect, Rect *clipRect ) = 0;
   virtual void draw(const Picture& pic, const Rect& srcRect, const Rect& dstRect, Rect* clipRect=0 ) = 0;
   virtual void draw(const Pictures& pic, const Point& pos, Rect* clipRect=0 ) = 0;
   virtual void draw(const Picture& pic, const Rects& srcRects, const Rects& dstRects, Rect* clipRect=0 ) = 0;
@@ -93,7 +93,7 @@ public:
 protected:
   static Engine* _instance;
 
-  Size _srcSize, _virtualSize;
+  Size _srcSize;
   std::map< int, int > _flags;
 };
 

@@ -29,7 +29,7 @@ class Destroy : public Layer
 public:
   virtual void handleEvent( NEvent& event );
   virtual int type() const;
-  virtual void drawTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
+  virtual void drawTile( const RenderInfo& rinfo, gfx::Tile& tile );
   virtual void render( gfx::Engine& engine);
   virtual void renderUi(gfx::Engine &engine);
   virtual void init( Point cursor );
@@ -40,10 +40,14 @@ public:
 
   static LayerPtr create( gfx::Renderer& renderer, PlayerCityPtr city );
 
+public signals:
+  Signal3<object::Type,TilePos,int>& onDestroy();
+
 private:
   Destroy(gfx::Renderer &renderer, PlayerCityPtr city );
 
   void _clearAll();
+  void _executeClear();
   void _exitDestroyTool();
   unsigned int _checkMoney4destroy( const gfx::Tile& tile );
 

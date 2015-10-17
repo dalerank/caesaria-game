@@ -38,6 +38,7 @@ public:
   int value() const;
 
   int coverage( Coverage type ) const;
+  int objects_n( Coverage type ) const;
 
   static std::string defaultName();
 

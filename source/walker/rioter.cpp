@@ -48,7 +48,7 @@ class Rioter::Impl
 public:
   typedef enum { searchHouse=0, go2destination, searchAnyBuilding,
                  destroyConstruction, go2anyplace, gooutFromCity, wait } State;
-  int houseLevel;
+  HouseLevel::ID houseLevel;
   State state;
   object::GroupSet excludeGroups;
 
@@ -103,8 +103,8 @@ void Rioter::timeStep(const unsigned long time)
     ConstructionList constructions = _city()->statistic().objects.find<Construction>( object::house );
     for( auto it=constructions.begin(); it != constructions.end(); )
     {
-      HousePtr h = (*it).as<House>();
-      if( h->spec().level() <= _d->houseLevel ) { it=constructions.erase( it ); }
+      auto house = (*it).as<House>();
+      if( house->level() <= _d->houseLevel ) { it=constructions.erase( it ); }
       else { ++it; }
     }
 
@@ -233,10 +233,10 @@ void Rioter::send2City( BuildingPtr bld )
     return;
 
   setPos( tiles.random()->pos() );
-  _d->houseLevel = 0;
+  _d->houseLevel = HouseLevel::vacantLot;
 
   if( bld.is<House>() )
-    _d->houseLevel = bld.as<House>()->spec().level();
+    _d->houseLevel = bld.as<House>()->level();
 
   _d->state = Impl::searchHouse;
 
@@ -260,15 +260,15 @@ void Rioter::save(VariantMap& stream) const
 {
   Walker::save( stream );
 
-  VARIANT_SAVE_ANY_D( stream, _d, houseLevel )
-  VARIANT_SAVE_ANY_D( stream, _d, state )
+  VARIANT_SAVE_ENUM_D( stream, _d, houseLevel )
+  VARIANT_SAVE_ENUM_D( stream, _d, state )
 }
 
 void Rioter::load(const VariantMap& stream)
 {
   Walker::load( stream );
 
-  VARIANT_LOAD_ANY_D( _d, houseLevel, stream )
+  VARIANT_LOAD_ENUM_D( _d, houseLevel, stream )
   VARIANT_LOAD_ENUM_D( _d, state, stream )
 }
 

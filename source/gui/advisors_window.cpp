@@ -128,14 +128,10 @@ void Parlor::showAdvisor(const Advisor type )
   if( type >= advisor::unknown )
     return;
 
-  Widget::Widgets rchildren = children();
-  for( auto child : rchildren )
+  auto buttons = children().select<PushButton>();
+  for( auto btn : buttons )
   {
-    PushButton* btn = safety_cast< PushButton* >( child );
-    if( btn )
-    {
-      btn->setPressed( btn->ID() == type );
-    }
+    btn->setPressed( btn->ID() == type );
   }
 
   if( _d->advisorPanel )

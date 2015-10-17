@@ -250,7 +250,7 @@ Statistic::WorkersInfo Statistic::_Workers::details() const
   return ret;
 }
 
-unsigned int Statistic::_Workers::need() const
+size_t Statistic::_Workers::need() const
 {
   WorkersInfo wInfo = details();
   return wInfo.need < wInfo.current ? 0 : wInfo.need - wInfo.current;
@@ -319,7 +319,7 @@ float Statistic::_Workers::monthlyOneWorkerWages() const
   return _parent.rcity.treasury().workerSalary() / (10.f * DateTime::monthsInYear);
 }
 
-unsigned int Statistic::_Workers::available() const
+size_t Statistic::_Workers::available() const
 {
   HouseList houses = _parent.houses.find();
 
@@ -330,9 +330,9 @@ unsigned int Statistic::_Workers::available() const
   return workersNumber;
 }
 
-int Statistic::_Objects::count(object::Type type) const
+size_t Statistic::_Objects::count(object::Type type) const
 {
-  int ret;
+  size_t ret=0;
   const OverlayList& buildings = _parent.rcity.overlays();
   for( auto bld : buildings )
   {
@@ -388,7 +388,7 @@ HirePriorities Statistic::_Workers::hirePriorities() const
   return wh.isValid() ? wh->priorities() : HirePriorities();
 }
 
-unsigned int Statistic::_Food::inGranaries() const
+size_t Statistic::_Food::inGranaries() const
 {
   int foodSum = 0;
 
@@ -398,7 +398,7 @@ unsigned int Statistic::_Food::inGranaries() const
   return foodSum;
 }
 
-unsigned int Statistic::_Food::monthlyConsumption() const
+size_t Statistic::_Food::monthlyConsumption() const
 {
   int foodComsumption = 0;
   HouseList houses = _parent.houses.find();
@@ -428,7 +428,7 @@ unsigned int Statistic::_Tax::payersPercent() const
   return math::percentage( registered, population );
 }
 
-unsigned int Statistic::_Food::possibleProducing() const
+size_t Statistic::_Food::possibleProducing() const
 {
   int foodProducing = 0;
   FarmList farms = _parent.objects.farms();
@@ -459,21 +459,21 @@ good::ProductMap Statistic::_Goods::details(bool includeGranary) const
 {
   good::ProductMap cityGoodsAvailable;
 
-  WarehouseList warehouses = _parent.objects.find<Warehouse>( object::any );
+  auto warehouses = _parent.objects.find<Warehouse>();
 
-  for( auto wh : warehouses )
+  for( auto warehouse : warehouses )
   {
-    good::ProductMap whStore = wh->store().details();
+    good::ProductMap whStore = warehouse->store().details();
     cityGoodsAvailable += whStore;
   }
 
   if( includeGranary )
   {
-    GranaryList granaries = _parent.objects.find<Granary>( object::any );
+    auto granaries = _parent.objects.find<Granary>( object::any );
 
-    for( auto gg : granaries )
+    for( auto granary : granaries )
     {
-      good::ProductMap grStore = gg->store().details();
+      good::ProductMap grStore = granary->store().details();
       cityGoodsAvailable += grStore;
     }
   }
@@ -490,12 +490,12 @@ int Statistic::_Objects::laborAccess(WorkingBuildingPtr wb) const
   TilePos wbpos = wb->pos();
   HouseList houses = find<House>( object::house, wbpos - offset, wbpos + offset );
   float averageDistance = 0;
-  for( auto it : houses )
+  for( auto house : houses )
   {
-    if( it->spec().level() > HouseLevel::vacantLot
-        && it->spec().level() < HouseLevel::smallVilla )
+    if( house->level() > HouseLevel::vacantLot
+        && house->level() < HouseLevel::smallVilla )
     {
-      averageDistance += wbpos.distanceFrom( it->pos() );
+      averageDistance += wbpos.distanceFrom( house->pos() );
     }
   }
 
@@ -578,7 +578,7 @@ HouseList Statistic::_Houses::find(std::set<int> levels) const
   HouseList ret;
   for( auto it : houses )
   {
-    if( levels.count( it->spec().level() ) > 0 )
+    if( levels.count( it->level() ) > HouseLevel::vacantLot )
     {
       ret << it;
     }

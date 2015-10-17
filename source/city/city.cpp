@@ -85,6 +85,7 @@
 #include "cityservice_peace.hpp"
 #include "city_option.hpp"
 #include "ambientsound.hpp"
+#include "core/osystem.hpp"
 
 #include <set>
 
@@ -164,7 +165,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( updateRoads, 0 );
   setOption( godEnabled, 1 );
   setOption( zoomEnabled, 1 );
-  setOption( zoomInvert, 1 );
+  setOption( zoomInvert, OSystem::isMac() ? 1 : 0 );
   setOption( warningsEnabled, 1 );
   setOption( fishPlaceEnabled, 1 );
   setOption( fireKoeff, 100 );
@@ -177,6 +178,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( destroyEpidemicHouses, 0 );
   setOption( difficulty, game::difficulty::usual );
   setOption( forestFire, 1 );
+  setOption( showGodsUnhappyWarn, 1 );
   setOption( forestGrow, 0 );
   setOption( warfNeedTimber, 1 );
 
@@ -363,13 +365,13 @@ void PlayerCity::load( const VariantMap& stream )
 
   if( needLoadOld )
   {
-    LOG_CITY.warn( "Trying to load from format %d", saveFormat );
+    LOG_CITY.warn( "Trying to load from format {}", saveFormat );
   }
 
   City::load( stream );
   _d->tilemap.load( stream.get( literals::tilemap ).toMap() );
   _d->walkers.grid.resize( Size( _d->tilemap.size() ) );
-  VARIANT_LOAD_ENUM_D( _d, walkers.idCount, stream )
+  VARIANT_LOAD_ENUM_D( _d, walkers.idCount, stream)
 
   LOG_CITY.info( "Parse main params" );
   _d->borderInfo.roadEntry = TilePos( stream.get( "roadEntry" ).toTilePos() );
@@ -426,9 +428,9 @@ void PlayerCity::load( const VariantMap& stream )
   for (auto item : walkers)
   {
     VariantMap walkerInfo = item.second.toMap();
-    int walkerType = (int)walkerInfo.get( "type", walker::unknown );
+    walker::Type walkerType = walkerInfo.get( "type", (int)walker::unknown ).toEnum<walker::Type>();
 
-    WalkerPtr walker = WalkerManager::instance().create( walker::Type( walkerType ), this );
+    WalkerPtr walker = WalkerManager::instance().create( walkerType, this );
     if( walker.isValid() )
     {
       walker->load( walkerInfo );
@@ -442,7 +444,7 @@ void PlayerCity::load( const VariantMap& stream )
 
   LOG_CITY.info( "Load service info" );
   VariantMap services = stream.get( "services" ).toMap();
-  for (auto item : services)
+  for(auto& item : services)
   {
     VariantMap servicesSave = item.second.toMap();
 
@@ -470,6 +472,7 @@ void PlayerCity::load( const VariantMap& stream )
   }
 
   setOption( PlayerCity::forceBuild, 0 );
+  setOption( PlayerCity::constructorMode, 0 );
   VARIANT_LOAD_ANY_D( _d, states.age, stream )
   VARIANT_LOAD_CLASS_D_LIST( _d, activePoints, stream )
 
@@ -509,7 +512,7 @@ void PlayerCity::setBuildOptions(const city::development::Options& options)
 const city::States &PlayerCity::states() const              { return _d->states; }
 Signal1<std::string>& PlayerCity::onWarningMessage()        { return _d->signal.onWarningMessage; }
 Signal2<TilePos,std::string>& PlayerCity::onDisasterEvent() { return _d->signal.onDisasterEvent; }
-Signal0<>&PlayerCity::onChangeBuildingOptions()             { return _d->signal.onBuildingOptionsChanged; }
+Signal0<>& PlayerCity::onChangeBuildingOptions()             { return _d->signal.onBuildingOptionsChanged; }
 const city::development::Options& PlayerCity::buildOptions() const { return _d->buildOptions; }
 const city::VictoryConditions& PlayerCity::victoryConditions() const {   return _d->winTargets; }
 void PlayerCity::setVictoryConditions(const city::VictoryConditions& targets) { _d->winTargets = targets; }
@@ -539,8 +542,8 @@ void PlayerCity::setOption(PlayerCity::OptionType opt, int value)
     _d->options[ highlightBuilding ] = false;
     _d->options[ destroyEpidemicHouses ] = false;
 
-    GameEventPtr e = WarningMessage::create( "WARNING: enabled C3 gameplay only!", WarningMessage::negative );
-    e->dispatch();
+    auto event = WarningMessage::create( "WARNING: enabled C3 gameplay only!", WarningMessage::negative );
+    event->dispatch();
   }
 }
 

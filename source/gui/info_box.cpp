@@ -25,6 +25,7 @@
 #include "label.hpp"
 #include "core/event.hpp"
 #include "core/variant_map.hpp"
+#include "stretch_layout.hpp"
 #include "core/utils.hpp"
 #include "core/gettext.hpp"
 #include "game/resourcegroup.hpp"
@@ -49,6 +50,7 @@ public:
   PushButton* btnHelp;
   bool isAutoPosition;
   GameAutoPause autopause;
+  std::map<Widget*, Callback> callbacks;
 
   Impl() : lbBlackFrame(0), lbTitle(0),
     lbText(0), btnExit(0), btnHelp(0),
@@ -178,11 +180,23 @@ void Infobox::setupUI(const vfs::Path& filename)
   Window::setupUI( filename );
 }
 
-Label* Infobox::_lbTitleRef(){  return _d->lbTitle;}
+void Infobox::addCallback(const std::string& name, Callback callback)
+{
+  //Point start = _d->btnHelp->absoluteRect().righttop();
+  INIT_WIDGET_FROM_UI( VLayout*, layout )
+  if( layout )
+  {
+    auto button = new PushButton( this, Rect(), name );
+    button->onClicked() += callback;
+  }
+}
 
-Label* Infobox::_lbTextRef(){ return _d->lbText; }
+Label* Infobox::_lbTitle(){  return _d->lbTitle;}
+Label* Infobox::_lbText(){ return _d->lbText; }
 Label* Infobox::_lbBlackFrame(){  return _d->lbBlackFrame; }
-PushButton*Infobox::_btnExitRef() { return _d->btnExit; }
+
+PushButton*Infobox::_btnHelp() { return _d->btnHelp; }
+PushButton*Infobox::_btnExit() { return _d->btnExit; }
 
 void Infobox::_updateWorkersLabel(const Point &pos, int picId, int need, int have )
 {
@@ -204,7 +218,7 @@ InfoboxBuilding::InfoboxBuilding( Widget* parent, const Tile& tile )
 {
   auto building = tile.overlay<Building>();
   if( building.isValid() )
-    setTitle( MetaDataHolder::findPrettyName( building->type() ) );
+    setTitle( building->info().prettyName() );
 }
 
 }

@@ -37,6 +37,7 @@
 #include "world/empire.hpp"
 #include "core/exception.hpp"
 #include "loader.hpp"
+#include "objects/infodb.hpp"
 #include "gamedate.hpp"
 #include "saver.hpp"
 #include "resourceloader.hpp"
@@ -109,7 +110,7 @@ public:
   void initMovie();
   void initMetrics();
   void initCelebrations();
-  void initGuiEnvironment();
+  void initUI();
   void initArchiveLoaders();
   void initPantheon( vfs::Path filename );
   void initFontCollection( vfs::Path resourcePath );
@@ -164,8 +165,9 @@ void Game::Impl::initVideo()
 
   engine = new SdlEngine();
 
-  Logger::warning( "GraficEngine: set size" );
-  engine->setScreenSize( SETTINGS_VALUE( resolution ).toSize() );
+  Size size = SETTINGS_VALUE( resolution );
+  Logger::warning( "GraficEngine: set size [{0}x{1}]", size.width(), size.height() );
+  engine->setScreenSize( size );
   engine->setFlag( Engine::batching, batchTexures ? 1 : 0 );
 
   bool fullscreen = KILLSWITCH( fullscreen );
@@ -262,11 +264,11 @@ void Game::Impl::createSaveDir()
   Logger::warningIf( !dirCreated, "Game: can't create save dir" );
 }
 
-void Game::Impl::initGuiEnvironment()
+void Game::Impl::initUI()
 {
   Logger::warning( "Game: initialize gui" );
-  gui = new gui::Ui( *engine );
 
+  gui = new gui::Ui( *engine );
   gui::infobox::Manager::instance().setBoxLock( KILLSWITCH( lockInfobox ) );
 }
 
@@ -371,7 +373,7 @@ bool Game::load(std::string filename)
   scene::SplashScreen screen;
 
   screen.initialize();
-  bool usingOldgfx = KILLSWITCH( oldgfx ) || !SETTINGS_VALUE( c3gfx ).toString().empty();
+  bool usingOldgfx = KILLSWITCH( oldgfx ) || !SETTINGS_STR( c3gfx ).empty();
   screen.setImage( usingOldgfx ? "load4" : "freska", 1 );
   screen.update( *_d->engine );
 
@@ -418,7 +420,7 @@ bool Game::load(std::string filename)
   world::CityPtr city = _d->empire->initPlayerCity( ptr_cast<world::City>( _d->city ) );
   if( city.isNull() )
   {
-    Logger::warning( "INIT ERROR: can't initalize city %s in empire" + _d->city->name() );
+    Logger::warning( "INIT ERROR: can't initalize city {0} in empire" + _d->city->name() );
     return false;
   }
   _d->empire->emperor().checkCities();
@@ -472,7 +474,7 @@ void Game::initialize()
   _d->initVideo();
   _d->initMovie();
   _d->initFontCollection( game::Settings::rcpath() );
-  _d->initGuiEnvironment();
+  _d->initUI();
   _d->initSound();
   _d->initHotkeys();
   _d->createSaveDir();
@@ -510,7 +512,7 @@ void Game::initialize()
   HouseSpecHelper::instance().initialize( SETTINGS_RC_PATH( houseModel ) );
 
   screen.setText( "##initialize_constructions##" );
-  MetaDataHolder::instance().initialize( SETTINGS_RC_PATH( constructionModel ) );
+  object::InfoDB::instance().initialize( SETTINGS_RC_PATH( constructionModel ) );
 
   screen.setText( "##initialize_walkers##" );
   WalkerHelper::instance().load( SETTINGS_RC_PATH( walkerModel ) );
@@ -539,7 +541,7 @@ bool Game::exec()
     return true;
   }    
 
-  Logger::warning( "game: exec switch to screen %d", _d->nextScreen );
+  Logger::warning( "game: exec switch to screen {0}", _d->nextScreen );
   addon::Manager& am = addon::Manager::instance();
   switch(_d->nextScreen)
   {
@@ -575,7 +577,7 @@ bool Game::exec()
     break;
 
     default:
-      Logger::warning( "game: unexpected next screen type %d", _d->nextScreen );
+      Logger::warning( "game: unexpected next screen type {0}", _d->nextScreen );
   }
 
   return _d->nextScreen != SCREEN_QUIT;

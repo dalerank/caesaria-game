@@ -305,17 +305,17 @@ void ServiceWalker::send2City(BuildingPtr base, int orders)
     return;
   }
 
-  ServiceBuildingPtr servBuilding = base.as<ServiceBuilding>();
 
-  if( servBuilding.isValid() && _d->maxDistance <= defaultServiceDistance )
+  if( base.is<ServiceBuilding>() && _d->maxDistance <= defaultServiceDistance )
   {
-    Logger::warning( "!!!Warning: Base have short distance for walker. Parent [%d,%d] ", base->pos().i(), base->pos().j() );
+    auto servBuilding = base.as<ServiceBuilding>();
+    Logger::warning( "!!!Warning: Base have short distance for walker. Parent [{0},{1}] ", base->pos().i(), base->pos().j() );
     setMaxDistance( servBuilding->walkerDistance() );
   }
 
   if( !base.is<WorkingBuilding>() )
   {
-    Logger::warning( "!!!Warning: ServiceWalker send not from service building. Parent [%d,%d] ", base->pos().i(), base->pos().j() );
+    Logger::warning( "!!!Warning: ServiceWalker send not from service building. Parent [{0},{1}] ", base->pos().i(), base->pos().j() );
   }
 
   setBase( base );
@@ -333,9 +333,9 @@ void ServiceWalker::_centerTile()
   for( auto b : reachedBuildings )
     b->applyService( this );
 
-  ServiceBuildingPtr servBuilding = base().as<ServiceBuilding>();
-  if( servBuilding.isValid() )
+  if( base().is<ServiceBuilding>() )
   {
+    auto servBuilding = base().as<ServiceBuilding>();
     servBuilding->buildingsServed( reachedBuildings, this );
   }
 
@@ -438,7 +438,7 @@ void ServiceWalker::load( const VariantMap& stream )
 
   if( overlay.isNull() )
   {
-    Logger::warning( "Not found base building[%d,%d] for service walker", _d->basePos.i(), _d->basePos.j() );
+    Logger::warning( "Not found base building[{0},{1}] for service walker", _d->basePos.i(), _d->basePos.j() );
   }
   else
   {

@@ -26,7 +26,7 @@ namespace gfx
 class Tilemap;
 
 namespace imgid
-{
+{  
   std::string toResource( const unsigned int imgId );
   int fromResource( const std::string &pic_name);
   Picture toPicture( const unsigned int imgId );
@@ -34,6 +34,7 @@ namespace imgid
 
 namespace tile
 {  
+  unsigned int width2size( int width );
   int encode( const Tile& tt );
   int turnCoastTile(int imgid , Direction newDirection);
   unsigned int hash( const TilePos& pos );

@@ -119,7 +119,7 @@ void GroupBox::beforeDraw(gfx::Engine& painter )
 
       Pictures pics;
       Decorator::draw( pics, Rect( Point( 0, 0 ), size() ),
-                       Decorator::Mode( styles[ math::clamp<int>( _d->style, 0, count ) ] ), Decorator::normalY );
+                       Decorator::Mode( styles[ math::clamp<int>( _d->style, 0, count ) ] ), nullptr, Decorator::normalY );
 
       bool batchOk = _d->background.load( pics, absoluteRect().lefttop() );
       if( !batchOk )

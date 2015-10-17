@@ -246,18 +246,18 @@ void EmpireMapWindow::Impl::drawMovable(Engine& painter)
   {
     if( obj->isMovable() )
     {
-      world::MovableObjectPtr mobj = obj.as<world::MovableObject>();
-      if( !mobj.isValid() )
+      auto movableObject = obj.as<world::MovableObject>();
+      if( !movableObject.isValid() )
       {
-        Logger::warning( "Object %s not movable", obj->name().c_str() );
+        Logger::warning( "Object {0} not movable", obj->name() );
         continue;
       }
 
-      Point mappos = mobj->location();
-      painter.draw( mobj->pictures(), offset + mobj->location() );
+      Point mappos = movableObject->location();
+      painter.draw( movableObject->pictures(), offset + movableObject->location() );
 
 #ifdef DEBUG
-      int distance = mobj->viewDistance();
+      int distance = movableObject->viewDistance();
       if( distance > 0 )
       {
         Point lastPos( distance * sin( 0 ), distance * cos( 0 ) );
@@ -271,7 +271,7 @@ void EmpireMapWindow::Impl::drawMovable(Engine& painter)
         }
       }
 
-      const world::Route& way = mobj->way();
+      const world::Route& way = movableObject->way();
       if( !way.empty() )
       {
         Point lastPos = way[ way.step ];
@@ -381,8 +381,8 @@ void EmpireMapWindow::Impl::createTradeRoute()
     if( city.isValid() && route.isValid() && route->isSeaRoute() )
     {
       unsigned int cost = world::EmpireHelper::getTradeRouteOpenCost( empire, city->name(), currentCity->name() );
-      GameEventPtr e = Payment::create( econ::Issue::sundries, -(int)cost );
-      e->dispatch();
+      auto event = Payment::create( econ::Issue::sundries, -(int)cost );
+      event->dispatch();
 
       DockList docks = city->statistic().objects.find<Dock>( object::dock );
       if( docks.empty() )
@@ -576,6 +576,8 @@ void EmpireMapWindow::beforeDraw(Engine& painter)
 {
   _d->lines.clear();
   Widget::beforeDraw( painter );
+
+  //"##click_on_city_for_info_tlp##";
 }
 
 void EmpireMapWindow::setFlag(EmpireMapWindow::Flag flag, bool value)

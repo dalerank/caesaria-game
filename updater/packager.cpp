@@ -4,7 +4,7 @@
 #include "util.hpp"
 #include "inifile.hpp"
 #include "core/utils.hpp"
-
+#include "core/format.hpp"
 #include "vfs/file.hpp"
 #include "vfs/directory.hpp"
 #include "vfs/entries.hpp"
@@ -75,18 +75,18 @@ void Packager::createUpdate( bool release )
     std::string sectionName;
     if( release )
     {
-      sectionName = utils::format( 0xff, "File %s", baseName.c_str() );
+      sectionName = fmt::format( "File {}", baseName );
     }
     else
     {
-      sectionName = utils::format( 0xff, "Version%s File %s", _crver.c_str(), baseName.c_str() );
+      sectionName = fmt::format( "Version{} File {}", _crver, baseName );
     }
 
     ByteArray data = vfs::NFile::open( (*i).absolutePath() ).readAll();
 
     unsigned int crc = data.crc32( 0 );
     vinfo->SetValue( sectionName, "crc", utils::format( 0xff, "%x", crc ) );
-    vinfo->SetValue( sectionName, "filesize", utils::format( 0xff, "%d", data.size() ) );
+    vinfo->SetValue( sectionName, "filesize", utils::i2str( data.size() ) );
     // Add platforms information info release file
     std::string platforms = getFilePlatforms(*i);
     if (!platforms.empty()) {

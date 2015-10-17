@@ -505,7 +505,7 @@ public:
   {
     if (window == NULL)
     {
-      Logger::warning( utils::format( 0xff, "CRITICAL!!! Unable to create SDL-window: %s", SDL_GetError() ) );
+      Logger::warning( "CRITICAL!!! Unable to create SDL-window: {0}", SDL_GetError() );
       THROW("Failed to create window");
     }
   }
@@ -527,7 +527,7 @@ void GlEngine::init()
   rc = TTF_Init();
   if (rc != 0) THROW("Unable to initialize SDL: " << SDL_GetError());
 
-  Logger::warning( utils::format( 0xff, "SDLGraficEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
+  Logger::warning( "SDLGraficEngine: set mode {0}x{1}",  _srcSize.width(), _srcSize.height() );
 
 #ifdef USE_GLES
   //_srcSize = Size( mode.w, mode.h );
@@ -570,7 +570,6 @@ void GlEngine::init()
 
   _d->throwIfnoWindow();
   _d->viewportSize = _srcSize;
-  _virtualSize = _srcSize;
   _d->useViewport = false;
 
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -613,11 +612,11 @@ void GlEngine::init()
 
   SDL_DisplayMode mode;
   SDL_GetCurrentDisplayMode(0, &mode);
-  Logger::warning( "Screen bpp: %d", SDL_BITSPERPIXEL(mode.format));
-  Logger::warning( "Vendor     : %s", glGetString(GL_VENDOR));
-  Logger::warning( "Renderer   : %s", glGetString(GL_RENDERER));
-  Logger::warning( "Version    : %s", glGetString(GL_VERSION));
-  Logger::warning( "Extensions : %n", glGetString(GL_EXTENSIONS));
+  Logger::warning( "Screen bpp: {}", SDL_BITSPERPIXEL(mode.format));
+  Logger::warning( "Vendor     : {}", glGetString(GL_VENDOR));
+  Logger::warning( "Renderer   : {}", glGetString(GL_RENDERER));
+  Logger::warning( "Version    : {}", glGetString(GL_VERSION));
+  Logger::warning( "Extensions : {}", glGetString(GL_EXTENSIONS));
 
   glEnable( GL_TEXTURE_2D );
   glClearColor( 0.0f, 0.0f, 0.0f, 0.0f );
@@ -636,8 +635,8 @@ void GlEngine::init()
 
   Logger::warning( "GrafixEngine: set caption");
   std::string versionStr = utils::format(0xff, "CaesarIA: OpenGL %d.%d R%d [%s:%s]",
-                                                 CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR, CAESARIA_VERSION_REVSN,
-                                                 CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
+                                               CAESARIA_VERSION_MAJOR, CAESARIA_VERSION_MINOR, CAESARIA_VERSION_REVSN,
+                                               CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
   SDL_SetWindowTitle( _d->window, versionStr.c_str() );
 
   //!!!!!
@@ -673,7 +672,7 @@ Picture GlEngine::createPicture( const Size& size )
   SDL_Surface* img = SDL_CreateRGBSurface( 0, size.width(), size.height(), 32,
                                            0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
 
-  Logger::warningIf( NULL == img, utils::format( 0xff, "GlEngine:: can't make surface, size=%dx%d", size.width(), size.height() ) );
+  Logger::warningIf( NULL == img, utils::format( 0xff, "GlEngine:: can't make surface, size={}x{}", size.width(), size.height() ) );
 
   Picture pic;
   pic.init( 0, img, 0 );  // no offset
@@ -707,6 +706,11 @@ Batch GlEngine::loadBatch(const Picture &pic, const Rects &srcRects, const Rects
 }
 
 void GlEngine::unloadBatch(const Batch &batch)
+{
+
+}
+
+void GlEngine::setVirtualSize( const Size& rect )
 {
 
 }
@@ -907,6 +911,11 @@ void GlEngine::draw(const Pictures& pictures, const Point& pos, Rect* clipRect)
   {
     draw( *it, pos, clipRect );
   }
+}
+
+void GlEngine::draw(const Picture& pic, const Rect& dstRect, Rect* clipRect)
+{
+
 }
 
 void GlEngine::drawLine(const NColor& color, const Point& p1, const Point& p2)

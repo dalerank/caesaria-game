@@ -33,7 +33,7 @@ TimberLogger::TimberLogger()
 {
   _picture().load( ResourceGroup::commerce, 72 );
 
-  _animationRef().load( ResourceGroup::commerce, 73, 10);
+  _animation().load( ResourceGroup::commerce, 73, 10);
   _fgPictures().resize(2);
 }
 

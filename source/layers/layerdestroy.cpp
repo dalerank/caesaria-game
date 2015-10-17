@@ -32,6 +32,7 @@
 #include "game/funds.hpp"
 #include "core/font.hpp"
 #include "gfx/tilearea.hpp"
+#include "core/osystem.hpp"
 #include "build.hpp"
 #include "objects/tree.hpp"
 #include "game/settings.hpp"
@@ -76,15 +77,31 @@ public:
   LayerPtr lastLayer;
   Renderer* renderer;
   Font textFont;
+  bool readyForExit;
+  Signal3<object::Type,TilePos,int> onDestroySignal;
 };
 
 void Destroy::_clearAll()
 {
   TilesArray tiles4clear = _getSelectedArea( _d->startTilePos );
+  std::set<TilePos> alsoDestroyed;
   for( auto tile : tiles4clear )
   {
-    GameEventPtr event = ClearTile::create( tile->epos() );
-    event->dispatch();
+    Tile* master = tile->master() ? tile->master() : tile;
+    if( alsoDestroyed.count( master->epos() ) == 0 )
+    {
+      alsoDestroyed.insert( master->epos() );
+
+      auto event = ClearTile::create( master->epos() );
+      event->dispatch();
+
+      if( tile->overlay().isValid() )
+      {
+        auto objectType = tile->overlay()->type();
+        int money = _checkMoney4destroy( *tile );
+        emit _d->onDestroySignal( objectType, tile->epos(), money);
+      }
+    }
   }
 }
 
@@ -94,12 +111,11 @@ unsigned int Destroy::_checkMoney4destroy(const Tile& tile)
   int baseValue = 0;
   if( overlay.isValid() )
   {
-    const MetaData& mdata = MetaDataHolder::find( overlay->type() );
-    baseValue = mdata.getOption( MetaDataOptions::cost ).toInt() / 2;
+    baseValue = overlay->info().cost() / 2;
   }
 
   baseValue += tile.getFlag( Tile::tlTree ) ? 6 : 0;
-  baseValue += tile.getFlag( Tile::tlRoad) ? 4 : 0;
+  baseValue += tile.getFlag( Tile::tlRoad ) ? 4 : 0;
 
   return baseValue;
 }
@@ -107,7 +123,7 @@ unsigned int Destroy::_checkMoney4destroy(const Tile& tile)
 void Destroy::render( Engine& engine )
 {
   // center the map on the screen
-  Point cameraOffset = _camera()->offset();
+  RenderInfo renderInfo = { engine, _camera()->offset() };
 
   const TilesArray& visibleTiles = _camera()->tiles();
   const TilesArray& flatTiles = _camera()->flatTiles();
@@ -137,34 +153,34 @@ void Destroy::render( Engine& engine )
     if( hashDestroyArea.inArea( tile ) )
     {
       engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
-      drawPass( engine, *tile, cameraOffset, Renderer::ground );
-      drawPass( engine, *tile, cameraOffset, Renderer::groundAnimation );
+      drawPass( renderInfo, *tile, Renderer::ground );
+      drawPass( renderInfo, *tile, Renderer::groundAnimation );
       engine.resetColorMask();
     }
     else
     {
-      drawPass( engine, *tile, cameraOffset, Renderer::ground );
-      drawPass( engine, *tile, cameraOffset, Renderer::groundAnimation );
+      drawPass( renderInfo, *tile, Renderer::ground );
+      drawPass( renderInfo, *tile, Renderer::groundAnimation );
     }
   }
 
   // FIRST PART: draw all flat land (walkable/boatable)  
   for( auto ftile : flatTiles )
   {
-    Tile* master = ftile->masterTile();
+    Tile* master = ftile->master();
 
     ftile = (master == 0 ? ftile : master);
 
-    if( !ftile->rwd() )
+    if( !ftile->rendered() )
     {
       if( hashDestroyArea.inArea( ftile ) )
       {
         engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
-        drawTile( engine, *ftile, cameraOffset );
+        drawTile( renderInfo, *ftile );
         engine.resetColorMask();
       }
       else
-        drawTile( engine, *ftile, cameraOffset );
+        drawTile( renderInfo, *ftile );
     }
   }
 
@@ -176,14 +192,14 @@ void Destroy::render( Engine& engine )
     if( hashDestroyArea.inArea( vtile ) )
     {
       engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
-      drawProminentTile( engine, *vtile, cameraOffset, z, false );
-      drawWalkers( engine, *vtile, cameraOffset );
+      drawProminentTile( renderInfo, *vtile, z, false );
+      drawWalkers( renderInfo, *vtile );
       engine.resetColorMask();
     }
     else
     {
-      drawProminentTile( engine, *vtile, cameraOffset, z, false );
-      drawWalkers( engine, *vtile, cameraOffset );
+      drawProminentTile( renderInfo, *vtile, z, false );
+      drawWalkers( renderInfo, *vtile );
     }
   }
 }
@@ -280,7 +296,7 @@ void Destroy::handleEvent(NEvent& event)
       {
         _setStartCursorPos( _lastCursorPos() );
 
-       Tile* tile = _camera()->at( _lastCursorPos(), true );
+        Tile* tile = _camera()->at( _lastCursorPos(), true );
         _d->startTilePos = tile ? tile->epos() : gfx::tilemap::invalidLocation();
       }
     }
@@ -288,10 +304,8 @@ void Destroy::handleEvent(NEvent& event)
 
     case mouseLbtnRelease:            // left button
     {
-      _clearAll();
-      _setStartCursorPos( _lastCursorPos() );
-      GameEventPtr e = Payment::create( econ::Issue::buildConstruction, -_d->money4destroy );
-      e->dispatch();      
+      if( !OSystem::isAndroid() )
+        _executeClear();
     }
     break;
 
@@ -311,17 +325,52 @@ void Destroy::handleEvent(NEvent& event)
     {
       switch( event.keyboard.key )
       {
-      case KEY_ESCAPE: _exitDestroyTool(); break;
+      case KEY_ESCAPE:
+      {
+        if( OSystem::isAndroid() )
+        {
+          if( !_d->readyForExit )
+          {
+            _setLastCursorPos( _startCursorPos() );
+            _d->readyForExit = true;
+            break;
+          }
+        }
+
+        _exitDestroyTool();
+      }
+      break;
+
+      case KEY_RETURN:
+      {
+        _executeClear();
+      }
+      break;
+
       default: break;
       }
     }
   }
 }
 
+Signal3<object::Type,TilePos,int>& Destroy::onDestroy()
+{
+  return _d->onDestroySignal;
+}
+
+void Destroy::_executeClear()
+{
+  _clearAll();
+  _setStartCursorPos( _lastCursorPos() );
+
+  GameEventPtr e = Payment::create( econ::Issue::buildConstruction, -_d->money4destroy );
+  e->dispatch();
+}
+
 int Destroy::type() const {  return citylayer::destroyd; }
 LayerPtr Destroy::drawLayer() const { return _d->lastLayer; }
 
-void Destroy::drawTile(Engine& engine, Tile& tile, const Point& offset )
+void Destroy::drawTile(const RenderInfo& rinfo, Tile& tile)
 {
   OverlayPtr overlay = tile.overlay();
 
@@ -332,11 +381,11 @@ void Destroy::drawTile(Engine& engine, Tile& tile, const Point& offset )
 
   if( _d->lastLayer.isValid() )
   {
-    _d->lastLayer->drawTile( engine, tile, offset );
+    _d->lastLayer->drawTile( rinfo, tile );
   }
   else
   {
-    Layer::drawTile( engine, tile, offset );
+    Layer::drawTile( rinfo, tile );
   }
 }
 
@@ -353,7 +402,7 @@ Destroy::Destroy( Renderer& renderer, PlayerCityPtr city)
 {
   _d->renderer = &renderer;
   _d->shovelPic.load( "shovel", 1 );
-  std::string rcLand = SETTINGS_VALUE( forbidenTile ).toString();
+  std::string rcLand = SETTINGS_STR( forbidenTile );
   _d->clearPic.load( rcLand, 2 );
   _d->textFont = Font::create( FONT_5 );
   _d->textPic = Picture( Size( 100, 30 ), 0, true );

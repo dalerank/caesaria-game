@@ -94,8 +94,8 @@ void Loader::Impl::initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city )
 
   Tile& signTile = tmap.at( tlPos + tlOffset );
 
-  Logger::warning( "(%d, %d)", tlPos.i(),    tlPos.j()    );
-  Logger::warning( "(%d, %d)", tlOffset.i(), tlOffset.j() );
+  Logger::warning( "({0}, {1})", tlPos.i(),    tlPos.j()    );
+  Logger::warning( "({0}, {1})", tlOffset.i(), tlOffset.j() );
 
   if( maySetSign( signTile ) )
   {
@@ -114,7 +114,7 @@ void Loader::Impl::initTilesAnimation( Tilemap& tmap )
   const Animation& meadow = AnimationBank::simple( AnimationBank::animMeadow );
   for( auto tile : area )
   {
-    int rId = tile->originalImgId() - 364;
+    int rId = tile->imgId() - 364;
     if( rId >= 0 && rId < 8 )
     {
       Animation water = AnimationBank::simple( AnimationBank::animWater );
@@ -132,7 +132,7 @@ void Loader::Impl::initTilesAnimation( Tilemap& tmap )
 
       if( !tile->picture().isValid() )
       {
-        Picture pic = MetaDataHolder::randomPicture( object::terrain, Size(1) );
+        Picture pic = object::Info::find( object::terrain ).randomPicture( Size(1) );
         tile->setPicture( pic );
       }
       tile->setAnimation( meadowAnim );

@@ -16,7 +16,7 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "constants.hpp"
-#include "metadata.hpp"
+#include "infodb.hpp"
 #include "core/logger.hpp"
 #include "core/variant_list.hpp"
 
@@ -126,6 +126,7 @@ Helper::Helper() : EnumsHelper<Type>( Type(0) )
     __REG_TYPE( water )
     __REG_TYPE( meadow )
     __REG_TYPE( roadBlock )
+    __REG_TYPE( farmtile )
 
     append( object::unknown,        "" );
 #undef __REG_TYPE
@@ -148,7 +149,7 @@ Type findType(const std::string &name)
 
 std::string toString( const Group& g)
 {
-  return MetaDataHolder::instance().findGroupname( g );
+  return object::InfoDB::instance().findGroupname( g );
 }
 
 VariantList TypeSet::save() const

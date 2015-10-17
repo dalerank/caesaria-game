@@ -67,8 +67,8 @@ public:
                     : (+100) );
     }
 
-    const TilePos& pos = tile ? tile->pos() : invalidePos;
-    const TilePos& otherPos = p->tile ? p->tile->pos() : getPos();
+    const TilePos& pos = getPos();
+    const TilePos& otherPos = p->getPos();
     return p->g + ((pos.i() == otherPos.i() || pos.j() == otherPos.j()) ? 10 : 14) + roadScore;
   }
 

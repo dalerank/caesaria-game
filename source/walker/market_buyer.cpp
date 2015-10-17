@@ -235,7 +235,7 @@ void MarketBuyer::_reachedPathway()
       
       if( building.is<Granary>() )
       {
-        GranaryPtr granary = building.as<Granary>();
+        auto granary = building.as<Granary>();
         // this is a granary!
         // std::cout << "MarketLady arrives at granary, res=" << _reservationID << std::endl;
         granary->store().applyRetrieveReservation(_d->basket, _d->reservationID);
@@ -263,7 +263,7 @@ void MarketBuyer::_reachedPathway()
       }
       else if( building.is<Warehouse>() )
       {
-        WarehousePtr warehouse = ptr_cast<Warehouse>( building );
+        auto warehouse = ptr_cast<Warehouse>( building );
         // this is a warehouse!
         warehouse->store().applyRetrieveReservation(_d->basket, _d->reservationID);
 

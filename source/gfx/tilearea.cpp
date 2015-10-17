@@ -17,6 +17,7 @@
 
 #include "tilearea.hpp"
 #include "tilemap.hpp"
+#include "objects/overlay.hpp"
 
 namespace gfx
 {
@@ -29,6 +30,17 @@ TilesArea::TilesArea(const Tilemap &tmap, const TilePos& leftup, const TilePos& 
 TilesArea::TilesArea(const Tilemap &tmap, int distance, const TilePos& center)
 {
   add( tmap, center, distance );
+}
+
+TilesArea::TilesArea(const Tilemap& tmap, int distance, OverlayPtr overlay)
+{
+  if( overlay.isNull() )
+    return;
+
+  TilePos offset( distance, distance  );
+  TilePos size( overlay->size().width(), overlay->size().height() );
+  TilePos start = overlay->tile().epos();
+  append( tmap.area( start - offset, start + size + offset ) );
 }
 
 TilesArea::TilesArea(const Tilemap &tmap, const TilePos& leftup, const Size& size)

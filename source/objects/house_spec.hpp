@@ -24,6 +24,7 @@
 #include "core/smartptr.hpp"
 #include "vfs/path.hpp"
 #include "predefinitions.hpp"
+#include "house_level.hpp"
 #include "service.hpp"
 
 class HouseSpecification
@@ -34,7 +35,7 @@ public:
   typedef enum { intv_foods=0, intv_goods, intv_service, intv_count } IntervalName;
   enum { needTheater=1, needAmphitheater=2, needColosseum=3 };
 
-  int level() const;
+  HouseLevel::ID level() const;
   int tileCapacity() const;
   int taxRate() const;
   int prosperity() const;

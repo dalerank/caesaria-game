@@ -139,7 +139,7 @@ void SpinBox::_update()
     }
 
     frameRect = Rect( _d->btnIncrease->right() + 5, 0, width(), height() );
-    string valueText = utils::format( 0xff, "%d %s", _d->value, _d->postfix.c_str() );
+    string valueText = fmt::format( "{0} {1}", _d->value, _d->postfix );
     _textPicture().fill( DefaultColors::clear, frameRect );
 
     if( !valueText.empty() )

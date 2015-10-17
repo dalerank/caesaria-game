@@ -49,6 +49,12 @@ AboutGranary::AboutGranary(Widget* parent, PlayerCityPtr city, const Tile& tile 
 
   _granary = tile.overlay<Granary>();
 
+  if( _granary.isNull() )
+  {
+    deleteLater();
+    return;
+  }
+
   setBase( _granary );
   _setWorkingVisible( true );
 
@@ -59,8 +65,7 @@ AboutGranary::AboutGranary(Widget* parent, PlayerCityPtr city, const Tile& tile 
 
   CONNECT( btnOrders, onClicked(), this, AboutGranary::showSpecialOrdersWindow );
 
-  std::string title = MetaDataHolder::findPrettyName( _granary->type() );
-  setTitle( _(title) ); 
+  setTitle( _( _granary->info().prettyName() ) );
 
   if( lbUnits )
   {
@@ -72,7 +77,7 @@ AboutGranary::AboutGranary(Widget* parent, PlayerCityPtr city, const Tile& tile 
                                              _("##units_in_stock##"), _("##freespace_for##"),
                                              Measure::convQty( freeQty ),
                                              Measure::measureType() );
-    lbUnits->setPosition( _lbTitleRef()->leftbottom() + Point( 0, 5 ) );
+    lbUnits->setPosition( _lbTitle()->leftbottom() + Point( 0, 5 ) );
     lbUnits->setText( desc );
 
     drawGood(good::wheat, 0, lbUnits->bottom() );

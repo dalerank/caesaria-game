@@ -29,35 +29,12 @@
 #include "extension.hpp"
 #include "gfx/tilearea.hpp"
 #include "core/json.hpp"
+#include "params.hpp"
 #include "core/flowlist.hpp"
 #include "core/common.hpp"
 
 using namespace gfx;
 using namespace events;
-
-class Params : public std::map<Param, double>
-{
-public:
-  VariantList save() const
-  {
-    VariantList ret;
-    for( auto& item : *this )
-      ret.push_back( VariantList( item.first, item.second ) );
-
-    return ret;
-  }
-
-  void load( const VariantList& stream )
-  {
-    for( auto& item : stream )
-    {
-      const VariantList& vl = item.toList();
-      Param param = (Param)vl.get( 0 ).toInt();
-      double value = vl.get( 1, 0.f ).toDouble();
-      (*this)[ param ] = value;
-    }
-  }
-};
 
 class Extensions : public FlowList<ConstructionExtension>
 {
@@ -104,8 +81,10 @@ public:
 Construction::Construction(const object::Type type, const Size& size)
   : Overlay( type, size ), _d( new Impl )
 {
-  _d->states[ pr::fire ] = 0;
-  _d->states[ pr::damage ] = 0;
+  setState( pr::fire, 0 );
+  setState( pr::damage, 0 );
+  setState( pr::inflammability, 1 );
+  setState( pr::collapsibility, 1 );
 }
 
 TilesArray& Construction::_roadside() { return _d->accessRoads; }
@@ -168,9 +147,9 @@ bool Construction::build( const city::AreaInfo& info )
 {
   Overlay::build( info );
 
-  std::string name =  utils::format( 0xff, "%s_%d_%d",
-                                     object::toString( type() ).c_str(),
-                                     info.pos.i(), info.pos.j() );
+  std::string name =  fmt::format( "{}_{}_{}",
+                                   object::toString( type() ),
+                                   info.pos.i(), info.pos.j() );
   setName( name );
 
   computeRoadside();
@@ -203,12 +182,19 @@ int Construction::roadsideDistance() const{ return 1; }
 
 void Construction::burn()
 {
-  deleteLater();
+  if( !info().mayBurn() )
+  {
+    Logger::warning( "Construction {0} [{1},{2}] cant be fireed at !", info().name(), pos().i(), pos().j() );
+  }
+  else
+  {
+    deleteLater();
 
-  GameEventPtr event = Disaster::create( tile(), Disaster::fire );
-  event->dispatch();
+    auto event = Disaster::create( tile(), Disaster::fire );
+    event->dispatch();
 
-  Logger::warning( "Construction catch fire at %d,%d!", pos().i(), pos().j() );
+    Logger::warning( "Construction {0} catch fire at []{1},{2}]!", info().name(), pos().i(), pos().j() );
+  }
 }
 
 void Construction::collapse()
@@ -221,7 +207,7 @@ void Construction::collapse()
   GameEventPtr event = Disaster::create( tile(), Disaster::collapse );
   event->dispatch();
 
-  Logger::warning( "Construction collapsed at %d,%d!", pos().i(), pos().j() );
+  Logger::warning( "Construction {0} collapsed at [{1},{2}]!", info().name(), pos().i(), pos().j() );
 }
 
 const Picture& Construction::picture() const { return Overlay::picture(); }
@@ -264,9 +250,15 @@ ConstructionExtensionPtr Construction::getExtension(const std::string& name)
 
 const ConstructionExtensionList& Construction::extensions() const { return _d->extensions; }
 
-void Construction::initialize(const MetaData& mdata)
+void Construction::initialize(const object::Info& mdata)
 {
   Overlay::initialize( mdata );
+
+  double inflammability = mdata.getOption( "inflammability", 1. );
+  setState( pr::inflammability, inflammability );
+
+  double collapsibility = mdata.getOption( "collapsibility", 1. );
+  setState( pr::collapsibility, collapsibility );
 
   VariantMap anMap = mdata.getOption( "animation" ).toMap();
   if( !anMap.empty() )
@@ -287,6 +279,11 @@ void Construction::initialize(const MetaData& mdata)
 
     setAnimation( anim );
   }
+}
+
+const Picture&Construction::picture(const city::AreaInfo& info) const
+{
+  return Overlay::picture( info );
 }
 
 double Construction::state(Param param) const { return _d->states[ param ]; }
@@ -311,10 +308,5 @@ void Construction::timeStep(const unsigned long time)
   _d->extensions.merge();
 
   Overlay::timeStep( time );
-}
-
-const Picture& Construction::picture(const city::AreaInfo& areaInfo) const
-{
-  return Overlay::picture();
 }
 

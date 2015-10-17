@@ -73,12 +73,12 @@ void MultilineButton::setText(const StringArray& text)
   PushButton::setText( "" );
   _strings = text;
   Widgets children = _layout->children();
-  foreach( it, children )
-    (*it)->remove();
+  for( auto&& child : children )
+    child->remove();
 
-  foreach( it, _strings )
+  for( auto& it : _strings )
   {
-    Label* lb = new Label( _layout, Rect(), *it );
+    Label* lb = new Label( _layout, Rect(), it );
     lb->setTextAlignment( horizontalTextAlign(), verticalTextAlign() );
   }
 }

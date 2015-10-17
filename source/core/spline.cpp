@@ -70,7 +70,7 @@ Spline::Spline(vd_t &x, vd_t &y)
 
 double Spline::getY( double x)
 {
-    int j;
+    size_t j;
     for ( j = 0; j < mySplineSet.size(); j++ )
     {
         if( mySplineSet[j].x > x )

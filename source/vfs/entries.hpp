@@ -37,6 +37,7 @@ public:
   class Items : public std::vector< EntryInfo >
   {
   public:
+    StringArray names() const;
     StringArray files( const std::string& ext ) const;
     StringArray folders() const;
   };

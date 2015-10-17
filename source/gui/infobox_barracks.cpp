@@ -50,7 +50,7 @@ AboutBarracks::AboutBarracks(Widget* parent, PlayerCityPtr city, const Tile& til
   if( !barracks.isValid() )
   {
     deleteLater();
-    Logger::warning( "AboutBarracs: cant find barracks at %d,%d", tile.i(), tile.j() );
+    Logger::warning( "AboutBarracs: cant find barracks at {0}x{1}", tile.i(), tile.j() );
     return;
   }
 
@@ -59,13 +59,13 @@ AboutBarracks::AboutBarracks(Widget* parent, PlayerCityPtr city, const Tile& til
 
   GET_DWIDGET_FROM_UI( _d, lbWeaponQty )
 
-  setTitle( MetaDataHolder::findPrettyName( base()->type() ) );
+  setTitle( _( barracks->info().prettyName() ) );
   setText( _("##barracks_info##") );
 
   if( _d->lbWeaponQty )
   {
-    _lbTextRef()->setHeight( height() / 2 );
-    _d->lbWeaponQty->setTop( _lbTextRef()->bottom() + 5 );
+    _lbText()->setHeight( height() / 2 );
+    _d->lbWeaponQty->setTop( _lbText()->bottom() + 5 );
     _d->lbWeaponQty->setText( _("##weapon_store_of##") + utils::i2str( barracks->goodQty( good::weapon ) ) );
   }
 }

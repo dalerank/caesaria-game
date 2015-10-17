@@ -292,7 +292,7 @@ ArchivePtr FileSystem::mountArchive(  const Path& filename,
   if( archive.isValid() )
   {
     const std::string arcType = archive->getTypeName();
-    Logger::warning( "FileSystem: check archive:type-%s as opened %s", arcType.c_str(), filename.toCString() );
+    Logger::warning( "FileSystem: check archive:type-{0} as opened {0}", arcType, filename.toString() );
     _d->openArchives.push_back( archive );
     if( password.size() )
     {
@@ -391,7 +391,7 @@ ArchivePtr FileSystem::mountArchive(NFile file, Archive::Type archiveType,
 
     if( archive.isValid() )
     {
-      Logger::warning( "Mount archive %s", file.path().toString().c_str() );
+      Logger::warning( "Mount archive {}", file.path().toString() );
       _d->openArchives.push_back(archive);
 
       if (password.size())
@@ -403,7 +403,7 @@ ArchivePtr FileSystem::mountArchive(NFile file, Archive::Type archiveType,
     }
     else
     {
-      Logger::warning( "Could not create archive for %s", file.path().toCString() );
+      Logger::warning( "Could not create archive for {}", file.path().toCString() );
     }
   }
 
@@ -437,7 +437,7 @@ bool FileSystem::unmountArchive(unsigned int index)
   bool ret = false;
   if (index < _d->openArchives.size())
   {
-    Logger::warning( "FileSystem: unmountArchive %d", index );
+    Logger::warning( "FileSystem: unmountArchive {0}", index );
     _d->openArchives.erase( _d->openArchives.begin() + index );
     ret = true;
   }

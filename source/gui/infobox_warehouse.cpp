@@ -58,15 +58,17 @@ AboutWarehouse::AboutWarehouse(Widget* parent, PlayerCityPtr city, const Tile& t
     lb->setTextAlignment( alignCenter, alignCenter );
   }*/
 
-  PushButton* btnOrders;
-  GET_WIDGET_FROM_UI( btnOrders );
+  INIT_WIDGET_FROM_UI( PushButton*, btnOrders );
   CONNECT( btnOrders, onClicked(), this, AboutWarehouse::showSpecialOrdersWindow );
 
-  std::string title = MetaDataHolder::findPrettyName( _warehouse->type() );
+  std::string title = _warehouse->info().prettyName();
+  if( _warehouse->isTradeCenter() )
+    title = "##trade_center##";
+
   setTitle( _(title) );
 
   // summary: total stock, free capacity
-  int _paintY = _lbTitleRef() ? _lbTitleRef()->bottom() : 50;
+  int _paintY = _lbTitle() ? _lbTitle()->bottom() : 50;
 
   drawGood(good::wheat,     0, _paintY+0);
   drawGood(good::vegetable, 0, _paintY+25);

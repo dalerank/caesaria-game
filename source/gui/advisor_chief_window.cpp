@@ -168,7 +168,7 @@ Chief::Chief(PlayerCityPtr city, Widget* parent, int id )
   _d->drawEntertainment();
   _d->drawSentiment();
 
-  TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  auto btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
   CONNECT( btnHelp, onClicked(), this, Chief::_showHelp );
 }
 
@@ -225,12 +225,12 @@ void Chief::Impl::drawEmploymentState()
     int needWorkersNumber = wInfo.need - wInfo.current;
     if( needWorkersNumber > 10 )
     {
-      text = utils::format( 0xff, "%s %d", _("##advchief_needworkers##"), needWorkersNumber );
+      text = fmt::format( "{0} {1}", _("##advchief_needworkers##"), needWorkersNumber );
       color = DefaultColors::brown;
     }
     else if( workless > bigWorklessPercent )
     {
-      text = utils::format( 0xff, "%s %d%%", _("##advchief_workless##"), workless );
+      text = fmt::format( "{0} {1}%", _("##advchief_workless##"), workless );
       color = DefaultColors::brown;
     }
     else { text = _("##advchief_employers_ok##");  }
@@ -296,7 +296,7 @@ void Chief::Impl::drawFoodStockState()
           case 3: text = "##our_foods_level_are_low##"; break;
 
           default:
-            text = utils::format( 0xff, "%s %d %s", _("##have_food_for##"), monthWithFood, _("##months##") );
+            text = fmt::format( "{0} {1} {2}", _("##have_food_for##"), monthWithFood, _("##months##") );
         }
       }
     }
@@ -379,7 +379,7 @@ void Chief::Impl::drawMilitary()
       {
         if( minDistance <= enemyNearCityGatesDistance )
         {
-          std::string threatText = utils::format( 0xff, "##%s_troops_at_our_gates##", maxThreat->type().c_str() );
+          std::string threatText = fmt::format( "##{0}_troops_at_our_gates##", maxThreat->type() );
           reasons << threatText;
         }
         else if( minDistance <= enemyNearCityDistance )

@@ -147,7 +147,7 @@ void Peace::addCriminal( WalkerPtr wlk )
   else if( wlk .is<Mugger>() ) { _d->threats.mugger = true; }
   else
   {
-    Logger::warning( "Peace: addCriminal unknown walker %d", wlk->type() );
+    Logger::warning( "Peace: addCriminal unknown walker {0}", wlk->type() );
     _d->threats.criminal = true;
   }
 }
@@ -161,7 +161,7 @@ void Peace::buildingDestroyed(OverlayPtr overlay, int why)
   }
 
   HousePtr house = overlay.as<House>();
-  if( house.isValid() && house->spec().level() > HouseLevel::tent )
+  if( house.isValid() && house->level() > HouseLevel::tent )
   {
     _d->significantBuildingsDestroyed = true;
   }

@@ -26,9 +26,10 @@ namespace city
 
 struct FestivalInfo
 {
+  typedef enum { none=0, small, middle, big, count } Type;
   DateTime date;
   religion::RomeDivinityType divinity;
-  int size;
+  Type size;
 
   VariantList save() const;
   void load( const VariantList& stream );
@@ -39,6 +40,7 @@ PREDEFINE_CLASS_SMARTPOINTER(Festival)
 class Festival : public Srvc
 {
 public:
+
   static SrvcPtr create(PlayerCityPtr city);
   static std::string defaultName();
 

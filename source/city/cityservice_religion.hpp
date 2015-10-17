@@ -19,6 +19,7 @@
 #define __CAESARIA_CITYSERVICE_RELIGION_H_INCLUDED__
 
 #include "cityservice.hpp"
+#include "religion/pantheon.hpp"
 #include "game/predefinitions.hpp"
 
 namespace city
@@ -41,6 +42,9 @@ public:
 
 private:
   Religion( PlayerCityPtr city );
+
+  void _updateRelation( religion::DivinityPtr divinity );
+  void _hideWarnings();
 
   class Impl;
   ScopedPtr< Impl > _d;

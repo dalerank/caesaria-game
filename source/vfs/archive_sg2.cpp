@@ -123,7 +123,7 @@ Sg2ArchiveReader::Sg2ArchiveReader(NFile file) : _file( file )
   file.seek(sgHeagerSize);
 
   unsigned int saveTime =  DebugTimer::ticks();
-  Logger::warning( "Read header, num bitmaps = %d, num images = %d, time=%d",
+  Logger::warning( "Read header, num bitmaps = {}, num images = {}, time = {}",
                    header.num_bitmap_records, header.num_image_records, saveTime);
 
   // Read bitmaps
@@ -175,7 +175,7 @@ Sg2ArchiveReader::Sg2ArchiveReader(NFile file) : _file( file )
 
       if( !p555.exist() )
       {
-          Logger::warning("Cannot found 555 file for image %s in file %s", name.c_str(), p555.toCString() );
+          Logger::warning("Cannot found 555 file for image {} in file {}", name, p555.toString() );
           continue; // skip to next bitmap
       }
 
@@ -186,10 +186,10 @@ Sg2ArchiveReader::Sg2ArchiveReader(NFile file) : _file( file )
       addItem( name, sir.offset, sir.length, false);
     } // image loop
   } // bitmap loop
-  Logger::warning( "Time before sort %d", DebugTimer::ticks() - saveTime );
+  Logger::warning( "Time before sort {}", DebugTimer::ticks() - saveTime );
   sort();
 
-  Logger::warning( "Time to load %d", DebugTimer::ticks() - saveTime );
+  Logger::warning( "Time to load {}", DebugTimer::ticks() - saveTime );
 }
 
 Sg2ArchiveReader::~Sg2ArchiveReader() {}
@@ -266,14 +266,14 @@ ByteArray Sg2ArchiveReader::_readData(const SgFileEntry& rec )
   FileNative z5file( filename, Entity::fmRead );
   if (!z5file.isOpen() )
   {
-    Logger::warning( "Unable to open 555 file %s", filename.c_str() );
+    Logger::warning( "Unable to open 555 file {}", filename );
     return ByteArray();
   }
 
   z5file.seek( start );
   if( data_length <= 0 )
   {
-    Logger::warning( "Data length: %d", data_length); // not an error per se
+    Logger::warning( "Data length: {}", data_length); // not an error per se
   }
 
   ByteArray data = z5file.read( data_length );
@@ -343,7 +343,7 @@ void Sg2ArchiveReader::_writeIsometricBase( Picture& img, const SgImageRecord& r
 	}
 	else
 	{
-		Logger::warning( "Unknown tile size: %d (height %d, width %d, size %d)",
+    Logger::warning( "Unknown tile size: {} (height {}, width {}, size {}})",
 				 2 * height / size, height, width, size );
 		return;
 	}
@@ -352,7 +352,7 @@ void Sg2ArchiveReader::_writeIsometricBase( Picture& img, const SgImageRecord& r
 	if( (width + 2) * height != (int)rec.uncompressed_length)
 	{
 		Logger::warning(
-			"Data length doesn't match footprint size: %0 vs %1 (%2) %3",
+      "Data length doesn't match footprint size: {} vs {} ({}) {}",
 			(width + 2) * height,
 			rec.uncompressed_length,
 			rec.length,
@@ -462,7 +462,7 @@ void Sg2ArchiveReader::_loadPlainImage( Picture& pic, const SgFileEntry& rec)
 	ByteArray data = _readData( rec );
 	if( data.size() != need_length )
 	{
-		Logger::warning( "Unable to read %d bytes from file (read %d bytes)",
+    Logger::warning( "Unable to read {} bytes from file (read {} bytes)",
 										 data.size(), need_length );
 		return;
 	}
@@ -541,7 +541,7 @@ NFile Sg2ArchiveReader::createAndOpenFile(const Path& filename)
       break;
 
       default:
-        Logger::warning("Unknown image type: %d", sir.type);
+        Logger::warning("Unknown image type: {}", sir.type);
       break;
     }
 

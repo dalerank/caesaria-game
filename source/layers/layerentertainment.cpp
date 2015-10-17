@@ -54,14 +54,12 @@ int Entertainment::_getLevelValue( HousePtr house )
   return 0;
 }
 
-void Entertainment::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Entertainment::drawTile(const RenderInfo& rinfo, Tile& tile)
 {
-  Point screenPos = tile.mappos() + offset;
-
   if( tile.overlay().isNull() )
   {
-    drawPass( engine, tile, offset, Renderer::ground );
-    drawPass( engine, tile, offset, Renderer::groundAnimation );
+    drawPass( rinfo, tile, Renderer::ground );
+    drawPass( rinfo, tile, Renderer::groundAnimation );
   }
   else
   {
@@ -83,26 +81,27 @@ void Entertainment::drawTile(Engine& engine, Tile& tile, const Point& offset)
       auto house = overlay.as<House>();
       entertainmentLevel = _getLevelValue( house );
 
-      needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+      needDrawAnimations = (house->level() <= HouseLevel::hovel) && (house->habitants().empty());
+      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
     }
     else
     {
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base );
     }
 
     if( needDrawAnimations )
     {
-      Layer::drawTile( engine, tile, offset );
+      Layer::drawTile( rinfo, tile );
       registerTileForRendering( tile );
     }
     else if( entertainmentLevel > 0 )
     {
-      drawColumn( engine, screenPos, entertainmentLevel );
+      Point screenPos = tile.mappos() + rinfo.offset;
+      drawColumn( rinfo, screenPos, entertainmentLevel );
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 LayerPtr Entertainment::create(TilemapCamera& camera, PlayerCityPtr city, int type )

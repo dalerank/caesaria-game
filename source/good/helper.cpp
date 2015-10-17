@@ -31,30 +31,31 @@ namespace good
 
 struct PicId
 {
-  Product type;
-  int emp;
+  Product type ;
+  int emp ;
   int local;
 };
 
-static const PicId defaultsPicId[ 20 ] = {
-  { none,       0,   0 },
-  { wheat,     11, 317 },
-  { vegetable, 12, 318 },
-  { fruit,     13, 319 },
-  { olive,     14, 320 },
-  { grape,     15, 321 },
-  { meat,      16, 322 },
-  { wine,      17, 323 },
-  { oil,       18, 324 },
-  { iron,      19, 325 },
-  { timber,    20, 326 },
-  { clay,      21, 327 },
-  { marble,    22, 328 },
-  { weapon,    23, 329 },
-  { furniture, 24, 330 },
-  { pottery,   25, 331 },
-  { denaries,  26, 332 },
-  { fish,      27,   0 }
+static std::map<good::Product, PicId> defaultsPicId = {
+  { none     , { none,       0,   0 }},
+  { wheat    , { wheat,     11, 317 }},
+  { vegetable, { vegetable, 12, 318 }},
+  { fruit    , { fruit,     13, 319 }},
+  { olive    , { olive,     14, 320 }},
+  { grape    , { grape,     15, 321 }},
+  { meat     , { meat,      16, 322 }},
+  { wine     , { wine,      17, 323 }},
+  { oil      , { oil,       18, 324 }},
+  { iron     , { iron,      19, 325 }},
+  { timber   , { timber,    20, 326 }},
+  { clay     , { clay,      21, 327 }},
+  { marble   , { marble,    22, 328 }},
+  { weapon   , { weapon,    23, 329 }},
+  { furniture, { furniture, 24, 330 }},
+  { pottery  , { pottery,   25, 331 }},
+  { denaries , { denaries,  26, 332 }},
+  { prettyWine,{ prettyWine,17, 323 }},
+  { fish     , { fish,      27, 333 }}
 };
 
 class Helper::Impl : public EnumsHelper<good::Product>
@@ -108,16 +109,9 @@ Helper::Helper() : _d( new Impl )
 
 Picture Helper::picture(Product type, bool emp )
 {
-  int picId;
+  const PicId& info = defaultsPicId[ type ];
 
-  if( emp )
-  {
-    picId = defaultsPicId[ type ].emp;
-  }
-  else
-  {
-    picId = defaultsPicId[ type ].local;
-  }
+  int picId = emp ? info.emp : info.local;
   
   if( picId > 0 )
   {

@@ -249,7 +249,7 @@ const Picture& Aqueduct::picture( const city::AreaInfo& info ) const
     {
       if( isReservoirNear )
       {
-        ReservoirPtr reservoir = overlay_d[ i ].as<Reservoir>();
+        auto reservoir = overlay_d[ i ].as<Reservoir>();
         switch( i )
         {
         case north: directionFlags += ( reservoir->entry( south ) == p + TilePos( 0, 1 ) ? 1 : 0 ); break;
@@ -435,7 +435,7 @@ bool Aqueduct::canAddRoad( PlayerCityPtr city, TilePos pos) const
   if (tilemap.at(tile_pos_d[south]).getFlag( Tile::tlRoad )) { directionFlags += 4; } // road to the south
   if (tilemap.at(tile_pos_d[west]).getFlag( Tile::tlRoad )) { directionFlags += 8; } // road to the west
 
-  Logger::warning( "direction flags=%d", directionFlags );
+  Logger::warning( "direction flags={0}", directionFlags );
 
   switch (directionFlags)
   {

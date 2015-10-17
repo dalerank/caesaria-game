@@ -90,6 +90,7 @@ Helper::Helper()
     LAYER(build)
     LAYER(destroyd)
     LAYER(market)
+    LAYER(constructor)
     LAYER(all)
 #undef LAYER
 

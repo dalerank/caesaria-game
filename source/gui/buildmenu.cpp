@@ -75,11 +75,10 @@ public:
 
     if( f.isValid() && _cost >= 0 )
     {           
-      char buffer[32];
-      sprintf( buffer, "%d", _cost );
-      Rect textRect = f.getTextRect( buffer, Rect( 5, 0, width()-10, height() ),
+      std::string text = utils::i2str( _cost );
+      Rect textRect = f.getTextRect( text, Rect( 5, 0, width()-10, height() ),
                                      align::lowerRight, verticalTextAlign() );
-      f.draw( _textPicture(), buffer, textRect.left(), textRect.top() );
+      f.draw( _textPicture(), text, textRect.left(), textRect.top() );
     }
   }
 
@@ -122,7 +121,7 @@ void BuildMenu::initialize()
     development::Branch branch = development::findBranch( item.toString() );
     if( branch != development::unknown )
     {
-      std::string title = utils::format( 0xff, "##bldm_%s##", item.toString().c_str() );
+      std::string title = fmt::format( "##bldm_{0}##", item.toString() );
       addSubmenuButton( branch, title );
     }
   }
@@ -172,23 +171,23 @@ void BuildMenu::addSubmenuButton(const city::development::Branch menuType, const
 void BuildMenu::addBuildButton(const object::Type buildingType )
 {
   //int t = DateTime::getElapsedTime();
-  const MetaData& buildingData = MetaDataHolder::instance().find( buildingType );
+  auto info = object::Info::find( buildingType );
 
-  int cost = buildingData.getOption( MetaDataOptions::cost );
+  int cost = info .cost();
   bool mayBuildInCity = _options.isBuildingAvailable( buildingType );
   if( _c3gameplay )
   {
-    mayBuildInCity &= buildingData.getOption( MetaDataOptions::c3logic, true ).toBool();
+    mayBuildInCity &= info .c3logic( true );
   }
 
   if( cost > 0 && mayBuildInCity )
   {
     // building can be built
-    BuildButton* button = new BuildButton( this, _(buildingData.prettyName()),
-                                           Rect( 0, height(), width(), height() + 25 ), -1 );
+    auto button = new BuildButton( this, _(info .prettyName()),
+                                   Rect( 0, height(), width(), height() + 25 ), -1 );
     button->setCost(cost);
     button->setID( buildingType );
-    button->setSound( "bmsel_" + buildingData.name() );
+    button->setSound( "bmsel_" + info .name() );
 
     setHeight( height() + 30 );
 
@@ -228,8 +227,8 @@ BuildMenu* BuildMenu::create(const city::development::Branch menuType, Widget* p
 
 bool BuildMenu::isPointInside( const Point& point ) const
 {
-  Rect clickedRect = _environment->rootWidget()->absoluteRect();
-  clickedRect._bottomright = Point( parent()->screenLeft(), _environment->rootWidget()->height() );
+  Rect clickedRect = ui()->rootWidget()->absoluteRect();
+  clickedRect._bottomright = Point( parent()->screenLeft(), ui()->rootWidget()->height() );
   return clickedRect.isPointInside( point );
 }
 

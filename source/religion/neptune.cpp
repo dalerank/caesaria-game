@@ -69,7 +69,8 @@ void Neptune::_doSmallCurse(PlayerCityPtr city)
 {
   GameEventPtr event = ShowInfobox::create( _("##smallcurse_of_neptune_title##"),
                                             _("##smallcurse_of_neptune_description##"),
-                                            ShowInfobox::send2scribe );
+                                            ShowInfobox::send2scribe,
+                                            "god_neptune" );
   event->dispatch();
 
   DockList docks = city->statistic().objects.find<Dock>();

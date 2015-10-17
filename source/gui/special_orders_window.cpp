@@ -59,10 +59,10 @@ BaseSpecialOrdersWindow::BaseSpecialOrdersWindow( Widget* parent, const Point& p
   _d->lbTitle->setFont( Font::create( FONT_5 ) );
   _d->lbTitle->setTextAlignment( align::center, align::center );
 
-  _d->btnExit = new TexturedButton( this, Point( 472, height() - 39 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
+  _d->btnExit = new TexturedButton( this, Point( 472, height() - 39 ), Size( 24 ), -1, config::id.menu.exitInf );
   _d->btnExit->setTooltipText( _("##infobox_tooltip_exit##") );
 
-  _d->btnHelp = new TexturedButton( this, Point( 14, height() - 39 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  _d->btnHelp = new TexturedButton( this, Point( 14, height() - 39 ), Size( 24 ), -1, config::id.menu.helpInf );
   _d->btnHelp->setTooltipText( _("##infobox_tooltip_help##") );
 
   _d->gbOrders = new GroupBox( this, Rect( 17, 42, width() - 17, height() - 70), -1, GroupBox::blackFrame );

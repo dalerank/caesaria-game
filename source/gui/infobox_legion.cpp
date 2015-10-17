@@ -119,7 +119,7 @@ AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos 
                           ? "##legion_haveho_soldiers_and_barracks##"
                           : "##legion_haveho_soldiers##";
 
-      _lbTextRef()->move( Point( 0, 20 ));
+      _lbText()->move( Point( 0, 20 ));
       setText( _( text ) );
     }
     else
