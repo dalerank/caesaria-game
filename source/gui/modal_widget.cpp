@@ -214,9 +214,8 @@ void ModalScreen::removeChild(Widget* child)
 void ModalScreen::addChild(Widget* child)
 {
   Widget::addChild(child);
-  _environment->setFocus(child);
+  ui()->setFocus(child);
 }
-
 
 void ModalScreen::_finalizeResize()
 {

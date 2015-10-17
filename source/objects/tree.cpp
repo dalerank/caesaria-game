@@ -51,6 +51,9 @@ Tree::Tree()
   _d->state = State::well;
   _d->lastTimeGrow = game::Date::current();
   _d->spreadFire = false;
+
+  auto& md = object::Info::find( object::tree );
+  setPicture( md.randomPicture(1) );
 }
 
 void Tree::timeStep( const unsigned long time )
@@ -87,6 +90,7 @@ bool Tree::isFlat() const { return _d->flat; }
 
 void Tree::initTerrain(Tile& terrain)
 {
+  terrain.setFlag( Tile::clearAll, true );
   terrain.setFlag( Tile::tlTree, true );
 }
 
@@ -100,7 +104,8 @@ bool Tree::build( const city::AreaInfo& info )
   }
   else
   {
-    setPicture( md.randomPicture(1) );
+    if( !picture().isValid() )
+      setPicture( md.randomPicture(1) );
   }
   _d->flat = (picture().height() <= tilemap::cellPicSize().height());
   return Overlay::build( info );

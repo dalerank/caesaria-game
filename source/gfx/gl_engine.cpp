@@ -710,7 +710,7 @@ void GlEngine::unloadBatch(const Batch &batch)
 
 }
 
-void GlEngine::setViewport(const Rect& rect)
+void GlEngine::setVirtualSize( const Size& rect )
 {
 
 }

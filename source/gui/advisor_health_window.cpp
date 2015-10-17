@@ -184,7 +184,7 @@ HealthcareInfo Health::Impl::getInfo(PlayerCityPtr city, const object::Type obje
   for( auto b : srvBuildings )
   {
     ret.buildingWork += b->numberWorkers() > 0 ? 1 : 0;
-    ret.peoplesServed += b->patientsNumber();
+    ret.peoplesServed += b->patientsCurrent();
     ret.buildingCount++;
   }
 

@@ -34,8 +34,10 @@
 #include "gfx/renderermode.hpp"
 #include "events/warningmessage.hpp"
 #include "game/funds.hpp"
+#include "objects/tree.hpp"
 #include "game/settings.hpp"
 #include "walker/walker.hpp"
+#include "objects/objects_factory.hpp"
 #include "gfx/tilearea.hpp"
 #include "gfx/city_renderer.hpp"
 #include "gfx/helper.hpp"
@@ -58,6 +60,8 @@ public:
   bool multiBuilding;
   TilePos lastTilePos;
   TilePos startTilePos;
+  bool splineEnabled;
+  int drawRadius;
   bool kbShift, kbCtrl;
   bool lmbPressed;
   bool overdrawBuilding;
@@ -66,7 +70,6 @@ public:
   bool needUpdateTiles;
   int drawLayerIndex;
   int frameCount;
-  int money4Construction;
   Renderer* renderer;
   LayerPtr lastLayer;
   std::string resForbiden;
@@ -85,6 +88,7 @@ public:
   Signal3<object::Type,TilePos,int> onBuildSignal;
 public:
   void sortBuildTiles();
+  bool canBuildOn( OverlayPtr overlay, city::AreaInfo& areaInfo);
 };
 
 void Constructor::_discardPreview()
@@ -102,16 +106,16 @@ void Constructor::_discardPreview()
   d->cachedTiles.clear();
 }
 
-void Constructor::_checkPreviewBuild(TilePos pos)
+void Constructor::_checkPreviewBuild(const TilePos& pos)
 {
   __D_IMPL(d,Constructor);
-  BuildModePtr bldCommand =  d->renderer->mode().as<BuildMode>();
+  auto command =  d->renderer->mode().as<EditorMode>();
 
-  if (bldCommand.isNull())
+  if (command.isNull())
     return;
 
   // TODO: do only when needed, when (i, j, _buildInstance) has changed
-  ConstructionPtr overlay = bldCommand->contruction();
+  OverlayPtr overlay = command->overlay();
 
   if( !overlay.isValid() )
   {
@@ -119,30 +123,12 @@ void Constructor::_checkPreviewBuild(TilePos pos)
   }
 
   Size size = overlay->size();
-  int cost = overlay->info().cost();
-
-  bool walkersOnTile = false;
-  if( bldCommand->flag( LayerMode::checkWalkers ) )
-  {
-    TilesArray tiles = _city()->tilemap().area( pos, size );
-    for( auto tile : tiles )
-    {
-      auto walkers = _city()->walkers( tile->epos() );
-
-      if( !walkers.empty() )
-      {
-        walkersOnTile = true;
-        break;
-      }
-    }
-  }
 
   city::AreaInfo areaInfo( _city(), pos, &d->buildTiles );
-  if( !walkersOnTile && overlay->canBuild( areaInfo ) )
+  if( d->canBuildOn( overlay, areaInfo ) )
   {
     Tilemap& tmap = _city()->tilemap();
     Tile *masterTile=0;
-    d->money4Construction += cost;
     for (int dj = 0; dj < size.height(); ++dj)
     {
       for (int di = 0; di < size.width(); ++di)
@@ -156,14 +142,19 @@ void Constructor::_checkPreviewBuild(TilePos pos)
           // this is the masterTile
           masterTile = tile;
         }
+        auto clone = TileOverlayFactory::instance().create( overlay->type() );
         tile->setPicture( tmap.at( pos + TilePos( di, dj ) ).picture() );
         tile->setMaster( masterTile );
-        tile->setOverlay( overlay.as<Overlay>() );
-        d->buildTiles.push_back( tile );
+        tile->setOverlay( clone );
+        bool added = d->buildTiles.appendOnce( tile );
+        if( !added )
+        {
+          delete tile;
+        }
       }
     }
   }
-  else
+  /*else
   {
     Tilemap& tmap = _city()->tilemap();
     for (int dj = 0; dj < size.height(); ++dj)
@@ -192,7 +183,7 @@ void Constructor::_checkPreviewBuild(TilePos pos)
         d->buildTiles.push_back( tile );
       }
     }
-  }
+  }*/
 }
 
 void Constructor::_checkBuildArea()
@@ -232,7 +223,6 @@ void Constructor::_updatePreviewTiles( bool force )
   d->lastTilePos = curTile->epos();
 
   _discardPreview();
-  d->money4Construction = 0;
 
   if( d->borderBuilding )
   {
@@ -279,69 +269,58 @@ void Constructor::_updatePreviewTiles( bool force )
     TilesArray tiles = _getSelectedArea( d->startTilePos );
 
     for( auto tile : tiles )
+    {
+      Size size;
+      Tile* master = tile->master() ? tile->master() : tile;
+      if( tile->overlay().isValid() )
+      {
+         size = tile->overlay()->size();
+      }
+      else
+      {
+         size = Size( gfx::tile::width2size( tile->picture().width() ) );
+      }
+
+      if( size.area() > 1 )
+      {
+        TilesArray apTiles = _city()->tilemap().area( master->epos(), size );
+        for( auto aptile : apTiles )
+          tiles.appendOnce( aptile );
+      }
+    }
+
+    for( auto tile : tiles )
       _checkPreviewBuild( tile->epos() );
-  }  
+  }
 
   d->sortBuildTiles();
 
-  d->text.image.fill( 0x0, Rect() );
+  /*d->text.image.fill( 0x0, Rect() );
   d->text.font.setColor( 0xffff0000 );
-  d->text.font.draw( d->text.image, utils::i2str( d->money4Construction ) + " Dn", Point() );
+  d->text.font.draw( d->text.image, utils::i2str( d->money4Construction ) + " Dn", Point() );*/
 }
 
 void Constructor::_buildAll()
 {
   __D_IMPL(d,Constructor);
-  BuildModePtr bldCommand = d->renderer->mode().as<BuildMode>();
-  if( bldCommand.isNull() )
+  auto command = d->renderer->mode().as<EditorMode>();
+  if( command.isNull() )
     return;
 
-  ConstructionPtr cnstr = bldCommand->contruction();
-
-  if( !cnstr.isValid() )
+  if( d->buildTiles.empty() )
   {
-    Logger::warning( "LayerBuild: No construction for build" );
+    Logger::warning( "LayerEditor: No tiles for build" );
     return;
-  }
+  }  
 
-  if( !_city()->treasury().haveMoneyForAction( 1 ) )
-  {
-    auto event = WarningMessage::create( "##out_of_credit##", 2 );
-    event->dispatch();
-    return;
-  }
-
-  bool buildOk = false;  
-  bool tileBusyBuilding = false;
   city::AreaInfo areaInfo( _city(), TilePos() );
   for( auto tile : d->buildTiles )
-  {
+  {    
     areaInfo.pos = tile->epos();
-    tileBusyBuilding |= tile->overlay().is<Building>();
-
-    if( cnstr->canBuild( areaInfo ) && tile->isMaster())
-    {
-      auto event = BuildAny::create( tile->epos(), cnstr->type() );
-      event->dispatch();
-      buildOk = true;
-
-      emit d->onBuildSignal( cnstr->type(), tile->epos(), cnstr->info().cost() );
-    }
+    tile->overlay()->build( areaInfo );
   }
 
   d->startTilePos = d->lastTilePos;
-
-  if( !buildOk )
-  {
-    std::string errorStr = cnstr->errorDesc();
-    std::string busyText = tileBusyBuilding
-                              ? "##need_build_on_free_area##"
-                              : "##need_build_on_cleared_area##";
-    auto event = WarningMessage::create( errorStr.empty() ? busyText : errorStr,
-                                         WarningMessage::neitral );
-    event->dispatch();
-  }
-
   d->needUpdateTiles = true;
 }
 
@@ -460,7 +439,7 @@ void Constructor::_finishBuild()
 
 int Constructor::type() const {  return citylayer::constructor; }
 
-void Constructor::_drawBuildTile( Engine& engine, Tile* tile, const Point& offset )
+void Constructor::_drawBuildTile( const RenderInfo& renderInfo, Tile* tile )
 {
   if( tile == nullptr )
     return;
@@ -474,103 +453,103 @@ void Constructor::_drawBuildTile( Engine& engine, Tile* tile, const Point& offse
   if( postTile->master() )
     postTile = postTile->master();
 
-  ConstructionPtr construction = postTile->overlay<Construction>();
-  engine.resetColorMask();
+  auto overlay = postTile->overlay();
+  renderInfo.engine.resetColorMask();
 
   areaInfo.pos = postTile->epos();
   bool maskSet = false;
   Size size(1,1);
 
-  if( construction.isValid() && construction->canBuild( areaInfo ) )
+  if( overlay.isValid() )
   {
-    engine.setColorMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
+    renderInfo.engine.setColorMask( 0x00000000, 0x0000ff00, 0, 0xff000000 );
     maskSet = true;
 
-    size = construction->size();
+    size = overlay->size();
   }
 
   if( postTile == tile && maskSet )
   {
     TilesArray area = _city()->tilemap().area( areaInfo.pos, size );
-    for( auto gtile : area )
+    /*for( auto gtile : area )
     {
       drawPass( engine, *gtile, offset, Renderer::ground );
       drawPass( engine, *gtile, offset, Renderer::groundAnimation );
-    }
+    }*/
   }
 
-  drawPass( engine, *postTile, offset, Renderer::ground );
-  drawPass( engine, *postTile, offset, Renderer::groundAnimation );
+  //drawPass( engine, *postTile, offset, Renderer::ground );
+  //drawPass( engine, *postTile, offset, Renderer::groundAnimation );
 
   if( maskSet )
   {
-    const Picture& picOver = construction->picture( areaInfo );
-    engine.draw( picOver, postTile->mappos() + offset );
-    drawPass( engine, *postTile, offset, Renderer::overlayAnimation );
-    engine.resetColorMask();
+    const Picture& picOver = overlay->picture( areaInfo );
+    renderInfo.engine.draw( picOver, postTile->mappos() + renderInfo.offset );
+    drawPass( renderInfo, *postTile, Renderer::overlayAnimation );
+    renderInfo.engine.resetColorMask();
   }
 }
 
-void Constructor::_tryDrawBuildTile( Engine& engine, Tile &tile, const Point& camOffset)
+void Constructor::_tryDrawBuildTile( const RenderInfo& renderInfo, Tile &tile)
 {
   Impl::CachedTiles& cache = _dfunc()->cachedTiles;
   auto it = cache.find( tile::hash( tile.epos() ) );
   if( it != cache.end() )
   {
-    _drawBuildTile( engine, it->second, camOffset );
+    _drawBuildTile( renderInfo, it->second );
   }
 }
 
-void Constructor::_drawBuildTiles( Engine& engine )
+void Constructor::_drawBuildTiles(const RenderInfo& renderInfo )
 {
   __D_IMPL(_d,Constructor);
-
-  Point offset = _camera()->offset();
 
   for( auto tile : _d->buildTiles )
-    _drawBuildTile( engine, tile, offset );  
+    _drawBuildTile( renderInfo, tile );
 }
 
-void Constructor::drawTile( Engine& engine, Tile& tile, const Point& offset )
+void Constructor::drawTile( const RenderInfo& rinfo, Tile& tile )
 {
   __D_IMPL(_d,Constructor);
-  Point screenPos = tile.mappos() + offset;
 
-  ConstructionPtr cntr = tile.overlay<Construction>();
+  auto overlay = tile.overlay();
   city::AreaInfo info( _city(), tile.epos(), &_d->buildTiles );
 
   const Picture* picBasic = 0;
   const Picture* picOver = 0;
-  if( cntr.isValid() && info.tiles().size() > 0 )
+  if( overlay.isValid() && info.tiles().size() > 0 )
   {
-    picBasic = &cntr->picture();
-    picOver = &cntr->picture( info );
+    picBasic = &overlay->picture();
+    picOver = &overlay->picture( info );
   }
 
   if( picOver && picBasic != picOver )
   {
-    drawPass( engine, tile, offset, Renderer::ground );
-    engine.draw( *picOver, screenPos );
-    drawPass( engine, tile, offset, Renderer::overlayAnimation );
+    Point screenPos = tile.mappos() + rinfo.offset;
+    drawPass( rinfo, tile, Renderer::ground );
+    rinfo.engine.draw( *picOver, screenPos );
+    drawPass( rinfo, tile, Renderer::overlayAnimation );
   }
   else if( _d->lastLayer.isValid() )
   {
-    _d->lastLayer->drawTile( engine, tile, offset );
+    if( _d->cachedTiles.count( tile::hash( tile.epos() ) ) == 0 )
+      _d->lastLayer->drawTile( rinfo, tile );
   }
   else
   {
-    Layer::drawTile( engine, tile, offset );
+    Layer::drawTile( rinfo, tile );
   }
 
   if( !_d->overdrawBuilding )
-    _tryDrawBuildTile( engine, tile, offset );
+    _tryDrawBuildTile( rinfo, tile );
 }
 
-void Constructor::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, const int depth, bool force)
+void Constructor::drawProminentTile( RenderInfo& renderInfo, Tile& tile, const int depth, bool force)
 {
-  Layer::drawProminentTile( engine, tile, offset, depth, force );
+  if( _dfunc()->cachedTiles.count( tile::hash( tile.epos() ) ) == 0 )
+    Layer::drawProminentTile( renderInfo, tile, depth, force );
 
-  _tryDrawBuildTile( engine, tile, offset );
+  _tryDrawBuildTile( renderInfo, tile );
 }
 
 void Constructor::render( Engine& engine)
@@ -578,21 +557,21 @@ void Constructor::render( Engine& engine)
   __D_IMPL(d,Constructor);
   Layer::render( engine );
 
-  if( ++d->frameCount >= frameCountLimiter)
+  /*if( ++d->frameCount >= frameCountLimiter)
   {
     _updatePreviewTiles( true );
-  }
+  }*/
 
   d->frameCount %= frameCountLimiter;
 
   if( d->overdrawBuilding )
-    _drawBuildTiles( engine );
+    _drawBuildTiles( { engine, _camera()->offset() } );
 }
 
 void Constructor::_initBuildMode()
 {
   __D_IMPL(_d,Constructor);
-  BuildModePtr command = ptr_cast<BuildMode>( _d->renderer->mode() );
+  auto command = _d->renderer->mode().as<EditorMode>();
   Logger::warningIf( !command.isValid(), "LayerBuild: init unknown command" );
 
   _d->multiBuilding = command.isValid() ? command->flag( LayerMode::multibuild ) : false;
@@ -632,13 +611,13 @@ void Constructor::beforeRender(Engine& engine)
     Layer::beforeRender( engine );
 }
 
-void Constructor::drawPass(Engine& engine, Tile& tile, const Point& offset, Renderer::Pass pass)
+void Constructor::drawPass(const RenderInfo& rinfo, Tile& tile, Renderer::Pass pass)
 {
   __D_IMPL(_d,Constructor);
   if( _d->lastLayer.isValid() )
-    _d->lastLayer->drawPass( engine, tile, offset, pass );
+    _d->lastLayer->drawPass( rinfo, tile, pass );
   else
-    Layer::drawPass( engine, tile, offset, pass );
+    Layer::drawPass( rinfo, tile, pass );
 }
 
 void Constructor::afterRender(Engine& engine)
@@ -719,6 +698,8 @@ Constructor::Constructor( Renderer& renderer, PlayerCityPtr city)
   d->startTilePos = gfx::tilemap::invalidLocation();
   d->text.font = Font::create( FONT_5 );
   d->readyForExit = false;
+  d->drawRadius = 1;
+  d->splineEnabled = false;
   d->text.image = Picture( Size( 100, 30 ), 0, true );
   _addWalkerType( walker::all );
 
@@ -738,6 +719,22 @@ void Constructor::Impl::sortBuildTiles()
   cachedTiles.clear();
   for( auto t : buildTiles )
     cachedTiles[ tile::hash( t->epos() ) ] = t;
+}
+
+bool Constructor::Impl::canBuildOn(OverlayPtr overlay, city::AreaInfo& areaInfo)
+{
+  if( overlay->type() == object::terrain )
+  {
+    return true;
+  }
+  else if( overlay->type() == object::tree )
+  {
+    bool walkable = areaInfo.tile().isWalkable( true );
+    bool isTree = is_kind_of<Tree>(areaInfo.tile().overlay());
+    return (walkable || isTree );
+  }
+
+  return false;
 }
 
 }//end namespace citylayer

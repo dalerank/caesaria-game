@@ -160,6 +160,13 @@ Picture toPicture(const unsigned int imgId)
 namespace tile
 {
 
+unsigned int width2size(int width)
+{
+  return width > 0
+            ? (width+2) / tilemap::tilePicSize.width()
+            : 0;
+}
+
 int encode(const Tile& tt)
 {
   int res = tt.getFlag( Tile::tlTree )   ? 0x00011 : 0;

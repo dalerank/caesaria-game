@@ -48,7 +48,7 @@ void Widget::beforeDraw(gfx::Engine& painter )
   for( auto child : d->children ) { child->beforeDraw( painter ); }
 }
 
-Ui* Widget::ui() {  return _environment; }
+Ui* Widget::ui() const {  return _dfunc()->environment; }
 
 void Widget::setTextAlignment(align::Type horizontal, align::Type vertical )
 {
@@ -64,12 +64,11 @@ void Widget::setTextAlignment(align::Type horizontal, align::Type vertical )
   d->textVertAlign = vertical;
 }
 
-void Widget::setMaxWidth( unsigned int width ) { __D_IMPL(d,Widget) d->size.maximimum.setWidth( width );}
-unsigned int Widget::height() const{    return relativeRect().height(); }
+void Widget::setMaxWidth( unsigned int width ) { _dfunc()->size.maximimum.setWidth( width );}
+unsigned int Widget::height() const            { return relativeRect().height(); }
 
 Widget::Widget( Widget* parent, int id, const Rect& rectangle )
-: __INIT_IMPL(Widget),
-  _environment( parent ? parent->ui() : 0 )
+: __INIT_IMPL(Widget)
 {
   __D_IMPL(_d,Widget)
   _d->align.left = align::upperLeft;
@@ -82,14 +81,19 @@ Widget::Widget( Widget* parent, int id, const Rect& rectangle )
   _d->parent = parent;
   _d->id = id;
   _d->flag.enabled = true;
-  _d->isSubElement = false;
+  _d->flag.internal = false;
   _d->noClip = false;
   _d->tabOrder = -1;
   _d->isTabGroup = false;
-  _d->relativeRect = rectangle;
-  _d->absoluteRect = rectangle;
-  _d->absoluteClippingRect = rectangle;
-  _d->desiredRect = rectangle;
+
+  _d->environment = parent ? parent->ui() : 0;
+
+  Logger::warningIf( !parent, "Parent for widget is null" );
+
+  _d->rect.relative = rectangle;
+  _d->rect.absolute = rectangle;
+  _d->rect.clipping = rectangle;
+  _d->rect.desired = rectangle;
   _d->flag.tabStop = false;
 
 #ifdef _DEBUG
@@ -126,16 +130,16 @@ void Widget::setGeometry( const Rect& r, GeometryType mode )
     SizeF d = r2.size().toSizeF();
 
     if( _d->align.left == align::scale)
-      _d->scaleRect.setLeft( (float)r.left() / d.width() );
+      _d->rect.scale.setLeft( (float)r.left() / d.width() );
     if (_d->align.right == align::scale)
-      _d->scaleRect.setRight( (float)r.right() / d.width() );
+      _d->rect.scale.setRight( (float)r.right() / d.width() );
     if (_d->align.top == align::scale)
-      _d->scaleRect.setTop( (float)r.top() / d.height() );
+      _d->rect.scale.setTop( (float)r.top() / d.height() );
     if (_d->align.bottom == align::scale)
-      _d->scaleRect.setBottom(  (float)r.bottom() / d.height() );
+      _d->rect.scale.setBottom(  (float)r.bottom() / d.height() );
   }
 
-  _d->desiredRect = r;
+  _d->rect.desired = r;
   updateAbsolutePosition();
 }
 
@@ -161,13 +165,13 @@ void Widget::setGeometry( const RectF& r, GeometryType mode )
   switch( mode )
   {
   case ProportionalGeometry:
-    _d->desiredRect = Rect(
+    _d->rect.desired = Rect(
           floor( d.width() * r.left() ),
           floor( d.height() * r.top() ),
           floor( d.width() * r.right() ),
           floor( d.height() * r.bottom() ));
 
-    _d->scaleRect = r;
+    _d->rect.scale = r;
   break;
 
   default:
@@ -177,8 +181,8 @@ void Widget::setGeometry( const RectF& r, GeometryType mode )
   updateAbsolutePosition();
 }
 
-Rect Widget::absoluteRect() const { return _dfunc()->absoluteRect;}
-Rect Widget::absoluteClippingRect() const{ return _dfunc()->absoluteClippingRect;}
+Rect Widget::absoluteRect() const { return _dfunc()->rect.absolute;}
+Rect Widget::absoluteClippingRect() const{ return _dfunc()->rect.clipping;}
 
 void Widget::setNotClipped( bool noClip )
 {
@@ -221,15 +225,15 @@ void Widget::setAlignment( Alignment left, Alignment right, Alignment top, Align
 
     SizeF d = r.size().toSizeF();
 
-    RectF dRect = _d->desiredRect.toRectF();
+    RectF dRect = _d->rect.desired.toRectF();
     if( _d->align.left == align::scale)
-      _d->scaleRect.setLeft( dRect.left() / d.width() );
+      _d->rect.scale.setLeft( dRect.left() / d.width() );
     if(_d->align.right == align::scale)
-      _d->scaleRect.setRight( dRect.right() / d.width() );
+      _d->rect.scale.setRight( dRect.right() / d.width() );
     if( _d->align.top  == align::scale)
-      _d->scaleRect.setTop( dRect.top() / d.height() );
+      _d->rect.scale.setTop( dRect.top() / d.height() );
     if (_d->align.bottom == align::scale)
-      _d->scaleRect.setBottom( dRect.bottom() / d.height() );
+      _d->rect.scale.setBottom( dRect.bottom() / d.height() );
   }
 }
 
@@ -645,7 +649,7 @@ void Widget::_addChild( Widget* child )
   {
     child->grab(); // prevent destruction when removed
     child->remove(); // remove from old parent
-    child->_dfunc()->lastParentRect = absoluteRect();
+    child->_dfunc()->rect.lastParent = absoluteRect();
     child->setParent( this );
     _dfunc()->children.push_back(child);
   }
@@ -674,8 +678,8 @@ void Widget::_recalculateAbsolutePosition( bool recursive )
       parentAbsoluteClip = parent()->absoluteClippingRect();
   }
 
-  const int diffx = parentAbsolute.width() - _d->lastParentRect.width();
-  const int diffy = parentAbsolute.height() - _d->lastParentRect.height();
+  const int diffx = parentAbsolute.width() - _d->rect.lastParent.width();
+  const int diffy = parentAbsolute.height() - _d->rect.lastParent.height();
 
 
   if( _d->align.left == align::scale || _d->align.right == align::scale)
@@ -688,64 +692,64 @@ void Widget::_recalculateAbsolutePosition( bool recursive )
   {
   case align::automatic:
   case align::upperLeft: break;
-  case align::lowerRight: _d->desiredRect._lefttop += Point( diffx, 0 ); break;
-  case align::center: _d->desiredRect._lefttop += Point( diffx/2, 0 ); break;
-  case align::scale: _d->desiredRect.setLeft( _d->scaleRect.left() * fw ); break;
+  case align::lowerRight: _d->rect.desired._lefttop += Point( diffx, 0 ); break;
+  case align::center: _d->rect.desired._lefttop += Point( diffx/2, 0 ); break;
+  case align::scale: _d->rect.desired.setLeft( _d->rect.scale.left() * fw ); break;
   }
 
   switch( _d->align.right)
   {
   case align::automatic:
   case align::upperLeft:   break;
-  case align::lowerRight: _d->desiredRect._bottomright += Point( diffx, 0 ); break;
-  case align::center: _d->desiredRect._bottomright += Point( diffx/2, 0 ); break;
-  case align::scale: _d->desiredRect.setRight( roundf( _d->scaleRect.right() * fw ) ); break;
+  case align::lowerRight: _d->rect.desired._bottomright += Point( diffx, 0 ); break;
+  case align::center: _d->rect.desired._bottomright += Point( diffx/2, 0 ); break;
+  case align::scale: _d->rect.desired.setRight( roundf( _d->rect.scale.right() * fw ) ); break;
   }
 
   switch( _d->align.top)
   {
   case align::automatic:
   case align::upperLeft: break;
-  case align::lowerRight: _d->desiredRect._lefttop += Point( 0, diffy ); break;
-  case align::center: _d->desiredRect._lefttop += Point( 0, diffy/2 ); break;
-  case align::scale: _d->desiredRect.setTop( roundf(_d->scaleRect.top() * fh) ); break;
+  case align::lowerRight: _d->rect.desired._lefttop += Point( 0, diffy ); break;
+  case align::center: _d->rect.desired._lefttop += Point( 0, diffy/2 ); break;
+  case align::scale: _d->rect.desired.setTop( roundf(_d->rect.scale.top() * fh) ); break;
   }
 
   switch( _d->align.bottom)
   {
   case align::automatic:
   case align::upperLeft:  break;
-  case align::lowerRight: _d->desiredRect._bottomright += Point( 0, diffy );  break;
-  case align::center:  _d->desiredRect._bottomright += Point( 0, diffy/2 );  break;
-  case align::scale: _d->desiredRect.setBottom( roundf(_d->scaleRect.bottom() * fh) );  break;
+  case align::lowerRight: _d->rect.desired._bottomright += Point( 0, diffy );  break;
+  case align::center:  _d->rect.desired._bottomright += Point( 0, diffy/2 );  break;
+  case align::scale: _d->rect.desired.setBottom( roundf(_d->rect.scale.bottom() * fh) );  break;
   }
 
-  _d->relativeRect = _d->desiredRect;
+  _d->rect.relative = _d->rect.desired;
 
-  const int w = _d->relativeRect.width();
-  const int h = _d->relativeRect.height();
+  const int w = _d->rect.relative.width();
+  const int h = _d->rect.relative.height();
 
   // make sure the desired rectangle is allowed
   if (w < (int)_d->size.mininimum.width() )
-      _d->relativeRect.setRight( _d->relativeRect.left() + _d->size.mininimum.width() );
+      _d->rect.relative.setRight( _d->rect.relative.left() + _d->size.mininimum.width() );
   if (h < (int)_d->size.mininimum.height() )
-      _d->relativeRect.setBottom( _d->relativeRect.top() + _d->size.mininimum.height() );
+      _d->rect.relative.setBottom( _d->rect.relative.top() + _d->size.mininimum.height() );
   if (_d->size.maximimum.width() > 0 && w > (int)_d->size.maximimum.width() )
-      _d->relativeRect.setRight( _d->relativeRect.left() + _d->size.maximimum.width() );
+      _d->rect.relative.setRight( _d->rect.relative.left() + _d->size.maximimum.width() );
   if (_d->size.maximimum.height() > 0 && h > (int)_d->size.maximimum.height() )
-      _d->relativeRect.setBottom( _d->relativeRect.top() + _d->size.maximimum.height() );
+      _d->rect.relative.setBottom( _d->rect.relative.top() + _d->size.maximimum.height() );
 
-  _d->relativeRect.repair();
+  _d->rect.relative.repair();
 
-  _d->absoluteRect = _d->relativeRect + parentAbsolute.lefttop();
+  _d->rect.absolute = _d->rect.relative + parentAbsolute.lefttop();
 
   if (!parent())
       parentAbsoluteClip = absoluteRect();
 
-  _d->absoluteClippingRect = absoluteRect();
-  _d->absoluteClippingRect.clipAgainst(parentAbsoluteClip);
+  _d->rect.clipping = absoluteRect();
+  _d->rect.clipping.clipAgainst(parentAbsoluteClip);
 
-  _d->lastParentRect = parentAbsolute;
+  _d->rect.lastParent = parentAbsolute;
 
   if ( recursive )
   {
@@ -822,7 +826,7 @@ void Widget::setEnabled(bool enabled){  _dfunc()->flag.enabled = enabled;}
 std::string Widget::internalName() const{    return _dfunc()->internalName;}
 void Widget::setInternalName( const std::string& name ){    _dfunc()->internalName = name;}
 Widget* Widget::parent() const {    return _dfunc()->parent;}
-Rect Widget::relativeRect() const{  return _dfunc()->relativeRect;}
+Rect Widget::relativeRect() const{  return _dfunc()->rect.relative;}
 bool Widget::isNotClipped() const{  return _dfunc()->noClip;}
 void Widget::setVisible( bool visible ){  _dfunc()->flag.visible = visible;}
 bool Widget::isTabStop() const{  return _dfunc()->flag.tabStop;}
@@ -836,14 +840,14 @@ void Widget::setID( int id ) {  _dfunc()->id = id; }
 const Widget::Widgets& Widget::children() const{  return _dfunc()->children;}
 Size Widget::maxSize() const{    return _dfunc()->size.maximimum;}
 Size Widget::minSize() const{    return _dfunc()->size.mininimum;}
-bool Widget::isHovered() const{  return _environment->isHovered( this );}
-bool Widget::isFocused() const{  return _environment->hasFocus( this );}
+bool Widget::isHovered() const{  return ui()->isHovered( this );}
+bool Widget::isFocused() const{  return ui()->hasFocus( this );}
 Rect Widget::clientRect() const{  return Rect( 0, 0, width(), height() );}
 void Widget::setFocus(){  ui()->setFocus( this );}
 void Widget::removeFocus(){  ui()->removeFocus( this );}
-Rect& Widget::absoluteClippingRectRef() const { return _dfunc()->absoluteClippingRect; }
+Rect& Widget::absoluteClippingRectRef() const { return _dfunc()->rect.clipping; }
 unsigned int Widget::width() const{  return relativeRect().width();}
-Size Widget::size() const{  return Size( _dfunc()->relativeRect.width(), _dfunc()->relativeRect.height() );}
+Size Widget::size() const{  return Size( _dfunc()->rect.relative.width(), _dfunc()->rect.relative.height() );}
 int Widget::screenTop() const { return absoluteRect().top(); }
 int Widget::screenLeft() const { return absoluteRect().left(); }
 int Widget::screenBottom() const { return absoluteRect().bottom(); }
@@ -852,16 +856,16 @@ Point Widget::lefttop() const { return Point( left(), top() ); }
 Point Widget::leftbottom() const { return Point( left(), bottom() ); }
 Point Widget::righttop() const { return Point( right(), top() ); }
 Point Widget::rightbottom() const { return Point( right(), bottom() ); }
-Point Widget::localToScreen( const Point& localPoint ) const{  return localPoint + _dfunc()->absoluteRect.lefttop();}
-Rect Widget::localToScreen( const Rect& localRect ) const{  return localRect + _dfunc()->absoluteRect.lefttop();}
-Point Widget::screenToLocal(const Point &screenPoint) const { return screenPoint - _dfunc()->absoluteRect.lefttop(); }
-void Widget::move( const Point& relativeMovement ){  setGeometry( _dfunc()->relativeRect + relativeMovement );}
-int Widget::bottom() const{  return _dfunc()->relativeRect.bottom(); }
-Point Widget::center() const { return (_dfunc()->relativeRect.rightbottom() + _dfunc()->relativeRect.lefttop()) / 2; }
+Point Widget::localToScreen( const Point& localPoint ) const{  return localPoint + _dfunc()->rect.absolute.lefttop();}
+Rect Widget::localToScreen( const Rect& localRect ) const{  return localRect + _dfunc()->rect.absolute.lefttop();}
+Point Widget::screenToLocal(const Point &screenPoint) const { return screenPoint - _dfunc()->rect.absolute.lefttop(); }
+void Widget::move( const Point& relativeMovement ){  setGeometry( _dfunc()->rect.relative + relativeMovement );}
+int Widget::bottom() const{  return _dfunc()->rect.relative.bottom(); }
+Point Widget::center() const { return (_dfunc()->rect.relative.rightbottom() + _dfunc()->rect.relative.lefttop()) / 2; }
 void Widget::setTabgroup( bool isGroup ) { _dfunc()->isTabGroup = isGroup; }
 bool Widget::visible() const{  return _dfunc()->flag.visible;}
-bool Widget::isSubElement() const{  return _dfunc()->isSubElement;}
-void Widget::setSubElement( bool subElement ){  _dfunc()->isSubElement = subElement;}
+bool Widget::isSubElement() const{  return _dfunc()->flag.internal;}
+void Widget::setSubElement( bool subElement ){  _dfunc()->flag.internal = subElement;}
 void Widget::setTabstop( bool enable ){  _dfunc()->flag.tabStop = enable;}
 void Widget::setLeft( int newLeft ) { setPosition( Point( newLeft, top() ) ); }
 void Widget::setTop( int newTop ) { setPosition( Point( left(), newTop ) );  }
@@ -872,7 +876,7 @@ void Widget::hide() { setVisible( false ); }
 void Widget::show() {  setVisible( true ); }
 Alignment Widget::horizontalTextAlign() const{  return _dfunc()->textHorzAlign; }
 Alignment Widget::verticalTextAlign() const{  return _dfunc()->textVertAlign;}
-void Widget::deleteLater(){  _environment->deleteLater( this ); }
+void Widget::deleteLater(){ ui()->deleteLater( this ); }
 
 void Widget::setRight( int newRight )
 {
@@ -905,7 +909,7 @@ void Widget::setCenter(Point center)
 
 void Widget::setBottom( int b )
 {
-  Rect r = _dfunc()->relativeRect;
+  Rect r = _dfunc()->rect.relative;
   r.setBottom(  b );
   setGeometry( r );
 }

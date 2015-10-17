@@ -25,8 +25,8 @@ class Food : public Info
 {
 public:
   virtual int type() const;
-  virtual void drawTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
-  virtual void drawWalkers(gfx::Engine &engine, const gfx::Tile &tile, const Point &camOffset);
+  virtual void drawTile(const RenderInfo& rinfo, gfx::Tile& tile);
+  virtual void drawWalkers( const RenderInfo& rinfo, const gfx::Tile &tile);
 
   static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
   virtual void handleEvent(NEvent& event);

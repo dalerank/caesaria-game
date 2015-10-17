@@ -41,8 +41,7 @@ protected:
   void _showHelp();
 
 private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  __DECLARE_IMPL(Emperor)
 };
 
 }

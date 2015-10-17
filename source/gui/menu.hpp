@@ -37,6 +37,7 @@ public:
   // draw on screen
   virtual void minimize();
   virtual void maximize();
+  virtual void cancel();
 
   virtual void draw( gfx::Engine& engine );
   virtual void setPosition(const Point& relativePosition);
@@ -46,6 +47,7 @@ public:
 
 signals public:
   Signal1<int>& onCreateConstruction();
+  Signal1<int>& onCreateObject();
   Signal0<>& onRemoveTool();
   Signal0<>& onHide();
 
@@ -53,14 +55,16 @@ protected:
   class Impl;
   ScopedPtr< Impl > _d;
 
-  struct Config;
+  struct Model;
+  struct Link;
 
   Menu( Widget* parent, int id, const Rect& rectangle, PlayerCityPtr city );
   virtual void _updateButtons();
-  virtual void _initialize( const Config& config );
+  virtual void _setModel(Model* model );
   void _setChildGeometry(Widget* w, const Rect& r );
   void _updateBuildOptions();
   void _createBuildMenu( int type, Widget* parent );
+  void _createLink( Link& config);
   PushButton* _addButton( int startPic, bool pushBtn, int yMul,
                           int id, bool haveSubmenu, int midPic,
                           const std::string& tooltip="" ,

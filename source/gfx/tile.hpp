@@ -59,12 +59,12 @@ public:
   void setPicture( const Picture& picture );
   void setPicture( const char* rc, const int index );
   void setPicture( const std::string& name );
-  inline const Picture& picture() const {  return _picture; }
+  inline const Picture& picture() const { return _picture; }
 
   // used for multi-tile graphics: current displayed picture
   // background of constructible tiles is 1x1 => master used for foreground
   // non-constructible tiles have no foreground => master used for background
-  inline Tile* master() const {  return _master;}
+  inline Tile* master() const { return _master;}
   void setMaster(Tile* master);
   bool isMaster() const;
 
@@ -72,8 +72,8 @@ public:
 
   bool isFlat() const;  // returns true if the tile is walkable/boatable (for display purpose)
 
-  inline void resetRendered() { _rendered = false; }
-  inline void setRendered()   { _rendered = true;  }
+  inline void resetRendered()  { _rendered = false; }
+  inline void setRendered()    { _rendered = true;  }
   inline bool rendered() const { return _rendered; }
 
   void animate( unsigned int time );

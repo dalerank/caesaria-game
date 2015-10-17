@@ -41,14 +41,12 @@ static const char* damageLevelName[maxDamageLevel] = {
 
 int Damage::type() const {  return citylayer::damage; }
 
-void Damage::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Damage::drawTile( const RenderInfo& rinfo, Tile& tile )
 {
-  Point screenPos = tile.mappos() + offset;
-
   if( tile.overlay().isNull() )
   {
-    drawPass( engine, tile, offset, Renderer::ground );
-    drawPass( engine, tile, offset, Renderer::groundAnimation );
+    drawPass( rinfo, tile, Renderer::ground );
+    drawPass( rinfo, tile, Renderer::groundAnimation );
   }
   else
   {
@@ -68,7 +66,7 @@ void Damage::drawTile(Engine& engine, Tile& tile, const Point& offset)
 
       if( !needDrawAnimations )
       {
-        drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
+        drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
       }
     }
     else
@@ -79,17 +77,18 @@ void Damage::drawTile(Engine& engine, Tile& tile, const Point& offset)
         damageLevel = (int)building->state( pr::damage );
       }
 
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.base );
+      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base );
     }
 
     if( needDrawAnimations )
     {
-      Layer::drawTile( engine, tile, offset );
+      Layer::drawTile( rinfo, tile );
       registerTileForRendering( tile );
     }
     else if( damageLevel >= 0 )
     {
-      drawColumn( engine, screenPos, damageLevel );
+      Point screenPos = tile.mappos() + rinfo.offset;
+      drawColumn( rinfo, screenPos, damageLevel );
     }
   }
 

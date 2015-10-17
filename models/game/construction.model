@@ -257,6 +257,7 @@
     class : "health"
     image : [ "security", 20 ]
     service : "srvc_doctor"
+    patients.max : 100
     sound : [ "clinic", 1 ]
   },  
   
@@ -266,6 +267,7 @@
     employers : 30
     class : "health"
     image : [ "security", 44 ]
+    patients.max : 1000
     service : "srvc_hospital"
   },
   
@@ -277,6 +279,7 @@
     image : [ "security", 32 ]
     animation : { rc : "bathanim", start : 1, count : 29, offset : [ 0, 120 ], delay : 3 }
     service : "srvc_baths"
+    patients.max : 200
     sound : [ "baths", 1 ]
   }, 
 
@@ -286,6 +289,7 @@
     employers : 2
     class : "health"
     size : [ 1, 1 ]
+    patients.max : 50
     image : [ "barber", 1 ]
     service : "srvc_barber"
     sound : [ "barber", 1 ]

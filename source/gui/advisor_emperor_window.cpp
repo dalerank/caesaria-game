@@ -158,6 +158,7 @@ public:
 
 void Emperor::_showChangeSalaryWindow()
 {
+  __D_IMPL(_d,Emperor)
   if( game::Date::current() > _d->city->victoryConditions().finishDate() )
   {
     dialog::Information( ui(), "", _("##disabled_draw_salary_for_free_reign##") );
@@ -175,6 +176,7 @@ void Emperor::_showChangeSalaryWindow()
 
 void Emperor::_showSend2CityWindow()
 {
+  __D_IMPL(_d,Emperor)
   PlayerPtr pl = _d->city->mayor();
   auto dialog = new dialog::CityDonation( parent(), pl->money() );
   dialog->show();
@@ -184,6 +186,7 @@ void Emperor::_showSend2CityWindow()
 
 void Emperor::_showGiftWindow()
 {
+  __D_IMPL(_d,Emperor)
   PlayerPtr pl = _d->city->mayor();
   world::Emperor& emperor = _d->city->empire()->emperor();
 
@@ -197,6 +200,7 @@ void Emperor::_showGiftWindow()
 
 void Emperor::_updateRequests()
 {
+  __D_IMPL(_d,Emperor)
   Rect reqsRect( Point( 32, 91 ), Size( 570, 220 ) );
 
   auto buttons = findChildren<RequestButton*>();
@@ -241,8 +245,9 @@ void Emperor::_showHelp()
 }
 
 Emperor::Emperor( PlayerCityPtr city, Widget* parent, int id )
-: Base( parent, city, id ), _d( new Impl )
+: Base( parent, city, id ), __INIT_IMPL(Emperor)
 {
+  __D_IMPL(_d,Emperor)
   _d->autoPause.activate();
   _d->city = city;
   _d->isRequestsUpdated = true;
@@ -284,7 +289,7 @@ void Emperor::draw(gfx::Engine& painter )
   if( !visible() )
     return;
 
-  if( _d->isRequestsUpdated )
+  if( _dfunc()->isRequestsUpdated )
   {
     _updateRequests();
   }
@@ -315,8 +320,8 @@ void Emperor::Impl::sendGift(int money)
 
 void Emperor::Impl::changeSalary( int money )
 {
-  PlayerPtr pl = city->mayor();
-  pl->setSalary( money );
+  auto player = city->mayor();
+  player->setSalary( money );
 
   float salKoeff = world::EmpireHelper::governorSalaryKoeff( ptr_cast<world::City>( city ) );
   if( salKoeff > 1.f )

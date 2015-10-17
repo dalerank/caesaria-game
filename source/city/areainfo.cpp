@@ -17,6 +17,8 @@
 
 #include "areainfo.hpp"
 #include "city.hpp"
+#include "gfx/tilemap.hpp"
+#include "gfx/helper.hpp"
 #include "gfx/tilesarray.hpp"
 
 namespace city
@@ -27,6 +29,11 @@ static const gfx::TilesArray clearTiles;
 const gfx::TilesArray& AreaInfo::tiles() const
 {
   return (_tiles != 0 ? *_tiles : clearTiles);
+}
+
+const gfx::Tile& AreaInfo::tile() const
+{
+  return city.isValid() ? city->tilemap().at( pos ) : gfx::tile::getInvalid();
 }
 
 AreaInfo::AreaInfo(PlayerCityPtr rcity,

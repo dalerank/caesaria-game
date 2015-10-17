@@ -49,9 +49,7 @@ public:
   virtual void updateState( Param name, double value );
   virtual void setState( Param name, double value );
   virtual double state( Param name ) const;
-
   virtual void timeStep(const unsigned long time);
-  virtual const gfx::Picture& picture( const city::AreaInfo& areaInfo ) const;
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
@@ -61,6 +59,7 @@ public:
   virtual const ConstructionExtensionList& extensions() const;  
 
   virtual void initialize(const object::Info& mdata);
+  virtual const gfx::Picture& picture(const city::AreaInfo& info) const;
 protected:
   Construction( const object::Type type, const Size& size );
   gfx::TilesArray& _roadside();
