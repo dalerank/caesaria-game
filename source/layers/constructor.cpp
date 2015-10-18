@@ -544,7 +544,7 @@ void Constructor::drawTile( const RenderInfo& rinfo, Tile& tile )
     _tryDrawBuildTile( rinfo, tile );
 }
 
-void Constructor::drawProminentTile( RenderInfo& renderInfo, Tile& tile, const int depth, bool force)
+void Constructor::drawProminentTile( const RenderInfo& renderInfo, Tile& tile, const int depth, bool force)
 {
   if( _dfunc()->cachedTiles.count( tile::hash( tile.epos() ) ) == 0 )
     Layer::drawProminentTile( renderInfo, tile, depth, force );

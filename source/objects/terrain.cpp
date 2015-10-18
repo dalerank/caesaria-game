@@ -43,6 +43,7 @@ bool Terrain::build( const city::AreaInfo& info )
   Overlay::build( info );
   tile().setPicture( picture() );
   deleteLater();
+  tile().setOverlay( nullptr );
 
   return true;
 }

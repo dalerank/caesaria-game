@@ -33,7 +33,7 @@ public:
   virtual void drawTile(const RenderInfo& rinfo, gfx::Tile& tile);
   virtual void render( gfx::Engine &engine);
   virtual void init(Point cursor);
-  virtual void drawProminentTile( RenderInfo& renderInfo, gfx::Tile& tile, const int depth, bool force);
+  virtual void drawProminentTile( const RenderInfo& renderInfo, gfx::Tile& tile, const int depth, bool force);
   virtual void beforeRender(gfx::Engine &engine);
   virtual void drawPass( const RenderInfo& rinfo, gfx::Tile &tile, gfx::Renderer::Pass pass);
   virtual void afterRender(gfx::Engine &engine);
@@ -58,7 +58,7 @@ private:
   void _initBuildMode();
   void _drawBuildTiles(const RenderInfo& rinfo );
   void _drawBuildTile(const RenderInfo& rinfo, gfx::Tile* tile);
-  void _tryDrawBuildTile( const RenderInfo& rinfo, gfx::Tile& tile);
+  bool _tryDrawBuildTile( const RenderInfo& rinfo, gfx::Tile& tile);
   void _exitBuildMode();
 
   Build( gfx::Renderer& renderer, PlayerCityPtr city );
