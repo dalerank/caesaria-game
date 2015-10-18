@@ -21,8 +21,12 @@
 #include "objects/house_spec.hpp"
 #include "game/resourcegroup.hpp"
 #include "constants.hpp"
+#include "core/logger.hpp"
 #include "city/statistic.hpp"
 #include "core/event.hpp"
+#include "good/turnover.hpp"
+#include "good/store.hpp"
+#include "game/gamedate.hpp"
 #include "gfx/tilemap_camera.hpp"
 
 using namespace gfx;
@@ -38,19 +42,25 @@ public:
     OverlayPtr current;
   } overlay;
 
+  DateTime lastUpdate;
   PointsArray points;
+  std::set<const Tile*> peersArea;
+  std::vector<TilesArray> ways;
+
+public:  
+  bool initContiditon( BuildingPtr b1, BuildingPtr b2 );
+  void canAppend(const gfx::Tile* tile, bool& ret);
 };
 
 int CommodityTurnover::type() const {  return citylayer::comturnover; }
 
-void CommodityTurnover::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void CommodityTurnover::drawTile(const RenderInfo& rinfo, Tile& tile)
 {
-  Point screenPos = tile.mappos() + offset;
 
   if( tile.overlay().isNull() )
   {
-    drawPass( engine, tile, offset, Renderer::ground );
-    drawPass( engine, tile, offset, Renderer::groundAnimation );
+    drawPass( rinfo, tile, Renderer::ground );
+    drawPass( rinfo, tile, Renderer::groundAnimation );
   }
   else
   {
@@ -70,26 +80,106 @@ void CommodityTurnover::drawTile(Engine& engine, Tile& tile, const Point& offset
 
       if( !needDrawAnimations )
       {
-        drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
+        drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
       }
     }
     else
     {
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, config::id.overlay.base );
+      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base );
     }
 
     if( needDrawAnimations )
     {
-      Layer::drawTile( engine, tile, offset );
+      Layer::drawTile( rinfo, tile );
       registerTileForRendering( tile );
     }
     else if( accessLevel >= 0 )
     {
-      drawColumn( engine, screenPos, accessLevel );
+      Point screenPos = tile.mappos() + rinfo.offset;
+      drawColumn( rinfo, screenPos, accessLevel );
     }
   }
 
   tile.setRendered();
+}
+
+void CommodityTurnover::afterRender(Engine& engine)
+{
+  Info::afterRender( engine );
+
+  if( _d->lastUpdate.daysTo( game::Date::current() ) > 7 )
+  {
+    _d->lastUpdate = game::Date::current();
+    _updateStorePath();
+  }
+}
+
+void CommodityTurnover::Impl::canAppend(const gfx::Tile* tile, bool& ret)
+{
+  ret = false;
+  if( tile->getFlag( Tile::tlRoad ) )
+  {
+    ret = true;
+  }
+  else
+  {
+    ret = peersArea.count( tile ) > 0;
+  }
+}
+
+void CommodityTurnover::_updateStorePath()
+{
+  BuildingPtr building = _d->overlay.current.as<Building>();
+  _d->ways.clear();
+  if( building.isValid() )
+  {
+    good::Store& store = building->store();
+    good::Turnovers consumers = store.consumers().items();
+
+    for( auto& item : consumers )
+    {
+      bool isOk = _d->initContiditon( building, _city()->getOverlay( item.receiver ).as<Building>() );
+
+      if( isOk )
+      {
+        Pathway pathway = PathwayHelper::create( item.sender, item.receiver, makeDelegate( _d.data(), &Impl::canAppend ) );
+        if( pathway.isValid() )
+        {
+          _d->ways.push_back( pathway.allTiles() );
+        }
+        else
+        {
+          isOk = false;
+        }
+      }
+
+      if( !isOk )
+      {
+        OverlayPtr b1 = _city()->getOverlay( item.sender );
+        OverlayPtr b2 = _city()->getOverlay( item.receiver );
+        Logger::warning( "CommodityTurnover: cant create path from [{},{}]:{} to [{},{}]:{}",
+                         item.sender.i(), item.sender.j(), b1.isValid() ? b1->info().name() : "unknown",
+                         item.receiver.i(), item.receiver.j(), b2.isValid() ? b2->info().name() : "unknown" );
+      }
+    }
+  }
+}
+
+bool CommodityTurnover::Impl::initContiditon(BuildingPtr b1, BuildingPtr b2)
+{
+  if( b1.isNull() || b2.isNull() )
+  {
+    return false;
+  }
+
+  peersArea.clear();
+  for( auto tile : b1->area() )
+    peersArea.insert( tile );
+
+  for( auto tile : b2->area() )
+    peersArea.insert( tile );
+
+  return true;
 }
 
 LayerPtr CommodityTurnover::create( Camera& camera, PlayerCityPtr city)

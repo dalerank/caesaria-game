@@ -38,6 +38,7 @@ public:
 
   virtual void timeStep(const unsigned long time);
   virtual void storeGoods(good::Stock& stock, const int amount = -1);
+  virtual good::Store& store();
 
   // evaluate the given service
   virtual bool build(const city::AreaInfo& info);

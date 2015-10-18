@@ -33,6 +33,7 @@
 #include "constants.hpp"
 #include "game/gamedate.hpp"
 #include "city/states.hpp"
+#include "good/storage.hpp"
 #include "walker/typeset.hpp"
 
 using namespace gfx;
@@ -172,6 +173,12 @@ void Building::storeGoods(good::Stock &stock, const int amount)
   std::string bldType = debugName();
   Logger::warning( "This building should not store any goods {0} at [{1},{2}]",
                    bldType, pos().i(), pos().j() );
+}
+
+good::Store& Building::store()
+{
+  static good::Storage invalidStorage;
+  return invalidStorage;
 }
 
 float Building::evaluateService(ServiceWalkerPtr walker)

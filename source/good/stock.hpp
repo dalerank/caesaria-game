@@ -63,6 +63,7 @@ public:
   bool empty() const;
 
   void setInfo( const Info& info );
+  void setInfo( const DateTime& date, unsigned int tag );
   const Info& info() const;
 
 protected:

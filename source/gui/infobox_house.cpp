@@ -265,7 +265,7 @@ void AboutHouse::drawHabitants( HousePtr house )
 
 void AboutHouse::drawGood(HousePtr house, const good::Product& goodType, const int col, const int row, const int startY )
 {
-  int qty = house->goodStore().qty( goodType );
+  int qty = house->store().qty( goodType );
   std::string text = utils::i2str(qty);
 
   // pictures of goods

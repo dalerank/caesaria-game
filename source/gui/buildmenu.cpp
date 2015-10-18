@@ -33,7 +33,6 @@
 #include "events/playsound.hpp"
 #include "core/logger.hpp"
 #include "core/saveadapter.hpp"
-#include "game/settings.hpp"
 #include "core/variant_list.hpp"
 
 //using namespace constants;
@@ -44,6 +43,15 @@ using namespace events;
 // used to display the building name and its cost
 namespace gui
 {
+
+class BuildMenu::Impl
+{
+public:
+  city::development::Options options;
+  city::development::Branch branch;
+  std::string menuModel;
+  bool c3gameplay;
+};
 
 class BuildButton : public PushButton
 {
@@ -97,22 +105,24 @@ private:
 
 BuildMenu::BuildMenu( Widget* parent, const Rect& rectangle, int id,
                       city::development::Branch branch )
-    : Widget( parent, id, rectangle )
+    : Widget( parent, id, rectangle ), __INIT_IMPL(BuildMenu)
 {
-  _c3gameplay = false;
-  _branch = branch;
+  __D_IMPL(_d,BuildMenu)
+  _d->c3gameplay = false;
+  _d->branch = branch;
 }
 
 void BuildMenu::initialize()
 {
   // compute the necessary width
+  __D_IMPL(_d,BuildMenu)
   int max_text_width = 0;
   int max_cost_width = 0;
   Size textSize;
   Font font = Font::create( FONT_2 );
 
-  VariantMap allItems = config::load( SETTINGS_RC_PATH( buildMenuModel ) );
-  VariantMap config = allItems.get( city::development::toString( _branch ) ).toMap();
+  VariantMap allItems = config::load( _d->menuModel );
+  VariantMap config = allItems.get( city::development::toString( _d->branch ) ).toMap();
   VariantList submenu = config.get( "submenu" ).toList();
   VariantList buildings = config.get( "buildings" ).toList();
 
@@ -121,7 +131,7 @@ void BuildMenu::initialize()
     development::Branch branch = development::findBranch( item.toString() );
     if( branch != development::unknown )
     {
-      std::string title = fmt::format( "##bldm_{0}##", item.toString() );
+      std::string title = fmt::format( "##bldm_{}##", item.toString() );
       addSubmenuButton( branch, title );
     }
   }
@@ -154,8 +164,9 @@ void BuildMenu::initialize()
 BuildMenu::~BuildMenu() {}
 
 void BuildMenu::addSubmenuButton(const city::development::Branch menuType, const std::string &text)
-{
-  if( !_options.isGroupAvailable( menuType ) )
+{  
+  __D_IMPL(_d,BuildMenu)
+  if( !_d->options.isGroupAvailable( menuType ) )
     return;
 
   BuildButton* button = new BuildButton( this, _(text), Rect( Point( 0, height() ), Size( width(), 25 ) ), -1 );
@@ -170,12 +181,13 @@ void BuildMenu::addSubmenuButton(const city::development::Branch menuType, const
 
 void BuildMenu::addBuildButton(const object::Type buildingType )
 {
+  __D_IMPL(_d,BuildMenu)
   //int t = DateTime::getElapsedTime();
   auto info = object::Info::find( buildingType );
 
   int cost = info .cost();
-  bool mayBuildInCity = _options.isBuildingAvailable( buildingType );
-  if( _c3gameplay )
+  bool mayBuildInCity = _d->options.isBuildingAvailable( buildingType );
+  if( _d->c3gameplay )
   {
     mayBuildInCity &= info .c3logic( true );
   }
@@ -195,6 +207,11 @@ void BuildMenu::addBuildButton(const object::Type buildingType )
   }
 }
 
+void BuildMenu::setModel(const std::string& filename)
+{
+  _dfunc()->menuModel = filename;
+}
+
 BuildMenu* BuildMenu::create(const city::development::Branch menuType, Widget* parent, bool c3gameplay )
 {
   BuildMenu* ret = 0;
@@ -209,7 +226,7 @@ BuildMenu* BuildMenu::create(const city::development::Branch menuType, Widget* p
   case development::entertainment:  ret = new BuildMenu_entertainment ( parent, Rect( 0, 0, 60, 1 )); break;
   case development::commerce:       ret = new BuildMenu_commerce      ( parent, Rect( 0, 0, 60, 1 )); break;
   case development::farm:           ret = new BuildMenu_farm          ( parent, Rect( 0, 0, 60, 1 )); break;
-  case development::raw_material:   ret = new BuildMenu_raw_material   ( parent, Rect( 0, 0, 60, 1 )); break;
+  case development::raw_material:   ret = new BuildMenu_raw_material  ( parent, Rect( 0, 0, 60, 1 )); break;
   case development::factory:        ret = new BuildMenu_factory       ( parent, Rect( 0, 0, 60, 1 )); break;
   case development::religion:       ret = new BuildMenu_religion      ( parent, Rect( 0, 0, 60, 1 )); break;
   case development::temple:         ret = new BuildMenu_temple        ( parent, Rect( 0, 0, 60, 1 )); break;
@@ -219,7 +236,7 @@ BuildMenu* BuildMenu::create(const city::development::Branch menuType, Widget* p
 
   if( ret )
   {
-    ret->_c3gameplay = c3gameplay;
+    ret->_dfunc()->c3gameplay = c3gameplay;
   }
 
   return ret;
@@ -232,7 +249,7 @@ bool BuildMenu::isPointInside( const Point& point ) const
   return clickedRect.isPointInside( point );
 }
 
-void BuildMenu::setBuildOptions( const development::Options& options ) {  _options = options; }
+void BuildMenu::setBuildOptions( const development::Options& options ) { _dfunc()->options = options; }
 
 void BuildMenu::_resolveButtonClick( Widget* widget )
 {
@@ -240,8 +257,8 @@ void BuildMenu::_resolveButtonClick( Widget* widget )
   if( sound.empty() )
     sound = "icon";
 
-  GameEventPtr e = PlaySound::create( sound, 1, 100 );
-  e->dispatch();
+  auto event = PlaySound::create( sound, 1, 100 );
+  event->dispatch();
 }
 
 BuildMenu_water::BuildMenu_water( Widget* parent, const Rect& rectangle )

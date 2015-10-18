@@ -43,6 +43,7 @@
 #include "extented_date_info.hpp"
 #include "core/saveadapter.hpp"
 #include "core/osystem.hpp"
+#include "game/settings.hpp"
 #include "events/playsound.hpp"
 
 using namespace constants;
@@ -539,6 +540,7 @@ void Menu::_createBuildMenu( int type, Widget* parent )
    {
      buildMenu->setNotClipped( true );
      buildMenu->setBuildOptions( _d->city->buildOptions() );
+     buildMenu->setModel( SETTINGS_RC_PATH( buildMenuModel ).toString() );
      buildMenu->initialize();
 
      int y = math::clamp< int >( parent->screenTop() - screenTop(), 0, ui()->rootWidget()->height() - buildMenu->height() );

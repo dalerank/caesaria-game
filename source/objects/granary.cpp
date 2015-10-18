@@ -27,6 +27,7 @@
 #include "game/gamedate.hpp"
 #include "walker/cart_supplier.hpp"
 #include "objects_factory.hpp"
+#include "good/turnover.hpp"
 #include "config.hpp"
 
 using namespace gfx;
@@ -71,18 +72,24 @@ public:
     good::Storage::store( stock, amount );
   }
 
-  virtual void applyStorageReservation(good::Stock& stock, const int reservationID)
+  virtual bool applyStorageReservation(good::Stock& stock, const int reservationID)
   {
-    good::Storage::applyStorageReservation( stock, reservationID );
-
+    bool isOk = good::Storage::applyStorageReservation( stock, reservationID );
+    gproviders.append( stock );
     granary->computePictures();
+    return isOk;
   }
 
-  virtual void applyRetrieveReservation(good::Stock &stock, const int reservationID)
+  virtual const good::ProviderDetails& providers() const
   {
-    good::Storage::applyRetrieveReservation( stock, reservationID );
+    return gproviders;
+  }
 
+  virtual bool applyRetrieveReservation(good::Stock &stock, const int reservationID)
+  {
+    bool isOk = good::Storage::applyRetrieveReservation( stock, reservationID );
     granary->computePictures();
+    return isOk;
   }
   
   virtual void setOrder( const good::Product type, const good::Orders::Order order )
@@ -92,6 +99,7 @@ public:
   }
 
   Granary* granary;
+  good::ProviderDetails gproviders;
 };
 
 class Granary::Impl

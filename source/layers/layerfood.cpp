@@ -121,7 +121,7 @@ void Food::handleEvent(NEvent& event)
 
           if( houseHabitantsCount > 0 )
           {
-            good::Store& st = house->goodStore();
+            good::Store& st = house->store();
             int foodQty = 0;
             for( good::Product k=good::wheat; k <= good::vegetable; ++k )
             {

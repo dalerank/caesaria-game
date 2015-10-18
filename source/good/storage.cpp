@@ -44,6 +44,9 @@ typedef std::vector<SmStock::Ptr> StockList;
 class Storage::Impl
 {
 public:
+  ConsumerDetails consumers;
+  ProviderDetails providers;
+
   StockList stocks;
   int capacity;
 
@@ -131,47 +134,54 @@ int Storage::getMaxStore(const good::Product goodType)
   return freeRoom;
 }
 
-void Storage::applyStorageReservation(good::Stock &stock, const int reservationID)
+bool Storage::applyStorageReservation(good::Stock &stock, const int reservationID)
 {
   good::Stock reservedStock = getStorageReservation(reservationID, true);
 
   if (stock.type() != reservedStock.type())
   {
     Logger::warning( "SimpleGoodStore:GoodType does not match reservation");
-    return;
+    return false;
   }
 
   if (stock.qty() < reservedStock.qty())
   {
     Logger::warning( "SimpleGoodStore:Quantity does not match reservation");
-    return;
+    return false;
   }
 
   int amount = reservedStock.qty();
   _gsd->stocks[ reservedStock.type() ]->push( amount );
   stock.pop( amount );
+  return true;
 }
 
-void Storage::applyRetrieveReservation(good::Stock& stock, const int reservationID)
+bool Storage::applyRetrieveReservation(good::Stock& stock, const int reservationID)
 {
   good::Stock reservedStock = getRetrieveReservation(reservationID, true);
 
   if (stock.type() != reservedStock.type())
   {
     Logger::warning( "SimpleGoodStore:GoodType does not match reservation");
-    return;
+    return false;
   }
 
   if( stock.capacity() < stock.qty() + reservedStock.qty())
   {
     Logger::warning( "SimpleGoodStore:Quantity does not match reservation");
-    return;
+    return false;
   }
 
   int amount = reservedStock.qty();
   good::Stock& currentStock = getStock(reservedStock.type());
   currentStock.pop( amount );
   stock.push( amount );
+  return true;
+}
+
+void Storage::confirmDeliver(Product type, int qty, unsigned int tag, const DateTime& time)
+{
+  _gsd->consumers.append( type, qty, tag, time );
 }
 
 VariantMap Storage::save() const

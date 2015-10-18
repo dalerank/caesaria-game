@@ -35,7 +35,7 @@ public:
 
   virtual void timeStep(const unsigned long time);
 
-  virtual good::Store& goodStore();
+  virtual good::Store& store();
 
   // return the current house level
   const HouseSpecification& spec() const;

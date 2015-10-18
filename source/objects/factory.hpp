@@ -21,6 +21,7 @@
 
 #include "objects/working.hpp"
 #include "predefinitions.hpp"
+#include "good/turnover.hpp"
 #include "good/good.hpp"
 
 class Factory : public WorkingBuilding
@@ -68,9 +69,6 @@ public:
 
   virtual unsigned int getFinishedQty() const;
   virtual unsigned int getConsumeQty() const;
-
-  ConsumersInfo consumers() const;
-  ProvidersInfo providers() const;
 
   std::string cartStateDesc() const;
   virtual void initialize(const object::Info& mdata);

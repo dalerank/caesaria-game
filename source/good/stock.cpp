@@ -112,10 +112,17 @@ void Stock::load( const VariantList& stream )
   }
 
   _capacity = (int)stream.get( idxCapacity );
+
   _qty = math::clamp( (int)stream.get( idxQty ), 0, _capacity );
   _info.sender = stream.get( idxSender, 0 );
   if( _info.sender > 0 )
     _info.birth = stream.get( idxBirth ).toDateTime();
+}
+
+void Stock::setInfo(const DateTime& date, unsigned int tag)
+{
+  _info.birth = date;
+  _info.sender = tag;
 }
 
 bool Stock::empty() const {  return _qty == 0; }

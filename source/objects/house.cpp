@@ -590,7 +590,7 @@ bool House::_tryEvolve_1_to_12_lvl( int level4grow, int growSize, const char des
 
           house->_setServiceMaxValue( Service::recruter, 0 );
 
-          selfHouse->goodStore().storeAll( house->goodStore() );
+          selfHouse->store().storeAll( house->store() );
         }
       }
 
@@ -923,7 +923,7 @@ void House::buyMarket( ServiceWalkerPtr walker )
 
   good::Store& marketStore = market->goodStore();
 
-  good::Store& houseStore = goodStore();
+  good::Store& houseStore = store();
   for( auto& goodType : good::all() )
   {
     int houseQty = houseStore.qty(goodType);
@@ -1042,7 +1042,7 @@ float House::evaluateService(ServiceWalkerPtr walker)
   {
     MarketPtr market = ptr_cast<Market>( _city()->getOverlay( walker->baseLocation() ) );
     good::Store& marketStore = market->goodStore();
-    good::Store& houseStore = goodStore();
+    good::Store& houseStore = store();
     foreach( goodType, good::all() )
     {
       int houseQty = houseStore.qty( *goodType) / 10;
@@ -1439,7 +1439,7 @@ std::string House::evolveInfo() const                            { return _d->ev
 bool House::isWalkable() const                                   { return size().width() == 1; }
 bool House::isFlat() const                                       { return _d->isFlat; }
 const CitizenGroup& House::habitants() const                     { return _d->habitants; }
-good::Store& House::goodStore()                                  { return _d->goodstore; }
+good::Store& House::store()                                      { return _d->goodstore; }
 const HouseSpecification& House::spec() const                    { return _d->spec; }
 HouseLevel::ID House::level() const                              { return spec().level(); }
 bool House::hasServiceAccess( Service::Type service)             { return getServiceValue(service) > 0; }

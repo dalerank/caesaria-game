@@ -27,6 +27,11 @@
 namespace good
 {
 
+namespace {
+ConsumerDetails invalidConsumers;
+ProviderDetails invalidProviders;
+}
+
 enum { noId=0 };
 
 class Store::Impl
@@ -125,6 +130,10 @@ good::Stock Store::getRetrieveReservation(const int reservationID, const bool po
   return info.stock;
 }
 
+void Store::confirmDeliver(Product, int, unsigned int, const DateTime&)
+{
+  Logger::warning( "GoodStore::confirmDeliver not implemented");
+}
 
 void Store::applyStorageReservation(Storage &goodStore, const int reservationID)
 {
@@ -234,6 +243,9 @@ void Store::load( const VariantMap& stream )
     index++;
   }
 }
+
+const ConsumerDetails& Store::consumers() const { return invalidConsumers; }
+const ProviderDetails& Store::providers() const { return invalidProviders; }
 
 bool Store::isDevastation() const{  return _d->devastation;}
 void Store::setDevastation( bool value ){  _d->devastation = value;}

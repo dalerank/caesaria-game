@@ -21,6 +21,7 @@
 #include "stock.hpp"
 #include "orders.hpp"
 #include "core/variant.hpp"
+#include "turnover.hpp"
 
 #include <set>
 
@@ -41,21 +42,6 @@ struct ReserveInfo
     return id < a.id;
   }
 };
-
-struct TurnoverInfo
-{
-  good::Product product;
-  unsigned int qty;
-  TilePos location;
-  TilePos destination;
-};
-
-class ConsumersInfo : public std::vector<TurnoverInfo>
-{
-
-};
-
-typedef ConsumersInfo ProvidersInfo;
 
 class Reservations : public std::set<ReserveInfo>
 {
@@ -117,8 +103,13 @@ public:
   good::Stock getRetrieveReservation(const int reservationID, const bool pop=false);
 
   // store/retrieve
-  virtual void applyStorageReservation(good::Stock& stock, const int reservationID) = 0;
-  virtual void applyRetrieveReservation(good::Stock& stock, const int reservationID) = 0;
+  virtual bool applyStorageReservation(good::Stock& stock, const int reservationID) = 0;
+  virtual bool applyRetrieveReservation(good::Stock& stock, const int reservationID) = 0;
+
+  virtual void confirmDeliver( good::Product type, int qty, unsigned int tag, const DateTime& time );
+
+  virtual const ConsumerDetails& consumers() const;
+  virtual const ProviderDetails& providers() const;
 
   // store/retrieve to goodStore
   void applyStorageReservation(Storage& goodStore, const int reservationID);
