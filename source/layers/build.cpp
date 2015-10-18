@@ -511,14 +511,17 @@ void Build::_drawBuildTile( const RenderInfo& rinfo, Tile* tile)
   }
 }
 
-void Build::_tryDrawBuildTile(const RenderInfo& rinfo, Tile &tile)
+bool Build::_tryDrawBuildTile(const RenderInfo& rinfo, Tile &tile)
 {
   Impl::CachedTiles& cache = _dfunc()->cachedTiles;
   auto it = cache.find( tile::hash( tile.epos() ) );
   if( it != cache.end() )
   {
     _drawBuildTile( rinfo, it->second );
+    return true;
   }
+
+  return false;
 }
 
 void Build::_drawBuildTiles( const RenderInfo& rinfo )
@@ -564,7 +567,7 @@ void Build::drawTile( const RenderInfo& rinfo, Tile& tile )
     _tryDrawBuildTile( rinfo, tile );
 }
 
-void Build::drawProminentTile( RenderInfo& renderInfo, Tile& tile, const int depth, bool force)
+void Build::drawProminentTile( const RenderInfo& renderInfo, Tile& tile, const int depth, bool force)
 {
   Layer::drawProminentTile( renderInfo, tile, depth, force );
 
