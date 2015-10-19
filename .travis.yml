@@ -40,4 +40,3 @@ notifications:
         - caesariagame:m3lwdYPWqeCOn0zWs0rjX5KY
     on_failure: always
     on_success: never
-
