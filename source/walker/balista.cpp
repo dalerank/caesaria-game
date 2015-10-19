@@ -22,18 +22,15 @@
 #include "game/resourcegroup.hpp"
 #include "enemysoldier.hpp"
 #include "game/gamedate.hpp"
+#include "config.hpp"
 #include "spear.hpp"
-
-namespace {
-  const int attackDistance = 16;
-}
 
 Balista::Balista( PlayerCityPtr city )
   : WallGuard( city, walker::balista )
 {
   _setType( walker::balista );
   setSpeedMultiplier( 0.f );
-  setAttackDistance( 8 );
+  setAttackDistance( config::distance::ballistaRange );
 
   _isActive = false;
 

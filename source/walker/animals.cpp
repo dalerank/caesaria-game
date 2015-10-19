@@ -89,7 +89,7 @@ std::string Animal::thoughts(Thought th) const
 
 void Animal::_findNewWay( const TilePos& start )
 {
-  Pathway pathway = PathwayHelper::randomWay( _city(), start, config::distance::animalRndDistance );
+  Pathway pathway = PathwayHelper::randomWay( _city(), start, config::distance::animalRandrom );
 
   if( pathway.isValid() )
   {
@@ -199,7 +199,7 @@ void Wolf::_centerTile()
 
   WalkerList walkers = _city()->statistic().walkers
                                            .neighbors<Walker>( pos() )
-                                           .exlude<Wolf>();
+                                           .exclude<Wolf>();
 
   if( !walkers.empty() )
   {
@@ -214,10 +214,10 @@ void Wolf::_centerTile()
 
 void Wolf::_findNewWay( const TilePos& start )
 {
-  TilePos offset(defaultRandomDistance,defaultRandomDistance);
-  WalkerList walkers = _city()->statistic().walkers.find<Walker>( walker::any,
-                                                                  start - offset, start + offset );
-  walkers = walkers.exclude<Wolf>();
+  TilePos offset( config::distance::animalRandrom, config::distance::animalRandrom);
+  WalkerList walkers = _city()->statistic().walkers
+                                           .find<Walker>( walker::any, start - offset, start + offset )
+                                           .exclude<Wolf>();
 
   Pathway pathway;
   if( !walkers.empty() )
@@ -228,7 +228,7 @@ void Wolf::_findNewWay( const TilePos& start )
 
   if( !pathway.isValid() )
   {
-    pathway = PathwayHelper::randomWay( _city(), start, defaultRandomDistance );
+    pathway = PathwayHelper::randomWay( _city(), start, config::distance::animalRandrom );
   }
 
   if( pathway.isValid() )

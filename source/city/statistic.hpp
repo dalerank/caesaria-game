@@ -355,7 +355,7 @@ inline Pathway Statistic::_Walkers::freeTile( TilePos target, TilePos currentPos
 }
 
 template< class T >
-inline SmartList<T> Statistic::_Walkers::find( TilePos start, walker::Type type ) const
+inline SmartList<T> Statistic::_Walkers::neighbors( TilePos start, walker::Type type ) const
 {
   static TilePos offset( 1, 1 );
   return find<T>( type, start - offset, start + offset );

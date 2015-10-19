@@ -449,7 +449,7 @@ void CartPusher::load( const VariantMap& stream )
 
   if( _d->producerBuilding.is<WorkingBuilding>() )
   {
-    auto workingBuilding = ptr_cast<WorkingBuilding>( _d->producerBuilding );
+    auto workingBuilding = _d->producerBuilding.as<WorkingBuilding>();
     workingBuilding->addWalker( this );
   }
   else
