@@ -15,27 +15,27 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_LAYERFIRE_H_INCLUDED__
-#define __CAESARIA_LAYERFIRE_H_INCLUDED__
+#ifndef __CAESARIA_TEXTURED_PATH_H_INCLUDED__
+#define __CAESARIA_TEXTURED_PATH_H_INCLUDED__
 
-#include "layerinfo.hpp"
+#include "core/scopedptr.hpp"
+#include "game/predefinitions.hpp"
+#include "core/color.hpp"
+#include "render_info.hpp"
+#include "pathway/pathway.hpp"
 
-namespace citylayer
+namespace gfx { class Camera; class Engine; }
+
+namespace gfx
 {
 
-class Fire : public Info
+class TexturedPath
 {
 public:
-  virtual int type() const;
-  virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
-  virtual void handleEvent( NEvent& event );
-
-  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
-
-private:
-  Fire( gfx::Camera& camera, PlayerCityPtr city );
+  static void draw(const Pathway& way, const RenderInfo& rinfo, NColor color=0);
+  static void draw(const TilesArray& tiles, const RenderInfo& rinfo, NColor color=0);
 };
 
-}//end namespace citylayer
+}//end namespace gfx
 
-#endif //__CAESARIA_LAYERFIRE_H_INCLUDED__
+#endif //__CAESARIA_TEXTURED_PATH_H_INCLUDED__

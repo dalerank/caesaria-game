@@ -29,7 +29,7 @@ class Destroy : public Layer
 public:
   virtual void handleEvent( NEvent& event );
   virtual int type() const;
-  virtual void drawTile( const RenderInfo& rinfo, gfx::Tile& tile );
+  virtual void drawTile( const gfx::RenderInfo& rinfo, gfx::Tile& tile );
   virtual void render( gfx::Engine& engine);
   virtual void renderUi(gfx::Engine &engine);
   virtual void init( Point cursor );

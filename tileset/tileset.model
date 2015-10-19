@@ -35,18 +35,18 @@
       }
     }
 
-    misc:
+    misc :
     {
       size : [ 2048, 2048 ]
       margin : 1
       ignorePath : true
       floatCoordinates : false
-      name : "carts"
-      archive : "resources/gfx/misc"
+      name : "misc"
+      archive : "resources/gfx/pics_misc"
 
       items :
       {
-        clay :
+        way :
         {
           type : "atlas"
           folder : "/resources/way"

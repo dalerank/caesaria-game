@@ -556,7 +556,7 @@ void Walker::load( const VariantMap& stream)
   setFlag( showDebugInfo, stream.get( "showDebugInfo" ).toBool() );
 }
 
-void Walker::turn(TilePos p )
+void Walker::turn(TilePos p)
 {
   Direction direction = tilemap::getDirection( pos(), p );
 

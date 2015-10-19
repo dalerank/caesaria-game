@@ -15,27 +15,23 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_LAYERFIRE_H_INCLUDED__
-#define __CAESARIA_LAYERFIRE_H_INCLUDED__
+#ifndef __CAESARIA_RENDER_INFO_H_INCLUDED__
+#define __CAESARIA_RENDER_INFO_H_INCLUDED__
 
-#include "layerinfo.hpp"
+#include "game/predefinitions.hpp"
+#include "core/position.hpp"
 
-namespace citylayer
+namespace gfx
 {
 
-class Fire : public Info
+class Engine;
+
+struct RenderInfo
 {
-public:
-  virtual int type() const;
-  virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
-  virtual void handleEvent( NEvent& event );
-
-  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
-
-private:
-  Fire( gfx::Camera& camera, PlayerCityPtr city );
+  Engine& engine;
+  Point offset;
 };
 
-}//end namespace citylayer
+}//end namespace gfx
 
-#endif //__CAESARIA_LAYERFIRE_H_INCLUDED__
+#endif //__CAESARIA_RENDER_INFO_H_INCLUDED__
