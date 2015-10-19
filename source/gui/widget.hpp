@@ -28,6 +28,7 @@
 #include "core/smartptr.hpp"
 #include "core/variant.hpp"
 #include "vfs/path.hpp"
+#include "element_state.hpp"
 
 namespace gfx
 {
@@ -428,16 +429,6 @@ protected:
 };
 
 typedef SmartPtr< Widget > WidgetPtr;
-
-enum ElementState
-{
-  stNormal=0, 
-  stPressed, 
-  stHovered, 
-  stDisabled, 
-  stChecked,
-  StateCount
-};
 
 }//end namespace gui
 #endif //__CAESARIA_WIDGET_H_INCLUDE_

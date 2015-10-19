@@ -95,7 +95,8 @@ void ShowAdvisorWindow::_exec(Game& game, unsigned int)
     }
     else
     {
-      Parlor::create( game.gui()->rootWidget(), -1, _advisor, game.city() );
+      auto model = new ParlorModel( game.city() );
+      Parlor::create( game.gui()->rootWidget(), -1, _advisor, model );
     }
   }
   else

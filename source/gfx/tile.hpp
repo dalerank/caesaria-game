@@ -27,9 +27,6 @@
 namespace gfx
 {
 
-class Picture;
-typedef unsigned int ImgID;
-
 // a Tile in the Tilemap
 class Tile
 {

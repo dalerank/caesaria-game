@@ -15,23 +15,21 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_GAMEAUTOPAUSE_H_INCLUDE_
-#define _CAESARIA_GAMEAUTOPAUSE_H_INCLUDE_
+#ifndef __CAESARIA_ELEMENTSTATE_H_INCLUDE_
+#define __CAESARIA_ELEMENTSTATE_H_INCLUDE_
 
-#include "core/scopedptr.hpp"
-
-namespace gui { class Widget; }
-
-class GameAutoPause
+namespace gui
 {
-public:
-  GameAutoPause();
-  void activate();
-  static void insertTo( gui::Widget* parent, bool pause=false );
-  virtual ~GameAutoPause();
 
-private:
-  bool _activated;
+enum ElementState
+{
+  stNormal=0, 
+  stPressed, 
+  stHovered, 
+  stDisabled, 
+  stChecked,
+  StateCount
 };
 
-#endif //_CAESARIA_GAMEAUTOPAUSE_H_INCLUDE_
+}//end namespace gui
+#endif //__CAESARIA_ELEMENTSTATE_H_INCLUDE_
