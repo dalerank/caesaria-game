@@ -56,7 +56,7 @@ int CommodityTurnover::type() const {  return citylayer::comturnover; }
 
 void CommodityTurnover::drawTile(const RenderInfo& rinfo, Tile& tile)
 {
-
+/*
   if( tile.overlay().isNull() )
   {
     drawPass( rinfo, tile, Renderer::ground );
@@ -101,17 +101,27 @@ void CommodityTurnover::drawTile(const RenderInfo& rinfo, Tile& tile)
   }
 
   tile.setRendered();
+*/
+  Layer::drawTile(rinfo, tile);
 }
 
 void CommodityTurnover::afterRender(Engine& engine)
 {
   Info::afterRender( engine );
 
-  if( _d->lastUpdate.daysTo( game::Date::current() ) > 7 )
+  if( _d->lastUpdate.daysTo( game::Date::current() ) > 1 )
   {
     _d->lastUpdate = game::Date::current();
     _updateStorePath();
   }
+}
+
+void CommodityTurnover::render(Engine& engine)
+{
+  Info::render( engine );
+
+  RenderInfo rinfo{ engine, _camera()->offset() };
+  _renderPaths( rinfo );
 }
 
 void CommodityTurnover::Impl::canAppend(const gfx::Tile* tile, bool& ret)
@@ -129,7 +139,7 @@ void CommodityTurnover::Impl::canAppend(const gfx::Tile* tile, bool& ret)
 
 void CommodityTurnover::_updateStorePath()
 {
-  BuildingPtr building = _d->overlay.current.as<Building>();
+  BuildingPtr building = _d->overlay.selected.as<Building>();
   _d->ways.clear();
   if( building.isValid() )
   {
@@ -190,6 +200,16 @@ LayerPtr CommodityTurnover::create( Camera& camera, PlayerCityPtr city)
   return ret;
 }
 
+void CommodityTurnover::_renderPaths(const RenderInfo& rinfo)
+{
+  for( auto& tiles : _d->ways )
+  {
+    PointsArray points = tiles.mappositions();
+    points.move( rinfo.offset + Point( gfx::tilemap::cellPicSize().width() / 2, 0 ) );
+    rinfo.engine.drawLines( DefaultColors::red, points );
+  }
+}
+
 void CommodityTurnover::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
@@ -218,7 +238,7 @@ void CommodityTurnover::handleEvent(NEvent& event)
 }
 
 CommodityTurnover::CommodityTurnover( Camera& camera, PlayerCityPtr city)
-  : Info( camera, city, 0 )
+  : Info( camera, city, 0 ), _d( new Impl )
 {
   _addWalkerType( walker::cartPusher );
   _addWalkerType( walker::supplier );

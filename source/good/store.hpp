@@ -130,6 +130,8 @@ public:
   virtual VariantMap save() const;
   virtual void load( const VariantMap& stream );
 
+  virtual TilePos owner() const;
+
   virtual void setOrder( const good::Product type, const Orders::Order order );
   virtual Orders::Order getOrder( const good::Product type ) const;
 
@@ -138,6 +140,8 @@ public:
 protected:
   Reservations& _getStoreReservations();
   Reservations& _getRetrieveReservations();
+  ConsumerDetails& _consumers();
+  ProviderDetails& _providers();
 
 private:
   class Impl;

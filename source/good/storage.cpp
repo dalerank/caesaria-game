@@ -19,6 +19,7 @@
 #include "core/variant_list.hpp"
 #include "core/utils.hpp"
 #include "good/productmap.hpp"
+#include "gfx/helper.hpp"
 #include "core/logger.hpp"
 
 namespace good
@@ -44,9 +45,6 @@ typedef std::vector<SmStock::Ptr> StockList;
 class Storage::Impl
 {
 public:
-  ConsumerDetails consumers;
-  ProviderDetails providers;
-
   StockList stocks;
   int capacity;
 
@@ -181,7 +179,7 @@ bool Storage::applyRetrieveReservation(good::Stock& stock, const int reservation
 
 void Storage::confirmDeliver(Product type, int qty, unsigned int tag, const DateTime& time)
 {
-  _gsd->consumers.append( type, qty, tag, time );
+  _consumers().append( type, qty, tag, time );
 }
 
 VariantMap Storage::save() const

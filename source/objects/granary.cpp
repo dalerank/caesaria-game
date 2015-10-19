@@ -52,6 +52,8 @@ public:
 
     setOrder( good::fish, good::Orders::none );
     setCapacity( GranaryStore::maxCapacity );
+
+    granary = nullptr;
   }
 
   // returns the reservationID if stock can be retrieved (else 0)
@@ -75,14 +77,9 @@ public:
   virtual bool applyStorageReservation(good::Stock& stock, const int reservationID)
   {
     bool isOk = good::Storage::applyStorageReservation( stock, reservationID );
-    gproviders.append( stock );
+    _providers().append( stock );
     granary->computePictures();
     return isOk;
-  }
-
-  virtual const good::ProviderDetails& providers() const
-  {
-    return gproviders;
   }
 
   virtual bool applyRetrieveReservation(good::Stock &stock, const int reservationID)
@@ -98,8 +95,9 @@ public:
     setCapacity( type, (order == good::Orders::reject || order == good::Orders::none ) ? 0 : GranaryStore::maxCapacity );
   }
 
+  virtual TilePos owner() const { return granary ? granary->pos() : gfx::tilemap::invalidLocation(); }
+
   Granary* granary;
-  good::ProviderDetails gproviders;
 };
 
 class Granary::Impl

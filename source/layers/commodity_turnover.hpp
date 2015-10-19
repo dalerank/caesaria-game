@@ -29,11 +29,13 @@ public:
   virtual int type() const;
   virtual void drawTile(const RenderInfo& rinfo, gfx::Tile& tile);
   virtual void afterRender(gfx::Engine &engine);
+  virtual void render(gfx::Engine &engine);
   virtual void handleEvent(NEvent& event);
 
   static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
 
 private:
+  void _renderPaths( const RenderInfo& rinfo );
   void _updateStorePath();
   CommodityTurnover( gfx::Camera& camera, PlayerCityPtr city );
 

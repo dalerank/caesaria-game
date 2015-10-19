@@ -60,10 +60,9 @@ LayerPtr Simple::create( Camera& camera, PlayerCityPtr city)
 
 void Simple::drawTile( const RenderInfo& rinfo, Tile& tile)
 {
-  OverlayPtr curOverlay = tile.overlay();
-
   if( _d->highlight.may )
   {
+    OverlayPtr curOverlay = tile.overlay();
     bool blowTile = (curOverlay.isValid() && curOverlay == _d->lastOverlay) && _d->highlight.any;
     if( blowTile )
     {

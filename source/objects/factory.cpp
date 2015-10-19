@@ -73,6 +73,8 @@ public:
     return isOk;
   }
 
+  virtual TilePos owner() const { return factory ? factory->pos() : gfx::tilemap::invalidLocation(); }
+
   Factory* factory;
 
 public signals:
@@ -273,13 +275,13 @@ std::string Factory::troubleDesc() const
   if( !isActive() )
   {
     std::string goodname = good::Helper::getTypeName( consumeGoodType() );
-    ret = fmt::format( "##trade_advisor_blocked_{0}_production##", goodname );
+    ret = fmt::format( "##trade_advisor_blocked_{}_production##", goodname );
   }
 
   if( ret.empty() && !haveMaterial() && consumeGoodType() != good::none )
   {
     std::string goodname = good::Helper::getTypeName( consumeGoodType() );
-    ret = fmt::format( "##trouble_need_{0}##", goodname );
+    ret = fmt::format( "##trouble_need_{}##", goodname );
   }
 
   return ret;
@@ -315,8 +317,8 @@ void Factory::setProductRate( const float rate ){  _d->production.rate = rate;}
 float Factory::productRate() const{  return _d->production.rate;}
 
 unsigned int Factory::effciency()      const { return laborAccessPercent() * productivity() / 100; }
-unsigned int Factory::getFinishedQty() const{ return _d->finishedQty;}
-unsigned int Factory::getConsumeQty()  const{ return 100;}
+unsigned int Factory::getFinishedQty() const { return _d->finishedQty; }
+unsigned int Factory::getConsumeQty()  const { return 100; }
 
 std::string Factory::cartStateDesc() const
 {
@@ -393,9 +395,9 @@ Creamery::Creamery() : Factory(good::olive, good::oil, object::oil_workshop, Siz
   _fgPictures().resize( 3 );
 }
 
-bool Creamery::canBuild( const city::AreaInfo& areaInof ) const
+bool Creamery::canBuild( const city::AreaInfo& areaInfo ) const
 {
-  return Factory::canBuild( areaInof );
+  return Factory::canBuild( areaInfo );
 }
 
 bool Creamery::build( const city::AreaInfo& info )

@@ -59,14 +59,9 @@ public:
     Point start;
   } cursor;
 
-  Camera* camera;
-  Tile* currentTile;
-  PlayerCityPtr city;
-  Picture outline;
-
   struct {
-    bool buildings;
-    bool trees;
+    bool buildings = true;
+    bool trees = true;
   } draw;
 
   struct {
@@ -75,11 +70,18 @@ public:
   } tooltip;
 
   int nextLayer;
+  struct {
+    Layer::WalkerTypes walkers;
+    AlwaysDrawObjects objects;
+  } visible;
+
   Picture terraintPic;
-  Layer::WalkerTypes vwalkers;
+  PlayerCityPtr city;
   Picture tilePosText;
+  Tile* currentTile;
+  Picture outline;
+  Camera* camera;
   Font debugFont;
-  AlwaysDrawObjects drObjects;
 
   int posMode;
 };
@@ -360,7 +362,7 @@ void Layer::drawWalkerOverlap( const RenderInfo& rinfo, Tile& tile, const int de
 
 const Layer::WalkerTypes& Layer::visibleTypes() const
 {
-  return _dfunc()->vwalkers;
+  return _dfunc()->visible.walkers;
 }
 
 void Layer::drawProminentTile( const RenderInfo& rinfo, Tile& tile, const int depth, bool force)
@@ -653,7 +655,7 @@ Layer::Layer( Camera* camera, PlayerCityPtr city )
 
 void Layer::_addWalkerType(walker::Type wtype)
 {
-  _dfunc()->vwalkers.insert( wtype );
+  _dfunc()->visible.walkers.insert( wtype );
 }
 
 void Layer::_initialize()
@@ -664,8 +666,8 @@ void Layer::_initialize()
   {
     object::Type ovType = object::findType( it );
     if( ovType != object::unknown )
-      _dfunc()->drObjects.insert( ovType );
-    }
+      _dfunc()->visible.objects.insert( ovType );
+  }
 }
 
 bool Layer::_moveCamera(NEvent &event)
@@ -689,8 +691,16 @@ bool Layer::_moveCamera(NEvent &event)
   return true;
 }
 
-Layer::WalkerTypes& Layer::_visibleWalkers() { return _dfunc()->vwalkers; }
-bool Layer::_isVisibleObject(object::Type ovType) { return _dfunc()->drObjects.count( ovType ) > 0; }
+bool Layer::_isVisibleObject(object::Type ovType)
+{
+  auto& objects = _dfunc()->visible.objects;
+  if( objects.empty() )
+    return true;
+  else
+    return objects.count( ovType ) > 0;
+}
+
+Layer::WalkerTypes& Layer::_visibleWalkers() { return _dfunc()->visible.walkers; }
 int Layer::nextLayer() const{ return _dfunc()->nextLayer; }
 void Layer::destroy() {}
 Camera* Layer::_camera(){ return _dfunc()->camera;}

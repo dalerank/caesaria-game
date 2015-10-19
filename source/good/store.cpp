@@ -19,6 +19,7 @@
 #include "core/utils.hpp"
 #include "core/foreach.hpp"
 #include "productmap.hpp"
+#include "gfx/helper.hpp"
 #include "core/logger.hpp"
 #include "core/variant_list.hpp"
 #include "core/variant_map.hpp"
@@ -27,18 +28,14 @@
 namespace good
 {
 
-namespace {
-ConsumerDetails invalidConsumers;
-ProviderDetails invalidProviders;
-}
-
 enum { noId=0 };
 
 class Store::Impl
 {
 public:  
   bool devastation;
-
+  ConsumerDetails consumers;
+  ProviderDetails providers;
   Reservations storeReservations;  // key=reservationID, value=stock
   Reservations retrieveReservations;  // key=reservationID, value=stock
   Orders goodOrders;
@@ -49,6 +46,8 @@ Store::Store() : _d( new Impl )
   _d->devastation = false;
 }
 
+ConsumerDetails& Store::_consumers() { return _d->consumers; }
+ProviderDetails& Store::_providers() { return _d->providers; }
 
 int Store::getMaxRetrieve(const good::Product goodType)
 {
@@ -130,9 +129,9 @@ good::Stock Store::getRetrieveReservation(const int reservationID, const bool po
   return info.stock;
 }
 
-void Store::confirmDeliver(Product, int, unsigned int, const DateTime&)
+void Store::confirmDeliver(Product gtype, int qty, unsigned int tag, const DateTime& time)
 {
-  Logger::warning( "GoodStore::confirmDeliver not implemented");
+  _d->consumers.append( gtype, qty, tag, time );
 }
 
 void Store::applyStorageReservation(Storage &goodStore, const int reservationID)
@@ -192,6 +191,8 @@ void Store::retrieve(good::Stock &stock, int amount)
   }
 }
 
+TilePos Store::owner() const { return gfx::tilemap::invalidLocation(); }
+
 void Store::storeAll( Store& goodStore )
 {
   for( auto& goodType : good::all() )
@@ -244,8 +245,17 @@ void Store::load( const VariantMap& stream )
   }
 }
 
-const ConsumerDetails& Store::consumers() const { return invalidConsumers; }
-const ProviderDetails& Store::providers() const { return invalidProviders; }
+const ConsumerDetails& Store::consumers() const
+{
+  _d->consumers.owner = owner();
+  return _d->consumers;
+}
+
+const ProviderDetails& Store::providers() const
+{
+  _d->providers.owner = owner();
+  return _d->providers;
+}
 
 bool Store::isDevastation() const{  return _d->devastation;}
 void Store::setDevastation( bool value ){  _d->devastation = value;}

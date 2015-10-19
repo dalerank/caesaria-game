@@ -104,7 +104,7 @@ void CartPusher::_reachedPathway()
       {
         int storedQty = saveQty - _d->stock.qty();
         producerBuilding()->store().confirmDeliver( _d->stock.type(), storedQty,
-                                                    gfx::tile::hash( producerBuilding()->pos() ),
+                                                    gfx::tile::hash( consumerBuilding()->pos() ),
                                                     game::Date::current() );
       }
     }
