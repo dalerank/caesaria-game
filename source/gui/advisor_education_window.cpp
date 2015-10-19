@@ -28,7 +28,6 @@
 #include "objects/house.hpp"
 #include "dictionary.hpp"
 #include "texturedbutton.hpp"
-#include "core/foreach.hpp"
 #include "objects/house_spec.hpp"
 #include "objects/constants.hpp"
 #include "objects/service.hpp"
@@ -39,22 +38,29 @@
 using namespace gfx;
 using namespace city;
 
-struct SrvcInfo
+struct EducationInfo
 {
-  object::Type type;
   std::string building;
   std::string people;
   Service::Type service;
   int maxStudy;
   CitizenGroup::Age age;
+  int buildingCount;
+  int buildingWork;
+  int peoplesStuding;
+  int need;
+  int nextLevel;
+  int coverage;
+  int minAccessLevel;
 };
 
-static SrvcInfo services[] = {
-                               {object::school, "##schools##", "##children##", Service::school, 75, CitizenGroup::scholar},
-                               {object::academy, "##colleges##", "##students##", Service::academy, 100, CitizenGroup::student},
-                               {object::library, "##libraries##", "##peoples##", Service::library, 800, CitizenGroup::mature},
-                               {object::unknown, "", "", Service::srvCount, 0, CitizenGroup::longliver }
-                             };
+static std::map<object::Type, EducationInfo> enterInfos =
+  {
+    {object::school,  {"##schools##", "##children##", Service::school, 75, CitizenGroup::scholar} },
+    {object::academy, {"##colleges##", "##students##", Service::academy, 100, CitizenGroup::student} },
+    {object::library, {"##libraries##", "##peoples##", Service::library, 800, CitizenGroup::mature} },
+    {object::unknown, {"", "", Service::srvCount, 0, CitizenGroup::longliver} }
+  };
 
 enum { maxDescriptionNumber = 10, badAccessValue=30, middleCoverage=75,
        awesomeAccessValue=100, awesomeCoverage=100, fantasticCoverage=150 };
@@ -73,49 +79,32 @@ namespace gui
 namespace advisorwnd
 {
 
-namespace {
-  struct HealthcareInfo
-  {
-    int buildingCount;
-    int buildingWork;
-    int peoplesStuding;
-    int need;
-    int nextLevel;
-    int coverage;
-    int minAccessLevel;
-  };
-}
-
-static SrvcInfo findInfo( const object::Type service )
+static EducationInfo findInfo( const object::Type objs )
 {
-  for( int index=0; services[index].type != object::unknown; index++ )
-  {
-    if( service == services[index].type )
-        return services[index];
-  }
+  auto it = enterInfos.find( objs );
+  if( it != enterInfos.end() )
+    return it->second;
 
-  SrvcInfo ret;
-  ret.service = Service::srvCount;
-  return ret;
+  return enterInfos[ object::unknown ];
 }
 
 class EducationInfoLabel : public Label
 {
 public:
   EducationInfoLabel( Widget* parent, const Rect& rect, const object::Type service,
-                      const HealthcareInfo& info )
+                      const EducationInfo& info )
     : Label( parent, rect ), _service( service ), _info( info )
   {
     setFont( Font::create( FONT_1_WHITE ) );
   }
 
-  const HealthcareInfo& getInfo() const   {    return _info;  }
+  const EducationInfo& getInfo() const   {    return _info;  }
 
   virtual void _updateTexture( gfx::Engine& painter )
   {
     Label::_updateTexture( painter );
 
-    SrvcInfo info = findInfo( _service );
+    EducationInfo info = findInfo( _service );
 
     Picture& texture = _textPicture();
     Font rfont = font();
@@ -136,7 +125,7 @@ public:
 
 private:
   object::Type _service;
-  HealthcareInfo _info;
+  EducationInfo _info;
 };
 
 class Education::Impl
@@ -152,7 +141,7 @@ public:
 
 public:
   std::string getTrouble( PlayerCityPtr city );
-  HealthcareInfo getInfo( PlayerCityPtr city, const object::Type service );
+  EducationInfo getInfo( PlayerCityPtr city, const object::Type service );
   void initUI(Education* parent, PlayerCityPtr city);
   void updateCityInfo( PlayerCityPtr city );
 };
@@ -161,7 +150,7 @@ void Education::Impl::initUI( Education* parent, PlayerCityPtr city )
 {
   Point startPoint( 2, 2 );
   Size labelSize( 550, 20 );
-  HealthcareInfo info;
+  EducationInfo info;
   info = getInfo( city, object::school );
   lbSchoolInfo = new EducationInfoLabel( lbBlackframe, Rect( startPoint, labelSize ), object::school, info );
 
@@ -171,7 +160,7 @@ void Education::Impl::initUI( Education* parent, PlayerCityPtr city )
   info = getInfo( city, object::library );
   lbLibraryInfo = new EducationInfoLabel( lbBlackframe, Rect( startPoint + Point( 0, 40), labelSize), object::library, info );
 
-  TexturedButton* btnHelp = new TexturedButton( parent, Point( 12, parent->height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  auto btnHelp = new TexturedButton( parent, Point( 12, parent->height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
   CONNECT( btnHelp, onClicked(), parent, Education::_showHelp );
 }
 
@@ -179,16 +168,17 @@ void Education::Impl::updateCityInfo(PlayerCityPtr city)
 {
   int sumScholars = 0;
   int sumStudents = 0;
-  HouseList houses = statistic::getHouses( city );
-  foreach( house, houses )
+  auto houses = city->statistic().houses.find();
+  for( auto house : houses )
   {
-    sumScholars += (*house)->habitants().scholar_n();
-    sumStudents += (*house)->habitants().student_n();
+    sumScholars += house->habitants().scholar_n();
+    sumStudents += house->habitants().student_n();
   }
 
-  std::string cityInfoStr = utils::format( 0xff, "%d %s, %d %s, %d %s",
-                                                  city->states().population, _("##people##"),
-                                                  sumScholars, _("##scholars##"), sumStudents, _("##students##") );
+  std::string cityInfoStr = fmt::format( "{} {}, {} {}, {} {}",
+                                           city->states().population, _("##people##"),
+                                           sumScholars, _("##scholars##"),
+                                           sumStudents, _("##students##") );
   if( lbCityInfo ) { lbCityInfo->setText( cityInfoStr ); }
 
   std::string advice = getTrouble( city );
@@ -224,9 +214,9 @@ void Education::_showHelp()
   DictionaryWindow::show( this, "education_advisor" );
 }
 
-HealthcareInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Type bType)
+EducationInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Type bType)
 {
-  HealthcareInfo ret;
+  EducationInfo ret = findInfo( bType );
 
   ret.buildingWork = 0;
   ret.peoplesStuding = 0;
@@ -235,37 +225,30 @@ HealthcareInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Type b
   ret.nextLevel = 0;
   ret.coverage = 0;
 
-  ServiceBuildingList servBuildings = statistic::getObjects<ServiceBuilding>( city, bType );
+  ServiceBuildingList servBuildings = city->statistic().objects.find<ServiceBuilding>( bType );
 
   ret.buildingCount = servBuildings.size();
-  SrvcInfo info = findInfo( bType );
-  if( info.service == Service::srvCount )
+  if( ret.service == Service::srvCount )
   {
-    Logger::warning( "AdvisorEducationWindow: unknown building type %d", bType );
+    Logger::warning( "AdvisorEducationWindow: unknown building type {0}", bType );
   }
 
-  foreach( it, servBuildings )
+  for( auto serv : servBuildings )
   {
-    ServiceBuildingPtr serv = *it;
     if( serv->numberWorkers() > 0 )
     {
       ret.buildingWork++;
-      ret.peoplesStuding += info.maxStudy * serv->numberWorkers() / serv->maximumWorkers();
+      ret.peoplesStuding += ret.maxStudy * serv->numberWorkers() / serv->maximumWorkers();
     }
   }
 
-  HouseList houses = statistic::getHouses( city );
+  auto habitable = city->statistic().houses.habitable();
   int minAccessLevel = awesomeAccessValue;
-  foreach( it, houses )
+  for( auto house : habitable )
   {
-    HousePtr house = *it;
-    int habitantsCount = house->habitants().count();
-    if( habitantsCount > 0 )
-    {
-      ret.need += ( house->habitants().count( info.age ) * ( house->isEducationNeed( info.service ) ? 1 : 0 ) );
-      ret.nextLevel += (house->spec().next().evaluateEducationNeed( house, info.service ) == awesomeAccessValue ? 1 : 0);
-      minAccessLevel = std::min<int>( house->getServiceValue( info.service ), minAccessLevel );
-    }
+    ret.need += ( house->habitants().count( ret.age ) * ( house->isEducationNeed( ret.service ) ? 1 : 0 ) );
+    ret.nextLevel += (house->spec().next().evaluateEducationNeed( house, ret.service ) == awesomeAccessValue ? 1 : 0);
+    minAccessLevel = std::min<int>( house->getServiceValue( ret.service ), minAccessLevel );
   }
 
   ret.coverage = ret.need == 0
@@ -277,9 +260,9 @@ HealthcareInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Type b
 std::string Education::Impl::getTrouble(PlayerCityPtr city)
 {
   StringArray advices;
-  const HealthcareInfo& schInfo = lbSchoolInfo->getInfo();
-  const HealthcareInfo& clgInfo = lbCollegeInfo->getInfo();
-  const HealthcareInfo& lbrInfo = lbLibraryInfo->getInfo();
+  const EducationInfo& schInfo = lbSchoolInfo->getInfo();
+  const EducationInfo& clgInfo = lbCollegeInfo->getInfo();
+  const EducationInfo& lbrInfo = lbLibraryInfo->getInfo();
   if( schInfo.need == 0 && clgInfo.need == 0 && lbrInfo.need == 0 )
   {
     return "##not_need_education##";

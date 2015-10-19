@@ -19,6 +19,7 @@
 #include "core/utils.hpp"
 #include "core/foreach.hpp"
 #include "productmap.hpp"
+#include "gfx/helper.hpp"
 #include "core/logger.hpp"
 #include "core/variant_list.hpp"
 #include "core/variant_map.hpp"
@@ -33,7 +34,8 @@ class Store::Impl
 {
 public:  
   bool devastation;
-
+  ConsumerDetails consumers;
+  ProviderDetails providers;
   Reservations storeReservations;  // key=reservationID, value=stock
   Reservations retrieveReservations;  // key=reservationID, value=stock
   Orders goodOrders;
@@ -44,6 +46,8 @@ Store::Store() : _d( new Impl )
   _d->devastation = false;
 }
 
+ConsumerDetails& Store::_consumers() { return _d->consumers; }
+ProviderDetails& Store::_providers() { return _d->providers; }
 
 int Store::getMaxRetrieve(const good::Product goodType)
 {
@@ -51,10 +55,8 @@ int Store::getMaxRetrieve(const good::Product goodType)
   int rqty = qty(goodType);
 
   // remove all retrieval reservations
-  foreach( i, _d->retrieveReservations)
-  {
-    rqty -= i->stock.qty();
-  }
+  for( auto& reserve : _d->retrieveReservations)
+    rqty -= reserve.qty();
 
   return rqty;
 }
@@ -127,6 +129,10 @@ good::Stock Store::getRetrieveReservation(const int reservationID, const bool po
   return info.stock;
 }
 
+void Store::confirmDeliver(Product gtype, int qty, unsigned int tag, const DateTime& time)
+{
+  _d->consumers.append( gtype, qty, tag, time );
+}
 
 void Store::applyStorageReservation(Storage &goodStore, const int reservationID)
 {
@@ -145,19 +151,6 @@ void Store::applyRetrieveReservation(Storage &goodStore, const int reservationID
   applyRetrieveReservation(stock, reservationID);
 }
 
-ProductMap Store::filled() const
-{
-  ProductMap ret;
-  foreach( goodType, good::all() )
-  {
-    int q = qty( *goodType );
-    if( q > 0 )
-      ret[ *goodType ] = q;
-  }
-
-  return ret;
-}
-
 void Store::store( good::Stock& stock, const int amount)
 {
   good::Stock reservedStock;
@@ -173,9 +166,9 @@ void Store::store( good::Stock& stock, const int amount)
   }
   else
   {
-    Logger::warning( "GoodStore: store impossible to store %d of %s",
+    Logger::warning( "GoodStore: store impossible to store {} of {}",
                      stock.qty(),
-                     good::Helper::name( stock.type() ).c_str() );
+                     good::Helper::name( stock.type() ) );
   }
 }
 
@@ -192,19 +185,21 @@ void Store::retrieve(good::Stock &stock, int amount)
   }
   else
   {
-    Logger::warning( "GoodStore:Impossible to retrieve %d of %s",
-                     good::Helper::name( stock.type() ).c_str(),
+    Logger::warning( "GoodStore:Impossible to retrieve {} of {}",
+                     good::Helper::name( stock.type() ),
                      stock.qty() );
   }
 }
 
-void Store::storeAll( Store& goodStore)
+TilePos Store::owner() const { return gfx::tilemap::invalidLocation(); }
+
+void Store::storeAll( Store& goodStore )
 {
-  foreach( goodType, good::all() )
+  for( auto& goodType : good::all() )
   {
     // for all types of good (except G_NONE)
-    good::Stock stock( *goodType, 9999, 0 );
-    goodStore.retrieve( stock, goodStore.qty( *goodType ) );
+    good::Stock stock( goodType, 9999, 0 );
+    goodStore.retrieve( stock, goodStore.qty( goodType ) );
     if( !stock.empty() )
     {
       store(stock, stock.qty());
@@ -221,10 +216,9 @@ VariantMap Store::save() const
   VARIANT_SAVE_CLASS_D( stream, _d, retrieveReservations )
 
   VariantList vm_orders;
-  foreach( i, good::all() )
-  {
-    vm_orders.push_back( (int)getOrder( *i ) );
-  }
+  for( auto& goodType : good::all() )
+    vm_orders.push_back( (int)getOrder( goodType ) );
+
   stream[ "orders" ] = vm_orders;
 
   return stream;
@@ -244,17 +238,56 @@ void Store::load( const VariantMap& stream )
 
   VariantList vm_orders = stream.get( "orders" ).toList();
   int index = 0;
-  foreach( var, vm_orders )
+  for( auto& var : vm_orders )
   {
-    setOrder( (good::Product)index, (Orders::Order)var->toInt() );
+    setOrder( (good::Product)index, (Orders::Order)var.toInt() );
     index++;
   }
+}
+
+const ConsumerDetails& Store::consumers() const
+{
+  _d->consumers.owner = owner();
+  return _d->consumers;
+}
+
+const ProviderDetails& Store::providers() const
+{
+  _d->providers.owner = owner();
+  return _d->providers;
 }
 
 bool Store::isDevastation() const{  return _d->devastation;}
 void Store::setDevastation( bool value ){  _d->devastation = value;}
 
 Store::~Store() {}
+
+ProductMap Store::details() const
+{
+  ProductMap ret;
+  for( auto& goodType : good::all() )
+  {
+    int q = qty( goodType );
+    if( q > 0 )
+      ret[ goodType ] = q;
+  }
+
+  return ret;
+}
+
+ProductMap Store::amounts() const
+{
+  ProductMap ret;
+  for( auto& goodType : good::all() )
+  {
+    int cap = capacity( goodType );
+    if( cap > 0 )
+      ret[ goodType ] = cap;
+  }
+
+  return ret;
+}
+
 void Store::setOrder( const good::Product type, const Orders::Order order ){  _d->goodOrders.set( type, order );}
 Orders::Order Store::getOrder(const good::Product type ) const{  return _d->goodOrders.get( type );}
 
@@ -274,10 +307,10 @@ Reservations::Reservations(){  _idCounter = 1; }
 
 const ReserveInfo& Reservations::get(unsigned int id) const
 {
-  foreach( i, *this )
+  for( auto& info : *this )
   {
-    if( i->id == id )
-      return *i;
+    if( info.id == id )
+      return info;
   }
 
   return Reservations::invalid;
@@ -327,11 +360,11 @@ VariantMap Reservations::save() const
 
   stream[ "idCounter" ] = static_cast<int>(_idCounter);
   VariantList vm_reservations;
-  for( const_iterator i=begin(); i != end(); ++i )
+  for( auto& item : *this )
   {
-    vm_reservations.push_back( (int)i->id );
-    vm_reservations.push_back( i->stock.save() );
-    vm_reservations.push_back( i->time );
+    vm_reservations.push_back( (int)item.id );
+    vm_reservations.push_back( item.stock.save() );
+    vm_reservations.push_back( item.time );
   }
   stream[ "items" ] = vm_reservations;
 

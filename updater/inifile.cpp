@@ -38,7 +38,7 @@ IniFilePtr IniFile::Create()
 	return IniFilePtr(new IniFile);
 }
 
-IniFilePtr IniFile::ConstructFromFile(vfs::Path filename)
+IniFilePtr IniFile::fromFile(vfs::Path filename)
 {
 	// Start parsing
 	std::ifstream iniFile(filename.toString().c_str());

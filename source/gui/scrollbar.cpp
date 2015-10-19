@@ -56,8 +56,8 @@ ScrollBar::ScrollBar(  Widget* parent, const Rect& rectangle,
 	setNotClipped(noclip);
 
 	// this element can be tabbed to
-	setTabStop(true);
-	setTabOrder(-1);
+	setTabstop(true);
+	setTaborder(-1);
 
   setValue(0);
 }
@@ -152,7 +152,7 @@ bool ScrollBar::onEvent(const NEvent& event)
               _draggedBySlider = _d->sliderRect.isPointInside( _d->cursorPos - absoluteRect().lefttop() );
               _trayClick = !_draggedBySlider;
               _desiredPos = _getPosFromMousePos( _d->cursorPos );
-							_environment->setFocus ( this );
+              ui()->setFocus ( this );
 							return true;
 						}
 					}
@@ -460,7 +460,7 @@ PushButton* ScrollBar::_createButton( const Rect& rectangle,
 {
     PushButton* btn = new PushButton( this, rectangle );
     btn->setSubElement(true);
-    btn->setTabStop(false);
+    btn->setTabstop(false);
     btn->setAlignment(left, rigth, top, bottom );
 
     switch( type )

@@ -22,13 +22,11 @@
 #include "objects/house.hpp"
 #include "objects/house_spec.hpp"
 #include "gfx/tile.hpp"
-#include "city/helper.hpp"
 #include "good/helper.hpp"
 #include "core/utils.hpp"
 #include "game/gamedate.hpp"
 #include "world/empire.hpp"
 #include "game/funds.hpp"
-#include "core/foreach.hpp"
 #include "sentiment.hpp"
 #include "cityservice_peace.hpp"
 #include "core/variant_map.hpp"
@@ -57,10 +55,10 @@ VariantMap Info::History::save() const
 
   int step=0;
   std::string stepName;
-  foreach( i, *this )
+  for( auto& item : *this )
   {
     stepName = utils::format( 0xff, "%04d", step++ );
-    currentVm[ stepName ] = i->save();
+    currentVm[ stepName ] = item.save();
   }
 
   return currentVm;
@@ -68,10 +66,10 @@ VariantMap Info::History::save() const
 
 void Info::History::load(const VariantMap &vm)
 {
-  foreach( i, vm )
+  for( auto& item : vm )
   {
     push_back( Parameters() );
-    back().load( i->second.toList() );
+    back().load( item.second.toList() );
   }
 }
 
@@ -93,11 +91,11 @@ VariantMap Info::MaxParameters::save() const
 void Info::MaxParameters::load(const VariantMap &vm)
 {
   resize( paramsCount );
-  foreach( i, vm )
+  for( auto& item : vm )
   {
-    int index = utils::toInt( i->first );
-    DateTime date = i->second.toList().get( 0 ).toDateTime();
-    int value = i->second.toList().get( 1 ).toInt();
+    int index = utils::toInt( item.first );
+    DateTime date = item.second.toList().get( 0 ).toDateTime();
+    int value = item.second.toList().get( 1 ).toInt();
     (*this)[ index ].date = date;
     (*this)[ index ].value = value;
   }
@@ -138,62 +136,57 @@ void Info::timeStep(const unsigned int time )
     last[ population  ] = _city()->states().population;
     last[ funds       ] = _city()->treasury().money();
     last[ taxpayes    ] =  0;//_d->city->getLastMonthTaxpayer();
-    last[ foodStock   ] = statistic::getFoodStock( _city() );
-    last[ foodMontlyConsumption ] = statistic::getFoodMonthlyConsumption( _city() );
+    last[ foodStock   ] = _city()->statistic().food.inGranaries();
+    last[ foodMontlyConsumption ] = _city()->statistic().food.monthlyConsumption();
     last[ monthWithFood ] = last[ foodMontlyConsumption ] > 0 ? (last[ foodStock ] / last[ foodMontlyConsumption ]) : 0;
 
-    int foodProducing = statistic::getFoodProducing( _city() );
+    int foodProducing = _city()->statistic().food.possibleProducing();
     int yearlyFoodConsumption = last[ foodMontlyConsumption ] * DateTime::monthsInYear;
     last[ foodKoeff   ] = ( foodProducing - yearlyFoodConsumption > 0 )
                             ? foodProducing / (yearlyFoodConsumption+1)
                             : -(yearlyFoodConsumption / (foodProducing+1) );
 
-    statistic::WorkersInfo wInfo = statistic::getWorkersNumber( _city() );
+    Statistic::WorkersInfo wInfo = _city()->statistic().workers.details();
 
     last[ needWorkers ] = wInfo.need - wInfo.current;
     last[ maxWorkers  ] = wInfo.need;
-    last[ workless    ] = statistic::getWorklessPercent( _city() );
+    last[ workless    ] = _city()->statistic().workers.worklessPercent();
     last[ payDiff     ] = _city()->empire()->workerSalary() - _city()->treasury().workerSalary();
     last[ tax         ] = _city()->treasury().taxRate();
     last[ cityWages   ] = _city()->treasury().workerSalary();
     last[ romeWages   ] = _city()->empire()->workerSalary();
-    last[ crimeLevel  ] = statistic::getCrimeLevel( _city() );
+    last[ crimeLevel  ] = _city()->statistic().crime.level();
     last[ favour      ] = _city()->favour();
     last[ prosperity  ] = _city()->prosperity();
-    last[ monthWtWar  ] = statistic::months2lastAttack( _city() );
-    last[ blackHouses ] = statistic::blackHouses( _city() );
+    last[ monthWtWar  ] = _city()->statistic().military.months2lastAttack();
+    last[ blackHouses ] = _city()->statistic().houses.terribleNumber();
     last[ peace       ] = 0;
 
-    PeacePtr peaceSrvc = statistic::getService<Peace>( _city() );
+    PeacePtr peaceSrvc = _city()->statistic().services.find<Peace>();
     if( peaceSrvc.isValid() )
     {
       last[ peace ] = peaceSrvc->value();
     }
 
-    MilitaryPtr mil = statistic::getService<Military>( _city() );
+    MilitaryPtr mil = _city()->statistic().services.find<Military>();
     if( mil.isValid() )
     {
       last[ Info::milthreat ] = mil->threatValue();
     }
 
-    HouseList houses = city::statistic::getHouses( _city() );
+    auto habitable = _city()->statistic().houses.habitable();
 
     last[ houseNumber ] = 0;
     last[ shackNumber ] = 0;
-    foreach( it, houses )
+    for( auto house : habitable )
     {
-      HousePtr h = *it;
-
-      if( h->habitants().count() > 0 )
-      {
-        int hLvl = h->spec().level();
-        last[ slumNumber ] += ( hLvl == HouseLevel::hovel || hLvl == HouseLevel::tent ? 1 : 0);
-        last[ shackNumber ] += ( hLvl >= HouseLevel::shack || hLvl < HouseLevel::hut ? 1 : 0);
-        last[ houseNumber ]++;
-      }
+      HouseLevel::ID hLvl = house->level();
+      last[ slumNumber ] += ( hLvl == HouseLevel::hovel || hLvl == HouseLevel::tent ? 1 : 0);
+      last[ shackNumber ] += ( hLvl >= HouseLevel::shack || hLvl < HouseLevel::hut ? 1 : 0);
+      last[ houseNumber ]++;
     }
 
-    SentimentPtr sentimentSrvc = statistic::getService<Sentiment>( _city() );
+    SentimentPtr sentimentSrvc = _city()->statistic().services.find<Sentiment>();
 
     if( sentimentSrvc.isValid())
       last[ sentiment ] = sentimentSrvc->value();
@@ -265,16 +258,12 @@ void Info::load(const VariantMap& stream)
 
 Info::Parameters::Parameters()
 {
-  resize( paramsCount );
-
-  foreach( i, *this )
-    *i = 0;
+  resize( paramsCount, 0 );
 }
 
 Info::Parameters::Parameters(const Info::Parameters& other)
 {
   resize( paramsCount );
-
   for( unsigned int i=0; i < other.size(); i++ )
     (*this)[ i ] = other[ i ];
 }
@@ -293,9 +282,9 @@ VariantList Info::Parameters::save() const
 void Info::Parameters::load(const VariantList& stream)
 {
   int k=0;
-  foreach( it, stream )
+  for( auto& it : stream )
   {
-    (*this)[ k ] = *it;
+    (*this)[ k ] = it;
     k++;
   }
 }

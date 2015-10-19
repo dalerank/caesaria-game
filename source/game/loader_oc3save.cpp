@@ -83,7 +83,7 @@ bool OC3::load( const std::string& filename, Game& game )
     return true;
   }
 
-  Logger::warning( "!!! WARNING: GameLoaderOc3 unsupported version %d", fileVersion );
+  Logger::warning( "!!! WARNING: GameLoaderOc3 unsupported version {0}", fileVersion );
   return false;
 }
 

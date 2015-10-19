@@ -20,7 +20,6 @@
 #include "gfx/helper.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/time.hpp"
-#include "core/foreach.hpp"
 #include "objects/overlay.hpp"
 #include "walker/watergarbage.hpp"
 #include "game/gamedate.hpp"
@@ -50,17 +49,17 @@ void Shoreline::Impl::checkMap( PlayerCityPtr city )
 {
   const TilesArray& tiles = city->tilemap().allTiles();
 
-  foreach( it, tiles )
+  for( auto tile : tiles )
   {
-    int imgId = (*it)->originalImgId();
-    if( (imgId >= 372 && imgId <= 403) || (imgId>=414 && imgId<=418) || (*it)->getFlag( Tile::tlCoast ) )
+    int imgId = tile->imgId();
+    if( (imgId >= 372 && imgId <= 403) || (imgId>=414 && imgId<=418) || tile->getFlag( Tile::tlCoast ) )
     {
-      slTiles.push_back( *it );
+      slTiles.push_back( tile );
     }
 
-    if( (*it)->getFlag( Tile::tlDeepWater ) )
+    if( tile->getFlag( Tile::tlDeepWater ) )
     {
-      dwTiles.push_back( *it );
+      dwTiles.push_back( tile );
     }
   }
 }
@@ -114,13 +113,12 @@ void Shoreline::timeStep( const unsigned int time )
 
   std::string picName;
   picName.reserve( 256 );
-  foreach( it, _d->slTiles )
+  for( auto tile : _d->slTiles )
   {
-    Tile* tile = *it;
     if( tile->overlay().isValid() )
       continue;
 
-    int picId = tile->originalImgId();
+    ImgID picId = tile->imgId();
     if( tile->param( Tile::pDesirability ) > 10 )
     {
       switch( picId )

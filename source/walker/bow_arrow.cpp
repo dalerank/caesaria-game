@@ -38,10 +38,10 @@ BowArrowPtr BowArrow::create(PlayerCityPtr city)
 void BowArrow::_onTarget()
 {
   const WalkerList& walkers = _city()->walkers( dstPos() );
-  foreach( w, walkers )
+  for( auto wlk : walkers )
   {
-    (*w)->updateHealth( defaultAttackValue );
-    (*w)->acceptAction( Walker::acFight, startPos() );
+    wlk->updateHealth( defaultAttackValue );
+    wlk->acceptAction( Walker::acFight, startPos() );
   }
 }
 

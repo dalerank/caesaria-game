@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef _CAESARIA_DOCK_INCLUDE_H_
 #define _CAESARIA_DOCK_INCLUDE_H_
@@ -25,15 +25,16 @@ class Dock : public WorkingBuilding
 {
 public:
   Dock();
-  ~Dock();
+  virtual ~Dock();
 
   virtual bool canBuild(const city::AreaInfo& areaInfo) const;  // returns true if it can be built there
-  virtual bool build(const city::AreaInfo &info);
+  virtual bool build(const city::AreaInfo& info);
   virtual void destroy();
 
   virtual void timeStep(const unsigned long time);
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
+  virtual void reinit();
   virtual std::string workersProblemDesc() const;
 
   bool isBusy() const;
@@ -61,8 +62,7 @@ private:
   Dock( PlayerCityPtr city );
 
   class Impl;
-  ScopedPtr< Impl > _d;
-
+  ScopedPtr<Impl> _d;
 };
 
 #endif //_CAESARIA_DOCK_INCLUDE_H_

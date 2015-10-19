@@ -40,10 +40,17 @@ AboutColosseum::AboutColosseum(Widget *parent, PlayerCityPtr city, const Tile &t
 {
   setupUI( ":/gui/infoboxcolosseum.gui" );
 
-  ColosseumPtr coloseum = ptr_cast<Colosseum>(tile.overlay());
-  setBase( ptr_cast<Construction>( coloseum ) );
+  auto coloseum = tile.overlay<Colosseum>();
+
+  if( coloseum.isNull() )
+  {
+    deleteLater();
+    return;
+  }
+
+  setBase( coloseum );
   _setWorkingVisible( true );
-  setTitle( _( MetaDataHolder::findPrettyName( object::colloseum ) ) );
+  setTitle( _( coloseum->info().prettyName() ) );
 
   _updateWorkersLabel( Point( 40, 150), 542, coloseum->maximumWorkers(), coloseum->numberWorkers() );
   

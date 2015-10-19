@@ -34,7 +34,7 @@ public:
     virtual bool isALoadableFileFormat( vfs::NFile file ) const = 0;
 
     //! creates a surface from the file
-    virtual gfx::Picture load( vfs::NFile file ) const = 0;
+    virtual gfx::Picture load( vfs::NFile file, bool streaming ) const = 0;
 };
 
 class PictureLoader
@@ -42,7 +42,7 @@ class PictureLoader
 public:
     static PictureLoader& instance();
 
-    gfx::Picture load( vfs::NFile file );
+    gfx::Picture load(vfs::NFile file, bool streaming = false );
 
     ~PictureLoader(void);
 private:

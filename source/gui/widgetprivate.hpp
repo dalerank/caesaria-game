@@ -25,49 +25,49 @@ namespace gui
 {
 
 class Widget;
+class Ui;
 
 class Widget::Impl
 {
 public:
-	
-	//FontsMap overrideFonts;
-	//OpacityMap opacity;
-	//ColorMap overrideColors;
-	//ElementStyle* style;
 	std::set<Widget*> eventHandlers;
 
   //! maximum and minimum size of the element
-  Size maxSize, minSize;
+  struct
+  {
+    Size maximimum;
+    Size mininimum;
+  } size;
 
   //! Pointer to the parent
   Widget* parent;
 
 	//! List of all children of this element
-  List<Widget*> children;
+  Widget::Widgets children;
 
-	//! relative rect of element
-	Rect relativeRect;
+  struct {
+    //! relative rect of element
+    Rect relative;
 
-	//! absolute rect of element
-	Rect absoluteRect;
+    //! absolute rect of element
+    Rect absolute;
 
-	//! absolute clipping rect of element
-	Rect absoluteClippingRect;
+    //! absolute clipping rect of element
+    Rect clipping;
 
-	//! the rectangle the element would prefer to be,
-	//! if it was not constrained by parent or max/min size
-	Rect desiredRect;
+    //! the rectangle the element would prefer to be,
+    //! if it was not constrained by parent or max/min size
+    Rect desired;
 
-	//! for calculating the difference when resizing parent
-	Rect lastParentRect;
+    //! for calculating the difference when resizing parent
+    Rect lastParent;
 
-	//! relative scale of the element inside its parent
-	RectF scaleRect;
+    //! relative scale of the element inside its parent
+    RectF scale;
+  } rect;
+
 
 	Alignment textHorzAlign, textVertAlign;
-
-  //! is visible?
-  bool isVisible;
 
   std::string internalName;
 
@@ -76,19 +76,30 @@ public:
   std::string text;
 
   //! tells the element how to act when its parent is resized
-  Alignment alignLeft, alignRight, alignTop, alignBottom;
+  struct {
+    Alignment left,
+              right,
+              top,
+              bottom;
+  } align;
 
   //! id
   int id;
 
-  //! tab stop like in windows
-  bool isTabStop;
+  struct {
+    //! tab stop like in windows
+    bool tabStop;
 
-  //! is enabled?
-  bool isEnabled;
+    //! is visible?
+    bool visible;
 
-  //! is a part of a larger whole and should not be serialized?
-  bool isSubElement;
+    //! is enabled?
+    bool enabled;
+
+    //! is a part of a larger whole and should not be serialized?
+    bool internal;
+  } flag;
+
 
   //! does this element ignore its parent's clipping rectangle?
   bool noClip;
@@ -99,8 +110,11 @@ public:
   //! tab groups are containers like windows, use ctrl+tab to navigate
   bool isTabGroup;
 
-  //
+  //runtime properties
   VariantMap properties;
+
+  //! GUI Environment
+  Ui* environment;
 };
 
 }//end namespace gui

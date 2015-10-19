@@ -41,25 +41,7 @@ class Util
   static const std::size_t GbBts = 1024 * 1024 * 1024;
 public:
 	// Formats the given number in bytes/kB/MB/GB
-  static std::string getHumanReadableBytes(std::size_t size)
-  {
-    if (size > GbBts)
-    {
-      return utils::format( 0xff, "%0.2f GB", size / (float)GbBts );
-    }
-    else if (size > MbBts)
-    {
-      return  utils::format( 0xff, "%0.1f MB", size / (float)MbBts );
-    }
-    else if (size > KbBts)
-    {
-      return  utils::format( 0xff, "%0.0f kB", size / (float)KbBts );
-    }
-    else
-    {
-      return  utils::format( 0xff, "%d bytes", size);
-    }
-  }
+  static std::string getHumanReadableBytes(std::size_t size);
 
   static void Wait(int millisecs)
   {

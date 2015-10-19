@@ -44,7 +44,7 @@ bool Wall::build( const city::AreaInfo& info )
   Tile& terrain = tilemap.at( info.pos );
 
   // we can't build if already have wall here
-  WallPtr wall = ptr_cast<Wall>( terrain.overlay() );
+  WallPtr wall = terrain.overlay<Wall>();
   if( wall.isValid() )
   {
     return false;
@@ -52,9 +52,10 @@ bool Wall::build( const city::AreaInfo& info )
 
   Construction::build( info );
 
-  WallList walls = city::statistic::getObjects<Wall>( info.city, object::wall );
+  auto walls = info.city->statistic().objects.find<Wall>( object::wall );
 
-  foreach( wall, walls ) { (*wall)->updatePicture( info.city ); }
+  for( auto wall : walls )
+    wall->updatePicture( info.city );
 
   updatePicture( info.city );
 
@@ -69,15 +70,20 @@ void Wall::destroy()
   {
     TilesArea area( _city()->tilemap(), pos() - TilePos( 2, 2), Size( 5 ) );
 
-    foreach( tile, area )
+    for( auto tile : area )
     {
-      WallPtr wall = ptr_cast<Wall>( (*tile)->overlay() );
+      WallPtr wall = tile->overlay<Wall>();
       if( wall.isValid()  )
       {
         wall->updatePicture( _city() );
       }
     }
   }
+}
+
+void Wall::burn()
+{
+  Logger::warning( "WARNING: Wall cant be burn. Ignore." );
 }
 
 void Wall::initTerrain(Tile &terrain)
@@ -109,7 +115,7 @@ const Picture& Wall::picture(const city::AreaInfo& areaInfo) const
 
   int directionFlags = 0;  // bit field, N=1, E=2, S=4, W=8
 
-  const TilePos tile_pos = (areaInfo.aroundTiles.empty()) ? pos() : areaInfo.pos;
+  const TilePos tile_pos = (areaInfo.tiles().empty()) ? pos() : areaInfo.pos;
 
   if (!tmap.isInside(tile_pos))
   {
@@ -148,9 +154,9 @@ const Picture& Wall::picture(const city::AreaInfo& areaInfo) const
   overlay_d[direction::southEast] = tmap.at( tile_pos_d[direction::southEast]  ).overlay();
 
   // if we have a TMP array with wall, calculate them
-  if (!areaInfo.aroundTiles.empty())
+  if (!areaInfo.tiles().empty())
   {
-    foreach( it, areaInfo.aroundTiles )
+    foreach( it, areaInfo.tiles() )
     {
       if( (*it)->overlay().isNull()
           || (*it)->overlay()->type() != object::wall)
@@ -236,7 +242,7 @@ const Picture& Wall::picture(const city::AreaInfo& areaInfo) const
 
   default:
     index = 178; // it's impossible, but ...
-    Logger::warning( "Impossible direction on wall building [%d,%d]", areaInfo.pos.i(), areaInfo.pos.j() );
+    Logger::warning( "Impossible direction on wall building [{0},{1}]", areaInfo.pos.i(), areaInfo.pos.j() );
   }
 
   static Picture ret;
@@ -246,7 +252,7 @@ const Picture& Wall::picture(const city::AreaInfo& areaInfo) const
 
 void Wall::updatePicture(PlayerCityPtr city)
 {
-  city::AreaInfo areaInfo = { city, TilePos(), TilesArray() };
+  city::AreaInfo areaInfo( city, TilePos() );
   setPicture( picture( areaInfo ) );
 }
 

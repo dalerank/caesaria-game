@@ -24,10 +24,7 @@
 #include "core/logger.hpp"
 #include "core/stacktrace.hpp"
 #include "core/osystem.hpp"
-
-#ifdef CAESARIA_USE_STEAM
-  #include "steam.hpp"
-#endif
+#include "steam.hpp"
 
 #if defined(CAESARIA_PLATFORM_WIN)
   #undef main
@@ -36,10 +33,9 @@
 #if defined(CAESARIA_PLATFORM_ANDROID)
 #include <SDL.h>
 #include <SDL_system.h>
-int SDL_main(int argc, char* argv[])
-#else
-int main(int argc, char* argv[])
 #endif
+
+int main(int argc, char* argv[])
 {
   crashhandler::install();
 
@@ -56,44 +52,52 @@ int main(int argc, char* argv[])
   options.checkwdir( argv, argc );
   Logger::registerWriter( Logger::filelog, workdir.toString() );
 
-  Logger::warning( "Game: setting workdir to " + SETTINGS_VALUE( workDir ).toString()  );
+  SimpleLogger LOG("Game");
 
-  Logger::warning( "Game: load game settings" );
+  LOG.info("Setting workdir to " + SETTINGS_STR(workDir));
+
+  LOG.info("Loading game settings");
   options.load();
   options.checkCmdOptions( argv, argc );
   options.checkC3present();
 
-  std::string systemLang = SETTINGS_VALUE( language ).toString();
-#ifdef CAESARIA_USE_STEAM
-  if( !steamapi::connect() )
-    return EXIT_FAILURE;
+  std::string systemLang = SETTINGS_STR( language );
 
-  if( systemLang.empty() )
-    systemLang = steamapi::language();
-#endif
+  if( steamapi::available() )
+  {
+    if( !steamapi::connect() )
+    {
+      LOG.fatal("Failed to connect to steam");
+      return EXIT_FAILURE;
+    }
+
+    if( systemLang.empty() )
+      systemLang = steamapi::language();
+  }
 
   options.changeSystemLang( systemLang );
 
-  Logger::warning( "Game: setting language to " + SETTINGS_VALUE( language ).toString() );
-  Logger::warning( "Game: using native C3 resources from " + SETTINGS_VALUE( c3gfx ).toString() );
-  Logger::warning( "Game: set cell width %d", SETTINGS_VALUE( cellw ).toInt() );
+  LOG.info("Language set to " + SETTINGS_STR(language));
+  LOG.info("Using native C3 resources from " + SETTINGS_STR(c3gfx));
+  LOG.info("Cell width set to {0}", SETTINGS_VALUE(cellw).toInt());
 
   try
   {
     Game game;
     game.initialize();
     while( game.exec() );
+
+    game.destroy();
   }
   catch( Exception& e )
   {
-    Logger::warning( "Critical error: " + e.getDescription() );
+    LOG.fatal("Critical error: " + e.getDescription());
 
     crashhandler::printstack();
   }
 
-#ifdef CAESARIA_USE_STEAM
-  steamapi::close();
-#endif
+  if( steamapi::available() )
+    steamapi::close();
 
   crashhandler::remove();
 

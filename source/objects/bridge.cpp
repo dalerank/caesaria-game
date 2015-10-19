@@ -32,13 +32,13 @@ class IdxSet : public std::set<int>
 public:
   IdxSet& load( const VariantList& stream )
   {
-    foreach( it, stream )
+    for( auto& item : stream )
     {
-      switch( it->type() )
+      switch( item.type() )
       {
       case Variant::String:
         {
-          StringArray items = utils::split( it->toString(), "->" );
+          StringArray items = utils::split( item.toString(), "->" );
           int start = utils::toInt( items.valueOrEmpty( 0 ) );
           int stop = utils::toInt( items.valueOrEmpty( 1 ) );
           addRange( start, stop );
@@ -47,11 +47,11 @@ public:
 
       case Variant::Int:
       case Variant::UInt:
-        insert( it->toInt() );
+        insert( item.toInt() );
       break;
 
       default:
-        Logger::warning( "!!! WARNING: Cant parse IdxSet from type %s", it->type() );
+        Logger::warning( "!!! WARNING: Cant parse IdxSet from type {0}", item.type() );
       break;
       }
     }
@@ -61,7 +61,7 @@ public:
 
   void addRange( int start, int stop )
   {
-    for( int k=start; k < stop; k++ )
+    for( int k=start; k <= stop; k++ )
       insert( k );
   }
 };
@@ -97,7 +97,7 @@ BridgeConfig& BridgeConfig::find( object::Type type )
     }
     else
     {
-      Logger::warning( "!!! WARNING: Cant find bridge config for %d:%s", type, configName.c_str() );
+      Logger::warning( "!!! WARNING: Cant find bridge config for {0}:{1}", type, configName );
     }
   }
 

@@ -26,86 +26,135 @@
 #include "core/foreach.hpp"
 #include "core/variant_map.hpp"
 #include "core/logger.hpp"
+#include "infodb.hpp"
 #include "constants.hpp"
 #include "gfx/picture_info_bank.hpp"
 #include "core/variant_list.hpp"
 
 using namespace gfx;
 
-const char* MetaDataOptions::cost = "cost";
-const char* MetaDataOptions::requestDestroy = "requestDestroy";
-const char* MetaDataOptions::employers = "employers";
-const char* MetaDataOptions::c3logic = "c3logic";
-
-MetaData MetaData::invalid = MetaData( object::unknown, "unknown" );
-
-class BuildingClassHelper : public EnumsHelper<object::Group>
+namespace object
 {
-public:
-  BuildingClassHelper() : EnumsHelper<object::Group>( object::group::unknown )
+
+Info Info::invalid = Info( object::unknown, "unknown" );
+namespace { enum { idxRcFamily=0, idxRcNumber }; }
+
+struct AdvPictures : std::map< int, StringArray >
+{
+  void loadMain( const VariantMap& options )
   {
-    append( object::group::industry, "industry" );
-    append( object::group::obtain, "rawmaterial" );
-    append( object::group::food, "food" );
-    append( object::group::disaster, "disaster" );
-    append( object::group::religion, "religion" );
-    append( object::group::military, "military" );
-    append( object::group::native, "native" );
-    append( object::group::water, "water" );
-    append( object::group::administration, "administration" );
-    append( object::group::bridge, "bridge" );
-    append( object::group::engineering, "engineer" );
-    append( object::group::trade, "trade" );
-    append( object::group::tower, "tower" );
-    append( object::group::gate, "gate" );
-    append( object::group::security, "security" );
-    append( object::group::education, "education" );
-    append( object::group::health, "health" );
-    append( object::group::sight, "sight" );
-    append( object::group::garden, "garden" );
-    append( object::group::road, "road" );
-    append( object::group::entertainment, "entertainment" );
-    append( object::group::house, "house" );
-    append( object::group::wall, "wall" );
-    append( object::group::unknown, "" );
+    VariantList basePic = options.get( "image" ).toList();
+    if( !basePic.empty() )
+    {
+      std::string groupName = basePic.get( idxRcFamily ).toString();
+      int imageIndex = basePic.get( idxRcNumber ).toInt();
+      Variant vOffset = options.get( "image.offset" );
+      if( vOffset.isValid() )
+      {
+        PictureInfoBank::instance().setOffset( groupName, imageIndex, vOffset.toPoint() );
+      }
+
+      Picture pic( groupName, imageIndex );
+      if( pic.isValid() )
+        (*this)[ 0 ].push_back( pic.name() );
+    }
+  }
+
+  void loadExt( const VariantMap& options )
+  {
+    VariantMap extPics = options.get( "image.ext" ).toMap();
+    for( auto& config : extPics )
+    {
+      VariantMap info = config.second.toMap();
+      VARIANT_INIT_ANY( int, size, info )
+      VARIANT_INIT_ANY( int, start, info );
+      VARIANT_INIT_ANY( int, count, info );
+      VARIANT_INIT_STR( rc, info );
+
+      for( int i=0; i < count; i++ )
+      {
+        Picture pic( rc, start + i );
+        if( pic.isValid() )
+          (*this)[ size ].push_back( pic.name() );
+      }
+    }
   }
 };
 
-class MetaData::Impl
+struct AdvSound
+{
+  std::string rc;
+
+  void load( const VariantMap& options )
+  {
+    VariantList soundVl = options.get( "sound" ).toList();
+    if( !soundVl.empty() )
+    {
+      rc = utils::format( 0xff, "%s_%05d",
+                          soundVl.get( idxRcFamily ).toString().c_str(),
+                          soundVl.get( idxRcNumber ).toInt() );
+    }
+  }
+};
+
+class Info::Impl
 {
 public:
   Desirability desirability;
   object::Type tileovType;
   object::Group group;
   std::string name;  // debug name  (english, ex:"iron")
-  std::string sound;
+  AdvSound sound;
   StringArray desc;
   VariantMap options;
   std::string prettyName;
 
-  std::map< int, StringArray > pictures;
+  AdvPictures pictures;
 };
 
-MetaData::MetaData(const object::Type buildingType, const std::string& name )
+Info::Info(const object::Type buildingType, const std::string& name )
   : _d( new Impl )
 {
   _d->prettyName = "##" + name + "##";
   _d->tileovType = buildingType;
   _d->group = object::group::unknown;
-  _d->name = name;  
+  _d->name = name;
 }
 
-MetaData::MetaData(const MetaData &a) : _d( new Impl )
+void Info::initialize(const VariantMap& options )
+{
+  _d->options = options;
+  VariantMap desMap = options.get( "desirability" ).toMap();
+  _d->desirability.VARIANT_LOAD_ANY(base, desMap );
+  _d->desirability.VARIANT_LOAD_ANY(range, desMap);
+  _d->desirability.VARIANT_LOAD_ANY(step, desMap );
+
+  _d->desc = options.get( "desc" ).toStringArray();
+  _d->prettyName = options.get( "prettyName", Variant( _d->prettyName ) ).toString();
+
+  _d->group = InfoDB::findGroup( options.get( "class" ).toString() );
+
+  _d->pictures.loadMain( options );
+  _d->pictures.loadExt( options );
+  _d->sound.load( options );
+}
+
+Info::Info(const Info& a) : _d( new Impl )
 {
   *this = a;
 }
 
-MetaData::~MetaData(){}
-std::string MetaData::name() const{  return _d->name;}
-std::string MetaData::sound() const{  return _d->sound;}
-std::string MetaData::prettyName() const {  return _d->prettyName;}
+const Info& Info::find(Type type)
+{
+  return InfoDB::find( type );
+}
 
-std::string MetaData::description() const
+Info::~Info(){}
+std::string Info::name() const{  return _d->name;}
+std::string Info::sound() const{  return _d->sound.rc;}
+std::string Info::prettyName() const {  return _d->prettyName;}
+
+std::string Info::description() const
 {
   if( _d->desc.empty() )
     return "##" + _d->name + "_info##";
@@ -113,22 +162,43 @@ std::string MetaData::description() const
   return _d->desc[ rand() % _d->desc.size() ];
 }
 
-object::Type MetaData::type() const {  return _d->tileovType;}
-Desirability MetaData::desirability() const{  return _d->desirability;}
+object::Type Info::type() const {  return _d->tileovType;}
+Desirability Info::desirability() const{  return _d->desirability;}
 
-Picture MetaData::picture(int size) const
+Picture Info::randomPicture(const Size& size) const
 {
-  StringArray& array = _d->pictures[ size ];
-  return Picture( array.random() );
+  return randomPicture( size.width() );
 }
 
-Variant MetaData::getOption(const std::string &name, Variant defaultVal ) const
+Picture Info::randomPicture(int size) const
+{
+  return _d->pictures[ size ].random();
+}
+
+bool Info::isMyPicture(const std::string& name) const
+{
+  for( auto& pics : _d->pictures )
+  {
+    bool found = pics.second.contains( name );
+    if( found )
+      return true;
+  }
+
+  return false;
+}
+
+Variant Info::getOption(const std::string &name, Variant defaultVal ) const
 {
   VariantMap::iterator it = _d->options.find( name );
   return it != _d->options.end() ? it->second : defaultVal;
 }
 
-MetaData& MetaData::operator=(const MetaData &a)
+bool Info::getFlag(const std::string& name, bool defValue) const
+{
+  return getOption( name, defValue ).toBool();
+}
+
+Info& Info::operator=(const Info& a)
 {
   _d->tileovType = a._d->tileovType;
   _d->name = a._d->name;
@@ -143,206 +213,41 @@ MetaData& MetaData::operator=(const MetaData &a)
   return *this;
 }
 
-object::Group MetaData::group() const {  return _d->group; }
+void Info::reload() const { InfoDB::instance().reload( type() ); }
+object::Group Info::group() const {  return _d->group; }
 
-class MetaDataHolder::Impl
+class ObjectsMap : public std::map<object::Type, Info>
 {
 public:
-  BuildingClassHelper classHelper;
-
-  typedef std::map<object::Type, MetaData> ObjectsMap;
-  typedef std::map<good::Product, object::Type> FactoryInMap;
-
-  ObjectsMap objectsInfo;// key=building_type, value=data
-  FactoryInMap mapBuildingByInGood;
+  const Info& valueOrEmpty( object::Type type ) const
+  {
+    ObjectsMap::const_iterator mapIt = find( type );
+    if( mapIt == end() )
+    {
+      Logger::warning("MetaDataHolder::Unknown objects {0}", type );
+      return Info::invalid;
+    }
+    return mapIt->second;
+  }
 };
 
-MetaDataHolder& MetaDataHolder::instance()
+ProductConsumer::ProductConsumer(good::Product product)
+ : _product( product )
 {
-  static MetaDataHolder inst;
-  return inst;
+
 }
 
-object::Type MetaDataHolder::getConsumerType(const good::Product inGoodType) const
+TypeSet ProductConsumer::consumers() const
 {
-  object::Type res = object::unknown;
+  TypeSet ret;
+  ret.insert( InfoDB::instance().getConsumerType( _product ) );
 
-  Impl::FactoryInMap::iterator mapIt;
-  mapIt = _d->mapBuildingByInGood.find(inGoodType);
-  if (mapIt != _d->mapBuildingByInGood.end())
-  {
-    res = mapIt->second;
-  }
-  return res;
-}
-
-const MetaData& MetaDataHolder::getData(const object::Type buildingType)
-{
-  Impl::ObjectsMap::iterator mapIt;
-  mapIt = instance()._d->objectsInfo.find(buildingType);
-  if (mapIt == instance()._d->objectsInfo.end())
-  {
-    Logger::warning("MetaDataHolder::Unknown objects %d", buildingType );
-    return MetaData::invalid;
-  }
-  return mapIt->second;
-}
-
-bool MetaDataHolder::hasData(const object::Type buildingType) const
-{
-  bool res = true;
-  Impl::ObjectsMap::iterator mapIt;
-  mapIt = _d->objectsInfo.find(buildingType);
-  if (mapIt == _d->objectsInfo.end())
-  {
-    res = false;
-  }
-  return res;
-}
-
-MetaDataHolder::OverlayTypes MetaDataHolder::availableTypes() const
-{
-  OverlayTypes ret;
-  foreach( it, _d->objectsInfo ) { ret.push_back( it->first );  }
   return ret;
 }
 
-void MetaDataHolder::addData(const MetaData &data)
+Type ProductConsumer::consumer() const
 {
-  object::Type buildingType = data.type();
-
-  if (hasData(buildingType))
-  {
-    Logger::warning( "MetaDataHolder: Info is already set for " + data.name() );
-    return;
-  }
-
-  _d->objectsInfo.insert(std::make_pair(buildingType, data));
+  return InfoDB::instance().getConsumerType( _product );
 }
 
-
-MetaDataHolder::MetaDataHolder() : _d( new Impl )
-{
-}
-
-void MetaDataHolder::initialize( vfs::Path filename )
-{
-  // populate _mapBuildingByInGood
-  _d->mapBuildingByInGood[good::iron  ] = object::weapons_workshop;
-  _d->mapBuildingByInGood[good::timber] = object::furniture_workshop;
-  _d->mapBuildingByInGood[good::clay  ] = object::pottery_workshop;
-  _d->mapBuildingByInGood[good::olive ] = object::oil_workshop;
-  _d->mapBuildingByInGood[good::grape ] = object::wine_workshop;
-
-  VariantMap constructions = config::load( filename );
-
-  foreach( mapItem, constructions )
-  {
-    VariantMap options = mapItem->second.toMap();
-
-    const object::Type btype = object::toType( mapItem->first );
-    if( btype == object::unknown )
-    {
-      Logger::warning( "!!!Warning: can't associate type with %s", mapItem->first.c_str() );
-      continue;
-    }
-
-    Impl::ObjectsMap::const_iterator bdataIt = _d->objectsInfo.find( btype );
-    if( bdataIt != _d->objectsInfo.end() )
-    {
-      Logger::warning( "!!!Warning: type %s also initialized", mapItem->first.c_str() );
-      continue;
-    }
-
-    MetaData bData( btype, mapItem->first );
-
-    bData._d->options = options;
-    VariantMap desMap = options[ "desirability" ].toMap();
-    bData._d->desirability.VARIANT_LOAD_ANY(base, desMap );
-    bData._d->desirability.VARIANT_LOAD_ANY(range, desMap);
-    bData._d->desirability.VARIANT_LOAD_ANY(step, desMap );
-
-    bData._d->desc = options.get( "desc" ).toStringArray();
-    bData._d->prettyName = options.get( "prettyName", Variant( bData._d->prettyName ) ).toString();
-
-    bData._d->group = findGroup( options[ "class" ].toString() );
-
-    VariantList basePic = options[ "image" ].toList();
-    if( !basePic.empty() )
-    {
-      std::string groupName = basePic.get( 0 ).toString();
-      int imageIndex = basePic.get( 1 ).toInt();
-      Variant vOffset = options[ "image.offset" ];
-      if( vOffset.isValid() )
-      {
-        PictureInfoBank::instance().setOffset( groupName, imageIndex, vOffset.toPoint() );
-      }
-
-      Picture pic( groupName, imageIndex );
-      bData._d->pictures[ 0 ] << pic.name();
-    }
-
-    VariantMap extPics = options[ "image.ext" ].toMap();
-    foreach( it, extPics )
-    {
-      VariantMap info = it->second.toMap();
-      VARIANT_INIT_ANY( int, size, info )
-      VARIANT_INIT_ANY( int, start, info );
-      VARIANT_INIT_ANY( int, count, info );
-      VARIANT_INIT_STR( rc, info );
-      for( int i=0; i < count; i++ )
-      {
-        Picture pic( rc, start + i );
-        if( pic.isValid() )
-        {
-          bData._d->pictures[ size ] << pic.name();
-        }
-      }
-    }
-
-    VariantList soundVl = options[ "sound" ].toList();
-    if( !soundVl.empty() )
-    {
-      bData._d->sound = utils::format( 0xff, "%s_%05d",
-                                              soundVl.get( 0 ).toString().c_str(), soundVl.get( 1 ).toInt() );
-    }
-
-    addData( bData );
-  }
-}
-
-MetaDataHolder::~MetaDataHolder() {}
-
-object::Group MetaDataHolder::findGroup( const std::string& name )
-{
-  object::Group type = instance()._d->classHelper.findType( name );
-
-  if( type == instance()._d->classHelper.getInvalid() )
-  {
-    Logger::warning( "MetaDataHolder: can't find object class for className %s", name.c_str() );
-    return object::group::unknown;
-  }
-
-  return type;
-}
-
-std::string MetaDataHolder::findGroupname(object::Group group)
-{
-  return instance()._d->classHelper.findName( group );
-}
-
-std::string MetaDataHolder::findPrettyName(object::Type type)
-{
-  return instance().getData( type ).prettyName();
-}
-
-std::string MetaDataHolder::findDescription(object::Type type)
-{
-  return instance().getData( type ).description();
-}
-
-Picture MetaDataHolder::randomPicture(object::Type type, Size size)
-{
-  const MetaData& md = getData( type );
-  return md.picture( size.width() );
-}
+}//end namespace object

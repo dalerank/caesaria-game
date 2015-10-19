@@ -25,6 +25,7 @@
 #include "game/gamedate.hpp"
 #include "config.hpp"
 #include "city.hpp"
+#include "objects_factory.hpp"
 
 namespace world
 {
@@ -32,6 +33,8 @@ namespace world
 namespace {
 const int defaultSoldiersCount=16;
 }
+
+REGISTER_CLASS_IN_WORLDFACTORY(RomeChastenerArmy)
 
 class RomeChastenerArmy::Impl
 {

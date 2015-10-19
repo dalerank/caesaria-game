@@ -36,6 +36,7 @@ public:
   Point startPos;
   Point ratingStartPos;
   Point offset;
+  gui::Widget* extentMenu;
   Font font;
   gfx::Renderer* cityRenderer;
   Picture background;
@@ -47,10 +48,10 @@ public:
 
     background.fill( 0xffffffff, Rect( ratingStartPos.x(), ratingStartPos.y(), background.width()-2, background.height()-2 ) );
     font.draw( background, utils::format( 0xff, "%d %%", senate->status( Senate::workless ) ), ratingStartPos, false, false );
-    font.draw( background, utils::format( 0xff, "%d", senate->status( Senate::culture ) ), ratingStartPos + offset, false, false );
-    font.draw( background, utils::format( 0xff, "%d", senate->status( Senate::prosperity ) ), ratingStartPos + offset * 2, false, false );
-    font.draw( background, utils::format( 0xff, "%d", senate->status( Senate::peace ) ), ratingStartPos + offset * 3, false, false );
-    font.draw( background, utils::format( 0xff, "%d", senate->status( Senate::favour ) ), ratingStartPos + offset * 4, false, false );
+    font.draw( background, utils::i2str( senate->status( Senate::culture ) ), ratingStartPos + offset, false, false );
+    font.draw( background, utils::i2str( senate->status( Senate::prosperity ) ), ratingStartPos + offset * 2, false, false );
+    font.draw( background, utils::i2str( senate->status( Senate::peace ) ), ratingStartPos + offset * 3, false, false );
+    font.draw( background, utils::i2str( senate->status( Senate::favour ) ), ratingStartPos + offset * 4, false, false );
 
     background.update();
   }
@@ -62,6 +63,7 @@ SenatePopupInfo::SenatePopupInfo() : _d( new Impl )
   _d->ratingStartPos = Point( 186, 6 );
   _d->offset = Point( 0, 14 );
   _d->lastUpdateTime = 0;
+  _d->extentMenu = 0;
   _d->background = Picture( Size( 240, 80 ), 0, true );
 
   _d->background.fill( 0xff000000, Rect( Point( 0, 0 ), _d->background.size() ) );

@@ -28,10 +28,10 @@ public:
 
   religion::DivinityPtr divinity() const;
 
-  virtual unsigned int parishionerNumber() const;
+  virtual unsigned int currentVisitors() const;
   virtual void deliverService();
   virtual unsigned int walkerDistance() const;
-  virtual void initialize(const MetaData& mdata);
+  virtual void initialize(const object::Info& mdata);
 
 protected:
   Temple( religion::DivinityPtr divinity, object::Type type, int imgId, const Size& size );
@@ -54,14 +54,14 @@ class SmallTemple : public Temple
 {
 protected:
   SmallTemple( religion::DivinityPtr divinity, object::Type type, int imgId );
-  virtual unsigned int parishionerNumber() const;
+  virtual unsigned int currentVisitors() const;
 };
 
 class BigTemple : public Temple
 {
 protected:
   BigTemple( religion::DivinityPtr divinity, object::Type type, int imgId );
-  virtual unsigned int parishionerNumber() const;
+  virtual unsigned int currentVisitors() const;
 
   virtual bool build(const city::AreaInfo &info);
 };
@@ -73,7 +73,7 @@ public:
 
 protected:
   virtual void _updateBuffs();
-  virtual void initialize(const MetaData &mdata);
+  virtual void initialize(const object::Info& mdata);
 };
 
 class TempleNeptune : public SmallTemple
@@ -135,7 +135,7 @@ class TempleOracle : public BigTemple
 {
 public:
   TempleOracle();
-  virtual unsigned int parishionerNumber() const;
+  virtual unsigned int currentVisitors() const;
 
   virtual bool build(const city::AreaInfo &info);
 };

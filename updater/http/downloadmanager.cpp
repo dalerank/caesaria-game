@@ -25,7 +25,7 @@ DownloadManager::DownloadManager() :
 	_allDownloadsDone(true)
 {}
 
-int DownloadManager::AddDownload(const DownloadPtr& download)
+int DownloadManager::add(const DownloadPtr& download)
 {
 	int id = _nextAvailableId++;
 
@@ -53,7 +53,7 @@ bool DownloadManager::DownloadInProgress()
   return GetCurrentDownloadId() != -1;
 }
 
-bool DownloadManager::HasPendingDownloads()
+bool DownloadManager::hasPendingDownloads()
 {
 	for (Downloads::const_iterator i = _downloads.begin(); i != _downloads.end(); ++i)
 	{
@@ -67,7 +67,7 @@ bool DownloadManager::HasPendingDownloads()
 	return false;
 }
 
-void DownloadManager::RemoveDownload(int id)
+void DownloadManager::remove(int id)
 {
 	Downloads::iterator found = _downloads.find(id);
 
@@ -95,7 +95,7 @@ DownloadPtr DownloadManager::GetCurrentDownload()
 	return GetDownload(GetCurrentDownloadId());
 }
 
-void DownloadManager::ProcessDownloads()
+void DownloadManager::process()
 {
 	if (_allDownloadsDone || _downloads.empty()) 
 	{

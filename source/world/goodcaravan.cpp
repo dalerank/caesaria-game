@@ -60,7 +60,7 @@ void GoodCaravan::sendTo(ObjectPtr obj)
     }
     else
     {
-      Logger::warning( "GoodCaravan: cannot find way from %s to %s", _d->base->name().c_str(), obj->name().c_str() );
+      Logger::warning( "GoodCaravan: cannot find way from {0} to {1}", _d->base->name(), obj->name() );
     }
   }
   else
@@ -70,11 +70,7 @@ void GoodCaravan::sendTo(ObjectPtr obj)
   }
 }
 
-void GoodCaravan::sendTo(CityPtr obj)
-{
-  sendTo( ptr_cast<Object>( obj ) );
-}
-
+void GoodCaravan::sendTo(CityPtr obj) { sendTo( obj.as<Object>() ); }
 good::Store& GoodCaravan::store() { return _d->store; }
 std::string GoodCaravan::type() const { return CAESARIA_STR_EXT(GoodCaravan); }
 
@@ -126,4 +122,4 @@ GoodCaravan::GoodCaravan( CityPtr city )
   setPicture( gfx::Picture( ResourceGroup::panelBackground, 108 ) );
 }
 
-}
+}//end namespace world

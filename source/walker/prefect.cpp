@@ -39,6 +39,7 @@
 #include "walkers_factory.hpp"
 #include "gfx/helper.hpp"
 #include "events/fireworkers.hpp"
+#include "core/common.hpp"
 
 using namespace gfx;
 using namespace events;
@@ -60,7 +61,7 @@ public:
 };
 
 Prefect::Prefect(PlayerCityPtr city )
-: ServiceWalker( city, Service::prefect ), _d( new Impl )
+  : ServiceWalker( city, Service::prefect ), _d( new Impl )
 {
   _setType( walker::prefect );
   _d->water = 0;
@@ -70,43 +71,31 @@ Prefect::Prefect(PlayerCityPtr city )
   setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
-bool Prefect::_looks4Fire( ServiceWalker::ReachedBuildings& buildings, TilePos& p )
+bool Prefect::_looks4Fire( ReachedBuildings& buildings, TilePos& p )
 {
   buildings = getReachedBuildings( pos() );
 
-  foreach( it, buildings )
-  {
-    if( (*it)->type() == object::burning_ruins )
-    {
-      p = (*it)->pos();
-      return true;
-    }
-  }
+  BuildingPtr b = buildings.firstOf( object::burning_ruins );
+  if( b.isValid() )
+    p = b->pos();
 
-  return false;
+  return b.isValid();
 }
 
 WalkerPtr Prefect::_looks4Enemy( const int range )
 {
   TilePos offset( range, range );
-  WalkerList walkers = city::statistic::getWalkers<Walker>( _city(), walker::any, pos() - offset, pos() + offset );
+  WalkerList walkers = _city()->statistic().walkers.find<Walker>( walker::any,
+                                                                  pos() - offset, pos() + offset );
 
-  for( WalkerList::iterator it = walkers.begin(); it != walkers.end(); )
-  {
-    if( (*it)->agressive() <= 0 ) { it = walkers.erase( it ); }
-    else { ++it; }
-  }
-
-  WalkerPtr enemy = findNearestWalker( pos(), walkers );
-
-  return enemy;
+  walkers = utils::selectAgressive( walkers );
+  return utils::findNearest( pos(), walkers );
 }
 
 bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
 {
-  foreach( it, buildings )
+  for( auto building : buildings )
   {
-    BuildingPtr building = *it;
     if( building->type() != object::burning_ruins )
       continue;
 
@@ -120,9 +109,8 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
     }
   }
 
-  foreach( it, buildings )
+  for( auto building : buildings )
   {
-    BuildingPtr building = *it;
     if( building->type() != object::burning_ruins )
       continue;
 
@@ -142,16 +130,16 @@ bool Prefect::_checkPath2NearestFire( const ReachedBuildings& buildings )
 
 void Prefect::_back2Prefecture()
 {
-  PrefecturePtr base = ptr_cast<Prefecture>( _city()->getOverlay( baseLocation() ) );
+  auto prefecture = _map().overlay( baseLocation() ).as<Prefecture>();
 
-  if( base.isNull() )
+  if( prefecture.isNull() )
   {
     Logger::warning( "!!! WARNING: Prefect lost base " );
     deleteLater();
     return;
   }
 
-  TilesArray area = base->enterArea();
+  TilesArray area = prefecture->enterArea();
 
   if( area.contain( pos() ) )
   {
@@ -160,7 +148,7 @@ void Prefect::_back2Prefecture()
     return;
   }
 
-  Pathway pathway = PathwayHelper::create( pos(), base, PathwayHelper::roadFirst );
+  Pathway pathway = PathwayHelper::create( pos(), prefecture, PathwayHelper::roadFirst );
 
   if( pathway.isValid() )
   {
@@ -175,47 +163,52 @@ void Prefect::_back2Prefecture()
   }
 }
 
-void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
-{        
-  foreach( it, reachedBuildings )
+void Prefect::_serveHouse( HousePtr house )
+{
+  if( !house.isValid() )
+    return;
+
+  int healthLevel = house->state( pr::health );
+  if( healthLevel < 1 )
   {
-    if( (*it).isNull() ) continue;
-    if( (*it)->isDeleted() ) continue;
+    house->deleteLater();
 
-    (*it)->applyService( this );
+    _d->fumigateHouseNumber++;
+    house->removeHabitants( 1000 ); //all habitants will killed
 
-    HousePtr house = it->as<House>();
-    if( house.isNull() ) continue;
+    GameEventPtr e = Disaster::create( house->tile(), Disaster::plague );
+    e->dispatch();
 
-    int healthLevel = house->state( pr::health );
-    if( healthLevel < 1 )
+    if( _d->fumigateHouseNumber > 5 )
     {
-      (*it)->deleteLater();
-
-      _d->fumigateHouseNumber++;
-      house->removeHabitants( 1000 ); //all habitants will killed
-
-      GameEventPtr e = Disaster::create( house->tile(), Disaster::plague );
+      e = ShowInfobox::create( "##pestilence_event_title##", "##pestilent_event_text##",
+                               ShowInfobox::send2scribe, "sick" );
       e->dispatch();
+      _d->fumigateHouseNumber = -999;
+    }
 
-      if( _d->fumigateHouseNumber > 5 )
+    if( _city()->getOption( PlayerCity::destroyEpidemicHouses ) )
+    {
+      HouseList hlist = _city()->statistic().objects.neighbors<House>( house );
+      for( auto h : hlist )
       {
-        e = ShowInfobox::create( "##pestilence_event_title##", "##pestilent_event_text##",
-                                 ShowInfobox::send2scribe, "sick" );
+        GameEventPtr e = Disaster::create( h->tile(), Disaster::plague );
         e->dispatch();
-        _d->fumigateHouseNumber = -999;
-      }
-
-      if( _city()->getOption( PlayerCity::destroyEpidemicHouses ) )
-      {
-        HouseList hlist = city::statistic::getNeighbors<House>( _city(), house );
-        foreach( dIt, hlist )
-        {
-          GameEventPtr e = Disaster::create( (*dIt)->tile(), Disaster::plague );
-          e->dispatch();
-        }
       }
     }
+  }
+}
+
+void Prefect::_serveBuildings( ReachedBuildings& reachedBuildings )
+{        
+  for( auto bld : reachedBuildings )
+  {
+    if( bld.isNull() ) continue;
+    if( bld->isDeleted() ) continue;
+
+    bld->applyService( this );
+
+    _serveHouse( bld.as<House>() );
   }
 }
 
@@ -250,12 +243,13 @@ void Prefect::_setSubAction( const Prefect::SbAction action)
 
 bool Prefect::_figthFire()
 {
-  TilesArray tiles = _city()->tilemap().getNeighbors(pos(), Tilemap::AllNeighbors);
+  BuildingList buildings = _map().getNeighbors(pos(), Tilemap::AllNeighbors)
+                                 .overlays()
+                                 .select<Building>();
 
-  foreach( it, tiles )
+  for( auto building : buildings )
   {
-    BuildingPtr building = ptr_cast<Building>( (*it)->overlay() );
-    if( building.isValid() && building->type() == object::burning_ruins )
+    if( building->type() == object::burning_ruins )
     {
       turn( building->pos() );
       _setSubAction( fightFire );
@@ -284,7 +278,8 @@ bool Prefect::_findFire()
 
 void Prefect::_brokePathway(TilePos p)
 {
-  OverlayPtr overlay = _city()->getOverlay( p );
+  OverlayPtr overlay = _map().overlay( p );
+
   if( overlay.isValid() && overlay->type() == object::burning_ruins )
   {
     setSpeed( 0.f );
@@ -313,7 +308,7 @@ void Prefect::_brokePathway(TilePos p)
 void Prefect::_reachedPathway()
 {
   TilesArray area;
-  BuildingPtr base = _city()->getOverlay( baseLocation() ).as<Building>();
+  BuildingPtr base = _map().overlay( baseLocation() ).as<Building>();
   if( base.isValid() )
     area = base->enterArea();
 
@@ -383,9 +378,9 @@ void Prefect::_centerTile()
       //on next deliverService
 
       //found fire, no water, go prefecture
-      PrefecturePtr ptr = _city()->getOverlay( baseLocation() ).as<Prefecture>();
-      if( ptr.isValid() )
-        ptr->fireDetect( firePos );
+      auto prefecture = _city()->getOverlay( baseLocation() ).as<Prefecture>();
+      if( prefecture.isValid() )
+        prefecture->fireDetect( firePos );
 
       _back2Prefecture();
     }
@@ -448,6 +443,14 @@ void Prefect::_noWay()
   _back2Prefecture();
 }
 
+static BuildingPtr isBurningRuins( const Tile& tile, bool& inFire )
+{
+  BuildingPtr building = tile.overlay<Building>();
+  inFire = (building.isValid() && building->type() == object::burning_ruins );
+
+  return inFire ? building : BuildingPtr();
+}
+
 void Prefect::timeStep(const unsigned long time)
 {
   ServiceWalker::timeStep( time );
@@ -471,8 +474,11 @@ void Prefect::timeStep(const unsigned long time)
 
   case fightFire:
   {    
-    BuildingPtr building = _nextTile().overlay().as<Building>();
-    bool inFire = (building.isValid() && building->type() == object::burning_ruins );
+    bool inFire;
+    BuildingPtr building = isBurningRuins( _nextTile(), inFire );
+
+    if( !inFire )
+      building = isBurningRuins( tile(), inFire );
 
     if( inFire )
     {
@@ -566,7 +572,7 @@ void Prefect::send2City(PrefecturePtr prefecture, Prefect::SbAction action, int 
 
 void Prefect::send2City(BuildingPtr base, int orders)
 {
-  PrefecturePtr prefecture = ptr_cast<Prefecture>( base );
+  auto prefecture = base.as<Prefecture>();
 
   if( prefecture.isValid() )
   {
@@ -574,7 +580,7 @@ void Prefect::send2City(BuildingPtr base, int orders)
   }
   else
   {
-    Logger::warning( "WARNING !!!: Prefect try send from non prefecture building. Delete prefect.");
+    Logger::warning( "!!!Warning: Prefect try send from non prefecture building. Delete prefect.");
     deleteLater();
   }
 }
@@ -647,7 +653,7 @@ void Prefect::load( const VariantMap& stream )
   _setSubAction( _d->prefectAction );
   _setAction( _d->water > 0 ? acDragWater : acMove );
 
-  PrefecturePtr prefecture = _city()->getOverlay( baseLocation() ).as<Prefecture>();
+  auto prefecture = _map().overlay( baseLocation() ).as<Prefecture>();
   if( prefecture.isValid() )
   {
     prefecture->addWalker( this );

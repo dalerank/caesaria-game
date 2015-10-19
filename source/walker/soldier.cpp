@@ -17,8 +17,9 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "soldier.hpp"
-#include "city/helper.hpp"
+#include "city/statistic.hpp"
 #include "helper.hpp"
+#include "objects/construction.hpp"
 #include "core/variant_map.hpp"
 
 using namespace gfx;
@@ -90,8 +91,7 @@ void Soldier::initialize(const VariantMap &options)
 bool Soldier::_move2freePos( TilePos target )
 {
   const int defaultRange = 10;
-  city::Helper helper( _city() );
-  Pathway way2freeslot = helper.findFreeTile<Soldier>( target, pos(), defaultRange );
+  Pathway way2freeslot = _city()->statistic().walkers.freeTile<Soldier>( target, pos(), defaultRange );
   if( way2freeslot.isValid() )
   {
     _updatePathway( way2freeslot );
@@ -133,6 +133,7 @@ unsigned int Soldier::attackDistance() const{ return _dfunc()->attackDistance; }
 Soldier::SldrAction Soldier::_subAction() const { return _dfunc()->sldAction; }
 void Soldier::_setSubAction(Soldier::SldrAction action){ _dfunc()->sldAction = action; }
 void Soldier::setAttackDistance(unsigned int distance) { _dfunc()->attackDistance = distance; }
+int Soldier::experience() const { return 0; }
 void Soldier::addFriend(walker::Type friendType){  _dfunc()->friends.insert( friendType );}
 
 bool Soldier::isFriendTo(WalkerPtr wlk) const

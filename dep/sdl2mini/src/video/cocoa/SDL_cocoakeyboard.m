@@ -1,6 +1,6 @@
 /*
   Simple DirectMedia Layer
-  Copyright (C) 1997-2013 Sam Lantinga <slouken@libsdl.org>
+  Copyright (C) 1997-2015 Sam Lantinga <slouken@libsdl.org>
 
   This software is provided 'as-is', without any express or implied
   warranty.  In no event will the authors be held liable for any damages
@@ -18,7 +18,7 @@
      misrepresented as being the original software.
   3. This notice may not be removed or altered from any source distribution.
 */
-#include "SDL_config.h"
+#include "../../SDL_internal.h"
 
 #if SDL_VIDEO_DRIVER_COCOA
 
@@ -32,33 +32,7 @@
 /*#define DEBUG_IME NSLog */
 #define DEBUG_IME(...)
 
-#ifndef NX_DEVICERCTLKEYMASK
-    #define NX_DEVICELCTLKEYMASK    0x00000001
-#endif
-#ifndef NX_DEVICELSHIFTKEYMASK
-    #define NX_DEVICELSHIFTKEYMASK  0x00000002
-#endif
-#ifndef NX_DEVICERSHIFTKEYMASK
-    #define NX_DEVICERSHIFTKEYMASK  0x00000004
-#endif
-#ifndef NX_DEVICELCMDKEYMASK
-    #define NX_DEVICELCMDKEYMASK    0x00000008
-#endif
-#ifndef NX_DEVICERCMDKEYMASK
-    #define NX_DEVICERCMDKEYMASK    0x00000010
-#endif
-#ifndef NX_DEVICELALTKEYMASK
-    #define NX_DEVICELALTKEYMASK    0x00000020
-#endif
-#ifndef NX_DEVICERALTKEYMASK
-    #define NX_DEVICERALTKEYMASK    0x00000040
-#endif
-#ifndef NX_DEVICERCTLKEYMASK
-    #define NX_DEVICERCTLKEYMASK    0x00002000
-#endif
-
-@interface SDLTranslatorResponder : NSView <NSTextInput>
-{
+@interface SDLTranslatorResponder : NSView <NSTextInput> {
     NSString *_markedText;
     NSRange   _markedRange;
     NSRange   _selectedRange;
@@ -83,10 +57,11 @@
 
     /* Could be NSString or NSAttributedString, so we have
      * to test and convert it before return as SDL event */
-    if ([aString isKindOfClass: [NSAttributedString class]])
+    if ([aString isKindOfClass: [NSAttributedString class]]) {
         str = [[aString string] UTF8String];
-    else
+    } else {
         str = [aString UTF8String];
+    }
 
     SDL_SendKeyboardText(str);
 }
@@ -117,17 +92,16 @@
 - (void) setMarkedText:(id) aString
          selectedRange:(NSRange) selRange
 {
-    if ([aString isKindOfClass: [NSAttributedString class]])
+    if ([aString isKindOfClass: [NSAttributedString class]]) {
         aString = [aString string];
+    }
 
-    if ([aString length] == 0)
-    {
+    if ([aString length] == 0) {
         [self unmarkText];
         return;
     }
 
-    if (_markedText != aString)
-    {
+    if (_markedText != aString) {
         [_markedText release];
         _markedText = [aString retain];
     }
@@ -197,45 +171,6 @@
 }
 
 @end
-
-/* This is the original behavior, before support was added for
- * differentiating between left and right versions of the keys.
- */
-static void
-DoUnsidedModifiers(unsigned short scancode,
-                   unsigned int oldMods, unsigned int newMods)
-{
-    const int mapping[] = {
-        SDL_SCANCODE_CAPSLOCK,
-        SDL_SCANCODE_LSHIFT,
-        SDL_SCANCODE_LCTRL,
-        SDL_SCANCODE_LALT,
-        SDL_SCANCODE_LGUI
-    };
-    unsigned int i, bit;
-
-    /* Iterate through the bits, testing each against the current modifiers */
-    for (i = 0, bit = NSAlphaShiftKeyMask; bit <= NSCommandKeyMask; bit <<= 1, ++i) {
-        unsigned int oldMask, newMask;
-
-        oldMask = oldMods & bit;
-        newMask = newMods & bit;
-
-        if (oldMask && oldMask != newMask) {        /* modifier up event */
-            /* If this was Caps Lock, we need some additional voodoo to make SDL happy */
-            if (bit == NSAlphaShiftKeyMask) {
-                SDL_SendKeyboardKey(SDL_PRESSED, mapping[i]);
-            }
-            SDL_SendKeyboardKey(SDL_RELEASED, mapping[i]);
-        } else if (newMask && oldMask != newMask) { /* modifier down event */
-            SDL_SendKeyboardKey(SDL_PRESSED, mapping[i]);
-            /* If this was Caps Lock, we need some additional voodoo to make SDL happy */
-            if (bit == NSAlphaShiftKeyMask) {
-                SDL_SendKeyboardKey(SDL_RELEASED, mapping[i]);
-            }
-        }
-    }
-}
 
 /* This is a helper function for HandleModifierSide. This
  * function reverts back to behavior before the distinction between
@@ -458,15 +393,7 @@ HandleModifiers(_THIS, unsigned short scancode, unsigned int modifierFlags)
         return;
     }
 
-    /*
-     * Starting with Panther (10.3.0), the ability to distinguish between
-     * left side and right side modifiers is available.
-     */
-    if (data->osversion >= 0x1030) {
-        DoSidedModifiers(scancode, data->modifierFlags, modifierFlags);
-    } else {
-        DoUnsidedModifiers(scancode, data->modifierFlags, modifierFlags);
-    }
+    DoSidedModifiers(scancode, data->modifierFlags, modifierFlags);
     data->modifierFlags = modifierFlags;
 }
 
@@ -490,10 +417,11 @@ UpdateKeymap(SDL_VideoData *data)
 
     /* Try Unicode data first */
     CFDataRef uchrDataRef = TISGetInputSourceProperty(key_layout, kTISPropertyUnicodeKeyLayoutData);
-    if (uchrDataRef)
+    if (uchrDataRef) {
         chr_data = CFDataGetBytePtr(uchrDataRef);
-    else
+    } else {
         goto cleanup;
+    }
 
     if (chr_data) {
         UInt32 keyboard_type = LMGetKbdType();
@@ -517,8 +445,9 @@ UpdateKeymap(SDL_VideoData *data)
                                   0, keyboard_type,
                                   kUCKeyTranslateNoDeadKeysMask,
                                   &dead_key_state, 8, &len, s);
-            if (err != noErr)
+            if (err != noErr) {
                 continue;
+            }
 
             if (len > 0 && s[0] != 0x10) {
                 keymap[scancode] = s[0];
@@ -550,10 +479,16 @@ Cocoa_InitKeyboard(_THIS)
 
 void
 Cocoa_StartTextInput(_THIS)
+{ @autoreleasepool
 {
     SDL_VideoData *data = (SDL_VideoData *) _this->driverdata;
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    NSView *parentView = [[NSApp keyWindow] contentView];
+    SDL_Window *window = SDL_GetKeyboardFocus();
+    NSWindow *nswindow = nil;
+    if (window) {
+        nswindow = ((SDL_WindowData*)window->driverdata)->nswindow;
+    }
+
+    NSView *parentView = [nswindow contentView];
 
     /* We only keep one field editor per process, since only the front most
      * window can receive text input events, so it make no sense to keep more
@@ -565,30 +500,26 @@ Cocoa_StartTextInput(_THIS)
             [[SDLTranslatorResponder alloc] initWithFrame: NSMakeRect(0.0, 0.0, 0.0, 0.0)];
     }
 
-    if (![[data->fieldEdit superview] isEqual: parentView])
-    {
+    if (![[data->fieldEdit superview] isEqual: parentView]) {
         /* DEBUG_IME(@"add fieldEdit to window contentView"); */
         [data->fieldEdit removeFromSuperview];
         [parentView addSubview: data->fieldEdit];
-        [[NSApp keyWindow] makeFirstResponder: data->fieldEdit];
+        [nswindow makeFirstResponder: data->fieldEdit];
     }
-
-    [pool release];
-}
+}}
 
 void
 Cocoa_StopTextInput(_THIS)
+{ @autoreleasepool
 {
     SDL_VideoData *data = (SDL_VideoData *) _this->driverdata;
 
     if (data && data->fieldEdit) {
-        NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
         [data->fieldEdit removeFromSuperview];
         [data->fieldEdit release];
         data->fieldEdit = nil;
-        [pool release];
     }
-}
+}}
 
 void
 Cocoa_SetTextInputRect(_THIS, SDL_Rect *rect)
@@ -596,8 +527,8 @@ Cocoa_SetTextInputRect(_THIS, SDL_Rect *rect)
     SDL_VideoData *data = (SDL_VideoData *) _this->driverdata;
 
     if (!rect) {
-    SDL_InvalidParamError("rect");
-    return;
+        SDL_InvalidParamError("rect");
+        return;
     }
 
     [data->fieldEdit setInputRect: rect];
@@ -607,6 +538,10 @@ void
 Cocoa_HandleKeyEvent(_THIS, NSEvent *event)
 {
     SDL_VideoData *data = (SDL_VideoData *) _this->driverdata;
+    if (!data) {
+        return;  /* can happen when returning from fullscreen Space on shutdown */
+    }
+
     unsigned short scancode = [event keyCode];
     SDL_Scancode code;
 #if 0
@@ -617,10 +552,10 @@ Cocoa_HandleKeyEvent(_THIS, NSEvent *event)
         /* see comments in SDL_cocoakeys.h */
         scancode = 60 - scancode;
     }
+
     if (scancode < SDL_arraysize(darwin_scancode_table)) {
         code = darwin_scancode_table[scancode];
-    }
-    else {
+    } else {
         /* Hmm, does this ever happen?  If so, need to extend the keymap... */
         code = SDL_SCANCODE_UNKNOWN;
     }

@@ -24,7 +24,6 @@
 #include "walker/constants.hpp"
 #include "walker/helper.hpp"
 #include "gfx/picture.hpp"
-#include "city/helper.hpp"
 #include "core/gettext.hpp"
 #include "good/productmap.hpp"
 #include "events/playsound.hpp"
@@ -36,6 +35,7 @@
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
 #include "gfx/helper.hpp"
+#include "gfx/tilemap.hpp"
 #include "core/metric.hpp"
 #include "events/movecamera.hpp"
 
@@ -149,8 +149,8 @@ void AboutPeople::_setWalker( WalkerPtr wlk )
   if( !thinks.empty() )
   {
     std::string sound = thinks.substr( 2, thinks.size() - 4 );
-    events::GameEventPtr e = events::PlaySound::create( sound, 100 );
-    e->dispatch();
+    auto event = events::PlaySound::create( sound, 100 );
+    event->dispatch();
   }
 
   _updateTitle();
@@ -171,12 +171,12 @@ void AboutPeople::_updateNeighbors()
 
   _d->screenshots.clear();
 
-  gfx::TilesArray tiles = _d->city->tilemap().getNeighbors( _d->object->pos(), gfx::Tilemap::AllNeighbors);
+  auto tiles = _d->city->tilemap().getNeighbors( _d->object->pos(), gfx::Tilemap::AllNeighbors);
   Rect lbRect( 25, 45, 25 + 52, 45 + 52 );
   Point lbOffset( 60, 0 );
-  foreach( itTile, tiles )
+  for( auto tile : tiles )
   {
-    const WalkerList& tileWalkers = _d->city->walkers( (*itTile)->pos() );
+    auto& tileWalkers = _d->city->walkers( tile->pos() );
     if( !tileWalkers.empty() )
     {
       //mini screenshot from citizen pos need here
@@ -200,6 +200,7 @@ void AboutPeople::_init( PlayerCityPtr city, const TilePos& pos, const std::stri
 
   _d->lbName = new Label( this, Rect( 90, 108, width() - 30, 108 + 20) );
   _d->lbName->setFont( Font::create( FONT_2 ));
+
   _d->lbType = new Label( this, Rect( 90, 128, width() - 30, 128 + 20) );
   _d->lbType->setFont( Font::create( FONT_1 ));
 
@@ -238,15 +239,15 @@ void AboutPeople::_updateTitle()
     {
     case walker::merchant:
     {
-      MerchantPtr m = _d->object.as<Merchant>();
-      title = _("##trade_caravan_from##") + std::string(" ") + m->parentCity();
+      auto landMerchant = _d->object.as<Merchant>();
+      title = _("##trade_caravan_from##") + std::string(" ") + landMerchant->parentCity();
     }
     break;
 
     case walker::seaMerchant:
     {
-      SeaMerchantPtr m = _d->object.as<SeaMerchant>();
-      title = _("##trade_ship_from##") + std::string(" ") + m->parentCity();
+      auto seaMerchant = _d->object.as<SeaMerchant>();
+      title = _("##trade_ship_from##") + std::string(" ") + seaMerchant->parentCity();
     }
     break;
 
@@ -284,14 +285,14 @@ void AboutPeople::Impl::updateCurrentAction(const std::string& action, TilePos p
   OverlayPtr ov = city->getOverlay( pos );
   if( ov.isValid() )
   {
-    destBuildingName = MetaDataHolder::findPrettyName( ov->type() );
+    destBuildingName = ov->info().prettyName();
     if( btnMove2dst ) btnMove2dst->setVisible( !destBuildingName.empty() );
   }
 
   if( lbCurrentAction )
   {
     lbCurrentAction->setPrefixText( _("##wlk_state##") );
-    lbCurrentAction->setText( action + "(" + destBuildingName + ")" );
+    lbCurrentAction->setText( action + "(" + _(destBuildingName) + ")" );
   }
 }
 
@@ -303,7 +304,7 @@ void AboutPeople::Impl::updateBaseBuilding( TilePos pos )
 
   if( ov.isValid() )
   {
-    text = MetaDataHolder::findPrettyName( ov->type() );
+    text = ov->info().prettyName();
     if( lbBaseBuilding ) lbBaseBuilding->setText( text );    
   }
 
@@ -314,8 +315,8 @@ void AboutPeople::Impl::moveCamera2base()
 {
   if( baseBuildingPos != gfx::tilemap::invalidLocation() )
   {
-    events::GameEventPtr e = events::MoveCamera::create( baseBuildingPos );
-    e->dispatch();
+    auto event = events::MoveCamera::create( baseBuildingPos );
+    event->dispatch();
   }
 }
 
@@ -323,8 +324,8 @@ void AboutPeople::Impl::moveCamera2dst()
 {
   if( destinationPos != gfx::tilemap::invalidLocation() )
   {
-    events::GameEventPtr e = events::MoveCamera::create( destinationPos );
-    e->dispatch();
+    auto event = events::MoveCamera::create( destinationPos );
+    event->dispatch();
   }
 
   if( object.isValid() )

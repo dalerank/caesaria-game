@@ -20,8 +20,7 @@
 #include "httprequest.hpp"
 #include "vfs/path.hpp"
 #include "core/smartptr.hpp"
-#include "../updater/exceptionsafethread.hpp"
-
+#include "thread/safethread.hpp"
 
 namespace updater
 {
@@ -77,7 +76,7 @@ protected:
 	// The corresponding HTTP request
 	HttpRequestPtr _request;
 
-	ExceptionSafeThreadPtr _thread;
+  threading::SafeThreadPtr _thread;
 
 	bool _crcCheckEnabled;
 	bool _filesizeCheckEnabled;
@@ -110,16 +109,16 @@ public:
 	void Stop();
 
 	// Enable or disable CRC validation after download
-	void EnableCrcCheck(bool enable);
+  void enableCrcCheck(bool enable);
 
 	// Enable or disable the filesize check after download
-	void EnableFilesizeCheck(bool enable);
+  void enableFilesizeCheck(bool enable);
 
 	// Set the required CRC for this download
-	void SetRequiredCrc(unsigned int requiredCrc);
+  void setRequiredCrc(unsigned int requiredCrc);
 
 	// Set the required filesize for this download
-	void SetRequiredFilesize(std::size_t requiredSize);
+  void setRequiredFilesize(std::size_t requiredSize);
 	
 	// The current status of this download
 	DownloadStatus GetStatus();
@@ -144,7 +143,7 @@ public:
 
 protected:
 	// Thread entry point
-	void perform();
+  void perform(bool& continues);
 
 	// Check method
 	bool checkIntegrity();

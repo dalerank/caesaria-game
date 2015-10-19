@@ -40,7 +40,7 @@ private:
   GranaryPtr _granary;
 };
 
-}
+}//end namespace infobox
 
 }//end namespace gui
 #endif //_CAESARIA_INFOBOX_GRANARY_H_INCLUDE_

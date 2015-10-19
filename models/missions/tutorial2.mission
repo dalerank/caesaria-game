@@ -8,6 +8,9 @@
   climate : 0
   adviserEnabled : false
   fishPlaceEnabled : false
+  preview.text : "##tutorial2_preview_mission##"
+  preview.title : "##tutorial2_preview_title##"
+  preview.image : ""
 	
   win :
   {
@@ -138,6 +141,7 @@
       small_mars_temple : true
       small_neptune_temple : true
       small_mercury_temple : true
+      roadBlock : true
       market : true
       granery : true
       wheat_farm : true

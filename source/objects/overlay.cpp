@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "overlay.hpp"
-#include "objects/metadata.hpp"
+#include "objects/infodb.hpp"
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/variant_map.hpp"
@@ -29,7 +29,9 @@ using namespace gfx;
 namespace {
 static Renderer::PassQueue defaultPassQueue=Renderer::PassQueue(1,Renderer::overlayAnimation);
 static Pictures invalidPictures;
+static SimpleLogger LOG_OVERLAY(CAESARIA_STR_EXT(Overlay));
 }
+
 
 class Overlay::Impl
 {
@@ -63,23 +65,32 @@ Overlay::Overlay(const object::Type type, const Size& size)
 
 Desirability Overlay::desirability() const
 {
-  return MetaDataHolder::getData( type() ).desirability();
+  return info().desirability();
 }
+
+void Overlay::setState(Param, double) {}
 
 void Overlay::setType(const object::Type type)
 {
-  const MetaData& bd = MetaDataHolder::getData( type );
+  auto info = object::Info::find( type );
 
   _d->overlayType = type;
-  _d->overlayClass = bd.group();
-  _d->name = bd.name();
+  _d->overlayClass = info.group();
+  _d->name = info.name();
 }
-
-void Overlay::timeStep(const unsigned long) {}
 
 void Overlay::changeDirection( Tile* masterTile, Direction direction)
 {
   _d->masterTile = masterTile;
+}
+
+Tilemap& Overlay::_map() const
+{
+  if( _city().isValid() )
+    return _city()->tilemap();
+
+  Logger::warning( "!!! WARNING: City is null at Overlay::_map()" );
+  return gfx::tilemap::getInvalid();
 }
 
 void Overlay::setPicture(Picture picture)
@@ -99,7 +110,7 @@ bool Overlay::build(const city::AreaInfo &info)
     for (int di = 0; di < _d->size.width(); ++di)
     {
       Tile& tile = tilemap.at( info.pos + TilePos( di, dj ) );
-      tile.setMasterTile( _d->masterTile );
+      tile.setMaster( _d->masterTile );
 
       if( tile.overlay().isValid() && tile.overlay() != this )
       {
@@ -115,11 +126,14 @@ bool Overlay::build(const city::AreaInfo &info)
   return true;
 }
 
+bool Overlay::canDestroy() const { return true; }
+std::string Overlay::errorDesc() const { return ""; }
+
 Tile& Overlay::tile() const
 {
   if( !_d->masterTile )
   {
-    Logger::warning( "master tile must be exists" );
+    LOG_OVERLAY.warn( "Master tile can't be null. Problem in tile with type " + object::toString( type() ) );
     static Tile invalid( gfx::tilemap::invalidLocation() );
     return invalid;
   }
@@ -142,10 +156,8 @@ void Overlay::save( VariantMap& stream ) const
   VariantList config;
   config.push_back( _d->overlayType );
 
-  MetaDataHolder& md = MetaDataHolder::instance();
-  config.push_back( md.hasData( _d->overlayType )
-                      ? Variant( md.getData( _d->overlayType ).name() )
-                      : Variant( debugName() ) );
+  std::string name = info().name();
+  config.push_back( Variant( name.empty() ? debugName() : name ) );
 
   config.push_back( tile().pos() );
 
@@ -167,50 +179,39 @@ void Overlay::load( const VariantMap& stream )
   _d->picture.load( pictureName );
   if( !_d->picture.isValid() )
   {
-    Logger::warning( "TileOverlay: invalid picture for building [%d,%d] with name %s", pos().i(), pos().j(), pictureName.c_str() );
+    LOG_OVERLAY.warn( "Invalid picture for building {0}{1} with name {2}", pos().i(), pos().j(), pictureName);
   }
   _d->picture.setOffset( stream.get( "pictureOffset" ).toPoint() );
   VARIANT_LOAD_ANYDEF_D( _d, isDeleted, false, stream )
   tile().setHeight( stream.get( "height" ) );
 }
 
-void Overlay::initialize(const MetaData& mdata)
+void Overlay::initialize(const object::Info& mdata)
 {
   Size size = mdata.getOption( "size" );
   if( size.area() > 0 )
     setSize( size );
 
-  if( mdata.picture().isValid() )
+  if( mdata.randomPicture().isValid() )
   {
-    setPicture( mdata.picture() );  // default picture for build tool
+    setPicture( mdata.randomPicture() );  // default picture for build tool
   }
 }
 
+const object::Info& Overlay::info() const { return object::Info::find( type() ); }
+
+void Overlay::timeStep(const unsigned long) {}
+void Overlay::reinit() {}
+void Overlay::burn() {}
+void Overlay::collapse() {} //nothing to do, neck for virtual function
 bool Overlay::isWalkable() const{  return false;}
 bool Overlay::isDestructible() const { return true; }
 bool Overlay::isFlat() const { return false;}
 void Overlay::debugLoadOld(int oldFormat, const VariantMap& stream) {}
-
-TilePos Overlay::pos() const
-{
-  if( !_d->masterTile )
-  {
-    Logger::warning(  "master tile can't be null" );
-    return gfx::tilemap::invalidLocation();
-  }
-  return _d->masterTile->epos();
-}
-
-std::string Overlay::sound() const
-{
-  const MetaData& md = MetaDataHolder::instance().getData( type() );
-  return md.sound();
-}
-
 void Overlay::setName( const std::string& name ){ _d->name = name;}
 void Overlay::setSize( const Size& size ){  _d->size = size;}
 Point Overlay::offset( const Tile&, const Point& ) const{  return Point( 0, 0 );}
-Animation& Overlay::_animationRef(){  return _d->animation;}
+Animation& Overlay::_animation(){  return _d->animation;}
 Tile* Overlay::_masterTile(){  return _d->masterTile;}
 PlayerCityPtr Overlay::_city() const{ return _d->city;}
 gfx::Pictures& Overlay::_fgPictures(){  return _d->fgPictures; }
@@ -230,15 +231,35 @@ Renderer::PassQueue Overlay::passQueue() const{ return defaultPassQueue;}
 std::string Overlay::name(){  return _d->name;}
 object::Type Overlay::type() const{ return _d->overlayType;}
 
+TilePos Overlay::pos() const
+{
+  if( !_d->masterTile )
+  {
+    LOG_OVERLAY.warn( "Master tile can't be null. Problem in tile with type " + object::toString( type() ) );
+    return gfx::tilemap::invalidLocation();
+  }
+  return _d->masterTile->epos();
+}
+
+const Picture& Overlay::picture(const city::AreaInfo& areaInfo) const
+{
+  return picture();
+}
+
+std::string Overlay::sound() const
+{
+  return info().sound();
+}
+
 TilesArray Overlay::area() const
 {
   if( _city().isNull() )
   {
-    Logger::warning( "WARNING !!!: Helper::getArea city is null" );
+    LOG_OVERLAY.error( "In Overlay::area() city is null. Tile type is " +object::toString( type() ) );
     return gfx::TilesArray();
   }
 
-  return _city()->tilemap().getArea( pos(), size() );
+  return _city()->tilemap().area( pos(), size() );
 }
 
 Overlay::~Overlay()
@@ -254,13 +275,13 @@ void OverlayDebugQueue::print()
   OverlayDebugQueue& inst = (OverlayDebugQueue&)instance();
   if( !inst._pointers.empty() )
   {
-    Logger::warning( "PRINT OVERLAY DEBUG QUEUE" );
+    LOG_OVERLAY.debug( "PRINT OVERLAY DEBUG QUEUE" );
     foreach( it, inst._pointers )
     {
       Overlay* ov = (Overlay*)*it;
-      Logger::warning( "%s - %s [%d,%d] ref:%d", ov->name().c_str(),
-                                          object::toString( ov->type() ).c_str(),
-                                          ov->pos().i(), ov->pos().j(), ov->rcount() );
+      LOG_OVERLAY.debug( "{} - {} [{},{}] ref:{}", ov->name(),
+                         object::toString( ov->type() ),
+                         ov->pos().i(), ov->pos().j(), ov->rcount() );
     }
   }
 }

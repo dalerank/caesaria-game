@@ -29,7 +29,8 @@ public:
   virtual void render(gfx::Engine &engine);
   virtual void beforeRender(gfx::Engine &engine);
   virtual void afterRender(gfx::Engine &engine);
-  virtual void drawColumn( gfx::Engine& engine, const Point& pos, const int percent );
+
+  virtual void drawColumn(const RenderInfo& rinfo, const Point& pos, const int percent );
 
   virtual ~Info();
 

@@ -196,6 +196,7 @@ APPEND_NAMEDTYPE_ID(water,                95)
 APPEND_NAMEDTYPE_ID(meadow,               96)
 APPEND_NAMEDTYPE_ID(roadBlock,            97)
 APPEND_NAMEDTYPE_ID(farmtile,             98)
+APPEND_NAMEDTYPE_ID(coast,                99)
 
 APPEND_NAMEDTYPE(userType)
 
@@ -205,8 +206,15 @@ END_NAMEDTYPE(Type)
 typedef std::set<Group> GroupSet;
 typedef std::vector<Group> Groups;
 typedef std::vector<Type> Types;
-typedef std::set<Type> TypeSet;
 std::string toString( const Type& t);
+
+class TypeSet : public std::set<Type>
+{
+public:
+  VariantList save() const;
+  void load( const VariantList& stream );
+};
+
 Type toType( const std::string& name);
 
 class Helper : public EnumsHelper<Type>

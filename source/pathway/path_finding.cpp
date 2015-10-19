@@ -181,19 +181,18 @@ DirectPRoutes Propagator::getRoutes(const object::Type buildingType)
 {
   DirectPRoutes ret;
   // init the building list
-  ConstructionList constructionList = city::statistic::getObjects<Construction>( _d->city, buildingType );
+  ConstructionList constructionList = _d->city->statistic().objects.find<Construction>( buildingType );
 
   // for each destination building
-  foreach( it, constructionList )
+  for( auto destination : constructionList )
   {
-    ConstructionPtr destination = *it;
     std::set<PathwayPtr> destPath;  // paths to the current building, ordered by distance
 
-    TilesArray destTiles = destination->roadside();
-    foreach( tile, destTiles )
+    const TilesArray& destTiles = destination->roadside();
+    for( auto& tile : destTiles )
     {
       // searches path to that given tile
-      Impl::RouteMap::iterator pathWayIt= _d->completedBranches.find( *tile );
+      Impl::RouteMap::iterator pathWayIt= _d->completedBranches.find( tile );
 
       if( pathWayIt != _d->completedBranches.end() )
       {

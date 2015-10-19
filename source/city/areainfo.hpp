@@ -13,22 +13,33 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2013 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_CITYAREAINFO_H_INCLUDED__
 #define __CAESARIA_CITYAREAINFO_H_INCLUDED__
 
 #include "predefinitions.hpp"
 #include "gfx/predefinitions.hpp"
+#include "core/position.hpp"
 
 namespace city
 {
 
-struct AreaInfo
+class AreaInfo
 {
+public:
   PlayerCityPtr city;
   TilePos pos;
-  const gfx::TilesArray& aroundTiles;
+
+  const gfx::TilesArray& tiles() const;
+  const gfx::Tile& tile() const;
+
+  AreaInfo(PlayerCityPtr rcity,
+           const TilePos& rpos,
+           const gfx::TilesArray* tiles = 0);
+
+private:
+  const gfx::TilesArray* _tiles;
 };
 
 }//end namespace city

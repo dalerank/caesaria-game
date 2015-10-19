@@ -81,7 +81,7 @@ void Info::_initialize()
   }
 }
 
-void Info::drawColumn( Engine& engine, const Point& pos, const int percent)
+void Info::drawColumn( const RenderInfo& rinfo, const Point& pos, const int percent)
 {
   // Column made of tree base parts and contains maximum 10 parts.
   // Header (10)
@@ -108,16 +108,16 @@ void Info::drawColumn( Engine& engine, const Point& pos, const int percent)
     return;
   }
 
-  engine.draw( _d->columnPic.foot, pos + Point( 10, -21 ) );
+  rinfo.engine.draw( _d->columnPic.foot, pos + Point( 10, -21 ) );
 
   if(rounded > 10)
   {
     for( int offsetY=7; offsetY < rounded; offsetY += 10 )
     {
-      engine.draw( _d->columnPic.body, pos - Point( -18, 8 + offsetY ) );
+      rinfo.engine.draw( _d->columnPic.body, pos - Point( -18, 8 + offsetY ) );
     }
 
-    engine.draw(_d->columnPic.header, pos - Point(-7, 25 + rounded));
+    rinfo.engine.draw(_d->columnPic.header, pos - Point(-7, 25 + rounded));
   }
 }
 
@@ -132,9 +132,9 @@ void Info::afterRender(Engine& engine)
 {
   Point camOffset = _camera()->offset();
 
-  foreach( it, _d->pictures )
+  for( auto& pic : _d->pictures )
   {
-    engine.draw( it->pic, camOffset + it->pos );
+    engine.draw( pic.pic, camOffset + pic.pos );
   }
 
   Layer::afterRender( engine );

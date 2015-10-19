@@ -4,6 +4,7 @@
 #include "game/gamedate.hpp"
 #include "core/utils.hpp"
 #include "core/gettext.hpp"
+#include "core/format.hpp"
 #include "game/roman_celebrates.hpp"
 
 namespace gui
@@ -53,9 +54,9 @@ void ExtentedDateInfo::_update()
   std::string monthStr = romDatePrefix + RomanDate::monthName( date.month()-1 ) + romDatePostfix;
   std::string dayDescription = game::Celebrates::instance().getDescription( date.day(), date.month() );
 
-  std::string text = utils::format( 0xff, "%s %s %d\n %s",
+  std::string text = fmt::format( "{0} {1} {2}\n {3}",
                                     _(dayStr), _(monthStr), date.year(),
-                                    dayDescription.c_str() );
+                                    dayDescription );
   setText( text );
 }
 

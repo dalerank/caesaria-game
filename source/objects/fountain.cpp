@@ -22,6 +22,7 @@
 #include "core/position.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/safetycast.hpp"
+#include "watersupply.hpp"
 #include "objects/road.hpp"
 #include "gfx/tile.hpp"
 #include "walker/serviceman.hpp"
@@ -78,12 +79,13 @@ void Fountain::deliverService()
   if( !_d->haveReservoirWater )
     return;
 
-  ServiceWalkerPtr walker = ServiceWalker::create( _city(), serviceType() );
-  walker->setBase( BuildingPtr( this ) );
-  walker->setReachDistance( 4 );
-  ServiceWalker::ReachedBuildings reachedBuildings = walker->getReachedBuildings( tile().pos() );
+  auto serviceMan = ServiceWalker::create( _city(), serviceType() );
+  serviceMan->setBase( BuildingPtr( this ) );
+  serviceMan->setReachDistance( 4 );
+  ReachedBuildings reachedBuildings = serviceMan->getReachedBuildings( tile().pos() );
 
-  foreach( b, reachedBuildings ) { (*b)->applyService( walker ); }
+  for( auto b : reachedBuildings )
+    b->applyService( serviceMan );
 }
 
 void Fountain::timeStep(const unsigned long time)
@@ -107,7 +109,7 @@ void Fountain::timeStep(const unsigned long time)
 
     if( needWorkers() > 0 )
     {
-      RecruterPtr recruter = Recruter::create( _city() );
+      auto recruter = Recruter::create( _city() );
       recruter->once( this, needWorkers(), _d->fillDistance * 2);
     }
   }  
@@ -154,27 +156,17 @@ bool Fountain::isNeedRoad() const { return false; }
 
 bool Fountain::haveReservoirAccess() const
 {
-  TilesArea reachedTiles( _city()->tilemap(), pos(), 10 );
-  foreach( tile, reachedTiles )
-  {
-    OverlayPtr overlay = (*tile)->overlay();
-    if( overlay.isValid() && (object::reservoir == overlay->type()) )
-    {
-      return true;
-    }
-  }
-
-  return false;
+  return TilesArea( _city()->tilemap(), 10, pos() ).overlays().count<Reservoir>() > 0;
 }
 
 void Fountain::destroy()
 {
   ServiceBuilding::destroy();
 
-  TilesArea reachedTiles( _city()->tilemap(), pos(), _d->fillDistance );
+  TilesArea reachedTiles( _city()->tilemap(), _d->fillDistance, pos() );
 
-  foreach( tile, reachedTiles )
-    { (*tile)->setParam( Tile::pFountainWater, 0 ); }
+  for( auto tile : reachedTiles )
+    tile->setParam( Tile::pFountainWater, 0 );
 
   if( numberWorkers() > 0 )
   {
@@ -193,7 +185,7 @@ void Fountain::load(const VariantMap& stream)
 
   VARIANT_LOAD_ANYDEF_D( _d, lastPicId, simpleFountain, stream )
   VARIANT_LOAD_ANY_D( _d, haveReservoirWater, stream );
-  _picture().load( ResourceGroup::utilitya, _d->lastPicId );
+  setPicture( ResourceGroup::utilitya, _d->lastPicId );
   _initAnimation();
   //check animation
   timeStep( 1 );
@@ -208,11 +200,11 @@ void Fountain::save(VariantMap& stream) const
 
 void Fountain::_initAnimation()
 {
-  _animationRef().clear();
-  _animationRef().load( ResourceGroup::utilitya, _d->lastPicId+1, fontainSizeAnim );
-  _animationRef().setDelay( 2 );
+  _animation().clear();
+  _animation().load( ResourceGroup::utilitya, _d->lastPicId+1, fontainSizeAnim );
+  _animation().setDelay( 2 );
   _fgPicture( 0 ) = Picture::getInvalid();
-  _animationRef().stop();
+  _animation().stop();
 }
 
 void Fountain::_dayUpdate()
@@ -221,12 +213,12 @@ void Fountain::_dayUpdate()
 
   if( mayWork() )
   {
-    TilesArea reachedTiles( _city()->tilemap(), pos(), _d->fillDistance );
+    TilesArea reachedTiles( _city()->tilemap(), _d->fillDistance, pos() );
 
-    foreach( tile, reachedTiles )
+    for( auto tile : reachedTiles )
     {
-      int value = (*tile)->param( Tile::pFountainWater );
-      (*tile)->setParam( Tile::pFountainWater, math::clamp( value+1, 0, 20 ) );
+      int value = tile->param( Tile::pFountainWater );
+      tile->setParam( Tile::pFountainWater, math::clamp( value+1, 0, 20 ) );
     }
   }
   else

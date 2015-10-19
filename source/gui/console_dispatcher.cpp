@@ -50,7 +50,7 @@ void CommandDispatcher::Dispatch(const std::string& cmdName, const StringArray& 
 		try
 		{
 			node->second->invoke( args, this, pOutput);
-			pOutput->AppendMessage( std::string() );
+			pOutput->appendMessage( std::string() );
 		}
         catch( ConsoleError& err)
 		{
@@ -60,7 +60,7 @@ void CommandDispatcher::Dispatch(const std::string& cmdName, const StringArray& 
 			wstr += cmdName;
 			wstr += "]";
 			pOutput->LogError(wstr);
-			pOutput->AppendMessage( err.getMessage() );
+			pOutput->appendMessage( err.getMessage() );
 		}
 		catch( std::exception& ex )
 		{
@@ -68,7 +68,7 @@ void CommandDispatcher::Dispatch(const std::string& cmdName, const StringArray& 
 			wstr += cmdName;
 			wstr += "]";
 			pOutput->LogError<std::string>(wstr);
-			pOutput->AppendMessage( ex.what() );
+			pOutput->appendMessage( ex.what() );
 		}
 	}
 	else
@@ -77,7 +77,7 @@ void CommandDispatcher::Dispatch(const std::string& cmdName, const StringArray& 
 		wstr += cmdName;
 		wstr += "] is not a valid command";
 		pOutput->LogError<std::string>(wstr);
-		pOutput->AppendMessage( "for a list of messages type \"help\" or \"list\"" );
+		pOutput->appendMessage( "for a list of messages type \"help\" or \"list\"" );
 	}
 }
 
@@ -129,13 +129,13 @@ void CommandDispatcher::printCommandList( MessageSink* pOutput, bool bUsage )
 		for(unsigned int i = 0; i < cmdNames.size(); i++)
 		{
 			printCommandUsage(cmdNames[i],pOutput);
-			pOutput->AppendMessage( std::string() );
+			pOutput->appendMessage( std::string() );
 		}
 	}
 	else
 	{
 		for(unsigned int i = 0; i < cmdNames.size(); i++)
-			pOutput->AppendMessage( cmdNames[ i ] );
+			pOutput->appendMessage( cmdNames[ i ] );
 	}
 }
 

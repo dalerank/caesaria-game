@@ -19,31 +19,52 @@
 #include "utils.hpp"
 #include "variant_map.hpp"
 #include "variant_list.hpp"
+#include "core/format.hpp"
 
 static std::string lastParsedObjectName;
-static std::string sanitizeString(std::string str)
+static std::string sanitizeString( const std::string& str)
 {
-  str = utils::replace( str, "\\", "\\\\");
+  std::string output;
+  output.reserve(str.length());
+  output += "\"";
+
+  for (std::string::size_type i = 0; i < str.length(); ++i)
+  {
+      switch (str[i])
+      {
+      case '"':              output += "\\\"";              break;
+      case '/':              output += "\\/";               break;
+      case '\b':             output += "\\b";               break;
+      case '\f':             output += "\\f";               break;
+      case '\n':             output += "\\n";               break;
+      case '\r':             output += "\\r";               break;
+      case '\t':             output += "\\t";               break;
+      case '\\':             output += "\\\\";              break;
+      default:               output += str[i];            break;
+      }
+  }
+
+  /*str = utils::replace( str, "\\", "\\\\");
   str = utils::replace( str, "\"", "\\\"");
   str = utils::replace( str, "\b", "\\b");
   str = utils::replace( str, "\f", "\\f");
   str = utils::replace( str, "\n", "\\n");
   str = utils::replace( str, "\r", "\\r");
-  str = utils::replace( str, "\t", "\\t");
-  
-  return std::string( "\"" ) + str + std::string("\"");
+  str = utils::replace( str, "\t", "\\t");*/
+  output += "\"";
+  return output;
 }
 
 static std::string join(const StringArray& rlist, const std::string& sep)
 {
   std::string res;
-  for( StringArray::const_iterator it = rlist.begin(); it != rlist.end(); ++it )
+  for( auto& it : rlist )
   {
     if(!res.empty())
     {
       res.append( sep );
     }
-    res.append( *it );
+    res.append( it );
   }
   return res;
 }
@@ -85,8 +106,8 @@ Variant Json::parse(const std::string& json, bool &success )
 
 std::string Json::serialize(const Variant &data, const std::string& tab)
 {
-        bool success = true;
-        return Json::serialize(data, success, tab);
+   bool success = true;
+   return Json::serialize(data, success, tab);
 }
 
 std::string Json::serialize(const Variant &data, bool &success, const std::string& tab)
@@ -104,23 +125,31 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
     case Variant::List:
     case Variant::NStringArray: // variant is a list?
     {
-      StringArray values;
       const VariantList rlist = data.toList();
-      std::string serializedValue;
-      serializedValue.reserve( 512 );
-      foreach( it, rlist )
+
+      if( rlist.empty() )
       {
-        serializedValue = serialize( *it, "" );
-        if( serializedValue.empty() )
+        str = "[]";
+      }
+      else
+      {
+        StringArray values;
+        std::string serializedValue;
+        serializedValue.reserve( 512 );
+        for( auto& item : rlist )
         {
-            success = false;
-            break;
+          serializedValue = serialize( item, "" );
+          if( serializedValue.empty() )
+          {
+              success = false;
+              break;
+          }
+
+          values.push_back( serializedValue );
         }
 
-        values.push_back( serializedValue );
+        str = "[ " + join( values, ", " ) + " ]";
       }
-
-      str = "[ " + join( values, ", " ) + " ]";
     }
     break;
 
@@ -138,16 +167,15 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
         StringArray pairs;
         std::string serializedValue;
         serializedValue.reserve( 512 );
-        foreach( it, vmap )
+        for( auto& item : vmap )
         {        
-          serializedValue = serialize( it->second, tab + "  ");
+          serializedValue = serialize( item.second, tab + "  ");
           if( serializedValue.empty())
           {
-                  //success = false;
-            pairs.push_back( tab + sanitizeString( it->first ) + std::string( " : \"nonSerializableValue\"" ) );
+            pairs.push_back( tab + sanitizeString( item.first ) + std::string( " : \"nonSerializableValue\"" ) );
             continue;
           }
-          pairs.push_back( tab + sanitizeString( it->first ) + " : " + serializedValue );
+          pairs.push_back( tab + sanitizeString( item.first ) + " : " + serializedValue );
         }
         str += join(pairs, ",\n");
         std::string rtab( tab );
@@ -204,7 +232,7 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
       // TODO: cheap hack - almost locale independent double formatting
       std::string posX = utils::replace(utils::format( 0xff, "%f", pos.x()), ",", ".");
       std::string posY = utils::replace(utils::format( 0xff, "%f", pos.y()), ",", ".");
-      str = utils::format( 0xff, "[ \"%s\", \"%s\" ]", posX.c_str(), posY.c_str() );
+      str = fmt::format( "[ {0}, {1} ]", posX, posY );
     }
     break;
 
@@ -235,11 +263,11 @@ std::string Json::serialize(const Variant &data, bool &success, const std::strin
     default:
       if ( data.canConvert( Variant::LongLong ) ) // any signed number?
       {
-        str = utils::format( 0xff, "%d", data.toLongLong() );
+        str = utils::i2str( data.toLongLong() );
       }
       else if (data.canConvert( Variant::Long ))
       {
-        str = utils::format( 0xff, "%d", data.toLongLong() );
+        str = utils::i2str( data.toLongLong() );
       }
       else if (data.canConvert( Variant::String ) ) // can value be converted to string?
       {

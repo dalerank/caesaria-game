@@ -21,6 +21,7 @@
 #include "stock.hpp"
 #include "orders.hpp"
 #include "core/variant.hpp"
+#include "turnover.hpp"
 
 #include <set>
 
@@ -32,6 +33,9 @@ struct ReserveInfo
   good::Stock stock;
   DateTime time;
   unsigned int id;
+
+  int qty() const { return stock.qty(); }
+  good::Product type() const { return stock.type(); }
 
   bool operator<(const ReserveInfo& a ) const
   {
@@ -72,7 +76,7 @@ public:
   virtual void setCapacity(const good::Product& goodType, const int maxQty) = 0;
 
   virtual int capacity() const = 0;
-  virtual ProductMap details() const = 0;
+  virtual ProductMap details() const;
   virtual int capacity(const good::Product& goodType ) const = 0;
 
   virtual int freeQty( const good::Product& goodType ) const;
@@ -99,26 +103,34 @@ public:
   good::Stock getRetrieveReservation(const int reservationID, const bool pop=false);
 
   // store/retrieve
-  virtual void applyStorageReservation(good::Stock& stock, const int reservationID) = 0;
-  virtual void applyRetrieveReservation(good::Stock& stock, const int reservationID) = 0;
+  virtual bool applyStorageReservation(good::Stock& stock, const int reservationID) = 0;
+  virtual bool applyRetrieveReservation(good::Stock& stock, const int reservationID) = 0;
+
+  virtual void confirmDeliver( good::Product type, int qty, unsigned int tag, const DateTime& time );
+
+  virtual const ConsumerDetails& consumers() const;
+  virtual const ProviderDetails& providers() const;
 
   // store/retrieve to goodStore
   void applyStorageReservation(Storage& goodStore, const int reservationID);
   void applyRetrieveReservation(Storage& goodStore, const int reservationID);
-  ProductMap filled() const;
+
+  ProductMap amounts() const;
 
   // immediate store/retrieve, exception if impossible
-  virtual void store( good::Stock& stock, const int amount);
-  virtual void retrieve( good::Stock& stock, const int amount);
+  virtual void store( good::Stock& stock, const int amounts);
+  virtual void retrieve( good::Stock& stock, const int amounts);
 
   // store all goods from the given goodStore
-  virtual void storeAll( Store &goodStore);
+  virtual void storeAll( Store& goodStore);
 
   virtual bool isDevastation() const;
   virtual void setDevastation( bool value );
 
   virtual VariantMap save() const;
   virtual void load( const VariantMap& stream );
+
+  virtual TilePos owner() const;
 
   virtual void setOrder( const good::Product type, const Orders::Order order );
   virtual Orders::Order getOrder( const good::Product type ) const;
@@ -128,6 +140,8 @@ public:
 protected:
   Reservations& _getStoreReservations();
   Reservations& _getRetrieveReservations();
+  ConsumerDetails& _consumers();
+  ProviderDetails& _providers();
 
 private:
   class Impl;

@@ -16,7 +16,6 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "working.hpp"
-#include "city/helper.hpp"
 #include "walker/walker.hpp"
 #include "city/statistic.hpp"
 #include "events/returnworkers.hpp"
@@ -25,7 +24,10 @@
 #include "game/gamedate.hpp"
 #include "objects/house.hpp"
 #include "objects/house_level.hpp"
+#include "core/format.hpp"
 #include "events/removecitizen.hpp"
+#include "core/common.hpp"
+#include "walker/typeset.hpp"
 
 using namespace gfx;
 using namespace events;
@@ -33,8 +35,12 @@ using namespace events;
 class WorkingBuilding::Impl
 {
 public:
-  unsigned int currentWorkers;
-  unsigned int maxWorkers;
+  struct
+  {
+    unsigned int current;
+    unsigned int maximum;
+  } workers;
+
   bool isActive;
   WalkerList walkerList;
   std::string errorStr;
@@ -48,34 +54,34 @@ public signals:
 WorkingBuilding::WorkingBuilding(const object::Type type, const Size& size)
 : Building( type, size ), _d( new Impl )
 {
-  _d->currentWorkers = 0;
-  _d->maxWorkers = 0;
+  _d->workers.current = 0;
+  _d->workers.maximum = 0;
   _d->isActive = true;
   _d->clearAnimationOnStop = true;
   _d->laborAccessKoeff = 100;
-  _animationRef().stop();
+  _animation().stop();
 }
 
 void WorkingBuilding::save( VariantMap& stream ) const
 {
   Building::save( stream );
-  VARIANT_SAVE_ANY_D( stream, _d, currentWorkers );
+  VARIANT_SAVE_ANY_D( stream, _d, workers.current );
   VARIANT_SAVE_ANY_D( stream, _d, isActive );
-  VARIANT_SAVE_ANY_D( stream, _d, maxWorkers );
+  VARIANT_SAVE_ANY_D( stream, _d, workers.maximum );
   VARIANT_SAVE_ANY_D( stream, _d, laborAccessKoeff );
 }
 
 void WorkingBuilding::load( const VariantMap& stream)
 {
   Building::load( stream );
-  VARIANT_LOAD_ANY_D( _d, currentWorkers, stream );
+  VARIANT_LOAD_ANY_D( _d, workers.current, stream );
   VARIANT_LOAD_ANY_D( _d, isActive, stream );
-  VARIANT_LOAD_ANY_D( _d, maxWorkers, stream );
+  VARIANT_LOAD_ANY_D( _d, workers.maximum, stream );
   VARIANT_LOAD_ANY_D( _d, laborAccessKoeff, stream );
 
-  if( !_d->maxWorkers )
+  if( !_d->workers.maximum )
   {
-    _d->maxWorkers = MetaDataHolder::getData( type() ).getOption( MetaDataOptions::employers );
+    _d->workers.maximum = info().employers();
   }
 }
 
@@ -115,18 +121,18 @@ std::string WorkingBuilding::troubleDesc() const
   return trouble;
 }
 
-void WorkingBuilding::initialize(const MetaData& mdata)
+void WorkingBuilding::initialize(const object::Info& mdata)
 {
   Building::initialize( mdata );
 
-  setMaximumWorkers( (unsigned int)mdata.getOption( "employers" ) );
+  setMaximumWorkers( (unsigned int)mdata.employers() );
 }
 
 std::string WorkingBuilding::workersStateDesc() const { return ""; }
-void WorkingBuilding::setMaximumWorkers(const unsigned int maxWorkers) { _d->maxWorkers = maxWorkers; }
-unsigned int WorkingBuilding::maximumWorkers() const { return _d->maxWorkers; }
-void WorkingBuilding::setWorkers(const unsigned int currentWorkers){  _d->currentWorkers = math::clamp( currentWorkers, 0u, _d->maxWorkers );}
-unsigned int WorkingBuilding::numberWorkers() const { return _d->currentWorkers; }
+void WorkingBuilding::setMaximumWorkers(const unsigned int maxWorkers) { _d->workers.maximum = maxWorkers; }
+unsigned int WorkingBuilding::maximumWorkers() const { return _d->workers.maximum; }
+void WorkingBuilding::setWorkers(const unsigned int currentWorkers){  _d->workers.current = math::clamp( currentWorkers, 0u, _d->workers.maximum );}
+unsigned int WorkingBuilding::numberWorkers() const { return _d->workers.current; }
 unsigned int WorkingBuilding::needWorkers() const { return maximumWorkers() - numberWorkers(); }
 unsigned int WorkingBuilding::productivity() const { return math::percentage( numberWorkers(), maximumWorkers() ); }
 unsigned int WorkingBuilding::laborAccessPercent() const { return _d->laborAccessKoeff; }
@@ -158,11 +164,11 @@ void WorkingBuilding::timeStep( const unsigned long time )
 {
   Building::timeStep( time );
 
-  utils::eraseDeletedElements( _d->walkerList );
+  utils::eraseIfDeleted( _d->walkerList );
 
   if( game::Date::isMonthChanged() && numberWorkers() > 0 )
   {
-    _d->laborAccessKoeff = city::statistic::getLaborAccessValue( _city(), this );
+    _d->laborAccessKoeff = _city()->statistic().objects.laborAccess( this );
   }
 
   if( isActive() )
@@ -175,27 +181,27 @@ void WorkingBuilding::_updateAnimation(const unsigned long time )
   {
     if( mayWork() )
     {
-      if( _animationRef().isStopped() )
+      if( _animation().isStopped() )
       {
         _changeAnimationState( true );
       }      
     }
     else
     {
-      if( _animationRef().isRunning() )
+      if( _animation().isRunning() )
       {      
         _changeAnimationState( false );
       }
     }
   }
 
-  if( _animationRef().isRunning() )
+  if( _animation().isRunning() )
   {
-    _animationRef().update( time );
-    const Picture& pic = _animationRef().currentFrame();
+    _animation().update( time );
+    const Picture& pic = _animation().currentFrame();
     if( pic.isValid() && !_fgPictures().empty() )
     {
-      _fgPictures().back() = _animationRef().currentFrame();
+      _fgPictures().back() = _animation().currentFrame();
     }
   }
 }
@@ -203,10 +209,10 @@ void WorkingBuilding::_updateAnimation(const unsigned long time )
 void WorkingBuilding::_changeAnimationState(bool enabled)
 {
   if( enabled )
-    _animationRef().start();
+    _animation().start();
   else
   {
-    _animationRef().stop();
+    _animation().stop();
 
     if( _d->clearAnimationOnStop && !_fgPictures().empty() )
     {
@@ -242,14 +248,11 @@ void WorkingBuilding::destroy()
 {
   Building::destroy();
 
-  foreach( it, _d->walkerList )
-  {
-    walker::Type wt = (*it)->type();
-    if( wt == walker::cartPusher || wt == walker::supplier )
-      continue;
-
-    (*it)->deleteLater();
-  }
+  WalkerList mayDelete = walkers();
+  utils::excludeByType( mayDelete, WalkerTypeSet( walker::cartPusher,
+                                                  walker::supplier ) );
+  for( auto wlk : mayDelete )
+    wlk->deleteLater();
 
   if( numberWorkers() > 0 )
   {
@@ -293,13 +296,13 @@ std::string WorkingBuildingHelper::productivity2desc( WorkingBuildingPtr w, cons
 
   if( prefix.empty() )
   {
-    return utils::format( 0xff, "##%s_%s##",
-                          factoryType.c_str(), productivityDescription[ workKoeff ] );
+    return fmt::format( "##{0}_{1}##",
+                        factoryType, productivityDescription[ workKoeff ] );
   }
   else
   {
-    return utils::format( 0xff, "##%s_%s_%s##",
-                          factoryType.c_str(), prefix.c_str(), productivityDescription[ workKoeff ] );
+    return fmt::format( "##{0}_{1}_{2}##",
+                        factoryType, prefix, productivityDescription[ workKoeff ] );
   }
 }
 

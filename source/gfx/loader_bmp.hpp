@@ -32,7 +32,7 @@ public:
    virtual bool isALoadableFileFormat( vfs::NFile file) const;
 
    //! creates a surface from the file
-   virtual gfx::Picture load( vfs::NFile file ) const;
+   virtual gfx::Picture load( vfs::NFile file, bool streaming ) const;
 };
 
 #endif //__CAESARIA_PICTURELOADER_BMP_H_INCLUDED__

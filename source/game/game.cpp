@@ -21,7 +21,6 @@
 #include "city/build_options.hpp"
 #include "core/utils.hpp"
 #include "objects/construction.hpp"
-#include "city/helper.hpp"
 #include "game/player.hpp"
 #include "gfx/picture.hpp"
 #include "gfx/gl_engine.hpp"
@@ -38,6 +37,7 @@
 #include "world/empire.hpp"
 #include "core/exception.hpp"
 #include "loader.hpp"
+#include "objects/infodb.hpp"
 #include "gamedate.hpp"
 #include "saver.hpp"
 #include "resourceloader.hpp"
@@ -49,7 +49,6 @@
 #include "pathway/astarpathfinding.hpp"
 #include "objects/house_spec.hpp"
 #include "walker/name_generator.hpp"
-#include "core/foreach.hpp"
 #include "religion/pantheon.hpp"
 #include "vfs/archive_sg2.hpp"
 #include "vfs/archive_zip.hpp"
@@ -71,6 +70,7 @@
 #include "config.hpp"
 #include "world/emperor.hpp"
 #include "core/metric.hpp"
+#include "city/build_options.hpp"
 #include "roman_celebrates.hpp"
 
 #include <list>
@@ -104,12 +104,13 @@ public:
   void initVideo();
   void initSound();
   void initPictures();
+  void initGameConfigs();
   void initAddons();
   void initHotkeys();
   void initMovie();
   void initMetrics();
   void initCelebrations();
-  void initGuiEnvironment();
+  void initUI();
   void initArchiveLoaders();
   void initPantheon( vfs::Path filename );
   void initFontCollection( vfs::Path resourcePath );
@@ -126,7 +127,7 @@ void Game::Impl::initMovie()
   movie::Config& config = movie::Config::instance();
 
   config.loadAlias( SETTINGS_RC_PATH( videoAlias ) );
-  std::string c3videoFile = SETTINGS_VALUE( c3video ).toString();
+  std::string c3videoFile = SETTINGS_STR( c3video );
 
   if( !c3videoFile.empty() )
   {
@@ -153,7 +154,7 @@ void Game::Impl::initLocale( std::string localePath )
   Locale::setDirectory( localePath );
 
   Logger::warning( "Game: load default language" );
-  Locale::setLanguage( SETTINGS_VALUE( language ).toString() );
+  Locale::setLanguage( SETTINGS_STR( language ) );
 }
 
 void Game::Impl::initVideo()
@@ -164,11 +165,12 @@ void Game::Impl::initVideo()
 
   engine = new SdlEngine();
 
-  Logger::warning( "GraficEngine: set size" );
-  engine->setScreenSize( SETTINGS_VALUE( resolution ).toSize() );
+  Size size = SETTINGS_VALUE( resolution );
+  Logger::warning( "GraficEngine: set size [{0}x{1}]", size.width(), size.height() );
+  engine->setScreenSize( size );
   engine->setFlag( Engine::batching, batchTexures ? 1 : 0 );
 
-  bool fullscreen = SETTINGS_VALUE( fullscreen );
+  bool fullscreen = KILLSWITCH( fullscreen );
   if( fullscreen )
   {
     Logger::warning( "GraficEngine: try set fullscreen mode" );
@@ -190,14 +192,14 @@ void Game::Impl::initSound()
   ae.setVolume( audio::game, SETTINGS_VALUE( soundVolume ) );
   ae.loadAlias( SETTINGS_RC_PATH( soundAlias ) );
 
-  std::string c3musicFolder = SETTINGS_VALUE( c3music ).toString();
+  std::string c3musicFolder = SETTINGS_STR( c3music );
   if( !c3musicFolder.empty() )
   {
     ae.addFolder( c3musicFolder );
   }
 
   Logger::warning( "Game: load talks archive" );
-  audio::Helper::initTalksArchive( SETTINGS_VALUE( talksArchive ).toString() );
+  audio::Helper::initTalksArchive( SETTINGS_STR( talksArchive ) );
 }
 
 void Game::Impl::mountArchives(ResourceLoader &loader)
@@ -205,7 +207,7 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
   Logger::warning( "Game: mount archives begin" );
 
   std::string errorStr;
-  std::string c3res = SETTINGS_VALUE( c3gfx ).toString();
+  std::string c3res = SETTINGS_STR( c3gfx );
   if( !c3res.empty() )
   {    
     vfs::Directory gfxDir( c3res );
@@ -251,7 +253,7 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
 void Game::Impl::createSaveDir()
 {
   Logger::warning( "Game: initialize save directory" );
-  vfs::Directory saveDir = SETTINGS_VALUE( savedir ).toString();
+  vfs::Directory saveDir = SETTINGS_STR( savedir );
 
   bool dirCreated = true;
   if( !saveDir.exist() )
@@ -262,12 +264,12 @@ void Game::Impl::createSaveDir()
   Logger::warningIf( !dirCreated, "Game: can't create save dir" );
 }
 
-void Game::Impl::initGuiEnvironment()
+void Game::Impl::initUI()
 {
   Logger::warning( "Game: initialize gui" );
-  gui = new gui::Ui( *engine );
 
-  gui::infobox::Manager::instance().setBoxLock( SETTINGS_VALUE( lockInfobox ) );
+  gui = new gui::Ui( *engine );
+  gui::infobox::Manager::instance().setBoxLock( KILLSWITCH( lockInfobox ) );
 }
 
 void Game::Impl::initPantheon( vfs::Path filename)
@@ -279,7 +281,8 @@ void Game::Impl::initPantheon( vfs::Path filename)
 void Game::Impl::initFontCollection( vfs::Path resourcePath )
 {
   Logger::warning( "Game: load fonts" );
-  FontCollection::instance().initialize( resourcePath.toString() );
+  std::string fontname = SETTINGS_STR( font );
+  FontCollection::instance().initialize( resourcePath.toString(), fontname );
 }
 
 void Game::Impl::initPictures()
@@ -287,6 +290,11 @@ void Game::Impl::initPictures()
   AnimationBank::instance().loadCarts( SETTINGS_RC_PATH( cartsModel ) );
   AnimationBank::instance().loadAnimation( SETTINGS_RC_PATH( animationsModel ),
                                            SETTINGS_RC_PATH( simpleAnimationModel ) );
+}
+
+void Game::Impl::initGameConfigs()
+{
+  city::development::loadBranchOptions( SETTINGS_RC_PATH( cntrGroupsModel ) );
 }
 
 void Game::Impl::initAddons()
@@ -365,7 +373,7 @@ bool Game::load(std::string filename)
   scene::SplashScreen screen;
 
   screen.initialize();
-  bool usingOldgfx = SETTINGS_VALUE( oldgfx ) || !SETTINGS_VALUE( c3gfx ).toString().empty();
+  bool usingOldgfx = KILLSWITCH( oldgfx ) || !SETTINGS_STR( c3gfx ).empty();
   screen.setImage( usingOldgfx ? "load4" : "freska", 1 );
   screen.update( *_d->engine );
 
@@ -412,16 +420,16 @@ bool Game::load(std::string filename)
   world::CityPtr city = _d->empire->initPlayerCity( ptr_cast<world::City>( _d->city ) );
   if( city.isNull() )
   {
-    Logger::warning( "INIT ERROR: can't initalize city %s in empire" + _d->city->name() );
+    Logger::warning( "INIT ERROR: can't initalize city {0} in empire" + _d->city->name() );
     return false;
   }
   _d->empire->emperor().checkCities();
 
   Logger::warning( "Game: calculate road access for buildings" );
   const OverlayList& llo = _d->city->overlays();
-  foreach( overlay, llo )
+  for( auto overlay : llo )
   {
-    ConstructionPtr construction = overlay->as<Construction>();
+    ConstructionPtr construction = overlay.as<Construction>();
     if( construction.isValid() )
     {
       construction->computeRoadside();
@@ -459,13 +467,14 @@ void Game::initialize()
   vfs::FileSystem::instance().setRcFolder( game::Settings::rcpath() );
 
   _d->initMetrics();
+  _d->initGameConfigs();
   _d->initAddons();
   _d->initArchiveLoaders();
-  _d->initLocale( SETTINGS_VALUE( localePath ).toString() );
+  _d->initLocale( SETTINGS_STR( localePath ) );
   _d->initVideo();
   _d->initMovie();
   _d->initFontCollection( game::Settings::rcpath() );
-  _d->initGuiEnvironment();
+  _d->initUI();
   _d->initSound();
   _d->initHotkeys();
   _d->createSaveDir();
@@ -497,13 +506,13 @@ void Game::initialize()
 
   screen.setText( "##initialize_names##" );
   NameGenerator::instance().initialize( SETTINGS_RC_PATH( ctNamesModel ) );
-  NameGenerator::instance().setLanguage( SETTINGS_VALUE( language ).toString() );
+  NameGenerator::instance().setLanguage( SETTINGS_STR( language ) );
 
   screen.setText( "##initialize_house_specification##" );
   HouseSpecHelper::instance().initialize( SETTINGS_RC_PATH( houseModel ) );
 
   screen.setText( "##initialize_constructions##" );
-  MetaDataHolder::instance().initialize( SETTINGS_RC_PATH( constructionModel ) );
+  object::InfoDB::instance().initialize( SETTINGS_RC_PATH( constructionModel ) );
 
   screen.setText( "##initialize_walkers##" );
   WalkerHelper::instance().load( SETTINGS_RC_PATH( walkerModel ) );
@@ -532,7 +541,7 @@ bool Game::exec()
     return true;
   }    
 
-  Logger::warning( "game: exec switch to screen %d", _d->nextScreen );
+  Logger::warning( "game: exec switch to screen {0}", _d->nextScreen );
   addon::Manager& am = addon::Manager::instance();
   switch(_d->nextScreen)
   {
@@ -568,7 +577,7 @@ bool Game::exec()
     break;
 
     default:
-      Logger::warning( "game: unexpected next screen type %d", _d->nextScreen );
+      Logger::warning( "game: unexpected next screen type {0}", _d->nextScreen );
   }
 
   return _d->nextScreen != SCREEN_QUIT;
@@ -579,7 +588,7 @@ void Game::reset()
   _d->empire = world::Empire::create();
 
   _d->player = Player::create();
-  _d->player->setName( SETTINGS_VALUE( playerName ).toString() );
+  _d->player->setName( SETTINGS_STR( playerName ) );
   _d->pauseCounter = 0;
   _d->timeX10 = 0;
   _d->saveTime = 0;
@@ -588,7 +597,7 @@ void Game::reset()
   WalkerRelations::instance().clear();
   WalkerRelations::instance().load( SETTINGS_RC_PATH( walkerRelations ) );
 
-  bool oldGameplay = SETTINGS_VALUE( oldgfx ) || !SETTINGS_VALUE( c3gfx ).toString().empty();
+  bool oldGameplay = KILLSWITCH( oldgfx ) || !SETTINGS_STR( c3gfx ).empty();
   _d->city = PlayerCity::create( _d->empire, _d->player );
   _d->city->setOption( PlayerCity::c3gameplay, oldGameplay );
 }
@@ -605,6 +614,11 @@ void Game::clear()
   OverlayDebugQueue::print();
   OverlayDebugQueue::instance().clear();
 #endif
+}
+
+void Game::destroy()
+{
+  audio::Engine::instance().exit();
 }
 
 void Game::setNextScreen(ScreenType screen) { _d->nextScreen = screen;}

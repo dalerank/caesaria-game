@@ -20,6 +20,7 @@
 #include "objects/building.hpp"
 #include "objects/overlay.hpp"
 #include "animation_bank.hpp"
+#include "tilemap.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
 #include "picture_bank.hpp"
@@ -32,6 +33,8 @@ using namespace direction;
 namespace gfx
 {
 
+static Tilemap invalidTmap;
+
 namespace tilemap
 {
 
@@ -41,6 +44,7 @@ static Size tilePicSize( x_tileBase * 2 - 2, x_tileBase );
 static Size tileCellSize( x_tileBase, y_tileBase );
 static Point centerOffset( y_tileBase / 2, y_tileBase / 2 );
 static TilePos tileInvalidLocation( -1, -1 );
+static TilePos tilePosLocation( 1, 1 );
 
 void initTileBase(int width)
 {
@@ -68,6 +72,8 @@ Direction getDirection(const TilePos& b, const TilePos& e)
 
 const TilePos& invalidLocation() { return tileInvalidLocation; }
 bool isValidLocation(const TilePos &pos) { return pos.i() >= 0 && pos.j() >=0; }
+const TilePos& unitLocation(){ return tilePosLocation; }
+Tilemap& getInvalid() { return invalidTmap; }
 
 }
 
@@ -111,7 +117,7 @@ std::string toResource( const unsigned int imgId )
       res_id = 51;
     } // TERRIBLE HACK!
 
-    Logger::warning( "TileHelper: unknown image Id=%d ", imgId );
+    Logger::warning( "TileHelper: unknown image Id={0} ", imgId );
   }
 
   std::string ret_str = utils::format( 0xff, "%s_%05d", res_pfx.c_str(), res_id );
@@ -153,6 +159,13 @@ Picture toPicture(const unsigned int imgId)
 
 namespace tile
 {
+
+unsigned int width2size(int width)
+{
+  return width > 0
+            ? (width+2) / tilemap::tilePicSize.width()
+            : 0;
+}
 
 int encode(const Tile& tt)
 {
@@ -292,12 +305,12 @@ void clear(Tile& tile)
 
   Picture pic( ResourceGroup::land1a, startOffset + imgId );
   tile.setPicture( ResourceGroup::land1a, startOffset + imgId );
-  tile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+  tile.setImgId( imgid::fromResource( pic.name() ) );
 }
 
 void fixPlateauFlags(Tile& tile)
 {
-  int imgId = tile.originalImgId();
+  int imgId = tile.imgId();
   bool plateau = (imgId > 200 && imgId < 245);
   bool l3aRocks = (imgId > 848 && imgId < 863);
   if( plateau || l3aRocks )
@@ -321,6 +334,29 @@ Tile& getInvalidSafe()
   return invalidTileSafe;
 }
 
-}//end namespace util
+Tile::Type findType(const std::string& name)
+{
+  if( name == CAESARIA_STR_EXT(tlTree) )    return Tile::tlTree;
+  if( name == CAESARIA_STR_EXT(tlRock) )    return Tile::tlRock;
+  if( name == CAESARIA_STR_EXT(tlWater) )   return Tile::tlWater;
+  if( name == CAESARIA_STR_EXT(tlGarden) )  return Tile::tlGarden;
+  if( name == CAESARIA_STR_EXT(tlRoad) )    return Tile::tlRoad;
+  if( name == CAESARIA_STR_EXT(tlCoast) )   return Tile::tlCoast;
+  if( name == CAESARIA_STR_EXT(tlElevation))return Tile::tlElevation;
+  if( name == CAESARIA_STR_EXT(tlMeadow) )  return Tile::tlMeadow;
+  if( name == CAESARIA_STR_EXT(tlRubble) )  return Tile::tlRubble;
+  if( name == CAESARIA_STR_EXT(tlWall) )    return Tile::tlWall;
+  if( name == CAESARIA_STR_EXT(tlDeepWater))return Tile::tlDeepWater;
+  if( name == CAESARIA_STR_EXT(tlRift) )    return Tile::tlRift;
+  if( name == CAESARIA_STR_EXT(tlGrass) )   return Tile::tlGrass;
+  return Tile::tlUnknown;
+}
+
+TilePos hash2pos(unsigned int hash)
+{
+  return TilePos( (hash >> 16 ) & 0xff, hash & 0xff );
+}
+
+}//end namespace tile
 
 }//end namespace gfx

@@ -66,11 +66,7 @@ void Military::timeStep(const unsigned int time )
   {
     DateTime curDate = game::Date::current();
     //clear old notificationse
-    for( Notifications::iterator it=_d->notifications.begin(); it != _d->notifications.end(); )
-    {
-      if( it->date.monthsTo( curDate ) > notificationHistoryMonths ) { it = _d->notifications.erase( it ); }
-      else { ++it; }
-    }
+    _d->notifications.eraseOld( curDate, notificationHistoryMonths );
   }
 
   if( game::Date::isWeekChanged() )
@@ -90,9 +86,9 @@ void Military::timeStep(const unsigned int time )
   {
     _d->needUpdateMilitaryThreat = false;
 
-    EnemySoldierList enemiesInCity = _city()->walkers().select<EnemySoldier>();
+    int enemiesInCity_n = _city()->walkers().count<EnemySoldier>();
 
-    _d->threatValue = enemiesInCity.size() * enemySoldiertThreat;
+    _d->threatValue = enemiesInCity_n * enemySoldiertThreat;
   }  
 }
 
@@ -119,15 +115,7 @@ const Notifications& Military::notifications() const
 
 bool Military::haveNotification( Notification::Type type) const
 {
-  foreach( it, _d->notifications )
-  {
-    if( it->type == type )
-    {
-      return true;
-    }
-  }
-
-  return false;
+  return _d->notifications.contain( type );
 }
 
 bool Military::isUnderAttack() const
@@ -142,9 +130,9 @@ VariantMap Military::save() const
 
   VariantMap notifications;
   int index = 0;
-  foreach( it, _d->notifications )
+  for( auto notification : _d->notifications )
   {
-    notifications[ utils::format( 0xff, "note_%03d", index ) ] = it->save();
+    notifications[ utils::format( 0xff, "note_%03d", index ) ] = notification.save();
   }
 
   VARIANT_SAVE_ANY( ret, notifications );
@@ -159,8 +147,8 @@ void Military::load(const VariantMap& stream)
   VARIANT_LOAD_TIME_D( _d, lastEnemyAttack, stream );
   VARIANT_LOAD_VMAP( notifications, stream );
 
-  foreach( it, notifications )
-    _d->notifications.push_back( notification::create(it->second.toList()) );
+  for( auto notification : notifications )
+    _d->notifications.push_back( notification::create( notification.second.toList()) );
 }
 
 const DateTime& Military::lastAttack() const { return _d->lastEnemyAttack; }
@@ -177,12 +165,12 @@ int Military::monthFromLastAttack() const{ return _d->lastEnemyAttack.monthsTo( 
 
 world::PlayerArmyList Military::expeditions() const
 {
-  FortList forts = statistic::getObjects<Fort>( _city(), object::group::military );
+  FortList forts = _city()->statistic().objects.find<Fort>( object::group::military );
 
   world::PlayerArmyList ret;
-  foreach( it, forts )
+  for( auto fort : forts )
   {
-    world::PlayerArmyPtr army = (*it)->expedition();
+    world::PlayerArmyPtr army = fort->expedition();
     if( army.isValid() )
     {
       ret.push_back( army );

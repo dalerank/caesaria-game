@@ -30,6 +30,7 @@ using namespace std;
 namespace {
 static const AStarPoint invalidPoint;
 typedef std::vector< AStarPoint* > APoints;
+static SimpleLogger LOG_PF( "PathFinder" );
 }
 
 class Pathfinder::Impl
@@ -81,7 +82,7 @@ public:
     }
     else
     {
-      //Logger::warning( "ERROR: failed to gather point (%d,%d) on grid", pos.getI(), pos.getJ() );
+      //LOG_PF.info( "ERROR: failed to gather point (%d,%d) on grid", pos.getI(), pos.getJ() );
       return 0;
     }
   }
@@ -117,24 +118,27 @@ public:
 
 Pathfinder::Pathfinder() : _d( new Impl )
 {
+  LOG_PF.warn( "Initialize" );
+
   _d->maxLoopCount = 4800;
   _d->verbose = 0;
 }
 
 void Pathfinder::update( const Tilemap& tilemap )
 {
-  Logger::warning( "Pathfinder: start updating" );
+  LOG_PF.info( "Updating started" );
 
-  Logger::warning( "Pathfinder: resizing grid to %d", tilemap.size() );
+  LOG_PF.info( "Resizing grid to {}", tilemap.size());
   int size = tilemap.size();
   _d->grid.reset( size, size );
 
-  Logger::warning( "Pathfinder: allocation AStarPoints" );
+  LOG_PF.info( "Allocating AStarPoints" );
   const TilesArray& tiles = tilemap.allTiles();
   foreach( tile, tiles )
   {
     _d->grid.init( *tile );
   }
+  LOG_PF.info( "Updating finished" );
 }
 
 Pathway Pathfinder::getPath(TilePos start, TilesArray arrivedArea, int flags)
@@ -174,7 +178,10 @@ Pathway Pathfinder::getPath(TilePos start, TilePos stop,  int flags)
 {
   if( start == stop )
   {
-    Logger::warning( "WARNING!!! Pathfinder::getPath start==stop" );
+#ifdef DEBUG
+    LOG_PF.warn( "Pathfinder::getPath start==stop" );
+    crashhandler::printstack(false);
+#endif
     return Pathway();
   }
 
@@ -228,7 +235,7 @@ void Pathfinder::Impl::isWater( const Tile* tile, bool& possible ) { possible = 
 
 bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, Pathway& oPathWay, int flags )
 {
-  for( TilesArray::iterator aaIt=arrivedArea.begin(); aaIt != arrivedArea.end(); )
+  for( auto aaIt=arrivedArea.begin(); aaIt != arrivedArea.end(); )
   {
     if( *aaIt == NULL ) { aaIt = arrivedArea.erase( aaIt ); }
     else { aaIt++; }
@@ -236,14 +243,14 @@ bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, P
 
   if( arrivedArea.empty() )
   {
-    Logger::warning( "AStarPathfinder: no arrived area" );
+    LOG_PF.warn( "AStar: no arrived area" );
     return false;
   }  
 
   AStarPoint* ap = at( startPos );
   if( !ap || !ap->tile )
   {
-    Logger::warning( "AStarPathfinder: wrong start pos at %d,%d", startPos.i(), startPos.j()  );
+    LOG_PF.warn( "AStar: wrong start pos at [{},{}]", startPos.i(), startPos.j());
     return false;
   }
 
@@ -335,7 +342,7 @@ bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, P
 
         if( !child )
         {
-          //Logger::warning( "No child for parent is (%d,%d)", current->getPos().getI() + x, current->getPos().getJ() + y );
+          //LOG_PF.info( "No child for parent is (%d,%d)", current->getPos().getI() + x, current->getPos().getJ() + y );
           continue;
         }
 
@@ -399,9 +406,9 @@ bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, P
   {
     if( verbose > 0 )
     {
-      Logger::warning( "AStarPathfinder: maxLoopCount reached from [%d,%d] to [%d,%d]",
+      LOG_PF.warn( "AStar: maxLoopCount reached from [{},{}] to [{},{}]",
                        startPos.i(), startPos.j(), endPoints.front()->getPos().i(), endPoints.front()->getPos().j() );
-      crashhandler::printstack();
+      crashhandler::printstack(false);
     }
     return false;
   }
@@ -420,12 +427,6 @@ bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, P
   }
 
   return oPathWay.length() > 0;
-}
-
-Pathfinder& Pathfinder::instance()
-{
-  static Pathfinder inst;
-  return inst;
 }
 
 Pathfinder::~Pathfinder() {}

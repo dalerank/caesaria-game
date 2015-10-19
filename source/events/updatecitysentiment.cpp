@@ -17,6 +17,7 @@
 
 #include "updatecitysentiment.hpp"
 #include "game/game.hpp"
+#include "objects/construction.hpp"
 #include "city/statistic.hpp"
 #include "city/sentiment.hpp"
 
@@ -38,9 +39,7 @@ bool UpdateCitySentiment::_mayExec(Game&, unsigned int) const {  return true; }
 
 void UpdateCitySentiment::_exec(Game& game, unsigned int)
 {
-  PlayerCityPtr city = game.city();
-
-  city::SentimentPtr srvc = city::statistic::getService<city::Sentiment>( city );
+  city::SentimentPtr srvc = game.city()->statistic().services.find<city::Sentiment>();
 
   if( srvc.isValid() )
   {
@@ -48,4 +47,4 @@ void UpdateCitySentiment::_exec(Game& game, unsigned int)
   }
 }
 
-}
+}//end namespace events

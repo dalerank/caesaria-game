@@ -3,9 +3,14 @@ compiler:
 - gcc
 before_install:
 # Get build dependencies
-- sudo apt-add-repository --yes ppa:zoogie/sdl2-snapshots #libsdl2
+- sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
+- sudo apt-add-repository --yes ppa:zoogie/sdl2-snapshots
 - sudo apt-get -qq update
-- sudo apt-get -qq install cmake p7zip-full build-essential libasound2-dev sshpass wget
+- sudo apt-get -qq install p7zip-full sshpass wget
+- sudo apt-get install -qq cmake build-essential libasound2-dev libxxf86vm-dev
+- sudo apt-get -qq install g++-4.8
+- if [ "$CXX" == "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
+#- sudo apt-get install -qq gcc-multilib g++-multilib
 install:
 - cd $TRAVIS_BUILD_DIR
 # Create unix makefiles
@@ -31,4 +36,8 @@ after_success:
 - sshpass -p "$SCP_PASS" scp -v *.linux dalerank@frs.sourceforge.net:/home/frs/project/opencaesar3/stuff/
 env:
 notifications:
-    slack: caesariagame:m3lwdYPWqeCOn0zWs0rjX5KY
+    slack:
+        - caesariagame:m3lwdYPWqeCOn0zWs0rjX5KY
+    on_failure: always
+    on_success: never
+

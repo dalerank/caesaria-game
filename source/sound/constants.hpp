@@ -26,7 +26,10 @@
 namespace audio
 {
 
-typedef enum { unknown=0, ambient, theme, game, speech, count } SoundType;
+typedef enum { unknown=0, ambient, theme, game, speech, effects, infobox, count } SoundType;
+typedef unsigned int Volume;
+const Volume minVolume=0;
+const Volume maxVolume=100;
 
 } //end namespace audio
 

@@ -144,7 +144,7 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   f.seekg(kLocation, std::ios::beg);
   unsigned int location=0;
   f.read((char*)&location, 1);
-  Logger::warning( "C3MapLoader: location of city is %d", (int)(location) );
+  Logger::warning( "C3MapLoader: location of city is {0}", (int)(location) );
 
   std::string cityName = LoaderHelper::getDefaultCityName( location );
   oCity->setName( cityName );
@@ -155,7 +155,7 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   int size_2;
   f.read((char*)&map_size,   4);
   f.read((char*)&size_2, 4);
-  Logger::warning( "C3MapLoader: map size is %d", map_size );
+  Logger::warning( "C3MapLoader: map size is {0}", map_size );
 
   if (map_size != size_2)
   {
@@ -209,7 +209,7 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
 
       Tile& tile = oTilemap.at(i, j);
       tile.setPicture( imgid::toResource( pGraphicGrid.data()[index] ) );
-      tile.setOriginalImgId( pGraphicGrid.data()[index] );
+      tile.setImgId( pGraphicGrid.data()[index] );
       //tile.setHeight( pElevationGrid.data()[ index ] );
 
       edgeData[ i ][ j ] =  pEdgeGrid.data()[index];
@@ -254,7 +254,7 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
         {
           for (int dj = 0; dj < size; ++dj)
           {
-            oTilemap.at(master.pos() + TilePos( di, dj ) ).setMasterTile(&master);
+            oTilemap.at(master.pos() + TilePos( di, dj ) ).setMaster(&master);
           }
         }
       }
@@ -275,7 +275,7 @@ void C3Map::Impl::initClimate(std::fstream &f, PlayerCityPtr ioCity )
 
   ioCity->setOption( PlayerCity::climateType, i);
 
-  Logger::warning( "C3MapLoader: climate type is %d", i );
+  Logger::warning( "C3MapLoader: climate type is {0}", i );
 }
 
 void C3Map::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)

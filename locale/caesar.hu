@@ -1,6 +1,7 @@
 {
+"##mainmenu_mcmxcviii##":"MCMXCVIII"
 "##actor_gods_angry##":"Óóóó! Az istenek haragszanak ránk. Kárhozat van a fejünkön!"
-"##administration_building##":"Kormányzati épületek"
+"##extm_administration_tlp##":"Kormányzati épületek"
 "##colleges##":"Akadémiák"
 "##academy##":"Akadémia"
 "##aqueduct##":"Akvadukt"
@@ -47,7 +48,6 @@
 "##advchief_employment##":"Foglalkoztatás"
 "##advchief_food_stocks##":"Élelemkészletek"
 "##advemployer_panel_salary##":"Bérek"
-"##gmsndwnd_ambient_sound##":"Hangbeállítások"
 "##advchief_low_crime##":"Van némi bűnözés, de semmi komoly."
 "##actor_high_workless##":"Akkora a munkanélküliség, hogy az már drámai."
 "##advchief_health##":"Egészségügy"
@@ -180,10 +180,10 @@
 "##missing_college_degrade##":"Ez a ház hamarosan visszafejlődik. Az oktatás nemrégiben még kitűnő volt a környéken, de most már nincs akadémia, ami ellátná az itt lakókat."
 "##missing_doctor__degrade##":"Ez a ház hamarosan visszafejlődik, mert romlott az egészségügyi ellátás. Ugyan a kórház hatása elér ide, de a klinikáé valamiért már nem."
 "##also_fountain_in_well_area##":"Ez a kút kihasználatlan, mivel itt mindenki folyóvizet használ a közeli csobogóról."
+"##gmsndwnd_ambient_sound##":"Hangbeállítások"
 "##merchant_notbad_city##":"Hajtottam már rosszabb városban is, mint ez"
 "##emperor_wrath_by_debt_text##":"Nagyon elégedetlen vagyok! Hiába biztosítottam tőkét, majd a szenátus bőkezűen hitelt, a feladatod mégsem teljesítetted. Cserben hagytál, és a városod aligha kelti Róma jóhírét. Most már látom, hogy kár volt a bizalmamba fogadnom téged, és hogy mást kell keresnem a helyedre. Talán az új szerepben, amit neked szánok, majd jobban boldogulsz... - A Császár"
 "##actor_so_hungry##":"Üres gyomorral nehéz jó előadást tartani."
 "##actor_low_entertainment##":"Hiába hajtom agyon magam, még így sincs megfelelő szórakoztatás a városban."
 "##wt_missioner_normal_life##":"Annyira hálás vagyok, hogy római lehetek. Látnia kellene, hogy ezek a barbárok milyen viskókban tengetik a napjaikat"
-"##mainmenu_mcmxcviii##":"MCMXCVIII"
 }

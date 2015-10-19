@@ -102,7 +102,7 @@ void Ratings::Impl::updateColumn( const Point& center, const int value )
 
 void Ratings::Impl::checkCultureRating()
 {
-  CultureRatingPtr culture = statistic::getService<CultureRating>( city );
+  CultureRatingPtr culture = city->statistic().services.find<CultureRating>();
 
   if( culture.isValid() )
   {
@@ -117,9 +117,15 @@ void Ratings::Impl::checkCultureRating()
     for( int k=CultureRating::covSchool; k < CultureRating::covCount; k++)
     {
       int coverage = culture->coverage( CultureRating::Coverage(k) );
-      if( coverage < 100 )
+      int objects_n = culture->objects_n( CultureRating::Coverage(k) );
+      if( objects_n == 0 )
       {
-        std::string troubleDesc = utils::format( 0xff, "##have_less_%s_in_city_%d##", cultureCoverageDesc[ k ], coverage / 50 );
+        std::string troubleDesc = fmt::format( "##haveno_{}_in_city##", cultureCoverageDesc[ k ] );
+        troubles.push_back( troubleDesc );
+      }
+      else if( coverage < 100 )
+      {
+        std::string troubleDesc = fmt::format( "##have_less_{}_in_city_{}##", cultureCoverageDesc[ k ], coverage / 50 );
         troubles.push_back( troubleDesc );
       }
     }
@@ -130,7 +136,7 @@ void Ratings::Impl::checkCultureRating()
 
 void Ratings::Impl::checkProsperityRating()
 {
-  ProsperityRatingPtr prosperity = statistic::getService<ProsperityRating>( city );
+  ProsperityRatingPtr prosperity = city->statistic().services.find<ProsperityRating>();
 
   std::string text;
   if( prosperity != 0 )
@@ -143,7 +149,7 @@ void Ratings::Impl::checkProsperityRating()
       return;
     }
 
-    InfoPtr info = statistic::getService<Info>( city );
+    InfoPtr info = city->statistic().services.find<Info>();
 
     city::Info::Parameters current = info->lastParams();
     city::Info::Parameters lastYear = info->yearParams( 0 );
@@ -188,8 +194,8 @@ void Ratings::Impl::checkProsperityRating()
 void Ratings::Impl::checkPeaceRating()
 {
   StringArray advices;
-  MilitaryPtr ml = statistic::getService<Military>( city );
-  PeacePtr peaceRt = statistic::getService<Peace>( city );
+  MilitaryPtr ml = city->statistic().services.find<Military>();
+  PeacePtr peaceRt = city->statistic().services.find<Peace>();
 
   if( ml.isNull() || peaceRt.isNull() || !lbRatingInfo )
   {
@@ -234,8 +240,8 @@ void Ratings::Impl::checkPeaceRating()
 void Ratings::Impl::checkFavourRating()
 {
   StringArray problems;
-  request::DispatcherPtr rd = statistic::getService<request::Dispatcher>( city );
-  InfoPtr info = statistic::getService<Info>( city );
+  request::DispatcherPtr rd = city->statistic().services.find<request::Dispatcher>();
+  InfoPtr info = city->statistic().services.find<Info>();
 
   Info::Parameters current = info->lastParams();
   Info::Parameters lastYear = info->yearParams( 0 );
@@ -270,6 +276,7 @@ void Ratings::Impl::checkFavourRating()
     if( rd->haveCanceledRequest() )
     {
       problems << "##imperial_request_cance_badly_affected##";
+      problems << "##request_failed##";
     }
   }
 
@@ -289,8 +296,13 @@ Ratings::Ratings(Widget* parent, int id, const PlayerCityPtr city )
 
   const city::VictoryConditions& targets = city->victoryConditions();
 
-  if( lbNeedPopulation ) lbNeedPopulation->setText( utils::format( 0xff, "%s %d (%d %s", _("##population##"), city->states().population,
-                                                                                          targets.needPopulation(), ("##need_population##")  ) );
+  if( lbNeedPopulation )
+  {
+    std::string text = fmt::format( "{} {} ({} {}",
+                                    _("##population##"), city->states().population,
+                                    targets.needPopulation(), ("##need_population##")  );
+    lbNeedPopulation->setText( text );
+  }
 
   GET_DWIDGET_FROM_UI( _d, btnCulture )
   if( _d->btnCulture )
@@ -328,7 +340,7 @@ Ratings::Ratings(Widget* parent, int id, const PlayerCityPtr city )
   }
   CONNECT( _d->btnFavour, onClicked(), _d.data(), Impl::checkFavourRating );
 
-  _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
   CONNECT( _d->btnHelp, onClicked(), this, Ratings::_showHelp );
 }
 

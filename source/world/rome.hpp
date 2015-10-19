@@ -27,7 +27,7 @@ class Rome : public City
 {
 public:
   static const char* defaultName;
-  Rome( EmpirePtr empire );
+  static CityPtr create( EmpirePtr empire );
 
   // performs one simulation step
   virtual bool isAvailable() const { return true; }
@@ -39,17 +39,19 @@ public:
   virtual std::string about(AboutType type);
   virtual const city::States& states() const;
   virtual void timeStep(const unsigned int time);
-  virtual SmartPtr<Player> mayor() const;
+  virtual PlayerPtr mayor() const;
   virtual bool haveOverduePayment() const;
   virtual void addObject(ObjectPtr);
   virtual DateTime lastAttack() const;
   virtual int strength() const;
-  virtual void delayTrade( unsigned int month );
+  virtual void delayTrade(unsigned int);
   virtual void empirePricesChanged( good::Product gtype, const PriceInfo& prices );
   virtual const good::Store& sells() const;
   virtual const good::Store& buys() const;
 
 private:
+  Rome( EmpirePtr empire );
+
   class Impl;
   ScopedPtr<Impl> _d;
 };

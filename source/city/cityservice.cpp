@@ -30,6 +30,8 @@ public:
   std::string name;
 };
 
+void Srvc::timeStep(const unsigned int time) {}
+
 std::string Srvc::name() const { return _d->name; }
 
 void Srvc::setName(const std::string& name) { _d->name = name; }
@@ -43,7 +45,7 @@ void Srvc::load(const VariantMap& stream) {}
 Srvc::~Srvc()
 {
 #ifdef DEBUG
-  Logger::warning( "CityServices: remove " + name() );
+  Logger::warning( "CityServices: remove {0}", name() );
 #endif
 }
 
@@ -54,7 +56,7 @@ Srvc::Srvc(PlayerCityPtr city, const std::string& name)
   _d->city = city;
   setDebugName( name );
 #ifdef DEBUG
-  Logger::warning( "CityServices: create " + name );
+  Logger::warning( "CityServices: create {0}", name );
 #endif
 }
 

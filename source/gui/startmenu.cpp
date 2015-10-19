@@ -69,7 +69,7 @@ PushButton* StartMenu::addButton( const std::string& caption, int id )
   newButton->setBackgroundStyle( style );
   newButton->setFont( btnFont );
 
-  List< PushButton* > buttons = findChildren< PushButton* >();
+  auto buttons = findChildren< PushButton* >();
   Point offsetBtn( ( width() - buttonSize.width() ) / 2, ( height() - offsetY * buttons.size() ) / 2 );
 
   foreach( btn, buttons )
@@ -84,8 +84,8 @@ PushButton* StartMenu::addButton( const std::string& caption, int id )
 void StartMenu::clear()
 {
   Widgets rchildren = children();
-  foreach( it, rchildren )
-    (*it)->remove();
+  for( auto&& it : rchildren )
+    it->remove();
 }
 
 }//end namespace gui

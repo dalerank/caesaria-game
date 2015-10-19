@@ -17,27 +17,45 @@
 
 #include "datetimehelper.hpp"
 #include "core/utils.hpp"
+#include "core/format.hpp"
 #include "core/gettext.hpp"
+#include "core/metric.hpp"
 
-namespace util
+namespace utils
 {
 
 
 template<class T>
-std::string _date2str(const T& time, bool drawDays)
+std::string _date2str(const T& time, bool drawDays, bool roman)
 {
-  std::string month = utils::format( 0xff, "##month_%d_short##", time.month() );
-  std::string age = utils::format( 0xff, "##age_%s##", time.age() );
+  std::string month = fmt::format( "##month_{0}_short##", (int)time.month() );
+  std::string age = fmt::format( "##age_{0}##", time.age() );
+  std::string year;
   std::string text;
+  std::string dayStr;
   if( drawDays)
-    text = utils::format( 0xff, "%d %s %d %s", time.day(), _( month ), abs( time.year() ), _( age ) );
-  else
-    text = utils::format( 0xff, "%s %d %s", _( month ), abs( time.year() ), _( age ) );
+  {
+    if( !roman )
+      dayStr = utils::i2str( time.day() );
+    else
+      dayStr = utils::toRoman( time.day() );
+  }
 
+  int yearNum = abs( time.year() );
+  if( !roman )
+    year = utils::i2str( yearNum );
+  else
+    year = utils::toRoman( yearNum );
+
+  text = fmt::format( "{} {} {} {}", dayStr, _( month ), year, _( age ) );
   return text;
 }
 
-std::string date2str(const RomanDate  &time, bool drawDays){  return _date2str( time, drawDays );}
-std::string date2str(const DateTime &time, bool drawDays){  return _date2str( time, drawDays );}
+std::string date2str(const RomanDate  &time, bool drawDays)
+{
+  return _date2str( time, drawDays, metric::Measure::isRoman() );
+}
+
+std::string date2str(const DateTime &time, bool drawDays){  return _date2str( time, drawDays, false );}
 
 }//end namespace util

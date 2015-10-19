@@ -198,7 +198,8 @@ void Wolf::_centerTile()
   Animal::_centerTile();
 
   TilePos offset(1,1);
-  WalkerList walkers = city::statistic::getWalkers<Walker>( _city(), walker::any, pos() - offset, pos() + offset );
+  WalkerList walkers = _city()->statistic().walkers.find<Walker>( walker::any,
+                                                                  pos() - offset, pos() + offset );
   walkers = walkers.exclude<Wolf>();
 
   if( !walkers.empty() )
@@ -215,7 +216,8 @@ void Wolf::_centerTile()
 void Wolf::_findNewWay( const TilePos& start )
 {
   TilePos offset(defaultRandomDistance,defaultRandomDistance);
-  WalkerList walkers = city::statistic::getWalkers<Walker>( _city(), walker::any, start - offset, start + offset );
+  WalkerList walkers = _city()->statistic().walkers.find<Walker>( walker::any,
+                                                                  start - offset, start + offset );
   walkers = walkers.exclude<Wolf>();
 
   Pathway pathway;

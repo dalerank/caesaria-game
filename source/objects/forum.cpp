@@ -65,12 +65,12 @@ void Forum::applyService(ServiceWalkerPtr walker)
   {
   case walker::taxCollector:
   {
-    TaxCollectorPtr txcl = ptr_cast<TaxCollector>( walker );
-    if( txcl.isValid() )
+    auto taxCollector = walker.as<TaxCollector>();
+    if( taxCollector.isValid() )
     {
-      float tax = txcl->takeMoney();;
+      float tax = taxCollector->takeMoney();;
       _d->taxValue += tax;
-      Logger::warning( "Forum: collect money %f. All money %f", tax, _d->taxValue );
+      Logger::warning( "Forum: collect money {0}. All money {1}", tax, _d->taxValue );
     }
   }
   break;
@@ -109,20 +109,17 @@ float Forum::collectTaxes()
 
 void Forum::Impl::removeMoney(PlayerCityPtr city)
 {
-  SenatePtr senate;
-  SenateList senates = city::statistic::getObjects<Senate>( city, object::senate );
-  if( !senates.empty() )
-    senate = senates.front();
+  int senates_n = city->statistic().objects.count<Senate>();
 
   int maxMoney = city->treasury().money();
   if( maxMoney > 0 )
   {
-    ForumList forums = city::statistic::getObjects<Forum>( city );
+    int forums_n = city->statistic().objects.count<Forum>();
 
-    if( senate.isValid() )
+    if( senates_n > 0 )
       maxMoney /= 2;
 
-    maxMoney /= forums.size();
+    maxMoney /= math::clamp( forums_n, 1, 99 );
 
     events::GameEventPtr e = events::Payment::create( econ::Issue::moneyStolen, -maxMoney );
     e->dispatch();

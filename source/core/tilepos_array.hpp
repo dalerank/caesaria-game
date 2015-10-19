@@ -28,11 +28,14 @@ class TilePosArray : public std::vector< TilePos >
 public:
   TilePosArray& operator<<(const TilePos& pos );
 
-  TilePosArray& addIfNot( const TilePos& pos );
+  TilePosArray& addUnique( const TilePos& pos );
 
   TilePosArray& append( const TilePos& pos );
 
   TilePos valueOrEmpty( unsigned int index );
+  TilePosArray& pop_front();
+
+  TilePos random();
 
   VariantList save() const;
 

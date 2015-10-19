@@ -7,7 +7,12 @@
   date : "-350.01.01"
   adviserEnabled : false
   fishPlaceEnabled : false
+  collapseKoeff : 10
+  fireKoeff : 10
   climate : 0
+  preview.text : "##tutorial_preview_mission##"
+  preview.title : "##tutorial_preview_title##"
+  preview.image : ""
 	
   win :
   {
@@ -118,7 +123,7 @@
                    
     buildings : 
     { 
-      well : true
+      well : true     
     }
   }
 }

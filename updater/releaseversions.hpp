@@ -54,7 +54,7 @@ public:
         file.filesize = utils::toUint( iniFile.GetValue(sectionName, "filesize") );
         file.localChangesAllowed = iniFile.GetValue(sectionName, "allow_local_modifications") == "1";
 
-        Logger::warning( "Found version %s file: %s with checksum %x", version.c_str(), filename.c_str(), file.crc );
+        Logger::warning( "Found version {} file: {} with checksum {}", version, filename, file.crc );
 
         set.insert(ReleaseFileSet::value_type(filename, file));
       }

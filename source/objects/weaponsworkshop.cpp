@@ -46,7 +46,7 @@ bool WeaponsWorkshop::build( const city::AreaInfo& info )
 {
   Factory::build( info );
 
-  bool haveIronMine = !city::statistic::getObjects<Building>( info.city, object::iron_mine ).empty();
+  bool haveIronMine = !info.city->statistic().objects.find<Building>( object::iron_mine ).empty();
 
   _setError( haveIronMine ? "" : "##need_iron_for_work##" );
 
@@ -55,6 +55,6 @@ bool WeaponsWorkshop::build( const city::AreaInfo& info )
 
 void WeaponsWorkshop::_storeChanged()
 {
-  _fgPicture(1) = inStockRef().empty() ? Picture() : Picture( ResourceGroup::commerce, 156 );
+  _fgPicture(1) = inStock().empty() ? Picture() : Picture( ResourceGroup::commerce, 156 );
   _fgPicture(1).setOffset( 20, 15 );
 }

@@ -59,23 +59,6 @@ private:
   __DECLARE_IMPL(Emperor)
 };
 
-class EmperorLine
-{
-public:
-  static EmperorLine& instance();
-
-  std::string getEmperor( DateTime time );
-  VariantMap getInfo( std::string name ) const;
-
-  void load(vfs::Path filename );
-
-private:
-  EmperorLine();
-
-  class Impl;
-  ScopedPtr<Impl> _d;
-};
-
-}
+}//end namespace world
 
 #endif //__CAESARIA_EMPEROR_H_INCLUDED__

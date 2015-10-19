@@ -19,9 +19,9 @@
 #include "label.hpp"
 #include "texturedbutton.hpp"
 #include "gfx/decorator.hpp"
+#include "objects/construction.hpp"
 #include "core/event.hpp"
 #include "gui/environment.hpp"
-#include "core/foreach.hpp"
 #include "city/city.hpp"
 #include "core/gettext.hpp"
 #include "game/funds.hpp"
@@ -130,35 +130,36 @@ FestivalPlanning::FestivalPlanning( Widget* parent, int id, const Rect& rectangl
   _d->updateTitle();
   _d->type = smallFest;
 
-  _d->btnHelp = new TexturedButton( this, Point( 52, height() - 52 ), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
-  _d->btnExit = new TexturedButton( this, Point( width() - 74, height() - 52 ), Size( 24 ), -1, ResourceMenu::exitInfBtnPicId );
+  _d->btnHelp = new TexturedButton( this, Point( 52, height() - 52 ), Size( 24 ), -1, config::id.menu.helpInf );
+  _d->btnExit = new TexturedButton( this, Point( width() - 74, height() - 52 ), Size( 24 ), -1, config::id.menu.exitInf );
 
   /*int money = _d->city->getFunds().getValue();*/
-  _d->cost = city::statistic::getFestivalCost( city, smallFest );
+  _d->cost = city->statistic().festival.calcCost( smallFest );
 
   if( _d->btnSmallFestival )
   {
     _d->btnSmallFestival->setID( Impl::festId+smallFest );
-    _d->btnSmallFestival->setText( utils::format( 0xff, "%s %d", _("##small_festival##"), _d->cost ) );
+    _d->btnSmallFestival->setText( fmt::format( "{} {}", _("##small_festival##"), _d->cost ) );
   }
 
-  _d->cost = city::statistic::getFestivalCost( city, middleFest );
+  _d->cost = city->statistic().festival.calcCost( middleFest );
   if( _d->btnMiddleFestival )
   {
     _d->btnMiddleFestival->setID( Impl::festId+middleFest );
-    _d->btnMiddleFestival->setText( utils::format( 0xff, "%s %d", _("##middle_festival##"), _d->cost ));
+    _d->btnMiddleFestival->setText( fmt::format( "{} {}", _("##middle_festival##"), _d->cost ));
   }
 
-  _d->cost = city::statistic::getFestivalCost( city, greatFest );
+  _d->cost = city->statistic().festival.calcCost( greatFest );
   if( _d->btnGreatFestival )
   {
     _d->btnGreatFestival->setID( Impl::festId+greatFest );
-    _d->btnGreatFestival->setText( utils::format( 0xff, "%s %d", _("##great_festival##"), _d->cost ));
+    _d->btnGreatFestival->setText( fmt::format( "{} {}", _("##great_festival##"), _d->cost ));
   }
 
-  _d->btnYes = new TexturedButton( this, Point( 350, height() - 50 ), Size( 39, 26), -1, ResourceMenu::okBtnPicId );
-  _d->btnNo = new TexturedButton( this, Point( 350 + 43, height() - 50 ), Size( 39, 26), -1, ResourceMenu::cancelBtnPicId );
-  _d->btnNo->setTooltipText( "##donot_organize_festival##" );
+  _d->btnYes = new TexturedButton( this, Point( 350, height() - 50 ), Size( 39, 26), -1, config::id.menu.ok );
+  _d->btnYes->setTooltipText( _("##new_festival##") );
+  _d->btnNo = new TexturedButton( this, Point( 350 + 43, height() - 50 ), Size( 39, 26), -1, config::id.menu.cancel );
+  _d->btnNo->setTooltipText( _("##donot_organize_festival##") );
 
   CONNECT( _d->btnExit,onClicked(), this, FestivalPlanning::deleteLater );
   CONNECT( _d->btnNo,  onClicked(), this, FestivalPlanning::deleteLater );
@@ -184,7 +185,7 @@ bool FestivalPlanning::onEvent(const NEvent& event)
     {
       if( (btn->ID() & Impl::divId) == Impl::divId )
       {
-        foreach ( abtn, _d->godBtns )  { (*abtn)->setPressed( false ); }
+        for( auto abtn : _d->godBtns ) { abtn->setPressed( false ); }
 
         btn->setPressed( true );
         _d->currentDivinity = _d->divines[ btn->ID() ];
@@ -212,7 +213,7 @@ bool FestivalPlanning::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-Signal2<int,int>& FestivalPlanning::onFestivalAssign() {  return _d->onFestivalAssignSignal;}
+Signal2<int,int>& FestivalPlanning::onFestivalAssign() { return _d->onFestivalAssignSignal;}
 
 }//end namespace dialog
 

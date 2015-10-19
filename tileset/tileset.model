@@ -1,0 +1,114 @@
+{
+  repository : "../../../caesaria"
+  output : "."
+  archives :
+  {
+    houses :
+    {
+      size : [ 2048, 2048 ]
+      margin : 2
+      ignorePath : true
+      floatCoordinates : false
+      name : "houses"
+      archive : "resources/gfx/pics_house"
+
+      info : {
+        atlas : [ "housng1a1.atlas" ]
+      }
+
+      items :
+      {
+        atlas :
+        {
+          type : "atlas"
+          folder : "/resources/houses"
+          files : [ "housng1a_*" ]
+        }
+
+        once :
+        {
+          type : "file"
+          folder : "/resources/houses"
+          files : [ "housgn1a1.atlas"
+                    "housgn1a1.png" ]
+        }
+      }
+    }
+
+    carts:
+    {
+      size : [ 2048, 2048 ]
+      margin : 1
+      ignorePath : true
+      floatCoordinates : false
+      name : "carts"
+      archive : "resources/gfx/pics_carts"
+
+      items :
+      {
+        clay :
+        {
+          type : "atlas"
+          folder : "/resources/carts/clay"
+          files : [ "cartclay_*" ]
+        }
+
+        fish :
+        {
+          type : "atlas"
+          folder : "/resources/carts/fish"
+          files : [ "cartfish_*" ]
+        }
+
+        fruit :
+        {
+          type : "atlas"
+          folder : "/resources/carts/fruit"
+          files : [ "cartfruit_*" ]
+        }
+
+        furniture :
+        {
+          type : "atlas"
+          folder : "/resources/carts/furniture"
+          files : [ "cartfurniture_*" ]
+        }
+
+        grape :
+        {
+          type : "atlas"
+          folder : "/resources/carts/grape"
+          files : [ "cartgrape_*" ]
+        }
+
+        iron :
+        {
+          type : "atlas"
+          folder : "/resources/carts/iron"
+          files : [ "cartiron_*" ]
+        }
+
+        marble :
+        {
+          type : "atlas"
+          folder : "/resources/carts/marble"
+          files : [ "cartmarble_*" ]
+        }
+
+        meat :
+        {
+          type : "atlas"
+          folder : "/resources/carts/meat"
+          files : [ "cartmeat_*" ]
+        }
+
+        none :
+        {
+          type : "atlas"
+          folder : "/resources/carts/none"
+          files : [ "cartnone_*" ]
+        }
+      }
+    }
+  }
+}

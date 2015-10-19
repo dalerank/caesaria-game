@@ -26,6 +26,7 @@
 #include "core/logger.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/flowlist.hpp"
+#include "core/common.hpp"
 
 using namespace gfx;
 
@@ -42,11 +43,11 @@ public:
   VariantMap save() const
   {
     VariantMap ret;
-    foreach( m, *this )
+    for( auto& m : *this )
     {
       VariantMap saveRoute;
-      (*m)->save( saveRoute );
-      ret[ "->" + (*m)->destinationCity() ] = saveRoute;
+      m->save( saveRoute );
+      ret[ "->" + m->destinationCity() ] = saveRoute;
     }
 
     return ret;
@@ -56,7 +57,7 @@ public:
   {
     if( !route )
     {
-      Logger::warning( "WARNING !!!: Merchants::load() route is null" );
+      Logger::warning( "!!!WARNING: Merchants::load() route is null" );
       return;
     }
 
@@ -71,21 +72,16 @@ public:
       }
       else
       {
-        Logger::warning( "WARNING !!!: Merchants::load() cant load merchant index %d for route %s",
-                         std::distance( stream.begin(), it ), route->name().c_str() );
+        Logger::warning( "!!!WARNING: Merchants::load() cant load merchant index {0} for route {1}",
+                         std::distance( stream.begin(), it ), route->name() );
       }
     }
   }
 
   void update( unsigned int time )
   {
-    MerchantList::iterator it=begin();
-    while( it != end() )
-    {
-      if( (*it)->isDeleted() ) {  it = erase( it ); }
-      else  { (*it)->timeStep( time ); ++it;  }
-    }
-
+    for( auto&& it : *this ) it->timeStep( time );
+    utils::eraseIfDeleted( *this );
     merge();
   }
 };
@@ -141,12 +137,10 @@ bool Traderoute::containPoint( const Point& pos, int devianceDistance)
   if( !_d->boundingBox.isPointInside( pos ) )
     return false;
 
-  foreach( it, _d->points )
+  for( auto& it : _d->points )
   {
-    if( it->distanceTo( pos ) < devianceDistance )
-    {
+    if( it.distanceTo( pos ) < devianceDistance )
       return true;
-    }
   }
 
   return false;
@@ -168,7 +162,7 @@ MerchantPtr Traderoute::addMerchant(const std::string& begin, good::Store &sell,
 {
   if( _d->points.empty() )
   {
-    Logger::warning( "Traderoute::addMerchant cannot create merchant for empty trade route [" + _d->begin + "<->" +_d->end  + "]" );
+    Logger::warning( "Traderoute::addMerchant cannot create merchant for empty trade route [{}<->{}]", _d->begin, _d->end );
     return MerchantPtr();
   }
 
@@ -190,21 +184,8 @@ Traderoute::Traderoute( EmpirePtr empire, std::string begin, std::string end )
 
 Traderoute::~Traderoute() {}
 
-MerchantPtr Traderoute::merchant( unsigned int index )
-{
-  bool invalidIndex = index >= _d->merchants.size();
-  if( invalidIndex )
-    return MerchantPtr();
-
-  MerchantList::iterator it = _d->merchants.begin();
-  std::advance( it, index );
-  return *it;
-}
-
-const MerchantList& Traderoute::merchants() const
-{
-  return _d->merchants;
-}
+MerchantPtr Traderoute::merchant( unsigned int index ) { return _d->merchants.valueOrEmpty( index ); }
+const MerchantList& Traderoute::merchants() const{  return _d->merchants; }
 
 VariantMap Traderoute::save() const
 {  
@@ -239,19 +220,13 @@ Signal1<MerchantPtr>& Traderoute::onMerchantArrived()
 
 void Traderoute::Impl::resolveMerchantArrived(MerchantPtr merchant)
 {
-  foreach( m, merchants )
-  {
-    if( *m == merchant )
-    {
-      (*m)->deleteLater();
-      break;
-    }
-  }
+  if( merchants.contain( merchant ) )
+    merchant->deleteLater();
 
   CityPtr city = empire->findCity( merchant->destinationCity() );
   if( city.isValid() )
   {
-    city->addObject( ptr_cast<Object>( merchant ) );
+    city->addObject( merchant.as<Object>() );
   }
 
   emit onMerchantArrivedSignal( merchant );
@@ -266,10 +241,8 @@ void Traderoute::Impl::updateBoundingBox()
   }
 
   boundingBox = Rect( points.front(), points.front() );
-  foreach ( it, points )
-  {
-    boundingBox.addInternalPoint( it->x(), it->y() );
-  }
+  for( auto& it : points )
+    boundingBox.addInternalPoint( it.x(), it.y() );
 }
 
 void Traderoute::Impl::updatePictures()

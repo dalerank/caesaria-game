@@ -32,16 +32,12 @@ namespace citylayer
 
 int Religion::type() const { return citylayer::religion; }
 
-void Religion::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Religion::drawTile( const RenderInfo& rinfo, Tile& tile)
 {
-  Point screenPos = tile.mappos() + offset;
-
   if( tile.overlay().isNull() )
   {
-    //draw background
-    //engine.draw( tile.picture(), screenPos );
-    drawPass( engine, tile, offset, Renderer::ground );
-    drawPass( engine, tile, offset, Renderer::groundAnimation );
+    drawPass( rinfo, tile, Renderer::ground );
+    drawPass( rinfo, tile, Renderer::groundAnimation );
   }
   else
   {
@@ -56,37 +52,38 @@ void Religion::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( overlay->type() == object::house )
     {
-      HousePtr house = ptr_cast<House>( overlay );
+      auto house = overlay.as<House>();
       religionLevel = (int) house->getServiceValue(Service::religionMercury);
       religionLevel += house->getServiceValue(Service::religionVenus);
       religionLevel += house->getServiceValue(Service::religionMars);
       religionLevel += house->getServiceValue(Service::religionNeptune);
       religionLevel += house->getServiceValue(Service::religionCeres);
       religionLevel = math::clamp( religionLevel / (house->spec().minReligionLevel()+1), 0, 100 );
-      needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
+      needDrawAnimations = (house->level() <= HouseLevel::hovel) && house->habitants().empty();
 
       if( !needDrawAnimations )
       {
-        drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+        drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
       }
     }
     else
     {
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base );
     }
 
     if( needDrawAnimations )
     {
-      Layer::drawTile( engine, tile, offset );
+      Layer::drawTile( rinfo, tile );
       registerTileForRendering( tile );
     }
     else if( religionLevel > 0 )
     {
-      drawColumn( engine, screenPos, religionLevel );
+      Point screenPos = tile.mappos() + rinfo.offset;
+      drawColumn( rinfo, screenPos, religionLevel );
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 void Religion::handleEvent(NEvent& event)
@@ -101,7 +98,7 @@ void Religion::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        HousePtr house = ptr_cast<House>( tile->overlay() );
+        auto house = tile->overlay<House>();
         if( house.isValid() )
         {
           int templeAccess = house->spec().computeReligionLevel( house );

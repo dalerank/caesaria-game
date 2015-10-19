@@ -57,13 +57,12 @@ struct ProgressInfo
 	double progressFraction;
 
 	// The current download speed, if applicable, in bytes/sec
-	double downloadSpeed;
 
-	// Number of bytes received
-	std::size_t downloadedBytes;
-
-	// Number of bytes to download
-	std::size_t bytesToDownload;
+  struct {
+    size_t downloaded; // Number of bytes received
+    size_t need; // Number of bytes to download
+    double speed;
+  } connection;
 
 	// Number of files to download
 	std::size_t filesToDownload;
@@ -114,14 +113,14 @@ public:
 	 * a popup being displayed, or a line printed to the console, this depends
 	 * on the implementation.
 	 */
-	virtual void OnMessage(const std::string& message) = 0;
+  virtual void onMessage(const std::string& message) = 0;
 
 	/** 
 	 * Use this method to send a warning to the view - this might result in
 	 * a popup being displayed, or a line printed to the console, this depends
 	 * on the implementation.
 	 */
-	virtual void OnWarning(const std::string& message) = 0;
+  virtual void onWarning(const std::string& message) = 0;
 
 	/**
 	 * Called when the controller starts to download a differential update package.

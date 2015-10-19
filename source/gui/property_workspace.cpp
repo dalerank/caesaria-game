@@ -71,9 +71,9 @@ PropertyWorkspace::PropertyWorkspace( Widget* _parent, scene::Base* scene, const
 
   setWindowFlag( fdraggable, true );
 	// we can ctrl+tab to it
-	setTabStop(true);
+	setTabstop(true);
 	// the tab order number is auto-assigned
-	setTabOrder(-1);
+	setTaborder(-1);
 
 	// set window text
   setText("");
@@ -168,10 +168,10 @@ void PropertyWorkspace::_addChildrenToTree( Widget* _parentElement, TreeViewItem
 	newnode->setData((void*)_parentElement);
   const Widget::Widgets& children = _parentElement->children();
 
-  foreach( i, children )
+  for( auto i : children )
 	{
-		if( !(*i)->isSubElement())
-      _addChildrenToTree(*i, newnode);
+    if( !i->isSubElement())
+      _addChildrenToTree(i, newnode);
 	}
 }
 

@@ -36,6 +36,7 @@
 #include "event_messagebox.hpp"
 #include "core/gettext.hpp"
 #include "gui/label.hpp"
+#include "events/playsound.hpp"
 #include "widget_helper.hpp"
 
 using namespace gfx;
@@ -79,12 +80,17 @@ public signals:
   Signal1<int> onRemoveMessage;
 
 protected:
+  int lastIndex=-1;
+  Picture pic;
+
   virtual void _drawItemIcon(gfx::Engine& painter, ListBoxItem& item, const Point& pos, Rect* clipRect)
   {
     bool opened = item.data( literals::opened );
     bool critical = item.data( literals::critical );
     int imgIndex = (critical ? 113 : 111) + (opened ? 1 : 0);
-    painter.draw( Picture( ResourceGroup::panelBackground, imgIndex ), pos + Point( 2, 2) );
+    if( imgIndex != lastIndex )
+      pic = Picture( ResourceGroup::panelBackground, imgIndex );
+    painter.draw( pic, pos + Point( 2, 2), clipRect );
   }
 
   virtual void _updateItemText(Engine& painter, ListBoxItem& item, const Rect& textRect, Font font, const Rect& frameRect)
@@ -93,7 +99,7 @@ protected:
 
     item.resetPicture( frameRect.size() );
 
-    item.draw( util::date2str( time, true ), font, Point( 35, 0 ) );
+    item.draw( utils::date2str( time, true ), font, Point( 35, 0 ) );
     item.draw( item.text(), font, Point( width() / 2, 0 ) );
   }
 
@@ -114,9 +120,9 @@ protected:
         int index = itemAt( event.mouse.pos() );
         if( index >= 0 )
         {
-          ListBoxItem& itemUnderMouse = item( index );
+          //ListBoxItem& itemUnderMouse = item((unsigned int) index);
 
-          bool opened = itemUnderMouse.data( literals::opened );
+          //bool opened = itemUnderMouse.data( literals::opened );
 
           //std::string text = opened ? "" : _("##scribemessages_unread##");
           //setTooltipText( text );
@@ -164,8 +170,11 @@ ScribesMessages::ScribesMessages( Widget* p, PlayerCityPtr city )
 
   CONNECT( _d->lbxMessages, onShowMessage, this, ScribesMessages::_showMessage );
   CONNECT( _d->lbxMessages, onRemoveMessage, this, ScribesMessages::_removeMessage );
-  CONNECT( _d->btnExit, onClicked(), this, ScribesMessages::deleteLater );
   CONNECT( _d->btnHelp, onClicked(), this, ScribesMessages::_showHelp );
+  CONNECT( _d->btnExit, onClicked(), this, ScribesMessages::deleteLater );
+
+  auto event = events::PlaySound::create( "extm_scribes", 1, 100, audio::effects );
+  event->dispatch();
 
   if( _d->lbxMessages ) _d->lbxMessages->setFocus();
   setModal();
@@ -186,9 +195,8 @@ void ScribesMessages::_fillMessages()
   const city::Scribes::Messages& messages = _d->city->scribes().messages();
   bool haveMessages = !messages.empty();
 
-  foreach( it, messages )
+  for( auto mt : messages )
   {
-    const city::Scribes::Message& mt = *it;
     ListBoxItem& item = _d->lbxMessages->addItem( mt.title, Font::create( FONT_1 ) );
     item.setData( literals::opened, mt.opened );
     item.setData( literals::date, mt.date );

@@ -10,9 +10,9 @@
 
   meadow : {
     type : 2
-    rc : "meadow"
-    start : 1
-    frames : 1
+    rc : "land1a"
+    start : 18
+    frames : 12
     delay : 12
     step : 1
   }

@@ -38,12 +38,13 @@ struct Base
 
   VariantList save() const;
   void load(const VariantList &stream);
-
 };
 
 class Array : public std::vector< Base >
 {
 public:
+  void eraseOld( const DateTime& date, int ageMonth );
+  bool contain( Base::Type type ) const;
 };
 
 }//end namespace

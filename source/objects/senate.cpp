@@ -21,7 +21,6 @@
 #include "game/resourcegroup.hpp"
 #include "game/funds.hpp"
 #include "walker/taxcollector.hpp"
-#include "city/helper.hpp"
 #include "constants.hpp"
 #include "city/statistic.hpp"
 #include "core/gettext.hpp"
@@ -107,7 +106,7 @@ bool Senate::canBuild( const city::AreaInfo& areaInfo ) const
 
   if( mayBuild )
   {
-    bool isSenatePresent = !statistic::getObjects<Building>( areaInfo.city, object::senate).empty();
+    bool isSenatePresent = !areaInfo.city->statistic().objects.find<Building>( object::senate).empty();
     _d->errorStr = isSenatePresent ? _("##can_build_only_one_of_building##") : "";
     mayBuild &= !isSenatePresent;
   }
@@ -121,12 +120,12 @@ void Senate::applyService(ServiceWalkerPtr walker)
   {
   case walker::taxCollector:
   {
-    TaxCollectorPtr txcl = ptr_cast<TaxCollector>( walker );
-    if( txcl.isValid() )
+    auto taxCollectir = walker.as<TaxCollector>();
+    if( taxCollectir.isValid() )
     {
-      float tax = txcl->takeMoney();;
+      float tax = taxCollectir->takeMoney();;
       _d->taxValue += tax;
-      Logger::warning( "Senate: collect money %f. All money %f", tax, _d->taxValue );
+      Logger::warning( "Senate: collect money {0}. All money {1}", tax, _d->taxValue );
     }
   }
   break;
@@ -176,7 +175,7 @@ void Senate::timeStep(const unsigned long time)
   ServiceBuilding::timeStep( time );
 }
 
-void Senate::initialize(const MetaData& mdata)
+void Senate::initialize(const object::Info& mdata)
 {
   ServiceBuilding::initialize( mdata );
 
@@ -245,7 +244,7 @@ int Senate::status(Senate::Status status) const
   {
     switch(status)
     {
-    case workless:   return statistic::getWorklessPercent( _city() );
+    case workless:   return _city()->statistic().workers.worklessPercent();
     case culture:    return _city()->culture();
     case prosperity: return _city()->prosperity();
     case peace:      return _city()->peace();

@@ -34,17 +34,13 @@ namespace citylayer
 
 int Tax::type() const {  return citylayer::tax; }
 
-void Tax::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Tax::drawTile(const RenderInfo& rinfo, Tile& tile)
 {
-  Point screenPos = tile.mappos() + offset;
 
   if( tile.overlay().isNull() )
   {
-    //draw background
-    //engine.draw( tile.picture(), screenPos );
-
-    drawPass( engine, tile, offset, Renderer::ground );
-    drawPass( engine, tile, offset, Renderer::groundAnimation );
+    drawPass( rinfo, tile, Renderer::ground );
+    drawPass( rinfo, tile, Renderer::groundAnimation );
   }
   else
   {
@@ -59,34 +55,35 @@ void Tax::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( overlay->type() == object::house )
     {
-      HousePtr house = ptr_cast<House>( overlay );
+      auto house = overlay.as<House>();
       int taxAccess = house->getServiceValue( Service::forum );
       taxLevel = math::clamp<int>( house->taxesThisYear(), 0, 100 );
-      needDrawAnimations = ((house->spec().level() == 1 && house->habitants().empty())
+      needDrawAnimations = ((house->level() <= HouseLevel::hovel && house->habitants().empty())
                             || taxAccess < 25);
 
       if( !needDrawAnimations )
       {
-        drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+        drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
       }
     }
     else
     {
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base );
     }
 
     if( needDrawAnimations )
     {
-      Layer::drawTile( engine, tile, offset );
+      Layer::drawTile( rinfo, tile );
       registerTileForRendering( tile );
     }
     else if( taxLevel > 0 )
     {
-      drawColumn( engine, screenPos, taxLevel );
+      Point screenPos = tile.mappos() + rinfo.offset;
+      drawColumn( rinfo, screenPos, taxLevel );
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 LayerPtr Tax::create( Camera& camera, PlayerCityPtr city )
@@ -109,15 +106,15 @@ void Tax::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        BuildingPtr bld = ptr_cast<Building>( tile->overlay() );
+        auto building = tile->overlay<Building>();
 
-        if( bld.isNull() )
+        if( building.isNull() )
         {
           text = "##no_people_in_this_locality##";
         }
         else
         {
-          HousePtr house = tile->overlay().as<House>();
+          auto house = tile->overlay<House>();
           if( house.isValid() )
           {
             bool lastTaxationTooOld = house->lastTaxationDate().monthsTo( game::Date::current() ) > DateTime::monthsInYear / 2;
@@ -139,8 +136,11 @@ void Tax::handleEvent(NEvent& event)
 }
 
 Tax::Tax( Camera& camera, PlayerCityPtr city)
-  : Info( camera, city, 124 )
+  : Info( camera, city, 9 )
 {
+  if( !city->getOption( PlayerCity::c3gameplay ) )
+    _loadColumnPicture( ResourceGroup::sprites, 124 );
+
   _addWalkerType( walker::taxCollector );
   _initialize();
 }

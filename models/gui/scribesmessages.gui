@@ -47,9 +47,11 @@
 
     lbInfo#Label :
     {
-      geometry : [ 50, "ph-60", "pw-50", "ph-20" ]
-      textAlign : [ "center", "center" ]
+      geometry : [ 50, "ph-40", "pw-50", "ph-12" ]
+      textAlign : [ "center", "upperLeft" ]
+      font : "FONT_1"
       text : "##left_click_open_right_erase##"
+      multiline : true
     }
   }
 }

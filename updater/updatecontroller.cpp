@@ -15,7 +15,7 @@
 
 #include "updatecontroller.hpp"
 #include "constants.hpp"
-
+#include "core/osystem.hpp"
 #include "util.hpp"
 
 namespace updater
@@ -28,11 +28,10 @@ UpdateController::UpdateController(IUpdateView& view, vfs::Path executableName, 
 	_abortFlag(false),
 	_differentialUpdatePerformed(false)
 {
-	_progress = ProgressHandlerPtr( new ProgressHandler(_view) );
-	_progress->drop();
+  _progress = ProgressHandler::create(_view);
 
-	_updater.SetDownloadProgressCallback( ptr_cast<Updater::DownloadProgress>( _progress ));
-	_updater.SetFileOperationProgressCallback( ptr_cast<Updater::FileOperationProgress>( _progress ));
+  _updater.SetDownloadProgressCallback( _progress.object() );
+  _updater.SetFileOperationProgressCallback( _progress.object() );
 }
 
 UpdateController::~UpdateController()
@@ -51,25 +50,23 @@ void UpdateController::DontPauseAt(UpdateStep step)
 	_interruptionPoints.erase(step);
 }
 
-void UpdateController::StartOrContinue()
+void UpdateController::start()
 {
   assert(_synchronizer == NULL); // debug builds take this seriously
 
   if( _synchronizer.isNull() )
   {
-     ExceptionSafeThreadPtr p( new ExceptionSafeThread( makeDelegate( this, &UpdateController::run )) );
-     p->SetThreadType( ThreadTypeIntervalDriven );
-     p->drop();
+     auto p = threading::SafeThread::create( threading::SafeThread::WorkFunction( this, &UpdateController::run ) );
      _synchronizer = p;
   }
 }
 
-void UpdateController::PerformPostUpdateCleanup()
+void UpdateController::doPostUpdateCleanup()
 {
 	_updater.postUpdateCleanup();
 }
 
-void UpdateController::Abort()
+void UpdateController::abort()
 {
   _abortFlag = true;
 
@@ -77,45 +74,47 @@ void UpdateController::Abort()
   {
     try
     {
-      _synchronizer->Stop();
+      _synchronizer->abort();
     }
     catch (std::runtime_error& ex)
     {
-      Logger::warning( "Controller thread aborted. %s", ex.what() );
+      Logger::warning( "Controller thread aborted. {}", ex.what() );
     }
 
     _updater.cancelDownloads();
   }
 }
 
-bool UpdateController::AllThreadsDone() {	return _synchronizer == NULL;}
-std::size_t UpdateController::GetNumMirrors(){	return _updater.GetNumMirrors(); }
-bool UpdateController::NewUpdaterAvailable(){	return _updater.NewUpdaterAvailable();}
-bool UpdateController::LocalFilesNeedUpdate(){	return _updater.LocalFilesNeedUpdate();}
-std::size_t UpdateController::GetTotalDownloadSize(){	return _updater.GetTotalDownloadSize();}
-std::size_t UpdateController::GetTotalBytesDownloaded(){	return _updater.GetTotalBytesDownloaded();}
-std::size_t UpdateController::GetNumFilesToBeUpdated(){	return _updater.GetNumFilesToBeUpdated();}
-std::string UpdateController::GetLocalVersion(){	return _updater.getDeterminedLocalVersion();}
-std::string UpdateController::GetNewestVersion(){	return _updater.getNewestVersion();}
+bool UpdateController::allThreadsDone() {	return _synchronizer == NULL;}
+std::size_t UpdateController::mirrors_n(){	return _updater.mirrors_n(); }
+bool UpdateController::haveNewUpdater(){	return _updater.NewUpdaterAvailable();}
+bool UpdateController::haveNewFiles(){	return _updater.isDownloadQueueFull();}
+std::size_t UpdateController::totalDownloadSize(){	return _updater.GetTotalDownloadSize();}
+std::size_t UpdateController::totalDownloadedBytes(){	return _updater.GetTotalBytesDownloaded();}
+std::size_t UpdateController::flesToBeUpdated_n(){	return _updater.GetNumFilesToBeUpdated();}
+std::string UpdateController::localVersion(){	return _updater.getDeterminedLocalVersion();}
+std::string UpdateController::farVersion(){	return _updater.getNewestVersion();}
 
-void UpdateController::removeDownload(std::string itemname)
+void UpdateController::removeDownload(const std::string& itemname)
 {
 	_updater.removeDownload( itemname );
 }
 
-void UpdateController::run()
+void UpdateController::run(bool& continues)
 {
 	while( _curStep != Done )
 	{
 		// Launch the thread and setup the callbacks
-		performStep( _curStep );
+    doStep( _curStep );
 		finalizeStep( _curStep );
 	}
+
+  continues = false;
 }
 
-void UpdateController::performStep(int step)
+void UpdateController::doStep(int step)
 {
-	//Logger::warning( "Step thread started: %d", step);
+  Logger::warning( "Step thread started: {}", step);
 
 	_view.onStartStep((UpdateStep)step);
 
@@ -124,43 +123,40 @@ void UpdateController::performStep(int step)
 	switch (step)
 	{
 	case Init:
-		// Check if TDM is active
+    // Check if CaesarIA is active
 		if( Util::caesariaIsRunning() )
 		{
-			// grayman - change "Doom3" to "The Dark Mod"
-			_view.OnWarning("The CaesarIA was found to be active.\nThe updater will not be able to update any files.\nPlease exit CaesarIA before continuing.");
+      _view.onWarning("The CaesarIA was found to be active.\nThe updater will not be able to update any files.\nPlease exit CaesarIA before continuing.");
 		}
-
-		break;
+  break;
 
 	case CleanupPreviousSession:
 		// Pass the call to the updater
-		_updater.CleanupPreviousSession();
-		break;
+    _updater.cleanupPreviousSession();
+  break;
 
 	case UpdateMirrors:
 		// Pass the call to the updater
-		if( _updater.isMirrorsNeedUpdate() )
+    if( _updater.isNeedLoadMirrorsFromServer() )
 		{
-			_updater.updateMirrors();
+      _updater.downloadNewMirrors();
 		}
 		else
 		{
-			// Load Mirrors
 			_updater.loadMirrors();
 		}
-		break;
+  break;
 
 	case DownloadStableVersion:
-		_updater.GetStableVersionFromServer();
-		break;
+    _updater.downloadStableVersion();
+  break;
 
 	case CompareLocalFilesToNewest:
-		_updater.CheckLocalFiles();
-		break;
+    _updater.checkLocalFiles();
+  break;
 
 	case DownloadVersionInfo:
-		_updater.GetVersionInfoFromServer();
+    _updater.downloadCurrentVersion();
 		break;
 
 	case DetermineLocalVersion:
@@ -169,7 +165,7 @@ void UpdateController::performStep(int step)
 
 	case DownloadNewUpdater:
 		// Prepare, Download, Apply
-		_updater.PrepareUpdateStep(TEMP_FILE_PREFIX);
+    _updater.prepareUpdateStep(TEMP_FILE_PREFIX);
 		_updater.PerformUpdateStep();
 		_updater.cleanupUpdateStep();
 		break;
@@ -181,7 +177,7 @@ void UpdateController::performStep(int step)
 	break;
 
 	case DownloadFullUpdate:
-		_updater.PrepareUpdateStep("");
+    _updater.prepareUpdateStep("");
 		_updater.PerformUpdateStep();
 		_updater.cleanupUpdateStep();
 		break;
@@ -191,8 +187,8 @@ void UpdateController::performStep(int step)
 		_updater.setBinaryAsExecutable();
 		break;
 
-	case RestartUpdater:		
-		_updater.RestartUpdater();
+  case RestartUpdater:
+    _updater.restartUpdater();
 		break;
 
 	case Done:
@@ -242,7 +238,7 @@ void UpdateController::finalizeStep(int step)
 				// Update necessary, new updater available
                 TryToProceedTo(DownloadNewUpdater);
 			}
-            else if (_updater.LocalFilesNeedUpdate())
+            else if (_updater.isDownloadQueueFull())
 			{
 				// Update necessary, updater is ok
 				if (_updater.DifferentialUpdateAvailable())
@@ -254,7 +250,7 @@ void UpdateController::finalizeStep(int step)
 					// Did we already perform a differential update?
 					if (_differentialUpdatePerformed)
 					{
-						_view.OnMessage("A differential update has been applied to your installation,\nthough some files still need to be updated.");
+            _view.onMessage("A differential update has been applied to your installation,\nthough some files still need to be updated.");
 					}
 
 					TryToProceedTo(DownloadFullUpdate);
@@ -270,8 +266,8 @@ void UpdateController::finalizeStep(int step)
 
 	case DownloadNewUpdater:
 		{
-			_updater.RestartUpdater();
-			TryToProceedTo(RestartUpdater);
+      _updater.restartUpdater();
+      TryToProceedTo(RestartUpdater);
 		}
 		break;
 
@@ -303,7 +299,7 @@ void UpdateController::finalizeStep(int step)
 		TryToProceedTo(Done);
 		break;
 
-	case RestartUpdater:
+  case RestartUpdater:
 		TryToProceedTo(Done);
 		break;
 
@@ -329,7 +325,7 @@ bool UpdateController::IsAllowedToContinueTo(UpdateStep step)
 	return _interruptionPoints.find(step) == _interruptionPoints.end();
 }
 
-bool UpdateController::IsDone()
+bool UpdateController::isDone()
 {
 	return _curStep == Done;
 }

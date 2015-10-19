@@ -63,7 +63,7 @@ public:
   virtual std::string workersStateDesc() const;
   virtual std::string troubleDesc() const;
 
-  virtual void initialize(const MetaData &mdata);
+  virtual void initialize(const object::Info& mdata);
 
 public signals:
   Signal1<bool>& onActiveChange();

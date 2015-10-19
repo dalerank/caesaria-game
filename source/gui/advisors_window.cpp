@@ -40,7 +40,6 @@
 #include "advisor_religion_window.hpp"
 #include "advisor_finance_window.hpp"
 #include "advisor_chief_window.hpp"
-#include "core/foreach.hpp"
 #include "game/funds.hpp"
 #include "events/event.hpp"
 #include "city/requestdispatcher.hpp"
@@ -129,14 +128,10 @@ void Parlor::showAdvisor(const Advisor type )
   if( type >= advisor::unknown )
     return;
 
-  Widget::Widgets rchildren = children();
-  foreach( child, rchildren )
+  auto buttons = children().select<PushButton>();
+  for( auto btn : buttons )
   {
-    PushButton* btn = safety_cast< PushButton* >( *child );
-    if( btn )
-    {
-      btn->setPressed( btn->ID() == type );
-    }
+    btn->setPressed( btn->ID() == type );
   }
 
   if( _d->advisorPanel )
@@ -148,7 +143,7 @@ void Parlor::showAdvisor(const Advisor type )
   if( type == advisor::employers )  { _d->advisorPanel = new advisorwnd::Employer( _d->city, this, advisor::employers );  }
   else if( type == advisor::military )
   {
-    FortList forts = city::statistic::getObjects<Fort>( _d->city );
+    FortList forts = _d->city->statistic().objects.find<Fort>();
     _d->advisorPanel = new advisorwnd::Legion( this, advisor::military, _d->city, forts );
   }
   else if( type == advisor::population ) { _d->advisorPanel = new advisorwnd::Population( _d->city, this, advisor::population ); }

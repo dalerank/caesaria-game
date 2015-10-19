@@ -20,6 +20,7 @@
 
 #include "core/scopedptr.hpp"
 #include "vfs/path.hpp"
+#include "core/time.hpp"
 
 namespace game
 {
@@ -29,7 +30,7 @@ class Celebrates
 public:
   static Celebrates& instance();
   void load( vfs::Path path );
-  std::string getDescription( int day, int month ) const;
+  std::string getDescription( int day_n, Month month ) const;
 
 private:
   Celebrates();

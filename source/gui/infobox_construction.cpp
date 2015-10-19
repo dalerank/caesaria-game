@@ -22,6 +22,7 @@
 #include "core/logger.hpp"
 #include "core/gettext.hpp"
 #include "events/showtileinfo.hpp"
+#include "events/playsound.hpp"
 
 namespace gui
 {
@@ -33,7 +34,7 @@ AboutConstruction::AboutConstruction( Widget* parent, Rect rect, Rect blackArea 
   : Infobox( parent, rect, blackArea )
 {
   setupUI( ":/gui/infoboxconstr.gui" );
-  _btnToggleWorking = 0;
+  _btnToggleWorking = nullptr;
 }
 
 AboutConstruction::~AboutConstruction() {}
@@ -62,7 +63,7 @@ bool AboutConstruction::onEvent(const NEvent& event)
   return Infobox::onEvent( event );
 }
 
-PushButton* AboutConstruction::_btnToggleWorkingRef() { return _btnToggleWorking; }
+PushButton* AboutConstruction::_buttonToggleWorking() { return _btnToggleWorking; }
 
 void AboutConstruction::_setWorkingVisible(bool show)
 {
@@ -90,17 +91,27 @@ void AboutConstruction::_setWorkingActive(bool working)
 
 void AboutConstruction::_updateWorkingText()
 {
-  WorkingBuildingPtr working = base().as<WorkingBuilding>();
-  _setWorkingActive( working.isValid() ? working->isActive() : false );
+  auto workingBuilding = base().as<WorkingBuilding>();
+  _setWorkingActive( workingBuilding.isValid() ? workingBuilding->isActive() : false );
 }
 
 void AboutConstruction::_resolveToggleWorking()
 {
-  WorkingBuildingPtr working = ptr_cast<WorkingBuilding>( base() );
-  if( working.isValid() )
+  auto workingBuilding = base().as<WorkingBuilding>();
+  if( workingBuilding.isValid() )
   {
-    working->setActive( !working->isActive() );
-    _setWorkingActive( working->isActive() );
+    workingBuilding->setActive( !workingBuilding->isActive() );
+    _setWorkingActive( workingBuilding->isActive() );
+  }
+}
+
+void AboutConstruction::_baseAssigned()
+{
+  if( base().isValid() )
+  {
+    std::string typeName = object::toString( base()->type() );
+    auto event = events::PlaySound::create( "bmsel_"+typeName, 1, 100, audio::infobox, true );
+    event->dispatch();
   }
 }
 
@@ -118,6 +129,6 @@ void AboutConstruction::_switch(int flag)
   }
 }
 
-}
+}//end namespace infobox
 
 }//end namespace gui

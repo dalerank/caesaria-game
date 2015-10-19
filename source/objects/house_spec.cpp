@@ -41,7 +41,7 @@ using namespace gfx;
 class HouseSpecification::Impl
 {
 public:
-  int houseLevel;
+  HouseLevel::ID houseLevel;
   int tileCapacity;
   std::string levelName;
   std::string internalName;
@@ -67,7 +67,7 @@ public:
   GoodConsumptionMuls consumptionMuls;
 };
 
-int HouseSpecification::level() const {   return _d->houseLevel;}
+HouseLevel::ID HouseSpecification::level() const {   return _d->houseLevel;}
 const std::string& HouseSpecification::levelName() const{   return _d->levelName;}
 bool HouseSpecification::isPatrician() const{   return _d->houseLevel >= HouseLevel::smallVilla;}
 int HouseSpecification::tileCapacity() const{   return _d->tileCapacity; }
@@ -76,12 +76,6 @@ int HouseSpecification::minEntertainmentLevel() const{  return _d->minEntertainm
 int HouseSpecification::minEducationLevel() const{  return _d->minEducationLevel;}
 int HouseSpecification::minHealthLevel() const {  return _d->minHealthLevel; }
 int HouseSpecification::minReligionLevel() const{  return _d->minReligionLevel;}
-//
-// int HouseLevelSpec::getMinWaterLevel()
-// {
-//    return _minWaterLevel;
-// }
-//
 int HouseSpecification::minFoodLevel() const{  return _d->minFoodLevel;}
 
 bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing,
@@ -92,11 +86,9 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing,
   std::string reason;
   std::string defaultStr;
   object::Type defaultNeedType;
-  TilePos defaultPos;
 
   std::string& ref = retMissing ? *retMissing : defaultStr;
   object::Type& needBuilding = retBtype ? *retBtype : defaultNeedType;
-  TilePos& rPos = retPos ? *retPos : defaultPos;
 
   needBuilding = object::unknown;
 
@@ -206,35 +198,35 @@ bool HouseSpecification::checkHouse( HousePtr house, std::string* retMissing,
     return false;
   }
 
-  if( _d->requiredGoods[good::pottery] != 0 && house->goodStore().qty(good::pottery) == 0)
+  if( _d->requiredGoods[good::pottery] != 0 && house->store().qty(good::pottery) == 0)
   {
     ref = "##missing_pottery##";
     needBuilding = object::pottery_workshop;
     return false;
   }
 
-  if( _d->requiredGoods[good::furniture] != 0 && house->goodStore().qty(good::furniture) == 0)
+  if( _d->requiredGoods[good::furniture] != 0 && house->store().qty(good::furniture) == 0)
   {
     ref = "##missing_furniture##";
     needBuilding = object::furniture_workshop;
     return false;
   }
 
-  if( _d->requiredGoods[good::oil] != 0 && house->goodStore().qty(good::oil) == 0)
+  if( _d->requiredGoods[good::oil] != 0 && house->store().qty(good::oil) == 0)
   {
     ref = "##missing_oil##";
     needBuilding = object::oil_workshop;
     return false;
   }
 
-  if( _d->requiredGoods[good::wine] != 0 && house->goodStore().qty(good::wine) == 0)
+  if( _d->requiredGoods[good::wine] != 0 && house->store().qty(good::wine) == 0)
   {
     ref = "##missing_wine##";
     needBuilding = object::wine_workshop;
     return false;
   }
 
-  if( _d->requiredGoods[good::prettyWine] != 0 && house->goodStore().qty(good::prettyWine) == 0)
+  if( _d->requiredGoods[good::prettyWine] != 0 && house->store().qty(good::prettyWine) == 0)
   {
     ref = "##missing_second_wine##";
     needBuilding = object::wine_workshop;
@@ -255,27 +247,28 @@ unsigned int HouseSpecification::consumptionInterval(HouseSpecification::Interva
   default: break;
   }
 
-  Logger::warning( "WARNING !!! Unknown interval name %d", name );
+  Logger::warning( "!!!Warning: Unknown interval name {0}", name );
   return 0;
 }
 
 int HouseSpecification::findUnwishedBuildingNearby(HousePtr house, object::Type& rType, TilePos& refPos ) const
 {
-  int aresOffset = math::clamp<int>( house->spec().level() / 5, 1, 10 );
+  int aresOffset = math::clamp<int>( house->level() / 5, 1, 10 );
   TilePos offset( aresOffset, aresOffset );
   TilePos housePos = house->pos();
   int houseDesrbl = house->desirability().base;
-  BuildingList buildings = city::statistic::getObjects<Building>( house->_city(), object::any, housePos - offset, housePos + offset );
+  BuildingList buildings = house->_city()->statistic().objects.find<Building>( object::any,
+                                                                               housePos - offset, housePos + offset );
 
   int ret = 0;
-  foreach( it, buildings )
+  for( auto bld : buildings )
   {
-    int desValue = (*it)->desirability().base;
+    int desValue = bld->desirability().base;
     if( desValue < 0 && houseDesrbl > desValue && abs( houseDesrbl - desValue ) > 1 )
     {
       ret = 1;
-      refPos = (*it)->pos();
-      rType = (*it)->type();
+      refPos = bld->pos();
+      rType = bld->type();
       break;
     }
   }
@@ -285,20 +278,21 @@ int HouseSpecification::findUnwishedBuildingNearby(HousePtr house, object::Type&
 
 int HouseSpecification::findLowLevelHouseNearby(HousePtr house, TilePos& refPos ) const
 {
-  int aresOffset = math::clamp<int>( house->spec().level() / 5, 1, 10 );
+  int aresOffset = math::clamp<int>( house->level() / 5, 1, 10 );
   TilePos offset( aresOffset, aresOffset );
   TilePos housePos = house->pos();
-  HouseList houses = city::statistic::getObjects<House>( house->_city(), object::house, housePos - offset, housePos + offset );
+  HouseList houses = house->_city()->statistic().objects.find<House>( object::house,
+                                                                      housePos - offset, housePos + offset );
 
   int ret = 0;
-  foreach( it, houses )
+  for( auto house : houses )
   {
-    int pop = (*it)->habitants().count();
-    int bLevel = (*it)->spec().level();
+    int pop = house->habitants().count();
+    HouseLevel::ID bLevel = house->level();
     if( pop > 0 && (_d->houseLevel - bLevel > 2) )
     {
       ret = 1;
-      refPos = (*it)->pos();
+      refPos = house->pos();
       break;
     }
   }
@@ -331,7 +325,7 @@ int HouseSpecification::computeFoodLevel(HousePtr house) const
 {
   int res = 0;
 
-  const good::Store& goodStore = house->goodStore();
+  const good::Store& goodStore = house->store();
   res += goodStore.qty(good::wheat) > 0 ? 1 : 0;
   res += goodStore.qty(good::fish) > 0 ? 1 : 0;
   res += goodStore.qty(good::meat) > 0 ? 1 : 0;
@@ -641,8 +635,8 @@ int HouseSpecification::computeDesirabilityLevel(HousePtr house, std::string& oM
 
   float middleDesirbl = 0;;
 
-  foreach( tile, area )
-    middleDesirbl += (float)(*tile)->param( Tile::pDesirability );
+  for( auto tile : area )
+    middleDesirbl += (float)tile->param( Tile::pDesirability );
 
   if( !area.empty() )
     middleDesirbl /= area.size();
@@ -704,11 +698,11 @@ HouseSpecification HouseSpecHelper::getSpec(const int houseLevel)
 
 int HouseSpecHelper::getLevel( const std::string& name )
 {
-  foreach( item, _d->levels )
+  for( auto item : _d->levels )
   {
-    if( item->second.internalName() == name )
+    if( item.second.internalName() == name )
     {
-      return item->second.level();
+      return item.second.level();
     }
   }
 
@@ -727,15 +721,15 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
     return;
   }
 
-  foreach( item, houseSpecs )
+  for( auto& specConfig : houseSpecs )
   {
     // this is not a comment (comments start by #)
     // std::cout << "Line #" << linenum << ":" << line << std::endl;
-    VariantMap hSpec = item->second.toMap();
+    VariantMap hSpec = specConfig.second.toMap();
 
     HouseSpecification spec;
-    spec._d->houseLevel = hSpec[ "level" ];
-    spec._d->internalName = item->first;
+    spec._d->houseLevel = hSpec[ "level" ].toEnum<HouseLevel::ID>();
+    spec._d->internalName = specConfig.first;
     spec._d->levelName = hSpec[ "title" ].toString();
     spec._d->tileCapacity = hSpec.get( "habitants" ).toInt();
     spec._d->minDesirability = hSpec.get( "minDesirability" ).toInt();  // min desirability
@@ -760,31 +754,31 @@ void HouseSpecHelper::initialize( const vfs::Path& filename )
     spec._d->prosperity = hSpec.get( "prosperity" ).toInt();  // prosperity
     spec._d->taxRate = hSpec.get( "tax" ).toInt();// tax_rate
 
-    foreach(i, good::all() )
+    for( auto& goodType : good::all() )
     {
-      spec._d->consumptionMuls[ *i ] = 1;
+      spec._d->consumptionMuls[ goodType ] = 1;
     }
 
     //load consumption goods koefficient
     VariantMap varConsumptions = hSpec.get( "consumptionkoeff" ).toMap();
-    foreach( v, varConsumptions )
+    for( auto& v : varConsumptions )
     {
-      spec._d->consumptionMuls[ good::Helper::getType( v->first ) ] = (float)v->second;
+      spec._d->consumptionMuls[ good::Helper::getType( v.first ) ] = (float)v.second;
     }
 
     VariantMap vmTextures = hSpec.get( "txs" ).toMap();
-    foreach( it, vmTextures )
+    for( auto& it : vmTextures )
     {
-      std::string arName = utils::format( 0xff, "h%d_%s", spec._d->houseLevel, it->first.c_str() );
-      StringArray txNames = it->second.toStringArray();
+      std::string arName = utils::format( 0xff, "h%d_%s", spec._d->houseLevel, it.first.c_str() );
+      StringArray txNames = it.second.toStringArray();
 
       StringArray& hSizeTxs = _d->houseTextures[ arName ];
-      foreach( tx, txNames )
+      for( auto& tx : txNames )
       {
-        Picture pic( *tx );
+        Picture pic( tx );
         if( pic.isValid() )
         {
-          hSizeTxs.push_back( *tx );
+          hSizeTxs.push_back( tx );
         }
       }
     }

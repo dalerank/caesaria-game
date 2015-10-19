@@ -40,12 +40,23 @@ class DrawOptions : public FlagHolder<int>
 public:
   typedef enum { drawGrid=0x1, shadowOverlay=0x2, showPath=0x4, windowActive=0x8, showRoads=0x10,
                  showObjectArea=0x20, showWalkableTiles=0x40, showLockedTiles=0x80, showFlatTiles=0x100,
-                 borderMoving=0x200, mayChangeLayer=0x400, oldGraphics=0x800, mmbMoving=0x1000
-               } Flags;
+                 borderMoving=0x200, mayChangeLayer=0x400, oldGraphics=0x800, mmbMoving=0x1000,
+                 showBuildings=0x2000, showTrees=0x4000, overdrawOnBuild=0x8000, rotateEnabled=0x10000
+               } Flag;
   static DrawOptions& instance();
+  static bool getFlag( Flag flag );
+  static void takeFlag( Flag flag, int value );
+  static DrawOptions::Flag findFlag( const std::string& name );
 
 private:
-  DrawOptions() {}
+  DrawOptions();
+  EnumsHelper<int> _helper;
+};
+
+struct RenderInfo
+{
+  gfx::Engine& engine;
+  Point offset;
 };
 
 class Layer : public ReferenceCounted
@@ -57,21 +68,24 @@ public:
   virtual const WalkerTypes& visibleTypes() const;
 
   //draw gfx tprominent ile
-  virtual void drawProminentTile(gfx::Engine& engine, gfx::Tile& tile, const Point& offset, const int depth, bool force );
+  virtual void drawProminentTile( const RenderInfo& rinfo, gfx::Tile& tile, const int depth, bool force );
 
   //draw gfx active tile
-  virtual void drawTile(gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
+  virtual void drawTile( const RenderInfo& rinfo, gfx::Tile& tile );
+  virtual void drawOverlayedTile(const RenderInfo& rinfo, gfx::Tile& tile);
 
   //draw gfx after walkers
-  virtual void drawWalkerOverlap(gfx::Engine& engine, gfx::Tile& tile, const Point& offset, const int depth );
+  virtual void drawWalkerOverlap( const RenderInfo& rinfo, gfx::Tile& tile, const int depth );
 
   virtual void handleEvent( NEvent& event );
-  virtual void drawPass(gfx::Engine& engine, gfx::Tile& tile, const Point& offset, gfx::Renderer::Pass pass );
-  virtual void drawArea(gfx::Engine& engine, const gfx::TilesArray& area, const Point& offset,
+  virtual void drawPass(const RenderInfo& rinfo, gfx::Tile& tile, gfx::Renderer::Pass pass );
+  virtual void drawArea(const RenderInfo& rinfo, const gfx::TilesArray& area,
                         const std::string& resourceGroup, int tileId );
 
-  virtual void drawLands( gfx::Engine& engine, gfx::Camera* camera );
-  virtual void drawWalkers( gfx::Engine& engine, const gfx::Tile& tile, const Point& camOffset );
+  virtual void drawLands(const RenderInfo& rinfo, gfx::Camera* camera );
+  virtual void drawLandTile( const RenderInfo& rinfo, gfx::Tile &tile );
+  virtual void drawFlatTile( const RenderInfo& rinfo, gfx::Tile& tile );
+  virtual void drawWalkers(const RenderInfo& rinfo, const gfx::Tile& tile);
   virtual void init( Point cursor );
   virtual void beforeRender( gfx::Engine& engine);
   virtual void afterRender( gfx::Engine& engine);

@@ -112,7 +112,7 @@ void SmkViewer::setFilename(const vfs::Path& path)
     smk_info_video( _d->smkfile, &_d->smkfileWidth, &_d->smkfileHeight, NULL );
     smk_info_audio( _d->smkfile, &_d->a_trackmask, _d->a_channels, _d->a_depth, _d->a_rate);
 
-    Logger::warning( "Opened file %s\nWidth: %d\nHeight: %d\nFrames: %d\nFPS: %lf\n", path.toCString(),
+    Logger::warning( "Opened file {0}\nWidth: {1}\nHeight: {2}\nFrames: {3}\nFPS: {4}\n", path.toCString(),
                      _d->smkfileWidth, _d->smkfileHeight, _d->frameCount, 1000000.0 / _d->usecsInFrame );
 
     smk_enable_video( _d->smkfile, 1 );
@@ -209,7 +209,7 @@ void SmkViewer::Impl::nextFrame()
     emit onFinishSignal();
   }
 
-  Logger::warning( " -> Frame %d...", currentFrame );
+  Logger::warning( " -> Frame {}...", currentFrame );
 
   /* Get the audio chunk for this frame from track 0 */
   /* printf("Audio info for track 0: bit-depth %u, channels %u, rate %u\n",

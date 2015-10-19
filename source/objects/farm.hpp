@@ -34,6 +34,8 @@ public:
   virtual void timeStep(const unsigned long time);
   virtual bool build(const city::AreaInfo &info);
   virtual bool canBuild( const city::AreaInfo& areaInfo ) const;  // returns true if it can be built there
+  virtual void burn();
+  virtual void collapse();
   virtual void destroy();
   virtual void computeRoadside();
 
@@ -41,7 +43,7 @@ public:
   virtual void load(const VariantMap& stream);
 
   virtual unsigned int produceQty() const;
-  virtual void initialize(const MetaData &mdata);
+  virtual void initialize(const object::Info& mdata);
 
 protected:
   gfx::Picture _getMainPicture();

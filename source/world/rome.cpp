@@ -61,6 +61,14 @@ Rome::Rome(EmpirePtr empire)
   _d->states.population = defaultPopulation;
 }
 
+CityPtr Rome::create(EmpirePtr empire)
+{
+  CityPtr ret( new Rome(empire) );
+  ret->drop();
+
+  return ret;
+}
+
 unsigned int Rome::tradeType() const { return 0; }
 econ::Treasury& Rome::treasury() { return _d->funds; }
 
@@ -75,10 +83,10 @@ void Rome::timeStep(const unsigned int time)
   City::timeStep( time );
 }
 
-SmartPtr<Player> Rome::mayor() const { return 0; }
+PlayerPtr Rome::mayor() const { return 0; }
 bool Rome::haveOverduePayment() const { return false; }
 const good::Store& Rome::buys() const{ return _d->gstore; }
-void Rome::delayTrade(unsigned int month) {}
+void Rome::delayTrade(unsigned int) {}
 void Rome::empirePricesChanged(good::Product, const PriceInfo&){}
 const good::Store& Rome::sells() const{ return _d->gstore; }
 
@@ -86,14 +94,14 @@ void Rome::addObject(ObjectPtr obj)
 {
   if( obj.is<GoodCaravan>() )
   {
-    GoodCaravanPtr caravan = obj.as<GoodCaravan>();
+    auto goodCaravan = obj.as<GoodCaravan>();
 
     good::Product gtype = good::none;
-    foreach( i, good::all())
+    for( auto& i : good::all())
     {
-      if( caravan->store().qty( *i ) > 0 )
+      if( goodCaravan->store().qty( i ) > 0 )
       {
-        gtype = *i;
+        gtype = i;
         break;
       }
     }
@@ -106,12 +114,7 @@ void Rome::addObject(ObjectPtr obj)
   }  
   else if( obj.is<Barbarian>() )
   {
-    BarbarianPtr brb = obj.as<Barbarian>();
-
-    if( brb.isValid() )
-    {
-      _d->lastAttack = game::Date::current();
-    }
+    _d->lastAttack = game::Date::current();
   }
 }
 

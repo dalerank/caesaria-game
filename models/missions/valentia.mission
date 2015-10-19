@@ -8,6 +8,7 @@
   adviserEnabled : true
   fishPlaceEnabled : true
   climate : 0
+  preview.title : "##valentia_preview_title##"
   preview.text : "##valentia_preview_mission##"
   preview.image : ""
 	
@@ -528,7 +529,7 @@
       warehouse : true
       senate : true
       garden : true
-
+      roadBlock : true
       prefecture : true
       small_ceres_temple : true
       small_venus_temple : true

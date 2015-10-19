@@ -3,7 +3,7 @@ project(smk)
 file(GLOB SMK_HEADERS_LIST "*.h")
 file(GLOB SMK_SOURCES_LIST "*.c")
 
-add_library(${PROJECT_NAME} ${SMK_SOURCES_LIST})
+add_library(${PROJECT_NAME} STATIC ${SMK_SOURCES_LIST})
 
 # Required on Unix OS family to be able to be linked into shared libraries.
 set_target_properties(${PROJECT_NAME}

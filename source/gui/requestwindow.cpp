@@ -42,7 +42,7 @@ public:
   std::string video;
 };
 
-EmperrorRequestWindow* EmperrorRequestWindow::create( Widget* parent, city::request::RequestPtr request,
+EmperrorRequestWindow* EmperrorRequestWindow::create( Widget* parent, city::RequestPtr request,
                                                       bool mayExec, const std::string& video )
 {
   EmperrorRequestWindow* ret = new EmperrorRequestWindow( parent, request );
@@ -57,7 +57,7 @@ EmperrorRequestWindow* EmperrorRequestWindow::create( Widget* parent, city::requ
 
 EmperrorRequestWindow::~EmperrorRequestWindow() {}
 
-EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::RequestPtr request )
+EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::RequestPtr request )
   : Window( parent, Rect( 0, 0, 480, 320 ), "" ), _d( new Impl )
 {
   _d->locker.activate();
@@ -68,7 +68,7 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::Req
   setModal();
   setCenter( parent->center() );
 
-  city::request::RqGoodPtr gr = ptr_cast<city::request::RqGood>(request);
+  city::request::RqGoodPtr gr = ptr_cast<city::GoodRequest>(request);
   if( gr.isValid() )
   {
     Label* lbQty;
@@ -84,7 +84,7 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::Req
     GET_WIDGET_FROM_UI( smkViewer )
     GET_WIDGET_FROM_UI( lbTitle )
 
-    if( lbQty ) { lbQty->setText( utils::format( 0xff, "%d", gr->qty() ) ); }
+    if( lbQty ) { lbQty->setText( utils::i2str( gr->qty() ) ); }
     if( imgIcon ) { imgIcon->setPicture( good::Helper::picture( gr->goodType() )); }
 
     std::string title, text, video;
@@ -111,10 +111,8 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::request::Req
     if( smkViewer ) { smkViewer->setFilename( video ); }
   }
 
-  TexturedButton* btnExit;
-  TexturedButton* btnAdvisor;
-  GET_WIDGET_FROM_UI( btnExit )
-  GET_WIDGET_FROM_UI( btnAdvisor )
+  INIT_WIDGET_FROM_UI( TexturedButton*, btnExit )
+  INIT_WIDGET_FROM_UI( TexturedButton*, btnAdvisor )
 
   CONNECT( btnExit, onClicked(), this, EmperrorRequestWindow::deleteLater );
   CONNECT( btnAdvisor, onClicked(), _d.data(), Impl::openEmperrorAdvisor );

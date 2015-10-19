@@ -41,6 +41,8 @@ public:
   void setStackMode( good::Product type, bool stacking );
   bool isStacking( good::Product type );
 
+  good::Products locked() const;
+
   bool isExporting( good::Product type ) const;
   bool isImporting( good::Product type ) const;
 

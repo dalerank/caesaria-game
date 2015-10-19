@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "overlays_menu.hpp"
 #include "core/gettext.hpp"
@@ -74,8 +74,9 @@ void OverlaysMenu::_addButtons(const int type )
     _addButton( citylayer::healthAll, startPos+=offset );
     _addButton( citylayer::commerce, startPos+=offset );
     _addButton( citylayer::religion, startPos+=offset );
-    setHeight( 8 * offset.y() );
-    break;
+    _addButton( citylayer::products, startPos+=offset );
+    setHeight( 9 * offset.y() );
+  break;
 
   case citylayer::risks:
     _addButton( citylayer::fire, startPos );
@@ -84,7 +85,7 @@ void OverlaysMenu::_addButtons(const int type )
     _addButton( citylayer::aborigen, startPos+=offset );
     _addButton( citylayer::troubles, startPos+=offset );
     _addButton( citylayer::sentiment, startPos+=offset );
-    break;
+  break;
 
   case citylayer::entertainments:
     _addButton( citylayer::entertainment, startPos );
@@ -92,14 +93,14 @@ void OverlaysMenu::_addButtons(const int type )
     _addButton( citylayer::amphitheater, startPos+=offset );
     _addButton( citylayer::colloseum, startPos+=offset );
     _addButton( citylayer::hippodrome, startPos+=offset );
-    break;
+  break;
 
   case citylayer::educations:
     _addButton( citylayer::education, startPos );
     _addButton( citylayer::school, startPos+=offset );
     _addButton( citylayer::library, startPos+=offset );
     _addButton( citylayer::academy, startPos+=offset );
-    break;
+  break;
 
   case citylayer::healthAll:
     _addButton( citylayer::health, startPos );
@@ -107,14 +108,16 @@ void OverlaysMenu::_addButtons(const int type )
     _addButton( citylayer::baths, startPos+=offset );
     _addButton( citylayer::doctor, startPos+=offset );
     _addButton( citylayer::hospital, startPos+=offset );
-    break;
+  break;
 
   case citylayer::commerce:
     _addButton( citylayer::tax, startPos );
     _addButton( citylayer::food, startPos+=offset );
     _addButton( citylayer::market, startPos+=offset );
     _addButton( citylayer::desirability, startPos+=offset );
-    break;
+    _addButton( citylayer::unemployed, startPos+=offset );
+    _addButton( citylayer::comturnover, startPos+=offset );
+  break;
 
   default: break;
   }  

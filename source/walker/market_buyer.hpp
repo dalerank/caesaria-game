@@ -25,6 +25,7 @@
 class MarketBuyer : public Human
 {
 public:
+  static unsigned int maxBuyDistance();
   static MarketBuyerPtr create( PlayerCityPtr city );
 
   virtual ~MarketBuyer();

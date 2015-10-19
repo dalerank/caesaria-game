@@ -76,7 +76,7 @@ public:
 
       rfont.draw( texture, _divinity->name(), 0, 0 );
       Font fontBlack = Font::create( FONT_1 );
-      fontBlack.draw( texture, utils::format( 0xff, "(%s)", _( _divinity->shortDescription() ) ), 80, 0 );
+      fontBlack.draw( texture, fmt::format( "({0}})", _( _divinity->shortDescription() ) ), 80, 0 );
       rfont.draw( texture, utils::i2str( _smallTempleCount ), 220, 0 );
       rfont.draw( texture, utils::i2str( _bigTempleCount ), 280, 0 );
 
@@ -91,7 +91,7 @@ public:
     else
     {
       rfont.draw( texture, _("##oracles_in_city##"), 0, 0 );
-      rfont.draw( texture, utils::format( 0xff, "%d", _smallTempleCount ), 220, 0 );
+      rfont.draw( texture, utils::i2str( _smallTempleCount ), 220, 0 );
     }
   }
 
@@ -140,8 +140,8 @@ public:
   {
     InfrastructureInfo ret;
 
-    ret.smallTemplCount = city::statistic::getObjects<ServiceBuilding>( city, small ).size();
-    ret.bigTempleCount = city::statistic::getObjects<ServiceBuilding>( city, big ).size();
+    ret.smallTemplCount = city->statistic().objects.find<ServiceBuilding>( small ).size();
+    ret.bigTempleCount = city->statistic().objects.find<ServiceBuilding>( big ).size();
 
     return ret;
   }
@@ -205,15 +205,15 @@ void Religion::_showHelp()
 void Religion::Impl::updateReligionAdvice(PlayerCityPtr city)
 {
   StringArray advices;
-  HouseList houses = city::statistic::getHouses( city );
+  HouseList houses = city->statistic().houses.find();
 
   int needBasicReligion = 0;
   int needSecondReligion = 0;
   int needThirdReligion = 0;
-  foreach( it, houses )
+  for( auto house : houses )
   {
-    const HouseSpecification& spec = (*it)->spec();
-    int curLevel = spec.computeReligionLevel( *it );
+    const HouseSpecification& spec = house->spec();
+    int curLevel = spec.computeReligionLevel( house );
     int needLevel = spec.minReligionLevel();
 
     switch( needLevel )
@@ -249,9 +249,9 @@ void Religion::Impl::updateReligionAdvice(PlayerCityPtr city)
     DivinityList gods = rome::Pantheon::instance().all();
 
     bool haveDispleasengGod = false;
-    foreach( it, gods )
+    for( auto god : gods )
     {
-      if( (*it)->relation() < 75 )
+      if( god->relation() < 75 )
       {
         haveDispleasengGod = true;
         break;

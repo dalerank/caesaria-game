@@ -47,8 +47,8 @@ void Layout::updateLayout()
     side = math::min(side, _side);
 
   WidgetsArray ch;
-  foreach( it, children() )
-    ch.push_back( *it );
+  for( auto it : children() )
+    ch.push_back( it );
 
   std::sort( ch.begin(), ch.end(), compareID );
 
@@ -101,6 +101,8 @@ void Layout::beforeDraw( gfx::Engine& painter )
   Widget::beforeDraw( painter );
 }
 
+bool Layout::full() const { return false; }
+
 void Layout::setupUI(const VariantMap &stream)
 {
   _side = stream.get( "side" );
@@ -152,6 +154,17 @@ VLayout::VLayout(Widget *parent) : Layout( parent, Rect(), true ) {}
 VLayout::VLayout(Widget *parent, const Rect &rect, int id) : Layout( parent, rect, true, id )
 {
 
+}
+
+bool VLayout::full() const
+{
+  for( auto widget : children() )
+  {
+    if( widget->bottom() > (int)height() )
+      return true;
+  }
+
+  return false;
 }
 
 }//end namespac gui

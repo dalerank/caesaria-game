@@ -20,7 +20,6 @@
 #include "gfx/helper.hpp"
 #include "objects/objects_factory.hpp"
 #include "resourcegroup.hpp"
-#include "objects/metadata.hpp"
 #include "core/logger.hpp"
 #include "gfx/tilesarray.hpp"
 #include "game/settings.hpp"
@@ -149,19 +148,19 @@ object::Type LoaderHelper::convImgId2ovrType( unsigned int imgId )
 void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int forceId )
 {
   int changeId = 0;
-  unsigned int imgId = oTile.originalImgId();
+  unsigned int imgId = oTile.imgId();
   object::Type ovType = object::unknown;
   if( oTile.getFlag( Tile::tlRoad ) )   // road
   {
     ovType = object::road;
-    Picture pic = MetaDataHolder::randomPicture( object::terrain, Size(1) );
+    Picture pic = object::Info::find( object::terrain ).randomPicture( Size(1) );
     oTile.setPicture( pic );
     changeId = imgid::fromResource( pic.name() );
   }
   else if( oTile.getFlag( Tile::tlTree ) )
   {
     ovType = object::tree;
-    Picture pic = MetaDataHolder::randomPicture( object::terrain, Size(1) );
+    Picture pic = object::Info::find( object::terrain ).randomPicture( Size(1) );
     oTile.setPicture( pic );
     changeId = imgid::fromResource( pic.name() );
   }
@@ -179,7 +178,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   else if( imgId >= 0x29c && imgId <= 0x2a1 ) //aqueduct
   {
     ovType = object::aqueduct;
-    Picture pic = MetaDataHolder::randomPicture( object::terrain, Size(1) );
+    Picture pic = object::Info::find( object::terrain ).randomPicture( Size(1) );
     oTile.setPicture( pic );
     oTile.setFlag( Tile::clearAll, true );
     changeId = imgid::fromResource( pic.name() );
@@ -192,15 +191,15 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   }
   else if( imgId >= 863 && imgId <= 870 )
   {
-    Picture pic = MetaDataHolder::randomPicture( object::terrain, Size(1) );
+    Picture pic = object::Info::find( object::terrain ).randomPicture( Size(1) );
     oTile.setPicture( pic );
     oTile.setFlag( Tile::clearAll, true );    
     changeId = imgid::fromResource( pic.name() );
-    oTile.setOriginalImgId( changeId );
+    oTile.setImgId( changeId );
   }
   else
   {
-    unsigned id = forceId > 0 ? forceId : oTile.originalImgId();
+    unsigned id = forceId > 0 ? forceId : oTile.imgId();
     ovType = convImgId2ovrType( id );
   }
 
@@ -211,7 +210,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   overlay = TileOverlayFactory::instance().create( ovType );
   if( ovType == object::elevation )
   {
-    std::string elevationPicName = imgid::toResource( oTile.originalImgId() );
+    std::string elevationPicName = imgid::toResource( oTile.imgId() );
     overlay->setPicture( Picture( elevationPicName ) );
   }
 
@@ -221,13 +220,13 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
     if( oTile.overlay().isValid() )
       return;
 
-    city::AreaInfo info = { city, oTile.pos(), TilesArray() };
+    city::AreaInfo info( city, oTile.pos() );
     overlay->build( info );
     city->addOverlay( overlay );
   }  
 
   if( changeId > 0 )
   {
-    oTile.setOriginalImgId( changeId );
+    oTile.setImgId( changeId );
   }
 }

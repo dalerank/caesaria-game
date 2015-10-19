@@ -40,10 +40,10 @@ WalkerPtr WalkerManager::create(const walker::Type walkerType, PlayerCityPtr cit
 
   if( findConstructor != _d->constructors.end() )
   {
-    return ptr_cast<Walker>( findConstructor->second->create( city ) );
+    return findConstructor->second->create( city ).as<Walker>();
   }
 
-  Logger::warning( "WalkerManager: cannot create walker from type %d", walkerType );
+  Logger::warning( "WalkerManager: cannot create walker from type {0}", walkerType );
   return WalkerPtr();
 }
 
@@ -60,7 +60,7 @@ void WalkerManager::addCreator( const walker::Type type, WalkerCreator* ctor )
   bool alreadyHaveConstructor = _d->constructors.find( type ) != _d->constructors.end();
   if( alreadyHaveConstructor )
   {
-    Logger::warning( "WalkerManager: also have constructor for type %s", typeName.c_str() );
+    Logger::warning( "WalkerManager: also have constructor for type {0}", typeName );
     return;
   }
   else

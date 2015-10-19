@@ -139,10 +139,9 @@ void ServiceWalker::_computeWalkerPath( int orders )
     orders = goServiceMaximum;
   }
 
-  ConstructionPtr ctr = base().as<Construction>();
   Propagator pathPropagator( _city() );
 
-  pathPropagator.init( ctr );
+  pathPropagator.init( base().as<Construction>() );
   pathPropagator.setAllDirections( Propagator::nwseDirections );
   pathPropagator.setObsoleteOverlays( _d->obsoleteOvs );
 
@@ -152,12 +151,12 @@ void ServiceWalker::_computeWalkerPath( int orders )
   if( (orders & goServiceMaximum) == goServiceMaximum )
   {
     float maxPathValue = 0.0;
-    foreach( current, pathWayList )
+    for( auto current : pathWayList )
     {
-      float pathValue = evaluatePath( *current );
+      float pathValue = evaluatePath( current );
       if(pathValue > maxPathValue)
       {
-        bestPath = *current;
+        bestPath = current;
         maxPathValue = pathValue;
       }
     }
@@ -165,12 +164,12 @@ void ServiceWalker::_computeWalkerPath( int orders )
   else if( (orders & goServiceMinimum) == goServiceMinimum )
   {
     float minPathValue = 9999.f;
-    foreach( current, pathWayList )
+    for( auto current : pathWayList )
     {
-      float pathValue = evaluatePath( *current );
+      float pathValue = evaluatePath( current );
       if(pathValue < minPathValue)
       {
-        bestPath = *current;
+        bestPath = current;
         minPathValue = pathValue;
       }
     }
@@ -193,16 +192,11 @@ void ServiceWalker::_computeWalkerPath( int orders )
   if( (orders & enterLastHouse) == enterLastHouse )
   {
     const TilesArray& tiles = bestPath->allTiles();
-    foreach( itTile, tiles )
+    for( auto tile : tiles )
     {
-      ServiceWalker::ReachedBuildings reachedBuildings = getReachedBuildings( (*itTile)->pos() );
-      foreach( it, reachedBuildings )
-      {
-        if( (*it)->type() == object::house )
-        {
-          _d->lastHousePos = (*itTile)->pos();
-        }
-      }
+      bool haveHouse = getReachedBuildings( tile->pos() ).contain( object::house );
+      if( haveHouse )
+        _d->lastHousePos = tile->pos();
     }
   }
 
@@ -214,15 +208,8 @@ void ServiceWalker::_cancelPath()
 {
   TilesArray pathTileList = pathway().allTiles();
 
-  foreach( tile, pathTileList )
-  {
-    ReachedBuildings reachedBuildings = getReachedBuildings( (*tile)->pos() );
-    foreach( b, reachedBuildings )
-    {
-      // the building has not been reserved yet
-       (*b)->cancelService( _d->service );
-    }
-  }
+  for( auto tile : pathTileList )
+    getReachedBuildings( tile->pos() ).cancelService( _d->service );
 }
 
 void ServiceWalker::_addObsoleteOverlay(object::Type type) { _d->obsoleteOvs.insert( type ); }
@@ -237,19 +224,13 @@ void ServiceWalker::return2Base()
   }
 }
 
-ServiceWalker::ReachedBuildings ServiceWalker::getReachedBuildings(const TilePos& pos )
+ReachedBuildings ServiceWalker::getReachedBuildings(const TilePos& pos )
 {
   ReachedBuildings res;
 
-  TilesArea reachedTiles( _city()->tilemap(), pos, reachDistance() );
-  foreach( it, reachedTiles )
-  {
-    BuildingPtr building = (*it)->overlay().as<Building>();
-    if( building.isValid() )
-    {
-      res.insert(building);
-    }
-  }
+  TilesArea reachedTiles( _city()->tilemap(), reachDistance(), pos );
+  for( auto tile : reachedTiles )
+    res.addIfValid( tile->overlay<Building>() );
 
   return res;
 }
@@ -257,23 +238,23 @@ ServiceWalker::ReachedBuildings ServiceWalker::getReachedBuildings(const TilePos
 float ServiceWalker::evaluatePath( PathwayPtr pathWay )
 {
   // evaluate all buildings along the path
-  ServiceWalker::ReachedBuildings doneBuildings;  // list of evaluated building: don't do them again
+  ReachedBuildings doneBuildings;  // list of evaluated building: don't do them again
   const TilesArray& pathTileList = pathWay->allTiles();
 
   int distance = 0;
   float res = 0.0;
-  foreach( itTile, pathTileList )
+  for( auto tile : pathTileList )
   {
-    ServiceWalker::ReachedBuildings reachedBuildings = getReachedBuildings( (*itTile)->pos() );
-    foreach( it, reachedBuildings )
+    ReachedBuildings reachedBuildings = getReachedBuildings( tile->pos() );
+    for( auto bld : reachedBuildings )
     {
-      std::pair<ServiceWalker::ReachedBuildings::iterator, bool> rc = doneBuildings.insert( *it );
+      std::pair<ReachedBuildings::iterator, bool> rc = doneBuildings.insert( bld );
       if (rc.second == true)
       {
         // the building has not been evaluated yet
-        int oneTileValue = (*it)->evaluateService( ServiceWalkerPtr( this ) );
+        int oneTileValue = bld->evaluateService( this );
         // mul serviceValue for buildingSize, need for more effectively count of path result
-        res += (oneTileValue * (*it)->size().area() );
+        res += (oneTileValue * bld->size().area() );
       }
     }
     distance++;
@@ -288,16 +269,16 @@ void ServiceWalker::_reservePath( const Pathway& pathWay)
   ReachedBuildings doneBuildings;  // list of evaluated building: don't do them again
   const TilesArray& pathTileList = pathWay.allTiles();
 
-  foreach( itTile, pathTileList )
+  for( auto tile : pathTileList )
   {
-    ReachedBuildings reachedBuildings = getReachedBuildings( (*itTile)->pos() );
-    foreach( it, reachedBuildings )
+    ReachedBuildings reachedBuildings = getReachedBuildings( tile->pos() );
+    for( auto bld : reachedBuildings )
     {
-      std::pair<ReachedBuildings::iterator, bool> rc = doneBuildings.insert( *it );
+      std::pair<ReachedBuildings::iterator, bool> rc = doneBuildings.insert( bld );
       if (rc.second == true)
       {
         // the building has not been reserved yet
-        (*it)->reserveService(_d->service);
+        bld->reserveService(_d->service);
       }
     }
   }
@@ -320,21 +301,21 @@ void ServiceWalker::send2City(BuildingPtr base, int orders)
 {
   if( base.isNull() )
   {
-    Logger::warning( "WARNING !!!: Try send from unexist base " );
+    Logger::warning( "!!!Warning: Try send from unexist base " );
     return;
   }
 
-  ServiceBuildingPtr servBuilding = base.as<ServiceBuilding>();
 
-  if( servBuilding.isValid() && _d->maxDistance <= defaultServiceDistance )
+  if( base.is<ServiceBuilding>() && _d->maxDistance <= defaultServiceDistance )
   {
-    Logger::warning( "WARNING !!!: Base have short distance for walker. Parent [%d,%d] ", base->pos().i(), base->pos().j() );
+    auto servBuilding = base.as<ServiceBuilding>();
+    Logger::warning( "!!!Warning: Base have short distance for walker. Parent [{0},{1}] ", base->pos().i(), base->pos().j() );
     setMaxDistance( servBuilding->walkerDistance() );
   }
 
   if( !base.is<WorkingBuilding>() )
   {
-    Logger::warning( "WARNING !!!: ServiceWalker send not from service building. Parent [%d,%d] ", base->pos().i(), base->pos().j() );
+    Logger::warning( "!!!Warning: ServiceWalker send not from service building. Parent [{0},{1}] ", base->pos().i(), base->pos().j() );
   }
 
   setBase( base );
@@ -349,11 +330,12 @@ void ServiceWalker::_centerTile()
 
   ReachedBuildings reachedBuildings = getReachedBuildings( pos() );
 
-  foreach( b, reachedBuildings ) { (*b)->applyService( this ); }
+  for( auto b : reachedBuildings )
+    b->applyService( this );
 
-  ServiceBuildingPtr servBuilding = base().as<ServiceBuilding>();
-  if( servBuilding.isValid() )
+  if( base().is<ServiceBuilding>() )
   {
+    auto servBuilding = base().as<ServiceBuilding>();
     servBuilding->buildingsServed( reachedBuildings, this );
   }
 
@@ -456,7 +438,7 @@ void ServiceWalker::load( const VariantMap& stream )
 
   if( overlay.isNull() )
   {
-    Logger::warning( "Not found base building[%d,%d] for service walker", _d->basePos.i(), _d->basePos.j() );
+    Logger::warning( "Not found base building[{0},{1}] for service walker", _d->basePos.i(), _d->basePos.j() );
   }
   else
   {
@@ -539,9 +521,9 @@ void ServiceWalker::initialize(const VariantMap& options)
   Human::initialize( options );
 
   VariantList oboletesOvs = options.get( "obsoleteOverlays" ).toList();
-  foreach( it, oboletesOvs )
+  for( auto& it : oboletesOvs )
   {
-    object::Type ovType = object::toType( it->toString() );
+    object::Type ovType = object::findType( it.toString() );
     if( ovType != object::unknown )
       _addObsoleteOverlay( ovType );
   }
@@ -571,11 +553,33 @@ ServiceWalkerPtr ServiceWalker::create(PlayerCityPtr city, const Service::Type s
 
 BuildingPtr ServiceWalker::base() const
 {
-  return _city().isValid()
-          ? _city()->getOverlay( baseLocation() ).as<Building>()
-          : BuildingPtr();
+  return _map().overlay( baseLocation() ).as<Building>();
 }
 
 ServiceWalker::~ServiceWalker() {}
 void ServiceWalker::setBase( BuildingPtr base ) { _d->basePos = (base.isValid() ? base->pos() : gfx::tilemap::invalidLocation()); }
 WalkerPtr ServicemanCreator::create(PlayerCityPtr city) { return ServiceWalker::create( city, serviceType ).object();  }
+
+bool ReachedBuildings::contain(object::Type type) const
+{
+  for( auto& i : *this )
+    if( i->type() == type )
+      return true;
+
+  return false;
+}
+
+BuildingPtr ReachedBuildings::firstOf(object::Type type) const
+{
+  for( auto& i : *this )
+    if( i->type() == type )
+      return i;
+
+  return BuildingPtr();
+}
+
+void ReachedBuildings::cancelService(Service::Type service)
+{
+  for( auto i : *this )
+    i->cancelService( service );
+}

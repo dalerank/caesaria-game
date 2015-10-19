@@ -37,6 +37,7 @@ public:
 
   virtual good::ProductMap sold() const;
   virtual good::ProductMap bougth() const;
+  virtual good::ProductMap mayBuy() const;
 
   virtual void timeStep(const unsigned long time);
 

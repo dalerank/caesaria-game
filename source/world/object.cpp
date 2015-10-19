@@ -22,11 +22,14 @@
 #include "gfx/animation.hpp"
 #include "core/logger.hpp"
 #include "core/stacktrace.hpp"
+#include "objects_factory.hpp"
 
 using namespace gfx;
 
 namespace world
 {
+
+REGISTER_CLASS_IN_WORLDFACTORY(Object)
 
 class Object::Impl
 {
@@ -59,7 +62,7 @@ Point Object::location() const { return _d->location;}
 
 void Object::addObject(ObjectPtr obj)
 {
-  Logger::warning( "WorldObjects: %s added to %s", obj->name().c_str(), name().c_str() );
+  Logger::warning( "WorldObjects: {0} added to {1}", obj->name(), name() );
 }
 
 void Object::setLocation(const Point& location){  _d->location = location; }
@@ -130,4 +133,4 @@ void Object::deleteLater() { _d->isDeleted = true; }
 Animation& Object::_animation() { return _d->animation; }
 Pictures&  Object::_pictures()  { return _d->pictures; }
 
-}
+}//end namespace world

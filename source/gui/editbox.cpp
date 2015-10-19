@@ -103,16 +103,16 @@ signals public:
 std::string __ucs2utf8( const std::wstring& text )
 {
   std::string ret;
-  foreach( i, text )
+  for( auto& symbol : text )
   {
-    if( (unsigned short)*i < 0x80 )
+    if( (unsigned short)symbol < 0x80 )
     {
-      ret.push_back( (char)(*i & 0xff ) );
+      ret.push_back( (char)(symbol & 0xff ) );
     }
     else
     {
-      ret.push_back( (char)( (*i >> 8) & 0xff) );
-      ret.push_back( (char)( *i & 0xff ) );
+      ret.push_back( (char)( (symbol >> 8) & 0xff) );
+      ret.push_back( (char)(  symbol       & 0xff ) );
     }
   }
 
@@ -123,13 +123,13 @@ void EditBox::_init()
 {
   _d->lastBreakFont = activeFont();
 
-  #ifdef _DEBUG
-      setDebugName( "EditBox");
-  #endif
+#ifdef _DEBUG
+  setDebugName( "EditBox");
+#endif
 
   // this element can be tabbed to
-  setTabStop(true);
-  setTabOrder(-1);
+  setTabstop(true);
+  setTaborder(-1);
 
   _breakText();
 
@@ -791,7 +791,7 @@ void EditBox::beforeDraw(Engine& painter)
       _d->background.destroy();
 
       Pictures pics;
-      Decorator::draw( pics, Rect( 0, 0, width(), height() ), Decorator::blackFrame, Decorator::normalY );
+      Decorator::draw( pics, Rect( 0, 0, width(), height() ), Decorator::blackFrame, nullptr, Decorator::normalY );
       bool batchOk = _d->background.load( pics, absoluteRect().lefttop() );
       if( !batchOk )
       {
@@ -968,7 +968,7 @@ void EditBox::draw( Engine& painter )
   if( !visible() )
 		return;
 
-	const bool focus = _environment->hasFocus(this);
+  const bool focus = ui()->hasFocus(this);
 
   //const ElementStyle& style = getStyle().GetState( getActiveState() );
 	//const ElementStyle& markStyle = getStyle().GetState( L"Marked" );
@@ -1096,7 +1096,7 @@ bool EditBox::_processMouse(const NEvent& event)
 	switch(event.mouse.type)
 	{
 	case mouseLbtnRelease:
-		if (_environment->hasFocus(this))
+    if (ui()->hasFocus(this))
 		{
 			Point rpos = event.mouse.pos() - _d->textOffset;
 			_d->cursorPos = _d->getCursorPos( this, rpos.x(), rpos.y());
@@ -1121,7 +1121,7 @@ bool EditBox::_processMouse(const NEvent& event)
 		}
 		break;
 	case mouseLbtnPressed:
-		if (!_environment->hasFocus(this))
+    if (!ui()->hasFocus(this))
 		{
 			_d->mouseMarking = true;
 			Point rpos = event.mouse.pos() - _d->textOffset;

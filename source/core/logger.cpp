@@ -31,6 +31,7 @@
 #include <stdint.h>
 #include <fstream>
 #include <map>
+#include "format.hpp"
 #include "vfs/directory.hpp"
 
 #ifdef CAESARIA_PLATFORM_ANDROID
@@ -101,9 +102,10 @@ class ConsoleLogWriter : public LogWriter
 public:
   virtual void write( const std::string& str, bool newline )
   {
-#ifdef CAESARIA_PLATFORM_ANDROID
-    str.append( newline ? "\n" : "" );
+#ifdef CAESARIA_PLATFORM_ANDROID    
     __android_log_print(ANDROID_LOG_DEBUG, CAESARIA_PLATFORM_NAME, "%s", str.c_str() );
+    if( newline )
+      __android_log_print(ANDROID_LOG_DEBUG, CAESARIA_PLATFORM_NAME, "\n" );
 #else
     std::cout << str;
     if( newline ) std::cout << std::endl;
@@ -128,9 +130,9 @@ public:
   {
     // Check for filter pass
     bool pass = filters.size() == 0;
-    foreach ( filter, filters )
+    for( auto& filter : filters )
     {
-      if (message.compare( 0, filter->length(), *filter ) == 0)
+      if (message.compare( 0, filter.length(), filter ) == 0)
       {
         pass = true;
         break;
@@ -138,31 +140,18 @@ public:
     }
     if (!pass) return;
 
-    foreach( i, writers )
+    for( auto&& item : writers )
     {
-      if( i->second.isValid() )
+      if( item.second.isValid() )
       {
-        i->second->write( message, newline );
+        item.second->write( message, newline );
       }
     }
   }
 
 };
 
-void Logger::warning( const char* fmt, ... )
-{
-  va_list argument_list;
-
-  va_start(argument_list, fmt);
-
-  std::string ret;
-  utils::vformat( ret, 512, fmt, argument_list );
-
-  va_end(argument_list);
-
-  instance()._d->write( ret );
-}
-
+void Logger::_print( const std::string& str ) {  instance()._d->write( str ); }
 void Logger::warning(const std::string& text) {  instance()._d->write( text );}
 void Logger::warningIf(bool warn, const std::string& text){  if( warn ) warning( text ); }
 void Logger::update(const std::string& text, bool newline){  instance()._d->write( text, newline ); }
@@ -175,9 +164,9 @@ void Logger::addFilter(const std::string& text)
 
 bool Logger::hasFilter(const std::string& text)
 {
-  foreach(filter, instance()._d->filters)
+  for( auto& filter : instance()._d->filters)
   {
-    if (*filter == text) return true;
+    if (filter == text) return true;
   }
   return false;
 }
@@ -233,10 +222,50 @@ Logger::Logger() : _d( new Impl )
 {
 }
 
-void Logger::registerWriter(std::string name, LogWriterPtr writer)
+void Logger::registerWriter(const std::string& name, LogWriterPtr writer)
 {
   if( writer.isValid() && writer->isActive() )
   {
     instance()._d->writers[ name ] = writer;
   }
+}
+
+void SimpleLogger::write(const std::string &message, bool newline) {
+  Logger::update( message, newline );
+}
+
+SimpleLogger::SimpleLogger( const std::string& category)
+  : _category(category)
+{}
+
+void SimpleLogger::llog(SimpleLogger::Severity severity, const std::string &text)
+{
+  std::string rtext = toS(severity) + " ";
+  rtext += _category;
+  rtext += ": " + text;
+  write(rtext);
+}
+
+bool SimpleLogger::isDebugEnabled() const {
+#ifdef DEBUG
+  return true;
+#else
+  return false;
+#endif
+}
+
+const std::string SimpleLogger::toS(SimpleLogger::Severity severity) {
+  switch (severity) {
+    case Severity::DBG:
+      return "[DEBUG]";
+    case Severity::INFO:
+      return "[INFO]";
+    case Severity::WARN:
+      return "[WARN]";
+    case Severity::ERR:
+      return "[ERROR]";
+    case Severity::FATAL:
+      return "[FATAL]";
+  }
+  return "[UNKNOWN]";
 }

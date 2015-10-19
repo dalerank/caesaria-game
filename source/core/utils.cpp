@@ -57,7 +57,7 @@ int vformat(std::string& str, int max_size, const char* format, va_list argument
   {
     Logger::warning( "String::vformat: String truncated when processing " + str );
     if( outputStacktraceLog )
-      crashhandler::printstack(0,63);
+      crashhandler::printstack(false);
   }
  
   str = buffer_ptr;
@@ -68,7 +68,7 @@ int vformat(std::string& str, int max_size, const char* format, va_list argument
   return length;
 }
 
-std::wstring utf8toWString(const char* src, int size)
+std::wstring utf8toWString(const char* src, size_t size)
 {
   std::wstring dest;
 
@@ -244,9 +244,16 @@ int toInt( const char* in, const char** out/*=0*/ )
   }
 }
 
-int toInt( const std::string& number )
+int toInt( const std::string& number, int base )
 {
-  return toInt( number.c_str() );
+  switch( base )
+  {
+  case 16:
+    return strtoul( number.c_str(), nullptr, 16);
+
+  default:
+    return toInt( number.c_str() );
+  }
 }
 
 unsigned int toUint( const char* in, const char** out/*=0*/ )
@@ -418,8 +425,78 @@ std::string trim(const std::string &str, const std::string &tr)
 VariantList toVList(const StringArray &items)
 {
   VariantList ret;
-  foreach( it, items ) ret << *it;
+  for( auto& str : items ) ret << str;
   return ret;
+}
+
+std::string toRoman(int value)
+{
+  struct romandata_t { int value; char const* numeral; };
+  static romandata_t const romandata[] =
+     { {1000, "M"},
+       {900,  "CM"},
+       {500,  "D"},
+       {400,  "CD"},
+       {100,  "C"},
+       {90,   "XC"},
+       {50,   "L"},
+       {40,   "XL"},
+       {10,   "X"},
+       {9,    "IX"},
+       {5,    "V"},
+       {4,    "IV"},
+       {1,    "I"},
+       {0,    NULL} }; // end marker
+
+  std::string result;
+  for (romandata_t const* current = romandata; current->value > 0; ++current)
+  {
+    while (value >= current->value)
+    {
+      result += current->numeral;
+      value  -= current->value;
+    }
+  }
+  return result;
+}
+
+bool endsWith(const std::string& text, const std::string& which)
+{
+  if( text.length() < which.length() )
+    return false;
+
+  auto itext = text.rbegin();
+  auto iwhich = which.rbegin();
+  for( ; iwhich != which.rend(); ++iwhich, ++itext )
+  {
+    if( *itext != *iwhich )
+      return false;
+  }
+
+  return true;
+}
+
+std::string toShortString(const std::string& input, std::size_t maxLength)
+{
+  if (input.length() > maxLength)
+  {
+    if (maxLength == 0)
+    {
+      return "";
+    }
+    else if (maxLength < 3)
+    {
+      return std::string(maxLength, '.');
+    }
+
+    std::size_t diff = input.length() - maxLength + 3; // 3 chars for the ellipsis
+    std::size_t curLength = input.length();
+
+    return input.substr(0, (curLength - diff) / 2) + "..." +
+        input.substr((curLength + diff) / 2);
+  }
+
+  return input;
 }
 
 }//end namespace utils

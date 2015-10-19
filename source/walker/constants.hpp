@@ -23,8 +23,8 @@
 namespace walker
 {
 
-BEGIN_NAMEDTYPE(Type,unknown)
-  ,immigrant,
+BEGIN_NAMEDTYPE(Type,unknown),
+  immigrant,
   emigrant,
   soldier,
   cartPusher,

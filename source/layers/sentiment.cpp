@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-20155 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "sentiment.hpp"
 #include "objects/constants.hpp"
@@ -42,17 +42,12 @@ static const char* sentimentLevelName[maxSentimentLevel] = {
 
 int Sentiment::type() const {  return citylayer::sentiment; }
 
-void Sentiment::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Sentiment::drawTile( const RenderInfo& rinfo, Tile& tile)
 {
-  Point screenPos = tile.mappos() + offset;
-
   if( tile.overlay().isNull() )
   {
-    //draw background
-    //engine.draw( tile.picture(), screenPos );
-
-    drawPass( engine, tile, offset, Renderer::ground );
-    drawPass( engine, tile, offset, Renderer::groundAnimation );
+    drawPass( rinfo, tile, Renderer::ground );
+    drawPass( rinfo, tile, Renderer::groundAnimation );
   }
   else
   {
@@ -66,33 +61,34 @@ void Sentiment::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( overlay->type() == object::house )
     {
-      HousePtr house = overlay.as<House>();
+      auto house = overlay.as<House>();
 
       sentimentLevel = (int)house->state( pr::happiness );
-      needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
+      needDrawAnimations = (house->level() <= HouseLevel::hovel) && house->habitants().empty();
 
       if( !needDrawAnimations )
       {
-        drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+        drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
       }
     }
     else
     {
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base );
     }
 
     if( needDrawAnimations )
     {
-      Layer::drawTile( engine, tile, offset );
+      Layer::drawTile( rinfo, tile );
       registerTileForRendering( tile );
     }
     else if( sentimentLevel > 0 )
     {
-      drawColumn( engine, screenPos, 100 - sentimentLevel );
+      Point screenPos = tile.mappos() + rinfo.offset;
+      drawColumn( rinfo, screenPos, 100 - sentimentLevel );
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 LayerPtr Sentiment::create( Camera& camera, PlayerCityPtr city)
@@ -115,7 +111,7 @@ void Sentiment::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        HousePtr house = tile->overlay().as<House>();
+        HousePtr house = tile->overlay<House>();
         if( house.isValid() )
         {
           int happiness = math::clamp<int>( house->state( pr::happiness ) / maxSentimentLevel, 0, maxSentimentLevel-1 );

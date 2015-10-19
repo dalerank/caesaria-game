@@ -60,7 +60,7 @@ public:
   bool significantBuildingsDestroyed;
   DateTime lastMessageDate;
 
-  Priorities<object::Type> unsignificantBuildings;
+  Vector<object::Type> unsignificantBuildings;
 };
 
 SrvcPtr Peace::create( PlayerCityPtr city )
@@ -100,11 +100,11 @@ void Peace::timeStep(const unsigned int time )
   if( !game::Date::isYearChanged() )
     return;
 
-  MilitaryPtr ml = statistic::getService<Military>( _city() );
+  MilitaryPtr ml = _city()->statistic().services.find<Military>();
   if( ml.isNull() )
   {
     Logger::warning( "!!! WARNING: not found military service" );
-    crashhandler::printstack();
+    crashhandler::printstack(false);
     return;
   }
 
@@ -142,12 +142,12 @@ void Peace::timeStep(const unsigned int time )
 
 void Peace::addCriminal( WalkerPtr wlk )
 {
-  if( is_kind_of<Rioter>( wlk ) )   {    _d->threats.rioter = true;  }
+  if( wlk.is<Rioter>() )   {    _d->threats.rioter = true;  }
   //else if( is_kind_of<Protestor>( wlk ) )   {    _d->threats.protestor = true;  }
-  else if( is_kind_of<Mugger>( wlk ) ) { _d->threats.mugger = true; }
+  else if( wlk .is<Mugger>() ) { _d->threats.mugger = true; }
   else
   {
-    Logger::warning( "Peace:addCriminal unknown walker %d", wlk->type() );
+    Logger::warning( "Peace: addCriminal unknown walker {0}", wlk->type() );
     _d->threats.criminal = true;
   }
 }
@@ -160,14 +160,14 @@ void Peace::buildingDestroyed(OverlayPtr overlay, int why)
     return;
   }
 
-  HousePtr house = ptr_cast<House>( overlay );
-  if( house.isValid() && house->spec().level() > HouseLevel::tent )
+  HousePtr house = overlay.as<House>();
+  if( house.isValid() && house->level() > HouseLevel::tent )
   {
     _d->significantBuildingsDestroyed = true;
   }
   else
   {
-    _d->significantBuildingsDestroyed |= !_d->unsignificantBuildings.count( overlay->type() );
+    _d->significantBuildingsDestroyed |= !_d->unsignificantBuildings.contain( overlay->type() );
   }
 
   if( _d->lastMessageDate.monthsTo( game::Date::current() ) > 1 )
@@ -241,4 +241,4 @@ void Peace::load(const VariantMap& stream)
   VARIANT_LOAD_ANY_D( _d, significantBuildingsDestroyed, stream )
 }
 
-}
+}//end namespace city
