@@ -94,6 +94,20 @@
           folder : "/resources/carts/marble"
           files : [ "cartmarble_*" ]
         }
+
+        meat :
+        {
+          type : "atlas"
+          folder : "/resources/carts/meat"
+          files : [ "cartmeat_*" ]
+        }
+
+        none :
+        {
+          type : "atlas"
+          folder : "/resources/carts/none"
+          files : [ "cartnone_*" ]
+        }
       }
     }
   }
