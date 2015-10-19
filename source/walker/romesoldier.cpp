@@ -240,7 +240,7 @@ RomeSoldier::~RomeSoldier(){}
 WalkerList RomeSoldier::_findEnemiesInRange( unsigned int range )
 {
   WalkerList walkers;
-  TilesArea area( _city()->tilemap(), range, pos() );
+  TilesArea area( _map(), range, pos() );
 
   FortPtr fort = base();
   bool attackAnimals = fort.isValid() ? fort->isAttackAnimals() : false;

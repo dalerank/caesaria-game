@@ -19,6 +19,7 @@
 #define __CAESARIA_CITY_PREDEFINITIONS_H_INCLUDED__
 
 #include "core/predefinitions.hpp"
+#include "core/smartlist.hpp"
 
 PREDEFINE_CLASS_SMARTPOINTER(PlayerCity)
 

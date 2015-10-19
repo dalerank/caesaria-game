@@ -130,8 +130,7 @@ void Tower::_rebuildWays()
   for( int range = Impl::maxPatrolRange; range > 0; range-- )
   {
     TilePos offset( range, range );
-    TilesArray tiles = _city()->tilemap().rect( pos() - offset,
-                                                              pos() + offset );
+    TilesArray tiles = _map().rect( pos() - offset, pos() + offset );
     for( auto tile : tiles )
     {
       bool patrolingWall;

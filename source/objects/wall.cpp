@@ -68,7 +68,7 @@ void Wall::destroy()
 
   if( _city().isValid() )
   {
-    TilesArea area( _city()->tilemap(), pos() - TilePos( 2, 2), Size( 5 ) );
+    TilesArea area( _map(), pos() - TilePos( 2, 2), Size( 5 ) );
 
     for( auto tile : area )
     {

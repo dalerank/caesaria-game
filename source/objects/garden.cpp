@@ -116,7 +116,7 @@ void Garden::setPicture(Picture picture)
 
 void Garden::update()
 {
-  TilesArea nearTiles( _city()->tilemap(), pos(), Size(2) );
+  TilesArea nearTiles( _map(), pos(), Size(2) );
 
   bool canGrow2squareGarden = ( nearTiles.size() == 4 ); // be carefull on map edges
   for( auto tile : nearTiles )

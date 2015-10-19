@@ -228,7 +228,7 @@ ReachedBuildings ServiceWalker::getReachedBuildings(const TilePos& pos )
 {
   ReachedBuildings res;
 
-  TilesArea reachedTiles( _city()->tilemap(), reachDistance(), pos );
+  TilesArea reachedTiles( _map(), reachDistance(), pos );
   for( auto tile : reachedTiles )
     res.addIfValid( tile->overlay<Building>() );
 

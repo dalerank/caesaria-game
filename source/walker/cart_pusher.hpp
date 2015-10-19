@@ -37,6 +37,7 @@ public:
 
   void setProducerBuilding( BuildingPtr building );
   void setConsumerBuilding( BuildingPtr building );
+
   BuildingPtr producerBuilding();
   BuildingPtr consumerBuilding();
   good::Stock& stock();

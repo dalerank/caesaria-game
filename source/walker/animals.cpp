@@ -28,6 +28,7 @@
 #include "helper.hpp"
 #include "ability.hpp"
 #include "walkers_factory.hpp"
+#include "config.hpp"
 
 using namespace gfx;
 
@@ -36,7 +37,6 @@ REGISTER_CLASS_IN_WALKERFACTORY(walker::wolf, Wolf)
 REGISTER_CLASS_IN_WALKERFACTORY(walker::zebra, Zebra)
 
 namespace {
-const int defaultRandomDistance=10;
 const int maxWayAlert=30;
 const float illnesValue=0.2f;
 const int every4frame=4;
@@ -89,7 +89,7 @@ std::string Animal::thoughts(Thought th) const
 
 void Animal::_findNewWay( const TilePos& start )
 {
-  Pathway pathway = PathwayHelper::randomWay( _city(), start, defaultRandomDistance );
+  Pathway pathway = PathwayHelper::randomWay( _city(), start, config::distance::animalRandrom );
 
   if( pathway.isValid() )
   {
@@ -119,8 +119,7 @@ void Herbivorous::_reachedPathway()
 {
   Walker::_reachedPathway();
 
-  Tilemap& tmap = _city()->tilemap();
-  if( tmap.at( pos() ).getFlag( Tile::tlMeadow ) )
+  if( _map().at( pos() ).getFlag( Tile::tlMeadow ) )
   {
     updateHealth( +100 );
   }
@@ -197,10 +196,9 @@ void Wolf::_centerTile()
 {
   Animal::_centerTile();
 
-  TilePos offset(1,1);
-  WalkerList walkers = _city()->statistic().walkers.find<Walker>( walker::any,
-                                                                  pos() - offset, pos() + offset );
-  walkers = walkers.exclude<Wolf>();
+  WalkerList walkers = _city()->statistic().walkers
+                                           .neighbors<Walker>( pos() )
+                                           .exclude<Wolf>();
 
   if( !walkers.empty() )
   {
@@ -215,10 +213,10 @@ void Wolf::_centerTile()
 
 void Wolf::_findNewWay( const TilePos& start )
 {
-  TilePos offset(defaultRandomDistance,defaultRandomDistance);
-  WalkerList walkers = _city()->statistic().walkers.find<Walker>( walker::any,
-                                                                  start - offset, start + offset );
-  walkers = walkers.exclude<Wolf>();
+  TilePos offset( config::distance::animalRandrom, config::distance::animalRandrom);
+  WalkerList walkers = _city()->statistic().walkers
+                                           .find<Walker>( walker::any, start - offset, start + offset )
+                                           .exclude<Wolf>();
 
   Pathway pathway;
   if( !walkers.empty() )
@@ -229,7 +227,7 @@ void Wolf::_findNewWay( const TilePos& start )
 
   if( !pathway.isValid() )
   {
-    pathway = PathwayHelper::randomWay( _city(), start, defaultRandomDistance );
+    pathway = PathwayHelper::randomWay( _city(), start, config::distance::animalRandrom );
   }
 
   if( pathway.isValid() )
@@ -261,8 +259,7 @@ void Wolf::timeStep(const unsigned long time)
   {
   case acFight:
   {
-    WalkerList walkers = _city()->walkers( _d->attackPos );
-    walkers = walkers.exclude<Wolf>();
+    WalkerList walkers = _city()->walkers( _d->attackPos ).exclude<Wolf>();
 
     if( !walkers.empty() )
     {

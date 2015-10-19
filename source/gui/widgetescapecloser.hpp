@@ -25,8 +25,8 @@ class WidgetEscapeCloser : public Widget
 {
 public:
   static void insertTo( Widget* parent );
-
   virtual bool onEvent(const NEvent &event);
+
 private:
   WidgetEscapeCloser( Widget* parent );
 };

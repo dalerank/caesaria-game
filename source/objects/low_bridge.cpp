@@ -361,7 +361,7 @@ void LowBridge::destroy()
     GameEventPtr event = ClearTile::create( tile->_pos );
     event->dispatch();
 
-    Tile& mapTile = _city()->tilemap().at( tile->_pos );
+    Tile& mapTile = _map().at( tile->_pos );
     tile::decode( mapTile, tile->_info );
   }
 }

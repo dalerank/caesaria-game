@@ -136,7 +136,7 @@ void EnemySoldier::_reachedPathway()
 
 WalkerList EnemySoldier::_findEnemiesInRange( unsigned int range )
 {
-  Tilemap& tmap = _city()->tilemap();
+  Tilemap& tmap = _map();
   WalkerList walkers;
 
   for( unsigned int k=0; k <= range; k ++ )
@@ -187,7 +187,7 @@ void EnemySoldier::_check4attack()
 
   if( !pathway.isValid() )
   {
-    int size = _city()->tilemap().size();
+    int size = _map().size();
     pathway = _findPathway2NearestConstruction( size/2 );
   }   
 
