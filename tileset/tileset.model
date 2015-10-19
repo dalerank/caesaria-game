@@ -35,6 +35,26 @@
       }
     }
 
+    misc:
+    {
+      size : [ 2048, 2048 ]
+      margin : 1
+      ignorePath : true
+      floatCoordinates : false
+      name : "carts"
+      archive : "resources/gfx/misc"
+
+      items :
+      {
+        clay :
+        {
+          type : "atlas"
+          folder : "/resources/way"
+          files : [ "way_*" ]
+        }
+      }
+    }
+
     carts:
     {
       size : [ 2048, 2048 ]
@@ -107,6 +127,20 @@
           type : "atlas"
           folder : "/resources/carts/none"
           files : [ "cartnone_*" ]
+        }
+
+        oil :
+        {
+          type : "atlas"
+          folder : "/resources/carts/oil"
+          files : [ "cartoil_*" ]
+        }
+
+        olive :
+        {
+          type : "atlas"
+          folder : "/resources/carts/olive"
+          files : [ "cartolive_*" ]
         }
       }
     }
