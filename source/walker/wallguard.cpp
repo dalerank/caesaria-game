@@ -233,7 +233,7 @@ FortificationList WallGuard::_findNearestWalls( EnemySoldierPtr enemy )
 {
   FortificationList ret;
 
-  Tilemap& tmap = _city()->tilemap();
+  Tilemap& tmap = _map();
   for( int range=1; range < 8; range++ )
   {
     TilePos offset( range, range );

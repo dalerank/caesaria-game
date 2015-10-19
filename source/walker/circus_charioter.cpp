@@ -43,7 +43,7 @@ CircusCharioter::CircusCharioter(PlayerCityPtr city)
 void CircusCharioter::_addToCircus(HippodromePtr circus)
 {
   Pathway path;
-  Tilemap& tmap = _city()->tilemap();
+  Tilemap& tmap = _map();
 
   TilePos start = circus->pos();
 

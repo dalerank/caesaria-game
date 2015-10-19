@@ -238,7 +238,6 @@ bool Dock::isBusy() const
 
 const Tile& Dock::landingTile() const
 {
-  Tilemap& tmap = _city()->tilemap();
   TilePos offset( -999, -999 );
   switch( _d->direction )
   {
@@ -250,7 +249,7 @@ const Tile& Dock::landingTile() const
   default: break;
   }
 
-  return tmap.at( pos() + offset );
+  return _map().at( pos() + offset );
 }
 
 int Dock::queueSize() const
@@ -272,7 +271,7 @@ const good::Store& Dock::exportStore() const { return _d->goods.exporting; }
 
 const Tile& Dock::queueTile() const
 {
-  TilesArea tiles( _city()->tilemap(), 3, pos() );
+  TilesArea tiles( _map(), 3, pos() );
   tiles = tiles.select( Tile::tlDeepWater );
 
   for( auto tile : tiles )

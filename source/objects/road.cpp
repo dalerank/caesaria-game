@@ -405,7 +405,7 @@ const Picture& Plaza::picture() const
 
 void Plaza::updatePicture()
 {
-  TilesArea nearTiles( _city()->tilemap(), pos(), Size(2) );
+  TilesArea nearTiles( _map(), pos(), Size(2) );
 
   bool canGrow2squarePlaza = ( nearTiles.size() == 4 ); // be carefull on map edges
   for( auto tile : nearTiles )

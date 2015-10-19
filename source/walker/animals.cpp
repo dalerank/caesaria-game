@@ -119,8 +119,7 @@ void Herbivorous::_reachedPathway()
 {
   Walker::_reachedPathway();
 
-  Tilemap& tmap = _city()->tilemap();
-  if( tmap.at( pos() ).getFlag( Tile::tlMeadow ) )
+  if( _map().at( pos() ).getFlag( Tile::tlMeadow ) )
   {
     updateHealth( +100 );
   }

@@ -156,14 +156,14 @@ bool Fountain::isNeedRoad() const { return false; }
 
 bool Fountain::haveReservoirAccess() const
 {
-  return TilesArea( _city()->tilemap(), 10, pos() ).overlays().count<Reservoir>() > 0;
+  return TilesArea( _map(), 10, pos() ).overlays().count<Reservoir>() > 0;
 }
 
 void Fountain::destroy()
 {
   ServiceBuilding::destroy();
 
-  TilesArea reachedTiles( _city()->tilemap(), _d->fillDistance, pos() );
+  TilesArea reachedTiles( _map(), _d->fillDistance, pos() );
 
   for( auto tile : reachedTiles )
     tile->setParam( Tile::pFountainWater, 0 );
@@ -213,7 +213,7 @@ void Fountain::_dayUpdate()
 
   if( mayWork() )
   {
-    TilesArea reachedTiles( _city()->tilemap(), _d->fillDistance, pos() );
+    TilesArea reachedTiles( _map(), _d->fillDistance, pos() );
 
     for( auto tile : reachedTiles )
     {

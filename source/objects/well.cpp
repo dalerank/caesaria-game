@@ -96,6 +96,6 @@ bool Well::build( const city::AreaInfo& areainfo )
 
 TilesArea Well::coverageArea() const
 {
-  TilesArea ret( _city()->tilemap(), wellServiceRange, pos() );
+  TilesArea ret( _map(), wellServiceRange, pos() );
   return ret;
 }

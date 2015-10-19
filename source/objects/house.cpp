@@ -406,7 +406,7 @@ void House::_updateCrime()
   {
     TilePos offset( 4, 4 );
     TilePos sizeOffset( size().width(), size().height() );
-    TilesArea tiles( _city()->tilemap(), pos() - offset, pos() + sizeOffset + offset );
+    TilesArea tiles( _map(), pos() - offset, pos() + sizeOffset + offset );
     int averageDes = 0;
     foreach( it, tiles ) { averageDes += (*it)->param( Tile::pDesirability ); }
     averageDes /= (tiles.size() + 1);
@@ -536,8 +536,7 @@ bool House::_tryEvolve_1_to_12_lvl( int level4grow, int growSize, const char des
 {
   if( size().width() == 1 )
   {
-    Tilemap& tmap = _city()->tilemap();
-    TilesArea area( tmap, pos(), Size(2) );
+    TilesArea area( _map(), pos(), Size(2) );
 
     bool mayGrow = true;
 
@@ -629,7 +628,7 @@ bool House::_tryEvolve_12_to_20_lvl( int level4grow, int minSize, const char des
 
   if( size() == Size( minSize-1 ) )
   {
-    Tilemap& tmap = _city()->tilemap();
+    Tilemap& tmap = _map();
     std::map<TilePos, TilesArray> possibleAreas;
 
     TilePos sPos = tile().pos();
@@ -869,11 +868,9 @@ void House::_levelDown()
 
   case HouseLevel::hovel:
   {
-    Tilemap& tmap = _city()->tilemap();
-
     if( size().area() > 1 )
     {
-      TilesArray perimetr = tmap.area( pos(), Size(2) );
+      TilesArray perimetr = _map().area( pos(), Size(2) );
       int peoplesPerHouse = habitants().count() / 4;
       foreach( tile, perimetr )
       {

@@ -139,7 +139,7 @@ void DustCloud::send2City(const TilePos &start, const TilePos& stop )
 
   attach();
 
-  Tilemap& tmap = _city()->tilemap();
+  Tilemap& tmap = _map();
   _pathway().init( tmap.at( _d->mapway.source ) );
   _pathway().setNextTile( tmap.at( _d->mapway.nextStep() ) );
 }
@@ -158,8 +158,8 @@ void DustCloud::timeStep(const unsigned long time)
     TilePos rpos = TilePos( (_d->worldway.current.x() - xOffset.x()) / yMultiplier,
                             (_d->worldway.current.y() - xOffset.y()) / yMultiplier );
 
-    Tile& t = _city()->tilemap().at( rpos );
-    _setLocation( &t );
+    Tile& tile = _map().at( rpos );
+    _setLocation( &tile );
 
     _setWpos( _d->worldway.current.toPoint() );
     _d->animation.update( time );
