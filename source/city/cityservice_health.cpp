@@ -157,10 +157,10 @@ void HealthCare::Impl::showWarningIfNeed()
 {
   if( avgMinHealth < health::bad )
   {
-    GameEventPtr e = WarningMessage::create( avgMinHealth < health::terrible
+    auto event = WarningMessage::create( avgMinHealth < health::terrible
                                              ? "##minimum_health_terrible##"
                                              : "##minimum_health_bad##", 2 );
-    e->dispatch();
+    event->dispatch();
   }
 }
 

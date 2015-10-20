@@ -349,7 +349,7 @@ void Chief::Impl::drawMilitary()
     if( !isBesieged )
     {
       Notification n = mil->priorityNotification();
-      reasons << n.message;
+      reasons << n.desc.message;
     }    
   }
 

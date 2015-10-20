@@ -75,7 +75,7 @@ void Military::timeStep(const unsigned int time )
 
     for( Notifications::iterator it=_d->notifications.begin(); it != _d->notifications.end(); )
     {
-      world::ObjectPtr object = empire->findObject( it->objectName );
+      world::ObjectPtr object = empire->findObject( it->desc.objectName );
 
       if( object.isValid() ) { ++it; }
       else { it = _d->notifications.erase( it ); }
@@ -92,13 +92,11 @@ void Military::timeStep(const unsigned int time )
   }  
 }
 
-void Military::addNotification(const std::string& text, const std::string& name, Notification::Type type)
+void Military::addNotification(const notification::Describe& describe )
 {
   Notification n;
   n.date = game::Date::current();
-  n.message = text;
-  n.objectName = name;
-  n.type = type;
+  n.desc = describe;
 
   _d->notifications.push_back( n );
 }
@@ -113,15 +111,15 @@ const Notifications& Military::notifications() const
   return _d->notifications;
 }
 
-bool Military::haveNotification( Notification::Type type) const
+bool Military::haveNotification( notification::Type type) const
 {
   return _d->notifications.contain( type );
 }
 
 bool Military::isUnderAttack() const
 {
-  return haveNotification( Notification::barbarian )
-      || haveNotification( Notification::chastener );
+  return haveNotification( notification::barbarian )
+      || haveNotification( notification::chastener );
 }
 
 VariantMap Military::save() const
@@ -130,7 +128,7 @@ VariantMap Military::save() const
 
   VariantMap notifications;
   int index = 0;
-  for( auto notification : _d->notifications )
+  for( auto& notification : _d->notifications )
   {
     notifications[ utils::format( 0xff, "note_%03d", index ) ] = notification.save();
   }
@@ -147,7 +145,7 @@ void Military::load(const VariantMap& stream)
   VARIANT_LOAD_TIME_D( _d, lastEnemyAttack, stream );
   VARIANT_LOAD_VMAP( notifications, stream );
 
-  for( auto notification : notifications )
+  for( auto& notification : notifications )
     _d->notifications.push_back( notification::create( notification.second.toList()) );
 }
 

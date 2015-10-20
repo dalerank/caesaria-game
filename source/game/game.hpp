@@ -27,6 +27,21 @@
 namespace scene{ class Base; }
 namespace gfx{   class Engine; }
 
+class Simulation
+{
+public:
+
+  struct {
+    unsigned int manualTicksCounterX10;
+    unsigned int current; // last action time
+    unsigned int ticksX10; // time (ticks) multiplied by 10;
+    unsigned int multiplier; // 100 = 1x speed
+  } time;
+
+  void reset();
+  Simulation();
+};
+
 class Game
 {
 public:
@@ -60,11 +75,10 @@ public:
   void step( unsigned int count = 1);
   void changeTimeMultiplier(int percent);
   void setTimeMultiplier(int percent);
-  int timeMultiplier() const;
+  int  timeMultiplier() const;
   void setNextScreen( scene::ScreenType screen);
 
-private:
-
+private:  
   class Impl;
   ScopedPtr< Impl > _d;
 };

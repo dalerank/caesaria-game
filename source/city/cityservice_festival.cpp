@@ -194,15 +194,15 @@ void Festival::_doFestival()
 
   rome::Pantheon::doFestival( _d->nextfest.divinity, festSize );
 
-  GameEventPtr e = ShowFeastival::create( _(info.desc), _(info.title),
-                                          _city()->mayor()->name(), info.video );
-  e->dispatch();
+  auto event = ShowFeastival::create( _(info.desc), _(info.title),
+                                      _city()->mayor()->name(), info.video );
+  event->dispatch();
 
-  e = UpdateCitySentiment::create( sentimentValue );
-  e->dispatch();
+  event = UpdateCitySentiment::create( sentimentValue );
+  event->dispatch();
 
-  e = UpdateHouseService::create( Service::crime, -sentimentValue );
-  e->dispatch();
+  event = UpdateHouseService::create( Service::crime, -sentimentValue );
+  event->dispatch();
 }
 
 }//end namespace city

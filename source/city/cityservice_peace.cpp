@@ -28,6 +28,7 @@
 #include "core/variant_map.hpp"
 #include "statistic.hpp"
 #include "core/stacktrace.hpp"
+#include "walker/protestor.hpp"
 #include "cityservice_factory.hpp"
 #include <set>
 
@@ -110,10 +111,10 @@ void Peace::timeStep(const unsigned int time )
 
   int change = (_d->threats.protestor || _d->threats.mugger) ? -minCh: 0;
 
-  if( ml->haveNotification( Notification::chastener ) )
+  if( ml->haveNotification( notification::chastener ) )
     change -= 1;
 
-  if( ml->haveNotification( Notification::barbarian ) )
+  if( ml->haveNotification( notification::barbarian ) )
     change -= 1;
 
   change -= std::min( _d->threats.rioter ? -maxCh : 0, _d->value );
@@ -143,7 +144,7 @@ void Peace::timeStep(const unsigned int time )
 void Peace::addCriminal( WalkerPtr wlk )
 {
   if( wlk.is<Rioter>() )   {    _d->threats.rioter = true;  }
-  //else if( is_kind_of<Protestor>( wlk ) )   {    _d->threats.protestor = true;  }
+  else if( is_kind_of<Protestor>( wlk ) )   {    _d->threats.protestor = true;  }
   else if( wlk .is<Mugger>() ) { _d->threats.mugger = true; }
   else
   {

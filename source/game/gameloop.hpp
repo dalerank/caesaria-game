@@ -13,36 +13,34 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
+// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_FREEPLAY_FINALIZER_H_INCLUDED__
-#define __CAESARIA_FREEPLAY_FINALIZER_H_INCLUDED__
 
-#include "city/city.hpp"
+#ifndef __CAESARIA_GAMELOOP_H_INCLUDED__
+#define __CAESARIA_GAMELOOP_H_INCLUDED__
 
-namespace game
+#include "gamestate.hpp"
+
+namespace gamestate
 {
 
-namespace freeplay
-{
-
-class Finalizer
+class InGame: public State
 {
 public:
-  Finalizer( PlayerCityPtr city );
+  InGame( Game *game, gfx::Engine* engine,
+          Simulation& simulation,
+          std::string& nextFilename,
+          std::string& restartFilename );
 
-  void addPopulationMilestones();
-  void initBuildOptions();
-  void addEvents();
-  void resetFavour();
+  virtual bool update(gfx::Engine* engine);
+
+  virtual ~InGame();
 
 private:
-  PlayerCityPtr _city;
+  __DECLARE_IMPL(InGame)
 };
 
+} //end namespace gamestate
 
-}//end namespace freeplay
-
-}//end namespace game
-
-#endif //__CAESARIA_FREEPLAY_FINALIZER_H_INCLUDED__
+#endif //__CAESARIA_GAMELOOP_H_INCLUDED__

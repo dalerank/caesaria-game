@@ -72,6 +72,7 @@
 #include "core/metric.hpp"
 #include "city/build_options.hpp"
 #include "roman_celebrates.hpp"
+#include "gameloop.hpp"
 
 #include <list>
 
@@ -84,7 +85,7 @@ class Game::Impl
 public:
   ScreenType nextScreen;
   std::string nextFilename;
-  gamestate::BaseState* currentScreen;
+  gamestate::State* currentScreen;
   gfx::Engine* engine;
   gui::Ui* gui;
 
@@ -93,12 +94,9 @@ public:
   PlayerPtr player;
 
   int pauseCounter;
-  unsigned int manualTicksCounterX10;
   std::string restartFile;
 
-  unsigned int saveTime; // last action time
-  unsigned int timeX10; // time (ticks) multiplied by 10;
-  unsigned int timeMultiplier; // 100 = 1x speed
+  Simulation simulation;
 
   void initLocale( std::string localePath );
   void initVideo();
@@ -330,24 +328,20 @@ void Game::setPaused(bool value)
 
 void Game::step(unsigned int count)
 {
-  _d->manualTicksCounterX10 += count * config::gamespeed::scale;
+  _d->simulation.time.manualTicksCounterX10 += count * config::gamespeed::scale;
 }
 
 Game::Game() : _d( new Impl )
 {
   _d->nextScreen = SCREEN_NONE;
   _d->pauseCounter = 0;
-  _d->manualTicksCounterX10 = 0;
-  _d->timeX10 = 0;
-  _d->saveTime = 0;
-  _d->timeMultiplier = config::gamespeed::defaultMutltiplier;
 }
 
-void Game::changeTimeMultiplier(int percent){  setTimeMultiplier( _d->timeMultiplier + percent );}
-void Game::setTimeMultiplier(int percent){  _d->timeMultiplier = math::clamp<unsigned int>( percent,
+void Game::changeTimeMultiplier(int percent){  setTimeMultiplier( _d->simulation.time.multiplier + percent );}
+void Game::setTimeMultiplier(int percent){  _d->simulation.time.multiplier = math::clamp<unsigned int>( percent,
                                                                                             config::gamespeed::minimum,
                                                                                             config::gamespeed::maximux );}
-int Game::timeMultiplier() const{  return _d->timeMultiplier;}
+int Game::timeMultiplier() const{  return _d->simulation.time.multiplier;}
 
 Game::~Game(){}
 
@@ -359,8 +353,8 @@ void Game::save(std::string filename) const
 
   SETTINGS_SET_VALUE( lastGame, Variant( filename ) );
 
-  GameEventPtr e = WarningMessage::create( "Game saved to " + vfs::Path( filename ).baseName().toString(), WarningMessage::neitral );
-  e->dispatch();
+  auto event = WarningMessage::create( "Game saved to " + vfs::Path( filename ).baseName().toString(), WarningMessage::neitral );
+  event->dispatch();
 }
 
 bool Game::load(std::string filename)
@@ -547,7 +541,7 @@ bool Game::exec()
   {
     case SCREEN_MENU:
     {
-      _d->currentScreen = new gamestate::ShowMainMenu(this, _d->engine);
+      _d->currentScreen = new gamestate::InMainMenu(this, _d->engine);
       am.initAddons4level( addon::mainMenu );
     }
     break;
@@ -555,19 +549,18 @@ bool Game::exec()
     case SCREEN_GAME:
     {
       Logger::warning( "game: enter setScreenGame" );
-      _d->timeX10 = 0;
-      _d->saveTime = _d->timeX10;
-      _d->currentScreen = new gamestate::GameLoop(this, _d->engine,
-                                                        _d->saveTime, _d->timeX10,
-                                                        _d->timeMultiplier, _d->manualTicksCounterX10,
-                                                        _d->nextFilename, _d->restartFile );
+      _d->simulation.reset();
+      _d->currentScreen = new gamestate::InGame(this, _d->engine,
+                                                _d->simulation,
+                                                _d->nextFilename,
+                                                _d->restartFile );
       am.initAddons4level( addon::level );
     }
     break;
 
     case SCREEN_BRIEFING:
     {
-      _d->currentScreen = new gamestate::MissionSelect(this, _d->engine, _d->nextFilename );
+      _d->currentScreen = new gamestate::InBriefing(this, _d->engine, _d->nextFilename );
       am.initAddons4level( addon::briefing );
     }
     break;
@@ -590,9 +583,6 @@ void Game::reset()
   _d->player = Player::create();
   _d->player->setName( SETTINGS_STR( playerName ) );
   _d->pauseCounter = 0;
-  _d->timeX10 = 0;
-  _d->saveTime = 0;
-  _d->manualTicksCounterX10 = 0;
 
   WalkerRelations::instance().clear();
   WalkerRelations::instance().load( SETTINGS_RC_PATH( walkerRelations ) );
@@ -623,3 +613,16 @@ void Game::destroy()
 
 void Game::setNextScreen(ScreenType screen) { _d->nextScreen = screen;}
 
+void Simulation::reset()
+{
+  time.ticksX10 = 0;
+  time.current = time.ticksX10;
+}
+
+Simulation::Simulation()
+{
+  time.manualTicksCounterX10 = 0;
+  time.ticksX10 = 0;
+  time.current = 0;
+  time.multiplier = config::gamespeed::defaultMutltiplier;
+}
