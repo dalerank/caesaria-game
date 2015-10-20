@@ -25,6 +25,7 @@
 #include "core/serializer.hpp"
 #include "good/good.hpp"
 #include "price_info.hpp"
+#include "governor_rank.hpp"
 
 namespace world
 {
@@ -86,22 +87,6 @@ private:
   class Impl;
   ScopedPtr< Impl > _d;
 };
-
-struct GovernorRank
-{
-  typedef enum { citizen=0, clerk, engineer,
-                 architect, questor, procurate,
-                 aedil, preator, consul, proconsul,
-                 caesar } Level;
-  std::string rankName;
-  std::string pretty;
-  unsigned int salary = 0;
-  Level level = citizen;
-
-  void load( const std::string& name, const VariantMap& vm );
-};
-
-typedef std::vector<GovernorRank> GovernorRanks;
 
 class EmpireHelper 
 {

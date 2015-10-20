@@ -890,6 +890,16 @@ void Widget::addProperty(const std::string& name, const Variant& value)
   _dfunc()->properties[ name ] = value;
 }
 
+void Widget::canvasDraw(const std::string& text, const Point& point, Font font, NColor color)
+{
+
+}
+
+void Widget::canvasDraw(const gfx::Picture& picture, const Point& point)
+{
+
+}
+
 const Variant& Widget::getProperty(const std::string& name) const
 {
   VariantMap::const_iterator it = _dfunc()->properties.find( name );

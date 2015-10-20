@@ -15,36 +15,38 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_CHANGE_SALARY_WINDOW_H_INCLUDE_
-#define _CAESARIA_CHANGE_SALARY_WINDOW_H_INCLUDE_
+#ifndef __CAESARIA_EMPEROR_REQUEST_BUTTON_H_INCLUDED__
+#define __CAESARIA_EMPEROR_REQUEST_BUTTON_H_INCLUDED__
 
-#include "window.hpp"
-#include "world/governor_rank.hpp"
-#include "core/signals.hpp"
+#include "pushbutton.hpp"
+#include "city/request.hpp"
 
 namespace gui
 {
 
-namespace dialog
+namespace advisorwnd
 {
 
-class ChangeSalary : public Window
+class RequestButton : public PushButton
 {
 public:
-  ChangeSalary(Widget* p, unsigned int salary );
+  RequestButton( Widget* parent, const Point& pos, int index, city::RequestPtr request );
+  virtual void draw(gfx::Engine& painter);
 
-  void setRanks( world::GovernorRanks ranks );
-  virtual ~ChangeSalary();
+protected:
+  virtual void _updateTextPic();
 
 public signals:
-  Signal1<int>& onChangeSalary();
+  Signal1<city::RequestPtr>& onExecRequest();
 
 private:
-  __DECLARE_IMPL(ChangeSalary)
+  void _acceptRequest();
+  void _executeRequest();
+
+  __DECLARE_IMPL(RequestButton)
 };
 
-}//end namespace dialog
+}//end namespace advisorwnd
 
-} //end namespace gui
-
-#endif //_CAESARIA_CHANGE_SALARY_WINDOW_H_INCLUDE_
+}//end namespace gui
+#endif //__CAESARIA_EMPEROR_REQUEST_BUTTON_H_INCLUDED__
