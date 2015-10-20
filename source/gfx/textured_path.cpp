@@ -65,9 +65,17 @@ void TexturedPath::draw(const TilesArray& tiles, const RenderInfo& rinfo, NColor
       break;
 
       case direction::northEast: index = 3; break;
-      case direction::southEast: index = 6; break;
       case direction::southWest: index = 4; break;
-      case direction::northWest: index = 5; break;
+      case direction::southEast: index = 5; break;
+
+      case direction::northWest:
+      {
+        int deltax = tiles[ prevIndex ]->epos().i() - tiles[ step ]->epos().i();
+        index = deltax == 0 ? 6 : 5;
+      }
+      break;
+
+      default: index = 0;
       }
 
       rinfo.engine.draw( Picture( "way", index), tiles[ step ]->mappos() + rinfo.offset + offset );
