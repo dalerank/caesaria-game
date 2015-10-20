@@ -65,10 +65,10 @@ public:
   {
     ListBoxItem& item = ListBox::addItem( text, font, color );
 
-    ListBoxItem::OverrideColor& itemfc = item.OverrideColors[ ListBoxItem::simple ];
-    item.OverrideColors[ ListBoxItem::hovered ].font = itemfc.font;
-    item.OverrideColors[ ListBoxItem::hovered ].Use = true;
-    item.OverrideColors[ ListBoxItem::hovered ].color = 0xffff0000;
+    ListBoxItem::OverrideColor& itemfc = item.overrideColors[ ListBoxItem::simple ];
+    item.overrideColors[ ListBoxItem::hovered ].font = itemfc.font;
+    item.overrideColors[ ListBoxItem::hovered ].Use = true;
+    item.overrideColors[ ListBoxItem::hovered ].color = 0xffff0000;
 
     item.setIcon( Picture( ResourceGroup::panelBackground, 111 ));
 

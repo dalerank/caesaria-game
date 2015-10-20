@@ -650,6 +650,21 @@ bool Label::onEvent(const NEvent& event)
 
 bool Label::isBorderVisible() const {  return _d->isBorderVisible; }
 
+void Label::canvasDraw(const string& text, const Point& point, Font dfont, NColor color)
+{
+  Picture& texture = _textPicture();
+  Font rfont = dfont.isValid() ? dfont : font();
+  if( color != 0 )
+    rfont.setColor( color );
+
+  rfont.draw( texture, text, point.x(), point.y() );
+}
+
+void gui::Label::canvasDraw(const Picture& picture, const Point& point)
+{
+
+}
+
 void Label::setPrefixText( const string& prefix )
 {
   _d->prefix = prefix;

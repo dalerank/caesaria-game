@@ -15,36 +15,18 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_CHANGE_SALARY_WINDOW_H_INCLUDE_
-#define _CAESARIA_CHANGE_SALARY_WINDOW_H_INCLUDE_
+#include "governor_rank.hpp"
+#include "core/variant_map.hpp"
 
-#include "window.hpp"
-#include "world/governor_rank.hpp"
-#include "core/signals.hpp"
-
-namespace gui
+namespace world
 {
 
-namespace dialog
+void GovernorRank::load( const std::string& name, const VariantMap &vm)
 {
+  rankName = name;
+  VARIANT_LOAD_STR( pretty, vm );
+  VARIANT_LOAD_ANY( salary, vm );
+  VARIANT_LOAD_ENUM( level, vm );
+}
 
-class ChangeSalary : public Window
-{
-public:
-  ChangeSalary(Widget* p, unsigned int salary );
-
-  void setRanks( world::GovernorRanks ranks );
-  virtual ~ChangeSalary();
-
-public signals:
-  Signal1<int>& onChangeSalary();
-
-private:
-  __DECLARE_IMPL(ChangeSalary)
-};
-
-}//end namespace dialog
-
-} //end namespace gui
-
-#endif //_CAESARIA_CHANGE_SALARY_WINDOW_H_INCLUDE_
+}//end namespace world

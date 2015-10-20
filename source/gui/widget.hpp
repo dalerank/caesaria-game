@@ -194,6 +194,12 @@ public:
   //! Moves this element on relative distance.
   virtual void move( const Point& offset );
 
+  //!
+  virtual void canvasDraw( const std::string& text, const Point& point=Point(), Font font=Font(), NColor color=0 );
+
+  //!
+  virtual void canvasDraw( const gfx::Picture& picture, const Point& point );
+
   //! Returns true if element is visible.
   virtual bool visible() const;
 
@@ -404,7 +410,7 @@ public:
   void setRight(int newRight);
 
   void addProperty(const std::string& name, const Variant &value );
-  const Variant& getProperty( const std::string& name ) const;
+  const Variant& getProperty( const std::string& name ) const;  
 
 protected:
 

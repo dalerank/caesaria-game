@@ -15,36 +15,33 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_CHANGE_SALARY_WINDOW_H_INCLUDE_
-#define _CAESARIA_CHANGE_SALARY_WINDOW_H_INCLUDE_
+#ifndef __CAESARIA_GOVERNORRANK_H_INCLUDED__
+#define __CAESARIA_GOVERNORRANK_H_INCLUDED__
 
-#include "window.hpp"
-#include "world/governor_rank.hpp"
-#include "core/signals.hpp"
+#include <string>
+#include <vector>
 
-namespace gui
+class VariantMap;
+
+namespace world
 {
 
-namespace dialog
+struct GovernorRank
 {
+  typedef enum { citizen=0, clerk, engineer,
+                 architect, questor, procurate,
+                 aedil, preator, consul, proconsul,
+                 caesar } Level;
+  std::string rankName;
+  std::string pretty;
+  unsigned int salary = 0;
+  Level level = citizen;
 
-class ChangeSalary : public Window
-{
-public:
-  ChangeSalary(Widget* p, unsigned int salary );
-
-  void setRanks( world::GovernorRanks ranks );
-  virtual ~ChangeSalary();
-
-public signals:
-  Signal1<int>& onChangeSalary();
-
-private:
-  __DECLARE_IMPL(ChangeSalary)
+  void load( const std::string& name, const VariantMap& vm );
 };
 
-}//end namespace dialog
+typedef std::vector<GovernorRank> GovernorRanks;
 
-} //end namespace gui
+}//end namespace world
 
-#endif //_CAESARIA_CHANGE_SALARY_WINDOW_H_INCLUDE_
+#endif //__CAESARIA_GOVERNORRANK_H_INCLUDED__

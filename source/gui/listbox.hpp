@@ -62,6 +62,8 @@ public:
   //! sets the selected item. Set this to -1 if no item should be selected
   virtual void setSelected(int id);
 
+  virtual void setSelectedTag(const Variant& tag);
+
   //! sets the selected item. Set this to -1 if no item should be selected
   virtual void setSelected(const std::string &item);
 

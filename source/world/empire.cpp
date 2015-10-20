@@ -725,12 +725,4 @@ void Empire::Impl::takeTaxes()
   }
 }
 
-void GovernorRank::load( const std::string& name, const VariantMap &vm)
-{
-  rankName = name;
-  VARIANT_LOAD_STR( pretty, vm );
-  VARIANT_LOAD_ANY( salary, vm );
-  VARIANT_LOAD_ENUM( level, vm );
-}
-
 }//end namespace world
