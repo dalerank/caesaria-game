@@ -109,6 +109,8 @@ public:
   void initMetrics();
   void initCelebrations();
   void initUI();
+  void initVfsSettings();
+  void initTilemapSettings();
   void initArchiveLoaders();
   void initPantheon( vfs::Path filename );
   void initFontCollection( vfs::Path resourcePath );
@@ -268,6 +270,23 @@ void Game::Impl::initUI()
 
   gui = new gui::Ui( *engine );
   gui::infobox::Manager::instance().setBoxLock( KILLSWITCH( lockInfobox ) );
+}
+
+void Game::Impl::initVfsSettings()
+{
+  //mount default rcpath folder
+  Logger::warning( "Game: set resource folder as {}", game::Settings::rcpath().toString() );
+  vfs::FileSystem::instance().setRcFolder( game::Settings::rcpath() );
+}
+
+void Game::Impl::initTilemapSettings()
+{
+  int cellWidth = SETTINGS_VALUE( cellw );
+  if( cellWidth != tilemap::c3CellWidth && cellWidth != tilemap::caCellWidth)
+  {
+    cellWidth = tilemap::c3CellWidth;
+  }
+  tilemap::initTileBase( cellWidth );
 }
 
 void Game::Impl::initPantheon( vfs::Path filename)
@@ -449,17 +468,8 @@ void Game::Impl::initArchiveLoaders()
 
 void Game::initialize()
 {
-  int cellWidth = SETTINGS_VALUE( cellw );
-  if( cellWidth != tilemap::c3CellWidth && cellWidth != tilemap::caCellWidth)
-  {
-    cellWidth = tilemap::c3CellWidth;
-  }    
-
-  tilemap::initTileBase( cellWidth );
-  //mount default rcpath folder
-  Logger::warning( "Game: set resource folder" );
-  vfs::FileSystem::instance().setRcFolder( game::Settings::rcpath() );
-
+  _d->initTilemapSettings();
+  _d->initVfsSettings();
   _d->initMetrics();
   _d->initGameConfigs();
   _d->initAddons();

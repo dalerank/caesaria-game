@@ -22,6 +22,7 @@
 #include "core/logger.hpp"
 #include "core/saveadapter.hpp"
 #include "gfx/loader.hpp"
+#include "core/color_list.hpp"
 #include "core/variant_map.hpp"
 #include "core/debug_timer.hpp"
 #include "gfx/sdl_engine.hpp"
@@ -160,7 +161,7 @@ public:
   Texture(int width, int height)
   {
     image = gfx::Picture( Size( width, height ), 0, true );
-    image.fill( DefaultColors::clear );
+    image.fill( ColorList::clear );
 
     root = new Node(0,0, width, height);
   }
@@ -720,7 +721,7 @@ int main(int argc, char* argv[])
     gray = ygray;
     for( int y=0; y < bg.height(); y+= offset )
     {
-      bg.fill( gray ? DefaultColors::darkSlateGray : DefaultColors::lightSlateGray, Rect( x, y, x+offset, y+offset ) );
+      bg.fill( gray ? ColorList::darkSlateGray : ColorList::lightSlateGray, Rect( x, y, x+offset, y+offset ) );
       gray = !gray;
     }    
   }

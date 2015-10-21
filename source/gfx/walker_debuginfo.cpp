@@ -18,6 +18,7 @@
 #include "walker_debuginfo.hpp"
 #include "pathway/pathway.hpp"
 #include "walker/walker.hpp"
+#include "core/color_list.hpp"
 #include "gfx/helper.hpp"
 #include "city/city.hpp"
 #include "gfx/decorator.hpp"
@@ -40,11 +41,11 @@ void WalkerDebugInfo::showPath( WalkerPtr walker, const RenderInfo& rinfo, NColo
   {
     if( walker->agressive() > 0 )
     {
-      pathColor = DefaultColors::red;
+      pathColor = ColorList::red;
     }
     else
     {
-      pathColor = pathway.isReverse() ? DefaultColors::blue : DefaultColors::green;
+      pathColor = pathway.isReverse() ? ColorList::blue : ColorList::green;
     }
   }
 

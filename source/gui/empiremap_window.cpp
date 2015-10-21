@@ -21,7 +21,7 @@
 #include "gfx/engine.hpp"
 #include "texturedbutton.hpp"
 #include "objects/dock.hpp"
-#include "core/color.hpp"
+#include "core/color_list.hpp"
 #include "world/empire.hpp"
 #include "world/computer_city.hpp"
 #include "city/statistic.hpp"
@@ -192,7 +192,7 @@ void EmpireMapWindow::Impl::drawCities(Engine& painter)
     pic = city->picture();
     painter.draw( city->pictures(), offset + location - Point( pic.width() / 2, pic.height() / 2 ) );
 #ifdef DEBUG
-    drawCell( painter, offset + location - Point( 10, 10 ), 20, DefaultColors::red );
+    drawCell( painter, offset + location - Point( 10, 10 ), 20, ColorList::red );
 #endif
   }
 }
@@ -221,8 +221,8 @@ void EmpireMapWindow::Impl::drawTradeRoutes(Engine& painter)
     {
       Point pos1 = offset + points[ index-1 ];
       Point pos2 = offset + points[ index ];
-      lines.add( DefaultColors::blue, pos1, pos2 );
-      drawCell( painter, pos1 - Point( 10, 10 ), 20, DefaultColors::green );
+      lines.add( ColorList::blue, pos1, pos2 );
+      drawCell( painter, pos1 - Point( 10, 10 ), 20, ColorList::green );
     }
 #endif
 
@@ -266,7 +266,7 @@ void EmpireMapWindow::Impl::drawMovable(Engine& painter)
           Point curPos( distance * sin( math::DEGTORAD * (math::DEGREE360 * i / 16)),
                         distance * cos( math::DEGTORAD * (math::DEGREE360 * i / 16)) );
 
-          lines.add( DefaultColors::blue, offset + mappos + lastPos, offset + mappos + curPos );
+          lines.add( ColorList::blue, offset + mappos + lastPos, offset + mappos + curPos );
           lastPos = curPos;
         }
       }
@@ -277,7 +277,7 @@ void EmpireMapWindow::Impl::drawMovable(Engine& painter)
         Point lastPos = way[ way.step ];
         for( world::Route::size_type k = way.step+1; k < way.size(); k++ )
         {
-          lines.add( DefaultColors::aliceBlue, offset + lastPos, offset + way[ k ] );
+          lines.add( ColorList::aliceBlue, offset + lastPos, offset + way[ k ] );
           lastPos = way[ k ];
         }
       }

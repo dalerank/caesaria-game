@@ -20,7 +20,7 @@
 #include "gfx/decorator.hpp"
 #include "core/variant_map.hpp"
 #include "gfx/pictureconverter.hpp"
-#include "core/color.hpp"
+#include "core/color_list.hpp"
 #include "widget_factory.hpp"
 #include "core/utils.hpp"
 #include "texturedbutton.hpp"
@@ -131,7 +131,7 @@ void SpinBox::_update()
   if( f.isValid() && _textPicture().isValid() )
   {
     Rect frameRect( Point( 0, 0 ), _d->btnDecrease->leftbottom()  );
-    _textPicture().fill( DefaultColors::clear, Rect() );
+    _textPicture().fill( ColorList::clear, Rect() );
     if( !text().empty() )
     {
       Rect textRect = f.getTextRect( text(), frameRect, horizontalTextAlign(), verticalTextAlign() );
@@ -140,7 +140,7 @@ void SpinBox::_update()
 
     frameRect = Rect( _d->btnIncrease->right() + 5, 0, width(), height() );
     string valueText = fmt::format( "{0} {1}", _d->value, _d->postfix );
-    _textPicture().fill( DefaultColors::clear, frameRect );
+    _textPicture().fill( ColorList::clear, frameRect );
 
     if( !valueText.empty() )
     {

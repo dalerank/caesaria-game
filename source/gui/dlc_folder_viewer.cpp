@@ -25,6 +25,7 @@
 #include "core/variant_map.hpp"
 #include "table.hpp"
 #include "gfx/loader.hpp"
+#include "core/color_list.hpp"
 #include "core/saveadapter.hpp"
 #include "gui/widget_helper.hpp"
 #include "core/logger.hpp"
@@ -92,7 +93,7 @@ public:
   void init( const Size& size )
   {
     background = Picture( size, 0, true );
-    background.fill( DefaultColors::black.color & 0xccffffff );
+    background.fill( ColorList::black.color & 0xccffffff );
     background.update();
   }
 };

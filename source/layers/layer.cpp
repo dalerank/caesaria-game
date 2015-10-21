@@ -40,6 +40,7 @@
 #include "gfx/walker_debuginfo.hpp"
 #include "core/timer.hpp"
 #include "core/logger.hpp"
+#include "core/color_list.hpp"
 #include "gfx/animation_bank.hpp"
 #include "city/statistic.hpp"
 
@@ -345,7 +346,7 @@ void Layer::render( Engine& engine )
 
     for( auto it : overDrawWalkers )
     {
-      WalkerDebugInfo::showPath( it, rinfo, DefaultColors::yellow );
+      WalkerDebugInfo::showPath( it, rinfo, ColorList::yellow );
     }
   }
 }
@@ -618,17 +619,17 @@ void Layer::afterRender(Engine& engine)
     }
 
     pos += offset;
-    engine.drawLine( DefaultColors::red, pos, pos + Point( halfRWidth, halfRWidth/2 ) * size.height() );
-    engine.drawLine( DefaultColors::red, pos + Point( halfRWidth, halfRWidth/2 ) * size.width(), pos + Point( rwidth, 0) * size.height() );
-    engine.drawLine( DefaultColors::red, pos + Point( rwidth, 0) * size.width(), pos + Point( halfRWidth, -halfRWidth/2 ) * size.height() );
-    engine.drawLine( DefaultColors::red, pos + Point( halfRWidth, -halfRWidth/2 ) * size.width(), pos );
+    engine.drawLine( ColorList::red, pos, pos + Point( halfRWidth, halfRWidth/2 ) * size.height() );
+    engine.drawLine( ColorList::red, pos + Point( halfRWidth, halfRWidth/2 ) * size.width(), pos + Point( rwidth, 0) * size.height() );
+    engine.drawLine( ColorList::red, pos + Point( rwidth, 0) * size.width(), pos + Point( halfRWidth, -halfRWidth/2 ) * size.height() );
+    engine.drawLine( ColorList::red, pos + Point( halfRWidth, -halfRWidth/2 ) * size.width(), pos );
 
     static int t=0;
     int a = (t++ % 40)/5;
-    engine.drawLine( DefaultColors::red, pos-Point(a,0), pos + Point( halfRWidth, (halfRWidth+a)/2 ) * size.height() );
-    engine.drawLine( DefaultColors::red, pos + Point( halfRWidth, (halfRWidth+a)/2 ) * size.width(), pos + Point( rwidth, 0) * size.height() + Point(a, 0) );
-    engine.drawLine( DefaultColors::red, pos + Point( rwidth, 0) * size.width() + Point(a,0), pos + Point( halfRWidth, (-a-halfRWidth)/2 ) * size.height() );
-    engine.drawLine( DefaultColors::red, pos + Point( halfRWidth, (-a-halfRWidth)/2 ) * size.width(), pos - Point(a,0) );
+    engine.drawLine( ColorList::red, pos-Point(a,0), pos + Point( halfRWidth, (halfRWidth+a)/2 ) * size.height() );
+    engine.drawLine( ColorList::red, pos + Point( halfRWidth, (halfRWidth+a)/2 ) * size.width(), pos + Point( rwidth, 0) * size.height() + Point(a, 0) );
+    engine.drawLine( ColorList::red, pos + Point( rwidth, 0) * size.width() + Point(a,0), pos + Point( halfRWidth, (-a-halfRWidth)/2 ) * size.height() );
+    engine.drawLine( ColorList::red, pos + Point( halfRWidth, (-a-halfRWidth)/2 ) * size.width(), pos - Point(a,0) );
 
 #ifdef DEBUG
     engine.draw( _d->tilePosText, pos );

@@ -29,6 +29,7 @@
 #include "gui/pushbutton.hpp"
 #include "gui/label.hpp"
 #include "game/settings.hpp"
+#include "core/color_list.hpp"
 #include "gui/playername_window.hpp"
 #include "core/logger.hpp"
 #include "core/foreach.hpp"
@@ -627,7 +628,7 @@ void StartMenu::initialize()
     _d->lbSteamName = new Label( _d->game->gui()->rootWidget(), Rect( 100, 10, 400, 80 ), text );
     _d->lbSteamName->setTextAlignment( align::upperLeft, align::center );
     _d->lbSteamName->setWordwrap( true );
-    _d->lbSteamName->setFont( Font::create( FONT_3, DefaultColors::white ) );
+    _d->lbSteamName->setFont( Font::create( FONT_3, ColorList::white ) );
   }
 }
 

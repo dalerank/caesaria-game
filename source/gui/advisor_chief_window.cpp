@@ -50,6 +50,7 @@
 #include "world/romechastenerarmy.hpp"
 #include "world/empire.hpp"
 #include "core/logger.hpp"
+#include "core/color_list.hpp"
 #include "city/states.hpp"
 
 using namespace gfx;
@@ -128,7 +129,7 @@ public:
   TexturedButton* btnHelp;
 
 public:
-  void drawReportRow( AdviceType, std::string text, NColor color=DefaultColors::black );
+  void drawReportRow( AdviceType, std::string text, NColor color=ColorList::black );
   void drawEmploymentState();
   void drawProfitState();
   void drawMigrationState();
@@ -213,12 +214,12 @@ void Chief::Impl::drawEmploymentState()
   Statistic::WorkersInfo wInfo = city->statistic().workers.details();
   int workless = city->statistic().workers.worklessPercent();
   std::string text;
-  NColor color = DefaultColors::black;
+  NColor color = ColorList::black;
 
   if( city->states().population == 0 )
   {
     text = _("##no_people_in_city##");
-    color =  DefaultColors::brown;
+    color =  ColorList::brown;
   }
   else
   {
@@ -226,12 +227,12 @@ void Chief::Impl::drawEmploymentState()
     if( needWorkersNumber > 10 )
     {
       text = fmt::format( "{0} {1}", _("##advchief_needworkers##"), needWorkersNumber );
-      color = DefaultColors::brown;
+      color = ColorList::brown;
     }
     else if( workless > bigWorklessPercent )
     {
       text = fmt::format( "{0} {1}%", _("##advchief_workless##"), workless );
-      color = DefaultColors::brown;
+      color = ColorList::brown;
     }
     else { text = _("##advchief_employers_ok##");  }
   }
@@ -245,7 +246,7 @@ void Chief::Impl::drawProfitState()
   int profit = city->treasury().profit();
   std::string prefix = (profit >= 0 ? "##advchief_haveprofit##" : "##advchief_havedeficit##");
   text = _(prefix) + std::string(" ") + utils::i2str( profit );
-  NColor textColor = profit > 0 ? DefaultColors::black : DefaultColors::brown;
+  NColor textColor = profit > 0 ? ColorList::black : ColorList::brown;
 
   drawReportRow( profitState, text, textColor );
 }

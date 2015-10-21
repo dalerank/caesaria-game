@@ -23,6 +23,7 @@
 #include "gfx/helper.hpp"
 #include "city/city.hpp"
 #include "vfs/file.hpp"
+#include "core/color_list.hpp"
 #include "vfs/path.hpp"
 #include "core/spline.hpp"
 #include "core/direction.hpp"
@@ -904,7 +905,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
       break;
 
       case 9: {
-        color = DefaultColors::white;
+        color = ColorList::white;
       }
       break;
     }

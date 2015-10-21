@@ -22,7 +22,7 @@
 #include "core/exception.hpp"
 #include "gfx/picture.hpp"
 #include "gfx/pictureconverter.hpp"
-#include "core/color.hpp"
+#include "core/color_list.hpp"
 #include "core/font.hpp"
 #include "core/gettext.hpp"
 
@@ -151,7 +151,7 @@ void SplashScreen::exitScene(bool showDevText)
     {
       Rect textRect = textFont.getTextRect( *it, Rect( Point(), _d->textPic.size() ), align::center, align::center );
       bool defaultColor = ( (*it)[0] != ' ');
-      textFont.setColor( defaultColor ? DefaultColors::dodgerBlue : DefaultColors::indianRed );
+      textFont.setColor( defaultColor ? ColorList::dodgerBlue : ColorList::indianRed );
       textFont.draw( _d->textPic, *it, textRect.left(), textRect.top() + offset, false, true );
       offset += 20;
     }

@@ -36,6 +36,7 @@
 #include "widget_helper.hpp"
 #include "gfx/helper.hpp"
 #include "gfx/tilemap.hpp"
+#include "core/color_list.hpp"
 #include "core/metric.hpp"
 #include "events/movecamera.hpp"
 
@@ -55,7 +56,7 @@ public:
     : Label( parent, rectangle, "", false, Label::bgBlackFrame )
   {
     _wlkPicture = gfx::Picture( rectangle.size() - Size( 6 ), 0, true );
-    _wlkPicture.fill( DefaultColors::clear, Rect() );
+    _wlkPicture.fill( ColorList::clear, Rect() );
     _walker = wlk;
   }
 

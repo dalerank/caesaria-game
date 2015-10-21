@@ -29,6 +29,7 @@
 #include "gfx/camera.hpp"
 #include "walker/walker.hpp"
 #include "core/tilerect.hpp"
+#include "core/color_list.hpp"
 #include "texturedbutton.hpp"
 #include "gfx/helper.hpp"
 #include "gfx/decorator.hpp"
@@ -217,8 +218,8 @@ void Minimap::Impl::getObjectColours(const Tile& tile, int &c1, int &c2)
 
   case object::burning_ruins:
   {
-    c1 = DefaultColors::red.color;
-    c2 = DefaultColors::red.color;
+    c1 = ColorList::red.color;
+    c2 = ColorList::red.color;
     colorFound = true;
   }
   break;
@@ -226,8 +227,8 @@ void Minimap::Impl::getObjectColours(const Tile& tile, int &c1, int &c2)
   case object::burned_ruins:
   case object::collapsed_ruins:
   {
-    c1 = DefaultColors::grey.color;
-    c2 = DefaultColors::grey.color;
+    c1 = ColorList::grey.color;
+    c2 = ColorList::grey.color;
     colorFound = true;
   }
   break;
@@ -259,40 +260,40 @@ void Minimap::Impl::getObjectColours(const Tile& tile, int &c1, int &c2)
     {
       case object::group::military:
       {
-        c1 = colors->colourA(DefaultColors::indianRed.color,1);
-        c2 = colors->colourA(DefaultColors::indianRed.color,0);
+        c1 = colors->colourA(ColorList::indianRed.color,1);
+        c2 = colors->colourA(ColorList::indianRed.color,0);
         colorFound = true;
       }
       break;
 
       case object::group::food:
       {
-        c1 = colors->colourA(DefaultColors::green.color,1);
-        c2 = colors->colourA(DefaultColors::green.color,0);
+        c1 = colors->colourA(ColorList::green.color,1);
+        c2 = colors->colourA(ColorList::green.color,0);
         colorFound = true;
       }
       break;
 
       case object::group::industry:
       {
-        c1 = colors->colourA(DefaultColors::brown.color,1);
-        c2 = colors->colourA(DefaultColors::brown.color,0);
+        c1 = colors->colourA(ColorList::brown.color,1);
+        c2 = colors->colourA(ColorList::brown.color,0);
         colorFound = true;
       }
       break;
 
       case object::group::obtain:
       {
-        c1 = colors->colourA(DefaultColors::sandyBrown.color,1);
-        c2 = colors->colourA(DefaultColors::sandyBrown.color,0);
+        c1 = colors->colourA(ColorList::sandyBrown.color,1);
+        c2 = colors->colourA(ColorList::sandyBrown.color,0);
         colorFound = true;
       }
       break;
 
       case object::group::religion:
       {
-        c1 = colors->colourA(DefaultColors::snow.color,1);
-        c2 = colors->colourA(DefaultColors::snow.color,0);
+        c1 = colors->colourA(ColorList::snow.color,1);
+        c2 = colors->colourA(ColorList::snow.color,0);
         colorFound = true;
       }
       break;
@@ -348,7 +349,7 @@ void Minimap::Impl::drawObjectsMmap( Picture& canvas, bool clear, bool force )
   if( lastObjectsCount != ovs.size() || force )
   {
     if( clear )
-      canvas.fill( DefaultColors::clear );
+      canvas.fill( ColorList::clear );
     lastObjectsCount = ovs.size();
 
     for( auto& overlay : ovs )
@@ -391,7 +392,7 @@ void Minimap::Impl::drawWalkersMmap( Picture& canvas, bool clear )
 
   const WalkerList& walkers = city->walkers();
   if( clear )
-    canvas.fill( DefaultColors::clear );
+    canvas.fill( ColorList::clear );
 
   unsigned int* pixelsObjects = canvas.lock();
 
@@ -405,16 +406,16 @@ void Minimap::Impl::drawWalkersMmap( Picture& canvas, bool clear )
 
       if ((*i)->agressive() > 0)
       {
-        cl = DefaultColors::red;
+        cl = ColorList::red;
       }
       else
       {
-        cl = DefaultColors::blue;
+        cl = ColorList::blue;
       }
     }
     else if( (*i)->type() == walker::immigrant )
     {
-      cl = DefaultColors::green;
+      cl = ColorList::green;
     }
 
     if (cl.color != 0)
