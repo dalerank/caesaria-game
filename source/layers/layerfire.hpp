@@ -27,7 +27,7 @@ class Fire : public Info
 {
 public:
   virtual int type() const;
-  virtual void drawTile(const RenderInfo& rinfo, gfx::Tile& tile);
+  virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
   virtual void handleEvent( NEvent& event );
 
   static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );

@@ -339,13 +339,13 @@ void Layer::render( Engine& engine )
       else
       {
         if( wlk->getFlag( Walker::showDebugInfo ) )
-          WalkerDebugInfo::showPath( wlk, engine, _d->camera );
+          WalkerDebugInfo::showPath( wlk, rinfo );
       }
     }
 
     for( auto it : overDrawWalkers )
     {
-      WalkerDebugInfo::showPath( it, engine, _d->camera, DefaultColors::yellow );
+      WalkerDebugInfo::showPath( it, rinfo, DefaultColors::yellow );
     }
   }
 }

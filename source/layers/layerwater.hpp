@@ -28,15 +28,15 @@ class Water : public Layer
 {
 public:
   virtual int type() const;
-  virtual void drawTile( const RenderInfo& rinfo, gfx::Tile& tile);
-  virtual void drawPass( const RenderInfo& rinfo, gfx::Tile& tile, gfx::Renderer::Pass pass);
-  virtual void drawWalkerOverlap(const RenderInfo& rinfo, gfx::Tile &tile, const int depth);
+  virtual void drawTile( const gfx::RenderInfo& rinfo, gfx::Tile& tile);
+  virtual void drawPass( const gfx::RenderInfo& rinfo, gfx::Tile& tile, gfx::Renderer::Pass pass);
+  virtual void drawWalkerOverlap(const gfx::RenderInfo& rinfo, gfx::Tile &tile, const int depth);
 
   static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
   virtual void handleEvent(NEvent& event);
 
 private:
-  void _drawLandTile( const RenderInfo& rinfo, gfx::Tile &tile, const Size &areaSize);
+  void _drawLandTile( const gfx::RenderInfo& rinfo, gfx::Tile &tile, const Size &areaSize);
 
   class Impl;
   ScopedPtr<Impl> _d;
