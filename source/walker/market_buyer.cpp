@@ -344,7 +344,7 @@ void MarketBuyer::load( const VariantMap& stream)
 
   TilePos tpos = stream.get( "marketPos" ).toTilePos();
 
-  _d->market << _city()->getOverlay( tpos );
+  _d->market << _map().overlay( tpos );
 
   VARIANT_LOAD_CLASS_D( _d, basket, stream )
   VARIANT_LOAD_ANY_D( _d, maxDistance, stream )

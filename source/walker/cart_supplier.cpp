@@ -39,6 +39,7 @@
 #include "core/direction.hpp"
 #include "walkers_factory.hpp"
 #include "gfx/helper.hpp"
+#include "gfx/tilemap.hpp"
 #include "gfx/cart_animation.hpp"
 
 using namespace gfx;
@@ -82,7 +83,7 @@ void CartSupplier::_reachedPathway()
     // walker is back in the market
     deleteLater();
     // put the content of the stock to receiver
-    auto building = _city()->getOverlay( _d->baseBuildingPos ).as<Building>();
+    auto building = _map().overlay<Building>( _d->baseBuildingPos );
 
     if( building.isValid() )
     {
@@ -102,7 +103,7 @@ void CartSupplier::_reachedPathway()
   else
   {
     // get goods from destination building
-    auto building = _city()->getOverlay( _d->storageBuildingPos ).as<Building>();
+    auto building = _map().overlay<Building>( _d->storageBuildingPos );
 
     if( building.isValid() )
     {
@@ -268,7 +269,7 @@ void CartSupplier::send2city( BuildingPtr building, good::Product what, const in
 
 void CartSupplier::_reserveStorage()
 {
-  auto building =_city()->getOverlay( _d->baseBuildingPos ).as<Building>();
+  auto building = _map().overlay<Building>( _d->baseBuildingPos );
 
   if( building.isValid() )
   {

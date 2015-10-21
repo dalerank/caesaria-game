@@ -21,6 +21,7 @@
 #include "pathway/pathway.hpp"
 #include "objects/market.hpp"
 #include "good/store.hpp"
+#include "gfx/tilemap.hpp"
 #include "walkers_factory.hpp"
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::marketLady, MarketLady)
@@ -35,7 +36,7 @@ ServiceWalkerPtr MarketLady::create(PlayerCityPtr city)
 
 MarketPtr MarketLady::market() const
 {
-  return _city()->getOverlay( baseLocation() ).as<Market>();
+  return _map().overlay<Market>( baseLocation() );
 }
 
 void MarketLady::_updateThoughts()

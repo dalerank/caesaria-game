@@ -173,7 +173,7 @@ void WallGuard::load(const VariantMap& stream)
   VARIANT_LOAD_ANY_D( _d, patrolPosition, stream )
 
   TilePos basePosition = stream.get( "base" );
-  auto tower = _city()->getOverlay( basePosition ).as<Tower>();
+  auto tower = _map().overlay<Tower>( basePosition );
 
   if( tower.isValid() )
   {

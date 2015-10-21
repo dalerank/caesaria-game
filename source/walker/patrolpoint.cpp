@@ -19,6 +19,7 @@
 #include "game/resourcegroup.hpp"
 #include "objects/military.hpp"
 #include "city/city.hpp"
+#include "gfx/tilemap.hpp"
 #include "game/gamedate.hpp"
 
 using namespace gfx;
@@ -83,7 +84,7 @@ void PatrolPoint::timeStep(const unsigned long time)
 
 FortPtr PatrolPoint::base() const
 {
-  return _city()->getOverlay( _d->basePos ).as<Fort>();
+  return _map().overlay<Fort>( _d->basePos );
 }
 
 void PatrolPoint::save(VariantMap& stream) const
