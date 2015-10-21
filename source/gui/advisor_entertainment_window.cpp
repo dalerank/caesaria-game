@@ -230,7 +230,6 @@ void Entertainment::Impl::updateInfo()
   const EntertInfo& thInfo = lbTheatresInfo->getInfo();
   const EntertInfo& amthInfo = lbAmphitheatresInfo->getInfo();
   const EntertInfo& clsInfo = lbColisseumInfo->getInfo();
-  //const InfrastructureInfo& hpdInfo = lbHippodromeInfo->getInfo();
 
   int theatersNeed = 0, amptNeed = 0, clsNeed = 0, hpdNeed = 0;
   int minTheaterSrvc = maxServiceValue;
