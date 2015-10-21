@@ -79,8 +79,7 @@ public:
   void setNextScreen( scene::ScreenType screen);
 
 private:  
-  class Impl;
-  ScopedPtr< Impl > _d;
+  __DECLARE_IMPL(Game)
 };
 
 
