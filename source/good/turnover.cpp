@@ -19,6 +19,8 @@
 #include "gfx/helper.hpp"
 #include "core/logger.hpp"
 #include "game/gamedate.hpp"
+#include "core/variant_list.hpp"
+#include "core/utils.hpp"
 
 namespace good
 {
@@ -54,6 +56,27 @@ void TurnoverDetails::append(Product gtype, int qty, int tag, const DateTime& ti
     Logger::warning( "TurnoverDetails: cant find history" );
 }
 
+VariantMap TurnoverDetails::save() const
+{
+  VariantMap ret;
+  for( auto& item : *this )
+  {
+    std::string index = utils::i2str( item.first );
+    ret[ index ] = item.second.save();
+  }
+
+  return ret;
+}
+
+void TurnoverDetails::load(const VariantMap& stream)
+{
+  for( auto& item : stream )
+  {
+    unsigned int sender = utils::toUint( item.first );
+    (*this)[ sender ].load( item.second.toMap() );
+  }
+}
+
 Turnovers TurnoverDetails::items() const
 {
   Turnovers ret;
@@ -87,6 +110,39 @@ Turnovers TurnoverDetails::items() const
   }
 
   return ret;
+}
+
+VariantMap StockInfoMap::save() const
+{
+  VariantMap ret;
+  for( auto& item : *this )
+  {
+    VariantList vlist;
+    for( auto& hstep : item.second )
+      vlist.push_back( VariantList( hstep.qty, hstep.birth.hashdate() ) );
+
+    std::string section = utils::i2str( item.first );
+    ret[ section ] = vlist;
+  }
+
+  return ret;
+}
+
+void StockInfoMap::load(const VariantMap& stream)
+{
+  for( auto& item : stream )
+  {
+    Product index = Product( utils::toInt( item.first ) );
+    VariantList items = item.second.toList();
+    for( auto& step : items )
+    {
+      VariantList vlist = step.toList();
+      SmInfo info;
+      info.qty   = vlist.get( 0 ).toUInt();
+      info.birth = DateTime::fromhash( vlist.get( 1 ).toUInt() );
+      (*this)[ index ].push_back( info );
+    }
+  }
 }
 
 

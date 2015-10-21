@@ -41,13 +41,13 @@ public:
   Orders goodOrders;
 };
 
-Store::Store() : _d( new Impl )
+Store::Store() : __INIT_IMPL(Store)
 {
-  _d->devastation = false;
+  _dfunc()->devastation = false;
 }
 
-ConsumerDetails& Store::_consumers() { return _d->consumers; }
-ProviderDetails& Store::_providers() { return _d->providers; }
+ConsumerDetails& Store::_consumers() { return _dfunc()->consumers; }
+ProviderDetails& Store::_providers() { return _dfunc()->providers; }
 
 int Store::getMaxRetrieve(const good::Product goodType)
 {
@@ -55,7 +55,7 @@ int Store::getMaxRetrieve(const good::Product goodType)
   int rqty = qty(goodType);
 
   // remove all retrieval reservations
-  for( auto& reserve : _d->retrieveReservations)
+  for( auto& reserve : _dfunc()->retrieveReservations)
     rqty -= reserve.qty();
 
   return rqty;
@@ -68,7 +68,7 @@ int Store::reserveStorage(good::Stock &stock, DateTime time)
     return noId;
 
   // the stock can be stored!
-  return _d->storeReservations.push( stock, time );
+  return _dfunc()->storeReservations.push( stock, time );
 }
 
 int Store::reserveStorage(good::Product what, unsigned int qty, DateTime time)
@@ -83,7 +83,7 @@ int Store::reserveRetrieval(good::Stock &stock, DateTime time)
   if( getMaxRetrieve(stock.type()) < stock.qty())
     return noId;
 
-  return _d->retrieveReservations.push( stock, time );
+  return _dfunc()->retrieveReservations.push( stock, time );
 }
 
 int Store::reserveRetrieval(good::Product what, unsigned int qty, DateTime time)
@@ -94,7 +94,8 @@ int Store::reserveRetrieval(good::Product what, unsigned int qty, DateTime time)
 
 good::Stock Store::getStorageReservation(const int reservationID, const bool pop)
 {
-  ReserveInfo info = _d->storeReservations.get( reservationID );
+  __D_REF(d,Store)
+  ReserveInfo info = d.storeReservations.get( reservationID );
 
   if( info.id == noId )
   {
@@ -104,7 +105,7 @@ good::Stock Store::getStorageReservation(const int reservationID, const bool pop
 
   if( pop )
   {
-    _d->storeReservations.pop( reservationID );
+    d.storeReservations.pop( reservationID );
   }
 
   return info.stock;
@@ -113,7 +114,8 @@ good::Stock Store::getStorageReservation(const int reservationID, const bool pop
 
 good::Stock Store::getRetrieveReservation(const int reservationID, const bool pop)
 {
-  ReserveInfo info = _d->retrieveReservations.get(reservationID);
+  __D_REF(d,Store)
+  ReserveInfo info = d.retrieveReservations.get(reservationID);
 
   if( info.id == noId )
   {
@@ -123,7 +125,7 @@ good::Stock Store::getRetrieveReservation(const int reservationID, const bool po
 
   if( pop )
   {
-    _d->retrieveReservations.pop( reservationID );
+    d.retrieveReservations.pop( reservationID );
   }
 
   return info.stock;
@@ -131,7 +133,7 @@ good::Stock Store::getRetrieveReservation(const int reservationID, const bool po
 
 void Store::confirmDeliver(Product gtype, int qty, unsigned int tag, const DateTime& time)
 {
-  _d->consumers.append( gtype, qty, tag, time );
+  _dfunc()->consumers.append( gtype, qty, tag, time );
 }
 
 void Store::applyStorageReservation(Storage &goodStore, const int reservationID)
@@ -209,11 +211,14 @@ void Store::storeAll( Store& goodStore )
 
 VariantMap Store::save() const
 {
+  __D_REF(d,Store)
   VariantMap stream;
 
-  VARIANT_SAVE_CLASS_D( stream, _d, storeReservations )
-  VARIANT_SAVE_ANY_D( stream, _d, devastation )
-  VARIANT_SAVE_CLASS_D( stream, _d, retrieveReservations )
+  VARIANT_SAVE_CLASS_D( stream, &d, storeReservations )
+  VARIANT_SAVE_ANY_D( stream, &d, devastation )
+  VARIANT_SAVE_CLASS_D( stream, &d, retrieveReservations )
+  VARIANT_SAVE_CLASS_D( stream, &d, consumers )
+  VARIANT_SAVE_CLASS_D( stream, &d, providers )
 
   VariantList vm_orders;
   for( auto& goodType : good::all() )
@@ -226,15 +231,18 @@ VariantMap Store::save() const
 
 void Store::load( const VariantMap& stream )
 {
+  __D_REF(d,Store)
   if( stream.empty() )
   {
     Logger::warning( "!!! WARNING: cant load store config from empty stream" );
     return;
   }
 
-  VARIANT_LOAD_ANY_D( _d, devastation, stream )
-  VARIANT_LOAD_CLASS_D( _d, storeReservations, stream )
-  VARIANT_LOAD_CLASS_D( _d, retrieveReservations, stream )
+  VARIANT_LOAD_ANY_D( &d, devastation, stream )
+  VARIANT_LOAD_CLASS_D( &d, storeReservations, stream )
+  VARIANT_LOAD_CLASS_D( &d, retrieveReservations, stream )
+  VARIANT_LOAD_CLASS_D( &d, consumers, stream )
+  VARIANT_LOAD_CLASS_D( &d, providers, stream )
 
   VariantList vm_orders = stream.get( "orders" ).toList();
   int index = 0;
@@ -247,18 +255,18 @@ void Store::load( const VariantMap& stream )
 
 const ConsumerDetails& Store::consumers() const
 {
-  _d->consumers.owner = owner();
-  return _d->consumers;
+  _dfunc()->consumers.owner = owner();
+  return _dfunc()->consumers;
 }
 
 const ProviderDetails& Store::providers() const
 {
-  _d->providers.owner = owner();
-  return _d->providers;
+  _dfunc()->providers.owner = owner();
+  return _dfunc()->providers;
 }
 
-bool Store::isDevastation() const{  return _d->devastation;}
-void Store::setDevastation( bool value ){  _d->devastation = value;}
+bool Store::isDevastation() const{  return _dfunc()->devastation;}
+void Store::setDevastation( bool value ){  _dfunc()->devastation = value;}
 
 Store::~Store() {}
 
@@ -288,17 +296,17 @@ ProductMap Store::amounts() const
   return ret;
 }
 
-void Store::setOrder( const good::Product type, const Orders::Order order ){  _d->goodOrders.set( type, order );}
-Orders::Order Store::getOrder(const good::Product type ) const{  return _d->goodOrders.get( type );}
+void Store::setOrder( const good::Product type, const Orders::Order order ){  _dfunc()->goodOrders.set( type, order );}
+Orders::Order Store::getOrder(const good::Product type ) const{  return _dfunc()->goodOrders.get( type );}
 
 void Store::removeExpired(DateTime date)
 {
-  _d->retrieveReservations.removeExpired( date, 2 );
-  _d->storeReservations.removeExpired( date, 2 );
+  _dfunc()->retrieveReservations.removeExpired( date, 2 );
+  _dfunc()->storeReservations.removeExpired( date, 2 );
 }
 
-Reservations& Store::_getStoreReservations() {  return _d->storeReservations; }
-Reservations& Store::_getRetrieveReservations(){   return _d->retrieveReservations;}
+Reservations& Store::_getStoreReservations() {  return _dfunc()->storeReservations; }
+Reservations& Store::_getRetrieveReservations(){   return _dfunc()->retrieveReservations;}
 int Store::freeQty( const good::Product& goodType ) const{ return capacity( goodType ) - qty( goodType );}
 int Store::freeQty() const{  return capacity() - qty();}
 bool Store::empty() const{  return qty() == 0;}

@@ -144,8 +144,7 @@ protected:
   ProviderDetails& _providers();
 
 private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  __DECLARE_IMPL(Store)
 };
 
 }//end namespace good

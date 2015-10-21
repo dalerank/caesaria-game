@@ -22,6 +22,7 @@
 #include "stock.hpp"
 #include "core/position.hpp"
 #include "core/scopedptr.hpp"
+#include "core/variant_map.hpp"
 
 namespace good
 {
@@ -43,7 +44,13 @@ struct SmInfo
 
 typedef std::vector<TurnoverInfo> Turnovers;
 typedef std::vector<SmInfo> SmHistory;
-typedef std::map<Product,SmHistory> StockInfoMap;
+
+class StockInfoMap : public std::map<Product,SmHistory>
+{
+public:
+  VariantMap save() const;
+  void load( const VariantMap& stream );
+};
 
 class TurnoverDetails : public std::map<unsigned int,StockInfoMap>
 {
@@ -51,6 +58,9 @@ public:
   TilePos owner;
   void append(const Stock& stock );
   void append(Product gtype, int qty, int tag,  const DateTime& time);
+
+  VariantMap save() const;
+  void load( const VariantMap& stream );
 
   Turnovers items() const;
 };
