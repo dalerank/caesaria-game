@@ -381,7 +381,7 @@ void EnemySoldier::timeStep(const unsigned long time)
   case destroyBuilding:
   {    
     ConstructionList constructions;
-    ConstructionPtr c = ptr_cast<Construction>(_city()->getOverlay( target() ) );
+    ConstructionPtr c = _map().overlay<Construction>( target() );
 
     if( c.isValid() && !_atExclude.count( c->group() ) )
     {

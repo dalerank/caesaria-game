@@ -77,7 +77,7 @@ void Prefecture::deliverService()
     {
       TilePos startPos = roadside().front()->pos();
 
-      OverlayPtr ruin = _city()->getOverlay( _d->fireDetect );
+      OverlayPtr ruin = _map().overlay( _d->fireDetect );
       Pathway pathway = PathwayHelper::create( startPos, ruin, PathwayHelper::allTerrain );
 
       bool fireInOutWorkArea = pathway.length() <= walkerDistance();

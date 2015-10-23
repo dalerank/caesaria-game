@@ -158,7 +158,7 @@ void RomeSoldier::load(const VariantMap& stream)
   VARIANT_LOAD_ANY_D( _d, patrolPosition, stream );
   VARIANT_LOAD_ANY_D( _d, basePos, stream );
 
-  auto fort = _city()->getOverlay( _d->basePos ).as<Fort>();
+  auto fort = _map().overlay<Fort>( _d->basePos );
   if( fort.isValid() )
   {
     fort->addWalker( this );

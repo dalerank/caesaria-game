@@ -914,7 +914,7 @@ void House::_levelDown()
 
 void House::buyMarket( ServiceWalkerPtr walker )
 {
-  MarketPtr market = ptr_cast<Market>( _city()->getOverlay( walker->baseLocation() ) );
+  MarketPtr market = _map().overlay<Market>( walker->baseLocation() );
   if( market.isNull() )
     return;
 
@@ -1037,7 +1037,7 @@ float House::evaluateService(ServiceWalkerPtr walker)
 
   case Service::market:
   {
-    MarketPtr market = ptr_cast<Market>( _city()->getOverlay( walker->baseLocation() ) );
+    MarketPtr market = _map().overlay<Market>( walker->baseLocation() );
     good::Store& marketStore = market->goodStore();
     good::Store& houseStore = store();
     foreach( goodType, good::all() )

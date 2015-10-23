@@ -378,7 +378,7 @@ void Prefect::_centerTile()
       //on next deliverService
 
       //found fire, no water, go prefecture
-      auto prefecture = _city()->getOverlay( baseLocation() ).as<Prefecture>();
+      auto prefecture = _map().overlay<Prefecture>( baseLocation() );
       if( prefecture.isValid() )
         prefecture->fireDetect( firePos );
 

@@ -23,6 +23,7 @@
 #include "constants.hpp"
 #include "gfx/helper.hpp"
 #include "core/foreach.hpp"
+#include "coast.hpp"
 #include "objects_factory.hpp"
 
 using namespace gfx;
@@ -42,8 +43,22 @@ bool Terrain::build( const city::AreaInfo& info )
 {
   Overlay::build( info );
   tile().setPicture( picture() );
-  deleteLater();
+  tile().setImgId( imgid::fromResource( picture().name() ) );
   tile().setOverlay( nullptr );
+  deleteLater();
+
+  TilesArray tiles = _map().area( 1, pos() );
+  for( auto tile : tiles )
+  {
+    bool isWater = tile->getFlag( Tile::tlWater );
+    isWater |= tile->getFlag( Tile::tlDeepWater );
+    if( isWater )
+    {
+      OverlayPtr ov = TileOverlayFactory::instance().create( object::coast );
+      city::AreaInfo binfo( info.city, tile->epos() );
+      ov->build( binfo );
+    }
+  }
 
   return true;
 }

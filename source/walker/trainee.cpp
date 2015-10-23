@@ -108,7 +108,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
     return;
   }
 
-  BuildingPtr base = ( _city()->getOverlay( _d->baseLocation ).as<Building>());
+  BuildingPtr base = _map().overlay<Building>( _d->baseLocation );
   if( !base.isValid() )
   {
     Logger::warning( "!!! WARNING: trainee walker base is null at [{0},{1}]", _d->baseLocation.i(), _d->baseLocation.j() );

@@ -21,6 +21,7 @@
 #include "objects/metadata.hpp"
 #include "name_generator.hpp"
 #include "objects/factory.hpp"
+#include "gfx/tilemap.hpp"
 #include "objects/warehouse.hpp"
 #include "objects/granary.hpp"
 #include "good/store.hpp"
@@ -445,7 +446,7 @@ void CartPusher::load( const VariantMap& stream )
   _d->stock.load( stream.get( literals::stock ).toList() );
 
   TilePos prPos( stream.get( literals::producerPos ).toTilePos() );
-  _d->producerBuilding = _city()->getOverlay( prPos ).as<Building>();
+  _d->producerBuilding = _map().overlay<Building>( prPos );
 
   if( _d->producerBuilding.is<WorkingBuilding>() )
   {
@@ -458,7 +459,7 @@ void CartPusher::load( const VariantMap& stream )
   }
 
   TilePos cnsmPos( stream.get( literals::consumerPos ).toTilePos() );
-  _d->consumerBuilding = _city()->getOverlay( cnsmPos ).as<Building>();
+  _d->consumerBuilding = _map().overlay<Building>( cnsmPos );
 
   VARIANT_LOAD_ANY_D( _d, maxDistance, stream )
   VARIANT_LOAD_ANY_D( _d, cantUnloadGoods, stream )

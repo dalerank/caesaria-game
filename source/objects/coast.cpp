@@ -35,14 +35,13 @@ namespace {
 
 Coast::Coast() : Overlay( object::terrain, Size(1) )
 {
-  setPicture( computePicture() );
+  setPicture( ResourceGroup::land1a, 199 );
 }
 
 bool Coast::build( const city::AreaInfo& info )
 {
   Overlay::build( info );
-  tile().setPicture( picture() );
-  deleteLater();
+  updatePicture();
 
   return true;
 }
@@ -51,15 +50,23 @@ void Coast::initTerrain(Tile& terrain)
 {
   terrain.setFlag( Tile::clearAll, true );
   terrain.setFlag( Tile::tlWater, true );
+  terrain.setFlag( Tile::tlCoast, true );
 }
 
 Picture Coast::computePicture()
 {
+<<<<<<< HEAD
   TilePos mpos = tile().epos();
   bool northnb = _map().at( mpos.northnb() ).getFlag( Tile::tlCoast );
   bool eastnb = _map().at( mpos.eastnb() ).getFlag( Tile::tlCoast );
   bool westnb = _map().at( mpos.westnb() ).getFlag( Tile::tlCoast );
   bool southnb = _map().at( mpos.southnb() ).getFlag( Tile::tlCoast );
+=======
+
+
+  int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
+  int imgId = math::random( 58-1 );
+>>>>>>> 697ff34048b4300c94947b6eb06b091c1b885da3
 
   int start = 0;
   int size = 0;
@@ -84,7 +91,11 @@ Picture Coast::computePicture()
 }
 
 bool Coast::isWalkable() const{ return false;}
+<<<<<<< HEAD
 bool Coast::isFlat() const { return true; }
+=======
+bool Coast::isFlat() const { return true;}
+>>>>>>> 697ff34048b4300c94947b6eb06b091c1b885da3
 void Coast::destroy() {}
 bool Coast::isDestructible() const { return false;}
 Renderer::PassQueue Coast::passQueue() const { return riftPassQueue; }

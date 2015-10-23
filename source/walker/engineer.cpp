@@ -66,13 +66,13 @@ void Engineer::_centerTile()
   TilePos offset( reachDistance(), reachDistance() );
   ConstructionList buildings = _city()->statistic().objects.find<Construction>( object::any,
                                                                                 pos() - offset, pos() + offset );
-  foreach( b, buildings )
+  for( auto b : buildings )
   {
-    if( !_d->_reachedBuildings.count( *b ) )
+    if( !_d->_reachedBuildings.count( b ) )
     {
-      int damageLvl = (*b)->state( pr::damage );
+      int damageLvl = b->state( pr::damage );
       _d->averageLevel = ( _d->averageLevel + damageLvl ) / 2;
-      _d->_reachedBuildings.insert( *b );
+      _d->_reachedBuildings.insert( b );
     }
   }
 

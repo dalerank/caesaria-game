@@ -84,7 +84,7 @@ void Emigrant::_lockHouse( HousePtr house )
 {
   if( _d->housePosLock.i() >= 0 )
   {
-    auto oldHouse = _map().overlay( _d->housePosLock ).as<House>();
+    auto oldHouse = _map().overlay<House>( _d->housePosLock );
     if( oldHouse.isValid() )
     {
       _d->housePosLock = gfx::tilemap::invalidLocation();
@@ -134,7 +134,7 @@ Pathway Emigrant::_findSomeWay( TilePos startPoint )
 
     if( !pathway.isValid() )
     {
-      pathway = PathwayHelper::create( startPoint, ptr_cast<Construction>(house),
+      pathway = PathwayHelper::create( startPoint, house,
                                        PathwayHelper::roadFirst  );
     }
 
@@ -172,7 +172,7 @@ void Emigrant::_reachedPathway()
     return;
   }
 
-  auto house = _city()->getOverlay( pos() ).as<House>();
+  auto house = _map().overlay<House>( pos() );
   if( house.isValid() )
   {
     _append2house( house );
