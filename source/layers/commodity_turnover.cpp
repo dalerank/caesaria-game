@@ -204,14 +204,7 @@ LayerPtr CommodityTurnover::create( Camera& camera, PlayerCityPtr city)
 void CommodityTurnover::_renderPaths(const RenderInfo& rinfo)
 {
   for( auto& tiles : _d->ways )
-  {
-    /*
-    PointsArray points = tiles.mappositions();
-    points.move( rinfo.offset + Point( gfx::tilemap::cellPicSize().width() / 2, 0 ) );
-    rinfo.engine.drawLines( DefaultColors::red, points );
-    */
     gfx::TexturedPath::draw( tiles, rinfo );
-  }
 }
 
 void CommodityTurnover::handleEvent(NEvent& event)

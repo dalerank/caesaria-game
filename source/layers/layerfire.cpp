@@ -21,9 +21,11 @@
 #include "game/resourcegroup.hpp"
 #include "city/statistic.hpp"
 #include "constants.hpp"
+#include "objects/working.hpp"
 #include "gfx/tilemap_camera.hpp"
 #include "core/event.hpp"
 #include "core/gettext.hpp"
+#include "gfx/textured_path.hpp"
 
 using namespace gfx;
 
@@ -38,6 +40,20 @@ static const char* fireLevelName[] = {
                                        "##extreme_fire_risk##", "##moment_fire_risk##"
                                      };
 
+class Fire::Impl
+{
+public:
+  struct
+  {
+    OverlayPtr selected;
+    OverlayPtr current;
+  } overlay;
+
+  DateTime lastUpdate;
+  std::vector<TilesArray> ways;
+
+  void updatePaths();
+};
 
 int Fire::type() const { return citylayer::fire; }
 
@@ -92,8 +108,18 @@ void Fire::drawTile( const RenderInfo& rinfo, Tile& tile )
   tile.setRendered();
 }
 
+void Fire::render(Engine& engine)
+{
+  Info::render( engine );
+
+  RenderInfo rinfo{ engine, _camera()->offset() };
+  for( auto& tiles : _d->ways )
+    TexturedPath::draw( tiles, rinfo );
+}
+
 void Fire::handleEvent(NEvent& event)
 {
+  __D_REF(d,Fire)
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
@@ -110,9 +136,18 @@ void Fire::handleEvent(NEvent& event)
           int fireLevel = math::clamp<int>( construction->state( pr::fire ), 0, 100 );
           text = fireLevelName[ math::clamp<int>( fireLevel / 10, 0, 9 ) ];
         }
+
+        d.overlay.current = tile->overlay();
       }
 
       _setTooltipText( _(text) );
+    }
+    break;
+
+    case mouseLbtnPressed:
+    {
+      d.overlay.selected = d.overlay.current;
+      d.updatePaths();
     }
     break;
 
@@ -132,10 +167,23 @@ LayerPtr Fire::create( Camera& camera, PlayerCityPtr city)
 }
 
 Fire::Fire( Camera& camera, PlayerCityPtr city)
-  : Info( camera, city, 18 )
+  : Info( camera, city, 18 ), __INIT_IMPL(Fire)
 {
   _addWalkerType( walker::prefect );
   _initialize();
+}
+
+void Fire::Impl::updatePaths()
+{
+  auto wbuilding = overlay.selected.as<WorkingBuilding>();
+  ways.clear();
+
+  if( wbuilding.isValid() )
+  {
+    const WalkerList& walkers = wbuilding->walkers();
+    for( auto walker : walkers )
+      ways.push_back( walker->pathway().allTiles() );
+  }
 }
 
 }//end namespace citylayer

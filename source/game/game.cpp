@@ -486,13 +486,17 @@ void Game::initialize()
     bool isOk = true;
     std::string stepText = step.first;
 
-    step.second( isOk, stepText );
-    if( !isOk )
+    try
     {
-      Logger::warning( "Game: initialize faild on step {}", step.first );
-      OSystem::error( "Game: initialize faild on step", step.first );
-      exit( -1 ); //kill application
+      step.second( isOk, stepText );
+      if( !isOk )
+      {
+        Logger::warning( "Game: initialize faild on step {}", step.first );
+        OSystem::error( "Game: initialize faild on step", step.first );
+        exit( -1 ); //kill application
+      }
     }
+    catch(...) { exit(-1); }
   }
 
   d.initGameConfigs();

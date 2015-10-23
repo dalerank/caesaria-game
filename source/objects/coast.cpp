@@ -55,17 +55,39 @@ void Coast::initTerrain(Tile& terrain)
 
 Picture Coast::computePicture()
 {
-  int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
-  int imgId = math::random( 58-1 );
+  TilePos mpos = tile().epos();
+  bool northnb = _map().at( mpos.northnb() ).getFlag( Tile::tlCoast );
+  bool eastnb = _map().at( mpos.eastnb() ).getFlag( Tile::tlCoast );
+  bool westnb = _map().at( mpos.westnb() ).getFlag( Tile::tlCoast );
+  bool southnb = _map().at( mpos.southnb() ).getFlag( Tile::tlCoast );
 
-  return Picture( ResourceGroup::land1a, startOffset + imgId );
+  int start = 0;
+  int size = 0;
+  if( northnb && eastnb ) { start = 144; size = 4; }
+  else if( northnb && southnb )
+  {
+    start = 132;
+    size = 4;
+    if( westnb && !eastnb ) start = 140;
+  }
+  else if( northnb && westnb ) { start = 156; size = 4; }
+  else if( westnb && eastnb )
+  {
+    start = 128;
+    size = 4;
+    if( southnb && !northnb ) start = 136;
+  }
+  else if( eastnb && southnb ) { start = 148; size = 4; }
+  else if( westnb && southnb ) { start = 152; size = 4; }
+
+  return Picture( ResourceGroup::land1a, start + math::random(size-1) );
 }
 
-bool Coast::isWalkable() const{ return true;}
-bool Coast::isFlat() const { return true;}
+bool Coast::isWalkable() const{ return false;}
+bool Coast::isFlat() const { return true; }
 void Coast::destroy() {}
 bool Coast::isDestructible() const { return false;}
-Renderer::PassQueue Coast::passQueue() const {  return riftPassQueue; }
+Renderer::PassQueue Coast::passQueue() const { return riftPassQueue; }
 
 void Coast::updatePicture()
 {

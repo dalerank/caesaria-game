@@ -84,9 +84,9 @@ void ClearTile::_exec( Game& game, unsigned int )
     for( auto tile : clearedTiles )
     {
       tile->setMaster( NULL );
-      tile->setFlag( Tile::tlTree, false);
-      tile->setFlag( Tile::tlRoad, false);
-      tile->setFlag( Tile::tlGarden, false);
+      tile->terrain().tree = false;
+      tile->terrain().road = false;
+      tile->terrain().garden = false;
       tile->setOverlay( NULL );
 
       deleteRoad |= tile->getFlag( Tile::tlRoad );

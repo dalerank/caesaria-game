@@ -33,16 +33,7 @@ namespace
   static Animation invalidAnimation;
 }
 
-void Tile::Terrain::reset()
-{
-  clearFlags();
-  params[ Tile::pDesirability ] = 0;
-  params[ Tile::pWellWater ] = 0;
-  params[ Tile::pFountainWater ] = 0;
-  params[ Tile::pReservoirWater ] = 0;
-}
-
-void Tile::Terrain::clearFlags()
+void Tile::Terrain::clear()
 {
   water      = false;
   rock       = false;
@@ -63,7 +54,7 @@ Tile::Tile( const TilePos& pos) //: _terrain( 0, 0, 0, 0, 0, 0 )
   _master = NULL;
   _rendered = false;
   _overlay = NULL;
-  _terrain.reset();
+  _terrain.clear();
   _terrain.imgid = 0;
   _height = 0;
   setEPos( pos );
@@ -184,7 +175,12 @@ void Tile::setFlag(Tile::Type type, bool value)
   case tlGarden: _terrain.garden = value; break;
   case tlElevation: _terrain.elevation = value; break;
   case tlRubble: _terrain.rubble = value; break;
-  case clearAll: _terrain.clearFlags(); break;
+  case clearAll:
+  {
+    _terrain.clear();
+    _params.clear();
+  }
+  break;
   case tlWall: _terrain.wall = value; break;
   case isRendered: _rendered = value; break;
   case tlDeepWater: _terrain.deepWater = value; break;
@@ -195,13 +191,13 @@ void Tile::setFlag(Tile::Type type, bool value)
 OverlayPtr Tile::overlay() const  { return _overlay;}
 void Tile::setOverlay(OverlayPtr overlay){  _overlay = overlay;}
 void Tile::setImgId(ImgID id){  _terrain.imgid = id;}
-void Tile::setParam(Param param, int value) { _terrain.params[ param ] = value; }
-void Tile::changeParam(Param param, int value) { _terrain.params[ param ] += value; }
+void Tile::setParam(Param param, int value) { _params[ param ] = value; }
+void Tile::changeParam(Param param, int value) { _params[ param ] += value; }
 
 int Tile::param( Param param) const
 {
-  std::map<Param, int>::const_iterator it = _terrain.params.find( param );
-  return it != _terrain.params.end() ? it->second : 0;
+  auto it = _params.find( param );
+  return it != _params.end() ? it->second : 0;
 }
 
 }//end namespace gfx

@@ -38,6 +38,29 @@ public:
                  isRendered, tlUnknown } Type;
 
 public:
+  struct Terrain
+  {
+    bool water;
+    bool rock;
+    bool tree;
+    bool road;
+    bool garden;
+    bool meadow;
+    bool elevation;
+    bool rubble;
+    bool wall;
+    bool coast;
+    bool deepWater;
+
+    /*
+     * original tile information
+     */
+    ImgID imgid;
+    unsigned short int terraininfo;
+
+    void clear();
+  };
+
   explicit Tile(const TilePos& pos);
 
   // tile coordinates
@@ -82,6 +105,8 @@ public:
   bool getFlag( Type type ) const;
   void setFlag( Type type, bool value );
 
+  Terrain& terrain() { return _terrain; }
+
   void setOverlay( OverlayPtr overlay );
   inline ImgID imgId() const { return _terrain.imgid;}
   void setImgId( ImgID id );
@@ -98,32 +123,7 @@ public:
   OverlayPtr overlay() const;
 
 private:
-  struct Terrain
-  {
-    bool water;
-    bool rock;
-    bool tree;
-    bool road;
-    bool garden;
-    bool meadow;
-    bool elevation;
-    bool rubble;
-    bool wall;
-    bool coast;
-    bool deepWater;
-
-    /*
-     * original tile information
-     */
-    ImgID imgid;
-    unsigned short int terraininfo;
-
-    void reset();
-    void clearFlags();
-
-    std::map<Param, int> params;
-  };
-
+  std::map<Param, int> _params;
   TilePos _pos; // absolute coordinates
   TilePos _epos; // effective coordinates
   Point _mappos;
