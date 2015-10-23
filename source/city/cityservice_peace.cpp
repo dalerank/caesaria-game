@@ -201,8 +201,7 @@ void Peace::buildingDestroyed(OverlayPtr overlay, int why)
 
     if( !title.empty() )
     {
-      GameEventPtr e = ShowInfobox::create( title, text, false, video );
-      e->dispatch();
+      events::dispatch<ShowInfobox>( title, text, false, video );
     }
   }
 }

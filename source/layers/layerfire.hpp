@@ -35,6 +35,7 @@ public:
 
 private:
   Fire( gfx::Camera& camera, PlayerCityPtr city );
+  virtual void _updatePaths();
   __DECLARE_IMPL(Fire)
 };
 

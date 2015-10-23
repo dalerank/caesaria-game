@@ -185,9 +185,8 @@ void WorkersHire::timeStep( const unsigned int time )
     int workersNeed = _city()->statistic().workers.need();
     if( workersNeed > employements::needMoreWorkers )
     {
-      GameEventPtr e = ShowInfobox::create( _("##city_need_workers_title##"), _("##city_need_workers_text##"),
-                                            ShowInfobox::send2scribe );
-      e->dispatch();
+      events::dispatch<ShowInfobox>( _("##city_need_workers_title##"), _("##city_need_workers_text##"),
+                                     ShowInfobox::send2scribe );
     }
   }
 }

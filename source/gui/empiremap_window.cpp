@@ -288,8 +288,7 @@ void EmpireMapWindow::Impl::drawMovable(Engine& painter)
 
 void EmpireMapWindow::Impl::showTradeAdvisorWindow()
 {
-  GameEventPtr e = ShowAdvisorWindow::create( true, advisor::trading );
-  e->dispatch();
+  events::dispatch<ShowAdvisorWindow>( true, advisor::trading );
 }
 
 void EmpireMapWindow::Impl::initBorder( Widget* p )
@@ -381,14 +380,12 @@ void EmpireMapWindow::Impl::createTradeRoute()
     if( city.isValid() && route.isValid() && route->isSeaRoute() )
     {
       unsigned int cost = world::EmpireHelper::getTradeRouteOpenCost( empire, city->name(), currentCity->name() );
-      auto event = Payment::create( econ::Issue::sundries, -(int)cost );
-      event->dispatch();
+      events::dispatch<Payment>( econ::Issue::sundries, -(int)cost );
 
       DockList docks = city->statistic().objects.find<Dock>( object::dock );
       if( docks.empty() )
       {
-        GameEventPtr e = ShowInfobox::create( _("##no_working_dock##" ), _( "##no_dock_for_sea_trade_routes##" ) );
-        e->dispatch();
+        events::dispatch<ShowInfobox>( _("##no_working_dock##" ), _( "##no_dock_for_sea_trade_routes##" ) );
       }
     }
   }

@@ -257,8 +257,7 @@ void BuildMenu::_resolveButtonClick( Widget* widget )
   if( sound.empty() )
     sound = "icon";
 
-  auto event = PlaySound::create( sound, 1, 100 );
-  event->dispatch();
+  events::dispatch<PlaySound>( sound, 1, 100 );
 }
 
 BuildMenu_water::BuildMenu_water( Widget* parent, const Rect& rectangle )

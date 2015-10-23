@@ -240,8 +240,7 @@ void Emperor::draw(gfx::Engine& painter )
 void Emperor::Impl::sendMoney( int money )
 {
   city->mayor()->appendMoney( -money );
-  auto event = Payment::create( econ::Issue::donation, money );
-  event->dispatch();
+  events::dispatch<Payment>( econ::Issue::donation, money );
 }
 
 void Emperor::Impl::sendGift(int money)

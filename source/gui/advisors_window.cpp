@@ -180,16 +180,14 @@ ParlorModel::ParlorModel(PlayerCityPtr city)
 
 void ParlorModel::sendMoney2City(int money)
 {
- auto event = Payment::create( econ::Issue::donation, money );
- event->dispatch();
+  events::dispatch<Payment>( econ::Issue::donation, money );
 }
 
 void ParlorModel::showEmpireMapWindow()
 {
   __D_IMPL(d,ParlorModel)
   d->advisorPanel->parent()->deleteLater();
-  auto event = ShowEmpireMap::create( d->parent );
-  event->dispatch();
+  events::dispatch<ShowEmpireMap>( d->parent );
 }
 
 void ParlorModel::setParent(Widget* parlor)

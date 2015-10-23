@@ -61,7 +61,7 @@ public:
   TilePos lastTilePos;
   TilePos startTilePos;
   bool splineEnabled;
-  int drawRadius;
+  int drawRadius;  
   bool kbShift, kbCtrl;
   bool lmbPressed;
   bool overdrawBuilding;

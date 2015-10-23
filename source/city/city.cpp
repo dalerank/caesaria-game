@@ -542,8 +542,7 @@ void PlayerCity::setOption(PlayerCity::OptionType opt, int value)
     _d->options[ highlightBuilding ] = false;
     _d->options[ destroyEpidemicHouses ] = false;
 
-    auto event = WarningMessage::create( "WARNING: enabled C3 gameplay only!", WarningMessage::negative );
-    event->dispatch();
+    events::dispatch<WarningMessage>( "WARNING: enabled C3 gameplay only!", WarningMessage::negative );
   }
 }
 
@@ -624,8 +623,7 @@ void PlayerCity::addObject( world::ObjectPtr object )
     {
       army->killSoldiers( 100 );
 
-      GameEventPtr e = ShowInfobox::create( _("##romechastener_attack_title##"), _("##romechastener_attack_disabled_by_player##"), true );
-      e->dispatch();
+      events::dispatch<ShowInfobox>( _("##romechastener_attack_title##"), _("##romechastener_attack_disabled_by_player##"), true );
       return;
     }
 
@@ -642,8 +640,7 @@ void PlayerCity::addObject( world::ObjectPtr object )
       }
     }
 
-    GameEventPtr e = ShowInfobox::create( _("##romechastener_attack_title##"), _("##romechastener_attack_text##"), true );
-    e->dispatch();
+    events::dispatch<ShowInfobox>( _("##romechastener_attack_title##"), _("##romechastener_attack_text##"), true );
   }
   else if( object.is<world::Barbarian>() )
   {
@@ -657,15 +654,13 @@ void PlayerCity::addObject( world::ObjectPtr object )
         soldier->wait( game::Date::days2ticks( k ) / 2 );
       }
 
-      GameEventPtr e = ShowInfobox::create( _("##barbarian_attack_title##"), _("##barbarian_attack_text##"), "spy_army" );
-      e->dispatch();
+      events::dispatch<ShowInfobox>( _("##barbarian_attack_title##"), _("##barbarian_attack_text##"), "spy_army" );
     }
   }
   else if( object.is<world::Messenger>() )
   {
     world::MessengerPtr msm = ptr_cast<world::Messenger>( object );
-    GameEventPtr e = ShowInfobox::create( msm->title(), msm->message() );
-    e->dispatch();
+    events::dispatch<ShowInfobox>( msm->title(), msm->message() );
   }
 }
 

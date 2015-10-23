@@ -39,8 +39,7 @@ GameAutoPause::GameAutoPause()
 
 void GameAutoPause::activate()
 {
-  auto event = Pause::create( Pause::hidepause );
-  event->dispatch();
+  events::dispatch<Pause>( Pause::hidepause );
   _activated = true;
 }
 
@@ -56,6 +55,5 @@ GameAutoPause::~GameAutoPause()
   if( !_activated )
     return;
 
-  auto event = Pause::create( Pause::hideplay );
-  event->dispatch();
+  events::dispatch<Pause>( Pause::hideplay );
 }

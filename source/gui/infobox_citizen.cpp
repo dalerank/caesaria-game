@@ -40,6 +40,8 @@
 #include "core/metric.hpp"
 #include "events/movecamera.hpp"
 
+using namespace events;
+
 namespace gui
 {
 
@@ -150,8 +152,7 @@ void AboutPeople::_setWalker( WalkerPtr wlk )
   if( !thinks.empty() )
   {
     std::string sound = thinks.substr( 2, thinks.size() - 4 );
-    auto event = events::PlaySound::create( sound, 100 );
-    event->dispatch();
+    events::dispatch<PlaySound>( sound, 100 );
   }
 
   _updateTitle();
@@ -316,8 +317,7 @@ void AboutPeople::Impl::moveCamera2base()
 {
   if( baseBuildingPos != gfx::tilemap::invalidLocation() )
   {
-    auto event = events::MoveCamera::create( baseBuildingPos );
-    event->dispatch();
+    events::dispatch<MoveCamera>( baseBuildingPos );
   }
 }
 
@@ -325,8 +325,7 @@ void AboutPeople::Impl::moveCamera2dst()
 {
   if( destinationPos != gfx::tilemap::invalidLocation() )
   {
-    auto event = events::MoveCamera::create( destinationPos );
-    event->dispatch();
+    events::dispatch<MoveCamera>( destinationPos );
   }
 
   if( object.isValid() )

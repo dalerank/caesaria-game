@@ -157,10 +157,9 @@ void HealthCare::Impl::showWarningIfNeed()
 {
   if( avgMinHealth < health::bad )
   {
-    auto event = WarningMessage::create( avgMinHealth < health::terrible
+    events::dispatch<WarningMessage>( avgMinHealth < health::terrible
                                              ? "##minimum_health_terrible##"
                                              : "##minimum_health_bad##", 2 );
-    event->dispatch();
   }
 }
 

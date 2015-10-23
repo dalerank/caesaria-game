@@ -62,13 +62,11 @@ void ClearTile::_exec( Game& game, unsigned int )
     if( overlay.isValid() && !overlay->canDestroy() )
     {
       auto info = overlay->info();
-      auto event = WarningMessage::create( _( overlay->errorDesc() ), WarningMessage::neitral );
-      event->dispatch();
+      events::dispatch<WarningMessage>( _( overlay->errorDesc() ), WarningMessage::neitral );
 
       if( info.requestDestroy() )
       {
-        event = RequestDestroy::create( overlay );
-        event->dispatch();
+        events::dispatch<RequestDestroy>( overlay );
       }
       return;
     }

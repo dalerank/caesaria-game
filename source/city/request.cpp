@@ -69,14 +69,12 @@ struct Award
   {
     if( money > 0 )
     {
-      GameEventPtr e = Payment::create( econ::Issue::donation, money );
-      e->dispatch();
+      events::dispatch<Payment>( econ::Issue::donation, money );
     }
 
     if( favour > 0 )
     {
-      GameEventPtr e = UpdateFavour::create( city->name(), favour );
-      e->dispatch();
+      events::dispatch<UpdateFavour>( city->name(), favour );
     }
   }
 };
@@ -106,8 +104,7 @@ struct Penalty
 
   void apply( PlayerCityPtr city ) const
   {
-    GameEventPtr e = UpdateFavour::create( city->name(), favour );
-    e->dispatch();
+    events::dispatch<UpdateFavour>( city->name(), favour );
   }
 };
 
@@ -141,8 +138,8 @@ void RqGood::exec( PlayerCityPtr city )
   {
     Unit stockCap = Unit::fromValue( _d->stock.capacity() );
     good::Stock stock( _d->stock.type(), stockCap.toQty() );
-    GameEventPtr e = RemoveGoods::create( stock.type(), stock.capacity() );
-    e->dispatch();
+
+    events::dispatch<RemoveGoods>( stock.type(), stock.capacity() );
     success( city );
 
     auto caravan = world::GoodCaravan::create( ptr_cast<world::City>( city ) );
@@ -231,8 +228,7 @@ void RqGood::fail( PlayerCityPtr city )
     _startDate = _finishDate;
 
     //std::string text = utils::format( 0xff, "You also have %d month to comply failed request", _d->failAppendMonth );
-    auto e = ShowInfobox::create( _("##emperor_anger##"), _("##emperor_anger_text##") );
-    e->dispatch();
+    events::dispatch<ShowInfobox>( _("##emperor_anger##"), _("##emperor_anger_text##") );
 
     _finishDate.appendMonth( _d->failedRequest.appendMonth );
     _d->failedRequest.appendMonth = 0;
@@ -242,8 +238,7 @@ void RqGood::fail( PlayerCityPtr city )
   {
     RqBase::fail( city );
 
-    auto e = ShowInfobox::create( _("##emperor_anger##"), _("##request_faild_text##") );
-    e->dispatch();
+    events::dispatch<ShowInfobox>( _("##emperor_anger##"), _("##request_faild_text##") );
   }
 }
 
@@ -255,8 +250,7 @@ void RqGood::update()
   {
     _d->alsoRemind = true;
 
-    auto e = ShowRequestInfo::create( this, true, _("##imperial_reminder_text##"), "", _("##imperial_reminder##") );
-    e->dispatch();
+    events::dispatch<ShowRequestInfo>( this, true, _("##imperial_reminder_text##"), "", _("##imperial_reminder##") );
   }
 }
 

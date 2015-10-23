@@ -133,8 +133,7 @@ bool Mission::load( const std::string& filename, Game& game )
     VariantMap vm_events = vm.get( "events" ).toMap();
     for( auto& item : vm_events )
     {
-      GameEventPtr e = PostponeEvent::create( item.first, item.second.toMap() );
-      e->dispatch();
+      events::dispatch<PostponeEvent>( item.first, item.second.toMap() );
     }
 
     game.empire()->setCitiesAvailable( false );
@@ -157,8 +156,7 @@ bool Mission::load( const std::string& filename, Game& game )
     VariantMap fishpointsVm = vm.get( "fishpoints" ).toMap();
     for( auto& item : fishpointsVm )
     {
-      GameEventPtr e = ChangeFishery::create( item.second.toTilePos(), ChangeFishery::add );
-      e->dispatch();
+      events::dispatch<ChangeFishery>( item.second.toTilePos(), ChangeFishery::add );
     }
 
     std::string missionName = vfs::Path( filename ).baseName( false ).toString();

@@ -39,6 +39,7 @@
 
 using namespace gfx;
 using namespace city;
+using namespace events;
 
 namespace gui
 {
@@ -183,8 +184,7 @@ void Legion::draw( Engine& painter )
 void Legion::_handleMove2Legion(FortPtr fort)
 {
   parent()->deleteLater();
-  events::GameEventPtr e = events::MoveCamera::create( fort->patrolLocation() );
-  e->dispatch();
+  events::dispatch<MoveCamera>( fort->patrolLocation() );
 }
 
 void Legion::_handleRetreaLegion(FortPtr fort)

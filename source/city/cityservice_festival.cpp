@@ -128,8 +128,7 @@ void Festival::assign( RomeDivinityType name, int size )
   _d->nextfest.date.appendMonth( festival::prepareMonthsDelay + size );
   _d->nextfest.divinity = name;
 
-  GameEventPtr e = Payment::create( econ::Issue::sundries, -_city()->statistic().festival.calcCost( (FestivalType)size ) );
-  e->dispatch();
+  events::dispatch<Payment>( econ::Issue::sundries, -_city()->statistic().festival.calcCost( (FestivalType)size ) );
 }
 
 Festival::Festival(PlayerCityPtr city)
@@ -194,15 +193,11 @@ void Festival::_doFestival()
 
   rome::Pantheon::doFestival( _d->nextfest.divinity, festSize );
 
-  auto event = ShowFeastival::create( _(info.desc), _(info.title),
-                                      _city()->mayor()->name(), info.video );
-  event->dispatch();
+  events::dispatch<ShowFeastival>( _(info.desc), _(info.title),
+                                   _city()->mayor()->name(), info.video );
 
-  event = UpdateCitySentiment::create( sentimentValue );
-  event->dispatch();
-
-  event = UpdateHouseService::create( Service::crime, -sentimentValue );
-  event->dispatch();
+  events::dispatch<UpdateCitySentiment>( sentimentValue );
+  events::dispatch<UpdateHouseService>( Service::crime, -sentimentValue );
 }
 
 }//end namespace city

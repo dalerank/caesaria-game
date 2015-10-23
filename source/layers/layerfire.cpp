@@ -21,6 +21,7 @@
 #include "game/resourcegroup.hpp"
 #include "city/statistic.hpp"
 #include "constants.hpp"
+#include "objects/prefecture.hpp"
 #include "objects/working.hpp"
 #include "gfx/tilemap_camera.hpp"
 #include "core/event.hpp"
@@ -51,8 +52,6 @@ public:
 
   DateTime lastUpdate;
   std::vector<TilesArray> ways;
-
-  void updatePaths();
 };
 
 int Fire::type() const { return citylayer::fire; }
@@ -147,7 +146,7 @@ void Fire::handleEvent(NEvent& event)
     case mouseLbtnPressed:
     {
       d.overlay.selected = d.overlay.current;
-      d.updatePaths();
+      _updatePaths();
     }
     break;
 
@@ -173,16 +172,17 @@ Fire::Fire( Camera& camera, PlayerCityPtr city)
   _initialize();
 }
 
-void Fire::Impl::updatePaths()
+void Fire::_updatePaths()
 {
-  auto wbuilding = overlay.selected.as<WorkingBuilding>();
-  ways.clear();
+  __D_REF(d,Fire)
+  auto wbuilding = d.overlay.selected.as<Prefecture>();
+  d.ways.clear();
 
   if( wbuilding.isValid() )
   {
     const WalkerList& walkers = wbuilding->walkers();
     for( auto walker : walkers )
-      ways.push_back( walker->pathway().allTiles() );
+      d.ways.push_back( walker->pathway().allTiles() );
   }
 }
 

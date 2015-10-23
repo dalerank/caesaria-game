@@ -460,8 +460,7 @@ void Game::save(std::string filename) const
 
   SETTINGS_SET_VALUE( lastGame, Variant( filename ) );
 
-  auto event = WarningMessage::create( "Game saved to " + vfs::Path( filename ).baseName().toString(), WarningMessage::neitral );
-  event->dispatch();
+  events::dispatch<WarningMessage>( "Game saved to " + vfs::Path( filename ).baseName().toString(), WarningMessage::neitral );
 }
 
 bool Game::load(std::string filename)
@@ -601,25 +600,16 @@ void Game::initialize()
     bool isOk = true;
     std::string stepText;
 
-<<<<<<< HEAD
     try
     {
-      step.second( isOk, stepText );
+      step.function( isOk, stepText );
+      d.updateSplashText( stepText );
       if( !isOk )
       {
-        Logger::warning( "Game: initialize faild on step {}", step.first );
-        OSystem::error( "Game: initialize faild on step", step.first );
+        Logger::warning( "Game: initialize faild on step {}", step.name );
+        OSystem::error( "Game: initialize faild on step", step.name );
         exit( -1 ); //kill application
       }
-=======
-    step.function( isOk, stepText );
-    d.updateSplashText( stepText );
-    if( !isOk )
-    {
-      Logger::warning( "Game: initialize faild on step {}", step.name );
-      OSystem::error( "Game: initialize faild on step", step.name );
-      exit( -1 ); //kill application
->>>>>>> 697ff34048b4300c94947b6eb06b091c1b885da3
     }
     catch(...) { exit(-1); }
   }

@@ -65,13 +65,12 @@ bool Dispatcher::add( const VariantMap& stream, bool showMessage )
   const std::string type = stream.get( "reqtype" ).toString();
   if( type == RqGood::typeName() )
   {
-    RequestPtr r = RqGood::create( stream );
-    _d->newRequests.push_back( r );
+    RequestPtr request = RqGood::create( stream );
+    _d->newRequests.push_back( request );
 
     if( showMessage )
     {
-      events::GameEventPtr e = events::ShowRequestInfo::create( r );
-      e->dispatch();
+      events::dispatch<events::ShowRequestInfo>( request );
     }
     return true;
   }

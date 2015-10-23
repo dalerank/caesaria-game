@@ -106,8 +106,7 @@ void Disaster::_exec( Game& game, unsigned int )
     {
     case Disaster::collapse:
     {
-      GameEventPtr e = PlaySound::create( "explode", rand() % 2, 100 );      
-      e->dispatch();
+      events::dispatch<PlaySound>( "explode", rand() % 2, 100 );
     }
     break;
 
