@@ -113,7 +113,7 @@ void Fire::render(Engine& engine)
   Info::render( engine );
 
   RenderInfo rinfo{ engine, _camera()->offset() };
-  for( auto& tiles : _d->ways )
+  for( auto& tiles : _dfunc()->ways )
     TexturedPath::draw( tiles, rinfo );
 }
 
