@@ -35,14 +35,13 @@ namespace {
 
 Coast::Coast() : Overlay( object::terrain, Size(1) )
 {
-  setPicture( computePicture() );
+  setPicture( ResourceGroup::land1a, 199 );
 }
 
 bool Coast::build( const city::AreaInfo& info )
 {
   Overlay::build( info );
-  tile().setPicture( picture() );
-  deleteLater();
+  updatePicture();
 
   return true;
 }
@@ -51,17 +50,20 @@ void Coast::initTerrain(Tile& terrain)
 {
   terrain.setFlag( Tile::clearAll, true );
   terrain.setFlag( Tile::tlWater, true );
+  terrain.setFlag( Tile::tlCoast, true );
 }
 
 Picture Coast::computePicture()
 {
+
+
   int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
   int imgId = math::random( 58-1 );
 
   return Picture( ResourceGroup::land1a, startOffset + imgId );
 }
 
-bool Coast::isWalkable() const{ return true;}
+bool Coast::isWalkable() const{ return false;}
 bool Coast::isFlat() const { return true;}
 void Coast::destroy() {}
 bool Coast::isDestructible() const { return false;}

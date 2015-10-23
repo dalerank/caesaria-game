@@ -35,6 +35,8 @@ void TurnoverDetails::append(Product gtype, int qty, int tag, const DateTime& ti
   auto it = this->find( tag );
 
   StockInfoMap* info = nullptr;
+  DateTime gamedate = game::Date::current();
+
   if( it != this->end() )
   {
     info = &it->second;
@@ -50,7 +52,14 @@ void TurnoverDetails::append(Product gtype, int qty, int tag, const DateTime& ti
     SmInfo sminfo;
     sminfo.qty = qty;
     sminfo.birth = time;
-    (*info)[ gtype ].push_back( sminfo );
+    SmHistory& history = (*info)[ gtype ];
+    history.push_back( sminfo );
+
+    for( auto itr=history.begin(); itr != history.end(); )
+    {
+      if( itr->birth.monthsTo( gamedate ) > DateTime::monthsInYear / 2 ) itr = history.erase( itr );
+      else ++itr;
+    }
   }
   else
     Logger::warning( "TurnoverDetails: cant find history" );
@@ -77,7 +86,7 @@ void TurnoverDetails::load(const VariantMap& stream)
   }
 }
 
-Turnovers TurnoverDetails::items() const
+Turnovers TurnoverDetails::items(Mode mode) const
 {
   Turnovers ret;
   DateTime gtime = game::Date::current();
@@ -103,6 +112,10 @@ Turnovers TurnoverDetails::items() const
 
       ti.sender = owner;
       ti.receiver = gfx::tile::hash2pos( item.first );
+
+      if( mode == in )
+        std::swap( ti.sender, ti.receiver );
+
       ti.type = gtype.first;
       ti.qty = qty;
       ti.level = minLevel;

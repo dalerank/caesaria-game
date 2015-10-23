@@ -337,7 +337,7 @@ void CityOptions::Impl::toggleC3gameplay()
     dlg->show();
 
     CONNECT( dlg, onOk(), this, Impl::enableC3gameplay )
-    }
+  }
 }
 
 void CityOptions::Impl::enableC3gameplay() { city->setOption( PlayerCity::c3gameplay, true ); }

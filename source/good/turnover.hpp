@@ -55,6 +55,7 @@ public:
 class TurnoverDetails : public std::map<unsigned int,StockInfoMap>
 {
 public:
+  typedef enum { in=0, out } Mode;
   TilePos owner;
   void append(const Stock& stock );
   void append(Product gtype, int qty, int tag,  const DateTime& time);
@@ -62,7 +63,7 @@ public:
   VariantMap save() const;
   void load( const VariantMap& stream );
 
-  Turnovers items() const;
+  Turnovers items(Mode mode=out) const;
 };
 
 typedef TurnoverDetails ConsumerDetails;
