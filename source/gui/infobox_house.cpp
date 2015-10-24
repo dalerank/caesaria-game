@@ -65,6 +65,7 @@
 
 using namespace gfx;
 using namespace gui::dialog;
+using namespace events;
 
 namespace gui
 {
@@ -105,8 +106,7 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
     return;
   }
 
-  events::GameEventPtr e = events::PlaySound::create( "bmsel_house", 1, 100, audio::infobox, true );
-  e->dispatch();
+  events::dispatch<PlaySound>( "bmsel_house", 1, 100, audio::infobox, true );
 
   setTitle( _(_house->levelName()) );
 

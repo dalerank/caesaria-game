@@ -338,9 +338,8 @@ void Build::_buildAll()
     std::string busyText = tileBusyBuilding
                               ? "##need_build_on_free_area##"
                               : "##need_build_on_cleared_area##";
-    auto event = WarningMessage::create( errorStr.empty() ? busyText : errorStr,
+    events::dispatch<WarningMessage>( errorStr.empty() ? busyText : errorStr,
                                          WarningMessage::neitral );
-    event->dispatch();
   }
 
   d.needUpdateTiles = true;
@@ -614,8 +613,7 @@ void Build::init(Point cursor)
 
   if( OSystem::isAndroid() )
   {
-    auto message = WarningMessage::create( "Press red cross for break/exit, stamp for build", WarningMessage::neitral );
-    message->dispatch();
+    events::dispatch<WarningMessage>( "Press red cross for break/exit, stamp for build", WarningMessage::neitral );
   }
 }
 

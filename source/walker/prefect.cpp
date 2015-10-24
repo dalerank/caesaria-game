@@ -176,14 +176,12 @@ void Prefect::_serveHouse( HousePtr house )
     _d->fumigateHouseNumber++;
     house->removeHabitants( 1000 ); //all habitants will killed
 
-    GameEventPtr e = Disaster::create( house->tile(), Disaster::plague );
-    e->dispatch();
+    events::dispatch<Disaster>( house->tile(), Disaster::plague );
 
     if( _d->fumigateHouseNumber > 5 )
     {
-      e = ShowInfobox::create( "##pestilence_event_title##", "##pestilent_event_text##",
-                               ShowInfobox::send2scribe, "sick" );
-      e->dispatch();
+      events::dispatch<ShowInfobox>( "##pestilence_event_title##", "##pestilent_event_text##",
+                                     true, "sick" );
       _d->fumigateHouseNumber = -999;
     }
 
@@ -192,8 +190,7 @@ void Prefect::_serveHouse( HousePtr house )
       HouseList hlist = _city()->statistic().objects.neighbors<House>( house );
       for( auto h : hlist )
       {
-        GameEventPtr e = Disaster::create( h->tile(), Disaster::plague );
-        e->dispatch();
+        events::dispatch<Disaster>( h->tile(), Disaster::plague );
       }
     }
   }

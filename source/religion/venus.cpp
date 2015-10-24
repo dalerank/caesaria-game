@@ -53,11 +53,10 @@ void Venus::updateRelation(float income, PlayerCityPtr city)
 
 void Venus::_doWrath( PlayerCityPtr city )
 {
-  GameEventPtr event = ShowInfobox::create( _("##wrath_of_venus_title##"),
+  events::dispatch<ShowInfobox>( _("##wrath_of_venus_title##"),
                                             _("##wrath_of_venus_description##"),
-                                            ShowInfobox::send2scribe,
+                                            true,
                                             "god_venus");
-  event->dispatch();
 
   SentimentPtr sentiment = city->statistic().services.find<Sentiment>();
 
@@ -72,9 +71,8 @@ void Venus::_doWrath( PlayerCityPtr city )
 
 void Venus::_doBlessing(PlayerCityPtr city)
 {
-  GameEventPtr event = ShowInfobox::create( _("##blessing_of_venus_title##"),
-                                            _("##blessing_of_venus_description##") );
-  event->dispatch();
+  events::dispatch<ShowInfobox>( _("##blessing_of_venus_title##"),
+                                 _("##blessing_of_venus_description##") );
 
   // Increase health by 8 in <=20% of houses for 5 month
   HouseList houses = city->statistic().houses.find();

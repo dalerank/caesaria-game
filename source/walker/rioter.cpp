@@ -203,8 +203,7 @@ void Rioter::timeStep(const unsigned long time)
           c->updateState( pr::damage, 1 );
           if( c->state( pr::damage ) < 10 || c->state( pr::fire ) < 10 )
           {
-            GameEventPtr e = Disaster::create( c->tile(), Disaster::riots );
-            e->dispatch();
+            events::dispatch<Disaster>( c->tile(), Disaster::riots );
           }
           break;
         }

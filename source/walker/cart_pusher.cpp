@@ -470,8 +470,7 @@ bool CartPusher::die()
 {
   bool created = Walker::die();
 
-  auto event = RemoveCitizens::create( pos(), CitizenGroup( CitizenGroup::mature, 1) );
-  event->dispatch();
+  events::dispatch<RemoveCitizens>( pos(), CitizenGroup( CitizenGroup::mature, 1) );
 
   if( !created )
   {

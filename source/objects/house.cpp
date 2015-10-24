@@ -765,8 +765,7 @@ void House::_levelUp()
 
     if( _d->houseLevel == HouseLevel::smallVilla )
     {
-      GameEventPtr e = FireWorkers::create( pos(), habitants().mature_n() );
-      e->dispatch();
+      events::dispatch<FireWorkers>( pos(), habitants().mature_n() );
     }
 
     _update( true );
@@ -878,8 +877,7 @@ void House::_levelDown()
         CitizenGroup moveGroup = removeHabitants( peoplesPerHouse );
         house->addHabitants( moveGroup );
 
-        GameEventPtr event = BuildAny::create( (*tile)->pos(), ptr_cast<Overlay>( house ) );
-        event->dispatch();
+        events::dispatch<BuildAny>( (*tile)->pos(), ptr_cast<Overlay>( house ) );
       }
 
       _setServiceMaxValue( Service::recruter, 0 );

@@ -50,11 +50,10 @@ void Neptune::updateRelation(float income, PlayerCityPtr city)
 
 void Neptune::_doWrath(PlayerCityPtr city)
 {
-  GameEventPtr event = ShowInfobox::create( _("##wrath_of_neptune_title##"),
-                                            _("##wrath_of_neptune_description##"),
-                                            ShowInfobox::send2scribe,
-                                            "god_neptune");
-  event->dispatch();
+  events::dispatch<ShowInfobox>( _("##wrath_of_neptune_title##"),
+                                 _("##wrath_of_neptune_description##"),
+                                 true,
+                                 "god_neptune");
 
   auto boats = city->walkers().select<Ship>();
 
@@ -67,11 +66,10 @@ void Neptune::_doWrath(PlayerCityPtr city)
 
 void Neptune::_doSmallCurse(PlayerCityPtr city)
 {
-  GameEventPtr event = ShowInfobox::create( _("##smallcurse_of_neptune_title##"),
-                                            _("##smallcurse_of_neptune_description##"),
-                                            ShowInfobox::send2scribe,
-                                            "god_neptune" );
-  event->dispatch();
+  events::dispatch<ShowInfobox>( _("##smallcurse_of_neptune_title##"),
+                                 _("##smallcurse_of_neptune_description##"),
+                                 true,
+                                 "god_neptune" );
 
   DockList docks = city->statistic().objects.find<Dock>();
 

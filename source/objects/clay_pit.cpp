@@ -47,8 +47,7 @@ void ClayPit::_reachUnworkingTreshold()
 {
   Factory::_reachUnworkingTreshold();
 
-  auto event = ShowInfobox::create( "##clay_pit_flooded##", "##clay_pit_flooded_by_low_support##");
-  event->dispatch();
+  events::dispatch<ShowInfobox>( "##clay_pit_flooded##", "##clay_pit_flooded_by_low_support##");
 
   collapse();
 }

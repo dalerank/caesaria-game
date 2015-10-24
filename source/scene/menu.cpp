@@ -226,8 +226,7 @@ void StartMenu::Impl::openDlcDirectory(Widget* sender)
 
 void StartMenu::Impl::showSoundOptions()
 {
-  auto event = events::ChangeSoundOptions::create();
-  event->dispatch();
+  events::dispatch<events::ChangeSoundOptions>();
 }
 
 void StartMenu::Impl::showLanguageOptions()
@@ -473,8 +472,7 @@ void StartMenu::Impl::showAdvancedMaterials()
 
 void StartMenu::Impl::showVideoOptions()
 {
-  auto event = events::SetVideoSettings::create();
-  event->dispatch();
+  events::dispatch<events::SetVideoSettings>();
 }
 
 void StartMenu::Impl::showMissionSelector()

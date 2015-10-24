@@ -173,8 +173,7 @@ ScribesMessages::ScribesMessages( Widget* p, PlayerCityPtr city )
   CONNECT( _d->btnHelp, onClicked(), this, ScribesMessages::_showHelp );
   CONNECT( _d->btnExit, onClicked(), this, ScribesMessages::deleteLater );
 
-  auto event = events::PlaySound::create( "extm_scribes", 1, 100, audio::effects );
-  event->dispatch();
+  events::dispatch<events::PlaySound>( "extm_scribes", 1, 100, audio::effects );
 
   if( _d->lbxMessages ) _d->lbxMessages->setFocus();
   setModal();

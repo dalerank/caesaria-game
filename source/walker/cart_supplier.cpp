@@ -311,8 +311,7 @@ void CartSupplier::load( const VariantMap& stream )
 
 bool CartSupplier::die()
 {
-  events::GameEventPtr e = events::RemoveCitizens::create( pos(), CitizenGroup( CitizenGroup::mature, 1) );
-  e->dispatch();
+  events::dispatch<events::RemoveCitizens>( pos(), CitizenGroup( CitizenGroup::mature, 1) );
 
   return Walker::die();
 }

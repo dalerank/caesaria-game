@@ -495,8 +495,7 @@ void Menu::minimize()
   auto animator = new PositionAnimator( this, WidgetAnimator::removeSelf, stopPos, 300 );
   CONNECT( animator, onFinish(), &_d->signal.onHide, Signal0<>::_emit );
 
-  auto event = PlaySound::create( "panel", 3, 100 );
-  event->dispatch();
+  events::dispatch<PlaySound>( "panel", 3, 100 );
 }
 
 void Menu::maximize()
@@ -505,8 +504,7 @@ void Menu::maximize()
   show();
   new PositionAnimator( this, WidgetAnimator::showParent | WidgetAnimator::removeSelf, stopPos, 300 );
 
-  auto event = PlaySound::create( "panel", 3, 100 );
-  event->dispatch();
+  events::dispatch<PlaySound>( "panel", 3, 100 );
 }
 
 void Menu::cancel()
@@ -567,8 +565,7 @@ void Menu::Impl::playSound( Widget* widget )
     index = math::random( 2 ) + 1;
   }
 
-  auto event = PlaySound::create( sound, index, 100 );
-  event->dispatch();
+  events::dispatch<PlaySound>( sound, index, 100 );
 }
 
 void Menu::Impl::updateBuildingOptions()
@@ -752,8 +749,7 @@ void ExtentMenu::setAlarmEnabled( bool enabled )
 {
   if( enabled )
   {
-    auto event = events::PlaySound::create( "extm_alarm", 1, 100, audio::effects );
-    event->dispatch();
+    events::dispatch<PlaySound>( "extm_alarm", 1, 100, audio::effects );
   }
 
   _d->disasterButton->setEnabled( enabled );

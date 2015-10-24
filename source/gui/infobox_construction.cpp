@@ -24,6 +24,8 @@
 #include "events/showtileinfo.hpp"
 #include "events/playsound.hpp"
 
+using namespace events;
+
 namespace gui
 {
 
@@ -110,8 +112,7 @@ void AboutConstruction::_baseAssigned()
   if( base().isValid() )
   {
     std::string typeName = object::toString( base()->type() );
-    auto event = events::PlaySound::create( "bmsel_"+typeName, 1, 100, audio::infobox, true );
-    event->dispatch();
+    events::dispatch<PlaySound>( "bmsel_"+typeName, 1, 100, audio::infobox, true );
   }
 }
 
@@ -121,11 +122,10 @@ void AboutConstruction::_switch(int flag)
 {
   if( _construction.isValid() )
   {
-    events::GameEventPtr e = events::ShowTileInfo::create( base()->pos(), flag == KEY_PERIOD
-                                                           ? events::ShowTileInfo::next
-                                                           : events::ShowTileInfo::prew );
+    events::dispatch<ShowTileInfo>( base()->pos(), flag == KEY_PERIOD
+                                    ? ShowTileInfo::next
+                                    : ShowTileInfo::prew );
     deleteLater();
-    e->dispatch();
   }
 }
 

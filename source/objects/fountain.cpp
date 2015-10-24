@@ -170,8 +170,7 @@ void Fountain::destroy()
 
   if( numberWorkers() > 0 )
   {
-    GameEventPtr e = ReturnWorkers::create( pos(), numberWorkers() );
-    e->dispatch();
+    events::dispatch<ReturnWorkers>( pos(), numberWorkers() );
   }
 }
 

@@ -596,8 +596,7 @@ void Constructor::init(Point cursor)
 
   if( OSystem::isAndroid() )
   {
-    auto message = WarningMessage::create( "Press red cross for break/exit, stamp for build", WarningMessage::neitral );
-    message->dispatch();
+    events::dispatch<WarningMessage>( "Press red cross for break/exit, stamp for build", WarningMessage::neitral );
   }
 }
 

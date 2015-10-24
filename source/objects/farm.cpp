@@ -198,8 +198,7 @@ void Farm::destroy()
     OverlayPtr ov = _map().overlay( pos );
     if( ov.isValid() && ov->type() == object::farmtile )
     {
-      GameEventPtr e = ClearTile::create( ov->pos() );
-      e->dispatch();
+      events::dispatch<ClearTile>( ov->pos() );
     }
   }
 

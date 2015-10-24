@@ -185,8 +185,9 @@ void WorkersHire::timeStep( const unsigned int time )
     int workersNeed = _city()->statistic().workers.need();
     if( workersNeed > employements::needMoreWorkers )
     {
-      events::dispatch<ShowInfobox>( _("##city_need_workers_title##"), _("##city_need_workers_text##"),
-                                     ShowInfobox::send2scribe );
+      events::dispatch<ShowInfobox>( _("##city_need_workers_title##"),
+                                     _("##city_need_workers_text##"),
+                                     true );
     }
   }
 }

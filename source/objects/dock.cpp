@@ -312,8 +312,7 @@ int Dock::importingGoods( good::Stock& stock)
   {
     _d->goods.importing.store( stock, traderMaySell );
 
-    GameEventPtr e = Payment::import( stock.type(), traderMaySell );
-    e->dispatch();
+    events::dispatch<Payment>( stock.type(), traderMaySell );
 
     cost = good::Helper::importPrice( _city(), stock.type(), traderMaySell );
   }

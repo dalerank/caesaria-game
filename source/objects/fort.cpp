@@ -282,8 +282,7 @@ void FortArea::destroy()
   Building::destroy();
   if( base().isValid() )
   {
-    GameEventPtr e = ClearTile::create( _d->basePos );
-    e->dispatch();
+    events::dispatch<ClearTile>( _d->basePos );
   }
 }
 
@@ -383,8 +382,7 @@ void Fort::destroy()
 
   if( _d->area.isValid()  )
   {
-    GameEventPtr e = ClearTile::create( _d->area->pos() );
-    e->dispatch();
+    events::dispatch<ClearTile>( _d->area->pos() );
     _d->area = 0;
   }
 

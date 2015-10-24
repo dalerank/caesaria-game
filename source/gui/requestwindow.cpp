@@ -31,6 +31,8 @@
 #include "widget_helper.hpp"
 #include "smkviewer.hpp"
 
+using namespace events;
+
 namespace gui
 {
 
@@ -146,8 +148,7 @@ bool EmperrorRequestWindow::onEvent(const NEvent& event)
 
 void EmperrorRequestWindow::Impl::openEmperrorAdvisor()
 {
-  events::GameEventPtr e = events::ShowAdvisorWindow::create( true, advisor::empire );
-  e->dispatch();
+  events::dispatch<ShowAdvisorWindow>( true, advisor::empire );
 }
 
 }//end namespace gui

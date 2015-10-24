@@ -374,8 +374,8 @@ void Level::initialize()
 
 std::string Level::nextFilename() const{  return _d->mapToLoad;}
 
-void Level::Impl::showSaveDialog() {  GameEventPtr e = ShowSaveDialog::create();   e->dispatch(); }
-void Level::Impl::setVideoOptions(){  GameEventPtr e = SetVideoSettings::create(); e->dispatch(); }
+void Level::Impl::showSaveDialog() {  events::dispatch<ShowSaveDialog>(); }
+void Level::Impl::setVideoOptions(){  events::dispatch<SetVideoSettings>(); }
 
 void Level::Impl::showGameSpeedOptionsDialog()
 {
@@ -399,8 +399,7 @@ void Level::Impl::showCityOptionsDialog()
 
 void Level::Impl::resolveWarningMessage(std::string text)
 {
-  GameEventPtr e = WarningMessage::create( text, WarningMessage::neitral );
-  e->dispatch();
+  events::dispatch<WarningMessage>( text, WarningMessage::neitral );
 }
 
 void Level::Impl::saveCameraPos(Point p)
@@ -416,8 +415,7 @@ void Level::Impl::saveCameraPos(Point p)
 
 void Level::Impl::showSoundOptionsWindow()
 {
-  GameEventPtr e = ChangeSoundOptions::create();
-  e->dispatch();
+  events::dispatch<ChangeSoundOptions>();
 }
 
 void Level::Impl::makeFastSave() { game->save( createFastSaveName().toString() ); }
@@ -510,8 +508,7 @@ void Level::Impl::extendReign(int years)
 
 void Level::Impl::handleDirectionChange(Direction direction)
 {
-  GameEventPtr e = WarningMessage::create( _("##" + direction::Helper::instance().findName( direction ) + "##"), 1 );
-  e->dispatch();
+  events::dispatch<WarningMessage>( _("##" + direction::Helper::instance().findName( direction ) + "##"), 1 );
 }
 
 std::string Level::Impl::getScreenshotName()
@@ -554,8 +551,7 @@ void Level::_resolveSwitchMap()
 
 void Level::Impl::showEmpireMapWindow()
 {
-  GameEventPtr e = ShowEmpireMap::create( true );
-  e->dispatch();
+  events::dispatch<ShowEmpireMap>( true );
 }
 
 void Level::draw()
@@ -630,8 +626,7 @@ void Level::Impl::makeScreenShot()
   Logger::warning( "Level: create screenshot " + filename );
 
   Engine::instance().createScreenshot( filename );
-  auto e = WarningMessage::create( "Screenshot save to " + filename, WarningMessage::neitral );
-  e->dispatch();
+  events::dispatch<WarningMessage>( "Screenshot save to " + filename, WarningMessage::neitral );
 }
 
 void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
@@ -697,8 +692,7 @@ void Level::Impl::checkWinMission( Level* lvl, bool force )
 
   if( success )
   {
-    auto event = MissionWin::create( conditions.name() );
-    event->dispatch();
+    events::dispatch<MissionWin>( conditions.name() );
   }
 }
 
@@ -782,9 +776,8 @@ bool Level::_tryExecHotkey(NEvent &event)
     case KEY_EQUALS:
     case KEY_ADD:
     {
-      auto e = ChangeSpeed::create( (event.keyboard.key == KEY_MINUS || event.keyboard.key == KEY_SUBTRACT)
+      events::dispatch<ChangeSpeed>( (event.keyboard.key == KEY_MINUS || event.keyboard.key == KEY_SUBTRACT)
                                                             ? -10 : +10 );
-      e->dispatch();
       handled = true;
     }
     break;
@@ -792,8 +785,7 @@ bool Level::_tryExecHotkey(NEvent &event)
     case KEY_KEY_P:
     {
       _d->simulationPaused =  !_d->simulationPaused;
-      auto e = Pause::create( _d->simulationPaused ? Pause::pause : Pause::play );
-      e->dispatch();
+      events::dispatch<Pause>( _d->simulationPaused ? Pause::pause : Pause::play );
       handled = true;
     }
     break;
@@ -801,8 +793,7 @@ bool Level::_tryExecHotkey(NEvent &event)
     case KEY_COMMA:
     case KEY_PERIOD:
     {
-      auto e = Step::create( event.keyboard.key == KEY_COMMA ? 1 : 25);
-      e->dispatch();
+      events::dispatch<Step>( event.keyboard.key == KEY_COMMA ? 1 : 25);
       handled = true;
     }
     break;
@@ -882,7 +873,7 @@ void Level::Impl::showMissionTaretsWindow()
   }
 }
 
-void Level::Impl::showAdvisorsWindow( const advisor::Type advType ) { ShowAdvisorWindow::create( true, advType )->dispatch(); }
-void Level::_showLoadDialog() { ShowLoadDialog::create()->dispatch(); }
+void Level::Impl::showAdvisorsWindow( const advisor::Type advType ) { events::dispatch<ShowAdvisorWindow>( true, advType ); }
+void Level::_showLoadDialog() { events::dispatch<ShowLoadDialog>(); }
 
 }//end namespace scene

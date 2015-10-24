@@ -33,6 +33,7 @@
 #include "game/infoboxmanager.hpp"
 
 using namespace gfx;
+using namespace events;
 
 namespace gui
 {
@@ -57,8 +58,7 @@ AboutSenate::AboutSenate(Widget* parent, PlayerCityPtr city, const Tile& tile )
   if( senate.isNull() )
     return;
 
-  auto event = events::PlaySound::create( "bmsel_senate", 1, 100, audio::infobox, true );
-  event->dispatch();
+  events::dispatch<PlaySound>( "bmsel_senate", 1, 100, audio::infobox, true );
 
   setTitle( _( senate->info().prettyName() ) );
 
@@ -91,8 +91,7 @@ Signal0<>& AboutSenate::onButtonAdvisorClicked()
 
 void AboutSenate::_showRatingAdvisor()
 {
-  events::GameEventPtr e = events::ShowAdvisorWindow::create( true, advisor::ratings );
-  e->dispatch();
+  events::dispatch<ShowAdvisorWindow>( true, advisor::ratings );
 }
 
 }

@@ -69,8 +69,7 @@ void IronMine::_reachUnworkingTreshold()
 {
   Factory::_reachUnworkingTreshold();
 
-  events::GameEventPtr e = events::ShowInfobox::create( "##iron_mine_collapse##", "##iron_mine_collapse_by_low_support##");
-  e->dispatch();
+  events::dispatch<events::ShowInfobox>( "##iron_mine_collapse##", "##iron_mine_collapse_by_low_support##");
 
   collapse();
 }

@@ -285,8 +285,9 @@ void Disorder::Impl::generateMugger(PlayerCityPtr city, HousePtr house )
     if( moneyStolen > maxMoneyStolen )
       moneyStolen = math::random( maxMoneyStolen );
 
-    events::dispatch<ShowInfobox>( "##money_stolen_title##", "##money_stolen_text##",
-                                   ShowInfobox::send2scribe, "mugging" );
+    events::dispatch<ShowInfobox>( "##money_stolen_title##",
+                                   "##money_stolen_text##",
+                                   true, "mugging" );
 
     city->treasury().resolveIssue( econ::Issue( econ::Issue::moneyStolen, -moneyStolen ) );
   }
@@ -300,7 +301,7 @@ void Disorder::Impl::generateMugger(PlayerCityPtr city, HousePtr house )
 void Disorder::Impl::generateRioter(PlayerCityPtr city, HousePtr house)
 {
   events::dispatch<ShowInfobox>( "##rioter_in_city_title##", "##rioter_in_city_text##",
-                                 ShowInfobox::send2scribe, "spy_riot" );
+                                 true, "spy_riot" );
   crime.rioters.thisYear++;
 
   RioterPtr rioter = Rioter::create( city );

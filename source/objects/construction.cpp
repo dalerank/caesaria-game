@@ -190,8 +190,7 @@ void Construction::burn()
   {
     deleteLater();
 
-    auto event = Disaster::create( tile(), Disaster::fire );
-    event->dispatch();
+    events::dispatch<Disaster>( tile(), Disaster::fire );
 
     Logger::warning( "Construction {0} catch fire at []{1},{2}]!", info().name(), pos().i(), pos().j() );
   }
@@ -204,8 +203,7 @@ void Construction::collapse()
 
   deleteLater();
 
-  GameEventPtr event = Disaster::create( tile(), Disaster::collapse );
-  event->dispatch();
+  events::dispatch<Disaster>( tile(), Disaster::collapse );
 
   Logger::warning( "Construction {0} collapsed at [{1},{2}]!", info().name(), pos().i(), pos().j() );
 }

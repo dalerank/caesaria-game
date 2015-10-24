@@ -67,16 +67,14 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
   if( lbTitle ) lbTitle->setText( _( title ) );
   if( !sound.empty() )
   {
-    GameEventPtr e = PlaySound::create( sound, 100 );
-    e->dispatch();
+    events::dispatch<PlaySound>( sound, 100 );
   }
 
   if( !speech.empty() )
   {
     _muter.activate( 5 );
     _speechDel.assign( speech );
-    GameEventPtr e = PlaySound::create( speech, 100, audio::speech );
-    e->dispatch();
+    events::dispatch<PlaySound>( speech, 100, audio::speech );
   }
 
   const std::string imgSeparator = "@img=";

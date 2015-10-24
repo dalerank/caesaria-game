@@ -430,8 +430,7 @@ void EnemySoldier::send2City( TilePos pos )
   _check4attack();
   attach();
 
-  events::GameEventPtr e = events::MilitaryThreat::create( 1 );
-  e->dispatch();
+  events::dispatch<events::MilitaryThreat>( 1 );
 }
 
 bool EnemySoldier::die()

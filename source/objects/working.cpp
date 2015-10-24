@@ -227,11 +227,8 @@ void WorkingBuilding::_disaster()
 {
   unsigned int buriedCitizens = math::random( numberWorkers() );
 
-  GameEventPtr e = ReturnWorkers::create( pos(), numberWorkers() );
-  e->dispatch();
-
-  e = RemoveCitizens::create( pos(), CitizenGroup( CitizenGroup::mature, buriedCitizens ) );
-  e->dispatch();
+  events::dispatch<ReturnWorkers>( pos(), numberWorkers() );
+  events::dispatch<RemoveCitizens>( pos(), CitizenGroup( CitizenGroup::mature, buriedCitizens ) );
 
   setWorkers( 0 );
 }
@@ -256,8 +253,7 @@ void WorkingBuilding::destroy()
 
   if( numberWorkers() > 0 )
   {
-    GameEventPtr e = ReturnWorkers::create( pos(), numberWorkers() );
-    e->dispatch();
+    events::dispatch<ReturnWorkers>( pos(), numberWorkers() );
   }
 }
 
