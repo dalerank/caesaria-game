@@ -42,6 +42,13 @@ bool Coast::build( const city::AreaInfo& info )
 {
   Overlay::build( info );
   updatePicture();
+  //deleteLater();
+  //tile().setOverlay( nullptr );
+  tile().setAnimation( Animation() );
+
+  CoastList coasts = neighbors();
+  for( auto nb : coasts )
+    nb->updatePicture();
 
   return true;
 }
@@ -55,32 +62,7 @@ void Coast::initTerrain(Tile& tile)
 
 Picture Coast::computePicture()
 {
-  TilePos mpos = tile().epos();
-  bool northnb = _map().at( mpos.northnb() ).getFlag( Tile::tlCoast );
-  bool eastnb = _map().at( mpos.eastnb() ).getFlag( Tile::tlCoast );
-  bool westnb = _map().at( mpos.westnb() ).getFlag( Tile::tlCoast );
-  bool southnb = _map().at( mpos.southnb() ).getFlag( Tile::tlCoast );
-
-  int start = 0;
-  int size = 0;
-  if( northnb && eastnb ) { start = 144; size = 4; }
-  else if( northnb && southnb )
-  {
-    start = 132;
-    size = 4;
-    if( westnb && !eastnb ) start = 140;
-  }
-  else if( northnb && westnb ) { start = 156; size = 4; }
-  else if( westnb && eastnb )
-  {
-    start = 128;
-    size = 4;
-    if( southnb && !northnb ) start = 136;
-  }
-  else if( eastnb && southnb ) { start = 148; size = 4; }
-  else if( westnb && southnb ) { start = 152; size = 4; }
-
-  return Picture( ResourceGroup::land1a, start + math::random(size-1) );
+  return calcPicture( _map(), tile() );
 }
 
 bool Coast::isWalkable() const{ return false;}
@@ -89,9 +71,73 @@ void Coast::destroy() {}
 bool Coast::isDestructible() const { return false;}
 Renderer::PassQueue Coast::passQueue() const { return riftPassQueue; }
 
+static bool __isWater( Tile& tile )
+{
+  bool isWater = tile.getFlag( Tile::tlWater ) || tile.getFlag( Tile::tlDeepWater );
+  bool isCoast = tile.getFlag( Tile::tlCoast );
+  return isWater && !isCoast;
+}
+
+Picture Coast::calcPicture( Tilemap& tmap, Tile& tile)
+{
+  TilePos mpos = tile.epos();
+
+  bool waterN = __isWater( tmap.at( mpos.nb().north() ) );
+  bool waterNE = __isWater( tmap.at( mpos.nb().northeast() ) );
+  bool waterE = __isWater( tmap.at( mpos.nb().east() ) );
+  bool waterSE = __isWater( tmap.at( mpos.nb().southeast() ) );
+  bool waterS = __isWater( tmap.at( mpos.nb().south() ) );
+  bool waterSW = __isWater( tmap.at( mpos.nb().southwest() ) );
+  bool waterW = __isWater( tmap.at( mpos.nb().west() ) );
+  bool waterNW = __isWater( tmap.at( mpos.nb().northwest() ) );
+  bool coastN = tmap.at( mpos.nb().north() ).getFlag( Tile::tlCoast );
+  bool coastNE = tmap.at( mpos.nb().northeast() ).getFlag( Tile::tlCoast );
+  bool coastE = tmap.at( mpos.nb().east() ).getFlag( Tile::tlCoast );
+  bool coastW = tmap.at( mpos.nb().west() ).getFlag( Tile::tlCoast );
+  bool coastSW = tmap.at( mpos.nb().southwest() ).getFlag( Tile::tlCoast );
+
+  int start = 0;
+  int size = 0;
+  //if( waterN && waterNE && waterNW)  {    start = 128;    size = 4;  }
+  /*else if( waterN && waterNE && waterE ) { start = 144; size = 4; }
+  else if( waterNE && waterE && waterSE) { start = 132; size = 4; }
+  else if( waterE && waterSE && waterS ) { start = 148; size = 4; }
+  else if( waterSE && waterS && waterSW) { start = 136; size = 4; }
+  else if( waterS && waterSW && waterW ) { start = 152; size = 4; }
+  else if( waterSW && waterW && waterNW ) { start = 140; size = 4; }*/
+  //else
+
+  if( waterW && waterNW && waterSW )
+  {
+    start = 140; size = 4;
+    if( waterN || (coastN && coastNE && coastE) ) { start = 173; size = 1; }
+    else if( waterS ) { start = 172; size = 1; }
+  }
+  else if( waterE && waterNE && waterSE )
+  {
+    start = 132; size = 4;
+    if( waterN ) { start = 170; size = 1; }
+    else if( waterS ) { start = 171; size = 1; }
+  }
+  else if( waterSW && waterS ) { start = 136; size = 4; }
+  else if( waterNW )   {    start = 156; size = 4;  }
+  else if( waterSW )   {    start = 152; size = 4;  }
+  else if( waterNE )   {    start = 144; size = 4;  }
+  else if( waterSE )   {    start = 148; size = 4;  }
+  else if( coastN && coastNE && coastW && coastSW ) { start = 156; size = 4; }
+
+  return Picture( ResourceGroup::land1a, start + math::random(size-1) );
+}
+
 void Coast::updatePicture()
 {
   setPicture( computePicture() );
   tile().setPicture( picture() );
   tile().setImgId( imgid::fromResource( picture().name() ) );
+}
+
+CoastList Coast::neighbors() const
+{
+  return _map().getNeighbors(pos(), Tilemap::AllNeighbors)
+               .overlays<Coast>();
 }

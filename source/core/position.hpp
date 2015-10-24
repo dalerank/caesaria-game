@@ -66,6 +66,19 @@ inline PointF Point::toPointF() const
 class TilePos : Vector2<int>
 {
 public:
+  struct Neighbors
+  {
+    const TilePos& pos;
+    inline TilePos north() const { return TilePos( pos.x(), pos.y()+1 ); }
+    inline TilePos northeast() const { return TilePos( pos.x()+1, pos.y()+1 ); }
+    inline TilePos east() const { return TilePos( pos.x()+1, pos.y() ); }
+    inline TilePos southeast() const { return TilePos( pos.x()+1, pos.y()-1 ); }
+    inline TilePos south() const { return TilePos( pos.x(), pos.y()-1 ); }
+    inline TilePos southwest() const { return TilePos( pos.x()-1, pos.y()-1 ); }
+    inline TilePos west() const { return TilePos( pos.x()-1, pos.y() ); }
+    inline TilePos northwest() const { return TilePos( pos.x()-1, pos.y()+1 ); }
+  };
+
   TilePos( const int i, const int j ) : Vector2<int>( i, j ) {}
   TilePos( const TilePos& other ) : Vector2<int>( other._x, other._y ) {}
   TilePos() : Vector2<int>( 0, 0 ) {}
@@ -77,10 +90,7 @@ public:
   inline int& ri() { return _x; }
   inline int& rj() { return _y; }
 
-  inline TilePos northnb() const { return TilePos( _x, _y+1 ); }
-  inline TilePos southnb() const { return TilePos( _x, _y-1 ); }
-  inline TilePos eastnb() const { return TilePos( _x+1, _y ); }
-  inline TilePos westnb() const { return TilePos( _x-1, _y ); }
+  Neighbors nb() const { return Neighbors{*this}; }
 
   inline void setI( const int i ) { _x = i; }
   inline void setJ( const int j ) { _y = j; }

@@ -47,13 +47,15 @@ bool Terrain::build( const city::AreaInfo& info )
   tile().setOverlay( nullptr );
   deleteLater();
 
-  TilesArray tiles = _map().area( 1, pos() );
+  TilesArray tiles = _map().getNeighbors(pos(), Tilemap::AllNeighbors);
   for( auto tile : tiles )
   {
     bool isWater = tile->getFlag( Tile::tlWater );
     isWater |= tile->getFlag( Tile::tlDeepWater );
-    if( isWater )
+    bool isCoast = tile->getFlag( Tile::tlCoast );
+    if( isWater /* && !isCoast */ )
     {
+      tile->setPicture( Picture::getInvalid() );
       OverlayPtr ov = TileOverlayFactory::instance().create( object::coast );
       city::AreaInfo binfo( info.city, tile->epos() );
       ov->build( binfo );
