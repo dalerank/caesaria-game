@@ -30,7 +30,6 @@ PREDEFINE_CLASS_SMARTPOINTER(Religion)
 class Religion : public Srvc
 {
 public:
-  static SrvcPtr create(PlayerCityPtr city);
   static std::string defaultName();
   virtual void timeStep( const unsigned int time );
 
@@ -40,8 +39,8 @@ public:
 
   virtual ~Religion();
 
-private:
   Religion( PlayerCityPtr city );
+private:
 
   void _updateRelation( religion::DivinityPtr divinity );
   void _hideWarnings();

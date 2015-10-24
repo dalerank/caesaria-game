@@ -43,14 +43,6 @@ public:
   FishPlaceList places;
 };
 
-SrvcPtr Fishery::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new Fishery( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 std::string Fishery::defaultName() {  return CAESARIA_STR_EXT(Fishery); }
 
 Fishery::Fishery( PlayerCityPtr city )

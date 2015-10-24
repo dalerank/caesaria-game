@@ -66,14 +66,6 @@ public:
   void showWarningIfNeed();
 };
 
-city::SrvcPtr HealthCare::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new HealthCare( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 std::string HealthCare::defaultName() { return CAESARIA_STR_EXT(HealthCare); }
 
 HealthCare::HealthCare( PlayerCityPtr city )

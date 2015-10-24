@@ -30,6 +30,7 @@
 
 using namespace gfx;
 using namespace events;
+using namespace city;
 
 namespace religion
 {
@@ -92,7 +93,7 @@ void Mars::_doBlessing(PlayerCityPtr city)
                                  _("##spirit_of_mars_text##"),
                                  true );
 
-  city::SrvcPtr spiritOfmars = city::SpiritOfMars::create( city );
+  SrvcPtr spiritOfmars = Srvc::create<SpiritOfMars>( city, 6 );
   spiritOfmars->attach();
 }
 

@@ -107,14 +107,6 @@ public:
   History history;
 };
 
-SrvcPtr Festival::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new Festival( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 std::string Festival::defaultName() {  return CAESARIA_STR_EXT(Festival); }
 
 void Festival::now() { _d->nextfest.date = game::Date::current(); }

@@ -142,14 +142,6 @@ public:
   void weekUpdate( unsigned int time, PlayerCityPtr rcity );
 };
 
-SrvcPtr Disorder::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new Disorder( city ) );
-  ret->drop();
-
-  return SrvcPtr( ret );
-}
-
 std::string Disorder::defaultName(){  return CAESARIA_STR_EXT(Disorder);}
 
 Disorder::Disorder( PlayerCityPtr city )

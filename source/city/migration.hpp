@@ -29,8 +29,6 @@ PREDEFINE_CLASS_SMARTPOINTER(Migration)
 class Migration : public Srvc
 {
 public:
-  static SrvcPtr create( PlayerCityPtr city );
-
   virtual void timeStep( const unsigned int time );
 
   int value() const;
@@ -49,8 +47,8 @@ public:
 
   void citizenLeaveCity( WalkerPtr walker );
 
-private:
   Migration( PlayerCityPtr city );
+private:
 
   class Impl;
   ScopedPtr< Impl > _d;

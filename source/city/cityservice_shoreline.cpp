@@ -64,14 +64,6 @@ void Shoreline::Impl::checkMap( PlayerCityPtr city )
   }
 }
 
-SrvcPtr Shoreline::create( PlayerCityPtr city )
-{
-  city::SrvcPtr ret( new Shoreline( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 std::string Shoreline::defaultName(){ return CAESARIA_STR_EXT(Shoreline); }
 
 Shoreline::Shoreline( PlayerCityPtr city )

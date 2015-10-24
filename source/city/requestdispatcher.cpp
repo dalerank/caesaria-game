@@ -52,14 +52,6 @@ Dispatcher::Dispatcher( PlayerCityPtr city )
 {
 }
 
-city::SrvcPtr Dispatcher::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new Dispatcher( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 bool Dispatcher::add( const VariantMap& stream, bool showMessage )
 {
   const std::string type = stream.get( "reqtype" ).toString();
@@ -139,7 +131,7 @@ VariantMap Dispatcher::save() const
 void Dispatcher::load(const VariantMap& stream)
 {
   VariantMap vm_items = stream.get( "items" ).toMap();
-  for( auto item : vm_items )
+  for( auto& item : vm_items )
     add( item.second.toMap(), false );
 
   VARIANT_LOAD_TIME_D( _d, lastRequestCancelDate, stream )

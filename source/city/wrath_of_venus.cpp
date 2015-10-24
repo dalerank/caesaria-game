@@ -41,18 +41,6 @@ public:
   bool isDeleted;
 };
 
-SrvcPtr WrathOfVenus::create( PlayerCityPtr city, int month, int strong )
-{
-  WrathOfVenus* ptr = new WrathOfVenus( city );
-  ptr->_d->endTime = game::Date::current();
-  ptr->_d->endTime.appendMonth( month );
-  ptr->_d->strong = strong;
-  SrvcPtr ret( ptr );
-  ret->drop();
-
-  return ret;
-}
-
 void WrathOfVenus::timeStep( const unsigned int time)
 {
   if( game::Date::isDayChanged() )
@@ -89,10 +77,13 @@ VariantMap WrathOfVenus::save() const
   return ret;
 }
 
-WrathOfVenus::WrathOfVenus(PlayerCityPtr city )
+WrathOfVenus::WrathOfVenus(PlayerCityPtr city, int month, int strong )
   : Srvc( city, WrathOfVenus::defaultName() ), _d( new Impl )
 {
   _d->isDeleted = false;
+  _d->endTime = game::Date::current();
+  _d->endTime.appendMonth( month );
+  _d->strong = strong;
   _d->strong = 1;
 }
 

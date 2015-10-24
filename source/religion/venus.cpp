@@ -65,7 +65,7 @@ void Venus::_doWrath( PlayerCityPtr city )
     sentiment->addBuff( -75, false, 12 );
   }
 
-  SrvcPtr wrathOfVenus = WrathOfVenus::create( city, DateTime::monthsInYear / 4 );
+  SrvcPtr wrathOfVenus = Srvc::create<WrathOfVenus>( city, DateTime::monthsInYear / 4, 1 );
   wrathOfVenus->attach();
 }
 

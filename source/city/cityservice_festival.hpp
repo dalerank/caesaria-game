@@ -40,8 +40,6 @@ PREDEFINE_CLASS_SMARTPOINTER(Festival)
 class Festival : public Srvc
 {
 public:
-
-  static SrvcPtr create(PlayerCityPtr city);
   static std::string defaultName();
 
   DateTime lastFestival() const;
@@ -54,9 +52,9 @@ public:
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream );  
 
+  Festival( PlayerCityPtr city );
 private:
   void _doFestival();
-  Festival( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;

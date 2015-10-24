@@ -67,14 +67,6 @@ public:
   void hireWorkers( PlayerCityPtr city, WorkingBuildingPtr bld );
 };
 
-SrvcPtr WorkersHire::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new WorkersHire( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 std::string WorkersHire::defaultName(){ return CAESARIA_STR_EXT(WorkersHire); }
 
 WorkersHire::WorkersHire(PlayerCityPtr city)

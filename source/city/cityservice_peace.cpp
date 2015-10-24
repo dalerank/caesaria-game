@@ -64,14 +64,6 @@ public:
   Vector<object::Type> unsignificantBuildings;
 };
 
-SrvcPtr Peace::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new Peace( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 Peace::Peace( PlayerCityPtr city )
   : Srvc( city, defaultName() ), _d( new Impl )
 {

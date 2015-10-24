@@ -45,14 +45,6 @@ public:
   bool needUpdateMilitaryThreat;
 };
 
-SrvcPtr Military::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new Military( city ) );
-  ret->drop();
-
-  return SrvcPtr( ret );
-}
-
 Military::Military( PlayerCityPtr city )
   : Srvc( city, defaultName() ), _d( new Impl )
 {

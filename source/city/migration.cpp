@@ -81,14 +81,6 @@ public:
   bool isPoorHousing( int shacks, int houses );
 };
 
-SrvcPtr Migration::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new Migration( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 Migration::Migration( PlayerCityPtr city )
   : Srvc( city, defaultName() ), _d( new Impl )
 {  
