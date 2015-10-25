@@ -26,6 +26,7 @@
 #include "gfx/tilemap_camera.hpp"
 #include "core/event.hpp"
 #include "core/gettext.hpp"
+#include "game/gamedate.hpp"
 #include "gfx/textured_path.hpp"
 
 using namespace gfx;
@@ -47,7 +48,7 @@ public:
   struct
   {
     OverlayPtr selected;
-    OverlayPtr current;
+    OverlayPtr underMouse;
   } overlay;
 
   DateTime lastUpdate;
@@ -58,11 +59,9 @@ int Fire::type() const { return citylayer::fire; }
 
 void Fire::drawTile( const RenderInfo& rinfo, Tile& tile )
 {
-
   if( tile.overlay().isNull() )
   {
-    drawPass( rinfo, tile, Renderer::ground );
-    drawPass( rinfo, tile, Renderer::groundAnimation );
+    drawLandTile( rinfo, tile );
   }
   else
   {
@@ -107,6 +106,14 @@ void Fire::drawTile( const RenderInfo& rinfo, Tile& tile )
   tile.setRendered();
 }
 
+void Fire::afterRender(Engine& engine)
+{
+  Info::afterRender(engine);
+
+  if( game::Date::isDayChanged() )
+    _updatePaths();
+}
+
 void Fire::render(Engine& engine)
 {
   Info::render( engine );
@@ -136,7 +143,7 @@ void Fire::handleEvent(NEvent& event)
           text = fireLevelName[ math::clamp<int>( fireLevel / 10, 0, 9 ) ];
         }
 
-        d.overlay.current = tile->overlay();
+        d.overlay.underMouse = tile->overlay();
       }
 
       _setTooltipText( _(text) );
@@ -144,8 +151,7 @@ void Fire::handleEvent(NEvent& event)
     break;
 
     case mouseLbtnPressed:
-    {
-      d.overlay.selected = d.overlay.current;
+    {      
       _updatePaths();
     }
     break;
@@ -155,14 +161,6 @@ void Fire::handleEvent(NEvent& event)
   }
 
   Layer::handleEvent( event );
-}
-
-LayerPtr Fire::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new Fire( camera, city ) );
-  ret->drop();
-
-  return ret;
 }
 
 Fire::Fire( Camera& camera, PlayerCityPtr city)
@@ -175,11 +173,15 @@ Fire::Fire( Camera& camera, PlayerCityPtr city)
 void Fire::_updatePaths()
 {
   __D_REF(d,Fire)
-  auto wbuilding = d.overlay.selected.as<Prefecture>();
-  d.ways.clear();
+  if( d.overlay.underMouse.is<Prefecture>() )
+  {
+    d.overlay.selected = d.overlay.underMouse;
+  }
 
+  auto wbuilding = d.overlay.selected.as<Prefecture>();
   if( wbuilding.isValid() )
   {
+    d.ways.clear();
     const WalkerList& walkers = wbuilding->walkers();
     for( auto walker : walkers )
       d.ways.push_back( walker->pathway().allTiles() );

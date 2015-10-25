@@ -151,14 +151,6 @@ void Food::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerPtr Food::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new Food( camera, city ) );
-  ret->drop();
-
-  return ret;
-}
-
 Food::Food( Camera& camera, PlayerCityPtr city)
   : Info( camera, city, 18 )
 {

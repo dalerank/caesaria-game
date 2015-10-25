@@ -36,7 +36,7 @@ void TexturedPath::draw(const Pathway& way, const RenderInfo& rinfo, NColor colo
 
 void TexturedPath::draw(const TilesArray& tiles, const RenderInfo& rinfo, NColor color)
 {
-  Point offset( tilemap::cellSize().width(), 0 );
+  Point offset( 0 /*tilemap::cellSize().width()*/, 0 );
   if( tiles.size() > 1 )
   {
     for( unsigned int step=0; step < tiles.size()-1; step++ )

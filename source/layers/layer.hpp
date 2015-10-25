@@ -37,6 +37,8 @@
 namespace citylayer
 {
 
+PREDEFINE_CLASS_SMARTLIST(Layer,List)
+
 class DrawOptions : public FlagHolder<int>
 {
 public:
@@ -59,6 +61,15 @@ class Layer : public ReferenceCounted
 {
 public:
   typedef std::set<walker::Type> WalkerTypes;
+
+  template<typename Class, typename... Args>
+  static LayerPtr create( Args & ... args)
+  {
+    LayerPtr instance( new Class( args... ) );
+    instance->drop();
+
+    return instance;
+  }
 
   virtual int type() const = 0;
   virtual const WalkerTypes& visibleTypes() const;
@@ -120,8 +131,6 @@ protected:
 
   __DECLARE_IMPL(Layer)
 };
-
-typedef SmartPtr<Layer> LayerPtr;
 
 }//end namespace citylayer
 

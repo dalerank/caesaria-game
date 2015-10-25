@@ -24,7 +24,6 @@
       btnBuildOverDraw#OptionButton:{base:"city_buildoverdraw",states:{off:0,on:1 }, link : [ "draw", "overdrawOnBuild" ] }
       btnShowGodsUnhappyWarn#OptionButton:{base:"city_buildoverdraw",states:{off:0,on:1 }, link : [ "city", "showGodsUnhappyWarn" ] }
       btnWarfNeedTimber#OptionButton:{base:"city_warf_timber",states:{off:0,on:1 }, link : [ "city", "warfNeedTimber" ] }
-      btnC3Gameplay#OptionButton:{base:"c3gameplay",states:{off:0,on:1 }, link : [ "city", "c3gameplay" ] }
 
       btnDifficulty#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_barbarian_mode##" }
       btnRoadBlocks#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_roadblock_mode##" }

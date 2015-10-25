@@ -28,10 +28,8 @@ public:
   virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
   virtual void drawWalkers( const gfx::RenderInfo& rinfo, const gfx::Tile &tile);
 
-  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
   virtual void handleEvent(NEvent& event);
 
-private:
   Food( gfx::Camera& camera, PlayerCityPtr city );
 };
 

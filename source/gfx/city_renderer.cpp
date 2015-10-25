@@ -115,12 +115,11 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   _d->camera.init( *_d->tilemap, engine->screenSize() );
   _d->engine = engine;
   _d->lastZoom = _d->camera.zoom();
-  //_d->engine->setScale( 1.f );
 
   addLayer( Simple::create( _d->camera, city ) );
   addLayer( Water::create( _d->camera, city ) );
-  addLayer( Fire::create( _d->camera, city ) );
-  addLayer( Food::create( _d->camera, city ) );
+  addLayer( Layer::create<Fire>( _d->camera, city ) );
+  addLayer( Layer::create<Food>( _d->camera, city ) );
   addLayer( Health::create( _d->camera, city, citylayer::health ));
   addLayer( Health::create( _d->camera, city, citylayer::doctor ));
   addLayer( Health::create( _d->camera, city, citylayer::hospital ));
@@ -357,7 +356,7 @@ TilePos CityRenderer::screen2tilepos(const Point& point ) const{  return _d->cam
 
 Camera* CityRenderer::camera() {  return &_d->camera; }
 Renderer::ModePtr CityRenderer::mode() const {  return _d->changeCommand;}
-void CityRenderer::addLayer( LayerPtr layer){  _d->layers.push_back( layer ); }
+void CityRenderer::addLayer(SmartPtr<Layer> layer){  _d->layers.push_back( layer ); }
 LayerPtr CityRenderer::currentLayer() const { return _d->currentLayer; }
 void CityRenderer::setViewport(const Size& size) { _d->camera.setViewport( size ); }
 Signal1<int>& CityRenderer::onLayerSwitch() { return _d->onLayerSwitchSignal; }
