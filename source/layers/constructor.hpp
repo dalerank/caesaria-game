@@ -40,7 +40,6 @@ public:
   virtual const WalkerTypes& visibleTypes() const;
   virtual void renderUi(gfx::Engine &engine);
   virtual void changeLayer(int type);
-  LayerPtr drawLayer() const;
 
   static LayerPtr create(gfx::Renderer &renderer, PlayerCityPtr city );
 

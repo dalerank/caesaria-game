@@ -133,13 +133,15 @@ Renderer::ModePtr EditorMode::create(object::Type type)
   newCommand->_setFlag( assign2road, false );
   newCommand->_setFlag( checkWalkers, false );
 
-  if( type == object::terrain )
+  switch( type )
   {
+  case object::terrain:
+  case object::tree:
+  case object::water:
     newCommand->_setFlag( multibuild, true );
-  }
-  else if( type == object::tree )
-  {
-    newCommand->_setFlag( multibuild, true );
+  break;
+
+  default: break;
   }
 
   Renderer::ModePtr ret( newCommand );

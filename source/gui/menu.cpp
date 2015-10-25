@@ -67,7 +67,8 @@ enum { noSubMenu=0, haveSubMenu=1, pushButton=1 };
 struct Menu::Link
 {
   typedef enum { buildHouse, clearLand,
-                 editTerrain, editForest } Name;
+                 editTerrain, editForest,
+                 buildRoad, editWater } Name;
   typedef enum { inGame=0, inEditor=1 } VisibleMode;
   Point pos;
   int picId;
@@ -111,6 +112,15 @@ struct Menu::Model
     actions[ Link::editForest  ] = { Point( 63,  277 ), config::id.menu.forest, object::tree, 0,
                                      object::tree, config::id.middle.clear, pushButton,
                                      noSubMenu, Rect(), "forest", nullptr, "", Link::inEditor };
+
+    actions[ Link::buildRoad   ] = { Point( 113, 277 ), config::id.menu.road, object::road,  2,
+                                     object::road, config::id.middle.road, pushButton,
+                                     noSubMenu, Rect(), "road", nullptr, "", Link::inGame };
+
+    actions[ Link::editWater   ] = { Point( 113, 277 ), config::id.menu.water, object::water,  2,
+                                     object::water, config::id.middle.clear, pushButton,
+                                     noSubMenu, Rect(), "water", nullptr, "", Link::inEditor};
+
   }
 
   bool isLinkValid( Link::Name name ) const
@@ -127,7 +137,10 @@ struct Menu::Model
   {
     Link::VisibleMode mode = enabled ? Link::inEditor : Link::inGame;
     for( auto&& item : actions )
-      item.second.button->setVisible( item.second.visibleMode == mode );
+    {
+      if( item.second.button )
+        item.second.button->setVisible( item.second.visibleMode == mode );
+    }
   }
 
   Model( Widget* parent, bool fit, const std::string& name, MenuType mode )
@@ -204,7 +217,6 @@ public:
   PushButton* messageButton;
   PushButton* disasterButton;
   PushButton* waterButton;
-  PushButton* roadButton;
   PushButton* administrationButton;
   PushButton* entertainmentButton;
   PushButton* educationButton;
@@ -273,8 +285,8 @@ void Menu::_updateButtons()
 
   _createLink( _d->model->actions[ Link::buildHouse ] );
   _createLink( _d->model->actions[ Link::clearLand  ] );
+  _createLink( _d->model->actions[ Link::buildRoad  ] );
 
-  _d->roadButton = _addButton( 135, true, 2, object::road, noSubMenu, config::id.middle.road, "road" );
   _d->waterButton = _addButton( 127, true, 3, development::water, haveSubMenu, config::id.middle.water, "water" );
   _d->healthButton = _addButton( 163, true, 4, development::health, haveSubMenu, config::id.middle.health, "health" );
   _d->templeButton = _addButton( 151, true, 5, development::religion, haveSubMenu, config::id.middle.religion, "temples" );
@@ -403,7 +415,8 @@ bool Menu::onEvent(const NEvent& event)
       _createBuildMenu( -1, this );
       emit _d->signal.onCreateConstruction( id );
     }
-    else if( id == object::terrain || id == object::tree )
+    else if( id == object::terrain
+             || id == object::tree || id == object::water )
     {
       _d->lastPressed = event.gui.caller;
       _createBuildMenu( -1, this );
@@ -615,7 +628,6 @@ void ExtentMenu::_updateButtons()
 
   _setChildGeometry( _d->button.minimize, Rect( Point( 127, 5 ), Size( 31, 20 ) ) );
 
-  _d->initActionButton( _d->roadButton,           Point( 113, 277 ) );
   _d->initActionButton( _d->waterButton,          Point( 13,  313 ) );
   _d->initActionButton( _d->healthButton,         Point( 63,  313 ) );
   _d->initActionButton( _d->templeButton,         Point( 113, 313 ) );
@@ -715,6 +727,7 @@ void ExtentMenu::setConstructorMode(bool enabled)
   {
     _createLink( _d->model->actions[ Link::editTerrain ] );
     _createLink( _d->model->actions[ Link::editForest ] );
+    _createLink( _d->model->actions[ Link::editWater ] );
   }
 
   _d->model->setConstructoMode( true );

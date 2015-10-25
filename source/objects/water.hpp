@@ -15,34 +15,31 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_LAYER_INFO_H_INCLUDED__
-#define __CAESARIA_LAYER_INFO_H_INCLUDED__
+#ifndef __CAESARIA_TERRAIN_H_INCLUDE__
+#define __CAESARIA_TERRAIN_H_INCLUDE__
 
-#include "layer.hpp"
+#include "objects/overlay.hpp"
 
-namespace citylayer
-{
+PREDEFINE_CLASS_SMARTLIST(Water,List)
 
-class Info : public Layer
+class Water : public Overlay
 {
 public:
-  virtual void render(gfx::Engine &engine);
-  virtual void afterRender(gfx::Engine &engine);
+  Water();
 
-  virtual void drawColumn(const gfx::RenderInfo& rinfo, const Point& pos, const int percent );
+  virtual gfx::Picture computePicture();
+  void updatePicture();
+  WaterList neighbors() const;
 
-  virtual ~Info();
+  virtual bool build( const city::AreaInfo& info );
+  virtual void initTerrain( gfx::Tile &terrain);
+  virtual bool isWalkable() const;
+  virtual bool isFlat() const;
+  virtual void destroy();
+  virtual bool isDestructible() const;
 
-protected:
-  void _loadColumnPicture( const char* rc, int picId );
-  virtual void _initialize();
-
-  Info(gfx::Camera& camera, PlayerCityPtr city, int columnIndex);
-
-private:
-  class Impl;
-  ScopedPtr<Impl> _d;
+  virtual gfx::Renderer::PassQueue passQueue() const;
+  static gfx::Picture randomPicture();
 };
 
-}//end namespace citylayer
-#endif //__CAESARIA_LAYER_INFO_H_INCLUDED__
+#endif //__CAESARIA_TERRAIN_H_INCLUDE__

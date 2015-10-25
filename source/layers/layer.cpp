@@ -76,6 +76,14 @@ public:
     AlwaysDrawObjects objects;
   } visible;
 
+  struct PictureInfo {
+    Point pos;
+    Picture pic;
+  };
+
+  typedef std::vector<PictureInfo> Pictures;
+
+  Pictures pictures;
   Picture terraintPic;
   PlayerCityPtr city;
   Picture tilePosText;
@@ -299,14 +307,14 @@ void Layer::_setTooltipText(const std::string& text)
 
 void Layer::render( Engine& engine )
 {
-  __D_IMPL(_d,Layer)
-  const TilesArray& visibleTiles = _d->camera->tiles();
-  RenderInfo rinfo = { engine, _d->camera->offset() };
+  __D_REF(d,Layer)
+  const TilesArray& visibleTiles = d.camera->tiles();
+  RenderInfo rinfo = { engine, d.camera->offset() };
 
   _camera()->startFrame();
   DrawOptions& opts = DrawOptions::instance();
   //FIRST PART: draw lands
-  drawLands( rinfo, _d->camera );
+  drawLands( rinfo, d.camera );
 
   if( opts.isFlag( DrawOptions::shadowOverlay ) )
   {
@@ -477,6 +485,22 @@ void Layer::beforeRender(Engine&)
   __D_IMPL(_d,Layer)
   _d->draw.buildings = DrawOptions::instance().isFlag( DrawOptions::showBuildings );
   _d->draw.trees = DrawOptions::instance().isFlag( DrawOptions::showTrees );
+  _d->pictures.clear();
+}
+
+void Layer::_addPicture(const Point& pos, const Picture& pic)
+{
+  Impl::PictureInfo info = { pos, pic };
+  _dfunc()->pictures.push_back( info );
+}
+
+void Layer::_addText(const Point& pos, const std::string& text, Font font)
+{
+  if( !font.isValid() )
+    font = _dfunc()->debugFont;
+
+  Picture tx = font.once( text );
+  _addPicture( pos, tx );
 }
 
 void Layer::afterRender(Engine& engine)
@@ -633,6 +657,11 @@ void Layer::afterRender(Engine& engine)
 #ifdef DEBUG
     engine.draw( _d->tilePosText, pos );
 #endif
+  }
+
+  for( auto& pic : _d->pictures )
+  {
+    engine.draw( pic.pic, offset + pic.pos );
   }
 }
 

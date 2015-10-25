@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "terrain.hpp"
+#include "water.hpp"
 #include "gfx/tile.hpp"
 #include "game/resourcegroup.hpp"
 #include "city/city.hpp"
@@ -28,18 +28,18 @@
 
 using namespace gfx;
 
-REGISTER_CLASS_IN_OVERLAYFACTORY(object::terrain, Terrain)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::water, Water)
 
 namespace {
   static Renderer::PassQueue riftPassQueue=Renderer::PassQueue(1,Renderer::ground);
 }
 
-Terrain::Terrain() : Overlay( object::terrain, Size(1) )
+Water::Water() : Overlay( object::water, Size(1) )
 {
   setPicture( computePicture() );
 }
 
-bool Terrain::build( const city::AreaInfo& info )
+bool Water::build( const city::AreaInfo& info )
 {
   Overlay::build( info );
   tile().setPicture( picture() );
@@ -52,45 +52,58 @@ bool Terrain::build( const city::AreaInfo& info )
   for( auto tile : tiles )
   {
     bool isWater = tile->getFlag( Tile::tlWater );
-    isWater |= tile->getFlag( Tile::tlDeepWater );
-    bool isCoast = tile->getFlag( Tile::tlCoast );
-    if( isWater /* && !isCoast */ )
+    isWater |= tile->getFlag( Tile::tlDeepWater );    
+    if( !isWater )
     {
       tile->setPicture( Picture::getInvalid() );
       OverlayPtr ov = TileOverlayFactory::instance().create( object::coast );
       city::AreaInfo binfo( info.city, tile->epos() );
       ov->build( binfo );
     }
+    bool isCoast = tile->getFlag( Tile::tlCoast );
+    if( isCoast )
+    {
+      CoastPtr coast = tile->overlay<Coast>();
+      if( coast.isValid() )
+        coast->updatePicture();
+      else
+      {
+        OverlayPtr ov = TileOverlayFactory::instance().create( object::coast );
+        city::AreaInfo binfo( info.city, tile->epos() );
+        ov->build( binfo );
+      }
+    }
   }
 
   return true;
 }
 
-void Terrain::initTerrain(Tile& terrain)
+void Water::initTerrain(Tile& tile)
 {
-  terrain.setFlag( Tile::clearAll, true );
+  tile.terrain().clear();
+  tile.terrain().water = true;
 }
 
-Picture Terrain::computePicture()
+Picture Water::computePicture()
 {
   return randomPicture();
 }
 
-bool Terrain::isWalkable() const{ return true;}
-bool Terrain::isFlat() const { return true;}
-void Terrain::destroy() {}
-bool Terrain::isDestructible() const { return false;}
-Renderer::PassQueue Terrain::passQueue() const {  return riftPassQueue; }
+bool Water::isWalkable() const{ return false;}
+bool Water::isFlat() const { return true;}
+void Water::destroy() {}
+bool Water::isDestructible() const { return false;}
+Renderer::PassQueue Water::passQueue() const {  return riftPassQueue; }
 
-Picture Terrain::randomPicture()
+Picture Water::randomPicture()
 {
-  int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
-  int imgId = math::random( 58-1 );
+  int startOffset  = 120;
+  int imgId = math::random( 7 );
 
   return Picture( ResourceGroup::land1a, startOffset + imgId );
 }
 
-void Terrain::updatePicture()
+void Water::updatePicture()
 {
   setPicture( computePicture() );
   tile().setPicture( picture() );

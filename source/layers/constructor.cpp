@@ -42,6 +42,7 @@
 #include "gfx/city_renderer.hpp"
 #include "gfx/helper.hpp"
 #include "gfx/tilemap.hpp"
+#include "objects/coast.hpp"
 #include "city/statistic.hpp"
 #include "core/osystem.hpp"
 
@@ -71,7 +72,7 @@ public:
   int drawLayerIndex;
   int frameCount;
   Renderer* renderer;
-  LayerPtr lastLayer;
+  //LayerPtr lastLayer;
   std::string resForbiden;
   Picture grnPicture;
   Picture redPicture;
@@ -108,8 +109,8 @@ void Constructor::_discardPreview()
 
 void Constructor::_checkPreviewBuild(const TilePos& pos)
 {
-  __D_IMPL(d,Constructor);
-  auto command =  d->renderer->mode().as<EditorMode>();
+  __D_REF(d,Constructor);
+  auto command =  d.renderer->mode().as<EditorMode>();
 
   if (command.isNull())
     return;
@@ -124,8 +125,8 @@ void Constructor::_checkPreviewBuild(const TilePos& pos)
 
   Size size = overlay->size();
 
-  city::AreaInfo areaInfo( _city(), pos, &d->buildTiles );
-  if( d->canBuildOn( overlay, areaInfo ) )
+  city::AreaInfo areaInfo( _city(), pos, &d.buildTiles );
+  if( d.canBuildOn( overlay, areaInfo ) )
   {
     Tilemap& tmap = _city()->tilemap();
     Tile *masterTile=0;
@@ -146,7 +147,7 @@ void Constructor::_checkPreviewBuild(const TilePos& pos)
         tile->setPicture( tmap.at( pos + TilePos( di, dj ) ).picture() );
         tile->setMaster( masterTile );
         tile->setOverlay( clone );
-        bool added = d->buildTiles.appendOnce( tile );
+        bool added = d.buildTiles.appendOnce( tile );
         if( !added )
         {
           delete tile;
@@ -326,9 +327,8 @@ void Constructor::_buildAll()
 
 void Constructor::_exitBuildMode()
 {
-  __D_IMPL(_d,Constructor);
   DrawOptions::instance().setFlag( DrawOptions::mayChangeLayer, true );
-  _setNextLayer( _d->lastLayer.isValid() ? _d->lastLayer->type() : citylayer::simple );
+  _setNextLayer( citylayer::simple );
   _setStartCursorPos( Point(-1, -1) );
   _discardPreview();
 }
@@ -502,18 +502,16 @@ void Constructor::_tryDrawBuildTile( const RenderInfo& renderInfo, Tile &tile)
 
 void Constructor::_drawBuildTiles(const RenderInfo& renderInfo )
 {
-  __D_IMPL(_d,Constructor);
-
-  for( auto tile : _d->buildTiles )
+  for( auto tile : _dfunc()->buildTiles )
     _drawBuildTile( renderInfo, tile );
 }
 
 void Constructor::drawTile( const RenderInfo& rinfo, Tile& tile )
 {
-  __D_IMPL(_d,Constructor);
+  __D_REF(d,Constructor);
 
   auto overlay = tile.overlay();
-  city::AreaInfo info( _city(), tile.epos(), &_d->buildTiles );
+  city::AreaInfo info( _city(), tile.epos(), &d.buildTiles );
 
   const Picture* picBasic = 0;
   const Picture* picOver = 0;
@@ -530,17 +528,17 @@ void Constructor::drawTile( const RenderInfo& rinfo, Tile& tile )
     rinfo.engine.draw( *picOver, screenPos );
     drawPass( rinfo, tile, Renderer::overlayAnimation );
   }
-  else if( _d->lastLayer.isValid() )
+  /*else if( d.lastLayer.isValid() )
   {
-    if( _d->cachedTiles.count( tile::hash( tile.epos() ) ) == 0 )
-      _d->lastLayer->drawTile( rinfo, tile );
-  }
+    if( d.cachedTiles.count( tile::hash( tile.epos() ) ) == 0 )
+      d.lastLayer->drawTile( rinfo, tile );
+  }*/
   else
   {
     Layer::drawTile( rinfo, tile );
   }
 
-  if( !_d->overdrawBuilding )
+  if( !d.overdrawBuilding )
     _tryDrawBuildTile( rinfo, tile );
 }
 
@@ -604,47 +602,46 @@ void Constructor::beforeRender(Engine& engine)
 {
   __D_IMPL(_d,Constructor);
   _d->overdrawBuilding = DrawOptions::instance().isFlag( DrawOptions::overdrawOnBuild );
-  if( _d->lastLayer.isValid() )
-    _d->lastLayer->beforeRender( engine );
-  else
-    Layer::beforeRender( engine );
+  Layer::beforeRender( engine );
 }
 
 void Constructor::drawPass(const RenderInfo& rinfo, Tile& tile, Renderer::Pass pass)
 {
-  __D_IMPL(_d,Constructor);
-  if( _d->lastLayer.isValid() )
-    _d->lastLayer->drawPass( rinfo, tile, pass );
-  else
-    Layer::drawPass( rinfo, tile, pass );
+  Layer::drawPass( rinfo, tile, pass );
 }
 
 void Constructor::afterRender(Engine& engine)
 {
-  __D_IMPL(_d,Constructor);
-  if( _d->needUpdateTiles )
+  __D_REF(d,Constructor);
+  if( d.needUpdateTiles )
   {
-   if( !OSystem::isAndroid() )
-   {
+    if( !OSystem::isAndroid() )
+    {
       _setLastCursorPos( engine.cursorPos() );
-   }
+    }
 
     _checkBuildArea();
     _updatePreviewTiles( false );
   }
 
-  if( _d->lastLayer.isValid() )
-    _d->lastLayer->afterRender( engine );
-  else
-    Layer::afterRender( engine );
+  const TilesArray& visibleTiles = _camera()->tiles();
+  for( auto tile : visibleTiles )
+  {
+    if( tile->terrain().coast )
+    {
+      CoastPtr coast = tile->overlay<Coast>();
+      if( coast != nullptr )
+      {
+        _addText( tile->mappos() + Point( 20, -15 ), utils::format( 0xff, "0x%x", coast->_rindex ) );
+      }
+    }
+  }
+
+  Layer::afterRender( engine );
 }
 
 const Layer::WalkerTypes& Constructor::visibleTypes() const
 {
-  __D_IMPL_CONST(_d,Constructor);
-  if( _d->lastLayer.isValid() )
-    return _d->lastLayer->visibleTypes();
-
   return Layer::visibleTypes();
 }
 
@@ -656,18 +653,11 @@ void Constructor::renderUi(Engine &engine)
 
 void Constructor::changeLayer(int layer)
 {
-  __D_IMPL(_d,Constructor);
   if( layer != type() )
   {
     if( layer == citylayer::destroyd )
     {
        _exitBuildMode();
-    }
-    else
-    {
-      _d->lastLayer = _d->renderer
-                          ? _d->renderer->getLayer( layer )
-                          : LayerPtr();
     }
   }
 
@@ -682,7 +672,6 @@ LayerPtr Constructor::create(Renderer& renderer, PlayerCityPtr city)
   return ret;
 }
 
-LayerPtr Constructor::drawLayer() const { return _dfunc()->lastLayer; }
 Constructor::~Constructor() {}
 
 Constructor::Constructor( Renderer& renderer, PlayerCityPtr city)
@@ -722,7 +711,8 @@ void Constructor::Impl::sortBuildTiles()
 
 bool Constructor::Impl::canBuildOn(OverlayPtr overlay, city::AreaInfo& areaInfo)
 {
-  if( overlay->type() == object::terrain )
+  if( overlay->type() == object::terrain
+      || overlay->type() == object::water )
   {
     return true;
   }

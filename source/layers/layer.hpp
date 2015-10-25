@@ -26,6 +26,7 @@
 #include "objects/constants.hpp"
 #include "game/predefinitions.hpp"
 #include "gfx/render_info.hpp"
+#include "core/font.hpp"
 #include "core/signals.hpp"
 #include "walker/constants.hpp"
 #include "core/flagholder.hpp"
@@ -96,6 +97,8 @@ public:
 protected:
   virtual void _initialize();
 
+  void _addPicture( const Point& pos, const gfx::Picture& pic );
+  void _addText( const Point& pos, const std::string& text, Font font=Font() );
   void _setLastCursorPos( Point pos );
   Point _lastCursorPos() const;
   void _setStartCursorPos( Point pos );

@@ -24,6 +24,7 @@
 #include "gfx/helper.hpp"
 #include "core/foreach.hpp"
 #include "objects_factory.hpp"
+#include "terrain.hpp"
 
 using namespace gfx;
 
@@ -62,69 +63,187 @@ void Coast::initTerrain(Tile& tile)
 
 Picture Coast::computePicture()
 {
-  return calcPicture( _map(), tile() );
+  return calcPicture();
 }
 
 bool Coast::isWalkable() const{ return false;}
 bool Coast::isFlat() const { return true;}
-void Coast::destroy() {}
+
+void Coast::destroy()
+{
+  CoastList coasts = neighbors();
+  for( auto nb : coasts )
+    nb->updatePicture();
+}
+
 bool Coast::isDestructible() const { return false;}
 Renderer::PassQueue Coast::passQueue() const { return riftPassQueue; }
 
-static bool __isWater( Tile& tile )
+static int __isWater( Tile& tile )
 {
   bool isWater = tile.getFlag( Tile::tlWater ) || tile.getFlag( Tile::tlDeepWater );
   bool isCoast = tile.getFlag( Tile::tlCoast );
-  return isWater && !isCoast;
+  return (isWater && !isCoast) ? 1 : 0;
 }
 
-Picture Coast::calcPicture( Tilemap& tmap, Tile& tile)
+Picture Coast::calcPicture()
 {
-  TilePos mpos = tile.epos();
+  Tilemap& tmap = _map();
+  TilePos mpos = tile().epos();
 
-  bool waterN = __isWater( tmap.at( mpos.nb().north() ) );
-  bool waterNE = __isWater( tmap.at( mpos.nb().northeast() ) );
-  bool waterE = __isWater( tmap.at( mpos.nb().east() ) );
-  bool waterSE = __isWater( tmap.at( mpos.nb().southeast() ) );
-  bool waterS = __isWater( tmap.at( mpos.nb().south() ) );
-  bool waterSW = __isWater( tmap.at( mpos.nb().southwest() ) );
-  bool waterW = __isWater( tmap.at( mpos.nb().west() ) );
-  bool waterNW = __isWater( tmap.at( mpos.nb().northwest() ) );
-  bool coastN = tmap.at( mpos.nb().north() ).getFlag( Tile::tlCoast );
-  bool coastNE = tmap.at( mpos.nb().northeast() ).getFlag( Tile::tlCoast );
-  bool coastE = tmap.at( mpos.nb().east() ).getFlag( Tile::tlCoast );
-  bool coastW = tmap.at( mpos.nb().west() ).getFlag( Tile::tlCoast );
-  bool coastSW = tmap.at( mpos.nb().southwest() ).getFlag( Tile::tlCoast );
+  int waterN = __isWater( tmap.at( mpos.nb().north() ) );
+  int waterNE = __isWater( tmap.at( mpos.nb().northeast() ) );
+  int waterE = __isWater( tmap.at( mpos.nb().east() ) );
+  int waterSE = __isWater( tmap.at( mpos.nb().southeast() ) );
+  int waterS = __isWater( tmap.at( mpos.nb().south() ) );
+  int waterSW = __isWater( tmap.at( mpos.nb().southwest() ) );
+  int waterW = __isWater( tmap.at( mpos.nb().west() ) );
+  int waterNW = __isWater( tmap.at( mpos.nb().northwest() ) );
+
+  int coastN = tmap.at( mpos.nb().north() ).getFlag( Tile::tlCoast );
+  int coastNE = tmap.at( mpos.nb().northeast() ).getFlag( Tile::tlCoast );
+  int coastNW = tmap.at( mpos.nb().northwest() ).getFlag( Tile::tlCoast );
+  int coastE = tmap.at( mpos.nb().east() ).getFlag( Tile::tlCoast );
+  int coastS = tmap.at( mpos.nb().south() ).getFlag( Tile::tlCoast );
+  int coastSE = tmap.at( mpos.nb().southeast() ).getFlag( Tile::tlCoast );
+  int coastW = tmap.at( mpos.nb().west() ).getFlag( Tile::tlCoast );
+  int coastSW = tmap.at( mpos.nb().southwest() ).getFlag( Tile::tlCoast );
+
+  _rindex = (waterN) + (waterNE << 1) + (waterE<<2) + (waterSE<<3)
+              + (waterS << 4) + (waterSW<<5) + (waterW<<6) + (waterNW<<7)
+              + (coastN<<8) + (coastNE << 9) + (coastE<<10) + (coastSE<<11)
+              + (coastS << 12) + (coastSW<<13) + (coastW<<14) + (coastNW<<15);
 
   int start = 0;
-  int size = 0;
-  //if( waterN && waterNE && waterNW)  {    start = 128;    size = 4;  }
-  /*else if( waterN && waterNE && waterE ) { start = 144; size = 4; }
-  else if( waterNE && waterE && waterSE) { start = 132; size = 4; }
-  else if( waterE && waterSE && waterS ) { start = 148; size = 4; }
-  else if( waterSE && waterS && waterSW) { start = 136; size = 4; }
-  else if( waterS && waterSW && waterW ) { start = 152; size = 4; }
-  else if( waterSW && waterW && waterNW ) { start = 140; size = 4; }*/
-  //else
+  int size = 1;
 
-  if( waterW && waterNW && waterSW )
+  switch( _rindex )
   {
-    start = 140; size = 4;
-    if( waterN || (coastN && coastNE && coastE) ) { start = 173; size = 1; }
-    else if( waterS ) { start = 172; size = 1; }
-  }
-  else if( waterE && waterNE && waterSE )
+
+  case 0x5020: case 0x1800: case 0x1000:
+    start = 152; size = 4; break;
+
+  case 0xcc03: case 0xce01: case 0xcf00:
+  case 0xc001: case 0xc03: case 0x6681: case 0x4681:
+  case 0x6483: case 0xe403: case 0xc601: case 0x6e81:
+  case 0xc403: case 0x4483: case 0x6780: case 0xd403:
+  case 0x4780: case 0x4f80: case 0x403: case 0x601:
+  case 0xc700: case 0x6c83: case 0x4c83: case 0x7483:
+  case 0xe601: case 0xec03: case 0xe502:
+    start = 128; size = 4; break;
+
+  case 0xcc30: case 0xc10: case 0xec10: case 0xfc00:
+  case 0xf408: case 0x6c10: case 0x4030: case 0x6418:
+  case 0xc438: case 0x4c30: case 0x4438: case 0xe418:
+  case 0x7408: case 0x7c00: case 0x5c20: case 0x4638:
+  case 0x6618: case 0xc638: case 0x418: case 0x4738:
+  case 0x618: case 0xf608: case 0x6e10: case 0x4e30:
+  case 0x5f20:
+    start = 136; size = 4; break;
+
+  case 0x5f8: case 0x7588: case 0xdf0: case 0x8d70:
+  case 0x6d90: case 0x2dd0: case 0xad50: case 0x7d80:
+  case 0xed10: case 0xfd00: case 0x3dc0: case 0xf508:
+  case 0x5e18: case 0xb548: case 0xbd40: case 0x8578:
+  case 0xe518: case 0x518: case 0xd10: case 0xa558:
+  case 0x25d8: case 0x8778: case 0x6598:
+    start = 172; size = 1; break;
+
+  case 0x1508: case 0x1c00: case 0x1408: case 0x3408:
+  case 0x1608: case 0x3c00: case 0x1e00: case 0x3608:
+    start = 148; size = 4; break;
+
+  case 0x1be0: case 0x19e0: case 0x13e0: case 0x11e0:
+  case 0x3c0: case 0x9560: case 0x15e0: case 0xb940:
+  case 0x9960: case 0x9160: case 0x3bc0: case 0x31c0:
+  case 0x7980: case 0xb140: case 0xf900: case 0xf100:
+  case 0x3840: case 0x39c0: case 0x7180: case 0x8140:
+  case 0x1900: case 0x1100: case 0xfb00: case 0x1c0:
+  case 0x33c0: case 0xf300: case 0x7380: case 0x9b60:
+  case 0xb340: case 0x9760:
+    start = 140; size = 4; break;
+
+  case 0xda05: case 0xd00f: case 0xd807: case 0x5a85:
+  case 0x528d: case 0xde01: case 0x5804: case 0xd708:
+  case 0xdf00: case 0xd30c: case 0xdb04: case 0x5788:
+  case 0x5c00: case 0xd204: case 0x5689: case 0x5f80:
+  case 0x508f: case 0x4087: case 0x5887: case 0xd202:
+  case 0xf00f: case 0x100d: case 0xd609: case 0x2d0d:
+  case 0x7a85: case 0x5b84: case 0x538c:
+    start = 170; size = 1; break;
+
+  case 0x730c: case 0x7608: case 0x4936: case 0x6b14:
+  case 0x4b34: case 0x413e: case 0x6916: case 0x433c:
+  case 0x611e: case 0xc13e: case 0x11e: case 0x631c:
+  case 0x4d32: case 0xd432: case 0x5b24: case 0x6d12:
+  case 0xf906:
+    start = 171; size = 1; break;
+
+  case 0x16e1: case 0x17e0: case 0x1403: case 0xf403:
+  case 0x34c3: case 0x14e3: case 0x36c1: case 0xf601:
+  case 0x7681: case 0x37c0: case 0x7780: case 0xb740:
+  case 0xb641: case 0x9661: case 0xb443: case 0x3cc3:
+  case 0x1ce3: case 0xd621: case 0xd423: case 0x9562:
+    start = 173; size = 1; break;
+
+  case 0xcd00: case 0x4d80:
+    start = 184; size = 1; break;
+
+  case 0xdd22:
+    start = 183; size = 1; break;
+
+  case 0xd408: start = 190; size = 1; break;
+
+  case 0x6180: case 0xe100: case 0x4180: case 0x4380:
+  case 0xc300: case 0xc100: case 0x100: case 0x6380:
+    start = 156; size = 4; break;
+
+  case 0x5820: case 0xd820: case 0xd020: case 0xf800:
+  case 0xf000: case 0x7800: case 0x7000:
+    start = 152; size = 4; break;
+
+  case 0x1906: case 0x110e: case 0x910e: case 0x9b04:
+  case 0x9f00: case 0x9906: case 0x1804: case 0x9708:
+  case 0x1b04: case 0x930c: case 0x1f00: case 0x304:
+  case 0x1708: case 0x130c: case 0xda20: case 0x330c:
+  case 0x310e: case 0xb10e: case 0x3b04: case 0x710e:
+  case 0x7b04: case 0xb906: case 0xb30c:
+    start = 132; size = 4; break;
+
+  case 0xd02: case 0x8d02: case 0x8502: case 0x502:
+  case 0x8f00: case 0xc00: case 0xf00: case 0x1502:
+  case 0x700: case 0x8700: case 0x2502: case 0x6502:
+  case 0xf502: case 0xed02: case 0x3d02:
+    start = 144; size = 4; break;
+
+  case 0x5588: case 0xd508: case 0x5d80: case 0xdd00:
+    start = 168; size = 1; break;
+
+  case 0xd522: case 0x5522:
+    start = 169; size = 1; break;
+
+  case 0x600: case 0xe00: case 0xe000: case 0x300:
+  case 0xc000: case 0x1b00: case 0x8100: case 0x8300:
+  case 0x3800:
   {
-    start = 132; size = 4;
-    if( waterN ) { start = 170; size = 1; }
-    else if( waterS ) { start = 171; size = 1; }
+    tile().setOverlay( nullptr );
+    tile().terrain().clear();
+    deleteLater();
+    return Terrain::randomPicture();
   }
-  else if( waterSW && waterS ) { start = 136; size = 4; }
-  else if( waterNW )   {    start = 156; size = 4;  }
-  else if( waterSW )   {    start = 152; size = 4;  }
-  else if( waterNE )   {    start = 144; size = 4;  }
-  else if( waterSE )   {    start = 148; size = 4;  }
-  else if( coastN && coastNE && coastW && coastSW ) { start = 156; size = 4; }
+  break;
+
+  case 0x837c: case 0x7887: case 0x6996: case 0xc34b:
+  case 0x46b9: case 0xea15: case 0xba45:
+  {
+    tile().setOverlay( nullptr );
+    tile().terrain().clear();
+    tile().terrain().water = true;
+    deleteLater();
+    return Picture( ResourceGroup::land1a, 120 );
+  }
+  break;
+  }
 
   return Picture( ResourceGroup::land1a, start + math::random(size-1) );
 }

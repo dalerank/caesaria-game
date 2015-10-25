@@ -39,7 +39,9 @@ public:
   virtual bool isDestructible() const;
   virtual gfx::Renderer::PassQueue passQueue() const;
 
-  static gfx::Picture calcPicture(gfx::Tilemap& tmap, gfx::Tile& tile );
+  int _rindex;
+protected:
+  gfx::Picture calcPicture();
 };
 
 #endif //__CAESARIA_COAST_H_INCLUDE__
