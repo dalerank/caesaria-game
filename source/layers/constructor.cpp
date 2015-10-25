@@ -271,6 +271,11 @@ void Constructor::_updatePreviewTiles( bool force )
 
     for( auto tile : tiles )
     {
+      if( !tile )
+      {
+        Logger::warning( "WARNING !!!: ConstructorArea: tile is null" );
+        continue;
+      }
       Size size;
       Tile* master = tile->master() ? tile->master() : tile;
       if( tile->overlay().isValid() )
@@ -624,6 +629,7 @@ void Constructor::afterRender(Engine& engine)
     _updatePreviewTiles( false );
   }
 
+#ifdef DEBUG
   const TilesArray& visibleTiles = _camera()->tiles();
   for( auto tile : visibleTiles )
   {
@@ -636,6 +642,7 @@ void Constructor::afterRender(Engine& engine)
       }
     }
   }
+#endif
 
   Layer::afterRender( engine );
 }
