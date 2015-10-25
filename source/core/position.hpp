@@ -105,6 +105,7 @@ public:
   TilePos operator-(const TilePos& other) const { return TilePos( _x - other._x, _y - other._y ); }
   TilePos operator*(int v) const { return TilePos( _x * v, _y * v ); }
   TilePos operator-() const { return TilePos( -_x, -_y ); }
+  TilePos operator/(int v) const { return TilePos( _x / v, _y / v); }
   bool operator==(const TilePos& other) const{ return (_x == other._x) && ( _y == other._y ); }
   bool operator!=(const TilePos& other) const{ return (_x != other._x ) || ( _y != other._y ); }
   bool operator<(const TilePos& other) const{ return (_x<other._x) || (_x==other._x && _y<other._y); }

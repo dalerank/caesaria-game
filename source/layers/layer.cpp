@@ -268,7 +268,7 @@ void Layer::drawPass( const RenderInfo& rinfo, Tile& tile, Renderer::Pass pass)
 void Layer::drawWalkers( const RenderInfo& rinfo, const Tile& tile)
 {
   Pictures pics;
-  const WalkerList& walkers = _city()->walkers( tile.pos() );
+  const WalkerList& walkers = _city()->walkers( tile.epos() );
   const Layer::WalkerTypes& vWalkers = visibleTypes();
 
   bool viewAll = vWalkers.count( walker::all );

@@ -72,7 +72,13 @@ bool InGame::update(gfx::Engine* engine)
   _screen->update( *engine );
   Simulation& sim = *d->simulation;
 
-  if( _game->city()->tilemap().direction() == direction::north )
+  bool simulationAvailable = _game->city()->tilemap().direction() == direction::north;
+  if( sim.time.manualTicksCounterX10 > 0 )
+  {
+    simulationAvailable = true;
+  }
+
+  if( simulationAvailable )
   {
     if( !_game->isPaused() )
     {

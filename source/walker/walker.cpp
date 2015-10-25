@@ -63,7 +63,6 @@ public:
     bool deleted;
     int health;
     int wait;
-
   } state;
 
   struct
@@ -225,20 +224,18 @@ void Walker::_walk()
   break;
 
   default:
-     Logger::warning( "Walker: invalid move direction: {0}", _d->action.direction );
+     Logger::warning( "Walker: invalid move direction: {}", _d->action.direction );
      _d->action.action = acNone;
      _d->action.direction = direction::none;
      return;
   break;
   }
 
-  PointF delta = _d->speed.vector;
-  delta.rx() = delta.x() * _d->speed.current() * speedKoeff;
-  delta.ry() = delta.y() * _d->speed.current() * speedKoeff;
+  PointF delta = _d->speed.vector * _d->speed.current() * speedKoeff;
 
   PointF tmp = _d->world.pos;
   const int wcell = tilemap::cellSize().height();
-  TilePos saveMpos( tmp.x() / wcell , tmp.y() / wcell );
+  TilePos saveMpos( tmp.x() / wcell, tmp.y() );
   _d->world.pos += delta;
   _updateMappos();
 
@@ -371,7 +368,7 @@ void Walker::acceptAction(Walker::Action, TilePos){}
 void Walker::setName(const std::string &name) {  _d->name = name; }
 const std::string &Walker::name() const{  return _d->name; }
 void Walker::addAbility(AbilityPtr ability) {  _d->abilities.push_back( ability );}
-TilePos Walker::pos() const{ return _d->map.tile ? _d->map.tile->pos() : gfx::tilemap::invalidLocation() ;}
+TilePos Walker::pos() const{ return _d->map.tile ? _d->map.tile->epos() : gfx::tilemap::invalidLocation() ;}
 void Walker::deleteLater(){ _d->state.deleted = true;}
 void Walker::setUniqueId( const UniqueId uid ) {  _d->uid = uid;}
 Walker::UniqueId Walker::uniqueId() const { return _d->uid; }
@@ -627,6 +624,21 @@ bool Walker::die()
     corpse->attach();
   }
   return corpse.isValid();
+}
+
+void Walker::mapTurned()
+{
+  float prevDistance = _d->world.dst2next();
+
+  setPos( tile().epos() );
+
+  float curDistance = _d->world.dst2next();
+  float move = curDistance - prevDistance;
+
+  PointF delta = _d->speed.vector.normalize() * move;
+  _d->world.pos += delta;
+
+  _updateMappos();
 }
 
 #ifdef DEBUG

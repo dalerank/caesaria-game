@@ -173,9 +173,7 @@ void CityRenderer::Impl::resetWalkersAfterTurn()
   const WalkerList& walkers = city->walkers();
 
   for( auto wlk : walkers )
-  {
-    wlk->setPos( wlk->tile().epos() );
-  }
+    wlk->mapTurned();
 }
 
 void CityRenderer::Impl::saveSettings()

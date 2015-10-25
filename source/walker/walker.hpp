@@ -103,6 +103,7 @@ public:
   virtual void wait( int ticks = 0 );
   virtual int  waitInterval() const;
   virtual bool die();
+  virtual void mapTurned();
 
   virtual void getPictures( gfx::Pictures& oPics);
 

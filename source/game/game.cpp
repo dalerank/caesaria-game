@@ -646,10 +646,10 @@ bool Game::exec()
     {
       Logger::warning( "game: enter setScreenGame" );
       d.simulation.reset();
-      d.currentScreen = new gamestate::InGame(this, d.engine,
-                                                d.simulation,
-                                                d.nextFilename,
-                                                d.restartFile );
+      d.currentScreen = new gamestate::InGame( this, d.engine,
+                                               d.simulation,
+                                               d.nextFilename,
+                                               d.restartFile );
       am.initAddons4level( addon::level );
     }
     break;
