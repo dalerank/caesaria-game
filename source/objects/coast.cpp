@@ -21,7 +21,9 @@
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
+#include "core/saveadapter.hpp"
 #include "gfx/helper.hpp"
+#include "core/variant_map.hpp"
 #include "core/foreach.hpp"
 #include "objects_factory.hpp"
 #include "terrain.hpp"
@@ -71,6 +73,7 @@ bool Coast::isFlat() const { return true;}
 
 void Coast::destroy()
 {
+  tile().terrain().coast = false;
   CoastList coasts = neighbors();
   for( auto nb : coasts )
     nb->updatePicture();
@@ -126,22 +129,22 @@ Picture Coast::calcPicture()
   case 0x4780: case 0x4f80: case 0x403: case 0x601:
   case 0xc700: case 0x6c83: case 0x4c83: case 0x7483:
   case 0xe601: case 0xec03: case 0xe502: case 0xee01:
-  case 0x4e81:
+  case 0x4e81: case 0xdc03:
     start = 128; size = 4; break;
 
   case 0xcc30: case 0xc10: case 0xec10: case 0xfc00:
-  case 0xf408: case 0x6c10: case 0x4030: case 0x6418:
+  case 0x6c10: case 0x4030: case 0x6418:
   case 0xc438: case 0x4c30: case 0x4438: case 0xe418:
   case 0x7c00: case 0x5c20: case 0x4638: case 0x6718:
   case 0x6618: case 0xc638: case 0x418: case 0x4738:
-  case 0x618: case 0xf608: case 0x6e10: case 0x4e30:
-  case 0xde20: case 0xee10:
+  case 0x618:  case 0x6e10: case 0x4e30:
+  case 0xde20: case 0xee10: case 0x7408:
     start = 136; size = 4; break;
 
   case 0x5f8: case 0x7588: case 0xdf0: case 0x8d70:
   case 0x6d90: case 0x2dd0: case 0xad50: case 0x7d80:
   case 0xed10: case 0xfd00: case 0x3dc0: case 0xf508:
-  case 0x5e18: case 0xb548: case 0xbd40: case 0x8578:
+  case 0x5e18: case 0xb548: case 0x8578:
   case 0xe518: case 0x518: case 0xd10: case 0xa558:
   case 0x25d8: case 0x8778: case 0x6598: case 0x7f8:
   case 0x6798: case 0xc538: case 0x35c8: case 0xff0:
@@ -150,18 +153,19 @@ Picture Coast::calcPicture()
 
   case 0x1508: case 0x1c00: case 0x1408: case 0x3408:
   case 0x1608: case 0x3c00: case 0x1e00: case 0x3608:
-  case 0x9408: case 0x7408: case 0x1708: case 0x7708:
+  case 0x9408: case 0x1708: case 0x7708: case 0xb708:
+  case 0x9608:
     start = 148; size = 4; break;
 
   case 0x1be0: case 0x19e0: case 0x13e0: case 0x11e0:
   case 0x3c0: case 0x9560: case 0x15e0: case 0xb940:
   case 0x9960: case 0x9160: case 0x3bc0: case 0x31c0:
   case 0x7980: case 0xb140: case 0xf900: case 0xf100:
-  case 0x3840: case 0x39c0: case 0x7180: case 0x8140:
+  case 0x3840: case 0x39c0: case 0x8140:
   case 0x1900: case 0x1100: case 0xfb00: case 0x1c0:
   case 0x33c0: case 0xf300: case 0x7380: case 0x9b60:
   case 0xb340: case 0x9760: case 0xbf40: case 0xbb40:
-  case 0xdb20: case 0xd120: case 0x9360:
+  case 0xdb20: case 0x9360: case 0x7b80:
     start = 140; size = 4; break;
 
   case 0xda05: case 0xd00f: case 0xd807: case 0x5a85:
@@ -171,16 +175,16 @@ Picture Coast::calcPicture()
   case 0x508f: case 0x4087: case 0x5887: case 0xd202:
   case 0xf00f: case 0x100d: case 0xd609: case 0x2d0d:
   case 0x7a85: case 0x5b84: case 0x538c: case 0x7c83:
-  case 0xf609: case 0xfe01: case 0x738c:
+  case 0xf609: case 0xfe01: case 0x738c: case 0xd906:
     start = 170; size = 1; break;
 
   case 0x7608: case 0x4936: case 0x6b14: case 0x7906:
   case 0x4b34: case 0x413e: case 0x6916: case 0x433c:
   case 0x611e: case 0xc13e: case 0x11e: case 0x631c:
   case 0x4d32: case 0xd432: case 0x5b24: case 0x6d12:
-  case 0xf906: case 0xcf30: case 0xfb04: case 0x6f10:
+  case 0xf906: case 0xcf30: case 0x6f10:
   case 0xcb34: case 0xc738: case 0xe11e: case 0x5f20:
-  case 0xdb24: case 0xef10:
+  case 0xdb24: case 0xef10: case 0xe718:
     start = 171; size = 1; break;
 
   case 0x16e1: case 0x17e0: case 0x1403: case 0xf403:
@@ -206,9 +210,9 @@ Picture Coast::calcPicture()
   case 0xd408:
     start = 190; size = 1; break;
 
-  case 0x6180: case 0xe100: case 0x4180: case 0x4380:
+  case 0x6180: case 0xe100: case 0x4380:
   case 0xc300: case 0xc100: case 0x100: case 0x6380:
-  case 0x4980:
+  case 0x4980: case 0x6b80:
     start = 156; size = 4; break;
 
   case 0x5820: case 0xd820: case 0xd020: case 0xf800:
@@ -221,10 +225,10 @@ Picture Coast::calcPicture()
   case 0x1906: case 0x110e: case 0x910e: case 0x9b04:
   case 0x9f00: case 0x9906: case 0x1804: case 0x9708:
   case 0x1b04: case 0x930c: case 0x1f00: case 0x304:
-  case 0x130c: case 0xda20: case 0x330c: case 0x3906:
-  case 0x310e: case 0xb10e: case 0x3b04: case 0x710e:
+  case 0x130c: case 0x330c: case 0x3906:
+  case 0x310e: case 0xb10e: case 0x3b04:
   case 0x7b04: case 0xb906: case 0xb30c: case 0xf10e:
-  case 0x730c: case 0xbb04: case 0xbd02:
+  case 0x730c: case 0xbb04:
     start = 132; size = 4; break;
 
   case 0xd02: case 0x8d02: case 0x8502: case 0x502:
@@ -245,13 +249,8 @@ Picture Coast::calcPicture()
 
   case 0x600: case 0xe00: case 0xe000: case 0x300:
   case 0xc000: case 0x1b00: case 0x8100: case 0x8300:
-  case 0x3800:
-  {
-    tile().setOverlay( nullptr );
-    tile().terrain().clear();
-    deleteLater();
-    return Terrain::randomPicture();
-  }
+  case 0x3800: case 0xb900:
+    start = -1;
   break;
 
   case 0x837c: case 0x7887: case 0x6996: case 0xc34b:
@@ -260,14 +259,52 @@ Picture Coast::calcPicture()
   case 0xb847: case 0xb748: case 0xeb14: case 0x6c93:
   case 0xe817: case 0x8e71: case 0xb34c: case 0xee11:
   case 0xe01f: case 0x39c6: case 0x3fc:
+    start = -2;
+  break;
+  }
+
+  if( start == 0 )
+  {
+    std::map<int, std::set<int> > maptiles;
+    VariantMap vm = config::load( ":/coast.model" );
+    for( auto& item : vm )
+    {
+      std::set<int> tiles;
+      VariantList tilesVm = item.second.toList();
+      for( auto& t : tilesVm )
+        tiles.insert( utils::toInt( t.toString(), 16 ) );
+
+      maptiles[ utils::toInt( item.first ) ] = tiles;
+    }
+
+    for( auto& item : maptiles )
+    {
+      if( item.second.count( _rindex ) > 0 )
+      {
+        start = item.first;
+        size = 1;
+        break;
+      }
+    }
+  }
+
+  if( start == -1 )
+  {
+    tile().setOverlay( nullptr );
+    tile().terrain().clear();
+    destroy();
+    deleteLater();
+    return Terrain::randomPicture();
+  }
+
+  if( start == -2 )
   {
     tile().setOverlay( nullptr );
     tile().terrain().clear();
     tile().terrain().water = true;
+    destroy();
     deleteLater();
     return Picture( ResourceGroup::land1a, 120 );
-  }
-  break;
   }
 
   return Picture( ResourceGroup::land1a, start + math::random(size-1) );
