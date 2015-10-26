@@ -198,14 +198,6 @@ FishingBoat::FishingBoat( PlayerCityPtr city ) : Ship( city ), _d( new Impl )
   _d->stock.setCapacity( 100 );
 }
 
-FishingBoatPtr FishingBoat::create(PlayerCityPtr city)
-{
-  FishingBoatPtr ret( new FishingBoat( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 void FishingBoat::_reachedPathway()
 {
   Walker::_reachedPathway();

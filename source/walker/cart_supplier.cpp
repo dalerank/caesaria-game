@@ -277,14 +277,6 @@ void CartSupplier::_reserveStorage()
   }
 }
 
-CartSupplierPtr CartSupplier::create(PlayerCityPtr city )
-{
-  CartSupplierPtr ret( new CartSupplier( city ) );
-  ret->drop(); //delete automatically
-
-  return ret;
-}
-
 void CartSupplier::save( VariantMap& stream ) const
 {
   Walker::save( stream );

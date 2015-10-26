@@ -29,11 +29,6 @@ public:
   std::set<ConstructionPtr> _reachedBuildings;
 };
 
-WalkerPtr Engineer::create(PlayerCityPtr city)
-{
-  return ServiceWalker::create( city, Service::engineer ).object();
-}
-
 Engineer::~Engineer() {}
 
 std::string Engineer::thoughts(Thought th) const

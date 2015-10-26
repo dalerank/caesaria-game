@@ -13,7 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 dalerank, dalerankn8@gmail.com
 
 #ifndef __CAESARIA_WALKERMANAGERCREATOR_H_INCLUDED__
 #define __CAESARIA_WALKERMANAGERCREATOR_H_INCLUDED__
@@ -29,13 +29,28 @@ public:
 };
 
 template< class T >
-class WalkerBaseCreator : public WalkerCreator
+class WalkerDefaultCreator : public WalkerCreator
 {
 public:
   virtual WalkerPtr create( PlayerCityPtr city )
   {
-    return T::create( city ).object();
+    return Walker::create<T>( city ).object();
   }
+};
+
+template< class T >
+class WalkerTypedCreator : public WalkerCreator
+{
+public:
+  WalkerTypedCreator(walker::Type wtype) : _wtype( wtype ) {}
+
+  virtual WalkerPtr create( PlayerCityPtr city )
+  {
+    return Walker::create<T>( city, _wtype ).object();
+  }
+
+private:
+  walker::Type _wtype;
 };
 
 #endif //__CAESARIA_WALKERMANAGER_H_INCLUDED__

@@ -94,6 +94,7 @@ using namespace events;
 using namespace config;
 
 static SimpleLogger LOG_CITY( "City" );
+typedef std::map<PlayerCity::TileType, Tile*> TileTypeMap;
 
 namespace config {
 CAESARIA_LITERALCONST(tilemap)
@@ -120,7 +121,7 @@ public:
 
   Picture empMapPicture;
 
-  BorderInfo borderInfo;
+  TileTypeMap border;
   Tilemap tilemap;
   TilePos cameraStart;
 
@@ -253,22 +254,21 @@ void PlayerCity::Impl::calculatePopulation()
 const WalkerList& PlayerCity::walkers(const TilePos& pos) { return _d->walkers.at( pos ); }
 const WalkerList& PlayerCity::walkers() const { return _d->walkers; }
 
-void PlayerCity::setBorderInfo(const BorderInfo& info)
-{
-  int size = tilemap().size();
-  TilePos start( 0, 0 );
-  TilePos stop( size-1, size-1 );
+void PlayerCity::setBorderInfo(TileType type, const TilePos& pos)
+{  
+  _d->border[ type ] = _d->tilemap.at( pos );
+}
 
-  _d->borderInfo.roadEntry = info.roadEntry.fit( start, stop );
-  _d->borderInfo.roadExit = info.roadExit.fit( start, stop );
-  _d->borderInfo.boatEntry = info.boatEntry.fit( start, stop );
-  _d->borderInfo.boatExit = info.boatExit.fit( start, stop );
+const Tile& PlayerCity::getBorderInfo( TileType type ) const
+{
+  auto it = _d->border.find( type );
+  Tile* tile = it != _d->border.end() ? *it->second : nullptr;
+  return tile ? *tile : tile::getInvalid();
 }
 
 const OverlayList& PlayerCity::overlays() const  { return _d->overlays; }
 city::ActivePoints& PlayerCity::activePoints()   { return _d->activePoints; }
-city::Scribes &PlayerCity::scribes()             { return _d->scribes; }
-const BorderInfo& PlayerCity::borderInfo() const { return _d->borderInfo; }
+city::Scribes& PlayerCity::scribes()             { return _d->scribes; }
 Picture PlayerCity::picture() const              { return _d->empMapPicture; }
 bool PlayerCity::isPaysTaxes() const             { return _d->economy.getIssueValue( econ::Issue::empireTax, econ::Treasury::lastYear ) > 0; }
 bool PlayerCity::haveOverduePayment() const      { return _d->economy.getIssueValue( econ::Issue::overduePayment, econ::Treasury::thisYear ) > 0; }

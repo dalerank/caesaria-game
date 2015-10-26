@@ -24,14 +24,10 @@
 class Chastener : public EnemySoldier
 {
 public:
-  static ChastenerPtr create( PlayerCityPtr city,
-                              walker::Type type=walker::romeChastenerSoldier );
-
   virtual int agressive() const;
   virtual bool die();
 
-protected:
-  Chastener( PlayerCityPtr city, walker::Type type );
+  Chastener( PlayerCityPtr city, walker::Type type=walker::romeChastenerSoldier );
 };
 
 #endif //_CAESARIA_CHASTENER_INCLUDE_H_

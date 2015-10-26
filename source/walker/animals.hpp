@@ -68,26 +68,19 @@ private:
 class Sheep : public Herbivorous
 {
 public:
-  static WalkerPtr create( PlayerCityPtr city );
-
-private:
   Sheep( PlayerCityPtr city );
 };
 
 class Zebra : public Herbivorous
 {
 public:
-  static WalkerPtr create( PlayerCityPtr city );
-
-private:
   Zebra( PlayerCityPtr city );
 };
 
 class Wolf : public Animal
 {
 public:
-  static WalkerPtr create( PlayerCityPtr city );
-
+  Wolf( PlayerCityPtr city );
   virtual void send2City(const TilePos& start);
   virtual bool die();
   virtual int agressive() const;
@@ -100,7 +93,6 @@ protected:
   virtual void _findNewWay(const TilePos& start);
 
 private:
-  Wolf( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr<Impl> _d;

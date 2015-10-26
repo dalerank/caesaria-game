@@ -39,14 +39,6 @@ public:
   Pathway findWay2bestField( PlayerCityPtr city, TilePos pos );
 };
 
-IndigenePtr Indigene::create(PlayerCityPtr city)
-{
-  IndigenePtr ret( new Indigene( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 void Indigene::send2city(BuildingPtr base)
 {
   TilesArray tiles = base->enterArea();

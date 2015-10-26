@@ -39,7 +39,7 @@
 #include "game/gamedate.hpp"
 #include "walkers_factory.hpp"
 
-REGISTER_SOLDIER_IN_WALKERFACTORY( walker::etruscanArcher, walker::etruscanArcher, EnemyArcher, etruscanArcher )
+REGISTER_CLASS_IN_WALKERFACTORY( walker::etruscanArcher, EnemyArcher )
 
 EnemyArcher::EnemyArcher(PlayerCityPtr city, walker::Type type )
   : EnemySoldier( city, type )
@@ -115,15 +115,6 @@ void EnemyArcher::timeStep(const unsigned long time)
 
   default: break;
   } // end switch( _d->action )
-}
-
-EnemyArcherPtr EnemyArcher::create(PlayerCityPtr city, walker::Type type )
-{
-  EnemyArcherPtr ret( new EnemyArcher( city, type ) );
-  ret->initialize( WalkerHelper::getOptions( type ) );
-  ret->drop();
-
-  return ret;
 }
 
 void EnemyArcher::load( const VariantMap& stream )

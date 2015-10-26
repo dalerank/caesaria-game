@@ -54,6 +54,12 @@ public:
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
 
+  template<typename T>
+  void addWalker( SmartPtr<T> walker )
+  {
+    addWalker( ptr_cast<Walker>( walker ) );
+  }
+
   virtual void addWalker( WalkerPtr walker );
   virtual const WalkerList& walkers() const;
   bool haveWalkers() const;

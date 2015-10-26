@@ -22,14 +22,6 @@
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::lion, Lion)
 
-LionPtr Lion::create(PlayerCityPtr city)
-{
-  LionPtr ret( new Lion( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 bool Lion::die()
 {
   bool created = Animal::die();
@@ -47,6 +39,5 @@ void Lion::_reachedPathway()
 Lion::Lion(PlayerCityPtr city) : Animal( city )
 {
   _setType( walker::lion );
-
   setName( _("##lion##") );
 }

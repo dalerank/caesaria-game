@@ -40,7 +40,7 @@ public:
            attackDistance( 1u ), morale( 100 ) {}
 };
 
-Soldier::Soldier(PlayerCityPtr city, walker::Type type)
+Soldier::Soldier( PlayerCityPtr city, walker::Type type)
     : Human( city ), __INIT_IMPL(Soldier)
 {
   _setType( type );

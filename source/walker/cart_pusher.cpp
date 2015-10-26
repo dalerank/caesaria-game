@@ -70,7 +70,7 @@ public:
   BuildingPtr getWalkerDestination_granary(Propagator& pathPropagator, Pathway& oPathWay);
 };
 
-CartPusher::CartPusher(PlayerCityPtr city )
+CartPusher::CartPusher(PlayerCityPtr city, CartCapacity cap)
   : Human( city ), _d( new Impl )
 {
   _setType( walker::cartPusher );
@@ -78,6 +78,7 @@ CartPusher::CartPusher(PlayerCityPtr city )
   _d->consumerBuilding = nullptr;
   _d->cantUnloadGoods = false;
   _d->brokePathCounter = 0;
+  _d->stock.setCapacity( cap );
   _d->maxDistance = distance::maxDeliver;
   _d->stock.setCapacity( simpleCart );
 
@@ -410,15 +411,6 @@ void CartPusher::timeStep( const unsigned long time )
   }
 
   Walker::timeStep( time );
-}
-
-CartPusherPtr CartPusher::create(PlayerCityPtr city, CartCapacity cap)
-{
-  CartPusherPtr ret( new CartPusher( city ) );
-  ret->_d->stock.setCapacity( cap );
-  ret->drop(); //delete automatically
-
-  return ret;
 }
 
 CartPusher::~CartPusher(){}

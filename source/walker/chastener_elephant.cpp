@@ -92,14 +92,6 @@ bool ChastenerElephant::_tryAttack()
   return EnemySoldier::_tryAttack();
 }
 
-ChastenerElephantPtr ChastenerElephant::create( PlayerCityPtr city)
-{
-  ChastenerElephantPtr ret( new ChastenerElephant( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 int ChastenerElephant::agressive() const { return 4; }
 
 bool ChastenerElephant::die()

@@ -40,16 +40,6 @@ public:
   bool loop;
 };
 
-WalkerPtr Corpse::create(PlayerCityPtr city)
-{
-  Corpse* corpse = new Corpse( city );
-
-  WalkerPtr ret( corpse );
-  ret->drop();
-
-  return ret;
-}
-
 WalkerPtr Corpse::create( PlayerCityPtr city, WalkerPtr wlk )
 {
   AnimationBank::MovementAnimation ma = AnimationBank::find( wlk->type() );

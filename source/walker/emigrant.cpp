@@ -147,7 +147,7 @@ Pathway Emigrant::_findSomeWay( TilePos startPoint )
   if( !pathway.isValid() || _d->failedWayCount > maxFailedWayCount )
   {    
     pathway = PathwayHelper::create( startPoint,
-                                     _city()->borderInfo().roadExit,
+                                     _city()->getBorderInfo( PlayerCity::roadExit ).pos(),
                                      PathwayHelper::allTerrain );
   }
 
@@ -159,7 +159,7 @@ void Emigrant::_reachedPathway()
   bool gooutCity = true;
   Walker::_reachedPathway();
 
-  if( pos() == _city()->borderInfo().roadExit )
+  if( pos() == _city()->getBorderInfo( PlayerCity::roadExit ).epos() )
   {
     auto migration = _city()->statistic().services.find<city::Migration>();
 
@@ -376,23 +376,16 @@ void Emigrant::_checkHouses(HouseList &hlist)
   }
 }
 
-EmigrantPtr Emigrant::create(PlayerCityPtr city )
-{
-  EmigrantPtr ret( new Emigrant( city ) );
-  ret->drop(); //delete automatically
-  return ret;
-}
-
 EmigrantPtr Emigrant::send2city( PlayerCityPtr city, const CitizenGroup& peoples,
                                  const Tile& startTile, std::string thinks )
 {
   if( peoples.count() > 0 )
   {
-    EmigrantPtr im = Emigrant::create( city );
-    im->setPeoples( peoples );
-    im->send2city( startTile );
-    im->setThinks( thinks );
-    return im;
+    auto emigrant = Walker::create<Emigrant>( city );
+    emigrant->setPeoples( peoples );
+    emigrant->send2city( startTile );
+    emigrant->setThinks( thinks );
+    return emigrant;
   }
 
   return EmigrantPtr();
@@ -420,7 +413,7 @@ void Emigrant::leaveCity( const Tile& tile )
 {
   setPos( tile.pos() );
   Pathway pathway = PathwayHelper::create( tile.pos(),
-                                           _city()->borderInfo().roadExit,
+                                           _city()->getBorderInfo( PlayerCity::roadExit ).epos(),
                                            PathwayHelper::allTerrain );
 
   if( !pathway.isValid() )

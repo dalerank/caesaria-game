@@ -138,12 +138,4 @@ bool Immigrant::die()
   return false;
 }
 
-ImmigrantPtr Immigrant::create(PlayerCityPtr city )
-{
-  ImmigrantPtr newEmigrant( new Immigrant( city ) );
-  newEmigrant->initialize( WalkerHelper::getOptions( walker::immigrant ) );
-  newEmigrant->drop();
-  return newEmigrant;
-}
-
 Immigrant::~Immigrant(){}

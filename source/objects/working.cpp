@@ -27,6 +27,7 @@
 #include "core/format.hpp"
 #include "events/removecitizen.hpp"
 #include "core/common.hpp"
+#include "core/logger.hpp"
 #include "walker/typeset.hpp"
 
 using namespace gfx;
@@ -235,10 +236,19 @@ void WorkingBuilding::_disaster()
 
 void WorkingBuilding::addWalker( WalkerPtr walker )
 {
-  if( walker.isValid() && !walker->isDeleted() )
+  if( walker.isNull() )
   {
-    _d->walkerList.push_back( walker );
+    Logger::warning( "WARNING !!! WorkingBuilding [{},{}] cant add null walker", pos().i(), pos().j() );
+    return;
   }
+
+   if( walker->isDeleted() )
+   {
+      Logger::warning( "WARNING !!! WorkingBuilding [{},{}] cant add walker [{}], because it also deleted", pos().i(), pos().j(), walker->name() );
+     return;
+   }
+
+    _d->walkerList.push_back( walker );
 }
 
 void WorkingBuilding::destroy()
