@@ -52,7 +52,7 @@ public:
   int type;
   unsigned int cost;
   std::vector<TexturedButton*> godBtns;
-  std::map<int, RomeDivinityType > divines;
+  std::map<int, RomeDivinity::Type > divines;
 
   PushButton* btnHelp;
   PushButton* btnExit;
@@ -64,7 +64,7 @@ public:
   TexturedButton* btnNo;
 
   PlayerCityPtr city;
-  RomeDivinityType currentDivinity;
+  RomeDivinity::Type currentDivinity;
 
 public signals:
   Signal2<int, int> onFestivalAssignSignal;
@@ -75,7 +75,7 @@ public:
     emit onFestivalAssignSignal( (int)currentDivinity, type );
   }
 
-  void addImage( Widget* parent, RomeDivinityType type, int column, int startPic )
+  void addImage( Widget* parent, RomeDivinity::Type type, int column, int startPic )
   {
     Size imgSize( 81, 91 );
     godBtns.push_back( new TexturedButton( parent, Point( column * 100 + 60, 48),
@@ -112,14 +112,14 @@ FestivalPlanning::FestivalPlanning( Widget* parent, int id, const Rect& rectangl
   move( Point( 8, 30) );
   _d->city = city;
 
-  _d->addImage( this, romeDivCeres, 0, 17 );
-  _d->addImage( this, romeDivNeptune, 1, 18 );
-  _d->addImage( this, romeDivMercury, 2, 19 );
-  _d->addImage( this, romeDivMars, 3, 20 );
-  _d->addImage( this, romeDivVenus, 4, 21 );
+  _d->addImage( this, RomeDivinity::Ceres, 0, 17 );
+  _d->addImage( this, RomeDivinity::Neptune, 1, 18 );
+  _d->addImage( this, RomeDivinity::Mercury, 2, 19 );
+  _d->addImage( this, RomeDivinity::Mars, 3, 20 );
+  _d->addImage( this, RomeDivinity::Venus, 4, 21 );
 
   _d->godBtns.front()->setPressed( true );
-  _d->currentDivinity = romeDivCeres;
+  _d->currentDivinity = RomeDivinity::Ceres;
 
   GET_DWIDGET_FROM_UI( _d, lbTitle )
   GET_DWIDGET_FROM_UI( _d, lbFestivalName )

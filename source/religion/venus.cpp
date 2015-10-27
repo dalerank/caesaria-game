@@ -37,15 +37,6 @@ namespace religion
 namespace rome
 {
 
-DivinityPtr Venus::create()
-{
-  DivinityPtr ret( new Venus() );
-  ret->setInternalName( baseDivinityNames[ romeDivVenus ] );
-  ret->drop();
-
-  return ret;
-}
-
 void Venus::updateRelation(float income, PlayerCityPtr city)
 {
   RomeDivinity::updateRelation( income, city );
@@ -155,6 +146,7 @@ void Venus::_doSmallCurse(PlayerCityPtr city)
 }
 
 Venus::Venus()
+  : RomeDivinity( RomeDivinity::Venus )
 {
   _wrathCounter = 0;
 }

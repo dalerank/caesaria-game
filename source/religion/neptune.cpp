@@ -34,18 +34,15 @@ namespace religion
 namespace rome
 {
 
-DivinityPtr Neptune::create()
-{
-  DivinityPtr ret( new Neptune() );
-  ret->setInternalName( baseDivinityNames[ romeDivNeptune ] );
-  ret->drop();
-
-  return ret;
-}
-
 void Neptune::updateRelation(float income, PlayerCityPtr city)
 {
   RomeDivinity::updateRelation( income, city );
+}
+
+Neptune::Neptune()
+  : RomeDivinity( RomeDivinity::Neptune )
+{
+
 }
 
 void Neptune::_doWrath(PlayerCityPtr city)

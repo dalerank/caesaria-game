@@ -14,3 +14,8 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "romedivinity.hpp"
+
+namespace religion
+{
+
+}//end namespace religion

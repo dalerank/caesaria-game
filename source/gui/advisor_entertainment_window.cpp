@@ -216,7 +216,7 @@ void Entertainment::_assignFestival( int divinityType, int festSize)
   FestivalPtr fest = _d->city->statistic().services.find<Festival>();
   if( fest.isValid() )
   {
-    fest->assign( (religion::RomeDivinityType)divinityType, festSize );
+    fest->assign( (religion::RomeDivinity::Type)divinityType, festSize );
     _d->updateFestivalInfo();
   }
 }

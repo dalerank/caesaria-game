@@ -32,18 +32,15 @@ namespace religion
 namespace rome
 {
 
-DivinityPtr Ceres::create()
-{
-  DivinityPtr ret( new Ceres() );
-  ret->setInternalName( baseDivinityNames[ romeDivCeres ] );
-  ret->drop();
-
-  return ret;
-}
-
 void Ceres::updateRelation(float income, PlayerCityPtr city)
 {
   RomeDivinity::updateRelation( income, city );
+}
+
+Ceres::Ceres()
+  : RomeDivinity( RomeDivinity::Ceres )
+{
+
 }
 
 void Ceres::_doWrath( PlayerCityPtr city )
