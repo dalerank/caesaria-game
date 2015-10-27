@@ -152,7 +152,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->states.population = 0;
   _d->economy.setTaxRate( econ::Treasury::defaultTaxPrcnt );
   _d->states.age = 0;
-  _d->statistic.reset( new city::Statistic( *this ) );
+  _d->statistic.createInstance( *this );
   _d->walkers.idCount = 1;
   _d->sentiment = city::Sentiment::defaultValue;
   _d->empMapPicture.load( ResourceGroup::empirebits, 1 );
