@@ -53,7 +53,7 @@ public signals:
 };
 
 WorkingBuilding::WorkingBuilding(const object::Type type, const Size& size)
-: Building( type, size ), _d( new Impl )
+  : Building( type, size ), _d( new Impl )
 {
   _d->workers.current = 0;
   _d->workers.maximum = 0;

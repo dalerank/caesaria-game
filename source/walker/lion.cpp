@@ -36,8 +36,8 @@ void Lion::_reachedPathway()
   deleteLater();
 }
 
-Lion::Lion(PlayerCityPtr city) : Animal( city )
+Lion::Lion(PlayerCityPtr city)
+  : Animal( city, walker::lion )
 {
-  _setType( walker::lion );
   setName( _("##lion##") );
 }

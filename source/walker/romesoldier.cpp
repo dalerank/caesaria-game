@@ -57,8 +57,6 @@ public:
 RomeSoldier::RomeSoldier( PlayerCityPtr city, walker::Type type )
     : Soldier( city, type ), _d( new Impl )
 {
-  setName( NameGenerator::rand( NameGenerator::male ) );
-
   _d->patrolPosition = gfx::tilemap::invalidLocation();
 }
 
@@ -139,7 +137,8 @@ void RomeSoldier::save(VariantMap& stream) const
   stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(RomeSoldier) ) );
 }
 
-FortPtr RomeSoldier::base() const { return _map().overlay( _d->basePos ).as<Fort>(); }
+Walker::Gender RomeSoldier::gender() const { return male; }
+FortPtr RomeSoldier::base() const { return _map().overlay<Fort>( _d->basePos ); }
 
 void RomeSoldier::load(const VariantMap& stream)
 {

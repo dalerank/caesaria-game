@@ -138,7 +138,7 @@ public:
 };
 
 Building::Building(const object::Type type, const Size& size )
-: Construction( type, size ), _d( new Impl )
+  : Construction( type, size ), _d( new Impl )
 {
   setState( pr::reserveExpires, 60 );
   _d->stateDecreaseInterval = game::Date::days2ticks( 1 );

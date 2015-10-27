@@ -27,6 +27,7 @@
 #include "core/priorities.hpp"
 #include "core/variant_map.hpp"
 #include "game/resourcegroup.hpp"
+#include "name_generator.hpp"
 #include "core/logger.hpp"
 
 class Patrician::Impl
@@ -36,17 +37,12 @@ public:
 };
 
 Patrician::Patrician(PlayerCityPtr city )
-  : Human( city ), _d( new Impl )
+  : Human( city, walker::patrician ), _d( new Impl )
 {
-  _setType( walker::patrician );
-
-  setName( _("##patrician##") );
+  setName( NameGenerator::rand( NameGenerator::patricianMale ) );
 }
 
-Patrician::~Patrician()
-{
-
-}
+Patrician::~Patrician() {}
 
 void Patrician::save( VariantMap& stream ) const
 {

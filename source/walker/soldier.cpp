@@ -41,9 +41,8 @@ public:
 };
 
 Soldier::Soldier( PlayerCityPtr city, walker::Type type)
-    : Human( city ), __INIT_IMPL(Soldier)
+    : Human( city, type ), __INIT_IMPL(Soldier)
 {
-  _setType( type );
 }
 
 void Soldier::fight()

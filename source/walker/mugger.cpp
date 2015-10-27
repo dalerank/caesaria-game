@@ -47,10 +47,8 @@ public:
 };
 
 Mugger::Mugger(PlayerCityPtr city)
-  : Human( city ), _d( new Impl )
+  : Human( city, walker::mugger ), _d( new Impl )
 {    
-  _setType( walker::mugger );
-
   addAbility( Illness::create( 0.3, 4) );
 }
 

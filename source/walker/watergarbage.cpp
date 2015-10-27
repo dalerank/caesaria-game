@@ -28,9 +28,8 @@ using namespace gfx;
 REGISTER_CLASS_IN_WALKERFACTORY(walker::waterGarbage, WaterGarbage)
 
 WaterGarbage::WaterGarbage(PlayerCityPtr city )
-  : Walker( city )
+  : Walker( city, walker::waterGarbage )
 {
-  _setType( walker::waterGarbage );
   _animation.load( ResourceGroup::sprites, 93, 6 );
   _animation.setDelay( 2 );
   _animation.setOffset( Point( -15, 0 ) );

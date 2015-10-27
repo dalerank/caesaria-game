@@ -27,13 +27,12 @@ public:
   void setPicInfo( const std::string& rc, unsigned int index );
 
 protected:
+  Spear( PlayerCityPtr city );
   virtual void _onTarget();
   virtual const char* rcGroup() const;
   virtual int _rcStartIndex() const;
 
 private:
-  Spear( PlayerCityPtr city );
-
   std::string _picRc;
   unsigned int _picIndex;
 };

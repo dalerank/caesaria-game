@@ -91,10 +91,9 @@ WalkerPtr Corpse::create( PlayerCityPtr city, TilePos pos,
   return ret;
 }
 
-Corpse::Corpse( PlayerCityPtr city ) : Walker( city ), _d( new Impl )
+Corpse::Corpse( PlayerCityPtr city )
+  : Walker( city, walker::corpse ), _d( new Impl )
 {
-  _setType( walker::corpse );
-
   _d->time = 0;
   _d->updateInterval = game::Date::days2ticks( 1 );
   _d->loop = false;

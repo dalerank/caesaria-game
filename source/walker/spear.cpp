@@ -31,10 +31,10 @@ REGISTER_CLASS_IN_WALKERFACTORY(walker::spear, Spear)
 void Spear::_onTarget()
 {
   const WalkerList& walkers = _city()->walkers( dstPos() );
-  foreach( w, walkers )
+  for( auto w : walkers )
   {
-    (*w)->updateHealth( -10 );
-    (*w)->acceptAction( Walker::acFight, startPos() );
+    w->updateHealth( -10 );
+    w->acceptAction( Walker::acFight, startPos() );
   }
 
   ConstructionPtr c = _map().overlay<Construction>( dstPos() );

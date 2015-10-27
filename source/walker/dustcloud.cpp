@@ -96,9 +96,8 @@ void DustCloud::create(PlayerCityPtr city, const TilePos& start, unsigned int ra
 }
 
 DustCloud::DustCloud(PlayerCityPtr city )
-  : Walker( city ), _d( new Impl )
+  : Walker( city, walker::dustCloud ), _d( new Impl )
 {
-  _setType( walker::dustCloud );
   _d->animation.load( ResourceGroup::sprites, 1, 8 );
   _d->animation.setDelay( Animation::hugeSlow );
   //_d->animation.setOffset( Point( 5, 7 ) );

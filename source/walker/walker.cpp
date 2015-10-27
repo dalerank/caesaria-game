@@ -105,7 +105,7 @@ public:
 
 void Walker::_awake()
 {
-  setName( NameGenerator::rand( gender() == male ? NameGenerator::male : NameGenerator::female ) );
+  setName( NameGenerator::rand( gender() == male ? NameGenerator::plebMale : NameGenerator::plebFemale ) );
   initialize( WalkerHelper::getOptions( type() ) );
 }
 

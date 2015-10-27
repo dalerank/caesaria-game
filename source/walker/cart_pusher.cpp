@@ -71,9 +71,8 @@ public:
 };
 
 CartPusher::CartPusher(PlayerCityPtr city, CartCapacity cap)
-  : Human( city ), _d( new Impl )
+  : Human( city, walker::cartPusher  ), _d( new Impl )
 {
-  _setType( walker::cartPusher );
   _d->producerBuilding = nullptr;
   _d->consumerBuilding = nullptr;
   _d->cantUnloadGoods = false;
@@ -82,7 +81,7 @@ CartPusher::CartPusher(PlayerCityPtr city, CartCapacity cap)
   _d->maxDistance = distance::maxDeliver;
   _d->stock.setCapacity( simpleCart );
 
-  setName( NameGenerator::rand( NameGenerator::male ) );
+  setName( NameGenerator::rand( NameGenerator::plebMale ) );
 }
 
 void CartPusher::_reachedPathway()

@@ -54,9 +54,8 @@ public:
 };
 
 MarketBuyer::MarketBuyer(PlayerCityPtr city )
-  : Human( city ), _d( new Impl )
+  : Human( city, walker::marketBuyer ), _d( new Impl )
 {
-   _setType( walker::marketBuyer );
    _d->maxDistance = MarketBuyer::maxBuyDistance();
    _d->basket.setCapacity(maxCapacity);  // this is a big basket!
 
@@ -71,7 +70,7 @@ MarketBuyer::MarketBuyer(PlayerCityPtr city )
    _d->basket.setCapacity(good::oil, goodCapacity);
    _d->basket.setCapacity(good::wine, goodCapacity);
 
-   setName( NameGenerator::rand( NameGenerator::female ) );
+   setName( NameGenerator::rand( NameGenerator::plebFemale ) );
 }
 
 MarketBuyer::~MarketBuyer(){}

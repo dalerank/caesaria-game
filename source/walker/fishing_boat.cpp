@@ -189,7 +189,8 @@ bool FishingBoat::die()
   return created;
 }
 
-FishingBoat::FishingBoat( PlayerCityPtr city ) : Ship( city ), _d( new Impl )
+FishingBoat::FishingBoat( PlayerCityPtr city )
+  : Ship( city ), _d( new Impl )
 {
   _setType( walker::fishingBoat );
   setName( _("##fishing_boat##") );

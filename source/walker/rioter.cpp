@@ -56,10 +56,9 @@ public:
   Pathway findTarget(PlayerCityPtr city, const ConstructionList& items, TilePos pos );
 };
 
-Rioter::Rioter(PlayerCityPtr city) : Human( city ), _d( new Impl )
+Rioter::Rioter(PlayerCityPtr city)
+  : Human( city,  walker::rioter ), _d( new Impl )
 {    
-  _setType( walker::rioter );
-
   addAbility( Illness::create( 0.3, 4) );
   excludeAttack( object::group::disaster );
 }

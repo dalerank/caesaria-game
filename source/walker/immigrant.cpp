@@ -51,7 +51,8 @@ static const std::string ThinksAboutFoodDesc[] = {
   ""
 };
 
-Immigrant::Immigrant( PlayerCityPtr city ) : Emigrant( city )
+Immigrant::Immigrant( PlayerCityPtr city )
+  : Emigrant( city )
 {
   CitizenGroup peoples;
   peoples[ CitizenGroup::matureMin ] = 2;

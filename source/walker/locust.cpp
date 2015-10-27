@@ -37,10 +37,8 @@ public:
 };
 
 Locust::Locust(PlayerCityPtr city, TilePos pos, int time)
-  : Walker( city ), _d( new Impl )
+  : Walker( city, walker::locust  ), _d( new Impl )
 {
-  _setType( walker::locust );
-
   _d->time = time;
   setPos( pos );
 

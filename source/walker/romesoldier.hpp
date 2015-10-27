@@ -34,6 +34,7 @@ public:
   virtual void send2patrol();  
 
   virtual void save(VariantMap &stream) const;
+  virtual Gender gender() const;
   virtual FortPtr base() const;
   virtual void load(const VariantMap &stream);
 

@@ -68,10 +68,8 @@ public:
 };
 
 ServiceWalker::ServiceWalker(PlayerCityPtr city, const Service::Type service)
-  : Human( city ), _d( new Impl )
+  : Human( city, walker::serviceman ), _d( new Impl )
 {
-  _setType( walker::serviceman );
-  _setNation( city->states().nation );
   _d->maxDistance = defaultServiceDistance;
   _d->service = service;
   _d->reachDistance = 2;
@@ -84,7 +82,7 @@ ServiceWalker::ServiceWalker(PlayerCityPtr city, const Service::Type service)
 void ServiceWalker::_init(const Service::Type service)
 {
   _d->service = service;
-  NameGenerator::NameType nameType = NameGenerator::male;
+  NameGenerator::NameType nameType = NameGenerator::plebMale;
 
   switch (_d->service)
   {
@@ -112,7 +110,7 @@ void ServiceWalker::_init(const Service::Type service)
   case Service::amphitheater: _setType( walker::gladiator ); break;
   case Service::colloseum:  _setType( walker::lionTamer );    break;
   case Service::hippodrome: _setType( walker::charioteer ); break;
-  case Service::market:     _setType( walker::marketLady ); nameType = NameGenerator::female; break;
+  case Service::market:     _setType( walker::marketLady ); nameType = NameGenerator::plebFemale; break;
   case Service::missionary: _setType( walker::missioner ); break;
 
   case Service::library:
@@ -573,4 +571,9 @@ void ReachedBuildings::cancelService(Service::Type service)
 {
   for( auto i : *this )
     i->cancelService( service );
+}
+
+WalkerPtr ServicemanCreator::create(PlayerCityPtr city)
+{
+  return Walker::create<ServiceWalker>( city, serviceType ).object();
 }

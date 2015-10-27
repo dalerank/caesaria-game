@@ -53,10 +53,9 @@ public:
   Pathway findHouse(PlayerCityPtr city, HouseList constructions, TilePos pos );
 };
 
-Protestor::Protestor(PlayerCityPtr city) : Human( city ), _d( new Impl )
+Protestor::Protestor(PlayerCityPtr city)
+  : Human( city, walker::protestor ), _d( new Impl )
 {    
-  _setType( walker::protestor );
-
   addAbility( Illness::create( 0.3, 4) );
 }
 

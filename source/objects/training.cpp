@@ -75,7 +75,7 @@ GladiatorSchool::GladiatorSchool() : TrainingBuilding( object::gladiatorSchool, 
 void GladiatorSchool::deliverTrainee()
 {
    // std::cout << "Deliver trainee!" << std::endl;
-  auto trainee = TraineeWalker::create( _city(), walker::gladiator );
+  auto trainee = Walker::create<TraineeWalker>( _city(), walker::gladiator );
   trainee->send2City( this );
 }
 

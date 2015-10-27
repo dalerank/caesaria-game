@@ -182,7 +182,7 @@ LandMerchant::LandMerchant(PlayerCityPtr city, world::MerchantPtr merchant)
     _d->baseCityName = merchant->baseCity();
   }
 
-  setName( NameGenerator::rand( NameGenerator::male ) );
+  setName( NameGenerator::rand( NameGenerator::plebMale ) );
 }
 
 LandMerchant::~LandMerchant(){}

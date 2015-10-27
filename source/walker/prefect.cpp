@@ -64,11 +64,10 @@ Prefect::Prefect(PlayerCityPtr city )
   : ServiceWalker( city, Service::prefect ), _d( new Impl )
 {
   _setType( walker::prefect );
+
   _d->water = 0;
   _d->fumigateHouseNumber = 0;
   _setSubAction( doNothing );  
-
-  setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
 bool Prefect::_looks4Fire( ReachedBuildings& buildings, TilePos& p )
@@ -598,6 +597,8 @@ void Prefect::initialize(const VariantMap& options)
 {
   ServiceWalker::initialize( options );
 }
+
+Walker::Gender Prefect::gender() const { return male; }
 
 std::string Prefect::thoughts(Thought th) const
 {

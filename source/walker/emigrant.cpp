@@ -68,11 +68,10 @@ public:
 };
 
 Emigrant::Emigrant(PlayerCityPtr city )
-  : Human( city ), _d( new Impl )
+  : Human( city, walker::emigrant ), _d( new Impl )
 {
-  _setType( walker::emigrant );
+  setName( NameGenerator::rand( NameGenerator::plebMale ) );
 
-  setName( NameGenerator::rand( NameGenerator::male ) );
   _d->stamina = math::random( 80 ) + 20;
   _d->failedWayCount = 0;
   _d->leaveCity = false;

@@ -41,7 +41,7 @@ public:
   virtual void acceptAction(Action action, TilePos pos);
   virtual bool die();
   virtual void initialize(const VariantMap &options);
-
+  virtual Gender gender() const;
   virtual std::string thoughts(Thought th) const;
   virtual TilePos places(Place type) const;
 
