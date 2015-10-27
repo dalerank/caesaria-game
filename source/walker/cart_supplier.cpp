@@ -63,15 +63,13 @@ public:
 };
 
 CartSupplier::CartSupplier( PlayerCityPtr city )
-  : Human( city ), _d( new Impl )
+  : Human( city, walker::supplier ), _d( new Impl )
 {
-  _setType( walker::supplier );
-
   _d->storageBuildingPos = gfx::tilemap::invalidLocation();
   _d->baseBuildingPos = gfx::tilemap::invalidLocation();
   _d->maxDistance = defaultDeliverDistance;
 
-  setName( NameGenerator::rand( NameGenerator::male ) );
+  setName( NameGenerator::rand( NameGenerator::plebMale ) );
 }
 
 void CartSupplier::_reachedPathway()
@@ -275,14 +273,6 @@ void CartSupplier::_reserveStorage()
   {
     _d->rcvReservationID = building->store().reserveStorage( _d->stock, game::Date::current() );
   }
-}
-
-CartSupplierPtr CartSupplier::create(PlayerCityPtr city )
-{
-  CartSupplierPtr ret( new CartSupplier( city ) );
-  ret->drop(); //delete automatically
-
-  return ret;
 }
 
 void CartSupplier::save( VariantMap& stream ) const

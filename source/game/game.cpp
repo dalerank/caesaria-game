@@ -329,7 +329,7 @@ void Game::Impl::showSplashScreen(bool& isOk, std::string& result)
 {
   if( !splash )
   {
-    splash.reset( new scene::SplashScreen() );
+    splash.createInstance();
     splash->initialize();
     splash->update( *engine );
   }

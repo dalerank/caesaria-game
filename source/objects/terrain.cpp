@@ -57,7 +57,7 @@ bool Terrain::build( const city::AreaInfo& info )
     if( isWater /* && !isCoast */ )
     {
       tile->setPicture( Picture::getInvalid() );
-      OverlayPtr ov = TileOverlayFactory::instance().create( object::coast );
+      OverlayPtr ov = Overlay::create( object::coast );
       city::AreaInfo binfo( info.city, tile->epos() );
       ov->build( binfo );
     }

@@ -235,8 +235,8 @@ bool Hippodrome::build( const city::AreaInfo& info )
   _d->sectionMiddle->setAnimationVisible( false );
   _animation().start();
 
-  auto charioter = CircusCharioter::create( _city(), this );
-  _d->charioters.push_back( charioter );
+  auto charioter = Walker::create<CircusCharioter>( _city(), this );
+  _d->charioters.push_back( charioter.object() );
 
   return true;
 }

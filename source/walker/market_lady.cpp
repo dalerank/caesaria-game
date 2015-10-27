@@ -26,14 +26,6 @@
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::marketLady, MarketLady)
 
-ServiceWalkerPtr MarketLady::create(PlayerCityPtr city)
-{
-  ServiceWalkerPtr ret( new MarketLady( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 MarketPtr MarketLady::market() const
 {
   return _map().overlay<Market>( baseLocation() );

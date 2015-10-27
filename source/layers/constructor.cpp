@@ -143,7 +143,7 @@ void Constructor::_checkPreviewBuild(const TilePos& pos)
           // this is the masterTile
           masterTile = tile;
         }
-        auto clone = TileOverlayFactory::instance().create( overlay->type() );
+        auto clone = Overlay::create( overlay->type() );
         tile->setPicture( tmap.at( pos + TilePos( di, dj ) ).picture() );
         tile->setMaster( masterTile );
         tile->setOverlay( clone );
@@ -638,7 +638,7 @@ void Constructor::afterRender(Engine& engine)
       CoastPtr coast = tile->overlay<Coast>();
       if( coast != nullptr )
       {
-        _addText( tile->mappos() + Point( 20, -15 ), utils::format( 0xff, "0x%x", coast->_rindex ) );
+        _addText( tile->mappos() + Point( 20, -15 ), utils::format( 0xff, "+%x", coast->_rindex ) );
       }
     }
   }

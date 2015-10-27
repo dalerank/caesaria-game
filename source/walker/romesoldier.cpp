@@ -36,7 +36,7 @@
 
 using namespace gfx;
 
-REGISTER_SOLDIER_IN_WALKERFACTORY( walker::legionary, walker::legionary, RomeSoldier, legionary )
+REGISTER_NAMED_CLASS_IN_WALKERFACTORY( walker::legionary, RomeSoldier, legionary )
 
 namespace  {
 static const int maxDistanceFromBase = 32;
@@ -57,17 +57,7 @@ public:
 RomeSoldier::RomeSoldier( PlayerCityPtr city, walker::Type type )
     : Soldier( city, type ), _d( new Impl )
 {
-  setName( NameGenerator::rand( NameGenerator::male ) );
-
   _d->patrolPosition = gfx::tilemap::invalidLocation();
-}
-
-RomeSoldierPtr RomeSoldier::create(PlayerCityPtr city, walker::Type type)
-{
-  RomeSoldierPtr ret( new RomeSoldier( city, type ) );
-  ret->drop();
-
-  return ret;
 }
 
 bool RomeSoldier::die()
@@ -147,7 +137,8 @@ void RomeSoldier::save(VariantMap& stream) const
   stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(RomeSoldier) ) );
 }
 
-FortPtr RomeSoldier::base() const { return _map().overlay( _d->basePos ).as<Fort>(); }
+Walker::Gender RomeSoldier::gender() const { return male; }
+FortPtr RomeSoldier::base() const { return _map().overlay<Fort>( _d->basePos ); }
 
 void RomeSoldier::load(const VariantMap& stream)
 {
@@ -454,7 +445,7 @@ void RomeSoldier::send2city(FortPtr base, TilePos pos )
 void RomeSoldier::send2expedition(const std::string& name)
 {
   _d->expedition = name;
-  TilePos cityEnter = _city()->borderInfo().roadEntry;
+  TilePos cityEnter = _city()->getBorderInfo( PlayerCity::roadEntry ).epos();
 
   Pathway way = PathwayHelper::create( pos(), cityEnter, PathwayHelper::allTerrain );
   if( way.isValid() )

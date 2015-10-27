@@ -51,7 +51,8 @@ static const std::string ThinksAboutFoodDesc[] = {
   ""
 };
 
-Immigrant::Immigrant( PlayerCityPtr city ) : Emigrant( city )
+Immigrant::Immigrant( PlayerCityPtr city )
+  : Emigrant( city )
 {
   CitizenGroup peoples;
   peoples[ CitizenGroup::matureMin ] = 2;
@@ -136,14 +137,6 @@ bool Immigrant::die()
   }
 
   return false;
-}
-
-ImmigrantPtr Immigrant::create(PlayerCityPtr city )
-{
-  ImmigrantPtr newEmigrant( new Immigrant( city ) );
-  newEmigrant->initialize( WalkerHelper::getOptions( walker::immigrant ) );
-  newEmigrant->drop();
-  return newEmigrant;
 }
 
 Immigrant::~Immigrant(){}

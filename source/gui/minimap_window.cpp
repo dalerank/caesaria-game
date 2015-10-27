@@ -96,7 +96,8 @@ Minimap::Minimap(Widget* parent, const Rect& rect, PlayerCityPtr city, const gfx
   _d->lastObjectsCount = 0;
   _d->bg.image = Picture( _d->size, 0, true );
   _d->bg.init = false;
-  _d->colors.reset( new minimap::Colors( city->climate() ) );
+  ClimateType type = city->climate();
+  _d->colors.createInstance( type );
   _d->btnZoomIn =  new TexturedButton( this, righttop() - Point( 28, -2  ), Size( 24 ), -1, 605 );
   _d->btnZoomOut = new TexturedButton( this, righttop() - Point( 28, -26 ), Size( 24 ), -1, 601 );
   setTooltipText( _("##minimap_tooltip##") );

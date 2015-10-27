@@ -53,9 +53,12 @@ public:
     _O(collapseKoeff)
     _O(highlightBuilding)
     _O(destroyEpidemicHouses)
-    _O(warfNeedTimber)
     _O(forestFire)
     _O(forestGrow)
+    _O(warfNeedTimber)
+    _O(showGodsUnhappyWarn)
+    _O(claypitMayCollapse)
+    _O(minesMayCollapse)
 #undef _O
   }
 };

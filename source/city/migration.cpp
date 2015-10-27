@@ -401,9 +401,9 @@ void Migration::Impl::createMigrationToCity( PlayerCityPtr city )
     return;
   }
 
-  Tile& roadTile = city->tilemap().at( city->borderInfo().roadEntry );
+  Tile& roadTile = city->tilemap().at( city->getBorderInfo( PlayerCity::roadEntry ).epos() );
 
-  ImmigrantPtr emigrant = Immigrant::create( city );
+  ImmigrantPtr emigrant = Walker::create<Immigrant>( city );
 
   if( emigrant.isValid() )
   {
@@ -433,7 +433,7 @@ void Migration::Impl::createMigrationFromCity( PlayerCityPtr city )
     HouseList randHouses = houses.random( number );
     for( auto house : randHouses )
     {
-      ImmigrantPtr emigrant = Immigrant::create( city );
+      ImmigrantPtr emigrant = Walker::create<Immigrant>( city );
       if( emigrant.isValid() )
       {
         house->removeHabitants( minWorkersNumber );

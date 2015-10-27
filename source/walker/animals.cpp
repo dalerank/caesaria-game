@@ -49,16 +49,14 @@ public:
   TilePos destination;
 };
 
-Animal::Animal(PlayerCityPtr city )
-  : Walker( city ), _d( new Impl )
+Animal::Animal(PlayerCityPtr city , walker::Type type)
+  : Walker( city, type ), _d( new Impl )
 {
   setFlag( Walker::vividly, true );
-  _setType( walker::unknown );
-
   setName( _("##animal##") );
 }
 
-void Animal::send2City(const TilePos &start )
+void Animal::send2City(const TilePos& start)
 {
   attach();
 }
@@ -103,16 +101,9 @@ void Animal::_findNewWay( const TilePos& start )
   }
 }
 
-Sheep::Sheep( PlayerCityPtr city ) : Herbivorous( walker::sheep, city )
+Sheep::Sheep( PlayerCityPtr city )
+  : Herbivorous( city, walker::sheep )
 {
-}
-
-WalkerPtr Sheep::create(PlayerCityPtr city)
-{
-  WalkerPtr ret( new Sheep( city ) );
-  ret->drop();
-
-  return ret;
 }
 
 void Herbivorous::_reachedPathway()
@@ -141,8 +132,8 @@ void Herbivorous::_noWay()
   _findNewWay( pos() );
 }
 
-Herbivorous::Herbivorous(walker::Type type, PlayerCityPtr city)
- : Animal( city )
+Herbivorous::Herbivorous(PlayerCityPtr city, walker::Type type)
+ : Animal( city, type )
 {
   _setType( type );
   setName( WalkerHelper::getPrettyTypename( type ) );
@@ -168,21 +159,12 @@ public:
 };
 
 Wolf::Wolf( PlayerCityPtr city )
-  : Animal( city ), _d( new Impl )
+  : Animal( city, walker::wolf ), _d( new Impl )
 {
-  _setType( walker::wolf );
   setSpeedMultiplier( 0.8 + math::random( 60 ) / 100.f);
   setName( _("##wolf##") );
 
   addAbility( Illness::create( illnesValue, every4frame ) );
-}
-
-WalkerPtr Wolf::create(PlayerCityPtr city)
-{
-  WalkerPtr ret( new Wolf( city ) );
-  ret->drop();
-
-  return ret;
 }
 
 void Wolf::_reachedPathway()
@@ -296,15 +278,7 @@ Fish::Fish(PlayerCityPtr city)
 
 Fish::~Fish() {}
 
-
-WalkerPtr Zebra::create(PlayerCityPtr city)
-{
-  WalkerPtr ret( new Zebra( city ) );
-  ret->drop();
-
-  return ret;
-}
-
-Zebra::Zebra(PlayerCityPtr city) : Herbivorous( walker::zebra, city )
+Zebra::Zebra(PlayerCityPtr city)
+  : Herbivorous( city, walker::zebra )
 {
 }

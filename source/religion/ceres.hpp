@@ -28,11 +28,12 @@ namespace rome
 
 class Ceres : public RomeDivinity
 {
+  DIVINITY_MUST_INITIALIZE_FROM_PANTHEON
 public:
-  static DivinityPtr create();
   virtual void updateRelation(float income, PlayerCityPtr city);
 
 protected:
+  Ceres();
   void _doWrath( PlayerCityPtr city );
   void _doBlessing( PlayerCityPtr city );
   void _doSmallCurse(PlayerCityPtr city);

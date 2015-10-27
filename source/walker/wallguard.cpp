@@ -48,21 +48,11 @@ public:
 WallGuard::WallGuard( PlayerCityPtr city, walker::Type type )
   : RomeSoldier( city, type ), _d( new Impl )
 {
-  setName( NameGenerator::rand( NameGenerator::male ) );
-
   setAttackDistance( 5 );
   _d->patrolPosition = gfx::tilemap::invalidLocation();
 }
 
 WallGuard::~WallGuard(){}
-
-WallGuardPtr WallGuard::create(PlayerCityPtr city, walker::Type type)
-{
-  WallGuardPtr ret( new WallGuard( city, type ) );
-  ret->drop();
-
-  return ret;
-}
 
 bool WallGuard::die()
 {
@@ -152,6 +142,8 @@ void WallGuard::fight()
   Soldier::fight();
   _setSubAction( Soldier::fightEnemy );
 }
+
+Walker::Gender WallGuard::gender() const { return male; }
 
 void WallGuard::save(VariantMap& stream) const
 {
@@ -387,7 +379,7 @@ void WallGuard::_waitFinished()
 
 void WallGuard::_fire( TilePos target )
 {
-  SpearPtr spear = Spear::create( _city() );
+  SpearPtr spear = Walker::create<Spear>( _city() );
   spear->toThrow( pos(), target );
   wait( game::Date::days2ticks( 1 ) / 2 );
 }

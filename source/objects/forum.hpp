@@ -35,8 +35,7 @@ public:
   virtual void collapse();
 
 private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  __DECLARE_IMPL(Forum)
 };
 
 #endif //__CAESARIA_FORUM_H_INCLUDED__

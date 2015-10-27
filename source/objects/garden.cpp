@@ -86,9 +86,10 @@ void Garden::save(VariantMap& stream) const
   stream[ "picture" ] = Variant( picture().name() );
 }
 
-Desirability Garden::desirability() const
+const Desirability& Garden::desirability() const
 {
-  Desirability ret = Construction::desirability();
+  static Desirability ret;
+  ret = Construction::desirability();
   ret.base *= (size().area() * size().width());
   //ret.range *= size().width();
   ret.step = -ret.base / ret.range;

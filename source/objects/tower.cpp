@@ -177,11 +177,11 @@ void Tower::deliverService()
       && walkers().empty()
       && trValue > 0 )
   {
-    Impl::PatrolWays::iterator it = _d->patrolWays.begin();
-    std::advance( it, rand() % _d->patrolWays.size() );
+    auto patrolWayIt = _d->patrolWays.begin();
+    std::advance( patrolWayIt, rand() % _d->patrolWays.size() );
 
-    auto guard = WallGuard::create( _city(), walker::romeGuard );
-    guard->send2city( this, *it );
+    auto guard = Walker::create<WallGuard>( _city(), walker::romeGuard );
+    guard->send2city( this, *patrolWayIt );
 
     addWalker( guard.object() );
   }
@@ -190,7 +190,8 @@ void Tower::deliverService()
   {
     if( _d->catapult.isNull() )
     {
-      _d->catapult = Balista::create( _city() );
+      _d->catapult = Walker::create<Balista>( _city() );
+      _d->catapult->attach();
       _d->catapult->setPos( pos()+TilePos( 1, 0 ) );
       _d->catapult->setBase( this );
     }

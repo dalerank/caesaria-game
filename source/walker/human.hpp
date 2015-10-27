@@ -27,6 +27,9 @@ public:
 
 protected:
   Human( PlayerCityPtr city );
+  Human( PlayerCityPtr city, walker::Type type );
+
+  void _initHumabOptions();
 };
 
 #endif //_CAESARIA_WALKER_H_INCLUDE_

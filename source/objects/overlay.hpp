@@ -30,9 +30,9 @@
 #include "city/desirability.hpp"
 #include "core/debug_queue.hpp"
 #include "param.hpp"
+#include "metadata.hpp"
 #include "constants.hpp"
 
-namespace object{ class Info; }
 namespace ovconfig
 {
 enum { idxType=0, idxTypename, idxLocation, ixdCount };
@@ -41,6 +41,24 @@ enum { idxType=0, idxTypename, idxLocation, ixdCount };
 class Overlay : public Serializable, public ReferenceCounted
 {
 public:
+  template<typename ObjClass, typename... Args>
+  static SmartPtr<ObjClass> create( const Args & ... args)
+  {
+    SmartPtr<ObjClass> instance( new ObjClass( args... ) );
+    instance->initialize( object::Info::find( instance->type() ) );
+    instance->drop();
+
+    return instance;
+  }
+
+  template<typename ObjClass>
+  static SmartPtr<ObjClass> create( object::Type type )
+  {
+    return ptr_cast<ObjClass>( create( type ));
+  }
+
+  static OverlayPtr create( object::Type type );
+
   Overlay( const object::Type type, const Size& size=Size(1));
   virtual ~Overlay();
 
@@ -82,7 +100,7 @@ public:
   const gfx::Animation& animation() const;
 
   virtual gfx::Renderer::PassQueue passQueue() const;
-  virtual Desirability desirability() const;
+  virtual const Desirability& desirability() const;
 
   virtual void setState( Param name, double value );
 

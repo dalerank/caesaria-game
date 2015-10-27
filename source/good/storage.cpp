@@ -38,6 +38,8 @@ public:
 
     return ret;
   }
+private:
+  SmStock() {}
 };
 
 typedef std::vector<SmStock::Ptr> StockList;

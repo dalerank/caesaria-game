@@ -37,16 +37,36 @@
 class Pathway;
 namespace gfx { class Tile; class Animation; class Tilemap; }
 
+#define WALKER_MUST_INITIALIZE_FROM_FACTORY friend class Walker;
+
 class Walker : public Serializable, public ReferenceCounted
 {
 public:
   typedef unsigned int UniqueId;
+  typedef enum { male, female } Gender;
   typedef enum { acNone=0, acMove, acFight, acDie, acWork, acMax } Action;
   typedef enum { infiniteWait=-1, showDebugInfo=1, vividly, showPath, userFlag=0x80, count=0xff } Flag;
   typedef enum { thCurrent, thAction, thCount } Thought;
   typedef enum { plOrigin, plDestination, pcCount } Place;
 
-  Walker( PlayerCityPtr city );
+  template<typename ObjClass, typename... Args>
+  static SmartPtr<ObjClass> create( const Args & ... args)
+  {
+    SmartPtr<ObjClass> instance( new ObjClass( args... ) );
+    instance->_awake();
+    instance->drop();
+
+    return instance;
+  }
+
+  template<typename ObjClass>
+  static SmartPtr<ObjClass> create( walker::Type type, PlayerCityPtr city )
+  {
+    return ptr_cast<ObjClass>( create( type, city ));
+  }
+
+  static WalkerPtr create( walker::Type type, PlayerCityPtr city );
+
   virtual ~Walker();
 
   virtual void timeStep(const unsigned long time);  // performs one simulation step
@@ -82,6 +102,7 @@ public:
   Direction direction() const;
   Walker::Action action() const;
 
+  virtual Gender gender() const;
   virtual double health() const;
   virtual void updateHealth(double value);
   virtual void acceptAction( Action action, TilePos pos );
@@ -119,6 +140,10 @@ public:
   Point wpos() const;
 
 protected:
+  Walker( PlayerCityPtr city );
+  Walker( PlayerCityPtr city, walker::Type type );
+
+  void _awake();
   void _walk();
   void _updateMappos();
   void _computeDirection();

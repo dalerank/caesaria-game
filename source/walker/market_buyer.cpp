@@ -54,9 +54,8 @@ public:
 };
 
 MarketBuyer::MarketBuyer(PlayerCityPtr city )
-  : Human( city ), _d( new Impl )
+  : Human( city, walker::marketBuyer ), _d( new Impl )
 {
-   _setType( walker::marketBuyer );
    _d->maxDistance = MarketBuyer::maxBuyDistance();
    _d->basket.setCapacity(maxCapacity);  // this is a big basket!
 
@@ -71,7 +70,7 @@ MarketBuyer::MarketBuyer(PlayerCityPtr city )
    _d->basket.setCapacity(good::oil, goodCapacity);
    _d->basket.setCapacity(good::wine, goodCapacity);
 
-   setName( NameGenerator::rand( NameGenerator::female ) );
+   setName( NameGenerator::rand( NameGenerator::plebFemale ) );
 }
 
 MarketBuyer::~MarketBuyer(){}
@@ -118,7 +117,7 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const object::Type ty
   return gfx::tilemap::invalidLocation();
 }
 
-void MarketBuyer::computeWalkerDestination( MarketPtr market )
+void MarketBuyer::_computeWalkerDestination( MarketPtr market )
 {
   _d->market = market;
   good::Products priorityGoods = _d->market->mostNeededGoods();
@@ -298,15 +297,16 @@ void MarketBuyer::_reachedPathway()
           good::Stock& currentStock = _d->basket.getStock( gtype );
           if( currentStock.qty() > 0 )
           {
-            MarketKidPtr boy = MarketKid::create( _city(), this );
-            good::Stock& boyBasket = boy->getBasket();
+            auto marketBoy = Walker::create<MarketKid>( _city(), this );
+
+            good::Stock& boyBasket = marketBoy->getBasket();
             boyBasket.setType( gtype );
             boyBasket.setCapacity( MarketKid::defaultCapacity );
             _d->basket.retrieve( boyBasket, math::clamp<int>( currentStock.qty(), 0, MarketKid::defaultCapacity ) );
-            boy->setDelay( delay );
+            marketBoy->setDelay( delay );
             delay += 20;
-            boy->send2City( _d->market );
-            _d->market->addWalker( boy.as<Walker>() );
+            marketBoy->send2City( _d->market );
+            _d->market->addWalker( marketBoy.as<Walker>() );
           }
         }
       }
@@ -320,7 +320,7 @@ void MarketBuyer::_reachedPathway()
 
 void MarketBuyer::send2City( MarketPtr market )
 {
-  computeWalkerDestination( market );
+  _computeWalkerDestination( market );
   attach();
 }
 
@@ -352,11 +352,3 @@ void MarketBuyer::load( const VariantMap& stream)
 }
 
 unsigned int MarketBuyer::maxBuyDistance() { return 25; }
-
-MarketBuyerPtr MarketBuyer::create( PlayerCityPtr city )
-{
-  MarketBuyerPtr ret( new MarketBuyer( city ) );
-  ret->drop();
-
-  return ret;
-}

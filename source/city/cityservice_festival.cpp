@@ -93,7 +93,7 @@ VariantList FestivalInfo::save() const
 void FestivalInfo::load(const VariantList& stream)
 {
   date = stream.get( 0 ).toDateTime();
-  divinity = stream.get( 1 ).toEnum<religion::RomeDivinityType>();
+  divinity = stream.get( 1 ).toEnum<religion::RomeDivinity::Type>();
   size = stream.get( 2 ).toEnum<FestivalInfo::Type>();
 }
 
@@ -113,7 +113,7 @@ void Festival::now() { _d->nextfest.date = game::Date::current(); }
 DateTime Festival::lastFestival() const { return _d->lastfest.date; }
 DateTime Festival::nextFestival() const { return _d->nextfest.date; }
 
-void Festival::assign( RomeDivinityType name, int size )
+void Festival::assign(RomeDivinity::Type name, int size )
 {
   _d->nextfest.size = (FestivalInfo::Type)size;
   _d->nextfest.date= game::Date::current();

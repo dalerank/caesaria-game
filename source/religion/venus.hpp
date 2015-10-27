@@ -28,8 +28,8 @@ namespace rome
 
 class Venus : public RomeDivinity
 {
+  DIVINITY_MUST_INITIALIZE_FROM_PANTHEON
 public:
-  static DivinityPtr create();
   virtual void updateRelation(float income, PlayerCityPtr city);
 
 protected:

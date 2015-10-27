@@ -186,7 +186,7 @@ void Tree::grow()
     auto tile = tiles.random();
     if( math::probably( 0.1f ) && tile->getFlag( Tile::isConstructible ) )
     {
-      OverlayPtr overlay = TileOverlayFactory::instance().create( type() );
+      OverlayPtr overlay = Overlay::create( type() );
       if( overlay.isValid()  )
       {
         city::AreaInfo areainfo( _city(), tile->pos() );

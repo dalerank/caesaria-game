@@ -34,7 +34,7 @@ namespace events
 
 GameEventPtr BuildAny::create( const TilePos& pos, const object::Type type )
 {
-  return create( pos, TileOverlayFactory::instance().create( type ) );
+  return create( pos, Overlay::create( type ) );
 }
 
 GameEventPtr BuildAny::create(const TilePos& pos, OverlayPtr overlay)

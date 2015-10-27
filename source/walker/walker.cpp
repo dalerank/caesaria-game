@@ -33,8 +33,10 @@
 #include "thinks.hpp"
 #include "gfx/helper.hpp"
 #include "ability.hpp"
+#include "name_generator.hpp"
 #include "helper.hpp"
 #include "core/foreach.hpp"
+#include "walkers_factory.hpp"
 #include "corpse.hpp"
 
 using namespace gfx;
@@ -97,28 +99,39 @@ public:
     inline float dst2next() const { return pos.getDistanceFrom( next ); }
     inline PointF delta() const { return next - pos; }
   } world;
+
+  void reset( PlayerCityPtr pcity );
 };
 
-Walker::Walker(PlayerCityPtr city) : _d( new Impl )
+void Walker::_awake()
 {
-  _d->city = city;
-  _d->nation = world::nation::unknown;
-  _d->action.action = Walker::acMove;
-  _d->action.direction = direction::none;
-  _d->type = walker::unknown;
+  setName( NameGenerator::rand( gender() == male ? NameGenerator::plebMale : NameGenerator::plebFemale ) );
+  initialize( WalkerHelper::getOptions( type() ) );
+}
 
-  _d->world.lastDst = 99.f;
+WalkerPtr Walker::create(walker::Type type, PlayerCityPtr city)
+{
+  auto wlk = WalkerManager::instance().create( type, city );
+  wlk->_awake();
 
-  _d->map.inCenter = false;
-  _d->map.tile = nullptr;
+  return wlk;
+}
 
-  _d->speed.value = 1.f; // default speed
-  _d->speed.multiplier = 1.f;
-  _d->speed.tileKoeff = 1.f;
+Walker::Walker(PlayerCityPtr city)
+  : _d( new Impl )
+{
+  _d->reset( city );
 
-  _d->state.health = 100;
-  _d->state.wait = 0;
-  _d->state.deleted = false;
+#ifdef DEBUG
+  WalkerDebugQueue::instance().add( this );
+#endif
+}
+
+Walker::Walker(PlayerCityPtr city, walker::Type type)
+  : _d( new Impl )
+{
+  _d->reset( city );
+  _d->type = type;
 
 #ifdef DEBUG
   WalkerDebugQueue::instance().add( this );
@@ -357,7 +370,8 @@ void Walker::_waitFinished() { }
 world::Nation Walker::nation() const{ return _d->nation; }
 void Walker::_setNation(world::Nation nation) { _d->nation = nation; }
 void Walker::_setLocation( Tile* location ){ _d->map.tile = location; }
-Walker::Action Walker::action() const {  return (Walker::Action)_d->action.action;}
+Walker::Action Walker::action() const { return (Walker::Action)_d->action.action;}
+Walker::Gender Walker::gender() const { return male; }
 bool Walker::isDeleted() const{   return _d->state.deleted;}
 void Walker::_changeDirection(){  _d->animation = Animation(); } // need to fetch the new animation
 walker::Type Walker::type() const{ return _d->type; }
@@ -658,3 +672,26 @@ void WalkerDebugQueue::print()
   }
 }
 #endif
+
+
+void Walker::Impl::reset(PlayerCityPtr pcity )
+{
+  city = city;
+  nation = world::nation::unknown;
+  action.action = Walker::acMove;
+  action.direction = direction::none;
+  type = walker::unknown;
+
+  world.lastDst = 99.f;
+
+  map.inCenter = false;
+  map.tile = nullptr;
+
+  speed.value = 1.f; // default speed
+  speed.multiplier = 1.f;
+  speed.tileKoeff = 1.f;
+
+  state.health = 100;
+  state.wait = 0;
+  state.deleted = false;
+}

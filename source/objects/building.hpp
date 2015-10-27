@@ -68,7 +68,6 @@ public:
 protected:
   void _updateBalanceKoeffs();
 
-
   class Impl;
   ScopedPtr< Impl > _d;
 };

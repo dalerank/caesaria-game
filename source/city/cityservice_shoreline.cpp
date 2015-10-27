@@ -85,8 +85,8 @@ void Shoreline::timeStep( const unsigned int time )
 
   if( time > _d->nextWaterGarbage )
   {
-    WaterGarbagePtr wg = WaterGarbage::create( _city() );
-    wg->send2City( _city()->borderInfo().boatEntry );
+    WaterGarbagePtr wg = Walker::create<WaterGarbage>( _city() );
+    wg->send2City( _city()->getBorderInfo( PlayerCity::boatEntry ).epos() );
 
     _d->nextWaterGarbage = time + math::random( game::Date::days2ticks( 10 ) );
 
@@ -95,7 +95,7 @@ void Shoreline::timeStep( const unsigned int time )
       Tile* t = _d->dwTiles.random();
       if( t )
       {
-        RiverWavePtr rw = RiverWave::create( _city() );
+        auto rw = Walker::create<RiverWave>( _city() );
         rw->send2City( t->pos() );
       }
     }

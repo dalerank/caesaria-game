@@ -35,18 +35,15 @@ namespace religion
 namespace rome
 {
 
-DivinityPtr Mercury::create()
-{
-  DivinityPtr ret( new Mercury() );
-  ret->setInternalName( baseDivinityNames[ romeDivMercury ] );
-  ret->drop();
-
-  return ret;
-}
-
 void Mercury::updateRelation(float income, PlayerCityPtr city)
 {
   RomeDivinity::updateRelation( income, city );
+}
+
+Mercury::Mercury()
+  : RomeDivinity( RomeDivinity::Mercury )
+{
+
 }
 
 template<class T>

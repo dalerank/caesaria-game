@@ -39,29 +39,6 @@ public:
   TilePos basePos;
 };
 
-PatrolPointPtr PatrolPoint::create( PlayerCityPtr city, FortPtr base,
-                                    std::string prefix, int startPos, int stepNumber, TilePos position)
-{
-  PatrolPoint* pp = new PatrolPoint( city );
-  pp->_d->basePos = base->pos();
-  pp->updateMorale( base->legionMorale() );
-
-  pp->_d->emblem = base->legionEmblem();
-  pp->_d->emblem.setOffset( animOffset + embemOffset + Point( -15, 30 ) );
-
-  Animation anim;
-  anim.load( prefix, startPos, stepNumber );
-  anim.setOffset( anim.offset() + animOffset  + extOffset );
-  pp->_d->animation = anim;
-
-  pp->setPos( position );
-  PatrolPointPtr ptr( pp );
-  ptr->drop();
-
-  pp->attach();
-  return ptr;
-}
-
 void PatrolPoint::getPictures( gfx::Pictures& oPics)
 {
   oPics.push_back( _d->standart );
@@ -69,12 +46,26 @@ void PatrolPoint::getPictures( gfx::Pictures& oPics)
   oPics.push_back( _d->animation.currentFrame() );
 }
 
-PatrolPoint::PatrolPoint( PlayerCityPtr city )
-  : Walker( city ), _d( new Impl )
+PatrolPoint::PatrolPoint(PlayerCityPtr city , FortPtr base, std::string prefix, int startPos, int stepNumber, TilePos position)
+  : Walker( city, walker::patrolPoint ), _d( new Impl )
 {
-  _setType( walker::patrolPoint );
-
   setFlag( vividly, false );
+
+  if( base.isValid() )
+  {
+    _d->basePos = base->pos();
+    updateMorale( base->legionMorale() );
+
+    _d->emblem = base->legionEmblem();
+    _d->emblem.setOffset( animOffset + embemOffset + Point( -15, 30 ) );
+
+    Animation anim;
+    anim.load( prefix, startPos, stepNumber );
+    anim.setOffset( anim.offset() + animOffset  + extOffset );
+    _d->animation = anim;
+
+    setPos( position );
+  }
 }
 
 void PatrolPoint::timeStep(const unsigned long time)

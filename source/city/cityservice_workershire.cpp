@@ -121,7 +121,7 @@ void WorkersHire::Impl::hireWorkers(PlayerCityPtr city, WorkingBuildingPtr bld)
 
   if( bld->roadside().size() > 0 )
   {
-    RecruterPtr hr = Recruter::create( city );
+    RecruterPtr hr = Walker::create<Recruter>( city );
     hr->setPriority( priorities );
     hr->setMaxDistance( distance );
 

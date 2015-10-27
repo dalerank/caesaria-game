@@ -38,16 +38,6 @@ public:
   Animation anim;
 };
 
-WalkerPtr HousePlague::create(PlayerCityPtr city)
-{
-  HousePlague* locust = new HousePlague( city );
-
-  WalkerPtr ret( locust );
-  ret->drop();
-
-  return ret;
-}
-
 void HousePlague::create(PlayerCityPtr city, TilePos pos, int time)
 {
   auto hpllist = city->walkers( pos ).select<HousePlague>();
@@ -67,7 +57,8 @@ void HousePlague::create(PlayerCityPtr city, TilePos pos, int time)
   ret->attach();
 }
 
-HousePlague::HousePlague( PlayerCityPtr city ) : Walker( city ), _d( new Impl )
+HousePlague::HousePlague( PlayerCityPtr city )
+  : Walker( city ), _d( new Impl )
 {
   _setType( walker::house_plague );
 

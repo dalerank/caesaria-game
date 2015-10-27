@@ -189,21 +189,14 @@ bool FishingBoat::die()
   return created;
 }
 
-FishingBoat::FishingBoat( PlayerCityPtr city ) : Ship( city ), _d( new Impl )
+FishingBoat::FishingBoat( PlayerCityPtr city )
+  : Ship( city ), _d( new Impl )
 {
   _setType( walker::fishingBoat );
   setName( _("##fishing_boat##") );
   _d->mode = wait;
   _d->stock.setType( good::fish );
   _d->stock.setCapacity( 100 );
-}
-
-FishingBoatPtr FishingBoat::create(PlayerCityPtr city)
-{
-  FishingBoatPtr ret( new FishingBoat( city ) );
-  ret->drop();
-
-  return ret;
 }
 
 void FishingBoat::_reachedPathway()

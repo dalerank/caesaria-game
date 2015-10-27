@@ -21,10 +21,8 @@
 #include "game/resourcegroup.hpp"
 
 Ship::Ship(PlayerCityPtr city )
-  : Walker( city )
+  : Walker( city, walker::unknown )
 {
-  _setType( walker::unknown );
-
   setName( _("##ship##") );
 }
 

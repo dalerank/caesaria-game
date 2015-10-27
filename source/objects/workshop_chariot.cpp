@@ -30,14 +30,15 @@
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::chariotSchool, WorkshopChariot)
 
-WorkshopChariot::WorkshopChariot() : TrainingBuilding( object::chariotSchool, Size(3) )
+WorkshopChariot::WorkshopChariot()
+  : TrainingBuilding( object::chariotSchool, Size(3) )
 {
   _fgPictures().resize(1);
 }
 
 void WorkshopChariot::deliverTrainee()
 {
-  TraineeWalkerPtr trainee = TraineeWalker::create( _city(), walker::charioteer );
+  auto trainee = Walker::create<TraineeWalker>( _city(), walker::charioteer );
   trainee->send2City( this );
 }
 
