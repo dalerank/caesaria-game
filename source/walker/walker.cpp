@@ -676,7 +676,7 @@ void WalkerDebugQueue::print()
 
 void Walker::Impl::reset(PlayerCityPtr pcity )
 {
-  city = city;
+  city = pcity;
   nation = world::nation::unknown;
   action.action = Walker::acMove;
   action.direction = direction::none;

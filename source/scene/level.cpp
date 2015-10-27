@@ -297,6 +297,7 @@ void Level::Impl::connectTopMenu2scene(Level* scene)
   CONNECT( topMenu, onShowGameSpeedOptions(), this,    Impl::showGameSpeedOptionsDialog )
   CONNECT( topMenu, onShowCityOptions(),      this,    Impl::showCityOptionsDialog )
   CONNECT( topMenu, onShowExtentInfo(),       extMenu, ExtentMenu::showInfo )
+  CONNECT( topMenu, onToggleConstructorMode(), scene,  Level::setConstructorMode )
 }
 
 void Level::initialize()

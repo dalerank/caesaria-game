@@ -730,7 +730,7 @@ void ExtentMenu::setConstructorMode(bool enabled)
     _createLink( _d->model->actions[ Link::editWater ] );
   }
 
-  _d->model->setConstructoMode( true );
+  _d->model->setConstructoMode( enabled );
 }
 
 void ExtentMenu::resolveUndoChange(bool enabled)

@@ -99,6 +99,7 @@ public:
     : Label( parent, rectangle )
   {
     _title = title;
+    _dfont = Font::create( FONT_2_WHITE );
 
     Picture pic;
     pic.load( ResourceGroup::panelBackground, 48 ), Point( 5, 5 );
@@ -112,10 +113,10 @@ public:
   {
     Label::_updateTexture( painter );
 
-    Font font = Font::create( FONT_2_WHITE );
-    font.draw( _textPicture(), _(_title), Point( 20, 0), true );
+    canvasDraw( _(_title), Point( 20, 0), _dfont );
   }
 
+  Font _dfont;
   std::string _title;
 };
 
