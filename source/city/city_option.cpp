@@ -58,6 +58,7 @@ public:
     _O(warfNeedTimber)
     _O(showGodsUnhappyWarn)
     _O(claypitMayCollapse)
+    _O(minesMayCollapse)
 #undef _O
   }
 };
