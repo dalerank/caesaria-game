@@ -175,13 +175,6 @@ void Mugger::timeStep(const unsigned long time)
   }
 }
 
-MuggerPtr Mugger::create(PlayerCityPtr city )
-{
-  MuggerPtr ret( new Mugger( city ) );
-  ret->drop();
-  return ret;
-}
-
 Mugger::~Mugger() {}
 
 void Mugger::send2City( HousePtr house )

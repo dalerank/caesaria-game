@@ -154,7 +154,8 @@ bool Dock::build( const city::AreaInfo& info )
   WorkingBuilding::build( info );
 
   TilePos landingPos = landingTile().pos();
-  Pathway way = PathwayHelper::create( landingPos, info.city->borderInfo().boatEntry, PathwayHelper::deepWater );
+  Pathway way = PathwayHelper::create( landingPos, info.city->getBorderInfo( PlayerCity::boatEntry ).epos(),
+                                       PathwayHelper::deepWater );
   if( !way.isValid() )
   {
     _setError( "##inland_lake_has_no_access_to_sea##" );
@@ -439,7 +440,7 @@ void Dock::_tryDeliverGoods()
 
     if( qty > 0 )
     {
-      auto cartPusher = CartPusher::create( _city() );
+      auto cartPusher = Walker::create<CartPusher>( _city() );
       good::Stock pusherStock( gtype, qty, 0 );
       _d->goods.importing.retrieve( pusherStock, qty );
       cartPusher->send2city( BuildingPtr( this ), pusherStock );
@@ -476,7 +477,7 @@ void Dock::_tryReceiveGoods()
   {
     if( _d->goods.requested.qty( gtype ) > 0 )
     {
-      auto cartSupplier = CartSupplier::create( _city() );
+      auto cartSupplier = Walker::create<CartSupplier>( _city() );
       int qty = std::min( 400, _d->goods.requested.getMaxRetrieve( gtype ) );
       cartSupplier->send2city( this, gtype, qty );
 

@@ -23,13 +23,12 @@
 
 class Prefect : public ServiceWalker
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
   typedef enum { patrol=0,
                  findFire, go2fire, fightFire,
                  go2enemy, fightEnemy,
                  doNothing } SbAction;
-
-  static PrefectPtr create( PlayerCityPtr city );
 
   virtual void timeStep(const unsigned long time);
   virtual float serviceValue() const;

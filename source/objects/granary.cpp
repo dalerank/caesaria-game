@@ -256,12 +256,12 @@ void Granary::_resolveDeliverMode()
 
     if( good::Orders::deliver == order && goodFreeQty > 0 )
     {
-      CartSupplierPtr walker = CartSupplier::create( _city() );
-      walker->send2city( this, gType, goodFreeQty );
+      auto cartSupplier = Walker::create<CartSupplier>( _city() );
+      cartSupplier->send2city( this, gType, goodFreeQty );
 
-      if( !walker->isDeleted() )
+      if( !cartSupplier->isDeleted() )
       {
-        addWalker( walker.object() );
+        addWalker( cartSupplier );
         return;
       }
     }
@@ -286,8 +286,8 @@ void Granary::_weekUpdate()
 bool Granary::_trySendGoods(good::Product gtype, int qty )
 {
   good::Stock stock( gtype, qty, qty);
-  auto cartPusher = CartPusher::create( _city() );
-  cartPusher->send2city( BuildingPtr( this ), stock );
+  auto cartPusher = Walker::create<CartPusher>( _city() );
+  cartPusher->send2city( this, stock );
 
   if( !cartPusher->isDeleted() )
   {

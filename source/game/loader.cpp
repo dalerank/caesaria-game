@@ -145,12 +145,10 @@ void Loader::Impl::finalize( Game& game, bool needInitEnterExit )
   Tilemap& tileMap = game.city()->tilemap();
 
   // exit and entry can't point to one tile or .... can!
-  const BorderInfo& border = game.city()->borderInfo();
-
   if( needInitEnterExit )
   {
-    initEntryExitTile( border.roadEntry, game.city() );
-    initEntryExitTile( border.roadExit,  game.city() );
+    initEntryExitTile( game.city()->getBorderInfo( PlayerCity::roadEntry ).epos(), game.city() );
+    initEntryExitTile( game.city()->getBorderInfo( PlayerCity::roadExit ).epos(),  game.city() );
   }
 
   initTilesAnimation( tileMap );

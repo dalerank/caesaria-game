@@ -25,9 +25,8 @@ typedef SmartPtr< TaxCollector > TaxCollectorPtr;
 
 class TaxCollector : public ServiceWalker
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static TaxCollectorPtr create( PlayerCityPtr city );
-
   float takeMoney() const;
 
   virtual void load(const VariantMap &stream);

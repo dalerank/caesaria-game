@@ -23,10 +23,12 @@
 
 class Chastener : public EnemySoldier
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
   virtual int agressive() const;
   virtual bool die();
 
+protected:
   Chastener( PlayerCityPtr city, walker::Type type=walker::romeChastenerSoldier );
 };
 

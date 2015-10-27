@@ -296,7 +296,7 @@ void Disorder::Impl::generateRioter(PlayerCityPtr city, HousePtr house)
                                  true, "spy_riot" );
   crime.rioters.thisYear++;
 
-  RioterPtr rioter = Rioter::create( city );
+  RioterPtr rioter = Walker::create<Rioter>( city );
   rioter->send2City( house.as<Building>() );
 
   changeCrimeLevel( city, -crime::rioterCost );
@@ -304,7 +304,7 @@ void Disorder::Impl::generateRioter(PlayerCityPtr city, HousePtr house)
 
 void Disorder::Impl::generateProtestor(PlayerCityPtr city, HousePtr house)
 {
-  ProtestorPtr protestor = Protestor::create( city );
+  ProtestorPtr protestor = Walker::create<Protestor>( city );
   protestor->send2City( house.as<Building>() );
 
   crime.protestor.thisYear++;

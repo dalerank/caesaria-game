@@ -536,15 +536,6 @@ Prefect::~Prefect() {}
 
 float Prefect::serviceValue() const {  return 5; }
 
-PrefectPtr Prefect::create(PlayerCityPtr city )
-{
-  PrefectPtr ret( new Prefect( city ) );
-  ret->initialize( WalkerHelper::getOptions( ret->type() ) );
-  ret->drop();
-
-  return ret;
-}
-
 void Prefect::send2City(PrefecturePtr prefecture, Prefect::SbAction action, int water/*=0 */ )
 {
   _setSubAction( water > 0 ? findFire : patrol );

@@ -216,13 +216,6 @@ void Rioter::timeStep(const unsigned long time)
   }
 }
 
-RioterPtr Rioter::create(PlayerCityPtr city )
-{ 
-  RioterPtr ret( new Rioter( city ) );
-  ret->drop();
-  return ret;
-}
-
 Rioter::~Rioter() {}
 
 void Rioter::send2City( BuildingPtr bld )
@@ -291,15 +284,6 @@ Pathway Rioter::Impl::findTarget(PlayerCityPtr city, const ConstructionList& ite
   }
 
   return Pathway();
-}
-
-
-RioterPtr NativeRioter::create(PlayerCityPtr city)
-{
-  RioterPtr ret( new NativeRioter( city ) );
-  ret->drop();
-
-  return ret;
 }
 
 NativeRioter::NativeRioter(PlayerCityPtr city)

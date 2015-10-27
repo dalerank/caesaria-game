@@ -387,7 +387,7 @@ void WallGuard::_waitFinished()
 
 void WallGuard::_fire( TilePos target )
 {
-  SpearPtr spear = Spear::create( _city() );
+  SpearPtr spear = Walker::create<Spear>( _city() );
   spear->toThrow( pos(), target );
   wait( game::Date::days2ticks( 1 ) / 2 );
 }

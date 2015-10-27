@@ -24,9 +24,8 @@
 
 class Recruter : public ServiceWalker
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static RecruterPtr create( PlayerCityPtr city );
-
   int needWorkers() const;
 
   void hireWorkers( const int workers );  

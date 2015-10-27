@@ -190,7 +190,8 @@ void Tower::deliverService()
   {
     if( _d->catapult.isNull() )
     {
-      _d->catapult = Balista::create( _city() );
+      _d->catapult = Walker::create<Balista>( _city() );
+      _d->catapult->attach();
       _d->catapult->setPos( pos()+TilePos( 1, 0 ) );
       _d->catapult->setBase( this );
     }

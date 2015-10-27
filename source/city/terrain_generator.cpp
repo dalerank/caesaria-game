@@ -624,7 +624,6 @@ static void __createRoad(Game& game )
       break;
   }
 
-  BorderInfo borderInfo = oCity->borderInfo();
   TilesArray borderTiles = oTilemap.border();
 
   if( !way.isValid() )
@@ -638,18 +637,20 @@ static void __createRoad(Game& game )
 
     for( int tryCount=0; tryCount < 10; tryCount++ )
     {
-      borderInfo.roadEntry = sterrain.random()->pos();
-      borderInfo.roadExit = eterrain.random()->pos();
+      oCity->setBorderInfo( PlayerCity::roadEntry, sterrain.random()->pos() );
+      oCity->setBorderInfo( PlayerCity::roadExit, eterrain.random()->pos() );
 
-      way = tgHelper.findWay( oTilemap, borderInfo.roadEntry, borderInfo.roadExit );
+      way = tgHelper.findWay( oTilemap,
+                              oCity->getBorderInfo( PlayerCity::roadEntry ).epos(),
+                              oCity->getBorderInfo( PlayerCity::roadExit ).epos() );
       if( way.isValid() )
         break;
 
-      TilesArray around = oTilemap.area( 3, borderInfo.roadEntry );
+      TilesArray around = oTilemap.area( 3, oCity->getBorderInfo( PlayerCity::roadEntry ).epos() );
       for( auto tile : around )
         sterrain.remove( tile->pos() );
 
-      around = oTilemap.area( 3, borderInfo.roadExit );
+      around = oTilemap.area( 3, oCity->getBorderInfo( PlayerCity::roadExit ).epos() );
       for( auto tile : around )
         eterrain.remove( tile->pos() );
     }
@@ -672,22 +673,20 @@ static void __createRoad(Game& game )
       oCity->addOverlay( overlay );
     }
 
-    borderInfo.roadEntry = way.startPos();
-    borderInfo.roadExit = way.stopPos();
+    oCity->setBorderInfo( PlayerCity::roadEntry, way.startPos() );
+    oCity->setBorderInfo( PlayerCity::roadExit, way.stopPos() );
   }  
   else
   {
     TilesArray terrain = borderTiles.terrains();
 
-    borderInfo.roadEntry = terrain.random()->pos();
-    borderInfo.roadExit = terrain.random()->pos();       
+    oCity->setBorderInfo( PlayerCity::roadEntry, terrain.random()->pos() );
+    oCity->setBorderInfo( PlayerCity::roadExit, terrain.random()->pos() );
   }
 
   TilesArray water = borderTiles.waters();
-  borderInfo.boatEntry = water.random()->pos();
-  borderInfo.boatExit = water.random()->pos();
-
-  oCity->setBorderInfo( borderInfo );
+  oCity->setBorderInfo( PlayerCity::boatEntry, water.random()->pos() );
+  oCity->setBorderInfo( PlayerCity::boatExit, water.random()->pos() );
 }
 
 TilesArray& addTileIfValid( TilesArray& tiles, int i, int j, Tilemap& tmap )

@@ -23,10 +23,8 @@
 
 class MerchantCamel : public Human
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static MerchantCamelPtr create( PlayerCityPtr city );
-  static MerchantCamelPtr create( PlayerCityPtr city, MerchantPtr merchant, int delay );
-
   MerchantPtr head();
 
   virtual void timeStep(const unsigned long time);
@@ -35,7 +33,7 @@ public:
 
   void updateHeadLocation( const TilePos& pos );
 private:
-  MerchantCamel(PlayerCityPtr city);
+  MerchantCamel(PlayerCityPtr city,MerchantPtr merchant=nullptr, int delay=0);
 
   class Impl;
   ScopedPtr<Impl> _d;

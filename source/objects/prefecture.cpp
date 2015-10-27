@@ -70,7 +70,7 @@ void Prefecture::deliverService()
   {
     TilePos fireDetectPos = _d->checkFireDetect( _city(), pos() );
     bool fireDetect = fireDetectPos.i() >= 0;
-    PrefectPtr prefect = Prefect::create( _city() );
+    PrefectPtr prefect = Walker::create<Prefect>( _city() );
     prefect->setMaxDistance( walkerDistance() );
 
     if( fireDetect )

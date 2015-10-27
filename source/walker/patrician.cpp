@@ -43,14 +43,6 @@ Patrician::Patrician(PlayerCityPtr city )
   setName( _("##patrician##") );
 }
 
-PatricianPtr Patrician::create(PlayerCityPtr city)
-{
-  PatricianPtr ret( new Patrician( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 Patrician::~Patrician()
 {
 

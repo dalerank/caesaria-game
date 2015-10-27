@@ -100,12 +100,12 @@ public:
     inline PointF delta() const { return next - pos; }
   } world;
 
-  void reset( PlayerCity pcity );
+  void reset( PlayerCityPtr pcity );
 };
 
 void Walker::_awake()
 {
-  setName( NameGenerator::rand( gender() ) );
+  setName( NameGenerator::rand( gender() == male ? NameGenerator::male : NameGenerator::female ) );
   initialize( WalkerHelper::getOptions( type() ) );
 }
 
@@ -674,7 +674,7 @@ void WalkerDebugQueue::print()
 #endif
 
 
-void Walker::Impl::reset( PlayerCity pcity )
+void Walker::Impl::reset(PlayerCityPtr pcity )
 {
   city = city;
   nation = world::nation::unknown;

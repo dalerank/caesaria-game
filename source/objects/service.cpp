@@ -97,7 +97,7 @@ void ServiceBuilding::deliverService()
     return;
 
   // make a service walker and send him to his wandering
-  ServiceWalkerPtr serviceman = ServiceWalker::create( _city(), serviceType() );
+  auto serviceman = Walker::create<ServiceWalker>( _city(), serviceType() );
   serviceman->send2City( this, _getWalkerOrders() );
 
   if( !serviceman->isDeleted() )

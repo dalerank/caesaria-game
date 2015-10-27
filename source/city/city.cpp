@@ -145,10 +145,10 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
 {
   LOG_CITY.warn( "Start initialize" );
 
-  _d->borderInfo.roadEntry = TilePos( 0, 0 );
-  _d->borderInfo.roadExit = TilePos( 0, 0 );
-  _d->borderInfo.boatEntry = TilePos( 0, 0 );
-  _d->borderInfo.boatExit = TilePos( 0, 0 );
+  setBorderInfo( roadEntry, TilePos( 0, 0 ) );
+  setBorderInfo( roadExit, TilePos( 0, 0 ) );
+  setBorderInfo( boatEntry, TilePos( 0, 0 ) );
+  setBorderInfo( boatExit, TilePos( 0, 0 ) );
   _d->economy.resolveIssue( econ::Issue( econ::Issue::donation, 1000 ) );
   _d->states.population = 0;
   _d->economy.setTaxRate( econ::Treasury::defaultTaxPrcnt );
@@ -256,13 +256,13 @@ const WalkerList& PlayerCity::walkers() const { return _d->walkers; }
 
 void PlayerCity::setBorderInfo(TileType type, const TilePos& pos)
 {  
-  _d->border[ type ] = _d->tilemap.at( pos );
+  _d->border[ type ] = &_d->tilemap.at( pos );
 }
 
 const Tile& PlayerCity::getBorderInfo( TileType type ) const
 {
   auto it = _d->border.find( type );
-  Tile* tile = it != _d->border.end() ? *it->second : nullptr;
+  Tile* tile = it != _d->border.end() ? it->second : nullptr;
   return tile ? *tile : tile::getInvalid();
 }
 
@@ -301,10 +301,10 @@ void PlayerCity::save( VariantMap& stream) const
   VARIANT_SAVE_ENUM_D( stream, _d, walkers.idCount )
 
   LOG_CITY.info( "Save main paramters " );
-  stream[ "roadEntry"  ] = _d->borderInfo.roadEntry;
-  stream[ "roadExit"   ] = _d->borderInfo.roadExit;
-  stream[ "boatEntry"  ] = _d->borderInfo.boatEntry;
-  stream[ "boatExit"   ] = _d->borderInfo.boatExit;
+  stream[ "roadEntry"  ] = getBorderInfo( PlayerCity::roadEntry ).epos();
+  stream[ "roadExit"   ] = getBorderInfo( PlayerCity::roadExit ).epos();
+  stream[ "boatEntry"  ] = getBorderInfo( PlayerCity::boatEntry ).epos();
+  stream[ "boatExit"   ] = getBorderInfo( PlayerCity::boatExit ).epos();
   VARIANT_SAVE_CLASS_D( stream, _d, options )
   VARIANT_SAVE_ANY_D( stream, _d, cameraStart )
   VARIANT_SAVE_ANY_D( stream, _d, states.population )
@@ -374,10 +374,10 @@ void PlayerCity::load( const VariantMap& stream )
   VARIANT_LOAD_ENUM_D( _d, walkers.idCount, stream)
 
   LOG_CITY.info( "Parse main params" );
-  _d->borderInfo.roadEntry = TilePos( stream.get( "roadEntry" ).toTilePos() );
-  _d->borderInfo.roadExit = TilePos( stream.get( "roadExit" ).toTilePos() );
-  _d->borderInfo.boatEntry = TilePos( stream.get( "boatEntry" ).toTilePos() );
-  _d->borderInfo.boatExit = TilePos( stream.get( "boatExit" ).toTilePos() );  
+  setBorderInfo( roadEntry, stream.get( "roadEntry" ) );
+  setBorderInfo( roadExit, stream.get( "roadExit" ) );
+  setBorderInfo( boatEntry,stream.get( "boatEntry" ) );
+  setBorderInfo( boatExit, stream.get( "boatExit" ) );
   VARIANT_LOAD_ANY_D( _d, states.population, stream )
   VARIANT_LOAD_ANY_D( _d, cameraStart, stream )
 
@@ -607,12 +607,12 @@ void PlayerCity::addObject( world::ObjectPtr object )
     world::MerchantPtr merchant = ptr_cast<world::Merchant>( object );
     if( merchant->isSeaRoute() )
     {
-      SeaMerchantPtr cityMerchant = SeaMerchant::create( this, merchant );
+      SeaMerchantPtr cityMerchant = Walker::create<SeaMerchant>( this, merchant );
       cityMerchant->send2city();
     }
     else
     {
-      LandMerchantPtr cityMerchant = LandMerchant::create( this, merchant );
+      LandMerchantPtr cityMerchant = Walker::create<LandMerchant>( this, merchant );
       cityMerchant->send2city();
     }
   }
@@ -629,13 +629,13 @@ void PlayerCity::addObject( world::ObjectPtr object )
 
     for( unsigned int k=0; k < army->soldiersNumber(); k++ )
     {
-      ChastenerPtr soldier = Chastener::create( this, walker::romeChastenerSoldier );
-      soldier->send2City( borderInfo().roadEntry );
+      ChastenerPtr soldier = Walker::create<Chastener>( this, walker::romeChastenerSoldier );
+      soldier->send2City( getBorderInfo( roadEntry ).epos() );
       soldier->wait( game::Date::days2ticks( k ) / 2 );
       if( (k % 16) == 15 )
       {
-        ChastenerElephantPtr elephant = ChastenerElephant::create( this );
-        elephant->send2City( borderInfo().roadEntry );
+        ChastenerElephantPtr elephant = Walker::create<ChastenerElephant>( this );
+        elephant->send2City( getBorderInfo( roadEntry ).epos() );
         soldier->wait( game::Date::days2ticks( k ) );
       }
     }
@@ -649,8 +649,8 @@ void PlayerCity::addObject( world::ObjectPtr object )
       world::BarbarianPtr brb = ptr_cast<world::Barbarian>( object );
       for( int k=0; k < brb->strength() / 2; k++ )
       {
-        EnemySoldierPtr soldier = EnemySoldier::create( this, walker::etruscanSoldier );
-        soldier->send2City( borderInfo().roadEntry );
+        EnemySoldierPtr soldier = Walker::create<EnemySoldier>( this, walker::etruscanSoldier );
+        soldier->send2City( getBorderInfo( roadEntry ).epos() );
         soldier->wait( game::Date::days2ticks( k ) / 2 );
       }
 

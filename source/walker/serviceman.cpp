@@ -543,14 +543,6 @@ TilePos ServiceWalker::places(Walker::Place type) const
   return Human::places( type );
 }
 
-ServiceWalkerPtr ServiceWalker::create(PlayerCityPtr city, const Service::Type service )
-{
-  ServiceWalkerPtr ret( new ServiceWalker( city, service ) );
-  ret->initialize( WalkerHelper::getOptions( ret->type() ) );
-  ret->drop();
-  return ret;
-}
-
 BuildingPtr ServiceWalker::base() const
 {
   return _map().overlay( baseLocation() ).as<Building>();
@@ -558,7 +550,6 @@ BuildingPtr ServiceWalker::base() const
 
 ServiceWalker::~ServiceWalker() {}
 void ServiceWalker::setBase( BuildingPtr base ) { _d->basePos = (base.isValid() ? base->pos() : gfx::tilemap::invalidLocation()); }
-WalkerPtr ServicemanCreator::create(PlayerCityPtr city) { return ServiceWalker::create( city, serviceType ).object();  }
 
 bool ReachedBuildings::contain(object::Type type) const
 {

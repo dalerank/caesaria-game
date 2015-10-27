@@ -24,14 +24,6 @@
 
 using namespace gfx;
 
-RiverWavePtr RiverWave::create(PlayerCityPtr city)
-{
-  RiverWavePtr ret( new RiverWave( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 RiverWave::RiverWave(PlayerCityPtr city )
   : Walker( city )
 {

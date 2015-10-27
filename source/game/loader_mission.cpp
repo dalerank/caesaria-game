@@ -101,7 +101,7 @@ bool Mission::load( const std::string& filename, Game& game )
       params.load( vm[ literals::random ].toMap() );
       targar.create( game, params );
 
-      game.city()->setCameraPos( game.city()->borderInfo().roadEntry );
+      game.city()->setCameraPos( game.city()->getBorderInfo( PlayerCity::roadEntry ).epos() );
       _d->needFinalizeMap = true;
     }
     else

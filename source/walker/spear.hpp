@@ -22,8 +22,8 @@
 
 class Spear : public ThrowingWeapon
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static SpearPtr create( PlayerCityPtr city );
   void setPicInfo( const std::string& rc, unsigned int index );
 
 protected:

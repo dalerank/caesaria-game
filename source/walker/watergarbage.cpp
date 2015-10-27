@@ -27,14 +27,6 @@ using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::waterGarbage, WaterGarbage)
 
-WaterGarbagePtr WaterGarbage::create(PlayerCityPtr city)
-{
-  WaterGarbagePtr ret( new WaterGarbage( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 WaterGarbage::WaterGarbage(PlayerCityPtr city )
   : Walker( city )
 {
@@ -51,10 +43,10 @@ WaterGarbage::WaterGarbage(PlayerCityPtr city )
 
 void WaterGarbage::send2City(const TilePos &start )
 {
-  Pathway path = PathwayHelper::create( start, _city()->borderInfo().boatExit, PathwayHelper::deepWater );
+  Pathway path = PathwayHelper::create( start, _city()->getBorderInfo( PlayerCity::boatExit ).epos(), PathwayHelper::deepWater );
   if( !path.isValid() )
   {
-    path = PathwayHelper::create( start, _city()->borderInfo().boatExit, PathwayHelper::water );
+    path = PathwayHelper::create( start, _city()->getBorderInfo( PlayerCity::boatExit ).epos(), PathwayHelper::water );
   }
 
   if( path.isValid() )

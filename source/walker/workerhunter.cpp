@@ -175,15 +175,6 @@ void Recruter::_noWay()
   }
 }
 
-RecruterPtr Recruter::create(PlayerCityPtr city )
-{ 
-  RecruterPtr ret( new Recruter( city ) );
-  ret->initialize( WalkerHelper::getOptions( ret->type() ) );
-
-  ret->drop();
-  return ret;
-}
-
 void Recruter::send2City( WorkingBuildingPtr building, const int workersNeeded )
 {
   _d->needWorkers = workersNeeded;

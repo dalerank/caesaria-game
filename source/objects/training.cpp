@@ -97,7 +97,7 @@ void LionsNursery::timeStep(const unsigned long time)
 void LionsNursery::deliverTrainee()
 {
   // std::cout << "Deliver trainee!" << std::endl;
-  auto tamer = LionTamer::create( _city() );
+  auto tamer = Walker::create<LionTamer>( _city() );
   tamer->send2City( this, true );
 
   addWalker( tamer.object() );

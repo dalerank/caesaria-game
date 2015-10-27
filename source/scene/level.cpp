@@ -753,9 +753,11 @@ bool Level::_tryExecHotkey(NEvent &event)
       {
         TilePos center = _d->renderer.camera()->center();
         TileRect trect( center-tilemap::unitLocation(), center+tilemap::unitLocation());
-        auto& borderInfo = _d->game->city()->borderInfo();
-        center = (trect.contain(borderInfo.roadEntry) ? borderInfo.roadExit : borderInfo.roadEntry);
-        _d->renderer.camera()->setCenter( center, false );
+        TilePos currect = _d->game->city()->getBorderInfo( PlayerCity::roadEntry ).epos();
+        PlayerCity::TileType rcenter = trect.contain( currect )
+                                          ? PlayerCity::roadExit
+                                          : PlayerCity::roadEntry;
+        _d->renderer.camera()->setCenter( _d->game->city()->getBorderInfo( rcenter ).epos(), false );
       }
       break;
 

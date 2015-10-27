@@ -336,10 +336,10 @@ DebugHandler::~DebugHandler() {}
 
 EnemySoldierPtr DebugHandler::Impl::makeEnemy( walker::Type type )
 {
-  EnemySoldierPtr enemy = WalkerManager::instance().create<EnemySoldier>( type, game->city() );
+  EnemySoldierPtr enemy = Walker::create<EnemySoldier>( type, game->city() );
   if( enemy.isValid() )
   {
-    enemy->send2City( game->city()->borderInfo().roadEntry );
+    enemy->send2City( game->city()->getBorderInfo( PlayerCity::roadEntry ).epos() );
   }
 
   return enemy;
@@ -751,7 +751,7 @@ void DebugHandler::Impl::handleEvent(int event)
       TilesArray tiles = fort->enterArea();
       for( int i=0; i < howMuchAdd; i++ )
       {
-        RomeSoldierPtr soldier = RomeSoldier::create( game->city(), walker::legionary );
+        RomeSoldierPtr soldier = Walker::create<RomeSoldier>( game->city(), walker::legionary );
         soldier->send2city( fort, tiles.front()->pos() );
         fort->addWalker( soldier.object() );
       }

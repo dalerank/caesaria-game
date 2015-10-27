@@ -600,9 +600,11 @@ bool Fort::build( const city::AreaInfo& info )
     _setError( "##need_barracks_for_work##" );
   }
 
-  _setPatrolPoint( PatrolPoint::create( info.city, this,
-                                        ResourceGroup::sprites, _d->flagIndex, 8,
-                                        info.pos + TilePos( 3, 3 ) ) );
+  auto pp = Walker::create<PatrolPoint>( info.city, this,
+                                         ResourceGroup::sprites, _d->flagIndex, 8,
+                                         info.pos + TilePos( 3, 3 ) );
+  pp->attach();
+  _setPatrolPoint( pp );
 
   return true;
 }

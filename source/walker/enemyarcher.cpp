@@ -50,7 +50,7 @@ EnemyArcher::EnemyArcher(PlayerCityPtr city, walker::Type type )
 
 void EnemyArcher::_fire( TilePos p )
 {
-  SpearPtr spear = Spear::create( _city() );
+  SpearPtr spear = Walker::create<Spear>( _city() );
   spear->toThrow( pos(), p );
   wait( game::Date::days2ticks( 1 ) / 2 );
 }

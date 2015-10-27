@@ -89,7 +89,7 @@ void NativeHut::timeStep(const unsigned long time)
 
     if( math::random( _discontent ) > rioterGenerateLevel )
     {
-      auto rioter = NativeRioter::create( _city() );
+      auto rioter = Walker::create<NativeRioter>( _city() );
       rioter->send2City( this );
       _discontent = 0;
     }
@@ -97,7 +97,7 @@ void NativeHut::timeStep(const unsigned long time)
     if( _day2look < 0 )
     {
       _day2look = 30 + math::random( 60 );
-      auto indigene = Indigene::create( _city() );
+      auto indigene = Walker::create<Indigene>( _city() );
       indigene->send2city( this );
     }
   }

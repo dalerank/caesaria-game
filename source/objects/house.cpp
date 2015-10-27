@@ -312,7 +312,7 @@ void House::_checkPatricianDeals()
   const TilesArray& roads = roadside();
   if( !roads.empty() )
   {
-    PatricianPtr patric = Patrician::create( _city() );
+    PatricianPtr patric = Walker::create<Patrician>( _city() );
     patric->send2City( roads.front()->pos() );
   }
 }

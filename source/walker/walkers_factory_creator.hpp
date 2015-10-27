@@ -21,6 +21,7 @@
 #include "core/scopedptr.hpp"
 #include "game/predefinitions.hpp"
 #include "walker/constants.hpp"
+#include "walker.hpp"
 
 class WalkerCreator
 {
@@ -46,7 +47,8 @@ public:
 
   virtual WalkerPtr create( PlayerCityPtr city )
   {
-    return Walker::create<T>( city, _wtype ).object();
+    auto w = Walker::create<T>( city, _wtype );
+    return w.object();
   }
 
 private:

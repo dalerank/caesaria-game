@@ -89,14 +89,6 @@ BuildingPtr TaxCollector::base() const
   return _map().overlay( baseLocation() ).as<Building>();
 }
 
-TaxCollectorPtr TaxCollector::create(PlayerCityPtr city )
-{
-  TaxCollectorPtr tc( new TaxCollector( city ) );
-  tc->drop();
-
-  return tc;
-}
-
 TaxCollector::TaxCollector(PlayerCityPtr city ) : ServiceWalker( city, Service::forum ), _d( new Impl )
 {
   _d->money = 0;

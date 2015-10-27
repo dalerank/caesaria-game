@@ -191,13 +191,6 @@ void Protestor::timeStep(const unsigned long time)
   }
 }
 
-ProtestorPtr Protestor::create(PlayerCityPtr city )
-{ 
-  ProtestorPtr ret( new Protestor( city ) );
-  ret->drop();
-  return ret;
-}
-
 Protestor::~Protestor() {}
 
 void Protestor::send2City( BuildingPtr bld )

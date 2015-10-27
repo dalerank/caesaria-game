@@ -36,7 +36,7 @@
 
 using namespace gfx;
 
-REGISTER_SOLDIER_IN_WALKERFACTORY( walker::legionary, walker::legionary, RomeSoldier, legionary )
+REGISTER_NAMED_CLASS_IN_WALKERFACTORY( walker::legionary, RomeSoldier, legionary )
 
 namespace  {
 static const int maxDistanceFromBase = 32;
@@ -60,14 +60,6 @@ RomeSoldier::RomeSoldier( PlayerCityPtr city, walker::Type type )
   setName( NameGenerator::rand( NameGenerator::male ) );
 
   _d->patrolPosition = gfx::tilemap::invalidLocation();
-}
-
-RomeSoldierPtr RomeSoldier::create(PlayerCityPtr city, walker::Type type)
-{
-  RomeSoldierPtr ret( new RomeSoldier( city, type ) );
-  ret->drop();
-
-  return ret;
 }
 
 bool RomeSoldier::die()
@@ -454,7 +446,7 @@ void RomeSoldier::send2city(FortPtr base, TilePos pos )
 void RomeSoldier::send2expedition(const std::string& name)
 {
   _d->expedition = name;
-  TilePos cityEnter = _city()->borderInfo().roadEntry;
+  TilePos cityEnter = _city()->getBorderInfo( PlayerCity::roadEntry ).epos();
 
   Pathway way = PathwayHelper::create( pos(), cityEnter, PathwayHelper::allTerrain );
   if( way.isValid() )
