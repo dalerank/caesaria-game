@@ -38,6 +38,15 @@ ClayPit::ClayPit()
   _setUnworkingInterval( 12 );
 }
 
+bool ClayPit::build(const city::AreaInfo& info)
+{
+  Factory::build( info );
+
+  bool mayCollapse = info.city->getOption( PlayerCity::claypitMayCollapse ) != 0;
+  if( !mayCollapse )
+    _setUnworkingInterval( 0 );
+}
+
 void ClayPit::timeStep( const unsigned long time )
 {
   Factory::timeStep( time );

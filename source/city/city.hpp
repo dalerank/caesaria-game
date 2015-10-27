@@ -44,7 +44,8 @@ public:
                  forceBuild, warningsEnabled, updateTiles, zoomEnabled, zoomInvert,
                  fireKoeff, barbarianAttack, c3gameplay, difficulty, legionAttack, climateType,
                  collapseKoeff, highlightBuilding, destroyEpidemicHouses, forestFire,
-                 forestGrow, warfNeedTimber, showGodsUnhappyWarn, constructorMode } OptionType;
+                 forestGrow, warfNeedTimber, showGodsUnhappyWarn, claypitMayCollapse,
+                 constructorMode } OptionType;
 
   static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr mayor );
   virtual ~PlayerCity();
