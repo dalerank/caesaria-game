@@ -143,7 +143,7 @@ void Constructor::_checkPreviewBuild(const TilePos& pos)
           // this is the masterTile
           masterTile = tile;
         }
-        auto clone = TileOverlayFactory::instance().create( overlay->type() );
+        auto clone = Overlay::create( overlay->type() );
         tile->setPicture( tmap.at( pos + TilePos( di, dj ) ).picture() );
         tile->setMaster( masterTile );
         tile->setOverlay( clone );

@@ -578,7 +578,7 @@ static void __createRivers(Game& game )
       TilesArray wayTiles = way.allTiles();
       for( auto tile : wayTiles )
       {
-        OverlayPtr overlay = TileOverlayFactory::instance().create( object::river );
+        OverlayPtr overlay = Overlay::create( object::river );
 
         tile->setPicture( Picture::getInvalid() );
         tile->setImgId( 0 );
@@ -662,7 +662,7 @@ static void __createRoad(Game& game )
 
     for( auto tile : wayTiles )
     {
-      OverlayPtr overlay = TileOverlayFactory::instance().create( object::road );
+      OverlayPtr overlay = Overlay::create( object::road );
 
       Picture pic( ResourceGroup::land1a, config::id.empire.grassPic + math::random( config::id.empire.grassPicsNumber-1 ) );
       tile->setPicture( pic );
@@ -871,7 +871,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
         Picture tree( ResourceGroup::land1a, start + math::random( rnd ) );
         tile.setImgId( imgid::fromResource( tree.name() ) );
 
-        OverlayPtr overlay = TileOverlayFactory::instance().create( object::tree );
+        OverlayPtr overlay = Overlay::create( object::tree );
         if( overlay != NULL )
         {
           city::AreaInfo info( oCity, tile.pos() );

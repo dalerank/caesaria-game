@@ -21,7 +21,6 @@
 #include "gfx/tile.hpp"
 #include "pathway/path_finding.hpp"
 #include "core/position.hpp"
-#include "objects/objects_factory.hpp"
 #include "pathway/astarpathfinding.hpp"
 #include "core/safetycast.hpp"
 #include "core/variant_map.hpp"
@@ -405,7 +404,7 @@ void PlayerCity::load( const VariantMap& stream )
     object::Type overlayType = (object::Type)config.get( ovconfig::idxType ).toInt();
     TilePos pos = config.get( ovconfig::idxLocation, gfx::tilemap::invalidLocation() );
 
-    OverlayPtr overlay = TileOverlayFactory::instance().create( overlayType );
+    auto overlay = Overlay::create( overlayType );
     if( overlay.isValid() && gfx::tilemap::isValidLocation( pos ) )
     {
       city::AreaInfo info( this, pos );
