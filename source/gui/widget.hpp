@@ -62,6 +62,13 @@ public:
     }
   };
 
+  template<typename WidgetClass, typename... Args>
+  WidgetClass& add( const Args& ... args)
+  {
+    WidgetClass* widget = new WidgetClass( this, args... );
+    return *widget;
+  }
+
   typedef enum { RelativeGeometry=0, AbsoluteGeometry, ProportionalGeometry } GeometryType;
   enum { noId=-1 };
 
@@ -100,7 +107,9 @@ public:
 	//! Sets another skin independent font.
 	/** If this is set to zero, the button uses the font of the skin.
 	\param font: New font to set. */
-  //virtual void setFont( Font font, u32 nA=0 );
+  virtual void setFont( const Font& font );
+
+  virtual void setFont( FontType type, NColor color=0 );
 
   //! Gets the override font (if any)
   /** \return The override font (may be 0) */
@@ -139,6 +148,9 @@ public:
   virtual int screenLeft() const;
 
   virtual int bottom() const;
+
+  typedef enum { parentCenter } DefinedPosition;
+  virtual void moveTo( DefinedPosition pos );
 
   virtual Point center() const;
 
@@ -190,6 +202,7 @@ public:
 
   //! Moves this element in absolute point.
   virtual void setPosition(const Point& relativePosition);
+  virtual void setPosition(int x, int y);
 
   //! Moves this element on relative distance.
   virtual void move( const Point& offset );
@@ -323,8 +336,8 @@ public:
   //! Sets the relative/absolute rectangle of this element.
   /** \param r The absolute position to set */
   void setGeometry(const Rect& r, GeometryType mode=RelativeGeometry );
-
   void setGeometry(const RectF& r, GeometryType mode=ProportionalGeometry);
+  void setGeometry(float left, float top, float rigth, float bottom );
 
   //! 
   void setLeft( int newLeft );

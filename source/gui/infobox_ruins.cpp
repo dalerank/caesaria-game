@@ -59,9 +59,9 @@ AboutRuins::AboutRuins( Widget* parent, PlayerCityPtr city, const Tile& tile )
     text = _( ruin->pinfo() );
   }
 
-  Label* lb = new Label( this, Rect( 20, 20, width() - 20, height() - 50), text );
-  lb->setTextAlignment( align::center, align::center );
-  lb->setWordwrap( true );
+  Label& lb = add<Label>( Rect( 20, 20, width() - 20, height() - 50), text );
+  lb.setTextAlignment( align::center, align::center );
+  lb.setWordwrap( true );
 }
 
 AboutRuins::~AboutRuins() {}

@@ -38,7 +38,6 @@ namespace dialog
 class VideoOptions::Impl
 {
 public:
-  GameAutoPause locker;
   PushButton* btnSwitchMode;
   bool fullScreen;
   bool haveChanges;
@@ -53,7 +52,7 @@ public:
 VideoOptions::VideoOptions(Widget* parent, gfx::Engine::Modes modes, bool fullscreen )
   : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
-  _d->locker.activate();
+  GameAutoPause::insertTo( this, true );
   setupUI( ":/gui/videooptions.gui" );
 
   setPosition( Point( parent->width() - width(), parent->height() - height() ) / 2 );

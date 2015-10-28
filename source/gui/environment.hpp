@@ -28,6 +28,13 @@ namespace gui
 class Ui : Widget
 {
 public:
+  template<typename WidgetClass, typename... Args>
+  WidgetClass& add( const Args& ... args)
+  {
+    WidgetClass* widget = new WidgetClass( this, args... );
+    return *widget;
+  }
+
   typedef enum { showTooltips=0, buttonShowDebugArea } Flag;
   Ui( gfx::Engine& painter );
 

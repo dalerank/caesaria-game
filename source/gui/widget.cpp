@@ -48,7 +48,7 @@ void Widget::beforeDraw(gfx::Engine& painter )
   for( auto child : d->children ) { child->beforeDraw( painter ); }
 }
 
-Ui* Widget::ui() const {  return _dfunc()->environment; }
+Ui* Widget::ui() const { return _dfunc()->environment; }
 
 void Widget::setTextAlignment(align::Type horizontal, align::Type vertical )
 {
@@ -151,7 +151,12 @@ Widget::Widgets& Widget::_getChildren() { return _dfunc()->children;}
 void Widget::setPosition( const Point& position )
 {
 	const Rect rectangle( position, size() );
-	setGeometry( rectangle );
+  setGeometry( rectangle );
+}
+
+void Widget::setPosition(int x, int y)
+{
+  setPosition( Point( x, y) );
 }
 
 void Widget::setGeometry( const RectF& r, GeometryType mode )
@@ -179,6 +184,11 @@ void Widget::setGeometry( const RectF& r, GeometryType mode )
   }
 
   updateAbsolutePosition();
+}
+
+void Widget::setGeometry(float left, float top, float rigth, float bottom)
+{
+  setGeometry( RectF( left, top, rigth, bottom ) );
 }
 
 Rect Widget::absoluteRect() const { return _dfunc()->rect.absolute;}
@@ -843,6 +853,7 @@ Size Widget::minSize() const{    return _dfunc()->size.mininimum;}
 bool Widget::isHovered() const{  return ui()->isHovered( this );}
 bool Widget::isFocused() const{  return ui()->hasFocus( this );}
 Rect Widget::clientRect() const{  return Rect( 0, 0, width(), height() );}
+void Widget::setFont(const Font& font) {}
 void Widget::setFocus(){  ui()->setFocus( this );}
 void Widget::removeFocus(){  ui()->removeFocus( this );}
 Rect& Widget::absoluteClippingRectRef() const { return _dfunc()->rect.clipping; }
@@ -877,12 +888,27 @@ void Widget::show() {  setVisible( true ); }
 Alignment Widget::horizontalTextAlign() const{  return _dfunc()->textHorzAlign; }
 Alignment Widget::verticalTextAlign() const{  return _dfunc()->textVertAlign;}
 void Widget::deleteLater(){ ui()->deleteLater( this ); }
+void Widget::setFont(FontType type, NColor color)
+{
+  Font font = Font::create( type );
+  if( color.color != 0 )
+    font.setColor( color );
+  setFont( font );
+}
 
 void Widget::setRight( int newRight )
 {
   Rect r = relativeRect();
   r.rright() = newRight;
   setGeometry( r );
+}
+
+void Widget::moveTo(Widget::DefinedPosition pos)
+{
+  switch( pos )
+  {
+  case parentCenter: setCenter( parent()->center() );
+  }
 }
 
 void Widget::addProperty(const std::string& name, const Variant& value)

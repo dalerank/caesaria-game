@@ -43,13 +43,9 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
   Size pSize = parent()->size() - size();
   setPosition( Point( pSize.width() / 2, pSize.height() / 2 ) );
 
-  Label* lbTitle;
-  TexturedButton* btnExit;
-  ListBox* lbxHelp;
-
-  GET_WIDGET_FROM_UI( lbTitle )
-  GET_WIDGET_FROM_UI( btnExit )
-  GET_WIDGET_FROM_UI( lbxHelp )
+  INIT_WIDGET_FROM_UI(Label*, lbTitle )
+  INIT_WIDGET_FROM_UI(TexturedButton*, btnExit )
+  INIT_WIDGET_FROM_UI(ListBox*, lbxHelp )
 
   CONNECT( btnExit, onClicked(), this, TutorialWindow::deleteLater );
 
@@ -78,9 +74,9 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
   }
 
   const std::string imgSeparator = "@img=";
-  foreach( it, items )
+  for( auto& it : items )
   {
-    std::string text = *it;
+    const std::string& text = it;
     if( text.substr( 0, imgSeparator.length() ) == imgSeparator )
     {
       Picture pic( text.substr( imgSeparator.length() ) );

@@ -144,17 +144,15 @@ void TopMenu::Impl::updateDate()
 
 void TopMenu::Impl::showShortKeyInfo()
 {
-  Widget* parent = lbDate->ui()->rootWidget();
-  Widget* shortKeyInfo = new Label( parent, Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
-  shortKeyInfo->setupUI( ":/gui/shortkeys.gui" );
-  shortKeyInfo->setCenter( parent->center() );
+  Widget& shortKeyInfo = lbDate->ui()->add<Label>( Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
+  shortKeyInfo.setupUI( ":/gui/shortkeys.gui" );
+  shortKeyInfo.moveTo( Widget::parentCenter );
 
-  auto btnExit = new TexturedButton( shortKeyInfo,
-                                     Point( shortKeyInfo->width() - 34, shortKeyInfo->height() - 34 ),
-                                     Size( 24 ), -1, config::id.menu.exitInf );
+  auto&& btnExit = shortKeyInfo.add<TexturedButton>( Point( shortKeyInfo.width() - 34, shortKeyInfo.height() - 34 ),
+                                                     Size( 24 ), -1, config::id.menu.exitInf );
   WidgetEscapeCloser::insertTo( shortKeyInfo );
 
-  CONNECT( btnExit, onClicked(), shortKeyInfo, Label::deleteLater );
+  CONNECT( &btnExit, onClicked(), &shortKeyInfo, Label::deleteLater );
 }
 
 void TopMenu::Impl::resolveExtentInfo(Widget *sender)
@@ -191,15 +189,13 @@ void TopMenu::Impl::initBackground( const Size& size )
 
 void TopMenu::Impl::showAboutInfo()
 {
-  Widget* parent = lbDate->ui()->rootWidget();
-  Widget* bg = new Label( parent, Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
-  bg->setupUI( ":/gui/about.gui" );
-  bg->setCenter( parent->center() );
+  Widget& window = lbDate->ui()->add<Label>( Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
+  window.setupUI( ":/gui/about.gui" );
+  window.moveTo( Widget::parentCenter );
+  auto&& btnExit = window.add<TexturedButton>( Point( window.width() - 34, window.height() - 34 ), Size( 24 ), -1, config::id.menu.exitInf );
 
-  auto btnExit = new TexturedButton( bg, Point( bg->width() - 34, bg->height() - 34 ), Size( 24 ), -1, config::id.menu.exitInf );
-  WidgetEscapeCloser::insertTo( bg );
-
-  CONNECT( btnExit, onClicked(), bg, Label::deleteLater );
+  CONNECT( &btnExit, onClicked(), &window, Label::deleteLater );
+  WidgetEscapeCloser::insertTo( window );
 }
 
 TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)

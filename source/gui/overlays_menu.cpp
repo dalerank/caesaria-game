@@ -126,12 +126,12 @@ void OverlaysMenu::_addButtons(const int type )
 void OverlaysMenu::_addButton(const int ovType, const Point& offset )
 {
   std::string layerName = citylayer::Helper::prettyName( (citylayer::Type)ovType );
-  PushButton* btn = new PushButton( this, Rect( 0, 0, width(), 20 ) + offset, _( layerName ), ovType, false, PushButton::greyBorderLineSmall );
-  btn->setFont( Font::create( FONT_1 ) );
-  btn->setNotClipped( true );
+  PushButton& btn = add<PushButton>( Rect( 0, 0, width(), 20 ) + offset, _( layerName ), ovType, false, PushButton::greyBorderLineSmall );
+  btn.setFont( Font::create( FONT_1 ) );
+  btn.setNotClipped( true );
   
   if( offset.x() != 0 )
-    _d->buttons.push_back( btn );
+    _d->buttons.push_back( &btn );
 }
 
 bool OverlaysMenu::isPointInside( const Point& point ) const

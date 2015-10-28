@@ -41,7 +41,7 @@ public:
   typedef enum { selectOnMouseMove=true, selectOnClick=false } SelectMode;
 
   //! constructor
-  ListBox(Widget* parent,
+  ListBox( Widget* parent,
            const Rect& rectangle=Rect( 0, 0, 1, 1), int id=-1, bool clip=true,
            bool drawBack=false, bool mos=false);
 

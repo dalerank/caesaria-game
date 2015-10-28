@@ -84,8 +84,8 @@ public:
       }
 
       Picture pic = PictureLoader::instance().load( vfs::NFile::open( picPath ) );
-      Image* image = new Image( table, Rect( 0, 0, 140, 140 ), pic, Image::best );
-      table->addElementToCell( rowNumber, columnNumber, image );
+      Image& image = table->add<Image>( Rect( 0, 0, 140, 140 ), pic, Image::best );
+      table->addElementToCell( rowNumber, columnNumber, &image );
       table->setCellData( rowNumber, columnNumber, "path", items[ k ].toString() );
     }    
   }
@@ -140,7 +140,7 @@ DlcFolderViewer::DlcFolderViewer(Widget* parent, Directory folder )
     }
   }
 
-  _d->table = new Table( this, -1, Rect( 120, 50, width() - 40, height() - 50 ) );
+  _d->table = &add<Table>( -1, Rect( 120, 50, width() - 40, height() - 50 ) );
   _d->table->setDrawFlag( Table::drawColumns, false );
   _d->table->setDrawFlag( Table::drawRows, false );
   _d->table->setDrawFlag( Table::drawActiveCell, true );
@@ -148,10 +148,10 @@ DlcFolderViewer::DlcFolderViewer(Widget* parent, Directory folder )
   _d->fillTable( items );
   CONNECT( _d->table, onCellClicked(), this, DlcFolderViewer::_resolveCellClick )
 
-  PushButton* btn = new PushButton( this, Rect( Point( width() / 2 - 200, height() - 40 ), Size( 200, 24 ) ), "Open folder" );
-  CONNECT( btn, onClicked(), this, DlcFolderViewer::_openFolder )
-  btn = new PushButton( this, Rect( Point( width() / 2 + 2, height() - 40 ), Size( 200, 24 ) ), "Close" );
-  CONNECT( btn, onClicked(), this, DlcFolderViewer::deleteLater )
+  PushButton& openFolder = add<PushButton>( Rect( Point( width() / 2 - 200, height() - 40 ), Size( 200, 24 ) ), "Open folder" );
+  CONNECT( &openFolder, onClicked(), this, DlcFolderViewer::_openFolder )
+  PushButton& close = add<PushButton>( Rect( Point( width() / 2 + 2, height() - 40 ), Size( 200, 24 ) ), "Close" );
+  CONNECT( &close, onClicked(), this, DlcFolderViewer::deleteLater )
 }
 
 DlcFolderViewer::~DlcFolderViewer() {}

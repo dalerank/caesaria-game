@@ -74,7 +74,7 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
 
   const int s = DEFAULT_SCROLLBAR_SIZE;
 
-  _d->scrollBar = new ScrollBar( this, Rect( width() - s, 0, width(), height()), false );
+  _d->scrollBar = &add<ScrollBar>( Rect( width() - s, 0, width(), height()), false );
   _d->scrollBar->setNotClipped( false );
   _d->scrollBar->setSubElement(true);
   _d->scrollBar->setVisibleFilledArea( false );

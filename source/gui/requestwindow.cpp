@@ -40,7 +40,6 @@ class EmperrorRequestWindow::Impl
 {
 public:
   void openEmperrorAdvisor();
-  GameAutoPause locker;
   std::string video;
 };
 
@@ -62,7 +61,7 @@ EmperrorRequestWindow::~EmperrorRequestWindow() {}
 EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::RequestPtr request )
   : Window( parent, Rect( 0, 0, 480, 320 ), "" ), _d( new Impl )
 {
-  _d->locker.activate();
+  GameAutoPause::insertTo( this );
 
   std::string uiFile = _d->video.empty() ? ":/gui/request.gui" : ":/gui/request_video.gui";
 

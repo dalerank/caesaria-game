@@ -359,25 +359,25 @@ PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul,
   Point offset( 1, 32 );
   int dy = 35;
 
-  MenuButton* ret = new MenuButton( this, Point( 0, 0 ), -1, -1, startPic, pushBtn );
-  ret->setID( id | ( haveSubmenu ? BuildMenu::subMenuCreateIdHigh : 0 ) );
+  MenuButton& ret = add<MenuButton>( Point( 0, 0 ), -1, -1, startPic, pushBtn );
+  ret.setID( id | ( haveSubmenu ? BuildMenu::subMenuCreateIdHigh : 0 ) );
   Point temp = offset + Point( 0, dy * yMul );
   if( _d->koeff != 1 )
   {
     temp.setX( ceil( temp.x() * _d->koeff) );
     temp.setY( temp.y() * _d->koeff );
-    ret->setWidth( ceil( ret->width() * _d->koeff ) );
-    ret->setHeight( ceil( ret->height() * _d->koeff ) );
+    ret.setWidth( ceil( ret.width() * _d->koeff ) );
+    ret.setHeight( ceil( ret.height() * _d->koeff ) );
   }
-  ret->setPosition( temp );
-  ret->setTooltipText( _( "##extm_"+ident+"_tlp##" ) );
-  ret->setSound( "extm_" + ident );
-  ret->setMidPicId( midPic );
+  ret.setPosition( temp );
+  ret.setTooltipText( _( "##extm_"+ident+"_tlp##" ) );
+  ret.setSound( "extm_" + ident );
+  ret.setMidPicId( midPic );
 
   if( rect.width() > 0 )
-    _setChildGeometry( ret, rect );
+    _setChildGeometry( &ret, rect );
 
-  return ret;
+  return &ret;
 }
 
 /* here will be helper functions for minimap generation */
@@ -489,15 +489,15 @@ Menu* Menu::create(Widget* parent, int id, PlayerCityPtr city, bool fitToScreen 
 {
   auto model = new Model( parent, fitToScreen, ":/menu.model", Model::smallMenu );
 
-  Menu* ret = new Menu( parent, id, Rect( 0, 0, model->width, parent->height() ), city );
+  Menu& ret = parent->add<Menu>( id, Rect( 0, 0, model->width, parent->height() ), city );
 
-  ret->_setModel( model );
-  ret->_updateButtons();
-  ret->_updateBuildOptions();
+  ret._setModel( model );
+  ret._updateButtons();
+  ret._updateBuildOptions();
 
-  CONNECT( city, onChangeBuildingOptions(), ret, Menu::_updateBuildOptions );
+  CONNECT( city, onChangeBuildingOptions(), &ret, Menu::_updateBuildOptions );
 
-  return ret;
+  return &ret;
 }
 
 void Menu::minimize()
@@ -505,8 +505,8 @@ void Menu::minimize()
   _d->lastPressed = 0;
   _createBuildMenu( -1, this );
   Point stopPos = lefttop() + Point( width(), 0 );
-  auto animator = new PositionAnimator( this, WidgetAnimator::removeSelf, stopPos, 300 );
-  CONNECT( animator, onFinish(), &_d->signal.onHide, Signal0<>::_emit );
+  auto&& animator = add<PositionAnimator>( WidgetAnimator::removeSelf, stopPos, 300 );
+  CONNECT( &animator, onFinish(), &_d->signal.onHide, Signal0<>::_emit );
 
   events::dispatch<PlaySound>( "panel", 3, 100 );
 }
@@ -599,16 +599,15 @@ ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city , bool
 {
   auto model = new Model( parent, fitToScreen, ":/extmenu.model", Model::bigMenu );
 
-  ExtentMenu* ret = new ExtentMenu( parent, id, Rect( 0, 0, model->width, parent->height() ), city );
-  ret->setID( Hash( CAESARIA_STR_A(ExtentMenu)) );
+  ExtentMenu& ret = parent->add<ExtentMenu>( id, Rect( 0, 0, model->width, parent->height() ), city );
+  ret.setID( Hash( CAESARIA_STR_A(ExtentMenu)) );
+  ret._setModel( model );
+  ret._updateButtons();
+  ret._updateBuildOptions();
 
-  ret->_setModel( model );
-  ret->_updateButtons();
-  ret->_updateBuildOptions();
+  CONNECT( city, onChangeBuildingOptions(), &ret, ExtentMenu::_updateBuildOptions );
 
-  CONNECT( city, onChangeBuildingOptions(), ret, ExtentMenu::_updateBuildOptions );
-
-  return ret;
+  return &ret;
 }
 
 ExtentMenu::ExtentMenu(Widget* p, int id, const Rect& rectangle, PlayerCityPtr city )
@@ -750,7 +749,7 @@ void ExtentMenu::showInfo(int type)
   ExtentedDateInfo* window = safety_cast<ExtentedDateInfo*>( findChild( hash ) );
   if( !window )
   {
-    window = new ExtentedDateInfo( this, Rect( Point(), size() ), hash );
+    window = &add<ExtentedDateInfo>( Rect( Point(), size() ), hash );
   }
   else
   {

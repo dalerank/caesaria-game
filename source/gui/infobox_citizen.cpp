@@ -168,8 +168,8 @@ void AboutPeople::_updateNeighbors()
   if( _d->object.isNull() )
     return;
 
-  foreach( it, _d->screenshots )
-    (*it)->deleteLater();
+  for( auto s : _d->screenshots )
+    s->deleteLater();
 
   _d->screenshots.clear();
 
@@ -182,13 +182,12 @@ void AboutPeople::_updateNeighbors()
     if( !tileWalkers.empty() )
     {
       //mini screenshot from citizen pos need here
-      CitizenScreenshot* lb = new CitizenScreenshot( this, lbRect, tileWalkers.front() );
-      lb->setTooltipText( _("##click_here_to_talk_person##") );
-      _d->screenshots.push_back( lb );
+      CitizenScreenshot& lb = add<CitizenScreenshot>( lbRect, tileWalkers.front() );
+      lb.setTooltipText( _("##click_here_to_talk_person##") );
+      _d->screenshots.push_back( &lb );
       lbRect += lbOffset;
 
-
-      CONNECT( lb, _onClickedSignal, this, AboutPeople::_setWalker );
+      CONNECT( &lb, _onClickedSignal, this, AboutPeople::_setWalker );
     }
   }
 }
@@ -200,17 +199,17 @@ void AboutPeople::_init( PlayerCityPtr city, const TilePos& pos, const std::stri
 
   Widget::setupUI( model );
 
-  _d->lbName = new Label( this, Rect( 90, 108, width() - 30, 108 + 20) );
+  _d->lbName = &add<Label>( Rect( 90, 108, width() - 30, 108 + 20) );
   _d->lbName->setFont( Font::create( FONT_2 ));
 
-  _d->lbType = new Label( this, Rect( 90, 128, width() - 30, 128 + 20) );
+  _d->lbType = &add<Label>( Rect( 90, 128, width() - 30, 128 + 20) );
   _d->lbType->setFont( Font::create( FONT_1 ));
 
-  _d->lbThinks = new Label( this, Rect( 90, 148, width() - 30, height() - 140),
+  _d->lbThinks = &add<Label>( Rect( 90, 148, width() - 30, height() - 140),
                             "##citizen_thoughts_will_be_placed_here##" );
 
   _d->lbThinks->setWordwrap( true );
-  _d->lbCitizenPic = new Label( this, Rect( 30, 112, 30 + 55, 112 + 80) );
+  _d->lbCitizenPic = &add<Label>( Rect( 30, 112, 30 + 55, 112 + 80) );
 
   GET_DWIDGET_FROM_UI( _d, lbCurrentAction )
   GET_DWIDGET_FROM_UI( _d, lbBaseBuilding )

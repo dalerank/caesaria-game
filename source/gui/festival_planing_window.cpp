@@ -130,8 +130,8 @@ FestivalPlanning::FestivalPlanning( Widget* parent, int id, const Rect& rectangl
   _d->updateTitle();
   _d->type = smallFest;
 
-  _d->btnHelp = new TexturedButton( this, Point( 52, height() - 52 ), Size( 24 ), -1, config::id.menu.helpInf );
-  _d->btnExit = new TexturedButton( this, Point( width() - 74, height() - 52 ), Size( 24 ), -1, config::id.menu.exitInf );
+  _d->btnHelp = &add<TexturedButton>( Point( 52, height() - 52 ), Size( 24 ), -1, config::id.menu.helpInf );
+  _d->btnExit = &add<TexturedButton>( Point( width() - 74, height() - 52 ), Size( 24 ), -1, config::id.menu.exitInf );
 
   /*int money = _d->city->getFunds().getValue();*/
   _d->cost = city->statistic().festival.calcCost( smallFest );
@@ -156,9 +156,9 @@ FestivalPlanning::FestivalPlanning( Widget* parent, int id, const Rect& rectangl
     _d->btnGreatFestival->setText( fmt::format( "{} {}", _("##great_festival##"), _d->cost ));
   }
 
-  _d->btnYes = new TexturedButton( this, Point( 350, height() - 50 ), Size( 39, 26), -1, config::id.menu.ok );
+  _d->btnYes = &add<TexturedButton>( Point( 350, height() - 50 ), Size( 39, 26), -1, config::id.menu.ok );
   _d->btnYes->setTooltipText( _("##new_festival##") );
-  _d->btnNo = new TexturedButton( this, Point( 350 + 43, height() - 50 ), Size( 39, 26), -1, config::id.menu.cancel );
+  _d->btnNo = &add<TexturedButton>( Point( 350 + 43, height() - 50 ), Size( 39, 26), -1, config::id.menu.cancel );
   _d->btnNo->setTooltipText( _("##donot_organize_festival##") );
 
   CONNECT( _d->btnExit,onClicked(), this, FestivalPlanning::deleteLater );

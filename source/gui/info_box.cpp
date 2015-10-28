@@ -186,8 +186,8 @@ void Infobox::addCallback(const std::string& name, Callback callback)
   INIT_WIDGET_FROM_UI( VLayout*, layout )
   if( layout )
   {
-    auto button = new PushButton( this, Rect(), name );
-    button->onClicked() += callback;
+    auto&& button = add<PushButton>( Rect(), name );
+    button.onClicked() += callback;
   }
 }
 

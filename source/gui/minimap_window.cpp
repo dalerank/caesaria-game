@@ -98,8 +98,8 @@ Minimap::Minimap(Widget* parent, const Rect& rect, PlayerCityPtr city, const gfx
   _d->bg.init = false;
   ClimateType type = city->climate();
   _d->colors.createInstance( type );
-  _d->btnZoomIn =  new TexturedButton( this, righttop() - Point( 28, -2  ), Size( 24 ), -1, 605 );
-  _d->btnZoomOut = new TexturedButton( this, righttop() - Point( 28, -26 ), Size( 24 ), -1, 601 );
+  _d->btnZoomIn = &add<TexturedButton>( righttop() - Point( 28, -2  ), Size( 24 ), -1, 605 );
+  _d->btnZoomOut = &add<TexturedButton>( righttop() - Point( 28, -26 ), Size( 24 ), -1, 601 );
   setTooltipText( _("##minimap_tooltip##") );
 }
 
