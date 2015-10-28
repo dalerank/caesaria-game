@@ -28,6 +28,7 @@
 #include "game/funds.hpp"
 #include "world/empire.hpp"
 #include "objects/constants.hpp"
+#include "core/color_list.hpp"
 #include "objects/working.hpp"
 #include "city/statistic.hpp"
 #include "core/logger.hpp"
@@ -107,7 +108,7 @@ protected:
 
     if( _priority > 0 )
     {
-      font.setColor( DefaultColors::black );
+      font.setColor( ColorList::black );
       font.draw( pic, utils::i2str( _priority ), Point( ofPriority, 3 ), Font::alphaDraw, Font::ignoreTx );
     }
 

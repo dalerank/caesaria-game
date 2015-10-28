@@ -55,25 +55,25 @@ BaseSpecialOrdersWindow::BaseSpecialOrdersWindow( Widget* parent, const Point& p
   : Window( parent, Rect( pos, Size( 510, h ) ), "" ), _d( new Impl )
 {
   // create the title
-  _d->lbTitle = new Label( this, Rect( 50, 10, width()-50, 10 + 30 ), "", true );
+  _d->lbTitle = &add<Label>( Rect( 50, 10, width()-50, 10 + 30 ), "", true );
   _d->lbTitle->setFont( Font::create( FONT_5 ) );
   _d->lbTitle->setTextAlignment( align::center, align::center );
 
-  _d->btnExit = new TexturedButton( this, Point( 472, height() - 39 ), Size( 24 ), -1, config::id.menu.exitInf );
+  _d->btnExit = &add<TexturedButton>( Point( 472, height() - 39 ), Size( 24 ), -1, config::id.menu.exitInf );
   _d->btnExit->setTooltipText( _("##infobox_tooltip_exit##") );
 
-  _d->btnHelp = new TexturedButton( this, Point( 14, height() - 39 ), Size( 24 ), -1, config::id.menu.helpInf );
+  _d->btnHelp = &add<TexturedButton>( Point( 14, height() - 39 ), Size( 24 ), -1, config::id.menu.helpInf );
   _d->btnHelp->setTooltipText( _("##infobox_tooltip_help##") );
 
-  _d->gbOrders = new GroupBox( this, Rect( 17, 42, width() - 17, height() - 70), -1, GroupBox::blackFrame );
-  _d->gbOrdersInsideArea = new Widget( _d->gbOrders, -1, Rect( 5, 5, _d->gbOrders->width() -5, _d->gbOrders->height() -5 ) );
+  _d->gbOrders = &add<GroupBox>( Rect( 17, 42, width() - 17, height() - 70), -1, GroupBox::blackFrame );
+  _d->gbOrdersInsideArea = &_d->gbOrders->add<Widget>( -1, Rect( 5, 5, _d->gbOrders->width()-5, _d->gbOrders->height()-5 ) );
 
   CONNECT( _d->btnExit, onClicked(), this, BaseSpecialOrdersWindow::deleteLater );
 }
 
 BaseSpecialOrdersWindow::~BaseSpecialOrdersWindow() {}
 
-Widget*BaseSpecialOrdersWindow::_ordersArea()
+Widget* BaseSpecialOrdersWindow::_ordersArea()
 {
   return _d->gbOrdersInsideArea;
 }

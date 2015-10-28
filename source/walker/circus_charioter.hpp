@@ -23,19 +23,19 @@
 
 class CircusCharioter : public Walker
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:  
-  static WalkerPtr create(PlayerCityPtr city, HippodromePtr circus );
+  static WalkerPtr create(PlayerCityPtr city );
   virtual ~CircusCharioter();
   virtual void getPictures(gfx::Pictures &oPics);
   virtual void timeStep(const unsigned long time);
 
 protected:
+  CircusCharioter( PlayerCityPtr city, HippodromePtr circus=nullptr );
   virtual void _reachedPathway();
   virtual void _changeDirection();
 
 private:
-  CircusCharioter( PlayerCityPtr city );
-
   void _addToCircus(HippodromePtr circus );
 
   class Impl;

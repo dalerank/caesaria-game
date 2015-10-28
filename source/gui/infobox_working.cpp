@@ -51,9 +51,10 @@ AboutWorkingBuilding::AboutWorkingBuilding( Widget* parent, WorkingBuildingPtr b
 
   _updateWorkersLabel( Point( 32, 150 ), 542, _working->maximumWorkers(), _working->numberWorkers() );
 
-  Label* lb = new Label( this, Rect( 16, 50, width() - 16, 130 ), "", false, Label::bgNone, lbHelpId );
-  lb->setFont( Font::create( FONT_2 ) );
-  lb->setWordwrap( true );
+  const int id = lbHelpId;
+  auto& lb = add<Label>( Rect( 16, 50, width() - 16, 130 ), "", false, Label::bgNone, id );
+  lb.setFont( Font::create( FONT_2 ) );
+  lb.setWordwrap( true );
 
   setText( "" );
 
@@ -63,8 +64,8 @@ AboutWorkingBuilding::AboutWorkingBuilding( Widget* parent, WorkingBuildingPtr b
     Rect rect = btnHelp->relativeRect();
     rect += Point( btnHelp->width() + 5, 0 );
     rect.rright() += 60;
-    PushButton* btn = new PushButton( this, rect, "Adv.Info", -1, false, PushButton::whiteBorderUp );
-    CONNECT( btn, onClicked(), this, AboutWorkingBuilding::_showAdvInfo )
+    PushButton& btn = add<PushButton>( rect, "Adv.Info", -1, false, PushButton::whiteBorderUp );
+    CONNECT( &btn, onClicked(), this, AboutWorkingBuilding::_showAdvInfo )
   }
 }
 

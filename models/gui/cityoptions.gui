@@ -25,7 +25,6 @@
       btnShowGodsUnhappyWarn#OptionButton:{base:"city_buildoverdraw",states:{off:0,on:1 }, link : [ "city", "showGodsUnhappyWarn" ] }
       btnWarfNeedTimber#OptionButton:{base:"city_warf_timber",states:{off:0,on:1 }, link : [ "city", "warfNeedTimber" ] }
 
-      btnC3Gameplay#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_c3rules_mode##" }
       btnDifficulty#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_barbarian_mode##" }
       btnRoadBlocks#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_roadblock_mode##" }
 
@@ -82,6 +81,8 @@
       btnBorderMoving#OptionButton    : { base : "city_border",    states : { off:0, on:1 },  link : [ "draw", "borderMoving" ] }
       btnForestFire#OptionButton      : { base : "city_forest_fire",states: { off:0, on:1 },  link : [ "city", "forestFire" ] }
       btnForestGrow#OptionButton      : { base : "city_forest_grow",states: { off:0, on:1 },  link : [ "city", "forestGrow" ] }
+      btnClaypitCollapse#OptionButton:{base:"city_claypit_collapse",states:{off:0,on:1 }, link : [ "city", "claypitMayCollapse" ] }
+      btnMinesCollapse#OptionButton:{base:"city_mines_collapse",states:{off:0,on:1 }, link : [ "city", "minesMayCollapse" ] }
 
       btnToggleBatching#PushButton  : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_batching_mode##"    }
       btnMetrics#PushButton         : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_metrics_mode##"     }

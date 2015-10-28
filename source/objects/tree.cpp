@@ -169,8 +169,7 @@ void Tree::_burnAround()
 {
    _d->spreadFire = true;
 
-  auto ovelrays = _city()->tilemap().getNeighbors( pos() )
-                                    .overlays();
+  auto ovelrays = _map().getNeighbors( pos() ).overlays();
   for( auto overlay : ovelrays )
   {
     if( math::probably( 0.5f ) )
@@ -180,14 +179,14 @@ void Tree::_burnAround()
 
 void Tree::grow()
 {
-  TilesArray tiles = _city()->tilemap().getNeighbors( pos() );
+  TilesArray tiles = _map().getNeighbors( pos() );
   _d->lastTimeGrow = game::Date::current();
   for( unsigned int i=0; i < tiles.size(); ++i )
   {
     auto tile = tiles.random();
     if( math::probably( 0.1f ) && tile->getFlag( Tile::isConstructible ) )
     {
-      OverlayPtr overlay = TileOverlayFactory::instance().create( type() );
+      OverlayPtr overlay = Overlay::create( type() );
       if( overlay.isValid()  )
       {
         city::AreaInfo areainfo( _city(), tile->pos() );

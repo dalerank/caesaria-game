@@ -33,7 +33,7 @@
 
 using namespace gfx;
 
-REGISTER_TRAINEEMAN_IN_WALKERFACTORY(walker::trainee, 0, trainee)
+REGISTER_NAMED_CLASS_IN_WALKERFACTORY(walker::trainee,TraineeWalker,trainee)
 
 typedef Vector<object::Type> NecessaryBuildings;
 
@@ -48,9 +48,8 @@ public:
 };
 
 TraineeWalker::TraineeWalker(PlayerCityPtr city, walker::Type traineeType)
-  : Human( city ), _d( new Impl )
+  : Human( city, traineeType ), _d( new Impl )
 {
-  _setType( traineeType );
   _d->maxDistance = 30;
   _init( traineeType );
 }
@@ -73,7 +72,7 @@ void TraineeWalker::_init(walker::Type traineeType)
   default: break;
   }
 
-  setName( NameGenerator::rand( NameGenerator::male ) );
+  setName( NameGenerator::rand( NameGenerator::plebMale ) );
 }
 
 void TraineeWalker::_cancelPath()
@@ -108,7 +107,7 @@ void TraineeWalker::_computeWalkerPath( bool roadOnly )
     return;
   }
 
-  BuildingPtr base = ( _city()->getOverlay( _d->baseLocation ).as<Building>());
+  BuildingPtr base = _map().overlay<Building>( _d->baseLocation );
   if( !base.isValid() )
   {
     Logger::warning( "!!! WARNING: trainee walker base is null at [{0},{1}]", _d->baseLocation.i(), _d->baseLocation.j() );
@@ -285,15 +284,3 @@ TilePos TraineeWalker::places(Walker::Place type) const
 
 
 TraineeWalker::~TraineeWalker(){}
-
-TraineeWalkerPtr TraineeWalker::create(PlayerCityPtr city, walker::Type traineeType )
-{
-  TraineeWalkerPtr ret( new TraineeWalker( city, traineeType ) );
-  ret->drop();
-  return ret;
-}
-
-WalkerPtr TraineeWalkerCreator::create(PlayerCityPtr city)
-{
-  return TraineeWalker::create( city, walker::trainee ).object();
-}

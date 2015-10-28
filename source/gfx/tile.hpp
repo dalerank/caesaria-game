@@ -27,20 +27,40 @@
 namespace gfx
 {
 
-class Picture;
-typedef unsigned int ImgID;
-
 // a Tile in the Tilemap
 class Tile
 {
 public:
-  typedef enum { pWellWater=0, pFountainWater, pReservoirWater, pDesirability, pBasicCount } Param;
+  typedef enum { pWellWater=0, pFountainWater, pReservoirWater, pDesirability, pDirt, pBasicCount } Param;
   typedef enum { tlRoad=0, tlWater, tlTree, tlMeadow, tlRock, tlOverlay,
                  tlGarden, tlElevation, tlWall, tlDeepWater, tlRubble,
                  isConstructible, isDestructible, tlRift, tlCoast, tlGrass, clearAll,
                  isRendered, tlUnknown } Type;
 
 public:
+  struct Terrain
+  {
+    bool water;
+    bool rock;
+    bool tree;
+    bool road;
+    bool garden;
+    bool meadow;
+    bool elevation;
+    bool rubble;
+    bool wall;
+    bool coast;
+    bool deepWater;
+
+    /*
+     * original tile information
+     */
+    ImgID imgid;
+    unsigned short int terraininfo;
+
+    void clear();
+  };
+
   explicit Tile(const TilePos& pos);
 
   // tile coordinates
@@ -85,6 +105,8 @@ public:
   bool getFlag( Type type ) const;
   void setFlag( Type type, bool value );
 
+  Terrain& terrain() { return _terrain; }
+
   void setOverlay( OverlayPtr overlay );
   inline ImgID imgId() const { return _terrain.imgid;}
   void setImgId( ImgID id );
@@ -101,32 +123,7 @@ public:
   OverlayPtr overlay() const;
 
 private:
-  struct Terrain
-  {
-    bool water;
-    bool rock;
-    bool tree;
-    bool road;
-    bool garden;
-    bool meadow;
-    bool elevation;
-    bool rubble;
-    bool wall;
-    bool coast;
-    bool deepWater;
-
-    /*
-     * original tile information
-     */
-    ImgID imgid;
-    unsigned short int terraininfo;
-
-    void reset();
-    void clearFlags();
-
-    std::map<Param, int> params;
-  };
-
+  std::map<Param, int> _params;
   TilePos _pos; // absolute coordinates
   TilePos _epos; // effective coordinates
   Point _mappos;

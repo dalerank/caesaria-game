@@ -56,7 +56,7 @@ AboutColosseum::AboutColosseum(Widget *parent, PlayerCityPtr city, const Tile &t
   
   if( coloseum->isNeedGladiators() )
   {
-    new Label( this, Rect( 35, 190, width() - 35, 190 + 20 ), _("##colloseum_haveno_gladiatorpit##") );
+    add<Label>( Rect( 35, 190, width() - 35, 190 + 20 ), _("##colloseum_haveno_gladiatorpit##") );
   }
   else
   {
@@ -66,7 +66,7 @@ AboutColosseum::AboutColosseum(Widget *parent, PlayerCityPtr city, const Tile &t
       DateTime lastAnimalBoutDate = coloseum->lastAnimalBoutDate();
       text = utils::format( 0xff, "%s %d %s", "##colloseum_animal_contest_runs##", lastAnimalBoutDate.daysTo( game::Date::current() ), "##days##" );
     }
-    new Label( this, Rect( 35, 200, width() - 35, 200 + 20 ), text );
+    add<Label>( Rect( 35, 200, width() - 35, 200 + 20 ), text );
 
     text = _("##colloseum_haveno_gladiator_bouts##");
     if( coloseum->isShowGladiatorBattles() )
@@ -75,7 +75,7 @@ AboutColosseum::AboutColosseum(Widget *parent, PlayerCityPtr city, const Tile &t
       text = utils::format( 0xff, "%s %d %s", "##colloseum_gladiator_contest_runs##", lastGlBoutDate.daysTo( game::Date::current() ), "##days##" );
     }
 
-    new Label( this, Rect( 35, 220, width() - 35, 220 + 20 ), text );
+    add<Label>( Rect( 35, 220, width() - 35, 220 + 20 ), text );
   }
 }
 

@@ -24,8 +24,8 @@
 
 class RiverWave : public Walker
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static RiverWavePtr create( PlayerCityPtr city );
   virtual ~RiverWave();
 
   virtual void send2City(const TilePos& location);

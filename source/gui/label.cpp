@@ -180,11 +180,11 @@ void Label::_updateTexture(gfx::Engine& painter )
           r -= Point( 0, height * _d->brokenText.size() / 2 );
         }
 
-        foreach( it, _d->brokenText )
+        for( auto btext : _d->brokenText )
         {
-          Rect textRect = _d->font.getTextRect( *it, r, horizontalTextAlign(), verticalTextAlign() );
+          Rect textRect = _d->font.getTextRect( btext, r, horizontalTextAlign(), verticalTextAlign() );
           textRect += _d->textOffset;
-          _d->font.draw( _d->textPicture, *it, textRect.lefttop(), useAlpha4Text, false );
+          _d->font.draw( _d->textPicture, btext, textRect.lefttop(), useAlpha4Text, false );
           r += Point( 0, height + _d->lineIntervalOffset );
         }        
       }
@@ -649,6 +649,21 @@ bool Label::onEvent(const NEvent& event)
 }
 
 bool Label::isBorderVisible() const {  return _d->isBorderVisible; }
+
+void Label::canvasDraw(const string& text, const Point& point, Font dfont, NColor color)
+{
+  Picture& texture = _textPicture();
+  Font rfont = dfont.isValid() ? dfont : font();
+  if( color != 0 )
+    rfont.setColor( color );
+
+  rfont.draw( texture, text, point.x(), point.y(), true );
+}
+
+void Label::canvasDraw(const Picture& picture, const Point& point)
+{
+
+}
 
 void Label::setPrefixText( const string& prefix )
 {

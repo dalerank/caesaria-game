@@ -47,14 +47,6 @@ public:
   int value;
 };
 
-SrvcPtr ServiceUpdater::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new ServiceUpdater( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 void ServiceUpdater::timeStep( const unsigned int time)
 {
   if( game::Date::isWeekChanged() )

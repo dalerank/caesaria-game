@@ -43,6 +43,7 @@ public:
   EditBox* edScreenshots;
   bool needRestart;
   TexturedButton* btnApply;
+
   Impl() : edResourcesPath(0), edCaesar3Music(0), edCaesar3Video(0),
            edCaesar3Path(0), needRestart(false) {}
 };

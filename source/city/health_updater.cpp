@@ -40,14 +40,6 @@ public:
   int value;
 };
 
-SrvcPtr HealthUpdater::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new HealthUpdater( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 void HealthUpdater::timeStep( const unsigned int time)
 {
   if( game::Date::isMonthChanged() )

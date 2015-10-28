@@ -49,10 +49,10 @@ class NColor;
 #define VARIANT_LOAD_STR(param,vm) param = vm.get( #param ).toString();
 #define VARIANT_LOAD_TIME(param,vm) param = vm.get( #param ).toDateTime();
 
-#define VARIANT_SAVE_ANY_D(vm,d,param) vm[ #param ] = d->param;
-#define VARIANT_SAVE_STR_D(vm,d,param) vm[ #param ] = Variant( d->param );
-#define VARIANT_LOAD_ANY_D(d,param,vm) d->param = vm.get( #param );
-#define VARIANT_LOAD_ANYDEF_D(d,param,def,vm) d->param = vm.get( #param, (def) );
+#define VARIANT_SAVE_ANY_D(vm,d,param) vm[ #param ] = (d)->param;
+#define VARIANT_SAVE_STR_D(vm,d,param) vm[ #param ] = Variant( (d)->param );
+#define VARIANT_LOAD_ANY_D(d,param,vm) (d)->param = vm.get( #param );
+#define VARIANT_LOAD_ANYDEF_D(d,param,def,vm) (d)->param = vm.get( #param, (def) );
 
 #define VARIANT_SAVE_ENUM_D(vm,d,param) vm[ #param ] = (int)d->param;
 #define VARIANT_LOAD_ENUM_D(d,param,vm) d->param = (__typeof__(d->param))vm.get( #param ).toInt();
@@ -68,8 +68,8 @@ class NColor;
 #define VARIANT_SAVE_CLASS(vm, param) vm[ #param ] = param.save();
 #define VARIANT_LOAD_CLASS(param, vm ) param.load( vm.get( #param ).toMap() );
 
-#define VARIANT_SAVE_CLASS_D(vm, d, param) vm[ #param ] = d->param.save();
-#define VARIANT_LOAD_CLASS_D(d, param, vm) d->param.load( vm.get( #param ).toMap() );
+#define VARIANT_SAVE_CLASS_D(vm, d, param) vm[ #param ] = (d)->param.save();
+#define VARIANT_LOAD_CLASS_D(d, param, vm) (d)->param.load( vm.get( #param ).toMap() );
 
 #define VARIANT_LOAD_CLASS_LIST(param, vm) param.load( vm.get( #param ).toList() );
 #define VARIANT_LOAD_CLASS_D_AS_LIST(d, param, vm) d->param << vm.get( #param ).toList();

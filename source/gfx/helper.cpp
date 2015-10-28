@@ -352,6 +352,11 @@ Tile::Type findType(const std::string& name)
   return Tile::tlUnknown;
 }
 
+TilePos hash2pos(unsigned int hash)
+{
+  return TilePos( (hash >> 16 ) & 0xff, hash & 0xff );
+}
+
 }//end namespace tile
 
 }//end namespace gfx

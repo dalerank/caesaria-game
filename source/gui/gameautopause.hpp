@@ -27,7 +27,7 @@ class GameAutoPause
 public:
   GameAutoPause();
   void activate();
-  static void insertTo( gui::Widget* parent );
+  static void insertTo( gui::Widget* parent, bool pause=false );
   virtual ~GameAutoPause();
 
 private:

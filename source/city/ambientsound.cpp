@@ -173,14 +173,6 @@ public:
   HashSet processedSounds;
 };
 
-SrvcPtr AmbientSound::create(PlayerCityPtr city)
-{
-  SrvcPtr p( new AmbientSound( city ) );
-  p->drop();
-
-  return p;
-}
-
 AmbientSound::~AmbientSound() {}
 
 AmbientSound::AmbientSound(PlayerCityPtr city)

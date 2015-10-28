@@ -321,8 +321,8 @@ void Warehouse::_resolveDeliverMode()
 
     if( good::Orders::deliver == order && goodFreeQty > 0 )
     {
-      auto supplier = CartSupplier::create( _city() );
-      supplier->send2city( BuildingPtr( this ), gType, goodFreeQty );
+      auto supplier = Walker::create<CartSupplier>( _city() );
+      supplier->send2city( this, gType, goodFreeQty );
 
       if( !supplier->isDeleted() )
       {
@@ -347,7 +347,7 @@ void Warehouse::_resolveDevastationMode()
       if( goodQty > 0 )
       {
         good::Stock stock( goodType, goodQty, goodQty);
-        auto pusher = CartPusher::create( _city() );
+        auto pusher = Walker::create<CartPusher>( _city() );
         pusher->stock().setCapacity( maxCapacity );
         pusher->send2city( BuildingPtr( this ), stock );
 

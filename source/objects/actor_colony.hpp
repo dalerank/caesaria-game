@@ -25,6 +25,7 @@ class ActorColony : public TrainingBuilding
 {
 public:
   ActorColony();
+
   virtual void deliverTrainee();
   virtual void timeStep(const unsigned long time);
 };

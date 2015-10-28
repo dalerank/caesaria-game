@@ -132,7 +132,6 @@ void EditBox::_init()
   setTaborder(-1);
 
   _breakText();
-
   _calculateScrollPos();
 
   setTextAlignment( align::upperLeft, align::center );

@@ -40,6 +40,7 @@
 #include "gfx/walker_debuginfo.hpp"
 #include "core/timer.hpp"
 #include "core/logger.hpp"
+#include "core/color_list.hpp"
 #include "gfx/animation_bank.hpp"
 #include "city/statistic.hpp"
 
@@ -59,14 +60,9 @@ public:
     Point start;
   } cursor;
 
-  Camera* camera;
-  Tile* currentTile;
-  PlayerCityPtr city;
-  Picture outline;
-
   struct {
-    bool buildings;
-    bool trees;
+    bool buildings = true;
+    bool trees = true;
   } draw;
 
   struct {
@@ -75,11 +71,26 @@ public:
   } tooltip;
 
   int nextLayer;
+  struct {
+    Layer::WalkerTypes walkers;
+    AlwaysDrawObjects objects;
+  } visible;
+
+  struct PictureInfo {
+    Point pos;
+    Picture pic;
+  };
+
+  typedef std::vector<PictureInfo> Pictures;
+
+  Pictures pictures;
   Picture terraintPic;
-  Layer::WalkerTypes vwalkers;
+  PlayerCityPtr city;
   Picture tilePosText;
+  Tile* currentTile;
+  Picture outline;
+  Camera* camera;
   Font debugFont;
-  AlwaysDrawObjects drObjects;
 
   int posMode;
 };
@@ -156,8 +167,7 @@ void Layer::handleEvent(NEvent& event)
       Tile* tile = _d->camera->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       if( tile )
       {
-        events::GameEventPtr e = events::ShowTileInfo::create( tile->epos() );
-        e->dispatch();
+        events::dispatch<events::ShowTileInfo>( tile->epos() );
       }
     }
     break;
@@ -258,7 +268,7 @@ void Layer::drawPass( const RenderInfo& rinfo, Tile& tile, Renderer::Pass pass)
 void Layer::drawWalkers( const RenderInfo& rinfo, const Tile& tile)
 {
   Pictures pics;
-  const WalkerList& walkers = _city()->walkers( tile.pos() );
+  const WalkerList& walkers = _city()->walkers( tile.epos() );
   const Layer::WalkerTypes& vWalkers = visibleTypes();
 
   bool viewAll = vWalkers.count( walker::all );
@@ -297,14 +307,14 @@ void Layer::_setTooltipText(const std::string& text)
 
 void Layer::render( Engine& engine )
 {
-  __D_IMPL(_d,Layer)
-  const TilesArray& visibleTiles = _d->camera->tiles();
-  RenderInfo rinfo = { engine, _d->camera->offset() };
+  __D_REF(d,Layer)
+  const TilesArray& visibleTiles = d.camera->tiles();
+  RenderInfo rinfo = { engine, d.camera->offset() };
 
   _camera()->startFrame();
   DrawOptions& opts = DrawOptions::instance();
   //FIRST PART: draw lands
-  drawLands( rinfo, _d->camera );
+  drawLands( rinfo, d.camera );
 
   if( opts.isFlag( DrawOptions::shadowOverlay ) )
   {
@@ -337,13 +347,13 @@ void Layer::render( Engine& engine )
       else
       {
         if( wlk->getFlag( Walker::showDebugInfo ) )
-          WalkerDebugInfo::showPath( wlk, engine, _d->camera );
+          WalkerDebugInfo::showPath( wlk, rinfo );
       }
     }
 
     for( auto it : overDrawWalkers )
     {
-      WalkerDebugInfo::showPath( it, engine, _d->camera, DefaultColors::yellow );
+      WalkerDebugInfo::showPath( it, rinfo, ColorList::yellow );
     }
   }
 }
@@ -360,7 +370,7 @@ void Layer::drawWalkerOverlap( const RenderInfo& rinfo, Tile& tile, const int de
 
 const Layer::WalkerTypes& Layer::visibleTypes() const
 {
-  return _dfunc()->vwalkers;
+  return _dfunc()->visible.walkers;
 }
 
 void Layer::drawProminentTile( const RenderInfo& rinfo, Tile& tile, const int depth, bool force)
@@ -475,6 +485,22 @@ void Layer::beforeRender(Engine&)
   __D_IMPL(_d,Layer)
   _d->draw.buildings = DrawOptions::instance().isFlag( DrawOptions::showBuildings );
   _d->draw.trees = DrawOptions::instance().isFlag( DrawOptions::showTrees );
+  _d->pictures.clear();
+}
+
+void Layer::_addPicture(const Point& pos, const Picture& pic)
+{
+  Impl::PictureInfo info = { pos, pic };
+  _dfunc()->pictures.push_back( info );
+}
+
+void Layer::_addText(const Point& pos, const std::string& text, Font font)
+{
+  if( !font.isValid() )
+    font = _dfunc()->debugFont;
+
+  Picture tx = font.once( text );
+  _addPicture( pos, tx );
 }
 
 void Layer::afterRender(Engine& engine)
@@ -616,21 +642,26 @@ void Layer::afterRender(Engine& engine)
     }
 
     pos += offset;
-    engine.drawLine( DefaultColors::red, pos, pos + Point( halfRWidth, halfRWidth/2 ) * size.height() );
-    engine.drawLine( DefaultColors::red, pos + Point( halfRWidth, halfRWidth/2 ) * size.width(), pos + Point( rwidth, 0) * size.height() );
-    engine.drawLine( DefaultColors::red, pos + Point( rwidth, 0) * size.width(), pos + Point( halfRWidth, -halfRWidth/2 ) * size.height() );
-    engine.drawLine( DefaultColors::red, pos + Point( halfRWidth, -halfRWidth/2 ) * size.width(), pos );
+    engine.drawLine( ColorList::red, pos, pos + Point( halfRWidth, halfRWidth/2 ) * size.height() );
+    engine.drawLine( ColorList::red, pos + Point( halfRWidth, halfRWidth/2 ) * size.width(), pos + Point( rwidth, 0) * size.height() );
+    engine.drawLine( ColorList::red, pos + Point( rwidth, 0) * size.width(), pos + Point( halfRWidth, -halfRWidth/2 ) * size.height() );
+    engine.drawLine( ColorList::red, pos + Point( halfRWidth, -halfRWidth/2 ) * size.width(), pos );
 
     static int t=0;
     int a = (t++ % 40)/5;
-    engine.drawLine( DefaultColors::red, pos-Point(a,0), pos + Point( halfRWidth, (halfRWidth+a)/2 ) * size.height() );
-    engine.drawLine( DefaultColors::red, pos + Point( halfRWidth, (halfRWidth+a)/2 ) * size.width(), pos + Point( rwidth, 0) * size.height() + Point(a, 0) );
-    engine.drawLine( DefaultColors::red, pos + Point( rwidth, 0) * size.width() + Point(a,0), pos + Point( halfRWidth, (-a-halfRWidth)/2 ) * size.height() );
-    engine.drawLine( DefaultColors::red, pos + Point( halfRWidth, (-a-halfRWidth)/2 ) * size.width(), pos - Point(a,0) );
+    engine.drawLine( ColorList::red, pos-Point(a,0), pos + Point( halfRWidth, (halfRWidth+a)/2 ) * size.height() );
+    engine.drawLine( ColorList::red, pos + Point( halfRWidth, (halfRWidth+a)/2 ) * size.width(), pos + Point( rwidth, 0) * size.height() + Point(a, 0) );
+    engine.drawLine( ColorList::red, pos + Point( rwidth, 0) * size.width() + Point(a,0), pos + Point( halfRWidth, (-a-halfRWidth)/2 ) * size.height() );
+    engine.drawLine( ColorList::red, pos + Point( halfRWidth, (-a-halfRWidth)/2 ) * size.width(), pos - Point(a,0) );
 
 #ifdef DEBUG
     engine.draw( _d->tilePosText, pos );
 #endif
+  }
+
+  for( auto& pic : _d->pictures )
+  {
+    engine.draw( pic.pic, offset + pic.pos );
   }
 }
 
@@ -653,7 +684,7 @@ Layer::Layer( Camera* camera, PlayerCityPtr city )
 
 void Layer::_addWalkerType(walker::Type wtype)
 {
-  _dfunc()->vwalkers.insert( wtype );
+  _dfunc()->visible.walkers.insert( wtype );
 }
 
 void Layer::_initialize()
@@ -664,8 +695,8 @@ void Layer::_initialize()
   {
     object::Type ovType = object::findType( it );
     if( ovType != object::unknown )
-      _dfunc()->drObjects.insert( ovType );
-    }
+      _dfunc()->visible.objects.insert( ovType );
+  }
 }
 
 bool Layer::_moveCamera(NEvent &event)
@@ -689,8 +720,16 @@ bool Layer::_moveCamera(NEvent &event)
   return true;
 }
 
-Layer::WalkerTypes& Layer::_visibleWalkers() { return _dfunc()->vwalkers; }
-bool Layer::_isVisibleObject(object::Type ovType) { return _dfunc()->drObjects.count( ovType ) > 0; }
+bool Layer::_isVisibleObject(object::Type ovType)
+{
+  auto& objects = _dfunc()->visible.objects;
+  if( objects.empty() )
+    return true;
+  else
+    return objects.count( ovType ) > 0;
+}
+
+Layer::WalkerTypes& Layer::_visibleWalkers() { return _dfunc()->visible.walkers; }
 int Layer::nextLayer() const{ return _dfunc()->nextLayer; }
 void Layer::destroy() {}
 Camera* Layer::_camera(){ return _dfunc()->camera;}

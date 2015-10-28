@@ -81,14 +81,6 @@ public:
   bool isPoorHousing( int shacks, int houses );
 };
 
-SrvcPtr Migration::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new Migration( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 Migration::Migration( PlayerCityPtr city )
   : Srvc( city, defaultName() ), _d( new Impl )
 {  
@@ -115,8 +107,7 @@ void Migration::timeStep( const unsigned int time )
     std::string trouble = reason();
     if( haveTroubles() )
     {
-      events::GameEventPtr e = events::WarningMessage::create(trouble, 1);
-      e->dispatch();
+      events::dispatch<events::WarningMessage>(trouble, 1);
     }
   }
 
@@ -410,9 +401,9 @@ void Migration::Impl::createMigrationToCity( PlayerCityPtr city )
     return;
   }
 
-  Tile& roadTile = city->tilemap().at( city->borderInfo().roadEntry );
+  Tile& roadTile = city->tilemap().at( city->getBorderInfo( PlayerCity::roadEntry ).epos() );
 
-  ImmigrantPtr emigrant = Immigrant::create( city );
+  ImmigrantPtr emigrant = Walker::create<Immigrant>( city );
 
   if( emigrant.isValid() )
   {
@@ -442,7 +433,7 @@ void Migration::Impl::createMigrationFromCity( PlayerCityPtr city )
     HouseList randHouses = houses.random( number );
     for( auto house : randHouses )
     {
-      ImmigrantPtr emigrant = Immigrant::create( city );
+      ImmigrantPtr emigrant = Walker::create<Immigrant>( city );
       if( emigrant.isValid() )
       {
         house->removeHabitants( minWorkersNumber );

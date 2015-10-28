@@ -35,7 +35,7 @@ public:
 
   virtual void timeStep(const unsigned long time);
 
-  virtual good::Store& goodStore();
+  virtual good::Store& store();
 
   // return the current house level
   const HouseSpecification& spec() const;
@@ -62,7 +62,7 @@ public:
   bool isEntertainmentNeed( Service::Type type ) const;
   bool isHealthNeed( Service::Type type ) const;
 
-  Desirability desirability() const;
+  const Desirability& desirability() const;
 
   virtual void destroy();
 

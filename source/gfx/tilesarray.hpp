@@ -18,6 +18,7 @@
 
 #include "tile.hpp"
 #include "core/tilepos_array.hpp"
+#include "core/position_array.hpp"
 
 #include <vector>
 #include <cstring>
@@ -47,7 +48,6 @@ public:
   Corners corners() const;
 
   TilePos leftUpCorner() const;
-
   TilePos rightDownCorner() const;
 
   TilesArray& operator=(const TilesArray& a);
@@ -66,6 +66,7 @@ public:
   TilesArray waters() const;
 
   TilesArray& remove(const TilePos& pos );
+  PointsArray mappositions() const;
   TilePosArray locations() const;
 
   OverlayList overlays() const;

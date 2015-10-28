@@ -38,6 +38,7 @@ namespace tile
   int encode( const Tile& tt );
   int turnCoastTile(int imgid , Direction newDirection);
   unsigned int hash( const TilePos& pos );
+  TilePos hash2pos( unsigned int hash );
   Point tilepos2screen( const TilePos& pos );
   Tile::Type findType( const std::string& name );
   TilePos screen2tilepos( const Point& point, int mapsize );

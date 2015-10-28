@@ -28,6 +28,7 @@
 #include "helper.hpp"
 #include "ability.hpp"
 #include "walkers_factory.hpp"
+#include "config.hpp"
 
 using namespace gfx;
 
@@ -36,7 +37,6 @@ REGISTER_CLASS_IN_WALKERFACTORY(walker::wolf, Wolf)
 REGISTER_CLASS_IN_WALKERFACTORY(walker::zebra, Zebra)
 
 namespace {
-const int defaultRandomDistance=10;
 const int maxWayAlert=30;
 const float illnesValue=0.2f;
 const int every4frame=4;
@@ -49,16 +49,14 @@ public:
   TilePos destination;
 };
 
-Animal::Animal(PlayerCityPtr city )
-  : Walker( city ), _d( new Impl )
+Animal::Animal(PlayerCityPtr city , walker::Type type)
+  : Walker( city, type ), _d( new Impl )
 {
   setFlag( Walker::vividly, true );
-  _setType( walker::unknown );
-
   setName( _("##animal##") );
 }
 
-void Animal::send2City(const TilePos &start )
+void Animal::send2City(const TilePos& start)
 {
   attach();
 }
@@ -89,7 +87,7 @@ std::string Animal::thoughts(Thought th) const
 
 void Animal::_findNewWay( const TilePos& start )
 {
-  Pathway pathway = PathwayHelper::randomWay( _city(), start, defaultRandomDistance );
+  Pathway pathway = PathwayHelper::randomWay( _city(), start, config::distance::animalRandrom );
 
   if( pathway.isValid() )
   {
@@ -103,24 +101,16 @@ void Animal::_findNewWay( const TilePos& start )
   }
 }
 
-Sheep::Sheep( PlayerCityPtr city ) : Herbivorous( walker::sheep, city )
+Sheep::Sheep( PlayerCityPtr city )
+  : Herbivorous( city, walker::sheep )
 {
-}
-
-WalkerPtr Sheep::create(PlayerCityPtr city)
-{
-  WalkerPtr ret( new Sheep( city ) );
-  ret->drop();
-
-  return ret;
 }
 
 void Herbivorous::_reachedPathway()
 {
   Walker::_reachedPathway();
 
-  Tilemap& tmap = _city()->tilemap();
-  if( tmap.at( pos() ).getFlag( Tile::tlMeadow ) )
+  if( _map().at( pos() ).getFlag( Tile::tlMeadow ) )
   {
     updateHealth( +100 );
   }
@@ -142,8 +132,8 @@ void Herbivorous::_noWay()
   _findNewWay( pos() );
 }
 
-Herbivorous::Herbivorous(walker::Type type, PlayerCityPtr city)
- : Animal( city )
+Herbivorous::Herbivorous(PlayerCityPtr city, walker::Type type)
+ : Animal( city, type )
 {
   _setType( type );
   setName( WalkerHelper::getPrettyTypename( type ) );
@@ -169,21 +159,12 @@ public:
 };
 
 Wolf::Wolf( PlayerCityPtr city )
-  : Animal( city ), _d( new Impl )
+  : Animal( city, walker::wolf ), _d( new Impl )
 {
-  _setType( walker::wolf );
   setSpeedMultiplier( 0.8 + math::random( 60 ) / 100.f);
   setName( _("##wolf##") );
 
   addAbility( Illness::create( illnesValue, every4frame ) );
-}
-
-WalkerPtr Wolf::create(PlayerCityPtr city)
-{
-  WalkerPtr ret( new Wolf( city ) );
-  ret->drop();
-
-  return ret;
 }
 
 void Wolf::_reachedPathway()
@@ -197,10 +178,9 @@ void Wolf::_centerTile()
 {
   Animal::_centerTile();
 
-  TilePos offset(1,1);
-  WalkerList walkers = _city()->statistic().walkers.find<Walker>( walker::any,
-                                                                  pos() - offset, pos() + offset );
-  walkers = walkers.exclude<Wolf>();
+  WalkerList walkers = _city()->statistic().walkers
+                                           .neighbors<Walker>( pos() )
+                                           .exclude<Wolf>();
 
   if( !walkers.empty() )
   {
@@ -215,10 +195,10 @@ void Wolf::_centerTile()
 
 void Wolf::_findNewWay( const TilePos& start )
 {
-  TilePos offset(defaultRandomDistance,defaultRandomDistance);
-  WalkerList walkers = _city()->statistic().walkers.find<Walker>( walker::any,
-                                                                  start - offset, start + offset );
-  walkers = walkers.exclude<Wolf>();
+  TilePos offset( config::distance::animalRandrom, config::distance::animalRandrom);
+  WalkerList walkers = _city()->statistic().walkers
+                                           .find<Walker>( walker::any, start - offset, start + offset )
+                                           .exclude<Wolf>();
 
   Pathway pathway;
   if( !walkers.empty() )
@@ -229,7 +209,7 @@ void Wolf::_findNewWay( const TilePos& start )
 
   if( !pathway.isValid() )
   {
-    pathway = PathwayHelper::randomWay( _city(), start, defaultRandomDistance );
+    pathway = PathwayHelper::randomWay( _city(), start, config::distance::animalRandrom );
   }
 
   if( pathway.isValid() )
@@ -261,8 +241,7 @@ void Wolf::timeStep(const unsigned long time)
   {
   case acFight:
   {
-    WalkerList walkers = _city()->walkers( _d->attackPos );
-    walkers = walkers.exclude<Wolf>();
+    WalkerList walkers = _city()->walkers( _d->attackPos ).exclude<Wolf>();
 
     if( !walkers.empty() )
     {
@@ -299,15 +278,7 @@ Fish::Fish(PlayerCityPtr city)
 
 Fish::~Fish() {}
 
-
-WalkerPtr Zebra::create(PlayerCityPtr city)
-{
-  WalkerPtr ret( new Zebra( city ) );
-  ret->drop();
-
-  return ret;
-}
-
-Zebra::Zebra(PlayerCityPtr city) : Herbivorous( walker::zebra, city )
+Zebra::Zebra(PlayerCityPtr city)
+  : Herbivorous( city, walker::zebra )
 {
 }

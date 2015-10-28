@@ -98,13 +98,6 @@ public:
   Buffs buffs;
 };
 
-city::SrvcPtr Sentiment::create( PlayerCityPtr city )
-{
-  SrvcPtr ret(new Sentiment( city ));
-  ret->drop();
-  return ret;
-}
-
 std::string Sentiment ::defaultName() { return CAESARIA_STR_EXT(Sentiment);}
 
 Sentiment::Sentiment( PlayerCityPtr city )

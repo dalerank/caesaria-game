@@ -27,6 +27,7 @@
 #include "game/gamedate.hpp"
 #include "walker/cart_supplier.hpp"
 #include "objects_factory.hpp"
+#include "good/turnover.hpp"
 #include "config.hpp"
 
 using namespace gfx;
@@ -51,6 +52,8 @@ public:
 
     setOrder( good::fish, good::Orders::none );
     setCapacity( GranaryStore::maxCapacity );
+
+    granary = nullptr;
   }
 
   // returns the reservationID if stock can be retrieved (else 0)
@@ -71,18 +74,19 @@ public:
     good::Storage::store( stock, amount );
   }
 
-  virtual void applyStorageReservation(good::Stock &stock, const int reservationID)
+  virtual bool applyStorageReservation(good::Stock& stock, const int reservationID)
   {
-    good::Storage::applyStorageReservation( stock, reservationID );
-
+    bool isOk = good::Storage::applyStorageReservation( stock, reservationID );
+    _providers().append( stock );
     granary->computePictures();
+    return isOk;
   }
 
-  virtual void applyRetrieveReservation(good::Stock &stock, const int reservationID)
+  virtual bool applyRetrieveReservation(good::Stock &stock, const int reservationID)
   {
-    good::Storage::applyRetrieveReservation( stock, reservationID );
-
+    bool isOk = good::Storage::applyRetrieveReservation( stock, reservationID );
     granary->computePictures();
+    return isOk;
   }
   
   virtual void setOrder( const good::Product type, const good::Orders::Order order )
@@ -90,6 +94,8 @@ public:
     good::Storage::setOrder( type, order );
     setCapacity( type, (order == good::Orders::reject || order == good::Orders::none ) ? 0 : GranaryStore::maxCapacity );
   }
+
+  virtual TilePos owner() const { return granary ? granary->pos() : gfx::tilemap::invalidLocation(); }
 
   Granary* granary;
 };
@@ -250,12 +256,12 @@ void Granary::_resolveDeliverMode()
 
     if( good::Orders::deliver == order && goodFreeQty > 0 )
     {
-      CartSupplierPtr walker = CartSupplier::create( _city() );
-      walker->send2city( this, gType, goodFreeQty );
+      auto cartSupplier = Walker::create<CartSupplier>( _city() );
+      cartSupplier->send2city( this, gType, goodFreeQty );
 
-      if( !walker->isDeleted() )
+      if( !cartSupplier->isDeleted() )
       {
-        addWalker( walker.object() );
+        addWalker( cartSupplier );
         return;
       }
     }
@@ -280,8 +286,8 @@ void Granary::_weekUpdate()
 bool Granary::_trySendGoods(good::Product gtype, int qty )
 {
   good::Stock stock( gtype, qty, qty);
-  auto cartPusher = CartPusher::create( _city() );
-  cartPusher->send2city( BuildingPtr( this ), stock );
+  auto cartPusher = Walker::create<CartPusher>( _city() );
+  cartPusher->send2city( this, stock );
 
   if( !cartPusher->isDeleted() )
   {

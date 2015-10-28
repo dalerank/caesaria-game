@@ -142,14 +142,6 @@ public:
   void weekUpdate( unsigned int time, PlayerCityPtr rcity );
 };
 
-SrvcPtr Disorder::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new Disorder( city ) );
-  ret->drop();
-
-  return SrvcPtr( ret );
-}
-
 std::string Disorder::defaultName(){  return CAESARIA_STR_EXT(Disorder);}
 
 Disorder::Disorder( PlayerCityPtr city )
@@ -285,9 +277,9 @@ void Disorder::Impl::generateMugger(PlayerCityPtr city, HousePtr house )
     if( moneyStolen > maxMoneyStolen )
       moneyStolen = math::random( maxMoneyStolen );
 
-    GameEventPtr e = ShowInfobox::create( "##money_stolen_title##", "##money_stolen_text##",
-                                          ShowInfobox::send2scribe, "mugging" );
-    e->dispatch();
+    events::dispatch<ShowInfobox>( "##money_stolen_title##",
+                                   "##money_stolen_text##",
+                                   true, "mugging" );
 
     city->treasury().resolveIssue( econ::Issue( econ::Issue::moneyStolen, -moneyStolen ) );
   }
@@ -300,12 +292,11 @@ void Disorder::Impl::generateMugger(PlayerCityPtr city, HousePtr house )
 
 void Disorder::Impl::generateRioter(PlayerCityPtr city, HousePtr house)
 {
-  GameEventPtr e = ShowInfobox::create( "##rioter_in_city_title##", "##rioter_in_city_text##",
-                                        ShowInfobox::send2scribe, "spy_riot" );
-  e->dispatch();
+  events::dispatch<ShowInfobox>( "##rioter_in_city_title##", "##rioter_in_city_text##",
+                                 true, "spy_riot" );
   crime.rioters.thisYear++;
 
-  RioterPtr rioter = Rioter::create( city );
+  RioterPtr rioter = Walker::create<Rioter>( city );
   rioter->send2City( house.as<Building>() );
 
   changeCrimeLevel( city, -crime::rioterCost );
@@ -313,7 +304,7 @@ void Disorder::Impl::generateRioter(PlayerCityPtr city, HousePtr house)
 
 void Disorder::Impl::generateProtestor(PlayerCityPtr city, HousePtr house)
 {
-  ProtestorPtr protestor = Protestor::create( city );
+  ProtestorPtr protestor = Walker::create<Protestor>( city );
   protestor->send2City( house.as<Building>() );
 
   crime.protestor.thisYear++;

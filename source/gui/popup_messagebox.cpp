@@ -55,14 +55,11 @@ Popup::Popup( Widget* parent, const std::string& title,
   setupUI( ":/gui/popupmessage.bui" );
   setCenter( parent->center() );
   
-  Label* lbTitle;
-  Label* lbTime;
-  Label* lbReceiver;
-  GET_WIDGET_FROM_UI( lbTitle )
+  INIT_WIDGET_FROM_UI(Label*, lbTitle )
   GET_DWIDGET_FROM_UI( _d, btnExit )
   GET_DWIDGET_FROM_UI( _d, btnHelp )
-  GET_WIDGET_FROM_UI( lbTime )
-  GET_WIDGET_FROM_UI( lbReceiver )
+  INIT_WIDGET_FROM_UI(Label*, lbTime )
+  INIT_WIDGET_FROM_UI(Label*, lbReceiver )
   GET_DWIDGET_FROM_UI( _d, lbText  )
 
   if( lbTitle ) lbTitle->setText( title );

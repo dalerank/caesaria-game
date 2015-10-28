@@ -92,8 +92,7 @@ void Destroy::_clearAll()
     {
       alsoDestroyed.insert( master->epos() );
 
-      auto event = ClearTile::create( master->epos() );
-      event->dispatch();
+      events::dispatch<ClearTile>( master->epos() );
 
       if( tile->overlay().isValid() )
       {

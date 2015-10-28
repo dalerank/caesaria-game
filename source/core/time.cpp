@@ -215,6 +215,19 @@ DateTime DateTime::time() const
   return ret;
 }
 
+unsigned int DateTime::hashdate() const
+{
+  return math::signnum( year() ) * ( math::abs( year() ) * 1000 + (int)month() * 50 + day() );
+}
+
+DateTime DateTime::fromhash(unsigned int hash)
+{
+  int y = hash / 1000;
+  int m = (hash % 1000) / 50;
+  int d = (hash % 50);
+  return DateTime( y, m, d );
+}
+
 unsigned int DateTime::elapsedTime()
 {
 #if defined(CAESARIA_PLATFORM_WIN)

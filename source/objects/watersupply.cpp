@@ -54,10 +54,9 @@ public:
 void Reservoir::_dropWater()
 {
   //now remove water flag from near tiles
-  Tilemap& tmap = _city()->tilemap();
-  TilesArea reachedTiles( tmap, pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
+  TilesArea reachedTiles( _map(), pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
 
-  foreach( tile, reachedTiles ) { (*tile)->setParam( Tile::pReservoirWater, 0 ); }
+  for( auto&& tile : reachedTiles ) { tile->setParam( Tile::pReservoirWater, 0 ); }
 }
 
 void Reservoir::_waterStateChanged()
@@ -163,12 +162,12 @@ void Reservoir::timeStep(const unsigned long time)
   //filled area, that reservoir present
   if( game::Date::isWeekChanged() )
   {
-    TilesArea reachedTiles( _city()->tilemap(), pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
+    TilesArea reachedTiles( _map(), pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
 
-    foreach( tile, reachedTiles )
+    for( auto&& tile : reachedTiles )
     {
-      int value = (*tile)->param( Tile::pReservoirWater );
-      (*tile)->setParam( Tile::pReservoirWater, math::clamp( value+1, 0, 20 ) );
+      int value = tile->param( Tile::pReservoirWater );
+      tile->setParam( Tile::pReservoirWater, math::clamp( value+1, 0, 20 ) );
     }
   }
 
@@ -247,7 +246,7 @@ void WaterSource::timeStep( const unsigned long time )
 
 void WaterSource::_produceWater(const TilePos* points, const int size)
 {
-  Tilemap& tilemap = _city()->tilemap();
+  Tilemap& tilemap = _map();
 
   for( int index=0; index < size; index++ )
   {
@@ -273,8 +272,7 @@ void WaterSource::_setError(const std::string& error){  _d->errorStr = error;}
 
 void WaterSource::broke()
 {
-  Tilemap& tilemap = _city()->tilemap();
-  TilesArray tiles = tilemap.rect( pos() - TilePos( 1, 1), size() + Size(2) );
+  TilesArray tiles = _map().rect( pos() - TilePos( 1, 1), size() + Size(2) );
 
   int saveWater = water();
   _d->water = 0;

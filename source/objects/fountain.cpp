@@ -79,7 +79,7 @@ void Fountain::deliverService()
   if( !_d->haveReservoirWater )
     return;
 
-  auto serviceMan = ServiceWalker::create( _city(), serviceType() );
+  auto serviceMan = Walker::create<ServiceWalker>( _city(), serviceType() );
   serviceMan->setBase( BuildingPtr( this ) );
   serviceMan->setReachDistance( 4 );
   ReachedBuildings reachedBuildings = serviceMan->getReachedBuildings( tile().pos() );
@@ -109,7 +109,7 @@ void Fountain::timeStep(const unsigned long time)
 
     if( needWorkers() > 0 )
     {
-      auto recruter = Recruter::create( _city() );
+      auto recruter = Walker::create<Recruter>( _city() );
       recruter->once( this, needWorkers(), _d->fillDistance * 2);
     }
   }  
@@ -156,22 +156,21 @@ bool Fountain::isNeedRoad() const { return false; }
 
 bool Fountain::haveReservoirAccess() const
 {
-  return TilesArea( _city()->tilemap(), 10, pos() ).overlays().count<Reservoir>() > 0;
+  return TilesArea( _map(), 10, pos() ).overlays().count<Reservoir>() > 0;
 }
 
 void Fountain::destroy()
 {
   ServiceBuilding::destroy();
 
-  TilesArea reachedTiles( _city()->tilemap(), _d->fillDistance, pos() );
+  TilesArea reachedTiles( _map(), _d->fillDistance, pos() );
 
   for( auto tile : reachedTiles )
     tile->setParam( Tile::pFountainWater, 0 );
 
   if( numberWorkers() > 0 )
   {
-    GameEventPtr e = ReturnWorkers::create( pos(), numberWorkers() );
-    e->dispatch();
+    events::dispatch<ReturnWorkers>( pos(), numberWorkers() );
   }
 }
 
@@ -213,7 +212,7 @@ void Fountain::_dayUpdate()
 
   if( mayWork() )
   {
-    TilesArea reachedTiles( _city()->tilemap(), _d->fillDistance, pos() );
+    TilesArea reachedTiles( _map(), _d->fillDistance, pos() );
 
     for( auto tile : reachedTiles )
     {

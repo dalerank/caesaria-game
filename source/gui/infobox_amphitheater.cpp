@@ -64,7 +64,7 @@ AboutAmphitheater::~AboutAmphitheater() {}
 
 void AboutAmphitheater::_updateWarnings()
 {
-  new Label( this, Rect( 35, 190, width() - 35, 190 + 20 ), _("##amphitheater_haveno_gladiatorpit##") );
+  add<Label>( Rect( 35, 190, width() - 35, 190 + 20 ), _("##amphitheater_haveno_gladiatorpit##") );
 }
 
 void AboutAmphitheater::_updateShowsInfo( AmphitheaterPtr amph )
@@ -76,7 +76,7 @@ void AboutAmphitheater::_updateShowsInfo( AmphitheaterPtr amph )
     text = utils::format( 0xff, "%s %d %s", "##amphitheater_show_runs##", lastShowDate.daysTo( game::Date::current() ), "##days##" );
   }
 
-  new Label( this, Rect( 35, 220, width() - 35, 220 + 20 ), text );
+  add<Label>( Rect( 35, 220, width() - 35, 220 + 20 ), text );
 }
 
 void AboutAmphitheater::_updateBouthsInfo( AmphitheaterPtr amph )
@@ -87,7 +87,7 @@ void AboutAmphitheater::_updateBouthsInfo( AmphitheaterPtr amph )
     DateTime lastGlBoutDate = amph->lastShow( Amphitheater::gladiatorBouts );
     text = utils::format( 0xff, "%s %d %s", "##amphitheater_gladiator_contest_runs##", lastGlBoutDate.daysTo( game::Date::current() ), "##days##" );
   }
-  new Label( this, Rect( 35, 200, width() - 35, 200 + 20 ), text );
+  add<Label>( Rect( 35, 200, width() - 35, 200 + 20 ), text );
 }
 
 }//end namespace infobox

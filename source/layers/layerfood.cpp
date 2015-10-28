@@ -121,7 +121,7 @@ void Food::handleEvent(NEvent& event)
 
           if( houseHabitantsCount > 0 )
           {
-            good::Store& st = house->goodStore();
+            good::Store& st = house->store();
             int foodQty = 0;
             for( good::Product k=good::wheat; k <= good::vegetable; ++k )
             {
@@ -149,14 +149,6 @@ void Food::handleEvent(NEvent& event)
   }
 
   Layer::handleEvent( event );
-}
-
-LayerPtr Food::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new Food( camera, city ) );
-  ret->drop();
-
-  return ret;
 }
 
 Food::Food( Camera& camera, PlayerCityPtr city)

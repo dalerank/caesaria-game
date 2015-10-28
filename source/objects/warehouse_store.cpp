@@ -111,20 +111,20 @@ int WarehouseStore::getMaxStore(const good::Product goodType)
   return freeRoom;
 }
 
-void WarehouseStore::applyStorageReservation( good::Stock &stock, const int reservationID )
+bool WarehouseStore::applyStorageReservation( good::Stock &stock, const int reservationID )
 {
   good::Stock reservedStock = getStorageReservation(reservationID, true);
 
   if (stock.type() != reservedStock.type())
   {
     Logger::warning( "Warehouse: GoodType does not match reservation" );
-    return;
+    return false;
   }
 
   if (stock.qty() < reservedStock.qty())
   {
     Logger::warning( "Warehouse: Quantity does not match reservation" );
-    return;
+    return false;
   }
 
 
@@ -159,9 +159,10 @@ void WarehouseStore::applyStorageReservation( good::Stock &stock, const int rese
   }
 
   _warehouse->computePictures();
+  return true;
 }
 
-void WarehouseStore::applyRetrieveReservation(good::Stock& stock, const int reservationID)
+bool WarehouseStore::applyRetrieveReservation(good::Stock& stock, const int reservationID)
 {
   good::Stock reservedStock = getRetrieveReservation(reservationID, true);
 
@@ -170,7 +171,7 @@ void WarehouseStore::applyRetrieveReservation(good::Stock& stock, const int rese
     Logger::warning( "Warehouse: GoodType does not match reservation need={} have={}",
                      good::Helper::name(reservedStock.type()),
                      good::Helper::name(stock.type()) );
-    return;
+    return false;
   }
   if( stock.capacity() < stock.qty() + reservedStock.qty() )
   {
@@ -220,6 +221,7 @@ void WarehouseStore::applyRetrieveReservation(good::Stock& stock, const int rese
   }
 
   _warehouse->computePictures();
+  return true;
 }
 
 void WarehouseStore::retrieve(good::Stock& stock, const int amount)

@@ -289,25 +289,21 @@ void C3Map::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
 
-  BorderInfo borderInfo;
-
-  borderInfo.roadEntry = TilePos( i, size - j - 1 );
+  ioCity->setBorderInfo( PlayerCity::roadEntry, TilePos( i, size - j - 1 ) );
 
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
-  borderInfo.roadExit = TilePos( i, size - j - 1 );
+  ioCity->setBorderInfo( PlayerCity::roadExit, TilePos( i, size - j - 1 ) );
 
   // init boat entry/exit point
   f.seekg(kBoatEntry, std::ios::beg);
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
-  borderInfo.boatEntry = TilePos( i, size - j - 1 );
+  ioCity->setBorderInfo( PlayerCity::boatEntry, TilePos( i, size - j - 1 ) );
 
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
-  borderInfo.boatExit = TilePos( i, size - j - 1);
-
-  ioCity->setBorderInfo( borderInfo );
+  ioCity->setBorderInfo( PlayerCity::boatExit, TilePos( i, size - j - 1) );
 
   //std::cout << "road entry at:" << ioCity.getRoadEntryI() << "," << ioCity.getRoadEntryJ() << std::endl;
   //std::cout << "road exit at:"  << ioCity.getRoadExitI()  << "," << ioCity.getRoadExitJ()  << std::endl;

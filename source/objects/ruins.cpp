@@ -67,7 +67,7 @@ void BurningRuins::timeStep(const unsigned long time)
     bool needSpread = ( state( pr::spreadFire ) == 0 && state( pr::fire ) < 50 );
     if( needSpread )
     {
-      OverlayList overlays = _city()->tilemap().getNeighbors( pos() ).overlays();
+      OverlayList overlays = _map().getNeighbors( pos() ).overlays();
 
       setState( pr::spreadFire, 1 );
       for( unsigned int i=0; i < overlays.size(); ++i )
@@ -130,8 +130,7 @@ void BurningRuins::destroy()
     fire->rmLocation( pos() );
   }
 
-  GameEventPtr event = BuildAny::create( pos(), p.object() );
-  event->dispatch();
+  events::dispatch<BuildAny>( pos(), p.object() );
 }
 
 void BurningRuins::collapse() {}
@@ -296,8 +295,7 @@ void PlagueRuins::destroy()
   p->drop();
   p->setInfo( pinfo() );
 
-  GameEventPtr event = BuildAny::create( pos(), p.object() );
-  event->dispatch();
+  events::dispatch<BuildAny>( pos(), p.object() );
 }
 
 void PlagueRuins::applyService(ServiceWalkerPtr walker){}

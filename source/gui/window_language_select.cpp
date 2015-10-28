@@ -48,31 +48,30 @@ LanguageSelect::LanguageSelect(gui::Widget* parent, vfs::Path model, const std::
   : Label( parent, Rect( Point(), size ), "", false, gui::Label::bgWhiteFrame ),
     _d( new Impl )
 {
-  ListBox* lbx = new ListBox( this, Rect( 0, 0, 1, 1 ), -1, true, true );
-  PushButton* btn = new PushButton( this, Rect( 0, 0, 1, 1), _("##continue##") );
+  auto&& listbox = add<ListBox>( Rect(), -1, true, true );
+  auto&& btnSelect = add<PushButton>( Rect(), _("##continue##") );
+  listbox.setGeometry( 0.05, 0.05, 0.95, 0.85 );
+  btnSelect.setGeometry( 0.1, 0.88, 0.9, 0.95 );
 
-  WidgetEscapeCloser::insertTo( this );
-  setCenter( parent->center() );
-  lbx->setFocus();
-  lbx->setGeometry( RectF( 0.05, 0.05, 0.95, 0.85 ) );
-  btn->setGeometry( RectF( 0.1, 0.88, 0.9, 0.95 ) );
+  WidgetEscapeCloser::insertTo( this );  
+  moveTo( Widget::parentCenter );
 
   _d->model = model;
   VariantMap languages = config::load( _d->model );
 
-  int currentIndex = -1;
   for( auto& it : languages )
   {
-    lbx->addItem( it.first );
-    std::string ext = it.second.toMap().get( literals::ext ).toString();
-    if( ext == current )
-      currentIndex = lbx->itemsCount() - 1;
+    std::string languageHash = it.second.toMap().get( literals::ext ).toString();
+    auto&& item = listbox.addItem( it.first );
+    item.setTag( languageHash );
   }
 
-  lbx->setSelected( currentIndex );
+  listbox.setSelectedTag( current );
 
-  CONNECT( lbx, onItemSelected(), this, LanguageSelect::_changeLanguage )
-      CONNECT( btn, onClicked(),      this, LanguageSelect::_apply          )
+  CONNECT( &listbox,   onItemSelected(), this, LanguageSelect::_changeLanguage )
+  CONNECT( &btnSelect, onClicked(),      this, LanguageSelect::_apply          )
+
+  listbox.setFocus();
 }
 
 LanguageSelect::~LanguageSelect() {}

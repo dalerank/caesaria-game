@@ -23,10 +23,9 @@
 
 class FishingBoat : public Ship
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
   typedef enum { go2fishplace, catchFish, back2base, finishCatch, unloadFish, ready2Catch, wait } State;
-
-  static FishingBoatPtr create( PlayerCityPtr city );
 
   void send2city( CoastalFactoryPtr base, TilePos start);
 

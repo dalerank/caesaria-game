@@ -116,10 +116,11 @@ const Picture& Road::picture( const city::AreaInfo& areaInfo) const
       if( tile->getFlag( Tile::tlRoad ) || tile->overlay().is<Road>() )
       {
         const TilePos& p = areaInfo.pos;
-        if( epos == p.northnb() ) directionFlags |= road2north; // road to the north
-        else if ( epos == p.southnb() ) directionFlags |= road2south; // road to the south
-        else if ( epos == p.eastnb() ) directionFlags |= road2east; // road to the east
-        else if ( epos == p.westnb() ) directionFlags |= road2west; // road to the west
+        TilePos::Neighbors nb = p.nb();
+        if( epos == nb.north() ) directionFlags |= road2north; // road to the north
+        else if ( epos == nb.south() ) directionFlags |= road2south; // road to the south
+        else if ( epos == nb.east() ) directionFlags |= road2east; // road to the east
+        else if ( epos == nb.west() ) directionFlags |= road2west; // road to the west
       }
     }
   }
@@ -405,7 +406,7 @@ const Picture& Plaza::picture() const
 
 void Plaza::updatePicture()
 {
-  TilesArea nearTiles( _city()->tilemap(), pos(), Size(2) );
+  TilesArea nearTiles( _map(), pos(), Size(2) );
 
   bool canGrow2squarePlaza = ( nearTiles.size() == 4 ); // be carefull on map edges
   for( auto tile : nearTiles )

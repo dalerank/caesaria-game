@@ -23,7 +23,7 @@
 #include "game/gamedate.hpp"
 #include "walkers_factory.hpp"
 
-REGISTER_SOLDIER_IN_WALKERFACTORY( walker::romeSpearman, walker::romeSpearman, RomeArcher, archer )
+REGISTER_NAMED_CLASS_IN_WALKERFACTORY( walker::romeSpearman, RomeArcher, archer )
 
 RomeArcher::RomeArcher(PlayerCityPtr city, walker::Type type )
   : RomeSoldier( city, type )
@@ -34,17 +34,9 @@ RomeArcher::RomeArcher(PlayerCityPtr city, walker::Type type )
 
 void RomeArcher::_fire( TilePos p )
 {
-  SpearPtr spear = Spear::create( _city() );
+  SpearPtr spear = Walker::create<Spear>( _city() );
   spear->toThrow( pos(), p );
   wait( game::Date::days2ticks( 1 ) / 2 );
-}
-
-RomeArcherPtr RomeArcher::create(PlayerCityPtr city, walker::Type type)
-{
-  RomeArcherPtr ret( new RomeArcher( city, type ) );
-  ret->drop();
-
-  return ret;
 }
 
 void RomeArcher::timeStep(const unsigned long time)

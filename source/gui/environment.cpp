@@ -552,25 +552,25 @@ Point Ui::cursorPos() const {  return _d->cursorPos; }
 
 Widget* UiTooltipWorker::standart(Widget& parent, Widget* hovered, Point cursor)
 {
-  Label* elm = new Label( &parent, Rect( 0, 0, 2, 2 ), hovered->tooltipText(), true, Label::bgSimpleWhite );
-  elm->setSubElement(true);
-  elm->setTextAlignment( align::upperLeft, align::upperLeft );
-  elm->setTextOffset( Point( 5, 5 ) );
+  Label& elm = parent.add<Label>( Rect( 0, 0, 2, 2 ), hovered->tooltipText(), true, Label::bgSimpleWhite );
+  elm.setSubElement(true);
+  elm.setTextAlignment( align::upperLeft, align::upperLeft );
+  elm.setTextOffset( Point( 5, 5 ) );
 
-  Size tooltipSize( elm->textWidth() + 20, elm->textHeight() + 2 );
+  Size tooltipSize( elm.textWidth() + 20, elm.textHeight() + 2 );
   if( tooltipSize.width() > parent.width() * 0.75 )
   {
     tooltipSize.setWidth( parent.width() * 0.5 );
-    tooltipSize.setHeight( elm->textHeight() * 2 + 10 );
-    elm->setWordwrap( true );
+    tooltipSize.setHeight( elm.textHeight() * 2 + 10 );
+    elm.setWordwrap( true );
   }
 
   Rect rect( cursor, tooltipSize );
 
   rect -= Point( tooltipSize.width() + 20, -20 );
-  elm->setGeometry( rect );
+  elm.setGeometry( rect );
 
-  return elm;
+  return &elm;
 }
 
 void UiTooltipWorker::update( unsigned int time, Widget& rootWidget, bool showTooltips,

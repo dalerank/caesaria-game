@@ -28,7 +28,7 @@ namespace gui
 //! constructor
 void ModalScreen::assignTo( Widget* widget )
 {
-  ModalScreen* mdScr = new ModalScreen( widget->parent() );
+  ModalScreen* mdScr = &widget->parent()->add<ModalScreen>();
   mdScr->addChild( widget );
 }
 

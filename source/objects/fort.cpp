@@ -282,8 +282,7 @@ void FortArea::destroy()
   Building::destroy();
   if( base().isValid() )
   {
-    GameEventPtr e = ClearTile::create( _d->basePos );
-    e->dispatch();
+    events::dispatch<ClearTile>( _d->basePos );
   }
 }
 
@@ -383,8 +382,7 @@ void Fort::destroy()
 
   if( _d->area.isValid()  )
   {
-    GameEventPtr e = ClearTile::create( _d->area->pos() );
-    e->dispatch();
+    events::dispatch<ClearTile>( _d->area->pos() );
     _d->area = 0;
   }
 
@@ -602,9 +600,11 @@ bool Fort::build( const city::AreaInfo& info )
     _setError( "##need_barracks_for_work##" );
   }
 
-  _setPatrolPoint( PatrolPoint::create( info.city, this,
-                                        ResourceGroup::sprites, _d->flagIndex, 8,
-                                        info.pos + TilePos( 3, 3 ) ) );
+  auto pp = Walker::create<PatrolPoint>( info.city, this,
+                                         ResourceGroup::sprites, _d->flagIndex, 8,
+                                         info.pos + TilePos( 3, 3 ) );
+  pp->attach();
+  _setPatrolPoint( pp );
 
   return true;
 }
