@@ -3,6 +3,7 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := main
+LOCAL_SHORT_COMMANDS := true
 
 STEAM_PATH     := ../steam
 GAME_PATH := $(LOCAL_PATH)
