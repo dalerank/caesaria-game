@@ -79,7 +79,7 @@ MissionTargets::MissionTargets( Widget* parent, int id, const Rect& rectangle )
   Widget::setupUI( ":/gui/targets.gui" );
 
   WidgetEscapeCloser::insertTo( this );
-  GameAutoPause::insertTo( this );
+  GameAutoPause::insertTo( this, true );
 
   INIT_WIDGET_FROM_UI( TexturedButton*, btnExit )
 

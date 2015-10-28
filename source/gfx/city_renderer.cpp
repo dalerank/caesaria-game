@@ -246,7 +246,7 @@ void CityRenderer::render()
   {
     lastZoom = _d->camera.zoom();
     zoom = lastZoom / 100.f;
-    _d->camera.setViewport( engine.screenSize() / zoom );
+    _d->camera.setViewport( engine.viewportSize()  / zoom );
   }
 
   zoom = lastZoom / 100.f;

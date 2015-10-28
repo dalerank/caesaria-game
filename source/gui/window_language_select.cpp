@@ -54,7 +54,7 @@ LanguageSelect::LanguageSelect(gui::Widget* parent, vfs::Path model, const std::
   btnSelect.setGeometry( 0.1, 0.88, 0.9, 0.95 );
 
   WidgetEscapeCloser::insertTo( this );  
-  setCenter( parent->center() );
+  moveTo( Widget::parentCenter );
 
   _d->model = model;
   VariantMap languages = config::load( _d->model );

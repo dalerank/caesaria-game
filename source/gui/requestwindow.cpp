@@ -61,7 +61,7 @@ EmperrorRequestWindow::~EmperrorRequestWindow() {}
 EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::RequestPtr request )
   : Window( parent, Rect( 0, 0, 480, 320 ), "" ), _d( new Impl )
 {
-  GameAutoPause::insertTo( this );
+  GameAutoPause::insertTo( this, true );
 
   std::string uiFile = _d->video.empty() ? ":/gui/request.gui" : ":/gui/request_video.gui";
 

@@ -75,6 +75,7 @@ public:
   SDL_Window* window;
   SDL_Renderer* renderer;
   SdlBatcher batcher;
+  Size viewportSize;
 
   MaskInfo mask;
   int sheigth;
@@ -298,6 +299,11 @@ void SdlEngine::init()
   _d->sheigth = _srcSize.height();
   _d->renderer = renderer;
 
+  float wx, wy;
+  //SDL_GetRendererOutputSize( _d->renderer, &w, &h );
+  SDL_RenderGetScale( _d->renderer, &wx, &wy);
+  _d->viewportSize = _srcSize * wx;
+
   _d->fpsTx = Picture( Size( 200, 20 ), 0, true );
 }
 
@@ -400,6 +406,8 @@ void SdlEngine::endRenderFrame()
 
   _d->drawCall = 0;
 }
+
+const Size& SdlEngine::viewportSize() const { return _d->viewportSize; }
 
 void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* clipRect )
 {    

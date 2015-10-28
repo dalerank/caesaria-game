@@ -66,16 +66,16 @@ WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, cons
   }
 
   int index=0;
-  foreach( goodType, good::all() )
+  for( auto& goodType : good::all() )
   {
-    if( excludeGoods.count( *goodType ) > 0 )
+    if( excludeGoods.count( goodType ) > 0 )
       continue;
 
-    const good::Orders::Order rule = d->warehouse->store().getOrder( *goodType );
+    const good::Orders::Order rule = d->warehouse->store().getOrder( goodType );
 
     if( rule != good::Orders::none )
     {
-      OrderGoodWidget::create( index, *goodType, _ordersArea(), d->warehouse->store() );
+      OrderGoodWidget::create( index, goodType, _ordersArea(), d->warehouse->store() );
       index++;
     }
   }

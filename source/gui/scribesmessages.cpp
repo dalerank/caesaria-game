@@ -159,7 +159,7 @@ ScribesMessages::ScribesMessages( Widget* p, PlayerCityPtr city )
   setCenter( p->center() );
 
   WidgetEscapeCloser::insertTo( this );
-  GameAutoPause::insertTo( this );
+  GameAutoPause::insertTo( this, true );
 
   _d->lbxMessages = &add<ScribesListBox>( Rect( 16, 60, width() - 16, height() - 50 ) );
 

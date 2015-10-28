@@ -78,7 +78,7 @@ SaveGame::SaveGame(Ui *ui, vfs::Directory dir, std::string fileExt, int id )
   moveTo( Widget::parentCenter );
 
   WidgetEscapeCloser::insertTo( this );
-  GameAutoPause::insertTo( this );
+  GameAutoPause::insertTo( this, true );
   
   GET_DWIDGET_FROM_UI( _d, edFilename )
   GET_DWIDGET_FROM_UI( _d, lbxSaves )

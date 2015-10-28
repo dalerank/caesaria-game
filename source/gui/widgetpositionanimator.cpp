@@ -40,7 +40,8 @@ PositionAnimator::PositionAnimator( Widget* node,
 	: WidgetAnimator( node, flags ), _d( new Impl )
 {
   //"parent must be exist"
-  _CAESARIA_DEBUG_BREAK_IF( !node );
+  if( !node )
+    return;
 
   _d->pos.stop = stopPos;
   _d->time = time;

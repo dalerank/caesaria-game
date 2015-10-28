@@ -434,6 +434,8 @@ protected:
    * geometry.
    */
   virtual void _finalizeResize();
+  virtual bool _onButtonClicked( Widget* sender ) { return false; }
+  virtual bool _onListboxChanged( Widget* sender ) { return false; }
   virtual void _finalizeMove();
 
   Widgets& _getChildren();

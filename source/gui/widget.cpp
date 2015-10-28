@@ -59,9 +59,9 @@ void Widget::setTextAlignment(align::Type horizontal, align::Type vertical )
     return;
   }
 
-  __D_IMPL(d,Widget)
-  d->textHorzAlign = horizontal;
-  d->textVertAlign = vertical;
+  __D_REF(d,Widget)
+  d.textAlign.horizontal = horizontal;
+  d.textAlign.vertical = vertical;
 }
 
 void Widget::setMaxWidth( unsigned int width ) { _dfunc()->size.maximimum.setWidth( width );}
@@ -70,31 +70,30 @@ unsigned int Widget::height() const            { return relativeRect().height();
 Widget::Widget( Widget* parent, int id, const Rect& rectangle )
 : __INIT_IMPL(Widget)
 {
-  __D_IMPL(_d,Widget)
-  _d->align.left = align::upperLeft;
-  _d->align.right = align::upperLeft;
-  _d->align.top = align::upperLeft;
-  _d->align.bottom = align::upperLeft;
-  _d->flag.visible = true;
-  _d->size.maximimum = Size(0,0);
-  _d->size.mininimum = Size(1,1);
-  _d->parent = parent;
-  _d->id = id;
-  _d->flag.enabled = true;
-  _d->flag.internal = false;
-  _d->noClip = false;
-  _d->tabOrder = -1;
-  _d->isTabGroup = false;
-
-  _d->environment = parent ? parent->ui() : 0;
+  __D_REF(_d,Widget)
+  _d.align.left = align::upperLeft;
+  _d.align.right = align::upperLeft;
+  _d.align.top = align::upperLeft;
+  _d.align.bottom = align::upperLeft;
+  _d.flag.visible = true;
+  _d.size.maximimum = Size(0,0);
+  _d.size.mininimum = Size(1,1);
+  _d.parent = parent;
+  _d.id = id;
+  _d.flag.enabled = true;
+  _d.flag.internal = false;
+  _d.noClip = false;
+  _d.tabOrder = -1;
+  _d.isTabGroup = false;
+  _d.environment = parent ? parent->ui() : 0;
 
   Logger::warningIf( !parent, "Parent for widget is null" );
 
-  _d->rect.relative = rectangle;
-  _d->rect.absolute = rectangle;
-  _d->rect.clipping = rectangle;
-  _d->rect.desired = rectangle;
-  _d->flag.tabStop = false;
+  _d.rect.relative = rectangle;
+  _d.rect.absolute = rectangle;
+  _d.rect.clipping = rectangle;
+  _d.rect.desired = rectangle;
+  _d.flag.tabStop = false;
 
 #ifdef _DEBUG
   setDebugName( "AbstractWidget" );
@@ -253,7 +252,8 @@ void Widget::updateAbsolutePosition()
   _recalculateAbsolutePosition(false);
 
   // update all children
-  for( auto child : _d->children ) { child->updateAbsolutePosition(); }
+  for( auto child : _d->children )
+    child->updateAbsolutePosition();
 }
 
 Widget* Widget::getElementFromPoint( const Point& point )
@@ -802,6 +802,20 @@ bool Widget::onEvent( const NEvent& event )
     if (parent() && (parent()->parent() == NULL))
       return true;
 
+  bool resolved = false;
+  if( event.EventType == sEventGui )
+  {
+    switch( event.gui.type )
+    {
+    case guiButtonClicked: resolved = _onButtonClicked( event.gui.caller ); break;
+    case guiListboxChanged: resolved = _onListboxChanged( event.gui.caller ); break;
+    default: break;
+    }
+  }
+
+  if( resolved )
+    return true;
+
   return parent() ? parent()->onEvent(event) : false;
 }
 
@@ -885,8 +899,8 @@ int Widget::left() const { return relativeRect().left(); }
 int Widget::right() const { return relativeRect().right(); }
 void Widget::hide() { setVisible( false ); }
 void Widget::show() {  setVisible( true ); }
-Alignment Widget::horizontalTextAlign() const{  return _dfunc()->textHorzAlign; }
-Alignment Widget::verticalTextAlign() const{  return _dfunc()->textVertAlign;}
+Alignment Widget::horizontalTextAlign() const{  return _dfunc()->textAlign.horizontal; }
+Alignment Widget::verticalTextAlign() const{  return _dfunc()->textAlign.vertical;}
 void Widget::deleteLater(){ ui()->deleteLater( this ); }
 void Widget::setFont(FontType type, NColor color)
 {

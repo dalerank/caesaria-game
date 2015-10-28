@@ -58,7 +58,7 @@ SoundOptions::SoundOptions(Widget* parent)
   setCenter( parent->center() );
 
   WidgetEscapeCloser::insertTo( this );
-  GameAutoPause::insertTo( this );
+  GameAutoPause::insertTo( this, true );
 
   INIT_WIDGET_FROM_UI( PushButton*, btnOk )
   if( btnOk ) btnOk->setFocus();
