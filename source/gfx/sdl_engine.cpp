@@ -664,6 +664,10 @@ void SdlEngine::setScale( float scale )
 
 void SdlEngine::setVirtualSize( const Size& size )
 {
+  bool needDraw = _d->batcher.finish();
+  if( needDraw )
+    _d->renderState();
+
   const Size* s = size.width() > 0 ? &size : &_srcSize;
   SDL_RenderSetLogicalSize( _d->renderer, s->width(), s->height() );
 }

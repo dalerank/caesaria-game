@@ -84,7 +84,6 @@ public:
   TilemapCamera camera;  // visible map area
   Layers layers;
   Point currentCursorPos;
-  int lastZoom;
   Renderer::ModePtr changeCommand;
 
 public:
@@ -114,7 +113,6 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   _d->guienv = guienv;
   _d->camera.init( *_d->tilemap, engine->screenSize() );
   _d->engine = engine;
-  _d->lastZoom = _d->camera.zoom();
 
   addLayer( Simple::create( _d->camera, city ) );
   addLayer( Water::create( _d->camera, city ) );
@@ -230,16 +228,7 @@ void CityRenderer::render()
 {  
   LayerPtr layer = _d->currentLayer;
   Engine& engine = *_d->engine;
-
-  if( _d->lastZoom != _d->camera.zoom() )
-  {
-    _d->lastZoom = _d->camera.zoom();
-
-    float fzoom = _d->lastZoom / 100.f;
-    Size s = engine.screenSize() * (1/fzoom);
-    engine.setScale( fzoom );
-    _d->camera.setViewport( s );
-  }
+  static int lastZoom = 0;
 
   if( _d->city->getOption( PlayerCity::updateTiles ) > 0 )
   {
@@ -252,7 +241,17 @@ void CityRenderer::render()
     return;
   }
 
-  engine.setScale( _d->lastZoom / 100.f );
+  float zoom;
+  if( lastZoom != _d->camera.zoom() )
+  {
+    lastZoom = _d->camera.zoom();
+    zoom = lastZoom / 100.f;
+    _d->camera.setViewport( engine.screenSize() / zoom );
+  }
+
+  zoom = lastZoom / 100.f;
+
+  engine.setScale( zoom );
 
   layer->beforeRender( engine );
   layer->render( engine );
