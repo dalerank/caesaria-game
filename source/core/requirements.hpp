@@ -40,7 +40,7 @@
   #define CAESARIA_COMPILER_NAME "unknown"
 #endif
 
-#define CAESARIA_LITERALCONST(name) namespace literals { static const char* name = CAESARIA_STR_EXT(name); }
+#define CAESARIA_LITERALCONST(name) namespace literals { auto name = CAESARIA_STR_EXT(name); }
 
 #define _USE_ASSERT_4_DEBUG
 
@@ -86,6 +86,7 @@
 
 #define __INIT_IMPL(Class) _d##Class( new Impl )
 #define __D_IMPL(a,Class) ScopedPtr<Impl>& a = _d##Class;
+#define __D_REF(a,Class) Impl& a = *(_d##Class).data();
 #define __D_IMPL_CONST(a,Class) const ScopedPtr<Impl>& a = _d##Class;
 
 #endif //__CAESARIA_REQUIREMENTS_INCLUDE_

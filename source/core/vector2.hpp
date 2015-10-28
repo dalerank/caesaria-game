@@ -168,14 +168,14 @@ public:
             _x += center._x;
             _y += center._y;
             return *this;
-    }
+  }
 
-    //! Normalize the vector.
-    /** The null vector is left untouched.
-    \return Reference to this vector, after normalization. */
-    Vector2<T>& normalize()
-    {
-            float length = (float)(_x*_x + _y*_y);
+  //! Normalize the vector.
+  /** The null vector is left untouched.
+  \return Reference to this vector, after normalization. */
+  Vector2<T>& normalize()
+  {
+    float length = (float)(_x*_x + _y*_y);
 
     if (math::isEqual(length, 0.f))
                     return *this;

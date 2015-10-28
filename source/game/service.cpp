@@ -65,7 +65,7 @@ Service::Type ServiceHelper::getType( const std::string& name )
 
   if( type == instance().getInvalid() )
   {
-    Logger::warning( "Can't find Service::Type for serviceName %s", name.c_str() );
+    Logger::warning( "Can't find Service::Type for serviceName {0}", name );
     //_CAESARIA_DEBUG_BREAK_IF( "Can't find  Service::Type for serviceName" );
   }
 
@@ -78,7 +78,7 @@ std::string ServiceHelper::getName( Service::Type type )
 
   if( name.empty() )
   {
-    Logger::warning( "Can't find service typeName for %d", type );
+    Logger::warning( "Can't find service typeName for {0}", type );
     //_CAESARIA_DEBUG_BREAK_IF( "Can't find service typeName by ServiceType" );
   }
 

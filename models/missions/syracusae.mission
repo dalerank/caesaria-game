@@ -7,7 +7,10 @@
   player.rank : 3
   adviserEnabled : true
   fishPlaceEnabled : false
-	
+  preview.text : "##syracusae_preview_mission##"
+  preview.title : "##syracusae_preview_title##"
+  preview.image : ""
+
   win :
   {
     population : 4000

@@ -78,8 +78,7 @@ Pathway ChastenerElephant::_findPathway2NearestConstruction( unsigned int range 
 
 bool ChastenerElephant::_tryAttack()
 {
-  Tilemap& tmap = _city()->tilemap();
-  ConstructionList constructions = tmap.getNeighbors( pos() )
+  ConstructionList constructions = _map().getNeighbors( pos() )
                                        .overlays()
                                        .select<Construction>();
   for( auto ov : constructions )
@@ -91,14 +90,6 @@ bool ChastenerElephant::_tryAttack()
   }
 
   return EnemySoldier::_tryAttack();
-}
-
-ChastenerElephantPtr ChastenerElephant::create( PlayerCityPtr city)
-{
-  ChastenerElephantPtr ret( new ChastenerElephant( city ) );
-  ret->drop();
-
-  return ret;
 }
 
 int ChastenerElephant::agressive() const { return 4; }

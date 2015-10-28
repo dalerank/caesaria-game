@@ -38,35 +38,40 @@ void __loadEventsFromSection( const VariantMap& vm )
 {
   for( auto& it : vm )
   {
-    events::GameEventPtr e = events::PostponeEvent::create( it.first, it.second.toMap() );
-    e->dispatch();
+    events::dispatch<PostponeEvent>( it.first, it.second.toMap() );
   }
 }
 
-void addPopulationMilestones(PlayerCityPtr city)
+Finalizer::Finalizer(PlayerCityPtr city) :
+  _city( city )
+{
+
+}
+
+void Finalizer::addPopulationMilestones()
 {
   VariantMap freeplayVm = config::load( SETTINGS_RC_PATH( freeplay_opts ) );
   __loadEventsFromSection( freeplayVm[ "population_milestones" ].toMap() );
 }
 
-void addEvents(PlayerCityPtr city)
+void Finalizer::addEvents()
 {
   VariantMap freeplayVm = config::load( SETTINGS_RC_PATH( freeplay_opts ) );
   __loadEventsFromSection( freeplayVm[ "events" ].toMap() );
 }
 
-void resetFavour(PlayerCityPtr city)
+void Finalizer::resetFavour()
 {
-  world::Emperor& emperor = city->empire()->emperor();
-  emperor.updateRelation( city->name(), config::emperor::defaultFavor );
+  world::Emperor& emperor = _city->empire()->emperor();
+  emperor.updateRelation( _city->name(), config::emperor::defaultFavor );
 }
 
-void initBuildOptions(PlayerCityPtr city)
+void Finalizer::initBuildOptions()
 {
   city::development::Options bopts;
-  bopts = city->buildOptions();
+  bopts = _city->buildOptions();
   bopts.setGroupAvailable( city::development::all, true );
-  city->setBuildOptions( bopts );
+  _city->setBuildOptions( bopts );
 }
 
 }//end namespace freeplay

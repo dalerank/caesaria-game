@@ -158,7 +158,7 @@ void Pathway::setNextDirection( const Tilemap& tmap, Direction direction)
   case direction::northWest  : _d->endPos += TilePos( -1, 1 ); break;
   default:
     _d->endPos += TilePos( 0, 1 );  break;
-    Logger::warning( "Unexpected Direction:%d", direction);
+    Logger::warning( "Unexpected Direction:{0}", direction);
   break;
   }
 
@@ -200,7 +200,7 @@ bool Pathway::contains(const Tile& tile)
 
 void Pathway::prettyPrint() const
 {
-  Logger::warning( "pathWay from [%d,%d] to [%d,%d]",
+  Logger::warning( "pathWay from [{0},{1}] to [{2},{3}]",
                    _d->startPos.i(), _d->startPos.j(), _d->endPos.i(), _d->endPos.j() );
 
   std::string strDir = "";

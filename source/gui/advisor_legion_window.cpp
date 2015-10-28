@@ -39,6 +39,7 @@
 
 using namespace gfx;
 using namespace city;
+using namespace events;
 
 namespace gui
 {
@@ -97,7 +98,7 @@ public:
       fontB.draw( pic, qtyStr, 70, 22 );
 
       int moraleValue = _fort->legionMorale() / 10;
-      std::string moraleStr = utils::format( 0xff, "##legion_morale_%d##", moraleValue );
+      std::string moraleStr = fmt::format( "##legion_morale_{0}##", moraleValue );
       fontB.draw( pic, _( moraleStr ), 180, 15 );
     }    
   }
@@ -154,11 +155,11 @@ Legion::Legion( Widget* parent, int id, PlayerCityPtr city, FortList forts )
   int index=0;
   for( auto fort : forts )
   {
-    LegionButton* btn = new LegionButton( this, startLegionArea + legionButtonOffset, index++, fort );
+    auto buttonLegion = new LegionButton( this, startLegionArea + legionButtonOffset, index++, fort );
 
-    CONNECT( btn, signal.onShowLegion, this, Legion::_handleMove2Legion );
-    CONNECT( btn, signal.onLegionRetreat, this, Legion::_handleRetreaLegion );
-    CONNECT( btn, signal.onEmpireService, this, Legion::_handleServiceEmpire );
+    CONNECT( buttonLegion, signal.onShowLegion, this, Legion::_handleMove2Legion );
+    CONNECT( buttonLegion, signal.onLegionRetreat, this, Legion::_handleRetreaLegion );
+    CONNECT( buttonLegion, signal.onEmpireService, this, Legion::_handleServiceEmpire );
   }
 
   if( _d->lbBlackframe && forts.empty() )
@@ -168,7 +169,7 @@ Legion::Legion( Widget* parent, int id, PlayerCityPtr city, FortList forts )
 
   _d->updateAlarms( city );
 
-  TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  auto btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
   CONNECT( btnHelp, onClicked(), this, Legion::_showHelp );
 }
 
@@ -183,8 +184,7 @@ void Legion::draw( Engine& painter )
 void Legion::_handleMove2Legion(FortPtr fort)
 {
   parent()->deleteLater();
-  events::GameEventPtr e = events::MoveCamera::create( fort->patrolLocation() );
-  e->dispatch();
+  events::dispatch<MoveCamera>( fort->patrolLocation() );
 }
 
 void Legion::_handleRetreaLegion(FortPtr fort)
@@ -239,7 +239,7 @@ void Legion::Impl::updateAlarms(PlayerCityPtr city)
     return;
   }
 
-  if( mil->haveNotification( Notification::barbarian ) )
+  if( mil->haveNotification( notification::barbarian ) )
   {
     lbAlarm->setText( _("##barbarian_are_closing_city##") );
     return;

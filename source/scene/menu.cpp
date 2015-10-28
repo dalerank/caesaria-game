@@ -29,6 +29,7 @@
 #include "gui/pushbutton.hpp"
 #include "gui/label.hpp"
 #include "game/settings.hpp"
+#include "core/color_list.hpp"
 #include "gui/playername_window.hpp"
 #include "core/logger.hpp"
 #include "core/foreach.hpp"
@@ -225,8 +226,7 @@ void StartMenu::Impl::openDlcDirectory(Widget* sender)
 
 void StartMenu::Impl::showSoundOptions()
 {
-  auto event = events::ChangeSoundOptions::create();
-  event->dispatch();
+  events::dispatch<events::ChangeSoundOptions>();
 }
 
 void StartMenu::Impl::showLanguageOptions()
@@ -472,8 +472,7 @@ void StartMenu::Impl::showAdvancedMaterials()
 
 void StartMenu::Impl::showVideoOptions()
 {
-  auto event = events::SetVideoSettings::create();
-  event->dispatch();
+  events::dispatch<events::SetVideoSettings>();
 }
 
 void StartMenu::Impl::showMissionSelector()
@@ -623,11 +622,11 @@ void StartMenu::initialize()
       return;
     }
 
-    std::string text = utils::format( 0xff, "Build %d\n%s", CAESARIA_BUILD_NUMBER, steamName.c_str() );
+    std::string text = fmt::format( "Build {0}\n{1}", CAESARIA_BUILD_NUMBER, steamName );
     _d->lbSteamName = new Label( _d->game->gui()->rootWidget(), Rect( 100, 10, 400, 80 ), text );
     _d->lbSteamName->setTextAlignment( align::upperLeft, align::center );
     _d->lbSteamName->setWordwrap( true );
-    _d->lbSteamName->setFont( Font::create( FONT_3, DefaultColors::white ) );
+    _d->lbSteamName->setFont( Font::create( FONT_3, ColorList::white ) );
   }
 }
 

@@ -95,9 +95,9 @@ gui::OrderGoodWidget::OrderGoodWidget(Widget* parent, const Rect& rect, good::Pr
   _type = good;
   setFont( Font::create( FONT_1_WHITE ) );
 
-  _btnChangeRule = new PushButton( this, Rect( 140, 0, 140 + 240, height() ), "", -1, false, PushButton::blackBorderUp );
-  _btnVolume = new VolumeButton( this, Rect( _btnChangeRule->righttop(), Size( 40, height() ) ),
-                                 _storage.capacity( good ), _storage.capacity() );
+  _btnChangeRule = &add<PushButton>( Rect( 140, 0, 140 + 240, height() ), "", -1, false, PushButton::blackBorderUp );
+  _btnVolume = &add<VolumeButton>( Rect( _btnChangeRule->righttop(), Size( 40, height() ) ),
+                                   _storage.capacity( good ), _storage.capacity() );
 
   _btnChangeRule->setFont( Font::create( FONT_1_WHITE ) );
   updateBtnText();
@@ -146,7 +146,7 @@ void gui::OrderGoodWidget::updateBtnText()
   good::Orders::Order rule = _storage.getOrder( _type );
   if( rule > good::Orders::none )
   {
-    Logger::warning( "OrderGoodWidget: unknown rule %d", (int)rule );
+    Logger::warning( "OrderGoodWidget: unknown rule {0}", (int)rule );
     return;
   }
 

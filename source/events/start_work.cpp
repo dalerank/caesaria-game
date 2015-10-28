@@ -60,8 +60,7 @@ void StartWork::_exec(Game& game, unsigned int)
 {
   for( auto& i : _options )
   {
-    GameEventPtr e = PostponeEvent::create( i.first, i.second.toMap() );
-    e->dispatch();
+    events::dispatch<PostponeEvent>( i.first, i.second.toMap() );
   }
 }
 

@@ -19,7 +19,7 @@
 namespace gui
 {
 
-WidgetEscapeCloser::WidgetEscapeCloser(gui::Widget* parent)
+WidgetEscapeCloser::WidgetEscapeCloser(Widget* parent)
   : Widget( parent, -1, Rect() )
 {
   parent->installEventHandler( this );
@@ -28,9 +28,12 @@ WidgetEscapeCloser::WidgetEscapeCloser(gui::Widget* parent)
 void WidgetEscapeCloser::insertTo(Widget* parent)
 {
   if( parent )
-  {
-    new WidgetEscapeCloser( parent );
-  }
+    parent->add<WidgetEscapeCloser>();
+}
+
+void WidgetEscapeCloser::insertTo(Widget& parent)
+{
+  insertTo( &parent );
 }
 
 bool WidgetEscapeCloser::onEvent(const NEvent& event)

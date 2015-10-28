@@ -40,6 +40,7 @@
 #include "gfx/walker_debuginfo.hpp"
 #include "core/timer.hpp"
 #include "core/logger.hpp"
+#include "core/color_list.hpp"
 #include "gfx/animation_bank.hpp"
 #include "city/statistic.hpp"
 
@@ -59,10 +60,10 @@ public:
     Point start;
   } cursor;
 
-  Camera* camera;
-  Tile* currentTile;
-  PlayerCityPtr city;
-  Picture outline;
+  struct {
+    bool buildings = true;
+    bool trees = true;
+  } draw;
 
   struct {
     Picture image;
@@ -70,11 +71,26 @@ public:
   } tooltip;
 
   int nextLayer;
+  struct {
+    Layer::WalkerTypes walkers;
+    AlwaysDrawObjects objects;
+  } visible;
+
+  struct PictureInfo {
+    Point pos;
+    Picture pic;
+  };
+
+  typedef std::vector<PictureInfo> Pictures;
+
+  Pictures pictures;
   Picture terraintPic;
-  Layer::WalkerTypes vwalkers;
+  PlayerCityPtr city;
   Picture tilePosText;
+  Tile* currentTile;
+  Picture outline;
+  Camera* camera;
   Font debugFont;
-  AlwaysDrawObjects drObjects;
 
   int posMode;
 };
@@ -151,8 +167,7 @@ void Layer::handleEvent(NEvent& event)
       Tile* tile = _d->camera->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       if( tile )
       {
-        events::GameEventPtr e = events::ShowTileInfo::create( tile->epos() );
-        e->dispatch();
+        events::dispatch<events::ShowTileInfo>( tile->epos() );
       }
     }
     break;
@@ -206,7 +221,7 @@ TilesArray Layer::_getSelectedArea( TilePos startPos )
   return _city()->tilemap().area( outStartPos, outStopPos );
 }
 
-void Layer::drawPass( Engine& engine, Tile& tile, const Point& offset, Renderer::Pass pass)
+void Layer::drawPass( const RenderInfo& rinfo, Tile& tile, Renderer::Pass pass)
 {
   Picture refPic;
   bool find = false;
@@ -237,23 +252,23 @@ void Layer::drawPass( Engine& engine, Tile& tile, const Point& offset, Renderer:
   break;
   }
 
-  Point screenPos = tile.mappos() + offset;
+  Point screenPos = tile.mappos() + rinfo.offset;
   if( refPic.isValid() )
   {
-    engine.draw( refPic, screenPos );
+    rinfo.engine.draw( refPic, screenPos );
   }
 
   if( !find && tile.rov().isValid() )
   {
     const Pictures& pics = tile.rov()->pictures( pass );
-    engine.draw( pics, screenPos );
+    rinfo.engine.draw( pics, screenPos );
   }
 }
 
-void Layer::drawWalkers( Engine& engine, const Tile& tile, const Point& camOffset )
+void Layer::drawWalkers( const RenderInfo& rinfo, const Tile& tile)
 {
   Pictures pics;
-  const WalkerList& walkers = _city()->walkers( tile.pos() );
+  const WalkerList& walkers = _city()->walkers( tile.epos() );
   const Layer::WalkerTypes& vWalkers = visibleTypes();
 
   bool viewAll = vWalkers.count( walker::all );
@@ -264,7 +279,7 @@ void Layer::drawWalkers( Engine& engine, const Tile& tile, const Point& camOffse
     {
       pics.clear();
       wlk->getPictures( pics );
-      engine.draw( pics, wlk->mappos() + camOffset );
+      rinfo.engine.draw( pics, wlk->mappos() + rinfo.offset );
     }
   }
 }
@@ -290,16 +305,16 @@ void Layer::_setTooltipText(const std::string& text)
   }
 }
 
-void Layer::render( Engine& engine)
+void Layer::render( Engine& engine )
 {
-  __D_IMPL(_d,Layer)
-  const TilesArray& visibleTiles = _d->camera->tiles();
-  Point camOffset = _d->camera->offset();
+  __D_REF(d,Layer)
+  const TilesArray& visibleTiles = d.camera->tiles();
+  RenderInfo rinfo = { engine, d.camera->offset() };
 
   _camera()->startFrame();
   DrawOptions& opts = DrawOptions::instance();
   //FIRST PART: draw lands
-  drawLands( engine, _d->camera );
+  drawLands( rinfo, d.camera );
 
   if( opts.isFlag( DrawOptions::shadowOverlay ) )
   {
@@ -311,9 +326,9 @@ void Layer::render( Engine& engine)
   {
     int z = tile->epos().z();
 
-    drawProminentTile( engine, *tile, camOffset, z, false );
-    drawWalkers( engine, *tile, camOffset );
-    drawWalkerOverlap( engine, *tile, camOffset, z );
+    drawProminentTile( rinfo, *tile, z, false );
+    drawWalkers( rinfo, *tile );
+    drawWalkerOverlap( rinfo, *tile, z );
   }
 
   engine.resetColorMask();
@@ -332,33 +347,33 @@ void Layer::render( Engine& engine)
       else
       {
         if( wlk->getFlag( Walker::showDebugInfo ) )
-          WalkerDebugInfo::showPath( wlk, engine, _d->camera );
+          WalkerDebugInfo::showPath( wlk, rinfo );
       }
     }
 
     for( auto it : overDrawWalkers )
     {
-      WalkerDebugInfo::showPath( it, engine, _d->camera, DefaultColors::yellow );
+      WalkerDebugInfo::showPath( it, rinfo, ColorList::yellow );
     }
   }
 }
 
-void Layer::drawWalkerOverlap( Engine& engine, Tile& tile, const Point& offset, const int depth)
+void Layer::drawWalkerOverlap( const RenderInfo& rinfo, Tile& tile, const int depth)
 {
   Tile* master = tile.master();
 
   // multi-tile: draw the master tile.
   // single-tile: draw current tile
   // and it is time to draw the master tile
-  drawPass( engine, 0 == master ? tile : *master, offset, Renderer::overWalker );
+  drawPass( rinfo, 0 == master ? tile : *master, Renderer::overWalker );
 }
 
 const Layer::WalkerTypes& Layer::visibleTypes() const
 {
-  return _dfunc()->vwalkers;
+  return _dfunc()->visible.walkers;
 }
 
-void Layer::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, const int depth, bool force)
+void Layer::drawProminentTile( const RenderInfo& rinfo, Tile& tile, const int depth, bool force)
 {
   if( tile.isFlat() && !force )
   {
@@ -369,7 +384,7 @@ void Layer::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, 
 
   if( 0 == master )    // single-tile
   {
-    drawTile( engine, tile, offset );
+    drawTile( rinfo, tile );
     return;
   }
 
@@ -377,39 +392,42 @@ void Layer::drawProminentTile( Engine& engine, Tile& tile, const Point& offset, 
   // and it is time to draw the master tile
   if( !master->rendered() && master == &tile )
   {
-    drawTile( engine, *master, offset );
+    drawTile( rinfo, *master );
   }
 }
 
-void Layer::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Layer::drawTile(const RenderInfo& rinfo, Tile& tile)
 {
+  __D_IMPL(_d,Layer)
   if( !tile.rendered() )
   {
     if( tile.rov().isValid() )
     {
       registerTileForRendering( tile );
 
-      bool breakBuilding = is_kind_of<Building>( tile.rov() ) && !DrawOptions::instance().isFlag( DrawOptions::showBuildings );
-      bool breakTree = is_kind_of<Tree>( tile.rov() ) && !DrawOptions::instance().isFlag( DrawOptions::showTrees );
+      bool breakBuilding = is_kind_of<Building>( tile.rov() ) && !_d->draw.buildings;
+      bool breakTree = is_kind_of<Tree>( tile.rov() ) && !_d->draw.trees;
 
       if( !(breakBuilding || breakTree) )
-      {
-        drawPass( engine, tile, offset, Renderer::overlayGround );
-        drawPass( engine, tile, offset, Renderer::overlay );
-        drawPass( engine, tile, offset, Renderer::overlayAnimation );
-      }
+        drawOverlayedTile( rinfo, tile );
     }
     else
     {
-      drawPass( engine, tile, offset, Renderer::ground );
-      drawPass( engine, tile, offset, Renderer::groundAnimation );
+      drawLandTile( rinfo, tile );
     }
 
     tile.setRendered();
   }
 }
 
-void Layer::drawArea(Engine& engine, const TilesArray& area, const Point &offset, const std::string &resourceGroup, int tileId)
+void Layer::drawOverlayedTile( const RenderInfo& rinfo, Tile& tile )
+{
+  drawPass( rinfo, tile, Renderer::overlayGround    );
+  drawPass( rinfo, tile, Renderer::overlay          );
+  drawPass( rinfo, tile, Renderer::overlayAnimation );
+}
+
+void Layer::drawArea( const RenderInfo& rinfo, const TilesArray& area, const std::string &resourceGroup, int tileId)
 {
   if( area.empty() )
     return;
@@ -422,37 +440,36 @@ void Layer::drawArea(Engine& engine, const TilesArray& area, const Point &offset
                           : baseTile->j();
   for( auto tile : area )
   {
-    int tileBorders = ( tile->i() == leftBorderAtI ? 0 : OverlayPic::skipLeftBorder )
-                      + ( tile->j() == rightBorderAtJ ? 0 : OverlayPic::skipRightBorder );
+    int tileBorders = ( tile->i() == leftBorderAtI ? 0 : config::id.overlay.skipLeftBorder )
+                      + ( tile->j() == rightBorderAtJ ? 0 : config::id.overlay.skipRightBorder );
     Picture pic(resourceGroup, tileBorders + tileId);
-    engine.draw( pic, tile->mappos() + offset );
+    rinfo.engine.draw( pic, tile->mappos() + rinfo.offset );
   }
 }
 
-void Layer::drawLands( Engine& engine, Camera* camera )
+void Layer::drawLands( const RenderInfo& rinfo, Camera* camera )
 {
   const TilesArray& flatTiles = camera->flatTiles();
   const TilesArray& groundTiles = camera->groundTiles();
-  Point camOffset = camera->offset();
 
   // FIRST PART: draw all flat land (walkable/boatable)
   for( auto tile : groundTiles )
-    drawLandTile( engine, *tile, camOffset );
+    drawLandTile( rinfo, *tile );
 
   for( auto tile : flatTiles )
-    drawFlatTile( engine, *tile, camOffset );
+    drawFlatTile( rinfo, *tile );
 }
 
-void Layer::drawLandTile(Engine &engine, Tile &tile, const Point &camOffset)
+void Layer::drawLandTile(const RenderInfo& rinfo, Tile &tile)
 {
-  drawPass( engine, tile, camOffset, Renderer::ground );
-  drawPass( engine, tile, camOffset, Renderer::groundAnimation );
+  drawPass( rinfo, tile, Renderer::ground );
+  drawPass( rinfo, tile, Renderer::groundAnimation );
 }
 
-void Layer::drawFlatTile(Engine& engine, Tile& tile, const Point& camOffset)
+void Layer::drawFlatTile(const RenderInfo& rinfo, Tile& tile)
 {
   if( tile.rov().isValid() )
-    drawTile( engine, tile, camOffset );
+    drawTile( rinfo, tile );
 }
 
 void Layer::init( Point cursor )
@@ -465,6 +482,25 @@ void Layer::init( Point cursor )
 
 void Layer::beforeRender(Engine&)
 {
+  __D_IMPL(_d,Layer)
+  _d->draw.buildings = DrawOptions::instance().isFlag( DrawOptions::showBuildings );
+  _d->draw.trees = DrawOptions::instance().isFlag( DrawOptions::showTrees );
+  _d->pictures.clear();
+}
+
+void Layer::_addPicture(const Point& pos, const Picture& pic)
+{
+  Impl::PictureInfo info = { pos, pic };
+  _dfunc()->pictures.push_back( info );
+}
+
+void Layer::_addText(const Point& pos, const std::string& text, Font font)
+{
+  if( !font.isValid() )
+    font = _dfunc()->debugFont;
+
+  Picture tx = font.once( text );
+  _addPicture( pos, tx );
 }
 
 void Layer::afterRender(Engine& engine)
@@ -606,21 +642,26 @@ void Layer::afterRender(Engine& engine)
     }
 
     pos += offset;
-    engine.drawLine( DefaultColors::red, pos, pos + Point( halfRWidth, halfRWidth/2 ) * size.height() );
-    engine.drawLine( DefaultColors::red, pos + Point( halfRWidth, halfRWidth/2 ) * size.width(), pos + Point( rwidth, 0) * size.height() );
-    engine.drawLine( DefaultColors::red, pos + Point( rwidth, 0) * size.width(), pos + Point( halfRWidth, -halfRWidth/2 ) * size.height() );
-    engine.drawLine( DefaultColors::red, pos + Point( halfRWidth, -halfRWidth/2 ) * size.width(), pos );
+    engine.drawLine( ColorList::red, pos, pos + Point( halfRWidth, halfRWidth/2 ) * size.height() );
+    engine.drawLine( ColorList::red, pos + Point( halfRWidth, halfRWidth/2 ) * size.width(), pos + Point( rwidth, 0) * size.height() );
+    engine.drawLine( ColorList::red, pos + Point( rwidth, 0) * size.width(), pos + Point( halfRWidth, -halfRWidth/2 ) * size.height() );
+    engine.drawLine( ColorList::red, pos + Point( halfRWidth, -halfRWidth/2 ) * size.width(), pos );
 
     static int t=0;
     int a = (t++ % 40)/5;
-    engine.drawLine( DefaultColors::red, pos-Point(a,0), pos + Point( halfRWidth, (halfRWidth+a)/2 ) * size.height() );
-    engine.drawLine( DefaultColors::red, pos + Point( halfRWidth, (halfRWidth+a)/2 ) * size.width(), pos + Point( rwidth, 0) * size.height() + Point(a, 0) );
-    engine.drawLine( DefaultColors::red, pos + Point( rwidth, 0) * size.width() + Point(a,0), pos + Point( halfRWidth, (-a-halfRWidth)/2 ) * size.height() );
-    engine.drawLine( DefaultColors::red, pos + Point( halfRWidth, (-a-halfRWidth)/2 ) * size.width(), pos - Point(a,0) );
+    engine.drawLine( ColorList::red, pos-Point(a,0), pos + Point( halfRWidth, (halfRWidth+a)/2 ) * size.height() );
+    engine.drawLine( ColorList::red, pos + Point( halfRWidth, (halfRWidth+a)/2 ) * size.width(), pos + Point( rwidth, 0) * size.height() + Point(a, 0) );
+    engine.drawLine( ColorList::red, pos + Point( rwidth, 0) * size.width() + Point(a,0), pos + Point( halfRWidth, (-a-halfRWidth)/2 ) * size.height() );
+    engine.drawLine( ColorList::red, pos + Point( halfRWidth, (-a-halfRWidth)/2 ) * size.width(), pos - Point(a,0) );
 
 #ifdef DEBUG
     engine.draw( _d->tilePosText, pos );
 #endif
+  }
+
+  for( auto& pic : _d->pictures )
+  {
+    engine.draw( pic.pic, offset + pic.pos );
   }
 }
 
@@ -634,7 +675,7 @@ Layer::Layer( Camera* camera, PlayerCityPtr city )
   _d->currentTile = 0;
 
   _d->posMode = 0;
-  _d->terraintPic = MetaDataHolder::randomPicture( object::terrain, Size( 1 ) );
+  _d->terraintPic = object::Info::find( object::terrain ).randomPicture( Size( 1 ) );
   _d->tilePosText = Picture( Size( 240, 80 ), 0, true );
 
   if( OSystem::isAndroid() )
@@ -643,7 +684,7 @@ Layer::Layer( Camera* camera, PlayerCityPtr city )
 
 void Layer::_addWalkerType(walker::Type wtype)
 {
-  _dfunc()->vwalkers.insert( wtype );
+  _dfunc()->visible.walkers.insert( wtype );
 }
 
 void Layer::_initialize()
@@ -654,8 +695,8 @@ void Layer::_initialize()
   {
     object::Type ovType = object::findType( it );
     if( ovType != object::unknown )
-      _dfunc()->drObjects.insert( ovType );
-    }
+      _dfunc()->visible.objects.insert( ovType );
+  }
 }
 
 bool Layer::_moveCamera(NEvent &event)
@@ -679,8 +720,16 @@ bool Layer::_moveCamera(NEvent &event)
   return true;
 }
 
-Layer::WalkerTypes& Layer::_visibleWalkers() { return _dfunc()->vwalkers; }
-bool Layer::_isVisibleObject(object::Type ovType) { return _dfunc()->drObjects.count( ovType ) > 0; }
+bool Layer::_isVisibleObject(object::Type ovType)
+{
+  auto& objects = _dfunc()->visible.objects;
+  if( objects.empty() )
+    return true;
+  else
+    return objects.count( ovType ) > 0;
+}
+
+Layer::WalkerTypes& Layer::_visibleWalkers() { return _dfunc()->visible.walkers; }
 int Layer::nextLayer() const{ return _dfunc()->nextLayer; }
 void Layer::destroy() {}
 Camera* Layer::_camera(){ return _dfunc()->camera;}
@@ -741,6 +790,7 @@ DrawOptions::DrawOptions() : _helper(0)
   _O(showBuildings)
   _O(showTrees)
   _O(overdrawOnBuild)
+  _O(rotateEnabled)
 #undef _O
 }
 

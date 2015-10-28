@@ -30,8 +30,8 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(object::quarry, MarbleQuarry)
 MarbleQuarry::MarbleQuarry()
   : Factory(good::none, good::marble, object::quarry, Size(2) )
 {
-  _animationRef().load( ResourceGroup::commerce, 44, 10);
-  _animationRef().setDelay( 4 );
+  _animation().load( ResourceGroup::commerce, 44, 10);
+  _animation().setDelay( 4 );
   _fgPictures().resize(2);
 
   _setClearAnimationOnStop( false );

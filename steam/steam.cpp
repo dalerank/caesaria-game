@@ -381,7 +381,7 @@ bool connect()
   // Ensure that the user has logged into Steam. This will always return true if the game is launched
   // from Steam, but if Steam is at the login prompt when you run your game from the debugger, it
   // will return false.
-  Logger::warning( "CurrentGameLanguage: %s", SteamApps()->GetCurrentGameLanguage() );
+  Logger::warning( "CurrentGameLanguage: {0}", SteamApps()->GetCurrentGameLanguage() );
   gameRunInOfflineMode = !SteamUser()->BLoggedOn();
 
   bool mayStart = SteamApps()->BIsSubscribedApp( CAESARIA_STEAM_APPID );
@@ -469,7 +469,7 @@ void unlockAchievement(AchievementType achivId)
   }
   else
   {
-    Logger::warning( "Unknown achievement ID:%d", achivId );
+    Logger::warning( "Unknown achievement ID:{}", achivId );
   }
 }
 
@@ -481,7 +481,7 @@ gfx::Picture achievementImage(AchievementType achivId)
   }
   else
   {
-    Logger::warning( "Unknown achievement ID:%d", achivId );
+    Logger::warning( "Unknown achievement ID:{}", achivId );
   }
 
   return gfx::Picture::getInvalid();
@@ -618,11 +618,11 @@ void UserStats::updateAchievementInfo( UserAchievementStored_t *pCallback )
   {
     if ( 0 == pCallback->m_nMaxProgress )
     {
-      Logger::warning( "Achievement '%s' unlocked!", pCallback->m_rgchAchievementName );
+      Logger::warning( "Achievement '{}' unlocked!", pCallback->m_rgchAchievementName );
     }
     else
     {
-      Logger::warning( "Achievement '%s' progress callback, (%d,%d)\n",
+      Logger::warning( "Achievement '{}' progress callback, ({},{}})\n",
                        pCallback->m_rgchAchievementName,
                        pCallback->m_nCurProgress,
                        pCallback->m_nMaxProgress );
@@ -727,7 +727,7 @@ std::string achievementCaption(AchievementType achivId)
   }
   else
   {
-    Logger::warning( "Unknown achievement ID:%d", achivId );
+    Logger::warning( "Unknown achievement ID:{}", achivId );
   }
 
   return "unknown_achv";
@@ -741,7 +741,7 @@ bool isAchievementReached(AchievementType achivId)
   }
   else
   {
-    Logger::warning( "Unknown achievement ID:%d", achivId );    
+    Logger::warning( "Unknown achievement ID:{}", achivId );
   }
   return false;
 }

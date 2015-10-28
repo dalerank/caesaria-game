@@ -23,9 +23,8 @@
 
 class ChastenerElephant : public EnemySoldier
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static ChastenerElephantPtr create( PlayerCityPtr city );
-
   virtual int agressive() const;
   virtual bool die();
 

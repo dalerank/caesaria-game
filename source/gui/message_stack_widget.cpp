@@ -53,7 +53,7 @@ protected:
     Pictures pics;
     Decorator::draw( pics, Rect( Point(), size() ), style );
 
-    Picture emlbPic( ResourceGroup::panelBackground, PicID::empireStamp );
+    Picture emlbPic( ResourceGroup::panelBackground, config::id.empire.stamp );
     pics.append( emlbPic, Point( 4, 2 ) );
     pics.append( emlbPic, Point( width() - emlbPic.width()-4, 2 ) );
 
@@ -85,9 +85,9 @@ void WindowMessageStack::_update()
   Point offsetLb( width() / 2, 12 );
   Point offset( 0, 23 );
   Widgets wds = children();
-  foreach( widget, wds )
+  for( auto widget : wds )
   {
-    (*widget)->setCenter( offsetLb );
+    widget->setCenter( offsetLb );
     offsetLb += offset;
   }
 }
@@ -98,14 +98,14 @@ void WindowMessageStack::beforeDraw(gfx::Engine& painter)
   unsigned int myWidth = width();
   int speed = std::max<int>( 20, 2 * myWidth / (painter.fps()+1) );
 
-  foreach( widget, wds )
+  for( auto widget : wds )
   {    
-    unsigned int wd = (*widget)->width();
+    unsigned int wd = widget->width();
     if( wd != myWidth )
     {
-      Point center = (*widget)->center();
-      (*widget)->setWidth( math::clamp<unsigned int>( wd+speed, 0, myWidth ) );
-      (*widget)->setCenter( center );
+      Point center = widget->center();
+      widget->setWidth( math::clamp<unsigned int>( wd+speed, 0, myWidth ) );
+      widget->setCenter( center );
     }
   }
 
@@ -121,19 +121,19 @@ void WindowMessageStack::addMessage( const std::string& text, MsgLevel lvl )
     removeChild( *children().begin() );
   }
 
-  new LabelA( this, Rect( 0, 0, 2, 20), text, lvl );
+  add<LabelA>( Rect( 0, 0, 2, 20), text, lvl );
 
   _update();
 }
 
 WindowMessageStack* WindowMessageStack::create( Widget* parent )
 {
-  WindowMessageStack* wnd = new WindowMessageStack( parent, WindowMessageStack::defaultID,
-                                                    Rect( 0, 0, parent->width() / 2, 92 ) );
-  wnd->setPosition( Point( parent->width() / 4, 33 ) );
-  wnd->sendToBack();
+  auto&& wnd = parent->add<WindowMessageStack>( WindowMessageStack::defaultID,
+                                                Rect( 0, 0, parent->width() / 2, 92 ) );
+  wnd.setPosition( Point( parent->width() / 4, 33 ) );
+  wnd.sendToBack();
 
-  return wnd;
+  return &wnd;
 }
 
 }//end namespace gui

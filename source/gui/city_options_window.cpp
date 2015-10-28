@@ -63,7 +63,7 @@ static void _setAutoText(Widget *widget, const std::string& text)
 
 static void _setAutoText(Widget *widget, const std::string& text, bool enabled )
 {
-  _setAutoText( widget, utils::format( 0xff, "##%s_%s##", text.c_str(), enabled ? "on" : "off" ) );
+  _setAutoText( widget, fmt::format( "##{0}_{1}##", text, enabled ? "on" : "off" ) );
 }
 
 class OptionButton : public PushButton
@@ -106,7 +106,7 @@ public:
     {
       if( item.first == value )
       {
-        std::string text = utils::format( 0xff, "##%s_%s##", basicName.c_str(), item.second.c_str() );
+        std::string text = fmt::format( "##{0}_{1}##", basicName, item.second );
         setText( _(text) );
         _setAutoText( this, text );
         break;
@@ -337,7 +337,7 @@ void CityOptions::Impl::toggleC3gameplay()
     dlg->show();
 
     CONNECT( dlg, onOk(), this, Impl::enableC3gameplay )
-    }
+  }
 }
 
 void CityOptions::Impl::enableC3gameplay() { city->setOption( PlayerCity::c3gameplay, true ); }
@@ -404,7 +404,7 @@ void CityOptions::Impl::update()
   if( lbFireRisk )
   {
     int value = city->getOption( PlayerCity::fireKoeff );
-    lbFireRisk->setText( utils::format( 0xff, "%s %d %%", "Fire risk", value ) );
+    lbFireRisk->setText( fmt::format( "{0} {1} %", "Fire risk", value ) );
   }
 
   if( lbCollapseRisk )
@@ -416,20 +416,20 @@ void CityOptions::Impl::update()
   if( btnDifficulty )
   {
     int value = city->getOption( PlayerCity::difficulty );
-    std::string text = utils::format( 0xff, "##city_df_%s##", game::difficulty::name[ value ] );
+    std::string text = fmt::format( "##city_df_%s##", game::difficulty::name[ value ] );
     _setAutoText( btnDifficulty, text );
   }
 
   if( btnC3Gameplay )
   {
     int value = city->getOption( PlayerCity::c3gameplay );
-    std::string text = utils::format( 0xff, "##city_c3gameplay_%s##", value ? "on" : "off" );
+    std::string text = fmt::format( "##city_c3rules_%s##", value ? "on" : "off" );
     _setAutoText( btnDifficulty, text );
   }
 
   if( btnMetrics )
   {
-    std::string text = utils::format( 0xff, "%s: %s" , _("##city_metric##"), _(metric::Measure::measureType()) );
+    std::string text = fmt::format( "%s: %s" , _("##city_metric##"), _(metric::Measure::measureType()) );
     _setAutoText( btnMetrics, text );
   }
 

@@ -7,6 +7,9 @@
   player.rank : 2  
   adviserEnabled : true
   fishPlaceEnabled : false
+  preview.text : "##tarentum_preview_mission##"
+  preview.title : "##tarentum_preview_title##"
+  preview.image : ""
 	
   win :
   {

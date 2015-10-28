@@ -24,11 +24,10 @@ namespace gui
 class WidgetEscapeCloser : public Widget
 {
 public:
-  static void insertTo( Widget* parent );
-
-  virtual bool onEvent(const NEvent &event);
-private:
   WidgetEscapeCloser( Widget* parent );
+  static void insertTo( Widget* parent );
+  static void insertTo( Widget& parent );
+  virtual bool onEvent(const NEvent &event);
 };
 
 }//end namesapce gui

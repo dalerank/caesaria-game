@@ -293,7 +293,7 @@ unsigned int Engine::Impl::loadSound(const std::string& sampleName)
 
     if( realPath.toString().empty() )
     {
-      Logger::warning( "SoundEngine: could not find sound %s", sampleName.c_str() );
+      Logger::warning( "SoundEngine: could not find sound {0}", sampleName );
       return 0;
     }
 
@@ -305,7 +305,7 @@ unsigned int Engine::Impl::loadSound(const std::string& sampleName)
 
     if( data.empty() )
     {
-      Logger::warning( "SoundEngine: could not load sound (%s)", realPath.toCString() );
+      Logger::warning( "SoundEngine: could not load sound {0}", realPath.toString() );
       return 0;
     }
 
@@ -314,7 +314,7 @@ unsigned int Engine::Impl::loadSound(const std::string& sampleName)
     sample.sound = realPath.toString();
     if(sample.chunk == NULL)
     {
-      Logger::warning( "SoundEngine: could not load sound (%s) with error:%s", realPath.toCString(), SDL_GetError() );
+      Logger::warning( "SoundEngine: could not load sound ({0}) with error:{1}", realPath.toString(), SDL_GetError() );
       return 0;
     }
 

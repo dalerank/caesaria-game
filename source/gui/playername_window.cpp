@@ -38,10 +38,11 @@ public:
   EditBox* edPlayerName;
   Label* lbExitHelp;
 
-public signals:
-  Signal1<std::string> onNameChangeSignal;
-  Signal0<> onCloseSignal;
-  Signal0<> onNewGameSignal;
+  struct {
+    Signal1<std::string> onNameChange;
+    Signal0<> onClose;
+    Signal0<> onNewGame;
+  } signal;
 };
 
 ChangePlayerName::ChangePlayerName(Widget* parent)
@@ -55,9 +56,9 @@ ChangePlayerName::ChangePlayerName(Widget* parent)
   GET_DWIDGET_FROM_UI( _d, lbExitHelp)
   INIT_WIDGET_FROM_UI( PushButton*, btnContinue )
 
-  CONNECT( _d->edPlayerName, onTextChanged(), &_d->onNameChangeSignal, Signal1<std::string>::_emit );
-  CONNECT( _d->edPlayerName, onEnterPressed(), &_d->onNewGameSignal, Signal0<>::_emit );
-  CONNECT( btnContinue, onClicked(), &_d->onNewGameSignal, Signal0<>::_emit );
+  CONNECT( _d->edPlayerName, onTextChanged(), &_d->signal.onNameChange, Signal1<std::string>::_emit );
+  CONNECT( _d->edPlayerName, onEnterPressed(), &_d->signal.onNewGame, Signal0<>::_emit );
+  CONNECT( btnContinue, onClicked(), &_d->signal.onNewGame, Signal0<>::_emit );
 
   if( _d->edPlayerName )
   {
@@ -67,6 +68,12 @@ ChangePlayerName::ChangePlayerName(Widget* parent)
   _d->mayExit = true;
 
   setModal();
+  /*btnContinue->setAlignment( align::scale, align::scale, align::scale, align::scale );
+  _d->edPlayerName->setAlignment( align::scale, align::scale, align::scale, align::scale );
+  _d->lbExitHelp->setAlignment( align::scale, align::scale, align::scale, align::scale );
+  setWidth( width() * 2 );
+  setHeight( height() * 2 );
+  setCenter( parent->center() );*/
 }
 
 bool ChangePlayerName::onEvent(const NEvent& event)
@@ -76,7 +83,7 @@ bool ChangePlayerName::onEvent(const NEvent& event)
     if( _d->mayExit )
     {
       deleteLater();
-      emit _d->onCloseSignal();
+      emit _d->signal.onClose();
 
       return true;
     }
@@ -111,9 +118,9 @@ void ChangePlayerName::setModal()
   if( _d->edPlayerName ) _d->edPlayerName->setFocus();
 }
 
-Signal0<>& ChangePlayerName::onClose(){  return _d->onCloseSignal;}
-Signal0<>& ChangePlayerName::onContinue(){  return _d->onNewGameSignal;}
-Signal1<std::string>& ChangePlayerName::onNameChange(){  return _d->onNameChangeSignal;}
+Signal0<>& ChangePlayerName::onClose(){  return _d->signal.onClose;}
+Signal0<>& ChangePlayerName::onContinue(){  return _d->signal.onNewGame;}
+Signal1<std::string>& ChangePlayerName::onNameChange(){  return _d->signal.onNameChange;}
 
 }//end namespace dialog
 

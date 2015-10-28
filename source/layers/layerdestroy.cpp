@@ -92,8 +92,7 @@ void Destroy::_clearAll()
     {
       alsoDestroyed.insert( master->epos() );
 
-      auto event = ClearTile::create( master->epos() );
-      event->dispatch();
+      events::dispatch<ClearTile>( master->epos() );
 
       if( tile->overlay().isValid() )
       {
@@ -111,8 +110,7 @@ unsigned int Destroy::_checkMoney4destroy(const Tile& tile)
   int baseValue = 0;
   if( overlay.isValid() )
   {
-    const MetaData& mdata = MetaDataHolder::find( overlay->type() );
-    baseValue = mdata.getOption( MetaDataOptions::cost ).toInt() / 2;
+    baseValue = overlay->info().cost() / 2;
   }
 
   baseValue += tile.getFlag( Tile::tlTree ) ? 6 : 0;
@@ -124,7 +122,7 @@ unsigned int Destroy::_checkMoney4destroy(const Tile& tile)
 void Destroy::render( Engine& engine )
 {
   // center the map on the screen
-  Point cameraOffset = _camera()->offset();
+  RenderInfo renderInfo = { engine, _camera()->offset() };
 
   const TilesArray& visibleTiles = _camera()->tiles();
   const TilesArray& flatTiles = _camera()->flatTiles();
@@ -154,14 +152,14 @@ void Destroy::render( Engine& engine )
     if( hashDestroyArea.inArea( tile ) )
     {
       engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
-      drawPass( engine, *tile, cameraOffset, Renderer::ground );
-      drawPass( engine, *tile, cameraOffset, Renderer::groundAnimation );
+      drawPass( renderInfo, *tile, Renderer::ground );
+      drawPass( renderInfo, *tile, Renderer::groundAnimation );
       engine.resetColorMask();
     }
     else
     {
-      drawPass( engine, *tile, cameraOffset, Renderer::ground );
-      drawPass( engine, *tile, cameraOffset, Renderer::groundAnimation );
+      drawPass( renderInfo, *tile, Renderer::ground );
+      drawPass( renderInfo, *tile, Renderer::groundAnimation );
     }
   }
 
@@ -177,11 +175,11 @@ void Destroy::render( Engine& engine )
       if( hashDestroyArea.inArea( ftile ) )
       {
         engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
-        drawTile( engine, *ftile, cameraOffset );
+        drawTile( renderInfo, *ftile );
         engine.resetColorMask();
       }
       else
-        drawTile( engine, *ftile, cameraOffset );
+        drawTile( renderInfo, *ftile );
     }
   }
 
@@ -193,14 +191,14 @@ void Destroy::render( Engine& engine )
     if( hashDestroyArea.inArea( vtile ) )
     {
       engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
-      drawProminentTile( engine, *vtile, cameraOffset, z, false );
-      drawWalkers( engine, *vtile, cameraOffset );
+      drawProminentTile( renderInfo, *vtile, z, false );
+      drawWalkers( renderInfo, *vtile );
       engine.resetColorMask();
     }
     else
     {
-      drawProminentTile( engine, *vtile, cameraOffset, z, false );
-      drawWalkers( engine, *vtile, cameraOffset );
+      drawProminentTile( renderInfo, *vtile, z, false );
+      drawWalkers( renderInfo, *vtile );
     }
   }
 }
@@ -371,7 +369,7 @@ void Destroy::_executeClear()
 int Destroy::type() const {  return citylayer::destroyd; }
 LayerPtr Destroy::drawLayer() const { return _d->lastLayer; }
 
-void Destroy::drawTile(Engine& engine, Tile& tile, const Point& offset )
+void Destroy::drawTile(const RenderInfo& rinfo, Tile& tile)
 {
   OverlayPtr overlay = tile.overlay();
 
@@ -382,11 +380,11 @@ void Destroy::drawTile(Engine& engine, Tile& tile, const Point& offset )
 
   if( _d->lastLayer.isValid() )
   {
-    _d->lastLayer->drawTile( engine, tile, offset );
+    _d->lastLayer->drawTile( rinfo, tile );
   }
   else
   {
-    Layer::drawTile( engine, tile, offset );
+    Layer::drawTile( rinfo, tile );
   }
 }
 

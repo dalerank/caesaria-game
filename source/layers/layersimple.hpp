@@ -29,7 +29,7 @@ class Simple : public Layer
 public:
   virtual int type() const;
   static LayerPtr create(gfx::Camera& camera, PlayerCityPtr city );
-  virtual void drawTile(gfx::Engine &engine, gfx::Tile &tile, const Point &offset);
+  virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile &tile);
   virtual void afterRender(gfx::Engine &engine);
   virtual void renderUi(gfx::Engine &engine);
 

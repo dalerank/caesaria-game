@@ -38,7 +38,7 @@ void PictureConverter::rgbBalance( Picture& dst, Picture& src, int lROffset, int
 
     if( !dst.isValid() )
     {
-      Logger::warning( "Rgbbalance conversion failed: %s", SDL_GetError() );
+      Logger::warning( "Rgbbalance conversion failed: {0}", SDL_GetError() );
       return;
     }
 

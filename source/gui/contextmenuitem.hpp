@@ -57,6 +57,8 @@ public:
 
   virtual void toggleCheck();
 
+  virtual void draw(gfx::Engine &painter);
+
   virtual void setFlag( DrawFlag flagName, bool set=true );
 
   virtual void setIcon( const gfx::Picture& icon, Point offset );
@@ -94,9 +96,11 @@ signals public:
   Signal1<bool>& onChecked();
   Signal1<int>& onAction();
 
+protected:
+  virtual void _updateTexture( gfx::Engine& painter );
+
 private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  __DECLARE_IMPL(ContextMenuItem)
 };
 
 }//end namespace gui

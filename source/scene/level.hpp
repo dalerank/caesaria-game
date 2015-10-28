@@ -48,6 +48,7 @@ public:
 
   virtual bool installEventHandler(EventHandlerPtr);
 
+  void setConstructorMode( bool enabled );
   void setCameraPos( TilePos pos );
   void switch2layer( int layer );
   virtual gfx::Camera* camera() const;

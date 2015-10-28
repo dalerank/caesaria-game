@@ -23,7 +23,7 @@
 #include "core/rectangle.hpp"
 #include "game/resourcegroup.hpp"
 #include "primitives.hpp"
-#include "core/color.hpp"
+#include "core/color_list.hpp"
 #include "core/logger.hpp"
 
 namespace gfx
@@ -83,7 +83,7 @@ void Decorator::drawBorder(Pictures& stack, const Rect& rectangle, const int off
 
   if( !sw || !sh )
   {
-    Logger::warning( "!!! WARNING: Cant draw border for sw=%d, sh=%d", sw, sh );
+    Logger::warning( "!!! WARNING: Cant draw border for sw={0}, sh={1}", sw, sh );
     return;
   }
 
@@ -208,7 +208,7 @@ void Decorator::draw( Picture& dstpic, const Rect& rectangle, Mode mode, bool us
   case lineBlackBorder:
   case lineWhiteBorder:
   {
-    NColor color = mode == lineBlackBorder ? DefaultColors::black : DefaultColors::white;
+    NColor color = mode == lineBlackBorder ? ColorList::black : ColorList::white;
     drawLine( dstpic, rectangle.lefttop(), rectangle.righttop(), color );
     drawLine( dstpic, rectangle.righttop()-Point(1,0), rectangle.rightbottom()-Point(1,0), color );
     drawLine( dstpic, rectangle.rightbottom()-Point(0,1), rectangle.leftbottom()-Point(0,1), color );
@@ -277,7 +277,7 @@ void Decorator::drawBorder( Pictures& stack, const Rect& rectangle,
   const int sh = size.height();
   if( !sw || !sh )
   {
-    Logger::warning( "Decorator::drawBorder() can't finf texture %s %d", ResourceGroup::panelBackground, tp );
+    Logger::warning( "Decorator::drawBorder() can't finf texture {0} {1}", ResourceGroup::panelBackground, tp );
     return;
   }
 

@@ -338,15 +338,15 @@ void ComputerCity::Impl::placeNewBuilding(object::Type type)
   BuildingInfo info;
 
   info.type = type;
-  const  MetaData& md = MetaDataHolder::find( info.type );
+  auto md = object::Info::find( info.type );
   good::Product output = good::Helper::getType( md.getOption( "output" ).toString() );
   info.outgoods.setType( output );
   info.ingoods.setType( good::getMaterial( output ) );
-  info.maxWorkersNumber = md.getOption( "employers" );
-  info.maxService = md.getOption( "maxServe" );
+  info.maxWorkersNumber = md.employers();
+  info.maxService = md.maxServe();
   info.workersNumber = 0;
   info.progress = 0;
-  info.productively = md.getOption( "productRate" ).toFloat() / 12.f;
+  info.productively = md.productRate() / 12.f;
 
   buildings.push_back( info );
 }
@@ -1019,10 +1019,10 @@ int ComputerCity::strength() const { return _d->strength; }
 
 void ComputerCity::_initTextures()
 {
-  int index = PicID::otherCity;
+  int index = config::id.empire.otherCity;
 
-  if( _d->distantCity ) { index = PicID::distantCity; }
-  else if( _d->states.romeCity ) { index = PicID::romeCity; }
+  if( _d->distantCity ) { index = config::id.empire.distantCity; }
+  else if( _d->states.romeCity ) { index = config::id.empire.romeCity; }
 
   setPicture( Picture( ResourceGroup::empirebits, index ) );
   _animation().load( ResourceGroup::empirebits, index+1, 6 );

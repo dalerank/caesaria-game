@@ -19,6 +19,7 @@
 #define _CAESARIA_CHANGE_SALARY_WINDOW_H_INCLUDE_
 
 #include "window.hpp"
+#include "world/governor_rank.hpp"
 #include "core/signals.hpp"
 
 namespace gui
@@ -32,13 +33,14 @@ class ChangeSalary : public Window
 public:
   ChangeSalary(Widget* p, unsigned int salary );
 
+  void setRanks( world::GovernorRanks ranks );
   virtual ~ChangeSalary();
 
 public signals:
   Signal1<int>& onChangeSalary();
 
 private:
-  __DECLARE_IMPL(ChangeSalaryWindow)
+  __DECLARE_IMPL(ChangeSalary)
 };
 
 }//end namespace dialog

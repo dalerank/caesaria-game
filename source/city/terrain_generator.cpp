@@ -23,6 +23,7 @@
 #include "gfx/helper.hpp"
 #include "city/city.hpp"
 #include "vfs/file.hpp"
+#include "core/color_list.hpp"
 #include "vfs/path.hpp"
 #include "core/spline.hpp"
 #include "core/direction.hpp"
@@ -349,8 +350,8 @@ static void __finalizeMap(Game& game, int pass )
       case passCheckInsideCornerTiles:
         switch( direction )
         {
-        case drNE: start=PicID::coastNE; break;
-        case drSE: start=PicID::coastSE; break;
+        case drNE: start=config::id.empire.coastNE; break;
+        case drSE: start=config::id.empire.coastSE; break;
         case 0x40: start=152; break;
         case 0x80: start=156; break;
         }
@@ -577,7 +578,7 @@ static void __createRivers(Game& game )
       TilesArray wayTiles = way.allTiles();
       for( auto tile : wayTiles )
       {
-        OverlayPtr overlay = TileOverlayFactory::instance().create( object::river );
+        OverlayPtr overlay = Overlay::create( object::river );
 
         tile->setPicture( Picture::getInvalid() );
         tile->setImgId( 0 );
@@ -623,7 +624,6 @@ static void __createRoad(Game& game )
       break;
   }
 
-  BorderInfo borderInfo = oCity->borderInfo();
   TilesArray borderTiles = oTilemap.border();
 
   if( !way.isValid() )
@@ -637,18 +637,20 @@ static void __createRoad(Game& game )
 
     for( int tryCount=0; tryCount < 10; tryCount++ )
     {
-      borderInfo.roadEntry = sterrain.random()->pos();
-      borderInfo.roadExit = eterrain.random()->pos();
+      oCity->setBorderInfo( PlayerCity::roadEntry, sterrain.random()->pos() );
+      oCity->setBorderInfo( PlayerCity::roadExit, eterrain.random()->pos() );
 
-      way = tgHelper.findWay( oTilemap, borderInfo.roadEntry, borderInfo.roadExit );
+      way = tgHelper.findWay( oTilemap,
+                              oCity->getBorderInfo( PlayerCity::roadEntry ).epos(),
+                              oCity->getBorderInfo( PlayerCity::roadExit ).epos() );
       if( way.isValid() )
         break;
 
-      TilesArray around = oTilemap.area( 3, borderInfo.roadEntry );
+      TilesArray around = oTilemap.area( 3, oCity->getBorderInfo( PlayerCity::roadEntry ).epos() );
       for( auto tile : around )
         sterrain.remove( tile->pos() );
 
-      around = oTilemap.area( 3, borderInfo.roadExit );
+      around = oTilemap.area( 3, oCity->getBorderInfo( PlayerCity::roadExit ).epos() );
       for( auto tile : around )
         eterrain.remove( tile->pos() );
     }
@@ -660,9 +662,9 @@ static void __createRoad(Game& game )
 
     for( auto tile : wayTiles )
     {
-      OverlayPtr overlay = TileOverlayFactory::instance().create( object::road );
+      OverlayPtr overlay = Overlay::create( object::road );
 
-      Picture pic( ResourceGroup::land1a, PicID::grassPic + math::random( PicID::grassPicsNumber-1 ) );
+      Picture pic( ResourceGroup::land1a, config::id.empire.grassPic + math::random( config::id.empire.grassPicsNumber-1 ) );
       tile->setPicture( pic );
       tile->setImgId( imgid::fromResource( pic.name() ) );
 
@@ -671,22 +673,20 @@ static void __createRoad(Game& game )
       oCity->addOverlay( overlay );
     }
 
-    borderInfo.roadEntry = way.startPos();
-    borderInfo.roadExit = way.stopPos();
+    oCity->setBorderInfo( PlayerCity::roadEntry, way.startPos() );
+    oCity->setBorderInfo( PlayerCity::roadExit, way.stopPos() );
   }  
   else
   {
     TilesArray terrain = borderTiles.terrains();
 
-    borderInfo.roadEntry = terrain.random()->pos();
-    borderInfo.roadExit = terrain.random()->pos();       
+    oCity->setBorderInfo( PlayerCity::roadEntry, terrain.random()->pos() );
+    oCity->setBorderInfo( PlayerCity::roadExit, terrain.random()->pos() );
   }
 
   TilesArray water = borderTiles.waters();
-  borderInfo.boatEntry = water.random()->pos();
-  borderInfo.boatExit = water.random()->pos();
-
-  oCity->setBorderInfo( borderInfo );
+  oCity->setBorderInfo( PlayerCity::boatEntry, water.random()->pos() );
+  oCity->setBorderInfo( PlayerCity::boatExit, water.random()->pos() );
 }
 
 TilesArray& addTileIfValid( TilesArray& tiles, int i, int j, Tilemap& tmap )
@@ -783,7 +783,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
 
   oCity->resize( mapSize );
 
-  Logger::warning( "W:%d H:%d", diamond_square.width(), diamond_square.height() );
+  Logger::warning( "W:{0} H:{1}", diamond_square.width(), diamond_square.height() );
 
   for( unsigned int index = 0; index < map.size(); index++)
   {
@@ -865,13 +865,13 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
           tile.setFlag( Tile::tlTree, true );
         }
 
-        Picture land = MetaDataHolder::randomPicture( object::terrain, Size(1) );
+        Picture land = object::Info::find( object::terrain ).randomPicture( Size(1) );
         tile.setPicture( land );
 
         Picture tree( ResourceGroup::land1a, start + math::random( rnd ) );
         tile.setImgId( imgid::fromResource( tree.name() ) );
 
-        OverlayPtr overlay = TileOverlayFactory::instance().create( object::tree );
+        OverlayPtr overlay = Overlay::create( object::tree );
         if( overlay != NULL )
         {
           city::AreaInfo info( oCity, tile.pos() );
@@ -904,7 +904,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
       break;
 
       case 9: {
-        color = DefaultColors::white;
+        color = ColorList::white;
       }
       break;
     }

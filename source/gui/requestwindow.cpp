@@ -31,6 +31,8 @@
 #include "widget_helper.hpp"
 #include "smkviewer.hpp"
 
+using namespace events;
+
 namespace gui
 {
 
@@ -38,7 +40,6 @@ class EmperrorRequestWindow::Impl
 {
 public:
   void openEmperrorAdvisor();
-  GameAutoPause locker;
   std::string video;
 };
 
@@ -60,7 +61,7 @@ EmperrorRequestWindow::~EmperrorRequestWindow() {}
 EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::RequestPtr request )
   : Window( parent, Rect( 0, 0, 480, 320 ), "" ), _d( new Impl )
 {
-  _d->locker.activate();
+  GameAutoPause::insertTo( this );
 
   std::string uiFile = _d->video.empty() ? ":/gui/request.gui" : ":/gui/request_video.gui";
 
@@ -84,7 +85,7 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::RequestPtr r
     GET_WIDGET_FROM_UI( smkViewer )
     GET_WIDGET_FROM_UI( lbTitle )
 
-    if( lbQty ) { lbQty->setText( utils::format( 0xff, "%d", gr->qty() ) ); }
+    if( lbQty ) { lbQty->setText( utils::i2str( gr->qty() ) ); }
     if( imgIcon ) { imgIcon->setPicture( good::Helper::picture( gr->goodType() )); }
 
     std::string title, text, video;
@@ -146,8 +147,7 @@ bool EmperrorRequestWindow::onEvent(const NEvent& event)
 
 void EmperrorRequestWindow::Impl::openEmperrorAdvisor()
 {
-  events::GameEventPtr e = events::ShowAdvisorWindow::create( true, advisor::empire );
-  e->dispatch();
+  events::dispatch<ShowAdvisorWindow>( true, advisor::empire );
 }
 
 }//end namespace gui

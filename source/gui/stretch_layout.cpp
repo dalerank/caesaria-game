@@ -47,8 +47,8 @@ void Layout::updateLayout()
     side = math::min(side, _side);
 
   WidgetsArray ch;
-  foreach( it, children() )
-    ch.push_back( *it );
+  for( auto it : children() )
+    ch.push_back( it );
 
   std::sort( ch.begin(), ch.end(), compareID );
 

@@ -123,9 +123,9 @@ void Finance::_updateTaxRateNowLabel()
     return;
 
   int taxValue = _city->statistic().tax.possible();
-  std::string strCurretnTax = utils::format( 0xff, "%d%% %s %d %s",
-                                                    _city->treasury().taxRate(), _("##may_collect_about##"),
-                                                    taxValue, _("##denaries##") );
+  std::string strCurretnTax = fmt::format( "{}% {} {} {}",
+                                           _city->treasury().taxRate(), _("##may_collect_about##"),
+                                           taxValue, _("##denaries##") );
   lbTaxRateNow->setText( strCurretnTax );
 }
 
@@ -168,9 +168,9 @@ void Finance::_initReportRows()
 
 void Finance::_initTaxManager()
 {
-  TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
-  TexturedButton* btnDecreaseTax = new TexturedButton( this, Point( 185, 73 ), Size( 24 ), -1, 601 );
-  TexturedButton* btnIncreaseTax = new TexturedButton( this, Point( 185+24, 73 ), Size( 24 ), -1, 605 );
+  auto btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
+  auto btnDecreaseTax = new TexturedButton( this, Point( 185, 73 ), Size( 24 ), -1, config::id.menu.arrowDown );
+  auto btnIncreaseTax = new TexturedButton( this, Point( 185+24, 73 ), Size( 24 ), -1, config::id.menu.arrowUp );
 
   CONNECT( btnDecreaseTax, onClicked(), this, Finance::_decreaseTax );
   CONNECT( btnIncreaseTax, onClicked(), this, Finance::_increaseTax );
@@ -180,7 +180,7 @@ void Finance::_initTaxManager()
 void Finance::_updateRegisteredPayers()
 {
   unsigned int regTaxPayers = _city->statistic().tax.payersPercent();
-  std::string strRegPaeyrs = utils::format( 0xff, "%d%% %s", regTaxPayers, _("##population_registered_as_taxpayers##") );
+  std::string strRegPaeyrs = fmt::format( "{}% {}", regTaxPayers, _("##population_registered_as_taxpayers##") );
   INIT_WIDGET_FROM_UI( Label*, lbRegPayers )
   if( lbRegPayers )
     lbRegPayers->setText( strRegPaeyrs );
@@ -190,7 +190,7 @@ void Finance::_updateCityTreasure()
 {
   INIT_WIDGET_FROM_UI( Label*, lbCityHave )
   if( lbCityHave )
-    lbCityHave->setText( utils::format( 0xff, "%s %d %s", _("##city_have##"), _city->treasury().money(), _("##denaries##") ) );
+    lbCityHave->setText( fmt::format( "{} {} {}", _("##city_have##"), _city->treasury().money(), _("##denaries##") ) );
 }
 
 }//end namespace advisorwnd

@@ -29,6 +29,7 @@
 #include "gfx/tilesarray.hpp"
 #include "city/cityservice_peace.hpp"
 #include "build.hpp"
+#include "core/format.hpp"
 #include "gfx/tilearea.hpp"
 
 using namespace gfx;
@@ -105,8 +106,7 @@ void Disaster::_exec( Game& game, unsigned int )
     {
     case Disaster::collapse:
     {
-      GameEventPtr e = PlaySound::create( "explode", rand() % 2, 100 );      
-      e->dispatch();
+      events::dispatch<PlaySound>( "explode", rand() % 2, 100 );
     }
     break;
 
@@ -132,7 +132,7 @@ void Disaster::_exec( Game& game, unsigned int )
                                        object::plague_ruins, object::collapsed_ruins,
                                        object::collapsed_ruins };
 
-        currentTileOverlay = TileOverlayFactory::instance().create( dstr2constr[_d->type] );
+        currentTileOverlay = Overlay::create( dstr2constr[_d->type] );
 
         RuinsPtr ruins = currentTileOverlay.as<Ruins>();
         if( ruins.isValid() )
@@ -140,13 +140,13 @@ void Disaster::_exec( Game& game, unsigned int )
           std::string typev = _d->infoType > houseOffset
                                 ? utils::format( 0xff, "house%02d", _d->infoType - houseOffset )
                                 : object::toString( object::Type( _d->infoType ) );
-          ruins->setInfo( utils::format( 0xff, "##ruins_%s_text##", typev.c_str() ) );
+          ruins->setInfo( fmt::format( "##ruins_{0}_text##", typev ) );
           ruins->afterBuild();
         }
       }
       else
       {
-        currentTileOverlay = TileOverlayFactory::instance().create( object::rift );
+        currentTileOverlay = Overlay::create( object::rift );
 
         //TilesArray tiles = game.city()->tilemap().getNeighbors(_pos, Tilemap::FourNeighbors);
 

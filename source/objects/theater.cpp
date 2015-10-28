@@ -53,7 +53,7 @@ void Theater::deliverService()
 {
   EntertainmentBuilding::deliverService();
 
-  if( _animationRef().isRunning() )
+  if( _animation().isRunning() )
   {
     _fgPictures().front().load( ResourceGroup::entertainment, 35 );
   }

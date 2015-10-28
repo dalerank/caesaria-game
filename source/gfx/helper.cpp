@@ -117,7 +117,7 @@ std::string toResource( const unsigned int imgId )
       res_id = 51;
     } // TERRIBLE HACK!
 
-    Logger::warning( "TileHelper: unknown image Id=%d ", imgId );
+    Logger::warning( "TileHelper: unknown image Id={0} ", imgId );
   }
 
   std::string ret_str = utils::format( 0xff, "%s_%05d", res_pfx.c_str(), res_id );
@@ -159,6 +159,13 @@ Picture toPicture(const unsigned int imgId)
 
 namespace tile
 {
+
+unsigned int width2size(int width)
+{
+  return width > 0
+            ? (width+2) / tilemap::tilePicSize.width()
+            : 0;
+}
 
 int encode(const Tile& tt)
 {
@@ -343,6 +350,11 @@ Tile::Type findType(const std::string& name)
   if( name == CAESARIA_STR_EXT(tlRift) )    return Tile::tlRift;
   if( name == CAESARIA_STR_EXT(tlGrass) )   return Tile::tlGrass;
   return Tile::tlUnknown;
+}
+
+TilePos hash2pos(unsigned int hash)
+{
+  return TilePos( (hash >> 16 ) & 0xff, hash & 0xff );
 }
 
 }//end namespace tile

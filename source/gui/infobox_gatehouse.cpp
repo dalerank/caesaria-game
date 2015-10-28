@@ -50,16 +50,15 @@ AboutGatehouse::AboutGatehouse(Widget* parent, PlayerCityPtr city, const Tile& t
   if( !_d->gates.isValid() )
   {
     deleteLater();
-    Logger::warning( "AboutGatehouse: cant find fort for [%d,%d]", tile.i(), tile.j() );
+    Logger::warning( "AboutGatehouse: cant find fort for [{0},{1}]", tile.i(), tile.j() );
     return;
   }
 
-  std::string title = MetaDataHolder::findPrettyName( _d->gates->type() );
-  setTitle( _( title ) );
+  setTitle( _( _d->gates->info().prettyName() ) );
 
   std::string text = _("##walls_need_a_gatehouse##");
 
-  _d->lbText = new Label( this, Rect( 20, 20, width() - 20, 240 ), text );
+  _d->lbText = &add<Label>( Rect( 20, 20, width() - 20, 240 ), text );
   _d->lbText->setTextAlignment( align::upperLeft, align::center );
   _d->lbText->setWordwrap( true );
 

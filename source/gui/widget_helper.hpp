@@ -47,10 +47,10 @@ inline T findChildA( bool recursiveFind, const Widget* p )
 }//end namespace gui
 
 #define GET_WIDGET_FROM_UI( element ) element = findChildA<__typeof__( element )>( #element, true, this ); \
-                                       if( 0 == element ) { Logger::warning( "Cannot fint %s in %s:%d", #element, __FILE__, __LINE__ ); }
+                                       if( 0 == element ) { Logger::warning( "Cannot fint {} in {}:{}", #element, __FILE__, __LINE__ ); }
 
-#define GET_DWIDGET_FROM_UI( d, element ) d->element = findChildA<__typeof__( d->element )>( #element, true, this ); \
-                                          if( 0 == d->element ) { Logger::warning( "Cannot fint %s in %s:%d", #element, __FILE__, __LINE__ ); }
+#define GET_DWIDGET_FROM_UI( d, element ) (d)->element = findChildA<__typeof__( (d)->element )>( #element, true, this ); \
+                                          if( 0 == (d)->element ) { Logger::warning( "Cannot fint {} in {}:{}", #element, __FILE__, __LINE__ ); }
 
 #define INIT_WIDGET_FROM_UI( type, element ) type element; GET_WIDGET_FROM_UI( element );
 

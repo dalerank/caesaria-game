@@ -31,16 +31,14 @@ PREDEFINE_CLASS_SMARTPOINTER(Military)
 class Military : public Srvc
 {
 public:  
-  static SrvcPtr create( PlayerCityPtr city );
-
   virtual void timeStep( const unsigned int time );
 
-  void addNotification( const std::string& text, const std::string& name, Notification::Type type );
+  void addNotification(const notification::Describe& describe );
 
   Notification priorityNotification() const;
   const Notifications& notifications() const;
 
-  bool haveNotification( Notification::Type type) const;
+  bool haveNotification( notification::Type type) const;
   bool isUnderAttack() const;
 
   virtual VariantMap save() const;
@@ -57,8 +55,8 @@ public:
 
   static std::string defaultName();
 
-private:
   Military(PlayerCityPtr city);
+private:
 
   class Impl;
   ScopedPtr< Impl > _d;

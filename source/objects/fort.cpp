@@ -282,8 +282,7 @@ void FortArea::destroy()
   Building::destroy();
   if( base().isValid() )
   {
-    GameEventPtr e = ClearTile::create( _d->basePos );
-    e->dispatch();
+    events::dispatch<ClearTile>( _d->basePos );
   }
 }
 
@@ -383,8 +382,7 @@ void Fort::destroy()
 
   if( _d->area.isValid()  )
   {
-    GameEventPtr e = ClearTile::create( _d->area->pos() );
-    e->dispatch();
+    events::dispatch<ClearTile>( _d->area->pos() );
     _d->area = 0;
   }
 
@@ -400,7 +398,7 @@ TilePos Fort::freeSlot(WalkerPtr who) const
   TilePos patrolPos;
   if( _d->patrolPoint.isNull()  )
   {
-    Logger::warning( "Not patrol point assign in fort [%d,%d]", pos().i(), pos().j() );
+    Logger::warning( "Not patrol point assign in fort [{0},{1}]", pos().i(), pos().j() );
     patrolPos = _d->area->pos() + TilePos( 0, 3 );
   }
   else
@@ -435,7 +433,7 @@ TilePos Fort::patrolLocation() const
   TilePos patrolPos;
   if( _d->patrolPoint.isNull()  )
   {
-    Logger::warning( "!!! WARNING: Fort::patrolLocation(): not patrol point assign in fort [%d,%d]", pos().i(), pos().j() );
+    Logger::warning( "!!! WARNING: Fort::patrolLocation(): not patrol point assign in fort [{0},{1}]", pos().i(), pos().j() );
     patrolPos = _d->area->pos() + TilePos( 0, 3 );
     crashhandler::printstack(false);
   }
@@ -602,9 +600,11 @@ bool Fort::build( const city::AreaInfo& info )
     _setError( "##need_barracks_for_work##" );
   }
 
-  _setPatrolPoint( PatrolPoint::create( info.city, this,
-                                        ResourceGroup::sprites, _d->flagIndex, 8,
-                                        info.pos + TilePos( 3, 3 ) ) );
+  auto pp = Walker::create<PatrolPoint>( info.city, this,
+                                         ResourceGroup::sprites, _d->flagIndex, 8,
+                                         info.pos + TilePos( 3, 3 ) );
+  pp->attach();
+  _setPatrolPoint( pp );
 
   return true;
 }

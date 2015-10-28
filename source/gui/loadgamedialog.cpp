@@ -19,6 +19,7 @@
 #include "vfs/directory.hpp"
 #include "filelistbox.hpp"
 #include "gfx/loader.hpp"
+#include "core/color_list.hpp"
 #include "widget_helper.hpp"
 #include "image.hpp"
 #include "core/logger.hpp"
@@ -55,7 +56,7 @@ void LoadGame::_fillFiles()
 
   for( auto& path : names )
   {
-    ListBoxItem& item = lbxFiles->addItem( path, Font(), DefaultColors::black.color );
+    ListBoxItem& item = lbxFiles->addItem( path, Font(), ColorList::black.color );
     vfs::Path imgpath = vfs::Path( path ).changeExtension( "png" );
     item.setData( "image", imgpath.toString() );
   }

@@ -36,8 +36,11 @@
 #include "widget_helper.hpp"
 #include "gfx/helper.hpp"
 #include "gfx/tilemap.hpp"
+#include "core/color_list.hpp"
 #include "core/metric.hpp"
 #include "events/movecamera.hpp"
+
+using namespace events;
 
 namespace gui
 {
@@ -55,7 +58,7 @@ public:
     : Label( parent, rectangle, "", false, Label::bgBlackFrame )
   {
     _wlkPicture = gfx::Picture( rectangle.size() - Size( 6 ), 0, true );
-    _wlkPicture.fill( DefaultColors::clear, Rect() );
+    _wlkPicture.fill( ColorList::clear, Rect() );
     _walker = wlk;
   }
 
@@ -149,8 +152,7 @@ void AboutPeople::_setWalker( WalkerPtr wlk )
   if( !thinks.empty() )
   {
     std::string sound = thinks.substr( 2, thinks.size() - 4 );
-    auto event = events::PlaySound::create( sound, 100 );
-    event->dispatch();
+    events::dispatch<PlaySound>( sound, 100 );
   }
 
   _updateTitle();
@@ -166,8 +168,8 @@ void AboutPeople::_updateNeighbors()
   if( _d->object.isNull() )
     return;
 
-  foreach( it, _d->screenshots )
-    (*it)->deleteLater();
+  for( auto s : _d->screenshots )
+    s->deleteLater();
 
   _d->screenshots.clear();
 
@@ -180,13 +182,12 @@ void AboutPeople::_updateNeighbors()
     if( !tileWalkers.empty() )
     {
       //mini screenshot from citizen pos need here
-      CitizenScreenshot* lb = new CitizenScreenshot( this, lbRect, tileWalkers.front() );
-      lb->setTooltipText( _("##click_here_to_talk_person##") );
-      _d->screenshots.push_back( lb );
+      CitizenScreenshot& lb = add<CitizenScreenshot>( lbRect, tileWalkers.front() );
+      lb.setTooltipText( _("##click_here_to_talk_person##") );
+      _d->screenshots.push_back( &lb );
       lbRect += lbOffset;
 
-
-      CONNECT( lb, _onClickedSignal, this, AboutPeople::_setWalker );
+      CONNECT( &lb, _onClickedSignal, this, AboutPeople::_setWalker );
     }
   }
 }
@@ -198,17 +199,17 @@ void AboutPeople::_init( PlayerCityPtr city, const TilePos& pos, const std::stri
 
   Widget::setupUI( model );
 
-  _d->lbName = new Label( this, Rect( 90, 108, width() - 30, 108 + 20) );
+  _d->lbName = &add<Label>( Rect( 90, 108, width() - 30, 108 + 20) );
   _d->lbName->setFont( Font::create( FONT_2 ));
 
-  _d->lbType = new Label( this, Rect( 90, 128, width() - 30, 128 + 20) );
+  _d->lbType = &add<Label>( Rect( 90, 128, width() - 30, 128 + 20) );
   _d->lbType->setFont( Font::create( FONT_1 ));
 
-  _d->lbThinks = new Label( this, Rect( 90, 148, width() - 30, height() - 140),
+  _d->lbThinks = &add<Label>( Rect( 90, 148, width() - 30, height() - 140),
                             "##citizen_thoughts_will_be_placed_here##" );
 
   _d->lbThinks->setWordwrap( true );
-  _d->lbCitizenPic = new Label( this, Rect( 30, 112, 30 + 55, 112 + 80) );
+  _d->lbCitizenPic = &add<Label>( Rect( 30, 112, 30 + 55, 112 + 80) );
 
   GET_DWIDGET_FROM_UI( _d, lbCurrentAction )
   GET_DWIDGET_FROM_UI( _d, lbBaseBuilding )
@@ -285,14 +286,14 @@ void AboutPeople::Impl::updateCurrentAction(const std::string& action, TilePos p
   OverlayPtr ov = city->getOverlay( pos );
   if( ov.isValid() )
   {
-    destBuildingName = MetaDataHolder::findPrettyName( ov->type() );
+    destBuildingName = ov->info().prettyName();
     if( btnMove2dst ) btnMove2dst->setVisible( !destBuildingName.empty() );
   }
 
   if( lbCurrentAction )
   {
     lbCurrentAction->setPrefixText( _("##wlk_state##") );
-    lbCurrentAction->setText( action + "(" + destBuildingName + ")" );
+    lbCurrentAction->setText( action + "(" + _(destBuildingName) + ")" );
   }
 }
 
@@ -304,7 +305,7 @@ void AboutPeople::Impl::updateBaseBuilding( TilePos pos )
 
   if( ov.isValid() )
   {
-    text = MetaDataHolder::findPrettyName( ov->type() );
+    text = ov->info().prettyName();
     if( lbBaseBuilding ) lbBaseBuilding->setText( text );    
   }
 
@@ -315,8 +316,7 @@ void AboutPeople::Impl::moveCamera2base()
 {
   if( baseBuildingPos != gfx::tilemap::invalidLocation() )
   {
-    auto event = events::MoveCamera::create( baseBuildingPos );
-    event->dispatch();
+    events::dispatch<MoveCamera>( baseBuildingPos );
   }
 }
 
@@ -324,8 +324,7 @@ void AboutPeople::Impl::moveCamera2dst()
 {
   if( destinationPos != gfx::tilemap::invalidLocation() )
   {
-    auto event = events::MoveCamera::create( destinationPos );
-    event->dispatch();
+    events::dispatch<MoveCamera>( destinationPos );
   }
 
   if( object.isValid() )

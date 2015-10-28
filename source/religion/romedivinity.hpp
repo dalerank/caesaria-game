@@ -26,33 +26,6 @@
 namespace religion
 {
 
-typedef enum
-{
-  romeDivCeres = 0,
-  romeDivMars,
-  romeDivNeptune,
-  romeDivVenus,
-  romeDivMercury,
-
-  romeDivCount=0xff
-} RomeDivinityType;
-
-struct RomeDinName
-{
-  RomeDivinityType type;
-  std::string name;
-};
-
-const char* const baseDivinityNames[] =
-{
-  "ceres",
-  "mars",
-  "neptune",
-  "venus",
-  "mercury",
-  0
-};
-
 class Divinity : public ReferenceCounted
 {
 public:

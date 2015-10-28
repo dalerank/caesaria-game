@@ -27,14 +27,6 @@ namespace {
 const int defaultAttackValue=-3;
 }
 
-BowArrowPtr BowArrow::create(PlayerCityPtr city)
-{
-  BowArrowPtr ret( new BowArrow( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 void BowArrow::_onTarget()
 {
   const WalkerList& walkers = _city()->walkers( dstPos() );
@@ -48,7 +40,8 @@ void BowArrow::_onTarget()
 const char* BowArrow::rcGroup() const {  return ResourceGroup::sprites; }
 int BowArrow::_rcStartIndex() const { return 130; }
 
-BowArrow::BowArrow(PlayerCityPtr city) : ThrowingWeapon( city )
+BowArrow::BowArrow(PlayerCityPtr city)
+  : ThrowingWeapon( city )
 {
   _setType( walker::bow_arrow );
 

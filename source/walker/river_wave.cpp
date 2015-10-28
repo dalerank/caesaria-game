@@ -24,19 +24,10 @@
 
 using namespace gfx;
 
-RiverWavePtr RiverWave::create(PlayerCityPtr city)
-{
-  RiverWavePtr ret( new RiverWave( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 RiverWave::RiverWave(PlayerCityPtr city )
-  : Walker( city )
+  : Walker( city, walker::riverWave )
 {
   _delay = math::random( 100 );
-  _setType( walker::riverWave );
   _animation.load( ResourceGroup::sprites, 109, 5 );
   _animation.setDelay( Animation::slow );
   _animation.setOffset( Point( 0, 0) );

@@ -39,7 +39,7 @@ public:
 
   void updatePicture(PlayerCityPtr city);
   void addRoad();
-  bool canAddRoad( PlayerCityPtr city, TilePos pos ) const;
+  bool canAddRoad( PlayerCityPtr city, const TilePos& pos ) const;
 
   virtual const gfx::Picture& picture(const city::AreaInfo& info) const;
 protected:

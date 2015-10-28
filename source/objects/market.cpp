@@ -85,12 +85,12 @@ void Market::deliverService()
   if( numberWorkers() > 0 && walkers().size() == 0 )
   {
     // the marketBuyer is ready to buy something!
-    MarketBuyerPtr buyer = MarketBuyer::create( _city() );
-    buyer->send2City( this );
+    auto marketBuyer = Walker::create<MarketBuyer>( _city() );
+    marketBuyer->send2City( this );
 
-    if( !buyer->isDeleted() )
+    if( !marketBuyer->isDeleted() )
     {
-      addWalker( buyer.object() );
+      addWalker( marketBuyer.object() );
     }
     else if( _d->isAnyGoodStored() )
     {
@@ -149,13 +149,14 @@ void Market::load( const VariantMap& stream)
 
   VARIANT_LOAD_CLASS_D( _d, goodStore, stream )
 
-      _d->initStore();
+  _d->initStore();
 }
 
 bool Market::build(const city::AreaInfo& info)
 {
   bool isOk = ServiceBuilding::build( info );
-  if( isOk )
+  bool isLoadingMode = !info.city->getOption( PlayerCity::forceBuild );
+  if( isOk && !isLoadingMode )
   {
     TilePosArray locations = roadside().locations();
     bool accessGranary = _d->checkStorageInWorkRange( info.city, locations, object::granery );

@@ -50,6 +50,7 @@
 #include "world/romechastenerarmy.hpp"
 #include "world/empire.hpp"
 #include "core/logger.hpp"
+#include "core/color_list.hpp"
 #include "city/states.hpp"
 
 using namespace gfx;
@@ -98,6 +99,7 @@ public:
     : Label( parent, rectangle )
   {
     _title = title;
+    _dfont = Font::create( FONT_2_WHITE );
 
     Picture pic;
     pic.load( ResourceGroup::panelBackground, 48 ), Point( 5, 5 );
@@ -111,10 +113,10 @@ public:
   {
     Label::_updateTexture( painter );
 
-    Font font = Font::create( FONT_2_WHITE );
-    font.draw( _textPicture(), _(_title), Point( 20, 0), true );
+    canvasDraw( _(_title), Point( 20, 0), _dfont );
   }
 
+  Font _dfont;
   std::string _title;
 };
 
@@ -128,7 +130,7 @@ public:
   TexturedButton* btnHelp;
 
 public:
-  void drawReportRow( AdviceType, std::string text, NColor color=DefaultColors::black );
+  void drawReportRow( AdviceType, std::string text, NColor color=ColorList::black );
   void drawEmploymentState();
   void drawProfitState();
   void drawMigrationState();
@@ -168,7 +170,7 @@ Chief::Chief(PlayerCityPtr city, Widget* parent, int id )
   _d->drawEntertainment();
   _d->drawSentiment();
 
-  TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  auto btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
   CONNECT( btnHelp, onClicked(), this, Chief::_showHelp );
 }
 
@@ -213,25 +215,25 @@ void Chief::Impl::drawEmploymentState()
   Statistic::WorkersInfo wInfo = city->statistic().workers.details();
   int workless = city->statistic().workers.worklessPercent();
   std::string text;
-  NColor color = DefaultColors::black;
+  NColor color = ColorList::black;
 
   if( city->states().population == 0 )
   {
     text = _("##no_people_in_city##");
-    color =  DefaultColors::brown;
+    color =  ColorList::brown;
   }
   else
   {
     int needWorkersNumber = wInfo.need - wInfo.current;
     if( needWorkersNumber > 10 )
     {
-      text = utils::format( 0xff, "%s %d", _("##advchief_needworkers##"), needWorkersNumber );
-      color = DefaultColors::brown;
+      text = fmt::format( "{0} {1}", _("##advchief_needworkers##"), needWorkersNumber );
+      color = ColorList::brown;
     }
     else if( workless > bigWorklessPercent )
     {
-      text = utils::format( 0xff, "%s %d%%", _("##advchief_workless##"), workless );
-      color = DefaultColors::brown;
+      text = fmt::format( "{0} {1}%", _("##advchief_workless##"), workless );
+      color = ColorList::brown;
     }
     else { text = _("##advchief_employers_ok##");  }
   }
@@ -245,7 +247,7 @@ void Chief::Impl::drawProfitState()
   int profit = city->treasury().profit();
   std::string prefix = (profit >= 0 ? "##advchief_haveprofit##" : "##advchief_havedeficit##");
   text = _(prefix) + std::string(" ") + utils::i2str( profit );
-  NColor textColor = profit > 0 ? DefaultColors::black : DefaultColors::brown;
+  NColor textColor = profit > 0 ? ColorList::black : ColorList::brown;
 
   drawReportRow( profitState, text, textColor );
 }
@@ -296,7 +298,7 @@ void Chief::Impl::drawFoodStockState()
           case 3: text = "##our_foods_level_are_low##"; break;
 
           default:
-            text = utils::format( 0xff, "%s %d %s", _("##have_food_for##"), monthWithFood, _("##months##") );
+            text = fmt::format( "{0} {1} {2}", _("##have_food_for##"), monthWithFood, _("##months##") );
         }
       }
     }
@@ -349,7 +351,7 @@ void Chief::Impl::drawMilitary()
     if( !isBesieged )
     {
       Notification n = mil->priorityNotification();
-      reasons << n.message;
+      reasons << n.desc.message;
     }    
   }
 
@@ -379,7 +381,7 @@ void Chief::Impl::drawMilitary()
       {
         if( minDistance <= enemyNearCityGatesDistance )
         {
-          std::string threatText = utils::format( 0xff, "##%s_troops_at_our_gates##", maxThreat->type().c_str() );
+          std::string threatText = fmt::format( "##{0}_troops_at_our_gates##", maxThreat->type() );
           reasons << threatText;
         }
         else if( minDistance <= enemyNearCityDistance )

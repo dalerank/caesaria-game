@@ -36,7 +36,6 @@ public:
   virtual ~ThrowingWeapon();
 protected:
   virtual void _reachedPathway();
-
   virtual void _onTarget() = 0;
   virtual const char* rcGroup() const = 0;
   virtual int _rcStartIndex() const = 0;

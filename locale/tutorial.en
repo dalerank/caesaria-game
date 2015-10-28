@@ -16,4 +16,5 @@
   "##tutorial_text_roads##" : "\tc Roads \nYou can build roads, just hold down the mouse button. \n\n"
   "##tutorial_text_roads2##": "Carefully plan construction of roads, creating as little as possible crossroads to your residents traveled freely wherever you want. On every crossroad people have to decide where to go next. It limits your control over their movements. \n\n"
   "##tutorial_religion_title##" : "Appeasing the gods"
+  "##tutorial_preview_mission##" : "Learn you for rules of game"
 }

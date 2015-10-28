@@ -24,8 +24,8 @@
 
 class WaterGarbage : public Walker
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static WaterGarbagePtr create( PlayerCityPtr city );
   virtual ~WaterGarbage();
 
   virtual void send2City(const TilePos& start );

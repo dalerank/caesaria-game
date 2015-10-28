@@ -62,6 +62,9 @@ public:
   DateTime date() const;
   DateTime time() const;
 
+  unsigned int hashdate() const;
+  static DateTime fromhash( unsigned int hash );
+
   int daysTo( const DateTime& future ) const;
   int equale( const DateTime& b );
   int monthsTo( const DateTime& end ) const;

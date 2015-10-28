@@ -101,7 +101,7 @@ void Manager::showHelp( PlayerCityPtr city, Ui* gui, TilePos pos )
 
   if( _d->showDebugInfo )
   {
-    Logger::warning( "Tile debug info: dsrbl=%d", tile.param( Tile::pDesirability ) );
+    Logger::warning( "Tile debug info: dsrbl={0}", tile.param( Tile::pDesirability ) );
   }
 
   type = overlay.isNull() ? object::unknown : overlay->type();
@@ -155,7 +155,7 @@ StaticInfoboxCreator::StaticInfoboxCreator(const std::string &caption, const std
   title( caption ), text( desc )
 {}
 
-Infobox *StaticInfoboxCreator::create(PlayerCityPtr city, Widget *parent, TilePos pos)
+Infobox* StaticInfoboxCreator::create(PlayerCityPtr city, Widget *parent, TilePos pos)
 {
   Size  size = parent->size();
   Infobox* infoBox = new Infobox( parent, Infobox::defaultRect );
@@ -164,7 +164,7 @@ Infobox *StaticInfoboxCreator::create(PlayerCityPtr city, Widget *parent, TilePo
   OverlayPtr overlay = city->getOverlay( pos );
 
   std::string caption = overlay.isValid()
-                                  ? MetaDataHolder::findPrettyName( overlay->type() )
+                                  ? overlay->info().prettyName()
                                   : title;
 
   infoBox->setTitle( _( caption ) );

@@ -144,7 +144,7 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   f.seekg(kLocation, std::ios::beg);
   unsigned int location=0;
   f.read((char*)&location, 1);
-  Logger::warning( "C3MapLoader: location of city is %d", (int)(location) );
+  Logger::warning( "C3MapLoader: location of city is {0}", (int)(location) );
 
   std::string cityName = LoaderHelper::getDefaultCityName( location );
   oCity->setName( cityName );
@@ -155,7 +155,7 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   int size_2;
   f.read((char*)&map_size,   4);
   f.read((char*)&size_2, 4);
-  Logger::warning( "C3MapLoader: map size is %d", map_size );
+  Logger::warning( "C3MapLoader: map size is {0}", map_size );
 
   if (map_size != size_2)
   {
@@ -275,7 +275,7 @@ void C3Map::Impl::initClimate(std::fstream &f, PlayerCityPtr ioCity )
 
   ioCity->setOption( PlayerCity::climateType, i);
 
-  Logger::warning( "C3MapLoader: climate type is %d", i );
+  Logger::warning( "C3MapLoader: climate type is {0}", i );
 }
 
 void C3Map::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
@@ -289,25 +289,21 @@ void C3Map::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
 
-  BorderInfo borderInfo;
-
-  borderInfo.roadEntry = TilePos( i, size - j - 1 );
+  ioCity->setBorderInfo( PlayerCity::roadEntry, TilePos( i, size - j - 1 ) );
 
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
-  borderInfo.roadExit = TilePos( i, size - j - 1 );
+  ioCity->setBorderInfo( PlayerCity::roadExit, TilePos( i, size - j - 1 ) );
 
   // init boat entry/exit point
   f.seekg(kBoatEntry, std::ios::beg);
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
-  borderInfo.boatEntry = TilePos( i, size - j - 1 );
+  ioCity->setBorderInfo( PlayerCity::boatEntry, TilePos( i, size - j - 1 ) );
 
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
-  borderInfo.boatExit = TilePos( i, size - j - 1);
-
-  ioCity->setBorderInfo( borderInfo );
+  ioCity->setBorderInfo( PlayerCity::boatExit, TilePos( i, size - j - 1) );
 
   //std::cout << "road entry at:" << ioCity.getRoadEntryI() << "," << ioCity.getRoadEntryJ() << std::endl;
   //std::cout << "road exit at:"  << ioCity.getRoadExitI()  << "," << ioCity.getRoadExitJ()  << std::endl;

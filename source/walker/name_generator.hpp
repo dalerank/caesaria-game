@@ -22,8 +22,9 @@
 class NameGenerator
 {
 public:
-  typedef enum { male=0, female,
-                 patricianMale, patricianFemale } NameType;
+  typedef enum { plebMale=0, plebFemale,
+                 patricianMale, patricianFemale,
+                 indigeneMale, indigeneFemale } NameType;
   static NameGenerator& instance();
 
   ~NameGenerator();

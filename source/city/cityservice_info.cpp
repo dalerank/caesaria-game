@@ -101,14 +101,6 @@ void Info::MaxParameters::load(const VariantMap &vm)
   }
 }
 
-SrvcPtr Info::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new Info( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 Info::Info( PlayerCityPtr city )
   : Srvc( city, defaultName() ), _d( new Impl )
 {
