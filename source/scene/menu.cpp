@@ -89,6 +89,7 @@ public:
   void showNewGame();
   void showOptionsMenu();
   void playRandomap();
+  void constructorMode();
   void showMainMenu();
   void showSoundOptions();
   void showVideoOptions();
@@ -102,7 +103,7 @@ public:
   void showSaveSelectDialog();
   void changePlayerName();
   void showAdvancedMaterials();
-  void handleStartCareer();
+  void startCareer();
   void showLanguageOptions();
   void showPackageOptions();
   void changeLanguage(std::string lang, std::string newFont, std::string sounds);
@@ -141,12 +142,12 @@ void StartMenu::Impl::changePlayerNameIfNeed(bool force)
   std::string playerName = SETTINGS_STR( playerName );
   if( playerName.empty() || force )
   {
-    dialog::ChangePlayerName* dlg = new dialog::ChangePlayerName( game->gui()->rootWidget() );
-    dlg->setName( playerName );
-    dlg->setMayExit( false );
+    auto&& dlg = game->gui()->add<dialog::ChangePlayerName>();
+    dlg.setName( playerName );
+    dlg.setMayExit( false );
 
-    CONNECT( dlg, onNameChange(), this, Impl::setPlayerName );
-    CONNECT( dlg, onContinue(), dlg, dialog::ChangePlayerName::deleteLater );
+    CONNECT( &dlg, onNameChange(), this, Impl::setPlayerName );
+    CONNECT( &dlg, onContinue(), &dlg, dialog::ChangePlayerName::deleteLater );
   }
 }
 
@@ -186,8 +187,8 @@ void StartMenu::Impl::resolveSteamStats()
         gfx::Picture pic = steamapi::achievementImage( achieventId );
         if( pic.isValid() )
         {
-          gui::Image* img = new gui::Image( game->gui()->rootWidget(), Point( 10, 100 + offset ), pic );
-          img->setTooltipText( steamapi::achievementCaption( achieventId ) );
+          auto&& img = game->gui()->add<gui::Image>( Point( 10, 100 + offset ), pic );
+          img.setTooltipText( steamapi::achievementCaption( achieventId ) );
           offset += 65;
         }
       }
@@ -221,7 +222,7 @@ void StartMenu::Impl::openDlcDirectory(Widget* sender)
     return;
 
   vfs::Path path( sender->getProperty( "path" ).toString() );
-  new DlcFolderViewer( game->gui()->rootWidget(), path );
+  game->gui()->add<DlcFolderViewer>( path );
 }
 
 void StartMenu::Impl::showSoundOptions()
@@ -234,17 +235,17 @@ void StartMenu::Impl::showLanguageOptions()
   vfs::Path model = SETTINGS_RC_PATH( langModel );
   std::string currentLang = SETTINGS_STR( language );
   std::string dfFont = SETTINGS_STR( defaultFont );
-  auto languageSelectDlg = new dialog::LanguageSelect( game->gui()->rootWidget(), model, currentLang );
-  languageSelectDlg->setDefaultFont( dfFont );
+  auto&& languageSelectDlg = game->gui()->add<dialog::LanguageSelect>( model, currentLang );
+  languageSelectDlg.setDefaultFont( dfFont );
 
-  CONNECT( languageSelectDlg, onChange,   this, Impl::changeLanguage )
-  CONNECT( languageSelectDlg, onContinue, this, Impl::reload         )
+  CONNECT( &languageSelectDlg, onChange,   this, Impl::changeLanguage )
+  CONNECT( &languageSelectDlg, onContinue, this, Impl::reload         )
 }
 
 void StartMenu::Impl::showPackageOptions()
 {
-  auto packageOptionsDlg = new dialog::PackageOptions( game->gui()->rootWidget(), Rect() );
-  packageOptionsDlg->setModal();
+  auto&& packageOptionsDlg = game->gui()->add<dialog::PackageOptions>( Rect() );
+  packageOptionsDlg.setModal();
 }
 
 void StartMenu::Impl::changeLanguage(std::string lang, std::string newFont, std::string sounds)
@@ -267,7 +268,7 @@ void StartMenu::Impl::changeLanguage(std::string lang, std::string newFont, std:
   audio::Helper::initTalksArchive( sounds );
 }
 
-void StartMenu::Impl::handleStartCareer()
+void StartMenu::Impl::startCareer()
 {
   menu->clear();
 
@@ -289,9 +290,7 @@ void StartMenu::Impl::handleNewGame()
 void StartMenu::Impl::showCredits()
 {
   audio::Engine::instance().play( "combat_long", 50, audio::theme );
-  Widget* parent = game->gui()->rootWidget();
 
-  Size size = parent->size();
   std::string strs[] = { _("##original_game##"),
                          "Caesar III (c)",
                          "Thank you, Impressions Games, for amazing game",
@@ -351,30 +350,30 @@ void StartMenu::Impl::showCredits()
                          "tracertong, pufik6666, rovanion",
                          "" };
 
-  Label* frame = new Label( parent, Rect( Point( 0, 0), size ), "", false, gui::Label::bgSimpleBlack );
-  WidgetEscapeCloser::insertTo( frame );
-  frame->setAlpha( 0xa0 );
+  Size size = game->gui()->vsize();
+  Label& frame = game->gui()->add<Label>( Rect( Point( 0, 0), size ), "", false, gui::Label::bgSimpleBlack );
+  WidgetEscapeCloser::insertTo( &frame );
+  frame.setAlpha( 0xa0 );
   int h = size.height();
   for( int i=0; !strs[i].empty(); i++ )
   {
-    Label* lb = new Label( frame, Rect( 0, h + i * 20, size.width(), h + (i + 1) * 20), strs[i] );
-    lb->setTextAlignment( align::center, align::center );
-    lb->setFont( Font::create( FONT_2_WHITE ) );
-    lb->setSubElement( true );
-    PositionAnimator* anim = new PositionAnimator( lb, WidgetAnimator::removeSelf | WidgetAnimator::removeParent, Point( 0, -20), 10000 );
-    anim->setSpeed( PointF( 0, -0.5 ) );
+    Label& lb = frame.add<Label>( Rect( 0, h + i * 20, size.width(), h + (i + 1) * 20), strs[i] );
+    lb.setTextAlignment( align::center, align::center );
+    lb.setFont( Font::create( FONT_2_WHITE ) );
+    lb.setSubElement( true );
+    auto& animator = lb.add<PositionAnimator>( WidgetAnimator::removeSelf | WidgetAnimator::removeParent, Point( 0, -20), 10000 );
+    animator.setSpeed( PointF( 0, -0.5 ) );
   }
 
-  auto buttonClose = new gui::PushButton( frame,
-                                          Rect( size.width() - 150, size.height() - 34, size.width() - 10, size.height() - 10 ),
-                                          _("##close##") );
-  frame->setFocus();
+  auto&& buttonClose = frame.add<PushButton>( Rect( size.width() - 150, size.height() - 34, size.width() - 10, size.height() - 10 ),
+                                             _("##close##") );
+  frame.setFocus();
 
-  CONNECT( buttonClose, onClicked(), frame, gui::Label::deleteLater );
-  CONNECT( buttonClose, onClicked(), this, Impl::playMenuSoundTheme );
+  CONNECT( &buttonClose, onClicked(), &frame, Label::deleteLater );
+  CONNECT( &buttonClose, onClicked(), this, Impl::playMenuSoundTheme );
 }
 
-#define ADD_MENU_BUTTON( text, slot) { PushButton* btn = menu->addButton( _(text),-1 ); CONNECT(btn, onClicked(), this, slot ); }
+#define ADD_MENU_BUTTON( text, slot) { PushButton* btn = menu->addButton( _(text), -1 ); CONNECT(btn, onClicked(), this, slot ); }
 
 void StartMenu::Impl::showLoadMenu()
 {
@@ -384,6 +383,22 @@ void StartMenu::Impl::showLoadMenu()
   ADD_MENU_BUTTON( "##mainmenu_loadgame##",    Impl::showSaveSelectDialog )
   ADD_MENU_BUTTON( "##mainmenu_loadmap##",     Impl::showMapSelectDialog )
   ADD_MENU_BUTTON( "##cancel##",               Impl::showMainMenu )
+}
+
+void StartMenu::Impl::constructorMode()
+{
+  auto&& loadFileDialog = game->gui()->add<dialog::LoadFile>( Rect(),
+                                                              vfs::Path( ":/maps/" ), ".map,.sav,.omap",
+                                                              -1 );
+  loadFileDialog.setMayDelete( false );
+
+  result = StartMenu::loadConstructor;
+  CONNECT( &loadFileDialog, onSelectFile(), this, Impl::selectFile );
+  loadFileDialog.setTitle( _("##mainmenu_loadmap##") );
+  loadFileDialog.setText( _("##start_this_map##") );
+
+  changePlayerNameIfNeed();
+
 }
 
 void StartMenu::Impl::playRandomap()
@@ -409,8 +424,9 @@ void StartMenu::Impl::showNewGame()
 {
   menu->clear();
 
-  ADD_MENU_BUTTON( "##mainmenu_startcareer##", Impl::handleStartCareer )
+  ADD_MENU_BUTTON( "##mainmenu_startcareer##", Impl::startCareer )
   ADD_MENU_BUTTON( "##mainmenu_randommap##",   Impl::playRandomap )
+  ADD_MENU_BUTTON( "##mainmenu_constructor##", Impl::constructorMode )
   ADD_MENU_BUTTON( "##cancel##",               Impl::showMainMenu )
 }
 
@@ -504,18 +520,15 @@ void StartMenu::Impl::setPlayerName(std::string name) { SETTINGS_SET_VALUE( play
 
 void StartMenu::Impl::showMapSelectDialog()
 {
-  Widget* parent = game->gui()->rootWidget();
-
-  auto loadFileDialog = dialog::LoadFile::create( parent,
-                                                  Rect(),
-                                                  vfs::Path( ":/maps/" ), ".map,.sav,.omap",
-                                                  -1 );
-  loadFileDialog->setMayDelete( false );
+  auto&& loadFileDialog = game->gui()->add<dialog::LoadFile>( Rect(),
+                                                              vfs::Path( ":/maps/" ), ".map,.sav,.omap",
+                                                              -1 );
+  loadFileDialog.setMayDelete( false );
 
   result = StartMenu::loadMap;
-  CONNECT( loadFileDialog, onSelectFile(), this, Impl::selectFile );
-  loadFileDialog->setTitle( _("##mainmenu_loadmap##") );
-  loadFileDialog->setText( _("##start_this_map##") );
+  CONNECT( &loadFileDialog, onSelectFile(), this, Impl::selectFile );
+  loadFileDialog.setTitle( _("##mainmenu_loadmap##") );
+  loadFileDialog.setText( _("##start_this_map##") );
 
   changePlayerNameIfNeed();
 }

@@ -137,6 +137,7 @@ InMainMenu::~InMainMenu()
   break;
 
   case StartMenu::loadMap:
+  case StartMenu::loadConstructor:
   {
     bool loadOk = _game->load( startMenu->mapName() );
     Logger::warning( (loadOk ? "ScreenMenu: end loading map" : "ScreenMenu: cant load map") + startMenu->mapName() );
@@ -146,6 +147,9 @@ InMainMenu::~InMainMenu()
     finalizer.initBuildOptions();
     finalizer.addEvents();
     finalizer.resetFavour();
+
+    if( _screen->result() == StartMenu::loadConstructor )
+      _game->city()->setOption( PlayerCity::constructorMode, 1 );
 
     _game->setNextScreen( loadOk ? SCREEN_GAME : SCREEN_MENU );
   }

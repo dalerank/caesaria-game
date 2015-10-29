@@ -717,16 +717,14 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case run_script:
   {
-    Widget* parent = game->gui()->rootWidget();
-    dialog::LoadFile* wnd = dialog::LoadFile::create( parent,
-                                                      Rect(),
-                                                      vfs::Path( ":/scripts/" ), ".model",
-                                                      -1 );
-    wnd->setCenter( parent->center() );
+    auto&& dialog = game->gui()->add<dialog::LoadFile>( Rect(),
+                                                        vfs::Path( ":/scripts/" ), ".model",
+                                                        -1 );
+    dialog.moveTo( Widget::parentCenter );
 
-    CONNECT( wnd, onSelectFile(), this, Impl::runScript );
-    wnd->setTitle( "Select file" );
-    wnd->setText( "open" );
+    CONNECT( &dialog, onSelectFile(), this, Impl::runScript );
+    dialog.setTitle( "Select file" );
+    dialog.setText( "open" );
   }
   break;
 

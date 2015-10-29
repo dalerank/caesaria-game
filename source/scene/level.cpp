@@ -371,6 +371,11 @@ void Level::initialize()
     gui::Ui& ui = *_d->game->gui();
     dialog::Information( &ui, "Please note", "Black object are not done yet and will be added as soon as finished." );
   }
+
+  if( _d->game->city()->getOption( PlayerCity::constructorMode ) )
+  {
+    setConstructorMode( true );
+  }
 }
 
 std::string Level::nextFilename() const{  return _d->mapToLoad;}

@@ -48,14 +48,20 @@ Signal1<int>&ContextMenuItem::onAction() { return _dfunc()->onActionSignal; }
 
 void ContextMenuItem::_updateTexture(Engine& painter)
 {
-  setTextOffset( Point( isChecked() ? 20 : 4, 0 ) );
+  setTextOffset( Point( isAutoChecking() ? 20 : 4, 0 ) );
 
   Label::_updateTexture( painter );
 
-  int side = height()-6;
-  _textPicture().fill( ColorList::black, Rect( 6, 6, side, side ) );
-  _textPicture().fill( isChecked() ? ColorList::firebrick : ColorList::floralwhite, Rect( 5, 5, side, side ) );
-  _textPicture().update();
+  if( isAutoChecking() )
+  {
+    const int sideOffset = 6;
+    const int side = height()-sideOffset;
+
+    Rect checkRect( sideOffset, sideOffset, side, side );
+    _textPicture().fill( ColorList::black, checkRect );
+    _textPicture().fill( isChecked() ? ColorList::firebrick : ColorList::floralwhite, checkRect.crop( 1 ) );
+    _textPicture().update();
+  }
 }
 
 ContextMenu* ContextMenuItem::addSubMenu( int id )
@@ -123,6 +129,7 @@ void ContextMenuItem::setHovered( bool hover )
   setFont( Font::create( hover ? FONT_2_RED : FONT_2 ));
 }
 
+bool ContextMenuItem::isAutoChecking() { return _dfunc()->isAutoChecking; }
 bool ContextMenuItem::isSeparator() const {  return _dfunc()->isSeparator; }
 void ContextMenuItem::setCommandId( int cmdId ){	_dfunc()->commandId = cmdId;}
 int ContextMenuItem::commandId() const{  return _dfunc()->commandId;}
