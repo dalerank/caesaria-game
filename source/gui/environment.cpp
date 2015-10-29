@@ -28,6 +28,7 @@
 #include "console.hpp"
 #include "core/logger.hpp"
 #include "core/hash.hpp"
+#include "core/osystem.hpp"
 #include "widgetprivate.hpp"
 
 using namespace gfx;
@@ -399,9 +400,10 @@ bool Ui::handleEvent( const NEvent& event )
 
 //!!! android fix. update hovered element on every mouse event,
 //!   that beforeDraw() function cannot do it correctly
-#ifdef CAESARIA_PLATFORM_ANDROID
-        _updateHovered( _d->cursorPos );
-#endif
+        if( OSystem::isAndroid() )
+        {
+          _updateHovered( _d->cursorPos );
+        }
 //!!! end android fix
         switch( event.mouse.type )
         {

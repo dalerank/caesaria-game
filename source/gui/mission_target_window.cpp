@@ -70,7 +70,7 @@ MissionTargets::MissionTargets( Widget* parent, PlayerCityPtr city, int id, cons
   Widget::setupUI( ":/gui/targets.gui" );
 
   WidgetEscapeCloser::insertTo( this );
-  GameAutoPause::insertTo( this, true );
+  GameAutoPause::insertTo( this );
 
   moveTo( Widget::parentCenter );
 

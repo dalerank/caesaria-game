@@ -583,7 +583,7 @@ void StartMenu::initialize()
                                                     "logo_rdt", 1, 2, 2, 2 );
 
   auto& btnSteamPage = _d->ui().add<TexturedButton>( Point( btnHomePage.left() - 128, scrSize.height() - 100 ),  Size( 128 ), -1,
-                                                      "steam_icon", 1, 2, 2, 2 );
+                                                     "steam_icon", 1, 2, 2, 2 );
 
   CONNECT( &btnSteamPage, onClicked(), _d.data(), Impl::openSteamPage );
   CONNECT( &btnHomePage, onClicked(), _d.data(), Impl::openHomePage );

@@ -172,7 +172,7 @@ Emperor::Emperor( PlayerCityPtr city, Widget* parent, int id )
 : Base( parent, city, id ), __INIT_IMPL(Emperor)
 {
   __D_IMPL(_d,Emperor)
-  GameAutoPause::insertTo( this, true );
+  GameAutoPause::insertTo( this );
   _d->isRequestsUpdated = true;
 
   Widget::setupUI( ":/gui/emperoropts.gui" );

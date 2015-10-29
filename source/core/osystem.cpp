@@ -330,7 +330,7 @@ void OSystem::restartProcess( const std::string& filename, const std::string& di
 #endif
 }
 
-bool OSystem::isAndroid() { return is( android ); }
+bool OSystem::isAndroid() { return true; }// is( android ); }
 bool OSystem::isLinux() { return is( linux ); }
 bool OSystem::isUnix() { return is( unix ); }
 bool OSystem::isMac() { return is( macos ); }

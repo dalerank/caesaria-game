@@ -74,7 +74,7 @@ LoadFile::LoadFile( Widget* parent, const Rect& rect,
 
   Widget::setupUI( ":/gui/loadfile.gui" );
   WidgetEscapeCloser::insertTo( this );
-  GameAutoPause::insertTo( this, true );
+  GameAutoPause::insertTo( this );
 
   // create the title
   GET_DWIDGET_FROM_UI( _d, lbTitle )
