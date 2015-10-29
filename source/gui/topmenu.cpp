@@ -148,8 +148,8 @@ void TopMenu::Impl::showShortKeyInfo()
   shortKeyInfo.setupUI( ":/gui/shortkeys.gui" );
   shortKeyInfo.moveTo( Widget::parentCenter );
 
-  auto&& btnExit = shortKeyInfo.add<TexturedButton>( Point( shortKeyInfo.width() - 34, shortKeyInfo.height() - 34 ),
-                                                     Size( 24 ), -1, config::id.menu.exitInf );
+  auto& btnExit = shortKeyInfo.add<TexturedButton>( Point( shortKeyInfo.width() - 34, shortKeyInfo.height() - 34 ),
+                                                    Size( 24 ), -1, config::id.menu.exitInf );
   WidgetEscapeCloser::insertTo( shortKeyInfo );
 
   CONNECT( &btnExit, onClicked(), &shortKeyInfo, Label::deleteLater );
@@ -192,7 +192,7 @@ void TopMenu::Impl::showAboutInfo()
   Widget& window = lbDate->ui()->add<Label>( Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
   window.setupUI( ":/gui/about.gui" );
   window.moveTo( Widget::parentCenter );
-  auto&& btnExit = window.add<TexturedButton>( Point( window.width() - 34, window.height() - 34 ), Size( 24 ), -1, config::id.menu.exitInf );
+  auto& btnExit = window.add<TexturedButton>( Point( window.width() - 34, window.height() - 34 ), Size( 24 ), -1, config::id.menu.exitInf );
 
   CONNECT( &btnExit, onClicked(), &window, Label::deleteLater );
   WidgetEscapeCloser::insertTo( window );

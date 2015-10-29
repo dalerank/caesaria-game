@@ -134,7 +134,7 @@ bool WarehouseStore::applyStorageReservation( good::Stock &stock, const int rese
   // first we look at the half filled subTiles
   if (amount > 0)
   {
-    for( auto&& room : _warehouse->rooms() )
+    for( auto& room : _warehouse->rooms() )
     {
       if( room.type() == stock.type() && room.freeQty() > 0 )
       {
@@ -146,7 +146,7 @@ bool WarehouseStore::applyStorageReservation( good::Stock &stock, const int rese
     }
 
     // then we look at the empty subTiles
-    for( auto&& room : _warehouse->rooms() )
+    for( auto& room : _warehouse->rooms() )
     {
       if( room.type() == good::none)
       {
@@ -184,7 +184,7 @@ bool WarehouseStore::applyRetrieveReservation(good::Stock& stock, const int rese
   int amount = reservedStock.qty();
 
   // first we look at the half filled subTiles
-  for( auto&& room : _warehouse->rooms() )
+  for( auto& room : _warehouse->rooms() )
   {
     if (amount == 0)
     {
@@ -204,7 +204,7 @@ bool WarehouseStore::applyRetrieveReservation(good::Stock& stock, const int rese
   }
 
   // then we look at the filled subTiles
-  for( auto&& room : _warehouse->rooms() )
+  for( auto& room : _warehouse->rooms() )
   {
     if (amount == 0)
     {
@@ -246,7 +246,7 @@ void WarehouseStore::load(const VariantMap &stream)
 
   VARIANT_LOAD_CLASS_LIST( _capacities, stream )
 
-  for( auto&& it : _capacities )
+  for( auto& it : _capacities )
     if( it.second == 0 )
       it.second = maxCapacity;
 }

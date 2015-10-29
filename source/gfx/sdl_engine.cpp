@@ -208,8 +208,10 @@ void SdlEngine::init()
 
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-  window = SDL_CreateWindow( "CaesarIA:android", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _srcSize.width(), _srcSize.height(),
-           SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
+  window = SDL_CreateWindow( "CaesarIA:android",
+                             SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                             _srcSize.width(), _srcSize.height(),
+                             SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
 
   Logger::warning("SDLGraficEngine:Android init successfull");
 #else

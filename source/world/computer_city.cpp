@@ -386,7 +386,7 @@ void ComputerCity::Impl::citizensConsumeServices()
   ServiceInfo mayServe;
   ServiceInfo idle;
 
-  for( auto&& info : buildings )
+  for( auto& info : buildings )
   {
     idle.type[info.type] &= (info.workersNumber < info.maxWorkersNumber);
     if( info.maxWorkersNumber > 0 )

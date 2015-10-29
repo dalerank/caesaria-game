@@ -96,6 +96,7 @@ public:
     : Label( parent, rect ), _service( service ), _info( info )
   {
     setFont( Font::create( FONT_1_WHITE ) );
+    setID( (int)service );
   }
 
   const EducationInfo& getInfo() const   {    return _info;  }
@@ -130,13 +131,9 @@ public:
   Label* lbCityInfo;
   Label* lbTroubleInfo;
   Label* lbBlackframe;
-
-  EducationInfoLabel* lbSchoolInfo;
-  EducationInfoLabel* lbCollegeInfo;
-  EducationInfoLabel* lbLibraryInfo;
-
 public:
-  std::string getTrouble( PlayerCityPtr city );
+  EducationInfo getInfo( const object::Type service );
+  std::string getTrouble();
   EducationInfo getInfo( PlayerCityPtr city, const object::Type service );
   void initUI(Education* parent, PlayerCityPtr city);
   void updateCityInfo( PlayerCityPtr city );
@@ -148,13 +145,13 @@ void Education::Impl::initUI( Education* parent, PlayerCityPtr city )
   Size labelSize( 550, 20 );
   EducationInfo info;
   info = getInfo( city, object::school );
-  lbSchoolInfo = &lbBlackframe->add<EducationInfoLabel>( Rect( startPoint, labelSize ), object::school, info );
+  lbBlackframe->add<EducationInfoLabel>( Rect( startPoint, labelSize ), object::school, info );
 
   info = getInfo( city, object::academy );
-  lbCollegeInfo = &lbBlackframe->add<EducationInfoLabel>( Rect( startPoint + Point( 0, 20), labelSize), object::academy, info );
+  lbBlackframe->add<EducationInfoLabel>( Rect( startPoint + Point( 0, 20), labelSize), object::academy, info );
 
   info = getInfo( city, object::library );
-  lbLibraryInfo = &lbBlackframe->add<EducationInfoLabel>( Rect( startPoint + Point( 0, 40), labelSize), object::library, info );
+  lbBlackframe->add<EducationInfoLabel>( Rect( startPoint + Point( 0, 40), labelSize), object::library, info );
 
   auto&& btnHelp = parent->add<TexturedButton>( Point( 12, parent->height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
   CONNECT( &btnHelp, onClicked(), parent, Education::_showHelp );
@@ -172,13 +169,13 @@ void Education::Impl::updateCityInfo(PlayerCityPtr city)
   }
 
   std::string cityInfoStr = fmt::format( "{} {}, {} {}, {} {}",
-                                           city->states().population, _("##people##"),
-                                           sumScholars, _("##scholars##"),
-                                           sumStudents, _("##students##") );
+                                         city->states().population, _("##people##"),
+                                         sumScholars, _("##scholars##"),
+                                         sumStudents, _("##students##") );
   if( lbCityInfo ) { lbCityInfo->setText( cityInfoStr ); }
 
-  std::string advice = getTrouble( city );
-  if( lbTroubleInfo ) { lbTroubleInfo->setText( _(advice) ); }
+  std::string trouble = getTrouble();
+  if( lbTroubleInfo ) { lbTroubleInfo->setText( _(trouble) ); }
 }
 
 Education::Education(PlayerCityPtr city, Widget* parent, int id )
@@ -253,12 +250,21 @@ EducationInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Type bT
   return ret;
 }
 
-std::string Education::Impl::getTrouble(PlayerCityPtr city)
+EducationInfo Education::Impl::getInfo(const object::Type service)
+{
+  auto row = lbBlackframe->findChild<EducationInfoLabel>( service );
+  if( row )
+    return row->getInfo();
+
+  return EducationInfo();
+}
+
+std::string Education::Impl::getTrouble()
 {
   StringArray advices;
-  auto& schoolInfo = lbSchoolInfo->getInfo();
-  auto& collegeInfo = lbCollegeInfo->getInfo();
-  auto& libraryInfo = lbLibraryInfo->getInfo();
+  auto schoolInfo = getInfo( object::school );
+  auto collegeInfo = getInfo( object::academy );
+  auto libraryInfo = getInfo( object::library );
   if( schoolInfo.need == 0 && collegeInfo.need == 0 && libraryInfo.need == 0 )
   {
     return "##not_need_education##";

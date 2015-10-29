@@ -717,9 +717,9 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case run_script:
   {
-    auto&& dialog = game->gui()->add<dialog::LoadFile>( Rect(),
-                                                        vfs::Path( ":/scripts/" ), ".model",
-                                                        -1 );
+    auto& dialog = game->gui()->add<dialog::LoadFile>( Rect(),
+                                                       vfs::Path( ":/scripts/" ), ".model",
+                                                       -1 );
     dialog.moveTo( Widget::parentCenter );
 
     CONNECT( &dialog, onSelectFile(), this, Impl::runScript );

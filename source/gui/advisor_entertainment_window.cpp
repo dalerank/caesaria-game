@@ -106,18 +106,16 @@ public:
 
     EntertInfo info = findInfo( _service );
 
-    Picture& texture = _textPicture();
-    Font rfont = font();
-    rfont.draw( texture, fmt::format( "{0} {1}", _info.buildingCount, _(info.building)), ofNumberInCity, 0 );
-    rfont.draw( texture, utils::i2str( _info.buildingWork ), ofWorkInCity, 0 );
-    rfont.draw( texture, utils::i2str( _info.buildingShow ), ofHaveShow, 0 );
-    rfont.draw( texture, fmt::format( "{0} {1}",_info.peoplesServed, _(info.people)), ofHowmuchServed, 0 );
+    canvasDraw( fmt::format( "{0} {1}", _info.buildingCount, _(info.building)), Point( ofNumberInCity, 0 ) );
+    canvasDraw( utils::i2str( _info.buildingWork ), Point( ofWorkInCity, 0 ) );
+    canvasDraw( utils::i2str( _info.buildingShow ), Point( ofHaveShow, 0 ) );
+    canvasDraw( fmt::format( "{0} {1}",_info.peoplesServed, _(info.people)), Point( ofHowmuchServed, 0 ) );
 
     std::string coverityText = "none";
     if( _info.buildingCount > 0 )
       coverityText = fmt::format( "{0}%", _info.coverity );
 
-    rfont.draw( texture, coverityText, ofCoverity, 0 );
+    canvasDraw( coverityText, Point( ofCoverity, 0 ) );
   }
 
 private:
@@ -143,7 +141,7 @@ public:
   int monthFromLastFestival;
 
 public:
-  EntertInfo getInfo(const object::Type service );
+  EntertInfo getInfo(const object::Type service);
   void updateInfo();
   void updateFestivalInfo();
   void initUI(Entertainment* parent);
@@ -181,8 +179,8 @@ void Entertainment::draw( Engine& painter )
 
 void Entertainment::_showFestivalWindow()
 {
-  dialog::FestivalPlanning* wnd = dialog::FestivalPlanning::create( this, _d->city, -1 );
-  CONNECT( wnd, onFestivalAssign(), this, Entertainment::_assignFestival );
+  auto& dialog = add<dialog::FestivalPlanning>( -1, Rect(), _d->city );
+  CONNECT( &dialog, onFestivalAssign(), this, Entertainment::_assignFestival );
 }
 
 EntertInfo Entertainment::Impl::getInfo( const object::Type service)

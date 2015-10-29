@@ -214,8 +214,8 @@ void Employer::Impl::showPriorityWindow( industry::Type industry )
   WorkersHirePtr wh = city->statistic().services.find<WorkersHire>();
 
   int priority = wh->getPriority( industry );
-  auto wnd = new dialog::HirePriority( lbSalaries->ui()->rootWidget(), industry, priority );
-  CONNECT( wnd, onAcceptPriority(), this, Impl::setIndustryPriority );
+  auto& wnd = lbSalaries->ui()->add<dialog::HirePriority>( industry, priority );
+  CONNECT( &wnd, onAcceptPriority(), this, Impl::setIndustryPriority );
 }
 
 void Employer::Impl::setIndustryPriority( industry::Type industry, int priority)
@@ -285,14 +285,14 @@ EmployerButton* Employer::Impl::addButton( Employer* parent, const Point& startP
 {
   EmployersInfo info = getEmployersInfo( priority );
 
-  EmployerButton* btn = new EmployerButton( parent, startPos, priority, title, info.needWorkers, info.currentWorkers );
-  btn->setTooltipText( _("##empbutton_tooltip##") );
-  btn->setText( "" );
-  empButtons[ priority ] = btn;
+  auto& employeeBtn = parent->add<EmployerButton>( startPos, priority, title, info.needWorkers, info.currentWorkers );
+  employeeBtn.setTooltipText( _("##empbutton_tooltip##") );
+  employeeBtn.setText( "" );
+  empButtons[ priority ] = &employeeBtn;
 
-  CONNECT( btn, onClickedSignal, this, Impl::showPriorityWindow );
+  CONNECT( &employeeBtn, onClickedSignal, this, Impl::showPriorityWindow );
 
-  return btn;
+  return &employeeBtn;
 }
 
 Employer::Employer(PlayerCityPtr city, Widget* parent, int id )
@@ -325,8 +325,8 @@ Employer::Employer(PlayerCityPtr city, Widget* parent, int id )
   GET_DWIDGET_FROM_UI( _d, lbWorkersState )
   GET_DWIDGET_FROM_UI( _d, lbYearlyWages )
 
-  auto btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
-  CONNECT( btnHelp, onClicked(), this, Employer::_showHelp );
+  auto& btnHelp = add<TexturedButton>( Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
+  CONNECT( &btnHelp, onClicked(), this, Employer::_showHelp );
 
   _d->updateSalaryLabel();
   _d->updateWorkersState();

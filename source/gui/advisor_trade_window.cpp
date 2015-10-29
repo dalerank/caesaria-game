@@ -75,7 +75,8 @@ void Trade::Impl::updateGoodsInfo()
 
   Widget::Widgets children = gbInfo->children();
 
-  for( auto&& child : children ) { child->deleteLater(); }
+  for( auto& child : children )
+    child->deleteLater();
 
   Point startDraw( 0, 5 );
   Size btnSize( gbInfo->width(), 20 );

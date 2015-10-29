@@ -38,7 +38,7 @@ Orders::Orders() : _d( new Impl )
 
 void Orders::set( Order rule )
 {
-  for( auto&& order : _d->orders )
+  for( auto& order : _d->orders )
   {
     if( order.second != Orders::none )
     {

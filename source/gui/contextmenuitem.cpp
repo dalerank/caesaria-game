@@ -66,7 +66,7 @@ void ContextMenuItem::_updateTexture(Engine& painter)
 
 ContextMenu* ContextMenuItem::addSubMenu( int id )
 {
-  auto&& sub = parent()->add<ContextMenu>( Rect(0,0,100,100), id, false, false );
+  auto& sub = parent()->add<ContextMenu>( Rect(0,0,100,100), id, false, false );
   setSubMenu( &sub );
   sub.bringToFront();
   return &sub;

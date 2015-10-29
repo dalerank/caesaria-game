@@ -84,7 +84,7 @@ void Parlor::_initButtons()
   }
 
   auto buttons = children().select<PushButton>();
-  for( auto&& btn : buttons )
+  for( auto& btn : buttons )
     btn->deleteLater();
 
   for( auto& item : _model->items() )

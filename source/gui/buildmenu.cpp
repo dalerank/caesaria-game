@@ -195,8 +195,8 @@ void BuildMenu::addBuildButton(const object::Type buildingType )
   if( cost > 0 && mayBuildInCity )
   {
     // building can be built
-    auto&& button = add<BuildButton>( _(info .prettyName()),
-                                      Rect( 0, height(), width(), height() + 25 ), -1 );
+    auto& button = add<BuildButton>( _(info .prettyName()),
+                                     Rect( 0, height(), width(), height() + 25 ), -1 );
     button.setCost(cost);
     button.setID( buildingType );
     button.setSound( "bmsel_" + info .name() );

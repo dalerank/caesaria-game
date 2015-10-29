@@ -84,7 +84,7 @@ PushButton* StartMenu::addButton( const std::string& caption, int id )
 void StartMenu::clear()
 {
   Widgets rchildren = children();
-  for( auto&& it : rchildren )
+  for( auto& it : rchildren )
     it->remove();
 }
 

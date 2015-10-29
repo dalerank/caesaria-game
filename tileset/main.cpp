@@ -282,13 +282,13 @@ public:
     textures.push_back( tx );
 		int count = 0;
 		
-    for( auto&& imageName : imageNameSet )
+    for( auto& imageName : imageNameSet )
 		{
       bool added = false;
 			
       Logger::warning( "Adding " + imageName.name + " to atlas (" + utils::i2str(++count) + ")");
 			
-      for( auto&& texture : textures)
+      for( auto& texture : textures)
 			{
         if(texture->addImage(imageName.image, imageName.name, padding))
 				{
@@ -544,7 +544,7 @@ public:
   int max() const
   {
     int result = 0;
-    for( auto&& a : *this )
+    for( auto& a : *this )
       result += a->textures.size();
 
     return result;

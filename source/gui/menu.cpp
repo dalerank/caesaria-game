@@ -136,7 +136,7 @@ struct Menu::Model
   void setConstructoMode( bool enabled )
   {
     Link::VisibleMode mode = enabled ? Link::inEditor : Link::inGame;
-    for( auto&& item : actions )
+    for( auto& item : actions )
     {
       if( item.second.button )
         item.second.button->setVisible( item.second.visibleMode == mode );
@@ -191,7 +191,7 @@ public:
       if( move == Point( 0, 0) )
         return;
 
-      for( auto&& r : rects )
+      for( auto& r : rects )
         r += move;
 
       batch.destroy();
@@ -505,7 +505,7 @@ void Menu::minimize()
   _d->lastPressed = 0;
   _createBuildMenu( -1, this );
   Point stopPos = lefttop() + Point( width(), 0 );
-  auto&& animator = add<PositionAnimator>( WidgetAnimator::removeSelf, stopPos, 300 );
+  auto& animator = add<PositionAnimator>( WidgetAnimator::removeSelf, stopPos, 300 );
   CONNECT( &animator, onFinish(), &_d->signal.onHide, Signal0<>::_emit );
 
   events::dispatch<PlaySound>( "panel", 3, 100 );

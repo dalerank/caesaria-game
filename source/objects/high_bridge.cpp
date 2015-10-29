@@ -587,7 +587,7 @@ void HighBridge::load(const VariantMap& stream)
 void HighBridge::hide()
 {
   setState( pr::destroyable, 1);
-  for( auto&& tile : _d->subtiles )
+  for( auto& tile : _d->subtiles )
   {
     tile->hide();
   }
