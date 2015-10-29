@@ -52,20 +52,18 @@ void ContextMenuItem::_updateTexture(Engine& painter)
 
   Label::_updateTexture( painter );
 
-  if( isChecked() )
-  {
-    int side = height()-6;
-    _textPicture().fill( ColorList::firebrick, Rect( 6, 6, side, side ) );
-    _textPicture().update();
-  }
+  int side = height()-6;
+  _textPicture().fill( ColorList::black, Rect( 6, 6, side, side ) );
+  _textPicture().fill( isChecked() ? ColorList::firebrick : ColorList::floralwhite, Rect( 5, 5, side, side ) );
+  _textPicture().update();
 }
 
 ContextMenu* ContextMenuItem::addSubMenu( int id )
 {
-  ContextMenu* sub = new ContextMenu( parent(), Rect(0,0,100,100), id, false, false);
-  setSubMenu( sub );
-  parent()->bringChildToFront( sub );
-  return sub;
+  auto&& sub = parent()->add<ContextMenu>( Rect(0,0,100,100), id, false, false );
+  setSubMenu( &sub );
+  sub.bringToFront();
+  return &sub;
 }
 
 //! Adds a sub menu from an element that already exists.

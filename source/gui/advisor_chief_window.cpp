@@ -150,25 +150,25 @@ public:
 Chief::Chief(PlayerCityPtr city, Widget* parent, int id )
   : Base( parent, city ), __INIT_IMPL( Chief )
 {
-  __D_IMPL(_d, Chief )
+  __D_REF(_d, Chief )
   setupUI( ":/gui/chiefadv.gui" );
 
   WidgetEscapeCloser::insertTo( this );  
 
-  _d->city = city;
-  _d->initRows( this, width() );
-  _d->drawEmploymentState();
-  _d->drawProfitState();
-  _d->drawMigrationState();
-  _d->drawFoodStockState();
-  _d->drawFoodConsumption();
-  _d->drawMilitary();
-  _d->drawCrime();
-  _d->drawHealth();
-  _d->drawEducation();
-  _d->drawReligion();
-  _d->drawEntertainment();
-  _d->drawSentiment();
+  _d.city = city;
+  _d.initRows( this, width() );
+  _d.drawEmploymentState();
+  _d.drawProfitState();
+  _d.drawMigrationState();
+  _d.drawFoodStockState();
+  _d.drawFoodConsumption();
+  _d.drawMilitary();
+  _d.drawCrime();
+  _d.drawHealth();
+  _d.drawEducation();
+  _d.drawReligion();
+  _d.drawEntertainment();
+  _d.drawSentiment();
 
   auto btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
   CONNECT( btnHelp, onClicked(), this, Chief::_showHelp );
