@@ -37,6 +37,8 @@ LoadGame::LoadGame(Widget* parent, const vfs::Directory& dir )
 
   CONNECT( _fileslbx(), onItemSelected(), this, LoadGame::_showPreview )
   setCenter( parent->center() );
+
+  _fillFiles();
 }
 
 void LoadGame::_fillFiles()
@@ -72,14 +74,6 @@ void LoadGame::_showPreview(const ListBoxItem &item)
   {
     imgPreview->setPicture( pic );
   }
-}
-
-LoadGame* LoadGame::create(Widget *parent, const vfs::Directory &dir)
-{
-  LoadGame* ret = new LoadGame( parent, dir );
-  ret->_fillFiles();
-
-  return ret;
 }
 
 LoadGame::~LoadGame()

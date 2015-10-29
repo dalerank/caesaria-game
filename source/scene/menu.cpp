@@ -119,18 +119,16 @@ public:
 
 void StartMenu::Impl::showSaveSelectDialog()
 {
-  Widget* parent = game->gui()->rootWidget();
-
   vfs::Path savesPath = SETTINGS_STR( savedir );
 
   result = StartMenu::loadSavedGame;
-  auto loadGameDialog = gui::dialog::LoadGame::create( parent, savesPath );
-  loadGameDialog->setShowExtension( false );
-  loadGameDialog->setMayDelete( true );
+  auto&& loadGameDialog = game->gui()->add<dialog::LoadGame>( savesPath );
+  loadGameDialog.setShowExtension( false );
+  loadGameDialog.setMayDelete( true );
 
-  CONNECT( loadGameDialog, onSelectFile(), this, Impl::selectFile );
-  loadGameDialog->setTitle( _("##mainmenu_loadgame##") );
-  loadGameDialog->setText( _("##load_this_game##") );
+  CONNECT( &loadGameDialog, onSelectFile(), this, Impl::selectFile );
+  loadGameDialog.setTitle( _("##mainmenu_loadgame##") );
+  loadGameDialog.setText( _("##load_this_game##") );
 
   changePlayerNameIfNeed();
 }
