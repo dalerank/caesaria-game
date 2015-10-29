@@ -58,16 +58,16 @@ void StartMenu::draw(gfx::Engine &painter)
   Widget::draw( painter );
 }
 
-PushButton* StartMenu::addButton( const std::string& caption, int id )
+PushButton& StartMenu::addButton( const std::string& caption, int id )
 {
   Size buttonSize = _d->options.get( "buttonSize", Size( 200, 25 ) ).toSize();
   Font btnFont = Font::create( _d->options.get( "buttonFont", Variant( "FONT_2" ) ).toString() );
   std::string style = _d->options.get( "buttonStyle" ).toString();
   int offsetY = _d->options.get( "buttonOffset", 40 );
 
-  PushButton* newButton = add<PushButton>( Rect( Point( 0, 0 ), buttonSize ), caption, id, false );
-  newButton->setBackgroundStyle( style );
-  newButton->setFont( btnFont );
+  PushButton& newButton = add<PushButton>( Rect( Point( 0, 0 ), buttonSize ), caption, id, false );
+  newButton.setBackgroundStyle( style );
+  newButton.setFont( btnFont );
 
   auto buttons = findChildren< PushButton* >();
   Point offsetBtn( ( width() - buttonSize.width() ) / 2, ( height() - offsetY * buttons.size() ) / 2 );

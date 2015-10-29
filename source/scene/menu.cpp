@@ -372,7 +372,7 @@ void StartMenu::Impl::showCredits()
   CONNECT( &buttonClose, onClicked(), this, Impl::playMenuSoundTheme );
 }
 
-#define ADD_MENU_BUTTON( text, slot) { PushButton* btn = menu->addButton( _(text), -1 ); CONNECT(btn, onClicked(), this, slot ); }
+#define ADD_MENU_BUTTON( text, slot) { auto& btn = menu->addButton( _(text), -1 ); CONNECT( &btn, onClicked(), this, slot ); }
 
 void StartMenu::Impl::showLoadMenu()
 {
@@ -476,9 +476,9 @@ void StartMenu::Impl::showAdvancedMaterials()
       vfs::Path path2subdir = it.fullpath;
       std::string locText = "##mainmenu_dlc_" + path2subdir.baseName().toString() + "##";
 
-      PushButton* btn = menu->addButton( _(locText), -1 );
-      btn->addProperty( "path", Variant( path2subdir.toString() ) );
-      CONNECT(btn, onClickedEx(), this, Impl::openDlcDirectory )
+      auto& btn = menu->addButton( _(locText), -1 );
+      btn.addProperty( "path", Variant( path2subdir.toString() ) );
+      CONNECT( &btn, onClickedEx(), this, Impl::openDlcDirectory )
     }
   }
 

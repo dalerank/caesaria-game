@@ -89,8 +89,9 @@ protected:
   Signal1<float> _onChangeSignal;
 };
 
-gui::OrderGoodWidget::OrderGoodWidget(Widget* parent, const Rect& rect, good::Product good, good::Store& storage)
-  : Label( parent, rect, "" ), _storage( storage )
+gui::OrderGoodWidget::OrderGoodWidget(Widget* parent, int index, good::Product good, good::Store& storage)
+  : Label( parent, Rect( Point( 0, 25 ) * index, Size( parent->width(), 25 ) ), "" ),
+    _storage( storage )
 {
   _type = good;
   setFont( Font::create( FONT_1_WHITE ) );
@@ -126,13 +127,6 @@ void OrderGoodWidget::draw(Engine& painter)
   Picture goodIcon = good::Helper::picture( _type );
   painter.draw( goodIcon, absoluteRect().lefttop() + Point( 15, 0 ), &absoluteClippingRectRef() );
   painter.draw( goodIcon, absoluteRect().righttop() - Point( 35, 0 ), &absoluteClippingRectRef() );
-}
-
-OrderGoodWidget* OrderGoodWidget::create(const int index, const good::Product good, Widget* parent, good::Store& storage)
-{
-  Point offset( 0, 25 );
-  Size wdgSize( parent->width(), 25 );
-  return parent->add<OrderGoodWidget>( Rect( offset * index, wdgSize), good, storage );
 }
 
 void gui::OrderGoodWidget::changeCapacity(float fillingPercentage)
