@@ -128,11 +128,11 @@ void OrderGoodWidget::draw(Engine& painter)
   painter.draw( goodIcon, absoluteRect().righttop() - Point( 35, 0 ), &absoluteClippingRectRef() );
 }
 
-OrderGoodWidget*OrderGoodWidget::create(const int index, const good::Product good, Widget* parent, good::Store& storage)
+OrderGoodWidget* OrderGoodWidget::create(const int index, const good::Product good, Widget* parent, good::Store& storage)
 {
   Point offset( 0, 25 );
   Size wdgSize( parent->width(), 25 );
-  return new OrderGoodWidget( parent, Rect( offset * index, wdgSize), good, storage );
+  return parent->add<OrderGoodWidget>( Rect( offset * index, wdgSize), good, storage );
 }
 
 void gui::OrderGoodWidget::changeCapacity(float fillingPercentage)

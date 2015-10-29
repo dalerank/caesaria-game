@@ -64,13 +64,13 @@ public:
 
 MissionTargets* MissionTargets::create(Widget* parent, PlayerCityPtr city, int id )
 {
-  MissionTargets* ret = new MissionTargets( parent, id, Rect( 0, 0, 610, 430 ) );
-  ret->setCenter( parent->center() );
-  ret->setCity( city );
-  ret->show();
-  ret->setModal();
+  MissionTargets& ret = parent->add<MissionTargets>( id, Rect( 0, 0, 610, 430 ) );
+  ret.setCenter( parent->center() );
+  ret.setCity( city );
+  ret.show();
+  ret.setModal();
 
-  return ret;
+  return &ret;
 }
 
 MissionTargets::MissionTargets( Widget* parent, int id, const Rect& rectangle )

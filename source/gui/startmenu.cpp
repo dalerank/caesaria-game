@@ -65,16 +65,16 @@ PushButton* StartMenu::addButton( const std::string& caption, int id )
   std::string style = _d->options.get( "buttonStyle" ).toString();
   int offsetY = _d->options.get( "buttonOffset", 40 );
 
-  PushButton* newButton = new PushButton( this, Rect( Point( 0, 0 ), buttonSize ), caption, id, false );
+  PushButton* newButton = add<PushButton>( Rect( Point( 0, 0 ), buttonSize ), caption, id, false );
   newButton->setBackgroundStyle( style );
   newButton->setFont( btnFont );
 
   auto buttons = findChildren< PushButton* >();
   Point offsetBtn( ( width() - buttonSize.width() ) / 2, ( height() - offsetY * buttons.size() ) / 2 );
 
-  foreach( btn, buttons )
+  for( auto btn : buttons )
   {
-    (*btn)->setPosition( offsetBtn );
+    btn->setPosition( offsetBtn );
     offsetBtn += Point( 0, offsetY );
   }
 

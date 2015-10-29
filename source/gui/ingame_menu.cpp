@@ -59,12 +59,6 @@ IngameMenu::IngameMenu(Widget *parent)
   setModal();
 }
 
-IngameMenu* IngameMenu::create(Ui* ui)
-{
-  IngameMenu* menu = new IngameMenu( ui->rootWidget() );
-  return menu;
-}
-
 Signal0<>& IngameMenu::onExit() { return _d->btnExit ? _d->btnExit->onClicked() : _d->invalidSignal; }
 Signal0<>& IngameMenu::onLoad() { return _d->btnLoad ? _d->btnLoad->onClicked() : _d->invalidSignal; }
 Signal0<>& IngameMenu::onSave() { return _d->btnSave ? _d->btnSave->onClicked() : _d->invalidSignal; }

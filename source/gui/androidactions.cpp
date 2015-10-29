@@ -199,7 +199,7 @@ void ActionsHandler::_sendKeyboardEvent(int key, bool ctrl)
 
 void ActionsHandler::_showIngameMenu()
 {
-  IngameMenu* menu = IngameMenu::create( ui() );
+  IngameMenu* menu = &ui()->add<IngameMenu>();
   if( menu )
   {
     CONNECT( menu, onExit(),    this, ActionsHandler::_resolveExitGame )
