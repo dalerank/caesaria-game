@@ -27,6 +27,7 @@
 #include "core/format.hpp"
 #include "events/removecitizen.hpp"
 #include "core/common.hpp"
+#include "core/logger.hpp"
 #include "walker/typeset.hpp"
 
 using namespace gfx;
@@ -52,7 +53,7 @@ public signals:
 };
 
 WorkingBuilding::WorkingBuilding(const object::Type type, const Size& size)
-: Building( type, size ), _d( new Impl )
+  : Building( type, size ), _d( new Impl )
 {
   _d->workers.current = 0;
   _d->workers.maximum = 0;
@@ -227,21 +228,27 @@ void WorkingBuilding::_disaster()
 {
   unsigned int buriedCitizens = math::random( numberWorkers() );
 
-  GameEventPtr e = ReturnWorkers::create( pos(), numberWorkers() );
-  e->dispatch();
-
-  e = RemoveCitizens::create( pos(), CitizenGroup( CitizenGroup::mature, buriedCitizens ) );
-  e->dispatch();
+  events::dispatch<ReturnWorkers>( pos(), numberWorkers() );
+  events::dispatch<RemoveCitizens>( pos(), CitizenGroup( CitizenGroup::mature, buriedCitizens ) );
 
   setWorkers( 0 );
 }
 
 void WorkingBuilding::addWalker( WalkerPtr walker )
 {
-  if( walker.isValid() && !walker->isDeleted() )
+  if( walker.isNull() )
   {
-    _d->walkerList.push_back( walker );
+    Logger::warning( "WARNING !!! WorkingBuilding [{},{}] cant add null walker", pos().i(), pos().j() );
+    return;
   }
+
+   if( walker->isDeleted() )
+   {
+      Logger::warning( "WARNING !!! WorkingBuilding [{},{}] cant add walker [{}], because it also deleted", pos().i(), pos().j(), walker->name() );
+     return;
+   }
+
+    _d->walkerList.push_back( walker );
 }
 
 void WorkingBuilding::destroy()
@@ -256,8 +263,7 @@ void WorkingBuilding::destroy()
 
   if( numberWorkers() > 0 )
   {
-    GameEventPtr e = ReturnWorkers::create( pos(), numberWorkers() );
-    e->dispatch();
+    events::dispatch<ReturnWorkers>( pos(), numberWorkers() );
   }
 }
 

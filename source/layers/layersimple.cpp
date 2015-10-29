@@ -58,28 +58,27 @@ LayerPtr Simple::create( Camera& camera, PlayerCityPtr city)
   return ret;
 }
 
-void Simple::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Simple::drawTile( const RenderInfo& rinfo, Tile& tile)
 {
-  OverlayPtr curOverlay = tile.overlay();
-
   if( _d->highlight.may )
   {
+    OverlayPtr curOverlay = tile.overlay();
     bool blowTile = (curOverlay.isValid() && curOverlay == _d->lastOverlay) && _d->highlight.any;
     if( blowTile )
     {
       _d->highlight.alpha.update();
       int value = _d->highlight.alpha.value();
-      engine.setColorMask( value << 16, value << 8, value, 0xff000000 );
+      rinfo.engine.setColorMask( value << 16, value << 8, value, 0xff000000 );
     }
 
-    Layer::drawTile(engine, tile, offset);
+    Layer::drawTile( rinfo, tile);
 
     if( blowTile )
-      engine.resetColorMask();
+      rinfo.engine.resetColorMask();
   }
   else
   {
-    Layer::drawTile(engine, tile, offset);
+    Layer::drawTile( rinfo, tile);
   }
 }
 

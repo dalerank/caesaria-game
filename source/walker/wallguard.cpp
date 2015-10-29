@@ -48,21 +48,11 @@ public:
 WallGuard::WallGuard( PlayerCityPtr city, walker::Type type )
   : RomeSoldier( city, type ), _d( new Impl )
 {
-  setName( NameGenerator::rand( NameGenerator::male ) );
-
   setAttackDistance( 5 );
   _d->patrolPosition = gfx::tilemap::invalidLocation();
 }
 
 WallGuard::~WallGuard(){}
-
-WallGuardPtr WallGuard::create(PlayerCityPtr city, walker::Type type)
-{
-  WallGuardPtr ret( new WallGuard( city, type ) );
-  ret->drop();
-
-  return ret;
-}
 
 bool WallGuard::die()
 {
@@ -153,6 +143,8 @@ void WallGuard::fight()
   _setSubAction( Soldier::fightEnemy );
 }
 
+Walker::Gender WallGuard::gender() const { return male; }
+
 void WallGuard::save(VariantMap& stream) const
 {
   Soldier::save( stream );
@@ -173,7 +165,7 @@ void WallGuard::load(const VariantMap& stream)
   VARIANT_LOAD_ANY_D( _d, patrolPosition, stream )
 
   TilePos basePosition = stream.get( "base" );
-  auto tower = _city()->getOverlay( basePosition ).as<Tower>();
+  auto tower = _map().overlay<Tower>( basePosition );
 
   if( tower.isValid() )
   {
@@ -233,7 +225,7 @@ FortificationList WallGuard::_findNearestWalls( EnemySoldierPtr enemy )
 {
   FortificationList ret;
 
-  Tilemap& tmap = _city()->tilemap();
+  Tilemap& tmap = _map();
   for( int range=1; range < 8; range++ )
   {
     TilePos offset( range, range );
@@ -387,7 +379,7 @@ void WallGuard::_waitFinished()
 
 void WallGuard::_fire( TilePos target )
 {
-  SpearPtr spear = Spear::create( _city() );
+  SpearPtr spear = Walker::create<Spear>( _city() );
   spear->toThrow( pos(), target );
   wait( game::Date::days2ticks( 1 ) / 2 );
 }

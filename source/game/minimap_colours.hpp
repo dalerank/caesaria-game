@@ -67,7 +67,7 @@ class Colors {
 		* Constructor - creates a new colour set with the given climate
 		* @param climate - one of the CLIMATE_* constants
 		*/
-		Colors(ClimateType climate);
+    Colors( const ClimateType climate);
 
 		/**
 		* Retrieves a specified colour from this set.

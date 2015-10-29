@@ -24,9 +24,11 @@
 #include "vfs/path.hpp"
 #include "gfx/picture.hpp"
 #include "core/variant.hpp"
-#include "objects/overlay.hpp"
+#include "objects/constants.hpp"
 
 // contains some metaData for a building type
+struct Desirability;
+
 namespace object
 {
 
@@ -62,7 +64,7 @@ public:
   object::Group group() const;
   gfx::Picture randomPicture( int size=0 ) const;
   bool isMyPicture( const std::string& name ) const;
-  Desirability desirability() const;
+  const Desirability& desirability() const;
   gfx::Picture randomPicture( const Size& size ) const;
 
   Variant getOption( const std::string& name, Variant defaultVal=Variant() ) const;

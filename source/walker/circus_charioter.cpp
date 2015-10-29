@@ -33,17 +33,19 @@ public:
   const Animation& cart( Direction direction );
 };
 
-CircusCharioter::CircusCharioter(PlayerCityPtr city)
-  : Walker( city ), _d( new Impl )
+CircusCharioter::CircusCharioter(PlayerCityPtr city, HippodromePtr circus)
+  : Walker( city, walker::circusCharioter ), _d( new Impl )
 {
-  _setType( walker::circusCharioter );
+  if( circus.isValid() )
+    _addToCircus( circus );
+
   setFlag( Walker::vividly, false );
 }
 
 void CircusCharioter::_addToCircus(HippodromePtr circus)
 {
   Pathway path;
-  Tilemap& tmap = _city()->tilemap();
+  Tilemap& tmap = _map();
 
   TilePos start = circus->pos();
 
@@ -90,17 +92,6 @@ const Animation& CircusCharioter::Impl::cart( Direction direction )
   }
 
   return animation;
-}
-
-WalkerPtr CircusCharioter::create(PlayerCityPtr city, HippodromePtr circus)
-{
-  CircusCharioter* ch = new CircusCharioter( city );
-  ch->_addToCircus( circus );
-
-  WalkerPtr ret( ch );
-  ret->drop();
-
-  return ret;
 }
 
 CircusCharioter::~CircusCharioter()

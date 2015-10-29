@@ -48,7 +48,7 @@ void Widget::beforeDraw(gfx::Engine& painter )
   for( auto child : d->children ) { child->beforeDraw( painter ); }
 }
 
-Ui* Widget::ui() const {  return _dfunc()->environment; }
+Ui* Widget::ui() const { return _dfunc()->environment; }
 
 void Widget::setTextAlignment(align::Type horizontal, align::Type vertical )
 {
@@ -59,9 +59,9 @@ void Widget::setTextAlignment(align::Type horizontal, align::Type vertical )
     return;
   }
 
-  __D_IMPL(d,Widget)
-  d->textHorzAlign = horizontal;
-  d->textVertAlign = vertical;
+  __D_REF(d,Widget)
+  d.textAlign.horizontal = horizontal;
+  d.textAlign.vertical = vertical;
 }
 
 void Widget::setMaxWidth( unsigned int width ) { _dfunc()->size.maximimum.setWidth( width );}
@@ -70,31 +70,30 @@ unsigned int Widget::height() const            { return relativeRect().height();
 Widget::Widget( Widget* parent, int id, const Rect& rectangle )
 : __INIT_IMPL(Widget)
 {
-  __D_IMPL(_d,Widget)
-  _d->align.left = align::upperLeft;
-  _d->align.right = align::upperLeft;
-  _d->align.top = align::upperLeft;
-  _d->align.bottom = align::upperLeft;
-  _d->flag.visible = true;
-  _d->size.maximimum = Size(0,0);
-  _d->size.mininimum = Size(1,1);
-  _d->parent = parent;
-  _d->id = id;
-  _d->flag.enabled = true;
-  _d->flag.internal = false;
-  _d->noClip = false;
-  _d->tabOrder = -1;
-  _d->isTabGroup = false;
-
-  _d->environment = parent ? parent->ui() : 0;
+  __D_REF(_d,Widget)
+  _d.align.left = align::upperLeft;
+  _d.align.right = align::upperLeft;
+  _d.align.top = align::upperLeft;
+  _d.align.bottom = align::upperLeft;
+  _d.flag.visible = true;
+  _d.size.maximimum = Size(0,0);
+  _d.size.mininimum = Size(1,1);
+  _d.parent = parent;
+  _d.id = id;
+  _d.flag.enabled = true;
+  _d.flag.internal = false;
+  _d.noClip = false;
+  _d.tabOrder = -1;
+  _d.isTabGroup = false;
+  _d.environment = parent ? parent->ui() : 0;
 
   Logger::warningIf( !parent, "Parent for widget is null" );
 
-  _d->rect.relative = rectangle;
-  _d->rect.absolute = rectangle;
-  _d->rect.clipping = rectangle;
-  _d->rect.desired = rectangle;
-  _d->flag.tabStop = false;
+  _d.rect.relative = rectangle;
+  _d.rect.absolute = rectangle;
+  _d.rect.clipping = rectangle;
+  _d.rect.desired = rectangle;
+  _d.flag.tabStop = false;
 
 #ifdef _DEBUG
   setDebugName( "AbstractWidget" );
@@ -151,7 +150,12 @@ Widget::Widgets& Widget::_getChildren() { return _dfunc()->children;}
 void Widget::setPosition( const Point& position )
 {
 	const Rect rectangle( position, size() );
-	setGeometry( rectangle );
+  setGeometry( rectangle );
+}
+
+void Widget::setPosition(int x, int y)
+{
+  setPosition( Point( x, y) );
 }
 
 void Widget::setGeometry( const RectF& r, GeometryType mode )
@@ -179,6 +183,11 @@ void Widget::setGeometry( const RectF& r, GeometryType mode )
   }
 
   updateAbsolutePosition();
+}
+
+void Widget::setGeometry(float left, float top, float rigth, float bottom)
+{
+  setGeometry( RectF( left, top, rigth, bottom ) );
 }
 
 Rect Widget::absoluteRect() const { return _dfunc()->rect.absolute;}
@@ -243,7 +252,8 @@ void Widget::updateAbsolutePosition()
   _recalculateAbsolutePosition(false);
 
   // update all children
-  for( auto child : _d->children ) { child->updateAbsolutePosition(); }
+  for( auto child : _d->children )
+    child->updateAbsolutePosition();
 }
 
 Widget* Widget::getElementFromPoint( const Point& point )
@@ -792,6 +802,20 @@ bool Widget::onEvent( const NEvent& event )
     if (parent() && (parent()->parent() == NULL))
       return true;
 
+  bool resolved = false;
+  if( event.EventType == sEventGui )
+  {
+    switch( event.gui.type )
+    {
+    case guiButtonClicked: resolved = _onButtonClicked( event.gui.caller ); break;
+    case guiListboxChanged: resolved = _onListboxChanged( event.gui.caller ); break;
+    default: break;
+    }
+  }
+
+  if( resolved )
+    return true;
+
   return parent() ? parent()->onEvent(event) : false;
 }
 
@@ -843,6 +867,7 @@ Size Widget::minSize() const{    return _dfunc()->size.mininimum;}
 bool Widget::isHovered() const{  return ui()->isHovered( this );}
 bool Widget::isFocused() const{  return ui()->hasFocus( this );}
 Rect Widget::clientRect() const{  return Rect( 0, 0, width(), height() );}
+void Widget::setFont(const Font& font) {}
 void Widget::setFocus(){  ui()->setFocus( this );}
 void Widget::removeFocus(){  ui()->removeFocus( this );}
 Rect& Widget::absoluteClippingRectRef() const { return _dfunc()->rect.clipping; }
@@ -874,9 +899,16 @@ int Widget::left() const { return relativeRect().left(); }
 int Widget::right() const { return relativeRect().right(); }
 void Widget::hide() { setVisible( false ); }
 void Widget::show() {  setVisible( true ); }
-Alignment Widget::horizontalTextAlign() const{  return _dfunc()->textHorzAlign; }
-Alignment Widget::verticalTextAlign() const{  return _dfunc()->textVertAlign;}
+Alignment Widget::horizontalTextAlign() const{  return _dfunc()->textAlign.horizontal; }
+Alignment Widget::verticalTextAlign() const{  return _dfunc()->textAlign.vertical;}
 void Widget::deleteLater(){ ui()->deleteLater( this ); }
+void Widget::setFont(FontType type, NColor color)
+{
+  Font font = Font::create( type );
+  if( color.color != 0 )
+    font.setColor( color );
+  setFont( font );
+}
 
 void Widget::setRight( int newRight )
 {
@@ -885,9 +917,27 @@ void Widget::setRight( int newRight )
   setGeometry( r );
 }
 
+void Widget::moveTo(Widget::DefinedPosition pos)
+{
+  switch( pos )
+  {
+  case parentCenter: setCenter( parent()->center() );
+  }
+}
+
 void Widget::addProperty(const std::string& name, const Variant& value)
 {
   _dfunc()->properties[ name ] = value;
+}
+
+void Widget::canvasDraw(const std::string& text, const Point& point, Font font, NColor color)
+{
+
+}
+
+void Widget::canvasDraw(const gfx::Picture& picture, const Point& point)
+{
+
 }
 
 const Variant& Widget::getProperty(const std::string& name) const

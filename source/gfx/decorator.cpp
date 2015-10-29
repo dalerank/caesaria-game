@@ -23,7 +23,7 @@
 #include "core/rectangle.hpp"
 #include "game/resourcegroup.hpp"
 #include "primitives.hpp"
-#include "core/color.hpp"
+#include "core/color_list.hpp"
 #include "core/logger.hpp"
 
 namespace gfx
@@ -208,7 +208,7 @@ void Decorator::draw( Picture& dstpic, const Rect& rectangle, Mode mode, bool us
   case lineBlackBorder:
   case lineWhiteBorder:
   {
-    NColor color = mode == lineBlackBorder ? DefaultColors::black : DefaultColors::white;
+    NColor color = mode == lineBlackBorder ? ColorList::black : ColorList::white;
     drawLine( dstpic, rectangle.lefttop(), rectangle.righttop(), color );
     drawLine( dstpic, rectangle.righttop()-Point(1,0), rectangle.rightbottom()-Point(1,0), color );
     drawLine( dstpic, rectangle.rightbottom()-Point(0,1), rectangle.leftbottom()-Point(0,1), color );

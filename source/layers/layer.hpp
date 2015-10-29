@@ -25,6 +25,8 @@
 #include "gfx/renderer.hpp"
 #include "objects/constants.hpp"
 #include "game/predefinitions.hpp"
+#include "gfx/render_info.hpp"
+#include "core/font.hpp"
 #include "core/signals.hpp"
 #include "walker/constants.hpp"
 #include "core/flagholder.hpp"
@@ -34,6 +36,8 @@
 
 namespace citylayer
 {
+
+PREDEFINE_CLASS_SMARTLIST(Layer,List)
 
 class DrawOptions : public FlagHolder<int>
 {
@@ -58,27 +62,37 @@ class Layer : public ReferenceCounted
 public:
   typedef std::set<walker::Type> WalkerTypes;
 
+  template<typename Class, typename... Args>
+  static LayerPtr create( Args & ... args)
+  {
+    LayerPtr instance( new Class( args... ) );
+    instance->drop();
+
+    return instance;
+  }
+
   virtual int type() const = 0;
   virtual const WalkerTypes& visibleTypes() const;
 
   //draw gfx tprominent ile
-  virtual void drawProminentTile(gfx::Engine& engine, gfx::Tile& tile, const Point& offset, const int depth, bool force );
+  virtual void drawProminentTile( const gfx::RenderInfo& rinfo, gfx::Tile& tile, const int depth, bool force );
 
   //draw gfx active tile
-  virtual void drawTile(gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
+  virtual void drawTile( const gfx::RenderInfo& rinfo, gfx::Tile& tile );
+  virtual void drawOverlayedTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
 
   //draw gfx after walkers
-  virtual void drawWalkerOverlap(gfx::Engine& engine, gfx::Tile& tile, const Point& offset, const int depth );
+  virtual void drawWalkerOverlap( const gfx::RenderInfo& rinfo, gfx::Tile& tile, const int depth );
 
   virtual void handleEvent( NEvent& event );
-  virtual void drawPass(gfx::Engine& engine, gfx::Tile& tile, const Point& offset, gfx::Renderer::Pass pass );
-  virtual void drawArea(gfx::Engine& engine, const gfx::TilesArray& area, const Point& offset,
+  virtual void drawPass(const gfx::RenderInfo& rinfo, gfx::Tile& tile, gfx::Renderer::Pass pass );
+  virtual void drawArea(const gfx::RenderInfo& rinfo, const gfx::TilesArray& area,
                         const std::string& resourceGroup, int tileId );
 
-  virtual void drawLands( gfx::Engine& engine, gfx::Camera* camera );
-  virtual void drawLandTile(gfx::Engine& engine, gfx::Tile &tile, const Point& camOffset );
-  virtual void drawFlatTile( gfx::Engine& engine, gfx::Tile& tile, const Point& camOffset );
-  virtual void drawWalkers( gfx::Engine& engine, const gfx::Tile& tile, const Point& camOffset );
+  virtual void drawLands(const gfx::RenderInfo& rinfo, gfx::Camera* camera );
+  virtual void drawLandTile( const gfx::RenderInfo& rinfo, gfx::Tile &tile );
+  virtual void drawFlatTile( const gfx::RenderInfo& rinfo, gfx::Tile& tile );
+  virtual void drawWalkers(const gfx::RenderInfo& rinfo, const gfx::Tile& tile);
   virtual void init( Point cursor );
   virtual void beforeRender( gfx::Engine& engine);
   virtual void afterRender( gfx::Engine& engine);
@@ -94,6 +108,8 @@ public:
 protected:
   virtual void _initialize();
 
+  void _addPicture( const Point& pos, const gfx::Picture& pic );
+  void _addText( const Point& pos, const std::string& text, Font font=Font() );
   void _setLastCursorPos( Point pos );
   Point _lastCursorPos() const;
   void _setStartCursorPos( Point pos );
@@ -115,8 +131,6 @@ protected:
 
   __DECLARE_IMPL(Layer)
 };
-
-typedef SmartPtr<Layer> LayerPtr;
 
 }//end namespace citylayer
 

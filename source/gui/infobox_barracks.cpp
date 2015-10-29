@@ -54,7 +54,7 @@ AboutBarracks::AboutBarracks(Widget* parent, PlayerCityPtr city, const Tile& til
     return;
   }
 
-  setBase( ptr_cast<Construction>( barracks ) );
+  setBase( barracks );
   _setWorkingVisible( true );
 
   GET_DWIDGET_FROM_UI( _d, lbWeaponQty )

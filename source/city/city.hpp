@@ -36,22 +36,17 @@ namespace trade { class Options; }
 namespace development { class Options; }
 }
 
-struct BorderInfo
-{
-  TilePos roadEntry;
-  TilePos roadExit;
-  TilePos boatEntry;
-  TilePos boatExit;
-};
-
 class PlayerCity : public world::City
 {
 public:  
+  typedef enum { roadEntry=0, roadExit, boatEntry, boatExit } TileType;
   typedef enum { adviserEnabled=0, godEnabled, fishPlaceEnabled, updateRoads,
                  forceBuild, warningsEnabled, updateTiles, zoomEnabled, zoomInvert,
                  fireKoeff, barbarianAttack, c3gameplay, difficulty, legionAttack, climateType,
                  collapseKoeff, highlightBuilding, destroyEpidemicHouses, forestFire,
-                 forestGrow, warfNeedTimber, showGodsUnhappyWarn, constructorMode } OptionType;
+                 forestGrow, warfNeedTimber, showGodsUnhappyWarn, claypitMayCollapse,
+                 minesMayCollapse,
+                 constructorMode } OptionType;
 
   static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr mayor );
   virtual ~PlayerCity();
@@ -76,8 +71,8 @@ public:
   const city::SrvcList& services() const;
 
   /** Set road/river enter/exit points for city */
-  void setBorderInfo( const BorderInfo& info );
-  const BorderInfo& borderInfo() const;
+  void setBorderInfo( TileType type, const TilePos& pos );
+  const gfx::Tile& getBorderInfo( TileType type ) const;
 
   /** Return city's icon for empire map */
   virtual gfx::Picture picture() const;

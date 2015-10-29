@@ -39,7 +39,7 @@ Well::Well() : ServiceBuilding( Service::well, object::well, Size(1) )
 
 void Well::deliverService()
 {
-  ServiceWalkerPtr walker = ServiceWalker::create( _city(), serviceType() );
+  ServiceWalkerPtr walker = Walker::create<ServiceWalker>( _city(), serviceType() );
   walker->setBase( BuildingPtr( this ) );
 
   ReachedBuildings reachedBuildings = walker->getReachedBuildings( tile().pos() );
@@ -96,6 +96,6 @@ bool Well::build( const city::AreaInfo& areainfo )
 
 TilesArea Well::coverageArea() const
 {
-  TilesArea ret( _city()->tilemap(), wellServiceRange, pos() );
+  TilesArea ret( _map(), wellServiceRange, pos() );
   return ret;
 }

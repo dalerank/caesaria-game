@@ -142,14 +142,6 @@ public:
            {}
 };
 
-SrvcPtr CultureRating::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new CultureRating( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 CultureRating::CultureRating( PlayerCityPtr city )
   : Srvc( city, defaultName() ), _d( new Impl )
 {

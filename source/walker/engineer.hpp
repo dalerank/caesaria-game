@@ -24,17 +24,16 @@
 /** This is an immigrant coming with his stuff */
 class Engineer : public ServiceWalker
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static WalkerPtr create( PlayerCityPtr city ); //need for walker manager
-
   virtual ~Engineer();
 
   virtual std::string thoughts(Thought th) const;
 
 protected:
+  Engineer( PlayerCityPtr city );
   virtual void _centerTile();
 
-  Engineer( PlayerCityPtr city );
   class Impl;
   ScopedPtr<Impl> _d;
 };

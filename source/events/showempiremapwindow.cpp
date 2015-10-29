@@ -50,8 +50,7 @@ void ShowEmpireMap::_exec(Game& game, unsigned int)
 { 
   if( !game.empire()->isAvailable() )
   {
-    GameEventPtr e = WarningMessage::create( "##not_available##", 1 );
-    e->dispatch();
+    events::dispatch<WarningMessage>( "##not_available##", 1 );
 
     return;
   }

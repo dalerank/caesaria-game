@@ -57,8 +57,8 @@ public:
 
   void setText( const std::string& text );
   const std::string& text() const;
-	void setTag( int tag );
-	int tag() const;
+  void setTag(const Variant& tag );
+  const Variant& tag() const;
 	gfx::Picture icon();
 	void setIcon( gfx::Picture pic );
 
@@ -109,7 +109,7 @@ public:
 	//!sets the item text alignment
 	void setTextAlignment( Alignment horizontal, Alignment vertical );
 
-	OverrideColor OverrideColors[ count ];
+  OverrideColor overrideColors[ count ];
 
   static ListBoxItem& invalidItem();
 

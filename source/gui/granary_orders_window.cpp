@@ -59,8 +59,8 @@ GranarySpecialOrdersWindow::GranarySpecialOrdersWindow( Widget* parent, const Po
     }
   }
 
-  d->btnToggleDevastation = new PushButton( this, Rect( 80, height() - 45, width() - 80, height() - 25 ),
-                                             "", -1, false, PushButton::whiteBorderUp );
+  d->btnToggleDevastation = &add<PushButton>( Rect( 80, height() - 45, width() - 80, height() - 25 ),
+                                              "", -1, false, PushButton::whiteBorderUp );
 
   CONNECT( d->btnToggleDevastation, onClicked(), this, GranarySpecialOrdersWindow::toggleDevastation );
   _updateBtnDevastation();

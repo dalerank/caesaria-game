@@ -133,7 +133,7 @@ void EmpireMap::initialize(const VariantMap& stream)
     index++;
   }
 
-  _d->routefinder.reset( new TraderouteFinder( *this ) );
+  _d->routefinder.createInstance( *this );
 }
 
 void EmpireMap::setCity(Point rpos)

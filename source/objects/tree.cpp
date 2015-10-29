@@ -51,6 +51,9 @@ Tree::Tree()
   _d->state = State::well;
   _d->lastTimeGrow = game::Date::current();
   _d->spreadFire = false;
+
+  auto& md = object::Info::find( object::tree );
+  setPicture( md.randomPicture(1) );
 }
 
 void Tree::timeStep( const unsigned long time )
@@ -87,6 +90,7 @@ bool Tree::isFlat() const { return _d->flat; }
 
 void Tree::initTerrain(Tile& terrain)
 {
+  terrain.setFlag( Tile::clearAll, true );
   terrain.setFlag( Tile::tlTree, true );
 }
 
@@ -100,7 +104,8 @@ bool Tree::build( const city::AreaInfo& info )
   }
   else
   {
-    setPicture( md.randomPicture(1) );
+    if( !picture().isValid() )
+      setPicture( md.randomPicture(1) );
   }
   _d->flat = (picture().height() <= tilemap::cellPicSize().height());
   return Overlay::build( info );
@@ -164,8 +169,7 @@ void Tree::_burnAround()
 {
    _d->spreadFire = true;
 
-  auto ovelrays = _city()->tilemap().getNeighbors( pos() )
-                                    .overlays();
+  auto ovelrays = _map().getNeighbors( pos() ).overlays();
   for( auto overlay : ovelrays )
   {
     if( math::probably( 0.5f ) )
@@ -175,14 +179,14 @@ void Tree::_burnAround()
 
 void Tree::grow()
 {
-  TilesArray tiles = _city()->tilemap().getNeighbors( pos() );
+  TilesArray tiles = _map().getNeighbors( pos() );
   _d->lastTimeGrow = game::Date::current();
   for( unsigned int i=0; i < tiles.size(); ++i )
   {
     auto tile = tiles.random();
     if( math::probably( 0.1f ) && tile->getFlag( Tile::isConstructible ) )
     {
-      OverlayPtr overlay = TileOverlayFactory::instance().create( type() );
+      OverlayPtr overlay = Overlay::create( type() );
       if( overlay.isValid()  )
       {
         city::AreaInfo areainfo( _city(), tile->pos() );

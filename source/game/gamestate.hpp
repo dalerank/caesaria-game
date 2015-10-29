@@ -33,12 +33,12 @@ namespace scene
 namespace gamestate
 {
 
-class BaseState
+class State
 {
 public:
-  BaseState(Game* game);
+  State(Game* game);
 
-  virtual ~BaseState();
+  virtual ~State();
 
   virtual bool update(gfx::Engine* engine);
 
@@ -54,49 +54,25 @@ protected:
   void _initialize(scene::Base* screen, scene::ScreenType screenType);
 };
 
-class MissionSelect : public BaseState
+class InBriefing : public State
 {
 public:
-  MissionSelect(Game *game, gfx::Engine* engine, const std::string &file);
+  InBriefing(Game *game, gfx::Engine* engine, const std::string &file);
 
-  virtual ~MissionSelect();
+  virtual ~InBriefing();
 
 private:
   scene::Briefing* _briefing;
 };
 
-class ShowMainMenu: public BaseState
+class InMainMenu: public State
 {
 public:
-  ShowMainMenu(Game *game, gfx::Engine* engine);
+  InMainMenu(Game *game, gfx::Engine* engine);
 
-  ~ShowMainMenu();
+  ~InMainMenu();
 private:
   scene::StartMenu* startMenu;
-};
-
-class GameLoop: public BaseState
-{
-public:
-  GameLoop(Game *game, gfx::Engine* engine,
-                   unsigned int& saveTime,
-                   unsigned int& timeX10,
-                   unsigned int& timeMultiplier,
-                   unsigned int& manualTicksCounterX10,
-                   std::string& nextFilename,
-                   std::string& restartFilename );
-
-  virtual bool update(gfx::Engine* engine);
-
-  ~GameLoop();
-private:
-  scene::Level* _level;
-  unsigned int& _saveTime;
-  unsigned int& _timeX10;
-  unsigned int& _timeMultiplier;
-  unsigned int& _manualTicksCounterX10;
-  std::string& _nextFilename;
-  std::string& _restartFilename;
 };
 
 } //end namespace gamestate

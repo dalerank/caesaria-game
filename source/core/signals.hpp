@@ -115,6 +115,12 @@ public:
     delegateList.push_back( makeDelegate( obj, func ) );
   }
 
+  Signal1& operator+=( _Delegate delegate )
+  {
+    delegateList.push_back( delegate );
+    return *this;
+  }
+
   template< class X, class Y >
   void connect( Y * obj, void (X::*func)( Param1 p1 ) const )
   {

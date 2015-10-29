@@ -99,14 +99,6 @@ public:
   int prosperityExtend;
 };
 
-SrvcPtr ProsperityRating::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new ProsperityRating( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 ProsperityRating::ProsperityRating(PlayerCityPtr city)
   : Srvc( city, defaultName() ), _d( new Impl )
 {

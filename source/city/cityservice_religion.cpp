@@ -101,14 +101,6 @@ public:
   StringArray reasons;
 };
 
-SrvcPtr Religion::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new Religion( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 std::string Religion::defaultName() { return CAESARIA_STR_EXT(Religion); }
 
 Religion::Religion( PlayerCityPtr city )

@@ -26,6 +26,7 @@
 #include "widget_helper.hpp"
 #include "core/variant_map.hpp"
 #include "game/gamedate.hpp"
+#include "core/color_list.hpp"
 #include "widgetescapecloser.hpp"
 #include "core/utils.hpp"
 #include "game/gift.hpp"
@@ -55,8 +56,9 @@ public signals:
 EmperorGift::EmperorGift(Widget* p, int money , const DateTime &lastgift)
   : Window( p, Rect( 0, 0, 1, 1 ), "" ), __INIT_IMPL(EmperorGift)
 {
-  _dfunc()->maxMoney = money;
-  _dfunc()->wantSend = 0;
+  __D_REF(d,EmperorGift)
+  d.maxMoney = money;
+  d.wantSend = 0;
 
   setupUI( ":/gui/gift4emperor.gui" );
   setCenter( parent()->center() );
@@ -67,12 +69,12 @@ EmperorGift::EmperorGift(Widget* p, int money , const DateTime &lastgift)
   INIT_WIDGET_FROM_UI( PushButton*, btnSend )
   INIT_WIDGET_FROM_UI( Label*, lbPlayerMoney )
 
-  CONNECT( lbxGifts, onItemSelected(), _dfunc().data(), Impl::selectGift );
-  CONNECT( btnSend, onClicked(), _dfunc().data(), Impl::sendGift );
+  CONNECT( lbxGifts, onItemSelected(), &d, Impl::selectGift );
+  CONNECT( btnSend, onClicked(), &d, Impl::sendGift );
   CONNECT( btnSend, onClicked(), this, EmperorGift::deleteLater );
   CONNECT( btnCancel, onClicked(), this, EmperorGift::deleteLater );
 
-  _dfunc()->fillGifts( lbxGifts );
+  d.fillGifts( lbxGifts );
 
   if( lbLastGiftDate )
   {
@@ -134,7 +136,7 @@ void EmperorGift::Impl::fillGifts(ListBox* lbx)
 
     ListBoxItem& item = lbx->addItem( giftDescription );
     item.setTag( tag );
-    item.setTextColor( ListBoxItem::simple, tag < maxMoney ? DefaultColors::black : DefaultColors::grey );
+    item.setTextColor( ListBoxItem::simple, tag < maxMoney ? ColorList::black : ColorList::grey );
     item.setEnabled( tag < maxMoney );
   }
 }

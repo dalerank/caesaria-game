@@ -41,7 +41,7 @@ public:
   typedef enum { selectOnMouseMove=true, selectOnClick=false } SelectMode;
 
   //! constructor
-  ListBox(Widget* parent,
+  ListBox( Widget* parent,
            const Rect& rectangle=Rect( 0, 0, 1, 1), int id=-1, bool clip=true,
            bool drawBack=false, bool mos=false);
 
@@ -61,6 +61,8 @@ public:
 
   //! sets the selected item. Set this to -1 if no item should be selected
   virtual void setSelected(int id);
+
+  virtual void setSelectedTag(const Variant& tag);
 
   //! sets the selected item. Set this to -1 if no item should be selected
   virtual void setSelected(const std::string &item);

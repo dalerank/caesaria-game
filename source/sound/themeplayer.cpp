@@ -59,14 +59,6 @@ ThemePlayer::ThemePlayer( PlayerCityPtr city )
   _d->lastIndex = 0;
 }
 
-city::SrvcPtr ThemePlayer::create( PlayerCityPtr city )
-{
-  city::SrvcPtr ret( new ThemePlayer( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 Signal1<std::string>& ThemePlayer::onSwitch() { return _d->onSwitchSignal; }
 
 std::string ThemePlayer::defaultName() { return "audio_player"; }

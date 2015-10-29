@@ -24,10 +24,9 @@
 
 class MarketKid : public Human
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
   enum { defaultCapacity=100 };
-  static MarketKidPtr create( PlayerCityPtr city );
-  static MarketKidPtr create( PlayerCityPtr city, MarketBuyerPtr lady );
 
   good::Stock& getBasket();
   void setDelay( int delay );
@@ -45,7 +44,7 @@ protected:
   virtual void _reachedPathway();
 
 private:
-  MarketKid( PlayerCityPtr city );
+  MarketKid( PlayerCityPtr city, MarketBuyerPtr lady=nullptr );
 
   class Impl;
   ScopedPtr< Impl > _d;

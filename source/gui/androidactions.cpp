@@ -232,8 +232,7 @@ void ActionsHandler::_showTileHelp()
   if( !_scene )
     return;
 
-  auto event = ShowTileInfo::create( _tilepos );
-  event->dispatch();
+  events::dispatch<ShowTileInfo>( _tilepos );
 }
 
 }//end namespace tablet

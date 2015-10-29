@@ -33,8 +33,7 @@ public:
   TopMenu( Widget* parent, const int height, bool useIcon );
 
   // draw on screen
-  void draw( gfx::Engine& engine );
-
+  void draw( gfx::Engine& engine );  
   void setFunds( int value );
   void setPopulation( int value );
 
@@ -43,6 +42,7 @@ signals public:
   Signal0<>& onSave();
   Signal0<>& onEnd();
   Signal0<>& onLoad();
+  Signal1<bool>& onToggleConstructorMode();
   Signal0<>& onRestart();
   Signal0<>& onShowVideoOptions();
   Signal0<>& onShowSoundOptions();

@@ -20,6 +20,7 @@
 #include "city/statistic.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "objects/native.hpp"
+#include "name_generator.hpp"
 #include "walkers_factory.hpp"
 
 using namespace gfx;
@@ -38,14 +39,6 @@ public:
 public:
   Pathway findWay2bestField( PlayerCityPtr city, TilePos pos );
 };
-
-IndigenePtr Indigene::create(PlayerCityPtr city)
-{
-  IndigenePtr ret( new Indigene( city ) );
-  ret->drop();
-
-  return ret;
-}
 
 void Indigene::send2city(BuildingPtr base)
 {
@@ -181,13 +174,12 @@ void Indigene::_updateState()
 }
 
 Indigene::Indigene(PlayerCityPtr city)
-  : Human( city ), _d( new Impl )
+  : Human( city, walker::indigene ), _d( new Impl )
 {
-  _setType( walker::indigene );
   _d->wheatQty = 0;
   _d->tryCount = 0;
 
-  setName( _("##indigene##") );
+  setName( NameGenerator::rand( NameGenerator::indigeneMale ) );
 }
 
 

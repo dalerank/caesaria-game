@@ -21,7 +21,6 @@
 #include "gfx/tile.hpp"
 #include "pathway/path_finding.hpp"
 #include "core/position.hpp"
-#include "objects/objects_factory.hpp"
 #include "pathway/astarpathfinding.hpp"
 #include "core/safetycast.hpp"
 #include "core/variant_map.hpp"
@@ -94,6 +93,7 @@ using namespace events;
 using namespace config;
 
 static SimpleLogger LOG_CITY( "City" );
+typedef std::map<PlayerCity::TileType, Tile*> TileTypeMap;
 
 namespace config {
 CAESARIA_LITERALCONST(tilemap)
@@ -120,7 +120,7 @@ public:
 
   Picture empMapPicture;
 
-  BorderInfo borderInfo;
+  TileTypeMap border;
   Tilemap tilemap;
   TilePos cameraStart;
 
@@ -144,15 +144,15 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
 {
   LOG_CITY.warn( "Start initialize" );
 
-  _d->borderInfo.roadEntry = TilePos( 0, 0 );
-  _d->borderInfo.roadExit = TilePos( 0, 0 );
-  _d->borderInfo.boatEntry = TilePos( 0, 0 );
-  _d->borderInfo.boatExit = TilePos( 0, 0 );
+  setBorderInfo( roadEntry, TilePos( 0, 0 ) );
+  setBorderInfo( roadExit, TilePos( 0, 0 ) );
+  setBorderInfo( boatEntry, TilePos( 0, 0 ) );
+  setBorderInfo( boatExit, TilePos( 0, 0 ) );
   _d->economy.resolveIssue( econ::Issue( econ::Issue::donation, 1000 ) );
   _d->states.population = 0;
   _d->economy.setTaxRate( econ::Treasury::defaultTaxPrcnt );
   _d->states.age = 0;
-  _d->statistic.reset( new city::Statistic( *this ) );
+  _d->statistic.createInstance( *this );
   _d->walkers.idCount = 1;
   _d->sentiment = city::Sentiment::defaultValue;
   _d->empMapPicture.load( ResourceGroup::empirebits, 1 );
@@ -253,22 +253,21 @@ void PlayerCity::Impl::calculatePopulation()
 const WalkerList& PlayerCity::walkers(const TilePos& pos) { return _d->walkers.at( pos ); }
 const WalkerList& PlayerCity::walkers() const { return _d->walkers; }
 
-void PlayerCity::setBorderInfo(const BorderInfo& info)
-{
-  int size = tilemap().size();
-  TilePos start( 0, 0 );
-  TilePos stop( size-1, size-1 );
+void PlayerCity::setBorderInfo(TileType type, const TilePos& pos)
+{  
+  _d->border[ type ] = &_d->tilemap.at( pos );
+}
 
-  _d->borderInfo.roadEntry = info.roadEntry.fit( start, stop );
-  _d->borderInfo.roadExit = info.roadExit.fit( start, stop );
-  _d->borderInfo.boatEntry = info.boatEntry.fit( start, stop );
-  _d->borderInfo.boatExit = info.boatExit.fit( start, stop );
+const Tile& PlayerCity::getBorderInfo( TileType type ) const
+{
+  auto it = _d->border.find( type );
+  Tile* tile = it != _d->border.end() ? it->second : nullptr;
+  return tile ? *tile : tile::getInvalid();
 }
 
 const OverlayList& PlayerCity::overlays() const  { return _d->overlays; }
 city::ActivePoints& PlayerCity::activePoints()   { return _d->activePoints; }
-city::Scribes &PlayerCity::scribes()             { return _d->scribes; }
-const BorderInfo& PlayerCity::borderInfo() const { return _d->borderInfo; }
+city::Scribes& PlayerCity::scribes()             { return _d->scribes; }
 Picture PlayerCity::picture() const              { return _d->empMapPicture; }
 bool PlayerCity::isPaysTaxes() const             { return _d->economy.getIssueValue( econ::Issue::empireTax, econ::Treasury::lastYear ) > 0; }
 bool PlayerCity::haveOverduePayment() const      { return _d->economy.getIssueValue( econ::Issue::overduePayment, econ::Treasury::thisYear ) > 0; }
@@ -301,10 +300,10 @@ void PlayerCity::save( VariantMap& stream) const
   VARIANT_SAVE_ENUM_D( stream, _d, walkers.idCount )
 
   LOG_CITY.info( "Save main paramters " );
-  stream[ "roadEntry"  ] = _d->borderInfo.roadEntry;
-  stream[ "roadExit"   ] = _d->borderInfo.roadExit;
-  stream[ "boatEntry"  ] = _d->borderInfo.boatEntry;
-  stream[ "boatExit"   ] = _d->borderInfo.boatExit;
+  stream[ "roadEntry"  ] = getBorderInfo( PlayerCity::roadEntry ).epos();
+  stream[ "roadExit"   ] = getBorderInfo( PlayerCity::roadExit ).epos();
+  stream[ "boatEntry"  ] = getBorderInfo( PlayerCity::boatEntry ).epos();
+  stream[ "boatExit"   ] = getBorderInfo( PlayerCity::boatExit ).epos();
   VARIANT_SAVE_CLASS_D( stream, _d, options )
   VARIANT_SAVE_ANY_D( stream, _d, cameraStart )
   VARIANT_SAVE_ANY_D( stream, _d, states.population )
@@ -374,10 +373,10 @@ void PlayerCity::load( const VariantMap& stream )
   VARIANT_LOAD_ENUM_D( _d, walkers.idCount, stream)
 
   LOG_CITY.info( "Parse main params" );
-  _d->borderInfo.roadEntry = TilePos( stream.get( "roadEntry" ).toTilePos() );
-  _d->borderInfo.roadExit = TilePos( stream.get( "roadExit" ).toTilePos() );
-  _d->borderInfo.boatEntry = TilePos( stream.get( "boatEntry" ).toTilePos() );
-  _d->borderInfo.boatExit = TilePos( stream.get( "boatExit" ).toTilePos() );  
+  setBorderInfo( roadEntry, stream.get( "roadEntry" ) );
+  setBorderInfo( roadExit, stream.get( "roadExit" ) );
+  setBorderInfo( boatEntry,stream.get( "boatEntry" ) );
+  setBorderInfo( boatExit, stream.get( "boatExit" ) );
   VARIANT_LOAD_ANY_D( _d, states.population, stream )
   VARIANT_LOAD_ANY_D( _d, cameraStart, stream )
 
@@ -405,7 +404,7 @@ void PlayerCity::load( const VariantMap& stream )
     object::Type overlayType = (object::Type)config.get( ovconfig::idxType ).toInt();
     TilePos pos = config.get( ovconfig::idxLocation, gfx::tilemap::invalidLocation() );
 
-    OverlayPtr overlay = TileOverlayFactory::instance().create( overlayType );
+    auto overlay = Overlay::create( overlayType );
     if( overlay.isValid() && gfx::tilemap::isValidLocation( pos ) )
     {
       city::AreaInfo info( this, pos );
@@ -542,8 +541,7 @@ void PlayerCity::setOption(PlayerCity::OptionType opt, int value)
     _d->options[ highlightBuilding ] = false;
     _d->options[ destroyEpidemicHouses ] = false;
 
-    auto event = WarningMessage::create( "WARNING: enabled C3 gameplay only!", WarningMessage::negative );
-    event->dispatch();
+    events::dispatch<WarningMessage>( "WARNING: enabled C3 gameplay only!", WarningMessage::negative );
   }
 }
 
@@ -608,12 +606,12 @@ void PlayerCity::addObject( world::ObjectPtr object )
     world::MerchantPtr merchant = ptr_cast<world::Merchant>( object );
     if( merchant->isSeaRoute() )
     {
-      SeaMerchantPtr cityMerchant = SeaMerchant::create( this, merchant );
+      SeaMerchantPtr cityMerchant = Walker::create<SeaMerchant>( this, merchant );
       cityMerchant->send2city();
     }
     else
     {
-      LandMerchantPtr cityMerchant = LandMerchant::create( this, merchant );
+      LandMerchantPtr cityMerchant = Walker::create<LandMerchant>( this, merchant );
       cityMerchant->send2city();
     }
   }
@@ -624,26 +622,24 @@ void PlayerCity::addObject( world::ObjectPtr object )
     {
       army->killSoldiers( 100 );
 
-      GameEventPtr e = ShowInfobox::create( _("##romechastener_attack_title##"), _("##romechastener_attack_disabled_by_player##"), true );
-      e->dispatch();
+      events::dispatch<ShowInfobox>( _("##romechastener_attack_title##"), _("##romechastener_attack_disabled_by_player##"), true );
       return;
     }
 
     for( unsigned int k=0; k < army->soldiersNumber(); k++ )
     {
-      ChastenerPtr soldier = Chastener::create( this, walker::romeChastenerSoldier );
-      soldier->send2City( borderInfo().roadEntry );
+      ChastenerPtr soldier = Walker::create<Chastener>( this, walker::romeChastenerSoldier );
+      soldier->send2City( getBorderInfo( roadEntry ).epos() );
       soldier->wait( game::Date::days2ticks( k ) / 2 );
       if( (k % 16) == 15 )
       {
-        ChastenerElephantPtr elephant = ChastenerElephant::create( this );
-        elephant->send2City( borderInfo().roadEntry );
+        ChastenerElephantPtr elephant = Walker::create<ChastenerElephant>( this );
+        elephant->send2City( getBorderInfo( roadEntry ).epos() );
         soldier->wait( game::Date::days2ticks( k ) );
       }
     }
 
-    GameEventPtr e = ShowInfobox::create( _("##romechastener_attack_title##"), _("##romechastener_attack_text##"), true );
-    e->dispatch();
+    events::dispatch<ShowInfobox>( _("##romechastener_attack_title##"), _("##romechastener_attack_text##"), true );
   }
   else if( object.is<world::Barbarian>() )
   {
@@ -652,20 +648,18 @@ void PlayerCity::addObject( world::ObjectPtr object )
       world::BarbarianPtr brb = ptr_cast<world::Barbarian>( object );
       for( int k=0; k < brb->strength() / 2; k++ )
       {
-        EnemySoldierPtr soldier = EnemySoldier::create( this, walker::etruscanSoldier );
-        soldier->send2City( borderInfo().roadEntry );
+        EnemySoldierPtr soldier = Walker::create<EnemySoldier>( this, walker::etruscanSoldier );
+        soldier->send2City( getBorderInfo( roadEntry ).epos() );
         soldier->wait( game::Date::days2ticks( k ) / 2 );
       }
 
-      GameEventPtr e = ShowInfobox::create( _("##barbarian_attack_title##"), _("##barbarian_attack_text##"), "spy_army" );
-      e->dispatch();
+      events::dispatch<ShowInfobox>( _("##barbarian_attack_title##"), _("##barbarian_attack_text##"), "spy_army" );
     }
   }
   else if( object.is<world::Messenger>() )
   {
     world::MessengerPtr msm = ptr_cast<world::Messenger>( object );
-    GameEventPtr e = ShowInfobox::create( msm->title(), msm->message() );
-    e->dispatch();
+    events::dispatch<ShowInfobox>( msm->title(), msm->message() );
   }
 }
 

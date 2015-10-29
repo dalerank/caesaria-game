@@ -53,13 +53,6 @@ public:
   void updateRoadsAround(Propagator& propagator, UpdateInfo info );
 };
 
-SrvcPtr Roads::create(PlayerCityPtr city)
-{
-  SrvcPtr ret( new Roads( city ) );
-  ret->drop();
-  return ret;
-}
-
 std::string Roads::defaultName(){  return CAESARIA_STR_A(Roads);}
 
 Roads::Roads( PlayerCityPtr city )

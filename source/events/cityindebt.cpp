@@ -136,8 +136,7 @@ void CityIndebt::_exec(Game& game, unsigned int)
 
     _d->state++;
 
-    GameEventPtr e = Payment::create( econ::Issue::caesarsHelp, money );
-    e->dispatch();
+    events::dispatch<Payment>( econ::Issue::caesarsHelp, money );
     _d->lastMessageSent = game::Date::current();
   }
   break;
@@ -146,8 +145,7 @@ void CityIndebt::_exec(Game& game, unsigned int)
   {
     if( _d->lastMessageSent.monthsTo( game::Date::current() ) > 11 )
     {
-      GameEventPtr e = ShowInfobox::create( "##message_from_centurion##", "##centurion_send_army_to_player##", true, "emp_send_army" );
-      e->dispatch();
+      events::dispatch<ShowInfobox>( "##message_from_centurion##", "##centurion_send_army_to_player##", true, "emp_send_army" );
 
       world::CityPtr rome = game.empire()->rome();
       PlayerCityPtr plCity = game.city();

@@ -74,8 +74,9 @@ void OverlaysMenu::_addButtons(const int type )
     _addButton( citylayer::healthAll, startPos+=offset );
     _addButton( citylayer::commerce, startPos+=offset );
     _addButton( citylayer::religion, startPos+=offset );
-    setHeight( 8 * offset.y() );
-    break;
+    _addButton( citylayer::products, startPos+=offset );
+    setHeight( 9 * offset.y() );
+  break;
 
   case citylayer::risks:
     _addButton( citylayer::fire, startPos );
@@ -84,7 +85,7 @@ void OverlaysMenu::_addButtons(const int type )
     _addButton( citylayer::aborigen, startPos+=offset );
     _addButton( citylayer::troubles, startPos+=offset );
     _addButton( citylayer::sentiment, startPos+=offset );
-    break;
+  break;
 
   case citylayer::entertainments:
     _addButton( citylayer::entertainment, startPos );
@@ -92,14 +93,14 @@ void OverlaysMenu::_addButtons(const int type )
     _addButton( citylayer::amphitheater, startPos+=offset );
     _addButton( citylayer::colloseum, startPos+=offset );
     _addButton( citylayer::hippodrome, startPos+=offset );
-    break;
+  break;
 
   case citylayer::educations:
     _addButton( citylayer::education, startPos );
     _addButton( citylayer::school, startPos+=offset );
     _addButton( citylayer::library, startPos+=offset );
     _addButton( citylayer::academy, startPos+=offset );
-    break;
+  break;
 
   case citylayer::healthAll:
     _addButton( citylayer::health, startPos );
@@ -107,7 +108,7 @@ void OverlaysMenu::_addButtons(const int type )
     _addButton( citylayer::baths, startPos+=offset );
     _addButton( citylayer::doctor, startPos+=offset );
     _addButton( citylayer::hospital, startPos+=offset );
-    break;
+  break;
 
   case citylayer::commerce:
     _addButton( citylayer::tax, startPos );
@@ -115,7 +116,8 @@ void OverlaysMenu::_addButtons(const int type )
     _addButton( citylayer::market, startPos+=offset );
     _addButton( citylayer::desirability, startPos+=offset );
     _addButton( citylayer::unemployed, startPos+=offset );
-    break;
+    _addButton( citylayer::comturnover, startPos+=offset );
+  break;
 
   default: break;
   }  
@@ -124,12 +126,12 @@ void OverlaysMenu::_addButtons(const int type )
 void OverlaysMenu::_addButton(const int ovType, const Point& offset )
 {
   std::string layerName = citylayer::Helper::prettyName( (citylayer::Type)ovType );
-  PushButton* btn = new PushButton( this, Rect( 0, 0, width(), 20 ) + offset, _( layerName ), ovType, false, PushButton::greyBorderLineSmall );
-  btn->setFont( Font::create( FONT_1 ) );
-  btn->setNotClipped( true );
+  PushButton& btn = add<PushButton>( Rect( 0, 0, width(), 20 ) + offset, _( layerName ), ovType, false, PushButton::greyBorderLineSmall );
+  btn.setFont( Font::create( FONT_1 ) );
+  btn.setNotClipped( true );
   
   if( offset.x() != 0 )
-    _d->buttons.push_back( btn );
+    _d->buttons.push_back( &btn );
 }
 
 bool OverlaysMenu::isPointInside( const Point& point ) const

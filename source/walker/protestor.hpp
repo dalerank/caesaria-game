@@ -24,8 +24,8 @@
 
 class Protestor : public Human
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static ProtestorPtr create( PlayerCityPtr city );
   virtual ~Protestor();
 
   virtual void timeStep(const unsigned long time);

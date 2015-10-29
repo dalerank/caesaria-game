@@ -68,8 +68,7 @@ void RequestDestroy::_applyDestroy()
   if( _overlay.isValid() )
   {
     _overlay->setState( pr::destroyable, 1. );
-    GameEventPtr e = ClearTile::create( _overlay->pos() );
-    e->dispatch();
+    events::dispatch<ClearTile>( _overlay->pos() );
     _mayDelete = true;
   }
 }

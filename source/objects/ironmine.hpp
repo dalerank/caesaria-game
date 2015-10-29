@@ -25,6 +25,7 @@ class IronMine : public Factory
 {
 public:
   IronMine();
+  virtual bool build(const city::AreaInfo &info);
   virtual bool canBuild(const city::AreaInfo& areaInfo) const;  // returns true if it can be built there
   virtual void timeStep(const unsigned long time);
 

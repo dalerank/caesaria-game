@@ -44,6 +44,7 @@ public:
   virtual bool onEvent(const NEvent& event);
 
   bool unselectAll();
+  Menu( Widget* parent, int id, const Rect& rectangle, PlayerCityPtr city );
 
 signals public:
   Signal1<int>& onCreateConstruction();
@@ -58,7 +59,6 @@ protected:
   struct Model;
   struct Link;
 
-  Menu( Widget* parent, int id, const Rect& rectangle, PlayerCityPtr city );
   virtual void _updateButtons();
   virtual void _setModel(Model* model );
   void _setChildGeometry(Widget* w, const Rect& r );
@@ -84,6 +84,7 @@ public:
   void resolveUndoChange( bool enabled );
   void setAlarmEnabled( bool enabled );
   Rect getMinimapRect() const;
+  ExtentMenu(Widget* parent, int id, const Rect& rectangle , PlayerCityPtr city);
 
 slots public:
   void changeOverlay( int ovType );
@@ -101,7 +102,6 @@ signals public:
   Signal0<>& onMissionTargetsWindowShow();
 
 protected:
-  ExtentMenu(Widget* parent, int id, const Rect& rectangle , PlayerCityPtr city);
   virtual void _updateButtons();
 };
 

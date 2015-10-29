@@ -89,21 +89,12 @@ BuildingPtr TaxCollector::base() const
   return _map().overlay( baseLocation() ).as<Building>();
 }
 
-TaxCollectorPtr TaxCollector::create(PlayerCityPtr city )
-{
-  TaxCollectorPtr tc( new TaxCollector( city ) );
-  tc->drop();
-
-  return tc;
-}
-
-TaxCollector::TaxCollector(PlayerCityPtr city ) : ServiceWalker( city, Service::forum ), _d( new Impl )
+TaxCollector::TaxCollector(PlayerCityPtr city )
+  : ServiceWalker( city, Service::forum ), _d( new Impl )
 {
   _d->money = 0;
   _d->return2base = false;
   _setType( walker::taxCollector );
-
-  setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
 float TaxCollector::takeMoney() const
@@ -159,5 +150,7 @@ void TaxCollector::save(VariantMap& stream) const
 {
   ServiceWalker::save( stream );
   VARIANT_SAVE_ANY_D( stream, _d, money )
-  VARIANT_SAVE_ANY_D( stream, _d, return2base )
+      VARIANT_SAVE_ANY_D( stream, _d, return2base )
 }
+
+Walker::Gender TaxCollector::gender() const { return male; }

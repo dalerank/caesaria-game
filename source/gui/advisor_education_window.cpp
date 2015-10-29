@@ -106,21 +106,17 @@ public:
 
     EducationInfo info = findInfo( _service );
 
-    Picture& texture = _textPicture();
-    Font rfont = font();
-    std::string buildingStrT = utils::format( 0xff, "%d %s", _info.buildingCount, _(info.building) );
-    rfont.draw( texture, buildingStrT, 0, 0 );
-
-    std::string buildingWorkT = utils::i2str( _info.buildingWork );
-    rfont.draw( texture, buildingWorkT, 165, 0 );
-
-    std::string peoplesStrT = utils::format( 0xff, "%d %s", _info.peoplesStuding, _(info.people) );
-    rfont.draw( texture, peoplesStrT, 255, 0 );
-
-    const char* coverageStr = _info.coverage > 0
+    std::string strBuildings = fmt::format( "{} {}", _info.buildingCount, _(info.building) );
+    std::string strPeoples = fmt::format( "{} {}", _info.peoplesStuding, _(info.people) );
+    std::string strWorking = utils::i2str( _info.buildingWork );
+    std::string coverageStr = _info.coverage > 0
                                   ? coverageDescriptions[ math::clamp( _info.coverage / maxDescriptionNumber, 0, maxDescriptionNumber-1 ) ]
                                   : "##non_cvrg##";
-    rfont.draw( texture, _( coverageStr ), 440, 0 );
+
+    canvasDraw( strBuildings, Point() );
+    canvasDraw( strWorking, Point( 165, 0 ) );
+    canvasDraw( strPeoples, Point( 255, 0 ) );
+    canvasDraw( _( coverageStr ), Point( 440, 0 ) );
   }
 
 private:
@@ -152,16 +148,16 @@ void Education::Impl::initUI( Education* parent, PlayerCityPtr city )
   Size labelSize( 550, 20 );
   EducationInfo info;
   info = getInfo( city, object::school );
-  lbSchoolInfo = new EducationInfoLabel( lbBlackframe, Rect( startPoint, labelSize ), object::school, info );
+  lbSchoolInfo = &lbBlackframe->add<EducationInfoLabel>( Rect( startPoint, labelSize ), object::school, info );
 
   info = getInfo( city, object::academy );
-  lbCollegeInfo = new EducationInfoLabel( lbBlackframe, Rect( startPoint + Point( 0, 20), labelSize), object::academy, info );
+  lbCollegeInfo = &lbBlackframe->add<EducationInfoLabel>( Rect( startPoint + Point( 0, 20), labelSize), object::academy, info );
 
   info = getInfo( city, object::library );
-  lbLibraryInfo = new EducationInfoLabel( lbBlackframe, Rect( startPoint + Point( 0, 40), labelSize), object::library, info );
+  lbLibraryInfo = &lbBlackframe->add<EducationInfoLabel>( Rect( startPoint + Point( 0, 40), labelSize), object::library, info );
 
-  auto btnHelp = new TexturedButton( parent, Point( 12, parent->height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
-  CONNECT( btnHelp, onClicked(), parent, Education::_showHelp );
+  auto&& btnHelp = parent->add<TexturedButton>( Point( 12, parent->height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
+  CONNECT( &btnHelp, onClicked(), parent, Education::_showHelp );
 }
 
 void Education::Impl::updateCityInfo(PlayerCityPtr city)
@@ -260,38 +256,38 @@ EducationInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Type bT
 std::string Education::Impl::getTrouble(PlayerCityPtr city)
 {
   StringArray advices;
-  const EducationInfo& schInfo = lbSchoolInfo->getInfo();
-  const EducationInfo& clgInfo = lbCollegeInfo->getInfo();
-  const EducationInfo& lbrInfo = lbLibraryInfo->getInfo();
-  if( schInfo.need == 0 && clgInfo.need == 0 && lbrInfo.need == 0 )
+  auto& schoolInfo = lbSchoolInfo->getInfo();
+  auto& collegeInfo = lbCollegeInfo->getInfo();
+  auto& libraryInfo = lbLibraryInfo->getInfo();
+  if( schoolInfo.need == 0 && collegeInfo.need == 0 && libraryInfo.need == 0 )
   {
     return "##not_need_education##";
   }
 
-  if( schInfo.nextLevel > 0 ) { advices << "##have_no_access_school_colege##"; }  
-  if( lbrInfo.nextLevel > 0 ) { advices << "##have_no_access_to_library##"; }
+  if( schoolInfo.nextLevel > 0 ) { advices << "##have_no_access_school_colege##"; }
+  if( libraryInfo.nextLevel > 0 ) { advices << "##have_no_access_to_library##"; }
 
 
-  if( schInfo.minAccessLevel < badAccessValue || clgInfo.minAccessLevel < badAccessValue )
+  if( schoolInfo.minAccessLevel < badAccessValue || collegeInfo.minAccessLevel < badAccessValue )
   {
     advices << "##edadv_need_better_access_school_or_colege##";
   }
 
-  if( schInfo.coverage < middleCoverage && clgInfo.coverage < middleCoverage && lbrInfo.coverage < middleCoverage )
+  if( schoolInfo.coverage < middleCoverage && collegeInfo.coverage < middleCoverage && libraryInfo.coverage < middleCoverage )
   {
     advices << "##need_more_access_to_lbr_school_colege##";
   }
 
-  if( schInfo.coverage < middleCoverage ) { advices << "##need_more_school_colege##"; }
-  else if( schInfo.coverage >= awesomeCoverage && schInfo.coverage < fantasticCoverage ) { advices << "##school_access_perfectly##"; }
+  if( schoolInfo.coverage < middleCoverage ) { advices << "##need_more_school_colege##"; }
+  else if( schoolInfo.coverage >= awesomeCoverage && schoolInfo.coverage < fantasticCoverage ) { advices << "##school_access_perfectly##"; }
 
-  if( clgInfo.coverage >= awesomeCoverage && clgInfo.coverage < fantasticCoverage ) { advices << "##colege_access_perfectly##"; }
+  if( collegeInfo.coverage >= awesomeCoverage && collegeInfo.coverage < fantasticCoverage ) { advices << "##colege_access_perfectly##"; }
 
-  if( lbrInfo.coverage < middleCoverage ) { advices << "##need_more_access_to_library##"; }
-  else if( lbrInfo.coverage > awesomeCoverage && lbrInfo.coverage < fantasticCoverage ) { advices << "##library_access_perfectrly##"; }
+  if( libraryInfo.coverage < middleCoverage ) { advices << "##need_more_access_to_library##"; }
+  else if( libraryInfo.coverage > awesomeCoverage && libraryInfo.coverage < fantasticCoverage ) { advices << "##library_access_perfectrly##"; }
 
-  if( lbrInfo.minAccessLevel < badAccessValue ) { advices << "##some_houses_need_better_library_access##"; }
-  if( lbrInfo.nextLevel > 0 && clgInfo.nextLevel > 0 )
+  if( libraryInfo.minAccessLevel < badAccessValue ) { advices << "##some_houses_need_better_library_access##"; }
+  if( libraryInfo.nextLevel > 0 && collegeInfo.nextLevel > 0 )
   {
     advices << "##some_houses_need_library_or_colege_access##";
   }

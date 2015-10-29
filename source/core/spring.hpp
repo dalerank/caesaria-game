@@ -20,7 +20,7 @@
 #ifndef __CAESARIA_MATH_SPRING_H_INCLUDE__
 #define __CAESARIA_MATH_SPRING_H_INCLUDE__
 
-#include "color.hpp"
+#include "color_list.hpp"
 
 namespace math
 {
@@ -83,7 +83,7 @@ typedef Spring<float> SpringF;
 class SpringColor
 {
 public:
-  SpringColor( const NColor& color = DefaultColors::clear )
+  SpringColor( const NColor& color = ColorList::clear )
     : _a( 0xff, 0, 0xff, 1 ),
       _r( 0xff, 0, 0, 0 ),
       _g( 0xff, 0, 0, 0 ),

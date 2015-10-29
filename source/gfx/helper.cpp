@@ -160,6 +160,13 @@ Picture toPicture(const unsigned int imgId)
 namespace tile
 {
 
+unsigned int width2size(int width)
+{
+  return width > 0
+            ? (width+2) / tilemap::tilePicSize.width()
+            : 0;
+}
+
 int encode(const Tile& tt)
 {
   int res = tt.getFlag( Tile::tlTree )   ? 0x00011 : 0;
@@ -343,6 +350,11 @@ Tile::Type findType(const std::string& name)
   if( name == CAESARIA_STR_EXT(tlRift) )    return Tile::tlRift;
   if( name == CAESARIA_STR_EXT(tlGrass) )   return Tile::tlGrass;
   return Tile::tlUnknown;
+}
+
+TilePos hash2pos(unsigned int hash)
+{
+  return TilePos( (hash >> 16 ) & 0xff, hash & 0xff );
 }
 
 }//end namespace tile

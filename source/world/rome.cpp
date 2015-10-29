@@ -106,11 +106,10 @@ void Rome::addObject(ObjectPtr obj)
       }
     }
 
-    GameEventPtr e = ShowInfobox::create( _("##rome_gratitude_request_title##"),
-                                          _("##rome_gratitude_request_text##"),
-                                          gtype,
-                                          !ShowInfobox::send2scribe);
-    e->dispatch();
+    events::dispatch<ShowInfobox>( _("##rome_gratitude_request_title##"),
+                                   _("##rome_gratitude_request_text##"),
+                                   gtype,
+                                   false );
   }  
   else if( obj.is<Barbarian>() )
   {

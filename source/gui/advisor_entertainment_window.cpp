@@ -216,7 +216,7 @@ void Entertainment::_assignFestival( int divinityType, int festSize)
   FestivalPtr fest = _d->city->statistic().services.find<Festival>();
   if( fest.isValid() )
   {
-    fest->assign( (religion::RomeDivinityType)divinityType, festSize );
+    fest->assign( (religion::RomeDivinity::Type)divinityType, festSize );
     _d->updateFestivalInfo();
   }
 }
@@ -230,7 +230,6 @@ void Entertainment::Impl::updateInfo()
   const EntertInfo& thInfo = lbTheatresInfo->getInfo();
   const EntertInfo& amthInfo = lbAmphitheatresInfo->getInfo();
   const EntertInfo& clsInfo = lbColisseumInfo->getInfo();
-  //const InfrastructureInfo& hpdInfo = lbHippodromeInfo->getInfo();
 
   int theatersNeed = 0, amptNeed = 0, clsNeed = 0, hpdNeed = 0;
   int minTheaterSrvc = maxServiceValue;

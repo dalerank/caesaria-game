@@ -45,14 +45,6 @@ public:
   TilesArray border;
 };
 
-SrvcPtr Animals::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new Animals( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 std::string Animals::defaultName() { return CAESARIA_STR_EXT(Animals); }
 
 void Animals::timeStep(const unsigned int time)
