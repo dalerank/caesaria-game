@@ -42,6 +42,7 @@ using namespace gfx;
 using namespace events;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::rioter, Rioter)
+REGISTER_CLASS_IN_WALKERFACTORY(walker::indigeneRioter, NativeRioter)
 
 class Rioter::Impl
 {
@@ -57,7 +58,7 @@ public:
 };
 
 Rioter::Rioter(PlayerCityPtr city)
-  : Human( city,  walker::rioter ), _d( new Impl )
+  : Human( city, walker::rioter ), _d( new Impl )
 {    
   addAbility( Illness::create( 0.3, 4) );
   excludeAttack( object::group::disaster );
