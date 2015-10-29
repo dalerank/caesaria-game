@@ -201,10 +201,8 @@ void SdlEngine::init()
 
 #ifdef CAESARIA_PLATFORM_ANDROID
   auto mode = modes().front();
-  Size s( mode.width(), mode.height() );
-  Logger::warning( "SDLGraficEngine: Android set mode {0}x{0}",  s.width(), s.height() );
-
-  _srcSize = Size( s.width() * ( 768.f / s.height()), 768 );
+  _srcSize = Size( mode.width(), mode.height() );
+  Logger::warning( "SDLGraficEngine: Android set mode {}x{}",  _srcSize.width(), _srcSize.height() );
 
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
@@ -304,7 +302,12 @@ void SdlEngine::init()
   float wx, wy;
   //SDL_GetRendererOutputSize( _d->renderer, &w, &h );
   SDL_RenderGetScale( _d->renderer, &wx, &wy);
+
+#ifdef CAESARIA_PLATFORM_ANDROID
+  _d->viewportSize = Size( s.width() * ( 800.f / s.height()), 800 );
+#else
   _d->viewportSize = _srcSize * wx;
+#endif
 
   _d->fpsTx = Picture( Size( 200, 20 ), 0, true );
 }
