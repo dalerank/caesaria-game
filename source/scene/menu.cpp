@@ -114,6 +114,7 @@ public:
   void changePlayerNameIfNeed(bool force=false);
   void reload();
   void restart();
+  gui::Ui& ui();
   void openDlcDirectory(Widget* sender);
 };
 
@@ -122,7 +123,7 @@ void StartMenu::Impl::showSaveSelectDialog()
   vfs::Path savesPath = SETTINGS_STR( savedir );
 
   result = StartMenu::loadSavedGame;
-  auto&& loadGameDialog = game->gui()->add<dialog::LoadGame>( savesPath );
+  auto&& loadGameDialog = ui().add<dialog::LoadGame>( savesPath );
   loadGameDialog.setShowExtension( false );
   loadGameDialog.setMayDelete( true );
 
@@ -140,7 +141,7 @@ void StartMenu::Impl::changePlayerNameIfNeed(bool force)
   std::string playerName = SETTINGS_STR( playerName );
   if( playerName.empty() || force )
   {
-    auto&& dlg = game->gui()->add<dialog::ChangePlayerName>();
+    auto&& dlg = ui().add<dialog::ChangePlayerName>();
     dlg.setName( playerName );
     dlg.setMayExit( false );
 
@@ -157,7 +158,7 @@ void StartMenu::Impl::fitScreenResolution()
   SETTINGS_SET_VALUE( screenFitted, true );
   game::Settings::save();
 
-  dialog::Information( game->gui(), "", "Enabled fullscreen mode. Please restart game");
+  dialog::Information( &ui(), "", "Enabled fullscreen mode. Please restart game");
   //CONNECT( dlg, onOk(), this, Impl::restart );
 }
 
@@ -185,7 +186,7 @@ void StartMenu::Impl::resolveSteamStats()
         gfx::Picture pic = steamapi::achievementImage( achieventId );
         if( pic.isValid() )
         {
-          auto&& img = game->gui()->add<gui::Image>( Point( 10, 100 + offset ), pic );
+          auto&& img = ui().add<gui::Image>( Point( 10, 100 + offset ), pic );
           img.setTooltipText( steamapi::achievementCaption( achieventId ) );
           offset += 65;
         }
@@ -220,7 +221,7 @@ void StartMenu::Impl::openDlcDirectory(Widget* sender)
     return;
 
   vfs::Path path( sender->getProperty( "path" ).toString() );
-  game->gui()->add<DlcFolderViewer>( path );
+  ui().add<DlcFolderViewer>( path );
 }
 
 void StartMenu::Impl::showSoundOptions()
@@ -233,7 +234,7 @@ void StartMenu::Impl::showLanguageOptions()
   vfs::Path model = SETTINGS_RC_PATH( langModel );
   std::string currentLang = SETTINGS_STR( language );
   std::string dfFont = SETTINGS_STR( defaultFont );
-  auto&& languageSelectDlg = game->gui()->add<dialog::LanguageSelect>( model, currentLang );
+  auto&& languageSelectDlg = ui().add<dialog::LanguageSelect>( model, currentLang );
   languageSelectDlg.setDefaultFont( dfFont );
 
   CONNECT( &languageSelectDlg, onChange,   this, Impl::changeLanguage )
@@ -242,7 +243,7 @@ void StartMenu::Impl::showLanguageOptions()
 
 void StartMenu::Impl::showPackageOptions()
 {
-  auto&& packageOptionsDlg = game->gui()->add<dialog::PackageOptions>( Rect() );
+  auto&& packageOptionsDlg = ui().add<dialog::PackageOptions>( Rect() );
   packageOptionsDlg.setModal();
 }
 
@@ -272,12 +273,12 @@ void StartMenu::Impl::startCareer()
 
   std::string playerName = SETTINGS_STR( playerName );
 
-  auto selectPlayerNameDlg = new dialog::ChangePlayerName( game->gui()->rootWidget() );
-  selectPlayerNameDlg->setName( playerName );
+  auto&& selectPlayerNameDlg = ui().add<dialog::ChangePlayerName>();
+  selectPlayerNameDlg.setName( playerName );
 
-  CONNECT( selectPlayerNameDlg, onNameChange(), this, Impl::setPlayerName );
-  CONNECT( selectPlayerNameDlg, onContinue(),   this, Impl::handleNewGame );
-  CONNECT( selectPlayerNameDlg, onClose(),      this, Impl::showMainMenu  );
+  CONNECT( &selectPlayerNameDlg, onNameChange(), this, Impl::setPlayerName );
+  CONNECT( &selectPlayerNameDlg, onContinue(),   this, Impl::handleNewGame );
+  CONNECT( &selectPlayerNameDlg, onClose(),      this, Impl::showMainMenu  );
 }
 
 void StartMenu::Impl::handleNewGame()
@@ -348,8 +349,8 @@ void StartMenu::Impl::showCredits()
                          "tracertong, pufik6666, rovanion",
                          "" };
 
-  Size size = game->gui()->vsize();
-  Label& frame = game->gui()->add<Label>( Rect( Point( 0, 0), size ), "", false, gui::Label::bgSimpleBlack );
+  Size size = ui().vsize();
+  Label& frame = ui().add<Label>( Rect( Point( 0, 0), size ), "", false, gui::Label::bgSimpleBlack );
   WidgetEscapeCloser::insertTo( &frame );
   frame.setAlpha( 0xa0 );
   int h = size.height();
@@ -385,9 +386,9 @@ void StartMenu::Impl::showLoadMenu()
 
 void StartMenu::Impl::constructorMode()
 {
-  auto&& loadFileDialog = game->gui()->add<dialog::LoadFile>( Rect(),
-                                                              vfs::Path( ":/maps/" ), ".map,.sav,.omap",
-                                                              -1 );
+  auto&& loadFileDialog = ui().add<dialog::LoadFile>( Rect(),
+                                                      vfs::Path( ":/maps/" ), ".map,.sav,.omap",
+                                                      -1 );
   loadFileDialog.setMayDelete( false );
 
   result = StartMenu::loadConstructor;
@@ -491,12 +492,10 @@ void StartMenu::Impl::showVideoOptions()
 
 void StartMenu::Impl::showMissionSelector()
 {
-  Widget* parent = game->gui()->rootWidget();
-
   result = StartMenu::loadMission;
-  dialog::LoadMission* wnd = dialog::LoadMission::create( parent, vfs::Path( ":/missions/" ) );
+  auto&& wnd = ui().add<dialog::LoadMission>( vfs::Path( ":/missions/" ) );
 
-  CONNECT( wnd, onSelectFile(), this, Impl::selectFile );
+  CONNECT( &wnd, onSelectFile(), this, Impl::selectFile );
 
   changePlayerNameIfNeed();
 }
@@ -518,9 +517,9 @@ void StartMenu::Impl::setPlayerName(std::string name) { SETTINGS_SET_VALUE( play
 
 void StartMenu::Impl::showMapSelectDialog()
 {
-  auto&& loadFileDialog = game->gui()->add<dialog::LoadFile>( Rect(),
-                                                              vfs::Path( ":/maps/" ), ".map,.sav,.omap",
-                                                              -1 );
+  auto&& loadFileDialog = ui().add<dialog::LoadFile>( Rect(),
+                                                      vfs::Path( ":/maps/" ), ".map,.sav,.omap",
+                                                      -1 );
   loadFileDialog.setMayDelete( false );
 
   result = StartMenu::loadMap;
@@ -544,9 +543,9 @@ StartMenu::~StartMenu() {}
 
 void StartMenu::draw()
 {
-  _d->game->gui()->beforeDraw();
+  _d->ui().beforeDraw();
   _d->engine->draw(_d->bgPicture, _d->bgOffset);
-  _d->game->gui()->draw();
+  _d->ui().draw();
 
   if( steamapi::available() )
   {
@@ -561,7 +560,7 @@ void StartMenu::handleEvent( NEvent& event )
     _d->quitGame();
   }
 
-  _d->game->gui()->handleEvent( event );
+  _d->ui().handleEvent( event );
 }
 
 void StartMenu::initialize()
@@ -572,24 +571,22 @@ void StartMenu::initialize()
   _d->bgPicture.load( resName, 1);
 
   // center the bgPicture on the screen
-  Size tmpSize = (_d->game->gui()->vsize() - _d->bgPicture.size())/2;
+  Size tmpSize = (_d->ui().vsize() - _d->bgPicture.size())/2;
   _d->bgOffset = Point( tmpSize.width(), tmpSize.height() );
 
-  _d->game->gui()->clear();
+  _d->ui().clear();
 
-  _d->menu = new gui::StartMenu( _d->game->gui()->rootWidget() );
+  _d->menu = &_d->ui().add<gui::StartMenu>();
 
-  Size scrSize = _d->game->gui()->vsize();
-  auto btnHomePage = new TexturedButton( _d->game->gui()->rootWidget(),
-                                         Point( scrSize.width() - 128, scrSize.height() - 100 ), Size( 128 ), -1,
-                                         "logo_rdt", 1, 2, 2, 2 );
+  Size scrSize = _d->ui().vsize();
+  auto&& btnHomePage = _d->ui().add<TexturedButton>( Point( scrSize.width() - 128, scrSize.height() - 100 ), Size( 128 ), -1,
+                                                    "logo_rdt", 1, 2, 2, 2 );
 
-  auto btnSteamPage = new TexturedButton( _d->game->gui()->rootWidget(),
-                                          Point( btnHomePage->left() - 128, scrSize.height() - 100 ),  Size( 128 ), -1,
-                                          "steam_icon", 1, 2, 2, 2 );
+  auto&& btnSteamPage = _d->ui().add<TexturedButton>( Point( btnHomePage.left() - 128, scrSize.height() - 100 ),  Size( 128 ), -1,
+                                                      "steam_icon", 1, 2, 2, 2 );
 
-  CONNECT( btnSteamPage, onClicked(), _d.data(), Impl::openSteamPage );
-  CONNECT( btnHomePage, onClicked(), _d.data(), Impl::openHomePage );
+  CONNECT( &btnSteamPage, onClicked(), _d.data(), Impl::openSteamPage );
+  CONNECT( &btnHomePage, onClicked(), _d.data(), Impl::openHomePage );
 
   _d->showMainMenu();
 
@@ -599,15 +596,15 @@ void StartMenu::initialize()
     if( !screenFitted )
     {
       Rect dialogRect = Rect( 0, 0, 400, 150 );
-      dialog::Dialog* dialog = new dialog::Dialog( _d->game->gui(), dialogRect,
-                                                   "Information", "Is need autofit screen resolution?",
-                                                   dialog::Dialog::btnOkCancel );
-      CONNECT(dialog, onOk(), dialog, dialog::Dialog::deleteLater );
-      CONNECT(dialog, onCancel(), dialog, dialog::Dialog::deleteLater );
-      CONNECT(dialog, onOk(), _d.data(), Impl::fitScreenResolution );
+      auto&& dialog = _d->ui().add<dialog::Dialog>( dialogRect,
+                                                    "Information", "Is need autofit screen resolution?",
+                                                    dialog::Dialog::btnOkCancel );
+      CONNECT( &dialog, onOk(),     &dialog, dialog::Dialog::deleteLater );
+      CONNECT( &dialog, onCancel(), &dialog, dialog::Dialog::deleteLater );
+      CONNECT( &dialog, onOk(),     _d.data(), Impl::fitScreenResolution );
       SETTINGS_SET_VALUE(screenFitted, true);
 
-      dialog->show();
+      dialog.show();
     }
   }
 
@@ -634,7 +631,7 @@ void StartMenu::initialize()
     }
 
     std::string text = fmt::format( "Build {0}\n{1}", CAESARIA_BUILD_NUMBER, steamName );
-    _d->lbSteamName = new Label( _d->game->gui()->rootWidget(), Rect( 100, 10, 400, 80 ), text );
+    _d->lbSteamName = &_d->ui().add<Label>( Rect( 100, 10, 400, 80 ), text );
     _d->lbSteamName->setTextAlignment( align::upperLeft, align::center );
     _d->lbSteamName->setWordwrap( true );
     _d->lbSteamName->setFont( Font::create( FONT_3, ColorList::white ) );
@@ -658,6 +655,7 @@ void StartMenu::afterFrame()
 
 int StartMenu::result() const{  return _d->result;}
 bool StartMenu::isStopped() const{  return _d->isStopped;}
+Ui& StartMenu::Impl::ui() { return *game->gui(); }
 std::string StartMenu::mapName() const{  return _d->fileMap;}
 std::string StartMenu::playerName() const { return SETTINGS_STR( playerName ); }
 
