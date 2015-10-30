@@ -109,6 +109,18 @@ Label::Label( Widget* parent ) : Widget( parent, -1, Rect( 0, 0, 1, 1) ), _d( ne
   setTextAlignment( align::automatic, align::automatic );
 }
 
+Label::Label(gui::Widget* parent, const Rect& rectangle, const std::string& text, Font font)
+  : Widget( parent, -1, rectangle ), _d( new Impl )
+{
+  _d->isBorderVisible = false;
+  _d->backgroundMode = bgNone;
+  _d->needUpdatePicture = true;
+
+  setTextAlignment( align::automatic, align::automatic );
+  setFont( font );
+  setText( text );
+}
+
 Label::Label(Widget* parent, const Rect& rectangle, const string& text, bool border,
 						 BackgroundMode background, int id)
 : Widget( parent, id, rectangle),

@@ -106,14 +106,9 @@ void Finance::_drawReportRow(const Point& pos, const std::string& title, int typ
   int tyvalue = _city->treasury().getIssueValue( (econ::Issue::Type)type, econ::Treasury::thisYear );
 
   Size size( 100, 20 );
-  Label* lbTitle = new Label( this, Rect( pos, size), _(title) );
-  lbTitle->setFont( font );
-
-  lbTitle = new Label( this, Rect( pos + Point( 215, 0), size), utils::i2str( lyvalue ) );
-  lbTitle->setFont( font );
-
-  lbTitle = new Label( this, Rect( pos + Point( 355, 0), size), utils::i2str( tyvalue ) );
-  lbTitle->setFont( font );
+  add<Label>( Rect( pos, size), _(title), font );
+  add<Label>( Rect( pos + Point( 215, 0), size), utils::i2str( lyvalue ), font );
+  add<Label>( Rect( pos + Point( 355, 0), size), utils::i2str( tyvalue ), font );
 }
 
 void Finance::_updateTaxRateNowLabel()
@@ -168,13 +163,13 @@ void Finance::_initReportRows()
 
 void Finance::_initTaxManager()
 {
-  auto btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
-  auto btnDecreaseTax = new TexturedButton( this, Point( 185, 73 ), Size( 24 ), -1, config::id.menu.arrowDown );
-  auto btnIncreaseTax = new TexturedButton( this, Point( 185+24, 73 ), Size( 24 ), -1, config::id.menu.arrowUp );
+  auto& btnHelp = add<TexturedButton>( Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
+  auto& btnDecreaseTax = add<TexturedButton>( Point( 185, 73 ), Size( 24 ), -1, config::id.menu.arrowDown );
+  auto& btnIncreaseTax = add<TexturedButton>( Point( 185+24, 73 ), Size( 24 ), -1, config::id.menu.arrowUp );
 
-  CONNECT( btnDecreaseTax, onClicked(), this, Finance::_decreaseTax );
-  CONNECT( btnIncreaseTax, onClicked(), this, Finance::_increaseTax );
-  CONNECT( btnHelp,        onClicked(), this, Finance::_showHelp );
+  CONNECT( &btnDecreaseTax, onClicked(), this, Finance::_decreaseTax );
+  CONNECT( &btnIncreaseTax, onClicked(), this, Finance::_increaseTax );
+  CONNECT( &btnHelp,        onClicked(), this, Finance::_showHelp );
 }
 
 void Finance::_updateRegisteredPayers()

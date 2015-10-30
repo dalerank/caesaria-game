@@ -93,26 +93,16 @@ protected:
   {
     PushButton::_updateTextPic();
 
-    Picture& pic = _textPicture();
-
     Font font = Font::create( FONT_1_WHITE );
-    font.draw( pic, _title, ofBranchName, 2, Font::alphaDraw, Font::ignoreTx );
-    font.draw( pic, utils::i2str( _needWorkers ), ofNeedWorkers, 2, Font::alphaDraw, Font::ignoreTx );
 
-    if( _haveWorkers < _needWorkers )
-    {
-      font = Font::create( FONT_1_RED );
-    }
+    canvasDraw( _title, Point( ofBranchName, 2), font );
+    canvasDraw( utils::i2str( _needWorkers ), Point( ofNeedWorkers, 2), font );
 
-    font.draw( pic, utils::i2str( _haveWorkers ), ofHaveWorkers, 2, Font::alphaDraw, Font::ignoreTx );
+    canvasDraw( utils::i2str( _haveWorkers ), Point( ofHaveWorkers, 2 ),
+                _haveWorkers < _needWorkers ? font.clone(  ColorList::caesarRed ) : font );
 
     if( _priority > 0 )
-    {
-      font.setColor( ColorList::black );
-      font.draw( pic, utils::i2str( _priority ), Point( ofPriority, 3 ), Font::alphaDraw, Font::ignoreTx );
-    }
-
-    pic.update();
+      canvasDraw( utils::i2str( _priority ), Point( ofPriority, 3 ), font.clone( ColorList::black ) );
   }
 
   virtual void draw(Engine &painter)

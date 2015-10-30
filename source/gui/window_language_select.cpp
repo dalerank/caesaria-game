@@ -66,7 +66,8 @@ LanguageSelect::LanguageSelect(gui::Widget* parent, vfs::Path model, const std::
     item.setTag( languageHash );
   }
 
-  listbox.setSelectedTag( current );
+  Variant currentLang( current );
+  listbox.setSelectedTag( currentLang );
 
   CONNECT( &listbox,   onItemSelected(), this, LanguageSelect::_changeLanguage )
   CONNECT( &btnSelect, onClicked(),      this, LanguageSelect::_apply          )

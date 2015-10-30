@@ -231,11 +231,9 @@ void StartMenu::Impl::showSoundOptions()
 
 void StartMenu::Impl::showLanguageOptions()
 {
-  vfs::Path model = SETTINGS_RC_PATH( langModel );
-  std::string currentLang = SETTINGS_STR( language );
-  std::string dfFont = SETTINGS_STR( defaultFont );
-  auto& languageSelectDlg = ui().add<dialog::LanguageSelect>( model, currentLang );
-  languageSelectDlg.setDefaultFont( dfFont );
+  auto& languageSelectDlg = ui().add<dialog::LanguageSelect>( SETTINGS_RC_PATH( langModel ),
+                                                              SETTINGS_STR( language ) );
+  languageSelectDlg.setDefaultFont( SETTINGS_STR( defaultFont ) );
 
   CONNECT( &languageSelectDlg, onChange,   this, Impl::changeLanguage )
   CONNECT( &languageSelectDlg, onContinue, this, Impl::reload         )
