@@ -252,6 +252,7 @@ public:
     static const int pop4shacksCalc=300;
     static const int minShacksDesirability =-10;
 
+    HouseList all() const;
     HouseList find( std::set<int> levels=std::set<int>() ) const;
     HouseList ready4evolve(const object::TypeSet& checkTypes) const;
     HouseList ready4evolve(const object::Type checkTypes) const;
@@ -260,6 +261,14 @@ public:
 
     Statistic& _parent;
   } houses;
+
+  struct _Religion
+  {
+    TempleList temples() const;
+    TempleOracleList oracles() const;
+    Statistic& _parent;
+  } religion;
+
 
   struct _Entertainment
   {

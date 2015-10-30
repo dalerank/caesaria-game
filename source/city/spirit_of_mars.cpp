@@ -50,7 +50,7 @@ void SpiritOfMars::timeStep( const unsigned int time)
 
     Logger::warning( "SpiritOfMars: execute service" );
 
-    EnemySoldierList enemies = _city()->statistic().walkers.find<EnemySoldier>();
+    auto enemies = _city()->statistic().walkers.find<EnemySoldier>();
 
     if( enemies.size() > 0 )
     {

@@ -91,8 +91,11 @@ public:
 class Sentiment::Impl
 {
 public:  
-  int value;
-  int finishValue;
+  struct {
+    int current;
+    int finish;
+  } value;
+
   int affect;
   int buffValue;
   Buffs buffs;
@@ -103,8 +106,8 @@ std::string Sentiment ::defaultName() { return CAESARIA_STR_EXT(Sentiment);}
 Sentiment::Sentiment( PlayerCityPtr city )
   : Srvc( city, defaultName() ), _d( new Impl )
 {
-  _d->value = defaultValue;
-  _d->finishValue = defaultValue;
+  _d->value.current = defaultValue;
+  _d->value.finish = defaultValue;
   _d->affect = 0;
   _d->buffValue = 0;
 }
@@ -113,7 +116,7 @@ void Sentiment::timeStep(const unsigned int time )
 {
   if( game::Date::isWeekChanged() )
   {
-    _d->value += math::signnum( _d->finishValue - _d->value );
+    _d->value.current += math::signnum( _d->value.finish - _d->value.current );
   }
 
   if( game::Date::isMonthChanged() )
@@ -140,26 +143,26 @@ void Sentiment::timeStep(const unsigned int time )
     HouseList houses = _city()->statistic().houses.find();
 
     unsigned int houseNumber = 0;
-    _d->finishValue = 0;
+    _d->value.finish = 0;
     for( auto house : houses )
     {
       house->setState( pr::happinessBuff, _d->buffValue );
 
       if( house->habitants().count() > 0 )
       {
-        _d->finishValue += house->state( pr::happiness );
+        _d->value.finish += house->state( pr::happiness );
         houseNumber++;
       }
     }
 
     if( houseNumber > 0 )
-      _d->finishValue /= houseNumber;
+      _d->value.finish /= houseNumber;
     else
-      _d->finishValue = defaultValue;
+      _d->value.finish = defaultValue;
   }
 }
 
-int Sentiment::value() const { return _d->value + _d->affect; }
+int Sentiment::value() const { return _d->value.current + _d->affect; }
 int Sentiment::buff() const { return _d->buffValue; }
 
 std::string Sentiment::reason() const
@@ -185,8 +188,8 @@ std::string Sentiment::reason() const
 VariantMap Sentiment::save() const
 {
   VariantMap ret = Srvc::save();
-  VARIANT_SAVE_ANY_D( ret, _d, value )
-  VARIANT_SAVE_ANY_D( ret, _d, finishValue )
+  VARIANT_SAVE_ANY_D( ret, _d, value.current )
+  VARIANT_SAVE_ANY_D( ret, _d, value.finish )
   VARIANT_SAVE_ANY_D( ret, _d, affect )
   VARIANT_SAVE_CLASS_D( ret, _d, buffs )
   return ret;
@@ -195,8 +198,8 @@ VariantMap Sentiment::save() const
 void Sentiment::load(const VariantMap& stream)
 {
   Srvc::load( stream );
-  VARIANT_LOAD_ANY_D( _d, value, stream )
-  VARIANT_LOAD_ANY_D( _d, finishValue, stream )
+  VARIANT_LOAD_ANY_D( _d, value.current, stream )
+  VARIANT_LOAD_ANY_D( _d, value.finish, stream )
   VARIANT_LOAD_ANY_D( _d, affect, stream )
   VARIANT_LOAD_CLASS_D_LIST( _d, buffs, stream )
 }
