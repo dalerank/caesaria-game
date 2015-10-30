@@ -80,7 +80,7 @@ void Animals::timeStep(const unsigned int time)
       int animals_n = _city()->statistic().walkers.count( walkerType );
       if( animals_n < (int)maxAnimalInCity )
       {
-        AnimalPtr animal = WalkerManager::instance().create<Animal>( walkerType, _city() );
+        AnimalPtr animal = Walker::create<Animal>( walkerType, _city() );
         if( animal.isValid() )
         {
           Tile* rndTile = _d->border.random();
@@ -102,7 +102,7 @@ VariantMap Animals::save() const
 
   VariantMap animalsVm;
   for( auto& winfo : _d->animalInfo )
-    animalsVm[ WalkerHelper::getTypename( winfo.first ) ] = winfo.second;
+    animalsVm[ walker::toString( winfo.first ) ] = winfo.second;
 
   ret[ "animals" ] = animalsVm;
 
@@ -116,7 +116,7 @@ void Animals::load(const VariantMap& stream)
   VariantMap animalsVm = stream.get( "animals" ).toMap();
   for( auto& info : animalsVm )
   {
-    walker::Type wtype = WalkerHelper::getType( info.first );
+    walker::Type wtype = walker::toType( info.first );
     _d->animalInfo[ wtype ] = info.second;
   }
 }
