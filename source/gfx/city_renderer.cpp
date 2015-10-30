@@ -111,7 +111,7 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   _d->city = city;
   _d->tilemap = &city->tilemap();
   _d->guienv = guienv;
-  _d->camera.init( *_d->tilemap, engine->screenSize() );
+  _d->camera.init( *_d->tilemap, engine->viewportSize() );
   _d->engine = engine;
 
   addLayer( Simple::create( _d->camera, city ) );

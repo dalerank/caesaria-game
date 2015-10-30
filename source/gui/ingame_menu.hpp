@@ -27,7 +27,7 @@ class IngameMenu : public Window
 {
 public:
   IngameMenu( Widget* parent );
-  virtual ~IngameMenu() {}
+  virtual ~IngameMenu();
 
 public signals:
   Signal0<>& onExit();
