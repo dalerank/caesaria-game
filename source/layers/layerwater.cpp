@@ -212,14 +212,6 @@ void Water::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerPtr Water::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new Water( camera, city ) );
-  ret->drop();
-
-  return ret;
-}
-
 Water::Water( Camera& camera, PlayerCityPtr city)
   : Layer( &camera, city ), _d( new Impl )
 {
