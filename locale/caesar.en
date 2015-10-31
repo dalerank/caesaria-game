@@ -20,6 +20,7 @@
 "##city_c3rules_on##":"С3 rules only"
 "##city_df_usual_tlp##":"Normal difficulty level, crime and taxes"
 "##city_df_hard_tlp##":"Increased risk of riots, reduced taxes"
+"##mainmenu_constructor##":"Map editor "
 "##city_df_nicety_tlp##":"High risk of uprisings, low taxes in the city, vindictive gods"
 "##city_df_impossible_tlp##":"You have to think about every step,real tax saving annually"
 "##city_df_fun_tlp##":"No riots in the city, reducing the impact of the gods, taxes are always going"

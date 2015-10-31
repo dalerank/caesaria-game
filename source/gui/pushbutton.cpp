@@ -321,6 +321,18 @@ void PushButton::setupUI(const VariantMap &ui)
 void PushButton::setTextOffset(const Point& offset) { _dfunc()->text.offset = offset;}
 bool PushButton::isPushButton() const { return _dfunc()->is.pushButton; }
 
+void PushButton::canvasDraw(const std::string& text, const Point& point, Font rfont, NColor color)
+{
+  Picture& pic = _textPicture();
+  if( !rfont.isValid() )
+    rfont = font( stNormal );
+
+  if( color.color != 0 )
+    rfont.setColor( color );
+
+  rfont.draw( pic, text, point, true, true  );
+}
+
 void PushButton::setPicture(Picture picture, ElementState state )
 {
   __D_IMPL(_d,PushButton);

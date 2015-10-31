@@ -123,7 +123,7 @@ void StartMenu::Impl::showSaveSelectDialog()
   vfs::Path savesPath = SETTINGS_STR( savedir );
 
   result = StartMenu::loadSavedGame;
-  auto&& loadGameDialog = ui().add<dialog::LoadGame>( savesPath );
+  auto& loadGameDialog = ui().add<dialog::LoadGame>( savesPath );
   loadGameDialog.setShowExtension( false );
   loadGameDialog.setMayDelete( true );
 
@@ -141,7 +141,7 @@ void StartMenu::Impl::changePlayerNameIfNeed(bool force)
   std::string playerName = SETTINGS_STR( playerName );
   if( playerName.empty() || force )
   {
-    auto&& dlg = ui().add<dialog::ChangePlayerName>();
+    auto& dlg = ui().add<dialog::ChangePlayerName>();
     dlg.setName( playerName );
     dlg.setMayExit( false );
 
@@ -186,7 +186,7 @@ void StartMenu::Impl::resolveSteamStats()
         gfx::Picture pic = steamapi::achievementImage( achieventId );
         if( pic.isValid() )
         {
-          auto&& img = ui().add<gui::Image>( Point( 10, 100 + offset ), pic );
+          auto& img = ui().add<gui::Image>( Point( 10, 100 + offset ), pic );
           img.setTooltipText( steamapi::achievementCaption( achieventId ) );
           offset += 65;
         }
@@ -231,11 +231,9 @@ void StartMenu::Impl::showSoundOptions()
 
 void StartMenu::Impl::showLanguageOptions()
 {
-  vfs::Path model = SETTINGS_RC_PATH( langModel );
-  std::string currentLang = SETTINGS_STR( language );
-  std::string dfFont = SETTINGS_STR( defaultFont );
-  auto&& languageSelectDlg = ui().add<dialog::LanguageSelect>( model, currentLang );
-  languageSelectDlg.setDefaultFont( dfFont );
+  auto& languageSelectDlg = ui().add<dialog::LanguageSelect>( SETTINGS_RC_PATH( langModel ),
+                                                              SETTINGS_STR( language ) );
+  languageSelectDlg.setDefaultFont( SETTINGS_STR( defaultFont ) );
 
   CONNECT( &languageSelectDlg, onChange,   this, Impl::changeLanguage )
   CONNECT( &languageSelectDlg, onContinue, this, Impl::reload         )
@@ -243,7 +241,7 @@ void StartMenu::Impl::showLanguageOptions()
 
 void StartMenu::Impl::showPackageOptions()
 {
-  auto&& packageOptionsDlg = ui().add<dialog::PackageOptions>( Rect() );
+  auto& packageOptionsDlg = ui().add<dialog::PackageOptions>( Rect() );
   packageOptionsDlg.setModal();
 }
 
@@ -273,7 +271,7 @@ void StartMenu::Impl::startCareer()
 
   std::string playerName = SETTINGS_STR( playerName );
 
-  auto&& selectPlayerNameDlg = ui().add<dialog::ChangePlayerName>();
+  auto& selectPlayerNameDlg = ui().add<dialog::ChangePlayerName>();
   selectPlayerNameDlg.setName( playerName );
 
   CONNECT( &selectPlayerNameDlg, onNameChange(), this, Impl::setPlayerName );
@@ -364,7 +362,7 @@ void StartMenu::Impl::showCredits()
     animator.setSpeed( PointF( 0, -0.5 ) );
   }
 
-  auto&& buttonClose = frame.add<PushButton>( Rect( size.width() - 150, size.height() - 34, size.width() - 10, size.height() - 10 ),
+  auto& buttonClose = frame.add<PushButton>( Rect( size.width() - 150, size.height() - 34, size.width() - 10, size.height() - 10 ),
                                              _("##close##") );
   frame.setFocus();
 
@@ -372,7 +370,7 @@ void StartMenu::Impl::showCredits()
   CONNECT( &buttonClose, onClicked(), this, Impl::playMenuSoundTheme );
 }
 
-#define ADD_MENU_BUTTON( text, slot) { PushButton* btn = menu->addButton( _(text), -1 ); CONNECT(btn, onClicked(), this, slot ); }
+#define ADD_MENU_BUTTON( text, slot) { auto& btn = menu->addButton( _(text), -1 ); CONNECT( &btn, onClicked(), this, slot ); }
 
 void StartMenu::Impl::showLoadMenu()
 {
@@ -386,9 +384,9 @@ void StartMenu::Impl::showLoadMenu()
 
 void StartMenu::Impl::constructorMode()
 {
-  auto&& loadFileDialog = ui().add<dialog::LoadFile>( Rect(),
-                                                      vfs::Path( ":/maps/" ), ".map,.sav,.omap",
-                                                      -1 );
+  auto& loadFileDialog = ui().add<dialog::LoadFile>( Rect(),
+                                                     vfs::Path( ":/maps/" ), ".map,.sav,.omap",
+                                                     -1 );
   loadFileDialog.setMayDelete( false );
 
   result = StartMenu::loadConstructor;
@@ -476,9 +474,9 @@ void StartMenu::Impl::showAdvancedMaterials()
       vfs::Path path2subdir = it.fullpath;
       std::string locText = "##mainmenu_dlc_" + path2subdir.baseName().toString() + "##";
 
-      PushButton* btn = menu->addButton( _(locText), -1 );
-      btn->addProperty( "path", Variant( path2subdir.toString() ) );
-      CONNECT(btn, onClickedEx(), this, Impl::openDlcDirectory )
+      auto& btn = menu->addButton( _(locText), -1 );
+      btn.addProperty( "path", Variant( path2subdir.toString() ) );
+      CONNECT( &btn, onClickedEx(), this, Impl::openDlcDirectory )
     }
   }
 
@@ -493,7 +491,7 @@ void StartMenu::Impl::showVideoOptions()
 void StartMenu::Impl::showMissionSelector()
 {
   result = StartMenu::loadMission;
-  auto&& wnd = ui().add<dialog::LoadMission>( vfs::Path( ":/missions/" ) );
+  auto& wnd = ui().add<dialog::LoadMission>( vfs::Path( ":/missions/" ) );
 
   CONNECT( &wnd, onSelectFile(), this, Impl::selectFile );
 
@@ -579,11 +577,11 @@ void StartMenu::initialize()
   _d->menu = &_d->ui().add<gui::StartMenu>();
 
   Size scrSize = _d->ui().vsize();
-  auto&& btnHomePage = _d->ui().add<TexturedButton>( Point( scrSize.width() - 128, scrSize.height() - 100 ), Size( 128 ), -1,
+  auto& btnHomePage = _d->ui().add<TexturedButton>( Point( scrSize.width() - 128, scrSize.height() - 100 ), Size( 128 ), -1,
                                                     "logo_rdt", 1, 2, 2, 2 );
 
-  auto&& btnSteamPage = _d->ui().add<TexturedButton>( Point( btnHomePage.left() - 128, scrSize.height() - 100 ),  Size( 128 ), -1,
-                                                      "steam_icon", 1, 2, 2, 2 );
+  auto& btnSteamPage = _d->ui().add<TexturedButton>( Point( btnHomePage.left() - 128, scrSize.height() - 100 ),  Size( 128 ), -1,
+                                                     "steam_icon", 1, 2, 2, 2 );
 
   CONNECT( &btnSteamPage, onClicked(), _d.data(), Impl::openSteamPage );
   CONNECT( &btnHomePage, onClicked(), _d.data(), Impl::openHomePage );
@@ -596,7 +594,7 @@ void StartMenu::initialize()
     if( !screenFitted )
     {
       Rect dialogRect = Rect( 0, 0, 400, 150 );
-      auto&& dialog = _d->ui().add<dialog::Dialog>( dialogRect,
+      auto& dialog = _d->ui().add<dialog::Dialog>( dialogRect,
                                                     "Information", "Is need autofit screen resolution?",
                                                     dialog::Dialog::btnOkCancel );
       CONNECT( &dialog, onOk(),     &dialog, dialog::Dialog::deleteLater );

@@ -84,7 +84,7 @@ void Parlor::_initButtons()
   }
 
   auto buttons = children().select<PushButton>();
-  for( auto&& btn : buttons )
+  for( auto& btn : buttons )
     btn->deleteLater();
 
   for( auto& item : _model->items() )
@@ -101,7 +101,7 @@ Parlor::Parlor( Widget* parent, int id )
 {
   setupUI( ":/gui/advisors.gui" );
 
-  GameAutoPause::insertTo( this, true );
+  GameAutoPause::insertTo( this );
   WidgetEscapeCloser::insertTo( this );
 
   INIT_WIDGET_FROM_UI( Image*, imgBgButtons )

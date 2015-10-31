@@ -80,7 +80,8 @@ public:
 
   void update( unsigned int time )
   {
-    for( auto&& it : *this ) it->timeStep( time );
+    for( auto& it : *this )
+      it->timeStep( time );
     utils::eraseIfDeleted( *this );
     merge();
   }

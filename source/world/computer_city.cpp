@@ -386,7 +386,7 @@ void ComputerCity::Impl::citizensConsumeServices()
   ServiceInfo mayServe;
   ServiceInfo idle;
 
-  for( auto&& info : buildings )
+  for( auto& info : buildings )
   {
     idle.type[info.type] &= (info.workersNumber < info.maxWorkersNumber);
     if( info.maxWorkersNumber > 0 )
@@ -770,6 +770,7 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
   _d->buys.setCapacity( 99999 );
   _d->realSells.setCapacity( 99999 );
   _d->states.age = 0;
+  _d->states.birth = game::Date::current();
   _d->states.romeCity = false;
 
   _initTextures();
@@ -824,6 +825,7 @@ void ComputerCity::save( VariantMap& options ) const
   VARIANT_SAVE_ANY_D( options, _d, trade.delay )
   VARIANT_SAVE_ANY_D( options, _d, lasttime.attacked )
   VARIANT_SAVE_ANY_D( options, _d, states.population )
+  VARIANT_SAVE_ANY_D( options, _d, states.birth )
   VARIANT_SAVE_ANY_D( options, _d, strength )
   VARIANT_SAVE_ANY_D( options, _d, sentiment )
 }
@@ -840,6 +842,7 @@ void ComputerCity::load( const VariantMap& options )
   VARIANT_LOAD_ANY_D   ( _d, available,             options )
   VARIANT_LOAD_ANY_D   ( _d, states.romeCity,       options )
   VARIANT_LOAD_ANY_D   ( _d, states.age,            options )
+  VARIANT_LOAD_TIME_D  ( _d, states.birth,          options )
   VARIANT_LOAD_ANY_D   ( _d, trade.delay,           options )
   VARIANT_LOAD_TIME_D  ( _d, lasttime.attacked,     options )
   VARIANT_LOAD_ANY_D   ( _d, strength,              options )

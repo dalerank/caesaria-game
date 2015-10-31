@@ -78,11 +78,12 @@ public:
   void addImage( Widget* parent, RomeDivinity::Type type, int column, int startPic )
   {
     Size imgSize( 81, 91 );
-    godBtns.push_back( new TexturedButton( parent, Point( column * 100 + 60, 48),
-                                           imgSize, divId + type, ResourceGroup::festivalimg,
-                                           startPic, startPic, startPic+5, startPic+5 ) );
-    godBtns.back()->setIsPushButton( true );
-    godBtns.back()->setTooltipText( _("##arrange_festiable_for_this_god##") );
+    auto& btn = parent->add<TexturedButton>( Point( column * 100 + 60, 48),
+                                             imgSize, divId + type, ResourceGroup::festivalimg,
+                                             startPic, startPic, startPic+5, startPic+5 );
+    btn.setIsPushButton( true );
+    btn.setTooltipText( _("##arrange_festiable_for_this_god##") );
+    godBtns.push_back( &btn );
     divines[ divId + type ] = type;    
   }
 
@@ -96,12 +97,6 @@ public:
     lbTitle->setText( _(text) );
   }
 };
-
-FestivalPlanning* FestivalPlanning::create(Widget* parent, PlayerCityPtr city, int id )
-{
-  FestivalPlanning* ret = new FestivalPlanning( parent, id, Rect( 0, 0, 1, 1 ), city);
-  return ret;
-}
 
 FestivalPlanning::~FestivalPlanning(){}
 

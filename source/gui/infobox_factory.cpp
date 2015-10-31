@@ -78,11 +78,11 @@ AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
   // paint progress
   std::string text = utils::format( 0xff, "%s %d%%", _("##rawm_production_complete_m##"), factory->progress() );
   Size lbSize( (width() - 20) / 2, 25 );
-  _lbProduction = new Label( this, Rect( _lbTitle()->leftbottom() + Point( 10, 0 ), lbSize ), text );
+  _lbProduction = &add<Label>( Rect( _lbTitle()->leftbottom() + Point( 10, 0 ), lbSize ), text );
   _lbProduction->setFont( Font::create( FONT_2 ) );
 
   std::string effciencyText = utils::format( 0xff, "%s %d%%", _("##effciency##"), factory->effciency() );
-  _lbEffciency = new Label( this, _lbProduction->relativeRect() + Point( lbSize.width(), 0 ), effciencyText );
+  _lbEffciency = &add<Label>( _lbProduction->relativeRect() + Point( lbSize.width(), 0 ), effciencyText );
   _lbEffciency->setFont( Font::create( FONT_2 ) );
 
 

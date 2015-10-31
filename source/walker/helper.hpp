@@ -79,4 +79,10 @@ private:
   ScopedPtr<Impl> _d;
 };
 
+namespace walker
+{
+Type toType( const std::string& name );
+std::string toString( walker::Type type );
+}
+
 #endif //_CAESARIA_WALKERHELPER_H_INCLUDE_

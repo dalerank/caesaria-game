@@ -139,7 +139,7 @@ public:
     int expandCounter = 0;
     do
     {
-      for( auto&& it : points )
+      for( auto& it : points )
         if( it.uid == 0 )
         {
           it.uid = uid;

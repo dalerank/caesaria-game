@@ -30,10 +30,9 @@ public:
   virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
   virtual void beforeRender( gfx::Engine& engine );
 
-  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
+  Desirability( gfx::Camera& camera, PlayerCityPtr city );
   virtual void handleEvent(NEvent& event);
 private:
-  Desirability( gfx::Camera& camera, PlayerCityPtr city );
 
   class Impl;
   ScopedPtr<Impl> _d;

@@ -357,11 +357,14 @@ void Build::_exitBuildMode()
 void Build::handleEvent(NEvent& event)
 {
   __D_REF(d,Build);
+
   if( event.EventType == sEventMouse )
   {
     d.kbShift = event.mouse.shift;
     d.kbCtrl = event.mouse.control;
     d.readyForExit = false;
+
+    Point cursorPos = event.mouse.pos();
 
     if( !OSystem::isAndroid() )
       d.lmbPressed = event.mouse.isLeftPressed();
@@ -370,7 +373,7 @@ void Build::handleEvent(NEvent& event)
     {
     case mouseMoved:
     {
-      _setLastCursorPos( event.mouse.pos() );
+      _setLastCursorPos( cursorPos );
       _checkBuildArea();
       _updatePreviewTiles( false );
     }
@@ -385,7 +388,7 @@ void Build::handleEvent(NEvent& event)
 
     case mouseLbtnRelease:            // left button
     {
-      Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
+      Tile* tile = _camera()->at( cursorPos, false );  // tile under the cursor (or NULL)
       if( tile == 0 )
       {
         break;
@@ -417,7 +420,7 @@ void Build::handleEvent(NEvent& event)
         {
           if( !d.readyForExit )
           {
-            _setStartCursorPos( Point(-1, -1) );
+            _setStartCursorPos( Point( -1, -1 ) );
             d.startTilePos = tilemap::invalidLocation();
             d.lastTilePos = tilemap::invalidLocation();
             d.needUpdateTiles = true;

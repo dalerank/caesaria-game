@@ -39,6 +39,8 @@ public:
   Label( Widget* parent, const Rect& rectangle, const std::string& text="", bool border=false,
          BackgroundMode background = bgNone, int id=-1);
 
+  Label( Widget* parent, const Rect& rectangle, const std::string& text, Font font);
+
   //! destructor
   virtual ~Label();
 

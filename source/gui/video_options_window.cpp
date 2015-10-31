@@ -51,7 +51,8 @@ public:
 VideoOptions::VideoOptions(Widget* parent, gfx::Engine::Modes modes, bool fullscreen )
   : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
-  GameAutoPause::insertTo( this, true );
+  WidgetEscapeCloser::insertTo( this );
+  GameAutoPause::insertTo( this );
   setupUI( ":/gui/videooptions.gui" );
 
   setPosition( Point( parent->width() - width(), parent->height() - height() ) / 2 );  
@@ -74,7 +75,6 @@ VideoOptions::VideoOptions(Widget* parent, gfx::Engine::Modes modes, bool fullsc
   }
 
   _update();
-  WidgetEscapeCloser::insertTo( this );
 
   INIT_WIDGET_FROM_UI( PushButton*, btnOk )
   if( btnOk ) btnOk->setFocus();

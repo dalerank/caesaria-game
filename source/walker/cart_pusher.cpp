@@ -223,7 +223,8 @@ void CartPusher::getPictures( gfx::Pictures& oPics)
      std::iter_swap( oPics.begin(), oPics.begin() + 1);
    }
 
-   for( auto&& pic : oPics ) { pic.addOffset( offset ); }
+   for( auto& pic : oPics )
+     pic.addOffset( offset );
 }
 
 void CartPusher::_computeWalkerDestination()

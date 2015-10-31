@@ -163,9 +163,12 @@ void Disaster::_exec( Game& game, unsigned int )
       Dispatcher::instance().append( BuildAny::create( tile->pos(), currentTileOverlay ) );
     }
 
-    std::string dstr2string[] = { "##alarm_fire_in_city##", "##alarm_building_collapsed##",
-                                  "##alarm_plague_in_city##", "##alarm_earthquake##" };
-    emit game.city()->onDisasterEvent()( _d->pos, _( dstr2string[_d->type] ) );
+    StringArray dstr2string;
+    dstr2string << "##alarm_fire_in_city##" << "##alarm_building_collapsed##"
+                << "##alarm_plague_in_city##" << "##alarm_earthquake##"
+                << "##alarm_riots_in_city##";
+    std::string alarmText = dstr2string.valueOrDefault( _d->type, "##alarm_unk_in_city##" );
+    emit game.city()->onDisasterEvent()( _d->pos, _( alarmText ) );
   }
 }
 

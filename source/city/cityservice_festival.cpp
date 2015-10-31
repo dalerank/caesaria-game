@@ -167,7 +167,7 @@ void Festival::_doFestival()
 {
   int sentimentValue = 0;
   int festSize = math::clamp<int>( _d->nextfest.size, FestivalInfo::none, FestivalInfo::big );
-  FestivalDesc& info = findDesc( FestivalInfo::Type( festSize ) );
+  const FestivalDesc& info = findDesc( FestivalInfo::Type( festSize ) );
 
   const DateTime currentDate = game::Date::current();
   if( _d->oldfest.date.monthsTo( currentDate ) >= DateTime::monthsInYear )

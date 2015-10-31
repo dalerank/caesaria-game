@@ -77,16 +77,17 @@ public:
   void clear( const DivinityList& divinities )
   {
     std::map< std::string, CoverageInfo >::clear();
-    for (auto divinity : divinities)
+    for( auto divinity : divinities)
     {
       CoverageInfo &cvInfo = (*this)[divinity->internalName()];
       cvInfo.temples.small_n = 0;
+      cvInfo.temples.big_n = 0;
     }
   }
 
   void setOraclesParishioner( int parishioners )
   {
-    for (auto it : *this)
+    for( auto& it : *this)
     {
       it.second.parishionerNumber += parishioners;
     }
@@ -125,17 +126,14 @@ void Religion::timeStep( const unsigned int time )
     _d->templesCoverity.clear( divinities );
 
     //update temples info
-    TempleList temples = _city()->statistic().objects.find<Temple>( object::group::religion );
+    TempleList temples = _city()->statistic().religion.temples();
     for (auto temple : temples)
-    {
       _d->templesCoverity.update( temple );
-    }
 
-    TempleOracleList oracles = _city()->statistic().objects.find<TempleOracle>( object::oracle );
+    TempleOracleList oracles = _city()->statistic().religion.oracles();
 
     //add parishioners to all divinities by oracles
     int oraclesParishionerNumber = 0;
-
     for (auto oracle : oracles)
     {
       oraclesParishionerNumber += oracle->currentVisitors();

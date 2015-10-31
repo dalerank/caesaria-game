@@ -170,8 +170,8 @@ Chief::Chief(PlayerCityPtr city, Widget* parent, int id )
   _d.drawEntertainment();
   _d.drawSentiment();
 
-  auto btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
-  CONNECT( btnHelp, onClicked(), this, Chief::_showHelp );
+  auto& btnHelp = add<TexturedButton>( Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
+  CONNECT( &btnHelp, onClicked(), this, Chief::_showHelp );
 }
 
 void Chief::Impl::initRows( Widget* parent, int width )
@@ -180,9 +180,7 @@ void Chief::Impl::initRows( Widget* parent, int width )
   Point offset( 0, 27 );
 
   for( int i=0; i < atCount; i++ )
-  {
-    rows.push_back( new InfomationRow( parent, titles[i], Rect( startPoint + offset * i, Size( width, offset.y() ) ) ) );
-  }
+    rows.push_back( &parent->add<InfomationRow>( titles[i], Rect( startPoint + offset * i, Size( width, offset.y() ) ) ) );
 }
 
 void Chief::draw( gfx::Engine& painter )
@@ -428,10 +426,10 @@ void Chief::Impl::drawCrime()
 {
   std::string text;
 
-  DisorderPtr ds = city->statistic().services.find<Disorder>();
-  if( ds.isValid() )
+  auto disorders = city->statistic().services.find<Disorder>();
+  if( disorders.isValid() )
   {
-    text = ds->reason();
+    text = disorders->reason();
   }
 
   text = text.empty() ? "##advchief_no_crime##" : text;
@@ -443,7 +441,7 @@ void Chief::Impl::drawHealth()
 {
   std::string text;
 
-  HealthCarePtr cityHealth = city->statistic().services.find<HealthCare>();
+  auto cityHealth = city->statistic().services.find<HealthCare>();
   if( cityHealth.isValid() )
   {
     text = cityHealth->reason();
@@ -495,20 +493,20 @@ void Chief::Impl::drawEntertainment()
 {
   StringArray reasons;
 
-  FestivalPtr srvc = city->statistic().services.find<Festival>();
-  if( srvc.isValid() )
+  auto festivals = city->statistic().services.find<Festival>();
+  if( festivals.isValid() )
   {
-    int monthFromLastFestival = srvc->lastFestival().monthsTo( game::Date::current() );
+    int monthFromLastFestival = festivals->lastFestival().monthsTo( game::Date::current() );
     if( monthFromLastFestival > DateTime::monthsInYear / 2 )
     {
       reasons << "##citizens_grumble_lack_festivals_held##";
     }
   }
 
-  CultureRatingPtr cltr = city->statistic().services.find<CultureRating>();
-  if( cltr.isValid() )
+  auto cultures = city->statistic().services.find<CultureRating>();
+  if( cultures.isValid() )
   {
-    int theaterCoverage = cltr->coverage( CultureRating::covTheatres );
+    int theaterCoverage = cultures->coverage( CultureRating::covTheatres );
     if( theaterCoverage >= serviceAwesomeCoverage )
     {
       reasons << "##current_play_runs_for_another##";
