@@ -61,7 +61,6 @@ public slots:
 private slots:
   void _quit();
   void _resolveSwitchMap();
-  void _showLoadDialog();
   void _resolveLoad();
   void _resolveEnterButton();
   void _requestExitGame();

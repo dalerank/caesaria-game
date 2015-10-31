@@ -979,12 +979,12 @@ void ListBox::setupUI(const VariantMap& ui)
   _d->scrollBar->setVisible( scrollBarVisible );
 
   VariantList items = ui.get( "items" ).toList();
-  foreach( i, items )
+  for( auto& item : items )
   {
-    VariantMap vm = (*i).toMap();
+    VariantMap vm = item.toMap();
     if( vm.empty() )
     {
-      addItem( (*i).toString() );
+      addItem( item.toString() );
     }
     else
     {

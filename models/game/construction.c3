@@ -36,6 +36,18 @@
     }
   }
 
+  rock : {
+    class : "rock"
+    image.ext : {
+      type_1 : { size:1, rc : "land1a", start : 290, count : 8 }
+      type_1a : { size:1, rc : "land3a", start : 71, count : 8 }
+      type_2 : { size:2, rc : "land1a", start : 298, count : 4 }
+      type_2a : { size:2, rc : "land3a", start : 79, count : 4 }
+      type_3 : { size:3, rc : "land1a", start : 302, count : 2 }
+      type_3 : { size:3, rc : "land3a", start : 83, count : 2 }
+    }
+  }
+
   road : {
     cost : 4,
     desirability : { base : 1, range : 0, step : 0 }

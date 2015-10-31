@@ -118,11 +118,11 @@ void AboutMarket::drawGood( MarketPtr market, const good::Product &goodType, int
   Picture pic = good::Helper::picture( goodType );
   Point pos( index * offset + startOffset, paintY );
 
-  Label* lb = new Label( this, Rect( pos, pos + Point( 100, 24 )) );
-  lb->setFont( Font::create( FONT_2 ) );
-  lb->setIcon( pic );
-  lb->setText( outText );
-  lb->setTextOffset( Point( 30, 0 ) );
+  Label& lb = add<Label>( Rect( pos, pos + Point( 100, 24 )) );
+  lb.setFont( Font::create( FONT_2 ) );
+  lb.setIcon( pic );
+  lb.setText( outText );
+  lb.setTextOffset( Point( 30, 0 ) );
 }
 
 }

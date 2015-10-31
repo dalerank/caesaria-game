@@ -112,7 +112,8 @@ void Walker::_awake()
 WalkerPtr Walker::create(walker::Type type, PlayerCityPtr city)
 {
   auto wlk = WalkerManager::instance().create( type, city );
-  wlk->_awake();
+  if( wlk.isValid() )
+    wlk->_awake();
 
   return wlk;
 }

@@ -395,7 +395,7 @@ OverlayPtr Farm::_buildFarmTile(const city::AreaInfo &info, const TilePos &ppos)
 
 void Farm::_buildFarmTiles(const city::AreaInfo& info, const TilePos& ppos )
 {
-  for( auto&& location : _d->sublocs )
+  for( auto& location : _d->sublocs )
   {
     city::AreaInfo tInfo = info;
     tInfo.pos += location;

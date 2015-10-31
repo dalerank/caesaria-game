@@ -66,9 +66,10 @@ enum { noSubMenu=0, haveSubMenu=1, pushButton=1 };
 
 struct Menu::Link
 {
-  typedef enum { buildHouse, clearLand,
+  typedef enum { buildHouse,  clearLand,
                  editTerrain, editForest,
-                 buildRoad, editWater } Name;
+                 buildRoad,   editWater,
+                 buildWater,  editRock } Name;
   typedef enum { inGame=0, inEditor=1 } VisibleMode;
   Point pos;
   int picId;
@@ -121,6 +122,14 @@ struct Menu::Model
                                      object::water, config::id.middle.clear, pushButton,
                                      noSubMenu, Rect(), "water", nullptr, "", Link::inEditor};
 
+    actions[ Link::buildWater  ] = { Point( 13,  313 ), config::id.menu.waterSupply, development::water,  3,
+                                     development::water, config::id.middle.water, pushButton,
+                                     haveSubMenu, Rect(), "water", nullptr, "", Link::inGame };
+
+    actions[ Link::editRock ] = { Point( 13,  313 ), config::id.menu.smRocks, object::rock,  2,
+                                     object::rock, config::id.middle.clear, pushButton,
+                                     noSubMenu, Rect(), "smRock", nullptr, "", Link::inEditor};
+
   }
 
   bool isLinkValid( Link::Name name ) const
@@ -136,7 +145,7 @@ struct Menu::Model
   void setConstructoMode( bool enabled )
   {
     Link::VisibleMode mode = enabled ? Link::inEditor : Link::inGame;
-    for( auto&& item : actions )
+    for( auto& item : actions )
     {
       if( item.second.button )
         item.second.button->setVisible( item.second.visibleMode == mode );
@@ -191,7 +200,7 @@ public:
       if( move == Point( 0, 0) )
         return;
 
-      for( auto&& r : rects )
+      for( auto& r : rects )
         r += move;
 
       batch.destroy();
@@ -216,7 +225,6 @@ public:
   PushButton* rotateRightButton;
   PushButton* messageButton;
   PushButton* disasterButton;
-  PushButton* waterButton;
   PushButton* administrationButton;
   PushButton* entertainmentButton;
   PushButton* educationButton;
@@ -286,8 +294,8 @@ void Menu::_updateButtons()
   _createLink( _d->model->actions[ Link::buildHouse ] );
   _createLink( _d->model->actions[ Link::clearLand  ] );
   _createLink( _d->model->actions[ Link::buildRoad  ] );
+  _createLink( _d->model->actions[ Link::buildWater ] );
 
-  _d->waterButton = _addButton( 127, true, 3, development::water, haveSubMenu, config::id.middle.water, "water" );
   _d->healthButton = _addButton( 163, true, 4, development::health, haveSubMenu, config::id.middle.health, "health" );
   _d->templeButton = _addButton( 151, true, 5, development::religion, haveSubMenu, config::id.middle.religion, "temples" );
   _d->educationButton = _addButton( 147, true, 6, development::education, haveSubMenu, config::id.middle.education, "education" );
@@ -415,8 +423,8 @@ bool Menu::onEvent(const NEvent& event)
       _createBuildMenu( -1, this );
       emit _d->signal.onCreateConstruction( id );
     }
-    else if( id == object::terrain
-             || id == object::tree || id == object::water )
+    else if( id == object::terrain || id == object::tree
+             || id == object::water || id == object::rock )
     {
       _d->lastPressed = event.gui.caller;
       _createBuildMenu( -1, this );
@@ -505,7 +513,7 @@ void Menu::minimize()
   _d->lastPressed = 0;
   _createBuildMenu( -1, this );
   Point stopPos = lefttop() + Point( width(), 0 );
-  auto&& animator = add<PositionAnimator>( WidgetAnimator::removeSelf, stopPos, 300 );
+  auto& animator = add<PositionAnimator>( WidgetAnimator::removeSelf, stopPos, 300 );
   CONNECT( &animator, onFinish(), &_d->signal.onHide, Signal0<>::_emit );
 
   events::dispatch<PlaySound>( "panel", 3, 100 );
@@ -584,7 +592,7 @@ void Menu::Impl::playSound( Widget* widget )
 void Menu::Impl::updateBuildingOptions()
 {
   const development::Options& options = city->buildOptions();
-  waterButton->setEnabled( options.isGroupAvailable( development::water ));
+  model->actions[ Link::buildWater ].button->setEnabled( options.isGroupAvailable( development::water ));
   administrationButton->setEnabled( options.isGroupAvailable( development::administration ));
   entertainmentButton->setEnabled( options.isGroupAvailable( development::entertainment ));
   educationButton->setEnabled( options.isGroupAvailable( development::education ));
@@ -627,7 +635,6 @@ void ExtentMenu::_updateButtons()
 
   _setChildGeometry( _d->button.minimize, Rect( Point( 127, 5 ), Size( 31, 20 ) ) );
 
-  _d->initActionButton( _d->waterButton,          Point( 13,  313 ) );
   _d->initActionButton( _d->healthButton,         Point( 63,  313 ) );
   _d->initActionButton( _d->templeButton,         Point( 113, 313 ) );
   _d->initActionButton( _d->educationButton,      Point( 13,  349 ) );
@@ -727,6 +734,7 @@ void ExtentMenu::setConstructorMode(bool enabled)
     _createLink( _d->model->actions[ Link::editTerrain ] );
     _createLink( _d->model->actions[ Link::editForest ] );
     _createLink( _d->model->actions[ Link::editWater ] );
+    _createLink( _d->model->actions[ Link::editRock ] );
   }
 
   _d->model->setConstructoMode( enabled );

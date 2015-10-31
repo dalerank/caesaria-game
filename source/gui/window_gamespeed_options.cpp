@@ -59,7 +59,7 @@ SpeedOptions::SpeedOptions( Widget* parent,
   _d->speed.game = gameSpeed;
   _d->speed.scroll = scrollSpeed;
   _d->autosaveInterval = autosaveInterval;
-  GameAutoPause::insertTo( this, true );
+  GameAutoPause::insertTo( this );
 
   setupUI( ":/gui/speedoptions.gui" );
 

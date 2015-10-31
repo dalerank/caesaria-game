@@ -52,12 +52,12 @@ void Shoreline::Impl::checkMap( PlayerCityPtr city )
   for( auto tile : tiles )
   {
     int imgId = tile->imgId();
-    if( (imgId >= 372 && imgId <= 403) || (imgId>=414 && imgId<=418) || tile->getFlag( Tile::tlCoast ) )
+    if( (imgId >= 372 && imgId <= 403) || (imgId>=414 && imgId<=418) || tile->terrain().coast )
     {
       slTiles.push_back( tile );
     }
 
-    if( tile->getFlag( Tile::tlDeepWater ) )
+    if( tile->terrain().deepWater )
     {
       dwTiles.push_back( tile );
     }
@@ -92,11 +92,11 @@ void Shoreline::timeStep( const unsigned int time )
 
     for( int k=0; k < 20; k++ )
     {
-      Tile* t = _d->dwTiles.random();
-      if( t )
+      Tile* randomTile = _d->dwTiles.random();
+      if( randomTile )
       {
         auto rw = Walker::create<RiverWave>( _city() );
-        rw->send2City( t->pos() );
+        rw->send2City( randomTile->pos() );
       }
     }
   }

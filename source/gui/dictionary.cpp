@@ -57,7 +57,7 @@ DictionaryWindow::DictionaryWindow( Widget* p )
 
   GET_DWIDGET_FROM_UI( _d, lbTitle )
   GET_DWIDGET_FROM_UI( _d, btnExit )
-  _d->lbText = new DictionaryText( this, Rect( 20, 40, width() - 20, height() - 40 ) );
+  _d->lbText = &add<DictionaryText>( Rect( 20, 40, width() - 20, height() - 40 ) );
   _d->lbText->setFont( Font::create( FONT_1 ) );
 
   CONNECT( _d->btnExit, onClicked(), this, DictionaryWindow::deleteLater )

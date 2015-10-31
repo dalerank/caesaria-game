@@ -51,7 +51,7 @@ HirePriority::HirePriority(Widget* p, city::industry::Type type, int priority)
   _d->priority = priority;
 
   WidgetEscapeCloser::insertTo( this );
-  GameAutoPause::insertTo( this, true );
+  GameAutoPause::insertTo( this );
 
   Label& lbTitle = add<Label>( Rect( 10, 10, width()-10, 10+35), _("##priority_level##") );
   lbTitle.setFont( Font::create( FONT_5 ) );

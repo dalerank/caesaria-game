@@ -69,19 +69,17 @@ void RequestButton::_updateTextPic()
 {
   PushButton::_updateTextPic();
 
-  Picture& pic = _textPicture();
-
   Font font = Font::create( FONT_1_WHITE );
 
   auto goodRequest = _dfunc()->request.as<GoodRequest>();
   if( goodRequest.isValid() )
   {
-    font.draw( pic, utils::i2str( goodRequest->qty() ), 2, 2 );
-    font.draw( pic, good::Helper::getTypeName( goodRequest->goodType() ), 60, 2 );
-
     int month2comply = game::Date::current().monthsTo( goodRequest->finishedDate() );
-    font.draw( pic, fmt::format( "{} {}", month2comply, _( "##rqst_month_2_comply##") ), 250, 2 );
-    font.draw( pic, goodRequest->description(), 5, pic.height() - 20 );
+
+    canvasDraw( utils::i2str( goodRequest->qty() ), Point( 2, 2 ), font );
+    canvasDraw( good::Helper::getTypeName( goodRequest->goodType() ), Point( 60, 2 ), font );
+    canvasDraw( fmt::format( "{} {}", month2comply, _( "##rqst_month_2_comply##") ), Point( 250, 2 ), font );
+    canvasDraw( goodRequest->description(), Point( 5, height() - 20 ), font );
   }
 }
 

@@ -175,6 +175,13 @@ void Font::setColor( NColor color )
 #endif
 }
 
+Font Font::clone(NColor color)
+{
+  Font ret( *this );
+  ret.setColor( color );
+  return ret;
+}
+
 void Font::draw( Picture& dstpic, const std::string &text, const int dx, const int dy, bool useAlpha, bool updatextTx )
 {
   if( !_d->ttfFont || !dstpic.isValid() )

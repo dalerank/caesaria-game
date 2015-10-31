@@ -113,13 +113,15 @@ void Layer::handleEvent(NEvent& event)
   __D_IMPL(_d,Layer)
   if( event.EventType == sEventMouse )
   {
+    Point pos = event.mouse.pos();
+
     switch( event.mouse.type  )
     {
     case mouseMoved:
     {
       Point savePos = _d->cursor.last;
       bool movingPressed = _isMovingButtonPressed( event );
-      _d->cursor.last = event.mouse.pos();
+      _d->cursor.last = pos;
 
       if( !movingPressed || _d->cursor.start.x() < 0 )
       {
@@ -146,7 +148,7 @@ void Layer::handleEvent(NEvent& event)
     case mouseLbtnRelease:            // left button
     case mouseMbtnRelease:
     {
-      Tile* tile = _d->camera->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
+      Tile* tile = _d->camera->at( pos, false );  // tile under the cursor (or NULL)
       if( tile == 0 )
       {
         break;
@@ -164,7 +166,7 @@ void Layer::handleEvent(NEvent& event)
 
     case mouseRbtnRelease:
     {
-      Tile* tile = _d->camera->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
+      Tile* tile = _d->camera->at( pos, false );  // tile under the cursor (or NULL)
       if( tile )
       {
         events::dispatch<events::ShowTileInfo>( tile->epos() );
@@ -507,7 +509,7 @@ void Layer::afterRender(Engine& engine)
 {
   __D_IMPL(_d,Layer)
   Point cursorPos = engine.cursorPos();
-  Size screenSize = engine.screenSize();
+  Size screenSize = engine.viewportSize();
   Point offset = _d->camera->offset();
   Point moveValue;
 
@@ -649,10 +651,10 @@ void Layer::afterRender(Engine& engine)
 
     static int t=0;
     int a = (t++ % 40)/5;
-    engine.drawLine( ColorList::red, pos-Point(a,0), pos + Point( halfRWidth, (halfRWidth+a)/2 ) * size.height() );
-    engine.drawLine( ColorList::red, pos + Point( halfRWidth, (halfRWidth+a)/2 ) * size.width(), pos + Point( rwidth, 0) * size.height() + Point(a, 0) );
-    engine.drawLine( ColorList::red, pos + Point( rwidth, 0) * size.width() + Point(a,0), pos + Point( halfRWidth, (-a-halfRWidth)/2 ) * size.height() );
-    engine.drawLine( ColorList::red, pos + Point( halfRWidth, (-a-halfRWidth)/2 ) * size.width(), pos - Point(a,0) );
+    engine.drawLine( ColorList::red, pos - Point( a,0), pos + Point( halfRWidth, halfRWidth/2 ) * size.height() + Point( 0,a/2) );
+    engine.drawLine( ColorList::red, pos + Point( halfRWidth, halfRWidth/2 ) * size.width() + Point( 0,a/2), pos + Point( rwidth, 0) * size.height() + Point(a, 0) );
+    engine.drawLine( ColorList::red, pos + Point( rwidth, 0) * size.width() + Point(a,0), pos + Point( halfRWidth, -halfRWidth/2 ) * size.height() - Point(0,a/2));
+    engine.drawLine( ColorList::red, pos + Point( halfRWidth, -halfRWidth/2 ) * size.width() - Point(0,a/2), pos - Point(a,0) );
 
 #ifdef DEBUG
     engine.draw( _d->tilePosText, pos );

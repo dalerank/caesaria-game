@@ -141,14 +141,6 @@ void Desirability::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerPtr Desirability::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new Desirability( camera, city ) );
-  ret->drop();
-
-  return ret;
-}
-
 Desirability::Desirability( Camera& camera, PlayerCityPtr city)
   : Info( camera, city, 0 ), _d( new Impl )
 {

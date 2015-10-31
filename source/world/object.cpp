@@ -121,7 +121,7 @@ void Object::attach()
 
 Object::~Object() {}
 
-Object::Object( EmpirePtr empire) : _d( new Impl )
+Object::Object(EmpirePtr empire) : _d( new Impl )
 {
   _d->time = 0;
   _d->empire = empire;

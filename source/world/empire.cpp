@@ -136,7 +136,9 @@ public:
 
   void update( unsigned int time )
   {
-    for( auto&& obj : *this ) obj->timeStep( time );
+    for( auto& obj : *this )
+      obj->timeStep( time );
+
     utils::eraseIfDeleted( *this );
     merge();
   }

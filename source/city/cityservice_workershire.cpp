@@ -121,11 +121,11 @@ void WorkersHire::Impl::hireWorkers(PlayerCityPtr city, WorkingBuildingPtr bld)
 
   if( bld->roadside().size() > 0 )
   {
-    RecruterPtr hr = Walker::create<Recruter>( city );
-    hr->setPriority( priorities );
-    hr->setMaxDistance( distance );
+    RecruterPtr recruter = Walker::create<Recruter>( city );
+    recruter->setPriority( priorities );
+    recruter->setMaxDistance( distance );
 
-    hr->send2City( bld, bld->needWorkers() );
+    recruter->send2City( bld, bld->needWorkers() );
   }
 }
 
@@ -141,8 +141,8 @@ void WorkersHire::timeStep( const unsigned int time )
                                            .find( walker::recruter )
                                            .select<Recruter>();
 
-  WorkingBuildingList buildings = _city()->statistic().objects
-                                                      .find<WorkingBuilding>();
+  auto workingBuildings = _city()->statistic().objects
+                                              .find<WorkingBuilding>();
 
   if( !_d->priorities.empty() )
   {
@@ -152,12 +152,12 @@ void WorkersHire::timeStep( const unsigned int time )
 
       for( auto group : groups )
       {
-        for( WorkingBuildingList::iterator it=buildings.begin(); it != buildings.end(); )
+        for( WorkingBuildingList::iterator it=workingBuildings.begin(); it != workingBuildings.end(); )
         {
           if( (*it)->group() == group )
           {
             _d->hireWorkers( _city(), *it );
-            it = buildings.erase( it );
+            it = workingBuildings.erase( it );
           }
           else { ++it; }
         }
@@ -165,7 +165,7 @@ void WorkersHire::timeStep( const unsigned int time )
     }
   }
 
-  for( auto building : buildings )
+  for( auto building : workingBuildings )
   {    
     _d->hireWorkers( _city(), building );
   }

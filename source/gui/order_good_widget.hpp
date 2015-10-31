@@ -30,7 +30,7 @@ class VolumeButton;
 class OrderGoodWidget : public Label
 {
 public:
-  static OrderGoodWidget* create( const int index, const good::Product good, Widget* parent, good::Store& storage );
+  OrderGoodWidget( Widget* parent, int index, good::Product good, good::Store& storage );
 
   void changeCapacity( float fillingPercentage );
   void updateBtnText();
@@ -38,7 +38,6 @@ public:
   void draw(gfx::Engine& painter);
 
 protected:
-  OrderGoodWidget( Widget* parent, const Rect& rect, good::Product good, good::Store& storage );
   virtual void _updateTexture( gfx::Engine& painter );
 
 private:

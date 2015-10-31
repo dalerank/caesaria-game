@@ -50,14 +50,6 @@ public:
 
 int Simple::type() const { return citylayer::simple; }
 
-LayerPtr Simple::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new Simple( camera, city ) );
-  ret->drop();
-
-  return ret;
-}
-
 void Simple::drawTile( const RenderInfo& rinfo, Tile& tile)
 {
   if( _d->highlight.may )

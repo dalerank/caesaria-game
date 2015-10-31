@@ -38,10 +38,9 @@ public:
   scene::Level* level;
   Simulation*   simulation;
   struct {
-
+    std::string*  next;
+    std::string*  restart;
   } filename;
-  std::string*  nextFilename;
-  std::string*  restartFilename;
 };
 
 InGame::InGame( Game* game, gfx::Engine* engine,
@@ -53,8 +52,8 @@ InGame::InGame( Game* game, gfx::Engine* engine,
   __D_IMPL(d,InGame)
   d->level = new scene::Level( *game, *engine );
   d->simulation = &simulation;
-  d->nextFilename = &nextFilename;
-  d->restartFilename = &restartFilename;
+  d->filename.next = &nextFilename;
+  d->filename.restart = &restartFilename;
 
   _initialize(d->level, SCREEN_GAME);
 
@@ -112,7 +111,9 @@ InGame::~InGame()
   __D_IMPL(d,InGame)
   _game->clear();
 
-  *d->nextFilename = d->level->nextFilename();
+  if( d->filename.next )
+    *d->filename.next = d->level->nextFilename();
+
   switch( _screen->result() )
   {
   case Level::res_menu: _game->setNextScreen( SCREEN_MENU );  break;
@@ -120,15 +121,15 @@ InGame::~InGame()
 
   case Level::res_restart:
   {
-    Logger::warning( "ScreenGame: restart game " + *d->restartFilename );
-    bool loadOk = _game->load( *d->restartFilename );
+    Logger::warning( "ScreenGame: restart game " + *d->filename.restart );
+    bool loadOk = _game->load( *d->filename.restart );
     _game->setNextScreen( loadOk ? SCREEN_GAME : SCREEN_MENU );
 
-    Logger::warning( (loadOk ? "ScreenGame: end loading file " : "ScreenGame: cant load file " ) + *d->restartFilename );
+    Logger::warning( (loadOk ? "ScreenGame: end loading file " : "ScreenGame: cant load file " ) + *d->filename.restart );
 
     if( loadOk )
     {
-      std::string ext = vfs::Path( *d->restartFilename ).extension();
+      std::string ext = vfs::Path( *d->filename.restart ).extension();
       if( ext == ".map" || ext == ".sav" )
       {
         game::freeplay::Finalizer finalizer( _game->city() );
