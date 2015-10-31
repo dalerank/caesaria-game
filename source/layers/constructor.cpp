@@ -89,7 +89,7 @@ public:
   Signal3<object::Type,TilePos,int> onBuildSignal;
 public:
   void sortBuildTiles();
-  bool canBuildOn( OverlayPtr overlay, city::AreaInfo& areaInfo);
+  bool canBuildOn( OverlayPtr overlay, const city::AreaInfo& areaInfo) const;
 };
 
 void Constructor::_discardPreview()
@@ -716,7 +716,7 @@ void Constructor::Impl::sortBuildTiles()
     cachedTiles[ tile::hash( t->epos() ) ] = t;
 }
 
-bool Constructor::Impl::canBuildOn(OverlayPtr overlay, city::AreaInfo& areaInfo)
+bool Constructor::Impl::canBuildOn(OverlayPtr overlay, const city::AreaInfo& areaInfo) const
 {
   if( overlay->type() == object::terrain
       || overlay->type() == object::water )
@@ -728,6 +728,12 @@ bool Constructor::Impl::canBuildOn(OverlayPtr overlay, city::AreaInfo& areaInfo)
     bool walkable = areaInfo.tile().isWalkable( true );
     bool isTree = is_kind_of<Tree>(areaInfo.tile().overlay());
     return (walkable || isTree );
+  }
+  else if( overlay->type() == object::rock )
+  {
+    bool walkable = areaInfo.tile().isWalkable( true );
+    bool isRock = areaInfo.tile().terrain().rock;
+    return (walkable || isRock );
   }
 
   return false;

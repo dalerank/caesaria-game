@@ -106,6 +106,7 @@ public:
   void setFlag( Type type, bool value );
 
   Terrain& terrain() { return _terrain; }
+  const Terrain& terrain() const { return _terrain; }
 
   void setOverlay( OverlayPtr overlay );
   inline ImgID imgId() const { return _terrain.imgid;}

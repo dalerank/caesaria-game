@@ -146,13 +146,21 @@ bool PostponeEvent::_mayExec( Game& game, unsigned int time ) const
     {
       if( _d->delay.valid() )
       {
-        DateTime cityBirth = game.city()->states().birth;
-        int addictiveYears = _d->delay.maxYear > 0
-                                  ? math::clamp( _d->delay.year, 0, _d->delay.maxYear )
+        DateTime startDate = game.city()->states().birth;
+        int addictiveYears = _d->delay.year == -1
+                                  ? math::random( _d->delay.maxYear )
                                   : _d->delay.year;
-        _d->date = cityBirth.appendMonth( addictiveYears * DateTime::monthsInYear )
-                            .appendMonth( _d->delay.month )
-                            .appendDay( _d->delay.day );
+        startDate = startDate.appendMonth( addictiveYears * DateTime::monthsInYear );
+
+        int addictiveMonths = _d->delay.maxYear == -1
+                                  ? math::random( DateTime::monthsInYear )
+                                  : _d->delay.month;
+        startDate = startDate.appendMonth( addictiveMonths );
+
+        int addictiveDays = _d->delay.day == -1
+                                  ? math::random( DateTime::daysInMonth( addictiveYears, addictiveMonths ) )
+                                  : _d->delay.day;
+        _d->date = startDate.appendDay( addictiveDays );
       }
     }
 
