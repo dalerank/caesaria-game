@@ -240,7 +240,7 @@
     }
 
 		barbarian_invasion_1#enemy_attack : {
-      date : "-7.5.01"
+      delay : { year : 3, month : -1 }
       type : "enemy_attack"
       target : "best_building"
       items : {

@@ -133,9 +133,9 @@ Statistic::Statistic(PlayerCity& c)
       INIT_SUBSTAT(military),
       INIT_SUBSTAT(map),
       INIT_SUBSTAT(houses),
+      INIT_SUBSTAT(religion),
       INIT_SUBSTAT(entertainment),
       INIT_SUBSTAT(balance),
-      INIT_SUBSTAT(religion),
       rcity( c )
 {
 

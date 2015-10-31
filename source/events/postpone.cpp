@@ -20,11 +20,13 @@
 #include "game/game.hpp"
 #include "city/city.hpp"
 #include "dispatcher.hpp"
+#include "objects/construction.hpp"
 #include "core/variant_map.hpp"
 #include "city/requestdispatcher.hpp"
 #include "core/logger.hpp"
 #include "city/cityservice_factory.hpp"
 #include "factory.hpp"
+#include "city/statistic.hpp"
 #include "city/states.hpp"
 
 namespace events
@@ -34,10 +36,40 @@ namespace {
 static const unsigned int defaultCheckInterval = 50;
 }
 
+struct EventDelay
+{
+  int maxYear = 0;
+  int year = 0;
+  int month = 0;
+  int day = 0;
+
+  bool valid() const { return (year + month + day != 0); }
+
+  void load( const VariantMap& vm )
+  {
+    VARIANT_LOAD_ANY(maxYear, vm)
+    VARIANT_LOAD_ANY(year, vm)
+    VARIANT_LOAD_ANY(month, vm)
+    VARIANT_LOAD_ANY(day, vm)
+  }
+
+  VariantMap save() const
+  {
+    VariantMap ret;
+    VARIANT_SAVE_ANY(ret, maxYear)
+    VARIANT_SAVE_ANY(ret, year)
+    VARIANT_SAVE_ANY(ret, month)
+    VARIANT_SAVE_ANY(ret, day)
+
+    return ret;
+  }
+};
+
 class PostponeEvent::Impl
 {
 public:
   DateTime date;
+  EventDelay delay;
   unsigned int population;
   bool mayDelete;
   unsigned int checkInterval;
@@ -52,24 +84,24 @@ public:
 
 GameEventPtr PostponeEvent::create( const std::string& type, const VariantMap& stream )
 {
-  PostponeEvent* pe = new PostponeEvent();
+  auto* event = new PostponeEvent();
 
   std::string::size_type reshPos = type.find( "#" );
-  pe->_name = type;
-  pe->_type = reshPos != std::string::npos
+  event->_name = type;
+  event->_type = reshPos != std::string::npos
                       ? type.substr( reshPos+1 )
                       : type;
 
-  pe->load( stream );
-  Logger::warningIf( pe->_type.empty(), "PostponeEvent: unknown postpone event" );
+  event->load( stream );
+  Logger::warningIf( event->_type.empty(), "PostponeEvent: unknown postpone event" );
 
-  GameEventPtr ret( pe );
+  GameEventPtr ret( event );
   ret->drop();
 
-  if( pe->_type.empty() )
+  if( event->_type.empty() )
     return GameEventPtr();
 
-  Logger::warning( "PostponeEvent: load event " + pe->_name );
+  Logger::warning( "PostponeEvent: load event " + event->_name );
   return ret;
 }
 
@@ -77,25 +109,23 @@ PostponeEvent::~PostponeEvent(){}
 
 void PostponeEvent::_executeIncludeEvents()
 {
-  Variant execVm = _d->options.get( "exec" );
-  if( execVm.isValid() )
-  {
-    Dispatcher::instance().load( execVm.toMap() );
-  }
+  VariantMap actions = _d->options.get( "exec" ).toMap();
+  if( actions.empty() )
+    Dispatcher::instance().load( actions );
 }
 
 void PostponeEvent::_exec(Game& game, unsigned int)
 {
   Logger::warning( "Start event name=" + _name + " type=" + _type );
 
-  Impl::Worker workers[3] = { makeDelegate( _d.data(), &Impl::executeRequest ),
-                              makeDelegate( _d.data(), &Impl::executeEvent ),
-                              makeDelegate( _d.data(), &Impl::executeCityService ) };
+  std::vector<Impl::Worker> actions{ makeDelegate( _d.data(), &Impl::executeRequest ),
+                                     makeDelegate( _d.data(), &Impl::executeEvent ),
+                                     makeDelegate( _d.data(), &Impl::executeCityService ) };
 
-  for( int i=0; i < 3; i++ )
+  for( auto& action : actions )
   {
     bool execOk;
-    workers[i]( game, _type, execOk );
+    action( game, _type, execOk );
     if( execOk )
     {
       _executeIncludeEvents();
@@ -108,9 +138,24 @@ void PostponeEvent::_exec(Game& game, unsigned int)
 
 bool PostponeEvent::_mayExec( Game& game, unsigned int time ) const
 {
-  if( _d->checkInterval == 0 || (time % _d->checkInterval == 1) )
+  if( _d->checkInterval == 0 )
   {
     bool dateCondition = true;
+
+    if( _d->date.year() == -1000 )
+    {
+      if( _d->delay.valid() )
+      {
+        DateTime cityBirth = game.city()->states().birth;
+        int addictiveYears = _d->delay.maxYear > 0
+                                  ? math::clamp( _d->delay.year, 0, _d->delay.maxYear )
+                                  : _d->delay.year;
+        _d->date = cityBirth.appendMonth( addictiveYears * DateTime::monthsInYear )
+                            .appendMonth( _d->delay.month )
+                            .appendDay( _d->delay.day );
+      }
+    }
+
     if( _d->date.year() != -1000 )
     {
       dateCondition = _d->date <= game::Date::current();
@@ -126,18 +171,24 @@ bool PostponeEvent::_mayExec( Game& game, unsigned int time ) const
     return _d->mayDelete;
   }
 
+  if( _d->checkInterval > 0 )
+  {
+    _d->checkInterval--;
+  }
+
   return false;
 }
 
-bool PostponeEvent::isDeleted() const{  return _d->mayDelete; }
+bool PostponeEvent::isDeleted() const{ return _d->mayDelete; }
 VariantMap PostponeEvent::save() const
 {
   VariantMap ret = _d->options;
   ret[ "type" ] = Variant( _type );
-  ret[ "name" ] = Variant( _name );  
+  ret[ "name" ] = Variant( _name );
   VARIANT_SAVE_ANY_D( ret, _d, date )
   VARIANT_SAVE_ANY_D( ret, _d, checkInterval)
   VARIANT_SAVE_ANY_D( ret, _d, population )
+  if( _d->delay.valid() ) VARIANT_SAVE_CLASS_D( ret, _d, delay )
   return ret;
 }
 
@@ -147,23 +198,23 @@ void PostponeEvent::load(const VariantMap& stream)
 
   _d->date = stream.get( "date", DateTime( -1000, 1, 1 ) ).toDateTime();
   VARIANT_LOAD_ANY_D( _d, population, stream )
+  VARIANT_LOAD_CLASS_D( _d, delay, stream )
   VARIANT_LOAD_ANYDEF_D( _d, checkInterval, defaultCheckInterval, stream )
+
   _d->options = stream;
 }
 
 PostponeEvent::PostponeEvent() : _d( new Impl )
 {
   _d->mayDelete = false;
+  _d->checkInterval = 0;
 }
 
 void PostponeEvent::Impl::executeRequest( Game& game, const std::string& type, bool& r )
 {
   if( "city_request" == type )
   {
-    PlayerCityPtr city = game.city();
-
-    city::SrvcPtr service = city->findService( city::request::Dispatcher::defaultName() );
-    city::request::DispatcherPtr dispatcher = ptr_cast<city::request::Dispatcher>( service );
+    auto dispatcher = game.city()->statistic().services.find<city::request::Dispatcher>();
 
     if( dispatcher.isValid() )
     {
@@ -206,4 +257,4 @@ void PostponeEvent::Impl::executeCityService( Game& game, const std::string& typ
   r = false;
 }
 
-}
+}//end namespace events
