@@ -177,6 +177,13 @@
           folder : "/resources/carts/wine"
           files : [ "cartwine_*" ]
         }
+
+        emmirant :
+        {
+          type : "atlas"
+          folder : "/resources/carts/emmigrant"
+          files : [ "emmigrant_*" ]
+        }
       }
     }
   }

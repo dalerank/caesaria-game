@@ -217,21 +217,6 @@ Info& Info::operator=(const Info& a)
 void Info::reload() const { InfoDB::instance().reload( type() ); }
 object::Group Info::group() const {  return _d->group; }
 
-class ObjectsMap : public std::map<object::Type, Info>
-{
-public:
-  const Info& valueOrEmpty( object::Type type ) const
-  {
-    ObjectsMap::const_iterator mapIt = find( type );
-    if( mapIt == end() )
-    {
-      Logger::warning("MetaDataHolder::Unknown objects {0}", type );
-      return Info::invalid;
-    }
-    return mapIt->second;
-  }
-};
-
 ProductConsumer::ProductConsumer(good::Product product)
  : _product( product )
 {
