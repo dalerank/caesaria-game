@@ -54,7 +54,7 @@ public:
 
   const EmpireMap& map() const;
   Emperor& emperor();
-  CityPtr rome() const;
+  CityPtr capital() const;
 
   TradeRoutes& troutes();
 

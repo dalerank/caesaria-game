@@ -16,6 +16,7 @@ create_update=1
 download_lastres=0
 send_to_remote=1
 clone_repo=0
+show_help=0
 
 txtred='\e[0;31m' # Red
 txtgrn='\e[0;32m' # Green
@@ -66,6 +67,9 @@ while [ $# -gt 0 ]; do
 		--clone)
       clone_repo=1
       ;;
+		--help)
+			show_help=1
+      ;;
     *)
       printf "***************************\n"
       printf "* Error: Invalid argument.*\n"
@@ -74,6 +78,25 @@ while [ $# -gt 0 ]; do
   esac
   shift
 done
+
+if [ show_help == 1 ]
+then
+	echo -e "${txtgrn}--pdir=/path/to/dir:     ${txtrst}set path directory as project folder ${txtrst}"
+	echo -e "${txtgrn}--sfpass=password:       ${txtrst}set password for remote folder ${txtrst}"
+	echo -e "${txtgrn}--sffolder=url:          ${txtrst}set path to remote folder ${txtrst}"
+	echo -e "${txtgrn}--wastedir=/path/to/dir: ${txtrst}set path to directory where archive will be move ${txtrst}"
+	echo -e "${txtgrn}--nogit:                 ${txtrst}no check last updates ${txtrst}" 
+  echo -e "${txtgrn}--debugb:                ${txtrst}create debug build ${txtrst}" 
+	echo -e "${txtgrn}--noandroid:						 ${txtrst}skip android build ${txtrst}" 	
+	echo -e "${txtgrn}--nowindows:						 ${txtrst}skip windows build ${txtrst}" 		
+	echo -e "${txtgrn}--nolinux:  						 ${txtrst}skip linux build ${txtrst}" 		
+	echo -e "${txtgrn}--nomac:  						   ${txtrst}skip mac build ${txtrst}" 		
+	echo -e "${txtgrn}--wgetlast:  						 ${txtrst}get last resources from server ${txtrst}" 		
+	echo -e "${txtgrn}--noremote:  						 ${txtrst}skip send archives to remote server ${txtrst}" 		
+	echo -e "${txtgrn}--clone:  						   ${txtrst}clone repository from bitbucket ${txtrst}" 		
+	echo -e "${txtgrn}--help:  						     ${txtrst}show this help${txtrst}" 		
+	exit
+fi
 
 if [ -x /usr/bin/git ]; then
     echo -e "${txtgrn}Check git: ${txtblue}found${txtrst}"

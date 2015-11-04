@@ -201,7 +201,7 @@ void Emperor::Impl::resolveTroubleCities( const CityList& cities )
 
     RomeChastenerArmyPtr army = RomeChastenerArmy::create( empire );
     army->setCheckFavor( true );
-    army->setBase( empire->rome() );
+    army->setBase( empire->capital() );
     army->setSoldiersNumber( sldrNumber );
     army->attack( ptr_cast<Object>( city ) );
 
