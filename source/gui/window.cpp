@@ -91,11 +91,15 @@ public:
     }
   } background;
 
-	Point dragStartPosition;
-	bool dragging;
+  struct {
+    bool active;
+    Point startPosition;
+  } drag;
 
-	NColor currentColor;
-	NColor captionColor;
+  struct {
+    NColor caption;
+    NColor current;
+  } colors;
 
 	FlagHolder<Window::FlagName> flags;
 };
@@ -113,7 +117,7 @@ Window::Window( Widget* parent, const Rect& rectangle, const std::string& title,
   setDebugName( "Window");
 #endif
   _d->background.image = Picture::getInvalid();
-	_d->dragging = false;
+  _d->drag.active = false;
   _d->buttons.resize( buttonCount, nullptr );
 
   _init();
@@ -138,12 +142,12 @@ void Window::_createSystemButton( ButtonName btnName, const std::string& tooltip
   PushButton*& btn = _d->buttons[ btnName ];
   if( !btn )
   {
-      btn = new PushButton( this, Rect( 0, 0, 10,10 ) );
-      btn->setTooltipText( tooltip );
-      btn->setVisible(visible);
-      btn->setSubElement(true);
-      btn->setTabstop(false);
-      btn->setAlignment(align::lowerRight, align::lowerRight, align::upperLeft, align::upperLeft);
+    btn = new PushButton( this, Rect( 0, 0, 10,10 ) );
+    btn->setTooltipText( tooltip );
+    btn->setVisible(visible);
+    btn->setSubElement(true);
+    btn->setTabstop(false);
+    btn->setAlignment(align::lowerRight, align::lowerRight, align::upperLeft, align::upperLeft);
   }
 }
 
@@ -190,7 +194,7 @@ void Window::_updateBackground()
 
 Window::~Window()
 {
-  Logger::warning( "Window ID=%d was removed", ID() );
+  Logger::warning( "Window ID={} was removed", ID() );
 }
 
 //! called if an event happened.
@@ -203,7 +207,7 @@ bool Window::onEvent(const NEvent& event)
 		case sEventGui:
 			if (event.gui.type == guiElementFocusLost)
 			{
-				_d->dragging = false;
+        _d->drag.active = false;
 			}
 
 			else if (event.gui.type == guiElementFocused)
@@ -229,23 +233,23 @@ bool Window::onEvent(const NEvent& event)
 			switch(event.mouse.type)
 			{
 			case mouseLbtnPressed:
-				_d->dragStartPosition = event.mouse.pos();
-				_d->dragging = _d->flags.isFlag( fdraggable );
+        _d->drag.startPosition = event.mouse.pos();
+        _d->drag.active = _d->flags.isFlag( fdraggable );
 				bringToFront();
 
       return true;
 
       case mouseRbtnRelease:
 			case mouseLbtnRelease:
-				_d->dragging = false;
+        _d->drag.active = false;
 
       return true;
 
       case mouseMoved:
 				if ( !event.mouse.isLeftPressed() )
-					_d->dragging = false;
+          _d->drag.active = false;
 
-				if (_d->dragging)
+        if (_d->drag.active)
 				{
 					// gui window should not be dragged outside its parent
 					const Rect& parentRect = parent()->absoluteRect();
@@ -255,8 +259,8 @@ bool Window::onEvent(const NEvent& event)
 						event.mouse.y > parentRect.bottom() -1))
 						return true;
 
-					move( event.mouse.pos() - _d->dragStartPosition );
-					_d->dragStartPosition = event.mouse.pos();
+          move( event.mouse.pos() - _d->drag.startPosition );
+          _d->drag.startPosition = event.mouse.pos();
 
           return true;
 				}

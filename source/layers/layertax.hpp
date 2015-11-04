@@ -27,7 +27,7 @@ class Tax : public Info
 {
 public:
   virtual int type() const;
-  virtual void drawTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
+  virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
 
   static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
   virtual void handleEvent(NEvent& event);

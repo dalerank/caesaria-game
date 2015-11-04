@@ -23,9 +23,8 @@
 
 class Indigene : public Human
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static IndigenePtr create( PlayerCityPtr city );
-
   void send2city( BuildingPtr base );
 
 protected:

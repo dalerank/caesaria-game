@@ -269,19 +269,19 @@ void printstack( bool showMessage, unsigned int starting_frame, unsigned int max
       if (status == 0)
       {
         funcname = ret; // use possibly realloc()-ed string
-        Logger::warning(" %s : %s+%s", symbollist[i], funcname.data(), begin_offset);
+        Logger::warning(" {0} : {1}+{2}", symbollist[i], funcname.data(), begin_offset);
       }
       else
       {
         // demangling failed. Output function name as a C function with
         // no arguments.
-        Logger::warning(" %s : %s()+%s", symbollist[i], begin_name, begin_offset);
+        Logger::warning(" {0} : {1}+{2}", symbollist[i], begin_name, begin_offset);
       }
     }
     else
     {
       // couldn't parse the line? print the whole line.
-      Logger::warning(" %s", symbollist[i]);
+      Logger::warning(" {}", symbollist[i]);
     }
   }
 

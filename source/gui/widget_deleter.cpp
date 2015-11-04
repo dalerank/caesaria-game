@@ -36,7 +36,7 @@ void WidgetDeleter::draw(gfx::Engine& painter )
 
 void WidgetDeleter::assignTo(Widget* parent, size_t time)
 {
-  new WidgetDeleter( parent, time );
+  parent->add<WidgetDeleter>( time );
 }
 
 }//end namespace gui

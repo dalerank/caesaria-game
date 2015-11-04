@@ -74,10 +74,9 @@ public:
   Pathway findRandomRaid(const DockList& docks, TilePos position);
 };
 
-SeaMerchant::SeaMerchant(PlayerCityPtr city )
-  : Merchant( city ), _d( new Impl )
+SeaMerchant::SeaMerchant(PlayerCityPtr city, world::MerchantPtr merchant )
+  : Merchant( city, walker::seaMerchant ), _d( new Impl )
 {
-  _setType( walker::seaMerchant );
   _d->waitInterval = 0;
   _d->tryDockCount = 0;
   _d->maxTryDockCount = 3;
@@ -86,7 +85,16 @@ SeaMerchant::SeaMerchant(PlayerCityPtr city )
   _d->anyBuy = false;
   _d->anySell = false;
 
-  setName( NameGenerator::rand( NameGenerator::male ) );
+  if( merchant.isValid() )
+  {
+    _d->sell.resize( merchant->sellGoods() );
+    _d->sell.storeAll( merchant->sellGoods() );
+    _d->buy.resize( merchant->buyGoods() );
+    _d->buy.storeAll( merchant->buyGoods() );
+    _d->baseCityName = merchant->baseCity();
+  }
+
+  setName( NameGenerator::rand( NameGenerator::plebMale ) );
 }
 
 SeaMerchant::~SeaMerchant()
@@ -310,7 +318,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     wlk->deleteLater();
     world::EmpirePtr empire = city->empire();
     const std::string& ourCityName = city->name();
-    world::TraderoutePtr route = empire->findRoute( ourCityName, baseCityName );
+    world::TraderoutePtr route = empire->troutes().find( ourCityName, baseCityName );
     if( route.isValid() )
     {
       route->addMerchant( ourCityName, sell, buy );
@@ -374,7 +382,7 @@ void SeaMerchant::_reachedPathway()
 
 void SeaMerchant::Impl::goAwayFromCity( PlayerCityPtr city, WalkerPtr walker )
 {
-  Pathway pathway = PathwayHelper::create( walker->pos(), city->borderInfo().boatExit, PathwayHelper::deepWater );
+  Pathway pathway = PathwayHelper::create( walker->pos(), city->getBorderInfo( PlayerCity::boatExit ).epos(), PathwayHelper::deepWater );
   if( !pathway.isValid() )
   {
     walker->deleteLater();
@@ -405,7 +413,7 @@ DockPtr SeaMerchant::Impl::findLandingDock(PlayerCityPtr city, WalkerPtr walker)
 void SeaMerchant::send2city()
 {
   _d->nextState = Impl::stFindDock;
-  setPos( _city()->borderInfo().boatEntry );
+  setPos( _city()->getBorderInfo( PlayerCity::boatEntry ).epos() );
   _d->resolveState( _city(), this );
   attach();
 }
@@ -528,26 +536,6 @@ TilePos SeaMerchant::places(Walker::Place type) const
   }
 
   return Human::places( type );
-}
-
-
-WalkerPtr SeaMerchant::create(PlayerCityPtr city) {  return create( city, world::MerchantPtr() ).object(); }
-
-SeaMerchantPtr SeaMerchant::create(PlayerCityPtr city, world::MerchantPtr merchant )
-{
-  SeaMerchantPtr cityMerchant( new SeaMerchant( city ) );
-  cityMerchant->drop();
-
-  if( merchant.isValid() )
-  {
-    cityMerchant->_d->sell.resize( merchant->sellGoods() );
-    cityMerchant->_d->sell.storeAll( merchant->sellGoods() );
-    cityMerchant->_d->buy.resize( merchant->buyGoods() );
-    cityMerchant->_d->buy.storeAll( merchant->buyGoods() );
-    cityMerchant->_d->baseCityName = merchant->baseCity();
-  }
-
-  return cityMerchant;
 }
 
 std::string SeaMerchant::parentCity() const { return _d->baseCityName; }

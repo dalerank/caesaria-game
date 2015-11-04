@@ -9,14 +9,14 @@ using namespace gfx;
 // PNG function for error handling
 static void png_cpexcept_error(png_structp png_ptr, png_const_charp msg)
 {
-  Logger::warning( "PNG fatal error %s", msg );
+  Logger::warning( "PNG fatal error {0}", msg );
   longjmp( png_jmpbuf(png_ptr), 1 );
 }
 
 // PNG function for warning handling
 static void png_cpexcept_warn(png_structp png_ptr, png_const_charp msg)
 {
-  Logger::warning( "PNG warning %s", msg );
+  Logger::warning( "PNG warning {0}", msg );
 }
 
 // PNG function for file reading
@@ -181,7 +181,7 @@ Picture PictureLoaderPng::load(vfs::NFile file, bool streaming) const
 
   if( !Height )
   {
-    Logger::warning( "LOAD PNG: Internal PNG create row pointers failure %s", file.path().toCString() );
+    Logger::warning( "LOAD PNG: Internal PNG create row pointers failure {0}", file.path().toCString() );
     png_destroy_read_struct(&png_ptr, NULL, NULL);
     return Picture::getInvalid();
   }

@@ -56,6 +56,9 @@ public:
     template<class T>
     Pathway freeTile( TilePos target, TilePos currentPos, const int range ) const;
 
+    template<class T>
+    SmartList< T > neighbors( TilePos start, walker::Type type=walker::any ) const;
+
     template< class T >
     SmartList< T > find( walker::Type type,
                          TilePos start=gfx::tilemap::invalidLocation(),
@@ -249,6 +252,7 @@ public:
     static const int pop4shacksCalc=300;
     static const int minShacksDesirability =-10;
 
+    HouseList all() const;
     HouseList find( std::set<int> levels=std::set<int>() ) const;
     HouseList ready4evolve(const object::TypeSet& checkTypes) const;
     HouseList ready4evolve(const object::Type checkTypes) const;
@@ -257,6 +261,14 @@ public:
 
     Statistic& _parent;
   } houses;
+
+  struct _Religion
+  {
+    TempleList temples() const;
+    TempleOracleList oracles() const;
+    Statistic& _parent;
+  } religion;
+
 
   struct _Entertainment
   {
@@ -349,6 +361,13 @@ inline Pathway Statistic::_Walkers::freeTile( TilePos target, TilePos currentPos
   }
 
   return Pathway();
+}
+
+template< class T >
+inline SmartList<T> Statistic::_Walkers::neighbors( TilePos start, walker::Type type ) const
+{
+  static TilePos offset( 1, 1 );
+  return find<T>( type, start - offset, start + offset );
 }
 
 template< class T >

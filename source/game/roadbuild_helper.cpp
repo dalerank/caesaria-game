@@ -61,7 +61,7 @@ bool __checkWalkables( const TilesArray& tiles )
 TilesArray RoadPropagator::createPath(Tilemap& tileMap, TilePos startPos, TilePos stopPos,
                                       bool roadAssignment, bool returnRect )
 {  
-  Logger::warning( "RoadPropagator::getPath from (%d, %d) to (%d, %d)",
+  Logger::warning( "RoadPropagator::getPath from ({0},{1}) to ({2}, {3})",
                     startPos.i(), startPos.j(), stopPos.i(), stopPos.j() );
   TilesArray ret;
   if( startPos == stopPos )

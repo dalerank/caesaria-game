@@ -32,8 +32,8 @@ std::string Merchant::parentCity() const
   return "";
 }
 
-Merchant::Merchant(PlayerCityPtr city)
- : Human( city )
+Merchant::Merchant(PlayerCityPtr city, walker::Type type)
+ : Human( city, type )
 {
 
 }

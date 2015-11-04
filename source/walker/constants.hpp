@@ -94,7 +94,7 @@ BEGIN_NAMEDTYPE(Type,unknown),
   trigger,
   all = 0xff,
   any = all
-END_NAMEDTYPE(Type)
+END_NAMEDTYPE(Type)                       
 
 } //end namespace walker
 

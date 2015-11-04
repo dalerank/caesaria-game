@@ -89,7 +89,7 @@ public:
     int count;
   };
 
-  void load( const MetaData& md, Direction dir )
+  void load( const object::Info& md, Direction dir )
   {
     std::string configName = "image." + direction::Helper::instance().findName( dir );
 
@@ -127,7 +127,7 @@ Dock::Dock(): WorkingBuilding( object::dock, Size(3) ), _d( new Impl )
 
   _d->initStores();
   _fgPictures().resize(1);
-  _animationRef().setDelay( 5 );
+  _animation().setDelay( 5 );
   _setClearAnimationOnStop( false );
 }
 
@@ -154,7 +154,8 @@ bool Dock::build( const city::AreaInfo& info )
   WorkingBuilding::build( info );
 
   TilePos landingPos = landingTile().pos();
-  Pathway way = PathwayHelper::create( landingPos, info.city->borderInfo().boatEntry, PathwayHelper::deepWater );
+  Pathway way = PathwayHelper::create( landingPos, info.city->getBorderInfo( PlayerCity::boatEntry ).epos(),
+                                       PathwayHelper::deepWater );
   if( !way.isValid() )
   {
     _setError( "##inland_lake_has_no_access_to_sea##" );
@@ -219,7 +220,7 @@ void Dock::load(const VariantMap& stream)
 
 void Dock::reinit()
 {
-  MetaDataHolder::instance().reload( type() );
+  info().reload();
   _updatePicture( _d->direction );
 }
 
@@ -238,7 +239,6 @@ bool Dock::isBusy() const
 
 const Tile& Dock::landingTile() const
 {
-  Tilemap& tmap = _city()->tilemap();
   TilePos offset( -999, -999 );
   switch( _d->direction )
   {
@@ -250,7 +250,7 @@ const Tile& Dock::landingTile() const
   default: break;
   }
 
-  return tmap.at( pos() + offset );
+  return _map().at( pos() + offset );
 }
 
 int Dock::queueSize() const
@@ -272,7 +272,7 @@ const good::Store& Dock::exportStore() const { return _d->goods.exporting; }
 
 const Tile& Dock::queueTile() const
 {
-  TilesArea tiles( _city()->tilemap(), 3, pos() );
+  TilesArea tiles( _map(), 3, pos() );
   tiles = tiles.select( Tile::tlDeepWater );
 
   for( auto tile : tiles )
@@ -313,8 +313,7 @@ int Dock::importingGoods( good::Stock& stock)
   {
     _d->goods.importing.store( stock, traderMaySell );
 
-    GameEventPtr e = Payment::import( stock.type(), traderMaySell );
-    e->dispatch();
+    events::dispatch<Payment>( stock.type(), traderMaySell );
 
     cost = good::Helper::importPrice( _city(), stock.type(), traderMaySell );
   }
@@ -348,10 +347,8 @@ Dock::~Dock(){}
 
 void Dock::_updatePicture(Direction direction)
 {
-  const MetaData& md = MetaDataHolder::find( type() );
-
   DockConfig config;
-  config.load( md, direction );
+  config.load( info(), direction );
 
   setPicture( config.image );
   setAnimation( config.animation );
@@ -443,7 +440,7 @@ void Dock::_tryDeliverGoods()
 
     if( qty > 0 )
     {
-      auto cartPusher = CartPusher::create( _city() );
+      auto cartPusher = Walker::create<CartPusher>( _city() );
       good::Stock pusherStock( gtype, qty, 0 );
       _d->goods.importing.retrieve( pusherStock, qty );
       cartPusher->send2city( BuildingPtr( this ), pusherStock );
@@ -480,7 +477,7 @@ void Dock::_tryReceiveGoods()
   {
     if( _d->goods.requested.qty( gtype ) > 0 )
     {
-      auto cartSupplier = CartSupplier::create( _city() );
+      auto cartSupplier = Walker::create<CartSupplier>( _city() );
       int qty = std::min( 400, _d->goods.requested.getMaxRetrieve( gtype ) );
       cartSupplier->send2city( this, gtype, qty );
 

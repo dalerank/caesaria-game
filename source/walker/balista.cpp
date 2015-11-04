@@ -22,31 +22,19 @@
 #include "game/resourcegroup.hpp"
 #include "enemysoldier.hpp"
 #include "game/gamedate.hpp"
+#include "config.hpp"
 #include "spear.hpp"
-
-namespace {
-  const int attackDistance = 16;
-}
 
 Balista::Balista( PlayerCityPtr city )
   : WallGuard( city, walker::balista )
 {
   _setType( walker::balista );
   setSpeedMultiplier( 0.f );
-  setAttackDistance( 8 );
+  setAttackDistance( config::distance::ballistaRange );
 
   _isActive = false;
 
   setName( _("##balista##") );
-}
-
-BalistaPtr Balista::create(PlayerCityPtr city)
-{
-  BalistaPtr ret( new Balista( city ) );
-  ret->drop();
-  ret->attach();
-
-  return ret;
 }
 
 Balista::~Balista(){}
@@ -79,7 +67,7 @@ bool Balista::_tryAttack()
 
 void Balista::_fire( TilePos target )
 {
-  SpearPtr spear = Spear::create( _city() );
+  SpearPtr spear = Walker::create<Spear>( _city() );
   spear->setPicInfo( ResourceGroup::sprites, 146 );
   spear->setPicOffset( Point( -15, 15 ));
   spear->toThrow( pos(), target );

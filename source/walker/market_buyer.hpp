@@ -24,16 +24,13 @@
 /** This is the market lady buying goods at granaries and warehouses */
 class MarketBuyer : public Human
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
   static unsigned int maxBuyDistance();
-  static MarketBuyerPtr create( PlayerCityPtr city );
 
   virtual ~MarketBuyer();
 
   void send2City( MarketPtr market );
-
-  // compute the destination to fetch the given good
-  void computeWalkerDestination( MarketPtr market );
 
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
@@ -46,6 +43,8 @@ protected:
 
 private:
   MarketBuyer( PlayerCityPtr city );
+  // compute the destination to fetch the given good
+  void _computeWalkerDestination( MarketPtr market );
 
   class Impl;
   ScopedPtr< Impl > _d;

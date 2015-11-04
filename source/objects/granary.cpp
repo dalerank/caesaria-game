@@ -27,6 +27,7 @@
 #include "game/gamedate.hpp"
 #include "walker/cart_supplier.hpp"
 #include "objects_factory.hpp"
+#include "good/turnover.hpp"
 #include "config.hpp"
 
 using namespace gfx;
@@ -51,6 +52,8 @@ public:
 
     setOrder( good::fish, good::Orders::none );
     setCapacity( GranaryStore::maxCapacity );
+
+    granary = nullptr;
   }
 
   // returns the reservationID if stock can be retrieved (else 0)
@@ -71,18 +74,19 @@ public:
     good::Storage::store( stock, amount );
   }
 
-  virtual void applyStorageReservation(good::Stock &stock, const int reservationID)
+  virtual bool applyStorageReservation(good::Stock& stock, const int reservationID)
   {
-    good::Storage::applyStorageReservation( stock, reservationID );
-
+    bool isOk = good::Storage::applyStorageReservation( stock, reservationID );
+    _providers().append( stock );
     granary->computePictures();
+    return isOk;
   }
 
-  virtual void applyRetrieveReservation(good::Stock &stock, const int reservationID)
+  virtual bool applyRetrieveReservation(good::Stock &stock, const int reservationID)
   {
-    good::Storage::applyRetrieveReservation( stock, reservationID );
-
+    bool isOk = good::Storage::applyRetrieveReservation( stock, reservationID );
     granary->computePictures();
+    return isOk;
   }
   
   virtual void setOrder( const good::Product type, const good::Orders::Order order )
@@ -90,6 +94,8 @@ public:
     good::Storage::setOrder( type, order );
     setCapacity( type, (order == good::Orders::reject || order == good::Orders::none ) ? 0 : GranaryStore::maxCapacity );
   }
+
+  virtual TilePos owner() const { return granary ? granary->pos() : gfx::tilemap::invalidLocation(); }
 
   Granary* granary;
 };
@@ -109,13 +115,13 @@ Granary::Granary() : WorkingBuilding( object::granery, Size(3) ), _d( new Impl )
   _picture().load( ResourceGroup::commerce, 140 );
   _fgPictures().resize(6);  // 1 upper level + 4 windows + animation
 
-  _animationRef().load(ResourceGroup::commerce, 146, 7, Animation::straight);
+  _animation().load(ResourceGroup::commerce, 146, 7, Animation::straight);
   // do the animation in reverse
-  _animationRef().load(ResourceGroup::commerce, 151, 6, Animation::reverse);
-  _animationRef().setDelay( 4 );
+  _animation().load(ResourceGroup::commerce, 151, 6, Animation::reverse);
+  _animation().setDelay( 4 );
 
   _fgPicture( 0 ) = Picture( ResourceGroup::commerce, 141 );
-  _fgPicture( 5 ) = _animationRef().currentFrame();
+  _fgPicture( 5 ) = _animation().currentFrame();
   computePictures();
 
   _d->devastateThis = false;  
@@ -133,7 +139,7 @@ void Granary::timeStep(const unsigned long time)
   {
     _weekUpdate();
     //animate workers need
-    _animationRef().setDelay( 4 + needWorkers() + math::random(2) );
+    _animation().setDelay( 4 + needWorkers() + math::random(2) );
   }
 }
 
@@ -250,12 +256,12 @@ void Granary::_resolveDeliverMode()
 
     if( good::Orders::deliver == order && goodFreeQty > 0 )
     {
-      CartSupplierPtr walker = CartSupplier::create( _city() );
-      walker->send2city( this, gType, goodFreeQty );
+      auto cartSupplier = Walker::create<CartSupplier>( _city() );
+      cartSupplier->send2city( this, gType, goodFreeQty );
 
-      if( !walker->isDeleted() )
+      if( !cartSupplier->isDeleted() )
       {
-        addWalker( walker.object() );
+        addWalker( cartSupplier );
         return;
       }
     }
@@ -280,8 +286,8 @@ void Granary::_weekUpdate()
 bool Granary::_trySendGoods(good::Product gtype, int qty )
 {
   good::Stock stock( gtype, qty, qty);
-  auto cartPusher = CartPusher::create( _city() );
-  cartPusher->send2city( BuildingPtr( this ), stock );
+  auto cartPusher = Walker::create<CartPusher>( _city() );
+  cartPusher->send2city( this, stock );
 
   if( !cartPusher->isDeleted() )
   {

@@ -103,6 +103,43 @@ namespace scene
 typedef SmartList<EventHandler> EventHandlers;
 const int topMenuHeight = 24;
 
+class MenuBreaker : public EventHandler
+{
+public:
+  Menu* _m1 = nullptr;
+  Menu* _m2 = nullptr;
+
+  MenuBreaker( Menu* m1, Menu* m2 )
+   : _m1(m1), _m2(m2)
+  {
+
+  }
+
+  static EventHandlerPtr create( Menu* m1, Menu* m2 )
+  {
+    EventHandlerPtr ret( new MenuBreaker( m1, m2 ) );
+    ret->drop();
+
+    return ret;
+  }
+
+  void handleEvent(NEvent &event)
+  {
+    bool rmbReleased = event.EventType == sEventMouse
+                       && event.mouse.type == mouseRbtnRelease;
+
+    bool escapePressed = event.EventType == sEventKeyboard
+                         && event.keyboard.key == KEY_ESCAPE;
+    if( rmbReleased || escapePressed )
+    {
+      if( _m1 ) _m1->cancel();
+      if( _m2 ) _m2->cancel();
+    }
+  }
+
+  bool finished() const { return false; }
+};
+
 class Level::Impl
 {
 public:
@@ -130,9 +167,10 @@ public:
   void showEmpireMapWindow();
   void showAdvisorsWindow(const advisor::Type advType );
   void showAdvisorsWindow();
-  void showMissionTaretsWindow();
+  void showMissionTargetsWindow();
   void showTradeAdvisorWindow();
   void resolveCreateConstruction( int type );
+  void resolveCreateObject( int type );
   void resolveSelectLayer( int type );
   void checkFailedMission(Level *lvl, bool forceFailed=false);
   void checkWinMission(Level *lvl, bool forceWin=false);
@@ -146,6 +184,7 @@ public:
   void showSoundOptionsWindow();
   void makeFastSave();
   void showTileHelp();
+  void showLoadDialog();
   void showMessagesWindow();
   void setAutosaveInterval( int value );
   void layerChanged( int layer );
@@ -179,7 +218,7 @@ void Level::Impl::initRender()
 {
   bool oldGraphics = KILLSWITCH( oldgfx ) || !SETTINGS_STR( c3gfx ).empty();
   renderer.initialize( game->city(), engine, game->gui(), oldGraphics );
-  renderer.setViewport( engine->screenSize() );
+  renderer.setViewport( engine->viewportSize() );
   renderer.camera()->setScrollSpeed( SETTINGS_VALUE( scrollSpeed ) );
 }
 
@@ -190,7 +229,7 @@ void Level::Impl::initMainUI()
 
   ui.clear();
 
-  Picture rPanelPic( ResourceGroup::panelBackground, PicID::rightPanelTx );
+  Picture rPanelPic( ResourceGroup::panelBackground, config::id.empire.rightPanelTx );
 
   Rect rPanelRect( ui.vsize().width() - rPanelPic.width(), topMenuHeight,
                    ui.vsize().width(), ui.vsize().height() );
@@ -221,6 +260,7 @@ void Level::Impl::initMainUI()
 void Level::Impl::installHandlers( Base* scene )
 {
   scene->installEventHandler( PatrolPointEventHandler::create( *game, renderer ) );
+  scene->installEventHandler( MenuBreaker::create( extMenu, menu ) );
 }
 
 void Level::Impl::initSound()
@@ -248,7 +288,7 @@ void Level::Impl::initTabletUI( Level* scene )
 void Level::Impl::connectTopMenu2scene(Level* scene)
 {
   CONNECT( topMenu, onExit(),                 scene,   Level::_requestExitGame )
-  CONNECT( topMenu, onLoad(),                 scene,   Level::_showLoadDialog )
+  CONNECT( topMenu, onLoad(),                 this,    Impl::showLoadDialog )
   CONNECT( topMenu, onEnd(),                  scene,   Level::exit )
   CONNECT( topMenu, onRestart(),              scene,   Level::restart )
   CONNECT( topMenu, onSave(),                 this,    Impl::showSaveDialog )
@@ -258,6 +298,7 @@ void Level::Impl::connectTopMenu2scene(Level* scene)
   CONNECT( topMenu, onShowGameSpeedOptions(), this,    Impl::showGameSpeedOptionsDialog )
   CONNECT( topMenu, onShowCityOptions(),      this,    Impl::showCityOptionsDialog )
   CONNECT( topMenu, onShowExtentInfo(),       extMenu, ExtentMenu::showInfo )
+  CONNECT( topMenu, onToggleConstructorMode(), scene,  Level::setConstructorMode )
 }
 
 void Level::initialize()
@@ -284,6 +325,7 @@ void Level::initialize()
 
   CONNECT( _d->extMenu, onHide(),                 _d->menu,          Menu::maximize )
   CONNECT( _d->extMenu, onCreateConstruction(),   _d.data(),         Impl::resolveCreateConstruction )
+  CONNECT( _d->extMenu, onCreateObject(),         _d.data(),         Impl::resolveCreateObject )
   CONNECT( _d->extMenu, onRemoveTool(),           _d.data(),         Impl::resolveRemoveTool )
   CONNECT( _d->extMenu, onRotateRight(),          &_d->renderer,     CityRenderer::rotateRight )
   CONNECT( _d->extMenu, onRotateLeft(),           &_d->renderer,     CityRenderer::rotateLeft )
@@ -292,7 +334,7 @@ void Level::initialize()
   CONNECT( _d->extMenu, onSelectOverlayType(),    _d.data(),         Impl::resolveSelectLayer )
   CONNECT( _d->extMenu, onEmpireMapShow(),        _d.data(),         Impl::showEmpireMapWindow )
   CONNECT( _d->extMenu, onAdvisorsWindowShow(),   _d.data(),         Impl::showAdvisorsWindow )
-  CONNECT( _d->extMenu, onMissionTargetsWindowShow(), _d.data(),     Impl::showMissionTaretsWindow )
+  CONNECT( _d->extMenu, onMissionTargetsWindowShow(), _d.data(),     Impl::showMissionTargetsWindow )
   CONNECT( _d->extMenu, onMessagesShow(),         _d.data(),         Impl::showMessagesWindow )
   CONNECT( _d->extMenu, onSwitchAlarm(),          &_d->alarmsHolder, AlarmEventHolder::next )
 
@@ -313,7 +355,7 @@ void Level::initialize()
   CONNECT( &_d->renderer, onDestroyed(),          &_d->undoStack,    undo::UStack::destroy )
   CONNECT( &_d->undoStack, onUndoChange(),        _d->extMenu,       ExtentMenu::resolveUndoChange )
 
-  _d->showMissionTaretsWindow();
+  _d->showMissionTargetsWindow();
   _d->renderer.camera()->setCenter( city->cameraPos() );
 
   _d->dhandler.insertTo( _d->game, _d->topMenu );
@@ -330,12 +372,17 @@ void Level::initialize()
     gui::Ui& ui = *_d->game->gui();
     dialog::Information( &ui, "Please note", "Black object are not done yet and will be added as soon as finished." );
   }
+
+  if( _d->game->city()->getOption( PlayerCity::constructorMode ) )
+  {
+    setConstructorMode( true );
+  }
 }
 
 std::string Level::nextFilename() const{  return _d->mapToLoad;}
 
-void Level::Impl::showSaveDialog() {  GameEventPtr e = ShowSaveDialog::create();   e->dispatch(); }
-void Level::Impl::setVideoOptions(){  GameEventPtr e = SetVideoSettings::create(); e->dispatch(); }
+void Level::Impl::showSaveDialog() {  events::dispatch<ShowSaveDialog>(); }
+void Level::Impl::setVideoOptions(){  events::dispatch<SetVideoSettings>(); }
 
 void Level::Impl::showGameSpeedOptionsDialog()
 {
@@ -359,8 +406,7 @@ void Level::Impl::showCityOptionsDialog()
 
 void Level::Impl::resolveWarningMessage(std::string text)
 {
-  GameEventPtr e = WarningMessage::create( text, WarningMessage::neitral );
-  e->dispatch();
+  events::dispatch<WarningMessage>( text, WarningMessage::neitral );
 }
 
 void Level::Impl::saveCameraPos(Point p)
@@ -376,8 +422,7 @@ void Level::Impl::saveCameraPos(Point p)
 
 void Level::Impl::showSoundOptionsWindow()
 {
-  GameEventPtr e = ChangeSoundOptions::create();
-  e->dispatch();
+  events::dispatch<ChangeSoundOptions>();
 }
 
 void Level::Impl::makeFastSave() { game->save( createFastSaveName().toString() ); }
@@ -470,8 +515,7 @@ void Level::Impl::extendReign(int years)
 
 void Level::Impl::handleDirectionChange(Direction direction)
 {
-  GameEventPtr e = WarningMessage::create( _("##" + direction::Helper::instance().findName( direction ) + "##"), 1 );
-  e->dispatch();
+  events::dispatch<WarningMessage>( _("##" + direction::Helper::instance().findName( direction ) + "##"), 1 );
 }
 
 std::string Level::Impl::getScreenshotName()
@@ -514,8 +558,7 @@ void Level::_resolveSwitchMap()
 
 void Level::Impl::showEmpireMapWindow()
 {
-  GameEventPtr e = ShowEmpireMap::create( true );
-  e->dispatch();
+  events::dispatch<ShowEmpireMap>( true );
 }
 
 void Level::draw()
@@ -590,8 +633,7 @@ void Level::Impl::makeScreenShot()
   Logger::warning( "Level: create screenshot " + filename );
 
   Engine::instance().createScreenshot( filename );
-  auto e = WarningMessage::create( "Screenshot save to " + filename, WarningMessage::neitral );
-  e->dispatch();
+  events::dispatch<WarningMessage>( "Screenshot save to " + filename, WarningMessage::neitral );
 }
 
 void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
@@ -633,7 +675,7 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
 
 void Level::Impl::checkWinMission( Level* lvl, bool force )
 {
-  PlayerCityPtr city = game->city();
+  auto city = game->city();
   auto& conditions = city->victoryConditions();
 
   int culture = city->culture();
@@ -657,14 +699,23 @@ void Level::Impl::checkWinMission( Level* lvl, bool force )
 
   if( success )
   {
-    auto e = MissionWin::create( conditions.name() );
-    e->dispatch();
+    events::dispatch<MissionWin>( conditions.name() );
   }
 }
 
 bool Level::installEventHandler(EventHandlerPtr handler) { _d->eventHandlers.push_back( handler ); return true; }
-void Level::Impl::resolveCreateConstruction( int type ){  renderer.setMode( BuildMode::create( object::Type( type ) ) );}
-void Level::Impl::resolveRemoveTool(){  renderer.setMode( DestroyMode::create() );}
+
+void Level::setConstructorMode(bool enabled)
+{
+  auto city = _d->game->city();
+  city->setOption( PlayerCity::constructorMode, enabled ? 1 : 0 );
+  _d->extMenu->setConstructorMode( enabled );
+}
+
+void Level::Impl::resolveCreateConstruction( int type ) { renderer.setMode( BuildMode::create( object::Type( type ) ) );}
+void Level::Impl::resolveCreateObject( int type ) { renderer.setMode( EditorMode::create( object::Type( type ) ) );}
+
+void Level::Impl::resolveRemoveTool() { renderer.setMode( DestroyMode::create() );}
 void Level::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerMode::create( type ) );}
 void Level::Impl::showAdvisorsWindow(){  showAdvisorsWindow( advisor::employers ); }
 void Level::Impl::showTradeAdvisorWindow(){  showAdvisorsWindow( advisor::trading ); }
@@ -709,9 +760,11 @@ bool Level::_tryExecHotkey(NEvent &event)
       {
         TilePos center = _d->renderer.camera()->center();
         TileRect trect( center-tilemap::unitLocation(), center+tilemap::unitLocation());
-        auto& borderInfo = _d->game->city()->borderInfo();
-        center = (trect.contain(borderInfo.roadEntry) ? borderInfo.roadExit : borderInfo.roadEntry);
-        _d->renderer.camera()->setCenter( center, false );
+        TilePos currect = _d->game->city()->getBorderInfo( PlayerCity::roadEntry ).epos();
+        PlayerCity::TileType rcenter = trect.contain( currect )
+                                          ? PlayerCity::roadExit
+                                          : PlayerCity::roadEntry;
+        _d->renderer.camera()->setCenter( _d->game->city()->getBorderInfo( rcenter ).epos(), false );
       }
       break;
 
@@ -732,9 +785,8 @@ bool Level::_tryExecHotkey(NEvent &event)
     case KEY_EQUALS:
     case KEY_ADD:
     {
-      auto e = ChangeSpeed::create( (event.keyboard.key == KEY_MINUS || event.keyboard.key == KEY_SUBTRACT)
+      events::dispatch<ChangeSpeed>( (event.keyboard.key == KEY_MINUS || event.keyboard.key == KEY_SUBTRACT)
                                                             ? -10 : +10 );
-      e->dispatch();
       handled = true;
     }
     break;
@@ -742,8 +794,7 @@ bool Level::_tryExecHotkey(NEvent &event)
     case KEY_KEY_P:
     {
       _d->simulationPaused =  !_d->simulationPaused;
-      auto e = Pause::create( _d->simulationPaused ? Pause::pause : Pause::play );
-      e->dispatch();
+      events::dispatch<Pause>( _d->simulationPaused ? Pause::pause : Pause::play );
       handled = true;
     }
     break;
@@ -751,8 +802,7 @@ bool Level::_tryExecHotkey(NEvent &event)
     case KEY_COMMA:
     case KEY_PERIOD:
     {
-      auto e = Step::create( event.keyboard.key == KEY_COMMA ? 1 : 25);
-      e->dispatch();
+      events::dispatch<Step>( event.keyboard.key == KEY_COMMA ? 1 : 25);
       handled = true;
     }
     break;
@@ -803,9 +853,9 @@ bool Level::_tryExecHotkey(NEvent &event)
     case KEY_ESCAPE:
     {
       Widget::Widgets children = _d->game->gui()->rootWidget()->children();
-      foreach( it, children )
+      for( auto it : children )
       {
-        bool handled = (*it)->onEvent( event );
+        bool handled = it->onEvent( event );
         if( handled )
             break;
       }
@@ -820,19 +870,19 @@ bool Level::_tryExecHotkey(NEvent &event)
   return handled;
 }
 
-void Level::Impl::showMissionTaretsWindow()
+void Level::Impl::showMissionTargetsWindow()
 {
   unsigned int id = Hash( CAESARIA_STR_EXT(MissionTargetsWindow) );
   Widget* wdg = game->gui()->findWidget( id );
   if( !wdg )
   {
-    dialog::MissionTargets* wnd = dialog::MissionTargets::create( game->gui()->rootWidget(), game->city() );
-    wnd->show();
-    wnd->setID( id );
+    auto& wnd = game->gui()->add<dialog::MissionTargets>( game->city() );
+    wnd.show();
+    wnd.setID( id );
   }
 }
 
-void Level::Impl::showAdvisorsWindow( const advisor::Type advType ) { ShowAdvisorWindow::create( true, advType )->dispatch(); }
-void Level::_showLoadDialog() { ShowLoadDialog::create()->dispatch(); }
+void Level::Impl::showAdvisorsWindow( const advisor::Type advType ) { events::dispatch<ShowAdvisorWindow>( true, advType ); }
+void Level::Impl::showLoadDialog() { events::dispatch<ShowLoadDialog>(); }
 
 }//end namespace scene

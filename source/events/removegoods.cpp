@@ -39,12 +39,7 @@ GameEventPtr RemoveGoods::create(good::Product type, int qty  )
 template<class T>
 void _removeGoodFrom( PlayerCityPtr city, object::Type btype, good::Product what, int& qty )
 {
-  SmartList<T> bList;	
-#ifdef CAESARIA_PLATFORM_HAIKU
-  bList << city->overlays();
-#else
-  bList = city->statistic().objects.find<T>( btype );
-#endif
+  SmartList<T> bList = city->statistic().objects.find<T>( btype );
   for( auto building : bList )
   {
     if( qty <= 0 )

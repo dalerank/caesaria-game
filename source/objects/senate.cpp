@@ -125,7 +125,7 @@ void Senate::applyService(ServiceWalkerPtr walker)
     {
       float tax = taxCollectir->takeMoney();;
       _d->taxValue += tax;
-      Logger::warning( "Senate: collect money %f. All money %f", tax, _d->taxValue );
+      Logger::warning( "Senate: collect money {0}. All money {1}", tax, _d->taxValue );
     }
   }
   break;
@@ -175,7 +175,7 @@ void Senate::timeStep(const unsigned long time)
   ServiceBuilding::timeStep( time );
 }
 
-void Senate::initialize(const MetaData& mdata)
+void Senate::initialize(const object::Info& mdata)
 {
   ServiceBuilding::initialize( mdata );
 
@@ -259,7 +259,7 @@ void Senate::deliverService()
 {
   if( numberWorkers() > 0 && walkers().size() == 0 )
   {
-    TaxCollectorPtr walker = TaxCollector::create( _city() );
+    TaxCollectorPtr walker = Walker::create<TaxCollector>( _city() );
     walker->send2City( this, TaxCollector::goServiceMaximum|TaxCollector::anywayWhenFailed );
 
     addWalker( walker.object() );

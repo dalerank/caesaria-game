@@ -47,8 +47,8 @@ public:
   TradeStateButton( Widget* parent, const Rect& rectangle, int id )
     : PushButton( parent, rectangle, "", id, false, PushButton::whiteBorderUp )
   {
-    btnDecrease = new TexturedButton( this, Point( 220, 3 ), Size( 24 ), -1, 601 );
-    btnIncrease = new TexturedButton( this, Point( 220 + 24, 3 ), Size( 24 ), -1, 605 );
+    btnDecrease = &add<TexturedButton>( Point( 220, 3 ), Size( 24 ), -1, 601 );
+    btnIncrease = &add<TexturedButton>(  Point( 220 + 24, 3 ), Size( 24 ), -1, 605 );
     btnDecrease->hide();
     btnIncrease->hide();
 
@@ -156,7 +156,7 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
     lbStackedQty->setText( text );
   }
 
-  _d->btnTradeState = new TradeStateButton( this, Rect( 50, 90, width() - 60, 90 + 30), -1 );
+  _d->btnTradeState = &add<TradeStateButton>( Rect( 50, 90, width() - 60, 90 + 30), -1 );
   /*if( gmode == gmUnknown )
   {
     _d->btnTradeState->setTradeState( trade::noTrade, 0 );

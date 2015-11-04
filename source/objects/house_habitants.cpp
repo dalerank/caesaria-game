@@ -48,14 +48,13 @@ void Habitants::update( House& h, const CitizenGroup& group )
 
   if( deltaWorkersNumber < 0 )
   {
-    Logger::warning( "Habitants::update fired %d workers", deltaWorkersNumber );
-    GameEventPtr e = FireWorkers::create( h.pos(), abs( deltaWorkersNumber ) );
-    e->dispatch();
+    Logger::warning( "Habitants::update fired {0} workers", deltaWorkersNumber );
+    events::dispatch<FireWorkers>( h.pos(), abs( deltaWorkersNumber ) );
   }
   else
   {
     if( workers.current + deltaWorkersNumber > workers.max )
-      Logger::warning( "WARNING!!! Habitants::update currentWorkers(%d) > maxWorkers(%d)", workers.current + deltaWorkersNumber, workers.max );
+      Logger::warning( "WARNING!!! Habitants::update currentWorkers({0}}) > maxWorkers({1}})", workers.current + deltaWorkersNumber, workers.max );
 
     workers.current = math::clamp<int>( workers.current + deltaWorkersNumber, 0, workers.max );
   }

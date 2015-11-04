@@ -36,27 +36,6 @@ public:
   Walker::UniqueId headId;
 };
 
-MerchantCamelPtr MerchantCamel::create(PlayerCityPtr city)
-{
-  MerchantCamelPtr camel( new MerchantCamel( city ) );
-  camel->drop();
-
-  return camel;
-}
-
-MerchantCamelPtr MerchantCamel::create(PlayerCityPtr city, MerchantPtr merchant, int delay)
-{
-  MerchantCamelPtr camel( new MerchantCamel( city ) );
-  camel->_d->headId = merchant->uniqueId();
-  camel->setPos( merchant->pos() );
-  camel->setPathway( merchant->pathway() );
-  camel->go();
-  camel->wait( delay );
-  camel->drop();
-
-  return camel;
-}
-
 void MerchantCamel::timeStep(const unsigned long time)
 {
   if( !_d->inCaravan )
@@ -65,7 +44,7 @@ void MerchantCamel::timeStep(const unsigned long time)
     if( !head.isValid() )
     {
       die();
-      Logger::warning( "!!!Warning: MerchantCamel havenot headID caravan %d", _d->headId );
+      Logger::warning( "!!!Warning: MerchantCamel havenot headID caravan {0}", _d->headId );
     }
     else
     {
@@ -110,11 +89,20 @@ void MerchantCamel::updateHeadLocation(const TilePos &pos)
   _d->headLocation = pos;
 }
 
-MerchantCamel::MerchantCamel(PlayerCityPtr city)
-  : Human( city ), _d( new Impl )
+MerchantCamel::MerchantCamel(PlayerCityPtr city, MerchantPtr merchant, int delay)
+  : Human( city, walker::merchantCamel ), _d( new Impl )
 {
   _d->headId = 0;
   _d->inCaravan = false;
   _d->headLocation = gfx::tilemap::invalidLocation();
-  _setType( walker::merchantCamel );
+
+  if( merchant.isValid() )
+  {
+    _d->headId = merchant->uniqueId();
+    setPos( merchant->pos() );
+    setPathway( merchant->pathway() );
+    go();
+    wait( delay );
+    drop();
+  }
 }

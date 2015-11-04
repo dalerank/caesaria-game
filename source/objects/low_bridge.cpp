@@ -323,8 +323,7 @@ bool LowBridge::build( const city::AreaInfo& info )
       subtile->_info = tile::encode( tile );
       subtile->_parent = this;
 
-      GameEventPtr event = BuildAny::create( buildPos, subtile.object() );
-      event->dispatch();
+      events::dispatch<BuildAny>( buildPos, subtile.object() );
       index++;
     }
   }
@@ -358,10 +357,9 @@ void LowBridge::destroy()
   for( auto tile : _d->subtiles )
   {
     tile->_parent = 0;
-    GameEventPtr event = ClearTile::create( tile->_pos );
-    event->dispatch();
+    events::dispatch<ClearTile>( tile->_pos );
 
-    Tile& mapTile = _city()->tilemap().at( tile->_pos );
+    Tile& mapTile = _map().at( tile->_pos );
     tile::decode( mapTile, tile->_info );
   }
 }
@@ -420,13 +418,12 @@ bool LowBridgeSubTile::isWalkable() const { return true;  }
 
 bool LowBridgeSubTile::isNeedRoad() const { return false; }
 
-bool LowBridgeSubTile::build(const city::AreaInfo &info)
+bool LowBridgeSubTile::build(const city::AreaInfo &areainfo)
 {
-  Construction::build( info );
+  Construction::build( areainfo );
   _fgPictures().clear();
-  _pos = info.pos;
-  const MetaData& md = MetaDataHolder::find( type() );
-  Point sbOffset = md.getOption( "subtileOffset" );
+  _pos = areainfo.pos;
+  Point sbOffset = info().getOption( "subtileOffset" );
   _rpicture.load( ResourceGroup::transport, _index );
   _rpicture.addOffset( sbOffset );
   _fgPictures().push_back( _rpicture );

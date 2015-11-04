@@ -28,7 +28,7 @@ public:
 
   virtual int currentVisitors() const;
   virtual int maxVisitors() const;
-  virtual void initialize(const MetaData &mdata);
+  virtual void initialize(const object::Info& mdata);
 
 protected:
   class Impl;

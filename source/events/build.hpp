@@ -31,6 +31,12 @@ public:
   static GameEventPtr create( const TilePos&, object::Type type );
   static GameEventPtr create( const TilePos&, OverlayPtr overlay );
 
+  template<typename T>
+  static GameEventPtr create( const TilePos& pos, SmartPtr<T> ov )
+  {
+    return create( pos, ptr_cast<Overlay>( ov ) );
+  }
+
 protected:
   virtual void _exec( Game& game, unsigned int );
   virtual bool _mayExec(Game &game, unsigned int time) const;

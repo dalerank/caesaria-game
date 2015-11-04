@@ -22,8 +22,8 @@
 
   roadBlock : {
     cost : 10
-    c3logic : true
     class : "road"
+    c3logic : true
     checkWalkersOnBuild : false
     image : [ "roadBlock", 1 ]
   }
@@ -33,6 +33,18 @@
     image.ext : {
       type_1 : { size:1, rc : "land1a", start : 10, count : 7 }
       type_2 : { size:1, rc : "land1a", start : 33, count : 27 }
+    }
+  }
+
+  rock : {
+    class : "rock"
+    image.ext : {
+      type_1 : { size:1, rc : "land1a", start : 290, count : 8 }
+      type_1a : { size:1, rc : "land3a", start : 71, count : 8 }
+      type_2 : { size:2, rc : "land1a", start : 298, count : 4 }
+      type_2a : { size:2, rc : "land3a", start : 79, count : 4 }
+      type_3 : { size:3, rc : "land1a", start : 302, count : 2 }
+      type_3 : { size:3, rc : "land3a", start : 83, count : 2 }
     }
   }
 
@@ -50,8 +62,7 @@
   }
   
   wall : {
-    desirability : 12,
-    range : 0,
+    desirability : { base : -12, range : 4, step : 3 }
     class : "wall"
     cost : 10    
     inflammability : 0
@@ -59,8 +70,7 @@
   },
 
   fortification : {
-    desirability : 16
-    range : 0
+    desirability : { base : -16, range : 4, step : 3 }
     class : "wall"
     cost : 20
     inflammability : 0
@@ -72,109 +82,106 @@
     desirability : { base: -2, range : 2, step : 1 }
     class : "water"
     sound : [ "aqueduct", 1 ]
+    mayBurn : false
   },
 
   amphitheater : {
     cost : 100,
     desirability : { base : 4, range : 4, step : -1 }
-    employers : 12
     class : "entertainment"    
     animation : { rc : "entertainment", start : 2, count : 10, offset : [ 100, 49 ], delay : 3 }
     image : [ "entertainment", 1 ]
     sound : [ "ampitheatre", 1 ]
+    employers : 12
   },
 
   theater : {
     cost : 50,
     desirability : { base : 2, range : 2, step : -1 }
-    employers : 8
     class : "entertainment"
     image : [ "entertainment", 13 ]
     animation : { rc : "entertainment", start : 14, count : 21, offset : [ 60, 36 ], delay : 3 }
     sound : [ "theatre", 1 ]
+    employers : 8
   },
 
   hippodrome : {
     cost : 2500,
     desirability : { base : -3, range : 3, step : 1 }
-    employers : 150
     class : "entertainment"
+    employers : 150
   },
   
   colloseum : {
     cost : 500,
     desirability : { base : -3, range : 3, step : 1 }
-    employers : 25
     class : "entertainment"
     sound : [ "colloseum", 1 ]
+    employers : 25
   },
   
   gladiatorSchool : {
     cost : 75,
     desirability : { base : -3, range : 3, step : 1 }
-    employers : 8
     class : "entertainment"
     image : [ "entertainment", 51 ]
     animation : { rc : "entertainment", start : 52, count : 10, offset : [ 62, 24 ], delay : 2 }
     sound : [ "gladiatorpit", 1 ]
+    employers : 8
   },
   
   house : {
     cost : 10,
     desirability : { base : -3, range : 3, step : 1 }
-    employers : 0
-    checkWalkersOnBuild : false
     class : "house"
+    checkWalkersOnBuild : false
   }
 
   lionsNursery : {
     cost : 75,
     desirability : { base : -3, range : 3, step : 1 }
-    employers : 8
     class : "entertainment"
     image : [ "entertainment", 62 ]
     animation : { rc : "entertainment", start : 63, count : 18, offset : [ 78, 21 ], delay : 2 }
+    employers : 8
   },
   
   actorColony : {
     cost : 50,
     desirability : { base : -2, range : 3, step : 1 }
-    employers : 5
     image : [ "entertainment", 81 ]
     class : "entertainment"
     animation : { rc : "entertainment", start : 82, count : 9, offset : [ 68, -6 ], delay : 2 }
     sound : [ "artistpit", 1  ]
+    employers : 5
   },
 
   chariotSchool : {
     cost : 75,
     desirability : { base : -3, range : 3, step : 1 }
-    employers : 10
     class : "entertainment"
     image : [ "entertainment", 91 ]
     animation : { rc : "entertainment", start : 92, count : 10, offset : [ 54, 23 ], delay : 2 }
     sound : [ "charioterspit", 1 ]
+    employers : 10
   },
   
   plaza : {
     cost : 15,
     desirability : { base : 4, range : 2,	step : -2 }
-    employers : 0
     class : "road"
-    checkWalkersOnBuild : false
     image : [ "entertainment", 102 ]
     image.ext : {
       type_1 : { size:1, rc : "entertainment", start : 102, count : 6 }
       type_1a: { size:1, rc : "plaza", start : 3139, count : 6 }
       type_2 : { size:2, rc : "entertainment", start : 108, count : 2 }
     }
+    checkWalkersOnBuild : false
   },  
 
   garden : {
     cost : 12,
     desirability : { base :3,	range : 3,	step : -1 }
-    employers : 0
-    checkWalkersOnBuild : false
     class : "garden"
     image : [ "entertainment", 110 ]
     image.ext : {
@@ -182,29 +189,29 @@
       type_2 : { size:2, rc : "entertainment", start : 114, count : 3 }
     }
     sound : [ "garden", 1 ]
+    checkWalkersOnBuild : false
   },
   
   fort_legionaries : {
     cost : 1000,
     desirability : { base :-20,	range : 10,	step : 2 }
-    employers : 16
     class : "military"
     sound : [ "fort", 1 ]
+    collapsibility : 0
     requestDestroy : true
     inflammability : 0
-    collapsibility : 0
+    employers : 16
   },
 
   missionaryPost : {
     cost : 100
-    employers : 20
     class : "education"
+    employers : 20
   },
 
   statue_small : {
     cost : 12,
     desirability : { base :3,	range : 3,	step : -1}
-    employers : 0
     class : "sight"
     sound : [ "statue", 1 ]
   },
@@ -212,138 +219,133 @@
   statue_middle : {
     cost : 60,
     desirability : { base :10,	range : 5,	step : -2 }
-    employers : 0
     class : "sight"
   },  
 
   statue_big : {
     cost : 150,
     desirability : { base :15,	range : 5,	step : -3 }
-    employers : 0
     class : "sight"
   },  
 
   fort_javelin : {
     cost : 1000,
     desirability : { base :-20,	range : 10,	step : 2 }
-    employers : 16
     class : "military"
+    requestDestroy : true
     inflammability : 0
     collapsibility : 0
-    requestDestroy : true
+    employers : 16
   }, 
 
   fort_horse : {
     cost : 1000,
     desirability : { base :-20,	range : 10,	step : 2 }
-    employers : 16
     class : "military"
     requestDestroy : true
     inflammability : 0
     collapsibility : 0
+    employers : 16
   }, 
 
   clinic : {
     cost : 30,
     desirability : { base :0,	range : 0,	step : 0 }
-    employers : 5
     class : "health"
     image : [ "security", 20 ]
     service : "srvc_doctor"
     sound : [ "clinic", 1 ]
+    employers : 2
   },  
   
   hospital : {
     cost : 300,
     desirability : { base :2,	range : 2,	step : -1 }
-    employers : 30
     class : "health"
     image : [ "security", 44 ]
+    employers : 30
     service : "srvc_hospital"
   },
   
   baths : {
     cost : 50,
     desirability : { base :4,	range : 4,	step : -1 }
-    employers : 10
     class : "health"
     image : [ "security", 32 ]
     animation : { rc : "security", start : 22, count : 10, offset : [ 23, 25 ], delay : 2 }
-    service : "srvc_baths"
     sound : [ "baths", 1 ]
+    service : "srvc_baths"
+    employers : 10
   }, 
 
   barber : {
     cost : 25,
     desirability : { base :2,	range : 2,	step : -1 }
-    employers : 2
     class : "health"
     image : [ "security", 19 ]
-    service : "srvc_barber"
     sound : [ "barber", 1 ]
+    service : "srvc_barber"
+    employers : 2
   }, 
   
   school : {
     cost : 50,
     desirability : { base :-2,	range : 2,	step : 1 }
-    employers : 10
     class : "education"
     image : [ "commerce", 83 ]
     sound : [ "school", 1 ]
+    employers : 10
   },    
   
   academy : {
     cost : 100,
     desirability : { base :4,	range : 4,	step : -1 }
-    employers : 30
     class : "education"
     image : [ "commerce", 85 ]
     sound : [ "academy", 1 ]
+    employers : 30
   },  
   
   library : {
     cost : 75,
     desirability : { base : 4,	range : 4,	step : -1 }
-    employers : 20
     class : "education"
     image : [ "commerce", 84 ]
     sound : [ "library", 1 ]
+    employers : 20
   },
 
   prefecture : {
     cost : 30,
     desirability : { base :-2,	range : 2,	step : 1 }
-    employers : 6
     image : [ "security", 1 ]
     animation : { rc : "security", start : 2, count : 10, offset : [ 20, 36 ], delay : 4 }
     class : "security"
+    employers : 6
   },  
  
   triumphal_arch : {
     cost : 0,
     desirability : { base :18,	range : 6,	step : -3 }
-    employers : 0
     class : "sight"
   }, 
   
   gatehouse : {
     cost : 100,
-    desirability : -4,
-    range : 4,
-    step : -1,
-    employers : 3
+    desirability : { base : -4, range : 4, step : -1 }
     class : "gate"
     inflammability : 0
     collapsibility : 0
+    employers : 3
   },  
 
   tower : {
     cost : 150,
     desirability : { base :-8,	range : 4,	step : -2 }
-    employers : 6
     class : "tower"
-    inflammability : 0
     collapsibility : 0
+    employers : 6
+    inflammability : 0
   },  
   
   small_ceres_temple : {
@@ -599,6 +601,7 @@
     cost : 80,
     desirability : { base : -6,	range : 3,	step : -2 }
     employers : 0
+    mayBurn : false
     class : "water"
     fullOffset : [ 47, -10 ]
     sound : [ "reservoir", 1 ]

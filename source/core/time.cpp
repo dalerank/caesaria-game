@@ -198,12 +198,17 @@ const char* DateTime::dayName( unsigned char d ){   return dayNames[ math::clamp
 const char* DateTime::monthName( Month month ){  return monthNames[ math::clamp<int>( (int)month, 0, 11 ) ];}
 const char* DateTime::shortMonthName(Month month) { return shortMonthNames[ math::clamp<int>( (int)month, 0, 11 ) ]; }
 
+int DateTime::daysInMonth(int y, int m)
+{
+  return ( m!=2
+              ?( (m%2) ^ (m>7) )+30
+              :( ((!(y % 400) || !( y % 4 )) && ( y % 25 )) ? 29 : 28 )
+         );
+}
+
 int DateTime::daysInMonth() const
 {
-  return ( _month!=2
-              ?( (_month%2) ^ (_month>7) )+30
-              :( ((!(_year % 400) || !( _year % 4 )) && ( _year % 25 )) ? 29 : 28 )
-               );
+  return DateTime::daysInMonth( _year, (int)_month );
 }
 
 const char *DateTime::age() const { return _year > 0 ? age_ad : age_bc; }
@@ -213,6 +218,19 @@ DateTime DateTime::time() const
   DateTime ret( *this );
   ret._year = ret._month = ret._day = 0;
   return ret;
+}
+
+unsigned int DateTime::hashdate() const
+{
+  return math::signnum( year() ) * ( math::abs( year() ) * 1000 + (int)month() * 50 + day() );
+}
+
+DateTime DateTime::fromhash(unsigned int hash)
+{
+  int y = hash / 1000;
+  int m = (hash % 1000) / 50;
+  int d = (hash % 50);
+  return DateTime( y, m, d );
 }
 
 unsigned int DateTime::elapsedTime()

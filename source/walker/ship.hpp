@@ -21,11 +21,13 @@
 
 class Ship : public Walker
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  Ship( PlayerCityPtr city );
-
   virtual bool die();
   virtual ~Ship();
+
+protected:
+  Ship( PlayerCityPtr city );
 };
 
 #endif //_CAESARIA_SHIP_INCLUDE_H_

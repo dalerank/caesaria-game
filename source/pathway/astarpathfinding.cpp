@@ -128,7 +128,7 @@ void Pathfinder::update( const Tilemap& tilemap )
 {
   LOG_PF.info( "Updating started" );
 
-  LOG_PF.info( "Resizing grid to %d", tilemap.size());
+  LOG_PF.info( "Resizing grid to {}", tilemap.size());
   int size = tilemap.size();
   _d->grid.reset( size, size );
 
@@ -250,7 +250,7 @@ bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, P
   AStarPoint* ap = at( startPos );
   if( !ap || !ap->tile )
   {
-    LOG_PF.warn( "AStar: wrong start pos at %d,%d", startPos.i(), startPos.j());
+    LOG_PF.warn( "AStar: wrong start pos at [{},{}]", startPos.i(), startPos.j());
     return false;
   }
 
@@ -406,7 +406,7 @@ bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, P
   {
     if( verbose > 0 )
     {
-      LOG_PF.warn( "AStar: maxLoopCount reached from [%d,%d] to [%d,%d]",
+      LOG_PF.warn( "AStar: maxLoopCount reached from [{},{}] to [{},{}]",
                        startPos.i(), startPos.j(), endPoints.front()->getPos().i(), endPoints.front()->getPos().j() );
       crashhandler::printstack(false);
     }

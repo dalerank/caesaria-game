@@ -43,7 +43,6 @@ namespace dialog
 class LoadFile::Impl
 {
 public:
-  GameAutoPause locker;
   Label* lbTitle;
   FileListBox* lbxFiles;
   PushButton* btnExit;
@@ -72,10 +71,10 @@ LoadFile::LoadFile( Widget* parent, const Rect& rect,
   : Window( parent, rect, "", id ), _d( new Impl )
 {
   _d->btnLoad = 0;
-  _d->locker.activate();
 
   Widget::setupUI( ":/gui/loadfile.gui" );
   WidgetEscapeCloser::insertTo( this );
+  GameAutoPause::insertTo( this );
 
   // create the title
   GET_DWIDGET_FROM_UI( _d, lbTitle )
@@ -104,16 +103,10 @@ LoadFile::LoadFile( Widget* parent, const Rect& rect,
   CONNECT( _d->lbxFiles, onItemSelected(), _d.data(), Impl::resolveItemSelected )
   CONNECT( _d->lbxFiles, onItemSelectedAgain(), _d.data(), Impl::resolveItemDblClick );
 
+  _fillFiles();
+
   setMayDelete( false );
   setCenter( parent->center() );
-}
-
-LoadFile* LoadFile::create(Widget *parent, const Rect &rect, const vfs::Directory &dir, const std::string &ext, int id)
-{
-  LoadFile* ret = new LoadFile( parent, rect, dir, ext, id );
-  ret->_fillFiles();
-
-  return ret;
 }
 
 LoadFile::~LoadFile(){}

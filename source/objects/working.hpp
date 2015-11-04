@@ -54,6 +54,12 @@ public:
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream);
 
+  template<typename T>
+  void addWalker( SmartPtr<T> walker )
+  {
+    addWalker( ptr_cast<Walker>( walker ) );
+  }
+
   virtual void addWalker( WalkerPtr walker );
   virtual const WalkerList& walkers() const;
   bool haveWalkers() const;
@@ -63,7 +69,7 @@ public:
   virtual std::string workersStateDesc() const;
   virtual std::string troubleDesc() const;
 
-  virtual void initialize(const MetaData &mdata);
+  virtual void initialize(const object::Info& mdata);
 
 public signals:
   Signal1<bool>& onActiveChange();

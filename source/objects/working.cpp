@@ -24,8 +24,10 @@
 #include "game/gamedate.hpp"
 #include "objects/house.hpp"
 #include "objects/house_level.hpp"
+#include "core/format.hpp"
 #include "events/removecitizen.hpp"
 #include "core/common.hpp"
+#include "core/logger.hpp"
 #include "walker/typeset.hpp"
 
 using namespace gfx;
@@ -51,14 +53,14 @@ public signals:
 };
 
 WorkingBuilding::WorkingBuilding(const object::Type type, const Size& size)
-: Building( type, size ), _d( new Impl )
+  : Building( type, size ), _d( new Impl )
 {
   _d->workers.current = 0;
   _d->workers.maximum = 0;
   _d->isActive = true;
   _d->clearAnimationOnStop = true;
   _d->laborAccessKoeff = 100;
-  _animationRef().stop();
+  _animation().stop();
 }
 
 void WorkingBuilding::save( VariantMap& stream ) const
@@ -80,7 +82,7 @@ void WorkingBuilding::load( const VariantMap& stream)
 
   if( !_d->workers.maximum )
   {
-    _d->workers.maximum = MetaDataHolder::find( type() ).getOption( MetaDataOptions::employers );
+    _d->workers.maximum = info().employers();
   }
 }
 
@@ -120,11 +122,11 @@ std::string WorkingBuilding::troubleDesc() const
   return trouble;
 }
 
-void WorkingBuilding::initialize(const MetaData& mdata)
+void WorkingBuilding::initialize(const object::Info& mdata)
 {
   Building::initialize( mdata );
 
-  setMaximumWorkers( (unsigned int)mdata.getOption( "employers" ) );
+  setMaximumWorkers( (unsigned int)mdata.employers() );
 }
 
 std::string WorkingBuilding::workersStateDesc() const { return ""; }
@@ -180,27 +182,27 @@ void WorkingBuilding::_updateAnimation(const unsigned long time )
   {
     if( mayWork() )
     {
-      if( _animationRef().isStopped() )
+      if( _animation().isStopped() )
       {
         _changeAnimationState( true );
       }      
     }
     else
     {
-      if( _animationRef().isRunning() )
+      if( _animation().isRunning() )
       {      
         _changeAnimationState( false );
       }
     }
   }
 
-  if( _animationRef().isRunning() )
+  if( _animation().isRunning() )
   {
-    _animationRef().update( time );
-    const Picture& pic = _animationRef().currentFrame();
+    _animation().update( time );
+    const Picture& pic = _animation().currentFrame();
     if( pic.isValid() && !_fgPictures().empty() )
     {
-      _fgPictures().back() = _animationRef().currentFrame();
+      _fgPictures().back() = _animation().currentFrame();
     }
   }
 }
@@ -208,10 +210,10 @@ void WorkingBuilding::_updateAnimation(const unsigned long time )
 void WorkingBuilding::_changeAnimationState(bool enabled)
 {
   if( enabled )
-    _animationRef().start();
+    _animation().start();
   else
   {
-    _animationRef().stop();
+    _animation().stop();
 
     if( _d->clearAnimationOnStop && !_fgPictures().empty() )
     {
@@ -226,21 +228,27 @@ void WorkingBuilding::_disaster()
 {
   unsigned int buriedCitizens = math::random( numberWorkers() );
 
-  GameEventPtr e = ReturnWorkers::create( pos(), numberWorkers() );
-  e->dispatch();
-
-  e = RemoveCitizens::create( pos(), CitizenGroup( CitizenGroup::mature, buriedCitizens ) );
-  e->dispatch();
+  events::dispatch<ReturnWorkers>( pos(), numberWorkers() );
+  events::dispatch<RemoveCitizens>( pos(), CitizenGroup( CitizenGroup::mature, buriedCitizens ) );
 
   setWorkers( 0 );
 }
 
 void WorkingBuilding::addWalker( WalkerPtr walker )
 {
-  if( walker.isValid() && !walker->isDeleted() )
+  if( walker.isNull() )
   {
-    _d->walkerList.push_back( walker );
+    Logger::warning( "WARNING !!! WorkingBuilding [{},{}] cant add null walker", pos().i(), pos().j() );
+    return;
   }
+
+   if( walker->isDeleted() )
+   {
+      Logger::warning( "WARNING !!! WorkingBuilding [{},{}] cant add walker [{}], because it also deleted", pos().i(), pos().j(), walker->name() );
+     return;
+   }
+
+    _d->walkerList.push_back( walker );
 }
 
 void WorkingBuilding::destroy()
@@ -255,8 +263,7 @@ void WorkingBuilding::destroy()
 
   if( numberWorkers() > 0 )
   {
-    GameEventPtr e = ReturnWorkers::create( pos(), numberWorkers() );
-    e->dispatch();
+    events::dispatch<ReturnWorkers>( pos(), numberWorkers() );
   }
 }
 
@@ -295,13 +302,13 @@ std::string WorkingBuildingHelper::productivity2desc( WorkingBuildingPtr w, cons
 
   if( prefix.empty() )
   {
-    return utils::format( 0xff, "##%s_%s##",
-                          factoryType.c_str(), productivityDescription[ workKoeff ] );
+    return fmt::format( "##{0}_{1}##",
+                        factoryType, productivityDescription[ workKoeff ] );
   }
   else
   {
-    return utils::format( 0xff, "##%s_%s_%s##",
-                          factoryType.c_str(), prefix.c_str(), productivityDescription[ workKoeff ] );
+    return fmt::format( "##{0}_{1}_{2}##",
+                        factoryType, prefix, productivityDescription[ workKoeff ] );
   }
 }
 

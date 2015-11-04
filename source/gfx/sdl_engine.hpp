@@ -41,14 +41,14 @@ public:
 
   virtual void startRenderFrame();
   virtual void endRenderFrame();
-
+  virtual const Size& viewportSize() const;
   virtual void setFlag( int flag, int value );
 
   virtual void setColorMask( int rmask, int gmask, int bmask, int amask );
   virtual void resetColorMask();
   virtual void setTitle( const std::string &title );
   virtual void setScale( float scale );
-  virtual void setViewport( const Rect& rect );
+  virtual void setVirtualSize(const Size& size );
   virtual Batch loadBatch(const Picture& pic, const Rects& srcRects, const Rects& dstRects, const Rect* clipRect);
   virtual void unloadBatch( const Batch& batch );
 

@@ -66,7 +66,7 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
   if( rawmb->produceGoodType() != good::none )
   {
     Picture pic = good::Helper::picture( rawmb->produceGoodType() );
-    new Image( this, Point( 10, 10 ), pic );
+    add<Image>( Point( 10, 10 ), pic );
   }
 
   _updateWorkersLabel( Point( 32, 160 ), 542, rawmb->maximumWorkers(), rawmb->numberWorkers() );
@@ -77,8 +77,7 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
     lbProgress->setText( text );
   }
 
-  std::string title = MetaDataHolder::findPrettyName( rawmb->type() );
-  _lbTitle()->setText( _(title) );
+  _lbTitle()->setText( _( rawmb->info().prettyName() ) );
 
   std::string text = rawmb->workersProblemDesc();
   std::string cartInfo = rawmb->cartStateDesc();
@@ -95,8 +94,8 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
     Rect rect = btnHelp->relativeRect();
     rect += Point( btnHelp->width() + 5, 0 );
     rect.rright() += 60;
-    PushButton* btn = new PushButton( this, rect, "Adv.Info", -1, false, PushButton::whiteBorderUp );
-    CONNECT( btn, onClicked(), this, AboutRawMaterial::_showAdvInfo )
+    PushButton& btn = add<PushButton>( rect, "Adv.Info", -1, false, PushButton::whiteBorderUp );
+    CONNECT( &btn, onClicked(), this, AboutRawMaterial::_showAdvInfo )
   }
 }
 

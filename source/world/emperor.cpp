@@ -135,7 +135,7 @@ void Emperor::Impl::updateRelation( CityPtr cityp )
 CityList Emperor::Impl::findTroubleCities()
 {
   CityList ret;
-  for( auto&& item : relations )
+  for( auto& item : relations )
   {
     CityPtr city = empire->findCity( item.first );
     Relation& relation = item.second;
@@ -201,7 +201,7 @@ void Emperor::Impl::resolveTroubleCities( const CityList& cities )
 
     RomeChastenerArmyPtr army = RomeChastenerArmy::create( empire );
     army->setCheckFavor( true );
-    army->setBase( empire->rome() );
+    army->setBase( empire->capital() );
     army->setSoldiersNumber( sldrNumber );
     army->attack( ptr_cast<Object>( city ) );
 

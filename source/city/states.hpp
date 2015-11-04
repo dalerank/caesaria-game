@@ -19,6 +19,7 @@
 #define __CAESARIA_CITY_STATES_H_INCLUDED__
 
 #include "world/nation.hpp"
+#include "core/time.hpp"
 
 namespace city
 {
@@ -29,6 +30,7 @@ struct States
   world::Nation nation = world::nation::unknown;
   unsigned int population = 0;
   bool romeCity = false;
+  DateTime birth;
 };
 
 }//end namespace city

@@ -23,7 +23,7 @@ namespace config
 
 namespace distance
 {
-enum { maxDeliver = 40 };
+enum { ballistaRange = 8, animalRandrom=10, maxDeliver = 40 };
 }
 
 }//end namespace city

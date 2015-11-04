@@ -49,6 +49,8 @@ public:
 
   void setScreenSize( const Size& size );
   const Size& screenSize() const;
+  virtual const Size& viewportSize() const { return _srcSize; }
+  virtual void setVirtualSize( const Size& rect ) = 0;
 
   bool isFullscreen() const;
   void setFullscreen(bool enabled );
@@ -56,7 +58,6 @@ public:
   virtual void setTitle( const std::string& title );
   virtual void setFlag( int flag, int value );
   virtual int getFlag( int flag ) const;
-  virtual void setViewport( const Rect& rect ) = 0;
   virtual void loadPicture( Picture& ioPicture, bool streaming ) = 0;
   virtual void unloadPicture( Picture& ioPicture) = 0;
 

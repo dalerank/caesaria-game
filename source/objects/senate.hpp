@@ -48,7 +48,7 @@ public:
 
   virtual void timeStep(const unsigned long time);
 
-  virtual void initialize(const MetaData &mdata);
+  virtual void initialize(const object::Info& mdata);
 
   virtual void save( VariantMap& stream ) const;
   virtual void load( const VariantMap& stream );

@@ -116,10 +116,9 @@ void LoadMission::Impl::fillFiles()
   flist = flist.filter( vfs::Entries::file | vfs::Entries::extFilter, ".mission" );
 
   StringArray names;
-  foreach( it, flist )
-  {
-    names << (*it).fullpath.toString();
-  }
+  for( auto& it : flist )
+    names << it.fullpath.toString();
+
   std::sort( names.begin(), names.end() );
 
   lbxFiles->addItems( names );
@@ -147,9 +146,9 @@ Signal1<std::string>& LoadMission::onSelectFile() { return _d->onSelectFileSigna
 
 LoadMission* LoadMission::create( Widget* parent, const vfs::Directory& dir )
 {
-  LoadMission* ret = new LoadMission( parent, dir );
-  ret->setCenter( parent->center() );
-  return ret;
+  LoadMission& ret = parent->add<LoadMission>( dir );
+  ret.moveTo( Widget::parentCenter );
+  return &ret;
 }
 
 }//end namespace dialog

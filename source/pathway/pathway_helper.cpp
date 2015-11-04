@@ -93,7 +93,7 @@ Pathway PathwayHelper::create( TilePos startPos, ConstructionPtr construction, P
 
     if( !way.isValid() )
     {
-      Logger::warning( "PathwayHelper: can't find way from [%d,%d] to construction: name=%s pos=[%d,%d]",
+      Logger::warning( "PathwayHelper: can't find way from [{0},{1}] to construction: name={2} pos=[{3},{4}]",
                        startPos.i(), startPos.j(), construction->name().c_str(),
                        construction->pos().i(), construction->pos().j() );
     }

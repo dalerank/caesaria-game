@@ -28,7 +28,7 @@ namespace gui
 //! constructor
 void ModalScreen::assignTo( Widget* widget )
 {
-  ModalScreen* mdScr = new ModalScreen( widget->parent() );
+  ModalScreen* mdScr = &widget->parent()->add<ModalScreen>();
   mdScr->addChild( widget );
 }
 
@@ -170,11 +170,11 @@ void ModalScreen::draw(gfx::Engine& painter )
 		Rect r;
 
 		Widget::Widgets rchildren = children();
-		foreach( w, rchildren )
+    for( auto w : rchildren )
 		{
-			if( (*w)->visible())
+      if( w->visible())
 			{
-				r = (*w)->absoluteRect();
+        r = w->absoluteRect();
         r._bottomright += Point( 1, 1 );
         r._lefttop -= Point( 1, 1 );
 
@@ -214,9 +214,8 @@ void ModalScreen::removeChild(Widget* child)
 void ModalScreen::addChild(Widget* child)
 {
   Widget::addChild(child);
-  _environment->setFocus(child);
+  ui()->setFocus(child);
 }
-
 
 void ModalScreen::_finalizeResize()
 {

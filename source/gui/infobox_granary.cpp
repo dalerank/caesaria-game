@@ -49,18 +49,21 @@ AboutGranary::AboutGranary(Widget* parent, PlayerCityPtr city, const Tile& tile 
 
   _granary = tile.overlay<Granary>();
 
+  if( _granary.isNull() )
+  {
+    deleteLater();
+    return;
+  }
+
   setBase( _granary );
   _setWorkingVisible( true );
 
-  PushButton* btnOrders;
-  Label* lbUnits;
-  GET_WIDGET_FROM_UI( btnOrders )
-  GET_WIDGET_FROM_UI( lbUnits )
+  INIT_WIDGET_FROM_UI( PushButton*, btnOrders )
+  INIT_WIDGET_FROM_UI( Label*, lbUnits )
 
   CONNECT( btnOrders, onClicked(), this, AboutGranary::showSpecialOrdersWindow );
 
-  std::string title = MetaDataHolder::findPrettyName( _granary->type() );
-  setTitle( _(title) ); 
+  setTitle( _( _granary->info().prettyName() ) );
 
   if( lbUnits )
   {
@@ -112,11 +115,11 @@ void AboutGranary::drawGood(good::Product goodType, int col, int paintY)
 
   // pictures of goods
   const Picture& pic = good::Helper::picture( goodType );
-  Label* lb = new Label( this, Rect( Point( (col == 0 ? 31 : 250), paintY), Size( width()/2 - 15, 24 )) );
-  lb->setIcon( pic );
-  lb->setFont( Font::create( FONT_2 ) );
-  lb->setText( outText );
-  lb->setTextOffset( Point( 30, 0 ) );
+  Label& lb = add<Label>( Rect( Point( (col == 0 ? 31 : 250), paintY), Size( width()/2 - 15, 24 )) );
+  lb.setIcon( pic );
+  lb.setFont( Font::create( FONT_2 ) );
+  lb.setText( outText );
+  lb.setTextOffset( Point( 30, 0 ) );
 }
 
 }//end namespace infobox

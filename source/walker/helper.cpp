@@ -169,7 +169,7 @@ VariantMap WalkerHelper::getOptions(const walker::Type type )
   VariantMap::iterator mapIt = instance()._d->options.find( tname );
   if( mapIt == instance()._d->options.end())
   {
-    Logger::warning( "Unknown walker info for type %d", type );
+    Logger::warning( "Unknown walker info for type {0}", type );
     return VariantMap();
   }
 
@@ -203,7 +203,7 @@ std::string WalkerHelper::getTypename( walker::Type type )
 
   if( name.empty() )
   {
-    Logger::warning( "WalkerHelper: can't find walker typeName for %d", type );
+    Logger::warning( "WalkerHelper: can't find walker typeName for {0}", type );
     //_CAESARIA_DEBUG_BREAK_IF( "Can't find walker typeName by WalkerType" );
   }
 
@@ -216,7 +216,7 @@ walker::Type WalkerHelper::getType(const std::string &name)
 
   if( type == instance()._d->htype.getInvalid() )
   {
-    Logger::warning( "Can't find walker type for %s", name.c_str());
+    Logger::warning( "Can't find walker type for {0}", name);
     //_CAESARIA_DEBUG_BREAK_IF( "Can't find walker type by typeName" );
   }
 
@@ -384,13 +384,13 @@ void __fillRelations( const std::string& name, const VariantMap& items, const st
   T wtype = check( name );
 
   StringArray types = items.get( section ).toStringArray();
-  foreach( itType, types )
+  for( auto& itType : types )
   {
-    T ftype = check( *itType );
+    T ftype = check( itType );
 
     if( ftype == unknownType )
     {
-      Logger::warning( warnText.c_str(), itType->c_str(), name.c_str());
+      Logger::warning( warnText, itType, name );
     }
     else
     {
@@ -403,32 +403,32 @@ void WalkerRelations::load(const VariantMap& stream)
 {
   //_d->relations.clear();
   VariantMap wrelations = stream.get( "walkers" ).toMap();
-  foreach( it, wrelations )
+  for( auto& itemr : wrelations )
   {
-    VariantMap item = it->second.toMap();
-    __fillRelations<walker::Type>( it->first, item, "friend",
+    VariantMap vm = itemr.second.toMap();
+    __fillRelations<walker::Type>( itemr.first, vm, "friend",
                                    &WalkerHelper::getType,
-                                   "WalkerRelations: unknown friend %s for type %s",
+                                   "WalkerRelations: unknown friend {0} for type {1}",
                                    &WalkerRelations::addFriend, walker::unknown );
 
-    __fillRelations<walker::Type>( it->first, item, "enemy",
+    __fillRelations<walker::Type>( itemr.first, vm, "enemy",
                                    &WalkerHelper::getType,
-                                   "WalkerRelations: unknown enemy %s for type %s",
+                                   "WalkerRelations: unknown enemy {0} for type {1}",
                                    &WalkerRelations::addEnemy, walker::unknown );
   }
 
   VariantMap nrelations = stream.get( "nations" ).toMap();
-  foreach( it,nrelations)
+  for( auto& itemr : nrelations)
   {
-    VariantMap item = it->second.toMap();
-    __fillRelations<world::Nation>( it->first, item, "friend",
+    VariantMap item = itemr.second.toMap();
+    __fillRelations<world::Nation>( itemr.first, item, "friend",
                                    &WalkerHelper::getNation,
-                                   "NationRelations: unknown friend %s for type %s",
+                                   "NationRelations: unknown friend {0} for type {1}",
                                    &WalkerRelations::addFriend, world::nation::unknown );
 
-    __fillRelations<world::Nation>( it->first, item, "enemy",
+    __fillRelations<world::Nation>( itemr.first, item, "enemy",
                                    &WalkerHelper::getNation,
-                                   "NationRelations: unknown enemy %s for type %s",
+                                   "NationRelations: unknown enemy {0} for type {1}",
                                    &WalkerRelations::addEnemy, world::nation::unknown );
   }
 }
@@ -436,7 +436,6 @@ void WalkerRelations::load(const VariantMap& stream)
 void WalkerRelations::clear()
 {
   _d->walkers.clear();
-
 }
 
 VariantMap WalkerRelations::save() const
@@ -449,4 +448,14 @@ VariantMap WalkerRelations::save() const
 WalkerRelations::WalkerRelations() : _d( new Impl )
 {
 
+}
+
+walker::Type walker::toType(const std::string& name)
+{
+  return WalkerHelper::getType( name );
+}
+
+std::string walker::toString(walker::Type type)
+{
+  return WalkerHelper::getTypename( type );
 }

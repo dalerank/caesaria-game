@@ -30,6 +30,7 @@
 #include "game/resourcegroup.hpp"
 #include "game/gamedate.hpp"
 #include "core/utils.hpp"
+#include "core/format.hpp"
 #include "config.hpp"
 
 using namespace gfx;
@@ -96,7 +97,7 @@ void ServiceBuilding::deliverService()
     return;
 
   // make a service walker and send him to his wandering
-  ServiceWalkerPtr serviceman = ServiceWalker::create( _city(), serviceType() );
+  auto serviceman = Walker::create<ServiceWalker>( _city(), serviceType() );
   serviceman->send2City( this, _getWalkerOrders() );
 
   if( !serviceman->isDeleted() )
@@ -144,7 +145,7 @@ std::string ServiceBuilding::workersStateDesc() const
               ? "ready_for_work"
               : "prepare_for_work";
   }
-  std::string currentState = utils::format( 0xff, "##%s_%s##", srvcType.c_str(), state.c_str() );
+  std::string currentState = fmt::format( "##{0}_{1}##", srvcType, state );
   return currentState;
 }
 

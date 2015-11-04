@@ -59,26 +59,16 @@ void ClearTile::_exec( Game& game, unsigned int )
 
     bool deleteRoad = cursorTile.getFlag( Tile::tlRoad );
 
-    if( overlay.isValid()  )
+    if( overlay.isValid() && !overlay->canDestroy() )
     {
-      const MetaData& md = MetaDataHolder::find( overlay->type() );
-      if( !overlay->canDestroy() )
-      {
-        GameEventPtr e = WarningMessage::create( _( overlay->errorDesc() ), WarningMessage::neitral );
-        e->dispatch();
+      auto info = overlay->info();
+      events::dispatch<WarningMessage>( _( overlay->errorDesc() ), WarningMessage::neitral );
 
-        if( md.getFlag( MetaDataOptions::requestDestroy, false ) )
-        {
-          e = RequestDestroy::create( overlay );
-          e->dispatch();
-        }
-        return;
-      }
-
-      if( md.getFlag( MetaDataOptions::precisionDestroy, false ) )
+      if( info.requestDestroy() )
       {
-        //overlay->partlyDestroy( _pos );
+        events::dispatch<RequestDestroy>( overlay );
       }
+      return;
     }
 
     if( overlay.isValid() )
@@ -92,9 +82,9 @@ void ClearTile::_exec( Game& game, unsigned int )
     for( auto tile : clearedTiles )
     {
       tile->setMaster( NULL );
-      tile->setFlag( Tile::tlTree, false);
-      tile->setFlag( Tile::tlRoad, false);
-      tile->setFlag( Tile::tlGarden, false);
+      tile->terrain().tree = false;
+      tile->terrain().road = false;
+      tile->terrain().garden = false;
       tile->setOverlay( NULL );
 
       deleteRoad |= tile->getFlag( Tile::tlRoad );

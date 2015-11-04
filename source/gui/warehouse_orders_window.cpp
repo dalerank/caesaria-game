@@ -50,7 +50,7 @@ public:
 WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, const Point& pos, WarehousePtr warehouse )
 : BaseSpecialOrdersWindow( parent, pos, defaultHeight ), __INIT_IMPL(WarehouseSpecialOrdersWindow)
 {
-  __D_IMPL(d, WarehouseSpecialOrdersWindow)
+  __D_REF(d, WarehouseSpecialOrdersWindow)
 
   setupUI( ":/gui/warehousespecial.gui");
   setTitle( _("##warehouse_orders##") );
@@ -58,7 +58,7 @@ WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, cons
   std::set<good::Product> excludeGoods;
   excludeGoods << good::none << good::denaries;
 
-  d->warehouse = warehouse;
+  d.warehouse = warehouse;
 
   if( warehouse->isTradeCenter() )
   {
@@ -66,27 +66,27 @@ WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, cons
   }
 
   int index=0;
-  foreach( goodType, good::all() )
+  for( auto& goodType : good::all() )
   {
-    if( excludeGoods.count( *goodType ) > 0 )
+    if( excludeGoods.count( goodType ) > 0 )
       continue;
 
-    const good::Orders::Order rule = d->warehouse->store().getOrder( *goodType );
+    const good::Orders::Order rule = d.warehouse->store().getOrder( goodType );
 
     if( rule != good::Orders::none )
     {
-      OrderGoodWidget::create( index, *goodType, _ordersArea(), d->warehouse->store() );
+      new OrderGoodWidget( _ordersArea(), index, goodType, d.warehouse->store() );
       index++;
     }
   }
 
-  GET_DWIDGET_FROM_UI( d, btnToggleDevastation )
-  GET_DWIDGET_FROM_UI( d, btnTradeCenter )
+  GET_DWIDGET_FROM_UI( &d, btnToggleDevastation )
+  GET_DWIDGET_FROM_UI( &d, btnTradeCenter )
 
-  CONNECT( d->btnToggleDevastation, onClicked(), d.data(), Impl::toggleDevastation );
-  CONNECT( d->btnTradeCenter,       onClicked(), d.data(), Impl::toggleTradeCenter );
+  CONNECT( d.btnToggleDevastation, onClicked(), &d, Impl::toggleDevastation );
+  CONNECT( d.btnTradeCenter,       onClicked(), &d, Impl::toggleTradeCenter );
 
-  d->update();
+  d.update();
 }
 
 WarehouseSpecialOrdersWindow::~WarehouseSpecialOrdersWindow() {}

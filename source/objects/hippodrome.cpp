@@ -90,9 +90,9 @@ HippodromeSection::HippodromeSection( Hippodrome& base, Direction direction, Typ
   _picture().load( ResourceGroup::hippodrome, pictureIndex );
   _picture().setOffset( Point( 0, _picture().height() / 2 ) + hippodromeSectionOffset[ pictureIndex ] );
 
-  _animationRef().addFrame( ResourceGroup::hippodrome, animIndex );
-  _animationRef().setOffset( hippodromeSectionOffset[ animIndex ]);
-  _animationRef().stop();
+  _animation().addFrame( ResourceGroup::hippodrome, animIndex );
+  _animation().setOffset( hippodromeSectionOffset[ animIndex ]);
+  _animation().stop();
 }
 
 HippodromeSection::~HippodromeSection(){}
@@ -104,8 +104,7 @@ void HippodromeSection::destroy()
   auto hippodrome = _map().overlay( _basepos ).as<Hippodrome>();
   if( hippodrome.isValid() )
   {
-    GameEventPtr e = ClearTile::create( _basepos );
-    e->dispatch();
+    events::dispatch<ClearTile>( _basepos );
     _basepos = gfx::tilemap::invalidLocation();
   }
 }
@@ -234,10 +233,10 @@ bool Hippodrome::build( const city::AreaInfo& info )
 
   _d->sectionEnd->setAnimationVisible( false );
   _d->sectionMiddle->setAnimationVisible( false );
-  _animationRef().start();
+  _animation().start();
 
-  auto charioter = CircusCharioter::create( _city(), this );
-  _d->charioters.push_back( charioter );
+  auto charioter = Walker::create<CircusCharioter>( _city(), this );
+  _d->charioters.push_back( charioter.object() );
 
   return true;
 }
@@ -248,15 +247,13 @@ void Hippodrome::destroy()
 
   if( _d->sectionEnd.isValid() )
   {
-    GameEventPtr e = ClearTile::create( _d->sectionEnd->pos() );
-    e->dispatch();
+    events::dispatch<ClearTile>( _d->sectionEnd->pos() );
     _d->sectionEnd = 0;
   }
 
   if( _d->sectionMiddle.isValid() )
   {
-    GameEventPtr e = ClearTile::create( _d->sectionMiddle->pos() );
-    e->dispatch();
+    events::dispatch<ClearTile>( _d->sectionMiddle->pos() );
     _d->sectionMiddle = 0;
   }
 }
@@ -272,10 +269,10 @@ WalkerList Hippodrome::_specificWorkers() const
 {
   WalkerList ret;
 
-  foreach( i, walkers() )
+  for( auto i : walkers() )
   {
-    if( (*i)->type() == walker::charioteer )
-      ret << *i;
+    if( i->type() == walker::charioteer )
+      ret << i;
   }
 
   return ret;
@@ -289,7 +286,7 @@ void Hippodrome::_init( bool onBuild )
     _fgPicture( 1 ) = Picture::getInvalid();
   }
 
-  _animationRef().clear();
+  _animation().clear();
 
   switch( _d->direction )
   {

@@ -34,9 +34,9 @@ namespace dialog
 class LoadFile : public Window
 {
 public:
-  static LoadFile* create( Widget* parent, const Rect& rect,
-                                 const vfs::Directory& dir, const std::string& ext,
-                                 int id  );
+  LoadFile( Widget* parent, const Rect& rect,
+                  const vfs::Directory& dir, const std::string& ext,
+                  int id );
 
   virtual ~LoadFile();
 
@@ -57,9 +57,6 @@ signals public:
   Signal1<std::string>& onSelectFile();
 
 protected:
-  LoadFile( Widget* parent, const Rect& rect,
-                  const vfs::Directory& dir, const std::string& ext,
-                  int id );
 
   virtual void _fillFiles();
 

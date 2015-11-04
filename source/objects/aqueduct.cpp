@@ -74,7 +74,7 @@ bool Aqueduct::build( const city::AreaInfo& info )
   WaterSource::build( info );
 
   TilePos offset( 2, 2 );
-  auto aqueducts = _city()->tilemap().area( info.pos - offset, info.pos + offset )
+  auto aqueducts = _map().area( info.pos - offset, info.pos + offset )
                                              .overlays<Aqueduct>();
 
   for( auto aqueduct : aqueducts ) { aqueduct->updatePicture( info.city ); }
@@ -96,7 +96,7 @@ void Aqueduct::destroy()
 
   if( _city().isValid() )
   {
-    TilesArea area( _city()->tilemap(), pos() - TilePos( 2, 2 ), Size( 5 ) );
+    TilesArea area( _map(), pos() - TilePos( 2, 2 ), Size( 5 ) );
     area.overlays()
         .select<Aqueduct>()
         .for_each( [this](AqueductPtr aq){ aq->updatePicture( _city() ); });
@@ -404,7 +404,7 @@ void Aqueduct::addRoad()
   }
 }
 
-bool Aqueduct::canAddRoad( PlayerCityPtr city, TilePos pos) const
+bool Aqueduct::canAddRoad(PlayerCityPtr city, const TilePos& pos) const
 {
   if( !city.isValid() )
     city = _city();
@@ -435,7 +435,7 @@ bool Aqueduct::canAddRoad( PlayerCityPtr city, TilePos pos) const
   if (tilemap.at(tile_pos_d[south]).getFlag( Tile::tlRoad )) { directionFlags += 4; } // road to the south
   if (tilemap.at(tile_pos_d[west]).getFlag( Tile::tlRoad )) { directionFlags += 8; } // road to the west
 
-  Logger::warning( "direction flags=%d", directionFlags );
+  Logger::warning( "direction flags={0}", directionFlags );
 
   switch (directionFlags)
   {

@@ -64,11 +64,10 @@ Prefect::Prefect(PlayerCityPtr city )
   : ServiceWalker( city, Service::prefect ), _d( new Impl )
 {
   _setType( walker::prefect );
+
   _d->water = 0;
   _d->fumigateHouseNumber = 0;
   _setSubAction( doNothing );  
-
-  setName( NameGenerator::rand( NameGenerator::male ) );
 }
 
 bool Prefect::_looks4Fire( ReachedBuildings& buildings, TilePos& p )
@@ -176,14 +175,12 @@ void Prefect::_serveHouse( HousePtr house )
     _d->fumigateHouseNumber++;
     house->removeHabitants( 1000 ); //all habitants will killed
 
-    GameEventPtr e = Disaster::create( house->tile(), Disaster::plague );
-    e->dispatch();
+    events::dispatch<Disaster>( house->tile(), Disaster::plague );
 
     if( _d->fumigateHouseNumber > 5 )
     {
-      e = ShowInfobox::create( "##pestilence_event_title##", "##pestilent_event_text##",
-                               ShowInfobox::send2scribe, "sick" );
-      e->dispatch();
+      events::dispatch<ShowInfobox>( "##pestilence_event_title##", "##pestilent_event_text##",
+                                     true, "sick" );
       _d->fumigateHouseNumber = -999;
     }
 
@@ -192,8 +189,7 @@ void Prefect::_serveHouse( HousePtr house )
       HouseList hlist = _city()->statistic().objects.neighbors<House>( house );
       for( auto h : hlist )
       {
-        GameEventPtr e = Disaster::create( h->tile(), Disaster::plague );
-        e->dispatch();
+        events::dispatch<Disaster>( h->tile(), Disaster::plague );
       }
     }
   }
@@ -378,7 +374,7 @@ void Prefect::_centerTile()
       //on next deliverService
 
       //found fire, no water, go prefecture
-      auto prefecture = _city()->getOverlay( baseLocation() ).as<Prefecture>();
+      auto prefecture = _map().overlay<Prefecture>( baseLocation() );
       if( prefecture.isValid() )
         prefecture->fireDetect( firePos );
 
@@ -539,15 +535,6 @@ Prefect::~Prefect() {}
 
 float Prefect::serviceValue() const {  return 5; }
 
-PrefectPtr Prefect::create(PlayerCityPtr city )
-{
-  PrefectPtr ret( new Prefect( city ) );
-  ret->initialize( WalkerHelper::getOptions( ret->type() ) );
-  ret->drop();
-
-  return ret;
-}
-
 void Prefect::send2City(PrefecturePtr prefecture, Prefect::SbAction action, int water/*=0 */ )
 {
   _setSubAction( water > 0 ? findFire : patrol );
@@ -610,6 +597,8 @@ void Prefect::initialize(const VariantMap& options)
 {
   ServiceWalker::initialize( options );
 }
+
+Walker::Gender Prefect::gender() const { return male; }
 
 std::string Prefect::thoughts(Thought th) const
 {

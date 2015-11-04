@@ -61,7 +61,7 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
 
   if( walker.is<Animal>() )
   {
-    std::string text = utils::format( 0xff, "##animal_%s_say##", WalkerHelper::getTypename( walker->type() ).c_str() );
+    std::string text = fmt::format( "##animal_{0}_say##", WalkerHelper::getTypename( walker->type() ) );
     return text;
   }
 

@@ -24,6 +24,8 @@
 #include "events/showtileinfo.hpp"
 #include "events/playsound.hpp"
 
+using namespace events;
+
 namespace gui
 {
 
@@ -70,7 +72,7 @@ void AboutConstruction::_setWorkingVisible(bool show)
   if( !_btnToggleWorking && _lbBlackFrame() )
   {
       Rect btnRect( Point( _lbBlackFrame()->width() - 110, (_lbBlackFrame()->height() - 25)/2 ), Size( 100, 25 ) );
-     _btnToggleWorking = new PushButton( _lbBlackFrame(), btnRect, "", -1, false, PushButton::blackBorderUp  );
+     _btnToggleWorking = &_lbBlackFrame()->add<PushButton>( btnRect, "", -1, false, PushButton::blackBorderUp  );
      _btnToggleWorking->setFont( Font::create( FONT_1 ) );
      _updateWorkingText();
 
@@ -110,8 +112,7 @@ void AboutConstruction::_baseAssigned()
   if( base().isValid() )
   {
     std::string typeName = object::toString( base()->type() );
-    auto event = events::PlaySound::create( "bmsel_"+typeName, 1, 100, audio::infobox, true );
-    event->dispatch();
+    events::dispatch<PlaySound>( "bmsel_"+typeName, 1, 100, audio::infobox, true );
   }
 }
 
@@ -121,11 +122,10 @@ void AboutConstruction::_switch(int flag)
 {
   if( _construction.isValid() )
   {
-    events::GameEventPtr e = events::ShowTileInfo::create( base()->pos(), flag == KEY_PERIOD
-                                                           ? events::ShowTileInfo::next
-                                                           : events::ShowTileInfo::prew );
+    events::dispatch<ShowTileInfo>( base()->pos(), flag == KEY_PERIOD
+                                    ? ShowTileInfo::next
+                                    : ShowTileInfo::prew );
     deleteLater();
-    e->dispatch();
   }
 }
 

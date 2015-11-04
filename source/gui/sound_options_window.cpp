@@ -35,35 +35,35 @@ namespace dialog
 class SoundOptions::Impl
 {
 public:
-  GameAutoPause locker;
   bool initialized;
+
+  struct {
+    Signal2<audio::SoundType,audio::Volume> onSoundChange;
+    Signal0<> onClose, onApply, onRequest;
+  } signal;
 
   void resolveChange( SpinBox* who, int value )
   {
     int type = who->getProperty( "soundType" );
-    emit onSoundChangeSignal( audio::SoundType(type), audio::Volume(value) );
+    emit signal.onSoundChange( audio::SoundType(type), audio::Volume(value) );
   }
-
-public signals:
-  Signal2<audio::SoundType,audio::Volume> onSoundChangeSignal;
-  Signal0<> onCloseSignal, onApplySignal, onRequestSignal;
 };
 
 SoundOptions::SoundOptions(Widget* parent)
   : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
-  _d->locker.activate();
   _d->initialized = false;
   setupUI( ":/gui/soundoptions.gui" );
 
   setCenter( parent->center() );
 
   WidgetEscapeCloser::insertTo( this );
+  GameAutoPause::insertTo( this );
 
   INIT_WIDGET_FROM_UI( PushButton*, btnOk )
   if( btnOk ) btnOk->setFocus();
 
-  List<SpinBox*> widgets = findChildren<SpinBox*>( true );
+  auto widgets = findChildren<SpinBox*>( true );
   for( auto wdg : widgets )
     CONNECT( wdg, onChangeA(), _d.data(), Impl::resolveChange )
 }
@@ -78,13 +78,13 @@ bool SoundOptions::onEvent(const NEvent& event)
     switch( id )
     {
     case 1001:
-      emit _d->onApplySignal();
+      emit _d->signal.onApply();
       deleteLater();
     break;
 
     case 1002:
     {
-      emit _d->onCloseSignal();
+      emit _d->signal.onClose();
       deleteLater();
     }
     break;
@@ -97,13 +97,13 @@ bool SoundOptions::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-Signal2<audio::SoundType, audio::Volume>& SoundOptions::onChange() { return _d->onSoundChangeSignal; }
-Signal0<>& SoundOptions::onClose()                       { return _d->onCloseSignal; }
-Signal0<>& SoundOptions::onApply()                       { return _d->onApplySignal; }
+Signal2<audio::SoundType, audio::Volume>& SoundOptions::onChange() { return _d->signal.onSoundChange; }
+Signal0<>& SoundOptions::onClose()                       { return _d->signal.onClose; }
+Signal0<>& SoundOptions::onApply()                       { return _d->signal.onApply; }
 
 void SoundOptions::update(audio::SoundType type, audio::Volume value)
 {
-  List<SpinBox*> widgets = findChildren<SpinBox*>( true );
+  auto widgets = findChildren<SpinBox*>( true );
 
   for( auto wdg : widgets )
   {

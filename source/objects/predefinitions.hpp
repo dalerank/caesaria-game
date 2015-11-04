@@ -19,6 +19,7 @@
 #define __CAESARIA_BUILDING_PREDEFINITIONS_H_INCLUDED__
 
 #include "core/predefinitions.hpp"
+#include "core/smartlist.hpp"
 #include "core/namedtype.hpp"
 
 PREDEFINE_CLASS_SMARTLIST(Building,List)

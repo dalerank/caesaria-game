@@ -48,6 +48,7 @@ public:
 
   virtual bool installEventHandler(EventHandlerPtr);
 
+  void setConstructorMode( bool enabled );
   void setCameraPos( TilePos pos );
   void switch2layer( int layer );
   virtual gfx::Camera* camera() const;
@@ -60,7 +61,6 @@ public slots:
 private slots:
   void _quit();
   void _resolveSwitchMap();
-  void _showLoadDialog();
   void _resolveLoad();
   void _resolveEnterButton();
   void _requestExitGame();

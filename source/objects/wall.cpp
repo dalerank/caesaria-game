@@ -68,7 +68,7 @@ void Wall::destroy()
 
   if( _city().isValid() )
   {
-    TilesArea area( _city()->tilemap(), pos() - TilePos( 2, 2), Size( 5 ) );
+    TilesArea area( _map(), pos() - TilePos( 2, 2), Size( 5 ) );
 
     for( auto tile : area )
     {
@@ -242,7 +242,7 @@ const Picture& Wall::picture(const city::AreaInfo& areaInfo) const
 
   default:
     index = 178; // it's impossible, but ...
-    Logger::warning( "Impossible direction on wall building [%d,%d]", areaInfo.pos.i(), areaInfo.pos.j() );
+    Logger::warning( "Impossible direction on wall building [{0},{1}]", areaInfo.pos.i(), areaInfo.pos.j() );
   }
 
   static Picture ret;

@@ -22,6 +22,7 @@
 #include "core/logger.hpp"
 #include "core/saveadapter.hpp"
 #include "gfx/loader.hpp"
+#include "core/color_list.hpp"
 #include "core/variant_map.hpp"
 #include "core/debug_timer.hpp"
 #include "gfx/sdl_engine.hpp"
@@ -160,7 +161,7 @@ public:
   Texture(int width, int height)
   {
     image = gfx::Picture( Size( width, height ), 0, true );
-    image.fill( DefaultColors::clear );
+    image.fill( ColorList::clear );
 
     root = new Node(0,0, width, height);
   }
@@ -202,10 +203,10 @@ public:
         if (unitCoordinates)
         {
           std::string str = utils::format( 0xff, "    %s %f %f %f %f", keyVal.c_str(),
-                                                           r.left()/(float)width,
-                                                           r.top()/(float)height,
-                                                           r.width()/(float)width,
-                                                           r.height()/(float)height );
+                                           r.left()/(float)width,
+                                           r.top()/(float)height,
+                                           r.width()/(float)width,
+                                           r.height()/(float)height );
           atlas.write( str );
         }
         else
@@ -243,7 +244,7 @@ public:
       vfs::Path path(str);
       if(!path.exist() || !path.isFolder())
 			{
-        Logger::warning("Error: Could not find directory '" + path.toString() + "'");
+        Logger::warning("Error: Could not find directory '{0}'", path.toString());
 				return;
 			}
 
@@ -263,8 +264,8 @@ public:
 
         if(image.width() > width || image.height() > height)
 				{
-          Logger::warning( "Error: '%s' (%dx%d) ) is larger than the atlas (%dx%d)",
-                           filename.c_str(), image.width(), image.height(), width, height );
+          Logger::warning( "Error: '{0}' ({1}x{2}) ) is larger than the atlas ({3}x{4}})",
+                           filename, image.width(), image.height(), width, height );
 					return;
 				}			        
 				
@@ -281,13 +282,13 @@ public:
     textures.push_back( tx );
 		int count = 0;
 		
-    for( auto&& imageName : imageNameSet )
+    for( auto& imageName : imageNameSet )
 		{
       bool added = false;
 			
       Logger::warning( "Adding " + imageName.name + " to atlas (" + utils::i2str(++count) + ")");
 			
-      for( auto&& texture : textures)
+      for( auto& texture : textures)
 			{
         if(texture->addImage(imageName.image, imageName.name, padding))
 				{
@@ -517,16 +518,19 @@ struct Config
 class Atlases : public std::vector<AtlasGenerator*>
 {
 public:
-  gfx::Picture findByIndex( int index )
+  gfx::Picture findByIndex( int index, std::string& name )
   {
     gfx::Picture ret = gfx::Picture::getInvalid();
     int currentStart = 0;
-    for( auto&& a : *this )
+    for( auto& a : *this )
     {
       if( index >= currentStart &&
           index < currentStart + a->textures.size() )
       {
-        ret = a->textures[ index - currentStart ]->image;
+        int tI = index - currentStart;
+        ret = a->textures[ tI ]->image;
+        name = a->names[ tI ];
+        break;
       }
       else
       {
@@ -540,7 +544,7 @@ public:
   int max() const
   {
     int result = 0;
-    for( auto&& a : *this )
+    for( auto& a : *this )
       result += a->textures.size();
 
     return result;
@@ -566,7 +570,7 @@ void createSet( const ArchiveConfig& archive, const StringArray& names )
   if ( zf == nullptr )
   {
      /* Handle error */
-     Logger::warning( "Unable to open %s for writing\n", arcName.toCString() );
+     Logger::warning( "Unable to open {} for writing\n", arcName.toCString() );
      return;
   }
 
@@ -717,13 +721,17 @@ int main(int argc, char* argv[])
     gray = ygray;
     for( int y=0; y < bg.height(); y+= offset )
     {
-      bg.fill( gray ? DefaultColors::darkSlateGray : DefaultColors::lightSlateGray, Rect( x, y, x+offset, y+offset ) );
+      bg.fill( gray ? ColorList::darkSlateGray : ColorList::lightSlateGray, Rect( x, y, x+offset, y+offset ) );
       gray = !gray;
     }    
   }
   bg.update();
 
   int index = 0;
+  std::string picName;
+  gfx::Picture pic = gens.findByIndex(index, picName);
+  engine->setTitle( picName );
+
   while(running)
   {
     static unsigned int lastTimeUpdate = DebugTimer::ticks();    
@@ -734,14 +742,16 @@ int main(int argc, char* argv[])
       {
         if( event.key.keysym.sym == SDLK_UP ) index++;
         if( event.key.keysym.sym == SDLK_DOWN) index--;
+
+        pic = gens.findByIndex(index, picName);
+        engine->setTitle( picName );
       }
     }
 
     index = math::clamp<int>( index, 0, gens.max()-1 );
     engine->startRenderFrame();
 
-    engine->draw( bg, Point() );
-    gfx::Picture pic = gens.findByIndex(index);
+    engine->draw( bg, Point() );    
     engine->draw( pic, Rect( Point(), pic.size()), Rect( Point(), Size(800) ) );
     engine->endRenderFrame();
 

@@ -49,7 +49,6 @@ class MissionTargets::Impl
 public:
   audio::Muter muter;
   audio::SampleDeleter speechDel;
-  GameAutoPause locker;
   PlayerCityPtr city;
   Label* lbTitle;
   Label* subTitle;
@@ -63,27 +62,19 @@ public:
   ListBox* lbxHelp;
 };
 
-MissionTargets* MissionTargets::create(Widget* parent, PlayerCityPtr city, int id )
-{
-  MissionTargets* ret = new MissionTargets( parent, id, Rect( 0, 0, 610, 430 ) );
-  ret->setCenter( parent->center() );
-  ret->setCity( city );
-  ret->show();
-  ret->setModal();
 
-  return ret;
-}
-
-MissionTargets::MissionTargets( Widget* parent, int id, const Rect& rectangle )
-  : Window( parent, rectangle, "", id ), _d( new Impl )
+MissionTargets::MissionTargets( Widget* parent, PlayerCityPtr city, int id, const Rect& rectangle )
+  : Window( parent, rectangle.width() > 0 ? rectangle : Rect( 0, 0, 610, 430 ), "", id )
+  , _d( new Impl )
 {
   Widget::setupUI( ":/gui/targets.gui" );
-  _d->locker.activate();
 
   WidgetEscapeCloser::insertTo( this );
+  GameAutoPause::insertTo( this );
+
+  moveTo( Widget::parentCenter );
 
   INIT_WIDGET_FROM_UI( TexturedButton*, btnExit )
-  CONNECT( btnExit, onClicked(), this, MissionTargets::deleteLater );
 
   GET_DWIDGET_FROM_UI( _d, lbTitle )
   GET_DWIDGET_FROM_UI( _d, lbPopulation )
@@ -93,6 +84,11 @@ MissionTargets::MissionTargets( Widget* parent, int id, const Rect& rectangle )
   GET_DWIDGET_FROM_UI( _d, lbPeace  )
   GET_DWIDGET_FROM_UI( _d, lbShortDesc )
   GET_DWIDGET_FROM_UI( _d, lbxHelp )
+
+  CONNECT( btnExit, onClicked(), this, MissionTargets::deleteLater );
+
+  setCity( city );
+  setModal();
 }
 
 void MissionTargets::draw( gfx::Engine& painter )

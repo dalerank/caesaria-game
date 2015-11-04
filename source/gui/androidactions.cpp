@@ -199,7 +199,7 @@ void ActionsHandler::_sendKeyboardEvent(int key, bool ctrl)
 
 void ActionsHandler::_showIngameMenu()
 {
-  IngameMenu* menu = IngameMenu::create( ui() );
+  IngameMenu* menu = &ui()->add<IngameMenu>();
   if( menu )
   {
     CONNECT( menu, onExit(),    this, ActionsHandler::_resolveExitGame )
@@ -232,8 +232,7 @@ void ActionsHandler::_showTileHelp()
   if( !_scene )
     return;
 
-  auto event = ShowTileInfo::create( _tilepos );
-  event->dispatch();
+  events::dispatch<ShowTileInfo>( _tilepos );
 }
 
 }//end namespace tablet

@@ -75,6 +75,7 @@ public:
   SDL_Window* window;
   SDL_Renderer* renderer;
   SdlBatcher batcher;
+  Size viewportSize;
 
   MaskInfo mask;
   int sheigth;
@@ -176,7 +177,7 @@ void SdlEngine::init()
   int rc = SDL_Init(SDL_INIT_VIDEO);
   if (rc != 0)
   {
-    Logger::warning( utils::format( 0xff, "CRITICAL!!! Unable to initialize SDL: %s", SDL_GetError() ) );
+    Logger::warning( "CRITICAL!!! Unable to initialize SDL: {}", SDL_GetError() );
     THROW("SDLGraficEngine: Unable to initialize SDL: " << SDL_GetError());
   }
 
@@ -184,7 +185,7 @@ void SdlEngine::init()
   rc = TTF_Init();
   if (rc != 0)
   {
-    Logger::warning( utils::format( 0xff, "CRITICAL!!! Unable to initialize ttf: %s", SDL_GetError() ) );
+    Logger::warning( "CRITICAL!!! Unable to initialize ttf: {0}", SDL_GetError() );
     THROW("SDLGraficEngine: Unable to initialize SDL: " << SDL_GetError());
   }
 
@@ -201,54 +202,58 @@ void SdlEngine::init()
 #ifdef CAESARIA_PLATFORM_ANDROID
   auto mode = modes().front();
   _srcSize = Size( mode.width(), mode.height() );
-  Logger::warning( utils::format( 0xff, "SDLGraficEngine: Android set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
+  Logger::warning( "SDLGraficEngine: Android set mode {}x{}",  _srcSize.width(), _srcSize.height() );
 
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
-  window = SDL_CreateWindow( "CaesarIA:android", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _srcSize.width(), _srcSize.height(),
-           SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
+  window = SDL_CreateWindow( "CaesarIA:android",
+                             SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                             _srcSize.width(), _srcSize.height(),
+                             SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
 
   Logger::warning("SDLGraficEngine:Android init successfull");
 #else
-  Logger::warning( utils::format( 0xff, "SDLGraficEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
+  Logger::warning( "SDLGraficEngine: set mode {}x{}",  _srcSize.width(), _srcSize.height() );
 
-  window = SDL_CreateWindow( "CaesariA",
+  if( isFullscreen() )
+  {
+    auto mode = modes().front();
+    Size s( mode.width(), mode.height() );
+
+    window = SDL_CreateWindow("CaesariA",
+                              SDL_WINDOWPOS_UNDEFINED,
+                              SDL_WINDOWPOS_UNDEFINED,
+                              s.width(), s.height(),
+                              SDL_WINDOW_OPENGL|SDL_WINDOW_FULLSCREEN_DESKTOP|SDL_WINDOW_SHOWN );
+  }
+  else
+  {
+    window = SDL_CreateWindow( "CaesariA",
                              SDL_WINDOWPOS_CENTERED,
                              SDL_WINDOWPOS_CENTERED,
                              _srcSize.width(), _srcSize.height(),
                              SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
+  }
 
   if (window == NULL)
   {
-    Logger::warning( utils::format( 0xff, "CRITICAL!!! Unable to create SDL-window: %s", SDL_GetError() ) );
+    Logger::warning( "CRITICAL!!! Unable to create SDL-window: {}", SDL_GetError() );
     THROW("Failed to create window");
   }
 
-  Logger::warning("SDLGraficEngine: init successfull");
-
-  if( isFullscreen() )
-  {
-    int idx = SDL_GetWindowDisplayIndex( window );
-    SDL_Rect bounds;
-    SDL_GetDisplayBounds( idx, &bounds );
-    SDL_SetWindowBordered( window, SDL_FALSE );
-    SDL_SetWindowPosition( window, bounds.x, bounds.y );
-    SDL_SetWindowSize( window, bounds.w, bounds.h );
-    _srcSize = Size( bounds.w, bounds.h );
-  }
+  Logger::warning("SDLGraficEngine: init successfull");  
 #endif
 
   SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
 
   if (renderer == NULL)
   {
-    Logger::warning( utils::format( 0xff, "CRITICAL!!! Unable to create renderer: %s", SDL_GetError() ) );
+    Logger::warning( "CRITICAL!!! Unable to create renderer: {}", SDL_GetError() );
     THROW("Failed to create renderer");
   }
 
   SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");  // make the scaled rendering look smoother.
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
   SDL_SetRenderDrawBlendMode( renderer, SDL_BLENDMODE_BLEND );
+  SDL_RenderSetLogicalSize( renderer, _srcSize.width(), _srcSize.height() );
   SDL_RenderClear(renderer);
   SDL_RenderPresent(renderer);
 
@@ -256,17 +261,18 @@ void SdlEngine::init()
   for( int k=0; k < SDL_GetNumRenderDrivers(); k++ )
   {
     SDL_GetRenderDriverInfo( k, &info );
-    Logger::warning( "SDLGraficEngine: availabe render %s ", info.name );
+    Logger::warning( "SDLGraficEngine: availabe render {}", info.name );
   }
 
   SDL_GetRendererInfo( renderer, &info );  
   int gl_version;
   SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
   SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 16);
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
   SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &gl_version );
-  Logger::warning( "SDLGraficEngine: init render %s ", info.name );
-  Logger::warning( "SDLGraficEngine: using OpenGL %d ", gl_version );
-  Logger::warning( "SDLGraficEngine: max texture size is [%dx%d]", info.max_texture_width, info.max_texture_height );
+  Logger::warning( "SDLGraficEngine: init render {}", info.name );
+  Logger::warning( "SDLGraficEngine: using OpenGL {}", gl_version );
+  Logger::warning( "SDLGraficEngine: max texture size is {}x{}", info.max_texture_width, info.max_texture_height );
 
   SDL_Texture *screenTexture = SDL_CreateTexture(renderer,
                                                  SDL_PIXELFORMAT_ARGB8888,
@@ -283,13 +289,22 @@ void SdlEngine::init()
   }
 
   Logger::warning( "SDLGraficEngine: set caption");
-  Logger::warning( "SDLGraphicEngine: version:%s compiler:%s", CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
-  std::string versionStr = utils::format( 0xff, "CaesarIA (b%d)", CAESARIA_BUILD_NUMBER );
+  Logger::warning( "SDLGraphicEngine: version:{} compiler:{}", CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
+  std::string versionStr = fmt::format( "CaesarIA (WORK IN PROGRESS/Build {})", CAESARIA_BUILD_NUMBER );
   SDL_SetWindowTitle( window, versionStr.c_str() );
 
   _d->window = window;
   _d->sheigth = _srcSize.height();
   _d->renderer = renderer;
+
+  float wx, wy;
+  SDL_RenderGetScale( _d->renderer, &wx, &wy);
+
+#ifdef CAESARIA_PLATFORM_ANDROID
+  _d->viewportSize = Size( _srcSize.width() * ( 800.f / _srcSize.height()), 800 );
+#else
+  _d->viewportSize = _srcSize * wx;
+#endif
 
   _d->fpsTx = Picture( Size( 200, 20 ), 0, true );
 }
@@ -305,7 +320,7 @@ void SdlEngine::loadPicture(Picture& ioPicture, bool streaming)
   if( !ioPicture.surface() )
   {
     Size size = ioPicture.size();
-    Logger::warning( utils::format( 0xff, "SdlEngine:: can't make surface, size=%dx%d", size.width(), size.height() ) );
+    Logger::warning( "SdlEngine:: can't make surface, size={}x{}]", size.width(), size.height() );
   }
 
   SDL_Texture* tx = 0;
@@ -370,7 +385,7 @@ void SdlEngine::endRenderFrame()
       _d->debugFont.draw( _d->fpsTx, _d->debugTextStr, Point( 0, 0 ) );
       timeCount = DebugTimer::ticks();
 #ifdef SHOW_FPS_IN_LOG
-      Logger::warning( "FPS: %d", _d->fps );
+      Logger::warning( "FPS: {0}", _d->fps );
 #endif
     }
     draw( _d->fpsTx, Point( _d->screen.width() / 2, 2 ), 0 );
@@ -393,6 +408,8 @@ void SdlEngine::endRenderFrame()
 
   _d->drawCall = 0;
 }
+
+const Size& SdlEngine::viewportSize() const { return _d->viewportSize; }
 
 void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* clipRect )
 {    
@@ -648,6 +665,13 @@ void SdlEngine::setTitle(const std::string& title)
 
 void SdlEngine::setScale( float scale )
 {
+  static float lastScale = 0;
+  if( lastScale != scale )
+  {
+    Logger::warning( "SdlEngine: set scale {}", scale );
+    lastScale = scale;
+  }
+
   bool needDraw = _d->batcher.finish();
   if( needDraw )
     _d->renderState();
@@ -655,15 +679,14 @@ void SdlEngine::setScale( float scale )
   SDL_RenderSetScale( _d->renderer, scale, scale );
 }
 
-void SdlEngine::setViewport(const Rect& rect)
+void SdlEngine::setVirtualSize( const Size& size )
 {
-  if( rect.width() > 0 )
-  {
-    SDL_Rect r = { rect.left(), rect.top(), rect.width(), rect.height() };
-    SDL_RenderSetViewport( _d->renderer, &r );
-  }
-  else
-    SDL_RenderSetViewport( _d->renderer, 0 );
+  bool needDraw = _d->batcher.finish();
+  if( needDraw )
+    _d->renderState();
+
+  const Size* s = size.width() > 0 ? &size : &_srcSize;
+  SDL_RenderSetLogicalSize( _d->renderer, s->width(), s->height() );
 }
 
 void SdlEngine::createScreenshot( const std::string& filename )
@@ -748,6 +771,16 @@ bool SdlEngine::haveEvent( NEvent& event )
   if( SDL_PollEvent(&sdlEvent) )
   {
     event = EventConverter::instance().get( sdlEvent );
+
+#ifdef CAESARIA_PLATFORM_ANDROID
+    //Android fix that prevent dribling map
+    if( event.EventType == sEventMouse )
+    {
+      Point cp = cursorPos();
+      event.mouse.x = cp.x();
+      event.mouse.y = cp.y();
+    }
+#endif
     return true;
   }
 

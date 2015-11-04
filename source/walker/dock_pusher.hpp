@@ -24,10 +24,8 @@
 /** This walker delivers goods */
 class Docker : public CartPusher
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static DockerPtr create( PlayerCityPtr city );
-
-protected:
   Docker( PlayerCityPtr city );
 };
 

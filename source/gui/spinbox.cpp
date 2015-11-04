@@ -20,7 +20,7 @@
 #include "gfx/decorator.hpp"
 #include "core/variant_map.hpp"
 #include "gfx/pictureconverter.hpp"
-#include "core/color.hpp"
+#include "core/color_list.hpp"
 #include "widget_factory.hpp"
 #include "core/utils.hpp"
 #include "texturedbutton.hpp"
@@ -42,11 +42,12 @@ public:
   TexturedButton* btnDecrease;
   TexturedButton* btnIncrease;
 
-  Impl() : minv( 0 ), maxv( 100 ), value( 0 ), step( 10 ), btnDecrease( 0 ), btnIncrease( 0 ) {}
+  struct {
+    Signal1<int> onChange;
+    Signal2<SpinBox*,int> onChangeA;
+  } signal;
 
-public signals:
-  Signal1<int> onChangeSignal;
-  Signal2<SpinBox*,int> onChangeASignal;
+  Impl() : minv( 0 ), maxv( 100 ), value( 0 ), step( 10 ), btnDecrease( 0 ), btnIncrease( 0 ) {}
 };
 
 //! constructor
@@ -58,8 +59,8 @@ SpinBox::SpinBox( Widget* parent )
 
 void SpinBox::_initButtons()
 {
-  _d->btnDecrease = new TexturedButton( this, Point( width() * 0.6, 2 ), Size( 24, 24), -1, 601 );
-  _d->btnIncrease = new TexturedButton( this, Point( width() * 0.6 + 26, 2), Size( 24, 24 ), -1, 605 );
+  _d->btnDecrease = &add<TexturedButton>( Point( width() * 0.6, 2 ), Size( 24, 24), -1, 601 );
+  _d->btnIncrease = &add<TexturedButton>( Point( width() * 0.6 + 26, 2), Size( 24, 24 ), -1, 605 );
 
   CONNECT( _d->btnDecrease, onClicked(), this, SpinBox::_decrease );
   CONNECT( _d->btnIncrease, onClicked(), this, SpinBox::_increase );
@@ -102,8 +103,8 @@ void SpinBox::setValue(int value)
   _update();
 }
 
-Signal1<int>& SpinBox::onChange(){ return _d->onChangeSignal;}
-Signal2<SpinBox*,int>& SpinBox::onChangeA(){ return _d->onChangeASignal; }
+Signal1<int>& SpinBox::onChange(){ return _d->signal.onChange;}
+Signal2<SpinBox*,int>& SpinBox::onChangeA(){ return _d->signal.onChangeA; }
 
 void gui::SpinBox::_updateTexture(Engine& painter)
 {
@@ -114,15 +115,15 @@ void gui::SpinBox::_updateTexture(Engine& painter)
 void SpinBox::_increase()
 {
   setValue( _d->value + _d->step );
-  emit _d->onChangeSignal( _d->value );
-  emit _d->onChangeASignal( this, _d->value );
+  emit _d->signal.onChange( _d->value );
+  emit _d->signal.onChangeA( this, _d->value );
 }
 
 void SpinBox::_decrease()
 {
   setValue( _d->value - _d->step );
-  emit _d->onChangeSignal( _d->value );
-  emit _d->onChangeASignal( this, _d->value );
+  emit _d->signal.onChange( _d->value );
+  emit _d->signal.onChangeA( this, _d->value );
 }
 
 void SpinBox::_update()
@@ -131,7 +132,7 @@ void SpinBox::_update()
   if( f.isValid() && _textPicture().isValid() )
   {
     Rect frameRect( Point( 0, 0 ), _d->btnDecrease->leftbottom()  );
-    _textPicture().fill( DefaultColors::clear, Rect() );
+    _textPicture().fill( ColorList::clear, Rect() );
     if( !text().empty() )
     {
       Rect textRect = f.getTextRect( text(), frameRect, horizontalTextAlign(), verticalTextAlign() );
@@ -139,8 +140,8 @@ void SpinBox::_update()
     }
 
     frameRect = Rect( _d->btnIncrease->right() + 5, 0, width(), height() );
-    string valueText = utils::format( 0xff, "%d %s", _d->value, _d->postfix.c_str() );
-    _textPicture().fill( DefaultColors::clear, frameRect );
+    string valueText = fmt::format( "{0} {1}", _d->value, _d->postfix );
+    _textPicture().fill( ColorList::clear, frameRect );
 
     if( !valueText.empty() )
     {

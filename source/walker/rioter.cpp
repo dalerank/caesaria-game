@@ -42,6 +42,7 @@ using namespace gfx;
 using namespace events;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::rioter, Rioter)
+REGISTER_CLASS_IN_WALKERFACTORY(walker::indigeneRioter, NativeRioter)
 
 class Rioter::Impl
 {
@@ -56,10 +57,9 @@ public:
   Pathway findTarget(PlayerCityPtr city, const ConstructionList& items, TilePos pos );
 };
 
-Rioter::Rioter(PlayerCityPtr city) : Human( city ), _d( new Impl )
+Rioter::Rioter(PlayerCityPtr city)
+  : Human( city, walker::rioter ), _d( new Impl )
 {    
-  _setType( walker::rioter );
-
   addAbility( Illness::create( 0.3, 4) );
   excludeAttack( object::group::disaster );
 }
@@ -203,8 +203,7 @@ void Rioter::timeStep(const unsigned long time)
           c->updateState( pr::damage, 1 );
           if( c->state( pr::damage ) < 10 || c->state( pr::fire ) < 10 )
           {
-            GameEventPtr e = Disaster::create( c->tile(), Disaster::riots );
-            e->dispatch();
+            events::dispatch<Disaster>( c->tile(), Disaster::riots );
           }
           break;
         }
@@ -215,13 +214,6 @@ void Rioter::timeStep(const unsigned long time)
 
   default: break;
   }
-}
-
-RioterPtr Rioter::create(PlayerCityPtr city )
-{ 
-  RioterPtr ret( new Rioter( city ) );
-  ret->drop();
-  return ret;
 }
 
 Rioter::~Rioter() {}
@@ -292,15 +284,6 @@ Pathway Rioter::Impl::findTarget(PlayerCityPtr city, const ConstructionList& ite
   }
 
   return Pathway();
-}
-
-
-RioterPtr NativeRioter::create(PlayerCityPtr city)
-{
-  RioterPtr ret( new NativeRioter( city ) );
-  ret->drop();
-
-  return ret;
 }
 
 NativeRioter::NativeRioter(PlayerCityPtr city)

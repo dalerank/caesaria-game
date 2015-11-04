@@ -18,7 +18,6 @@
 #ifndef __CAESARIA_OBJECTPARAM_H_INCLUDED__
 #define __CAESARIA_OBJECTPARAM_H_INCLUDED__
 
-#include "core/namedtype.hpp"
 #include "core/hash.hpp"
 
 #define REGISTER_PARAM(name,id) namespace pr { static const Param name = Param(id); }
@@ -26,22 +25,24 @@
 
 namespace pr
 {
-BEGIN_NAMEDTYPE(Type,none)
-APPEND_NAMEDTYPE(fire)
-APPEND_NAMEDTYPE(damage)
-APPEND_NAMEDTYPE(inflammability)
-APPEND_NAMEDTYPE(collapsibility)
-APPEND_NAMEDTYPE(destroyable)
-APPEND_NAMEDTYPE(health)
-APPEND_NAMEDTYPE(happiness)
-APPEND_NAMEDTYPE(happinessBuff)
-APPEND_NAMEDTYPE(healthBuff)
-APPEND_NAMEDTYPE(settleLock)
-APPEND_NAMEDTYPE(lockTerrain)
-APPEND_NAMEDTYPE(food)
-APPEND_NAMEDTYPE(reserveExpires)
-APPEND_NAMEDTYPE(paramCount)
-END_NAMEDTYPE(Type)
+typedef enum
+{
+  unknown=0,
+  fire,
+  damage,
+  inflammability,
+  collapsibility,
+  destroyable,
+  health,
+  happiness,
+  happinessBuff,
+  healthBuff,
+  settleLock,
+  lockTerrain,
+  food,
+  reserveExpires,
+  paramCount
+} Type;
 }
 
 typedef pr::Type Param;

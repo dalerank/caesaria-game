@@ -19,6 +19,7 @@
 #include "core/variant_list.hpp"
 #include "core/utils.hpp"
 #include "good/productmap.hpp"
+#include "gfx/helper.hpp"
 #include "core/logger.hpp"
 
 namespace good
@@ -37,6 +38,8 @@ public:
 
     return ret;
   }
+private:
+  SmStock() {}
 };
 
 typedef std::vector<SmStock::Ptr> StockList;
@@ -131,47 +134,54 @@ int Storage::getMaxStore(const good::Product goodType)
   return freeRoom;
 }
 
-void Storage::applyStorageReservation(good::Stock &stock, const int reservationID)
+bool Storage::applyStorageReservation(good::Stock &stock, const int reservationID)
 {
   good::Stock reservedStock = getStorageReservation(reservationID, true);
 
   if (stock.type() != reservedStock.type())
   {
     Logger::warning( "SimpleGoodStore:GoodType does not match reservation");
-    return;
+    return false;
   }
 
   if (stock.qty() < reservedStock.qty())
   {
     Logger::warning( "SimpleGoodStore:Quantity does not match reservation");
-    return;
+    return false;
   }
 
   int amount = reservedStock.qty();
   _gsd->stocks[ reservedStock.type() ]->push( amount );
   stock.pop( amount );
+  return true;
 }
 
-void Storage::applyRetrieveReservation(good::Stock& stock, const int reservationID)
+bool Storage::applyRetrieveReservation(good::Stock& stock, const int reservationID)
 {
   good::Stock reservedStock = getRetrieveReservation(reservationID, true);
 
   if (stock.type() != reservedStock.type())
   {
     Logger::warning( "SimpleGoodStore:GoodType does not match reservation");
-    return;
+    return false;
   }
 
   if( stock.capacity() < stock.qty() + reservedStock.qty())
   {
     Logger::warning( "SimpleGoodStore:Quantity does not match reservation");
-    return;
+    return false;
   }
 
   int amount = reservedStock.qty();
   good::Stock& currentStock = getStock(reservedStock.type());
   currentStock.pop( amount );
   stock.push( amount );
+  return true;
+}
+
+void Storage::confirmDeliver(Product type, int qty, unsigned int tag, const DateTime& time)
+{
+  _consumers().append( type, qty, tag, time );
 }
 
 VariantMap Storage::save() const

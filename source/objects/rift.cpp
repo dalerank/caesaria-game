@@ -61,9 +61,8 @@ void Rift::initTerrain(Tile& terrain)
 
 RiftList Rift::neighbors() const
 {
-  return  _city()->tilemap()
-                  .getNeighbors(pos(), Tilemap::FourNeighbors)
-                  .overlays<Rift>();
+  return  _map().getNeighbors(pos(), Tilemap::FourNeighbors)
+                .overlays<Rift>();
 
 }
 

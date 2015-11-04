@@ -51,14 +51,6 @@ public:
   int value;
 };
 
-SrvcPtr GoodsUpdater::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new GoodsUpdater( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 void GoodsUpdater::timeStep(const unsigned int time)
 {
   if( game::Date::isWeekChanged() )

@@ -42,17 +42,6 @@ public:
   bool isDeleted;
 };
 
-SrvcPtr SpiritOfMars::create( PlayerCityPtr city, int month )
-{
-  SpiritOfMars* ptr = new SpiritOfMars( city );
-  ptr->_d->endTime = game::Date::current();
-  ptr->_d->endTime.appendMonth( month );
-  SrvcPtr ret( ptr );
-  ret->drop();
-
-  return ret;
-}
-
 void SpiritOfMars::timeStep( const unsigned int time)
 {
   if( game::Date::isWeekChanged() )
@@ -61,7 +50,7 @@ void SpiritOfMars::timeStep( const unsigned int time)
 
     Logger::warning( "SpiritOfMars: execute service" );
 
-    EnemySoldierList enemies = _city()->statistic().walkers.find<EnemySoldier>();
+    auto enemies = _city()->statistic().walkers.find<EnemySoldier>();
 
     if( enemies.size() > 0 )
     {
@@ -96,10 +85,12 @@ VariantMap SpiritOfMars::save() const
   return ret;
 }
 
-SpiritOfMars::SpiritOfMars(PlayerCityPtr city )
+SpiritOfMars::SpiritOfMars(PlayerCityPtr city, int month )
   : Srvc( city, SpiritOfMars::defaultName() ), _d( new Impl )
 {
   _d->isDeleted = false;
+  _d->endTime = game::Date::current();
+  _d->endTime.appendMonth( month );
 }
 
 }//end namespace city

@@ -49,15 +49,15 @@ EmpirePrices::EmpirePrices(Widget *parent, int id, const Rect &rectangle, Player
     }
 
     Picture goodIcon = good::Helper::picture( gtype );
-    new Image( this, startPos, goodIcon );
+    add<Image>( startPos, goodIcon );
 
     std::string priceStr = utils::i2str( ctrade.buyPrice( gtype ) );
-    Label* lb = new Label( this, Rect( startPos + Point( 0, 34 ), Size( 24, 24 ) ), priceStr );
-    lb->setFont( font );
+    Label& lb = add<Label>( Rect( startPos + Point( 0, 34 ), Size( 24, 24 ) ), priceStr );
+    lb.setFont( font );
 
     priceStr = utils::i2str( ctrade.sellPrice( gtype ) );
-    lb = new Label( this, Rect( startPos + Point( 0, 58 ), Size( 24, 24 ) ), priceStr );
-    lb->setFont( font );
+    Label& lb2 = add<Label>( Rect( startPos + Point( 0, 58 ), Size( 24, 24 ) ), priceStr );
+    lb2.setFont( font );
 
     startPos += Point( 30, 0 );
   }

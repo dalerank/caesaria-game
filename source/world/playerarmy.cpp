@@ -131,7 +131,7 @@ void PlayerArmy::move2location(Point point)
   bool validWay = _findWay( location(), point);
   if( !validWay )
   {
-    Logger::warning( "PlayerArmy: cant find way to point [%d,%d]", point.x(), point.y()  );
+    Logger::warning( "PlayerArmy: cant find way to point [{0},{!}]", point.x(), point.y()  );
     deleteLater();
   }
 

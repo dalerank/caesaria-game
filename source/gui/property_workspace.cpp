@@ -168,10 +168,10 @@ void PropertyWorkspace::_addChildrenToTree( Widget* _parentElement, TreeViewItem
 	newnode->setData((void*)_parentElement);
   const Widget::Widgets& children = _parentElement->children();
 
-  foreach( i, children )
+  for( auto i : children )
 	{
-		if( !(*i)->isSubElement())
-      _addChildrenToTree(*i, newnode);
+    if( !i->isSubElement())
+      _addChildrenToTree(i, newnode);
 	}
 }
 

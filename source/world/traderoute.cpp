@@ -72,15 +72,16 @@ public:
       }
       else
       {
-        Logger::warning( "!!!WARNING: Merchants::load() cant load merchant index %d for route %s",
-                         std::distance( stream.begin(), it ), route->name().c_str() );
+        Logger::warning( "!!!WARNING: Merchants::load() cant load merchant index {0} for route {1}",
+                         std::distance( stream.begin(), it ), route->name() );
       }
     }
   }
 
   void update( unsigned int time )
   {
-    for( auto&& it : *this ) it->timeStep( time );
+    for( auto& it : *this )
+      it->timeStep( time );
     utils::eraseIfDeleted( *this );
     merge();
   }
@@ -162,7 +163,7 @@ MerchantPtr Traderoute::addMerchant(const std::string& begin, good::Store &sell,
 {
   if( _d->points.empty() )
   {
-    Logger::warning( "Traderoute::addMerchant cannot create merchant for empty trade route [" + _d->begin + "<->" +_d->end  + "]" );
+    Logger::warning( "Traderoute::addMerchant cannot create merchant for empty trade route [{}<->{}]", _d->begin, _d->end );
     return MerchantPtr();
   }
 
