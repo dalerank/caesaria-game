@@ -156,6 +156,27 @@
           folder : "/resources/carts/timber"
           files : [ "carttimber_*" ]
         }
+
+        weapons :
+        {
+          type : "atlas"
+          folder : "/resources/carts/weapons"
+          files : [ "cartweapon_*" ]
+        }
+
+        wheat :
+        {
+          type : "atlas"
+          folder : "/resources/carts/wheat"
+          files : [ "cartwheat_*" ]
+        }
+
+        wine :
+        {
+          type : "atlas"
+          folder : "/resources/carts/wine"
+          files : [ "cartwine_*" ]
+        }
       }
     }
   }
