@@ -15,6 +15,7 @@ have_wastefolder=0
 create_update=1
 download_lastres=0
 send_to_remote=1
+clean=0
 clone_repo=0
 show_help=0
 
@@ -39,6 +40,9 @@ while [ $# -gt 0 ]; do
       ;;
 		--nogit)
       updaterepo=0
+      ;;
+		--clean)
+      clean=1
       ;;
   	--debugb)
       debug_build=1
@@ -86,12 +90,14 @@ then
 	echo -e "${txtgrn}--sffolder=url:          ${txtrst}set path to remote folder ${txtrst}"
 	echo -e "${txtgrn}--wastedir=/path/to/dir: ${txtrst}set path to directory where archive will be move ${txtrst}"
 	echo -e "${txtgrn}--nogit:                 ${txtrst}no check last updates ${txtrst}" 
+	echo -e "${txtgrn}--clean:                 ${txtrst}clean build ${txtrst}" 
   echo -e "${txtgrn}--debugb:                ${txtrst}create debug build ${txtrst}" 
 	echo -e "${txtgrn}--noandroid:						 ${txtrst}skip android build ${txtrst}" 	
 	echo -e "${txtgrn}--nowindows:						 ${txtrst}skip windows build ${txtrst}" 		
 	echo -e "${txtgrn}--nolinux:  						 ${txtrst}skip linux build ${txtrst}" 		
 	echo -e "${txtgrn}--nomac:  						   ${txtrst}skip mac build ${txtrst}" 		
 	echo -e "${txtgrn}--wgetlast:  						 ${txtrst}get last resources from server ${txtrst}" 		
+	echo -e "${txtgrn}--noupdate:  						 ${txtrst}skip create update info ${txtrst}" 		
 	echo -e "${txtgrn}--noremote:  						 ${txtrst}skip send archives to remote server ${txtrst}" 		
 	echo -e "${txtgrn}--clone:  						   ${txtrst}clone repository from bitbucket ${txtrst}" 		
 	echo -e "${txtgrn}--help:  						     ${txtrst}show this help${txtrst}" 		
@@ -216,6 +222,13 @@ if [ -z "$project" ]
 then
     echo -e "${txtred}Project dir is unset. Use current dir as project folder${txtrst}"
     project="."
+fi
+
+if [ $clean == 1 ]
+then
+	cd $project
+	rm -rf build
+	exit
 fi
 
 if [ ! -f "${project}/CMakeLists.txt" ]
@@ -369,8 +382,8 @@ then
 	echo -e "${txtgrn}Goto to artifacts directory... ${txtrst}"
 	cd ../caesaria-test
 	
-	echo -e "${txtgrn}Remove unneed files ${txtblu}stdout.txt libFLAC-8.dll libmikmod-2.dll smpeg.dll${txtrst}"
-	rm stdout.txt libFLAC-8.dll libmikmod-2.dll smpeg.dll
+	#echo -e "${txtgrn}Remove unneed files ${txtblu}stdout.txt libFLAC-8.dll libmikmod-2.dll smpeg.dll${txtrst}"
+	#rm stdout.txt libFLAC-8.dll libmikmod-2.dll smpeg.dll
 
 	if [ $send_to_remote == 0 ]
 	then
@@ -396,14 +409,9 @@ then
 	fi
 
 fi #build for linux
-exit
 
 if [ $buildwindows == 1 ]
 then
-	maybuildwinx=1 
-  
-	if [ $maybuildwinx == 1 ]
-	then
 		cd $projectdir
 		echo -e "${txtgrn}Reset previous cmake build folder... ${txtblu} $currentdir/build ${txtrst}"
 		rm -rf build
@@ -450,9 +458,6 @@ then
 				rm $PACKAGE_NAME_WINDOWS
 			fi
 		fi
-	else
-		echo -e "${txtred}Cant create build for windows${txtrst}"
-	fi
 fi
 
 if [ $create_update == 1 ]
