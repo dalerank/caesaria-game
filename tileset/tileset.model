@@ -142,6 +142,20 @@
           folder : "/resources/carts/olive"
           files : [ "cartolive_*" ]
         }
+
+        pottery :
+        {
+          type : "atlas"
+          folder : "/resources/carts/pottery"
+          files : [ "cartpottery_*" ]
+        }
+
+        timber :
+        {
+          type : "atlas"
+          folder : "/resources/carts/timber"
+          files : [ "carttimber_*" ]
+        }
       }
     }
   }
