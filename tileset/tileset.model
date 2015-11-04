@@ -35,6 +35,53 @@
       }
     }
 
+    animals :
+    {
+      size : [ 2048, 2048 ]
+      margin : 1
+      ignorePath : true
+      floatCoordinates : false
+      name : "animals"
+      archive : "resources/gfx/pics_animals"
+
+      items :
+      {
+        sheep :
+        {
+          type : "atlas"
+          folder : "/resources/sheep"
+          files : [ "sheep_*" ]
+        }
+      }
+    }
+
+    walkers :
+    {
+      size : [ 2048, 2048 ]
+      margin : 1
+      ignorePath : true
+      floatCoordinates : false
+      name : "walkers"
+      archive : "resources/gfx/pics_walkers"
+
+      items :
+      {
+        marketkid :
+        {
+          type : "atlas"
+          folder : "/resources/marketkid"
+          files : [ "marketkid_*" ]
+        }
+
+        marketlady :
+        {
+          type : "atlas"
+          folder : "/resources/marketlady"
+          files : [ "marketlady_*" ]
+        }
+      }
+    }
+
     misc :
     {
       size : [ 2048, 2048 ]
