@@ -15,6 +15,7 @@ have_wastefolder=0
 create_update=1
 download_lastres=0
 send_to_remote=1
+clone_repo=0
 
 txtred='\e[0;31m' # Red
 txtgrn='\e[0;32m' # Green
@@ -62,6 +63,9 @@ while [ $# -gt 0 ]; do
 		--noupdate)
       create_update=0
       ;;
+		--clone)
+      clone_repo=1
+      ;;
     *)
       printf "***************************\n"
       printf "* Error: Invalid argument.*\n"
@@ -70,6 +74,18 @@ while [ $# -gt 0 ]; do
   esac
   shift
 done
+
+if [ -x /usr/bin/git ]; then
+    echo -e "${txtgrn}Check git: ${txtblue}found${txtrst}"
+else
+    echo -e "${txtred}Git not found. It need for download repository${txtrst}"
+		read -r -p "Do you want to install git? [Y/n]" response
+		response=${response,,} # tolower
+		if [[ $response =~ ^(yes|y| ) ]]; then
+				echo -e "${txtgrn}Installing ${txtblu}git ${txtrst}"
+				sudo apt-get install git
+		fi
+fi
 
 if [ -x /usr/bin/cmake ]; then
     echo -e "${txtgrn}Check cmake: ${txtblue}found${txtrst}"
@@ -157,6 +173,15 @@ else
 		fi
 fi	    
 
+if [ $clone_repo == 1 ]
+then
+	mydir=`pwd`
+	echo -e "${txtgrn}Clone repository to ${mydir} ${txtrst}"
+	git clone https://bitbucket.org/dalerank/caesaria tmp
+	mv tmp/* ./
+	rm -rf tmp 
+fi
+
 if [ $buildlinux == 0 ] && [ $buildandroid == 0 ] && [ $buildwindows == 0 ]
 then
 	echo -e "${txtred}Nothing to build ${txtrst}"
@@ -174,7 +199,19 @@ if [ ! -f "${project}/CMakeLists.txt" ]
 then
 	ndir=`pwd`
 	echo -e "${txtred}Not found CMakeList.txt. Is ${txtblu}${ndir}/${project}/${txtred} project folder?${txtrst}"
-	exit
+
+	read -r -p "Do you want to download last revision sources? [Y/n]" response
+	response=${response,,} # tolower
+	if [[ $response =~ ^(yes|y| ) ]]
+	then
+		echo -e "${txtgrn}Clone repository to ${mydir} ${txtrst}"
+  	git clone https://bitbucket.org/dalerank/caesaria tmp
+		mv tmp/* ./
+	  rm -rf tmp
+	else
+		echo -e "${txtred}Try to use other directory or start ${txtgrn}./install.sh --clone${txtrst}"
+		exit
+	fi
 fi
 
 if [ -z "$sf_password" ]
