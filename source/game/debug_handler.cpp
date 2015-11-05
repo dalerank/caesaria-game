@@ -750,8 +750,8 @@ void DebugHandler::Impl::handleEvent(int event)
       for( int i=0; i < howMuchAdd; i++ )
       {
         RomeSoldierPtr soldier = Walker::create<RomeSoldier>( game->city(), walker::legionary );
-        soldier->send2city( fort, tiles.front()->pos() );
         fort->addWalker( soldier.object() );
+        soldier->send2city( fort, tiles.front()->pos());
       }
     }
   }

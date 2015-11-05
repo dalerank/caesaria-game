@@ -52,7 +52,6 @@ public:
   void update( unsigned int time );
 
 private:
-
   class Impl;
   ScopedPtr<Impl> _d;
 };
@@ -62,8 +61,6 @@ class Trading
 public:
   Trading();
   ~Trading();
-
-  TradeRoutes& routes();
 
   void timeStep( unsigned int time );
   void init( EmpirePtr empire );

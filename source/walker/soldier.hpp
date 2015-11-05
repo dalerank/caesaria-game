@@ -34,6 +34,7 @@ public:
                  back2base,
                  duckout,
                  patrol,
+                 doStuck,
                  userAction,
                  doNothing=0xff } SldrAction;
 

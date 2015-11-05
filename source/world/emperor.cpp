@@ -199,7 +199,7 @@ void Emperor::Impl::resolveTroubleCities( const CityList& cities )
 
     unsigned int sldrNumber = std::max( legionSoldiersCount, relation.soldiersSent );
 
-    RomeChastenerArmyPtr army = RomeChastenerArmy::create( empire );
+    auto army = RomeChastenerArmy::create( empire );
     army->setCheckFavor( true );
     army->setBase( empire->capital() );
     army->setSoldiersNumber( sldrNumber );

@@ -40,6 +40,7 @@ REGISTER_NAMED_CLASS_IN_WALKERFACTORY( walker::legionary, RomeSoldier, legionary
 
 namespace  {
 static const int maxDistanceFromBase = 32;
+static const unsigned int maxStuckInterval = game::Date::days2ticks( 7 );
 enum {
   expedition=Soldier::userAction+1
  };
@@ -48,6 +49,8 @@ enum {
 class RomeSoldier::Impl
 {
 public:
+  unsigned int lastStuckInterval;
+  unsigned int stuckTime;
   TilePos basePos;
   TilePos patrolPosition;
   double strikeForce, resistance;
@@ -58,6 +61,9 @@ RomeSoldier::RomeSoldier( PlayerCityPtr city, walker::Type type )
     : Soldier( city, type ), _d( new Impl )
 {
   _d->patrolPosition = gfx::tilemap::invalidLocation();
+  _setSubAction( doNothing );
+  _d->stuckTime = 0;
+  _d->lastStuckInterval = 0;
 }
 
 bool RomeSoldier::die()
@@ -119,7 +125,29 @@ void RomeSoldier::timeStep(const unsigned long time)
     }
   break;
 
-  default: break;
+  case doStuck:
+    //check when can 
+    if( _d->stuckTime == 0 )
+    {
+      _d->lastStuckInterval = _d->lastStuckInterval == 0
+                                      ? game::Date::days2ticks( 1 )
+                                      : _d->lastStuckInterval * 2;
+      _d->stuckTime = _d->lastStuckInterval;
+      _back2base();
+    }
+
+    //clamp max stuck interval
+    if( _d->lastStuckInterval > maxStuckInterval )
+    {
+      _d->lastStuckInterval = maxStuckInterval;
+    }
+
+    _d->stuckTime--;
+  break;
+
+  default:
+    //Logger::warning( "Unknown")
+  break;
   } // end switch( _d->action )
 }
 
@@ -316,7 +344,7 @@ void RomeSoldier::_back2base()
   FortPtr b = base();
   if( b.isValid() )
   {
-    Pathway way = PathwayHelper::create( pos(), b->freeSlot( this ), PathwayHelper::allTerrain );
+    Pathway way = PathwayHelper::create( pos(), b->findSlot( this ), PathwayHelper::allTerrain );
 
     if( way.isValid() )
     {
@@ -324,6 +352,10 @@ void RomeSoldier::_back2base()
       _setSubAction( go2position );
       go();
       return;
+    }
+    else
+    {
+      _setSubAction( doStuck );
     }
   }
   else
@@ -438,8 +470,8 @@ void RomeSoldier::send2city(FortPtr base, TilePos pos )
 {
   setPos( pos );
   _d->basePos = base->pos();
-  _back2base();
   attach();
+  _back2base();
 }
 
 void RomeSoldier::send2expedition(const std::string& name)
