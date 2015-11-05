@@ -34,6 +34,7 @@ public:
 
   TilePos valueOrEmpty( unsigned int index );
   TilePosArray& pop_front();
+  void remove( const TilePos& pos );
 
   TilePos random();
 

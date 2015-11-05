@@ -477,7 +477,7 @@ void ComputerCity::_checkMerchantsDeadline()
 {
   if( _d->trade.merchantSent.monthsTo( game::Date::current() ) > config::trade::minMonthsMerchantSend )
   {
-    TraderouteList routes = empire()->tradeRoutes( name() );
+    TraderouteList routes = empire()->troutes().from( name() );
 
     if( routes.empty() )
       return;

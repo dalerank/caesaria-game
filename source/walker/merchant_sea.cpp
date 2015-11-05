@@ -318,7 +318,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
     wlk->deleteLater();
     world::EmpirePtr empire = city->empire();
     const std::string& ourCityName = city->name();
-    world::TraderoutePtr route = empire->findRoute( ourCityName, baseCityName );
+    world::TraderoutePtr route = empire->troutes().find( ourCityName, baseCityName );
     if( route.isValid() )
     {
       route->addMerchant( ourCityName, sell, buy );

@@ -20,6 +20,10 @@
     }
   }
 
+  riverWave : {
+    class : "water"
+  }
+
   roadBlock : {
     cost : 10
     class : "road"

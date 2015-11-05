@@ -83,8 +83,8 @@ BEGIN_NAMEDTYPE(Type,unknown),
   indigeneRioter,
   indigene,
   missioner,
-  zebra,
-  riverWave,
+  zebra,//60
+  riverWave,//61
   supplier,
   circusCharioter,
   docker,

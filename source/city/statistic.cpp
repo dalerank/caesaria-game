@@ -40,6 +40,7 @@
 #include "cityservice_health.hpp"
 #include "world/traderoute.hpp"
 #include "core/logger.hpp"
+#include "world/trading.hpp"
 #include "city/states.hpp"
 #include <map>
 
@@ -522,7 +523,7 @@ int Statistic::_Military::months2lastAttack() const
 bool Statistic::_Goods::canImport(good::Product type) const
 {
   world::EmpirePtr empire = _parent.rcity.empire();
-  world::TraderouteList routes = empire->tradeRoutes( _parent.rcity.name() );
+  world::TraderouteList routes = empire->troutes().from( _parent.rcity.name() );
   bool haveImportWay = false;
   for( auto route : routes )
   {

@@ -147,7 +147,7 @@ void CityIndebt::_exec(Game& game, unsigned int)
     {
       events::dispatch<ShowInfobox>( "##message_from_centurion##", "##centurion_send_army_to_player##", true, "emp_send_army" );
 
-      world::CityPtr rome = game.empire()->rome();
+      world::CityPtr rome = game.empire()->capital();
       PlayerCityPtr plCity = game.city();
 
       world::RomeChastenerArmyPtr army = world::RomeChastenerArmy::create( game.empire() );

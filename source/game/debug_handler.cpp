@@ -426,7 +426,7 @@ void DebugHandler::Impl::handleEvent(int event)
     auto caravan = world::GoodCaravan::create( ptr_cast<world::City>( game->city() ) );
     good::Stock stock( good::Helper::random(), 1000, 1000 );
     caravan->store().store( stock, stock.qty() );
-    caravan->sendTo( game->empire()->rome() );
+    caravan->sendTo( game->empire()->capital() );
   }
   break;
 
@@ -586,7 +586,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case send_chastener:
   {
-    world::CityPtr rome = game->empire()->rome();
+    world::CityPtr rome = game->empire()->capital();
     PlayerCityPtr plCity = game->city();
 
     world::RomeChastenerArmyPtr army = world::RomeChastenerArmy::create( game->empire() );
@@ -750,8 +750,8 @@ void DebugHandler::Impl::handleEvent(int event)
       for( int i=0; i < howMuchAdd; i++ )
       {
         RomeSoldierPtr soldier = Walker::create<RomeSoldier>( game->city(), walker::legionary );
-        soldier->send2city( fort, tiles.front()->pos() );
         fort->addWalker( soldier.object() );
+        soldier->send2city( fort, tiles.front()->pos());
       }
     }
   }
