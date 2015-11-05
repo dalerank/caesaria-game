@@ -251,7 +251,7 @@ public:
       getImageFiles(path, imageFiles);
 		}
 
-    Logger::warning( "Found %d images", imageFiles.size() );
+    Logger::warning( "Found {} images", imageFiles.size() );
 
     std::set<ImageName> imageNameSet;
 
@@ -309,7 +309,7 @@ public:
 		
     for(Texture* texture : textures)
 		{
-      Logger::warning( "Writing atlas: " + name + utils::i2str(++count));
+      Logger::warning( "Writing atlas: {} {}", name, utils::i2str(++count));
       std::string txName = name + utils::i2str(count);
       texture->write(txName, fileNameOnly, unitCoordinates, width, height);
       names.push_back( txName + ".png" );
