@@ -20,6 +20,10 @@
     }
   }
 
+  riverWave : {
+    class : "water"
+  }
+
   tree : {
     class : "tree"
     image.ext : {

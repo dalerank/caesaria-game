@@ -194,7 +194,7 @@
   fishingBoat : {
     move : { rc : "fboat", start : 1, frames : 3, action : 1, step : 8 }
     work : { rc : "fboat", start : 25, frames : 3, action : 4, step : 8 }
-    die : { rc : "carts", start : 265, frames : 8, action : 3, step : 0 }
+    die : { rc : "fboat", start : 50, frames : 8, action : 3, step : 0 }
   }
 
   lion : {

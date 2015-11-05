@@ -79,6 +79,13 @@
           folder : "/resources/marketlady"
           files : [ "marketlady_*" ]
         }
+
+        fishingboat :
+        {
+          type : "atlas"
+          folder : "/resources/fishingboat"
+          files : [ "fboat_*" ]
+        }
       }
     }
 

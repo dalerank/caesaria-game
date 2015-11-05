@@ -266,7 +266,7 @@ FortArea::FortArea() : Building( object::fortArea, Size(4) ),
 {
   setPicture( ResourceGroup::security, 13 );
 
-  _d->isFlat = picture().height() <= picture().width() / 2;
+  _d->isFlat = true; //picture().height() <= picture().width() / 2;
 
   setState( pr::inflammability, 0 );
   setState( pr::collapsibility, 0 );
