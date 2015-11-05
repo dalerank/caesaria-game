@@ -248,7 +248,7 @@ void WorkingBuilding::addWalker( WalkerPtr walker )
      return;
    }
 
-    _d->walkerList.push_back( walker );
+   _d->walkerList.push_back( walker );
 }
 
 void WorkingBuilding::destroy()

@@ -35,6 +35,60 @@
       }
     }
 
+    animals :
+    {
+      size : [ 2048, 2048 ]
+      margin : 1
+      ignorePath : true
+      floatCoordinates : false
+      name : "animals"
+      archive : "resources/gfx/pics_animals"
+
+      items :
+      {
+        sheep :
+        {
+          type : "atlas"
+          folder : "/resources/sheep"
+          files : [ "sheep_*" ]
+        }
+      }
+    }
+
+    walkers :
+    {
+      size : [ 2048, 2048 ]
+      margin : 1
+      ignorePath : true
+      floatCoordinates : false
+      name : "walkers"
+      archive : "resources/gfx/pics_walkers"
+
+      items :
+      {
+        marketkid :
+        {
+          type : "atlas"
+          folder : "/resources/marketkid"
+          files : [ "marketkid_*" ]
+        }
+
+        marketlady :
+        {
+          type : "atlas"
+          folder : "/resources/marketlady"
+          files : [ "marketlady_*" ]
+        }
+
+        fishingboat :
+        {
+          type : "atlas"
+          folder : "/resources/fishingboat"
+          files : [ "fboat_*" ]
+        }
+      }
+    }
+
     misc :
     {
       size : [ 2048, 2048 ]
@@ -141,6 +195,48 @@
           type : "atlas"
           folder : "/resources/carts/olive"
           files : [ "cartolive_*" ]
+        }
+
+        pottery :
+        {
+          type : "atlas"
+          folder : "/resources/carts/pottery"
+          files : [ "cartpottery_*" ]
+        }
+
+        timber :
+        {
+          type : "atlas"
+          folder : "/resources/carts/timber"
+          files : [ "carttimber_*" ]
+        }
+
+        weapons :
+        {
+          type : "atlas"
+          folder : "/resources/carts/weapons"
+          files : [ "cartweapon_*" ]
+        }
+
+        wheat :
+        {
+          type : "atlas"
+          folder : "/resources/carts/wheat"
+          files : [ "cartwheat_*" ]
+        }
+
+        wine :
+        {
+          type : "atlas"
+          folder : "/resources/carts/wine"
+          files : [ "cartwine_*" ]
+        }
+
+        emmirant :
+        {
+          type : "atlas"
+          folder : "/resources/carts/emmigrant"
+          files : [ "emmigrant_*" ]
         }
       }
     }
