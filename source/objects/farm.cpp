@@ -174,7 +174,7 @@ void Farm::burn()
   Factory::burn();
   for( auto& pos : _d->sublocs )
   {
-    OverlayPtr ov = _city()->getOverlay( pos );
+    OverlayPtr ov = _map().overlay( pos );
     if( ov.isValid() )
       ov->burn();
   }
@@ -185,7 +185,7 @@ void Farm::collapse()
   Factory::collapse();
   for( auto& pos : _d->sublocs )
   {
-    OverlayPtr ov = _city()->getOverlay( pos );
+    OverlayPtr ov = _map().overlay( pos );
     if( ov.isValid() )
       ov->collapse();
   }
@@ -195,11 +195,10 @@ void Farm::destroy()
 {
   for( auto& pos : _d->sublocs )
   {
-    OverlayPtr ov = _city()->getOverlay( pos );
+    OverlayPtr ov = _map().overlay( pos );
     if( ov.isValid() && ov->type() == object::farmtile )
     {
-      GameEventPtr e = ClearTile::create( ov->pos() );
-      e->dispatch();
+      events::dispatch<ClearTile>( ov->pos() );
     }
   }
 
@@ -212,10 +211,10 @@ void Farm::computeRoadside()
 
   for( auto& pos : _d->sublocs )
   {
-    ConstructionPtr ov = _city()->getOverlay( pos ).as<Construction>();
-    if( ov.isValid() && ov->type() == object::farmtile )
+    auto construction = _map().overlay<Construction>( pos );
+    if( construction.isValid() && construction->type() == object::farmtile )
     {
-      _roadside().append( ov->roadside() );
+      _roadside().append( construction->roadside() );
     }
   }
 }
@@ -246,7 +245,7 @@ void Farm::computePictures()
       amount = 0;  // for next subTiles
     }
 
-    auto farmTile = _city()->getOverlay( _d->sublocs[n] ).as<FarmTile>();
+    auto farmTile = _map().overlay<FarmTile>( _d->sublocs[n] );
     if( farmTile.isValid() )
       farmTile->setPicture( FarmTile::computePicture( produceGoodType(), percentTile ));
   }
@@ -396,7 +395,7 @@ OverlayPtr Farm::_buildFarmTile(const city::AreaInfo &info, const TilePos &ppos)
 
 void Farm::_buildFarmTiles(const city::AreaInfo& info, const TilePos& ppos )
 {
-  for( auto&& location : _d->sublocs )
+  for( auto& location : _d->sublocs )
   {
     city::AreaInfo tInfo = info;
     tInfo.pos += location;

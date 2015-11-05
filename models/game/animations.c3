@@ -74,6 +74,10 @@
     move : { rc : "citizen01", start : 1137, frames : 12, action : 1, step : 8 }
   }
 
+  riverWave : {
+    class : "water"
+  }
+
   gladiator : {
     move : { rc : "citizen02", start : 1, frames : 12, action : 1, step : 8 }
   }

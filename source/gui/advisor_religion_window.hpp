@@ -39,8 +39,7 @@ public:
 private:
   void _showHelp();
 
-  class Impl;
-  ScopedPtr< Impl > _d;
+  __DECLARE_IMPL(Religion)
 };
 
 }

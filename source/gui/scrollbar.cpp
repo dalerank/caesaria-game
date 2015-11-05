@@ -458,7 +458,7 @@ int ScrollBar::value() const { return _value;}
 PushButton* ScrollBar::_createButton( const Rect& rectangle,
                                       Alignment left, Alignment rigth, Alignment top, Alignment bottom, int type )
 {
-    PushButton* btn = new PushButton( this, rectangle );
+    PushButton* btn = &add<PushButton>( rectangle );
     btn->setSubElement(true);
     btn->setTabstop(false);
     btn->setAlignment(left, rigth, top, bottom );

@@ -58,6 +58,7 @@ public:
   Label* lbFunds;
   Label* lbDate;
   bool useIcon;
+  bool constructorMode;
   ContextMenu* langSelect;
 
   struct {
@@ -65,6 +66,21 @@ public:
     Pictures pics;
     Rects rects;
   } bg;
+
+  struct {
+    Signal0<> onExit;
+    Signal0<> onEnd;
+    Signal0<> onSave;
+    Signal0<> onLoad;
+    Signal0<> onRestart;
+    Signal0<> onShowVideoOptions;
+    Signal0<> onShowSoundOptions;
+    Signal0<> onShowGameSpeedOptions;
+    Signal0<> onShowCityOptions;
+    Signal1<bool> onToggleConstructorMode;
+    Signal1<int> onShowExtentInfo;
+    Signal1<Advisor> onRequestAdvisor;
+  } signal;
 
 slots public:
   void resolveSave();
@@ -75,19 +91,6 @@ slots public:
   void showShortKeyInfo();
   void resolveExtentInfo(Widget* sender);
   void initBackground( const Size& size );
-
-signals public:
-  Signal0<> onExitSignal;
-  Signal0<> onEndSignal;
-  Signal0<> onSaveSignal;
-  Signal0<> onLoadSignal;
-  Signal0<> onRestartSignal;
-  Signal0<> onShowVideoOptionsSignal;
-  Signal0<> onShowSoundOptionsSignal;
-  Signal0<> onShowGameSpeedOptionsSignal;
-  Signal0<> onShowCityOptionsSignal;
-  Signal1<int> onShowExtentInfoSignal;
-  Signal1<Advisor> onRequestAdvisorSignal;
 };
 
 void TopMenu::draw(gfx::Engine& engine)
@@ -141,17 +144,15 @@ void TopMenu::Impl::updateDate()
 
 void TopMenu::Impl::showShortKeyInfo()
 {
-  Widget* parent = lbDate->ui()->rootWidget();
-  Widget* shortKeyInfo = new Label( parent, Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
-  shortKeyInfo->setupUI( ":/gui/shortkeys.gui" );
-  shortKeyInfo->setCenter( parent->center() );
+  Widget& shortKeyInfo = lbDate->ui()->add<Label>( Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
+  shortKeyInfo.setupUI( ":/gui/shortkeys.gui" );
+  shortKeyInfo.moveTo( Widget::parentCenter );
 
-  auto btnExit = new TexturedButton( shortKeyInfo,
-                                     Point( shortKeyInfo->width() - 34, shortKeyInfo->height() - 34 ),
-                                     Size( 24 ), -1, config::id.menu.exitInf );
+  auto& btnExit = shortKeyInfo.add<TexturedButton>( Point( shortKeyInfo.width() - 34, shortKeyInfo.height() - 34 ),
+                                                    Size( 24 ), -1, config::id.menu.exitInf );
   WidgetEscapeCloser::insertTo( shortKeyInfo );
 
-  CONNECT( btnExit, onClicked(), shortKeyInfo, Label::deleteLater );
+  CONNECT( &btnExit, onClicked(), &shortKeyInfo, Label::deleteLater );
 }
 
 void TopMenu::Impl::resolveExtentInfo(Widget *sender)
@@ -159,7 +160,7 @@ void TopMenu::Impl::resolveExtentInfo(Widget *sender)
   int tag = sender->getProperty( CAESARIA_STR_A(ExtentInfo) );
   if( tag != extentinfo::none )
   {
-    emit onShowExtentInfoSignal( tag );
+    emit signal.onShowExtentInfo( tag );
   }
 }
 
@@ -188,15 +189,13 @@ void TopMenu::Impl::initBackground( const Size& size )
 
 void TopMenu::Impl::showAboutInfo()
 {
-  Widget* parent = lbDate->ui()->rootWidget();
-  Widget* bg = new Label( parent, Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
-  bg->setupUI( ":/gui/about.gui" );
-  bg->setCenter( parent->center() );
+  Widget& window = lbDate->ui()->add<Label>( Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
+  window.setupUI( ":/gui/about.gui" );
+  window.moveTo( Widget::parentCenter );
+  auto& btnExit = window.add<TexturedButton>( Point( window.width() - 34, window.height() - 34 ), Size( 24 ), -1, config::id.menu.exitInf );
 
-  auto btnExit = new TexturedButton( bg, Point( bg->width() - 34, bg->height() - 34 ), Size( 24 ), -1, config::id.menu.exitInf );
-  WidgetEscapeCloser::insertTo( bg );
-
-  CONNECT( btnExit, onClicked(), bg, Label::deleteLater );
+  CONNECT( &btnExit, onClicked(), &window, Label::deleteLater );
+  WidgetEscapeCloser::insertTo( window );
 }
 
 TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
@@ -208,6 +207,7 @@ TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
 
   _d->initBackground( size() );
   _d->useIcon = useIcon;
+  _d->constructorMode = false;
 
   GET_DWIDGET_FROM_UI( _d, lbPopulation )
   GET_DWIDGET_FROM_UI( _d, lbFunds )
@@ -243,11 +243,11 @@ TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
   ContextMenuItem* mainMenu = file->addItem( _("##gmenu_file_mainmenu##"), -1, true, false, false, false );
   ContextMenuItem* exit = file->addItem( _("##gmenu_exit_game##"), -1, true, false, false, false );
 
-  CONNECT( restart, onClicked(), &_d->onRestartSignal, Signal0<>::_emit );
-  CONNECT( exit, onClicked(), &_d->onExitSignal, Signal0<>::_emit );
-  CONNECT( save, onClicked(), &_d->onSaveSignal, Signal0<>::_emit );
-  CONNECT( load, onClicked(), &_d->onLoadSignal, Signal0<>::_emit );
-  CONNECT( mainMenu, onClicked(), &_d->onEndSignal, Signal0<>::_emit );
+  CONNECT( restart, onClicked(), &_d->signal.onRestart, Signal0<>::_emit );
+  CONNECT( exit, onClicked(), &_d->signal.onExit, Signal0<>::_emit );
+  CONNECT( save, onClicked(), &_d->signal.onSave, Signal0<>::_emit );
+  CONNECT( load, onClicked(), &_d->signal.onLoad, Signal0<>::_emit );
+  CONNECT( mainMenu, onClicked(), &_d->signal.onEnd, Signal0<>::_emit );
 
   tmp = addItem( _("##gmenu_options##"), -1, true, true, false, false );
   ContextMenu* options = tmp->addSubMenu();
@@ -255,11 +255,14 @@ TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
   ContextMenuItem* sound = options->addItem( _("##sound_settings##"), -1, true, false, false, false );
   ContextMenuItem* speed = options->addItem( _("##speed_settings##"), -1, true, false, false, false );
   ContextMenuItem* cityopts = options->addItem( _("##city_settings##"), -1, true, false, false, false );
+  ContextMenuItem* constrMode = options->addItem( _("##city_constr_mode##"), -1, true, false, false, false );
+  constrMode->setAutoChecking( true );
 
-  CONNECT( screen, onClicked(), &_d->onShowVideoOptionsSignal,     Signal0<>::_emit );
-  CONNECT( speed,  onClicked(), &_d->onShowGameSpeedOptionsSignal, Signal0<>::_emit );
-  CONNECT( sound,  onClicked(), &_d->onShowSoundOptionsSignal,     Signal0<>::_emit );
-  CONNECT( cityopts,  onClicked(), &_d->onShowCityOptionsSignal,   Signal0<>::_emit );
+  CONNECT( screen, onClicked(), &_d->signal.onShowVideoOptions,     Signal0<>::_emit );
+  CONNECT( speed,  onClicked(), &_d->signal.onShowGameSpeedOptions, Signal0<>::_emit );
+  CONNECT( sound,  onClicked(), &_d->signal.onShowSoundOptions,     Signal0<>::_emit );
+  CONNECT( cityopts,  onClicked(), &_d->signal.onShowCityOptions,   Signal0<>::_emit );
+  CONNECT( constrMode, onChecked(), &_d->signal.onToggleConstructorMode, Signal1<bool>::_emit );
 
   tmp = addItem( _("##gmenu_help##"), -1, true, true, false, false );
   ContextMenu* helpMenu = tmp->addSubMenu();
@@ -288,17 +291,18 @@ TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
   _d->updateDate();
 }
 
-Signal0<>& TopMenu::onExit() {  return _d->onExitSignal; }
-Signal0<>& TopMenu::onSave(){  return _d->onSaveSignal; }
-Signal0<>& TopMenu::onEnd(){  return _d->onEndSignal; }
-Signal1<Advisor>& TopMenu::onRequestAdvisor() {  return _d->onRequestAdvisorSignal; }
-Signal1<int> &TopMenu::onShowExtentInfo() { return _d->onShowExtentInfoSignal; }
-Signal0<>& TopMenu::onLoad(){  return _d->onLoadSignal; }
-Signal0<>&TopMenu::onRestart() { return _d->onRestartSignal; }
-Signal0<>& TopMenu::onShowVideoOptions(){  return _d->onShowVideoOptionsSignal; }
-Signal0<>&TopMenu::onShowSoundOptions(){ return _d->onShowSoundOptionsSignal; }
-Signal0<>& TopMenu::onShowGameSpeedOptions(){  return _d->onShowGameSpeedOptionsSignal; }
-Signal0<>&TopMenu::onShowCityOptions(){ return _d->onShowCityOptionsSignal; }
-void TopMenu::Impl::resolveAdvisorShow(int id) { emit onRequestAdvisorSignal( (advisor::Type)id ); }
+Signal0<>& TopMenu::onExit() {  return _d->signal.onExit; }
+Signal0<>& TopMenu::onSave(){  return _d->signal.onSave; }
+Signal0<>& TopMenu::onEnd(){  return _d->signal.onEnd; }
+Signal1<Advisor>& TopMenu::onRequestAdvisor() {  return _d->signal.onRequestAdvisor; }
+Signal1<int> &TopMenu::onShowExtentInfo() { return _d->signal.onShowExtentInfo; }
+Signal0<>& TopMenu::onLoad(){  return _d->signal.onLoad; }
+Signal0<>&TopMenu::onRestart() { return _d->signal.onRestart; }
+Signal0<>& TopMenu::onShowVideoOptions(){  return _d->signal.onShowVideoOptions; }
+Signal0<>&TopMenu::onShowSoundOptions(){ return _d->signal.onShowSoundOptions; }
+Signal0<>& TopMenu::onShowGameSpeedOptions(){  return _d->signal.onShowGameSpeedOptions; }
+Signal0<>&TopMenu::onShowCityOptions(){ return _d->signal.onShowCityOptions; }
+void TopMenu::Impl::resolveAdvisorShow(int id) { emit signal.onRequestAdvisor( (advisor::Type)id ); }
+Signal1<bool>&gui::TopMenu::onToggleConstructorMode() { return _d->signal.onToggleConstructorMode; }
 
 }//end namespace gui

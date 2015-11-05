@@ -79,7 +79,7 @@ void Fountain::deliverService()
   if( !_d->haveReservoirWater )
     return;
 
-  auto serviceMan = ServiceWalker::create( _city(), serviceType() );
+  auto serviceMan = Walker::create<ServiceWalker>( _city(), serviceType() );
   serviceMan->setBase( BuildingPtr( this ) );
   serviceMan->setReachDistance( 4 );
   ReachedBuildings reachedBuildings = serviceMan->getReachedBuildings( tile().pos() );
@@ -109,7 +109,7 @@ void Fountain::timeStep(const unsigned long time)
 
     if( needWorkers() > 0 )
     {
-      auto recruter = Recruter::create( _city() );
+      auto recruter = Walker::create<Recruter>( _city() );
       recruter->once( this, needWorkers(), _d->fillDistance * 2);
     }
   }  
@@ -170,8 +170,7 @@ void Fountain::destroy()
 
   if( numberWorkers() > 0 )
   {
-    GameEventPtr e = ReturnWorkers::create( pos(), numberWorkers() );
-    e->dispatch();
+    events::dispatch<ReturnWorkers>( pos(), numberWorkers() );
   }
 }
 

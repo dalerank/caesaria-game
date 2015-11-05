@@ -29,7 +29,7 @@ public:
   Picture textPic;
   std::string text;
   VariantMap data;
-	int tag;
+  Variant tag;
   float currentHovered;
   Picture icon;
   Point iconOffset;
@@ -80,9 +80,9 @@ ListBoxItem& ListBoxItem::operator=( const ListBoxItem& other )
 
 	for( unsigned int i=0; i < count;i++ )
 	{
-		OverrideColors[ i ].Use = other.OverrideColors[ i ].Use;
-		OverrideColors[ i ].font = other.OverrideColors[ i ].font;
-		OverrideColors[ i ].color = other.OverrideColors[ i ].color;
+		overrideColors[ i ].Use = other.overrideColors[ i ].Use;
+		overrideColors[ i ].font = other.overrideColors[ i ].font;
+		overrideColors[ i ].color = other.overrideColors[ i ].color;
 	}
 
 	return *this;
@@ -103,8 +103,8 @@ void ListBoxItem::setTextAlignment( Alignment horizontal, Alignment vertical )
 
 void ListBoxItem::setTextColor(ListBoxItem::ColorType type, NColor color)
 {
-  OverrideColors[ type ].color = color;
-  OverrideColors[ type ].Use = true;
+  overrideColors[ type ].color = color;
+  overrideColors[ type ].Use = true;
 }
 
 void ListBoxItem::updateText(const Point &p, Font f, const Size &s)
@@ -146,8 +146,8 @@ void ListBoxItem::clear()
 }
 
 ListBoxItem::~ListBoxItem(){}
-void ListBoxItem::setTag( int tag ){	_d->tag = tag;}
-int ListBoxItem::tag() const{	return _d->tag;}
+void ListBoxItem::setTag( const Variant& tag ){	_d->tag = tag;}
+const Variant& ListBoxItem::tag() const{	return _d->tag;}
 bool ListBoxItem::isEnabled() const{    return _d->enabled;}
 void ListBoxItem::setEnabled( bool en ){    _d->enabled = en;}
 ElementState ListBoxItem::state() const{    return _d->state;}

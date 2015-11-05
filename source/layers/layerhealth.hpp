@@ -26,7 +26,7 @@ class Health : public Info
 {
 public:
   virtual int type() const;
-  virtual void drawTile(const RenderInfo& rinfo, gfx::Tile& tile);
+  virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
 
   static LayerPtr create( gfx::TilemapCamera& camera, PlayerCityPtr city, int type );
   virtual void handleEvent(NEvent& event);

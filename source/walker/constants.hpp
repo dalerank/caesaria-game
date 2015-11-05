@@ -83,8 +83,8 @@ BEGIN_NAMEDTYPE(Type,unknown),
   indigeneRioter,
   indigene,
   missioner,
-  zebra,
-  riverWave,
+  zebra,//60
+  riverWave,//61
   supplier,
   circusCharioter,
   docker,
@@ -94,7 +94,7 @@ BEGIN_NAMEDTYPE(Type,unknown),
   trigger,
   all = 0xff,
   any = all
-END_NAMEDTYPE(Type)
+END_NAMEDTYPE(Type)                       
 
 } //end namespace walker
 

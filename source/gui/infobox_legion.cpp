@@ -83,16 +83,16 @@ AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos 
 
   if( !walkers.empty() )
   {
-    foreach( i, walkers )
+    for( auto& wlk : walkers )
     {
-      RomeSoldierPtr rs = i->as<RomeSoldier>();
+      RomeSoldierPtr rs = wlk.as<RomeSoldier>();
       if( rs.isValid() )
       {
         _d->fort = rs->base();
         break;
       }
 
-      PatrolPointPtr pp = i->as<PatrolPoint>();
+      PatrolPointPtr pp = wlk.as<PatrolPoint>();
       if( pp.isValid() )
       {
         _d->fort = pp->base();
@@ -272,11 +272,11 @@ void AboutLegion::_addFormationButton(int index, int id, int picId)
 {
   Point offset( 83, 0 );
   Rect rect( Point( 16, 140 ) + offset * index, Size( 83 ) );
-  PushButton* btn = new PushButton( this, rect, "", id );
-  btn->setBackgroundStyle( PushButton::whiteBorderUp );
-  btn->setIcon( ResourceGroup::menuMiddleIcons, picId );
-  btn->setIconOffset( Point( 1, 1 ) );
-  btn->setTooltipText( _("##legion_formation_tooltip##") );
+  PushButton& btn = add<PushButton>( rect, "", id );
+  btn.setBackgroundStyle( PushButton::whiteBorderUp );
+  btn.setIcon( ResourceGroup::menuMiddleIcons, picId );
+  btn.setIconOffset( Point( 1, 1 ) );
+  btn.setTooltipText( _("##legion_formation_tooltip##") );
 }
 
 void AboutLegion::_returnSoldiers2fort()

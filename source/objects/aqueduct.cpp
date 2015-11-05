@@ -404,7 +404,7 @@ void Aqueduct::addRoad()
   }
 }
 
-bool Aqueduct::canAddRoad( PlayerCityPtr city, TilePos pos) const
+bool Aqueduct::canAddRoad(PlayerCityPtr city, const TilePos& pos) const
 {
   if( !city.isValid() )
     city = _city();

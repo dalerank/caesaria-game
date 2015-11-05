@@ -27,7 +27,7 @@ class CommodityTurnover : public Info
 {
 public:
   virtual int type() const;
-  virtual void drawTile(const RenderInfo& rinfo, gfx::Tile& tile);
+  virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
   virtual void afterRender(gfx::Engine &engine);
   virtual void render(gfx::Engine &engine);
   virtual void handleEvent(NEvent& event);
@@ -35,7 +35,7 @@ public:
   static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
 
 private:
-  void _renderPaths( const RenderInfo& rinfo );
+  void _renderPaths( const gfx::RenderInfo& rinfo );
   void _updateStorePath();
   CommodityTurnover( gfx::Camera& camera, PlayerCityPtr city );
 

@@ -82,7 +82,7 @@ AboutFort::AboutFort(Widget* parent, PlayerCityPtr city, const Tile& tile )
         text = "##fort_has_been_cursed_by_mars##";
   }
 
-  _d->lbText = new Label( this, Rect( 20, 20, width() - 20, 120 ), text );
+  _d->lbText = &add<Label>( Rect( 20, 20, width() - 20, 120 ), text );
   _d->lbText->setTextAlignment( align::upperLeft, align::center );
   _d->lbText->setWordwrap( true );
 
@@ -104,11 +104,11 @@ void AboutFort::Impl::update(Widget* parent)
   const SoldierList& soldiers = fort->soldiers();
   SoldierList::size_type k=0;
   int lbWidth = (parent->width() - 40) / 2;
-  foreach( it, soldiers )
+  for( auto it : soldiers )
   {
-    Label* lbSoldierName = new Label( parent, Rect( Point( k < 8 ? 0 : lbWidth, 0), Size( lbWidth, 24 ) ), (*it)->name() );
-    lbSoldierName->setTextAlignment( align::center, align::center );
-    lbSoldierName->move( startPos + Point( 0, 25 * k ) );
+    Label& lbSoldierName = parent->add<Label>( Rect( Point( k < 8 ? 0 : lbWidth, 0), Size( lbWidth, 24 ) ), it->name() );
+    lbSoldierName.setTextAlignment( align::center, align::center );
+    lbSoldierName.move( startPos + Point( 0, 25 * k ) );
     k++;
   }
 }

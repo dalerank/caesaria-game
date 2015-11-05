@@ -22,7 +22,7 @@
 #include "core/variant_map.hpp"
 #include "core/event.hpp"
 #include "gfx/pictureconverter.hpp"
-#include "core/color.hpp"
+#include "core/color_list.hpp"
 #include "core/logger.hpp"
 #include "core/json.hpp"
 #include "core/utils.hpp"
@@ -150,7 +150,7 @@ DictionaryText::DictionaryText(Widget* parent, const Rect& rectangle, const stri
   _init();
 
   #ifdef _DEBUG
-    setDebugName( "label");
+    setDebugName( "DText");
   #endif
 
   setTextAlignment( align::automatic, align::automatic );
@@ -376,7 +376,7 @@ void DictionaryText::Impl::breakText( const std::string& rtext, const Size& wdgS
 			richText.offset = linewidth;
       richText.font = font.current;
 			richText.uri = true;
-      NColor color = DefaultColors::blue;
+      NColor color = ColorList::blue;
 
       if(rText[i+1] == '#')
       {

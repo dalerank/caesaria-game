@@ -323,8 +323,7 @@ bool LowBridge::build( const city::AreaInfo& info )
       subtile->_info = tile::encode( tile );
       subtile->_parent = this;
 
-      GameEventPtr event = BuildAny::create( buildPos, subtile.object() );
-      event->dispatch();
+      events::dispatch<BuildAny>( buildPos, subtile.object() );
       index++;
     }
   }
@@ -358,8 +357,7 @@ void LowBridge::destroy()
   for( auto tile : _d->subtiles )
   {
     tile->_parent = 0;
-    GameEventPtr event = ClearTile::create( tile->_pos );
-    event->dispatch();
+    events::dispatch<ClearTile>( tile->_pos );
 
     Tile& mapTile = _map().at( tile->_pos );
     tile::decode( mapTile, tile->_info );

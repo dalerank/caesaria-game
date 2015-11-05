@@ -121,19 +121,19 @@ void WindowMessageStack::addMessage( const std::string& text, MsgLevel lvl )
     removeChild( *children().begin() );
   }
 
-  new LabelA( this, Rect( 0, 0, 2, 20), text, lvl );
+  add<LabelA>( Rect( 0, 0, 2, 20), text, lvl );
 
   _update();
 }
 
 WindowMessageStack* WindowMessageStack::create( Widget* parent )
 {
-  auto wnd = new WindowMessageStack( parent, WindowMessageStack::defaultID,
-                                     Rect( 0, 0, parent->width() / 2, 92 ) );
-  wnd->setPosition( Point( parent->width() / 4, 33 ) );
-  wnd->sendToBack();
+  auto& wnd = parent->add<WindowMessageStack>( WindowMessageStack::defaultID,
+                                               Rect( 0, 0, parent->width() / 2, 92 ) );
+  wnd.setPosition( Point( parent->width() / 4, 33 ) );
+  wnd.sendToBack();
 
-  return wnd;
+  return &wnd;
 }
 
 }//end namespace gui

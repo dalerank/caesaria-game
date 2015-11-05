@@ -54,14 +54,14 @@ AboutDock::AboutDock(Widget* parent, PlayerCityPtr city, const Tile& tile )
   setBase( dock );
   _setWorkingVisible( true );
 
-  Label* lbAbout = new Label( this, Rect( 15, 30, width() - 15, 50) );
-  lbAbout->setWordwrap( true );
-  lbAbout->setFont( Font::create( FONT_1 ) );
-  lbAbout->setTextAlignment( align::upperLeft, align::upperLeft );
+  Label& lbAbout = add<Label>( Rect( 15, 30, width() - 15, 50) );
+  lbAbout.setWordwrap( true );
+  lbAbout.setFont( Font::create( FONT_1 ) );
+  lbAbout.setTextAlignment( align::upperLeft, align::upperLeft );
 
   setTitle( _( dock->info().prettyName() ) );
 
-  lbAbout->setText( _( dock->numberWorkers() > 0 ? "##dock_about##" : "##dock_no_workers##" ) );
+  lbAbout.setText( _( dock->numberWorkers() > 0 ? "##dock_about##" : "##dock_no_workers##" ) );
   updateStore( dock );
 
   _updateWorkersLabel( Point( 32, 8 ), 542, dock->maximumWorkers(), dock->numberWorkers() );
@@ -82,11 +82,11 @@ void AboutDock::drawGood( DockPtr dock, const good::Product &goodType, int index
   Picture pic = good::Helper::picture( goodType );
   Point pos( index * offset + startOffset, paintY );
 
-  Label* lb = new Label( this, Rect( pos, pos + Point( 100, 24 )) );
-  lb->setFont( Font::create( FONT_2 ) );
-  lb->setIcon( pic );
-  lb->setText( outText );
-  lb->setTextOffset( Point( 30, 0 ) );
+  Label& lb = add<Label>( Rect( pos, pos + Point( 100, 24 )) );
+  lb.setFont( Font::create( FONT_2 ) );
+  lb.setIcon( pic );
+  lb.setText( outText );
+  lb.setTextOffset( Point( 30, 0 ) );
 }
 
 void AboutDock::updateStore( DockPtr dock )

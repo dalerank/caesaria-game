@@ -28,6 +28,7 @@
 #include "game/funds.hpp"
 #include "world/empire.hpp"
 #include "objects/constants.hpp"
+#include "core/color_list.hpp"
 #include "objects/working.hpp"
 #include "city/statistic.hpp"
 #include "core/logger.hpp"
@@ -92,26 +93,16 @@ protected:
   {
     PushButton::_updateTextPic();
 
-    Picture& pic = _textPicture();
-
     Font font = Font::create( FONT_1_WHITE );
-    font.draw( pic, _title, ofBranchName, 2, Font::alphaDraw, Font::ignoreTx );
-    font.draw( pic, utils::i2str( _needWorkers ), ofNeedWorkers, 2, Font::alphaDraw, Font::ignoreTx );
 
-    if( _haveWorkers < _needWorkers )
-    {
-      font = Font::create( FONT_1_RED );
-    }
+    canvasDraw( _title, Point( ofBranchName, 2), font );
+    canvasDraw( utils::i2str( _needWorkers ), Point( ofNeedWorkers, 2), font );
 
-    font.draw( pic, utils::i2str( _haveWorkers ), ofHaveWorkers, 2, Font::alphaDraw, Font::ignoreTx );
+    canvasDraw( utils::i2str( _haveWorkers ), Point( ofHaveWorkers, 2 ),
+                _haveWorkers < _needWorkers ? font.clone(  ColorList::caesarRed ) : font );
 
     if( _priority > 0 )
-    {
-      font.setColor( DefaultColors::black );
-      font.draw( pic, utils::i2str( _priority ), Point( ofPriority, 3 ), Font::alphaDraw, Font::ignoreTx );
-    }
-
-    pic.update();
+      canvasDraw( utils::i2str( _priority ), Point( ofPriority, 3 ), font.clone( ColorList::black ) );
   }
 
   virtual void draw(Engine &painter)
@@ -213,8 +204,8 @@ void Employer::Impl::showPriorityWindow( industry::Type industry )
   WorkersHirePtr wh = city->statistic().services.find<WorkersHire>();
 
   int priority = wh->getPriority( industry );
-  auto wnd = new dialog::HirePriority( lbSalaries->ui()->rootWidget(), industry, priority );
-  CONNECT( wnd, onAcceptPriority(), this, Impl::setIndustryPriority );
+  auto& wnd = lbSalaries->ui()->add<dialog::HirePriority>( industry, priority );
+  CONNECT( &wnd, onAcceptPriority(), this, Impl::setIndustryPriority );
 }
 
 void Employer::Impl::setIndustryPriority( industry::Type industry, int priority)
@@ -284,14 +275,14 @@ EmployerButton* Employer::Impl::addButton( Employer* parent, const Point& startP
 {
   EmployersInfo info = getEmployersInfo( priority );
 
-  EmployerButton* btn = new EmployerButton( parent, startPos, priority, title, info.needWorkers, info.currentWorkers );
-  btn->setTooltipText( _("##empbutton_tooltip##") );
-  btn->setText( "" );
-  empButtons[ priority ] = btn;
+  auto& employeeBtn = parent->add<EmployerButton>( startPos, priority, title, info.needWorkers, info.currentWorkers );
+  employeeBtn.setTooltipText( _("##empbutton_tooltip##") );
+  employeeBtn.setText( "" );
+  empButtons[ priority ] = &employeeBtn;
 
-  CONNECT( btn, onClickedSignal, this, Impl::showPriorityWindow );
+  CONNECT( &employeeBtn, onClickedSignal, this, Impl::showPriorityWindow );
 
-  return btn;
+  return &employeeBtn;
 }
 
 Employer::Employer(PlayerCityPtr city, Widget* parent, int id )
@@ -324,8 +315,8 @@ Employer::Employer(PlayerCityPtr city, Widget* parent, int id )
   GET_DWIDGET_FROM_UI( _d, lbWorkersState )
   GET_DWIDGET_FROM_UI( _d, lbYearlyWages )
 
-  auto btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
-  CONNECT( btnHelp, onClicked(), this, Employer::_showHelp );
+  auto& btnHelp = add<TexturedButton>( Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
+  CONNECT( &btnHelp, onClicked(), this, Employer::_showHelp );
 
   _d->updateSalaryLabel();
   _d->updateWorkersState();

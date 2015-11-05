@@ -40,7 +40,8 @@ public:
   void init( Tilemap& tilemap, Size size );
 
   // size of the view in pixel
-  void setViewport(Size newSize);
+  void setViewport(const Size& newSize);
+  const Size& viewport() const;
 
   void move(PointF relative);
   void moveRight(const int amount);

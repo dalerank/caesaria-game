@@ -45,8 +45,7 @@ void MarketAccess::drawTile(const RenderInfo& rinfo, Tile& tile)
 {
   if( tile.overlay().isNull() )
   {
-    drawPass( rinfo, tile, Renderer::ground );
-    drawPass( rinfo, tile, Renderer::groundAnimation );
+    drawLandTile( rinfo, tile );
   }
   else
   {
@@ -109,7 +108,7 @@ void MarketAccess::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        HousePtr house = tile->overlay<House>();
+        auto house = tile->overlay<House>();
         if( house.isValid() )
         {
           int accessLevel = house->getServiceValue( Service::market );
@@ -132,9 +131,9 @@ void MarketAccess::handleEvent(NEvent& event)
 MarketAccess::MarketAccess( Camera& camera, PlayerCityPtr city)
   : Info( camera, city, accessColumnIndex )
 {
-  _addWalkerType( walker::marketBuyer );
-  _addWalkerType( walker::marketLady );
-  _addWalkerType( walker::marketKid );
+  _visibleWalkers() << walker::marketBuyer
+                    << walker::marketLady
+                    << walker::marketKid;
 
   _initialize();
 }

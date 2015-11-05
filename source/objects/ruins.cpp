@@ -130,8 +130,7 @@ void BurningRuins::destroy()
     fire->rmLocation( pos() );
   }
 
-  GameEventPtr event = BuildAny::create( pos(), p.object() );
-  event->dispatch();
+  events::dispatch<BuildAny>( pos(), p.object() );
 }
 
 void BurningRuins::collapse() {}
@@ -296,8 +295,7 @@ void PlagueRuins::destroy()
   p->drop();
   p->setInfo( pinfo() );
 
-  GameEventPtr event = BuildAny::create( pos(), p.object() );
-  event->dispatch();
+  events::dispatch<BuildAny>( pos(), p.object() );
 }
 
 void PlagueRuins::applyService(ServiceWalkerPtr walker){}

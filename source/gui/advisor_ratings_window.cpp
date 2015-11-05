@@ -205,8 +205,8 @@ void Ratings::Impl::checkPeaceRating()
 
   unsigned int peace = city->peace();
 
-  bool cityUnderRomeAttack = ml->haveNotification( Notification::chastener );
-  bool cityUnderBarbarianAttack = ml->haveNotification( Notification::barbarian );
+  bool cityUnderRomeAttack = ml->haveNotification( notification::chastener );
+  bool cityUnderBarbarianAttack = ml->haveNotification( notification::barbarian );
 
   if( cityUnderBarbarianAttack || cityUnderRomeAttack )
   {

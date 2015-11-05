@@ -52,8 +52,7 @@ void Water::drawTile( const RenderInfo& rinfo, Tile& tile)
 
   if( tile.overlay().isNull() )
   {
-    drawPass( rinfo, tile, Renderer::ground );
-    drawPass( rinfo, tile, Renderer::groundAnimation );
+    drawLandTile( rinfo, tile );
   }
   else
   {
@@ -211,14 +210,6 @@ void Water::handleEvent(NEvent& event)
   }
 
   Layer::handleEvent( event );
-}
-
-LayerPtr Water::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new Water( camera, city ) );
-  ret->drop();
-
-  return ret;
 }
 
 Water::Water( Camera& camera, PlayerCityPtr city)

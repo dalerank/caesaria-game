@@ -93,7 +93,7 @@ VariantList FestivalInfo::save() const
 void FestivalInfo::load(const VariantList& stream)
 {
   date = stream.get( 0 ).toDateTime();
-  divinity = stream.get( 1 ).toEnum<religion::RomeDivinityType>();
+  divinity = stream.get( 1 ).toEnum<religion::RomeDivinity::Type>();
   size = stream.get( 2 ).toEnum<FestivalInfo::Type>();
 }
 
@@ -107,29 +107,20 @@ public:
   History history;
 };
 
-SrvcPtr Festival::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new Festival( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 std::string Festival::defaultName() {  return CAESARIA_STR_EXT(Festival); }
 
 void Festival::now() { _d->nextfest.date = game::Date::current(); }
 DateTime Festival::lastFestival() const { return _d->lastfest.date; }
 DateTime Festival::nextFestival() const { return _d->nextfest.date; }
 
-void Festival::assign( RomeDivinityType name, int size )
+void Festival::assign(RomeDivinity::Type name, int size )
 {
   _d->nextfest.size = (FestivalInfo::Type)size;
   _d->nextfest.date= game::Date::current();
   _d->nextfest.date.appendMonth( festival::prepareMonthsDelay + size );
   _d->nextfest.divinity = name;
 
-  GameEventPtr e = Payment::create( econ::Issue::sundries, -_city()->statistic().festival.calcCost( (FestivalType)size ) );
-  e->dispatch();
+  events::dispatch<Payment>( econ::Issue::sundries, -_city()->statistic().festival.calcCost( (FestivalType)size ) );
 }
 
 Festival::Festival(PlayerCityPtr city)
@@ -176,7 +167,7 @@ void Festival::_doFestival()
 {
   int sentimentValue = 0;
   int festSize = math::clamp<int>( _d->nextfest.size, FestivalInfo::none, FestivalInfo::big );
-  FestivalDesc& info = findDesc( FestivalInfo::Type( festSize ) );
+  const FestivalDesc& info = findDesc( FestivalInfo::Type( festSize ) );
 
   const DateTime currentDate = game::Date::current();
   if( _d->oldfest.date.monthsTo( currentDate ) >= DateTime::monthsInYear )
@@ -194,15 +185,11 @@ void Festival::_doFestival()
 
   rome::Pantheon::doFestival( _d->nextfest.divinity, festSize );
 
-  GameEventPtr e = ShowFeastival::create( _(info.desc), _(info.title),
-                                          _city()->mayor()->name(), info.video );
-  e->dispatch();
+  events::dispatch<ShowFeastival>( _(info.desc), _(info.title),
+                                   _city()->mayor()->name(), info.video );
 
-  e = UpdateCitySentiment::create( sentimentValue );
-  e->dispatch();
-
-  e = UpdateHouseService::create( Service::crime, -sentimentValue );
-  e->dispatch();
+  events::dispatch<UpdateCitySentiment>( sentimentValue );
+  events::dispatch<UpdateHouseService>( Service::crime, -sentimentValue );
 }
 
 }//end namespace city

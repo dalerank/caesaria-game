@@ -47,7 +47,7 @@ bool StringAttribute::updateAttrib(bool sendEvent)
 
 std::string StringAttribute::editText() const { return _attribEditBox->text(); }
 
-void StringAttribute::setFont(Font font)
+void StringAttribute::setFont(const Font& font)
 {
   if( _attribEditBox ) _attribEditBox->setFont( font );
 }

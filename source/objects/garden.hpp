@@ -31,7 +31,7 @@ public:
   virtual bool build(const city::AreaInfo &info);
   virtual void load(const VariantMap &stream);
   virtual void save(VariantMap &stream) const;
-  virtual Desirability desirability() const;
+  virtual const Desirability& desirability() const;
   virtual std::string sound() const;
   virtual void destroy();
   virtual void setPicture(gfx::Picture picture);

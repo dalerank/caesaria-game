@@ -38,6 +38,17 @@ ClayPit::ClayPit()
   _setUnworkingInterval( 12 );
 }
 
+bool ClayPit::build(const city::AreaInfo& info)
+{
+  bool isOk = Factory::build( info );
+
+  bool mayCollapse = info.city->getOption( PlayerCity::minesMayCollapse ) != 0;
+  if( !mayCollapse )
+    _setUnworkingInterval( 0 );
+
+  return isOk;
+}
+
 void ClayPit::timeStep( const unsigned long time )
 {
   Factory::timeStep( time );
@@ -47,8 +58,7 @@ void ClayPit::_reachUnworkingTreshold()
 {
   Factory::_reachUnworkingTreshold();
 
-  auto event = ShowInfobox::create( "##clay_pit_flooded##", "##clay_pit_flooded_by_low_support##");
-  event->dispatch();
+  events::dispatch<ShowInfobox>( "##clay_pit_flooded##", "##clay_pit_flooded_by_low_support##");
 
   collapse();
 }

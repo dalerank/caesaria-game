@@ -20,6 +20,7 @@ set( TILESET_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/core/variant.cpp"
       "${BASE_SOURCE_DIR}/core/eventconverter.cpp"
       "${BASE_SOURCE_DIR}/core/font.cpp"
+      "${BASE_SOURCE_DIR}/core/color_list.cpp"
       "${BASE_SOURCE_DIR}/core/debug_timer.cpp"
       "${BASE_SOURCE_DIR}/vfs/directory.cpp"
       "${BASE_SOURCE_DIR}/vfs/file.cpp"

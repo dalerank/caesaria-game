@@ -209,10 +209,11 @@ Settings::Settings() : _d( new Impl )
   _d->options[ oldgfx              ] = 0;
 #endif
 
-#ifdef CAESARIA_PLATFORM_ANDROID
-  _d->options[ needAcceptBuild     ] = true;
-  _d->options[ showTabletMenu      ] = true;
-#endif
+  if( OSystem::isAndroid() )
+  {
+    _d->options[ needAcceptBuild     ] = true;
+    _d->options[ showTabletMenu      ] = true;
+  }
 }
 
 void Settings::set( const std::string& option, const Variant& value )

@@ -35,18 +35,15 @@ namespace religion
 namespace rome
 {
 
-DivinityPtr Mercury::create()
-{
-  DivinityPtr ret( new Mercury() );
-  ret->setInternalName( baseDivinityNames[ romeDivMercury ] );
-  ret->drop();
-
-  return ret;
-}
-
 void Mercury::updateRelation(float income, PlayerCityPtr city)
 {
   RomeDivinity::updateRelation( income, city );
+}
+
+Mercury::Mercury()
+  : RomeDivinity( RomeDivinity::Mercury )
+{
+
 }
 
 template<class T>
@@ -57,11 +54,10 @@ void __filchGoods( const std::string& title, PlayerCityPtr city, bool showMessag
     std::string txt = fmt::format( "##{0}_of_mercury_title##", title );
     std::string descr = fmt::format( "##{0}_of_mercury_description##", title );
 
-    events::GameEventPtr event = events::ShowInfobox::create( _(txt),
-                                                              _(descr),
-                                                              events::ShowInfobox::send2scribe,
-                                                              "god_mercury");
-    event->dispatch();
+    events::dispatch<events::ShowInfobox>( _(txt),
+                                           _(descr),
+                                           true,
+                                           "god_mercury");
   }
 
   SmartList<T> buildings = city->statistic().objects.find<T>();
@@ -89,9 +85,8 @@ void Mercury::_doWrath(PlayerCityPtr city)
 
 void Mercury::_doSmallCurse(PlayerCityPtr city)
 {
-  events::GameEventPtr event = events::ShowInfobox::create( _("##smallcurse_of_mercury_title##"),
-                                                            _("##smallcurse_of_mercury_description##") );
-  event->dispatch();
+  events::dispatch<events::ShowInfobox>( _("##smallcurse_of_mercury_title##"),
+                                         _("##smallcurse_of_mercury_description##") );
 
   FactoryList factories = city->overlays().select<Factory>();
 

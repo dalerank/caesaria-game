@@ -59,7 +59,7 @@ void FortLegionary::_readyNewSoldier()
 
   if( !tiles.empty() )
   {
-    auto soldier = RomeSoldier::create( _city(), walker::legionary );
+    auto soldier = Walker::create<RomeSoldier>( _city(), walker::legionary );
     soldier->send2city( this, tiles.front()->pos() );
     addWalker( soldier.object() );
   }
@@ -91,7 +91,7 @@ void FortMounted::_readyNewSoldier()
 
   if( !tiles.empty() )
   {
-    auto soldier = RomeHorseman::create( _city() );
+    auto soldier = Walker::create<RomeHorseman>( _city() );
     soldier->send2city( this, tiles.front()->pos() );
     addWalker( soldier.object() );
   }
@@ -116,7 +116,7 @@ void FortJaveline::_readyNewSoldier()
 
   if( !tiles.empty() )
   {
-    auto archer = RomeArcher::create( _city() );
+    auto archer = Walker::create<RomeArcher>( _city() );
     archer->send2city( this, tiles.front()->pos() );
     addWalker( archer.object() );
   }

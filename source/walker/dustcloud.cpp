@@ -70,15 +70,6 @@ public:
 
 };
 
-WalkerPtr DustCloud::create(PlayerCityPtr city)
-{
-  WalkerPtr ret( new DustCloud( city ) );
-  ret->initialize( WalkerHelper::getOptions( walker::dustCloud ) );
-  ret->drop();
-
-  return ret;
-}
-
 void DustCloud::create(PlayerCityPtr city, const TilePos& start, unsigned int range)
 {
   for( int direction=0; direction < 8; direction++ )
@@ -105,9 +96,8 @@ void DustCloud::create(PlayerCityPtr city, const TilePos& start, unsigned int ra
 }
 
 DustCloud::DustCloud(PlayerCityPtr city )
-  : Walker( city ), _d( new Impl )
+  : Walker( city, walker::dustCloud ), _d( new Impl )
 {
-  _setType( walker::dustCloud );
   _d->animation.load( ResourceGroup::sprites, 1, 8 );
   _d->animation.setDelay( Animation::hugeSlow );
   //_d->animation.setOffset( Point( 5, 7 ) );

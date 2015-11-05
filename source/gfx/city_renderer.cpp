@@ -84,7 +84,6 @@ public:
   TilemapCamera camera;  // visible map area
   Layers layers;
   Point currentCursorPos;
-  int lastZoom;
   Renderer::ModePtr changeCommand;
 
 public:
@@ -112,15 +111,13 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   _d->city = city;
   _d->tilemap = &city->tilemap();
   _d->guienv = guienv;
-  _d->camera.init( *_d->tilemap, engine->screenSize() );
+  _d->camera.init( *_d->tilemap, engine->viewportSize() );
   _d->engine = engine;
-  _d->lastZoom = _d->camera.zoom();
-  //_d->engine->setScale( 1.f );
 
-  addLayer( Simple::create( _d->camera, city ) );
-  addLayer( Water::create( _d->camera, city ) );
-  addLayer( Fire::create( _d->camera, city ) );
-  addLayer( Food::create( _d->camera, city ) );
+  addLayer( Layer::create<Simple>( _d->camera, city ) );
+  addLayer( Layer::create<Water>( _d->camera, city ) );
+  addLayer( Layer::create<Fire>( _d->camera, city ) );
+  addLayer( Layer::create<Food>( _d->camera, city ) );
   addLayer( Health::create( _d->camera, city, citylayer::health ));
   addLayer( Health::create( _d->camera, city, citylayer::doctor ));
   addLayer( Health::create( _d->camera, city, citylayer::hospital ));
@@ -130,7 +127,7 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   addLayer( Damage::create( _d->camera, city ) );
   addLayer( Sentiment::create( _d->camera, city ) );
   addLayer( Unemployed::create( _d->camera, city ) );
-  addLayer( citylayer::Desirability::create( _d->camera, city ) );
+  addLayer( Layer::create<citylayer::Desirability>( _d->camera, city ) );
   addLayer( Entertainment::create( _d->camera, city, citylayer::entertainment ) );
   addLayer( Entertainment::create( _d->camera, city, citylayer::theater ) );
   addLayer( Entertainment::create( _d->camera, city, citylayer::amphitheater ) );
@@ -174,9 +171,7 @@ void CityRenderer::Impl::resetWalkersAfterTurn()
   const WalkerList& walkers = city->walkers();
 
   for( auto wlk : walkers )
-  {
-    wlk->setPos( wlk->tile().epos() );
-  }
+    wlk->mapTurned();
 }
 
 void CityRenderer::Impl::saveSettings()
@@ -233,16 +228,7 @@ void CityRenderer::render()
 {  
   LayerPtr layer = _d->currentLayer;
   Engine& engine = *_d->engine;
-
-  if( _d->lastZoom != _d->camera.zoom() )
-  {
-    _d->lastZoom = _d->camera.zoom();
-
-    float fzoom = _d->lastZoom / 100.f;
-    Size s = engine.screenSize() * (1/fzoom);
-    engine.setScale( fzoom );
-    _d->camera.setViewport( s );
-  }
+  static int lastZoom = 0;
 
   if( _d->city->getOption( PlayerCity::updateTiles ) > 0 )
   {
@@ -255,7 +241,17 @@ void CityRenderer::render()
     return;
   }
 
-  engine.setScale( _d->lastZoom / 100.f );
+  float zoom;
+  if( lastZoom != _d->camera.zoom() )
+  {
+    lastZoom = _d->camera.zoom();
+    zoom = lastZoom / 100.f;
+    _d->camera.setViewport( engine.viewportSize()  / zoom );
+  }
+
+  zoom = lastZoom / 100.f;
+
+  engine.setScale( zoom );
 
   layer->beforeRender( engine );
   layer->render( engine );
@@ -357,7 +353,7 @@ TilePos CityRenderer::screen2tilepos(const Point& point ) const{  return _d->cam
 
 Camera* CityRenderer::camera() {  return &_d->camera; }
 Renderer::ModePtr CityRenderer::mode() const {  return _d->changeCommand;}
-void CityRenderer::addLayer( LayerPtr layer){  _d->layers.push_back( layer ); }
+void CityRenderer::addLayer(SmartPtr<Layer> layer){  _d->layers.push_back( layer ); }
 LayerPtr CityRenderer::currentLayer() const { return _d->currentLayer; }
 void CityRenderer::setViewport(const Size& size) { _d->camera.setViewport( size ); }
 Signal1<int>& CityRenderer::onLayerSwitch() { return _d->onLayerSwitchSignal; }

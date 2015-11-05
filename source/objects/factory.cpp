@@ -247,7 +247,7 @@ void Factory::deliverGood()
   int qty = _d->goodStore.qty( _d->goods.out );
   if( _mayDeliverGood() && qty >= 100 )
   {      
-    auto cartPusher = CartPusher::create( _city() );
+    auto cartPusher = Walker::create<CartPusher>( _city() );
 
     good::Stock pusherStock( _d->goods.out, qty, 0 );
     _d->goodStore.retrieve( pusherStock, math::clamp( qty, 0, 400 ) );
@@ -375,7 +375,7 @@ void Factory::receiveGood()
   mayStoreQty = math::clamp<unsigned int>( mayStoreQty, 0, 100 );
   if( _mayDeliverGood() && mayStoreQty > 0 )
   {
-    auto cartSupplier = CartSupplier::create( _city() );
+    auto cartSupplier = Walker::create<CartSupplier>( _city() );
     cartSupplier->send2city( this, consumeGoodType(), mayStoreQty );
 
     addWalker( cartSupplier.object() );

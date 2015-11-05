@@ -26,10 +26,20 @@ namespace game
 namespace freeplay
 {
 
-void addPopulationMilestones( PlayerCityPtr city );
-void initBuildOptions(PlayerCityPtr city);
-void addEvents(PlayerCityPtr city);
-void resetFavour(PlayerCityPtr city);
+class Finalizer
+{
+public:
+  Finalizer( PlayerCityPtr city );
+
+  void addPopulationMilestones();
+  void initBuildOptions();
+  void addEvents();
+  void resetFavour();
+
+private:
+  PlayerCityPtr _city;
+};
+
 
 }//end namespace freeplay
 

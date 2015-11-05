@@ -39,6 +39,7 @@
 #include "core/direction.hpp"
 #include "walkers_factory.hpp"
 #include "gfx/helper.hpp"
+#include "gfx/tilemap.hpp"
 #include "gfx/cart_animation.hpp"
 
 using namespace gfx;
@@ -62,15 +63,13 @@ public:
 };
 
 CartSupplier::CartSupplier( PlayerCityPtr city )
-  : Human( city ), _d( new Impl )
+  : Human( city, walker::supplier ), _d( new Impl )
 {
-  _setType( walker::supplier );
-
   _d->storageBuildingPos = gfx::tilemap::invalidLocation();
   _d->baseBuildingPos = gfx::tilemap::invalidLocation();
   _d->maxDistance = defaultDeliverDistance;
 
-  setName( NameGenerator::rand( NameGenerator::male ) );
+  setName( NameGenerator::rand( NameGenerator::plebMale ) );
 }
 
 void CartSupplier::_reachedPathway()
@@ -82,7 +81,7 @@ void CartSupplier::_reachedPathway()
     // walker is back in the market
     deleteLater();
     // put the content of the stock to receiver
-    auto building = _city()->getOverlay( _d->baseBuildingPos ).as<Building>();
+    auto building = _map().overlay<Building>( _d->baseBuildingPos );
 
     if( building.isValid() )
     {
@@ -102,7 +101,7 @@ void CartSupplier::_reachedPathway()
   else
   {
     // get goods from destination building
-    auto building = _city()->getOverlay( _d->storageBuildingPos ).as<Building>();
+    auto building = _map().overlay<Building>( _d->storageBuildingPos );
 
     if( building.isValid() )
     {
@@ -268,20 +267,12 @@ void CartSupplier::send2city( BuildingPtr building, good::Product what, const in
 
 void CartSupplier::_reserveStorage()
 {
-  auto building =_city()->getOverlay( _d->baseBuildingPos ).as<Building>();
+  auto building = _map().overlay<Building>( _d->baseBuildingPos );
 
   if( building.isValid() )
   {
     _d->rcvReservationID = building->store().reserveStorage( _d->stock, game::Date::current() );
   }
-}
-
-CartSupplierPtr CartSupplier::create(PlayerCityPtr city )
-{
-  CartSupplierPtr ret( new CartSupplier( city ) );
-  ret->drop(); //delete automatically
-
-  return ret;
 }
 
 void CartSupplier::save( VariantMap& stream ) const
@@ -310,8 +301,7 @@ void CartSupplier::load( const VariantMap& stream )
 
 bool CartSupplier::die()
 {
-  events::GameEventPtr e = events::RemoveCitizens::create( pos(), CitizenGroup( CitizenGroup::mature, 1) );
-  e->dispatch();
+  events::dispatch<events::RemoveCitizens>( pos(), CitizenGroup( CitizenGroup::mature, 1) );
 
   return Walker::die();
 }

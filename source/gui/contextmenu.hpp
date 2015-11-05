@@ -49,7 +49,7 @@ public:
 
   //! constructor
   ContextMenu( Widget* parent, const Rect& rectangle, int id=-1,
-                     bool getFocus = true, bool allowFocus = true);
+               bool getFocus = true, bool allowFocus = true);
 
   //! destructor
   virtual ~ContextMenu();

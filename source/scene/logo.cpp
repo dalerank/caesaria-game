@@ -22,8 +22,9 @@
 #include "core/exception.hpp"
 #include "gfx/picture.hpp"
 #include "gfx/pictureconverter.hpp"
-#include "core/color.hpp"
+#include "core/color_list.hpp"
 #include "core/font.hpp"
+#include "core/osystem.hpp"
 #include "core/gettext.hpp"
 
 using namespace gfx;
@@ -127,10 +128,11 @@ void SplashScreen::exitScene(bool showDevText)
 
   Font textFont = Font::create( FONT_3 ) ;
 
-#ifdef CAESARIA_PLATFORM_ANDROID
-  offset = 12;
-  textFont = Font::create( FONT_4 );
-#endif
+  if( OSystem::isAndroid() )
+  {
+    offset = 12;
+    textFont = Font::create( FONT_4 );
+  }
 
   _d->fade( engine, _d->background, true, offset );
   _d->textPic = Picture( engine.screenSize(), 0, true );
@@ -151,7 +153,7 @@ void SplashScreen::exitScene(bool showDevText)
     {
       Rect textRect = textFont.getTextRect( *it, Rect( Point(), _d->textPic.size() ), align::center, align::center );
       bool defaultColor = ( (*it)[0] != ' ');
-      textFont.setColor( defaultColor ? DefaultColors::dodgerBlue : DefaultColors::indianRed );
+      textFont.setColor( defaultColor ? ColorList::dodgerBlue : ColorList::indianRed );
       textFont.draw( _d->textPic, *it, textRect.left(), textRect.top() + offset, false, true );
       offset += 20;
     }

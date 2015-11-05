@@ -30,6 +30,7 @@
 #include "core/common.hpp"
 #include "cityservice_workershire.hpp"
 #include "objects/farm.hpp"
+#include "objects/religion.hpp"
 #include "world/empire.hpp"
 #include "objects/warehouse.hpp"
 #include "cityservice_disorder.hpp"
@@ -39,6 +40,7 @@
 #include "cityservice_health.hpp"
 #include "world/traderoute.hpp"
 #include "core/logger.hpp"
+#include "world/trading.hpp"
 #include "city/states.hpp"
 #include <map>
 
@@ -61,7 +63,7 @@ float Statistic::_Balance::koeff() const
 int Statistic::_Entertainment::coverage(Service::Type service) const
 {
   int need = 0, have = 0;
-  HouseList houses = _parent.rcity.statistic().houses.find();
+  auto houses = _parent.rcity.statistic().houses.all();
   for( auto house : houses )
   {
     if( house->isEntertainmentNeed( service ) )
@@ -119,22 +121,23 @@ HouseList Statistic::_Houses::habitable() const
 #endif
 Statistic::Statistic(PlayerCity& c)
     : INIT_SUBSTAT(walkers),
-    INIT_SUBSTAT(objects),
-    INIT_SUBSTAT(tax),
-    INIT_SUBSTAT(workers),
-    INIT_SUBSTAT(population),
-    INIT_SUBSTAT(food),
-    INIT_SUBSTAT(services),
-    INIT_SUBSTAT(festival),
-    INIT_SUBSTAT(crime),
-    INIT_SUBSTAT(goods),
-    INIT_SUBSTAT(health),
-    INIT_SUBSTAT(military),
-    INIT_SUBSTAT(map),
-    INIT_SUBSTAT(houses),
-    INIT_SUBSTAT(entertainment),
-    INIT_SUBSTAT(balance),
-    rcity( c )
+      INIT_SUBSTAT(objects),
+      INIT_SUBSTAT(tax),
+      INIT_SUBSTAT(workers),
+      INIT_SUBSTAT(population),
+      INIT_SUBSTAT(food),
+      INIT_SUBSTAT(services),
+      INIT_SUBSTAT(festival),
+      INIT_SUBSTAT(crime),
+      INIT_SUBSTAT(goods),
+      INIT_SUBSTAT(health),
+      INIT_SUBSTAT(military),
+      INIT_SUBSTAT(map),
+      INIT_SUBSTAT(houses),
+      INIT_SUBSTAT(religion),
+      INIT_SUBSTAT(entertainment),
+      INIT_SUBSTAT(balance),
+      rcity( c )
 {
 
 }
@@ -520,7 +523,7 @@ int Statistic::_Military::months2lastAttack() const
 bool Statistic::_Goods::canImport(good::Product type) const
 {
   world::EmpirePtr empire = _parent.rcity.empire();
-  world::TraderouteList routes = empire->tradeRoutes( _parent.rcity.name() );
+  world::TraderouteList routes = empire->troutes().from( _parent.rcity.name() );
   bool haveImportWay = false;
   for( auto route : routes )
   {
@@ -569,6 +572,11 @@ unsigned int Statistic::_Houses::terribleNumber() const
   return ret;
 }
 
+HouseList Statistic::_Houses::all() const
+{
+  return _parent.objects.find<House>();
+}
+
 HouseList Statistic::_Houses::find(std::set<int> levels) const
 {
   HouseList houses = _parent.objects.find<House>();
@@ -585,6 +593,16 @@ HouseList Statistic::_Houses::find(std::set<int> levels) const
   }
 
   return ret;
+}
+
+TempleList Statistic::_Religion::temples() const
+{
+  return _parent.objects.find<Temple>( object::group::religion );
+}
+
+TempleOracleList Statistic::_Religion::oracles() const
+{
+  return _parent.objects.find<TempleOracle>( object::oracle );
 }
 
 }//end namespace city

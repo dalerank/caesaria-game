@@ -24,8 +24,8 @@
 /** This is an immigrant coming with his stuff */
 class Patrician : public Human
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static PatricianPtr create( PlayerCityPtr city );
   virtual ~Patrician();
 
   virtual void send2City( TilePos start );

@@ -23,10 +23,10 @@
 
 class EnemySoldier : public Soldier
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
   typedef enum { attackAll, attackFood, attackCitizen, attackBestBuilding,
                  attackIndustry, attackSenate, attackCount } AttackPriority;
-  static EnemySoldierPtr create( PlayerCityPtr city, walker::Type type );
 
   virtual void timeStep(const unsigned long time);
 
@@ -56,7 +56,7 @@ protected:
   virtual void _check4attack();
   virtual Pathway _findPathway2NearestConstruction(unsigned int range);
 
-  EnemySoldier( PlayerCityPtr city, walker::Type type );
+  EnemySoldier(PlayerCityPtr city, walker::Type type);
 
   object::GroupSet &_excludeAttack();
 

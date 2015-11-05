@@ -37,9 +37,15 @@ public:
     return it != this->end();
   }  
 
-  std::string valueOrEmpty( unsigned int index ) const
+  const std::string& valueOrEmpty( unsigned int index ) const
   {
-    return (index < size()) ? at( index ) : "";
+    static std::string emptyStr;
+    return (index < size()) ? at( index ) : emptyStr;
+  }
+
+  const std::string& valueOrDefault( unsigned int index, const std::string& defaultStr ) const
+  {
+    return (index < size()) ? at( index ) : defaultStr;
   }
 
   bool remove( const std::string& str )

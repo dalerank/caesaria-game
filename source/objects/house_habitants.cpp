@@ -49,8 +49,7 @@ void Habitants::update( House& h, const CitizenGroup& group )
   if( deltaWorkersNumber < 0 )
   {
     Logger::warning( "Habitants::update fired {0} workers", deltaWorkersNumber );
-    GameEventPtr e = FireWorkers::create( h.pos(), abs( deltaWorkersNumber ) );
-    e->dispatch();
+    events::dispatch<FireWorkers>( h.pos(), abs( deltaWorkersNumber ) );
   }
   else
   {

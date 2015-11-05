@@ -66,8 +66,10 @@ public:
     RectF scale;
   } rect;
 
-
-	Alignment textHorzAlign, textVertAlign;
+  struct {
+    Alignment horizontal;
+    Alignment vertical;
+  } textAlign;
 
   std::string internalName;
 

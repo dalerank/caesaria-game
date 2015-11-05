@@ -43,9 +43,20 @@ IronMine::IronMine()
   _setUnworkingInterval( 12 );
 }
 
+bool IronMine::build(const city::AreaInfo& info)
+{
+  bool isOk = Factory::build( info );
+
+  bool mayCollapse = info.city->getOption( PlayerCity::claypitMayCollapse ) != 0;
+  if( !mayCollapse )
+    _setUnworkingInterval( 0 );
+
+  return isOk;
+}
+
 bool IronMine::canBuild( const city::AreaInfo& areaInfo ) const
 {
-  bool is_constructible = WorkingBuilding::canBuild( areaInfo );
+  bool is_constructible = Factory::canBuild( areaInfo );
   bool near_mountain = false;  // tells if the factory is next to a mountain
 
   Tilemap& tilemap = areaInfo.city->tilemap();
@@ -69,8 +80,7 @@ void IronMine::_reachUnworkingTreshold()
 {
   Factory::_reachUnworkingTreshold();
 
-  events::GameEventPtr e = events::ShowInfobox::create( "##iron_mine_collapse##", "##iron_mine_collapse_by_low_support##");
-  e->dispatch();
+  events::dispatch<events::ShowInfobox>( "##iron_mine_collapse##", "##iron_mine_collapse_by_low_support##");
 
   collapse();
 }

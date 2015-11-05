@@ -53,8 +53,7 @@ void ShowTileInfo::_exec(Game& game, unsigned int time)
     {
       _pos = c->pos();
 
-      GameEventPtr e = MoveCamera::create( _pos );
-      e->dispatch();
+      events::dispatch<MoveCamera>( _pos );
     }
   }
   break;

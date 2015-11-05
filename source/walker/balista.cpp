@@ -37,15 +37,6 @@ Balista::Balista( PlayerCityPtr city )
   setName( _("##balista##") );
 }
 
-BalistaPtr Balista::create(PlayerCityPtr city)
-{
-  BalistaPtr ret( new Balista( city ) );
-  ret->drop();
-  ret->attach();
-
-  return ret;
-}
-
 Balista::~Balista(){}
 
 void Balista::setActive(bool active)
@@ -76,7 +67,7 @@ bool Balista::_tryAttack()
 
 void Balista::_fire( TilePos target )
 {
-  SpearPtr spear = Spear::create( _city() );
+  SpearPtr spear = Walker::create<Spear>( _city() );
   spear->setPicInfo( ResourceGroup::sprites, 146 );
   spear->setPicOffset( Point( -15, 15 ));
   spear->toThrow( pos(), target );

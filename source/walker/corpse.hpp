@@ -24,9 +24,8 @@
 /** This is an immigrant coming with his stuff */
 class Corpse : public Walker
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static WalkerPtr create( PlayerCityPtr city ); //need for walker manager
-
   static WalkerPtr create( PlayerCityPtr city, WalkerPtr walker );
   static WalkerPtr create( PlayerCityPtr city, TilePos pos,
                       std::string rcGroup, int startIndex, int stopIndex,

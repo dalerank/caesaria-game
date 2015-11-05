@@ -22,7 +22,7 @@
 #include "environment.hpp"
 #include "gfx/decorator.hpp"
 #include "gfx/engine.hpp"
-#include "core/color.hpp"
+#include "core/color_list.hpp"
 #include "core/logger.hpp"
 #include "core/variant_list.hpp"
 #include "gfx/picturesarray.hpp"
@@ -175,10 +175,10 @@ void PushButton::_updateTextPic()
 
   if( _d->bg.style == flatBorderLine )
   {
-    Decorator::drawLine( textTxs, Point( 0, 0), Point( width(), 0), DefaultColors::black );
-    Decorator::drawLine( textTxs, Point( width()-1, 0), Point( width()-1, height() ), DefaultColors::black );
-    Decorator::drawLine( textTxs, Point( width(), height()-1), Point( 0, height()-1), DefaultColors::black );
-    Decorator::drawLine( textTxs, Point( 0, height() ), Point( 0, 0), DefaultColors::black );
+    Decorator::drawLine( textTxs, Point( 0, 0), Point( width(), 0), ColorList::black );
+    Decorator::drawLine( textTxs, Point( width()-1, 0), Point( width()-1, height() ), ColorList::black );
+    Decorator::drawLine( textTxs, Point( width(), height()-1), Point( 0, height()-1), ColorList::black );
+    Decorator::drawLine( textTxs, Point( 0, height() ), Point( 0, 0), ColorList::black );
   }
 
   textTxs.update();
@@ -320,6 +320,18 @@ void PushButton::setupUI(const VariantMap &ui)
 
 void PushButton::setTextOffset(const Point& offset) { _dfunc()->text.offset = offset;}
 bool PushButton::isPushButton() const { return _dfunc()->is.pushButton; }
+
+void PushButton::canvasDraw(const std::string& text, const Point& point, Font rfont, NColor color)
+{
+  Picture& pic = _textPicture();
+  if( !rfont.isValid() )
+    rfont = font( stNormal );
+
+  if( color.color != 0 )
+    rfont.setColor( color );
+
+  rfont.draw( pic, text, point, true, true  );
+}
 
 void PushButton::setPicture(Picture picture, ElementState state )
 {
@@ -580,15 +592,15 @@ void PushButton::draw( gfx::Engine& painter )
 #ifdef DEBUG
   if( ui()->hasFlag( Ui::buttonShowDebugArea ) )
   {
-    painter.drawLine( DefaultColors::red, absoluteRect().lefttop(), absoluteRect().righttop() );
-    painter.drawLine( DefaultColors::red, absoluteRect().righttop(), absoluteRect().rightbottom() );
-    painter.drawLine( DefaultColors::red, absoluteRect().rightbottom(), absoluteRect().leftbottom() );
-    painter.drawLine( DefaultColors::red, absoluteRect().leftbottom(), absoluteRect().lefttop() );
+    painter.drawLine( ColorList::red, absoluteRect().lefttop(), absoluteRect().righttop() );
+    painter.drawLine( ColorList::red, absoluteRect().righttop(), absoluteRect().rightbottom() );
+    painter.drawLine( ColorList::red, absoluteRect().rightbottom(), absoluteRect().leftbottom() );
+    painter.drawLine( ColorList::red, absoluteRect().leftbottom(), absoluteRect().lefttop() );
 
     if( _d->currentButtonState == stPressed )
     {
-      painter.drawLine( DefaultColors::red, absoluteRect().lefttop(), absoluteRect().rightbottom() );
-      painter.drawLine( DefaultColors::red, absoluteRect().leftbottom(), absoluteRect().righttop() );
+      painter.drawLine( ColorList::red, absoluteRect().lefttop(), absoluteRect().rightbottom() );
+      painter.drawLine( ColorList::red, absoluteRect().leftbottom(), absoluteRect().righttop() );
     }
   }
 #endif

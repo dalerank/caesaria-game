@@ -21,6 +21,7 @@
 #include "gfx/tilemap.hpp"
 #include "core/variant_map.hpp"
 #include "core/variant_list.hpp"
+#include "objects_factory.hpp"
 #include "gfx/helper.hpp"
 #include "core/logger.hpp"
 
@@ -48,8 +49,13 @@ public:
   PlayerCityPtr city;
 };
 
+OverlayPtr Overlay::create(object::Type type)
+{
+  return TileOverlayFactory::instance().create( type );
+}
+
 Overlay::Overlay(const object::Type type, const Size& size)
-: _d( new Impl )
+  : _d( new Impl )
 {
   _d->masterTile = 0;
   _d->size = size;
@@ -63,7 +69,7 @@ Overlay::Overlay(const object::Type type, const Size& size)
 #endif
 }
 
-Desirability Overlay::desirability() const
+const Desirability& Overlay::desirability() const
 {
   return info().desirability();
 }

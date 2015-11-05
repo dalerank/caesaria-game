@@ -62,7 +62,7 @@ public:
   bool isEntertainmentNeed( Service::Type type ) const;
   bool isHealthNeed( Service::Type type ) const;
 
-  Desirability desirability() const;
+  const Desirability& desirability() const;
 
   virtual void destroy();
 

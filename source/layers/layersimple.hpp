@@ -27,14 +27,13 @@ namespace citylayer
 class Simple : public Layer
 {
 public:
+  Simple(gfx::Camera& camera, PlayerCityPtr city );
   virtual int type() const;
-  static LayerPtr create(gfx::Camera& camera, PlayerCityPtr city );
-  virtual void drawTile(const RenderInfo& rinfo, gfx::Tile &tile);
+  virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile &tile);
   virtual void afterRender(gfx::Engine &engine);
   virtual void renderUi(gfx::Engine &engine);
 
 protected:
-  Simple(gfx::Camera& camera, PlayerCityPtr city );
 
   class Impl;
   ScopedPtr<Impl> _d;

@@ -62,13 +62,11 @@ void ClearTile::_exec( Game& game, unsigned int )
     if( overlay.isValid() && !overlay->canDestroy() )
     {
       auto info = overlay->info();
-      auto event = WarningMessage::create( _( overlay->errorDesc() ), WarningMessage::neitral );
-      event->dispatch();
+      events::dispatch<WarningMessage>( _( overlay->errorDesc() ), WarningMessage::neitral );
 
       if( info.requestDestroy() )
       {
-        event = RequestDestroy::create( overlay );
-        event->dispatch();
+        events::dispatch<RequestDestroy>( overlay );
       }
       return;
     }
@@ -84,9 +82,9 @@ void ClearTile::_exec( Game& game, unsigned int )
     for( auto tile : clearedTiles )
     {
       tile->setMaster( NULL );
-      tile->setFlag( Tile::tlTree, false);
-      tile->setFlag( Tile::tlRoad, false);
-      tile->setFlag( Tile::tlGarden, false);
+      tile->terrain().tree = false;
+      tile->terrain().road = false;
+      tile->terrain().garden = false;
       tile->setOverlay( NULL );
 
       deleteRoad |= tile->getFlag( Tile::tlRoad );

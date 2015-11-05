@@ -39,6 +39,8 @@ public:
   Label( Widget* parent, const Rect& rectangle, const std::string& text="", bool border=false,
          BackgroundMode background = bgNone, int id=-1);
 
+  Label( Widget* parent, const Rect& rectangle, const std::string& text, Font font);
+
   //! destructor
   virtual ~Label();
 
@@ -58,9 +60,17 @@ public:
   //! Return background draw
   virtual BackgroundMode backgroundMode() const;
 
+  //!
   virtual bool onEvent(const NEvent &event);
 
+  //!
   virtual bool isBorderVisible() const;
+
+  //!
+  virtual void canvasDraw(const std::string& text, const Point& point=Point(), Font font=Font(), NColor color=0);
+
+  //!
+  virtual void canvasDraw(const gfx::Picture& picture, const Point& point);
 
   //! Sets whether to draw the border
   virtual void setBorderVisible(bool draw);

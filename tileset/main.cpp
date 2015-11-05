@@ -22,6 +22,7 @@
 #include "core/logger.hpp"
 #include "core/saveadapter.hpp"
 #include "gfx/loader.hpp"
+#include "core/color_list.hpp"
 #include "core/variant_map.hpp"
 #include "core/debug_timer.hpp"
 #include "gfx/sdl_engine.hpp"
@@ -160,7 +161,7 @@ public:
   Texture(int width, int height)
   {
     image = gfx::Picture( Size( width, height ), 0, true );
-    image.fill( DefaultColors::clear );
+    image.fill( ColorList::clear );
 
     root = new Node(0,0, width, height);
   }
@@ -281,13 +282,13 @@ public:
     textures.push_back( tx );
 		int count = 0;
 		
-    for( auto&& imageName : imageNameSet )
+    for( auto& imageName : imageNameSet )
 		{
       bool added = false;
 			
       Logger::warning( "Adding " + imageName.name + " to atlas (" + utils::i2str(++count) + ")");
 			
-      for( auto&& texture : textures)
+      for( auto& texture : textures)
 			{
         if(texture->addImage(imageName.image, imageName.name, padding))
 				{
@@ -543,7 +544,7 @@ public:
   int max() const
   {
     int result = 0;
-    for( auto&& a : *this )
+    for( auto& a : *this )
       result += a->textures.size();
 
     return result;
@@ -720,7 +721,7 @@ int main(int argc, char* argv[])
     gray = ygray;
     for( int y=0; y < bg.height(); y+= offset )
     {
-      bg.fill( gray ? DefaultColors::darkSlateGray : DefaultColors::lightSlateGray, Rect( x, y, x+offset, y+offset ) );
+      bg.fill( gray ? ColorList::darkSlateGray : ColorList::lightSlateGray, Rect( x, y, x+offset, y+offset ) );
       gray = !gray;
     }    
   }

@@ -27,8 +27,6 @@ namespace city
 class Water : public city::Srvc
 {
 public:
-  static city::SrvcPtr create( PlayerCityPtr city );
-
   virtual void timeStep(const unsigned int time );
 
 private:

@@ -2,6 +2,7 @@
 #include "treeview_item.hpp"
 #include "scrollbar.hpp"
 #include "core/event.hpp"
+#include "core/color_list.hpp"
 #include "gfx/engine.hpp"
 
 #define DEFAULT_SCROLLBAR_SIZE 15
@@ -483,7 +484,7 @@ void TreeView::draw( gfx::Engine& painter )
 			}
 		}			
 
-    drawRect( frameRect, DefaultColors::blue, painter, 0);
+    drawRect( frameRect, ColorList::blue, painter, 0);
     // draw the lines if neccessary
     if( _linesVisible )
 		{
@@ -493,7 +494,7 @@ void TreeView::draw( gfx::Engine& painter )
       Point lp = frameRect.lefttop() + Point( -(_indentWidth) + 1, _itemHeight / 2 );
       Point rp = lp + Point( (node->hasChildren() ? 2 : _indentWidth - 3), 0 );
 
-      painter.drawLine( DefaultColors::red, lp, rp );
+      painter.drawLine( ColorList::red, lp, rp );
 
       if( isFirst )
       {
@@ -503,7 +504,7 @@ void TreeView::draw( gfx::Engine& painter )
       else
       {
         rp = Point( lp.x(), prevPoint.y() );
-        painter.drawLine( DefaultColors::red, lp, rp );
+        painter.drawLine( ColorList::red, lp, rp );
       }
 
       if( node->getParentItem() != _root )

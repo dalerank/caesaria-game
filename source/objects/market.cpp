@@ -85,12 +85,12 @@ void Market::deliverService()
   if( numberWorkers() > 0 && walkers().size() == 0 )
   {
     // the marketBuyer is ready to buy something!
-    MarketBuyerPtr buyer = MarketBuyer::create( _city() );
-    buyer->send2City( this );
+    auto marketBuyer = Walker::create<MarketBuyer>( _city() );
+    marketBuyer->send2City( this );
 
-    if( !buyer->isDeleted() )
+    if( !marketBuyer->isDeleted() )
     {
-      addWalker( buyer.object() );
+      addWalker( marketBuyer.object() );
     }
     else if( _d->isAnyGoodStored() )
     {

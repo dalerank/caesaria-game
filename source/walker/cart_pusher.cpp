@@ -21,6 +21,7 @@
 #include "objects/metadata.hpp"
 #include "name_generator.hpp"
 #include "objects/factory.hpp"
+#include "gfx/tilemap.hpp"
 #include "objects/warehouse.hpp"
 #include "objects/granary.hpp"
 #include "good/store.hpp"
@@ -69,18 +70,18 @@ public:
   BuildingPtr getWalkerDestination_granary(Propagator& pathPropagator, Pathway& oPathWay);
 };
 
-CartPusher::CartPusher(PlayerCityPtr city )
-  : Human( city ), _d( new Impl )
+CartPusher::CartPusher(PlayerCityPtr city, CartCapacity cap)
+  : Human( city, walker::cartPusher  ), _d( new Impl )
 {
-  _setType( walker::cartPusher );
   _d->producerBuilding = nullptr;
   _d->consumerBuilding = nullptr;
   _d->cantUnloadGoods = false;
   _d->brokePathCounter = 0;
+  _d->stock.setCapacity( cap );
   _d->maxDistance = distance::maxDeliver;
   _d->stock.setCapacity( simpleCart );
 
-  setName( NameGenerator::rand( NameGenerator::male ) );
+  setName( NameGenerator::rand( NameGenerator::plebMale ) );
 }
 
 void CartPusher::_reachedPathway()
@@ -222,7 +223,8 @@ void CartPusher::getPictures( gfx::Pictures& oPics)
      std::iter_swap( oPics.begin(), oPics.begin() + 1);
    }
 
-   for( auto&& pic : oPics ) { pic.addOffset( offset ); }
+   for( auto& pic : oPics )
+     pic.addOffset( offset );
 }
 
 void CartPusher::_computeWalkerDestination()
@@ -411,15 +413,6 @@ void CartPusher::timeStep( const unsigned long time )
   Walker::timeStep( time );
 }
 
-CartPusherPtr CartPusher::create(PlayerCityPtr city, CartCapacity cap)
-{
-  CartPusherPtr ret( new CartPusher( city ) );
-  ret->_d->stock.setCapacity( cap );
-  ret->drop(); //delete automatically
-
-  return ret;
-}
-
 CartPusher::~CartPusher(){}
 
 void CartPusher::save( VariantMap& stream ) const
@@ -445,7 +438,7 @@ void CartPusher::load( const VariantMap& stream )
   _d->stock.load( stream.get( literals::stock ).toList() );
 
   TilePos prPos( stream.get( literals::producerPos ).toTilePos() );
-  _d->producerBuilding = _city()->getOverlay( prPos ).as<Building>();
+  _d->producerBuilding = _map().overlay<Building>( prPos );
 
   if( _d->producerBuilding.is<WorkingBuilding>() )
   {
@@ -458,7 +451,7 @@ void CartPusher::load( const VariantMap& stream )
   }
 
   TilePos cnsmPos( stream.get( literals::consumerPos ).toTilePos() );
-  _d->consumerBuilding = _city()->getOverlay( cnsmPos ).as<Building>();
+  _d->consumerBuilding = _map().overlay<Building>( cnsmPos );
 
   VARIANT_LOAD_ANY_D( _d, maxDistance, stream )
   VARIANT_LOAD_ANY_D( _d, cantUnloadGoods, stream )
@@ -469,8 +462,7 @@ bool CartPusher::die()
 {
   bool created = Walker::die();
 
-  auto event = RemoveCitizens::create( pos(), CitizenGroup( CitizenGroup::mature, 1) );
-  event->dispatch();
+  events::dispatch<RemoveCitizens>( pos(), CitizenGroup( CitizenGroup::mature, 1) );
 
   if( !created )
   {

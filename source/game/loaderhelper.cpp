@@ -206,8 +206,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   if( ovType == object::unknown )
     return;
 
-  OverlayPtr overlay; // This is the overlay object, if any
-  overlay = TileOverlayFactory::instance().create( ovType );
+  OverlayPtr overlay = Overlay::create( ovType );
   if( ovType == object::elevation )
   {
     std::string elevationPicName = imgid::toResource( oTile.imgId() );

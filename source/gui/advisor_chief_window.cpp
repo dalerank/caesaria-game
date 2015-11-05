@@ -50,6 +50,7 @@
 #include "world/romechastenerarmy.hpp"
 #include "world/empire.hpp"
 #include "core/logger.hpp"
+#include "core/color_list.hpp"
 #include "city/states.hpp"
 
 using namespace gfx;
@@ -98,6 +99,7 @@ public:
     : Label( parent, rectangle )
   {
     _title = title;
+    _dfont = Font::create( FONT_2_WHITE );
 
     Picture pic;
     pic.load( ResourceGroup::panelBackground, 48 ), Point( 5, 5 );
@@ -111,10 +113,10 @@ public:
   {
     Label::_updateTexture( painter );
 
-    Font font = Font::create( FONT_2_WHITE );
-    font.draw( _textPicture(), _(_title), Point( 20, 0), true );
+    canvasDraw( _(_title), Point( 20, 0), _dfont );
   }
 
+  Font _dfont;
   std::string _title;
 };
 
@@ -128,7 +130,7 @@ public:
   TexturedButton* btnHelp;
 
 public:
-  void drawReportRow( AdviceType, std::string text, NColor color=DefaultColors::black );
+  void drawReportRow( AdviceType, std::string text, NColor color=ColorList::black );
   void drawEmploymentState();
   void drawProfitState();
   void drawMigrationState();
@@ -148,28 +150,28 @@ public:
 Chief::Chief(PlayerCityPtr city, Widget* parent, int id )
   : Base( parent, city ), __INIT_IMPL( Chief )
 {
-  __D_IMPL(_d, Chief )
+  __D_REF(_d, Chief )
   setupUI( ":/gui/chiefadv.gui" );
 
   WidgetEscapeCloser::insertTo( this );  
 
-  _d->city = city;
-  _d->initRows( this, width() );
-  _d->drawEmploymentState();
-  _d->drawProfitState();
-  _d->drawMigrationState();
-  _d->drawFoodStockState();
-  _d->drawFoodConsumption();
-  _d->drawMilitary();
-  _d->drawCrime();
-  _d->drawHealth();
-  _d->drawEducation();
-  _d->drawReligion();
-  _d->drawEntertainment();
-  _d->drawSentiment();
+  _d.city = city;
+  _d.initRows( this, width() );
+  _d.drawEmploymentState();
+  _d.drawProfitState();
+  _d.drawMigrationState();
+  _d.drawFoodStockState();
+  _d.drawFoodConsumption();
+  _d.drawMilitary();
+  _d.drawCrime();
+  _d.drawHealth();
+  _d.drawEducation();
+  _d.drawReligion();
+  _d.drawEntertainment();
+  _d.drawSentiment();
 
-  auto btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
-  CONNECT( btnHelp, onClicked(), this, Chief::_showHelp );
+  auto& btnHelp = add<TexturedButton>( Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
+  CONNECT( &btnHelp, onClicked(), this, Chief::_showHelp );
 }
 
 void Chief::Impl::initRows( Widget* parent, int width )
@@ -178,9 +180,7 @@ void Chief::Impl::initRows( Widget* parent, int width )
   Point offset( 0, 27 );
 
   for( int i=0; i < atCount; i++ )
-  {
-    rows.push_back( new InfomationRow( parent, titles[i], Rect( startPoint + offset * i, Size( width, offset.y() ) ) ) );
-  }
+    rows.push_back( &parent->add<InfomationRow>( titles[i], Rect( startPoint + offset * i, Size( width, offset.y() ) ) ) );
 }
 
 void Chief::draw( gfx::Engine& painter )
@@ -213,12 +213,12 @@ void Chief::Impl::drawEmploymentState()
   Statistic::WorkersInfo wInfo = city->statistic().workers.details();
   int workless = city->statistic().workers.worklessPercent();
   std::string text;
-  NColor color = DefaultColors::black;
+  NColor color = ColorList::black;
 
   if( city->states().population == 0 )
   {
     text = _("##no_people_in_city##");
-    color =  DefaultColors::brown;
+    color =  ColorList::brown;
   }
   else
   {
@@ -226,12 +226,12 @@ void Chief::Impl::drawEmploymentState()
     if( needWorkersNumber > 10 )
     {
       text = fmt::format( "{0} {1}", _("##advchief_needworkers##"), needWorkersNumber );
-      color = DefaultColors::brown;
+      color = ColorList::brown;
     }
     else if( workless > bigWorklessPercent )
     {
       text = fmt::format( "{0} {1}%", _("##advchief_workless##"), workless );
-      color = DefaultColors::brown;
+      color = ColorList::brown;
     }
     else { text = _("##advchief_employers_ok##");  }
   }
@@ -245,7 +245,7 @@ void Chief::Impl::drawProfitState()
   int profit = city->treasury().profit();
   std::string prefix = (profit >= 0 ? "##advchief_haveprofit##" : "##advchief_havedeficit##");
   text = _(prefix) + std::string(" ") + utils::i2str( profit );
-  NColor textColor = profit > 0 ? DefaultColors::black : DefaultColors::brown;
+  NColor textColor = profit > 0 ? ColorList::black : ColorList::brown;
 
   drawReportRow( profitState, text, textColor );
 }
@@ -349,7 +349,7 @@ void Chief::Impl::drawMilitary()
     if( !isBesieged )
     {
       Notification n = mil->priorityNotification();
-      reasons << n.message;
+      reasons << n.desc.message;
     }    
   }
 
@@ -426,10 +426,10 @@ void Chief::Impl::drawCrime()
 {
   std::string text;
 
-  DisorderPtr ds = city->statistic().services.find<Disorder>();
-  if( ds.isValid() )
+  auto disorders = city->statistic().services.find<Disorder>();
+  if( disorders.isValid() )
   {
-    text = ds->reason();
+    text = disorders->reason();
   }
 
   text = text.empty() ? "##advchief_no_crime##" : text;
@@ -441,7 +441,7 @@ void Chief::Impl::drawHealth()
 {
   std::string text;
 
-  HealthCarePtr cityHealth = city->statistic().services.find<HealthCare>();
+  auto cityHealth = city->statistic().services.find<HealthCare>();
   if( cityHealth.isValid() )
   {
     text = cityHealth->reason();
@@ -493,20 +493,20 @@ void Chief::Impl::drawEntertainment()
 {
   StringArray reasons;
 
-  FestivalPtr srvc = city->statistic().services.find<Festival>();
-  if( srvc.isValid() )
+  auto festivals = city->statistic().services.find<Festival>();
+  if( festivals.isValid() )
   {
-    int monthFromLastFestival = srvc->lastFestival().monthsTo( game::Date::current() );
+    int monthFromLastFestival = festivals->lastFestival().monthsTo( game::Date::current() );
     if( monthFromLastFestival > DateTime::monthsInYear / 2 )
     {
       reasons << "##citizens_grumble_lack_festivals_held##";
     }
   }
 
-  CultureRatingPtr cltr = city->statistic().services.find<CultureRating>();
-  if( cltr.isValid() )
+  auto cultures = city->statistic().services.find<CultureRating>();
+  if( cultures.isValid() )
   {
-    int theaterCoverage = cltr->coverage( CultureRating::covTheatres );
+    int theaterCoverage = cultures->coverage( CultureRating::covTheatres );
     if( theaterCoverage >= serviceAwesomeCoverage )
     {
       reasons << "##current_play_runs_for_another##";

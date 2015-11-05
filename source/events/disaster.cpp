@@ -106,8 +106,7 @@ void Disaster::_exec( Game& game, unsigned int )
     {
     case Disaster::collapse:
     {
-      GameEventPtr e = PlaySound::create( "explode", rand() % 2, 100 );      
-      e->dispatch();
+      events::dispatch<PlaySound>( "explode", rand() % 2, 100 );
     }
     break;
 
@@ -133,7 +132,7 @@ void Disaster::_exec( Game& game, unsigned int )
                                        object::plague_ruins, object::collapsed_ruins,
                                        object::collapsed_ruins };
 
-        currentTileOverlay = TileOverlayFactory::instance().create( dstr2constr[_d->type] );
+        currentTileOverlay = Overlay::create( dstr2constr[_d->type] );
 
         RuinsPtr ruins = currentTileOverlay.as<Ruins>();
         if( ruins.isValid() )
@@ -147,7 +146,7 @@ void Disaster::_exec( Game& game, unsigned int )
       }
       else
       {
-        currentTileOverlay = TileOverlayFactory::instance().create( object::rift );
+        currentTileOverlay = Overlay::create( object::rift );
 
         //TilesArray tiles = game.city()->tilemap().getNeighbors(_pos, Tilemap::FourNeighbors);
 
@@ -164,9 +163,12 @@ void Disaster::_exec( Game& game, unsigned int )
       Dispatcher::instance().append( BuildAny::create( tile->pos(), currentTileOverlay ) );
     }
 
-    std::string dstr2string[] = { "##alarm_fire_in_city##", "##alarm_building_collapsed##",
-                                  "##alarm_plague_in_city##", "##alarm_earthquake##" };
-    emit game.city()->onDisasterEvent()( _d->pos, _( dstr2string[_d->type] ) );
+    StringArray dstr2string;
+    dstr2string << "##alarm_fire_in_city##" << "##alarm_building_collapsed##"
+                << "##alarm_plague_in_city##" << "##alarm_earthquake##"
+                << "##alarm_riots_in_city##";
+    std::string alarmText = dstr2string.valueOrDefault( _d->type, "##alarm_unk_in_city##" );
+    emit game.city()->onDisasterEvent()( _d->pos, _( alarmText ) );
   }
 }
 

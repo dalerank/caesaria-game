@@ -39,16 +39,16 @@ GameAutoPause::GameAutoPause()
 
 void GameAutoPause::activate()
 {
-  auto event = Pause::create( Pause::hidepause );
-  event->dispatch();
-  _activated = true;
+  if( !_activated )
+  {
+    events::dispatch<Pause>( Pause::hidepause );
+    _activated = true;
+  }
 }
 
-void GameAutoPause::insertTo(gui::Widget *parent, bool pause)
+void GameAutoPause::insertTo(gui::Widget *parent)
 {
-  auto widget = new GameAutoPauseWidget( parent );
-  if( pause )
-    widget->locker.activate();
+  parent->add<GameAutoPauseWidget>();
 }
 
 GameAutoPause::~GameAutoPause()
@@ -56,6 +56,5 @@ GameAutoPause::~GameAutoPause()
   if( !_activated )
     return;
 
-  auto event = Pause::create( Pause::hideplay );
-  event->dispatch();
+  events::dispatch<Pause>( Pause::hideplay );
 }

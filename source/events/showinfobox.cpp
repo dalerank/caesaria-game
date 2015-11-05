@@ -139,8 +139,7 @@ void ShowInfobox::_exec( Game& game, unsigned int )
 
   if( _d->send2scribe )
   {
-    auto event = ScribeMessage::create( _(_d->title), _(_d->text), _d->gtype, _d->position );
-    event->dispatch();
+    events::dispatch<ScribeMessage>( _(_d->title), _(_d->text), _d->gtype, _d->position );
   }
 }
 

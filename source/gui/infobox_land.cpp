@@ -39,21 +39,22 @@ REGISTER_OBJECT_BASEINFOBOX(tree,AboutLand)
 AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
   : Infobox( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 60, 510 - 16, 60 + 180) )
 { 
-  Label* lbText = new Label( this, Rect( 38, 60, 470, 60+180 ), "", true, Label::bgNone, lbTextId );
-  lbText->setFont( Font::create( FONT_2 ) );
-  lbText->setTextAlignment( align::upperLeft, align::center );
-  lbText->setWordwrap( true );
+  int id = lbTextId;
+  Label& lbText = add<Label>( Rect( 38, 60, 470, 60+180 ), "", true, Label::bgNone, id );
+  lbText.setFont( Font::create( FONT_2 ) );
+  lbText.setTextAlignment( align::upperLeft, align::center );
+  lbText.setWordwrap( true );
 
   std::string text;
   std::string title;
 
-  if( tile.pos() == city->borderInfo().roadExit )
+  if( tile.pos() == city->getBorderInfo( PlayerCity::roadExit ).epos() )
   {
     title = "##to_empire_road##";
     _helpUri = "road_to_empire";
     text = "";
   }
-  else if( tile.pos() == city->borderInfo().boatEntry )
+  else if( tile.pos() == city->getBorderInfo( PlayerCity::roadEntry ).epos() )
   {
     title = "##to_rome_road##";
     text = "";
@@ -71,7 +72,7 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
                             : "##water";
     title = typeStr + "_caption##";
 
-    TilePos exitPos = city->borderInfo().boatEntry;
+    TilePos exitPos = city->getBorderInfo( PlayerCity::boatEntry ).epos();
     Pathway way = PathwayHelper::create( tile.pos(), exitPos, PathwayHelper::deepWaterFirst );
 
     text = way.isValid()
@@ -99,8 +100,8 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
       _helpUri = "paved_road";
       auto road = tile.overlay<Road>();
       title = road->pavedValue() > 0 ? "##road_paved_caption##" : "##road_caption##";
-      if( tile.pos() == city->borderInfo().roadEntry ) { text = "##road_from_rome##"; }
-      else if( tile.pos() == city->borderInfo().roadExit ) { text = "##road_to_distant_region##"; }
+      if( tile.pos() == city->getBorderInfo( PlayerCity::roadEntry ).epos() ) { text = "##road_from_rome##"; }
+      else if( tile.pos() == city->getBorderInfo( PlayerCity::roadExit ).epos() ) { text = "##road_to_distant_region##"; }
       else text = road->pavedValue() > 0 ? "##road_paved_text##" : "##road_text##";
     }
     else

@@ -127,6 +127,8 @@ Helper::Helper() : EnumsHelper<Type>( Type(0) )
     __REG_TYPE( meadow )
     __REG_TYPE( roadBlock )
     __REG_TYPE( farmtile )
+    __REG_TYPE( coast )
+    __REG_TYPE( rock )
 
     append( object::unknown,        "" );
 #undef __REG_TYPE

@@ -68,8 +68,7 @@ void ChangeEmpireOptions::_exec(Game& game, unsigned int)
     {
       bool raiseSalary = empire->workerSalary() - lastWorkerSalary;
 
-      GameEventPtr e = ShowInfobox::create( "##rome##", raiseSalary ? "##rome_raises_wages##" : "##rome_lowers_wages##");
-      e->dispatch();
+      events::dispatch<ShowInfobox>( "##rome##", raiseSalary ? "##rome_raises_wages##" : "##rome_lowers_wages##");
     }
   }
 

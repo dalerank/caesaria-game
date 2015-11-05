@@ -507,8 +507,7 @@ bool HighBridge::build( const city::AreaInfo& info  )
       subtile->_info = tile::encode( tile );
       subtile->_parent = this;
       
-      events::GameEventPtr event = events::BuildAny::create( buildPos, subtile.object() );
-      event->dispatch();
+      events::dispatch<events::BuildAny>( buildPos, subtile.object() );
     }    
   }
 
@@ -549,8 +548,7 @@ void HighBridge::destroy()
   {
     HighBridgeSubTilePtr subtile = *it;
 
-    events::GameEventPtr event = events::ClearTile::create( subtile->_pos );
-    event->dispatch();
+    events::dispatch<events::ClearTile>( subtile->_pos );
 
     Tile& mapTile = city->tilemap().at( subtile->_pos );
     mapTile.setFlag( Tile::tlRoad, false );
@@ -589,7 +587,7 @@ void HighBridge::load(const VariantMap& stream)
 void HighBridge::hide()
 {
   setState( pr::destroyable, 1);
-  for( auto&& tile : _d->subtiles )
+  for( auto& tile : _d->subtiles )
   {
     tile->hide();
   }
