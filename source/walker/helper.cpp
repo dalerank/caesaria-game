@@ -158,6 +158,7 @@ public:
     __REG_WTYPE( circusCharioter )
     __REG_WTYPE( docker )
     __REG_WTYPE( gladiatorRiot )
+    __REG_WTYPE( riverWave )
     __REG_WTYPE( merchantCamel )
 #undef __REG_WTYPE
   }
@@ -169,7 +170,7 @@ VariantMap WalkerHelper::getOptions(const walker::Type type )
   VariantMap::iterator mapIt = instance()._d->options.find( tname );
   if( mapIt == instance()._d->options.end())
   {
-    Logger::warning( "Unknown walker info for type {0}", type );
+    Logger::warning( "Unknown walker info for type {}", type );
     return VariantMap();
   }
 
@@ -276,7 +277,6 @@ Picture WalkerHelper::bigPicture(walker::Type type)
 
 WalkerHelper::~WalkerHelper(){}
 WalkerHelper::WalkerHelper() : _d( new Impl ){}
-
 
 struct RelationInfo
 {
