@@ -324,7 +324,7 @@ public:
       vfs::Directory directory( path );
       StringArray files = directory.entries().items().files( ".png" );
       StringArray directories = directory.entries().items().folders();
-		
+
       imageFiles << files;
 			
       for( auto str : directories)

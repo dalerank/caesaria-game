@@ -22,7 +22,7 @@
         {
           type : "atlas"
           folder : "/resources/houses"
-          files : [ "housng1a_*" ]
+          files : [ "housng1*" ]
         }
 
         ground :
@@ -161,9 +161,8 @@
       name : "gui"
       archive : "resources/gfx/pics_gui"
 
-			info : {
-        atlas : [ "sprites2.atlas"
-									"remake_pack1.atlas" ]
+      info : {
+        atlas : [ "remake_pack1.atlas" ]
       }
 
       items :
@@ -200,8 +199,7 @@
         {
           type : "file"
           folder : "/resources/sprites_stub"
-          files : [ "sprites2.atlas"
-										"sprites2.png" ]
+          files : [ "*" ]
         }   
 
 				gui_stub :
@@ -278,14 +276,14 @@
       }
     }
 
-    misc :
+    pics :
     {
       size : [ 2048, 2048 ]
       margin : 1
       ignorePath : true
       floatCoordinates : false
-      name : "misc"
-      archive : "resources/gfx/pics_misc"
+      name : "pics"
+      archive : "resources/gfx/pics"
 
       items :
       {
@@ -294,6 +292,20 @@
           type : "atlas"
           folder : "/resources/way"
           files : [ "way_*" ]
+        }
+
+        tutorial :
+        {
+          type : "atlas"
+          folder : "/resources/tutorial"
+          files : [ "picture*" ]
+        }
+
+        titles :
+        {
+          type : "atlas"
+          folder : "/resources/misc"
+          files : [ "*" ]
         }
       }
     }
@@ -553,6 +565,20 @@
           folder : "/resources/dock"
           files : [ "transport*" ]
         }
+
+        rocks :
+        {
+          type : "atlas"
+          folder : "/resources/rocks"
+          files : [ "land*" ]
+        }
+
+        tree :
+        {
+          type : "atlas"
+          folder : "/resources/tree"
+          files : [ "land1a_*" ]
+        }
       }
     }
 
@@ -595,11 +621,39 @@
           files : [ "entertainment_*" ]
         }
 
+        meadow :
+        {
+          type : "atlas"
+          folder : "/resources/land"
+          files : [ "meadow_*" ]
+        }
+
         bunedtree :
         {
           type : "atlas"
           folder : "/resources/land"
           files : [ "burnedTree_*" ]
+        }
+
+        land1a :
+        {
+          type : "atlas"
+          folder : "/resources/land"
+          files : [ "land1a_*" ]
+        }
+
+        land2a :
+        {
+          type : "atlas"
+          folder : "/resources/land"
+          files : [ "land2a_*" ]
+        }
+
+        land3a :
+        {
+          type : "atlas"
+          folder : "/resources/land"
+          files : [ "land3a_*" ]
         }
       }
     }
@@ -739,6 +793,13 @@
           type : "atlas"
           folder : "/resources/carts/emmigrant"
           files : [ "emmigrant_*" ]
+        }
+
+        worker :
+        {
+          type : "atlas"
+          folder : "/resources/carts/pusher"
+          files : [ "citizen01_*" ]
         }
       }
     }  
