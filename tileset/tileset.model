@@ -310,6 +310,33 @@
       }
     }
 
+    water_anim:
+    {
+      size : [ 2048, 2048 ]
+      margin : 1
+      ignorePath : true
+      floatCoordinates : false
+      name : "wateranim"
+      archive : "resources/gfx/pics_wateranim"
+
+      items :
+      {
+        reservoir :
+        {
+          type : "atlas"
+          folder : "/resources/reservoir"
+          files : [ "*" ]
+        }
+
+        baths_anim :
+        {
+          type : "atlas"
+          folder : "/resources/baths"
+          files : [ "bathanim_*" ]
+        }
+      }
+    }
+
     objects:
     {
       size : [ 2048, 2048 ]
@@ -335,6 +362,13 @@
           files : [ "quarry*" ]
         }
 
+        plateau :
+        {
+          type : "atlas"
+          folder : "/resources/plateau"
+          files : [ "plateau_*" ]
+        }
+
         barber :
         {
           type : "atlas"
@@ -354,13 +388,6 @@
           type : "atlas"
           folder : "/resources/actorschool"
           files : [ "actorschoola_*" ]
-        }
-
-        baths_anim :
-        {
-          type : "atlas"
-          folder : "/resources/baths"
-          files : [ "bathanim_*" ]
         }
 
         claypitfill :
@@ -522,21 +549,7 @@
           type : "atlas"
           folder : "/resources/farm"
           files : [ "*" ]
-        }
-
-        reservoir :
-        {
-          type : "atlas"
-          folder : "/resources/reservoir"
-          files : [ "utilitya_*" ]
-        }
-
-        reservoir_anim :
-        {
-          type : "atlas"
-          folder : "/resources/reservoir"
-          files : [ "resvanim_*" ]
-        }
+        }        
 
         security :
         {
@@ -577,7 +590,7 @@
         {
           type : "atlas"
           folder : "/resources/tree"
-          files : [ "land1a_*" ]
+          files : [ "*" ]
         }
       }
     }
@@ -585,75 +598,24 @@
     lands :
     {
       size : [ 2048, 2048 ]
-      margin : 1
+      margin : 0
       ignorePath : true
       floatCoordinates : false
       name : "lands"
       archive : "resources/gfx/pics_land"
 
+      info : {
+        atlas : [ "land1a1.atlas" ]
+      }
+
       items :
       {
-        plateau :
+        main :
         {
-          type : "atlas"
-          folder : "/resources/plateau"
-          files : [ "plateau_*" ]
-        }
-
-        roadblock :
-        {
-          type : "atlas"
-          folder : "/resources/land"
-          files : [ "roadBlock_*" ]
-        }
-
-        oc3_land :
-        {
-          type : "atlas"
-          folder : "/resources/land"
-          files : [ "oc3_land_*" ]
-        }
-
-        plaza :
-        {
-          type : "atlas"
-          folder : "/resources/land"
-          files : [ "entertainment_*" ]
-        }
-
-        meadow :
-        {
-          type : "atlas"
-          folder : "/resources/land"
-          files : [ "meadow_*" ]
-        }
-
-        bunedtree :
-        {
-          type : "atlas"
-          folder : "/resources/land"
-          files : [ "burnedTree_*" ]
-        }
-
-        land1a :
-        {
-          type : "atlas"
-          folder : "/resources/land"
-          files : [ "land1a_*" ]
-        }
-
-        land2a :
-        {
-          type : "atlas"
-          folder : "/resources/land"
-          files : [ "land2a_*" ]
-        }
-
-        land3a :
-        {
-          type : "atlas"
-          folder : "/resources/land"
-          files : [ "land3a_*" ]
+          type : "file"
+          folder : "/resources/land_stub"
+          files : [ "land1a1.atlas"
+                    "land1a1.[atlas]ng" ]
         }
       }
     }

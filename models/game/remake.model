@@ -7,5 +7,6 @@
   house : ":/gfx/pics_house.zip"
   land : ":/gfx/pics_land.zip"
   objects : ":/gfx/pics_objects.zip"
+  wateranim : ":/gfx/pics_wateranim.zip"
   walkers : ":/gfx/pics_walkers.zip"
 }
