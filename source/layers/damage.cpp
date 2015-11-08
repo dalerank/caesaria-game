@@ -21,6 +21,9 @@
 #include "objects/house_spec.hpp"
 #include "game/resourcegroup.hpp"
 #include "constants.hpp"
+#include "objects/engineer_post.hpp"
+#include "game/gamedate.hpp"
+#include "gfx/textured_path.hpp"
 #include "city/statistic.hpp"
 #include "core/event.hpp"
 #include "gfx/tilemap_camera.hpp"
@@ -38,6 +41,19 @@ static const char* damageLevelName[maxDamageLevel] = {
                                          "##high_damage_risk##", "##collapse_available_damage_risk##",
                                          "##very_high_damage_risk##", "##extreme_damage_risk##"
                                        };
+
+class Damage::Impl
+{
+public:
+  struct
+  {
+    OverlayPtr selected;
+    OverlayPtr underMouse;
+  } overlay;
+
+  DateTime lastUpdate;
+  std::vector<TilesArray> ways;
+};
 
 int Damage::type() const {  return citylayer::damage; }
 
@@ -123,7 +139,15 @@ void Damage::handleEvent(NEvent& event)
         }
       }
 
+      _dfunc()->overlay.underMouse = tile->overlay();
+
       _setTooltipText( text );
+    }
+    break;
+
+    case mouseLbtnPressed:
+    {
+      _updatePaths();
     }
     break;
 
@@ -134,8 +158,43 @@ void Damage::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
+void Damage::afterRender(Engine& engine)
+{
+  Info::afterRender(engine);
+
+  if( game::Date::isDayChanged() )
+    _updatePaths();
+}
+
+void Damage::render(Engine& engine)
+{
+  Info::render( engine );
+
+  RenderInfo rinfo{ engine, _camera()->offset() };
+  for( auto& tiles : _dfunc()->ways )
+    TexturedPath::draw( tiles, rinfo );
+}
+
+void Damage::_updatePaths()
+{
+  __D_REF(d,Damage)
+      if( d.overlay.underMouse.is<EngineerPost>() )
+  {
+    d.overlay.selected = d.overlay.underMouse;
+  }
+
+  auto wbuilding = d.overlay.selected.as<EngineerPost>();
+  if( wbuilding.isValid() )
+  {
+    d.ways.clear();
+    const WalkerList& walkers = wbuilding->walkers();
+    for( auto walker : walkers )
+      d.ways.push_back( walker->pathway().allTiles() );
+  }
+}
+
 Damage::Damage( Camera& camera, PlayerCityPtr city)
-  : Info( camera, city, damageColumnIndex )
+  : Info( camera, city, damageColumnIndex ), __INIT_IMPL(Damage)
 {
   _addWalkerType( walker::engineer );
   _initialize();

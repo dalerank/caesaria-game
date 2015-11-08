@@ -20,10 +20,15 @@
 #include "objects/house.hpp"
 #include "objects/house_spec.hpp"
 #include "game/resourcegroup.hpp"
+#include "walker/market_buyer.hpp"
 #include "constants.hpp"
 #include "city/statistic.hpp"
+#include "objects/market.hpp"
+#include "gfx/textured_path.hpp"
 #include "core/event.hpp"
+#include "core/color_list.hpp"
 #include "gfx/tilemap_camera.hpp"
+#include "game/gamedate.hpp"
 
 using namespace gfx;
 
@@ -38,6 +43,25 @@ static const char* marketLevelName[maxAccessLevel] = {
                                          "##good_market_access##", "##verygood_market_access##",
                                          "##high_market_access##", "##awesome_market_access##"
                                        };
+
+struct ColoredWay
+{
+  NColor color;
+  TilesArray tiles;
+};
+
+class MarketAccess::Impl
+{
+public:
+  struct
+  {
+    OverlayPtr selected;
+    OverlayPtr underMouse;
+  } overlay;
+
+  DateTime lastUpdate;
+  std::vector<ColoredWay> ways;
+};
 
 int MarketAccess::type() const {  return citylayer::market; }
 
@@ -117,7 +141,15 @@ void MarketAccess::handleEvent(NEvent& event)
         }
       }
 
+      _dfunc()->overlay.underMouse = tile->overlay();
+
       _setTooltipText( text );
+    }
+    break;
+
+    case mouseLbtnPressed:
+    {
+      _updatePaths();
     }
     break;
 
@@ -128,8 +160,48 @@ void MarketAccess::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
+void MarketAccess::_updatePaths()
+{
+  __D_REF(d,MarketAccess)
+  if( d.overlay.underMouse.is<Market>() )
+  {
+    d.overlay.selected = d.overlay.underMouse;
+  }
+
+  auto wbuilding = d.overlay.selected.as<Market>();
+  if( wbuilding.isValid() )
+  {
+    d.ways.clear();
+    const WalkerList& walkers = wbuilding->walkers();
+    for( auto walker : walkers )
+    {
+      NColor color = walker.is<MarketBuyer>() ? ColorList::red : ColorList::blue;
+      d.ways.push_back( ColoredWay{ color, walker->pathway().allTiles() } );
+    }
+  }
+}
+
+void MarketAccess::render(Engine& engine)
+{
+  Info::render( engine );
+
+  RenderInfo rinfo{ engine, _camera()->offset() };
+  for( auto& wayinfo : _dfunc()->ways )
+  {
+    TexturedPath::draw( wayinfo.tiles, rinfo, wayinfo.color );
+  }
+}
+
+void MarketAccess::afterRender(Engine& engine)
+{
+  Info::afterRender(engine);
+
+  if( game::Date::isDayChanged() )
+    _updatePaths();
+}
+
 MarketAccess::MarketAccess( Camera& camera, PlayerCityPtr city)
-  : Info( camera, city, accessColumnIndex )
+  : Info( camera, city, accessColumnIndex ), __INIT_IMPL(MarketAccess)
 {
   _visibleWalkers() << walker::marketBuyer
                     << walker::marketLady

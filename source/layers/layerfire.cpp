@@ -125,7 +125,6 @@ void Fire::render(Engine& engine)
 
 void Fire::handleEvent(NEvent& event)
 {
-  __D_REF(d,Fire)
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
@@ -143,7 +142,7 @@ void Fire::handleEvent(NEvent& event)
           text = fireLevelName[ math::clamp<int>( fireLevel / 10, 0, 9 ) ];
         }
 
-        d.overlay.underMouse = tile->overlay();
+        _dfunc()->overlay.underMouse = tile->overlay();
       }
 
       _setTooltipText( _(text) );
