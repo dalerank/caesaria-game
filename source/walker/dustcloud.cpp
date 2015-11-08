@@ -74,8 +74,7 @@ void DustCloud::create(PlayerCityPtr city, const TilePos& start, unsigned int ra
 {
   for( int direction=0; direction < 8; direction++ )
   {
-    DustCloud* dc = new DustCloud( city );
-    dc->initialize( WalkerHelper::getOptions( walker::dustCloud ) );
+    auto dustcloud = Walker::create<DustCloud>( city );
 
     TilePos offset;
     switch( direction )
@@ -90,8 +89,7 @@ void DustCloud::create(PlayerCityPtr city, const TilePos& start, unsigned int ra
     case direction::northWest: offset = TilePos( -1, 1 ); break;
     }
 
-    dc->send2City( start, start + offset * range);
-    dc->drop();
+    dustcloud->send2City( start, start + offset * range);
   }
 }
 
@@ -112,7 +110,7 @@ void DustCloud::send2City(const TilePos &start, const TilePos& stop )
   _d->mapway.source = start;
   _d->mapway.destination = stop;
 
-  if( _d->mapway.mayMove() )
+  if( !_d->mapway.mayMove() )
   {
     Logger::warning( "WARNING!!! DustCloud: start equale destination" );
     _d->mapway.destination = _d->mapway.source + TilePos( 1, 1 );

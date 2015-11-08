@@ -615,7 +615,7 @@
           type : "file"
           folder : "/resources/land_stub"
           files : [ "land1a1.atlas"
-                    "land1a1.[atlas]ng" ]
+                    "land1a1.png" ]
         }
       }
     }
