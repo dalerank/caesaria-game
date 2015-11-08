@@ -122,6 +122,7 @@ LayerPtr MarketAccess::create( Camera& camera, PlayerCityPtr city)
 
 void MarketAccess::handleEvent(NEvent& event)
 {
+  __D_REF(d,MarketAccess)
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
@@ -141,7 +142,7 @@ void MarketAccess::handleEvent(NEvent& event)
         }
       }
 
-      _dfunc()->overlay.underMouse = tile->overlay();
+      d.overlay.underMouse = tile->overlay();
 
       _setTooltipText( text );
     }
@@ -149,7 +150,11 @@ void MarketAccess::handleEvent(NEvent& event)
 
     case mouseLbtnPressed:
     {
-      _updatePaths();
+      if( d.overlay.underMouse.is<Market>() )
+      {
+        d.overlay.selected = d.overlay.underMouse;
+        _updatePaths();
+      }
     }
     break;
 
@@ -163,11 +168,6 @@ void MarketAccess::handleEvent(NEvent& event)
 void MarketAccess::_updatePaths()
 {
   __D_REF(d,MarketAccess)
-  if( d.overlay.underMouse.is<Market>() )
-  {
-    d.overlay.selected = d.overlay.underMouse;
-  }
-
   auto wbuilding = d.overlay.selected.as<Market>();
   if( wbuilding.isValid() )
   {

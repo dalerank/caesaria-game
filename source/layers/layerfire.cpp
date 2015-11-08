@@ -125,6 +125,7 @@ void Fire::render(Engine& engine)
 
 void Fire::handleEvent(NEvent& event)
 {
+  __D_REF(d,Fire)
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
@@ -142,7 +143,7 @@ void Fire::handleEvent(NEvent& event)
           text = fireLevelName[ math::clamp<int>( fireLevel / 10, 0, 9 ) ];
         }
 
-        _dfunc()->overlay.underMouse = tile->overlay();
+        d.overlay.underMouse = tile->overlay();
       }
 
       _setTooltipText( _(text) );
@@ -151,7 +152,11 @@ void Fire::handleEvent(NEvent& event)
 
     case mouseLbtnPressed:
     {      
-      _updatePaths();
+      if( d.overlay.underMouse.is<Prefecture>() )
+      {
+        d.overlay.selected = d.overlay.underMouse;
+        _updatePaths();
+      }
     }
     break;
 
@@ -172,11 +177,6 @@ Fire::Fire( Camera& camera, PlayerCityPtr city)
 void Fire::_updatePaths()
 {
   __D_REF(d,Fire)
-  if( d.overlay.underMouse.is<Prefecture>() )
-  {
-    d.overlay.selected = d.overlay.underMouse;
-  }
-
   auto wbuilding = d.overlay.selected.as<Prefecture>();
   if( wbuilding.isValid() )
   {

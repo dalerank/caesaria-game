@@ -121,6 +121,7 @@ LayerPtr Damage::create( Camera& camera, PlayerCityPtr city)
 
 void Damage::handleEvent(NEvent& event)
 {
+  __D_REF(d,Damage)
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
@@ -139,7 +140,7 @@ void Damage::handleEvent(NEvent& event)
         }
       }
 
-      _dfunc()->overlay.underMouse = tile->overlay();
+      d.overlay.underMouse = tile->overlay();
 
       _setTooltipText( text );
     }
@@ -147,7 +148,11 @@ void Damage::handleEvent(NEvent& event)
 
     case mouseLbtnPressed:
     {
-      _updatePaths();
+      if( d.overlay.underMouse.is<EngineerPost>() )
+      {
+        d.overlay.selected = d.overlay.underMouse;
+        _updatePaths();
+      }
     }
     break;
 
@@ -178,11 +183,6 @@ void Damage::render(Engine& engine)
 void Damage::_updatePaths()
 {
   __D_REF(d,Damage)
-      if( d.overlay.underMouse.is<EngineerPost>() )
-  {
-    d.overlay.selected = d.overlay.underMouse;
-  }
-
   auto wbuilding = d.overlay.selected.as<EngineerPost>();
   if( wbuilding.isValid() )
   {
