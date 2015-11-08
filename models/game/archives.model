@@ -3,6 +3,7 @@
   sounds : ":/audio/wavs_buildings.zip"
   game_sounds : ":/audio/wavs_game.zip"
   gui  : ":/gfx/pics_gui.zip"
+  oc3addon : ":/gfx/pics_oc3.zip"
   way  : ":/gfx/misc.zip"
   housingb : ":/gfx/pics_house.zip"
 }
