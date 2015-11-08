@@ -625,21 +625,69 @@ void createSet( const ArchiveConfig& archive, const StringArray& names )
   zipClose(zf,NULL);
 }
 
+void unpackAtlases( const std::string& fullpath )
+{
+  vfs::Directory currentDir = vfs::Path( fullpath ).directory();
+  vfs::Entries::Items entries = currentDir.entries().items();
+  for( auto& item : entries )
+  {
+    if( item.name.isMyExtension( ".atlas" )  )
+    {
+      VariantMap config = config::load( item.name );
+      vfs::Path textureName = config.get( "texture" ).toString();
+
+      vfs::Path dirName = textureName.removeExtension();
+      bool dirCreated = currentDir.create( dirName.toString() );
+      if( !dirCreated )
+      {
+        Logger::warning( "Cant create directory " + textureName.toString() );
+        continue;
+      }
+
+      vfs::Directory dir2save = currentDir/dirName;
+
+      vfs::NFile file = vfs::NFile::open( textureName );
+      gfx::Picture atlasTx = PictureLoader::instance().load( file, true );
+
+      VariantMap frames = config.get( "frames" ).toMap();
+      for( auto& frame : frames )
+      {
+        std::string name = frame.first + ".png" ;
+        VariantList rectVl = frame.second.toList();
+        Point start( rectVl.get( 0 ).toInt(), rectVl.get( 1 ).toInt() );
+        Size size( rectVl.get( 2 ).toInt(), rectVl.get( 3 ).toInt() );
+
+        gfx::Picture image = gfx::Picture( size, 0, true );
+        image.fill( ColorList::clear );
+
+        image.draw( atlasTx, Rect( start, size ) );
+        image.save( (dir2save/name).toString() );
+      }
+    }
+  }
+}
+
 int main(int argc, char* argv[])
 {
   Logger::registerWriter( Logger::consolelog, "" );
   gfx::Engine* engine = new gfx::SdlEngine();
 
-  Logger::warning( "GraficEngine: set size" );  
+  Logger::warning( "GraficEngine: set size 800x800" );
   engine->setScreenSize( Size( 800, 800 ) );
   engine->setFlag( gfx::Engine::debugInfo, true );
   engine->setFlag( gfx::Engine::batching, false );
   engine->init();
   engine->setTitle( "CaesarIA: tileset packer" );
 
-
   Config config;
   Atlases gens;
+
+  if(argc == 2 && strcmp( argv[1], "unpack" ) == 0 )
+  {
+    //unpackAtlases( "/home/dalerank/projects/caesaria-test/tools/tileset/tileset.linux" );
+    unpackAtlases( argv[0] );
+    return 0;
+  }
 
   vfs::Path path( "tileset.model" );
   if( path.exist() )
@@ -652,11 +700,14 @@ int main(int argc, char* argv[])
     if(argc < 5)
     {
       Logger::warning("CaesarIA texture atlas generator by Dalerank(java code Lukasz Bruun)");
-      Logger::warning("\tUsage: AtlasGenerator <name> <width> <height> <padding> <ignorePaths> <unitCoordinates> <directory> [<directory> ...]");
+      Logger::warning("\tUsage: AtlasGenerator <name> <width> <height> <padding> <ignorePaths> <unitCoordinates> <directory> [<directory> ...]");      
       Logger::warning("\t\t<padding>: Padding between images in the final texture atlas.");
       Logger::warning("\t\t<ignorePaths>: Only writes out the file name without the path of it to the atlas txt file.");
       Logger::warning("\t\t<unitCoordinates>: Coordinates will be written to atlas json file in 0..1 range instead of 0..width, 0..height range");
       Logger::warning("\tExample: tileset atlas 2048 2048 5 1 1 images");
+      Logger::warning("\t");
+      Logger::warning("\tUsage: AtlasGenerator unpack");
+      Logger::warning("\twill unpack current atlasses to different textures");
       return 0;
     }
 
