@@ -111,14 +111,6 @@ void Damage::drawTile( const RenderInfo& rinfo, Tile& tile )
   tile.setRendered();
 }
 
-LayerPtr Damage::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new Damage( camera, city ) );
-  ret->drop();
-
-  return ret;
-}
-
 void Damage::handleEvent(NEvent& event)
 {
   __D_REF(d,Damage)

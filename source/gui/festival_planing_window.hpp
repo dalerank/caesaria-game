@@ -33,15 +33,14 @@ class FestivalPlanning : public Window
 public:
   FestivalPlanning( Widget* parent, int id, const Rect& rectangle, PlayerCityPtr city );
   virtual ~FestivalPlanning();
-
   virtual void draw( gfx::Engine& painter );
-
   virtual bool onEvent(const NEvent &event);
 
 public signals:
   Signal2<int,int>& onFestivalAssign();
 
 private:
+  void _assignFestival();
 
   class Impl;
   ScopedPtr< Impl > _d;

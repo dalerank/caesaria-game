@@ -26,14 +26,11 @@ namespace citylayer
 class Crime : public Info
 {
 public:
+  Crime(gfx::Camera& camera, PlayerCityPtr city );
+
   virtual int type() const;
   virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
-
-  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
   virtual void handleEvent(NEvent &event);
-
-private:
-  Crime(gfx::Camera& camera, PlayerCityPtr city );
 };
 
 }//end namespace citylayer

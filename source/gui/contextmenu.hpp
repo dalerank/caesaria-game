@@ -113,12 +113,6 @@ public:
   //! When an eventparent is set it receives events instead of the usual parent element
   virtual void setEventParent( Widget *parent );
 
-  //! Writes attributes of the element.
-  virtual void save( VariantMap& out ) const;
-
-  //! Reads attributes of the element
-  virtual void load( const VariantMap& in );
-
   virtual void setAllowFocus( bool enabled );
 
   void beforeDraw( gfx::Engine& painter );
@@ -132,7 +126,6 @@ signals public:
 	
 protected:
   void _setHovered( int index );
-
   void _closeAllSubMenus();
   bool _hasOpenSubMenu() const;
 

@@ -30,7 +30,6 @@
 #include "core/signals.hpp"
 #include "walker/constants.hpp"
 #include "core/flagholder.hpp"
-#include "walker/constants.hpp"
 
 #include <set>
 
@@ -61,15 +60,6 @@ class Layer : public ReferenceCounted
 {
 public:
   typedef std::set<walker::Type> WalkerTypes;
-
-  template<typename Class, typename... Args>
-  static LayerPtr create( Args & ... args)
-  {
-    LayerPtr instance( new Class( args... ) );
-    instance->drop();
-
-    return instance;
-  }
 
   virtual int type() const = 0;
   virtual const WalkerTypes& visibleTypes() const;
