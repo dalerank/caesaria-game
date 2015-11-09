@@ -59,7 +59,6 @@ public:
   int  waterIncreaseInterval;
   int  lastPicId;
   int  fillDistance;
-
 };
 
 Fountain::Fountain()
