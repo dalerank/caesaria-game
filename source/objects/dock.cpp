@@ -170,7 +170,7 @@ void Dock::destroy()
 
   int index=0;
   for( auto tile : tiles )
-   tile::decode( *tile, _d->saved_tile[ index++ ] );
+    tile::decode( *tile, _d->saved_tile[ index++ ] );
 
   WorkingBuilding::destroy();
 }

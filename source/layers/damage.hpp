@@ -29,11 +29,16 @@ public:
   virtual int type() const;
   virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
   virtual void handleEvent(NEvent& event);
+  virtual void afterRender(gfx::Engine& engine);
+  virtual void render(gfx::Engine& engine);
 
   static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
 
 private:
   Damage( gfx::Camera& camera, PlayerCityPtr city );
+  void _updatePaths();
+
+  __DECLARE_IMPL(Damage)
 };
 
 }//end namespace city

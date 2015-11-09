@@ -84,7 +84,7 @@ void Parlor::_initButtons()
   }
 
   auto buttons = children().select<PushButton>();
-  for( auto&& btn : buttons )
+  for( auto& btn : buttons )
     btn->deleteLater();
 
   for( auto& item : _model->items() )
@@ -101,7 +101,7 @@ Parlor::Parlor( Widget* parent, int id )
 {
   setupUI( ":/gui/advisors.gui" );
 
-  GameAutoPause::insertTo( this, true );
+  GameAutoPause::insertTo( this );
   WidgetEscapeCloser::insertTo( this );
 
   INIT_WIDGET_FROM_UI( Image*, imgBgButtons )
@@ -174,7 +174,9 @@ public:
 ParlorModel::ParlorModel(PlayerCityPtr city)
   : __INIT_IMPL(ParlorModel)
 {
-  _dfunc()->city = city;
+  __D_REF(d,ParlorModel)
+  d.city = city;
+  d.advisorPanel = nullptr;
 }
 
 
@@ -215,43 +217,43 @@ Parlor::Items ParlorModel::items()
 
 void ParlorModel::switchAdvisor(Advisor type)
 {
-  __D_IMPL(d,ParlorModel)
+  __D_REF(d,ParlorModel)
   if( type >= advisor::unknown )
     return;
 
-  auto buttons = d->parent->children().select<PushButton>();
+  auto buttons = d.parent->children().select<PushButton>();
   for( auto btn : buttons )
   {
     btn->setPressed( btn->ID() == type );
   }
 
-  if( d->advisorPanel )
+  if( d.advisorPanel )
   {
-    d->advisorPanel->deleteLater();
-    d->advisorPanel = 0;
+    d.advisorPanel->deleteLater();
+    d.advisorPanel = nullptr;
   }
 
-  if( type == advisor::employers )  { d->advisorPanel = new advisorwnd::Employer( d->city, d->parent, advisor::employers );  }
+  if( type == advisor::employers )  { d.advisorPanel = new advisorwnd::Employer( d.city, d.parent, advisor::employers );  }
   else if( type == advisor::military )
   {
-    auto forts = d->city->statistic().objects.find<Fort>();
-    d->advisorPanel = new advisorwnd::Legion( d->parent, advisor::military, d->city, forts );
+    auto forts = d.city->statistic().objects.find<Fort>();
+    d.advisorPanel = new advisorwnd::Legion( d.parent, advisor::military, d.city, forts );
   }
-  else if( type == advisor::population ) { d->advisorPanel = new advisorwnd::Population( d->city, d->parent, advisor::population ); }
-  else if( type ==  advisor::empire )     d->advisorPanel = new advisorwnd::Emperor( d->city, d->parent, advisor::empire );
-  else if( type == advisor::ratings )     d->advisorPanel = new advisorwnd::Ratings( d->parent, advisor::ratings, d->city );
+  else if( type == advisor::population ) { d.advisorPanel = new advisorwnd::Population( d.city, d.parent, advisor::population ); }
+  else if( type ==  advisor::empire )     d.advisorPanel = new advisorwnd::Emperor( d.city, d.parent, advisor::empire );
+  else if( type == advisor::ratings )     d.advisorPanel = new advisorwnd::Ratings( d.parent, advisor::ratings, d.city );
   else if( type == advisor::trading )
   {
-    auto tradeWindow = new advisorwnd::Trade( d->city, d->parent, advisor::trading );
-    d->advisorPanel =  tradeWindow;
+    auto tradeWindow = new advisorwnd::Trade( d.city, d.parent, advisor::trading );
+    d.advisorPanel =  tradeWindow;
     CONNECT( tradeWindow, onEmpireMapRequest(), this, ParlorModel::showEmpireMapWindow );
   }
-  else if( type == advisor::education )    d->advisorPanel = new advisorwnd::Education( d->city, d->parent, -1 );
-  else if( type == advisor::health ) d->advisorPanel = new advisorwnd::Health( d->city, d->parent, -1 );
-  else if( type == advisor::entertainment ) d->advisorPanel = new advisorwnd::Entertainment( d->city, d->parent, -1 );
-  else if( type == advisor::religion ) d->advisorPanel = new advisorwnd::Religion( d->city, d->parent, -1 );
-  else if( type == advisor::finance ) d->advisorPanel = new advisorwnd::Finance( d->city, d->parent, -1 );
-  else if( type == advisor::main ) d->advisorPanel = new advisorwnd::Chief( d->city, d->parent, -1 );
+  else if( type == advisor::education )    d.advisorPanel = new advisorwnd::Education( d.city, d.parent, -1 );
+  else if( type == advisor::health ) d.advisorPanel = new advisorwnd::Health( d.city, d.parent, -1 );
+  else if( type == advisor::entertainment ) d.advisorPanel = new advisorwnd::Entertainment( d.city, d.parent, -1 );
+  else if( type == advisor::religion ) d.advisorPanel = new advisorwnd::Religion( d.city, d.parent, -1 );
+  else if( type == advisor::finance ) d.advisorPanel = new advisorwnd::Finance( d.city, d.parent, -1 );
+  else if( type == advisor::main ) d.advisorPanel = new advisorwnd::Chief( d.city, d.parent, -1 );
 }
 
 }//end namespace advisorwnd

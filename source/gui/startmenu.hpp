@@ -36,7 +36,7 @@ public:
   virtual ~StartMenu();
 
   virtual void draw(gfx::Engine &painter);
-  PushButton* addButton( const std::string& caption, int id );
+  PushButton& addButton( const std::string& caption, int id );
   void clear();
 private:
   class Impl;

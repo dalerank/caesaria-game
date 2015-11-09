@@ -42,7 +42,7 @@ public signals:
   Signal1<Point> onSelectLocationSignal;
 };
 
-LegionTargetWindow::LegionTargetWindow(Widget* parent, int id, PlayerCityPtr city )
+LegionTargetWindow::LegionTargetWindow(Widget* parent, PlayerCityPtr city, int id )
   : EmpireMapWindow( parent, id, city ), _d( new Impl )
 {
   _d->location = Point( -1, -1 );
@@ -109,13 +109,6 @@ void LegionTargetWindow::_changePosition()
     CONNECT( &btnSendTroops, onClicked(), _d.data(), Impl::handleSendTroops );
     CONNECT( &btnExit, onClicked(), wdg->parent(), Widget::deleteLater );
   }
-}
-
-LegionTargetWindow* LegionTargetWindow::create(PlayerCityPtr city, Widget* parent, int id )
-{
-  LegionTargetWindow* ret = new LegionTargetWindow( parent, id, city );
-
-  return ret;
 }
 
 LegionTargetWindow::~LegionTargetWindow()

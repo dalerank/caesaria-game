@@ -88,7 +88,7 @@ void AboutMerchant::_drawGood( const good::Product& goodType, int qty, int index
   gfx::Picture pic = good::Helper::picture( goodType );
   Point pos( index * offset + startOffset, paintY );
 
-  auto&& label = add<Label>( Rect( pos, pos + Point( 100, 24 )) );
+  auto& label = add<Label>( Rect( pos, pos + Point( 100, 24 )) );
   label.setFont( Font::create( FONT_2 ) );
   label.setIcon( pic );
   label.setText( outText );

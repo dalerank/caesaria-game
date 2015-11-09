@@ -39,6 +39,7 @@ public:
 
   int lastMonthComing() const;
   int lastMonthLeaving() const;
+  float getMigrationKoeff();
   bool haveTroubles() const;
 
   int lastMonthMigration() const;

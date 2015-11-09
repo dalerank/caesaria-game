@@ -36,7 +36,6 @@ namespace dialog
 class WinMission::Impl
 {
 public:
-  GameAutoPause locker;
   audio::Muter muter;
   audio::SampleDeleter speechDel;
 
@@ -54,9 +53,9 @@ WinMission::WinMission( Widget* p, const std::string& newTitle,
   setupUI( ":/gui/winmission.gui" );
 
   Logger::warning( "dialog::WinMission show" );
-  _d->locker.activate();
+  GameAutoPause::insertTo( this );
 
-  setCenter( p->center() );
+  moveTo( Widget::parentCenter );
 
   INIT_WIDGET_FROM_UI(Label*, lbNewTitle )
   INIT_WIDGET_FROM_UI(PushButton*, btnContinue2years )

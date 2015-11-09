@@ -83,32 +83,32 @@ Dialog::Dialog(Ui *ui, const Rect& rectangle, const std::string& title,
     setCenter( parent()->center() );
   }
   
-  Label* lbTitle = new Label( this, Rect( 10, 10, width() - 10, 10 + titleHeight), title );
-  lbTitle->setFont( Font::create( FONT_5 ) );
-  lbTitle->setTextAlignment( align::center, align::center );  
+  auto& lbTitle = add<Label>( Rect( 10, 10, width() - 10, 10 + titleHeight), title );
+  lbTitle.setFont( Font::create( FONT_5 ) );
+  lbTitle.setTextAlignment( align::center, align::center );
 
-  Label* lbText = new Label( this, Rect( 10, 20 + titleHeight, width() - 10, height() - 50 ), text );
-  lbText->setTextAlignment( align::center, align::upperLeft );
-  lbText->setWordwrap( true );
+  auto& lbText = add<Label>( Rect( 10, 20 + titleHeight, width() - 10, height() - 50 ), text );
+  lbText.setTextAlignment( align::center, align::upperLeft );
+  lbText.setWordwrap( true );
 
   if( (buttons == btnOk) || (buttons == btnCancel) )
   {
-    new TexturedButton( this, Point( width() / 2 - 20, height() - 50),
-                        Size( 39, 26 ), buttons,
-                        buttons == btnOk ? okBtnPicId : cancelBtnPicId );
+    add<TexturedButton>( Point( width() / 2 - 20, height() - 50),
+                         Size( 39, 26 ), buttons,
+                         buttons == btnOk ? okBtnPicId : cancelBtnPicId );
   }
   else if( buttons & (btnOk | btnCancel) )
   {
-    new TexturedButton( this, Point( width() / 2 - 24 - 16, height() - 50),
-                        Size( 39, 26 ), btnOk, okBtnPicId );
-    new TexturedButton( this, Point( width() / 2 + 16, height() - 50 ),
-                        Size( 39, 26 ), btnCancel, cancelBtnPicId );
+    add<TexturedButton>( Point( width() / 2 - 24 - 16, height() - 50),
+                         Size( 39, 26 ), btnOk, okBtnPicId );
+    add<TexturedButton>( Point( width() / 2 + 16, height() - 50 ),
+                         Size( 39, 26 ), btnCancel, cancelBtnPicId );
   }
 
   if( buttons & btnNever )
   {
-    new TexturedButton( this, Point( width() - 24 - 16, height() - 50),
-                        Size( 39, 26 ), btnNever, cancelBtnPicId );
+    add<TexturedButton>( Point( width() - 24 - 16, height() - 50),
+                         Size( 39, 26 ), btnNever, cancelBtnPicId );
 
 
   }
@@ -181,7 +181,7 @@ void Dialog::draw(gfx::Engine& painter )
 
 Dialog* Information(Ui* ui, const std::string &title, const std::string &text)
 {
-  Dialog* ret = new Dialog( ui, Rect(), title, text, Dialog::btnOk );
+  Dialog* ret = &ui->add<Dialog>( Rect(), title, text, Dialog::btnOk );
 
   CONNECT( ret, onOk(), ret, Dialog::deleteLater )
   CONNECT( ret, onCancel(), ret, Dialog::deleteLater )
@@ -191,7 +191,7 @@ Dialog* Information(Ui* ui, const std::string &title, const std::string &text)
 
 Dialog* Confirmation(Ui* ui, const std::string &title, const std::string &text, bool pauseGame)
 {
-  Dialog* ret = new Dialog( ui, Rect(), title, text, Dialog::btnOkCancel, pauseGame );
+  Dialog* ret = &ui->add<Dialog>( Rect(), title, text, Dialog::btnOkCancel, pauseGame );
 
   CONNECT( ret, onOk(), ret, Dialog::deleteLater )
   CONNECT( ret, onCancel(), ret, Dialog::deleteLater )

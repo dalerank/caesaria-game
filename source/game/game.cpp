@@ -506,7 +506,7 @@ bool Game::load(std::string filename)
 
   Logger::warning( "Game: try find loader" );
   game::Loader loader;
-  loader.onUpdate().connect( &screen, &scene::SplashScreen::setText );
+  loader.onUpdate() += makeDelegate( &screen, &scene::SplashScreen::setText );
 
   bool loadOk = loader.load( fPath, *this );
 

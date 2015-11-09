@@ -150,6 +150,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setBorderInfo( boatExit, TilePos( 0, 0 ) );
   _d->economy.resolveIssue( econ::Issue( econ::Issue::donation, 1000 ) );
   _d->states.population = 0;
+  _d->states.birth = game::Date::current();
   _d->economy.setTaxRate( econ::Treasury::defaultTaxPrcnt );
   _d->states.age = 0;
   _d->statistic.createInstance( *this );
@@ -351,6 +352,7 @@ void PlayerCity::save( VariantMap& stream) const
   stream[ "saveFormat" ] = CAESARIA_BUILD_NUMBER;
   stream[ "services" ] = vm_services;
   VARIANT_SAVE_ANY_D( stream, _d, states.age )
+  VARIANT_SAVE_ANY_D( stream, _d, states.birth )
   VARIANT_SAVE_CLASS_D( stream, _d, activePoints )
 
   LOG_CITY.info( "Finalize save map" );
@@ -379,6 +381,7 @@ void PlayerCity::load( const VariantMap& stream )
   setBorderInfo( boatExit, stream.get( "boatExit" ) );
   VARIANT_LOAD_ANY_D( _d, states.population, stream )
   VARIANT_LOAD_ANY_D( _d, cameraStart, stream )
+  VARIANT_LOAD_TIME_D( _d, states.birth, stream )
 
   LOG_CITY.info( "Parse options" );
   VARIANT_LOAD_CLASS_D_LIST( _d, options, stream )
@@ -396,7 +399,7 @@ void PlayerCity::load( const VariantMap& stream )
   LOG_CITY.info( "Load overlays" );
   VariantMap overlays = stream.get( "overlays" ).toMap();
 
-  for (auto item : overlays)
+  for (auto& item : overlays)
   {
     VariantMap overlayParams = item.second.toMap();
     VariantList config = overlayParams.get( "config" ).toList();
@@ -424,12 +427,12 @@ void PlayerCity::load( const VariantMap& stream )
 
   LOG_CITY.info( "Parse walkers info" );
   VariantMap walkers = stream.get( "walkers" ).toMap();
-  for (auto item : walkers)
+  for (auto& item : walkers)
   {
     VariantMap walkerInfo = item.second.toMap();
     walker::Type walkerType = walkerInfo.get( "type", (int)walker::unknown ).toEnum<walker::Type>();
 
-    WalkerPtr walker = WalkerManager::instance().create( walkerType, this );
+    WalkerPtr walker = Walker::create( walkerType, this );
     if( walker.isValid() )
     {
       walker->load( walkerInfo );

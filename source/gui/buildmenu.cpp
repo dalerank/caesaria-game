@@ -195,8 +195,8 @@ void BuildMenu::addBuildButton(const object::Type buildingType )
   if( cost > 0 && mayBuildInCity )
   {
     // building can be built
-    auto&& button = add<BuildButton>( _(info .prettyName()),
-                                      Rect( 0, height(), width(), height() + 25 ), -1 );
+    auto& button = add<BuildButton>( _(info .prettyName()),
+                                     Rect( 0, height(), width(), height() + 25 ), -1 );
     button.setCost(cost);
     button.setID( buildingType );
     button.setSound( "bmsel_" + info .name() );
@@ -217,20 +217,20 @@ BuildMenu* BuildMenu::create(const city::development::Branch menuType, Widget* p
   BuildMenu* ret = 0;
   switch (menuType)
   {
-  case development::water:          ret = new BuildMenu_water         ( parent, Rect( 0, 0, 60, 1 )); break;
-  case development::health:         ret = new BuildMenu_health        ( parent, Rect( 0, 0, 60, 1 )); break;
-  case development::security:       ret = new BuildMenu_security      ( parent, Rect( 0, 0, 60, 1 )); break;
-  case development::education:      ret = new BuildMenu_education     ( parent, Rect( 0, 0, 60, 1 )); break;
-  case development::engineering:    ret = new BuildMenu_engineering   ( parent, Rect( 0, 0, 60, 1 )); break;
-  case development::administration: ret = new BuildMenu_administration( parent, Rect( 0, 0, 60, 1 )); break;
-  case development::entertainment:  ret = new BuildMenu_entertainment ( parent, Rect( 0, 0, 60, 1 )); break;
-  case development::commerce:       ret = new BuildMenu_commerce      ( parent, Rect( 0, 0, 60, 1 )); break;
-  case development::farm:           ret = new BuildMenu_farm          ( parent, Rect( 0, 0, 60, 1 )); break;
-  case development::raw_material:   ret = new BuildMenu_raw_material  ( parent, Rect( 0, 0, 60, 1 )); break;
-  case development::factory:        ret = new BuildMenu_factory       ( parent, Rect( 0, 0, 60, 1 )); break;
-  case development::religion:       ret = new BuildMenu_religion      ( parent, Rect( 0, 0, 60, 1 )); break;
-  case development::temple:         ret = new BuildMenu_temple        ( parent, Rect( 0, 0, 60, 1 )); break;
-  case development::big_temple:     ret = new BuildMenu_bigtemple     ( parent, Rect( 0, 0, 60, 1 )); break;
+  case development::water:          ret = &parent->add<BuildMenu_water >        ( Rect( 0, 0, 60, 1 )); break;
+  case development::health:         ret = &parent->add<BuildMenu_health>        ( Rect( 0, 0, 60, 1 )); break;
+  case development::security:       ret = &parent->add<BuildMenu_security>      ( Rect( 0, 0, 60, 1 )); break;
+  case development::education:      ret = &parent->add<BuildMenu_education>     ( Rect( 0, 0, 60, 1 )); break;
+  case development::engineering:    ret = &parent->add<BuildMenu_engineering>   ( Rect( 0, 0, 60, 1 )); break;
+  case development::administration: ret = &parent->add<BuildMenu_administration>( Rect( 0, 0, 60, 1 )); break;
+  case development::entertainment:  ret = &parent->add<BuildMenu_entertainment> ( Rect( 0, 0, 60, 1 )); break;
+  case development::commerce:       ret = &parent->add<BuildMenu_commerce>      ( Rect( 0, 0, 60, 1 )); break;
+  case development::farm:           ret = &parent->add<BuildMenu_farm>          ( Rect( 0, 0, 60, 1 )); break;
+  case development::raw_material:   ret = &parent->add<BuildMenu_raw_material>  ( Rect( 0, 0, 60, 1 )); break;
+  case development::factory:        ret = &parent->add<BuildMenu_factory>       ( Rect( 0, 0, 60, 1 )); break;
+  case development::religion:       ret = &parent->add<BuildMenu_religion>      ( Rect( 0, 0, 60, 1 )); break;
+  case development::temple:         ret = &parent->add<BuildMenu_temple>        ( Rect( 0, 0, 60, 1 )); break;
+  case development::big_temple:     ret = &parent->add<BuildMenu_bigtemple>     ( Rect( 0, 0, 60, 1 )); break;
   default:       break; // DO NOTHING 
   };
 

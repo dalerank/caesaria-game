@@ -75,6 +75,7 @@ public:
   SDL_Window* window;
   SDL_Renderer* renderer;
   SdlBatcher batcher;
+  Size viewportSize;
 
   MaskInfo mask;
   int sheigth;
@@ -200,15 +201,13 @@ void SdlEngine::init()
 
 #ifdef CAESARIA_PLATFORM_ANDROID
   auto mode = modes().front();
-  Size s( mode.width(), mode.height() );
-  Logger::warning( "SDLGraficEngine: Android set mode {0}x{0}",  s.width(), s.height() );
+  _srcSize = Size( mode.width(), mode.height() );
+  Logger::warning( "SDLGraficEngine: Android set mode {}x{}",  _srcSize.width(), _srcSize.height() );
 
-  _srcSize = Size( s.width() * ( 768.f / s.height()), 768 );
-
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
-  window = SDL_CreateWindow( "CaesarIA:android", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _srcSize.width(), _srcSize.height(),
-           SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
+  window = SDL_CreateWindow( "CaesarIA:android",
+                             SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                             _srcSize.width(), _srcSize.height(),
+                             SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
 
   Logger::warning("SDLGraficEngine:Android init successfull");
 #else
@@ -298,6 +297,15 @@ void SdlEngine::init()
   _d->sheigth = _srcSize.height();
   _d->renderer = renderer;
 
+  float wx, wy;
+  SDL_RenderGetScale( _d->renderer, &wx, &wy);
+
+#ifdef CAESARIA_PLATFORM_ANDROID
+  _d->viewportSize = Size( _srcSize.width() * ( 800.f / _srcSize.height()), 800 );
+#else
+  _d->viewportSize = _srcSize * wx;
+#endif
+
   _d->fpsTx = Picture( Size( 200, 20 ), 0, true );
 }
 
@@ -312,7 +320,7 @@ void SdlEngine::loadPicture(Picture& ioPicture, bool streaming)
   if( !ioPicture.surface() )
   {
     Size size = ioPicture.size();
-    Logger::warning( "SdlEngine:: can't make surface, size={0}x{1}]", size.width(), size.height() );
+    Logger::warning( "SdlEngine:: can't make surface, size={}x{}]", size.width(), size.height() );
   }
 
   SDL_Texture* tx = 0;
@@ -400,6 +408,8 @@ void SdlEngine::endRenderFrame()
 
   _d->drawCall = 0;
 }
+
+const Size& SdlEngine::viewportSize() const { return _d->viewportSize; }
 
 void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* clipRect )
 {    
@@ -655,6 +665,13 @@ void SdlEngine::setTitle(const std::string& title)
 
 void SdlEngine::setScale( float scale )
 {
+  static float lastScale = 0;
+  if( lastScale != scale )
+  {
+    Logger::warning( "SdlEngine: set scale {}", scale );
+    lastScale = scale;
+  }
+
   bool needDraw = _d->batcher.finish();
   if( needDraw )
     _d->renderState();
@@ -754,6 +771,16 @@ bool SdlEngine::haveEvent( NEvent& event )
   if( SDL_PollEvent(&sdlEvent) )
   {
     event = EventConverter::instance().get( sdlEvent );
+
+#ifdef CAESARIA_PLATFORM_ANDROID
+    //Android fix that prevent dribling map
+    if( event.EventType == sEventMouse )
+    {
+      Point cp = cursorPos();
+      event.mouse.x = cp.x();
+      event.mouse.y = cp.y();
+    }
+#endif
     return true;
   }
 

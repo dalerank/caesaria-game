@@ -49,6 +49,7 @@ public:
 
   void setScreenSize( const Size& size );
   const Size& screenSize() const;
+  virtual const Size& viewportSize() const { return _srcSize; }
   virtual void setVirtualSize( const Size& rect ) = 0;
 
   bool isFullscreen() const;

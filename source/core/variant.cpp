@@ -211,47 +211,42 @@ inline bool compareNumericMetaType(const Variant2Impl *const a, const Variant2Im
     return *static_cast<const T *>(a->data.ptr) == *static_cast<const T *>(b->data.ptr);
 }
 
-/*static bool compare(const Variant2Impl *a, const Variant2Impl *b)
+static bool compareVariants(const Variant2Impl *a, const Variant2Impl *b)
 {
     switch(a->type) {
-    //case Variant::List:
-    //    return *v_cast<VariantList>(a) == *v_cast<VariantList>(b);
-    //case Variant::Map: 
-    //    {
-    //    const VariantMap *m1 = v_cast<VariantMap>(a);
-    //    const VariantMap *m2 = v_cast<VariantMap>(b);
-    //    if (m1->count() != m2->count())
-    //        return false;
-    //    VariantMap::ConstIterator it = m1->constBegin();
-    //    VariantMap::ConstIterator it2 = m2->constBegin();
-    //    while (it != m1->constEnd()) {
-    //        if (*it != *it2 || it.key() != it2.key())
-    //            return false;
-    //        ++it;
-    //        ++it2;
-    //    }
-    //   return true;
-    //}
-    // 
+    case Variant::List:
+        return *v_cast<VariantList>(a) == *v_cast<VariantList>(b);
+    case Variant::Map:
+        {
+        const VariantMap *m1 = v_cast<VariantMap>(a);
+        const VariantMap *m2 = v_cast<VariantMap>(b);
+        if (m1->size() != m2->size())
+            return false;
+        VariantMap::const_iterator it = m1->begin();
+        VariantMap::const_iterator it2 = m2->begin();
+        while (it != m1->end())
+        {
+            if (*it != *it2 || it->first != it2->first )
+                return false;
+            ++it;
+            ++it2;
+        }
+       return true;
+    }
+
     //case Variant::Hash:
     //    return *v_cast<VariantHash>(a) == *v_cast<VariantHash>(b);
     case Variant::String:
      return *v_cast<std::string>(a) == *v_cast<std::string>(b);
-    //case Variant::NStringArray:
-    //   return *v_cast<StringList>(a) == *v_cast<StringList>(b);
+    case Variant::NStringArray:
+       return *v_cast<StringArray>(a) == *v_cast<StringArray>(b);
     case Variant::NSize: return *v_cast<Size>(a) == *v_cast<Size>(b);
     case Variant::NSizeF: return *v_cast<SizeF>(a) == *v_cast<SizeF>(b);
     case Variant::NRectI: return *v_cast<Rect>(a) == *v_cast<Rect>(b);
     case Variant::NRectF: return *v_cast<RectF>(a) == *v_cast<RectF>(b);
-//     case Variant::Line:
-//         return *v_cast<Line>(a) == *v_cast<Line>(b);
-//     case Variant::LineF:
-//         return *v_cast<LineF>(a) == *v_cast<LineF>(b);
     case Variant::NPoint: return *v_cast<Point>(a) == *v_cast<Point>(b);
     case Variant::NPointF: return *v_cast<PointF>(a) == *v_cast<PointF>(b);
     case Variant::NTilePos: return *v_cast<TilePos>(a) == *v_cast<TilePos>(b);
-//    case Variant::Url:
-//        return *v_cast<Url>(a) == *v_cast<Url>(b);
     case Variant::Char:
       return a->data.c == b->data.c;
     case Variant::Int:
@@ -268,10 +263,10 @@ inline bool compareNumericMetaType(const Variant2Impl *const a, const Variant2Im
         return a->data.d == b->data.d;
     case Variant::Float:
         return a->data.f == b->data.f;
-//    case Variant::Date:
-//        return *v_cast<Date>(a) == *v_cast<Date>(b);
+    case Variant::Date:
+        return *v_cast<DateTime>(a) == *v_cast<DateTime>(b);
 //    case Variant::Time:
-//        return *v_cast<Time>(a) == *v_cast<Time>(b); 
+//        return *v_cast<Time>(a) == *v_cast<Time>(b);
     case Variant::NDateTime: return *v_cast<DateTime>(a) == *v_cast<DateTime>(b);
     case Variant::NByteArray: return *v_cast<ByteArray>(a) == *v_cast<ByteArray>(b);
     case Variant::Invalid: return true;
@@ -291,7 +286,7 @@ inline bool compareNumericMetaType(const Variant2Impl *const a, const Variant2Im
         return true;
 
     return a_ptr == b_ptr;
-}*/
+}
 
 /*!
   \internal
@@ -1842,7 +1837,7 @@ bool Variant::isValid() const
 Variant2Handler::Variant2Handler()
 {
 	construct = constructNewVariant;
-	compare = 0;
+  compare = compareVariants;
 	canConvert = 0;
 	convert = convertVariantType2Type;
 	clear = clearVariant;

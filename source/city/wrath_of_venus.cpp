@@ -49,7 +49,7 @@ void WrathOfVenus::timeStep( const unsigned int time)
 
     Logger::warning( "WrathOfVenus: execute service" );
 
-    HumanList citizens = _city()->statistic().walkers.find<Human>();
+    auto citizens = _city()->statistic().walkers.find<Human>();
     citizens = citizens.random( _d->strong );
 
     for( auto wlk : citizens )

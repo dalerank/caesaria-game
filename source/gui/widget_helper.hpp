@@ -9,39 +9,39 @@ namespace gui
 template< class T >
 inline T findChildA( const std::string& internalName, bool recursiveFind, const Widget* p )
 {
-  foreach( it, p->children() )
+  for( auto child : p->children() )
   {
-    if( (*it)->internalName() == internalName )
-      return safety_cast< T >( *it );
+    if( child->internalName() == internalName )
+      return safety_cast< T >( child );
 
     if( recursiveFind )
     {
-      T chElm = findChildA< T >( internalName, recursiveFind, *it );
+      T chElm = findChildA< T >( internalName, recursiveFind, child );
       if( chElm )
          return chElm;
     }
   }
-  return 0;
+  return nullptr;
 }
 
 template< class T >
 inline T findChildA( bool recursiveFind, const Widget* p )
 {
-  foreach( it, p->children() )
+  for( auto child : p->children() )
   {
-    T ret = safety_cast< T >( *it );
+    T ret = safety_cast< T >( child );
     if( ret != 0 )
       return ret;
 
     if( recursiveFind )
     {
-      T chElm = findChildA< T >( recursiveFind, *it );
+      T chElm = findChildA< T >( recursiveFind, child );
       if( chElm )
          return chElm;
     }
   }
 
-  return 0;
+  return nullptr;
 }
 
 }//end namespace gui

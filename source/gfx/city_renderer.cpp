@@ -111,11 +111,11 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   _d->city = city;
   _d->tilemap = &city->tilemap();
   _d->guienv = guienv;
-  _d->camera.init( *_d->tilemap, engine->screenSize() );
+  _d->camera.init( *_d->tilemap, engine->viewportSize() );
   _d->engine = engine;
 
-  addLayer( Simple::create( _d->camera, city ) );
-  addLayer( Water::create( _d->camera, city ) );
+  addLayer( Layer::create<Simple>( _d->camera, city ) );
+  addLayer( Layer::create<Water>( _d->camera, city ) );
   addLayer( Layer::create<Fire>( _d->camera, city ) );
   addLayer( Layer::create<Food>( _d->camera, city ) );
   addLayer( Health::create( _d->camera, city, citylayer::health ));
@@ -127,7 +127,7 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   addLayer( Damage::create( _d->camera, city ) );
   addLayer( Sentiment::create( _d->camera, city ) );
   addLayer( Unemployed::create( _d->camera, city ) );
-  addLayer( citylayer::Desirability::create( _d->camera, city ) );
+  addLayer( Layer::create<citylayer::Desirability>( _d->camera, city ) );
   addLayer( Entertainment::create( _d->camera, city, citylayer::entertainment ) );
   addLayer( Entertainment::create( _d->camera, city, citylayer::theater ) );
   addLayer( Entertainment::create( _d->camera, city, citylayer::amphitheater ) );
@@ -246,7 +246,7 @@ void CityRenderer::render()
   {
     lastZoom = _d->camera.zoom();
     zoom = lastZoom / 100.f;
-    _d->camera.setViewport( engine.screenSize() / zoom );
+    _d->camera.setViewport( engine.viewportSize()  / zoom );
   }
 
   zoom = lastZoom / 100.f;

@@ -89,6 +89,7 @@ public:
   virtual void setupUI(const VariantMap &ui);
 
   virtual void setTextOffset( const Point& offset );
+  virtual void canvasDraw(const std::string &text, const Point &point, Font font=Font(), NColor color=0);
 
 signals public:
   virtual Signal0<>& onClicked(); 

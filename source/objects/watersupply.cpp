@@ -56,7 +56,8 @@ void Reservoir::_dropWater()
   //now remove water flag from near tiles
   TilesArea reachedTiles( _map(), pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
 
-  for( auto&& tile : reachedTiles ) { tile->setParam( Tile::pReservoirWater, 0 ); }
+  for( auto& tile : reachedTiles )
+    tile->setParam( Tile::pReservoirWater, 0 );
 }
 
 void Reservoir::_waterStateChanged()
@@ -164,7 +165,7 @@ void Reservoir::timeStep(const unsigned long time)
   {
     TilesArea reachedTiles( _map(), pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
 
-    for( auto&& tile : reachedTiles )
+    for( auto& tile : reachedTiles )
     {
       int value = tile->param( Tile::pReservoirWater );
       tile->setParam( Tile::pReservoirWater, math::clamp( value+1, 0, 20 ) );

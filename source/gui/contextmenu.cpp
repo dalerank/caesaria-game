@@ -297,6 +297,9 @@ void ContextMenu::setVisible(bool visible)
   _setHovered( -1 );
   _closeAllSubMenus();
 
+  if( visible )
+    updateItems();
+
   Widget::setVisible( visible );
 }
 

@@ -167,7 +167,7 @@ public:
   void showEmpireMapWindow();
   void showAdvisorsWindow(const advisor::Type advType );
   void showAdvisorsWindow();
-  void showMissionTaretsWindow();
+  void showMissionTargetsWindow();
   void showTradeAdvisorWindow();
   void resolveCreateConstruction( int type );
   void resolveCreateObject( int type );
@@ -184,6 +184,7 @@ public:
   void showSoundOptionsWindow();
   void makeFastSave();
   void showTileHelp();
+  void showLoadDialog();
   void showMessagesWindow();
   void setAutosaveInterval( int value );
   void layerChanged( int layer );
@@ -217,7 +218,7 @@ void Level::Impl::initRender()
 {
   bool oldGraphics = KILLSWITCH( oldgfx ) || !SETTINGS_STR( c3gfx ).empty();
   renderer.initialize( game->city(), engine, game->gui(), oldGraphics );
-  renderer.setViewport( engine->screenSize() );
+  renderer.setViewport( engine->viewportSize() );
   renderer.camera()->setScrollSpeed( SETTINGS_VALUE( scrollSpeed ) );
 }
 
@@ -287,7 +288,7 @@ void Level::Impl::initTabletUI( Level* scene )
 void Level::Impl::connectTopMenu2scene(Level* scene)
 {
   CONNECT( topMenu, onExit(),                 scene,   Level::_requestExitGame )
-  CONNECT( topMenu, onLoad(),                 scene,   Level::_showLoadDialog )
+  CONNECT( topMenu, onLoad(),                 this,    Impl::showLoadDialog )
   CONNECT( topMenu, onEnd(),                  scene,   Level::exit )
   CONNECT( topMenu, onRestart(),              scene,   Level::restart )
   CONNECT( topMenu, onSave(),                 this,    Impl::showSaveDialog )
@@ -333,7 +334,7 @@ void Level::initialize()
   CONNECT( _d->extMenu, onSelectOverlayType(),    _d.data(),         Impl::resolveSelectLayer )
   CONNECT( _d->extMenu, onEmpireMapShow(),        _d.data(),         Impl::showEmpireMapWindow )
   CONNECT( _d->extMenu, onAdvisorsWindowShow(),   _d.data(),         Impl::showAdvisorsWindow )
-  CONNECT( _d->extMenu, onMissionTargetsWindowShow(), _d.data(),     Impl::showMissionTaretsWindow )
+  CONNECT( _d->extMenu, onMissionTargetsWindowShow(), _d.data(),     Impl::showMissionTargetsWindow )
   CONNECT( _d->extMenu, onMessagesShow(),         _d.data(),         Impl::showMessagesWindow )
   CONNECT( _d->extMenu, onSwitchAlarm(),          &_d->alarmsHolder, AlarmEventHolder::next )
 
@@ -354,7 +355,7 @@ void Level::initialize()
   CONNECT( &_d->renderer, onDestroyed(),          &_d->undoStack,    undo::UStack::destroy )
   CONNECT( &_d->undoStack, onUndoChange(),        _d->extMenu,       ExtentMenu::resolveUndoChange )
 
-  _d->showMissionTaretsWindow();
+  _d->showMissionTargetsWindow();
   _d->renderer.camera()->setCenter( city->cameraPos() );
 
   _d->dhandler.insertTo( _d->game, _d->topMenu );
@@ -370,6 +371,11 @@ void Level::initialize()
   {
     gui::Ui& ui = *_d->game->gui();
     dialog::Information( &ui, "Please note", "Black object are not done yet and will be added as soon as finished." );
+  }
+
+  if( _d->game->city()->getOption( PlayerCity::constructorMode ) )
+  {
+    setConstructorMode( true );
   }
 }
 
@@ -864,19 +870,19 @@ bool Level::_tryExecHotkey(NEvent &event)
   return handled;
 }
 
-void Level::Impl::showMissionTaretsWindow()
+void Level::Impl::showMissionTargetsWindow()
 {
   unsigned int id = Hash( CAESARIA_STR_EXT(MissionTargetsWindow) );
   Widget* wdg = game->gui()->findWidget( id );
   if( !wdg )
   {
-    auto wnd = dialog::MissionTargets::create( game->gui()->rootWidget(), game->city() );
-    wnd->show();
-    wnd->setID( id );
+    auto& wnd = game->gui()->add<dialog::MissionTargets>( game->city() );
+    wnd.show();
+    wnd.setID( id );
   }
 }
 
 void Level::Impl::showAdvisorsWindow( const advisor::Type advType ) { events::dispatch<ShowAdvisorWindow>( true, advType ); }
-void Level::_showLoadDialog() { events::dispatch<ShowLoadDialog>(); }
+void Level::Impl::showLoadDialog() { events::dispatch<ShowLoadDialog>(); }
 
 }//end namespace scene

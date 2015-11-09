@@ -184,7 +184,7 @@ void Construction::burn()
 {
   if( !info().mayBurn() )
   {
-    Logger::warning( "Construction {0} [{1},{2}] cant be fireed at !", info().name(), pos().i(), pos().j() );
+    Logger::warning( "Construction {0} [{1},{2}] cant be fireed!", info().name(), pos().i(), pos().j() );
   }
   else
   {
@@ -192,7 +192,7 @@ void Construction::burn()
 
     events::dispatch<Disaster>( tile(), Disaster::fire );
 
-    Logger::warning( "Construction {0} catch fire at []{1},{2}]!", info().name(), pos().i(), pos().j() );
+    Logger::warning( "Construction {0} catch fire at [{1},{2}]!", info().name(), pos().i(), pos().j() );
   }
 }
 

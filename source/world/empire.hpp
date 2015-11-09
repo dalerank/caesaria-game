@@ -30,6 +30,8 @@
 namespace world
 {
 
+class TradeRoutes;
+
 class Empire : public ReferenceCounted, public Serializable
 {
 public:
@@ -52,15 +54,11 @@ public:
 
   const EmpireMap& map() const;
   Emperor& emperor();
-  CityPtr rome() const;
+  CityPtr capital() const;
+
+  TradeRoutes& troutes();
 
   TraderoutePtr createTradeRoute( std::string start, std::string stop );
-
-  TraderoutePtr findRoute( unsigned int index );
-  TraderoutePtr findRoute( const std::string& start, const std::string& stop );  
-
-  TraderouteList tradeRoutes( const std::string& startCity );
-  TraderouteList tradeRoutes();
 
   virtual void save( VariantMap& stream ) const;
   virtual void load( const VariantMap& stream );

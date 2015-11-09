@@ -78,6 +78,7 @@ public:
   static const char* dayName( unsigned char d );
   static const char* monthName(Month d );
   static const char* shortMonthName( Month d );
+  static int daysInMonth(int year, int d );
   int daysInMonth() const;
   const char* age() const;
 

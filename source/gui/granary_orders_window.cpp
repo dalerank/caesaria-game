@@ -41,28 +41,28 @@ public:
 GranarySpecialOrdersWindow::GranarySpecialOrdersWindow( Widget* parent, const Point& pos, GranaryPtr granary )
 : BaseSpecialOrdersWindow( parent, pos, defaultHeight ), __INIT_IMPL(GranarySpecialOrdersWindow)
 {
-  __D_IMPL(d, GranarySpecialOrdersWindow)
+  __D_REF(d, GranarySpecialOrdersWindow)
 
   setupUI( ":/gui/granaryspecial.gui" );
 
   setTitle( _("##granary_orders##") );
   int index=0;
-  d->granary = granary;
+  d.granary = granary;
   for( auto& goodType : good::foods() )
   {
     const good::Orders::Order rule = granary->store().getOrder( goodType );
     
     if( rule != good::Orders::none )
     {
-      OrderGoodWidget::create( index, goodType, _ordersArea(), granary->store() );
+      new OrderGoodWidget( _ordersArea(), index, goodType, granary->store() );
       index++;
     }
   }
 
-  d->btnToggleDevastation = &add<PushButton>( Rect( 80, height() - 45, width() - 80, height() - 25 ),
-                                              "", -1, false, PushButton::whiteBorderUp );
+  d.btnToggleDevastation = &add<PushButton>( Rect( 80, height() - 45, width() - 80, height() - 25 ),
+                                             "", -1, false, PushButton::whiteBorderUp );
 
-  CONNECT( d->btnToggleDevastation, onClicked(), this, GranarySpecialOrdersWindow::toggleDevastation );
+  CONNECT( d.btnToggleDevastation, onClicked(), this, GranarySpecialOrdersWindow::toggleDevastation );
   _updateBtnDevastation();
 }
 
@@ -70,15 +70,15 @@ GranarySpecialOrdersWindow::~GranarySpecialOrdersWindow() {}
 
 void GranarySpecialOrdersWindow::toggleDevastation()
 {
-  __D_IMPL(d, GranarySpecialOrdersWindow)
-  d->granary->store().setDevastation( !d->granary->store().isDevastation() );
+  __D_REF(d, GranarySpecialOrdersWindow)
+  d.granary->store().setDevastation( !d.granary->store().isDevastation() );
   _updateBtnDevastation();
 }
 
 void GranarySpecialOrdersWindow::_updateBtnDevastation()
 {
-  __D_IMPL(d, GranarySpecialOrdersWindow)
-  d->btnToggleDevastation->setText( d->granary->store().isDevastation()
+  __D_REF(d, GranarySpecialOrdersWindow)
+  d.btnToggleDevastation->setText( d.granary->store().isDevastation()
                                     ? _("##stop_granary_devastation##")
                                     : _("##devastate_granary##") );
 }

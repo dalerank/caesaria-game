@@ -183,6 +183,16 @@ public:
     this->erase( it );
   }
 
+  int indexOf( SmartPtr<T> who ) const
+  {
+    int index=0;
+    for( auto& it : *this )
+      if( it == who ) return index;
+      else index++;
+
+    return -1;
+  }
+
   template< class W >
   int count() const
   {

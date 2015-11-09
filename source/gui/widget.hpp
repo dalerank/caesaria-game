@@ -312,7 +312,13 @@ public:
    *	\return Returns the first element with the given id. If no element
    *	with this id was found, 0 is returned.
    */
-  virtual Widget* findChild(int id, bool searchchildren=false) const;
+  virtual Widget* findChild(int id, bool searchChildren=false) const;
+
+  template<class T>
+  T* findChild(int id, bool searchChildren=false) const
+  {
+    return safety_cast<T*>( findChild( id, searchChildren ) );
+  }
 
   //! Reads attributes of the scene node.
   /** Implement this to set the attributes of your scene node for
@@ -434,6 +440,8 @@ protected:
    * geometry.
    */
   virtual void _finalizeResize();
+  virtual bool _onButtonClicked( Widget* sender ) { return false; }
+  virtual bool _onListboxChanged( Widget* sender ) { return false; }
   virtual void _finalizeMove();
 
   Widgets& _getChildren();

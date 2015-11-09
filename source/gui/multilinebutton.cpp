@@ -73,7 +73,7 @@ void MultilineButton::setText(const StringArray& text)
   PushButton::setText( "" );
   _strings = text;
   Widgets children = _layout->children();
-  for( auto&& child : children )
+  for( auto& child : children )
     child->remove();
 
   for( auto& it : _strings )

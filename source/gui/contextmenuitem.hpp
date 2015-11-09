@@ -67,6 +67,7 @@ public:
 
   virtual void setHovered( bool hover );
 
+  virtual bool isAutoChecking();
   virtual void setAutoChecking( bool autoChecking );
 
   virtual bool isPointInside(const Point& point) const;

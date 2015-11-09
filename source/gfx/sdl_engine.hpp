@@ -41,7 +41,7 @@ public:
 
   virtual void startRenderFrame();
   virtual void endRenderFrame();
-
+  virtual const Size& viewportSize() const;
   virtual void setFlag( int flag, int value );
 
   virtual void setColorMask( int rmask, int gmask, int bmask, int amask );

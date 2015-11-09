@@ -35,8 +35,6 @@ namespace dialog
 class SpeedOptions::Impl
 {
 public:
-  GameAutoPause locker;
-
   struct
   {
     int game;
@@ -61,7 +59,7 @@ SpeedOptions::SpeedOptions( Widget* parent,
   _d->speed.game = gameSpeed;
   _d->speed.scroll = scrollSpeed;
   _d->autosaveInterval = autosaveInterval;
-  _d->locker.activate();
+  GameAutoPause::insertTo( this );
 
   setupUI( ":/gui/speedoptions.gui" );
 

@@ -161,8 +161,7 @@ void EmpireMapWindow::Impl::updateCityInfo()
       }
       else
       {
-        world::EmpirePtr empire = city->empire();
-        world::TraderoutePtr route = empire->findRoute( currentCity->name(), city->name() );
+        world::TraderoutePtr route = city->empire()->troutes().find( currentCity->name(), city->name() );
         if( route != 0 )
         {
           drawTradeRouteInfo();
@@ -209,7 +208,7 @@ void EmpireMapWindow::Impl::drawStatic(Engine& painter)
 
 void EmpireMapWindow::Impl::drawTradeRoutes(Engine& painter)
 {
-  world::TraderouteList routes = city->empire()->tradeRoutes();
+  world::TraderouteList routes = city->empire()->troutes().all();
   for( auto& route : routes )
   {
     const PointsArray& points = route->points();
@@ -374,7 +373,7 @@ void EmpireMapWindow::Impl::createTradeRoute()
   if( currentCity != 0 )
   {
     world::EmpirePtr empire = city->empire();
-    world::TraderoutePtr route = empire->createTradeRoute( city->name(), currentCity->name() );
+    world::TraderoutePtr route = empire->troutes().create( city->name(), currentCity->name() );
 
     if( city.isValid() && route.isValid() && route->isSeaRoute() )
     {
@@ -668,7 +667,7 @@ void EmpireMapWindow::_changePosition()
   else
   {
     world::EmpirePtr empire = _d->city->empire();
-    world::TraderouteList routes = empire->tradeRoutes();
+    world::TraderouteList routes = empire->troutes().all();
 
     for( auto& route : routes )
     {

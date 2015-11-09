@@ -58,9 +58,9 @@ class HealthBuilding::Impl
 {
 public:
   struct {
-    unsigned int current;
-    unsigned int served;
-    unsigned int max;
+    unsigned int current=0;
+    unsigned int served=0;
+    unsigned int max=0;
   } patients;
   ServedHouses servedHouses;
   DateTime lastDateResults;
@@ -79,8 +79,7 @@ void HealthBuilding::buildingsServed(const std::set<BuildingPtr>& buildings, Ser
     if( building->type() == object::house )
     {
       HousePtr house = building.as<House>();
-      TilePos pos = house->pos();
-      int hash = (pos.i() << 8) | pos.i();
+      int hash = gfx::tile::hash( house->pos() );
       _d->servedHouses[ hash ] = house->habitants().count();
     }
   }
@@ -109,6 +108,7 @@ void HealthBuilding::deliverService()
   bool servedMaxPeople = _d->patients.max == 0
                           ? false
                           : _d->patients.served >= _d->patients.max;
+
   if( haveWorkers && !inPatrol && !servedMaxPeople )
   {
     ServiceBuilding::deliverService();

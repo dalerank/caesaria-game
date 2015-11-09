@@ -88,9 +88,9 @@ void Dispatcher::Impl::weekUpdate( unsigned int time, PlayerCityPtr rcity )
     bool isReady = request->isReady( rcity );
     if( !request->isAnnounced() && isReady )
     {
-      events::GameEventPtr e = events::ShowRequestInfo::create( request, true );
+      auto event = events::ShowRequestInfo::create( request, true );
       request->setAnnounced( true );
-      e->dispatch();
+      event->dispatch();
     }
 
     request->update();
