@@ -23,8 +23,10 @@
 #include "objects/construction.hpp"
 #include "corpse.hpp"
 #include "ability.hpp"
+#include "objects/house_spec.hpp"
 #include "city/statistic.hpp"
 #include "core/priorities.hpp"
+#include "objects/house.hpp"
 #include "core/variant_map.hpp"
 #include "game/resourcegroup.hpp"
 #include "name_generator.hpp"
@@ -34,6 +36,7 @@ class Patrician::Impl
 {
 public:
   TilePos destination;
+  HousePtr house;
 };
 
 Patrician::Patrician(PlayerCityPtr city )
@@ -48,34 +51,77 @@ void Patrician::save( VariantMap& stream ) const
 {
   Walker::save( stream );
   VARIANT_SAVE_ANY_D( stream, _d, destination )
+  stream[ "house" ] = _d->house.isValid() ? _d->house->pos() : gfx::tilemap::invalidLocation();
 }
 
 void Patrician::load( const VariantMap& stream )
 {
   Walker::load( stream );
   VARIANT_LOAD_ANY_D( _d, destination, stream )
+
+  TilePos housePos = stream.get( "house" );
+  _d->house = _map().overlay<House>( housePos );
 }
 
-void Patrician::_findNewWay( const TilePos& start )
+bool Patrician::_findNewWay( const TilePos& pos )
 {
-  object::TypeSet bTypes;
-  bTypes << object::senate;
+  std::map<int,object::Type> servicesNeed;
+
+  if( !_d->house.isValid() )
+  {
+    bTypes << object::senate << object::library << object::forum;
+  }
+  else
+  {
+    int srvcValue = _d->house->getServiceValue( Service::senate );
+    servicesNeed[ srvcValue ] << object::senate;
+
+    srvcValue = _d->house->getServiceValue( Service::library );
+    servicesNeed[ srvcValue ] << object::library;
+
+    srvcValue = _d->house->getServiceValue( Service::forum );
+    servicesNeed[ srvcValue ] << object::forum;
+
+    srvcValue = _d->house->getServiceValue( Service::patrician );
+    servicesNeed[ srvcValue ] << object::house;
+  }
+
 
   ConstructionList buildings;
-
-  for( auto it : bTypes )
+  object::Type type = *servicesNeed.begin();
+  switch( type )
   {
-    buildings.append( _city()->statistic().objects.find<Construction>( it ) );
+  case object::house:
+  {
+    buildings = _city()->statistic().houses
+                                    .patricians( true )
+                                    .select<Construction>();
+  }
+  break;
+  case object::senate:
+  {
+    object::TypeSet bTypes;
+    bTypes << object::governorHouse << object::governorVilla
+           << object::governorPalace << object::senate;
+    buildings = _city()->statistic().objects.find<Construction>( bTypes );
+  }
+  break;
+
+  default:
+    buildings = _city()->statistic().objects.find<Construction>( type );
+  break;
   }
 
   Pathway pathway;
 
   for( size_t k=0; k < std::min<size_t>( 3, buildings.size() ); k++ )
   {
-    pathway = PathwayHelper::create( start, buildings.random(), PathwayHelper::roadOnly );
+    ConstructionPtr building = buildings.random();
+    pathway = PathwayHelper::create( start, building, PathwayHelper::roadOnly );
 
     if( pathway.isValid() )
     {
+      _d->destination = building->pos();
       break;
     }
   }
@@ -85,17 +131,21 @@ void Patrician::_findNewWay( const TilePos& start )
     pathway = PathwayHelper::randomWay( _city(), start, 10 );
   }
 
+  bool wayFound = true;
   if( pathway.isValid() )
   {
     setPos( start );
     setPathway( pathway );
     go();
+    wayFound = true;
   }
   else
   {
-    Logger::warning( "Patrician: cant find way" );
+    Logger::warning( "WARNING !!! Patrician cant find way" );
     die();
   }
+
+  return wayFound;
 }
 
 void Patrician::_reachedPathway()
@@ -114,19 +164,25 @@ void Patrician::_reachedPathway()
 bool Patrician::die()
 {
   return Walker::die();
+}
 
-  /*if( _getAnimationType() == gfx::patricianMove )
+void Patrician::send2City( HousePtr house )
+{
+  if( !house.isValid() )
   {
-    Corpse::create( _getCity(), pos(), ResourceGroup::citizen3, 809, 816 );
+    deleteLater();
+    Logger::warning( "WARNING !!! Cant start patrician from null house" );
+    return;
+  }
+
+  _d->house = house;
+  if( _findNewWay( house->roadside().locations().random() ) )
+  {
+    attach();
   }
   else
   {
-    Corpse::create( _getCity(), pos(), ResourceGroup::citizen3, 1017, 1024 );
-  }*/
-}
-
-void Patrician::send2City(TilePos start )
-{
-  _findNewWay( start );
-  attach();
+    Logger::warning( "WARNING !!! Cant start patrician from house [{},{}]", house->pos().i(), house->pos().j() );
+    deleteLater();
+  }
 }

@@ -114,6 +114,19 @@ HouseList Statistic::_Houses::habitable() const
   return houses;
 }
 
+HouseList Statistic::_Houses::patricians( bool habitabl ) const
+{
+  HouseList houses = habitabl ? habitable() : all();
+
+  for( auto it=houses.begin(); it != houses.end(); )
+  {
+    if( !(*it)->spec().isPatrician() ) it = houses.erase( it );
+    else ++it;
+  }
+
+  return houses;
+}
+
 #if _MSC_VER >= 1300
 #define INIT_SUBSTAT(a) a({*this})
 #else

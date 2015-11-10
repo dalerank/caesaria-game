@@ -57,10 +57,10 @@ namespace {
          maxTableTax=25, defaultHappiness=50, maxHappiness=100 };
 
   static int happines4tax[maxTableTax] = { 10,  9,  7,  6,  4,
-                                                2,  1,  0, -1,  -2,
-                                               -2, -3, -4, -5,  -7,
-                                               -9,-11,-13,-15, -17,
-                                              -19,-21,-23,-27, -31 };
+                                            2,  1,  0, -1, -2,
+                                           -2, -3, -4, -5, -7,
+                                           -9,-11,-13,-15,-17,
+                                          -19,-21,-23,-27,-31 };
 
   int getHappines4tax( int tax )
   {
@@ -312,8 +312,9 @@ void House::_checkPatricianDeals()
   const TilesArray& roads = roadside();
   if( !roads.empty() )
   {
-    PatricianPtr patric = Walker::create<Patrician>( _city() );
-    patric->send2City( roads.front()->pos() );
+    auto patrician = Walker::create<Patrician>( _city() );
+    patrician->send2City( roads.random()->pos() );
+    patrician->setHouse( this );
   }
 }
 
@@ -408,7 +409,10 @@ void House::_updateCrime()
     TilePos sizeOffset( size().width(), size().height() );
     TilesArea tiles( _map(), pos() - offset, pos() + sizeOffset + offset );
     int averageDes = 0;
-    foreach( it, tiles ) { averageDes += (*it)->param( Tile::pDesirability ); }
+
+    for( auto it : tiles )
+      averageDes += it->param( Tile::pDesirability );
+
     averageDes /= (tiles.size() + 1);
 
     desirabilityInfluence = math::clamp( averageDes - spec().minDesirabilityLevel(), -10, 10 );

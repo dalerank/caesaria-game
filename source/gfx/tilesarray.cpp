@@ -275,7 +275,7 @@ void TilesArray::pop_front() { erase( this->begin() ); }
 
 Tile* TilesArray::random() const
 {
-  return size() > 0 ? (*this)[ math::random( size()-1 ) ] : 0;
+  return size() > 0 ? (*this)[ math::random( size()-1 ) ] : nullptr;
 }
 
 }//end namespace
