@@ -75,23 +75,19 @@ WinMission::WinMission( Widget* p, const std::string& newTitle,
 }
 
 WinMission::~WinMission(){}
+Signal0<>& WinMission::onAcceptAssign()    { return _d->signal.nextMission;   }
+Signal1<int>& WinMission::onContinueRules(){ return _d->signal.continueRules; }
 
-bool WinMission::onEvent(const NEvent &event)
+bool WinMission::_onButtonClicked(Widget* sender)
 {
-  if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
+  switch( caller->ID() )
   {
-    switch( event.gui.caller->ID() )
-    {
-    case 0xff: emit _d->signal.nextMission(); deleteLater(); break;
-    default: emit _d->signal.continueRules( event.gui.caller->ID()); deleteLater(); break;
-    }
+  case 0xff: emit _d->signal.nextMission(); deleteLater(); break;
+  default: emit _d->signal.continueRules( event.gui.caller->ID()); deleteLater(); break;
   }
 
-  return Window::onEvent( event );
+  return true;
 }
-
-Signal0<>& WinMission::onAcceptAssign(){  return _d->signal.nextMission; }
-Signal1<int>& WinMission::onContinueRules(){  return _d->signal.continueRules; }
 
 }//end namespace dialog
 
