@@ -23,10 +23,45 @@
 #include "gfx/decorator.hpp"
 #include "gfx/tilesarray.hpp"
 #include "gfx/camera.hpp"
+#include "core/color_list.hpp"
 #include "gfx/picturesarray.hpp"
 
 namespace gfx
 {
+
+namespace {
+struct TexturedPathConfig
+{
+  std::map<NColor,unsigned int> indexes = { {ColorList::red,0},
+                                            {ColorList::blue,20},
+                                            {ColorList::grey,40},
+                                            {ColorList::green,60},
+                                            {ColorList::violet,80},
+                                            {ColorList::lightSlateBlue,100},
+                                            {ColorList::orange,120},
+                                            {ColorList::pink,140},
+                                            {ColorList::lightSlateGray,160},
+                                            {ColorList::yellow,180}
+                                          };
+
+  std::map<unsigned int,Picture> cache;
+  const Picture& getpic( const NColor& color, int direction )
+  {
+    auto it = indexes.find( color );
+    int index = (it != indexes.end() ? it->second : 0) + direction;
+
+    auto itPic = cache.find( index );
+    if( itPic == cache.end() )
+    {
+      cache[ index ] = Picture( "way", index );
+      return cache[ index ];
+    }
+    else
+      return itPic->second;
+  }
+};
+
+}
 
 void TexturedPath::draw(const Pathway& way, const RenderInfo& rinfo, NColor color )
 {
@@ -36,6 +71,8 @@ void TexturedPath::draw(const Pathway& way, const RenderInfo& rinfo, NColor colo
 
 void TexturedPath::draw(const TilesArray& tiles, const RenderInfo& rinfo, NColor color)
 {
+  static TexturedPathConfig config;
+
   Point offset( 0 /*tilemap::cellSize().width()*/, 0 );
   if( tiles.size() > 1 )
   {
@@ -64,9 +101,22 @@ void TexturedPath::draw(const TilesArray& tiles, const RenderInfo& rinfo, NColor
         index = 2;
       break;
 
-      case direction::northEast: index = 3; break;
+      case direction::northEast:
+      {
+        int deltax = tiles[ prevIndex ]->epos().i() - tiles[ step ]->epos().i();
+        index = deltax == 0 ? 3 : 4;
+      }
+      break;
+
       case direction::southWest: index = 4; break;
-      case direction::southEast: index = 5; break;
+
+
+      case direction::southEast:
+      {
+        int deltax = tiles[ prevIndex ]->epos().j() - tiles[ step ]->epos().j();
+        index = deltax == 0 ? 6 : 5;
+      }
+      break;
 
       case direction::northWest:
       {
@@ -78,7 +128,7 @@ void TexturedPath::draw(const TilesArray& tiles, const RenderInfo& rinfo, NColor
       default: index = 0;
       }
 
-      rinfo.engine.draw( Picture( "way", index), tiles[ step ]->mappos() + rinfo.offset + offset );
+      rinfo.engine.draw( config.getpic( color, index ), tiles[ step ]->mappos() + rinfo.offset + offset );
     }
 
     int lenght = tiles.size();
@@ -93,7 +143,7 @@ void TexturedPath::draw(const TilesArray& tiles, const RenderInfo& rinfo, NColor
     case direction::east:  index = 8;  break;
     default: index = 0;
     }
-    rinfo.engine.draw( Picture( "way", index), tiles.back()->mappos() + rinfo.offset + offset );
+    rinfo.engine.draw( config.getpic( color, index ), tiles.back()->mappos() + rinfo.offset + offset );
   }
 }
 

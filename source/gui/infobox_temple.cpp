@@ -62,7 +62,6 @@ AboutTemple::AboutTemple(Widget* parent, PlayerCityPtr city, const Tile& tile )
   }
   else
   {
-
      DivinityPtr divn = temple->divinity();
      bool bigTemple = temple->size().width() > 2;
      shortDesc =  _( divn->shortDescription() );

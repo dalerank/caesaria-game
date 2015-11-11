@@ -55,8 +55,9 @@ WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, cons
   setupUI( ":/gui/warehousespecial.gui");
   setTitle( _("##warehouse_orders##") );
 
-  std::set<good::Product> excludeGoods;
-  excludeGoods << good::none << good::denaries;
+  good::Products goods =  good::all();
+  goods.exclude( good::none )
+       .exclude( good::denaries );
 
   d.warehouse = warehouse;
 
@@ -66,11 +67,8 @@ WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, cons
   }
 
   int index=0;
-  for( auto& goodType : good::all() )
+  for( auto& goodType : goods )
   {
-    if( excludeGoods.count( goodType ) > 0 )
-      continue;
-
     const good::Orders::Order rule = d.warehouse->store().getOrder( goodType );
 
     if( rule != good::Orders::none )

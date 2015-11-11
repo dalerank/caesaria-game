@@ -209,7 +209,7 @@ void EmpireMapWindow::Impl::drawStatic(Engine& painter)
 void EmpireMapWindow::Impl::drawTradeRoutes(Engine& painter)
 {
   world::TraderouteList routes = city->empire()->troutes().all();
-  for( auto& route : routes )
+  for( auto route : routes )
   {
     const PointsArray& points = route->points();
     const Pictures& pictures = route->pictures();
@@ -231,9 +231,9 @@ void EmpireMapWindow::Impl::drawTradeRoutes(Engine& painter)
     }
 
     world::MerchantList merchants = route->merchants();
-    foreach ( it, merchants )
+    for( auto merchant : merchants )
     {
-      painter.draw( (*it)->picture(), offset + (*it)->location() );
+      painter.draw( merchant->picture(), offset + merchant->location() );
     }
   }
 }
@@ -247,7 +247,7 @@ void EmpireMapWindow::Impl::drawMovable(Engine& painter)
       auto movableObject = obj.as<world::MovableObject>();
       if( !movableObject.isValid() )
       {
-        Logger::warning( "Object {0} not movable", obj->name() );
+        Logger::warning( "Object {} not movable", obj->name() );
         continue;
       }
 

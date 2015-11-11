@@ -20,6 +20,7 @@
 
 #include "layerinfo.hpp"
 #include "objects/constants.hpp"
+#include "constants.hpp"
 
 namespace citylayer
 {
@@ -27,17 +28,19 @@ namespace citylayer
 class Entertainment : public Info
 {
 public:
+  Entertainment( gfx::Camera& camera, PlayerCityPtr city, citylayer::Type type );
+
   virtual int type() const;
   virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
-
-  static LayerPtr create(gfx::TilemapCamera& camera, PlayerCityPtr city, int type );
   virtual void handleEvent(NEvent& event);
+  virtual void afterRender(gfx::Engine& engine);
+  virtual void render(gfx::Engine& engine);
 private:
-  Entertainment( gfx::Camera& camera, PlayerCityPtr city, int type );
+  void _updatePaths();
   int _getLevelValue(HousePtr house);
 
-  std::set<object::Type> _flags;
-  int _type;
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 }//end namespace citylayer

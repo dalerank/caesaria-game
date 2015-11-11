@@ -113,17 +113,23 @@ public:
 };
 
 //! constructor
-PushButton::PushButton(Widget* parent )
+PushButton::PushButton(Widget* parent)
   : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), __INIT_IMPL(PushButton)
 {
-  __D_IMPL(_d,PushButton)
-  _d->currentButtonState = stNormal;
-  _d->lastButtonState = StateCount;
-  _d->is.pressed = false;
-  _d->is.drawText = true;
-  _d->bg.style = greyBorderLine;
-  _d->bg.needUpdateBackground = true;
+  __D_REF(d,PushButton)
+  d.currentButtonState = stNormal;
+  d.lastButtonState = StateCount;
+  d.is.pressed = false;
+  d.is.drawText = true;
+  d.bg.style = greyBorderLine;
+  d.bg.needUpdateBackground = true;
   setTextAlignment( align::center, align::center );
+}
+
+PushButton::PushButton(Widget* parent, const RectF& rectangle, const std::string& caption, int id, bool noclip, const gui::PushButton::BackgroundStyle bgstyle)
+  : PushButton( parent, Rect( 0, 0, 1, 1), caption, id, noclip, bgstyle )
+{
+  setGeometry( rectangle );
 }
 
 PushButton::PushButton( Widget* parent,
@@ -134,13 +140,13 @@ PushButton::PushButton( Widget* parent,
                         const BackgroundStyle bgStyle )
 : Widget( parent, id, rectangle ), __INIT_IMPL(PushButton)
 {
-  __D_IMPL(_d,PushButton)
+  __D_REF(d,PushButton)
   setDebugName( CAESARIA_STR_EXT(PushButton) );
 
-  _d->is.pressed = false;
-  _d->currentButtonState = stNormal;
-  _d->lastButtonState = StateCount;
-  _d->is.drawText = true;
+  d.is.pressed = false;
+  d.currentButtonState = stNormal;
+  d.lastButtonState = StateCount;
+  d.is.drawText = true;
   setBackgroundStyle( bgStyle );
   setTextAlignment( align::center, align::center );
 

@@ -158,7 +158,7 @@ void Granary::initTerrain(Tile& terrain)
   //         (1,0)Y    (2,1)Y
   //              (2,0)N
 
- /* bool walkable = (offset.i() % 2 == 1 || offset.j() % 2 == 1); //au: VladRassokhin
+  /* bool walkable = (offset.i() % 2 == 1 || offset.j() % 2 == 1); //au: VladRassokhin
   terrain.setFlag( Tile::tlRoad, walkable );
   terrain.setFlag( Tile::tlRock, !walkable ); // el muleta
   */
@@ -198,7 +198,7 @@ void Granary::load( const VariantMap& stream)
   computePictures();
 }
 
-bool Granary::isWalkable() const { return true; }
+bool Granary::isWalkable() const { return false; }
 
 void Granary::destroy()
 {
@@ -244,11 +244,12 @@ Renderer::PassQueue Granary::passQueue() const { return granaryPass; }
 
 void Granary::_resolveDeliverMode()
 {
-  if( walkers().size() > 0 )
-  {
+  //dont send walkers if they on way already
+  if( haveWalkers() )
     return;
-  }
-  //if warehouse in devastation mode need try send cart pusher with goods to other granary/warehouse/factory
+
+  //if warehouse in deliver mode some good then we need to send cart for other warehouses
+  //and take it
   for( auto& gType : good::foods() )
   {
     good::Orders::Order order = _d->store.getOrder( gType );
@@ -256,12 +257,12 @@ void Granary::_resolveDeliverMode()
 
     if( good::Orders::deliver == order && goodFreeQty > 0 )
     {
-      auto cartSupplier = Walker::create<CartSupplier>( _city() );
-      cartSupplier->send2city( this, gType, goodFreeQty );
+      auto supplier = Walker::create<CartSupplier>( _city() );
+      supplier->send2city( this, gType, goodFreeQty );
 
-      if( !cartSupplier->isDeleted() )
+      if( !supplier->isDeleted() )
       {
-        addWalker( cartSupplier );
+        addWalker( supplier );
         return;
       }
     }
@@ -286,14 +287,14 @@ void Granary::_weekUpdate()
 bool Granary::_trySendGoods(good::Product gtype, int qty )
 {
   good::Stock stock( gtype, qty, qty);
-  auto cartPusher = Walker::create<CartPusher>( _city() );
-  cartPusher->send2city( this, stock );
+  auto deliverer = Walker::create<CartPusher>( _city() );
+  deliverer->send2city( this, stock );
 
-  if( !cartPusher->isDeleted() )
+  if( !deliverer->isDeleted() )
   {
     stock.setQty( 0 );
-    _d->store.retrieve( stock, qty );//setCurrentQty( (GoodType)goodType, goodQtyMax - goodQty );
-    addWalker( cartPusher.object() );
+    _d->store.retrieve( stock, qty );
+    addWalker( deliverer.object() );
     return true;
   }
 

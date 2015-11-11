@@ -95,7 +95,8 @@ bool ChangePlayerName::onEvent(const NEvent& event)
 void ChangePlayerName::setMayExit(bool value)
 {
   _d->mayExit = value;
-  if( _d->lbExitHelp ) _d->lbExitHelp->setVisible( value );
+  if( _d->lbExitHelp )
+    _d->lbExitHelp->setVisible( value );
 }
 
 ChangePlayerName::~ChangePlayerName(){}
@@ -115,7 +116,8 @@ void ChangePlayerName::setModal()
 {
   Window::setModal();
 
-  if( _d->edPlayerName ) _d->edPlayerName->setFocus();
+  if( _d->edPlayerName )
+    _d->edPlayerName->setFocus();
 }
 
 Signal0<>& ChangePlayerName::onClose(){  return _d->signal.onClose;}

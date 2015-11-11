@@ -26,8 +26,8 @@ namespace gui
 namespace infobox
 {
 
-AboutEvent::AboutEvent(Widget* parent, const std::string& title,
-                                  const std::string& message, DateTime time, good::Product gtype, const std::string& additional)
+AboutEvent::AboutEvent( Widget* parent, const std::string& title,
+                        const std::string& message, DateTime time, good::Product gtype, const std::string& additional)
   : Infobox( parent, Rect( 0, 0, 480, 320 ), Rect( 18, 40, 480 - 18, 320 - 50 ) )
 {
   setTitle( title );

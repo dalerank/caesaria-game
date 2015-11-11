@@ -38,6 +38,7 @@
 #include "core/gettext.hpp"
 #include "core/logger.hpp"
 #include "game/funds.hpp"
+#include "core/common.hpp"
 #include "city/build_options.hpp"
 #include "city/statistic.hpp"
 #include "walker/patrician.hpp"
@@ -57,10 +58,10 @@ namespace {
          maxTableTax=25, defaultHappiness=50, maxHappiness=100 };
 
   static int happines4tax[maxTableTax] = { 10,  9,  7,  6,  4,
-                                                2,  1,  0, -1,  -2,
-                                               -2, -3, -4, -5,  -7,
-                                               -9,-11,-13,-15, -17,
-                                              -19,-21,-23,-27, -31 };
+                                            2,  1,  0, -1, -2,
+                                           -2, -3, -4, -5, -7,
+                                           -9,-11,-13,-15,-17,
+                                          -19,-21,-23,-27,-31 };
 
   int getHappines4tax( int tax )
   {
@@ -193,6 +194,7 @@ public:
   std::string evolveInfo;
   Habitants habitants;
   Animation healthAnimation;
+  WalkerList walkers;
 
   bool isFlat;
   int currentYear;
@@ -309,11 +311,18 @@ void House::_checkPatricianDeals()
   if( !spec().isPatrician() )
     return;
 
+  int maxPatriciansNumber = size().width();
+  if( walkers().count<Patrician>() >= maxPatriciansNumber )
+  {
+    Logger::warning( "WARNING !!! House [{},{}] also have maximum patricians in deals", pos().i(), pos().j() );
+    return;
+  }
+
   const TilesArray& roads = roadside();
   if( !roads.empty() )
   {
-    PatricianPtr patric = Walker::create<Patrician>( _city() );
-    patric->send2City( roads.front()->pos() );
+    auto patrician = Walker::create<Patrician>( _city() );
+    patrician->send2City( this );
   }
 }
 
@@ -408,7 +417,10 @@ void House::_updateCrime()
     TilePos sizeOffset( size().width(), size().height() );
     TilesArea tiles( _map(), pos() - offset, pos() + sizeOffset + offset );
     int averageDes = 0;
-    foreach( it, tiles ) { averageDes += (*it)->param( Tile::pDesirability ); }
+
+    for( auto it : tiles )
+      averageDes += it->param( Tile::pDesirability );
+
     averageDes /= (tiles.size() + 1);
 
     desirabilityInfluence = math::clamp( averageDes - spec().minDesirabilityLevel(), -10, 10 );
@@ -527,6 +539,11 @@ void House::timeStep(const unsigned long time)
     _updateCrime();
     _updateHomeless();
     _checkPatricianDeals();
+  }
+
+  if( game::Date::isDayChanged() )
+  {
+    utils::eraseIfDeleted( _d->walkers );
   }
 
   Building::timeStep( time );
@@ -1220,6 +1237,19 @@ std::string House::troubleDesc() const
 }
 
 bool House::isCheckedDesirability() const {  return _city()->buildOptions().isCheckDesirability(); }
+
+void House::addWalker(WalkerPtr walker)
+{
+  if( !_d->walkers.contain( walker ) )
+  {
+    _d->walkers.push_back( walker );
+  }
+}
+
+const WalkerList& House::walkers() const
+{
+  return _d->walkers;
+}
 
 void House::__debugChangeLevel(int change)
 {
