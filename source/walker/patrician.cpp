@@ -155,8 +155,40 @@ void Patrician::_reachedPathway()
   }
   else
   {
-    _pathway().toggleDirection();
+    _pathway().toggleDirection();        
     go();
+
+    OverlayPtr overlay = _map().overlay( _d->destination );
+    object::Type objType = overlay.isValid() ? overlay->type() : object::unknown;
+    switch( objType )
+    {
+    case object::senate:
+    case object::governorHouse:
+    case object::governorVilla:
+    case object::governorPalace:
+      if( _d->house.isValid() )
+        _d->house->setServiceValue( Service::senate, 100 );
+    break;
+
+    case object::library:
+      if( _d->house.isValid() )
+        _d->house->setServiceValue( Service::library, 100 );
+    break;
+
+    case object::house:
+      if( _d->house.isValid() && overlay.as<House>()->spec().isPatrician() )
+        _d->house->setServiceValue( Service::patrician, 100 );
+    break;
+
+    case object::forum:
+      if( _d->house.isValid() )
+        _d->house->setServiceValue( Service::forum, 100 );
+    break;
+
+    default:
+      Logger::warning( "WARNING !!! Unknown overlay type {} for patrician way", object::toString( objType ) );
+    break;
+    }
   }
 }
 
