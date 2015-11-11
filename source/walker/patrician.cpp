@@ -61,6 +61,9 @@ void Patrician::load( const VariantMap& stream )
 
   TilePos housePos = stream.get( "house" );
   _d->house = _map().overlay<House>( housePos );
+
+  if( _d->house.isValid() )
+    _d->house->addWalker( this );
 }
 
 bool Patrician::_findNewWay( const TilePos& pos )
@@ -209,6 +212,7 @@ void Patrician::send2City( HousePtr house )
   _d->house = house;
   if( _findNewWay( house->roadside().locations().random() ) )
   {
+    house->addWalker( this );
     attach();
   }
   else

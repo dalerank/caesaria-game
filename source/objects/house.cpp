@@ -38,6 +38,7 @@
 #include "core/gettext.hpp"
 #include "core/logger.hpp"
 #include "game/funds.hpp"
+#include "core/common.hpp"
 #include "city/build_options.hpp"
 #include "city/statistic.hpp"
 #include "walker/patrician.hpp"
@@ -193,6 +194,7 @@ public:
   std::string evolveInfo;
   Habitants habitants;
   Animation healthAnimation;
+  WalkerList walkers;
 
   bool isFlat;
   int currentYear;
@@ -308,6 +310,13 @@ void House::_checkPatricianDeals()
 {
   if( !spec().isPatrician() )
     return;
+
+  int maxPatriciansNumber = size();
+  if( walkers().count<Patrician>() >= maxPatriciansNumber )
+  {
+    Logger::warning( "WARNING !!! House [{},{}] also have maximum patricians in deals", pos().i(), pos().j() );
+    return;
+  }
 
   const TilesArray& roads = roadside();
   if( !roads.empty() )
@@ -530,6 +539,11 @@ void House::timeStep(const unsigned long time)
     _updateCrime();
     _updateHomeless();
     _checkPatricianDeals();
+  }
+
+  if( game::Date::isDayChanged() )
+  {
+    utils::eraseIfDeleted( _d->walkers );
   }
 
   Building::timeStep( time );
@@ -1223,6 +1237,19 @@ std::string House::troubleDesc() const
 }
 
 bool House::isCheckedDesirability() const {  return _city()->buildOptions().isCheckDesirability(); }
+
+void House::addWalker(WalkerPtr walker)
+{
+  if( !_d->walkers.contain( walker ) )
+  {
+    _d->walkers.push_back( walker );
+  }
+}
+
+const WalkerList& House::walkers() const
+{
+  return _d->walkers;
+}
 
 void House::__debugChangeLevel(int change)
 {
