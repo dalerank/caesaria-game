@@ -80,10 +80,10 @@ Signal1<int>& WinMission::onContinueRules(){ return _d->signal.continueRules; }
 
 bool WinMission::_onButtonClicked(Widget* sender)
 {
-  switch( caller->ID() )
+  switch( sender->ID() )
   {
   case 0xff: emit _d->signal.nextMission(); deleteLater(); break;
-  default: emit _d->signal.continueRules( event.gui.caller->ID()); deleteLater(); break;
+  default: emit _d->signal.continueRules( sender->ID()); deleteLater(); break;
   }
 
   return true;

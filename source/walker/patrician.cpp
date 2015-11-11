@@ -67,9 +67,11 @@ bool Patrician::_findNewWay( const TilePos& pos )
 {
   std::map<int,object::Type> servicesNeed;
 
+  ConstructionList buildings;
   if( !_d->house.isValid() )
   {
-    bTypes << object::senate << object::library << object::forum;
+    Logger::warning( "WARNING !!! Patrician have no house" );
+    return false;
   }
   else
   {
@@ -84,40 +86,37 @@ bool Patrician::_findNewWay( const TilePos& pos )
 
     srvcValue = _d->house->getServiceValue( Service::patrician );
     servicesNeed[ srvcValue ] << object::house;
-  }
 
+    object::Type type = servicesNeed.begin()->second;
+    switch( type )
+    {
+    case object::house:
+    {
+      buildings = _city()->statistic().houses
+                                      .patricians( true )
+                                      .select<Construction>();
+    }
+    break;
+    case object::senate:
+    {
+      object::TypeSet bTypes;
+      bTypes << object::governorHouse << object::governorVilla
+             << object::governorPalace << object::senate;
+      buildings = _city()->statistic().objects.find<Construction>( bTypes );
+    }
+    break;
 
-  ConstructionList buildings;
-  object::Type type = *servicesNeed.begin();
-  switch( type )
-  {
-  case object::house:
-  {
-    buildings = _city()->statistic().houses
-                                    .patricians( true )
-                                    .select<Construction>();
-  }
-  break;
-  case object::senate:
-  {
-    object::TypeSet bTypes;
-    bTypes << object::governorHouse << object::governorVilla
-           << object::governorPalace << object::senate;
-    buildings = _city()->statistic().objects.find<Construction>( bTypes );
-  }
-  break;
-
-  default:
-    buildings = _city()->statistic().objects.find<Construction>( type );
-  break;
-  }
+    default:
+      buildings = _city()->statistic().objects.find<Construction>( type );
+    break;
+    }
+  }  
 
   Pathway pathway;
-
   for( size_t k=0; k < std::min<size_t>( 3, buildings.size() ); k++ )
   {
     ConstructionPtr building = buildings.random();
-    pathway = PathwayHelper::create( start, building, PathwayHelper::roadOnly );
+    pathway = PathwayHelper::create( pos, building, PathwayHelper::roadOnly );
 
     if( pathway.isValid() )
     {
@@ -128,13 +127,13 @@ bool Patrician::_findNewWay( const TilePos& pos )
 
   if( !pathway.isValid() )
   {
-    pathway = PathwayHelper::randomWay( _city(), start, 10 );
+    pathway = PathwayHelper::randomWay( _city(), pos, 10 );
   }
 
   bool wayFound = true;
   if( pathway.isValid() )
   {
-    setPos( start );
+    setPos( pos );
     setPathway( pathway );
     go();
     wayFound = true;

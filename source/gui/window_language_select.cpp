@@ -85,7 +85,7 @@ void LanguageSelect::_changeLanguage(const gui::ListBoxItem& item)
   auto it = languages.find( item.text() );
   if( it != languages.end() )
   {
-    VariantMap vm = it.second.toMap();
+    VariantMap vm = it->second.toMap();
     std::string lang = vm.get( literals::ext ).toString();
     std::string talksArchive = vm.get( literals::talks ).toString();
     std::string newFont  = vm.get( literals::font ).toString();

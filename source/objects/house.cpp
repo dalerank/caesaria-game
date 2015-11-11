@@ -313,8 +313,7 @@ void House::_checkPatricianDeals()
   if( !roads.empty() )
   {
     auto patrician = Walker::create<Patrician>( _city() );
-    patrician->send2City( roads.random()->pos() );
-    patrician->setHouse( this );
+    patrician->send2City( this );
   }
 }
 
