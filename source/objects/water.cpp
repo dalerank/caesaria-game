@@ -56,7 +56,7 @@ bool Water::build( const city::AreaInfo& info )
     if( !isWater )
     {
       tile->setPicture( Picture::getInvalid() );
-      OverlayPtr ov = TileOverlayFactory::instance().create( object::coast );
+      CoastPtr ov = Overlay::create<Coast>();
       city::AreaInfo binfo( info.city, tile->epos() );
       ov->build( binfo );
     }
@@ -68,7 +68,7 @@ bool Water::build( const city::AreaInfo& info )
         coast->updatePicture();
       else
       {
-        OverlayPtr ov = TileOverlayFactory::instance().create( object::coast );
+        CoastPtr ov = Overlay::create<Coast>();
         city::AreaInfo binfo( info.city, tile->epos() );
         ov->build( binfo );
       }
