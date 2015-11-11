@@ -33,18 +33,19 @@ public:
 
   bool contains( const std::string& str )
   {
-    for( auto item : *this )
-    {
-      if( item == str )
-        return true;
-    }
-
-    return false;
+    auto it = std::find( this->begin(), this->end(), str );
+    return it != this->end();
   }  
 
-  std::string valueOrEmpty( unsigned int index ) const
+  const std::string& valueOrEmpty( unsigned int index ) const
   {
-    return (index < size()) ? at( index ) : "";
+    static std::string emptyStr;
+    return (index < size()) ? at( index ) : emptyStr;
+  }
+
+  const std::string& valueOrDefault( unsigned int index, const std::string& defaultStr ) const
+  {
+    return (index < size()) ? at( index ) : defaultStr;
   }
 
   bool remove( const std::string& str )
@@ -69,7 +70,7 @@ public:
 
   inline StringArray& operator << ( const StringArray& a )
   {
-    for( auto&& item : a )
+    for( auto& item : a )
       push_back( item );
 
     return *this;

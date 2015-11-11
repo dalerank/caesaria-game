@@ -35,17 +35,12 @@ namespace citylayer
 
 int Food::type() const {  return citylayer::food; }
 
-void Food::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Food::drawTile( const RenderInfo& rinfo, Tile& tile )
 {
-  Point screenPos = tile.mappos() + offset;
-
   if( tile.overlay().isNull() )
   {
-    //draw background
-    //engine.draw( tile.picture(), screenPos );
-
-    drawPass( engine, tile, offset, Renderer::ground );
-    drawPass( engine, tile, offset, Renderer::groundAnimation );
+    drawPass( rinfo, tile, Renderer::ground );
+    drawPass( rinfo, tile, Renderer::groundAnimation );
   }
   else
   {
@@ -59,51 +54,51 @@ void Food::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( overlay->type() == object::house )
     {
-      HousePtr house = ptr_cast<House>( overlay );
+      auto house = overlay.as<House>();
       foodLevel = (int) house->state( pr::food );
-      needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
+      needDrawAnimations = (house->level() <= HouseLevel::hovel) && (house->habitants().empty());
       if( !needDrawAnimations )
       {
-        drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+        drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
       }
     }
     else      //other buildings
     {
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base);
+      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base);
     }
 
     if( needDrawAnimations )
     {
-      Layer::drawTile( engine, tile, offset );
+      Layer::drawTile( rinfo, tile );
       registerTileForRendering( tile );
     }
     else if( foodLevel >= 0 )
     {
-      drawColumn( engine, screenPos, math::clamp( 100 - foodLevel, 0, 100 ) );
+      Point screenPos = tile.mappos() + rinfo.offset;
+      drawColumn( rinfo, screenPos, math::clamp( 100 - foodLevel, 0, 100 ) );
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
-void Food::drawWalkers(Engine &engine, const Tile &tile, const Point &camOffset)
+void Food::drawWalkers(const RenderInfo& rinfo, const Tile &tile)
 {
   Pictures pics;
   const WalkerList& walkers = _city()->walkers( tile.pos() );
 
-  foreach( w, walkers )
+  for( auto wlk : walkers )
   {
-    WalkerPtr wlk = *w;
     if( wlk->type() == walker::cartPusher )
     {
-      CartPusherPtr cartp = ptr_cast<CartPusher>( wlk );
-      good::Product gtype = cartp->stock().type();
+      auto cartPusher = wlk.as<CartPusher>();
+      good::Product gtype = cartPusher->stock().type();
       if( gtype == good::none || gtype > good::vegetable )
         continue;
     }
     pics.clear();
-    (*w)->getPictures( pics );
-    engine.draw( pics, (*w)->mappos() + camOffset );
+    wlk->getPictures( pics );
+    rinfo.engine.draw( pics, wlk->mappos() + rinfo.offset );
   }
 }
 
@@ -119,14 +114,14 @@ void Food::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        HousePtr house = ptr_cast<House>( tile->overlay() );
+        auto house = tile->overlay<House>();
         if( house.isValid() )
         {
           int houseHabitantsCount = house->habitants().count();
 
           if( houseHabitantsCount > 0 )
           {
-            good::Store& st = house->goodStore();
+            good::Store& st = house->store();
             int foodQty = 0;
             for( good::Product k=good::wheat; k <= good::vegetable; ++k )
             {
@@ -154,14 +149,6 @@ void Food::handleEvent(NEvent& event)
   }
 
   Layer::handleEvent( event );
-}
-
-LayerPtr Food::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new Food( camera, city ) );
-  ret->drop();
-
-  return ret;
 }
 
 Food::Food( Camera& camera, PlayerCityPtr city)

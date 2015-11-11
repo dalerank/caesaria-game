@@ -21,20 +21,24 @@
 namespace updater
 {
 
-class UpdaterOptions :
-	public ProgramOptions
+class UpdaterOptions : public ProgramOptions
 {
 public:
   UpdaterOptions()
   {
-    SetupDescription();
+    reset( 0, 0 );
   }
 
   // Construct options from command line arguments
   UpdaterOptions(int argc, char* argv[])
+  {     
+    reset( argc, argv );
+  }
+
+  void reset(int argc, char* argv[])
   {
     SetupDescription();
-    ParseFromCommandLine(argc, argv);
+    parse(argc, argv);
 
     for (int i = 1; i < argc; ++i)
     {
@@ -57,13 +61,13 @@ public:
     if( proxyUser.empty() && proxyPassword.empty() )
     {
       // Non-authenticated proxy
-      Logger::warning( "Using proxy: %s", proxyStr.c_str() );
+      Logger::warning( "Using proxy: {}", proxyStr );
       conn->SetProxyHost( proxyStr );
     }
     else
     {
       // Proxy with authentication
-      Logger::warning( "Using proxy with authentication: %s", proxyStr.c_str() );
+      Logger::warning( "Using proxy with authentication: {}", proxyStr );
       conn->SetProxyHost( proxyStr );
       conn->SetProxyUsername( proxyUser );
       conn->SetProxyPassword( proxyPassword );

@@ -210,15 +210,15 @@ Picture::Picture(const Size& size, unsigned char* data, bool mayChange) : _d( ne
   _d->drop();
   _orect = Rect( 0, 0, size.width(), size.height() );
 
+  _d->surface = SDL_CreateRGBSurface( 0, size.width(), size.height(), 32,
+                                      0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
+
   if( data )
   {
-    _d->surface = SDL_CreateRGBSurfaceFrom( data, size.width(), size.height(), 32, size.width() * 4,
-                                            0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
+    memcpy( _d->surface->pixels, data, size.area() * 4 );
   }
   else
   {
-    _d->surface = SDL_CreateRGBSurface( 0, size.width(), size.height(), 32,
-                                        0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
     SDL_FillRect( _d->surface, 0, 0 );
   }
 
@@ -239,20 +239,37 @@ Picture::Picture(const std::string& group, const int id) : _d( new PictureImpl )
 
 Picture::Picture(const std::string& filename )  : _d( new PictureImpl )
 {
-   _d->drop();
+  _d->drop();
   load( filename );
 }
 #endif
 
 const Picture& Picture::getInvalid() {  return _invalidPicture; }
 
-Picture& Picture::draw(gfx::Picture pic, const Point& point, const Size& size)
+Picture& Picture::draw(Picture pic, const Point& point, const Size& size)
 {
   if( pic.surface() && _d->surface && _d->texture )
   {
     SDL_Rect rect = { (short)point.x(), (short)point.y(),
                       (unsigned short)size.width(), (unsigned short)size.height() };
     SDL_BlitSurface( pic.surface(), nullptr, _d->surface, &rect );
+
+    update();
+  }
+
+  return *this;
+}
+
+Picture& Picture::draw(Picture pic, const Rect& src, const Rect& dst)
+{
+  if( pic.surface() && _d->surface && _d->texture )
+  {
+    SDL_Rect srcRect = { (short)src.left(), (short)src.top(),
+                         (unsigned short)src.width(), (unsigned short)src.height() };
+    SDL_Rect dstRect = { (short)dst.left(), (short)dst.top(),
+                         (unsigned short)dst.width(), (unsigned short)dst.height() };
+
+    SDL_BlitSurface( pic.surface(), &srcRect, _d->surface, dst.width() > 0 ? &dstRect : nullptr );
 
     update();
   }

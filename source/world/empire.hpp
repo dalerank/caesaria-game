@@ -25,9 +25,12 @@
 #include "core/serializer.hpp"
 #include "good/good.hpp"
 #include "price_info.hpp"
+#include "governor_rank.hpp"
 
 namespace world
 {
+
+class TradeRoutes;
 
 class Empire : public ReferenceCounted, public Serializable
 {
@@ -51,15 +54,11 @@ public:
 
   const EmpireMap& map() const;
   Emperor& emperor();
-  CityPtr rome() const;
+  CityPtr capital() const;
+
+  TradeRoutes& troutes();
 
   TraderoutePtr createTradeRoute( std::string start, std::string stop );
-
-  TraderoutePtr findRoute( unsigned int index );
-  TraderoutePtr findRoute( const std::string& start, const std::string& stop );  
-
-  TraderouteList tradeRoutes( const std::string& startCity );
-  TraderouteList tradeRoutes();
 
   virtual void save( VariantMap& stream ) const;
   virtual void load( const VariantMap& stream );
@@ -87,25 +86,13 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-struct GovernorRank
-{
-  std::string rankName;
-  std::string pretty;
-  unsigned int salary;
-  unsigned int level;
-
-  void load( const std::string& name, const VariantMap& vm );
-};
-
-typedef std::vector<GovernorRank> GovernorRanks;
-
 class EmpireHelper 
 {
 public:
   static unsigned int getTradeRouteOpenCost( EmpirePtr empire, const std::string& start, const std::string& stop );
   static float governorSalaryKoeff( CityPtr city );
   static GovernorRanks ranks();
-  static GovernorRank getRank( unsigned int name );
+  static GovernorRank getRank(GovernorRank::Level level);
 };
 
 }//end namespace world

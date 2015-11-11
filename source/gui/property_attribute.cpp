@@ -80,7 +80,7 @@ void AbstractAttribute::setValue( const Variant& attribute )
 
 void AbstractAttribute::setParentID(int parentID) {  _myParentID = parentID; }
 
-void AbstractAttribute::setFont(Font font) {}
+void AbstractAttribute::setFont( const Font& font) {}
 
 bool AbstractAttribute::updateAttrib(bool sendEvent)
 {

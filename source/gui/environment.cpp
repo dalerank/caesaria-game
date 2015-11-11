@@ -20,6 +20,7 @@
 #include "core/rectangle.hpp"
 #include "gfx/engine.hpp"
 #include "core/event.hpp"
+#include "widgetprivate.hpp"
 #include "label.hpp"
 #include "core/time.hpp"
 #include "core/foreach.hpp"
@@ -27,6 +28,8 @@
 #include "console.hpp"
 #include "core/logger.hpp"
 #include "core/hash.hpp"
+#include "core/osystem.hpp"
+#include "widgetprivate.hpp"
 
 using namespace gfx;
 
@@ -65,6 +68,7 @@ public:
   Widget::Widgets deletionQueue;
 
   gfx::Engine* engine;
+  Size size;
   Point cursorPos;
   Flags flags;
   int consoleId;
@@ -81,18 +85,23 @@ Ui::Ui(Engine& painter )
 
   _d->preRenderFunctionCalled = false;
   _d->focusedElement = 0;
+  _d->size = painter.screenSize();
   _d->engine = &painter;
-  _environment = this;
+  _dfunc()->environment = this;
   _d->tooltip.element;
   _d->tooltip.lastTime = 0;
   _d->tooltip.enterTime = 0;
   _d->tooltip.launchTime = 1000;
   _d->tooltip.relaunchTime = 500;
 
-  setGeometry( Rect( Point(), painter.virtualSize() ) );
+  Widget::_dfunc()->environment = this;
+
+  setGeometry( Rect( Point(), _d->size ) );
 
   _d->consoleId = Hash( CAESARIA_STR_EXT(Console) );
-  _d->console = 0;//new Console( this, _d->consoleId, Rect() );
+  _d->console = 0;
+
+  setFlag( buttonShowDebugArea, 0 );
 }
 
 //! Returns if the element has focus
@@ -264,6 +273,11 @@ void Ui::setFlag(Ui::Flag name, int value)
   _d->flags[ name ] = value;
 }
 
+bool Ui::hasFlag(Ui::Flag name)
+{
+  return _d->flags[ name ];
+}
+
 void Ui::_updateHovered( const Point& mousePos )
 {
   WidgetPtr lastHovered = _d->hovered.current;
@@ -386,9 +400,10 @@ bool Ui::handleEvent( const NEvent& event )
 
 //!!! android fix. update hovered element on every mouse event,
 //!   that beforeDraw() function cannot do it correctly
-#ifdef CAESARIA_PLATFORM_ANDROID
-        _updateHovered( _d->cursorPos );
-#endif
+        if( OSystem::isAndroid() )
+        {
+          _updateHovered( _d->cursorPos );
+        }
 //!!! end android fix
         switch( event.mouse.type )
         {
@@ -484,10 +499,10 @@ bool Ui::handleEvent( const NEvent& event )
 Widget* Ui::hovered() const { return _d->hovered.current.object(); }
 
 void Ui::beforeDraw()
-{
-  const Size screenSize( _d->engine->virtualSize() );
+{  
+  const Size& screenSize = _d->size;
   const Point& rigthDown = rootWidget()->absoluteRect().rightbottom();
-  
+
   if( rigthDown.x() != screenSize.width() || rigthDown.y() != screenSize.height() )
   {
     // resize gui environment
@@ -534,29 +549,30 @@ void Ui::animate( unsigned int time )
   Widget::animate( time );
 }
 
+Size Ui::vsize() const {  return size(); }
 Point Ui::cursorPos() const {  return _d->cursorPos; }
 
 Widget* UiTooltipWorker::standart(Widget& parent, Widget* hovered, Point cursor)
 {
-  Label* elm = new Label( &parent, Rect( 0, 0, 2, 2 ), hovered->tooltipText(), true, Label::bgSimpleWhite );
-  elm->setSubElement(true);
-  elm->setTextAlignment( align::upperLeft, align::upperLeft );
-  elm->setTextOffset( Point( 5, 5 ) );
+  Label& elm = parent.add<Label>( Rect( 0, 0, 2, 2 ), hovered->tooltipText(), true, Label::bgSimpleWhite );
+  elm.setSubElement(true);
+  elm.setTextAlignment( align::upperLeft, align::upperLeft );
+  elm.setTextOffset( Point( 5, 5 ) );
 
-  Size tooltipSize( elm->textWidth() + 20, elm->textHeight() + 2 );
+  Size tooltipSize( elm.textWidth() + 20, elm.textHeight() + 2 );
   if( tooltipSize.width() > parent.width() * 0.75 )
-    {
-      tooltipSize.setWidth( parent.width() * 0.5 );
-      tooltipSize.setHeight( elm->textHeight() * 2 + 10 );
-      elm->setWordwrap( true );
-    }
+  {
+    tooltipSize.setWidth( parent.width() * 0.5 );
+    tooltipSize.setHeight( elm.textHeight() * 2 + 10 );
+    elm.setWordwrap( true );
+  }
 
   Rect rect( cursor, tooltipSize );
 
   rect -= Point( tooltipSize.width() + 20, -20 );
-  elm->setGeometry( rect );
+  elm.setGeometry( rect );
 
-  return elm;
+  return &elm;
 }
 
 void UiTooltipWorker::update( unsigned int time, Widget& rootWidget, bool showTooltips,

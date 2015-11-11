@@ -34,33 +34,51 @@ public:
   gfx::Pictures backgroundNb;
 
   std::vector< ListBoxItem > items;
-  NColor itemDefaultColorText;
-  NColor itemDefaultColorTextHighlight;
+
+  struct {
+    NColor text;
+    NColor textHighlight;
+  } color;
+
+  struct {
+    int item;
+    int total;
+    int override;
+  } height;
+
 	Rect clientClip;
 	Rect margin;
+
+  struct {
+    int selected;
+    int hovered;
+  } index;
+
   bool dragEventSended;
-  int hoveredItemIndex;
-  int itemHeight;
-  int itemHeightOverride;
-  int totalItemHeight;
 	Font font;
 	int itemsIconWidth;
 	//SpriteBank* iconBank;
 	ScrollBar* scrollBar;
-	unsigned int selectTime;
-	int selectedItemIndex;
-	unsigned int lastKeyTime;
+
+  struct {
+    unsigned int select;
+    unsigned int lastKey;
+  } time;
+
   std::string keyBuffer;
 	bool selecting;
   Point itemTextOffset;
   bool needItemsRepackTextures;
 
-signals public:
-	Signal1<int> indexSelected;
-  Signal1<std::string> textSelected;
-	Signal1<int> indexSelectedAgain;
-  Signal1<const ListBoxItem&> onItemSelectedAgainSignal;
-  Signal1<const ListBoxItem&> onItemSelectedSignal;
+  struct {
+    Signal1<int> onIndexSelected;
+    Signal1<int> onIndexSelectedAgain;
+
+    Signal1<std::string> onTextSelected;
+
+    Signal1<const ListBoxItem&> onItemSelectedAgain;
+    Signal1<const ListBoxItem&> onItemSelected;
+  } signal;
 };
 
 }//end namespace gui

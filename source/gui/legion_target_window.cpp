@@ -42,7 +42,7 @@ public signals:
   Signal1<Point> onSelectLocationSignal;
 };
 
-LegionTargetWindow::LegionTargetWindow(Widget* parent, int id, PlayerCityPtr city )
+LegionTargetWindow::LegionTargetWindow(Widget* parent, PlayerCityPtr city, int id )
   : EmpireMapWindow( parent, id, city ), _d( new Impl )
 {
   _d->location = Point( -1, -1 );
@@ -101,21 +101,14 @@ void LegionTargetWindow::_changePosition()
     Point startDraw = wdg->center() - wdg->lefttop();
     Point offset( 400, 20 );
 
-    PushButton* btnSendTroops = new PushButton( wdg, Rect( startDraw - offset, startDraw ),
-                                                _("##lgntrg_send##"), -1, false, PushButton::blackBorderUp );
-    PushButton* btnExit = new PushButton( wdg, Rect( btnSendTroops->righttop(), btnSendTroops->righttop() + offset ) ,
-                                          _("##lngtrg_exit"), -1, false, PushButton::blackBorderUp );
+    PushButton& btnSendTroops = wdg->add<PushButton>( Rect( startDraw - offset, startDraw ),
+                                                      _("##lgntrg_send##"), -1, false, PushButton::blackBorderUp );
+    PushButton& btnExit = wdg->add<PushButton>( Rect( btnSendTroops.righttop(), btnSendTroops.righttop() + offset ) ,
+                                                _("##lngtrg_exit"), -1, false, PushButton::blackBorderUp );
 
-    CONNECT( btnSendTroops, onClicked(), _d.data(), Impl::handleSendTroops );
-    CONNECT( btnExit, onClicked(), wdg->parent(), Widget::deleteLater );
+    CONNECT( &btnSendTroops, onClicked(), _d.data(), Impl::handleSendTroops );
+    CONNECT( &btnExit, onClicked(), wdg->parent(), Widget::deleteLater );
   }
-}
-
-LegionTargetWindow* LegionTargetWindow::create(PlayerCityPtr city, Widget* parent, int id )
-{
-  LegionTargetWindow* ret = new LegionTargetWindow( parent, id, city );
-
-  return ret;
 }
 
 LegionTargetWindow::~LegionTargetWindow()

@@ -22,9 +22,8 @@
 
 class LionTamer : public TraineeWalker
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static LionTamerPtr create( PlayerCityPtr city );
-
   virtual void timeStep(const unsigned long time);
   virtual void send2City(BuildingPtr base, bool roadOnly);
   virtual ~LionTamer();

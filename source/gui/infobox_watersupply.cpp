@@ -47,10 +47,10 @@ AboutFontain::AboutFontain(Widget* parent, PlayerCityPtr city, const Tile& tile)
   setupUI( ":/gui/infoboxfountain.gui" );
   setTitle( _("##fountain##") );
 
-  _lbTextRef()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
-  _lbTextRef()->setWordwrap( true );
+  _lbText()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
+  _lbText()->setWordwrap( true );
 
-  FountainPtr fountain = tile.overlay().as<Fountain>();
+  FountainPtr fountain = tile.overlay<Fountain>();
 
   setBase( fountain );
 
@@ -75,7 +75,7 @@ AboutFontain::AboutFontain(Widget* parent, PlayerCityPtr city, const Tile& tile)
     }
   }
 
-  _lbTextRef()->setText( _(text) );
+  _lbText()->setText( _(text) );
 }
 
 AboutFontain::~AboutFontain(){}
@@ -90,10 +90,10 @@ AboutReservoir::AboutReservoir(Widget* parent, PlayerCityPtr city, const Tile& t
 {
   setTitle( _("##reservoir##") );
 
-  _lbTextRef()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
-  _lbTextRef()->setWordwrap( true );
+  _lbText()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
+  _lbText()->setWordwrap( true );
 
-  ReservoirPtr reservoir = tile.overlay().as<Reservoir>();
+  ReservoirPtr reservoir = tile.overlay<Reservoir>();
   setBase( reservoir );
 
   std::string text;
@@ -104,7 +104,7 @@ AboutReservoir::AboutReservoir(Widget* parent, PlayerCityPtr city, const Tile& t
               : "##reservoir_no_water##";
   }
 
-  _lbTextRef()->setText( _(text) );
+  _lbText()->setText( _(text) );
 }
 
 AboutReservoir::~AboutReservoir() {}
@@ -119,10 +119,10 @@ AboutWell::AboutWell(Widget* parent, PlayerCityPtr city, const Tile& tile)
 {
   setTitle( _("##well##") );
 
-  _lbTextRef()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
-  _lbTextRef()->setWordwrap( true );
+  _lbText()->setGeometry( Rect( 25, 45, width() - 25, height() - 55 ) );
+  _lbText()->setWordwrap( true );
 
-  WellPtr well = tile.overlay().as<Well>();
+  WellPtr well = tile.overlay<Well>();
   setBase( well );
 
   std::string text;
@@ -131,9 +131,9 @@ AboutWell::AboutWell(Widget* parent, PlayerCityPtr city, const Tile& tile)
     TilesArea coverageArea = well->coverageArea();
 
     bool haveHouseInArea = false;
-    foreach( tile, coverageArea )
+    for( auto& tile : coverageArea )
     {
-      haveHouseInArea |= is_kind_of<House>( (*tile)->overlay() );
+      haveHouseInArea |= tile->overlay().is<House>();
     }
 
     if( !haveHouseInArea )
@@ -143,13 +143,10 @@ AboutWell::AboutWell(Widget* parent, PlayerCityPtr city, const Tile& tile)
     else
     {
       bool houseNeedWell = false;
-      foreach( tile, coverageArea)
+      auto houses = coverageArea.overlays().select<House>();
+      for( auto& house : houses )
       {
-        HousePtr house = ptr_cast<House>( (*tile)->overlay() );
-        if( house.isValid() )
-        {
-          houseNeedWell |= ( house->getServiceValue( Service::fountain ) == 0 );
-        }
+        houseNeedWell |= ( house->getServiceValue( Service::fountain ) == 0 );
       }
 
       if( !houseNeedWell )
@@ -158,15 +155,11 @@ AboutWell::AboutWell(Widget* parent, PlayerCityPtr city, const Tile& tile)
       }
       else
       {
-        TilesArea tiles = well->coverageArea();
+        auto houses = well->coverageArea().overlays().select<House>();
         bool haveLowHealthHouse = false;
-        foreach( it, tiles )
+        for( auto& house : houses )
         {
-          HousePtr house = ptr_cast<House>( (*it)->overlay() );
-          if( house.isValid() )
-          {
-            haveLowHealthHouse |= house->state( pr::health ) < 10;
-          }
+          haveLowHealthHouse |= house->state( pr::health ) < 10;
         }
 
         text = haveLowHealthHouse
@@ -176,7 +169,7 @@ AboutWell::AboutWell(Widget* parent, PlayerCityPtr city, const Tile& tile)
     }
   }
 
-  _lbTextRef()->setText( _(text) );
+  _lbText()->setText( _(text) );
 }
 
 AboutWell::~AboutWell() {}
@@ -186,6 +179,6 @@ void AboutWell::_showHelp()
   DictionaryWindow::show( parent(), object::well );
 }
 
-}
+}//end namespace infobox
 
 }//end namespace gui

@@ -14,12 +14,13 @@ set( TILESET_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/core/bytearray.cpp"
       "${BASE_SOURCE_DIR}/core/logger.cpp"
       "${BASE_SOURCE_DIR}/core/time.cpp"
-      "${BASE_SOURCE_DIR}/thread/thread.cpp"
-      "${BASE_SOURCE_DIR}/thread/threadevent.cpp"
-      "${BASE_SOURCE_DIR}/thread/threadtask.cpp"
+      "${BASE_SOURCE_DIR}/core/json.cpp"
+      "${BASE_SOURCE_DIR}/core/format.cpp"
+      "${BASE_SOURCE_DIR}/core/saveadapter.cpp"
       "${BASE_SOURCE_DIR}/core/variant.cpp"
       "${BASE_SOURCE_DIR}/core/eventconverter.cpp"
       "${BASE_SOURCE_DIR}/core/font.cpp"
+      "${BASE_SOURCE_DIR}/core/color_list.cpp"
       "${BASE_SOURCE_DIR}/core/debug_timer.cpp"
       "${BASE_SOURCE_DIR}/vfs/directory.cpp"
       "${BASE_SOURCE_DIR}/vfs/file.cpp"
@@ -30,6 +31,8 @@ set( TILESET_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/gfx/sdl_engine.cpp"
       "${BASE_SOURCE_DIR}/gfx/IMG_savepng.cpp"
       "${BASE_SOURCE_DIR}/gfx/loader_png.cpp"
+      "${BASE_SOURCE_DIR}/gfx/loader_bmp.cpp"
+      "${BASE_SOURCE_DIR}/gfx/loader.cpp"
       "${BASE_SOURCE_DIR}/vfs/path.cpp"
       "${BASE_SOURCE_DIR}/vfs/entries.cpp"
       "${BASE_SOURCE_DIR}/vfs/filesystem.cpp"
@@ -37,19 +40,22 @@ set( TILESET_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/vfs/filenative_impl.cpp"
       "${BASE_SOURCE_DIR}/core/stacktrace.cpp"
       "${BASE_SOURCE_DIR}/core/osystem.cpp"
+      "tileset.model"
 )
 
 include_directories( ${BASE_SOURCE_DIR} )
 include_directories( ${DEP_DIR} )
-include_directories( ${SDL2MINI_INCLUDE_DIR} )
+include_directories( ${SDL2MINI_INCLUDE_DIR})
 include_directories( ${PNG_INCLUDE_DIR})
 include_directories( ${SDL2_TTF_INCLUDE_DIR})
+include_directories( ${ZLIB_INCLUDE_DIR})
 
 add_executable(${PROJECT_NAME}
                ${TILESET_SRC_LIST} ${TILESET_INC_LIST}
                ${TILESET_DEP_SOURCES_LIST} )
 
 target_link_libraries(${PROJECT_NAME} ${PNG_LIBRARY})
+target_link_libraries(${PROJECT_NAME} ${ZLIB_LIBRARY})
 target_link_libraries(${PROJECT_NAME} ${SDL2MINI_LIBRARY})
 target_link_libraries(${PROJECT_NAME} ${SDL2_TTF_LIBRARY})
 
@@ -100,6 +106,12 @@ ADD_CUSTOM_COMMAND(
     TARGET ${PROJECT_NAME}
     POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_BINARY_DIR}/${TILESET_BINARY_FILENAME}" "${WORK_DIR}/tools/tileset/${TILESET_BINARY_FILENAME}"
+)
+
+ADD_CUSTOM_COMMAND(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/tileset/tileset.model" "${WORK_DIR}/tools/tileset"
 )
 
 if(EXT_BINDIR)

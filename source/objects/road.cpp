@@ -58,8 +58,8 @@ bool Road::build( const city::AreaInfo& info )
 
   if( overlay.is<Aqueduct>() )
   {
-    AqueductPtr aq = overlay.as<Aqueduct>();
-    aq->addRoad();
+    auto aqueduct = overlay.as<Aqueduct>();
+    aqueduct->addRoad();
 
     return false;
   }
@@ -116,10 +116,11 @@ const Picture& Road::picture( const city::AreaInfo& areaInfo) const
       if( tile->getFlag( Tile::tlRoad ) || tile->overlay().is<Road>() )
       {
         const TilePos& p = areaInfo.pos;
-        if( epos == p.northnb() ) directionFlags |= road2north; // road to the north
-        else if ( epos == p.southnb() ) directionFlags |= road2south; // road to the south
-        else if ( epos == p.eastnb() ) directionFlags |= road2east; // road to the east
-        else if ( epos == p.westnb() ) directionFlags |= road2west; // road to the west
+        TilePos::Neighbors nb = p.nb();
+        if( epos == nb.north() ) directionFlags |= road2north; // road to the north
+        else if ( epos == nb.south() ) directionFlags |= road2south; // road to the south
+        else if ( epos == nb.east() ) directionFlags |= road2east; // road to the east
+        else if ( epos == nb.west() ) directionFlags |= road2west; // road to the west
       }
     }
   }
@@ -355,28 +356,24 @@ const Picture& Plaza::picture(const city::AreaInfo& areaInfo) const
 
 void Plaza::appendPaved(int) {}
 
-bool Plaza::build( const city::AreaInfo& info )
+bool Plaza::build( const city::AreaInfo& areainfo )
 {
-  RoadPtr road = ptr_cast<Road>( info.city->getOverlay( info.pos ) );
+  RoadPtr road = areainfo.city->getOverlay( areainfo.pos ).as<Road>();
   if( road.isValid() )
   {
     road->setState( pr::lockTerrain, 1 );
   }
 
-  Construction::build( info );
-  setPicture( MetaDataHolder::randomPicture( type(), size() ) );
+  Construction::build( areainfo );
+  setPicture( info().randomPicture( size() ) );
 
   if( size().area() == 1 )
   {
-    TilesArray tilesAround = info.city->tilemap().getNeighbors( pos(), Tilemap::AllNeighbors);
-    foreach( tile, tilesAround )
-    {
-      PlazaPtr plaza = ptr_cast<Plaza>( (*tile)->overlay() );
-      if( plaza.isValid() )
-      {
-        plaza->updatePicture();
-      }
-    }
+    auto plazas = areainfo.city->tilemap()
+                               .getNeighbors( pos(), Tilemap::AllNeighbors)
+                               .overlays<Plaza>();
+    for( auto plaza : plazas )
+      plaza->updatePicture();
   }
 
   return true;
@@ -409,12 +406,12 @@ const Picture& Plaza::picture() const
 
 void Plaza::updatePicture()
 {
-  TilesArea nearTiles( _city()->tilemap(), pos(), Size(2) );
+  TilesArea nearTiles( _map(), pos(), Size(2) );
 
   bool canGrow2squarePlaza = ( nearTiles.size() == 4 ); // be carefull on map edges
-  foreach( tile, nearTiles )
+  for( auto tile : nearTiles )
   {
-    PlazaPtr garden = ptr_cast<Plaza>( (*tile)->overlay() );
+    PlazaPtr garden = tile->overlay<Plaza>();
     canGrow2squarePlaza &= (garden.isValid() && garden->size().area() <= 2 );
   }
 
@@ -431,9 +428,9 @@ void Plaza::updatePicture()
 
     Desirability::update( _city(), this, Desirability::off );
     setSize( Size( 2 ) );
-    city::AreaInfo info( _city(), pos() );
-    Construction::build( info );
-    setPicture( MetaDataHolder::randomPicture( type(), size() ) );
+    city::AreaInfo areainfo( _city(), pos() );
+    Construction::build( areainfo );
+    setPicture( info().randomPicture( size() ) );
     Desirability::update( _city(), this, Desirability::on );
   }
 }

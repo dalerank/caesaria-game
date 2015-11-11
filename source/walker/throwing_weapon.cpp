@@ -54,12 +54,12 @@ void ThrowingWeapon::toThrow(TilePos src, TilePos dst)
 
   attach();
 
-  const Tile& tile = _city()->tilemap().at( src );
+  const Tile& tile = _map().at( src );
   OverlayPtr ov = tile.overlay();
   if( ov.isValid() )
   {
     _d->height = ov->offset( tile, xOffset ).y();
-    const Tile& dTile = _city()->tilemap().at( dst );
+    const Tile& dTile = _map().at( dst );
     ov = dTile.overlay();
     if( ov.isValid() )
     {

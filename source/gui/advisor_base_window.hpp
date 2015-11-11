@@ -29,8 +29,11 @@ namespace gui
 namespace advisorwnd
 {
 
-static const int defaultWidth = 640;
-static const int defaultHeight = 484;
+struct Config
+{
+  static const int width = 640;
+  static const int height = 484;
+};
 
 class Base : public Window
 {
@@ -39,7 +42,7 @@ public:
     : Window( parent, Rect( 0, 0, 1, 1 ), "", id )
   {
     _city = city;
-    setPosition( Point( (parent->width() - defaultWidth ), (parent->height() - defaultHeight) )/2 );
+    setPosition( Point( (parent->width() - Config::width ), (parent->height() - Config::height) )/2 );
   }
 
 protected:

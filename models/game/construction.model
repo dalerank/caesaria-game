@@ -49,6 +49,8 @@
     range : 0,
     class : "wall"
     cost : 10
+    inflammability : 0
+    collapsibility : 0
   },
 
   fortification : {
@@ -56,11 +58,14 @@
     range : 0
     class : "wall"
     cost : 20
+    inflammability : 0
+    collapsibility : 0
   }
   
   aqueduct : {
     cost : 8,
     desirability : { base: -2, range : 2, step : 1 }
+    mayBurn : false
     class : "water"
     sound : [ "aqueduct", 1 ]
   },
@@ -191,6 +196,8 @@
     sound : [ "fort", 1 ]
     image : [ "fortlegioner", 1 ]
     requestDestroy : true
+    inflammability : 0
+    collapsibility : 0
   },
 
   missionaryPost : {
@@ -228,6 +235,8 @@
     class : "military"
     image : [ "fortspear", 1 ]
     requestDestroy : true
+    inflammability : 0
+    collapsibility : 0
   }, 
 
   fort_horse : {
@@ -237,6 +246,8 @@
     class : "military"
     image : [ "fortmount", 1 ]
     requestDestroy : true
+    inflammability : 0
+    collapsibility : 0
   }, 
 
   clinic : {
@@ -246,6 +257,7 @@
     class : "health"
     image : [ "security", 20 ]
     service : "srvc_doctor"
+    patients.max : 100
     sound : [ "clinic", 1 ]
   },  
   
@@ -255,6 +267,7 @@
     employers : 30
     class : "health"
     image : [ "security", 44 ]
+    patients.max : 1000
     service : "srvc_hospital"
   },
   
@@ -266,6 +279,7 @@
     image : [ "security", 32 ]
     animation : { rc : "bathanim", start : 1, count : 29, offset : [ 0, 120 ], delay : 3 }
     service : "srvc_baths"
+    patients.max : 200
     sound : [ "baths", 1 ]
   }, 
 
@@ -275,6 +289,7 @@
     employers : 2
     class : "health"
     size : [ 1, 1 ]
+    patients.max : 50
     image : [ "barber", 1 ]
     service : "srvc_barber"
     sound : [ "barber", 1 ]
@@ -335,6 +350,8 @@
     step : -1,
     employers : 3
     class : "gate"
+    inflammability : 0
+    collapsibility : 0
   },  
 
   tower : {
@@ -342,6 +359,8 @@
     desirability : { base :-8,	range : 4,	step : -2 }
     employers : 6
     class : "tower"
+    inflammability : 0
+    collapsibility : 0
   },  
   
   small_ceres_temple : {
@@ -610,6 +629,7 @@
     cost : 80,
     desirability : { base : -6,	range : 3,	step : -2 }
     employers : 0
+    mayBurn : false
     class : "water"
     fullOffset : [ 0, 0 ]
     animation : { rc : "resvanim", start : 1, count : 29, offset : [ 0, 211 ], delay : 4 }
@@ -695,6 +715,13 @@
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 0
     class : "disaster"
+  },
+
+  farmtile :
+  {
+    cost : 0
+    desirability : { base : 0, range : 0,	step : 0 }
+    class : "food"
   },
   
   wheat_farm : 

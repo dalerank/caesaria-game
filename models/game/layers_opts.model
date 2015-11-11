@@ -24,7 +24,7 @@
   market : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge", "farmtile",
                        "high_bridge", "elevation", "rift", "tree", "burning_ruins", "waymark", "roadBlock",
-                       "plague_ruins" ]
+                       "plague_ruins", "market" ]
   }
 
   desirability : {
@@ -153,6 +153,10 @@
   troubles : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
                        "high_bridge", "elevation", "rift", "tree", "burning_ruins", "waymark", "plague_ruins" ]
+  }
+
+  comturnover : {
+    visibleObjects : [ "all" ]
   }
 
   risks : {

@@ -47,10 +47,8 @@ public:
 };
 
 Mugger::Mugger(PlayerCityPtr city)
-  : Human( city ), _d( new Impl )
+  : Human( city, walker::mugger ), _d( new Impl )
 {    
-  _setType( walker::mugger );
-
   addAbility( Illness::create( 0.3, 4) );
 }
 
@@ -99,7 +97,7 @@ void Mugger::timeStep(const unsigned long time)
       houseEpxens[ money ] << house;
     }
 
-    for( std::map< int, HouseList >::reverse_iterator expHList = houseEpxens.rbegin();
+    for( auto expHList = houseEpxens.rbegin();
          expHList != houseEpxens.rend(); ++expHList )
     {
       HouseList& hlist = expHList->second;
@@ -173,13 +171,6 @@ void Mugger::timeStep(const unsigned long time)
 
   default: break;
   }
-}
-
-MuggerPtr Mugger::create(PlayerCityPtr city )
-{
-  MuggerPtr ret( new Mugger( city ) );
-  ret->drop();
-  return ret;
 }
 
 Mugger::~Mugger() {}

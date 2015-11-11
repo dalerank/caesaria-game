@@ -96,7 +96,7 @@ void PlayerArmy::timeStep(const unsigned int time)
   {
     if( game::Date::isDayChanged() )
     {
-      for( RomeSoldierList::iterator it=_d->waitSoldiers.begin(); it != _d->waitSoldiers.end(); )
+      for( auto it=_d->waitSoldiers.begin(); it != _d->waitSoldiers.end(); )
       {
         if( (*it)->isDeleted() )
         {
@@ -131,7 +131,7 @@ void PlayerArmy::move2location(Point point)
   bool validWay = _findWay( location(), point);
   if( !validWay )
   {
-    Logger::warning( "PlayerArmy: cant find way to point [%d,%d]", point.x(), point.y()  );
+    Logger::warning( "PlayerArmy: cant find way to point [{0},{!}]", point.x(), point.y()  );
     deleteLater();
   }
 
@@ -209,19 +209,18 @@ bool PlayerArmy::_isAgressiveArmy(ArmyPtr other) const
 
 void PlayerArmy::_check4attack()
 {
-  MovableObjectList mobjects;
-  mobjects << empire()->objects();
+  auto mobjects = empire()->objects().select<MovableObject>();
   mobjects.remove( this );
 
   std::map< int, MovableObjectPtr > distanceMap;
 
-  for( auto it : mobjects )
+  for( auto& it : mobjects )
   {
     float distance = location().distanceTo( it->location() );
     distanceMap[ (int)distance ] = it;
   }
 
-  for( auto it : distanceMap )
+  for( auto& it : distanceMap )
   {
     if( it.first < config::army::viewRange )
     {
@@ -289,7 +288,7 @@ void PlayerArmy::_reachedWay()
         walker->attach();
       }
 
-      FortPtr fort = pCity->getOverlay( _d->fortPos ).as<Fort>();
+      auto fort = pCity->getOverlay( _d->fortPos ).as<Fort>();
       if( fort.isValid() )
       {
         fort->returnSoldiers();
@@ -352,7 +351,7 @@ PlayerArmy::PlayerArmy( EmpirePtr empire )
 void PlayerArmy::Impl::updateStrength()
 {
   unsigned int result = 0;
-  for( auto it : soldiersInfo )
+  for( auto& it : soldiersInfo )
   {
     result += it.strike;
   }

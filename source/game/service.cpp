@@ -55,6 +55,7 @@ ServiceHelper::ServiceHelper() : EnumsHelper<Service::Type>( Service::srvCount )
   __REG_SERVICE( crime )
   __REG_SERVICE( guard )
   __REG_SERVICE( missionary )
+  __REG_SERVICE( patrician )
 #undef __REG_SERVICE
   append( Service::srvCount, "srvc_none" );
 }
@@ -65,7 +66,7 @@ Service::Type ServiceHelper::getType( const std::string& name )
 
   if( type == instance().getInvalid() )
   {
-    Logger::warning( "Can't find Service::Type for serviceName %s", name.c_str() );
+    Logger::warning( "WARNING !!! Can't find Service::Type for serviceName {0}", name );
     //_CAESARIA_DEBUG_BREAK_IF( "Can't find  Service::Type for serviceName" );
   }
 
@@ -78,7 +79,7 @@ std::string ServiceHelper::getName( Service::Type type )
 
   if( name.empty() )
   {
-    Logger::warning( "Can't find service typeName for %d", type );
+    Logger::warning( "WARNING !!! Can't find service typeName for {0}", type );
     //_CAESARIA_DEBUG_BREAK_IF( "Can't find service typeName by ServiceType" );
   }
 

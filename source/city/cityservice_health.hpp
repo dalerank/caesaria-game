@@ -26,18 +26,17 @@ namespace city
 
 PREDEFINE_CLASS_SMARTPOINTER(HealthCare)
 
-class HealthCare : public city::Srvc
+class HealthCare : public Srvc
 {
 public:
-  static city::SrvcPtr create( PlayerCityPtr city );
   static std::string defaultName();
 
   virtual void timeStep( const unsigned int time );
   unsigned int value() const;
   std::string reason() const;
 
-private:
   HealthCare( PlayerCityPtr city );
+private:
 
   class Impl;
   ScopedPtr< Impl > _d;

@@ -26,18 +26,36 @@
 #include "city/statistic.hpp"
 #include "core/priorities.hpp"
 #include "core/gettext.hpp"
+#include "game/gamedate.hpp"
 #include "core/utils.hpp"
+#include "objects/entertainment.hpp"
+#include "gfx/textured_path.hpp"
 
 using namespace gfx;
 
 namespace citylayer
 {
 
-int Entertainment::type() const {  return _type; }
+class Entertainment::Impl
+{
+public:
+  struct
+  {
+    OverlayPtr selected;
+    OverlayPtr underMouse;
+  } overlay;
+
+  DateTime lastUpdate;
+  std::vector<TilesArray> ways;
+  std::set<object::Type> flags;
+  int type;
+};
+
+int Entertainment::type() const {  return _d->type; }
 
 int Entertainment::_getLevelValue( HousePtr house )
 {
-  switch( _type )
+  switch( _d->type )
   {
   case citylayer::entertainment:
   {
@@ -54,17 +72,11 @@ int Entertainment::_getLevelValue( HousePtr house )
   return 0;
 }
 
-void Entertainment::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Entertainment::drawTile(const RenderInfo& rinfo, Tile& tile)
 {
-  Point screenPos = tile.mappos() + offset;
-
   if( tile.overlay().isNull() )
   {
-    //draw background
-    //engine.draw( tile.picture(), screenPos );
-
-    drawPass( engine, tile, offset, Renderer::ground );
-    drawPass( engine, tile, offset, Renderer::groundAnimation );
+    drawLandTile( rinfo, tile );
   }
   else
   {
@@ -77,48 +89,36 @@ void Entertainment::drawTile(Engine& engine, Tile& tile, const Point& offset)
       // Base set of visible objects
       needDrawAnimations = true;
     }
-    else if( _flags.count( overlay->type() ) > 0 )
+    else if( _d->flags.count( overlay->type() ) > 0 )
     {
       needDrawAnimations = true;
-      //if( !needDrawAnimations )
-      //{
-      //  city::Helper helper( _city() );
-      //  drawArea( engine, helper.getArea( overlay ), offset, ResourceGroup::foodOverlay, OverlayPic::base );
-      //}
     }
     else if( overlay->type() == object::house )
     {
-      HousePtr house = ptr_cast<House>( overlay );
+      auto house = overlay.as<House>();
       entertainmentLevel = _getLevelValue( house );
 
-      needDrawAnimations = (house->spec().level() == 1) && (house->habitants().empty());
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+      needDrawAnimations = (house->level() <= HouseLevel::hovel) && (house->habitants().empty());
+      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
     }
     else
     {
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base );
     }
 
     if( needDrawAnimations )
     {
-      Layer::drawTile( engine, tile, offset );
+      Layer::drawTile( rinfo, tile );
       registerTileForRendering( tile );
     }
     else if( entertainmentLevel > 0 )
     {
-      drawColumn( engine, screenPos, entertainmentLevel );
+      Point screenPos = tile.mappos() + rinfo.offset;
+      drawColumn( rinfo, screenPos, entertainmentLevel );
     }
   }
 
-  tile.setWasDrawn();
-}
-
-LayerPtr Entertainment::create(TilemapCamera& camera, PlayerCityPtr city, int type )
-{
-  LayerPtr ret( new Entertainment( camera, city, type ) );
-  ret->drop();
-
-  return ret;
+  tile.setRendered();
 }
 
 void Entertainment::handleEvent(NEvent& event)
@@ -129,25 +129,26 @@ void Entertainment::handleEvent(NEvent& event)
     {
     case mouseMoved:
     {
-      Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
+      Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)     
+
       std::string text = "";
       if( tile != 0 )
       {
-        HousePtr house = ptr_cast<House>( tile->overlay() );
+        HousePtr house = tile->overlay<House>();
         if( house != 0 )
         {
           std::string typeName;
-          switch( _type )
+          switch( _d->type )
           {
-          case citylayer::entertainment: typeName = "entertainment"; break;
-          case citylayer::theater: typeName = "theater"; break;
-          case citylayer::amphitheater: typeName = "amphitheater"; break;
-          case citylayer::colloseum: typeName = "colloseum"; break;
-          case citylayer::hippodrome: typeName = "hippodrome"; break;
+          case citylayer::entertainment:  typeName = "entertainment";  break;
+          case citylayer::theater:        typeName = "theater";        break;
+          case citylayer::amphitheater:   typeName = "amphitheater";   break;
+          case citylayer::colloseum:      typeName = "colloseum";      break;
+          case citylayer::hippodrome:     typeName = "hippodrome";     break;
           }
 
           int lvlValue = _getLevelValue( house );
-          if( _type == citylayer::entertainment )
+          if( _d->type == citylayer::entertainment )
           {
             text = utils::format( 0xff, "##%d_entertainment_access##", lvlValue / 10 );
           }
@@ -173,7 +174,19 @@ void Entertainment::handleEvent(NEvent& event)
         }
       }
 
+      _d->overlay.underMouse = tile->overlay();
+
       _setTooltipText( _(text) );
+    }
+    break;
+
+    case mouseLbtnPressed:
+    {
+      if( _d->overlay.underMouse.is<EntertainmentBuilding>() )
+      {
+        _d->overlay.selected = _d->overlay.underMouse;
+        _updatePaths();
+      }
     }
     break;
 
@@ -184,15 +197,44 @@ void Entertainment::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-Entertainment::Entertainment( Camera& camera, PlayerCityPtr city, int type )
-  : Info( camera, city, 9 )
+void Entertainment::render(Engine& engine)
 {
-  _type = type;
+  Info::render( engine );
 
-  switch( type )
+  RenderInfo rinfo{ engine, _camera()->offset() };
+  for( auto& tiles : _d->ways )
+    TexturedPath::draw( tiles, rinfo );
+}
+
+void Entertainment::afterRender(Engine& engine)
+{
+  Info::afterRender(engine);
+
+  if( game::Date::isDayChanged() )
+    _updatePaths();
+}
+
+void Entertainment::_updatePaths()
+{
+  auto wbuilding = _d->overlay.selected.as<EntertainmentBuilding>();
+  if( wbuilding.isValid() && _d->flags.count( wbuilding->type() ) )
+  {
+    _d->ways.clear();
+    const WalkerList& walkers = wbuilding->walkers();
+    for( auto walker : walkers )
+      _d->ways.push_back( walker->pathway().allTiles() );
+  }
+}
+
+Entertainment::Entertainment(Camera& camera, PlayerCityPtr city, Type type )
+  : Info( camera, city, 9 ), _d( new Impl )
+{
+  _d->type = type;
+
+  switch( _d->type )
   {
   case citylayer::entertainment:
-    _flags << object::unknown << object::theater
+    _d->flags << object::unknown << object::theater
            << object::amphitheater << object::colloseum
            << object::hippodrome << object::actorColony
            << object::gladiatorSchool << object::lionsNursery
@@ -203,22 +245,22 @@ Entertainment::Entertainment( Camera& camera, PlayerCityPtr city, int type )
   break;
 
   case citylayer::theater:
-    _flags << object::theater << object::actorColony;
+    _d->flags << object::theater << object::actorColony;
     _visibleWalkers() << walker::actor;
   break;
 
   case citylayer::amphitheater:
-    _flags << object::amphitheater << object::actorColony << object::gladiatorSchool;
+    _d->flags << object::amphitheater << object::actorColony << object::gladiatorSchool;
     _visibleWalkers() << walker::actor << walker::gladiator;
   break;
 
   case citylayer::colloseum:
-    _flags << object::colloseum << object::gladiatorSchool << object::lionsNursery;
+    _d->flags << object::colloseum << object::gladiatorSchool << object::lionsNursery;
     _visibleWalkers() << walker::gladiator << walker::lionTamer;
   break;
 
   case citylayer::hippodrome:
-    _flags << object::hippodrome << object::chariotSchool;
+    _d->flags << object::hippodrome << object::chariotSchool;
     _addWalkerType( walker::charioteer );
   break;
 

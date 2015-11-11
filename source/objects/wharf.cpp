@@ -82,7 +82,7 @@ void Wharf::timeStep(const unsigned long time)
   }
   else
   {
-    if( _d->boat.isValid() && !_d->boat->isBusy() && outStockRef().empty() )
+    if( _d->boat.isValid() && !_d->boat->isBusy() && outStock().empty() )
     {
       _d->boat->startCatch();
     }
@@ -142,8 +142,8 @@ std::string Wharf::troubleDesc() const
 {
   if( _d->boat.isValid() )
   {
-    const WalkerList& places = _city()->statistic().walkers.find( walker::fishPlace );
-    if( places.empty() )
+    int places_n = _city()->statistic().walkers.count( walker::fishPlace );
+    if( !places_n )
     {
       return "##no_fishplace_in_city##";
     }

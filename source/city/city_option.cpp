@@ -55,6 +55,10 @@ public:
     _O(destroyEpidemicHouses)
     _O(forestFire)
     _O(forestGrow)
+    _O(warfNeedTimber)
+    _O(showGodsUnhappyWarn)
+    _O(claypitMayCollapse)
+    _O(minesMayCollapse)
 #undef _O
   }
 };
@@ -67,7 +71,7 @@ PlayerCity::OptionType findOption(const std::string& name)
 VariantList Options::save() const
 {
   VariantList ret;
-  for (auto it : *this)
+  for(auto& it : *this)
   {
     ret << Point(it.first, it.second);
   }
@@ -76,7 +80,7 @@ VariantList Options::save() const
 
 void Options::load(const VariantList& stream)
 {
-  for (auto it : stream)
+  for (auto& it : stream)
   {
     Point tmp = it;
     (*this)[ (PlayerCity::OptionType)tmp.x() ] = tmp.y();

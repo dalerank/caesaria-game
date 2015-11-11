@@ -39,7 +39,7 @@ Well::Well() : ServiceBuilding( Service::well, object::well, Size(1) )
 
 void Well::deliverService()
 {
-  ServiceWalkerPtr walker = ServiceWalker::create( _city(), serviceType() );
+  ServiceWalkerPtr walker = Walker::create<ServiceWalker>( _city(), serviceType() );
   walker->setBase( BuildingPtr( this ) );
 
   ReachedBuildings reachedBuildings = walker->getReachedBuildings( tile().pos() );
@@ -49,7 +49,7 @@ void Well::deliverService()
   for( auto bld : reachedBuildings)
   {
     bld->applyService( walker );
-    HousePtr house = bld.as<House>();
+    auto house = bld.as<House>();
     if( house.isValid() )
     {
       lowHealth = std::min<unsigned int>( lowHealth, house->state(pr::health ) );
@@ -79,11 +79,11 @@ std::string Well::sound() const
   return ServiceBuilding::sound();
 }
 
-bool Well::build( const city::AreaInfo& info )
+bool Well::build( const city::AreaInfo& areainfo )
 {
-  ServiceBuilding::build( info );
+  ServiceBuilding::build( areainfo );
 
-  Picture rpic = MetaDataHolder::randomPicture( type(), size() );
+  Picture rpic = info().randomPicture( size() );
   if( !rpic.isValid() )
     rpic.load( ResourceGroup::utilitya, 1 );
 
@@ -96,6 +96,6 @@ bool Well::build( const city::AreaInfo& info )
 
 TilesArea Well::coverageArea() const
 {
-  TilesArea ret( _city()->tilemap(), wellServiceRange, pos() );
+  TilesArea ret( _map(), wellServiceRange, pos() );
   return ret;
 }

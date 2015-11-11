@@ -17,6 +17,7 @@
 
 #include "datetimehelper.hpp"
 #include "core/utils.hpp"
+#include "core/format.hpp"
 #include "core/gettext.hpp"
 #include "core/metric.hpp"
 
@@ -27,8 +28,8 @@ namespace utils
 template<class T>
 std::string _date2str(const T& time, bool drawDays, bool roman)
 {
-  std::string month = utils::format( 0xff, "##month_%d_short##", time.month() );
-  std::string age = utils::format( 0xff, "##age_%s##", time.age() );
+  std::string month = fmt::format( "##month_{0}_short##", (int)time.month() );
+  std::string age = fmt::format( "##age_{0}##", time.age() );
   std::string year;
   std::string text;
   std::string dayStr;
@@ -46,7 +47,7 @@ std::string _date2str(const T& time, bool drawDays, bool roman)
   else
     year = utils::toRoman( yearNum );
 
-  text = utils::format( 0xff, "%s %s %s %s", dayStr.c_str(), _( month ), year.c_str(), _( age ) );
+  text = fmt::format( "{} {} {} {}", dayStr, _( month ), year, _( age ) );
   return text;
 }
 

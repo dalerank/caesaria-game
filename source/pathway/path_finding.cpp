@@ -188,8 +188,8 @@ DirectPRoutes Propagator::getRoutes(const object::Type buildingType)
   {
     std::set<PathwayPtr> destPath;  // paths to the current building, ordered by distance
 
-    TilesArray destTiles = destination->roadside();
-    for( auto tile : destTiles )
+    const TilesArray& destTiles = destination->roadside();
+    for( auto& tile : destTiles )
     {
       // searches path to that given tile
       Impl::RouteMap::iterator pathWayIt= _d->completedBranches.find( tile );

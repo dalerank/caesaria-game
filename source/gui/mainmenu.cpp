@@ -176,8 +176,8 @@ void MainMenu::_recalculateSize()
       refItem->setDimmension( itemSize );
     }
 
-   refItem->setOffset( width );
-   width += refItem->dimmension().width();
+    refItem->setOffset( width );
+    width += refItem->dimmension().width();
   }
 
   // recalculate submenus

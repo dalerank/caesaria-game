@@ -22,7 +22,7 @@
 #include "core/variant_map.hpp"
 #include "core/event.hpp"
 #include "gfx/pictureconverter.hpp"
-#include "core/color.hpp"
+#include "core/color_list.hpp"
 #include "core/logger.hpp"
 #include "core/json.hpp"
 #include "core/utils.hpp"
@@ -63,7 +63,7 @@ struct Tokens : std::vector<TextToken>
   const std::string text() const
   {
     std::string ret;
-    for( auto token : *this ) { ret += token.text; }
+    for( auto& token : *this ) { ret += token.text; }
     return ret;
   }
 };
@@ -150,7 +150,7 @@ DictionaryText::DictionaryText(Widget* parent, const Rect& rectangle, const stri
   _init();
 
   #ifdef _DEBUG
-    setDebugName( "label");
+    setDebugName( "DText");
   #endif
 
   setTextAlignment( align::automatic, align::automatic );
@@ -198,7 +198,7 @@ void DictionaryText::_updateTexture( gfx::Engine& painter )
         r -= Point( 0, height * _d->brokenText.size() / 2 );
       }
 
-      for( auto tokens : _d->brokenText )
+      for( auto& tokens : _d->brokenText )
       {
         std::string tmpString = tokens.text();
 
@@ -206,7 +206,7 @@ void DictionaryText::_updateTexture( gfx::Engine& painter )
         textRect += _d->text.offset;
 
         int offset = 0;
-        for( auto chunk : tokens )
+        for( auto& chunk : tokens )
         {
           chunk.font.draw( _d->text.tx, chunk.text,
                            textRect.lefttop() + Point( offset + chunk.offset, 0 ),
@@ -376,7 +376,7 @@ void DictionaryText::Impl::breakText( const std::string& rtext, const Size& wdgS
 			richText.offset = linewidth;
       richText.font = font.current;
 			richText.uri = true;
-      NColor color = DefaultColors::blue;
+      NColor color = ColorList::blue;
 
       if(rText[i+1] == '#')
       {

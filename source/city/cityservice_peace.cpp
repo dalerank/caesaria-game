@@ -28,6 +28,7 @@
 #include "core/variant_map.hpp"
 #include "statistic.hpp"
 #include "core/stacktrace.hpp"
+#include "walker/protestor.hpp"
 #include "cityservice_factory.hpp"
 #include <set>
 
@@ -60,16 +61,8 @@ public:
   bool significantBuildingsDestroyed;
   DateTime lastMessageDate;
 
-  Priorities<object::Type> unsignificantBuildings;
+  Vector<object::Type> unsignificantBuildings;
 };
-
-SrvcPtr Peace::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new Peace( city ) );
-  ret->drop();
-
-  return ret;
-}
 
 Peace::Peace( PlayerCityPtr city )
   : Srvc( city, defaultName() ), _d( new Impl )
@@ -110,10 +103,10 @@ void Peace::timeStep(const unsigned int time )
 
   int change = (_d->threats.protestor || _d->threats.mugger) ? -minCh: 0;
 
-  if( ml->haveNotification( Notification::chastener ) )
+  if( ml->haveNotification( notification::chastener ) )
     change -= 1;
 
-  if( ml->haveNotification( Notification::barbarian ) )
+  if( ml->haveNotification( notification::barbarian ) )
     change -= 1;
 
   change -= std::min( _d->threats.rioter ? -maxCh : 0, _d->value );
@@ -143,11 +136,11 @@ void Peace::timeStep(const unsigned int time )
 void Peace::addCriminal( WalkerPtr wlk )
 {
   if( wlk.is<Rioter>() )   {    _d->threats.rioter = true;  }
-  //else if( is_kind_of<Protestor>( wlk ) )   {    _d->threats.protestor = true;  }
+  else if( is_kind_of<Protestor>( wlk ) )   {    _d->threats.protestor = true;  }
   else if( wlk .is<Mugger>() ) { _d->threats.mugger = true; }
   else
   {
-    Logger::warning( "Peace: addCriminal unknown walker %d", wlk->type() );
+    Logger::warning( "Peace: addCriminal unknown walker {0}", wlk->type() );
     _d->threats.criminal = true;
   }
 }
@@ -161,7 +154,7 @@ void Peace::buildingDestroyed(OverlayPtr overlay, int why)
   }
 
   HousePtr house = overlay.as<House>();
-  if( house.isValid() && house->spec().level() > HouseLevel::tent )
+  if( house.isValid() && house->level() > HouseLevel::tent )
   {
     _d->significantBuildingsDestroyed = true;
   }
@@ -200,8 +193,7 @@ void Peace::buildingDestroyed(OverlayPtr overlay, int why)
 
     if( !title.empty() )
     {
-      GameEventPtr e = ShowInfobox::create( title, text, false, video );
-      e->dispatch();
+      events::dispatch<ShowInfobox>( title, text, false, video );
     }
   }
 }

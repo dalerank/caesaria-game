@@ -50,36 +50,27 @@ public:
 
 int Simple::type() const { return citylayer::simple; }
 
-LayerPtr Simple::create( Camera& camera, PlayerCityPtr city)
+void Simple::drawTile( const RenderInfo& rinfo, Tile& tile)
 {
-  LayerPtr ret( new Simple( camera, city ) );
-  ret->drop();
-
-  return ret;
-}
-
-void Simple::drawTile(Engine& engine, Tile& tile, const Point& offset)
-{
-  OverlayPtr curOverlay = tile.overlay();
-
   if( _d->highlight.may )
   {
+    OverlayPtr curOverlay = tile.overlay();
     bool blowTile = (curOverlay.isValid() && curOverlay == _d->lastOverlay) && _d->highlight.any;
     if( blowTile )
     {
       _d->highlight.alpha.update();
       int value = _d->highlight.alpha.value();
-      engine.setColorMask( value << 16, value << 8, value, 0xff000000 );
+      rinfo.engine.setColorMask( value << 16, value << 8, value, 0xff000000 );
     }
 
-    Layer::drawTile(engine, tile, offset);
+    Layer::drawTile( rinfo, tile);
 
     if( blowTile )
-      engine.resetColorMask();
+      rinfo.engine.resetColorMask();
   }
   else
   {
-    Layer::drawTile(engine, tile, offset);
+    Layer::drawTile( rinfo, tile);
   }
 }
 
@@ -112,8 +103,7 @@ void Simple::renderUi(Engine &engine)
   Tile* lastTile = _currentTile();
   if( lastTile )
   {
-    OverlayPtr ov = lastTile->overlay();
-    SenatePtr senate = ptr_cast<Senate>( ov );
+    SenatePtr senate = lastTile->overlay<Senate>();
     if( senate.isValid() )
     {
       _d->senateInfo.draw( _lastCursorPos(), Engine::instance(), senate );

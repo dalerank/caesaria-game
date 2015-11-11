@@ -33,6 +33,7 @@
 #include "walker/fish_place.hpp"
 #include "gfx/tilesarray.hpp"
 #include "game/gamedate.hpp"
+#include "gfx/tilemap.hpp"
 #include "walkers_factory.hpp"
 #include "gfx/helper.hpp"
 
@@ -55,8 +56,8 @@ void FishingBoat::save( VariantMap& stream ) const
   Ship::save( stream );
 
   VARIANT_SAVE_ANY_D( stream, _d, destination )
-  stream[ "stock" ] = _d->stock.save();
-  stream[ "mode" ] = (int)_d->mode;
+  VARIANT_SAVE_CLASS_D( stream, _d, stock )
+  VARIANT_SAVE_ENUM_D( stream, _d, mode )
   stream[ "base" ] = _d->base.isValid() ? _d->base->pos() : gfx::tilemap::invalidLocation();
 }
 
@@ -64,10 +65,12 @@ void FishingBoat::load( const VariantMap& stream )
 {
   Ship::load( stream );
   VARIANT_LOAD_ANY_D( _d, destination, stream )
-  _d->stock.load( stream.get( "stock" ).toList() );
-  _d->mode = (State)stream.get( "mode", (int)wait ).toInt();
+  VARIANT_LOAD_CLASS_D_LIST( _d, stock, stream )
+  VARIANT_LOAD_ENUM_D( _d, mode, stream )
+  //(State)stream.get( "mode", (int)wait ).toInt();
 
-  _d->base = ptr_cast<CoastalFactory>(_city()->getOverlay( (TilePos)stream.get( "base" ) ) );
+  TilePos basepos = stream.get( "base" );
+  _d->base = _map().overlay<CoastalFactory>( basepos );
   if( _d->base.isValid() )
   {
     _d->base->assignBoat( this );
@@ -186,21 +189,14 @@ bool FishingBoat::die()
   return created;
 }
 
-FishingBoat::FishingBoat( PlayerCityPtr city ) : Ship( city ), _d( new Impl )
+FishingBoat::FishingBoat( PlayerCityPtr city )
+  : Ship( city ), _d( new Impl )
 {
   _setType( walker::fishingBoat );
   setName( _("##fishing_boat##") );
   _d->mode = wait;
   _d->stock.setType( good::fish );
   _d->stock.setCapacity( 100 );
-}
-
-FishingBoatPtr FishingBoat::create(PlayerCityPtr city)
-{
-  FishingBoatPtr ret( new FishingBoat( city ) );
-  ret->drop();
-
-  return ret;
 }
 
 void FishingBoat::_reachedPathway()

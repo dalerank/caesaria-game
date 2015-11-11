@@ -51,10 +51,8 @@ namespace
 
 int Desirability::type() const {  return citylayer::desirability; }
 
-void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
+void Desirability::drawTile( const RenderInfo& rinfo, Tile& tile)
 {
-  Point screenPos = tile.mappos() + offset;
-
   int desirability = tile.param( Tile::pDesirability );
   if( tile.overlay().isNull() )
   {
@@ -64,22 +62,20 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
       int desIndex = __des2index( desirability );
       Picture pic( ResourceGroup::land2a, 37 + desIndex );
 
-      engine.draw( pic, screenPos );
+      rinfo.engine.draw( pic, tile.mappos() + rinfo.offset );
     }
     else
     {
-      //engine.draw( tile.picture(), screenPos );
-      drawPass( engine, tile, offset, Renderer::ground );
-      drawPass( engine, tile, offset, Renderer::groundAnimation );
+      drawLandTile(rinfo, tile);
     }
   }
   else
   {
-    OverlayPtr overlay = tile.overlay();
+    auto overlay = tile.overlay();
     if( _isVisibleObject( overlay->type() ) )
     {
       // Base set of visible objects
-      Layer::drawTile( engine, tile, offset );
+      Layer::drawTile( rinfo, tile );
       registerTileForRendering( tile );
     }
     else
@@ -92,7 +88,7 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
 
       for( auto tile : tiles4clear )
       {
-        engine.draw( pic, tile->mappos() + offset );
+        rinfo.engine.draw( pic, tile->mappos() + rinfo.offset );
       }
     }
   }
@@ -105,7 +101,7 @@ void Desirability::drawTile( Engine& engine, Tile& tile, const Point& offset)
     _addPicture( tile.mappos() + Point( 20, -15 ), tx );
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
 void Desirability::beforeRender( Engine& engine )
@@ -143,14 +139,6 @@ void Desirability::handleEvent(NEvent& event)
   }
 
   Layer::handleEvent( event );
-}
-
-LayerPtr Desirability::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new Desirability( camera, city ) );
-  ret->drop();
-
-  return ret;
 }
 
 Desirability::Desirability( Camera& camera, PlayerCityPtr city)

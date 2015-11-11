@@ -80,26 +80,22 @@ void C3Sav::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
 
-  BorderInfo borderInfo;
-
-  borderInfo.roadEntry = TilePos( i, size - j - 1 );
+  ioCity->setBorderInfo( PlayerCity::roadEntry, TilePos( i, size - j - 1 ) );
 
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
-  borderInfo.roadExit = TilePos( i, size - j - 1 );
+  ioCity->setBorderInfo( PlayerCity::roadExit, TilePos( i, size - j - 1 ) );
 
   // init boat entry/exit point
   f.seekg(savePos, std::ios::beg);
   f.seekg(1276, std::ios::cur);
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
-  borderInfo.boatEntry = TilePos( i, size - j - 1 );
+  ioCity->setBorderInfo( PlayerCity::boatEntry, TilePos( i, size - j - 1 ) );
 
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
-  borderInfo.boatExit = TilePos( i, size - j - 1);
-
-  ioCity->setBorderInfo( borderInfo );
+  ioCity->setBorderInfo( PlayerCity::boatExit, TilePos( i, size - j - 1) );
 
   f.seekg(savePos, std::ios::beg);
 }
@@ -213,7 +209,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
   try
   {
     f.read((char*)&tmp, 4); // read length of compressed chunk
-    Logger::warning( "GameLoaderC3Sav: length of compressed ids is %d", tmp );
+    Logger::warning( "GameLoaderC3Sav: length of compressed ids is {0}", tmp );
     PKWareInputStream *pk = new PKWareInputStream(&f, false, tmp);
     for (int i = 0; i < gfx::tilemap::c3mapSizeSq; i++)
     {
@@ -223,7 +219,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
     delete pk;
     
     f.read((char*)&tmp, 4); // read length of compressed chunk
-    Logger::warning( "GameLoaderC3Sav: length of compressed egdes is %d", tmp );
+    Logger::warning( "GameLoaderC3Sav: length of compressed egdes is {0}", tmp );
     pk = new PKWareInputStream(&f, false, tmp);
     for (int i = 0; i < gfx::tilemap::c3mapSizeSq; i++)
     {
@@ -235,7 +231,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
     SkipCompressed(f); // skip building ids
     
     f.read((char*)&tmp, 4); // read length of compressed chunk
-    Logger::warning( "GameLoaderC3Sav: length of compressed terraindata is %d", tmp );
+    Logger::warning( "GameLoaderC3Sav: length of compressed terraindata is {0}", tmp );
     pk = new PKWareInputStream(&f, false, tmp);
     for (int i = 0; i < gfx::tilemap::c3mapSizeSq; i++)
     {
@@ -259,7 +255,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
     
     // here goes walkers array
     f.read((char*)&tmp, 4); // read length of compressed chunk
-    Logger::warning( "GameLoaderC3Sav: length of compressed walkers data is %d", tmp );
+    Logger::warning( "GameLoaderC3Sav: length of compressed walkers data is {0}", tmp );
     pk = new PKWareInputStream(&f, false, tmp);    
     for (int j = 0; j < 1000; j++)
     {
@@ -318,8 +314,8 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
 
     game.city()->setCameraPos( TilePos( size/2, size/2 ) );
 
-    bool oldgfx = !SETTINGS_VALUE( c3gfx ).toString().empty();
-    oldgfx |= SETTINGS_VALUE( oldgfx ).toBool();
+    bool oldgfx = !SETTINGS_STR( c3gfx ).empty();
+    oldgfx |= KILLSWITCH( oldgfx );
 
     for (int itA = 0; itA < size; ++itA)
     {
@@ -338,14 +334,14 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
         if( pic.isValid() )
         {
           currentTile.setPicture( pic );
-          currentTile.setOriginalImgId( imgId );
+          currentTile.setImgId( imgId );
         }
         else
         {
           object::Type ovType = LoaderHelper::convImgId2ovrType( imgId );
           if( ovType == object::unknown )
           {
-            Logger::warning( "!!! GameLoaderC3Sav: Unknown building %x at [%d,%d]", imgId, i, j );
+            Logger::warning( "!!! GameLoaderC3Sav: Unknown building %x at [{0},{0}]", imgId, i, j );
           }
           else
           {
@@ -355,9 +351,9 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
                  imgId == 0x1f8 || imgId == 0x1e5 || imgId == 0x1e6 || imgId == 0x201 ||
                  imgId == 0x208 || imgId == 0x1ea )
              {
-               Picture pic = MetaDataHolder::randomPicture( oldgfx ? object::meadow : object::terrain, Size(1) );
+               Picture pic = object::Info::find( oldgfx ? object::meadow : object::terrain ).randomPicture( Size(1) );
                currentTile.setPicture( pic );
-               currentTile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+               currentTile.setImgId( imgid::fromResource( pic.name() ) );
                currentTile.setFlag( Tile::clearAll, true );
                currentTile.setFlag( Tile::tlMeadow, true );
              }
@@ -366,7 +362,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
           baseBuildings[ currentTile.pos() ] = imgId;
           pic.load( ResourceGroup::land1a, 230 + math::random( 57 ) );
           currentTile.setPicture( pic );
-          currentTile.setOriginalImgId( imgid::fromResource( pic.name() ) );
+          currentTile.setImgId( imgid::fromResource( pic.name() ) );
         }
 
         edgeData[ i ][ j ] = edgeGrid[index];
@@ -413,7 +409,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
           {
             for (int dj = 0; dj < size; ++dj)
             {
-              oTilemap.at(master.i() + di, master.j() + dj).setMasterTile(&master);
+              oTilemap.at(master.i() + di, master.j() + dj).setMaster(&master);
             }
           }
         }
@@ -424,7 +420,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
         unsigned int bbImgId = bbIt == baseBuildings.end() ? 0 : bbIt->second;
 
         Tile& tile = oTilemap.at( i, j );
-        Tile* masterTile = tile.masterTile();
+        Tile* masterTile = tile.master();
         if( !masterTile )
           masterTile = &tile;
 

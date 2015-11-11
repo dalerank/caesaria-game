@@ -34,14 +34,6 @@ public:
   UqLocations locations;
 };
 
-SrvcPtr Fire::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new Fire( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 std::string Fire::defaultName() { return CAESARIA_STR_EXT(Fire); }
 
 Fire::Fire( PlayerCityPtr city )

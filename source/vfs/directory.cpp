@@ -52,7 +52,7 @@ bool Directory::create( std::string dir )
   Directory rdir( dir );
   if( rdir.exist() )
   {
-    Logger::warning( "Directory %s also exist", dir.c_str() );
+    Logger::warning( "Directory {0} also exist", dir );
     return false;
   }
 
@@ -65,7 +65,7 @@ bool Directory::create( std::string dir )
 
   if( result < 0 )
   {
-    Logger::warning( "Cannot create directory %s error=%d", dir.c_str(), result );
+    Logger::warning( "Cannot create directory {0} error={1}", dir, result );
   }
   return (result == 0);
 }
@@ -80,7 +80,8 @@ bool Directory::createByPath( Directory dir )
   try
   {
 #if  defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
-    switchTo( "/" );
+    if( dir.toString().front() == '/' )
+      switchTo( "/" );
 #endif
 
     foreach( iter, path )
@@ -91,7 +92,7 @@ bool Directory::createByPath( Directory dir )
       {
         if( !path.isFolder() )
         {
-          Logger::warning( "Current path %s not a directory " + current );
+          Logger::warning( "Current path {} not a directory ", current );
           result = false;
           break;
         }
@@ -168,17 +169,31 @@ Path Directory::getFilePath( const Path& fileName )
   return Path( ret );
 }
 
+std::string _concat( const Path& p1, const Path& p2 )
+{
+  std::string p1str = p1.addEndSlash().toString();
+  std::string p2str = p2.removeBeginSlash().toString();
+  return p1str + p2str;
+}
+
 Directory Directory::operator/(const Directory& dir) const
 {
-  std::string dr = addEndSlash().toString();
-  return Directory( dr + dir.toString() );
+  return Directory( _concat( *this, dir ) );
 }
 
 Path Directory::operator/(const Path& filename) const
 {
-  std::string dr = addEndSlash().toString();
-  std::string fn = filename.removeBeginSlash().toString();
-  return Path( dr + fn );
+  return Path( _concat( *this, filename ) );
+}
+
+Path Directory::operator/(const std::string& filename) const
+{
+  return Path( _concat( *this, filename ) );
+}
+
+Path Directory::operator/(const char* filename) const
+{
+  return Path( _concat( *this, filename ) );
 }
 
 bool Directory::switchTo( const Path& dirName ){  return FileSystem::instance().changeWorkingDirectoryTo( dirName );}

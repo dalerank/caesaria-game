@@ -55,6 +55,6 @@ bool WeaponsWorkshop::build( const city::AreaInfo& info )
 
 void WeaponsWorkshop::_storeChanged()
 {
-  _fgPicture(1) = inStockRef().empty() ? Picture() : Picture( ResourceGroup::commerce, 156 );
+  _fgPicture(1) = inStock().empty() ? Picture() : Picture( ResourceGroup::commerce, 156 );
   _fgPicture(1).setOffset( 20, 15 );
 }

@@ -75,7 +75,7 @@ void DebugTimer::check(const std::string& prefix, const std::string &name)
 {
 #ifdef CAESARIA_USE_DEBUGTIMERS
   unsigned int t = delta( name, true );
-  Logger::warning( "DEBUG_TIMER:%s%s delta:%d", prefix.c_str(), name.c_str(), t );
+  Logger::warning( "DEBUG_TIMER:{0}{1} delta:{2}", prefix, name, t );
 #else
 
 #endif

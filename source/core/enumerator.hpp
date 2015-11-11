@@ -27,7 +27,7 @@ public:
   const std::string noText;
   T findType( const std::string& name ) const
   {
-    for( auto&& it : _equales )
+    for( auto& it : _equales )
     {
       if( name == it.second )
       {

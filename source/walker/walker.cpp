@@ -33,8 +33,10 @@
 #include "thinks.hpp"
 #include "gfx/helper.hpp"
 #include "ability.hpp"
+#include "name_generator.hpp"
 #include "helper.hpp"
 #include "core/foreach.hpp"
+#include "walkers_factory.hpp"
 #include "corpse.hpp"
 
 using namespace gfx;
@@ -63,7 +65,6 @@ public:
     bool deleted;
     int health;
     int wait;
-
   } state;
 
   struct
@@ -98,28 +99,40 @@ public:
     inline float dst2next() const { return pos.getDistanceFrom( next ); }
     inline PointF delta() const { return next - pos; }
   } world;
+
+  void reset( PlayerCityPtr pcity );
 };
 
-Walker::Walker(PlayerCityPtr city) : _d( new Impl )
+void Walker::_awake()
 {
-  _d->city = city;
-  _d->nation = world::nation::unknown;
-  _d->action.action = Walker::acMove;
-  _d->action.direction = direction::none;
-  _d->type = walker::unknown;
+  setName( NameGenerator::rand( gender() == male ? NameGenerator::plebMale : NameGenerator::plebFemale ) );
+  initialize( WalkerHelper::getOptions( type() ) );
+}
 
-  _d->world.lastDst = 99.f;
+WalkerPtr Walker::create(walker::Type type, PlayerCityPtr city)
+{
+  auto wlk = WalkerManager::instance().create( type, city );
+  if( wlk.isValid() )
+    wlk->_awake();
 
-  _d->map.inCenter = false;
-  _d->map.tile = nullptr;
+  return wlk;
+}
 
-  _d->speed.value = 1.f; // default speed
-  _d->speed.multiplier = 1.f;
-  _d->speed.tileKoeff = 1.f;
+Walker::Walker(PlayerCityPtr city)
+  : _d( new Impl )
+{
+  _d->reset( city );
 
-  _d->state.health = 100;
-  _d->state.wait = 0;
-  _d->state.deleted = false;
+#ifdef DEBUG
+  WalkerDebugQueue::instance().add( this );
+#endif
+}
+
+Walker::Walker(PlayerCityPtr city, walker::Type type)
+  : _d( new Impl )
+{
+  _d->reset( city );
+  _d->type = type;
 
 #ifdef DEBUG
   WalkerDebugQueue::instance().add( this );
@@ -178,7 +191,7 @@ void Walker::timeStep(const unsigned long time)
 
 void Walker::setPos( const TilePos& pos )
 {
-  _d->map.tile = &_d->city->tilemap().at( pos );
+  _d->map.tile = &_map().at( pos );
   _d->world.pos = _d->map.tile->center().toPointF();
 
   _computeDirection();
@@ -225,20 +238,18 @@ void Walker::_walk()
   break;
 
   default:
-     Logger::warning( "Walker: invalid move direction: %d", _d->action.direction );
+     Logger::warning( "Walker: invalid move direction: {}", _d->action.direction );
      _d->action.action = acNone;
      _d->action.direction = direction::none;
      return;
   break;
   }
 
-  PointF delta = _d->speed.vector;
-  delta.rx() = delta.x() * _d->speed.current() * speedKoeff;
-  delta.ry() = delta.y() * _d->speed.current() * speedKoeff;
+  PointF delta = _d->speed.vector * _d->speed.current() * speedKoeff;
 
   PointF tmp = _d->world.pos;
   const int wcell = tilemap::cellSize().height();
-  TilePos saveMpos( tmp.x() / wcell , tmp.y() / wcell );
+  TilePos saveMpos( tmp.x() / wcell, tmp.y() );
   _d->world.pos += delta;
   _updateMappos();
 
@@ -261,7 +272,7 @@ void Walker::_walk()
 
   if( saveMpos != currentMapPos )
   {
-    _d->map.tile = &_d->city->tilemap().at( currentMapPos );
+    _d->map.tile = &_map().at( currentMapPos );
     _changeTile();
   }
 }
@@ -349,7 +360,7 @@ const Tile& Walker::_nextTile() const
   default: /*Logger::warning( "Unknown direction: %d", _d->action.direction);*/ break;
   }
 
-  return _d->city->tilemap().at( p );
+  return _map().at( p );
 }
 
 const Point& Walker::mappos() const { return _d->map.pos;}
@@ -360,7 +371,8 @@ void Walker::_waitFinished() { }
 world::Nation Walker::nation() const{ return _d->nation; }
 void Walker::_setNation(world::Nation nation) { _d->nation = nation; }
 void Walker::_setLocation( Tile* location ){ _d->map.tile = location; }
-Walker::Action Walker::action() const {  return (Walker::Action)_d->action.action;}
+Walker::Action Walker::action() const { return (Walker::Action)_d->action.action;}
+Walker::Gender Walker::gender() const { return male; }
 bool Walker::isDeleted() const{   return _d->state.deleted;}
 void Walker::_changeDirection(){  _d->animation = Animation(); } // need to fetch the new animation
 walker::Type Walker::type() const{ return _d->type; }
@@ -371,7 +383,7 @@ void Walker::acceptAction(Walker::Action, TilePos){}
 void Walker::setName(const std::string &name) {  _d->name = name; }
 const std::string &Walker::name() const{  return _d->name; }
 void Walker::addAbility(AbilityPtr ability) {  _d->abilities.push_back( ability );}
-TilePos Walker::pos() const{ return _d->map.tile ? _d->map.tile->pos() : gfx::tilemap::invalidLocation() ;}
+TilePos Walker::pos() const{ return _d->map.tile ? _d->map.tile->epos() : gfx::tilemap::invalidLocation() ;}
 void Walker::deleteLater(){ _d->state.deleted = true;}
 void Walker::setUniqueId( const UniqueId uid ) {  _d->uid = uid;}
 Walker::UniqueId Walker::uniqueId() const { return _d->uid; }
@@ -387,6 +399,15 @@ PlayerCityPtr Walker::_city() const{  return _d->city;}
 void Walker::_setHealth(double value){  _d->state.health = value;}
 bool Walker::getFlag(Walker::Flag flag) const{ return _d->flags.count( flag ) > 0; }
 const Tile& Walker::tile() const {  return _d->map.tile ? *_d->map.tile : invalidTile; }
+
+Tilemap& Walker::_map() const
+{
+  if( _city().isValid() )
+    return _city()->tilemap();
+
+  Logger::warning( "!!! WARNING: City is null at Walker::_map()" );
+  return gfx::tilemap::getInvalid();
+}
 
 void Walker::setFlag(Walker::Flag flag, bool value)
 {
@@ -509,15 +530,14 @@ void Walker::save( VariantMap& stream ) const
 
 void Walker::load( const VariantMap& stream)
 {
-  Tilemap& tmap = _city()->tilemap();
 
   VARIANT_LOAD_ENUM_D( _d, nation, stream )
   VARIANT_LOAD_STR_D( _d, name, stream )
   VARIANT_LOAD_ANY_D( _d, world.pos, stream )
   TilePos pos = stream.get( "location" ).toTilePos();
-  _d->map.tile = &tmap.at( pos );
+  _d->map.tile = &_map().at( pos );
   VARIANT_LOAD_ANY_D( _d, world.lastDst, stream )
-  _d->map.path.load( tmap, stream.get( "map.path" ).toMap() );
+  _d->map.path.load( _map(), stream.get( "map.path" ).toMap() );
   VARIANT_LOAD_STR_D( _d, thinks, stream )
   VARIANT_LOAD_ANY_D( _d, speed.tileKoeff, stream )
   VARIANT_LOAD_ANY_D( _d, world.next, stream );
@@ -531,14 +551,14 @@ void Walker::load( const VariantMap& stream)
 
   if( !_d->map.path.isValid() )
   {
-    Logger::warning( "WARNING!!! Walker: wrong way for %s:%s at [%d,%d]",
-                     WalkerHelper::getTypename( _d->type ).c_str(), _d->name.c_str(),
+    Logger::warning( "WARNING!!! Walker: wrong way for {0}:{1} at [{2},{3}]",
+                     WalkerHelper::getTypename( _d->type ), _d->name,
                      _d->map.tile->i(), _d->map.tile->j() );
   }
   
   if( _d->speed.multiplier < 0.1 ) //Sometime this have this error in save file
   {
-    Logger::warning( "WARNING!!!! Walker: Wrong speed multiplier for %d", _d->uid );
+    Logger::warning( "WARNING!!!! Walker: Wrong speed multiplier for {0}", _d->uid );
     _d->speed.multiplier = 1;
   }
 
@@ -547,7 +567,7 @@ void Walker::load( const VariantMap& stream)
   setFlag( showDebugInfo, stream.get( "showDebugInfo" ).toBool() );
 }
 
-void Walker::turn(TilePos p )
+void Walker::turn(TilePos p)
 {
   Direction direction = tilemap::getDirection( pos(), p );
 
@@ -620,6 +640,21 @@ bool Walker::die()
   return corpse.isValid();
 }
 
+void Walker::mapTurned()
+{
+  float prevDistance = _d->world.dst2next();
+
+  setPos( tile().epos() );
+
+  float curDistance = _d->world.dst2next();
+  float move = curDistance - prevDistance;
+
+  PointF delta = _d->speed.vector.normalize() * move;
+  _d->world.pos += delta;
+
+  _updateMappos();
+}
+
 #ifdef DEBUG
 void WalkerDebugQueue::print()
 {
@@ -630,10 +665,33 @@ void WalkerDebugQueue::print()
     foreach( it, inst._pointers )
     {
       Walker* wlk = (Walker*)*it;
-      Logger::warning( "%s - %s [%d,%d] ref:%d", wlk->name().c_str(),
-                                          WalkerHelper::getTypename( wlk->type() ).c_str(),
-                                          wlk->pos().i(), wlk->pos().j(), wlk->rcount() );
+      Logger::warning( "{0} - {1} [{2},{3}] ref:{4}", wlk->name(),
+                       WalkerHelper::getTypename( wlk->type() ),
+                       wlk->pos().i(), wlk->pos().j(), wlk->rcount() );
     }
   }
 }
 #endif
+
+
+void Walker::Impl::reset(PlayerCityPtr pcity )
+{
+  city = pcity;
+  nation = world::nation::unknown;
+  action.action = Walker::acMove;
+  action.direction = direction::none;
+  type = walker::unknown;
+
+  world.lastDst = 99.f;
+
+  map.inCenter = false;
+  map.tile = nullptr;
+
+  speed.value = 1.f; // default speed
+  speed.multiplier = 1.f;
+  speed.tileKoeff = 1.f;
+
+  state.health = 100;
+  state.wait = 0;
+  state.deleted = false;
+}

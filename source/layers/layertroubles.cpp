@@ -37,16 +37,11 @@ namespace citylayer
 
 int Troubles::type() const{ return _type;}
 
-void Troubles::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Troubles::drawTile( const RenderInfo& rinfo, Tile& tile)
 {
-  //Point screenPos = tile.mappos() + offset;
-
   if( tile.overlay().isNull() )
   {
-    //draw background
-    //engine.draw( tile.picture(), screenPos );
-    drawPass( engine, tile, offset, Renderer::ground );
-    drawPass( engine, tile, offset, Renderer::groundAnimation );
+    drawLandTile( rinfo, tile );
   }
   else
   {
@@ -60,29 +55,29 @@ void Troubles::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else
     {
-      ConstructionPtr c = ptr_cast<Construction>( overlay );
-      if( c.isValid() )
+      auto construction = overlay.as<Construction>();
+      if( construction.isValid() )
       {
-        std::string trouble = c->troubleDesc();
+        std::string trouble = construction->troubleDesc();
         needDrawAnimations = !trouble.empty();
       }
     }
 
     if( needDrawAnimations )
     {
-      Layer::drawTile( engine, tile, offset );
+      Layer::drawTile( rinfo, tile );
       registerTileForRendering( tile );
     }
     else
     {
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base );
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
 }
 
-LayerPtr Troubles::create(Camera& camera, PlayerCityPtr city , int type)
+LayerPtr Troubles::create(Camera& camera, PlayerCityPtr city, int type)
 {
   LayerPtr ret( new Troubles( camera, city, type ) );
   ret->drop();
@@ -103,18 +98,18 @@ void Troubles::handleEvent(NEvent& event)
 
       if( tile != 0 )
       {
-        ConstructionPtr constr = ptr_cast<Construction>( tile->overlay() );
+        auto constr = tile->overlay<Construction>();
         if( constr.isValid() )
         {
           text = constr->troubleDesc();
 
           if( text.empty() )
           {
-            WorkingBuildingPtr wb = ptr_cast<WorkingBuilding>( constr );
-            if( text.empty() && wb.isValid() )
+            auto working = constr.as<WorkingBuilding>();
+            if( text.empty() && working.isValid() )
             {
-              int laborAccess = wb->laborAccessPercent();
-              if( wb->roadside().empty() || laborAccess == 0 )
+              int laborAccess = working->laborAccessPercent();
+              if( working->roadside().empty() || laborAccess == 0 )
               {
                 text = "##working_have_no_labor_access##";
               }              

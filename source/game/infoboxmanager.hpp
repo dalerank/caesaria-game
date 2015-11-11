@@ -38,7 +38,7 @@ typedef SmartPtr< Manager > InfoBoxManagerPtr;
 class InfoboxCreator
 {
 public:
-  virtual gui::infobox::Infobox* create( PlayerCityPtr, gui::Widget*, TilePos ) = 0;
+  virtual infobox::Infobox* create( PlayerCityPtr, gui::Widget*, TilePos ) = 0;
 };
 
 template< class T >

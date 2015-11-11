@@ -100,8 +100,8 @@ void Economy::checkIssue(econ::Issue::Type type)
       std::string text = lastYearBrokenTribute > 0
           ? "##for_second_year_broke_tribute##"
           : "##current_year_notpay_tribute_warning##";
-      GameEventPtr e = ShowInfobox::create( "##tribute_broken_title##", text );
-      e->dispatch();
+
+      events::dispatch<ShowInfobox>( "##tribute_broken_title##", text );
     }
   break;
 

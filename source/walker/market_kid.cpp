@@ -25,6 +25,7 @@
 #include "core/variant_map.hpp"
 #include "name_generator.hpp"
 #include "constants.hpp"
+#include "gfx/tilemap.hpp"
 #include "corpse.hpp"
 #include "thinks.hpp"
 #include "walkers_factory.hpp"
@@ -40,34 +41,19 @@ public:
   unsigned int birthTime;
 };
 
-MarketKidPtr MarketKid::create(PlayerCityPtr city )
-{
-  MarketKidPtr ret( new MarketKid( city ) );
-  ret->drop();
-
-  return ret;
-}
-
-MarketKidPtr MarketKid::create(PlayerCityPtr city, MarketBuyerPtr lady )
-{
-  MarketKidPtr ret( new MarketKid( city ) );
-  ret->setPos( lady->pos() );
-  ret->_pathway() = lady->pathway();
-
-  ret->drop();
-
-  return ret;
-}
-
-MarketKid::MarketKid(PlayerCityPtr city )
-  : Human( city ), _d( new Impl )
+MarketKid::MarketKid(PlayerCityPtr city, MarketBuyerPtr lady )
+  : Human( city, walker::marketKid ), _d( new Impl )
 {
   _d->delay = 0;
+
   _d->birthTime = 0;
   _d->basket.setCapacity( defaultCapacity );
-  _setType( walker::marketKid );
 
-  setName( NameGenerator::rand( NameGenerator::male ) );
+  if( lady.isValid() )
+  {
+    setPos( lady->pos() );
+    setPathway( lady->pathway() );
+  }
 }
 
 void MarketKid::setDelay( int delay ) {  _d->delay = delay; }
@@ -126,7 +112,7 @@ void MarketKid::_reachedPathway()
 
   deleteLater();
 
-  auto market = _city()->getOverlay( _d->marketPos ).as<Market>();
+  auto market = _map().overlay( _d->marketPos ).as<Market>();
   if( market.isValid() )
   {
     market->goodStore().store( _d->basket, _d->basket.qty() );

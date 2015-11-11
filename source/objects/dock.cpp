@@ -89,7 +89,7 @@ public:
     int count;
   };
 
-  void load( const MetaData& md, Direction dir )
+  void load( const object::Info& md, Direction dir )
   {
     std::string configName = "image." + direction::Helper::instance().findName( dir );
 
@@ -127,7 +127,7 @@ Dock::Dock(): WorkingBuilding( object::dock, Size(3) ), _d( new Impl )
 
   _d->initStores();
   _fgPictures().resize(1);
-  _animationRef().setDelay( 5 );
+  _animation().setDelay( 5 );
   _setClearAnimationOnStop( false );
 }
 
@@ -148,12 +148,14 @@ bool Dock::build( const city::AreaInfo& info )
 
   TilesArea area(  info.city->tilemap(), info.pos, size() );
 
-  for( auto tile : area ) { _d->saved_tile.push_back( tile::encode( *tile ) ); }
+  for( auto tile : area )
+     _d->saved_tile.push_back( tile::encode( *tile ) );
 
   WorkingBuilding::build( info );
 
   TilePos landingPos = landingTile().pos();
-  Pathway way = PathwayHelper::create( landingPos, info.city->borderInfo().boatEntry, PathwayHelper::deepWater );
+  Pathway way = PathwayHelper::create( landingPos, info.city->getBorderInfo( PlayerCity::boatEntry ).epos(),
+                                       PathwayHelper::deepWater );
   if( !way.isValid() )
   {
     _setError( "##inland_lake_has_no_access_to_sea##" );
@@ -167,7 +169,8 @@ void Dock::destroy()
   TilesArray tiles = area();
 
   int index=0;
-  for( auto tile : tiles ) { tile::decode( *tile, _d->saved_tile[ index++ ] ); }
+  for( auto tile : tiles )
+    tile::decode( *tile, _d->saved_tile[ index++ ] );
 
   WorkingBuilding::destroy();
 }
@@ -217,7 +220,7 @@ void Dock::load(const VariantMap& stream)
 
 void Dock::reinit()
 {
-  MetaDataHolder::instance().reload( type() );
+  info().reload();
   _updatePicture( _d->direction );
 }
 
@@ -236,7 +239,6 @@ bool Dock::isBusy() const
 
 const Tile& Dock::landingTile() const
 {
-  Tilemap& tmap = _city()->tilemap();
   TilePos offset( -999, -999 );
   switch( _d->direction )
   {
@@ -248,7 +250,7 @@ const Tile& Dock::landingTile() const
   default: break;
   }
 
-  return tmap.at( pos() + offset );
+  return _map().at( pos() + offset );
 }
 
 int Dock::queueSize() const
@@ -270,7 +272,7 @@ const good::Store& Dock::exportStore() const { return _d->goods.exporting; }
 
 const Tile& Dock::queueTile() const
 {
-  TilesArea tiles( _city()->tilemap(), 3, pos() );
+  TilesArea tiles( _map(), 3, pos() );
   tiles = tiles.select( Tile::tlDeepWater );
 
   for( auto tile : tiles )
@@ -311,8 +313,7 @@ int Dock::importingGoods( good::Stock& stock)
   {
     _d->goods.importing.store( stock, traderMaySell );
 
-    GameEventPtr e = Payment::import( stock.type(), traderMaySell );
-    e->dispatch();
+    events::dispatch<Payment>( stock.type(), traderMaySell );
 
     cost = good::Helper::importPrice( _city(), stock.type(), traderMaySell );
   }
@@ -346,10 +347,8 @@ Dock::~Dock(){}
 
 void Dock::_updatePicture(Direction direction)
 {
-  const MetaData& md = MetaDataHolder::find( type() );
-
   DockConfig config;
-  config.load( md, direction );
+  config.load( info(), direction );
 
   setPicture( config.image );
   setAnimation( config.animation );
@@ -363,7 +362,7 @@ void Dock::_setDirection(Direction direction)
 
 bool Dock::Impl::isFlatCoast(const Tile& tile) const
 {
-  int imgId = tile.originalImgId();
+  int imgId = tile.imgId();
   return (imgId >= 372 && imgId <= 387);
 }
 
@@ -372,26 +371,26 @@ Direction Dock::Impl::getDirection(PlayerCityPtr city, TilePos pos, Size size)
   Tilemap& tilemap = city->tilemap();
 
   int s = size.width();
-  TilesArray constructibleTiles = tilemap.getArea( pos + TilePos( 0, 1 ), pos + TilePos( s-1, s-1 ) );
-  TilesArray coastalTiles = tilemap.getArea( pos, pos + TilePos( s, 0 ) );
+  TilesArray constructibleTiles = tilemap.area( pos + TilePos( 0, 1 ), pos + TilePos( s-1, s-1 ) );
+  TilesArray coastalTiles = tilemap.area( pos, pos + TilePos( s, 0 ) );
 
   if( isConstructibleArea( constructibleTiles ) && isCoastalArea( coastalTiles ) )
   { return south; }
 
-  constructibleTiles = tilemap.getArea( pos, pos + TilePos( s-1, 1 ) );
-  coastalTiles = tilemap.getArea( pos + TilePos( 0, s-1 ), pos + TilePos( s-1, s-1 ) );
+  constructibleTiles = tilemap.area( pos, pos + TilePos( s-1, 1 ) );
+  coastalTiles = tilemap.area( pos + TilePos( 0, s-1 ), pos + TilePos( s-1, s-1 ) );
 
   if( isConstructibleArea( constructibleTiles ) && isCoastalArea( coastalTiles ) )
   { return north; }
 
-  constructibleTiles = tilemap.getArea( pos + TilePos( 1, 0 ), pos + TilePos( 2, 2 ) );
-  coastalTiles = tilemap.getArea( pos, pos + TilePos( 0, 2 ) );
+  constructibleTiles = tilemap.area( pos + TilePos( 1, 0 ), pos + TilePos( 2, 2 ) );
+  coastalTiles = tilemap.area( pos, pos + TilePos( 0, 2 ) );
 
   if( isConstructibleArea( constructibleTiles ) && isCoastalArea( coastalTiles ) )
   { return west; }
 
-  constructibleTiles = tilemap.getArea( pos, pos + TilePos( 1, 2 ) );
-  coastalTiles = tilemap.getArea( pos + TilePos( 2, 0), pos + TilePos( 2, 2 ) );
+  constructibleTiles = tilemap.area( pos, pos + TilePos( 1, 2 ) );
+  coastalTiles = tilemap.area( pos + TilePos( 2, 0), pos + TilePos( 2, 2 ) );
 
   if( isConstructibleArea( constructibleTiles ) && isCoastalArea( coastalTiles ) )
   { return east; }
@@ -435,28 +434,28 @@ void Dock::_tryDeliverGoods()
     return;
   }
 
-  for( auto gtype : good::all() )
+  for( auto& gtype : good::all() )
   {
     int qty = std::min( _d->goods.importing.getMaxRetrieve( gtype ), 400 );
 
     if( qty > 0 )
     {
-      CartPusherPtr walker = CartPusher::create( _city() );
+      auto cartPusher = Walker::create<CartPusher>( _city() );
       good::Stock pusherStock( gtype, qty, 0 );
       _d->goods.importing.retrieve( pusherStock, qty );
-      walker->send2city( BuildingPtr( this ), pusherStock );
+      cartPusher->send2city( BuildingPtr( this ), pusherStock );
 
       //success to send cartpusher
-      if( !walker->isDeleted() )
+      if( !cartPusher->isDeleted() )
       {
-        if( walker->pathway().isValid() )
+        if( cartPusher->pathway().isValid() )
         {
-          addWalker( walker.object() );
+          addWalker( cartPusher.object() );
         }
         else
         {
           _d->goods.importing.store( pusherStock, qty );
-          walker->deleteLater();
+          cartPusher->deleteLater();
         }
       }
       else
@@ -474,17 +473,17 @@ void Dock::_tryReceiveGoods()
     return;
   }
 
-  for( auto gtype : good::all() )
+  for( auto& gtype : good::all() )
   {
     if( _d->goods.requested.qty( gtype ) > 0 )
     {
-      CartSupplierPtr cart = CartSupplier::create( _city() );
+      auto cartSupplier = Walker::create<CartSupplier>( _city() );
       int qty = std::min( 400, _d->goods.requested.getMaxRetrieve( gtype ) );
-      cart->send2city( this, gtype, qty );
+      cartSupplier->send2city( this, gtype, qty );
 
-      if( !cart->isDeleted() )
+      if( !cartSupplier->isDeleted() )
       {
-        addWalker( cart.object() );
+        addWalker( cartSupplier.object() );
         good::Stock tmpStock( gtype, qty, 0 );
         _d->goods.requested.retrieve( tmpStock, qty );
         return;

@@ -35,8 +35,18 @@ ClayPit::ClayPit()
   : Factory( good::none, good::clay, object::clay_pit, Size(2) )
 {
   _fgPictures().resize(2);
-
   _setUnworkingInterval( 12 );
+}
+
+bool ClayPit::build(const city::AreaInfo& info)
+{
+  bool isOk = Factory::build( info );
+
+  bool mayCollapse = info.city->getOption( PlayerCity::minesMayCollapse ) != 0;
+  if( !mayCollapse )
+    _setUnworkingInterval( 0 );
+
+  return isOk;
 }
 
 void ClayPit::timeStep( const unsigned long time )
@@ -48,8 +58,7 @@ void ClayPit::_reachUnworkingTreshold()
 {
   Factory::_reachUnworkingTreshold();
 
-  GameEventPtr e = ShowInfobox::create( "##clay_pit_flooded##", "##clay_pit_flooded_by_low_support##");
-  e->dispatch();
+  events::dispatch<ShowInfobox>( "##clay_pit_flooded##", "##clay_pit_flooded_by_low_support##");
 
   collapse();
 }
@@ -62,7 +71,7 @@ bool ClayPit::canBuild( const city::AreaInfo& areaInfo ) const
     return false;
 
   Tilemap& tilemap = areaInfo.city->tilemap();
-  TilesArray perimetr = tilemap.getRectangle( areaInfo.pos + TilePos( -1, -1), size() + Size( 2 ), Tilemap::checkCorners );
+  TilesArray perimetr = tilemap.rect( areaInfo.pos + TilePos( -1, -1), size() + Size( 2 ), Tilemap::checkCorners );
 
   bool near_water = !perimetr.select( Tile::tlWater ).empty();
 

@@ -29,6 +29,7 @@ public:
   virtual bool canBuild(const city::AreaInfo& areaInfo) const;
   virtual bool isNeedRoad() const;
   virtual void destroy();
+  virtual void burn();
   virtual bool isWalkable() const; 
 
   void updatePicture(PlayerCityPtr city);

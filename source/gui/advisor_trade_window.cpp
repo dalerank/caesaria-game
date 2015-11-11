@@ -75,13 +75,14 @@ void Trade::Impl::updateGoodsInfo()
 
   Widget::Widgets children = gbInfo->children();
 
-  for( auto&& child : children ) { child->deleteLater(); }
+  for( auto& child : children )
+    child->deleteLater();
 
   Point startDraw( 0, 5 );
   Size btnSize( gbInfo->width(), 20 );
   trade::Options& copt = city->tradeOptions();
   int indexOffset=0;
-  for( auto gtype : good::all() )
+  for( auto& gtype : good::all() )
   {
     trade::Order tradeState = copt.getOrder( gtype );
     if( tradeState == trade::disabled || gtype == good::none)
@@ -148,7 +149,7 @@ Trade::Trade(PlayerCityPtr city, Widget* parent, int id )
 
   _d->updateGoodsInfo();
 
-  TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
+  auto btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
   CONNECT( btnHelp, onClicked(), this, Trade::_showHelp );
 }
 

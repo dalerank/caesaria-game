@@ -48,10 +48,10 @@ public:
 
     background.fill( 0xffffffff, Rect( ratingStartPos.x(), ratingStartPos.y(), background.width()-2, background.height()-2 ) );
     font.draw( background, utils::format( 0xff, "%d %%", senate->status( Senate::workless ) ), ratingStartPos, false, false );
-    font.draw( background, utils::format( 0xff, "%d", senate->status( Senate::culture ) ), ratingStartPos + offset, false, false );
-    font.draw( background, utils::format( 0xff, "%d", senate->status( Senate::prosperity ) ), ratingStartPos + offset * 2, false, false );
-    font.draw( background, utils::format( 0xff, "%d", senate->status( Senate::peace ) ), ratingStartPos + offset * 3, false, false );
-    font.draw( background, utils::format( 0xff, "%d", senate->status( Senate::favour ) ), ratingStartPos + offset * 4, false, false );
+    font.draw( background, utils::i2str( senate->status( Senate::culture ) ), ratingStartPos + offset, false, false );
+    font.draw( background, utils::i2str( senate->status( Senate::prosperity ) ), ratingStartPos + offset * 2, false, false );
+    font.draw( background, utils::i2str( senate->status( Senate::peace ) ), ratingStartPos + offset * 3, false, false );
+    font.draw( background, utils::i2str( senate->status( Senate::favour ) ), ratingStartPos + offset * 4, false, false );
 
     background.update();
   }
@@ -89,7 +89,7 @@ void SenatePopupInfo::draw( const Point& cursorPos, gfx::Engine& painter, Senate
       _d->updateRatings( senate );
     }
 
-    Rect screen( Point( 0, 0), painter.screenSize() );
+    Rect screen( Point(0, 0), painter.screenSize() );
     Rect rect( cursorPos, _d->background.size() );
 
     rect.constrainTo( screen );

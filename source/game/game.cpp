@@ -37,6 +37,7 @@
 #include "world/empire.hpp"
 #include "core/exception.hpp"
 #include "loader.hpp"
+#include "objects/infodb.hpp"
 #include "gamedate.hpp"
 #include "saver.hpp"
 #include "resourceloader.hpp"
@@ -71,6 +72,7 @@
 #include "core/metric.hpp"
 #include "city/build_options.hpp"
 #include "roman_celebrates.hpp"
+#include "gameloop.hpp"
 
 #include <list>
 
@@ -83,45 +85,105 @@ class Game::Impl
 public:
   ScreenType nextScreen;
   std::string nextFilename;
-  gamestate::BaseState* currentScreen;
+  gamestate::State* currentScreen;
   gfx::Engine* engine;
   gui::Ui* gui;
 
   world::EmpirePtr empire;
   PlayerCityPtr city;
   PlayerPtr player;
+  ScopedPtr<scene::SplashScreen> splash;
 
   int pauseCounter;
-  unsigned int manualTicksCounterX10;
   std::string restartFile;
 
-  unsigned int saveTime; // last action time
-  unsigned int timeX10; // time (ticks) multiplied by 10;
-  unsigned int timeMultiplier; // 100 = 1x speed
+  Simulation simulation;
 
-  void initLocale( std::string localePath );
-  void initVideo();
-  void initSound();
-  void initPictures();
-  void initGameConfigs();
-  void initAddons();
-  void initHotkeys();
-  void initMovie();
-  void initMetrics();
-  void initCelebrations();
-  void initGuiEnvironment();
-  void initArchiveLoaders();
-  void initPantheon( vfs::Path filename );
-  void initFontCollection( vfs::Path resourcePath );
+  void initLocale(bool& isOk , std::string& result);
+  void initVideo(bool& isOk, std::string& result);
+  void initSound(bool& isOk, std::string& result);
+  void initPictures(bool& isOk, std::string& result);
+  void initGameConfigs(bool& isOk, std::string& result);
+  void initAddons(bool& isOk, std::string& result);
+  void initHotkeys(bool& isOk, std::string& result);
+  void initMovie(bool& isOk, std::string& result);
+  void initMetrics(bool& isOk, std::string& result);
+  void initCelebrations(bool& isOk, std::string& result);
+  void initUI(bool& isOk, std::string& result);
+  void initVfsSettings(bool& isOk, std::string& result);
+  void initTilemapSettings(bool& isOk, std::string& result);
+  void initArchiveLoaders(bool& isOk, std::string& result);
+  void initFontCollection(bool& isOk , std::string& result);
   void mountArchives( ResourceLoader& loader );
-  void createSaveDir();
+  void createSaveDir(bool& isOk , std::string& result);
+  void showSplashScreen(bool& isOk , std::string& result);
+  void loadResources(bool& isOk , std::string& result);
+  void updateSplashText(std::string text);
+  void loadPicInfo(bool& isOk , std::string& result);
+  void initNameGenerator(bool& isOk , std::string& result);
+  void loadHouseSpecs(bool& isOk , std::string& result);
+  void loadObjectsMetadata(bool& isOk, std::string& result);
+  void loadWalkersMetadata(bool& isOk, std::string& result);
+  void loadReligionConfig(bool& isOk, std::string& result);
+  void fadeSplash(bool& isOk, std::string& result);
 
   Impl(): nextScreen(SCREEN_NONE),
-      currentScreen(0), engine(0), gui(0)
+      currentScreen(nullptr), engine(nullptr),
+      gui(nullptr), splash(nullptr)
   {}
 };
 
-void Game::Impl::initMovie()
+void Game::Impl::loadPicInfo(bool& isOk, std::string& result)
+{
+  Logger::warning( "Game: initialize offsets" );
+  result = "##loading_offsets##";
+  PictureInfoBank::instance().initialize( SETTINGS_RC_PATH( pic_offsets ) );
+}
+
+void Game::Impl::initNameGenerator(bool& isOk, std::string& result)
+{
+  result = "##initialize_names##";
+  NameGenerator::instance().initialize( SETTINGS_RC_PATH( ctNamesModel ) );
+  NameGenerator::instance().setLanguage( SETTINGS_STR( language ) );
+}
+
+void Game::Impl::loadHouseSpecs(bool& isOk, std::string& result)
+{
+  result = "##initialize_house_specification##";
+  HouseSpecHelper::instance().initialize( SETTINGS_RC_PATH( houseModel ) );
+}
+
+void Game::Impl::loadObjectsMetadata(bool& isOk, std::string& result)
+{
+  result = "##initialize_constructions##";
+  object::InfoDB::instance().initialize( SETTINGS_RC_PATH( constructionModel ) );
+}
+
+void Game::Impl::loadWalkersMetadata(bool& isOk, std::string& result)
+{
+  result = "##initialize_walkers##";
+  WalkerHelper::instance().load( SETTINGS_RC_PATH( walkerModel ) );
+}
+
+void Game::Impl::loadReligionConfig(bool& isOk, std::string& result)
+{
+  result = "##initialize_religion##";
+  vfs::Path filename = SETTINGS_RC_PATH( pantheonModel );
+  VariantMap pantheon = config::load( filename );
+  religion::rome::Pantheon::instance().load( pantheon );
+}
+
+void Game::Impl::fadeSplash(bool& isOk, std::string& result)
+{
+  result = "##ready_to_game##";
+
+  if( game::Settings::get( "no-fade" ).isNull() && splash )
+      splash->exitScene( scene::SplashScreen::showDevText );
+
+  splash.reset( 0 );
+}
+
+void Game::Impl::initMovie(bool& isOk, std::string& result)
 {
   movie::Config& config = movie::Config::instance();
 
@@ -134,29 +196,29 @@ void Game::Impl::initMovie()
   }
 }
 
-void Game::Impl::initMetrics()
+void Game::Impl::initMetrics(bool& isOk, std::string& result)
 {
   int value = SETTINGS_VALUE( metricSystem );
   metric::Measure::setMode( (metric::Measure::Mode)value );
 }
 
-void Game::Impl::initCelebrations()
+void Game::Impl::initCelebrations(bool& isOk, std::string& result)
 {
   vfs::Path value = SETTINGS_RC_PATH( celebratesConfig );
   game::Celebrates::instance().load( value );
 }
 
-void Game::Impl::initLocale( std::string localePath )
+void Game::Impl::initLocale( bool& isOk, std::string& result )
 {
   //init translator
   Logger::warning( "Game: initialize localization folder" );
-  Locale::setDirectory( localePath );
+  Locale::setDirectory( SETTINGS_STR( localePath ) );
 
   Logger::warning( "Game: load default language" );
   Locale::setLanguage( SETTINGS_STR( language ) );
 }
 
-void Game::Impl::initVideo()
+void Game::Impl::initVideo(bool& isOk, std::string& result)
 {
   Logger::warning( "GraficEngine: create" );
 
@@ -164,11 +226,12 @@ void Game::Impl::initVideo()
 
   engine = new SdlEngine();
 
-  Logger::warning( "GraficEngine: set size" );
-  engine->setScreenSize( SETTINGS_VALUE( resolution ).toSize() );
+  Size size = SETTINGS_VALUE( resolution );
+  Logger::warning( "GraficEngine: set size [{}x{}]", size.width(), size.height() );
+  engine->setScreenSize( size );
   engine->setFlag( Engine::batching, batchTexures ? 1 : 0 );
 
-  bool fullscreen = SETTINGS_VALUE( fullscreen );
+  bool fullscreen = KILLSWITCH( fullscreen );
   if( fullscreen )
   {
     Logger::warning( "GraficEngine: try set fullscreen mode" );
@@ -178,7 +241,7 @@ void Game::Impl::initVideo()
   engine->init();
 }
 
-void Game::Impl::initSound()
+void Game::Impl::initSound(bool& isOk, std::string& result)
 {
   Logger::warning( "init sound engine" );
   audio::Engine& ae = audio::Engine::instance();
@@ -248,7 +311,7 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
   loader.loadFromModel( SETTINGS_RC_PATH( archivesModel ) );
 }
 
-void Game::Impl::createSaveDir()
+void Game::Impl::createSaveDir(bool& isOk , std::string& result)
 {
   Logger::warning( "Game: initialize save directory" );
   vfs::Directory saveDir = SETTINGS_STR( savedir );
@@ -262,46 +325,89 @@ void Game::Impl::createSaveDir()
   Logger::warningIf( !dirCreated, "Game: can't create save dir" );
 }
 
-void Game::Impl::initGuiEnvironment()
+void Game::Impl::showSplashScreen(bool& isOk, std::string& result)
+{
+  if( !splash )
+  {
+    splash.createInstance();
+    splash->initialize();
+    splash->update( *engine );
+  }
+}
+
+void Game::Impl::loadResources(bool& isOk, std::string& result)
+{
+  Logger::warning( "Game: initialize resource loader" );
+  ResourceLoader rcLoader;
+  rcLoader.loadFiles( SETTINGS_RC_PATH( logoArchive ) );
+  rcLoader.onStartLoading().connect( this, &Impl::updateSplashText );
+
+  Logger::warning( "Game: initialize resources" );
+  mountArchives( rcLoader );  // init some quick pictures for screenWait
+}
+
+void Game::Impl::updateSplashText(std::string text)
+{
+  if( splash )
+  {
+    splash->setText( text );
+  }
+}
+
+void Game::Impl::initUI(bool& isOk, std::string& result)
 {
   Logger::warning( "Game: initialize gui" );
-  gui = new gui::Ui( *engine );
 
+  gui = new gui::Ui( *engine );
   gui::infobox::Manager::instance().setBoxLock( KILLSWITCH( lockInfobox ) );
 }
 
-void Game::Impl::initPantheon( vfs::Path filename)
+void Game::Impl::initVfsSettings(bool& isOk, std::string& result)
 {
-  VariantMap pantheon = config::load( filename );
-  religion::rome::Pantheon::instance().load( pantheon );
+  //mount default rcpath folder
+  Logger::warning( "Game: set resource folder as {}", game::Settings::rcpath().toString() );
+  vfs::FileSystem::instance().setRcFolder( game::Settings::rcpath() );
 }
 
-void Game::Impl::initFontCollection( vfs::Path resourcePath )
+void Game::Impl::initTilemapSettings(bool& isOk, std::string& result)
 {
+  int cellWidth = SETTINGS_VALUE( cellw );
+  if( cellWidth != tilemap::c3CellWidth && cellWidth != tilemap::caCellWidth)
+  {
+    cellWidth = tilemap::c3CellWidth;
+  }
+  tilemap::initTileBase( cellWidth );
+}
+
+void Game::Impl::initFontCollection( bool& isOk, std::string& result )
+{
+  vfs::Path resourcePath = game::Settings::rcpath();
   Logger::warning( "Game: load fonts" );
   std::string fontname = SETTINGS_STR( font );
   FontCollection::instance().initialize( resourcePath.toString(), fontname );
 }
 
-void Game::Impl::initPictures()
+void Game::Impl::initPictures(bool& isOk , std::string& result)
 {
+  result = "##initialize_animations##";
+
   AnimationBank::instance().loadCarts( SETTINGS_RC_PATH( cartsModel ) );
   AnimationBank::instance().loadAnimation( SETTINGS_RC_PATH( animationsModel ),
                                            SETTINGS_RC_PATH( simpleAnimationModel ) );
 }
 
-void Game::Impl::initGameConfigs()
+void Game::Impl::initGameConfigs(bool& isOk, std::string& result)
 {
   city::development::loadBranchOptions( SETTINGS_RC_PATH( cntrGroupsModel ) );
 }
 
-void Game::Impl::initAddons()
+void Game::Impl::initAddons(bool& isOk, std::string& result)
 {
   addon::Manager& am = addon::Manager::instance();
   am.load( vfs::Directory( std::string( ":/addons" ) ) );
 }
 
-void Game::Impl::initHotkeys()
+void Game::Impl::initHotkeys(bool& isOk, std::string& result)
 {
   game::HotkeyManager& hkMgr = game::HotkeyManager::instance();
   hkMgr.load( SETTINGS_RC_PATH( hotkeysModel ) );
@@ -309,60 +415,57 @@ void Game::Impl::initHotkeys()
   CONNECT( &hkMgr, onHotkey(), &events::Dispatcher::instance(), events::Dispatcher::load );
 }
 
-PlayerPtr Game::player() const { return _d->player; }
-PlayerCityPtr Game::city() const { return _d->city; }
-world::EmpirePtr Game::empire() const { return _d->empire; }
-gui::Ui* Game::gui() const { return _d->gui; }
-gfx::Engine* Game::engine() const { return _d->engine; }
-scene::Base* Game::scene() const { return _d->currentScreen->toBase(); }
+PlayerPtr Game::player() const { return _dfunc()->player; }
+PlayerCityPtr Game::city() const { return _dfunc()->city; }
+world::EmpirePtr Game::empire() const { return _dfunc()->empire; }
+gui::Ui* Game::gui() const { return _dfunc()->gui; }
+gfx::Engine* Game::engine() const { return _dfunc()->engine; }
+scene::Base* Game::scene() const { return _dfunc()->currentScreen->toBase(); }
 
 const DateTime& Game::date() const { return game::Date::current(); }
-bool Game::isPaused() const { return _d->pauseCounter>0; }
+bool Game::isPaused() const { return _dfunc()->pauseCounter>0; }
 void Game::play() { setPaused( false ); }
 void Game::pause() { setPaused( true ); }
 
 void Game::setPaused(bool value)
 {
-  _d->pauseCounter = math::clamp( _d->pauseCounter + (value ? 1 : -1 ), 0, 99 );
+  __D_REF(d,Game)
+  d.pauseCounter = math::clamp( d.pauseCounter + (value ? 1 : -1 ), 0, 99 );
 }
 
 void Game::step(unsigned int count)
 {
-  _d->manualTicksCounterX10 += count * config::gamespeed::scale;
+  _dfunc()->simulation.time.manualTicksCounterX10 += count * config::gamespeed::scale;
 }
 
-Game::Game() : _d( new Impl )
+Game::Game() : __INIT_IMPL(Game)
 {
-  _d->nextScreen = SCREEN_NONE;
-  _d->pauseCounter = 0;
-  _d->manualTicksCounterX10 = 0;
-  _d->timeX10 = 0;
-  _d->saveTime = 0;
-  _d->timeMultiplier = config::gamespeed::defaultMutltiplier;
+  _dfunc()->nextScreen = SCREEN_NONE;
+  _dfunc()->pauseCounter = 0;
 }
 
-void Game::changeTimeMultiplier(int percent){  setTimeMultiplier( _d->timeMultiplier + percent );}
-void Game::setTimeMultiplier(int percent){  _d->timeMultiplier = math::clamp<unsigned int>( percent,
+void Game::changeTimeMultiplier(int percent){ setTimeMultiplier( _dfunc()->simulation.time.multiplier + percent );}
+void Game::setTimeMultiplier(int percent){ _dfunc()->simulation.time.multiplier = math::clamp<unsigned int>( percent,
                                                                                             config::gamespeed::minimum,
                                                                                             config::gamespeed::maximux );}
-int Game::timeMultiplier() const{  return _d->timeMultiplier;}
+int Game::timeMultiplier() const{  return _dfunc()->simulation.time.multiplier;}
 
 Game::~Game(){}
 
 void Game::save(std::string filename) const
 {
   game::Saver saver;
-  saver.setRestartFile( _d->restartFile );
+  saver.setRestartFile( _dfunc()->restartFile );
   saver.save( filename, *this );
 
   SETTINGS_SET_VALUE( lastGame, Variant( filename ) );
 
-  GameEventPtr e = WarningMessage::create( "Game saved to " + vfs::Path( filename ).baseName().toString(), WarningMessage::neitral );
-  e->dispatch();
+  events::dispatch<WarningMessage>( "Game saved to " + vfs::Path( filename ).baseName().toString(), WarningMessage::neitral );
 }
 
 bool Game::load(std::string filename)
 {
+  __D_REF(d,Game)
   Logger::warning( "Game: try load from " + filename );
 
   Logger::warning( "Game: reseting variables" );
@@ -371,9 +474,9 @@ bool Game::load(std::string filename)
   scene::SplashScreen screen;
 
   screen.initialize();
-  bool usingOldgfx = SETTINGS_VALUE( oldgfx ) || !SETTINGS_VALUE( c3gfx ).toString().empty();
+  bool usingOldgfx = KILLSWITCH( oldgfx ) || !SETTINGS_STR( c3gfx ).empty();
   screen.setImage( usingOldgfx ? "load4" : "freska", 1 );
-  screen.update( *_d->engine );
+  screen.update( *_dfunc()->engine );
 
   vfs::Path fPath( filename );
   if( !fPath.exist() )
@@ -397,13 +500,13 @@ bool Game::load(std::string filename)
 
   Logger::warning( "Game: init empire start options" );
   events::Dispatcher::instance().reset();
-  _d->empire->initialize( SETTINGS_RC_PATH( citiesModel ),
+  d.empire->initialize( SETTINGS_RC_PATH( citiesModel ),
                           SETTINGS_RC_PATH( empireObjectsModel ),
                           SETTINGS_RC_PATH( worldModel ) );
 
   Logger::warning( "Game: try find loader" );
   game::Loader loader;
-  loader.onUpdate().connect( &screen, &scene::SplashScreen::setText );
+  loader.onUpdate() += makeDelegate( &screen, &scene::SplashScreen::setText );
 
   bool loadOk = loader.load( fPath, *this );
 
@@ -413,18 +516,18 @@ bool Game::load(std::string filename)
     return false;
   }
 
-  _d->restartFile = loader.restartFile();
+  d.restartFile = loader.restartFile();
   Logger::warning( "Game: init player city" );
-  world::CityPtr city = _d->empire->initPlayerCity( ptr_cast<world::City>( _d->city ) );
+  world::CityPtr city = d.empire->initPlayerCity( ptr_cast<world::City>( d.city ) );
   if( city.isNull() )
   {
-    Logger::warning( "INIT ERROR: can't initalize city %s in empire" + _d->city->name() );
+    Logger::warning( "INIT ERROR: can't initalize city {} in empire" + d.city->name() );
     return false;
   }
-  _d->empire->emperor().checkCities();
+  d.empire->emperor().checkCities();
 
   Logger::warning( "Game: calculate road access for buildings" );
-  const OverlayList& llo = _d->city->overlays();
+  const OverlayList& llo = d.city->overlays();
   for( auto overlay : llo )
   {
     ConstructionPtr construction = overlay.as<Construction>();
@@ -435,7 +538,7 @@ bool Game::load(std::string filename)
   }
 
   Logger::warning( "Game: initialize local pathfinder" );
-  Pathfinder::instance().update( _d->city->tilemap() );
+  Pathfinder::instance().update( d.city->tilemap() );
 
   Logger::warning( "Game: load finished" );
 
@@ -443,7 +546,7 @@ bool Game::load(std::string filename)
   return true;
 }
 
-void Game::Impl::initArchiveLoaders()
+void Game::Impl::initArchiveLoaders(bool& isOk, std::string& result)
 {
   Logger::warning( "Game: initialize sg2/zip archive loaders" );
   vfs::FileSystem& fs = vfs::FileSystem::instance();
@@ -451,101 +554,90 @@ void Game::Impl::initArchiveLoaders()
   fs.addArchiveLoader( new vfs::ZipArchiveLoader( &fs ) );
 }
 
+
+struct InitializeStep
+{
+  std::string name;
+  Delegate2<bool&, std::string&> function;
+};
+
 void Game::initialize()
 {
-  int cellWidth = SETTINGS_VALUE( cellw );
-  if( cellWidth != tilemap::c3CellWidth && cellWidth != tilemap::caCellWidth)
+  __D_REF(d,Game)
+  #define ADD_STEP(obj,functor) { #functor, makeDelegate(obj,&functor) }
+  std::vector<InitializeStep> steps = {
+    ADD_STEP( &d, Impl::initTilemapSettings ),
+    ADD_STEP( &d, Impl::initVfsSettings ),
+    ADD_STEP( &d, Impl::initMetrics ),
+    ADD_STEP( &d, Impl::initGameConfigs ),
+    ADD_STEP( &d, Impl::initAddons ),
+    ADD_STEP( &d, Impl::initArchiveLoaders ),
+    ADD_STEP( &d, Impl::initLocale ),
+    ADD_STEP( &d, Impl::initVideo ),
+    ADD_STEP( &d, Impl::initMovie ),
+    ADD_STEP( &d, Impl::initFontCollection ),
+    ADD_STEP( &d, Impl::initUI ),
+    ADD_STEP( &d, Impl::initSound ),
+    ADD_STEP( &d, Impl::initHotkeys ),
+    ADD_STEP( &d, Impl::createSaveDir ),
+    ADD_STEP( &d, Impl::loadResources ),
+    ADD_STEP( &d, Impl::showSplashScreen ),
+    ADD_STEP( &d, Impl::initCelebrations ),
+    ADD_STEP( &d, Impl::loadPicInfo ),
+    ADD_STEP( &d, Impl::initPictures ),
+    ADD_STEP( &d, Impl::initNameGenerator ),
+    ADD_STEP( &d, Impl::loadHouseSpecs ),
+    ADD_STEP( &d, Impl::loadObjectsMetadata ),
+    ADD_STEP( &d, Impl::loadWalkersMetadata ),
+    ADD_STEP( &d, Impl::loadReligionConfig ),
+    ADD_STEP( &d, Impl::fadeSplash )
+  };
+
+  #undef ADD_STEP
+
+  for( auto&& step : steps )
   {
-    cellWidth = tilemap::c3CellWidth;
-  }    
+    bool isOk = true;
+    std::string stepText;
 
-  tilemap::initTileBase( cellWidth );
-  //mount default rcpath folder
-  Logger::warning( "Game: set resource folder" );
-  vfs::FileSystem::instance().setRcFolder( game::Settings::rcpath() );
+    try
+    {
+      step.function( isOk, stepText );
+      d.updateSplashText( stepText );
+      if( !isOk )
+      {
+        Logger::warning( "Game: initialize faild on step {}", step.name );
+        OSystem::error( "Game: initialize faild on step", step.name );
+        exit( -1 ); //kill application
+      }
+    }
+    catch(...) { exit(-1); }
+  }
 
-  _d->initMetrics();
-  _d->initGameConfigs();
-  _d->initAddons();
-  _d->initArchiveLoaders();
-  _d->initLocale( SETTINGS_STR( localePath ) );
-  _d->initVideo();
-  _d->initMovie();
-  _d->initFontCollection( game::Settings::rcpath() );
-  _d->initGuiEnvironment();
-  _d->initSound();
-  _d->initHotkeys();
-  _d->createSaveDir();
-
-  Logger::warning( "Game: load splash screen" );
-  splash::initialize( "logo_00001" );
-
-  scene::SplashScreen screen;
-
-  Logger::warning( "Game: initialize resource loader" );
-  ResourceLoader rcLoader;
-  rcLoader.loadFiles( SETTINGS_RC_PATH( logoArchive ) );
-  rcLoader.onStartLoading().connect( &screen, &scene::SplashScreen::setText );
-
-  screen.initialize();
-  screen.update( *_d->engine );
-
-  Logger::warning( "Game: initialize offsets" );
-  screen.setPrefix( "##loading_offsets##" );
-  PictureInfoBank::instance().initialize( SETTINGS_RC_PATH( pic_offsets ) );
-
-  Logger::warning( "Game: initialize resources" );
-  screen.setPrefix( "##loading_resources##" );
-  _d->mountArchives( rcLoader );  // init some quick pictures for screenWait
-
-  screen.setPrefix( "" );
-  screen.setText( "##initialize_animations##" );
-  _d->initPictures();
-
-  screen.setText( "##initialize_names##" );
-  NameGenerator::instance().initialize( SETTINGS_RC_PATH( ctNamesModel ) );
-  NameGenerator::instance().setLanguage( SETTINGS_VALUE( language ).toString() );
-
-  screen.setText( "##initialize_house_specification##" );
-  HouseSpecHelper::instance().initialize( SETTINGS_RC_PATH( houseModel ) );
-
-  screen.setText( "##initialize_constructions##" );
-  MetaDataHolder::instance().initialize( SETTINGS_RC_PATH( constructionModel ) );
-
-  screen.setText( "##initialize_walkers##" );
-  WalkerHelper::instance().load( SETTINGS_RC_PATH( walkerModel ) );
-
-  screen.setText( "##initialize_religion##" );
-  _d->initPantheon( SETTINGS_RC_PATH( pantheonModel ) );
-
-  screen.setText( "##ready_to_game##" );
-
-  if( game::Settings::get( "no-fade" ).isNull() )
-    screen.exitScene( scene::SplashScreen::showDevText );
-
-  _d->nextScreen = SCREEN_MENU;
-  _d->engine->setFlag( gfx::Engine::debugInfo, 1 );
+  d.nextScreen = SCREEN_MENU;
+  d.engine->setFlag( gfx::Engine::debugInfo, 1 );
 }
 
 bool Game::exec()
 {
-  if (_d->currentScreen && _d->currentScreen->getScreenType() == _d->nextScreen)
+  __D_REF(d,Game)
+  if (d.currentScreen && d.currentScreen->getScreenType() == d.nextScreen)
   {
-    if (!_d->currentScreen->update(_d->engine))
+    if (!d.currentScreen->update(d.engine))
     {
-      delete _d->currentScreen;
-      _d->currentScreen = 0;
+      delete d.currentScreen;
+      d.currentScreen = 0;
     }
     return true;
   }    
 
-  Logger::warning( "game: exec switch to screen %d", _d->nextScreen );
+  Logger::warning( "game: exec switch to screen {}", d.nextScreen );
   addon::Manager& am = addon::Manager::instance();
-  switch(_d->nextScreen)
+  switch(d.nextScreen)
   {
     case SCREEN_MENU:
     {
-      _d->currentScreen = new gamestate::ShowMainMenu(this, _d->engine);
+      d.currentScreen = new gamestate::InMainMenu(this, d.engine);
       am.initAddons4level( addon::mainMenu );
     }
     break;
@@ -553,19 +645,18 @@ bool Game::exec()
     case SCREEN_GAME:
     {
       Logger::warning( "game: enter setScreenGame" );
-      _d->timeX10 = 0;
-      _d->saveTime = _d->timeX10;
-      _d->currentScreen = new gamestate::GameLoop(this, _d->engine,
-                                                        _d->saveTime, _d->timeX10,
-                                                        _d->timeMultiplier, _d->manualTicksCounterX10,
-                                                        _d->nextFilename, _d->restartFile );
+      d.simulation.reset();
+      d.currentScreen = new gamestate::InGame( this, d.engine,
+                                               d.simulation,
+                                               d.nextFilename,
+                                               d.restartFile );
       am.initAddons4level( addon::level );
     }
     break;
 
     case SCREEN_BRIEFING:
     {
-      _d->currentScreen = new gamestate::MissionSelect(this, _d->engine, _d->nextFilename );
+      d.currentScreen = new gamestate::InBriefing(this, d.engine, d.nextFilename );
       am.initAddons4level( addon::briefing );
     }
     break;
@@ -575,36 +666,34 @@ bool Game::exec()
     break;
 
     default:
-      Logger::warning( "game: unexpected next screen type %d", _d->nextScreen );
+      Logger::warning( "game: unexpected next screen type {}", d.nextScreen );
   }
 
-  return _d->nextScreen != SCREEN_QUIT;
+  return d.nextScreen != SCREEN_QUIT;
 }
 
 void Game::reset()
 {
-  _d->empire = world::Empire::create();
+  __D_REF(d,Game)
+  d.empire = world::Empire::create();
 
-  _d->player = Player::create();
-  _d->player->setName( SETTINGS_STR( playerName ) );
-  _d->pauseCounter = 0;
-  _d->timeX10 = 0;
-  _d->saveTime = 0;
-  _d->manualTicksCounterX10 = 0;
+  d.player = Player::create();
+  d.player->setName( SETTINGS_STR( playerName ) );
+  d.pauseCounter = 0;
 
   WalkerRelations::instance().clear();
   WalkerRelations::instance().load( SETTINGS_RC_PATH( walkerRelations ) );
 
   bool oldGameplay = KILLSWITCH( oldgfx ) || !SETTINGS_STR( c3gfx ).empty();
-  _d->city = PlayerCity::create( _d->empire, _d->player );
-  _d->city->setOption( PlayerCity::c3gameplay, oldGameplay );
+  d.city = PlayerCity::create( d.empire, d.player );
+  d.city->setOption( PlayerCity::c3gameplay, oldGameplay );
 }
 
 void Game::clear()
 {
   //_d->empire = world::EmpirePtr();
-  _d->city->clean();
-  _d->city = PlayerCityPtr();
+  _dfunc()->city->clean();
+  _dfunc()->city = PlayerCityPtr();
 #ifdef DEBUG
   WalkerDebugQueue::print();
   WalkerDebugQueue::instance().clear();
@@ -614,5 +703,23 @@ void Game::clear()
 #endif
 }
 
-void Game::setNextScreen(ScreenType screen) { _d->nextScreen = screen;}
+void Game::destroy()
+{
+  audio::Engine::instance().exit();
+}
 
+void Game::setNextScreen(ScreenType screen) { _dfunc()->nextScreen = screen;}
+
+void Simulation::reset()
+{
+  time.ticksX10 = 0;
+  time.current = time.ticksX10;
+}
+
+Simulation::Simulation()
+{
+  time.manualTicksCounterX10 = 0;
+  time.ticksX10 = 0;
+  time.current = 0;
+  time.multiplier = config::gamespeed::defaultMutltiplier;
+}

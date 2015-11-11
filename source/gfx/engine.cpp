@@ -43,11 +43,11 @@ Engine::Engine()
 
 Engine::~Engine() {  _instance = NULL; }
 
-void Engine::setScreenSize( Size size ) { _srcSize = size; }
-const Size& Engine::virtualSize() const { return _virtualSize; }
+void Engine::setScreenSize(const Size& size ) { _srcSize = size; }
 bool Engine::isFullscreen() const{ return getFlag( fullscreen ) > 0; }
 void Engine::setFullscreen(bool enabled){ setFlag( fullscreen, enabled ? 1 : 0 ); }
 const Size& Engine::screenSize() const  { return _srcSize; }
+void Engine::setTitle( const std::string& title ) {}
 void Engine::setFlag( int flag, int value ) { _flags[ flag ] = value;}
 
 int Engine::getFlag(int flag) const

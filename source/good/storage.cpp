@@ -19,6 +19,7 @@
 #include "core/variant_list.hpp"
 #include "core/utils.hpp"
 #include "good/productmap.hpp"
+#include "gfx/helper.hpp"
 #include "core/logger.hpp"
 
 namespace good
@@ -37,6 +38,8 @@ public:
 
     return ret;
   }
+private:
+  SmStock() {}
 };
 
 typedef std::vector<SmStock::Ptr> StockList;
@@ -50,7 +53,7 @@ public:
   void reset()
   {
     stocks.clear();
-    for( auto goodType : good::all() )
+    for( auto& goodType : good::all() )
     {
       stocks.push_back( SmStock::create( goodType ) );
     }
@@ -69,7 +72,7 @@ int Storage::capacity() const {  return _gsd->capacity; }
 int Storage::qty() const
 {
   int qty = 0;
-  for( auto&& stock : _gsd->stocks )
+  for( auto& stock : _gsd->stocks )
     qty += stock->qty();
 
   return qty;
@@ -80,7 +83,7 @@ good::Stock& Storage::getStock(const Product& goodType){  return *(_gsd->stocks[
 ProductMap Storage::details() const
 {
   ProductMap ret;
-  for( auto&& cstock : _gsd->stocks )
+  for( auto& cstock : _gsd->stocks )
     ret[ cstock->type() ] += cstock->qty();
 
   return ret;
@@ -93,7 +96,7 @@ void Storage::setCapacity(const good::Product& goodType, const int maxQty)
 {
   if( goodType == good::any() )
   {
-    for( auto&& gtype : good::all() )
+    for( auto& gtype : good::all() )
     {
       _gsd->stocks[ gtype ]->setCapacity( maxQty );
     }
@@ -117,7 +120,7 @@ int Storage::getMaxStore(const good::Product goodType)
     int goodFreeRoom = _gsd->stocks[ goodType ]->freeQty();
 
     // remove all storage reservations
-    for( auto&& reserved : _getStoreReservations() )
+    for( auto& reserved : _getStoreReservations() )
     {
       globalFreeRoom -= reserved.qty();
 
@@ -131,47 +134,54 @@ int Storage::getMaxStore(const good::Product goodType)
   return freeRoom;
 }
 
-void Storage::applyStorageReservation(good::Stock &stock, const int reservationID)
+bool Storage::applyStorageReservation(good::Stock &stock, const int reservationID)
 {
   good::Stock reservedStock = getStorageReservation(reservationID, true);
 
   if (stock.type() != reservedStock.type())
   {
     Logger::warning( "SimpleGoodStore:GoodType does not match reservation");
-    return;
+    return false;
   }
 
   if (stock.qty() < reservedStock.qty())
   {
     Logger::warning( "SimpleGoodStore:Quantity does not match reservation");
-    return;
+    return false;
   }
 
   int amount = reservedStock.qty();
   _gsd->stocks[ reservedStock.type() ]->push( amount );
   stock.pop( amount );
+  return true;
 }
 
-void Storage::applyRetrieveReservation(good::Stock& stock, const int reservationID)
+bool Storage::applyRetrieveReservation(good::Stock& stock, const int reservationID)
 {
   good::Stock reservedStock = getRetrieveReservation(reservationID, true);
 
   if (stock.type() != reservedStock.type())
   {
     Logger::warning( "SimpleGoodStore:GoodType does not match reservation");
-    return;
+    return false;
   }
 
   if( stock.capacity() < stock.qty() + reservedStock.qty())
   {
     Logger::warning( "SimpleGoodStore:Quantity does not match reservation");
-    return;
+    return false;
   }
 
   int amount = reservedStock.qty();
   good::Stock& currentStock = getStock(reservedStock.type());
   currentStock.pop( amount );
   stock.push( amount );
+  return true;
+}
+
+void Storage::confirmDeliver(Product type, int qty, unsigned int tag, const DateTime& time)
+{
+  _consumers().append( type, qty, tag, time );
 }
 
 VariantMap Storage::save() const
@@ -181,7 +191,7 @@ VariantMap Storage::save() const
   stream[ "max" ] = _gsd->capacity;
 
   VariantList stockSave;
-  for( auto&& stockInfo : _gsd->stocks )
+  for( auto& stockInfo : _gsd->stocks )
     stockSave.push_back( stockInfo->save() );
 
   stream[ "stock" ] = stockSave;
@@ -202,7 +212,7 @@ void Storage::load( const VariantMap& stream )
 
   _gsd->reset();
   VariantList stockSave = stream.get( "stock" ).toList();
-  for( auto&& sotckInfo : stockSave )
+  for( auto& sotckInfo : stockSave )
   {
     SmStock::Ptr stock = SmStock::create( good::none );
     stock->load( sotckInfo.toList() );
@@ -216,7 +226,7 @@ void Storage::resize(const Store &other )
 {
   setCapacity( other.capacity() );
 
-  for( auto&& goodType : good::all() )
+  for( auto& goodType : good::all() )
   {
     setCapacity( goodType, other.capacity( goodType ) );
   }

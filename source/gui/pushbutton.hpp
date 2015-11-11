@@ -32,9 +32,16 @@ class PushButton : public Widget
 public:
   typedef enum { greyBorderLine, greyBorderLineSmall, whiteBorderUp,
                  blackBorderUp, noBackground, greyBorderLineBig,
-                 flatBorderLine } BackgroundStyle;
+                 flatBorderLine, greyBorderLineFit } BackgroundStyle;
 
   PushButton( Widget* );
+
+  PushButton(Widget* parent,
+              const RectF& rectangle,
+              const std::string& caption="",
+              int id=-1,
+              bool noclip=false,
+              const BackgroundStyle bgstyle=greyBorderLine);
 
   //! constructor
   PushButton( Widget* parent,
@@ -58,10 +65,7 @@ public:
 
   virtual void setText(const std::string& text );
 
-  virtual bool isPushButton() const;
-
   virtual void setPressed( bool pressed );
-
   virtual bool isPressed() const;
 
   virtual bool isBodyVisible() const;
@@ -82,16 +86,17 @@ public:
   virtual void setBackgroundStyle( const std::string& style );
 
   virtual void setFont( const Font& font, ElementState state );
-
   virtual void setFont( const Font& font );
 
   virtual Font font( ElementState state );
 
+  virtual bool isPushButton() const;
   virtual void setIsPushButton( bool value );
 
   virtual void setupUI(const VariantMap &ui);
 
   virtual void setTextOffset( const Point& offset );
+  virtual void canvasDraw(const std::string &text, const Point &point, Font font=Font(), NColor color=0);
 
 signals public:
   virtual Signal0<>& onClicked(); 

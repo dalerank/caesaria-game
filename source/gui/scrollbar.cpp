@@ -83,7 +83,7 @@ bool ScrollBar::onEvent(const NEvent& event)
 		case sEventKeyboard:
 			if (event.keyboard.pressed)
 			{
-                const int oldPos = _value;
+        const int oldPos = _value;
 				bool absorb = true;
 				switch (event.keyboard.key)
 				{
@@ -152,7 +152,7 @@ bool ScrollBar::onEvent(const NEvent& event)
               _draggedBySlider = _d->sliderRect.isPointInside( _d->cursorPos - absoluteRect().lefttop() );
               _trayClick = !_draggedBySlider;
               _desiredPos = _getPosFromMousePos( _d->cursorPos );
-							_environment->setFocus ( this );
+              ui()->setFocus ( this );
 							return true;
 						}
 					}
@@ -458,7 +458,7 @@ int ScrollBar::value() const { return _value;}
 PushButton* ScrollBar::_createButton( const Rect& rectangle,
                                       Alignment left, Alignment rigth, Alignment top, Alignment bottom, int type )
 {
-    PushButton* btn = new PushButton( this, rectangle );
+    PushButton* btn = &add<PushButton>( rectangle );
     btn->setSubElement(true);
     btn->setTabstop(false);
     btn->setAlignment(left, rigth, top, bottom );

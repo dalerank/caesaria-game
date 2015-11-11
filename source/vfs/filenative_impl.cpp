@@ -195,7 +195,7 @@ void FileNative::openFile()
   const char* modeStr[] = { "rb", "wb", "ab" };
   if( (unsigned int)_mode > Entity::fmAppend )
   {
-    Logger::warning( "Unsupported file open mode for %s", _name.toCString() );
+    Logger::warning( "Unsupported file open mode for {0}", _name.toString() );
     _mode = Entity::fmRead;
   }
 
@@ -210,7 +210,7 @@ void FileNative::openFile()
   }
   else
   {
-    Logger::warning( "FileNative: Can't open file %s", _name.toCString() );
+    Logger::warning( "FileNative: Can't open file {0}", _name.toString() );
   }
 }
 
@@ -238,7 +238,9 @@ bool FileNative::isOpen() const { return _file != 0;}
 
 size_t FileNative::lastModify() const
 {
-#ifdef CAESARIA_PLATFORM_LINUX
+#ifdef CAESARIA_PLATFORM_ANDROID
+  return 0;
+#elif defined(CAESARIA_PLATFORM_UNIX)
   struct stat attr;
   stat(_name.toCString(), &attr);
   return attr.st_mtime;

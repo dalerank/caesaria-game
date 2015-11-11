@@ -29,5 +29,6 @@
   "##tt_set_export_rules##" : "Click on the small picture of pottery to see how many you have stored in your warehouse. Click on the 'not trading' button, and it will change to 'Export over' and some arrows; click on the arrows until it says 'Export Over 2'"
   "##tt2_first_export_sale##" : "This authorizes the sale of any pottery in your warehouse in excess of 2 cart loads. Exit to the main game now, and before long you will see a donkey train move through your city. If you have more than 2 carts of pottery in your warehouse, it will stop and remove it, paying you at the same time. Your first export sale!"
   "##tt2_expand_your_city##" : "You can now expand your city further, with income from taxes and pottery sales financing your growth."
+  "##tutorial2_preview_mission##" : "Learn you for advanced rules of game"
 }
 

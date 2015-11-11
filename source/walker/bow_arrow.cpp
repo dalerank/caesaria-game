@@ -27,28 +27,21 @@ namespace {
 const int defaultAttackValue=-3;
 }
 
-BowArrowPtr BowArrow::create(PlayerCityPtr city)
-{
-  BowArrowPtr ret( new BowArrow( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 void BowArrow::_onTarget()
 {
   const WalkerList& walkers = _city()->walkers( dstPos() );
-  foreach( w, walkers )
+  for( auto wlk : walkers )
   {
-    (*w)->updateHealth( defaultAttackValue );
-    (*w)->acceptAction( Walker::acFight, startPos() );
+    wlk->updateHealth( defaultAttackValue );
+    wlk->acceptAction( Walker::acFight, startPos() );
   }
 }
 
 const char* BowArrow::rcGroup() const {  return ResourceGroup::sprites; }
 int BowArrow::_rcStartIndex() const { return 130; }
 
-BowArrow::BowArrow(PlayerCityPtr city) : ThrowingWeapon( city )
+BowArrow::BowArrow(PlayerCityPtr city)
+  : ThrowingWeapon( city )
 {
   _setType( walker::bow_arrow );
 

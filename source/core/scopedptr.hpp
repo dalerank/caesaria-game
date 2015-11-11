@@ -87,7 +87,14 @@ public:
   inline bool operator!() const {		return !d;	}
   inline operator bool() const {	return !isNull();	}
   inline T* data() const	{	return d;	}
-  inline bool isNull() const {	return !d;	}
+  inline bool isNull() const { return !d; }
+
+  template<typename... Args>
+  void createInstance( Args & ... args)
+  {
+    T* instance = new T( args... );
+    reset( instance );
+  }
 
   inline void reset(T *other = 0)
   {

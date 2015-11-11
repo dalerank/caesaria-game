@@ -19,16 +19,17 @@
 #define __CAESARIA_CITYSERVICE_FESTIVAL_H_INCLUDED__
 
 #include "cityservice.hpp"
-#include "religion/romedivinity.hpp"
+#include "religion/divinities.hpp"
 
 namespace city
 {
 
 struct FestivalInfo
 {
+  typedef enum { none=0, small, middle, big, count } Type;
   DateTime date;
-  religion::RomeDivinityType divinity;
-  int size;
+  religion::RomeDivinity::Type divinity;
+  Type size;
 
   VariantList save() const;
   void load( const VariantList& stream );
@@ -39,12 +40,11 @@ PREDEFINE_CLASS_SMARTPOINTER(Festival)
 class Festival : public Srvc
 {
 public:
-  static SrvcPtr create(PlayerCityPtr city);
   static std::string defaultName();
 
   DateTime lastFestival() const;
   DateTime nextFestival() const;
-  void assign(religion::RomeDivinityType name, int size);
+  void assign(religion::RomeDivinity::Type name, int size);
   void now();
 
   virtual void timeStep( const unsigned int time );
@@ -52,9 +52,9 @@ public:
   virtual VariantMap save() const;
   virtual void load(const VariantMap& stream );  
 
+  Festival( PlayerCityPtr city );
 private:
   void _doFestival();
-  Festival( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;

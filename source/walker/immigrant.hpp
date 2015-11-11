@@ -27,10 +27,9 @@ typedef SmartPtr< Immigrant > ImmigrantPtr;
 /** This is an immigrant coming with his stuff */
 class Immigrant : public Emigrant
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
   typedef enum { G_EMIGRANT_CART1=0, G_EMIGRANT_CART2, CT_MAX } CartType;
-
-  static ImmigrantPtr create( PlayerCityPtr city);
 
   virtual void getPictures( gfx::Pictures &oPics);
   virtual void timeStep(const unsigned long time);

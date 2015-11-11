@@ -198,7 +198,7 @@ static std::string _prepareUpdateBatchFile( const std::string& executableFp, con
   // Append the current set of command line arguments to the new instance
   std::string arguments;
 
-  for( auto&& optionItem : cmds )
+  for( auto& optionItem : cmds )
   {
     arguments += " " + optionItem;
   }
@@ -232,7 +232,7 @@ static std::string _prepareUpdateBatchFile( const std::string& executableFp, con
   batch.close();
 
   // Mark the shell script as executable in *nix
-  if( OSystem::is( OSystem::unix ))
+  if( OSystem::isUnix() )
     OSystem::markFileAsExecutable(updateBatchFile.toString());
 
   return updateBatchFile.toString();

@@ -24,80 +24,69 @@
 #include "vfs/path.hpp"
 #include "gfx/picture.hpp"
 #include "core/variant.hpp"
-#include "objects/overlay.hpp"
+#include "objects/constants.hpp"
 
 // contains some metaData for a building type
-class MetaDataOptions
-{
-public:
-  static const char* cost;
-  static const char* requestDestroy;
-  static const char* employers;
-  static const char* c3logic;
-};
+struct Desirability;
 
-class MetaData
+namespace object
 {
-  friend class MetaDataHolder;
-  MetaData( const object::Type type, const std::string& name );
+
+class Info
+{
+  friend class InfoDB;
+  Info( const object::Type type, const std::string& name );
 
   void initialize(const VariantMap& options);
 
 public:
-  static MetaData invalid;
+#define DECL_PROPERTY(type,name,def) type name(const type& t=def) const { return getOption( #name, t ); }
+  DECL_PROPERTY(int,cost,0)
+  DECL_PROPERTY(bool,requestDestroy,false)
+  DECL_PROPERTY(int,employers,0)
+  DECL_PROPERTY(bool,c3logic,false)
+  DECL_PROPERTY(bool,checkWalkersOnBuild,true)
+  DECL_PROPERTY(int,maxServe,0)
+  DECL_PROPERTY(bool,mayBurn,true)
+  DECL_PROPERTY(float,productRate,1.f)
 
-  MetaData( const MetaData& a );
+  static Info invalid;
 
-  ~MetaData();
+  Info( const Info& a );
+
+  ~Info();
 
   std::string name() const;
   std::string sound() const;
   std::string prettyName() const;
   std::string description() const;
-  bool checkWalkersOnBuild() const;
   object::Type type() const;
   object::Group group() const;
-  gfx::Picture picture( int size=0 ) const;
-  Desirability desirability() const;
+  gfx::Picture randomPicture( int size=0 ) const;
+  bool isMyPicture( const std::string& name ) const;
+  const Desirability& desirability() const;
+  gfx::Picture randomPicture( const Size& size ) const;
 
   Variant getOption( const std::string& name, Variant defaultVal=Variant() ) const;
+  bool getFlag( const std::string& name, bool defValue ) const;
+  Info& operator=( const Info& a );
+  void reload() const;
 
-  MetaData& operator=( const MetaData& a );
+  static const Info& find( object::Type type );
 private:
   class Impl;
   ScopedPtr<Impl> _d;
 };
 
-// contains some metaData for each building type
-class MetaDataHolder
+struct ProductConsumer
 {
-public:
-  static MetaDataHolder& instance();
+  ProductConsumer( good::Product product );
+  object::TypeSet consumers() const;
+  object::Type consumer() const;
 
-  void addData(const MetaData& data, bool force);
-  static const MetaData& find(const object::Type buildingType);
-  bool hasData(const object::Type buildingType) const;
-  object::Types availableTypes() const;
-
-  // return factory that consume good
-  object::Type getConsumerType(const good::Product inGoodType) const;
-
-  static object::Group findGroup( const std::string& name );
-  static std::string findGroupname( object::Group group );
-
-  static std::string findPrettyName( object::Type type );
-  static std::string findDescription( object::Type type );
-  static gfx::Picture randomPicture( object::Type type, Size size );
-
-  void initialize(vfs::Path filename );
-  void reload( const object::Type type );
-  ~MetaDataHolder();
-private:
-  MetaDataHolder();
-  void _loadConfig(object::Type type, const std::string &name, const VariantMap& options, bool force);
-
-  class Impl;
-  ScopedPtr<Impl> _d;
+  good::Product _product;
 };
+
+}//end namepsace object
 
 #endif //_CAESARIA_OBJECTS_METADATA_H_INCLUDE_

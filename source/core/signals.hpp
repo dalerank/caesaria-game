@@ -27,9 +27,9 @@
 #define CONNECT( a, signal, b, slot ) \
 { \
 	if( (a!=0) && (b!=0) ) { (a)->signal.connect( (b), &slot ); } \
-	else if( (a==0) && (b==0) ) { Logger::warning( "Cannot connect null::%s to null::%s at %d:%s", CAESARIA_STR_A(signal), CAESARIA_STR_A(slot), __LINE__, __FILE__); } \
-	else if( (b==0) ) { Logger::warning( "Cannot connect %s::%s to null::%s at %d:%s", CAESARIA_STR_A(a), CAESARIA_STR_A(signal), CAESARIA_STR_A(slot), __LINE__, __FILE__); }\
-	else if( (a==0) ) { Logger::warning( "Cannot connect null::%s to %s::%s at %d:%s", CAESARIA_STR_A(signal), CAESARIA_STR_A(b), CAESARIA_STR_A(slot), __LINE__, __FILE__); }\
+  else if( (a==0) && (b==0) ) { Logger::warning( "Cannot connect null::{0} to null::{1} at {2}:{3}", CAESARIA_STR_A(signal), CAESARIA_STR_A(slot), __LINE__, __FILE__); } \
+  else if( (b==0) ) { Logger::warning( "Cannot connect {0}::{1} to null::{2} at {3}:{4}", CAESARIA_STR_A(a), CAESARIA_STR_A(signal), CAESARIA_STR_A(slot), __LINE__, __FILE__); }\
+  else if( (a==0) ) { Logger::warning( "Cannot connect null::{0} to {1}::{2} at {3}:{4}", CAESARIA_STR_A(signal), CAESARIA_STR_A(b), CAESARIA_STR_A(slot), __LINE__, __FILE__); }\
 }
 
 template< class Param0 = void >
@@ -44,6 +44,12 @@ private:
 
 public:
   void connect( _Delegate delegate ) { delegateList.push_back( delegate ); }
+
+  Signal0& operator+=( _Delegate delegate )
+  {
+    delegateList.push_back( delegate );
+    return *this;
+  }
 
   template< class X, class Y >
   void connect( Y * obj, void (X::*func)() )
@@ -107,6 +113,12 @@ public:
   void connect( Y * obj, void (X::*func)( Param1 p1 ) )
   {
     delegateList.push_back( makeDelegate( obj, func ) );
+  }
+
+  Signal1& operator+=( _Delegate delegate )
+  {
+    delegateList.push_back( delegate );
+    return *this;
   }
 
   template< class X, class Y >

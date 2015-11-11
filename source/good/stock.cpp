@@ -34,18 +34,18 @@ Stock::Stock()
   _qty = 0;
 }
 
-Stock::Stock(const Product& which, const int maxQty, const int currentQty)
+Stock::Stock(const Product& which, const int capacity, const int qty)
   : _type( which )
 {
-  _capacity = maxQty;
-  _qty = currentQty;
+  _capacity = capacity;
+  _qty = qty;
 }
 
 Stock::~Stock() {}
 
 const Product& Stock::type() const { return _type; }
 
-void Stock::append(good::Stock& stock, const int iAmount)
+void Stock::takeFrom(good::Stock& stock, const int iAmount)
 {
   if (stock.type() == none)
   {
@@ -54,7 +54,7 @@ void Stock::append(good::Stock& stock, const int iAmount)
   }
   if (type() != none && type() != stock.type() )
   {
-    std::string errorStr = utils::format( 0xff, "GoodTypes do not match: %d vs %d", _type, stock._type );
+    std::string errorStr = fmt::format( "GoodTypes do not match: {} vs {}", _type, stock._type );
     Logger::warning( errorStr );
     return;
   }
@@ -88,29 +88,46 @@ VariantList Stock::save() const
   stream << (int)_type
          << _capacity
          << _qty;
+  if( _info.sender > 0 )
+  {
+    stream << _info.sender
+           << _info.birth;
+  }
 
   return stream;
 }
 
-enum { idxType=0, idxCapacity, idxQty };
+enum { idxType=0, idxCapacity, idxQty, idxSender, idxBirth };
 
 void Stock::load( const VariantList& stream )
 {
-  if( stream.empty())
+  if( stream.empty() )
     return;
 
   _type = good::Product( stream.get( idxType ).toInt() );
   if( _type >= good::any() )
   {
-    Logger::warning( "GoodStock: wrong type of good %d", _type );
+    Logger::warning( "GoodStock: wrong type of good {0}", _type );
     _type = good::none;
   }
 
   _capacity = (int)stream.get( idxCapacity );
+
   _qty = math::clamp( (int)stream.get( idxQty ), 0, _capacity );
+  _info.sender = stream.get( idxSender, 0 );
+  if( _info.sender > 0 )
+    _info.birth = stream.get( idxBirth ).toDateTime();
+}
+
+void Stock::setInfo(const DateTime& date, unsigned int tag)
+{
+  _info.birth = date;
+  _info.sender = tag;
 }
 
 bool Stock::empty() const {  return _qty == 0; }
+void Stock::setInfo(const Stock::Info& info) { _info = info; }
+const Stock::Info& Stock::info() const { return _info; }
 void Stock::setType( Product goodType ) { _type = goodType; }
 void Stock::setCapacity( const int maxQty ){  _capacity = maxQty;}
 int Stock::freeQty() const{  return std::max( _capacity - _qty, 0 );}

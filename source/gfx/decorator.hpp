@@ -19,6 +19,7 @@
 #define _CAESARIA_PICTURE_DECORATOR_INCLUDE_H_
 
 #include "picturesarray.hpp"
+#include "core/rect_array.hpp"
 
 namespace gfx
 {
@@ -52,11 +53,11 @@ public:
                } Mode;
 
   static void draw(Picture& dstpic, const Rect& rectangle, Mode mode, bool useAlpha=true, bool updateTexture=false);
-  static void draw(Pictures& stack, const Rect& rectangle, Mode mode, bool negY=negativeY);
+  static void draw(Pictures& stack, const Rect& rectangle, Mode mode, Rects* rects=nullptr, bool negY=negativeY);
   static void drawArea(Pictures& stack, const Rect& rectangle, int picId, int picCount, int offset);
 
   // draws a text button background  offset=22(lightgray), 25(gray), 62(small_green), 65(small_brown), 68(small_grey)
-  static void drawPanel( Pictures& stack, const Rect& rectangle, int picId );
+  static void drawPanel(Pictures& stack, const Rect& rectangle, int picId, Rects* rects);
 
   // draws a rectangular area
   static void drawFrame(Picture& dstpic, const Rect& rectangle, const int picId, bool useAlpha);

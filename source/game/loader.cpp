@@ -94,13 +94,13 @@ void Loader::Impl::initEntryExitTile( const TilePos& tlPos, PlayerCityPtr city )
 
   Tile& signTile = tmap.at( tlPos + tlOffset );
 
-  Logger::warning( "(%d, %d)", tlPos.i(),    tlPos.j()    );
-  Logger::warning( "(%d, %d)", tlOffset.i(), tlOffset.j() );
+  Logger::warning( "({0}, {1})", tlPos.i(),    tlPos.j()    );
+  Logger::warning( "({0}, {1})", tlOffset.i(), tlOffset.j() );
 
   if( maySetSign( signTile ) )
   {
     tile::clear( signTile );
-    OverlayPtr waymark = TileOverlayFactory::instance().create( object::waymark );
+    OverlayPtr waymark = Overlay::create( object::waymark );
     city::AreaInfo info( city, tlPos + tlOffset );
     waymark->build( info );
     city->addOverlay( waymark );
@@ -111,9 +111,10 @@ void Loader::Impl::initTilesAnimation( Tilemap& tmap )
 {
   TilesArray area = tmap.allTiles();
 
+  const Animation& meadow = AnimationBank::simple( AnimationBank::animMeadow );
   for( auto tile : area )
   {
-    int rId = tile->originalImgId() - 364;
+    int rId = tile->imgId() - 364;
     if( rId >= 0 && rId < 8 )
     {
       Animation water = AnimationBank::simple( AnimationBank::animWater );
@@ -124,13 +125,17 @@ void Loader::Impl::initTilesAnimation( Tilemap& tmap )
 
     if( tile->getFlag( Tile::tlMeadow ) )
     {
-      const Animation& meadow = AnimationBank::simple( AnimationBank::animMeadow );
+      Animation meadowAnim;
+      int index = math::random( meadow.size()-1 );
+      meadowAnim.addFrame( meadow.frame( index ) );
+      meadowAnim.setDelay( 10 );
+
       if( !tile->picture().isValid() )
       {
-        Picture pic = MetaDataHolder::randomPicture( object::terrain, Size(1) );
+        Picture pic = object::Info::find( object::terrain ).randomPicture( Size(1) );
         tile->setPicture( pic );
       }
-      tile->setAnimation( meadow );
+      tile->setAnimation( meadowAnim );
     }
   }
 }
@@ -140,12 +145,10 @@ void Loader::Impl::finalize( Game& game, bool needInitEnterExit )
   Tilemap& tileMap = game.city()->tilemap();
 
   // exit and entry can't point to one tile or .... can!
-  const BorderInfo& border = game.city()->borderInfo();
-
   if( needInitEnterExit )
   {
-    initEntryExitTile( border.roadEntry, game.city() );
-    initEntryExitTile( border.roadExit,  game.city() );
+    initEntryExitTile( game.city()->getBorderInfo( PlayerCity::roadEntry ).epos(), game.city() );
+    initEntryExitTile( game.city()->getBorderInfo( PlayerCity::roadExit ).epos(),  game.city() );
   }
 
   initTilesAnimation( tileMap );

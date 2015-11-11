@@ -36,32 +36,11 @@ public:
   Picture picture;
 };
 
-WalkerPtr Locust::create(PlayerCityPtr city)
+Locust::Locust(PlayerCityPtr city, TilePos pos, int time)
+  : Walker( city, walker::locust  ), _d( new Impl )
 {
-  Locust* locust = new Locust( city );
-
-  WalkerPtr ret( locust );
-  ret->drop();
-
-  return ret;
-}
-
-void Locust::create(PlayerCityPtr city, TilePos pos, int time)
-{
-  Locust* locust = new Locust( city );
-  locust->setPos( pos );
-  locust->_d->time = time;
-
-  WalkerPtr ret( locust );
-  ret->drop();
-  ret->attach();
-}
-
-Locust::Locust( PlayerCityPtr city ) : Walker( city ), _d( new Impl )
-{
-  _setType( walker::locust );
-
-  _d->time = 0;
+  _d->time = time;
+  setPos( pos );
 
   setName( _("##locust##") );
   _setHealth( 0 );
@@ -77,7 +56,7 @@ void Locust::timeStep(const unsigned long time)
 
   if( game::Date::isWeekChanged() )
   {
-    FarmPtr farm = _city()->getOverlay( pos() ).as<Farm>();
+    auto farm = _map().overlay( pos() ).as<Farm>();
     if( farm.isValid() && farm->type() != object::meat_farm )
     {
       farm->updateProgress( -50 );

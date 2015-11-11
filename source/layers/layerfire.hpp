@@ -26,14 +26,16 @@ namespace citylayer
 class Fire : public Info
 {
 public:
-  virtual int type() const;
-  virtual void drawTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
+  virtual int type() const;  
+  virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
+  virtual void afterRender(gfx::Engine& engine);
+  virtual void render(gfx::Engine &engine);
   virtual void handleEvent( NEvent& event );
 
-  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
-
-private:
   Fire( gfx::Camera& camera, PlayerCityPtr city );
+private:
+  virtual void _updatePaths();
+  __DECLARE_IMPL(Fire)
 };
 
 }//end namespace citylayer

@@ -36,7 +36,7 @@ Baths::Baths() : HealthBuilding(Service::baths, object::baths, Size(2) )
 
 bool haveReservoirWater( const Tilemap& tm, const TilePos& pos )
 {
-  TilesArray possiblePlace = tm.getArea( pos, pos + TilePos(1,1) );
+  TilesArray possiblePlace = tm.area( pos, pos + TilePos(1,1) );
   return !possiblePlace.select( Tile::pReservoirWater ).empty();
 }
 

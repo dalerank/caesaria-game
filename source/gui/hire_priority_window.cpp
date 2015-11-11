@@ -34,7 +34,6 @@ namespace dialog
 class HirePriority::Impl
 {
 public:
-  GameAutoPause locker;
   city::industry::Type type;
   int priority;
   std::set<PushButton*> prButtons;
@@ -48,38 +47,37 @@ HirePriority::HirePriority(Widget* p, city::industry::Type type, int priority)
 {
   Logger::warning( "HirePriorityWnd: show" );
 
-  _d->locker.activate();
   _d->type = type;
   _d->priority = priority;
 
   WidgetEscapeCloser::insertTo( this );
+  GameAutoPause::insertTo( this );
 
-  Label* lbTitle = new Label( this, Rect( 10, 10, width()-10, 10+35), _("##priority_level##") );
-  lbTitle->setFont( Font::create( FONT_5 ) );
-  lbTitle->setTextAlignment( align::center, align::center );
+  Label& lbTitle = add<Label>( Rect( 10, 10, width()-10, 10+35), _("##priority_level##") );
+  lbTitle.setFont( Font::create( FONT_5 ) );
+  lbTitle.setTextAlignment( align::center, align::center );
 
-  Label* lbExit = new Label( this, Rect( 0, height() - 30, width(), height() - 10), _("##right_click_to_exit##") );
-  lbExit->setFont( Font::create( FONT_1 ) );
-  lbExit->setTextAlignment( align::center, align::center );
+  Label& lbExit = add<Label>( Rect( 0, height() - 30, width(), height() - 10), _("##right_click_to_exit##") );
+  lbExit.setFont( Font::create( FONT_1 ) );
+  lbExit.setTextAlignment( align::center, align::center );
 
   Point start( 65, 44 );
   Size btnSize( 28, 28 );
   for( int k=0; k < 9; k++ )
   {
-    PushButton* btn = new PushButton( this, Rect( start, btnSize), utils::i2str( k+1 ), k+1, false, PushButton::flatBorderLine );
-    btn->setIsPushButton( true );
-    btn->setPressed( priority > 0 ? k+1 == priority : false );
-    btn->setTooltipText( _("##priority_button_tolltip##") );
+    PushButton& btn = add<PushButton>( Rect( start, btnSize), utils::i2str( k+1 ), k+1, false, PushButton::flatBorderLine );
+    btn.setIsPushButton( true );
+    btn.setPressed( priority > 0 ? k+1 == priority : false );
+    btn.setTooltipText( _("##priority_button_tolltip##") );
     start += Point( btnSize.width() + 5, 0 );
-    _d->prButtons.insert( btn );
+    _d->prButtons.insert( &btn );
   }
 
-  PushButton* noPr = new PushButton( this, Rect( 68, 78, 364, 104 ), _("##no_priority##"), 0, false, PushButton::flatBorderLine );
-  _d->prButtons.insert( noPr );
-  noPr->setPressed( priority == 0 );
+  PushButton& noPr = add<PushButton>( Rect( 68, 78, 364, 104 ), _("##no_priority##"), 0, false, PushButton::flatBorderLine );
+  _d->prButtons.insert( &noPr );
+  noPr.setPressed( priority == 0 );
 
-  setCenter( p->center() );
-
+  moveTo( Widget::parentCenter );
   setModal();
 }
 
@@ -91,9 +89,9 @@ bool HirePriority::onEvent(const NEvent& event)
   {
     if( _d->prButtons.count( static_cast<PushButton*>( event.gui.caller ) ) )
     {
-      foreach( i, _d->prButtons )
+      for( auto btn : _d->prButtons )
       {
-        (*i)->setPressed( *i == event.gui.caller );
+        btn->setPressed( btn == event.gui.caller );
       }
       _d->priority = event.gui.caller->ID();
       emit _d->onAcceptPrioritySignal( _d->type, _d->priority );

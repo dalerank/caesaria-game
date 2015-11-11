@@ -38,16 +38,12 @@ public:
                    const std::string& receiver="",
                    int id=-1 );
 
-  void draw( gfx::Engine& painter );
+  virtual void draw( gfx::Engine& painter );
 
   static Popup* information( Widget* parent,
                              const std::string& title,
-                                       const std::string& text,
-                                       const DateTime& time );
-
-private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+                             const std::string& text,
+                             const DateTime& time );
 };
 
 }//end namespace messagebox

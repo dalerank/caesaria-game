@@ -42,12 +42,28 @@ namespace city
 REGISTER_SERVICE_IN_FACTORY(Festival,festival)
 
 namespace {
-  int firstFestivalSentinment[ festival::count] = { 7, 9, 12 };
-  int secondFesivalSentiment[ festival::count] = { 2, 3, 5 };
+  struct FestivalDesc
+  {
+    int first;
+    int second;
+    std::string title;
+    std::string desc;
+    std::string video;
+  };
 
-  const char* festivalTitles[ festival::count] = { "", "##small_festival##", "##middle_festival##", "##great_festival##" };
-  const char* festivalDesc[ festival::count] = { "", "##small_fest_description##", "##middle_fest_description##", "##big_fest_description##" };
-  const char* festivalVideo[ festival::count] = { "", "festival1_feast", "festival3_glad", "festival2_chariot" };
+  static std::map< FestivalInfo::Type, FestivalDesc > festivalDesc =
+  {
+   { FestivalInfo::none,   { 0, 0, "##unk_festival##",    "##unk_festival_description##", ""                  } },
+   { FestivalInfo::small,  { 7, 2, "##small_festival##",  "##small_fest_description##",   "festival1_feast"   } },
+   { FestivalInfo::middle, { 9, 3, "##middle_festival##", "##middle_fest_description##",  "festival3_glad"    } },
+   { FestivalInfo::big,    {12, 5, "##great_festival##",  "##big_fest_description##",     "festival2_chariot" } },
+  };
+
+  FestivalDesc& findDesc( FestivalInfo::Type type )
+  {
+    auto it = festivalDesc.find( type );
+    return it != festivalDesc.end() ? it->second : festivalDesc[ FestivalInfo::none ];
+  }
 }
 
 class History : public std::vector<FestivalInfo>
@@ -77,8 +93,8 @@ VariantList FestivalInfo::save() const
 void FestivalInfo::load(const VariantList& stream)
 {
   date = stream.get( 0 ).toDateTime();
-  divinity = (religion::RomeDivinityType)stream.get( 1 ).toInt();
-  size = stream.get( 2 ).toInt();
+  divinity = stream.get( 1 ).toEnum<religion::RomeDivinity::Type>();
+  size = stream.get( 2 ).toEnum<FestivalInfo::Type>();
 }
 
 class Festival::Impl
@@ -91,29 +107,20 @@ public:
   History history;
 };
 
-SrvcPtr Festival::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new Festival( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 std::string Festival::defaultName() {  return CAESARIA_STR_EXT(Festival); }
 
 void Festival::now() { _d->nextfest.date = game::Date::current(); }
 DateTime Festival::lastFestival() const { return _d->lastfest.date; }
 DateTime Festival::nextFestival() const { return _d->nextfest.date; }
 
-void Festival::assign( RomeDivinityType name, int size )
+void Festival::assign(RomeDivinity::Type name, int size )
 {
-  _d->nextfest.size = (festival::Type)size;
+  _d->nextfest.size = (FestivalInfo::Type)size;
   _d->nextfest.date= game::Date::current();
   _d->nextfest.date.appendMonth( festival::prepareMonthsDelay + size );
   _d->nextfest.divinity = name;
 
-  GameEventPtr e = Payment::create( econ::Issue::sundries, -_city()->statistic().festival.calcCost( (FestivalType)size ) );
-  e->dispatch();
+  events::dispatch<Payment>( econ::Issue::sundries, -_city()->statistic().festival.calcCost( (FestivalType)size ) );
 }
 
 Festival::Festival(PlayerCityPtr city)
@@ -159,15 +166,15 @@ void Festival::load( const VariantMap& stream)
 void Festival::_doFestival()
 {
   int sentimentValue = 0;
+  int festSize = math::clamp<int>( _d->nextfest.size, FestivalInfo::none, FestivalInfo::big );
+  const FestivalDesc& info = findDesc( FestivalInfo::Type( festSize ) );
 
   const DateTime currentDate = game::Date::current();
   if( _d->oldfest.date.monthsTo( currentDate ) >= DateTime::monthsInYear )
   {
-    int* sentimentValues = (_d->lastfest.date.monthsTo( game::Date::current() ) < DateTime::monthsInYear )
-                                ? secondFesivalSentiment
-                                : firstFestivalSentinment;
-
-    sentimentValue = sentimentValues[ _d->nextfest.size ];
+    sentimentValue = (_d->lastfest.date.monthsTo( game::Date::current() ) < DateTime::monthsInYear )
+                                ? info.second
+                                : info.first;
   }
 
   _d->oldfest = _d->lastfest;
@@ -176,18 +183,13 @@ void Festival::_doFestival()
 
   _d->history.push_back( _d->oldfest );
 
-  rome::Pantheon::doFestival( _d->nextfest.divinity, _d->nextfest.size );
+  rome::Pantheon::doFestival( _d->nextfest.divinity, festSize );
 
-  int id = math::clamp<int>( _d->nextfest.size, festival::none, festival::big );
-  GameEventPtr e = ShowFeastival::create( _(festivalDesc[ id ]), _(festivalTitles[ id ]),
-                                          _city()->mayor()->name(), festivalVideo[ id ] );
-  e->dispatch();
+  events::dispatch<ShowFeastival>( _(info.desc), _(info.title),
+                                   _city()->mayor()->name(), info.video );
 
-  e = UpdateCitySentiment::create( sentimentValue );
-  e->dispatch();
-
-  e = UpdateHouseService::create( Service::crime, -firstFestivalSentinment[ _d->nextfest.size ] );
-  e->dispatch();
+  events::dispatch<UpdateCitySentiment>( sentimentValue );
+  events::dispatch<UpdateHouseService>( Service::crime, -sentimentValue );
 }
 
 }//end namespace city

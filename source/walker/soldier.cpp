@@ -40,10 +40,9 @@ public:
            attackDistance( 1u ), morale( 100 ) {}
 };
 
-Soldier::Soldier(PlayerCityPtr city, walker::Type type)
-    : Human( city ), __INIT_IMPL(Soldier)
+Soldier::Soldier( PlayerCityPtr city, walker::Type type)
+    : Human( city, type ), __INIT_IMPL(Soldier)
 {
-  _setType( type );
 }
 
 void Soldier::fight()
@@ -133,6 +132,7 @@ unsigned int Soldier::attackDistance() const{ return _dfunc()->attackDistance; }
 Soldier::SldrAction Soldier::_subAction() const { return _dfunc()->sldAction; }
 void Soldier::_setSubAction(Soldier::SldrAction action){ _dfunc()->sldAction = action; }
 void Soldier::setAttackDistance(unsigned int distance) { _dfunc()->attackDistance = distance; }
+int Soldier::experience() const { return 0; }
 void Soldier::addFriend(walker::Type friendType){  _dfunc()->friends.insert( friendType );}
 
 bool Soldier::isFriendTo(WalkerPtr wlk) const

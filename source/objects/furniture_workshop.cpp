@@ -38,14 +38,15 @@ bool FurnitureWorkshop::build( const city::AreaInfo& info )
 {
   Factory::build( info );
 
-  bool haveTimberLogger = !info.city->statistic().objects.find<TimberLogger>( object::lumber_mill ).empty();
+  bool haveTimberLogger = info.city->statistic().objects.count<TimberLogger>() > 0;
 
   _setError( haveTimberLogger ? "" : _("##need_timber_for_work##") );
 
   return true;
 }
 
-FurnitureWorkshop::FurnitureWorkshop() : Factory(good::timber, good::furniture, object::furniture_workshop, Size(2) )
+FurnitureWorkshop::FurnitureWorkshop()
+  : Factory(good::timber, good::furniture, object::furniture_workshop, Size(2) )
 {
   _picture().load( ResourceGroup::commerce, 117 );
   _fgPictures().resize( 3 );
@@ -53,6 +54,6 @@ FurnitureWorkshop::FurnitureWorkshop() : Factory(good::timber, good::furniture, 
 
 void FurnitureWorkshop::_storeChanged()
 {
-  _fgPictures()[1] = inStockRef().empty() ? Picture() : Picture( ResourceGroup::commerce, 155 );
+  _fgPictures()[1] = inStock().empty() ? Picture() : Picture( ResourceGroup::commerce, 155 );
   _fgPictures()[1].setOffset( 47, 0 );
 }

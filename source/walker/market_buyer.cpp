@@ -54,10 +54,9 @@ public:
 };
 
 MarketBuyer::MarketBuyer(PlayerCityPtr city )
-  : Human( city ), _d( new Impl )
+  : Human( city, walker::marketBuyer ), _d( new Impl )
 {
-   _setType( walker::marketBuyer );
-   _d->maxDistance = 25;
+   _d->maxDistance = MarketBuyer::maxBuyDistance();
    _d->basket.setCapacity(maxCapacity);  // this is a big basket!
 
    _d->basket.setCapacity(good::wheat, foodCapacity);
@@ -71,7 +70,7 @@ MarketBuyer::MarketBuyer(PlayerCityPtr city )
    _d->basket.setCapacity(good::oil, goodCapacity);
    _d->basket.setCapacity(good::wine, goodCapacity);
 
-   setName( NameGenerator::rand( NameGenerator::female ) );
+   setName( NameGenerator::rand( NameGenerator::plebFemale ) );
 }
 
 MarketBuyer::~MarketBuyer(){}
@@ -118,7 +117,7 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const object::Type ty
   return gfx::tilemap::invalidLocation();
 }
 
-void MarketBuyer::computeWalkerDestination( MarketPtr market )
+void MarketBuyer::_computeWalkerDestination( MarketPtr market )
 {
   _d->market = market;
   good::Products priorityGoods = _d->market->mostNeededGoods();
@@ -134,18 +133,16 @@ void MarketBuyer::computeWalkerDestination( MarketPtr market )
     // get the list of buildings within reach
     Pathway pathWay;
     Propagator pathPropagator( _city() );
-    pathPropagator.init( ptr_cast<Construction>( _d->market ) );
+    pathPropagator.init( _d->market.as<Construction>() );
     pathPropagator.setAllDirections( false );
     pathPropagator.propagate( _d->maxDistance);
 
     // try to find the most needed good
-    for( auto goodType : priorityGoods )
+    for( auto& goodType : priorityGoods )
     {
       _d->priorityGood = goodType;
 
-      if( _d->priorityGood == good::wheat || _d->priorityGood == good::fish
-          || _d->priorityGood == good::meat || _d->priorityGood == good::fruit
-          || _d->priorityGood == good::vegetable)
+      if( good::isFood( _d->priorityGood ) )
       {
         // try get that good from a granary
         _d->destBuildingPos = getWalkerDestination2<Granary>( pathPropagator, object::granery, _d->market,
@@ -169,7 +166,7 @@ void MarketBuyer::computeWalkerDestination( MarketPtr market )
         // we found a destination!
         setPos( pathWay.startPos() );
         setPathway( pathWay );
-         break;
+        break;
       }
     }
   }
@@ -233,19 +230,20 @@ void MarketBuyer::_reachedPathway()
    else
    {
       // get goods from destination building
-      OverlayPtr building = _city()->tilemap().at( _d->destBuildingPos ).overlay();
+      OverlayPtr building = _map().overlay( _d->destBuildingPos );
       
       if( building.is<Granary>() )
       {
-        GranaryPtr granary = building.as<Granary>();
+        auto granary = building.as<Granary>();
         // this is a granary!
         // std::cout << "MarketLady arrives at granary, res=" << _reservationID << std::endl;
         granary->store().applyRetrieveReservation(_d->basket, _d->reservationID);
+
         good::Products foods = good::foods();
         foods.exclude( _city()->tradeOptions().locked() );
 
         // take other goods if possible
-        for( auto goodType : foods )
+        for( auto& goodType : foods )
         {
           // for all types of good (except G_NONE)
           int qty = _d->market->getGoodDemand(goodType) - _d->basket.qty(goodType);
@@ -262,16 +260,17 @@ void MarketBuyer::_reachedPathway()
           }
         }
       }
-      else if( is_kind_of<Warehouse>( building ) )
+      else if( building.is<Warehouse>() )
       {
-        WarehousePtr warehouse = ptr_cast<Warehouse>( building );
+        auto warehouse = ptr_cast<Warehouse>( building );
         // this is a warehouse!
         warehouse->store().applyRetrieveReservation(_d->basket, _d->reservationID);
+
         good::Products products = good::all();
         products.exclude( _city()->tradeOptions().locked() );
 
         // take other goods if possible
-        for( auto goodType : products )
+        for( auto& goodType : products )
         {
           // for all types of good (except G_NONE)
           int qty = _d->market->getGoodDemand(goodType) - _d->basket.qty(goodType);
@@ -293,20 +292,21 @@ void MarketBuyer::_reachedPathway()
 
       while( _d->basket.qty() > MarketKid::defaultCapacity )
       {
-        for( auto gtype : good::all() )
+        for( auto& gtype : good::all() )
         {
           good::Stock& currentStock = _d->basket.getStock( gtype );
           if( currentStock.qty() > 0 )
           {
-            MarketKidPtr boy = MarketKid::create( _city(), this );
-            good::Stock& boyBasket = boy->getBasket();
+            auto marketBoy = Walker::create<MarketKid>( _city(), this );
+
+            good::Stock& boyBasket = marketBoy->getBasket();
             boyBasket.setType( gtype );
             boyBasket.setCapacity( MarketKid::defaultCapacity );
             _d->basket.retrieve( boyBasket, math::clamp<int>( currentStock.qty(), 0, MarketKid::defaultCapacity ) );
-            boy->setDelay( delay );
+            marketBoy->setDelay( delay );
             delay += 20;
-            boy->send2City( _d->market );
-            _d->market->addWalker( boy.as<Walker>() );
+            marketBoy->send2City( _d->market );
+            _d->market->addWalker( marketBoy.as<Walker>() );
           }
         }
       }
@@ -320,7 +320,7 @@ void MarketBuyer::_reachedPathway()
 
 void MarketBuyer::send2City( MarketPtr market )
 {
-  computeWalkerDestination( market );
+  _computeWalkerDestination( market );
   attach();
 }
 
@@ -344,17 +344,11 @@ void MarketBuyer::load( const VariantMap& stream)
 
   TilePos tpos = stream.get( "marketPos" ).toTilePos();
 
-  _d->market << _city()->getOverlay( tpos );
+  _d->market << _map().overlay( tpos );
 
   VARIANT_LOAD_CLASS_D( _d, basket, stream )
   VARIANT_LOAD_ANY_D( _d, maxDistance, stream )
   VARIANT_LOAD_ANY_D( _d, reservationID, stream )
 }
 
-MarketBuyerPtr MarketBuyer::create( PlayerCityPtr city )
-{
-  MarketBuyerPtr ret( new MarketBuyer( city ) );
-  ret->drop();
-
-  return ret;
-}
+unsigned int MarketBuyer::maxBuyDistance() { return 25; }

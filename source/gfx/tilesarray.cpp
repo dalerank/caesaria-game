@@ -31,6 +31,17 @@ bool TilesArray::contain(const TilePos &tilePos) const
   return false;
 }
 
+bool TilesArray::contain(Tile* a) const
+{
+  for( auto tile : *this )
+  {
+    if( tile == a )
+      return true;
+  }
+
+  return false;
+}
+
 Tile* TilesArray::find(const TilePos& tilePos) const
 {
   for( auto tile : *this )
@@ -133,6 +144,15 @@ TilesArray &TilesArray::append(Tile *a)
   return *this;
 }
 
+bool TilesArray::appendOnce(Tile* a)
+{
+  if( contain( a ) )
+    return false;
+
+  push_back( a );
+  return true;
+}
+
 TilesArray TilesArray::walkables(bool alllands) const
 {
   TilesArray ret;
@@ -181,6 +201,26 @@ TilesArray TilesArray::terrains() const
   return ret;
 }
 
+TilesArray TilesArray::masters() const
+{
+  TilesArray masterTiles;
+  for( auto tile : *this )
+    if( tile->master() != 0 )
+      masterTiles.appendOnce( tile->master() );
+
+  return masterTiles;
+}
+
+TilesArray TilesArray::children(Tile* master) const
+{
+  TilesArray ret;
+  for( auto tile : *this )
+    if( tile->master() == master )
+      ret.push_back( tile );
+
+  return ret;
+}
+
 TilesArray TilesArray::waters() const
 {
   TilesArray ret;
@@ -202,6 +242,15 @@ TilesArray& TilesArray::remove( const TilePos& pos)
   }
 
   return *this;
+}
+
+PointsArray TilesArray::mappositions() const
+{
+  PointsArray ret;
+  for( auto tile : *this )
+    ret << tile->mappos();
+
+  return ret;
 }
 
 TilePosArray TilesArray::locations() const
@@ -226,7 +275,7 @@ void TilesArray::pop_front() { erase( this->begin() ); }
 
 Tile* TilesArray::random() const
 {
-  return size() > 0 ? (*this)[ math::random( size()-1 ) ] : 0;
+  return size() > 0 ? (*this)[ math::random( size()-1 ) ] : nullptr;
 }
 
 }//end namespace

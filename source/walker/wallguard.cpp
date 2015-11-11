@@ -48,21 +48,11 @@ public:
 WallGuard::WallGuard( PlayerCityPtr city, walker::Type type )
   : RomeSoldier( city, type ), _d( new Impl )
 {
-  setName( NameGenerator::rand( NameGenerator::male ) );
-
   setAttackDistance( 5 );
   _d->patrolPosition = gfx::tilemap::invalidLocation();
 }
 
 WallGuard::~WallGuard(){}
-
-WallGuardPtr WallGuard::create(PlayerCityPtr city, walker::Type type)
-{
-  WallGuardPtr ret( new WallGuard( city, type ) );
-  ret->drop();
-
-  return ret;
-}
 
 bool WallGuard::die()
 {
@@ -115,9 +105,9 @@ void WallGuard::timeStep(const unsigned long time)
 
   case check4attack:
   {
-    EnemySoldierList enemies = _findEnemiesInRange( attackDistance() ).select<EnemySoldier>();
+    bool haveEnemies = _findEnemiesInRange( attackDistance() ).count<EnemySoldier>() > 0;
 
-    if( !enemies.empty() )
+    if( haveEnemies )
     {    
       fight();      
     }
@@ -153,6 +143,8 @@ void WallGuard::fight()
   _setSubAction( Soldier::fightEnemy );
 }
 
+Walker::Gender WallGuard::gender() const { return male; }
+
 void WallGuard::save(VariantMap& stream) const
 {
   Soldier::save( stream );
@@ -173,7 +165,7 @@ void WallGuard::load(const VariantMap& stream)
   VARIANT_LOAD_ANY_D( _d, patrolPosition, stream )
 
   TilePos basePosition = stream.get( "base" );
-  TowerPtr tower = _city()->getOverlay( basePosition ).as<Tower>();
+  auto tower = _map().overlay<Tower>( basePosition );
 
   if( tower.isValid() )
   {
@@ -193,8 +185,8 @@ std::string WallGuard::thoughts(Thought th) const
   case thCurrent:
   {
     TilePos offset( 10, 10 );
-    EnemySoldierList enemies = _city()->statistic().walkers.find<EnemySoldier>( walker::any, pos() - offset, pos() + offset );
-    if( enemies.empty() )
+    int enemies_n = _city()->statistic().walkers.count( walker::any, pos() - offset, pos() + offset );
+    if( enemies_n > 0 )
     {
       return Soldier::thoughts(th);
     }
@@ -233,12 +225,12 @@ FortificationList WallGuard::_findNearestWalls( EnemySoldierPtr enemy )
 {
   FortificationList ret;
 
-  Tilemap& tmap = _city()->tilemap();
+  Tilemap& tmap = _map();
   for( int range=1; range < 8; range++ )
   {
     TilePos offset( range, range );
     TilePos ePos = enemy->pos();
-    TilesArray tiles = tmap.getRectangle( ePos - offset, ePos + offset );
+    TilesArray tiles = tmap.rect( ePos - offset, ePos + offset );
     FortificationList walls = tiles.overlays().select<Fortification>();
 
     for( auto wall : walls )
@@ -387,7 +379,7 @@ void WallGuard::_waitFinished()
 
 void WallGuard::_fire( TilePos target )
 {
-  SpearPtr spear = Spear::create( _city() );
+  SpearPtr spear = Walker::create<Spear>( _city() );
   spear->toThrow( pos(), target );
   wait( game::Date::days2ticks( 1 ) / 2 );
 }

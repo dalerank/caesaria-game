@@ -31,7 +31,7 @@ public:
   virtual unsigned int currentVisitors() const;
   virtual void deliverService();
   virtual unsigned int walkerDistance() const;
-  virtual void initialize(const MetaData& mdata);
+  virtual void initialize(const object::Info& mdata);
 
 protected:
   Temple( religion::DivinityPtr divinity, object::Type type, int imgId, const Size& size );
@@ -73,7 +73,7 @@ public:
 
 protected:
   virtual void _updateBuffs();
-  virtual void initialize(const MetaData &mdata);
+  virtual void initialize(const object::Info& mdata);
 };
 
 class TempleNeptune : public SmallTemple

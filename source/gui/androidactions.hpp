@@ -62,6 +62,7 @@ private slots:
   void _showLoadDialog();
   void _restartGame();
   void _exitToMainMenu();
+  void _setActiveTile( TilePos tilepos );
   void _showIngameMenu();
 
 private:
@@ -69,6 +70,7 @@ private:
 
   ActionsHandler( Widget* parent, scene::Base* scene );
   scene::Base* _scene;
+  TilePos _tilepos;
 };
 
 }//end namespace tablet

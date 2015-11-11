@@ -36,10 +36,11 @@
 
 using namespace gfx;
 
-REGISTER_SOLDIER_IN_WALKERFACTORY( walker::legionary, walker::legionary, RomeSoldier, legionary )
+REGISTER_NAMED_CLASS_IN_WALKERFACTORY( walker::legionary, RomeSoldier, legionary )
 
 namespace  {
 static const int maxDistanceFromBase = 32;
+static const unsigned int maxStuckInterval = game::Date::days2ticks( 7 );
 enum {
   expedition=Soldier::userAction+1
  };
@@ -48,6 +49,8 @@ enum {
 class RomeSoldier::Impl
 {
 public:
+  unsigned int lastStuckInterval;
+  unsigned int stuckTime;
   TilePos basePos;
   TilePos patrolPosition;
   double strikeForce, resistance;
@@ -57,17 +60,10 @@ public:
 RomeSoldier::RomeSoldier( PlayerCityPtr city, walker::Type type )
     : Soldier( city, type ), _d( new Impl )
 {
-  setName( NameGenerator::rand( NameGenerator::male ) );
-
   _d->patrolPosition = gfx::tilemap::invalidLocation();
-}
-
-RomeSoldierPtr RomeSoldier::create(PlayerCityPtr city, walker::Type type)
-{
-  RomeSoldierPtr ret( new RomeSoldier( city, type ) );
-  ret->drop();
-
-  return ret;
+  _setSubAction( doNothing );
+  _d->stuckTime = 0;
+  _d->lastStuckInterval = 0;
 }
 
 bool RomeSoldier::die()
@@ -105,14 +101,13 @@ void RomeSoldier::timeStep(const unsigned long time)
   {
   case fightEnemy:
   {
-    WalkerList enemies = _findEnemiesInRange( attackDistance() );
+    WalkerPtr enemy = _findEnemiesInRange( attackDistance() ).valueOrEmpty(0);
 
-    if( !enemies.empty() )
+    if( !enemy.isValid() )
     {
-      WalkerPtr p = enemies.front();
-      turn( p->pos() );
-      p->updateHealth( -3 );
-      p->acceptAction( Walker::acFight, pos() );
+      turn( enemy->pos() );
+      enemy->updateHealth( -3 );
+      enemy->acceptAction( Walker::acFight, pos() );
     }
     else
     {
@@ -130,7 +125,29 @@ void RomeSoldier::timeStep(const unsigned long time)
     }
   break;
 
-  default: break;
+  case doStuck:
+    //check when can 
+    if( _d->stuckTime == 0 )
+    {
+      _d->lastStuckInterval = _d->lastStuckInterval == 0
+                                      ? game::Date::days2ticks( 1 )
+                                      : _d->lastStuckInterval * 2;
+      _d->stuckTime = _d->lastStuckInterval;
+      _back2base();
+    }
+
+    //clamp max stuck interval
+    if( _d->lastStuckInterval > maxStuckInterval )
+    {
+      _d->lastStuckInterval = maxStuckInterval;
+    }
+
+    _d->stuckTime--;
+  break;
+
+  default:
+    //Logger::warning( "Unknown")
+  break;
   } // end switch( _d->action )
 }
 
@@ -148,7 +165,8 @@ void RomeSoldier::save(VariantMap& stream) const
   stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(RomeSoldier) ) );
 }
 
-FortPtr RomeSoldier::base() const { return ptr_cast<Fort>( _city()->getOverlay( _d->basePos ) ); }
+Walker::Gender RomeSoldier::gender() const { return male; }
+FortPtr RomeSoldier::base() const { return _map().overlay<Fort>( _d->basePos ); }
 
 void RomeSoldier::load(const VariantMap& stream)
 {
@@ -159,14 +177,14 @@ void RomeSoldier::load(const VariantMap& stream)
   VARIANT_LOAD_ANY_D( _d, patrolPosition, stream );
   VARIANT_LOAD_ANY_D( _d, basePos, stream );
 
-  FortPtr fort = _city()->getOverlay( _d->basePos ).as<Fort>();
+  auto fort = _map().overlay<Fort>( _d->basePos );
   if( fort.isValid() )
   {
     fort->addWalker( this );
   }
   else
   {
-    Logger::warning( "!!! WARNING: RomeSoldier cant find base for himself at [%d,%d]", _d->basePos.i(), _d->basePos.j() );
+    Logger::warning( "!!! WARNING: RomeSoldier cant find base for himself at [{0},{1}]", _d->basePos.i(), _d->basePos.j() );
     die();
   }
 }
@@ -241,7 +259,7 @@ RomeSoldier::~RomeSoldier(){}
 WalkerList RomeSoldier::_findEnemiesInRange( unsigned int range )
 {
   WalkerList walkers;
-  TilesArea area( _city()->tilemap(), range, pos() );
+  TilesArea area( _map(), range, pos() );
 
   FortPtr fort = base();
   bool attackAnimals = fort.isValid() ? fort->isAttackAnimals() : false;
@@ -326,7 +344,7 @@ void RomeSoldier::_back2base()
   FortPtr b = base();
   if( b.isValid() )
   {
-    Pathway way = PathwayHelper::create( pos(), b->freeSlot( this ), PathwayHelper::allTerrain );
+    Pathway way = PathwayHelper::create( pos(), b->findSlot( this ), PathwayHelper::allTerrain );
 
     if( way.isValid() )
     {
@@ -334,6 +352,10 @@ void RomeSoldier::_back2base()
       _setSubAction( go2position );
       go();
       return;
+    }
+    else
+    {
+      _setSubAction( doStuck );
     }
   }
   else
@@ -448,14 +470,14 @@ void RomeSoldier::send2city(FortPtr base, TilePos pos )
 {
   setPos( pos );
   _d->basePos = base->pos();
-  _back2base();
   attach();
+  _back2base();
 }
 
 void RomeSoldier::send2expedition(const std::string& name)
 {
   _d->expedition = name;
-  TilePos cityEnter = _city()->borderInfo().roadEntry;
+  TilePos cityEnter = _city()->getBorderInfo( PlayerCity::roadEntry ).epos();
 
   Pathway way = PathwayHelper::create( pos(), cityEnter, PathwayHelper::allTerrain );
   if( way.isValid() )

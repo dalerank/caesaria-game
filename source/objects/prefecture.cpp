@@ -24,6 +24,7 @@
 #include "gfx/tile.hpp"
 #include "city/city.hpp"
 #include "pathway/path_finding.hpp"
+#include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
 #include "city/cityservice_fire.hpp"
 #include "objects/constants.hpp"
@@ -49,7 +50,7 @@ Prefecture::Prefecture()
 {
   _d->fireDetect = gfx::tilemap::invalidLocation();
 
-  setPicture( MetaDataHolder::randomPicture( type(), size() ) );
+  setPicture( info().randomPicture( size() ) );
   _fgPictures().resize(1);
 }
 
@@ -69,14 +70,14 @@ void Prefecture::deliverService()
   {
     TilePos fireDetectPos = _d->checkFireDetect( _city(), pos() );
     bool fireDetect = fireDetectPos.i() >= 0;
-    PrefectPtr prefect = Prefect::create( _city() );
+    PrefectPtr prefect = Walker::create<Prefect>( _city() );
     prefect->setMaxDistance( walkerDistance() );
 
     if( fireDetect )
     {
       TilePos startPos = roadside().front()->pos();
 
-      OverlayPtr ruin = _city()->getOverlay( _d->fireDetect );
+      OverlayPtr ruin = _map().overlay( _d->fireDetect );
       Pathway pathway = PathwayHelper::create( startPos, ruin, PathwayHelper::allTerrain );
 
       bool fireInOutWorkArea = pathway.length() <= walkerDistance();
@@ -110,14 +111,13 @@ TilePos Prefecture::Impl::checkFireDetect( PlayerCityPtr city, const TilePos& po
   if( fireDetect.i() >= 0 )
     return fireDetect;
 
-  city::FirePtr fire;
-  fire << city->findService( city::Fire::defaultName() );
+  city::FirePtr fire = city->statistic().services.find<city::Fire>();
 
   fireDetect = gfx::tilemap::invalidLocation();
   if( city.isValid() )
   {
     int minDistance = 9999;
-    for( auto location : fire->locations() )
+    for( auto& location : fire->locations() )
     {
       int currentDistance = pos.distanceFrom( location );
       if( currentDistance < minDistance )

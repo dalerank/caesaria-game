@@ -38,20 +38,10 @@ public:
   Animation anim;
 };
 
-WalkerPtr HousePlague::create(PlayerCityPtr city)
-{
-  HousePlague* locust = new HousePlague( city );
-
-  WalkerPtr ret( locust );
-  ret->drop();
-
-  return ret;
-}
-
 void HousePlague::create(PlayerCityPtr city, TilePos pos, int time)
 {
-  HousePlagueList hpllist;
-  hpllist << city->walkers( pos );
+  auto hpllist = city->walkers( pos ).select<HousePlague>();
+
   if( !hpllist.empty() )
   {
     hpllist.front()->_d->counter = 0;
@@ -67,7 +57,8 @@ void HousePlague::create(PlayerCityPtr city, TilePos pos, int time)
   ret->attach();
 }
 
-HousePlague::HousePlague( PlayerCityPtr city ) : Walker( city ), _d( new Impl )
+HousePlague::HousePlague( PlayerCityPtr city )
+  : Walker( city ), _d( new Impl )
 {
   _setType( walker::house_plague );
 
@@ -93,7 +84,7 @@ void HousePlague::timeStep(const unsigned long time)
 
   if( game::Date::isDayChanged() )
   {
-    HousePtr house = _city()->getOverlay( pos() ).as<House>();
+    auto house = _map().overlay<House>( pos() );
     int health_value = house.isValid() ? house->state( pr::health ) : 100;
     if( health_value > 20 )
     {
@@ -121,8 +112,6 @@ void HousePlague::load( const VariantMap& stream )
 
   VARIANT_LOAD_ANY_D( _d, time, stream )
   VARIANT_LOAD_ANY_D( _d, counter, stream )
-
-  //_d->picture = Picture::load( _d->rcGroup, _d->currentIndex );
 }
 
 const Picture& HousePlague::getMainPicture()

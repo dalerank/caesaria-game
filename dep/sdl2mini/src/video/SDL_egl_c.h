@@ -26,7 +26,6 @@
 #if SDL_VIDEO_OPENGL_EGL
 
 #include "SDL_egl.h"
-
 #include "SDL_sysvideo.h"
 
 typedef struct SDL_EGL_VideoData

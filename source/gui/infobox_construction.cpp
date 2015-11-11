@@ -24,6 +24,8 @@
 #include "events/showtileinfo.hpp"
 #include "events/playsound.hpp"
 
+using namespace events;
+
 namespace gui
 {
 
@@ -34,7 +36,7 @@ AboutConstruction::AboutConstruction( Widget* parent, Rect rect, Rect blackArea 
   : Infobox( parent, rect, blackArea )
 {
   setupUI( ":/gui/infoboxconstr.gui" );
-  _btnToggleWorking = 0;
+  _btnToggleWorking = nullptr;
 }
 
 AboutConstruction::~AboutConstruction() {}
@@ -63,14 +65,14 @@ bool AboutConstruction::onEvent(const NEvent& event)
   return Infobox::onEvent( event );
 }
 
-PushButton* AboutConstruction::_btnToggleWorkingRef() { return _btnToggleWorking; }
+PushButton* AboutConstruction::_buttonToggleWorking() { return _btnToggleWorking; }
 
 void AboutConstruction::_setWorkingVisible(bool show)
 {
   if( !_btnToggleWorking && _lbBlackFrame() )
   {
       Rect btnRect( Point( _lbBlackFrame()->width() - 110, (_lbBlackFrame()->height() - 25)/2 ), Size( 100, 25 ) );
-     _btnToggleWorking = new PushButton( _lbBlackFrame(), btnRect, "", -1, false, PushButton::blackBorderUp  );
+     _btnToggleWorking = &_lbBlackFrame()->add<PushButton>( btnRect, "", -1, false, PushButton::blackBorderUp  );
      _btnToggleWorking->setFont( Font::create( FONT_1 ) );
      _updateWorkingText();
 
@@ -91,17 +93,17 @@ void AboutConstruction::_setWorkingActive(bool working)
 
 void AboutConstruction::_updateWorkingText()
 {
-  WorkingBuildingPtr working = base().as<WorkingBuilding>();
-  _setWorkingActive( working.isValid() ? working->isActive() : false );
+  auto workingBuilding = base().as<WorkingBuilding>();
+  _setWorkingActive( workingBuilding.isValid() ? workingBuilding->isActive() : false );
 }
 
 void AboutConstruction::_resolveToggleWorking()
 {
-  WorkingBuildingPtr working = base().as<WorkingBuilding>();
-  if( working.isValid() )
+  auto workingBuilding = base().as<WorkingBuilding>();
+  if( workingBuilding.isValid() )
   {
-    working->setActive( !working->isActive() );
-    _setWorkingActive( working->isActive() );
+    workingBuilding->setActive( !workingBuilding->isActive() );
+    _setWorkingActive( workingBuilding->isActive() );
   }
 }
 
@@ -110,8 +112,7 @@ void AboutConstruction::_baseAssigned()
   if( base().isValid() )
   {
     std::string typeName = object::toString( base()->type() );
-    events::GameEventPtr e = events::PlaySound::create( "bmsel_"+typeName, 1, 100, audio::infobox, true );
-    e->dispatch();
+    events::dispatch<PlaySound>( "bmsel_"+typeName, 1, 100, audio::infobox, true );
   }
 }
 
@@ -121,14 +122,13 @@ void AboutConstruction::_switch(int flag)
 {
   if( _construction.isValid() )
   {
-    events::GameEventPtr e = events::ShowTileInfo::create( base()->pos(), flag == KEY_PERIOD
-                                                           ? events::ShowTileInfo::next
-                                                           : events::ShowTileInfo::prew );
+    events::dispatch<ShowTileInfo>( base()->pos(), flag == KEY_PERIOD
+                                    ? ShowTileInfo::next
+                                    : ShowTileInfo::prew );
     deleteLater();
-    e->dispatch();
   }
 }
 
-}
+}//end namespace infobox
 
 }//end namespace gui

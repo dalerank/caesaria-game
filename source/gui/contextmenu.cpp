@@ -52,7 +52,6 @@ ContextMenu::ContextMenu( Widget* parent, const Rect& rectangle,
   _d->flags.allowFocus = allowFocus;
   _d->changeTime = 0;
   _d->highlihted.index = -1;
-
 }
 
 //! destructor
@@ -68,8 +67,8 @@ ContextMenu::CloseMode ContextMenu::getCloseHandling() const {  return _d->close
 unsigned int ContextMenu::itemCount() const {  return _d->items.size();}
 
 ContextMenuItem* ContextMenu::addItem( const std::string& path, const std::string& text, int commandId,
-                          bool enabled, bool hasSubMenu,
-                          bool checked, bool autoChecking)
+                                       bool enabled, bool hasSubMenu,
+                                       bool checked, bool autoChecking)
 {
   StringArray items = utils::split( path, "/" );
 
@@ -85,7 +84,7 @@ ContextMenuItem* ContextMenu::addItem( const std::string& path, const std::strin
   }
 
   items.erase( items.begin() );
-  for( auto&& item : items )
+  for( auto& item : items )
   {
     if( lastItem->subMenu() == NULL )
     {
@@ -117,35 +116,35 @@ ContextMenuItem* ContextMenu::addItem( const std::string& text, int commandId,
 
 //! Insert a menu item at specified position.
 ContextMenuItem* ContextMenu::insertItem(unsigned int idx, const std::string& text, int commandId, bool enabled,
-    bool hasSubMenu, bool checked, bool autoChecking)
+                                         bool hasSubMenu, bool checked, bool autoChecking)
 {
-  ContextMenuItem* newItem = new ContextMenuItem( this, text );
-  newItem->setEnabled( enabled );
-  newItem->setSubElement( true );
-  newItem->setChecked( checked );
-  newItem->setAutoChecking( autoChecking );
-  newItem->setText( text );
-  newItem->setFlag( ContextMenuItem::drawSubmenuSprite );
-  newItem->setIsSeparator( text.empty() );
-  newItem->setCommandId( commandId );
-  sendChildToBack( newItem );
+  ContextMenuItem& newItem = add<ContextMenuItem>( text );
+  newItem.setEnabled( enabled );
+  newItem.setSubElement( true );
+  newItem.setChecked( checked );
+  newItem.setAutoChecking( autoChecking );
+  newItem.setText( text );
+  newItem.setFlag( ContextMenuItem::drawSubmenuSprite );
+  newItem.setIsSeparator( text.empty() );
+  newItem.setCommandId( commandId );
+  newItem.sendToBack();
 
   if (hasSubMenu)
   {
-    ContextMenu* subMenu = newItem->addSubMenu( commandId );
+    ContextMenu* subMenu = newItem.addSubMenu( commandId );
     subMenu->setVisible( false );
   }
 
   if ( idx < _d->items.size() )
   {
-    _d->items.insert( _d->items.begin() + idx, newItem );
+    _d->items.insert( _d->items.begin() + idx, &newItem );
   }
   else
   {
-    _d->items.push_back( newItem );
+    _d->items.push_back( &newItem );
   }
 
-  return newItem;
+  return &newItem;
 }
 
 ContextMenuItem* ContextMenu::findItem( int commandId, unsigned int idxStartSearch ) const
@@ -163,20 +162,17 @@ ContextMenuItem* ContextMenu::findItem( int commandId, unsigned int idxStartSear
 
 ContextMenuItem* ContextMenu::findItem(const std::string& name) const
 {
-  foreach( it, _d->items )
+  for( auto it : _d->items )
   {
-    if ( (*it)->text() == name )
-    {
-      return *it;
-    }
+    if ( it->text() == name )
+      return it;
   }
 
-  return NULL;
+  return nullptr;
 }
 
 //! Adds a separator item to the menu
 void ContextMenu::addSeparator() {  addItem(0, -1, true, false, false, false); }
-
 
 //! Returns text of the menu item.
 ContextMenuItem* ContextMenu::item( unsigned int idx ) const
@@ -290,12 +286,14 @@ bool ContextMenu::onEvent(const NEvent& event)
 	return Widget::onEvent(event);
 }
 
-
 //! Sets the visible state of this element.
 void ContextMenu::setVisible(bool visible)
 {
   _setHovered( -1 );
   _closeAllSubMenus();
+
+  if( visible )
+    updateItems();
 
   Widget::setVisible( visible );
 }
@@ -409,9 +407,9 @@ bool ContextMenu::_isHighlighted( const Point& p, bool canOpenSubMenu )
 		}
 	}
 
-	foreach( it, _d->items )
+  for( auto it : _d->items )
 	{
-		(*it)->setHovered( false );
+    it->setHovered( false );
 	}
 
 	// highlight myself
@@ -589,142 +587,6 @@ ContextMenuItem *ContextMenu::selectedItem() const
   return item( _d->highlihted.index );
 }
 
-//! Writes attributes of the element.
-void ContextMenu::save( VariantMap& out ) const
-{
-	/*INrpElement::serializeAttributes(out,options);
-
-	out->addPosition2d("Position", Pos);
-
-	if (Parent->getType() == EGUIET_CONTEXT_MENU || Parent->getType() == EGUIET_MENU )
-	{
-		const NrpContextMenu* const ptr = (const NrpContextMenu*)Parent;
-		// find the position of this item in its parent's list
-		unsigned int i;
-		// VC6 needs the cast for this
-		for (i=0; (i<ptr->getItemCount()) && (ptr->getSubMenu(i) != (const NrpContextMenu*)this); ++i)
-			; // do nothing
-
-		out->addInt("ParentItem", i);
-	}
-
-	out->addInt("CloseHandling", (int)CloseHandling);
-
-	// write out the item list
-	out->addInt("ItemCount", Items.size());
-
-    core::stringc tmp;
-
-    INrpEnvironment* env = core::nrp_cast< INrpEnvironment* >( Environment );
-	for (unsigned int i=0; i < Items.size(); ++i)
-	{
-        String itemCaption = "Item";
-        itemCaption.append( String::FromInt( i ) );
-        itemCaption.append(  String::FromCharArray( nrp::SerializeHelper::stateProp ) );
-        out->addString( nrp::SerializeHelper::subSectionStartProp, itemCaption.c_str() );
-
-        const SItem& refItem = Items[i];
-		tmp = "IsSeparator"; tmp += i;
-		out->addBool(tmp.c_str(), refItem.IsSeparator);
-
-		if (!refItem.IsSeparator)
-		{
-			tmp = "Text"; tmp += i;
-			out->addString(tmp.c_str(), refItem.Text.c_str());
-			tmp = "CommandID"; tmp += i;
-			out->addInt(tmp.c_str(), refItem.CommandId);
-			tmp = "Enabled"; tmp += i;
-			out->addBool(tmp.c_str(), refItem.Enabled);
-			tmp = "Checked"; tmp += i;
-			out->addBool(tmp.c_str(), refItem.Checked);
-			tmp = "AutoChecking"; tmp += i;
-			out->addBool(tmp.c_str(), refItem.AutoChecking);
-            tmp = "FontName"; tmp += i;
-            String fontName;
-            env->GetFontManager()->GetFontName( refItem.font, fontName );
-            out->addString( tmp.c_str(), fontName.c_str() );
-            tmp = "FontColor"; tmp += i;
-            out->addColor(tmp.c_str(), refItem.color );
-		}
-
-        out->addString( core::SerializeHelper::subSectionEndProp, itemCaption.c_str() );
-	}
-    */
-}
-
-
-//! Reads attributes of the element
-void ContextMenu::load( const VariantMap& in )
-{
-    /*
-	INrpElement::deserializeAttributes(in,options);
-
-	Pos = in->getAttributeAsPosition2d("Position");
-
-	// link to this item's parent
-	if (Parent && ( Parent->getType() == EGUIET_CONTEXT_MENU || Parent->getType() == EGUIET_MENU ) )
-        ((NrpContextMenu*)Parent)->SetSubMenu( in->getAttributeAsInt("ParentItem"),this);
-
-	CloseHandling = (CloseMode)in->getAttributeAsInt("CloseHandling");
-
-	removeAllItems();
-
-	// read the item list
-	const int count = in->getAttributeAsInt("ItemCount");
-
-	for (int i=0; i<count; ++i)
-	{
-        core::stringc tmp;
-		String txt;
-		int commandid=-1;
-		bool enabled=true;
-		bool checked=false;
-		bool autochecking=false;
-
-		tmp = "IsSeparator"; tmp += i;
-		if ( in->existsAttribute(tmp.c_str()) && in->getAttributeAsBool(tmp.c_str()) )
-			addSeparator();
-		else
-		{
-			tmp = "Text"; tmp += i;
-			if ( in->existsAttribute(tmp.c_str()) )
-				txt = in->getAttributeAsStringW( tmp.c_str() );
-
-			tmp = "CommandID"; tmp += i;
-			if ( in->existsAttribute(tmp.c_str()) )
-				commandid = in->getAttributeAsInt(tmp.c_str());
-
-			tmp = "Enabled"; tmp += i;
-			if ( in->existsAttribute(tmp.c_str()) )
-				enabled = in->getAttributeAsBool(tmp.c_str());
-
-			tmp = "Checked"; tmp += i;
-			if ( in->existsAttribute(tmp.c_str()) )
-				checked = in->getAttributeAsBool(tmp.c_str());
-
- 			tmp = "AutoChecking"; tmp += i;
-			if ( in->existsAttribute(tmp.c_str()) )
-				autochecking = in->getAttributeAsBool(tmp.c_str());
-
-            unsigned int index = addItem( txt.c_str(), commandid, enabled, false, checked, autochecking);
-
-            SItem& refItem = Items[ index ];
-            tmp = "FontName"; tmp += i;
-            if ( in->existsAttribute(tmp.c_str()) )
-                refItem.font = GetEnvironment()->GetFontManager()->GetFont( in->getAttributeAsStringW( tmp.c_str() ) );
-
-            tmp = "FontColor"; tmp += i;
-            if ( in->existsAttribute(tmp.c_str()) )
-                refItem.color = in->getAttributeAsColor( tmp.c_str() );
-		}
-	}
-
-	_RecalculateSize();
-
-    */
-}
-
-
 // because sometimes the element has no parent at click time
 void ContextMenu::setEventParent( Widget *parent )
 {
@@ -738,8 +600,8 @@ void ContextMenu::setEventParent( Widget *parent )
 
 bool ContextMenu::_hasOpenSubMenu() const
 {
-	foreach( i, _d->items )
-		if( (*i)->subMenu() && (*i)->subMenu()->visible() )
+  for( auto i : _d->items )
+    if( i->subMenu() && i->subMenu()->visible() )
 			return true;
 
 	return false;
@@ -749,14 +611,12 @@ bool ContextMenu::_hasOpenSubMenu() const
 void ContextMenu::_closeAllSubMenus()
 {
 	for(unsigned int i=0; i<_d->items.size(); ++i)
-		if( _d->items[i]->subMenu() )
+  {
+    if( _d->items[i]->subMenu() && _d->items[i]->visible())
 		{
-			if( _d->items[i]->visible() )
-      {
-				setItemVisible( i, false );
-      }
-			//_d->items[i]->getSubMenu()->setVisible(false);
+      setItemVisible( i, false );
 		}
+  }
 
 	//HighLighted = -1;
 }

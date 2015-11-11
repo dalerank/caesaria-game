@@ -76,8 +76,7 @@ void Temple::_changeAnimationState(bool value)
 
   if( !value )
   {
-    int index=0;
-    foreach( it, _td->fires )
+    for( int index=0; index < (int)_td->fires.size(); index++ )
       _fgPicture( 1 + index++ ) = gfx::Picture();
   }
 }
@@ -104,15 +103,13 @@ void Temple::_updateAnimation(const unsigned long time)
 {
   ServiceBuilding::_updateAnimation( time );
 
-  if( _animationRef().isRunning() )
+  if( _animation().isRunning() )
   {
     _td->fireAnimation.update( time );
-    int index = 0;
-    foreach( it, _td->fires )
+    for( int index=0; index < (int)_td->fires.size(); index++ )
     {
       _fgPicture( 1 + index ) = _td->fireAnimation.currentFrame();
-      _fgPicture( 1 + index ).setOffset( *it );
-      index++;
+      _fgPicture( 1 + index ).setOffset( _td->fires[index] );
     }
   }
 }
@@ -141,7 +138,7 @@ void Temple::deliverService()
 
 unsigned int Temple::walkerDistance() const { return 26;}
 
-void Temple::initialize(const MetaData &mdata)
+void Temple::initialize(const object::Info& mdata)
 {
   ServiceBuilding::initialize( mdata );
 
@@ -177,7 +174,7 @@ void TempleCeres::_updateBuffs()
   }
 }
 
-void TempleCeres::initialize(const MetaData &mdata)
+void TempleCeres::initialize(const object::Info& mdata)
 {
   Temple::initialize( mdata );  
 }
@@ -244,8 +241,8 @@ BigTempleMercury::BigTempleMercury() : BigTemple( rome::Pantheon::mercury(), obj
 TempleOracle::TempleOracle() : BigTemple( DivinityPtr(), object::oracle, 55 )
 {
   setSize( Size( 2 ) );
-  _animationRef().load( ResourceGroup::security, 56, 6);
-  _animationRef().setOffset( Point( 9, 30 ) );
+  _animation().load( ResourceGroup::security, 56, 6);
+  _animation().setOffset( Point( 9, 30 ) );
   _fgPictures().resize(1);
 }
 

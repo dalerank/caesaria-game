@@ -21,6 +21,7 @@
 #include "stock.hpp"
 #include "orders.hpp"
 #include "core/variant.hpp"
+#include "turnover.hpp"
 
 #include <set>
 
@@ -102,8 +103,13 @@ public:
   good::Stock getRetrieveReservation(const int reservationID, const bool pop=false);
 
   // store/retrieve
-  virtual void applyStorageReservation(good::Stock& stock, const int reservationID) = 0;
-  virtual void applyRetrieveReservation(good::Stock& stock, const int reservationID) = 0;
+  virtual bool applyStorageReservation(good::Stock& stock, const int reservationID) = 0;
+  virtual bool applyRetrieveReservation(good::Stock& stock, const int reservationID) = 0;
+
+  virtual void confirmDeliver( good::Product type, int qty, unsigned int tag, const DateTime& time );
+
+  virtual const ConsumerDetails& consumers() const;
+  virtual const ProviderDetails& providers() const;
 
   // store/retrieve to goodStore
   void applyStorageReservation(Storage& goodStore, const int reservationID);
@@ -116,13 +122,15 @@ public:
   virtual void retrieve( good::Stock& stock, const int amounts);
 
   // store all goods from the given goodStore
-  virtual void storeAll( Store &goodStore);
+  virtual void storeAll( Store& goodStore);
 
   virtual bool isDevastation() const;
   virtual void setDevastation( bool value );
 
   virtual VariantMap save() const;
   virtual void load( const VariantMap& stream );
+
+  virtual TilePos owner() const;
 
   virtual void setOrder( const good::Product type, const Orders::Order order );
   virtual Orders::Order getOrder( const good::Product type ) const;
@@ -132,10 +140,11 @@ public:
 protected:
   Reservations& _getStoreReservations();
   Reservations& _getRetrieveReservations();
+  ConsumerDetails& _consumers();
+  ProviderDetails& _providers();
 
 private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  __DECLARE_IMPL(Store)
 };
 
 }//end namespace good

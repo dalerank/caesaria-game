@@ -58,10 +58,9 @@ bool StartWork::isDeleted() const {  return _isDeleted; }
 
 void StartWork::_exec(Game& game, unsigned int)
 {
-  for( auto&& i : _options )
+  for( auto& i : _options )
   {
-    GameEventPtr e = PostponeEvent::create( i.first, i.second.toMap() );
-    e->dispatch();
+    events::dispatch<PostponeEvent>( i.first, i.second.toMap() );
   }
 }
 
@@ -71,7 +70,7 @@ bool StartWork::_mayExec(Game& game, unsigned int ) const
   {
     bool ret = false;
 
-    for( auto type : _bldTypes )
+    for( auto& type : _bldTypes )
     {
       WorkingBuildingList bld = game.city()->statistic().objects.find<WorkingBuilding>( type );
 

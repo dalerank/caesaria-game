@@ -8,6 +8,7 @@
   adviserEnabled : true
   fishPlaceEnabled : true
   climate : 0
+  preview.title : "##valentia_preview_title##"
   preview.text : "##valentia_preview_mission##"
   preview.image : ""
 	

@@ -131,7 +131,7 @@ bool MovableObject::_findWay( Point p1, Point p2 )
 
   if( d->way.empty() )
   {
-    Logger::warning( "MovableObject: cannot find way from [%d,%d] to [%d,%d]", p1.x(), p1.y(), p2.x(), p2.y() );
+    Logger::warning( "MovableObject: cannot find way from [{},{}] to [{},{}]", p1.x(), p1.y(), p2.x(), p2.y() );
     return false;
   }
 

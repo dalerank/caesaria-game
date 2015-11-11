@@ -69,14 +69,12 @@ struct Award
   {
     if( money > 0 )
     {
-      GameEventPtr e = Payment::create( econ::Issue::donation, money );
-      e->dispatch();
+      events::dispatch<Payment>( econ::Issue::donation, money );
     }
 
     if( favour > 0 )
     {
-      GameEventPtr e = UpdateFavour::create( city->name(), favour );
-      e->dispatch();
+      events::dispatch<UpdateFavour>( city->name(), favour );
     }
   }
 };
@@ -106,8 +104,7 @@ struct Penalty
 
   void apply( PlayerCityPtr city ) const
   {
-    GameEventPtr e = UpdateFavour::create( city->name(), favour );
-    e->dispatch();
+    events::dispatch<UpdateFavour>( city->name(), favour );
   }
 };
 
@@ -141,13 +138,13 @@ void RqGood::exec( PlayerCityPtr city )
   {
     Unit stockCap = Unit::fromValue( _d->stock.capacity() );
     good::Stock stock( _d->stock.type(), stockCap.toQty() );
-    GameEventPtr e = RemoveGoods::create( stock.type(), stock.capacity() );
-    e->dispatch();
+
+    events::dispatch<RemoveGoods>( stock.type(), stock.capacity() );
     success( city );
 
-    world::GoodCaravanPtr caravan = world::GoodCaravan::create( ptr_cast<world::City>( city ) );    
+    auto caravan = world::GoodCaravan::create( ptr_cast<world::City>( city ) );
     caravan->store().store( stock, -1 );
-    caravan->sendTo( city->empire()->rome() );
+    caravan->sendTo( city->empire()->capital() );
   }
 }
 
@@ -157,7 +154,7 @@ bool RqGood::isReady( PlayerCityPtr city ) const
 
   Unit stockCap = Unit::fromQty( gm[ _d->stock.type() ] );
   Unit needCap = Unit::fromValue( _d->stock.capacity() );
-  _d->description = utils::format( 0xff, "%s %d", _("##qty_stacked_in_city_warehouse##"), stockCap.ivalue() );
+  _d->description = fmt::format( "{0} {1}", _("##qty_stacked_in_city_warehouse##"), stockCap.ivalue() );
   if( stockCap >= needCap )
   {
     return true;
@@ -171,7 +168,7 @@ std::string RqGood::typeName() {  return "good_request";}
 
 VariantMap RqGood::save() const
 {
-  VariantMap ret = Request::save();
+  VariantMap ret = RqBase::save();
 
   ret[ "reqtype" ] = Variant( typeName() );
   ret[ "month" ] = _d->months2comply;
@@ -186,7 +183,7 @@ VariantMap RqGood::save() const
 
 void RqGood::load(const VariantMap& stream)
 {
-  Request::load( stream );
+  RqBase::load( stream );
   _d->months2comply = (int)stream.get( "month" );
 
   Variant vm_goodt = stream.get( "good" );
@@ -218,7 +215,7 @@ void RqGood::load(const VariantMap& stream)
 
 void RqGood::success( PlayerCityPtr city )
 {
-  Request::success( city );
+  RqBase::success( city );
   _d->complyRequest.apply( city );
 }
 
@@ -231,8 +228,7 @@ void RqGood::fail( PlayerCityPtr city )
     _startDate = _finishDate;
 
     //std::string text = utils::format( 0xff, "You also have %d month to comply failed request", _d->failAppendMonth );
-    auto e = ShowInfobox::create( _("##emperor_anger##"), _("##emperor_anger_text##") );
-    e->dispatch();
+    events::dispatch<ShowInfobox>( _("##emperor_anger##"), _("##emperor_anger_text##") );
 
     _finishDate.appendMonth( _d->failedRequest.appendMonth );
     _d->failedRequest.appendMonth = 0;
@@ -240,23 +236,21 @@ void RqGood::fail( PlayerCityPtr city )
   }
   else
   {
-    Request::fail( city );
+    RqBase::fail( city );
 
-    auto e = ShowInfobox::create( _("##emperor_anger##"), _("##request_faild_text##") );
-    e->dispatch();
+    events::dispatch<ShowInfobox>( _("##emperor_anger##"), _("##request_faild_text##") );
   }
 }
 
 void RqGood::update()
 {
-  Request::update();
+  RqBase::update();
 
   if( !_d->alsoRemind && (_startDate.monthsTo( game::Date::current() ) > DateTime::monthsInYear ) )
   {
     _d->alsoRemind = true;
 
-    auto e = ShowRequestInfo::create( this, true, _("##imperial_reminder_text##"), "", _("##imperial_reminder##") );
-    e->dispatch();
+    events::dispatch<ShowRequestInfo>( this, true, _("##imperial_reminder_text##"), "", _("##imperial_reminder##") );
   }
 }
 
@@ -264,12 +258,12 @@ std::string RqGood::description() const {  return _d->description; }
 int RqGood::qty() const { return _d->stock.capacity(); }
 good::Product RqGood::goodType() const { return _d->stock.type(); }
 
-RqGood::RqGood() : Request( DateTime() ), _d( new Impl )
+RqGood::RqGood() : RqBase( DateTime() ), _d( new Impl )
 {
   _d->alsoRemind = false;
 }
 
-VariantMap Request::save() const
+VariantMap RqBase::save() const
 {
   VariantMap ret;
   ret[ "deleted" ] = _isDeleted;
@@ -280,7 +274,7 @@ VariantMap Request::save() const
   return ret;
 }
 
-void Request::load(const VariantMap& stream)
+void RqBase::load(const VariantMap& stream)
 {
   _isDeleted = stream.get( "deleted" );
   _isAnnounced = stream.get( "announced" );
@@ -292,7 +286,7 @@ void Request::load(const VariantMap& stream)
   _startDate = vStart.isNull() ? game::Date::current() : vStart.toDateTime();
 }
 
-Request::Request(DateTime finish) : _isDeleted( false ), _isAnnounced( false ), _finishDate( finish )
+RqBase::RqBase(DateTime finish) : _isDeleted( false ), _isAnnounced( false ), _finishDate( finish )
 {
 
 }

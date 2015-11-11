@@ -170,7 +170,7 @@ void PictureBank::addAtlas( const std::string& filename )
     atlas.filename = filename;
 
     VariantMap items = options.get( framesSection ).toMap();
-    for( auto&& i : items )
+    for( auto& i : items )
     {
       unsigned int hash = Hash( i.first );
       atlas.images.insert( hash );
@@ -233,7 +233,7 @@ Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
   bool fileExist = false;
   if( realPath.extension().empty() )
   {
-    for( auto&& ext : picExentions )
+    for( auto& ext : picExentions )
     {
       realPath = name + ext;
 
@@ -256,7 +256,7 @@ Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
   }
 
   unsigned int hash = Hash( name );
-  for( auto&& curAtlass : atlases )
+  for( auto& curAtlass : atlases )
   {
     bool found = curAtlass.find( hash );
     if( found )
@@ -273,7 +273,7 @@ Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
     return it->second;
   }
 
-  Logger::warning( "PictureBank: Unknown resource %s", name.c_str() );
+  Logger::warning( "PictureBank: Unknown resource {0}", name.c_str() );
   return Picture::getInvalid();
 }
 
@@ -306,7 +306,7 @@ void PictureBank::Impl::loadAtlas(const vfs::Path& filePath)
   if( !info.empty() )
   {
     VariantMap items = info.get( framesSection ).toMap();
-    for( auto&& i : items )
+    for( auto& i : items )
     {
       VariantList rInfo = i.second.toList();
       Picture pic = mainTexture;

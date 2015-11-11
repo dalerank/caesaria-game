@@ -23,16 +23,13 @@
 
 class Lion : public Animal
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static LionPtr create( PlayerCityPtr city );
-
   virtual bool die();
 
 protected:
-  virtual void _reachedPathway();
-
-private:
   Lion( PlayerCityPtr city );
+  virtual void _reachedPathway();
 };
 
 #endif //__CAESARIA_LION_H_INCLUDED__

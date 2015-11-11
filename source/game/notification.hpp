@@ -25,37 +25,38 @@
 namespace notification
 {
 
-struct Base
-{
-  enum { ftype=0, fdate, fname, fmessage, flocation };
-  typedef enum { unknown, barbarian=0x1, chastener, attack } Type;
+typedef enum { unknown, barbarian=0x1, chastener, attack } Type;
 
-  DateTime date;
+struct Describe
+{
   Type type;
   std::string message;
   std::string objectName;
+};
+
+struct Note
+{
+  enum { ftype=0, fdate, fname, fmessage, flocation };
+
+  DateTime date;
+  Describe desc;
   Point location;
 
   VariantList save() const;
   void load(const VariantList &stream);
-
 };
 
-class Array : public std::vector< Base >
+class Array : public std::vector< Note >
 {
 public:
   void eraseOld( const DateTime& date, int ageMonth );
-  bool contain( Base::Type type ) const;
+  bool contain( Type type ) const;
 };
 
+Note create(const VariantList &stream);
 }//end namespace
 
-typedef notification::Base Notification;
+typedef notification::Note Notification;
 typedef notification::Array Notifications;
-
-namespace notification
-{
-Notification create(const VariantList &stream);
-}
 
 #endif //_CAESARIA_NOTIFICATION_H_INCLUDE_

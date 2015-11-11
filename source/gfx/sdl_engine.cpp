@@ -75,8 +75,10 @@ public:
   SDL_Window* window;
   SDL_Renderer* renderer;
   SdlBatcher batcher;
+  Size viewportSize;
 
   MaskInfo mask;
+  int sheigth;
   unsigned int fps, lastFps;
   unsigned int lastUpdateFps;
   unsigned int drawCall;
@@ -85,6 +87,7 @@ public:
 public:
   void renderState(const Batch &batch, const Rect *clip);
   void renderState();
+  void setClip(const Rect& clip);
   void renderOnce(const Picture& pic, const Rect& src, const Rect& dstRect,
                   const Rect* clipRect, bool useTxOffset);
 };
@@ -174,7 +177,7 @@ void SdlEngine::init()
   int rc = SDL_Init(SDL_INIT_VIDEO);
   if (rc != 0)
   {
-    Logger::warning( utils::format( 0xff, "CRITICAL!!! Unable to initialize SDL: %s", SDL_GetError() ) );
+    Logger::warning( "CRITICAL!!! Unable to initialize SDL: {}", SDL_GetError() );
     THROW("SDLGraficEngine: Unable to initialize SDL: " << SDL_GetError());
   }
 
@@ -182,7 +185,7 @@ void SdlEngine::init()
   rc = TTF_Init();
   if (rc != 0)
   {
-    Logger::warning( utils::format( 0xff, "CRITICAL!!! Unable to initialize ttf: %s", SDL_GetError() ) );
+    Logger::warning( "CRITICAL!!! Unable to initialize ttf: {0}", SDL_GetError() );
     THROW("SDLGraficEngine: Unable to initialize SDL: " << SDL_GetError());
   }
 
@@ -197,76 +200,60 @@ void SdlEngine::init()
   SDL_Window *window;
 
 #ifdef CAESARIA_PLATFORM_ANDROID
-  //_srcSize = Size( mode.w, mode.h );
-  Logger::warning( utils::format( 0xff, "SDLGraficEngine: Android set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
+  auto mode = modes().front();
+  _srcSize = Size( mode.width(), mode.height() );
+  Logger::warning( "SDLGraficEngine: Android set mode {}x{}",  _srcSize.width(), _srcSize.height() );
 
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
-
-  window = SDL_CreateWindow( "CaesarIA:android", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, _srcSize.width(), _srcSize.height(),
-           SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
+  window = SDL_CreateWindow( "CaesarIA:android",
+                             SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                             _srcSize.width(), _srcSize.height(),
+                             SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_BORDERLESS );
 
   Logger::warning("SDLGraficEngine:Android init successfull");
-
-  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 0);
-
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 1);
-  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 #else
-  unsigned int flags = SDL_WINDOW_OPENGL;
-  Logger::warning( utils::format( 0xff, "SDLGraficEngine: set mode %dx%d",  _srcSize.width(), _srcSize.height() ) );
+  Logger::warning( "SDLGraficEngine: set mode {}x{}",  _srcSize.width(), _srcSize.height() );
 
-  if(isFullscreen())
+  if( isFullscreen() )
   {
-    window = SDL_CreateWindow("CaesariA",
-        SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
-        0, 0,
-        flags | SDL_WINDOW_FULLSCREEN_DESKTOP);
+    auto mode = modes().front();
+    Size s( mode.width(), mode.height() );
 
+    window = SDL_CreateWindow("CaesariA",
+                              SDL_WINDOWPOS_UNDEFINED,
+                              SDL_WINDOWPOS_UNDEFINED,
+                              s.width(), s.height(),
+                              SDL_WINDOW_OPENGL|SDL_WINDOW_FULLSCREEN_DESKTOP|SDL_WINDOW_SHOWN );
   }
   else
   {
-    window = SDL_CreateWindow("CaesariA",
-                              SDL_WINDOWPOS_CENTERED,
-                              SDL_WINDOWPOS_CENTERED,
-                              _srcSize.width(), _srcSize.height(),
-                              flags);
+    window = SDL_CreateWindow( "CaesariA",
+                             SDL_WINDOWPOS_CENTERED,
+                             SDL_WINDOWPOS_CENTERED,
+                             _srcSize.width(), _srcSize.height(),
+                             SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
   }
 
   if (window == NULL)
   {
-    Logger::warning( utils::format( 0xff, "CRITICAL!!! Unable to create SDL-window: %s", SDL_GetError() ) );
+    Logger::warning( "CRITICAL!!! Unable to create SDL-window: {}", SDL_GetError() );
     THROW("Failed to create window");
   }
 
-  Logger::warning("SDLGraficEngine: init successfull");
+  Logger::warning("SDLGraficEngine: init successfull");  
 #endif
 
-  //int render_version = math::clamp( game::Settings::get( "render_mode" ).toInt(), 0, SDL_GetNumRenderDrivers());
   SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED );
 
   if (renderer == NULL)
   {
-    Logger::warning( utils::format( 0xff, "CRITICAL!!! Unable to create renderer: %s", SDL_GetError() ) );
+    Logger::warning( "CRITICAL!!! Unable to create renderer: {}", SDL_GetError() );
     THROW("Failed to create renderer");
   }
 
-  _virtualSize = _srcSize;
-  if( isFullscreen() )
-  {
-    SDL_DisplayMode mode;
-    SDL_GetDisplayMode(0, 0, &mode);
-    unsigned int fullscreenVirtualWidth = mode.w;
-    unsigned int fullscreenVirtualHeight = mode.h;
-
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");  // make the scaled rendering look smoother.
-    SDL_RenderSetLogicalSize(renderer, fullscreenVirtualWidth, fullscreenVirtualHeight );
-    _virtualSize = Size( fullscreenVirtualWidth, fullscreenVirtualHeight );
-  }
-
+  SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");  // make the scaled rendering look smoother.
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
   SDL_SetRenderDrawBlendMode( renderer, SDL_BLENDMODE_BLEND );
+  SDL_RenderSetLogicalSize( renderer, _srcSize.width(), _srcSize.height() );
   SDL_RenderClear(renderer);
   SDL_RenderPresent(renderer);
 
@@ -274,16 +261,18 @@ void SdlEngine::init()
   for( int k=0; k < SDL_GetNumRenderDrivers(); k++ )
   {
     SDL_GetRenderDriverInfo( k, &info );
-    Logger::warning( "SDLGraficEngine: availabe render %s ", info.name );
+    Logger::warning( "SDLGraficEngine: availabe render {}", info.name );
   }
 
   SDL_GetRendererInfo( renderer, &info );  
   int gl_version;
   SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
   SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 16);
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
   SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &gl_version );
-  Logger::warning( "SDLGraficEngine: init render %s ", info.name );
-  Logger::warning( "SDLGraficEngine: using OpenGL %d ", gl_version );
+  Logger::warning( "SDLGraficEngine: init render {}", info.name );
+  Logger::warning( "SDLGraficEngine: using OpenGL {}", gl_version );
+  Logger::warning( "SDLGraficEngine: max texture size is {}x{}", info.max_texture_width, info.max_texture_height );
 
   SDL_Texture *screenTexture = SDL_CreateTexture(renderer,
                                                  SDL_PIXELFORMAT_ARGB8888,
@@ -300,12 +289,22 @@ void SdlEngine::init()
   }
 
   Logger::warning( "SDLGraficEngine: set caption");
-  std::string versionStr = utils::format( 0xff, "CaesarIA: SDL build %d [%s:%s]",
-                                          CAESARIA_BUILD_NUMBER, CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
+  Logger::warning( "SDLGraphicEngine: version:{} compiler:{}", CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
+  std::string versionStr = fmt::format( "CaesarIA (WORK IN PROGRESS/Build {})", CAESARIA_BUILD_NUMBER );
   SDL_SetWindowTitle( window, versionStr.c_str() );
 
   _d->window = window;
+  _d->sheigth = _srcSize.height();
   _d->renderer = renderer;
+
+  float wx, wy;
+  SDL_RenderGetScale( _d->renderer, &wx, &wy);
+
+#ifdef CAESARIA_PLATFORM_ANDROID
+  _d->viewportSize = Size( _srcSize.width() * ( 800.f / _srcSize.height()), 800 );
+#else
+  _d->viewportSize = _srcSize * wx;
+#endif
 
   _d->fpsTx = Picture( Size( 200, 20 ), 0, true );
 }
@@ -321,7 +320,7 @@ void SdlEngine::loadPicture(Picture& ioPicture, bool streaming)
   if( !ioPicture.surface() )
   {
     Size size = ioPicture.size();
-    Logger::warning( utils::format( 0xff, "SdlEngine:: can't make surface, size=%dx%d", size.width(), size.height() ) );
+    Logger::warning( "SdlEngine:: can't make surface, size={}x{}]", size.width(), size.height() );
   }
 
   SDL_Texture* tx = 0;
@@ -386,7 +385,7 @@ void SdlEngine::endRenderFrame()
       _d->debugFont.draw( _d->fpsTx, _d->debugTextStr, Point( 0, 0 ) );
       timeCount = DebugTimer::ticks();
 #ifdef SHOW_FPS_IN_LOG
-      Logger::warning( "FPS: %d", _d->fps );
+      Logger::warning( "FPS: {0}", _d->fps );
 #endif
     }
     draw( _d->fpsTx, Point( _d->screen.width() / 2, 2 ), 0 );
@@ -410,6 +409,8 @@ void SdlEngine::endRenderFrame()
   _d->drawCall = 0;
 }
 
+const Size& SdlEngine::viewportSize() const { return _d->viewportSize; }
+
 void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* clipRect )
 {    
   if( !picture.isValid() )
@@ -427,10 +428,7 @@ void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* c
     _d->drawCall++;
 
     if( clipRect != 0 )
-    {
-      SDL_Rect r = { clipRect->left(), clipRect->top(), clipRect->width(), clipRect->height() };
-      SDL_RenderSetClipRect( _d->renderer, &r );
-    }
+      _d->setClip( *clipRect );
 
     const Impl::MaskInfo& mask = _d->mask;
     SDL_Texture* ptx = picture.texture();
@@ -456,9 +454,8 @@ void SdlEngine::draw(const Picture &picture, const int dx, const int dy, Rect* c
     }
 
     if( clipRect != 0 )
-    {
       SDL_RenderSetClipRect( _d->renderer, 0 );
-    }
+
     drawTime += DateTime::elapsedTime() - t;
   }
 }
@@ -488,10 +485,7 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
     _d->drawCall+=pictures.size();
 
     if( clipRect != 0 )
-    {
-      SDL_Rect r = { clipRect->left(), clipRect->top(), clipRect->width(), clipRect->height() };
-      SDL_RenderSetClipRect( _d->renderer, &r );
-    }
+      _d->setClip( *clipRect );
 
     const Impl::MaskInfo& mask = _d->mask;
     for( const Picture& picture : pictures )
@@ -520,11 +514,15 @@ void SdlEngine::draw( const Pictures& pictures, const Point& pos, Rect* clipRect
     }
 
     if( clipRect != 0 )
-    {
       SDL_RenderSetClipRect( _d->renderer, 0 );
-    }
+
     drawTimeBatch += DateTime::elapsedTime() - t;
   }
+}
+
+void SdlEngine::draw(const Picture& pic, const Rect& dstRect, Rect* clipRect)
+{
+  draw( pic, Rect( 0, 0, pic.width(), pic.height()), dstRect, clipRect );
 }
 
 void SdlEngine::draw(const Picture& pic, const Rect& srcRect, const Rect& dstRect, Rect *clipRect)
@@ -579,17 +577,12 @@ void SdlEngine::draw(const Batch &batch, Rect *clipRect)
   {
     _d->drawCall++;
     if( clipRect != 0 )
-    {
-      SDL_Rect r = { clipRect->left(), clipRect->top(), clipRect->width(), clipRect->height() };
-      SDL_RenderSetClipRect( _d->renderer, &r );
-    }
+      _d->setClip( *clipRect );
 
     SDL_RenderBatch( _d->renderer, batch.native() );
 
     if( clipRect != 0 )
-    {
       SDL_RenderSetClipRect( _d->renderer, 0 );
-    }
   }
 }
 
@@ -605,6 +598,11 @@ void SdlEngine::drawLine(const NColor &color, const Point &p1, const Point &p2)
   SDL_RenderDrawLine( _d->renderer, p1.x(), p1.y(), p2.x(), p2.y() );
 
   SDL_SetRenderDrawColor( _d->renderer, 0, 0, 0, 0 );
+}
+
+void SdlEngine::fillRect(const NColor& color, const Rect& rect)
+{
+
 }
 
 void SdlEngine::drawLines(const NColor &color, const PointsArray& points)
@@ -659,13 +657,36 @@ void SdlEngine::resetColorMask()
   _d->mask.reset();
 }
 
+void SdlEngine::setTitle(const std::string& title)
+{
+  if( _d->window )
+    SDL_SetWindowTitle( _d->window, title.c_str() );
+}
+
 void SdlEngine::setScale( float scale )
 {
+  static float lastScale = 0;
+  if( lastScale != scale )
+  {
+    Logger::warning( "SdlEngine: set scale {}", scale );
+    lastScale = scale;
+  }
+
   bool needDraw = _d->batcher.finish();
   if( needDraw )
     _d->renderState();
 
   SDL_RenderSetScale( _d->renderer, scale, scale );
+}
+
+void SdlEngine::setVirtualSize( const Size& size )
+{
+  bool needDraw = _d->batcher.finish();
+  if( needDraw )
+    _d->renderState();
+
+  const Size* s = size.width() > 0 ? &size : &_srcSize;
+  SDL_RenderSetLogicalSize( _d->renderer, s->width(), s->height() );
 }
 
 void SdlEngine::createScreenshot( const std::string& filename )
@@ -709,7 +730,7 @@ Engine::Modes SdlEngine::modes() const
   }
 
   Modes ret;
-  for( auto mode : uniqueModes )
+  for( auto& mode : uniqueModes )
   {
     int width = (mode >> 16)&0xffff;
     if( width <= maxWidth )
@@ -750,10 +771,32 @@ bool SdlEngine::haveEvent( NEvent& event )
   if( SDL_PollEvent(&sdlEvent) )
   {
     event = EventConverter::instance().get( sdlEvent );
+
+#ifdef CAESARIA_PLATFORM_ANDROID
+    //Android fix that prevent dribling map
+    if( event.EventType == sEventMouse )
+    {
+      Point cp = cursorPos();
+      event.mouse.x = cp.x();
+      event.mouse.y = cp.y();
+    }
+#endif
     return true;
   }
 
   return false;
+}
+
+void SdlEngine::Impl::setClip(const Rect& clip)
+{
+  static SDL_Rect r;
+
+  r.x = clip.left();
+  r.y = sheigth - clip.top() - clip.height();
+  r.w = clip.width();
+  r.h = clip.height();
+
+  SDL_RenderSetClipRect( renderer, &r );
 }
 
 void SdlEngine::Impl::renderState( const Batch& batch, const Rect* clip )
@@ -764,10 +807,7 @@ void SdlEngine::Impl::renderState( const Batch& batch, const Rect* clip )
   drawCall++;
   bool clipped = ( clip && clip->width() > 0 );
   if( clipped )
-  {
-    SDL_Rect r = { clip->left(), clip->top(), clip->width(), clip->height() };
-    SDL_RenderSetClipRect( renderer, &r );
-  }
+    setClip( *clip );
 
   SDL_Texture* ptx = batch.native()->texture;
   if( mask.enabled )
@@ -785,9 +825,7 @@ void SdlEngine::Impl::renderState( const Batch& batch, const Rect* clip )
   }
 
   if( clipped )
-  {
     SDL_RenderSetClipRect( renderer, 0 );
-  }
 }
 
 void SdlEngine::Impl::renderState()
@@ -814,10 +852,7 @@ void SdlEngine::Impl::renderOnce(const Picture &pic, const Rect& srcRect, const 
   drawCall++;
 
   if( clipRect != 0 )
-  {
-    SDL_Rect r = { clipRect->left(), clipRect->top(), clipRect->width(), clipRect->height() };
-    SDL_RenderSetClipRect( renderer, &r );
-  }
+    setClip(*clipRect);
 
   if( mask.enabled )
   {
@@ -839,9 +874,7 @@ void SdlEngine::Impl::renderOnce(const Picture &pic, const Rect& srcRect, const 
   }
 
   if( clipRect != 0 )
-  {
     SDL_RenderSetClipRect( renderer, 0 );
-  }
 
   drawTime += DateTime::elapsedTime() - t;
 }

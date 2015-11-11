@@ -32,6 +32,7 @@ public:
   virtual bool canBuild(const city::AreaInfo& areaInfo) const;
   virtual std::string workersProblemDesc() const;
   virtual void deliverService();
+  virtual void burn();
 
   virtual gfx::TilesArray enterArea() const;
 

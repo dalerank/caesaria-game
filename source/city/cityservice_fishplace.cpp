@@ -43,14 +43,6 @@ public:
   FishPlaceList places;
 };
 
-SrvcPtr Fishery::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new Fishery( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 std::string Fishery::defaultName() {  return CAESARIA_STR_EXT(Fishery); }
 
 Fishery::Fishery( PlayerCityPtr city )
@@ -67,17 +59,17 @@ void Fishery::timeStep(const unsigned int time )
 
   if( _d->places.empty() )
   {
-    _d->places = _city()->statistic().walkers.find<FishPlace>( walker::fishPlace, TilePos(-1, -1) );
+    _d->places = _city()->statistic().walkers.find<FishPlace>( walker::fishPlace );
   }
 
   while( _d->places.size() < _d->maxFishPlace )
   {
-    FishPlacePtr fishplace = FishPlace::create( _city() );
+    FishPlacePtr fishplace = Walker::create<FishPlace>( _city() );
     TilePos travelingPoint = _d->locations.empty()
-                               ? _city()->borderInfo().boatExit
+                               ? _city()->getBorderInfo( PlayerCity::boatExit ).epos()
                                : _d->locations.random();
 
-    fishplace->send2city( _city()->borderInfo().boatEntry, travelingPoint );
+    fishplace->send2city( _city()->getBorderInfo( PlayerCity::boatEntry ).epos(), travelingPoint );
 
     if( fishplace->isDeleted() )
     {
@@ -103,7 +95,7 @@ void Fishery::load(const VariantMap& stream)
   Srvc::load( stream );
 
   VariantMap locations = stream.get( "locations" ).toMap();
-  for( auto location : locations )
+  for( auto& location : locations )
   {
     addLocation( location.second.toTilePos() );
   }
@@ -115,7 +107,7 @@ VariantMap Fishery::save() const
 
   VariantMap locationsVm;
   int index = 0;
-  for( auto location : _d->locations )
+  for( auto& location : _d->locations )
   {
     locationsVm[ utils::format( 0xff, "fp_%d", index++ ) ] = location;
   }

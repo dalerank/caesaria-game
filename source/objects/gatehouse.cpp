@@ -19,8 +19,11 @@
 #include "constants.hpp"
 #include "game/resourcegroup.hpp"
 #include "city/statistic.hpp"
+#include "game/gamedate.hpp"
+#include "city/cityservice_military.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
+#include "walker/enemysoldier.hpp"
 #include "objects/road.hpp"
 #include "core/variant_map.hpp"
 #include "objects_factory.hpp"
@@ -41,6 +44,8 @@ class Gatehouse::Impl
 public:
   Pictures gatehouseSprite;
   Direction direction;
+  Gatehouse::Mode mode;
+  bool walkable;
 
   void updateSprite();
 };
@@ -49,9 +54,8 @@ Gatehouse::Gatehouse() : Building( object::gatehouse, Size( 2 ) ), _d( new Impl 
 {
   _picture().load( ResourceGroup::land2a, 150 );
   _d->gatehouseSprite.resize( 1 );
-
-  setState( pr::inflammability, 0 );
-  setState( pr::collapsibility, 0 );
+  _d->walkable = true;
+  _d->mode = autoToggle;
 }
 
 bool Gatehouse::_update( const city::AreaInfo& areaInfo )
@@ -127,6 +131,8 @@ void Gatehouse::save(VariantMap& stream) const
   Building::save( stream );
 
   VARIANT_SAVE_ENUM_D( stream, _d, direction )
+  VARIANT_SAVE_ENUM_D( stream, _d, mode )
+  VARIANT_SAVE_ANY_D ( stream, _d, walkable )
 }
 
 void Gatehouse::load(const VariantMap& stream)
@@ -134,11 +140,13 @@ void Gatehouse::load(const VariantMap& stream)
   Building::load( stream );
 
   VARIANT_LOAD_ENUM_D( _d, direction, stream )
+  VARIANT_LOAD_ENUM_D( _d, mode, stream )
+  VARIANT_LOAD_ANY_D ( _d, walkable, stream )
 
   _d->updateSprite();
 }
 
-bool Gatehouse::isWalkable() const {  return true; }
+bool Gatehouse::isWalkable() const { return _d->walkable; }
 Renderer::PassQueue Gatehouse::passQueue() const{  return gatehousePass;}
 
 const Pictures& Gatehouse::pictures(Renderer::Pass pass) const
@@ -161,23 +169,61 @@ void Gatehouse::destroy()
 {
   TilesArray tiles = area();
 
-  foreach( it, tiles ) (*it)->setFlag( Tile::tlRoad, false );
+  for( auto tile : tiles )
+    tile->setFlag( Tile::tlRoad, false );
 }
+
+void Gatehouse::burn()
+{
+  Logger::warning( "WARNING: Gatehouse cant be burn. Ignore." );
+}
+
+void Gatehouse::timeStep(const unsigned long time)
+{
+  Building::timeStep( time );
+
+  if( _d->mode == autoToggle && game::Date::isDayChanged() )
+  {
+    auto military = _city()->statistic().services.find<city::Military>();
+    if( military.isValid() )
+    {
+      int threatValue = military->threatValue();
+      if( threatValue > 0 )
+      {
+        TilePos offset( 3, 3 );
+        TilePos start = tile().epos() - offset;
+        TilePos end = tile().epos() + TilePos( size().width(), size().height() ) + offset;
+        int enemies_n = _city()->statistic()
+                                .walkers
+                                .count<EnemySoldier>( start, end );
+
+        _d->walkable = (enemies_n == 0);
+      }
+    }
+  }
+}
+
+void Gatehouse::setMode(Gatehouse::Mode mode)
+{
+  _d->mode = mode;
+  switch( _d->mode )
+  {
+  case autoToggle: _d->walkable = false;
+  case opened: _d->walkable = true;
+  case closed: _d->walkable = false;
+  }
+}
+
+Gatehouse::Mode Gatehouse::mode() const { return _d->mode; }
 
 bool Gatehouse::build( const city::AreaInfo& info )
 {
   _update( info );
   _d->updateSprite();
 
-  TilesArea tiles( info.city->tilemap(), info.pos, size() );
-  foreach( it, tiles )
-  {
-    RoadPtr road = ptr_cast<Road>( (*it)->overlay() );
-    if( road.isValid() )
-    {
-      road->setState( pr::lockTerrain, 1 );
-    }
-  }
+  auto roads = TilesArea( info.city->tilemap(), info.pos, size() ).overlays<Road>();
+  for( auto road : roads )
+    road->setState( pr::lockTerrain, 1 );
 
   return Building::build( info );
 }
@@ -186,7 +232,6 @@ bool Gatehouse::canBuild( const city::AreaInfo& areaInfo ) const
 {
   return const_cast< Gatehouse* >( this )->_update( areaInfo );
 }
-
 
 void Gatehouse::Impl::updateSprite()
 {

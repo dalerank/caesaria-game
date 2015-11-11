@@ -45,23 +45,20 @@ bool Garden::isWalkable() const {  return _flat; }
 bool Garden::isFlat() const{ return _flat;}
 bool Garden::isNeedRoad() const{  return false;}
 
-bool Garden::build( const city::AreaInfo& info )
+bool Garden::build( const city::AreaInfo& areainfo )
 {
   // this is the same arrangement of garden tiles as existed in C3
-  Construction::build( info );
-  setPicture( MetaDataHolder::randomPicture( type(), size() ) );
+  Construction::build( areainfo );
+  setPicture( info().randomPicture( size() ) );
 
   if( size().area() == 1 )
   {
-    TilesArray tilesAround = info.city->tilemap().getNeighbors(pos(), Tilemap::AllNeighbors);
-    foreach( tile, tilesAround )
-    {
-      GardenPtr garden = ptr_cast<Garden>( (*tile)->overlay() );
-      if( garden.isValid() )
-      {
-        garden->update();
-      }
-    }
+    auto gardens = areainfo.city->tilemap()
+                              .getNeighbors(pos(), Tilemap::AllNeighbors)
+                              .overlays()
+                              .select<Garden>();
+    for( auto garden : gardens )
+      garden->update();
   }
 
   return true;
@@ -89,9 +86,10 @@ void Garden::save(VariantMap& stream) const
   stream[ "picture" ] = Variant( picture().name() );
 }
 
-Desirability Garden::desirability() const
+const Desirability& Garden::desirability() const
 {
-  Desirability ret = Construction::desirability();
+  static Desirability ret;
+  ret = Construction::desirability();
   ret.base *= (size().area() * size().width());
   //ret.range *= size().width();
   ret.step = -ret.base / ret.range;
@@ -107,7 +105,8 @@ std::string Garden::sound() const
 void Garden::destroy()
 {
   TilesArray tiles = area();
-  foreach( it, tiles ) (*it)->setFlag( Tile::tlGarden, false );
+  for( auto tile : tiles )
+    tile->setFlag( Tile::tlGarden, false );
 }
 
 void Garden::setPicture(Picture picture)
@@ -118,20 +117,20 @@ void Garden::setPicture(Picture picture)
 
 void Garden::update()
 {
-  TilesArea nearTiles( _city()->tilemap(), pos(), Size(2) );
+  TilesArea nearTiles( _map(), pos(), Size(2) );
 
   bool canGrow2squareGarden = ( nearTiles.size() == 4 ); // be carefull on map edges
-  foreach( tile, nearTiles )
+  for( auto tile : nearTiles )
   {
-    GardenPtr garden = ptr_cast<Garden>( (*tile)->overlay() );
+    auto garden = tile->overlay<Garden>();
     canGrow2squareGarden &= (garden.isValid() && garden->size().area() <= 2 );
   }
 
   if( canGrow2squareGarden )
   {   
-    foreach( tile, nearTiles )
+    for( auto tile : nearTiles )
     {
-      OverlayPtr overlay = (*tile)->overlay();
+      OverlayPtr overlay = tile->overlay();
 
       //not delete himself
       if( overlay != this && overlay.isValid() )
@@ -143,9 +142,9 @@ void Garden::update()
     Desirability::update( _city(), this, Desirability::off );
 
     setSize( Size( 2 ) );
-    city::AreaInfo info( _city(), pos() );
-    Construction::build( info );
-    setPicture( MetaDataHolder::randomPicture( type(), size() ) );
+    city::AreaInfo areainfo( _city(), pos() );
+    Construction::build( areainfo );
+    setPicture( info().randomPicture( size() ) );
     Desirability::update( _city(), this, Desirability::on );
   }
 }

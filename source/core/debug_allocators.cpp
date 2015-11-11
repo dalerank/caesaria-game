@@ -59,7 +59,7 @@ void debug_new::print()
 {
   FILE* logFile = fopen( "debug_unfreed.log", "w");
 
-  for( auto i : allocList )
+  for( auto& i : allocList )
   {
     if( logFile )
     {

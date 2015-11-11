@@ -46,7 +46,6 @@ namespace dialog
 class SaveGame::Impl
 {
 public:
-  GameAutoPause locker;
   PushButton* btnOk;
   PushButton* btnCancel;
   EditBox* edFilename;
@@ -68,18 +67,20 @@ void SaveGame::Impl::findFiles()
   StringArray names;
   names << flist.filter( vfs::Entries::file | vfs::Entries::extFilter, extension );
   std::sort( names.begin(), names.end() );
-  if( lbxSaves ) lbxSaves->addItems( names );
+
+  if( lbxSaves )
+    lbxSaves->addItems( names );
 }
 
 SaveGame::SaveGame(Ui *ui, vfs::Directory dir, std::string fileExt, int id )
 : Window( ui->rootWidget(), Rect( 0, 0, 512, 384 ), "", id ), _d( new Impl )
 {
-  _d->locker.activate();
   Widget::setupUI( ":/gui/savefile.gui" );
 
-  setCenter( parent()->center() );
+  moveTo( Widget::parentCenter );
 
   WidgetEscapeCloser::insertTo( this );
+  GameAutoPause::insertTo( this );
   
   GET_DWIDGET_FROM_UI( _d, edFilename )
   GET_DWIDGET_FROM_UI( _d, lbxSaves )

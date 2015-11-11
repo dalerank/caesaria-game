@@ -41,7 +41,7 @@ class ChastenerElephant::Impl
 public:
   void mayMove( const Tile* tile, bool& ret )
   {
-    BuildingPtr f = ptr_cast<Building>( tile->overlay() );
+    BuildingPtr f = tile->overlay<Building>();
     ret = ( tile->isWalkable( true ) || f.isValid() );
   }
 };
@@ -63,10 +63,9 @@ Pathway ChastenerElephant::_findPathway2NearestConstruction( unsigned int range 
   {
     ConstructionList constructions = _findContructionsInRange( tmpRange );
 
-    foreach( it, constructions )
+    for( auto construction : constructions )
     {
-      ConstructionPtr c = ptr_cast<Construction>( *it );
-      ret = PathwayHelper::create( pos(), c->pos(), makeDelegate( _d.data(), &Impl::mayMove ) );
+      ret = PathwayHelper::create( pos(), construction->pos(), makeDelegate( _d.data(), &Impl::mayMove ) );
       if( ret.isValid() )
       {
         return ret;
@@ -79,11 +78,11 @@ Pathway ChastenerElephant::_findPathway2NearestConstruction( unsigned int range 
 
 bool ChastenerElephant::_tryAttack()
 {
-  Tilemap& tmap = _city()->tilemap();
-  TilesArray tiles = tmap.getNeighbors( pos() );
-  foreach( it, tiles )
+  ConstructionList constructions = _map().getNeighbors( pos() )
+                                       .overlays()
+                                       .select<Construction>();
+  for( auto ov : constructions )
   {
-    ConstructionPtr ov = ptr_cast<Construction>( (*it)->overlay() );
     if( ov.isValid() && !_excludeAttack().count( ov->group() ) )
     {
       ov->collapse();
@@ -91,14 +90,6 @@ bool ChastenerElephant::_tryAttack()
   }
 
   return EnemySoldier::_tryAttack();
-}
-
-ChastenerElephantPtr ChastenerElephant::create( PlayerCityPtr city)
-{
-  ChastenerElephantPtr ret( new ChastenerElephant( city ) );
-  ret->drop();
-
-  return ret;
 }
 
 int ChastenerElephant::agressive() const { return 4; }

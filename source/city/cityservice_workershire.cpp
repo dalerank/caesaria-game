@@ -25,7 +25,7 @@
 #include "core/foreach.hpp"
 #include "game/gamedate.hpp"
 #include "core/gettext.hpp"
-#include "objects/metadata.hpp"
+#include "objects/infodb.hpp"
 #include "statistic.hpp"
 #include "events/showinfobox.hpp"
 #include "core/saveadapter.hpp"
@@ -54,7 +54,7 @@ class WorkersHire::Impl
 public:
   typedef std::map<object::Group, object::Types> GroupBuildings;
 
-  WalkerList hrInCity;
+  RecruterList recrutesInCity;
   unsigned int distance;
   DateTime lastMessageDate;
   HirePriorities priorities;
@@ -66,14 +66,6 @@ public:
   bool haveRecruter( WorkingBuildingPtr objects );
   void hireWorkers( PlayerCityPtr city, WorkingBuildingPtr bld );
 };
-
-SrvcPtr WorkersHire::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new WorkersHire( city ) );
-  ret->drop();
-
-  return ret;
-}
 
 std::string WorkersHire::defaultName(){ return CAESARIA_STR_EXT(WorkersHire); }
 
@@ -90,13 +82,13 @@ WorkersHire::WorkersHire(PlayerCityPtr city)
 
 void WorkersHire::Impl::fillIndustryMap()
 {
-  object::Types types = MetaDataHolder::instance().availableTypes();
+  object::Types types = object::InfoDB::instance().availableTypes();
 
   industryBuildings.clear();
 
-  for( auto&& type : types)
+  for( auto& type : types)
   {
-    const MetaData& info = MetaDataHolder::find( type );
+    auto info = object::Info::find( type );
     int workersNeed = info.getOption( literals::employers );
     if( workersNeed > 0 )
     {
@@ -107,14 +99,10 @@ void WorkersHire::Impl::fillIndustryMap()
 
 bool WorkersHire::Impl::haveRecruter( WorkingBuildingPtr building )
 {
-  for( auto wlk : hrInCity )
+  for( auto recruter : recrutesInCity )
   {
-    RecruterPtr hr = wlk.as<Recruter>();
-    if( hr.isValid() )
-    {
-      if( hr->baseLocation() == building->pos() )
+    if( recruter->baseLocation() == building->pos() )
         return true;
-    }
   }
 
   return false;
@@ -133,11 +121,11 @@ void WorkersHire::Impl::hireWorkers(PlayerCityPtr city, WorkingBuildingPtr bld)
 
   if( bld->roadside().size() > 0 )
   {
-    RecruterPtr hr = Recruter::create( city );
-    hr->setPriority( priorities );
-    hr->setMaxDistance( distance );
+    RecruterPtr recruter = Walker::create<Recruter>( city );
+    recruter->setPriority( priorities );
+    recruter->setMaxDistance( distance );
 
-    hr->send2City( bld, bld->needWorkers() );
+    recruter->send2City( bld, bld->needWorkers() );
   }
 }
 
@@ -149,24 +137,27 @@ void WorkersHire::timeStep( const unsigned int time )
   if( _city()->states().population == 0 )
     return;
 
-  _d->hrInCity = _city()->statistic().walkers.find( walker::recruter );
+  _d->recrutesInCity = _city()->statistic().walkers
+                                           .find( walker::recruter )
+                                           .select<Recruter>();
 
-  WorkingBuildingList buildings = _city()->statistic().objects.find<WorkingBuilding>( object::any );
+  auto workingBuildings = _city()->statistic().objects
+                                              .find<WorkingBuilding>();
 
   if( !_d->priorities.empty() )
   {
-    for( auto&& priority : _d->priorities )
+    for( auto& priority : _d->priorities )
     {
       object::Groups groups = industry::toGroups( priority );
 
       for( auto group : groups )
       {
-        for( WorkingBuildingList::iterator it=buildings.begin(); it != buildings.end(); )
+        for( WorkingBuildingList::iterator it=workingBuildings.begin(); it != workingBuildings.end(); )
         {
           if( (*it)->group() == group )
           {
             _d->hireWorkers( _city(), *it );
-            it = buildings.erase( it );
+            it = workingBuildings.erase( it );
           }
           else { ++it; }
         }
@@ -174,7 +165,7 @@ void WorkersHire::timeStep( const unsigned int time )
     }
   }
 
-  for( auto building : buildings )
+  for( auto building : workingBuildings )
   {    
     _d->hireWorkers( _city(), building );
   }
@@ -186,9 +177,9 @@ void WorkersHire::timeStep( const unsigned int time )
     int workersNeed = _city()->statistic().workers.need();
     if( workersNeed > employements::needMoreWorkers )
     {
-      GameEventPtr e = ShowInfobox::create( _("##city_need_workers_title##"), _("##city_need_workers_text##"),
-                                            ShowInfobox::send2scribe );
-      e->dispatch();
+      events::dispatch<ShowInfobox>( _("##city_need_workers_title##"),
+                                     _("##city_need_workers_text##"),
+                                     true );
     }
   }
 }

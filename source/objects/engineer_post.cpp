@@ -27,7 +27,7 @@ REGISTER_CLASS_IN_OVERLAYFACTORY( object::engineering_post, EngineerPost)
 
 EngineerPost::EngineerPost() : ServiceBuilding( Service::engineer, object::engineering_post, Size(1) )
 {
-  setPicture( MetaDataHolder::randomPicture( type(), size() ) );
+  setPicture( info().randomPicture( size() ) );
   _fgPictures().resize(1);
 }
 

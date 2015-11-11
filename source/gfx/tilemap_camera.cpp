@@ -103,7 +103,7 @@ void TilemapCamera::init(Tilemap &tilemap, Size size)
   _d->screenSize = size;
 }
 
-void TilemapCamera::setViewport(Size newSize)
+void TilemapCamera::setViewport(const Size& newSize)
 {
   if( _d->viewSize != newSize )
   {
@@ -112,12 +112,18 @@ void TilemapCamera::setViewport(Size newSize)
 
   _d->virtualSize = newSize;
 
-  newSize += _d->borderSize;
+  Size nSize = newSize + _d->borderSize;
   Size vpSize( tilemap::cellPicSize().height() * 2, tilemap::cellPicSize().height() );
-  _d->viewSize = Size( ( newSize.width() + (vpSize.width()-1)) / vpSize.width(),
-                       ( newSize.height() + (vpSize.height()-1)) / vpSize.height() );
+  _d->viewSize = Size( ( nSize.width() + (vpSize.width()-1)) / vpSize.width(),
+                       ( nSize.height() + (vpSize.height()-1)) / vpSize.height() );
   
-  Logger::warning( "TilemapArea::setViewport w=%d h=%d", _d->viewSize.width(), _d->viewSize.height() );
+  Logger::warning( "TilemapArea::setViewport w={} h={}, ScreenSize=[{}, {}]", _d->viewSize.width(), _d->viewSize.height(),
+                                                                              newSize.width(), newSize.height() );
+}
+
+const Size& TilemapCamera::viewport() const
+{
+  return _d->virtualSize;
 }
 
 void TilemapCamera::setCenter(TilePos pos, bool checkCorner)
@@ -298,7 +304,7 @@ const TilesArray& TilemapCamera::tiles() const
           _d->tiles.visible.push_back( tile );
         }
 
-        Tile* master = tile->masterTile();
+        Tile* master = tile->master();
         if( master != NULL )
         {
           Point pos = master->mappos() + _d->offset;
@@ -338,8 +344,8 @@ MovableOrders TilemapCamera::Impl::mayMove(PointF )
 
 void TilemapCamera::Impl::resetDrawn()
 {
-  for( auto i : tiles.visible ) { i->resetWasDrawn(); }
-  for( auto i : tiles.flat ) { i->resetWasDrawn(); }
+  for( auto i : tiles.visible ) { i->resetRendered(); }
+  for( auto i : tiles.flat ) { i->resetRendered(); }
 }
 
 Point TilemapCamera::Impl::getOffset(const PointF &center)
@@ -368,13 +374,13 @@ void TilemapCamera::Impl::updateFlatTiles()
   for( auto t : tiles.visible )
   {
     int z = t->epos().z();
-    Tile* tile = t->masterTile();
+    Tile* tile = t->master();
     if( !tile )
       tile = t;
 
-    if( tile->isFlat() && tile->epos().z() == z && !tile->rwd() )
+    if( tile->isFlat() && tile->epos().z() == z && !tile->rendered() )
     {
-      tile->setWasDrawn();
+      tile->setRendered();
       tiles.flat.push_back( tile );
     }
   }

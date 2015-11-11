@@ -40,9 +40,11 @@ public:
   void removeMoney( PlayerCityPtr city );
 };
 
-Forum::Forum() : ServiceBuilding(Service::forum, object::forum, Size(2)), _d( new Impl )
+Forum::Forum()
+  : ServiceBuilding(Service::forum, object::forum, Size(2)),
+   __INIT_IMPL(Forum)
 {
-  _d->taxValue = 0;
+  _dfunc()->taxValue = 0;
   _picture().load( ResourceGroup::govt, 10 );
 }
 
@@ -50,7 +52,7 @@ void Forum::deliverService()
 {
   if( numberWorkers() > 0 && walkers().size() == 0 )
   {
-    TaxCollectorPtr walker = TaxCollector::create( _city() );
+    TaxCollectorPtr walker = Walker::create<TaxCollector>( _city() );
     walker->send2City( this, ServiceWalker::goServiceMaximum|ServiceWalker::anywayWhenFailed );
 
     addWalker( walker.object() );
@@ -61,16 +63,17 @@ unsigned int Forum::walkerDistance() const { return 26; }
 
 void Forum::applyService(ServiceWalkerPtr walker)
 {
+  __D_REF(d,Forum)
   switch( walker->type() )
   {
   case walker::taxCollector:
   {
-    TaxCollectorPtr txcl = ptr_cast<TaxCollector>( walker );
-    if( txcl.isValid() )
+    auto taxCollector = walker.as<TaxCollector>();
+    if( taxCollector.isValid() )
     {
-      float tax = txcl->takeMoney();;
-      _d->taxValue += tax;
-      Logger::warning( "Forum: collect money %f. All money %f", tax, _d->taxValue );
+      float tax = taxCollector->takeMoney();;
+      d.taxValue += tax;
+      Logger::warning( "Forum: collect money {0}. All money {1}", tax, d.taxValue );
     }
   }
   break;
@@ -84,24 +87,25 @@ void Forum::applyService(ServiceWalkerPtr walker)
 
 void Forum::burn()
 {
-  _d->removeMoney( _city() );
+  _dfunc()->removeMoney( _city() );
   ServiceBuilding::burn();
 }
 
 void Forum::collapse()
 {
-  _d->removeMoney( _city() );
+  _dfunc()->removeMoney( _city() );
   ServiceBuilding::collapse();
 }
 
 float Forum::collectTaxes()
 {
+  __D_REF(d,Forum)
   int save = 0;
 
-  if( _d->taxValue > 1 )
+  if( d.taxValue > 1 )
   {
-    save = floor( _d->taxValue );
-    _d->taxValue -= save;
+    save = floor( d.taxValue );
+    d.taxValue -= save;
   }
 
   return save;
@@ -109,22 +113,18 @@ float Forum::collectTaxes()
 
 void Forum::Impl::removeMoney(PlayerCityPtr city)
 {
-  SenatePtr senate;
-  SenateList senates = city->statistic().objects.find<Senate>( object::senate );
-  if( !senates.empty() )
-    senate = senates.front();
+  int senates_n = city->statistic().objects.count<Senate>();
 
   int maxMoney = city->treasury().money();
   if( maxMoney > 0 )
   {
-    ForumList forums = city->statistic().objects.find<Forum>();
+    int forums_n = city->statistic().objects.count<Forum>();
 
-    if( senate.isValid() )
+    if( senates_n > 0 )
       maxMoney /= 2;
 
-    maxMoney /= forums.size();
+    maxMoney /= math::clamp( forums_n, 1, 99 );
 
-    events::GameEventPtr e = events::Payment::create( econ::Issue::moneyStolen, -maxMoney );
-    e->dispatch();
+    events::dispatch<events::Payment>( econ::Issue::moneyStolen, -maxMoney );
   }
 }

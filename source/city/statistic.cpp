@@ -27,8 +27,10 @@
 #include "gfx/tilemap.hpp"
 #include "goods_updater.hpp"
 #include "game/funds.hpp"
+#include "core/common.hpp"
 #include "cityservice_workershire.hpp"
 #include "objects/farm.hpp"
+#include "objects/religion.hpp"
 #include "world/empire.hpp"
 #include "objects/warehouse.hpp"
 #include "cityservice_disorder.hpp"
@@ -38,6 +40,7 @@
 #include "cityservice_health.hpp"
 #include "world/traderoute.hpp"
 #include "core/logger.hpp"
+#include "world/trading.hpp"
 #include "city/states.hpp"
 #include <map>
 
@@ -60,7 +63,7 @@ float Statistic::_Balance::koeff() const
 int Statistic::_Entertainment::coverage(Service::Type service) const
 {
   int need = 0, have = 0;
-  HouseList houses = _parent.rcity.statistic().houses.find();
+  auto houses = _parent.rcity.statistic().houses.all();
   for( auto house : houses )
   {
     if( house->isEntertainmentNeed( service ) )
@@ -78,21 +81,17 @@ int Statistic::_Entertainment::coverage(Service::Type service) const
 
 HouseList Statistic::_Houses::ready4evolve(const object::TypeSet& checkTypes ) const
 {
-  HouseList ret;
-
   HouseList houses = find();
 
-  for( auto it : houses )
+  for( auto it=houses.begin(); it != houses.end(); )
   {
     object::Type btype;
-    it->spec().next().checkHouse( it, NULL, &btype );
-    if( checkTypes.count( btype ) )
-    {    
-      ret.push_back( it );
-    }
+    (*it)->spec().next().checkHouse( *it, nullptr, &btype );
+    if( checkTypes.count( btype ) ) it = houses.erase( it );
+    else ++it;
   }
 
-  return ret;
+  return houses;
 }
 
 HouseList Statistic::_Houses::ready4evolve( const object::Type checkType ) const
@@ -102,6 +101,32 @@ HouseList Statistic::_Houses::ready4evolve( const object::Type checkType ) const
   return ready4evolve( checkTypes );
 }
 
+HouseList Statistic::_Houses::habitable() const
+{
+  HouseList houses = find();
+
+  for( auto it=houses.begin(); it != houses.end(); )
+  {
+    if( (*it)->habitants().count() > 0 ) ++it;
+    else it = houses.erase( it );
+  }
+
+  return houses;
+}
+
+HouseList Statistic::_Houses::patricians( bool habitabl ) const
+{
+  HouseList houses = habitabl ? habitable() : all();
+
+  for( auto it=houses.begin(); it != houses.end(); )
+  {
+    if( !(*it)->spec().isPatrician() ) it = houses.erase( it );
+    else ++it;
+  }
+
+  return houses;
+}
+
 #if _MSC_VER >= 1300
 #define INIT_SUBSTAT(a) a({*this})
 #else
@@ -109,22 +134,23 @@ HouseList Statistic::_Houses::ready4evolve( const object::Type checkType ) const
 #endif
 Statistic::Statistic(PlayerCity& c)
     : INIT_SUBSTAT(walkers),
-    INIT_SUBSTAT(objects),
-    INIT_SUBSTAT(tax),
-    INIT_SUBSTAT(workers),
-    INIT_SUBSTAT(population),
-    INIT_SUBSTAT(food),
-    INIT_SUBSTAT(services),
-    INIT_SUBSTAT(festival),
-    INIT_SUBSTAT(crime),
-    INIT_SUBSTAT(goods),
-    INIT_SUBSTAT(health),
-    INIT_SUBSTAT(military),
-    INIT_SUBSTAT(map),
-    INIT_SUBSTAT(houses),
-    INIT_SUBSTAT(entertainment),
-    INIT_SUBSTAT(balance),
-    rcity( c )
+      INIT_SUBSTAT(objects),
+      INIT_SUBSTAT(tax),
+      INIT_SUBSTAT(workers),
+      INIT_SUBSTAT(population),
+      INIT_SUBSTAT(food),
+      INIT_SUBSTAT(services),
+      INIT_SUBSTAT(festival),
+      INIT_SUBSTAT(crime),
+      INIT_SUBSTAT(goods),
+      INIT_SUBSTAT(health),
+      INIT_SUBSTAT(military),
+      INIT_SUBSTAT(map),
+      INIT_SUBSTAT(houses),
+      INIT_SUBSTAT(religion),
+      INIT_SUBSTAT(entertainment),
+      INIT_SUBSTAT(balance),
+      rcity( c )
 {
 
 }
@@ -160,6 +186,32 @@ const WalkerList& Statistic::_Walkers::find(walker::Type type) const
   return wl;
 }
 
+int Statistic::_Walkers::count(walker::Type type, const TilePos& start, const TilePos& stop) const
+{
+  int result = 0;
+  if( start == gfx::tilemap::invalidLocation() )
+  {
+    const WalkerList& all =_parent.rcity.walkers();
+    result = utils::countByType( all, type );
+  }
+  else if( stop == gfx::tilemap::invalidLocation() )
+  {
+    const WalkerList& wlkOnTile = _parent.rcity.walkers( start );
+    result = utils::countByType( wlkOnTile, type );
+  }
+  else
+  {
+    gfx::TilesArea area( _parent.rcity.tilemap(), start, stop );
+    for( auto tile : area)
+    {
+      const WalkerList& wlkOnTile = _parent.rcity.walkers( tile->pos() );
+      result += utils::countByType( wlkOnTile, type );
+    }
+  }
+
+  return result;
+}
+
 unsigned int Statistic::_Tax::possible() const
 {
   HouseList houses = _parent.houses.find();
@@ -183,7 +235,7 @@ unsigned int Statistic::_Tax::possible() const
 
 gfx::TilesArray Statistic::_Map::perimetr(const TilePos& lu, const TilePos& rb) const
 {
-  return _parent.rcity.tilemap().getRectangle( lu, rb );
+  return _parent.rcity.tilemap().rect( lu, rb );
 }
 
 void Statistic::_Map::updateTilePics() const
@@ -212,7 +264,7 @@ Statistic::WorkersInfo Statistic::_Workers::details() const
   return ret;
 }
 
-unsigned int Statistic::_Workers::need() const
+size_t Statistic::_Workers::need() const
 {
   WorkersInfo wInfo = details();
   return wInfo.need < wInfo.current ? 0 : wInfo.need - wInfo.current;
@@ -281,7 +333,7 @@ float Statistic::_Workers::monthlyOneWorkerWages() const
   return _parent.rcity.treasury().workerSalary() / (10.f * DateTime::monthsInYear);
 }
 
-unsigned int Statistic::_Workers::available() const
+size_t Statistic::_Workers::available() const
 {
   HouseList houses = _parent.houses.find();
 
@@ -290,6 +342,19 @@ unsigned int Statistic::_Workers::available() const
     workersNumber += house->habitants().mature_n();
 
   return workersNumber;
+}
+
+size_t Statistic::_Objects::count(object::Type type) const
+{
+  size_t ret=0;
+  const OverlayList& buildings = _parent.rcity.overlays();
+  for( auto bld : buildings )
+  {
+    if( bld.isValid() && bld->type() == type )
+      ret++;
+  }
+
+  return ret;
 }
 
 OverlayList Statistic::_Objects::neighbors(OverlayPtr overlay, bool v) const
@@ -301,7 +366,7 @@ OverlayList Statistic::_Objects::neighbors(OverlayPtr overlay, bool v) const
   TilePos start = overlay->pos() - gfx::tilemap::unitLocation();
   TilePos stop = start + TilePos( size.width(), size.height() );
   OverlayList ret;
-  gfx::TilesArray tiles = _parent.rcity.tilemap().getRectangle( start, stop );
+  gfx::TilesArray tiles = _parent.rcity.tilemap().rect( start, stop );
   std::set<OverlayPtr> checked;
   for( auto tile : tiles )
   {
@@ -337,7 +402,7 @@ HirePriorities Statistic::_Workers::hirePriorities() const
   return wh.isValid() ? wh->priorities() : HirePriorities();
 }
 
-unsigned int Statistic::_Food::inGranaries() const
+size_t Statistic::_Food::inGranaries() const
 {
   int foodSum = 0;
 
@@ -347,7 +412,7 @@ unsigned int Statistic::_Food::inGranaries() const
   return foodSum;
 }
 
-unsigned int Statistic::_Food::monthlyConsumption() const
+size_t Statistic::_Food::monthlyConsumption() const
 {
   int foodComsumption = 0;
   HouseList houses = _parent.houses.find();
@@ -377,7 +442,7 @@ unsigned int Statistic::_Tax::payersPercent() const
   return math::percentage( registered, population );
 }
 
-unsigned int Statistic::_Food::possibleProducing() const
+size_t Statistic::_Food::possibleProducing() const
 {
   int foodProducing = 0;
   FarmList farms = _parent.objects.farms();
@@ -401,25 +466,28 @@ unsigned int Statistic::_Festival::calcCost(FestivalType type) const
   return 0;
 }
 
+good::ProductMap Statistic::_Goods::inCity() const { return details( true ); }
+good::ProductMap Statistic::_Goods::inWarehouses() const { return details( false ); }
+
 good::ProductMap Statistic::_Goods::details(bool includeGranary) const
 {
   good::ProductMap cityGoodsAvailable;
 
-  WarehouseList warehouses = _parent.objects.find<Warehouse>( object::any );
+  auto warehouses = _parent.objects.find<Warehouse>();
 
-  for( auto wh : warehouses )
+  for( auto warehouse : warehouses )
   {
-    good::ProductMap whStore = wh->store().details();
+    good::ProductMap whStore = warehouse->store().details();
     cityGoodsAvailable += whStore;
   }
 
   if( includeGranary )
   {
-    GranaryList granaries = _parent.objects.find<Granary>( object::any );
+    auto granaries = _parent.objects.find<Granary>( object::any );
 
-    for( auto gg : granaries )
+    for( auto granary : granaries )
     {
-      good::ProductMap grStore = gg->store().details();
+      good::ProductMap grStore = granary->store().details();
       cityGoodsAvailable += grStore;
     }
   }
@@ -436,12 +504,12 @@ int Statistic::_Objects::laborAccess(WorkingBuildingPtr wb) const
   TilePos wbpos = wb->pos();
   HouseList houses = find<House>( object::house, wbpos - offset, wbpos + offset );
   float averageDistance = 0;
-  for( auto it : houses )
+  for( auto house : houses )
   {
-    if( it->spec().level() > HouseLevel::vacantLot
-        && it->spec().level() < HouseLevel::smallVilla )
+    if( house->level() > HouseLevel::vacantLot
+        && house->level() < HouseLevel::smallVilla )
     {
-      averageDistance += wbpos.distanceFrom( it->pos() );
+      averageDistance += wbpos.distanceFrom( house->pos() );
     }
   }
 
@@ -466,7 +534,7 @@ int Statistic::_Military::months2lastAttack() const
 bool Statistic::_Goods::canImport(good::Product type) const
 {
   world::EmpirePtr empire = _parent.rcity.empire();
-  world::TraderouteList routes = empire->tradeRoutes( _parent.rcity.name() );
+  world::TraderouteList routes = empire->troutes().from( _parent.rcity.name() );
   bool haveImportWay = false;
   for( auto route : routes )
   {
@@ -515,6 +583,11 @@ unsigned int Statistic::_Houses::terribleNumber() const
   return ret;
 }
 
+HouseList Statistic::_Houses::all() const
+{
+  return _parent.objects.find<House>();
+}
+
 HouseList Statistic::_Houses::find(std::set<int> levels) const
 {
   HouseList houses = _parent.objects.find<House>();
@@ -524,13 +597,23 @@ HouseList Statistic::_Houses::find(std::set<int> levels) const
   HouseList ret;
   for( auto it : houses )
   {
-    if( levels.count( it->spec().level() ) > 0 )
+    if( levels.count( it->level() ) > HouseLevel::vacantLot )
     {
       ret << it;
     }
   }
 
   return ret;
+}
+
+TempleList Statistic::_Religion::temples() const
+{
+  return _parent.objects.find<Temple>( object::group::religion );
+}
+
+TempleOracleList Statistic::_Religion::oracles() const
+{
+  return _parent.objects.find<TempleOracle>( object::oracle );
 }
 
 }//end namespace city

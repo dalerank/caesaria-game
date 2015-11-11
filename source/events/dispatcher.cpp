@@ -74,7 +74,7 @@ void Dispatcher::update(Game& game, unsigned int time )
 
   if( !_d->newEvents.empty() )
   {
-    _d->events << _d->newEvents;
+    _d->events.append( _d->newEvents );
     _d->newEvents.clear();
   }
 }
@@ -83,9 +83,9 @@ VariantMap Dispatcher::save() const
 {
   VariantMap ret;
   int index = 0;
-  for( auto&& event : _d->events )
+  for( auto& event : _d->events )
   {
-    ret[ utils::format( 0xff, "event_%d", index++ ) ] = event->save();
+    ret[ fmt::format( "event_{0}", index++ ) ] = event->save();
   }
 
   return ret;
@@ -93,14 +93,12 @@ VariantMap Dispatcher::save() const
 
 void Dispatcher::load(const VariantMap& stream)
 {
-  for( auto&& it : stream )
+  for( auto& it : stream )
   {
-    GameEventPtr e = PostponeEvent::create( it.first, it.second.toMap() );
+    auto event = PostponeEvent::create( it.first, it.second.toMap() );
 
-    if( e.isValid() )
-    {
-      append( e );
-    }
+    if( event.isValid() )
+      append( event );
   }
 }
 

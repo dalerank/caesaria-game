@@ -103,7 +103,7 @@ signals public:
 std::string __ucs2utf8( const std::wstring& text )
 {
   std::string ret;
-  for( auto symbol : text )
+  for( auto& symbol : text )
   {
     if( (unsigned short)symbol < 0x80 )
     {
@@ -132,7 +132,6 @@ void EditBox::_init()
   setTaborder(-1);
 
   _breakText();
-
   _calculateScrollPos();
 
   setTextAlignment( align::upperLeft, align::center );
@@ -791,7 +790,7 @@ void EditBox::beforeDraw(Engine& painter)
       _d->background.destroy();
 
       Pictures pics;
-      Decorator::draw( pics, Rect( 0, 0, width(), height() ), Decorator::blackFrame, Decorator::normalY );
+      Decorator::draw( pics, Rect( 0, 0, width(), height() ), Decorator::blackFrame, nullptr, Decorator::normalY );
       bool batchOk = _d->background.load( pics, absoluteRect().lefttop() );
       if( !batchOk )
       {
@@ -968,7 +967,7 @@ void EditBox::draw( Engine& painter )
   if( !visible() )
 		return;
 
-	const bool focus = _environment->hasFocus(this);
+  const bool focus = ui()->hasFocus(this);
 
   //const ElementStyle& style = getStyle().GetState( getActiveState() );
 	//const ElementStyle& markStyle = getStyle().GetState( L"Marked" );
@@ -1096,7 +1095,7 @@ bool EditBox::_processMouse(const NEvent& event)
 	switch(event.mouse.type)
 	{
 	case mouseLbtnRelease:
-		if (_environment->hasFocus(this))
+    if (ui()->hasFocus(this))
 		{
 			Point rpos = event.mouse.pos() - _d->textOffset;
 			_d->cursorPos = _d->getCursorPos( this, rpos.x(), rpos.y());
@@ -1121,7 +1120,7 @@ bool EditBox::_processMouse(const NEvent& event)
 		}
 		break;
 	case mouseLbtnPressed:
-		if (!_environment->hasFocus(this))
+    if (!ui()->hasFocus(this))
 		{
 			_d->mouseMarking = true;
 			Point rpos = event.mouse.pos() - _d->textOffset;

@@ -32,11 +32,10 @@ namespace dialog
 class LoadGame : public LoadFile
 {
 public:
-  static LoadGame* create( Widget* parent, const vfs::Directory& dir );
+  LoadGame( Widget* parent, const vfs::Directory& dir );
   virtual ~LoadGame();
 
 protected:
-  LoadGame( Widget* parent, const vfs::Directory& dir );
   virtual void _fillFiles();
   void _showPreview( const ListBoxItem& item );
 

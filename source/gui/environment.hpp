@@ -28,7 +28,14 @@ namespace gui
 class Ui : Widget
 {
 public:
-  typedef enum { showTooltips=0 } Flag;
+  template<typename WidgetClass, typename... Args>
+  WidgetClass& add( const Args& ... args)
+  {
+    WidgetClass* widget = new WidgetClass( this, args... );
+    return *widget;
+  }
+
+  typedef enum { showTooltips=0, buttonShowDebugArea } Flag;
   Ui( gfx::Engine& painter );
 
   virtual ~Ui();
@@ -50,7 +57,7 @@ public:
   virtual void beforeDraw();
 
   void animate(unsigned int time);
-
+  Size vsize() const;
   bool handleEvent(const NEvent& event);
 
   virtual void deleteLater( Widget* ptrElement );
@@ -58,6 +65,7 @@ public:
   Widget* createWidget( const std::string& type, Widget* parent );
 
   void setFlag( Flag name, int value );
+  bool hasFlag( Flag name );
   void clear();
    
 private:    

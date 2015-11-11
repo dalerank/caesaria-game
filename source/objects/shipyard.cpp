@@ -49,7 +49,7 @@ Shipyard::Shipyard() : CoastalFactory(good::timber, good::none, object::shipyard
   // transport 1 2 3 4
   _picture().load( ResourceGroup::shipyard, Impl::northPic );
 
-  inStockRef().setCapacity( 1200 );
+  inStock().setCapacity( 1200 );
   store().setCapacity( 1200 );
   _d->creatingBoat = false;
 }
@@ -100,10 +100,10 @@ void Shipyard::timeStep(const unsigned long time)
     {
       updateProgress( -100.f );
 
-      _d->boat = FishingBoat::create( _city() );
+      _d->boat = Walker::create<FishingBoat>( _city() );
       _d->boat->send2city( this, landingTile().pos() );
     }
-    }
+  }
 }
 
 bool Shipyard::build(const city::AreaInfo& info)

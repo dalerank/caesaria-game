@@ -61,14 +61,12 @@ void ClearTile::_exec( Game& game, unsigned int )
 
     if( overlay.isValid() && !overlay->canDestroy() )
     {
-      GameEventPtr e = WarningMessage::create( _( overlay->errorDesc() ), WarningMessage::neitral );
-      e->dispatch();
+      auto info = overlay->info();
+      events::dispatch<WarningMessage>( _( overlay->errorDesc() ), WarningMessage::neitral );
 
-      const MetaData& md = MetaDataHolder::find( overlay->type() );
-      if( md.getOption( MetaDataOptions::requestDestroy, false ).toBool() )
+      if( info.requestDestroy() )
       {
-        e = RequestDestroy::create( overlay );
-        e->dispatch();
+        events::dispatch<RequestDestroy>( overlay );
       }
       return;
     }
@@ -80,13 +78,13 @@ void ClearTile::_exec( Game& game, unsigned int )
       overlay->deleteLater();
     }
 
-    TilesArray clearedTiles = tmap.getArea( rPos, size );
+    TilesArray clearedTiles = tmap.area( rPos, size );
     for( auto tile : clearedTiles )
     {
-      tile->setMasterTile( NULL );
-      tile->setFlag( Tile::tlTree, false);
-      tile->setFlag( Tile::tlRoad, false);
-      tile->setFlag( Tile::tlGarden, false);
+      tile->setMaster( NULL );
+      tile->terrain().tree = false;
+      tile->terrain().road = false;
+      tile->terrain().garden = false;
       tile->setOverlay( NULL );
 
       deleteRoad |= tile->getFlag( Tile::tlRoad );
@@ -112,7 +110,7 @@ void ClearTile::_exec( Game& game, unsigned int )
         Picture pic;
         pic.load( ResourceGroup::land1a, startOffset + imgId );
         tile->setPicture( pic );
-        tile->setOriginalImgId( imgid::fromResource( pic.name() ) );
+        tile->setImgId( imgid::fromResource( pic.name() ) );
       }
     }
 

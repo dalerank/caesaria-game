@@ -85,8 +85,7 @@ void EarthQuake::_exec( Game& game, unsigned int time)
 
       if( mayDestruct )
       {
-        GameEventPtr e = Disaster::create( *currentTile, Disaster::rift );
-        e->dispatch();
+        events::dispatch<Disaster>( *currentTile, Disaster::rift );
       }
     }
 

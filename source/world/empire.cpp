@@ -64,14 +64,14 @@ public:
 
   void setAvailable( bool value )
   {
-    for( auto city : *this )
+    for( auto& city : *this )
       city->setAvailable( value );
   }
 
   void update( unsigned int time )
   {
-    foreach( it, *this )
-      (*it)->timeStep( time );
+    for( auto& it : *this )
+      it->timeStep( time );
   }
 
   CityPtr find( const std::string& name ) const
@@ -114,7 +114,7 @@ public:
       setAvailable( allCities == "enabled" );
     }
 
-    for( auto item : stream )
+    for( auto& item : stream )
     {
       CityPtr city = find( item.first );
       if( city.isValid() )
@@ -123,7 +123,7 @@ public:
       }
       else
       {
-        Logger::warning( "!!! WARNING: Cant find city %s on load", item.first.c_str() );
+        Logger::warning( "!!! WARNING: Cant find city {} on load", item.first );
       }
     }
   }
@@ -136,7 +136,9 @@ public:
 
   void update( unsigned int time )
   {
-    for( auto obj : *this ) obj->timeStep( time );
+    for( auto& obj : *this )
+      obj->timeStep( time );
+
     utils::eraseIfDeleted( *this );
     merge();
   }
@@ -144,7 +146,7 @@ public:
   VariantMap save() const
   {
     VariantMap ret;
-    for( auto obj : *this)
+    for( auto& obj : *this)
     {
       VariantMap objSave;
       obj->save( objSave );
@@ -156,7 +158,7 @@ public:
 
   void load( const VariantMap& stream, EmpirePtr empire )
   {
-    for( auto item : stream )
+    for( auto& item : stream )
     {
       const VariantMap& vm = item.second.toMap();
       std::string objectType = vm.get( "type" ).toString();
@@ -180,6 +182,7 @@ class Empire::Impl
 public:
   Cities cities;
   Trading trading;
+  TradeRoutes troutes;
   EmpireMap emap;
   Objects objects;
   Economy economy;
@@ -198,6 +201,7 @@ public:
 Empire::Empire() : _d( new Impl )
 {
   _d->trading.init( this );
+  _d->troutes.init( this );
   _d->economy.workerSalary = econ::defaultSalary;
   _d->economy.rateInterest = defaultInterestPercent;
   _d->economy.treasury = 0;
@@ -212,10 +216,10 @@ Empire::Empire() : _d( new Impl )
 CityList Empire::cities() const
 {
   CityList ret;
-  foreach( it, _d->cities )
+  for( auto city : _d->cities )
   {
-    if( (*it)->isAvailable() )
-      ret.push_back( *it );
+    if( city->isAvailable() )
+      ret.push_back( city );
   }
 
   return ret;
@@ -248,13 +252,13 @@ void Empire::_initializeCities( vfs::Path filename )
     return;
   }
 
-  for( auto item : cities )
+  for( auto& item : cities )
   {
     CityPtr city = ComputerCity::create( this, item.first );
     addCity( city );
     city->load( item.second.toMap() );
     _d->emap.setCity( city->location() );
-    }
+  }
 }
 
 void Empire::_initializeCapital()
@@ -289,9 +293,8 @@ void Empire::addObject(ObjectPtr obj)
     obj->setName( obj->type() + utils::i2str( _d->objects.id++ ) );
   }  
 
-  foreach( it, _d->objects )
+  for( auto object : _d->objects )
   {
-    auto object = *it;
     if( object == obj )
     {
       Logger::warning( "WARNING!!! Empire:addObject also have object with name " + obj->name() );
@@ -308,7 +311,7 @@ CityPtr Empire::addCity( CityPtr city )
 
   if( ret.isValid() )
   {
-    Logger::warning( "Empire: city %s already exist", city->name().c_str() );
+    Logger::warning( "Empire: city {0} already exist", city->name() );
     //_CAESARIA_DEBUG_BREAK_IF( "City already exist" );
     return ret;
   }
@@ -339,6 +342,8 @@ void Empire::save( VariantMap& stream ) const
   VARIANT_SAVE_ANY_D  ( stream, _d, maxBarbariansGroups  )
   VARIANT_SAVE_ANY_D  ( stream, _d, economy.rateInterest )
   VARIANT_SAVE_ANY_D  ( stream, _d, economy.treasury     )
+  VARIANT_SAVE_CLASS_D( stream, _d, troutes              )
+
 }
 
 void Empire::load( const VariantMap& stream )
@@ -352,6 +357,7 @@ void Empire::load( const VariantMap& stream )
   VARIANT_LOAD_CLASS_D ( _d, trading,                                       stream )
   VARIANT_LOAD_CLASS_D ( _d, cities,                                        stream )
   VARIANT_LOAD_CLASS_D ( _d, emperor,                                       stream ) //patch from keeeeper
+  VARIANT_LOAD_CLASS_D ( _d, troutes,                                       stream )
   _d->objects.load( stream.get( "objects" ).toMap(), this );
 }
 
@@ -393,11 +399,11 @@ TraderoutePtr Empire::createTradeRoute(std::string start, std::string stop )
   bool startAndDstCorrect = startCity.isValid() && stopCity.isValid();
   if( startAndDstCorrect )
   {
-    TraderoutePtr route = _d->trading.createRoute( start, stop );
+    TraderoutePtr route = _d->troutes.create( start, stop );
     if( !route.isValid() )
     {
-      Logger::warning( "WARNING!!! Trading::load cant create route from %s to %s",
-                       start.c_str(), stop.c_str() );
+      Logger::warning( "WARNING!!! Trading::load cant create route from {0} to {1}",
+                       start, stop );
       return route;
     }
 
@@ -446,17 +452,10 @@ TraderoutePtr Empire::createTradeRoute(std::string start, std::string stop )
   }
   else
   {
-    Logger::warning( "!!! WARNING: Cant create road from %s to %s", start.c_str(), stop.c_str() );
+    Logger::warning( "!!! WARNING: Cant create road from {0} to {1}", start, stop );
   }
 
   return TraderoutePtr();
-}
-
-TraderoutePtr Empire::findRoute( unsigned int index ) {  return _d->trading.findRoute( index ); }
-
-TraderoutePtr Empire::findRoute( const std::string& start, const std::string& stop )
-{
-  return _d->trading.findRoute( start, stop ); 
 }
 
 void Empire::timeStep( unsigned int time )
@@ -482,7 +481,8 @@ void Empire::timeStep( unsigned int time )
 const EmpireMap& Empire::map() const { return _d->emap; }
 
 Emperor& Empire::emperor() { return _d->emperor; }
-CityPtr Empire::rome() const { return findCity( Rome::defaultName ); }
+CityPtr Empire::capital() const { return findCity( Rome::defaultName ); }
+TradeRoutes& Empire::troutes() { return _d->troutes; }
 
 CityPtr Empire::initPlayerCity( CityPtr city )
 {
@@ -490,7 +490,7 @@ CityPtr Empire::initPlayerCity( CityPtr city )
 
   if( ret.isNull() )
   {
-    Logger::warning("Empire: can't init player city, city with name %s no exist", city->name().c_str() );
+    Logger::warning( "Empire: can't init player city, city with name {} no exist", city->name() );
     return CityPtr();
   }
 
@@ -499,7 +499,7 @@ CityPtr Empire::initPlayerCity( CityPtr city )
   _d->cities.push_back( city );
   _d->cities.playerCity = city->name();
 
-  for( auto product : good::all() )
+  for( auto& product : good::all() )
   {
     world::PriceInfo prices = getPrice( product );
     city->empirePricesChanged( product, prices );
@@ -515,18 +515,16 @@ ObjectList Empire::findObjects( Point location, int deviance ) const
   ObjectList ret;
   int sqrDeviance = pow( deviance, 2 ); //not need calculate sqrt
 
-  foreach( it, _d->objects )
+  for( auto item : _d->objects )
   {
-    auto item = *it;
     if( item->isAvailable() && location.getDistanceFromSQ( item->location() ) < sqrDeviance )
     {        
       ret << item;
     }
   }
 
-  foreach( it, _d->cities )
+  for( auto city : _d->cities )
   {
-    auto city  = *it;
     if( city->isAvailable() && location.getDistanceFromSQ( city->location() ) < sqrDeviance )
     {
       ret << city.as<Object>();
@@ -539,11 +537,11 @@ ObjectList Empire::findObjects( Point location, int deviance ) const
 
 ObjectPtr Empire::findObject(const std::string& name) const
 {
-  foreach( it, _d->objects )
+  for( auto obj : _d->objects )
   {
-    if( (*it)->name() == name )
+    if( obj->name() == name )
     {
-      return *it;
+      return obj;
     }
   }
 
@@ -551,8 +549,6 @@ ObjectPtr Empire::findObject(const std::string& name) const
 
   return city.as<Object>();
 }
-
-TraderouteList Empire::tradeRoutes( const std::string& startCity ) { return _d->trading.routes( startCity );}
 
 unsigned int EmpireHelper::getTradeRouteOpenCost( EmpirePtr empire, const std::string& start, const std::string& stop )
 {
@@ -596,7 +592,7 @@ GovernorRanks EmpireHelper::ranks()
   std::map<unsigned int, GovernorRank> sortRanks;
 
   VariantMap vm = config::load( SETTINGS_RC_PATH( ranksModel ) );
-  for( auto item : vm )
+  for( auto& item : vm )
   {
     GovernorRank rank;
     rank.load( item.first, item.second.toMap() );
@@ -604,19 +600,17 @@ GovernorRanks EmpireHelper::ranks()
   }
 
   GovernorRanks ret;
-  for( auto rank : sortRanks )
+  for( auto& rank : sortRanks )
     ret.push_back( rank.second );
 
   return ret;
 }
 
-GovernorRank EmpireHelper::getRank(unsigned int name)
+GovernorRank EmpireHelper::getRank(GovernorRank::Level level)
 {
   GovernorRanks ranks = world::EmpireHelper::ranks();
-  return ranks[ math::clamp<int>( name, 0, ranks.size() ) ];
+  return ranks[ math::clamp<int>( level, 0, ranks.size() ) ];
 }
-
-TraderouteList Empire::tradeRoutes(){  return _d->trading.routes();}
 
 void Empire::Impl::checkLoans()
 {
@@ -645,10 +639,8 @@ void Empire::Impl::checkLoans()
 
 void Empire::Impl::checkBarbarians( EmpirePtr empire )
 {
-  BarbarianList barbarians;
-  barbarians << objects;
-
-  bool needYetOneBarbarianGroup = barbarians.size() < maxBarbariansGroups;
+  unsigned int barbarians_n = objects.count<Barbarian>();
+  bool needYetOneBarbarianGroup = barbarians_n < maxBarbariansGroups;
 
   if( needYetOneBarbarianGroup )
   {
@@ -703,7 +695,7 @@ void Empire::Impl::takeTaxes()
       {
         int minimumExpireTax =econ::calcTaxValue( city->states().population, defaultCityTaxKoeff ) + minimumCityTax;
         empireTax = math::clamp( profit / cityTaxLimiter, minimumExpireTax, 9999 );
-        emperor.citySentTax( city->name(), empireTax );
+        //emperor.citySentTax( city->name(), empireTax );
       }
 
       bool cityTooYoung4tax = city->states().age <= econ::cityAge4tax;
@@ -725,14 +717,6 @@ void Empire::Impl::takeTaxes()
       }
     }
   }
-}
-
-void GovernorRank::load( const std::string& name, const VariantMap &vm)
-{
-  rankName = name;
-  VARIANT_LOAD_STR( pretty, vm );
-  VARIANT_LOAD_ANY( salary, vm );
-  VARIANT_LOAD_ANY( level, vm );
 }
 
 }//end namespace world

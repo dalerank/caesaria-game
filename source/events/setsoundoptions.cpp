@@ -33,7 +33,8 @@ namespace events
 class Model
 {
 public:
-  struct Info { int volumes[ audio::count ]; };
+  struct Info
+  { audio::Volume volumes[ audio::count ]; };
 
   Info _current, _save;
 
@@ -51,9 +52,9 @@ public:
 
   void destroy() { delete this; }
 
-  void set( audio::SoundType type, int value )
+  void set( audio::SoundType type, audio::Volume value )
   {
-    _current.volumes[ type ] = math::clamp( value, 0, 100 );
+    _current.volumes[ type ] = math::clamp( value, audio::minVolume, audio::maxVolume );
   }
 
   unsigned int get( audio::SoundType type ) const;

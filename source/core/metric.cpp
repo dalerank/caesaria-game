@@ -31,7 +31,7 @@ const char* Measure::measureType()
   }
 }
 
-const char *Measure::measureShort()
+const char* Measure::measureShort()
 {
   switch( instance()._mode )
   {

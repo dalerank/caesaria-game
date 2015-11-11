@@ -20,6 +20,12 @@
 
 #include <time.h>
 
+enum class Month {
+  january=0, february, march, april,
+  may, june, july, august, september,
+  october, november, december
+};
+
 class DateTime
 {
 public:
@@ -29,7 +35,7 @@ public:
   static const DateTime invalid;
 
   unsigned char hour() const;
-  unsigned char month() const;
+  Month month() const;
   int year() const;
   unsigned char minutes() const;
   unsigned char day() const;
@@ -37,7 +43,7 @@ public:
   unsigned char seconds() const;
 
   void setHour( unsigned char hour );
-  void setMonth( unsigned char month );
+  void setMonth( Month month );
   void setYear( unsigned int year );
   void setMinutes( unsigned char minute );
   void setDay( unsigned char day );
@@ -56,6 +62,9 @@ public:
   DateTime date() const;
   DateTime time() const;
 
+  unsigned int hashdate() const;
+  static DateTime fromhash( unsigned int hash );
+
   int daysTo( const DateTime& future ) const;
   int equale( const DateTime& b );
   int monthsTo( const DateTime& end ) const;
@@ -67,8 +76,9 @@ public:
   DateTime& operator=( const DateTime& t );
 
   static const char* dayName( unsigned char d );
-  static const char* monthName( unsigned char d );
-  static const char* shortMonthName( unsigned char d );
+  static const char* monthName(Month d );
+  static const char* shortMonthName( Month d );
+  static int daysInMonth(int year, int d );
   int daysInMonth() const;
   const char* age() const;
 
@@ -109,9 +119,18 @@ public:
   static const int abUrbeCondita = 753;
   const char* age() const;
   static const char* dayName( unsigned char d );
-  static const char* monthName( unsigned char d );
+  static const char* monthName( Month d );
   static const char* shortMonthName( unsigned char d );
   explicit RomanDate( const DateTime& date );
 };
+
+inline Month operator-(const Month& a, int month )
+{
+  month %= DateTime::monthsInYear;
+  int mIndex = (int)a + ((int)a < month ? DateTime::monthsInYear : 0);
+  mIndex -= month;
+
+  return Month( mIndex );
+}
 
 #endif //__CAESARIA_DATETIME_H_INCLUDE_

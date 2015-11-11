@@ -34,7 +34,7 @@ namespace events
 
 GameEventPtr BuildAny::create( const TilePos& pos, const object::Type type )
 {
-  return create( pos, TileOverlayFactory::instance().create( type ) );
+  return create( pos, Overlay::create( type ) );
 }
 
 GameEventPtr BuildAny::create(const TilePos& pos, OverlayPtr overlay)
@@ -65,11 +65,10 @@ void BuildAny::_exec( Game& game, unsigned int )
   }
 
   TilePos offset(10, 10);
-  EnemySoldierList enemies =  game.city()->statistic().walkers.find<EnemySoldier>( walker::any, _pos - offset, _pos + offset );
-  if( !enemies.empty() && _overlay->group() != object::group::disaster)
+  int enemies_n =  game.city()->statistic().walkers.count<EnemySoldier>( _pos - offset, _pos + offset );
+  if( enemies_n > 0 && _overlay->group() != object::group::disaster)
   {
-    GameEventPtr e = WarningMessage::create( "##too_close_to_enemy_troops##", 2 );
-    e->dispatch();
+    events::dispatch<WarningMessage>( "##too_close_to_enemy_troops##", 2 );
     return;
   }
 
@@ -80,7 +79,7 @@ void BuildAny::_exec( Game& game, unsigned int )
 
     if( !buildOk )
     {
-      Logger::warning( "BuildAny: some error when build [%d,%d] type:%s", _pos.i(), _pos.j(), _overlay->name().c_str() );
+      Logger::warning( "BuildAny: some error when build {0}{1} type:{2}", _pos.i(), _pos.j(), _overlay->name() );
       return;
     }
 
@@ -90,27 +89,23 @@ void BuildAny::_exec( Game& game, unsigned int )
     ConstructionPtr construction = _overlay.as<Construction>();
     if( construction.isValid() )
     {
-      const MetaData& buildingData = MetaDataHolder::find( _overlay->type() );
-      game.city()->treasury().resolveIssue( econ::Issue( econ::Issue::buildConstruction,
-                                                         -(int)buildingData.getOption( MetaDataOptions::cost ) ) );
+      auto info = _overlay->info();
+      game.city()->treasury().resolveIssue( econ::Issue( econ::Issue::buildConstruction, -info.cost() ) );
 
       if( construction->group() != object::group::disaster )
       {
-        GameEventPtr e = PlaySound::create( "buildok", 1, 100 );
-        e->dispatch();
+        events::dispatch<PlaySound>( "buildok", 1, 100 );
       }
 
       if( construction->isNeedRoad() && construction->roadside().empty() )
       {
-        GameEventPtr e = WarningMessage::create( "##building_need_road_access##", 1 );
-        e->dispatch();
+        events::dispatch<WarningMessage>( "##building_need_road_access##", 1 );
       }
 
       std::string error = construction->errorDesc();
       if( !error.empty() )
       {
-        GameEventPtr e = WarningMessage::create( error, 1 );
-        e->dispatch();
+        events::dispatch<WarningMessage>( error, 1 );
       }
 
       WorkingBuildingPtr wb = construction.as<WorkingBuilding>();
@@ -119,26 +114,23 @@ void BuildAny::_exec( Game& game, unsigned int )
         unsigned int worklessCount = game.city()->statistic().workers.workless();
         if( worklessCount < wb->maximumWorkers() )
         {
-          GameEventPtr e = WarningMessage::create( "##city_need_more_workers##", 2 );
-          e->dispatch();
+          events::dispatch<WarningMessage>( "##city_need_more_workers##", 2 );
         }
 
         int laborAccessKoeff = wb->laborAccessPercent();
         if( laborAccessKoeff < 50 )
         {
-          GameEventPtr e = WarningMessage::create( "##working_build_poor_labor_warning##", 2 );
-          e->dispatch();
+          events::dispatch<WarningMessage>( "##working_build_poor_labor_warning##", 2 );
         }
       }
     }
   }
   else
   {
-    ConstructionPtr construction = _overlay.as<Construction>();
+    auto construction = _overlay.as<Construction>();
     if( construction.isValid() )
     {
-      GameEventPtr e = WarningMessage::create( construction->errorDesc(), 1 );
-      e->dispatch();
+      events::dispatch<WarningMessage>( construction->errorDesc(), 1 );
     }
   }
 }

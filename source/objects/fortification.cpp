@@ -37,6 +37,7 @@
 #include "objects_factory.hpp"
 
 using namespace gfx;
+using namespace events;
 using namespace direction;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::fortification, Fortification)
@@ -68,26 +69,28 @@ Fortification::~Fortification() {}
 bool Fortification::build( const city::AreaInfo& info )
 {
   // we can't build if already have wall here
-  WallPtr wall = info.city->getOverlay( info.pos ).as<Wall>();
+  auto wall = info.city->getOverlay( info.pos ).as<Wall>();
   if( wall.isValid() )
   {
     return false;
   }
 
-  Pathway way2border = PathwayHelper::create( info.pos, info.city->borderInfo().roadEntry, PathwayHelper::allTerrain );
+  Pathway way2border = PathwayHelper::create( info.pos, info.city->getBorderInfo( PlayerCity::roadEntry ).epos(),
+                                              PathwayHelper::allTerrain );
   if( !way2border.isValid() )
   {
-    events::GameEventPtr event = events::WarningMessage::create( "##walls_need_a_gatehouse##", 1 );
-    event->dispatch();
+    events::dispatch<WarningMessage>( "##walls_need_a_gatehouse##", 1 );
   }
 
   Building::build( info );
-  FortificationList fortifications = info.city->statistic().objects.find<Fortification>( object::fortification );
+  auto fortifications = info.city->statistic().objects.find<Fortification>();
 
-  for( auto fort : fortifications ) { fort->updatePicture( info.city ); }
+  for( auto fort : fortifications )
+    fort->updatePicture( info.city );
 
-  TowerList towers = info.city->statistic().objects.find<Tower>( object::tower );
-  for( auto tower : towers ) { tower->resetPatroling(); }
+  TowerList towers = info.city->statistic().objects.find<Tower>();
+  for( auto tower : towers )
+    tower->resetPatroling();
 
   updatePicture( info.city );
 
@@ -100,15 +103,11 @@ void Fortification::destroy()
 
   if( _city().isValid() )
   {
-    TilesArea area( _city()->tilemap(), pos() - TilePos( 2, 2), Size( 5 ) );
-    foreach( tile, area )
-    {
-      FortificationPtr f = ptr_cast<Fortification>( (*tile)->overlay() );
-      if( f.isValid()  )
-      {
-        f->updatePicture( _city() );
-      }
-    }
+    TilesArea area( _map(), pos() - TilePos( 2, 2), Size( 5 ) );
+
+    auto fortifications = area.overlays().select<Fortification>();
+    for( auto f : fortifications )
+      f->updatePicture( _city() );
   }
 }
 
@@ -470,20 +469,20 @@ void Fortification::save(VariantMap& stream) const
   Wall::save( stream );
 
   stream[ "direction" ] = (int)_d->direction;
-  stream[ "offset" ] = _d->offset;
-  stream[ "mayPatrol" ] = _d->mayPatrol;
-  stream[ "isTowerEnter" ] = _d->isTowerEnter;
-  stream[ "index" ] = _d->index;
+  VARIANT_SAVE_ANY_D( stream, _d, offset )
+  VARIANT_SAVE_ANY_D( stream, _d, mayPatrol )
+  VARIANT_SAVE_ANY_D( stream, _d, isTowerEnter )
+  VARIANT_SAVE_ANY_D( stream, _d, index )
 }
 
 void Fortification::load(const VariantMap& stream)
 {
   Wall::load( stream );
   _d->direction = (Direction)stream.get( "direction" ).toInt();
-  _d->offset = stream.get( "offset" );
-  _d->mayPatrol = stream.get( "mayPatrol" );
-  _d->isTowerEnter = stream.get( "isTowerEnter" );
-  _d->index = stream.get( "index" );
+  VARIANT_LOAD_ANY_D( _d, offset, stream )
+  VARIANT_LOAD_ANY_D( _d, mayPatrol, stream )
+  VARIANT_LOAD_ANY_D( _d, isTowerEnter, stream )
+  VARIANT_LOAD_ANY_D( _d, index, stream )
 }
 
 

@@ -75,7 +75,7 @@ bool SdlBatcher::append(const Picture& pic, const Rect& srcrect, const Rect& dst
 
   bool batched = true;
   bool textureSwitched = _d->onwork->texture.texture() != pic.texture();
-  bool clipSwitched = (_d->onwork->clip == rclip);
+  bool clipSwitched = (_d->onwork->clip != rclip);
 
   if( textureSwitched || clipSwitched)
   {
@@ -107,7 +107,7 @@ bool SdlBatcher::append(const Picture &pic, const Rects &srcrects, const Rects &
 
   bool batched = true;
   bool textureSwitched = _d->onwork->texture.texture() != pic.texture();
-  bool clipSwitched = (_d->onwork->clip == rclip);
+  bool clipSwitched = (_d->onwork->clip != rclip);
 
   if( textureSwitched || clipSwitched)
   {

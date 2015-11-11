@@ -30,9 +30,9 @@
 #include "city/desirability.hpp"
 #include "core/debug_queue.hpp"
 #include "param.hpp"
+#include "metadata.hpp"
 #include "constants.hpp"
 
-class MetaData;
 namespace ovconfig
 {
 enum { idxType=0, idxTypename, idxLocation, ixdCount };
@@ -41,6 +41,24 @@ enum { idxType=0, idxTypename, idxLocation, ixdCount };
 class Overlay : public Serializable, public ReferenceCounted
 {
 public:
+  template<typename ObjClass, typename... Args>
+  static SmartPtr<ObjClass> create( const Args & ... args)
+  {
+    SmartPtr<ObjClass> instance( new ObjClass( args... ) );
+    instance->initialize( object::Info::find( instance->type() ) );
+    instance->drop();
+
+    return instance;
+  }
+
+  template<typename ObjClass>
+  static SmartPtr<ObjClass> create( object::Type type )
+  {
+    return ptr_cast<ObjClass>( create( type ));
+  }
+
+  static OverlayPtr create( object::Type type );
+
   Overlay( const object::Type type, const Size& size=Size(1));
   virtual ~Overlay();
 
@@ -56,7 +74,6 @@ public:
   virtual bool isDestructible() const;
   virtual bool isFlat() const;
   virtual void initTerrain( gfx::Tile& terrain ) = 0;
-
   virtual std::string errorDesc() const;
 
   virtual bool build( const city::AreaInfo& info );
@@ -83,7 +100,7 @@ public:
   const gfx::Animation& animation() const;
 
   virtual gfx::Renderer::PassQueue passQueue() const;
-  virtual Desirability desirability() const;
+  virtual const Desirability& desirability() const;
 
   virtual void setState( Param name, double value );
 
@@ -96,16 +113,20 @@ public:
   virtual void save( VariantMap& stream) const;
   virtual void load( const VariantMap& stream );
 
-  virtual void initialize( const MetaData& mdata );
+  virtual void initialize( const object::Info& mdata );
   virtual void reinit();
 
+  const object::Info& info() const;
+
   virtual void debugLoadOld( int oldFormat, const VariantMap& stream );
+  virtual const gfx::Picture& picture(const city::AreaInfo& info) const;
 
 protected:
   void setType(const object::Type type);
-  gfx::Animation& _animationRef();
+  gfx::Animation& _animation();
   gfx::Tile* _masterTile();
   PlayerCityPtr _city() const;
+  gfx::Tilemap& _map() const;
   gfx::Pictures& _fgPictures();
   gfx::Picture& _fgPicture(unsigned int index);
   const gfx::Picture &_fgPicture(unsigned int index) const;

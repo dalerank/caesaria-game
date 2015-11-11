@@ -54,7 +54,7 @@ void EntertainmentBuilding::deliverService()
   // we need all trainees types for the show
   if( !mayWork() )
   {
-    _animationRef().stop();
+    _animation().stop();
     return;
   }
 
@@ -71,7 +71,7 @@ void EntertainmentBuilding::deliverService()
       if( !_specificWorkers().empty() )
       {
         _d->showCounter++;
-        _animationRef().start();
+        _animation().start();
         decreaseLevel = workDecreaseLevel;
       }
     }
@@ -79,10 +79,10 @@ void EntertainmentBuilding::deliverService()
 
   if( _specificWorkers().empty() )
   {
-    _animationRef().stop(); //have no actors for the show
+    _animation().stop(); //have no actors for the show
   }
 
-  for( auto item : _d->necWalkers )
+  for( auto& item : _d->necWalkers )
   {
     int level = traineeValue( item );
     setTraineeValue( item, math::clamp( level - decreaseLevel, 0, 100) );
@@ -122,12 +122,12 @@ std::string EntertainmentBuilding::troubleDesc() const
 
   if( ret.empty() )
   {
-    for( auto item : _d->necWalkers )
+    for( auto& item : _d->necWalkers )
     {
       int level = traineeValue( item );
       if( level == 0 )
       {
-        ret = utils::format( 0xff, "##need_trainee_%s##", WalkerHelper::getTypename( item ).c_str() );
+        ret = fmt::format( "##need_trainee_{0}##", WalkerHelper::getTypename( item ));
         break;
       }
     }

@@ -21,9 +21,13 @@
 #include "game/resourcegroup.hpp"
 #include "city/statistic.hpp"
 #include "constants.hpp"
+#include "objects/prefecture.hpp"
+#include "objects/working.hpp"
 #include "gfx/tilemap_camera.hpp"
 #include "core/event.hpp"
 #include "core/gettext.hpp"
+#include "game/gamedate.hpp"
+#include "gfx/textured_path.hpp"
 
 using namespace gfx;
 
@@ -38,20 +42,26 @@ static const char* fireLevelName[] = {
                                        "##extreme_fire_risk##", "##moment_fire_risk##"
                                      };
 
+class Fire::Impl
+{
+public:
+  struct
+  {
+    OverlayPtr selected;
+    OverlayPtr underMouse;
+  } overlay;
+
+  DateTime lastUpdate;
+  std::vector<TilesArray> ways;
+};
 
 int Fire::type() const { return citylayer::fire; }
 
-void Fire::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Fire::drawTile( const RenderInfo& rinfo, Tile& tile )
 {
-  Point screenPos = tile.mappos() + offset;
-
   if( tile.overlay().isNull() )
   {
-    //draw background
-    //engine.draw( tile.picture(), screenPos );
-
-    drawPass( engine, tile, offset, Renderer::ground );
-    drawPass( engine, tile, offset, Renderer::groundAnimation );
+    drawLandTile( rinfo, tile );
   }
   else
   {
@@ -65,38 +75,57 @@ void Fire::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( overlay->type() == object::house )
     {
-      HousePtr house = ptr_cast<House>( overlay );
+      auto house = overlay.as<House>();
       fireLevel = (int)house->state( pr::fire );
-      needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase  );
+      needDrawAnimations = (house->level() <= HouseLevel::hovel) && house->habitants().empty();
+      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.inHouseBase  );
     }
     else //other buildings
     {
-      ConstructionPtr constr = ptr_cast<Construction>( overlay );
+      auto constr = overlay.as<Construction>();
       if( constr != 0 )
       {
         fireLevel = (int)constr->state( pr::fire );
       }
 
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base  );
+      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base  );
     }
 
     if( needDrawAnimations )
     {
-      Layer::drawTile( engine, tile, offset );
+      Layer::drawTile( rinfo, tile );
       registerTileForRendering( tile );
     }
     else if( fireLevel >= 0)
     {
-      drawColumn( engine, screenPos, fireLevel );
+      Point screenPos = tile.mappos() + rinfo.offset;
+      drawColumn( rinfo, screenPos, fireLevel );
     }
   }
 
-  tile.setWasDrawn();
+  tile.setRendered();
+}
+
+void Fire::afterRender(Engine& engine)
+{
+  Info::afterRender(engine);
+
+  if( game::Date::isDayChanged() )
+    _updatePaths();
+}
+
+void Fire::render(Engine& engine)
+{
+  Info::render( engine );
+
+  RenderInfo rinfo{ engine, _camera()->offset() };
+  for( auto& tiles : _dfunc()->ways )
+    TexturedPath::draw( tiles, rinfo );
 }
 
 void Fire::handleEvent(NEvent& event)
 {
+  __D_REF(d,Fire)
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
@@ -107,15 +136,27 @@ void Fire::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        ConstructionPtr constr = tile->overlay().as<Construction>();
-        if( constr != 0 )
+        auto construction = tile->overlay<Construction>();
+        if( construction != 0 )
         {
-          int fireLevel = math::clamp<int>( constr->state( pr::fire ), 0, 100 );
+          int fireLevel = math::clamp<int>( construction->state( pr::fire ), 0, 100 );
           text = fireLevelName[ math::clamp<int>( fireLevel / 10, 0, 9 ) ];
         }
+
+        d.overlay.underMouse = tile->overlay();
       }
 
       _setTooltipText( _(text) );
+    }
+    break;
+
+    case mouseLbtnPressed:
+    {      
+      if( d.overlay.underMouse.is<Prefecture>() )
+      {
+        d.overlay.selected = d.overlay.underMouse;
+        _updatePaths();
+      }
     }
     break;
 
@@ -126,19 +167,24 @@ void Fire::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerPtr Fire::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new Fire( camera, city ) );
-  ret->drop();
-
-  return ret;
-}
-
 Fire::Fire( Camera& camera, PlayerCityPtr city)
-  : Info( camera, city, 18 )
+  : Info( camera, city, 18 ), __INIT_IMPL(Fire)
 {
   _addWalkerType( walker::prefect );
   _initialize();
+}
+
+void Fire::_updatePaths()
+{
+  __D_REF(d,Fire)
+  auto wbuilding = d.overlay.selected.as<Prefecture>();
+  if( wbuilding.isValid() )
+  {
+    d.ways.clear();
+    const WalkerList& walkers = wbuilding->walkers();
+    for( auto walker : walkers )
+      d.ways.push_back( walker->pathway().allTiles() );
+  }
 }
 
 }//end namespace citylayer

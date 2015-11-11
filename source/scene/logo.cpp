@@ -22,8 +22,9 @@
 #include "core/exception.hpp"
 #include "gfx/picture.hpp"
 #include "gfx/pictureconverter.hpp"
-#include "core/color.hpp"
+#include "core/color_list.hpp"
 #include "core/font.hpp"
+#include "core/osystem.hpp"
 #include "core/gettext.hpp"
 
 using namespace gfx;
@@ -56,7 +57,7 @@ void SplashScreen::initialize()
   Engine& engine = Engine::instance();
 
   _d->textPic = Picture( Size( 800, 30 ), 0, true );
-  _d->fadetx = Picture( engine.virtualSize(), 0, true );
+  _d->fadetx = Picture( engine.screenSize(), 0, true );
   _d->fadetx.fill( NColor(0xff, 0, 0, 0), Rect() );
 
   setImage( "logo", 1 );
@@ -91,10 +92,10 @@ void SplashScreen::setImage(const std::string &image, int index)
     _d->background.load( "logo", 1 );
 
   // center the background on the screen
-  Size s = (engine.virtualSize() - _d->background.size()) / 2;
+  Size s = (engine.screenSize() - _d->background.size()) / 2;
   _d->background.setOffset( Point( s.width(), -s.height() ) );
 
-  _d->textPic.setOffset( Point( (engine.virtualSize().width() - _d->textPic.width()) / 2,
+  _d->textPic.setOffset( Point( (engine.screenSize().width() - _d->textPic.width()) / 2,
                                   _d->background.offset().y() - _d->background.height() - 5 ) );
 }
 
@@ -127,10 +128,11 @@ void SplashScreen::exitScene(bool showDevText)
 
   Font textFont = Font::create( FONT_3 ) ;
 
-#ifdef CAESARIA_PLATFORM_ANDROID
-  offset = 12;
-  textFont = Font::create( FONT_4 );
-#endif
+  if( OSystem::isAndroid() )
+  {
+    offset = 12;
+    textFont = Font::create( FONT_4 );
+  }
 
   _d->fade( engine, _d->background, true, offset );
   _d->textPic = Picture( engine.screenSize(), 0, true );
@@ -147,12 +149,12 @@ void SplashScreen::exitScene(bool showDevText)
          << "If you encounter bugs or crashes please send us a report";
 
     int offset = 0;
-    foreach( it, text )
+    for( const auto& line : text )
     {
-      Rect textRect = textFont.getTextRect( *it, Rect( Point(), _d->textPic.size() ), align::center, align::center );
-      bool defaultColor = ( (*it)[0] != ' ');
-      textFont.setColor( defaultColor ? DefaultColors::dodgerBlue : DefaultColors::indianRed );
-      textFont.draw( _d->textPic, *it, textRect.left(), textRect.top() + offset, false, true );
+      Rect textRect = textFont.getTextRect( line, Rect( Point(), _d->textPic.size() ), align::center, align::center );
+      bool defaultColor = ( (line)[0] != ' ');
+      textFont.setColor( defaultColor ? ColorList::dodgerBlue : ColorList::indianRed );
+      textFont.draw( _d->textPic, line, textRect.left(), textRect.top() + offset, false, true );
       offset += 20;
     }
 

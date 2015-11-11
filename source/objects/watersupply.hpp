@@ -63,7 +63,7 @@ public:
   virtual void destroy();
   virtual std::string troubleDesc() const;
   virtual void addWater( const WaterSource& source );
-  virtual void initialize(const MetaData &mdata);
+  virtual void initialize(const object::Info& mdata);
   virtual void broke();
 
   TilePos entry( Direction direction );

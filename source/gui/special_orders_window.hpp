@@ -46,30 +46,5 @@ protected:
   ScopedPtr< Impl > _d;
 };
 
-class GranarySpecialOrdersWindow : public BaseSpecialOrdersWindow
-{
-public:
-  static const int defaultHeight = 250;
-  GranarySpecialOrdersWindow( Widget* parent, const Point& pos, GranaryPtr granary );
-  ~GranarySpecialOrdersWindow();
-
-  void toggleDevastation();
-private:
-  void _updateBtnDevastation();
-
-  __DECLARE_IMPL(GranarySpecialOrdersWindow)
-};
-
-class WarehouseSpecialOrdersWindow : public BaseSpecialOrdersWindow
-{
-public:
-  static const int defaultHeight = 550;
-  WarehouseSpecialOrdersWindow( Widget* parent, const Point& pos, WarehousePtr warehouse );
-  ~WarehouseSpecialOrdersWindow();
-
-private:
-  __DECLARE_IMPL(WarehouseSpecialOrdersWindow)
-};
-
 }//end namesapce gui
 #endif //__CAESARIA_SPECIAL_ORDERS_WINDOW_H_INCLUDED__

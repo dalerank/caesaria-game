@@ -21,6 +21,9 @@
 #include "objects/house_spec.hpp"
 #include "game/resourcegroup.hpp"
 #include "constants.hpp"
+#include "objects/engineer_post.hpp"
+#include "game/gamedate.hpp"
+#include "gfx/textured_path.hpp"
 #include "city/statistic.hpp"
 #include "core/event.hpp"
 #include "gfx/tilemap_camera.hpp"
@@ -39,19 +42,27 @@ static const char* damageLevelName[maxDamageLevel] = {
                                          "##very_high_damage_risk##", "##extreme_damage_risk##"
                                        };
 
+class Damage::Impl
+{
+public:
+  struct
+  {
+    OverlayPtr selected;
+    OverlayPtr underMouse;
+  } overlay;
+
+  DateTime lastUpdate;
+  std::vector<TilesArray> ways;
+};
+
 int Damage::type() const {  return citylayer::damage; }
 
-void Damage::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Damage::drawTile( const RenderInfo& rinfo, Tile& tile )
 {
-  Point screenPos = tile.mappos() + offset;
-
   if( tile.overlay().isNull() )
   {
-    //draw background
-    //engine.draw( tile.picture(), screenPos );
-
-    drawPass( engine, tile, offset, Renderer::ground );
-    drawPass( engine, tile, offset, Renderer::groundAnimation );
+    drawPass( rinfo, tile, Renderer::ground );
+    drawPass( rinfo, tile, Renderer::groundAnimation );
   }
   else
   {
@@ -65,50 +76,44 @@ void Damage::drawTile(Engine& engine, Tile& tile, const Point& offset)
     }
     else if( overlay->type() == object::house )
     {
-      HousePtr house = ptr_cast<House>( overlay );
+      auto house = overlay.as<House>();
       damageLevel = (int)house->state( pr::damage );
-      needDrawAnimations = (house->spec().level() == 1) && house->habitants().empty();
+      needDrawAnimations = (house->level() <= HouseLevel::hovel) && house->habitants().empty();
 
       if( !needDrawAnimations )
       {
-        drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+        drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
       }
     }
     else
     {
-      BuildingPtr building = ptr_cast<Building>( overlay );
+      auto building = overlay.as<Building>();
       if( building.isValid() )
       {
         damageLevel = (int)building->state( pr::damage );
       }
 
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base );
     }
 
     if( needDrawAnimations )
     {
-      Layer::drawTile( engine, tile, offset );
+      Layer::drawTile( rinfo, tile );
       registerTileForRendering( tile );
     }
     else if( damageLevel >= 0 )
     {
-      drawColumn( engine, screenPos, damageLevel );
+      Point screenPos = tile.mappos() + rinfo.offset;
+      drawColumn( rinfo, screenPos, damageLevel );
     }
   }
 
-  tile.setWasDrawn();
-}
-
-LayerPtr Damage::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new Damage( camera, city ) );
-  ret->drop();
-
-  return ret;
+  tile.setRendered();
 }
 
 void Damage::handleEvent(NEvent& event)
 {
+  __D_REF(d,Damage)
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
@@ -119,7 +124,7 @@ void Damage::handleEvent(NEvent& event)
       std::string text = "";
       if( tile != 0 )
       {
-        ConstructionPtr construction = ptr_cast<Construction>( tile->overlay() );
+        auto construction = tile->overlay<Construction>();
         if( construction.isValid() )
         {
           int damageLevel = math::clamp<int>( construction->state( pr::damage ) / maxDamageLevel, 0, maxDamageLevel-1 );
@@ -127,7 +132,19 @@ void Damage::handleEvent(NEvent& event)
         }
       }
 
+      d.overlay.underMouse = tile->overlay();
+
       _setTooltipText( text );
+    }
+    break;
+
+    case mouseLbtnPressed:
+    {
+      if( d.overlay.underMouse.is<EngineerPost>() )
+      {
+        d.overlay.selected = d.overlay.underMouse;
+        _updatePaths();
+      }
     }
     break;
 
@@ -138,8 +155,38 @@ void Damage::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
+void Damage::afterRender(Engine& engine)
+{
+  Info::afterRender(engine);
+
+  if( game::Date::isDayChanged() )
+    _updatePaths();
+}
+
+void Damage::render(Engine& engine)
+{
+  Info::render( engine );
+
+  RenderInfo rinfo{ engine, _camera()->offset() };
+  for( auto& tiles : _dfunc()->ways )
+    TexturedPath::draw( tiles, rinfo );
+}
+
+void Damage::_updatePaths()
+{
+  __D_REF(d,Damage)
+  auto wbuilding = d.overlay.selected.as<EngineerPost>();
+  if( wbuilding.isValid() )
+  {
+    d.ways.clear();
+    const WalkerList& walkers = wbuilding->walkers();
+    for( auto walker : walkers )
+      d.ways.push_back( walker->pathway().allTiles() );
+  }
+}
+
 Damage::Damage( Camera& camera, PlayerCityPtr city)
-  : Info( camera, city, damageColumnIndex )
+  : Info( camera, city, damageColumnIndex ), __INIT_IMPL(Damage)
 {
   _addWalkerType( walker::engineer );
   _initialize();

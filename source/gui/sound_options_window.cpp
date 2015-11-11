@@ -35,84 +35,76 @@ namespace dialog
 class SoundOptions::Impl
 {
 public:
-  GameAutoPause locker;
   bool initialized;
+
+  struct {
+    Signal2<audio::SoundType,audio::Volume> onSoundChange;
+    Signal0<> onClose, onApply, onRequest;
+  } signal;
 
   void resolveChange( SpinBox* who, int value )
   {
     int type = who->getProperty( "soundType" );
-    emit onSoundChangeSignal( audio::SoundType(type), value );
+    emit signal.onSoundChange( audio::SoundType(type), audio::Volume(value) );
   }
-
-public signals:
-  Signal2<audio::SoundType, int> onSoundChangeSignal;
-  Signal0<> onCloseSignal, onApplySignal, onRequestSignal;
 };
 
 SoundOptions::SoundOptions(Widget* parent)
   : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
-  _d->locker.activate();
   _d->initialized = false;
   setupUI( ":/gui/soundoptions.gui" );
 
-  setCenter( parent->center() );
+  moveTo( Widget::parentCenter );
 
   WidgetEscapeCloser::insertTo( this );
+  GameAutoPause::insertTo( this );
 
   INIT_WIDGET_FROM_UI( PushButton*, btnOk )
   if( btnOk ) btnOk->setFocus();
 
-  List<SpinBox*> widgets = findChildren<SpinBox*>( true );
-  foreach( it, widgets )
-    CONNECT( *it, onChangeA(), _d.data(), Impl::resolveChange )
+  auto widgets = findChildren<SpinBox*>( true );
+  for( auto wdg : widgets )
+    CONNECT( wdg, onChangeA(), _d.data(), Impl::resolveChange )
 }
 
 SoundOptions::~SoundOptions( void ) {}
+Signal2<audio::SoundType, audio::Volume>& SoundOptions::onChange() { return _d->signal.onSoundChange; }
+Signal0<>& SoundOptions::onClose()                       { return _d->signal.onClose; }
+Signal0<>& SoundOptions::onApply()                       { return _d->signal.onApply; }
 
-bool SoundOptions::onEvent(const NEvent& event)
-{  
-  if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
-  {
-    int id = event.gui.caller->ID();
-    switch( id )
-    {
-    case 1001:
-      emit _d->onApplySignal();
-      deleteLater();
-    break;
-
-    case 1002:
-    {
-      emit _d->onCloseSignal();
-      deleteLater();
-    }
-    break;
-
-    }
-
-    return true;
-  }
-
-  return Widget::onEvent( event );
-}
-
-Signal2<audio::SoundType, int>& SoundOptions::onChange() { return _d->onSoundChangeSignal; }
-Signal0<>& SoundOptions::onClose()                       { return _d->onCloseSignal; }
-Signal0<>& SoundOptions::onApply()                       { return _d->onApplySignal; }
-
-void SoundOptions::update(audio::SoundType type, int value)
+void SoundOptions::update(audio::SoundType type, audio::Volume value)
 {
-  List<SpinBox*> widgets = findChildren<SpinBox*>( true );
+  auto widgets = findChildren<SpinBox*>( true );
 
-  foreach( it, widgets )
+  for( auto wdg : widgets )
   {
-    if( (*it)->getProperty( "soundType" ).toInt() == type )
+    if( wdg->getProperty( "soundType" ).toInt() == type )
     {
-      (*it)->setValue( value );
+      wdg->setValue( value );
       return;
     }
   }
+}
+
+bool SoundOptions::_onButtonClicked(Widget* sender)
+{
+  switch( sender->ID() )
+  {
+  case applyId:
+    emit _d->signal.onApply();
+    deleteLater();
+  break;
+
+  case closeId:
+  {
+    emit _d->signal.onClose();
+    deleteLater();
+  }
+  break;
+  }
+
+  return true;
 }
 
 }//end namespace dialog

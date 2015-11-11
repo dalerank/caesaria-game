@@ -66,6 +66,9 @@ void RandomFire::_exec( Game& game, unsigned int time)
 
     ConstructionList ctrs = game.city()->statistic().objects.findNotIn<Construction>( exclude );
 
+    if( ctrs.empty() )
+      return;
+
     unsigned int number4burn = math::clamp<unsigned int>( (ctrs.size() * _d->strong / 100), 1u, 100u );
 
     for( unsigned int k=0; k < number4burn; k++ )

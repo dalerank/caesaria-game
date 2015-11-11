@@ -36,23 +36,35 @@ IronMine::IronMine()
 {
   _picture().load( ResourceGroup::commerce, 54 );
 
-  _animationRef().load( ResourceGroup::commerce, 55, 6 );
-  _animationRef().setDelay( 5 );
+  _animation().load( ResourceGroup::commerce, 55, 6 );
+  _animation().setDelay( 5 );
   _fgPictures().resize( 2 );
 
   _setUnworkingInterval( 12 );
 }
 
+bool IronMine::build(const city::AreaInfo& info)
+{
+  bool isOk = Factory::build( info );
+
+  bool mayCollapse = info.city->getOption( PlayerCity::claypitMayCollapse ) != 0;
+  if( !mayCollapse )
+    _setUnworkingInterval( 0 );
+
+  return isOk;
+}
+
 bool IronMine::canBuild( const city::AreaInfo& areaInfo ) const
 {
-  bool is_constructible = WorkingBuilding::canBuild( areaInfo );
+  bool is_constructible = Factory::canBuild( areaInfo );
   bool near_mountain = false;  // tells if the factory is next to a mountain
 
   Tilemap& tilemap = areaInfo.city->tilemap();
-  TilesArray perimetr = tilemap.getRectangle( areaInfo.pos + TilePos( -1, -1 ),
+  TilesArray perimetr = tilemap.rect( areaInfo.pos + TilePos( -1, -1 ),
                                               areaInfo.pos + TilePos(3, 3), Tilemap::checkCorners );
 
-  for( auto tile : perimetr ) { near_mountain |= tile->getFlag( Tile::tlRock ); }
+  for( auto tile : perimetr )
+    near_mountain |= tile->getFlag( Tile::tlRock );
 
   const_cast< IronMine* >( this )->_setError( near_mountain ? "" : "##iron_mine_need_mountain_near##" );
 
@@ -68,8 +80,7 @@ void IronMine::_reachUnworkingTreshold()
 {
   Factory::_reachUnworkingTreshold();
 
-  events::GameEventPtr e = events::ShowInfobox::create( "##iron_mine_collapse##", "##iron_mine_collapse_by_low_support##");
-  e->dispatch();
+  events::dispatch<events::ShowInfobox>( "##iron_mine_collapse##", "##iron_mine_collapse_by_low_support##");
 
   collapse();
 }

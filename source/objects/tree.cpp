@@ -51,6 +51,9 @@ Tree::Tree()
   _d->state = State::well;
   _d->lastTimeGrow = game::Date::current();
   _d->spreadFire = false;
+
+  auto& md = object::Info::find( object::tree );
+  setPicture( md.randomPicture(1) );
 }
 
 void Tree::timeStep( const unsigned long time )
@@ -65,8 +68,8 @@ void Tree::timeStep( const unsigned long time )
         _burnAround();
     }
 
-    _animationRef().update( time );
-    _fgPictures().back() = _animationRef().currentFrame();
+    _animation().update( time );
+    _fgPictures().back() = _animation().currentFrame();
 
     if( _d->health <= 0 )
       _die();
@@ -87,13 +90,23 @@ bool Tree::isFlat() const { return _d->flat; }
 
 void Tree::initTerrain(Tile& terrain)
 {
+  terrain.setFlag( Tile::clearAll, true );
   terrain.setFlag( Tile::tlTree, true );
 }
 
 bool Tree::build( const city::AreaInfo& info )
 {
-  std::string picname = imgid::toResource( info.city->tilemap().at( info.pos ).originalImgId() );
-  _picture().load( picname );
+  std::string picname = imgid::toResource( info.city->tilemap().at( info.pos ).imgId() );
+  auto& md = object::Info::find( object::tree );
+  if( md.isMyPicture( picname ) )
+  {
+    _picture().load( picname );
+  }
+  else
+  {
+    if( !picture().isValid() )
+      setPicture( md.randomPicture(1) );
+  }
   _d->flat = (picture().height() <= tilemap::cellPicSize().height());
   return Overlay::build( info );
 }
@@ -148,7 +161,7 @@ void Tree::burn()
 void Tree::_startBurning()
 {
   _d->state = State::burning;
-  _animationRef() = AnimationBank::instance().simple( AnimationBank::animFire + 0 );
+  _animation() = AnimationBank::instance().simple( AnimationBank::animFire + 0 );
   _fgPictures().resize(1);
 }
 
@@ -156,9 +169,8 @@ void Tree::_burnAround()
 {
    _d->spreadFire = true;
 
-  OverlayList ovs = _city()->tilemap().getNeighbors( pos() )
-                                      .overlays();
-  for( auto overlay : ovs )
+  auto ovelrays = _map().getNeighbors( pos() ).overlays();
+  for( auto overlay : ovelrays )
   {
     if( math::probably( 0.5f ) )
       overlay->burn();
@@ -167,26 +179,26 @@ void Tree::_burnAround()
 
 void Tree::grow()
 {
-  TilesArray tiles = _city()->tilemap().getNeighbors( pos() );
+  TilesArray tiles = _map().getNeighbors( pos() );
   _d->lastTimeGrow = game::Date::current();
   for( unsigned int i=0; i < tiles.size(); ++i )
   {
     auto tile = tiles.random();
     if( math::probably( 0.1f ) && tile->getFlag( Tile::isConstructible ) )
     {
-      OverlayPtr overlay = TileOverlayFactory::instance().create( type() );
+      OverlayPtr overlay = Overlay::create( type() );
       if( overlay.isValid()  )
       {
-        city::AreaInfo info( _city(), tile->pos() );
-        bool buildOk = overlay->build( info );
+        city::AreaInfo areainfo( _city(), tile->pos() );
+        bool buildOk = overlay->build( areainfo );
         if( buildOk )
         {
           _city()->addOverlay( overlay );
 
-          TreePtr newTree = overlay.as<Tree>();
+          auto newTree = overlay.as<Tree>();
           if( newTree.isValid() )
           {
-            Picture pic = MetaDataHolder::randomPicture( type(), Size(1) );
+            Picture pic = info().randomPicture( Size(1) );
             newTree->setPicture( pic );
             newTree->_d->flat = pic.height() < pic.width() / 2;
             newTree->_d->health = 10;
@@ -203,6 +215,6 @@ void Tree::_die()
   _d->state = State::burnt;
   setPicture( "burnedTree", 1 );
   _d->flat = false;
-  _animationRef().clear();
+  _animation().clear();
   _fgPictures().clear();
 }
