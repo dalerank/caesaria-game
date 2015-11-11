@@ -8,7 +8,6 @@ before_install:
 - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
 - sudo add-apt-repository --yes ppa:tobydox/mingw-x-precise
 - sudo apt-get -qq update
-<<<<<<< HEAD
 - sudo apt-get -qq install cmake p7zip-full build-essential libasound2-dev
 - sudo apt-get -qq install -y mingw32-x-binutils mingw32-x-gcc mingw32-x-runtime
 - sudo apt-get -qq install sshpass
