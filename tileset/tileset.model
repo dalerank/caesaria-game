@@ -18,11 +18,25 @@
 
       items :
       {
-        atlas :
+        houses :
         {
           type : "atlas"
           folder : "/resources/houses"
-          files : [ "housng1a_*" ]
+          files : [ "housng1*" ]
+        }
+
+        ground :
+        {
+          type : "atlas"
+          folder : "/resources/houses"
+          files : [ "housng1g_*" ]
+        }
+
+        smoke :
+        {
+          type : "atlas"
+          folder : "/resources/houses"
+          files : [ "illhouse_*" ]
         }
 
         once :
@@ -35,7 +49,7 @@
       }
     }
 
-    animals :
+		animals :
     {
       size : [ 2048, 2048 ]
       margin : 1
@@ -86,17 +100,190 @@
           folder : "/resources/fishingboat"
           files : [ "fboat_*" ]
         }
+
+        prefect :
+        {
+          type : "atlas"
+          folder : "/resources/prefect"
+          files : [ "citizen02_*" ]
+        }
+
+        prefectdw :
+        {
+          type : "atlas"
+          folder : "/resources/prefect"
+          files : [ "prefectdw_*" ]
+        }
+
+        prefectff :
+        {
+          type : "atlas"
+          folder : "/resources/prefect"
+          files : [ "prefectff_*" ]
+        }
+
+        priest :
+        {
+          type : "atlas"
+          folder : "/resources/priest"
+          files : [ "priest_*" ]
+        }
+
+        dust :
+        {
+          type : "atlas"
+          folder : "/resources/dust"
+          files : [ "dust_*" ]
+        }
+
+        pleb :
+        {
+          type : "atlas"
+          folder : "/resources/pleb"
+          files : [ "citizen*" ]
+        }
+
+        pleb_die :
+        {
+          type : "atlas"
+          folder : "/resources/pleb"
+          files : [ "wd_*" ]
+        }
       }
     }
 
-    misc :
+    gui :
     {
       size : [ 2048, 2048 ]
       margin : 1
       ignorePath : true
       floatCoordinates : false
-      name : "misc"
-      archive : "resources/gfx/pics_misc"
+      name : "gui"
+      archive : "resources/gfx/pics_gui"
+
+      info : {
+        atlas : [ "remake_pack1.atlas" ]
+      }
+
+      items :
+      {
+        europe1 :
+        {
+          type : "file"
+          folder : "/resources/gui"
+          files : [ "europe01_00002.png" ]
+        }
+
+        shovel :
+        {
+          type : "atlas"
+          folder : "/resources/gui"
+          files : [ "shovel_*" ]
+        }
+
+        europe2 :
+        {
+          type : "atlas"
+          folder : "/resources/gui"
+          files : [ "europe02_*" ]
+        }       
+
+				sprites :
+        {
+          type : "atlas"
+          folder : "/resources/sprites"
+          files : [ "sprites_*" ]
+        }     
+
+				sprites_stub :
+        {
+          type : "file"
+          folder : "/resources/sprites_stub"
+          files : [ "*" ]
+        }   
+
+				gui_stub :
+        {
+          type : "file"
+          folder : "/resources/gui_stub"
+          files : [ "remake_pack1.atlas"
+										"remake_pack1.png" ]
+        }   
+
+				taxcolumn :
+        {
+          type : "atlas"
+          folder : "/resources/sprites"
+          files : [ "taxcolumn_*" ]
+        }     
+
+        empmap :
+        {
+          type : "file"
+          folder : "/resources/gui"
+          files : [ "the_empire_*" ]
+        }
+
+				dlcperf :
+        {
+          type : "atlas"
+          folder : "/resources/gui"
+          files : [ "dlcperf_*" ]
+        }
+
+        empirebits :
+        {
+          type : "atlas"
+          folder : "/resources/gui"
+          files : [ "empirebits_*" ]
+        }
+
+        empirepanels :
+        {
+          type : "atlas"
+          folder : "/resources/gui"
+          files : [ "empire_panels_*" ]
+        }
+
+        paneling :
+        {
+          type : "atlas"
+          folder : "/resources/gui"
+          files : [ "paneling_*" ]
+        }
+
+        panelwindows :
+        {
+          type : "atlas"
+          folder : "/resources/gui"
+          files : [ "panelwindows_*" ]
+        }
+
+        population :
+        {
+          type : "atlas"
+          folder : "/resources/gui"
+          files : [ "population_*" ]
+        }
+
+        senate :
+        {
+          type : "file"
+          folder : "/resources/gui"
+          files : [ "senate_00001.png"
+                    "ckit_00001.png" ]
+        }
+      }
+    }
+
+    pics :
+    {
+      size : [ 2048, 2048 ]
+      margin : 1
+      ignorePath : true
+      floatCoordinates : false
+      name : "pics"
+      archive : "resources/gfx/pics"
 
       items :
       {
@@ -105,6 +292,330 @@
           type : "atlas"
           folder : "/resources/way"
           files : [ "way_*" ]
+        }
+
+        tutorial :
+        {
+          type : "atlas"
+          folder : "/resources/tutorial"
+          files : [ "picture*" ]
+        }
+
+        titles :
+        {
+          type : "atlas"
+          folder : "/resources/misc"
+          files : [ "*" ]
+        }
+      }
+    }
+
+    water_anim:
+    {
+      size : [ 2048, 2048 ]
+      margin : 1
+      ignorePath : true
+      floatCoordinates : false
+      name : "wateranim"
+      archive : "resources/gfx/pics_wateranim"
+
+      items :
+      {
+        reservoir :
+        {
+          type : "atlas"
+          folder : "/resources/reservoir"
+          files : [ "*" ]
+        }
+
+        baths_anim :
+        {
+          type : "atlas"
+          folder : "/resources/baths"
+          files : [ "bathanim_*" ]
+        }
+      }
+    }
+
+    objects:
+    {
+      size : [ 2048, 2048 ]
+      margin : 1
+      ignorePath : true
+      floatCoordinates : false
+      name : "objects"
+      archive : "resources/gfx/pics_objects"
+
+      items :
+      {
+        fountain :
+        {
+          type : "atlas"
+          folder : "/resources/fountain"
+          files : [ "utilitya_*" ]
+        }
+
+        quarry :
+        {
+          type : "atlas"
+          folder : "/resources/quarry"
+          files : [ "quarry*" ]
+        }
+
+        plateau :
+        {
+          type : "atlas"
+          folder : "/resources/plateau"
+          files : [ "plateau_*" ]
+        }
+
+        barber :
+        {
+          type : "atlas"
+          folder : "/resources/barber"
+          files : [ "barber_*" ]
+        }
+
+        gardens :
+        {
+          type : "atlas"
+          folder : "/resources/gardens"
+          files : [ "entertainment_*" ]
+        }
+
+        actorshool_anim :
+        {
+          type : "atlas"
+          folder : "/resources/actorschool"
+          files : [ "actorschoola_*" ]
+        }
+
+        claypitfill :
+        {
+          type : "atlas"
+          folder : "/resources/commerce"
+          files : [ "claypitf_*" ]
+        }
+
+        commerce :
+        {
+          type : "atlas"
+          folder : "/resources/commerce"
+          files : [ "commerce_*" ]
+        }
+
+        engineering :
+        {
+          type : "atlas"
+          folder : "/resources/engineering"
+          files : [ "engineering_*" ]
+        }
+
+        engineering_anim :
+        {
+          type : "atlas"
+          folder : "/resources/engineering"
+          files : [ "engineeringa_*" ]
+        }
+
+        ironmine_anim :
+        {
+          type : "atlas"
+          folder : "/resources/ironmine"
+          files : [ "ironminea_*" ]
+        }
+
+        walls :
+        {
+          type : "atlas"
+          folder : "/resources/walls"
+          files : [ "land2a_*" ]
+        }
+
+        lubmill :
+        {
+          type : "atlas"
+          folder : "/resources/lubmill"
+          files : [ "lumbermill_*" ]
+        }
+
+        lubmill_anim :
+        {
+          type : "atlas"
+          folder : "/resources/lubmill"
+          files : [ "lubmill_anim_*" ]
+        }
+
+        warehouse :
+        {
+          type : "atlas"
+          folder : "/resources/warehouse"
+          files : [ "warehouse_*" ]
+        }
+
+        tradecenter :
+        {
+          type : "atlas"
+          folder : "/resources/warehouse"
+          files : [ "tradecenter_*" ]
+        }
+
+        smlceres :
+        {
+          type : "atlas"
+          folder : "/resources/religion"
+          files : [ "smlceres_*" ]
+        }
+
+        smlmars :
+        {
+          type : "atlas"
+          folder : "/resources/religion"
+          files : [ "smlmars_*" ]
+        }
+
+        smlmercury :
+        {
+          type : "atlas"
+          folder : "/resources/religion"
+          files : [ "smlmercury_*" ]
+        }
+
+        smlneptune :
+        {
+          type : "atlas"
+          folder : "/resources/religion"
+          files : [ "smlneptune_*" ]
+        }
+
+        smlvenus :
+        {
+          type : "atlas"
+          folder : "/resources/religion"
+          files : [ "smlvenus_*" ]
+        }
+
+        fireanim :
+        {
+          type : "atlas"
+          folder : "/resources/religion"
+          files : [ "fireanim_*" ]
+        }
+
+        fortlegioner :
+        {
+          type : "atlas"
+          folder : "/resources/fort"
+          files : [ "fortlegioner_*" ]
+        }
+
+        fortmount :
+        {
+          type : "atlas"
+          folder : "/resources/fort"
+          files : [ "fortmount_*" ]
+        }
+
+        fortspear :
+        {
+          type : "atlas"
+          folder : "/resources/religion"
+          files : [ "fortspear_*" ]
+        }
+
+        senate :
+        {
+          type : "atlas"
+          folder : "/resources/senate"
+          files : [ "govt_*" ]
+        }
+
+        senate :
+        {
+          type : "atlas"
+          folder : "/resources/senate"
+          files : [ "forum_*" ]
+        }
+
+        entertainment :
+        {
+          type : "atlas"
+          folder : "/resources/entertainment"
+          files : [ "entertainment_*" ]
+        }
+
+        farms :
+        {
+          type : "atlas"
+          folder : "/resources/farm"
+          files : [ "*" ]
+        }        
+
+        security :
+        {
+          type : "atlas"
+          folder : "/resources/security"
+          files : [ "security_*" ]
+        }
+
+        prefecture :
+        {
+          type : "atlas"
+          folder : "/resources/prefecture"
+          files : [ "prefecture_*" ]
+        }
+
+        well :
+        {
+          type : "atlas"
+          folder : "/resources/well"
+          files : [ "well_*" ]
+        }
+
+        dock :
+        {
+          type : "atlas"
+          folder : "/resources/dock"
+          files : [ "transport*" ]
+        }
+
+        rocks :
+        {
+          type : "atlas"
+          folder : "/resources/rocks"
+          files : [ "land*" ]
+        }
+
+        tree :
+        {
+          type : "atlas"
+          folder : "/resources/tree"
+          files : [ "*" ]
+        }
+      }
+    }
+
+    lands :
+    {
+      size : [ 2048, 2048 ]
+      margin : 0
+      ignorePath : true
+      floatCoordinates : false
+      name : "lands"
+      archive : "resources/gfx/pics_land"
+
+      info : {
+        atlas : [ "land1a1.atlas" ]
+      }
+
+      items :
+      {
+        main :
+        {
+          type : "file"
+          folder : "/resources/land_stub"
+          files : [ "land1a1.atlas"
+                    "land1a1.png" ]
         }
       }
     }
@@ -125,6 +636,13 @@
           type : "atlas"
           folder : "/resources/carts/clay"
           files : [ "cartclay_*" ]
+        }
+
+        shipwreck :
+        {
+          type : "atlas"
+          folder : "/resources/carts/shipwreck"
+          files : [ "carts_*" ]
         }
 
         fish :
@@ -238,7 +756,14 @@
           folder : "/resources/carts/emmigrant"
           files : [ "emmigrant_*" ]
         }
+
+        worker :
+        {
+          type : "atlas"
+          folder : "/resources/carts/pusher"
+          files : [ "citizen01_*" ]
+        }
       }
-    }
+    }  
   }
 }

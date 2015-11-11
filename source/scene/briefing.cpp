@@ -74,7 +74,6 @@ class Briefing::Impl
 public:
   static const int currentVesion=1;
   bool isStopped;
-  gui::Label* missionTitle;
   gui::Label* cityCaption;
   gui::TexturedButton* btnContinue;
   Game* game;
@@ -132,12 +131,12 @@ void Briefing::initialize()
     std::string briefingCaption = vm[ "title" ].toString();
     if( briefingCaption.empty() )
       briefingCaption = "##briefing_select_next_mission##";
-    gui::Image* mapback = new gui::Image( _d->game->gui()->rootWidget(), Point(), pic );
+    gui::Image& mapback = _d->game->gui()->add<gui::Image>( Point(), pic );
     if( !pic.isValid() )
     {
-      mapback->setGeometry( Rect( 0, 0, 640, 480 ) );
+      mapback.setGeometry( Rect( 0, 0, 640, 480 ) );
     }
-    mapback->setCenter( _d->game->gui()->rootWidget()->center() );
+    mapback.setCenter( _d->game->gui()->rootWidget()->center() );
 
     std::string mapToLoad = vm[ "image" ].toString();
     pic.load( mapToLoad );
@@ -148,27 +147,28 @@ void Briefing::initialize()
 
     Point startImgPos( 192, 144 );
     const unsigned int textYOffset = 400;
-    new gui::Image( mapback, startImgPos, pic );
+    mapback.add<gui::Image>( startImgPos, pic );
 
     VariantMap items = vm[ "items" ].toMap();
-    foreach( it, items )
+    for( const auto& it : items )
     {
-      VariantMap miss_vm = it->second.toMap();
+      VariantMap miss_vm = it.second.toMap();
       std::string title = miss_vm.get( "title" ).toString();
-      Point location = miss_vm.get( "location" ).toPoint() + startImgPos;
       std::string mission = miss_vm.get( "mission" ).toString();
-      gui::MissionButton* btn = new gui::MissionButton( mapback, location, title, mission );
-      CONNECT( btn, onMissionSelect, _d.data(), Impl::resolveSelecMission );      
+      Point location = miss_vm.get( "location" ).toPoint() + startImgPos;
+
+      auto& missionButton = mapback.add<gui::MissionButton>( location, title, mission );
+      CONNECT( &missionButton, onMissionSelect, _d.data(), Impl::resolveSelecMission );
     }
 
     std::string missionTt = vm.get( "title" ).toString();
-    _d->missionTitle = new gui::Label( mapback, Rect( 200, 550, 200 + textYOffset, 600 ), missionTt );
-    _d->missionTitle->setFont( Font::create( FONT_5 ));
-    _d->cityCaption = new gui::Label( mapback, Rect( 200, 600, 200 + textYOffset, 630 ) );
+    auto& missionTitle = mapback.add<gui::Label>( Rect( 200, 550, 200 + textYOffset, 600 ), missionTt );
+    missionTitle.setFont( Font::create( FONT_5 ));
+    _d->cityCaption = &mapback.add<gui::Label>( Rect( 200, 600, 200 + textYOffset, 630 ) );
     _d->cityCaption->setFont( Font::create( FONT_2 ) );
     _d->cityCaption->setText( _(briefingCaption) );
 
-    _d->btnContinue = new gui::TexturedButton( mapback, Point( 780, 560 ), Size( 27 ), -1, 179 );
+    _d->btnContinue = &mapback.add<gui::TexturedButton>( Point( 780, 560 ), Size( 27 ), -1, 179 );
     _d->btnContinue->setEnabled( false );
     CONNECT( _d->btnContinue, onClicked(), _d.data(), Impl::resolvePlayMission );
   }

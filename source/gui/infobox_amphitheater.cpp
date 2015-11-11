@@ -57,7 +57,6 @@ AboutAmphitheater::AboutAmphitheater(Widget *parent, PlayerCityPtr city, const T
     _updateBouthsInfo( amph );
     _updateShowsInfo( amph );
   }
-
 }
 
 AboutAmphitheater::~AboutAmphitheater() {}

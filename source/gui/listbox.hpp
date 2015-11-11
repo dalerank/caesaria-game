@@ -45,6 +45,11 @@ public:
            const Rect& rectangle=Rect( 0, 0, 1, 1), int id=-1, bool clip=true,
            bool drawBack=false, bool mos=false);
 
+  //! constructor
+  ListBox( Widget* parent,
+           const RectF& rectangle, int id=-1, bool clip=true,
+           bool drawBack=false, bool mos=false);
+
   //! destructor
   virtual ~ListBox();
 

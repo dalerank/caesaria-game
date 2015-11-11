@@ -516,10 +516,10 @@ bool HighBridge::build( const city::AreaInfo& info  )
 
 bool HighBridge::canDestroy() const
 {
-  foreach( subtile, _d->subtiles )
+  for( auto subtile : _d->subtiles )
   {
-    WalkerList walkers = _city()->statistic().walkers.find<Walker>( walker::any, pos() + (*subtile)->pos() );
-    if( !walkers.empty() )
+    size_t walkers_n = _city()->statistic().walkers.count<Walker>( pos() + subtile->pos() );
+    if( !walkers_n )
     {
       _d->error = "##cant_demolish_bridge_with_people##";
       return false;
@@ -536,21 +536,18 @@ bool HighBridge::canDestroy() const
 
 void HighBridge::destroy()
 { 
-  PlayerCityPtr city = _city();
-  foreach( it, _d->subtiles )
+  for( auto tile : _d->subtiles )
   {
-    (*it)->_parent = 0;
-    (*it)->setState( pr::destroyable, true );
-    (*it)->deleteLater();
+    tile->_parent = 0;
+    tile->setState( pr::destroyable, true );
+    tile->deleteLater();
   }
 
-  foreach( it,  _d->subtiles )
+  for( auto subtile : _d->subtiles )
   {
-    HighBridgeSubTilePtr subtile = *it;
-
     events::dispatch<events::ClearTile>( subtile->_pos );
 
-    Tile& mapTile = city->tilemap().at( subtile->_pos );
+    Tile& mapTile = _map().at( subtile->_pos );
     mapTile.setFlag( Tile::tlRoad, false );
   }
 
@@ -565,7 +562,7 @@ void HighBridge::save(VariantMap& stream) const
   Construction::save( stream );
 
   VariantList vl_tinfo;
-  for( auto& subtile :  _d->subtiles )
+  for( auto subtile :  _d->subtiles )
   {
     vl_tinfo.push_back( subtile->_imgId );
   }
@@ -587,7 +584,7 @@ void HighBridge::load(const VariantMap& stream)
 void HighBridge::hide()
 {
   setState( pr::destroyable, 1);
-  for( auto& tile : _d->subtiles )
+  for( auto tile : _d->subtiles )
   {
     tile->hide();
   }

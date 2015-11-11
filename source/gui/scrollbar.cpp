@@ -83,7 +83,7 @@ bool ScrollBar::onEvent(const NEvent& event)
 		case sEventKeyboard:
 			if (event.keyboard.pressed)
 			{
-                const int oldPos = _value;
+        const int oldPos = _value;
 				bool absorb = true;
 				switch (event.keyboard.key)
 				{

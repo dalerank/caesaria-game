@@ -2,6 +2,10 @@
 updaterepo=1
 debug_build=0
 buildwindows=1
+buildsteawin=0
+buildsteamlin=0
+update_steam=0
+steam_folder=""
 buildlinux=1
 buildandroid=1
 projectdir=""
@@ -74,6 +78,15 @@ while [ $# -gt 0 ]; do
 		--help)
 			show_help=1
       ;;
+		--steamwin)
+			buildsteamwin=1
+      ;;
+		--steamlin)
+			buildsteamlin=1
+      ;;
+		--steamup)
+			update_steam=1
+      ;;
     *)
       printf "***************************\n"
       printf "* Error: Invalid argument.*\n"
@@ -83,7 +96,7 @@ while [ $# -gt 0 ]; do
   shift
 done
 
-if [ show_help == 1 ]
+if [ $show_help == 1 ]
 then
 	echo -e "${txtgrn}--pdir=/path/to/dir:     ${txtrst}set path directory as project folder ${txtrst}"
 	echo -e "${txtgrn}--sfpass=password:       ${txtrst}set password for remote folder ${txtrst}"
@@ -92,15 +105,20 @@ then
 	echo -e "${txtgrn}--nogit:                 ${txtrst}no check last updates ${txtrst}" 
 	echo -e "${txtgrn}--clean:                 ${txtrst}clean build ${txtrst}" 
   echo -e "${txtgrn}--debugb:                ${txtrst}create debug build ${txtrst}" 
-	echo -e "${txtgrn}--noandroid:						 ${txtrst}skip android build ${txtrst}" 	
-	echo -e "${txtgrn}--nowindows:						 ${txtrst}skip windows build ${txtrst}" 		
-	echo -e "${txtgrn}--nolinux:  						 ${txtrst}skip linux build ${txtrst}" 		
-	echo -e "${txtgrn}--nomac:  						   ${txtrst}skip mac build ${txtrst}" 		
-	echo -e "${txtgrn}--wgetlast:  						 ${txtrst}get last resources from server ${txtrst}" 		
-	echo -e "${txtgrn}--noupdate:  						 ${txtrst}skip create update info ${txtrst}" 		
-	echo -e "${txtgrn}--noremote:  						 ${txtrst}skip send archives to remote server ${txtrst}" 		
-	echo -e "${txtgrn}--clone:  						   ${txtrst}clone repository from bitbucket ${txtrst}" 		
-	echo -e "${txtgrn}--help:  						     ${txtrst}show this help${txtrst}" 		
+	echo -e "${txtgrn}--noandroid:             ${txtrst}skip android build ${txtrst}" 	
+	echo -e "${txtgrn}--nowindows:             ${txtrst}skip windows build ${txtrst}" 		
+	echo -e "${txtgrn}--nolinux:               ${txtrst}skip linux build ${txtrst}" 		
+	echo -e "${txtgrn}--nomac:                 ${txtrst}skip mac build ${txtrst}" 		
+
+	echo -e "${txtgrn}--steamwin:              ${txtrst}build windows build with Steam API ${txtrst}" 		
+	echo -e "${txtgrn}--steamlin:              ${txtrst}build linux build with Steam API${txtrst}" 		
+	echo -e "${txtgrn}--steamup:               ${txtrst}update Steam build with Steam console ${txtrst}" 		
+
+	echo -e "${txtgrn}--wgetlast:              ${txtrst}get last resources from server ${txtrst}" 		
+	echo -e "${txtgrn}--noupdate:              ${txtrst}skip create update info ${txtrst}" 		
+	echo -e "${txtgrn}--noremote:              ${txtrst}skip send archives to remote server ${txtrst}" 		
+	echo -e "${txtgrn}--clone:                 ${txtrst}clone repository from bitbucket ${txtrst}" 		
+	echo -e "${txtgrn}--help:                  ${txtrst}show this help${txtrst}" 		
 	exit
 fi
 
@@ -126,6 +144,11 @@ else
 				echo -e "${txtgrn}Installing ${txtblu}cmake ${txtrst}"
 				sudo apt-get install cmake
 		fi
+fi
+
+if [ $update_steam == 1 ]
+then
+	steam_folder=`echo $CAESARIA_STEAM_FOLDER`
 fi
 
 if [ -x '/usr/bin/wget' ]; then
@@ -317,11 +340,25 @@ else
 	echo -e "${txtgrn}Build game for windows: ${txtred}no"
 fi
 
+if [ $buildsteamwin == 1 ]
+then
+	echo -e "${txtgrn}Build game for windows with Steam: ${txtblu}yes"
+else
+	echo -e "${txtgrn}Build game for windows with Steam: ${txtred}no"
+fi
+
 if [ $buildlinux == 1 ]
 then
 	echo -e "${txtgrn}Build game for linux: ${txtblu}yes"
 else
 	echo -e "${txtgrn}Build game for linux: ${txtred}no"
+fi
+
+if [ $buildsteamlin == 1 ]
+then
+	echo -e "${txtgrn}Build game for linux with Steam: ${txtblu}yes"
+else
+	echo -e "${txtgrn}Build game for linux with Steam: ${txtred}no"
 fi
 
 if [ $buildandroid == 1 ]
@@ -362,6 +399,7 @@ fi
 
 if [ $buildlinux == 1 ]
 then
+	echo -e "${txtred}Run building for linux... ${txtrst}"
 	echo -e "${txtgrn}Reset previous cmake build folder... ${txtblu} $currentdir/build ${txtrst}"
 	rm -rf build
 	mkdir build 
@@ -409,6 +447,32 @@ then
 	fi
 
 fi #build for linux
+
+if [ $buildsteamlin == 1 ]
+then
+	cd $projectdir
+	echo -e "${txtred}Run building for steam linux... ${txtrst}"
+	echo -e "${txtgrn}Reset previous cmake build folder... ${txtblu} $currentdir/build ${txtrst}"
+	rm -rf build
+	mkdir build 
+	cd build
+
+	if [ $debug_build == 1 ]
+	then
+		echo -e "${txtgrn}Build game in ${txtred}debug${txtgrn} mode ${txtrst}"
+		cmake -DCMAKE_BUILD_TYPE=Debug -DUSE_STEAM=1 ..
+	else
+		echo -e "${txtgrn}Build game in ${txtblu}release${txtgrn} mode ${txtrst}"
+		cmake -DCMAKE_BUILD_TYPE=Release -DUSE_STEAM=1 ..
+	fi
+	
+	echo -e "${txtgrn}Start building... ${txtrst}"
+	make -j5
+
+	echo -e "${txtgrn}Goto to artifacts directory... ${txtrst}"
+	cd ../caesaria-test
+	
+fi #build for steam linux
 
 if [ $buildwindows == 1 ]
 then
@@ -458,6 +522,35 @@ then
 				rm $PACKAGE_NAME_WINDOWS
 			fi
 		fi
+fi
+
+if [ $buildsteamwin == 1 ]
+then
+		cd $projectdir
+		echo -e "${txtred}Run building for steam windows... ${txtrst}"
+
+		echo -e "${txtgrn}Reset previous cmake build folder... ${txtblu} $currentdir/build ${txtrst}"
+		rm -rf build
+		mkdir build 
+		cd build
+
+		if [ $debug_build == 1 ]
+		then
+			echo -e "${txtgrn}Build game in ${txtred}debug${txtgrn} mode ${txtrst}"
+			cmake -DCMAKE_BUILD_TYPE=Debug -DUSE_STEAM=1 -DCMAKE_TOOLCHAIN_FILE=../xcompile/win32-cross.cmake ..
+		else
+			echo -e "${txtgrn}Build game in ${txtblu}release${txtgrn} mode ${txtrst}"
+			cmake -DCMAKE_BUILD_TYPE=Release -DUSE_STEAM=1 -DCMAKE_TOOLCHAIN_FILE=../xcompile/win32-cross.cmake ..
+		fi
+
+		echo -e "${txtgrn}Start building... ${txtrst}"
+		make -j5
+
+		echo -e "${txtgrn}Goto to artifacts directory... ${txtrst}"
+		cd ../caesaria-test
+
+		echo -e "${txtgrn}Copy pthread dll to artifacts directory${txtrst}"	
+		cp /usr/i686-w64-mingw32/lib/libwinptread-1.dll ./
 fi
 
 if [ $create_update == 1 ]

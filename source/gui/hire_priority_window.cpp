@@ -77,8 +77,7 @@ HirePriority::HirePriority(Widget* p, city::industry::Type type, int priority)
   _d->prButtons.insert( &noPr );
   noPr.setPressed( priority == 0 );
 
-  setCenter( p->center() );
-
+  moveTo( Widget::parentCenter );
   setModal();
 }
 

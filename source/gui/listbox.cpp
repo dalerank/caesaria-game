@@ -95,6 +95,12 @@ ListBox::ListBox( Widget* parent,const Rect& rectangle,
   _recalculateItemHeight( Font::create( FONT_2 ), height() );
 }
 
+ListBox::ListBox(Widget* parent, const RectF& rectangle, int id, bool clip, bool drawBack, bool mos)
+  : ListBox( parent, Rect( 0, 0, 1, 1), id, clip, drawBack, mos)
+{
+  setGeometry( rectangle );
+}
+
 void ListBox::_recalculateItemHeight( const Font& defaulFont, int h )
 {
   if( !_d->font.isValid() )

@@ -42,7 +42,7 @@ public:
                       : lvl == WindowMessageStack::info ? Decorator::brownPanelSmall : Decorator::greenPanelSmall );
 
     setTextAlignment( align::center, align::center );
-    new WidgetDeleter( this, 5000 );
+    add<WidgetDeleter>( 5000 );
   }
 
 protected:

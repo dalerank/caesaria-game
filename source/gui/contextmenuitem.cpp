@@ -25,7 +25,7 @@ using namespace gfx;
 namespace gui
 {
 
-ContextMenuItem::ContextMenuItem( ContextMenu* parent, const std::string& text ) 
+ContextMenuItem::ContextMenuItem(Widget* parent, const std::string& text )
   : Label( parent, Rect( 0, 0, 1, 1 ), text, false, Label::bgWhite ),
     __INIT_IMPL(ContextMenuItem)
 {
