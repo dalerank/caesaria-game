@@ -27,6 +27,7 @@
 #include "core/event.hpp"
 #include "gfx/sdl_engine.hpp"
 #include "core/font.hpp"
+#include "walker/corpse.hpp"
 #include "objects/fortification.hpp"
 #include "core/utils.hpp"
 #include "gfx/camera.hpp"
@@ -130,7 +131,8 @@ void Build::_checkPreviewBuild(TilePos pos)
     TilesArray tiles = _city()->tilemap().area( pos, size );
     for( auto tile : tiles )
     {
-      auto walkers = _city()->walkers( tile->epos() );
+      auto walkers = _city()->walkers( tile->epos() )
+                              .exclude<Corpse>();
 
       if( !walkers.empty() )
       {

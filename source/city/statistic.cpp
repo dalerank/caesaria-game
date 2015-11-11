@@ -186,17 +186,15 @@ const WalkerList& Statistic::_Walkers::find(walker::Type type) const
   return wl;
 }
 
-int Statistic::_Walkers::count(walker::Type type, TilePos start, TilePos stop) const
+int Statistic::_Walkers::count(walker::Type type, const TilePos& start, const TilePos& stop) const
 {
   int result = 0;
-  TilePos stopPos = stop;
-
   if( start == gfx::tilemap::invalidLocation() )
   {
     const WalkerList& all =_parent.rcity.walkers();
     result = utils::countByType( all, type );
   }
-  else if( stopPos == gfx::tilemap::invalidLocation() )
+  else if( stop == gfx::tilemap::invalidLocation() )
   {
     const WalkerList& wlkOnTile = _parent.rcity.walkers( start );
     result = utils::countByType( wlkOnTile, type );

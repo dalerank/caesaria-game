@@ -165,12 +165,10 @@ void Construction::computeRoadside()
   if( !_masterTile() )
       return;
 
-  Tilemap& tilemap = _city()->tilemap();
-
   int s = size().width();
   for( int dst=1; dst <= roadsideDistance(); dst++ )
   {
-    TilesArray tiles = tilemap.rect( pos() + TilePos( -dst, -dst ),
+    TilesArray tiles = _map().rect( pos() + TilePos( -dst, -dst ),
                                      pos() + TilePos( s+dst-1, s+dst-1 ),
                                      !Tilemap::checkCorners );
 

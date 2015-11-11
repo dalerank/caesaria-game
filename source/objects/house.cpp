@@ -311,7 +311,7 @@ void House::_checkPatricianDeals()
   if( !spec().isPatrician() )
     return;
 
-  int maxPatriciansNumber = size();
+  int maxPatriciansNumber = size().width();
   if( walkers().count<Patrician>() >= maxPatriciansNumber )
   {
     Logger::warning( "WARNING !!! House [{},{}] also have maximum patricians in deals", pos().i(), pos().j() );
