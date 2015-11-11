@@ -109,13 +109,13 @@ Window::Window( Widget* parent, const Rect& rectangle, const std::string& title,
 	: Widget( parent, id, rectangle ),
 	  _d( new Impl )
 {
-  _d->flags.setFlag( fdraggable, true );
-  _d->flags.setFlag( fbackgroundVisible, true );
-  _d->flags.setFlag( ftitleVisible, true );
-	_d->title = 0;
+  setWindowFlag( fdraggable, true );
+  setWindowFlag( fbackgroundVisible, true );
+  setWindowFlag( ftitleVisible, true );
 #ifdef _DEBUG
   setDebugName( "Window");
 #endif
+  _d->title = nullptr;
   _d->background.image = Picture::getInvalid();
   _d->drag.active = false;
   _d->buttons.resize( buttonCount, nullptr );
@@ -142,7 +142,7 @@ void Window::_createSystemButton( ButtonName btnName, const std::string& tooltip
   PushButton*& btn = _d->buttons[ btnName ];
   if( !btn )
   {
-    btn = new PushButton( this, Rect( 0, 0, 10,10 ) );
+    btn = &add<PushButton>( Rect( 0, 0, 10,10 ) );
     btn->setTooltipText( tooltip );
     btn->setVisible(visible);
     btn->setSubElement(true);
@@ -159,7 +159,7 @@ void Window::_init()
 
 	if( !_d->title )
 	{
-		_d->title = new Label( this, Rect( 0, 0, width(), 20 ), text(), false );
+    _d->title = &add<Label>( Rect( 0, 0, width(), 20 ), text(), false );
 		_d->title->setSubElement( true );
 	}
 
@@ -209,24 +209,22 @@ bool Window::onEvent(const NEvent& event)
 			{
         _d->drag.active = false;
 			}
-
 			else if (event.gui.type == guiElementFocused)
 			{
 					if( ((event.gui.caller == this) || isMyChild(event.gui.caller)))
 						bringToFront();
 			}
-			else
-				if (event.gui.type == guiButtonClicked)
-				{
-					if (event.gui.caller == _d->buttons[ buttonClose ] )
-					{
-    					// send close event to parent
-    					// if the event was not absorbed
-              if( !parent()->onEvent( NEvent::Gui( this, 0, guiElementClosed ) ) )
-					        deleteLater();
-              return true;
-					}
-				}
+      else if (event.gui.type == guiButtonClicked)
+      {
+        if (event.gui.caller == _d->buttons[ buttonClose ] )
+        {
+            // send close event to parent
+            // if the event was not absorbed
+            if( !parent()->onEvent( NEvent::Gui( this, 0, guiElementClosed ) ) )
+                deleteLater();
+            return true;
+        }
+      }
 		break;
 
 		case sEventMouse:
@@ -399,7 +397,8 @@ void Window::setupUI(const vfs::Path& path)
 void Window::setTextAlignment( Alignment horizontal, Alignment vertical )
 {
 	Widget::setTextAlignment( horizontal, vertical );
-	_d->title->setTextAlignment( horizontal, vertical );
+  if( _d->title )
+    _d->title->setTextAlignment( horizontal, vertical );
 }
 
 }//end namespace gui

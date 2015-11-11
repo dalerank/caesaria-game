@@ -232,7 +232,7 @@ static std::string _prepareUpdateBatchFile( const std::string& executableFp, con
   batch.close();
 
   // Mark the shell script as executable in *nix
-  if( OSystem::is( OSystem::unix ))
+  if( OSystem::isUnix() )
     OSystem::markFileAsExecutable(updateBatchFile.toString());
 
   return updateBatchFile.toString();

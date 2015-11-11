@@ -122,34 +122,34 @@ void MissionTargets::setCity(PlayerCityPtr city)
 
   if( _d->lbProsperity )
   {
-    text = utils::format( 0xff, "%s:%d", _("##senatepp_prsp_rating##"), wint.needProsperity() );
+    text = fmt::format( "{}:{}", _("##senatepp_prsp_rating##"), wint.needProsperity() );
     _d->lbProsperity->setText( text );
     _d->lbProsperity->setVisible( wint.needProsperity() > 0 );
   }
 
   if( _d->lbPopulation )
   {
-    text = utils::format( 0xff, "%s:%d", _("##mission_wnd_population##"), wint.needPopulation() );
+    text = fmt::format( "{}:{}", _("##mission_wnd_population##"), wint.needPopulation() );
     _d->lbPopulation->setText( text );
   }
 
   if( _d->lbFavour )
   {
-    text = utils::format( 0xff, "%s:%d", _("##senatepp_favour_rating##"), wint.needFavour() );
+    text = fmt::format( "{}:{}", _("##senatepp_favour_rating##"), wint.needFavour() );
     _d->lbFavour->setText( text );
     _d->lbFavour->setVisible( wint.needFavour() > 0 );
   }
 
   if( _d->lbCulture )
   {
-    text = utils::format( 0xff, "%s:%d", _("##senatepp_clt_rating##"), wint.needCulture() );
+    text = fmt::format( "{}:{}", _("##senatepp_clt_rating##"), wint.needCulture() );
     _d->lbCulture->setText( text );
     _d->lbCulture->setVisible( wint.needCulture() > 0 );
   }
 
   if( _d->lbPeace )
   {
-    text = utils::format( 0xff, "%s:%d", _("##senatepp_peace_rating##"), wint.needPeace() );
+    text = fmt::format( "{}:{}", _("##senatepp_peace_rating##"), wint.needPeace() );
     _d->lbPeace->setText( text );
     _d->lbPeace->setVisible( wint.needPeace() > 0 );
   }
@@ -158,9 +158,8 @@ void MissionTargets::setCity(PlayerCityPtr city)
   {
     _d->lbxHelp->setItemDefaultColor( ListBoxItem::simple, 0xffe0e0e0 );
 
-    foreach( it, wint.overview() )
+    for( const auto& text : wint.overview() )
     {
-      std::string text = *it;
       if( text.substr( 0, 5 ) == "@img=" )
       {
         Picture pic( text.substr( 5 ) );

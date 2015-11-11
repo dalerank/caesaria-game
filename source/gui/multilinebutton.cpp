@@ -78,8 +78,8 @@ void MultilineButton::setText(const StringArray& text)
 
   for( auto& it : _strings )
   {
-    Label* lb = new Label( _layout, Rect(), it );
-    lb->setTextAlignment( horizontalTextAlign(), verticalTextAlign() );
+    auto& label = _layout->add<Label>( Rect(), it );
+    label.setTextAlignment( horizontalTextAlign(), verticalTextAlign() );
   }
 }
 

@@ -44,6 +44,7 @@ public:
   // add the button in the menu.
   void addBuildButton(const object::Type buildingType);
   void setModel( const std::string& filename );
+  void setC3gameplay( bool enabled );
 
   virtual bool isPointInside(const Point& point) const;
 

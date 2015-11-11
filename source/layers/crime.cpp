@@ -94,14 +94,6 @@ void Crime::drawTile( const RenderInfo& rinfo, Tile& tile)
   tile.setRendered();
 }
 
-LayerPtr Crime::create(Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new Crime( camera, city ) );
-  ret->drop();
-
-  return ret;
-}
-
 void Crime::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )

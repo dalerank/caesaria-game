@@ -62,6 +62,8 @@ void LoadGame::_fillFiles()
     vfs::Path imgpath = vfs::Path( path ).changeExtension( "png" );
     item.setData( "image", imgpath.toString() );
   }
+
+  moveTo( Widget::parentCenter );
 }
 
 void LoadGame::_showPreview(const ListBoxItem &item)

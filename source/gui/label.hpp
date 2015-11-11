@@ -143,7 +143,6 @@ protected:
   gfx::Pictures& _backgroundNb();
 
 private:
-
   class Impl;
   ScopedPtr< Impl > _d;
 };

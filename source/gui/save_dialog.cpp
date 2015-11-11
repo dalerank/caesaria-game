@@ -67,7 +67,9 @@ void SaveGame::Impl::findFiles()
   StringArray names;
   names << flist.filter( vfs::Entries::file | vfs::Entries::extFilter, extension );
   std::sort( names.begin(), names.end() );
-  if( lbxSaves ) lbxSaves->addItems( names );
+
+  if( lbxSaves )
+    lbxSaves->addItems( names );
 }
 
 SaveGame::SaveGame(Ui *ui, vfs::Directory dir, std::string fileExt, int id )

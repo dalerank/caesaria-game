@@ -181,7 +181,7 @@ void Dialog::draw(gfx::Engine& painter )
 
 Dialog* Information(Ui* ui, const std::string &title, const std::string &text)
 {
-  Dialog* ret = new Dialog( ui, Rect(), title, text, Dialog::btnOk );
+  Dialog* ret = &ui->add<Dialog>( Rect(), title, text, Dialog::btnOk );
 
   CONNECT( ret, onOk(), ret, Dialog::deleteLater )
   CONNECT( ret, onCancel(), ret, Dialog::deleteLater )
@@ -191,7 +191,7 @@ Dialog* Information(Ui* ui, const std::string &title, const std::string &text)
 
 Dialog* Confirmation(Ui* ui, const std::string &title, const std::string &text, bool pauseGame)
 {
-  Dialog* ret = new Dialog( ui, Rect(), title, text, Dialog::btnOkCancel, pauseGame );
+  Dialog* ret = &ui->add<Dialog>( Rect(), title, text, Dialog::btnOkCancel, pauseGame );
 
   CONNECT( ret, onOk(), ret, Dialog::deleteLater )
   CONNECT( ret, onCancel(), ret, Dialog::deleteLater )

@@ -96,10 +96,11 @@ public:
   virtual std::string troubleDesc() const;
 
   bool isCheckedDesirability() const;
+  void addWalker( WalkerPtr walker );
+  const WalkerList& walkers() const;
 
   void __debugChangeLevel( int change );
   void __debugMakeGeneration();
-
 private:
   void _updateHealthLevel();
   void _levelUp();

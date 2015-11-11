@@ -272,7 +272,7 @@ void Walker::_walk()
 
   if( saveMpos != currentMapPos )
   {
-    _d->map.tile = &_d->city->tilemap().at( currentMapPos );
+    _d->map.tile = &_map().at( currentMapPos );
     _changeTile();
   }
 }
@@ -360,7 +360,7 @@ const Tile& Walker::_nextTile() const
   default: /*Logger::warning( "Unknown direction: %d", _d->action.direction);*/ break;
   }
 
-  return _d->city->tilemap().at( p );
+  return _map().at( p );
 }
 
 const Point& Walker::mappos() const { return _d->map.pos;}
@@ -530,15 +530,14 @@ void Walker::save( VariantMap& stream ) const
 
 void Walker::load( const VariantMap& stream)
 {
-  Tilemap& tmap = _city()->tilemap();
 
   VARIANT_LOAD_ENUM_D( _d, nation, stream )
   VARIANT_LOAD_STR_D( _d, name, stream )
   VARIANT_LOAD_ANY_D( _d, world.pos, stream )
   TilePos pos = stream.get( "location" ).toTilePos();
-  _d->map.tile = &tmap.at( pos );
+  _d->map.tile = &_map().at( pos );
   VARIANT_LOAD_ANY_D( _d, world.lastDst, stream )
-  _d->map.path.load( tmap, stream.get( "map.path" ).toMap() );
+  _d->map.path.load( _map(), stream.get( "map.path" ).toMap() );
   VARIANT_LOAD_STR_D( _d, thinks, stream )
   VARIANT_LOAD_ANY_D( _d, speed.tileKoeff, stream )
   VARIANT_LOAD_ANY_D( _d, world.next, stream );

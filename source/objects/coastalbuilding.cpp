@@ -107,7 +107,6 @@ void CoastalFactory::assignBoat(ShipPtr)
 
 const Tile& CoastalFactory::landingTile() const
 {
-  Tilemap& tmap = _city()->tilemap();
   TilePos offset( -999, -999 );
   switch( _d->direction )
   {
@@ -119,7 +118,7 @@ const Tile& CoastalFactory::landingTile() const
   default: break;
   }
 
-  return tmap.at( pos() + offset );
+  return _map().at( pos() + offset );
 }
 
 CoastalFactory::~CoastalFactory()

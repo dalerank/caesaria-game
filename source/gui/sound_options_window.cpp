@@ -55,7 +55,7 @@ SoundOptions::SoundOptions(Widget* parent)
   _d->initialized = false;
   setupUI( ":/gui/soundoptions.gui" );
 
-  setCenter( parent->center() );
+  moveTo( Widget::parentCenter );
 
   WidgetEscapeCloser::insertTo( this );
   GameAutoPause::insertTo( this );
@@ -69,34 +69,6 @@ SoundOptions::SoundOptions(Widget* parent)
 }
 
 SoundOptions::~SoundOptions( void ) {}
-
-bool SoundOptions::onEvent(const NEvent& event)
-{  
-  if( event.EventType == sEventGui && event.gui.type == guiButtonClicked )
-  {
-    int id = event.gui.caller->ID();
-    switch( id )
-    {
-    case 1001:
-      emit _d->signal.onApply();
-      deleteLater();
-    break;
-
-    case 1002:
-    {
-      emit _d->signal.onClose();
-      deleteLater();
-    }
-    break;
-
-    }
-
-    return true;
-  }
-
-  return Widget::onEvent( event );
-}
-
 Signal2<audio::SoundType, audio::Volume>& SoundOptions::onChange() { return _d->signal.onSoundChange; }
 Signal0<>& SoundOptions::onClose()                       { return _d->signal.onClose; }
 Signal0<>& SoundOptions::onApply()                       { return _d->signal.onApply; }
@@ -113,6 +85,26 @@ void SoundOptions::update(audio::SoundType type, audio::Volume value)
       return;
     }
   }
+}
+
+bool SoundOptions::_onButtonClicked(Widget* sender)
+{
+  switch( sender->ID() )
+  {
+  case applyId:
+    emit _d->signal.onApply();
+    deleteLater();
+  break;
+
+  case closeId:
+  {
+    emit _d->signal.onClose();
+    deleteLater();
+  }
+  break;
+  }
+
+  return true;
 }
 
 }//end namespace dialog

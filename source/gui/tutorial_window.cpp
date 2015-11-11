@@ -40,8 +40,7 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
   _locker.activate();
 
   setupUI( ":/gui/tutorial_window.gui" );
-  Size pSize = parent()->size() - size();
-  setPosition( Point( pSize.width() / 2, pSize.height() / 2 ) );
+  moveTo( Widget::parentCenter );
 
   INIT_WIDGET_FROM_UI(Label*, lbTitle )
   INIT_WIDGET_FROM_UI(TexturedButton*, btnExit )

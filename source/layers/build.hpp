@@ -28,6 +28,7 @@ namespace citylayer
 class Build : public Layer
 {
 public:
+  Build( gfx::Camera& camera, PlayerCityPtr city, gfx::Renderer* renderer );
   virtual void handleEvent(NEvent &event);
   virtual int type() const;
   virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
@@ -41,8 +42,6 @@ public:
   virtual void renderUi(gfx::Engine &engine);
   virtual void changeLayer(int type);
   LayerPtr drawLayer() const;
-
-  static LayerPtr create(gfx::Renderer &renderer, PlayerCityPtr city );
 
   virtual ~Build();
 public signals:
@@ -61,7 +60,6 @@ private:
   bool _tryDrawBuildTile( const gfx::RenderInfo& rinfo, gfx::Tile& tile);
   void _exitBuildMode();
 
-  Build( gfx::Renderer& renderer, PlayerCityPtr city );
 
   __DECLARE_IMPL(Build)
 };

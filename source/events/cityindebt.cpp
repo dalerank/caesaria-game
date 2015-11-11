@@ -114,9 +114,6 @@ CityIndebt::CityIndebt() : _d( new Impl )
 
 void CityIndebt::_exec(Game& game, unsigned int)
 {
-  gui::Ui* env = game.gui();
-  //_d->isDeleted = _d->state > 3;
-
   switch( _d->state )
   {
   case noDebts:
@@ -128,11 +125,11 @@ void CityIndebt::_exec(Game& game, unsigned int)
     std::string title = _d->state < _d->title.size() ? _d->title[ _d->state ] : "##city_in_debt_text##";
 
     unsigned int money = _d->state < _d->emperorMoney.size() ? _d->emperorMoney[ _d->state ] : 0;
-    gui::FilmWidget* dlg = new gui::FilmWidget( env->rootWidget(), video );
-    dlg->setText( _( text ) );
-    dlg->setTitle( _( title ) );
-    dlg->setTime( game::Date::current() );
-    dlg->show();
+    gui::FilmWidget& dlg = game.gui()->add<gui::FilmWidget>( video );
+    dlg.setText( _( text ) );
+    dlg.setTitle( _( title ) );
+    dlg.setTime( game::Date::current() );
+    dlg.show();
 
     _d->state++;
 

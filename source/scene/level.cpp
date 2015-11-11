@@ -236,7 +236,7 @@ void Level::Impl::initMainUI()
 
   rightPanel = MenuRigthPanel::create( ui.rootWidget(), rPanelRect, rPanelPic);
 
-  topMenu = new TopMenu( ui.rootWidget(), topMenuHeight, !city->getOption( PlayerCity::c3gameplay ) );
+  topMenu = &ui.add<TopMenu>( topMenuHeight, !city->getOption( PlayerCity::c3gameplay ) );
   topMenu->setPopulation( game->city()->states().population );
   topMenu->setFunds( game->city()->treasury().money() );
 
@@ -250,10 +250,9 @@ void Level::Impl::initMainUI()
                                topMenu->height() ) );
   Rect minimapRect = extMenu->getMinimapRect();
 
-  mmap = new Minimap( extMenu, minimapRect, city, *renderer.camera() );
+  mmap = &extMenu->add<Minimap>( minimapRect, city, *renderer.camera() );
 
   WindowMessageStack::create( ui.rootWidget() );
-
   rightPanel->bringToFront();
 }
 
@@ -386,22 +385,20 @@ void Level::Impl::setVideoOptions(){  events::dispatch<SetVideoSettings>(); }
 
 void Level::Impl::showGameSpeedOptionsDialog()
 {
-  dialog::SpeedOptions* dialog = new dialog::SpeedOptions( game->gui()->rootWidget(),
-                                                           game->timeMultiplier(),
-                                                           SETTINGS_VALUE( scrollSpeed ),
-                                                           SETTINGS_VALUE( autosaveInterval ) );
+  dialog::SpeedOptions& dialog = game->gui()->add<dialog::SpeedOptions>( game->timeMultiplier(),
+                                                                         SETTINGS_VALUE( scrollSpeed ),
+                                                                         SETTINGS_VALUE( autosaveInterval ) );
 
-  CONNECT( dialog, onGameSpeedChange(), game, Game::setTimeMultiplier );
-  CONNECT( dialog, onScrollSpeedChange(), renderer.camera(), Camera::setScrollSpeed );
-  CONNECT( dialog, onScrollSpeedChange(), this, Impl::saveScrollSpeed );
-  CONNECT( dialog, onAutosaveIntervalChange(), this, Impl::setAutosaveInterval );
+  CONNECT( &dialog, onGameSpeedChange(), game, Game::setTimeMultiplier );
+  CONNECT( &dialog, onScrollSpeedChange(), renderer.camera(), Camera::setScrollSpeed );
+  CONNECT( &dialog, onScrollSpeedChange(), this, Impl::saveScrollSpeed );
+  CONNECT( &dialog, onAutosaveIntervalChange(), this, Impl::setAutosaveInterval );
 }
 
 void Level::Impl::showCityOptionsDialog()
 {
-  dialog::CityOptions* wnd = new dialog::CityOptions( game->gui()->rootWidget(),
-                                                      game->city() );
-  wnd->show();
+  auto& wnd = game->gui()->add<dialog::CityOptions>( game->city() );
+  wnd.show();
 }
 
 void Level::Impl::resolveWarningMessage(std::string text)
@@ -434,7 +431,7 @@ void Level::Impl::showMessagesWindow()
 
   if( wnd == 0 )
   {
-    wnd = new dialog::ScribesMessages( game->gui()->rootWidget(), game->city() );
+    wnd = &game->gui()->add<dialog::ScribesMessages>( game->city() );
   }
   else
   {
@@ -486,17 +483,16 @@ void Level::Impl::makeFullScreenshot()
 
   Picture fullPic = Picture( fullPicSize, 0, true );
   Point doffset( 0, fullPicSize.height() / 2 );
-  foreach( tile, ret )
+  for( auto tile : ret )
   {
-    Tile* t = *tile;
-    if( t->master() )
-      t = t->master();       
+    if( tile->master() )
+      tile = tile->master();
 
-    const Picture& tpic = t->overlay().isValid()
-                            ? t->overlay()->picture()
-                            : t->picture();
+    const Picture& tpic = tile->overlay().isValid()
+                            ? tile->overlay()->picture()
+                            : tile->picture();
 
-    Rect srcRect( 0, 0, tpic.width(), tpic.height() );
+    //Rect srcRect( 0, 0, tpic.width(), tpic.height() );
     //fullPic->draw( tpic, srcRect, t->mappos() + doffset - tpic.offset() );
   }
 
@@ -654,21 +650,20 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
     if( failedByDestroy || failedByTime || forceFailed )
     {
       game->pause();
-      Window* wnd = new Window( game->gui()->rootWidget(),
-                                Rect( 0, 0, 400, 220 ), "" );
-      Label* lb = new Label( wnd, Rect( 10, 10, 390, 110 ), _("##mission_failed##") );
-      lb->setTextAlignment( align::center, align::center );
-      lb->setFont( Font::create( FONT_6 ) );
+      Window& window = game->gui()->add<Window>( Rect( 0, 0, 400, 220 ), "" );
+      Label& text = window.add<Label>( Rect( 10, 10, 390, 110 ), _("##mission_failed##") );
+      text.setTextAlignment( align::center, align::center );
+      text.setFont( Font::create( FONT_6 ) );
 
-      auto btnRestart = new PushButton( wnd, Rect( 20, 120, 380, 144), _("##restart_mission##") );
-      btnRestart->setTooltipText( _("##restart_mission_tip##") );
-      auto btnMenu = new PushButton( wnd, Rect( 20, 150, 380, 174), _("##exit_to_main_menu##") );
+      auto& btnRestart = window.add<PushButton>( Rect( 20, 120, 380, 144), _("##restart_mission##") );
+      btnRestart.setTooltipText( _("##restart_mission_tip##") );
+      auto& btnMenu = window.add<PushButton>( Rect( 20, 150, 380, 174), _("##exit_to_main_menu##") );
 
-      wnd->setCenter( game->gui()->rootWidget()->center() );
-      wnd->setModal();
+      window.moveTo( Widget::parentCenter );
+      window.setModal();
 
-      CONNECT( btnRestart, onClicked(), lvl, Level::restart );
-      CONNECT( btnMenu, onClicked(), lvl, Level::exit );
+      CONNECT( &btnRestart, onClicked(), lvl, Level::restart );
+      CONNECT( &btnMenu, onClicked(), lvl, Level::exit );
     }
   }
 }
@@ -687,14 +682,13 @@ void Level::Impl::checkWinMission( Level* lvl, bool force )
 
   if( success || force )
   {
-    auto winDialog = new dialog::WinMission( game->gui()->rootWidget(),
-                                             conditions.newTitle(), conditions.winText(),
-                                             conditions.winSpeech(), conditions.mayContinue() );
+    auto& winDialog = game->gui()->add<dialog::WinMission>( conditions.newTitle(), conditions.winText(),
+                                                            conditions.winSpeech(), conditions.mayContinue() );
 
     mapToLoad = conditions.nextMission();
 
-    CONNECT( winDialog, onAcceptAssign(), lvl, Level::_resolveSwitchMap );
-    CONNECT( winDialog, onContinueRules(), this, Impl::extendReign )
+    CONNECT( &winDialog, onAcceptAssign(), lvl, Level::_resolveSwitchMap );
+    CONNECT( &winDialog, onContinueRules(), this, Impl::extendReign )
   }
 
   if( success )
@@ -732,8 +726,8 @@ void Level::exit() { _d->result = Level::res_menu; stop(); }
 void Level::_requestExitGame()
 {
   auto dialog = dialog::Confirmation( _d->game->gui(),
-                                              "", _("##exit_without_saving_question##"),
-                                              dialog::Dialog::pauseGame );
+                                      "", _("##exit_without_saving_question##"),
+                                      dialog::Dialog::pauseGame );
   CONNECT( dialog, onOk(), this, Level::_quit );
 }
 

@@ -179,6 +179,6 @@ void AboutWell::_showHelp()
   DictionaryWindow::show( parent(), object::well );
 }
 
-}
+}//end namespace infobox
 
 }//end namespace gui

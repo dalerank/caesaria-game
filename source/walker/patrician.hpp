@@ -20,6 +20,7 @@
 
 #include "human.hpp"
 #include "predefinitions.hpp"
+#include "objects/predefinitions.hpp"
 
 /** This is an immigrant coming with his stuff */
 class Patrician : public Human
@@ -28,7 +29,7 @@ class Patrician : public Human
 public:
   virtual ~Patrician();
 
-  virtual void send2City( TilePos start );
+  virtual void send2City( HousePtr house );
 
   virtual void save(VariantMap& stream) const;
   virtual void load(const VariantMap& stream);
@@ -36,7 +37,7 @@ public:
   virtual bool die();
 
 protected:
-  void _findNewWay(const TilePos& start);
+  bool _findNewWay(const TilePos& start);
   virtual void _reachedPathway();
 
 private:

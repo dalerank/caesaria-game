@@ -136,7 +136,8 @@ bool Reservoir::_isNearWater(PlayerCityPtr city, const TilePos& pos ) const
   Tilemap& tilemap = city->tilemap();
   TilesArray perimetr = tilemap.rect( pos + TilePos( -1, -1 ), size() + Size( 2 ), !Tilemap::checkCorners );
 
-  foreach( tile, perimetr) { near_water |= (*tile)->getFlag( Tile::tlWater ); }
+  for( auto& tile : perimetr)
+    near_water |= tile->getFlag( Tile::tlWater );
 
   return near_water;
 }

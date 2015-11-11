@@ -26,14 +26,12 @@ namespace citylayer
 class Unemployed : public Info
 {
 public:
+  Unemployed( gfx::Camera& camera, PlayerCityPtr city );
   virtual int type() const;
   virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
   virtual void handleEvent(NEvent& event);
 
-  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
-
 private:
-  Unemployed( gfx::Camera& camera, PlayerCityPtr city );
 };
 
 }//end namespace city

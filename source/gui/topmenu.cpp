@@ -111,13 +111,13 @@ void TopMenu::draw(gfx::Engine& engine)
 void TopMenu::setPopulation( int value )
 {
   if( _d->lbPopulation )
-    _d->lbPopulation->setText( utils::format( 0xff, "%s %d", _d->useIcon ? "" : _("##pop##"), value ) );
+    _d->lbPopulation->setText( fmt::format( "{} {}", _d->useIcon ? "" : _("##pop##"), value ) );
 }
 
 void TopMenu::setFunds( int value )
 {
   if( _d->lbFunds )
-    _d->lbFunds->setText( utils::format( 0xff, "%.2s %d", _d->useIcon ? "" : _("##denarii_short##"), value) );
+    _d->lbFunds->setText( fmt::format( "{} {}", _d->useIcon ? "" : _("##denarii_short##"), value) );
 }
 
 void TopMenu::Impl::updateDate()
@@ -238,10 +238,10 @@ TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
   ContextMenu* file = tmp->addSubMenu();
 
   ContextMenuItem* restart = file->addItem( _("##gmenu_file_restart##"), -1, true, false, false, false );
-  ContextMenuItem* load = file->addItem( _("##mainmenu_loadgame##"), -1, true, false, false, false );
-  ContextMenuItem* save = file->addItem( _("##gmenu_file_save##"), -1, true, false, false, false );
-  ContextMenuItem* mainMenu = file->addItem( _("##gmenu_file_mainmenu##"), -1, true, false, false, false );
-  ContextMenuItem* exit = file->addItem( _("##gmenu_exit_game##"), -1, true, false, false, false );
+  ContextMenuItem* load =    file->addItem( _("##mainmenu_loadgame##"),  -1, true, false, false, false );
+  ContextMenuItem* save =    file->addItem( _("##gmenu_file_save##"),    -1, true, false, false, false );
+  ContextMenuItem* mainMenu= file->addItem( _("##gmenu_file_mainmenu##"),-1, true, false, false, false );
+  ContextMenuItem* exit =    file->addItem( _("##gmenu_exit_game##"),    -1, true, false, false, false );
 
   CONNECT( restart, onClicked(), &_d->signal.onRestart, Signal0<>::_emit );
   CONNECT( exit, onClicked(), &_d->signal.onExit, Signal0<>::_emit );
@@ -273,18 +273,18 @@ TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
 
   tmp = addItem( _("##gmenu_advisors##"), -1, true, true, false, false );
   ContextMenu* advisersMenu = tmp->addSubMenu();
-  advisersMenu->addItem( _("##visit_labor_advisor##"), advisor::employers );
+  advisersMenu->addItem( _("##visit_labor_advisor##"      ), advisor::employers );
   advisersMenu->addItem( _("##visit_military_advisor##"   ), advisor::military );
-  advisersMenu->addItem( _("##visit_imperial_advisor##"     ), advisor::empire );
-  advisersMenu->addItem( _("##visit_rating_advisor##"    ), advisor::ratings );
-  advisersMenu->addItem( _("##visit_trade_advisor##"    ), advisor::trading );
+  advisersMenu->addItem( _("##visit_imperial_advisor##"   ), advisor::empire );
+  advisersMenu->addItem( _("##visit_rating_advisor##"     ), advisor::ratings );
+  advisersMenu->addItem( _("##visit_trade_advisor##"      ), advisor::trading );
   advisersMenu->addItem( _("##visit_population_advisor##" ), advisor::population );
   advisersMenu->addItem( _("##visit_health_advisor##"     ), advisor::health );
   advisersMenu->addItem( _("##visit_education_advisor##"  ), advisor::education );
   advisersMenu->addItem( _("##visit_religion_advisor##"   ), advisor::religion );
   advisersMenu->addItem( _("##visit_entertainment_advisor##"), advisor::entertainment );
-  advisersMenu->addItem( _("##visit_financial_advisor##"    ), advisor::finance );
-  advisersMenu->addItem( _("##visit_chief_advisor##"       ), advisor::main );
+  advisersMenu->addItem( _("##visit_financial_advisor##"  ), advisor::finance );
+  advisersMenu->addItem( _("##visit_chief_advisor##"      ), advisor::main );
 
   CONNECT( advisersMenu, onItemAction(), _d.data(), Impl::resolveAdvisorShow );
 
