@@ -104,7 +104,7 @@ void HealthBuilding::deliverService()
   }
 
   bool haveWorkers = numberWorkers() > 0;
-  bool inPatrol = walkers().empty();
+  bool inPatrol = !walkers().empty();
   bool servedMaxPeople = _d->patients.max == 0
                           ? false
                           : _d->patients.served >= _d->patients.max;
