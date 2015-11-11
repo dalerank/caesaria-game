@@ -42,6 +42,7 @@
 #include "core/logger.hpp"
 #include "core/color_list.hpp"
 #include "gfx/animation_bank.hpp"
+#include "game/settings.hpp"
 #include "city/statistic.hpp"
 
 using namespace gfx;
@@ -85,6 +86,7 @@ public:
 
   Pictures pictures;
   Picture terraintPic;
+  Picture greenTile;
   PlayerCityPtr city;
   Picture tilePosText;
   Tile* currentTile;
@@ -101,10 +103,10 @@ void Layer::registerTileForRendering(Tile& tile)
 
 void Layer::renderUi(Engine& engine)
 {
-  __D_IMPL(_d,Layer)
-  if( !_d->tooltip.text.empty() )
+  __D_REF(d,Layer)
+  if( !d.tooltip.text.empty() )
   {
-    engine.draw( _d->tooltip.image, _d->cursor.last );
+    engine.draw( d.tooltip.image, d.cursor.last );
   }
 }
 
@@ -288,22 +290,22 @@ void Layer::drawWalkers( const RenderInfo& rinfo, const Tile& tile)
 
 void Layer::_setTooltipText(const std::string& text)
 {
-  __D_IMPL(_d,Layer)
-  if( _d->tooltip.text != text )
+  __D_REF(d,Layer)
+  if( d.tooltip.text != text )
   {
     Font font = Font::create( FONT_2 );
-    _d->tooltip.text = text;
+    d.tooltip.text = text;
     Size size = font.getTextSize( text );
 
-    if( _d->tooltip.image.isValid() || (_d->tooltip.image.size() != size) )
+    if( d.tooltip.image.isValid() || (d.tooltip.image.size() != size) )
     {
-      _d->tooltip.image = Picture( size, 0, true );
+      d.tooltip.image = Picture( size, 0, true );
     }
 
-    _d->tooltip.image.fill( 0x00000000, Rect( Point( 0, 0 ), _d->tooltip.image.size() ) );
-    _d->tooltip.image.fill( 0xff000000, Rect( Point( 0, 0 ), size ) );
-    _d->tooltip.image.fill( 0xffffffff, Rect( Point( 1, 1 ), size - Size( 2, 2 ) ) );
-    font.draw( _d->tooltip.image, text, Point(), false );
+    d.tooltip.image.fill( 0x00000000, Rect( Point( 0, 0 ), d.tooltip.image.size() ) );
+    d.tooltip.image.fill( 0xff000000, Rect( Point( 0, 0 ), size ) );
+    d.tooltip.image.fill( 0xffffffff, Rect( Point( 1, 1 ), size - Size( 2, 2 ) ) );
+    font.draw( d.tooltip.image, text, Point(), false );
   }
 }
 
@@ -476,18 +478,18 @@ void Layer::drawFlatTile(const RenderInfo& rinfo, Tile& tile)
 
 void Layer::init( Point cursor )
 {
-  __D_IMPL(_d,Layer)
-  _d->cursor.last = cursor;
-  _d->cursor.start = cursor;
-  _d->nextLayer = type();
+  __D_REF(d,Layer)
+  d.cursor.last = cursor;
+  d.cursor.start = cursor;
+  d.nextLayer = type();
 }
 
 void Layer::beforeRender(Engine&)
 {
-  __D_IMPL(_d,Layer)
-  _d->draw.buildings = DrawOptions::instance().isFlag( DrawOptions::showBuildings );
-  _d->draw.trees = DrawOptions::instance().isFlag( DrawOptions::showTrees );
-  _d->pictures.clear();
+  __D_REF(d,Layer)
+  d.draw.buildings = DrawOptions::instance().isFlag( DrawOptions::showBuildings );
+  d.draw.trees = DrawOptions::instance().isFlag( DrawOptions::showTrees );
+  d.pictures.clear();
 }
 
 void Layer::_addPicture(const Point& pos, const Picture& pic)
@@ -542,78 +544,53 @@ void Layer::afterRender(Engine& engine)
     {
       const Tile& tile = tmap.at( 0, k );
       const Tile& etile = tmap.at( size - 1, k );
-      engine.drawLine( 0x80ff0000, tile.mappos() + offset, etile.mappos() + offset );
+      NColor color = ColorList::red;
+      color.setAlpha( k%10 ? 0x80 : 0x40 );
+      engine.drawLine( color, tile.mappos() + offset, etile.mappos() + offset );
 
       const Tile& rtile = tmap.at( k, 0 );
       const Tile& ertile = tmap.at( k, size - 1 );
-      engine.drawLine( 0x80ff0000, rtile.mappos() + offset, ertile.mappos() + offset );
+      engine.drawLine( color, rtile.mappos() + offset, ertile.mappos() + offset );
     }
-
-    /*std::string text;
-    Font font = Font::create( FONT_0 );
-    font.setColor( 0x80ffffff );
-    switch( _d->posMode )
-    {
-    case 1:
-      for( int i=0; i < size; i+=2 )
-      {
-        for( int j=0; j < size; j+=2 )
-        {
-          const Tile& rtile = tmap.at( i, j );
-          text = utils::format( 0xff, "(%d,%d)", i, j );
-          //PictureDecorator::basicText( screen, rtile.mapPos() + offset + Point( 0, 0),text.c_str(), 0xffffffff );
-          font.draw( screen, text, rtile.mappos() + offset + Point( 7, -7 ), false );
-        }
-      }
-    break;
-    }*/
   }
 
   if( opts.isFlag( DrawOptions::showRoads ) )
   {
-    Picture grnPicture( "oc3_land", 1);
-
     TilesArray tiles = _d->city->tilemap().allTiles();
     for( auto tile : tiles )
     {
       if( tile->getFlag( Tile::tlRoad ) )
-        engine.draw( grnPicture , offset + tile->mappos() );
+        engine.draw( _d->greenTile , offset + tile->mappos() );
     }
   }
 
   if( opts.isFlag( DrawOptions::showWalkableTiles ) )
   {
-    Picture grnPicture( "oc3_land", 1);
-
     TilesArray tiles = _d->city->tilemap().allTiles();
     for( auto tile : tiles )
     {
       if( tile->isWalkable( true ) )
-        engine.draw( grnPicture , offset + tile->mappos() );
+        engine.draw( _d->greenTile, offset + tile->mappos() );
     }
   }
 
   if( opts.isFlag( DrawOptions::showFlatTiles ) )
   {
-    Picture grnPicture( "oc3_land", 1);
-
     TilesArray tiles = _d->city->tilemap().allTiles();
     for( auto tile : tiles )
     {
       if( tile->isFlat() )
-        engine.draw( grnPicture , offset + tile->mappos() );
+        engine.draw( _d->greenTile, offset + tile->mappos() );
     }
   }
 
   if( opts.isFlag( DrawOptions::showLockedTiles ) )
   {
-    Picture grnPicture( "oc3_land", 2);
-
     TilesArray tiles = _d->city->tilemap().allTiles();
     for( auto tile : tiles )
     {
       if( !tile->isWalkable( true ) )
-        engine.draw( grnPicture , offset + tile->mappos() );
+        engine.draw( _d->greenTile, offset + tile->mappos() );
     }
   }
 
@@ -667,11 +644,12 @@ void Layer::afterRender(Engine& engine)
   }
 }
 
-Layer::Layer( Camera* camera, PlayerCityPtr city )
+Layer::Layer(Camera* camera, PlayerCityPtr city )
   : __INIT_IMPL(Layer)
 {
   __D_IMPL(_d,Layer)
   _d->camera = camera;
+  _d->greenTile = Picture( SETTINGS_STR(forbidenTile), 1 );
   _d->city = city;
   _d->debugFont = Font::create( FONT_1_WHITE );
   _d->currentTile = 0;

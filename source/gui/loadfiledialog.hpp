@@ -27,6 +27,7 @@ namespace gui
 {
 
 class FileListBox;
+class ListBoxItem;
 
 namespace dialog
 {
@@ -59,6 +60,8 @@ signals public:
 protected:
 
   virtual void _fillFiles();
+  void _resolveItemSelected( const ListBoxItem& item );
+  void _resolveItemDblClick( const ListBoxItem& item );
 
   gui::FileListBox* _fileslbx() const;
   const vfs::Directory& _directory() const;

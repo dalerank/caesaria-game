@@ -154,10 +154,6 @@
     die : { rc : "citizen04", start : 144, frames : 8, action : 3, step : 0 }
   }
 
-  riverWave : {
-    class : "water"
-  }
-
   merchant : {
     move : { rc : "carts", start : 145, frames : 5, action : 1, step : 8 }
   }

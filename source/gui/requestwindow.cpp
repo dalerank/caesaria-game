@@ -46,14 +46,14 @@ public:
 EmperrorRequestWindow* EmperrorRequestWindow::create( Widget* parent, city::RequestPtr request,
                                                       bool mayExec, const std::string& video )
 {
-  EmperrorRequestWindow* ret = new EmperrorRequestWindow( parent, request );
+  auto* requestWindow = new EmperrorRequestWindow(parent, request);
   if( mayExec )
   {
-    ret->setText( _( "##city_have_goods_for_request##") );    
+    requestWindow->setText( _( "##city_have_goods_for_request##") );
   }
-  ret->_d->video = video;
+  requestWindow->setVideo( video );
 
-  return ret;
+  return requestWindow;
 }
 
 EmperrorRequestWindow::~EmperrorRequestWindow() {}
@@ -67,23 +67,17 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::RequestPtr r
 
   setupUI( uiFile );
   setModal();
-  setCenter( parent->center() );
+  moveTo( Widget::parentCenter );
 
   city::request::RqGoodPtr gr = ptr_cast<city::GoodRequest>(request);
   if( gr.isValid() )
   {
-    Label* lbQty;
-    Image* imgIcon;
-    Label* lbInterval;
-    Label* lbTitle;
-    Label* lbText;
-    SmkViewer* smkViewer;
-    GET_WIDGET_FROM_UI( lbQty )
-    GET_WIDGET_FROM_UI( lbText )
-    GET_WIDGET_FROM_UI( imgIcon )
-    GET_WIDGET_FROM_UI( lbInterval )
-    GET_WIDGET_FROM_UI( smkViewer )
-    GET_WIDGET_FROM_UI( lbTitle )
+    INIT_WIDGET_FROM_UI(Label*, lbQty )
+    INIT_WIDGET_FROM_UI(Label*, lbText )
+    INIT_WIDGET_FROM_UI(Image*, imgIcon )
+    INIT_WIDGET_FROM_UI(Label*, lbInterval )
+    INIT_WIDGET_FROM_UI(SmkViewer*, smkViewer )
+    INIT_WIDGET_FROM_UI(Label*, lbTitle )
 
     if( lbQty ) { lbQty->setText( utils::i2str( gr->qty() ) ); }
     if( imgIcon ) { imgIcon->setPicture( good::Helper::picture( gr->goodType() )); }
@@ -143,6 +137,11 @@ void EmperrorRequestWindow::setTitle(const std::string& text)
 bool EmperrorRequestWindow::onEvent(const NEvent& event)
 {
   return Widget::onEvent( event );
+}
+
+void EmperrorRequestWindow::setVideo(const std::string& video)
+{
+  _d->video = video;
 }
 
 void EmperrorRequestWindow::Impl::openEmperrorAdvisor()

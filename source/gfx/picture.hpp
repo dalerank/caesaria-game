@@ -82,6 +82,7 @@ public:
 
   void fill(const NColor& color, Rect rect=Rect() );
   Picture& draw(Picture pic, const Point& point, const Size& size );
+  Picture& draw(Picture pic, const Rect& src, const Rect& dst=Rect());
 
   unsigned int* lock();
   void unlock();

@@ -162,12 +162,12 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
     Rect rect = btnHelp->relativeRect();
     rect += Point( btnHelp->width() + 5, 0 );
     rect.rright() += 60;
-    PushButton& hbtns = add<PushButton>( rect, "Habitants", -1, false, PushButton::whiteBorderUp );
-    CONNECT( &hbtns, onClicked(), this, AboutHouse::_showHbtInfo )
+    auto& btnHabitants = add<PushButton>( rect, "Habitants", -1, false, PushButton::whiteBorderUp );
+    CONNECT( &btnHabitants, onClicked(), this, AboutHouse::_showHbtInfo )
 
-    rect += Point( hbtns.width() + 5, 0 );
-    auto& srvcs = add<PushButton>( rect, "Services", -1, false, PushButton::whiteBorderUp );
-    CONNECT( &srvcs, onClicked(), this, AboutHouse::_showSrvcInfo )
+    rect += Point( btnHabitants.width() + 5, 0 );
+    auto& btnServices = add<PushButton>( rect, "Services", -1, false, PushButton::whiteBorderUp );
+    CONNECT( &btnServices, onClicked(), this, AboutHouse::_showSrvcInfo )
   }
 
   drawHabitants( _house );

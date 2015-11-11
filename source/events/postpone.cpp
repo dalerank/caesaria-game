@@ -110,7 +110,7 @@ PostponeEvent::~PostponeEvent(){}
 void PostponeEvent::_executeIncludeEvents()
 {
   VariantMap actions = _d->options.get( "exec" ).toMap();
-  if( actions.empty() )
+  if( !actions.empty() )
     Dispatcher::instance().load( actions );
 }
 

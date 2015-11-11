@@ -36,6 +36,13 @@ public:
 
   PushButton( Widget* );
 
+  PushButton(Widget* parent,
+              const RectF& rectangle,
+              const std::string& caption="",
+              int id=-1,
+              bool noclip=false,
+              const BackgroundStyle bgstyle=greyBorderLine);
+
   //! constructor
   PushButton( Widget* parent,
               const Rect& rectangle,

@@ -67,8 +67,8 @@ void Pause::_exec(Game& game, unsigned int)
       if( !wdg )
       {
         Size scrSize = rootWidget->size();
-        wdg = new gui::Label( rootWidget, Rect( Point( (scrSize.width() - wdgSize.width())/2, 40 ), wdgSize ),
-                              _("##game_is_paused##"), false, gui::Label::bgWhiteFrame, windowGamePausedId );
+        wdg = &game.gui()->add<gui::Label>( Rect( Point( (scrSize.width() - wdgSize.width())/2, 40 ), wdgSize ),
+                                            _("##game_is_paused##"), false, gui::Label::bgWhiteFrame, windowGamePausedId );
         wdg->setTextAlignment( align::center, align::center );
       }
     }

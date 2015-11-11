@@ -152,7 +152,11 @@ void Fire::handleEvent(NEvent& event)
 
     case mouseLbtnPressed:
     {      
-      _updatePaths();
+      if( d.overlay.underMouse.is<Prefecture>() )
+      {
+        d.overlay.selected = d.overlay.underMouse;
+        _updatePaths();
+      }
     }
     break;
 
@@ -173,11 +177,6 @@ Fire::Fire( Camera& camera, PlayerCityPtr city)
 void Fire::_updatePaths()
 {
   __D_REF(d,Fire)
-  if( d.overlay.underMouse.is<Prefecture>() )
-  {
-    d.overlay.selected = d.overlay.underMouse;
-  }
-
   auto wbuilding = d.overlay.selected.as<Prefecture>();
   if( wbuilding.isValid() )
   {

@@ -149,12 +149,12 @@ void SplashScreen::exitScene(bool showDevText)
          << "If you encounter bugs or crashes please send us a report";
 
     int offset = 0;
-    foreach( it, text )
+    for( const auto& line : text )
     {
-      Rect textRect = textFont.getTextRect( *it, Rect( Point(), _d->textPic.size() ), align::center, align::center );
-      bool defaultColor = ( (*it)[0] != ' ');
+      Rect textRect = textFont.getTextRect( line, Rect( Point(), _d->textPic.size() ), align::center, align::center );
+      bool defaultColor = ( (line)[0] != ' ');
       textFont.setColor( defaultColor ? ColorList::dodgerBlue : ColorList::indianRed );
-      textFont.draw( _d->textPic, *it, textRect.left(), textRect.top() + offset, false, true );
+      textFont.draw( _d->textPic, line, textRect.left(), textRect.top() + offset, false, true );
       offset += 20;
     }
 

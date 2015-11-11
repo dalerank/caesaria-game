@@ -101,7 +101,7 @@ void AboutGranary::showSpecialOrdersWindow()
     pos = absoluteRect().lefttop();
   }
 
-  new GranarySpecialOrdersWindow( parent(), pos, _granary );
+  parent()->add<GranarySpecialOrdersWindow>( pos, _granary );
 }
 
 void AboutGranary::drawGood(good::Product goodType, int col, int paintY)

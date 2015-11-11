@@ -117,6 +117,13 @@ std::set<SmartPtr<Object>> uniques( const std::set<SmartPtr<Parent>>& objects )
   return ret;
 }
 
+template<typename Object>
+void deleteLater( SmartPtr<Object> overlay )
+{
+  if( overlay.isValid() )
+    overlay->deleteLater();
+}
+
 }//end namespace utils
 
 #endif

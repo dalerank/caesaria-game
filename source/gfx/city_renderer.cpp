@@ -85,13 +85,23 @@ public:
   Layers layers;
   Point currentCursorPos;
   Renderer::ModePtr changeCommand;
+  LayerPtr currentLayer;
 
 public:
-  LayerPtr currentLayer;
   void setLayer( int type );
   void resetWalkersAfterTurn();
   void saveSettings();
   void awareExperimental();
+
+  template<typename Class, typename... Args>
+  LayerPtr instanceLayer( Args ... args)
+  {
+    LayerPtr layer( new Class( camera, city, args... ) );
+    layer->drop();
+    layers.push_back( layer );
+
+    return layer;
+  }
 
 public signals:
   Signal1<int> onLayerSwitchSignal;
@@ -114,26 +124,26 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   _d->camera.init( *_d->tilemap, engine->viewportSize() );
   _d->engine = engine;
 
-  addLayer( Layer::create<Simple>( _d->camera, city ) );
-  addLayer( Layer::create<Water>( _d->camera, city ) );
-  addLayer( Layer::create<Fire>( _d->camera, city ) );
-  addLayer( Layer::create<Food>( _d->camera, city ) );
+  _d->instanceLayer<Simple>();
+  _d->instanceLayer<Water>();
+  _d->instanceLayer<Fire>();
+  _d->instanceLayer<Food>();
   addLayer( Health::create( _d->camera, city, citylayer::health ));
   addLayer( Health::create( _d->camera, city, citylayer::doctor ));
   addLayer( Health::create( _d->camera, city, citylayer::hospital ));
   addLayer( Health::create( _d->camera, city, citylayer::barber ));
   addLayer( Health::create( _d->camera, city, citylayer::baths ));
-  addLayer( Religion::create( _d->camera, city ) );
-  addLayer( Damage::create( _d->camera, city ) );
+  _d->instanceLayer<Religion>();
+  _d->instanceLayer<Damage>();
   addLayer( Sentiment::create( _d->camera, city ) );
-  addLayer( Unemployed::create( _d->camera, city ) );
-  addLayer( Layer::create<citylayer::Desirability>( _d->camera, city ) );
-  addLayer( Entertainment::create( _d->camera, city, citylayer::entertainment ) );
-  addLayer( Entertainment::create( _d->camera, city, citylayer::theater ) );
-  addLayer( Entertainment::create( _d->camera, city, citylayer::amphitheater ) );
-  addLayer( Entertainment::create( _d->camera, city, citylayer::colloseum ) );
-  addLayer( Entertainment::create( _d->camera, city, citylayer::hippodrome ) );
-  addLayer( Crime::create( _d->camera, city ) ) ;
+  _d->instanceLayer<Unemployed>();
+  _d->instanceLayer<citylayer::Desirability>();
+  _d->instanceLayer<Entertainment>( citylayer::entertainment );
+  _d->instanceLayer<Entertainment>( citylayer::theater );
+  _d->instanceLayer<Entertainment>( citylayer::amphitheater );
+  _d->instanceLayer<Entertainment>( citylayer::colloseum );
+  _d->instanceLayer<Entertainment>( citylayer::hippodrome );
+  _d->instanceLayer<Crime>();
   addLayer( Destroy::create( *this, city ) );
   addLayer( Tax::create( _d->camera, city ) );
   addLayer( Education::create( _d->camera, city, citylayer::education ) );
@@ -145,7 +155,7 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   addLayer( Aborigens::create( _d->camera, city ) );
   addLayer( MarketAccess::create( _d->camera, city ) );
   addLayer( CommodityTurnover::create( _d->camera, city ) );
-  addLayer( Build::create( *this, city ) );
+  _d->instanceLayer<Build>( this );
   addLayer( Constructor::create( *this, city ) );
 
   DrawOptions& dopts = DrawOptions::instance();

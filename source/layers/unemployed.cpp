@@ -88,14 +88,6 @@ void Unemployed::drawTile(const RenderInfo& rinfo, Tile& tile)
   tile.setRendered();
 }
 
-LayerPtr Unemployed::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new Unemployed( camera, city ) );
-  ret->drop();
-
-  return ret;
-}
-
 void Unemployed::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )

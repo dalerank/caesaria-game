@@ -44,10 +44,8 @@ class BaseSpecialOrdersWindow::Impl
 public:
   Pictures bgPicture;
   GroupBox* gbOrders;
-  Widget* gbOrdersInsideArea;
   Label* lbTitle;
-  PushButton* btnExit;
-  PushButton* btnHelp;
+  Widget* gbOrdersInsideArea;
   PushButton* btnEmpty;
 };
 
@@ -55,20 +53,21 @@ BaseSpecialOrdersWindow::BaseSpecialOrdersWindow( Widget* parent, const Point& p
   : Window( parent, Rect( pos, Size( 510, h ) ), "" ), _d( new Impl )
 {
   // create the title
-  _d->lbTitle = &add<Label>( Rect( 50, 10, width()-50, 10 + 30 ), "", true );
-  _d->lbTitle->setFont( Font::create( FONT_5 ) );
-  _d->lbTitle->setTextAlignment( align::center, align::center );
+  auto& lbTitle = add<Label>( Rect( 50, 10, width()-50, 10 + 30 ), "", true );
+  lbTitle.setFont( Font::create( FONT_5 ) );
+  lbTitle.setTextAlignment( align::center, align::center );
+  _d->lbTitle = &lbTitle;
 
-  _d->btnExit = &add<TexturedButton>( Point( 472, height() - 39 ), Size( 24 ), -1, config::id.menu.exitInf );
-  _d->btnExit->setTooltipText( _("##infobox_tooltip_exit##") );
+  auto& btnExit = add<TexturedButton>( Point( 472, height() - 39 ), Size( 24 ), -1, config::id.menu.exitInf );
+  btnExit.setTooltipText( _("##infobox_tooltip_exit##") );
 
-  _d->btnHelp = &add<TexturedButton>( Point( 14, height() - 39 ), Size( 24 ), -1, config::id.menu.helpInf );
-  _d->btnHelp->setTooltipText( _("##infobox_tooltip_help##") );
+  auto& btnHelp = add<TexturedButton>( Point( 14, height() - 39 ), Size( 24 ), -1, config::id.menu.helpInf );
+  btnHelp.setTooltipText( _("##infobox_tooltip_help##") );
 
-  _d->gbOrders = &add<GroupBox>( Rect( 17, 42, width() - 17, height() - 70), -1, GroupBox::blackFrame );
-  _d->gbOrdersInsideArea = &_d->gbOrders->add<Widget>( -1, Rect( 5, 5, _d->gbOrders->width()-5, _d->gbOrders->height()-5 ) );
+  auto& gbOrders = add<GroupBox>( Rect( 17, 42, width() - 17, height() - 70), -1, GroupBox::blackFrame );
+  _d->gbOrdersInsideArea = &gbOrders.add<Widget>( -1, Rect( 5, 5, gbOrders.width()-5, gbOrders.height()-5 ) );
 
-  CONNECT( _d->btnExit, onClicked(), this, BaseSpecialOrdersWindow::deleteLater );
+  CONNECT( &btnExit, onClicked(), this, BaseSpecialOrdersWindow::deleteLater );
 }
 
 BaseSpecialOrdersWindow::~BaseSpecialOrdersWindow() {}
@@ -112,6 +111,10 @@ bool BaseSpecialOrdersWindow::onEvent( const NEvent& event)
   return Widget::onEvent( event );
 }
 
-void BaseSpecialOrdersWindow::setTitle( const std::string& text ){  _d->lbTitle->setText( text );}
+void BaseSpecialOrdersWindow::setTitle( const std::string& text )
+{
+  if( _d->lbTitle )
+    _d->lbTitle->setText( text );
+}
 
 }//end namespace gui

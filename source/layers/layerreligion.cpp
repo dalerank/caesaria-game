@@ -121,14 +121,6 @@ void Religion::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-LayerPtr Religion::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new Religion( camera, city ) );
-  ret->drop();
-
-  return ret;
-}
-
 Religion::Religion( Camera& camera, PlayerCityPtr city)
   : Info( camera, city, 9 )
 {

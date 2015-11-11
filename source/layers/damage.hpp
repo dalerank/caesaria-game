@@ -26,14 +26,17 @@ namespace citylayer
 class Damage : public Info
 {
 public:
+  Damage( gfx::Camera& camera, PlayerCityPtr city );
   virtual int type() const;
   virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
   virtual void handleEvent(NEvent& event);
-
-  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
+  virtual void afterRender(gfx::Engine& engine);
+  virtual void render(gfx::Engine& engine);
 
 private:
-  Damage( gfx::Camera& camera, PlayerCityPtr city );
+  void _updatePaths();
+
+  __DECLARE_IMPL(Damage)
 };
 
 }//end namespace city
