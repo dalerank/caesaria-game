@@ -61,6 +61,7 @@ public:
   TilePos startTilePos;
   bool kbShift, kbCtrl;
   bool lmbPressed;
+  bool mayBuildInCity;
   bool overdrawBuilding;
   bool borderBuilding;
   bool roadAssignment;
@@ -108,8 +109,8 @@ void Build::_discardPreview()
 
 void Build::_checkPreviewBuild(TilePos pos)
 {
-  __D_IMPL(d,Build);
-  auto command =  d->renderer->mode().as<BuildMode>();
+  __D_REF(d,Build);
+  auto command =  d.renderer->mode().as<BuildMode>();
 
   if (command.isNull())
     return;
@@ -142,17 +143,18 @@ void Build::_checkPreviewBuild(TilePos pos)
     }
   }
 
-  city::AreaInfo areaInfo( _city(), pos, &d->buildTiles );
+  city::AreaInfo areaInfo( _city(), pos, &d.buildTiles );
   if( !walkersOnTile && construction->canBuild( areaInfo ) )
   {
+    d.mayBuildInCity = true;
     Tilemap& tmap = _city()->tilemap();
     Tile *masterTile=0;
-    d->money4Construction += cost;
+    d.money4Construction += cost;
     for (int dj = 0; dj < size.height(); ++dj)
     {
       for (int di = 0; di < size.width(); ++di)
       {
-        Tile& basicTile =  tmap.at( pos + TilePos( di, dj ) );
+        Tile& basicTile = tmap.at( pos + TilePos( di, dj ) );
         Tile* tile = new Tile( basicTile.pos() );  // make a copy of tile
         tile->setEPos( basicTile.epos() );
 
@@ -164,12 +166,13 @@ void Build::_checkPreviewBuild(TilePos pos)
         tile->setPicture( tmap.at( pos + TilePos( di, dj ) ).picture() );
         tile->setMaster( masterTile );
         tile->setOverlay( construction.as<Overlay>() );
-        d->buildTiles.push_back( tile );
+        d.buildTiles.push_back( tile );
       }
     }
   }
   else
   {
+    d.mayBuildInCity = false;
     Tilemap& tmap = _city()->tilemap();
     for (int dj = 0; dj < size.height(); ++dj)
     {
@@ -190,11 +193,11 @@ void Build::_checkPreviewBuild(TilePos pos)
           walkersOnTile = !_city()->walkers( rPos ).empty();
         }
 
-        tile->setPicture( (!walkersOnTile && isConstructible) ? d->btile.green : d->btile.red );
+        tile->setPicture( (!walkersOnTile && isConstructible) ? d.btile.green : d.btile.red );
         tile->setMaster( 0 );
         tile->setFlag( Tile::clearAll, true );
         tile->setOverlay( 0 );
-        d->buildTiles.push_back( tile );
+        d.buildTiles.push_back( tile );
       }
     }
   }
@@ -516,7 +519,7 @@ bool Build::_tryDrawBuildTile(const RenderInfo& rinfo, Tile &tile)
 {
   Impl::CachedTiles& cache = _dfunc()->cachedTiles;
   auto it = cache.find( tile::hash( tile.epos() ) );
-  if( it != cache.end() )
+  if( it != cache.end() && _dfunc()->mayBuildInCity )
   {
     _drawBuildTile( rinfo, it->second );
     return true;
@@ -575,44 +578,44 @@ void Build::drawProminentTile( const RenderInfo& renderInfo, Tile& tile, const i
 
 void Build::render( Engine& engine)
 {
-  __D_IMPL(d,Build);
+  __D_REF(d,Build);
   Layer::render( engine );
 
-  if( ++d->frameCount >= frameCountLimiter)
+  if( ++d.frameCount >= frameCountLimiter)
   {
     _updatePreviewTiles( true );
   }
 
-  d->frameCount %= frameCountLimiter;
+  d.frameCount %= frameCountLimiter;
 
   RenderInfo rinfo = { engine, _camera()->offset() };
-  if( d->overdrawBuilding )
+  if( d.overdrawBuilding || !d.mayBuildInCity)
     _drawBuildTiles( rinfo );
 }
 
 void Build::_initBuildMode()
 {
-  __D_IMPL(_d,Build);
-  auto command = _d->renderer->mode().as<BuildMode>();
+  __D_REF(_d,Build);
+  auto command = _d.renderer->mode().as<BuildMode>();
   Logger::warningIf( !command.isValid(), "LayerBuild: init unknown command" );
 
-  _d->multiBuilding = command.isValid() ? command->flag( LayerMode::multibuild ) : false;
-  _d->roadAssignment = command.isValid() ? command->flag( LayerMode::assign2road ) : false;
-  _d->borderBuilding = command.isValid() ? command->flag( LayerMode::border ) : false;
+  _d.multiBuilding = command.isValid() ? command->flag( LayerMode::multibuild ) : false;
+  _d.roadAssignment = command.isValid() ? command->flag( LayerMode::assign2road ) : false;
+  _d.borderBuilding = command.isValid() ? command->flag( LayerMode::border ) : false;
 }
 
 void Build::init(Point cursor)
 {
-  __D_IMPL(_d,Build);
+  __D_REF(_d,Build);
   Layer::init( cursor );
 
-  _d->lastTilePos = tilemap::invalidLocation();
-  _d->startTilePos = tilemap::invalidLocation();
-  _d->readyForExit = false;
-  _d->kbShift = false;
-  _d->kbCtrl = false;
+  _d.lastTilePos = tilemap::invalidLocation();
+  _d.startTilePos = tilemap::invalidLocation();
+  _d.readyForExit = false;
+  _d.kbShift = false;
+  _d.kbCtrl = false;
 
-  changeLayer( _d->renderer->currentLayer()->type() );
+  changeLayer( _d.renderer->currentLayer()->type() );
 
   DrawOptions::instance().setFlag( DrawOptions::mayChangeLayer, false );
 
@@ -624,27 +627,27 @@ void Build::init(Point cursor)
 
 void Build::beforeRender(Engine& engine)
 {
-  __D_IMPL(_d,Build);
-  _d->overdrawBuilding = DrawOptions::instance().isFlag( DrawOptions::overdrawOnBuild );
-  if( _d->lastLayer.isValid() )
-    _d->lastLayer->beforeRender( engine );
+  __D_REF(_d,Build);
+  _d.overdrawBuilding = DrawOptions::instance().isFlag( DrawOptions::overdrawOnBuild );
+  if( _d.lastLayer.isValid() )
+    _d.lastLayer->beforeRender( engine );
   else
     Layer::beforeRender( engine );
 }
 
 void Build::drawPass(const RenderInfo& rinfo, Tile& tile, Renderer::Pass pass)
 {
-  __D_IMPL(_d,Build);
-  if( _d->lastLayer.isValid() )
-    _d->lastLayer->drawPass( rinfo, tile, pass );
+  __D_REF(_d,Build);
+  if( _d.lastLayer.isValid() )
+    _d.lastLayer->drawPass( rinfo, tile, pass );
   else
     Layer::drawPass( rinfo, tile, pass );
 }
 
 void Build::afterRender(Engine& engine)
 {
-  __D_IMPL(_d,Build);
-  if( _d->needUpdateTiles )
+  __D_REF(_d,Build);
+  if( _d.needUpdateTiles )
   {
     if( !OSystem::isAndroid() )
     {
@@ -655,8 +658,8 @@ void Build::afterRender(Engine& engine)
      _updatePreviewTiles( false );
   }
 
-  if( _d->lastLayer.isValid() )
-    _d->lastLayer->afterRender( engine );
+  if( _d.lastLayer.isValid() )
+    _d.lastLayer->afterRender( engine );
   else
     Layer::afterRender( engine );
 }
@@ -678,7 +681,7 @@ void Build::renderUi(Engine &engine)
 
 void Build::changeLayer(int layer)
 {
-  __D_IMPL(_d,Build);
+  __D_REF(_d,Build);
   if( layer != type() )
   {
     if( layer == citylayer::destroyd )
@@ -687,8 +690,8 @@ void Build::changeLayer(int layer)
     }
     else
     {
-      _d->lastLayer = _d->renderer
-                          ? _d->renderer->getLayer( layer )
+      _d.lastLayer = _d.renderer
+                          ? _d.renderer->getLayer( layer )
                           : LayerPtr();
     }
   }
@@ -696,23 +699,15 @@ void Build::changeLayer(int layer)
   _initBuildMode();
 }
 
-LayerPtr Build::create(Renderer& renderer, PlayerCityPtr city)
-{
-  LayerPtr ret( new Build( renderer, city ) );
-  ret->drop();
-
-  return ret;
-}
-
 LayerPtr Build::drawLayer() const { return _dfunc()->lastLayer; }
 Build::~Build() {}
 
-Build::Build( Renderer& renderer, PlayerCityPtr city)
-  : Layer( renderer.camera(), city ),
+Build::Build(Camera& camera, PlayerCityPtr city, Renderer* renderer )
+  : Layer( &camera, city ),
     __INIT_IMPL(Build)
 {
   __D_REF(d,Build);
-  d.renderer = &renderer;
+  d.renderer = renderer;
   d.frameCount = 0;
   d.needUpdateTiles = false;
   d.resForbiden = SETTINGS_STR( forbidenTile );

@@ -155,7 +155,7 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   addLayer( Aborigens::create( _d->camera, city ) );
   addLayer( MarketAccess::create( _d->camera, city ) );
   addLayer( CommodityTurnover::create( _d->camera, city ) );
-  addLayer( Build::create( *this, city ) );
+  _d->instanceLayer<Build>( this );
   addLayer( Constructor::create( *this, city ) );
 
   DrawOptions& dopts = DrawOptions::instance();
