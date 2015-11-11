@@ -76,16 +76,16 @@ bool Patrician::_findNewWay( const TilePos& pos )
   else
   {
     int srvcValue = _d->house->getServiceValue( Service::senate );
-    servicesNeed[ srvcValue ] << object::senate;
+    servicesNeed[ srvcValue ] = object::senate;
 
     srvcValue = _d->house->getServiceValue( Service::library );
-    servicesNeed[ srvcValue ] << object::library;
+    servicesNeed[ srvcValue ] = object::library;
 
     srvcValue = _d->house->getServiceValue( Service::forum );
-    servicesNeed[ srvcValue ] << object::forum;
+    servicesNeed[ srvcValue ] = object::forum;
 
     srvcValue = _d->house->getServiceValue( Service::patrician );
-    servicesNeed[ srvcValue ] << object::house;
+    servicesNeed[ srvcValue ] = object::house;
 
     object::Type type = servicesNeed.begin()->second;
     switch( type )

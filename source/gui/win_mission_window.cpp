@@ -45,10 +45,10 @@ public:
   } signal;
 };
 
-WinMission::WinMission( Widget* p, const std::string& newTitle,
+WinMission::WinMission( Widget* parent, const std::string& newTitle,
                         const std::string& winText,
                         const std::string& speech, bool mayContinue )
-  : Window( p, Rect( 0, 0, 540, 240 ), "" ), _d( new Impl )
+  : Window( parent, Rect( 0, 0, 540, 240 ), "" ), _d( new Impl )
 {
   setupUI( ":/gui/winmission.gui" );
 

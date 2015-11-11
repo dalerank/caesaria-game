@@ -66,8 +66,10 @@ void AboutMerchant::_updateExtInfo()
     index=0;
     add<Label>(Rect( Point( 16, _lbBlackFrame()->bottom() + 26 ), Size( 84, 24 ) ), _("##sold##"));
     for( auto& it : mmap )
+    {
       if( it.second > 0 )
         _drawGood( it.first, it.second, index++, _lbBlackFrame()->bottom() + 26 );
+    }
   }
   break;
 

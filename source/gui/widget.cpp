@@ -190,8 +190,8 @@ void Widget::setGeometry(float left, float top, float rigth, float bottom)
   setGeometry( RectF( left, top, rigth, bottom ) );
 }
 
-Rect Widget::absoluteRect() const { return _dfunc()->rect.absolute;}
-Rect Widget::absoluteClippingRect() const{ return _dfunc()->rect.clipping;}
+Rect Widget::absoluteRect() const { return _dfunc()->rect.absolute; }
+Rect Widget::absoluteClippingRect() const{ return _dfunc()->rect.clipping; }
 
 void Widget::setNotClipped( bool noClip )
 {

@@ -38,35 +38,27 @@ namespace gui
 namespace messagebox
 {
 
-class Popup::Impl
-{
-public:
-  PushButton* btnExit;
-  PushButton* btnHelp; 
-  Label* lbText;
-};
-
 Popup::Popup( Widget* parent, const std::string& title,
-                                  const std::string& text,
-                                  const DateTime& time,
-                                  const std::string& receiver, int id )
-  : Window( parent, Rect( 0, 0, 590, 320  ), "", id ), _d( new Impl )
+                              const std::string& text,
+                              const DateTime& time,
+                              const std::string& receiver, int id )
+  : Window( parent, Rect( 0, 0, 590, 320  ), "", id )
 {
   setupUI( ":/gui/popupmessage.bui" );
   setCenter( parent->center() );
   
   INIT_WIDGET_FROM_UI(Label*, lbTitle )
-  GET_DWIDGET_FROM_UI( _d, btnExit )
-  GET_DWIDGET_FROM_UI( _d, btnHelp )
+  INIT_WIDGET_FROM_UI(PushButton*, btnExit )
+  //GET_DWIDGET_FROM_UI( _d, btnHelp )
   INIT_WIDGET_FROM_UI(Label*, lbTime )
   INIT_WIDGET_FROM_UI(Label*, lbReceiver )
-  GET_DWIDGET_FROM_UI( _d, lbText  )
+  INIT_WIDGET_FROM_UI(Label*, lbText  )
 
   if( lbTitle ) lbTitle->setText( title );
   if( lbTime ) lbTime->setText( utils::date2str( time, true ) );
   if( lbReceiver ) lbReceiver->setText( receiver );
 
-  CONNECT( _d->btnExit, onClicked(), this, Popup::deleteLater );
+  CONNECT( btnExit, onClicked(), this, Popup::deleteLater );
 }
 
 void Popup::draw(gfx::Engine& painter )
@@ -79,7 +71,7 @@ void Popup::draw(gfx::Engine& painter )
 
 Popup* Popup::information(Widget* parent, const std::string& title, const std::string& text, const DateTime& time)
 {
-  return new Popup( parent, title, text, time );
+  return &parent->add<Popup>( title, text, time );
 }
 
 }//end namespace messagebox

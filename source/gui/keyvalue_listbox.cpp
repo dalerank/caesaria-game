@@ -40,10 +40,10 @@ KeyValueListBox::KeyValueListBox(Widget* parent, const Rect& rectangle, int id)
 ListBoxItem& KeyValueListBox::addItem(const std::string& keyValue, Font font, const int color)
 {
   StringArray items = utils::split( keyValue, "][" );
-  foreach( it, items )
+  for( auto& it : items )
   {
-    *it = utils::trim( *it, "]" );
-    *it = utils::trim( *it, "[" );
+    it = utils::trim( it, "]" );
+    it = utils::trim( it, "[" );
   }
   ListBoxItem& item = addItem( items.valueOrEmpty( 0 ), items.valueOrEmpty( 1 ), font, color );
 

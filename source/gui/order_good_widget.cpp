@@ -71,7 +71,7 @@ protected:
   void _updateText()
   {
     _step = _step % 4;
-    setText( _step == 0 ? "Any" : utils::format( 0xff, "%d/4", _step ) );
+    setText( _step == 0 ? "Any" : fmt::format( "{}/4", _step ) );
   }
 
   //! when some mouse button clicked
@@ -89,7 +89,7 @@ protected:
   Signal1<float> _onChangeSignal;
 };
 
-gui::OrderGoodWidget::OrderGoodWidget(Widget* parent, int index, good::Product good, good::Store& storage)
+OrderGoodWidget::OrderGoodWidget(Widget* parent, int index, good::Product good, good::Store& storage)
   : Label( parent, Rect( Point( 0, 25 ) * index, Size( parent->width(), 25 ) ), "" ),
     _storage( storage )
 {
@@ -129,13 +129,13 @@ void OrderGoodWidget::draw(Engine& painter)
   painter.draw( goodIcon, absoluteRect().righttop() - Point( 35, 0 ), &absoluteClippingRectRef() );
 }
 
-void gui::OrderGoodWidget::changeCapacity(float fillingPercentage)
+void OrderGoodWidget::changeCapacity(float fillingPercentage)
 {
   int storeCap = _storage.capacity();
   _storage.setCapacity( _type, storeCap * fillingPercentage );
 }
 
-void gui::OrderGoodWidget::updateBtnText()
+void OrderGoodWidget::updateBtnText()
 {
   good::Orders::Order rule = _storage.getOrder( _type );
   if( rule > good::Orders::none )
@@ -149,7 +149,7 @@ void gui::OrderGoodWidget::updateBtnText()
   _btnChangeRule->setText( _(ruleName[ rule ]) );
 }
 
-void gui::OrderGoodWidget::changeRule()
+void OrderGoodWidget::changeRule()
 {
   good::Orders::Order rule = _storage.getOrder( _type );
   _storage.setOrder( _type, good::Orders::Order( (rule+1) % (good::Orders::none)) );

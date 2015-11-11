@@ -76,9 +76,10 @@ AboutSenate::AboutSenate(Widget* parent, PlayerCityPtr city, const Tile& tile )
   add<Label>( Rect( lb.leftbottom(), lbSize ), taxThisYearStr );
 
   add<Label>( Rect( 60, 215, 60 + 300, 215 + 24 ), _("##visit_rating_advisor##") );
-  TexturedButton* btnAdvisor = new TexturedButton( this, Point( 350, 215 ), Size(28), advisorBtnId, 289 );
-  CONNECT( btnAdvisor, onClicked(), this, AboutSenate::_showRatingAdvisor );
-  CONNECT( btnAdvisor, onClicked(), this, AboutSenate::deleteLater );
+
+  TexturedButton& btnAdvisor = add<TexturedButton>( Point( 350, 215 ), Size(28), advisorBtnId, 289 );
+  CONNECT( &btnAdvisor, onClicked(), this, AboutSenate::_showRatingAdvisor );
+  CONNECT( &btnAdvisor, onClicked(), this, AboutSenate::deleteLater );
 }
 
 AboutSenate::~AboutSenate() {}
@@ -94,6 +95,6 @@ void AboutSenate::_showRatingAdvisor()
   events::dispatch<ShowAdvisorWindow>( true, advisor::ratings );
 }
 
-}
+}//end namespace infobox
 
 }//end namespace gui

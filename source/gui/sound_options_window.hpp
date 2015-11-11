@@ -32,12 +32,12 @@ namespace dialog
 class SoundOptions : public Window
 {
 public:
+  typedef enum { applyId=1001, closeId } BtnID;
   SoundOptions( Widget* parent );
 
   //! Destructor
   virtual ~SoundOptions(void);
 
-  virtual bool onEvent(const NEvent &event);
 
 public signals:
   Signal2<audio::SoundType,audio::Volume>& onChange();
@@ -48,6 +48,7 @@ public slots:
   void update(audio::SoundType type, audio::Volume value );
 
 private:
+  virtual bool _onButtonClicked(Widget *sender);
   class Impl;
   ScopedPtr< Impl > _d;
 };

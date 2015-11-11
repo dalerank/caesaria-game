@@ -89,7 +89,7 @@ void SenatePopupInfo::draw( const Point& cursorPos, gfx::Engine& painter, Senate
       _d->updateRatings( senate );
     }
 
-    Rect screen( Point( 0, 0), painter.screenSize() );
+    Rect screen( Point(0, 0), painter.screenSize() );
     Rect rect( cursorPos, _d->background.size() );
 
     rect.constrainTo( screen );
