@@ -39,7 +39,6 @@
 #include "core/variant_list.hpp"
 #include <SDL_ttf.h>
 
-
 #ifndef CAESARIA_PLATFORM_WIN
   #define GL_GLEXT_PROTOTYPES
 #endif
