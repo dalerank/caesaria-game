@@ -1,5 +1,6 @@
 {
   indigene : ":/gfx/pics_indigene.zip"
+  etruscan : ":/gfx/pics_etruscan.zip"
   sounds : ":/audio/wavs_buildings.zip"
   game_sounds : ":/audio/wavs_game.zip"
   gui  : ":/gfx/pics_gui.zip"
