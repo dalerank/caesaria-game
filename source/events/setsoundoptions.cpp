@@ -94,6 +94,7 @@ void ChangeSoundOptions::_exec(Game& game, unsigned int)
   Engine& ae = Engine::instance();
 
   CONNECT( dialog, onChange(), model,  Model::set )
+  CONNECT( dialog, onApply(),  model,  Model::apply )
   CONNECT( dialog, onClose(),  model,  Model::restore )
   CONNECT( dialog, onChange(), &ae,    Engine::setVolume )
 

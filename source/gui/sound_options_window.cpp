@@ -65,7 +65,7 @@ SoundOptions::SoundOptions(Widget* parent)
 
   auto widgets = findChildren<SpinBox*>( true );
   for( auto wdg : widgets )
-    CONNECT( wdg, onChangeA(), _d.data(), Impl::resolveChange )
+    CONNECT( wdg, onChangeA(), _d.data(), Impl::resolveChange )  
 }
 
 SoundOptions::~SoundOptions( void ) {}
