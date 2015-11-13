@@ -33,9 +33,6 @@ protected:
   bool _tryAttack();
 
   ChastenerElephant( PlayerCityPtr city );
-
-  class Impl;
-  ScopedPtr<Impl> _d;
 };
 
 #endif //_CAESARIA_CHASTENER_ELEPHANT_INCLUDE_H_

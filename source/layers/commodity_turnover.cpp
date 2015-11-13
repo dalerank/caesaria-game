@@ -44,13 +44,8 @@ public:
   } overlay;
 
   DateTime lastUpdate;
-  PointsArray points;
-  std::set<const Tile*> peersArea;
-  std::vector<TilesArray> ways;
-
-public:  
-  bool initContiditon( BuildingPtr b1, BuildingPtr b2 );
-  void canAppend(const gfx::Tile* tile, bool& ret);
+  PointsArray points;  
+  std::vector<TilesArray> ways; 
 };
 
 int CommodityTurnover::type() const {  return citylayer::comturnover; }
@@ -125,19 +120,6 @@ void CommodityTurnover::render(Engine& engine)
   _renderPaths( rinfo );
 }
 
-void CommodityTurnover::Impl::canAppend(const gfx::Tile* tile, bool& ret)
-{
-  ret = false;
-  if( tile->getFlag( Tile::tlRoad ) )
-  {
-    ret = true;
-  }
-  else
-  {
-    ret = peersArea.count( tile ) > 0;
-  }
-}
-
 void CommodityTurnover::_updateStorePath()
 {
   BuildingPtr building = _d->overlay.selected.as<Building>();
@@ -149,11 +131,14 @@ void CommodityTurnover::_updateStorePath()
 
     for( auto& item : consumers )
     {
-      bool isOk = _d->initContiditon( building, _city()->getOverlay( item.receiver ).as<Building>() );
+      bool isOk = true;
+      PathwayCondition wayCondition;
+      isOk &= wayCondition.append( building );
+      isOk &= wayCondition.append( _map().overlay( item.receiver ) );
 
       if( isOk )
       {
-        Pathway pathway = PathwayHelper::create( item.sender, item.receiver, makeDelegate( _d.data(), &Impl::canAppend ) );
+        Pathway pathway = PathwayHelper::create( item.sender, item.receiver, wayCondition.byRoads() );
         if( pathway.isValid() )
         {
           _d->ways.push_back( pathway.allTiles() );
@@ -166,39 +151,14 @@ void CommodityTurnover::_updateStorePath()
 
       if( !isOk )
       {
-        OverlayPtr b1 = _city()->getOverlay( item.sender );
-        OverlayPtr b2 = _city()->getOverlay( item.receiver );
+        OverlayPtr b1 = _map().overlay( item.sender );
+        OverlayPtr b2 = _map().overlay( item.receiver );
         Logger::warning( "CommodityTurnover: cant create path from [{},{}]:{} to [{},{}]:{}",
                          item.sender.i(), item.sender.j(), b1.isValid() ? b1->info().name() : "unknown",
                          item.receiver.i(), item.receiver.j(), b2.isValid() ? b2->info().name() : "unknown" );
       }
     }
   }
-}
-
-bool CommodityTurnover::Impl::initContiditon(BuildingPtr b1, BuildingPtr b2)
-{
-  if( b1.isNull() || b2.isNull() )
-  {
-    return false;
-  }
-
-  peersArea.clear();
-  for( auto tile : b1->area() )
-    peersArea.insert( tile );
-
-  for( auto tile : b2->area() )
-    peersArea.insert( tile );
-
-  return true;
-}
-
-LayerPtr CommodityTurnover::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new CommodityTurnover( camera, city ) );
-  ret->drop();
-
-  return ret;
 }
 
 void CommodityTurnover::_renderPaths(const RenderInfo& rinfo)

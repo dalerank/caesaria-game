@@ -44,12 +44,17 @@ public:
   Point offset;
   BalistaPtr catapult;
   bool needResetWays;
+};
 
+struct WallCondition
+{
   void mayPatroling( const Tile* tile, bool& ret )
   {
     FortificationPtr f = tile->overlay<Fortification>();
     ret = ( f.isValid() && f->mayPatrol() );
   }
+
+  TilePossibleCondition byWalls() { return makeDelegate( this, &WallCondition::mayPatroling ); }
 };
 
 Tower::Tower()
@@ -127,6 +132,8 @@ void Tower::_rebuildWays()
   if( enter.empty() )
     return;
 
+  WallCondition condition;
+
   for( int range = Impl::maxPatrolRange; range > 0; range-- )
   {
     TilePos offset( range, range );
@@ -134,11 +141,11 @@ void Tower::_rebuildWays()
     for( auto tile : tiles )
     {
       bool patrolingWall;
-      _d->mayPatroling( tile, patrolingWall );
+      condition.mayPatroling( tile, patrolingWall );
       if( patrolingWall )
       {
         TilePos tpos = enter.front()->pos();
-        Pathway pathway = PathwayHelper::create( tpos, tile->pos(), makeDelegate( _d.data(), &Impl::mayPatroling ) );
+        Pathway pathway = PathwayHelper::create( tpos, tile->pos(), condition.byWalls() );
 
         if( pathway.isValid() )
         {
@@ -232,9 +239,12 @@ Point Tower::offset(const Tile& tile, const Point& subpos) const
 PathwayList Tower::getWays(TilePos start, FortificationList dest)
 {
   PathwayList ret;
+
+  WallCondition condition;
+
   for( auto wall : dest )
   {
-    Pathway tmp = PathwayHelper::create( start, wall->pos(), makeDelegate( _d.data(), &Impl::mayPatroling ) );
+    Pathway tmp = PathwayHelper::create( start, wall->pos(), condition.byWalls() );
     if( tmp.isValid() )
     {    
       ret.push_back( PathwayPtr( new Pathway( tmp ) ) );
@@ -247,7 +257,8 @@ PathwayList Tower::getWays(TilePos start, FortificationList dest)
 
 Pathway Tower::getWay(TilePos start, TilePos stop)
 {
-  return PathwayHelper::create( start, stop, makeDelegate( _d.data(), &Impl::mayPatroling ) );
+  WallCondition condition;
+  return PathwayHelper::create( start, stop, condition.byWalls() );
 }
 
 float Tower::evaluateTrainee(walker::Type traineeType)

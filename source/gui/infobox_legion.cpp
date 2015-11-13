@@ -204,9 +204,9 @@ void AboutLegion::_addAvailalbesFormation()
 
   int index = 0;
   int formationPicId[] = { 33, 34, 30, 31, 29, 28 };
-  foreach( it, formations )
+  for( auto& it : formations )
   {
-    _addFormationButton( index, *it, formationPicId[ *it ] );
+    _addFormationButton( index, it, formationPicId[ it ] );
     index++;
   }
 }

@@ -112,14 +112,6 @@ void MarketAccess::drawTile(const RenderInfo& rinfo, Tile& tile)
   tile.setRendered();
 }
 
-LayerPtr MarketAccess::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new MarketAccess( camera, city ) );
-  ret->drop();
-
-  return ret;
-}
-
 void MarketAccess::handleEvent(NEvent& event)
 {
   __D_REF(d,MarketAccess)
