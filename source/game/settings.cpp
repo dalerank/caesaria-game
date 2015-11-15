@@ -251,6 +251,18 @@ void Settings::setwdir( const std::string& wdirstr )
   _d->options[ savedir ] = Variant( saveDir.toString() );
 }
 
+void Settings::resetIfNeed(char* argv[], int argc)
+{
+  for (int i = 0; i < argc; i++)
+  {
+    if( !strcmp( argv[i], "-resetConfig" ) )
+    {
+      vfs::NFile::remove( SETTINGS_RC_PATH( settingsPath ) );
+      return;
+    }
+  }
+}
+
 void Settings::checkwdir(char* argv[], int argc)
 {
   for (int i = 0; i < (argc - 1); i++)
@@ -259,7 +271,7 @@ void Settings::checkwdir(char* argv[], int argc)
     {
       const char* opts = argv[i+1];
       setwdir( std::string( opts, strlen( opts ) ) );
-      i++;
+      return;
     }
   }
 }

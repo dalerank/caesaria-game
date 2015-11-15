@@ -50,6 +50,7 @@ int main(int argc, char* argv[])
 
   options.setwdir( workdir.toString() );
   options.checkwdir( argv, argc );
+  options.resetIfNeed( argv, argc );
   Logger::registerWriter( Logger::filelog, workdir.toString() );
 
   SimpleLogger LOG("Game");
