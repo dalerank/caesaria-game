@@ -381,6 +381,22 @@ OverlayList Statistic::_Objects::neighbors(OverlayPtr overlay, bool v) const
   return ret;
 }
 
+OverlayList Statistic::_Objects::neighbors(const TilePos& pos) const
+{
+  TilePos start = pos - gfx::tilemap::unitLocation();
+  TilePos stop = pos  + gfx::tilemap::unitLocation();
+  OverlayList ret;
+  gfx::TilesArray tiles = _parent.rcity.tilemap().rect( start, stop );
+  for( auto tile : tiles )
+  {
+    OverlayPtr ov = tile->overlay();
+    if( ov.isValid() && !ret.contain( ov ) )
+      ret.push_back( ov );
+  }
+
+  return ret;
+}
+
 unsigned int Statistic::_Workers::worklessPercent() const
 {
   return math::percentage( workless(), available() );

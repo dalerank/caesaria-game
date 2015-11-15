@@ -41,30 +41,23 @@ public:
   unsigned int birthTime;
 };
 
-MarketKid::MarketKid(PlayerCityPtr city, MarketBuyerPtr lady )
+MarketKid::MarketKid(PlayerCityPtr city)
   : Human( city, walker::marketKid ), _d( new Impl )
 {
   _d->delay = 0;
 
   _d->birthTime = 0;
   _d->basket.setCapacity( defaultCapacity );
-
-  if( lady.isValid() )
-  {
-    setPos( lady->pos() );
-    setPathway( lady->pathway() );
-  }
 }
 
 void MarketKid::setDelay( int delay ) {  _d->delay = delay; }
 
-void MarketKid::send2City( MarketPtr destination )
+void MarketKid::send2City( MarketPtr market )
 {
-  if( destination.isValid() )
+  if( market.isValid() )
   {
-    _d->marketPos = destination->pos();
-    _pathway().move( Pathway::reverse );
-    _centerTile();
+    _d->marketPos = market->pos();
+    market->addWalker( this );
     attach();
   }
   else
