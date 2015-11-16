@@ -131,13 +131,7 @@ void PictureInfoBank::Impl::setOne(const std::string& preffix, const int index, 
 Point PictureInfoBank::getOffset(const std::string& resource_name)
 {
   Impl::PictureInfoMap::iterator it = _d->data.find( Hash( resource_name ) );
-  if (it == _d->data.end())
-  {
-    return Point();
-    // THROW("Invalid resource name: " << resource_name);
-  }
-
-  return (*it).second;
+  return it != _d->data.end() ? it->second : Point();
 }
 
 void PictureInfoBank::setOffset(const std::string& preffix, const int index, const Point& data)

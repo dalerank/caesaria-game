@@ -313,28 +313,27 @@ void Settings::checkC3present()
   std::string c3path = _d->options[ c3gfx ].toString();
   bool useOldGraphics = !c3path.empty() || KILLSWITCH(oldgfx);
 
-  typedef struct { std::string key; std::string value; } kv;
-  const kv items[] = {
-                       {houseModel, "house"},
-                       {constructionModel, "construction"},
-                       {citiesModel, "cities"},
-                       {climateModel, "climateModel"},
-                       {walkerModel, "walker"},
-                       {animationsModel, "animations"},
-                       {empireObjectsModel, "empire_objects"},
-                       {simpleAnimationModel, "basic_animations"},
-                       {cartsModel, "carts"},
-                       {worldModel, "worldmap"},
-                       {buildMenuModel, "build_menu"},
-                       {soundAlias, "sounds"},
-                       {videoAlias, "videos"},
-                       {pic_offsets, "offsets"},
-                       {"", ""} };
+  std::map<std::string,std::string> items = {
+                                                   {houseModel,        "house"},
+                                                   {constructionModel, "construction"},
+                                                   {citiesModel,       "cities"},
+                                                   {climateModel,      "climateModel"},
+                                                   {walkerModel,       "walker"},
+                                                   {animationsModel,   "animations"},
+                                                   {empireObjectsModel,"empire_objects"},
+                                                   {simpleAnimationModel,"basic_animations"},
+                                                   {cartsModel,        "carts"},
+                                                   {worldModel,        "worldmap"},
+                                                   {buildMenuModel,    "build_menu"},
+                                                   {soundAlias,        "sounds"},
+                                                   {videoAlias,        "videos"},
+                                                   {pic_offsets,       "offsets"},
+                                                  };
 
   if( useOldGraphics )
   {
-    for( int index=0; !items[index].key.empty(); index++ )
-      _d->options[ items[index].key ] = items[ index ].value + ".c3";
+    for( auto& item : items )
+      item.second += ".c3";
 
     _d->options[ forbidenTile        ] = Variant( std::string( "org_land" ) );
     _d->options[ titleResource       ] = Variant( std::string( "title" ) );
@@ -342,8 +341,8 @@ void Settings::checkC3present()
   }
   else
   {
-    for( int index=0; !items[index].key.empty(); index++ )
-      _d->options[ items[index].key ] = items[ index ].value + ".model";
+    for( auto& item : items )
+      item.second += ".model";
 
     _d->options[ forbidenTile        ] = Variant( std::string( "oc3_land" ) );
     _d->options[ titleResource       ] = Variant( std::string( "titlerm" ) );

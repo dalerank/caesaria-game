@@ -183,7 +183,16 @@ void CommodityTurnover::handleEvent(NEvent& event)
 
     case mouseLbtnPressed:
     {
-      _d->overlay.selected = _d->overlay.current;
+      if( _d->overlay.current.isValid() )
+      {
+        object::Group group = _d->overlay.current->group();
+
+        if( group == object::group::industry ||
+            group == object::group::obtain ||
+            group == object::group::food ||
+            group == object::group::trade )
+          _d->overlay.selected = _d->overlay.current;
+      }
     }
     break;
 

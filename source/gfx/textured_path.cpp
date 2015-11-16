@@ -41,8 +41,7 @@ struct TexturedPathConfig
                                             {ColorList::orange,120},
                                             {ColorList::pink,140},
                                             {ColorList::lightSlateGray,160},
-                                            {ColorList::yellow,180}
-                                          };
+                                            {ColorList::yellow,180} };
 
   std::map<unsigned int,Picture> cache;
   const Picture& getpic( const NColor& color, int direction )
@@ -72,8 +71,18 @@ void TexturedPath::draw(const Pathway& way, const RenderInfo& rinfo, NColor colo
 void TexturedPath::draw(const TilesArray& tiles, const RenderInfo& rinfo, NColor color)
 {
   static TexturedPathConfig config;
+  static Point offset;
 
-  Point offset( 0 /*tilemap::cellSize().width()*/, 0 );
+  if( offset.x() == 0 )
+  {
+    Picture pic = config.getpic( ColorList::red, 1 );
+    if( pic.width() < gfx::tilemap::cellPicSize().width() )
+    {
+      offset = Point( (gfx::tilemap::cellPicSize().width() - pic.width()) / 2,
+                      gfx::tilemap::cellPicSize().height() / 2 - pic.height() * 1.5 );
+    }
+  }
+
   if( tiles.size() > 1 )
   {
     for( unsigned int step=0; step < tiles.size()-1; step++ )
