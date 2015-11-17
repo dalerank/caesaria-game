@@ -314,40 +314,40 @@ void Settings::checkC3present()
   bool useOldGraphics = !c3path.empty() || KILLSWITCH(oldgfx);
 
   std::map<std::string,std::string> items = {
-                                                   {houseModel,        "house"},
-                                                   {constructionModel, "construction"},
-                                                   {citiesModel,       "cities"},
-                                                   {climateModel,      "climateModel"},
-                                                   {walkerModel,       "walker"},
-                                                   {animationsModel,   "animations"},
-                                                   {empireObjectsModel,"empire_objects"},
-                                                   {simpleAnimationModel,"basic_animations"},
-                                                   {cartsModel,        "carts"},
-                                                   {worldModel,        "worldmap"},
-                                                   {buildMenuModel,    "build_menu"},
-                                                   {soundAlias,        "sounds"},
-                                                   {videoAlias,        "videos"},
-                                                   {pic_offsets,       "offsets"},
-                                                  };
+                                              {houseModel,        "house"},
+                                              {constructionModel, "construction"},
+                                              {citiesModel,       "cities"},
+                                              {climateModel,      "climateModel"},
+                                              {walkerModel,       "walker"},
+                                              {animationsModel,   "animations"},
+                                              {empireObjectsModel,"empire_objects"},
+                                              {simpleAnimationModel,"basic_animations"},
+                                              {cartsModel,        "carts"},
+                                              {worldModel,        "worldmap"},
+                                              {buildMenuModel,    "build_menu"},
+                                              {soundAlias,        "sounds"},
+                                              {videoAlias,        "videos"},
+                                              {pic_offsets,       "offsets"},
+                                            };
 
+  std::string ext;
   if( useOldGraphics )
   {
-    for( auto& item : items )
-      item.second += ".c3";
-
+    ext = ".c3";
     _d->options[ forbidenTile        ] = Variant( std::string( "org_land" ) );
     _d->options[ titleResource       ] = Variant( std::string( "title" ) );
     _d->options[ cellw ] = 30;
   }
   else
   {
-    for( auto& item : items )
-      item.second += ".model";
-
+    ext = ".model";
     _d->options[ forbidenTile        ] = Variant( std::string( "oc3_land" ) );
     _d->options[ titleResource       ] = Variant( std::string( "titlerm" ) );
     _d->options[ cellw ] = 60;
   }
+
+  for( auto& item : items )
+    _d->options[ item.first ] = item.second + ext;
 }
 
 void Settings::changeSystemLang(const std::string& newLang)

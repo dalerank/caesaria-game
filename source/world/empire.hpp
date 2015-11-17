@@ -89,7 +89,6 @@ private:
 class EmpireHelper 
 {
 public:
-  static unsigned int getTradeRouteOpenCost( EmpirePtr empire, const std::string& start, const std::string& stop );
   static float governorSalaryKoeff( CityPtr city );
   static GovernorRanks ranks();
   static GovernorRank getRank(GovernorRank::Level level);

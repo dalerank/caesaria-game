@@ -373,11 +373,11 @@ void EmpireMapWindow::Impl::createTradeRoute()
   if( currentCity != 0 )
   {
     world::EmpirePtr empire = city->empire();
-    world::TraderoutePtr route = empire->troutes().create( city->name(), currentCity->name() );
+    world::TraderoutePtr route = empire->createTradeRoute( city->name(), currentCity->name() );
 
     if( city.isValid() && route.isValid() && route->isSeaRoute() )
     {
-      unsigned int cost = world::EmpireHelper::getTradeRouteOpenCost( empire, city->name(), currentCity->name() );
+      unsigned int cost = empire->troutes().getRouteOpenCost( city->name(), currentCity->name() );
       events::dispatch<Payment>( econ::Issue::sundries, -(int)cost );
 
       DockList docks = city->statistic().objects.find<Dock>( object::dock );
@@ -440,7 +440,7 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   PushButton& btnOpenTrade = gbox->add<PushButton>( Rect( startDraw + startButton, Size( 400, 20 ) ),
                                                     "", -1, false, PushButton::blackBorderUp );
 
-  unsigned int routeOpenCost = world::EmpireHelper::getTradeRouteOpenCost( empire, city->name(), currentCity->name() );
+  unsigned int routeOpenCost = empire->troutes().getRouteOpenCost( city->name(), currentCity->name() );
 
   btnOpenTrade.setText( utils::format( 0xff, "%d %s", routeOpenCost, _("##dn_for_open_trade##")));
 
@@ -493,7 +493,8 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
 void EmpireMapWindow::Impl::resetInfoPanel()
 {
   Widget::Widgets childs = gbox->children();
-  for( auto child : childs ) { child->deleteLater(); }
+  for( auto child : childs )
+    child->deleteLater();
 }
 
 void EmpireMapWindow::Impl::showOpenRouteRequestWindow()
@@ -594,9 +595,8 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
 #ifdef DEBUG
     {
       std::string text = _d->lbTitle->text();
-      _d->lbTitle->setText( text + utils::format( 0xff, " [%d,%d]",
-                                                  - _d->offset.x() + _d->drag.start.x(),
-                                                  - _d->offset.y() + _d->drag.start.y() ) );
+      Point rpoint = -_d->offset + _d->drag.start;
+      _d->lbTitle->setText( text + fmt::format( " [{},{}]", rpoint.x(), rpoint.y() ) );
     }
 #endif
     break;
@@ -669,7 +669,7 @@ void EmpireMapWindow::_changePosition()
     world::EmpirePtr empire = _d->city->empire();
     world::TraderouteList routes = empire->troutes().all();
 
-    for( auto& route : routes )
+    for( auto route : routes )
     {
       if( route->containPoint( -_d->offset + cursorPos, 4 ) )
       {
