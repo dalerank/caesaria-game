@@ -28,6 +28,7 @@
 #include "core/gettext.hpp"
 #include "game/gamedate.hpp"
 #include "core/utils.hpp"
+#include "core/color_list.hpp"
 #include "core/logger.hpp"
 #include "objects/entertainment.hpp"
 #include "gfx/textured_path.hpp"
@@ -47,7 +48,7 @@ public:
   } overlay;
 
   DateTime lastUpdate;
-  std::vector<TilesArray> ways;
+  std::vector<ColoredWay> ways;
   std::set<object::Type> flags;
   int type;
 };
@@ -203,8 +204,8 @@ void Entertainment::render(Engine& engine)
   Info::render( engine );
 
   RenderInfo rinfo{ engine, _camera()->offset() };
-  for( auto& tiles : _d->ways )
-    TexturedPath::draw( tiles, rinfo );
+  for( auto& item : _d->ways )
+    TexturedPath::draw( item.tiles, rinfo, item.color, item.offset );
 }
 
 void Entertainment::afterRender(Engine& engine)
@@ -223,7 +224,7 @@ void Entertainment::_updatePaths()
     _d->ways.clear();
     const WalkerList& walkers = entBuilding->walkers();
     for( auto walker : walkers )
-      _d->ways.push_back( walker->pathway().allTiles() );
+      _d->ways.push_back( ColoredWay{ walker->pathway().allTiles(), ColorList::red, Point( 5, 0 ) } );
 
     const EntertainmentBuilding::IncomeWays& incomes = entBuilding->incomes();
     for( const auto& way : incomes )
@@ -238,7 +239,7 @@ void Entertainment::_updatePaths()
         Pathway pathway = PathwayHelper::create( way.base, way.destination, condition.byRoads() );
         if( pathway.isValid() )
         {
-          _d->ways.push_back( pathway.allTiles() );
+          _d->ways.push_back( ColoredWay{ pathway.allTiles(), ColorList::blue, Point( -5, 0 ) } );
         }
         else
         {

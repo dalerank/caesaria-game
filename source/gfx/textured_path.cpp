@@ -62,13 +62,13 @@ struct TexturedPathConfig
 
 }
 
-void TexturedPath::draw(const Pathway& way, const RenderInfo& rinfo, NColor color )
+void TexturedPath::draw(const Pathway& way, const RenderInfo& rinfo, NColor color, const Point& doff )
 {
   const TilesArray& tiles = way.allTiles();
-  draw( tiles, rinfo, color );
+  draw( tiles, rinfo, color, doff );
 }
 
-void TexturedPath::draw(const TilesArray& tiles, const RenderInfo& rinfo, NColor color)
+void TexturedPath::draw(const TilesArray& tiles, const RenderInfo& rinfo, NColor color, const Point& doff)
 {
   static TexturedPathConfig config;
   static Point offset;
@@ -81,7 +81,7 @@ void TexturedPath::draw(const TilesArray& tiles, const RenderInfo& rinfo, NColor
       offset = Point( (gfx::tilemap::cellPicSize().width() - pic.width()) / 2,
                       gfx::tilemap::cellPicSize().height() / 2 - pic.height() * 1.5 );
     }
-  }
+  }    
 
   if( tiles.size() > 1 )
   {
@@ -137,7 +137,7 @@ void TexturedPath::draw(const TilesArray& tiles, const RenderInfo& rinfo, NColor
       default: index = 0;
       }
 
-      rinfo.engine.draw( config.getpic( color, index ), tiles[ step ]->mappos() + rinfo.offset + offset );
+      rinfo.engine.draw( config.getpic( color, index ), tiles[ step ]->mappos() + rinfo.offset + offset + doff );
     }
 
     int lenght = tiles.size();
@@ -152,7 +152,7 @@ void TexturedPath::draw(const TilesArray& tiles, const RenderInfo& rinfo, NColor
     case direction::east:  index = 8;  break;
     default: index = 0;
     }
-    rinfo.engine.draw( config.getpic( color, index ), tiles.back()->mappos() + rinfo.offset + offset );
+    rinfo.engine.draw( config.getpic( color, index ), tiles.back()->mappos() + rinfo.offset + offset + doff );
   }
 }
 
