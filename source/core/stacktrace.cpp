@@ -153,7 +153,7 @@ static BOOL CALLBACK EnumModules(LPSTR moduleName, DWORD baseOfDll, PVOID userCo
 static LONG CALLBACK ExceptionHandler(LPEXCEPTION_POINTERS e)
 {
 	// Prologue.
-	Logger::warning("CaesarIA %d has crashed.", CAESARIA_BUILD_NUMBER );
+  Logger::warning("CaesarIA {} has crashed.", CAESARIA_BUILD_NUMBER );
 	// Initialize IMAGEHLP.DLL.
 	SymInitialize(GetCurrentProcess(), ".", TRUE);
 
@@ -204,10 +204,9 @@ void printstack( bool showMessage, unsigned int starting_frame, unsigned int max
   if (showMessage)
   {
     std::string file = vfs::Directory::applicationDir().getFilePath("stdout.txt").toString();
-    std::string msg = utils::format( 0xff,
-                                     "CaesarIA has crashed.\n\n"
-                                         "A stacktrace has been written to:\n"
-                                         "%s", file.c_str());
+    std::string msg = fmt::format( "CaesarIA has crashed.\n\n"
+                                   "A stacktrace has been written to:\n"
+                                   "{}", file );
     OSystem::error( "CaesarIA: Unhandled exception", msg );
   }
 
