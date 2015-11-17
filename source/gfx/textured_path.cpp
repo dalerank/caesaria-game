@@ -71,17 +71,14 @@ void TexturedPath::draw(const Pathway& way, const RenderInfo& rinfo, NColor colo
 void TexturedPath::draw(const TilesArray& tiles, const RenderInfo& rinfo, NColor color, const Point& doff)
 {
   static TexturedPathConfig config;
-  static Point offset;
+  Point offset;
 
-  if( offset.x() == 0 )
+  const Picture& pic = config.getpic( ColorList::red, 1 );
+  if( pic.width()+2 < gfx::tilemap::cellPicSize().width() )
   {
-    Picture pic = config.getpic( ColorList::red, 1 );
-    if( pic.width() < gfx::tilemap::cellPicSize().width() )
-    {
-      offset = Point( (gfx::tilemap::cellPicSize().width() - pic.width()) / 2,
-                      gfx::tilemap::cellPicSize().height() / 2 - pic.height() * 1.5 );
-    }
-  }    
+    offset = Point( (gfx::tilemap::cellPicSize().width() - pic.width()) / 2,
+                    gfx::tilemap::cellPicSize().height() / 2 - pic.height() * 1.5 );
+  }
 
   if( tiles.size() > 1 )
   {

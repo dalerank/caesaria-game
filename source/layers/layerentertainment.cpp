@@ -224,7 +224,7 @@ void Entertainment::_updatePaths()
     _d->ways.clear();
     const WalkerList& walkers = entBuilding->walkers();
     for( auto walker : walkers )
-      _d->ways.push_back( ColoredWay{ walker->pathway().allTiles(), ColorList::red, Point( 5, 0 ) } );
+      _d->ways.push_back( ColoredWay{ walker->pathway().allTiles(), ColorList::red, Point( 0, 2 ) } );
 
     const EntertainmentBuilding::IncomeWays& incomes = entBuilding->incomes();
     for( const auto& way : incomes )
@@ -239,7 +239,7 @@ void Entertainment::_updatePaths()
         Pathway pathway = PathwayHelper::create( way.base, way.destination, condition.byRoads() );
         if( pathway.isValid() )
         {
-          _d->ways.push_back( ColoredWay{ pathway.allTiles(), ColorList::blue, Point( -5, 0 ) } );
+          _d->ways.push_back( ColoredWay{ pathway.allTiles(), ColorList::blue, Point( 0, -2 ) } );
         }
         else
         {
