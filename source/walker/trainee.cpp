@@ -93,9 +93,14 @@ void TraineeWalker::setBase(BuildingPtr originBuilding)
       : gfx::tilemap::invalidLocation();
 }
 
+BuildingPtr TraineeWalker::base() const
+{
+  return _map().overlay<Building>( _d->baseLocation );
+}
+
 BuildingPtr TraineeWalker::receiver() const
 {
-  return _map().overlay( _d->destLocation ).as<Building>();
+  return _map().overlay<Building>( _d->destLocation );
 }
 
 void TraineeWalker::_computeWalkerPath( bool roadOnly )

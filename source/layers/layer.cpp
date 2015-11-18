@@ -681,23 +681,33 @@ void Layer::_initialize()
 
 bool Layer::_moveCamera(NEvent &event)
 {
-  __D_IMPL(_d,Layer)
+  __D_REF(_d,Layer)
   bool pressed = event.keyboard.pressed;
-  int moveValue = math::clamp<int>( _d->camera->scrollSpeed()/10, 1, 99 );
+  int moveValue = math::clamp<int>( _d.camera->scrollSpeed()/10, 1, 99 );
 
   moveValue *= ( event.keyboard.shift ? 4 : 1 ) * (pressed ? 1 : 0);
 
   switch( event.keyboard.key )
   {
-  case KEY_UP:    _d->camera->moveUp   ( moveValue ); break;
-  case KEY_DOWN:  _d->camera->moveDown ( moveValue ); break;
-  case KEY_RIGHT: _d->camera->moveRight( moveValue ); break;
-  case KEY_LEFT:  _d->camera->moveLeft ( moveValue ); break;
+  case KEY_UP:    _d.camera->moveUp   ( moveValue ); break;
+  case KEY_DOWN:  _d.camera->moveDown ( moveValue ); break;
+  case KEY_RIGHT: _d.camera->moveRight( moveValue ); break;
+  case KEY_LEFT:  _d.camera->moveLeft ( moveValue ); break;
   default:
       return false;
   }
 
   return true;
+}
+
+Tilemap& Layer::_map() const
+{
+  __D_REF(_d,Layer)
+  if( _d.city.isValid() )
+    return _d.city->tilemap();
+
+  Logger::warning( "!!! WARNING: City is null at Walker::_map()" );
+  return gfx::tilemap::getInvalid();
 }
 
 bool Layer::_isVisibleObject(object::Type ovType)
@@ -712,8 +722,8 @@ bool Layer::_isVisibleObject(object::Type ovType)
 Layer::WalkerTypes& Layer::_visibleWalkers() { return _dfunc()->visible.walkers; }
 int Layer::nextLayer() const{ return _dfunc()->nextLayer; }
 void Layer::destroy() {}
-Camera* Layer::_camera(){ return _dfunc()->camera;}
-PlayerCityPtr Layer::_city(){ return _dfunc()->city;}
+Camera* Layer::_camera(){ return _dfunc()->camera; }
+PlayerCityPtr Layer::_city(){ return _dfunc()->city; }
 void Layer::changeLayer(int type) {}
 void Layer::_setNextLayer(int layer) { _dfunc()->nextLayer = layer;}
 Layer::~Layer(){}

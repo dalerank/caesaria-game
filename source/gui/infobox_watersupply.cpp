@@ -131,7 +131,7 @@ AboutWell::AboutWell(Widget* parent, PlayerCityPtr city, const Tile& tile)
     TilesArea coverageArea = well->coverageArea();
 
     bool haveHouseInArea = false;
-    for( auto& tile : coverageArea )
+    for( auto tile : coverageArea )
     {
       haveHouseInArea |= tile->overlay().is<House>();
     }
@@ -155,7 +155,7 @@ AboutWell::AboutWell(Widget* parent, PlayerCityPtr city, const Tile& tile)
       }
       else
       {
-        auto houses = well->coverageArea().overlays().select<House>();
+        auto houses = well->coverageArea().overlays<House>();
         bool haveLowHealthHouse = false;
         for( auto& house : houses )
         {

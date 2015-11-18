@@ -111,6 +111,7 @@ protected:
   WalkerTypes& _visibleWalkers();
   bool _isVisibleObject( object::Type ovType );
   bool _moveCamera( NEvent& event );
+  gfx::Tilemap& _map() const;
 
   gfx::TilesArray _getSelectedArea( TilePos startPos=TilePos(-1,-1) );
 

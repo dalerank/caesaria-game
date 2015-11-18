@@ -140,19 +140,13 @@ void PictureBank::Impl::destroyUnusableTextures()
     if( it->second <= 0 )
     {
       SDL_DestroyTexture( it->first );
-      txCounters.erase( it++ );
+      it = txCounters.erase( it );
     }
-    else
-    {
-      ++it;
-    }
+    else { ++it; }
   }
 }
 
-void PictureBank::reset()
-{
-
-}
+void PictureBank::reset() {}
 
 void PictureBank::setPicture( const std::string &name, const Picture& pic )
 {
@@ -273,7 +267,7 @@ Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
     return it->second;
   }
 
-  Logger::warning( "PictureBank: Unknown resource {0}", name.c_str() );
+  Logger::warning( "PictureBank: Unknown resource {}", name );
   return Picture::getInvalid();
 }
 

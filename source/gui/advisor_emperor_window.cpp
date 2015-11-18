@@ -75,13 +75,6 @@ namespace {
 class Emperor::Impl
 {
 public:
-  gui::Label* lbEmperorFavour;
-  gui::Label* lbEmperorFavourDesc;
-  gui::Label* lbPost;
-  gui::Label* lbPrimaryFunds;
-  PushButton* btnSendGift;
-  PushButton* btnSend2City;
-  PushButton* btnChangeSalary; 
   bool isRequestsUpdated;
 };
 
@@ -97,7 +90,7 @@ void Emperor::_showChangeSalaryWindow()
   salaryWindow.setRanks( world::EmpireHelper::ranks() );
   salaryWindow.show();
 
-  auto&& btnHelp = salaryWindow.add<TexturedButton>( Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.exitInf );
+  auto& btnHelp = salaryWindow.add<TexturedButton>( Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.exitInf );
   CONNECT( &btnHelp, onClicked(), this, Emperor::_showHelp );
   CONNECT( &salaryWindow, onChangeSalary(), this, Emperor::_changeSalary )
 }
@@ -112,8 +105,8 @@ void Emperor::_showSend2CityWindow()
 
 void Emperor::_showGiftWindow()
 {
-  auto&& dialog = ui()->add<dialog::EmperorGift>( _mayor()->money(),
-                                                  _emperor().lastGiftDate( _city->name() ) );
+  auto& dialog = ui()->add<dialog::EmperorGift>( _mayor()->money(),
+                                                 _emperor().lastGiftDate( _city->name() ) );
   dialog.show();
 
   CONNECT( &dialog, onSendGift(), this, Emperor::_sendGift );
@@ -138,7 +131,7 @@ void Emperor::_updateRequests()
 
   if( requests.empty() )
   {
-    auto&& label = add<Label>( reqsRect, _("##have_no_requests##") );
+    auto& label = add<Label>( reqsRect, _("##have_no_requests##") );
     label.setWordwrap( true );
     label.setTextAlignment( align::upperLeft, align::center );
   }
@@ -149,7 +142,7 @@ void Emperor::_updateRequests()
       if( !(*r)->isDeleted() )
       {
         bool mayExec = (*r)->isReady( _city );
-        auto&& btn = add<RequestButton>( reqsRect.lefttop() + Point( 5, 5 ),
+        auto& btn = add<RequestButton>( reqsRect.lefttop() + Point( 5, 5 ),
                                          std::distance( requests.begin(), r ), *r );
         btn.setTooltipText( _("##request_btn_tooltip##") );
         btn.setEnabled( mayExec );
@@ -178,20 +171,17 @@ Emperor::Emperor( PlayerCityPtr city, Widget* parent, int id )
   Widget::setupUI( ":/gui/emperoropts.gui" );
 
   INIT_WIDGET_FROM_UI( Label*, lbTitle )
+  INIT_WIDGET_FROM_UI( Label*, lbEmperorFavour )
+  INIT_WIDGET_FROM_UI( Label*, lbEmperorFavourDesc  )
+  INIT_WIDGET_FROM_UI( PushButton*, btnSendGift )
+  INIT_WIDGET_FROM_UI( PushButton*, btnSend2City )
+  INIT_WIDGET_FROM_UI( PushButton*, btnChangeSalary )
 
-  GET_DWIDGET_FROM_UI( _d, lbEmperorFavour )
-  GET_DWIDGET_FROM_UI( _d, lbEmperorFavourDesc  )
-  GET_DWIDGET_FROM_UI( _d, lbPost )
-  GET_DWIDGET_FROM_UI( _d, lbPrimaryFunds )
-  GET_DWIDGET_FROM_UI( _d, btnSendGift )
-  GET_DWIDGET_FROM_UI( _d, btnSend2City )
-  GET_DWIDGET_FROM_UI( _d, btnChangeSalary )
+  if( lbEmperorFavour )
+    lbEmperorFavour->setText( fmt::format( "{} {}", _("##advemp_emperor_favour##"), _city->favour() ) );
 
-  if( _d->lbEmperorFavour )
-    _d->lbEmperorFavour->setText( fmt::format( "{0} {1}", _("##advemp_emperor_favour##"), _city->favour() ) );
-
-  if( _d->lbEmperorFavourDesc )
-    _d->lbEmperorFavourDesc->setText( _( _getEmperorFavourStr() ) );
+  if( lbEmperorFavourDesc )
+    lbEmperorFavourDesc->setText( _( _getEmperorFavourStr() ) );
 
   if( lbTitle )
   {
@@ -202,9 +192,9 @@ Emperor::Emperor( PlayerCityPtr city, Widget* parent, int id )
     lbTitle->setText( text );
   }
 
-  CONNECT( _d->btnChangeSalary, onClicked(), this, Emperor::_showChangeSalaryWindow );
-  CONNECT( _d->btnSend2City, onClicked(), this, Emperor::_showSend2CityWindow );
-  CONNECT( _d->btnSendGift, onClicked(), this, Emperor::_showGiftWindow );
+  CONNECT( btnChangeSalary, onClicked(), this, Emperor::_showChangeSalaryWindow );
+  CONNECT( btnSend2City,    onClicked(), this, Emperor::_showSend2CityWindow );
+  CONNECT( btnSendGift,     onClicked(), this, Emperor::_showGiftWindow );
 }
 
 void Emperor::draw(gfx::Engine& painter )

@@ -36,18 +36,19 @@ using namespace gfx;
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::romeChastenerElephant, ChastenerElephant)
 
-class ChastenerElephant::Impl
+struct ElephantWayCondition
 {
-public:
-  void mayMove( const Tile* tile, bool& ret )
+  void tryMove( const Tile* tile, bool& ret )
   {
     BuildingPtr f = tile->overlay<Building>();
     ret = ( tile->isWalkable( true ) || f.isValid() );
   }
+
+  TilePossibleCondition mayMove() { return makeDelegate( this, &ElephantWayCondition::tryMove ); }
 };
 
 ChastenerElephant::ChastenerElephant( PlayerCityPtr city )
-    : EnemySoldier( city, walker::romeChastenerElephant ), _d( new Impl )
+    : EnemySoldier( city, walker::romeChastenerElephant )
 {
   _excludeAttack().clear();
   _excludeAttack() << object::group::disaster
@@ -59,13 +60,15 @@ Pathway ChastenerElephant::_findPathway2NearestConstruction( unsigned int range 
 {
   Pathway ret;
 
+  ElephantWayCondition condition;
+
   for( unsigned int tmpRange=1; tmpRange <= range; tmpRange++ )
   {
     ConstructionList constructions = _findContructionsInRange( tmpRange );
 
     for( auto construction : constructions )
     {
-      ret = PathwayHelper::create( pos(), construction->pos(), makeDelegate( _d.data(), &Impl::mayMove ) );
+      ret = PathwayHelper::create( pos(), construction->pos(), condition.mayMove() );
       if( ret.isValid() )
       {
         return ret;
@@ -79,8 +82,7 @@ Pathway ChastenerElephant::_findPathway2NearestConstruction( unsigned int range 
 bool ChastenerElephant::_tryAttack()
 {
   ConstructionList constructions = _map().getNeighbors( pos() )
-                                       .overlays()
-                                       .select<Construction>();
+                                         .overlays<Construction>();
   for( auto ov : constructions )
   {
     if( ov.isValid() && !_excludeAttack().count( ov->group() ) )

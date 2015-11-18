@@ -252,7 +252,7 @@ void Empire::_initializeCities( vfs::Path filename )
     return;
   }
 
-  for( auto& item : cities )
+  for( const auto& item : cities )
   {
     CityPtr city = ComputerCity::create( this, item.first );
     addCity( city );
@@ -548,26 +548,6 @@ ObjectPtr Empire::findObject(const std::string& name) const
   CityPtr city = findCity( name );
 
   return city.as<Object>();
-}
-
-unsigned int EmpireHelper::getTradeRouteOpenCost( EmpirePtr empire, const std::string& start, const std::string& stop )
-{
-  CityPtr startCity = empire->findCity( start );
-  CityPtr stopCity = empire->findCity( stop );
-
-  if( startCity.isValid() && stopCity.isValid() )
-  {
-    int distance2City = (int)startCity->location().getDistanceFrom( stopCity->location() ); 
-    distance2City = (distance2City / 100 + 1 ) * 200;
-
-    return distance2City;
-  }
-  else
-  {
-    Logger::warning( "!!! WARNING: getTradeRouteOpenCost city not found " + (startCity.isNull() ? start : stop) );
-  }
-
-  return 0;
 }
 
 float EmpireHelper::governorSalaryKoeff(CityPtr city)

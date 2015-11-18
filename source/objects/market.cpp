@@ -155,7 +155,7 @@ void Market::load( const VariantMap& stream)
 bool Market::build(const city::AreaInfo& info)
 {
   bool isOk = ServiceBuilding::build( info );
-  bool isLoadingMode = !info.city->getOption( PlayerCity::forceBuild );
+  bool isLoadingMode = info.city->getOption( PlayerCity::forceBuild ) > 0;
   if( isOk && !isLoadingMode )
   {
     TilePosArray locations = roadside().locations();

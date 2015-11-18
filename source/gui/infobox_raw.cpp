@@ -81,7 +81,7 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
 
   std::string text = rawmb->workersProblemDesc();
   std::string cartInfo = rawmb->cartStateDesc();
-  text = ( utils::format( 0xff, "%s\n%s", _(text), _( cartInfo ) ) );
+  text = ( fmt::format( "{}\n{}", _(text), _( cartInfo ) ) );
 
   if( lbProductivity != NULL )
   {
@@ -104,12 +104,12 @@ void AboutRawMaterial::_showAdvInfo()
   auto miningBuilding = base().as<Factory>();
   if( miningBuilding.isValid() )
   {
-    std::string workerState = utils::format( 0xff, "Damage=%d\nFire=%d\n",
-                                                  (int)miningBuilding->state( pr::damage ),
-                                                  (int)miningBuilding->state( pr::fire ) );
+    std::string workerState = fmt::format( "Damage={}\nFire={}\n",
+                                           (int)miningBuilding->state( pr::damage ),
+                                           (int)miningBuilding->state( pr::fire ) );
 
-    dialog::Dialog* dialog = dialog::Information( ui(), "Information", workerState );
-    dialog->setCenter( ui()->rootWidget()->center() );
+    auto* dialog = dialog::Information( ui(), "Information", workerState );
+    dialog->moveTo( Widget::parentCenter );
   }
 }
 
