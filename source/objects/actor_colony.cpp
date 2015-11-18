@@ -38,7 +38,7 @@ void ActorColony::deliverTrainee()
   auto trainee = Walker::create<TraineeWalker>( _city(), walker::actor );
   trainee->send2City( this );
 
-  addWalker( trainee.object() );
+  addWalker( trainee );
 }
 
 void ActorColony::timeStep(const unsigned long time)

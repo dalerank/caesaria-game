@@ -62,7 +62,7 @@ Point Object::location() const { return _d->location;}
 
 void Object::addObject(ObjectPtr obj)
 {
-  Logger::warning( "WorldObjects: {0} added to {1}", obj->name(), name() );
+  Logger::warning( "WorldObjects: {} added to {}", obj->name(), name() );
 }
 
 void Object::setLocation(const Point& location){  _d->location = location; }

@@ -106,7 +106,7 @@ void AboutWarehouse::showSpecialOrdersWindow()
     pos = absoluteRect().lefttop();
   }
 
-  new WarehouseSpecialOrdersWindow( parent(), pos, _warehouse );
+   parent()->add<WarehouseSpecialOrdersWindow>( pos, _warehouse );
 }
 
 void AboutWarehouse::drawGood(const good::Product& goodType, int col, int paintY )
@@ -116,7 +116,7 @@ void AboutWarehouse::drawGood(const good::Product& goodType, int col, int paintY
 
   // pictures of goods
   const Picture& pic = good::Helper::picture( goodType );
-  std::string outText = utils::format( 0xff, "%d %s", qty / 100, _(goodName) );
+  std::string outText = fmt::format( "{} {}", qty / 100, _(goodName) );
 
   Label& lb = add<Label>( Rect( Point( col * 150 + 15, paintY), Size( 150, 24 ) ) );
   lb.setFont( Font::create( FONT_2 ) );

@@ -204,6 +204,26 @@ TraderouteList TradeRoutes::from( const std::string& begin )
   return ret;
 }
 
+unsigned int TradeRoutes::getRouteOpenCost(const std::string& start, const std::string& stop) const
+{
+  CityPtr startCity = _d->empire->findCity( start );
+  CityPtr stopCity = _d->empire->findCity( stop );
+
+  if( startCity.isValid() && stopCity.isValid() )
+  {
+    int distance2City = (int)startCity->location().getDistanceFrom( stopCity->location() );
+    distance2City = (distance2City / 100 + 1 ) * 200;
+
+    return distance2City;
+  }
+  else
+  {
+    Logger::warning( "!!! WARNING: getTradeRouteOpenCost city not found " + (startCity.isNull() ? start : stop) );
+  }
+
+  return 0;
+}
+
 TraderouteList TradeRoutes::all()
 {
   TraderouteList ret;

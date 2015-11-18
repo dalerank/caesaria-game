@@ -92,7 +92,7 @@ public:
   virtual void setOrder( const good::Product type, const good::Orders::Order order )
   {
     good::Storage::setOrder( type, order );
-    setCapacity( type, (order == good::Orders::reject || order == good::Orders::none ) ? 0 : GranaryStore::maxCapacity );
+    setCapacity( type, (order == good::Orders::reject || order == good::Orders::none) ? 0 : GranaryStore::maxCapacity );
   }
 
   virtual TilePos owner() const { return granary ? granary->pos() : gfx::tilemap::invalidLocation(); }
@@ -105,7 +105,6 @@ class Granary::Impl
 public:
   GranaryStore store;
   Pictures granarySprite;
-  bool devastateThis;
 };
 
 Granary::Granary() : WorkingBuilding( object::granery, Size(3) ), _d( new Impl )
@@ -124,7 +123,6 @@ Granary::Granary() : WorkingBuilding( object::granery, Size(3) ), _d( new Impl )
   _fgPicture( 5 ) = _animation().currentFrame();
   computePictures();
 
-  _d->devastateThis = false;  
   _d->granarySprite.push_back( Picture( ResourceGroup::commerce, 141 ) );
   _d->granarySprite.push_back( Picture::getInvalid() );
 }
@@ -140,6 +138,7 @@ void Granary::timeStep(const unsigned long time)
     _weekUpdate();
     //animate workers need
     _animation().setDelay( 4 + needWorkers() + math::random(2) );
+    _d->store.removeExpired( game::Date::current() );
   }
 }
 

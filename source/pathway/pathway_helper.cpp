@@ -216,3 +216,23 @@ Pathway PathwayHelper::way2border(PlayerCityPtr city, const TilePos& pos)
 
   return Pathway();
 }
+
+bool PathwayCondition::append(OverlayPtr overlay)
+{
+  if( overlay.isNull() )
+    return false;
+
+  for( auto tile : overlay->area() )
+    insert( tile );
+
+  return true;
+}
+
+void PathwayCondition::checkRoads(const Tile* tile, bool& ret)
+{
+  ret = false;
+  if( tile->getFlag( Tile::tlRoad ) )  { ret = true;  }
+  else                                 { ret = count( tile ) > 0; }
+}
+
+TilePossibleCondition PathwayCondition::byRoads() { return makeDelegate( this, &PathwayCondition::checkRoads ); }

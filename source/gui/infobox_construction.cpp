@@ -71,7 +71,7 @@ void AboutConstruction::_setWorkingVisible(bool show)
 {
   if( !_btnToggleWorking && _lbBlackFrame() )
   {
-      Rect btnRect( Point( _lbBlackFrame()->width() - 110, (_lbBlackFrame()->height() - 25)/2 ), Size( 100, 25 ) );
+     Rect btnRect( Point( _lbBlackFrame()->width() - 110, (_lbBlackFrame()->height() - 25)/2 ), Size( 100, 25 ) );
      _btnToggleWorking = &_lbBlackFrame()->add<PushButton>( btnRect, "", -1, false, PushButton::blackBorderUp  );
      _btnToggleWorking->setFont( Font::create( FONT_1 ) );
      _updateWorkingText();

@@ -176,7 +176,7 @@ void CartSupplier::getPictures( Pictures& oPics)
 template< class T >
 TilePos getSupplierDestination2( Propagator &pathPropagator, const object::Type type,
                                  const good::Product what, const int needQty,
-                                 Pathway &oPathWay, long& reservId )
+                                 Pathway &oPathWay, long& reservId, BuildingPtr base )
 {
   SmartPtr< T > res;
 
@@ -185,13 +185,17 @@ TilePos getSupplierDestination2( Propagator &pathPropagator, const object::Type 
   int max_qty = 0;
 
   // select the warehouse with the max quantity of requested goods
-  foreach( pathWayIt, pathWayList )
+  for( auto& pathWayIt : pathWayList )
   {
     // for every warehouse within range
-    BuildingPtr building= pathWayIt->first.as<Building>();
-    PathwayPtr pathWay= pathWayIt->second;
+    BuildingPtr building= pathWayIt.first.as<Building>();
 
-    SmartPtr< T > destBuilding = building.as<T>();
+    if( building == base )
+      continue;
+
+    PathwayPtr pathWay= pathWayIt.second;
+
+    SmartPtr<T> destBuilding = building.as<T>();
     int qty = destBuilding->store().getMaxRetrieve( what );
     if( qty > max_qty )
     {
@@ -232,13 +236,15 @@ void CartSupplier::computeWalkerDestination(BuildingPtr building, const good::Pr
 
   // try get that good from a granary
   _d->storageBuildingPos = getSupplierDestination2<Granary>( pathPropagator, object::granery,
-                                                             type, qty, pathWay, _d->reservationID );
+                                                             type, qty, pathWay, _d->reservationID,
+                                                             building );
 
   if( _d->storageBuildingPos.i() < 0 )
   {
     // try get that good from a warehouse
     _d->storageBuildingPos = getSupplierDestination2<Warehouse>( pathPropagator, object::warehouse,
-                                                                 type, qty, pathWay, _d->reservationID );
+                                                                 type, qty, pathWay, _d->reservationID,
+                                                                 building );
   }
 
   if( _d->storageBuildingPos.i() >= 0 )

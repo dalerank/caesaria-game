@@ -41,8 +41,7 @@ struct TexturedPathConfig
                                             {ColorList::orange,120},
                                             {ColorList::pink,140},
                                             {ColorList::lightSlateGray,160},
-                                            {ColorList::yellow,180}
-                                          };
+                                            {ColorList::yellow,180} };
 
   std::map<unsigned int,Picture> cache;
   const Picture& getpic( const NColor& color, int direction )
@@ -63,17 +62,24 @@ struct TexturedPathConfig
 
 }
 
-void TexturedPath::draw(const Pathway& way, const RenderInfo& rinfo, NColor color )
+void TexturedPath::draw(const Pathway& way, const RenderInfo& rinfo, NColor color, const Point& doff )
 {
   const TilesArray& tiles = way.allTiles();
-  draw( tiles, rinfo, color );
+  draw( tiles, rinfo, color, doff );
 }
 
-void TexturedPath::draw(const TilesArray& tiles, const RenderInfo& rinfo, NColor color)
+void TexturedPath::draw(const TilesArray& tiles, const RenderInfo& rinfo, NColor color, const Point& doff)
 {
   static TexturedPathConfig config;
+  Point offset;
 
-  Point offset( 0 /*tilemap::cellSize().width()*/, 0 );
+  const Picture& pic = config.getpic( ColorList::red, 1 );
+  if( pic.width()+2 < gfx::tilemap::cellPicSize().width() )
+  {
+    offset = Point( (gfx::tilemap::cellPicSize().width() - pic.width()) / 2,
+                    gfx::tilemap::cellPicSize().height() / 2 - pic.height() * 1.5 );
+  }
+
   if( tiles.size() > 1 )
   {
     for( unsigned int step=0; step < tiles.size()-1; step++ )
@@ -128,7 +134,7 @@ void TexturedPath::draw(const TilesArray& tiles, const RenderInfo& rinfo, NColor
       default: index = 0;
       }
 
-      rinfo.engine.draw( config.getpic( color, index ), tiles[ step ]->mappos() + rinfo.offset + offset );
+      rinfo.engine.draw( config.getpic( color, index ), tiles[ step ]->mappos() + rinfo.offset + offset + doff );
     }
 
     int lenght = tiles.size();
@@ -143,7 +149,7 @@ void TexturedPath::draw(const TilesArray& tiles, const RenderInfo& rinfo, NColor
     case direction::east:  index = 8;  break;
     default: index = 0;
     }
-    rinfo.engine.draw( config.getpic( color, index ), tiles.back()->mappos() + rinfo.offset + offset );
+    rinfo.engine.draw( config.getpic( color, index ), tiles.back()->mappos() + rinfo.offset + offset + doff );
   }
 }
 

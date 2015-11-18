@@ -103,13 +103,13 @@ void AboutWorkingBuilding::_showAdvInfo()
     timeText = utils::date2str( time, true );
   }
 
-  std::string workerState = utils::format( 0xff, "Damage=%d\nFire=%d\nService=%s\n",
-                                                  (int)_working->state( pr::damage ),
-                                                  (int)_working->state( pr::fire ),
-                                                  timeText.c_str() );
+  std::string workerState = fmt::format( "Damage={}\nFire={}\nService={}\n",
+                                         (int)_working->state( pr::damage ),
+                                         (int)_working->state( pr::fire ),
+                                         timeText.c_str() );
 
   auto dialog = dialog::Information( ui(), "Information", workerState );
-  dialog->setCenter( ui()->rootWidget()->center() );
+  dialog->moveTo( Widget::parentCenter );
 }
 
 }//end namespace infobox

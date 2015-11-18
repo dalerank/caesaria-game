@@ -44,12 +44,6 @@ static const char* marketLevelName[maxAccessLevel] = {
                                          "##high_market_access##", "##awesome_market_access##"
                                        };
 
-struct ColoredWay
-{
-  NColor color;
-  TilesArray tiles;
-};
-
 class MarketAccess::Impl
 {
 public:
@@ -112,14 +106,6 @@ void MarketAccess::drawTile(const RenderInfo& rinfo, Tile& tile)
   tile.setRendered();
 }
 
-LayerPtr MarketAccess::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new MarketAccess( camera, city ) );
-  ret->drop();
-
-  return ret;
-}
-
 void MarketAccess::handleEvent(NEvent& event)
 {
   __D_REF(d,MarketAccess)
@@ -176,7 +162,7 @@ void MarketAccess::_updatePaths()
     for( auto walker : walkers )
     {
       NColor color = walker.is<MarketBuyer>() ? ColorList::red : ColorList::blue;
-      d.ways.push_back( ColoredWay{ color, walker->pathway().allTiles() } );
+      d.ways.push_back( ColoredWay{ walker->pathway().allTiles(), color } );
     }
   }
 }

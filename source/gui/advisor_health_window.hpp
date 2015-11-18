@@ -41,6 +41,8 @@ private:
    * @brief Calls when player press help button
    */
   void _showHelp();
+  void _updateAdvice( PlayerCityPtr city );
+  void _initUI(PlayerCityPtr c);
 
   class Impl;
   ScopedPtr< Impl > _d;

@@ -58,13 +58,17 @@ public:
   bool cartBackward;
   bool leaveCity;
   float stamina;
+};
 
-public:
-  void mayWalk( const Tile* tile, bool& ret )
+struct EmigrantWayCondition
+{
+  void tryWalk( const Tile* tile, bool& ret )
   {
     HousePtr f = tile->overlay<House>();
     ret = ( tile->isWalkable( true ) || f.isValid() );
-  }  
+  }
+
+  TilePossibleCondition mayWalk() { return makeDelegate( this, &EmigrantWayCondition::tryWalk ); }
 };
 
 Emigrant::Emigrant(PlayerCityPtr city )
@@ -216,6 +220,7 @@ void Emigrant::_append2house( HousePtr house )
 
 bool Emigrant::_checkNearestHouse()
 {
+  EmigrantWayCondition condition;
   for( int k=1; k < 3; k++ )
   {
     TilePos offset( k, k );
@@ -233,7 +238,7 @@ bool Emigrant::_checkNearestHouse()
       int freeRoom = item.second->capacity() - item.second->habitants().count();
       if( freeRoom > 0 )
       {
-        Pathway pathway = PathwayHelper::create( pos(), item.second->pos(), makeDelegate( _d.data(), &Impl::mayWalk ) );
+        Pathway pathway = PathwayHelper::create( pos(), item.second->pos(), condition.mayWalk() );
 
         _updatePathway( pathway );
         go();
