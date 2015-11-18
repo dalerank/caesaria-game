@@ -22,6 +22,7 @@
 #include "game/predefinitions.hpp"
 #include "core/color.hpp"
 #include "render_info.hpp"
+#include "gfx/tilesarray.hpp"
 #include "pathway/pathway.hpp"
 
 namespace gfx { class Camera; class Engine; }
@@ -32,8 +33,15 @@ namespace gfx
 class TexturedPath
 {
 public:
-  static void draw(const Pathway& way, const RenderInfo& rinfo, NColor color=0);
-  static void draw(const TilesArray& tiles, const RenderInfo& rinfo, NColor color=0);
+  static void draw(const Pathway& way, const RenderInfo& rinfo, NColor color=0, const Point& doff=Point());
+  static void draw(const TilesArray& tiles, const RenderInfo& rinfo, NColor color=0, const Point& doff=Point());
+};
+
+struct ColoredWay
+{
+  TilesArray tiles;
+  NColor color;
+  Point offset;
 };
 
 }//end namespace gfx

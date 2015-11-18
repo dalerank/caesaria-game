@@ -36,8 +36,7 @@ void Aborigens::drawTile( const RenderInfo& rinfo, Tile& tile )
 {
   if( tile.overlay().isNull() )
   {
-    drawPass( rinfo, tile, Renderer::ground );
-    drawPass( rinfo, tile, Renderer::groundAnimation );
+    drawLandTile( rinfo, tile );
   }
   else
   {
@@ -74,14 +73,6 @@ void Aborigens::drawTile( const RenderInfo& rinfo, Tile& tile )
   }
 
   tile.setRendered();
-}
-
-LayerPtr Aborigens::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new Aborigens( camera, city ) );
-  ret->drop();
-
-  return ret;
 }
 
 void Aborigens::handleEvent(NEvent& event)

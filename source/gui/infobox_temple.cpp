@@ -72,8 +72,8 @@ AboutTemple::AboutTemple(Widget* parent, PlayerCityPtr city, const Tile& tile )
      bool goodRelation = divn->relation() >= 50;
 
      longDescr = utils::format(0xff, "##%s_%s_info##",
-                                             divn->internalName().c_str(),
-                                             goodRelation ? "goodmood" : "badmood" );
+                                     divn->internalName().c_str(),
+                                     goodRelation ? "goodmood" : "badmood" );
 
      Image& img = add<Image>( Point( 192, 140 ), divn->picture() );
      img.setTooltipText( _(longDescr) );

@@ -31,7 +31,7 @@ public:
   good::Stock& getBasket();
   void setDelay( int delay );
 
-  void send2City( MarketPtr destination );
+  void send2City(MarketPtr market);
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
@@ -44,7 +44,7 @@ protected:
   virtual void _reachedPathway();
 
 private:
-  MarketKid( PlayerCityPtr city, MarketBuyerPtr lady=nullptr );
+  MarketKid( PlayerCityPtr city );
 
   class Impl;
   ScopedPtr< Impl > _d;

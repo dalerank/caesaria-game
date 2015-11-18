@@ -123,6 +123,7 @@ public:
     enum { maxLaborDistance=8 };
 
     OverlayList neighbors( OverlayPtr overlay, bool v ) const;
+    OverlayList neighbors(const TilePos& pos ) const;
     FarmList farms(std::set<object::Type> which=std::set<object::Type>() ) const;
     int laborAccess( WorkingBuildingPtr wb ) const;    
 

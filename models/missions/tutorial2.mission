@@ -25,7 +25,6 @@
     title : "##engineer##"
     may_continue : false
     short : "##tt2_short##"
-    maxHouseLevel : "hut"
     win.text : "##tt2_win_text##"
     sound.overview : "tutorial2_speech"
     sound.win      : "tutorial2_win_speech"

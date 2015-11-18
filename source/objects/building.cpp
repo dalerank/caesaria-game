@@ -257,10 +257,10 @@ float Building::evaluateTrainee(walker::Type traineeType)
 void Building::reserveTrainee(walker::Type traineeType) { _d->reserved.trainees.reserve(traineeType); }
 void Building::cancelTrainee(walker::Type traineeType) { _d->reserved.trainees.erase(traineeType);}
 
-void Building::updateTrainee(  TraineeWalkerPtr walker )
+void Building::updateTrainee( TraineeWalkerPtr walker )
 {
    _d->reserved.trainees.erase( walker->type() );
-   _d->trainees[ walker->type() ] += walker->value() ;
+   _d->trainees[ walker->type() ] += walker->value();
 }
 
 void Building::setTraineeValue(walker::Type type, int value)

@@ -38,8 +38,12 @@ public:
 protected:
   virtual void _fillFiles();
   void _showPreview( const ListBoxItem& item );
+  void _changeSort();
+
+  typedef enum { sortName=0, sortDate, sortFast, sortAuto, sortUser, sortCount } SortMode;
 
   gfx::Picture _previewImg;
+  SortMode _sortMode;
 };
 
 }//end namespace dialog

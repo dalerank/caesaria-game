@@ -37,6 +37,12 @@ public:
     return it != this->end();
   }  
 
+  StringArray& push_front( const std::string& str )
+  {
+    insert( this->begin(), str );
+    return *this;
+  }
+
   const std::string& valueOrEmpty( unsigned int index ) const
   {
     static std::string emptyStr;

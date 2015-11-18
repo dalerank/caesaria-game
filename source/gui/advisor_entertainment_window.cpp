@@ -51,7 +51,26 @@ struct EntertInfo
   int buildingShow;
   int coverity;
   int partlyWork;
+
+  static const std::map<object::Type,EntertInfo> defaults;
+  static const EntertInfo& findDefaults( const object::Type service )
+  {
+    auto it = defaults.find( service );
+    if( it != defaults.end() )
+      return it->second;
+
+    static const EntertInfo invalid{ "", "" };
+    return invalid;
+  }
 };
+
+const std::map<object::Type,EntertInfo> EntertInfo::defaults =
+                {
+                  { object::theater, {"##theaters##", "##peoples##"} },
+                  { object::amphitheater, {"##amphitheaters##", "##peoples##"} },
+                  { object::colloseum, {"##colloseum##", "##peoples##"} },
+                  { object::hippodrome, {"##hippodromes##",  "-"} }
+                };
 
 enum { idxTheater=0, idxAmph=1, idxColosseum=2, idxHippodrome=3,
        rowOffset=20,
@@ -59,35 +78,17 @@ enum { idxTheater=0, idxAmph=1, idxColosseum=2, idxHippodrome=3,
        badCoverage=50, normalCoverage=80, maxCoverage=100,
        maxServiceValue=100 };
 
-enum { ofNumberInCity=10, ofWorkInCity=165, ofHaveShow=245, ofHowmuchServed=305, ofCoverity=445 };
-
 namespace gui
 {
 
 namespace advisorwnd
 {
 
-static EntertInfo findDefaultInfo( const object::Type service )
-{
-  static std::map<object::Type,EntertInfo> defaultInfos =
-  {
-    { object::theater, {"##theaters##", "##peoples##"} },
-    { object::amphitheater, {"##amphitheaters##", "##peoples##"} },
-    { object::colloseum, {"##colloseum##", "##peoples##"} },
-    { object::hippodrome, {"##hippodromes##",  "-"} },
-    { object::unknown, {"", ""} }
-  };
-
-  auto it = defaultInfos.find( service );
-  if( it != defaultInfos.end() )
-    return it->second;
-
-  return defaultInfos[ object::unknown ];
-}
-
 class EntertainmentInfoLabel : public Label
 {
 public:
+  enum { numberInCity=10, workInCity=165, haveShow=245, howmuchServed=305, coverity=445 };
+
   EntertainmentInfoLabel( Widget* parent, const Rect& rect,
                           const object::Type service, const EntertInfo& info  )
     : Label( parent, rect ),
@@ -101,23 +102,21 @@ public:
   {
     Label::_updateTexture( painter );
 
-    EntertInfo info = findDefaultInfo( _service );
-
-    canvasDraw( fmt::format( "{0} {1}", _info.buildingCount, _(info.building)), Point( ofNumberInCity, 0 ) );
-    canvasDraw( utils::i2str( _info.buildingWork ), Point( ofWorkInCity, 0 ) );
-    canvasDraw( utils::i2str( _info.buildingShow ), Point( ofHaveShow, 0 ) );
-    canvasDraw( fmt::format( "{0} {1}",_info.peoplesServed, _(info.people)), Point( ofHowmuchServed, 0 ) );
+    canvasDraw( fmt::format( "{} {}", _info.buildingCount, _(_info.building)), Point( numberInCity,  0 ) );
+    canvasDraw( fmt::format( "{}",    _info.buildingWork ),                    Point( workInCity,    0 ) );
+    canvasDraw( fmt::format( "{}",    _info.buildingShow ),                    Point( haveShow,      0 ) );
+    canvasDraw( fmt::format( "{} {}", _info.peoplesServed, _(_info.people)),   Point( howmuchServed, 0 ) );
 
     std::string coverityText = "none";
     if( _info.buildingCount > 0 )
-      coverityText = fmt::format( "{0}%", _info.coverity );
+      coverityText = fmt::format( "{}%", _info.coverity );
 
-    canvasDraw( coverityText, Point( ofCoverity, 0 ) );
+    canvasDraw( coverityText, Point( coverity, 0 ) );
   }
 
 public:
   object::Type _service;
-  const EntertInfo& _info;
+  EntertInfo _info;
 };
 
 class Entertainment::Impl
@@ -184,7 +183,7 @@ const EntertInfo& Entertainment::Impl::getInfo(const object::Type objectType)
   if( it != infos.end() )
     return it->second;
 
-  EntertInfo ret = findDefaultInfo( objectType );
+  EntertInfo ret = EntertInfo::findDefaults( objectType );
 
   ret.buildingWork = 0;
   ret.peoplesServed = 0;

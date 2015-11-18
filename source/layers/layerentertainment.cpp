@@ -28,6 +28,8 @@
 #include "core/gettext.hpp"
 #include "game/gamedate.hpp"
 #include "core/utils.hpp"
+#include "core/color_list.hpp"
+#include "core/logger.hpp"
 #include "objects/entertainment.hpp"
 #include "gfx/textured_path.hpp"
 
@@ -46,7 +48,7 @@ public:
   } overlay;
 
   DateTime lastUpdate;
-  std::vector<TilesArray> ways;
+  std::vector<ColoredWay> ways;
   std::set<object::Type> flags;
   int type;
 };
@@ -202,8 +204,8 @@ void Entertainment::render(Engine& engine)
   Info::render( engine );
 
   RenderInfo rinfo{ engine, _camera()->offset() };
-  for( auto& tiles : _d->ways )
-    TexturedPath::draw( tiles, rinfo );
+  for( auto& item : _d->ways )
+    TexturedPath::draw( item.tiles, rinfo, item.color, item.offset );
 }
 
 void Entertainment::afterRender(Engine& engine)
@@ -216,13 +218,44 @@ void Entertainment::afterRender(Engine& engine)
 
 void Entertainment::_updatePaths()
 {
-  auto wbuilding = _d->overlay.selected.as<EntertainmentBuilding>();
-  if( wbuilding.isValid() && _d->flags.count( wbuilding->type() ) )
+  auto entBuilding = _d->overlay.selected.as<EntertainmentBuilding>();
+  if( entBuilding.isValid() && _d->flags.count( entBuilding->type() ) )
   {
     _d->ways.clear();
-    const WalkerList& walkers = wbuilding->walkers();
+    const WalkerList& walkers = entBuilding->walkers();
     for( auto walker : walkers )
-      _d->ways.push_back( walker->pathway().allTiles() );
+      _d->ways.push_back( ColoredWay{ walker->pathway().allTiles(), ColorList::red, Point( 0, 2 ) } );
+
+    const EntertainmentBuilding::IncomeWays& incomes = entBuilding->incomes();
+    for( const auto& way : incomes )
+    {
+      bool isOk = true;
+      PathwayCondition condition;
+      isOk &= condition.append( _map().overlay( way.base ) );
+      isOk &= condition.append( _map().overlay( way.destination ) );
+
+      if( isOk )
+      {
+        Pathway pathway = PathwayHelper::create( way.base, way.destination, condition.byRoads() );
+        if( pathway.isValid() )
+        {
+          _d->ways.push_back( ColoredWay{ pathway.allTiles(), ColorList::blue, Point( 0, -2 ) } );
+        }
+        else
+        {
+          isOk = false;
+        }
+      }
+
+      if( !isOk )
+      {
+        OverlayPtr b1 = _map().overlay( way.base );
+        OverlayPtr b2 = _map().overlay( way.destination );
+        Logger::warning( "EntertainmentLayer: cant create path from [{},{}]:{} to [{},{}]:{}",
+                         way.base.i(),        way.base.j(),        b1.isValid() ? b1->info().name() : "unknown",
+                         way.destination.i(), way.destination.j(), b2.isValid() ? b2->info().name() : "unknown" );
+      }
+    }
   }
 }
 
@@ -235,10 +268,10 @@ Entertainment::Entertainment(Camera& camera, PlayerCityPtr city, Type type )
   {
   case citylayer::entertainment:
     _d->flags << object::unknown << object::theater
-           << object::amphitheater << object::colloseum
-           << object::hippodrome << object::actorColony
-           << object::gladiatorSchool << object::lionsNursery
-           << object::chariotSchool;
+              << object::amphitheater << object::colloseum
+              << object::hippodrome << object::actorColony
+              << object::gladiatorSchool << object::lionsNursery
+              << object::chariotSchool;
 
     _visibleWalkers() << walker::actor << walker::gladiator
                       << walker::lionTamer << walker::charioteer;

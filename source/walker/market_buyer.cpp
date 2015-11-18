@@ -30,8 +30,10 @@
 #include "good/storage.hpp"
 #include "name_generator.hpp"
 #include "core/variant_map.hpp"
+#include "city/statistic.hpp"
 #include "objects/constants.hpp"
 #include "game/gamedate.hpp"
+#include "pathway/pathway_helper.hpp"
 #include "gfx/helper.hpp"
 #include "walkers_factory.hpp"
 #include "city/trade_options.hpp"
@@ -217,7 +219,8 @@ TilePos MarketBuyer::places(Walker::Place type) const
 void MarketBuyer::_reachedPathway()
 {
    Walker::_reachedPathway();
-   if( _pathway().isReverse() )
+   OverlayList overlays = _city()->statistic().objects.neighbors( pos() );
+   if( overlays.contain( _d->market.as<Overlay>() ) )
    {
      // walker is back in the market
      deleteLater();
@@ -226,12 +229,13 @@ void MarketBuyer::_reachedPathway()
        // put the content of the basket in the market
        _d->market->goodStore().storeAll( _d->basket );
      }
+     return;
    }
-   else
-   {
-      // get goods from destination building
-      OverlayPtr building = _map().overlay( _d->destBuildingPos );
-      
+
+   // get goods from destination building
+   OverlayPtr building = _map().overlay( _d->destBuildingPos );
+   if( overlays.contain( building ) )
+   {      
       if( building.is<Granary>() )
       {
         auto granary = building.as<Granary>();
@@ -288,33 +292,36 @@ void MarketBuyer::_reachedPathway()
         }
       }
 
-      unsigned long delay = 20;
-
-      while( _d->basket.qty() > MarketKid::defaultCapacity )
+      unsigned long delay = 0;
+      Pathway way = PathwayHelper::create( pos(), _d->market, PathwayHelper::roadFirst );
+      if( way.isValid() )
       {
-        for( auto& gtype : good::all() )
-        {
-          good::Stock& currentStock = _d->basket.getStock( gtype );
-          if( currentStock.qty() > 0 )
-          {
-            auto marketBoy = Walker::create<MarketKid>( _city(), this );
+        setPathway( way );
+        go();
 
-            good::Stock& boyBasket = marketBoy->getBasket();
-            boyBasket.setType( gtype );
-            boyBasket.setCapacity( MarketKid::defaultCapacity );
-            _d->basket.retrieve( boyBasket, math::clamp<int>( currentStock.qty(), 0, MarketKid::defaultCapacity ) );
-            marketBoy->setDelay( delay );
-            delay += 20;
-            marketBoy->send2City( _d->market );
-            _d->market->addWalker( marketBoy.as<Walker>() );
+        while( _d->basket.qty() > MarketKid::defaultCapacity )
+        {
+          for( auto& gtype : good::all() )
+          {
+            good::Stock& currentStock = _d->basket.getStock( gtype );
+            if( currentStock.qty() > 0 )
+            {
+              auto marketBoy = Walker::create<MarketKid>( _city() );
+
+              good::Stock& boyBasket = marketBoy->getBasket();
+              boyBasket.setType( gtype );
+              boyBasket.setCapacity( MarketKid::defaultCapacity );
+              _d->basket.retrieve( boyBasket, math::clamp<int>( currentStock.qty(), 0, MarketKid::defaultCapacity ) );
+
+              marketBoy->setPos( pos() );
+              marketBoy->setDelay( delay += 20 );
+              marketBoy->send2City( _d->market );
+              marketBoy->setPathway( way );
+              marketBoy->go();
+            }
           }
         }
       }
-
-      // walker is near the granary/warehouse
-      _pathway().move( Pathway::reverse );
-      _centerTile();
-      go();
    }
 }
 

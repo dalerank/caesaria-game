@@ -251,6 +251,18 @@ void Settings::setwdir( const std::string& wdirstr )
   _d->options[ savedir ] = Variant( saveDir.toString() );
 }
 
+void Settings::resetIfNeed(char* argv[], int argc)
+{
+  for (int i = 0; i < argc; i++)
+  {
+    if( !strcmp( argv[i], "-resetConfig" ) )
+    {
+      vfs::NFile::remove( SETTINGS_RC_PATH( settingsPath ) );
+      return;
+    }
+  }
+}
+
 void Settings::checkwdir(char* argv[], int argc)
 {
   for (int i = 0; i < (argc - 1); i++)
@@ -259,7 +271,7 @@ void Settings::checkwdir(char* argv[], int argc)
     {
       const char* opts = argv[i+1];
       setwdir( std::string( opts, strlen( opts ) ) );
-      i++;
+      return;
     }
   }
 }
@@ -301,42 +313,41 @@ void Settings::checkC3present()
   std::string c3path = _d->options[ c3gfx ].toString();
   bool useOldGraphics = !c3path.empty() || KILLSWITCH(oldgfx);
 
-  typedef struct { std::string key; std::string value; } kv;
-  const kv items[] = {
-                       {houseModel, "house"},
-                       {constructionModel, "construction"},
-                       {citiesModel, "cities"},
-                       {climateModel, "climateModel"},
-                       {walkerModel, "walker"},
-                       {animationsModel, "animations"},
-                       {empireObjectsModel, "empire_objects"},
-                       {simpleAnimationModel, "basic_animations"},
-                       {cartsModel, "carts"},
-                       {worldModel, "worldmap"},
-                       {buildMenuModel, "build_menu"},
-                       {soundAlias, "sounds"},
-                       {videoAlias, "videos"},
-                       {pic_offsets, "offsets"},
-                       {"", ""} };
+  std::map<std::string,std::string> items = {
+                                              {houseModel,        "house"},
+                                              {constructionModel, "construction"},
+                                              {citiesModel,       "cities"},
+                                              {climateModel,      "climateModel"},
+                                              {walkerModel,       "walker"},
+                                              {animationsModel,   "animations"},
+                                              {empireObjectsModel,"empire_objects"},
+                                              {simpleAnimationModel,"basic_animations"},
+                                              {cartsModel,        "carts"},
+                                              {worldModel,        "worldmap"},
+                                              {buildMenuModel,    "build_menu"},
+                                              {soundAlias,        "sounds"},
+                                              {videoAlias,        "videos"},
+                                              {pic_offsets,       "offsets"},
+                                            };
 
+  std::string ext;
   if( useOldGraphics )
   {
-    for( int index=0; !items[index].key.empty(); index++ )
-      _d->options[ items[index].key ] = items[ index ].value + ".c3";
-
+    ext = ".c3";
     _d->options[ forbidenTile        ] = Variant( std::string( "org_land" ) );
     _d->options[ titleResource       ] = Variant( std::string( "title" ) );
     _d->options[ cellw ] = 30;
   }
   else
   {
-    for( int index=0; !items[index].key.empty(); index++ )
-      _d->options[ items[index].key ] = items[ index ].value + ".model";
-
+    ext = ".model";
     _d->options[ forbidenTile        ] = Variant( std::string( "oc3_land" ) );
     _d->options[ titleResource       ] = Variant( std::string( "titlerm" ) );
     _d->options[ cellw ] = 60;
   }
+
+  for( auto& item : items )
+    _d->options[ item.first ] = item.second + ext;
 }
 
 void Settings::changeSystemLang(const std::string& newLang)

@@ -32,6 +32,7 @@ public:
   virtual int value() const;
   virtual void send2City( BuildingPtr base, bool roadOnly=true );
   void setBase(BuildingPtr building);
+  BuildingPtr base() const;
   BuildingPtr receiver() const;
 
   virtual void save( VariantMap& stream) const;
