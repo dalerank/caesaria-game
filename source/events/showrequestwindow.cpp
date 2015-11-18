@@ -51,8 +51,8 @@ void ShowRequestInfo::_exec(Game& game, unsigned int)
 {
   if( _request.isValid() )
   {
-    gui::EmperrorRequestWindow* wnd = gui::EmperrorRequestWindow::create( game.gui()->rootWidget(), _request,
-                                                                          _reqAvailable, _video );
+    auto* wnd = gui::EmperrorRequestWindow::create( game.gui()->rootWidget(), _request,
+                                                    _reqAvailable, _video );
     if( !_message.empty() ) { wnd->setText( _message ); }
     if( !_title.empty() ) { wnd->setTitle( _title ); }
 

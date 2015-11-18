@@ -52,13 +52,11 @@ bool ShowFeastival::_mayExec(Game& game, unsigned int time) const
 
 void ShowFeastival::_exec(Game& game, unsigned int)
 {
-  gui::Ui* env = game.gui();
-
-  gui::FilmWidget* dlg = new gui::FilmWidget( env->rootWidget(), _video );
-  dlg->setText( _text );
-  dlg->setTitle( _title );
-  dlg->setReceiver( _receiver );
-  dlg->setTime( game::Date::current() );
+  auto& dlg = game.gui()->add<gui::FilmWidget>( _video );
+  dlg.setText( _text );
+  dlg.setTitle( _title );
+  dlg.setReceiver( _receiver );
+  dlg.setTime( game::Date::current() );
 }
 
-}
+}//end namespace events
