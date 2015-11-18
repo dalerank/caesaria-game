@@ -46,6 +46,7 @@ public:
   TraderoutePtr find( unsigned int index );
   TraderoutePtr find( const std::string& begin, const std::string& end );
   TraderouteList from( const std::string& begin );
+  unsigned int getRouteOpenCost(const std::string& start, const std::string& stop ) const;
 
   TraderouteList all();
   TraderoutePtr create( const std::string& begin, const std::string& end );

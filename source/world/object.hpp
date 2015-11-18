@@ -53,9 +53,7 @@ public:
   virtual void load( const VariantMap& stream );
 
   virtual void attach();
-
   virtual ~Object();
-
   void deleteLater();
 
 protected:

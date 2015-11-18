@@ -67,30 +67,33 @@ enum { cityHavenotFood=-4, cityHavenotFoodNextMonth=0, cityHaveSmallFoodNextMont
        bigWorklessPercent=10, enemyNearCityGatesDistance=40, enemyNearCityDistance=100,
        bigThreatValue=100, serviceAwesomeCoverage=100, haveThreatDistance=200, infinteDistance=999 };
 
-typedef enum { atEmployers=0, profitState,
-               migrationState, foodStockState,
-               foodConsumption,
-               atMilitary, atCrime,
-               atHealth, atEducation,
-               atReligion, atEntertainment,
-               atSentiment,
-               atCount } AdviceType;
-
-static const std::string titles[atCount] =
+struct Advice
 {
-  "##advchief_employment##",
-  "##advchief_finance##",
-  "##advchief_migration##",
-  "##advchief_food_stocks##",
-  "##advchief_food_consumption##",
-  "##advchief_military##",
-  "##advchief_crime##",
-  "##advchief_health##",
-  "##advchief_education##",
-  "##advchief_religion##",
-  "##advchief_entertainment##",
-  "##advchief_sentiment##"
+  typedef enum { employers=0, profit,
+                 migration, foodStock,
+                 foodConsumption,
+                 military, crime,
+                 health, education,
+                 religion, entertainment,
+                 sentiment,
+                 count } Type;
+  static const std::map<Type,std::string> row;
 };
+
+const std::map<Advice::Type,std::string> Advice::row = {
+                                            {employers,     "##advchief_employment##"       },
+                                            {profit,        "##advchief_finance##"          },
+                                            {migration,     "##advchief_migration##"        },
+                                            {foodStock,     "##advchief_food_stocks##"      },
+                                            {foodConsumption,"##advchief_food_consumption##"},
+                                            {military,      "##advchief_military##"         },
+                                            {crime,         "##advchief_crime##"            },
+                                            {health,        "##advchief_health##"           },
+                                            {education,     "##advchief_education##"        },
+                                            {religion,      "##advchief_religion##"         },
+                                            {entertainment, "##advchief_entertainment##"    },
+                                            {sentiment,     "##advchief_sentiment##"        }
+                                          };
 
 class InfomationRow : public Label
 {
@@ -123,14 +126,14 @@ public:
 class Chief::Impl
 {
 public:  
-  typedef std::vector<InfomationRow*> InformationTable;
+  typedef std::map<Advice::Type,InfomationRow*> InformationTable;
 
   PlayerCityPtr city;
   InformationTable rows;
   TexturedButton* btnHelp;
 
 public:
-  void drawReportRow( AdviceType, std::string text, NColor color=ColorList::black );
+  void drawReportRow( Advice::Type, std::string text, NColor color=ColorList::black );
   void drawEmploymentState();
   void drawProfitState();
   void drawMigrationState();
@@ -179,8 +182,9 @@ void Chief::Impl::initRows( Widget* parent, int width )
   Point startPoint( 20, 60 );
   Point offset( 0, 27 );
 
-  for( int i=0; i < atCount; i++ )
-    rows.push_back( &parent->add<InfomationRow>( titles[i], Rect( startPoint + offset * i, Size( width, offset.y() ) ) ) );
+  int index=0;
+  for(const auto& row : Advice::row )
+    rows[ row.first ] = &parent->add<InfomationRow>( row.second, Rect( startPoint + offset * index++, Size( width, offset.y() ) ) );
 }
 
 void Chief::draw( gfx::Engine& painter )
@@ -196,11 +200,12 @@ void Chief::_showHelp()
   DictionaryWindow::show( this, "advisor_chief" );
 }
 
-void Chief::Impl::drawReportRow( AdviceType type, std::string text, NColor color )
+void Chief::Impl::drawReportRow(Advice::Type type, std::string text, NColor color )
 {
-  if( type < atCount )
+  auto it = rows.find( type );
+  if( it != rows.end() )
   {
-    InfomationRow* row = rows[ type ];
+    InfomationRow* row = it->second;
     Font font = row->font();
     font.setColor( color );
     row->setFont( font );
@@ -225,18 +230,18 @@ void Chief::Impl::drawEmploymentState()
     int needWorkersNumber = wInfo.need - wInfo.current;
     if( needWorkersNumber > 10 )
     {
-      text = fmt::format( "{0} {1}", _("##advchief_needworkers##"), needWorkersNumber );
+      text = fmt::format( "{} {}", _("##advchief_needworkers##"), needWorkersNumber );
       color = ColorList::brown;
     }
     else if( workless > bigWorklessPercent )
     {
-      text = fmt::format( "{0} {1}%", _("##advchief_workless##"), workless );
+      text = fmt::format( "{} {}%", _("##advchief_workless##"), workless );
       color = ColorList::brown;
     }
     else { text = _("##advchief_employers_ok##");  }
   }
 
-  drawReportRow( atEmployers, text, color );
+  drawReportRow( Advice::employers, text, color );
 }
 
 void Chief::Impl::drawProfitState()
@@ -247,7 +252,7 @@ void Chief::Impl::drawProfitState()
   text = _(prefix) + std::string(" ") + utils::i2str( profit );
   NColor textColor = profit > 0 ? ColorList::black : ColorList::brown;
 
-  drawReportRow( profitState, text, textColor );
+  drawReportRow( Advice::profit, text, textColor );
 }
 
 void Chief::Impl::drawMigrationState()
@@ -260,7 +265,7 @@ void Chief::Impl::drawMigrationState()
     text = migration->reason();
   }
 
-  drawReportRow( migrationState, _( text ) );
+  drawReportRow( Advice::migration, _( text ) );
 }
 
 void Chief::Impl::drawFoodStockState()
@@ -302,7 +307,7 @@ void Chief::Impl::drawFoodStockState()
     }
   }
 
-  drawReportRow( foodStockState, _(text) );
+  drawReportRow( Advice::foodStock, _(text) );
 }
 
 void Chief::Impl::drawFoodConsumption()
@@ -333,7 +338,7 @@ void Chief::Impl::drawFoodConsumption()
     }
   }
 
-  drawReportRow( foodConsumption, _(text) );
+  drawReportRow( Advice::foodConsumption, _(text) );
 }
 
 void Chief::Impl::drawMilitary()
@@ -419,7 +424,7 @@ void Chief::Impl::drawMilitary()
     reasons << "##no_warning_for_us##";
   }
 
-  drawReportRow( atMilitary, _(reasons.random()) );
+  drawReportRow( Advice::military, _(reasons.random()) );
 }
 
 void Chief::Impl::drawCrime()
@@ -434,7 +439,7 @@ void Chief::Impl::drawCrime()
 
   text = text.empty() ? "##advchief_no_crime##" : text;
 
-  drawReportRow( atCrime, _(text) );
+  drawReportRow( Advice::crime, _(text) );
 }
 
 void Chief::Impl::drawHealth()
@@ -449,7 +454,7 @@ void Chief::Impl::drawHealth()
 
   text = text.empty() ? "##advchief_health_good##" : text;
 
-  drawReportRow( atHealth, _(text));
+  drawReportRow( Advice::health, _(text));
 }
 
 void Chief::Impl::drawEducation()
@@ -457,17 +462,14 @@ void Chief::Impl::drawEducation()
   std::string text;
 
   StringArray reasons;
-  object::Type avTypes[] = { object::school, object::library, object::academy, object::unknown };
-  std::string avReasons[] = { "##advchief_some_need_education##", "##advchief_some_need_library##",
-                              "##advchief_some_need_academy##", "" };
-
-  for( int i=0; avTypes[i] != object::unknown; i++ )
+  std::map<object::Type, std::string> avTypes = { {object::school,  "##advchief_some_need_education##"},
+                                                  {object::library, "##advchief_some_need_library##"  },
+                                                  {object::academy, "##advchief_some_need_academy##"  } };
+  for( const auto& item : avTypes )
   {
-    HouseList houses = city->statistic().houses.ready4evolve( avTypes[ i ] );
+    HouseList houses = city->statistic().houses.ready4evolve( item.first );
     if( houses.size() > 0 )
-    {
-      reasons << avReasons[i];
-    }
+      reasons << item.second;
   }
 
   text = reasons.random();
@@ -475,7 +477,7 @@ void Chief::Impl::drawEducation()
   if( text.empty() )
     text = "##advchief_education_ok##";
 
-  drawReportRow( atEducation, _( text ) );
+  drawReportRow( Advice::education, _( text ) );
 }
 
 void Chief::Impl::drawReligion()
@@ -486,7 +488,7 @@ void Chief::Impl::drawReligion()
   {
 
   }
-  drawReportRow( atReligion, text );
+  drawReportRow( Advice::religion, text );
 }
 
 void Chief::Impl::drawEntertainment()
@@ -519,7 +521,7 @@ void Chief::Impl::drawEntertainment()
     reasons << "##current_races_runs_for_another##";
   }
 
-  drawReportRow( atEntertainment, _( reasons.random() ) );
+  drawReportRow( Advice::entertainment, _( reasons.random() ) );
 }
 
 void Chief::Impl::drawSentiment()
@@ -530,7 +532,7 @@ void Chief::Impl::drawSentiment()
                      ? sentiment->reason()
                      : "##unknown_sentiment_reason##";
 
-  drawReportRow( atSentiment, text );
+  drawReportRow( Advice::sentiment, text );
 }
 
 }//end namespace advisorwnd

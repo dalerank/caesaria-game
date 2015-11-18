@@ -271,7 +271,8 @@ void Traderoute::Impl::updatePictures()
     }
 
     Picture pic( ResourceGroup::empirebits, picIndex + (seaRoute ? 8 : 0) );
-    pic.setOffset( offset );
+    Point randOffset( math::random(3), math::random(3) );
+    pic.setOffset( offset + randOffset );
     pictures.push_back( pic );
   }
 }

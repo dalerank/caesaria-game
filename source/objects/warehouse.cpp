@@ -197,6 +197,7 @@ void Warehouse::timeStep(const unsigned long time)
     }
 
     _animation().setDelay( 4 + needWorkers() + math::random(2) );
+    _d->goodStore.removeExpired( game::Date::current() );
   }
 
   WorkingBuilding::timeStep( time );

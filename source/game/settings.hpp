@@ -125,6 +125,7 @@ public:
   void checkCmdOptions( char* argv[], int argc );
   void checkC3present();
   void changeSystemLang( const std::string& newLang );
+  void resetIfNeed(char* argv[], int argc);
 private:
   Settings();
 

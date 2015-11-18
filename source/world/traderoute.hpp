@@ -44,7 +44,7 @@ public:
   void timeStep( unsigned int time );
   PointsArray points( bool reverse=false ) const;
   bool containPoint(const Point &pos, int devianceDistance=10 );
-  void setPoints(const PointsArray& points , bool seaRoute);
+  void setPoints(const PointsArray& points, bool seaRoute);
   const gfx::Pictures& pictures() const;
 
   bool isSeaRoute() const;

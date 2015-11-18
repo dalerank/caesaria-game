@@ -97,7 +97,6 @@ protected:
 
     canvasDraw( _title, Point( ofBranchName, 2), font );
     canvasDraw( utils::i2str( _needWorkers ), Point( ofNeedWorkers, 2), font );
-
     canvasDraw( utils::i2str( _haveWorkers ), Point( ofHaveWorkers, 2 ),
                 _haveWorkers < _needWorkers ? font.clone(  ColorList::caesarRed ) : font );
 
@@ -254,7 +253,7 @@ Employer::Impl::EmployersInfo Employer::Impl::getEmployersInfo(industry::Type ty
   object::Groups groups = industry::toGroups( type );
 
   WorkingBuildingList buildings;
-  for( auto& gr : groups )
+  for( const auto& gr : groups )
   {
     WorkingBuildingList sectorBuildings = city->statistic().objects.find<WorkingBuilding>( gr );
     buildings.insert( buildings.begin(), sectorBuildings.begin(), sectorBuildings.end() );

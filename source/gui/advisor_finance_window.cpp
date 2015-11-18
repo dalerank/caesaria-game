@@ -54,15 +54,16 @@ namespace {
 class Finance::Impl
 {
 public:
+  typedef enum { donations=2, debt=3, imports=4, wages=5,
+                 constructions=6, credit=7, salaries=8,
+                 sundries=9, empireTaxes=10, expensives=11,
+                 profits=12, balance=13 } Row;
 };
 
-enum { rowDonation=2, rowDebt=3, rowImports=4, rowWages=5,
-       rowConstructions=6, rowCredit=7, rowSalary=8,
-       rowSundries=9, rowEmpireTax=10, rowExpensive=11,
-       rowProfit=12, rowBalance=13 };
+
 
 Finance::Finance(PlayerCityPtr city, Widget* parent, int id )
-: Base( parent, city, id ), _d( new Impl )
+  : Base( parent, city, id ), _d( new Impl )
 {
   setupUI( ":/gui/financeadv.gui" );
 
@@ -80,16 +81,16 @@ void Finance::draw(gfx::Engine& painter )
 
   Window::draw( painter );
 
-  Rect p( startPoint + absoluteRect().lefttop() + offset * rowDebt + Point( 200, 0 ), Size( 72, 1) );
+  Rect p( startPoint + absoluteRect().lefttop() + offset * Impl::debt + Point( 200, 0 ), Size( 72, 1) );
   painter.drawLine( 0xff000000, p.lefttop(), p.righttop() );
 
-  p = Rect( startPoint + absoluteRect().lefttop() + offset * rowDebt + Point( 340, 0 ), Size( 72, 1) );
+  p = Rect( startPoint + absoluteRect().lefttop() + offset * Impl::debt + Point( 340, 0 ), Size( 72, 1) );
   painter.drawLine( 0xff000000, p.lefttop(), p.righttop() );
 
-  p = Rect( startPoint + absoluteRect().lefttop() + offset * rowExpensive + Point( 200, 10 ), Size( 72, 1) );
+  p = Rect( startPoint + absoluteRect().lefttop() + offset * Impl::expensives + Point( 200, 10 ), Size( 72, 1) );
   painter.drawLine( 0xff000000, p.lefttop(), p.righttop() );
 
-  p =  Rect( startPoint + absoluteRect().lefttop() + offset * rowExpensive + Point( 340, 10 ), Size( 72, 1) );
+  p =  Rect( startPoint + absoluteRect().lefttop() + offset * Impl::expensives + Point( 340, 10 ), Size( 72, 1) );
   painter.drawLine( 0xff000000, p.lefttop(), p.righttop() );
 }
 
@@ -139,26 +140,26 @@ void Finance::_increaseTax()
 void Finance::_initReportRows()
 {
   Point sp = startPoint;
-  _drawReportRow( sp,                             "##taxes##",     econ::Issue::taxIncome );
-  _drawReportRow( sp + offset,                    "##trade##",     econ::Issue::exportGoods );
-  _drawReportRow( sp + offset * rowDonation,      "##donations##", econ::Issue::donation );
-  _drawReportRow( sp + offset * rowDebt,          "##debet##",     econ::Issue::debet );
+  _drawReportRow( sp,                                "##taxes##",     econ::Issue::taxIncome );
+  _drawReportRow( sp + offset,                       "##trade##",     econ::Issue::exportGoods );
+  _drawReportRow( sp + offset * Impl::donations,     "##donations##", econ::Issue::donation );
+  _drawReportRow( sp + offset * Impl::debt,          "##debet##",     econ::Issue::debet );
 
   sp += Point( 0, 6 );
-  _drawReportRow( sp + offset * rowImports,       "##import_fn##", econ::Issue::importGoods );
-  _drawReportRow( sp + offset * rowWages,         "##wages##",     econ::Issue::workersWages );
-  _drawReportRow( sp + offset * rowConstructions, "##buildings##", econ::Issue::buildConstruction );
-  _drawReportRow( sp + offset * rowCredit,        "##percents##",  econ::Issue::creditPercents );
-  _drawReportRow( sp + offset * rowSalary,        "##pn_salary##", econ::Issue::playerSalary );
-  _drawReportRow( sp + offset * rowSundries,      "##other##",     econ::Issue::sundries );
-  _drawReportRow( sp + offset * rowEmpireTax,     "##empire_tax##",econ::Issue::empireTax );
-  _drawReportRow( sp + offset * rowExpensive,     "##credit##",    econ::Issue::credit );
+  _drawReportRow( sp + offset * Impl::imports,       "##import_fn##", econ::Issue::importGoods );
+  _drawReportRow( sp + offset * Impl::wages,         "##wages##",     econ::Issue::workersWages );
+  _drawReportRow( sp + offset * Impl::constructions, "##buildings##", econ::Issue::buildConstruction );
+  _drawReportRow( sp + offset * Impl::credit,        "##percents##",  econ::Issue::creditPercents );
+  _drawReportRow( sp + offset * Impl::salaries,      "##pn_salary##", econ::Issue::playerSalary );
+  _drawReportRow( sp + offset * Impl::sundries,      "##other##",     econ::Issue::sundries );
+  _drawReportRow( sp + offset * Impl::empireTaxes,   "##empire_tax##",econ::Issue::empireTax );
+  _drawReportRow( sp + offset * Impl::expensives,    "##credit##",    econ::Issue::credit );
 
   sp += Point( 0, 6 );
-  _drawReportRow( sp + offset * rowProfit,        "##profit##",    econ::Issue::cityProfit );
+  _drawReportRow( sp + offset * Impl::profits,       "##profit##",    econ::Issue::cityProfit );
 
   sp += Point( 0, 6 );
-  _drawReportRow( sp + offset * rowBalance,       "##balance##",   econ::Issue::balance );
+  _drawReportRow( sp + offset * Impl::balance,       "##balance##",   econ::Issue::balance );
 }
 
 void Finance::_initTaxManager()

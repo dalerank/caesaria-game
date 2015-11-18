@@ -41,22 +41,32 @@ using namespace city;
 
 struct HealthcareInfo
 {
-  object::Type type;
   std::string building;
   std::string people;
   int buildingCount;
   int buildingWork;
   int peoplesServed;
   int needService;
+
+  static const std::map<object::Type, HealthcareInfo> defaults;
+  static const HealthcareInfo& find( const object::Type service )
+  {
+    auto it = defaults.find( service );
+    if( it != defaults.end() )
+      return it->second;
+
+    static const HealthcareInfo invalid{ "", "" };
+    return invalid;
+  }
 };
 
-static HealthcareInfo healthDescrs[] = {
-  { object::baths, "##bath##", "##peoples##" },
-  { object::barber, "##barber##", "##peoples##" },
-  { object::hospital, "##hospital##", "##patients##" },
-  { object::clinic, "##clinics##", "##peoples##" },
-  { object::unknown, "", "" }
-};
+ const std::map<object::Type, HealthcareInfo> HealthcareInfo::defaults = {
+    { object::baths,    {"##bath##",     "##peoples##"} },
+    { object::barber,   {"##barber##",   "##peoples##"} },
+    { object::hospital, {"##hospital##", "##patients##"} },
+    { object::clinic,   {"##clinics##",  "##peoples##"} },
+  };
+
 
 enum { idxBarber=1, idxDoctor=2, idxHospital=3, rowOffset=20, smallCityNormalhealthValue=85,
        minPopullation4healthCalc=100, smallCityPopulation=300 };
@@ -66,17 +76,6 @@ namespace gui
 
 namespace advisorwnd
 {
-
-static HealthcareInfo findInfo( const object::Type service )
-{
-  for( int index=0; healthDescrs[index].type != object::unknown; index++ )
-  {
-    if( service == healthDescrs[index].type )
-        return healthDescrs[index];
-  }
-
-  return HealthcareInfo();
-}
 
 class HealthInfoLabel : public Label
 {
@@ -95,7 +94,7 @@ public:
   {
     Label::_updateTexture( painter );
 
-    HealthcareInfo info = findInfo( _service );
+    HealthcareInfo info = HealthcareInfo::find( _service );
 
     Picture& texture = _textPicture();
     Font rfont = font();
@@ -107,7 +106,7 @@ public:
     std::string peoplesStrT = _("##health_no_info##");
     if( _info.buildingCount > 0 )
     {
-      peoplesStrT = fmt::format( "{0} ({1}) {2}", _info.peoplesServed, _info.needService, _(info.people) );
+      peoplesStrT = fmt::format( "{} ({}) {}", _info.peoplesServed, _info.needService, _(info.people) );
     }
 
     rfont.draw( texture, peoplesStrT, 255, 0 );
@@ -119,7 +118,7 @@ public:
                             ? math::percentage( _info.peoplesServed, _info.needService )
                             : 100;
       math::clamp_to( coveragePrcnt, 0, 100 );
-      coverageStrT = fmt::format( "{0} %", coveragePrcnt );
+      coverageStrT = fmt::format( "{}%", coveragePrcnt );
     }
     rfont.draw( texture, coverageStrT, 455, 0 );
   }
@@ -132,17 +131,9 @@ private:
 class Health::Impl
 {
 public:
-  HealthInfoLabel* lbBathsInfo;
-  HealthInfoLabel* lbBarbersInfo;
-  HealthInfoLabel* lbDoctorInfo;
-  HealthInfoLabel* lbHospitalInfo;
-  Label* lbBlackframe;
-  Label* lbAdvice;
   TexturedButton* btnHelp;
 
   HealthcareInfo getInfo(PlayerCityPtr city, const object::Type objectType );
-  void updateAdvice( PlayerCityPtr city );
-  void initUI(Health* parent , PlayerCityPtr c);
 };
 
 Health::Health(PlayerCityPtr city, Widget* parent, int id )
@@ -151,12 +142,10 @@ Health::Health(PlayerCityPtr city, Widget* parent, int id )
   setupUI( ":/gui/healthadv.gui" );
   setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
-  GET_DWIDGET_FROM_UI( _d, lbAdvice )
-  GET_DWIDGET_FROM_UI( _d, lbBlackframe )
   GET_DWIDGET_FROM_UI( _d, btnHelp )
 
-  _d->initUI( this, city );
-  _d->updateAdvice( city );
+  _initUI( city );
+  _updateAdvice( city );
 
   CONNECT( _d->btnHelp, onClicked(), this, Health::_showHelp );
 }
@@ -199,8 +188,9 @@ HealthcareInfo Health::Impl::getInfo(PlayerCityPtr city, const object::Type obje
   return ret;
 }
 
-void Health::Impl::updateAdvice(PlayerCityPtr c)
+void Health::_updateAdvice(PlayerCityPtr c)
 {
+  INIT_WIDGET_FROM_UI( Label*, lbAdvice )
   if( !lbAdvice )
     return;
 
@@ -273,25 +263,29 @@ void Health::Impl::updateAdvice(PlayerCityPtr c)
   lbAdvice->setText( _(text) );
 }
 
-void Health::Impl::initUI(Health* parent, PlayerCityPtr c)
+void Health::_initUI(PlayerCityPtr c)
 {
+  INIT_WIDGET_FROM_UI( Label*, lbBlackframe )
+  if( !lbBlackframe )
+  {
+    Logger::warning( "WARNING !!! Cant initialize Health adwisor window" );
+    return;
+  }
+
   Point startPoint = lbBlackframe->lefttop() + Point( 3, 3 );
   Size labelSize( lbBlackframe->width() - 6, 20 );
 
-  HealthcareInfo info = getInfo( c, object::baths );
-  lbBathsInfo = new HealthInfoLabel( parent, Rect( startPoint, labelSize ), object::baths, info );
+  HealthcareInfo info = _d->getInfo( c, object::baths );
+  lbBlackframe->add<HealthInfoLabel>( Rect( startPoint, labelSize ), object::baths, info );
 
-  info = getInfo( c, object::barber );
-  lbBarbersInfo = new HealthInfoLabel( parent, Rect( startPoint + Point( 0, rowOffset * idxBarber ), labelSize), object::barber,
-                                       info );
+  info = _d->getInfo( c, object::barber );
+  lbBlackframe->add<HealthInfoLabel>( Rect( startPoint + Point( 0, rowOffset * idxBarber ), labelSize), object::barber, info );
 
-  info = getInfo( c, object::clinic );
-  lbDoctorInfo = new HealthInfoLabel( parent, Rect( startPoint + Point( 0, rowOffset * idxDoctor ), labelSize), object::clinic,
-                                      info );
+  info = _d->getInfo( c, object::clinic );
+  lbBlackframe->add<HealthInfoLabel>( Rect( startPoint + Point( 0, rowOffset * idxDoctor ), labelSize), object::clinic, info );
 
-  info = getInfo( c, object::hospital );
-  lbHospitalInfo = new HealthInfoLabel( parent, Rect( startPoint + Point( 0, rowOffset * idxHospital), labelSize), object::hospital,
-                                        info );
+  info = _d->getInfo( c, object::hospital );
+  lbBlackframe->add<HealthInfoLabel>( Rect( startPoint + Point( 0, rowOffset * idxHospital), labelSize), object::hospital, info );
 }
 
 }//end namespace advisor

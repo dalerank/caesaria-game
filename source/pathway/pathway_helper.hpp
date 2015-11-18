@@ -21,7 +21,22 @@
 #include "objects/predefinitions.hpp"
 #include "objects/constants.hpp"
 #include "core/tilepos_array.hpp"
+#include "gfx/tilesarray.hpp"
 #include "route.hpp"
+
+class PathwayCondition : std::set<const gfx::Tile*>
+{
+public:
+  template<class Obj>
+  bool append( SmartPtr<Obj> building )
+  {
+    return append( ptr_cast<Overlay>( building ) );
+  }
+
+  bool append(OverlayPtr overlay);
+  void checkRoads(const gfx::Tile* tile, bool& ret);
+  TilePossibleCondition byRoads();
+};
 
 class PathwayHelper
 {
@@ -48,7 +63,6 @@ public:
   static DirectRoute shortWay( PlayerCityPtr city, const TilePosArray& area, object::Type buildingType, WayType type );
 
   static Pathway randomWay( PlayerCityPtr city, const TilePos& startPos, int walkRadius );
-
   static Pathway way2border( PlayerCityPtr city, const TilePos& startPos );
 };
 

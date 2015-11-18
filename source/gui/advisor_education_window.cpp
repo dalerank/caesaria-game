@@ -223,7 +223,7 @@ EducationInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Type bT
   ret.buildingCount = servBuildings.size();
   if( ret.service == Service::srvCount )
   {
-    Logger::warning( "AdvisorEducationWindow: unknown building type {0}", bType );
+    Logger::warning( "AdvisorEducationWindow: unknown building type {}", bType );
   }
 
   for( auto serv : servBuildings )

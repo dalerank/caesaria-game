@@ -9,4 +9,6 @@
   objects : ":/gfx/pics_objects.zip"
   wateranim : ":/gfx/pics_wateranim.zip"
   walkers : ":/gfx/pics_walkers.zip"
+  misc : ":/gfx/misc.zip"
+  sound : ":/audio/themes.zip"
 }

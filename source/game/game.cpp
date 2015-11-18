@@ -501,8 +501,8 @@ bool Game::load(std::string filename)
   Logger::warning( "Game: init empire start options" );
   events::Dispatcher::instance().reset();
   d.empire->initialize( SETTINGS_RC_PATH( citiesModel ),
-                          SETTINGS_RC_PATH( empireObjectsModel ),
-                          SETTINGS_RC_PATH( worldModel ) );
+                        SETTINGS_RC_PATH( empireObjectsModel ),
+                        SETTINGS_RC_PATH( worldModel ) );
 
   Logger::warning( "Game: try find loader" );
   game::Loader loader;
