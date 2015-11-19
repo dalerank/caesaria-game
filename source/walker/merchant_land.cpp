@@ -40,7 +40,6 @@
 #include "merchant_camel.hpp"
 #include "events/fundissue.hpp"
 #include "game/gamedate.hpp"
-#include "gfx/helper.hpp"
 #include "walkers_factory.hpp"
 
 using namespace gfx;

@@ -35,6 +35,7 @@ class Variant;
 class VariantList;
 class VariantMap;
 class NColor;
+class TilePos;
 
 #ifdef _MSC_VER
 #define __typeof__ decltype
@@ -267,7 +268,7 @@ class Variant
   operator float() const { return toFloat(); }
   operator bool() const { return toBool(); }
   operator std::string() const { return toString(); }
-  operator TilePos() const { return toTilePos(); }
+  operator TilePos() const;
   operator Point() const { return toPoint(); }
   operator PointF() const { return toPointF(); }
   operator Size() const { return toSize(); }

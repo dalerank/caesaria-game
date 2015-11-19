@@ -23,7 +23,7 @@
 namespace events
 {
 
-GameEventPtr MoveCamera::create( TilePos pos )
+GameEventPtr MoveCamera::create(const TilePos& pos )
 {
   MoveCamera* e = new MoveCamera();
   e->_pos = pos;

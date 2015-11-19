@@ -20,9 +20,9 @@
 #include "gfx/tilemap_camera.hpp"
 #include "gfx/tilearea.hpp"
 #include "sound/engine.hpp"
+#include "gfx/tile_config.hpp"
 #include "core/utils.hpp"
 #include "objects/overlay.hpp"
-#include "gfx/helper.hpp"
 #include "config.hpp"
 #include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
@@ -67,7 +67,7 @@ struct AmbientEmitter
   void initialize( const vfs::Path& filename )
   {
     VariantMap types = config::load( filename );
-    for( auto& rtype : types )
+    for( const auto& rtype : types )
     {
       Tile::Type type = gfx::tile::findType( rtype.first );
       if( type != Tile::tlUnknown )

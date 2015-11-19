@@ -37,7 +37,7 @@
 #include "loader.hpp"
 #include "core/saveadapter.hpp"
 #include "vfs/file.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "core/color.hpp"
 #include "core/variant_list.hpp"
 

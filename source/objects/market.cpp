@@ -63,7 +63,7 @@ public:
     goodStore.setCapacity(good::wine, 250);
   }
 
-  bool checkStorageInWorkRange( PlayerCityPtr city, const TilePosArray& enter, object::Type objTypr )
+  bool checkStorageInWorkRange( PlayerCityPtr city, const Locations& enter, object::Type objTypr )
   {
     auto route = PathwayHelper::shortWay( city, enter, objTypr, PathwayHelper::roadOnly );
     bool invalidRoute = !route.isValid();
@@ -158,7 +158,7 @@ bool Market::build(const city::AreaInfo& info)
   bool isLoadingMode = info.city->getOption( PlayerCity::forceBuild ) > 0;
   if( isOk && !isLoadingMode )
   {
-    TilePosArray locations = roadside().locations();
+    Locations locations = roadside().locations();
     bool accessGranary = _d->checkStorageInWorkRange( info.city, locations, object::granery );
     bool accessWarehouse = _d->checkStorageInWorkRange( info.city, locations, object::warehouse );
 

@@ -23,6 +23,7 @@
 #include "objects/predefinitions.hpp"
 #include "predefinitions.hpp"
 #include "core/direction.hpp"
+#include "tilepos.hpp"
 
 namespace gfx
 {

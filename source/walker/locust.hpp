@@ -19,6 +19,7 @@
 #define __CAESARIA_LOCUST_H_INCLUDED__
 
 #include "walker.hpp"
+#include "gfx/tilepos.hpp"
 #include "core/predefinitions.hpp"
 
 /** This is an immigrant coming with his stuff */

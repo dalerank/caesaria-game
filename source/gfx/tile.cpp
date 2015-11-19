@@ -22,7 +22,9 @@
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"
-#include "helper.hpp"
+#include "imgid.hpp"
+#include "gfx/tilemap_config.hpp"
+#include "gfx/tile_config.hpp"
 #include "game/gamedate.hpp"
 
 namespace gfx

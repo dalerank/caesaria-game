@@ -19,6 +19,7 @@
 #include "core/logger.hpp"
 #include "core/foreach.hpp"
 #include "core/variant_map.hpp"
+#include "gfx/tilepos.hpp"
 #include "core/tilepos_array.hpp"
 #include "routefinder.hpp"
 
@@ -94,14 +95,12 @@ EmpireMap::TerrainType EmpireMap::at( const TilePos& ij ) const
 Route EmpireMap::findRoute(Point start, Point stop, int flags ) const
 {
   Route way;
-  TilePosArray tiles;
+  Locations tiles;
 
   _d->routefinder->findRoute( _d->pnt2tp( start ), _d->pnt2tp( stop ), tiles, flags);
 
-  foreach( pos, tiles)
-  {
-    way.push_back( _d->tp2pnt( *pos ) );
-  }
+  for( const auto& pos : tiles)
+    way.push_back( _d->tp2pnt( pos ) );
 
   return way;
 }
@@ -126,10 +125,10 @@ void EmpireMap::initialize(const VariantMap& stream)
 
   VariantList tiles = stream.get( "tiles" ).toList();
   int index = 0;
-  foreach( v, tiles )
+  for( const auto& v : tiles )
   {
     EmTile& tile = _d->at( TilePos( index % _d->size.width(), index / _d->size.width() ) );
-    tile.info = (v->toInt() == 0 ? EmpireMap::land : EmpireMap::sea);
+    tile.info = (v.toInt() == 0 ? EmpireMap::land : EmpireMap::sea);
     index++;
   }
 

@@ -31,7 +31,6 @@
 #include "core/foreach.hpp"
 #include "game/gamedate.hpp"
 #include "animals.hpp"
-#include "gfx/helper.hpp"
 #include "walkers_factory.hpp"
 
 using namespace gfx;

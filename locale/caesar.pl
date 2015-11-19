@@ -132,6 +132,7 @@
 "##governor_palace_2##":"Willa gubernatora"
 "##governorVilla##":"Willa gubernatora"
 "##wine##":"Wino"
+"##prettyWine##":"Falern Wino"
 "##vinard##":"Farma winogron"
 "##city_opts_god_on##":"Bogowie: Wł."
 "##city_opts_god_off##":"Bogowie: Wył."

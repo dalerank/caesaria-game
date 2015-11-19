@@ -307,6 +307,7 @@
 "##governor_palace_2##":"Ståthållarens villa"
 "##governorVilla##":"Ståthållarens villa"
 "##wine##":"Vin"
+"##prettyWine##":"Falern Vin"
 "##grape##":"Vindruvor"
 "##vinard_info##":"Druvorna från dessa vinrankor har odlats särskild för vinframställning. Vingårdarna gör fint vin för dina egna patricier, samt för export."
 "##vinard##":"Druvodling"

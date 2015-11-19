@@ -31,7 +31,7 @@
 #include "gfx/tilemap.hpp"
 #include "core/logger.hpp"
 #include "thinks.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "ability.hpp"
 #include "name_generator.hpp"
 #include "helper.hpp"
@@ -371,6 +371,7 @@ void Walker::_waitFinished() { }
 world::Nation Walker::nation() const{ return _d->nation; }
 void Walker::_setNation(world::Nation nation) { _d->nation = nation; }
 void Walker::_setLocation( Tile* location ){ _d->map.tile = location; }
+void Walker::_setLocation(const TilePos& pos) { _setLocation( &_map().at( pos ) ); }
 Walker::Action Walker::action() const { return (Walker::Action)_d->action.action;}
 Walker::Gender Walker::gender() const { return male; }
 bool Walker::isDeleted() const{   return _d->state.deleted;}

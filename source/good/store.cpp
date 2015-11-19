@@ -19,9 +19,9 @@
 #include "core/utils.hpp"
 #include "core/foreach.hpp"
 #include "productmap.hpp"
-#include "gfx/helper.hpp"
 #include "core/logger.hpp"
 #include "core/variant_list.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "core/variant_map.hpp"
 #include "helper.hpp"
 
@@ -55,7 +55,7 @@ int Store::getMaxRetrieve(const good::Product goodType)
   int rqty = qty(goodType);
 
   // remove all retrieval reservations
-  for( auto& reserve : _dfunc()->retrieveReservations)
+  for( const auto& reserve : _dfunc()->retrieveReservations )
     rqty -= reserve.qty();
 
   return rqty;

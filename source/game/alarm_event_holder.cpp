@@ -20,7 +20,7 @@
 #include "core/timer.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include <vector>
 
 class AlarmEvent

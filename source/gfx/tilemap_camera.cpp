@@ -22,7 +22,7 @@
 #include "core/size.hpp"
 #include "core/exception.hpp"
 #include "core/logger.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "core/foreach.hpp"
 #include "objects/overlay.hpp"
 

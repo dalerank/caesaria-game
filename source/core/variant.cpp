@@ -21,38 +21,45 @@
 #include "variant.hpp"
 #include "variant_map.hpp"
 #include "variant_list.hpp"
+#include "gfx/tilepos.hpp"
 #include "variantprivate.hpp"
 #include "utils.hpp"
 
+namespace tname {
+template<class T>
+static bool equale( const char* name )
+{
+  return !strcmp( name, typeid(T).name() );
+}
+}
+
 static Variant::Type staticNameToType( const char* name )
 {
-  if( !strcmp( name, typeid(bool).name() ) ) return Variant::Bool;
-  if( !strcmp( name, typeid(int).name() ) )  return Variant::Int;
-  if( !strcmp( name, typeid(bool).name() ) ) return Variant::Bool;
-  if( !strcmp( name, typeid(unsigned int).name() ) ) return Variant::UInt;
-  if( !strcmp( name, typeid(long long).name() ) ) return Variant::LongLong;
-  if( !strcmp( name, typeid(bool).name() ) )  return Variant::Bool;
-  if( !strcmp( name, typeid(double).name() ) ) return Variant::Double;
-  if( !strcmp( name, typeid(char).name() ) )  return Variant::Char;
-  if( !strcmp( name, typeid(VariantMap).name() ) ) return Variant::Map;
-  if( !strcmp( name, typeid(VariantList).name() ) ) return Variant::List;
-  if( !strcmp( name, typeid(std::string).name() ) ) return Variant::String;
-  if( !strcmp( name, typeid(StringArray).name() ) ) return Variant::NStringArray;
-  if( !strcmp( name, typeid(ByteArray).name() ) )   return Variant::NByteArray;
-  if( !strcmp( name, typeid(DateTime).name() ) )    return Variant::NDateTime;
-  if( !strcmp( name, typeid(bool).name() ) )        return Variant::Bool;
-  if( !strcmp( name, typeid(Rect).name() ) )        return Variant::NRectI;
-  if( !strcmp( name, typeid(RectF).name() ) )       return Variant::NRectF;
-  if( !strcmp( name, typeid(Size).name() ) )        return Variant::NSize;
-  if( !strcmp( name, typeid(SizeF).name() ) )       return Variant::NSizeF;
-  if( !strcmp( name, typeid(Point).name() ) )       return Variant::NPoint;
-  if( !strcmp( name, typeid(TilePos).name() ) )     return Variant::NTilePos;
-  if( !strcmp( name, typeid(PointF).name() ) )      return Variant::NPointF;
-  if( !strcmp( name, typeid(unsigned char).name() ) )  return Variant::Uchar;
-  if( !strcmp( name, typeid(unsigned short).name() ) ) return Variant::Ushort;
-  if( !strcmp( name, typeid(unsigned long).name() ) )  return Variant::Ulong;
-  if( !strcmp( name, typeid(long).name() ) )   	       return Variant::Long;
-  if( !strcmp( name, typeid(float).name() ) )          return Variant::Float;
+  if( tname::equale<bool>( name ) )           return Variant::Bool;
+  if( tname::equale<int>( name ) )            return Variant::Int;
+  if( tname::equale<unsigned int>( name ) )   return Variant::UInt;
+  if( tname::equale<long long>( name ) )      return Variant::LongLong;
+  if( tname::equale<bool>( name ) )           return Variant::Bool;
+  if( tname::equale<double>( name ) )         return Variant::Double;
+  if( tname::equale<char>( name ) )           return Variant::Char;
+  if( tname::equale<VariantMap>( name ) )     return Variant::Map;
+  if( tname::equale<VariantList>( name ) )    return Variant::List;
+  if( tname::equale<std::string>( name ) )    return Variant::String;
+  if( tname::equale<StringArray>( name ) )    return Variant::NStringArray;
+  if( tname::equale<ByteArray>( name ) )      return Variant::NByteArray;
+  if( tname::equale<DateTime>( name ) )       return Variant::NDateTime;
+  if( tname::equale<Rect>( name ) )           return Variant::NRectI;
+  if( tname::equale<RectF>( name ) )          return Variant::NRectF;
+  if( tname::equale<Size>( name ) )           return Variant::NSize;
+  if( tname::equale<SizeF>( name ) )          return Variant::NSizeF;
+  if( tname::equale<Point>( name ) )          return Variant::NPoint;
+  if( tname::equale<TilePos>( name ) )        return Variant::NTilePos;
+  if( tname::equale<PointF>( name ) )         return Variant::NPointF;
+  if( tname::equale<unsigned char>( name ) )  return Variant::Uchar;
+  if( tname::equale<unsigned short>( name ) ) return Variant::Ushort;
+  if( tname::equale<unsigned long>( name ) )  return Variant::Ulong;
+  if( tname::equale<long>( name ) )   	      return Variant::Long;
+  if( tname::equale<float>( name ) )          return Variant::Float;
 
   return Variant::Invalid;
 }
@@ -61,38 +68,38 @@ static std::string staticTypeToName( Variant::Type t)
 {
   switch( t )
   {
-  case Variant::Invalid:	return "Invalid";
-  case Variant::Bool : return "Bool";
-  case Variant::Int : return "Int";
-  case Variant::UInt : return "Uint";
-  case Variant::LongLong : return "LongLong";
-  case Variant::ULongLong : return "ULongLong";
-  case Variant::Double : return "Double";
-  case Variant::Char : return "Char";
-  case Variant::Map : return "Map";
-  case Variant::List : return "List";
-  case Variant::String : return "String";
-  case Variant::NStringArray : return "StringArray";
-  case Variant::NByteArray : return "ByteArray";
-  case Variant::NDateTime : return "DateTime";
-  case Variant::NRectI : return "Rect";
-  case Variant::NRectF : return "RectF";
-  case Variant::NSize : return "Size";
-  case Variant::NSizeF : return "SizeF";
-  case Variant::Line : return "Line";
-  case Variant::LineF : return "LineF";
-  case Variant::NPoint : return "Point";
-  case Variant::NTilePos : return "TilePos";
-  case Variant::NPointF : return "PointF";
-  case Variant::Font : return "Font";
-  case Variant::Pixmap : return "Pixmap";
-  case Variant::Color : return "Color";
-  case Variant::Uchar : return "Uchar";
-  case Variant::Ushort : return "Ushort";
-  case Variant::Ulong : return "Ulong";
-  case Variant::Long : return "Long";
-  case Variant::Float : return "Float";
-  case Variant::UserType : return "UserType";
+  case Variant::Invalid:        return "Invalid";
+  case Variant::Bool :          return "Bool";
+  case Variant::Int :           return "Int";
+  case Variant::UInt :          return "Uint";
+  case Variant::LongLong :      return "LongLong";
+  case Variant::ULongLong :     return "ULongLong";
+  case Variant::Double :        return "Double";
+  case Variant::Char :          return "Char";
+  case Variant::Map :           return "Map";
+  case Variant::List :          return "List";
+  case Variant::String :        return "String";
+  case Variant::NStringArray :  return "StringArray";
+  case Variant::NByteArray :    return "ByteArray";
+  case Variant::NDateTime :     return "DateTime";
+  case Variant::NRectI :        return "Rect";
+  case Variant::NRectF :        return "RectF";
+  case Variant::NSize :         return "Size";
+  case Variant::NSizeF :        return "SizeF";
+  case Variant::Line :          return "Line";
+  case Variant::LineF :         return "LineF";
+  case Variant::NPoint :        return "Point";
+  case Variant::NTilePos :      return "TilePos";
+  case Variant::NPointF :       return "PointF";
+  case Variant::Font :          return "Font";
+  case Variant::Pixmap :        return "Pixmap";
+  case Variant::Color :         return "Color";
+  case Variant::Uchar :         return "Uchar";
+  case Variant::Ushort :        return "Ushort";
+  case Variant::Ulong :         return "Ulong";
+  case Variant::Long :          return "Long";
+  case Variant::Float :         return "Float";
+  case Variant::UserType :      return "UserType";
   default: return "";
   }
 }
@@ -1269,6 +1276,7 @@ RectF Variant::toRectf() const
     return Variant2ToHelper<RectF>(_d, Variant::NRectF, varHandler);
 }
 
+Variant::operator TilePos() const { return toTilePos(); }
 Variant::operator NColor() const { return toColor(); }
 
 /*!

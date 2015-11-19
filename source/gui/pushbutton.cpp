@@ -363,20 +363,16 @@ void PushButton::setIcon( const std::string& rcname, int index, ElementState sta
 void PushButton::setIconOffset(Point offset)
 {
   __D_IMPL(_d,PushButton);
-  for( int i=stNormal; i < StateCount; i++ )
-  {
-    _d->buttonStates[ i ].iconOffset = offset;
-  }
+  for( auto& state : _d->buttonStates )
+    state.iconOffset = offset;
 }
 
 void PushButton::setIcon(const std::string& rcname, int index)
 {
   __D_IMPL(_d,PushButton);
   Picture pic( rcname, index );
-  for( int i=stNormal; i < StateCount; i++ )
-  {
-    _d->buttonStates[ i ].icon = pic;
-  }
+  for( auto& state : _d->buttonStates )
+    state.icon = pic;
 }
 
 void PushButton::setPicture( const std::string& rcname, int index )

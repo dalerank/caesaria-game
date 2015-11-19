@@ -49,7 +49,7 @@ public signals:
 
 private:
   void _updatePreviewTiles(bool force);
-  void _checkPreviewBuild(TilePos pos);
+  void _checkPreviewBuild(const TilePos& pos);
   void _checkBuildArea();
   void _discardPreview();
   void _buildAll();

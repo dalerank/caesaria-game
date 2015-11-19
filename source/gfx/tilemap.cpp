@@ -18,7 +18,9 @@
 
 #include "tilemap.hpp"
 
-#include "gfx/helper.hpp"
+#include "imgid.hpp"
+#include "gfx/tile_config.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "objects/building.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"

@@ -85,7 +85,7 @@ public:
         Rect textRect = f.getTextRect( _(text), Rect( 0, 0, width() / 2, height() ), horizontalTextAlign(), verticalTextAlign() );
         f.draw( _textPicture(), _(text), textRect._lefttop, true );
 
-        text = utils::format( 0xff, "%d %s", goodsQty, _("##trade_btn_qty##") );
+        text = fmt::format( "{} {}", goodsQty, _("##trade_btn_qty##") );
         textRect = f.getTextRect( text, Rect( width() / 2 + 24 * 2, 0, width(), height() ), horizontalTextAlign(), verticalTextAlign() );
         f.draw( _textPicture(), text, textRect._lefttop, true );
       }
@@ -276,7 +276,8 @@ void GoodOrderManageWindow::toggleIndustryEnable()
   bool industryEnabled = isIndustryEnabled();
   //up or down all factory for this industry
   FactoryList factories = _d->city->statistic().objects.producers<Factory>( _d->type );
-  for( auto factory : factories ) { factory->setActive( !industryEnabled ); }
+  for( auto factory : factories )
+    factory->setActive( !industryEnabled );
 
   updateIndustryState();
   emit _d->onOrderChangedSignal();

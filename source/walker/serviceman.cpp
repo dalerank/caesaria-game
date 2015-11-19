@@ -32,7 +32,7 @@
 #include "game/resourcegroup.hpp"
 #include "corpse.hpp"
 #include "core/foreach.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "city/states.hpp"
 #include "gfx/tilearea.hpp"
 #include "walkers_factory.hpp"
@@ -551,7 +551,7 @@ void ServiceWalker::setBase( BuildingPtr base ) { _d->basePos = (base.isValid() 
 
 bool ReachedBuildings::contain(object::Type type) const
 {
-  for( auto& i : *this )
+  for( const auto& i : *this )
     if( i->type() == type )
       return true;
 

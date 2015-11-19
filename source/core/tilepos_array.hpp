@@ -20,7 +20,6 @@
 
 #include <vector>
 #include <set>
-#include "position.hpp"
 #include "variant.hpp"
 
 class TilePosArray : public std::vector< TilePos >

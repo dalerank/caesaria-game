@@ -20,6 +20,7 @@
 #include "variant_map.hpp"
 #include "variant_list.hpp"
 #include "core/format.hpp"
+#include "gfx/tilepos.hpp"
 
 static std::string lastParsedObjectName;
 static std::string sanitizeString( const std::string& str)

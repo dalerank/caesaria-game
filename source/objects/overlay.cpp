@@ -16,13 +16,13 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "overlay.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "objects/infodb.hpp"
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/variant_map.hpp"
 #include "core/variant_list.hpp"
 #include "objects_factory.hpp"
-#include "gfx/helper.hpp"
 #include "core/logger.hpp"
 
 using namespace gfx;

@@ -21,7 +21,7 @@
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/imgid.hpp"
 #include "core/foreach.hpp"
 #include "coast.hpp"
 #include "objects_factory.hpp"
@@ -53,7 +53,7 @@ bool Terrain::build( const city::AreaInfo& info )
   {
     bool isWater = tile->getFlag( Tile::tlWater );
     isWater |= tile->getFlag( Tile::tlDeepWater );
-    bool isCoast = tile->getFlag( Tile::tlCoast );
+    //bool isCoast = tile->getFlag( Tile::tlCoast );
     if( isWater /* && !isCoast */ )
     {
       tile->setPicture( Picture::getInvalid() );

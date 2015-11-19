@@ -27,7 +27,7 @@
 #include "objects/constants.hpp"
 #include "game/citizen_group.hpp"
 #include "game/service.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "walker/walker.hpp"
 #include "gfx/tilearea.hpp"
 #include "industry.hpp"
