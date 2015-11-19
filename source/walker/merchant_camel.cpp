@@ -102,6 +102,5 @@ MerchantCamel::MerchantCamel(PlayerCityPtr city, MerchantPtr merchant, int delay
     setPathway( merchant->pathway() );
     go();
     wait( delay );
-    drop();
   }
 }

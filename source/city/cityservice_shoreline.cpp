@@ -86,7 +86,7 @@ void Shoreline::Impl::checkMap( PlayerCityPtr city )
     }
 }
 
-void Shoreline::Impl::generateWaterGarabage(PlayerCityPtr city)
+void Shoreline::Impl::generateWaterGarbage(PlayerCityPtr city)
 {
   auto waterGarbage = Walker::create<WaterGarbage>( city );
   waterGarbage->send2City( city->getBorderInfo( PlayerCity::boatEntry ).epos() );

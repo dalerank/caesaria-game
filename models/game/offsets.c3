@@ -43,7 +43,7 @@
   granary_animation : { rc : "commerce", start : 146, stop : 152, offset : [ 78, 69 ] }
   market_poor_anim : { rc : "commerce", start : 2, stop : 11, offset : [ 42, 34 ] }
   our_city_flag : { rc : "empire_bits", start : 2, stop : 7, offset : [ 0, 0 ] }
-  merchants : { rc : "empire_bits", start : 69, stop : 70, offset : [ -5, -5 ] }
+  merchants : { rc : "empire_bits", start : 69, stop : 70, offset : [ -5, 10 ] }
   distant_city_flag : { rc : "empire_bits", start : 16, stop : 21, offset : [ 0, 0 ] }
   foreing_city_flag : { rc : "empire_bits", start : 9, stop : 14, offset : [ 0, 0 ] }
   theater_work : { rc : "entertainment", start : 35, stop : 35, offset : [ 34, 37 ] }
