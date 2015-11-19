@@ -253,9 +253,9 @@ PointsArray TilesArray::mappositions() const
   return ret;
 }
 
-TilePosArray TilesArray::locations() const
+Locations TilesArray::locations() const
 {
-  TilePosArray ret;
+  Locations ret;
   for( auto tile : *this )
     ret << tile->pos();
 

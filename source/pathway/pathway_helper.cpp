@@ -139,9 +139,9 @@ DirectRoute PathwayHelper::shortWay(PlayerCityPtr city, const TilePos& startPos,
   return shortWay( startPos, constructions, type );
 }
 
-DirectRoute PathwayHelper::shortWay(PlayerCityPtr city, const TilePosArray& area, object::Type buildingType, WayType type)
+DirectRoute PathwayHelper::shortWay(PlayerCityPtr city, const Locations& area, object::Type buildingType, WayType type)
 {
-  TilePosArray locations( area );
+  Locations locations( area );
   ConstructionList constructions = city->statistic().objects.find<Construction>( buildingType );
 
   DirectRoute shortestWay;

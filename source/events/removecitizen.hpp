@@ -19,6 +19,7 @@
 #define _CAESARIA_EVENT_REMOVECITIZENS_H_INCLUDE_
 
 #include "event.hpp"
+#include "gfx/tilepos.hpp"
 #include "game/citizen_group.hpp"
 
 namespace events
@@ -40,6 +41,6 @@ private:
   CitizenGroup _group;
 };
 
-}
+}//end namespace events
 
 #endif //_CAESARIA_EVENT_REMOVECITIZENS_H_INCLUDE_

@@ -22,6 +22,7 @@
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
 #include "core/logger.hpp"
+#include "imgid.hpp"
 #include "helper.hpp"
 #include "game/gamedate.hpp"
 

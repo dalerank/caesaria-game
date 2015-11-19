@@ -276,7 +276,8 @@ void GoodOrderManageWindow::toggleIndustryEnable()
   bool industryEnabled = isIndustryEnabled();
   //up or down all factory for this industry
   FactoryList factories = _d->city->statistic().objects.producers<Factory>( _d->type );
-  for( auto factory : factories ) { factory->setActive( !industryEnabled ); }
+  for( auto factory : factories )
+    factory->setActive( !industryEnabled );
 
   updateIndustryState();
   emit _d->onOrderChangedSignal();

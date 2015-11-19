@@ -19,7 +19,7 @@
 #define _CAESARIA_EVENT_MOVECAMERA_H_INCLUDE_
 
 #include "event.hpp"
-#include "core/position.hpp"
+#include "gfx/tilepos.hpp"
 
 namespace events
 {
@@ -37,6 +37,6 @@ private:
   TilePos _pos;
 };
 
-}
+}//end namespace events
 
 #endif //_CAESARIA_EVENT_MOVECAMERA_H_INCLUDE_

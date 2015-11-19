@@ -623,7 +623,7 @@ void ListBox::beforeDraw(gfx::Engine& painter)
     Alignment itemTextHorizontalAlign, itemTextVerticalAlign;
     Font currentFont;
 
-    for( int i = 0; i < (int)_d->items.size();  i++ )
+    for( size_t i = 0; i < _d->items.size();  i++ )
     {
       ListBoxItem& refItem = _d->items[ i ];
 

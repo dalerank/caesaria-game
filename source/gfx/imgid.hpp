@@ -15,30 +15,23 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_VARIANT_MAP_H_INCLUDED__
-#define __CAESARIA_VARIANT_MAP_H_INCLUDED__
+#ifndef __CAESARIA_IMGID_HELPER_H_INCLUDED__
+#define __CAESARIA_IMGID_HELPER_H_INCLUDED__
 
-#include "variant.hpp"
-#include "delegate.hpp"
+#include "tile.hpp"
 
-class VariantMap : public std::map<std::string, Variant>
+namespace gfx
 {
-public:
-  typedef Delegate2< const std::string&, const Variant& > Visitor;
 
-  VariantMap() {}
+class Tilemap;
 
-  VariantMap( const VariantMap& other );
+namespace imgid
+{  
+  std::string toResource( const unsigned int imgId );
+  int fromResource( const std::string &pic_name);
+  Picture toPicture( const unsigned int imgId );
+}
 
-  VariantMap& operator+=(const VariantMap& other );
+}//end namespace gfx
 
-  void visitEach( Visitor visitor );
-
-  VariantMap& operator=(const VariantMap& other );
-
-  Variant get( const std::string& name, Variant defaultVal=Variant() ) const;
-
-  Variant toVariant() const;
-};
-
-#endif // __CAESARIA_VARIANT_MAP_H_INCLUDED__
+#endif //__CAESARIA_IMGID_HELPER_H_INCLUDED__

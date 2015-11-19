@@ -18,6 +18,7 @@
 #include "city/city.hpp"
 #include "constants.hpp"
 #include "corpse.hpp"
+#include "gfx/tilepos.hpp"
 #include "game/resourcegroup.hpp"
 
 Ship::Ship(PlayerCityPtr city )

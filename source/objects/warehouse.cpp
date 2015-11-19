@@ -120,7 +120,7 @@ void Warehouse::Room::computePicture()
   }
 
   picture.load( ResourceGroup::warehouse, picIdx );
-  picture.addOffset( tile::tilepos2screen( location ) );
+  picture.addOffset( location.toScreenCoordinates() );
 }
 
 class Warehouse::Impl
@@ -136,7 +136,7 @@ public:
 static Picture strafePic(const std::string& rc, int index, int i, int j )
 {
   Picture ret( rc, index );
-  ret.addOffset( tile::tilepos2screen( TilePos( i, j ) ) );
+  ret.addOffset( TilePos( i, j ).toScreenCoordinates() );
 
   return ret;
 }

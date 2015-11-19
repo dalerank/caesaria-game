@@ -67,7 +67,7 @@ public:
 
   TilesArray& remove(const TilePos& pos );
   PointsArray mappositions() const;
-  TilePosArray locations() const;
+  Locations locations() const;
 
   OverlayList overlays() const;
 

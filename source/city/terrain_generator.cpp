@@ -20,6 +20,7 @@
 #include "game/resourcegroup.hpp"
 #include "core/logger.hpp"
 #include "game/game.hpp"
+#include "gfx/imgid.hpp"
 #include "gfx/helper.hpp"
 #include "city/city.hpp"
 #include "vfs/file.hpp"

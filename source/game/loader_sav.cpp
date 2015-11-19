@@ -16,6 +16,7 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "loader_sav.hpp"
+#include "gfx/imgid.hpp"
 #include "gfx/helper.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"

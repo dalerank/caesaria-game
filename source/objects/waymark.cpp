@@ -17,6 +17,7 @@
 
 #include "waymark.hpp"
 #include "game/resourcegroup.hpp"
+#include "gfx/imgid.hpp"
 #include "gfx/helper.hpp"
 #include "city/city.hpp"
 #include "core/foreach.hpp"

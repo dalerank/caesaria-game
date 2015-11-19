@@ -16,17 +16,11 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "helper.hpp"
-#include "core/exception.hpp"
-#include "objects/building.hpp"
-#include "objects/overlay.hpp"
-#include "animation_bank.hpp"
-#include "tilemap.hpp"
-#include "game/resourcegroup.hpp"
-#include "core/utils.hpp"
-#include "picture_bank.hpp"
+#include "imgid.hpp"
 #include "core/logger.hpp"
-#include "game/gamedate.hpp"
-#include "core/stacktrace.hpp"
+#include "game/resourcegroup.hpp"
+#include "objects/overlay.hpp"
+#include "tilemap.hpp"
 
 using namespace direction;
 
@@ -75,97 +69,17 @@ bool isValidLocation(const TilePos &pos) { return pos.i() >= 0 && pos.j() >=0; }
 const TilePos& unitLocation(){ return tilePosLocation; }
 Tilemap& getInvalid() { return invalidTmap; }
 
-}
-
-namespace imgid
+unsigned int picWidth2CellSize(int width)
 {
-
-std::string toResource( const unsigned int imgId )
-{
-  // example: for land1a_00004, pfx=land1a and id=4
-  std::string res_pfx;  // resource name prefix
-  int res_id = imgId;   // id of resource
-
-  if( imgId < 245 )
-  {
-    res_pfx = ResourceGroup::plateau;
-    res_id = imgId - 200;
-  }
-  else if( imgId < 548 )
-  {
-    res_pfx = ResourceGroup::land1a;
-    res_id = imgId - 244;
-  }
-  else if( imgId < 779 )
-  {
-    res_pfx = ResourceGroup::land2a;
-    res_id = imgId - 547;
-  }
-  else if( imgId < 871)
-  {
-    res_pfx = ResourceGroup::land3a;
-    res_id = imgId - 778;
-  }
-  else
-  {
-    res_pfx = ResourceGroup::land1a;
-    res_id = 0;
-
-    if (imgId == 0xb10 || imgId == 0xb0d)
-    {
-      res_pfx = ResourceGroup::housing;
-      res_id = 51;
-    } // TERRIBLE HACK!
-
-    Logger::warning( "TileHelper: unknown image Id={0} ", imgId );
-  }
-
-  std::string ret_str = utils::format( 0xff, "%s_%05d", res_pfx.c_str(), res_id );
-  return ret_str;
-}
-
-int fromResource( const std::string& pic_name )
-{
-  // example: for land1a_00004, return 244+4=248
-  std::string res_pfx;  // resource name prefix = land1a
-  int res_id = 0;   // idx of resource = 4
-
-  // extract the name and idx from name (ex: [land1a, 4])
-  int pos = pic_name.find("_");
-  res_pfx = pic_name.substr(0, pos);
-  std::stringstream ss(pic_name.substr(pos+1));
-  ss >> res_id;
-
-  if (res_pfx == ResourceGroup::plateau ){  res_id += 200; }
-  else if (res_pfx == ResourceGroup::land1a) { res_id += 244; }
-  else if (res_pfx == ResourceGroup::land2a) { res_id += 547; }
-  else if (res_pfx == ResourceGroup::land3a) { res_id += 778; }
-  else
-  {
-    Logger::warning( "TileHelper: unknown image " + pic_name );
-    res_id = 0;
-  }
-
-  return res_id;
-}
-
-Picture toPicture(const unsigned int imgId)
-{
-  std::string picname = toResource( imgId );
-  return Picture( picname );
+  return width > 0
+            ? (width+2) / tilemap::tilePicSize.width()
+            : 0;
 }
 
 }
 
 namespace tile
 {
-
-unsigned int width2size(int width)
-{
-  return width > 0
-            ? (width+2) / tilemap::tilePicSize.width()
-            : 0;
-}
 
 int encode(const Tile& tt)
 {
@@ -197,7 +111,7 @@ static int __turnBySet( int imgid, int start, int length, int frameCount, int an
 int turnCoastTile(int imgid, Direction newDirection )
 {
   int koeff[] = { 0, 0, 0, 1, 1, 2, 2, 3, 3, -1};
-  Picture pic = imgid::toPicture( imgid );
+  //Picture pic = imgid::toPicture( imgid );
   imgid -= 372;
   if( koeff[ newDirection ] >= 0 )
   {
@@ -251,24 +165,13 @@ int turnCoastTile(int imgid, Direction newDirection )
     }
   }
 
-  Picture pic2 = imgid::toPicture( imgid + 372 );
+  //Picture pic2 = imgid::toPicture( imgid + 372 );
   return imgid + 372;
 }
 
 unsigned int hash(const TilePos& pos)
 {
   return (pos.i() << 16) + pos.j();
-}
-
-Point tilepos2screen(const TilePos& pos)
-{
-  return Point( tilemap::x_tileBase * (pos.j()+pos.i()),
-                tilemap::y_tileBase * (pos.j()-pos.i()) );
-}
-
-TilePos screen2tilepos( const Point& point, int mapsize )
-{
-  return TilePos( 0, 0 );
 }
 
 void decode(Tile& tile, const int bitset)
@@ -296,16 +199,6 @@ const Tile& getInvalid()
 {
   static Tile invalidTile( tilemap::invalidLocation() );
   return invalidTile;
-}
-
-void clear(Tile& tile)
-{
-  int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
-  int imgId = math::random( 58 );
-
-  Picture pic( ResourceGroup::land1a, startOffset + imgId );
-  tile.setPicture( ResourceGroup::land1a, startOffset + imgId );
-  tile.setImgId( imgid::fromResource( pic.name() ) );
 }
 
 void fixPlateauFlags(Tile& tile)

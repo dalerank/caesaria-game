@@ -407,7 +407,7 @@ LowBridgeSubTile::LowBridgeSubTile(const TilePos &pos, int index)
   _index = index;
   _parent = 0;
   _rpicture.load( ResourceGroup::transport, index );
-  _rpicture.addOffset( tile::tilepos2screen( _pos ) );
+  _rpicture.addOffset( _pos.toScreenCoordinates() );
 }
 
 LowBridgeSubTile::~LowBridgeSubTile() {}

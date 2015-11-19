@@ -25,27 +25,16 @@ namespace gfx
 
 class Tilemap;
 
-namespace imgid
-{  
-  std::string toResource( const unsigned int imgId );
-  int fromResource( const std::string &pic_name);
-  Picture toPicture( const unsigned int imgId );
-}
-
 namespace tile
-{  
-  unsigned int width2size( int width );
+{    
   int encode( const Tile& tt );
   int turnCoastTile(int imgid , Direction newDirection);
   unsigned int hash( const TilePos& pos );
   TilePos hash2pos( unsigned int hash );
-  Point tilepos2screen( const TilePos& pos );
   Tile::Type findType( const std::string& name );
-  TilePos screen2tilepos( const Point& point, int mapsize );
   void decode( Tile& tile, const int bitset);
   const Tile& getInvalid();
   Tile& getInvalidSafe();
-  void clear( Tile& tile );
   void fixPlateauFlags( Tile& tile );
 }//end namespace tile
 
@@ -55,6 +44,7 @@ namespace tilemap
 
   Direction getDirection( const TilePos& b, const TilePos& e );
   void initTileBase( int width );
+  unsigned int picWidth2CellSize( int width );
   Tilemap& getInvalid();
   const Point& cellCenter();
   const Size& cellPicSize();

@@ -50,7 +50,7 @@ public:
     _index = index;
 
     Picture pic( ResourceGroup::transport, _index );
-    pic.addOffset( tile::tilepos2screen( _pos ) );
+    pic.addOffset( _pos.toScreenCoordinates() );
     setPicture( pic );
 
     //checkSecondPart();
@@ -92,7 +92,7 @@ public:
     {
       Tile& mt = info.city->tilemap().at( pos + TilePos( 0, 1 ) );
       info.city->tilemap().at( pos + TilePos( 0, 1 ) ).setMaster( 0 );
-      info.city->tilemap().at( pos ).setMaster( &mt );
+      info.city->tilemap().at( pos                   ).setMaster( &mt );
 
       pic.addOffset( -30, -15 );
       _fgPictures().push_back( pic );
@@ -101,7 +101,7 @@ public:
     {
       Tile& mt = info.city->tilemap().at( pos + TilePos( 0, 1 ) );
       Picture landPic = mt.picture();
-      landPic.addOffset( tile::tilepos2screen( TilePos( 0, 1 ) ) );
+      landPic.addOffset( TilePos( 0, 1 ).toScreenCoordinates() );
       _fgPictures().push_back( landPic );
 
       _fgPictures().push_back( pic );
@@ -110,7 +110,7 @@ public:
     {
       Tile& mt = info.city->tilemap().at( pos + TilePos( 1, 0) );
       Picture landPic = mt.picture();
-      landPic.addOffset( tile::tilepos2screen( TilePos( 1, 0 ) )  );
+      landPic.addOffset( TilePos( 1, 0 ).toScreenCoordinates()  );
       _fgPictures().push_back( landPic );
 
      pic.addOffset( 8, -14 );
@@ -120,7 +120,7 @@ public:
     {
       Tile& mt = info.city->tilemap().at( info.pos + TilePos( 1, 0) );
       Picture landPic = mt.picture();
-      landPic.addOffset( tile::tilepos2screen( TilePos( 1, 0 ) ) );
+      landPic.addOffset( TilePos( 1, 0 ).toScreenCoordinates() );
       _fgPictures().push_back( landPic );
 
       pic.addOffset( 0, -15 );

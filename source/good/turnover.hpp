@@ -20,7 +20,7 @@
 
 #include "good.hpp"
 #include "stock.hpp"
-#include "core/position.hpp"
+#include "gfx/tilepos.hpp"
 #include "core/scopedptr.hpp"
 #include "core/variant_map.hpp"
 

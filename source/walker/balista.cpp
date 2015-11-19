@@ -21,6 +21,7 @@
 #include "constants.hpp"
 #include "game/resourcegroup.hpp"
 #include "enemysoldier.hpp"
+#include "gfx/tilepos.hpp"
 #include "game/gamedate.hpp"
 #include "config.hpp"
 #include "spear.hpp"

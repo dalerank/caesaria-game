@@ -17,7 +17,7 @@
 #include "city.hpp"
 #include "core/safetycast.hpp"
 #include "core/position.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/imgid.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/time.hpp"
 #include "objects/overlay.hpp"

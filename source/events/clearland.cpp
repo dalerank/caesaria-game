@@ -21,7 +21,7 @@
 #include "gfx/tilemap.hpp"
 #include "warningmessage.hpp"
 #include "core/gettext.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/imgid.hpp"
 #include "requestdestroy.hpp"
 #include "objects/construction.hpp"
 #include "game/resourcegroup.hpp"

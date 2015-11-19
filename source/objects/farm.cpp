@@ -138,13 +138,13 @@ Farm::Farm(const good::Product outGood, const object::Type farmType )
               << TilePos( 2, 1) << TilePos( 1, 0) << TilePos( 2, 0);
 
   Picture mainPic = _getMainPicture();
-  mainPic.addOffset( tile::tilepos2screen( TilePos( 0, 1) ) );
+  mainPic.addOffset( TilePos( 0, 1 ).toScreenCoordinates() );
   _fgPictures().push_back( mainPic );  // farm building
 
   for( auto& pos : _d->sublocs )
   {
     Picture tPic = FarmTile::computePicture( outGood, 0 );
-    tPic.addOffset( tile::tilepos2screen( pos ) );
+    tPic.addOffset( pos.toScreenCoordinates() );
     _fgPictures().push_back( tPic );
   }
   setPicture( Picture::getInvalid() );

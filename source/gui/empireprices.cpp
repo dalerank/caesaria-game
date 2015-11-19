@@ -41,6 +41,7 @@ EmpirePrices::EmpirePrices(Widget *parent, int id, const Rect &rectangle, Player
   trade::Options& ctrade = city->tradeOptions();
   Font font = Font::create( FONT_1 );
   Point startPos( 140, 50 );
+
   for( good::Product gtype=good::wheat; gtype < good::prettyWine; ++gtype )
   {
     if( gtype == good::fish || gtype == good::denaries)
@@ -74,10 +75,10 @@ void EmpirePrices::draw(Engine &painter)
 bool EmpirePrices::onEvent(const NEvent &event)
 {
   if( event.EventType == sEventMouse && event.mouse.isRightPressed() )
-    {
-      deleteLater();
-      return true;
-    }
+  {
+    deleteLater();
+    return true;
+  }
 
   return Window::onEvent( event );
 }

@@ -150,7 +150,7 @@ public:
     positions.clear();
     TilesArea area;
     fillArea( tmap, area );
-    TilePosArray locations = area.walkables( true ).locations();
+    Locations locations = area.walkables( true ).locations();
 
     for( auto& r : locations )
       positions.push_back( r - location );
@@ -227,7 +227,7 @@ public:
   }
 
   TilePos location;
-  TilePosArray positions;
+  Locations positions;
   struct {
     unsigned int open = 3;
     unsigned int westLine = 5;
@@ -318,7 +318,7 @@ Fort::Fort(object::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) ),
   logo.setOffset( Point( 80, 10 ) );
 
   Picture area(ResourceGroup::security, 13 );
-  area.addOffset( tile::tilepos2screen( TilePos( 3, 0) ) );
+  area.addOffset( TilePos( 3, 0).toScreenCoordinates() );
 
   _fgPictures().resize(2);
   _fgPicture( 0 ) = logo;

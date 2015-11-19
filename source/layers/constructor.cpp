@@ -284,7 +284,7 @@ void Constructor::_updatePreviewTiles( bool force )
       }
       else
       {
-         size = Size( gfx::tile::width2size( tile->picture().width() ) );
+         size = Size( gfx::tilemap::picWidth2CellSize( tile->picture().width() ) );
       }
 
       if( size.area() > 1 )

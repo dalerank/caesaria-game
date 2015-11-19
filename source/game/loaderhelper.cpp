@@ -17,7 +17,7 @@
 
 #include "loaderhelper.hpp"
 #include "city/city.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/imgid.hpp"
 #include "objects/objects_factory.hpp"
 #include "resourcegroup.hpp"
 #include "core/logger.hpp"

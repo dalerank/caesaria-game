@@ -17,7 +17,7 @@
 #define _CAESARIA_EVENT_FIREWORKERS_H_INCLUDE_
 
 #include "event.hpp"
-#include "core/position.hpp"
+#include "gfx/tilepos.hpp"
 
 namespace events
 {
@@ -38,6 +38,6 @@ private:
   unsigned int _workers;
 };
 
-}
+}//end namespace events
 
 #endif //_CAESARIA_EVENT_FIREWORKERS_H_INCLUDE_

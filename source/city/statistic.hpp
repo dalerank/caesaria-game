@@ -24,6 +24,7 @@
 #include "good/productmap.hpp"
 #include "predefinitions.hpp"
 #include "festivaltype.hpp"
+#include "gfx/helper.hpp"
 #include "objects/constants.hpp"
 #include "game/citizen_group.hpp"
 #include "game/service.hpp"

@@ -20,7 +20,7 @@
 
 #include "event.hpp"
 #include "objects/constants.hpp"
-#include "core/position.hpp"
+#include "gfx/tilepos.hpp"
 
 namespace events
 {
