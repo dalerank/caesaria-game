@@ -36,30 +36,70 @@ REGISTER_SERVICE_IN_FACTORY(Shoreline, shoreline)
 class Shoreline::Impl
 {
 public:
-  TilesArray slTiles;
-  TilesArray dwTiles;
+  struct {
+    TilesArray coast;
+    TilesArray water;
+    TilesArray riverside;
+  } tiles;
 
   int lastTimeUpdate;
   unsigned int nextWaterGarbage;
 
   void checkMap(PlayerCityPtr city );
+  void generateWaterGarbage(PlayerCityPtr city);
 };
 
 void Shoreline::Impl::checkMap( PlayerCityPtr city )
 {
-  const TilesArray& tiles = city->tilemap().allTiles();
+  Tilemap& tmap = city->tilemap();
+  const TilesArray& rtiles = tmap.allTiles();
 
-  for( auto tile : tiles )
+  //initialize coastal and water tiles
+  for( auto tile : rtiles )
   {
     int imgId = tile->imgId();
     if( (imgId >= 372 && imgId <= 403) || (imgId>=414 && imgId<=418) || tile->terrain().coast )
     {
-      slTiles.push_back( tile );
+      tiles.coast.push_back( tile );
     }
 
     if( tile->terrain().deepWater )
     {
-      dwTiles.push_back( tile );
+      tiles.water.push_back( tile );
+    }
+  }
+
+  //initialize riverside tiles
+  std::set<Tile*> checkedTiles;
+  for( auto tile : tiles.coast )
+  {
+    TilesArray area = tmap.area( 2, tile->pos() );
+    for( auto dtile : area )
+    {
+      if( dtile->getFlag( Tile::tlWater ) || dtile->getFlag( Tile::tlDeepWater ) )
+        continue;
+
+      auto pair = checkedTiles.insert( dtile );
+      if( pair.second )
+        tiles.riverside.push_back( dtile );
+    }
+    }
+}
+
+void Shoreline::Impl::generateWaterGarabage(PlayerCityPtr city)
+{
+  auto waterGarbage = Walker::create<WaterGarbage>( city );
+  waterGarbage->send2City( city->getBorderInfo( PlayerCity::boatEntry ).epos() );
+
+  nextWaterGarbage += math::random( game::Date::days2ticks( 10 ) );
+
+  for( int k=0; k < 20; k++ )
+  {
+    Tile* randomTile = tiles.water.random();
+    if( randomTile )
+    {
+      auto rw = Walker::create<RiverWave>( city );
+      rw->send2City( randomTile->pos() );
     }
   }
 }
@@ -78,34 +118,24 @@ void Shoreline::timeStep( const unsigned int time )
   if( !game::Date::isWeekChanged() )
     return;
 
-  if( _d->slTiles.empty() )
-  {
+  if( _d->tiles.coast.empty() )
     _d->checkMap( _city() );
+
+  //update riverside tiles is need
+  if( _city()->getOption( PlayerCity::riversideAsWell ) )
+  {
+    for( auto tile : _d->tiles.riverside )
+      tile->setParam( Tile::pWellWater, 16 );
   }
 
   if( time > _d->nextWaterGarbage )
-  {
-    auto waterGarbage = Walker::create<WaterGarbage>( _city() );
-    waterGarbage->send2City( _city()->getBorderInfo( PlayerCity::boatEntry ).epos() );
-
-    _d->nextWaterGarbage = time + math::random( game::Date::days2ticks( 10 ) );
-
-    for( int k=0; k < 20; k++ )
-    {
-      Tile* randomTile = _d->dwTiles.random();
-      if( randomTile )
-      {
-        auto rw = Walker::create<RiverWave>( _city() );
-        rw->send2City( randomTile->pos() );
-      }
-    }
-  }
+    _d->generateWaterGarbage( _city() );
 
   _d->lastTimeUpdate = time;
 
   std::string picName;
   picName.reserve( 256 );
-  for( auto tile : _d->slTiles )
+  for( auto tile : _d->tiles.coast )
   {
     if( tile->overlay().isValid() )
       continue;

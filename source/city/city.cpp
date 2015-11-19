@@ -163,7 +163,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setPicture( Picture( ResourceGroup::empirebits, 1 ) );
   _initAnimation();
 
-  setOption( updateRoads, 0 );
+  setOption( updateRoadsOnNextFrame, 0 );
   setOption( godEnabled, 1 );
   setOption( zoomEnabled, 1 );
   setOption( zoomInvert, OSystem::isMac() ? 1 : 0 );
@@ -180,8 +180,9 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( difficulty, game::difficulty::usual );
   setOption( forestFire, 1 );
   setOption( showGodsUnhappyWarn, 1 );
-  setOption( forestGrow, 0 );
+  setOption( forestGrow, 1 );
   setOption( warfNeedTimber, 1 );
+  setOption( riversideAsWell, 1 );
 
   _d->states.nation = world::nation::rome;
 }
@@ -230,9 +231,9 @@ void PlayerCity::timeStep(unsigned int time)
   _d->services.update( this, time );
   city::Timers::instance().update( time );
 
-  if( getOption( updateRoads ) > 0 )
+  if( getOption( updateRoadsOnNextFrame ) > 0 )
   {
-    setOption( updateRoads, 0 );
+    setOption( updateRoadsOnNextFrame, 0 );
     _d->overlays.recalcRoadAccess();
   }
 }
@@ -535,16 +536,15 @@ void PlayerCity::addService( city::SrvcPtr service )        { _d->services.push_
 void PlayerCity::setOption(PlayerCity::OptionType opt, int value)
 {
   _d->options[ opt ] = value;
-  if( opt == c3gameplay && value )
+  if( opt == c3gameplay )
   {
-    _d->options[ warfNeedTimber ] = false;
-    _d->options[ forestFire ] = false;
-    _d->options[ forestGrow ] = false;
-    _d->options[ forestGrow ] = false;
-    _d->options[ highlightBuilding ] = false;
-    _d->options[ destroyEpidemicHouses ] = false;
+    events::dispatch<WarningMessage>( "WARNING: enabled C3 gameplay only!", WarningMessage::negative );     
 
-    events::dispatch<WarningMessage>( "WARNING: enabled C3 gameplay only!", WarningMessage::negative );
+    _d->options[ warfNeedTimber ] = !value;
+    _d->options[ forestFire ] = !value;
+    _d->options[ forestGrow ] = !value;
+    _d->options[ destroyEpidemicHouses ] = !value;
+    _d->options[ riversideAsWell ] = !value;
   }
 }
 

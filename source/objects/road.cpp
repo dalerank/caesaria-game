@@ -46,7 +46,7 @@ Road::Road()
 
 bool Road::build( const city::AreaInfo& info )
 {
-  info.city->setOption( PlayerCity::updateRoads, 1 );
+  info.city->setOption( PlayerCity::updateRoadsOnNextFrame, 1 );
 
   Tilemap& tilemap = info.city->tilemap();
   OverlayPtr overlay = tilemap.at( info.pos ).overlay();

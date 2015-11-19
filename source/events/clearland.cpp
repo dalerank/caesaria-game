@@ -120,7 +120,7 @@ void ClearTile::_exec( Game& game, unsigned int )
     //
     if( deleteRoad )
     {
-      game.city()->setOption( PlayerCity::updateRoads, 1 );
+      game.city()->setOption( PlayerCity::updateRoadsOnNextFrame, 1 );
     }
   }
 
