@@ -50,7 +50,7 @@ public:
 
   TraderouteList all();
   TraderoutePtr create( const std::string& begin, const std::string& end );
-  void update( unsigned int time );
+  void timeStep( unsigned int time );
 
 private:
   class Impl;

@@ -473,6 +473,7 @@ void Empire::timeStep( unsigned int time )
   }
 
   _d->trading.timeStep( time );
+  _d->troutes.timeStep( time );
   _d->emperor.timeStep( time );
   _d->cities.update( time );
   _d->objects.update( time );
