@@ -21,7 +21,6 @@
 #include "pathway/pathway.hpp"
 #include "objects/constants.hpp"
 #include "objects/house.hpp"
-#include "gfx/helper.hpp"
 #include "game/gamedate.hpp"
 #include "objects_factory.hpp"
 #include "core/logger.hpp"
@@ -71,10 +70,10 @@ void School::buildingsServed(const std::set<BuildingPtr>& buildings, ServiceWalk
   if( walker->pathway().isReverse() )
     return;
 
-  auto houses = utils::uniques<House>( buildings );
+  auto houses = utils::select<House>( buildings );
   for( auto house : houses )
   {
-    unsigned int posHash = gfx::tile::hash(house->pos());
+    unsigned int posHash = house->pos().hash();
     _d->srvBuidings[ posHash ] = house->habitants().scholar_n();
   }
 

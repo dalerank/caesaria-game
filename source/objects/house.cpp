@@ -17,7 +17,6 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "house.hpp"
-#include "gfx/helper.hpp"
 #include "objects/house_spec.hpp"
 #include "core/utils.hpp"
 #include "core/exception.hpp"
@@ -115,8 +114,8 @@ class Services : public std::map<Service::Type, ISrvcAdapter*>
 public:
   ~Services()
   {
-    foreach(it, *this)
-      delete it->second;
+    for( auto& it : *this)
+      delete it.second;
   }
 
   Services()
@@ -163,10 +162,10 @@ public:
   VariantList save() const
   {
      VariantList ret;
-     foreach( mapItem, *this )
+     for( auto& mapItem : *this )
      {
-       ret.push_back( Variant( (int)mapItem->first ) );
-       ret.push_back( Variant( mapItem->second->value() ) );
+       ret.push_back( Variant( (int)mapItem.first ) );
+       ret.push_back( Variant( mapItem.second->value() ) );
      }
 
      return ret;

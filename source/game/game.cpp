@@ -61,7 +61,7 @@
 #include "gfx/picture_info_bank.hpp"
 #include "gfx/sdl_engine.hpp"
 #include "objects/overlay.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "gamestate.hpp"
 #include "infoboxmanager.hpp"
 #include "hotkey_manager.hpp"

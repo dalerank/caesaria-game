@@ -7,15 +7,16 @@ set(DEP_DIR "${CMAKE_SOURCE_DIR}/dep")
 aux_source_directory(. UPD_SRC_LIST)
 file(GLOB UPD_INC_LIST "*.hpp")
 
+add_definitions(-DCAESARIA_DISABLED_TILEMAPCONFIG)
+
 set( UPD_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/core/hash.cpp"
       "${BASE_SOURCE_DIR}/core/utils.cpp"
       "${BASE_SOURCE_DIR}/core/bytearray.cpp"
       "${BASE_SOURCE_DIR}/core/logger.cpp"
       "${BASE_SOURCE_DIR}/core/time.cpp"
-      "${BASE_SOURCE_DIR}/gfx/tilepos.cpp"
-      "${BASE_SOURCE_DIR}/gfx/tile.cpp"
       "${BASE_SOURCE_DIR}/core/format.cpp"
+      "${BASE_SOURCE_DIR}/gfx/tilepos.cpp"
       "${BASE_SOURCE_DIR}/thread/safethread.cpp"
       "${BASE_SOURCE_DIR}/core/variant.cpp"
       "${BASE_SOURCE_DIR}/core/variant_map.cpp"

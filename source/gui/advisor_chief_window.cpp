@@ -104,8 +104,7 @@ public:
     _title = title;
     _dfont = Font::create( FONT_2_WHITE );
 
-    Picture pic;
-    pic.load( ResourceGroup::panelBackground, 48 ), Point( 5, 5 );
+    Picture pic( ResourceGroup::panelBackground, 48 );
     setIcon( pic, Point( 5, 5 ) );
     setFont( Font::create( FONT_2 ) );
 

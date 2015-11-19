@@ -15,40 +15,28 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_WALKER_GRID_H_INCLUDED__
-#define __CAESARIA_WALKER_GRID_H_INCLUDED__
+#ifndef __CAESARIA_TILE_CONFIG_H_INCLUDED__
+#define __CAESARIA_TILE_CONFIG_H_INCLUDED__
 
-#include "walker/predefinitions.hpp"
-#include "core/size.hpp"
-#include <vector>
+#include "tile.hpp"
 
-namespace city
+namespace gfx
 {
 
-class WalkersGrid
-{
-public:
-  void clear();
+class Tilemap;
 
-  void append( WalkerPtr a );
-  void resize( Size size );
-  const Size& size() const;
-  void remove( WalkerPtr a );
-  void update( const WalkerList& walkers );
-  void sort();
+namespace tile
+{    
+  int encode( const Tile& tt );
+  int turnCoastTile(int imgid , Direction newDirection);
+  TilePos hash2pos( unsigned int hash );
+  Tile::Type findType( const std::string& name );
+  void decode( Tile& tile, const int bitset);
+  const Tile& getInvalid();
+  Tile& getInvalidSafe();
+  void fixPlateauFlags( Tile& tile );
+}//end namespace tile
 
-  const WalkerList& at(const TilePos& pos);
+}//end namespace gfx
 
-private:
-  unsigned int _offset(const TilePos& pos);
-
-  typedef std::vector< WalkerList > Grid;
-
-  Size _size;
-  unsigned int _gsize;
-  Grid _grid;
-};
-
-}//end namespace city
-
-#endif//__CAESARIA_WALKER_GRID_H_INCLUDED__
+#endif //__CAESARIA_TILE_CONFIG_H_INCLUDED__

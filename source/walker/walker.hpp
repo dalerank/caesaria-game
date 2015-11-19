@@ -169,6 +169,7 @@ protected:
   void _setDirection( Direction direction );
   void _setNation( world::Nation nation );
   void _setLocation( gfx::Tile* tile );
+  void _setLocation( const TilePos& pos );
   void _setType( walker::Type type );
   PlayerCityPtr _city() const;
   gfx::Tilemap& _map() const;

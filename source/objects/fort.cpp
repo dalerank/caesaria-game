@@ -20,7 +20,6 @@
 #include "game/resourcegroup.hpp"
 #include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
-#include "gfx/helper.hpp"
 #include "walker/romesoldier.hpp"
 #include "core/logger.hpp"
 #include "events/event.hpp"

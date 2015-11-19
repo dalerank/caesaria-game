@@ -34,7 +34,6 @@
 #include "objects/constants.hpp"
 #include "game/gamedate.hpp"
 #include "pathway/pathway_helper.hpp"
-#include "gfx/helper.hpp"
 #include "walkers_factory.hpp"
 #include "city/trade_options.hpp"
 

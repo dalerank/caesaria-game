@@ -23,7 +23,7 @@
 #include "core/foreach.hpp"
 #include "gfx/tilemap_camera.hpp"
 #include "city/city.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "core/event.hpp"
 #include "events/clearland.hpp"
 #include "core/utils.hpp"
@@ -43,26 +43,26 @@ using namespace events;
 namespace citylayer
 {
 
-class DestroingArea : std::set<int>
+class DestroingArea : std::set<unsigned int>
 {
 public:
   DestroingArea& operator+=(Tile* tile)
   {
-    this->insert( tile::hash( tile->epos() ) );
+    this->insert( tile->epos().hash() );
     return *this;
   }
 
   DestroingArea& operator+=(const TilesArray& tiles )
   {
     for( auto tile : tiles )
-      this->insert( tile::hash( tile->epos() ) );
+      this->insert( tile->epos().hash() );
 
     return *this;
   }
 
   bool inArea( Tile* tile ) const
   {
-    return tile->getFlag( Tile::isDestructible ) && count( tile::hash( tile->epos() ) ) > 0;
+    return tile->getFlag( Tile::isDestructible ) && count( tile->epos().hash() ) > 0;
   }
 };
 

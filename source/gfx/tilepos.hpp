@@ -68,13 +68,17 @@ public:
   bool operator!=(const TilePos& other) const{ return (_x != other._x ) || ( _y != other._y ); }
   bool operator<(const TilePos& other) const{ return (_x<other._x) || (_x==other._x && _y<other._y); }
 
+#ifndef CAESARIA_DISABLED_TILEMAPCONFIG
   Point toScreenCoordinates() const;
+#endif
 
   double getAngleICW() const;
 
   TilePos fit( const TilePos& lur, const TilePos& tbr ) const;
 
   TilePos nextStep( const TilePos& dst ) const;
+
+  unsigned int hash() const;
 };
 
 #endif //__CAESARIA_TILEPOS_H_INCLUDED__

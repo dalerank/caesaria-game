@@ -14,8 +14,8 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "tilesarray.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "objects/overlay.hpp"
-#include "gfx/helper.hpp"
 
 namespace gfx
 {

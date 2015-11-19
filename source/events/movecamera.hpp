@@ -27,7 +27,7 @@ namespace events
 class MoveCamera : public GameEvent
 {
 public:
-  static GameEventPtr create( TilePos pos );
+  static GameEventPtr create( const TilePos& pos );
 
 protected:
   virtual void _exec( Game& game, unsigned int );

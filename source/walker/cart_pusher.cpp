@@ -33,7 +33,7 @@
 #include "events/removecitizen.hpp"
 #include "game/resourcegroup.hpp"
 #include "corpse.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "gfx/cart_animation.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "walkers_factory.hpp"
@@ -80,8 +80,6 @@ CartPusher::CartPusher(PlayerCityPtr city, CartCapacity cap)
   _d->stock.setCapacity( cap );
   _d->maxDistance = distance::maxDeliver;
   _d->stock.setCapacity( simpleCart );
-
-  setName( NameGenerator::rand( NameGenerator::plebMale ) );
 }
 
 void CartPusher::_reachedPathway()
@@ -105,7 +103,7 @@ void CartPusher::_reachedPathway()
       {
         int storedQty = saveQty - _d->stock.qty();
         producerBuilding()->store().confirmDeliver( _d->stock.type(), storedQty,
-                                                    gfx::tile::hash( consumerBuilding()->pos() ),
+                                                    consumerBuilding()->pos().hash(),
                                                     game::Date::current() );
       }
     }
@@ -144,7 +142,7 @@ void CartPusher::_brokePathway(TilePos pos)
     }
   }
 
-  Logger::warning( "CartPusher::_brokePathway not destination point [{},{}]", pos.i(), pos.j() );
+  Logger::warning( "WARNING !!! CartPusher::_brokePathway not destination point [{},{}]", pos.i(), pos.j() );
   deleteLater();
 }
 

@@ -17,13 +17,14 @@
 
 #include "loader_map.hpp"
 #include "gfx/imgid.hpp"
-#include "gfx/helper.hpp"
 #include "city/city.hpp"
 #include "game.hpp"
 #include "core/exception.hpp"
 #include "objects/objects_factory.hpp"
 #include "core/utils.hpp"
 #include "gfx/tilemap.hpp"
+#include "gfx/tilemap_config.hpp"
+#include "gfx/tile_config.hpp"
 #include "world/empire.hpp"
 #include "core/logger.hpp"
 #include "objects/constants.hpp"
@@ -145,7 +146,7 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   f.seekg(kLocation, std::ios::beg);
   unsigned int location=0;
   f.read((char*)&location, 1);
-  Logger::warning( "C3MapLoader: location of city is {0}", (int)(location) );
+  Logger::warning( "C3MapLoader: location of city is {}", (int)(location) );
 
   std::string cityName = LoaderHelper::getDefaultCityName( location );
   oCity->setName( cityName );
@@ -156,7 +157,7 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   int size_2;
   f.read((char*)&map_size,   4);
   f.read((char*)&size_2, 4);
-  Logger::warning( "C3MapLoader: map size is {0}", map_size );
+  Logger::warning( "C3MapLoader: map size is {}", map_size );
 
   if (map_size != size_2)
   {

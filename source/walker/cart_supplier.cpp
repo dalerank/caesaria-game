@@ -38,7 +38,7 @@
 #include "city/trade_options.hpp"
 #include "core/direction.hpp"
 #include "walkers_factory.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "gfx/tilemap.hpp"
 #include "gfx/cart_animation.hpp"
 

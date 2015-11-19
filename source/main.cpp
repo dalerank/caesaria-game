@@ -20,7 +20,6 @@
 #include "vfs/directory.hpp"
 #include "game/settings.hpp"
 #include "game/game.hpp"
-#include "gfx/helper.hpp"
 #include "core/logger.hpp"
 #include "core/stacktrace.hpp"
 #include "core/osystem.hpp"

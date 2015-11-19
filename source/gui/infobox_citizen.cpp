@@ -34,8 +34,8 @@
 #include "walker/merchant_sea.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
-#include "gfx/helper.hpp"
 #include "gfx/tilemap.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "core/color_list.hpp"
 #include "core/metric.hpp"
 #include "events/movecamera.hpp"
@@ -178,7 +178,7 @@ void AboutPeople::_updateNeighbors()
   Point lbOffset( 60, 0 );
   for( auto tile : tiles )
   {
-    auto& tileWalkers = _d->city->walkers( tile->pos() );
+    const auto& tileWalkers = _d->city->walkers( tile->pos() );
     if( !tileWalkers.empty() )
     {
       //mini screenshot from citizen pos need here

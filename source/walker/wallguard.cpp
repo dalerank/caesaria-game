@@ -33,7 +33,6 @@
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
 #include "walker/helper.hpp"
-#include "gfx/helper.hpp"
 
 using namespace gfx;
 
@@ -68,7 +67,7 @@ bool WallGuard::die()
     break;
 
     default:
-      Logger::warning( "Wallguard::die() not work yet for this type " + WalkerHelper::getTypename( type() ) );
+      Logger::warning( "WARNING !!! Wallguard::die() not work yet for this type " + WalkerHelper::getTypename( type() ) );
     }
   }
 

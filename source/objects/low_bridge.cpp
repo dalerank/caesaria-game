@@ -15,9 +15,9 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "low_bridge.hpp"
+#include "gfx/tile_config.hpp"
 #include "gfx/picture.hpp"
 #include "game/resourcegroup.hpp"
-#include "gfx/helper.hpp"
 #include "city/statistic.hpp"
 #include "core/variant_map.hpp"
 #include "core/variant_list.hpp"
@@ -372,7 +372,7 @@ void LowBridge::save(VariantMap& stream) const
   Construction::save( stream );
 
   VariantList vl_tinfo;
-  for( auto& subtile : _d->subtiles )
+  for( const auto& subtile : _d->subtiles )
   {
     vl_tinfo.push_back( subtile->_imgId );
   }

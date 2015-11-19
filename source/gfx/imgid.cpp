@@ -15,7 +15,7 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#include "helper.hpp"
+#include "imgid.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/logger.hpp"
 #include "core/utils.hpp"

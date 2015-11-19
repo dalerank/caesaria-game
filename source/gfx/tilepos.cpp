@@ -16,7 +16,10 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "tilepos.hpp"
-#include "helper.hpp"
+
+#ifndef CAESARIA_DISABLED_TILEMAPCONFIG
+#include "tilemap_config.hpp"
+#endif
 
 TilePos::TilePos(const int i, const int j) : Vector2<int>( i, j ) {}
 
@@ -28,11 +31,14 @@ float TilePos::distanceFrom(const TilePos& other) const { return getDistanceFrom
 
 int TilePos::getDistanceFromSQ(const TilePos& other) const { return Vector2<int>::getDistanceFromSQ(other);}
 
+
+#ifndef CAESARIA_DISABLED_TILEMAPCONFIG
 Point TilePos::toScreenCoordinates() const
 {
   return Point( gfx::tilemap::cellSize().width() * (_y+_x),
                 gfx::tilemap::cellSize().height()* (_y-_x) );
 }
+#endif
 
 double TilePos::getAngleICW() const { return getAngle(); }
 
@@ -50,3 +56,5 @@ TilePos TilePos::nextStep(const TilePos& dst) const
   return *this + TilePos( math::signnum( dst.i() - i() ),
                           math::signnum( dst.j() - j() ) );
 }
+
+unsigned int TilePos::hash() const { return (_x << 16) + _y; }

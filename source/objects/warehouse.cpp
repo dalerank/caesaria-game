@@ -24,7 +24,6 @@
 #include "core/exception.hpp"
 #include "gui/info_box.hpp"
 #include "core/gettext.hpp"
-#include "gfx/helper.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/variant.hpp"
 #include "walker/cart_pusher.hpp"
@@ -208,10 +207,10 @@ void Warehouse::computePictures()
   int index = 4;
   std::string rc = _d->isTradeCenter ? ResourceGroup::tradecenter : ResourceGroup::warehouse;
   _fgPictures()[ fgpic::idxMainPic ] = strafePic( rc, 1, 0, 2);
-  foreach( room, _d->rooms )
+  for( auto& room : _d->rooms )
   {
-     room->computePicture();
-     _fgPicture( index ) = room->picture;
+     room.computePicture();
+     _fgPicture( index ) = room.picture;
      index++;
   }
 }
@@ -243,7 +242,7 @@ void Warehouse::load( const VariantMap& stream )
   
   VariantList vm_tiles = stream.get( literals::tiles ).toList();
   int tileIndex = 0;
-  for( auto& it : vm_tiles )
+  for( const auto& it : vm_tiles )
   {
     _d->rooms[ tileIndex ].load( it.toList() );
     tileIndex++;

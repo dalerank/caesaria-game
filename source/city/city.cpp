@@ -63,7 +63,6 @@
 #include "walker/helper.hpp"
 #include "walkergrid.hpp"
 #include "events/showinfobox.hpp"
-#include "gfx/helper.hpp"
 #include "game/difficulty.hpp"
 #include "active_points.hpp"
 #include "game/player.hpp"
@@ -83,6 +82,7 @@
 #include "events/warningmessage.hpp"
 #include "cityservice_peace.hpp"
 #include "city_option.hpp"
+#include "gfx/tile_config.hpp"
 #include "ambientsound.hpp"
 #include "core/osystem.hpp"
 
@@ -399,7 +399,7 @@ void PlayerCity::load( const VariantMap& stream )
   LOG_CITY.info( "Load overlays" );
   VariantMap overlays = stream.get( "overlays" ).toMap();
 
-  for (auto& item : overlays)
+  for( const auto& item : overlays)
   {
     VariantMap overlayParams = item.second.toMap();
     VariantList config = overlayParams.get( "config" ).toList();
@@ -427,7 +427,7 @@ void PlayerCity::load( const VariantMap& stream )
 
   LOG_CITY.info( "Parse walkers info" );
   VariantMap walkers = stream.get( "walkers" ).toMap();
-  for (auto& item : walkers)
+  for( const auto& item : walkers)
   {
     VariantMap walkerInfo = item.second.toMap();
     walker::Type walkerType = walkerInfo.get( "type", (int)walker::unknown ).toEnum<walker::Type>();
@@ -446,7 +446,7 @@ void PlayerCity::load( const VariantMap& stream )
 
   LOG_CITY.info( "Load service info" );
   VariantMap services = stream.get( "services" ).toMap();
-  for(auto& item : services)
+  for( const auto& item : services)
   {
     VariantMap servicesSave = item.second.toMap();
 
@@ -529,7 +529,7 @@ unsigned int PlayerCity::tradeType() const                  { return world::Empi
 Signal1<int>& PlayerCity::onPopulationChanged()             { return _d->signal.onPopulationChanged; }
 Signal1<int>& PlayerCity::onFundsChanged()                  { return _d->economy.onChange(); }
 void PlayerCity::setCameraPos(const TilePos pos)            { _d->cameraStart = pos; }
-TilePos PlayerCity::cameraPos() const                       { return _d->cameraStart; }
+const TilePos& PlayerCity::cameraPos() const                       { return _d->cameraStart; }
 void PlayerCity::addService( city::SrvcPtr service )        { _d->services.push_back( service ); }
 
 void PlayerCity::setOption(PlayerCity::OptionType opt, int value)

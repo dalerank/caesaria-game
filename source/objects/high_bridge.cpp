@@ -16,11 +16,11 @@
 #include "high_bridge.hpp"
 #include "gfx/picture.hpp"
 #include "game/resourcegroup.hpp"
-#include "gfx/helper.hpp"
 #include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
 #include "events/build.hpp"
 #include "core/variant_map.hpp"
+#include "gfx/tile_config.hpp"
 #include "core/variant_list.hpp"
 #include "constants.hpp"
 #include "walker/walker.hpp"
@@ -288,9 +288,9 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
       _d->addSpan( tiles.front()->pos() - startPos, HighBridgeSubTile::liftingWestL );
       tiles.erase( tiles.begin() );
 
-      foreach( tile, tiles )
+      for( auto tile : tiles )
       {
-        _d->addSpan( (*tile)->pos() - startPos, HighBridgeSubTile::spanWest );
+        _d->addSpan( tile->pos() - startPos, HighBridgeSubTile::spanWest );
       }
 
       _d->addSpan( tiles.back()->pos() - startPos + TilePos( 1, 0 ), HighBridgeSubTile::descentWest );
@@ -333,9 +333,9 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
       _d->addSpan( tiles.front()->pos() - startPos, HighBridgeSubTile::liftingWestL );
       tiles.erase( tiles.begin() );
 
-      foreach( tile, tiles )
+      for( auto tile : tiles )
       {        
-        _d->addSpan( (*tile)->pos() - startPos, HighBridgeSubTile::spanWest );
+        _d->addSpan( tile->pos() - startPos, HighBridgeSubTile::spanWest );
       }
 
       _d->addSpan( tiles.back()->pos() - startPos + TilePos( 1, 0 ), HighBridgeSubTile::descentWest );
@@ -369,7 +369,8 @@ void HighBridge::_computePictures( PlayerCityPtr city, const TilePos& startPos, 
   break;
   }
 
-  foreach( tile, _d->subtiles ) { _fgPictures().push_back( (*tile)->picture() ); }
+  for( auto tile : _d->subtiles )
+     _fgPictures().push_back( tile->picture() );
 }
 
 bool HighBridge::_checkOnlyWaterUnderBridge( PlayerCityPtr city, const TilePos& start, const TilePos& stop ) const
@@ -444,11 +445,11 @@ void HighBridge::_checkParams(PlayerCityPtr city, Direction& direction, TilePos&
   if( direction == direction::none )
   {
     TilesArea tiles( tilemap, curPos + TilePos(0, 1), curPos + TilePos( 0, 10) );
-    foreach( it, tiles )
+    for( auto it : tiles )
     {
-      if( __isFlatCoastTile( **it ) )
+      if( __isFlatCoastTile( *it ) )
       {
-        stop = (*it)->pos();
+        stop = it->pos();
         direction = abs( stop.j() - start.j() ) > 3 ? direction::northEast : direction::none;
         break;
       }

@@ -34,7 +34,7 @@
 #include "objects_factory.hpp"
 #include "game/gamedate.hpp"
 #include "gfx/tilearea.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 
 using namespace gfx;
 

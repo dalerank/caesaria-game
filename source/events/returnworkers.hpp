@@ -25,7 +25,7 @@ namespace events
 class ReturnWorkers : public GameEvent
 {
 public:
-  static GameEventPtr create(TilePos center, unsigned int workers);
+  static GameEventPtr create(const TilePos& center, unsigned int workers);
 
 protected:
   virtual void _exec(Game& game, unsigned int time );

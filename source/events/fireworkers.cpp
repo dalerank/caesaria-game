@@ -29,7 +29,7 @@ namespace events
 {
 static const int defaultReturnWorkersDistance = 40;
 
-GameEventPtr FireWorkers::create(TilePos center, unsigned int workers)
+GameEventPtr FireWorkers::create(const TilePos& center, unsigned int workers)
 {
   FireWorkers* e = new FireWorkers();
   e->_center  = center;
@@ -71,7 +71,7 @@ void FireWorkers::_exec(Game& game, unsigned int)
 
   if( _workers > 0 )
   {
-    WorkingBuildingList buildings = game.city()->statistic().objects.find<WorkingBuilding>( object::any );
+    WorkingBuildingList buildings = game.city()->statistic().objects.find<WorkingBuilding>();
     for( auto building : buildings )
     {
       int removedFromWb = building->removeWorkers( _workers );

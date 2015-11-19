@@ -25,7 +25,7 @@
 #include "gfx/tilemap.hpp"
 #include "objects/construction.hpp"
 #include "events/disaster.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "factory.hpp"
 
 using namespace gfx;
@@ -43,7 +43,7 @@ public:
   TilePos start, end, current;
 };
 
-GameEventPtr EarthQuake::create(TilePos start, TilePos stop)
+GameEventPtr EarthQuake::create(const TilePos& start, const TilePos& stop)
 {
   EarthQuake* eq = new EarthQuake();
   eq->_d->start = start;

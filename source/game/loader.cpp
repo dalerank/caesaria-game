@@ -26,7 +26,6 @@
 #include "core/position.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/utils.hpp"
-#include "gfx/helper.hpp"
 #include "gfx/imgid.hpp"
 #include "resourcegroup.hpp"
 #include "gfx/animation_bank.hpp"

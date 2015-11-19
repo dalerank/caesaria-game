@@ -22,7 +22,6 @@
 #include "walkers_factory.hpp"
 #include "city/statistic.hpp"
 #include "objects/construction.hpp"
-#include "gfx/helper.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "core/logger.hpp"
 

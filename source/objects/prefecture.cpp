@@ -28,7 +28,6 @@
 #include "gfx/tilemap.hpp"
 #include "city/cityservice_fire.hpp"
 #include "objects/constants.hpp"
-#include "gfx/helper.hpp"
 #include "objects_factory.hpp"
 
 using namespace gfx;
@@ -114,17 +113,14 @@ TilePos Prefecture::Impl::checkFireDetect( PlayerCityPtr city, const TilePos& po
   city::FirePtr fire = city->statistic().services.find<city::Fire>();
 
   fireDetect = gfx::tilemap::invalidLocation();
-  if( city.isValid() )
+  int minDistance = 9999;
+  for( auto& location : fire->locations() )
   {
-    int minDistance = 9999;
-    for( auto& location : fire->locations() )
+    int currentDistance = pos.distanceFrom( location );
+    if( currentDistance < minDistance )
     {
-      int currentDistance = pos.distanceFrom( location );
-      if( currentDistance < minDistance )
-      {
-        minDistance = currentDistance;
-        fireDetect = location;
-      }
+      minDistance = currentDistance;
+      fireDetect = location;
     }
   }
 

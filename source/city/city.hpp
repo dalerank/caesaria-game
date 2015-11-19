@@ -84,7 +84,7 @@ public:
   
   /** Set/get current camera position last frame */
   void setCameraPos(const TilePos pos);
-  TilePos cameraPos() const;
+  const TilePos& cameraPos() const;
      
   econ::Treasury& treasury();
 
