@@ -210,6 +210,7 @@
 "##governor_palace_2##":"Guvernérův paláce"
 "##governorVilla##":"Guvernérova vila"
 "##wine##":"Víno"
+"##prettyWine##":"Falern Víno"
 "##grape##":"Hrozny vína"
 "##vinard##":"Vinohrad"
 "##wine_workshop##":"Vinárna"

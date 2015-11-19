@@ -16,7 +16,9 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "loader_sav.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/imgid.hpp"
+#include "gfx/tilemap_config.hpp"
+#include "gfx/tile_config.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"
 #include "objects/objects_factory.hpp"
@@ -209,7 +211,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
   try
   {
     f.read((char*)&tmp, 4); // read length of compressed chunk
-    Logger::warning( "GameLoaderC3Sav: length of compressed ids is {0}", tmp );
+    Logger::warning( "GameLoaderC3Sav: length of compressed ids is {}", tmp );
     PKWareInputStream *pk = new PKWareInputStream(&f, false, tmp);
     for (int i = 0; i < gfx::tilemap::c3mapSizeSq; i++)
     {
@@ -219,7 +221,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
     delete pk;
     
     f.read((char*)&tmp, 4); // read length of compressed chunk
-    Logger::warning( "GameLoaderC3Sav: length of compressed egdes is {0}", tmp );
+    Logger::warning( "GameLoaderC3Sav: length of compressed egdes is {}", tmp );
     pk = new PKWareInputStream(&f, false, tmp);
     for (int i = 0; i < gfx::tilemap::c3mapSizeSq; i++)
     {
@@ -231,7 +233,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
     SkipCompressed(f); // skip building ids
     
     f.read((char*)&tmp, 4); // read length of compressed chunk
-    Logger::warning( "GameLoaderC3Sav: length of compressed terraindata is {0}", tmp );
+    Logger::warning( "GameLoaderC3Sav: length of compressed terraindata is {}", tmp );
     pk = new PKWareInputStream(&f, false, tmp);
     for (int i = 0; i < gfx::tilemap::c3mapSizeSq; i++)
     {
@@ -255,7 +257,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
     
     // here goes walkers array
     f.read((char*)&tmp, 4); // read length of compressed chunk
-    Logger::warning( "GameLoaderC3Sav: length of compressed walkers data is {0}", tmp );
+    Logger::warning( "GameLoaderC3Sav: length of compressed walkers data is {}", tmp );
     pk = new PKWareInputStream(&f, false, tmp);    
     for (int j = 0; j < 1000; j++)
     {
@@ -341,7 +343,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
           object::Type ovType = LoaderHelper::convImgId2ovrType( imgId );
           if( ovType == object::unknown )
           {
-            Logger::warning( "!!! GameLoaderC3Sav: Unknown building %x at [{0},{0}]", imgId, i, j );
+            Logger::warning( "!!! GameLoaderC3Sav: Unknown building %x at [{},{}]", imgId, i, j );
           }
           else
           {
@@ -429,8 +431,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
           LoaderHelper::decodeTerrain( *masterTile, oCity, bbImgId );
         }
       }
-    }
-    
+    }    
   }
   catch(PKException)
   {

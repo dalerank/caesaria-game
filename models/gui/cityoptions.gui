@@ -13,7 +13,8 @@
   columns#HLayout : {
     geometry : [ 16, 50, "pw-16", "ph-30" ]
 
-    columnA#VLayout : {
+    columnA#VLayout :
+    {
       btnCityGods#OptionButton : { base : "city_opts_god", states : { off:0, on:1 }, link : [ "city", "godEnabled" ] }
       btnWarnings#OptionButton : { base : "city_warnings", states : { off:0, on:1 }, link : [ "city", "warningsEnabled" ] }
       btnZoom#OptionButton     : { base : "city_zoom",     states : { off:0, on:1 }, link : [ "city", "zoomEnabled" ] }
@@ -23,15 +24,18 @@
       btnShowTooltips#OptionButton:{base: "city_tooltips", states : { off:0, on:1 }, link : [ "game", "tooltipEnabled" ] }
       btnBuildOverDraw#OptionButton:{base:"city_buildoverdraw",states:{off:0,on:1 }, link : [ "draw", "overdrawOnBuild" ] }
       btnShowGodsUnhappyWarn#OptionButton:{base:"city_buildoverdraw",states:{off:0,on:1 }, link : [ "city", "showGodsUnhappyWarn" ] }
-      btnWarfNeedTimber#OptionButton:{base:"city_warf_timber",states:{off:0,on:1 }, link : [ "city", "warfNeedTimber" ] }
+      btnWarfNeedTimber#OptionButton:{base:"city_warf_timber",states:{off:0,on:1  }, link : [ "city", "warfNeedTimber" ] }
+      btnRiverSideAsWell#OptionButton:{base:"river_side_well",states:{off:0,on:1  }, link : [ "city", "riversideAsWell" ] }
 
       btnDifficulty#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_barbarian_mode##" }
       btnRoadBlocks#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_roadblock_mode##" }
 
-      firerisk#HLayout : {
+      firerisk#HLayout :
+      {
         maximumSize : [ 0, 24 ]
         lbFireRisk#Label : { font : "FONT_2" }
-        btnIncreaseFireRisk#TexturedButton : {
+        btnIncreaseFireRisk#TexturedButton :
+        {
           maximumSize : [ 24, 24 ]
           normal : [ "paneling", 605 ]
           hovered : [ "paneling", 606 ]
@@ -39,7 +43,8 @@
           disabled : [ "paneling", 305 ]
         }
 
-        btnDecreaseFireRisk#TexturedButton : {
+        btnDecreaseFireRisk#TexturedButton :
+        {
           maximumSize : [ 24, 24 ]
           normal : [ "paneling", 601 ]
           hovered : [ "paneling", 602 ]

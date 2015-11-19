@@ -38,7 +38,7 @@ public:
     _O(adviserEnabled);
     _O(godEnabled)
     _O(fishPlaceEnabled)
-    _O(updateRoads)
+    _O(updateRoadsOnNextFrame)
     _O(forceBuild)
     _O(warningsEnabled)
     _O(updateTiles)

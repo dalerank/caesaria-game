@@ -63,7 +63,6 @@
 #include "walker/helper.hpp"
 #include "walkergrid.hpp"
 #include "events/showinfobox.hpp"
-#include "gfx/helper.hpp"
 #include "game/difficulty.hpp"
 #include "active_points.hpp"
 #include "game/player.hpp"
@@ -83,6 +82,7 @@
 #include "events/warningmessage.hpp"
 #include "cityservice_peace.hpp"
 #include "city_option.hpp"
+#include "gfx/tile_config.hpp"
 #include "ambientsound.hpp"
 #include "core/osystem.hpp"
 
@@ -163,7 +163,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setPicture( Picture( ResourceGroup::empirebits, 1 ) );
   _initAnimation();
 
-  setOption( updateRoads, 0 );
+  setOption( updateRoadsOnNextFrame, 0 );
   setOption( godEnabled, 1 );
   setOption( zoomEnabled, 1 );
   setOption( zoomInvert, OSystem::isMac() ? 1 : 0 );
@@ -180,8 +180,9 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( difficulty, game::difficulty::usual );
   setOption( forestFire, 1 );
   setOption( showGodsUnhappyWarn, 1 );
-  setOption( forestGrow, 0 );
+  setOption( forestGrow, 1 );
   setOption( warfNeedTimber, 1 );
+  setOption( riversideAsWell, 1 );
 
   _d->states.nation = world::nation::rome;
 }
@@ -189,7 +190,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
 void PlayerCity::_initAnimation()
 {
   _animation().clear();
-  _animation().load( "ourcity_anim" );
+  _animation().load( "world_ourcity" );
 }
 
 std::string PlayerCity::about(Object::AboutType type)
@@ -230,9 +231,9 @@ void PlayerCity::timeStep(unsigned int time)
   _d->services.update( this, time );
   city::Timers::instance().update( time );
 
-  if( getOption( updateRoads ) > 0 )
+  if( getOption( updateRoadsOnNextFrame ) > 0 )
   {
-    setOption( updateRoads, 0 );
+    setOption( updateRoadsOnNextFrame, 0 );
     _d->overlays.recalcRoadAccess();
   }
 }
@@ -399,7 +400,7 @@ void PlayerCity::load( const VariantMap& stream )
   LOG_CITY.info( "Load overlays" );
   VariantMap overlays = stream.get( "overlays" ).toMap();
 
-  for (auto& item : overlays)
+  for( const auto& item : overlays)
   {
     VariantMap overlayParams = item.second.toMap();
     VariantList config = overlayParams.get( "config" ).toList();
@@ -427,7 +428,7 @@ void PlayerCity::load( const VariantMap& stream )
 
   LOG_CITY.info( "Parse walkers info" );
   VariantMap walkers = stream.get( "walkers" ).toMap();
-  for (auto& item : walkers)
+  for( const auto& item : walkers)
   {
     VariantMap walkerInfo = item.second.toMap();
     walker::Type walkerType = walkerInfo.get( "type", (int)walker::unknown ).toEnum<walker::Type>();
@@ -446,7 +447,7 @@ void PlayerCity::load( const VariantMap& stream )
 
   LOG_CITY.info( "Load service info" );
   VariantMap services = stream.get( "services" ).toMap();
-  for(auto& item : services)
+  for( const auto& item : services)
   {
     VariantMap servicesSave = item.second.toMap();
 
@@ -529,22 +530,21 @@ unsigned int PlayerCity::tradeType() const                  { return world::Empi
 Signal1<int>& PlayerCity::onPopulationChanged()             { return _d->signal.onPopulationChanged; }
 Signal1<int>& PlayerCity::onFundsChanged()                  { return _d->economy.onChange(); }
 void PlayerCity::setCameraPos(const TilePos pos)            { _d->cameraStart = pos; }
-TilePos PlayerCity::cameraPos() const                       { return _d->cameraStart; }
+const TilePos& PlayerCity::cameraPos() const                       { return _d->cameraStart; }
 void PlayerCity::addService( city::SrvcPtr service )        { _d->services.push_back( service ); }
 
 void PlayerCity::setOption(PlayerCity::OptionType opt, int value)
 {
   _d->options[ opt ] = value;
-  if( opt == c3gameplay && value )
+  if( opt == c3gameplay )
   {
-    _d->options[ warfNeedTimber ] = false;
-    _d->options[ forestFire ] = false;
-    _d->options[ forestGrow ] = false;
-    _d->options[ forestGrow ] = false;
-    _d->options[ highlightBuilding ] = false;
-    _d->options[ destroyEpidemicHouses ] = false;
+    events::dispatch<WarningMessage>( "WARNING: enabled C3 gameplay only!", WarningMessage::negative );     
 
-    events::dispatch<WarningMessage>( "WARNING: enabled C3 gameplay only!", WarningMessage::negative );
+    _d->options[ warfNeedTimber ] = !value;
+    _d->options[ forestFire ] = !value;
+    _d->options[ forestGrow ] = !value;
+    _d->options[ destroyEpidemicHouses ] = !value;
+    _d->options[ riversideAsWell ] = !value;
   }
 }
 

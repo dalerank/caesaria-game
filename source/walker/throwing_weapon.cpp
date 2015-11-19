@@ -18,7 +18,7 @@
 #include "city/city.hpp"
 #include "objects/overlay.hpp"
 #include "game/resourcegroup.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/foreach.hpp"
 

@@ -39,7 +39,8 @@
 #include "walker/walker.hpp"
 #include "gfx/tilearea.hpp"
 #include "gfx/city_renderer.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
+#include "gfx/tile_config.hpp"
 #include "gfx/tilemap.hpp"
 #include "city/statistic.hpp"
 #include "core/osystem.hpp"
@@ -107,16 +108,16 @@ void Build::_discardPreview()
   d->cachedTiles.clear();
 }
 
-void Build::_checkPreviewBuild(TilePos pos)
+void Build::_checkPreviewBuild(const TilePos& pos)
 {
   __D_REF(d,Build);
-  auto command =  d.renderer->mode().as<BuildMode>();
+  auto buildMode =  d.renderer->mode().as<BuildMode>();
 
-  if (command.isNull())
+  if (buildMode.isNull())
     return;
 
   // TODO: do only when needed, when (i, j, _buildInstance) has changed
-  ConstructionPtr construction = command->contruction();
+  ConstructionPtr construction = buildMode->contruction();
 
   if( !construction.isValid() )
   {
@@ -127,7 +128,7 @@ void Build::_checkPreviewBuild(TilePos pos)
   int cost = construction->info().cost();
 
   bool walkersOnTile = false;
-  if( command->flag( LayerMode::checkWalkers ) )
+  if( buildMode->flag( LayerMode::checkWalkers ) )
   {
     TilesArray tiles = _city()->tilemap().area( pos, size );
     for( auto tile : tiles )
@@ -188,7 +189,7 @@ void Build::_checkPreviewBuild(TilePos pos)
         tile->setEPos( basicTile.epos() );
 
         walkersOnTile = false;
-        if( command->flag( LayerMode::checkWalkers ) )
+        if( buildMode->flag( LayerMode::checkWalkers ) )
         {
           walkersOnTile = !_city()->walkers( rPos ).empty();
         }
@@ -518,7 +519,7 @@ void Build::_drawBuildTile( const RenderInfo& rinfo, Tile* tile)
 bool Build::_tryDrawBuildTile(const RenderInfo& rinfo, Tile &tile)
 {
   Impl::CachedTiles& cache = _dfunc()->cachedTiles;
-  auto it = cache.find( tile::hash( tile.epos() ) );
+  auto it = cache.find( tile.epos().hash() );
   if( it != cache.end() && _dfunc()->mayBuildInCity )
   {
     _drawBuildTile( rinfo, it->second );
@@ -732,7 +733,7 @@ void Build::Impl::sortBuildTiles()
 
   cachedTiles.clear();
   for( auto t : buildTiles )
-    cachedTiles[ tile::hash( t->epos() ) ] = t;
+    cachedTiles[ t->epos().hash() ] = t;
 }
 
 }//end namespace citylayer

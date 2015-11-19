@@ -68,7 +68,7 @@ public:
   virtual bool applyRetrieveReservation( good::Stock& stock, const int reservationID)
   {
     bool isOk = good::Storage::applyRetrieveReservation( stock, reservationID );
-    stock.setInfo( game::Date::current(), tile::hash( factory->pos() ) );
+    stock.setInfo( game::Date::current(), factory->pos().hash() );
     emit onChangeState();
     return isOk;
   }
@@ -245,12 +245,12 @@ void Factory::deliverGood()
 {
   // make a cart pusher and send him away
   int qty = _d->goodStore.qty( _d->goods.out );
-  if( _mayDeliverGood() && qty >= 100 )
+  if( _mayDeliverGood() && qty >= CartPusher::simpleCart )
   {      
     auto cartPusher = Walker::create<CartPusher>( _city() );
 
     good::Stock pusherStock( _d->goods.out, qty, 0 );
-    _d->goodStore.retrieve( pusherStock, math::clamp( qty, 0, 400 ) );
+    _d->goodStore.retrieve( pusherStock, math::clamp<int>( qty, 0, CartPusher::megaCart ) );
 
     cartPusher->send2city( this, pusherStock );
 
@@ -372,7 +372,7 @@ void Factory::receiveGood()
     return;
 
   unsigned int mayStoreQty = _d->goodStore.getMaxStore( consumeGoodType() );
-  mayStoreQty = math::clamp<unsigned int>( mayStoreQty, 0, 100 );
+  mayStoreQty = math::clamp<unsigned int>( mayStoreQty, 0, CartPusher::simpleCart );
   if( _mayDeliverGood() && mayStoreQty > 0 )
   {
     auto cartSupplier = Walker::create<CartSupplier>( _city() );

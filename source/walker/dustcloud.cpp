@@ -22,7 +22,7 @@
 #include "pathway/pathway_helper.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/tilemap.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "walker/helper.hpp"
 #include "core/variant_map.hpp"
 #include "core/logger.hpp"
@@ -127,9 +127,8 @@ void DustCloud::send2City(const TilePos &start, const TilePos& stop )
 
   attach();
 
-  Tilemap& tmap = _map();
-  _pathway().init( tmap.at( _d->mapway.source ) );
-  _pathway().setNextTile( tmap.at( _d->mapway.nextStep() ) );
+  _pathway().init( _map().at( _d->mapway.source ) );
+  _pathway().setNextTile( _map().at( _d->mapway.nextStep() ) );
 }
 
 void DustCloud::timeStep(const unsigned long time)
@@ -146,8 +145,7 @@ void DustCloud::timeStep(const unsigned long time)
     TilePos rpos = TilePos( (_d->worldway.current.x() - xOffset.x()) / yMultiplier,
                             (_d->worldway.current.y() - xOffset.y()) / yMultiplier );
 
-    Tile& tile = _map().at( rpos );
-    _setLocation( &tile );
+    _setLocation( rpos );
 
     _setWpos( _d->worldway.current.toPoint() );
     _d->animation.update( time );

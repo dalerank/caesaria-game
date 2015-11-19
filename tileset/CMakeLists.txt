@@ -6,6 +6,7 @@ set(DEP_DIR "${CMAKE_SOURCE_DIR}/dep")
 
 aux_source_directory(. TILESET_SRC_LIST)
 add_definitions(-DCAESARIA_DISABLE_PICTUREBANK)
+add_definitions(-DCAESARIA_DISABLED_TILEMAPCONFIG)
 file(GLOB TILESET_INC_LIST "*.hpp")
 
 set( TILESET_DEP_SOURCES_LIST
@@ -16,8 +17,10 @@ set( TILESET_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/core/time.cpp"
       "${BASE_SOURCE_DIR}/core/json.cpp"
       "${BASE_SOURCE_DIR}/core/format.cpp"
+      "${BASE_SOURCE_DIR}/gfx/tilepos.cpp"
       "${BASE_SOURCE_DIR}/core/saveadapter.cpp"
       "${BASE_SOURCE_DIR}/core/variant.cpp"
+      "${BASE_SOURCE_DIR}/core/variant_map.cpp"
       "${BASE_SOURCE_DIR}/core/eventconverter.cpp"
       "${BASE_SOURCE_DIR}/core/font.cpp"
       "${BASE_SOURCE_DIR}/core/color_list.cpp"

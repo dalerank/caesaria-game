@@ -35,7 +35,7 @@
 #include "game/gamedate.hpp"
 #include "gfx/tilemap.hpp"
 #include "walkers_factory.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::fishingBoat, FishingBoat)
 

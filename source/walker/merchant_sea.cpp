@@ -35,7 +35,6 @@
 #include "objects/dock.hpp"
 #include "game/gamedate.hpp"
 #include "walkers_factory.hpp"
-#include "gfx/helper.hpp"
 
 using namespace city;
 

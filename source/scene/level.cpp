@@ -48,7 +48,7 @@
 #include "game/settings.hpp"
 #include "gui/mission_target_window.hpp"
 #include "gui/label.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "core/gettext.hpp"
 #include "gui/minimap_window.hpp"
 #include "gui/window_gamespeed_options.hpp"
@@ -460,8 +460,8 @@ void Level::Impl::makeFullScreenshot()
   int mapSize = tmap.size();
   Tile& lastRightTile = tmap.at( mapSize-1, mapSize-1 );
   Tile& lastBottomTile = tmap.at( mapSize-1, 0 );
-  Point lastRightPos = tile::tilepos2screen( lastRightTile.pos() );
-  Point lastBottomPos = tile::tilepos2screen( lastBottomTile.pos() );
+  Point lastRightPos = lastRightTile.pos().toScreenCoordinates();
+  Point lastBottomPos = lastBottomTile.pos().toScreenCoordinates();
   Size fullPicSize( lastRightPos.x(), abs( lastBottomPos.y() ) * 2 );
 
   TilesArray ret;
@@ -482,7 +482,7 @@ void Level::Impl::makeFullScreenshot()
   }
 
   Picture fullPic = Picture( fullPicSize, 0, true );
-  Point doffset( 0, fullPicSize.height() / 2 );
+  /*Point doffset( 0, fullPicSize.height() / 2 );
   for( auto tile : ret )
   {
     if( tile->master() )
@@ -492,9 +492,9 @@ void Level::Impl::makeFullScreenshot()
                             ? tile->overlay()->picture()
                             : tile->picture();
 
-    //Rect srcRect( 0, 0, tpic.width(), tpic.height() );
-    //fullPic->draw( tpic, srcRect, t->mappos() + doffset - tpic.offset() );
-  }
+    Rect srcRect( 0, 0, tpic.width(), tpic.height() );
+    fullPic->draw( tpic, srcRect, t->mappos() + doffset - tpic.offset() );
+  }*/
 
   std::string filename = getScreenshotName();
   PictureConverter::save( fullPic, filename, "PNG" );

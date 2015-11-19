@@ -15,39 +15,17 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_HELPER_H_INCLUDED__
-#define __CAESARIA_HELPER_H_INCLUDED__
+#ifndef __CAESARIA_TILEMAP_CONFIG_H_INCLUDED__
+#define __CAESARIA_TILEMAP_CONFIG_H_INCLUDED__
 
-#include "tile.hpp"
+#include "tilepos.hpp"
+#include "core/direction.hpp"
+#include "core/size.hpp"
 
 namespace gfx
 {
 
 class Tilemap;
-
-namespace imgid
-{  
-  std::string toResource( const unsigned int imgId );
-  int fromResource( const std::string &pic_name);
-  Picture toPicture( const unsigned int imgId );
-}
-
-namespace tile
-{  
-  unsigned int width2size( int width );
-  int encode( const Tile& tt );
-  int turnCoastTile(int imgid , Direction newDirection);
-  unsigned int hash( const TilePos& pos );
-  TilePos hash2pos( unsigned int hash );
-  Point tilepos2screen( const TilePos& pos );
-  Tile::Type findType( const std::string& name );
-  TilePos screen2tilepos( const Point& point, int mapsize );
-  void decode( Tile& tile, const int bitset);
-  const Tile& getInvalid();
-  Tile& getInvalidSafe();
-  void clear( Tile& tile );
-  void fixPlateauFlags( Tile& tile );
-}//end namespace tile
 
 namespace tilemap
 {
@@ -55,6 +33,7 @@ namespace tilemap
 
   Direction getDirection( const TilePos& b, const TilePos& e );
   void initTileBase( int width );
+  unsigned int picWidth2CellSize( int width );
   Tilemap& getInvalid();
   const Point& cellCenter();
   const Size& cellPicSize();
@@ -66,4 +45,4 @@ namespace tilemap
 
 }//end namespace gfx
 
-#endif //__CAESARIA_HELPER_H_INCLUDED__
+#endif //__CAESARIA_TILEMAP_CONFIG_H_INCLUDED__

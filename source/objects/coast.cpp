@@ -22,7 +22,7 @@
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
 #include "core/saveadapter.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/imgid.hpp"
 #include "core/variant_map.hpp"
 #include "core/foreach.hpp"
 #include "objects_factory.hpp"

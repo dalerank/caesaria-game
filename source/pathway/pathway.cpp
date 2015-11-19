@@ -15,7 +15,7 @@
 
 #include "pathway.hpp"
 #include "objects/overlay.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "core/direction.hpp"
 #include "core/variant_map.hpp"
 #include "gfx/tilemap.hpp"
@@ -158,7 +158,7 @@ void Pathway::setNextDirection( const Tilemap& tmap, Direction direction)
   case direction::northWest  : _d->endPos += TilePos( -1, 1 ); break;
   default:
     _d->endPos += TilePos( 0, 1 );  break;
-    Logger::warning( "Unexpected Direction:{0}", direction);
+    Logger::warning( "WARNING !!! Unexpected Direction:{}", direction);
   break;
   }
 
@@ -257,10 +257,8 @@ void Pathway::load(const Tilemap& tmap, const VariantMap& stream )
   VARIANT_LOAD_ANY_D( _d, startPos, stream )
   VARIANT_LOAD_ANY_D( _d, endPos,   stream )
   VariantList vmTiles = stream.get( literals::tiles ).toList();
-  foreach( it, vmTiles )
-  {
-    _d->tiles.push_back( const_cast<Tile*>( &tmap.at( it->toTilePos() )) );
-  }
+  for( const auto& it : vmTiles )
+    _d->tiles.push_back( const_cast<Tile*>( &tmap.at( it.toTilePos() )) );
 
   VARIANT_LOAD_ANY_D( _d, reverse, stream )
   VARIANT_LOAD_ANY_D( _d, step, stream )

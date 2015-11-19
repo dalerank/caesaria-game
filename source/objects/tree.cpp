@@ -17,7 +17,7 @@
 
 #include "tree.hpp"
 #include "game/resourcegroup.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/imgid.hpp"
 #include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects/construction.hpp"

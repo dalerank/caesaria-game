@@ -20,7 +20,6 @@
 #include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
 #include "objects/constants.hpp"
-#include "gfx/helper.hpp"
 #include "objects/overlay.hpp"
 #include "core/variant_list.hpp"
 
@@ -102,7 +101,7 @@ public:
 
   void loadRules( const VariantMap& stream )
   {
-    for( auto& item : stream )
+    for( const auto& item : stream )
     {
       object::Type btype = object::findType( item.first );
       (*this)[ btype ].mayBuild = item.second.toBool();
@@ -111,7 +110,7 @@ public:
 
   void loadQuotes( const VariantMap& stream )
   {
-    for( auto& item : stream )
+    for( const auto& item : stream )
     {
       object::Type btype = object::findType( item.first );
       (*this)[ btype ].quotes = item.second.toInt();

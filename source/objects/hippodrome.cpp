@@ -26,7 +26,6 @@
 #include "walker/walker.hpp"
 #include "events/clearland.hpp"
 #include "walker/circus_charioter.hpp"
-#include "gfx/helper.hpp"
 #include "objects_factory.hpp"
 
 using namespace gfx;

@@ -31,7 +31,7 @@
 #include "core/tilerect.hpp"
 #include "core/color_list.hpp"
 #include "texturedbutton.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "gfx/decorator.hpp"
 #include "city/states.hpp"
 
@@ -353,7 +353,7 @@ void Minimap::Impl::drawObjectsMmap( Picture& canvas, bool clear, bool force )
       canvas.fill( ColorList::clear );
     lastObjectsCount = ovs.size();
 
-    for( auto& overlay : ovs )
+    for( auto overlay : ovs )
     {
       const Tile& tile = overlay->tile();
 

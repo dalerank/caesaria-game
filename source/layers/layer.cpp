@@ -21,7 +21,6 @@
 #include "city/statistic.hpp"
 #include "game/resourcegroup.hpp"
 #include "gfx/tilesarray.hpp"
-#include "gfx/helper.hpp"
 #include "objects/building.hpp"
 #include "objects/tree.hpp"
 #include "core/variant_map.hpp"

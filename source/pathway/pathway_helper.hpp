@@ -60,7 +60,7 @@ public:
 
   static DirectRoute shortWay( PlayerCityPtr city, const TilePos& startPos, object::Type buildingType, WayType type );
   static DirectRoute shortWay( const TilePos& startPos, ConstructionList buildings, WayType type);
-  static DirectRoute shortWay( PlayerCityPtr city, const TilePosArray& area, object::Type buildingType, WayType type );
+  static DirectRoute shortWay( PlayerCityPtr city, const Locations& area, object::Type buildingType, WayType type );
 
   static Pathway randomWay( PlayerCityPtr city, const TilePos& startPos, int walkRadius );
   static Pathway way2border( PlayerCityPtr city, const TilePos& startPos );

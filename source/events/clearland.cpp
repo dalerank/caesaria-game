@@ -21,7 +21,7 @@
 #include "gfx/tilemap.hpp"
 #include "warningmessage.hpp"
 #include "core/gettext.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/imgid.hpp"
 #include "requestdestroy.hpp"
 #include "objects/construction.hpp"
 #include "game/resourcegroup.hpp"
@@ -120,7 +120,7 @@ void ClearTile::_exec( Game& game, unsigned int )
     //
     if( deleteRoad )
     {
-      game.city()->setOption( PlayerCity::updateRoads, 1 );
+      game.city()->setOption( PlayerCity::updateRoadsOnNextFrame, 1 );
     }
   }
 

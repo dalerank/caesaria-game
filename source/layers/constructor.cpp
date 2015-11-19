@@ -40,7 +40,7 @@
 #include "objects/objects_factory.hpp"
 #include "gfx/tilearea.hpp"
 #include "gfx/city_renderer.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tile_config.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects/coast.hpp"
 #include "city/statistic.hpp"
@@ -231,8 +231,8 @@ void Constructor::_updatePreviewTiles( bool force )
     Tile* stopTile  = _camera()->at( _lastCursorPos(),  true );
 
     TilesArray pathTiles = RoadPropagator::createPath( _city()->tilemap(),
-                                                     startTile->epos(), stopTile->epos(),
-                                                     d->roadAssignment, d->kbShift );
+                                                       startTile->epos(), stopTile->epos(),
+                                                       d->roadAssignment, d->kbShift );
     Tilemap& tmap = _city()->tilemap();
     TilePos leftUpCorner = pathTiles.leftUpCorner();
     TilePos rigthDownCorner = pathTiles.rightDownCorner();
@@ -284,7 +284,7 @@ void Constructor::_updatePreviewTiles( bool force )
       }
       else
       {
-         size = Size( gfx::tile::width2size( tile->picture().width() ) );
+         size = Size( gfx::tilemap::picWidth2CellSize( tile->picture().width() ) );
       }
 
       if( size.area() > 1 )
@@ -498,7 +498,7 @@ void Constructor::_drawBuildTile( const RenderInfo& renderInfo, Tile* tile )
 void Constructor::_tryDrawBuildTile( const RenderInfo& renderInfo, Tile &tile)
 {
   Impl::CachedTiles& cache = _dfunc()->cachedTiles;
-  auto it = cache.find( tile::hash( tile.epos() ) );
+  auto it = cache.find( tile.epos().hash() );
   if( it != cache.end() )
   {
     _drawBuildTile( renderInfo, it->second );
@@ -549,7 +549,7 @@ void Constructor::drawTile( const RenderInfo& rinfo, Tile& tile )
 
 void Constructor::drawProminentTile( const RenderInfo& renderInfo, Tile& tile, const int depth, bool force)
 {
-  if( _dfunc()->cachedTiles.count( tile::hash( tile.epos() ) ) == 0 )
+  if( _dfunc()->cachedTiles.count( tile.epos().hash() ) == 0 )
     Layer::drawProminentTile( renderInfo, tile, depth, force );
 
   _tryDrawBuildTile( renderInfo, tile );
@@ -713,7 +713,7 @@ void Constructor::Impl::sortBuildTiles()
 
   cachedTiles.clear();
   for( auto t : buildTiles )
-    cachedTiles[ tile::hash( t->epos() ) ] = t;
+    cachedTiles[ t->epos().hash() ] = t;
 }
 
 bool Constructor::Impl::canBuildOn(OverlayPtr overlay, const city::AreaInfo& areaInfo) const
