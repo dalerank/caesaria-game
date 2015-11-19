@@ -190,7 +190,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
 void PlayerCity::_initAnimation()
 {
   _animation().clear();
-  _animation().load( "ourcity_anim" );
+  _animation().load( "world_ourcity" );
 }
 
 std::string PlayerCity::about(Object::AboutType type)
