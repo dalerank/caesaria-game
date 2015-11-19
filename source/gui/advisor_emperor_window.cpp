@@ -245,7 +245,7 @@ void Emperor::_changeSalary( int money )
 
 std::string Emperor::_getEmperorFavourStr()
 {
-  return fmt::format( "##emperor_favour_%02d##", _city->favour() * favourLimiter / maxFavourValue  );
+  return utils::format( 0xff, "##emperor_favour_%02d##", _city->favour() * favourLimiter / maxFavourValue  );
 }
 
 void Emperor::_resolveRequest(RequestPtr request)

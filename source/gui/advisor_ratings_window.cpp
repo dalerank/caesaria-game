@@ -300,7 +300,7 @@ Ratings::Ratings(Widget* parent, int id, const PlayerCityPtr city )
   {
     std::string text = fmt::format( "{} {} ({} {}",
                                     _("##population##"), city->states().population,
-                                    targets.needPopulation(), ("##need_population##")  );
+                                    targets.needPopulation(), _("##need_population##")  );
     lbNeedPopulation->setText( text );
   }
 
