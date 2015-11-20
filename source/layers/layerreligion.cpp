@@ -22,6 +22,8 @@
 #include "city/statistic.hpp"
 #include "core/utils.hpp"
 #include "core/event.hpp"
+#include "objects/religion.hpp"
+#include "gfx/textured_path.hpp"
 #include "gfx/tilemap_camera.hpp"
 #include "core/gettext.hpp"
 
@@ -30,14 +32,26 @@ using namespace gfx;
 namespace citylayer
 {
 
+class Religion::Impl
+{
+public:
+  struct
+  {
+    OverlayPtr selected;
+    OverlayPtr underMouse;
+  } overlay;
+
+  DateTime lastUpdate;
+  std::vector<TilesArray> ways;
+};
+
 int Religion::type() const { return citylayer::religion; }
 
 void Religion::drawTile( const RenderInfo& rinfo, Tile& tile)
 {
   if( tile.overlay().isNull() )
   {
-    drawPass( rinfo, tile, Renderer::ground );
-    drawPass( rinfo, tile, Renderer::groundAnimation );
+    drawLandTile( rinfo, tile );
   }
   else
   {
@@ -86,6 +100,27 @@ void Religion::drawTile( const RenderInfo& rinfo, Tile& tile)
   tile.setRendered();
 }
 
+void Religion::render(Engine& engine)
+{
+  Info::render( engine );
+
+  RenderInfo rinfo{ engine, _camera()->offset() };
+  for( auto& tiles : _d->ways )
+    TexturedPath::draw( tiles, rinfo );
+}
+
+void Religion::_updatePaths()
+{
+  auto wbuilding = _d->overlay.selected.as<Temple>();
+  if( wbuilding.isValid() )
+  {
+    _d->ways.clear();
+    const WalkerList& walkers = wbuilding->walkers();
+    for( auto walker : walkers )
+      _d->ways.push_back( walker->pathway().allTiles() );
+  }
+}
+
 void Religion::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )
@@ -114,6 +149,16 @@ void Religion::handleEvent(NEvent& event)
     }
     break;
 
+    case mouseLbtnPressed:
+    {
+      if( _d->overlay.underMouse.is<Temple>() )
+      {
+        _d->overlay.selected = _d->overlay.underMouse;
+        _updatePaths();
+      }
+    }
+    break;
+
     default: break;
     }
   }
@@ -122,7 +167,7 @@ void Religion::handleEvent(NEvent& event)
 }
 
 Religion::Religion( Camera& camera, PlayerCityPtr city)
-  : Info( camera, city, 9 )
+  : Info( camera, city, 9 ), _d( new Impl )
 {
   _addWalkerType( walker::priest );
   _initialize();
