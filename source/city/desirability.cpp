@@ -55,3 +55,9 @@ void Desirability::update( PlayerCityPtr r, OverlayPtr overlay, bool onBuild )
   }
 }
 
+const Desirability&Desirability::invalid()
+{
+  static Desirability inv;
+  return inv;
+}
+

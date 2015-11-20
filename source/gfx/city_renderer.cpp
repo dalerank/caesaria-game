@@ -128,11 +128,11 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   _d->instanceLayer<Water>();
   _d->instanceLayer<Fire>();
   _d->instanceLayer<Food>();
-  addLayer( Health::create( _d->camera, city, citylayer::health ));
-  addLayer( Health::create( _d->camera, city, citylayer::doctor ));
-  addLayer( Health::create( _d->camera, city, citylayer::hospital ));
-  addLayer( Health::create( _d->camera, city, citylayer::barber ));
-  addLayer( Health::create( _d->camera, city, citylayer::baths ));
+  _d->instanceLayer<Health>( citylayer::health );
+  _d->instanceLayer<Health>( citylayer::doctor );
+  _d->instanceLayer<Health>( citylayer::hospital );
+  _d->instanceLayer<Health>( citylayer::barber );
+  _d->instanceLayer<Health>( citylayer::baths );
   _d->instanceLayer<Religion>();
   _d->instanceLayer<Damage>();
   addLayer( Sentiment::create( _d->camera, city ) );

@@ -27,7 +27,7 @@ namespace city
 {
 
 /** Helper class for player city */
-class Services : public city::SrvcList
+class Services : public SrvcList
 {
 public:
   /** Call every frame */
