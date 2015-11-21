@@ -36,6 +36,7 @@ public:
 
 private:
   void _showHelp();
+  void _showAdvSalaries();
 
   class Impl;
   ScopedPtr< Impl > _d;
