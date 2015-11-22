@@ -24,11 +24,13 @@
 #include "core/locale.hpp"
 #include "core/variant_map.hpp"
 #include "table.hpp"
+#include "steam.hpp"
 #include "gfx/loader.hpp"
 #include "core/color_list.hpp"
 #include "core/saveadapter.hpp"
 #include "gui/widget_helper.hpp"
 #include "core/logger.hpp"
+#include "core/event.hpp"
 #include "core/priorities.hpp"
 
 using namespace gfx;
@@ -38,11 +40,6 @@ namespace gui
 {
 
 REGISTER_CLASS_IN_WIDGETFACTORY(DlcFolderViewer)
-#ifdef CAESARIA_USE_STEAM
-static std::string ld_prefix = "STEAM_RUNTIME=0 LD_LIBRARY_PATH=\"$SYSTEM_LD_LIBRARY_PATH\" PATH=\"$SYSTEM_PATH\" ";
-#else
-static std::string ld_prefix;
-#endif
 
 class DlcFolderViewer::Impl
 {
@@ -158,7 +155,7 @@ DlcFolderViewer::~DlcFolderViewer() {}
 
 void DlcFolderViewer::_openFolder()
 {
-  OSystem::openDir( _d->folder.toString(), ld_prefix );
+  OSystem::openDir( _d->folder.toString(), steamapi::ld_prefix() );
 }
 
 void DlcFolderViewer::draw(Engine& painter)
@@ -169,6 +166,18 @@ void DlcFolderViewer::draw(Engine& painter)
   painter.draw( _d->background, lefttop() );
 
   Window::draw( painter );
+}
+
+bool DlcFolderViewer::onEvent(const NEvent& event)
+{
+  if( event.EventType == sEventKeyboard &&
+      event.keyboard.key == KEY_ESCAPE )
+  {
+    deleteLater();
+    return true;
+  }
+
+  return Window::onEvent( event );
 }
 
 void DlcFolderViewer::setupUI(const VariantMap& ui)
@@ -210,8 +219,8 @@ void DlcFolderViewer::_resolveCellClick(int row, int column)
       _loadDesc( path );
     }
     else
-    {
-      OSystem::openUrl( save.toCString(), ld_prefix );
+    {      
+      OSystem::openUrl( save.toCString(), steamapi::ld_prefix() );
     }
   }
 }

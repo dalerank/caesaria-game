@@ -19,10 +19,15 @@
 
 #include "core/osystem.hpp"
 #include "core/logger.hpp"
+#include "core/stringarray.hpp"
 #include "public/steam/steam_api.h"
 
 #ifdef CAESARIA_PLATFORM_WIN
 #include "helper/helper.h"
+#endif
+
+#ifdef CAESARIA_PLATFORM_LINUX
+#include <unistd.h>
 #endif
 
 namespace steamapi
@@ -37,6 +42,7 @@ enum StatName { stat_num_games=0, stat_num_wins, stat_num_lose, stat_count };
 static const AppId_t CAESARIA_STEAM_APPID=0x04ffd8;
 static const AppId_t CAESARIA_AVEC3_APPID=0x053124;
 static bool gameRunInOfflineMode = false;
+static bool gameRunFromClient = false;
 
 struct Achievement
 {
@@ -366,6 +372,14 @@ bool connect()
     Logger::warning( "SteamAPI_Init() failed" );
     OSystem::error( "Fatal Error", "Steam must be running to play this game (SteamAPI_Init() failed).\n" );
     return false;
+  }
+
+  if( OSystem::isUnix() )
+  {
+    int pid = getpid();
+    StringArray processIdTree;
+    OSystem::getProcessTree( pid, processIdTree );
+    gameRunFromClient = processIdTree.contains( "steam" );
   }
 
   // set our debug handler
@@ -763,6 +777,13 @@ void evaluateAchievement( AchievementType achivId )
 
 bool available() { return true; }
 
+std::string ld_prefix()
+{
+  return gameRunFromClient
+            ? "STEAM_RUNTIME=0 LD_LIBRARY_PATH=\"$SYSTEM_LD_LIBRARY_PATH\" PATH=\"$SYSTEM_PATH\" "
+            : "";
+}
+
 #else
 
 bool available() { return false; }
@@ -774,6 +795,7 @@ gfx::Picture achievementImage(steamapi::AchievementType) { return gfx::Picture()
 void init() {}
 std::string userName(){ return ""; }
 void update(){}
+std::string ld_prefix() { return ""; }
 std::string achievementCaption(AchievementType achivId) { return ""; }
 std::string language() { return "en"; }
 const gfx::Picture&userImage() { return gfx::Picture::getInvalid(); }
