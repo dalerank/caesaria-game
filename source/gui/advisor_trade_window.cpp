@@ -112,7 +112,7 @@ bool Trade::Impl::getWorkState(good::Product gtype )
   return producers.empty() ? true : industryActive;
 }
 
-void Trade::Impl::showGoodOrderManageWindow(good::Product type )
+void Trade::Impl::showGoodOrderManageWindow(good::Product type)
 {
   int gmode = GoodOrderManageWindow::gmUnknown;
   gmode |= (city->statistic().goods.canImport( type ) ? GoodOrderManageWindow::gmImport : 0);
@@ -121,7 +121,6 @@ void Trade::Impl::showGoodOrderManageWindow(good::Product type )
   Widget* p = gbInfo->parent();
   auto& wnd = p->add<GoodOrderManageWindow>( Rect( 0, 0, p->width() - 80, p->height() - 100 ),
                                              city, type, allgoods[ type ], (GoodOrderManageWindow::GoodMode)gmode );
-  wnd.moveTo( Widget::parentCenter );
   CONNECT( &wnd, onOrderChanged(), this, Impl::updateGoodsInfo );
 }
 
