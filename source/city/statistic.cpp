@@ -36,6 +36,7 @@
 #include "cityservice_disorder.hpp"
 #include "cityservice_military.hpp"
 #include "core/time.hpp"
+#include "objects/fort.hpp"
 #include "objects/farm.hpp"
 #include "cityservice_health.hpp"
 #include "world/traderoute.hpp"
@@ -251,14 +252,16 @@ Statistic::WorkersInfo Statistic::_Workers::details() const
 {
   WorkersInfo ret;
 
-  WorkingBuildingList buildings = _parent.objects.find<WorkingBuilding>( object::any );
+  WorkingBuildingList buildings = _parent.objects.find<WorkingBuilding>();
 
   ret.current = 0;
   ret.need = 0;
   for( auto bld : buildings )
-    {
-      ret.current += bld->numberWorkers();
+  {
+    ret.current += bld->numberWorkers();
     ret.need += bld->maximumWorkers();
+
+    ret.map[ bld->workerType() ] += bld->numberWorkers();
   }
 
   return ret;
@@ -545,6 +548,11 @@ int Statistic::_Military::months2lastAttack() const
 {
   MilitaryPtr ml = _parent.services.find<Military>();
   return ml.isValid() ? ml->monthFromLastAttack() : 0;
+}
+
+FortList Statistic::_Military::forts() const
+{
+  return _parent.objects.find<Fort>();
 }
 
 bool Statistic::_Goods::canImport(good::Product type) const

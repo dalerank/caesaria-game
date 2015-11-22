@@ -111,8 +111,10 @@ public:
     INIT_WIDGET_FROM_UI( Label*, grayArea )
     Point offset( 0, 35 );
     Rect rect( 6, 6, grayArea->width() - 6, 6+30 );
-    grayArea->add<SalaryButton>( rect, walker::legionary, 30 );
-    grayArea->add<SalaryButton>( rect+offset, walker::taxCollector, 30 );
+    grayArea->add<SalaryButton>( rect+offset*0, walker::legionary, 30 );
+    grayArea->add<SalaryButton>( rect+offset*1, walker::romeGuard, 30 );
+    grayArea->add<SalaryButton>( rect+offset*2, walker::romeHorseman, 30 );
+    grayArea->add<SalaryButton>( rect+offset*3, walker::romeSpearman, 30 );
 
     WidgetEscapeCloser::insertTo( this );
     setModal();

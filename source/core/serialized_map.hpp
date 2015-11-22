@@ -15,23 +15,32 @@
 //
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_CITY_OPTION_H_INCLUDED__
-#define __CAESARIA_CITY_OPTION_H_INCLUDED__
+#ifndef _CAESARIA_SERIALIZED_MAP_H_INCLUDE_
+#define _CAESARIA_SERIALIZED_MAP_H_INCLUDE_
 
-#include "city.hpp"
-#include "core/serialized_map.hpp"
+#include "variant_list.hpp"
 
-namespace city
-{  
-
-PlayerCity::OptionType findOption( const std::string& name);
-
-class Options : public SerializedMap<int,int>
+template<class A, class B>
+class SerializedMap : public std::map<A,B>
 {
 public:
-  virtual void load(const VariantList &stream );
-  void resetIfNot( int name, int value );
+  virtual VariantList save() const
+  {
+    VariantList ret;
+    for( const auto& item : *this )
+      ret.push_back( VariantList(item.first, item.second ) );
+
+    return ret;
+  }
+
+  virtual void load( const VariantList& stream )
+  {
+    for( const auto& item : stream )
+    {
+      VariantList vl = item.toList();
+      (*this)[ vl.get(0) ] = vl.get(1);
+    }
+  }
 };
 
-}//end namespace city
-#endif //__CAESARIA_CITY_OPTION_H_INCLUDED__
+#endif//_CAESARIA_SERIALIZED_MAP_H_INCLUDE_

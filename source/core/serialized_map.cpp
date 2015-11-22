@@ -15,23 +15,8 @@
 //
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_CITY_OPTION_H_INCLUDED__
-#define __CAESARIA_CITY_OPTION_H_INCLUDED__
+#include "serialized_map.hpp"
 
-#include "city.hpp"
-#include "core/serialized_map.hpp"
 
-namespace city
-{  
 
-PlayerCity::OptionType findOption( const std::string& name);
 
-class Options : public SerializedMap<int,int>
-{
-public:
-  virtual void load(const VariantList &stream );
-  void resetIfNot( int name, int value );
-};
-
-}//end namespace city
-#endif //__CAESARIA_CITY_OPTION_H_INCLUDED__

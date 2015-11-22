@@ -23,6 +23,7 @@
 #include "objects/house.hpp"
 #include "objects/forum.hpp"
 #include "objects/senate.hpp"
+#include "objects/fort.hpp"
 #include "events/showinfobox.hpp"
 
 using namespace events;
@@ -44,6 +45,7 @@ void Economy::payWages(PlayerCityPtr city)
   {
     HouseList houses = city->statistic().houses.find();
 
+    //usual workers wages
     float salary = city->statistic().workers.monthlyOneWorkerWages();
     float wages = 0;
     for( auto house : houses )
@@ -53,6 +55,21 @@ void Economy::payWages(PlayerCityPtr city)
       house->appendMoney( house_wages );
       wages += house_wages;
     }
+
+    //soldiers wages
+    if( city->getOption( PlayerCity::soldiersHaveSalary ) )
+    {
+      FortList forts = city->statistic().military.forts();
+      for( auto fort : forts )
+      {
+        int soldierType = fort->workerType();
+
+        int yearSalary = city->treasury().workerSalary( soldierType );
+        int monthSalary = yearSalary / (10.f * DateTime::monthsInYear);
+        wages += monthSalary * fort->soldiers_n();
+      }
+    }
+
     resolveIssue( econ::Issue( econ::Issue::workersWages, ceil( -wages ) ) );
   }
   else
