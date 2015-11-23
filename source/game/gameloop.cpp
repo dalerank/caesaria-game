@@ -55,7 +55,7 @@ InGame::InGame( Game* game, gfx::Engine* engine,
   d.filename.next = &nextFilename;
   d.filename.restart = &restartFilename;
 
-  _initialize(d->level, SCREEN_GAME);
+  _initialize( d.level, SCREEN_GAME);
 
   Logger::warning( "game: prepare for game loop" );
 }

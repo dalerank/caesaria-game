@@ -555,7 +555,7 @@ void Layer::afterRender(Engine& engine)
 
   if( opts.isFlag( DrawOptions::showRoads ) )
   {
-    TilesArray tiles = _d->city->tilemap().allTiles();
+    const TilesArray& tiles = _d->camera->tiles();
     for( auto tile : tiles )
     {
       if( tile->getFlag( Tile::tlRoad ) )
@@ -565,7 +565,7 @@ void Layer::afterRender(Engine& engine)
 
   if( opts.isFlag( DrawOptions::showWalkableTiles ) )
   {
-    TilesArray tiles = _d->city->tilemap().allTiles();
+    const TilesArray& tiles = _d->camera->tiles();
     for( auto tile : tiles )
     {
       if( tile->isWalkable( true ) )
@@ -575,7 +575,7 @@ void Layer::afterRender(Engine& engine)
 
   if( opts.isFlag( DrawOptions::showFlatTiles ) )
   {
-    TilesArray tiles = _d->city->tilemap().allTiles();
+    const TilesArray& tiles = _d->camera->tiles();
     for( auto tile : tiles )
     {
       if( tile->isFlat() )
@@ -585,7 +585,7 @@ void Layer::afterRender(Engine& engine)
 
   if( opts.isFlag( DrawOptions::showLockedTiles ) )
   {
-    TilesArray tiles = _d->city->tilemap().allTiles();
+    const TilesArray& tiles = _d->camera->tiles();
     for( auto tile : tiles )
     {
       if( !tile->isWalkable( true ) )
@@ -646,16 +646,15 @@ void Layer::afterRender(Engine& engine)
 Layer::Layer(Camera* camera, PlayerCityPtr city )
   : __INIT_IMPL(Layer)
 {
-  __D_IMPL(_d,Layer)
-  _d->camera = camera;
-  _d->greenTile = Picture( SETTINGS_STR(forbidenTile), 1 );
-  _d->city = city;
-  _d->debugFont = Font::create( FONT_1_WHITE );
-  _d->currentTile = 0;
-
-  _d->posMode = 0;
-  _d->terraintPic = object::Info::find( object::terrain ).randomPicture( Size( 1 ) );
-  _d->tilePosText = Picture( Size( 240, 80 ), 0, true );
+  __D_REF(_d,Layer)
+  _d.camera = camera;
+  _d.greenTile = Picture( SETTINGS_STR(forbidenTile), 1 );
+  _d.city = city;
+  _d.debugFont = Font::create( FONT_1_WHITE );
+  _d.currentTile = 0;
+  _d.posMode = 0;
+  _d.terraintPic = object::Info::find( object::terrain ).randomPicture( Size( 1 ) );
+  _d.tilePosText = Picture( Size( 240, 80 ), 0, true );
 
   if( OSystem::isAndroid() )
     DrawOptions::instance().setFlag( DrawOptions::showObjectArea, true );
@@ -669,8 +668,8 @@ void Layer::_addWalkerType(walker::Type wtype)
 void Layer::_initialize()
 {
   const VariantMap& vm = citylayer::Helper::getConfig( (citylayer::Type)type() );
-  StringArray vl = vm.get( "visibleObjects" ).toStringArray();
-  for( auto& it : vl )
+  StringArray visibleObjectTypes = vm.get( "visibleObjects" ).toStringArray();
+  for( const auto& it : visibleObjectTypes )
   {
     object::Type ovType = object::findType( it );
     if( ovType != object::unknown )

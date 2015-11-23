@@ -319,7 +319,7 @@ void SdlEngine::loadPicture(Picture& ioPicture, bool streaming)
   if( !ioPicture.surface() )
   {
     Size size = ioPicture.size();
-    Logger::warning( "SdlEngine:: can't make surface, size={}x{}]", size.width(), size.height() );
+    Logger::warning( "SdlEngine: can't make surface, size={}x{}]", size.width(), size.height() );
   }
 
   SDL_Texture* tx = 0;

@@ -164,38 +164,34 @@ void Army::addObject(ObjectPtr obj )
   ArmyPtr otherArmy = ptr_cast<Army>( obj );
   if( otherArmy.isValid() && _isAgressiveArmy( otherArmy ) )
   {
-    int attackersLoss = 0;
-    int selfLoss = 0;
+    Army::BattleResult result = Army::battle( otherArmy->strength(), strength() );
 
-    Army::battle( otherArmy->strength(), strength(), attackersLoss, selfLoss );
-
-    otherArmy->killSoldiers(attackersLoss);
-    killSoldiers(selfLoss);
+    otherArmy->killSoldiers( result.atcLoss );
+    killSoldiers( result.defLoss );
   }
 }
 
 std::string Army::target() const { return _dfunc()->destination; }
 
-void Army::battle(unsigned int attackers, unsigned int defenders, int& attackersLoss, int& deffLoss )
+Army::BattleResult Army::battle(unsigned int attackers, unsigned int defenders )
 {
   int delimArmy2self = math::percentage( attackers, defenders );
-  attackersLoss = 0;
-  deffLoss = 0;
+  BattleResult result;
 
   if( delimArmy2self < 25 )
   {
-    attackersLoss = maxLoss;
-    deffLoss = math::random( 10 );
+    result.atcLoss = maxLoss;
+    result.defLoss = math::random( 10 );
   }
   else if( delimArmy2self <= 100 )
   {
     int minAtLoss = maxLoss - delimArmy2self;
     int randomAtLoss = math::random(maxLoss+delimArmy2self);
-    attackersLoss = math::clamp<int>( randomAtLoss, minAtLoss, maxLoss );
+    result.atcLoss = math::clamp<int>( randomAtLoss, minAtLoss, maxLoss );
 
-    int minSelfLoss = math::random( attackersLoss );
-    int randomSelfLoss = math::random( attackersLoss + delimArmy2self );
-    deffLoss = math::clamp<int>( randomSelfLoss, minSelfLoss, maxLoss );
+    int minSelfLoss = math::random( result.atcLoss );
+    int randomSelfLoss = math::random( result.atcLoss + delimArmy2self );
+    result.defLoss = math::clamp<int>( randomSelfLoss, minSelfLoss, maxLoss );
   }
   else if( delimArmy2self < 400 )
   {
@@ -208,14 +204,16 @@ void Army::battle(unsigned int attackers, unsigned int defenders, int& attackers
      else if (pctAdvantage < 300) { minb = 20; }
      else { minb = 15; }
 
-     attackersLoss = math::clamp<int>( math::random( maxLoss ), 0, minb );
-     deffLoss = math::clamp<int>( math::random( maxLoss ), maxLoss - minb, maxLoss );
+     result.atcLoss = math::clamp<int>( math::random( maxLoss ), 0, minb );
+     result.defLoss = math::clamp<int>( math::random( maxLoss ), maxLoss - minb, maxLoss );
   }
   else
   {
-    attackersLoss = math::random( 10 );
-    deffLoss = maxLoss;
+    result.atcLoss = math::random( 10 );
+    result.defLoss = maxLoss;
   }
+
+  return result;
 }
 
 bool Army::_isAgressiveArmy(ArmyPtr) const
