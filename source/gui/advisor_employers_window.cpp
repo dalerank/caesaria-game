@@ -32,7 +32,9 @@
 #include "objects/working.hpp"
 #include "city/statistic.hpp"
 #include "core/logger.hpp"
+#include "walker/helper.hpp"
 #include "core/event.hpp"
+#include "widgetescapecloser.hpp"
 #include "environment.hpp"
 #include "dictionary.hpp"
 #include "hire_priority_window.hpp"
@@ -55,6 +57,71 @@ static const int idBase = 0x100;
 enum { badAccess=50, simpleAccess=75, goodAccess=90 };
 enum { ofLockOffset=45, ofPriority=60, ofBranchName=130, ofNeedWorkers=375, ofHaveWorkers=480 };
 }
+
+class SalaryButton : public PushButton
+{
+public:
+  SalaryButton( Widget* parent, const Rect& rectangle, walker::Type wType, int value )
+    : PushButton( parent, rectangle, "", -1, false, PushButton::whiteBorderUp )
+  {
+    walkerType = wType;
+    salary = value;
+    btnDecrease = &add<TexturedButton>( Point( 220, 3 ), Size( 24 ), -1, 601 );
+    btnIncrease = &add<TexturedButton>( Point( 220 + 24, 3 ), Size( 24 ), -1, 605 );
+
+    btnDecrease->setTooltipText( _("##advslr_btn_tooltip##") );
+    btnIncrease->setTooltipText( _("##advslr_btn_tooltip##") );
+  }
+
+  virtual void _updateTextPic()
+  {
+    PushButton::_updateTextPic();
+
+    Font f = font( _state() );
+    std::string text = WalkerHelper::getPrettyTypename( walkerType );
+    Rect textRect = f.getTextRect( _(text), Rect( 0, 0, width() / 2, height() ), horizontalTextAlign(), verticalTextAlign() );
+    f.draw( _textPicture(), _(text), textRect.lefttop(), true );
+
+    text = fmt::format( "{} {}", salary, _("##advemployer_panel_denaries##"));
+    textRect = f.getTextRect( text, Rect( width() / 2 + 24 * 2, 0, width(), height() ), horizontalTextAlign(), verticalTextAlign() );
+    f.draw( _textPicture(), text, textRect.lefttop(), true );
+  }
+
+  void update()
+  {
+    _finalizeResize();
+  }
+
+  int salary;
+  walker::Type walkerType;
+  TexturedButton* btnDecrease;
+  TexturedButton* btnIncrease;
+};
+
+class SalariesWindow : public Window
+{
+public:
+  SalariesWindow( Widget* parent, PlayerCityPtr city )
+    : Window( parent, Rect( 0, 0, 480, 480 ), "" )
+  {
+    Widget::setupUI( ":/gui/advsalaries.gui" );
+    _city = city;
+    moveTo( Widget::parentCenter );
+
+    INIT_WIDGET_FROM_UI( Label*, grayArea )
+    Point offset( 0, 35 );
+    Rect rect( 6, 6, grayArea->width() - 6, 6+30 );
+    grayArea->add<SalaryButton>( rect+offset*0, walker::legionary, 30 );
+    grayArea->add<SalaryButton>( rect+offset*1, walker::romeGuard, 30 );
+    grayArea->add<SalaryButton>( rect+offset*2, walker::romeHorseman, 30 );
+    grayArea->add<SalaryButton>( rect+offset*3, walker::romeSpearman, 30 );
+
+    WidgetEscapeCloser::insertTo( this );
+    setModal();
+  }
+
+  PlayerCityPtr _city;
+};
 
 class EmployerButton : public PushButton
 {
@@ -133,9 +200,9 @@ class Employer::Impl
 public:
   typedef std::vector< EmployerButton* > EmployerButtons;
 
-  gui::Label* lbSalaries;
-  gui::Label* lbYearlyWages;
-  gui::Label* lbWorkersState;
+  Label* lbSalaries;
+  Label* lbYearlyWages;
+  Label* lbWorkersState;
 
   PlayerCityPtr city;
   EmployerButtons empButtons;
@@ -185,7 +252,7 @@ void Employer::Impl::updateYearlyWages()
     return;
 
   int wages = city->statistic().workers.monthlyWages() * DateTime::monthsInYear;
-  std::string wagesStr = fmt::format( "{0} {1}", _("##workers_yearly_wages_is##"), wages );
+  std::string wagesStr = fmt::format( "{} {}", _("##workers_yearly_wages_is##"), wages );
 
   lbYearlyWages->setText( wagesStr );
 }
@@ -238,14 +305,12 @@ void Employer::Impl::updateSalaryLabel()
 {
   int pay = city->treasury().workerSalary();
   int romePay = city->empire()->workerSalary();
-  std::string salaryString = fmt::format( "{0} {1} ({2} {3}})",
+  std::string salaryString = fmt::format( "{} {} ({} {})",
                                           _("##advemployer_panel_denaries##"), pay,
                                           _("##advemployer_panel_romepay##"), romePay );
 
   if( lbSalaries )
-  {
     lbSalaries->setText( salaryString );
-  }
 }
 
 Employer::Impl::EmployersInfo Employer::Impl::getEmployersInfo(industry::Type type )
@@ -294,9 +359,14 @@ Employer::Employer(PlayerCityPtr city, Widget* parent, int id )
 
   INIT_WIDGET_FROM_UI( TexturedButton*, btnIncreaseSalary )
   INIT_WIDGET_FROM_UI( TexturedButton*, btnDecreaseSalary )
+  INIT_WIDGET_FROM_UI( PushButton*, btnAdvSalaries )
 
-  CONNECT( btnIncreaseSalary, onClicked(), _d.data(), Impl::increaseSalary );
-  CONNECT( btnDecreaseSalary, onClicked(), _d.data(), Impl::decreaseSalary );
+  CONNECT( btnIncreaseSalary, onClicked(), _d.data(), Impl::increaseSalary )
+  CONNECT( btnDecreaseSalary, onClicked(), _d.data(), Impl::decreaseSalary )
+  CONNECT( btnAdvSalaries, onClicked(), this, Employer::_showAdvSalaries )
+
+  if( btnAdvSalaries )
+    btnAdvSalaries->bringToFront();
 
   //buttons _d->_d->background
   Point startPos = Point( 32, 70 ) + Point( 8, 8 );
@@ -342,6 +412,11 @@ bool Employer::onEvent(const NEvent& event)
 }
 
 void Employer::_showHelp() { DictionaryWindow::show( this, "labor_advisor" ); }
+
+void Employer::_showAdvSalaries()
+{
+  ui()->add<SalariesWindow>( _d->city );
+}
 
 }//end namespace advisorwnd
 

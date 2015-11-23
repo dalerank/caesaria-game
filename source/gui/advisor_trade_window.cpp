@@ -94,10 +94,10 @@ void Trade::Impl::updateGoodsInfo()
     int exportQty = copt.tradeLimit( trade::exporting, gtype ).ivalue();
     int importQty = copt.tradeLimit( trade::importing, gtype ).ivalue();
     
-    TradeGoodInfo* btn = new TradeGoodInfo( gbInfo, Rect( startDraw + Point( 0, btnSize.height()) * indexOffset, btnSize ),
+    auto& btn = gbInfo->add<TradeGoodInfo>( Rect( startDraw + Point( 0, btnSize.height()) * indexOffset, btnSize ),
                                             gtype, allgoods[ gtype ], workState, tradeState, exportQty, importQty );
     indexOffset++;
-    CONNECT( btn, onClickedA(), this, Impl::showGoodOrderManageWindow );
+    CONNECT( &btn, onClickedA(), this, Impl::showGoodOrderManageWindow );
   } 
 }
 
@@ -106,30 +106,30 @@ bool Trade::Impl::getWorkState(good::Product gtype )
   bool industryActive = false;
   FactoryList producers = city->statistic().objects.producers<Factory>( gtype );
 
-  for( auto factory : producers ) { industryActive |= factory->isActive(); }
+  for( auto factory : producers )
+    industryActive |= factory->isActive();
 
   return producers.empty() ? true : industryActive;
 }
 
-void Trade::Impl::showGoodOrderManageWindow(good::Product type )
+void Trade::Impl::showGoodOrderManageWindow(good::Product type)
 {
   int gmode = GoodOrderManageWindow::gmUnknown;
-  Widget* p = gbInfo->parent();
   gmode |= (city->statistic().goods.canImport( type ) ? GoodOrderManageWindow::gmImport : 0);
   gmode |= (city->statistic().goods.canProduce( type ) ? GoodOrderManageWindow::gmProduce : 0);
 
-  GoodOrderManageWindow* wnd = new GoodOrderManageWindow( p, Rect( 0, 0, p->width() - 80, p->height() - 100 ),
-                                                          city, type, allgoods[ type ], (GoodOrderManageWindow::GoodMode)gmode );
-  wnd->setCenter( p->center() );
-  CONNECT( wnd, onOrderChanged(), this, Impl::updateGoodsInfo );
+  Widget* p = gbInfo->parent();
+  auto& wnd = p->add<GoodOrderManageWindow>( Rect( 0, 0, p->width() - 80, p->height() - 100 ),
+                                             city, type, allgoods[ type ], (GoodOrderManageWindow::GoodMode)gmode );
+  CONNECT( &wnd, onOrderChanged(), this, Impl::updateGoodsInfo );
 }
 
 void Trade::Impl::showGoodsPriceWindow()
 {
   Widget* parent = gbInfo->parent();
   Size size( 610, 180 );
-  new EmpirePrices( parent, -1, Rect( Point( ( parent->width() - size.width() ) / 2,
-                                                   ( parent->height() - size.height() ) / 2), size ), city );
+  parent->add<EmpirePrices>( -1, Rect( Point( ( parent->width() - size.width() ) / 2,
+                             ( parent->height() - size.height() ) / 2), size ), city );
 }
 
 Trade::Trade(PlayerCityPtr city, Widget* parent, int id )
@@ -149,8 +149,8 @@ Trade::Trade(PlayerCityPtr city, Widget* parent, int id )
 
   _d->updateGoodsInfo();
 
-  auto btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
-  CONNECT( btnHelp, onClicked(), this, Trade::_showHelp );
+  auto& btnHelp = add<TexturedButton>( Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
+  CONNECT( &btnHelp, onClicked(), this, Trade::_showHelp );
 }
 
 void Trade::draw(gfx::Engine& painter )

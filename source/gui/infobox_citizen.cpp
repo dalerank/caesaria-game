@@ -182,12 +182,12 @@ void AboutPeople::_updateNeighbors()
     if( !tileWalkers.empty() )
     {
       //mini screenshot from citizen pos need here
-      CitizenScreenshot& lb = add<CitizenScreenshot>( lbRect, tileWalkers.front() );
-      lb.setTooltipText( _("##click_here_to_talk_person##") );
-      _d->screenshots.push_back( &lb );
+      auto& ctzScreenshot = add<CitizenScreenshot>( lbRect, tileWalkers.front() );
+      ctzScreenshot.setTooltipText( _("##click_here_to_talk_person##") );
+      _d->screenshots.push_back( &ctzScreenshot );
       lbRect += lbOffset;
 
-      CONNECT( &lb, _onClickedSignal, this, AboutPeople::_setWalker );
+      CONNECT( &ctzScreenshot, _onClickedSignal, this, AboutPeople::_setWalker );
     }
   }
 }
@@ -206,7 +206,7 @@ void AboutPeople::_init( PlayerCityPtr city, const TilePos& pos, const std::stri
   _d->lbType->setFont( Font::create( FONT_1 ));
 
   _d->lbThinks = &add<Label>( Rect( 90, 148, width() - 30, height() - 140),
-                            "##citizen_thoughts_will_be_placed_here##" );
+                              "##citizen_thoughts_will_be_placed_here##" );
 
   _d->lbThinks->setWordwrap( true );
   _d->lbCitizenPic = &add<Label>( Rect( 30, 112, 30 + 55, 112 + 80) );
@@ -233,6 +233,10 @@ void AboutPeople::_updateTitle()
   {
     title = WalkerHelper::getNationName( _d->object->nation() );
     title.insert( title.size()-2, "_soldier" );
+  }
+  else if( !_d->object->getFlag( Walker::vividly ) )
+  {
+    title = "##object##";
   }
   else
   {
@@ -282,18 +286,18 @@ const WalkerList& AboutPeople::_walkers() const { return _d->walkers; }
 void AboutPeople::Impl::updateCurrentAction(const std::string& action, TilePos pos)
 {
   destinationPos = pos;
-  std::string destBuildingName;
   OverlayPtr ov = city->getOverlay( pos );
-  if( ov.isValid() )
-  {
-    destBuildingName = ov->info().prettyName();
-    if( btnMove2dst ) btnMove2dst->setVisible( !destBuildingName.empty() );
-  }
+  if( btnMove2dst )
+    btnMove2dst->setVisible( ov.isValid() );
 
   if( lbCurrentAction )
   {
-    lbCurrentAction->setPrefixText( _("##wlk_state##") );
-    lbCurrentAction->setText( action + "(" + _(destBuildingName) + ")" );
+    std::string text = ov.isValid() ? ov->info().prettyName() : "";
+    if( !action.empty() || !text.empty() )
+    {
+      lbCurrentAction->setPrefixText( _("##wlk_state##") );
+      lbCurrentAction->setText( action + "(" + _(text) + ")" );
+    }
   }
 }
 
@@ -301,15 +305,12 @@ void AboutPeople::Impl::updateBaseBuilding( TilePos pos )
 {
   baseBuildingPos = pos;
   OverlayPtr ov = city->getOverlay( pos );
-  std::string text;
 
-  if( ov.isValid() )
-  {
-    text = ov->info().prettyName();
-    if( lbBaseBuilding ) lbBaseBuilding->setText( text );    
-  }
+  if( lbBaseBuilding )
+    lbBaseBuilding->setText( ov.isValid() ? ov->info().prettyName() : "" );
 
-  if( btnMove2base ) btnMove2base->setVisible( !text.empty() );
+  if( btnMove2base )
+    btnMove2base->setVisible( ov.isValid() );
 }
 
 void AboutPeople::Impl::moveCamera2base()

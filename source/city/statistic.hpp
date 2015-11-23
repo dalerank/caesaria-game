@@ -143,6 +143,7 @@ public:
   {
     int current = 0;
     int need = 0;
+    std::map<walker::Type,int> map;
   };
 
   struct _Workers
@@ -229,6 +230,7 @@ public:
   struct _Military
   {
     int months2lastAttack() const;
+    FortList forts() const;
 
     Statistic& _parent;
   } military;

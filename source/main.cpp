@@ -25,11 +25,11 @@
 #include "core/osystem.hpp"
 #include "steam.hpp"
 
-#if defined(CAESARIA_PLATFORM_WIN)
+#ifdef CAESARIA_PLATFORM_WIN
   #undef main
 #endif
 
-#if defined(CAESARIA_PLATFORM_ANDROID)
+#ifdef CAESARIA_PLATFORM_ANDROID
 #include <SDL.h>
 #include <SDL_system.h>
 #endif

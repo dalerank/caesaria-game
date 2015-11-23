@@ -32,6 +32,7 @@
 
 #ifdef CAESARIA_PLATFORM_LINUX
 #include <cstdlib>
+#include <string.h>
 const char* getDialogCommand()
 {
   if (::system(NULL))
@@ -68,6 +69,75 @@ void OSystem::error(const std::string& title, const std::string& text)
   // fail-safe method here, using stdio perhaps, depends on your application
 #elif defined(CAESARIA_PLATFORM_WIN)
   MessageBox(NULL, text.c_str(), title.c_str(), MB_OK | MB_ICONERROR);
+#endif
+}
+
+#ifdef CAESARIA_PLATFORM_LINUX
+/**
+ * Get the parent PID from a PID
+ * @param pid pid
+ * @param ppid parent process id
+ *
+ * Note: init is 1 and it has a parent id of 0.
+ */
+int getParentPid(const pid_t pid) {
+  char buffer[BUFSIZ];
+  sprintf(buffer, "/proc/%d/stat", pid);
+  int result;
+  FILE* fp = fopen(buffer, "r");
+  if (fp) {
+    size_t size = fread(buffer, sizeof (char), sizeof (buffer), fp);
+    if (size > 0) {
+      // See: http://man7.org/linux/man-pages/man5/proc.5.html section /proc/[pid]/stat
+      strtok(buffer, " "); // (1) pid  %d
+      strtok(NULL, " "); // (2) comm  %s
+      strtok(NULL, " "); // (3) state  %c
+      char * s_ppid = strtok(NULL, " "); // (4) ppid  %d
+      result = atoi(s_ppid);
+    }
+    fclose(fp);
+  }
+
+  return result;
+}
+
+/**
+ * Get a process name from its PID.
+ * @param pid PID of the process
+ * @param name Name of the process
+ *
+ * Source: http://stackoverflow.com/questions/15545341/process-name-from-its-pid-in-linux
+ */
+std::string getProcessName(const pid_t pid) {
+  char procfile[BUFSIZ];
+  sprintf(procfile, "/proc/%d/cmdline", pid);
+  char name[0xff];
+  FILE* f = fopen(procfile, "r");
+  if (f) {
+    size_t size;
+    size = fread(name, sizeof (char), sizeof (procfile), f);
+    if (size > 0) {
+      if ('\n' == name[size - 1])
+        name[size - 1] = '\0';
+    }
+    fclose(f);
+  }
+
+  return name;
+}
+#endif
+
+void OSystem::getProcessTree(int pid, StringArray& out)
+{
+#ifdef CAESARIA_PLATFORM_LINUX
+  while (pid != 0)
+  {
+    std::string name = getProcessName(pid);
+    Logger::warning( "{} - {}", pid, name.c_str() );
+    pid = getParentPid( pid );
+    vfs::Path pname( name );
+    out.push_back( pname.baseName().toString() );
+  }
 #endif
 }
 

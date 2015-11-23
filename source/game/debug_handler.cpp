@@ -178,6 +178,9 @@ enum {
   forest_grow,
   increase_max_level,
   decrease_max_level,
+  increase_house_level,
+  decrease_house_level,
+  lock_house_level,
   enable_constructor_mode,
   next_theme
 };
@@ -301,6 +304,9 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
 
   ADD_DEBUG_EVENT( house, increase_max_level )
   ADD_DEBUG_EVENT( house, decrease_max_level )
+  ADD_DEBUG_EVENT( house, increase_house_level )
+  ADD_DEBUG_EVENT( house, decrease_house_level )
+  ADD_DEBUG_EVENT( house, lock_house_level )
 
   ADD_DEBUG_EVENT( options, run_script )
   ADD_DEBUG_EVENT( options, all_sound_off )
@@ -499,6 +505,15 @@ void DebugHandler::Impl::handleEvent(int event)
     std::string levelName = HouseSpecHelper::instance().getSpec( conditions.maxHouseLevel() ).internalName();
     events::dispatch<WarningMessage>( "DEBUG: House max level is " + levelName,
                                       events::WarningMessage::neitral );
+  }
+  break;
+
+  case increase_house_level:
+  case decrease_house_level:
+  {
+    HouseList houses = game->city()->overlays().select<House>();
+    for( auto house : houses )
+      house->__debugChangeLevel( event == increase_house_level ? 1 : -1 );
   }
   break;
 

@@ -43,6 +43,7 @@ public:
 
   virtual std::string thoughts(Thought th) const;
   virtual TilePos places(Place type) const;
+  virtual void initialize(const VariantMap &options);
 
   std::string parentCity() const;
 

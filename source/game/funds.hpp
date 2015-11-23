@@ -91,8 +91,9 @@ public:
   int getIssueValue( Issue::Type type, int age=thisYear ) const;
   int taxRate() const;
   void setTaxRate( const unsigned int value );
-  int workerSalary() const;
+  int workerSalary( int wtype=0 ) const;
   void setWorkerSalary( const unsigned int value );
+  void setWorkerSalary( int wtype, const unsigned int value );
   int money() const;
   int profit() const;
 

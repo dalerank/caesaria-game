@@ -174,6 +174,7 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
   CONNECT( _d->btnIndustryState, onClicked(), this, GoodOrderManageWindow::toggleIndustryEnable );
   CONNECT( _d->btnStackingState, onClicked(), this, GoodOrderManageWindow::toggleStackingGoods );
 
+  moveTo( Widget::parentCenter );
   setModal();
 }
 

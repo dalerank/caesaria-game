@@ -183,6 +183,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( forestGrow, 1 );
   setOption( warfNeedTimber, 1 );
   setOption( riversideAsWell, 1 );
+  setOption( soldiersHaveSalary, 1 );
 
   _d->states.nation = world::nation::rome;
 }
@@ -538,13 +539,15 @@ void PlayerCity::setOption(PlayerCity::OptionType opt, int value)
   _d->options[ opt ] = value;
   if( opt == c3gameplay )
   {
-    events::dispatch<WarningMessage>( "WARNING: enabled C3 gameplay only!", WarningMessage::negative );     
+    if( value )
+      events::dispatch<WarningMessage>( "WARNING! Enabled C3 gameplay only!", WarningMessage::negative );
 
     _d->options[ warfNeedTimber ] = !value;
     _d->options[ forestFire ] = !value;
     _d->options[ forestGrow ] = !value;
     _d->options[ destroyEpidemicHouses ] = !value;
     _d->options[ riversideAsWell ] = !value;
+    _d->options[ soldiersHaveSalary ] = !value;
   }
 }
 

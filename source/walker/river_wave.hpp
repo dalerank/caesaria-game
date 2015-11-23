@@ -31,6 +31,7 @@ public:
   virtual void send2City(const TilePos& location);
   virtual void timeStep(const unsigned long time);
   virtual void save(VariantMap& stream) const;
+  virtual void initialize(const VariantMap &options);
 
 protected:
   const gfx::Picture& getMainPicture();

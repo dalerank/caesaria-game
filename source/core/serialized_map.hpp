@@ -13,37 +13,34 @@
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
-// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_ADVISOR_EMPLOYERS_WINDOW_H_INCLUDED__
-#define __CAESARIA_ADVISOR_EMPLOYERS_WINDOW_H_INCLUDED__
+#ifndef _CAESARIA_SERIALIZED_MAP_H_INCLUDE_
+#define _CAESARIA_SERIALIZED_MAP_H_INCLUDE_
 
-#include "advisor_base_window.hpp"
+#include "variant_list.hpp"
 
-namespace gui
-{
-
-namespace advisorwnd
-{
-
-class Employer : public Base
+template<class A, class B>
+class SerializedMap : public std::map<A,B>
 {
 public:
-  Employer( PlayerCityPtr city, Widget* parent, int id );
+  virtual VariantList save() const
+  {
+    VariantList ret;
+    for( const auto& item : *this )
+      ret.push_back( VariantList(item.first, item.second ) );
 
-  virtual void draw( gfx::Engine& painter );
-  virtual bool onEvent(const NEvent &event);
+    return ret;
+  }
 
-private:
-  void _showHelp();
-  void _showAdvSalaries();
-
-  class Impl;
-  ScopedPtr< Impl > _d;
+  virtual void load( const VariantList& stream )
+  {
+    for( const auto& item : stream )
+    {
+      VariantList vl = item.toList();
+      (*this)[ vl.get(0) ] = vl.get(1);
+    }
+  }
 };
 
-}//end namespace advisorwnd
-
-}//end namespace gui
-
-#endif //__CAESARIA_ADVISOR_EMPLOYERS_WINDOW_H_INCLUDED__
+#endif//_CAESARIA_SERIALIZED_MAP_H_INCLUDE_

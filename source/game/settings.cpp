@@ -107,6 +107,7 @@ __REG_PROPERTY(defaultFont)
 __REG_PROPERTY(celebratesConfig)
 __REG_PROPERTY(ambientsounds)
 __REG_PROPERTY(cntrGroupsModel)
+__REG_PROPERTY(logfile)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -155,6 +156,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ opengl_opts         ] = std::string( "/opengl.model" );
   _d->options[ freeplay_opts       ] = std::string( "/freeplay.model" );
   _d->options[ walkerRelations     ] = std::string( "/relations.model" );
+  _d->options[ logfile             ] = std::string( "stdout.txt" );
   _d->options[ font                ] = std::string( "FreeSerif.ttf" );
   _d->options[ defaultFont         ] = std::string( "FreeSerif.ttf" );
   _d->options[ simpleAnimationModel] = std::string( "/basic_animations.model" );

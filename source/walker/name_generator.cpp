@@ -42,7 +42,7 @@ NameGenerator& NameGenerator::instance()
 
 NameGenerator::~NameGenerator(){}
 
-std::string NameGenerator::rand( NameType type )
+std::string NameGenerator::rand(NameType type , world::Nation nation)
 {
   const NameGenerator& ng = instance();
 

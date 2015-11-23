@@ -406,7 +406,7 @@ void EmpireMapWindow::Impl::createTradeRoute()
       events::dispatch<Payment>( econ::Issue::sundries, -(int)cost );
 
       size_t docks_n = city.base->statistic().objects.count( object::dock );
-      if( docks_n )
+      if( !docks_n )
       {
         events::dispatch<ShowInfobox>( _("##no_working_dock##" ), _( "##no_dock_for_sea_trade_routes##" ) );
       }

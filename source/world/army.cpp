@@ -48,10 +48,10 @@ public:
 Army::Army( EmpirePtr empire )
   : MovableObject( empire ), __INIT_IMPL(Army)
 {
-  __D_IMPL(d,Army)
+  __D_REF(d,Army)
 
   _animation().load( "world_army" );
-  d->strength = 0;
+  d.strength = 0;
 }
 
 ArmyPtr Army::create(EmpirePtr empire)
@@ -66,12 +66,12 @@ Army::~Army(){}
 
 void Army::_reachedWay()
 {
-  __D_IMPL(d,Army)
+  __D_REF(d,Army)
 
   ObjectPtr obj;
-  if( !d->destination.empty() )
+  if( !d.destination.empty() )
   {
-    obj = empire()->findObject( d->destination );
+    obj = empire()->findObject( d.destination );
   }
   else
   {
@@ -88,7 +88,7 @@ void Army::_reachedWay()
   }
   else
   {
-    Logger::warning( "!!!Army: nof found object with name " +(d->destination.empty() ? "NULL" : d->destination) );
+    Logger::warning( "!!!Army: nof found object with name " +(d.destination.empty() ? "NULL" : d.destination) );
   }
 
   MovableObject::_reachedWay();
@@ -122,34 +122,33 @@ void Army::setBase(CityPtr base){  _dfunc()->base = base.isValid() ? base->name(
 
 void Army::attack(ObjectPtr obj)
 {
-  __D_IMPL(d,Army)
-  CityPtr baseCity = empire()->findCity( d->base );
+  __D_REF(d,Army)
+  CityPtr baseCity = empire()->findCity( d.base );
   if( baseCity.isValid() && obj.isValid() )
   {
-    d->destination = obj->name();
+    d.destination = obj->name();
     _findWay( baseCity->location(), obj->location() );
 
     if( _way().empty() )
     {
-      Logger::warning( "Army: cannot find way from {0} to {1}", d->base, obj->name() );
+      Logger::warning( "Army: cannot find way from {} to {}", d.base, obj->name() );
     }
 
     attach();
   }
   else
   {
-    Logger::warning( "Army: base is " + ( d->base.empty() ? "null" : d->base ) );
+    Logger::warning( "Army: base is " + ( d.base.empty() ? "null" : d.base ) );
     Logger::warning( "Army: object for attack is " + ( obj.isNull() ? "null" : obj->name() ) );
   }
 }
 
 void Army::setStrength(int value)
 {
-  _dfunc()->strength = value;
-  if( _dfunc()->strength <= 0 )
-  {
+  __D_REF(d,Army)
+  d.strength = value;
+  if( d.strength <= 0 )
     deleteLater();
-  }
 }
 
 int Army::strength() const { return _dfunc()->strength; }
@@ -224,4 +223,4 @@ bool Army::_isAgressiveArmy(ArmyPtr) const
   return true;
 }
 
-}
+}//end namespace world
