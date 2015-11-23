@@ -221,7 +221,7 @@ void Senate::_updateUnemployers()
   }
 }
 
-float Senate::collectTaxes()
+float Senate::takeMoney()
 {
   int save = 0;
 

@@ -27,6 +27,7 @@
       btnWarfNeedTimber#OptionButton:{base:"city_warf_timber",states:{off:0,on:1  }, link : [ "city", "warfNeedTimber" ] }
       btnRiverSideAsWell#OptionButton:{base:"river_side_well",states:{off:0,on:1  }, link : [ "city", "riversideAsWell" ] }
       btnSoldiersHaveSalary#OptionButton:{base:"sldr_wages",states:{off:0,on:1  }, link : [ "city", "soldiersHaveSalary" ] }
+      btnHousePersonalTaxes#OptionButton:{base:"personal_tax",states:{off:0,on:1  }, link : [ "city", "housePersonalTaxes" ] }
 
       btnDifficulty#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_barbarian_mode##" }
       btnRoadBlocks#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_roadblock_mode##" }

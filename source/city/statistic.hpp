@@ -106,6 +106,9 @@ public:
     SmartList< T > find( const object::Type type, const TilePos& start, const TilePos& stop ) const;
 
     template< class T >
+    SmartList< T > find( const object::Type type, const TilePos& center, int radius ) const;
+
+    template< class T >
     SmartPtr< T > next( SmartPtr< T > current ) const;
 
     template<class T>
@@ -293,6 +296,13 @@ public:
 
 
 /** Implementations **/
+template< class T >
+inline SmartList< T > Statistic::_Objects::find( const object::Type type, const TilePos& center, int radius ) const
+{
+  TilePos offset( radius, radius );
+  return find<T>( type, center - offset, center + offset );
+}
+
 template< class T >
 inline SmartList< T > Statistic::_Objects::find( const object::Type type, const TilePos& start, const TilePos& stop ) const
 {

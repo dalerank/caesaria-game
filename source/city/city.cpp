@@ -184,6 +184,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( warfNeedTimber, 1 );
   setOption( riversideAsWell, 1 );
   setOption( soldiersHaveSalary, 1 );
+  setOption( housePersonalTaxes, 1 );
 
   _d->states.nation = world::nation::rome;
 }
@@ -548,6 +549,7 @@ void PlayerCity::setOption(PlayerCity::OptionType opt, int value)
     _d->options[ destroyEpidemicHouses ] = !value;
     _d->options[ riversideAsWell ] = !value;
     _d->options[ soldiersHaveSalary ] = !value;
+    _d->options[ housePersonalTaxes ] = !value;
   }
 }
 

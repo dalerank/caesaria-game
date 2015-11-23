@@ -24,6 +24,7 @@
 #include "objects/forum.hpp"
 #include "objects/senate.hpp"
 #include "objects/fort.hpp"
+#include "game/difficulty.hpp"
 #include "events/showinfobox.hpp"
 
 using namespace events;
@@ -82,11 +83,26 @@ void Economy::collectTaxes(PlayerCityPtr city)
 {
   float lastMonthTax = 0;
 
-  ForumList forums = city->statistic().objects.find<Forum>( object::forum );
-  for( auto forum : forums ) { lastMonthTax += forum->collectTaxes(); }
+  if( city->getOption( PlayerCity::housePersonalTaxes ) )
+  {
+    ForumList forums = city->statistic().objects.find<Forum>( object::forum );
+    for( auto forum : forums ) { lastMonthTax += forum->takeMoney(); }
 
-  SenateList senates = city->statistic().objects.find<Senate>( object::senate );
-  for( auto senate : senates ) { lastMonthTax += senate->collectTaxes(); }
+    SenateList senates = city->statistic().objects.find<Senate>( object::senate );
+    for( auto senate : senates ) { lastMonthTax += senate->takeMoney(); }
+  }
+  else
+  {
+    HouseList houses = city->statistic().houses.all();
+    for( auto house : houses )
+    {
+      //collect money only from taxed houses
+      if( house->getServiceValue( Service::forum ) > 0 )
+      {
+        lastMonthTax += house->collectTaxes();
+      }
+    }
+  }
 
   resolveIssue( econ::Issue( econ::Issue::taxIncome, lastMonthTax ) );
 }
@@ -112,14 +128,14 @@ void Economy::checkIssue(econ::Issue::Type type)
   switch( type )
   {
   case econ::Issue::overdueEmpireTax:
-    {
-      int lastYearBrokenTribute = getIssueValue( econ::Issue::overdueEmpireTax, econ::Treasury::lastYear );
-      std::string text = lastYearBrokenTribute > 0
-          ? "##for_second_year_broke_tribute##"
-          : "##current_year_notpay_tribute_warning##";
+  {
+    int lastYearBrokenTribute = getIssueValue( econ::Issue::overdueEmpireTax, econ::Treasury::lastYear );
+    std::string text = lastYearBrokenTribute > 0
+        ? "##for_second_year_broke_tribute##"
+        : "##current_year_notpay_tribute_warning##";
 
-      events::dispatch<ShowInfobox>( "##tribute_broken_title##", text );
-    }
+    events::dispatch<ShowInfobox>( "##tribute_broken_title##", text );
+  }
   break;
 
   default:

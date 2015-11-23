@@ -90,14 +90,6 @@ void Sentiment::drawTile( const RenderInfo& rinfo, Tile& tile)
   tile.setRendered();
 }
 
-LayerPtr Sentiment::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new Sentiment( camera, city ) );
-  ret->drop();
-
-  return ret;
-}
-
 void Sentiment::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )

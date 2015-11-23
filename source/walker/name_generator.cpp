@@ -55,6 +55,7 @@ std::string NameGenerator::rand(NameType type , world::Nation nation)
   case patricianFemale: names = &ng._d->female; break;
   case indigeneMale: names = &ng._d->male; break;
   case indigeneFemale: names = &ng._d->female; break;
+  case merchant: names = &ng._d->male; break;
   }
 
   return names->random() + " " + ng._d->surname.random();

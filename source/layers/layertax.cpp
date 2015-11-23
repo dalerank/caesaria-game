@@ -85,14 +85,6 @@ void Tax::drawTile(const RenderInfo& rinfo, Tile& tile)
   tile.setRendered();
 }
 
-LayerPtr Tax::create( Camera& camera, PlayerCityPtr city )
-{
-  LayerPtr ret( new Tax( camera, city ) );
-  ret->drop();
-
-  return ret;
-}
-
 void Tax::handleEvent(NEvent& event)
 {
   if( event.EventType == sEventMouse )

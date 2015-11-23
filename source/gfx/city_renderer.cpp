@@ -135,7 +135,7 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   _d->instanceLayer<Health>( citylayer::baths );
   _d->instanceLayer<Religion>();
   _d->instanceLayer<Damage>();
-  addLayer( Sentiment::create( _d->camera, city ) );
+  _d->instanceLayer<Sentiment>();
   _d->instanceLayer<Unemployed>();
   _d->instanceLayer<citylayer::Desirability>();
   _d->instanceLayer<Entertainment>( citylayer::entertainment );
@@ -145,7 +145,7 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   _d->instanceLayer<Entertainment>( citylayer::hippodrome );
   _d->instanceLayer<Crime>();
   addLayer( Destroy::create( *this, city ) );
-  addLayer( Tax::create( _d->camera, city ) );
+  _d->instanceLayer<Tax>();
   addLayer( Education::create( _d->camera, city, citylayer::education ) );
   addLayer( Education::create( _d->camera, city, citylayer::school ) );
   addLayer( Education::create( _d->camera, city, citylayer::library ) );

@@ -97,7 +97,7 @@ void Forum::collapse()
   ServiceBuilding::collapse();
 }
 
-float Forum::collectTaxes()
+float Forum::takeMoney()
 {
   __D_REF(d,Forum)
   int save = 0;

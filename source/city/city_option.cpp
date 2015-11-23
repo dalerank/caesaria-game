@@ -61,6 +61,7 @@ public:
     _O(minesMayCollapse)
     _O(riversideAsWell)
     _O(soldiersHaveSalary)
+    _O(housePersonalTaxes)
 #undef _O
   }
 };
@@ -91,6 +92,7 @@ void Options::load(const VariantList& stream)
   resetIfNot( PlayerCity::minesMayCollapse, 1);
   resetIfNot( PlayerCity::riversideAsWell, 1);
   resetIfNot( PlayerCity::soldiersHaveSalary, 1);
+  resetIfNot( PlayerCity::housePersonalTaxes, 1);
   resetIfNot( PlayerCity::difficulty, game::difficulty::usual );
 }
 

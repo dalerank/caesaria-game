@@ -148,7 +148,7 @@ const Picture& ThrowingWeapon::getMainPicture() {  return _d->pic; }
 
 void ThrowingWeapon::initialize(const VariantMap& options)
 {
-  Walker::initialize( optiosn );
+  Walker::initialize( options );
   setName( _("##unknow_throwing_weapon##") );
 }
 TilePos ThrowingWeapon::dstPos() const {  return _d->dst; }
