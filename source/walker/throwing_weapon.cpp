@@ -145,6 +145,12 @@ void ThrowingWeapon::turn(TilePos p)
 }
 
 const Picture& ThrowingWeapon::getMainPicture() {  return _d->pic; }
+
+void ThrowingWeapon::initialize(const VariantMap& options)
+{
+  Walker::initialize( optiosn );
+  setName( _("##unknow_throwing_weapon##") );
+}
 TilePos ThrowingWeapon::dstPos() const {  return _d->dst; }
 TilePos ThrowingWeapon::startPos() const{  return _d->from; }
 ThrowingWeapon::~ThrowingWeapon() {}
@@ -162,7 +168,5 @@ void ThrowingWeapon::setPicOffset(Point offset)
 
 ThrowingWeapon::ThrowingWeapon(PlayerCityPtr city) : Walker( city ), _d( new Impl )
 {
-  setName( _("##unknow_throwing_weapon##") );
-
   setFlag( vividly, false );
 }

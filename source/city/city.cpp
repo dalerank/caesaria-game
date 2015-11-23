@@ -539,7 +539,8 @@ void PlayerCity::setOption(PlayerCity::OptionType opt, int value)
   _d->options[ opt ] = value;
   if( opt == c3gameplay )
   {
-    events::dispatch<WarningMessage>( "WARNING: enabled C3 gameplay only!", WarningMessage::negative );     
+    if( value )
+      events::dispatch<WarningMessage>( "WARNING! Enabled C3 gameplay only!", WarningMessage::negative );
 
     _d->options[ warfNeedTimber ] = !value;
     _d->options[ forestFire ] = !value;

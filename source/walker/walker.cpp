@@ -406,7 +406,7 @@ Tilemap& Walker::_map() const
   if( _city().isValid() )
     return _city()->tilemap();
 
-  Logger::warning( "!!! WARNING: City is null at Walker::_map()" );
+  Logger::warning( "WARNING !!! City is null at Walker::_map()" );
   return gfx::tilemap::getInvalid();
 }
 
