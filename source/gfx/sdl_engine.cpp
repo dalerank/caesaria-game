@@ -288,7 +288,6 @@ void SdlEngine::init()
     THROW("Unable to set video mode: " << SDL_GetError());
   }
 
-  Logger::warning( "SDLGraficEngine: set caption");
   Logger::warning( "SDLGraphicEngine: version:{} compiler:{}", CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
   std::string versionStr = fmt::format( "CaesarIA (WORK IN PROGRESS/Build {})", CAESARIA_BUILD_NUMBER );
   SDL_SetWindowTitle( window, versionStr.c_str() );

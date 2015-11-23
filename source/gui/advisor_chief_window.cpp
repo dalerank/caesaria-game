@@ -181,9 +181,12 @@ void Chief::Impl::initRows( Widget* parent, int width )
   Point startPoint( 20, 60 );
   Point offset( 0, 27 );
 
-  int index=0;
+  Rect rowRect( startPoint, Size( width, offset.y() ) );
   for(const auto& row : Advice::row )
-    rows[ row.first ] = &parent->add<InfomationRow>( row.second, Rect( startPoint + offset * index++, Size( width, offset.y() ) ) );
+  {
+    rows[ row.first ] = &parent->add<InfomationRow>( row.second, rowRect );
+    rowRect += offset;
+  }
 }
 
 void Chief::draw( gfx::Engine& painter )
@@ -204,11 +207,8 @@ void Chief::Impl::drawReportRow(Advice::Type type, std::string text, NColor colo
   auto it = rows.find( type );
   if( it != rows.end() )
   {
-    InfomationRow* row = it->second;
-    Font font = row->font();
-    font.setColor( color );
-    row->setFont( font );
-    row->setText( text );
+    it->second->setColor( color );
+    it->second->setText( text );
   }
 }
 
@@ -497,7 +497,7 @@ void Chief::Impl::drawEntertainment()
   auto festivals = city->statistic().services.find<Festival>();
   if( festivals.isValid() )
   {
-    int monthFromLastFestival = festivals->lastFestival().monthsTo( game::Date::current() );
+    int monthFromLastFestival = festivals->last().monthsTo( game::Date::current() );
     if( monthFromLastFestival > DateTime::monthsInYear / 2 )
     {
       reasons << "##citizens_grumble_lack_festivals_held##";

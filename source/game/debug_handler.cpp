@@ -529,9 +529,9 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case show_fest:
   {
-    city::FestivalPtr fest = game->city()->statistic().services.find<city::Festival>();
-    if( fest.isValid() )
-      fest->now();
+    city::FestivalPtr festivals = game->city()->statistic().services.find<city::Festival>();
+    if( festivals.isValid() )
+      festivals->doFestivalNow();
   }
   break;
 

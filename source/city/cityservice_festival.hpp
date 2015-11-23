@@ -42,10 +42,10 @@ class Festival : public Srvc
 public:
   static std::string defaultName();
 
-  DateTime lastFestival() const;
-  DateTime nextFestival() const;
+  DateTime last() const;
+  DateTime next() const;
   void assign(religion::RomeDivinity::Type name, int size);
-  void now();
+  void doFestivalNow();
 
   virtual void timeStep( const unsigned int time );
 

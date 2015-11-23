@@ -148,7 +148,7 @@ void OSystem::openUrl(const std::string& url, const std::string& prefix)
   Logger::warning( command );
   ::system( command.c_str() );
 #elif defined(CAESARIA_PLATFORM_WIN)
-  ShellExecuteA(0, 0, url.c_str(), 0, 0 , SW_SHOW );
+  ShellExecuteA(0, "Open", url.c_str(), 0, 0 , SW_SHOW );
 #elif defined(CAESARIA_PLATFORM_MACOSX)
   std::string result = "open \"" + url + "\" &";
   ::system( result.c_str() );

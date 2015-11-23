@@ -66,11 +66,11 @@ public:
   {
     walkerType = wType;
     salary = value;
-    btnDecrease = &add<TexturedButton>( Point( 220, 3 ), Size( 24 ), -1, 601 );
-    btnIncrease = &add<TexturedButton>( Point( 220 + 24, 3 ), Size( 24 ), -1, 605 );
+    auto& btnDecrease = add<TexturedButton>( Point( 220, 3 ), Size( 24 ), -1, config::id.menu.rowDown );
+    btnDecrease.setTooltipText( _("##advslr_btn_tooltip##") );
 
-    btnDecrease->setTooltipText( _("##advslr_btn_tooltip##") );
-    btnIncrease->setTooltipText( _("##advslr_btn_tooltip##") );
+    auto& btnIncrease = add<TexturedButton>( btnDecrease.righttop(), Size( 24 ), -1, config::id.menu.rowUp );
+    btnIncrease.setTooltipText( _("##advslr_btn_tooltip##") );
   }
 
   virtual void _updateTextPic()
@@ -94,8 +94,6 @@ public:
 
   int salary;
   walker::Type walkerType;
-  TexturedButton* btnDecrease;
-  TexturedButton* btnIncrease;
 };
 
 class SalariesWindow : public Window

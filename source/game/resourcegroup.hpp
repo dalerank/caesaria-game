@@ -76,6 +76,8 @@ struct IDDB
     int waterSupply = 127;
     int terrain = 183;
     int forest = 186;
+    int rowDown = 601;
+    int rowUp = 605;
     int water = 189;
     int smRocks = 204;
     int helpInf = 528;

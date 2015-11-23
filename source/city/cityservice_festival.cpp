@@ -109,9 +109,9 @@ public:
 
 std::string Festival::defaultName() {  return CAESARIA_STR_EXT(Festival); }
 
-void Festival::now() { _d->nextfest.date = game::Date::current(); }
-DateTime Festival::lastFestival() const { return _d->lastfest.date; }
-DateTime Festival::nextFestival() const { return _d->nextfest.date; }
+void Festival::doFestivalNow() { _d->nextfest.date = game::Date::current(); }
+DateTime Festival::last() const { return _d->lastfest.date; }
+DateTime Festival::next() const { return _d->nextfest.date; }
 
 void Festival::assign(RomeDivinity::Type name, int size )
 {

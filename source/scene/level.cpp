@@ -266,22 +266,20 @@ void Level::Impl::initSound()
 {
   auto sound = game->city()->statistic().services.find<city::AmbientSound>();
   auto player = game->city()->statistic().services.find<audio::ThemePlayer>();
+
   if( sound.isValid() )
     sound->setCamera( renderer.camera() );
 
-  if( player.isValid() )
-  {
-    CONNECT( player, onSwitch(), this, Impl::resolveWarningMessage )
-  }
+  CONNECT( player, onSwitch(), this, Impl::resolveWarningMessage )
 }
 
 void Level::Impl::initTabletUI( Level* scene )
 {
   //specific tablet actions bar
-  tablet::ActionsBar* tabletUi = new tablet::ActionsBar( game->gui()->rootWidget() );
-  tablet::ActionsHandler::assignTo( tabletUi, scene );
+  auto& tabletUi = game->gui()->add<tablet::ActionsBar>();
+  tablet::ActionsHandler::assignTo( &tabletUi, scene );
 
-  tabletUi->setVisible( SETTINGS_VALUE(showTabletMenu) );
+  tabletUi.setVisible( SETTINGS_VALUE(showTabletMenu) );
 }
 
 void Level::Impl::connectTopMenu2scene(Level* scene)
