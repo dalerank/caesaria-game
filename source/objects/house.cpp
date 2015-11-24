@@ -345,13 +345,13 @@ void House::_updateTax()
 
   if( newEconomyModel )
   {
-    float oneManTaxInMonth = spec().taxRate() / (float)(spec().tileCapacity() * size().area());
+    float oneManTaxInMonth = spec().taxRate() / (float)spec().tileCapacity();
     cityTax = multiply * habitants().count() * oneManTaxInMonth * cityTax;
     _d->economy.money -= cityTax;
   }
   else
   {
-    cityTax = multiply * spec().taxRate() * cityTax;
+    cityTax = multiply * spec().taxRate() * cityTax * size().area();
     _d->economy.money = 10;
   }
 

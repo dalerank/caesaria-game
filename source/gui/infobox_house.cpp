@@ -178,7 +178,7 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
   {
     if( _house->getServiceValue( Service::forum ) > 0 )
     {
-      taxesStr = utils::format( 0xff, "%d %s", taxes, _("##house_pay_tax##") );
+      taxesStr = fmt::format( "{} {}", taxes * _house->size().area(), _("##house_pay_tax##") );
     }
     else
     {
@@ -194,10 +194,10 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
     }
   }
 
-  Label* taxesLb = new Label( this, Rect( 16 + 35, 177, width() - 16, 177 + 20 ), _( taxesStr ) );
+  auto& taxesLb = add<Label>( Rect( 16 + 35, 177, width() - 16, 177 + 20 ), _( taxesStr ) );
 
   std::string aboutCrimes = _("##house_not_report_about_crimes##");
-  Label& lbCrime = add<Label>( taxesLb->relativeRect() + Point( 0, 22 ), aboutCrimes );
+  Label& lbCrime = add<Label>( taxesLb.relativeRect() + Point( 0, 22 ), aboutCrimes );
 
   int startY = lbCrime.bottom() + 10;
   if( _house->level() > HouseLevel::tent )
@@ -243,7 +243,7 @@ void AboutHouse::drawHabitants( HousePtr house )
   if( freeRoom > 0 )
   {
     // there is some room for new habitants!
-    freeRoomText = utils::format( 0xff, "%d %s %d", current, _("##citizens_additional_rooms_for##"), freeRoom);
+    freeRoomText = fmt::format( "{} {} {}", current, _("##citizens_additional_rooms_for##"), freeRoom);
   }
   else if (freeRoom == 0)
   {
@@ -318,8 +318,8 @@ void AboutHouse::_showHbtInfo()
 
 void AboutHouse::_showSrvcInfo()
 {
-  std::string srvcState = utils::format( 0xff, "Health=%d",
-                                               (int)_house->state( pr::health ));
+  std::string srvcState = fmt::format( "Health={}",
+                                        (int)_house->state( pr::health ));
 
   Dialog& dialog = ui()->add<Dialog>( Rect( 0, 0, 400, 400 ), "Services", srvcState, Dialog::btnOk );
   dialog.moveTo( Widget::parentCenter );
