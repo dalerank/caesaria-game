@@ -615,7 +615,7 @@ void Game::initialize()
   }
 
   d.nextScreen = SCREEN_MENU;
-  d.engine->setFlag( gfx::Engine::debugInfo, 1 );
+  d.engine->setFlag( gfx::Engine::showMetrics, 1 );
 }
 
 bool Game::exec()

@@ -661,7 +661,7 @@ void GlEngine::setFlag( int flag, int value )
 {
   Engine::setFlag( flag, value );
 
-  if( flag == debugInfo )
+  if( flag == showMetrics )
   {
     _d->debugFont = Font::create( FONT_2 );
   }
@@ -795,7 +795,7 @@ void GlEngine::startRenderFrame()
 
 void GlEngine::endRenderFrame()
 {
-  if( getFlag( Engine::debugInfo ) )
+  if( getFlag( Engine::showMetrics ) )
   {
     std::string debugText = utils::format( 0xff, "fps:%d call:%d", _lastFps, _drawCall );
     _d->fpsText.fill( 0, Rect() );
