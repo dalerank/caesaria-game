@@ -38,6 +38,7 @@ public:
 private:
   void _updatePaths();
   int _getLevelValue(HousePtr house);
+  std::string _getAccessLevel(int lvlValue) const;
 
   class Impl;
   ScopedPtr<Impl> _d;

@@ -72,11 +72,11 @@ void Crime::drawTile( const RenderInfo& rinfo, Tile& tile)
       crime = (int)house->getServiceValue( Service::crime );
       needDrawAnimations = (house->level() <= HouseLevel::hovel) && house->habitants().empty(); // In case of vacant terrain
 
-      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.inHouseBase  );
+      drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.house  );
     }
     else
     {
-      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base  );
+      drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.constr  );
     }
 
     if( needDrawAnimations )

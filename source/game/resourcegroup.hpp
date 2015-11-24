@@ -18,6 +18,8 @@
 #ifndef __CAESARIA_RESOURCENAMES_H_INCLUDE_
 #define __CAESARIA_RESOURCENAMES_H_INCLUDE_
 
+#include <string>
+
 class ResourceGroup
 {
 public:
@@ -34,7 +36,6 @@ public:
   __RCG_NAME commerce;
   __RCG_NAME security;
   __RCG_NAME transport;
-  __RCG_NAME aqueduct;
   __RCG_NAME road;
   __RCG_NAME land1a;
   __RCG_NAME meadow;
@@ -46,8 +47,6 @@ public:
   __RCG_NAME plateau;
   __RCG_NAME wharf;
   __RCG_NAME shipyard;
-  __RCG_NAME waterOverlay;
-  __RCG_NAME foodOverlay;
   __RCG_NAME empirebits;
   __RCG_NAME empirepnls;
   __RCG_NAME citizen1;
@@ -55,7 +54,7 @@ public:
   __RCG_NAME citizen3;
   __RCG_NAME citizen4;
   __RCG_NAME citizen5;
-  __RCG_NAME lion;
+  //__RCG_NAME lion;
   __RCG_NAME wall;
   __RCG_NAME hippodrome;
   __RCG_NAME celts;
@@ -66,8 +65,10 @@ public:
 namespace config
 {
 
-struct IDDB
+struct ID
 {
+#define STR_ALIAS(a,b) const std::string a=#b;
+
   struct _Menu
   {
     int house = 123;
@@ -124,24 +125,33 @@ struct IDDB
     int coastSE=148;
   };
 
-  struct _Overlay
-  {
-    int base = 1;
-    int skipRightBorder = 1;
-    int skipLeftBorder = 2;
-    int inHouse = 4;
-    int inHouseBase = 5;
-    int reservoirRange = 8;
-    int haveWater = 16;
-  };
-
   _Menu menu;
   _Middle middle;
-  _Empire empire;
-  _Overlay overlay;
+  _Empire empire;  
 };
 
-static IDDB id;
+struct {
+  int constr = 1;
+  int skipRightBorder = 1;
+  int skipLeftBorder = 2;
+  int house = 4;
+} tile;
+
+struct {
+  STR_ALIAS(aqueduct,land2a)
+} rc;
+
+struct
+{
+  int reservoirRange = 8;
+  int haveWater = 16;
+
+  STR_ALIAS(water,land2a)
+  STR_ALIAS(food,land2a)
+  STR_ALIAS(ground,land2a)
+} layer;
+
+static ID id;
 
 }
 

@@ -23,14 +23,30 @@
 #include "constants.hpp"
 #include "core/event.hpp"
 #include "gfx/camera.hpp"
+#include "objects/senate.hpp"
+#include "objects/forum.hpp"
 #include "core/gettext.hpp"
 #include "game/gamedate.hpp"
+#include "gfx/textured_path.hpp"
 #include "city/statistic.hpp"
 
 using namespace gfx;
 
 namespace citylayer
 {
+
+class Tax::Impl
+{
+public:
+  struct
+  {
+    OverlayPtr selected;
+    OverlayPtr underMouse;
+  } overlay;
+
+  DateTime lastUpdate;
+  std::vector<TilesArray> ways;
+};
 
 int Tax::type() const {  return citylayer::tax; }
 
@@ -62,12 +78,12 @@ void Tax::drawTile(const RenderInfo& rinfo, Tile& tile)
 
       if( !needDrawAnimations )
       {
-        drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
+        drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.house );
       }
     }
     else
     {
-      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base );
+      drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.constr );
     }
 
     if( needDrawAnimations )
@@ -119,6 +135,17 @@ void Tax::handleEvent(NEvent& event)
     }
     break;
 
+    case mouseLbtnPressed:
+    {
+      OverlayPtr overlay = _d->overlay.underMouse;
+      if( overlay.is<Senate>() || overlay.is<Forum>() )
+      {
+        _d->overlay.selected = overlay;
+        _updatePaths();
+      }
+    }
+    break;
+
     default: break;
     }
   }
@@ -126,8 +153,37 @@ void Tax::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
+void Tax::afterRender(Engine& engine)
+{
+  Info::afterRender(engine);
+
+  if( game::Date::isDayChanged() )
+    _updatePaths();
+}
+
+void Tax::render(Engine& engine)
+{
+  Info::render( engine );
+
+  RenderInfo rinfo{ engine, _camera()->offset() };
+  for( auto& tiles : _d->ways )
+    TexturedPath::draw( tiles, rinfo );
+}
+
+void Tax::_updatePaths()
+{
+  auto wbuilding = _d->overlay.selected.as<WorkingBuilding>();
+  if( wbuilding.isValid() )
+  {
+    _d->ways.clear();
+    const WalkerList& walkers = wbuilding->walkers();
+    for( auto walker : walkers )
+      _d->ways.push_back( walker->pathway().allTiles() );
+  }
+}
+
 Tax::Tax( Camera& camera, PlayerCityPtr city)
-  : Info( camera, city, 9 )
+  : Info( camera, city, 9 ), _d( new Impl )
 {
   if( !city->getOption( PlayerCity::c3gameplay ) )
     _loadColumnPicture( ResourceGroup::sprites, 124 );

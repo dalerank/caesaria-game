@@ -146,12 +146,12 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   _d->instanceLayer<Crime>();
   addLayer( Destroy::create( *this, city ) );
   _d->instanceLayer<Tax>();
-  addLayer( Education::create( _d->camera, city, citylayer::education ) );
-  addLayer( Education::create( _d->camera, city, citylayer::school ) );
-  addLayer( Education::create( _d->camera, city, citylayer::library ) );
-  addLayer( Education::create( _d->camera, city, citylayer::academy ) );
-  addLayer( Troubles::create( _d->camera, city, citylayer::risks ) );
-  addLayer( Troubles::create( _d->camera, city, citylayer::troubles ) );
+  _d->instanceLayer<Education>( citylayer::education );
+  _d->instanceLayer<Education>( citylayer::school );
+  _d->instanceLayer<Education>( citylayer::library );
+  _d->instanceLayer<Education>( citylayer::academy );
+  _d->instanceLayer<Troubles>( citylayer::risks );
+  _d->instanceLayer<Troubles>( citylayer::troubles );
   _d->instanceLayer<Aborigens>();
   _d->instanceLayer<MarketAccess>();
   _d->instanceLayer<CommodityTurnover>();

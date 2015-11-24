@@ -61,9 +61,9 @@ PictureInfoBank::PictureInfoBank() : _d( new Impl )
   _d->setRange( ResourceGroup::wall, 152, 185, offset );
   _d->setRange( ResourceGroup::sprites, 114, 161, offset );
 
-  _d->setRange( ResourceGroup::waterOverlay, 1, 2, offset ); //wateroverlay building 1x1
-  _d->setRange( ResourceGroup::waterOverlay, 11, 12, offset ); //wateroverlay houses 1x1
-  _d->setRange( ResourceGroup::waterOverlay, 21, 22, offset ); //wateroverlay reservoir area 1x1
+  _d->setRange( config::layer.water, 1, 2, offset ); //wateroverlay building 1x1
+  _d->setRange( config::layer.water, 11, 12, offset ); //wateroverlay houses 1x1
+  _d->setRange( config::layer.water, 21, 22, offset ); //wateroverlay reservoir area 1x1
 
   _d->setOne( ResourceGroup::entertainment, 12, 37, 62); // amphitheater
   _d->setOne( ResourceGroup::entertainment, 50, 70, 105);  // collosseum

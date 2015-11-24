@@ -69,7 +69,8 @@ struct Menu::Link
   typedef enum { buildHouse,  clearLand,
                  editTerrain, editForest,
                  buildRoad,   editWater,
-                 buildWater,  editRock } Name;
+                 buildWater,  editRock,
+                 buildHealth, editMeadow } Name;
   typedef enum { inGame=0, inEditor=1 } VisibleMode;
   Point pos;
   int picId;
