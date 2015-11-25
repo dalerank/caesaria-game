@@ -508,10 +508,10 @@ void Layer::_addText(const Point& pos, const std::string& text, Font font)
 
 void Layer::afterRender(Engine& engine)
 {
-  __D_IMPL(_d,Layer)
+  __D_REF(_d,Layer)
   Point cursorPos = engine.cursorPos();
   Size screenSize = engine.viewportSize();
-  Point offset = _d->camera->offset();
+  Point offset = _d.camera->offset();
   Point moveValue;
 
   //on edge cursor moving
@@ -530,13 +530,13 @@ void Layer::afterRender(Engine& engine)
 
     if( moveValue.x() != 0 || moveValue.y() != 0 )
     {
-      _d->camera->move( moveValue.toPointF() );
+      _d.camera->move( moveValue.toPointF() );
     }
   }
 
   if( opts.isFlag( DrawOptions::drawGrid ) )
   {
-    Tilemap& tmap = _d->city->tilemap();
+    Tilemap& tmap = _d.city->tilemap();
     int size = tmap.size();
     //Picture& screen = engine.screen();
     for( int k=0; k < size; k++ )
@@ -555,56 +555,56 @@ void Layer::afterRender(Engine& engine)
 
   if( opts.isFlag( DrawOptions::showRoads ) )
   {
-    const TilesArray& tiles = _d->camera->tiles();
+    const TilesArray& tiles = _d.camera->tiles();
     for( auto tile : tiles )
     {
       if( tile->getFlag( Tile::tlRoad ) )
-        engine.draw( _d->greenTile , offset + tile->mappos() );
+        engine.draw( _d.greenTile , offset + tile->mappos() );
     }
   }
 
   if( opts.isFlag( DrawOptions::showWalkableTiles ) )
   {
-    const TilesArray& tiles = _d->camera->tiles();
+    const TilesArray& tiles = _d.camera->tiles();
     for( auto tile : tiles )
     {
       if( tile->isWalkable( true ) )
-        engine.draw( _d->greenTile, offset + tile->mappos() );
+        engine.draw( _d.greenTile, offset + tile->mappos() );
     }
   }
 
   if( opts.isFlag( DrawOptions::showFlatTiles ) )
   {
-    const TilesArray& tiles = _d->camera->tiles();
+    const TilesArray& tiles = _d.camera->tiles();
     for( auto tile : tiles )
     {
       if( tile->isFlat() )
-        engine.draw( _d->greenTile, offset + tile->mappos() );
+        engine.draw( _d.greenTile, offset + tile->mappos() );
     }
   }
 
   if( opts.isFlag( DrawOptions::showLockedTiles ) )
   {
-    const TilesArray& tiles = _d->camera->tiles();
+    const TilesArray& tiles = _d.camera->tiles();
     for( auto tile : tiles )
     {
       if( !tile->isWalkable( true ) )
-        engine.draw( _d->greenTile, offset + tile->mappos() );
+        engine.draw( _d.greenTile, offset + tile->mappos() );
     }
   }
 
-  if( _d->currentTile && opts.isFlag( DrawOptions::showObjectArea ) )
+  if( _d.currentTile && opts.isFlag( DrawOptions::showObjectArea ) )
   {
-    Tile* tile = _d->currentTile;
+    Tile* tile = _d.currentTile;
     Point pos = tile->mappos();
     int rwidth = tilemap::cellPicSize().width();
     int halfRWidth = rwidth / 2;
     Size size( math::clamp<int>( (tile->picture().width() + 2) / rwidth, 1, 10 ) );
 
-    if( _d->tilePosText.isValid() )
+    if( _d.tilePosText.isValid() )
     {
-      _d->tilePosText.fill( 0x0 );
-      _d->debugFont.draw( _d->tilePosText, utils::format( 0xff, "%d,%d", tile->i(), tile->j() ), false, true );
+      _d.tilePosText.fill( 0x0 );
+      _d.debugFont.draw( _d.tilePosText, fmt::format( "{},{}", tile->i(), tile->j() ), false, true );
     }
 
     OverlayPtr ov = tile->overlay();
@@ -633,11 +633,11 @@ void Layer::afterRender(Engine& engine)
     engine.drawLine( ColorList::red, pos + Point( halfRWidth, -halfRWidth/2 ) * size.width() - Point(0,a/2), pos - Point(a,0) );
 
 #ifdef DEBUG
-    engine.draw( _d->tilePosText, pos );
+    engine.draw( _d.tilePosText, pos );
 #endif
   }
 
-  for( auto& pic : _d->pictures )
+  for( auto& pic : _d.pictures )
   {
     engine.draw( pic.pic, offset + pic.pos );
   }

@@ -78,6 +78,8 @@ public:
   Size viewportSize;
 
   MaskInfo mask;
+  Point mousepos;
+  Rect windowRect;
   int sheigth;
   unsigned int fps, lastFps;
   unsigned int lastUpdateFps;
@@ -296,13 +298,16 @@ void SdlEngine::init()
   _d->sheigth = _srcSize.height();
   _d->renderer = renderer;
 
+  SDL_Rect rect;
   float wx, wy;
-  SDL_RenderGetScale( _d->renderer, &wx, &wy);
+  SDL_RenderGetViewport( _d->renderer, &rect);
+  SDL_RenderGetScale( _d->renderer, &wx, &wy );
 
 #ifdef CAESARIA_PLATFORM_ANDROID
   _d->viewportSize = Size( _srcSize.width() * ( 800.f / _srcSize.height()), 800 );
 #else
   _d->viewportSize = _srcSize * wx;
+  _d->windowRect = Rect( Point( rect.x, rect.y ), Size( rect.w, rect.h ) );
 #endif
 
   _d->fpsTx = Picture( Size( 200, 20 ), 0, true );
@@ -367,6 +372,8 @@ void SdlEngine::startRenderFrame()
 {
   drawTime =0;
   drawTimeBatch = 0;
+
+  SDL_GetMouseState( &_d->mousepos.rx(), &_d->mousepos.ry() );
   SDL_RenderClear(_d->renderer);  // black background for a complete redraw
   _d->batcher.reset();
 }
@@ -741,10 +748,9 @@ Engine::Modes SdlEngine::modes() const
 
 Point SdlEngine::cursorPos() const
 {
-  int x,y;
-  SDL_GetMouseState(&x,&y);
-
-  return Point( x, y );
+  float scale = _srcSize.width() / (float)_d->viewportSize.width();
+  Point p = _d->mousepos - _d->windowRect.lefttop();
+  return p * scale;
 }
 
 unsigned int SdlEngine::fps() const {  return _d->fps; }

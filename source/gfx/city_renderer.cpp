@@ -121,7 +121,7 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   _d->city = city;
   _d->tilemap = &city->tilemap();
   _d->guienv = guienv;
-  _d->camera.init( *_d->tilemap, engine->viewportSize() );
+  _d->camera.init( *_d->tilemap, engine->screenSize() );
   _d->engine = engine;
 
   _d->instanceLayer<Simple>();
@@ -256,7 +256,7 @@ void CityRenderer::render()
   {
     lastZoom = _d->camera.zoom();
     zoom = lastZoom / 100.f;
-    _d->camera.setViewport( engine.viewportSize()  / zoom );
+    _d->camera.setViewport( engine.viewportSize() / zoom );
   }
 
   zoom = lastZoom / 100.f;

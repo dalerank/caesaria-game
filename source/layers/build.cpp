@@ -95,8 +95,8 @@ public:
 
 void Build::_discardPreview()
 {
-  __D_IMPL(d,Build)
-  for( auto tile : d->buildTiles )
+  __D_REF(d,Build)
+  for( auto tile : d.buildTiles )
   {
     if( tile->overlay().isValid() )
       tile->overlay()->deleteLater();
@@ -104,8 +104,8 @@ void Build::_discardPreview()
     delete tile;
   }
 
-  d->buildTiles.clear();
-  d->cachedTiles.clear();
+  d.buildTiles.clear();
+  d.cachedTiles.clear();
 }
 
 void Build::_checkPreviewBuild(const TilePos& pos)
@@ -667,9 +667,9 @@ void Build::afterRender(Engine& engine)
 
 const Layer::WalkerTypes& Build::visibleTypes() const
 {
-  __D_IMPL_CONST(_d,Build);
-  if( _d->lastLayer.isValid() )
-    return _d->lastLayer->visibleTypes();
+  __D_REF(_d,Build);
+  if( _d.lastLayer.isValid() )
+    return _d.lastLayer->visibleTypes();
 
   return Layer::visibleTypes();
 }
@@ -704,8 +704,7 @@ LayerPtr Build::drawLayer() const { return _dfunc()->lastLayer; }
 Build::~Build() {}
 
 Build::Build(Camera& camera, PlayerCityPtr city, Renderer* renderer )
-  : Layer( &camera, city ),
-    __INIT_IMPL(Build)
+  : Layer( &camera, city ), __INIT_IMPL(Build)
 {
   __D_REF(d,Build);
   d.renderer = renderer;
