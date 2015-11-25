@@ -22,26 +22,39 @@
 #include "core/direction.hpp"
 #include "core/size.hpp"
 
-namespace gfx
+namespace gfx {class Tilemap;}
+
+namespace config
 {
 
-class Tilemap;
-
-namespace tilemap
+struct _Tilemap
 {
-  enum { c3bldSize=5, c3CellWidth=30, caCellWidth=60, c3mapSize=162, c3mapSizeSq=c3mapSize*c3mapSize };
+  struct _Cell
+  {
+    struct {
+      const int oldw = 30;
+      const int neww = 60;
+    } width;
+    const Point& center();
+    const Size& picSize();
+    const Size& size();
+    void setWidth( int width );
+  } cell;
+
+  const int maxBuildingSide = 5;
+  const int maxSide = 168;
+  const int maxArea = maxSide * maxSide;
 
   Direction getDirection( const TilePos& b, const TilePos& e );
-  void initTileBase( int width );
   unsigned int picWidth2CellSize( int width );
-  Tilemap& getInvalid();
-  const Point& cellCenter();
-  const Size& cellPicSize();
-  const Size& cellSize();
+
+  gfx::Tilemap& invalid();
   const TilePos& invalidLocation();
   const TilePos& unitLocation();
   bool isValidLocation( const TilePos& pos );
-}
+};
+
+static _Tilemap tilemap;
 
 }//end namespace gfx
 

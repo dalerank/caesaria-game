@@ -113,8 +113,8 @@ struct SoundEmitter
 
   bool operator < ( const SoundEmitter& a ) const
   {
-    return ( tile->pos().getDistanceFromSQ( cameraPos )
-             < a.tile->pos().getDistanceFromSQ( cameraPos ));
+    return ( tile->pos().distanceSqFrom( cameraPos )
+             < a.tile->pos().distanceSqFrom( cameraPos ));
   }
 
   std::string sound( unsigned int time ) const

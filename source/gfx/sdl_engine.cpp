@@ -271,7 +271,7 @@ void SdlEngine::init()
                               SDL_WINDOWPOS_UNDEFINED,
                               SDL_WINDOWPOS_UNDEFINED,
                               s.width(), s.height(),
-                              SDL_WINDOW_OPENGL|SDL_WINDOW_FULLSCREEN_DESKTOP|SDL_WINDOW_SHOWN );
+                              SDL_WINDOW_OPENGL|SDL_WINDOW_FULLSCREEN|SDL_WINDOW_SHOWN );
   }
   else
   {
@@ -279,9 +279,7 @@ void SdlEngine::init()
                              SDL_WINDOWPOS_CENTERED,
                              SDL_WINDOWPOS_CENTERED,
                              _srcSize.width(), _srcSize.height(),
-                             //1400, 800,
                              SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN );
-    //_srcSize = Size( 800, 600 );
   }
 
   if (_d->window == NULL)

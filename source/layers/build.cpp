@@ -212,7 +212,7 @@ void Build::_checkBuildArea()
     _setStartCursorPos( _lastCursorPos() );
 
     Tile* tile = _camera()->at( _lastCursorPos(), true );
-    d.startTilePos = tile ? tile->epos() : tilemap::invalidLocation();
+    d.startTilePos = tile ? tile->epos() : TilePos::invalid();
   }
 }
 
@@ -427,8 +427,8 @@ void Build::handleEvent(NEvent& event)
           if( !d.readyForExit )
           {
             _setStartCursorPos( Point( -1, -1 ) );
-            d.startTilePos = tilemap::invalidLocation();
-            d.lastTilePos = tilemap::invalidLocation();
+            d.startTilePos = TilePos::invalid();
+            d.lastTilePos = TilePos::invalid();
             d.needUpdateTiles = true;
             d.lmbPressed = false;
             d.readyForExit = true;
@@ -610,8 +610,8 @@ void Build::init(Point cursor)
   __D_REF(_d,Build);
   Layer::init( cursor );
 
-  _d.lastTilePos = tilemap::invalidLocation();
-  _d.startTilePos = tilemap::invalidLocation();
+  _d.lastTilePos = TilePos::invalid();
+  _d.startTilePos = TilePos::invalid();
   _d.readyForExit = false;
   _d.kbShift = false;
   _d.kbCtrl = false;
@@ -711,7 +711,7 @@ Build::Build(Camera& camera, PlayerCityPtr city, Renderer* renderer )
   d.frameCount = 0;
   d.needUpdateTiles = false;
   d.resForbiden = SETTINGS_STR( forbidenTile );
-  d.startTilePos = gfx::tilemap::invalidLocation();
+  d.startTilePos = TilePos::invalid();
   d.text.font = Font::create( FONT_5 );
   d.readyForExit = false;
   d.text.image = Picture( Size( 100, 30 ), 0, true );

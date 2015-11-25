@@ -195,7 +195,7 @@ void Constructor::_checkBuildArea()
     _setStartCursorPos( _lastCursorPos() );
 
     Tile* tile = _camera()->at( _lastCursorPos(), true );
-    _d->startTilePos = tile ? tile->epos() : tilemap::invalidLocation();
+    _d->startTilePos = tile ? tile->epos() : TilePos::invalid();
   }
 }
 
@@ -284,7 +284,7 @@ void Constructor::_updatePreviewTiles( bool force )
       }
       else
       {
-         size = Size( gfx::tilemap::picWidth2CellSize( tile->picture().width() ) );
+         size = Size( config::tilemap.picWidth2CellSize( tile->picture().width() ) );
       }
 
       if( size.area() > 1 )
@@ -402,8 +402,8 @@ void Constructor::handleEvent(NEvent& event)
           if( !_d->readyForExit )
           {
             _setStartCursorPos( Point(-1, -1) );
-            _d->startTilePos = tilemap::invalidLocation();
-            _d->lastTilePos = tilemap::invalidLocation();
+            _d->startTilePos = TilePos::invalid();
+            _d->lastTilePos = TilePos::invalid();
             _d->needUpdateTiles = true;
             _d->lmbPressed = false;
             _d->readyForExit = true;
@@ -587,8 +587,8 @@ void Constructor::init(Point cursor)
   __D_IMPL(_d,Constructor);
   Layer::init( cursor );
 
-  _d->lastTilePos = tilemap::invalidLocation();
-  _d->startTilePos = tilemap::invalidLocation();
+  _d->lastTilePos = TilePos::invalid();
+  _d->startTilePos = TilePos::invalid();
   _d->readyForExit = false;
   _d->kbShift = false;
   _d->kbCtrl = false;
@@ -690,7 +690,7 @@ Constructor::Constructor( Renderer& renderer, PlayerCityPtr city)
   d->frameCount = 0;
   d->needUpdateTiles = false;
   d->resForbiden = SETTINGS_STR( forbidenTile );
-  d->startTilePos = gfx::tilemap::invalidLocation();
+  d->startTilePos = TilePos::invalid();
   d->text.font = Font::create( FONT_5 );
   d->readyForExit = false;
   d->drawRadius = 1;

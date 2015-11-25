@@ -49,7 +49,7 @@ public:
     TilePos source;
     Point destination2world() const
     {
-      int yMultiplier = tilemap::cellSize().height();
+      int yMultiplier = config::tilemap.cell.size().height();
       Point xOffset( 0, yMultiplier );
       return Point( destination.i(), destination.j() ) * yMultiplier + xOffset;
     }
@@ -58,7 +58,7 @@ public:
 
     Point source2world() const
     {
-      int yMultiplier = tilemap::cellSize().height();
+      int yMultiplier = config::tilemap.cell.size().height();
       Point xOffset( 0, yMultiplier );
       return Point( source.i(), source.j() ) * yMultiplier + xOffset;
     }
@@ -140,7 +140,7 @@ void DustCloud::timeStep(const unsigned long time)
     PointF saveCurrent = _d->worldway.current;
     _d->worldway.current += _d->worldway.speed;
 
-    int yMultiplier = tilemap::cellSize().height();
+    int yMultiplier = config::tilemap.cell.size().height();
     Point xOffset( 0, yMultiplier );
     TilePos rpos = TilePos( (_d->worldway.current.x() - xOffset.x()) / yMultiplier,
                             (_d->worldway.current.y() - xOffset.y()) / yMultiplier );

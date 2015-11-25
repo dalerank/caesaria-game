@@ -621,7 +621,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case kill_all_enemies:
   {
-     EnemySoldierList enemies = game->city()->statistic().walkers.find<EnemySoldier>( walker::any, gfx::tilemap::invalidLocation() );
+     EnemySoldierList enemies = game->city()->statistic().walkers.find<EnemySoldier>( walker::any, TilePos::invalid() );
 
      for( auto enemy : enemies )
        enemy->die();

@@ -159,7 +159,7 @@ void Minimap::Impl::getTerrainColours( const Tile& tile, bool staticTiles, int& 
 
 void Minimap::Impl::getTileColours(const Tile& tile, int &c1, int &c2)
 {
-  if( !gfx::tilemap::isValidLocation( tile.pos() ) )
+  if( !config::tilemap.isValidLocation( tile.pos() ) )
   {
     c1 = c2 = 0xff000000;
     return;

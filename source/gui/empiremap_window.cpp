@@ -26,6 +26,7 @@
 #include "world/computer_city.hpp"
 #include "city/statistic.hpp"
 #include "gfx/decorator.hpp"
+#include "core/line.hpp"
 #include "label.hpp"
 #include "core/utils.hpp"
 #include "core/gettext.hpp"
@@ -70,22 +71,6 @@ struct Dragging
   bool active;
   Point start;
   Point last;
-};
-
-struct Line
-{
-  Point begin, end;
-  NColor color;
-};
-
-class Lines : public std::vector<Line>
-{
-public:
-  void add( const NColor& color, const Point& p1, const Point& p2 )
-  {
-    Line a = { p1, p2, color };
-    push_back( a );
-  }
 };
 
 class EmpireMapWindow::Impl

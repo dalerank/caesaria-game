@@ -694,7 +694,7 @@ static void __createRoad(Game& game )
 TilesArray& addTileIfValid( TilesArray& tiles, int i, int j, Tilemap& tmap )
 {
   Tile& t = tmap.at( i, j );
-  if( tilemap::isValidLocation( t.epos() ) )
+  if( config::tilemap.isValidLocation( t.epos() ) )
     tiles.push_back( &t );
 
   return tiles;

@@ -96,7 +96,7 @@ Tilemap& Overlay::_map() const
     return _city()->tilemap();
 
   Logger::warning( "!!! WARNING: City is null at Overlay::_map()" );
-  return gfx::tilemap::getInvalid();
+  return config::tilemap.invalid();
 }
 
 void Overlay::setPicture(Picture picture)
@@ -140,7 +140,7 @@ Tile& Overlay::tile() const
   if( !_d->masterTile )
   {
     LOG_OVERLAY.warn( "Master tile can't be null. Problem in tile with type " + object::toString( type() ) );
-    static Tile invalid( gfx::tilemap::invalidLocation() );
+    static Tile invalid( TilePos::invalid() );
     return invalid;
   }
   return *_d->masterTile;
@@ -242,7 +242,7 @@ TilePos Overlay::pos() const
   if( !_d->masterTile )
   {
     LOG_OVERLAY.warn( "Master tile can't be null. Problem in tile with type " + object::toString( type() ) );
-    return gfx::tilemap::invalidLocation();
+    return TilePos::invalid();
   }
   return _d->masterTile->epos();
 }

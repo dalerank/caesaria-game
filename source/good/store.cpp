@@ -193,7 +193,7 @@ void Store::retrieve(good::Stock &stock, int amount)
   }
 }
 
-TilePos Store::owner() const { return gfx::tilemap::invalidLocation(); }
+TilePos Store::owner() const { return TilePos::invalid(); }
 
 void Store::storeAll( Store& goodStore )
 {

@@ -597,7 +597,7 @@ void Layer::afterRender(Engine& engine)
   {
     Tile* tile = _d.currentTile;
     Point pos = tile->mappos();
-    int rwidth = tilemap::cellPicSize().width();
+    int rwidth = config::tilemap.cell.picSize().width();
     int halfRWidth = rwidth / 2;
     Size size( math::clamp<int>( (tile->picture().width() + 2) / rwidth, 1, 10 ) );
 
@@ -705,7 +705,7 @@ Tilemap& Layer::_map() const
     return _d.city->tilemap();
 
   Logger::warning( "!!! WARNING: City is null at Walker::_map()" );
-  return gfx::tilemap::getInvalid();
+  return config::tilemap.invalid();
 }
 
 bool Layer::_isVisibleObject(object::Type ovType)

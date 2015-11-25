@@ -256,7 +256,7 @@ void Destroy::init(Point cursor)
   _setLastCursorPos( cursor );
   _setStartCursorPos( cursor );
 
-  _d->startTilePos = gfx::tilemap::invalidLocation();
+  _d->startTilePos = TilePos::invalid();
 
   LayerPtr layer = _d->renderer->currentLayer();
   if( layer.isValid() )
@@ -296,7 +296,7 @@ void Destroy::handleEvent(NEvent& event)
         _setStartCursorPos( _lastCursorPos() );
 
         Tile* tile = _camera()->at( _lastCursorPos(), true );
-        _d->startTilePos = tile ? tile->epos() : gfx::tilemap::invalidLocation();
+        _d->startTilePos = tile ? tile->epos() : TilePos::invalid();
       }
     }
     break;

@@ -408,10 +408,10 @@ void PlayerCity::load( const VariantMap& stream )
     VariantList config = overlayParams.get( "config" ).toList();
 
     object::Type overlayType = (object::Type)config.get( ovconfig::idxType ).toInt();
-    TilePos pos = config.get( ovconfig::idxLocation, gfx::tilemap::invalidLocation() );
+    TilePos pos = config.get( ovconfig::idxLocation, TilePos::invalid() );
 
     auto overlay = Overlay::create( overlayType );
-    if( overlay.isValid() && gfx::tilemap::isValidLocation( pos ) )
+    if( overlay.isValid() && config::tilemap.isValidLocation( pos ) )
     {
       city::AreaInfo info( this, pos );
       overlay->build( info );

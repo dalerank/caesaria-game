@@ -190,12 +190,12 @@ const WalkerList& Statistic::_Walkers::find(walker::Type type) const
 int Statistic::_Walkers::count(walker::Type type, const TilePos& start, const TilePos& stop) const
 {
   int result = 0;
-  if( start == gfx::tilemap::invalidLocation() )
+  if( start == TilePos::invalid() )
   {
     const WalkerList& all =_parent.rcity.walkers();
     result = utils::countByType( all, type );
   }
-  else if( stop == gfx::tilemap::invalidLocation() )
+  else if( stop == TilePos::invalid() )
   {
     const WalkerList& wlkOnTile = _parent.rcity.walkers( start );
     result = utils::countByType( wlkOnTile, type );
@@ -366,7 +366,7 @@ OverlayList Statistic::_Objects::neighbors(OverlayPtr overlay, bool v) const
     return OverlayList();
 
   Size size = overlay->size();
-  TilePos start = overlay->pos() - gfx::tilemap::unitLocation();
+  TilePos start = overlay->pos() - config::tilemap.unitLocation();
   TilePos stop = start + TilePos( size.width(), size.height() );
   OverlayList ret;
   gfx::TilesArray tiles = _parent.rcity.tilemap().rect( start, stop );
@@ -386,8 +386,8 @@ OverlayList Statistic::_Objects::neighbors(OverlayPtr overlay, bool v) const
 
 OverlayList Statistic::_Objects::neighbors(const TilePos& pos) const
 {
-  TilePos start = pos - gfx::tilemap::unitLocation();
-  TilePos stop = pos  + gfx::tilemap::unitLocation();
+  TilePos start = pos - config::tilemap.unitLocation();
+  TilePos stop = pos  + config::tilemap.unitLocation();
   OverlayList ret;
   gfx::TilesArray tiles = _parent.rcity.tilemap().rect( start, stop );
   for( auto tile : tiles )

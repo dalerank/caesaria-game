@@ -751,7 +751,7 @@ bool Level::_tryExecHotkey(NEvent &event)
       case KEY_KEY_E:
       {
         TilePos center = _d->renderer.camera()->center();
-        TileRect trect( center-tilemap::unitLocation(), center+tilemap::unitLocation());
+        TileRect trect( center-config::tilemap.unitLocation(), center+config::tilemap.unitLocation());
         TilePos currect = _d->game->city()->getBorderInfo( PlayerCity::roadEntry ).epos();
         PlayerCity::TileType rcenter = trect.contain( currect )
                                           ? PlayerCity::roadExit

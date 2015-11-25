@@ -192,7 +192,7 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
   {
   case stFindWarehouseForSelling:
     {
-      destination = gfx::tilemap::invalidLocation();  // no destination yet
+      destination = TilePos::invalid();  // no destination yet
 
       // get the list of buildings within reach
       Propagator pathPropagator( city );
@@ -235,7 +235,7 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
 
   case stFindWarehouseForBuying:
     {
-      destination = gfx::tilemap::invalidLocation();  // no destination yet
+      destination = TilePos::invalid();  // no destination yet
 
       // get the list of buildings within reach
       Propagator pathPropagator( city );

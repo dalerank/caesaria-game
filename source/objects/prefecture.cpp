@@ -47,7 +47,7 @@ Prefecture::Prefecture()
   : ServiceBuilding(Service::prefect, object::prefecture, Size(1)),
     _d( new Impl )
 {
-  _d->fireDetect = gfx::tilemap::invalidLocation();
+  _d->fireDetect = TilePos::invalid();
 
   setPicture( info().randomPicture( size() ) );
   _fgPictures().resize(1);
@@ -93,7 +93,7 @@ void Prefecture::deliverService()
         fireDetect = false;
       }
 
-      _d->fireDetect = gfx::tilemap::invalidLocation();
+      _d->fireDetect = TilePos::invalid();
     }
     
     prefect->send2City( this, Prefect::patrol, fireDetect ? 1000 : 0 );
@@ -112,7 +112,7 @@ TilePos Prefecture::Impl::checkFireDetect( PlayerCityPtr city, const TilePos& po
 
   city::FirePtr fire = city->statistic().services.find<city::Fire>();
 
-  fireDetect = gfx::tilemap::invalidLocation();
+  fireDetect = TilePos::invalid();
   int minDistance = 9999;
   for( auto& location : fire->locations() )
   {

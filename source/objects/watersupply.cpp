@@ -314,6 +314,6 @@ TilePos Reservoir::entry(Direction direction)
   case direction::east: return pos() + TilePos( 2, 1 );
   case direction::south: return pos() + TilePos( 1, 0 );
   case direction::west: return pos() + TilePos( 0, 1 );
-  default: return gfx::tilemap::invalidLocation();
+  default: return TilePos::invalid();
   }
 }

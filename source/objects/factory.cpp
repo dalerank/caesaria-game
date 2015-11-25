@@ -73,7 +73,7 @@ public:
     return isOk;
   }
 
-  virtual TilePos owner() const { return factory ? factory->pos() : gfx::tilemap::invalidLocation(); }
+  virtual TilePos owner() const { return factory ? factory->pos() : TilePos::invalid(); }
 
   Factory* factory;
 

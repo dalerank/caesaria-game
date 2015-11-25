@@ -372,11 +372,12 @@ void Game::Impl::initVfsSettings(bool& isOk, std::string& result)
 void Game::Impl::initTilemapSettings(bool& isOk, std::string& result)
 {
   int cellWidth = SETTINGS_VALUE( cellw );
-  if( cellWidth != tilemap::c3CellWidth && cellWidth != tilemap::caCellWidth)
+  if( cellWidth != config::tilemap.cell.width.oldw
+      && cellWidth != config::tilemap.cell.width.neww )
   {
-    cellWidth = tilemap::c3CellWidth;
+    cellWidth = config::tilemap.cell.width.oldw;
   }
-  tilemap::initTileBase( cellWidth );
+  config::tilemap.cell.setWidth( cellWidth );
 }
 
 void Game::Impl::initFontCollection( bool& isOk, std::string& result )

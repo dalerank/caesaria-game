@@ -52,7 +52,7 @@ void MerchantCamel::timeStep(const unsigned long time)
     }
   }
 
-  if( !gfx::tilemap::isValidLocation( _d->headLocation ) )
+  if( _d->headLocation == TilePos::invalid() )
   {
     return;
   }
@@ -112,7 +112,7 @@ MerchantCamel::MerchantCamel(PlayerCityPtr city, MerchantPtr merchant, int delay
 {
   _d->headId = 0;
   _d->inCaravan = false;
-  _d->headLocation = gfx::tilemap::invalidLocation();
+  _d->headLocation = TilePos::invalid();
 
   if( merchant.isValid() )
   {

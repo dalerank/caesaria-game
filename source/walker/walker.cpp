@@ -42,7 +42,7 @@
 using namespace gfx;
 
 namespace {
-const Tile invalidTile( gfx::tilemap::invalidLocation() );
+const Tile invalidTile( TilePos::invalid() );
 }
 
 class Walker::Impl
@@ -248,7 +248,7 @@ void Walker::_walk()
   PointF delta = _d->speed.vector * _d->speed.current() * speedKoeff;
 
   PointF tmp = _d->world.pos;
-  const int wcell = tilemap::cellSize().height();
+  const int wcell = config::tilemap.cell.size().height();
   TilePos saveMpos( tmp.x() / wcell, tmp.y() );
   _d->world.pos += delta;
   _updateMappos();
@@ -314,7 +314,7 @@ void Walker::_centerTile()
     // compute the direction to reach the destination
     _computeDirection();
     const Tile& tile = _nextTile();
-    bool nextTileBlocked = !gfx::tilemap::isValidLocation( tile.epos() ) || !tile.isWalkable( true );
+    bool nextTileBlocked = !config::tilemap.isValidLocation( tile.epos() ) || !tile.isWalkable( true );
 
     if( nextTileBlocked  )
     {
@@ -336,7 +336,7 @@ void Walker::_computeDirection()
   _d->action.direction = _d->map.path.direction();
   _d->world.next = _nextTile().center().toPointF();
   _d->world.lastDst = _d->world.dst2next();
-  _d->speed.vector = _d->world.delta() / tilemap::cellSize().height();
+  _d->speed.vector = _d->world.delta() / config::tilemap.cell.size().height();
 
   if( lastDirection != _d->action.direction )
   {
@@ -384,7 +384,7 @@ void Walker::acceptAction(Walker::Action, TilePos){}
 void Walker::setName(const std::string &name) {  _d->name = name; }
 const std::string &Walker::name() const{  return _d->name; }
 void Walker::addAbility(AbilityPtr ability) {  _d->abilities.push_back( ability );}
-TilePos Walker::pos() const{ return _d->map.tile ? _d->map.tile->epos() : gfx::tilemap::invalidLocation() ;}
+TilePos Walker::pos() const{ return _d->map.tile ? _d->map.tile->epos() : TilePos::invalid() ;}
 void Walker::deleteLater(){ _d->state.deleted = true;}
 void Walker::setUniqueId( const UniqueId uid ) {  _d->uid = uid;}
 Walker::UniqueId Walker::uniqueId() const { return _d->uid; }
@@ -394,7 +394,7 @@ Animation& Walker::_animation() {  return _d->animation;}
 const Animation& Walker::_animation() const {  return _d->animation;}
 void Walker::_setDirection(Direction direction ){  _d->action.direction = direction; }
 void Walker::setThinks(std::string newThinks){  _d->thinks = newThinks;}
-TilePos Walker::places(Walker::Place type) const { return gfx::tilemap::invalidLocation(); }
+TilePos Walker::places(Walker::Place) const { return TilePos::invalid(); }
 void Walker::_setType(walker::Type type){  _d->type = type;}
 PlayerCityPtr Walker::_city() const{  return _d->city;}
 void Walker::_setHealth(double value){  _d->state.health = value;}
@@ -407,7 +407,7 @@ Tilemap& Walker::_map() const
     return _city()->tilemap();
 
   Logger::warning( "WARNING !!! City is null at Walker::_map()" );
-  return gfx::tilemap::getInvalid();
+  return config::tilemap.invalid();
 }
 
 void Walker::setFlag(Walker::Flag flag, bool value)
@@ -570,7 +570,7 @@ void Walker::load( const VariantMap& stream)
 
 void Walker::turn(TilePos p)
 {
-  Direction direction = tilemap::getDirection( pos(), p );
+  Direction direction = pos().directionTo( p );
 
   if( _d->action.direction != direction )
   {

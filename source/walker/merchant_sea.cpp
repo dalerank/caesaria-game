@@ -104,7 +104,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
   {
   case stFindDock:
   {    
-    destBuildingPos = gfx::tilemap::invalidLocation();  // no destination yet
+    destBuildingPos = TilePos::invalid();  // no destination yet
 
     Pathway pathway;
     // get the list of buildings within reach   

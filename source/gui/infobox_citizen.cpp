@@ -315,7 +315,7 @@ void AboutPeople::Impl::updateBaseBuilding( TilePos pos )
 
 void AboutPeople::Impl::moveCamera2base()
 {
-  if( baseBuildingPos != gfx::tilemap::invalidLocation() )
+  if( baseBuildingPos != TilePos::invalid() )
   {
     events::dispatch<MoveCamera>( baseBuildingPos );
   }
@@ -323,7 +323,7 @@ void AboutPeople::Impl::moveCamera2base()
 
 void AboutPeople::Impl::moveCamera2dst()
 {
-  if( destinationPos != gfx::tilemap::invalidLocation() )
+  if( destinationPos != TilePos::invalid() )
   {
     events::dispatch<MoveCamera>( destinationPos );
   }

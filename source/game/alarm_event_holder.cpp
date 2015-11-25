@@ -91,7 +91,7 @@ void AlarmEventHolder::next()
 TilePos AlarmEventHolder::getCurrentPos() const
 {
   if( _d->currentIndex >= _d->alarms.size() )
-    return gfx::tilemap::invalidLocation();
+    return TilePos::invalid();
 
   return _d->alarms[ _d->currentIndex ].position;
 }

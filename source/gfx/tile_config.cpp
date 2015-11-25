@@ -142,7 +142,7 @@ void decode(Tile& tile, const int bitset)
 
 const Tile& getInvalid()
 {
-  static Tile invalidTile( tilemap::invalidLocation() );
+  static Tile invalidTile( TilePos::invalid() );
   return invalidTile;
 }
 
@@ -162,10 +162,10 @@ void fixPlateauFlags(Tile& tile)
 
 Tile& getInvalidSafe()
 {
-  static Tile invalidTileSafe( tilemap::invalidLocation() );
-  if( tilemap::isValidLocation( invalidTileSafe.pos() ) )
+  static Tile invalidTileSafe( TilePos::invalid() );
+  if( config::tilemap.isValidLocation( invalidTileSafe.pos() ) )
   {
-    invalidTileSafe = Tile( tilemap::invalidLocation() );
+    invalidTileSafe = Tile( TilePos::invalid() );
     Logger::warning( "!!! WARNING function getInvalidSafe call" );
   }
 
