@@ -53,7 +53,7 @@ protected:
     Pictures pics;
     Decorator::draw( pics, Rect( Point(), size() ), style );
 
-    Picture emlbPic( ResourceGroup::panelBackground, config::id.empire.stamp );
+    Picture emlbPic( gui::rc.panel, config::id.empire.stamp );
     pics.append( emlbPic, Point( 4, 2 ) );
     pics.append( emlbPic, Point( width() - emlbPic.width()-4, 2 ) );
 

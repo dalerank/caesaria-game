@@ -24,12 +24,6 @@ class ResourceGroup
 {
 public:
 #define __RCG_NAME static const char*
-  __RCG_NAME panelBackground;
-  __RCG_NAME menuMiddleIcons;
-  __RCG_NAME festivalimg;
-  __RCG_NAME land2a;
-  __RCG_NAME land3a;
-  __RCG_NAME animals;
   __RCG_NAME sprites;
   __RCG_NAME buildingEngineer;
   __RCG_NAME utilitya;
@@ -37,7 +31,6 @@ public:
   __RCG_NAME security;
   __RCG_NAME transport;
   __RCG_NAME road;
-  __RCG_NAME land1a;
   __RCG_NAME meadow;
   __RCG_NAME entertainment;
   __RCG_NAME warehouse;
@@ -54,7 +47,6 @@ public:
   __RCG_NAME citizen3;
   __RCG_NAME citizen4;
   __RCG_NAME citizen5;
-  //__RCG_NAME lion;
   __RCG_NAME wall;
   __RCG_NAME hippodrome;
   __RCG_NAME celts;
@@ -65,48 +57,9 @@ public:
 namespace config
 {
 
+#define STR_ALIAS(a,b) const std::string a=#b;
 struct ID
 {
-#define STR_ALIAS(a,b) const std::string a=#b;
-
-  struct _Menu
-  {
-    int house = 123;
-    int clear = 131;
-    int road = 135;
-    int waterSupply = 127;
-    int terrain = 183;
-    int forest = 186;
-    int rowDown = 601;
-    int rowUp = 605;
-    int water = 189;
-    int smRocks = 204;
-    int helpInf = 528;
-    int arrowDown = 601;
-    int arrowUp = 605;
-    int exitInf = 532;
-    int ok = 239;
-    int maximize = 101;
-    int cancel = 243;
-  };
-
-  struct _Middle
-  {
-    int house = 1;
-    int clear = 12;
-    int road = 11;
-    int water = 4;
-    int health = 6;
-    int religion = 2;
-    int education = 7;
-    int administration = 3;
-    int entertainment = 5;
-    int engineer = 8;
-    int security = 9;
-    int comerce = 10;
-    int empty = 13;
-  };
-
   struct _Empire
   {
     int	bad = 0;
@@ -125,8 +78,6 @@ struct ID
     int coastSE=148;
   };
 
-  _Menu menu;
-  _Middle middle;
   _Empire empire;  
 };
 
@@ -139,6 +90,10 @@ struct {
 
 struct {
   STR_ALIAS(aqueduct,land2a)
+  STR_ALIAS(animals,citizen04)
+  STR_ALIAS(land1a,land1a)
+  STR_ALIAS(land2a,land2a)
+  STR_ALIAS(land3a,land3a)
 } rc;
 
 struct
@@ -154,5 +109,70 @@ struct
 static ID id;
 
 }
+
+namespace gui
+{
+struct {
+STR_ALIAS(panel,paneling)
+} rc;
+
+struct {
+  int house = 1;
+  int clear = 12;
+  int road = 11;
+  int water = 4;
+  int health = 6;
+  int religion = 2;
+  int education = 7;
+  int administration = 3;
+  int entertainment = 5;
+  int engineer = 8;
+  int security = 9;
+  int comerce = 10;
+  int empty = 13;
+  STR_ALIAS(rc,panelwindows)
+} miniature;
+
+struct {
+  int footer = 544;
+  int header = 546;
+  int body = 545;
+} column;
+
+struct {
+  int simple = 111;
+  int critial = 113;
+} message;
+
+struct {
+  int house = 123;
+  int clear = 131;
+  int road = 135;
+  int waterSupply = 127;
+  int terrain = 183;
+  int forest = 186;
+  int rowDown = 601;
+  int rowUp = 605;
+  int water = 189;
+  int smRocks = 204;
+  int help = 528;
+  int arrowDown = 601;
+  int arrowUp = 605;
+  int exit = 532;
+  int ok = 239;
+  int maximize = 101;
+  int cancel = 243;
+} button;
+
+struct { 
+  int chiefIcon = 48;
+  int lockpick = 238;
+  int gotoLegion = 563;
+  int return2fort = 564;
+  int serv2empire = 566;
+  int wrathIcon = 334;
+} id;
+
+}//end namespace gui
 
 #endif //__CAESARIA_RESOURCENAMES_H_INCLUDE_

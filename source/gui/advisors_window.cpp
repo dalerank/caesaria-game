@@ -64,15 +64,15 @@ namespace gui
 namespace advisorwnd
 {
 
-PushButton* Parlor::_addButton( Advisor adv, const int picId, std::string tooltip )
+PushButton* Parlor::_addButton( Advisor advisorName, int picId, std::string tooltip )
 {
   Point tabButtonPos( (width() - 636) / 2 + 10, height() / 2 + 192 + 10);
 
-  PushButton* btn = new TexturedButton( this, tabButtonPos + Point( 48, 0 ) * (adv-1), Size( 40 ),
-                                        adv, picId, picId, picId + 13 );
-  btn->setIsPushButton( true );
-  btn->setTooltipText( tooltip );
-  return btn;
+  auto& btn = add<TexturedButton>( tabButtonPos + Point( 48, 0 ) * (advisorName-1), Size( 40 ),
+                                   advisorName, TexturedButton::States( picId, picId, picId + 13 ) );
+  btn.setIsPushButton( true );
+  btn.setTooltipText( tooltip );
+  return &btn;
 }
 
 void Parlor::_initButtons()

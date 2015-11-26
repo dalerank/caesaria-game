@@ -19,15 +19,7 @@
 
 #define __RCG_NAME_IMP(a,b) const char* ResourceGroup::a = b;
 
-__RCG_NAME_IMP(panelBackground , "paneling")
-__RCG_NAME_IMP(menuMiddleIcons , "panelwindows")
-__RCG_NAME_IMP(festivalimg     , "panelwindows")
-__RCG_NAME_IMP(land1a          , "land1a")
-__RCG_NAME_IMP(land2a          , "land2a")
-__RCG_NAME_IMP(land3a          , "land3a")
 __RCG_NAME_IMP(meadow          , "meadow")
-//__RCG_NAME_IMP(lion            , "citizen03")
-__RCG_NAME_IMP(animals         , "citizen04")
 __RCG_NAME_IMP(citizen1        , "citizen01")
 __RCG_NAME_IMP(citizen2        , "citizen02")
 __RCG_NAME_IMP(citizen3        , "citizen03")

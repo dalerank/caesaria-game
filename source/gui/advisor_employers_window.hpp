@@ -35,7 +35,6 @@ public:
   virtual bool onEvent(const NEvent &event);
 
 private:
-  void _showHelp();
   void _showAdvSalaries();
 
   class Impl;

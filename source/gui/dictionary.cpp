@@ -28,6 +28,7 @@
 #include "core/event.hpp"
 #include "widget_helper.hpp"
 #include "core/gettext.hpp"
+#include "widgetescapecloser.hpp"
 #include "environment.hpp"
 
 using namespace gfx;
@@ -42,28 +43,36 @@ class DictionaryWindow::Impl
 public:
   Label* lbTitle;
   DictionaryText* lbText;
-  TexturedButton* btnExit;
 
   typedef std::map<std::string,std::string> Aliases;
   Aliases aliases;
 };
 
-DictionaryWindow::DictionaryWindow( Widget* p )
+DictionaryWindow::DictionaryWindow( Widget* p, const std::string& helpId )
   : Window( p->ui()->rootWidget(), Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
   setupUI( ":/gui/dictionary.gui" );
-
-  setPosition( Point( parent()->width() - width(), parent()->height() - height() ) / 2 );
+  moveTo( Widget::parentCenter );
+  WidgetEscapeCloser::insertTo( this );
 
   GET_DWIDGET_FROM_UI( _d, lbTitle )
-  GET_DWIDGET_FROM_UI( _d, btnExit )
+  INIT_WIDGET_FROM_UI( PushButton* , btnExit )
   _d->lbText = &add<DictionaryText>( Rect( 20, 40, width() - 20, height() - 40 ) );
   _d->lbText->setFont( Font::create( FONT_1 ) );
 
-  CONNECT( _d->btnExit, onClicked(), this, DictionaryWindow::deleteLater )
+  CONNECT( btnExit, onClicked(), this, DictionaryWindow::deleteLater )
   CONNECT( _d->lbText, onWordClick(), this, DictionaryWindow::_handleUriChange )
 
+  if( !helpId.empty() )
+    load( helpId );
+
   setModal();
+}
+
+DictionaryWindow::DictionaryWindow(Widget* parent, object::Type type)
+  : DictionaryWindow( parent, "" )
+{
+   load( object::toString( type ) );
 }
 
 void DictionaryWindow::_handleUriChange(std::string value)
@@ -85,24 +94,6 @@ vfs::Path DictionaryWindow::_convUri2path(std::string uri)
     fpath = fpath.changeExtension( defaultExt );
 
   return fpath;
-}
-
-void DictionaryWindow::show(Widget* parent, object::Type type)
-{
-  DictionaryWindow* wnd = new DictionaryWindow( parent );
-  if( wnd->_d->lbText )
-  {
-    wnd->load( object::toString( type ) );
-  }
-}
-
-void DictionaryWindow::show(Widget* parent, const std::string& uri)
-{
-  DictionaryWindow* wnd = new DictionaryWindow( parent );
-  if( wnd->_d->lbText )
-  {
-    wnd->load( uri );
-  }
 }
 
 DictionaryWindow::~DictionaryWindow( void ) {}
@@ -141,10 +132,8 @@ void DictionaryWindow::load(const std::string& uri)
 
   _d->aliases.clear();
   VariantMap uris = vm.get( "uri" ).toMap();
-  foreach( it, uris )
-  {
-    _d->aliases[ it->first ] = it->second.toString();
-  }
+  for( const auto& it : uris )
+    _d->aliases[ it.first ] = it.second.toString();
 
   _d->lbTitle->setText( _(title) );
   _d->lbText->setText( text );

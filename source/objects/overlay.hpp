@@ -90,7 +90,7 @@ public:
 
   // graphic
   virtual void setPicture(gfx::Picture picture);
-  virtual void setPicture(const char* resource, const int index);
+  virtual void setPicture(const std::string& resource, const int index);
   virtual const gfx::Pictures& pictures( gfx::Renderer::Pass pass ) const;
 
   virtual const gfx::Picture& picture() const;

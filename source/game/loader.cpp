@@ -165,8 +165,8 @@ void Loader::Impl::clearTile(Tile& tile)
   int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
   int imgId = math::random( 58 );
 
-  Picture pic( ResourceGroup::land1a, startOffset + imgId );
-  tile.setPicture( ResourceGroup::land1a, startOffset + imgId );
+  Picture pic( config::rc.land1a, startOffset + imgId );
+  tile.setPicture( config::rc.land1a, startOffset + imgId );
   tile.setImgId( imgid::fromResource( pic.name() ) );
 }
 

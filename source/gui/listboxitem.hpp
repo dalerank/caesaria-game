@@ -61,6 +61,7 @@ public:
   const Variant& tag() const;
 	gfx::Picture icon();
 	void setIcon( gfx::Picture pic );
+  void setIcon( const std::string& rc, int index );
 
   bool isEnabled() const;
   void setEnabled( bool en );

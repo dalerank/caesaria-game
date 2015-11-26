@@ -43,6 +43,7 @@ public:
   virtual void draw( gfx::Engine& painter );
 
   virtual void setPicture(const gfx::Picture& picture );
+  virtual void setPicture(const std::string& rc, int id );
 
   virtual void setupUI( const VariantMap& ui );
     

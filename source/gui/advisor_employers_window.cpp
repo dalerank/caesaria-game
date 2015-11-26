@@ -66,10 +66,10 @@ public:
   {
     walkerType = wType;
     salary = value;
-    auto& btnDecrease = add<TexturedButton>( Point( 220, 3 ), Size( 24 ), -1, config::id.menu.rowDown );
+    auto& btnDecrease = add<TexturedButton>( Point( 220, 3 ), gui::button.rowDown );
     btnDecrease.setTooltipText( _("##advslr_btn_tooltip##") );
 
-    auto& btnIncrease = add<TexturedButton>( btnDecrease.righttop(), Size( 24 ), -1, config::id.menu.rowUp );
+    auto& btnIncrease = add<TexturedButton>( btnDecrease.righttop(), gui::button.rowUp );
     btnIncrease.setTooltipText( _("##advslr_btn_tooltip##") );
   }
 
@@ -131,7 +131,7 @@ public:
     _needWorkers = need;
     _haveWorkers = have;
     _priority = 0;
-    _lockPick.load( ResourceGroup::panelBackground, 238 );
+    _lockPick.load( gui::rc.panel, gui::id.lockpick );
 
     int percentage = math::percentage( have, need );
     std::string tooltip;
@@ -382,8 +382,7 @@ Employer::Employer(PlayerCityPtr city, Widget* parent, int id )
   GET_DWIDGET_FROM_UI( _d, lbWorkersState )
   GET_DWIDGET_FROM_UI( _d, lbYearlyWages )
 
-  auto& btnHelp = add<TexturedButton>( Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
-  CONNECT( &btnHelp, onClicked(), this, Employer::_showHelp );
+  add<HelpButton>( Point( 12, height() - 39), "labor_advisor" );
 
   _d->updateSalaryLabel();
   _d->updateWorkersState();
@@ -408,8 +407,6 @@ bool Employer::onEvent(const NEvent& event)
 
   return Widget::onEvent( event );
 }
-
-void Employer::_showHelp() { DictionaryWindow::show( this, "labor_advisor" ); }
 
 void Employer::_showAdvSalaries()
 {

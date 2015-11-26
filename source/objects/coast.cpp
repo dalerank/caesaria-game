@@ -38,7 +38,7 @@ namespace {
 
 Coast::Coast() : Overlay( object::terrain, Size(1) )
 {
-  setPicture( ResourceGroup::land1a, 199 );
+  setPicture( config::rc.land1a, 199 );
 }
 
 bool Coast::build( const city::AreaInfo& info )
@@ -304,10 +304,10 @@ Picture Coast::calcPicture()
     tile().terrain().water = true;
     destroy();
     deleteLater();
-    return Picture( ResourceGroup::land1a, 120 );
+    return Picture( config::rc.land1a, 120 );
   }
 
-  return Picture( ResourceGroup::land1a, start + math::random(size-1) );
+  return Picture( config::rc.land1a, start + math::random(size-1) );
 }
 
 void Coast::updatePicture()
