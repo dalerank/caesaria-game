@@ -212,10 +212,7 @@ public:
   Widget* lastPressed;
 
   struct {
-    PushButton* forest;
-    PushButton* menu;
     PushButton* minimize;
-
   } button;
 
   PushButton* senateButton;
@@ -675,14 +672,14 @@ void ExtentMenu::_updateButtons()
   _setChildGeometry( _d->disasterButton, Rect( Point( 113, 421 ), Size( 39, 22 ) ) );
   _d->disasterButton->setEnabled( false );
 
-  _d->middleLabel = new Image( this, Rect( 0, 0, 1, 1 ), Picture(), Image::fit );
+  _d->middleLabel = &add<Image>( Rect( 0, 0, 1, 1 ), Picture(), Image::fit );
   _setChildGeometry( _d->middleLabel, Rect( Point( 7, 216 ), Size( 148, 52 )) );
-  _d->middleLabel->setPicture( gui::rc.panel, gui::miniature.empty );
+  _d->middleLabel->setPicture( gui::miniature.rc, gui::miniature.empty );
 
-  _d->overlaysMenu = new OverlaysMenu( parent(), Rect( 0, 0, 160, 1 ), -1 );
+  _d->overlaysMenu = &parent()->add<OverlaysMenu>( Rect( 0, 0, 160, 1 ), -1 );
   _d->overlaysMenu->hide();
 
-  _d->overlaysButton = new PushButton( this, Rect( 0, 0, 1, 1 ), _("##ovrm_text##"), -1, false, PushButton::greyBorderLineFit );
+  _d->overlaysButton = &add<PushButton>( Rect( 0, 0, 1, 1 ), _("##ovrm_text##"), -1, false, PushButton::greyBorderLineFit );
   _setChildGeometry( _d->overlaysButton, Rect( 4, 3, 122, 28 ) );
   _d->overlaysButton->setTooltipText( _("##select_city_layer##") );
 
@@ -699,7 +696,7 @@ bool ExtentMenu::onEvent(const NEvent& event)
     if( btn )
     {
       int picId = btn->miniatureIndex() > 0 ? btn->miniatureIndex() : gui::miniature.empty;
-      _d->middleLabel->setPicture( gui::rc.panel, picId );
+      _d->middleLabel->setPicture( gui::miniature.rc, picId );
     }
   }
 
