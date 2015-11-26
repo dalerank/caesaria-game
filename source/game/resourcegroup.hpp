@@ -126,9 +126,9 @@ struct {
   int education = 7;
   int administration = 3;
   int entertainment = 5;
-  int engineer = 8;
+  int engineering = 8;
   int security = 9;
-  int comerce = 10;
+  int commerce = 10;
   int empty = 13;
   STR_ALIAS(rc,panelwindows)
 } miniature;
@@ -148,9 +148,20 @@ struct {
   int house = 123;
   int clear = 131;
   int road = 135;
+  int govt = 139;
+  int engineering = 167;
+  int entertainment = 143;
+  int education = 147;
+  int meadow = 202;
+  int river = 189;
+  int temple = 151;
+  int broad = 213;
   int waterSupply = 127;
   int terrain = 183;
+  int health = 163;
+  int rift = 192;
   int forest = 186;
+  int plateau = 204;
   int rowDown = 601;
   int rowUp = 605;
   int water = 189;
@@ -160,8 +171,13 @@ struct {
   int arrowUp = 605;
   int exit = 532;
   int ok = 239;
+  int indigene = 210;
   int maximize = 101;
   int cancel = 243;
+  int security = 159;
+  int waymark = 216;
+  int commerce = 155;
+  int attacks = 225;
 } button;
 
 struct { 

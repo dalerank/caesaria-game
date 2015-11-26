@@ -70,7 +70,15 @@ struct Menu::Link
                  editTerrain, editForest,
                  buildRoad,   editWater,
                  buildWater,  editRock,
-                 buildHealth, editMeadow } Name;
+                 buildHealth, editMeadow,
+                 buildTemple, editPlateau,
+                 buildEducation, editRift,
+                 buildEntertainment, editRiver,
+                 buildGovt, editIndigene,
+                 buildEngineering, editRoads,
+                 buildSecurity, editBorders,
+                 buildCommerce, editAttacks,
+               } Name;
   typedef enum { inGame=0, inEditor=1 } VisibleMode;
   Point pos;
   int picId;
@@ -97,39 +105,109 @@ struct Menu::Model
   bool fitToScreen;  
   std::map<Link::Name, Menu::Link> actions;
 
+  void setEnabled( Link::Name name, bool enabled )
+  {
+    if( actions[ name ].button )
+      actions[ name ].button->setEnabled( enabled );
+  }
+
   void initDefaultActions()
   {
-    actions[ Link::buildHouse  ] = { Point( 13,  277 ), gui::button.house, object::house, 0,
+    actions[ Link::buildHouse  ] = { {13,277}, gui::button.house, object::house, 0,
                                      object::house, gui::miniature.house, pushButton,
                                      noSubMenu, Rect(), "housing", nullptr, "", Link::inGame };
 
-    actions[ Link::editTerrain ] = { Point( 13,  277 ), gui::button.terrain, object::terrain, 0,
+    actions[ Link::editTerrain ] = { {13,277}, gui::button.terrain, object::terrain, 0,
                                      object::terrain, gui::miniature.clear, pushButton,
                                      noSubMenu, Rect(), "terrain", nullptr, "", Link::inEditor };
 
-    actions[ Link::clearLand   ] = { Point( 63,  277 ), gui::button.clear, (int)AdvToolMode::removeTool, 1,
+    actions[ Link::clearLand   ] = { {63,277}, gui::button.clear, (int)AdvToolMode::removeTool, 1,
                                      (int)AdvToolMode::removeTool, gui::miniature.clear, pushButton,
                                      noSubMenu, Rect(), "clear_land", nullptr, "", Link::inGame };
 
-    actions[ Link::editForest  ] = { Point( 63,  277 ), gui::button.forest, object::tree, 0,
+    actions[ Link::editForest  ] = { {63,277}, gui::button.forest, object::tree, 0,
                                      object::tree, gui::miniature.clear, pushButton,
                                      noSubMenu, Rect(), "forest", nullptr, "", Link::inEditor };
 
-    actions[ Link::buildRoad   ] = { Point( 113, 277 ), gui::button.road, object::road,  2,
+    actions[ Link::buildRoad   ] = { {113,277}, gui::button.road, object::road,  2,
                                      object::road, gui::miniature.road, pushButton,
                                      noSubMenu, Rect(), "road", nullptr, "", Link::inGame };
 
-    actions[ Link::editWater   ] = { Point( 113, 277 ), gui::button.water, object::water,  2,
+    actions[ Link::editWater   ] = { {113,277}, gui::button.water, object::water,  2,
                                      object::water, gui::miniature.clear, pushButton,
                                      noSubMenu, Rect(), "water", nullptr, "", Link::inEditor};
 
-    actions[ Link::buildWater  ] = { Point( 13,  313 ), gui::button.waterSupply, development::water,  3,
+    actions[ Link::buildWater  ] = { {13,313}, gui::button.waterSupply, development::water,  3,
                                      development::water, gui::miniature.water, pushButton,
                                      haveSubMenu, Rect(), "water", nullptr, "", Link::inGame };
 
-    actions[ Link::editRock ] = { Point( 13,  313 ), gui::button.smRocks, object::rock,  2,
+    actions[ Link::editRock ] = { {13,313}, gui::button.smRocks, object::rock,  3,
                                      object::rock, gui::miniature.clear, pushButton,
                                      noSubMenu, Rect(), "smRock", nullptr, "", Link::inEditor};
+
+    actions[ Link::buildHealth  ] = { {63,313}, gui::button.health, development::health,  4,
+                                      development::health, gui::miniature.health, pushButton,
+                                      haveSubMenu, Rect(), "health", nullptr, "", Link::inGame };
+
+    actions[ Link::editMeadow ] = { {63,313}, gui::button.meadow, object::meadow,  4,
+                                     object::meadow, gui::miniature.clear, pushButton,
+                                     noSubMenu, Rect(), "meadow", nullptr, "", Link::inEditor};
+
+    actions[ Link::buildTemple  ] = { {113,313}, gui::button.temple, development::religion,  5,
+                                      development::religion, gui::miniature.religion, pushButton,
+                                      haveSubMenu, Rect(), "temples", nullptr, "", Link::inGame };
+
+    actions[ Link::editPlateau ] = { {113,313}, gui::button.plateau, object::plateau,  5,
+                                     object::plateau, gui::miniature.clear, pushButton,
+                                     noSubMenu, Rect(), "plateau", nullptr, "", Link::inEditor};
+
+    actions[ Link::buildEducation]={ {13,349}, gui::button.education, development::education,  6,
+                                      development::education, gui::miniature.education, pushButton,
+                                      haveSubMenu, Rect(), "education", nullptr, "", Link::inGame };
+
+    actions[ Link::editRift ] = { {13,349}, gui::button.rift, object::rift,  6,
+                                   object::rift, gui::miniature.clear, pushButton,
+                                   noSubMenu, Rect(), "rift", nullptr, "", Link::inEditor};
+
+    actions[ Link::buildEntertainment]={ {63,349}, gui::button.entertainment, development::entertainment,  7,
+                                         development::entertainment, gui::miniature.entertainment, pushButton,
+                                         haveSubMenu, Rect(), "entertainment", nullptr, "", Link::inGame };
+
+    actions[ Link::editRiver ] = { {63,349}, gui::button.river, object::river,  7,
+                                  object::river, gui::miniature.clear, pushButton,
+                                  noSubMenu, Rect(), "river", nullptr, "", Link::inEditor};
+
+    actions[ Link::buildGovt ]={ {113,349}, gui::button.govt, development::administration, 8,
+                                 development::administration, gui::miniature.administration, pushButton,
+                                 haveSubMenu, Rect(), "administration", nullptr, "", Link::inGame };
+
+    actions[ Link::editIndigene ] = { {113,349}, gui::button.indigene, object::native_hut,  8,
+                                  object::native_hut, gui::miniature.clear, pushButton,
+                                  noSubMenu, Rect(), "indigene", nullptr, "", Link::inEditor};
+
+    actions[ Link::buildEngineering ]={ {13,385}, gui::button.engineering, development::engineering, 9,
+                                 development::engineering, gui::miniature.engineering, pushButton,
+                                 haveSubMenu, Rect(), "engineering", nullptr, "", Link::inGame };
+
+    actions[ Link::editRoads ] = { {13,385}, gui::button.broad, object::road,  9,
+                                  object::road, gui::miniature.clear, pushButton,
+                                  noSubMenu, Rect(), "road", nullptr, "", Link::inEditor};
+
+    actions[ Link::buildSecurity ]={ {63,385}, gui::button.security, development::security, 10,
+                                 development::security, gui::miniature.security, pushButton,
+                                 haveSubMenu, Rect(), "security", nullptr, "", Link::inGame };
+
+    actions[ Link::editBorders ] = { {63,385}, gui::button.waymark, object::waymark,  10,
+                                  object::waymark, gui::miniature.clear, pushButton,
+                                  noSubMenu, Rect(), "waymark", nullptr, "", Link::inEditor};
+
+    actions[ Link::buildCommerce ]={ {113,385}, gui::button.commerce, development::commerce, 11,
+                                 development::commerce, gui::miniature.commerce, pushButton,
+                                 haveSubMenu, Rect(), "comerce", nullptr, "", Link::inGame };
+
+    actions[ Link::editAttacks ] = { {113,385}, gui::button.attacks, object::attackTrigger,  10,
+                                  object::attackTrigger, gui::miniature.clear, pushButton,
+                                  noSubMenu, Rect(), "attackTrigger", nullptr, "", Link::inEditor};
 
   }
 
@@ -223,14 +301,6 @@ public:
   PushButton* rotateRightButton;
   PushButton* messageButton;
   PushButton* disasterButton;
-  PushButton* administrationButton;
-  PushButton* entertainmentButton;
-  PushButton* educationButton;
-  PushButton* templeButton;
-  PushButton* commerceButton;
-  PushButton* securityButton;
-  PushButton* healthButton;
-  PushButton* engineerButton;
   PushButton* cancelButton;
   PushButton* overlaysButton;
 
@@ -293,25 +363,14 @@ void Menu::_updateButtons()
   _createLink( _d->model->actions[ Link::clearLand  ] );
   _createLink( _d->model->actions[ Link::buildRoad  ] );
   _createLink( _d->model->actions[ Link::buildWater ] );
-
-  _d->healthButton = _addButton( 163, true, 4, development::health, haveSubMenu, gui::miniature.health, "health" );
-  _d->templeButton = _addButton( 151, true, 5, development::religion, haveSubMenu, gui::miniature.religion, "temples" );
-  _d->educationButton = _addButton( 147, true, 6, development::education, haveSubMenu, gui::miniature.education, "education" );
-
-  _d->entertainmentButton = _addButton( 143, true, 7, development::entertainment, haveSubMenu,
-                                        gui::miniature.entertainment, "entertainment" );
-
-  _d->administrationButton = _addButton( 139, true, 8, development::administration, haveSubMenu,
-                                         gui::miniature.administration, "administration" );
-
-  _d->engineerButton = _addButton( 167, true, 9, development::engineering, haveSubMenu,
-                                   gui::miniature.engineer, "engineering" );
-
-  _d->securityButton = _addButton( 159, true, 10, development::security, haveSubMenu,
-                                   gui::miniature.security, "security" );
-
-  _d->commerceButton = _addButton( 155, true, 11, development::commerce, haveSubMenu,
-                                   gui::miniature.comerce, "comerce" );
+  _createLink( _d->model->actions[ Link::buildHealth ]);
+  _createLink( _d->model->actions[ Link::buildTemple ]);
+  _createLink( _d->model->actions[ Link::buildEducation ]);
+  _createLink( _d->model->actions[ Link::buildEntertainment ]);
+  _createLink( _d->model->actions[ Link::buildGovt ]);
+  _createLink( _d->model->actions[ Link::buildEngineering ]);
+  _createLink( _d->model->actions[ Link::buildSecurity]);
+  _createLink( _d->model->actions[ Link::buildCommerce]);
 
   CONNECT( _d->button.minimize, onClicked(), this, Menu::minimize );
 }
@@ -521,7 +580,7 @@ void Menu::maximize()
 {
   Point stopPos = lefttop() - Point( width(), 0 );
   show();
-  new PositionAnimator( this, WidgetAnimator::showParent | WidgetAnimator::removeSelf, stopPos, 300 );
+  add<PositionAnimator>( WidgetAnimator::showParent | WidgetAnimator::removeSelf, stopPos, 300 );
 
   events::dispatch<PlaySound>( "panel", 3, 100 );
 }
@@ -590,15 +649,15 @@ void Menu::Impl::playSound( Widget* widget )
 void Menu::Impl::updateBuildingOptions()
 {
   const development::Options& options = city->buildOptions();
-  model->actions[ Link::buildWater ].button->setEnabled( options.isGroupAvailable( development::water ));
-  administrationButton->setEnabled( options.isGroupAvailable( development::administration ));
-  entertainmentButton->setEnabled( options.isGroupAvailable( development::entertainment ));
-  educationButton->setEnabled( options.isGroupAvailable( development::education ));
-  templeButton->setEnabled( options.isGroupAvailable( development::religion ));
-  commerceButton->setEnabled( options.isGroupAvailable( development::commerce ));
-  securityButton->setEnabled( options.isGroupAvailable( development::security ));
-  healthButton->setEnabled( options.isGroupAvailable( development::health ));
-  engineerButton->setEnabled( options.isGroupAvailable( development::engineering ));
+  model->setEnabled( Link::buildWater, options.isGroupAvailable( development::water ));
+  model->setEnabled( Link::buildGovt, options.isGroupAvailable( development::administration ));
+  model->setEnabled( Link::buildEntertainment, options.isGroupAvailable( development::entertainment ));
+  model->setEnabled( Link::buildEducation, options.isGroupAvailable( development::education ));
+  model->setEnabled( Link::buildTemple, options.isGroupAvailable( development::religion ));
+  model->setEnabled( Link::buildCommerce, options.isGroupAvailable( development::commerce ));
+  model->setEnabled( Link::buildSecurity, options.isGroupAvailable( development::security ));
+  model->setEnabled( Link::buildHealth, options.isGroupAvailable( development::health ));
+  model->setEnabled( Link::buildEngineering, options.isGroupAvailable( development::engineering ));
 }
 
 ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city , bool fitToScreen)
@@ -632,15 +691,6 @@ void ExtentMenu::_updateButtons()
                                    "hide_bigpanel" );
 
   _setChildGeometry( _d->button.minimize, Rect( Point( 127, 5 ), Size( 31, 20 ) ) );
-
-  _d->initActionButton( _d->healthButton,         Point( 63,  313 ) );
-  _d->initActionButton( _d->templeButton,         Point( 113, 313 ) );
-  _d->initActionButton( _d->educationButton,      Point( 13,  349 ) );
-  _d->initActionButton( _d->entertainmentButton,  Point( 63,  349 ) );
-  _d->initActionButton( _d->administrationButton, Point( 113, 349 ) );
-  _d->initActionButton( _d->engineerButton,       Point( 13,  385 ) );
-  _d->initActionButton( _d->securityButton,       Point( 63,  385 ) );
-  _d->initActionButton( _d->commerceButton,       Point( 113, 385 ) );
 
   //header
   _d->senateButton = _addButton( 79, false, 0, -1, false, -1, "senate" );
@@ -730,9 +780,17 @@ void ExtentMenu::setConstructorMode(bool enabled)
   if( !_d->model->isLinkValid( Link::editTerrain ) )
   {
     _createLink( _d->model->actions[ Link::editTerrain ] );
-    _createLink( _d->model->actions[ Link::editForest ] );
-    _createLink( _d->model->actions[ Link::editWater ] );
-    _createLink( _d->model->actions[ Link::editRock ] );
+    _createLink( _d->model->actions[ Link::editForest  ] );
+    _createLink( _d->model->actions[ Link::editWater   ] );
+    _createLink( _d->model->actions[ Link::editRock    ] );
+    _createLink( _d->model->actions[ Link::editMeadow  ] );
+    _createLink( _d->model->actions[ Link::editPlateau ] );
+    _createLink( _d->model->actions[ Link::editRift    ] );
+    _createLink( _d->model->actions[ Link::editRiver   ] );
+    _createLink( _d->model->actions[ Link::editIndigene] );
+    _createLink( _d->model->actions[ Link::editRoads   ] );
+    _createLink( _d->model->actions[ Link::editBorders ] );
+    _createLink( _d->model->actions[ Link::editAttacks ] );
   }
 
   _d->model->setConstructoMode( enabled );

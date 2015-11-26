@@ -42,7 +42,7 @@ struct _Tilemap
   } cell;
 
   const int maxBuildingSide = 5;
-  const int maxSide = 168;
+  const int maxSide = 162;
   const int maxArea = maxSide * maxSide;
 
   Direction getDirection( const TilePos& b, const TilePos& e );
