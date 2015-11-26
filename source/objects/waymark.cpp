@@ -76,7 +76,7 @@ bool Waymark::build( const city::AreaInfo& info )
     deleteLater();
   }
 
-  _picture().load( ResourceGroup::land3a, picIndex );
+  _picture().load( config::rc.land3a, picIndex );
   _isFlat = picture().height() <= config::tilemap.cell.picSize().height();
 
   return Overlay::build( info );

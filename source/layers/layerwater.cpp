@@ -74,16 +74,16 @@ void Water::drawTile( const RenderInfo& rinfo, Tile& tile)
         auto house = overlay.as<House>();
         needDrawAnimations = (house->level() <= HouseLevel::hovel) && house->habitants().empty();
 
-        tileNumber = config::id.overlay.inHouse;
+        tileNumber = config::tile.house;
         haveWater = haveWater || house->hasServiceAccess(Service::fountain) || house->hasServiceAccess(Service::well);
       }
 
       if( !needDrawAnimations )
       {
-        tileNumber += (haveWater ? config::id.overlay.haveWater : 0);
-        tileNumber += tile.param( Tile::pReservoirWater ) > 0 ? config::id.overlay.reservoirRange : 0;
+        tileNumber += (haveWater ? config::layer.haveWater : 0);
+        tileNumber += tile.param( Tile::pReservoirWater ) > 0 ? config::layer.reservoirRange : 0;
 
-        drawArea( rinfo, overlay->area(), ResourceGroup::waterOverlay, config::id.overlay.base + tileNumber );
+        drawArea( rinfo, overlay->area(), config::layer.water, config::tile.constr + tileNumber );
 
         areaSize = Size( 0 );
       }
@@ -141,10 +141,10 @@ void Water::_drawLandTile(const RenderInfo& rinfo, Tile& tile, const Size& areaS
 
     if( (reservoirWater + fontainWater > 0) && ! rtile->getFlag( Tile::tlWater ) && rtile->overlay().isNull() )
     {
-      int picIndex = reservoirWater ? config::id.overlay.reservoirRange : 0;
-      picIndex |= fontainWater > 0 ? config::id.overlay.haveWater : 0;
-      picIndex |= config::id.overlay.skipLeftBorder | config::id.overlay.skipRightBorder;
-      rinfo.engine.draw( _d->pics[ picIndex + config::id.overlay.base ], rtile->mappos() + rinfo.offset );
+      int picIndex = reservoirWater ? config::layer.reservoirRange : 0;
+      picIndex |= fontainWater > 0 ? config::layer.haveWater : 0;
+      picIndex |= config::tile.skipLeftBorder | config::tile.skipRightBorder;
+      rinfo.engine.draw( _d->pics[ picIndex + config::tile.constr ], rtile->mappos() + rinfo.offset );
     }
   }
 }
@@ -219,7 +219,7 @@ Water::Water( Camera& camera, PlayerCityPtr city)
   _initialize();
 
   for( int i=1; i < 32; i++ )
-    _d->pics[ i ] = Picture( ResourceGroup::waterOverlay, i );
+    _d->pics[ i ] = Picture( config::layer.water, i );
 }
 
 }//end namespace citylayer

@@ -24,6 +24,7 @@
 #include "core/logger.hpp"
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"
+#include "environment.hpp"
 #include "game/settings.hpp"
 #include "game/infoboxmanager.hpp"
 #include "objects/ruins.hpp"
@@ -46,7 +47,7 @@ AboutRuins::AboutRuins( Widget* parent, PlayerCityPtr city, const Tile& tile )
   RuinsPtr ruin = tile.overlay<Ruins>();
   if( ruin.isNull() )
   {
-    Logger::warning( "AbourRuins: tile overlay at [{0},{1}] not ruin", tile.i(), tile.j() );
+    Logger::warning( "AbourRuins: tile overlay at [{},{}] not ruin", tile.i(), tile.j() );
     return;
   }
 
@@ -65,11 +66,7 @@ AboutRuins::AboutRuins( Widget* parent, PlayerCityPtr city, const Tile& tile )
 }
 
 AboutRuins::~AboutRuins() {}
-
-void AboutRuins::_showHelp()
-{
-  DictionaryWindow::show( this, object::toString( _ruinType ) );
-}
+void AboutRuins::_showHelp() { ui()->add<DictionaryWindow>( _ruinType ); }
 
 }
 

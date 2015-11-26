@@ -86,10 +86,7 @@ void AboutWorkingBuilding::setText(const std::string& text)
   }
 }
 
-void AboutWorkingBuilding::_showHelp()
-{
-  DictionaryWindow::show( this, _working->type() );
-}
+void AboutWorkingBuilding::_showHelp() { ui()->add<DictionaryWindow>( _working->type() ); }
 
 WorkingBuildingPtr AboutWorkingBuilding::_getBuilding() { return _working; }
 

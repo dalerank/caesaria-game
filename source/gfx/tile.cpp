@@ -63,7 +63,7 @@ Tile::Tile( const TilePos& pos) //: _terrain( 0, 0, 0, 0, 0, 0 )
 }
 
 void Tile::setPicture(const Picture& picture) {  _picture = picture; }
-void Tile::setPicture(const char* rc, const int index){ _picture.load( rc, index );}
+void Tile::setPicture(const std::string& group, const int index){ _picture.load( group, index );}
 void Tile::setPicture(const std::string& name){ _picture.load( name );}
 void Tile::setMaster(Tile* master){  _master = master; }
 

@@ -115,7 +115,7 @@ Picture Helper::picture(Product type, bool emp )
   
   if( picId > 0 )
   {
-    return Picture( emp ? ResourceGroup::empirepnls : ResourceGroup::panelBackground, picId );
+    return Picture( emp ? ResourceGroup::empirepnls : gui::rc.panel, picId );
   }
 
   return Picture();

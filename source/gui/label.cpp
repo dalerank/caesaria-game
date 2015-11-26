@@ -697,6 +697,18 @@ void Label::setIcon(const Picture& icon, Point offset )
   _d->needUpdatePicture = true;
 }
 
+void Label::setIcon(const string& rc, int index)
+{
+  _d->icon.load( rc, index );
+  _d->needUpdatePicture = true;
+}
+
+void Label::setIconOffset(const Point& offset)
+{
+  _d->icon.setOffset( offset );
+  _d->needUpdatePicture = true;
+}
+
 void Label::setFont( const Font& font )
 {
   _d->font = font;

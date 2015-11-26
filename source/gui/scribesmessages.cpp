@@ -71,7 +71,7 @@ public:
     item.overrideColors[ ListBoxItem::hovered ].Use = true;
     item.overrideColors[ ListBoxItem::hovered ].color = 0xffff0000;
 
-    item.setIcon( Picture( ResourceGroup::panelBackground, 111 ));
+    item.setIcon( gui::rc.panel, gui::message.simple );
 
     return item;
   }
@@ -88,9 +88,10 @@ protected:
   {
     bool opened = item.data( literals::opened );
     bool critical = item.data( literals::critical );
-    int imgIndex = (critical ? 113 : 111) + (opened ? 1 : 0);
+    int imgIndex = (critical ? gui::message.critial : gui::message.simple) + (opened ? 1 : 0);
     if( imgIndex != lastIndex )
-      pic = Picture( ResourceGroup::panelBackground, imgIndex );
+      pic.load( gui::rc.panel, imgIndex );
+
     painter.draw( pic, pos + Point( 2, 2), clipRect );
   }
 
@@ -145,7 +146,6 @@ public:
   PlayerCityPtr city;
   Label* lbInfo;
   TexturedButton* btnExit;
-  TexturedButton* btnHelp;
 };
 
 ScribesMessages::~ScribesMessages() {}
@@ -163,16 +163,16 @@ ScribesMessages::ScribesMessages( Widget* p, PlayerCityPtr city )
 
   _d->lbxMessages = &add<ScribesListBox>( Rect( 16, 60, width() - 16, height() - 50 ) );
 
-  GET_DWIDGET_FROM_UI( _d, btnHelp )
-  GET_DWIDGET_FROM_UI( _d, btnExit )
+  INIT_WIDGET_FROM_UI( PushButton*, btnHelp )
+  INIT_WIDGET_FROM_UI( PushButton*, btnExit )
   GET_DWIDGET_FROM_UI( _d, lbInfo )
 
   _fillMessages();
 
   CONNECT( _d->lbxMessages, onShowMessage, this, ScribesMessages::_showMessage );
   CONNECT( _d->lbxMessages, onRemoveMessage, this, ScribesMessages::_removeMessage );
-  CONNECT( _d->btnHelp, onClicked(), this, ScribesMessages::_showHelp );
-  CONNECT( _d->btnExit, onClicked(), this, ScribesMessages::deleteLater );
+  CONNECT( btnHelp, onClicked(), this, ScribesMessages::_showHelp );
+  CONNECT( btnExit, onClicked(), this, ScribesMessages::deleteLater );
 
   events::dispatch<events::PlaySound>( "extm_scribes", 1, 100, audio::effects );
 
@@ -220,17 +220,13 @@ void ScribesMessages::_fillMessages()
   }
 }
 
-void ScribesMessages::_showHelp()
-{
-  DictionaryWindow::show( this, "scribes_messages" );
-}
+void ScribesMessages::_showHelp() { ui()->add<DictionaryWindow>( "scribes_messages" ); }
 
 void ScribesMessages::_showMessage(int index)
 {
   city::Scribes::Message mt = _d->city->scribes().getMessage( index );
   _d->city->scribes().readMessage( index );
-  ui()->add<infobox::AboutEvent>( mt.title, mt.text, mt.date, mt.gtype )
-        .show();
+  ui()->add<infobox::AboutEvent>( mt.title, mt.text, mt.date, mt.gtype );
 
   _fillMessages();
 }

@@ -231,7 +231,7 @@ void AboutHouse::drawHabitants( HousePtr house )
   // citizen or patrician picture
   int picId = house->spec().isPatrician() ? 541 : 542;
    
-  Picture citPic( ResourceGroup::panelBackground, picId );
+  Picture citPic( gui::rc.panel, picId );
   _lbBlackFrame()->setIcon( citPic, Point( 15, 5 ) );
 
   // number of habitants
@@ -248,12 +248,12 @@ void AboutHouse::drawHabitants( HousePtr house )
   else if (freeRoom == 0)
   {
     // full house!
-    freeRoomText = utils::format( 0xff, "%d %s", current, _("##occupants##"));
+    freeRoomText = fmt::format( "{} {}", current, _("##occupants##"));
   }
   else if (freeRoom < 0)
   {
     // too many habitants!
-    freeRoomText = utils::format( 0xff, "%d %s %d", current, _("##no_room_for_citizens##"),-freeRoom);
+    freeRoomText = fmt::format( "{} {} {}", current, _("##no_room_for_citizens##"),-freeRoom);
     lbHabitants.setFont( Font::create( FONT_2_RED ) );
   }
 
@@ -296,7 +296,7 @@ bool AboutHouse::onEvent(const NEvent& event)
   return Infobox::onEvent( event );
 }
 
-void AboutHouse::_showHelp() { DictionaryWindow::show( this, "house" ); }
+void AboutHouse::_showHelp() { ui()->add<DictionaryWindow>( "house" ); }
 
 void AboutHouse::_showHbtInfo()
 {
@@ -312,7 +312,6 @@ void AboutHouse::_showHbtInfo()
                                                   _house->habitants().aged_n() );
 
   Dialog& dialog = ui()->add<Dialog>( Rect( 0, 0, 400, 400 ), "Habitants", workerState, Dialog::btnOk );
-  dialog.moveTo( Widget::parentCenter );
   CONNECT( &dialog, onOk(), &dialog, Dialog::deleteLater )
 }
 

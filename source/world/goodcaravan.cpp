@@ -119,7 +119,7 @@ GoodCaravan::GoodCaravan( CityPtr city )
 
   setSpeed( deafaultSpeed );
 
-  setPicture( gfx::Picture( ResourceGroup::panelBackground, 108 ) );
+  setPicture( gfx::Picture( gui::rc.panel, 108 ) );
 }
 
 }//end namespace world

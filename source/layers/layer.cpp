@@ -443,8 +443,8 @@ void Layer::drawArea( const RenderInfo& rinfo, const TilesArray& area, const std
                           : baseTile->j();
   for( auto tile : area )
   {
-    int tileBorders = ( tile->i() == leftBorderAtI ? 0 : config::id.overlay.skipLeftBorder )
-                      + ( tile->j() == rightBorderAtJ ? 0 : config::id.overlay.skipRightBorder );
+    int tileBorders = ( tile->i() == leftBorderAtI ? 0 : config::tile.skipLeftBorder )
+                      + ( tile->j() == rightBorderAtJ ? 0 : config::tile.skipRightBorder );
     Picture pic(resourceGroup, tileBorders + tileId);
     rinfo.engine.draw( pic, tile->mappos() + rinfo.offset );
   }

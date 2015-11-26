@@ -726,7 +726,7 @@ void EmpireMapWindow::_changePosition()
 
 const Point& EmpireMapWindow::_offset() const { return _d->offset; }
 Widget* EmpireMapWindow::_resetInfoPanel() { _d->resetInfoPanel(); return _d->gbox; }
-void EmpireMapWindow::_showHelp() { DictionaryWindow::show( this, "empiremap" ); }
+void EmpireMapWindow::_showHelp() { ui()->add<DictionaryWindow>( "empiremap" ); }
 
 void EmpireMapWindow::_toggleAi()
 {
@@ -744,8 +744,7 @@ void EmpireMapWindow::_toggleAi()
 
 EmpireMapWindow* EmpireMapWindow::create(PlayerCityPtr city, Widget* parent, int id )
 {
-  EmpireMapWindow* ret = new EmpireMapWindow( parent, id, city );
-  return ret;
+  return &parent->add<EmpireMapWindow>( id, city );
 }
 
 EmpireMapWindow::~EmpireMapWindow()

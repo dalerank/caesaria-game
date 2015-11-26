@@ -225,7 +225,7 @@ Picture& Overlay::_fgPicture( unsigned int index ){  return _d->fgPictures[index
 const Picture& Overlay::_fgPicture( unsigned int index ) const {  return _d->fgPictures[index]; }
 Picture& Overlay::_picture(){  return _d->picture; }
 object::Group Overlay::group() const{  return _d->overlayClass;}
-void Overlay::setPicture(const char* resource, const int index){ _picture().load( resource, index ); }
+void Overlay::setPicture(const std::string& resource, const int index){ _picture().load( resource, index ); }
 const Picture& Overlay::picture() const{  return _d->picture;}
 void Overlay::setAnimation(const Animation& animation){  _d->animation = animation;}
 const Animation& Overlay::animation() const { return _d->animation;}

@@ -94,11 +94,6 @@ void Finance::draw(gfx::Engine& painter )
   painter.drawLine( 0xff000000, p.lefttop(), p.righttop() );
 }
 
-void Finance::_showHelp()
-{
-  DictionaryWindow::show( this, "finance_advisor" );
-}
-
 void Finance::_drawReportRow(const Point& pos, const std::string& title, int type)
 {
   Font font = Font::create( FONT_1 );
@@ -164,13 +159,12 @@ void Finance::_initReportRows()
 
 void Finance::_initTaxManager()
 {
-  auto& btnHelp = add<TexturedButton>( Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
-  auto& btnDecreaseTax = add<TexturedButton>( Point( 185, 73 ), Size( 24 ), -1, config::id.menu.arrowDown );
-  auto& btnIncreaseTax = add<TexturedButton>( Point( 185+24, 73 ), Size( 24 ), -1, config::id.menu.arrowUp );
+  add<HelpButton>( Point( 12, height() - 39), "finance_advisor" );
+  auto& btnDecreaseTax = add<TexturedButton>( Point( 185, 73 ), Size( 24 ), -1, gui::button.arrowDown );
+  auto& btnIncreaseTax = add<TexturedButton>( Point( 185+24, 73 ), Size( 24 ), -1, gui::button.arrowUp );
 
   CONNECT( &btnDecreaseTax, onClicked(), this, Finance::_decreaseTax );
   CONNECT( &btnIncreaseTax, onClicked(), this, Finance::_increaseTax );
-  CONNECT( &btnHelp,        onClicked(), this, Finance::_showHelp );
 }
 
 void Finance::_updateRegisteredPayers()

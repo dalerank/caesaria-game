@@ -101,11 +101,11 @@ void Entertainment::drawTile(const RenderInfo& rinfo, Tile& tile)
       entertainmentLevel = _getLevelValue( house );
 
       needDrawAnimations = (house->level() <= HouseLevel::hovel) && (house->habitants().empty());
-      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
+      drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.house );
     }
     else
     {
-      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base );
+      drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.constr );
     }
 
     if( needDrawAnimations )
@@ -152,26 +152,12 @@ void Entertainment::handleEvent(NEvent& event)
           int lvlValue = _getLevelValue( house );
           if( _d->type == citylayer::entertainment )
           {
-            text = utils::format( 0xff, "##%d_entertainment_access##", lvlValue / 10 );
+            text = fmt::format( "##{}_entertainment_access##", lvlValue / 10 );
           }
           else
-          {
-            std::string levelName;
-
-            if( lvlValue > 0 )
-            {
-              if( lvlValue < 20 ) { levelName = "##warning_"; }
-              else if( lvlValue < 40 ) { levelName = "##bad_"; }
-              else if( lvlValue < 60 ) { levelName = "##simple_"; }
-              else if( lvlValue < 80 ) { levelName = "##good_"; }
-              else { levelName = "##awesome_"; }
-
-              text = levelName + typeName + "_access##";
-            }
-            else
-            {
-              text = levelName + "_no_access";
-            }
+          {            
+            std::string levelName = _getAccessLevel( lvlValue );
+            text = levelName + typeName + "_access##";
           }
         }
       }
@@ -197,6 +183,15 @@ void Entertainment::handleEvent(NEvent& event)
   }
 
   Layer::handleEvent( event );
+}
+
+std::string Entertainment::_getAccessLevel( int lvlValue ) const
+{
+  static const std::vector<std::string> accesDesc = { "##no_", "##warning_",
+                                                      "##bad_", "##simple_",
+                                                      "##good_", "##awesome_" };
+  float limiter = 100.f / accesDesc.size();
+  return accesDesc[ math::clamp<int>( ceil( lvlValue / limiter ), 0, accesDesc.size()-1 ) ];
 }
 
 void Entertainment::render(Engine& engine)

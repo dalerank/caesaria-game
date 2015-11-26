@@ -40,7 +40,6 @@ signals public:
   Signal0<>& onEmpireMapRequest();
 
 private:
-  void _showHelp();
 
   class Impl;
   ScopedPtr< Impl > _d;

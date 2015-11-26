@@ -113,6 +113,9 @@ public:
   virtual void setBackgroundPicture( const gfx::Picture& picture, Point offset=Point() );
 
   virtual void setIcon( const gfx::Picture& icon, Point offset=Point() );
+  virtual void setIcon( const std::string& rc, int index );
+
+  virtual void setIconOffset( const Point& offset );
 
   virtual void setFont( const Font& font );
 

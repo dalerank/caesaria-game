@@ -82,7 +82,7 @@ void Damage::drawTile( const RenderInfo& rinfo, Tile& tile )
 
       if( !needDrawAnimations )
       {
-        drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
+        drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.house );
       }
     }
     else
@@ -93,7 +93,7 @@ void Damage::drawTile( const RenderInfo& rinfo, Tile& tile )
         damageLevel = (int)building->state( pr::damage );
       }
 
-      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base );
+      drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.constr );
     }
 
     if( needDrawAnimations )

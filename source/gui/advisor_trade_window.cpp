@@ -149,8 +149,7 @@ Trade::Trade(PlayerCityPtr city, Widget* parent, int id )
 
   _d->updateGoodsInfo();
 
-  auto& btnHelp = add<TexturedButton>( Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
-  CONNECT( &btnHelp, onClicked(), this, Trade::_showHelp );
+  add<HelpButton>( Point( 12, height() - 39), "trade_advisor" );
 }
 
 void Trade::draw(gfx::Engine& painter )
@@ -162,11 +161,6 @@ void Trade::draw(gfx::Engine& painter )
 }
 
 Signal0<>& Trade::onEmpireMapRequest() { return _d->btnEmpireMap->onClicked(); }
-
-void Trade::_showHelp()
-{
-  DictionaryWindow::show( this, "trade_advisor" );
-}
 
 }//end namespace advisorwnd
 

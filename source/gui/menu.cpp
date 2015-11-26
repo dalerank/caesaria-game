@@ -69,7 +69,8 @@ struct Menu::Link
   typedef enum { buildHouse,  clearLand,
                  editTerrain, editForest,
                  buildRoad,   editWater,
-                 buildWater,  editRock } Name;
+                 buildWater,  editRock,
+                 buildHealth, editMeadow } Name;
   typedef enum { inGame=0, inEditor=1 } VisibleMode;
   Point pos;
   int picId;
@@ -98,36 +99,36 @@ struct Menu::Model
 
   void initDefaultActions()
   {
-    actions[ Link::buildHouse  ] = { Point( 13,  277 ), config::id.menu.house, object::house, 0,
-                                     object::house, config::id.middle.house, pushButton,
+    actions[ Link::buildHouse  ] = { Point( 13,  277 ), gui::button.house, object::house, 0,
+                                     object::house, gui::miniature.house, pushButton,
                                      noSubMenu, Rect(), "housing", nullptr, "", Link::inGame };
 
-    actions[ Link::editTerrain ] = { Point( 13,  277 ), config::id.menu.terrain, object::terrain, 0,
-                                     object::terrain, config::id.middle.clear, pushButton,
+    actions[ Link::editTerrain ] = { Point( 13,  277 ), gui::button.terrain, object::terrain, 0,
+                                     object::terrain, gui::miniature.clear, pushButton,
                                      noSubMenu, Rect(), "terrain", nullptr, "", Link::inEditor };
 
-    actions[ Link::clearLand   ] = { Point( 63,  277 ), config::id.menu.clear, (int)AdvToolMode::removeTool, 1,
-                                     (int)AdvToolMode::removeTool, config::id.middle.clear, pushButton,
+    actions[ Link::clearLand   ] = { Point( 63,  277 ), gui::button.clear, (int)AdvToolMode::removeTool, 1,
+                                     (int)AdvToolMode::removeTool, gui::miniature.clear, pushButton,
                                      noSubMenu, Rect(), "clear_land", nullptr, "", Link::inGame };
 
-    actions[ Link::editForest  ] = { Point( 63,  277 ), config::id.menu.forest, object::tree, 0,
-                                     object::tree, config::id.middle.clear, pushButton,
+    actions[ Link::editForest  ] = { Point( 63,  277 ), gui::button.forest, object::tree, 0,
+                                     object::tree, gui::miniature.clear, pushButton,
                                      noSubMenu, Rect(), "forest", nullptr, "", Link::inEditor };
 
-    actions[ Link::buildRoad   ] = { Point( 113, 277 ), config::id.menu.road, object::road,  2,
-                                     object::road, config::id.middle.road, pushButton,
+    actions[ Link::buildRoad   ] = { Point( 113, 277 ), gui::button.road, object::road,  2,
+                                     object::road, gui::miniature.road, pushButton,
                                      noSubMenu, Rect(), "road", nullptr, "", Link::inGame };
 
-    actions[ Link::editWater   ] = { Point( 113, 277 ), config::id.menu.water, object::water,  2,
-                                     object::water, config::id.middle.clear, pushButton,
+    actions[ Link::editWater   ] = { Point( 113, 277 ), gui::button.water, object::water,  2,
+                                     object::water, gui::miniature.clear, pushButton,
                                      noSubMenu, Rect(), "water", nullptr, "", Link::inEditor};
 
-    actions[ Link::buildWater  ] = { Point( 13,  313 ), config::id.menu.waterSupply, development::water,  3,
-                                     development::water, config::id.middle.water, pushButton,
+    actions[ Link::buildWater  ] = { Point( 13,  313 ), gui::button.waterSupply, development::water,  3,
+                                     development::water, gui::miniature.water, pushButton,
                                      haveSubMenu, Rect(), "water", nullptr, "", Link::inGame };
 
-    actions[ Link::editRock ] = { Point( 13,  313 ), config::id.menu.smRocks, object::rock,  2,
-                                     object::rock, config::id.middle.clear, pushButton,
+    actions[ Link::editRock ] = { Point( 13,  313 ), gui::button.smRocks, object::rock,  2,
+                                     object::rock, gui::miniature.clear, pushButton,
                                      noSubMenu, Rect(), "smRock", nullptr, "", Link::inEditor};
 
   }
@@ -163,10 +164,10 @@ struct Menu::Model
     mtype = mode;
 
     if( !background.isValid() )
-      background.load( ResourceGroup::panelBackground, mode == smallMenu ? 16 : 17 );
+      background.load( gui::rc.panel, mode == smallMenu ? 16 : 17 );
 
     if( !bottom.isValid() )
-      bottom.load( ResourceGroup::panelBackground, mode == smallMenu ? 21 : 20 );
+      bottom.load( gui::rc.panel, mode == smallMenu ? 21 : 20 );
 
     scale = 1;
     if( fitToScreen )
@@ -211,10 +212,7 @@ public:
   Widget* lastPressed;
 
   struct {
-    PushButton* forest;
-    PushButton* menu;
     PushButton* minimize;
-
   } button;
 
   PushButton* senateButton;
@@ -269,7 +267,7 @@ public:
     setIsPushButton( pushBtn );
   }
 
-  int midPicId() const { return _midIconId; }
+  int miniatureIndex() const { return _midIconId; }
   void setMidPicId( int id ) { _midIconId = id; }
   void setSound( const std::string& name ) { addProperty( "sound", name ); }
 private:
@@ -287,8 +285,8 @@ Menu::Menu(Widget* parent, int id, const Rect& rectangle , PlayerCityPtr city)
 
 void Menu::_updateButtons()
 {
-  _d->button.minimize = _addButton( config::id.menu.maximize, false, 0, (int)AdvToolMode::maximizeTool,
-                                    noSubMenu, config::id.middle.empty, "show_bigpanel",
+  _d->button.minimize = _addButton( gui::button.maximize, false, 0, (int)AdvToolMode::maximizeTool,
+                                    noSubMenu, gui::miniature.empty, "show_bigpanel",
                                     Rect( Point( 6, 4 ), Size( 31, 20 ) ) );
 
   _createLink( _d->model->actions[ Link::buildHouse ] );
@@ -296,24 +294,24 @@ void Menu::_updateButtons()
   _createLink( _d->model->actions[ Link::buildRoad  ] );
   _createLink( _d->model->actions[ Link::buildWater ] );
 
-  _d->healthButton = _addButton( 163, true, 4, development::health, haveSubMenu, config::id.middle.health, "health" );
-  _d->templeButton = _addButton( 151, true, 5, development::religion, haveSubMenu, config::id.middle.religion, "temples" );
-  _d->educationButton = _addButton( 147, true, 6, development::education, haveSubMenu, config::id.middle.education, "education" );
+  _d->healthButton = _addButton( 163, true, 4, development::health, haveSubMenu, gui::miniature.health, "health" );
+  _d->templeButton = _addButton( 151, true, 5, development::religion, haveSubMenu, gui::miniature.religion, "temples" );
+  _d->educationButton = _addButton( 147, true, 6, development::education, haveSubMenu, gui::miniature.education, "education" );
 
   _d->entertainmentButton = _addButton( 143, true, 7, development::entertainment, haveSubMenu,
-                                        config::id.middle.entertainment, "entertainment" );
+                                        gui::miniature.entertainment, "entertainment" );
 
   _d->administrationButton = _addButton( 139, true, 8, development::administration, haveSubMenu,
-                                         config::id.middle.administration, "administration" );
+                                         gui::miniature.administration, "administration" );
 
   _d->engineerButton = _addButton( 167, true, 9, development::engineering, haveSubMenu,
-                                   config::id.middle.engineer, "engineering" );
+                                   gui::miniature.engineer, "engineering" );
 
   _d->securityButton = _addButton( 159, true, 10, development::security, haveSubMenu,
-                                   config::id.middle.security, "security" );
+                                   gui::miniature.security, "security" );
 
   _d->commerceButton = _addButton( 155, true, 11, development::commerce, haveSubMenu,
-                                   config::id.middle.comerce, "comerce" );
+                                   gui::miniature.comerce, "comerce" );
 
   CONNECT( _d->button.minimize, onClicked(), this, Menu::minimize );
 }
@@ -630,7 +628,7 @@ void ExtentMenu::_updateButtons()
   Menu::_updateButtons();
 
   _d->button.minimize->deleteLater();
-  _d->button.minimize = _addButton( 97, false, 0, (int)AdvToolMode::maximizeTool, false, config::id.middle.empty,
+  _d->button.minimize = _addButton( 97, false, 0, (int)AdvToolMode::maximizeTool, false, gui::miniature.empty,
                                    "hide_bigpanel" );
 
   _setChildGeometry( _d->button.minimize, Rect( Point( 127, 5 ), Size( 31, 20 ) ) );
@@ -674,14 +672,14 @@ void ExtentMenu::_updateButtons()
   _setChildGeometry( _d->disasterButton, Rect( Point( 113, 421 ), Size( 39, 22 ) ) );
   _d->disasterButton->setEnabled( false );
 
-  _d->middleLabel = new Image( this, Rect( 0, 0, 1, 1 ), Picture(), Image::fit );
+  _d->middleLabel = &add<Image>( Rect( 0, 0, 1, 1 ), Picture(), Image::fit );
   _setChildGeometry( _d->middleLabel, Rect( Point( 7, 216 ), Size( 148, 52 )) );
-  _d->middleLabel->setPicture( Picture( ResourceGroup::menuMiddleIcons, config::id.middle.empty ) );
+  _d->middleLabel->setPicture( gui::miniature.rc, gui::miniature.empty );
 
-  _d->overlaysMenu = new OverlaysMenu( parent(), Rect( 0, 0, 160, 1 ), -1 );
+  _d->overlaysMenu = &parent()->add<OverlaysMenu>( Rect( 0, 0, 160, 1 ), -1 );
   _d->overlaysMenu->hide();
 
-  _d->overlaysButton = new PushButton( this, Rect( 0, 0, 1, 1 ), _("##ovrm_text##"), -1, false, PushButton::greyBorderLineFit );
+  _d->overlaysButton = &add<PushButton>( Rect( 0, 0, 1, 1 ), _("##ovrm_text##"), -1, false, PushButton::greyBorderLineFit );
   _setChildGeometry( _d->overlaysButton, Rect( 4, 3, 122, 28 ) );
   _d->overlaysButton->setTooltipText( _("##select_city_layer##") );
 
@@ -697,8 +695,8 @@ bool ExtentMenu::onEvent(const NEvent& event)
     MenuButton* btn = safety_cast< MenuButton* >( event.gui.caller );
     if( btn )
     {
-      int picId = btn->midPicId() > 0 ? btn->midPicId() : config::id.middle.empty;
-      _d->middleLabel->setPicture( Picture( ResourceGroup::menuMiddleIcons, picId ) );
+      int picId = btn->miniatureIndex() > 0 ? btn->miniatureIndex() : gui::miniature.empty;
+      _d->middleLabel->setPicture( gui::miniature.rc, picId );
     }
   }
 

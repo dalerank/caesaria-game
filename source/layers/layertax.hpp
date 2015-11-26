@@ -29,7 +29,14 @@ public:
   Tax( gfx::Camera& camera, PlayerCityPtr city );
   virtual int type() const;
   virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
-  virtual void handleEvent(NEvent& event);
+  virtual void handleEvent(NEvent& event);  
+  virtual void afterRender(gfx::Engine& engine);
+  virtual void render(gfx::Engine& engine);
+private:
+  void _updatePaths();
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 }//end namespace citylayer

@@ -147,12 +147,8 @@ void TopMenu::Impl::showShortKeyInfo()
   Widget& shortKeyInfo = lbDate->ui()->add<Label>( Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
   shortKeyInfo.setupUI( ":/gui/shortkeys.gui" );
   shortKeyInfo.moveTo( Widget::parentCenter );
-
-  auto& btnExit = shortKeyInfo.add<TexturedButton>( Point( shortKeyInfo.width() - 34, shortKeyInfo.height() - 34 ),
-                                                    Size( 24 ), -1, config::id.menu.exitInf );
+  shortKeyInfo.add<ExitButton>( Point( shortKeyInfo.width() - 34, shortKeyInfo.height() - 34 ) );
   WidgetEscapeCloser::insertTo( shortKeyInfo );
-
-  CONNECT( &btnExit, onClicked(), &shortKeyInfo, Label::deleteLater );
 }
 
 void TopMenu::Impl::resolveExtentInfo(Widget *sender)
@@ -167,7 +163,7 @@ void TopMenu::Impl::resolveExtentInfo(Widget *sender)
 void TopMenu::Impl::initBackground( const Size& size )
 {
   Pictures p_marble;
-  p_marble.load( ResourceGroup::panelBackground, 1, 12 );
+  p_marble.load( gui::rc.panel, 1, 12 );
 
   unsigned int i = 0;
   int x = 0;
@@ -192,9 +188,8 @@ void TopMenu::Impl::showAboutInfo()
   Widget& window = lbDate->ui()->add<Label>( Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
   window.setupUI( ":/gui/about.gui" );
   window.moveTo( Widget::parentCenter );
-  auto& btnExit = window.add<TexturedButton>( Point( window.width() - 34, window.height() - 34 ), Size( 24 ), -1, config::id.menu.exitInf );
+  window.add<ExitButton>( Point( window.width() - 34, window.height() - 34 ) );
 
-  CONNECT( &btnExit, onClicked(), &window, Label::deleteLater );
   WidgetEscapeCloser::insertTo( window );
 }
 

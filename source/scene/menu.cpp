@@ -336,7 +336,7 @@ void StartMenu::Impl::showCredits()
                          " ",
                          _("##localization##"),
                          " ",
-                         "Alexander Klimenko, Manuel Alvarez, Artem Tolmachev, Peter Willington",
+                         "Alexander Klimenko, Manuel Alvarez, Artem Tolmachev, Peter Willington, Leszek Bochenek",
                          " ",
                          _("##thanks_to##"),
                          " ",
@@ -589,10 +589,10 @@ void StartMenu::initialize()
 
   Size scrSize = _d->ui().vsize();
   auto& btnHomePage = _d->ui().add<TexturedButton>( Point( scrSize.width() - 128, scrSize.height() - 100 ), Size( 128 ), -1,
-                                                    "logo_rdt", 1, 2, 2, 2 );
+                                                    "logo_rdt", TexturedButton::States( 1, 2, 2, 2 ) );
 
   auto& btnSteamPage = _d->ui().add<TexturedButton>( Point( btnHomePage.left() - 128, scrSize.height() - 100 ),  Size( 128 ), -1,
-                                                     "steam_icon", 1, 2, 2, 2 );
+                                                     "steam_icon", TexturedButton::States( 1, 2, 2, 2 ) );
 
   CONNECT( &btnSteamPage, onClicked(), _d.data(), Impl::openSteamPage );
   CONNECT( &btnHomePage, onClicked(), _d.data(), Impl::openHomePage );

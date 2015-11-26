@@ -94,7 +94,7 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
     Rect rect = btnHelp->relativeRect();
     rect += Point( btnHelp->width() + 5, 0 );
     rect.rright() += 60;
-    PushButton& btn = add<PushButton>( rect, "Adv.Info", -1, false, PushButton::whiteBorderUp );
+    auto& btn = add<PushButton>( rect, "Adv.Info", -1, false, PushButton::whiteBorderUp );
     CONNECT( &btn, onClicked(), this, AboutRawMaterial::_showAdvInfo )
   }
 }
@@ -114,11 +114,7 @@ void AboutRawMaterial::_showAdvInfo()
 }
 
 AboutRawMaterial::~AboutRawMaterial() {}
-
-void AboutRawMaterial::_showHelp()
-{
-  DictionaryWindow::show( ui()->rootWidget(), _type );
-}
+void AboutRawMaterial::_showHelp() { ui()->add<DictionaryWindow>( _type ); }
 
 }
 

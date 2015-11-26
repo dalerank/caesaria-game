@@ -104,8 +104,8 @@ public:
     _title = title;
     _dfont = Font::create( FONT_2_WHITE );
 
-    Picture pic( ResourceGroup::panelBackground, 48 );
-    setIcon( pic, Point( 5, 5 ) );
+    setIcon( gui::rc.panel, gui::id.chiefIcon );
+    setIconOffset( Point( 5, 5 ) );
     setFont( Font::create( FONT_2 ) );
 
     setTextOffset( Point( 255, 0) );
@@ -172,8 +172,7 @@ Chief::Chief(PlayerCityPtr city, Widget* parent, int id )
   _d.drawEntertainment();
   _d.drawSentiment();
 
-  auto& btnHelp = add<TexturedButton>( Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
-  CONNECT( &btnHelp, onClicked(), this, Chief::_showHelp );
+  add<HelpButton>( Point( 12, height() - 39 ), "advisor_chief" );
 }
 
 void Chief::Impl::initRows( Widget* parent, int width )
@@ -195,11 +194,6 @@ void Chief::draw( gfx::Engine& painter )
     return;
 
   Window::draw( painter );
-}
-
-void Chief::_showHelp()
-{
-  DictionaryWindow::show( this, "advisor_chief" );
 }
 
 void Chief::Impl::drawReportRow(Advice::Type type, std::string text, NColor color )

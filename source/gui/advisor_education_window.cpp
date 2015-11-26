@@ -155,8 +155,7 @@ void Education::Impl::initUI( Education* parent, PlayerCityPtr city )
   info = getInfo( city, object::library );
   lbBlackframe->add<EducationInfoLabel>( rect + offset * 2, object::library, info );
 
-  auto&& btnHelp = parent->add<TexturedButton>( Point( 12, parent->height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
-  CONNECT( &btnHelp, onClicked(), parent, Education::_showHelp );
+  parent->add<HelpButton>( Point( 12, parent->height() - 39), "education_advisor" );
 }
 
 void Education::Impl::updateCityInfo(PlayerCityPtr city)
@@ -181,7 +180,7 @@ void Education::Impl::updateCityInfo(PlayerCityPtr city)
 }
 
 Education::Education(PlayerCityPtr city, Widget* parent, int id )
-: Base( parent, city, id ),
+  : Base( parent, city, id ),
   __INIT_IMPL(Education)
 {
   setupUI( ":/gui/educationadv.gui" );
@@ -202,11 +201,6 @@ void Education::draw( gfx::Engine& painter )
     return;
 
   Window::draw( painter );
-}
-
-void Education::_showHelp()
-{
-  DictionaryWindow::show( this, "education_advisor" );
 }
 
 EducationInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Type bType)

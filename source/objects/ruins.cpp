@@ -50,7 +50,7 @@ BurningRuins::BurningRuins()
   setState( pr::collapsibility, 0 );
   setState( pr::spreadFire, 0 );
 
-  _picture().load( ResourceGroup::land2a, 187 );
+  _picture().load( config::rc.land2a, 187 );
   _animation() = AnimationBank::instance().simple( AnimationBank::animFire+2 );
   _fgPictures().resize(1);
 }
@@ -92,12 +92,12 @@ void BurningRuins::timeStep(const unsigned long time)
       updateState( pr::fire, -1 );
       if( state( pr::fire ) == 50 )
       {
-        _picture().load( ResourceGroup::land2a, 214 );
+        _picture().load( config::rc.land2a, 214 );
         _animation() = AnimationBank::instance().simple( AnimationBank::animFire + 1 );
       }
       else if( state( pr::fire ) == 25 )
       {
-        _picture().load( ResourceGroup::land2a, 223 );
+        _picture().load( config::rc.land2a, 223 );
         _animation() = AnimationBank::instance().simple( AnimationBank::animFire + 0 );
       }
     }
@@ -187,7 +187,7 @@ void BurnedRuins::timeStep( const unsigned long ){}
 
 BurnedRuins::BurnedRuins() : Ruins( object::burned_ruins )
 {
-  _picture().load( ResourceGroup::land2a, 111 + rand() % 8 );
+  _picture().load( config::rc.land2a, 111 + rand() % 8 );
 }
 
 bool BurnedRuins::build( const city::AreaInfo& info )
@@ -229,7 +229,7 @@ bool CollapsedRuins::build( const city::AreaInfo& info )
 
   tile().setFlag( Tile::tlTree, false );
   tile().setFlag( Tile::tlRoad, false );
-  _picture().load( ResourceGroup::land2a, 111 + math::random( 7 ) );
+  _picture().load( config::rc.land2a, 111 + math::random( 7 ) );
 
   if( !_alsoBuilt )
   {
@@ -249,7 +249,7 @@ PlagueRuins::PlagueRuins() : Ruins( object::plague_ruins )
   setState( pr::fire, 99 );
   setState( pr::collapsibility, 0 );
 
-  _picture().load( ResourceGroup::land2a, 187 );
+  _picture().load( config::rc.land2a, 187 );
   _animation() = AnimationBank::instance().simple( AnimationBank::animFire + 2 );
 
   _fgPictures().resize(2);
@@ -269,12 +269,12 @@ void PlagueRuins::timeStep(const unsigned long time)
       updateState( pr::fire, -1 );
       if( state( pr::fire ) == 50 )
       {
-        _picture().load( ResourceGroup::land2a, 214 );
+        _picture().load( config::rc.land2a, 214 );
         _animation() = AnimationBank::instance().simple( AnimationBank::animFire + 1 );
       }
       else if( state( pr::fire ) == 25 )
       {
-        _picture().load( ResourceGroup::land2a, 223 );
+        _picture().load( config::rc.land2a, 223 );
         _animation() = AnimationBank::instance().simple( AnimationBank::animFire + 0 );
       }
     }

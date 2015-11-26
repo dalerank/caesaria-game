@@ -24,6 +24,7 @@
 #include "dictionary.hpp"
 #include "walker/soldier.hpp"
 #include "label.hpp"
+#include "environment.hpp"
 #include "game/infoboxmanager.hpp"
 
 using namespace gfx;
@@ -89,14 +90,8 @@ AboutFort::AboutFort(Widget* parent, PlayerCityPtr city, const Tile& tile )
   _d->update( this );
 }
 
-AboutFort::~AboutFort()
-{
-}
-
-void AboutFort::_showHelp()
-{
-  DictionaryWindow::show( this, "fort" );
-}
+AboutFort::~AboutFort() {}
+void AboutFort::_showHelp() {  ui()->add<DictionaryWindow>( "fort" ); }
 
 void AboutFort::Impl::update(Widget* parent)
 {
