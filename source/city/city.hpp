@@ -46,7 +46,7 @@ public:
                  collapseKoeff, highlightBuilding, destroyEpidemicHouses, forestFire,
                  forestGrow, warfNeedTimber, showGodsUnhappyWarn, claypitMayCollapse,
                  minesMayCollapse, riversideAsWell, soldiersHaveSalary, housePersonalTaxes,
-                 hackForest2timber,
+                 cutForest2timber,
                  constructorMode } OptionType;
 
   static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr mayor );

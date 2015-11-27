@@ -25,7 +25,6 @@ class ResourceGroup
 public:
 #define __RCG_NAME static const char*
   __RCG_NAME sprites;
-  __RCG_NAME buildingEngineer;
   __RCG_NAME utilitya;
   __RCG_NAME commerce;
   __RCG_NAME security;

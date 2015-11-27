@@ -535,7 +535,7 @@ int Statistic::_Objects::laborAccess(WorkingBuildingPtr wb) const
   if( houses.size() > 0 )
     averageDistance /= houses.size();
 
-  return math::clamp( math::percentage( averageDistance, maxLaborDistance ) * 2, 25, 100 );
+  return math::clamp<unsigned int>( math::percentage( averageDistance, maxLaborDistance ) * 2, 25, 100 );
 }
 
 unsigned int Statistic::_Health::value() const

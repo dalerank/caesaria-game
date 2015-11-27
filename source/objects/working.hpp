@@ -32,7 +32,6 @@ public:
   unsigned int maximumWorkers() const;
   unsigned int numberWorkers() const;
   unsigned int needWorkers() const;
-  unsigned int productivity() const;
   unsigned int laborAccessPercent() const;
   virtual std::string sound() const;
 
@@ -40,6 +39,7 @@ public:
   unsigned int addWorkers( const unsigned int workers );
   unsigned int removeWorkers( const unsigned int workers );
 
+  virtual math::Percent productivity() const;
   virtual bool mayWork() const;
 
   virtual void setActive(const bool value);  // if false then this building is stopped

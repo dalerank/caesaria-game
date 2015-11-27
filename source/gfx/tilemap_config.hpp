@@ -45,7 +45,6 @@ struct _Tilemap
   const int maxSide = 162;
   const int maxArea = maxSide * maxSide;
 
-  Direction getDirection( const TilePos& b, const TilePos& e );
   unsigned int picWidth2CellSize( int width );
 
   gfx::Tilemap& invalid();

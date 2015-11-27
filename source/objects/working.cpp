@@ -137,7 +137,7 @@ unsigned int WorkingBuilding::maximumWorkers() const { return _d->workers.maximu
 void WorkingBuilding::setWorkers(const unsigned int currentWorkers){  _d->workers.current = math::clamp( currentWorkers, 0u, _d->workers.maximum );}
 unsigned int WorkingBuilding::numberWorkers() const { return _d->workers.current; }
 unsigned int WorkingBuilding::needWorkers() const { return maximumWorkers() - numberWorkers(); }
-unsigned int WorkingBuilding::productivity() const { return math::percentage( numberWorkers(), maximumWorkers() ); }
+math::Percent WorkingBuilding::productivity() const { return math::percentage( numberWorkers(), maximumWorkers() ); }
 unsigned int WorkingBuilding::laborAccessPercent() const { return _d->laborAccessKoeff; }
 bool WorkingBuilding::mayWork() const { return numberWorkers() > 0; }
 void WorkingBuilding::setActive(const bool value) { _d->isActive = value; }
@@ -145,7 +145,7 @@ bool WorkingBuilding::isActive() const { return _d->isActive; }
 WorkingBuilding::~WorkingBuilding(){}
 const WalkerList& WorkingBuilding::walkers() const {  return _d->walkerList; }
 bool WorkingBuilding::haveWalkers() const { return !_d->walkerList.empty(); }
-std::string WorkingBuilding::errorDesc() const { return _d->errorStr;}
+std::string WorkingBuilding::errorDesc() const { return _d->errorStr; }
 void WorkingBuilding::_setError(const std::string& err) { _d->errorStr = err;}
 void WorkingBuilding::_setWorkersType(walker::Type type) { _d->workers.type = type; }
 Signal1<bool>& WorkingBuilding::onActiveChange() { return _d->onActiveChangeSignal; }
