@@ -243,7 +243,7 @@ void Settings::setwdir( const std::string& wdirstr )
   vfs::Path dirName;
   if( OSystem::isLinux() )
   {
-    dirName = vfs::Path( ".caesaria/" ) + defaultSaveDir;
+    dirName = ".caesaria/" + defaultSaveDir;
     saveDir = vfs::Directory::userDir()/dirName;
   }
   else

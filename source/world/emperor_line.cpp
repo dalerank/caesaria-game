@@ -77,7 +77,7 @@ void EmperorLine::load(vfs::Path filename)
   _d->changes.clear();
 
   VariantMap opts = config::load( filename );
-  for( auto& it : opts )
+  for( const auto& it : opts )
   {
     EmperorInfo info;
     info.load( it.second.toMap() );

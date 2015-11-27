@@ -62,6 +62,7 @@ public:
     _O(riversideAsWell)
     _O(soldiersHaveSalary)
     _O(housePersonalTaxes)
+    _O(hackForest2timber)
 #undef _O
   }
 };
@@ -93,6 +94,7 @@ void Options::load(const VariantList& stream)
   resetIfNot( PlayerCity::riversideAsWell, 1);
   resetIfNot( PlayerCity::soldiersHaveSalary, 1);
   resetIfNot( PlayerCity::housePersonalTaxes, 1);
+  resetIfNot( PlayerCity::hackForest2timber, 1 );
   resetIfNot( PlayerCity::difficulty, game::difficulty::usual );
 }
 

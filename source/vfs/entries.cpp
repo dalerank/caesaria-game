@@ -235,8 +235,8 @@ int Entries::findFile(const Path& filename, bool isDirectory) const
       bool equale = false;
       switch( sType )
       {
-      case Path::equaleCase: equale = (*it).nhash == fnHash; break;
-      case Path::ignoreCase: equale = (*it).nihash == fnHash; break;
+      case Path::equaleCase: equale = it->nhash == fnHash; break;
+      case Path::ignoreCase: equale = it->nihash == fnHash; break;
       default: break;
       }
 
@@ -252,13 +252,13 @@ int Entries::findFile(const Path& filename, bool isDirectory) const
     {
     case Path::equaleCase:
     {
-      Impl::HashedIndex::iterator it = _d->hashedIndex.find( fnHash );
+      auto it = _d->hashedIndex.find( fnHash );
       if( it != _d->hashedIndex.end() ) return it->second;
     }
     break;
     case Path::ignoreCase:
     {
-      Impl::HashedIndex::iterator it = _d->hashedIcIndex.find( fnHash );
+      auto it = _d->hashedIcIndex.find( fnHash );
       if( it != _d->hashedIcIndex.end() ) return it->second;
     }
     break;
@@ -291,27 +291,27 @@ Entries Entries::filter(int flags, const std::string& options)
 
   StringArray exts = utils::split( utils::trim( options ), "," );
 
-  foreach( it, _d->files )
+  for( const auto& item : _d->files )
   {
     bool mayAdd = true;
-    if( isFile ) { mayAdd = !(*it).isDirectory; }
-    if( !mayAdd && isDirectory ) { mayAdd = (*it).isDirectory; }
+    if( isFile ) { mayAdd = !item.isDirectory; }
+    if( !mayAdd && isDirectory ) { mayAdd = item.isDirectory; }
 
-    if( mayAdd && !(*it).isDirectory && checkFileExt )
+    if( mayAdd && !item.isDirectory && checkFileExt )
     {
       if( exts.size() > 1 )
       {
-        mayAdd = exts.contains( it->fullpath.extension() );
+        mayAdd = exts.contains( item.fullpath.extension() );
       }
       else
       {
-        mayAdd = it->fullpath.isMyExtension( options );
+        mayAdd = item.fullpath.isMyExtension( options );
       }
     }
 
     if( mayAdd )
     {
-      ret._d->files.push_back( *it );
+      ret._d->files.push_back( item );
     }
   }
 

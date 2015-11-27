@@ -159,7 +159,7 @@ bool Mission::load( const std::string& filename, Game& game )
       events::dispatch<ChangeFishery>( item.second.toTilePos(), ChangeFishery::add );
     }
 
-    std::string missionName = vfs::Path( filename ).baseName( false ).toString();
+    std::string missionName = vfs::Path( filename ).baseName().removeExtension();
     Locale::addTranslation( missionName );
     SETTINGS_SET_VALUE( lastTranslation, Variant( missionName ) );
 

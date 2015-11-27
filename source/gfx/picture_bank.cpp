@@ -275,7 +275,7 @@ void PictureBank::Impl::loadAtlas(const vfs::Path& filePath)
 {
   if( !filePath.exist() )
   {
-    Logger::warning( "PictureBank: cant find atlas " + filePath.toString() );
+    Logger::warning( "PictureBank: cant find atlas " + filePath );
     return;
   }
 
@@ -292,7 +292,7 @@ void PictureBank::Impl::loadAtlas(const vfs::Path& filePath)
   }
   else
   {
-    Logger::warning( "PictureBank: load atlas failed for texture" + texturePath.toString() );
+    Logger::warning( "PictureBank: load atlas failed for texture" + texturePath );
     mainTexture = Picture::getInvalid();
   }
 

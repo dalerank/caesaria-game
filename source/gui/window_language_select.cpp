@@ -54,7 +54,7 @@ LanguageSelect::LanguageSelect(Widget* parent, vfs::Path model, const std::strin
   _d->model = model;
   VariantMap languages = config::load( _d->model );
 
-  for( auto& it : languages )
+  for( const auto& it : languages )
   {
     std::string languageHash = it.second.toMap().get( literals::ext ).toString();
     auto& item = listbox.addItem( it.first );

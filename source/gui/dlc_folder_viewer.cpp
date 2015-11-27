@@ -25,6 +25,7 @@
 #include "core/variant_map.hpp"
 #include "table.hpp"
 #include "steam.hpp"
+#include "texturedbutton.hpp"
 #include "gfx/loader.hpp"
 #include "core/color_list.hpp"
 #include "core/saveadapter.hpp"
@@ -145,9 +146,10 @@ DlcFolderViewer::DlcFolderViewer(Widget* parent, Directory folder )
   _d->fillTable( items );
   CONNECT( _d->table, onCellClicked(), this, DlcFolderViewer::_resolveCellClick )
 
-  PushButton& openFolder = add<PushButton>( Rect( Point( width() / 2 - 200, height() - 40 ), Size( 200, 24 ) ), "Open folder" );
+  auto& openFolder = add<PushButton>( Rect( Point( width() / 2 - 200, height() - 40 ), Size( 200, 24 ) ), "Open folder" );
   CONNECT( &openFolder, onClicked(), this, DlcFolderViewer::_openFolder )
-  PushButton& close = add<PushButton>( Rect( Point( width() / 2 + 2, height() - 40 ), Size( 200, 24 ) ), "Close" );
+
+  auto& close = add<PushButton>( Rect( Point( width() / 2 + 2, height() - 40 ), Size( 200, 24 ) ), "Close" );
   CONNECT( &close, onClicked(), this, DlcFolderViewer::deleteLater )
 }
 
@@ -192,13 +194,11 @@ void DlcFolderViewer::_loadDesc(Path path)
   Rect rect = _d->table->relativeRect();
   rect.rleft() += 100;
   rect.rright() -= 100;
-  Window* window = new Window( this, rect, "" );
-  window->setupUI( path );
-  window->setModal();
-  window->setWindowFlag( Window::fdraggable, false );
-
-  PushButton* btnClose = new PushButton( window, Rect( window->width() - 40, 12, window->width() - 16, 12 + 24), "X");
-  CONNECT( btnClose, onClicked(), window, Window::deleteLater )
+  auto& window = add<Window>( rect, "" );
+  window.setupUI( path );
+  window.setModal();
+  window.setWindowFlag( Window::fdraggable, false );
+  window.add<ExitButton>( Point( window.width() - 40, 12 ) );
 }
 
 void DlcFolderViewer::_resolveCellClick(int row, int column)

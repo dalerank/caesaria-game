@@ -252,13 +252,13 @@ static std::string _prepareUpdateBatchFile( const std::string& executableFp, con
   vfs::Path executable( executableFp );
   vfs::Directory targetdir( dir );
 
-  vfs::Path temporaryUpdater = tempFilePrefix + executable.baseName().toString();
+  vfs::Path temporaryUpdater = tempFilePrefix + executable.baseName();
 
   std::string restartBatchFile = OSystem::isWindows() ? "update_updater.cmd" : "update_updater.sh";
 
   vfs::Path updateBatchFile =  targetdir.getFilePath( restartBatchFile );
 
-  Logger::warning( "Preparing CaesarIA update batch file in " + updateBatchFile.toString() );
+  Logger::warning( "Preparing CaesarIA update batch file in " + updateBatchFile );
 
   std::ofstream batch(updateBatchFile.toCString());
 

@@ -272,8 +272,7 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
   if( !c3res.empty() )
   {    
     vfs::Directory gfxDir( c3res );
-    vfs::Path c3sg2( "c3.sg2" );
-    vfs::Path c3path = gfxDir/c3sg2;
+    vfs::Path c3path = gfxDir/"c3.sg2";
 
     if( !c3path.exist( vfs::Path::ignoreCase ) )
     {
@@ -461,7 +460,7 @@ void Game::save(std::string filename) const
 
   SETTINGS_SET_VALUE( lastGame, Variant( filename ) );
 
-  events::dispatch<WarningMessage>( "Game saved to " + vfs::Path( filename ).baseName().toString(), WarningMessage::neitral );
+  events::dispatch<WarningMessage>( "Game saved to " + vfs::Path( filename ).baseName().removeExtension(), WarningMessage::neitral );
 }
 
 bool Game::load(std::string filename)

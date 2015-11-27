@@ -65,20 +65,20 @@ public:
 
 ArchivePtr FileSystem::Impl::changeArchivePassword(const Path& filename, const std::string& password )
 {
-  foreach( it, openArchives )
+  for( auto& item : openArchives )
   {
     // TODO: This should go into a path normalization method
     // We need to check for directory names with trailing slash and without
     const Path absPath = filename.absolutePath();
-    const Path arcPath = (*it)->entries()->getPath();
+    const Path arcPath = item->entries()->getPath();
     if( (absPath == arcPath) || (arcPath == (absPath.toString() + "/")) )
     {
       if( password.size() )
       {
-        (*it)->Password=password;
+        item->Password=password;
       }
 
-      return *it;
+      return item;
     }
   }
 
@@ -100,9 +100,9 @@ FileSystem::~FileSystem() {}
 
 NFile FileSystem::loadFileFromArchive( const Path& filePath )
 {
-  foreach( it, _d->openArchives )
+  for( auto& item :  _d->openArchives )
   {
-    NFile file = (*it)->createAndOpenFile( filePath );
+    NFile file = item->createAndOpenFile( filePath );
 
     if( file.isOpen() )
     {
@@ -538,9 +538,9 @@ bool FileSystem::changeWorkingDirectoryTo(Path newDirectory)
   {
     _d->workingDirectory[ fsNative ] = newDirectory;
 #if defined(CAESARIA_PLATFORM_WIN)
-    success = ( _chdir( newDirectory.toString().c_str() ) == 0 );
+    success = ( _chdir( newDirectory.toCString() ) == 0 );
 #elif defined(CAESARIA_PLATFORM_UNIX)
-    success = ( chdir( newDirectory.toString().c_str() ) == 0 );
+    success = ( chdir( newDirectory.toCString() ) == 0 );
 #endif //CAESARIA_PLATFORM_UNIX
   }
 
@@ -663,10 +663,10 @@ Entries FileSystem::getFileList()
 		EntryInfo e3;
 
 		//! PWD
-		ret.addItem( Path( rpath.toString() + "." ), 0, 0, true, 0);
+    ret.addItem( rpath.toString() + Path::firstEntry, 0, 0, true, 0);
 
 		//! parent
-		ret.addItem( Path( rpath.toString() + ".." ), 0, 0, true, 0);
+    ret.addItem( rpath.toString() + Path::secondEntry, 0, 0, true, 0);
 
 		//! merge archives
 		for (unsigned int i=0; i < _d->openArchives.size(); ++i)

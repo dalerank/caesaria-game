@@ -123,12 +123,14 @@ void SaveGame::_resolveOkClick()
 
 void SaveGame::_resolveListboxChange( const ListBoxItem& item )
 {
-  _d->edFilename->setText( vfs::Path( item.text() ).baseName( false ).toString() );
+  vfs::Path path = item.text();
+  _d->edFilename->setText( path.baseName().removeExtension() );
 }
 
 void SaveGame::_resolveDblListboxChange( const ListBoxItem& item )
 {
-  _d->edFilename->setText( vfs::Path( item.text() ).baseName( false ).toString() );
+  vfs::Path path = item.text();
+  _d->edFilename->setText( path.baseName().removeExtension() );
   _resolveOkClick();
 }
 
