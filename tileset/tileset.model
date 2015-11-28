@@ -310,14 +310,14 @@
       }
     }
 
-    water_anim:
+    animations:
     {
       size : [ 2048, 2048 ]
       margin : 1
       ignorePath : true
       floatCoordinates : false
-      name : "wateranim"
-      archive : "resources/gfx/pics_wateranim"
+      name : "anim"
+      archive : "resources/gfx/pics_anim"
 
       items :
       {
@@ -326,6 +326,13 @@
           type : "atlas"
           folder : "/resources/reservoir"
           files : [ "*" ]
+        }
+
+        fireanim :
+        {
+          type : "atlas"
+          folder : "/resources/fire"
+          files : [ "fire_*" ]
         }
 
         baths_anim :
@@ -495,7 +502,7 @@
           files : [ "smlvenus_*" ]
         }
 
-        fireanim :
+        temple_anim :
         {
           type : "atlas"
           folder : "/resources/religion"

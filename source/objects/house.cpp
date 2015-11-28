@@ -1144,7 +1144,7 @@ void House::_update( bool needChangeTexture )
   {
     if( !pic.isValid() )
     {
-      Logger::warning( "WARNING!!! House: failed change texture for size {0}", size().width() );
+      Logger::warning( "WARNING!!! House: failed change texture for size {}", size().width() );
       pic = Picture::getInvalid();
     }
 

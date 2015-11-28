@@ -7,7 +7,7 @@
   house : ":/gfx/pics_house.zip"
   land : ":/gfx/pics_land.zip"
   objects : ":/gfx/pics_objects.zip"
-  wateranim : ":/gfx/pics_wateranim.zip"
+  animations : ":/gfx/pics_anim.zip"
   walkers : ":/gfx/pics_walkers.zip"
   misc : ":/gfx/misc.zip"
   sound : ":/audio/themes.zip"
