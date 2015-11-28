@@ -655,7 +655,7 @@ const Layer::WalkerTypes& Constructor::visibleTypes() const
 void Constructor::renderUi(Engine &engine)
 {
   Layer::renderUi( engine );
-  engine.draw( _dfunc()->text.image, engine.cursorPos() + Point( 10, 10 ));
+  //engine.draw( _dfunc()->text.image, engine.cursorPos() + Point( 10, 10 ));
 }
 
 void Constructor::changeLayer(int layer)
@@ -723,7 +723,8 @@ bool Constructor::Impl::canBuildOn(OverlayPtr overlay, const city::AreaInfo& are
   {
     return true;
   }
-  else if( overlay->type() == object::tree )
+  else if( overlay->type() == object::tree
+           || overlay->type() == object::meadow )
   {
     bool walkable = areaInfo.tile().isWalkable( true );
     bool isTree = is_kind_of<Tree>(areaInfo.tile().overlay());

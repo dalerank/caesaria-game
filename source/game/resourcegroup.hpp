@@ -151,7 +151,7 @@ struct {
   int engineering = 167;
   int entertainment = 143;
   int education = 147;
-  int meadow = 202;
+  int meadow = 201;
   int river = 189;
   int temple = 151;
   int broad = 213;
@@ -164,7 +164,7 @@ struct {
   int rowDown = 601;
   int rowUp = 605;
   int water = 189;
-  int smRocks = 204;
+  int rocks = 198;
   int help = 528;
   int arrowDown = 601;
   int arrowUp = 605;

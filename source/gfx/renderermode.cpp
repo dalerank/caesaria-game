@@ -139,6 +139,7 @@ Renderer::ModePtr EditorMode::create(object::Type type)
   case object::tree:
   case object::water:
   case object::rock:
+  case object::meadow:
     newCommand->_setFlag( multibuild, true );
   break;
 

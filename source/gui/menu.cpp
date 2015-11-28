@@ -66,10 +66,10 @@ enum { noSubMenu=0, haveSubMenu=1, pushButton=1 };
 
 struct Menu::Link
 {
-  typedef enum { buildHouse,  clearLand,
-                 editTerrain, editForest,
+  typedef enum { buildHouse,  editTerrain,
+                 clearLand, editForest,
                  buildRoad,   editWater,
-                 buildWater,  editRock,
+                 buildWater,  editRocks,
                  buildHealth, editMeadow,
                  buildTemple, editPlateau,
                  buildEducation, editRift,
@@ -77,7 +77,7 @@ struct Menu::Link
                  buildGovt, editIndigene,
                  buildEngineering, editRoads,
                  buildSecurity, editBorders,
-                 buildCommerce, editAttacks,
+                 buildCommerce, editAttacks
                } Name;
   typedef enum { inGame=0, inEditor=1 } VisibleMode;
   Point pos;
@@ -141,7 +141,7 @@ struct Menu::Model
                                      development::water, gui::miniature.water, pushButton,
                                      haveSubMenu, Rect(), "water", nullptr, "", Link::inGame };
 
-    actions[ Link::editRock ] = { {13,313}, gui::button.smRocks, object::rock,  3,
+    actions[ Link::editRocks ] = { {13,313}, gui::button.rocks, object::rock,  3,
                                      object::rock, gui::miniature.clear, pushButton,
                                      noSubMenu, Rect(), "smRock", nullptr, "", Link::inEditor};
 
@@ -205,7 +205,7 @@ struct Menu::Model
                                  development::commerce, gui::miniature.commerce, pushButton,
                                  haveSubMenu, Rect(), "comerce", nullptr, "", Link::inGame };
 
-    actions[ Link::editAttacks ] = { {113,385}, gui::button.attacks, object::attackTrigger,  10,
+    actions[ Link::editAttacks ] = { {113,385}, gui::button.attacks, object::attackTrigger,  11,
                                   object::attackTrigger, gui::miniature.clear, pushButton,
                                   noSubMenu, Rect(), "attackTrigger", nullptr, "", Link::inEditor};
 
@@ -481,7 +481,8 @@ bool Menu::onEvent(const NEvent& event)
       emit _d->signal.onCreateConstruction( id );
     }
     else if( id == object::terrain || id == object::tree
-             || id == object::water || id == object::rock )
+             || id == object::water || id == object::rock
+             || id == object::meadow )
     {
       _d->lastPressed = event.gui.caller;
       _createBuildMenu( -1, this );
@@ -782,7 +783,7 @@ void ExtentMenu::setConstructorMode(bool enabled)
     _createLink( _d->model->actions[ Link::editTerrain ] );
     _createLink( _d->model->actions[ Link::editForest  ] );
     _createLink( _d->model->actions[ Link::editWater   ] );
-    _createLink( _d->model->actions[ Link::editRock    ] );
+    _createLink( _d->model->actions[ Link::editRocks    ] );
     _createLink( _d->model->actions[ Link::editMeadow  ] );
     _createLink( _d->model->actions[ Link::editPlateau ] );
     _createLink( _d->model->actions[ Link::editRift    ] );
