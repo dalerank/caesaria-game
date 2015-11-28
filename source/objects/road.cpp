@@ -334,7 +334,12 @@ bool Plaza::canBuild(const city::AreaInfo& areaInfo) const
 
   TilesArea area( tilemap, areaInfo.pos, size() ); // something very complex ???
   for( auto tile : area )
-    is_constructible &= tile->overlay().is<Road>();
+  {
+    object::Type type = tile->overlay().isValid()
+                          ? tile->overlay()->type()
+                          : object::unknown;
+    is_constructible &= (type == object::road);
+  }
 
   const_cast<Plaza*>( this )->setState( pr::errorBuild, !is_constructible  );
 
