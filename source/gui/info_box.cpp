@@ -205,7 +205,7 @@ void Infobox::_updateWorkersLabel(const Point &pos, int picId, int need, int hav
     return;
 
   // number of workers
-  std::string text = fmt::format( "{} {} ({} {}})",
+  std::string text = fmt::format( "{} {} ({} {})",
                                   have, _("##employers##"),
                                   need, _("##requierd##") );
   _d->lbBlackFrame->setIcon( gui::rc.panel, picId );
