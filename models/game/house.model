@@ -230,7 +230,7 @@
       tax : 2
       txs : {
         s1: [ "housng1a_00019", "housng1b_00019" ]
-        s2: [ "housng1a_00023", "housng1b_00023" ]
+        s2: [ "housng1a_00024", "housng1b_00024" ]
       }
     },
 
