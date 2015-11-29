@@ -103,7 +103,7 @@ static const int minimumOldFormat = 58;
 class PlayerCity::Impl
 {
 public:
-  city::Economy economy;  // amount of money
+  city::Economy funds;  // amount of money
   city::Overlays overlays;
   city::Services services;
   city::ActivePoints activePoints;
@@ -148,10 +148,10 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setBorderInfo( roadExit, TilePos( 0, 0 ) );
   setBorderInfo( boatEntry, TilePos( 0, 0 ) );
   setBorderInfo( boatExit, TilePos( 0, 0 ) );
-  _d->economy.resolveIssue( econ::Issue( econ::Issue::donation, 1000 ) );
+  _d->funds.resolveIssue( econ::Issue( econ::Issue::donation, 1000 ) );
   _d->states.population = 0;
   _d->states.birth = game::Date::current();
-  _d->economy.setTaxRate( econ::Treasury::defaultTaxPrcnt );
+  _d->funds.setTaxRate( econ::Treasury::defaultTaxPrcnt );
   _d->states.age = 0;
   _d->statistic.createInstance( *this );
   _d->walkers.idCount = 1;
@@ -242,10 +242,10 @@ void PlayerCity::timeStep(unsigned int time)
 
 void PlayerCity::Impl::monthStep( PlayerCityPtr city, const DateTime& time )
 {
-  economy.collectTaxes( city );
-  economy.payWages( city );
-  economy.payMayorSalary( city );
-  economy.updateHistory( game::Date::current() );
+  funds.collectTaxes( city );
+  funds.payWages( city );
+  funds.payMayorSalary( city );
+  funds.updateHistory( game::Date::current() );
 }
 
 void PlayerCity::Impl::calculatePopulation()
@@ -273,10 +273,10 @@ const OverlayList& PlayerCity::overlays() const  { return _d->overlays; }
 city::ActivePoints& PlayerCity::activePoints()   { return _d->activePoints; }
 city::Scribes& PlayerCity::scribes()             { return _d->scribes; }
 Picture PlayerCity::picture() const              { return _d->empMapPicture; }
-bool PlayerCity::isPaysTaxes() const             { return _d->economy.getIssueValue( econ::Issue::empireTax, econ::Treasury::lastYear ) > 0; }
-bool PlayerCity::haveOverduePayment() const      { return _d->economy.getIssueValue( econ::Issue::overduePayment, econ::Treasury::thisYear ) > 0; }
+bool PlayerCity::isPaysTaxes() const             { return _d->funds.getIssueValue( econ::Issue::empireTax, econ::Treasury::lastYear ) > 0; }
+bool PlayerCity::haveOverduePayment() const      { return _d->funds.getIssueValue( econ::Issue::overduePayment, econ::Treasury::thisYear ) > 0; }
 Tilemap& PlayerCity::tilemap()                   { return _d->tilemap; }
-econ::Treasury& PlayerCity::treasury()           { return _d->economy; }
+econ::Treasury& PlayerCity::treasury()           { return _d->funds; }
 
 int PlayerCity::strength() const
 {
@@ -313,7 +313,7 @@ void PlayerCity::save( VariantMap& stream) const
   VARIANT_SAVE_ANY_D( stream, _d, states.population )
 
   LOG_CITY.info( "Save finance information" );
-  stream[ "funds" ] = _d->economy.save();
+  VARIANT_SAVE_CLASS_D( stream, _d, funds )
   VARIANT_SAVE_CLASS_D( stream, _d, scribes )
 
   LOG_CITY.info( "Save trade/build/win options" );
@@ -391,7 +391,7 @@ void PlayerCity::load( const VariantMap& stream )
   setOption( PlayerCity::forceBuild, 1 );
 
   LOG_CITY.info( "Parse funds" );
-  _d->economy.load( stream.get( "funds" ).toMap() );
+  VARIANT_LOAD_CLASS_D( _d, funds, stream )
   VARIANT_LOAD_CLASS_D( _d, scribes, stream )
 
   LOG_CITY.info( "Parse trade/build/win params" );
@@ -530,7 +530,7 @@ const good::Store& PlayerCity::buys() const                 { return _d->tradeOp
 ClimateType PlayerCity::climate() const                     { return (ClimateType)getOption( PlayerCity::climateType ); }
 unsigned int PlayerCity::tradeType() const                  { return world::EmpireMap::sea | world::EmpireMap::land; }
 Signal1<int>& PlayerCity::onPopulationChanged()             { return _d->signal.onPopulationChanged; }
-Signal1<int>& PlayerCity::onFundsChanged()                  { return _d->economy.onChange(); }
+Signal1<int>& PlayerCity::onFundsChanged()                  { return _d->funds.onChange(); }
 void PlayerCity::setCameraPos(const TilePos pos)            { _d->cameraStart = pos; }
 const TilePos& PlayerCity::cameraPos() const                       { return _d->cameraStart; }
 void PlayerCity::addService( city::SrvcPtr service )        { _d->services.push_back( service ); }

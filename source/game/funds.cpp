@@ -315,7 +315,7 @@ VariantList IssuesValue::save() const
 void IssuesValue::load(const VariantList& stream)
 {
   VariantListReader reader( stream );
-  while( reader.atEnd() )
+  while( !reader.atEnd() )
   {
     econ::Issue::Type type = (Issue::Type)reader.next().toInt(); //type
     int value = reader.next().toInt(); //value

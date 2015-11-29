@@ -116,7 +116,7 @@ void Finance::_updateTaxRateNowLabel()
   int taxValue = _city->statistic().tax.possible();
   std::string strCurretnTax = fmt::format( "{}% {} {} {}",
                                            _city->treasury().taxRate(), _("##may_collect_about##"),
-                                           taxValue, _("##denaries##") );
+                                           taxValue, _("##denarii_short##") );
   lbTaxRateNow->setText( strCurretnTax );
 }
 
@@ -180,7 +180,7 @@ void Finance::_updateCityTreasure()
 {
   INIT_WIDGET_FROM_UI( Label*, lbCityHave )
   if( lbCityHave )
-    lbCityHave->setText( fmt::format( "{} {} {}", _("##city_have##"), _city->treasury().money(), _("##denaries##") ) );
+    lbCityHave->setText( fmt::format( "{} {} {}", _("##city_have##"), _city->treasury().money(), _("##denarii_short##") ) );
 }
 
 }//end namespace advisorwnd
