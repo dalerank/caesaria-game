@@ -25,17 +25,14 @@ class Meadow : public Overlay
 public:
   Meadow();
 
-  void updatePicture();
   gfx::TilesArray neighbors() const;
 
   virtual bool build( const city::AreaInfo& info );
   virtual void initTerrain( gfx::Tile &terrain);
   virtual bool isWalkable() const;
   virtual bool isFlat() const;
-  virtual void destroy();
   virtual bool isDestructible() const;
 
-  virtual void load(const VariantMap &stream);
   virtual gfx::Renderer::PassQueue passQueue() const;
 };
 

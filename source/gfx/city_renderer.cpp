@@ -368,17 +368,4 @@ LayerPtr CityRenderer::currentLayer() const { return _d->currentLayer; }
 void CityRenderer::setViewport(const Size& size) { _d->camera.setViewport( size ); }
 Signal1<int>& CityRenderer::onLayerSwitch() { return _d->onLayerSwitchSignal; }
 
-Signal3<object::Type,TilePos,int>& CityRenderer::onBuilt()
-{
-  auto buildLayer = getLayer( citylayer::build ).as<Build>();
-  return buildLayer->onBuild();
-}
-
-Signal3<object::Type,TilePos,int>& CityRenderer::onDestroyed()
-{
-  auto buildLayer = getLayer( citylayer::destroyd ).as<Destroy>();
-  return buildLayer->onDestroy();
-}
-
-
 }//end namespace gfx

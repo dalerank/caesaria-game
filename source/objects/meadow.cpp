@@ -41,7 +41,13 @@ Meadow::Meadow() : Overlay( object::meadow, Size(1) )
 bool Meadow::build( const city::AreaInfo& info )
 {
   Overlay::build( info );
-  updatePicture();
+
+  const Animation& meadow = AnimationBank::simple( AnimationBank::animMeadow );
+  Animation meadowAnim;
+  int index = math::random( meadow.size()-1 );
+  meadowAnim.addFrame( meadow.frame( index ) );
+
+  tile().setAnimation( meadowAnim );
 
   deleteLater();
 
@@ -62,21 +68,5 @@ TilesArray Meadow::neighbors() const
 
 bool Meadow::isWalkable() const{ return true;}
 bool Meadow::isFlat() const { return true;}
-void Meadow::destroy() {}
 bool Meadow::isDestructible() const { return true;}
 Renderer::PassQueue Meadow::passQueue() const {  return riftPassQueue; }
-
-void Meadow::updatePicture()
-{
-  const Animation& meadow = AnimationBank::simple( AnimationBank::animMeadow );
-  Animation meadowAnim;
-  int index = math::random( meadow.size()-1 );
-  meadowAnim.addFrame( meadow.frame( index ) );
-
-  tile().setAnimation( meadowAnim );
-}
-
-void Meadow::load(const VariantMap& stream)
-{
-  updatePicture();
-}

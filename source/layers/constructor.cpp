@@ -86,7 +86,6 @@ public:
   TilesArray buildTiles;  // these tiles have draw over "normal" tilemap tiles!
   CachedTiles cachedTiles;
 
-  Signal3<object::Type,TilePos,int> onBuildSignal;
 public:
   void sortBuildTiles();
   bool canBuildOn( OverlayPtr overlay, const city::AreaInfo& areaInfo) const;
@@ -700,11 +699,6 @@ Constructor::Constructor( Renderer& renderer, PlayerCityPtr city)
 
   d->grnPicture.load( d->resForbiden, 1 );
   d->redPicture.load( d->resForbiden, 2 );
-}
-
-Signal3<object::Type,TilePos,int>& Constructor::onBuild()
-{
-  return _dfunc()->onBuildSignal;
 }
 
 void Constructor::Impl::sortBuildTiles()

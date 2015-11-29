@@ -157,8 +157,8 @@ public:
   TilePos selectedTilePos;
   citylayer::Type lastLayerId;
   DebugHandler dhandler;
-  undo::UStack undoStack;
   bool simulationPaused;
+  undo::UStack undoStack;
 
   int result;
 
@@ -348,8 +348,6 @@ void Level::initialize()
   CONNECT( &_d->renderer, onLayerSwitch(), _d.data(),                Impl::layerChanged )
 
   CONNECT( _d->extMenu, onUndo(),                 &_d->undoStack,    undo::UStack::undo )
-  CONNECT( &_d->renderer, onBuilt(),              &_d->undoStack,    undo::UStack::build )
-  CONNECT( &_d->renderer, onDestroyed(),          &_d->undoStack,    undo::UStack::destroy )
   CONNECT( &_d->undoStack, onUndoChange(),        _d->extMenu,       ExtentMenu::resolveUndoChange )
 
   _d->showMissionTargetsWindow();
@@ -714,8 +712,8 @@ void Level::Impl::showTradeAdvisorWindow(){  showAdvisorsWindow( advisor::tradin
 void Level::setCameraPos(TilePos pos) {  _d->renderer.camera()->setCenter( pos ); }
 void Level::switch2layer(int layer) { _d->renderer.setLayer( layer ); }
 Camera* Level::camera() const { return _d->renderer.camera(); }
+undo::UStack&Level::undoStack() { return _d->undoStack; }
 void Level::Impl::saveScrollSpeed(int speed) { SETTINGS_SET_VALUE( scrollSpeed, speed ); }
-
 void Level::_quit(){ _d->result = Level::res_quit; stop(); }
 void Level::restart() { _d->result = Level::res_restart; stop();}
 int  Level::result() const {  return _d->result; }

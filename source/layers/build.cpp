@@ -41,6 +41,7 @@
 #include "gfx/city_renderer.hpp"
 #include "gfx/tilemap_config.hpp"
 #include "gfx/tile_config.hpp"
+#include "events/undo_action.hpp"
 #include "gfx/tilemap.hpp"
 #include "city/statistic.hpp"
 #include "core/osystem.hpp"
@@ -88,7 +89,6 @@ public:
   TilesArray buildTiles;  // these tiles have draw over "normal" tilemap tiles!
   CachedTiles cachedTiles;
 
-  Signal3<object::Type,TilePos,int> onBuildSignal;
 public:
   void sortBuildTiles();
 };
@@ -332,7 +332,8 @@ void Build::_buildAll()
       events::dispatch<BuildAny>( tile->epos(), construction->type() );
       buildOk = true;
 
-      emit d.onBuildSignal( construction->type(), tile->epos(), construction->info().cost() );
+      events::dispatch<UndoAction>( UndoAction::built, construction->type(),
+                                    tile->epos(), construction->info().cost() );
     }
   }
 
@@ -461,10 +462,13 @@ void Build::handleEvent(NEvent& event)
 
 void Build::_finishBuild()
 {
+  __D_REF(_d,Build);
+
   _buildAll();
   _setStartCursorPos( _lastCursorPos() );
   _updatePreviewTiles( true );
-  _dfunc()->lmbPressed = false;
+  _d.lmbPressed = false;
+  events::dispatch<UndoAction>( UndoAction::finished );
 }
 
 int Build::type() const {  return citylayer::build; }
@@ -719,11 +723,6 @@ Build::Build(Camera& camera, PlayerCityPtr city, Renderer* renderer )
   d.btile.red.load( d.resForbiden, 2 );
 
   _addWalkerType( walker::all );
-}
-
-Signal3<object::Type,TilePos,int>& Build::onBuild()
-{
-  return _dfunc()->onBuildSignal;
 }
 
 void Build::Impl::sortBuildTiles()
