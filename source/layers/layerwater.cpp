@@ -22,11 +22,16 @@
 #include "objects/house_spec.hpp"
 #include "constants.hpp"
 #include "city/statistic.hpp"
+#include "core/color_list.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/event.hpp"
+#include "objects/watersupply.hpp"
+#include "objects/fountain.hpp"
 #include "core/gettext.hpp"
 #include "gfx/tilemap_camera.hpp"
 #include "objects/aqueduct.hpp"
+#include "gfx/textured_path.hpp"
+#include "game/gamedate.hpp"
 #include "core/font.hpp"
 #include "core/utils.hpp"
 
@@ -41,6 +46,14 @@ public:
   std::set<int> flags;
   bool showWaterValue;
   std::map<int, Picture> pics;
+
+  struct
+  {
+    OverlayPtr selected;
+    OverlayPtr underMouse;
+  } overlay;
+
+  std::vector<ColoredWay> ways;
 };
 
 int Water::type() const{  return citylayer::water;}
@@ -199,9 +212,18 @@ void Water::handleEvent(NEvent& event)
           case 4: case 5: text = "##water_srvc_reservoir##"; break;
           }
         }
+
+        _d->overlay.underMouse = tile->overlay();
       }
 
       _setTooltipText( _(text) );
+    }
+    break;
+
+    case mouseLbtnPressed:
+    {
+      _d->overlay.selected = _d->overlay.underMouse;
+      _updatePaths();
     }
     break;
 
@@ -210,6 +232,59 @@ void Water::handleEvent(NEvent& event)
   }
 
   Layer::handleEvent( event );
+}
+
+void Water::_updatePaths()
+{
+  auto reservoir = _d->overlay.underMouse.as<Reservoir>();
+  if( reservoir.isValid() )
+  {
+    _d->ways.clear();
+    PathwayCondition wayCondition;
+    auto fountains = reservoir->aquifer().overlays<Fountain>();
+
+    for( auto fountain : fountains )
+    {
+      Pathway pathway = PathwayHelper::create( reservoir->pos(), fountain->pos(), wayCondition.bySomething() );
+      if( pathway.isValid() )
+        _d->ways.push_back( { pathway.allTiles(), ColorList::red } );
+    }
+  }
+
+  auto fountain = _d->overlay.underMouse.as<Fountain>();
+  if( fountain.isValid() )
+  {
+    _d->ways.clear();
+
+    PathwayCondition wayCondition;
+    auto reservoirs = _map().rect( 10, fountain->pos() ).overlays<Reservoir>();
+
+    for( auto reservoir : reservoirs )
+    {
+      Pathway pathway = PathwayHelper::create( reservoir->pos(), fountain->pos(), wayCondition.bySomething() );
+      if( pathway.isValid() )
+        _d->ways.push_back( { pathway.allTiles(), ColorList::blue } );
+    }
+  }
+}
+
+void Water::render(Engine& engine)
+{
+  Layer::render( engine );
+
+  RenderInfo rinfo{ engine, _camera()->offset() };
+  for( auto& wayinfo : _d->ways )
+  {
+    TexturedPath::draw( wayinfo.tiles, rinfo, wayinfo.color );
+  }
+}
+
+void Water::afterRender(Engine& engine)
+{
+  Layer::afterRender(engine);
+
+  if( game::Date::isDayChanged() )
+    _updatePaths();
 }
 
 Water::Water( Camera& camera, PlayerCityPtr city)

@@ -35,7 +35,10 @@ public:
 
   bool append(OverlayPtr overlay);
   void checkRoads(const gfx::Tile* tile, bool& ret);
+  void allTiles(const gfx::Tile* tile, bool& ret);
+
   TilePossibleCondition byRoads();
+  TilePossibleCondition bySomething();
 };
 
 class PathwayHelper

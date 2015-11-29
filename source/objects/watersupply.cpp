@@ -164,7 +164,7 @@ void Reservoir::timeStep(const unsigned long time)
   //filled area, that reservoir present
   if( game::Date::isWeekChanged() )
   {
-    TilesArea reachedTiles( _map(), pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
+    TilesArray reachedTiles = aquifer();
 
     for( auto& tile : reachedTiles )
     {
@@ -183,6 +183,11 @@ void Reservoir::timeStep(const unsigned long time)
   
   // takes current animation frame and put it into foreground
   _fgPicture( 0 ) = _animation().currentFrame();
+}
+
+TilesArray Reservoir::aquifer() const
+{
+  return TilesArea( _map(), pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
 }
 
 bool Reservoir::canBuild( const city::AreaInfo& areaInfo ) const
