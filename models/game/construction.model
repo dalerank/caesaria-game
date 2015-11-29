@@ -323,7 +323,9 @@
     employers : 30
     maxServe : 100
     class : "education"
-    image : [ "commerce", 85 ]
+    image.ext : {
+      s3 : { size: 3, rc : "academy", start : 1, count : 2 }
+    }
     sound : [ "academy", 1 ]
   },  
   

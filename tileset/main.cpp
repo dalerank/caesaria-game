@@ -640,7 +640,7 @@ void unpackAtlases( const std::string& fullpath )
       bool dirCreated = currentDir.create( dirName.toString() );
       if( !dirCreated )
       {
-        Logger::warning( "Cant create directory " + textureName.toString() );
+        Logger::warning( "WARNING !!! Cant create directory " + textureName.toString() );
         continue;
       }
 

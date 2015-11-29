@@ -534,14 +534,7 @@
         {
           type : "atlas"
           folder : "/resources/senate"
-          files : [ "govt_*" ]
-        }
-
-        senate :
-        {
-          type : "atlas"
-          folder : "/resources/senate"
-          files : [ "forum_*" ]
+          files : [ "*" ]
         }
 
         entertainment :
@@ -556,7 +549,14 @@
           type : "atlas"
           folder : "/resources/farm"
           files : [ "*" ]
-        }        
+        }
+
+        academy :
+        {
+          type : "atlas"
+          folder : "/resources/academy"
+          files : [ "*" ]
+        }
 
         security :
         {
