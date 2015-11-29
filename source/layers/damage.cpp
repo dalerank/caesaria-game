@@ -130,9 +130,9 @@ void Damage::handleEvent(NEvent& event)
           int damageLevel = math::clamp<int>( construction->state( pr::damage ) / maxDamageLevel, 0, maxDamageLevel-1 );
           text = damageLevelName[ damageLevel ];
         }
-      }
 
-      d.overlay.underMouse = tile->overlay();
+        d.overlay.underMouse = tile->overlay();
+      }
 
       _setTooltipText( text );
     }

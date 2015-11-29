@@ -221,6 +221,8 @@ void Education::handleEvent(NEvent& event)
             text = levelName + typeName + "_access##";
           }
         }
+
+        _d->overlay.underMouse = tile->overlay();
       }
 
       _setTooltipText( _(text) );

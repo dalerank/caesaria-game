@@ -126,9 +126,9 @@ void MarketAccess::handleEvent(NEvent& event)
           accessLevel = math::clamp<int>( accessLevel / maxAccessLevel, 0, maxAccessLevel-1 );
           text = marketLevelName[ accessLevel ];
         }
-      }
 
-      d.overlay.underMouse = tile->overlay();
+        d.overlay.underMouse = tile->overlay();
+      }
 
       _setTooltipText( text );
     }

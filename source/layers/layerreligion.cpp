@@ -143,6 +143,8 @@ void Religion::handleEvent(NEvent& event)
                   ? "##religion_access_full##"
                   : utils::format( 0xff, "##religion_access_%d_temple##", templeAccess );
         }
+
+        _d->overlay.underMouse = tile->overlay();
       }
 
       _setTooltipText( _(text) );

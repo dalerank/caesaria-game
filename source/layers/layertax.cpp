@@ -129,6 +129,8 @@ void Tax::handleEvent(NEvent& event)
               text = "##house_not_registered_for_taxes##";
           }
         }
+
+        _d->overlay.underMouse = tile->overlay();
       }
 
       _setTooltipText( _(text) );
