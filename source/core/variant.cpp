@@ -654,11 +654,10 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
     case Variant::NStringArray:
         if (d->type == Variant::List) 
         {
-            StringArray *slst = static_cast<StringArray*>(result);
-            const VariantList *list = v_cast< VariantList >(d);
-            VariantList::const_iterator it = list->begin(); 
-            for( ; it != list->end(); ++it)
-                slst->push_back( it->toString() );
+            StringArray* slst = static_cast<StringArray*>(result);
+            const VariantList* list = v_cast< VariantList >(d);
+            for( const auto& it : *list )
+                slst->push_back( it.toString() );
         } 
         else if( d->type == Variant::String ) 
         {
@@ -703,7 +702,7 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
         {
         case Variant::String:
           *dt = DateTime( v_cast<std::string>(d)->c_str() );
-            break;
+        break;
 //         case Variant::Date:
 //             *dt = DateTime(*v_cast<Date>(d));
 //             break;

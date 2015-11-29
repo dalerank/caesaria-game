@@ -58,16 +58,14 @@ BaseSpecialOrdersWindow::BaseSpecialOrdersWindow( Widget* parent, const Point& p
   lbTitle.setTextAlignment( align::center, align::center );
   _d->lbTitle = &lbTitle;
 
-  auto& btnExit = add<TexturedButton>( Point( 472, height() - 39 ), Size( 24 ), -1, config::id.menu.exitInf );
+  auto& btnExit = add<ExitButton>( Point( 472, height() - 39 ), Widget::noId );
   btnExit.setTooltipText( _("##infobox_tooltip_exit##") );
 
-  auto& btnHelp = add<TexturedButton>( Point( 14, height() - 39 ), Size( 24 ), -1, config::id.menu.helpInf );
+  auto& btnHelp = add<HelpButton>( Point( 14, height() - 39 ), "" );
   btnHelp.setTooltipText( _("##infobox_tooltip_help##") );
 
   auto& gbOrders = add<GroupBox>( Rect( 17, 42, width() - 17, height() - 70), -1, GroupBox::blackFrame );
   _d->gbOrdersInsideArea = &gbOrders.add<Widget>( -1, Rect( 5, 5, gbOrders.width()-5, gbOrders.height()-5 ) );
-
-  CONNECT( &btnExit, onClicked(), this, BaseSpecialOrdersWindow::deleteLater );
 }
 
 BaseSpecialOrdersWindow::~BaseSpecialOrdersWindow() {}

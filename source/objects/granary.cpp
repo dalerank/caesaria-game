@@ -95,7 +95,7 @@ public:
     setCapacity( type, (order == good::Orders::reject || order == good::Orders::none) ? 0 : GranaryStore::maxCapacity );
   }
 
-  virtual TilePos owner() const { return granary ? granary->pos() : gfx::tilemap::invalidLocation(); }
+  virtual TilePos owner() const { return granary ? granary->pos() : TilePos::invalid(); }
 
   Granary* granary;
 };

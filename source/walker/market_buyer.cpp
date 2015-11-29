@@ -115,7 +115,7 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const object::Type ty
     return res->pos();
   }
 
-  return gfx::tilemap::invalidLocation();
+  return TilePos::invalid();
 }
 
 void MarketBuyer::_computeWalkerDestination( MarketPtr market )
@@ -126,7 +126,7 @@ void MarketBuyer::_computeWalkerDestination( MarketPtr market )
   //only look at goods that shall not be stockpiled
   priorityGoods.exclude( _city()->tradeOptions().locked() );
 
-  _d->destBuildingPos = gfx::tilemap::invalidLocation();  // no destination yet
+  _d->destBuildingPos = TilePos::invalid();  // no destination yet
 
   if( priorityGoods.size() > 0 )
   {
@@ -149,7 +149,7 @@ void MarketBuyer::_computeWalkerDestination( MarketPtr market )
         _d->destBuildingPos = getWalkerDestination2<Granary>( pathPropagator, object::granery, _d->market,
                                                               _d->basket, _d->priorityGood, pathWay, _d->reservationID );
 
-        if( !gfx::tilemap::isValidLocation( _d->destBuildingPos ) )
+        if( _d->destBuildingPos == TilePos::invalid() )
         {
           _d->destBuildingPos = getWalkerDestination2<Warehouse>( pathPropagator, object::warehouse, _d->market,
                                                                 _d->basket, _d->priorityGood, pathWay, _d->reservationID );
@@ -162,7 +162,7 @@ void MarketBuyer::_computeWalkerDestination( MarketPtr market )
                                                                 _d->basket, _d->priorityGood, pathWay, _d->reservationID );
       }
 
-      if( gfx::tilemap::isValidLocation( _d->destBuildingPos ) )
+      if( config::tilemap.isValidLocation( _d->destBuildingPos ) )
       {
         // we found a destination!
         setPos( pathWay.startPos() );
@@ -172,7 +172,7 @@ void MarketBuyer::_computeWalkerDestination( MarketPtr market )
     }
   }
 
-  if( !gfx::tilemap::isValidLocation( _d->destBuildingPos ) )
+  if( _d->destBuildingPos == TilePos::invalid() )
   {
     // we have nothing to buy, or cannot find what we need to buy
     deleteLater();
@@ -206,7 +206,7 @@ TilePos MarketBuyer::places(Walker::Place type) const
 {
   switch( type )
   {
-  case plOrigin: return _d->market.isValid() ? _d->market->pos() : gfx::tilemap::invalidLocation();
+  case plOrigin: return _d->market.isValid() ? _d->market->pos() : TilePos::invalid();
   case plDestination: return _d->destBuildingPos;
   default: break;
   }
@@ -335,7 +335,7 @@ void MarketBuyer::save( VariantMap& stream ) const
   Walker::save( stream );
   VARIANT_SAVE_ANY_D( stream, _d, destBuildingPos )
   VARIANT_SAVE_ANY_D( stream, _d, priorityGood )
-  stream[ "marketPos" ] = _d->market.isValid() ? _d->market->pos() : gfx::tilemap::invalidLocation();
+  stream[ "marketPos" ] = _d->market.isValid() ? _d->market->pos() : TilePos::invalid();
 
   VARIANT_SAVE_CLASS_D( stream, _d, basket )
   VARIANT_SAVE_ANY_D( stream, _d, maxDistance )

@@ -112,6 +112,7 @@ Helper::Helper() : EnumsHelper<Type>( Type(0) )
     __REG_TYPE( burning_ruins )
     __REG_TYPE( burned_ruins )
     __REG_TYPE( plague_ruins )
+    __REG_TYPE( wolves_den )
     __REG_TYPE( collapsed_ruins )
     __REG_TYPE( gatehouse )
     __REG_TYPE( tower )
@@ -129,6 +130,8 @@ Helper::Helper() : EnumsHelper<Type>( Type(0) )
     __REG_TYPE( farmtile )
     __REG_TYPE( coast )
     __REG_TYPE( rock )
+    __REG_TYPE( plateau )
+    __REG_TYPE( attackTrigger )
 
     append( object::unknown,        "" );
 #undef __REG_TYPE
@@ -144,7 +147,7 @@ Type findType(const std::string &name)
   object::Type type = Helper::instance().findType( name );
 
   Logger::warningIf( type == unknown,
-                     "MetaDataHolder: can't find type for typeName " + ( name.empty() ? "null" : name) );
+                     "WARNING !!! can't find type for typeName " + ( name.empty() ? "null" : name) );
 
   return type;
 }

@@ -48,7 +48,7 @@ WallGuard::WallGuard( PlayerCityPtr city, walker::Type type )
   : RomeSoldier( city, type ), _d( new Impl )
 {
   setAttackDistance( 5 );
-  _d->patrolPosition = gfx::tilemap::invalidLocation();
+  _d->patrolPosition = TilePos::invalid();
 }
 
 WallGuard::~WallGuard(){}
@@ -148,7 +148,7 @@ void WallGuard::save(VariantMap& stream) const
 {
   Soldier::save( stream );
 
-  stream[ "base" ] = _d->base.isValid() ? _d->base->pos() : gfx::tilemap::invalidLocation();
+  stream[ "base" ] = _d->base.isValid() ? _d->base->pos() : TilePos::invalid();
   VARIANT_SAVE_ANY_D( stream, _d, strikeForce )
   VARIANT_SAVE_ANY_D( stream, _d, resistance )
   VARIANT_SAVE_ANY_D( stream, _d, patrolPosition )
@@ -206,7 +206,7 @@ TilePos WallGuard::places(Walker::Place type) const
 {
   switch( type )
   {
-  case plOrigin: return _d->base.isValid() ? _d->base->pos() : gfx::tilemap::invalidLocation();
+  case plOrigin: return _d->base.isValid() ? _d->base->pos() : TilePos::invalid();
   case plDestination: return _d->patrolPosition;
   default: break;
   }

@@ -73,9 +73,8 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
   }
 
   const std::string imgSeparator = "@img=";
-  for( auto& it : items )
+  for( const auto& text : items )
   {
-    const std::string& text = it;
     if( text.substr( 0, imgSeparator.length() ) == imgSeparator )
     {
       Picture pic( text.substr( imgSeparator.length() ) );

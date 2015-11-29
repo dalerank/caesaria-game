@@ -92,7 +92,7 @@ TilesArray::Corners TilesArray::corners() const
 TilePos TilesArray::leftUpCorner() const
 {
   if( empty() )
-    return gfx::tilemap::invalidLocation();
+    return TilePos::invalid();
 
   TilePos ret( INT_MAX, 0 );
   for( auto tile : *this )
@@ -108,7 +108,7 @@ TilePos TilesArray::leftUpCorner() const
 TilePos TilesArray::rightDownCorner() const
 {
   if( empty() )
-    return gfx::tilemap::invalidLocation();
+    return TilePos::invalid();
 
   TilePos ret( 0, INT_MAX );
   for( auto tile : *this )

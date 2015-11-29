@@ -46,7 +46,6 @@ protected:
   void _resolveRequest( city::RequestPtr request );
   PlayerPtr _mayor();
   world::Emperor& _emperor();
-  void _showHelp();
 
 private:
   __DECLARE_IMPL(Emperor)

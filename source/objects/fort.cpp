@@ -107,7 +107,7 @@ public:
     if( index < positions.size() )
         return location + positions[ index ];
 
-    return gfx::tilemap::invalidLocation();
+    return TilePos::invalid();
   }
 
   void expand()
@@ -141,7 +141,7 @@ public:
     }
     while( ++expandCounter < 4 );
 
-    return gfx::tilemap::invalidLocation();
+    return TilePos::invalid();
   }
 
   void updatePoints( Tilemap& tmap )
@@ -420,7 +420,7 @@ TilePos Fort::findSlot(WalkerPtr who) const
 
   int index = walkers().indexOf( who );
   TilePos sldLocation =_d->patrolArea.getPos( index );
-  if( !gfx::tilemap::isValidLocation( sldLocation ) )
+  if( !config::tilemap.isValidLocation( sldLocation ) )
   {
     sldLocation = _d->patrolArea.append( _map(), index );
   }
@@ -510,12 +510,12 @@ void Fort::load(const VariantMap& stream)
 {
   WorkingBuilding::load( stream );
 
-  VARIANT_LOAD_ANYDEF_D( _d, patrolArea.location,gfx::tilemap::invalidLocation(), stream )
-  VARIANT_LOAD_ANY_D   ( _d, maxSoldier,                                          stream )
-  VARIANT_LOAD_ANY_D   ( _d, attackAnimals,                                       stream )
-  VARIANT_LOAD_ENUM_D  ( _d, patrolArea.mode,                                     stream )
+  VARIANT_LOAD_ANYDEF_D( _d, patrolArea.location, TilePos::invalid(), stream )
+  VARIANT_LOAD_ANY_D   ( _d, maxSoldier,                              stream )
+  VARIANT_LOAD_ANY_D   ( _d, attackAnimals,                           stream )
+  VARIANT_LOAD_ENUM_D  ( _d, patrolArea.mode,                         stream )
 
-  if( !gfx::tilemap::isValidLocation( _d->patrolArea.location ) )
+  if( !config::tilemap.isValidLocation( _d->patrolArea.location ) )
     _d->patrolArea.location = pos() + TilePos( 3, 4 );
 
   _d->patrolPoint->setPos( _d->patrolArea.location );

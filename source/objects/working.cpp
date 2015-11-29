@@ -40,6 +40,7 @@ public:
   {
     unsigned int current;
     unsigned int maximum;
+    walker::Type type;
   } workers;
 
   bool isActive;
@@ -56,6 +57,7 @@ WorkingBuilding::WorkingBuilding(const object::Type type, const Size& size)
   : Building( type, size ), _d( new Impl )
 {
   _d->workers.current = 0;
+  _d->workers.type = walker::unknown;
   _d->workers.maximum = 0;
   _d->isActive = true;
   _d->clearAnimationOnStop = true;
@@ -135,7 +137,7 @@ unsigned int WorkingBuilding::maximumWorkers() const { return _d->workers.maximu
 void WorkingBuilding::setWorkers(const unsigned int currentWorkers){  _d->workers.current = math::clamp( currentWorkers, 0u, _d->workers.maximum );}
 unsigned int WorkingBuilding::numberWorkers() const { return _d->workers.current; }
 unsigned int WorkingBuilding::needWorkers() const { return maximumWorkers() - numberWorkers(); }
-unsigned int WorkingBuilding::productivity() const { return math::percentage( numberWorkers(), maximumWorkers() ); }
+math::Percent WorkingBuilding::productivity() const { return math::percentage( numberWorkers(), maximumWorkers() ); }
 unsigned int WorkingBuilding::laborAccessPercent() const { return _d->laborAccessKoeff; }
 bool WorkingBuilding::mayWork() const { return numberWorkers() > 0; }
 void WorkingBuilding::setActive(const bool value) { _d->isActive = value; }
@@ -143,8 +145,9 @@ bool WorkingBuilding::isActive() const { return _d->isActive; }
 WorkingBuilding::~WorkingBuilding(){}
 const WalkerList& WorkingBuilding::walkers() const {  return _d->walkerList; }
 bool WorkingBuilding::haveWalkers() const { return !_d->walkerList.empty(); }
-std::string WorkingBuilding::errorDesc() const { return _d->errorStr;}
+std::string WorkingBuilding::errorDesc() const { return _d->errorStr; }
 void WorkingBuilding::_setError(const std::string& err) { _d->errorStr = err;}
+void WorkingBuilding::_setWorkersType(walker::Type type) { _d->workers.type = type; }
 Signal1<bool>& WorkingBuilding::onActiveChange() { return _d->onActiveChangeSignal; }
 
 unsigned int WorkingBuilding::addWorkers(const unsigned int workers )
@@ -223,6 +226,7 @@ void WorkingBuilding::_changeAnimationState(bool enabled)
 }
 
 void WorkingBuilding::_setClearAnimationOnStop(bool value) {  _d->clearAnimationOnStop = value; }
+walker::Type WorkingBuilding::workerType() { return _d->workers.type; }
 
 void WorkingBuilding::_disaster()
 {
@@ -280,6 +284,7 @@ void WorkingBuilding::burn()
 
   _disaster();
 }
+
 
 namespace {
 

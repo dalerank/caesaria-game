@@ -166,14 +166,6 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   }
   else if( oTile.getFlag( Tile::tlMeadow ) )
   {
-    /*bool oldgfx = !SETTINGS_VALUE( c3gfx ).toString().empty();
-    oldgfx |= SETTINGS_VALUE( oldgfx ).toBool();
-    if( !oldgfx )
-    {
-      Picture pic = MetaDataHolder::randomPicture( objects::meadow, Size(1) );
-      oTile.setPicture( pic );
-      changeId = imgid::fromResource( pic.name() );
-    }*/
   } 
   else if( imgId >= 0x29c && imgId <= 0x2a1 ) //aqueduct
   {

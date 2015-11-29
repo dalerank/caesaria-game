@@ -83,12 +83,12 @@ void MarketAccess::drawTile(const RenderInfo& rinfo, Tile& tile)
 
       if( !needDrawAnimations )
       {
-        drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
+        drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.house );
       }
     }
     else
     {
-      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base );
+      drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.constr );
     }
 
     if( needDrawAnimations )
@@ -126,9 +126,9 @@ void MarketAccess::handleEvent(NEvent& event)
           accessLevel = math::clamp<int>( accessLevel / maxAccessLevel, 0, maxAccessLevel-1 );
           text = marketLevelName[ accessLevel ];
         }
-      }
 
-      d.overlay.underMouse = tile->overlay();
+        d.overlay.underMouse = tile->overlay();
+      }
 
       _setTooltipText( text );
     }

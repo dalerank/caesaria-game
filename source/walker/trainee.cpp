@@ -87,7 +87,7 @@ void TraineeWalker::setBase(BuildingPtr originBuilding)
 {
   _d->baseLocation = originBuilding.isValid()
       ? originBuilding->pos()
-      : gfx::tilemap::invalidLocation();
+      : TilePos::invalid();
 }
 
 BuildingPtr TraineeWalker::base() const
@@ -102,7 +102,7 @@ BuildingPtr TraineeWalker::receiver() const
 
 void TraineeWalker::_computeWalkerPath( bool roadOnly )
 {
-  if( !gfx::tilemap::isValidLocation( _d->baseLocation ) )
+  if( _d->baseLocation == TilePos::invalid() )
   {
     Logger::warning( "!!! WARNING: trainee walker baselocation is unaccessible at [{},{}]", _d->baseLocation.i(), _d->baseLocation.j() );
     deleteLater();
@@ -225,7 +225,7 @@ void TraineeWalker::send2City(BuildingPtr base, bool roadOnly )
   _d->baseLocation = base->pos();
   _computeWalkerPath( roadOnly );
 
-  if( !isDeleted() && gfx::tilemap::isValidLocation( _d->destLocation ) )
+  if( !isDeleted() && config::tilemap.isValidLocation( _d->destLocation ) )
   {
     BuildingPtr dest = receiver();
     dest->reserveTrainee( type() );

@@ -48,4 +48,5 @@
   foreing_city_flag : { rc : "empire_bits", start : 9, stop : 14, offset : [ 20, -7 ] }
   theater_work : { rc : "entertainment", start : 35, stop : 35, offset : [ 34, 37 ] }
   way : { rc : "way", start : 1, stop : 200, offset : [ -1, -1 ] }
+  ground : { rc : "ground", start : 1, stop : 5, offset : [ -1, -1 ] }
 }

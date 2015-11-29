@@ -25,6 +25,7 @@
 #include "objects/well.hpp"
 #include "objects/constants.hpp"
 #include "core/foreach.hpp"
+#include "environment.hpp"
 #include "objects/house.hpp"
 #include "objects/watersupply.hpp"
 #include "game/infoboxmanager.hpp"
@@ -79,11 +80,7 @@ AboutFontain::AboutFontain(Widget* parent, PlayerCityPtr city, const Tile& tile)
 }
 
 AboutFontain::~AboutFontain(){}
-
-void AboutFontain::_showHelp()
-{
-  DictionaryWindow::show( parent(), object::fountain );
-}
+void AboutFontain::_showHelp() { ui()->add<DictionaryWindow>( object::fountain ); }
 
 AboutReservoir::AboutReservoir(Widget* parent, PlayerCityPtr city, const Tile& tile)
   : AboutConstruction( parent, Rect( 0, 0, 480, 320 ), Rect( 0, 0, 1, 1 ) )
@@ -109,10 +106,7 @@ AboutReservoir::AboutReservoir(Widget* parent, PlayerCityPtr city, const Tile& t
 
 AboutReservoir::~AboutReservoir() {}
 
-void AboutReservoir::_showHelp()
-{
-  DictionaryWindow::show( parent(), object::reservoir );
-}
+void AboutReservoir::_showHelp() { ui()->add<DictionaryWindow>( object::reservoir ); }
 
 AboutWell::AboutWell(Widget* parent, PlayerCityPtr city, const Tile& tile)
   : AboutConstruction( parent, Rect( 0, 0, 480, 320 ), Rect() )
@@ -173,11 +167,7 @@ AboutWell::AboutWell(Widget* parent, PlayerCityPtr city, const Tile& tile)
 }
 
 AboutWell::~AboutWell() {}
-
-void AboutWell::_showHelp()
-{
-  DictionaryWindow::show( parent(), object::well );
-}
+void AboutWell::_showHelp() { ui()->add<DictionaryWindow>( object::well ); }
 
 }//end namespace infobox
 

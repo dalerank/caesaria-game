@@ -443,8 +443,8 @@ void Layer::drawArea( const RenderInfo& rinfo, const TilesArray& area, const std
                           : baseTile->j();
   for( auto tile : area )
   {
-    int tileBorders = ( tile->i() == leftBorderAtI ? 0 : config::id.overlay.skipLeftBorder )
-                      + ( tile->j() == rightBorderAtJ ? 0 : config::id.overlay.skipRightBorder );
+    int tileBorders = ( tile->i() == leftBorderAtI ? 0 : config::tile.skipLeftBorder )
+                      + ( tile->j() == rightBorderAtJ ? 0 : config::tile.skipRightBorder );
     Picture pic(resourceGroup, tileBorders + tileId);
     rinfo.engine.draw( pic, tile->mappos() + rinfo.offset );
   }
@@ -508,10 +508,10 @@ void Layer::_addText(const Point& pos, const std::string& text, Font font)
 
 void Layer::afterRender(Engine& engine)
 {
-  __D_IMPL(_d,Layer)
+  __D_REF(_d,Layer)
   Point cursorPos = engine.cursorPos();
   Size screenSize = engine.viewportSize();
-  Point offset = _d->camera->offset();
+  Point offset = _d.camera->offset();
   Point moveValue;
 
   //on edge cursor moving
@@ -530,13 +530,13 @@ void Layer::afterRender(Engine& engine)
 
     if( moveValue.x() != 0 || moveValue.y() != 0 )
     {
-      _d->camera->move( moveValue.toPointF() );
+      _d.camera->move( moveValue.toPointF() );
     }
   }
 
   if( opts.isFlag( DrawOptions::drawGrid ) )
   {
-    Tilemap& tmap = _d->city->tilemap();
+    Tilemap& tmap = _d.city->tilemap();
     int size = tmap.size();
     //Picture& screen = engine.screen();
     for( int k=0; k < size; k++ )
@@ -555,56 +555,56 @@ void Layer::afterRender(Engine& engine)
 
   if( opts.isFlag( DrawOptions::showRoads ) )
   {
-    TilesArray tiles = _d->city->tilemap().allTiles();
+    const TilesArray& tiles = _d.camera->tiles();
     for( auto tile : tiles )
     {
       if( tile->getFlag( Tile::tlRoad ) )
-        engine.draw( _d->greenTile , offset + tile->mappos() );
+        engine.draw( _d.greenTile , offset + tile->mappos() );
     }
   }
 
   if( opts.isFlag( DrawOptions::showWalkableTiles ) )
   {
-    TilesArray tiles = _d->city->tilemap().allTiles();
+    const TilesArray& tiles = _d.camera->tiles();
     for( auto tile : tiles )
     {
       if( tile->isWalkable( true ) )
-        engine.draw( _d->greenTile, offset + tile->mappos() );
+        engine.draw( _d.greenTile, offset + tile->mappos() );
     }
   }
 
   if( opts.isFlag( DrawOptions::showFlatTiles ) )
   {
-    TilesArray tiles = _d->city->tilemap().allTiles();
+    const TilesArray& tiles = _d.camera->tiles();
     for( auto tile : tiles )
     {
       if( tile->isFlat() )
-        engine.draw( _d->greenTile, offset + tile->mappos() );
+        engine.draw( _d.greenTile, offset + tile->mappos() );
     }
   }
 
   if( opts.isFlag( DrawOptions::showLockedTiles ) )
   {
-    TilesArray tiles = _d->city->tilemap().allTiles();
+    const TilesArray& tiles = _d.camera->tiles();
     for( auto tile : tiles )
     {
       if( !tile->isWalkable( true ) )
-        engine.draw( _d->greenTile, offset + tile->mappos() );
+        engine.draw( _d.greenTile, offset + tile->mappos() );
     }
   }
 
-  if( _d->currentTile && opts.isFlag( DrawOptions::showObjectArea ) )
+  if( _d.currentTile && opts.isFlag( DrawOptions::showObjectArea ) )
   {
-    Tile* tile = _d->currentTile;
+    Tile* tile = _d.currentTile;
     Point pos = tile->mappos();
-    int rwidth = tilemap::cellPicSize().width();
+    int rwidth = config::tilemap.cell.picSize().width();
     int halfRWidth = rwidth / 2;
     Size size( math::clamp<int>( (tile->picture().width() + 2) / rwidth, 1, 10 ) );
 
-    if( _d->tilePosText.isValid() )
+    if( _d.tilePosText.isValid() )
     {
-      _d->tilePosText.fill( 0x0 );
-      _d->debugFont.draw( _d->tilePosText, utils::format( 0xff, "%d,%d", tile->i(), tile->j() ), false, true );
+      _d.tilePosText.fill( 0x0 );
+      _d.debugFont.draw( _d.tilePosText, fmt::format( "{},{}", tile->i(), tile->j() ), false, true );
     }
 
     OverlayPtr ov = tile->overlay();
@@ -633,11 +633,11 @@ void Layer::afterRender(Engine& engine)
     engine.drawLine( ColorList::red, pos + Point( halfRWidth, -halfRWidth/2 ) * size.width() - Point(0,a/2), pos - Point(a,0) );
 
 #ifdef DEBUG
-    engine.draw( _d->tilePosText, pos );
+    engine.draw( _d.tilePosText, pos );
 #endif
   }
 
-  for( auto& pic : _d->pictures )
+  for( auto& pic : _d.pictures )
   {
     engine.draw( pic.pic, offset + pic.pos );
   }
@@ -646,16 +646,15 @@ void Layer::afterRender(Engine& engine)
 Layer::Layer(Camera* camera, PlayerCityPtr city )
   : __INIT_IMPL(Layer)
 {
-  __D_IMPL(_d,Layer)
-  _d->camera = camera;
-  _d->greenTile = Picture( SETTINGS_STR(forbidenTile), 1 );
-  _d->city = city;
-  _d->debugFont = Font::create( FONT_1_WHITE );
-  _d->currentTile = 0;
-
-  _d->posMode = 0;
-  _d->terraintPic = object::Info::find( object::terrain ).randomPicture( Size( 1 ) );
-  _d->tilePosText = Picture( Size( 240, 80 ), 0, true );
+  __D_REF(_d,Layer)
+  _d.camera = camera;
+  _d.greenTile = Picture( SETTINGS_STR(forbidenTile), 1 );
+  _d.city = city;
+  _d.debugFont = Font::create( FONT_1_WHITE );
+  _d.currentTile = 0;
+  _d.posMode = 0;
+  _d.terraintPic = object::Info::find( object::terrain ).randomPicture( Size( 1 ) );
+  _d.tilePosText = Picture( Size( 240, 80 ), 0, true );
 
   if( OSystem::isAndroid() )
     DrawOptions::instance().setFlag( DrawOptions::showObjectArea, true );
@@ -669,8 +668,8 @@ void Layer::_addWalkerType(walker::Type wtype)
 void Layer::_initialize()
 {
   const VariantMap& vm = citylayer::Helper::getConfig( (citylayer::Type)type() );
-  StringArray vl = vm.get( "visibleObjects" ).toStringArray();
-  for( auto& it : vl )
+  StringArray visibleObjectTypes = vm.get( "visibleObjects" ).toStringArray();
+  for( const auto& it : visibleObjectTypes )
   {
     object::Type ovType = object::findType( it );
     if( ovType != object::unknown )
@@ -706,7 +705,7 @@ Tilemap& Layer::_map() const
     return _d.city->tilemap();
 
   Logger::warning( "!!! WARNING: City is null at Walker::_map()" );
-  return gfx::tilemap::getInvalid();
+  return config::tilemap.invalid();
 }
 
 bool Layer::_isVisibleObject(object::Type ovType)

@@ -195,13 +195,13 @@ void EnemySoldier::_check4attack()
   {
     pathway = PathwayHelper::create( pos(), _city()->getBorderInfo( PlayerCity::roadExit ).epos(),
                                      PathwayHelper::allTerrain );
-    setTarget( gfx::tilemap::invalidLocation() );
+    setTarget( TilePos::invalid() );
   }
 
   if( !pathway.isValid() )
   {
     pathway = PathwayHelper::randomWay( _city(), pos(), 10 );
-    setTarget( gfx::tilemap::invalidLocation() );
+    setTarget( TilePos::invalid() );
     _failedWayCounter++;
   }
 

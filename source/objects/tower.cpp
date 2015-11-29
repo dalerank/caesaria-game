@@ -62,7 +62,7 @@ Tower::Tower()
 {
   _d->noEntry = false;
   setMaximumWorkers( 6 );
-  _picture().load( ResourceGroup::land2a, 149 );
+  _picture().load( config::rc.land2a, 149 );
 
   setState( pr::inflammability, 0 );
   setState( pr::collapsibility, 0 );
@@ -136,8 +136,7 @@ void Tower::_rebuildWays()
 
   for( int range = Impl::maxPatrolRange; range > 0; range-- )
   {
-    TilePos offset( range, range );
-    TilesArray tiles = _map().rect( pos() - offset, pos() + offset );
+    TilesArray tiles = _map().rect( range, pos() );
     for( auto tile : tiles )
     {
       bool patrolingWall;

@@ -26,6 +26,7 @@
 #include "game/game.hpp"
 
 class Game;
+namespace undo{ class UStack; }
 
 namespace scene
 {
@@ -45,13 +46,13 @@ public:
   virtual void animate( unsigned int time );
   virtual void afterFrame();
   virtual int result() const;
-
   virtual bool installEventHandler(EventHandlerPtr);
+  virtual gfx::Camera* camera() const;
 
+  undo::UStack& undoStack();
   void setConstructorMode( bool enabled );
   void setCameraPos( TilePos pos );
   void switch2layer( int layer );
-  virtual gfx::Camera* camera() const;
 
 public slots:
   void loadStage(std::string filename);

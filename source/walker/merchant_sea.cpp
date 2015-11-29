@@ -92,8 +92,6 @@ SeaMerchant::SeaMerchant(PlayerCityPtr city, world::MerchantPtr merchant )
     _d->buy.storeAll( merchant->buyGoods() );
     _d->baseCityName = merchant->baseCity();
   }
-
-  setName( NameGenerator::rand( NameGenerator::plebMale ) );
 }
 
 SeaMerchant::~SeaMerchant()
@@ -106,7 +104,7 @@ void SeaMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk )
   {
   case stFindDock:
   {    
-    destBuildingPos = gfx::tilemap::invalidLocation();  // no destination yet
+    destBuildingPos = TilePos::invalid();  // no destination yet
 
     Pathway pathway;
     // get the list of buildings within reach   
@@ -535,6 +533,12 @@ TilePos SeaMerchant::places(Walker::Place type) const
   }
 
   return Human::places( type );
+}
+
+void SeaMerchant::initialize(const VariantMap& options)
+{
+  Merchant::initialize( options );
+  setName( NameGenerator::rand( NameGenerator::plebMale ) );
 }
 
 std::string SeaMerchant::parentCity() const { return _d->baseCityName; }

@@ -79,7 +79,7 @@ public:
     std::map< std::string, CoverageInfo >::clear();
     for( auto divinity : divinities)
     {
-      CoverageInfo &cvInfo = (*this)[divinity->internalName()];
+      CoverageInfo& cvInfo = (*this)[divinity->internalName()];
       cvInfo.temples.small_n = 0;
       cvInfo.temples.big_n = 0;
     }

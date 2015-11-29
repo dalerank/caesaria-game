@@ -59,7 +59,7 @@ public:
 RomeSoldier::RomeSoldier( PlayerCityPtr city, walker::Type type )
     : Soldier( city, type ), _d( new Impl )
 {
-  _d->patrolPosition = gfx::tilemap::invalidLocation();
+  _d->patrolPosition = TilePos::invalid();
   _setSubAction( doNothing );
   _d->stuckTime = 0;
   _d->lastStuckInterval = 0;
@@ -425,7 +425,7 @@ void RomeSoldier::_brokePathway(TilePos p)
 {
   Soldier::_brokePathway( p );
 
-  if( gfx::tilemap::isValidLocation( _d->patrolPosition ) )
+  if( config::tilemap.isValidLocation( _d->patrolPosition ) )
   {
     Pathway way = PathwayHelper::create( pos(), _d->patrolPosition,
                                          PathwayHelper::allTerrain );

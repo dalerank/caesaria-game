@@ -137,10 +137,11 @@
 
   religion : {
     visibleObjects : [ "road", "plaza", "garden", "burned_ruins", "collapsed_ruins", "tree", "low_bridge",
-                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "small_temple_ceres",
+                       "high_bridge", "elevation", "rift", "tree", "burning_ruins", "small_ceres_temple",
                        "small_mars_temple", "small_mercury_temple", "small_neptune_temple", "small_venus_temple",
-                       "big_ceres_temple", "roadBlock", "plague_ruins",
-                       "big_mars_temple", "big_mercury_temple", "big_neptune_temple", "big_venus_temple", "oracle", "waymark" ]
+                       "roadBlock", "plague_ruins",
+                       "big_ceres_temple", "big_mars_temple", "big_mercury_temple",
+                       "big_neptune_temple", "big_venus_temple", "oracle", "waymark" ]
   }
 
   tax : {

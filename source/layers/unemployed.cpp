@@ -62,7 +62,7 @@ void Unemployed::drawTile(const RenderInfo& rinfo, Tile& tile)
 
       if( !needDrawAnimations )
       {
-        drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
+        drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.house );
       }
     }
     else if( workingBuilding.isValid() )
@@ -70,7 +70,7 @@ void Unemployed::drawTile(const RenderInfo& rinfo, Tile& tile)
       worklessPercent = math::percentage( workingBuilding->needWorkers(), workingBuilding->maximumWorkers() );
       needDrawAnimations = workingBuilding->needWorkers() > 0;
       if( !needDrawAnimations )
-        drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base );
+        drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.constr );
     }
 
     if( needDrawAnimations )

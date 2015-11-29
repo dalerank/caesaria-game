@@ -235,4 +235,10 @@ void PathwayCondition::checkRoads(const Tile* tile, bool& ret)
   else                                 { ret = count( tile ) > 0; }
 }
 
+void PathwayCondition::allTiles(const Tile*, bool& ret)
+{
+  ret = true;
+}
+
 TilePossibleCondition PathwayCondition::byRoads() { return makeDelegate( this, &PathwayCondition::checkRoads ); }
+TilePossibleCondition PathwayCondition::bySomething() { return makeDelegate( this, &PathwayCondition::allTiles ); }

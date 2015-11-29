@@ -42,7 +42,7 @@ public:
 
 School::School() : EducationBuilding(Service::school, object::school, Size(2))
 {
-  _picture().load( ResourceGroup::commerce, 83 );
+  setPicture( info().randomPicture( Size(2) ) );
   _d->maxMonthVisitors = config::educationbld::maxSchoolVisitors;
 }
 
@@ -94,14 +94,14 @@ int School::_getWalkerOrders() const
 
 Library::Library() : EducationBuilding(Service::library, object::library, Size(2))
 {
-  _picture().load( ResourceGroup::commerce, 84 );
+  setPicture( info().randomPicture( Size(2) ) );
   _d->maxMonthVisitors = config::educationbld::maxLibraryVisitors;
   _d->currentPeopleServed = _d->maxMonthVisitors;
 }
 
 Academy::Academy() : EducationBuilding(Service::academy, object::academy, Size(3))
 {
-  _picture().load( ResourceGroup::commerce, 85 );
+  setPicture( info().randomPicture( Size(3) ) );
   _d->maxMonthVisitors = config::educationbld::maxAcademyVisitors;
   _d->currentPeopleServed = _d->maxMonthVisitors;
 }

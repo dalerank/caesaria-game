@@ -140,7 +140,7 @@ public:
     }
     if (!pass) return;
 
-    for( auto&& item : writers )
+    for( auto& item : writers )
     {
       if( item.second.isValid() )
       {

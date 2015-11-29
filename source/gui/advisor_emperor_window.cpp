@@ -87,11 +87,11 @@ void Emperor::_showChangeSalaryWindow()
   }
 
   auto&& salaryWindow = ui()->add<dialog::ChangeSalary>( _mayor()->salary() );
+
+  salaryWindow.add<HelpButton>( Point( 12, height() - 39), "emperor_advisor" );
   salaryWindow.setRanks( world::EmpireHelper::ranks() );
   salaryWindow.show();
 
-  auto& btnHelp = salaryWindow.add<TexturedButton>( Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.exitInf );
-  CONNECT( &btnHelp, onClicked(), this, Emperor::_showHelp );
   CONNECT( &salaryWindow, onChangeSalary(), this, Emperor::_changeSalary )
 }
 
@@ -155,11 +155,6 @@ void Emperor::_updateRequests()
 
 PlayerPtr Emperor::_mayor() {  return _city->mayor(); }
 world::Emperor& Emperor::_emperor() { return _city->empire()->emperor(); }
-
-void Emperor::_showHelp()
-{
-  DictionaryWindow::show( this, "emperor_advisor" );
-}
 
 Emperor::Emperor( PlayerCityPtr city, Widget* parent, int id )
 : Base( parent, city, id ), __INIT_IMPL(Emperor)

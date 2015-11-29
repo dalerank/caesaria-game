@@ -44,7 +44,7 @@ public:
 
   void visitEach( Visitor visitor )
   {
-    for( auto&& item : *this )
+    for( auto& item : *this )
       visitor( item );
   }
 

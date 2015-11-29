@@ -86,7 +86,7 @@ void WorkersHire::Impl::fillIndustryMap()
 
   industryBuildings.clear();
 
-  for( auto& type : types)
+  for( auto type : types)
   {
     auto info = object::Info::find( type );
     int workersNeed = info.getOption( literals::employers );
@@ -152,7 +152,7 @@ void WorkersHire::timeStep( const unsigned int time )
 
       for( auto group : groups )
       {
-        for( WorkingBuildingList::iterator it=workingBuildings.begin(); it != workingBuildings.end(); )
+        for( auto it=workingBuildings.begin(); it != workingBuildings.end(); )
         {
           if( (*it)->group() == group )
           {

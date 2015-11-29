@@ -53,11 +53,15 @@ void Spear::setPicInfo(const std::string& rc, unsigned int index)
   _picIndex = index;
 }
 
+void Spear::initialize(const VariantMap& options)
+{
+  ThrowingWeapon::initialize( options );
+  setName( _("##spear##") );
+}
+
 Spear::Spear(PlayerCityPtr city) : ThrowingWeapon( city )
 {
   _setType( walker::spear );
   _picIndex = 114;
   _picRc = ResourceGroup::sprites;
-
-  setName( _("##spear##") );
 }

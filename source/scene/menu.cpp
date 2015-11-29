@@ -97,8 +97,8 @@ public:
   void quitGame();
   void selectFile( std::string fileName );
   void setPlayerName( std::string name );
-  void openSteamPage() { OSystem::openUrl( "http://store.steampowered.com/app/327640" ); }
-  void openHomePage() { OSystem::openUrl( "www.caesaria.net" ); }
+  void openSteamPage();
+  void openHomePage();
   void showMapSelectDialog();
   void showSaveSelectDialog();
   void changePlayerName();
@@ -114,8 +114,9 @@ public:
   void changePlayerNameIfNeed(bool force=false);
   void reload();
   void restart();
-  gui::Ui& ui();
   void openDlcDirectory(Widget* sender);
+  void showLogFile();
+  gui::Ui& ui();
 };
 
 void StartMenu::Impl::showSaveSelectDialog()
@@ -135,6 +136,13 @@ void StartMenu::Impl::showSaveSelectDialog()
 }
 
 void StartMenu::Impl::changePlayerName() { changePlayerNameIfNeed(true); }
+
+void StartMenu::Impl::showLogFile()
+{
+  vfs::Directory logfile = SETTINGS_STR( workDir );
+  logfile = logfile/SETTINGS_STR( logfile );
+  OSystem::openUrl( logfile.toString(), steamapi::ld_prefix() );
+}
 
 void StartMenu::Impl::changePlayerNameIfNeed(bool force)
 {
@@ -328,7 +336,7 @@ void StartMenu::Impl::showCredits()
                          " ",
                          _("##localization##"),
                          " ",
-                         "Alexander Klimenko, Manuel Alvarez, Artem Tolmachev, Peter Willington",
+                         "Alexander Klimenko, Manuel Alvarez, Artem Tolmachev, Peter Willington, Leszek Bochenek",
                          " ",
                          _("##thanks_to##"),
                          " ",
@@ -414,6 +422,7 @@ void StartMenu::Impl::showOptionsMenu()
   ADD_MENU_BUTTON( "##mainmenu_sound##",    Impl::showSoundOptions )
   ADD_MENU_BUTTON( "##mainmenu_package##",  Impl::showPackageOptions )
   ADD_MENU_BUTTON( "##mainmenu_plname##",   Impl::changePlayerName )
+  ADD_MENU_BUTTON( "##mainmenu_showlog##",  Impl::showLogFile )
   ADD_MENU_BUTTON( "##cancel##",            Impl::showMainMenu )
 }
 
@@ -512,6 +521,8 @@ void StartMenu::Impl::selectFile(std::string fileName)
 }
 
 void StartMenu::Impl::setPlayerName(std::string name) { SETTINGS_SET_VALUE( playerName, Variant( name ) ); }
+void StartMenu::Impl::openSteamPage() { OSystem::openUrl( "http://store.steampowered.com/app/327640", steamapi::ld_prefix() ); }
+void StartMenu::Impl::openHomePage() { OSystem::openUrl( "http://www.caesaria.net", steamapi::ld_prefix() ); }
 
 void StartMenu::Impl::showMapSelectDialog()
 {
@@ -578,10 +589,10 @@ void StartMenu::initialize()
 
   Size scrSize = _d->ui().vsize();
   auto& btnHomePage = _d->ui().add<TexturedButton>( Point( scrSize.width() - 128, scrSize.height() - 100 ), Size( 128 ), -1,
-                                                    "logo_rdt", 1, 2, 2, 2 );
+                                                    "logo_rdt", TexturedButton::States( 1, 2, 2, 2 ) );
 
   auto& btnSteamPage = _d->ui().add<TexturedButton>( Point( btnHomePage.left() - 128, scrSize.height() - 100 ),  Size( 128 ), -1,
-                                                     "steam_icon", 1, 2, 2, 2 );
+                                                     "steam_icon", TexturedButton::States( 1, 2, 2, 2 ) );
 
   CONNECT( &btnSteamPage, onClicked(), _d.data(), Impl::openSteamPage );
   CONNECT( &btnHomePage, onClicked(), _d.data(), Impl::openHomePage );

@@ -135,7 +135,7 @@ void LoadGame::_fillFiles()
   break;
   }
 
-  for( auto& path : names )
+  for( const auto& path : names )
   {
     ListBoxItem& item = lbxFiles->addItem( path, Font(), ColorList::black.color );
     vfs::Path imgpath = vfs::Path( path ).changeExtension( "png" );

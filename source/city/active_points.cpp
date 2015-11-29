@@ -31,7 +31,7 @@ ActivePoints::ActivePoints()
 
 TilePos ActivePoints::get( unsigned int index) const
 {
-  return index < maxPoints ? (*this)[index] : tilemap::invalidLocation();
+  return index < maxPoints ? (*this)[index] : TilePos::invalid();
 }
 
 void ActivePoints::set( unsigned int index, const TilePos& pos)

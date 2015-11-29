@@ -40,6 +40,7 @@ class TaxCollector::Impl
 public:
   float money;
   bool return2base;
+  bool housePersonalTax;
 
   std::map< TilePos, float > history;
 };
@@ -54,10 +55,13 @@ void TaxCollector::_centerTile()
     if( house->isDeleted() || _d->history.count( house->pos() ) > 0 )
       continue;
 
-    float tax = house->collectTaxes();
-    _d->money += tax;
+    if( _d->housePersonalTax )
+    {
+      float tax = house->collectTaxes();
+      _d->money += tax;
+      _d->history[ house->pos() ] += tax;
+    }
     house->applyService( this );
-    _d->history[ house->pos() ] += tax;
   }
 }
 
@@ -65,8 +69,7 @@ std::string TaxCollector::thoughts(Thought th) const
 {
   if( th == thCurrent )
   {
-    TilePos offset( 2, 2 );
-    HouseList houses = _city()->statistic().objects.find<House>( object::house, pos() - offset, pos() + offset );
+    HouseList houses = _city()->statistic().objects.find<House>( object::house, pos(), reachDistance() );
     unsigned int poorHouseCounter=0;
     unsigned int richHouseCounter=0;
 
@@ -94,6 +97,7 @@ TaxCollector::TaxCollector(PlayerCityPtr city )
 {
   _d->money = 0;
   _d->return2base = false;
+  _d->housePersonalTax = city.isValid() ? city->getOption( PlayerCity::housePersonalTaxes ) : false;
   _setType( walker::taxCollector );
 }
 
@@ -114,8 +118,8 @@ void TaxCollector::_reachedPathway()
     }
 
     Logger::warning( "TaxCollector: path history" );
-    for( auto& step : _d->history )
-      Logger::warning( "       [{}x{}]:{}", step.first.i(), step.first.j(), step.second );
+    for( const auto& step : _d->history )
+      Logger::warning( "       [{},{}]:{}", step.first.i(), step.first.j(), step.second );
 
     deleteLater();
     return;
@@ -136,12 +140,11 @@ void TaxCollector::_reachedPathway()
   ServiceWalker::_reachedPathway();
 }
 
-void TaxCollector::_noWay(){  die();  }
+void TaxCollector::_noWay() { die(); }
 
 void TaxCollector::load(const VariantMap& stream)
 {
   ServiceWalker::load( stream );
-
   VARIANT_LOAD_ANY_D( _d, money, stream )
   VARIANT_LOAD_ANY_D( _d, return2base, stream )
 }
@@ -150,7 +153,7 @@ void TaxCollector::save(VariantMap& stream) const
 {
   ServiceWalker::save( stream );
   VARIANT_SAVE_ANY_D( stream, _d, money )
-      VARIANT_SAVE_ANY_D( stream, _d, return2base )
+  VARIANT_SAVE_ANY_D( stream, _d, return2base )
 }
 
 Walker::Gender TaxCollector::gender() const { return male; }

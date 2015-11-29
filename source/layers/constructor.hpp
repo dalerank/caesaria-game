@@ -44,8 +44,6 @@ public:
   static LayerPtr create(gfx::Renderer &renderer, PlayerCityPtr city );
 
   virtual ~Constructor();
-public signals:
-  Signal3<object::Type,TilePos,int>& onBuild();
 
 private:
   void _updatePreviewTiles(bool force);

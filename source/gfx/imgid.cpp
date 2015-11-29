@@ -41,22 +41,22 @@ std::string toResource( const unsigned int imgId )
   }
   else if( imgId < 548 )
   {
-    res_pfx = ResourceGroup::land1a;
+    res_pfx = config::rc.land1a;
     res_id = imgId - 244;
   }
   else if( imgId < 779 )
   {
-    res_pfx = ResourceGroup::land2a;
+    res_pfx = config::rc.land2a;
     res_id = imgId - 547;
   }
   else if( imgId < 871)
   {
-    res_pfx = ResourceGroup::land3a;
+    res_pfx = config::rc.land3a;
     res_id = imgId - 778;
   }
   else
   {
-    res_pfx = ResourceGroup::land1a;
+    res_pfx = config::rc.land1a;
     res_id = 0;
 
     if (imgId == 0xb10 || imgId == 0xb0d)
@@ -85,9 +85,9 @@ int fromResource( const std::string& pic_name )
   ss >> res_id;
 
   if (res_pfx == ResourceGroup::plateau ){  res_id += 200; }
-  else if (res_pfx == ResourceGroup::land1a) { res_id += 244; }
-  else if (res_pfx == ResourceGroup::land2a) { res_id += 547; }
-  else if (res_pfx == ResourceGroup::land3a) { res_id += 778; }
+  else if (res_pfx == config::rc.land1a) { res_id += 244; }
+  else if (res_pfx == config::rc.land2a) { res_id += 547; }
+  else if (res_pfx == config::rc.land3a) { res_id += 778; }
   else
   {
     Logger::warning( "WARNING !!! TileHelper unknown image " + pic_name );

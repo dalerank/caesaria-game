@@ -53,7 +53,8 @@ ListBoxItem& FileListBox::addItem(const std::string& text, Font font, const int 
   std::string timeStr = utils::format( 0xff, "(%02d %s %02d:%02d:%02d)",
                                               time.day(), DateTime::shortMonthName( time.month()-1 ),
                                               (time.hour() + gmtOffset)%24, time.minutes(), time.seconds() );
-  ListBoxItem& item = ListBox::addItem( vfs::Path( text ).baseName().toString(), font, color );
+  vfs::Path path( text );
+  ListBoxItem& item = ListBox::addItem( path.baseName().toString(), font, color );
 
   item.setData( "time", Variant( timeStr ) );
   return item;
@@ -67,7 +68,7 @@ void FileListBox::_updateItemText(gfx::Engine& painter, ListBoxItem& item, const
   {
     item.clear();
 
-    std::string text = vfs::Path( item.text() ).baseName( false ).toString();
+    std::string text = vfs::Path( item.text() ).baseName().removeExtension();
     Rect finalRect = font.getTextRect( text, Rect( Point(), frameRect.size() ), align::upperLeft, align::center );
 
     item.draw( text, font, finalRect.lefttop() + Point( 10, 0)  );

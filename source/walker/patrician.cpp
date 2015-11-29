@@ -42,7 +42,6 @@ public:
 Patrician::Patrician(PlayerCityPtr city )
   : Human( city, walker::patrician ), _d( new Impl )
 {
-  setName( NameGenerator::rand( NameGenerator::patricianMale ) );
 }
 
 Patrician::~Patrician() {}
@@ -51,7 +50,7 @@ void Patrician::save( VariantMap& stream ) const
 {
   Walker::save( stream );
   VARIANT_SAVE_ANY_D( stream, _d, destination )
-  stream[ "house" ] = _d->house.isValid() ? _d->house->pos() : gfx::tilemap::invalidLocation();
+  stream[ "house" ] = _d->house.isValid() ? _d->house->pos() : TilePos::invalid();
 }
 
 void Patrician::load( const VariantMap& stream )
@@ -64,6 +63,12 @@ void Patrician::load( const VariantMap& stream )
 
   if( _d->house.isValid() )
     _d->house->addWalker( this );
+}
+
+void Patrician::initialize(const VariantMap& options)
+{
+  Human::initialize( options );
+  setName( NameGenerator::rand( NameGenerator::patricianMale ) );
 }
 
 bool Patrician::_findNewWay( const TilePos& pos )

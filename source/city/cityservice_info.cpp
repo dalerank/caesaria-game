@@ -77,13 +77,7 @@ VariantMap Info::MaxParameters::save() const
 {
   VariantMap maxParamVm;
   for( int k=0; k < paramsCount; k++ )
-  {
-    VariantList paramVm;
-    paramVm << (*this)[ k ].date;
-    paramVm << (*this)[ k ].value;
-
-    maxParamVm[ utils::format( 0xff, "%02d", k ) ] = paramVm;
-  }
+    maxParamVm[ utils::format( 0xff, "%02d", k ) ] = VariantList( (*this)[ k ].date, (*this)[ k ].value );
 
   return maxParamVm;
 }
@@ -94,10 +88,9 @@ void Info::MaxParameters::load(const VariantMap &vm)
   for( auto& item : vm )
   {
     int index = utils::toInt( item.first );
-    DateTime date = item.second.toList().get( 0 ).toDateTime();
-    int value = item.second.toList().get( 1 ).toInt();
-    (*this)[ index ].date = date;
-    (*this)[ index ].value = value;
+    VariantList vl = item.second.toList();
+    (*this)[ index ].date = vl.get( 0 ).toDateTime();
+    (*this)[ index ].value = vl.get( 1 ).toInt();
   }
 }
 
@@ -256,29 +249,23 @@ Info::Parameters::Parameters()
 Info::Parameters::Parameters(const Info::Parameters& other)
 {
   resize( paramsCount );
-  for( unsigned int i=0; i < other.size(); i++ )
-    (*this)[ i ] = other[ i ];
+  *this = other;
+  //std::copy( other.begin(), other.end(), begin() );
 }
 
 VariantList Info::Parameters::save() const
 {
   VariantList vl;
   for( int k=0; k < Info::paramsCount; k++  )
-  {
     vl.push_back( (*this)[ k ] );
-  }
 
   return vl;
 }
 
 void Info::Parameters::load(const VariantList& stream)
 {
-  int k=0;
   for( auto& it : stream )
-  {
-    (*this)[ k ] = it;
-    k++;
-  }
+    push_back( it );
 }
 
 }//end namespace city

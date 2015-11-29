@@ -74,7 +74,7 @@ ServiceWalker::ServiceWalker(PlayerCityPtr city, const Service::Type service)
   _d->service = service;
   _d->reachDistance = 2;
   _d->wayFailedCounter = 0;
-  _d->lastHousePos = gfx::tilemap::invalidLocation();
+  _d->lastHousePos = TilePos::invalid();
 
   _init(service);
 }
@@ -547,7 +547,7 @@ BuildingPtr ServiceWalker::base() const
 }
 
 ServiceWalker::~ServiceWalker() {}
-void ServiceWalker::setBase( BuildingPtr base ) { _d->basePos = (base.isValid() ? base->pos() : gfx::tilemap::invalidLocation()); }
+void ServiceWalker::setBase( BuildingPtr base ) { _d->basePos = (base.isValid() ? base->pos() : TilePos::invalid()); }
 
 bool ReachedBuildings::contain(object::Type type) const
 {

@@ -22,6 +22,7 @@
 #include "objects/house.hpp"
 #include "objects/constants.hpp"
 #include "game/gamedate.hpp"
+#include "core/serialized_map.hpp"
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
 
@@ -41,8 +42,10 @@ public:
 class Treasury::Impl
 {
 public:
-  int taxRate;
+  SerializedMap<int, int> salaries;
+
   int workerSalary;
+  int taxRate;
   int money;
   int lastYearUpdate;
   int maxDebt;
@@ -177,8 +180,21 @@ int Treasury::getIssueValue(Issue::Type type, int age ) const
 
 int Treasury::taxRate() const{  return _d->taxRate;}
 void Treasury::setTaxRate(const unsigned int value) {  _d->taxRate = value;}
-int Treasury::workerSalary() const{  return _d->workerSalary;}
-void Treasury::setWorkerSalary(const unsigned int value){  _d->workerSalary = value;}
+void Treasury::setWorkerSalary(const unsigned int value) { _d->workerSalary = value; }
+
+void Treasury::setWorkerSalary(int wtype, const unsigned int value)
+{
+  _d->salaries[ wtype ] = value;
+}
+
+int Treasury::workerSalary(int wtype) const
+{
+  auto it = _d->salaries.find( wtype );
+  if( it != _d->salaries.end() )
+    return it->second;
+
+  return _d->workerSalary;
+}
 
 VariantMap Treasury::save() const
 {
@@ -190,6 +206,7 @@ VariantMap Treasury::save() const
   VARIANT_SAVE_ANY_D( ret, _d, lastYearUpdate )
   VARIANT_SAVE_CLASS_D( ret, _d, history )
   VARIANT_SAVE_CLASS_D( ret, _d, detailedHistory )
+  VARIANT_SAVE_CLASS_D( ret, _d, salaries )
 
   return ret;
 }
@@ -202,6 +219,7 @@ void Treasury::load( const VariantMap& stream )
   VARIANT_LOAD_ANY_D( _d, lastYearUpdate, stream )
   VARIANT_LOAD_CLASS_D_LIST( _d, history, stream )
   VARIANT_LOAD_CLASS_D_LIST( _d, detailedHistory, stream )
+  VARIANT_LOAD_CLASS_D_LIST( _d, salaries, stream )
 }
 
 Treasury::~Treasury(){}
@@ -297,7 +315,7 @@ VariantList IssuesValue::save() const
 void IssuesValue::load(const VariantList& stream)
 {
   VariantListReader reader( stream );
-  while( reader.atEnd() )
+  while( !reader.atEnd() )
   {
     econ::Issue::Type type = (Issue::Type)reader.next().toInt(); //type
     int value = reader.next().toInt(); //value

@@ -87,7 +87,7 @@ Picture Terrain::randomPicture()
   int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
   int imgId = math::random( 58-1 );
 
-  return Picture( ResourceGroup::land1a, startOffset + imgId );
+  return Picture( config::rc.land1a, startOffset + imgId );
 }
 
 void Terrain::updatePicture()

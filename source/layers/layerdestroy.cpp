@@ -34,6 +34,7 @@
 #include "gfx/tilearea.hpp"
 #include "core/osystem.hpp"
 #include "build.hpp"
+#include "events/undo_action.hpp"
 #include "objects/tree.hpp"
 #include "game/settings.hpp"
 
@@ -78,7 +79,6 @@ public:
   Renderer* renderer;
   Font textFont;
   bool readyForExit;
-  Signal3<object::Type,TilePos,int> onDestroySignal;
 };
 
 void Destroy::_clearAll()
@@ -98,10 +98,13 @@ void Destroy::_clearAll()
       {
         auto objectType = tile->overlay()->type();
         int money = _checkMoney4destroy( *tile );
-        emit _d->onDestroySignal( objectType, tile->epos(), money);
+
+        events::dispatch<UndoAction>( UndoAction::destroyed, objectType, tile->epos(), money );
       }
     }
   }
+
+  events::dispatch<UndoAction>( UndoAction::finished );
 }
 
 unsigned int Destroy::_checkMoney4destroy(const Tile& tile)
@@ -256,7 +259,7 @@ void Destroy::init(Point cursor)
   _setLastCursorPos( cursor );
   _setStartCursorPos( cursor );
 
-  _d->startTilePos = gfx::tilemap::invalidLocation();
+  _d->startTilePos = TilePos::invalid();
 
   LayerPtr layer = _d->renderer->currentLayer();
   if( layer.isValid() )
@@ -296,7 +299,7 @@ void Destroy::handleEvent(NEvent& event)
         _setStartCursorPos( _lastCursorPos() );
 
         Tile* tile = _camera()->at( _lastCursorPos(), true );
-        _d->startTilePos = tile ? tile->epos() : gfx::tilemap::invalidLocation();
+        _d->startTilePos = tile ? tile->epos() : TilePos::invalid();
       }
     }
     break;
@@ -352,18 +355,12 @@ void Destroy::handleEvent(NEvent& event)
   }
 }
 
-Signal3<object::Type,TilePos,int>& Destroy::onDestroy()
-{
-  return _d->onDestroySignal;
-}
-
 void Destroy::_executeClear()
 {
   _clearAll();
   _setStartCursorPos( _lastCursorPos() );
 
-  GameEventPtr e = Payment::create( econ::Issue::buildConstruction, -_d->money4destroy );
-  e->dispatch();
+  events::dispatch<Payment>( econ::Issue::buildConstruction, -_d->money4destroy );
 }
 
 int Destroy::type() const {  return citylayer::destroyd; }

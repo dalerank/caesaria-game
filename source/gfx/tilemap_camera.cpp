@@ -82,7 +82,7 @@ public:
 
 TilemapCamera::TilemapCamera() : _d( new Impl )
 {
-  _d->tileMapSize = tilemap::cellSize();
+  _d->tileMapSize = config::tilemap.cell.size();
   _d->tmap = NULL;
   _d->scrollSpeed = 30;
   _d->viewSize = Size( 0 );
@@ -90,7 +90,7 @@ TilemapCamera::TilemapCamera() : _d( new Impl )
   _d->virtualSize = Size( 0 );
   _d->centerMapXZ = PointF( 0, 0 );
   _d->zoomAlsoLess = false;
-  _d->borderSize = Size( gfx::tilemap::cellSize().width() * 4 );
+  _d->borderSize = Size( config::tilemap.cell.size().width() * 4 );
   _d->tiles.visible.reserve( 2000 );
   _d->zoom = 100;
 }
@@ -113,7 +113,7 @@ void TilemapCamera::setViewport(const Size& newSize)
   _d->virtualSize = newSize;
 
   Size nSize = newSize + _d->borderSize;
-  Size vpSize( tilemap::cellPicSize().height() * 2, tilemap::cellPicSize().height() );
+  Size vpSize( config::tilemap.cell.picSize().height() * 2, config::tilemap.cell.picSize().height() );
   _d->viewSize = Size( ( nSize.width() + (vpSize.width()-1)) / vpSize.width(),
                        ( nSize.height() + (vpSize.height()-1)) / vpSize.height() );
   
@@ -198,7 +198,7 @@ void TilemapCamera::_setCenter(Point pos, bool checkBorder)
 TilePos TilemapCamera::center() const
 {
   Tile* tile = centerTile();
-  return tile ? tile->epos() : gfx::tilemap::invalidLocation();
+  return tile ? tile->epos() : TilePos::invalid();
 }
 
 void TilemapCamera::changeZoom(int delta)
@@ -386,11 +386,11 @@ void TilemapCamera::Impl::updateFlatTiles()
   }
 
   const TilesArray& tl = tmap->svkBorderTiles();
-  Rect viewRect( Point( -tilemap::cellPicSize().width(), -tilemap::cellPicSize().height() ),
-                 virtualSize + tilemap::cellPicSize() * 2 );
+  Rect viewRect( Point( -config::tilemap.cell.picSize().width(), -config::tilemap.cell.size().height() ),
+                 virtualSize + config::tilemap.cell.picSize() * 2 );
   for( auto i : tl )
   {
-    if( viewRect.isPointInside( i->mappos() + Point( tilemap::cellPicSize().width()/2, 0 ) + offset)  )
+    if( viewRect.isPointInside( i->mappos() + Point( config::tilemap.cell.picSize().width()/2, 0 ) + offset)  )
     {
       tiles.flat.push_back( i );
     }

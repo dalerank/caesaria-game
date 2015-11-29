@@ -19,6 +19,7 @@
 #include "label.hpp"
 #include "core/gettext.hpp"
 #include "city/city.hpp"
+#include "environment.hpp"
 #include "objects/road.hpp"
 #include "core/utils.hpp"
 #include "objects/constants.hpp"
@@ -142,10 +143,8 @@ void AboutLand::setText( const std::string& text )
     lb->setText( text );
 }
 
-void AboutLand::_showHelp()
-{
-  DictionaryWindow::show( this, _helpUri );
-}
+void AboutLand::_showHelp() { ui()->add<DictionaryWindow>( _helpUri ); }
+void AboutFreeHouse::_showHelp() { ui()->add<DictionaryWindow>( "vacant_lot" ); }
 
 AboutFreeHouse::AboutFreeHouse( Widget* parent, PlayerCityPtr city, const Tile& tile )
     : AboutLand( parent, city, tile )
@@ -161,10 +160,6 @@ AboutFreeHouse::AboutFreeHouse( Widget* parent, PlayerCityPtr city, const Tile& 
   }
 }
 
-void AboutFreeHouse::_showHelp()
-{
-  DictionaryWindow::show( this, "vacant_lot" );
-}
 
 }//end namespace infobox
 

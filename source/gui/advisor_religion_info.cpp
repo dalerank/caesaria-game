@@ -64,7 +64,7 @@ ReligionInfoLabel::ReligionInfoLabel(Widget* parent, const Rect& rect, DivinityP
   d.mood = 0;
   d.wrath.xOffset = 400;
 
-  d.wrath.image = Picture( ResourceGroup::panelBackground, 334 );
+  d.wrath.image = Picture( gui::rc.panel, gui::id.wrathIcon );
   setFont( Font::create( FONT_1_WHITE ) );
 }
 

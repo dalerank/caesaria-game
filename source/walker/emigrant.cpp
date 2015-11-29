@@ -80,7 +80,7 @@ Emigrant::Emigrant(PlayerCityPtr city )
   _d->failedWayCount = 0;
   _d->leaveCity = false;
   _d->cartBackward = true;
-  _d->housePosLock = gfx::tilemap::invalidLocation();
+  _d->housePosLock = TilePos::invalid();
 }
 
 void Emigrant::_lockHouse( HousePtr house )
@@ -90,7 +90,7 @@ void Emigrant::_lockHouse( HousePtr house )
     auto oldHouse = _map().overlay<House>( _d->housePosLock );
     if( oldHouse.isValid() )
     {
-      _d->housePosLock = gfx::tilemap::invalidLocation();
+      _d->housePosLock = TilePos::invalid();
       oldHouse->setState( pr::settleLock, 0 );
     }
   }

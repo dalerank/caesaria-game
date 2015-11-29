@@ -63,7 +63,7 @@ Tile::Tile( const TilePos& pos) //: _terrain( 0, 0, 0, 0, 0, 0 )
 }
 
 void Tile::setPicture(const Picture& picture) {  _picture = picture; }
-void Tile::setPicture(const char* rc, const int index){ _picture.load( rc, index );}
+void Tile::setPicture(const std::string& group, const int index){ _picture.load( group, index );}
 void Tile::setPicture(const std::string& name){ _picture.load( name );}
 void Tile::setMaster(Tile* master){  _master = master; }
 
@@ -80,13 +80,13 @@ bool Tile::isFlat() const
 }
 
 
-Point Tile::center() const {  return Point( _epos.i(), _epos.j() ) * tilemap::cellSize().height() + tilemap::cellCenter(); }
+Point Tile::center() const {  return Point( _epos.i(), _epos.j() ) * config::tilemap.cell.size().height() + config::tilemap.cell.center(); }
 bool Tile::isMaster() const{  return (_master == this);}
 void Tile::setEPos(const TilePos& epos)
 {
   _epos = epos;
-  _mappos = Point( tilemap::cellSize().width() * ( _epos.i() + _epos.j() ),
-                   tilemap::cellSize().height() * ( _epos.i() - _epos.j() ) - _height * tilemap::cellSize().height() );
+  _mappos = Point( config::tilemap.cell.size().width() * ( _epos.i() + _epos.j() ),
+                   config::tilemap.cell.size().height() * ( _epos.i() - _epos.j() ) - _height * config::tilemap.cell.size().height() );
 }
 
 void Tile::changeDirection(Tile *masterTile, Direction newDirection)

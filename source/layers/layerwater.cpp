@@ -22,11 +22,16 @@
 #include "objects/house_spec.hpp"
 #include "constants.hpp"
 #include "city/statistic.hpp"
+#include "core/color_list.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/event.hpp"
+#include "objects/watersupply.hpp"
+#include "objects/fountain.hpp"
 #include "core/gettext.hpp"
 #include "gfx/tilemap_camera.hpp"
 #include "objects/aqueduct.hpp"
+#include "gfx/textured_path.hpp"
+#include "game/gamedate.hpp"
 #include "core/font.hpp"
 #include "core/utils.hpp"
 
@@ -41,6 +46,14 @@ public:
   std::set<int> flags;
   bool showWaterValue;
   std::map<int, Picture> pics;
+
+  struct
+  {
+    OverlayPtr selected;
+    OverlayPtr underMouse;
+  } overlay;
+
+  std::vector<ColoredWay> ways;
 };
 
 int Water::type() const{  return citylayer::water;}
@@ -74,16 +87,16 @@ void Water::drawTile( const RenderInfo& rinfo, Tile& tile)
         auto house = overlay.as<House>();
         needDrawAnimations = (house->level() <= HouseLevel::hovel) && house->habitants().empty();
 
-        tileNumber = config::id.overlay.inHouse;
+        tileNumber = config::tile.house;
         haveWater = haveWater || house->hasServiceAccess(Service::fountain) || house->hasServiceAccess(Service::well);
       }
 
       if( !needDrawAnimations )
       {
-        tileNumber += (haveWater ? config::id.overlay.haveWater : 0);
-        tileNumber += tile.param( Tile::pReservoirWater ) > 0 ? config::id.overlay.reservoirRange : 0;
+        tileNumber += (haveWater ? config::layer.haveWater : 0);
+        tileNumber += tile.param( Tile::pReservoirWater ) > 0 ? config::layer.reservoirRange : 0;
 
-        drawArea( rinfo, overlay->area(), ResourceGroup::waterOverlay, config::id.overlay.base + tileNumber );
+        drawArea( rinfo, overlay->area(), config::layer.water, config::tile.constr + tileNumber );
 
         areaSize = Size( 0 );
       }
@@ -141,10 +154,10 @@ void Water::_drawLandTile(const RenderInfo& rinfo, Tile& tile, const Size& areaS
 
     if( (reservoirWater + fontainWater > 0) && ! rtile->getFlag( Tile::tlWater ) && rtile->overlay().isNull() )
     {
-      int picIndex = reservoirWater ? config::id.overlay.reservoirRange : 0;
-      picIndex |= fontainWater > 0 ? config::id.overlay.haveWater : 0;
-      picIndex |= config::id.overlay.skipLeftBorder | config::id.overlay.skipRightBorder;
-      rinfo.engine.draw( _d->pics[ picIndex + config::id.overlay.base ], rtile->mappos() + rinfo.offset );
+      int picIndex = reservoirWater ? config::layer.reservoirRange : 0;
+      picIndex |= fontainWater > 0 ? config::layer.haveWater : 0;
+      picIndex |= config::tile.skipLeftBorder | config::tile.skipRightBorder;
+      rinfo.engine.draw( _d->pics[ picIndex + config::tile.constr ], rtile->mappos() + rinfo.offset );
     }
   }
 }
@@ -199,9 +212,18 @@ void Water::handleEvent(NEvent& event)
           case 4: case 5: text = "##water_srvc_reservoir##"; break;
           }
         }
+
+        _d->overlay.underMouse = tile->overlay();
       }
 
       _setTooltipText( _(text) );
+    }
+    break;
+
+    case mouseLbtnPressed:
+    {
+      _d->overlay.selected = _d->overlay.underMouse;
+      _updatePaths();
     }
     break;
 
@@ -212,6 +234,59 @@ void Water::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
+void Water::_updatePaths()
+{
+  auto reservoir = _d->overlay.underMouse.as<Reservoir>();
+  if( reservoir.isValid() )
+  {
+    _d->ways.clear();
+    PathwayCondition wayCondition;
+    auto fountains = reservoir->aquifer().overlays<Fountain>();
+
+    for( auto fountain : fountains )
+    {
+      Pathway pathway = PathwayHelper::create( reservoir->pos(), fountain->pos(), wayCondition.bySomething() );
+      if( pathway.isValid() )
+        _d->ways.push_back( { pathway.allTiles(), ColorList::red } );
+    }
+  }
+
+  auto fountain = _d->overlay.underMouse.as<Fountain>();
+  if( fountain.isValid() )
+  {
+    _d->ways.clear();
+
+    PathwayCondition wayCondition;
+    auto reservoirs = _map().rect( 10, fountain->pos() ).overlays<Reservoir>();
+
+    for( auto reservoir : reservoirs )
+    {
+      Pathway pathway = PathwayHelper::create( reservoir->pos(), fountain->pos(), wayCondition.bySomething() );
+      if( pathway.isValid() )
+        _d->ways.push_back( { pathway.allTiles(), ColorList::blue } );
+    }
+  }
+}
+
+void Water::render(Engine& engine)
+{
+  Layer::render( engine );
+
+  RenderInfo rinfo{ engine, _camera()->offset() };
+  for( auto& wayinfo : _d->ways )
+  {
+    TexturedPath::draw( wayinfo.tiles, rinfo, wayinfo.color );
+  }
+}
+
+void Water::afterRender(Engine& engine)
+{
+  Layer::afterRender(engine);
+
+  if( game::Date::isDayChanged() )
+    _updatePaths();
+}
+
 Water::Water( Camera& camera, PlayerCityPtr city)
   : Layer( &camera, city ), _d( new Impl )
 {
@@ -219,7 +294,7 @@ Water::Water( Camera& camera, PlayerCityPtr city)
   _initialize();
 
   for( int i=1; i < 32; i++ )
-    _d->pics[ i ] = Picture( ResourceGroup::waterOverlay, i );
+    _d->pics[ i ] = Picture( config::layer.water, i );
 }
 
 }//end namespace citylayer

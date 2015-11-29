@@ -173,7 +173,7 @@ void AboutLegion::_update()
 
   if( _d->btnAttackAnimals )
   {
-    std::string text = utils::format( 0xff, "##attack_animals_%s##", _d->fort->isAttackAnimals() ? "on" : "off" );
+    std::string text = fmt::format( "##attack_animals_{}##", _d->fort->isAttackAnimals() ? "on" : "off" );
     _d->btnAttackAnimals->setText( text );
   }
 
@@ -274,7 +274,7 @@ void AboutLegion::_addFormationButton(int index, int id, int picId)
   Rect rect( Point( 16, 140 ) + offset * index, Size( 83 ) );
   PushButton& btn = add<PushButton>( rect, "", id );
   btn.setBackgroundStyle( PushButton::whiteBorderUp );
-  btn.setIcon( ResourceGroup::menuMiddleIcons, picId );
+  btn.setIcon( gui::miniature.rc, picId );
   btn.setIconOffset( Point( 1, 1 ) );
   btn.setTooltipText( _("##legion_formation_tooltip##") );
 }

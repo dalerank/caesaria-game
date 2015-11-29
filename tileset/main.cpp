@@ -640,7 +640,7 @@ void unpackAtlases( const std::string& fullpath )
       bool dirCreated = currentDir.create( dirName.toString() );
       if( !dirCreated )
       {
-        Logger::warning( "Cant create directory " + textureName.toString() );
+        Logger::warning( "WARNING !!! Cant create directory " + textureName.toString() );
         continue;
       }
 
@@ -674,7 +674,7 @@ int main(int argc, char* argv[])
 
   Logger::warning( "GraficEngine: set size 800x800" );
   engine->setScreenSize( Size( 800, 800 ) );
-  engine->setFlag( gfx::Engine::debugInfo, true );
+  engine->setFlag( gfx::Engine::showMetrics, true );
   engine->setFlag( gfx::Engine::batching, false );
   engine->init();
   engine->setTitle( "CaesarIA: tileset packer" );
@@ -799,11 +799,12 @@ int main(int argc, char* argv[])
     }
 
     index = math::clamp<int>( index, 0, gens.max()-1 );
-    engine->startRenderFrame();
+    engine->frame().start();
 
     engine->draw( bg, Point() );    
     engine->draw( pic, Rect( Point(), pic.size()), Rect( Point(), Size(800) ) );
-    engine->endRenderFrame();
+
+    engine->frame().finish();
 
     int delayTicks = DebugTimer::ticks() - lastTimeUpdate;
     if( delayTicks < 33 )

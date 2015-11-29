@@ -73,7 +73,7 @@ public:
     return isOk;
   }
 
-  virtual TilePos owner() const { return factory ? factory->pos() : gfx::tilemap::invalidLocation(); }
+  virtual TilePos owner() const { return factory ? factory->pos() : TilePos::invalid(); }
 
   Factory* factory;
 
@@ -216,9 +216,7 @@ void Factory::timeStep(const unsigned long time)
 
   //no workers or no good in stock... stop animate
   if( !mayWork() )
-  {
     return;
-  }
   
   if( _d->production.progress >= 100.0 ) { _productReady();     }
   else                                   { _productProgress();  }
@@ -316,7 +314,7 @@ void Factory::_storeChanged(){}
 void Factory::setProductRate( const float rate ){  _d->production.rate = rate;}
 float Factory::productRate() const{  return _d->production.rate;}
 
-unsigned int Factory::effciency()      const { return laborAccessPercent() * productivity() / 100; }
+math::Percent Factory::effciency()      const { return laborAccessPercent() * productivity() / 100; }
 unsigned int Factory::getFinishedQty() const { return _d->finishedQty; }
 unsigned int Factory::getConsumeQty()  const { return 100; }
 
@@ -439,9 +437,9 @@ void Factory::_productProgress()
   if( _d->produceGood && game::Date::isDayChanged() )
   {
     //ok... factory is work, produce goods
-    float timeKoeff = _d->production.rate / 365.f;
+    float productionPerYear = _d->production.rate / 365.f;
     float laborAccessKoeff = laborAccessPercent() / 100.f;
-    float dayProgress = productivity() * timeKoeff * laborAccessKoeff;  // work is proportional to time and factory speed
+    float dayProgress = productivity() * productionPerYear * laborAccessKoeff;  // work is proportional to time and factory speed
 
     _d->production.progress += dayProgress;
   }

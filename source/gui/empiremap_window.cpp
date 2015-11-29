@@ -26,6 +26,7 @@
 #include "world/computer_city.hpp"
 #include "city/statistic.hpp"
 #include "gfx/decorator.hpp"
+#include "core/line.hpp"
 #include "label.hpp"
 #include "core/utils.hpp"
 #include "core/gettext.hpp"
@@ -70,22 +71,6 @@ struct Dragging
   bool active;
   Point start;
   Point last;
-};
-
-struct Line
-{
-  Point begin, end;
-  NColor color;
-};
-
-class Lines : public std::vector<Line>
-{
-public:
-  void add( const NColor& color, const Point& p1, const Point& p2 )
-  {
-    Line a = { p1, p2, color };
-    push_back( a );
-  }
 };
 
 class EmpireMapWindow::Impl
@@ -406,7 +391,7 @@ void EmpireMapWindow::Impl::createTradeRoute()
       events::dispatch<Payment>( econ::Issue::sundries, -(int)cost );
 
       size_t docks_n = city.base->statistic().objects.count( object::dock );
-      if( docks_n )
+      if( !docks_n )
       {
         events::dispatch<ShowInfobox>( _("##no_working_dock##" ), _( "##no_dock_for_sea_trade_routes##" ) );
       }
@@ -741,7 +726,7 @@ void EmpireMapWindow::_changePosition()
 
 const Point& EmpireMapWindow::_offset() const { return _d->offset; }
 Widget* EmpireMapWindow::_resetInfoPanel() { _d->resetInfoPanel(); return _d->gbox; }
-void EmpireMapWindow::_showHelp() { DictionaryWindow::show( this, "empiremap" ); }
+void EmpireMapWindow::_showHelp() { ui()->add<DictionaryWindow>( "empiremap" ); }
 
 void EmpireMapWindow::_toggleAi()
 {
@@ -759,8 +744,7 @@ void EmpireMapWindow::_toggleAi()
 
 EmpireMapWindow* EmpireMapWindow::create(PlayerCityPtr city, Widget* parent, int id )
 {
-  EmpireMapWindow* ret = new EmpireMapWindow( parent, id, city );
-  return ret;
+  return &parent->add<EmpireMapWindow>( id, city );
 }
 
 EmpireMapWindow::~EmpireMapWindow()

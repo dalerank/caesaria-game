@@ -419,10 +419,10 @@ void CartPusher::save( VariantMap& stream ) const
   
   stream[ literals::stock ] = _d->stock.save();
   stream[ literals::producerPos ] = _d->producerBuilding.isValid()
-                                ? _d->producerBuilding->pos() : gfx::tilemap::invalidLocation();
+                                ? _d->producerBuilding->pos() : TilePos::invalid();
 
   stream[ literals::consumerPos ] = _d->consumerBuilding.isValid()
-                                ? _d->consumerBuilding->pos() : gfx::tilemap::invalidLocation();
+                                ? _d->consumerBuilding->pos() : TilePos::invalid();
 
   VARIANT_SAVE_ANY_D( stream, _d, maxDistance )
   VARIANT_SAVE_ANY_D( stream, _d, cantUnloadGoods )
@@ -506,8 +506,8 @@ TilePos CartPusher::places(Walker::Place type) const
 {
   switch( type )
   {
-  case plOrigin: return _d->producerBuilding.isValid() ? _d->producerBuilding->pos() : gfx::tilemap::invalidLocation();
-  case plDestination: return _d->consumerBuilding.isValid() ? _d->consumerBuilding->pos() : gfx::tilemap::invalidLocation();
+  case plOrigin: return _d->producerBuilding.isValid() ? _d->producerBuilding->pos() : TilePos::invalid();
+  case plDestination: return _d->consumerBuilding.isValid() ? _d->consumerBuilding->pos() : TilePos::invalid();
   default: break;
   }
 

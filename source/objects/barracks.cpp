@@ -89,7 +89,7 @@ void Barracks::storeGoods(good::Stock& stock, const int amount)
 
 std::string Barracks::workersProblemDesc() const
 {
-  unsigned int pp = productivity();
+  math::Percent pp = productivity();
   unsigned int haveWeapon = _d->store.qty() >= _d->store.capacity() / 2;
   if( pp > 0  )
   {

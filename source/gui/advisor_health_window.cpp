@@ -23,6 +23,7 @@
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
 #include "gfx/engine.hpp"
+#include "environment.hpp"
 #include "core/gettext.hpp"
 #include "objects/construction.hpp"
 #include "city/statistic.hpp"
@@ -131,8 +132,6 @@ private:
 class Health::Impl
 {
 public:
-  TexturedButton* btnHelp;
-
   HealthcareInfo getInfo(PlayerCityPtr city, const object::Type objectType );
 };
 
@@ -142,12 +141,12 @@ Health::Health(PlayerCityPtr city, Widget* parent, int id )
   setupUI( ":/gui/healthadv.gui" );
   setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
-  GET_DWIDGET_FROM_UI( _d, btnHelp )
+  INIT_WIDGET_FROM_UI( PushButton*, btnHelp )
 
   _initUI( city );
   _updateAdvice( city );
 
-  CONNECT( _d->btnHelp, onClicked(), this, Health::_showHelp );
+  CONNECT( btnHelp, onClicked(), this, Health::_showHelp );
 }
 
 void Health::draw( gfx::Engine& painter )
@@ -157,8 +156,6 @@ void Health::draw( gfx::Engine& painter )
 
   Window::draw( painter );
 }
-
-void Health::_showHelp() { DictionaryWindow::show( this, "health_advisor" ); }
 
 HealthcareInfo Health::Impl::getInfo(PlayerCityPtr city, const object::Type objectType)
 {
@@ -187,6 +184,8 @@ HealthcareInfo Health::Impl::getInfo(PlayerCityPtr city, const object::Type obje
 
   return ret;
 }
+
+void Health::_showHelp() { ui()->add<DictionaryWindow>( "health_advisor" ); }
 
 void Health::_updateAdvice(PlayerCityPtr c)
 {

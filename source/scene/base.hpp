@@ -20,6 +20,7 @@
 #define _CAESARIA_SCENE_BASE_H_INCLUDE_
 
 #include "core/referencecounted.hpp"
+#include "core/scopedptr.hpp"
 #include "core/smartptr.hpp"
 
 struct NEvent;
@@ -69,7 +70,6 @@ public:
 protected:
   Base();
 
-  //WidgetEvent _wevent;  // event to pass to the main loop
   bool _isStopped;  // screen needs to stop its loop
   int _delayTicks;
 };

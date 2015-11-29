@@ -157,8 +157,8 @@ public:
   TilePos selectedTilePos;
   citylayer::Type lastLayerId;
   DebugHandler dhandler;
-  undo::UStack undoStack;
   bool simulationPaused;
+  undo::UStack undoStack;
 
   int result;
 
@@ -229,7 +229,7 @@ void Level::Impl::initMainUI()
 
   ui.clear();
 
-  Picture rPanelPic( ResourceGroup::panelBackground, config::id.empire.rightPanelTx );
+  Picture rPanelPic( gui::rc.panel, config::id.empire.rightPanelTx );
 
   Rect rPanelRect( ui.vsize().width() - rPanelPic.width(), topMenuHeight,
                    ui.vsize().width(), ui.vsize().height() );
@@ -266,22 +266,20 @@ void Level::Impl::initSound()
 {
   auto sound = game->city()->statistic().services.find<city::AmbientSound>();
   auto player = game->city()->statistic().services.find<audio::ThemePlayer>();
+
   if( sound.isValid() )
     sound->setCamera( renderer.camera() );
 
-  if( player.isValid() )
-  {
-    CONNECT( player, onSwitch(), this, Impl::resolveWarningMessage )
-  }
+  CONNECT( player, onSwitch(), this, Impl::resolveWarningMessage )
 }
 
 void Level::Impl::initTabletUI( Level* scene )
 {
   //specific tablet actions bar
-  tablet::ActionsBar* tabletUi = new tablet::ActionsBar( game->gui()->rootWidget() );
-  tablet::ActionsHandler::assignTo( tabletUi, scene );
+  auto& tabletUi = game->gui()->add<tablet::ActionsBar>();
+  tablet::ActionsHandler::assignTo( &tabletUi, scene );
 
-  tabletUi->setVisible( SETTINGS_VALUE(showTabletMenu) );
+  tabletUi.setVisible( SETTINGS_VALUE(showTabletMenu) );
 }
 
 void Level::Impl::connectTopMenu2scene(Level* scene)
@@ -350,8 +348,6 @@ void Level::initialize()
   CONNECT( &_d->renderer, onLayerSwitch(), _d.data(),                Impl::layerChanged )
 
   CONNECT( _d->extMenu, onUndo(),                 &_d->undoStack,    undo::UStack::undo )
-  CONNECT( &_d->renderer, onBuilt(),              &_d->undoStack,    undo::UStack::build )
-  CONNECT( &_d->renderer, onDestroyed(),          &_d->undoStack,    undo::UStack::destroy )
   CONNECT( &_d->undoStack, onUndoChange(),        _d->extMenu,       ExtentMenu::resolveUndoChange )
 
   _d->showMissionTargetsWindow();
@@ -716,8 +712,8 @@ void Level::Impl::showTradeAdvisorWindow(){  showAdvisorsWindow( advisor::tradin
 void Level::setCameraPos(TilePos pos) {  _d->renderer.camera()->setCenter( pos ); }
 void Level::switch2layer(int layer) { _d->renderer.setLayer( layer ); }
 Camera* Level::camera() const { return _d->renderer.camera(); }
+undo::UStack&Level::undoStack() { return _d->undoStack; }
 void Level::Impl::saveScrollSpeed(int speed) { SETTINGS_SET_VALUE( scrollSpeed, speed ); }
-
 void Level::_quit(){ _d->result = Level::res_quit; stop(); }
 void Level::restart() { _d->result = Level::res_restart; stop();}
 int  Level::result() const {  return _d->result; }
@@ -753,7 +749,7 @@ bool Level::_tryExecHotkey(NEvent &event)
       case KEY_KEY_E:
       {
         TilePos center = _d->renderer.camera()->center();
-        TileRect trect( center-tilemap::unitLocation(), center+tilemap::unitLocation());
+        TileRect trect( center-config::tilemap.unitLocation(), center+config::tilemap.unitLocation());
         TilePos currect = _d->game->city()->getBorderInfo( PlayerCity::roadEntry ).epos();
         PlayerCity::TileType rcenter = trect.contain( currect )
                                           ? PlayerCity::roadExit

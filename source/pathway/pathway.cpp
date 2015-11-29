@@ -101,12 +101,12 @@ Direction Pathway::direction() const
     if(_d->reverse )
     {
       if( _d->step > 0 )
-        return tilemap::getDirection( _d->tiles[_d->step]->epos(),  _d->tiles[ _d->step-1]->epos() );
+        return _d->tiles[_d->step]->epos().directionTo( _d->tiles[ _d->step-1]->epos() );
     }
     else
     {
       if( _d->step < _d->tiles.size()-1 )
-        return tilemap::getDirection( _d->tiles[_d->step]->epos(),  _d->tiles[ _d->step+1]->epos() );
+        return _d->tiles[_d->step]->epos().directionTo( _d->tiles[ _d->step+1]->epos() );
     }
   }
 
@@ -200,13 +200,13 @@ bool Pathway::contains(const Tile& tile)
 
 void Pathway::prettyPrint() const
 {
-  Logger::warning( "pathWay from [{0},{1}] to [{2},{3}]",
+  Logger::warning( "pathWay from [{},{}] to [{},{}]",
                    _d->startPos.i(), _d->startPos.j(), _d->endPos.i(), _d->endPos.j() );
 
   std::string strDir = "";
   for( unsigned int k=0; k < _d->tiles.size()-1; k++ )
   {
-    Direction direction = tilemap::getDirection( _d->tiles[k]->pos(), _d->tiles[k+1]->pos() );
+    Direction direction = _d->tiles[k]->pos().directionTo( _d->tiles[k+1]->pos() );
 
     switch (direction)
     {

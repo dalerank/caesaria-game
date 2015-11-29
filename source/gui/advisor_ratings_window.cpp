@@ -57,48 +57,54 @@ namespace advisorwnd
 
 namespace {
 enum { muchPlebsPercent=30, peaceAverage=50, cityAmazinProsperity=90, peaceLongTime=90 };
-
 const char* const cultureCoverageDesc[CultureRating::covCount] = { "school", "library", "academy", "temple", "theater" };
 }
+
+class RatingColumn : public Label
+{
+public:
+  Pictures columns;
+
+  RatingColumn(Widget *parent, const Point& center, int value )
+    : Label( parent )
+  {
+    int columnStartY = 275;
+    Picture footer( gui::rc.panel, gui::column.footer );
+    Picture header( gui::rc.panel, gui::column.header );
+    Picture body( gui::rc.panel, gui::column.body );
+
+    for( int i=0; i < value; i++ )
+    {
+      columns.append( body, Point( center.x() - body.width() / 2, -columnStartY + (10 + i * 2)) );
+    }
+
+    columns.append( footer, Point( center.x() - footer.width() / 2, -columnStartY + footer.height()) );
+    if( value >= 50 )
+    {
+      columns.append( header, Point( center.x() - header.width() / 2, -columnStartY + (10 + value * 2)) );
+    }
+
+    setCenter( center );
+  }
+
+  virtual void draw(Engine &painter)
+  {
+    painter.draw( columns, parent()->absoluteRect().lefttop() );
+  }
+};
 
 class Ratings::Impl
 {
 public:
-  Pictures columns;
-  RatingButton* btnCulture;
-  RatingButton* btnProsperity;
-  RatingButton* btnPeace;
-  RatingButton* btnFavour;
-  TexturedButton* btnHelp;
   Label* lbRatingInfo;
   PlayerCityPtr city;
 
 public:
-  void updateColumn( const Point& alignCenter, const int value );
   void checkCultureRating();
   void checkProsperityRating();
   void checkPeaceRating();
   void checkFavourRating();
 };
-
-void Ratings::Impl::updateColumn( const Point& center, const int value )
-{
-  int columnStartY = 275;
-  Picture footer( ResourceGroup::panelBackground, 544 );
-  Picture header( ResourceGroup::panelBackground, 546 );
-  Picture body( ResourceGroup::panelBackground, 545 );
-
-  for( int i=0; i < value; i++ )
-  {
-    columns.append( body, Point( center.x() - body.width() / 2, -columnStartY + (10 + i * 2)) );
-  }
-
-  columns.append( footer, Point( center.x() - footer.width() / 2, -columnStartY + footer.height()) );
-  if( value >= 50 )
-  {
-    columns.append( header, Point( center.x() - header.width() / 2, -columnStartY + (10 + value * 2)) );
-  }
-}
 
 void Ratings::Impl::checkCultureRating()
 {
@@ -304,44 +310,43 @@ Ratings::Ratings(Widget* parent, int id, const PlayerCityPtr city )
     lbNeedPopulation->setText( text );
   }
 
-  GET_DWIDGET_FROM_UI( _d, btnCulture )
-  if( _d->btnCulture )
+  INIT_WIDGET_FROM_UI( RatingButton*, btnCulture )
+  if( btnCulture )
   {
-    _d->btnCulture->setTarget( targets.needCulture() );
-    _d->btnCulture->setValue( _d->city->culture() );
-    _d->updateColumn( _d->btnCulture->relativeRect().center(), _d->city->culture() );
+    btnCulture->setTarget( targets.needCulture() );
+    btnCulture->setValue( _d->city->culture() );
+    add<RatingColumn>( btnCulture->relativeRect().center(), _d->city->culture() );
   }
-  CONNECT( _d->btnCulture, onClicked(), _d.data(), Impl::checkCultureRating );
+  CONNECT( btnCulture, onClicked(), _d.data(), Impl::checkCultureRating );
 
-  GET_DWIDGET_FROM_UI( _d, btnProsperity )
-  if( _d->btnProsperity )
+  INIT_WIDGET_FROM_UI( RatingButton*, btnProsperity )
+  if( btnProsperity )
   {
-    _d->btnProsperity->setValue( _d->city->prosperity() );
-    _d->btnProsperity->setTarget( targets.needProsperity() );
-    _d->updateColumn( _d->btnProsperity->relativeRect().center(), _d->city->prosperity() );
+    btnProsperity->setValue( _d->city->prosperity() );
+    btnProsperity->setTarget( targets.needProsperity() );
+    add<RatingColumn>( btnProsperity->relativeRect().center(), _d->city->prosperity() );
   }
-  CONNECT( _d->btnProsperity, onClicked(), _d.data(), Impl::checkProsperityRating );
+  CONNECT( btnProsperity, onClicked(), _d.data(), Impl::checkProsperityRating );
 
-  GET_DWIDGET_FROM_UI( _d, btnPeace )
-  if( _d->btnPeace )
+  INIT_WIDGET_FROM_UI( RatingButton*, btnPeace )
+  if( btnPeace )
   {
-    _d->btnPeace->setValue( _d->city->peace() );
-    _d->btnPeace->setTarget( targets.needPeace() );
-    _d->updateColumn( _d->btnPeace->relativeRect().center(), _d->city->peace() );
+    btnPeace->setValue( _d->city->peace() );
+    btnPeace->setTarget( targets.needPeace() );
+    add<RatingColumn>( btnPeace->relativeRect().center(), _d->city->peace() );
   }
-  CONNECT( _d->btnPeace, onClicked(), _d.data(), Impl::checkPeaceRating );
+  CONNECT( btnPeace, onClicked(), _d.data(), Impl::checkPeaceRating );
 
-  GET_DWIDGET_FROM_UI( _d, btnFavour )
-  if( _d->btnFavour )
+  INIT_WIDGET_FROM_UI( RatingButton*, btnFavour )
+  if( btnFavour )
   {
-    _d->btnFavour->setValue( _d->city->favour() );
-    _d->btnFavour->setTarget( targets.needFavour() );
-    _d->updateColumn( _d->btnFavour->relativeRect().center(), _d->city->favour() );
+    btnFavour->setValue( _d->city->favour() );
+    btnFavour->setTarget( targets.needFavour() );
+    add<RatingColumn>( btnFavour->relativeRect().center(), _d->city->favour() );
   }
-  CONNECT( _d->btnFavour, onClicked(), _d.data(), Impl::checkFavourRating );
+  CONNECT( btnFavour, onClicked(), _d.data(), Impl::checkFavourRating );
 
-  _d->btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
-  CONNECT( _d->btnHelp, onClicked(), this, Ratings::_showHelp );
+  add<HelpButton>( Point( 12, height() - 39), "ratings_advisor" );
 }
 
 void Ratings::draw( gfx::Engine& painter )
@@ -350,11 +355,7 @@ void Ratings::draw( gfx::Engine& painter )
     return;
 
   Window::draw( painter );
-
-  painter.draw( _d->columns, absoluteRect().lefttop(), &absoluteClippingRectRef() );
 }
-
-void Ratings::_showHelp() { DictionaryWindow::show( this, "ratings_advisor" ); }
 
 }
 

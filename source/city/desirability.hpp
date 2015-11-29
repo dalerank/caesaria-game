@@ -29,11 +29,7 @@ struct Desirability
 
   enum { off=false, on=true };
   static void update( PlayerCityPtr r, OverlayPtr ov, bool on );
-  static const Desirability& invalid()
-  {
-    static Desirability inv;
-    return inv;
-  }
+  static const Desirability& invalid();
 };
 
 #endif //__CAESARIA_DESIRABILTY_H_INCLUDED__

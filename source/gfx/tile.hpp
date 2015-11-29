@@ -78,8 +78,8 @@ public:
 
   // displayed picture
   void setPicture( const Picture& picture );
-  void setPicture( const char* rc, const int index );
   void setPicture( const std::string& name );
+  void setPicture( const std::string& group, const int index );
   inline const Picture& picture() const { return _picture; }
 
   // used for multi-tile graphics: current displayed picture

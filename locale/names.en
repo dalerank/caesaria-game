@@ -833,24 +833,24 @@
     },
     "greek": {
         "male": [
-            "PlatonJason",
-            "GeorgesKokes",
-            "MarcarioNicolas",
-            "AntonyPetros",
-            "JaisonPitera",
-            "ChristianoZenon",
-            "AthanasiosKormos",
+            "Platon",
+            "Georges",
+            "Marcarios",
+            "Antonys",
+            "Jaisonos",
+            "Christianos",
+            "Athanasios",
             "CimonScala",
-            "KristofrAmbrosia",
+            "Kristofros",
             "TitoSperos",
             "EachannLadas",
             "HeliosSamaras",
-            "ErysichthonRodia",
-            "BaucisKallas",
-            "JirkarCastellanos",
-            "AlcyoneusZografos",
-            "AnastagioLois",
-            "NaupliusKondos",
+            "Erysichthonas",
+            "Baucis",
+            "Jirkars",
+            "Alcyoneus",
+            "Anastagios",
+            "Nauplius",
             "AmycusHatzis",
             "PlatoAnagnos",
             "ZelotesHanno",
@@ -893,6 +893,8 @@
             "CyrylXenakis",
             "ClioBanis",
             "TyroneDukas"
-        ]
+        ],			
+				"surname": [ "Jason", "Kokes", "Nicolas", "Petros", "Piterabs", "Zenons", "Kormos", "Ambrosias", "Rodis", "Kallas",
+										 "Castellanos", "Zografos", "Lois",	"Kondos" ]
     }
 }

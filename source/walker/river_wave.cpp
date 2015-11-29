@@ -33,8 +33,6 @@ RiverWave::RiverWave(PlayerCityPtr city )
   _animation.setOffset( Point( 0, 0) );
   _animation.start( false );
 
-  setName( _("##river_wave##") );
-
   setFlag( vividly, false );
 }
 
@@ -67,5 +65,11 @@ RiverWave::~RiverWave() {}
 void RiverWave::save( VariantMap& stream ) const
 {
   Walker::save( stream );
+}
+
+void RiverWave::initialize(const VariantMap& options)
+{
+  Walker::initialize( options );
+  setName( _("##river_wave##") );
 }
 
