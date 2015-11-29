@@ -374,13 +374,12 @@ bool connect()
     return false;
   }
 
-  if( OSystem::isUnix() )
-  {
+#ifdef CAESARIA_PLATFORM_LINUX
     int pid = getpid();
     StringArray processIdTree;
     OSystem::getProcessTree( pid, processIdTree );
     gameRunFromClient = processIdTree.contains( "steam" );
-  }
+#endif
 
   // set our debug handler
   SteamClient()->SetWarningMessageHook( &SteamAPIDebugTextHook );
