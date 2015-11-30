@@ -37,7 +37,14 @@ REGISTER_CLASS_IN_WIDGETFACTORY(SpinBox)
 class SpinBox::Impl
 {
 public:
-  int minv, maxv, value, step;
+  struct
+  {
+    int minimum = 0;
+    int maximum = 100;
+    int current = 0;
+    int step = 10;
+  } value;
+
   std::string postfix;
   TexturedButton* btnDecrease;
   TexturedButton* btnIncrease;
@@ -47,7 +54,7 @@ public:
     Signal2<SpinBox*,int> onChangeA;
   } signal;
 
-  Impl() : minv( 0 ), maxv( 100 ), value( 0 ), step( 10 ), btnDecrease( 0 ), btnIncrease( 0 ) {}
+  Impl() : btnDecrease( 0 ), btnIncrease( 0 ) {}
 };
 
 //! constructor
@@ -99,7 +106,7 @@ void SpinBox::draw(gfx::Engine& painter )
 
 void SpinBox::setValue(int value)
 {
-  _d->value = math::clamp( value, _d->minv, _d->maxv );
+  _d->value.current = math::clamp( value, _d->value.minimum, _d->value.maximum );
   _update();
 }
 
@@ -114,16 +121,16 @@ void gui::SpinBox::_updateTexture(Engine& painter)
 
 void SpinBox::_increase()
 {
-  setValue( _d->value + _d->step );
-  emit _d->signal.onChange( _d->value );
-  emit _d->signal.onChangeA( this, _d->value );
+  setValue( _d->value.current + _d->value.step );
+  emit _d->signal.onChange( _d->value.current );
+  emit _d->signal.onChangeA( this, _d->value.current );
 }
 
 void SpinBox::_decrease()
 {
-  setValue( _d->value - _d->step );
-  emit _d->signal.onChange( _d->value );
-  emit _d->signal.onChangeA( this, _d->value );
+  setValue( _d->value.current - _d->value.step );
+  emit _d->signal.onChange( _d->value.current );
+  emit _d->signal.onChangeA( this, _d->value.current );
 }
 
 void SpinBox::_update()
@@ -140,7 +147,7 @@ void SpinBox::_update()
     }
 
     frameRect = Rect( _d->btnIncrease->right() + 5, 0, width(), height() );
-    string valueText = fmt::format( "{0} {1}", _d->value, _d->postfix );
+    string valueText = fmt::format( "{} {}", _d->value.current, _d->postfix );
     _textPicture().fill( ColorList::clear, frameRect );
 
     if( !valueText.empty() )
@@ -155,9 +162,9 @@ void SpinBox::setupUI(const VariantMap& ui)
 {
   Label::setupUI( ui );
 
-  _d->maxv = ui.get( "max", _d->maxv );
-  _d->minv = ui.get( "min", _d->minv );
-  _d->value = ui.get( "value", _d->value );
+  _d->value.maximum = ui.get( "max", _d->value.maximum );
+  _d->value.minimum = ui.get( "min", _d->value.minimum );
+  _d->value.current = ui.get( "value", _d->value.current );
   _d->postfix = ui.get( "postfix", _d->postfix ).toString();
 
   if( _d->btnDecrease )

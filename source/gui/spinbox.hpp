@@ -28,7 +28,6 @@ class SpinBox : public Label
 public:
   //! constructor
   SpinBox(Widget* parent );
-
   SpinBox(Widget* parent, const Rect& rectangle, const std::string& text="", const std::string& postfix="", int id=-1);
 
   //! destructor

@@ -592,9 +592,9 @@ void ContextMenu::setEventParent( Widget *parent )
 {
 	_d->eventParent = parent;
 
-	for (unsigned int i=0; i<_d->items.size(); ++i)
-		if( _d->items[i]->subMenu() )
-			_d->items[i]->subMenu()->setEventParent(parent);
+  for( auto item : _d->items )
+    if( item->subMenu() )
+      item->subMenu()->setEventParent(parent);
 }
 
 
