@@ -26,6 +26,7 @@
 #include "gfx/picture.hpp"
 #include "core/gettext.hpp"
 #include "good/productmap.hpp"
+#include "walker/animals.hpp"
 #include "events/playsound.hpp"
 #include "gfx/decorator.hpp"
 #include "walker/enemysoldier.hpp"
@@ -108,7 +109,7 @@ public:
   std::vector<CitizenScreenshot*> screenshots;
   TilePos baseBuildingPos;
   TilePos destinationPos;
-  WalkerPtr object;
+  WalkerPtr object;  
 
 public:
   void updateCurrentAction( const std::string& action, TilePos pos );
@@ -223,44 +224,84 @@ void AboutPeople::_init( PlayerCityPtr city, const TilePos& pos, const std::stri
 void AboutPeople::_updateExtInfo(){}
 Label *AboutPeople::_lbThinks(){ return _d->lbThinks; }
 
+typedef Delegate2< WalkerPtr, bool& > Condition;
+
 void AboutPeople::_updateTitle()
 {
   if( _d->object.isNull() )
     return;
 
-  std::string title;
-  if( _d->object.is<EnemySoldier>() )
-  {
-    title = WalkerHelper::getNationName( _d->object->nation() );
-    title.insert( title.size()-2, "_soldier" );
-  }
-  else if( !_d->object->getFlag( Walker::vividly ) )
-  {
-    title = "##object##";
-  }
-  else
-  {
-    switch( _d->object->type() )
-    {
-    case walker::merchant:
-    {
-      auto landMerchant = _d->object.as<Merchant>();
-      title = _("##trade_caravan_from##") + std::string(" ") + landMerchant->parentCity();
-    }
-    break;
+  std::vector<Condition> conditions{ makeDelegate( this, &AboutPeople::_checkEnemy ),
+                                     makeDelegate( this, &AboutPeople::_checkUnvividly ),
+                                     makeDelegate( this, &AboutPeople::_checkAnimal ),
+                                     makeDelegate( this, &AboutPeople::_checkMerchant ),
+                                     makeDelegate( this, &AboutPeople::_checkDefault ) };
 
-    case walker::seaMerchant:
-    {
-      auto seaMerchant = _d->object.as<SeaMerchant>();
-      title = _("##trade_ship_from##") + std::string(" ") + seaMerchant->parentCity();
-    }
-    break;
-
-    default: title = "##citizen##";
-    }
+  for( auto& condition : conditions )
+  {
+    bool found = false;
+    condition( _d->object, found );
+    if( found )
+      break;
   }
+}
 
-  setTitle( _( title ) );
+void AboutPeople::_checkEnemy(WalkerPtr walker, bool& found)
+{
+  if( !walker.is<EnemySoldier>() )
+    return;
+
+  std::string title = WalkerHelper::getNationName( walker->nation() );
+  title.insert( title.size()-2, "_soldier" );
+  setTitle( _(title) );
+  found = true;
+}
+
+void AboutPeople::_checkUnvividly(WalkerPtr walker, bool& found)
+{
+  if( walker->getFlag( Walker::vividly ) )
+    return;
+
+  setTitle( _("##object##") );
+  found = true;
+}
+
+void AboutPeople::_checkAnimal(WalkerPtr walker, bool& found)
+{
+  if( !walker.is<Animal>() )
+    return;
+
+  setTitle( _("##animal##") );
+  found = true;
+}
+
+void AboutPeople::_checkMerchant(WalkerPtr walker, bool& found)
+{
+  switch( walker->type() )
+  {
+  case walker::merchant:
+  {
+    auto landMerchant = walker.as<Merchant>();
+    setTitle( _("##trade_caravan_from##") + std::string(" ") + landMerchant->parentCity() );
+    found = true;
+  }
+  break;
+
+  case walker::seaMerchant:
+  {
+    auto seaMerchant = walker.as<SeaMerchant>();
+    setTitle( _("##trade_ship_from##") + std::string(" ") + seaMerchant->parentCity() );
+    found = true;
+  }
+  break;
+
+  default: break;
+  }
+}
+
+void AboutPeople::_checkDefault(WalkerPtr walker, bool& found)
+{
+  setTitle( _("##citizen##") );
 }
 
 AboutPeople::~AboutPeople()
