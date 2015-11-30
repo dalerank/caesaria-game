@@ -48,7 +48,6 @@ protected:
   const Point& _offset() const;
 
   Widget* _resetInfoPanel();
-  void _showHelp();
   void _toggleAi();
 
   class Impl;

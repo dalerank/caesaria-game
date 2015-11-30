@@ -56,11 +56,9 @@ DictionaryWindow::DictionaryWindow( Widget* p, const std::string& helpId )
   WidgetEscapeCloser::insertTo( this );
 
   GET_DWIDGET_FROM_UI( _d, lbTitle )
-  INIT_WIDGET_FROM_UI( PushButton* , btnExit )
   _d->lbText = &add<DictionaryText>( Rect( 20, 40, width() - 20, height() - 40 ) );
   _d->lbText->setFont( Font::create( FONT_1 ) );
 
-  CONNECT( btnExit, onClicked(), this, DictionaryWindow::deleteLater )
   CONNECT( _d->lbText, onWordClick(), this, DictionaryWindow::_handleUriChange )
 
   if( !helpId.empty() )
@@ -88,7 +86,7 @@ void DictionaryWindow::_handleUriChange(std::string value)
 
 vfs::Path DictionaryWindow::_convUri2path(std::string uri)
 {
-  vfs::Path fpath = ":/help/" + uri + "." + Locale::current();
+  vfs::Path fpath = fmt::format( ":/help/{}.{}", uri, Locale::current() );
 
   if( !fpath.exist() )
     fpath = fpath.changeExtension( defaultExt );

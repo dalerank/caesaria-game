@@ -294,7 +294,7 @@ void Chief::Impl::drawFoodStockState()
           case 3: text = "##our_foods_level_are_low##"; break;
 
           default:
-            text = fmt::format( "{0} {1} {2}", _("##have_food_for##"), monthWithFood, _("##months##") );
+            text = fmt::format( "{} {} {}", _("##have_food_for##"), monthWithFood, _("##months##") );
         }
       }
     }

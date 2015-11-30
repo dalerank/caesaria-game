@@ -10,7 +10,8 @@
     textAlign : [ "center", "center" ]
   }
 
-  columns#HLayout : {
+  columns#HLayout :
+  {
     geometry : [ 16, 50, "pw-16", "ph-30" ]
 
     columnA#VLayout :
@@ -33,47 +34,23 @@
       btnDifficulty#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_barbarian_mode##" }
       btnRoadBlocks#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_roadblock_mode##" }
 
-      firerisk#HLayout :
+      sbFireRisk#SpinBox :
       {
         maximumSize : [ 0, 24 ]
-        lbFireRisk#Label : { font : "FONT_2" }
-        btnIncreaseFireRisk#TexturedButton :
-        {
-          maximumSize : [ 24, 24 ]
-          normal : [ "paneling", 605 ]
-          hovered : [ "paneling", 606 ]
-          pressed : [ "paneling", 607 ]
-          disabled : [ "paneling", 305 ]
-        }
-
-        btnDecreaseFireRisk#TexturedButton :
-        {
-          maximumSize : [ 24, 24 ]
-          normal : [ "paneling", 601 ]
-          hovered : [ "paneling", 602 ]
-          pressed : [ "paneling", 603 ]
-          disabled : [ "paneling", 304 ]
-        }
+        font : "FONT_2"
+        postfix : "%"
+        min : 10
+        max : 150
+        step : 10
       }
 
-      collapserisk#HLayout : {
+      sbCollapseRisk#SpinBox : {
         maximumSize : [ 0, 24 ]
-        lbCollapseRisk#Label : { font : "FONT_2" }
-        btnIncreaseCollapseRisk#TexturedButton : {
-          maximumSize : [ 24, 24 ]
-          normal : [ "paneling", 605 ]
-          hovered : [ "paneling", 606 ]
-          pressed : [ "paneling", 607 ]
-          disabled : [ "paneling", 305 ]
-        }
-
-        btnDecreaseCollapseRisk#TexturedButton : {
-          maximumSize : [ 24, 24 ]
-          normal : [ "paneling", 601 ]
-          hovered : [ "paneling", 602 ]
-          pressed : [ "paneling", 603 ]
-          disabled : [ "paneling", 304 ]
-        }
+        font : "FONT_2"
+        postfix : "%"
+        min : 10
+        max : 150
+        step : 10
       }
     }
 
@@ -97,12 +74,8 @@
     }
   }
 
-  btnClose#TexturedButton :
+  btnClose#ExitButton :
   {
     geometry : [ "pw-34", "ph-34", "pw-10", "ph-10" ]
-    normal : [ "paneling", 532 ]
-    hovered : [ "paneling", 533 ]
-    pressed : [ "paneling", 534 ]
-    disabled : [ "paneling", 535 ]
   }
 }

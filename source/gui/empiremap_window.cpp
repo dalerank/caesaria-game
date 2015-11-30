@@ -457,6 +457,18 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   CONNECT( &btnOpenTrade, onClicked(), this, Impl::showOpenRouteRequestWindow );
 }
 
+class GoodText : public Label
+{
+public:
+  GoodText( Widget* parent, const Point& pos, good::Product type, int current, int maxv )
+    : Label( parent, Rect( pos, Size(100,30) ) )
+  {
+    setText( fmt::format( "{}/{}", current, maxv ) );
+    setTextOffset( Point( 30, 0 ) );
+    setIcon( good::Helper::picture( type, true), Point( 3, 3 ) );
+  }
+};
+
 void EmpireMapWindow::Impl::drawTradeRouteInfo()
 {
   Point startDraw( (gbox->width() - 400) / 2, gbox->height() - 80 );
@@ -470,17 +482,14 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
     Unit cursell = Unit::fromQty( sellgoods.qty( product ) );
     if( maxsell > 0  )
     {
-      Label& lb = gbox->add<Label>( Rect( startDraw + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );
-      lb.setBackgroundPicture( good::Helper::picture( product, true) );
-
-      std::string text = fmt::format( "{}/{}", cursell.ivalue(), maxsell.ivalue() );
-      gbox->add<Label>( Rect( startDraw + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );
+      gbox->add<GoodText>( startDraw + Point( 80 + 100 * k, 0 ),
+                           product, cursell.ivalue(), maxsell.ivalue() );
       k++;
     }
   }
 
   Point buyPoint = startDraw + Point( 0, 30 );
-  new Label( gbox, Rect( buyPoint, Size( 80, 30 )), _("##emw_bought##") );
+  gbox->add<Label>( Rect( buyPoint, Size( 80, 30 ) ), _("##emw_bought##") );
 
   const good::Store& buygoods = city.current->buys();
   k=0;
@@ -490,11 +499,8 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
     Unit curbuy = Unit::fromQty( buygoods.qty( product ) );
     if( maxbuy > 0  )
     {
-      Label& lb = gbox->add<Label>( Rect( buyPoint + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );
-      lb.setBackgroundPicture( good::Helper::picture( product, true) );
-
-      std::string text = fmt::format( "{}/{}", curbuy.ivalue(), maxbuy.ivalue() );
-      gbox->add<Label>( Rect( buyPoint + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );
+      gbox->add<GoodText>( buyPoint + Point( 80 + 100 * k, 0 ),
+                           product, curbuy.ivalue(), maxbuy.ivalue() );
       k++;
     }
   }
@@ -539,15 +545,11 @@ EmpireMapWindow::EmpireMapWindow(Widget* parent, int id, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, gbox )
   if( _d->gbox ) _d->gbox->sendToBack();
 
-  INIT_WIDGET_FROM_UI( PushButton*, btnHelp )
-  INIT_WIDGET_FROM_UI( PushButton*, btnExit )
   INIT_WIDGET_FROM_UI( PushButton*, btnTrade )
   INIT_WIDGET_FROM_UI( PushButton*, btnAi )
 
-  CONNECT( btnExit, onClicked(), this, EmpireMapWindow::deleteLater )
   CONNECT( btnTrade, onClicked(), this, EmpireMapWindow::deleteLater )
   CONNECT( btnTrade, onClicked(), _d.data(), Impl::showTradeAdvisorWindow )
-  CONNECT( btnHelp, onClicked(), this, EmpireMapWindow::_showHelp )
   CONNECT( btnAi, onClicked(), this, EmpireMapWindow::_toggleAi )
 
   setFlag( showCityInfo, true );
@@ -580,8 +582,6 @@ void EmpireMapWindow::beforeDraw(Engine& painter)
 {
   _d->lines.clear();
   Widget::beforeDraw( painter );
-
-  //"##click_on_city_for_info_tlp##";
 }
 
 void EmpireMapWindow::setFlag(EmpireMapWindow::Flag flag, bool value)
@@ -726,7 +726,6 @@ void EmpireMapWindow::_changePosition()
 
 const Point& EmpireMapWindow::_offset() const { return _d->offset; }
 Widget* EmpireMapWindow::_resetInfoPanel() { _d->resetInfoPanel(); return _d->gbox; }
-void EmpireMapWindow::_showHelp() { ui()->add<DictionaryWindow>( "empiremap" ); }
 
 void EmpireMapWindow::_toggleAi()
 {

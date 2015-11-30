@@ -41,13 +41,9 @@ ContextMenuItem* MainMenu::addItem(const std::string& text, int commandId, bool 
   ContextMenuItem* ret = ContextMenu::addItem( text, commandId, enabled, hasSubMenu, checked, autoChecking );
   if( ret && ret->subMenu() )
   {
-    //ret->getSubMenu()->setStyle( getStyle().getSubStyle( NES_SUBMENU ).getName() );
     ret->setFlag( ContextMenuItem::drawSubmenuSprite, false );
     ret->setBackgroundMode( Label::bgNone );
   }
-  //refItem.alignEnabled = true;
-  //refItem.horizontal = EGUIA_CENTER;
-  //refItem.vertical = EGUIA_CENTER;
 
   return ret;
 }
@@ -84,10 +80,8 @@ bool MainMenu::onEvent(const NEvent& event)
       {
       case mouseLbtnPressed:
       {
-        if (!ui()->hasFocus(this))
-        {
-                ui()->setFocus(this);
-        }
+        if (!isFocused())
+          setFocus();
 
         bringToFront();
 
@@ -95,12 +89,12 @@ bool MainMenu::onEvent(const NEvent& event)
          bool shouldCloseSubMenu = _hasOpenSubMenu();
          if (!absoluteClippingRect().isPointInside(p))
          {
-                 shouldCloseSubMenu = false;
+           shouldCloseSubMenu = false;
          }
-         _isHighlighted( event.mouse.pos(), true);
+         _isHighlighted( event.mouse.pos(), true );
          if ( shouldCloseSubMenu )
          {
-           ui()->removeFocus(this);
+           removeFocus();
          }
 
          return true;
@@ -111,9 +105,9 @@ bool MainMenu::onEvent(const NEvent& event)
         Point p(event.mouse.pos() );
         if (!absoluteClippingRect().isPointInside(p))
         {
-                int t = _sendClick(p);
-                if ((t==0 || t==1) && isFocused())
-                        removeFocus();
+          int t = _sendClick(p);
+          if ((t==0 || t==1) && isFocused())
+            removeFocus();
         }
 
         return true;
@@ -121,7 +115,7 @@ bool MainMenu::onEvent(const NEvent& event)
 
       case mouseMoved:
       {
-        if (ui()->hasFocus(this) && hovered() >= 0)
+        if (isFocused() && hovered() >= 0)
         {
           int oldHighLighted = hovered();
           _isHighlighted( event.mouse.pos(), true);
@@ -151,8 +145,7 @@ void MainMenu::_recalculateSize()
   Font font = Font::create( FONT_2_WHITE );
   
   int hg = std::max<int>( DEFAULT_MENU_HEIGHT, height() );
-  setGeometry( Rect( parentRect.left(), parentRect.top(),
-                     parentRect.right(), parentRect.top() + hg ) );
+  setGeometry( Rect( parentRect.lefttop(), parentRect.righttop() + Point( 0, hg ) ) );
   Rect rect;
 
   rect._lefttop = parentRect.lefttop();
@@ -167,7 +160,7 @@ void MainMenu::_recalculateSize()
     ContextMenuItem* refItem = item( i );
     if ( refItem->isSeparator() )
     {
-            refItem->setDimmension( Size( 16, height() ) );
+      refItem->setDimmension( Size( 16, height() ) );
     }
     else
     {
@@ -193,7 +186,7 @@ void MainMenu::_recalculateSize()
       // move submenu
       Size itemSize = refItem->subMenu()->absoluteRect().size();
       refItem->subMenu()->setGeometry( Rect( refItem->offset(), hg,
-      refItem->offset() + itemSize.width()-5, hg+itemSize.height() ));
+                                             refItem->offset() + itemSize.width()-5, hg+itemSize.height() ));
     }
   }
 }
