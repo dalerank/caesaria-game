@@ -142,7 +142,7 @@ public:
   void weekUpdate( unsigned int time, PlayerCityPtr rcity );
 };
 
-std::string Disorder::defaultName(){  return CAESARIA_STR_EXT(Disorder);}
+std::string Disorder::defaultName(){  return GAME_STR_EXT(Disorder);}
 
 Disorder::Disorder( PlayerCityPtr city )
   : Srvc( city, Disorder::defaultName() ), _d( new Impl )

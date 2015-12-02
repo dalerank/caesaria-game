@@ -34,7 +34,7 @@ public:
 
   OptionEnum() : EnumsHelper<int>(-1)
   {
-#define _O(a) append( PlayerCity::a, CAESARIA_STR_EXT(a) );
+#define _O(a) append( PlayerCity::a, GAME_STR_EXT(a) );
     _O(adviserEnabled)
     _O(godEnabled)
     _O(fishPlaceEnabled)

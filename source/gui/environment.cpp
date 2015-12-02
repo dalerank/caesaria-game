@@ -98,7 +98,7 @@ Ui::Ui(Engine& painter )
 
   setGeometry( Rect( Point(), _d->size ) );
 
-  _d->consoleId = Hash( CAESARIA_STR_EXT(Console) );
+  _d->consoleId = Hash( GAME_STR_A(Console) );
   _d->console = 0;
 
   setFlag( buttonShowDebugArea, 0 );

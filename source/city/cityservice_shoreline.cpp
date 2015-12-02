@@ -104,7 +104,7 @@ void Shoreline::Impl::generateWaterGarbage(PlayerCityPtr city)
   }
 }
 
-std::string Shoreline::defaultName(){ return CAESARIA_STR_EXT(Shoreline); }
+std::string Shoreline::defaultName(){ return GAME_STR_EXT(Shoreline); }
 
 Shoreline::Shoreline( PlayerCityPtr city )
   : city::Srvc( city, Shoreline::defaultName() ), _d( new Impl )

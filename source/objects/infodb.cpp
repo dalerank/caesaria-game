@@ -40,7 +40,7 @@ class BuildingClassHelper : public EnumsHelper<object::Group>
 public:
   BuildingClassHelper() : EnumsHelper<object::Group>( object::group::unknown )
   {
-#define __REG_GROUPNAME(a) append( object::group::a, CAESARIA_STR_EXT(a) );
+#define __REG_GROUPNAME(a) append( object::group::a, GAME_STR_A(a) );
     __REG_GROUPNAME(industry)
     __REG_GROUPNAME(food)
     __REG_GROUPNAME(disaster)

@@ -121,7 +121,7 @@ inline T __random(T rmax, std::true_type, std::false_type)
   static std::random_device random_device;
   static std::default_random_engine engine(random_device());  
   std::uniform_real_distribution<T> distribution(0,
-#ifdef CAESARIA_PLATFORM_ANDROID
+#ifdef GAME_PLATFORM_ANDROID
                                                  nextafter(rmax, std::numeric_limits<T>::max())
 #else
                                                  std::nextafter(rmax, std::numeric_limits<T>::max())

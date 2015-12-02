@@ -54,7 +54,7 @@ RomeChastenerArmyPtr RomeChastenerArmy::create( EmpirePtr empire )
 
 void RomeChastenerArmy::setSoldiersNumber(unsigned int count) { _d->soldiersNumber = count; }
 
-std::string RomeChastenerArmy::type() const { return CAESARIA_STR_EXT(RomeChastenerArmy); }
+std::string RomeChastenerArmy::type() const { return GAME_STR_A(RomeChastenerArmy); }
 unsigned int RomeChastenerArmy::soldiersNumber() const { return _d->soldiersNumber; }
 void RomeChastenerArmy::setCheckFavor(bool value) { _d->checkFavor = value; }
 

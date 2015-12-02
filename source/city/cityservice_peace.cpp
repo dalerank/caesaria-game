@@ -199,7 +199,7 @@ void Peace::buildingDestroyed(OverlayPtr overlay, int why)
 }
 
 int Peace::value() const { return _d->value; }
-std::string Peace::defaultName() { return CAESARIA_STR_EXT(Peace); }
+std::string Peace::defaultName() { return GAME_STR_EXT(Peace); }
 
 std::string Peace::reason() const
 {

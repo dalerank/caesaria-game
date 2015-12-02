@@ -666,7 +666,7 @@ ExtentMenu* ExtentMenu::create(Widget* parent, int id, PlayerCityPtr city , bool
   auto model = new Model( parent, fitToScreen, ":/extmenu.model", Model::bigMenu );
 
   ExtentMenu& ret = parent->add<ExtentMenu>( id, Rect( 0, 0, model->width, parent->height() ), city );
-  ret.setID( Hash( CAESARIA_STR_A(ExtentMenu)) );
+  ret.setID( Hash( GAME_STR_A(ExtentMenu)) );
   ret._setModel( model );
   ret._updateButtons();
   ret._updateBuildOptions();
@@ -810,7 +810,7 @@ void ExtentMenu::changeOverlay(int ovType)
 
 void ExtentMenu::showInfo(int type)
 {
-  int hash = Hash(CAESARIA_STR_A(ExtentedDateInfo));
+  int hash = Hash( GAME_STR_A(ExtentedDateInfo));
   ExtentedDateInfo* window = safety_cast<ExtentedDateInfo*>( findChild( hash ) );
   if( !window )
   {

@@ -48,9 +48,9 @@ using namespace config;
 REGISTER_CLASS_IN_WALKERFACTORY(walker::cartPusher, CartPusher)
 
 namespace {
-CAESARIA_LITERALCONST(stock)
-CAESARIA_LITERALCONST(producerPos)
-CAESARIA_LITERALCONST(consumerPos)
+GAME_LITERALCONST(stock)
+GAME_LITERALCONST(producerPos)
+GAME_LITERALCONST(consumerPos)
 }
 
 class CartPusher::Impl

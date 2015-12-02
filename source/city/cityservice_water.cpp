@@ -29,7 +29,7 @@ namespace city
 const int waterDecreaseInterval = game::Date::days2ticks( 5 );
 
 Water::Water( PlayerCityPtr city )
-  : city::Srvc( city, CAESARIA_STR_EXT(Water) )
+  : city::Srvc( city, GAME_STR_EXT(Water) )
 {
 }
 

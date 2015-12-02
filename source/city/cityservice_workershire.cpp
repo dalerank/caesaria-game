@@ -45,8 +45,8 @@ namespace city
 REGISTER_SERVICE_IN_FACTORY(WorkersHire,workers_hire)
 
 namespace {
-CAESARIA_LITERALCONST(priorities)
-CAESARIA_LITERALCONST(employers)
+GAME_LITERALCONST(priorities)
+GAME_LITERALCONST(employers)
 }
 
 class WorkersHire::Impl
@@ -67,7 +67,7 @@ public:
   void hireWorkers( PlayerCityPtr city, WorkingBuildingPtr bld );
 };
 
-std::string WorkersHire::defaultName(){ return CAESARIA_STR_EXT(WorkersHire); }
+std::string WorkersHire::defaultName(){ return GAME_STR_EXT(WorkersHire); }
 
 WorkersHire::WorkersHire(PlayerCityPtr city)
   : Srvc( city, WorkersHire::defaultName() ), _d( new Impl )

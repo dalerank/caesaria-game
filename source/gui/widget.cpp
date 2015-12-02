@@ -36,7 +36,7 @@ namespace gui
 {
 
 static const Variant invalidVariant;
-CAESARIA_LITERALCONST(vars)
+GAME_LITERALCONST(vars)
 
 void Widget::beforeDraw(gfx::Engine& painter )
 {

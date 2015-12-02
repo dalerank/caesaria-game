@@ -761,7 +761,7 @@ DrawOptions::Flag DrawOptions::findFlag(const std::string& name)
 
 DrawOptions::DrawOptions() : _helper(0)
 {
-#define _O(a) _helper.append( DrawOptions::a, CAESARIA_STR_EXT(a) );
+#define _O(a) _helper.append( DrawOptions::a, GAME_STR_A(a) );
   _O(drawGrid)
   _O(shadowOverlay)
   _O(showPath)

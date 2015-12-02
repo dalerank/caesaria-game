@@ -141,7 +141,7 @@ SmkViewer::SmkViewer(Widget* parent, const Rect& rectangle, Mode mode)
   _d->mode = mode;
   _d->needUpdateTexture = true;
   #ifdef DEBUG
-    setDebugName( CAESARIA_STR_EXT(SmkViewer) );
+    setDebugName( GAME_STR_A(SmkViewer) );
   #endif
 }
 

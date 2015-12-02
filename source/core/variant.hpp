@@ -302,10 +302,10 @@ protected:
 
 private:
   // force compile error, prevent Variant(bool) to be called
-  inline Variant(void *) { _CAESARIA_DEBUG_BREAK_IF(true); }
+  inline Variant(void *) { _GAME_DEBUG_BREAK_IF(true); }
 
   // force compile error, prevent Variant(QVariant::Type, int) to be called
-  inline Variant(bool, int) { _CAESARIA_DEBUG_BREAK_IF(true); }
+  inline Variant(bool, int) { _GAME_DEBUG_BREAK_IF(true); }
 };
 
 inline Variant::Variant() {}

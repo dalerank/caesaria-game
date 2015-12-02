@@ -55,7 +55,7 @@ public:
   void updateRoadsAround(Propagator& propagator, UpdateInfo info );
 };
 
-std::string Roads::defaultName(){  return CAESARIA_STR_A(Roads);}
+std::string Roads::defaultName(){  return GAME_STR_A(Roads);}
 
 Roads::Roads( PlayerCityPtr city )
   : Srvc( city, Roads::defaultName() ), _d( new Impl )

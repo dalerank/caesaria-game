@@ -100,8 +100,8 @@ void Scribes::addMessage(const Message& message)
 }
 
 namespace {
-CAESARIA_LITERALCONST(gtype)
-CAESARIA_LITERALCONST(ext)
+GAME_LITERALCONST(gtype)
+GAME_LITERALCONST(ext)
 }
 
 VariantMap Scribes::Message::save() const

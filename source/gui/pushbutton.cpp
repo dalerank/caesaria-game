@@ -141,7 +141,7 @@ PushButton::PushButton( Widget* parent,
 : Widget( parent, id, rectangle ), __INIT_IMPL(PushButton)
 {
   __D_REF(d,PushButton)
-  setDebugName( CAESARIA_STR_EXT(PushButton) );
+  setDebugName( GAME_STR_A(PushButton) );
 
   d.is.pressed = false;
   d.currentButtonState = stNormal;

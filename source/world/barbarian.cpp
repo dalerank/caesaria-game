@@ -69,7 +69,7 @@ std::string Barbarian::about(Object::AboutType type)
   return ret;
 }
 
-std::string Barbarian::type() const { return CAESARIA_STR_EXT(Barbarian); }
+std::string Barbarian::type() const { return GAME_STR_A(Barbarian); }
 
 void Barbarian::timeStep(unsigned int time)
 {

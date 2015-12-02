@@ -28,7 +28,7 @@ namespace game
 {
 
 #define _CONFIG_PATH(a) std::string( #a ".model");
-#define __REG_PROPERTY(a) const char* Settings::a = CAESARIA_STR_EXT(a);
+#define __REG_PROPERTY(a) const char* Settings::a = GAME_STR_A(a);
 __REG_PROPERTY(localePath)
 __REG_PROPERTY(resourcePath )
 __REG_PROPERTY(pantheonModel )
@@ -207,7 +207,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ debugMenu           ] = true;
 #endif
 
-#ifdef CAESARIA_USE_STEAM
+#ifdef GAME_USE_STEAM
   _d->options[ oldgfx              ] = 0;
 #endif
 

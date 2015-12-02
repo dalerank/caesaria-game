@@ -107,7 +107,7 @@ public:
   History history;
 };
 
-std::string Festival::defaultName() {  return CAESARIA_STR_EXT(Festival); }
+std::string Festival::defaultName() {  return GAME_STR_EXT(Festival); }
 
 void Festival::doFestivalNow() { _d->nextfest.date = game::Date::current(); }
 DateTime Festival::last() const { return _d->lastfest.date; }

@@ -214,6 +214,6 @@ int CultureRating::objects_n(CultureRating::Coverage type) const
   }
 }
 
-std::string CultureRating::defaultName() { return CAESARIA_STR_EXT(CultureRating); }
+std::string CultureRating::defaultName() { return GAME_STR_EXT(CultureRating); }
 
 }//end namespace city

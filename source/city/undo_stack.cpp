@@ -34,7 +34,7 @@ namespace undo
 
 PREDEFINE_CLASS_SMARTLIST(UndoAction,List)
 
-const int UndoTimerId = Hash(CAESARIA_STR_EXT(UStack));
+const int UndoTimerId = Hash(GAME_STR_EXT(UStack));
 
 class UndoAction : public ReferenceCounted
 {

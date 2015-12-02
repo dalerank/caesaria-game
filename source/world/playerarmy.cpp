@@ -88,7 +88,7 @@ PlayerArmyPtr PlayerArmy::create(EmpirePtr empire, CityPtr city)
   return ret;
 }
 
-std::string PlayerArmy::type() const { return CAESARIA_STR_EXT(PlayerArmy); }
+std::string PlayerArmy::type() const { return GAME_STR_A(PlayerArmy); }
 
 void PlayerArmy::timeStep(const unsigned int time)
 {

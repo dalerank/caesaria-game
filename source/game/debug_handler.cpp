@@ -458,7 +458,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case property_browser:
   {
-    int hash = Hash( CAESARIA_STR_A(PropertyWorkspace) );
+    int hash = Hash( GAME_STR_A(PropertyWorkspace) );
     PropertyWorkspace* browser = safety_cast<PropertyWorkspace*>( game->gui()->findWidget( hash ) );
     if( !browser )
     {

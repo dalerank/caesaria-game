@@ -91,7 +91,7 @@ public signals:
 };
 
 ActionsBar::ActionsBar( Widget* parent)
-  : Window( parent, Rect( 0, 0, 1, 1 ), "", Hash(CAESARIA_STR_A(AndroidActionsBar)), bgNone ), _d( new Impl )
+  : Window( parent, Rect( 0, 0, 1, 1 ), "", Hash(GAME_STR_A(AndroidActionsBar)), bgNone ), _d( new Impl )
 {
   setupUI( ":/gui/android_actions_bar.gui" );
 

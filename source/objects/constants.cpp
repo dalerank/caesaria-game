@@ -31,7 +31,7 @@ Helper& Helper::instance()
 
 Helper::Helper() : EnumsHelper<Type>( Type(0) )
 {
-#define __REG_TYPE(a) append(a, CAESARIA_STR_EXT(a) );
+#define __REG_TYPE(a) append(a, GAME_STR_A(a) );
     __REG_TYPE( amphitheater )
     __REG_TYPE( theater )
     __REG_TYPE( hippodrome )

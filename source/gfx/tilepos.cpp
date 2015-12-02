@@ -17,7 +17,7 @@
 
 #include "tilepos.hpp"
 
-#ifndef CAESARIA_DISABLED_TILEMAPCONFIG
+#ifndef GAME_DISABLED_TILEMAPCONFIG
 #include "tilemap_config.hpp"
 #endif
 
@@ -48,7 +48,7 @@ Direction TilePos::directionTo(const TilePos& e) const
 }
 
 
-#ifndef CAESARIA_DISABLED_TILEMAPCONFIG
+#ifndef GAME_DISABLED_TILEMAPCONFIG
 Point TilePos::toScreenCoordinates() const
 {
   return Point( config::tilemap.cell.size().width() * (_y+_x),

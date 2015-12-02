@@ -178,6 +178,6 @@ world::ObjectList Military::enemies() const
 }
 
 unsigned int Military::threatValue() const{ return _d->threatValue; }
-std::string Military::defaultName(){  return CAESARIA_STR_EXT(Military); }
+std::string Military::defaultName(){  return GAME_STR_EXT(Military); }
 
 }//end namespace city
