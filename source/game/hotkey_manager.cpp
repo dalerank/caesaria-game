@@ -30,7 +30,7 @@ class HotkeyMapper : public EnumsHelper<KeyCode>
 public:
   HotkeyMapper() : EnumsHelper<KeyCode>( KEY_KEY_CODES_COUNT )
   {
-#define _HK(a) append(a, GAME_STR_A(a) );
+#define _HK(a) append(a, TEXT(a) );
     _HK(KEY_F1) _HK(KEY_F2) _HK(KEY_F3)
     _HK(KEY_F4) _HK(KEY_F5) _HK(KEY_F6)
     _HK(KEY_F7) _HK(KEY_F8) _HK(KEY_F9)

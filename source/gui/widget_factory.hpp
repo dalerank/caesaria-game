@@ -63,7 +63,7 @@ private:
 
 #define REGISTER_CLASS_IN_WIDGETFACTORY(a) \
 namespace { \
-struct Registrator_##a { Registrator_##a() { WidgetFactory::instance().addCreator( GAME_STR_A(a), new BaseWidgetCreator<a>() ); }}; \
+struct Registrator_##a { Registrator_##a() { WidgetFactory::instance().addCreator( TEXT(a), new BaseWidgetCreator<a>() ); }}; \
 static Registrator_##a rtor_##a; \
 }
 

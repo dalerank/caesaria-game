@@ -101,7 +101,7 @@ public:
   Buffs buffs;
 };
 
-std::string Sentiment ::defaultName() { return GAME_STR_EXT(Sentiment);}
+std::string Sentiment ::defaultName() { return TEXT(Sentiment);}
 
 Sentiment::Sentiment( PlayerCityPtr city )
   : Srvc( city, defaultName() ), _d( new Impl )

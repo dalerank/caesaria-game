@@ -31,7 +31,7 @@ namespace vfs
 {
 
 namespace {
-static const std::string readerTypename = GAME_STR_A(ZipArchiveReader);
+static const std::string readerTypename = TEXT(ZipArchiveReader);
 }
 
 ZipArchiveLoader::ZipArchiveLoader(vfs::FileSystem* fs)

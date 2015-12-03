@@ -28,7 +28,7 @@ namespace game
 {
 
 #define _CONFIG_PATH(a) std::string( #a ".model");
-#define __REG_PROPERTY(a) const char* Settings::a = GAME_STR_A(a);
+#define __REG_PROPERTY(a) const char* Settings::a = TEXT(a);
 __REG_PROPERTY(localePath)
 __REG_PROPERTY(resourcePath )
 __REG_PROPERTY(pantheonModel )

@@ -43,7 +43,7 @@ public:
   FishPlaceList places;
 };
 
-std::string Fishery::defaultName() {  return GAME_STR_EXT(Fishery); }
+std::string Fishery::defaultName() {  return TEXT(Fishery); }
 
 Fishery::Fishery( PlayerCityPtr city )
   : Srvc( city, Fishery::defaultName() ), _d( new Impl )

@@ -167,7 +167,7 @@ void TempleCeres::_updateBuffs()
 
     for( auto farm : farms )
     {
-      FactoryProgressUpdater::uniqueTo( farm.as<Factory>(), _buffValue() * multiplier, 4, GAME_STR_A(TempleCeres) );
+      FactoryProgressUpdater::uniqueTo( farm.as<Factory>(), _buffValue() * multiplier, 4, TEXT(TempleCeres) );
     }
 
     SmallTemple::_updateBuffs();
@@ -221,8 +221,8 @@ void TempleMercury::_updateBuffs()
 
     for( auto wh : warehouses )
     {
-      WarehouseBuff::uniqueTo( wh, Warehouse::sellGoodsBuff, _buffValue() * multiplier,  4, GAME_STR_A(TempleMercury) );
-      WarehouseBuff::uniqueTo( wh, Warehouse::buyGoodsBuff, -_buffValue() * multiplier,  4, GAME_STR_A(TempleMercury) );
+      WarehouseBuff::uniqueTo( wh, Warehouse::sellGoodsBuff, _buffValue() * multiplier,  4, TEXT(TempleMercury) );
+      WarehouseBuff::uniqueTo( wh, Warehouse::buyGoodsBuff, -_buffValue() * multiplier,  4, TEXT(TempleMercury) );
     }
 
     SmallTemple::_updateBuffs();

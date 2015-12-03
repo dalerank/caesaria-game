@@ -28,7 +28,7 @@ using namespace gfx;
 namespace gui
 {
 
-const int WindowMessageStack::defaultID = Hash( GAME_STR_A(WindowMessageStack) );
+const int WindowMessageStack::defaultID = Hash( TEXT(WindowMessageStack) );
 
 class LabelA : public Label
 {

@@ -141,7 +141,7 @@ SmkViewer::SmkViewer(Widget* parent, const Rect& rectangle, Mode mode)
   _d->mode = mode;
   _d->needUpdateTexture = true;
   #ifdef DEBUG
-    setDebugName( GAME_STR_A(SmkViewer) );
+    setDebugName( TEXT(SmkViewer) );
   #endif
 }
 

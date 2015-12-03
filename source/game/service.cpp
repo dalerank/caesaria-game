@@ -26,7 +26,7 @@ ServiceHelper& ServiceHelper::instance()
 
 ServiceHelper::ServiceHelper() : EnumsHelper<Service::Type>( Service::srvCount )
 {
-#define __REG_SERVICE(a) append( Service::a, "srvc_" GAME_STR_A(a) );
+#define __REG_SERVICE(a) append( Service::a, "srvc_" TEXT(a) );
   __REG_SERVICE( well )
   __REG_SERVICE( fountain )
   __REG_SERVICE( market )

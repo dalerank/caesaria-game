@@ -42,7 +42,7 @@ void initialize(ClimateType climate)
   VariantMap climateArchives = config::load( SETTINGS_RC_PATH( climateModel ) );
 
   std::string optName;
-  if( climate == central ) { optName = GAME_STR_A(central); }
+  if( climate == central ) { optName = TEXT(central); }
   else if( climate == northen )  { optName = "north"; }
   else if( climate == desert ) { optName = "south"; }
 

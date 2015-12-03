@@ -31,9 +31,9 @@ typedef enum { central=0, northen, desert, count } Type;
 
 inline Type fromString( const std::string& value )
 {
-  if( value == GAME_STR_A(desert) ) return desert;
-  if( value == GAME_STR_A(central) ) return central;
-  if( value == GAME_STR_A(northen) ) return northen;
+  if( value == TEXT(desert) ) return desert;
+  if( value == TEXT(central) ) return central;
+  if( value == TEXT(northen) ) return northen;
 
   return central;
 }

@@ -58,7 +58,7 @@ public:
 
   BranchHelper() : EnumsHelper<Branch>( unknown )
   {
-#define __REG_BR(a) append( a, GAME_STR_EXT(a) );
+#define __REG_BR(a) append( a, TEXT(a) );
     __REG_BR( water )
     __REG_BR( health )
     __REG_BR( security )

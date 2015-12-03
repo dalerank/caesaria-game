@@ -85,7 +85,7 @@ public:
 };
 
 Minimap::Minimap(Widget* parent, const Rect& rect, PlayerCityPtr city, const gfx::Camera& camera, const Size& size)
-  : Widget( parent, Hash(GAME_STR_A(Minimap)), rect ), _d( new Impl )
+  : Widget( parent, Hash(TEXT(Minimap)), rect ), _d( new Impl )
 {
   setupUI( ":/gui/minimap.gui" );
 

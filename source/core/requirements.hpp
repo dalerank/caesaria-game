@@ -22,7 +22,7 @@
 #include "platform.hpp"
 
 #define GAME_STR_EXT(__A) #__A
-#define GAME_STR_A(__A) GAME_STR_EXT(__A)
+#define TEXT(__A) GAME_STR_EXT(__A)
 
 #ifdef GAME_PLATFORM_WIN
   // alignment of a member was sensitive to packing
@@ -40,7 +40,7 @@
   #define GAME_COMPILER_NAME "unknown"
 #endif
 
-#define GAME_LITERALCONST(name) namespace literals { auto name = GAME_STR_EXT(name); }
+#define GAME_LITERALCONST(name) namespace literals { auto name = TEXT(name); }
 
 #define _USE_ASSERT_4_DEBUG
 

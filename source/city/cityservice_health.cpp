@@ -66,7 +66,7 @@ public:
   void showWarningIfNeed();
 };
 
-std::string HealthCare::defaultName() { return GAME_STR_EXT(HealthCare); }
+std::string HealthCare::defaultName() { return TEXT(HealthCare); }
 
 HealthCare::HealthCare( PlayerCityPtr city )
   : Srvc( city, HealthCare::defaultName() ), _d( new Impl )

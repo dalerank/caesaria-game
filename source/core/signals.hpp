@@ -27,9 +27,9 @@
 #define CONNECT( a, signal, b, slot ) \
 { \
 	if( (a!=0) && (b!=0) ) { (a)->signal.connect( (b), &slot ); } \
-  else if( (a==0) && (b==0) ) { Logger::warning( "Cannot connect null::{0} to null::{1} at {2}:{3}", GAME_STR_A(signal), GAME_STR_A(slot), __LINE__, __FILE__); } \
-  else if( (b==0) ) { Logger::warning( "Cannot connect {0}::{1} to null::{2} at {3}:{4}", GAME_STR_A(a), GAME_STR_A(signal), GAME_STR_A(slot), __LINE__, __FILE__); }\
-  else if( (a==0) ) { Logger::warning( "Cannot connect null::{0} to {1}::{2} at {3}:{4}", GAME_STR_A(signal), GAME_STR_A(b), GAME_STR_A(slot), __LINE__, __FILE__); }\
+  else if( (a==0) && (b==0) ) { Logger::warning( "Cannot connect null::{0} to null::{1} at {2}:{3}", TEXT(signal), TEXT(slot), __LINE__, __FILE__); } \
+  else if( (b==0) ) { Logger::warning( "Cannot connect {0}::{1} to null::{2} at {3}:{4}", TEXT(a), TEXT(signal), TEXT(slot), __LINE__, __FILE__); }\
+  else if( (a==0) ) { Logger::warning( "Cannot connect null::{0} to {1}::{2} at {3}:{4}", TEXT(signal), TEXT(b), TEXT(slot), __LINE__, __FILE__); }\
 }
 
 template< class Param0 = void >

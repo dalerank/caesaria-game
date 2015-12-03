@@ -73,7 +73,7 @@ public:
 
   Impl() : EnumsHelper<good::Product>(good::none)
   {
-#define __REG_GTYPE(a) append( good::a, GAME_STR_A(a), "##" GAME_STR_A(a)"##" );
+#define __REG_GTYPE(a) append( good::a, TEXT(a), "##" TEXT(a)"##" );
     __REG_GTYPE(none )
     __REG_GTYPE(wheat)
     __REG_GTYPE(fish )

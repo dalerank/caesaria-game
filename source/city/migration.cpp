@@ -315,7 +315,7 @@ std::string Migration::leaveCityReason() const
   return "";
 }
 
-std::string Migration::defaultName() { return GAME_STR_EXT(Migration); }
+std::string Migration::defaultName() { return TEXT(Migration); }
 
 bool Migration::haveTroubles() const{ return _d->haveTroubles; }
 int Migration::lastMonthMigration() const { return _d->lastMonth.migration; }

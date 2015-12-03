@@ -152,7 +152,7 @@ void WallGuard::save(VariantMap& stream) const
   VARIANT_SAVE_ANY_D( stream, _d, strikeForce )
   VARIANT_SAVE_ANY_D( stream, _d, resistance )
   VARIANT_SAVE_ANY_D( stream, _d, patrolPosition )
-  stream[ "__debug_typeName" ] = Variant( std::string( GAME_STR_A(WallGuard) ) );
+  stream[ "__debug_typeName" ] = Variant( std::string( TEXT(WallGuard) ) );
 }
 
 void WallGuard::load(const VariantMap& stream)

@@ -222,7 +222,7 @@ void Warehouse::save( VariantMap& stream ) const
 {
   WorkingBuilding::save( stream );
 
-  stream[ "__debug_typeName" ] = Variant( std::string( GAME_STR_A(Warehouse) ) );
+  stream[ "__debug_typeName" ] = Variant( std::string( TEXT(Warehouse) ) );
   stream[ literals::goodStore ] = _d->goodStore.save();
 
   VARIANT_SAVE_ANY_D( stream, _d, isTradeCenter)

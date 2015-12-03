@@ -102,7 +102,7 @@ public:
   StringArray reasons;
 };
 
-std::string Religion::defaultName() { return GAME_STR_EXT(Religion); }
+std::string Religion::defaultName() { return TEXT(Religion); }
 
 Religion::Religion( PlayerCityPtr city )
   : Srvc( city, Religion::defaultName() ), _d( new Impl )

@@ -458,7 +458,7 @@ void EffectManager::load(vfs::Path effectModel)
 {
   VariantMap stream = config::load( effectModel );
 
-  VariantMap technique = stream.get( GAME_STR_EXT(technique) ).toMap();
+  VariantMap technique = stream.get( TEXT(technique) ).toMap();
 
   foreach( pass, technique )
   {

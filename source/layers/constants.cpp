@@ -54,7 +54,7 @@ const VariantMap& Helper::getConfig(Type t)
 Helper::Helper() 
   : EnumsHelper<Type>( count ), _d( new Impl )
 {
-#define LAYER(a) append( citylayer::a, GAME_STR_A(a) );
+#define LAYER(a) append( citylayer::a, TEXT(a) );
     LAYER(simple)
     LAYER(water)
     LAYER(fire)

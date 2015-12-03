@@ -184,7 +184,7 @@ void Granary::save( VariantMap& stream) const
 {
    WorkingBuilding::save( stream );
 
-   stream[ "__debug_typeName" ] = Variant( std::string( GAME_STR_A(B_GRANARY) ) );
+   stream[ "__debug_typeName" ] = Variant( std::string( TEXT(B_GRANARY) ) );
    stream[ literals::goodStore ] = _d->store.save();
 }
 

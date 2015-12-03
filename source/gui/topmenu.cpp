@@ -153,7 +153,7 @@ void TopMenu::Impl::showShortKeyInfo()
 
 void TopMenu::Impl::resolveExtentInfo(Widget *sender)
 {
-  int tag = sender->getProperty( GAME_STR_A(ExtentInfo) );
+  int tag = sender->getProperty( TEXT(ExtentInfo) );
   if( tag != extentinfo::none )
   {
     emit signal.onShowExtentInfo( tag );
@@ -212,20 +212,20 @@ TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
   {
     _d->lbPopulation->setPosition( Point( width() - populationLabelOffset, 0 ) );
     _d->lbPopulation->setIcon( useIcon ? Picture( "population", 1 ) : Picture() );
-    _d->lbPopulation->addProperty( GAME_STR_A(ExtentInfo), extentinfo::population );
+    _d->lbPopulation->addProperty( TEXT(ExtentInfo), extentinfo::population );
   }
 
   if( _d->lbFunds )
   {
     _d->lbFunds->setPosition(  Point( width() - fundLabelOffset, 0) );
     _d->lbFunds->setIcon( useIcon ? Picture( "paneling", 332 ) : Picture() );
-    _d->lbFunds->addProperty( GAME_STR_A(ExtentInfo), extentinfo::economy);
+    _d->lbFunds->addProperty( TEXT(ExtentInfo), extentinfo::economy);
   }
 
   if( _d->lbDate )
   {
     _d->lbDate->setPosition( Point( width() - dateLabelOffset, 0) );
-    _d->lbDate->addProperty( GAME_STR_A(ExtentInfo), extentinfo::celebrates );
+    _d->lbDate->addProperty( TEXT(ExtentInfo), extentinfo::celebrates );
     CONNECT( _d->lbDate, onClickedA(), _d.data(), Impl::resolveExtentInfo )
   }
 

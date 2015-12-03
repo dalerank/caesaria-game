@@ -117,7 +117,7 @@ void FactoryProgressUpdater::timeStep( ConstructionPtr parent, unsigned int time
   ConstructionExtension::timeStep( parent, time );
 }
 
-std::string FactoryProgressUpdater::type() const { return GAME_STR_A(FactoryProgressUpdater); }
+std::string FactoryProgressUpdater::type() const { return TEXT(FactoryProgressUpdater); }
 
 FactoryProgressUpdater::FactoryProgressUpdater()
 {
@@ -169,7 +169,7 @@ void FortCurseByMars::timeStep(ConstructionPtr parent, unsigned int time)
   ConstructionExtension::timeStep( parent, time );
 }
 
-std::string FortCurseByMars::type() const{ return GAME_STR_A(FortCurseByMars); }
+std::string FortCurseByMars::type() const{ return TEXT(FortCurseByMars); }
 
 FortCurseByMars::FortCurseByMars() {}
 
@@ -241,7 +241,7 @@ ConstructionExtensionPtr ExtensionsFactory::create(const VariantMap& stream)
 
 ExtensionsFactory::ExtensionsFactory() : _d( new Impl )
 {
-#define ADD_CREATOR(T) _d->addCreator<T>( GAME_STR_A(T) );
+#define ADD_CREATOR(T) _d->addCreator<T>( TEXT(T) );
 
   ADD_CREATOR(FortCurseByMars)
   ADD_CREATOR(FactoryProgressUpdater)
@@ -301,7 +301,7 @@ void WarehouseBuff::timeStep(ConstructionPtr parent, unsigned int time)
   ConstructionExtension::timeStep( parent, time );
 }
 
-std::string WarehouseBuff::type() const {  return GAME_STR_A(WarehouseBuff); }
+std::string WarehouseBuff::type() const {  return TEXT(WarehouseBuff); }
 float WarehouseBuff::value() const { return _options.get( "value" ).toFloat(); }
 int WarehouseBuff::group() const { return _options.get( "group" ).toInt(); }
 
@@ -348,7 +348,7 @@ void ConstructionParamUpdater::timeStep(ConstructionPtr parent, unsigned int tim
   }
 }
 
-std::string ConstructionParamUpdater::type() const { return GAME_STR_A(ConstructionParamUpdater); }
+std::string ConstructionParamUpdater::type() const { return TEXT(ConstructionParamUpdater); }
 
 void ConstructionParamUpdater::destroy(ConstructionPtr parent)
 {

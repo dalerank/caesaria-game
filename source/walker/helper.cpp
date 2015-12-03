@@ -72,7 +72,7 @@ public:
 
   Impl()
   {
-#define __REG_WNATION(a) appendNation( world::nation::a, GAME_STR_A(a));
+#define __REG_WNATION(a) appendNation( world::nation::a, TEXT(a));
     __REG_WNATION( unknown )
     __REG_WNATION( rome )
     __REG_WNATION( etruscan )
@@ -96,7 +96,7 @@ public:
 
       appendType( walker::all,        "unknown" );
 
-#define __REG_WTYPE(a) appendType( walker::a, GAME_STR_A(a));
+#define __REG_WTYPE(a) appendType( walker::a, TEXT(a));
     __REG_WTYPE( unknown    )
     __REG_WTYPE( immigrant  )
     __REG_WTYPE( citizen    )

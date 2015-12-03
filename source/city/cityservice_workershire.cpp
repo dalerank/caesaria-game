@@ -67,7 +67,7 @@ public:
   void hireWorkers( PlayerCityPtr city, WorkingBuildingPtr bld );
 };
 
-std::string WorkersHire::defaultName(){ return GAME_STR_EXT(WorkersHire); }
+std::string WorkersHire::defaultName(){ return TEXT(WorkersHire); }
 
 WorkersHire::WorkersHire(PlayerCityPtr city)
   : Srvc( city, WorkersHire::defaultName() ), _d( new Impl )

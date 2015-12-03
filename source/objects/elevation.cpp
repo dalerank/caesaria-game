@@ -40,7 +40,7 @@ public:
 Elevation::Elevation()
   : Overlay( object::elevation, Size( 2 ) ), _d( new Impl )
 {
-  setDebugName( GAME_STR_A(Elevation) );
+  setDebugName( TEXT(Elevation) );
 }
 
 Elevation::~Elevation(){}

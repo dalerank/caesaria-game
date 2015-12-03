@@ -123,10 +123,10 @@ bool Mission::load( const std::string& filename, Game& game )
     city->treasury().resolveIssue( econ::Issue( econ::Issue::donation, vm.get( "funds" ).toInt() ) );
 
     Logger::warning( "GameLoaderMission: load city options ");
-    city->setOption( PlayerCity::adviserEnabled, vm.get( GAME_STR_A(adviserEnabled), 1 ) );
-    city->setOption( PlayerCity::fishPlaceEnabled, vm.get( GAME_STR_A(fishPlaceEnabled), 1 ) );
-    city->setOption( PlayerCity::collapseKoeff, vm.get( GAME_STR_A(collapseKoeff), 100 ) );
-    city->setOption( PlayerCity::fireKoeff, vm.get( GAME_STR_A(fireKoeff), 100 ) );
+    city->setOption( PlayerCity::adviserEnabled, vm.get( TEXT(adviserEnabled), 1 ) );
+    city->setOption( PlayerCity::fishPlaceEnabled, vm.get( TEXT(fishPlaceEnabled), 1 ) );
+    city->setOption( PlayerCity::collapseKoeff, vm.get( TEXT(collapseKoeff), 100 ) );
+    city->setOption( PlayerCity::fireKoeff, vm.get( TEXT(fireKoeff), 100 ) );
 
     game::Date::instance().init( vm[ "date" ].toDateTime() );
 

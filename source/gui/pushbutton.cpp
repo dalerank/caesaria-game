@@ -141,7 +141,7 @@ PushButton::PushButton( Widget* parent,
 : Widget( parent, id, rectangle ), __INIT_IMPL(PushButton)
 {
   __D_REF(d,PushButton)
-  setDebugName( GAME_STR_A(PushButton) );
+  setDebugName( TEXT(PushButton) );
 
   d.is.pressed = false;
   d.currentButtonState = stNormal;
