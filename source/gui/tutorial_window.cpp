@@ -43,10 +43,9 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
   moveTo( Widget::parentCenter );
 
   INIT_WIDGET_FROM_UI(Label*, lbTitle )
-  INIT_WIDGET_FROM_UI(TexturedButton*, btnExit )
   INIT_WIDGET_FROM_UI(ListBox*, lbxHelp )
 
-  CONNECT( btnExit, onClicked(), this, TutorialWindow::deleteLater );
+  LINK_WIDGET_LOCAL_ACTION( TexturedButton*, btnExit, onClicked(), TutorialWindow::deleteLater );
 
   if( !lbxHelp )
     return;

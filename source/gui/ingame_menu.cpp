@@ -28,7 +28,6 @@ namespace gui
 class IngameMenu::Impl
 {
 public:
-  PushButton* btnContinue;
   PushButton* btnSave;
   PushButton* btnLoad;
   PushButton* btnRestart;
@@ -47,14 +46,13 @@ IngameMenu::IngameMenu(Widget *parent)
   setCenter( parent->center() );
   WidgetEscapeCloser::insertTo( this );
 
-  GET_DWIDGET_FROM_UI( _d, btnContinue )
   GET_DWIDGET_FROM_UI( _d, btnSave )
   GET_DWIDGET_FROM_UI( _d, btnLoad  )
   GET_DWIDGET_FROM_UI( _d, btnRestart )
   GET_DWIDGET_FROM_UI( _d, btnMainMenu )
   GET_DWIDGET_FROM_UI( _d, btnExit )
 
-  CONNECT( _d->btnContinue, onClicked(), this, IngameMenu::deleteLater );
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnContinue, onClicked(), IngameMenu::deleteLater );
 
   setModal();
 }

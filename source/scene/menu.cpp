@@ -243,8 +243,8 @@ void StartMenu::Impl::showLanguageOptions()
                                                               SETTINGS_STR( language ) );
   languageSelectDlg.setDefaultFont( SETTINGS_STR( defaultFont ) );
 
-  CONNECT( &languageSelectDlg, onChange,   this, Impl::changeLanguage )
-  CONNECT( &languageSelectDlg, onContinue, this, Impl::reload         )
+  CONNECT_LOCAL( &languageSelectDlg, onChange,   Impl::changeLanguage )
+  CONNECT_LOCAL( &languageSelectDlg, onContinue, Impl::reload         )
 }
 
 void StartMenu::Impl::showPackageOptions()
@@ -281,9 +281,9 @@ void StartMenu::Impl::startCareer()
   auto& selectPlayerNameDlg = ui().add<dialog::ChangePlayerName>();
   selectPlayerNameDlg.setName( playerName );
 
-  CONNECT( &selectPlayerNameDlg, onNameChange(), this, Impl::setPlayerName );
-  CONNECT( &selectPlayerNameDlg, onContinue(),   this, Impl::handleNewGame );
-  CONNECT( &selectPlayerNameDlg, onClose(),      this, Impl::showMainMenu  );
+  CONNECT_LOCAL( &selectPlayerNameDlg, onNameChange(), Impl::setPlayerName );
+  CONNECT_LOCAL( &selectPlayerNameDlg, onContinue(),   Impl::handleNewGame );
+  CONNECT_LOCAL( &selectPlayerNameDlg, onClose(),      Impl::showMainMenu  );
 }
 
 void StartMenu::Impl::handleNewGame()

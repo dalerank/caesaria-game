@@ -78,9 +78,9 @@ public:
     empireService.setIconOffset( Point( 4, 4 ) );
     empireService.setTooltipText( "##empire_service_tip##");
 
-    CONNECT( &gotoLegion,    onClicked(), this, LegionButton::_resolveMove2Legion       );
-    CONNECT( &return2fort,   onClicked(), this, LegionButton::_resolveReturnLegion2Fort );
-    CONNECT( &empireService, onClicked(), this, LegionButton::_resolveEmpireService     );
+    CONNECT_LOCAL( &gotoLegion,    onClicked(), LegionButton::_resolveMove2Legion       );
+    CONNECT_LOCAL( &return2fort,   onClicked(), LegionButton::_resolveReturnLegion2Fort );
+    CONNECT_LOCAL( &empireService, onClicked(), LegionButton::_resolveEmpireService     );
   }
 
   virtual void _updateTextPic()
@@ -156,9 +156,9 @@ Legion::Legion( Widget* parent, int id, PlayerCityPtr city, FortList forts )
   {
     auto& buttonLegion = add<LegionButton>( startLegionArea + legionButtonOffset, index++, fort );
 
-    CONNECT( &buttonLegion, signal.onShowLegion,    this, Legion::_handleMove2Legion );
-    CONNECT( &buttonLegion, signal.onLegionRetreat, this, Legion::_handleRetreaLegion );
-    CONNECT( &buttonLegion, signal.onEmpireService, this, Legion::_handleServiceEmpire );
+    CONNECT_LOCAL( &buttonLegion, signal.onShowLegion,    Legion::_handleMove2Legion );
+    CONNECT_LOCAL( &buttonLegion, signal.onLegionRetreat, Legion::_handleRetreaLegion );
+    CONNECT_LOCAL( &buttonLegion, signal.onEmpireService, Legion::_handleServiceEmpire );
   }
 
   if( _d->lbBlackframe && forts.empty() )

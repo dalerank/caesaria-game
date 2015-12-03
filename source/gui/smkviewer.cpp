@@ -211,17 +211,6 @@ void SmkViewer::Impl::nextFrame()
 
   Logger::warning( " -> Frame {}...", currentFrame );
 
-  /* Get the audio chunk for this frame from track 0 */
-  /* printf("Audio info for track 0: bit-depth %u, channels %u, rate %u\n",
-    a_depth[0],
-  a_channels[0],
-  a_rate[0] );
-
-  audio_data = smk_get_audio(s,0);
-
-  printf(" done.\n");
-   */
-  /* Advance to next frame */
   smk_next(smkfile);
 }
 

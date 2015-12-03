@@ -38,8 +38,7 @@ namespace gui
 
 class EmperrorRequestWindow::Impl
 {
-public:
-  void openEmperrorAdvisor();
+public:  
   std::string video;
 };
 
@@ -105,12 +104,9 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::RequestPtr r
     if( smkViewer ) { smkViewer->setFilename( video ); }
   }
 
-  INIT_WIDGET_FROM_UI( TexturedButton*, btnExit )
-  INIT_WIDGET_FROM_UI( TexturedButton*, btnAdvisor )
-
-  CONNECT( btnExit, onClicked(), this, EmperrorRequestWindow::deleteLater );
-  CONNECT( btnAdvisor, onClicked(), _d.data(), Impl::openEmperrorAdvisor );
-  CONNECT( btnAdvisor, onClicked(), this, EmperrorRequestWindow::deleteLater );
+  LINK_WIDGET_LOCAL_ACTION( TexturedButton*, btnExit,    onClicked(), EmperrorRequestWindow::deleteLater )
+  LINK_WIDGET_LOCAL_ACTION( TexturedButton*, btnAdvisor, onClicked(), EmperrorRequestWindow::deleteLater )
+  LINK_WIDGET_LOCAL_ACTION( TexturedButton*, btnAdvisor, onClicked(), EmperrorRequestWindow::_openEmperrorAdvisor )
   setModal();
 }
 
@@ -144,7 +140,7 @@ void EmperrorRequestWindow::setVideo(const std::string& video)
   _d->video = video;
 }
 
-void EmperrorRequestWindow::Impl::openEmperrorAdvisor()
+void EmperrorRequestWindow::_openEmperrorAdvisor()
 {
   events::dispatch<ShowAdvisorWindow>( true, advisor::empire );
 }

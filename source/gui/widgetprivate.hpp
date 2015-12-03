@@ -73,9 +73,10 @@ public:
 
   std::string internalName;
 
-  std::string toolTipText;
-
-  std::string text;
+  struct {
+    std::string tooltip;
+    std::string value;
+  } text;
 
   //! tells the element how to act when its parent is resized
   struct {

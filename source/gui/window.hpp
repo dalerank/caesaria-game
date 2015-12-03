@@ -69,7 +69,7 @@ public:
   virtual Rect clientRect() const;
   virtual void setModal();
 
-  void setWindowFlag( FlagName flag, bool enabled=true );
+  virtual void setWindowFlag( FlagName flag, bool enabled=true );
 
   virtual void setupUI(const VariantMap &ui);
 

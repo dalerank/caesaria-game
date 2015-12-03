@@ -91,6 +91,7 @@ public:
 
   Variant data( const std::string& name ) const;
   void setData( const std::string& name, const Variant& value );
+  void setData( const VariantMap& map );
 
   void setTextColor( ColorType type, NColor color);
 

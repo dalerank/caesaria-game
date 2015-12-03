@@ -61,7 +61,8 @@ SoundOptions::SoundOptions(Widget* parent)
   GameAutoPause::insertTo( this );
 
   INIT_WIDGET_FROM_UI( PushButton*, btnOk )
-  if( btnOk ) btnOk->setFocus();
+  if( btnOk )
+    btnOk->setFocus();
 
   auto widgets = findChildren<SpinBox*>( true );
   for( auto wdg : widgets )

@@ -86,21 +86,21 @@ void Emperor::_showChangeSalaryWindow()
     return;
   }
 
-  auto&& salaryWindow = ui()->add<dialog::ChangeSalary>( _mayor()->salary() );
+  auto& salaryWindow = ui()->add<dialog::ChangeSalary>( _mayor()->salary() );
 
   salaryWindow.add<HelpButton>( Point( 12, height() - 39), "emperor_advisor" );
   salaryWindow.setRanks( world::EmpireHelper::ranks() );
   salaryWindow.show();
 
-  CONNECT( &salaryWindow, onChangeSalary(), this, Emperor::_changeSalary )
+  CONNECT_LOCAL( &salaryWindow, onChangeSalary(), Emperor::_changeSalary )
 }
 
 void Emperor::_showSend2CityWindow()
 {
-  auto&& donationWindow = ui()->add<dialog::CityDonation>( _mayor()->money() );
+  auto& donationWindow = ui()->add<dialog::CityDonation>( _mayor()->money() );
   donationWindow.show();
 
-  CONNECT( &donationWindow, onSendMoney(), this, Emperor::_sendMoney );
+  CONNECT_LOCAL( &donationWindow, onSendMoney(), Emperor::_sendMoney );
 }
 
 void Emperor::_showGiftWindow()
@@ -109,7 +109,7 @@ void Emperor::_showGiftWindow()
                                                  _emperor().lastGiftDate( _city->name() ) );
   dialog.show();
 
-  CONNECT( &dialog, onSendGift(), this, Emperor::_sendGift );
+  CONNECT_LOCAL( &dialog, onSendGift(), Emperor::_sendGift );
 }
 
 void Emperor::_updateRequests()
@@ -143,7 +143,7 @@ void Emperor::_updateRequests()
       {
         bool mayExec = (*r)->isReady( _city );
         auto& btn = add<RequestButton>( reqsRect.lefttop() + Point( 5, 5 ),
-                                         std::distance( requests.begin(), r ), *r );
+                                        std::distance( requests.begin(), r ), *r );
         btn.setTooltipText( _("##request_btn_tooltip##") );
         btn.setEnabled( mayExec );
         btn.onExecRequest() += makeDelegate( this, &Emperor::_resolveRequest );
@@ -168,9 +168,6 @@ Emperor::Emperor( PlayerCityPtr city, Widget* parent, int id )
   INIT_WIDGET_FROM_UI( Label*, lbTitle )
   INIT_WIDGET_FROM_UI( Label*, lbEmperorFavour )
   INIT_WIDGET_FROM_UI( Label*, lbEmperorFavourDesc  )
-  INIT_WIDGET_FROM_UI( PushButton*, btnSendGift )
-  INIT_WIDGET_FROM_UI( PushButton*, btnSend2City )
-  INIT_WIDGET_FROM_UI( PushButton*, btnChangeSalary )
 
   if( lbEmperorFavour )
     lbEmperorFavour->setText( fmt::format( "{} {}", _("##advemp_emperor_favour##"), _city->favour() ) );
@@ -187,9 +184,9 @@ Emperor::Emperor( PlayerCityPtr city, Widget* parent, int id )
     lbTitle->setText( text );
   }
 
-  CONNECT( btnChangeSalary, onClicked(), this, Emperor::_showChangeSalaryWindow );
-  CONNECT( btnSend2City,    onClicked(), this, Emperor::_showSend2CityWindow );
-  CONNECT( btnSendGift,     onClicked(), this, Emperor::_showGiftWindow );
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnChangeSalary, onClicked(), Emperor::_showChangeSalaryWindow );
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnSend2City,    onClicked(), Emperor::_showSend2CityWindow );
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnSendGift,     onClicked(), Emperor::_showGiftWindow );
 }
 
 void Emperor::draw(gfx::Engine& painter )

@@ -58,10 +58,8 @@ AboutGranary::AboutGranary(Widget* parent, PlayerCityPtr city, const Tile& tile 
   setBase( _granary );
   _setWorkingVisible( true );
 
-  INIT_WIDGET_FROM_UI( PushButton*, btnOrders )
   INIT_WIDGET_FROM_UI( Label*, lbUnits )
-
-  CONNECT( btnOrders, onClicked(), this, AboutGranary::showSpecialOrdersWindow );
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnOrders, onClicked(), AboutGranary::showSpecialOrdersWindow );
 
   setTitle( _( _granary->info().prettyName() ) );
 

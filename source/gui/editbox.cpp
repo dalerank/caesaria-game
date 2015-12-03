@@ -279,7 +279,7 @@ bool EditBox::onEvent(const NEvent& event)
 				}
 			}
 			break;
-		case sTextInput:
+		case sEventTextInput:
 			_inputChar(*(unsigned short*)event.text.text);
 		break;
 

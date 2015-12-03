@@ -101,7 +101,7 @@ Ui::Ui(Engine& painter )
   _d->consoleId = Hash( TEXT(Console) );
   _d->console = 0;
 
-  setFlag( buttonShowDebugArea, 0 );
+  setFlag( drawDebugArea, 0 );
 }
 
 //! Returns if the element has focus
@@ -154,6 +154,9 @@ void Ui::draw()
   }
 
   Widget::draw( *_d->engine );  
+
+  if( hasFlag( drawDebugArea ) )
+    Widget::debugDraw( *_d->engine );
 
   _d->tooltip.update( DateTime::elapsedTime(), *this, _d->flags[ showTooltips ],
                       _d->hovered.noSubelement, _d->cursorPos );
@@ -451,7 +454,7 @@ bool Ui::handleEvent( const NEvent& event )
         }
     break;
 
-    case sTextInput:
+    case sEventTextInput:
     case sEventKeyboard:
         {
           if( _d->console )

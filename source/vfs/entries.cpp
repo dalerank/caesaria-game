@@ -358,6 +358,16 @@ StringArray Entries::Items::names() const
   return ret;
 }
 
+StringArray Entries::Items::fullnames() const
+{
+  StringArray ret;
+
+  for( auto& item : *this )
+    ret << item.fullpath.toString();
+
+  return ret;
+}
+
 StringArray Entries::Items::files(const std::string& ext) const
 {
   StringArray ret;

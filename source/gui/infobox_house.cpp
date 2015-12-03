@@ -163,11 +163,11 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
     rect += Point( btnHelp->width() + 5, 0 );
     rect.rright() += 60;
     auto& btnHabitants = add<PushButton>( rect, "Habitants", -1, false, PushButton::whiteBorderUp );
-    CONNECT( &btnHabitants, onClicked(), this, AboutHouse::_showHbtInfo )
+    CONNECT_LOCAL( &btnHabitants, onClicked(), AboutHouse::_showHbtInfo )
 
     rect += Point( btnHabitants.width() + 5, 0 );
     auto& btnServices = add<PushButton>( rect, "Services", -1, false, PushButton::whiteBorderUp );
-    CONNECT( &btnServices, onClicked(), this, AboutHouse::_showSrvcInfo )
+    CONNECT_LOCAL( &btnServices, onClicked(), AboutHouse::_showSrvcInfo )
   }
 
   drawHabitants( _house );

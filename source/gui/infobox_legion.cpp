@@ -133,8 +133,8 @@ AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos 
   setTitle( _( fortTitle ) );
   _update();
 
-  CONNECT( _d->btnReturn, onClicked(), this, AboutLegion::_returnSoldiers2fort );
-  CONNECT( _d->btnAttackAnimals, onClicked(), this, AboutLegion::_toggleAnimalsAttack );
+  CONNECT_LOCAL( _d->btnReturn, onClicked(), AboutLegion::_returnSoldiers2fort );
+  CONNECT_LOCAL( _d->btnAttackAnimals, onClicked(), AboutLegion::_toggleAnimalsAttack );
 }
 
 AboutLegion::~AboutLegion() {}

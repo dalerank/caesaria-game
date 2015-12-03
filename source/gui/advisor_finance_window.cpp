@@ -163,8 +163,8 @@ void Finance::_initTaxManager()
   auto& btnDecreaseTax = add<TexturedButton>( Point( 185, 73 ), Size( 24 ), -1, gui::button.arrowDown );
   auto& btnIncreaseTax = add<TexturedButton>( Point( 185+24, 73 ), Size( 24 ), -1, gui::button.arrowUp );
 
-  CONNECT( &btnDecreaseTax, onClicked(), this, Finance::_decreaseTax );
-  CONNECT( &btnIncreaseTax, onClicked(), this, Finance::_increaseTax );
+  CONNECT_LOCAL( &btnDecreaseTax, onClicked(), Finance::_decreaseTax );
+  CONNECT_LOCAL( &btnIncreaseTax, onClicked(), Finance::_increaseTax );
 }
 
 void Finance::_updateRegisteredPayers()

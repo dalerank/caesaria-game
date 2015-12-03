@@ -21,8 +21,8 @@
 #include "version.hpp"
 #include "platform.hpp"
 
-#define GAME_STR_EXT(__A) #__A
-#define TEXT(__A) GAME_STR_EXT(__A)
+#define STRINGIFY(__A) #__A
+#define TEXT(__A) STRINGIFY(__A)
 
 #ifdef GAME_PLATFORM_WIN
   // alignment of a member was sensitive to packing
@@ -88,5 +88,9 @@
 #define __D_IMPL(a,Class) ScopedPtr<Impl>& a = _d##Class;
 #define __D_REF(a,Class) Impl& a = *(_d##Class).data();
 #define __D_IMPL_CONST(a,Class) const ScopedPtr<Impl>& a = _d##Class;
+
+#ifdef _MSC_VER
+#define __typeof__ decltype
+#endif
 
 #endif //__CAESARIA_REQUIREMENTS_INCLUDE_

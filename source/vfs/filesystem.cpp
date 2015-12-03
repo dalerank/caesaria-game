@@ -727,7 +727,7 @@ DateTime FileSystem::getFileUpdateTime(const Path& filename) const
                          OPEN_EXISTING, 0, NULL);
   GetFileTime( h, &creationTime, &lpLastAccessTime, &lastWriteTime );
   SYSTEMTIME systemTime;
-  FileTimeToSystemTime( &creationTime, &systemTime );
+  FileTimeToSystemTime( &lastWriteTime, &systemTime );
   CloseHandle(h);
   return DateTime( systemTime.wYear, systemTime.wMonth, systemTime.wDay,
                    systemTime.wHour, systemTime.wMinute, systemTime.wSecond );

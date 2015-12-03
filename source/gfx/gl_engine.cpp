@@ -431,8 +431,8 @@ void PostprocFilter::begin()
 {
   glUseProgram( _program );
 
-  foreach( i, _variables )
-    setUniformVar( i->first, i->second );
+  for( auto i : _variables )
+    setUniformVar( i.first, i.second );
 }
 
 
@@ -458,11 +458,11 @@ void EffectManager::load(vfs::Path effectModel)
 {
   VariantMap stream = config::load( effectModel );
 
-  VariantMap technique = stream.get( TEXT(technique) ).toMap();
+  VariantMap technique = stream.get( STRINGIFY(technique) ).toMap();
 
-  foreach( pass, technique )
+  for( auto pass : technique )
   {
-    VariantMap variables = pass->second.toMap();
+    VariantMap variables = pass.second.toMap();
     PostprocFilterPtr effect = PostprocFilter::create();
     std::string shaderFile = variables.get( "shader" ).toString();
     variables.erase( "shader" );
