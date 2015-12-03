@@ -228,17 +228,30 @@ void ListBox::setSelected(int id)
 
 void ListBox::setSelectedTag(const Variant& tag)
 {
-  int index = -1;
-  for( auto it=_d->items.begin(); it != _d->items.end(); ++it )
+  int index = 0;
+  for( auto& it : _d->items )
   {
-    if( it->tag() == tag )
+    if( it.tag() == tag )
     {
-      index = std::distance( _d->items.begin(), it );
+      setSelected( index );
       break;
     }
+    index++;
   }
+}
 
-  setSelected( index );
+void ListBox::setSelectedWithData(const std::string& name, const Variant& data)
+{
+  int index = 0;
+  for( auto& it : _d->items )
+  {
+    if( it.data( name ) == data )
+    {
+      setSelected( index );
+      break;
+    }
+    index++;
+  }
 }
 
 //! sets the selected item. Set this to -1 if no item should be selected

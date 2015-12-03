@@ -63,6 +63,8 @@ public:
   //! override render function 
   virtual void draw( gfx::Engine& painter );
 
+  virtual void debugDraw(gfx::Engine &painter);
+
   virtual void setText(const std::string& text );
 
   virtual void setPressed( bool pressed );

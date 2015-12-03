@@ -39,6 +39,7 @@
 #include "objects/constants.hpp"
 #include "empireprices.hpp"
 #include "goodordermanage.hpp"
+#include "events/showempiremapwindow.hpp"
 #include "widget_helper.hpp"
 #include "city/statistic.hpp"
 #include "dictionary.hpp"
@@ -56,8 +57,6 @@ namespace advisorwnd
 class Trade::Impl
 {
 public:
-  PushButton* btnEmpireMap;
-  PushButton* btnPrices; 
   GroupBox* gbInfo;
   PlayerCityPtr city;
   good::ProductMap allgoods;
@@ -65,7 +64,6 @@ public:
   bool getWorkState( good::Product gtype );
   void updateGoodsInfo();
   void showGoodOrderManageWindow( good::Product type );
-  void showGoodsPriceWindow();
 };
 
 void Trade::Impl::updateGoodsInfo()
@@ -97,9 +95,11 @@ void Trade::Impl::updateGoodsInfo()
     auto& btn = gbInfo->add<TradeGoodInfo>( Rect( startDraw + Point( 0, btnSize.height()) * indexOffset, btnSize ),
                                             gtype, allgoods[ gtype ], workState, tradeState, exportQty, importQty );
     indexOffset++;
-    CONNECT( &btn, onClickedA(), this, Impl::showGoodOrderManageWindow );
-  } 
+    CONNECT_LOCAL( &btn, onClickedA(), Impl::showGoodOrderManageWindow );
+  }
 }
+
+void Trade::_showEmpireMap() { events::dispatch<events::ShowEmpireMap>( true ); }
 
 bool Trade::Impl::getWorkState(good::Product gtype )
 {
@@ -121,18 +121,17 @@ void Trade::Impl::showGoodOrderManageWindow(good::Product type)
   Widget* p = gbInfo->parent();
   auto& wnd = p->add<GoodOrderManageWindow>( Rect( 0, 0, p->width() - 80, p->height() - 100 ),
                                              city, type, allgoods[ type ], (GoodOrderManageWindow::GoodMode)gmode );
-  CONNECT( &wnd, onOrderChanged(), this, Impl::updateGoodsInfo );
+  CONNECT_LOCAL( &wnd, onOrderChanged(), Impl::updateGoodsInfo );
 }
 
-void Trade::Impl::showGoodsPriceWindow()
+void Trade::_showGoodsPriceWindow()
 {
-  Widget* parent = gbInfo->parent();
   Size size( 610, 180 );
-  parent->add<EmpirePrices>( -1, Rect( Point( ( parent->width() - size.width() ) / 2,
-                             ( parent->height() - size.height() ) / 2), size ), city );
+  add<EmpirePrices>( -1, Rect( Point( ( width() - size.width() ) / 2,
+                     ( height() - size.height() ) / 2), size ), _d->city );
 }
 
-Trade::Trade(PlayerCityPtr city, Widget* parent, int id )
+Trade::Trade(Widget* parent, PlayerCityPtr city, int id )
 : Base( parent, city, id ), _d( new Impl )
 {
   setupUI( ":/gui/tradeadv.gui" );
@@ -140,12 +139,14 @@ Trade::Trade(PlayerCityPtr city, Widget* parent, int id )
   _d->city = city;
   _d->allgoods = city->statistic().goods.details( false );
 
-  GET_DWIDGET_FROM_UI( _d, btnEmpireMap  )
-  GET_DWIDGET_FROM_UI( _d, btnPrices )
   GET_DWIDGET_FROM_UI( _d, gbInfo )
 
-  CONNECT( _d->btnEmpireMap, onClicked(), this, Trade::deleteLater );
-  CONNECT( _d->btnPrices, onClicked(), _d.data(), Impl::showGoodsPriceWindow );
+#define LINK_WIDGET_ACTIONA( type, element, signal, slot) \
+  LINK_WIDGET_LOCAL_ACTION( type, element, signal, __typeof__(this)::##slot )
+
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnEmpireMap, onClicked(), Trade::deleteLater );
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnEmpireMap, onClicked(), Trade::_showEmpireMap );
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnPrices,    onClicked(), Trade::_showGoodsPriceWindow );
 
   _d->updateGoodsInfo();
 
@@ -159,8 +160,6 @@ void Trade::draw(gfx::Engine& painter )
 
   Window::draw( painter );
 }
-
-Signal0<>& Trade::onEmpireMapRequest() { return _d->btnEmpireMap->onClicked(); }
 
 }//end namespace advisorwnd
 

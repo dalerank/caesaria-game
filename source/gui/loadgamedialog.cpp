@@ -38,10 +38,8 @@ LoadGame::LoadGame(Widget* parent, const vfs::Directory& dir )
   _sortMode = sortCount;
   Widget::setupUI( ":/gui/loadgame.gui" );
 
-  INIT_WIDGET_FROM_UI(PushButton*, btnSort)
-
   CONNECT( _fileslbx(), onItemSelected(), this, LoadGame::_showPreview )
-  CONNECT( btnSort, onClicked(), this, LoadGame::_changeSort )
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnSort, onClicked(), LoadGame::_changeSort )
 
   moveTo( Widget::parentCenter );
 

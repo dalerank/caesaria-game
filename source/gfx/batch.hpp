@@ -27,6 +27,7 @@ namespace gfx
 {
 class Picture;
 class Pictures;
+class Engine;
 
 class Batch
 {
@@ -43,9 +44,11 @@ public:
   bool load(const Pictures& pics, const Point& pos);
   void load(const Picture& pics, const Rects& srcrects, const Rects& dstrects);
 private:
-
   SDL_Batch* _batch;
 };
+
+void drawBatchWithFallback( Engine& engine, const Batch& batch,
+                            const Pictures& pictures, const Point& pos, Rect* clip );
 
 }//end namespace gfx
 

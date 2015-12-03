@@ -62,7 +62,7 @@ RequestButton::RequestButton(Widget* parent, const Point& pos, int index, Reques
 
   _finalizeResize();
 
-  CONNECT( this, onClicked(), this, RequestButton::_executeRequest );
+  CONNECT_LOCAL( this, onClicked(), RequestButton::_executeRequest );
 }
 
 void RequestButton::_updateTextPic()
@@ -90,7 +90,7 @@ void RequestButton::_acceptRequest()  { emit _dfunc()->onExecRequestSignal( _dfu
 void RequestButton::_executeRequest()
 {
   dialog::Dialog* dialog = dialog::Confirmation( ui(),  "", "##dispatch_emperor_request_question##" );
-  CONNECT( dialog, onOk(), this, RequestButton::_acceptRequest );
+  CONNECT_LOCAL( dialog, onOk(), RequestButton::_acceptRequest );
 }
 
 void RequestButton::draw(Engine& painter)

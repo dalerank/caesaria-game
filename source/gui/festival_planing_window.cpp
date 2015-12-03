@@ -147,9 +147,9 @@ FestivalPlanning::FestivalPlanning( Widget* parent, int id, const Rect& rectangl
   btnYes.setTooltipText( _("##new_festival##") );
   btnNo.setTooltipText( _("##donot_organize_festival##") );
 
-  CONNECT( &btnNo,  onClicked(), this, FestivalPlanning::deleteLater );
-  CONNECT( &btnYes, onClicked(), this, FestivalPlanning::_assignFestival );
-  CONNECT( &btnYes, onClicked(), this, FestivalPlanning::deleteLater );
+  CONNECT_LOCAL( &btnNo,  onClicked(), FestivalPlanning::deleteLater );
+  CONNECT_LOCAL( &btnYes, onClicked(), FestivalPlanning::_assignFestival );
+  CONNECT_LOCAL( &btnYes, onClicked(), FestivalPlanning::deleteLater );
 }
 
 void FestivalPlanning::draw( gfx::Engine& painter )

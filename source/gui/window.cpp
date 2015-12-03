@@ -45,25 +45,25 @@ public:
 class BatchState
 {
 public:
-  Batch state;
-  Pictures images;
+  Batch body;
+  Pictures fallback;
 
-  void reset() { images.clear(); }
+  void reset() { fallback.clear(); }
 
   void fill( const Rect& area, const Point& lefttop, Decorator::Mode style, bool negativeY )
   {
     bool errorsOnBatch = false;
-    state.destroy();
-    Decorator::draw( images, area, style, nullptr, negativeY  );
-    errorsOnBatch = !state.load( images, lefttop );
+    body.destroy();
+    Decorator::draw( fallback, area, style, nullptr, negativeY  );
+    errorsOnBatch = !body.load( fallback, lefttop );
 
     if( errorsOnBatch )
     {
-      Decorator::reverseYoffset( images );
-      state.destroy();
+      Decorator::reverseYoffset( fallback );
+      body.destroy();
     }
     else
-      images.clear();
+      fallback.clear();
   }
 };
 
@@ -305,10 +305,9 @@ void Window::draw( Engine& painter )
 			}
 			else
 			{
-        if( _d->background.batch.state.valid() )
-          painter.draw( _d->background.batch.state, &absoluteClippingRectRef() );
-        else
-          painter.draw( _d->background.batch.images, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+        drawBatchWithFallback( painter, _d->background.batch.body,
+                               _d->background.batch.fallback, absoluteRect().lefttop(),
+                               &absoluteClippingRectRef() );
 			}
 		}
 	}
@@ -346,7 +345,7 @@ void Window::setBackground( Picture texture )
 {
   _d->background.image = texture;
   _d->background.type = bgNone;
-  _d->background.batch.state.destroy();
+  _d->background.batch.body.destroy();
 }
 
 void Window::setBackground(Window::BackgroundType type)

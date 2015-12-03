@@ -179,7 +179,7 @@ void Layer::handleEvent(NEvent& event)
     break;
     }
   }
-  else if( event.EventType == sAppEvent )
+  else if( event.EventType == sEvenApplication )
   {
     switch( event.app.type )
     {

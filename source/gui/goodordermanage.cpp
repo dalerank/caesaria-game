@@ -144,7 +144,6 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
 
   INIT_WIDGET_FROM_UI( Label*, lbTitle )
   INIT_WIDGET_FROM_UI( Label*, lbStackedQty )
-  INIT_WIDGET_FROM_UI( TexturedButton*, btnExit )
   GET_DWIDGET_FROM_UI( _d, lbIndustryInfo )
   GET_DWIDGET_FROM_UI( _d, btnIndustryState )
   GET_DWIDGET_FROM_UI( _d, btnStackingState )
@@ -157,22 +156,17 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
   }
 
   _d->btnTradeState = &add<TradeStateButton>( Rect( 50, 90, width() - 60, 90 + 30), -1 );
-  /*if( gmode == gmUnknown )
-  {
-    _d->btnTradeState->setTradeState( trade::noTrade, 0 );
-    _d->btnTradeState->setEnabled( false );
-  }*/
 
   updateTradeState();
   updateIndustryState();
   updateStackingState();
 
-  CONNECT( btnExit, onClicked(), this, GoodOrderManageWindow::deleteLater );
-  CONNECT( _d->btnTradeState, onClicked(), this, GoodOrderManageWindow::changeTradeState );
-  CONNECT( _d->btnTradeState->btnIncrease, onClicked(), this, GoodOrderManageWindow::increaseQty );
-  CONNECT( _d->btnTradeState->btnDecrease, onClicked(), this, GoodOrderManageWindow::decreaseQty );
-  CONNECT( _d->btnIndustryState, onClicked(), this, GoodOrderManageWindow::toggleIndustryEnable );
-  CONNECT( _d->btnStackingState, onClicked(), this, GoodOrderManageWindow::toggleStackingGoods );
+  LINK_WIDGET_LOCAL_ACTION( TexturedButton*, btnExit, onClicked(), GoodOrderManageWindow::deleteLater );
+  CONNECT_LOCAL( _d->btnTradeState, onClicked(),              GoodOrderManageWindow::changeTradeState );
+  CONNECT_LOCAL( _d->btnTradeState->btnIncrease, onClicked(), GoodOrderManageWindow::increaseQty );
+  CONNECT_LOCAL( _d->btnTradeState->btnDecrease, onClicked(), GoodOrderManageWindow::decreaseQty );
+  CONNECT_LOCAL( _d->btnIndustryState, onClicked(),           GoodOrderManageWindow::toggleIndustryEnable );
+  CONNECT_LOCAL( _d->btnStackingState, onClicked(),           GoodOrderManageWindow::toggleStackingGoods );
 
   moveTo( Widget::parentCenter );
   setModal();

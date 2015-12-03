@@ -89,4 +89,8 @@
 #define __D_REF(a,Class) Impl& a = *(_d##Class).data();
 #define __D_IMPL_CONST(a,Class) const ScopedPtr<Impl>& a = _d##Class;
 
+#ifdef _MSC_VER
+#define __typeof__ decltype
+#endif
+
 #endif //__CAESARIA_REQUIREMENTS_INCLUDE_

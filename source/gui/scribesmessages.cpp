@@ -163,16 +163,14 @@ ScribesMessages::ScribesMessages( Widget* p, PlayerCityPtr city )
 
   _d->lbxMessages = &add<ScribesListBox>( Rect( 16, 60, width() - 16, height() - 50 ) );
 
-  INIT_WIDGET_FROM_UI( PushButton*, btnHelp )
-  INIT_WIDGET_FROM_UI( PushButton*, btnExit )
   GET_DWIDGET_FROM_UI( _d, lbInfo )
 
   _fillMessages();
 
-  CONNECT( _d->lbxMessages, onShowMessage, this, ScribesMessages::_showMessage );
-  CONNECT( _d->lbxMessages, onRemoveMessage, this, ScribesMessages::_removeMessage );
-  CONNECT( btnHelp, onClicked(), this, ScribesMessages::_showHelp );
-  CONNECT( btnExit, onClicked(), this, ScribesMessages::deleteLater );
+  CONNECT_LOCAL( _d->lbxMessages, onShowMessage, ScribesMessages::_showMessage )
+  CONNECT_LOCAL( _d->lbxMessages, onRemoveMessage, ScribesMessages::_removeMessage )
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnHelp, onClicked(), ScribesMessages::_showHelp )
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnExit, onClicked(), ScribesMessages::deleteLater )
 
   events::dispatch<events::PlaySound>( "extm_scribes", 1, 100, audio::effects );
 

@@ -141,12 +141,10 @@ Health::Health(PlayerCityPtr city, Widget* parent, int id )
   setupUI( ":/gui/healthadv.gui" );
   setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
-  INIT_WIDGET_FROM_UI( PushButton*, btnHelp )
-
   _initUI( city );
   _updateAdvice( city );
 
-  CONNECT( btnHelp, onClicked(), this, Health::_showHelp );
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnHelp, onClicked(), Health::_showHelp );
 }
 
 void Health::draw( gfx::Engine& painter )

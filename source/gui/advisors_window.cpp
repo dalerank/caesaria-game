@@ -93,7 +93,7 @@ void Parlor::_initButtons()
   PushButton* btn = _addButton( advisor::unknown, 609 );
   btn->setIsPushButton( false );
 
-  CONNECT( btn, onClicked(), this, Parlor::deleteLater );
+  CONNECT_LOCAL( btn, onClicked(), Parlor::deleteLater );
 }
 
 Parlor::Parlor( Widget* parent, int id )
@@ -105,7 +105,6 @@ Parlor::Parlor( Widget* parent, int id )
   WidgetEscapeCloser::insertTo( this );
 
   INIT_WIDGET_FROM_UI( Image*, imgBgButtons )
-
   if( imgBgButtons )
     imgBgButtons->setPosition( Point( (width() - 636) / 2, height() / 2 + 192) );
 }
@@ -116,10 +115,7 @@ void Parlor::setModel(ParlorModel* model)
   model->setParent( this );
   _initButtons();
 
-  if( model != nullptr )
-  {
-    CONNECT( this, onSwitchAdvisor, model, ParlorModel::switchAdvisor );
-  }
+  CONNECT( this, onSwitchAdvisor, model, ParlorModel::switchAdvisor );
 }
 
 void Parlor::draw(gfx::Engine& engine )
@@ -179,7 +175,6 @@ ParlorModel::ParlorModel(PlayerCityPtr city)
   d.advisorPanel = nullptr;
 }
 
-
 void ParlorModel::sendMoney2City(int money)
 {
   events::dispatch<Payment>( econ::Issue::donation, money );
@@ -187,9 +182,9 @@ void ParlorModel::sendMoney2City(int money)
 
 void ParlorModel::showEmpireMapWindow()
 {
-  __D_IMPL(d,ParlorModel)
-  d->advisorPanel->parent()->deleteLater();
-  events::dispatch<ShowEmpireMap>( d->parent );
+  __D_REF(d,ParlorModel)
+  d.advisorPanel->parent()->deleteLater();
+  events::dispatch<ShowEmpireMap>( true );
 }
 
 void ParlorModel::setParent(Widget* parlor)
@@ -242,12 +237,7 @@ void ParlorModel::switchAdvisor(Advisor type)
   else if( type == advisor::population ) { d.advisorPanel = new advisorwnd::Population( d.city, d.parent, advisor::population ); }
   else if( type ==  advisor::empire )     d.advisorPanel = new advisorwnd::Emperor( d.city, d.parent, advisor::empire );
   else if( type == advisor::ratings )     d.advisorPanel = new advisorwnd::Ratings( d.parent, advisor::ratings, d.city );
-  else if( type == advisor::trading )
-  {
-    auto tradeWindow = new advisorwnd::Trade( d.city, d.parent, advisor::trading );
-    d.advisorPanel =  tradeWindow;
-    CONNECT( tradeWindow, onEmpireMapRequest(), this, ParlorModel::showEmpireMapWindow );
-  }
+  else if( type == advisor::trading )     d.advisorPanel = &d.parent->add<advisorwnd::Trade>( d.city, advisor::trading );
   else if( type == advisor::education )    d.advisorPanel = new advisorwnd::Education( d.city, d.parent, -1 );
   else if( type == advisor::health ) d.advisorPanel = new advisorwnd::Health( d.city, d.parent, -1 );
   else if( type == advisor::entertainment ) d.advisorPanel = new advisorwnd::Entertainment( d.city, d.parent, -1 );

@@ -18,6 +18,7 @@
 
 #include "delegate.hpp"
 #include "list.hpp"
+#include "requirements.hpp"
 #include "foreach.hpp"
 
 #define signals
@@ -31,6 +32,12 @@
   else if( (b==0) ) { Logger::warning( "Cannot connect {0}::{1} to null::{2} at {3}:{4}", CAESARIA_STR_A(a), CAESARIA_STR_A(signal), CAESARIA_STR_A(slot), __LINE__, __FILE__); }\
   else if( (a==0) ) { Logger::warning( "Cannot connect null::{0} to {1}::{2} at {3}:{4}", CAESARIA_STR_A(signal), CAESARIA_STR_A(b), CAESARIA_STR_A(slot), __LINE__, __FILE__); }\
 }
+
+#define CONNECT_LOCAL( a, signal, slot ) \
+  { \
+    if( (a!=0) ) { (a)->signal.connect( this, &slot ); } \
+    else if( (a==0) ) { Logger::warning( "Cannot connect null::{0} to {1}::{2} at {3}:{4}", CAESARIA_STR_A(signal), CAESARIA_STR_A(b), CAESARIA_STR_A(slot), __LINE__, __FILE__); }\
+  }
 
 template< class Param0 = void >
 class Signal0
@@ -91,7 +98,7 @@ public:
         { delegateList.erase( it ); return; }
   }
 
-  void _emit() const { foreach( it, delegateList ) (*it)(); }
+  void _emit() const { for( auto& rdelegate : delegateList ) rdelegate(); }
   void operator() () const { _emit(); }
 };
 

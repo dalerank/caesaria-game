@@ -52,8 +52,8 @@ void ShowSaveDialog::_exec(Game& game, unsigned int)
     return;
   }
 
-  SaveGame* dialog = new SaveGame( game.gui(), saveDir, defaultExt, -1 );
-  CONNECT( dialog, onFileSelected(), &game, Game::save )
+  auto& dialog = game.gui()->add<SaveGame>( saveDir, defaultExt, -1 );
+  CONNECT( &dialog, onFileSelected(), &game, Game::save )
 }
 
 bool ShowSaveDialog::_mayExec(Game&, unsigned int) const{ return true; }
