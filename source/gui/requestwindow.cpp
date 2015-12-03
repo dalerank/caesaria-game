@@ -66,7 +66,6 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::RequestPtr r
   std::string uiFile = _d->video.empty() ? ":/gui/request.gui" : ":/gui/request_video.gui";
 
   setupUI( uiFile );
-  setModal();
   moveTo( Widget::parentCenter );
 
   city::request::RqGoodPtr gr = ptr_cast<city::GoodRequest>(request);
@@ -112,6 +111,7 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::RequestPtr r
   CONNECT( btnExit, onClicked(), this, EmperrorRequestWindow::deleteLater );
   CONNECT( btnAdvisor, onClicked(), _d.data(), Impl::openEmperrorAdvisor );
   CONNECT( btnAdvisor, onClicked(), this, EmperrorRequestWindow::deleteLater );
+  setModal();
 }
 
 void EmperrorRequestWindow::draw(gfx::Engine& painter )

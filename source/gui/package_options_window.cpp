@@ -72,7 +72,9 @@ PackageOptions::PackageOptions( Widget* parent, const Rect& rectangle )
   CONNECT( _d->edCaesar3Music,  onTextChanged(), this, PackageOptions::_setCaesar3Music )
   CONNECT( _d->edScreenshots,   onTextChanged(), this, PackageOptions::_setScreenshotsDir )
 
-  if( _d->btnApply ) _d->btnApply->setFocus();
+  if( _d->btnApply )
+      _d->btnApply->setFocus();
+  setModal();
 }
 
 PackageOptions::~PackageOptions() {}

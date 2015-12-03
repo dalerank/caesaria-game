@@ -68,12 +68,6 @@ ChangePlayerName::ChangePlayerName(Widget* parent)
   _d->mayExit = true;
 
   setModal();
-  /*btnContinue->setAlignment( align::scale, align::scale, align::scale, align::scale );
-  _d->edPlayerName->setAlignment( align::scale, align::scale, align::scale, align::scale );
-  _d->lbExitHelp->setAlignment( align::scale, align::scale, align::scale, align::scale );
-  setWidth( width() * 2 );
-  setHeight( height() * 2 );
-  setCenter( parent->center() );*/
 }
 
 bool ChangePlayerName::onEvent(const NEvent& event)

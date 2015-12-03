@@ -249,8 +249,7 @@ void StartMenu::Impl::showLanguageOptions()
 
 void StartMenu::Impl::showPackageOptions()
 {
-  auto& packageOptionsDlg = ui().add<dialog::PackageOptions>( Rect() );
-  packageOptionsDlg.setModal();
+  ui().add<dialog::PackageOptions>( Rect() );
 }
 
 void StartMenu::Impl::changeLanguage(std::string lang, std::string newFont, std::string sounds)
