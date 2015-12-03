@@ -32,6 +32,7 @@
 #include "gfx/city_renderer.hpp"
 #include "gfx/tile.hpp"
 #include "gfx/engine.hpp"
+#include "city/scribes.hpp"
 #include "overlays_menu.hpp"
 #include "core/foreach.hpp"
 #include "core/utils.hpp"
@@ -417,6 +418,37 @@ void Menu::_createLink( Link& link )
   link.button = btn;
 }
 
+class MessageAnnotation : public Widget
+{
+public:
+  MessageAnnotation( Widget* parent, const Rect& rect, Scribes& messages )
+    : Widget( parent, -1, rect )
+  {
+    active = false;
+    pic = Picture( gui::rc.panel, 114 );
+    setSubElement( true );
+    CONNECT( &messages, onChangeMessageNumber(), this, MessageAnnotation::messagesChanged )
+  }
+
+  void messagesChanged(int number)
+  {
+    active = number > 0;
+  }
+
+  virtual void draw(Engine& painter)
+  {
+    unsigned int time = DateTime::elapsedTime() ;
+    if( active && (time % 1000 < 500) )
+    {
+      Rect rect( Point(), pic.size() );
+      painter.draw( pic, rect, absoluteRect(),  &absoluteClippingRectRef() );
+    }
+  }
+
+  bool active;
+  Picture pic;
+};
+
 PushButton* Menu::_addButton( int startPic, bool pushBtn, int yMul, 
                               int id, bool haveSubmenu, int midPic,
                               const std::string& ident, const Rect& rect )
@@ -718,6 +750,7 @@ void ExtentMenu::_updateButtons()
 
   _d->messageButton = _addButton( 115, false, 0, -1, false, -1, "message" );
   _setChildGeometry( _d->messageButton, Rect( Point( 63, 421 ), Size( 39, 22 ) ) );
+  new MessageAnnotation( _d->messageButton, Rect( 2, 2, 23, 20 ), _d->city->scribes() );
 
   _d->disasterButton = _addButton( 119, false, 0, -1, false, -1, "troubles" );
   _setChildGeometry( _d->disasterButton, Rect( Point( 113, 421 ), Size( 39, 22 ) ) );

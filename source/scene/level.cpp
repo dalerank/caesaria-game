@@ -352,6 +352,7 @@ void Level::initialize()
 
   _d->showMissionTargetsWindow();
   _d->renderer.camera()->setCenter( city->cameraPos() );
+  _d->extMenu->resolveUndoChange( _d->undoStack.isAvailableUndo() );
 
   _d->dhandler.insertTo( _d->game, _d->topMenu );
   _d->dhandler.setVisible( false );
