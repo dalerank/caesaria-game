@@ -73,7 +73,7 @@ public:
 
   Impl() : EnumsHelper<good::Product>(good::none)
   {
-#define __REG_GTYPE(a) append( good::a, CAESARIA_STR_EXT(a), "##" CAESARIA_STR_EXT(a)"##" );
+#define __REG_GTYPE(a) append( good::a, TEXT(a), "##" TEXT(a)"##" );
     __REG_GTYPE(none )
     __REG_GTYPE(wheat)
     __REG_GTYPE(fish )
@@ -137,7 +137,7 @@ Product Helper::getType( const std::string& name )
   {
     Logger::warning( "Can't find type for goodName " + name );
     return good::none;
-    //_CAESARIA_DEBUG_BREAK_IF( "Can't find type for goodName" );
+    //_GAME_DEBUG_BREAK_IF( "Can't find type for goodName" );
   }
 
   return type;

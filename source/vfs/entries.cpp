@@ -214,9 +214,9 @@ int Entries::findFile(const Path& filename, bool isDirectory) const
   Path::SensType sType = _d->sensType;
   if( _d->sensType == Path::nativeCase )
   {
-#if defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
+#if defined(GAME_PLATFORM_UNIX) || defined(GAME_PLATFORM_UNIXU)
     sType = Path::equaleCase;
-#elif defined(CAESARIA_PLATFORM_WIN)
+#elif defined(GAME_PLATFORM_WIN)
     sType = Path::ignoreCase;
 #endif
   }

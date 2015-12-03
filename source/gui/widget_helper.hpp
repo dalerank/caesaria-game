@@ -61,8 +61,8 @@ T getWidgetFromUI( const std::string& elmName, const char* filename, int line, c
 
 }//end namespace gui
 
-#define GET_WIDGET_FROM_UI( element ) element = getWidgetFromUI<__typeof__(element)>( CAESARIA_STR_A(element), __FILE__, __LINE__, this );
-#define GET_DWIDGET_FROM_UI( d, element ) (d)->element = getWidgetFromUI<__typeof__( (d)->element)>( CAESARIA_STR_A(element), __FILE__, __LINE__, this );
+#define GET_WIDGET_FROM_UI( element ) element = getWidgetFromUI<__typeof__(element)>( TEXT(element), __FILE__, __LINE__, this );
+#define GET_DWIDGET_FROM_UI( d, element ) (d)->element = getWidgetFromUI<__typeof__( (d)->element)>( TEXT(element), __FILE__, __LINE__, this );
 
 #define INIT_WIDGET_FROM_UI( type, element ) type element; GET_WIDGET_FROM_UI( element );
 #define LINK_WIDGET_ACTION( type, element, signal, receiver, slot) { type element; GET_WIDGET_FROM_UI( element ); CONNECT( element, signal, receiver, slot ); }

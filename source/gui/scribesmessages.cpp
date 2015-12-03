@@ -48,10 +48,10 @@ namespace gui
 namespace dialog
 {
 
-CAESARIA_LITERALCONST(opened)
-CAESARIA_LITERALCONST(critical)
-CAESARIA_LITERALCONST(ext)
-CAESARIA_LITERALCONST(date)
+GAME_LITERALCONST(opened)
+GAME_LITERALCONST(critical)
+GAME_LITERALCONST(ext)
+GAME_LITERALCONST(date)
 
 class ScribesListBox : public ListBox
 {

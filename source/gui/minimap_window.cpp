@@ -85,7 +85,7 @@ public:
 };
 
 Minimap::Minimap(Widget* parent, const Rect& rect, PlayerCityPtr city, const gfx::Camera& camera, const Size& size)
-  : Widget( parent, Hash(CAESARIA_STR_A(Minimap)), rect ), _d( new Impl )
+  : Widget( parent, Hash(TEXT(Minimap)), rect ), _d( new Impl )
 {
   setupUI( ":/gui/minimap.gui" );
 
@@ -177,7 +177,7 @@ void Minimap::Impl::getTileColours(const Tile& tile, int &c1, int &c2)
   c1 |= 0xff000000;
   c2 |= 0xff000000;
 
-#ifdef CAESARIA_PLATFORM_ANDROID
+#ifdef GAME_PLATFORM_ANDROID
   c1 = NColor( c1 ).abgr();
   c2 = NColor( c2 ).abgr();
 #endif
@@ -330,7 +330,7 @@ void Minimap::Impl::getObjectColours(const Tile& tile, int &c1, int &c2)
   c1 |= 0xff000000;
   c2 |= 0xff000000;
 
-#ifdef CAESARIA_PLATFORM_ANDROID
+#ifdef GAME_PLATFORM_ANDROID
   c1 = NColor( c1 ).abgr();
   c2 = NColor( c2 ).abgr();
 #endif

@@ -141,9 +141,6 @@ Trade::Trade(Widget* parent, PlayerCityPtr city, int id )
 
   GET_DWIDGET_FROM_UI( _d, gbInfo )
 
-#define LINK_WIDGET_ACTIONA( type, element, signal, slot) \
-  LINK_WIDGET_LOCAL_ACTION( type, element, signal, __typeof__(this)::##slot )
-
   LINK_WIDGET_LOCAL_ACTION( PushButton*, btnEmpireMap, onClicked(), Trade::deleteLater );
   LINK_WIDGET_LOCAL_ACTION( PushButton*, btnEmpireMap, onClicked(), Trade::_showEmpireMap );
   LINK_WIDGET_LOCAL_ACTION( PushButton*, btnPrices,    onClicked(), Trade::_showGoodsPriceWindow );

@@ -26,7 +26,7 @@ using namespace gfx;
 
 namespace {
 static Tile invalidTile( TilePos(-1, -1) );
-CAESARIA_LITERALCONST(tiles)
+GAME_LITERALCONST(tiles)
 }
 
 bool operator<(const Pathway& v1, const Pathway& v2)
@@ -220,7 +220,7 @@ void Pathway::prettyPrint() const
     case direction::northWest: strDir += "NW"; break;
     default:
       //"Unexpected Direction:"
-      _CAESARIA_DEBUG_BREAK_IF( direction );
+      _GAME_DEBUG_BREAK_IF( direction );
     break;
     }
 

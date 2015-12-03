@@ -423,7 +423,7 @@ void Level::Impl::makeFastSave() { game->save( createFastSaveName().toString() )
 
 void Level::Impl::showMessagesWindow()
 {
-  unsigned int id = Hash( CAESARIA_STR_A(dialog::ScribesMessages) );
+  unsigned int id = Hash( TEXT(dialog::ScribesMessages) );
   Widget* wnd = game->gui()->findWidget( id );
 
   if( wnd == 0 )
@@ -863,7 +863,7 @@ bool Level::_tryExecHotkey(NEvent &event)
 
 void Level::Impl::showMissionTargetsWindow()
 {
-  unsigned int id = Hash( CAESARIA_STR_EXT(MissionTargetsWindow) );
+  unsigned int id = Hash( TEXT(MissionTargetsWindow) );
   Widget* wdg = game->gui()->findWidget( id );
   if( !wdg )
   {

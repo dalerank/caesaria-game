@@ -257,6 +257,6 @@ void AmbientSound::setCamera(Camera *camera)
   _d->camera = camera;
 }
 
-std::string AmbientSound::defaultName() { return CAESARIA_STR_EXT(AmbientSound); }
+std::string AmbientSound::defaultName() { return TEXT(AmbientSound); }
 
 }//end namespace city

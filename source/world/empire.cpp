@@ -312,7 +312,7 @@ CityPtr Empire::addCity( CityPtr city )
   if( ret.isValid() )
   {
     Logger::warning( "Empire: city {0} already exist", city->name() );
-    //_CAESARIA_DEBUG_BREAK_IF( "City already exist" );
+    //_GAME_DEBUG_BREAK_IF( "City already exist" );
     return ret;
   }
 

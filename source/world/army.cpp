@@ -116,7 +116,7 @@ void Army::load(const VariantMap& stream)
   VARIANT_LOAD_ANY_D( d, strength, stream )
 }
 
-std::string Army::type() const { return CAESARIA_STR_EXT(Army); }
+std::string Army::type() const { return TEXT(Army); }
 
 void Army::setBase(CityPtr base){  _dfunc()->base = base.isValid() ? base->name() : "";  }
 

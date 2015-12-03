@@ -96,7 +96,7 @@ static SimpleLogger LOG_CITY( "City" );
 typedef std::map<PlayerCity::TileType, Tile*> TileTypeMap;
 
 namespace config {
-CAESARIA_LITERALCONST(tilemap)
+GAME_LITERALCONST(tilemap)
 static const int minimumOldFormat = 58;
 }
 
@@ -352,7 +352,7 @@ void PlayerCity::save( VariantMap& stream) const
     vm_services[service->name() ] = service->save();
   }
 
-  stream[ "saveFormat" ] = CAESARIA_BUILD_NUMBER;
+  stream[ "saveFormat" ] = GAME_BUILD_NUMBER;
   stream[ "services" ] = vm_services;
   VARIANT_SAVE_ANY_D( stream, _d, states.age )
   VARIANT_SAVE_ANY_D( stream, _d, states.birth )
@@ -365,7 +365,7 @@ void PlayerCity::load( const VariantMap& stream )
 {
   LOG_CITY.info( "Start parse savemap" );
   int saveFormat = stream.get( "saveFormat", minimumOldFormat );
-  bool needLoadOld = saveFormat < CAESARIA_BUILD_NUMBER;
+  bool needLoadOld = saveFormat < GAME_BUILD_NUMBER;
 
   if( needLoadOld )
   {

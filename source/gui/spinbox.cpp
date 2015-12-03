@@ -88,7 +88,7 @@ SpinBox::SpinBox(Widget* parent, const Rect& rectangle, const std::string& text,
   _d->postfix = postfix;
   _initButtons();
 #ifdef _DEBUG
-   setDebugName( CAESARIA_STR_A(SpinBox) );
+   setDebugName( TEXT(SpinBox) );
 #endif
 }
 

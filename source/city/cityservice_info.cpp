@@ -214,7 +214,7 @@ Info::Parameters Info::yearParams(unsigned int year) const
 
 const Info::MaxParameters& Info::maxParams() const { return _d->maxparam; }
 const Info::History& Info::history() const { return _d->allHistory; }
-std::string Info::defaultName() {  return CAESARIA_STR_EXT(Info); }
+std::string Info::defaultName() {  return TEXT(Info); }
 
 VariantMap Info::save() const
 {

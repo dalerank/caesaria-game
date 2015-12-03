@@ -147,7 +147,7 @@ PushButton::PushButton( Widget* parent,
                         const BackgroundStyle bgStyle )
 : Widget( parent, id, rectangle ), __INIT_IMPL(PushButton)
 {
-  setDebugName( CAESARIA_STR_EXT(PushButton) );
+  setDebugName( TEXT(PushButton) );
 
   setBackgroundStyle( bgStyle );
   setTextAlignment( align::center, align::center );
@@ -158,9 +158,9 @@ PushButton::PushButton( Widget* parent,
 
 void PushButton::_updateTextPic()
 {
-  __D_IMPL(_d,PushButton)
+  __D_REF(_d,PushButton)
   ElementState state = _state();
-  Picture& textTxs = _d->text.picture;
+  Picture& textTxs = _d.text.picture;
 
   if( textTxs.isValid() )
   {
@@ -172,16 +172,16 @@ void PushButton::_updateTextPic()
     textTxs = Picture( size(), 0, true );
   }
 
-  Font stFont = _d->buttonStates[ state ].font;
+  Font stFont = _d.buttonStates[ state ].font;
   if( textTxs.isValid() && stFont.isValid() )
   {
     Rect textRect = stFont.getTextRect( text(), Rect( 0, 0, width(), height() ),
                                               horizontalTextAlign(), verticalTextAlign() );
     textTxs.fill( 0x00ffffff, Rect( 0, 0, 0, 0 ) );
-    stFont.draw( textTxs, text(), textRect.lefttop() + _d->text.offset, true, false );
+    stFont.draw( textTxs, text(), textRect.lefttop() + _d.text.offset, true, false );
   }
 
-  if( _d->bg.style == flatBorderLine )
+  if( _d.bg.style == flatBorderLine )
   {
     Decorator::drawLine( textTxs, Point( 0, 0), Point( width(), 0), ColorList::black );
     Decorator::drawLine( textTxs, Point( width()-1, 0), Point( width()-1, height() ), ColorList::black );
@@ -653,8 +653,9 @@ void PushButton::_finalizeResize()
 
 void PushButton::setBackgroundStyle( const BackgroundStyle style )
 {
-  _dfunc()->bg.style = style;
-  _dfunc()->bg.dirty = true;
+  __D_REF(d,PushButton)
+  d.bg.style = style;
+  d.bg.dirty = true;
 }
 
 void PushButton::setBackgroundStyle(const std::string &strStyle)

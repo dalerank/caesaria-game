@@ -33,7 +33,7 @@
 #include "zlib.h"
 #include "zip.h"
 
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
   #undef main
 #endif
 

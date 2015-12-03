@@ -28,9 +28,9 @@
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
 
-CAESARIA_LITERALCONST(talks)
-CAESARIA_LITERALCONST(font)
-CAESARIA_LITERALCONST(ext)
+GAME_LITERALCONST(talks)
+GAME_LITERALCONST(font)
+GAME_LITERALCONST(ext)
 
 namespace gui
 {

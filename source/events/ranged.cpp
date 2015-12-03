@@ -21,7 +21,7 @@
 namespace events
 {
 
-CAESARIA_LITERALCONST(population)
+GAME_LITERALCONST(population)
 
 VariantMap Ranged::save() const
 {

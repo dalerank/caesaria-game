@@ -48,7 +48,7 @@ void ShowLoadDialog::_exec(Game& game, unsigned int)
 
   vfs::Path savesPath = SETTINGS_STR( savedir );
   std::string defaultExt = SETTINGS_STR( saveExt );
-  auto&& dialog = game.gui()->add<dialog::LoadFile>( Rect(), savesPath, defaultExt,-1 );
+  auto& dialog = game.gui()->add<dialog::LoadFile>( Rect(), savesPath, defaultExt,-1 );
 
   CONNECT( &dialog, onSelectFile(), lvl, scene::Level::loadStage );
   dialog.setTitle( _("##mainmenu_loadgame##") );

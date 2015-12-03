@@ -41,7 +41,7 @@
 #include "core/debug_timer.hpp"
 #include "sdl_batcher.hpp"
 
-#ifdef CAESARIA_PLATFORM_MACOSX
+#ifdef GAME_PLATFORM_MACOSX
 #include <dlfcn.h>
 #endif
 
@@ -240,7 +240,7 @@ void SdlEngine::init()
     THROW("SDLGraficEngine: Unable to initialize SDL: " << SDL_GetError());
   }
 
-#ifdef CAESARIA_PLATFORM_MACOSX
+#ifdef GAME_PLATFORM_MACOSX
   void* cocoa_lib;
   cocoa_lib = dlopen( "/System/Library/Frameworks/Cocoa.framework/Cocoa", RTLD_LAZY );
   void (*nsappload)(void);
@@ -248,7 +248,7 @@ void SdlEngine::init()
   nsappload();
 #endif
 
-#ifdef CAESARIA_PLATFORM_ANDROID
+#ifdef GAME_PLATFORM_ANDROID
   auto mode = modes().front();
   _srcSize = Size( mode.width(), mode.height() );
   Logger::warning( "SDLGraficEngine: Android set mode {}x{}",  _srcSize.width(), _srcSize.height() );
@@ -337,14 +337,14 @@ void SdlEngine::init()
     THROW("Unable to set video mode: " << SDL_GetError());
   }
 
-  Logger::warning( "SDLGraphicEngine: version:{} compiler:{}", CAESARIA_PLATFORM_NAME, CAESARIA_COMPILER_NAME );
-  std::string versionStr = fmt::format( "CaesarIA (WORK IN PROGRESS/Build {})", CAESARIA_BUILD_NUMBER );
+  Logger::warning( "SDLGraphicEngine: version:{} compiler:{}", GAME_PLATFORM_NAME, GAME_COMPILER_NAME );
+  std::string versionStr = fmt::format( "CaesarIA (WORK IN PROGRESS/Build {})", GAME_BUILD_NUMBER );
   SDL_SetWindowTitle( _d->window, versionStr.c_str() );
 
   _d->sheigth = _srcSize.height();
   _d->renderer = renderer;
 
-#ifdef CAESARIA_PLATFORM_ANDROID
+#ifdef GAME_PLATFORM_ANDROID
   _d->screenScale = 800.f / _srcSize.height();
 #else
   SDL_RenderGetScale( _d->renderer, &_d->screenScale, nullptr );
@@ -802,7 +802,7 @@ bool SdlEngine::haveEvent( NEvent& event )
   {
     event = EventConverter::instance().get( sdlEvent );
 
-#ifdef CAESARIA_PLATFORM_ANDROID
+#ifdef GAME_PLATFORM_ANDROID
     //Android fix that prevent dribling map
     if( event.EventType == sEventMouse )
     {

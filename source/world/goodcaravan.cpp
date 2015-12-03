@@ -72,7 +72,7 @@ void GoodCaravan::sendTo(ObjectPtr obj)
 
 void GoodCaravan::sendTo(CityPtr obj) { sendTo( obj.as<Object>() ); }
 good::Store& GoodCaravan::store() { return _d->store; }
-std::string GoodCaravan::type() const { return CAESARIA_STR_EXT(GoodCaravan); }
+std::string GoodCaravan::type() const { return TEXT(GoodCaravan); }
 
 void GoodCaravan::timeStep(unsigned int time)
 {
