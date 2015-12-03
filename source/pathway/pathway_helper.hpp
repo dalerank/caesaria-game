@@ -59,7 +59,8 @@ public:
                         WayType type);
 
   static Pathway create(TilePos statrPos, TilePos stopPos,
-                        const TilePossibleCondition& condition );
+                        const TilePossibleCondition& condition,
+                        int flags=0);
 
   static DirectRoute shortWay( PlayerCityPtr city, const TilePos& startPos, object::Type buildingType, WayType type );
   static DirectRoute shortWay( const TilePos& startPos, ConstructionList buildings, WayType type);

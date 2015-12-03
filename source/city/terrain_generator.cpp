@@ -467,7 +467,7 @@ public:
     Pathfinder& pathfinder = Pathfinder::instance();
     pathfinder.setCondition( makeDelegate( this, &TerrainGeneratorHelper::needBuildRoad ) );
 
-    return pathfinder.getPath( startPos, endPos, Pathfinder::customCondition | Pathfinder::fourDirection );
+    return pathfinder.getPath( startPos, endPos, Pathway::customCondition | Pathway::fourDirection );
   }
 
   Pathway findWay(Tilemap& oTilemap, int startSide, int endSide )
@@ -506,7 +506,7 @@ public:
       {
         Tile* endTile = arrivedTiles[ arvTileIndex ];
 
-        Pathway way = pathfinder.getPath( *rtile, *endTile, Pathfinder::customCondition | Pathfinder::fourDirection );
+        Pathway way = pathfinder.getPath( *rtile, *endTile, Pathway::customCondition | Pathway::fourDirection );
 
         if( way.isValid() )
           return way;
@@ -558,16 +558,14 @@ static void __createRivers(Game& game )
     Pathway way;
     for( int range=0; range < 99; range++ )
     {
-      TilesArray perimeter = oTilemap.rect( range, centertile->pos() );
-      for( auto currentTile : perimeter )
+      TilesArray waters = oTilemap.rect( range, centertile->pos() )
+                                  .select( Tile::tlWater );
+      for( auto currentTile : waters )
       {
-        if( currentTile->getFlag( Tile::tlWater ) )
+        way = pathfinder.getPath( *centertile, *currentTile, Pathway::customCondition | Pathway::fourDirection );
+        if( way.isValid() )
         {
-          way = pathfinder.getPath( *centertile, *currentTile, Pathfinder::customCondition | Pathfinder::fourDirection );
-          if( way.isValid() )
-          {
-            break;
-          }
+          break;
         }
       }
 
