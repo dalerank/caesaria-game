@@ -37,6 +37,7 @@
 #include "events/undo_action.hpp"
 #include "objects/tree.hpp"
 #include "game/settings.hpp"
+#include "core/format.hpp"
 
 using namespace gfx;
 using namespace events;
@@ -84,22 +85,22 @@ public:
 void Destroy::_clearAll()
 {
   TilesArray tiles4clear = _getSelectedArea( _d->startTilePos );
-  std::set<TilePos> alsoDestroyed;
+  std::set<Tile*> alsoDestroyed;
   for( auto tile : tiles4clear )
   {
     Tile* master = tile->master() ? tile->master() : tile;
-    if( alsoDestroyed.count( master->epos() ) == 0 )
+    if( alsoDestroyed.count( master ) == 0 )
     {
-      alsoDestroyed.insert( master->epos() );
+      alsoDestroyed.insert( master );
 
       events::dispatch<ClearTile>( master->epos() );
 
-      if( tile->overlay().isValid() )
+      if( master->overlay().isValid() )
       {
-        auto objectType = tile->overlay()->type();
-        int money = _checkMoney4destroy( *tile );
+        auto objectType = master->overlay()->type();
+        int money = _checkMoney4destroy( *master );
 
-        events::dispatch<UndoAction>( UndoAction::destroyed, objectType, tile->epos(), money );
+        events::dispatch<UndoAction>( UndoAction::destroyed, objectType, master->epos(), money );
       }
     }
   }
@@ -139,6 +140,7 @@ void Destroy::render( Engine& engine )
   //create list of destroy tiles add full area building if some of it tile constain in destroy area
   _d->savesum = _d->money4destroy;
   _d->money4destroy = 0;
+  std::set<Tile*> checked;
   for( auto dtile : destroyArea )
   {
     hashDestroyArea += dtile;
@@ -147,42 +149,35 @@ void Destroy::render( Engine& engine )
     if( overlay.isValid() )
       hashDestroyArea += overlay->area();
 
-    _d->money4destroy += _checkMoney4destroy( *dtile );
+    Tile* master = dtile->master() ? dtile->master() : dtile;
+    if( checked.count( master ) == 0 )
+    {
+      checked.insert( master );
+      _d->money4destroy += _checkMoney4destroy( *dtile );
+    }
   }
 
   for( auto tile : groundTiles )
   {
     if( hashDestroyArea.inArea( tile ) )
-    {
       engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
-      drawPass( renderInfo, *tile, Renderer::ground );
-      drawPass( renderInfo, *tile, Renderer::groundAnimation );
-      engine.resetColorMask();
-    }
-    else
-    {
-      drawPass( renderInfo, *tile, Renderer::ground );
-      drawPass( renderInfo, *tile, Renderer::groundAnimation );
-    }
+
+    drawLandTile( renderInfo, *tile );
+    engine.resetColorMask();
   }
 
   // FIRST PART: draw all flat land (walkable/boatable)  
   for( auto ftile : flatTiles )
   {
-    Tile* master = ftile->master();
-
-    ftile = (master == 0 ? ftile : master);
+    ftile = ftile->master() ? ftile->master() : ftile;
 
     if( !ftile->rendered() )
     {
       if( hashDestroyArea.inArea( ftile ) )
-      {
         engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
-        drawTile( renderInfo, *ftile );
-        engine.resetColorMask();
-      }
-      else
-        drawTile( renderInfo, *ftile );
+
+      drawTile( renderInfo, *ftile );
+      engine.resetColorMask();
     }
   }
 
@@ -192,17 +187,11 @@ void Destroy::render( Engine& engine )
     int z = vtile->epos().z();
 
     if( hashDestroyArea.inArea( vtile ) )
-    {
       engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
-      drawProminentTile( renderInfo, *vtile, z, false );
-      drawWalkers( renderInfo, *vtile );
-      engine.resetColorMask();
-    }
-    else
-    {
-      drawProminentTile( renderInfo, *vtile, z, false );
-      drawWalkers( renderInfo, *vtile );
-    }
+
+    drawProminentTile( renderInfo, *vtile, z, false );
+    drawWalkers( renderInfo, *vtile );
+    engine.resetColorMask();
   }
 }
 
@@ -212,7 +201,7 @@ void Destroy::renderUi(Engine &engine)
   {
     _d->textPic.fill( 0x0, Rect() );
     _d->textFont.setColor( 0xffff0000 );
-    _d->textFont.draw( _d->textPic, utils::i2str( _d->money4destroy ) + " Dn", Point() );
+    _d->textFont.draw( _d->textPic, fmt::format( "{} Dn", _d->money4destroy ), Point() );
   }
 
   engine.draw( _d->shovelPic, engine.cursorPos() - Point( 5, _d->shovelPic.height() ) );
