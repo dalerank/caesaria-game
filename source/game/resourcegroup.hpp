@@ -84,7 +84,8 @@ struct {
   int constr = 1;
   int skipRightBorder = 1;
   int skipLeftBorder = 2;
-  int house = 4;
+  int ground = 4;
+  int house = 5;
 } tile;
 
 struct {

@@ -693,7 +693,7 @@ bool FileSystem::existFile(const Path& filename, Path::SensType sens) const
   #if defined(GAME_PLATFORM_WIN)
     if( sens == Path::nativeCase || sens == Path::ignoreCase )
     {
-      return ( _access( filename.toString().c_str(), 0) != -1);
+      return ( _access( filename.toCString(), 0) != -1);
     }
   #elif defined(GAME_PLATFORM_UNIX) || defined(GAME_PLATFORM_HAIKU)
     if( sens == Path::nativeCase || sens == Path::equaleCase )
@@ -722,7 +722,7 @@ DateTime FileSystem::getFileUpdateTime(const Path& filename) const
   FILETIME creationTime,
            lpLastAccessTime,
            lastWriteTime;
-  HANDLE h = CreateFile( filename.toString().c_str(),
+  HANDLE h = CreateFile( filename.toCString(),
                          GENERIC_READ, FILE_SHARE_READ, NULL,
                          OPEN_EXISTING, 0, NULL);
   GetFileTime( h, &creationTime, &lpLastAccessTime, &lastWriteTime );
