@@ -116,99 +116,99 @@ struct Menu::Model
   {
     actions[ Link::buildHouse  ] = { {13,277}, gui::button.house, object::house, 0,
                                      object::house, gui::miniature.house, pushButton,
-                                     noSubMenu, Rect(), "housing", nullptr, "", Link::inGame };
+                                     noSubMenu, Rect(), "housing", nullptr, "housing", Link::inGame };
 
     actions[ Link::editTerrain ] = { {13,277}, gui::button.terrain, object::terrain, 0,
                                      object::terrain, gui::miniature.clear, pushButton,
-                                     noSubMenu, Rect(), "terrain", nullptr, "", Link::inEditor };
+                                     noSubMenu, Rect(), "terrain", nullptr, "terrain", Link::inEditor };
 
     actions[ Link::clearLand   ] = { {63,277}, gui::button.clear, (int)AdvToolMode::removeTool, 1,
                                      (int)AdvToolMode::removeTool, gui::miniature.clear, pushButton,
-                                     noSubMenu, Rect(), "clear_land", nullptr, "", Link::inGame };
+                                     noSubMenu, Rect(), "clear_land", nullptr, "clear", Link::inGame };
 
     actions[ Link::editForest  ] = { {63,277}, gui::button.forest, object::tree, 0,
                                      object::tree, gui::miniature.clear, pushButton,
-                                     noSubMenu, Rect(), "forest", nullptr, "", Link::inEditor };
+                                     noSubMenu, Rect(), "forest", nullptr, "forest", Link::inEditor };
 
     actions[ Link::buildRoad   ] = { {113,277}, gui::button.road, object::road,  2,
                                      object::road, gui::miniature.road, pushButton,
-                                     noSubMenu, Rect(), "road", nullptr, "", Link::inGame };
+                                     noSubMenu, Rect(), "road", nullptr, "road", Link::inGame };
 
     actions[ Link::editWater   ] = { {113,277}, gui::button.water, object::water,  2,
                                      object::water, gui::miniature.clear, pushButton,
-                                     noSubMenu, Rect(), "water", nullptr, "", Link::inEditor};
+                                     noSubMenu, Rect(), "water", nullptr, "water", Link::inEditor};
 
     actions[ Link::buildWater  ] = { {13,313}, gui::button.waterSupply, development::water,  3,
                                      development::water, gui::miniature.water, pushButton,
-                                     haveSubMenu, Rect(), "water", nullptr, "", Link::inGame };
+                                     haveSubMenu, Rect(), "water", nullptr, "water", Link::inGame };
 
     actions[ Link::editRocks ] = { {13,313}, gui::button.rocks, object::rock,  3,
                                      object::rock, gui::miniature.clear, pushButton,
-                                     noSubMenu, Rect(), "smRock", nullptr, "", Link::inEditor};
+                                     noSubMenu, Rect(), "smRock", nullptr, "smRock", Link::inEditor};
 
     actions[ Link::buildHealth  ] = { {63,313}, gui::button.health, development::health,  4,
                                       development::health, gui::miniature.health, pushButton,
-                                      haveSubMenu, Rect(), "health", nullptr, "", Link::inGame };
+                                      haveSubMenu, Rect(), "health", nullptr, "health", Link::inGame };
 
     actions[ Link::editMeadow ] = { {63,313}, gui::button.meadow, object::meadow,  4,
                                      object::meadow, gui::miniature.clear, pushButton,
-                                     noSubMenu, Rect(), "meadow", nullptr, "", Link::inEditor};
+                                     noSubMenu, Rect(), "meadow", nullptr, "meadow", Link::inEditor};
 
     actions[ Link::buildTemple  ] = { {113,313}, gui::button.temple, development::religion,  5,
                                       development::religion, gui::miniature.religion, pushButton,
-                                      haveSubMenu, Rect(), "temples", nullptr, "", Link::inGame };
+                                      haveSubMenu, Rect(), "temples", nullptr, "temples", Link::inGame };
 
     actions[ Link::editPlateau ] = { {113,313}, gui::button.plateau, object::plateau,  5,
                                      object::plateau, gui::miniature.clear, pushButton,
-                                     noSubMenu, Rect(), "plateau", nullptr, "", Link::inEditor};
+                                     noSubMenu, Rect(), "plateau", nullptr, "plateau", Link::inEditor};
 
     actions[ Link::buildEducation]={ {13,349}, gui::button.education, development::education,  6,
                                       development::education, gui::miniature.education, pushButton,
-                                      haveSubMenu, Rect(), "education", nullptr, "", Link::inGame };
+                                      haveSubMenu, Rect(), "education", nullptr, "education", Link::inGame };
 
     actions[ Link::editRift ] = { {13,349}, gui::button.rift, object::rift,  6,
                                    object::rift, gui::miniature.clear, pushButton,
-                                   noSubMenu, Rect(), "rift", nullptr, "", Link::inEditor};
+                                   noSubMenu, Rect(), "rift", nullptr, "rift", Link::inEditor};
 
     actions[ Link::buildEntertainment]={ {63,349}, gui::button.entertainment, development::entertainment,  7,
                                          development::entertainment, gui::miniature.entertainment, pushButton,
-                                         haveSubMenu, Rect(), "entertainment", nullptr, "", Link::inGame };
+                                         haveSubMenu, Rect(), "entertainment", nullptr, "entertainment", Link::inGame };
 
     actions[ Link::editRiver ] = { {63,349}, gui::button.river, object::river,  7,
                                   object::river, gui::miniature.clear, pushButton,
-                                  noSubMenu, Rect(), "river", nullptr, "", Link::inEditor};
+                                  noSubMenu, Rect(), "river", nullptr, "river", Link::inEditor};
 
     actions[ Link::buildGovt ]={ {113,349}, gui::button.govt, development::administration, 8,
                                  development::administration, gui::miniature.administration, pushButton,
-                                 haveSubMenu, Rect(), "administration", nullptr, "", Link::inGame };
+                                 haveSubMenu, Rect(), "administration", nullptr, "administration", Link::inGame };
 
     actions[ Link::editIndigene ] = { {113,349}, gui::button.indigene, object::native_hut,  8,
                                   object::native_hut, gui::miniature.clear, pushButton,
-                                  noSubMenu, Rect(), "indigene", nullptr, "", Link::inEditor};
+                                  noSubMenu, Rect(), "indigene", nullptr, "indigene", Link::inEditor};
 
     actions[ Link::buildEngineering ]={ {13,385}, gui::button.engineering, development::engineering, 9,
                                  development::engineering, gui::miniature.engineering, pushButton,
-                                 haveSubMenu, Rect(), "engineering", nullptr, "", Link::inGame };
+                                 haveSubMenu, Rect(), "engineering", nullptr, "engineering", Link::inGame };
 
     actions[ Link::editRoads ] = { {13,385}, gui::button.broad, object::road,  9,
                                   object::road, gui::miniature.clear, pushButton,
-                                  noSubMenu, Rect(), "road", nullptr, "", Link::inEditor};
+                                  noSubMenu, Rect(), "road", nullptr, "road", Link::inEditor};
 
     actions[ Link::buildSecurity ]={ {63,385}, gui::button.security, development::security, 10,
                                  development::security, gui::miniature.security, pushButton,
-                                 haveSubMenu, Rect(), "security", nullptr, "", Link::inGame };
+                                 haveSubMenu, Rect(), "security", nullptr, "security", Link::inGame };
 
     actions[ Link::editBorders ] = { {63,385}, gui::button.waymark, object::waymark,  10,
                                   object::waymark, gui::miniature.clear, pushButton,
-                                  noSubMenu, Rect(), "waymark", nullptr, "", Link::inEditor};
+                                  noSubMenu, Rect(), "waymark", nullptr, "waymark", Link::inEditor};
 
     actions[ Link::buildCommerce ]={ {113,385}, gui::button.commerce, development::commerce, 11,
                                  development::commerce, gui::miniature.commerce, pushButton,
-                                 haveSubMenu, Rect(), "comerce", nullptr, "", Link::inGame };
+                                 haveSubMenu, Rect(), "comerce", nullptr, "comerce", Link::inGame };
 
     actions[ Link::editAttacks ] = { {113,385}, gui::button.attacks, object::attackTrigger,  11,
                                   object::attackTrigger, gui::miniature.clear, pushButton,
-                                  noSubMenu, Rect(), "attackTrigger", nullptr, "", Link::inEditor};
+                                  noSubMenu, Rect(), "attackTrigger", nullptr, "attackTrigger", Link::inEditor};
 
   }
 

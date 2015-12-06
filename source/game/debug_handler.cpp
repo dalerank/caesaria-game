@@ -185,6 +185,8 @@ enum {
   enable_constructor_mode,
   show_requests,
   show_attacks,
+  reset_fire_risk,
+  reset_collapse_risk,
   next_theme
 };
 
@@ -304,6 +306,8 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( in_city, decrease_sentiment )
   ADD_DEBUG_EVENT( in_city, increase_sentiment )
   ADD_DEBUG_EVENT( in_city, forest_grow )
+  ADD_DEBUG_EVENT( in_city, reset_fire_risk )
+  ADD_DEBUG_EVENT( in_city, reset_collapse_risk )
 
   ADD_DEBUG_EVENT( house, increase_max_level )
   ADD_DEBUG_EVENT( house, decrease_max_level )
@@ -483,6 +487,22 @@ void DebugHandler::Impl::handleEvent(int event)
     forest = forest.random( 2 );
     for( auto tree : forest )
       tree->burn();
+  }
+  break;
+
+  case reset_fire_risk:
+  {
+    BuildingList buildings = game->city()->overlays().select<Building>();
+    for( auto building : buildings )
+      building->setState( pr::fire, 0 );
+  }
+  break;
+
+  case reset_collapse_risk:
+  {
+    BuildingList buildings = game->city()->overlays().select<Building>();
+    for( auto building : buildings )
+      building->setState( pr::damage, 0 );
   }
   break;
 

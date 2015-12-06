@@ -94,7 +94,11 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::RequestPtr r
       video = "urgent_message2";
     }
 
-    if( lbText ) { lbText->setText( _( text ) ); }
+    if( lbText )
+    {
+      lbText->setWordwrap( true );
+      lbText->setText( _( text ) );
+    }
     if( lbTitle ) { lbTitle->setText( _( title ) ); }
 
     int month2Comply = game::Date::current().monthsTo( gr->finishedDate() );

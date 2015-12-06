@@ -25,6 +25,7 @@
 #include "core/timer.hpp"
 #include "city/economy.hpp"
 #include "objects/metadata.hpp"
+#include "objects/metadata.hpp"
 #include "events/build.hpp"
 
 using namespace events;
@@ -76,7 +77,9 @@ public:
 
   virtual void undo( PlayerCityPtr city )
   {
-    events::dispatch<BuildAny>( location, type );
+    const object::Info& info = object::Info::find( type );
+    TilePos undoOffset = info.getOption( "undoOffset" );
+    events::dispatch<BuildAny>( location + undoOffset, type );
     events::dispatch<Payment>( econ::Issue::buildConstruction, money );
   }
 };

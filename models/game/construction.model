@@ -741,6 +741,7 @@
   wheat_farm : 
   {
     cost : 40,
+    undoOffset : [ 0, -1 ]
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     class : "food"
@@ -752,6 +753,7 @@
   vegetable_farm :
   {
     cost : 40,
+    undoOffset : [ 0, -1 ]
     desirability : { base : -2, 	range : 2,	step : 1 }
     employers : 10
     productRate : 9.6
@@ -764,6 +766,7 @@
   fig_farm : 
   {
     cost : 40,
+    undoOffset : [ 0, -1 ]
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     output : "fruit"
@@ -776,6 +779,7 @@
   olive_farm : 
   {
     cost : 40,
+    undoOffset : [ 0, -1 ]
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     class : "food"
@@ -788,6 +792,7 @@
   vinard :
   {
     cost : 40,
+    undoOffset : [ 0, -1 ]
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     class : "food"
@@ -800,6 +805,7 @@
   meat_farm : 
   {
     cost : 40,
+    undoOffset : [ 0, -1 ]
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     class : "food"

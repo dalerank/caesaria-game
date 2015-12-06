@@ -435,18 +435,26 @@ void Layer::drawArea( const RenderInfo& rinfo, const TilesArray& area, const std
   if( area.empty() )
     return;
 
-  Tile* baseTile = area.front();
-  OverlayPtr overlay = baseTile->overlay();
-  int leftBorderAtI = baseTile->i();
-  int rightBorderAtJ = overlay.isValid()
-                          ? overlay->size().height() - 1 + baseTile->j()
-                          : baseTile->j();
-  for( auto tile : area )
+  if( area.size() == 1 )
   {
-    int tileBorders = ( tile->i() == leftBorderAtI ? 0 : config::tile.skipLeftBorder )
-                      + ( tile->j() == rightBorderAtJ ? 0 : config::tile.skipRightBorder );
-    Picture pic(resourceGroup, tileBorders + tileId);
-    rinfo.engine.draw( pic, tile->mappos() + rinfo.offset );
+    Picture pic(resourceGroup, tileId );
+    rinfo.engine.draw( pic, area.front()->mappos() + rinfo.offset );
+  }
+  else
+  {
+    Tile* baseTile = area.front();
+    OverlayPtr overlay = baseTile->overlay();
+    int leftBorderAtI = baseTile->i();
+    int rightBorderAtJ = overlay.isValid()
+                            ? overlay->size().height() - 1 + baseTile->j()
+                            : baseTile->j();
+    for( auto tile : area )
+    {
+      int tileBorders = ( tile->i() == leftBorderAtI ? 0 : config::tile.skipLeftBorder )
+                        + ( tile->j() == rightBorderAtJ ? 0 : config::tile.skipRightBorder );
+      Picture pic(resourceGroup, tileBorders + tileId);
+      rinfo.engine.draw( pic, tile->mappos() + rinfo.offset );
+    }
   }
 }
 
