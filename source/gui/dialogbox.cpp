@@ -113,11 +113,11 @@ Dialog::Dialog(Ui *ui, const Rect& rectangle, const std::string& title,
 
   }
 
-  moveTo( Widget::parentCenter );
-  setModal();
-
   if( lockGame )
     _d->locker.activate();
+
+  moveTo( Widget::parentCenter );
+  setModal();
 }
 
 Signal1<int>& Dialog::onResult()

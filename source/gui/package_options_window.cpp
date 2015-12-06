@@ -51,7 +51,6 @@ PackageOptions::PackageOptions( Widget* parent, const Rect& rectangle )
   : Window( parent, rectangle, "" ), _d( new Impl )
 {
   setupUI( ":/gui/packageopts.gui" );
-  moveTo( Widget::parentCenter );
 
   GET_DWIDGET_FROM_UI(_d,edResourcesPath)
   INIT_WIDGET_FROM_UI(TexturedButton*,btnApply)
@@ -59,8 +58,6 @@ PackageOptions::PackageOptions( Widget* parent, const Rect& rectangle )
   GET_DWIDGET_FROM_UI(_d,edCaesar3Video)
   GET_DWIDGET_FROM_UI(_d,edCaesar3Music)
   GET_DWIDGET_FROM_UI(_d,edScreenshots)
-
-  WidgetEscapeCloser::insertTo( this );
 
   _update();
 
@@ -71,6 +68,8 @@ PackageOptions::PackageOptions( Widget* parent, const Rect& rectangle )
   CONNECT_LOCAL( _d->edCaesar3Music,  onTextChanged(), PackageOptions::_setCaesar3Music )
   CONNECT_LOCAL( _d->edScreenshots,   onTextChanged(), PackageOptions::_setScreenshotsDir )
 
+  WidgetEscapeCloser::insertTo( this );
+  moveTo( Widget::parentCenter );
   setModal();
 }
 

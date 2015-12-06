@@ -69,11 +69,6 @@ MissionTargets::MissionTargets( Widget* parent, PlayerCityPtr city, int id, cons
 {
   Widget::setupUI( ":/gui/targets.gui" );
 
-  WidgetEscapeCloser::insertTo( this );
-  GameAutoPause::insertTo( this );
-
-  moveTo( Widget::parentCenter );
-
   GET_DWIDGET_FROM_UI( _d, lbTitle )
   GET_DWIDGET_FROM_UI( _d, lbPopulation )
   GET_DWIDGET_FROM_UI( _d, lbProsperity )
@@ -86,6 +81,11 @@ MissionTargets::MissionTargets( Widget* parent, PlayerCityPtr city, int id, cons
   LINK_WIDGET_LOCAL_ACTION( TexturedButton*, btnExit, onClicked(), MissionTargets::deleteLater );
 
   setCity( city );
+
+
+  WidgetEscapeCloser::insertTo( this );
+  GameAutoPause::insertTo( this );
+  moveTo( Widget::parentCenter );
   setModal();
 }
 

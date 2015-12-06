@@ -105,8 +105,7 @@ void AboutWorkingBuilding::_showAdvInfo()
                                          (int)_working->state( pr::fire ),
                                          timeText.c_str() );
 
-  auto dialog = dialog::Information( ui(), "Information", workerState );
-  dialog->moveTo( Widget::parentCenter );
+  dialog::Information( ui(), "Information", workerState );
 }
 
 }//end namespace infobox

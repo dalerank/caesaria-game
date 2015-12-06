@@ -146,8 +146,9 @@ void TopMenu::Impl::showShortKeyInfo()
 {
   Widget& shortKeyInfo = lbDate->ui()->add<Label>( Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
   shortKeyInfo.setupUI( ":/gui/shortkeys.gui" );
-  shortKeyInfo.moveTo( Widget::parentCenter );
   shortKeyInfo.add<ExitButton>( Point( shortKeyInfo.width() - 34, shortKeyInfo.height() - 34 ) );
+
+  shortKeyInfo.moveTo( Widget::parentCenter );
   WidgetEscapeCloser::insertTo( shortKeyInfo );
 }
 
@@ -187,9 +188,9 @@ void TopMenu::Impl::showAboutInfo()
 {
   Widget& window = lbDate->ui()->add<Label>( Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
   window.setupUI( ":/gui/about.gui" );
-  window.moveTo( Widget::parentCenter );
   window.add<ExitButton>( Point( window.width() - 34, window.height() - 34 ) );
 
+  window.moveTo( Widget::parentCenter );
   WidgetEscapeCloser::insertTo( window );
 }
 

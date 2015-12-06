@@ -40,7 +40,6 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
   _locker.activate();
 
   setupUI( ":/gui/tutorial_window.gui" );
-  moveTo( Widget::parentCenter );
 
   INIT_WIDGET_FROM_UI(Label*, lbTitle )
   INIT_WIDGET_FROM_UI(ListBox*, lbxHelp )
@@ -90,6 +89,7 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
     }
   }
 
+  moveTo( Widget::parentCenter );
   setModal();
 }
 

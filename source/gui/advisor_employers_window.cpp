@@ -104,7 +104,6 @@ public:
   {
     Widget::setupUI( ":/gui/advsalaries.gui" );
     _city = city;
-    moveTo( Widget::parentCenter );
 
     INIT_WIDGET_FROM_UI( Label*, grayArea )
     Point offset( 0, 35 );
@@ -114,6 +113,7 @@ public:
     grayArea->add<SalaryButton>( rect+offset*2, walker::romeHorseman, 30 );
     grayArea->add<SalaryButton>( rect+offset*3, walker::romeSpearman, 30 );
 
+    moveTo( Widget::parentCenter );
     WidgetEscapeCloser::insertTo( this );
     setModal();
   }

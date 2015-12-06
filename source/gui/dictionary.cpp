@@ -52,8 +52,6 @@ DictionaryWindow::DictionaryWindow( Widget* p, const std::string& helpId )
   : Window( p->ui()->rootWidget(), Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
   setupUI( ":/gui/dictionary.gui" );
-  moveTo( Widget::parentCenter );
-  WidgetEscapeCloser::insertTo( this );
 
   GET_DWIDGET_FROM_UI( _d, lbTitle )
   _d->lbText = &add<DictionaryText>( Rect( 20, 40, width() - 20, height() - 40 ) );
@@ -64,6 +62,8 @@ DictionaryWindow::DictionaryWindow( Widget* p, const std::string& helpId )
   if( !helpId.empty() )
     load( helpId );
 
+  moveTo( Widget::parentCenter );
+  WidgetEscapeCloser::insertTo( this );
   setModal();
 }
 

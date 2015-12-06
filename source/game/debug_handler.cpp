@@ -761,8 +761,6 @@ void DebugHandler::Impl::handleEvent(int event)
     auto& dialog = game->gui()->add<dialog::LoadFile>( Rect(),
                                                        vfs::Path( ":/scripts/" ), ".model",
                                                        -1 );
-    dialog.moveTo( Widget::parentCenter );
-
     CONNECT( &dialog, onSelectFile(), this, Impl::runScript );
     dialog.setTitle( "Select file" );
     dialog.setText( "open" );

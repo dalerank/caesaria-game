@@ -65,7 +65,6 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::RequestPtr r
   std::string uiFile = _d->video.empty() ? ":/gui/request.gui" : ":/gui/request_video.gui";
 
   setupUI( uiFile );
-  moveTo( Widget::parentCenter );
 
   city::request::RqGoodPtr gr = ptr_cast<city::GoodRequest>(request);
   if( gr.isValid() )
@@ -111,6 +110,8 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::RequestPtr r
   LINK_WIDGET_LOCAL_ACTION( TexturedButton*, btnExit,    onClicked(), EmperrorRequestWindow::deleteLater )
   LINK_WIDGET_LOCAL_ACTION( TexturedButton*, btnAdvisor, onClicked(), EmperrorRequestWindow::deleteLater )
   LINK_WIDGET_LOCAL_ACTION( TexturedButton*, btnAdvisor, onClicked(), EmperrorRequestWindow::_openEmperrorAdvisor )
+
+  moveTo( Widget::parentCenter );
   setModal();
 }
 

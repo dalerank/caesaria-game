@@ -657,11 +657,11 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
       btnRestart.setTooltipText( _("##restart_mission_tip##") );
       auto& btnMenu = window.add<PushButton>( Rect( 20, 150, 380, 174), _("##exit_to_main_menu##") );
 
-      window.moveTo( Widget::parentCenter );
-      window.setModal();
-
       CONNECT( &btnRestart, onClicked(), lvl, Level::restart );
       CONNECT( &btnMenu, onClicked(), lvl, Level::exit );
+
+      window.moveTo( Widget::parentCenter );
+      window.setModal();
     }
   }
 }

@@ -62,8 +62,6 @@ LoadFile::LoadFile( Widget* parent, const Rect& rect,
   : Window( parent, rect, "", id ), _d( new Impl )
 {
   Widget::setupUI( ":/gui/loadfile.gui" );
-  WidgetEscapeCloser::insertTo( this );
-  GameAutoPause::insertTo( this );
 
   _d->directory = dir;
   _d->fileExtensions = ext;
@@ -91,7 +89,10 @@ LoadFile::LoadFile( Widget* parent, const Rect& rect,
   _fillFiles();
 
   setMayDelete( false );
+  WidgetEscapeCloser::insertTo( this );
+  GameAutoPause::insertTo( this );
   moveTo( Widget::parentCenter );
+  setModal();
 }
 
 LoadFile::~LoadFile(){}

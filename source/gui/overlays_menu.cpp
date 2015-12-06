@@ -32,8 +32,8 @@ class SubmenuButtons : public std::vector<PushButton*>
 public:
   void reset()
   {
-    foreach( it, *this )
-      (*it)->deleteLater();
+    for( auto widget : this )
+      widget->deleteLater();
 
     clear();
   }

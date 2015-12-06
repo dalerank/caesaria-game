@@ -183,9 +183,6 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   _d->widget = this;
   Window::setupUI( ":/gui/cityoptions.gui" );
 
-  WidgetEscapeCloser::insertTo( this );
-  moveTo( Widget::parentCenter );
-
   GET_DWIDGET_FROM_UI( _d, sbFireRisk )
   GET_DWIDGET_FROM_UI( _d, sbCollapseRisk )
   GET_DWIDGET_FROM_UI( _d, btnC3Gameplay )
@@ -218,6 +215,9 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
     CONNECT( btn, onChange, _d.data(), Impl::resolveOptionChange );
 
   _d->update();
+
+  WidgetEscapeCloser::insertTo( this );
+  moveTo( Widget::parentCenter );
   setModal();
 }
 

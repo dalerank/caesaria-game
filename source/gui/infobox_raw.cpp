@@ -108,8 +108,7 @@ void AboutRawMaterial::_showAdvInfo()
                                            (int)miningBuilding->state( pr::damage ),
                                            (int)miningBuilding->state( pr::fire ) );
 
-    auto* dialog = dialog::Information( ui(), "Information", workerState );
-    dialog->moveTo( Widget::parentCenter );
+    dialog::Information( ui(), "Information", workerState );
   }
 }
 

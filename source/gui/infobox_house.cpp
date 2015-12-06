@@ -321,7 +321,6 @@ void AboutHouse::_showSrvcInfo()
                                         (int)_house->state( pr::health ));
 
   Dialog& dialog = ui()->add<Dialog>( Rect( 0, 0, 400, 400 ), "Services", srvcState, Dialog::btnOk );
-  dialog.moveTo( Widget::parentCenter );
   CONNECT( &dialog, onOk(), &dialog, Dialog::deleteLater )
 }
 

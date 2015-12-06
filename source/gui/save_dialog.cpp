@@ -74,11 +74,6 @@ SaveGame::SaveGame(Ui *ui, vfs::Directory dir, std::string fileExt, int id )
 : Window( ui->rootWidget(), Rect( 0, 0, 512, 384 ), "", id ), _d( new Impl )
 {
   Widget::setupUI( ":/gui/savefile.gui" );
-
-  moveTo( Widget::parentCenter );
-
-  WidgetEscapeCloser::insertTo( this );
-  GameAutoPause::insertTo( this );
   
   GET_DWIDGET_FROM_UI( _d, edFilename )
   GET_DWIDGET_FROM_UI( _d, lbxSaves )
@@ -92,6 +87,10 @@ SaveGame::SaveGame(Ui *ui, vfs::Directory dir, std::string fileExt, int id )
   LINK_WIDGET_LOCAL_ACTION( PushButton*, btnCancel, onClicked(), SaveGame::deleteLater )
 
   _d->findFiles();
+
+  moveTo( Widget::parentCenter );
+  WidgetEscapeCloser::insertTo( this );
+  GameAutoPause::insertTo( this );
   setModal();
 }
 

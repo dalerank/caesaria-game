@@ -41,8 +41,6 @@ LoadGame::LoadGame(Widget* parent, const vfs::Directory& dir )
   CONNECT( _fileslbx(), onItemSelected(), this, LoadGame::_showPreview )
   LINK_WIDGET_LOCAL_ACTION( PushButton*, btnSort, onClicked(), LoadGame::_changeSort )
 
-  moveTo( Widget::parentCenter );
-
   _changeSort();
 }
 
