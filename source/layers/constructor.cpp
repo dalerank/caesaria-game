@@ -725,6 +725,12 @@ bool Constructor::Impl::canBuildOn(OverlayPtr overlay, const city::AreaInfo& are
     bool isTree = is_kind_of<Tree>(areaInfo.tile().overlay());
     return (walkable || isTree );
   }
+  else if( type == object::river )
+  {
+    bool walkable = areaInfo.tile().isWalkable( true );
+    bool coast = areaInfo.tile().terrain().coast;
+    return (walkable || coast);
+  }
   else if( type == object::rock
            || type == object::plateau )
   {

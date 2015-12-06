@@ -514,7 +514,8 @@ bool Menu::onEvent(const NEvent& event)
     }
     else if( id == object::terrain || id == object::tree
              || id == object::water || id == object::rock
-             || id == object::meadow || id == object::plateau )
+             || id == object::meadow || id == object::plateau
+             || id == object::river )
     {
       _d->lastPressed = event.gui.caller;
       _createBuildMenu( -1, this );

@@ -144,6 +144,11 @@ Renderer::ModePtr EditorMode::create(object::Type type)
     newCommand->_setFlag( multibuild, true );
   break;
 
+  case object::river:
+    newCommand->_setFlag( multibuild, true );
+    newCommand->_setFlag( border, true );
+  break;
+
   default: break;
   }
 
