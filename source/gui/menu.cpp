@@ -438,7 +438,7 @@ public:
   virtual void draw(Engine& painter)
   {
     unsigned int time = DateTime::elapsedTime() ;
-    if( active && (time % 1000 < 500) )
+    if( enabled() && active && (time % 1000 < 500) )
     {
       Rect rect( Point(), pic.size() );
       painter.draw( pic, rect, absoluteRect(),  &absoluteClippingRectRef() );
@@ -514,7 +514,7 @@ bool Menu::onEvent(const NEvent& event)
     }
     else if( id == object::terrain || id == object::tree
              || id == object::water || id == object::rock
-             || id == object::meadow )
+             || id == object::meadow || id == object::plateau )
     {
       _d->lastPressed = event.gui.caller;
       _createBuildMenu( -1, this );

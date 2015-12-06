@@ -40,6 +40,13 @@
     }
   }
 
+  plateau : {
+    class : "rock"
+    image.ext : {
+      type_1 : { size:1, rc : "plateau", start : 1, count : 44 }
+    }
+  }
+
   rock : {
     class : "rock"
     image.ext : {
