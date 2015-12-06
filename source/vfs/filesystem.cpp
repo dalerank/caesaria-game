@@ -708,32 +708,6 @@ bool FileSystem::existFile(const Path& filename, Path::SensType sens) const
   return index != -1;
 }
 
-DateTime FileSystem::getFileUpdateTime(const Path& filename) const
-{ 
-#ifndef GAME_PLATFORM_WIN
-  struct tm *foo;
-  struct stat attrib;
-  stat( filename.toCString(), &attrib);
-  foo = gmtime((const time_t*)&(attrib.st_mtime));
-
-  return DateTime( foo->tm_year, foo->tm_mon+1, foo->tm_mday+1,
-                   foo->tm_hour, foo->tm_min, foo->tm_sec );
-#else
-  FILETIME creationTime,
-           lpLastAccessTime,
-           lastWriteTime;
-  HANDLE h = CreateFile( filename.toCString(),
-                         GENERIC_READ, FILE_SHARE_READ, NULL,
-                         OPEN_EXISTING, 0, NULL);
-  GetFileTime( h, &creationTime, &lpLastAccessTime, &lastWriteTime );
-  SYSTEMTIME systemTime;
-  FileTimeToSystemTime( &lastWriteTime, &systemTime );
-  CloseHandle(h);
-  return DateTime( systemTime.wYear, systemTime.wMonth, systemTime.wDay,
-                   systemTime.wHour, systemTime.wMinute, systemTime.wSecond );
-#endif
-}
-
 FileSystem& FileSystem::instance()
 {
   static FileSystem _instanceFileSystem;

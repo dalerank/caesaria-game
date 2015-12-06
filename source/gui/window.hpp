@@ -56,10 +56,10 @@ public:
 
   //! Set if the window titlebar will be drawn
   //! Note: If the background is not drawn, then the titlebar is automatically also not drawn
-  virtual void setHeaderVisible(bool draw);
+  virtual void setTitleVisible(bool draw);
 
   //! Get if the window titlebar will be drawn
-  virtual bool headerVisible() const;
+  virtual bool titleVisible() const;
 
   virtual void setBackground( gfx::Picture texture );
   virtual void setBackground( BackgroundType type );
@@ -78,6 +78,7 @@ public:
   virtual void setTextAlignment( Alignment horizontal, Alignment vertical );
 
   virtual void setText( const std::string& text );
+  virtual void setTitleRect( const Rect& rect );
 
 protected:
   void _createSystemButton( ButtonName btnName, const std::string& tooltip, bool visible );

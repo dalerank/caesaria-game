@@ -73,9 +73,9 @@ public:
     btnIncrease.setTooltipText( _("##advslr_btn_tooltip##") );
   }
 
-  virtual void _updateTextPic()
+  virtual void _updateTexture()
   {
-    PushButton::_updateTextPic();
+    PushButton::_updateTexture();
 
     Font f = font( _state() );
     std::string text = WalkerHelper::getPrettyTypename( walkerType );
@@ -154,9 +154,9 @@ signals public:
 
 protected:
 
-  virtual void _updateTextPic()
+  virtual void _updateTexture()
   {
-    PushButton::_updateTextPic();
+    PushButton::_updateTexture();
 
     Font font = Font::create( FONT_1_WHITE );
 

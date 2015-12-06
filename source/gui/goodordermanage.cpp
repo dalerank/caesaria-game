@@ -56,9 +56,9 @@ public:
     btnIncrease->setTooltipText( _("##export_btn_tooltip##") );
   }
 
-  virtual void _updateTextPic()
+  virtual void _updateTexture()
   {
-    PushButton::_updateTextPic();
+    PushButton::_updateTexture();
 
     switch( order )
     {

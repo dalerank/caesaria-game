@@ -133,7 +133,8 @@ PushButton::PushButton(Widget* parent)
   setTextAlignment( align::center, align::center );
 }
 
-PushButton::PushButton(Widget* parent, const RectF& rectangle, const std::string& caption, int id, bool noclip, const gui::PushButton::BackgroundStyle bgstyle)
+PushButton::PushButton(Widget* parent, const RectF& rectangle, const std::string& caption, int id,
+                       bool noclip, const gui::PushButton::BackgroundStyle bgstyle)
   : PushButton( parent, Rect( 0, 0, 1, 1), caption, id, noclip, bgstyle )
 {
   setGeometry( rectangle );
@@ -156,7 +157,7 @@ PushButton::PushButton( Widget* parent,
   setNotClipped(noclip);
 }
 
-void PushButton::_updateTextPic()
+void PushButton::_updateTexture()
 {
   __D_REF(_d,PushButton)
   ElementState state = _state();
@@ -548,7 +549,7 @@ void PushButton::beforeDraw( gfx::Engine& painter )
 
   if( _d.bg.textChanged )
 	{    
-		_updateTextPic();
+		_updateTexture();
     _d.bg.textChanged = false;
 	}
 

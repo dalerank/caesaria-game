@@ -65,9 +65,9 @@ RequestButton::RequestButton(Widget* parent, const Point& pos, int index, Reques
   CONNECT_LOCAL( this, onClicked(), RequestButton::_executeRequest );
 }
 
-void RequestButton::_updateTextPic()
+void RequestButton::_updateTexture()
 {
-  PushButton::_updateTextPic();
+  PushButton::_updateTexture();
 
   Font font = Font::create( FONT_1_WHITE );
 

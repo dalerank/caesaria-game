@@ -137,6 +137,12 @@ void Window::setText(const std::string& text )
     _d->title->setText( text );
 }
 
+void Window::setTitleRect(const Rect& rect)
+{
+  if( _d->title )
+    _d->title->setGeometry( rect );
+}
+
 void Window::_createSystemButton( ButtonName btnName, const std::string& tooltip, bool visible )
 {
   PushButton*& btn = _d->buttons[ btnName ];
@@ -331,14 +337,14 @@ void Window::setBackgroundVisible(bool draw) {	_d->flags.setFlag( fbackgroundVis
 bool Window::backgroundVisible() const {	return _d->flags.isFlag( fbackgroundVisible ); }
 
 //! Set if the window titlebar will be drawn
-void Window::setHeaderVisible(bool draw)
+void Window::setTitleVisible(bool draw)
 {
 	_d->flags.setFlag( ftitleVisible, draw );
 	_d->title->setVisible( draw );
 }
 
 //! Get if the window titlebar will be drawn
-bool Window::headerVisible() const {	return _d->flags.isFlag( ftitleVisible );}
+bool Window::titleVisible() const {	return _d->flags.isFlag( ftitleVisible );}
 Rect Window::clientRect() const{	return Rect(0, 0, 0, 0);}
 
 void Window::setBackground( Picture texture )

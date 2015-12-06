@@ -83,9 +83,9 @@ public:
     CONNECT_LOCAL( &empireService, onClicked(), LegionButton::_resolveEmpireService     );
   }
 
-  virtual void _updateTextPic()
+  virtual void _updateTexture()
   {
-    PushButton::_updateTextPic();
+    PushButton::_updateTexture();
 
     if( _fort.isValid() )
     {

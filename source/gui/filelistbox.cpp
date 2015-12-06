@@ -16,7 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "filelistbox.hpp"
-#include "vfs/filesystem.hpp"
+#include "vfs/fileinfo.hpp"
 #include "core/utils.hpp"
 #include "listboxitem.hpp"
 #include "core/osystem.hpp"
@@ -48,7 +48,7 @@ void FileListBox::setShowExtension(bool show) { setFlag( showExtension, show ); 
 
 ListBoxItem& FileListBox::addItem(const std::string& text, Font font, const int color)
 {
-  DateTime time = vfs::FileSystem::instance().getFileUpdateTime( text );
+  DateTime time = vfs::Info( text ).modified();
   int gmtOffset = OSystem::gmtOffsetMs() / DateTime::secondsInHour;
   std::string timeStr = utils::format( 0xff, "(%02d %s %02d:%02d:%02d)",
                                               time.day(), DateTime::shortMonthName( time.month()-1 ),

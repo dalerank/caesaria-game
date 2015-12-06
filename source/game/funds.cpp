@@ -36,7 +36,7 @@ enum { defaultSalary=30 };
 class IssuesDetailedHistory::Impl
 {
 public:
-  IssuesDetailedHistory::DateIssues issues;
+  DateIssues issues;
 };
 
 class Treasury::Impl
@@ -178,6 +178,7 @@ int Treasury::getIssueValue(Issue::Type type, int age ) const
   return ( it == step.end() ) ? 0 : it->second;
 }
 
+const IssuesDetailedHistory& Treasury::getIssueHistory() const {  return _d->detailedHistory; }
 int Treasury::taxRate() const{  return _d->taxRate;}
 void Treasury::setTaxRate(const unsigned int value) {  _d->taxRate = value;}
 void Treasury::setWorkerSalary(const unsigned int value) { _d->workerSalary = value; }
@@ -257,10 +258,7 @@ void IssuesDetailedHistory::addIssue(Issue issue)
   }
 }
 
-const IssuesDetailedHistory::DateIssues& IssuesDetailedHistory::issues()
-{
-  return _d->issues;
-}
+const DateIssues& IssuesDetailedHistory::issues() const {  return _d->issues; }
 
 IssuesDetailedHistory::IssuesDetailedHistory() : _d( new Impl )
 {
@@ -289,14 +287,14 @@ void IssuesDetailedHistory::load(const VariantList& stream)
   }
 }
 
-VariantList IssuesDetailedHistory::DateIssue::save() const
+VariantList DateIssue::save() const
 {
   VariantList ret;
   ret << time << type << money;
   return ret;
 }
 
-void IssuesDetailedHistory::DateIssue::load(const VariantList& stream)
+void DateIssue::load(const VariantList& stream)
 {
   time = stream.get( 0 ).toDateTime();
   type = (Type)stream.get( 1 ).toInt();

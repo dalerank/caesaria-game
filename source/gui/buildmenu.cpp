@@ -74,10 +74,10 @@ public:
     addProperty( "sound", name );
   }
 
-  void _updateTextPic()
+  void _updateTexture()
   {
     ElementState state = _state();
-    PushButton::_updateTextPic();
+    PushButton::_updateTexture();
 
     Font f = font( state );
 

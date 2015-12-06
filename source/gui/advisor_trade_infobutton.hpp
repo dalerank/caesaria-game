@@ -39,7 +39,7 @@ public:
 
 protected:
   virtual void _btnClicked();
-  virtual void _updateTextPic();
+  virtual void _updateTexture();
 
 private:
   class Impl;

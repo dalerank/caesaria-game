@@ -23,7 +23,7 @@
 #include "widget_helper.hpp"
 #include "image.hpp"
 #include "core/gettext.hpp"
-#include "vfs/filesystem.hpp"
+#include "vfs/fileinfo.hpp"
 #include "core/logger.hpp"
 
 namespace gui
@@ -53,7 +53,7 @@ StringArray sortByDate( const vfs::Entries& array )
   std::map<DateTime,std::string> sortedByTime;
   for( const auto& item : array.items() )
   {
-    DateTime time = vfs::FileSystem::instance().getFileUpdateTime( item.fullpath );
+    DateTime time = vfs::Info( item.fullpath ).modified();
     sortedByTime[ time ] = item.fullpath.toString();
   }
 

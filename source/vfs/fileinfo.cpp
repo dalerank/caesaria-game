@@ -17,12 +17,75 @@
 
 #include "fileinfo.hpp"
 
+#if defined(GAME_PLATFORM_UNIX) || defined(GAME_PLATFORM_HAIKU)
+  #include <stdio.h>
+  #include <stdlib.h>
+  #include <string.h>
+  #include <limits.h>
+  #include <sys/types.h>
+  #include <dirent.h>
+  #include <sys/stat.h>
+  #include <unistd.h>
+#endif
+
 namespace vfs
 {
 
 Info::Info(Path path) : _path( path )
 {
 
+}
+
+DateTime Info::modified() const
+{
+#ifndef GAME_PLATFORM_WIN
+  struct tm *foo;
+  struct stat attrib;
+  stat( _path.toCString(), &attrib);
+  foo = gmtime((const time_t*)&(attrib.st_mtime));
+
+  return DateTime( foo->tm_year, foo->tm_mon+1, foo->tm_mday+1,
+                   foo->tm_hour, foo->tm_min, foo->tm_sec );
+#else
+  FILETIME creationTime,
+           lpLastAccessTime,
+           lastWriteTime;
+  HANDLE h = CreateFile( _path.toCString(),
+                         GENERIC_READ, FILE_SHARE_READ, NULL,
+                         OPEN_EXISTING, 0, NULL);
+  GetFileTime( h, &creationTime, &lpLastAccessTime, &lastWriteTime );
+  SYSTEMTIME systemTime;
+  FileTimeToSystemTime( &lastWriteTime, &systemTime );
+  CloseHandle(h);
+  return DateTime( systemTime.wYear, systemTime.wMonth, systemTime.wDay,
+                   systemTime.wHour, systemTime.wMinute, systemTime.wSecond );
+#endif
+}
+
+DateTime Info::created() const
+{
+#ifndef GAME_PLATFORM_WIN
+  struct tm *foo;
+  struct stat attrib;
+  stat( _path.toCString(), &attrib);
+  foo = gmtime((const time_t*)&(attrib.st_ctime));
+
+  return DateTime( foo->tm_year, foo->tm_mon+1, foo->tm_mday+1,
+                   foo->tm_hour, foo->tm_min, foo->tm_sec );
+#else
+  FILETIME creationTime,
+           lpLastAccessTime,
+           lastWriteTime;
+  HANDLE h = CreateFile( _path.toCString(),
+                         GENERIC_READ, FILE_SHARE_READ, NULL,
+                         OPEN_EXISTING, 0, NULL);
+  GetFileTime( h, &creationTime, &lpLastAccessTime, &lastWriteTime );
+  SYSTEMTIME systemTime;
+  FileTimeToSystemTime( &creationTime, &systemTime );
+  CloseHandle(h);
+  return DateTime( systemTime.wYear, systemTime.wMonth, systemTime.wDay,
+                   systemTime.wHour, systemTime.wMinute, systemTime.wSecond );
+#endif
 }
 
 

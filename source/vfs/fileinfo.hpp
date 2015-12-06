@@ -29,8 +29,8 @@ class Info
 public:
   Info( vfs::Path path );
 
-  DateTime modified();
-  DateTime created();
+  DateTime modified() const;
+  DateTime created() const;
 
 private:
   vfs::Path _path;
