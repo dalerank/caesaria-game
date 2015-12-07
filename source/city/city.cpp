@@ -60,6 +60,7 @@
 #include "world/barbarian.hpp"
 #include "objects/fort.hpp"
 #include "events/showinfobox.hpp"
+#include "world/relations.hpp"
 #include "walker/helper.hpp"
 #include "walkergrid.hpp"
 #include "events/showinfobox.hpp"
@@ -606,7 +607,7 @@ int PlayerCity::peace() const
 }
 
 int PlayerCity::sentiment() const {  return _d->sentiment; }
-int PlayerCity::favour() const { return empire()->emperor().relation( name() ); }
+int PlayerCity::favour() const { return empire()->emperor().relation( name() ).value(); }
 
 void PlayerCity::addObject( world::ObjectPtr object )
 {

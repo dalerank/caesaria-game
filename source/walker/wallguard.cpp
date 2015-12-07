@@ -19,6 +19,7 @@
 #include "city/statistic.hpp"
 #include "name_generator.hpp"
 #include "corpse.hpp"
+#include "core/common.hpp"
 #include "core/variant_map.hpp"
 #include "game/resourcegroup.hpp"
 #include "objects/military.hpp"
@@ -148,7 +149,7 @@ void WallGuard::save(VariantMap& stream) const
 {
   Soldier::save( stream );
 
-  stream[ "base" ] = _d->base.isValid() ? _d->base->pos() : TilePos::invalid();
+  stream[ "base" ] = utils::objPosOrDefault( _d->base );
   VARIANT_SAVE_ANY_D( stream, _d, strikeForce )
   VARIANT_SAVE_ANY_D( stream, _d, resistance )
   VARIANT_SAVE_ANY_D( stream, _d, patrolPosition )

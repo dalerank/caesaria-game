@@ -16,6 +16,7 @@
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
 #include "fileinfo.hpp"
+#include "core/platform_specific.hpp"
 
 #if defined(GAME_PLATFORM_UNIX) || defined(GAME_PLATFORM_HAIKU)
   #include <stdio.h>

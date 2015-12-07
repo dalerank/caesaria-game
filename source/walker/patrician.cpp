@@ -31,6 +31,7 @@
 #include "game/resourcegroup.hpp"
 #include "name_generator.hpp"
 #include "core/logger.hpp"
+#include "core/common.hpp"
 
 class Patrician::Impl
 {
@@ -50,7 +51,7 @@ void Patrician::save( VariantMap& stream ) const
 {
   Walker::save( stream );
   VARIANT_SAVE_ANY_D( stream, _d, destination )
-  stream[ "house" ] = _d->house.isValid() ? _d->house->pos() : TilePos::invalid();
+  stream[ "house" ] = utils::objPosOrDefault( _d->house );
 }
 
 void Patrician::load( const VariantMap& stream )

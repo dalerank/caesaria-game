@@ -36,6 +36,7 @@
 #include "city/states.hpp"
 #include "gfx/tilearea.hpp"
 #include "walkers_factory.hpp"
+#include "core/common.hpp"
 
 using namespace gfx;
 
@@ -547,7 +548,7 @@ BuildingPtr ServiceWalker::base() const
 }
 
 ServiceWalker::~ServiceWalker() {}
-void ServiceWalker::setBase( BuildingPtr base ) { _d->basePos = (base.isValid() ? base->pos() : TilePos::invalid()); }
+void ServiceWalker::setBase( BuildingPtr base ) { _d->basePos = utils::objPosOrDefault( base ); }
 
 bool ReachedBuildings::contain(object::Type type) const
 {

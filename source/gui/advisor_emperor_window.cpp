@@ -49,8 +49,10 @@
 #include "emperorgiftwindow.hpp"
 #include "gui/environment.hpp"
 #include "gui/dialogbox.hpp"
+#include "world/relations.hpp"
 #include "texturedbutton.hpp"
 #include "dictionary.hpp"
+#include "game/datetimehelper.hpp"
 #include "advisor_request_button.hpp"
 #include "gui/widget_helper.hpp"
 #include "game/gift.hpp"
@@ -65,7 +67,8 @@ namespace gui
 namespace advisorwnd
 {
 
-namespace {
+namespace
+{
   Point requestButtonOffset = Point( 0, 55 );
   Size requestButtonSize = Size( 560, 40 );
 
@@ -106,10 +109,44 @@ void Emperor::_showSend2CityWindow()
 void Emperor::_showGiftWindow()
 {
   auto& dialog = ui()->add<dialog::EmperorGift>( _mayor()->money(),
-                                                 _emperor().lastGiftDate( _city->name() ) );
+                                                 _emperor().lastGift( _city->name() ).date() );
   dialog.show();
 
   CONNECT_LOCAL( &dialog, onSendGift(), Emperor::_sendGift );
+}
+
+class GiftDetails : public Window
+{
+public:
+  GiftDetails( Widget* parent, const Size& size, const std::string& title, const world::GiftHistory& history )
+   : Window( parent, Rect( Point(), size), title )
+  {
+    setTextAlignment( align::center, align::center );
+    setFont( FONT_3 );
+    setTitleRect( Rect( 15, 15, width() - 15, 45 ) );
+    add<ExitButton>( Point( width() - 37, 12 ) );
+
+    ListBox& listbox = add<ListBox>( Rect( 15, 45, width()-15, height() - 15 ), -1, true, true );
+    listbox.setItemFont( Font::create( FONT_1 ) );
+    listbox.setItemHeight( 16 );
+
+    for( auto it=history.rbegin(); it != history.rend(); ++it )
+    {
+       const Gift& gift = *it;
+       std::string text = fmt::format( "{} {} {}", utils::date2str( gift.date(), true ), gift.value(), gift.name() );
+       listbox.addItem( text );
+    }
+
+    moveTo( Widget::parentCenter );
+    setModal();
+  }
+};
+
+
+void Emperor::_showGiftHistory()
+{
+  const world::Relation& relation = _city->empire()->emperor().relation( _city->name() );
+  ui()->add<GiftDetails>( Size( 480, 640 ), _("##history_gift##"), relation.gifts() );
 }
 
 void Emperor::_updateRequests()
@@ -184,9 +221,10 @@ Emperor::Emperor( PlayerCityPtr city, Widget* parent, int id )
     lbTitle->setText( text );
   }
 
-  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnChangeSalary, onClicked(), Emperor::_showChangeSalaryWindow );
-  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnSend2City,    onClicked(), Emperor::_showSend2CityWindow );
-  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnSendGift,     onClicked(), Emperor::_showGiftWindow );
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnChangeSalary, onClicked(), Emperor::_showChangeSalaryWindow )
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnSend2City,    onClicked(), Emperor::_showSend2CityWindow )
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnSendGift,     onClicked(), Emperor::_showGiftWindow )
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnGiftHistory,  onClicked(), Emperor::_showGiftHistory )
 }
 
 void Emperor::draw(gfx::Engine& painter )
@@ -219,7 +257,7 @@ void Emperor::_sendGift(int money)
   }
 
   _mayor()->appendMoney( -money );
-  _city->empire()->emperor().sendGift( Gift( _city->name(), "gift", money ) );
+  _city->empire()->emperor().sendGift( Gift( _city->name(), "gift", money, game::Date::current() ) );
 }
 
 void Emperor::_changeSalary( int money )
