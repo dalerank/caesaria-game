@@ -91,9 +91,9 @@ void TradeGoodInfo::_btnClicked()
   emit _d->onClickedASignal( _d->good.type );
 }
 
-void TradeGoodInfo::_updateTextPic()
+void TradeGoodInfo::_updateTexture()
 {
-  PushButton::_updateTextPic();
+  PushButton::_updateTexture();
 
   if( _textPicture().isValid() )
   {

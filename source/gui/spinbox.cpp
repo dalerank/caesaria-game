@@ -69,8 +69,8 @@ void SpinBox::_initButtons()
   _d->btnDecrease = &add<TexturedButton>( Point( width() * 0.6, 2 ), Size( 24, 24), -1, 601 );
   _d->btnIncrease = &add<TexturedButton>( Point( width() * 0.6 + 26, 2), Size( 24, 24 ), -1, 605 );
 
-  CONNECT( _d->btnDecrease, onClicked(), this, SpinBox::_decrease );
-  CONNECT( _d->btnIncrease, onClicked(), this, SpinBox::_increase );
+  CONNECT_LOCAL( _d->btnDecrease, onClicked(), SpinBox::_decrease )
+  CONNECT_LOCAL( _d->btnIncrease, onClicked(), SpinBox::_increase )
 }
 
 void SpinBox::_finalizeResize()
@@ -88,7 +88,7 @@ SpinBox::SpinBox(Widget* parent, const Rect& rectangle, const std::string& text,
   _d->postfix = postfix;
   _initButtons();
 #ifdef _DEBUG
-   setDebugName( CAESARIA_STR_A(SpinBox) );
+   setDebugName( TEXT(SpinBox) );
 #endif
 }
 

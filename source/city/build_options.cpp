@@ -31,8 +31,8 @@ namespace city
 namespace development
 {
 
-CAESARIA_LITERALCONST(farm)
-CAESARIA_LITERALCONST(disable_all)
+GAME_LITERALCONST(farm)
+GAME_LITERALCONST(disable_all)
 
 enum { maxLimit=999 };
 
@@ -58,7 +58,7 @@ public:
 
   BranchHelper() : EnumsHelper<Branch>( unknown )
   {
-#define __REG_BR(a) append( a, CAESARIA_STR_EXT(a) );
+#define __REG_BR(a) append( a, TEXT(a) );
     __REG_BR( water )
     __REG_BR( health )
     __REG_BR( security )

@@ -27,6 +27,7 @@
 #include "core/variant.hpp"
 #include "pathway/path_finding.hpp"
 #include "market_kid.hpp"
+#include "core/common.hpp"
 #include "good/storage.hpp"
 #include "name_generator.hpp"
 #include "core/variant_map.hpp"
@@ -206,7 +207,7 @@ TilePos MarketBuyer::places(Walker::Place type) const
 {
   switch( type )
   {
-  case plOrigin: return _d->market.isValid() ? _d->market->pos() : TilePos::invalid();
+  case plOrigin: return utils::objPosOrDefault( _d->market );
   case plDestination: return _d->destBuildingPos;
   default: break;
   }
@@ -335,7 +336,7 @@ void MarketBuyer::save( VariantMap& stream ) const
   Walker::save( stream );
   VARIANT_SAVE_ANY_D( stream, _d, destBuildingPos )
   VARIANT_SAVE_ANY_D( stream, _d, priorityGood )
-  stream[ "marketPos" ] = _d->market.isValid() ? _d->market->pos() : TilePos::invalid();
+  stream[ "marketPos" ] = utils::objPosOrDefault( _d->market );
 
   VARIANT_SAVE_CLASS_D( stream, _d, basket )
   VARIANT_SAVE_ANY_D( stream, _d, maxDistance )
@@ -350,7 +351,7 @@ void MarketBuyer::load( const VariantMap& stream)
 
   TilePos tpos = stream.get( "marketPos" ).toTilePos();
 
-  _d->market << _map().overlay( tpos );
+  _d->market = _map().overlay<Market>( tpos );
 
   VARIANT_LOAD_CLASS_D( _d, basket, stream )
   VARIANT_LOAD_ANY_D( _d, maxDistance, stream )

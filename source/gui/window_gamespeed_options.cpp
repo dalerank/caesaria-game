@@ -70,8 +70,8 @@ SpeedOptions::SpeedOptions( Widget* parent,
 
 SpeedOptions::~SpeedOptions( void ) {}
 
-Signal1<int>& SpeedOptions::onGameSpeedChange() {  return _d->signal.onGameSpeedChange;}
-Signal1<int>& SpeedOptions::onScrollSpeedChange(){  return _d->signal.onScrollSpeedChange;}
+Signal1<int>& SpeedOptions::onGameSpeedChange() {  return _d->signal.onGameSpeedChange; }
+Signal1<int>& SpeedOptions::onScrollSpeedChange(){  return _d->signal.onScrollSpeedChange; }
 Signal1<int>& SpeedOptions::onAutosaveIntervalChange(){ return _d->signal.onAutosaveIntervalShange; }
 
 bool SpeedOptions::_onButtonClicked(Widget* sender)

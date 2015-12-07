@@ -7,7 +7,7 @@ set(DEP_DIR "${CMAKE_SOURCE_DIR}/dep")
 aux_source_directory(. UPD_SRC_LIST)
 file(GLOB UPD_INC_LIST "*.hpp")
 
-add_definitions(-DCAESARIA_DISABLED_TILEMAPCONFIG)
+add_definitions(-DGAME_DISABLED_TILEMAPCONFIG)
 
 set( UPD_DEP_SOURCES_LIST
       "${BASE_SOURCE_DIR}/core/hash.cpp"

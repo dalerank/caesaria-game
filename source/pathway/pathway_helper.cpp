@@ -27,30 +27,30 @@ Pathway PathwayHelper::create( TilePos startPos, TilePos stopPos, WayType type/*
   Pathfinder& p = Pathfinder::instance();
   switch( type )
   {
-  case allTerrain: return p.getPath( startPos, stopPos, Pathfinder::terrainOnly );
-  case roadOnly: return p.getPath( startPos, stopPos, Pathfinder::roadOnly );
+  case allTerrain: return p.getPath( startPos, stopPos, Pathway::terrainOnly );
+  case roadOnly: return p.getPath( startPos, stopPos, Pathway::roadOnly );
 
   case roadFirst:
   {
-    Pathway ret = p.getPath( startPos, stopPos, Pathfinder::roadOnly );
+    Pathway ret = p.getPath( startPos, stopPos, Pathway::roadOnly );
     if( !ret.isValid() )
     {
-      ret = p.getPath( startPos, stopPos, Pathfinder::terrainOnly );
+      ret = p.getPath( startPos, stopPos, Pathway::terrainOnly );
     }
 
     return ret;
   }
   break;
 
-  case deepWater: return p.getPath( startPos, stopPos, Pathfinder::deepWaterOnly );
-  case water: return p.getPath( startPos, stopPos, Pathfinder::waterOnly );
+  case deepWater: return p.getPath( startPos, stopPos, Pathway::deepWaterOnly );
+  case water: return p.getPath( startPos, stopPos, Pathway::waterOnly );
 
   case deepWaterFirst:
   {
-    Pathway ret = p.getPath( startPos, stopPos, Pathfinder::deepWaterOnly );
+    Pathway ret = p.getPath( startPos, stopPos, Pathway::deepWaterOnly );
     if( !ret.isValid() )
     {
-      ret = p.getPath( startPos, stopPos, Pathfinder::waterOnly );
+      ret = p.getPath( startPos, stopPos, Pathway::waterOnly );
     }
 
     return ret;
@@ -73,16 +73,16 @@ Pathway PathwayHelper::create( TilePos startPos, ConstructionPtr construction, P
 
     switch( type )
     {
-    case allTerrain: way = p.getPath( startPos, construction->enterArea(), Pathfinder::terrainOnly );
-    case roadOnly: way = p.getPath( startPos, construction->roadside(), Pathfinder::roadOnly );
+    case allTerrain: way = p.getPath( startPos, construction->enterArea(), Pathway::terrainOnly );
+    case roadOnly: way = p.getPath( startPos, construction->roadside(), Pathway::roadOnly );
 
     case roadFirst:
     {
-      way = p.getPath( startPos, construction->roadside(), Pathfinder::roadOnly );
+      way = p.getPath( startPos, construction->roadside(), Pathway::roadOnly );
 
       if( !way.isValid() )
       {
-        way = p.getPath( startPos, construction->enterArea(), Pathfinder::terrainOnly );
+        way = p.getPath( startPos, construction->enterArea(), Pathway::terrainOnly );
       }
     }
     break;
@@ -102,10 +102,10 @@ Pathway PathwayHelper::create( TilePos startPos, ConstructionPtr construction, P
   return way;
 }
 
-Pathway PathwayHelper::create(TilePos startPos, TilePos stopPos, const TilePossibleCondition& condition)
+Pathway PathwayHelper::create(TilePos startPos, TilePos stopPos, const TilePossibleCondition& condition, int flags)
 {
   Pathfinder::instance().setCondition( condition );
-  return Pathfinder::instance().getPath( startPos, stopPos, Pathfinder::customCondition );
+  return Pathfinder::instance().getPath( startPos, stopPos, Pathway::customCondition|flags );
 }
 
 DirectRoute PathwayHelper::shortWay(const TilePos& startPos, ConstructionList buildings, WayType type)

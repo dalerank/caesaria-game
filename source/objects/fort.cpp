@@ -57,8 +57,8 @@ public:
   static LegionEmblem findFree( PlayerCityPtr city );
 };
 
-CAESARIA_LITERALCONST(name)
-CAESARIA_LITERALCONST(img)
+GAME_LITERALCONST(name)
+GAME_LITERALCONST(img)
 
 }
 

@@ -148,7 +148,6 @@ Signal1<std::string>& LoadMission::onSelectFile() { return _d->onSelectFileSigna
 LoadMission* LoadMission::create( Widget* parent, const vfs::Directory& dir )
 {
   LoadMission& ret = parent->add<LoadMission>( dir );
-  ret.moveTo( Widget::parentCenter );
   return &ret;
 }
 

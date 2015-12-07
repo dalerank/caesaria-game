@@ -262,9 +262,9 @@ enum SysEventType
   sEventKeyboard,
 
   //! A keyboard symbol input event.
-  sTextInput,
+  sEventTextInput,
 
-  sAppEvent,
+  sEvenApplication,
 
   sEventUser,
 

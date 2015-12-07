@@ -26,7 +26,7 @@ ServiceHelper& ServiceHelper::instance()
 
 ServiceHelper::ServiceHelper() : EnumsHelper<Service::Type>( Service::srvCount )
 {
-#define __REG_SERVICE(a) append( Service::a, "srvc_" CAESARIA_STR_EXT(a) );
+#define __REG_SERVICE(a) append( Service::a, "srvc_" TEXT(a) );
   __REG_SERVICE( well )
   __REG_SERVICE( fountain )
   __REG_SERVICE( market )
@@ -67,7 +67,7 @@ Service::Type ServiceHelper::getType( const std::string& name )
   if( type == instance().getInvalid() )
   {
     Logger::warning( "WARNING !!! Can't find Service::Type for serviceName {0}", name );
-    //_CAESARIA_DEBUG_BREAK_IF( "Can't find  Service::Type for serviceName" );
+    //_GAME_DEBUG_BREAK_IF( "Can't find  Service::Type for serviceName" );
   }
 
   return type;
@@ -80,7 +80,7 @@ std::string ServiceHelper::getName( Service::Type type )
   if( name.empty() )
   {
     Logger::warning( "WARNING !!! Can't find service typeName for {0}", type );
-    //_CAESARIA_DEBUG_BREAK_IF( "Can't find service typeName by ServiceType" );
+    //_GAME_DEBUG_BREAK_IF( "Can't find service typeName by ServiceType" );
   }
 
   return name;

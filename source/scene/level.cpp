@@ -285,17 +285,18 @@ void Level::Impl::initTabletUI( Level* scene )
 void Level::Impl::connectTopMenu2scene(Level* scene)
 {
   CONNECT( topMenu, onExit(),                 scene,   Level::_requestExitGame )
-  CONNECT( topMenu, onLoad(),                 this,    Impl::showLoadDialog )
   CONNECT( topMenu, onEnd(),                  scene,   Level::exit )
   CONNECT( topMenu, onRestart(),              scene,   Level::restart )
-  CONNECT( topMenu, onSave(),                 this,    Impl::showSaveDialog )
-  CONNECT( topMenu, onRequestAdvisor(),       this,    Impl::showAdvisorsWindow )
-  CONNECT( topMenu, onShowVideoOptions(),     this,    Impl::setVideoOptions )
-  CONNECT( topMenu, onShowSoundOptions(),     this,    Impl::showSoundOptionsWindow )
-  CONNECT( topMenu, onShowGameSpeedOptions(), this,    Impl::showGameSpeedOptionsDialog )
-  CONNECT( topMenu, onShowCityOptions(),      this,    Impl::showCityOptionsDialog )
   CONNECT( topMenu, onShowExtentInfo(),       extMenu, ExtentMenu::showInfo )
   CONNECT( topMenu, onToggleConstructorMode(), scene,  Level::setConstructorMode )
+
+  CONNECT_LOCAL( topMenu, onLoad(),                    Impl::showLoadDialog )
+  CONNECT_LOCAL( topMenu, onSave(),                    Impl::showSaveDialog )
+  CONNECT_LOCAL( topMenu, onRequestAdvisor(),          Impl::showAdvisorsWindow )
+  CONNECT_LOCAL( topMenu, onShowVideoOptions(),        Impl::setVideoOptions )
+  CONNECT_LOCAL( topMenu, onShowSoundOptions(),        Impl::showSoundOptionsWindow )
+  CONNECT_LOCAL( topMenu, onShowGameSpeedOptions(),    Impl::showGameSpeedOptionsDialog )
+  CONNECT_LOCAL( topMenu, onShowCityOptions(),         Impl::showCityOptionsDialog )
 }
 
 void Level::initialize()
@@ -352,6 +353,7 @@ void Level::initialize()
 
   _d->showMissionTargetsWindow();
   _d->renderer.camera()->setCenter( city->cameraPos() );
+  _d->extMenu->resolveUndoChange( _d->undoStack.isAvailableUndo() );
 
   _d->dhandler.insertTo( _d->game, _d->topMenu );
   _d->dhandler.setVisible( false );
@@ -422,7 +424,7 @@ void Level::Impl::makeFastSave() { game->save( createFastSaveName().toString() )
 
 void Level::Impl::showMessagesWindow()
 {
-  unsigned int id = Hash( CAESARIA_STR_A(dialog::ScribesMessages) );
+  unsigned int id = Hash( TEXT(dialog::ScribesMessages) );
   Widget* wnd = game->gui()->findWidget( id );
 
   if( wnd == 0 )
@@ -655,11 +657,11 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
       btnRestart.setTooltipText( _("##restart_mission_tip##") );
       auto& btnMenu = window.add<PushButton>( Rect( 20, 150, 380, 174), _("##exit_to_main_menu##") );
 
-      window.moveTo( Widget::parentCenter );
-      window.setModal();
-
       CONNECT( &btnRestart, onClicked(), lvl, Level::restart );
       CONNECT( &btnMenu, onClicked(), lvl, Level::exit );
+
+      window.moveTo( Widget::parentCenter );
+      window.setModal();
     }
   }
 }
@@ -862,7 +864,7 @@ bool Level::_tryExecHotkey(NEvent &event)
 
 void Level::Impl::showMissionTargetsWindow()
 {
-  unsigned int id = Hash( CAESARIA_STR_EXT(MissionTargetsWindow) );
+  unsigned int id = Hash( TEXT(MissionTargetsWindow) );
   Widget* wdg = game->gui()->findWidget( id );
   if( !wdg )
   {

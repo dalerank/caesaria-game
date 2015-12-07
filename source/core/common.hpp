@@ -20,6 +20,7 @@
 
 #include "smartlist.hpp"
 #include "position.hpp"
+#include "gfx/tilepos.hpp"
 
 namespace utils
 {
@@ -45,6 +46,18 @@ int countByType( const ObjectList& objects, const T& type )
   }
 
   return ret;
+}
+
+template<class ObjectPtr>
+inline std::string objNameOrDefault( ObjectPtr obj, const std::string& defaultValue="" )
+{
+  return obj.isValid() ? obj->name() : defaultValue;
+}
+
+template<class ObjectPtr>
+inline TilePos objPosOrDefault( ObjectPtr obj, const TilePos& defaultValue=TilePos::invalid() )
+{
+  return obj.isValid() ? obj->pos() : defaultValue;
 }
 
 template< class Object >

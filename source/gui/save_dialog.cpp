@@ -46,8 +46,6 @@ namespace dialog
 class SaveGame::Impl
 {
 public:
-  PushButton* btnOk;
-  PushButton* btnCancel;
   EditBox* edFilename;
   ListBox* lbxSaves;
   vfs::Directory directory;
@@ -76,44 +74,41 @@ SaveGame::SaveGame(Ui *ui, vfs::Directory dir, std::string fileExt, int id )
 : Window( ui->rootWidget(), Rect( 0, 0, 512, 384 ), "", id ), _d( new Impl )
 {
   Widget::setupUI( ":/gui/savefile.gui" );
-
-  moveTo( Widget::parentCenter );
-
-  WidgetEscapeCloser::insertTo( this );
-  GameAutoPause::insertTo( this );
   
   GET_DWIDGET_FROM_UI( _d, edFilename )
   GET_DWIDGET_FROM_UI( _d, lbxSaves )
-  GET_DWIDGET_FROM_UI( _d, btnOk )
-  GET_DWIDGET_FROM_UI( _d, btnCancel )
 
   _d->directory = dir;
   _d->extension = fileExt;
 
-  CONNECT( _d->lbxSaves,  onItemSelectedAgain(), this, SaveGame::_resolveDblListboxChange )
-  CONNECT( _d->lbxSaves,  onItemSelected(),      this, SaveGame::_resolveListboxChange )
-  CONNECT( _d->btnOk,     onClicked(),           this, SaveGame::_resolveOkClick )
-  CONNECT( _d->btnCancel, onClicked(),           this, SaveGame::deleteLater )
+  CONNECT_LOCAL( _d->lbxSaves,  onItemSelectedAgain(), SaveGame::_resolveDblListboxChange )
+  CONNECT_LOCAL( _d->lbxSaves,  onItemSelected(),      SaveGame::_resolveListboxChange )
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnOk,  onClicked(), SaveGame::_resolveOkClick )
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnCancel, onClicked(), SaveGame::deleteLater )
 
   _d->findFiles();
+
+  moveTo( Widget::parentCenter );
+  WidgetEscapeCloser::insertTo( this );
+  GameAutoPause::insertTo( this );
   setModal();
 }
 
 void SaveGame::_resolveOkClick()
 {
-  _d->realFilename = vfs::Path( _d->edFilename->text() );
-  if( _d->realFilename.extension().empty() )
+  _d->realFilename = _d->edFilename->text();
+
+  if( !_d->realFilename.haveExtension() )
     _d->realFilename = _d->realFilename + _d->extension;
 
   _d->realFilename = _d->directory/_d->realFilename;
 
   if( _d->realFilename.exist() )
   {
-    Dialog* dialog = Confirmation( ui(),
-                                   _("##warning##"),
-                                   _("##save_already_exist##") );
-
-    CONNECT( dialog, onOk(), this, SaveGame::_save )
+    Confirmation( ui(),
+                  _("##warning##"),
+                  _("##save_already_exist##"),
+                  makeDelegate( this, &SaveGame::_save ) );
   }
   else
   {

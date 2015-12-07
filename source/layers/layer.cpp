@@ -179,7 +179,7 @@ void Layer::handleEvent(NEvent& event)
     break;
     }
   }
-  else if( event.EventType == sAppEvent )
+  else if( event.EventType == sEvenApplication )
   {
     switch( event.app.type )
     {
@@ -435,18 +435,26 @@ void Layer::drawArea( const RenderInfo& rinfo, const TilesArray& area, const std
   if( area.empty() )
     return;
 
-  Tile* baseTile = area.front();
-  OverlayPtr overlay = baseTile->overlay();
-  int leftBorderAtI = baseTile->i();
-  int rightBorderAtJ = overlay.isValid()
-                          ? overlay->size().height() - 1 + baseTile->j()
-                          : baseTile->j();
-  for( auto tile : area )
+  if( area.size() == 1 )
   {
-    int tileBorders = ( tile->i() == leftBorderAtI ? 0 : config::tile.skipLeftBorder )
-                      + ( tile->j() == rightBorderAtJ ? 0 : config::tile.skipRightBorder );
-    Picture pic(resourceGroup, tileBorders + tileId);
-    rinfo.engine.draw( pic, tile->mappos() + rinfo.offset );
+    Picture pic(resourceGroup, tileId );
+    rinfo.engine.draw( pic, area.front()->mappos() + rinfo.offset );
+  }
+  else
+  {
+    Tile* baseTile = area.front();
+    OverlayPtr overlay = baseTile->overlay();
+    int leftBorderAtI = baseTile->i();
+    int rightBorderAtJ = overlay.isValid()
+                            ? overlay->size().height() - 1 + baseTile->j()
+                            : baseTile->j();
+    for( auto tile : area )
+    {
+      int tileBorders = ( tile->i() == leftBorderAtI ? 0 : config::tile.skipLeftBorder )
+                        + ( tile->j() == rightBorderAtJ ? 0 : config::tile.skipRightBorder );
+      Picture pic(resourceGroup, tileBorders + tileId);
+      rinfo.engine.draw( pic, tile->mappos() + rinfo.offset );
+    }
   }
 }
 
@@ -761,7 +769,7 @@ DrawOptions::Flag DrawOptions::findFlag(const std::string& name)
 
 DrawOptions::DrawOptions() : _helper(0)
 {
-#define _O(a) _helper.append( DrawOptions::a, CAESARIA_STR_EXT(a) );
+#define _O(a) _helper.append( DrawOptions::a, TEXT(a) );
   _O(drawGrid)
   _O(shadowOverlay)
   _O(showPath)

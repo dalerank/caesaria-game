@@ -91,7 +91,7 @@ InBriefing::~InBriefing()
   break;
 
   default:
-    _CAESARIA_DEBUG_BREAK_IF( "Briefing: unexpected result event" );
+    _GAME_DEBUG_BREAK_IF( "Briefing: unexpected result event" );
   }
 }
 
@@ -162,7 +162,7 @@ InMainMenu::~InMainMenu()
   break;
 
   default:
-    _CAESARIA_DEBUG_BREAK_IF( "Unexpected result event" );
+    _GAME_DEBUG_BREAK_IF( "Unexpected result event" );
   }
 }
 

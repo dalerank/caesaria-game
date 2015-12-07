@@ -28,7 +28,6 @@ namespace gui
 class IngameMenu::Impl
 {
 public:
-  PushButton* btnContinue;
   PushButton* btnSave;
   PushButton* btnLoad;
   PushButton* btnRestart;
@@ -40,21 +39,20 @@ public signals:
 };
 
 IngameMenu::IngameMenu(Widget *parent)
-  : Window( parent, Rect( 0, 0, 500, 450 ), "", Hash( CAESARIA_STR_A(IngameMenu) ) ),
+  : Window( parent, Rect( 0, 0, 500, 450 ), "", Hash( TEXT(IngameMenu) ) ),
     _d( new Impl )
 {
   setupUI( ":/gui/ingamemenu_android.gui" );
   setCenter( parent->center() );
   WidgetEscapeCloser::insertTo( this );
 
-  GET_DWIDGET_FROM_UI( _d, btnContinue )
   GET_DWIDGET_FROM_UI( _d, btnSave )
   GET_DWIDGET_FROM_UI( _d, btnLoad  )
   GET_DWIDGET_FROM_UI( _d, btnRestart )
   GET_DWIDGET_FROM_UI( _d, btnMainMenu )
   GET_DWIDGET_FROM_UI( _d, btnExit )
 
-  CONNECT( _d->btnContinue, onClicked(), this, IngameMenu::deleteLater );
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnContinue, onClicked(), IngameMenu::deleteLater );
 
   setModal();
 }

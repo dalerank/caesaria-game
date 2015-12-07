@@ -42,6 +42,7 @@ public:
 
 private:
   EmperrorRequestWindow( Widget* parent, city::RequestPtr request );
+  void _openEmperrorAdvisor();
 
   class Impl;
   ScopedPtr< Impl > _d;

@@ -40,13 +40,11 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
   _locker.activate();
 
   setupUI( ":/gui/tutorial_window.gui" );
-  moveTo( Widget::parentCenter );
 
   INIT_WIDGET_FROM_UI(Label*, lbTitle )
-  INIT_WIDGET_FROM_UI(TexturedButton*, btnExit )
   INIT_WIDGET_FROM_UI(ListBox*, lbxHelp )
 
-  CONNECT( btnExit, onClicked(), this, TutorialWindow::deleteLater );
+  LINK_WIDGET_LOCAL_ACTION( TexturedButton*, btnExit, onClicked(), TutorialWindow::deleteLater );
 
   if( !lbxHelp )
     return;
@@ -91,6 +89,7 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
     }
   }
 
+  moveTo( Widget::parentCenter );
   setModal();
 }
 

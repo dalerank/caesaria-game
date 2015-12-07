@@ -37,9 +37,9 @@ namespace gfx
 
 namespace
 {
-  CAESARIA_LITERALCONST( small )
-  CAESARIA_LITERALCONST( big )
-  CAESARIA_LITERALCONST( mega )
+GAME_LITERALCONST( small )
+GAME_LITERALCONST( big )
+GAME_LITERALCONST( mega )
 
 struct CartInfo
 {

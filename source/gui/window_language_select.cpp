@@ -28,9 +28,9 @@
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
 
-CAESARIA_LITERALCONST(talks)
-CAESARIA_LITERALCONST(font)
-CAESARIA_LITERALCONST(ext)
+GAME_LITERALCONST(talks)
+GAME_LITERALCONST(font)
+GAME_LITERALCONST(ext)
 
 namespace gui
 {
@@ -38,34 +38,18 @@ namespace gui
 namespace dialog
 {
 
-class LanguageSelect::Impl
-{
-public:
-  vfs::Path model;
-};
-
-LanguageSelect::LanguageSelect(Widget* parent, vfs::Path model, const std::string& current, Size size)
-  : Label( parent, Rect( Point(), size ), "", false, gui::Label::bgWhiteFrame ),
-    _d( new Impl )
+LanguageSelect::LanguageSelect(Widget* parent, vfs::Path model, const std::string& current, const Size& size)
+  : Label( parent, Rect( Point(), size ), "", false, gui::Label::bgWhiteFrame )
 {
   auto& listbox = add<ListBox>( RectF(0.05, 0.05, 0.95, 0.85), -1, true, true );
   auto& btnSelect = add<PushButton>( RectF(0.1, 0.88, 0.9, 0.95), _("##continue##") );
 
-  _d->model = model;
-  VariantMap languages = config::load( _d->model );
+  _loadLanguages( listbox, model );
 
-  for( const auto& it : languages )
-  {
-    std::string languageHash = it.second.toMap().get( literals::ext ).toString();
-    auto& item = listbox.addItem( it.first );
-    item.setTag( languageHash );
-  }
+  listbox.setSelectedWithData( literals::ext, Variant( current ) );
 
-  Variant currentLang( current );
-  listbox.setSelectedTag( currentLang );
-
-  CONNECT( &listbox,   onItemSelected(), this, LanguageSelect::_changeLanguage )
-  CONNECT( &btnSelect, onClicked(),      this, LanguageSelect::_apply          )
+  CONNECT_LOCAL( &listbox,   onItemSelected(), LanguageSelect::_changeLanguage )
+  CONNECT_LOCAL( &btnSelect, onClicked(),      LanguageSelect::_apply          )
 
   listbox.setFocus();
   moveTo( Widget::parentCenter );
@@ -79,22 +63,27 @@ void LanguageSelect::setDefaultFont(const std::string& fontname)
   _defaultFont = fontname;
 }
 
-void LanguageSelect::_changeLanguage(const gui::ListBoxItem& item)
+void LanguageSelect::_loadLanguages(ListBox& listbox, const vfs::Path& filename )
 {
-  VariantMap languages = config::load( _d->model );
-  auto it = languages.find( item.text() );
-  if( it != languages.end() )
+  VariantMap languages = config::load( filename );
+
+  for( const auto& it : languages )
   {
-    VariantMap vm = it->second.toMap();
-    std::string lang = vm.get( literals::ext ).toString();
-    std::string talksArchive = vm.get( literals::talks ).toString();
-    std::string newFont  = vm.get( literals::font ).toString();
-
-    if( newFont.empty() )
-      newFont = _defaultFont;
-
-    emit onChange( lang, newFont, talksArchive );
+    auto& item = listbox.addItem( it.first );
+    item.setData( it.second.toMap() );
   }
+}
+
+void LanguageSelect::_changeLanguage(const ListBoxItem& item)
+{
+  std::string lang         = item.data( literals::ext );
+  std::string talksArchive = item.data( literals::talks );
+  std::string newFont      = item.data( literals::font );
+
+  if( newFont.empty() )
+    newFont = _defaultFont;
+
+  emit onChange( lang, newFont, talksArchive );
 }
 
 void LanguageSelect::_apply()

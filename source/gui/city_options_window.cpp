@@ -183,9 +183,6 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   _d->widget = this;
   Window::setupUI( ":/gui/cityoptions.gui" );
 
-  WidgetEscapeCloser::insertTo( this );
-  moveTo( Widget::parentCenter );
-
   GET_DWIDGET_FROM_UI( _d, sbFireRisk )
   GET_DWIDGET_FROM_UI( _d, sbCollapseRisk )
   GET_DWIDGET_FROM_UI( _d, btnC3Gameplay )
@@ -195,15 +192,10 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, btnMetrics )
   GET_DWIDGET_FROM_UI( _d, btnRoadBlocks )
 
-  INIT_WIDGET_FROM_UI(OptionButton*, btnShowTooltips )
-  INIT_WIDGET_FROM_UI(OptionButton*, btnAnroidBarEnabled )
-  INIT_WIDGET_FROM_UI(OptionButton*, btnDebugEnabled )
-  INIT_WIDGET_FROM_UI(OptionButton*, btnToggleCcUseAI )
-
-  CONNECT( btnShowTooltips, onChange, _d.data(), Impl::changeShowTooltips )
-  CONNECT( btnDebugEnabled, onChange, _d.data(), Impl::changeDebugVisible )
-  CONNECT( btnAnroidBarEnabled, onChange, _d.data(), Impl::changeAndroidBarVisible )
-  CONNECT( btnToggleCcUseAI, onChange, _d.data(), Impl::changeCcAi )
+  LINK_WIDGET_ACTION( OptionButton*, btnShowTooltips, onChange, _d.data(), Impl::changeShowTooltips )
+  LINK_WIDGET_ACTION( OptionButton*, btnDebugEnabled, onChange, _d.data(), Impl::changeDebugVisible )
+  LINK_WIDGET_ACTION( OptionButton*, btnAnroidBarEnabled, onChange, _d.data(), Impl::changeAndroidBarVisible )
+  LINK_WIDGET_ACTION( OptionButton*, btnToggleCcUseAI, onChange, _d.data(), Impl::changeCcAi )
 
   CONNECT( _d->sbFireRisk, onChange(), _d.data(), Impl::changeFireRisk )
   CONNECT( _d->sbCollapseRisk, onChange(), _d.data(), Impl::changeCollapseRisk )
@@ -223,6 +215,9 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
     CONNECT( btn, onChange, _d.data(), Impl::resolveOptionChange );
 
   _d->update();
+
+  WidgetEscapeCloser::insertTo( this );
+  moveTo( Widget::parentCenter );
   setModal();
 }
 

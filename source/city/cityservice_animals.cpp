@@ -45,7 +45,7 @@ public:
   TilesArray border;
 };
 
-std::string Animals::defaultName() { return CAESARIA_STR_EXT(Animals); }
+std::string Animals::defaultName() { return TEXT(Animals); }
 
 void Animals::timeStep(const unsigned int time)
 {

@@ -36,6 +36,7 @@
 #include "gfx/tilemap_config.hpp"
 #include "gfx/cart_animation.hpp"
 #include "pathway/pathway_helper.hpp"
+#include "core/common.hpp"
 #include "walkers_factory.hpp"
 #include "core/logger.hpp"
 #include "city/trade_options.hpp"
@@ -48,9 +49,9 @@ using namespace config;
 REGISTER_CLASS_IN_WALKERFACTORY(walker::cartPusher, CartPusher)
 
 namespace {
-CAESARIA_LITERALCONST(stock)
-CAESARIA_LITERALCONST(producerPos)
-CAESARIA_LITERALCONST(consumerPos)
+GAME_LITERALCONST(stock)
+GAME_LITERALCONST(producerPos)
+GAME_LITERALCONST(consumerPos)
 }
 
 class CartPusher::Impl
@@ -418,11 +419,8 @@ void CartPusher::save( VariantMap& stream ) const
   Walker::save( stream );
   
   stream[ literals::stock ] = _d->stock.save();
-  stream[ literals::producerPos ] = _d->producerBuilding.isValid()
-                                ? _d->producerBuilding->pos() : TilePos::invalid();
-
-  stream[ literals::consumerPos ] = _d->consumerBuilding.isValid()
-                                ? _d->consumerBuilding->pos() : TilePos::invalid();
+  stream[ literals::producerPos ] = utils::objPosOrDefault( _d->producerBuilding );
+  stream[ literals::consumerPos ] = utils::objPosOrDefault( _d->consumerBuilding );
 
   VARIANT_SAVE_ANY_D( stream, _d, maxDistance )
   VARIANT_SAVE_ANY_D( stream, _d, cantUnloadGoods )
@@ -506,8 +504,8 @@ TilePos CartPusher::places(Walker::Place type) const
 {
   switch( type )
   {
-  case plOrigin: return _d->producerBuilding.isValid() ? _d->producerBuilding->pos() : TilePos::invalid();
-  case plDestination: return _d->consumerBuilding.isValid() ? _d->consumerBuilding->pos() : TilePos::invalid();
+  case plOrigin: return utils::objPosOrDefault( _d->producerBuilding );
+  case plDestination: return utils::objPosOrDefault( _d->consumerBuilding );
   default: break;
   }
 

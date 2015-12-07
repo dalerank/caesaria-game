@@ -38,6 +38,7 @@ protected:
   void _showChangeSalaryWindow();
   void _showSend2CityWindow();
   void _showGiftWindow();
+  void _showGiftHistory();
   void _updateRequests();
   void _sendMoney( int money );
   void _sendGift( int money );

@@ -73,9 +73,9 @@ public:
     btnIncrease.setTooltipText( _("##advslr_btn_tooltip##") );
   }
 
-  virtual void _updateTextPic()
+  virtual void _updateTexture()
   {
-    PushButton::_updateTextPic();
+    PushButton::_updateTexture();
 
     Font f = font( _state() );
     std::string text = WalkerHelper::getPrettyTypename( walkerType );
@@ -104,7 +104,6 @@ public:
   {
     Widget::setupUI( ":/gui/advsalaries.gui" );
     _city = city;
-    moveTo( Widget::parentCenter );
 
     INIT_WIDGET_FROM_UI( Label*, grayArea )
     Point offset( 0, 35 );
@@ -114,6 +113,7 @@ public:
     grayArea->add<SalaryButton>( rect+offset*2, walker::romeHorseman, 30 );
     grayArea->add<SalaryButton>( rect+offset*3, walker::romeSpearman, 30 );
 
+    moveTo( Widget::parentCenter );
     WidgetEscapeCloser::insertTo( this );
     setModal();
   }
@@ -154,9 +154,9 @@ signals public:
 
 protected:
 
-  virtual void _updateTextPic()
+  virtual void _updateTexture()
   {
-    PushButton::_updateTextPic();
+    PushButton::_updateTexture();
 
     Font font = Font::create( FONT_1_WHITE );
 
@@ -269,7 +269,7 @@ void Employer::Impl::showPriorityWindow( industry::Type industry )
 
   int priority = wh->getPriority( industry );
   auto& wnd = lbSalaries->ui()->add<dialog::HirePriority>( industry, priority );
-  CONNECT( &wnd, onAcceptPriority(), this, Impl::setIndustryPriority );
+  CONNECT_LOCAL( &wnd, onAcceptPriority(), Impl::setIndustryPriority );
 }
 
 void Employer::Impl::setIndustryPriority( industry::Type industry, int priority)
@@ -342,7 +342,7 @@ EmployerButton* Employer::Impl::addButton( Employer* parent, const Point& startP
   employeeBtn.setText( "" );
   empButtons[ priority ] = &employeeBtn;
 
-  CONNECT( &employeeBtn, onClickedSignal, this, Impl::showPriorityWindow );
+  CONNECT_LOCAL( &employeeBtn, onClickedSignal, Impl::showPriorityWindow );
 
   return &employeeBtn;
 }
@@ -355,13 +355,12 @@ Employer::Employer(PlayerCityPtr city, Widget* parent, int id )
   _d->city = city;
   _d->empButtons.resize( industry::count );
 
-  INIT_WIDGET_FROM_UI( TexturedButton*, btnIncreaseSalary )
   INIT_WIDGET_FROM_UI( TexturedButton*, btnDecreaseSalary )
   INIT_WIDGET_FROM_UI( PushButton*, btnAdvSalaries )
 
-  CONNECT( btnIncreaseSalary, onClicked(), _d.data(), Impl::increaseSalary )
-  CONNECT( btnDecreaseSalary, onClicked(), _d.data(), Impl::decreaseSalary )
-  CONNECT( btnAdvSalaries, onClicked(), this, Employer::_showAdvSalaries )
+  LINK_WIDGET_ACTION( TexturedButton*, btnIncreaseSalary, onClicked(), _d.data(), Impl::increaseSalary )
+  LINK_WIDGET_ACTION( TexturedButton*, btnDecreaseSalary, onClicked(), _d.data(), Impl::decreaseSalary )
+  CONNECT_LOCAL( btnAdvSalaries, onClicked(), Employer::_showAdvSalaries )
 
   if( btnAdvSalaries )
     btnAdvSalaries->bringToFront();

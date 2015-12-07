@@ -113,9 +113,9 @@ AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos 
       //_d->gbLegionParams2->hide();
       _d->btnReturn->hide();
 
-      BuildingList barracks = city->statistic().objects.find<Building>( object::barracks );
+      int barracks_n = city->statistic().objects.count( object::barracks );
 
-      std::string text = barracks.empty()
+      std::string text = barracks_n == 0
                           ? "##legion_haveho_soldiers_and_barracks##"
                           : "##legion_haveho_soldiers##";
 
@@ -133,8 +133,8 @@ AboutLegion::AboutLegion(Widget* parent, PlayerCityPtr city, const TilePos& pos 
   setTitle( _( fortTitle ) );
   _update();
 
-  CONNECT( _d->btnReturn, onClicked(), this, AboutLegion::_returnSoldiers2fort );
-  CONNECT( _d->btnAttackAnimals, onClicked(), this, AboutLegion::_toggleAnimalsAttack );
+  CONNECT_LOCAL( _d->btnReturn, onClicked(), AboutLegion::_returnSoldiers2fort );
+  CONNECT_LOCAL( _d->btnAttackAnimals, onClicked(), AboutLegion::_toggleAnimalsAttack );
 }
 
 AboutLegion::~AboutLegion() {}

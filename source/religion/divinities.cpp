@@ -40,7 +40,7 @@ namespace religion
 {
 
 namespace {
-CAESARIA_LITERALCONST(name)
+GAME_LITERALCONST(name)
 }
 
 struct RomeDinConfig

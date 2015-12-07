@@ -243,14 +243,13 @@ void StartMenu::Impl::showLanguageOptions()
                                                               SETTINGS_STR( language ) );
   languageSelectDlg.setDefaultFont( SETTINGS_STR( defaultFont ) );
 
-  CONNECT( &languageSelectDlg, onChange,   this, Impl::changeLanguage )
-  CONNECT( &languageSelectDlg, onContinue, this, Impl::reload         )
+  CONNECT_LOCAL( &languageSelectDlg, onChange,   Impl::changeLanguage )
+  CONNECT_LOCAL( &languageSelectDlg, onContinue, Impl::reload         )
 }
 
 void StartMenu::Impl::showPackageOptions()
 {
-  auto& packageOptionsDlg = ui().add<dialog::PackageOptions>( Rect() );
-  packageOptionsDlg.setModal();
+  ui().add<dialog::PackageOptions>( Rect() );
 }
 
 void StartMenu::Impl::changeLanguage(std::string lang, std::string newFont, std::string sounds)
@@ -282,9 +281,9 @@ void StartMenu::Impl::startCareer()
   auto& selectPlayerNameDlg = ui().add<dialog::ChangePlayerName>();
   selectPlayerNameDlg.setName( playerName );
 
-  CONNECT( &selectPlayerNameDlg, onNameChange(), this, Impl::setPlayerName );
-  CONNECT( &selectPlayerNameDlg, onContinue(),   this, Impl::handleNewGame );
-  CONNECT( &selectPlayerNameDlg, onClose(),      this, Impl::showMainMenu  );
+  CONNECT_LOCAL( &selectPlayerNameDlg, onNameChange(), Impl::setPlayerName );
+  CONNECT_LOCAL( &selectPlayerNameDlg, onContinue(),   Impl::handleNewGame );
+  CONNECT_LOCAL( &selectPlayerNameDlg, onClose(),      Impl::showMainMenu  );
 }
 
 void StartMenu::Impl::handleNewGame()
@@ -337,6 +336,7 @@ void StartMenu::Impl::showCredits()
                          _("##localization##"),
                          " ",
                          "Alexander Klimenko, Manuel Alvarez, Artem Tolmachev, Peter Willington, Leszek Bochenek",
+                         "Michele Ribechini",
                          " ",
                          _("##thanks_to##"),
                          " ",
@@ -639,7 +639,7 @@ void StartMenu::initialize()
       return;
     }
 
-    std::string text = fmt::format( "Build {0}\n{1}", CAESARIA_BUILD_NUMBER, steamName );
+    std::string text = fmt::format( "Build {0}\n{1}", GAME_BUILD_NUMBER, steamName );
     _d->lbSteamName = &_d->ui().add<Label>( Rect( 100, 10, 400, 80 ), text );
     _d->lbSteamName->setTextAlignment( align::upperLeft, align::center );
     _d->lbSteamName->setWordwrap( true );

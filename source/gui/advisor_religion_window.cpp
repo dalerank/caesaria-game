@@ -91,8 +91,7 @@ Religion::Religion(PlayerCityPtr city, Widget* parent, int id )
 
   d.updateReligionAdvice( city );
 
-  INIT_WIDGET_FROM_UI( TexturedButton*, btnHelp )
-  CONNECT( btnHelp, onClicked(), this, Religion::_showHelp );
+  LINK_WIDGET_LOCAL_ACTION( TexturedButton*, btnHelp, onClicked(), Religion::_showHelp );
 }
 
 void Religion::draw(gfx::Engine& painter )

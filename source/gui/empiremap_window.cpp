@@ -545,12 +545,9 @@ EmpireMapWindow::EmpireMapWindow(Widget* parent, int id, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, gbox )
   if( _d->gbox ) _d->gbox->sendToBack();
 
-  INIT_WIDGET_FROM_UI( PushButton*, btnTrade )
-  INIT_WIDGET_FROM_UI( PushButton*, btnAi )
-
-  CONNECT( btnTrade, onClicked(), this, EmpireMapWindow::deleteLater )
-  CONNECT( btnTrade, onClicked(), _d.data(), Impl::showTradeAdvisorWindow )
-  CONNECT( btnAi, onClicked(), this, EmpireMapWindow::_toggleAi )
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnTrade, onClicked(), EmpireMapWindow::deleteLater )
+  LINK_WIDGET_ACTION( PushButton*, btnTrade, onClicked(), _d.data(), Impl::showTradeAdvisorWindow )
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnAi, onClicked(), EmpireMapWindow::_toggleAi )
 
   setFlag( showCityInfo, true );
 }

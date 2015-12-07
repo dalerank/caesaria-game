@@ -74,13 +74,13 @@ public:
 
   inline T& operator*() const
   {
-    _CAESARIA_DEBUG_BREAK_IF( !d );
+    _GAME_DEBUG_BREAK_IF( !d );
     return *d;
   }
 
   inline T *operator->() const
   {
-    _CAESARIA_DEBUG_BREAK_IF( !d );
+    _GAME_DEBUG_BREAK_IF( !d );
     return d;
   }
 

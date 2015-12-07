@@ -65,14 +65,12 @@ EmperorGift::EmperorGift(Widget* p, int money , const DateTime &lastgift)
 
   INIT_WIDGET_FROM_UI( Label*, lbLastGiftDate )
   INIT_WIDGET_FROM_UI( ListBox*, lbxGifts )
-  INIT_WIDGET_FROM_UI( PushButton*, btnCancel )
-  INIT_WIDGET_FROM_UI( PushButton*, btnSend )
   INIT_WIDGET_FROM_UI( Label*, lbPlayerMoney )
 
   CONNECT( lbxGifts, onItemSelected(), &d, Impl::selectGift );
-  CONNECT( btnSend, onClicked(), &d, Impl::sendGift );
-  CONNECT( btnSend, onClicked(), this, EmperorGift::deleteLater );
-  CONNECT( btnCancel, onClicked(), this, EmperorGift::deleteLater );
+  LINK_WIDGET_ACTION( PushButton*, btnSend, onClicked(), &d, Impl::sendGift );
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnSend, onClicked(), EmperorGift::deleteLater );
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnCancel, onClicked(), EmperorGift::deleteLater );
 
   d.fillGifts( lbxGifts );
 

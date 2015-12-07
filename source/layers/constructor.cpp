@@ -712,19 +712,27 @@ void Constructor::Impl::sortBuildTiles()
 
 bool Constructor::Impl::canBuildOn(OverlayPtr overlay, const city::AreaInfo& areaInfo) const
 {
-  if( overlay->type() == object::terrain
-      || overlay->type() == object::water )
+  object::Type type = overlay.isValid() ? overlay->type() : object::unknown;
+  if( type == object::terrain
+      || type == object::water )
   {
     return true;
   }
-  else if( overlay->type() == object::tree
-           || overlay->type() == object::meadow )
+  else if( type == object::tree
+           || type == object::meadow )
   {
     bool walkable = areaInfo.tile().isWalkable( true );
     bool isTree = is_kind_of<Tree>(areaInfo.tile().overlay());
     return (walkable || isTree );
   }
-  else if( overlay->type() == object::rock )
+  else if( type == object::river )
+  {
+    bool walkable = areaInfo.tile().isWalkable( true );
+    bool coast = areaInfo.tile().terrain().coast;
+    return (walkable || coast);
+  }
+  else if( type == object::rock
+           || type == object::plateau )
   {
     bool walkable = areaInfo.tile().isWalkable( true );
     bool isRock = areaInfo.tile().terrain().rock;

@@ -236,7 +236,7 @@ void Water::handleEvent(NEvent& event)
 
 void Water::_updatePaths()
 {
-  auto reservoir = _d->overlay.underMouse.as<Reservoir>();
+  auto reservoir = _d->overlay.selected.as<Reservoir>();
   if( reservoir.isValid() )
   {
     _d->ways.clear();
@@ -245,7 +245,8 @@ void Water::_updatePaths()
 
     for( auto fountain : fountains )
     {
-      Pathway pathway = PathwayHelper::create( reservoir->pos(), fountain->pos(), wayCondition.bySomething() );
+      Pathway pathway = PathwayHelper::create( reservoir->pos(), fountain->pos(),
+                                               wayCondition.bySomething(), Pathway::fourDirection  );
       if( pathway.isValid() )
         _d->ways.push_back( { pathway.allTiles(), ColorList::red } );
     }

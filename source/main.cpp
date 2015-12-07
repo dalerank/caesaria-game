@@ -25,11 +25,11 @@
 #include "core/osystem.hpp"
 #include "steam.hpp"
 
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
   #undef main
 #endif
 
-#ifdef CAESARIA_PLATFORM_ANDROID
+#ifdef GAME_PLATFORM_ANDROID
 #include <SDL.h>
 #include <SDL_system.h>
 #endif
@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
   crashhandler::install();
 
   vfs::Directory workdir;
-#ifdef CAESARIA_PLATFORM_ANDROID
+#ifdef GAME_PLATFORM_ANDROID
   workdir  = vfs::Path( SDL_AndroidGetExternalStoragePath() );
 #else
   workdir = vfs::Path( argv[0] ).directory();

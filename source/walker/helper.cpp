@@ -72,7 +72,7 @@ public:
 
   Impl()
   {
-#define __REG_WNATION(a) appendNation( world::nation::a, CAESARIA_STR_A(a));
+#define __REG_WNATION(a) appendNation( world::nation::a, TEXT(a));
     __REG_WNATION( unknown )
     __REG_WNATION( rome )
     __REG_WNATION( etruscan )
@@ -96,7 +96,7 @@ public:
 
       appendType( walker::all,        "unknown" );
 
-#define __REG_WTYPE(a) appendType( walker::a, CAESARIA_STR_A(a));
+#define __REG_WTYPE(a) appendType( walker::a, TEXT(a));
     __REG_WTYPE( unknown    )
     __REG_WTYPE( immigrant  )
     __REG_WTYPE( citizen    )
@@ -205,7 +205,7 @@ std::string WalkerHelper::getTypename( walker::Type type )
   if( name.empty() )
   {
     Logger::warning( "WalkerHelper: can't find walker typeName for {0}", type );
-    //_CAESARIA_DEBUG_BREAK_IF( "Can't find walker typeName by WalkerType" );
+    //_GAME_DEBUG_BREAK_IF( "Can't find walker typeName by WalkerType" );
   }
 
   return name;
@@ -218,7 +218,7 @@ walker::Type WalkerHelper::getType(const std::string &name)
   if( type == instance()._d->htype.getInvalid() )
   {
     Logger::warning( "Can't find walker type for {0}", name);
-    //_CAESARIA_DEBUG_BREAK_IF( "Can't find walker type by typeName" );
+    //_GAME_DEBUG_BREAK_IF( "Can't find walker type by typeName" );
   }
 
   return type;

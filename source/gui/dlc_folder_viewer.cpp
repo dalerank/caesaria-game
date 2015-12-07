@@ -196,9 +196,10 @@ void DlcFolderViewer::_loadDesc(Path path)
   rect.rright() -= 100;
   auto& window = add<Window>( rect, "" );
   window.setupUI( path );
-  window.setModal();
   window.setWindowFlag( Window::fdraggable, false );
   window.add<ExitButton>( Point( window.width() - 40, 12 ) );
+
+  window.setModal();
 }
 
 void DlcFolderViewer::_resolveCellClick(int row, int column)

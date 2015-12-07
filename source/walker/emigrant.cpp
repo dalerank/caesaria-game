@@ -42,7 +42,7 @@ using namespace gfx;
 REGISTER_CLASS_IN_WALKERFACTORY(walker::emigrant, Emigrant)
 
 namespace  {
-CAESARIA_LITERALCONST(peoples)
+GAME_LITERALCONST(peoples)
 const int maxFailedWayCount = 10;
 const int populationOverVillage=300;
 const int minDesirability4settle=-10;

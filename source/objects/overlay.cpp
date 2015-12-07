@@ -30,7 +30,7 @@ using namespace gfx;
 namespace {
 static Renderer::PassQueue defaultPassQueue=Renderer::PassQueue(1,Renderer::overlayAnimation);
 static Pictures invalidPictures;
-static SimpleLogger LOG_OVERLAY(CAESARIA_STR_EXT(Overlay));
+static SimpleLogger LOG_OVERLAY(TEXT(Overlay));
 }
 
 

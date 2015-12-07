@@ -27,6 +27,7 @@
 #include "core/variant_map.hpp"
 #include "objects/building.hpp"
 #include "gfx/tilemap.hpp"
+#include "core/common.hpp"
 #include "pathway/pathway_helper.hpp"
 #include "walkers_factory.hpp"
 
@@ -85,9 +86,7 @@ void TraineeWalker::_cancelPath()
 
 void TraineeWalker::setBase(BuildingPtr originBuilding)
 {
-  _d->baseLocation = originBuilding.isValid()
-      ? originBuilding->pos()
-      : TilePos::invalid();
+  _d->baseLocation = utils::objPosOrDefault( originBuilding );
 }
 
 BuildingPtr TraineeWalker::base() const

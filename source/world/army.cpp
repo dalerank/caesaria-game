@@ -23,6 +23,7 @@
 #include "empiremap.hpp"
 #include "gfx/tilesarray.hpp"
 #include "game/resourcegroup.hpp"
+#include "core/common.hpp"
 #include "core/variant_map.hpp"
 #include "config.hpp"
 
@@ -116,9 +117,9 @@ void Army::load(const VariantMap& stream)
   VARIANT_LOAD_ANY_D( d, strength, stream )
 }
 
-std::string Army::type() const { return CAESARIA_STR_EXT(Army); }
+std::string Army::type() const { return TEXT(Army); }
 
-void Army::setBase(CityPtr base){  _dfunc()->base = base.isValid() ? base->name() : "";  }
+void Army::setBase(CityPtr base) { _dfunc()->base = utils::objNameOrDefault( base ); }
 
 void Army::attack(ObjectPtr obj)
 {
@@ -139,7 +140,7 @@ void Army::attack(ObjectPtr obj)
   else
   {
     Logger::warning( "Army: base is " + ( d.base.empty() ? "null" : d.base ) );
-    Logger::warning( "Army: object for attack is " + ( obj.isNull() ? "null" : obj->name() ) );
+    Logger::warning( "Army: object for attack is " + utils::objNameOrDefault( obj, "null" ) );
   }
 }
 

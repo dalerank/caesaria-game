@@ -65,7 +65,7 @@ AboutWorkingBuilding::AboutWorkingBuilding( Widget* parent, WorkingBuildingPtr b
     rect += Point( btnHelp->width() + 5, 0 );
     rect.rright() += 60;
     PushButton& btn = add<PushButton>( rect, "Adv.Info", -1, false, PushButton::whiteBorderUp );
-    CONNECT( &btn, onClicked(), this, AboutWorkingBuilding::_showAdvInfo )
+    CONNECT_LOCAL( &btn, onClicked(), AboutWorkingBuilding::_showAdvInfo )
   }
 }
 
@@ -105,8 +105,7 @@ void AboutWorkingBuilding::_showAdvInfo()
                                          (int)_working->state( pr::fire ),
                                          timeText.c_str() );
 
-  auto dialog = dialog::Information( ui(), "Information", workerState );
-  dialog->moveTo( Widget::parentCenter );
+  dialog::Information( ui(), "Information", workerState );
 }
 
 }//end namespace infobox
