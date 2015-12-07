@@ -8,6 +8,7 @@
 "##city_metric##":"Единицы изм."
 "##city_roadblock_on##":"Шлагбаум: включены"
 "##quantity##":"Игровые"
+"##history_gift##":"Подарки"
 "##kilogram##":"Современные"
 "##modius##":"Римские"
 "##city_buildoverdraw_on##":"Строительство: поверх тайлов"
