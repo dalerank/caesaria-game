@@ -29,8 +29,9 @@
 #include "objects/house_spec.hpp"
 #include "city/statistic.hpp"
 #include "objects/house.hpp"
-#include "texturedbutton.hpp"
 #include "dictionary.hpp"
+#include "environment.hpp"
+#include "texturedbutton.hpp"
 #include "religion/pantheon.hpp"
 #include "game/gamedate.hpp"
 #include "objects/constants.hpp"
@@ -51,7 +52,6 @@ class Religion::Impl
 {
 public:
   Label* lbReligionAdvice;
-  TexturedButton* btnHelp;
   Size labelSize = Size( 550, 20 );
 
   ReligionInfoLabel* addInfo( Widget* parent, PlayerCityPtr city,
@@ -88,10 +88,10 @@ Religion::Religion(PlayerCityPtr city, Widget* parent, int id )
   d.addInfo( this, city, object::oracle, object::oracle, DivinityPtr(), startPoint + Point( 0, 100) );
 
   GET_DWIDGET_FROM_UI( &d, lbReligionAdvice )
-  GET_DWIDGET_FROM_UI( &d, btnHelp )
 
   d.updateReligionAdvice( city );
-  CONNECT( d.btnHelp, onClicked(), this, Religion::_showHelp );
+
+  LINK_WIDGET_LOCAL_ACTION( TexturedButton*, btnHelp, onClicked(), Religion::_showHelp );
 }
 
 void Religion::draw(gfx::Engine& painter )
@@ -102,10 +102,7 @@ void Religion::draw(gfx::Engine& painter )
   Window::draw( painter );
 }
 
-void Religion::_showHelp()
-{
-  DictionaryWindow::show( this, "religion_advisor" );
-}
+void Religion::_showHelp() { ui()->add<DictionaryWindow>( "religion_advisor" ); }
 
 void Religion::Impl::updateReligionAdvice(PlayerCityPtr city)
 {

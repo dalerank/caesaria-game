@@ -19,6 +19,7 @@
 #include "city/statistic.hpp"
 #include "name_generator.hpp"
 #include "corpse.hpp"
+#include "core/common.hpp"
 #include "core/variant_map.hpp"
 #include "game/resourcegroup.hpp"
 #include "objects/military.hpp"
@@ -33,7 +34,6 @@
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
 #include "walker/helper.hpp"
-#include "gfx/helper.hpp"
 
 using namespace gfx;
 
@@ -49,7 +49,7 @@ WallGuard::WallGuard( PlayerCityPtr city, walker::Type type )
   : RomeSoldier( city, type ), _d( new Impl )
 {
   setAttackDistance( 5 );
-  _d->patrolPosition = gfx::tilemap::invalidLocation();
+  _d->patrolPosition = TilePos::invalid();
 }
 
 WallGuard::~WallGuard(){}
@@ -68,7 +68,7 @@ bool WallGuard::die()
     break;
 
     default:
-      Logger::warning( "Wallguard::die() not work yet for this type " + WalkerHelper::getTypename( type() ) );
+      Logger::warning( "WARNING !!! Wallguard::die() not work yet for this type " + WalkerHelper::getTypename( type() ) );
     }
   }
 
@@ -149,11 +149,11 @@ void WallGuard::save(VariantMap& stream) const
 {
   Soldier::save( stream );
 
-  stream[ "base" ] = _d->base.isValid() ? _d->base->pos() : gfx::tilemap::invalidLocation();
+  stream[ "base" ] = utils::objPosOrDefault( _d->base );
   VARIANT_SAVE_ANY_D( stream, _d, strikeForce )
   VARIANT_SAVE_ANY_D( stream, _d, resistance )
   VARIANT_SAVE_ANY_D( stream, _d, patrolPosition )
-  stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(WallGuard) ) );
+  stream[ "__debug_typeName" ] = Variant( std::string( TEXT(WallGuard) ) );
 }
 
 void WallGuard::load(const VariantMap& stream)
@@ -207,7 +207,7 @@ TilePos WallGuard::places(Walker::Place type) const
 {
   switch( type )
   {
-  case plOrigin: return _d->base.isValid() ? _d->base->pos() : gfx::tilemap::invalidLocation();
+  case plOrigin: return _d->base.isValid() ? _d->base->pos() : TilePos::invalid();
   case plDestination: return _d->patrolPosition;
   default: break;
   }

@@ -52,13 +52,13 @@ FishPlace::FishPlace( PlayerCityPtr city )
 
   if( _d->fishCount > 1 )
   {
-    _d->animation.load( ResourceGroup::land3a, 19, 24); //big fish place
+    _d->animation.load( config::rc.land3a, 19, 24); //big fish place
     _d->basicOffset = Point( -41, 122 );
     _d->animation.setOffset( _d->basicOffset );
   }
   else
   {
-    _d->animation.load( ResourceGroup::land3a, 1, 18);
+    _d->animation.load( config::rc.land3a, 1, 18);
     _d->basicOffset =  Point( 0, 55 );
     _d->animation.setOffset( _d->basicOffset );
   } //small fish place

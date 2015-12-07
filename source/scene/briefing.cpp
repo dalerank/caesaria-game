@@ -38,7 +38,7 @@ class MissionButton : public TexturedButton
 {
 public:
   MissionButton( Widget* parent, Point pos, std::string title, std::string mission )
-   : TexturedButton( parent, pos, Size( 46 ), -1, "europe02", 5, 6, 4, 4 )
+   : TexturedButton( parent, pos, Size( 46 ), -1, "europe02", TexturedButton::States( 5, 6, 4, 4 ) )
   {
     setIsPushButton( true );
     _mission = mission;

@@ -200,7 +200,7 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
 #if SDL_MAJOR_VERSION>1
   case SDL_WINDOWEVENT:
   {
-    ret.EventType = sAppEvent;
+    ret.EventType = sEvenApplication;
     ret.app.type = appEventCount;
     switch( sdlEvent.window.event )
     {
@@ -314,7 +314,7 @@ NEvent EventConverter::get( const SDL_Event& sdlEvent )
 
   case SDL_TEXTINPUT:
   {
-    ret.EventType = sTextInput;
+    ret.EventType = sEventTextInput;
     memcpy( ret.text.text, sdlEvent.text.text, 32 );
   }
   break;

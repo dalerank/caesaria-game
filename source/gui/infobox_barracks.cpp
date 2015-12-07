@@ -37,7 +37,6 @@ REGISTER_OBJECT_BASEINFOBOX(barracks,AboutBarracks)
 class AboutBarracks::Impl
 {
 public:
-  Label* lbWeaponQty;
 };
 
 AboutBarracks::AboutBarracks(Widget* parent, PlayerCityPtr city, const Tile& tile )
@@ -57,16 +56,16 @@ AboutBarracks::AboutBarracks(Widget* parent, PlayerCityPtr city, const Tile& til
   setBase( barracks );
   _setWorkingVisible( true );
 
-  GET_DWIDGET_FROM_UI( _d, lbWeaponQty )
+  INIT_WIDGET_FROM_UI( Label*, lbWeaponQty )
 
   setTitle( _( barracks->info().prettyName() ) );
   setText( _("##barracks_info##") );
 
-  if( _d->lbWeaponQty )
+  if( lbWeaponQty )
   {
     _lbText()->setHeight( height() / 2 );
-    _d->lbWeaponQty->setTop( _lbText()->bottom() + 5 );
-    _d->lbWeaponQty->setText( _("##weapon_store_of##") + utils::i2str( barracks->goodQty( good::weapon ) ) );
+    lbWeaponQty->setTop( _lbText()->bottom() + 5 );
+    lbWeaponQty->setText( _("##weapon_store_of##") + utils::i2str( barracks->goodQty( good::weapon ) ) );
   }
 }
 

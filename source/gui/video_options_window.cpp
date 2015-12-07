@@ -67,7 +67,7 @@ VideoOptions::VideoOptions(Widget* parent, gfx::Engine::Modes modes, bool fullsc
 
     for( auto& mode : modes )
     {
-      modeStr = utils::format( 0xff, "%dx%d", mode.width(), mode.height() );
+      modeStr = fmt::format( "{}x{}", mode.width(), mode.height() );
       ListBoxItem& item = lbxModes->addItem( modeStr );
       item.setTag( (mode.width() << 16) + mode.height());
       item.setTextAlignment( align::center, align::center );
@@ -77,7 +77,8 @@ VideoOptions::VideoOptions(Widget* parent, gfx::Engine::Modes modes, bool fullsc
   _update();
 
   INIT_WIDGET_FROM_UI( PushButton*, btnOk )
-  if( btnOk ) btnOk->setFocus();
+  if( btnOk )
+    btnOk->setFocus();
 }
 
 VideoOptions::~VideoOptions( void ){}

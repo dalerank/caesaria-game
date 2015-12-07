@@ -23,7 +23,7 @@
 #include "widget_helper.hpp"
 #include "image.hpp"
 #include "core/gettext.hpp"
-#include "vfs/filesystem.hpp"
+#include "vfs/fileinfo.hpp"
 #include "core/logger.hpp"
 
 namespace gui
@@ -38,12 +38,8 @@ LoadGame::LoadGame(Widget* parent, const vfs::Directory& dir )
   _sortMode = sortCount;
   Widget::setupUI( ":/gui/loadgame.gui" );
 
-  INIT_WIDGET_FROM_UI(PushButton*, btnSort)
-
   CONNECT( _fileslbx(), onItemSelected(), this, LoadGame::_showPreview )
-  CONNECT( btnSort, onClicked(), this, LoadGame::_changeSort )
-
-  moveTo( Widget::parentCenter );
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnSort, onClicked(), LoadGame::_changeSort )
 
   _changeSort();
 }
@@ -55,7 +51,7 @@ StringArray sortByDate( const vfs::Entries& array )
   std::map<DateTime,std::string> sortedByTime;
   for( const auto& item : array.items() )
   {
-    DateTime time = vfs::FileSystem::instance().getFileUpdateTime( item.fullpath );
+    DateTime time = vfs::Info( item.fullpath ).modified();
     sortedByTime[ time ] = item.fullpath.toString();
   }
 
@@ -135,7 +131,7 @@ void LoadGame::_fillFiles()
   break;
   }
 
-  for( auto& path : names )
+  for( const auto& path : names )
   {
     ListBoxItem& item = lbxFiles->addItem( path, Font(), ColorList::black.color );
     vfs::Path imgpath = vfs::Path( path ).changeExtension( "png" );

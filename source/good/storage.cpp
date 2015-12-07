@@ -19,7 +19,6 @@
 #include "core/variant_list.hpp"
 #include "core/utils.hpp"
 #include "good/productmap.hpp"
-#include "gfx/helper.hpp"
 #include "core/logger.hpp"
 
 namespace good
@@ -72,7 +71,7 @@ int Storage::capacity() const {  return _gsd->capacity; }
 int Storage::qty() const
 {
   int qty = 0;
-  for( auto& stock : _gsd->stocks )
+  for( const auto& stock : _gsd->stocks )
     qty += stock->qty();
 
   return qty;
@@ -83,7 +82,7 @@ good::Stock& Storage::getStock(const Product& goodType){  return *(_gsd->stocks[
 ProductMap Storage::details() const
 {
   ProductMap ret;
-  for( auto& cstock : _gsd->stocks )
+  for( const auto& cstock : _gsd->stocks )
     ret[ cstock->type() ] += cstock->qty();
 
   return ret;

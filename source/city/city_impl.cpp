@@ -131,7 +131,7 @@ VariantMap Walkers::save() const
     }
     catch(...)
     {
-      Logger::warning( "!!! WARNING: Can't save walker type {0}", WalkerHelper::getTypename( wtype ));
+      Logger::warning( "WARNING !!! Can't save walker type {}", WalkerHelper::getTypename( wtype ));
     }
 
     walkedId++;

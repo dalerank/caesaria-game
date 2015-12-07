@@ -40,6 +40,13 @@
     }
   }
 
+  plateau : {
+    class : "rock"
+    image.ext : {
+      type_1 : { size:1, rc : "plateau", start : 1, count : 44 }
+    }
+  }
+
   rock : {
     class : "rock"
     image.ext : {
@@ -698,6 +705,7 @@
   wheat_farm : 
   {
     cost : 40,
+    undoOffset : [ 0, -1 ]
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     output : "wheat"
@@ -709,6 +717,7 @@
   vegetable_farm :
   {
     cost : 40,
+    undoOffset : [ 0, -1 ]
     desirability : { base : -2, 	range : 2,	step : 1 }
     employers : 10
     output : "vegetable"
@@ -720,6 +729,7 @@
   fig_farm : 
   {
     cost : 40,
+    undoOffset : [ 0, -1 ]
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     output : "fruit"
@@ -730,6 +740,7 @@
   olive_farm : 
   {
     cost : 40,
+    undoOffset : [ 0, -1 ]
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     output : "olive"
@@ -741,6 +752,7 @@
   vinard :
   {
     cost : 40,
+    undoOffset : [ 0, -1 ]
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     output : "grape"
@@ -752,6 +764,7 @@
   meat_farm : 
   {
     cost : 40,
+    undoOffset : [ 0, -1 ]
     desirability : { base : -2,	range : 2,	step : 1 }
     employers : 10
     class : "food"

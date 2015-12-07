@@ -26,6 +26,7 @@
 #include "world/computer_city.hpp"
 #include "city/statistic.hpp"
 #include "gfx/decorator.hpp"
+#include "core/line.hpp"
 #include "label.hpp"
 #include "core/utils.hpp"
 #include "core/gettext.hpp"
@@ -70,22 +71,6 @@ struct Dragging
   bool active;
   Point start;
   Point last;
-};
-
-struct Line
-{
-  Point begin, end;
-  NColor color;
-};
-
-class Lines : public std::vector<Line>
-{
-public:
-  void add( const NColor& color, const Point& p1, const Point& p2 )
-  {
-    Line a = { p1, p2, color };
-    push_back( a );
-  }
 };
 
 class EmpireMapWindow::Impl
@@ -406,7 +391,7 @@ void EmpireMapWindow::Impl::createTradeRoute()
       events::dispatch<Payment>( econ::Issue::sundries, -(int)cost );
 
       size_t docks_n = city.base->statistic().objects.count( object::dock );
-      if( docks_n )
+      if( !docks_n )
       {
         events::dispatch<ShowInfobox>( _("##no_working_dock##" ), _( "##no_dock_for_sea_trade_routes##" ) );
       }
@@ -472,6 +457,18 @@ void EmpireMapWindow::Impl::drawCityGoodsInfo()
   CONNECT( &btnOpenTrade, onClicked(), this, Impl::showOpenRouteRequestWindow );
 }
 
+class GoodText : public Label
+{
+public:
+  GoodText( Widget* parent, const Point& pos, good::Product type, int current, int maxv )
+    : Label( parent, Rect( pos, Size(100,30) ) )
+  {
+    setText( fmt::format( "{}/{}", current, maxv ) );
+    setTextOffset( Point( 30, 0 ) );
+    setIcon( good::Helper::picture( type, true), Point( 3, 3 ) );
+  }
+};
+
 void EmpireMapWindow::Impl::drawTradeRouteInfo()
 {
   Point startDraw( (gbox->width() - 400) / 2, gbox->height() - 80 );
@@ -485,17 +482,14 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
     Unit cursell = Unit::fromQty( sellgoods.qty( product ) );
     if( maxsell > 0  )
     {
-      Label& lb = gbox->add<Label>( Rect( startDraw + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );
-      lb.setBackgroundPicture( good::Helper::picture( product, true) );
-
-      std::string text = fmt::format( "{}/{}", cursell.ivalue(), maxsell.ivalue() );
-      gbox->add<Label>( Rect( startDraw + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );
+      gbox->add<GoodText>( startDraw + Point( 80 + 100 * k, 0 ),
+                           product, cursell.ivalue(), maxsell.ivalue() );
       k++;
     }
   }
 
   Point buyPoint = startDraw + Point( 0, 30 );
-  new Label( gbox, Rect( buyPoint, Size( 80, 30 )), _("##emw_bought##") );
+  gbox->add<Label>( Rect( buyPoint, Size( 80, 30 ) ), _("##emw_bought##") );
 
   const good::Store& buygoods = city.current->buys();
   k=0;
@@ -505,11 +499,8 @@ void EmpireMapWindow::Impl::drawTradeRouteInfo()
     Unit curbuy = Unit::fromQty( buygoods.qty( product ) );
     if( maxbuy > 0  )
     {
-      Label& lb = gbox->add<Label>( Rect( buyPoint + Point( 80 + 100 * k, 0 ), Size( 24, 24 ) ) );
-      lb.setBackgroundPicture( good::Helper::picture( product, true) );
-
-      std::string text = fmt::format( "{}/{}", curbuy.ivalue(), maxbuy.ivalue() );
-      gbox->add<Label>( Rect( buyPoint + Point( 110 + 100 * k, 0), Size( 70, 30 ) ), text );
+      gbox->add<GoodText>( buyPoint + Point( 80 + 100 * k, 0 ),
+                           product, curbuy.ivalue(), maxbuy.ivalue() );
       k++;
     }
   }
@@ -554,16 +545,9 @@ EmpireMapWindow::EmpireMapWindow(Widget* parent, int id, PlayerCityPtr city )
   GET_DWIDGET_FROM_UI( _d, gbox )
   if( _d->gbox ) _d->gbox->sendToBack();
 
-  INIT_WIDGET_FROM_UI( PushButton*, btnHelp )
-  INIT_WIDGET_FROM_UI( PushButton*, btnExit )
-  INIT_WIDGET_FROM_UI( PushButton*, btnTrade )
-  INIT_WIDGET_FROM_UI( PushButton*, btnAi )
-
-  CONNECT( btnExit, onClicked(), this, EmpireMapWindow::deleteLater )
-  CONNECT( btnTrade, onClicked(), this, EmpireMapWindow::deleteLater )
-  CONNECT( btnTrade, onClicked(), _d.data(), Impl::showTradeAdvisorWindow )
-  CONNECT( btnHelp, onClicked(), this, EmpireMapWindow::_showHelp )
-  CONNECT( btnAi, onClicked(), this, EmpireMapWindow::_toggleAi )
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnTrade, onClicked(), EmpireMapWindow::deleteLater )
+  LINK_WIDGET_ACTION( PushButton*, btnTrade, onClicked(), _d.data(), Impl::showTradeAdvisorWindow )
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnAi, onClicked(), EmpireMapWindow::_toggleAi )
 
   setFlag( showCityInfo, true );
 }
@@ -595,8 +579,6 @@ void EmpireMapWindow::beforeDraw(Engine& painter)
 {
   _d->lines.clear();
   Widget::beforeDraw( painter );
-
-  //"##click_on_city_for_info_tlp##";
 }
 
 void EmpireMapWindow::setFlag(EmpireMapWindow::Flag flag, bool value)
@@ -741,7 +723,6 @@ void EmpireMapWindow::_changePosition()
 
 const Point& EmpireMapWindow::_offset() const { return _d->offset; }
 Widget* EmpireMapWindow::_resetInfoPanel() { _d->resetInfoPanel(); return _d->gbox; }
-void EmpireMapWindow::_showHelp() { DictionaryWindow::show( this, "empiremap" ); }
 
 void EmpireMapWindow::_toggleAi()
 {
@@ -759,8 +740,7 @@ void EmpireMapWindow::_toggleAi()
 
 EmpireMapWindow* EmpireMapWindow::create(PlayerCityPtr city, Widget* parent, int id )
 {
-  EmpireMapWindow* ret = new EmpireMapWindow( parent, id, city );
-  return ret;
+  return &parent->add<EmpireMapWindow>( id, city );
 }
 
 EmpireMapWindow::~EmpireMapWindow()

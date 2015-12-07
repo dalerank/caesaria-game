@@ -16,7 +16,9 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "loader_sav.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/imgid.hpp"
+#include "gfx/tilemap_config.hpp"
+#include "gfx/tile_config.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"
 #include "objects/objects_factory.hpp"
@@ -186,12 +188,13 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
   uint32_t tmp;
 
   // need to rewrite better
-  std::vector<short int> graphicGrid; graphicGrid.resize( gfx::tilemap::c3mapSizeSq, 0 );
-  std::vector<unsigned char> edgeGrid; edgeGrid.resize( gfx::tilemap::c3mapSizeSq, 0 );
-  std::vector<short int> terrainGrid; terrainGrid.resize( gfx::tilemap::c3mapSizeSq, 0 );
-  std::vector<unsigned char> rndmTerGrid; rndmTerGrid.resize(gfx::tilemap::c3mapSizeSq, 0);
-  std::vector<unsigned char> randomGrid; randomGrid.resize( gfx::tilemap::c3mapSizeSq, 0 );
-  std::vector<unsigned char> zeroGrid; zeroGrid.resize( gfx::tilemap::c3mapSizeSq, 0 );
+  const int mapArea = config::tilemap.maxArea;
+  std::vector<short int> graphicGrid; graphicGrid.resize( mapArea, 0 );
+  std::vector<unsigned char> edgeGrid; edgeGrid.resize( mapArea, 0 );
+  std::vector<short int> terrainGrid; terrainGrid.resize( mapArea, 0 );
+  std::vector<unsigned char> rndmTerGrid; rndmTerGrid.resize( mapArea, 0);
+  std::vector<unsigned char> randomGrid; randomGrid.resize( mapArea, 0 );
+  std::vector<unsigned char> zeroGrid; zeroGrid.resize( mapArea, 0 );
     
   if( !f.is_open() )
   {
@@ -209,9 +212,9 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
   try
   {
     f.read((char*)&tmp, 4); // read length of compressed chunk
-    Logger::warning( "GameLoaderC3Sav: length of compressed ids is {0}", tmp );
+    Logger::warning( "GameLoaderC3Sav: length of compressed ids is {}", tmp );
     PKWareInputStream *pk = new PKWareInputStream(&f, false, tmp);
-    for (int i = 0; i < gfx::tilemap::c3mapSizeSq; i++)
+    for (int i = 0; i < mapArea; i++)
     {
       graphicGrid[i] = pk->readShort();
     }
@@ -219,9 +222,9 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
     delete pk;
     
     f.read((char*)&tmp, 4); // read length of compressed chunk
-    Logger::warning( "GameLoaderC3Sav: length of compressed egdes is {0}", tmp );
+    Logger::warning( "GameLoaderC3Sav: length of compressed egdes is {}", tmp );
     pk = new PKWareInputStream(&f, false, tmp);
-    for (int i = 0; i < gfx::tilemap::c3mapSizeSq; i++)
+    for (int i = 0; i < mapArea; i++)
     {
       edgeGrid[i] = pk->readByte();
     }
@@ -231,9 +234,9 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
     SkipCompressed(f); // skip building ids
     
     f.read((char*)&tmp, 4); // read length of compressed chunk
-    Logger::warning( "GameLoaderC3Sav: length of compressed terraindata is {0}", tmp );
+    Logger::warning( "GameLoaderC3Sav: length of compressed terraindata is {}", tmp );
     pk = new PKWareInputStream(&f, false, tmp);
-    for (int i = 0; i < gfx::tilemap::c3mapSizeSq; i++)
+    for (int i = 0; i < mapArea; i++)
     {
       terrainGrid[i] = pk->readShort();
     }
@@ -245,7 +248,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
     SkipCompressed(f);
     SkipCompressed(f);
     
-    f.read((char*)&randomGrid[0], gfx::tilemap::c3mapSizeSq);
+    f.read((char*)&randomGrid[0], mapArea);
     
     SkipCompressed(f);
     SkipCompressed(f);
@@ -255,7 +258,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
     
     // here goes walkers array
     f.read((char*)&tmp, 4); // read length of compressed chunk
-    Logger::warning( "GameLoaderC3Sav: length of compressed walkers data is {0}", tmp );
+    Logger::warning( "GameLoaderC3Sav: length of compressed walkers data is {}", tmp );
     pk = new PKWareInputStream(&f, false, tmp);    
     for (int j = 0; j < 1000; j++)
     {
@@ -308,7 +311,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
     // here goes the WORK!
 
     // loads the graphics map
-    int border_size = (gfx::tilemap::c3mapSize - size) / 2;
+    int border_size = (config::tilemap.maxSide - size) / 2;
 
     std::map< int, std::map< int, unsigned char > > edgeData;
 
@@ -324,7 +327,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
         int i = itB;
         int j = size - itA - 1;
 
-        int index = gfx::tilemap::c3mapSize * (border_size + itA) + border_size + itB;
+        int index = config::tilemap.maxSide * (border_size + itA) + border_size + itB;
 
         Tile& currentTile = oTilemap.at(i, j);
 
@@ -341,7 +344,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
           object::Type ovType = LoaderHelper::convImgId2ovrType( imgId );
           if( ovType == object::unknown )
           {
-            Logger::warning( "!!! GameLoaderC3Sav: Unknown building %x at [{0},{0}]", imgId, i, j );
+            Logger::warning( "!!! GameLoaderC3Sav: Unknown building %x at [{},{}]", imgId, i, j );
           }
           else
           {
@@ -360,7 +363,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
           }
 
           baseBuildings[ currentTile.pos() ] = imgId;
-          pic.load( ResourceGroup::land1a, 230 + math::random( 57 ) );
+          pic.load( config::rc.land1a, 230 + math::random( 57 ) );
           currentTile.setPicture( pic );
           currentTile.setImgId( imgid::fromResource( pic.name() ) );
         }
@@ -385,7 +388,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
             try
             {
               // find size, 5 is maximal size for building
-              for (dj = 0; dj < tilemap::c3bldSize; ++dj)
+              for (dj = 0; dj < config::tilemap.maxBuildingSide; ++dj)
               {
                 int edd = edgeData[ i ][ j - dj ];
                 // find bottom left corner
@@ -429,8 +432,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
           LoaderHelper::decodeTerrain( *masterTile, oCity, bbImgId );
         }
       }
-    }
-    
+    }    
   }
   catch(PKException)
   {

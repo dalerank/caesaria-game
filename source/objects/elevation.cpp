@@ -17,7 +17,7 @@
 
 #include "elevation.hpp"
 #include "constants.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/imgid.hpp"
 #include "game/resourcegroup.hpp"
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
@@ -40,7 +40,7 @@ public:
 Elevation::Elevation()
   : Overlay( object::elevation, Size( 2 ) ), _d( new Impl )
 {
-  setDebugName( CAESARIA_STR_EXT(Elevation) );
+  setDebugName( TEXT(Elevation) );
 }
 
 Elevation::~Elevation(){}

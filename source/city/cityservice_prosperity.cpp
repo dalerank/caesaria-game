@@ -204,7 +204,7 @@ int ProsperityRating::getMark(ProsperityRating::Mark type) const
   return 0;
 }
 
-std::string ProsperityRating::defaultName() { return CAESARIA_STR_EXT(ProsperityRating); }
+std::string ProsperityRating::defaultName() { return TEXT(ProsperityRating); }
 
 VariantMap ProsperityRating::save() const
 {

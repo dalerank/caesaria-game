@@ -18,7 +18,7 @@
 #include "city/city.hpp"
 #include "objects/overlay.hpp"
 #include "game/resourcegroup.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "gfx/tilemap.hpp"
 #include "core/foreach.hpp"
 
@@ -42,7 +42,7 @@ void ThrowingWeapon::toThrow(TilePos src, TilePos dst)
 {
   _d->from = src;
   _d->dst = dst;
-  int yMultiplier = tilemap::cellSize().height();
+  int yMultiplier = config::tilemap.cell.size().height();
   Point xOffset( yMultiplier, yMultiplier );
   _d->dstPos = Point( dst.i(), dst.j() ) * yMultiplier + xOffset;
   _d->srcPos = Point( src.i(), src.j() ) * yMultiplier + xOffset;
@@ -87,9 +87,9 @@ void ThrowingWeapon::timeStep(const unsigned long time)
     PointF saveCurrent = _d->currentPos;
     _d->currentPos += _d->deltaMove;
     _d->height += _d->deltaHeight;
-    const int wcell = tilemap::cellSize().height();
+    const int wcell = config::tilemap.cell.size().height();
 
-    Point tp = (_d->currentPos.toPoint() - tilemap::cellCenter()) / wcell;
+    Point tp = (_d->currentPos.toPoint() - config::tilemap.cell.center()) / wcell;
     TilePos ij( tp.x(), tp.y() );
     setPos( ij );
     _setWpos( _d->currentPos.toPoint() );
@@ -110,7 +110,7 @@ void ThrowingWeapon::timeStep(const unsigned long time)
 
 void ThrowingWeapon::turn(TilePos p)
 {
-  int yMultiplier = tilemap::cellSize().height();
+  int yMultiplier = config::tilemap.cell.size().height();
   PointF xOffset( yMultiplier, yMultiplier );
   PointF prPos = PointF( p.i(), p.j() ) * yMultiplier + xOffset;
   float t = (_d->currentPos - prPos).getAngle();
@@ -145,6 +145,12 @@ void ThrowingWeapon::turn(TilePos p)
 }
 
 const Picture& ThrowingWeapon::getMainPicture() {  return _d->pic; }
+
+void ThrowingWeapon::initialize(const VariantMap& options)
+{
+  Walker::initialize( options );
+  setName( _("##unknow_throwing_weapon##") );
+}
 TilePos ThrowingWeapon::dstPos() const {  return _d->dst; }
 TilePos ThrowingWeapon::startPos() const{  return _d->from; }
 ThrowingWeapon::~ThrowingWeapon() {}
@@ -162,7 +168,5 @@ void ThrowingWeapon::setPicOffset(Point offset)
 
 ThrowingWeapon::ThrowingWeapon(PlayerCityPtr city) : Walker( city ), _d( new Impl )
 {
-  setName( _("##unknow_throwing_weapon##") );
-
   setFlag( vividly, false );
 }

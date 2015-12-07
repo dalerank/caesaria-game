@@ -35,7 +35,10 @@ public:
 
   bool append(OverlayPtr overlay);
   void checkRoads(const gfx::Tile* tile, bool& ret);
+  void allTiles(const gfx::Tile* tile, bool& ret);
+
   TilePossibleCondition byRoads();
+  TilePossibleCondition bySomething();
 };
 
 class PathwayHelper
@@ -56,11 +59,12 @@ public:
                         WayType type);
 
   static Pathway create(TilePos statrPos, TilePos stopPos,
-                        const TilePossibleCondition& condition );
+                        const TilePossibleCondition& condition,
+                        int flags=0);
 
   static DirectRoute shortWay( PlayerCityPtr city, const TilePos& startPos, object::Type buildingType, WayType type );
   static DirectRoute shortWay( const TilePos& startPos, ConstructionList buildings, WayType type);
-  static DirectRoute shortWay( PlayerCityPtr city, const TilePosArray& area, object::Type buildingType, WayType type );
+  static DirectRoute shortWay( PlayerCityPtr city, const Locations& area, object::Type buildingType, WayType type );
 
   static Pathway randomWay( PlayerCityPtr city, const TilePos& startPos, int walkRadius );
   static Pathway way2border( PlayerCityPtr city, const TilePos& startPos );

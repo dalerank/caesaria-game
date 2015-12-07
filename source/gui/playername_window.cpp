@@ -54,11 +54,10 @@ ChangePlayerName::ChangePlayerName(Widget* parent)
 
   GET_DWIDGET_FROM_UI( _d, edPlayerName )
   GET_DWIDGET_FROM_UI( _d, lbExitHelp)
-  INIT_WIDGET_FROM_UI( PushButton*, btnContinue )
 
   CONNECT( _d->edPlayerName, onTextChanged(), &_d->signal.onNameChange, Signal1<std::string>::_emit );
   CONNECT( _d->edPlayerName, onEnterPressed(), &_d->signal.onNewGame, Signal0<>::_emit );
-  CONNECT( btnContinue, onClicked(), &_d->signal.onNewGame, Signal0<>::_emit );
+  LINK_WIDGET_ACTION( PushButton*, btnContinue, onClicked(), &_d->signal.onNewGame, Signal0<>::_emit );
 
   if( _d->edPlayerName )
   {
@@ -68,12 +67,6 @@ ChangePlayerName::ChangePlayerName(Widget* parent)
   _d->mayExit = true;
 
   setModal();
-  /*btnContinue->setAlignment( align::scale, align::scale, align::scale, align::scale );
-  _d->edPlayerName->setAlignment( align::scale, align::scale, align::scale, align::scale );
-  _d->lbExitHelp->setAlignment( align::scale, align::scale, align::scale, align::scale );
-  setWidth( width() * 2 );
-  setHeight( height() * 2 );
-  setCenter( parent->center() );*/
 }
 
 bool ChangePlayerName::onEvent(const NEvent& event)

@@ -35,7 +35,7 @@ using namespace gfx;
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::granery, Granary)
 
 namespace {
-CAESARIA_LITERALCONST(goodStore)
+GAME_LITERALCONST(goodStore)
 static const Renderer::Pass rpass[2] = { Renderer::overlayAnimation, Renderer::overWalker };
 static const Renderer::PassQueue granaryPass = Renderer::PassQueue( rpass, rpass + 1 );
 }
@@ -95,7 +95,7 @@ public:
     setCapacity( type, (order == good::Orders::reject || order == good::Orders::none) ? 0 : GranaryStore::maxCapacity );
   }
 
-  virtual TilePos owner() const { return granary ? granary->pos() : gfx::tilemap::invalidLocation(); }
+  virtual TilePos owner() const { return granary ? granary->pos() : TilePos::invalid(); }
 
   Granary* granary;
 };
@@ -184,7 +184,7 @@ void Granary::save( VariantMap& stream) const
 {
    WorkingBuilding::save( stream );
 
-   stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(B_GRANARY) ) );
+   stream[ "__debug_typeName" ] = Variant( std::string( TEXT(B_GRANARY) ) );
    stream[ literals::goodStore ] = _d->store.save();
 }
 

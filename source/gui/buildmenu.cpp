@@ -74,10 +74,10 @@ public:
     addProperty( "sound", name );
   }
 
-  void _updateTextPic()
+  void _updateTexture()
   {
     ElementState state = _state();
-    PushButton::_updateTextPic();
+    PushButton::_updateTexture();
 
     Font f = font( state );
 
@@ -173,7 +173,7 @@ void BuildMenu::addSubmenuButton(const city::development::Branch menuType, const
   button.setCost(-1);  // no display cost
   button.setSound( "bmsel_" + development::toString( menuType ) );
 
-  CONNECT( &button, onClickedEx(), this, BuildMenu::_resolveButtonClick );
+  CONNECT_LOCAL( &button, onClickedEx(), BuildMenu::_resolveButtonClick );
 
   setHeight( height() + 30 );
 }
@@ -202,7 +202,7 @@ void BuildMenu::addBuildButton(const object::Type buildingType )
 
     setHeight( height() + 30 );
 
-    CONNECT( &button, onClickedEx(), this, BuildMenu::_resolveButtonClick );
+    CONNECT_LOCAL( &button, onClickedEx(), BuildMenu::_resolveButtonClick );
   }
 }
 

@@ -21,7 +21,7 @@
 #include "city/city.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/imgid.hpp"
 #include "core/foreach.hpp"
 #include "coast.hpp"
 #include "objects_factory.hpp"
@@ -53,7 +53,7 @@ bool Terrain::build( const city::AreaInfo& info )
   {
     bool isWater = tile->getFlag( Tile::tlWater );
     isWater |= tile->getFlag( Tile::tlDeepWater );
-    bool isCoast = tile->getFlag( Tile::tlCoast );
+    //bool isCoast = tile->getFlag( Tile::tlCoast );
     if( isWater /* && !isCoast */ )
     {
       tile->setPicture( Picture::getInvalid() );
@@ -87,7 +87,7 @@ Picture Terrain::randomPicture()
   int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
   int imgId = math::random( 58-1 );
 
-  return Picture( ResourceGroup::land1a, startOffset + imgId );
+  return Picture( config::rc.land1a, startOffset + imgId );
 }
 
 void Terrain::updatePicture()

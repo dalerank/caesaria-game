@@ -40,7 +40,6 @@
 #include "merchant_camel.hpp"
 #include "events/fundissue.hpp"
 #include "game/gamedate.hpp"
-#include "gfx/helper.hpp"
 #include "walkers_factory.hpp"
 
 using namespace gfx;
@@ -193,7 +192,7 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
   {
   case stFindWarehouseForSelling:
     {
-      destination = gfx::tilemap::invalidLocation();  // no destination yet
+      destination = TilePos::invalid();  // no destination yet
 
       // get the list of buildings within reach
       Propagator pathPropagator( city );
@@ -236,7 +235,7 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
 
   case stFindWarehouseForBuying:
     {
-      destination = gfx::tilemap::invalidLocation();  // no destination yet
+      destination = TilePos::invalid();  // no destination yet
 
       // get the list of buildings within reach
       Propagator pathPropagator( city );

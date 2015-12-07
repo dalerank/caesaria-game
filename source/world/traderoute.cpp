@@ -22,6 +22,7 @@
 #include "city.hpp"
 #include "good/storage.hpp"
 #include "core/utils.hpp"
+#include "game/gamedate.hpp"
 #include "core/foreach.hpp"
 #include "core/logger.hpp"
 #include "game/resourcegroup.hpp"
@@ -119,7 +120,8 @@ CityPtr Traderoute::partner(const std::string& name) const
 
 void Traderoute::timeStep( unsigned int time )
 {
-  _d->merchants.update( time );
+  if( game::Date::isDayChanged() )
+    _d->merchants.update( time );
 }
 
 PointsArray Traderoute::points( bool reverse ) const

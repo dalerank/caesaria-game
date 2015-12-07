@@ -17,7 +17,8 @@
 
 #include "waymark.hpp"
 #include "game/resourcegroup.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/imgid.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "city/city.hpp"
 #include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
@@ -38,11 +39,7 @@ void Waymark::timeStep( const unsigned long time )
 
 bool Waymark::isFlat() const { return _isFlat; }
 bool Waymark::isDestructible() const{  return false; }
-
-void Waymark::initTerrain(Tile& terrain)
-{
-
-}
+void Waymark::initTerrain(Tile&) {}
 
 bool Waymark::build( const city::AreaInfo& info )
 {  
@@ -79,8 +76,8 @@ bool Waymark::build( const city::AreaInfo& info )
     deleteLater();
   }
 
-  _picture().load( ResourceGroup::land3a, picIndex );
-  _isFlat = picture().height() <= tilemap::cellPicSize().height();
+  _picture().load( config::rc.land3a, picIndex );
+  _isFlat = picture().height() <= config::tilemap.cell.picSize().height();
 
   return Overlay::build( info );
 }

@@ -25,8 +25,7 @@ class River : public Overlay
 public:
   River();
 
-  virtual gfx::Picture computePicture();
-  void updatePicture();
+  void updatePicture(const city::AreaInfo& info);
   RiverList neighbors() const;
 
   virtual bool build( const city::AreaInfo& info );
@@ -38,9 +37,7 @@ public:
 
   virtual void load(const VariantMap &stream);
   virtual gfx::Renderer::PassQueue passQueue() const;
-
-private:
-  int directionFlags;
+  virtual const gfx::Picture& picture(const city::AreaInfo& info) const;
 };
 
 #endif //__CAESARIA_RIVER_H_INCLUDE__

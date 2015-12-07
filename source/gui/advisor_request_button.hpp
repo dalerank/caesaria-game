@@ -34,7 +34,7 @@ public:
   virtual void draw(gfx::Engine& painter);
 
 protected:
-  virtual void _updateTextPic();
+  virtual void _updateTexture();
 
 public signals:
   Signal1<city::RequestPtr>& onExecRequest();

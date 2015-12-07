@@ -18,8 +18,8 @@
 #include "textured_path.hpp"
 #include "pathway/pathway.hpp"
 #include "walker/walker.hpp"
-#include "gfx/helper.hpp"
 #include "city/city.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "gfx/decorator.hpp"
 #include "gfx/tilesarray.hpp"
 #include "gfx/camera.hpp"
@@ -74,10 +74,10 @@ void TexturedPath::draw(const TilesArray& tiles, const RenderInfo& rinfo, NColor
   Point offset;
 
   const Picture& pic = config.getpic( ColorList::red, 1 );
-  if( pic.width()+2 < gfx::tilemap::cellPicSize().width() )
+  if( pic.width()+2 < config::tilemap.cell.picSize().width() )
   {
-    offset = Point( (gfx::tilemap::cellPicSize().width() - pic.width()) / 2,
-                    gfx::tilemap::cellPicSize().height() / 2 - pic.height() * 1.5 );
+    offset = Point( (config::tilemap.cell.picSize().width() - pic.width()) / 2,
+                    config::tilemap.cell.picSize().height() / 2 - pic.height() * 1.5 );
   }
 
   if( tiles.size() > 1 )
@@ -91,8 +91,7 @@ void TexturedPath::draw(const TilesArray& tiles, const RenderInfo& rinfo, NColor
         prevIndex = step - 1;
         nextIndex = step + 1;
       }
-      Direction dir = tilemap::getDirection( tiles[ prevIndex ]->epos(),
-                                             tiles[ nextIndex ]->epos() );
+      Direction dir = tiles[ prevIndex ]->epos().directionTo( tiles[ nextIndex ]->epos() );
 
       int index = 0;
       switch( dir )
@@ -139,8 +138,7 @@ void TexturedPath::draw(const TilesArray& tiles, const RenderInfo& rinfo, NColor
 
     int lenght = tiles.size();
     int index = 0;
-    Direction dir = tilemap::getDirection( tiles[ lenght-2 ]->epos(),
-                                           tiles[ lenght-1 ]->epos() );
+    Direction dir = tiles[ lenght-2 ]->epos().directionTo( tiles[ lenght-1 ]->epos() );
     switch( dir )
     {
     case direction::north: index = 7;  break;

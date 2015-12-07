@@ -9,7 +9,7 @@
     textAlign : [ "center", "center" ]
   }
 
-  btnExit#TexturedButton : {
+  btnExit#ExitButton : {
     geometry : [ "pw-36", "ph-36", "pw-10", "ph-10" ]
     normal : [ "paneling", 532 ]
     hovered : [ "paneling", 533 ]

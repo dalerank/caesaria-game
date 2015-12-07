@@ -31,7 +31,6 @@
 #include "core/foreach.hpp"
 #include "game/gamedate.hpp"
 #include "animals.hpp"
-#include "gfx/helper.hpp"
 #include "walkers_factory.hpp"
 
 using namespace gfx;
@@ -60,7 +59,7 @@ public:
 RomeSoldier::RomeSoldier( PlayerCityPtr city, walker::Type type )
     : Soldier( city, type ), _d( new Impl )
 {
-  _d->patrolPosition = gfx::tilemap::invalidLocation();
+  _d->patrolPosition = TilePos::invalid();
   _setSubAction( doNothing );
   _d->stuckTime = 0;
   _d->lastStuckInterval = 0;
@@ -162,7 +161,7 @@ void RomeSoldier::save(VariantMap& stream) const
   VARIANT_SAVE_ANY_D( stream, _d, strikeForce );
   VARIANT_SAVE_ANY_D( stream, _d, resistance );
   VARIANT_SAVE_ANY_D( stream, _d, patrolPosition );
-  stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(RomeSoldier) ) );
+  stream[ "__debug_typeName" ] = Variant( std::string( TEXT(RomeSoldier) ) );
 }
 
 Walker::Gender RomeSoldier::gender() const { return male; }
@@ -426,7 +425,7 @@ void RomeSoldier::_brokePathway(TilePos p)
 {
   Soldier::_brokePathway( p );
 
-  if( gfx::tilemap::isValidLocation( _d->patrolPosition ) )
+  if( config::tilemap.isValidLocation( _d->patrolPosition ) )
   {
     Pathway way = PathwayHelper::create( pos(), _d->patrolPosition,
                                          PathwayHelper::allTerrain );

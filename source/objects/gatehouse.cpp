@@ -52,7 +52,7 @@ public:
 
 Gatehouse::Gatehouse() : Building( object::gatehouse, Size( 2 ) ), _d( new Impl )
 {
-  _picture().load( ResourceGroup::land2a, 150 );
+  _picture().load( config::rc.land2a, 150 );
   _d->gatehouseSprite.resize( 1 );
   _d->walkable = true;
   _d->mode = autoToggle;
@@ -95,7 +95,7 @@ bool Gatehouse::_update( const city::AreaInfo& areaInfo )
     index = 151;
   }
 
-  _picture().load( ResourceGroup::land2a, index );
+  _picture().load( config::rc.land2a, index );
 
   bool mayConstruct = ((rmap[ direction::none ] || freemap[ direction::none ]) &&
                        (rmap[ north ] || freemap[ north ]) &&

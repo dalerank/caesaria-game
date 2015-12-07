@@ -17,7 +17,7 @@
 
 #include "tree.hpp"
 #include "game/resourcegroup.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/imgid.hpp"
 #include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
 #include "objects/construction.hpp"
@@ -107,7 +107,7 @@ bool Tree::build( const city::AreaInfo& info )
     if( !picture().isValid() )
       setPicture( md.randomPicture(1) );
   }
-  _d->flat = (picture().height() <= tilemap::cellPicSize().height());
+  _d->flat = (picture().height() <= config::tilemap.cell.picSize().height());
   return Overlay::build( info );
 }
 

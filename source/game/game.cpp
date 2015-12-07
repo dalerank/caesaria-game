@@ -61,7 +61,7 @@
 #include "gfx/picture_info_bank.hpp"
 #include "gfx/sdl_engine.hpp"
 #include "objects/overlay.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "gamestate.hpp"
 #include "infoboxmanager.hpp"
 #include "hotkey_manager.hpp"
@@ -272,8 +272,7 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
   if( !c3res.empty() )
   {    
     vfs::Directory gfxDir( c3res );
-    vfs::Path c3sg2( "c3.sg2" );
-    vfs::Path c3path = gfxDir/c3sg2;
+    vfs::Path c3path = gfxDir/"c3.sg2";
 
     if( !c3path.exist( vfs::Path::ignoreCase ) )
     {
@@ -372,11 +371,12 @@ void Game::Impl::initVfsSettings(bool& isOk, std::string& result)
 void Game::Impl::initTilemapSettings(bool& isOk, std::string& result)
 {
   int cellWidth = SETTINGS_VALUE( cellw );
-  if( cellWidth != tilemap::c3CellWidth && cellWidth != tilemap::caCellWidth)
+  if( cellWidth != config::tilemap.cell.width.oldw
+      && cellWidth != config::tilemap.cell.width.neww )
   {
-    cellWidth = tilemap::c3CellWidth;
+    cellWidth = config::tilemap.cell.width.oldw;
   }
-  tilemap::initTileBase( cellWidth );
+  config::tilemap.cell.setWidth( cellWidth );
 }
 
 void Game::Impl::initFontCollection( bool& isOk, std::string& result )
@@ -460,7 +460,7 @@ void Game::save(std::string filename) const
 
   SETTINGS_SET_VALUE( lastGame, Variant( filename ) );
 
-  events::dispatch<WarningMessage>( "Game saved to " + vfs::Path( filename ).baseName().toString(), WarningMessage::neitral );
+  events::dispatch<WarningMessage>( "Game saved to " + vfs::Path( filename ).baseName().removeExtension(), WarningMessage::neitral );
 }
 
 bool Game::load(std::string filename)
@@ -615,7 +615,7 @@ void Game::initialize()
   }
 
   d.nextScreen = SCREEN_MENU;
-  d.engine->setFlag( gfx::Engine::debugInfo, 1 );
+  d.engine->setFlag( gfx::Engine::showMetrics, 1 );
 }
 
 bool Game::exec()

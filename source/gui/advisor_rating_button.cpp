@@ -48,9 +48,9 @@ RatingButton::RatingButton(Widget *parent)
   _target = 0;
 }
 
-void RatingButton::_updateTextPic()
+void RatingButton::_updateTexture()
 {
-  PushButton::_updateTextPic();
+  PushButton::_updateTexture();
 
   Font digitFont = Font::create( FONT_4 );
   Font targetFont = Font::create( FONT_1 );

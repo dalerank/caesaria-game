@@ -26,14 +26,10 @@ namespace citylayer
 class Sentiment : public Info
 {
 public:
+  Sentiment( gfx::Camera& camera, PlayerCityPtr city );
   virtual int type() const;
   virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
   virtual void handleEvent(NEvent& event);
-
-  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
-
-private:
-  Sentiment( gfx::Camera& camera, PlayerCityPtr city );
 };
 
 }//end namespace city

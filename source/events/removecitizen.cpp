@@ -28,7 +28,7 @@ namespace events
 {
 const int defaultReturnWorkersDistance = 40;
 
-GameEventPtr RemoveCitizens::create(TilePos center, const CitizenGroup& group)
+GameEventPtr RemoveCitizens::create(const TilePos& center, const CitizenGroup& group)
 {
   RemoveCitizens* e = new RemoveCitizens();
   e->_center  = center;

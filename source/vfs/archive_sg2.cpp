@@ -54,7 +54,7 @@ enum {
 
 
 namespace {
-static const std::string readerTypename=CAESARIA_STR_EXT(Sg2ArchiveReader);
+static const std::string readerTypename=TEXT(Sg2ArchiveReader);
 static const char* arch555ext = "555";
 }
 

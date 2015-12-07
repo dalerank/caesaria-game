@@ -42,7 +42,6 @@ public:
   EditBox* edCaesar3Path;
   EditBox* edScreenshots;
   bool needRestart;
-  TexturedButton* btnApply;
 
   Impl() : edResourcesPath(0), edCaesar3Music(0), edCaesar3Video(0),
            edCaesar3Path(0), needRestart(false) {}
@@ -52,27 +51,26 @@ PackageOptions::PackageOptions( Widget* parent, const Rect& rectangle )
   : Window( parent, rectangle, "" ), _d( new Impl )
 {
   setupUI( ":/gui/packageopts.gui" );
-  setCenter( parent->center() );
 
   GET_DWIDGET_FROM_UI(_d,edResourcesPath)
-  GET_DWIDGET_FROM_UI(_d,btnApply)
+  INIT_WIDGET_FROM_UI(TexturedButton*,btnApply)
   GET_DWIDGET_FROM_UI(_d,edCaesar3Path)
   GET_DWIDGET_FROM_UI(_d,edCaesar3Video)
   GET_DWIDGET_FROM_UI(_d,edCaesar3Music)
   GET_DWIDGET_FROM_UI(_d,edScreenshots)
 
-  WidgetEscapeCloser::insertTo( this );
-
   _update();
 
-  CONNECT( _d->btnApply,        onClicked(),     this, PackageOptions::_close )
-  CONNECT( _d->edResourcesPath, onTextChanged(), this, PackageOptions::_setResourcesPath )
-  CONNECT( _d->edCaesar3Path,   onTextChanged(), this, PackageOptions::_setCaesar3Path )
-  CONNECT( _d->edCaesar3Video,  onTextChanged(), this, PackageOptions::_setCaesar3Video )
-  CONNECT( _d->edCaesar3Music,  onTextChanged(), this, PackageOptions::_setCaesar3Music )
-  CONNECT( _d->edScreenshots,   onTextChanged(), this, PackageOptions::_setScreenshotsDir )
+  CONNECT_LOCAL( btnApply,            onClicked(),     PackageOptions::_close )
+  CONNECT_LOCAL( _d->edResourcesPath, onTextChanged(), PackageOptions::_setResourcesPath )
+  CONNECT_LOCAL( _d->edCaesar3Path,   onTextChanged(), PackageOptions::_setCaesar3Path )
+  CONNECT_LOCAL( _d->edCaesar3Video,  onTextChanged(), PackageOptions::_setCaesar3Video )
+  CONNECT_LOCAL( _d->edCaesar3Music,  onTextChanged(), PackageOptions::_setCaesar3Music )
+  CONNECT_LOCAL( _d->edScreenshots,   onTextChanged(), PackageOptions::_setScreenshotsDir )
 
-  if( _d->btnApply ) _d->btnApply->setFocus();
+  WidgetEscapeCloser::insertTo( this );
+  moveTo( Widget::parentCenter );
+  setModal();
 }
 
 PackageOptions::~PackageOptions() {}

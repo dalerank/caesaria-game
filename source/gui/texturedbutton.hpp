@@ -26,14 +26,51 @@ namespace gui
 class TexturedButton : public PushButton
 {
 public:
-  TexturedButton( Widget* parent, const Point& pos, const Size& size, int id,
-                  int normalTxIndex, int hovTxIndex=-1, int prsTxIndex=-1, int dsbTxIndex=-1 );
+  static const int defaultSize = 24;
+  struct States
+  {
+    int normal;
+    int hover;
+    int pressed;
+    int disabled;
+    States( int n, int h=-1, int p=-1, int d=-1 )
+     : normal( n ), hover( h ), pressed( p ), disabled( d )
+    {}
+  };
+
+  TexturedButton( Widget* parent, const Point& pos, const States& states );
 
   TexturedButton( Widget* parent, const Point& pos, const Size& size, int id,
-                  const char* resourceGroup,
-                  int normalTxIndex, int hovTxIndex=-1, int prsTxIndex=-1, int dsbTxIndex=-1 );
+                  const States& states );
+
+  TexturedButton( Widget* parent, const Point& pos, const Size& size, int id,
+                  const std::string& resourceGroup,
+                  const States& states );
 
   TexturedButton( Widget* parent );
+};
+
+class HelpButton : public TexturedButton
+{
+public:
+  HelpButton(Widget* parent);
+  HelpButton(Widget* parent, const Point& pos, const std::string& helpId, int id=Widget::noId );
+
+  virtual void setupUI( const VariantMap& ui );
+
+protected:
+  virtual void _btnClicked();
+  std::string _helpid;
+};
+
+class ExitButton : public TexturedButton
+{
+public:
+  ExitButton(Widget* parent);
+  ExitButton(Widget* parent, const Point& pos, int id=Widget::noId);
+
+protected:
+  virtual void _btnClicked();
 };
 
 }//end namespace gui

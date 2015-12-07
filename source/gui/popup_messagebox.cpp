@@ -48,8 +48,6 @@ Popup::Popup( Widget* parent, const std::string& title,
   setCenter( parent->center() );
   
   INIT_WIDGET_FROM_UI(Label*, lbTitle )
-  INIT_WIDGET_FROM_UI(PushButton*, btnExit )
-  //GET_DWIDGET_FROM_UI( _d, btnHelp )
   INIT_WIDGET_FROM_UI(Label*, lbTime )
   INIT_WIDGET_FROM_UI(Label*, lbReceiver )
   INIT_WIDGET_FROM_UI(Label*, lbText  )
@@ -58,7 +56,7 @@ Popup::Popup( Widget* parent, const std::string& title,
   if( lbTime ) lbTime->setText( utils::date2str( time, true ) );
   if( lbReceiver ) lbReceiver->setText( receiver );
 
-  CONNECT( btnExit, onClicked(), this, Popup::deleteLater );
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnExit, onClicked(), Popup::deleteLater );
 }
 
 void Popup::draw(gfx::Engine& painter )

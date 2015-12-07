@@ -48,10 +48,12 @@ CityDonation::CityDonation( Widget* p, int money )
   d.money.available = money;
 
   setupUI( ":/gui/money2city.gui" );
-  moveTo( Widget::parentCenter );
   setAvailableMoney( money );
   _linkButtons2Actions();
   _updateDonationText();
+
+  moveTo( Widget::parentCenter );
+  setModal();
 }
 
 CityDonation::~CityDonation() {}

@@ -22,6 +22,7 @@
 #include "core/logger.hpp"
 #include "dictionary.hpp"
 #include "label.hpp"
+#include "environment.hpp"
 #include "game/infoboxmanager.hpp"
 
 using namespace gfx;
@@ -66,14 +67,8 @@ AboutGatehouse::AboutGatehouse(Widget* parent, PlayerCityPtr city, const Tile& t
   _updateModeText();
 }
 
-AboutGatehouse::~AboutGatehouse()
-{
-}
-
-void AboutGatehouse::_showHelp()
-{
-  DictionaryWindow::show( this, "gatehouse" );
-}
+AboutGatehouse::~AboutGatehouse() {}
+void AboutGatehouse::_showHelp() { ui()->add<DictionaryWindow>( "gatehouse" ); }
 
 void AboutGatehouse::_resolveToggleWorking()
 {

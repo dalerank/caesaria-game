@@ -28,9 +28,9 @@
 namespace events
 {
 
-CAESARIA_LITERALCONST(enabled)
-CAESARIA_LITERALCONST(empire)
-CAESARIA_LITERALCONST(adviser)
+GAME_LITERALCONST(enabled)
+GAME_LITERALCONST(empire)
+GAME_LITERALCONST(adviser)
 
 REGISTER_EVENT_IN_FACTORY(ChangeEmpireOptions, "empire_options")
 

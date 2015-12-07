@@ -37,10 +37,10 @@ using namespace gfx;
 namespace events
 {
 
-CAESARIA_LITERALCONST(items)
-CAESARIA_LITERALCONST(target)
-CAESARIA_LITERALCONST(count)
-CAESARIA_LITERALCONST(random)
+GAME_LITERALCONST(items)
+GAME_LITERALCONST(target)
+GAME_LITERALCONST(count)
+GAME_LITERALCONST(random)
 
 REGISTER_EVENT_IN_FACTORY(EnemyAttack, "enemy_attack" )
 
@@ -175,8 +175,7 @@ VariantMap EnemyAttack::save() const
 
 EnemyAttack::EnemyAttack() : __INIT_IMPL(EnemyAttack)
 {
-  __D_IMPL(_d,EnemyAttack)
-  _d->isDeleted = false;
+  _dfunc()->isDeleted = false;
 }
 
 }//end namespace events

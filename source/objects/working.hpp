@@ -32,7 +32,6 @@ public:
   unsigned int maximumWorkers() const;
   unsigned int numberWorkers() const;
   unsigned int needWorkers() const;
-  unsigned int productivity() const;
   unsigned int laborAccessPercent() const;
   virtual std::string sound() const;
 
@@ -40,6 +39,7 @@ public:
   unsigned int addWorkers( const unsigned int workers );
   unsigned int removeWorkers( const unsigned int workers );
 
+  virtual math::Percent productivity() const;
   virtual bool mayWork() const;
 
   virtual void setActive(const bool value);  // if false then this building is stopped
@@ -48,6 +48,7 @@ public:
   virtual void destroy();
   virtual void collapse();
   virtual void burn();
+  virtual walker::Type workerType();
 
   virtual void timeStep(const unsigned long time);
 
@@ -77,6 +78,7 @@ public signals:
 protected:
   void _setError(const std::string& err);
   void _fireWorkers();
+  void _setWorkersType( walker::Type type );
   void _setClearAnimationOnStop( bool value );
   void _disaster();
 

@@ -146,18 +146,15 @@ void TopMenu::Impl::showShortKeyInfo()
 {
   Widget& shortKeyInfo = lbDate->ui()->add<Label>( Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
   shortKeyInfo.setupUI( ":/gui/shortkeys.gui" );
+  shortKeyInfo.add<ExitButton>( Point( shortKeyInfo.width() - 34, shortKeyInfo.height() - 34 ) );
+
   shortKeyInfo.moveTo( Widget::parentCenter );
-
-  auto& btnExit = shortKeyInfo.add<TexturedButton>( Point( shortKeyInfo.width() - 34, shortKeyInfo.height() - 34 ),
-                                                    Size( 24 ), -1, config::id.menu.exitInf );
   WidgetEscapeCloser::insertTo( shortKeyInfo );
-
-  CONNECT( &btnExit, onClicked(), &shortKeyInfo, Label::deleteLater );
 }
 
 void TopMenu::Impl::resolveExtentInfo(Widget *sender)
 {
-  int tag = sender->getProperty( CAESARIA_STR_A(ExtentInfo) );
+  int tag = sender->getProperty( TEXT(ExtentInfo) );
   if( tag != extentinfo::none )
   {
     emit signal.onShowExtentInfo( tag );
@@ -167,7 +164,7 @@ void TopMenu::Impl::resolveExtentInfo(Widget *sender)
 void TopMenu::Impl::initBackground( const Size& size )
 {
   Pictures p_marble;
-  p_marble.load( ResourceGroup::panelBackground, 1, 12 );
+  p_marble.load( gui::rc.panel, 1, 12 );
 
   unsigned int i = 0;
   int x = 0;
@@ -191,10 +188,9 @@ void TopMenu::Impl::showAboutInfo()
 {
   Widget& window = lbDate->ui()->add<Label>( Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
   window.setupUI( ":/gui/about.gui" );
-  window.moveTo( Widget::parentCenter );
-  auto& btnExit = window.add<TexturedButton>( Point( window.width() - 34, window.height() - 34 ), Size( 24 ), -1, config::id.menu.exitInf );
+  window.add<ExitButton>( Point( window.width() - 34, window.height() - 34 ) );
 
-  CONNECT( &btnExit, onClicked(), &window, Label::deleteLater );
+  window.moveTo( Widget::parentCenter );
   WidgetEscapeCloser::insertTo( window );
 }
 
@@ -217,20 +213,20 @@ TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
   {
     _d->lbPopulation->setPosition( Point( width() - populationLabelOffset, 0 ) );
     _d->lbPopulation->setIcon( useIcon ? Picture( "population", 1 ) : Picture() );
-    _d->lbPopulation->addProperty( CAESARIA_STR_A(ExtentInfo), extentinfo::population );
+    _d->lbPopulation->addProperty( TEXT(ExtentInfo), extentinfo::population );
   }
 
   if( _d->lbFunds )
   {
     _d->lbFunds->setPosition(  Point( width() - fundLabelOffset, 0) );
     _d->lbFunds->setIcon( useIcon ? Picture( "paneling", 332 ) : Picture() );
-    _d->lbFunds->addProperty( CAESARIA_STR_A(ExtentInfo), extentinfo::economy);
+    _d->lbFunds->addProperty( TEXT(ExtentInfo), extentinfo::economy);
   }
 
   if( _d->lbDate )
   {
     _d->lbDate->setPosition( Point( width() - dateLabelOffset, 0) );
-    _d->lbDate->addProperty( CAESARIA_STR_A(ExtentInfo), extentinfo::celebrates );
+    _d->lbDate->addProperty( TEXT(ExtentInfo), extentinfo::celebrates );
     CONNECT( _d->lbDate, onClickedA(), _d.data(), Impl::resolveExtentInfo )
   }
 

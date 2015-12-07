@@ -55,17 +55,17 @@ SoundOptions::SoundOptions(Widget* parent)
   _d->initialized = false;
   setupUI( ":/gui/soundoptions.gui" );
 
-  moveTo( Widget::parentCenter );
-
-  WidgetEscapeCloser::insertTo( this );
-  GameAutoPause::insertTo( this );
-
   INIT_WIDGET_FROM_UI( PushButton*, btnOk )
-  if( btnOk ) btnOk->setFocus();
+  if( btnOk )
+    btnOk->setFocus();
 
   auto widgets = findChildren<SpinBox*>( true );
   for( auto wdg : widgets )
     CONNECT( wdg, onChangeA(), _d.data(), Impl::resolveChange )  
+
+  moveTo( Widget::parentCenter );
+  WidgetEscapeCloser::insertTo( this );
+  GameAutoPause::insertTo( this );
 }
 
 SoundOptions::~SoundOptions( void ) {}

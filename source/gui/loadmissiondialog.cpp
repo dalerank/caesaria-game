@@ -65,10 +65,9 @@ void LoadMission::Impl::resolveItemSelected(const ListBoxItem& item)
 {
   saveItemText = item.text();
 
-  vfs::Path fn(saveItemText);
-  fn = directory/fn;
+  vfs::Path fn = directory/saveItemText;
 
-  std::string missionName = vfs::Path( fn ).baseName( false ).toString();
+  std::string missionName = fn.baseName().removeExtension();
   VariantMap vm = config::load( fn );
   Locale::addTranslation( missionName );
 
@@ -149,7 +148,6 @@ Signal1<std::string>& LoadMission::onSelectFile() { return _d->onSelectFileSigna
 LoadMission* LoadMission::create( Widget* parent, const vfs::Directory& dir )
 {
   LoadMission& ret = parent->add<LoadMission>( dir );
-  ret.moveTo( Widget::parentCenter );
   return &ret;
 }
 

@@ -32,7 +32,6 @@ AboutEvent::AboutEvent( Widget* parent, const std::string& title,
 {
   setTitle( title );
   setAutoPosition( false );
-  setModal();
   setWindowFlag( fdraggable, false );
 
   setCenter( parent->center() );
@@ -69,6 +68,8 @@ AboutEvent::AboutEvent( Widget* parent, const std::string& title,
     goodLabel.setTextOffset( Point( 30, 0 ) );
     goodLabel.setIcon( good::Helper::picture( gtype ), Point( 0, 7 ) );
   }
+
+  setModal();
 }
 
 

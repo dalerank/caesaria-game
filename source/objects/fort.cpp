@@ -20,7 +20,6 @@
 #include "game/resourcegroup.hpp"
 #include "city/statistic.hpp"
 #include "gfx/tilemap.hpp"
-#include "gfx/helper.hpp"
 #include "walker/romesoldier.hpp"
 #include "core/logger.hpp"
 #include "events/event.hpp"
@@ -58,8 +57,8 @@ public:
   static LegionEmblem findFree( PlayerCityPtr city );
 };
 
-CAESARIA_LITERALCONST(name)
-CAESARIA_LITERALCONST(img)
+GAME_LITERALCONST(name)
+GAME_LITERALCONST(img)
 
 }
 
@@ -108,7 +107,7 @@ public:
     if( index < positions.size() )
         return location + positions[ index ];
 
-    return gfx::tilemap::invalidLocation();
+    return TilePos::invalid();
   }
 
   void expand()
@@ -142,7 +141,7 @@ public:
     }
     while( ++expandCounter < 4 );
 
-    return gfx::tilemap::invalidLocation();
+    return TilePos::invalid();
   }
 
   void updatePoints( Tilemap& tmap )
@@ -150,7 +149,7 @@ public:
     positions.clear();
     TilesArea area;
     fillArea( tmap, area );
-    TilePosArray locations = area.walkables( true ).locations();
+    Locations locations = area.walkables( true ).locations();
 
     for( auto& r : locations )
       positions.push_back( r - location );
@@ -227,7 +226,7 @@ public:
   }
 
   TilePos location;
-  TilePosArray positions;
+  Locations positions;
   struct {
     unsigned int open = 3;
     unsigned int westLine = 5;
@@ -318,7 +317,7 @@ Fort::Fort(object::Type type, int picIdLogo) : WorkingBuilding( type, Size(3) ),
   logo.setOffset( Point( 80, 10 ) );
 
   Picture area(ResourceGroup::security, 13 );
-  area.addOffset( tile::tilepos2screen( TilePos( 3, 0) ) );
+  area.addOffset( TilePos( 3, 0).toScreenCoordinates() );
 
   _fgPictures().resize(2);
   _fgPicture( 0 ) = logo;
@@ -421,7 +420,7 @@ TilePos Fort::findSlot(WalkerPtr who) const
 
   int index = walkers().indexOf( who );
   TilePos sldLocation =_d->patrolArea.getPos( index );
-  if( !gfx::tilemap::isValidLocation( sldLocation ) )
+  if( !config::tilemap.isValidLocation( sldLocation ) )
   {
     sldLocation = _d->patrolArea.append( _map(), index );
   }
@@ -511,12 +510,12 @@ void Fort::load(const VariantMap& stream)
 {
   WorkingBuilding::load( stream );
 
-  VARIANT_LOAD_ANYDEF_D( _d, patrolArea.location,gfx::tilemap::invalidLocation(), stream )
-  VARIANT_LOAD_ANY_D   ( _d, maxSoldier,                                          stream )
-  VARIANT_LOAD_ANY_D   ( _d, attackAnimals,                                       stream )
-  VARIANT_LOAD_ENUM_D  ( _d, patrolArea.mode,                                     stream )
+  VARIANT_LOAD_ANYDEF_D( _d, patrolArea.location, TilePos::invalid(), stream )
+  VARIANT_LOAD_ANY_D   ( _d, maxSoldier,                              stream )
+  VARIANT_LOAD_ANY_D   ( _d, attackAnimals,                           stream )
+  VARIANT_LOAD_ENUM_D  ( _d, patrolArea.mode,                         stream )
 
-  if( !gfx::tilemap::isValidLocation( _d->patrolArea.location ) )
+  if( !config::tilemap.isValidLocation( _d->patrolArea.location ) )
     _d->patrolArea.location = pos() + TilePos( 3, 4 );
 
   _d->patrolPoint->setPos( _d->patrolArea.location );

@@ -20,7 +20,6 @@
 #include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
 #include "objects/constants.hpp"
-#include "gfx/helper.hpp"
 #include "objects/overlay.hpp"
 #include "core/variant_list.hpp"
 
@@ -32,8 +31,8 @@ namespace city
 namespace development
 {
 
-CAESARIA_LITERALCONST(farm)
-CAESARIA_LITERALCONST(disable_all)
+GAME_LITERALCONST(farm)
+GAME_LITERALCONST(disable_all)
 
 enum { maxLimit=999 };
 
@@ -59,7 +58,7 @@ public:
 
   BranchHelper() : EnumsHelper<Branch>( unknown )
   {
-#define __REG_BR(a) append( a, CAESARIA_STR_EXT(a) );
+#define __REG_BR(a) append( a, TEXT(a) );
     __REG_BR( water )
     __REG_BR( health )
     __REG_BR( security )
@@ -102,7 +101,7 @@ public:
 
   void loadRules( const VariantMap& stream )
   {
-    for( auto& item : stream )
+    for( const auto& item : stream )
     {
       object::Type btype = object::findType( item.first );
       (*this)[ btype ].mayBuild = item.second.toBool();
@@ -111,7 +110,7 @@ public:
 
   void loadQuotes( const VariantMap& stream )
   {
-    for( auto& item : stream )
+    for( const auto& item : stream )
     {
       object::Type btype = object::findType( item.first );
       (*this)[ btype ].quotes = item.second.toInt();

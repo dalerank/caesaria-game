@@ -37,11 +37,6 @@ public:
   virtual void draw( gfx::Engine& painter );
 
 private:
-  /**
-   * @brief Calls when player press help button
-   */
-  void _showHelp();
-  void _drawReportRow( const Point& pos, const std::string& title, int type );
   void _updateTaxRateNowLabel();
 
   /**
@@ -57,6 +52,8 @@ private:
    * @brief Update text for registered tax payers value
    */
   void _updateRegisteredPayers();
+  void _addRow(const Rect& rect, int index, bool line = false );
+  void _showIssueDetails( Widget* widget );
 
   /**
    * @brief Update text for city treasure value

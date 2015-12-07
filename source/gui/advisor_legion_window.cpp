@@ -64,28 +64,28 @@ public:
     _fort = fort;
     _finalizeResize();
 
-    PushButton& gotoLegion    = add<PushButton>( Rect( Point( gotoLegionX, 5), btnSize ), "", -1, false, PushButton::blackBorderUp );
-    gotoLegion.setIcon( ResourceGroup::panelBackground, 563 );
+    auto& gotoLegion = add<PushButton>( Rect( Point( gotoLegionX, 5), btnSize ), "", -1, false, PushButton::blackBorderUp );
+    gotoLegion.setIcon( gui::rc.panel, gui::id.gotoLegion );
     gotoLegion.setIconOffset( Point( 4, 4 ) );
 
-    PushButton& return2fort   = add<PushButton>( Rect( Point( return2fortX, 5), btnSize ), "", -1, false, PushButton::blackBorderUp );
-    return2fort.setIcon(  ResourceGroup::panelBackground, 564 );
+    auto& return2fort = add<PushButton>( Rect( Point( return2fortX, 5), btnSize ), "", -1, false, PushButton::blackBorderUp );
+    return2fort.setIcon(  gui::rc.panel, gui::id.return2fort );
     return2fort.setIconOffset( Point( 4, 4 ) );
     return2fort.setTooltipText( _("##return_2_fort##") );
 
-    PushButton& empireService = add<PushButton>( Rect( Point( send2empireX, 5), btnSize ), "", -1, false, PushButton::blackBorderUp );
-    empireService.setIcon( ResourceGroup::panelBackground, 566 );
+    auto& empireService = add<PushButton>( Rect( Point( send2empireX, 5), btnSize ), "", -1, false, PushButton::blackBorderUp );
+    empireService.setIcon( gui::rc.panel, gui::id.serv2empire  );
     empireService.setIconOffset( Point( 4, 4 ) );
     empireService.setTooltipText( "##empire_service_tip##");
 
-    CONNECT( &gotoLegion,    onClicked(), this, LegionButton::_resolveMove2Legion       );
-    CONNECT( &return2fort,   onClicked(), this, LegionButton::_resolveReturnLegion2Fort );
-    CONNECT( &empireService, onClicked(), this, LegionButton::_resolveEmpireService     );
+    CONNECT_LOCAL( &gotoLegion,    onClicked(), LegionButton::_resolveMove2Legion       );
+    CONNECT_LOCAL( &return2fort,   onClicked(), LegionButton::_resolveReturnLegion2Fort );
+    CONNECT_LOCAL( &empireService, onClicked(), LegionButton::_resolveEmpireService     );
   }
 
-  virtual void _updateTextPic()
+  virtual void _updateTexture()
   {
-    PushButton::_updateTextPic();
+    PushButton::_updateTexture();
 
     if( _fort.isValid() )
     {
@@ -156,9 +156,9 @@ Legion::Legion( Widget* parent, int id, PlayerCityPtr city, FortList forts )
   {
     auto& buttonLegion = add<LegionButton>( startLegionArea + legionButtonOffset, index++, fort );
 
-    CONNECT( &buttonLegion, signal.onShowLegion,    this, Legion::_handleMove2Legion );
-    CONNECT( &buttonLegion, signal.onLegionRetreat, this, Legion::_handleRetreaLegion );
-    CONNECT( &buttonLegion, signal.onEmpireService, this, Legion::_handleServiceEmpire );
+    CONNECT_LOCAL( &buttonLegion, signal.onShowLegion,    Legion::_handleMove2Legion );
+    CONNECT_LOCAL( &buttonLegion, signal.onLegionRetreat, Legion::_handleRetreaLegion );
+    CONNECT_LOCAL( &buttonLegion, signal.onEmpireService, Legion::_handleServiceEmpire );
   }
 
   if( _d->lbBlackframe && forts.empty() )
@@ -168,8 +168,7 @@ Legion::Legion( Widget* parent, int id, PlayerCityPtr city, FortList forts )
 
   _d->updateAlarms( city );
 
-  auto& btnHelp = add<TexturedButton>( Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
-  CONNECT( &btnHelp, onClicked(), this, Legion::_showHelp );
+  add<HelpButton>( Point( 12, height() - 39), "legion_advisor" );
 }
 
 void Legion::draw( Engine& painter )
@@ -218,11 +217,6 @@ void Legion::_handleServiceEmpire(FortPtr fort)
   legionDialog.show();
 
   CONNECT( &legionDialog, onSelectLocation(), fort.object(), Fort::sendExpedition );
-}
-
-void Legion::_showHelp()
-{
-  DictionaryWindow::show( this, "legion_advisor" );
 }
 
 void Legion::Impl::updateAlarms(PlayerCityPtr city)

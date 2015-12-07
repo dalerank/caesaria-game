@@ -19,7 +19,7 @@
 #define _CAESARIA_CLEAR_LAND_EVENT_H_INCLUDE_
 
 #include "event.hpp"
-#include "core/position.hpp"
+#include "gfx/tilepos.hpp"
 
 class Game;
 

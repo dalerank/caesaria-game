@@ -17,7 +17,7 @@
 #define _CAESARIA_EVENT_SHOWTILEINFO_H_INCLUDE_
 
 #include "event.hpp"
-#include "core/position.hpp"
+#include "gfx/tilepos.hpp"
 
 namespace events
 {

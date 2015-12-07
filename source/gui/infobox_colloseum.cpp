@@ -22,7 +22,7 @@
 #include "label.hpp"
 #include "core/gettext.hpp"
 #include "game/gamedate.hpp"
-#include "core/utils.hpp"
+#include "core/format.hpp"
 #include "game/infoboxmanager.hpp"
 
 using namespace gfx;
@@ -64,7 +64,7 @@ AboutColosseum::AboutColosseum(Widget *parent, PlayerCityPtr city, const Tile &t
     if( coloseum->isShowLionBattles() )
     {
       DateTime lastAnimalBoutDate = coloseum->lastAnimalBoutDate();
-      text = utils::format( 0xff, "%s %d %s", "##colloseum_animal_contest_runs##", lastAnimalBoutDate.daysTo( game::Date::current() ), "##days##" );
+      text = fmt::format( "{} {} {}", _("##colloseum_animal_contest_runs##"), lastAnimalBoutDate.daysTo( game::Date::current() ), _("##days##") );
     }
     add<Label>( Rect( 35, 200, width() - 35, 200 + 20 ), text );
 
@@ -72,7 +72,7 @@ AboutColosseum::AboutColosseum(Widget *parent, PlayerCityPtr city, const Tile &t
     if( coloseum->isShowGladiatorBattles() )
     {
       DateTime lastGlBoutDate = coloseum->lastGladiatorBoutDate();
-      text = utils::format( 0xff, "%s %d %s", "##colloseum_gladiator_contest_runs##", lastGlBoutDate.daysTo( game::Date::current() ), "##days##" );
+      text = fmt::format( "{} {} {}", _("##colloseum_gladiator_contest_runs##"), lastGlBoutDate.daysTo( game::Date::current() ), _("##days##") );
     }
 
     add<Label>( Rect( 35, 220, width() - 35, 220 + 20 ), text );

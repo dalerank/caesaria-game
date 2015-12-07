@@ -148,7 +148,7 @@ const Picture& Fortification::picture(const city::AreaInfo& areaInfo) const
   if (!tmap.isInside(tile_pos))
   {
     static Picture ret;
-    ret.load( ResourceGroup::aqueduct, 121 );
+    ret.load( config::rc.aqueduct, 121 );
     return ret;
   }
 

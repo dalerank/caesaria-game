@@ -121,21 +121,21 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   _d->city = city;
   _d->tilemap = &city->tilemap();
   _d->guienv = guienv;
-  _d->camera.init( *_d->tilemap, engine->viewportSize() );
+  _d->camera.init( *_d->tilemap, engine->screenSize() );
   _d->engine = engine;
 
   _d->instanceLayer<Simple>();
   _d->instanceLayer<Water>();
   _d->instanceLayer<Fire>();
   _d->instanceLayer<Food>();
-  addLayer( Health::create( _d->camera, city, citylayer::health ));
-  addLayer( Health::create( _d->camera, city, citylayer::doctor ));
-  addLayer( Health::create( _d->camera, city, citylayer::hospital ));
-  addLayer( Health::create( _d->camera, city, citylayer::barber ));
-  addLayer( Health::create( _d->camera, city, citylayer::baths ));
+  _d->instanceLayer<Health>( citylayer::health );
+  _d->instanceLayer<Health>( citylayer::doctor );
+  _d->instanceLayer<Health>( citylayer::hospital );
+  _d->instanceLayer<Health>( citylayer::barber );
+  _d->instanceLayer<Health>( citylayer::baths );
   _d->instanceLayer<Religion>();
   _d->instanceLayer<Damage>();
-  addLayer( Sentiment::create( _d->camera, city ) );
+  _d->instanceLayer<Sentiment>();
   _d->instanceLayer<Unemployed>();
   _d->instanceLayer<citylayer::Desirability>();
   _d->instanceLayer<Entertainment>( citylayer::entertainment );
@@ -145,13 +145,13 @@ void CityRenderer::initialize(PlayerCityPtr city, Engine* engine, gui::Ui* guien
   _d->instanceLayer<Entertainment>( citylayer::hippodrome );
   _d->instanceLayer<Crime>();
   addLayer( Destroy::create( *this, city ) );
-  addLayer( Tax::create( _d->camera, city ) );
-  addLayer( Education::create( _d->camera, city, citylayer::education ) );
-  addLayer( Education::create( _d->camera, city, citylayer::school ) );
-  addLayer( Education::create( _d->camera, city, citylayer::library ) );
-  addLayer( Education::create( _d->camera, city, citylayer::academy ) );
-  addLayer( Troubles::create( _d->camera, city, citylayer::risks ) );
-  addLayer( Troubles::create( _d->camera, city, citylayer::troubles ) );
+  _d->instanceLayer<Tax>();
+  _d->instanceLayer<Education>( citylayer::education );
+  _d->instanceLayer<Education>( citylayer::school );
+  _d->instanceLayer<Education>( citylayer::library );
+  _d->instanceLayer<Education>( citylayer::academy );
+  _d->instanceLayer<Troubles>( citylayer::risks );
+  _d->instanceLayer<Troubles>( citylayer::troubles );
   _d->instanceLayer<Aborigens>();
   _d->instanceLayer<MarketAccess>();
   _d->instanceLayer<CommodityTurnover>();
@@ -256,7 +256,7 @@ void CityRenderer::render()
   {
     lastZoom = _d->camera.zoom();
     zoom = lastZoom / 100.f;
-    _d->camera.setViewport( engine.viewportSize()  / zoom );
+    _d->camera.setViewport( engine.viewportSize() / zoom );
   }
 
   zoom = lastZoom / 100.f;
@@ -367,18 +367,5 @@ void CityRenderer::addLayer(SmartPtr<Layer> layer){  _d->layers.push_back( layer
 LayerPtr CityRenderer::currentLayer() const { return _d->currentLayer; }
 void CityRenderer::setViewport(const Size& size) { _d->camera.setViewport( size ); }
 Signal1<int>& CityRenderer::onLayerSwitch() { return _d->onLayerSwitchSignal; }
-
-Signal3<object::Type,TilePos,int>& CityRenderer::onBuilt()
-{
-  auto buildLayer = getLayer( citylayer::build ).as<Build>();
-  return buildLayer->onBuild();
-}
-
-Signal3<object::Type,TilePos,int>& CityRenderer::onDestroyed()
-{
-  auto buildLayer = getLayer( citylayer::destroyd ).as<Destroy>();
-  return buildLayer->onDestroy();
-}
-
 
 }//end namespace gfx

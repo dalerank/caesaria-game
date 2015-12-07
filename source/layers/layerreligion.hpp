@@ -28,9 +28,13 @@ public:
   virtual int type() const;
   virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
   virtual void handleEvent(NEvent& event);
+  virtual void render(gfx::Engine& engine);
 
 private:
-  std::set<int> _flags;
+  void _updatePaths();
+
+  class Impl;
+  ScopedPtr<Impl> _d;
 };
 
 }//end namespace citylayer

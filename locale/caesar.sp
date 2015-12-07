@@ -241,6 +241,7 @@
 "##governor_palace_2##":"Villa del gobernador"
 "##governorVilla##":"Villa del gobernador"
 "##wine##":"Vino"
+"##prettyWine##":"Falern Vino"
 "##grape##":"Viñas"
 "##vinard_info##":"Las uvas de estos viñedos están especialmente indicadas para la elaboración de vino. Las bodegas podrán elaborar vino para los patricios, y también podrás exportar."
 "##vinard##":"Granja de uvas"

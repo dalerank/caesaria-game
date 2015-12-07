@@ -35,10 +35,7 @@ class Variant;
 class VariantList;
 class VariantMap;
 class NColor;
-
-#ifdef _MSC_VER
-#define __typeof__ decltype
-#endif
+class TilePos;
 
 #define VARIANT_INIT_ANY( type, param, vm) type param = vm.get( #param );
 #define VARIANT_INIT_STR( param, vm) std::string param = vm.get( #param ).toString();
@@ -267,7 +264,7 @@ class Variant
   operator float() const { return toFloat(); }
   operator bool() const { return toBool(); }
   operator std::string() const { return toString(); }
-  operator TilePos() const { return toTilePos(); }
+  operator TilePos() const;
   operator Point() const { return toPoint(); }
   operator PointF() const { return toPointF(); }
   operator Size() const { return toSize(); }
@@ -301,10 +298,10 @@ protected:
 
 private:
   // force compile error, prevent Variant(bool) to be called
-  inline Variant(void *) { _CAESARIA_DEBUG_BREAK_IF(true); }
+  inline Variant(void *) { _GAME_DEBUG_BREAK_IF(true); }
 
   // force compile error, prevent Variant(QVariant::Type, int) to be called
-  inline Variant(bool, int) { _CAESARIA_DEBUG_BREAK_IF(true); }
+  inline Variant(bool, int) { _GAME_DEBUG_BREAK_IF(true); }
 };
 
 inline Variant::Variant() {}

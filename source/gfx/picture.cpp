@@ -86,7 +86,7 @@ void Picture::save(const std::string& filename)
     IMG_SavePNG( filename.c_str(), _d->surface, -1 );
 }
 
-#ifndef CAESARIA_DISABLE_PICTUREBANK
+#ifndef GAME_DISABLE_PICTUREBANK
 void Picture::load( const std::string& group, const int id )
 {
   *this = PictureBank::instance().getPicture( group, id );
@@ -184,7 +184,7 @@ void Picture::update()
     return;
   }
 
-#ifndef CAESARIA_DISABLE_PICTUREBANK
+#ifndef GAME_DISABLE_PICTUREBANK
   if( _d->surface && _d->opengltx > 0 )
   {    
     Engine::instance().loadPicture( *this, false );
@@ -230,7 +230,7 @@ Picture::Picture(const Size& size, unsigned char* data, bool mayChange) : _d( ne
   }
 }
 
-#ifndef CAESARIA_DISABLE_PICTUREBANK
+#ifndef GAME_DISABLE_PICTUREBANK
 Picture::Picture(const std::string& group, const int id) : _d( new PictureImpl )
 {
   _d->drop();

@@ -18,18 +18,20 @@
 
 #include "core/scopedptr.hpp"
 #include "vfs/path.hpp"
+#include "world/nation.hpp"
 
 class NameGenerator
 {
 public:
   typedef enum { plebMale=0, plebFemale,
                  patricianMale, patricianFemale,
-                 indigeneMale, indigeneFemale } NameType;
+                 indigeneMale, indigeneFemale,
+                 merchant } NameType;
   static NameGenerator& instance();
 
   ~NameGenerator();
 
-  static std::string rand( NameType type );
+  static std::string rand( NameType type, world::Nation nation=world::nation::unknown );
   void initialize(vfs::Path filename );
   void setLanguage( const std::string& language );
 

@@ -177,7 +177,10 @@ void CommodityTurnover::handleEvent(NEvent& event)
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       if( tile != 0 )
+      {
         _d->overlay.current = tile->overlay();
+
+      }
     }
     break;
 

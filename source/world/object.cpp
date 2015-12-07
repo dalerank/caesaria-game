@@ -53,7 +53,7 @@ ObjectPtr Object::create( EmpirePtr empire)
 }
 
 bool Object::isDeleted() const { return _d->isDeleted; }
-std::string Object::type() const { return CAESARIA_STR_EXT(Object); }
+std::string Object::type() const { return TEXT(Object); }
 void Object::timeStep(const unsigned int time) {}
 EmpirePtr Object::empire() const { return _d->empire; }
 std::string Object::name() const { return _d->name; }

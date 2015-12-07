@@ -16,7 +16,7 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "dock.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tile_config.hpp"
 #include "core/variant_map.hpp"
 #include "game/resourcegroup.hpp"
 #include "city/statistic.hpp"
@@ -208,7 +208,7 @@ void Dock::load(const VariantMap& stream)
 {
   Building::load( stream );
 
-  _d->direction = (Direction)stream.get( CAESARIA_STR_EXT(direction), direction::southWest ).toInt();
+  _d->direction = (Direction)stream.get( TEXT(direction), direction::southWest ).toInt();
   VARIANT_LOAD_CLASS_D_AS_LIST( _d, saved_tile, stream )
   VARIANT_LOAD_CLASS_D( _d, goods.exporting, stream )
   VARIANT_LOAD_CLASS_D( _d, goods.importing, stream )

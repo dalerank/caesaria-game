@@ -36,6 +36,7 @@
 #include "cityservice_disorder.hpp"
 #include "cityservice_military.hpp"
 #include "core/time.hpp"
+#include "objects/fort.hpp"
 #include "objects/farm.hpp"
 #include "cityservice_health.hpp"
 #include "world/traderoute.hpp"
@@ -189,12 +190,12 @@ const WalkerList& Statistic::_Walkers::find(walker::Type type) const
 int Statistic::_Walkers::count(walker::Type type, const TilePos& start, const TilePos& stop) const
 {
   int result = 0;
-  if( start == gfx::tilemap::invalidLocation() )
+  if( start == TilePos::invalid() )
   {
     const WalkerList& all =_parent.rcity.walkers();
     result = utils::countByType( all, type );
   }
-  else if( stop == gfx::tilemap::invalidLocation() )
+  else if( stop == TilePos::invalid() )
   {
     const WalkerList& wlkOnTile = _parent.rcity.walkers( start );
     result = utils::countByType( wlkOnTile, type );
@@ -251,14 +252,16 @@ Statistic::WorkersInfo Statistic::_Workers::details() const
 {
   WorkersInfo ret;
 
-  WorkingBuildingList buildings = _parent.objects.find<WorkingBuilding>( object::any );
+  WorkingBuildingList buildings = _parent.objects.find<WorkingBuilding>();
 
   ret.current = 0;
   ret.need = 0;
   for( auto bld : buildings )
-    {
-      ret.current += bld->numberWorkers();
+  {
+    ret.current += bld->numberWorkers();
     ret.need += bld->maximumWorkers();
+
+    ret.map[ bld->workerType() ] += bld->numberWorkers();
   }
 
   return ret;
@@ -363,7 +366,7 @@ OverlayList Statistic::_Objects::neighbors(OverlayPtr overlay, bool v) const
     return OverlayList();
 
   Size size = overlay->size();
-  TilePos start = overlay->pos() - gfx::tilemap::unitLocation();
+  TilePos start = overlay->pos() - config::tilemap.unitLocation();
   TilePos stop = start + TilePos( size.width(), size.height() );
   OverlayList ret;
   gfx::TilesArray tiles = _parent.rcity.tilemap().rect( start, stop );
@@ -383,8 +386,8 @@ OverlayList Statistic::_Objects::neighbors(OverlayPtr overlay, bool v) const
 
 OverlayList Statistic::_Objects::neighbors(const TilePos& pos) const
 {
-  TilePos start = pos - gfx::tilemap::unitLocation();
-  TilePos stop = pos  + gfx::tilemap::unitLocation();
+  TilePos start = pos - config::tilemap.unitLocation();
+  TilePos stop = pos  + config::tilemap.unitLocation();
   OverlayList ret;
   gfx::TilesArray tiles = _parent.rcity.tilemap().rect( start, stop );
   for( auto tile : tiles )
@@ -532,7 +535,7 @@ int Statistic::_Objects::laborAccess(WorkingBuildingPtr wb) const
   if( houses.size() > 0 )
     averageDistance /= houses.size();
 
-  return math::clamp( math::percentage( averageDistance, maxLaborDistance ) * 2, 25, 100 );
+  return math::clamp<unsigned int>( math::percentage( averageDistance, maxLaborDistance ) * 2, 25, 100 );
 }
 
 unsigned int Statistic::_Health::value() const
@@ -545,6 +548,11 @@ int Statistic::_Military::months2lastAttack() const
 {
   MilitaryPtr ml = _parent.services.find<Military>();
   return ml.isValid() ? ml->monthFromLastAttack() : 0;
+}
+
+FortList Statistic::_Military::forts() const
+{
+  return _parent.objects.find<Fort>();
 }
 
 bool Statistic::_Goods::canImport(good::Product type) const

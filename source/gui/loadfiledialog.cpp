@@ -62,19 +62,16 @@ LoadFile::LoadFile( Widget* parent, const Rect& rect,
   : Window( parent, rect, "", id ), _d( new Impl )
 {
   Widget::setupUI( ":/gui/loadfile.gui" );
-  WidgetEscapeCloser::insertTo( this );
-  GameAutoPause::insertTo( this );
 
   _d->directory = dir;
   _d->fileExtensions = ext;
 
-  INIT_WIDGET_FROM_UI( PushButton*, btnExit )
   INIT_WIDGET_FROM_UI( PushButton*, btnHelp )
   INIT_WIDGET_FROM_UI( PushButton*, btnLoad )
   INIT_WIDGET_FROM_UI( PushButton*, btnDelete )
   GET_DWIDGET_FROM_UI( _d, lbxFiles )
 
-  CONNECT( btnExit,   onClicked(), this,      LoadFile::deleteLater )
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnExit,   onClicked(), LoadFile::deleteLater )
   CONNECT( btnLoad,   onClicked(), _d.data(), Impl::emitSelectFile )
   CONNECT( btnDelete, onClicked(), _d.data(), Impl::deleteFile )
   CONNECT( btnDelete, onClicked(), this,      LoadFile::_fillFiles )
@@ -86,13 +83,16 @@ LoadFile::LoadFile( Widget* parent, const Rect& rect,
     _d->lbxFiles->setFocus();
   }
 
-  CONNECT( _d->lbxFiles, onItemSelected(), this, LoadFile::_resolveItemSelected )
-  CONNECT( _d->lbxFiles, onItemSelectedAgain(),this, LoadFile::_resolveItemDblClick );
+  CONNECT_LOCAL( _d->lbxFiles, onItemSelected(),      LoadFile::_resolveItemSelected )
+  CONNECT_LOCAL( _d->lbxFiles, onItemSelectedAgain(), LoadFile::_resolveItemDblClick );
 
   _fillFiles();
 
   setMayDelete( false );
+  WidgetEscapeCloser::insertTo( this );
+  GameAutoPause::insertTo( this );
   moveTo( Widget::parentCenter );
+  setModal();
 }
 
 LoadFile::~LoadFile(){}
@@ -106,11 +106,8 @@ void LoadFile::_fillFiles()
   vfs::Entries flist = vfs::Directory( _d->directory ).entries();
   flist = flist.filter( vfs::Entries::file | vfs::Entries::extFilter, _d->fileExtensions );
 
-  StringArray names;
-  foreach( it, flist )
-  {
-    names <<  (*it).fullpath.toString();
-  }
+  StringArray names = flist.items().fullnames();
+
   std::sort( names.begin(), names.end() );
 
   _d->lbxFiles->addItems( names );

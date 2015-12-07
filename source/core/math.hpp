@@ -73,6 +73,9 @@ const double DEGTORAD64 = PI64 / 180.0;
 const double RADTODEG64 = 180.0 / PI64;
 const double DEGREE360 = 360.0;
 
+typedef unsigned int Distance;
+typedef float DistanceF;
+
 //! Utility function to convert a radian value to degrees
 /** Provided as it can be clearer to write radToDeg(X) than RADTODEG * X
 \param radians	The radians value to convert to degrees.
@@ -87,7 +90,8 @@ inline double abs( double v )
   return v >= 0 ? v : -v;
 }
 
-inline int percentage( int value, int base )
+typedef unsigned int Percent;
+inline Percent percentage( unsigned int value, unsigned int base )
 {
   return base > 0 ? (value * 100 / base) : 0;
 }
@@ -117,7 +121,7 @@ inline T __random(T rmax, std::true_type, std::false_type)
   static std::random_device random_device;
   static std::default_random_engine engine(random_device());  
   std::uniform_real_distribution<T> distribution(0,
-#ifdef CAESARIA_PLATFORM_ANDROID
+#ifdef GAME_PLATFORM_ANDROID
                                                  nextafter(rmax, std::numeric_limits<T>::max())
 #else
                                                  std::nextafter(rmax, std::numeric_limits<T>::max())

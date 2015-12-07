@@ -205,10 +205,11 @@ void Infobox::_updateWorkersLabel(const Point &pos, int picId, int need, int hav
     return;
 
   // number of workers
-  std::string text = utils::format( 0xff, "%d %s (%d %s)",
-                                    have, _("##employers##"),
-                                    need, _("##requierd##") );
-  _d->lbBlackFrame->setIcon( Picture( ResourceGroup::panelBackground, picId ), Point( 20, 10 ) );
+  std::string text = fmt::format( "{} {} ({} {})",
+                                  have, _("##employers##"),
+                                  need, _("##requierd##") );
+  _d->lbBlackFrame->setIcon( gui::rc.panel, picId );
+  _d->lbBlackFrame->setIconOffset( { 20, 10 } );
   _d->lbBlackFrame->setText( text );
 }
 

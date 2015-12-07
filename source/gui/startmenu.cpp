@@ -27,6 +27,7 @@
 #include "label.hpp"
 #include "core/osystem.hpp"
 #include "core/variant_map.hpp"
+#include "core/format.hpp"
 #include "core/foreach.hpp"
 #include "core/saveadapter.hpp"
 
@@ -43,10 +44,7 @@ StartMenu::StartMenu( Widget* parent )
   : Widget( parent, -1, parent->relativeRect() ), _d( new Impl )
 {
   std::string path2options;
-  if( OSystem::isAndroid() )
-    path2options = ":/gui/startmenu_android.gui";
-  else
-    path2options = ":/gui/startmenu.gui";
+  path2options = fmt::format( ":/gui/startmenu{}.gui", OSystem::isAndroid() ? "_android" : "" );
 
   _d->options = config::load( path2options );
 }

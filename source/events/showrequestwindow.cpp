@@ -60,4 +60,4 @@ void ShowRequestInfo::_exec(Game& game, unsigned int)
   }
 }
 
-}
+}//end namespace events

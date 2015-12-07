@@ -35,7 +35,7 @@ namespace city
 {
 
 namespace {
-CAESARIA_LITERALCONST(good)
+GAME_LITERALCONST(good)
 }
 
 REGISTER_SERVICE_IN_FACTORY(GoodsUpdater,goodsUpdater)

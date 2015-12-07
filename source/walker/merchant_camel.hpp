@@ -32,6 +32,10 @@ public:
   virtual void load(const VariantMap &stream);
 
   void updateHeadLocation( const TilePos& pos );
+
+protected:
+  virtual void _centerTile();
+
 private:
   MerchantCamel(PlayerCityPtr city,MerchantPtr merchant=nullptr, int delay=0);
 

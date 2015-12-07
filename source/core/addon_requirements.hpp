@@ -18,8 +18,8 @@
 #ifndef __CAESARIA_ADDON_REQUIREMENTS_INCLUDE_HPP__
 #define __CAESARIA_ADDON_REQUIREMENTS_INCLUDE_HPP__
 
-#ifdef CAESARIA_PLATFORM_WIN
-  #ifdef CAESARIA_ADDON_DEFINED
+#ifdef GAME_PLATFORM_WIN
+  #ifdef GAME_ADDON_DEFINED
     #define  ADDON_EXPORT __declspec(dllexport)
   #else
     #define  ADDON_EXPORT __declspec(dllimport)

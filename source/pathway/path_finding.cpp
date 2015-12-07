@@ -62,7 +62,8 @@ void Propagator::init(TilePos origin){  init( _d->tilemap->at( origin ) );}
 
 void Propagator::setObsoleteOverlays(const Propagator::ObsoleteOverlays& ovs)
 {
-  foreach( it, ovs ) { _d->obsoleteOvs.insert( *it ); }
+  for( const auto& type : ovs )
+    _d->obsoleteOvs.insert( type );
 }
 
 void Propagator::init( ConstructionPtr origin)
