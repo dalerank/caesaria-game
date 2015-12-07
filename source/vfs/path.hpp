@@ -102,6 +102,11 @@ private:
   ScopedPtr< Impl > _d;
 };
 
+inline std::string operator+(const std::string& str, const Path& path)
+{
+  return str + path.toString();
+}
+
 }//end namespace io
 
 #endif //__CAESARIA_FILEPATH_H_INCLUDED__

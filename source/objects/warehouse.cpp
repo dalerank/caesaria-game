@@ -24,7 +24,6 @@
 #include "core/exception.hpp"
 #include "gui/info_box.hpp"
 #include "core/gettext.hpp"
-#include "gfx/helper.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/variant.hpp"
 #include "walker/cart_pusher.hpp"
@@ -54,8 +53,8 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(object::warehouse, Warehouse)
 
 namespace
 {
-CAESARIA_LITERALCONST(tiles)
-CAESARIA_LITERALCONST(goodStore)
+GAME_LITERALCONST(tiles)
+GAME_LITERALCONST(goodStore)
 }
 
 namespace config
@@ -120,7 +119,7 @@ void Warehouse::Room::computePicture()
   }
 
   picture.load( ResourceGroup::warehouse, picIdx );
-  picture.addOffset( tile::tilepos2screen( location ) );
+  picture.addOffset( location.toScreenCoordinates() );
 }
 
 class Warehouse::Impl
@@ -136,7 +135,7 @@ public:
 static Picture strafePic(const std::string& rc, int index, int i, int j )
 {
   Picture ret( rc, index );
-  ret.addOffset( tile::tilepos2screen( TilePos( i, j ) ) );
+  ret.addOffset( TilePos( i, j ).toScreenCoordinates() );
 
   return ret;
 }
@@ -208,10 +207,10 @@ void Warehouse::computePictures()
   int index = 4;
   std::string rc = _d->isTradeCenter ? ResourceGroup::tradecenter : ResourceGroup::warehouse;
   _fgPictures()[ fgpic::idxMainPic ] = strafePic( rc, 1, 0, 2);
-  foreach( room, _d->rooms )
+  for( auto& room : _d->rooms )
   {
-     room->computePicture();
-     _fgPicture( index ) = room->picture;
+     room.computePicture();
+     _fgPicture( index ) = room.picture;
      index++;
   }
 }
@@ -223,7 +222,7 @@ void Warehouse::save( VariantMap& stream ) const
 {
   WorkingBuilding::save( stream );
 
-  stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(Warehouse) ) );
+  stream[ "__debug_typeName" ] = Variant( std::string( TEXT(Warehouse) ) );
   stream[ literals::goodStore ] = _d->goodStore.save();
 
   VARIANT_SAVE_ANY_D( stream, _d, isTradeCenter)
@@ -243,7 +242,7 @@ void Warehouse::load( const VariantMap& stream )
   
   VariantList vm_tiles = stream.get( literals::tiles ).toList();
   int tileIndex = 0;
-  for( auto& it : vm_tiles )
+  for( const auto& it : vm_tiles )
   {
     _d->rooms[ tileIndex ].load( it.toList() );
     tileIndex++;

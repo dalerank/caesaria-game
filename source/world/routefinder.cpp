@@ -18,6 +18,7 @@
 #include "routefinder.hpp"
 #include "empiremap.hpp"
 #include "core/delegate.hpp"
+#include "gfx/tilepos.hpp"
 #include "core/tilepos_array.hpp"
 #include "core/foreach.hpp"
 
@@ -123,7 +124,7 @@ public:
   Grid grid;
   unsigned int maxLoopCount;
 
-  bool aStar(TilePos startPos, TilePos stopPos, TilePosArray& way, int flags);
+  bool aStar(TilePos startPos, TilePos stopPos, Locations& way, int flags);
   void update( const EmpireMap& emap );
   void isTerrain( const EmPoint* p, bool& ret ) { ret = p ? (p->info & EmpireMap::land) : false; }
   void isWater( const EmPoint* p, bool& ret ) { ret = p ? (p->info & EmpireMap::sea) : false; }
@@ -142,7 +143,7 @@ TraderouteFinder::TraderouteFinder(const EmpireMap& empiremap)
   _d->maxLoopCount = 1200;
 }
 
-bool TraderouteFinder::findRoute(TilePos start, TilePos stop, TilePosArray& way, int flags)
+bool TraderouteFinder::findRoute(TilePos start, TilePos stop, Locations& way, int flags)
 {
   return _d->aStar( start, stop, way, flags );
 }
@@ -172,7 +173,7 @@ void TraderouteFinder::Impl::update( const EmpireMap& emap )
 }
 
 
-bool TraderouteFinder::Impl::aStar(TilePos startPos, TilePos stopPos, TilePosArray& way, int flags )
+bool TraderouteFinder::Impl::aStar(TilePos startPos, TilePos stopPos, Locations& way, int flags )
 {
   if( (flags & terrainOnly) > 0 ) { isWalkableCondition = makeDelegate( this, &Impl::isTerrain ); }
   else if( (flags & waterOnly) > 0 ) { isWalkableCondition = makeDelegate( this, &Impl::isWater ); }
@@ -201,11 +202,11 @@ bool TraderouteFinder::Impl::aStar(TilePos startPos, TilePos stopPos, TilePosArr
   while( n == 0 || ( !(stopPoint == current) && n < maxLoopCount ))
   {
     // Look for the smallest F value in the openList and make it the current point
-    foreach( point, openList)
+    for( auto point : openList)
     {
-      if( *point == openList.front() || (*point)->getFScore() <= current->getFScore() )
+      if( point == openList.front() || point->getFScore() <= current->getFScore() )
       {
-        current = *point;
+        current = point;
       }
     }
 
@@ -295,9 +296,8 @@ bool TraderouteFinder::Impl::aStar(TilePos startPos, TilePos stopPos, TilePosArr
   }
 
   // Reset
-  foreach( point, openList) { (*point)->opened = false; }
-
-  foreach( point, closedList) { (*point)->closed = false; }
+  for( auto& point : openList) { point->opened = false; }
+  for( auto& point : closedList) { point->closed = false; }
 
   if( n >= maxLoopCount )
   {
@@ -315,10 +315,11 @@ bool TraderouteFinder::Impl::aStar(TilePos startPos, TilePos stopPos, TilePosArr
   if( !lPath.empty() )
   {
     way.push_back( startPos );
-    foreach( pathPoint, lPath ) { way.push_back( (*pathPoint)->pos ); }
+    for( const auto& pathPoint : lPath )
+      way.push_back( pathPoint->pos );
   }
 
   return way.size() > 0;
 }
 
-}
+}//end namespace world

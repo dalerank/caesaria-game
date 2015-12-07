@@ -31,7 +31,7 @@
 #include "core/tilerect.hpp"
 #include "core/color_list.hpp"
 #include "texturedbutton.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "gfx/decorator.hpp"
 #include "city/states.hpp"
 
@@ -85,7 +85,7 @@ public:
 };
 
 Minimap::Minimap(Widget* parent, const Rect& rect, PlayerCityPtr city, const gfx::Camera& camera, const Size& size)
-  : Widget( parent, Hash(CAESARIA_STR_A(Minimap)), rect ), _d( new Impl )
+  : Widget( parent, Hash(TEXT(Minimap)), rect ), _d( new Impl )
 {
   setupUI( ":/gui/minimap.gui" );
 
@@ -159,7 +159,7 @@ void Minimap::Impl::getTerrainColours( const Tile& tile, bool staticTiles, int& 
 
 void Minimap::Impl::getTileColours(const Tile& tile, int &c1, int &c2)
 {
-  if( !gfx::tilemap::isValidLocation( tile.pos() ) )
+  if( !config::tilemap.isValidLocation( tile.pos() ) )
   {
     c1 = c2 = 0xff000000;
     return;
@@ -177,7 +177,7 @@ void Minimap::Impl::getTileColours(const Tile& tile, int &c1, int &c2)
   c1 |= 0xff000000;
   c2 |= 0xff000000;
 
-#ifdef CAESARIA_PLATFORM_ANDROID
+#ifdef GAME_PLATFORM_ANDROID
   c1 = NColor( c1 ).abgr();
   c2 = NColor( c2 ).abgr();
 #endif
@@ -330,7 +330,7 @@ void Minimap::Impl::getObjectColours(const Tile& tile, int &c1, int &c2)
   c1 |= 0xff000000;
   c2 |= 0xff000000;
 
-#ifdef CAESARIA_PLATFORM_ANDROID
+#ifdef GAME_PLATFORM_ANDROID
   c1 = NColor( c1 ).abgr();
   c2 = NColor( c2 ).abgr();
 #endif
@@ -353,7 +353,7 @@ void Minimap::Impl::drawObjectsMmap( Picture& canvas, bool clear, bool force )
       canvas.fill( ColorList::clear );
     lastObjectsCount = ovs.size();
 
-    for( auto& overlay : ovs )
+    for( auto overlay : ovs )
     {
       const Tile& tile = overlay->tile();
 

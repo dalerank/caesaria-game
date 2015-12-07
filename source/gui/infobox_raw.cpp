@@ -50,7 +50,7 @@ REGISTER_OBJECT_BASEINFOBOX(quarry,AboutRawMaterial)
 REGISTER_OBJECT_BASEINFOBOX(iron_mine,AboutRawMaterial)
 
 AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Tile& tile )
-  : AboutConstruction( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 170, 510 - 16, 170 + 74 ) )
+  : AboutConstruction( parent, Rect( 0, 0, 510, 350 ), Rect( 16, 170, 510 - 16, 170 + 64 ) )
 {  
   Widget::setupUI( ":/gui/infoboxraw.gui" );
 
@@ -73,7 +73,7 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
 
   if( lbProgress != NULL )
   {
-    std::string text = utils::format( 0xff, "%s %d%%", _("##rawm_production_complete_m##"), rawmb->progress() );
+    std::string text = fmt::format( "{} {}%", _("##rawm_production_complete_m##"), rawmb->progress() );
     lbProgress->setText( text );
   }
 
@@ -94,8 +94,8 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
     Rect rect = btnHelp->relativeRect();
     rect += Point( btnHelp->width() + 5, 0 );
     rect.rright() += 60;
-    PushButton& btn = add<PushButton>( rect, "Adv.Info", -1, false, PushButton::whiteBorderUp );
-    CONNECT( &btn, onClicked(), this, AboutRawMaterial::_showAdvInfo )
+    auto& btn = add<PushButton>( rect, "Adv.Info", -1, false, PushButton::whiteBorderUp );
+    CONNECT_LOCAL( &btn, onClicked(), AboutRawMaterial::_showAdvInfo )
   }
 }
 
@@ -108,17 +108,12 @@ void AboutRawMaterial::_showAdvInfo()
                                            (int)miningBuilding->state( pr::damage ),
                                            (int)miningBuilding->state( pr::fire ) );
 
-    auto* dialog = dialog::Information( ui(), "Information", workerState );
-    dialog->moveTo( Widget::parentCenter );
+    dialog::Information( ui(), "Information", workerState );
   }
 }
 
 AboutRawMaterial::~AboutRawMaterial() {}
-
-void AboutRawMaterial::_showHelp()
-{
-  DictionaryWindow::show( ui()->rootWidget(), _type );
-}
+void AboutRawMaterial::_showHelp() { ui()->add<DictionaryWindow>( _type ); }
 
 }
 

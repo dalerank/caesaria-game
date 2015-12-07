@@ -35,7 +35,8 @@
 #include "game/gamedate.hpp"
 #include "gfx/tilemap.hpp"
 #include "walkers_factory.hpp"
-#include "gfx/helper.hpp"
+#include "core/common.hpp"
+#include "gfx/tilemap_config.hpp"
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::fishingBoat, FishingBoat)
 
@@ -58,7 +59,7 @@ void FishingBoat::save( VariantMap& stream ) const
   VARIANT_SAVE_ANY_D( stream, _d, destination )
   VARIANT_SAVE_CLASS_D( stream, _d, stock )
   VARIANT_SAVE_ENUM_D( stream, _d, mode )
-  stream[ "base" ] = _d->base.isValid() ? _d->base->pos() : gfx::tilemap::invalidLocation();
+  stream[ "base" ] = utils::objPosOrDefault( _d->base );
 }
 
 void FishingBoat::load( const VariantMap& stream )
@@ -213,7 +214,7 @@ void FishingBoat::_reachedPathway()
 
 Pathway FishingBoat::Impl::findFishingPlace(PlayerCityPtr city, TilePos pos )
 {
-  FishPlaceList places = city->statistic().walkers.find<FishPlace>( walker::fishPlace, gfx::tilemap::invalidLocation() );
+  FishPlaceList places = city->statistic().walkers.find<FishPlace>( walker::fishPlace, TilePos::invalid() );
 
   int minDistance = 999;
   FishPlacePtr nearest;

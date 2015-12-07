@@ -19,8 +19,8 @@
 #include "pathway/pathway.hpp"
 #include "walker/walker.hpp"
 #include "core/color_list.hpp"
-#include "gfx/helper.hpp"
 #include "city/city.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "gfx/decorator.hpp"
 #include "gfx/tilesarray.hpp"
 #include "gfx/camera.hpp"
@@ -50,7 +50,7 @@ void WalkerDebugInfo::showPath( WalkerPtr walker, const RenderInfo& rinfo, NColo
   }
 
   Point pos = walker->mappos();
-  Point xOffset( tilemap::cellSize().width(), 0 );
+  Point xOffset( config::tilemap.cell.size().width(), 0 );
   PointsArray points;
   if( pathway.isReverse() )
   {

@@ -49,6 +49,8 @@ FortLegionary::FortLegionary()
   _addFormation( frmWestDblLine );
   _addFormation( frmSquad );
   _addFormation( frmOpen );
+
+  _setWorkersType( walker::legionary );
 }
 
 int FortLegionary::flagIndex() const { return 21; }

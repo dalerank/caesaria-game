@@ -28,12 +28,30 @@
 namespace world
 {
 
+class GiftHistory : public std::vector<Gift>
+{
+public:
+  const Gift& last() const;
+  int update( const Gift& gift );
+
+  void load(const VariantMap& stream );
+  VariantMap save() const;
+private:
+  int _lastSignedValue;
+};
+
+class Soldiers
+{
+public:
+};
+
 class Relation
 {
 public:
+  static const Relation invalid;
+
   unsigned int soldiersSent;
   unsigned int lastSoldiersSent;
-  Gift lastGift;
 
   DateTime lastTaxDate;
   unsigned int wrathPoint;
@@ -46,6 +64,8 @@ public:
 
   int value() const;
   void update( const Gift& gift );
+
+  const GiftHistory& gifts() const;
   void change( float delta );
   void reset();
   void removeSoldier();
@@ -53,6 +73,7 @@ public:
   VariantMap save() const;
   void load( const VariantMap& stream );
 private:
+  GiftHistory _gifts;
   float _value;
 };
 

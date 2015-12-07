@@ -68,12 +68,12 @@ public:
   virtual bool applyRetrieveReservation( good::Stock& stock, const int reservationID)
   {
     bool isOk = good::Storage::applyRetrieveReservation( stock, reservationID );
-    stock.setInfo( game::Date::current(), tile::hash( factory->pos() ) );
+    stock.setInfo( game::Date::current(), factory->pos().hash() );
     emit onChangeState();
     return isOk;
   }
 
-  virtual TilePos owner() const { return factory ? factory->pos() : gfx::tilemap::invalidLocation(); }
+  virtual TilePos owner() const { return factory ? factory->pos() : TilePos::invalid(); }
 
   Factory* factory;
 
@@ -216,9 +216,7 @@ void Factory::timeStep(const unsigned long time)
 
   //no workers or no good in stock... stop animate
   if( !mayWork() )
-  {
     return;
-  }
   
   if( _d->production.progress >= 100.0 ) { _productReady();     }
   else                                   { _productProgress();  }
@@ -245,12 +243,12 @@ void Factory::deliverGood()
 {
   // make a cart pusher and send him away
   int qty = _d->goodStore.qty( _d->goods.out );
-  if( _mayDeliverGood() && qty >= 100 )
+  if( _mayDeliverGood() && qty >= CartPusher::simpleCart )
   {      
     auto cartPusher = Walker::create<CartPusher>( _city() );
 
     good::Stock pusherStock( _d->goods.out, qty, 0 );
-    _d->goodStore.retrieve( pusherStock, math::clamp( qty, 0, 400 ) );
+    _d->goodStore.retrieve( pusherStock, math::clamp<int>( qty, 0, CartPusher::megaCart ) );
 
     cartPusher->send2city( this, pusherStock );
 
@@ -316,7 +314,7 @@ void Factory::_storeChanged(){}
 void Factory::setProductRate( const float rate ){  _d->production.rate = rate;}
 float Factory::productRate() const{  return _d->production.rate;}
 
-unsigned int Factory::effciency()      const { return laborAccessPercent() * productivity() / 100; }
+math::Percent Factory::effciency()      const { return laborAccessPercent() * productivity() / 100; }
 unsigned int Factory::getFinishedQty() const { return _d->finishedQty; }
 unsigned int Factory::getConsumeQty()  const { return 100; }
 
@@ -372,7 +370,7 @@ void Factory::receiveGood()
     return;
 
   unsigned int mayStoreQty = _d->goodStore.getMaxStore( consumeGoodType() );
-  mayStoreQty = math::clamp<unsigned int>( mayStoreQty, 0, 100 );
+  mayStoreQty = math::clamp<unsigned int>( mayStoreQty, 0, CartPusher::simpleCart );
   if( _mayDeliverGood() && mayStoreQty > 0 )
   {
     auto cartSupplier = Walker::create<CartSupplier>( _city() );
@@ -439,9 +437,9 @@ void Factory::_productProgress()
   if( _d->produceGood && game::Date::isDayChanged() )
   {
     //ok... factory is work, produce goods
-    float timeKoeff = _d->production.rate / 365.f;
+    float productionPerYear = _d->production.rate / 365.f;
     float laborAccessKoeff = laborAccessPercent() / 100.f;
-    float dayProgress = productivity() * timeKoeff * laborAccessKoeff;  // work is proportional to time and factory speed
+    float dayProgress = productivity() * productionPerYear * laborAccessKoeff;  // work is proportional to time and factory speed
 
     _d->production.progress += dayProgress;
   }

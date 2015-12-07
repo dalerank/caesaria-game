@@ -110,4 +110,10 @@ Batch::Batch(SDL_Batch *batch)
   _batch = batch;
 }
 
+void drawBatchWithFallback(Engine& engine, const Batch& batch, const Pictures& pictures, const Point& pos, Rect* clip)
+{
+   if( batch.valid() ) engine.draw( batch, clip );
+   else                engine.draw( pictures, pos, clip );
+}
+
 }//end namespace gfx

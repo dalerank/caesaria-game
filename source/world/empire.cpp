@@ -312,7 +312,7 @@ CityPtr Empire::addCity( CityPtr city )
   if( ret.isValid() )
   {
     Logger::warning( "Empire: city {0} already exist", city->name() );
-    //_CAESARIA_DEBUG_BREAK_IF( "City already exist" );
+    //_GAME_DEBUG_BREAK_IF( "City already exist" );
     return ret;
   }
 
@@ -473,6 +473,7 @@ void Empire::timeStep( unsigned int time )
   }
 
   _d->trading.timeStep( time );
+  _d->troutes.timeStep( time );
   _d->emperor.timeStep( time );
   _d->cities.update( time );
   _d->objects.update( time );

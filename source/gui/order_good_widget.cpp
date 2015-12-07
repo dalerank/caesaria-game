@@ -103,8 +103,8 @@ OrderGoodWidget::OrderGoodWidget(Widget* parent, int index, good::Product good, 
   _btnChangeRule->setFont( Font::create( FONT_1_WHITE ) );
   updateBtnText();
 
-  CONNECT( _btnChangeRule, onClicked(), this, OrderGoodWidget::changeRule );
-  CONNECT( _btnVolume, onChange(), this, OrderGoodWidget::changeCapacity );
+  CONNECT_LOCAL( _btnChangeRule, onClicked(), OrderGoodWidget::changeRule );
+  CONNECT_LOCAL( _btnVolume,     onChange(),  OrderGoodWidget::changeCapacity );
 }
 
 void OrderGoodWidget::_updateTexture(Engine& painter)

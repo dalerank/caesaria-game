@@ -18,12 +18,12 @@
 #include "city/city.hpp"
 #include "constants.hpp"
 #include "corpse.hpp"
+#include "gfx/tilepos.hpp"
 #include "game/resourcegroup.hpp"
 
 Ship::Ship(PlayerCityPtr city )
   : Walker( city, walker::unknown )
 {
-  setName( _("##ship##") );
 }
 
 bool Ship::die()
@@ -37,6 +37,12 @@ bool Ship::die()
   }
 
   return false;
+}
+
+void Ship::initialize(const VariantMap& options)
+{
+  Walker::initialize( options );
+  setName( _("##ship##") );
 }
 
 Ship::~Ship(){}

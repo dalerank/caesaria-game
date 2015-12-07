@@ -279,7 +279,7 @@ bool EditBox::onEvent(const NEvent& event)
 				}
 			}
 			break;
-		case sTextInput:
+		case sEventTextInput:
 			_inputChar(*(unsigned short*)event.text.text);
 		break;
 
@@ -1509,57 +1509,6 @@ void EditBox::_sendGuiEvent( unsigned int type)
 {
     parent()->onEvent( NEvent::Gui( this, 0, (GuiEventType)type ));
 }
-
-//! Writes attributes of the element.
-//void EditBox::save( core::VariantArray* out ) const
-//{
-	/*out->addBool  ("Border", 			  Border);
-	out->addBool  ("Background", 		  Background);
-	out->addBool  ("_d->overrideColorEnabled",_d->overrideColorEnabled );
-	//out->addColor ("OverrideColor",       OverrideColor);
-	// out->addFont("OverrideFont",OverrideFont);
-	out->addInt   ("MaxChars",            Max);
-	out->addBool  ("WordWrap",            WordWrap);
-	out->addBool  ("MultiLine",           MultiLine);
-	out->addBool  ("AutoScroll",          AutoScroll);
-	out->addBool  ("PasswordBox",         PasswordBox);
-	String ch = L" ";
-	ch[0] = PasswordChar;
-	out->addString("PasswordChar",        ch.c_str());
-	out->addEnum  ("HTextAlign",          _textHorzAlign, NrpAlignmentNames);
-	out->addEnum  ("VTextAlign",          _textVertAlign, NrpAlignmentNames);
-
-	INrpElement::serializeAttributes(out,options);
-    */
-//}
-
-
-//! Reads attributes of the element
-//void EditBox::load( core::VariantArray* in )
-//{
-//       Widget::load(in);
-/*
-	setDrawBorder( in->getAttributeAsBool("Border") );
-	setDrawBackground( in->getAttributeAsBool("Background") );
-	setOverrideColor(in->getAttributeAsColor("OverrideColor"));
-	enableOverrideColor(in->getAttributeAsBool("_d->overrideColorEnabled"));
-	setMax(in->getAttributeAsInt("MaxChars"));
-	setWordWrap(in->getAttributeAsBool("WordWrap"));
-	setMultiLine(in->getAttributeAsBool("MultiLine"));
-	setAutoScroll(in->getAttributeAsBool("AutoScroll"));
-	String ch = in->getAttributeAsStringW("PasswordChar");
-
-	if (!ch.size())
-		setPasswordBox(in->getAttributeAsBool("PasswordBox"));
-	else
-		setPasswordBox(in->getAttributeAsBool("PasswordBox"), ch[0]);
-
-	setTextAlignment( (CAESARIA_ALIGNMENT) in->getAttributeAsEnumeration("HTextAlign", GUIAlignmentNames),
-			(CAESARIA_ALIGNMENT) in->getAttributeAsEnumeration("VTextAlign", GUIAlignmentNames));
-
-	// setOverrideFont(in->getAttributeAsFont("OverrideFont"));
-    */
-//}
 
 NColor EditBox::overrideColor() const
 {

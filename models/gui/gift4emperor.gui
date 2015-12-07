@@ -33,7 +33,7 @@
     text : "##dispatch_gift##"
     bgtype : "whiteBorderUp"
   }
-    
+
   btnCancel#PushButton : {
     geometry : [ 340, "ph-40", 496, "ph-20" ]
     font : "FONT_2"

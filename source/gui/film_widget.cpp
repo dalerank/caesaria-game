@@ -37,7 +37,6 @@ class FilmWidget::Impl
 public:
   GameAutoPause locker;
   Label* lbTitle;
-  TexturedButton* btnExit;
   Label* lbTime;
   Label* lbReceiver;
   Label* lbMessage;
@@ -58,7 +57,6 @@ FilmWidget::FilmWidget(Widget* parent, const std::string& movieName )
   setCenter( parent->center() );
 
   GET_DWIDGET_FROM_UI( _d, lbTitle )
-  GET_DWIDGET_FROM_UI( _d, btnExit )
   GET_DWIDGET_FROM_UI( _d, lbTime )
   GET_DWIDGET_FROM_UI( _d, lbReceiver )
   GET_DWIDGET_FROM_UI( _d, lbMessage )
@@ -78,8 +76,8 @@ FilmWidget::FilmWidget(Widget* parent, const std::string& movieName )
     add<Image>( Rect( 12, 12, width() - 12, 12 + 292 ), pic, Image::fit );
   }
 
-  CONNECT( _d->btnExit, onClicked(), &_d->onCloseSignal, Signal0<>::_emit );
-  CONNECT( _d->btnExit, onClicked(), this, FilmWidget::deleteLater );
+  LINK_WIDGET_ACTION( TexturedButton*, btnExit, onClicked(), &_d->onCloseSignal, Signal0<>::_emit );
+  LINK_WIDGET_LOCAL_ACTION( TexturedButton*, btnExit, onClicked(), FilmWidget::deleteLater );
 
   setModal();
 }

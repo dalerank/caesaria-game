@@ -169,6 +169,12 @@ TraderoutePtr TradeRoutes::create( const std::string& begin, const std::string& 
   return route;
 }
 
+void TradeRoutes::timeStep(unsigned int time)
+{
+  for( auto& route : _d->routes )
+    route.second->timeStep( time );
+}
+
 void Trading::setPrice(good::Product gtype, int bCost, int sCost)
 {
   _d->empirePrices.setPrice( gtype, bCost, sCost );

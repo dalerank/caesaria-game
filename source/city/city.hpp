@@ -40,12 +40,13 @@ class PlayerCity : public world::City
 {
 public:  
   typedef enum { roadEntry=0, roadExit, boatEntry, boatExit } TileType;
-  typedef enum { adviserEnabled=0, godEnabled, fishPlaceEnabled, updateRoads,
+  typedef enum { adviserEnabled=0, godEnabled, fishPlaceEnabled, updateRoadsOnNextFrame,
                  forceBuild, warningsEnabled, updateTiles, zoomEnabled, zoomInvert,
                  fireKoeff, barbarianAttack, c3gameplay, difficulty, legionAttack, climateType,
                  collapseKoeff, highlightBuilding, destroyEpidemicHouses, forestFire,
                  forestGrow, warfNeedTimber, showGodsUnhappyWarn, claypitMayCollapse,
-                 minesMayCollapse,
+                 minesMayCollapse, riversideAsWell, soldiersHaveSalary, housePersonalTaxes,
+                 cutForest2timber,
                  constructorMode } OptionType;
 
   static PlayerCityPtr create( world::EmpirePtr empire, PlayerPtr mayor );
@@ -84,7 +85,7 @@ public:
   
   /** Set/get current camera position last frame */
   void setCameraPos(const TilePos pos);
-  TilePos cameraPos() const;
+  const TilePos& cameraPos() const;
      
   econ::Treasury& treasury();
 

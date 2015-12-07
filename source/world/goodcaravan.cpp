@@ -72,7 +72,7 @@ void GoodCaravan::sendTo(ObjectPtr obj)
 
 void GoodCaravan::sendTo(CityPtr obj) { sendTo( obj.as<Object>() ); }
 good::Store& GoodCaravan::store() { return _d->store; }
-std::string GoodCaravan::type() const { return CAESARIA_STR_EXT(GoodCaravan); }
+std::string GoodCaravan::type() const { return TEXT(GoodCaravan); }
 
 void GoodCaravan::timeStep(unsigned int time)
 {
@@ -94,7 +94,7 @@ void GoodCaravan::load(const VariantMap& stream)
 
   _d->options = stream;
   _d->base = empire()->findCity( stream.get( "base" ).toString() );
-  Logger::warningIf( _d->base == 0, "!!! WARNING: GoodCaravan::load base not exists" );
+  Logger::warningIf( _d->base.isNull(), "!!! WARNING: GoodCaravan::load base not exists" );
 
   VARIANT_LOAD_CLASS_D( _d, store, stream )
   VARIANT_LOAD_STR_D( _d, destination, stream )
@@ -119,7 +119,7 @@ GoodCaravan::GoodCaravan( CityPtr city )
 
   setSpeed( deafaultSpeed );
 
-  setPicture( gfx::Picture( ResourceGroup::panelBackground, 108 ) );
+  setPicture( gfx::Picture( gui::rc.panel, 108 ) );
 }
 
 }//end namespace world

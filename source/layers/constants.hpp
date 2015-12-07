@@ -38,6 +38,8 @@ typedef enum { simple=0, water, fire, damage, desirability,
        all, count=0xff
      } Type;
 
+std::string toString( Type t );
+
 class Helper : public EnumsHelper<Type>
 {
 public:

@@ -30,7 +30,7 @@ public:
   virtual void timeStep(const unsigned int time );
 
 private:
-  Water( PlayerCityPtr city );
+  Water( PlayerCityPtr city );  
 };
 
 }//end namespace city

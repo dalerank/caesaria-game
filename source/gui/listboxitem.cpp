@@ -45,6 +45,7 @@ public:
 
 void ListBoxItem::setText(const std::string& text){ _d->text = text;}
 void ListBoxItem::setIcon( Picture icon ){    _d->icon = icon; }
+void ListBoxItem::setIcon( const std::string& rc, int index ) { _d->icon.load( rc, index ); }
 const std::string& ListBoxItem::text() const{    return _d->text;}
 const Alignment& ListBoxItem::verticalAlign() const{    return _d->vertical;}
 bool ListBoxItem::isAlignEnabled() const{ return _d->enabled; }
@@ -161,6 +162,7 @@ void ListBoxItem::setUrl(const std::string& url) { _d->url = url; }
 const std::string&ListBoxItem::url() const { return _d->url; }
 Variant ListBoxItem::data( const std::string &name) const{ return _d->data[ name ]; }
 void ListBoxItem::setData( const std::string &name, const Variant& value ){ _d->data[name] = value; }
+void ListBoxItem::setData(const VariantMap& map) { _d->data = map; }
 float ListBoxItem::currentHovered() const {   return _d->currentHovered;}
 void ListBoxItem::updateHovered( float delta ){    _d->currentHovered = math::clamp<float>( _d->currentHovered + delta, 0.f, 255.f );}
 Picture ListBoxItem::icon() { return _d->icon; }

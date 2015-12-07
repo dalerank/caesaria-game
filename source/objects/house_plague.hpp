@@ -26,7 +26,7 @@ class HousePlague : public Walker
 {
   WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static void create( PlayerCityPtr city, TilePos pos, int time);
+  static void create( PlayerCityPtr city, const TilePos& pos, int time);
   ~HousePlague();
 
   virtual void timeStep(const unsigned long time);

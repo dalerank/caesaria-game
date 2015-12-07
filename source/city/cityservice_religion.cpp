@@ -79,7 +79,7 @@ public:
     std::map< std::string, CoverageInfo >::clear();
     for( auto divinity : divinities)
     {
-      CoverageInfo &cvInfo = (*this)[divinity->internalName()];
+      CoverageInfo& cvInfo = (*this)[divinity->internalName()];
       cvInfo.temples.small_n = 0;
       cvInfo.temples.big_n = 0;
     }
@@ -102,7 +102,7 @@ public:
   StringArray reasons;
 };
 
-std::string Religion::defaultName() { return CAESARIA_STR_EXT(Religion); }
+std::string Religion::defaultName() { return TEXT(Religion); }
 
 Religion::Religion( PlayerCityPtr city )
   : Srvc( city, Religion::defaultName() ), _d( new Impl )

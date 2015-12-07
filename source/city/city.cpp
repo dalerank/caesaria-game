@@ -60,10 +60,10 @@
 #include "world/barbarian.hpp"
 #include "objects/fort.hpp"
 #include "events/showinfobox.hpp"
+#include "world/relations.hpp"
 #include "walker/helper.hpp"
 #include "walkergrid.hpp"
 #include "events/showinfobox.hpp"
-#include "gfx/helper.hpp"
 #include "game/difficulty.hpp"
 #include "active_points.hpp"
 #include "game/player.hpp"
@@ -83,6 +83,7 @@
 #include "events/warningmessage.hpp"
 #include "cityservice_peace.hpp"
 #include "city_option.hpp"
+#include "gfx/tile_config.hpp"
 #include "ambientsound.hpp"
 #include "core/osystem.hpp"
 
@@ -96,14 +97,14 @@ static SimpleLogger LOG_CITY( "City" );
 typedef std::map<PlayerCity::TileType, Tile*> TileTypeMap;
 
 namespace config {
-CAESARIA_LITERALCONST(tilemap)
+GAME_LITERALCONST(tilemap)
 static const int minimumOldFormat = 58;
 }
 
 class PlayerCity::Impl
 {
 public:
-  city::Economy economy;  // amount of money
+  city::Economy funds;  // amount of money
   city::Overlays overlays;
   city::Services services;
   city::ActivePoints activePoints;
@@ -148,10 +149,10 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setBorderInfo( roadExit, TilePos( 0, 0 ) );
   setBorderInfo( boatEntry, TilePos( 0, 0 ) );
   setBorderInfo( boatExit, TilePos( 0, 0 ) );
-  _d->economy.resolveIssue( econ::Issue( econ::Issue::donation, 1000 ) );
+  _d->funds.resolveIssue( econ::Issue( econ::Issue::donation, 1000 ) );
   _d->states.population = 0;
   _d->states.birth = game::Date::current();
-  _d->economy.setTaxRate( econ::Treasury::defaultTaxPrcnt );
+  _d->funds.setTaxRate( econ::Treasury::defaultTaxPrcnt );
   _d->states.age = 0;
   _d->statistic.createInstance( *this );
   _d->walkers.idCount = 1;
@@ -163,7 +164,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setPicture( Picture( ResourceGroup::empirebits, 1 ) );
   _initAnimation();
 
-  setOption( updateRoads, 0 );
+  setOption( updateRoadsOnNextFrame, 0 );
   setOption( godEnabled, 1 );
   setOption( zoomEnabled, 1 );
   setOption( zoomInvert, OSystem::isMac() ? 1 : 0 );
@@ -180,8 +181,11 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( difficulty, game::difficulty::usual );
   setOption( forestFire, 1 );
   setOption( showGodsUnhappyWarn, 1 );
-  setOption( forestGrow, 0 );
+  setOption( forestGrow, 1 );
   setOption( warfNeedTimber, 1 );
+  setOption( riversideAsWell, 1 );
+  setOption( soldiersHaveSalary, 1 );
+  setOption( housePersonalTaxes, 1 );
 
   _d->states.nation = world::nation::rome;
 }
@@ -189,7 +193,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
 void PlayerCity::_initAnimation()
 {
   _animation().clear();
-  _animation().load( "ourcity_anim" );
+  _animation().load( "world_ourcity" );
 }
 
 std::string PlayerCity::about(Object::AboutType type)
@@ -230,19 +234,19 @@ void PlayerCity::timeStep(unsigned int time)
   _d->services.update( this, time );
   city::Timers::instance().update( time );
 
-  if( getOption( updateRoads ) > 0 )
+  if( getOption( updateRoadsOnNextFrame ) > 0 )
   {
-    setOption( updateRoads, 0 );
+    setOption( updateRoadsOnNextFrame, 0 );
     _d->overlays.recalcRoadAccess();
   }
 }
 
 void PlayerCity::Impl::monthStep( PlayerCityPtr city, const DateTime& time )
 {
-  economy.collectTaxes( city );
-  economy.payWages( city );
-  economy.payMayorSalary( city );
-  economy.updateHistory( game::Date::current() );
+  funds.collectTaxes( city );
+  funds.payWages( city );
+  funds.payMayorSalary( city );
+  funds.updateHistory( game::Date::current() );
 }
 
 void PlayerCity::Impl::calculatePopulation()
@@ -270,10 +274,10 @@ const OverlayList& PlayerCity::overlays() const  { return _d->overlays; }
 city::ActivePoints& PlayerCity::activePoints()   { return _d->activePoints; }
 city::Scribes& PlayerCity::scribes()             { return _d->scribes; }
 Picture PlayerCity::picture() const              { return _d->empMapPicture; }
-bool PlayerCity::isPaysTaxes() const             { return _d->economy.getIssueValue( econ::Issue::empireTax, econ::Treasury::lastYear ) > 0; }
-bool PlayerCity::haveOverduePayment() const      { return _d->economy.getIssueValue( econ::Issue::overduePayment, econ::Treasury::thisYear ) > 0; }
+bool PlayerCity::isPaysTaxes() const             { return _d->funds.getIssueValue( econ::Issue::empireTax, econ::Treasury::lastYear ) > 0; }
+bool PlayerCity::haveOverduePayment() const      { return _d->funds.getIssueValue( econ::Issue::overduePayment, econ::Treasury::thisYear ) > 0; }
 Tilemap& PlayerCity::tilemap()                   { return _d->tilemap; }
-econ::Treasury& PlayerCity::treasury()           { return _d->economy; }
+econ::Treasury& PlayerCity::treasury()           { return _d->funds; }
 
 int PlayerCity::strength() const
 {
@@ -310,7 +314,7 @@ void PlayerCity::save( VariantMap& stream) const
   VARIANT_SAVE_ANY_D( stream, _d, states.population )
 
   LOG_CITY.info( "Save finance information" );
-  stream[ "funds" ] = _d->economy.save();
+  VARIANT_SAVE_CLASS_D( stream, _d, funds )
   VARIANT_SAVE_CLASS_D( stream, _d, scribes )
 
   LOG_CITY.info( "Save trade/build/win options" );
@@ -349,7 +353,7 @@ void PlayerCity::save( VariantMap& stream) const
     vm_services[service->name() ] = service->save();
   }
 
-  stream[ "saveFormat" ] = CAESARIA_BUILD_NUMBER;
+  stream[ "saveFormat" ] = GAME_BUILD_NUMBER;
   stream[ "services" ] = vm_services;
   VARIANT_SAVE_ANY_D( stream, _d, states.age )
   VARIANT_SAVE_ANY_D( stream, _d, states.birth )
@@ -362,7 +366,7 @@ void PlayerCity::load( const VariantMap& stream )
 {
   LOG_CITY.info( "Start parse savemap" );
   int saveFormat = stream.get( "saveFormat", minimumOldFormat );
-  bool needLoadOld = saveFormat < CAESARIA_BUILD_NUMBER;
+  bool needLoadOld = saveFormat < GAME_BUILD_NUMBER;
 
   if( needLoadOld )
   {
@@ -388,7 +392,7 @@ void PlayerCity::load( const VariantMap& stream )
   setOption( PlayerCity::forceBuild, 1 );
 
   LOG_CITY.info( "Parse funds" );
-  _d->economy.load( stream.get( "funds" ).toMap() );
+  VARIANT_LOAD_CLASS_D( _d, funds, stream )
   VARIANT_LOAD_CLASS_D( _d, scribes, stream )
 
   LOG_CITY.info( "Parse trade/build/win params" );
@@ -399,16 +403,16 @@ void PlayerCity::load( const VariantMap& stream )
   LOG_CITY.info( "Load overlays" );
   VariantMap overlays = stream.get( "overlays" ).toMap();
 
-  for (auto& item : overlays)
+  for( const auto& item : overlays)
   {
     VariantMap overlayParams = item.second.toMap();
     VariantList config = overlayParams.get( "config" ).toList();
 
     object::Type overlayType = (object::Type)config.get( ovconfig::idxType ).toInt();
-    TilePos pos = config.get( ovconfig::idxLocation, gfx::tilemap::invalidLocation() );
+    TilePos pos = config.get( ovconfig::idxLocation, TilePos::invalid() );
 
     auto overlay = Overlay::create( overlayType );
-    if( overlay.isValid() && gfx::tilemap::isValidLocation( pos ) )
+    if( overlay.isValid() && config::tilemap.isValidLocation( pos ) )
     {
       city::AreaInfo info( this, pos );
       overlay->build( info );
@@ -427,7 +431,7 @@ void PlayerCity::load( const VariantMap& stream )
 
   LOG_CITY.info( "Parse walkers info" );
   VariantMap walkers = stream.get( "walkers" ).toMap();
-  for (auto& item : walkers)
+  for( const auto& item : walkers)
   {
     VariantMap walkerInfo = item.second.toMap();
     walker::Type walkerType = walkerInfo.get( "type", (int)walker::unknown ).toEnum<walker::Type>();
@@ -446,7 +450,7 @@ void PlayerCity::load( const VariantMap& stream )
 
   LOG_CITY.info( "Load service info" );
   VariantMap services = stream.get( "services" ).toMap();
-  for(auto& item : services)
+  for( const auto& item : services)
   {
     VariantMap servicesSave = item.second.toMap();
 
@@ -527,24 +531,27 @@ const good::Store& PlayerCity::buys() const                 { return _d->tradeOp
 ClimateType PlayerCity::climate() const                     { return (ClimateType)getOption( PlayerCity::climateType ); }
 unsigned int PlayerCity::tradeType() const                  { return world::EmpireMap::sea | world::EmpireMap::land; }
 Signal1<int>& PlayerCity::onPopulationChanged()             { return _d->signal.onPopulationChanged; }
-Signal1<int>& PlayerCity::onFundsChanged()                  { return _d->economy.onChange(); }
+Signal1<int>& PlayerCity::onFundsChanged()                  { return _d->funds.onChange(); }
 void PlayerCity::setCameraPos(const TilePos pos)            { _d->cameraStart = pos; }
-TilePos PlayerCity::cameraPos() const                       { return _d->cameraStart; }
+const TilePos& PlayerCity::cameraPos() const                       { return _d->cameraStart; }
 void PlayerCity::addService( city::SrvcPtr service )        { _d->services.push_back( service ); }
 
 void PlayerCity::setOption(PlayerCity::OptionType opt, int value)
 {
   _d->options[ opt ] = value;
-  if( opt == c3gameplay && value )
+  if( opt == c3gameplay )
   {
-    _d->options[ warfNeedTimber ] = false;
-    _d->options[ forestFire ] = false;
-    _d->options[ forestGrow ] = false;
-    _d->options[ forestGrow ] = false;
-    _d->options[ highlightBuilding ] = false;
-    _d->options[ destroyEpidemicHouses ] = false;
+    if( value )
+      events::dispatch<WarningMessage>( "WARNING! Enabled C3 gameplay only!", WarningMessage::negative );
 
-    events::dispatch<WarningMessage>( "WARNING: enabled C3 gameplay only!", WarningMessage::negative );
+    _d->options[ warfNeedTimber ] = !value;
+    _d->options[ forestFire ] = !value;
+    _d->options[ forestGrow ] = !value;
+    _d->options[ destroyEpidemicHouses ] = !value;
+    _d->options[ riversideAsWell ] = !value;
+    _d->options[ soldiersHaveSalary ] = !value;
+    _d->options[ housePersonalTaxes ] = !value;
+    _d->options[ cutForest2timber ] = !value;
   }
 }
 
@@ -600,7 +607,7 @@ int PlayerCity::peace() const
 }
 
 int PlayerCity::sentiment() const {  return _d->sentiment; }
-int PlayerCity::favour() const { return empire()->emperor().relation( name() ); }
+int PlayerCity::favour() const { return empire()->emperor().relation( name() ).value(); }
 
 void PlayerCity::addObject( world::ObjectPtr object )
 {

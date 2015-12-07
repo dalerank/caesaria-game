@@ -22,7 +22,7 @@
 #include "gfx/tilearea.hpp"
 #include "gfx/tilemap.hpp"
 #include "constants.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/imgid.hpp"
 #include "core/foreach.hpp"
 #include "coast.hpp"
 #include "objects_factory.hpp"
@@ -30,6 +30,7 @@
 using namespace gfx;
 
 REGISTER_CLASS_IN_OVERLAYFACTORY(object::rock, Rock)
+REGISTER_CLASS_IN_OVERLAYFACTORY(object::plateau, Plateau)
 
 namespace {
   static Renderer::PassQueue riftPassQueue=Renderer::PassQueue(1,Renderer::ground);
@@ -151,3 +152,11 @@ SmartList<Rock> Rock::neighbors() const
                .overlays()
                .select<Rock>();
 }
+
+Plateau::Plateau()
+{
+  setType( object::plateau );
+  setPicture( info().randomPicture( Size(1) ) );
+}
+
+bool Plateau::update() { return true; }

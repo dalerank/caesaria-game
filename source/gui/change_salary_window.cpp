@@ -54,14 +54,10 @@ ChangeSalary::ChangeSalary(Widget* p, unsigned int salary)
   d->newSalary = salary;
   d->currentSalary = salary;
 
-  INIT_WIDGET_FROM_UI( PushButton*, btnCancel  )
-  INIT_WIDGET_FROM_UI( ListBox*,    lbxTitles )
-  INIT_WIDGET_FROM_UI( PushButton*, btnOk )
-
-  CONNECT( btnCancel, onClicked(), this, ChangeSalary::deleteLater );
-  CONNECT( btnOk, onClicked(), d.data(), Impl::setNewSalary );
-  CONNECT( btnOk, onClicked(), this, ChangeSalary::deleteLater  );
-  CONNECT( lbxTitles, onItemSelected(), d.data(), Impl::resolveSalaryChange );
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnCancel, onClicked(), ChangeSalary::deleteLater );
+  LINK_WIDGET_ACTION( PushButton*, btnOk, onClicked(), d.data(), Impl::setNewSalary );
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnOk, onClicked(), ChangeSalary::deleteLater  );
+  LINK_WIDGET_ACTION(  ListBox*, lbxTitles, onItemSelected(), d.data(), Impl::resolveSalaryChange );
 }
 
 void ChangeSalary::setRanks(world::GovernorRanks ranks)

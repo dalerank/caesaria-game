@@ -26,7 +26,7 @@ namespace events
 {
 const int defaultReturnWorkersDistance = 40;
 
-GameEventPtr ReturnWorkers::create(TilePos center, unsigned int workers)
+GameEventPtr ReturnWorkers::create(const TilePos& center, unsigned int workers)
 {
   ReturnWorkers* e = new ReturnWorkers();
   e->_center  = center;

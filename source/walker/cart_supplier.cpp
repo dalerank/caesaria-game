@@ -38,7 +38,7 @@
 #include "city/trade_options.hpp"
 #include "core/direction.hpp"
 #include "walkers_factory.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "gfx/tilemap.hpp"
 #include "gfx/cart_animation.hpp"
 
@@ -65,8 +65,8 @@ public:
 CartSupplier::CartSupplier( PlayerCityPtr city )
   : Human( city, walker::supplier ), _d( new Impl )
 {
-  _d->storageBuildingPos = gfx::tilemap::invalidLocation();
-  _d->baseBuildingPos = gfx::tilemap::invalidLocation();
+  _d->storageBuildingPos = TilePos::invalid();
+  _d->baseBuildingPos = TilePos::invalid();
   _d->maxDistance = defaultDeliverDistance;
 
   setName( NameGenerator::rand( NameGenerator::plebMale ) );
@@ -215,13 +215,13 @@ TilePos getSupplierDestination2( Propagator &pathPropagator, const object::Type 
   }
   else
   {
-    return gfx::tilemap::invalidLocation();
+    return TilePos::invalid();
   }
 }
 
 void CartSupplier::computeWalkerDestination(BuildingPtr building, const good::Product type, const int qty )
 {
-  _d->storageBuildingPos = gfx::tilemap::invalidLocation();  // no destination yet
+  _d->storageBuildingPos = TilePos::invalid();  // no destination yet
 
   if( _city()->tradeOptions().isStacking( type ) )
     return;

@@ -79,7 +79,7 @@ void HealthBuilding::buildingsServed(const std::set<BuildingPtr>& buildings, Ser
     if( building->type() == object::house )
     {
       HousePtr house = building.as<House>();
-      int hash = gfx::tile::hash( house->pos() );
+      int hash = house->pos().hash();
       _d->servedHouses[ hash ] = house->habitants().count();
     }
   }

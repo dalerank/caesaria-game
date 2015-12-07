@@ -17,6 +17,7 @@
 
 #include "walkergrid.hpp"
 #include "walker/walker.hpp"
+#include "gfx/tile.hpp"
 #include "core/logger.hpp"
 
 namespace city

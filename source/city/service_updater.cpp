@@ -33,7 +33,7 @@ namespace city
 {
 
 namespace {
-CAESARIA_LITERALCONST(service)
+GAME_LITERALCONST(service)
 }
 
 REGISTER_SERVICE_IN_FACTORY(ServiceUpdater,serviceUpdater)

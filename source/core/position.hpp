@@ -34,6 +34,7 @@ public:
   Point operator-(const Point& other) const { return Point( _x - other._x, _y - other._y ); }
   Point operator-() const { return Point( -_x, -_y); }
   Point operator*(float mul) const{ return Point( _x*mul, _y*mul ); }
+  Point operator/(float div) const{ return Point( _x/div, _y/div ); }
 
   void setX( const int nx ) { _x = nx; }
   void setY( const int ny ) { _y = ny; }
@@ -62,71 +63,5 @@ inline PointF Point::toPointF() const
 { 
   return PointF( (float)_x, (float)_y );
 }
-
-class TilePos : Vector2<int>
-{
-public:
-  struct Neighbors
-  {
-    const TilePos& pos;
-    inline TilePos north() const { return TilePos( pos.x(), pos.y()+1 ); }
-    inline TilePos northeast() const { return TilePos( pos.x()+1, pos.y()+1 ); }
-    inline TilePos east() const { return TilePos( pos.x()+1, pos.y() ); }
-    inline TilePos southeast() const { return TilePos( pos.x()+1, pos.y()-1 ); }
-    inline TilePos south() const { return TilePos( pos.x(), pos.y()-1 ); }
-    inline TilePos southwest() const { return TilePos( pos.x()-1, pos.y()-1 ); }
-    inline TilePos west() const { return TilePos( pos.x()-1, pos.y() ); }
-    inline TilePos northwest() const { return TilePos( pos.x()-1, pos.y()+1 ); }
-  };
-
-  TilePos( const int i, const int j ) : Vector2<int>( i, j ) {}
-  TilePos( const TilePos& other ) : Vector2<int>( other._x, other._y ) {}
-  TilePos() : Vector2<int>( 0, 0 ) {}
-
-  inline int i() const { return _x; }
-  inline int j() const { return _y; }
-  inline int z() const { return _y - _x; }
-
-  inline int& ri() { return _x; }
-  inline int& rj() { return _y; }
-
-  Neighbors nb() const { return Neighbors{*this}; }
-
-  inline void setI( const int i ) { _x = i; }
-  inline void setJ( const int j ) { _y = j; }
-  inline void set(int nx, int ny) { _x = nx; _y = ny; }
-
-  float distanceFrom( const TilePos& other ) const { return getDistanceFrom( other );}
-  int getDistanceFromSQ(const TilePos& other) const { return Vector2<int>::getDistanceFromSQ(other);}
-
-  TilePos& operator=(const TilePos& other) { set( other._x, other._y ); return *this; }
-  TilePos& operator+=(const TilePos& other) { set( _x + other._x, _y + other._y ); return *this; }
-  TilePos& operator-=(const TilePos& other) { set( _x - other._x, _y - other._y ); return *this; }
-  TilePos operator+(const TilePos& other) const { return TilePos( _x + other._x, _y + other._y ); }
-  TilePos operator-(const TilePos& other) const { return TilePos( _x - other._x, _y - other._y ); }
-  TilePos operator*(int v) const { return TilePos( _x * v, _y * v ); }
-  TilePos operator-() const { return TilePos( -_x, -_y ); }
-  TilePos operator/(int v) const { return TilePos( _x / v, _y / v); }
-  bool operator==(const TilePos& other) const{ return (_x == other._x) && ( _y == other._y ); }
-  bool operator!=(const TilePos& other) const{ return (_x != other._x ) || ( _y != other._y ); }
-  bool operator<(const TilePos& other) const{ return (_x<other._x) || (_x==other._x && _y<other._y); }
-
-  double getAngleICW() const { return getAngle(); }
-
-  TilePos fit( const TilePos& lur, const TilePos& tbr ) const
-  {
-    TilePos ret = *this;
-    ret._x = math::clamp( ret._x, lur._x, tbr._x );
-    ret._y = math::clamp( ret._y, lur._y, tbr._y );
-
-    return ret;
-  }
-
-  TilePos nextStep( const TilePos& dst ) const
-  {
-    return *this + TilePos( math::signnum( dst.i() - i() ),
-                            math::signnum( dst.j() - j() ) );
-  }
-};
 
 #endif //__CAESARIA_POSITION_H_INCLUDED__

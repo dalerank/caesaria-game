@@ -35,7 +35,7 @@ public:
     return *widget;
   }
 
-  typedef enum { showTooltips=0, buttonShowDebugArea } Flag;
+  typedef enum { showTooltips=0, drawDebugArea } Flag;
   Ui( gfx::Engine& painter );
 
   virtual ~Ui();

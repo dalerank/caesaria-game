@@ -63,4 +63,5 @@
   oilworkshop : { rc : "oilworkshop", start : 1, stop : 1, offset : [ -1, -1 ] }
   burnedTree : { rc : "burnedTree", start : 1, stop : 1, offset : [ -1, -1 ] }
   way : { rc : "way", start : 1, stop : 200, offset : [ 0, 0 ] }
+  academy : { rc : "academy", start : 1, stop : 2, offset : [ -1, -1 ] }
 }

@@ -27,6 +27,7 @@
 #include "core/variant.hpp"
 #include "pathway/path_finding.hpp"
 #include "market_kid.hpp"
+#include "core/common.hpp"
 #include "good/storage.hpp"
 #include "name_generator.hpp"
 #include "core/variant_map.hpp"
@@ -34,7 +35,6 @@
 #include "objects/constants.hpp"
 #include "game/gamedate.hpp"
 #include "pathway/pathway_helper.hpp"
-#include "gfx/helper.hpp"
 #include "walkers_factory.hpp"
 #include "city/trade_options.hpp"
 
@@ -116,7 +116,7 @@ TilePos getWalkerDestination2( Propagator &pathPropagator, const object::Type ty
     return res->pos();
   }
 
-  return gfx::tilemap::invalidLocation();
+  return TilePos::invalid();
 }
 
 void MarketBuyer::_computeWalkerDestination( MarketPtr market )
@@ -127,7 +127,7 @@ void MarketBuyer::_computeWalkerDestination( MarketPtr market )
   //only look at goods that shall not be stockpiled
   priorityGoods.exclude( _city()->tradeOptions().locked() );
 
-  _d->destBuildingPos = gfx::tilemap::invalidLocation();  // no destination yet
+  _d->destBuildingPos = TilePos::invalid();  // no destination yet
 
   if( priorityGoods.size() > 0 )
   {
@@ -150,7 +150,7 @@ void MarketBuyer::_computeWalkerDestination( MarketPtr market )
         _d->destBuildingPos = getWalkerDestination2<Granary>( pathPropagator, object::granery, _d->market,
                                                               _d->basket, _d->priorityGood, pathWay, _d->reservationID );
 
-        if( !gfx::tilemap::isValidLocation( _d->destBuildingPos ) )
+        if( _d->destBuildingPos == TilePos::invalid() )
         {
           _d->destBuildingPos = getWalkerDestination2<Warehouse>( pathPropagator, object::warehouse, _d->market,
                                                                 _d->basket, _d->priorityGood, pathWay, _d->reservationID );
@@ -163,7 +163,7 @@ void MarketBuyer::_computeWalkerDestination( MarketPtr market )
                                                                 _d->basket, _d->priorityGood, pathWay, _d->reservationID );
       }
 
-      if( gfx::tilemap::isValidLocation( _d->destBuildingPos ) )
+      if( config::tilemap.isValidLocation( _d->destBuildingPos ) )
       {
         // we found a destination!
         setPos( pathWay.startPos() );
@@ -173,7 +173,7 @@ void MarketBuyer::_computeWalkerDestination( MarketPtr market )
     }
   }
 
-  if( !gfx::tilemap::isValidLocation( _d->destBuildingPos ) )
+  if( _d->destBuildingPos == TilePos::invalid() )
   {
     // we have nothing to buy, or cannot find what we need to buy
     deleteLater();
@@ -207,7 +207,7 @@ TilePos MarketBuyer::places(Walker::Place type) const
 {
   switch( type )
   {
-  case plOrigin: return _d->market.isValid() ? _d->market->pos() : gfx::tilemap::invalidLocation();
+  case plOrigin: return utils::objPosOrDefault( _d->market );
   case plDestination: return _d->destBuildingPos;
   default: break;
   }
@@ -336,7 +336,7 @@ void MarketBuyer::save( VariantMap& stream ) const
   Walker::save( stream );
   VARIANT_SAVE_ANY_D( stream, _d, destBuildingPos )
   VARIANT_SAVE_ANY_D( stream, _d, priorityGood )
-  stream[ "marketPos" ] = _d->market.isValid() ? _d->market->pos() : gfx::tilemap::invalidLocation();
+  stream[ "marketPos" ] = utils::objPosOrDefault( _d->market );
 
   VARIANT_SAVE_CLASS_D( stream, _d, basket )
   VARIANT_SAVE_ANY_D( stream, _d, maxDistance )
@@ -351,7 +351,7 @@ void MarketBuyer::load( const VariantMap& stream)
 
   TilePos tpos = stream.get( "marketPos" ).toTilePos();
 
-  _d->market << _map().overlay( tpos );
+  _d->market = _map().overlay<Market>( tpos );
 
   VARIANT_LOAD_CLASS_D( _d, basket, stream )
   VARIANT_LOAD_ANY_D( _d, maxDistance, stream )

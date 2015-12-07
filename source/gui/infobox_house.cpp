@@ -163,11 +163,11 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
     rect += Point( btnHelp->width() + 5, 0 );
     rect.rright() += 60;
     auto& btnHabitants = add<PushButton>( rect, "Habitants", -1, false, PushButton::whiteBorderUp );
-    CONNECT( &btnHabitants, onClicked(), this, AboutHouse::_showHbtInfo )
+    CONNECT_LOCAL( &btnHabitants, onClicked(), AboutHouse::_showHbtInfo )
 
     rect += Point( btnHabitants.width() + 5, 0 );
     auto& btnServices = add<PushButton>( rect, "Services", -1, false, PushButton::whiteBorderUp );
-    CONNECT( &btnServices, onClicked(), this, AboutHouse::_showSrvcInfo )
+    CONNECT_LOCAL( &btnServices, onClicked(), AboutHouse::_showSrvcInfo )
   }
 
   drawHabitants( _house );
@@ -178,7 +178,7 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
   {
     if( _house->getServiceValue( Service::forum ) > 0 )
     {
-      taxesStr = utils::format( 0xff, "%d %s", taxes, _("##house_pay_tax##") );
+      taxesStr = fmt::format( "{} {}", taxes * _house->size().area(), _("##house_pay_tax##") );
     }
     else
     {
@@ -194,10 +194,10 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
     }
   }
 
-  Label* taxesLb = new Label( this, Rect( 16 + 35, 177, width() - 16, 177 + 20 ), _( taxesStr ) );
+  auto& taxesLb = add<Label>( Rect( 16 + 35, 177, width() - 16, 177 + 20 ), _( taxesStr ) );
 
   std::string aboutCrimes = _("##house_not_report_about_crimes##");
-  Label& lbCrime = add<Label>( taxesLb->relativeRect() + Point( 0, 22 ), aboutCrimes );
+  Label& lbCrime = add<Label>( taxesLb.relativeRect() + Point( 0, 22 ), aboutCrimes );
 
   int startY = lbCrime.bottom() + 10;
   if( _house->level() > HouseLevel::tent )
@@ -231,7 +231,7 @@ void AboutHouse::drawHabitants( HousePtr house )
   // citizen or patrician picture
   int picId = house->spec().isPatrician() ? 541 : 542;
    
-  Picture citPic( ResourceGroup::panelBackground, picId );
+  Picture citPic( gui::rc.panel, picId );
   _lbBlackFrame()->setIcon( citPic, Point( 15, 5 ) );
 
   // number of habitants
@@ -243,17 +243,17 @@ void AboutHouse::drawHabitants( HousePtr house )
   if( freeRoom > 0 )
   {
     // there is some room for new habitants!
-    freeRoomText = utils::format( 0xff, "%d %s %d", current, _("##citizens_additional_rooms_for##"), freeRoom);
+    freeRoomText = fmt::format( "{} {} {}", current, _("##citizens_additional_rooms_for##"), freeRoom);
   }
   else if (freeRoom == 0)
   {
     // full house!
-    freeRoomText = utils::format( 0xff, "%d %s", current, _("##occupants##"));
+    freeRoomText = fmt::format( "{} {}", current, _("##occupants##"));
   }
   else if (freeRoom < 0)
   {
     // too many habitants!
-    freeRoomText = utils::format( 0xff, "%d %s %d", current, _("##no_room_for_citizens##"),-freeRoom);
+    freeRoomText = fmt::format( "{} {} {}", current, _("##no_room_for_citizens##"),-freeRoom);
     lbHabitants.setFont( Font::create( FONT_2_RED ) );
   }
 
@@ -296,7 +296,7 @@ bool AboutHouse::onEvent(const NEvent& event)
   return Infobox::onEvent( event );
 }
 
-void AboutHouse::_showHelp() { DictionaryWindow::show( this, "house" ); }
+void AboutHouse::_showHelp() { ui()->add<DictionaryWindow>( "house" ); }
 
 void AboutHouse::_showHbtInfo()
 {
@@ -312,17 +312,15 @@ void AboutHouse::_showHbtInfo()
                                                   _house->habitants().aged_n() );
 
   Dialog& dialog = ui()->add<Dialog>( Rect( 0, 0, 400, 400 ), "Habitants", workerState, Dialog::btnOk );
-  dialog.moveTo( Widget::parentCenter );
   CONNECT( &dialog, onOk(), &dialog, Dialog::deleteLater )
 }
 
 void AboutHouse::_showSrvcInfo()
 {
-  std::string srvcState = utils::format( 0xff, "Health=%d",
-                                               (int)_house->state( pr::health ));
+  std::string srvcState = fmt::format( "Health={}",
+                                        (int)_house->state( pr::health ));
 
   Dialog& dialog = ui()->add<Dialog>( Rect( 0, 0, 400, 400 ), "Services", srvcState, Dialog::btnOk );
-  dialog.moveTo( Widget::parentCenter );
   CONNECT( &dialog, onOk(), &dialog, Dialog::deleteLater )
 }
 

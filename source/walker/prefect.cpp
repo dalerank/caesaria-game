@@ -37,7 +37,6 @@
 #include "pathway/pathway_helper.hpp"
 #include "walker/helper.hpp"
 #include "walkers_factory.hpp"
-#include "gfx/helper.hpp"
 #include "events/fireworkers.hpp"
 #include "core/common.hpp"
 

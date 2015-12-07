@@ -104,9 +104,8 @@ public:
     _title = title;
     _dfont = Font::create( FONT_2_WHITE );
 
-    Picture pic;
-    pic.load( ResourceGroup::panelBackground, 48 ), Point( 5, 5 );
-    setIcon( pic, Point( 5, 5 ) );
+    setIcon( gui::rc.panel, gui::id.chiefIcon );
+    setIconOffset( Point( 5, 5 ) );
     setFont( Font::create( FONT_2 ) );
 
     setTextOffset( Point( 255, 0) );
@@ -173,8 +172,7 @@ Chief::Chief(PlayerCityPtr city, Widget* parent, int id )
   _d.drawEntertainment();
   _d.drawSentiment();
 
-  auto& btnHelp = add<TexturedButton>( Point( 12, height() - 39), Size( 24 ), -1, config::id.menu.helpInf );
-  CONNECT( &btnHelp, onClicked(), this, Chief::_showHelp );
+  add<HelpButton>( Point( 12, height() - 39 ), "advisor_chief" );
 }
 
 void Chief::Impl::initRows( Widget* parent, int width )
@@ -182,9 +180,12 @@ void Chief::Impl::initRows( Widget* parent, int width )
   Point startPoint( 20, 60 );
   Point offset( 0, 27 );
 
-  int index=0;
+  Rect rowRect( startPoint, Size( width, offset.y() ) );
   for(const auto& row : Advice::row )
-    rows[ row.first ] = &parent->add<InfomationRow>( row.second, Rect( startPoint + offset * index++, Size( width, offset.y() ) ) );
+  {
+    rows[ row.first ] = &parent->add<InfomationRow>( row.second, rowRect );
+    rowRect += offset;
+  }
 }
 
 void Chief::draw( gfx::Engine& painter )
@@ -195,21 +196,13 @@ void Chief::draw( gfx::Engine& painter )
   Window::draw( painter );
 }
 
-void Chief::_showHelp()
-{
-  DictionaryWindow::show( this, "advisor_chief" );
-}
-
 void Chief::Impl::drawReportRow(Advice::Type type, std::string text, NColor color )
 {
   auto it = rows.find( type );
   if( it != rows.end() )
   {
-    InfomationRow* row = it->second;
-    Font font = row->font();
-    font.setColor( color );
-    row->setFont( font );
-    row->setText( text );
+    it->second->setColor( color );
+    it->second->setText( text );
   }
 }
 
@@ -301,7 +294,7 @@ void Chief::Impl::drawFoodStockState()
           case 3: text = "##our_foods_level_are_low##"; break;
 
           default:
-            text = fmt::format( "{0} {1} {2}", _("##have_food_for##"), monthWithFood, _("##months##") );
+            text = fmt::format( "{} {} {}", _("##have_food_for##"), monthWithFood, _("##months##") );
         }
       }
     }
@@ -498,7 +491,7 @@ void Chief::Impl::drawEntertainment()
   auto festivals = city->statistic().services.find<Festival>();
   if( festivals.isValid() )
   {
-    int monthFromLastFestival = festivals->lastFestival().monthsTo( game::Date::current() );
+    int monthFromLastFestival = festivals->last().monthsTo( game::Date::current() );
     if( monthFromLastFestival > DateTime::monthsInYear / 2 )
     {
       reasons << "##citizens_grumble_lack_festivals_held##";

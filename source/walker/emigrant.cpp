@@ -23,7 +23,7 @@
 #include "gfx/tile.hpp"
 #include "core/variant.hpp"
 #include "city/statistic.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "pathway/path_finding.hpp"
 #include "gfx/tilemap.hpp"
 #include "name_generator.hpp"
@@ -42,7 +42,7 @@ using namespace gfx;
 REGISTER_CLASS_IN_WALKERFACTORY(walker::emigrant, Emigrant)
 
 namespace  {
-CAESARIA_LITERALCONST(peoples)
+GAME_LITERALCONST(peoples)
 const int maxFailedWayCount = 10;
 const int populationOverVillage=300;
 const int minDesirability4settle=-10;
@@ -80,7 +80,7 @@ Emigrant::Emigrant(PlayerCityPtr city )
   _d->failedWayCount = 0;
   _d->leaveCity = false;
   _d->cartBackward = true;
-  _d->housePosLock = gfx::tilemap::invalidLocation();
+  _d->housePosLock = TilePos::invalid();
 }
 
 void Emigrant::_lockHouse( HousePtr house )
@@ -90,7 +90,7 @@ void Emigrant::_lockHouse( HousePtr house )
     auto oldHouse = _map().overlay<House>( _d->housePosLock );
     if( oldHouse.isValid() )
     {
-      _d->housePosLock = gfx::tilemap::invalidLocation();
+      _d->housePosLock = TilePos::invalid();
       oldHouse->setState( pr::settleLock, 0 );
     }
   }
@@ -98,7 +98,7 @@ void Emigrant::_lockHouse( HousePtr house )
   if( house.isValid() )
   {
     _d->housePosLock = house->pos();
-    house->setState( pr::settleLock, tile::hash( _d->housePosLock ) );
+    house->setState( pr::settleLock, _d->housePosLock.hash() );
   }
 }
 
@@ -329,7 +329,7 @@ void Emigrant::_findFinestHouses(HouseList& hlist)
 {
   HouseList::iterator itHouse = hlist.begin();
   bool bigcity = _city()->states().population > populationOverVillage;
-  unsigned int houseLockId = tile::hash( _d->housePosLock );
+  unsigned int houseLockId = _d->housePosLock.hash();
 
   while( itHouse != hlist.end() )
   {

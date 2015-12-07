@@ -55,10 +55,10 @@ namespace loader
 
 static const int currentVesion = 1;
 
-CAESARIA_LITERALCONST(climate)
-CAESARIA_LITERALCONST(version)
-CAESARIA_LITERALCONST(map)
-CAESARIA_LITERALCONST(random)
+GAME_LITERALCONST(climate)
+GAME_LITERALCONST(version)
+GAME_LITERALCONST(map)
+GAME_LITERALCONST(random)
 
 class Mission::Impl
 {
@@ -123,10 +123,10 @@ bool Mission::load( const std::string& filename, Game& game )
     city->treasury().resolveIssue( econ::Issue( econ::Issue::donation, vm.get( "funds" ).toInt() ) );
 
     Logger::warning( "GameLoaderMission: load city options ");
-    city->setOption( PlayerCity::adviserEnabled, vm.get( CAESARIA_STR_A(adviserEnabled), 1 ) );
-    city->setOption( PlayerCity::fishPlaceEnabled, vm.get( CAESARIA_STR_A(fishPlaceEnabled), 1 ) );
-    city->setOption( PlayerCity::collapseKoeff, vm.get( CAESARIA_STR_A(collapseKoeff), 100 ) );
-    city->setOption( PlayerCity::fireKoeff, vm.get( CAESARIA_STR_A(fireKoeff), 100 ) );
+    city->setOption( PlayerCity::adviserEnabled, vm.get( TEXT(adviserEnabled), 1 ) );
+    city->setOption( PlayerCity::fishPlaceEnabled, vm.get( TEXT(fishPlaceEnabled), 1 ) );
+    city->setOption( PlayerCity::collapseKoeff, vm.get( TEXT(collapseKoeff), 100 ) );
+    city->setOption( PlayerCity::fireKoeff, vm.get( TEXT(fireKoeff), 100 ) );
 
     game::Date::instance().init( vm[ "date" ].toDateTime() );
 
@@ -154,18 +154,18 @@ bool Mission::load( const std::string& filename, Game& game )
     game.empire()->emperor().updateRelation( city->name(), 50 );
 
     VariantMap fishpointsVm = vm.get( "fishpoints" ).toMap();
-    for( auto& item : fishpointsVm )
+    for( const auto& item : fishpointsVm )
     {
       events::dispatch<ChangeFishery>( item.second.toTilePos(), ChangeFishery::add );
     }
 
-    std::string missionName = vfs::Path( filename ).baseName( false ).toString();
+    std::string missionName = vfs::Path( filename ).baseName().removeExtension();
     Locale::addTranslation( missionName );
     SETTINGS_SET_VALUE( lastTranslation, Variant( missionName ) );
 
     //reseting divinities festival date
     DivinityList gods = rome::Pantheon::instance().all();
-    for( auto it : gods )
+    for( const auto it : gods )
     {
       rome::Pantheon::doFestival( it->name(), 0 );
     }

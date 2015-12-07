@@ -14,8 +14,8 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "tilesarray.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "objects/overlay.hpp"
-#include "gfx/helper.hpp"
 
 namespace gfx
 {
@@ -92,7 +92,7 @@ TilesArray::Corners TilesArray::corners() const
 TilePos TilesArray::leftUpCorner() const
 {
   if( empty() )
-    return gfx::tilemap::invalidLocation();
+    return TilePos::invalid();
 
   TilePos ret( INT_MAX, 0 );
   for( auto tile : *this )
@@ -108,7 +108,7 @@ TilePos TilesArray::leftUpCorner() const
 TilePos TilesArray::rightDownCorner() const
 {
   if( empty() )
-    return gfx::tilemap::invalidLocation();
+    return TilePos::invalid();
 
   TilePos ret( 0, INT_MAX );
   for( auto tile : *this )
@@ -253,9 +253,9 @@ PointsArray TilesArray::mappositions() const
   return ret;
 }
 
-TilePosArray TilesArray::locations() const
+Locations TilesArray::locations() const
 {
-  TilePosArray ret;
+  Locations ret;
   for( auto tile : *this )
     ret << tile->pos();
 

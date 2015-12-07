@@ -60,7 +60,7 @@ void Desirability::drawTile( const RenderInfo& rinfo, Tile& tile)
     if( tile.getFlag( Tile::isConstructible ) && desirability != 0 )
     {
       int desIndex = __des2index( desirability );
-      Picture pic( ResourceGroup::land2a, 37 + desIndex );
+      Picture pic( config::rc.land2a, 37 + desIndex );
 
       rinfo.engine.draw( pic, tile.mappos() + rinfo.offset );
     }
@@ -82,7 +82,7 @@ void Desirability::drawTile( const RenderInfo& rinfo, Tile& tile)
     {
       //other buildings
       int picOffset = __des2index( desirability );
-      Picture pic( ResourceGroup::land2a, 37 + picOffset );
+      Picture pic( config::rc.land2a, 37 + picOffset );
 
       TilesArray tiles4clear = overlay->area();
 
@@ -95,10 +95,12 @@ void Desirability::drawTile( const RenderInfo& rinfo, Tile& tile)
 
   if( desirability != 0 )
   {
+#ifdef DEBUG
     Picture tx = _d->debugFont.once( utils::i2str( desirability ) );
     _d->debugText.push_back( tx );
 
     _addPicture( tile.mappos() + Point( 20, -15 ), tx );
+#endif
   }
 
   tile.setRendered();

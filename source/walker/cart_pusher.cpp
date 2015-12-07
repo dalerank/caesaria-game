@@ -33,9 +33,10 @@
 #include "events/removecitizen.hpp"
 #include "game/resourcegroup.hpp"
 #include "corpse.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "gfx/cart_animation.hpp"
 #include "pathway/pathway_helper.hpp"
+#include "core/common.hpp"
 #include "walkers_factory.hpp"
 #include "core/logger.hpp"
 #include "city/trade_options.hpp"
@@ -48,9 +49,9 @@ using namespace config;
 REGISTER_CLASS_IN_WALKERFACTORY(walker::cartPusher, CartPusher)
 
 namespace {
-CAESARIA_LITERALCONST(stock)
-CAESARIA_LITERALCONST(producerPos)
-CAESARIA_LITERALCONST(consumerPos)
+GAME_LITERALCONST(stock)
+GAME_LITERALCONST(producerPos)
+GAME_LITERALCONST(consumerPos)
 }
 
 class CartPusher::Impl
@@ -80,8 +81,6 @@ CartPusher::CartPusher(PlayerCityPtr city, CartCapacity cap)
   _d->stock.setCapacity( cap );
   _d->maxDistance = distance::maxDeliver;
   _d->stock.setCapacity( simpleCart );
-
-  setName( NameGenerator::rand( NameGenerator::plebMale ) );
 }
 
 void CartPusher::_reachedPathway()
@@ -105,7 +104,7 @@ void CartPusher::_reachedPathway()
       {
         int storedQty = saveQty - _d->stock.qty();
         producerBuilding()->store().confirmDeliver( _d->stock.type(), storedQty,
-                                                    gfx::tile::hash( consumerBuilding()->pos() ),
+                                                    consumerBuilding()->pos().hash(),
                                                     game::Date::current() );
       }
     }
@@ -144,7 +143,7 @@ void CartPusher::_brokePathway(TilePos pos)
     }
   }
 
-  Logger::warning( "CartPusher::_brokePathway not destination point [{},{}]", pos.i(), pos.j() );
+  Logger::warning( "WARNING !!! CartPusher::_brokePathway not destination point [{},{}]", pos.i(), pos.j() );
   deleteLater();
 }
 
@@ -420,11 +419,8 @@ void CartPusher::save( VariantMap& stream ) const
   Walker::save( stream );
   
   stream[ literals::stock ] = _d->stock.save();
-  stream[ literals::producerPos ] = _d->producerBuilding.isValid()
-                                ? _d->producerBuilding->pos() : gfx::tilemap::invalidLocation();
-
-  stream[ literals::consumerPos ] = _d->consumerBuilding.isValid()
-                                ? _d->consumerBuilding->pos() : gfx::tilemap::invalidLocation();
+  stream[ literals::producerPos ] = utils::objPosOrDefault( _d->producerBuilding );
+  stream[ literals::consumerPos ] = utils::objPosOrDefault( _d->consumerBuilding );
 
   VARIANT_SAVE_ANY_D( stream, _d, maxDistance )
   VARIANT_SAVE_ANY_D( stream, _d, cantUnloadGoods )
@@ -508,8 +504,8 @@ TilePos CartPusher::places(Walker::Place type) const
 {
   switch( type )
   {
-  case plOrigin: return _d->producerBuilding.isValid() ? _d->producerBuilding->pos() : gfx::tilemap::invalidLocation();
-  case plDestination: return _d->consumerBuilding.isValid() ? _d->consumerBuilding->pos() : gfx::tilemap::invalidLocation();
+  case plOrigin: return utils::objPosOrDefault( _d->producerBuilding );
+  case plDestination: return utils::objPosOrDefault( _d->consumerBuilding );
   default: break;
   }
 

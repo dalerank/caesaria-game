@@ -19,7 +19,7 @@
 #define __CAESARIA_ANIMATION_H_INCLUDE_
 
 #include "picturesarray.hpp"
-#include "core/variant.hpp"
+#include "core/variant_map.hpp"
 #include "core/scopedptr.hpp"
 
 // several frames for a basic visual animation

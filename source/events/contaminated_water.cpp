@@ -49,8 +49,6 @@ GameEventPtr ContaminatedWater::create()
 
 void _decreaseHousesHealth( object::Type btype, PlayerCityPtr city, int value )
 {
-  TilePos offset( 2, 2 );
-
   const OverlayList& buildings = city->overlays();
 
   for( auto building : buildings )
@@ -58,7 +56,7 @@ void _decreaseHousesHealth( object::Type btype, PlayerCityPtr city, int value )
     if( building->type() != btype )
         continue;
 
-    HouseList houses = city->statistic().objects.find<House>( object::house, building->pos() - offset, building->pos() + offset );
+    HouseList houses = city->statistic().objects.find<House>( object::house, building->pos(), 2 );
 
     for( auto house : houses )
     {

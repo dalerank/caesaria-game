@@ -29,6 +29,7 @@ public:
   virtual void turn(TilePos pos);
   virtual void setPicOffset( Point offset );
   virtual const gfx::Picture& getMainPicture();
+  virtual void initialize(const VariantMap &options);
 
   TilePos dstPos() const;
   TilePos startPos() const;

@@ -31,13 +31,20 @@ struct NEvent;
 namespace gfx
 {
 
+struct Frame
+{
+virtual void start() = 0; // start a new frame
+virtual void finish() = 0; // display the frame
+virtual void drawMetrics() = 0;
+};
+
 class Engine
 {
 public:
   typedef Size Mode;
   typedef std::vector<Size> Modes;
 
-  typedef enum { fullscreen=0, debugInfo, effects, batching } Flags;
+  typedef enum { fullscreen=0, showMetrics, effects, batching } Flags;
   static Engine& instance();
 
   Engine();
@@ -49,15 +56,17 @@ public:
 
   void setScreenSize( const Size& size );
   const Size& screenSize() const;
-  virtual const Size& viewportSize() const { return _srcSize; }
+
+  virtual Size viewportSize() const { return _srcSize; }
   virtual void setVirtualSize( const Size& rect ) = 0;
 
   bool isFullscreen() const;
-  void setFullscreen(bool enabled );
+  void setFullscreen( bool enabled );
 
   virtual void setTitle( const std::string& title );
   virtual void setFlag( int flag, int value );
   virtual int getFlag( int flag ) const;
+
   virtual void loadPicture( Picture& ioPicture, bool streaming ) = 0;
   virtual void unloadPicture( Picture& ioPicture) = 0;
 
@@ -66,8 +75,7 @@ public:
 
   virtual void setScale( float scale ) = 0;
 
-  virtual void startRenderFrame() = 0;  // start a new frame
-  virtual void endRenderFrame() = 0;  // display the frame
+  virtual Frame& frame() = 0;
 
   virtual void draw(const Picture& pic, const int dx, const int dy, Rect* clipRect=0 ) = 0;
   virtual void draw(const Picture& pic, const Point& pos, Rect* clipRect=0 ) = 0;
@@ -95,7 +103,7 @@ protected:
   static Engine* _instance;
 
   Size _srcSize;
-  std::map< int, int > _flags;
+  std::map<int,int> _flags;
 };
 
 }//end namespace gfx

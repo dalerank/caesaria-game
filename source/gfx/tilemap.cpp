@@ -18,7 +18,9 @@
 
 #include "tilemap.hpp"
 
-#include "gfx/helper.hpp"
+#include "imgid.hpp"
+#include "gfx/tile_config.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "objects/building.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"
@@ -82,7 +84,7 @@ Tilemap::Tilemap() : _d( new Impl )
 {
   _d->size = 0;
   _d->direction = direction::north;
-  _d->virtWidth = tilemap::cellSize().width() * 2;
+  _d->virtWidth = config::tilemap.cell.size().width() * 2;
 }
 
 void Tilemap::resize( const unsigned int size )

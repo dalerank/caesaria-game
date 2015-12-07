@@ -38,7 +38,7 @@ public:
   Animation anim;
 };
 
-void HousePlague::create(PlayerCityPtr city, TilePos pos, int time)
+void HousePlague::create(PlayerCityPtr city, const TilePos& pos, int time)
 {
   auto hpllist = city->walkers( pos ).select<HousePlague>();
 

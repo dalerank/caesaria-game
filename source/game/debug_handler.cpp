@@ -87,7 +87,8 @@ enum {
   options,
   house,
   draw,
-  empire
+  empire,
+  mission
 };
 
 enum {
@@ -178,7 +179,14 @@ enum {
   forest_grow,
   increase_max_level,
   decrease_max_level,
+  increase_house_level,
+  decrease_house_level,
+  lock_house_level,
   enable_constructor_mode,
+  show_requests,
+  show_attacks,
+  reset_fire_risk,
+  reset_collapse_risk,
   next_theme
 };
 
@@ -298,9 +306,17 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( in_city, decrease_sentiment )
   ADD_DEBUG_EVENT( in_city, increase_sentiment )
   ADD_DEBUG_EVENT( in_city, forest_grow )
+  ADD_DEBUG_EVENT( in_city, reset_fire_risk )
+  ADD_DEBUG_EVENT( in_city, reset_collapse_risk )
 
   ADD_DEBUG_EVENT( house, increase_max_level )
   ADD_DEBUG_EVENT( house, decrease_max_level )
+  ADD_DEBUG_EVENT( house, increase_house_level )
+  ADD_DEBUG_EVENT( house, decrease_house_level )
+  ADD_DEBUG_EVENT( house, lock_house_level )
+
+  ADD_DEBUG_EVENT( mission, show_requests )
+  ADD_DEBUG_EVENT( mission, show_attacks )
 
   ADD_DEBUG_EVENT( options, run_script )
   ADD_DEBUG_EVENT( options, all_sound_off )
@@ -452,7 +468,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case property_browser:
   {
-    int hash = Hash( CAESARIA_STR_A(PropertyWorkspace) );
+    int hash = Hash( TEXT(PropertyWorkspace) );
     PropertyWorkspace* browser = safety_cast<PropertyWorkspace*>( game->gui()->findWidget( hash ) );
     if( !browser )
     {
@@ -471,6 +487,22 @@ void DebugHandler::Impl::handleEvent(int event)
     forest = forest.random( 2 );
     for( auto tree : forest )
       tree->burn();
+  }
+  break;
+
+  case reset_fire_risk:
+  {
+    BuildingList buildings = game->city()->overlays().select<Building>();
+    for( auto building : buildings )
+      building->setState( pr::fire, 0 );
+  }
+  break;
+
+  case reset_collapse_risk:
+  {
+    BuildingList buildings = game->city()->overlays().select<Building>();
+    for( auto building : buildings )
+      building->setState( pr::damage, 0 );
   }
   break;
 
@@ -502,6 +534,15 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
 
+  case increase_house_level:
+  case decrease_house_level:
+  {
+    HouseList houses = game->city()->overlays().select<House>();
+    for( auto house : houses )
+      house->__debugChangeLevel( event == increase_house_level ? 1 : -1 );
+  }
+  break;
+
   case add_player_money:    game->player()->appendMoney( 1000 );  break;
 
   case add_favor:
@@ -514,9 +555,9 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case show_fest:
   {
-    city::FestivalPtr fest = game->city()->statistic().services.find<city::Festival>();
-    if( fest.isValid() )
-      fest->now();
+    city::FestivalPtr festivals = game->city()->statistic().services.find<city::Festival>();
+    if( festivals.isValid() )
+      festivals->doFestivalNow();
   }
   break;
 
@@ -606,7 +647,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case kill_all_enemies:
   {
-     EnemySoldierList enemies = game->city()->statistic().walkers.find<EnemySoldier>( walker::any, gfx::tilemap::invalidLocation() );
+     EnemySoldierList enemies = game->city()->statistic().walkers.find<EnemySoldier>( walker::any, TilePos::invalid() );
 
      for( auto enemy : enemies )
        enemy->die();
@@ -720,8 +761,6 @@ void DebugHandler::Impl::handleEvent(int event)
     auto& dialog = game->gui()->add<dialog::LoadFile>( Rect(),
                                                        vfs::Path( ":/scripts/" ), ".model",
                                                        -1 );
-    dialog.moveTo( Widget::parentCenter );
-
     CONNECT( &dialog, onSelectFile(), this, Impl::runScript );
     dialog.setTitle( "Select file" );
     dialog.setText( "open" );

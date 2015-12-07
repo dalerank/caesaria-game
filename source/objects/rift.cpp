@@ -106,7 +106,7 @@ Picture Rift::computePicture()
   case 15: index = 229; break; // North+East+South+West
   }
 
-  return Picture( ResourceGroup::land1a, index);
+  return Picture( config::rc.land1a, index);
 }
 
 bool Rift::isWalkable() const{  return false;}

@@ -16,9 +16,9 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "turnover.hpp"
-#include "gfx/helper.hpp"
 #include "core/logger.hpp"
 #include "game/gamedate.hpp"
+#include "gfx/tile_config.hpp"
 #include "core/variant_list.hpp"
 #include "core/utils.hpp"
 
@@ -68,7 +68,7 @@ void TurnoverDetails::append(Product gtype, int qty, int tag, const DateTime& ti
 VariantMap TurnoverDetails::save() const
 {
   VariantMap ret;
-  for( auto& item : *this )
+  for( const auto& item : *this )
   {
     std::string index = utils::i2str( item.first );
     ret[ index ] = item.second.save();
@@ -79,7 +79,7 @@ VariantMap TurnoverDetails::save() const
 
 void TurnoverDetails::load(const VariantMap& stream)
 {
-  for( auto& item : stream )
+  for( const auto& item : stream )
   {
     unsigned int sender = utils::toUint( item.first );
     (*this)[ sender ].load( item.second.toMap() );
@@ -101,7 +101,7 @@ Turnovers TurnoverDetails::items(Mode mode) const
 
       int qty = 0;
       int minLevel = 99;
-      for( auto sminfo : history )
+      for( const auto& sminfo : history )
       {
         qty += sminfo.qty;
         minLevel = math::min( minLevel, sminfo.birth.monthsTo( gtime ) );
@@ -128,10 +128,10 @@ Turnovers TurnoverDetails::items(Mode mode) const
 VariantMap StockInfoMap::save() const
 {
   VariantMap ret;
-  for( auto& item : *this )
+  for( const auto& item : *this )
   {
     VariantList vlist;
-    for( auto& hstep : item.second )
+    for( const auto& hstep : item.second )
       vlist.push_back( VariantList( hstep.qty, hstep.birth.hashdate() ) );
 
     std::string section = utils::i2str( item.first );
@@ -143,11 +143,11 @@ VariantMap StockInfoMap::save() const
 
 void StockInfoMap::load(const VariantMap& stream)
 {
-  for( auto& item : stream )
+  for( const auto& item : stream )
   {
     Product index = Product( utils::toInt( item.first ) );
     VariantList items = item.second.toList();
-    for( auto& step : items )
+    for( const auto& step : items )
     {
       VariantList vlist = step.toList();
       SmInfo info;

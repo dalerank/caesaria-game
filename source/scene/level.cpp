@@ -48,7 +48,7 @@
 #include "game/settings.hpp"
 #include "gui/mission_target_window.hpp"
 #include "gui/label.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "core/gettext.hpp"
 #include "gui/minimap_window.hpp"
 #include "gui/window_gamespeed_options.hpp"
@@ -157,8 +157,8 @@ public:
   TilePos selectedTilePos;
   citylayer::Type lastLayerId;
   DebugHandler dhandler;
-  undo::UStack undoStack;
   bool simulationPaused;
+  undo::UStack undoStack;
 
   int result;
 
@@ -229,7 +229,7 @@ void Level::Impl::initMainUI()
 
   ui.clear();
 
-  Picture rPanelPic( ResourceGroup::panelBackground, config::id.empire.rightPanelTx );
+  Picture rPanelPic( gui::rc.panel, config::id.empire.rightPanelTx );
 
   Rect rPanelRect( ui.vsize().width() - rPanelPic.width(), topMenuHeight,
                    ui.vsize().width(), ui.vsize().height() );
@@ -266,38 +266,37 @@ void Level::Impl::initSound()
 {
   auto sound = game->city()->statistic().services.find<city::AmbientSound>();
   auto player = game->city()->statistic().services.find<audio::ThemePlayer>();
+
   if( sound.isValid() )
     sound->setCamera( renderer.camera() );
 
-  if( player.isValid() )
-  {
-    CONNECT( player, onSwitch(), this, Impl::resolveWarningMessage )
-  }
+  CONNECT( player, onSwitch(), this, Impl::resolveWarningMessage )
 }
 
 void Level::Impl::initTabletUI( Level* scene )
 {
   //specific tablet actions bar
-  tablet::ActionsBar* tabletUi = new tablet::ActionsBar( game->gui()->rootWidget() );
-  tablet::ActionsHandler::assignTo( tabletUi, scene );
+  auto& tabletUi = game->gui()->add<tablet::ActionsBar>();
+  tablet::ActionsHandler::assignTo( &tabletUi, scene );
 
-  tabletUi->setVisible( SETTINGS_VALUE(showTabletMenu) );
+  tabletUi.setVisible( SETTINGS_VALUE(showTabletMenu) );
 }
 
 void Level::Impl::connectTopMenu2scene(Level* scene)
 {
   CONNECT( topMenu, onExit(),                 scene,   Level::_requestExitGame )
-  CONNECT( topMenu, onLoad(),                 this,    Impl::showLoadDialog )
   CONNECT( topMenu, onEnd(),                  scene,   Level::exit )
   CONNECT( topMenu, onRestart(),              scene,   Level::restart )
-  CONNECT( topMenu, onSave(),                 this,    Impl::showSaveDialog )
-  CONNECT( topMenu, onRequestAdvisor(),       this,    Impl::showAdvisorsWindow )
-  CONNECT( topMenu, onShowVideoOptions(),     this,    Impl::setVideoOptions )
-  CONNECT( topMenu, onShowSoundOptions(),     this,    Impl::showSoundOptionsWindow )
-  CONNECT( topMenu, onShowGameSpeedOptions(), this,    Impl::showGameSpeedOptionsDialog )
-  CONNECT( topMenu, onShowCityOptions(),      this,    Impl::showCityOptionsDialog )
   CONNECT( topMenu, onShowExtentInfo(),       extMenu, ExtentMenu::showInfo )
   CONNECT( topMenu, onToggleConstructorMode(), scene,  Level::setConstructorMode )
+
+  CONNECT_LOCAL( topMenu, onLoad(),                    Impl::showLoadDialog )
+  CONNECT_LOCAL( topMenu, onSave(),                    Impl::showSaveDialog )
+  CONNECT_LOCAL( topMenu, onRequestAdvisor(),          Impl::showAdvisorsWindow )
+  CONNECT_LOCAL( topMenu, onShowVideoOptions(),        Impl::setVideoOptions )
+  CONNECT_LOCAL( topMenu, onShowSoundOptions(),        Impl::showSoundOptionsWindow )
+  CONNECT_LOCAL( topMenu, onShowGameSpeedOptions(),    Impl::showGameSpeedOptionsDialog )
+  CONNECT_LOCAL( topMenu, onShowCityOptions(),         Impl::showCityOptionsDialog )
 }
 
 void Level::initialize()
@@ -350,12 +349,11 @@ void Level::initialize()
   CONNECT( &_d->renderer, onLayerSwitch(), _d.data(),                Impl::layerChanged )
 
   CONNECT( _d->extMenu, onUndo(),                 &_d->undoStack,    undo::UStack::undo )
-  CONNECT( &_d->renderer, onBuilt(),              &_d->undoStack,    undo::UStack::build )
-  CONNECT( &_d->renderer, onDestroyed(),          &_d->undoStack,    undo::UStack::destroy )
   CONNECT( &_d->undoStack, onUndoChange(),        _d->extMenu,       ExtentMenu::resolveUndoChange )
 
   _d->showMissionTargetsWindow();
   _d->renderer.camera()->setCenter( city->cameraPos() );
+  _d->extMenu->resolveUndoChange( _d->undoStack.isAvailableUndo() );
 
   _d->dhandler.insertTo( _d->game, _d->topMenu );
   _d->dhandler.setVisible( false );
@@ -426,7 +424,7 @@ void Level::Impl::makeFastSave() { game->save( createFastSaveName().toString() )
 
 void Level::Impl::showMessagesWindow()
 {
-  unsigned int id = Hash( CAESARIA_STR_A(dialog::ScribesMessages) );
+  unsigned int id = Hash( TEXT(dialog::ScribesMessages) );
   Widget* wnd = game->gui()->findWidget( id );
 
   if( wnd == 0 )
@@ -460,8 +458,8 @@ void Level::Impl::makeFullScreenshot()
   int mapSize = tmap.size();
   Tile& lastRightTile = tmap.at( mapSize-1, mapSize-1 );
   Tile& lastBottomTile = tmap.at( mapSize-1, 0 );
-  Point lastRightPos = tile::tilepos2screen( lastRightTile.pos() );
-  Point lastBottomPos = tile::tilepos2screen( lastBottomTile.pos() );
+  Point lastRightPos = lastRightTile.pos().toScreenCoordinates();
+  Point lastBottomPos = lastBottomTile.pos().toScreenCoordinates();
   Size fullPicSize( lastRightPos.x(), abs( lastBottomPos.y() ) * 2 );
 
   TilesArray ret;
@@ -482,7 +480,7 @@ void Level::Impl::makeFullScreenshot()
   }
 
   Picture fullPic = Picture( fullPicSize, 0, true );
-  Point doffset( 0, fullPicSize.height() / 2 );
+  /*Point doffset( 0, fullPicSize.height() / 2 );
   for( auto tile : ret )
   {
     if( tile->master() )
@@ -492,9 +490,9 @@ void Level::Impl::makeFullScreenshot()
                             ? tile->overlay()->picture()
                             : tile->picture();
 
-    //Rect srcRect( 0, 0, tpic.width(), tpic.height() );
-    //fullPic->draw( tpic, srcRect, t->mappos() + doffset - tpic.offset() );
-  }
+    Rect srcRect( 0, 0, tpic.width(), tpic.height() );
+    fullPic->draw( tpic, srcRect, t->mappos() + doffset - tpic.offset() );
+  }*/
 
   std::string filename = getScreenshotName();
   PictureConverter::save( fullPic, filename, "PNG" );
@@ -659,11 +657,11 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
       btnRestart.setTooltipText( _("##restart_mission_tip##") );
       auto& btnMenu = window.add<PushButton>( Rect( 20, 150, 380, 174), _("##exit_to_main_menu##") );
 
-      window.moveTo( Widget::parentCenter );
-      window.setModal();
-
       CONNECT( &btnRestart, onClicked(), lvl, Level::restart );
       CONNECT( &btnMenu, onClicked(), lvl, Level::exit );
+
+      window.moveTo( Widget::parentCenter );
+      window.setModal();
     }
   }
 }
@@ -716,8 +714,8 @@ void Level::Impl::showTradeAdvisorWindow(){  showAdvisorsWindow( advisor::tradin
 void Level::setCameraPos(TilePos pos) {  _d->renderer.camera()->setCenter( pos ); }
 void Level::switch2layer(int layer) { _d->renderer.setLayer( layer ); }
 Camera* Level::camera() const { return _d->renderer.camera(); }
+undo::UStack&Level::undoStack() { return _d->undoStack; }
 void Level::Impl::saveScrollSpeed(int speed) { SETTINGS_SET_VALUE( scrollSpeed, speed ); }
-
 void Level::_quit(){ _d->result = Level::res_quit; stop(); }
 void Level::restart() { _d->result = Level::res_restart; stop();}
 int  Level::result() const {  return _d->result; }
@@ -753,7 +751,7 @@ bool Level::_tryExecHotkey(NEvent &event)
       case KEY_KEY_E:
       {
         TilePos center = _d->renderer.camera()->center();
-        TileRect trect( center-tilemap::unitLocation(), center+tilemap::unitLocation());
+        TileRect trect( center-config::tilemap.unitLocation(), center+config::tilemap.unitLocation());
         TilePos currect = _d->game->city()->getBorderInfo( PlayerCity::roadEntry ).epos();
         PlayerCity::TileType rcenter = trect.contain( currect )
                                           ? PlayerCity::roadExit
@@ -866,7 +864,7 @@ bool Level::_tryExecHotkey(NEvent &event)
 
 void Level::Impl::showMissionTargetsWindow()
 {
-  unsigned int id = Hash( CAESARIA_STR_EXT(MissionTargetsWindow) );
+  unsigned int id = Hash( TEXT(MissionTargetsWindow) );
   Widget* wdg = game->gui()->findWidget( id );
   if( !wdg )
   {

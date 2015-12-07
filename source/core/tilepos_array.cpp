@@ -16,6 +16,7 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "tilepos_array.hpp"
+#include "gfx/tilepos.hpp"
 #include "variant_list.hpp"
 
 TilePosArray& TilePosArray::operator<<(const TilePos& pos)

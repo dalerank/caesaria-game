@@ -149,7 +149,7 @@ Entertainment::Entertainment(PlayerCityPtr city, Widget* parent, int id )
   FestivalPtr fest = city->statistic().services.find<Festival>();
 
   setupUI( ":/gui/entertainmentadv.gui" );
-  _d->monthFromLastFestival = fest->lastFestival().monthsTo( game::Date::current() );
+  _d->monthFromLastFestival = fest->last().monthsTo( game::Date::current() );
 
   GET_DWIDGET_FROM_UI( _d, lbBlackframe )
   GET_DWIDGET_FROM_UI( _d, lbTroubleInfo )
@@ -332,14 +332,14 @@ void Entertainment::Impl::updateFestivalInfo()
   if( !lbInfoAboutLastFestival )
     return;
 
-  FestivalPtr fest = city->statistic().services.find<Festival>();
-  if( fest.isValid() )
+  FestivalPtr festivals = city->statistic().services.find<Festival>();
+  if( festivals.isValid() )
   {    
     std::string text = utils::i2str( monthFromLastFestival ) + " " +  _("##month_from_last_festival##");
 
     if( lbMonthFromLastFestival ) { lbMonthFromLastFestival->setText( text ); }
 
-    bool prepare2Festival = fest->nextFestival() >= game::Date::current();
+    bool prepare2Festival = festivals->next() >= game::Date::current();
     btnNewFestival->setText( prepare2Festival ? _("##prepare_to_festival##") : _("##new_festival##") );
     btnNewFestival->setEnabled( !prepare2Festival );
 

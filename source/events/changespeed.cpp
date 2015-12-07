@@ -26,7 +26,6 @@
 #include "game/resourcegroup.hpp"
 #include "gui/environment.hpp"
 #include "gui/label.hpp"
-#include "gfx/helper.hpp"
 
 using namespace gfx;
 
@@ -52,8 +51,7 @@ Pause::Pause() : _mode( unknown ) {}
 
 void Pause::_exec(Game& game, unsigned int)
 {
-  gui::Widget* rootWidget = game.gui()->rootWidget();
-  gui::Label* wdg = safety_cast< gui::Label* >( rootWidget->findChild( windowGamePausedId ) );
+  gui::Label* wdg = safety_cast< gui::Label* >( game.gui()->findWidget( windowGamePausedId ) );
 
   switch( _mode )
   {
@@ -66,7 +64,7 @@ void Pause::_exec(Game& game, unsigned int)
     {
       if( !wdg )
       {
-        Size scrSize = rootWidget->size();
+        Size scrSize = game.gui()->vsize();
         wdg = &game.gui()->add<gui::Label>( Rect( Point( (scrSize.width() - wdgSize.width())/2, 40 ), wdgSize ),
                                             _("##game_is_paused##"), false, gui::Label::bgWhiteFrame, windowGamePausedId );
         wdg->setTextAlignment( align::center, align::center );

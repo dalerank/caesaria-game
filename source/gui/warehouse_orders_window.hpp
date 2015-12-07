@@ -33,6 +33,9 @@ public:
 
 private:
   __DECLARE_IMPL(WarehouseSpecialOrdersWindow)
+  void _update();
+  void _toggleTradeCenter();
+  void _toggleDevastation();
 };
 
 }//end namesapce gui

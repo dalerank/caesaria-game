@@ -147,14 +147,14 @@ Pathway Pathfinder::getPath(TilePos start, TilesArray arrivedArea, int flags)
     return Pathway();
 
   Pathway oPathway;
-  if( (flags & checkStart) )
+  if( (flags & Pathway::checkStart) )
   {
     AStarPoint* ap = _d->at( start );
     if( !ap || !(ap->tile) || !(ap->tile->isWalkable( true ) ) )
       return Pathway();
   }
 
-  if( flags & traversePath )
+  if( flags & Pathway::traversePath )
   {
     bool found = _d->getTraversingPoints( start, arrivedArea.front()->pos(), oPathway );
     return found ? oPathway : Pathway();
@@ -265,13 +265,13 @@ bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, P
     }
   }
 
-  bool useRoad = (( flags & ignoreRoad ) == 0 );
+  bool useRoad = (( flags & Pathway::ignoreRoad ) == 0 );
 
-  if( (flags & customCondition)) {}
-  else if( (flags & roadOnly) > 0 ) { condition = makeDelegate( this, &Impl::isRoad); }
-  else if( (flags & terrainOnly) > 0 ) { condition = makeDelegate( this, &Impl::isTerrain ); }
-  else if( (flags & deepWaterOnly) > 0 ) { condition = makeDelegate( this, &Impl::isDeepWater ); }
-  else if( (flags & waterOnly) > 0 ) { condition = makeDelegate( this, &Impl::isWater ); }
+  if( (flags & Pathway::customCondition)) {}
+  else if( (flags & Pathway::roadOnly) > 0 ) { condition = makeDelegate( this, &Impl::isRoad); }
+  else if( (flags & Pathway::terrainOnly) > 0 ) { condition = makeDelegate( this, &Impl::isTerrain ); }
+  else if( (flags & Pathway::deepWaterOnly) > 0 ) { condition = makeDelegate( this, &Impl::isDeepWater ); }
+  else if( (flags & Pathway::waterOnly) > 0 ) { condition = makeDelegate( this, &Impl::isWater ); }
   else
   {
     return false;
@@ -335,7 +335,7 @@ bool Pathfinder::Impl::aStar( const TilePos& startPos, TilesArray arrivedArea, P
           continue;
         }
 
-        if( (flags & fourDirection) && !(x==0 || y==0) )
+        if( (flags & Pathway::fourDirection) && !(x==0 || y==0) )
           continue;
         // Get this point
         child = at( current->getPos() + TilePos( x, y ) );

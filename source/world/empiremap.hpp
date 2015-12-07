@@ -42,7 +42,7 @@ public:
 
   TerrainType at(const TilePos& ij) const;
 
-  Route findRoute(Point start, Point stop, int flags ) const;
+  Route findRoute( const Point& start, const Point& stop, int flags ) const;
 private:
   class Impl;
   ScopedPtr< Impl > _d;

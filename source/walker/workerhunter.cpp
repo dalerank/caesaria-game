@@ -30,7 +30,6 @@
 #include "corpse.hpp"
 #include "objects/working.hpp"
 #include "helper.hpp"
-#include "gfx/helper.hpp"
 #include "walkers_factory.hpp"
 
 REGISTER_CLASS_IN_WALKERFACTORY(walker::recruter, Recruter)

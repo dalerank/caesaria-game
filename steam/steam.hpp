@@ -48,7 +48,7 @@ bool isStatsReceived();
 gfx::Picture achievementImage( AchievementType achivId );
 std::string achievementCaption( AchievementType achivId );
 std::string language();
-
+std::string ld_prefix();
 std::string userName();
 const gfx::Picture& userImage();
 

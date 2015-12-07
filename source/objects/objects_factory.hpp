@@ -60,7 +60,7 @@ private:
 
 #define REGISTER_CLASS_IN_OVERLAYFACTORY(type,a) \
 namespace { \
-struct Registrator_##a { Registrator_##a() { TileOverlayFactory::instance().addCreator( type, CAESARIA_STR_A(a), new BaseCreator<a>() ); }}; \
+struct Registrator_##a { Registrator_##a() { TileOverlayFactory::instance().addCreator( type, TEXT(a), new BaseCreator<a>() ); }}; \
 static Registrator_##a rtor_##a; \
 }
 

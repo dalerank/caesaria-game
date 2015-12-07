@@ -32,6 +32,7 @@
 #include "game/infoboxmanager.hpp"
 #include "layers/layer.hpp"
 #include "game/settings.hpp"
+#include "spinbox.hpp"
 #include "texturedbutton.hpp"
 #include "city/build_options.hpp"
 #include "topmenu.hpp"
@@ -63,7 +64,7 @@ static void _setAutoText(Widget *widget, const std::string& text)
 
 static void _setAutoText(Widget *widget, const std::string& text, bool enabled )
 {
-  _setAutoText( widget, fmt::format( "##{0}_{1}##", text, enabled ? "on" : "off" ) );
+  _setAutoText( widget, fmt::format( "##{}_{}##", text, enabled ? "on" : "off" ) );
 }
 
 class OptionButton : public PushButton
@@ -106,7 +107,7 @@ public:
     {
       if( item.first == value )
       {
-        std::string text = fmt::format( "##{0}_{1}##", basicName, item.second );
+        std::string text = fmt::format( "##{}_{}##", basicName, item.second );
         setText( _(text) );
         _setAutoText( this, text );
         break;
@@ -148,21 +149,15 @@ public:
   PushButton* btnC3Gameplay;
   PushButton* btnRoadBlocks;
 
-  Label* lbFireRisk;
-  Label* lbCollapseRisk;
-  TexturedButton* btnIncreaseFireRisk;
-  TexturedButton* btnDecreaseFireRisk;
-  TexturedButton* btnIncreaseCollapseRisk;
-  TexturedButton* btnDecreaseCollapseRisk;
+  SpinBox* sbFireRisk;
+  SpinBox* sbCollapseRisk;
 
   PlayerCityPtr city;
 
   void update();
   Widget* findDebugMenu(Ui *ui);
-  void increaseFireRisk();
-  void decreaseFireRisk();
-  void increaseCollapseRisk();
-  void decreaseCollapseRisk();
+  void changeFireRisk( int value );
+  void changeCollapseRisk( int value );
   void toggleDifficulty();
   void toggleRoadBlocks();
   void toggleUseBatching();
@@ -177,6 +172,7 @@ public:
   void changeDebugVisible(std::string group, std::string name, int value);
   void changeAndroidBarVisible(std::string group, std::string name, int value);
   void changeCcAi(std::string group, std::string name, int value);
+  void setCityOption(PlayerCity::OptionType option, int value);
 };
 
 CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
@@ -187,39 +183,24 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
   _d->widget = this;
   Window::setupUI( ":/gui/cityoptions.gui" );
 
-  WidgetEscapeCloser::insertTo( this );
-
-  setCenter( parent->center() );
-
-  GET_DWIDGET_FROM_UI( _d, lbFireRisk )
-  GET_DWIDGET_FROM_UI( _d, btnIncreaseFireRisk )
-  GET_DWIDGET_FROM_UI( _d, btnDecreaseFireRisk )
-  GET_DWIDGET_FROM_UI( _d, lbCollapseRisk )
+  GET_DWIDGET_FROM_UI( _d, sbFireRisk )
+  GET_DWIDGET_FROM_UI( _d, sbCollapseRisk )
   GET_DWIDGET_FROM_UI( _d, btnC3Gameplay )
-  GET_DWIDGET_FROM_UI( _d, btnIncreaseCollapseRisk )
-  GET_DWIDGET_FROM_UI( _d, btnDecreaseCollapseRisk )
 
   GET_DWIDGET_FROM_UI( _d, btnDifficulty )
   GET_DWIDGET_FROM_UI( _d, btnToggleBatching )
   GET_DWIDGET_FROM_UI( _d, btnMetrics )
   GET_DWIDGET_FROM_UI( _d, btnRoadBlocks )
 
-  INIT_WIDGET_FROM_UI(OptionButton*, btnShowTooltips )
-  INIT_WIDGET_FROM_UI(OptionButton*, btnAnroidBarEnabled )
-  INIT_WIDGET_FROM_UI(OptionButton*, btnDebugEnabled )
-  INIT_WIDGET_FROM_UI(OptionButton*, btnToggleCcUseAI )
+  LINK_WIDGET_ACTION( OptionButton*, btnShowTooltips, onChange, _d.data(), Impl::changeShowTooltips )
+  LINK_WIDGET_ACTION( OptionButton*, btnDebugEnabled, onChange, _d.data(), Impl::changeDebugVisible )
+  LINK_WIDGET_ACTION( OptionButton*, btnAnroidBarEnabled, onChange, _d.data(), Impl::changeAndroidBarVisible )
+  LINK_WIDGET_ACTION( OptionButton*, btnToggleCcUseAI, onChange, _d.data(), Impl::changeCcAi )
 
-  CONNECT( btnShowTooltips, onChange, _d.data(), Impl::changeShowTooltips )
-  CONNECT( btnDebugEnabled, onChange, _d.data(), Impl::changeDebugVisible )
-  CONNECT( btnAnroidBarEnabled, onChange, _d.data(), Impl::changeAndroidBarVisible )
-  CONNECT( btnToggleCcUseAI, onChange, _d.data(), Impl::changeCcAi )
-
-  CONNECT( _d->btnIncreaseFireRisk, onClicked(), _d.data(), Impl::increaseFireRisk )
-  CONNECT( _d->btnDecreaseFireRisk, onClicked(), _d.data(), Impl::decreaseFireRisk )
+  CONNECT( _d->sbFireRisk, onChange(), _d.data(), Impl::changeFireRisk )
+  CONNECT( _d->sbCollapseRisk, onChange(), _d.data(), Impl::changeCollapseRisk )
 
   CONNECT( _d->btnDifficulty, onClicked(), _d.data(), Impl::toggleDifficulty )
-  CONNECT( _d->btnIncreaseCollapseRisk, onClicked(), _d.data(), Impl::increaseCollapseRisk )
-  CONNECT( _d->btnDecreaseCollapseRisk, onClicked(), _d.data(), Impl::decreaseCollapseRisk )
   CONNECT( _d->btnToggleBatching, onClicked(), _d.data(), Impl::toggleUseBatching )
   CONNECT( _d->btnMetrics, onClicked(), _d.data(), Impl::toggleMetrics )
   CONNECT( _d->btnRoadBlocks, onClicked(), _d.data(), Impl::toggleRoadBlocks )
@@ -234,6 +215,9 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
     CONNECT( btn, onChange, _d.data(), Impl::resolveOptionChange );
 
   _d->update();
+
+  WidgetEscapeCloser::insertTo( this );
+  moveTo( Widget::parentCenter );
   setModal();
 }
 
@@ -242,6 +226,13 @@ CityOptions::~CityOptions() {}
 void CityOptions::setupUI(const VariantMap& ui)
 {
   Window::setupUI( ui );
+}
+
+void CityOptions::Impl::setCityOption( PlayerCity::OptionType option, int value )
+{
+  int optValue = city->getOption( option );
+  city->setOption( option, optValue  );
+  update();
 }
 
 void CityOptions::Impl::changeCityOption( PlayerCity::OptionType option, int delta )
@@ -298,10 +289,8 @@ void CityOptions::Impl::changeCcAi(std::string, std::string, int value)
     rcity->setModeAI( value ? world::City::indifferent : world::City::inactive );
 }
 
-void CityOptions::Impl::increaseFireRisk() { changeCityOption( PlayerCity::fireKoeff, +10 ); }
-void CityOptions::Impl::decreaseFireRisk() { changeCityOption( PlayerCity::fireKoeff, -10 ); }
-void CityOptions::Impl::increaseCollapseRisk() { changeCityOption( PlayerCity::collapseKoeff, +10 ); }
-void CityOptions::Impl::decreaseCollapseRisk() { changeCityOption( PlayerCity::collapseKoeff, -10 ); }
+void CityOptions::Impl::changeFireRisk( int value ) { setCityOption( PlayerCity::fireKoeff, value ); }
+void CityOptions::Impl::changeCollapseRisk( int value ) { setCityOption( PlayerCity::collapseKoeff, value ); }
 
 void CityOptions::Impl::toggleCityOption(PlayerCity::OptionType option)
 {
@@ -401,16 +390,14 @@ void CityOptions::Impl::update()
     btn->update( value );
   }
 
-  if( lbFireRisk )
+  if( sbFireRisk )
   {
-    int value = city->getOption( PlayerCity::fireKoeff );
-    lbFireRisk->setText( fmt::format( "{0} {1} %", "Fire risk", value ) );
+    sbFireRisk->setValue( city->getOption( PlayerCity::fireKoeff ) );
   }
 
-  if( lbCollapseRisk )
+  if( sbCollapseRisk )
   {
-    int value = city->getOption( PlayerCity::collapseKoeff );
-    lbCollapseRisk->setText( utils::format( 0xff, "%s %d %%", "Collapse risk", value ) );
+    sbCollapseRisk->setValue( city->getOption( PlayerCity::collapseKoeff ) );
   }
 
   if( btnDifficulty )
@@ -429,7 +416,7 @@ void CityOptions::Impl::update()
 
   if( btnMetrics )
   {
-    std::string text = fmt::format( "%s: %s" , _("##city_metric##"), _(metric::Measure::measureType()) );
+    std::string text = fmt::format( "{}: {}" , _("##city_metric##"), _(metric::Measure::measureType()) );
     _setAutoText( btnMetrics, text );
   }
 

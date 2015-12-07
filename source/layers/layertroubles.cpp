@@ -70,19 +70,11 @@ void Troubles::drawTile( const RenderInfo& rinfo, Tile& tile)
     }
     else
     {
-      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base );
+      drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.constr );
     }
   }
 
   tile.setRendered();
-}
-
-LayerPtr Troubles::create(Camera& camera, PlayerCityPtr city, int type)
-{
-  LayerPtr ret( new Troubles( camera, city, type ) );
-  ret->drop();
-
-  return ret;
 }
 
 void Troubles::handleEvent(NEvent& event)

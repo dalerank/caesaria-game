@@ -44,12 +44,10 @@ public:
   LayerPtr drawLayer() const;
 
   virtual ~Build();
-public signals:
-  Signal3<object::Type,TilePos,int>& onBuild();
 
 private:
   void _updatePreviewTiles(bool force);
-  void _checkPreviewBuild(TilePos pos);
+  void _checkPreviewBuild(const TilePos& pos);
   void _checkBuildArea();
   void _discardPreview();
   void _buildAll();

@@ -25,6 +25,7 @@
 class Gift
 {
 public:
+  static const Gift invalid;
   typedef enum { modest, generous, lavish } Type;
 
   const std::string& name() const;
@@ -39,7 +40,7 @@ public:
 
   Gift();
   Gift( const Gift& a );
-  Gift( const std::string& sender, const std::string& name, int money, int data=-1 );
+  Gift( const std::string& sender, const std::string& name, int money, const DateTime& date, int data=-1 );
   ~Gift();
 private:
 

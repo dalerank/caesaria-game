@@ -288,6 +288,7 @@
 "##governor_palace_2##":"Villa du gouverneur"
 "##governorVilla##":"Villa du gouverneur"
 "##wine##":"Vin"
+"##prettyWine##":"Falern Vin"
 "##vinard_info##":"Les raisins cultivés ici sont destinés spécifiquement à la production de vin. Vos patriciens raffolent de ce produit local, qui s'exporte également très bien."
 "##vinard##":"Ferme d'Olives"
 "##wine_workshop_info##":"Les raisins permettent de produire du vin, très prisé des patriciens dans leurs villas. Le vin est très demandé et s'exporte très bien."

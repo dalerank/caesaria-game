@@ -28,7 +28,7 @@ namespace game
 {
 
 #define _CONFIG_PATH(a) std::string( #a ".model");
-#define __REG_PROPERTY(a) const char* Settings::a = CAESARIA_STR_EXT(a);
+#define __REG_PROPERTY(a) const char* Settings::a = TEXT(a);
 __REG_PROPERTY(localePath)
 __REG_PROPERTY(resourcePath )
 __REG_PROPERTY(pantheonModel )
@@ -107,6 +107,7 @@ __REG_PROPERTY(defaultFont)
 __REG_PROPERTY(celebratesConfig)
 __REG_PROPERTY(ambientsounds)
 __REG_PROPERTY(cntrGroupsModel)
+__REG_PROPERTY(logfile)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -155,6 +156,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ opengl_opts         ] = std::string( "/opengl.model" );
   _d->options[ freeplay_opts       ] = std::string( "/freeplay.model" );
   _d->options[ walkerRelations     ] = std::string( "/relations.model" );
+  _d->options[ logfile             ] = std::string( "stdout.txt" );
   _d->options[ font                ] = std::string( "FreeSerif.ttf" );
   _d->options[ defaultFont         ] = std::string( "FreeSerif.ttf" );
   _d->options[ simpleAnimationModel] = std::string( "/basic_animations.model" );
@@ -205,7 +207,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ debugMenu           ] = true;
 #endif
 
-#ifdef CAESARIA_USE_STEAM
+#ifdef GAME_USE_STEAM
   _d->options[ oldgfx              ] = 0;
 #endif
 
@@ -241,7 +243,7 @@ void Settings::setwdir( const std::string& wdirstr )
   vfs::Path dirName;
   if( OSystem::isLinux() )
   {
-    dirName = vfs::Path( ".caesaria/" ) + defaultSaveDir;
+    dirName = ".caesaria/" + defaultSaveDir;
     saveDir = vfs::Directory::userDir()/dirName;
   }
   else

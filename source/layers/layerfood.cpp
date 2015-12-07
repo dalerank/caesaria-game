@@ -39,8 +39,7 @@ void Food::drawTile( const RenderInfo& rinfo, Tile& tile )
 {
   if( tile.overlay().isNull() )
   {
-    drawPass( rinfo, tile, Renderer::ground );
-    drawPass( rinfo, tile, Renderer::groundAnimation );
+    drawLandTile( rinfo, tile );
   }
   else
   {
@@ -59,12 +58,12 @@ void Food::drawTile( const RenderInfo& rinfo, Tile& tile )
       needDrawAnimations = (house->level() <= HouseLevel::hovel) && (house->habitants().empty());
       if( !needDrawAnimations )
       {
-        drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
+        drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.house );
       }
     }
-    else      //other buildings
+    else //other buildings
     {
-      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base);
+      drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.constr );
     }
 
     if( needDrawAnimations )
