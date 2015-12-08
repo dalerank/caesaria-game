@@ -153,11 +153,7 @@ void Info::timeStep(const unsigned int time )
       last[ peace ] = peaceSrvc->value();
     }
 
-    MilitaryPtr mil = _city()->statistic().services.find<Military>();
-    if( mil.isValid() )
-    {
-      last[ Info::milthreat ] = mil->threatValue();
-    }
+    last[ Info::milthreat ] = _city()->statistic().services.value<Military>();
 
     auto habitable = _city()->statistic().houses.habitable();
 
@@ -171,10 +167,7 @@ void Info::timeStep(const unsigned int time )
       last[ houseNumber ]++;
     }
 
-    SentimentPtr sentimentSrvc = _city()->statistic().services.find<Sentiment>();
-
-    if( sentimentSrvc.isValid())
-      last[ sentiment ] = sentimentSrvc->value();
+    last[ sentiment ] = _city()->statistic().services.value<Sentiment>();
 
     for( int k=0; k < paramsCount; k++ )
     {

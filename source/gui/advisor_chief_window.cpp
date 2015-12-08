@@ -337,16 +337,16 @@ void Chief::Impl::drawFoodConsumption()
 void Chief::Impl::drawMilitary()
 {
   StringArray reasons;
-  MilitaryPtr mil = city->statistic().services.find<Military>();
+  MilitaryPtr military = city->statistic().services.find<Military>();
   bool isBesieged = false;
 
-  if( mil.isValid() )
+  if( military.isValid() )
   {
-    isBesieged = mil->threatValue() > bigThreatValue;
+    isBesieged = military->value() > bigThreatValue;
 
     if( !isBesieged )
     {
-      Notification n = mil->priorityNotification();
+      Notification n = military->priorityNotification();
       reasons << n.desc.message;
     }    
   }

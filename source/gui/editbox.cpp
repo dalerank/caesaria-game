@@ -761,12 +761,8 @@ void EditBox::_drawHolderText( Font font, Rect* clip )
   if( isFocused() )
   {
     _d->setTextRect( this, 0, _d->holderText );
-    Font holderFont = font;
-
-    if( holderFont.isValid() )
-    {
-        holderFont.draw( _d->textPicture, _d->holderText, 0, 0 );
-    }
+    if( font.isValid() )
+      font.draw( _d->textPicture, _d->holderText, 0, 0 );
   }
 }
 

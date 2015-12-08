@@ -187,7 +187,7 @@ void Gatehouse::timeStep(const unsigned long time)
     auto military = _city()->statistic().services.find<city::Military>();
     if( military.isValid() )
     {
-      int threatValue = military->threatValue();
+      int threatValue = military->value();
       if( threatValue > 0 )
       {
         TilePos offset( 3, 3 );

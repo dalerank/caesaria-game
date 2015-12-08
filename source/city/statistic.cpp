@@ -156,16 +156,8 @@ Statistic::Statistic(PlayerCity& c)
 
 }
 
-void Statistic::update(const unsigned long time)
-{
-   walkers.cached.clear();
-}
-
-unsigned int Statistic::_Crime::level() const
-{
-  DisorderPtr ds = _parent.services.find<Disorder>();
-  return ds.isValid() ? ds->value() : 0;
-}
+void Statistic::update(const unsigned long time) { walkers.cached.clear(); }
+unsigned int Statistic::_Crime::level() const { return _parent.services.value<Disorder>(); }
 
 const WalkerList& Statistic::_Walkers::find(walker::Type type) const
 {

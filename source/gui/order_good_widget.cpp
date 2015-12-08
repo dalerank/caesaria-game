@@ -113,11 +113,7 @@ void OrderGoodWidget::_updateTexture(Engine& painter)
 
   std::string goodName = _( "##" + good::Helper::getTypeName( _type ) + "##" );
 
-  if( _textPicture().isValid() )
-  {
-    Font rfont = font();
-    rfont.draw( _textPicture(), goodName, 55, 0 );
-  }
+  canvasDraw( goodName, Point( 55, 0 ) );
 }
 
 void OrderGoodWidget::draw(Engine& painter)

@@ -83,9 +83,8 @@ bool Well::build( const city::AreaInfo& areainfo )
 {
   ServiceBuilding::build( areainfo );
 
-  Picture rpic = info().randomPicture( size() );
-  if( !rpic.isValid() )
-    rpic.load( ResourceGroup::utilitya, 1 );
+  Picture rpic = info().randomPicture( size() )
+                       .withFallback( ResourceGroup::utilitya, 1 );
 
   setPicture( rpic );
 
