@@ -183,8 +183,8 @@ public:
 
   struct _Services
   {
-    template<class T>
-    SmartPtr<T> find() const;
+    template<class T> SmartPtr<T> find() const;
+    template<class Srvc> int value( int defaultValue = 0 ) const;
 
     Statistic& _parent;
   } services;
@@ -597,6 +597,13 @@ template<class T>
 inline SmartPtr<T> Statistic::_Services::find() const
 {
   return ptr_cast<T>( _parent.rcity.findService( T::defaultName() ) );
+}
+
+template<class Srvc>
+int Statistic::_Services::value( int defaultValue ) const
+{
+  auto ptr = find<Srvc>();
+  return ptr.isValid() ? ptr->value() : defaultValue;
 }
 
 template< class T >

@@ -666,7 +666,7 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
 
 void EmpireMapWindow::_changePosition()
 {
-  Point cursorPos = const_cast<EmpireMapWindow*>( this )->ui()->cursorPos() ;
+  Point cursorPos = ui()->cursorPos() ;
   world::ObjectPtr obj = _d->findObject( cursorPos );
 
   std::string text;

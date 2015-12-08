@@ -64,8 +64,8 @@ struct EmigrantWayCondition
 {
   void tryWalk( const Tile* tile, bool& ret )
   {
-    HousePtr f = tile->overlay<House>();
-    ret = ( tile->isWalkable( true ) || f.isValid() );
+    bool isHouse = tile->overlay().is<House>();
+    ret = ( tile->isWalkable( true ) || isHouse );
   }
 
   TilePossibleCondition mayWalk() { return makeDelegate( this, &EmigrantWayCondition::tryWalk ); }

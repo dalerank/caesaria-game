@@ -139,11 +139,9 @@ void Briefing::initialize()
     mapback.setCenter( _d->game->gui()->rootWidget()->center() );
 
     std::string mapToLoad = vm[ "image" ].toString();
-    pic.load( mapToLoad );
-    if( !pic.isValid() )
-    {
-      pic.load( "europe01", 2 );
-    }
+
+    pic.load( mapToLoad )
+       .withFallback( "europe01", 2 );
 
     Point startImgPos( 192, 144 );
     const unsigned int textYOffset = 400;

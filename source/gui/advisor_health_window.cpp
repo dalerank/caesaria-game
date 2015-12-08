@@ -192,6 +192,11 @@ void Health::_updateAdvice(PlayerCityPtr c)
     return;
 
   HealthCarePtr hc = c->statistic().services.find<HealthCare>();
+  if( !hc.isValid() )
+  {
+    Logger::warning( "WARNING !!! HealthCare service not exist" );
+    return;
+  }
 
   StringArray outText;
 
@@ -203,7 +208,7 @@ void Health::_updateAdvice(PlayerCityPtr c)
   {
     if( c->states().population < smallCityPopulation )
     {
-      if( hc.isValid() && hc->value() > smallCityNormalhealthValue )
+      if( hc->value() > smallCityNormalhealthValue )
       {
         outText << "##healthadv_noproblem_small_city##";
       }
@@ -247,10 +252,7 @@ void Health::_updateAdvice(PlayerCityPtr c)
         outText << "##healthadv_some_regions_need_hospital##";
       }
 
-      if( hc.isValid() )
-      {
-        outText << hc->reason();
-      }
+      outText << hc->reason();
     }
   }
 

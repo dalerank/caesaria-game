@@ -40,8 +40,8 @@ struct ElephantWayCondition
 {
   void tryMove( const Tile* tile, bool& ret )
   {
-    BuildingPtr f = tile->overlay<Building>();
-    ret = ( tile->isWalkable( true ) || f.isValid() );
+    BuildingPtr building = tile->overlay<Building>();
+    ret = ( tile->isWalkable( true ) || building.isValid() );
   }
 
   TilePossibleCondition mayMove() { return makeDelegate( this, &ElephantWayCondition::tryMove ); }

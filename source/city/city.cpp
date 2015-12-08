@@ -557,8 +557,7 @@ void PlayerCity::setOption(PlayerCity::OptionType opt, int value)
 
 int PlayerCity::prosperity() const
 {
-  city::ProsperityRatingPtr csPrsp = statistic().services.find<city::ProsperityRating>();
-  return csPrsp.isValid() ? csPrsp->value() : 0;
+  return statistic().services.value<city::ProsperityRating>();
 }
 
 int PlayerCity::getOption(PlayerCity::OptionType opt) const
@@ -594,17 +593,8 @@ PlayerCityPtr PlayerCity::create( world::EmpirePtr empire, PlayerPtr player )
   return ret;
 }
 
-int PlayerCity::culture() const
-{
-  city::CultureRatingPtr culture = statistic().services.find<city::CultureRating>();
-  return culture.isValid() ? culture->value() : 0;
-}
-
-int PlayerCity::peace() const
-{
-  city::PeacePtr peace = statistic().services.find<city::Peace>();
-  return peace.isValid() ? peace->value() : 0;
-}
+int PlayerCity::culture() const { return statistic().services.value<city::CultureRating>(); }
+int PlayerCity::peace() const { return statistic().services.value<city::Peace>(); }
 
 int PlayerCity::sentiment() const {  return _d->sentiment; }
 int PlayerCity::favour() const { return empire()->emperor().relation( name() ).value(); }

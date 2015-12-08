@@ -577,10 +577,8 @@ void PushButton::draw( gfx::Engine& painter )
       painter.draw( state.background, absoluteRect(), &absoluteClippingRectRef() );
     else
     {
-      if( state.batch.body.valid() )
-        painter.draw( state.batch.body, &absoluteClippingRectRef() );
-      else
-        painter.draw( state.batch.fallback, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+      drawBatchWithFallback( painter, state.batch.body, state.batch.fallback,
+                             absoluteRect().lefttop(), &absoluteClippingRectRef() );
     }
 	}
 
