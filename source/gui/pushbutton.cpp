@@ -74,13 +74,13 @@ class PushButton::Impl
 public:
   struct {
     bool pressed = false;
-    bool pushButton;
+    bool pushButton = false;
   } is;
 
   struct {
     bool textChanged;
     bool dirty;
-    bool visible;
+    bool visible = true;
     PushButton::BackgroundStyle style;
   } bg;
 
@@ -110,9 +110,6 @@ public:
 
   Impl() : clickTime(0)
   {
-    is.pressed = false;
-    is.pushButton = false;
-    is.drawBody = true;
     for( int i=0; i < StateCount; i++)
     {
       auto& state = buttonStates[ ElementState(i) ];
@@ -557,7 +554,7 @@ void PushButton::beforeDraw( gfx::Engine& painter )
 	Widget::beforeDraw( painter  );
 }
 
-bool PushButton::isBodyVisible() const { return _dfunc()->is.drawBody; }
+bool PushButton::isBodyVisible() const { return _dfunc()->bg.visible; }
 bool gui::PushButton::isTextVisible() const { return _dfunc()->text.visible; }
 void gui::PushButton::setTextVisible(bool value) { _dfunc()->text.visible = value; }
 
