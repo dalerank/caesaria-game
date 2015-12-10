@@ -20,18 +20,21 @@
 #include "animals.hpp"
 #include "human.hpp"
 #include "world/nation.hpp"
+#include "core/hash.hpp"
 #include "core/logger.hpp"
 #include "core/variant_map.hpp"
 #include "core/saveadapter.hpp"
 
 using namespace gfx;
 
-class TypeEnums : public EnumsHelper<walker::Type>
+class WalkersDB : public std::map< walker::Type, walker::Info >
 {
 public:
-  TypeEnums() : EnumsHelper<walker::Type>( walker::unknown )
+  std::map<int, walker::Type> rmap;
+  void append( walker::Type type, const std::string& name )
   {
-
+    (*this)[ type ] = walker::Info{ type, name, "##wt_" + name + "##" };
+    rmap[ Hash(name) ] = type;
   }
 };
 
@@ -47,11 +50,9 @@ public:
 class WalkerHelper::Impl
 {
 public:    
-  typedef std::map< walker::Type, std::string > PrettyNames;
   typedef std::map< world::Nation, std::string > PrettyNations;
 
-  TypeEnums htype;
-  PrettyNames typenames;
+  WalkersDB infodb;
 
   NationEnums hnation;
   PrettyNations nationnames;
@@ -60,8 +61,7 @@ public:
 
   void appendType( walker::Type type, const std::string& name )
   {
-    htype.append( type, name );
-    typenames[ type ] = "##wt_" + name + "##";
+    infodb.append( type, name  );
   }
 
   void appendNation( world::Nation nation, const std::string& name )
@@ -187,6 +187,20 @@ bool WalkerHelper::isAnimal(WalkerPtr wlk)
   return wlk.is<Animal>() || wlk.is<Fish>();
 }
 
+const walker::Info& WalkerHelper::find(walker::Type type)
+{
+  static const walker::Info invalid{ walker::unknown, "unknown", "##wt_unknown##" };
+  auto it = instance()._d->infodb.find( type );
+
+  if( it != instance()._d->infodb.end() )
+    return it->second;
+  else
+  {
+    Logger::warning( "WalkerHelper: can't find walker typeName for {}", type );
+    return invalid;
+  }
+}
+
 void WalkerHelper::load( const vfs::Path& filename )
 {
   _d->options = config::load( filename );
@@ -198,37 +212,22 @@ WalkerHelper& WalkerHelper::instance()
   return inst;
 }
 
-std::string WalkerHelper::getTypename( walker::Type type )
-{
-  std::string name = instance()._d->htype.findName( type );
+std::string WalkerHelper::getTypename( walker::Type type ) {  return find( type ).typeName(); }
+std::string WalkerHelper::getPrettyTypename(walker::Type type) {  return find( type ).prettyName(); }
 
-  if( name.empty() )
+walker::Type WalkerHelper::getType(const std::string& name)
+{
+  const auto& infodb = instance()._d->infodb;
+  auto typeIt = infodb.rmap.find( Hash(name) );
+  if( typeIt == infodb.rmap.end() )
   {
-    Logger::warning( "WalkerHelper: can't find walker typeName for {0}", type );
-    //_GAME_DEBUG_BREAK_IF( "Can't find walker typeName by WalkerType" );
+    Logger::warning( "WalkerHelper: can't find walker type for {}", name);
+    return walker::unknown;
   }
 
-  return name;
+  return typeIt->second;
 }
 
-walker::Type WalkerHelper::getType(const std::string &name)
-{
-  walker::Type type = instance()._d->htype.findType( name );
-
-  if( type == instance()._d->htype.getInvalid() )
-  {
-    Logger::warning( "Can't find walker type for {0}", name);
-    //_GAME_DEBUG_BREAK_IF( "Can't find walker type by typeName" );
-  }
-
-  return type;
-}
-
-std::string WalkerHelper::getPrettyTypename(walker::Type type)
-{
-  Impl::PrettyNames::iterator it = instance()._d->typenames.find( type );
-  return it != instance()._d->typenames.end() ? it->second : "";
-}
 
 std::string WalkerHelper::getNationName(world::Nation type)
 {
@@ -246,33 +245,6 @@ world::Nation WalkerHelper::getNation(const std::string &name)
   }
 
   return nation;
-}
-
-Picture WalkerHelper::bigPicture(walker::Type type)
-{
-  int index = -1;
-  switch( type )
-  {
-  case walker::immigrant: index=4; break;
-  case walker::emigrant: index=9; break;
-  case walker::doctor: index = 2; break;
-  case walker::cartPusher: index=51; break;
-  case walker::marketLady: index=12; break;
-  case walker::marketKid: index=38; break;
-  case walker::merchant: index=25; break;
-  case walker::prefect: index=19; break;
-  case walker::engineer: index=7; break;
-  case walker::taxCollector: index=6; break;
-  case walker::sheep: index = 54; break;
-  case walker::seaMerchant: index = 61; break;
-  case walker::merchantCamel : index = 25; break;
-  case walker::recruter: index=13; break;
-  case walker::lionTamer: index=11; break;
-  default: index=8; break;
-  break;
-  }
-
-  return index >= 0 ? Picture( "bigpeople", index ) : Picture::getInvalid();
 }
 
 WalkerHelper::~WalkerHelper(){}

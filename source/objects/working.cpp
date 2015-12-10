@@ -300,7 +300,7 @@ static const char* productivityDescription[] =
 
 std::string WorkingBuildingHelper::productivity2desc( WorkingBuildingPtr w, const std::string& prefix )
 {
-  std::string factoryType = object::toString( w->type() );
+  std::string factoryType = w->info().typeName();
   unsigned int workKoeff = w->productivity() * productivityDescriptionCount / 100;
 
   workKoeff = math::clamp( workKoeff, 0u, productivityDescriptionCount-1 );
