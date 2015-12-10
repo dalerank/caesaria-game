@@ -147,12 +147,7 @@ void Info::timeStep(const unsigned int time )
     last[ blackHouses ] = _city()->statistic().houses.terribleNumber();
     last[ peace       ] = 0;
 
-    PeacePtr peaceSrvc = _city()->statistic().services.find<Peace>();
-    if( peaceSrvc.isValid() )
-    {
-      last[ peace ] = peaceSrvc->value();
-    }
-
+    last[ peace ] = _city()->statistic().services.value<Peace>();
     last[ Info::milthreat ] = _city()->statistic().services.value<Military>();
 
     auto habitable = _city()->statistic().houses.habitable();

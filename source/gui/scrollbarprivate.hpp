@@ -33,7 +33,6 @@ signals public:
 	Signal1<int> onPositionChanged;
 
 public:
-	Rect textureRect;
 	Rect	sliderTextureRect;
 	Rect	backgroundRect;
 	Rect	filledAreaRect;
@@ -44,7 +43,11 @@ public:
   Point cursorPos;
   unsigned int lastTimeChange;
 
-  gfx::Picture texture;
+  struct {
+    gfx::Picture texture;
+    Rect rect;
+  } background;
+
   gfx::Picture sliderPictureUp, sliderPictureDown;
   gfx::Picture sliderTexture;
 };

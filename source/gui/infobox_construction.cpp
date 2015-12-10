@@ -111,8 +111,7 @@ void AboutConstruction::_baseAssigned()
 {
   if( base().isValid() )
   {
-    std::string typeName = object::toString( base()->type() );
-    events::dispatch<PlaySound>( "bmsel_"+typeName, 1, 100, audio::infobox, true );
+    events::dispatch<PlaySound>( "bmsel_" + base()->info().typeName(), 1, 100, audio::infobox, true );
   }
 }
 

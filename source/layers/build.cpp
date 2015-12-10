@@ -295,7 +295,7 @@ void Build::_updatePreviewTiles( bool force )
 
   d.text.image.fill( 0x0, Rect() );
   d.text.font.setColor( 0xffff0000 );
-  d.text.font.draw( d.text.image, utils::i2str( d.money4Construction ) + " Dn", Point() );
+  d.text.font.draw( d.text.image, fmt::format( "{} Dn", d.money4Construction ), Point() );
 }
 
 void Build::_buildAll()
