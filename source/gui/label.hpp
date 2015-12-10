@@ -70,6 +70,10 @@ public:
   virtual void canvasDraw(const std::string& text, const Point& point=Point(), Font font=Font(), NColor color=0);
 
   //!
+  virtual void canvasDraw(const std::string& text, const Rect& rect, Font font=Font(), NColor color=0,
+                          Alignment halign=align::automatic, Alignment valign=align::automatic );
+
+  //!
   virtual void canvasDraw(const gfx::Picture& picture, const Point& point);
 
   //! Sets whether to draw the border

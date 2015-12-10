@@ -377,7 +377,7 @@ void Chief::Impl::drawMilitary()
       {
         if( minDistance <= enemyNearCityGatesDistance )
         {
-          std::string threatText = fmt::format( "##{0}_troops_at_our_gates##", maxThreat->type() );
+          std::string threatText = fmt::format( "##{}_troops_at_our_gates##", maxThreat->type() );
           reasons << threatText;
         }
         else if( minDistance <= enemyNearCityDistance )
