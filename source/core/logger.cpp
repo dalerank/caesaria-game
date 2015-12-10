@@ -190,9 +190,8 @@ void Logger::registerWriter(Logger::Type type, const std::string& param )
   {
   case consolelog:
   {
-    LogWriterPtr wr( new ConsoleLogWriter() );
-    wr->drop();
-    registerWriter( "__console", wr );
+    auto wr = ptr_make<ConsoleLogWriter>();
+    registerWriter( "__console", wr.as<LogWriter>() );
   }
   break;
 
@@ -200,9 +199,8 @@ void Logger::registerWriter(Logger::Type type, const std::string& param )
   {
     vfs::Directory workdir( param );
     vfs::Path fullname = workdir/"stdout.txt";
-    LogWriterPtr wr( new FileLogWriter( fullname.toString() ) );
-    wr->drop();
-    registerWriter( "__log", wr );
+    auto wr = ptr_make<FileLogWriter>( fullname.toString() );
+    registerWriter( "__log", wr.as<LogWriter>() );
   }
   break;
 
