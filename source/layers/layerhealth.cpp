@@ -179,7 +179,7 @@ void Health::handleEvent(NEvent& event)
     {
       if( _d->overlay.underMouse.is<HealthBuilding>() )
       {
-        if( _d->flags.count( _d->overlay.underMouse->type() ) )
+        if( _d->flags.count( object::typeOrDefault( _d->overlay.underMouse ) ) )
         {
           _d->overlay.selected = _d->overlay.underMouse;
           _updatePaths();

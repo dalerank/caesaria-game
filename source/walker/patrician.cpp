@@ -168,7 +168,7 @@ void Patrician::_reachedPathway()
     go();
 
     OverlayPtr overlay = _map().overlay( _d->destination );
-    object::Type objType = overlay.isValid() ? overlay->type() : object::unknown;
+    object::Type objType = object::typeOrDefault( overlay );
     switch( objType )
     {
     case object::senate:

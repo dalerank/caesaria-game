@@ -330,14 +330,13 @@ void PlayerCity::save( VariantMap& stream) const
   for( auto overlay : _d->overlays )
   {
     VariantMap vm_overlay;
-    object::Type otype = object::unknown;
+    object::Type otype = object::typeOrDefault( overlay );
 
     try
     {
-      otype = overlay->type();
       overlay->save( vm_overlay );
       auto pos = overlay->pos();
-      vm_overlays[ utils::format( 0xff, "%d,%d", pos.i(), pos.j() ) ] = vm_overlay;
+      vm_overlays[ fmt::format( "{},{}", pos.i(), pos.j() ) ] = vm_overlay;
     }
     catch(...)
     {

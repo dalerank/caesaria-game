@@ -312,7 +312,7 @@ inline SmartList< T > Statistic::_Objects::find( const object::Type type, const 
   for( auto tile : area )
   {
     SmartPtr<T> obj = ptr_cast< T >( tile->overlay() );
-    if( obj.isValid() && (obj->type() == type || type == object::any) )
+    if( object::typeOrDefault( obj ) == type || type == object::any )
     {
       ret.push_back( obj );
     }
@@ -543,7 +543,7 @@ inline SmartList< T > Statistic::_Objects::find( object::Type type ) const
   auto buildings = _parent.rcity.overlays();
   for( auto bld : buildings )
   {
-    if( bld.isValid() && (bld->type() == type || type == object::any) )
+    if( object::typeOrDefault( bld ) == type || type == object::any )
       ret.addIfValid( bld.as<T>() );
   }
 
