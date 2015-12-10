@@ -56,6 +56,16 @@ private:
   EnumsHelper<int> _helper;
 };
 
+class LayerDrawPass : public ReferenceCounted
+{
+public:
+  typedef enum { gui=0 } Type;
+  virtual void draw( const gfx::RenderInfo& rinfo, gfx::Tile& tile ) {}
+  virtual std::string name() { return ""; }
+  virtual void handleEvent( NEvent& event ) {}
+};
+typedef SmartPtr<LayerDrawPass> LayerDrawPassPtr;
+
 class Layer : public ReferenceCounted
 {
 public:
@@ -82,7 +92,7 @@ public:
   virtual void drawLands(const gfx::RenderInfo& rinfo, gfx::Camera* camera );
   virtual void drawLandTile( const gfx::RenderInfo& rinfo, gfx::Tile &tile );
   virtual void drawFlatTile( const gfx::RenderInfo& rinfo, gfx::Tile& tile );
-  virtual void drawWalkers(const gfx::RenderInfo& rinfo, const gfx::Tile& tile);
+  virtual void drawWalkers( const gfx::RenderInfo& rinfo, const gfx::Tile& tile);
   virtual void init( Point cursor );
   virtual void beforeRender( gfx::Engine& engine);
   virtual void afterRender( gfx::Engine& engine);
@@ -90,8 +100,9 @@ public:
   virtual void renderUi( gfx::Engine& engine );
   virtual void registerTileForRendering(gfx::Tile&);
   virtual void changeLayer( int type );
-  virtual int nextLayer() const;
+  virtual int  nextLayer() const;
   virtual void destroy();
+  virtual void addDrawPass( int type, LayerDrawPassPtr pass );
 
   virtual ~Layer();
 
@@ -104,12 +115,12 @@ protected:
   Point _lastCursorPos() const;
   void _setStartCursorPos( Point pos );
   Point _startCursorPos() const;
-  gfx::Tile* _currentTile() const;
   bool _isMovingButtonPressed( NEvent& event ) const;
   void _setTooltipText( const std::string& text );
   void _addWalkerType( walker::Type wtype );
   WalkerTypes& _visibleWalkers();
   bool _isVisibleObject( object::Type ovType );
+  gfx::Tile* _currentTile() const;
   bool _moveCamera( NEvent& event );
   gfx::Tilemap& _map() const;
 
