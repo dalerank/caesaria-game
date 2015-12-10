@@ -96,17 +96,16 @@ void Tree::initTerrain(Tile& terrain)
 
 bool Tree::build( const city::AreaInfo& info )
 {
-  std::string picname = imgid::toResource( info.city->tilemap().at( info.pos ).imgId() );
+  std::string txName = imgid::toResource( info.city->tilemap().at( info.pos ).imgId() );
   auto& md = object::Info::find( object::tree );
-  if( md.isMyPicture( picname ) )
+  if( md.havePicture( txName ) )
   {
-    _picture().load( picname );
+    _picture().load( txName );
   }
-  else
-  {
-    if( !picture().isValid() )
+
+  if( !picture().isValid() )
       setPicture( md.randomPicture(1) );
-  }
+
   _d->flat = (picture().height() <= config::tilemap.cell.picSize().height());
   return Overlay::build( info );
 }
