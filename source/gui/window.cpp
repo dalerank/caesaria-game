@@ -24,6 +24,7 @@
 #include "modal_widget.hpp"
 #include "core/variant_map.hpp"
 #include "gfx/decorator.hpp"
+#include "gfx/drawstate.hpp"
 #include "gfx/picturesarray.hpp"
 
 using namespace gfx;
@@ -305,16 +306,10 @@ void Window::draw( Engine& painter )
 	{
 		if( _d->flags.isFlag( fbackgroundVisible ) )
 		{
-      if( _d->background.image.isValid() )
-			{
-        painter.draw( _d->background.image, absoluteRect().lefttop(), &absoluteClippingRectRef() );
-			}
-			else
-			{
-        drawBatchWithFallback( painter, _d->background.batch.body,
-                               _d->background.batch.fallback, absoluteRect().lefttop(),
-                               &absoluteClippingRectRef() );
-			}
+      DrawState pipe( painter, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+      pipe.draw( _d->background.image )
+          .fallback( _d->background.batch.body )
+          .fallback( _d->background.batch.fallback );
 		}
 	}
 

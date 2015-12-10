@@ -35,6 +35,7 @@
 #include "gfx/decorator.hpp"
 #include "listbox.hpp"
 #include "core/metric.hpp"
+#include "gfx/drawstate.hpp"
 #include "city/config.hpp"
 #include "core/osystem.hpp"
 
@@ -100,10 +101,9 @@ void TopMenu::draw(gfx::Engine& engine)
 
   _d->updateDate();
 
-  if( _d->bg.batch.valid() )
-    engine.draw( _d->bg.batch, &absoluteClippingRectRef() );
-  else
-    engine.draw( _d->bg.pics, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+  DrawState pipe( engine, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+  pipe.draw( _d->bg.batch )
+      .fallback( _d->bg.pics );
 
   MainMenu::draw( engine );
 }

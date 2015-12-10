@@ -20,6 +20,7 @@
 #include "pushbutton.hpp"
 #include "core/event.hpp"
 #include "gfx/engine.hpp"
+#include "gfx/drawstate.hpp"
 #include "gui/environment.hpp"
 #include "game/resourcegroup.hpp"
 
@@ -339,17 +340,9 @@ void ScrollBar::draw(gfx::Engine& painter )
 	if (!visible())
 		return;
 
-  //draw background
-  if( _d->texture.isValid() )
-  {
-    painter.draw( _d->texture, absoluteRect().lefttop(), &absoluteClippingRectRef() );
-  }
-
-  //draw slider
-  if( _d->sliderTexture.isValid() )
-  {
-    painter.draw( _d->sliderTexture, absoluteRect().lefttop() + _d->sliderRect.lefttop(), &absoluteClippingRectRef() );
-  }
+  DrawState pipe( painter, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+  pipe.draw( _d->background.texture )
+      .draw( _d->sliderTexture, _d->sliderRect.lefttop() );
 
 	// draw buttons
 	Widget::draw( painter );
@@ -514,8 +507,8 @@ void ScrollBar::_refreshControls()
 
 void ScrollBar::setBackgroundImage( const Picture& pixmap )
 {
-	_d->texture = pixmap;
-  _d->textureRect = Rect( Point(0,0), pixmap.size() );
+  _d->background.texture = pixmap;
+  _d->background.rect = Rect( Point(0,0), pixmap.size() );
 }
 
 void ScrollBar::setSliderImage( const Picture& pixmap, const ElementState state )
