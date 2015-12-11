@@ -20,6 +20,7 @@
 
 #include "event.hpp"
 #include "gfx/tilepos.hpp"
+#include "gfx/predefinitions.hpp"
 
 class Game;
 
@@ -30,6 +31,7 @@ class ClearTile : public GameEvent
 {
 public:
   static GameEventPtr create( const TilePos& );
+  static GameEventPtr create( const gfx::Tile& );
 
 protected:
   virtual void _exec( Game& game, unsigned int );

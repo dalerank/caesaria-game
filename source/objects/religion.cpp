@@ -128,8 +128,7 @@ void Temple::deliverService()
   {
     ServiceBuilding::deliverService();
 
-    if( _city()->getOption( PlayerCity::godEnabled ) &&
-        !_city()->getOption( PlayerCity::c3gameplay ) )
+    if( _city()->getOption( PlayerCity::godEnabled ) )
     {
       _updateBuffs();
     }
