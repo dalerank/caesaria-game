@@ -87,8 +87,7 @@ enum {
   options,
   house,
   draw,
-  empire,
-  mission
+  empire
 };
 
 enum {
@@ -292,6 +291,8 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( level, fail_mission )
   ADD_DEBUG_EVENT( level, change_emperor )
   ADD_DEBUG_EVENT( level, property_browser )
+  ADD_DEBUG_EVENT( level, show_requests )
+  ADD_DEBUG_EVENT( level, show_attacks )
 
   ADD_DEBUG_EVENT( empire, send_merchants )
 
@@ -315,8 +316,6 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( house, decrease_house_level )
   ADD_DEBUG_EVENT( house, lock_house_level )
 
-  ADD_DEBUG_EVENT( mission, show_requests )
-  ADD_DEBUG_EVENT( mission, show_attacks )
 
   ADD_DEBUG_EVENT( options, run_script )
   ADD_DEBUG_EVENT( options, all_sound_off )

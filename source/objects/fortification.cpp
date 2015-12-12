@@ -214,7 +214,7 @@ const Picture& Fortification::picture(const city::AreaInfo& areaInfo) const
   for (int i = 0; i < direction::count; ++i)
   {
     if (!is_border[i] &&
-        ( (overlay_d[i].isValid() && overlay_d[i]->type() == object::fortification) || is_busy[i]))
+        ( ( object::typeOrDefault( overlay_d[i] ) == object::fortification) || is_busy[i]))
     {
       switch (i)
       {

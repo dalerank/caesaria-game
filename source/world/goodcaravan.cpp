@@ -20,6 +20,7 @@
 #include "good/storage.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/logger.hpp"
+#include "core/common.hpp"
 #include "city.hpp"
 #include "core/variant_map.hpp"
 
@@ -84,7 +85,7 @@ void GoodCaravan::save(VariantMap& stream) const
   MovableObject::save( stream );
 
   VARIANT_SAVE_CLASS_D( stream, _d, store )
-  stream[ "base"  ] = Variant( _d->base.isValid() ? _d->base->name() : "" );
+  stream[ "base"  ] = Variant( utils::objNameOrDefault( _d->base ) );
   VARIANT_SAVE_STR_D( stream, _d, destination )
 }
 

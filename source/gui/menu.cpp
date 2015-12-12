@@ -27,6 +27,7 @@
 #include "gfx/decorator.hpp"
 #include "widgetpositionanimator.hpp"
 #include "label.hpp"
+#include "gfx/drawstate.hpp"
 #include "core/gettext.hpp"
 #include "game/minimap_colours.hpp"
 #include "gfx/city_renderer.hpp"
@@ -261,17 +262,17 @@ class Menu::Impl
 {
 public:
   struct {
-    Pictures pics;
+    Pictures fallback;
     Rects rects;
     Batch batch;
 
     void add( Picture pic, const Rect& r )
     {
-      pics.push_back( pic );
+      fallback.push_back( pic );
       rects.push_back( r );
 
       batch.destroy();
-      batch.load( pics, rects );
+      batch.load( fallback, rects );
     }
 
     void update( const Point& move )
@@ -284,7 +285,7 @@ public:
         r += move;
 
       batch.destroy();
-      batch.load( pics, rects );
+      batch.load( fallback, rects );
     }
   } bg;
 
@@ -483,10 +484,9 @@ void Menu::draw(gfx::Engine& painter)
   if( !visible() )
     return;
 
-  if( _d->bg.batch.valid() )
-    painter.draw( _d->bg.batch, &absoluteClippingRectRef() );
-  else
-    painter.draw( _d->bg.pics, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+  DrawState pipe( painter, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+  pipe.draw( _d->bg.batch )
+      .fallback( _d->bg.fallback );
     
   Widget::draw( painter );
 }

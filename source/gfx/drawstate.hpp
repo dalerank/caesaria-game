@@ -15,26 +15,37 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_MEADOW_H_INCLUDE__
-#define __CAESARIA_MEADOW_H_INCLUDE__
+#ifndef __CAESARIA_DRAW_STATE_H_INCLUDED__
+#define __CAESARIA_DRAW_STATE_H_INCLUDED__
 
-#include "objects/overlay.hpp"
+#include "picture.hpp"
 
-class Meadow : public Overlay
+namespace gfx
+{
+
+class Engine;
+class Batch;
+class Pictures;
+
+class DrawState
 {
 public:
-  Meadow();
-  ~Meadow();
+  DrawState(Engine& painter);
+  DrawState(Engine& painter, const Point& lefttop, Rect* clip );
 
-  gfx::TilesArray neighbors() const;
+  DrawState& draw( const Picture& picture );
+  DrawState& draw( const Picture& picture, const Point& offset );
+  DrawState& draw( const Batch& batch );
+  DrawState& fallback( const Batch& batch );
+  DrawState& fallback( const Pictures& pics );
 
-  virtual bool build( const city::AreaInfo& info );
-  virtual void initTerrain( gfx::Tile &terrain);
-  virtual bool isWalkable() const;
-  virtual bool isFlat() const;
-  virtual bool isDestructible() const;
-
-  virtual gfx::Renderer::PassQueue passQueue() const;
+private:
+  Engine& _painter;
+  bool _ok = false;
+  Point _lefttop;
+  Rect* _clip = nullptr;
 };
 
-#endif //__CAESARIA_MEADOW_H_INCLUDE__
+}//end namespace gfx
+
+#endif //__CAESARIA_DRAW_STATE_H_INCLUDED__

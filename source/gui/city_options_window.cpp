@@ -230,8 +230,7 @@ void CityOptions::setupUI(const VariantMap& ui)
 
 void CityOptions::Impl::setCityOption( PlayerCity::OptionType option, int value )
 {
-  int optValue = city->getOption( option );
-  city->setOption( option, optValue  );
+  city->setOption( option, value  );
   update();
 }
 

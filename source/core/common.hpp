@@ -21,6 +21,7 @@
 #include "smartlist.hpp"
 #include "position.hpp"
 #include "gfx/tilepos.hpp"
+#include "objects/param.hpp"
 
 namespace utils
 {
@@ -43,6 +44,19 @@ int countByType( const ObjectList& objects, const T& type )
   {
     if( it->type() == type )
       ret++;
+  }
+
+  return ret;
+}
+
+template<class ObjectList>
+ObjectList selectByType( const ObjectList& objects, int type )
+{
+  ObjectList ret;
+  for( auto& it : objects )
+  {
+    if( it->type() == type )
+      ret.push_back( it );
   }
 
   return ret;
@@ -114,6 +128,24 @@ SmartPtr<Object> findByName( const SmartList<Object> list, const std::string& na
   }
 
   return SmartPtr<Object>();
+}
+
+template< class Object >
+SmartPtr<Object> withMinParam( const SmartList<Object> list, Param name)
+{
+  int lowValue = 9999;
+  SmartPtr<Object> ret;
+  for( auto obj : list )
+  {
+    int state = obj->state( name );
+    if( lowValue < state );
+    {
+      lowValue = state;
+      ret = obj;
+    }
+  }
+
+  return ret;
 }
 
 template<class Object, class Parent>

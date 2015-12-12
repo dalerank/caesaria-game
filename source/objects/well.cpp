@@ -19,6 +19,7 @@
 #include "game/resourcegroup.hpp"
 #include "walker/serviceman.hpp"
 #include "gfx/tile.hpp"
+#include "core/common.hpp"
 #include "house.hpp"
 #include "city/statistic.hpp"
 #include "constants.hpp"
@@ -40,22 +41,17 @@ Well::Well() : ServiceBuilding( Service::well, object::well, Size(1) )
 void Well::deliverService()
 {
   ServiceWalkerPtr walker = Walker::create<ServiceWalker>( _city(), serviceType() );
-  walker->setBase( BuildingPtr( this ) );
+  walker->setBase( this );
 
   ReachedBuildings reachedBuildings = walker->getReachedBuildings( tile().pos() );
 
-  unsigned int lowHealth = 100;
-  HouseList houses;
   for( auto bld : reachedBuildings)
-  {
     bld->applyService( walker );
-    auto house = bld.as<House>();
-    if( house.isValid() )
-    {
-      lowHealth = std::min<unsigned int>( lowHealth, house->state(pr::health ) );
-      houses << house;
-    }
-  }
+
+  HouseList houses = reachedBuildings.select<House>().toList();
+  HousePtr illHouse = utils::withMinParam( houses, pr::health );
+
+  unsigned int lowHealth = illHouse->state( pr::health );
 
   if( lowHealth < 30 )
   {
@@ -83,9 +79,8 @@ bool Well::build( const city::AreaInfo& areainfo )
 {
   ServiceBuilding::build( areainfo );
 
-  Picture rpic = info().randomPicture( size() );
-  if( !rpic.isValid() )
-    rpic.load( ResourceGroup::utilitya, 1 );
+  Picture rpic = info().randomPicture( size() )
+                       .withFallback( ResourceGroup::utilitya, 1 );
 
   setPicture( rpic );
 

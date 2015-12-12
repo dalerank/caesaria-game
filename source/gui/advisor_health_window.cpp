@@ -97,20 +97,11 @@ public:
 
     HealthcareInfo info = HealthcareInfo::find( _service );
 
-    Picture& texture = _textPicture();
-    Font rfont = font();
-    std::string buildingStrT = utils::i2str( _info.buildingCount ) + " " + _(info.building);
-    rfont.draw( texture, buildingStrT, 0, 0 );
-
-    rfont.draw( texture, utils::i2str( _info.buildingWork ), 165, 0 );
-
     std::string peoplesStrT = _("##health_no_info##");
     if( _info.buildingCount > 0 )
     {
       peoplesStrT = fmt::format( "{} ({}) {}", _info.peoplesServed, _info.needService, _(info.people) );
     }
-
-    rfont.draw( texture, peoplesStrT, 255, 0 );
 
     std::string coverageStrT;
     if( _info.buildingCount > 0 )
@@ -121,7 +112,11 @@ public:
       math::clamp_to( coveragePrcnt, 0, 100 );
       coverageStrT = fmt::format( "{}%", coveragePrcnt );
     }
-    rfont.draw( texture, coverageStrT, 455, 0 );
+
+    canvasDraw( fmt::format( "{} {}", _info.buildingCount, _(info.building )), Point() );
+    canvasDraw( utils::i2str( _info.buildingWork ), Point( 165, 0 ) );
+    canvasDraw( peoplesStrT, Point( 255, 0 ) );
+    canvasDraw( coverageStrT, Point( 455, 0 ) );
   }
 
 private:
@@ -192,6 +187,11 @@ void Health::_updateAdvice(PlayerCityPtr c)
     return;
 
   HealthCarePtr hc = c->statistic().services.find<HealthCare>();
+  if( !hc.isValid() )
+  {
+    Logger::warning( "WARNING !!! HealthCare service not exist" );
+    return;
+  }
 
   StringArray outText;
 
@@ -203,7 +203,7 @@ void Health::_updateAdvice(PlayerCityPtr c)
   {
     if( c->states().population < smallCityPopulation )
     {
-      if( hc.isValid() && hc->value() > smallCityNormalhealthValue )
+      if( hc->value() > smallCityNormalhealthValue )
       {
         outText << "##healthadv_noproblem_small_city##";
       }
@@ -247,10 +247,7 @@ void Health::_updateAdvice(PlayerCityPtr c)
         outText << "##healthadv_some_regions_need_hospital##";
       }
 
-      if( hc.isValid() )
-      {
-        outText << hc->reason();
-      }
+      outText << hc->reason();
     }
   }
 

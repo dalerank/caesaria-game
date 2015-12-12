@@ -183,8 +183,8 @@ public:
 
   struct _Services
   {
-    template<class T>
-    SmartPtr<T> find() const;
+    template<class T> SmartPtr<T> find() const;
+    template<class Srvc> int value( int defaultValue = 0 ) const;
 
     Statistic& _parent;
   } services;
@@ -312,7 +312,7 @@ inline SmartList< T > Statistic::_Objects::find( const object::Type type, const 
   for( auto tile : area )
   {
     SmartPtr<T> obj = ptr_cast< T >( tile->overlay() );
-    if( obj.isValid() && (obj->type() == type || type == object::any) )
+    if( object::typeOrDefault( obj ) == type || type == object::any )
     {
       ret.push_back( obj );
     }
@@ -543,7 +543,7 @@ inline SmartList< T > Statistic::_Objects::find( object::Type type ) const
   auto buildings = _parent.rcity.overlays();
   for( auto bld : buildings )
   {
-    if( bld.isValid() && (bld->type() == type || type == object::any) )
+    if( object::typeOrDefault( bld ) == type || type == object::any )
       ret.addIfValid( bld.as<T>() );
   }
 
@@ -597,6 +597,13 @@ template<class T>
 inline SmartPtr<T> Statistic::_Services::find() const
 {
   return ptr_cast<T>( _parent.rcity.findService( T::defaultName() ) );
+}
+
+template<class Srvc>
+int Statistic::_Services::value( int defaultValue ) const
+{
+  auto ptr = find<Srvc>();
+  return ptr.isValid() ? ptr->value() : defaultValue;
 }
 
 template< class T >

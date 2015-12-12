@@ -93,6 +93,7 @@ struct {
   STR_ALIAS(land1a,land1a)
   STR_ALIAS(land2a,land2a)
   STR_ALIAS(land3a,land3a)
+  STR_ALIAS(bigpeople,bigpeople)
 } rc;
 
 struct

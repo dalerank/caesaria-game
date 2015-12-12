@@ -34,10 +34,8 @@ public:
   template<typename Class, typename... Args>
   static SrvcPtr create( const Args & ... args)
   {
-    SrvcPtr instance( new Class( args... ) );
-    instance->drop();
-
-    return instance;
+    auto instance = ptr_make<Class>( args... );
+    return ptr_cast<Srvc>( instance );
   }
   /**
    * @brief Call every frame

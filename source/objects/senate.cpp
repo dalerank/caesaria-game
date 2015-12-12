@@ -106,7 +106,7 @@ bool Senate::canBuild( const city::AreaInfo& areaInfo ) const
 
   if( mayBuild )
   {
-    bool isSenatePresent = !areaInfo.city->statistic().objects.find<Building>( object::senate).empty();
+    bool isSenatePresent = areaInfo.city->statistic().objects.count( object::senate) > 0;
     _d->errorStr = isSenatePresent ? _("##can_build_only_one_of_building##") : "";
     mayBuild &= !isSenatePresent;
   }

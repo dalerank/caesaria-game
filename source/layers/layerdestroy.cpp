@@ -38,6 +38,7 @@
 #include "objects/tree.hpp"
 #include "game/settings.hpp"
 #include "core/format.hpp"
+#include "gfx/tile_config.hpp"
 
 using namespace gfx;
 using namespace events;
@@ -88,7 +89,7 @@ void Destroy::_clearAll()
   std::set<Tile*> alsoDestroyed;
   for( auto tile : tiles4clear )
   {
-    Tile* master = tile->master() ? tile->master() : tile;
+    Tile* master = tile::master( tile );
     if( alsoDestroyed.count( master ) == 0 )
     {
       alsoDestroyed.insert( master );

@@ -87,9 +87,8 @@ void SplashScreen::draw()
 void SplashScreen::setImage(const std::string &image, int index)
 {
   Engine& engine = Engine::instance();
-  _d->background.load( image, index );
-  if( !_d->background.isValid() )
-    _d->background.load( "logo", 1 );
+  _d->background.load( image, index )
+                .withFallback( "logo", 1 );
 
   // center the background on the screen
   Size s = (engine.screenSize() - _d->background.size()) / 2;

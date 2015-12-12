@@ -156,16 +156,8 @@ Statistic::Statistic(PlayerCity& c)
 
 }
 
-void Statistic::update(const unsigned long time)
-{
-   walkers.cached.clear();
-}
-
-unsigned int Statistic::_Crime::level() const
-{
-  DisorderPtr ds = _parent.services.find<Disorder>();
-  return ds.isValid() ? ds->value() : 0;
-}
+void Statistic::update(const unsigned long time) { walkers.cached.clear(); }
+unsigned int Statistic::_Crime::level() const { return _parent.services.value<Disorder>(); }
 
 const WalkerList& Statistic::_Walkers::find(walker::Type type) const
 {
@@ -353,7 +345,7 @@ size_t Statistic::_Objects::count(object::Type type) const
   const OverlayList& buildings = _parent.rcity.overlays();
   for( auto bld : buildings )
   {
-    if( bld.isValid() && bld->type() == type )
+    if( object::typeOrDefault( bld ) == type )
       ret++;
   }
 
@@ -540,8 +532,7 @@ int Statistic::_Objects::laborAccess(WorkingBuildingPtr wb) const
 
 unsigned int Statistic::_Health::value() const
 {
-  HealthCarePtr h = _parent.services.find<HealthCare>();
-  return h.isValid() ? h->value() : 100;
+  return _parent.services.value<HealthCare>( 100 );
 }
 
 int Statistic::_Military::months2lastAttack() const

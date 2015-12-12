@@ -210,7 +210,7 @@ void Farm::computeRoadside()
   for( auto& pos : _d->sublocs )
   {
     auto construction = _map().overlay<Construction>( pos );
-    if( construction.isValid() && construction->type() == object::farmtile )
+    if( object::typeOrDefault( construction ) == object::farmtile )
     {
       _roadside().append( construction->roadside() );
     }
@@ -327,11 +327,8 @@ void Farm::initialize(const object::Info& mdata)
 
 Picture Farm::_getMainPicture()
 {
-  Picture ret = info().randomPicture();
-  if( !ret.isValid() )
-    ret.load(ResourceGroup::commerce, 12);
-
-  return ret;
+  return info().randomPicture()
+               .withFallback( ResourceGroup::commerce, 12 );
 }
 
 Farm::~Farm() {}

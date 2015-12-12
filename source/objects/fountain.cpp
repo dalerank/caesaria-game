@@ -79,7 +79,7 @@ void Fountain::deliverService()
     return;
 
   auto serviceMan = Walker::create<ServiceWalker>( _city(), serviceType() );
-  serviceMan->setBase( BuildingPtr( this ) );
+  serviceMan->setBase( this );
   serviceMan->setReachDistance( 4 );
   ReachedBuildings reachedBuildings = serviceMan->getReachedBuildings( tile().pos() );
 

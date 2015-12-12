@@ -275,7 +275,7 @@ void Prefect::_brokePathway(TilePos p)
 {
   OverlayPtr overlay = _map().overlay( p );
 
-  if( overlay.isValid() && overlay->type() == object::burning_ruins )
+  if( object::typeOrDefault( overlay ) == object::burning_ruins )
   {
     setSpeed( 0.f );
     _setAction( acFightFire );
@@ -441,7 +441,7 @@ void Prefect::_noWay()
 static BuildingPtr isBurningRuins( const Tile& tile, bool& inFire )
 {
   BuildingPtr building = tile.overlay<Building>();
-  inFire = (building.isValid() && building->type() == object::burning_ruins );
+  inFire = (object::typeOrDefault( building ) == object::burning_ruins);
 
   return inFire ? building : BuildingPtr();
 }
