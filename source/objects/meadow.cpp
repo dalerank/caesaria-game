@@ -38,6 +38,8 @@ Meadow::Meadow() : Overlay( object::meadow, Size(1) )
   setPicture( info().randomPicture( Size(1) ) ); // 110 111 112 113
 }
 
+Meadow::~Meadow() {}
+
 bool Meadow::build( const city::AreaInfo& info )
 {
   Overlay::build( info );
@@ -48,6 +50,7 @@ bool Meadow::build( const city::AreaInfo& info )
   meadowAnim.addFrame( meadow.frame( index ) );
 
   tile().setAnimation( meadowAnim );
+  tile().setOverlay( nullptr );
 
   deleteLater();
 

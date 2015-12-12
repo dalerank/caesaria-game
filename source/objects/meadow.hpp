@@ -24,6 +24,7 @@ class Meadow : public Overlay
 {
 public:
   Meadow();
+  ~Meadow();
 
   gfx::TilesArray neighbors() const;
 
