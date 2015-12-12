@@ -39,6 +39,7 @@
         maximumSize : [ 0, 24 ]
         font : "FONT_2"
         postfix : "%"
+        text : "Fire risk"
         min : 10
         max : 150
         step : 10
@@ -48,6 +49,7 @@
         maximumSize : [ 0, 24 ]
         font : "FONT_2"
         postfix : "%"
+        text : "Collapse risk"
         min : 10
         max : 150
         step : 10

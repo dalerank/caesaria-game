@@ -61,7 +61,7 @@ gui::TexturedButton::TexturedButton(gui::Widget *parent) : PushButton( parent )
 }
 
 HelpButton::HelpButton(Widget* parent)
-  : TexturedButton( parent )
+  : HelpButton( parent, Point(), "", -1 )
 {
 
 }
@@ -85,7 +85,7 @@ void HelpButton::_btnClicked()
 }
 
 ExitButton::ExitButton(Widget* parent)
-  : TexturedButton( parent )
+  : ExitButton( parent, Point(), -1 )
 {
 
 }

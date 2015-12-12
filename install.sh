@@ -418,12 +418,13 @@ then
 	make -j5
 
 	echo -e "${txtgrn}Goto to artifacts directory... ${txtrst}"
-	cd ../caesaria-test
+  cd ${projectdir}
+ 	cd ../caesaria-test
 	
 	#echo -e "${txtgrn}Remove unneed files ${txtblu}stdout.txt libFLAC-8.dll libmikmod-2.dll smpeg.dll${txtrst}"
 	#rm stdout.txt libFLAC-8.dll libmikmod-2.dll smpeg.dll
 
-	if [ $send_to_remote == 0 ]
+	if [ $send_to_remote == 1 ]
 	then
 		echo -e "${txtgrn}Create package for linux${txtrst}"
 		PACKAGE_NAME_LINUX=caesaria_nightly_linux_$REVISION_NUMBER.zip
@@ -433,7 +434,7 @@ then
 		then
 			echo -e "Host frs.sourceforge.net\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config	
 			echo -e "${txtgrn}Upload nigtly build linux to sf.net${textrst}"
-			sshpass -p $sf_password scp -v $PACKAGE_NAME_LINUX ${sf_folder}/bin/
+			sshpass -p $sf_password scp -v $PACKAGE_NAME_LINUX ${sf_folder}
 		fi
 
 		if [ $have_wastefolder == 1 ]
@@ -470,6 +471,7 @@ then
 	make -j5
 
 	echo -e "${txtgrn}Goto to artifacts directory... ${txtrst}"
+	cd ${projectdir}
 	cd ../caesaria-test
 	
 fi #build for steam linux
@@ -495,12 +497,13 @@ then
 		make -j5
 
 		echo -e "${txtgrn}Goto to artifacts directory... ${txtrst}"
+		cd ${projectdir}
 		cd ../caesaria-test
 
 		echo -e "${txtgrn}Copy pthread dll to artifacts directory${txtrst}"	
 		cp /usr/i686-w64-mingw32/lib/libwinptread-1.dll ./
 	
-		if [ $send_to_remote == 0 ]
+		if [ $send_to_remote == 1 ]
 		then
 			echo -e "${txtgrn}Create package for windows${txtrst}"
 			PACKAGE_NAME_WINDOWS=caesaria_nightly_windows_$REVISION_NUMBER.zip
@@ -510,7 +513,7 @@ then
 			then
 				echo -e "Host frs.sourceforge.net\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
 				echo -e "${txtgrn}Upload nigtly build windows to sf.net${textrst}"
-				sshpass -p $sf_password scp -vvv $PACKAGE_NAME_WINDOWS ${sf_folder}/bin/
+				sshpass -p $sf_password scp -vvv $PACKAGE_NAME_WINDOWS ${sf_folder}
 			fi
 
 			if [ $have_wastefolder == 1 ]
@@ -547,6 +550,7 @@ then
 		make -j5
 
 		echo -e "${txtgrn}Goto to artifacts directory... ${txtrst}"
+		cd ${projectdir}
 		cd ../caesaria-test
 
 		echo -e "${txtgrn}Copy pthread dll to artifacts directory${txtrst}"	

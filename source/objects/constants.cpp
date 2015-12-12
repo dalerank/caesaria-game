@@ -26,6 +26,12 @@ namespace object
 class Helper : public EnumsHelper<Type>
 {
 public:
+  static Helper& instance()
+  {
+    static Helper inst;
+    return inst;
+  }
+
   Helper() : EnumsHelper<Type>( unknown )
   {
   #define __REG_TYPE(a) append(a, TEXT(a) );
@@ -135,13 +141,11 @@ public:
   }
 };
 
-static Helper _helperInst;
-
-std::string toString(const Type& t) {  return _helperInst.findName( t ); }
+std::string toString(const Type& t) { return Helper::instance().findName( t ); }
 
 Type findType(const std::string &name)
 {
-  object::Type type = _helperInst.findType( name );
+  object::Type type = Helper::instance().findType( name );
 
   Logger::warningIf( type == unknown,
                      "WARNING !!! can't find type for typeName " + ( name.empty() ? "null" : name) );
