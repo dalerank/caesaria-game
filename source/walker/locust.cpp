@@ -57,7 +57,7 @@ void Locust::timeStep(const unsigned long time)
   if( game::Date::isWeekChanged() )
   {
     auto farm = _map().overlay( pos() ).as<Farm>();
-    if( farm.isValid() && farm->type() != object::meat_farm )
+    if( object::typeOrDefault( farm ) != object::meat_farm )
     {
       farm->updateProgress( -50 );
     }

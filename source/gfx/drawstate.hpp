@@ -15,43 +15,37 @@
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_SCROLLBAR_PRIVATE_H_INCLUDE_
-#define _CAESARIA_SCROLLBAR_PRIVATE_H_INCLUDE_
+#ifndef __CAESARIA_DRAW_STATE_H_INCLUDED__
+#define __CAESARIA_DRAW_STATE_H_INCLUDED__
 
-#include "gfx/picture.hpp"
-#include "core/signals.hpp"
-#include "core/rectangle.hpp"
+#include "picture.hpp"
 
-namespace gui
+namespace gfx
 {
 
-class PushButton;
+class Engine;
+class Batch;
+class Pictures;
 
-class ScrollBar::Impl
+class DrawState
 {
-signals public:
-	Signal1<int> onPositionChanged;
-
 public:
-	Rect	sliderTextureRect;
-	Rect	backgroundRect;
-	Rect	filledAreaRect;
-	Rect	sliderRect;
-	PushButton* upButton;
-	PushButton* downButton;
-  bool needRecalculateParams;
-  Point cursorPos;
-  unsigned int lastTimeChange;
+  DrawState(Engine& painter);
+  DrawState(Engine& painter, const Point& lefttop, Rect* clip );
 
-  struct {
-    gfx::Picture texture;
-    Rect rect;
-  } background;
+  DrawState& draw( const Picture& picture );
+  DrawState& draw( const Picture& picture, const Point& offset );
+  DrawState& draw( const Batch& batch );
+  DrawState& fallback( const Batch& batch );
+  DrawState& fallback( const Pictures& pics );
 
-  gfx::Picture sliderPictureUp, sliderPictureDown;
-  gfx::Picture sliderTexture;
+private:
+  Engine& _painter;
+  bool _ok = false;
+  Point _lefttop;
+  Rect* _clip = nullptr;
 };
 
-}//end namespace gui
+}//end namespace gfx
 
-#endif //_CAESARIA_SCROLLBAR_PRIVATE_H_INCLUDE_
+#endif //__CAESARIA_DRAW_STATE_H_INCLUDED__

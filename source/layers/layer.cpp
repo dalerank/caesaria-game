@@ -82,6 +82,8 @@ public:
   };
 
   typedef std::vector<PictureInfo> Pictures;
+  typedef std::vector<LayerDrawPassPtr> Passes;
+  typedef std::map<int,Passes> PassesMap;
 
   Pictures pictures;
   Picture terraintPic;
@@ -92,6 +94,7 @@ public:
   Picture outline;
   Camera* camera;
   Font debugFont;
+  PassesMap passes;
 
   int posMode;
 };
@@ -100,12 +103,21 @@ void Layer::registerTileForRendering(Tile& tile)
 {
 }
 
-void Layer::renderUi(Engine& engine)
+void Layer::renderUi( Engine& engine )
 {
   __D_REF(d,Layer)
   if( !d.tooltip.text.empty() )
   {
     engine.draw( d.tooltip.image, d.cursor.last );
+  }
+
+  const auto& passes = d.passes[ LayerDrawPass::gui ];
+  Tile* tile = _currentTile();
+  if( !passes.empty() && tile != nullptr  )
+  {
+    RenderInfo rinfo = { engine, d.camera->offset() };
+    for( auto pass : passes )
+      pass->draw( rinfo, *tile );
   }
 }
 
@@ -728,6 +740,8 @@ bool Layer::_isVisibleObject(object::Type ovType)
 Layer::WalkerTypes& Layer::_visibleWalkers() { return _dfunc()->visible.walkers; }
 int Layer::nextLayer() const{ return _dfunc()->nextLayer; }
 void Layer::destroy() {}
+
+void Layer::addDrawPass(int type, LayerDrawPassPtr pass) { _dfunc()->passes[ type ].push_back(pass); }
 Camera* Layer::_camera(){ return _dfunc()->camera; }
 PlayerCityPtr Layer::_city(){ return _dfunc()->city; }
 void Layer::changeLayer(int type) {}

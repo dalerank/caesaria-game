@@ -397,15 +397,15 @@ void Minimap::Impl::drawWalkersMmap( Picture& canvas, bool clear )
 
   unsigned int* pixelsObjects = canvas.lock();
 
-  foreach( i, walkers )
+  for( auto wlk : walkers )
   {
-    const TilePos& pos = (*i)->pos();
+    const TilePos& pos = wlk->pos();
 
     NColor cl;
-    if ((*i)->agressive() != 0)
+    if (wlk->agressive() != 0)
     {
 
-      if ((*i)->agressive() > 0)
+      if (wlk->agressive() > 0)
       {
         cl = ColorList::red;
       }
@@ -414,7 +414,7 @@ void Minimap::Impl::drawWalkersMmap( Picture& canvas, bool clear )
         cl = ColorList::blue;
       }
     }
-    else if( (*i)->type() == walker::immigrant )
+    else if( wlk->type() == walker::immigrant )
     {
       cl = ColorList::green;
     }

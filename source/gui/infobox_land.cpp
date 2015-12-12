@@ -89,7 +89,7 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
   }
   else if( tile.getFlag( Tile::tlRoad ) )
   {
-    object::Type ovType = tile.overlay().isValid() ? tile.overlay()->type() : object::unknown;
+    object::Type ovType = object::typeOrDefault( tile.overlay() );
     if(ovType == object::plaza )
     {
       title = "##plaza_caption##";

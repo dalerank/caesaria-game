@@ -42,7 +42,7 @@ public:
 TimberLogger::TimberLogger()
   : Factory(good::none, good::timber, object::lumber_mill, Size(2) ), _d( new Impl )
 {
-  _picture().load( ResourceGroup::commerce, 72 );
+  setPicture( info().randomPicture( size() ) );
 
   _animation().load( ResourceGroup::commerce, 73, 10);
   _fgPictures().resize(2);

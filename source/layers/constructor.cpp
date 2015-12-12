@@ -712,7 +712,7 @@ void Constructor::Impl::sortBuildTiles()
 
 bool Constructor::Impl::canBuildOn(OverlayPtr overlay, const city::AreaInfo& areaInfo) const
 {
-  object::Type type = overlay.isValid() ? overlay->type() : object::unknown;
+  object::Type type = object::typeOrDefault( overlay );
   if( type == object::terrain
       || type == object::water )
   {

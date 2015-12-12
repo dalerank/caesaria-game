@@ -135,26 +135,14 @@ void SpinBox::_decrease()
 
 void SpinBox::_update()
 {
-  Font f = font();
-  if( f.isValid() && _textPicture().isValid() )
+  if( font().isValid() && _textPicture().isValid() )
   {
-    Rect frameRect( Point( 0, 0 ), _d->btnDecrease->leftbottom()  );
     _textPicture().fill( ColorList::clear, Rect() );
-    if( !text().empty() )
-    {
-      Rect textRect = f.getTextRect( text(), frameRect, horizontalTextAlign(), verticalTextAlign() );
-      f.draw( _textPicture(), text(), textRect.lefttop(), true, false );
-    }
+    canvasDraw( text(),
+                Rect( Point( 0, 0 ), _d->btnDecrease->leftbottom()  ) );
 
-    frameRect = Rect( _d->btnIncrease->right() + 5, 0, width(), height() );
-    string valueText = fmt::format( "{} {}", _d->value.current, _d->postfix );
-    _textPicture().fill( ColorList::clear, frameRect );
-
-    if( !valueText.empty() )
-    {
-      Rect textRect = f.getTextRect( valueText, frameRect, horizontalTextAlign(), verticalTextAlign() );
-      f.draw( _textPicture(), valueText, textRect.lefttop(), true, true );
-    }
+    canvasDraw( fmt::format( "{} {}", _d->value.current, _d->postfix ),
+                Rect( _d->btnIncrease->right() + 5, 0, width(), height() ) );
   }
 }
 

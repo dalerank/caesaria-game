@@ -43,19 +43,10 @@ void Waymark::initTerrain(Tile&) {}
 
 bool Waymark::build( const city::AreaInfo& info )
 {  
-  bool isEntryMark = false;
-
   Tilemap& tmap = info.city->tilemap();
   TilesArray around = tmap.getNeighbors( info.pos );
   TilePos entryPos = info.city->getBorderInfo( PlayerCity::roadEntry ).epos();
-  for( auto tile : around )
-  {
-    if( tile->pos() == entryPos )
-    {
-      isEntryMark = true;
-      break;
-    }
-  }
+  bool isEntryMark = around.contain( entryPos );
 
   unsigned int picIndex = isEntryMark ? 89 : 85;
   const TilePos& pos = info.pos;

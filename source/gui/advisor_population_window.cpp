@@ -339,9 +339,7 @@ void CityChartLegend::_updateTexture(Engine &painter)
   if( !_textPicture().isValid() )
     return;
 
-  Picture& pic = _textPicture();
-
-  pic.fill( 0, Rect() );
+  _textPicture().fill( 0, Rect() );
   for( int k=0; k < _stepCount+1; k++ )
   {
     std::string text = utils::i2str( k * _maxValue / _stepCount );
@@ -349,7 +347,7 @@ void CityChartLegend::_updateTexture(Engine &painter)
         ? Point( k * width() / _stepCount - (k == 0 ? 0 : 20), 3 )
         : Point( 8, height() - k * height() / _stepCount - (k == _stepCount ? 0 : 23) );
 
-    font().draw( pic, text, offset );
+    canvasDraw( text, offset );
   }
 }
 

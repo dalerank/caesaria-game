@@ -210,7 +210,7 @@ void Farm::computeRoadside()
   for( auto& pos : _d->sublocs )
   {
     auto construction = _map().overlay<Construction>( pos );
-    if( construction.isValid() && construction->type() == object::farmtile )
+    if( object::typeOrDefault( construction ) == object::farmtile )
     {
       _roadside().append( construction->roadside() );
     }

@@ -143,9 +143,8 @@ void AboutPeople::_setWalker( WalkerPtr wlk )
   _d->object = wlk;
   _d->lbName->setText( wlk->name() );
 
-  std::string walkerType = WalkerHelper::getPrettyTypename( wlk->type() );
-  _d->lbType->setText( _(walkerType) );
-  _d->lbCitizenPic->setBackgroundPicture( WalkerHelper::bigPicture( wlk->type() ) );
+  _d->lbType->setText( _(wlk->info().prettyName()) );
+  _d->lbCitizenPic->setBackgroundPicture( wlk->info().bigPicture() );
 
   std::string thinks = wlk->thoughts( Walker::thCurrent );
   _d->lbThinks->setText( _( thinks ) );

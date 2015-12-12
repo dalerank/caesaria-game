@@ -42,6 +42,11 @@ GameEventPtr ClearTile::create(const TilePos& pos)
   return ret;
 }
 
+GameEventPtr ClearTile::create(const Tile& tile )
+{
+  return create( tile.epos() );
+}
+
 bool ClearTile::_mayExec(Game& game, unsigned int) const{ return true; }
 
 void ClearTile::_exec( Game& game, unsigned int )

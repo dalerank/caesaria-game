@@ -20,6 +20,7 @@
 #include "gfx/picture.hpp"
 #include "gfx/engine.hpp"
 #include "core/variant_map.hpp"
+#include "gfx/drawstate.hpp"
 #include "widget_factory.hpp"
 
 using namespace gfx;
@@ -71,15 +72,10 @@ void GroupBox::draw(gfx::Engine& painter )
   if (!visible())
       return;
 
-  if( _d->background.image.isValid() )
-  {
-    painter.draw( _d->background.image, absoluteRect().lefttop(), &absoluteClippingRectRef() );
-  }
-  else
-  {
-    drawBatchWithFallback( painter, _d->background.body, _d->background.fallback,
-                           absoluteRect().lefttop(), &absoluteClippingRectRef() );
-  }
+  DrawState pipe(painter, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+  pipe.draw( _d->background.image )
+      .fallback( _d->background.body )
+      .fallback( _d->background.fallback );
 
   Widget::draw( painter );
 }

@@ -678,6 +678,22 @@ void Label::canvasDraw(const string& text, const Point& point, Font dfont, NColo
   rfont.draw( texture, text, point.x(), point.y(), true );
 }
 
+void Label::canvasDraw(const string& text, const Rect& rect, Font dfont, NColor color, Alignment halign, Alignment valign)
+{
+  if( halign == align::automatic )
+    halign = horizontalTextAlign();
+
+  if( valign == align::automatic )
+    valign = verticalTextAlign();
+
+  Font rfont = dfont.isValid() ? dfont : font();
+  if( !text.empty() )
+  {
+    Rect textRect = rfont.getTextRect( text, rect, halign, valign );
+    canvasDraw( text, textRect.lefttop(), rfont, color );
+  }
+}
+
 void Label::canvasDraw(const Picture& picture, const Point& point)
 {
 

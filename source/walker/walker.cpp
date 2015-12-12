@@ -377,6 +377,7 @@ Walker::Gender Walker::gender() const { return male; }
 bool Walker::isDeleted() const{   return _d->state.deleted;}
 void Walker::_changeDirection(){  _d->animation = Animation(); } // need to fetch the new animation
 walker::Type Walker::type() const{ return _d->type; }
+const walker::Info& Walker::info() const { return WalkerHelper::find( type() ); }
 Direction Walker::direction() const {  return _d->action.direction;}
 double Walker::health() const{  return _d->state.health;}
 void Walker::updateHealth(double value) {  _d->state.health = math::clamp( _d->state.health + value, -100.0, 100.0 );}
@@ -667,7 +668,7 @@ void WalkerDebugQueue::print()
     {
       Walker* wlk = (Walker*)*it;
       Logger::warning( "{0} - {1} [{2},{3}] ref:{4}", wlk->name(),
-                       WalkerHelper::getTypename( wlk->type() ),
+                       wlk->info().typeName(),
                        wlk->pos().i(), wlk->pos().j(), wlk->rcount() );
     }
   }

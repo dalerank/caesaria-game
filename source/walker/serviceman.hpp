@@ -46,6 +46,15 @@ public:
     return ret;
   }
 
+  SmartList<T> toList() const
+  {
+    SmartList<T> ret;
+    for( auto i : *this )
+      ret.push_back( i );
+
+    return ret;
+  }
+
   template<class Dst>
   bool contain() const
   {
