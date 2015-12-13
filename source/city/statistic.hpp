@@ -106,6 +106,9 @@ public:
     SmartList< T > find( const object::Type type, const TilePos& start, const TilePos& stop ) const;
 
     template< class T >
+    SmartList< T > find( const TilePos& center, int radius ) const;
+
+    template< class T >
     SmartList< T > find( const object::Type type, const TilePos& center, int radius ) const;
 
     template< class T >
@@ -304,6 +307,14 @@ inline SmartList< T > Statistic::_Objects::find( const object::Type type, const 
 }
 
 template< class T >
+inline SmartList< T > Statistic::_Objects::find( const TilePos& center, int radius ) const
+{
+  TilePos offset( radius, radius );
+  return find<T>( object::any, center - offset, center + offset );
+}
+
+
+template< class T >
 inline SmartList< T > Statistic::_Objects::find( const object::Type type, const TilePos& start, const TilePos& stop ) const
 {
   SmartList< T > ret;
@@ -314,7 +325,7 @@ inline SmartList< T > Statistic::_Objects::find( const object::Type type, const 
     SmartPtr<T> obj = ptr_cast< T >( tile->overlay() );
     if( object::typeOrDefault( obj ) == type || type == object::any )
     {
-      ret.push_back( obj );
+      ret.addIfValid( obj );
     }
   }
 
