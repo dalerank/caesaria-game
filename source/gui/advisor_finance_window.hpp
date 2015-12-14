@@ -35,6 +35,7 @@ public:
   Finance( PlayerCityPtr city, Widget* parent, int id );
 
   virtual void draw( gfx::Engine& painter );
+  virtual bool onEvent(const NEvent &event);
 
 private:
   void _updateTaxRateNowLabel();

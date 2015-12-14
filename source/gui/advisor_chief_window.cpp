@@ -155,7 +155,7 @@ Chief::Chief(PlayerCityPtr city, Widget* parent, int id )
   __D_REF(_d, Chief )
   setupUI( ":/gui/chiefadv.gui" );
 
-  WidgetEscapeCloser::insertTo( this );  
+  WidgetClose::insertTo( this );  
 
   _d.city = city;
   _d.initRows( this, width() );

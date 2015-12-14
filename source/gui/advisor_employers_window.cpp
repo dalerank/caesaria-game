@@ -114,7 +114,7 @@ public:
     grayArea->add<SalaryButton>( rect+offset*3, walker::romeSpearman, 30 );
 
     moveTo( Widget::parentCenter );
-    WidgetEscapeCloser::insertTo( this );
+    WidgetClose::insertTo( this );
     setModal();
   }
 
@@ -407,10 +407,7 @@ bool Employer::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-void Employer::_showAdvSalaries()
-{
-  ui()->add<SalariesWindow>( _d->city );
-}
+void Employer::_showAdvSalaries() { ui()->add<SalariesWindow>( _d->city ); }
 
 }//end namespace advisorwnd
 

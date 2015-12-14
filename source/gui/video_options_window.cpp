@@ -51,7 +51,7 @@ public:
 VideoOptions::VideoOptions(Widget* parent, gfx::Engine::Modes modes, bool fullscreen )
   : Window( parent, Rect( 0, 0, 1, 1 ), "" ), _d( new Impl )
 {
-  WidgetEscapeCloser::insertTo( this );
+  WidgetClose::insertTo( this );
   GameAutoPause::insertTo( this );
   setupUI( ":/gui/videooptions.gui" );
 

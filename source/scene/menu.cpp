@@ -34,7 +34,7 @@
 #include "core/logger.hpp"
 #include "core/foreach.hpp"
 #include "vfs/directory.hpp"
-#include "gui/label.hpp"
+#include "gui/fade.hpp"
 #include "gui/listbox.hpp"
 #include "core/locale.hpp"
 #include "core/saveadapter.hpp"
@@ -356,9 +356,8 @@ void StartMenu::Impl::showCredits()
                          "" };
 
   Size size = ui().vsize();
-  Label& frame = ui().add<Label>( Rect( Point( 0, 0), size ), "", false, gui::Label::bgSimpleBlack );
-  WidgetEscapeCloser::insertTo( &frame );
-  frame.setAlpha( 0xa0 );
+  Fade& frame = ui().add<Fade>( 0xA0 );
+  WidgetClose::insertTo( &frame, KEY_RBUTTON );
   int h = size.height();
   for( int i=0; !strs[i].empty(); i++ )
   {

@@ -39,8 +39,6 @@ public:
 
   virtual void draw( gfx::Engine& painter );
 
-  virtual bool onEvent(const NEvent &event);
-
   void increaseQty();
 
   void decreaseQty();

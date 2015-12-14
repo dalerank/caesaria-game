@@ -64,7 +64,7 @@ Infobox::Infobox( Widget* parent, const Rect& rect, const Rect& blackArea, int i
 : Window( parent, rect, "", id ), _d( new Impl )
 {
   _d->autopause.activate();
-  WidgetEscapeCloser::insertTo( this );
+  WidgetClose::insertTo( this, KEY_RBUTTON );
 
   // create the title
   setupUI( ":/gui/infobox.gui" );
@@ -135,12 +135,7 @@ bool Infobox::onEvent( const NEvent& event)
   switch( event.EventType )
   {
   case sEventMouse:
-    if( event.mouse.type == mouseRbtnRelease )
-    {
-      deleteLater();
-      return true;
-    }
-    else if( event.mouse.type == mouseLbtnRelease )
+    if( event.mouse.type == mouseLbtnRelease )
     {
       return true;
     }

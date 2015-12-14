@@ -101,8 +101,6 @@ void ChangeSoundOptions::_exec(Game& game, unsigned int)
   dialog.update( audio::ambient, ae.volume( audio::ambient ) );
   dialog.update( audio::theme, ae.volume( audio::theme ) );
   dialog.update( audio::game, ae.volume( audio::game ) );
-
-  dialog.show();
 }
 
 bool ChangeSoundOptions::_mayExec(Game&, unsigned int) const { return true; }

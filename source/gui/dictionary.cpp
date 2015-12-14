@@ -63,7 +63,7 @@ DictionaryWindow::DictionaryWindow( Widget* p, const std::string& helpId )
     load( helpId );
 
   moveTo( Widget::parentCenter );
-  WidgetEscapeCloser::insertTo( this );
+  WidgetClose::insertTo( this, KEY_RBUTTON );
   setModal();
 }
 
@@ -101,12 +101,7 @@ bool DictionaryWindow::onEvent(const NEvent& event)
   switch( event.EventType )
   {
   case sEventMouse:
-    if( event.mouse.type == mouseRbtnRelease )
-    {
-      deleteLater();
-      return true;
-    }
-    else if( event.mouse.type == mouseLbtnRelease )
+    if( event.mouse.type == mouseLbtnRelease )
     {
       return true;
     }
