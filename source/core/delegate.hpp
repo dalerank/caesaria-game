@@ -1969,114 +1969,108 @@ public:
 // but VC6 doesn't allow 'typename' in this context.
 // So, I have to use a macro.
 
-#ifdef FASTDLGT_VC6
-#define FASTDLGT_RETTYPE detail::VoidToDefaultVoid<RetType>::type
-#else
-#define FASTDLGT_RETTYPE RetType
-#endif
-
 //N=0
 template <class X, class Y, class RetType>
-Delegate0<FASTDLGT_RETTYPE> makeDelegate(Y* x, RetType (X::*func)()) {
-	return Delegate0<FASTDLGT_RETTYPE>(x, func);
+Delegate0<RetType> makeDelegate(Y* x, RetType (X::*func)()) {
+  return Delegate0<RetType>(x, func);
 }
 
 template <class X, class Y, class RetType>
-Delegate0<FASTDLGT_RETTYPE> makeDelegate(Y* x, RetType (X::*func)() const) {
-	return Delegate0<FASTDLGT_RETTYPE>(x, func);
+Delegate0<RetType> makeDelegate(Y* x, RetType (X::*func)() const) {
+  return Delegate0<RetType>(x, func);
 }
 
 //N=1
 template <class X, class Y, class Param1, class RetType>
-Delegate1<Param1, FASTDLGT_RETTYPE> makeDelegate(Y* x, RetType (X::*func)(Param1 p1)) {
-	return Delegate1<Param1, FASTDLGT_RETTYPE>(x, func);
+Delegate1<Param1, RetType> makeDelegate(Y* x, RetType (X::*func)(Param1 p1)) {
+  return Delegate1<Param1, RetType>(x, func);
 }
 
 template <class X, class Y, class Param1, class RetType>
-Delegate1<Param1, FASTDLGT_RETTYPE> makeDelegate(Y* x, RetType (X::*func)(Param1 p1) const) {
-	return Delegate1<Param1, FASTDLGT_RETTYPE>(x, func);
+Delegate1<Param1, RetType> makeDelegate(Y* x, RetType (X::*func)(Param1 p1) const) {
+  return Delegate1<Param1, RetType>(x, func);
 }
 
 //N=2
 template <class X, class Y, class Param1, class Param2, class RetType>
-Delegate2<Param1, Param2, FASTDLGT_RETTYPE> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2)) {
-	return Delegate2<Param1, Param2, FASTDLGT_RETTYPE>(x, func);
+Delegate2<Param1, Param2, RetType> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2)) {
+  return Delegate2<Param1, Param2, RetType>(x, func);
 }
 
 template <class X, class Y, class Param1, class Param2, class RetType>
-Delegate2<Param1, Param2, FASTDLGT_RETTYPE> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2) const) {
-	return Delegate2<Param1, Param2, FASTDLGT_RETTYPE>(x, func);
+Delegate2<Param1, Param2, RetType> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2) const) {
+  return Delegate2<Param1, Param2, RetType>(x, func);
 }
 
 //N=3
 template <class X, class Y, class Param1, class Param2, class Param3, class RetType>
-Delegate3<Param1, Param2, Param3, FASTDLGT_RETTYPE> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2, Param3 p3)) {
-	return Delegate3<Param1, Param2, Param3, FASTDLGT_RETTYPE>(x, func);
+Delegate3<Param1, Param2, Param3, RetType> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2, Param3 p3)) {
+  return Delegate3<Param1, Param2, Param3, RetType>(x, func);
 }
 
 template <class X, class Y, class Param1, class Param2, class Param3, class RetType>
-Delegate3<Param1, Param2, Param3, FASTDLGT_RETTYPE> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2, Param3 p3) const) {
-	return Delegate3<Param1, Param2, Param3, FASTDLGT_RETTYPE>(x, func);
+Delegate3<Param1, Param2, Param3, RetType> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2, Param3 p3) const) {
+  return Delegate3<Param1, Param2, Param3, RetType>(x, func);
 }
 
 //N=4
 template <class X, class Y, class Param1, class Param2, class Param3, class Param4, class RetType>
-Delegate4<Param1, Param2, Param3, Param4, FASTDLGT_RETTYPE> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4)) {
-	return Delegate4<Param1, Param2, Param3, Param4, FASTDLGT_RETTYPE>(x, func);
+Delegate4<Param1, Param2, Param3, Param4, RetType> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4)) {
+  return Delegate4<Param1, Param2, Param3, Param4, RetType>(x, func);
 }
 
 template <class X, class Y, class Param1, class Param2, class Param3, class Param4, class RetType>
-Delegate4<Param1, Param2, Param3, Param4, FASTDLGT_RETTYPE> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4) const) {
-	return Delegate4<Param1, Param2, Param3, Param4, FASTDLGT_RETTYPE>(x, func);
+Delegate4<Param1, Param2, Param3, Param4, RetType> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4) const) {
+  return Delegate4<Param1, Param2, Param3, Param4, RetType>(x, func);
 }
 
 //N=5
 template <class X, class Y, class Param1, class Param2, class Param3, class Param4, class Param5, class RetType>
-Delegate5<Param1, Param2, Param3, Param4, Param5, FASTDLGT_RETTYPE> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5)) {
-	return Delegate5<Param1, Param2, Param3, Param4, Param5, FASTDLGT_RETTYPE>(x, func);
+Delegate5<Param1, Param2, Param3, Param4, Param5, RetType> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5)) {
+  return Delegate5<Param1, Param2, Param3, Param4, Param5, RetType>(x, func);
 }
 
 template <class X, class Y, class Param1, class Param2, class Param3, class Param4, class Param5, class RetType>
-Delegate5<Param1, Param2, Param3, Param4, Param5, FASTDLGT_RETTYPE> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5) const) {
-	return Delegate5<Param1, Param2, Param3, Param4, Param5, FASTDLGT_RETTYPE>(x, func);
+Delegate5<Param1, Param2, Param3, Param4, Param5, RetType> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5) const) {
+  return Delegate5<Param1, Param2, Param3, Param4, Param5, RetType>(x, func);
 }
 
 //N=6
 template <class X, class Y, class Param1, class Param2, class Param3, class Param4, class Param5, class Param6, class RetType>
-Delegate6<Param1, Param2, Param3, Param4, Param5, Param6, FASTDLGT_RETTYPE> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6)) {
-	return Delegate6<Param1, Param2, Param3, Param4, Param5, Param6, FASTDLGT_RETTYPE>(x, func);
+Delegate6<Param1, Param2, Param3, Param4, Param5, Param6, RetType> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6)) {
+  return Delegate6<Param1, Param2, Param3, Param4, Param5, Param6, RetType>(x, func);
 }
 
 template <class X, class Y, class Param1, class Param2, class Param3, class Param4, class Param5, class Param6, class RetType>
-Delegate6<Param1, Param2, Param3, Param4, Param5, Param6, FASTDLGT_RETTYPE> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6) const) {
-	return Delegate6<Param1, Param2, Param3, Param4, Param5, Param6, FASTDLGT_RETTYPE>(x, func);
+Delegate6<Param1, Param2, Param3, Param4, Param5, Param6, RetType> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6) const) {
+  return Delegate6<Param1, Param2, Param3, Param4, Param5, Param6, RetType>(x, func);
 }
 
 //N=7
 template <class X, class Y, class Param1, class Param2, class Param3, class Param4, class Param5, class Param6, class Param7, class RetType>
-Delegate7<Param1, Param2, Param3, Param4, Param5, Param6, Param7, FASTDLGT_RETTYPE> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6, Param7 p7)) {
-	return Delegate7<Param1, Param2, Param3, Param4, Param5, Param6, Param7, FASTDLGT_RETTYPE>(x, func);
+Delegate7<Param1, Param2, Param3, Param4, Param5, Param6, Param7, RetType> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6, Param7 p7)) {
+  return Delegate7<Param1, Param2, Param3, Param4, Param5, Param6, Param7, RetType>(x, func);
 }
 
 template <class X, class Y, class Param1, class Param2, class Param3, class Param4, class Param5, class Param6, class Param7, class RetType>
-Delegate7<Param1, Param2, Param3, Param4, Param5, Param6, Param7, FASTDLGT_RETTYPE> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6, Param7 p7) const) {
-	return Delegate7<Param1, Param2, Param3, Param4, Param5, Param6, Param7, FASTDLGT_RETTYPE>(x, func);
+Delegate7<Param1, Param2, Param3, Param4, Param5, Param6, Param7, RetType> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6, Param7 p7) const) {
+  return Delegate7<Param1, Param2, Param3, Param4, Param5, Param6, Param7, RetType>(x, func);
 }
 
 //N=8
 template <class X, class Y, class Param1, class Param2, class Param3, class Param4, class Param5, class Param6, class Param7, class Param8, class RetType>
-Delegate8<Param1, Param2, Param3, Param4, Param5, Param6, Param7, Param8, FASTDLGT_RETTYPE> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6, Param7 p7, Param8 p8)) {
-	return Delegate8<Param1, Param2, Param3, Param4, Param5, Param6, Param7, Param8, FASTDLGT_RETTYPE>(x, func);
+Delegate8<Param1, Param2, Param3, Param4, Param5, Param6, Param7, Param8, RetType> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6, Param7 p7, Param8 p8)) {
+  return Delegate8<Param1, Param2, Param3, Param4, Param5, Param6, Param7, Param8, RetType>(x, func);
 }
 
 template <class X, class Y, class Param1, class Param2, class Param3, class Param4, class Param5, class Param6, class Param7, class Param8, class RetType>
-Delegate8<Param1, Param2, Param3, Param4, Param5, Param6, Param7, Param8, FASTDLGT_RETTYPE> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6, Param7 p7, Param8 p8) const) {
-	return Delegate8<Param1, Param2, Param3, Param4, Param5, Param6, Param7, Param8, FASTDLGT_RETTYPE>(x, func);
+Delegate8<Param1, Param2, Param3, Param4, Param5, Param6, Param7, Param8, RetType> makeDelegate(Y* x, RetType (X::*func)(Param1 p1, Param2 p2, Param3 p3, Param4 p4, Param5 p5, Param6 p6, Param7 p7, Param8 p8) const) {
+  return Delegate8<Param1, Param2, Param3, Param4, Param5, Param6, Param7, Param8, RetType>(x, func);
 }
 
 
  // clean up after ourselves...
-#undef FASTDLGT_RETTYPE
+#undef RetType
 
 #endif //__CAESARIA_DELEGATES_H_INCLUDE_
 

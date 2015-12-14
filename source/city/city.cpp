@@ -149,6 +149,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setBorderInfo( roadExit, TilePos( 0, 0 ) );
   setBorderInfo( boatEntry, TilePos( 0, 0 ) );
   setBorderInfo( boatExit, TilePos( 0, 0 ) );
+
   _d->funds.resolveIssue( econ::Issue( econ::Issue::donation, 1000 ) );
   _d->states.population = 0;
   _d->states.birth = game::Date::current();
@@ -186,6 +187,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( riversideAsWell, 1 );
   setOption( soldiersHaveSalary, 1 );
   setOption( housePersonalTaxes, 1 );
+  setOption( ironInRocks, 1 );
 
   _d->states.nation = world::nation::rome;
 }
