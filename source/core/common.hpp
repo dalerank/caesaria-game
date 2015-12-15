@@ -148,6 +148,12 @@ SmartPtr<Object> withMinParam( const SmartList<Object> list, Param name)
   return ret;
 }
 
+template< class Object >
+int objectState( SmartPtr<Object> object, Param name, int defaultValue=0 )
+{
+  return object.isValid() ? object->state( name ) : defaultValue;
+}
+
 template<class Object, class Parent>
 std::set<SmartPtr<Object>> select( const std::set<SmartPtr<Parent>>& objects )
 {

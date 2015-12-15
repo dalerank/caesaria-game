@@ -260,10 +260,8 @@ void Road::destroy()
 
   TilesArray tiles = area();
 
-  foreach( it, tiles )
-  {
-    (*it)->setFlag( Tile::tlRoad, false );
-  }
+  for( auto it : tiles )
+    it->setFlag( Tile::tlRoad, false );
 }
 
 void Road::burn() {}
