@@ -181,5 +181,4 @@ void TypeSet::load(const VariantList& stream)
   }
 }
 
-
 }//end namespace object

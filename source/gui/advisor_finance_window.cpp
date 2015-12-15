@@ -33,6 +33,7 @@
 #include "game/datetimehelper.hpp"
 #include "listbox.hpp"
 #include "objects/house_level.hpp"
+#include "core/event.hpp"
 #include "environment.hpp"
 #include "objects/constants.hpp"
 #include "core/logger.hpp"
@@ -156,6 +157,18 @@ void Finance::draw(gfx::Engine& painter )
     return;
 
   Window::draw( painter );
+}
+
+bool Finance::onEvent(const NEvent& event)
+{
+  if( event.EventType == sEventGui
+      && event.gui.type == guiButtonClicked )
+  {
+    if( safety_cast<FinanceRow*>( event.gui.caller ) != 0 )
+      return true;
+  }
+
+  return Base::onEvent(event);
 }
 
 void Finance::_updateTaxRateNowLabel()

@@ -89,7 +89,7 @@ SaveGame::SaveGame(Ui *ui, vfs::Directory dir, std::string fileExt, int id )
   _d->findFiles();
 
   moveTo( Widget::parentCenter );
-  WidgetEscapeCloser::insertTo( this );
+  WidgetClose::insertTo( this, KEY_RBUTTON );
   GameAutoPause::insertTo( this );
   setModal();
 }

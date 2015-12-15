@@ -216,7 +216,7 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
 
   _d->update();
 
-  WidgetEscapeCloser::insertTo( this );
+  WidgetClose::insertTo( this, KEY_RBUTTON );
   moveTo( Widget::parentCenter );
   setModal();
 }

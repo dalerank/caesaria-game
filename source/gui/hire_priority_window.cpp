@@ -50,7 +50,7 @@ HirePriority::HirePriority(Widget* p, city::industry::Type type, int priority)
   _d->type = type;
   _d->priority = priority;
 
-  WidgetEscapeCloser::insertTo( this );
+  WidgetClose::insertTo( this, KEY_RBUTTON );
   GameAutoPause::insertTo( this );
 
   Label& lbTitle = add<Label>( Rect( 10, 10, width()-10, 10+35), _("##priority_level##") );
@@ -100,12 +100,6 @@ bool HirePriority::onEvent(const NEvent& event)
 
       return true;
     }
-  }
-
-  if( event.EventType == sEventMouse && event.mouse.type == mouseRbtnRelease )
-  {
-    deleteLater();
-    return true;
   }
 
   return Widget::onEvent( event );

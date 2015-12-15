@@ -25,8 +25,10 @@
 #include "city/build_options.hpp"
 #include "events/postpone.hpp"
 #include "world/config.hpp"
+#include "gfx/tilemap.hpp"
 
 using namespace events;
+using namespace gfx;
 
 namespace game
 {
@@ -58,6 +60,14 @@ void Finalizer::addEvents()
 {
   VariantMap freeplayVm = config::load( SETTINGS_RC_PATH( freeplay_opts ) );
   __loadEventsFromSection( freeplayVm[ "events" ].toMap() );
+}
+
+void Finalizer::resetIronCovery(int qty)
+{
+  TilesArray tiles = _city->tilemap().allTiles().select( Tile::tlRock );
+
+  for( auto tile : tiles )
+    tile->setParam( Tile::pIron, math::random( qty ) );
 }
 
 void Finalizer::resetFavour()

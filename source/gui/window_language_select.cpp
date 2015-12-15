@@ -53,7 +53,7 @@ LanguageSelect::LanguageSelect(Widget* parent, vfs::Path model, const std::strin
 
   listbox.setFocus();
   moveTo( Widget::parentCenter );
-  WidgetEscapeCloser::insertTo( this );
+  WidgetClose::insertTo( this );
 }
 
 LanguageSelect::~LanguageSelect() {}

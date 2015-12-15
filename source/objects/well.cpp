@@ -51,18 +51,12 @@ void Well::deliverService()
   HouseList houses = reachedBuildings.select<House>().toList();
   HousePtr illHouse = utils::withMinParam( houses, pr::health );
 
-  unsigned int lowHealth = illHouse->state( pr::health );
-
+  unsigned int lowHealth = utils::objectState( illHouse, pr::health, 100 );
   if( lowHealth < 30 )
   {
     lowHealth = (100 - lowHealth) / 10;
-    for( auto house : houses)
-    {
-      if( house->state( pr::health ) > 10 )
-      {
-        house->updateState( pr::health, -lowHealth );
-      }
-    }
+    houses.where( [] (HousePtr h) { return h->state( pr::health ) > 10; })
+          .for_each( [lowHealth] (HousePtr h) { return h->updateState( pr::health, -lowHealth ); } );
   }
 }
 

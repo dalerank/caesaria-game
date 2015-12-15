@@ -21,6 +21,7 @@
 #include "core/gettext.hpp"
 #include "core/foreach.hpp"
 #include "gfx/tilemap.hpp"
+#include "core/common.hpp"
 #include "constants.hpp"
 #include "game/gamedate.hpp"
 #include "walker/walkers_factory.hpp"
@@ -85,7 +86,7 @@ void HousePlague::timeStep(const unsigned long time)
   if( game::Date::isDayChanged() )
   {
     auto house = _map().overlay<House>( pos() );
-    int health_value = house.isValid() ? house->state( pr::health ) : 100;
+    int health_value = utils::objectState( house, pr::health, 100 );
     if( health_value > 20 )
     {
       deleteLater();

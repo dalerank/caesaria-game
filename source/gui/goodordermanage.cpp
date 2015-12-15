@@ -138,7 +138,7 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
   _d->gmode = gmode;
 
   setupUI( ":/gui/goodorder.gui" );
-  WidgetEscapeCloser::insertTo( this );
+  WidgetClose::insertTo( this, KEY_RBUTTON );
 
   _d->icon = good::Helper::picture( type );
 
@@ -182,18 +182,7 @@ void GoodOrderManageWindow::draw(Engine &painter)
   painter.draw( _d->icon, absoluteRect().lefttop() + Point( 10, 10 ) );
 }
 
-bool GoodOrderManageWindow::onEvent(const NEvent& event)
-{
-  if( event.EventType == sEventMouse && event.mouse.isRightPressed() )
-  {
-    deleteLater();
-    return true;
-  }
-
-  return Window::onEvent( event );
-}
-
-void GoodOrderManageWindow::increaseQty() { _changeTradeLimit( +1 ); }
+ void GoodOrderManageWindow::increaseQty() { _changeTradeLimit( +1 ); }
 
 void GoodOrderManageWindow::decreaseQty() { _changeTradeLimit( -1 ); }
 

@@ -12,26 +12,21 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#ifndef _CAESARIA_WIDGETESCAPECLOSER_H_INCLUDE_
-#define _CAESARIA_WIDGETESCAPECLOSER_H_INCLUDE_
-
-#include "widget.hpp"
-#include "core/event.hpp"
-#include <set>
+#include "fade.hpp"
 
 namespace gui
 {
 
-class WidgetClose : public Widget
+Fade::Fade(Widget* parent, int alpha, const Rect& rect )
+  : Label( parent, rect.width() > 0 ? rect : Rect( Point( 0, 0), parent->size() ),
+           "", false, gui::Label::bgSimpleBlack )
 {
-  std::set<KeyCode> _codes;
-public:
-  WidgetClose( Widget* parent );
-  static void insertTo( Widget* parent, KeyCode code1=KEY_KEY_CODES_COUNT, KeyCode code2=KEY_ESCAPE );
-  virtual bool onEvent( const NEvent &event );
-};
+  setAlpha( alpha );
+}
 
-}//end namesapce gui
+Fade::~Fade(){}
 
-#endif //_CAESARIA_WIDGETESCAPECLOSER_H_INCLUDE_
+}//end namespace gui

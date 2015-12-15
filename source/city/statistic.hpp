@@ -267,6 +267,7 @@ public:
     HouseList ready4evolve(const object::Type checkTypes) const;
     HouseList habitable() const;
     HouseList patricians(bool habitabl) const;
+    HouseList plebs(bool habitabl) const;
     unsigned int terribleNumber() const;
 
     Statistic& _parent;

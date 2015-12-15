@@ -86,7 +86,7 @@ LoadMission::LoadMission(Widget* parent , const vfs::Directory &dir)
 {
   setupUI( ":/gui/loadmissiondialog.gui" );
 
-  WidgetEscapeCloser::insertTo( this );
+  WidgetClose::insertTo( this );
 
   _d->directory = dir;
 
