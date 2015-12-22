@@ -105,7 +105,7 @@ public:
     _dfont = Font::create( FONT_2_WHITE );
 
     setIcon( gui::rc.panel, gui::id.chiefIcon );
-    setIconOffset( Point( 5, 5 ) );
+    setIconOffset( { 5, 5 } );
     setFont( Font::create( FONT_2 ) );
 
     setTextOffset( Point( 255, 0) );

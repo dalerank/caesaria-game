@@ -230,11 +230,7 @@ void Level::Impl::initMainUI()
   ui.clear();
 
   Picture rPanelPic( gui::rc.panel, config::id.empire.rightPanelTx );
-
-  Rect rPanelRect( ui.vsize().width() - rPanelPic.width(), topMenuHeight,
-                   ui.vsize().width(), ui.vsize().height() );
-
-  rightPanel = MenuRigthPanel::create( ui.rootWidget(), rPanelRect, rPanelPic);
+  rightPanel = MenuRigthPanel::create( ui.rootWidget(), rPanelPic, topMenuHeight );
 
   topMenu = &ui.add<TopMenu>( topMenuHeight, !city->getOption( PlayerCity::c3gameplay ) );
   topMenu->setPopulation( game->city()->states().population );
@@ -242,18 +238,29 @@ void Level::Impl::initMainUI()
 
   bool fitToHeidht = OSystem::isAndroid();
   menu = Menu::create( ui.rootWidget(), -1, city, fitToHeidht );
-  menu->setPosition( Point( ui.vsize().width() - rightPanel->width(),
-                            topMenu->height() ) );
+  menu->hide();
 
   extMenu = ExtentMenu::create( ui.rootWidget(), -1, city, fitToHeidht );
-  extMenu->setPosition( Point( ui.vsize().width() - extMenu->width() - rightPanel->width(),
-                               topMenu->height() ) );
+  extMenu->show();
   Rect minimapRect = extMenu->getMinimapRect();
 
   mmap = &extMenu->add<Minimap>( minimapRect, city, *renderer.camera() );
 
   WindowMessageStack::create( ui.rootWidget() );
   rightPanel->bringToFront();
+
+  if( KILLSWITCH( rightMenu ) )
+  {
+    rightPanel->setSide( MenuRigthPanel::rightSide );
+    menu->setSide( Menu::rightSide, rightPanel->lefttop() );
+    extMenu->setSide( Menu::rightSide, rightPanel->lefttop() );
+  }
+  else
+  {
+    rightPanel->setSide( MenuRigthPanel::leftSide );
+    menu->setSide( Menu::leftSide, rightPanel->righttop() );
+    extMenu->setSide( Menu::leftSide, rightPanel->righttop() );
+  }
 }
 
 void Level::Impl::installHandlers( Base* scene )

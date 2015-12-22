@@ -33,15 +33,18 @@ public:
     Batch body;
     Pictures fallback;
   } batch;
+  Picture tile;
 };
 
-MenuRigthPanel::MenuRigthPanel( Widget* parent ) : Widget( parent, -1, Rect( 0, 0, 100, 100 ) ), _d( new Impl )
+MenuRigthPanel::MenuRigthPanel( Widget* parent )
+  : Widget( parent, -1, Rect( 0, 0, 100, 100 ) ), _d( new Impl )
 {
 }
 
 void MenuRigthPanel::_initBackground(const Picture &tilePic)
 {
   _d->batch.body.destroy();
+  _d->tile = tilePic;
 
   unsigned int y = 0;
 
@@ -71,17 +74,30 @@ void MenuRigthPanel::draw( gfx::Engine& engine )
       .fallback( _d->batch.fallback );
 }
 
-MenuRigthPanel* MenuRigthPanel::create( Widget* parent, const Rect& rectangle, const Picture& tilePic )
+void MenuRigthPanel::setSide(MenuRigthPanel::Side side)
 {
-  MenuRigthPanel* ret = new MenuRigthPanel( parent );
+  switch( side )
+  {
+  case leftSide: setPosition( {0, top() } ); break;
+  case rightSide: setPosition( { parent()->width() - width(), top() } ); break;
+  }
 
+  _initBackground( _d->tile );
+}
+
+MenuRigthPanel* MenuRigthPanel::create( Widget* parent, const Picture& tilePic, int top )
+{
+  MenuRigthPanel& ret = parent->add<MenuRigthPanel>();
   if( tilePic.height() == 0 )
-    return ret;
+    return &ret;
 
-  ret->setGeometry( rectangle );
-  ret->_initBackground( tilePic );
+  Rect rect( parent->width() - tilePic.width(), top,
+             parent->width(), parent->height() );
 
-  return ret;
+  ret.setGeometry( rect );
+  ret._initBackground( tilePic );
+
+  return &ret;
 }
 
 }//end namespace gui

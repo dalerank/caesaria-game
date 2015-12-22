@@ -168,8 +168,9 @@ void BuildMenu::addSubmenuButton(const city::development::Branch menuType, const
   if( !_dfunc()->options.isGroupAvailable( menuType ) )
     return;
 
-  BuildButton& button = add<BuildButton>( _(text), Rect( Point( 0, height() ), Size( width(), 25 ) ), -1 );
-  button.setID( menuType | subMenuCreateIdHigh );
+  BuildButton& button = add<BuildButton>( _(text),
+                                          Rect( 0, height(), width(), height()+25 ),
+                                          menuType | subMenuCreateIdHigh );
   button.setCost(-1);  // no display cost
   button.setSound( "bmsel_" + development::toString( menuType ) );
 
@@ -198,7 +199,7 @@ void BuildMenu::addBuildButton(const object::Type buildingType )
                                      Rect( 0, height(), width(), height() + 25 ), -1 );
     button.setCost(cost);
     button.setID( buildingType );
-    button.setSound( "bmsel_" + info .name() );
+    button.setSound( "bmsel_" + info.name() );
 
     setHeight( height() + 30 );
 

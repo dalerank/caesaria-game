@@ -30,6 +30,7 @@
       btnSoldiersHaveSalary#OptionButton:{base:"sldr_wages",states:{off:0,on:1  }, link : [ "city", "soldiersHaveSalary" ] }
       btnHousePersonalTaxes#OptionButton:{base:"personal_tax",states:{off:0,on:1  }, link : [ "city", "housePersonalTaxes" ] }
       btnCutForest2timber#OptionButton:{base:"cut_forest",states:{off:0,on:1  }, link : [ "city", "cutForest2timber" ] }
+      btnRightMenu#OptionButton:{base:"rightMenu",states:{off:0,on:1  }, link : [ "game", "rightMenu" ] }
 
       btnDifficulty#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_barbarian_mode##" }
       btnRoadBlocks#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_roadblock_mode##" }

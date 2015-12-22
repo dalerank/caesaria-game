@@ -31,13 +31,15 @@ class PushButton;
 
 class Menu : public Widget
 {
-public:  
+public:
+  typedef enum { leftSide, rightSide } Side;
   static Menu* create(Widget* parent, int id, PlayerCityPtr city, bool fitToScreen=false );
 
   // draw on screen
   virtual void minimize();
   virtual void maximize();
   virtual void cancel();
+  virtual void setSide(Side side, const Point& offset);
 
   virtual void draw( gfx::Engine& engine );
   virtual void setPosition(const Point& relativePosition);

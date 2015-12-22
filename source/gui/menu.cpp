@@ -309,6 +309,7 @@ public:
   Image* middleLabel;
   OverlaysMenu* overlaysMenu; 
   float koeff;
+  Menu::Side side;
   PlayerCityPtr city;
   ScopedPtr<Menu::Model> model;
 
@@ -351,6 +352,7 @@ Menu::Menu(Widget* parent, int id, const Rect& rectangle , PlayerCityPtr city)
 {
   setupUI( ":/gui/shortmenu.gui" );
   _d->city = city;
+  _d->side = rightSide;
   _d->lastPressed = 0;
   _d->overlaysMenu = 0;
 }
@@ -565,7 +567,7 @@ bool Menu::onEvent(const NEvent& event)
     {
     case mouseRbtnRelease:
       _createBuildMenu( -1, this );
-     cancel();
+      cancel();
     return true;
 
     case mouseLbtnPressed:
@@ -603,7 +605,7 @@ void Menu::minimize()
 {
   _d->lastPressed = 0;
   _createBuildMenu( -1, this );
-  Point stopPos = lefttop() + Point( width(), 0 );
+  Point stopPos = lefttop() + Point( width(), 0 ) * (_d->side == Menu::leftSide ? -1 : 1 );
   auto& animator = add<PositionAnimator>( WidgetAnimator::removeSelf, stopPos, 300 );
   CONNECT( &animator, onFinish(), &_d->signal.onHide, Signal0<>::_emit );
 
@@ -612,7 +614,7 @@ void Menu::minimize()
 
 void Menu::maximize()
 {
-  Point stopPos = lefttop() - Point( width(), 0 );
+  Point stopPos = lefttop() - Point( width(), 0 ) * (_d->side == Menu::leftSide ? -1 : 1 );
   show();
   add<PositionAnimator>( WidgetAnimator::showParent | WidgetAnimator::removeSelf, stopPos, 300 );
 
@@ -623,6 +625,21 @@ void Menu::cancel()
 {
   unselectAll();
   _d->lastPressed = 0;
+}
+
+void Menu::setSide(Menu::Side side, const Point& offset)
+{
+  _d->side = side;
+  switch( _d->side )
+  {
+  case leftSide:
+    setPosition( {offset.x() - (visible() ? 0u : 1u) * width(), offset.y()} );
+  break;
+
+  case rightSide:
+    setPosition( {offset.x() - (visible() ? 1u : 0u) * width(), offset.y()} );
+  break;
+  }
 }
 
 bool Menu::unselectAll()
