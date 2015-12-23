@@ -42,6 +42,13 @@ void Venus::updateRelation(float income, PlayerCityPtr city)
   RomeDivinity::updateRelation( income, city );
 }
 
+object::Type Venus::templeType(Divinity::TempleSize size) const
+{
+    return size == bigTemple
+                    ? BIG_TEMPLE_TYPE(venus)
+                    : SML_TEMPLE_TYPE(venus);
+}
+
 void Venus::_doWrath( PlayerCityPtr city )
 {
   events::dispatch<ShowInfobox>( _("##wrath_of_venus_title##"),

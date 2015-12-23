@@ -55,6 +55,7 @@ void RequestDestroy::_exec(Game& game, unsigned int)
                                   ? "##destroy_this_building##"
                                   : constrQuestion;
     Dialog* dialog = Confirmation( game.gui(), _("##warning##"), _(questionStr) );
+
     CONNECT_LOCAL(dialog, onOk(), RequestDestroy::_applyDestroy );
     CONNECT_LOCAL(dialog, onCancel(), RequestDestroy::_declineDestroy );
   }

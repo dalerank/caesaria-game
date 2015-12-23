@@ -43,6 +43,15 @@ DrawState& DrawState::draw(const Picture& picture)
   return *this;
 }
 
+DrawState&DrawState::draw(const Pictures& pics)
+{
+ _ok = !pics.empty();
+  if( _ok )
+    _painter.draw( pics, _lefttop, _clip );
+
+  return *this;
+}
+
 DrawState&DrawState::draw(const Picture& picture, const Point& offset)
 {
   _ok = picture.isValid();
