@@ -25,6 +25,7 @@
 #include "gfx/engine.hpp"
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
+#include "city/city.hpp"
 #include "religion/pantheon.hpp"
 #include "gfx/drawstate.hpp"
 #include "gfx/decorator.hpp"

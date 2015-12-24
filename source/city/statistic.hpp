@@ -288,6 +288,13 @@ public:
     Statistic& _parent;
   } entertainment;
 
+  struct _Education
+  {
+    EducationBuildingList find(Service::Type service) const;
+
+    Statistic& _parent;
+  } education;
+
   struct _Balance
   {
     float koeff() const;

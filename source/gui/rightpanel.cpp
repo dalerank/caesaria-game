@@ -79,7 +79,7 @@ void MenuRigthPanel::setSide(MenuRigthPanel::Side side)
   switch( side )
   {
   case leftSide: setPosition( {0, top() } ); break;
-  case rightSide: setPosition( { parent()->width() - width(), top() } ); break;
+  case rightSide: setPosition( { static_cast<int>(parent()->width() - width()), top() } ); break;
   }
 
   _initBackground( _d->tile );

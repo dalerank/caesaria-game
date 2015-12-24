@@ -633,11 +633,11 @@ void Menu::setSide(Menu::Side side, const Point& offset)
   switch( _d->side )
   {
   case leftSide:
-    setPosition( {offset.x() - (visible() ? 0u : 1u) * width(), offset.y()} );
+    setPosition( {static_cast<int>(offset.x() - (visible()?0:1) * width()), offset.y()} );
   break;
 
   case rightSide:
-    setPosition( {offset.x() - (visible() ? 1u : 0u) * width(), offset.y()} );
+    setPosition( {static_cast<int>(offset.x() - (visible()?1:0) * width()), offset.y()} );
   break;
   }
 }

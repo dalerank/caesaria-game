@@ -25,12 +25,15 @@
 #include "core/utils.hpp"
 #include "gfx/engine.hpp"
 #include "city/statistic.hpp"
+#include "objects/education.hpp"
 #include "objects/house.hpp"
 #include "dictionary.hpp"
 #include "texturedbutton.hpp"
 #include "objects/house_spec.hpp"
 #include "objects/constants.hpp"
 #include "objects/service.hpp"
+#include "environment.hpp"
+#include "widgetescapecloser.hpp"
 #include "city/states.hpp"
 #include "core/logger.hpp"
 #include "widget_helper.hpp"
@@ -88,22 +91,27 @@ static EducationInfo findInfo( const object::Type objs )
   return enterInfos[ object::unknown ];
 }
 
-class EducationInfoLabel : public Label
+class EducationCityInfo : public PushButton
 {
 public:
-  EducationInfoLabel( Widget* parent, const Rect& rect, const object::Type service,
-                      const EducationInfo& info )
-    : Label( parent, rect ), _service( service ), _info( info )
+  EducationCityInfo( Widget* parent, const Rect& rect,
+                    const object::Type service,
+                    const EducationInfo& info )
+    : PushButton( parent, rect, "",  -1, false, PushButton::noBackground ),
+      _service( service ),
+      _info( info )
   {
     setFont( Font::create( FONT_1_WHITE ) );
     setID( (int)service );
+
+    Decorator::draw( _border, Rect( 0, 0, width(), height() ), Decorator::brownBorder );
   }
 
   const EducationInfo& getInfo() const   {    return _info;  }
 
-  virtual void _updateTexture( gfx::Engine& painter )
+  virtual void _updateTexture()
   {
-    Label::_updateTexture( painter );
+    PushButton::_updateTexture();
 
     EducationInfo info = findInfo( _service );
 
@@ -120,9 +128,18 @@ public:
     canvasDraw( _( coverageStr ), Point( 440, 0 ) );
   }
 
+  virtual void draw(Engine &painter)
+  {
+    PushButton::draw( painter );
+
+    if( _state() == stHovered )
+      painter.draw( _border, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+  }
+
 private:
   object::Type _service;
   EducationInfo _info;
+  Pictures _border;
 };
 
 class Education::Impl
@@ -147,15 +164,18 @@ void Education::Impl::initUI( Education* parent, PlayerCityPtr city )
   Rect rect( startPoint, labelSize );
   EducationInfo info;
   info = getInfo( city, object::school );
-  lbBlackframe->add<EducationInfoLabel>( rect, object::school, info );
+  auto& btnSchools = lbBlackframe->add<EducationCityInfo>( rect, object::school, info );
+  CONNECT( &btnSchools, onClickedEx(), parent, Education::showDetails )
 
   info = getInfo( city, object::academy );
-  lbBlackframe->add<EducationInfoLabel>( rect + offset , object::academy, info );
+  auto& btnAcademy = lbBlackframe->add<EducationCityInfo>( rect + offset , object::academy, info );
+  CONNECT( &btnAcademy, onClickedEx(), parent, Education::showDetails )
 
   info = getInfo( city, object::library );
-  lbBlackframe->add<EducationInfoLabel>( rect + offset * 2, object::library, info );
+  auto& btnLibrary = lbBlackframe->add<EducationCityInfo>( rect + offset * 2, object::library, info );
+  CONNECT( &btnLibrary, onClickedEx(), parent, Education::showDetails )
 
-  parent->add<HelpButton>( Point( 12, parent->height() - 39), "education_advisor" );
+  parent->add<HelpButton>( Point( 12, parent->height() - 39 ), "education_advisor" );
 }
 
 void Education::Impl::updateCityInfo(PlayerCityPtr city)
@@ -203,6 +223,74 @@ void Education::draw( gfx::Engine& painter )
   Window::draw( painter );
 }
 
+class EducationBuildingDetail : public PushButton
+{
+public:
+  EducationBuildingDetail( Widget* parent, const Rect& rectangle, EducationBuildingPtr ptr )
+    : PushButton( parent, rectangle, "", -1, false, PushButton::whiteBorderUp )
+  {
+    building = ptr;
+  }
+
+  virtual void _updateTexture()
+  {
+    PushButton::_updateTexture();
+
+    Font f = font( _state() );
+    std::string text = building->name();
+    if( text.empty() )
+    {
+      TilePos pos = building->pos();
+      text = fmt::format( "{} [{},{}]]", building->info().prettyName(), pos.i(), pos.j() );
+    }
+
+    Rect textRect = f.getTextRect( _(text), Rect( 0, 0, width() / 2, height() ), horizontalTextAlign(), verticalTextAlign() );
+    f.draw( _textPicture(), _(text), textRect.lefttop(), true );
+
+    text = fmt::format( "served {} of {}", building->currentVisitors(), building->maxVisitors() );
+    textRect = f.getTextRect( text, Rect( width() / 2 + 24 * 2, 0, width(), height() ), horizontalTextAlign(), verticalTextAlign() );
+    f.draw( _textPicture(), text, textRect.lefttop(), true );
+
+    _textPicture().update();
+  }
+
+  EducationBuildingPtr building;
+};
+
+class EducationDetailsWindow : public Window
+{
+public:
+  EducationDetailsWindow( Widget* parent, PlayerCityPtr city, int service )
+    : Window( parent, Rect( 0, 0, 480, 480 ), "" )
+  {
+    Widget::setupUI( ":/gui/advsalaries.gui" );
+    _city = city;
+
+    INIT_WIDGET_FROM_UI( Label*, grayArea )
+    Point offset( 0, 35 );
+    Rect rect( 6, 6, grayArea->width() - 6, 6+30 );
+
+    auto buildings = city->statistic().education.find( (Service::Type)service );
+    int index=0;
+    for( auto bld : buildings )
+    {
+      grayArea->add<EducationBuildingDetail>( rect + offset * index, bld );
+      index++;
+    }
+
+    moveTo( Widget::parentCenter );
+    WidgetClose::insertTo( this );
+    setModal();
+  }
+
+  PlayerCityPtr _city;
+};
+
+void Education::showDetails(Widget* widget)
+{
+  ui()->add<EducationDetailsWindow>( _city, widget->ID() );
+}
+
 EducationInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Type bType)
 {
   EducationInfo ret = findInfo( bType );
@@ -248,7 +336,7 @@ EducationInfo Education::Impl::getInfo(PlayerCityPtr city, const object::Type bT
 
 EducationInfo Education::Impl::getInfo(const object::Type service)
 {
-  auto row = lbBlackframe->findChild<EducationInfoLabel>( service );
+  auto row = lbBlackframe->findChild<EducationCityInfo>( service );
   if( row )
     return row->getInfo();
 

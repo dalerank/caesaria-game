@@ -56,138 +56,150 @@ public:
 namespace config
 {
 
-#define STR_ALIAS(a,b) const std::string a=#b;
+#define STR_ALIAS(a,b) std::string a{#b};
+#define INT_ALIAS(a,b) int a=b;
 struct ID
 {
   struct _Empire
   {
-    int	bad = 0;
-    int stamp = 543;
-    int baseLocalGoodId = 316;
-    int baseEmpireGoodId = 10;
-    int grassPicsNumber = 57;
-    int seaTradeRoute = 69;
-    int landTradeRoute = 70;
-    int romeCity=8;
-    int distantCity=22;
-    int rightPanelTx=14;
-    int otherCity=15;
-    int grassPic=62;
-    int coastNE=144;
-    int coastSE=148;
+    INT_ALIAS(bad, 0)
+    INT_ALIAS(stamp,543)
+    INT_ALIAS(baseLocalGoodId,316)
+    INT_ALIAS(baseEmpireGoodId,10)
+    INT_ALIAS(grassPicsNumber,57)
+    INT_ALIAS(seaTradeRoute,69)
+    INT_ALIAS(landTradeRoute,70)
+    INT_ALIAS(romeCity,8)
+    INT_ALIAS(distantCity,22)
+    INT_ALIAS(rightPanelTx,14)
+    INT_ALIAS(otherCity,15)
+    INT_ALIAS(grassPic,62)
+    INT_ALIAS(coastNE,144)
+    INT_ALIAS(coastSE,148)
   };
 
-  _Empire empire;  
+  _Empire empire;
 };
 
-struct {
-  int constr = 1;
-  int skipRightBorder = 1;
-  int skipLeftBorder = 2;
-  int house = 5;
-} tile;
+struct _Tile {
+  INT_ALIAS(constr,1)
+  INT_ALIAS(skipRightBorder,1)
+  INT_ALIAS(skipLeftBorder,2)
+  INT_ALIAS(house,5)
+};
 
-struct {
+struct _RC {
   STR_ALIAS(aqueduct,land2a)
   STR_ALIAS(animals,citizen04)
   STR_ALIAS(land1a,land1a)
   STR_ALIAS(land2a,land2a)
   STR_ALIAS(land3a,land3a)
   STR_ALIAS(bigpeople,bigpeople)
-} rc;
+};
 
-struct
+struct _Layer
 {
-  int reservoirRange = 8;
-  int haveWater = 16;
+  INT_ALIAS(reservoirRange,8)
+  INT_ALIAS(haveWater,16)
 
   STR_ALIAS(water,land2a)
   STR_ALIAS(food,land2a)
   STR_ALIAS(ground,land2a)
-} layer;
+};
 
+static _Tile tile;
+static _RC rc;
+static _Layer layer;
 static ID id;
 
-}
+};
 
 namespace gui
 {
-struct {
-STR_ALIAS(panel,paneling)
-} rc;
 
-struct {
-  int house = 1;
-  int clear = 12;
-  int road = 11;
-  int water = 4;
-  int health = 6;
-  int religion = 2;
-  int education = 7;
-  int administration = 3;
-  int entertainment = 5;
-  int engineering = 8;
-  int security = 9;
-  int commerce = 10;
-  int empty = 13;
+struct _RC{
+  STR_ALIAS(panel,paneling)
+};
+
+struct _Miniature{
+  INT_ALIAS(house, 1)
+  INT_ALIAS(clear,12)
+  INT_ALIAS(road,11)
+  INT_ALIAS(water,4)
+  INT_ALIAS(health,6)
+  INT_ALIAS(religion,2)
+  INT_ALIAS(education,7)
+  INT_ALIAS(administration,3)
+  INT_ALIAS(entertainment,5)
+  INT_ALIAS(engineering,8)
+  INT_ALIAS(security,9)
+  INT_ALIAS(commerce,10)
+  INT_ALIAS(empty,13)
   STR_ALIAS(rc,panelwindows)
-} miniature;
+};
 
-struct {
-  int footer = 544;
-  int header = 546;
-  int body = 545;
-} column;
+struct _Column {
+  INT_ALIAS(footer,544)
+  INT_ALIAS(header,546)
+  INT_ALIAS(body,545)
+};
 
-struct {
-  int simple = 111;
-  int critial = 113;
-} message;
+struct _Message {
+  INT_ALIAS(simple, 111)
+  INT_ALIAS(critial, 113)
+};
 
-struct {
-  int house = 123;
-  int clear = 131;
-  int road = 135;
-  int govt = 139;
-  int engineering = 167;
-  int entertainment = 143;
-  int education = 147;
-  int meadow = 201;
-  int river = 189;
-  int temple = 151;
-  int broad = 213;
-  int waterSupply = 127;
-  int terrain = 183;
-  int health = 163;
-  int rift = 192;
-  int forest = 186;
-  int plateau = 204;
-  int rowDown = 601;
-  int rowUp = 605;
-  int water = 189;
-  int rocks = 198;
-  int help = 528;
-  int arrowDown = 601;
-  int arrowUp = 605;
-  int exit = 532;
-  int ok = 239;
-  int indigene = 210;
-  int maximize = 101;
-  int cancel = 243;
-  int security = 159;
-  int waymark = 216;
-  int commerce = 155;
-  int attacks = 225;
-} button;
+struct _Button {
+  INT_ALIAS(house, 123)
+  INT_ALIAS(clear, 131)
+  INT_ALIAS(road, 135)
+  INT_ALIAS(govt, 139)
+  INT_ALIAS(engineering, 167)
+  INT_ALIAS(entertainment, 143)
+  INT_ALIAS(education, 147)
+  INT_ALIAS(meadow, 201)
+  INT_ALIAS(river, 189)
+  INT_ALIAS(temple, 151)
+  INT_ALIAS(broad, 213)
+  INT_ALIAS(waterSupply, 127)
+  INT_ALIAS(terrain, 183)
+  INT_ALIAS(health, 163)
+  INT_ALIAS(rift, 192)
+  INT_ALIAS(forest, 186)
+  INT_ALIAS(plateau, 204)
+  INT_ALIAS(rowDown, 601)
+  INT_ALIAS(rowUp, 605)
+  INT_ALIAS(water, 189)
+  INT_ALIAS(rocks, 198)
+  INT_ALIAS(help, 528)
+  INT_ALIAS(arrowDown, 601)
+  INT_ALIAS(arrowUp, 605)
+  INT_ALIAS(exit, 532)
+  INT_ALIAS(ok, 239)
+  INT_ALIAS(indigene, 210)
+  INT_ALIAS(maximize, 101)
+  INT_ALIAS(cancel, 243)
+  INT_ALIAS(security, 159)
+  INT_ALIAS(waymark, 216)
+  INT_ALIAS(commerce, 155)
+  INT_ALIAS(attacks, 225)
+};
 
-struct { 
-  int chiefIcon = 48;
-  int lockpick = 238;
-  int gotoLegion = 563;
-  int return2fort = 564;
-  int serv2empire = 566;
-  int wrathIcon = 334;
-} id;
+struct _ID{ 
+  INT_ALIAS(chiefIcon,48)
+  INT_ALIAS(lockpick,238)
+  INT_ALIAS(gotoLegion,563)
+  INT_ALIAS(return2fort,564)
+  INT_ALIAS(serv2empire,566)
+  INT_ALIAS(wrathIcon,334)
+};
+
+static _RC rc;
+static _Miniature miniature;
+static _Button button;
+static _Message message;
+static _ID id;
+static _Column column;
 
 }//end namespace gui
 

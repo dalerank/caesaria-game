@@ -1,0 +1,155 @@
+﻿Build started 12/24/2015 3:16:26 PM.
+     1>Project "E:\projects\caesaria\MSVC\mixer\mixer.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I..\..\dep\sdl2mini\include /I"..\..\dep\mixer\external\libvorbisidec-1.2.1" /I..\..\dep\xcompile /I"..\..\dep\mixer\external\libogg-1.3.1\include" /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _LIB /D _UNICODE /D UNICODE /D OGG_MUSIC /D OGG_USE_TREMOR /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TC /analyze- /errorReport:prompt ..\..\dep\mixer\dynamic_flac.c ..\..\dep\mixer\dynamic_fluidsynth.c ..\..\dep\mixer\dynamic_mod.c ..\..\dep\mixer\dynamic_modplug.c ..\..\dep\mixer\dynamic_mp3.c ..\..\dep\mixer\dynamic_ogg.c ..\..\dep\mixer\effects_internal.c ..\..\dep\mixer\effect_position.c ..\..\dep\mixer\effect_stereoreverse.c "..\..\dep\mixer\external\libogg-1.3.1\src\bitwise.c" "..\..\dep\mixer\external\libogg-1.3.1\src\framing.c" "..\..\dep\mixer\external\libvorbisidec-1.2.1\block.c" "..\..\dep\mixer\external\libvorbisidec-1.2.1\codebook.c" "..\..\dep\mixer\external\libvorbisidec-1.2.1\floor0.c" "..\..\dep\mixer\external\libvorbisidec-1.2.1\floor1.c" "..\..\dep\mixer\external\libvorbisidec-1.2.1\info.c" "..\..\dep\mixer\external\libvorbisidec-1.2.1\mapping0.c" "..\..\dep\mixer\external\libvorbisidec-1.2.1\mdct.c" "..\..\dep\mixer\external\libvorbisidec-1.2.1\registry.c" "..\..\dep\mixer\external\libvorbisidec-1.2.1\res012.c" "..\..\dep\mixer\external\libvorbisidec-1.2.1\sharedbook.c" "..\..\dep\mixer\external\libvorbisidec-1.2.1\synthesis.c" "..\..\dep\mixer\external\libvorbisidec-1.2.1\vorbisfile.c" "..\..\dep\mixer\external\libvorbisidec-1.2.1\window.c" ..\..\dep\mixer\fluidsynth.c ..\..\dep\mixer\load_aiff.c ..\..\dep\mixer\load_flac.c ..\..\dep\mixer\load_ogg.c ..\..\dep\mixer\load_voc.c ..\..\dep\mixer\mixer.c ..\..\dep\mixer\music.c ..\..\dep\mixer\music_cmd.c ..\..\dep\mixer\music_flac.c ..\..\dep\mixer\music_mad.c ..\..\dep\mixer\music_mod.c ..\..\dep\mixer\music_modplug.c ..\..\dep\mixer\music_ogg.c ..\..\dep\mixer\playmus.c ..\..\dep\mixer\playwave.c ..\..\dep\mixer\wavestream.c
+         wavestream.c
+         playwave.c
+         playmus.c
+         music_ogg.c
+     1>e:\projects\caesaria\dep\mixer\music_ogg.c(81): warning C4133: '=' : incompatible types - from 'Sint64 (__cdecl *)(void *,ogg_int64_t,int)' to 'int (__cdecl *)(void *,ogg_int64_t,int)'
+     1>e:\projects\caesaria\dep\mixer\music_ogg.c(82): warning C4133: '=' : incompatible types - from 'Sint64 (__cdecl *)(void *)' to 'long (__cdecl *)(void *)'
+         music_modplug.c
+         music_mod.c
+         music_mad.c
+         music_flac.c
+         music_cmd.c
+         music.c
+     1>e:\projects\caesaria\dep\mixer\music.c(341): warning C4102: 'skip' : unreferenced label
+     1>e:\projects\caesaria\dep\mixer\music.c(849): warning C4102: 'skip' : unreferenced label
+     1>e:\projects\caesaria\dep\mixer\music.c(977): warning C4102: 'skip' : unreferenced label
+     1>e:\projects\caesaria\dep\mixer\music.c(1286): warning C4102: 'skip' : unreferenced label
+     1>e:\projects\caesaria\dep\mixer\music.c(1474): warning C4102: 'skip' : unreferenced label
+     1>e:\projects\caesaria\dep\mixer\music.c(1503): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(112) : see declaration of 'strcpy'
+         mixer.c
+         load_voc.c
+         load_ogg.c
+     1>e:\projects\caesaria\dep\mixer\load_ogg.c(89): warning C4133: '=' : incompatible types - from 'Sint64 (__cdecl *)(void *,ogg_int64_t,int)' to 'int (__cdecl *)(void *,ogg_int64_t,int)'
+     1>e:\projects\caesaria\dep\mixer\load_ogg.c(90): warning C4133: '=' : incompatible types - from 'Sint64 (__cdecl *)(void *)' to 'long (__cdecl *)(void *)'
+     1>e:\projects\caesaria\dep\mixer\load_ogg.c(92): warning C4133: '=' : incompatible types - from 'Sint64 (__cdecl *)(void *)' to 'int (__cdecl *)(void *)'
+         load_flac.c
+         load_aiff.c
+         fluidsynth.c
+         window.c
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\window_lookup.h(21): warning C4114: same type qualifier used more than once
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\window_lookup.h(32): warning C4114: same type qualifier used more than once
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\window_lookup.h(51): warning C4114: same type qualifier used more than once
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\window_lookup.h(86): warning C4114: same type qualifier used more than once
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\window_lookup.h(153): warning C4114: same type qualifier used more than once
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\window_lookup.h(284): warning C4114: same type qualifier used more than once
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\window_lookup.h(543): warning C4114: same type qualifier used more than once
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\window_lookup.h(1058): warning C4114: same type qualifier used more than once
+         vorbisfile.c
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\vorbisfile.c(268): warning C4244: '=' : conversion from 'ogg_int64_t' to 'int', possible loss of data
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\vorbisfile.c(533): warning C4244: 'return' : conversion from 'ogg_int64_t' to 'int', possible loss of data
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\vorbisfile.c(560): warning C4244: 'return' : conversion from 'ogg_int64_t' to 'int', possible loss of data
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\vorbisfile.c(564): warning C4244: 'return' : conversion from 'ogg_int64_t' to 'int', possible loss of data
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\vorbisfile.c(574): warning C4244: 'return' : conversion from 'ogg_int64_t' to 'int', possible loss of data
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\vorbisfile.c(636): warning C4244: 'return' : conversion from 'ogg_int64_t' to 'int', possible loss of data
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\vorbisfile.c(866): warning C4244: 'function' : conversion from 'ogg_int64_t' to 'long', possible loss of data
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\vorbisfile.c(1004): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\stdio.h(211) : see declaration of 'fopen'
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\vorbisfile.c(1072): warning C4244: 'return' : conversion from 'ogg_int64_t' to 'long', possible loss of data
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\vorbisfile.c(1076): warning C4244: 'return' : conversion from 'ogg_int64_t' to 'long', possible loss of data
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\vorbisfile.c(1104): warning C4244: '=' : conversion from 'ogg_int64_t' to 'long', possible loss of data
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\vorbisfile.c(1658): warning C4244: '=' : conversion from 'ogg_int64_t' to 'long', possible loss of data
+         synthesis.c
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\stdlib.h(921): warning C4005: 'max' : macro redefinition
+                 e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\os.h(61) : see previous definition of 'max'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\stdlib.h(922): warning C4005: 'min' : macro redefinition
+                 e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\os.h(57) : see previous definition of 'min'
+         sharedbook.c
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\sharedbook.c(393): warning C4244: '=' : conversion from 'long' to 'char', possible loss of data
+         Generating Code...
+         Compiling...
+         res012.c
+         registry.c
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\stdlib.h(921): warning C4005: 'max' : macro redefinition
+                 e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\os.h(61) : see previous definition of 'max'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\stdlib.h(922): warning C4005: 'min' : macro redefinition
+                 e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\os.h(57) : see previous definition of 'min'
+         mdct.c
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\stdlib.h(921): warning C4005: 'max' : macro redefinition
+                 e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\os.h(61) : see previous definition of 'max'
+     1>c:\program files (x86)\microsoft visual studio 12.0\vc\include\stdlib.h(922): warning C4005: 'min' : macro redefinition
+                 e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\os.h(57) : see previous definition of 'min'
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\mdct_lookup.h(21): warning C4114: same type qualifier used more than once
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\mdct_lookup.h(282): warning C4114: same type qualifier used more than once
+         mapping0.c
+         info.c
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\info.c(36): warning C4244: '=' : conversion from 'long' to 'char', possible loss of data
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\info.c(62): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(112) : see declaration of 'strcpy'
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\info.c(63): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(118) : see declaration of 'strcat'
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\info.c(81): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(112) : see declaration of 'strcpy'
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\info.c(82): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+                 c:\program files (x86)\microsoft visual studio 12.0\vc\include\string.h(118) : see declaration of 'strcat'
+         floor1.c
+         floor0.c
+         codebook.c
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\codebook.c(339): warning C4101: 'j' : unreferenced local variable
+         block.c
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\block.c(404): warning C4244: 'initializing' : conversion from 'ogg_int64_t' to 'long', possible loss of data
+     1>e:\projects\caesaria\dep\mixer\external\libvorbisidec-1.2.1\block.c(442): warning C4244: 'initializing' : conversion from 'ogg_int64_t' to 'long', possible loss of data
+         framing.c
+         bitwise.c
+         effect_stereoreverse.c
+         effect_position.c
+         effects_internal.c
+         dynamic_ogg.c
+         dynamic_mp3.c
+         dynamic_modplug.c
+         dynamic_mod.c
+         dynamic_fluidsynth.c
+         dynamic_flac.c
+         Generating Code...
+       Lib:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\Lib.exe /OUT:"..\..\dep/mixer/lib/mixer.lib" /NOLOGO Debug\dynamic_flac.obj
+         Debug\dynamic_fluidsynth.obj
+         Debug\dynamic_mod.obj
+         Debug\dynamic_modplug.obj
+         Debug\dynamic_mp3.obj
+         Debug\dynamic_ogg.obj
+         Debug\effects_internal.obj
+         Debug\effect_position.obj
+         Debug\effect_stereoreverse.obj
+         Debug\bitwise.obj
+         Debug\framing.obj
+         Debug\block.obj
+         Debug\codebook.obj
+         Debug\floor0.obj
+         Debug\floor1.obj
+         Debug\info.obj
+         Debug\mapping0.obj
+         Debug\mdct.obj
+         Debug\registry.obj
+         Debug\res012.obj
+         Debug\sharedbook.obj
+         Debug\synthesis.obj
+         Debug\vorbisfile.obj
+         Debug\window.obj
+         Debug\fluidsynth.obj
+         Debug\load_aiff.obj
+         Debug\load_flac.obj
+         Debug\load_ogg.obj
+         Debug\load_voc.obj
+         Debug\mixer.obj
+         Debug\music.obj
+         Debug\music_cmd.obj
+         Debug\music_flac.obj
+         Debug\music_mad.obj
+         Debug\music_mod.obj
+         Debug\music_modplug.obj
+         Debug\music_ogg.obj
+         Debug\playmus.obj
+         Debug\playwave.obj
+         Debug\wavestream.obj
+     1>playmus.obj : warning LNK4006: _SDL_main already defined in playwave.obj; second definition ignored
+         mixer.vcxproj -> E:\projects\caesaria\MSVC\mixer\..\..\dep/mixer/lib/mixer.lib
+     1>Done Building Project "E:\projects\caesaria\MSVC\mixer\mixer.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:07.17

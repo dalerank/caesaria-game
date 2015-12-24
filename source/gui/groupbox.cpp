@@ -55,7 +55,7 @@ GroupBox::GroupBox( Widget* parent, const Rect& rectangle, int id, Style style)
 : Widget( parent, id, rectangle ), _d( new Impl )
 {
 	#ifdef _DEBUG
-    etDebugName("GroupBox");
+     setDebugName("GroupBox");
 	#endif
 
   _d->scaleImage = true;	

@@ -20,6 +20,7 @@
 #include "dialogbox.hpp"
 #include "good/helper.hpp"
 #include "gfx/engine.hpp"
+#include "city/city.hpp"
 #include "core/utils.hpp"
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"

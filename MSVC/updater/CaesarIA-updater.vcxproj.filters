@@ -10,9 +10,6 @@
     <Filter Include="core">
       <UniqueIdentifier>{c9909c55-dce9-433d-95aa-2608b0244840}</UniqueIdentifier>
     </Filter>
-    <Filter Include="thread">
-      <UniqueIdentifier>{858bfa91-b593-4e6e-aa84-2c47dfffaa6a}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\updater\http\download.cpp">
@@ -71,18 +68,6 @@
     <ClCompile Include="..\..\source\core\variant.cpp">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\source\thread\thread.cpp">
-      <Filter>thread</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\thread\mutex.cpp">
-      <Filter>thread</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\thread\threadevent.cpp">
-      <Filter>thread</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\source\thread\threadtask.cpp">
-      <Filter>thread</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\source\core\utils.cpp">
       <Filter>core</Filter>
     </ClCompile>
@@ -92,6 +77,16 @@
     <ClCompile Include="..\..\source\core\hash.cpp">
       <Filter>core</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\source\core\format.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\core\variant_map.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\gfx\tilepos.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\source\thread\safethread.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\updater\http\download.hpp">
@@ -162,18 +157,6 @@
     </ClInclude>
     <ClInclude Include="..\..\source\core\variant.hpp">
       <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\thread\thread.hpp">
-      <Filter>thread</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\thread\mutex.hpp">
-      <Filter>thread</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\thread\threadevent.hpp">
-      <Filter>thread</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\source\thread\threadtask.hpp">
-      <Filter>thread</Filter>
     </ClInclude>
     <ClInclude Include="..\..\source\core\utils.hpp">
       <Filter>core</Filter>
