@@ -36,9 +36,6 @@ public:
 	Rect	sliderTextureRect;
 	Rect	backgroundRect;
 	Rect	filledAreaRect;
-	Rect	sliderRect;
-	PushButton* upButton;
-	PushButton* downButton;
   bool needRecalculateParams;
   Point cursorPos;
   unsigned int lastTimeChange;
@@ -48,8 +45,22 @@ public:
     Rect rect;
   } background;
 
-  gfx::Picture sliderPictureUp, sliderPictureDown;
-  gfx::Picture sliderTexture;
+  struct {
+    struct {
+      gfx::Picture img;
+      PushButton* widget;
+    } up;
+
+    struct {
+      gfx::Picture img;
+      PushButton* widget;
+    } down;
+  } button;
+
+  struct {
+    gfx::Picture texture;
+    Rect         rect;
+  } slider;
 };
 
 }//end namespace gui

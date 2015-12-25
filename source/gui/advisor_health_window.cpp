@@ -36,6 +36,7 @@
 #include "core/logger.hpp"
 #include "city/states.hpp"
 #include "widget_helper.hpp"
+#include "gfx/drawstate.hpp"
 
 using namespace gfx;
 using namespace city;
@@ -78,22 +79,23 @@ namespace gui
 namespace advisorwnd
 {
 
-class HealthInfoLabel : public Label
+class HealthInfoLabel : public PushButton
 {
 public:
   HealthInfoLabel( Widget* parent, const Rect& rect, const object::Type service,
                    const HealthcareInfo& info  )
-    : Label( parent, rect )
+    : PushButton( parent, rect, "", -1, false, PushButton::noBackground )
   {
     _service = service;
     _info = info;
 
     setFont( Font::create( FONT_1 ) );
+    Decorator::draw( border, Rect( 0, 0, width(), height() ), Decorator::brownBorder );
   }
 
-  virtual void _updateTexture( gfx::Engine& painter )
+  virtual void _updateTexture()
   {
-    Label::_updateTexture( painter );
+    PushButton::_updateTexture();
 
     HealthcareInfo info = HealthcareInfo::find( _service );
 
@@ -119,9 +121,19 @@ public:
     canvasDraw( coverageStrT, Point( 455, 0 ) );
   }
 
+  virtual void draw(Engine &painter)
+  {
+    PushButton::draw( painter );
+
+    DrawState pipe( painter, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+    if( _state() == stHovered )
+     pipe.draw( d.border );
+  }
+
 private:
   object::Type _service;
   HealthcareInfo _info;
+  Pictures border;
 };
 
 class Health::Impl
@@ -172,7 +184,7 @@ HealthcareInfo Health::Impl::getInfo(PlayerCityPtr city, const object::Type obje
   for( auto h : houses )
   {
     if( h->isHealthNeed( serviceType ) )
-    ret.needService += h->habitants().count();
+      ret.needService += h->habitants().count();
   }
 
   return ret;

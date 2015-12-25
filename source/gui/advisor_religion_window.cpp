@@ -96,8 +96,11 @@ Religion::Religion(PlayerCityPtr city, Widget* parent, int id )
                                           DivinityPtr() };
 
   int index = 0;
-  for( auto divn : divinities )
-    d.addInfo( this, city, divn, startPoint + Point( 0, 20) * index );
+  for (auto divn : divinities)
+  {
+	  d.addInfo(this, city, divn, startPoint + Point(0, 20) * index);
+	  index++;
+  }
 
   GET_DWIDGET_FROM_UI( &d, lbReligionAdvice )
 

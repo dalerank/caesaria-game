@@ -78,17 +78,11 @@ public:
   VariantListReader( const VariantList& list )
     : _list( list )
   {
-    _initialized = false;
+    _it = _list.begin();
   }
 
   const Variant& next()
   {
-    if( !_initialized )
-    {
-      _it = _list.begin();
-      _initialized = true;
-    }
-
     const Variant& value = *_it;
     ++_it;
 
@@ -98,7 +92,6 @@ public:
   bool atEnd() { return _it == _list.end(); }
 
 private:
-  bool _initialized;
   VariantList::const_iterator _it;
   const VariantList& _list;
 };
@@ -106,7 +99,7 @@ private:
 template<class T>
 typename std::vector<T>& operator<<(std::vector<T>& v, const VariantList& vars)
 {
-  for( auto& it : vars )
+  for( const auto& it : vars )
     v.push_back( (T)it );
 
   return v;
