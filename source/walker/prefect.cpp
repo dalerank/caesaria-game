@@ -82,9 +82,8 @@ bool Prefect::_looks4Fire( ReachedBuildings& buildings, TilePos& p )
 
 WalkerPtr Prefect::_looks4Enemy( const int range )
 {
-  TilePos offset( range, range );
-  WalkerList walkers = _city()->statistic().walkers.find<Walker>( walker::any,
-                                                                  pos() - offset, pos() + offset );
+  WalkerList walkers = _city()->statistic().walkers.find<Walker>( walker::any, range,
+                                                                  pos() );
 
   walkers = utils::selectAgressive( walkers );
   return utils::findNearest( pos(), walkers );

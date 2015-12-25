@@ -169,6 +169,7 @@ void Animation::load(const VariantMap& stream)
 
 void Animation::simple(const VariantMap& stream)
 {
+  __D_IMPL(d,Animation)
   VARIANT_INIT_STR( rc, stream )
   VARIANT_INIT_ANY( int, start, stream )
   VARIANT_INIT_ANY( int, frames, stream )
