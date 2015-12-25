@@ -89,7 +89,7 @@ public:
     _service = service;
     _info = info;
 
-    setFont( Font::create( FONT_1 ) );
+    setFont( Font::create( FONT_1_WHITE ) );
     Decorator::draw( border, Rect( 0, 0, width(), height() ), Decorator::brownBorder );
   }
 
@@ -100,20 +100,14 @@ public:
     HealthcareInfo info = HealthcareInfo::find( _service );
 
     std::string peoplesStrT = _("##health_no_info##");
-    if( _info.buildingCount > 0 )
-    {
-      peoplesStrT = fmt::format( "{} ({}) {}", _info.peoplesServed, _info.needService, _(info.people) );
-    }
+    peoplesStrT = fmt::format( "{} ({}) {}", _info.peoplesServed, _info.needService, _(info.people) );
 
     std::string coverageStrT;
-    if( _info.buildingCount > 0 )
-    {
-      int coveragePrcnt = _info.needService > 0
-                            ? math::percentage( _info.peoplesServed, _info.needService )
-                            : 100;
-      math::clamp_to( coveragePrcnt, 0, 100 );
-      coverageStrT = fmt::format( "{}%", coveragePrcnt );
-    }
+    int coveragePrcnt = _info.needService > 0
+                          ? math::percentage( _info.peoplesServed, _info.needService )
+                          : 100;
+    math::clamp_to( coveragePrcnt, 0, 100 );
+    coverageStrT = fmt::format( "{}%", coveragePrcnt );
 
     canvasDraw( fmt::format( "{} {}", _info.buildingCount, _(info.building )), Point() );
     canvasDraw( utils::i2str( _info.buildingWork ), Point( 165, 0 ) );
@@ -278,7 +272,7 @@ void Health::_initUI(PlayerCityPtr c)
     return;
   }
 
-  Point startPoint = lbBlackframe->lefttop() + Point( 3, 3 );
+  Point startPoint = Point( 3, 3 );
   Size labelSize( lbBlackframe->width() - 6, 20 );
 
   HealthcareInfo info = _d->getInfo( c, object::baths );
