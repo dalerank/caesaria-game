@@ -21,11 +21,10 @@
 #include "gfx/picture.hpp"
 #include "core/signals.hpp"
 #include "core/rectangle.hpp"
+#include "gui/pushbutton.hpp"
 
 namespace gui
 {
-
-class PushButton;
 
 class ScrollBar::Impl
 {
@@ -46,20 +45,21 @@ public:
   } background;
 
   struct {
-    struct {
-      gfx::Picture img;
-      PushButton* widget;
-    } up;
+    struct _ButtonInfo{
+      PushButton* widget = nullptr;
+      bool visible() const { return widget && widget->visible(); }
+      void setEnabled(bool enable) { if(widget) widget->setEnabled( enable); }
+    };
 
-    struct {
-      gfx::Picture img;
-      PushButton* widget;
-    } down;
+    _ButtonInfo down;
+    _ButtonInfo up;
   } button;
 
   struct {
     gfx::Picture texture;
     Rect         rect;
+    gfx::Picture pressed;
+    gfx::Picture normal;
   } slider;
 };
 

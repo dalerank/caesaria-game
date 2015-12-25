@@ -152,7 +152,7 @@ void Animation::load(const VariantMap& stream)
   __D_IMPL(d,Animation)
   VARIANT_LOAD_ANY_D( d, index, stream )
   VARIANT_LOAD_ANY_D( d, delay, stream )
-  VARIANT_LOAD_ANY_D( d, loop, stream );
+  VARIANT_LOAD_ANY_D( d, loop,  stream )
 
   VariantMap range = stream.get( "range" ).toMap();
   if( !range.empty() )
@@ -165,6 +165,15 @@ void Animation::load(const VariantMap& stream)
   }
 
   _pictures.load( stream.get( "pictures" ).toStringArray() );
+}
+
+void Animation::simple(const VariantMap& stream)
+{
+  VARIANT_INIT_STR( rc, stream )
+  VARIANT_INIT_ANY( int, start, stream )
+  VARIANT_INIT_ANY( int, frames, stream )
+  VARIANT_LOAD_ANY_D( d, delay, stream )
+  load( rc, start, frames );
 }
 
 void Animation::clear() { _pictures.clear();}

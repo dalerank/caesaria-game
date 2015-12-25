@@ -127,7 +127,7 @@ public:
 
     DrawState pipe( painter, absoluteRect().lefttop(), &absoluteClippingRectRef() );
     if( _state() == stHovered )
-     pipe.draw( d.border );
+     pipe.draw( border );
   }
 
 private:

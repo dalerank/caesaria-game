@@ -194,10 +194,9 @@ void Wolf::_centerTile()
 }
 
 void Wolf::_findNewWay( const TilePos& start )
-{
-  TilePos offset( config::distance::animalRandrom, config::distance::animalRandrom);
+{  
   WalkerList walkers = _city()->statistic().walkers
-                                           .find<Walker>( walker::any, start - offset, start + offset )
+                                           .find<Walker>( walker::any, config::distance::animalRandrom, start )
                                            .exclude<Wolf>();
 
   Pathway pathway;

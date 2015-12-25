@@ -59,6 +59,11 @@ public:
     template<class T>
     SmartList< T > neighbors( TilePos start, walker::Type type=walker::any ) const;
 
+    template<class T>
+    SmartList< T > find( walker::Type type,
+                         int radius,
+                         const TilePos& pos ) const;
+
     template< class T >
     SmartList< T > find( walker::Type type,
                          const TilePos& start=TilePos::invalid(),
@@ -401,6 +406,13 @@ inline SmartList<T> Statistic::_Walkers::neighbors( TilePos start, walker::Type 
 {
   static TilePos offset( 1, 1 );
   return find<T>( type, start - offset, start + offset );
+}
+
+template< class T >
+SmartList<T> Statistic::_Walkers::find(walker::Type type, int radius, const TilePos& pos) const
+{
+  TilePos offset( radius, radius);
+  return find<T>( type, pos - offset, pos + offset );
 }
 
 template< class T >
