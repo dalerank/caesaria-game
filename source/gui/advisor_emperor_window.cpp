@@ -146,7 +146,12 @@ public:
 void Emperor::_showGiftHistory()
 {
   const world::Relation& relation = _city->empire()->emperor().relation( _city->name() );
-  ui()->add<GiftDetails>( Size( 480, 640 ), _("##history_gift##"), relation.gifts() );
+  if( relation.gifts().empty() )
+  {
+    dialog::Information( ui(), "Note", "You was not sent any gifts to emperor" );
+  }
+  else
+    ui()->add<GiftDetails>( Size( 480, 640 ), _("##history_gift##"), relation.gifts() );
 }
 
 void Emperor::_updateRequests()

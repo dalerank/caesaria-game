@@ -246,9 +246,14 @@ bool Window::onEvent(const NEvent& event)
 
       case mouseRbtnRelease:
 			case mouseLbtnRelease:
-        _d->drag.active = false;
-
-      return true;
+      {
+        if( _d->drag.active )
+        {
+          _d->drag.active = false;
+          return true;
+        }
+      }
+      break;
 
       case mouseMoved:
 				if ( !event.mouse.isLeftPressed() )

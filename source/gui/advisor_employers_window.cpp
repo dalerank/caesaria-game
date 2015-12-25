@@ -114,7 +114,7 @@ public:
     grayArea->add<SalaryButton>( rect+offset*3, walker::romeSpearman, 30 );
 
     moveTo( Widget::parentCenter );
-    WidgetClose::insertTo( this );
+    WidgetClose::insertTo( this, KEY_RBUTTON );
     setModal();
   }
 

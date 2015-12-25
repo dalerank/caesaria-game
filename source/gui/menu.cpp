@@ -591,6 +591,17 @@ bool Menu::onEvent(const NEvent& event)
     }
   }
 
+  if( event.EventType == sEventKeyboard )
+  {
+    if( event.keyboard.key == KEY_ESCAPE )
+    {
+      auto menus = findChildren<BuildMenu*>();
+      for( auto m : menus ) m->deleteLater();
+    }
+
+    return true;
+  }
+
   return Widget::onEvent( event );
 }
 
