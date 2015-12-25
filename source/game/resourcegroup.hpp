@@ -183,6 +183,7 @@ struct _Button {
   INT_ALIAS(waymark, 216)
   INT_ALIAS(commerce, 155)
   INT_ALIAS(attacks, 225)
+  INT_ALIAS(undo, 171)
 };
 
 struct _ID{ 

@@ -65,6 +65,7 @@ enum class AdvToolMode
 };
 
 enum { noSubMenu=0, haveSubMenu=1, pushButton=1 };
+static Signal0<> invalidAction;
 
 struct Menu::Link
 {
@@ -79,7 +80,8 @@ struct Menu::Link
                  buildGovt, editIndigene,
                  buildEngineering, editRoads,
                  buildSecurity, editBorders,
-                 buildCommerce, editAttacks
+                 buildCommerce, editAttacks,
+                 undoAction
                } Name;
   typedef enum { inGame=0, inEditor=1 } VisibleMode;
   Point pos;
@@ -95,6 +97,9 @@ struct Menu::Link
   PushButton* button;
   std::string tooltip;
   VisibleMode visibleMode;
+
+  void setEnabled(bool enabled) { if( button ) button->setEnabled(enabled); }
+  Signal0<>& action() { return button ? button->onClicked() : invalidAction; }
 };
 
 struct Menu::Model
@@ -211,6 +216,9 @@ struct Menu::Model
                                   object::attackTrigger, gui::miniature.clear, pushButton,
                                   noSubMenu, Rect(), "attackTrigger", nullptr, "attackTrigger", Link::inEditor};
 
+    actions[ Link::undoAction ] = { {13,421}, gui::button.undo, (int)object::unknown, 12,
+                                    object::unknown, gui::miniature.clear, pushButton,
+                                    noSubMenu, Rect(), "cancel", nullptr, "cancel", Link::inEditor};
   }
 
   bool isLinkValid( Link::Name name ) const
@@ -303,7 +311,6 @@ public:
   PushButton* rotateRightButton;
   PushButton* messageButton;
   PushButton* disasterButton;
-  PushButton* cancelButton;
   PushButton* overlaysButton;
 
   Image* middleLabel;
@@ -375,6 +382,7 @@ void Menu::_updateButtons()
   _createLink( _d->model->actions[ Link::buildEngineering ]);
   _createLink( _d->model->actions[ Link::buildSecurity]);
   _createLink( _d->model->actions[ Link::buildCommerce]);
+  _createLink( _d->model->actions[ Link::undoAction ] );
 
   CONNECT( _d->button.minimize, onClicked(), this, Menu::minimize );
 }
@@ -762,9 +770,7 @@ void ExtentMenu::_updateButtons()
   _d->rotateRightButton = _addButton( 94, false, 0, -1, false, -1, "rotate_map_clockwise" ) ;
   _setChildGeometry( _d->rotateRightButton, Rect( Point( 123, 184 ), Size( 33, 22 ) ) );
 
-  _d->cancelButton = _addButton( 171, false, 0, -1, false, -1, "cancel" );
-  _setChildGeometry( _d->cancelButton, Rect( Point( 13, 421 ), Size( 39, 22 ) ) );
-  _d->cancelButton->setEnabled( false );
+  _d->model->actions[ Link::undoAction ].setEnabled( false );
 
   _d->messageButton = _addButton( 115, false, 0, -1, false, -1, "message" );
   _setChildGeometry( _d->messageButton, Rect( Point( 63, 421 ), Size( 39, 22 ) ) );
@@ -848,10 +854,7 @@ void ExtentMenu::setConstructorMode(bool enabled)
   _d->model->setConstructoMode( enabled );
 }
 
-void ExtentMenu::resolveUndoChange(bool enabled)
-{
-  _d->cancelButton->setEnabled( enabled );
-}
+void ExtentMenu::resolveUndoChange(bool enabled) { _d->model->actions[ Link::undoAction ].setEnabled( enabled ); }
 
 void ExtentMenu::changeOverlay(int ovType)
 {
@@ -896,7 +899,7 @@ Signal0<>& ExtentMenu::onSwitchAlarm(){  return _d->disasterButton->onClicked();
 Signal0<>& ExtentMenu::onMessagesShow()  { return _d->messageButton->onClicked(); }
 Signal0<>& ExtentMenu::onRotateRight() { return _d->rotateRightButton->onClicked(); }
 Signal0<>& ExtentMenu::onRotateLeft() { return _d->rotateLeftButton->onClicked(); }
-Signal0<>& ExtentMenu::onUndo() { return _d->cancelButton->onClicked(); }
+Signal0<>& ExtentMenu::onUndo() { return _d->model->actions[ Link::undoAction ].action(); }
 Signal0<>& ExtentMenu::onMissionTargetsWindowShow(){  return _d->missionButton->onClicked(); }
 
 }//end namespace gui
