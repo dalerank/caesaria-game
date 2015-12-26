@@ -23,6 +23,7 @@
 #include "gfx/drawstate.hpp"
 #include "gui/environment.hpp"
 #include "game/resourcegroup.hpp"
+#include "core/color_list.hpp"
 
 using namespace gfx;
 
@@ -35,16 +36,17 @@ ScrollBar::ScrollBar(  Widget* parent, const Rect& rectangle,
 	_dragging(false), _isSliderHovered( false ), _lastSliderHovered( true ), _horizontal( horizontal ),
     _draggedBySlider(false), _trayClick(false),
     _overrideBgColorEnabled( false ), _visibleFilledArea( true ),
-    _overrideBgColor( 0 ), _value(0), _sliderPos(0), _lastSliderPos( 0 ),
+    _sliderPos(0), _lastSliderPos( 0 ),
     _drawLenght(0), _minValue(0), _maxVallue(100),
     _smallStep(10), _largeStep(50), _desiredPos(0),
 	_d( new Impl )
 {
 	_d->lastTimeChange = 0l;
   _d->needRecalculateParams = true;
-
-  _d->slider.texture.load( gui::rc.panel, 61 );
-  _d->slider.texture.load( gui::rc.panel, 53 );
+  _d->overrideBgColor = ColorList::clear;
+  _d->value = 0;
+  _d->slider.normal.load( gui::rc.panel, 61 );
+  _d->slider.pressed.load( gui::rc.panel, 53 );
 
 #ifdef _DEBUG
    setDebugName("ScrollBar");
@@ -69,7 +71,7 @@ ScrollBar::~ScrollBar(){}
 void ScrollBar::_resolvePositionChanged()
 {
   parent()->onEvent( NEvent::Gui( this, 0, guiScrollbarChanged ) );
-  emit _d->onPositionChanged( _value );
+  emit _d->onPositionChanged( _d->value );
 }
 
 //! called if an event happened
@@ -82,20 +84,20 @@ bool ScrollBar::onEvent(const NEvent& event)
 		case sEventKeyboard:
 			if (event.keyboard.pressed)
 			{
-        const int oldPos = _value;
+        const int oldPos = _d->value;
 				bool absorb = true;
 				switch (event.keyboard.key)
 				{
-        case KEY_LEFT: case KEY_UP: setValue(_value-_smallStep); break;
-        case KEY_RIGHT:	case KEY_DOWN: setValue(_value+_smallStep); break;
+        case KEY_LEFT: case KEY_UP: setValue(_d->value-_smallStep); break;
+        case KEY_RIGHT:	case KEY_DOWN: setValue(_d->value+_smallStep); break;
         case KEY_HOME: setValue(_minValue);	break;
-        case KEY_PRIOR: setValue(_value-_largeStep); break;
+        case KEY_PRIOR: setValue(_d->value-_largeStep); break;
         case KEY_END: setValue(_maxVallue);	break;
-        case KEY_NEXT: setValue(_value+_largeStep); break;
+        case KEY_NEXT: setValue(_d->value+_largeStep); break;
 				default:absorb = false;
 				}
 
-				if (_value != oldPos)
+        if (_d->value != oldPos)
 				{
 					_resolvePositionChanged();
 				}
@@ -108,11 +110,11 @@ bool ScrollBar::onEvent(const NEvent& event)
 			{
         if (event.gui.caller == _d->button.up.widget)
         {
-          setValue(_value-_smallStep);
+          setValue(_d->value-_smallStep);
         }
         else if (event.gui.caller == _d->button.down.widget)
         {
-          setValue(_value+_smallStep);
+          setValue(_d->value+_smallStep);
         }
 				
         _resolvePositionChanged();
@@ -171,7 +173,7 @@ bool ScrollBar::onEvent(const NEvent& event)
 							return isInside;
 
             const int newPos = _getPosFromMousePos( _d->cursorPos );
-            const int oldPos = _value;
+            const int oldPos = _d->value;
 
             if (!_draggedBySlider)
 						{
@@ -204,7 +206,7 @@ bool ScrollBar::onEvent(const NEvent& event)
 							_desiredPos = newPos;
 						}
 
-						if (_value != oldPos )
+            if (_d->value != oldPos )
 						{
 							_resolvePositionChanged();
 						}
@@ -238,22 +240,22 @@ void ScrollBar::afterPaint( unsigned int timeMs )
 	{
 		_d->lastTimeChange = timeMs;
 
-    const int oldPos = _value;
+    const int oldPos = _d->value;
 
-    if (_desiredPos >= _value + _largeStep)
+    if (_desiredPos >= _d->value + _largeStep)
     {
-      setValue(_value + _largeStep);
+      setValue(_d->value + _largeStep);
     }
-		else if (_desiredPos <= _value - _largeStep)
+    else if (_desiredPos <= _d->value - _largeStep)
     {
-      setValue(_value - _largeStep);
+      setValue(_d->value - _largeStep);
     }
-		else if (_desiredPos >= _value - _largeStep && _desiredPos <= _value + _largeStep)
+    else if (_desiredPos >= _d->value - _largeStep && _desiredPos <= _d->value + _largeStep)
     {
       setValue(_desiredPos);
     }
 
-    if (_value != oldPos )
+    if (_d->value != oldPos )
 		{
 			parent()->onEvent( NEvent::Gui( this, 0, guiScrollbarChanged ) );
 		}
@@ -367,7 +369,7 @@ int ScrollBar::_getPosFromMousePos(const Point& pos) const
 //! sets the position of the scrollbar
 void ScrollBar::setValue(int pos)
 {
-  _value = math::clamp( pos, _minValue, _maxVallue );
+  _d->value = math::clamp( pos, _minValue, _maxVallue );
 
   const Rect& borderMarginRect = Rect( 0, 0, 0, 0 );
   if( _horizontal )
@@ -377,7 +379,7 @@ void ScrollBar::setValue(int pos)
     borderMargin -= borderMarginRect.right();
 
     float f = ( width() + borderMargin - ( height()*2.0f + _drawLenght)) / getRange();
-    _sliderPos = (int)( ( ( _value - _minValue ) * f) + _drawLenght * 0.5f ) + borderMarginRect.left();
+    _sliderPos = (int)( ( ( _d->value - _minValue ) * f) + _drawLenght * 0.5f ) + borderMarginRect.left();
 	}
 	else
 	{
@@ -387,7 +389,7 @@ void ScrollBar::setValue(int pos)
     int sliderHeight = _d->slider.texture.height();
 
     float f = ( height() + borderMargin - _drawLenght - sliderHeight) / getRange();
-    _sliderPos = top + (int)( ( ( _value - _minValue ) * f) ) + borderMarginRect.top();
+    _sliderPos = top + (int)( ( ( _d->value - _minValue ) * f) ) + borderMarginRect.top();
 	}
 }
 
@@ -417,7 +419,7 @@ void ScrollBar::setMaxValue(int max)
   _d->button.up.setEnabled(enable);
   _d->button.down.setEnabled(enable);
 
-  setValue(_value);
+  setValue(_d->value);
 }
 
 //! gets the maximum value of the scrollbar.
@@ -433,12 +435,12 @@ void ScrollBar::setMinValue(int min)
   _d->button.up.setEnabled(enable);
   _d->button.down.setEnabled(enable);
 
-  setValue(_value);
+  setValue(_d->value);
 }
 
 
 //! gets the current position of the scrollbar
-int ScrollBar::value() const { return _value;}
+int ScrollBar::value() const { return _d->value;}
 
 PushButton* ScrollBar::_createButton( const Rect& rectangle,
                                       Alignment left, Alignment rigth, Alignment top, Alignment bottom, int type )

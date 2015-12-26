@@ -32,9 +32,11 @@ signals public:
 	Signal1<int> onPositionChanged;
 
 public:
-	Rect	sliderTextureRect;
-	Rect	backgroundRect;
-	Rect	filledAreaRect;
+  Rect sliderTextureRect;
+  Rect backgroundRect;
+  NColor  overrideBgColor;
+  int  value;
+  Rect filledAreaRect;
   bool needRecalculateParams;
   Point cursorPos;
   unsigned int lastTimeChange;
