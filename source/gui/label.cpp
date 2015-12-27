@@ -737,6 +737,11 @@ void Label::setFont( const Font& font )
   _d->needUpdatePicture = true;
 }
 
+void Label::setFont(FontType type, NColor color)
+{
+  Widget::setFont(type, color);
+}
+
 void Label::setAlpha(unsigned int value)
 {
   _d->opaque = value;

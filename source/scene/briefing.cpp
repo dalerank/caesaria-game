@@ -163,7 +163,7 @@ void Briefing::initialize()
     auto& missionTitle = mapback.add<gui::Label>( Rect( 200, 550, 200 + textYOffset, 600 ), missionTt );
     missionTitle.setFont( Font::create( FONT_5 ));
     _d->cityCaption = &mapback.add<gui::Label>( Rect( 200, 600, 200 + textYOffset, 630 ) );
-    _d->cityCaption->setFont( Font::create( FONT_2 ) );
+    _d->cityCaption->setFont( FONT_2 );
     _d->cityCaption->setText( _(briefingCaption) );
 
     _d->btnContinue = &mapback.add<gui::TexturedButton>( Point( 780, 560 ), Size( 27 ), -1, 179 );

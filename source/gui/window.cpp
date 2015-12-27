@@ -123,7 +123,7 @@ Window::Window( Widget* parent, const Rect& rectangle, const std::string& title,
 
   _init();
 
-    // this element is a tab group
+  // this element is a tab group
   setBackground( type );
   setTabgroup( true );
   setTabstop( true );
@@ -166,7 +166,9 @@ void Window::_init()
 
 	if( !_d->title )
 	{
-    _d->title = &add<Label>( Rect( 0, 0, width(), 20 ), text(), false );
+    _d->title = &add<Label>( Rect( 15, 15, width()-15, 15+20 ), text(), false );
+    _d->title->setTextAlignment( align::center, align::center );
+    _d->title->setFont( FONT_4 );
 		_d->title->setSubElement( true );
 	}
 

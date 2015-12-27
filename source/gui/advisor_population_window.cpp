@@ -321,7 +321,7 @@ void Population::Impl::updateStates()
 CityChartLegend::CityChartLegend(Widget *parent, const Rect &rectangle, bool horizontal, int stepCount)
   : Label( parent, rectangle )
 {
-  setFont( Font::create( FONT_1 ) );
+  setFont( FONT_1 );
   _stepCount = stepCount;
   _horizontal = horizontal;
 }

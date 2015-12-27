@@ -106,7 +106,7 @@ public:
 
     setIcon( gui::rc.panel, gui::id.chiefIcon );
     setIconOffset( { 5, 5 } );
-    setFont( Font::create( FONT_2 ) );
+    setFont( FONT_2 );
 
     setTextOffset( Point( 255, 0) );
   }

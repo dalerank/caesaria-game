@@ -28,6 +28,8 @@
 #include "objects/education.hpp"
 #include "objects/house.hpp"
 #include "dictionary.hpp"
+#include "events/showadvisorwindow.hpp"
+#include "events/movecamera.hpp"
 #include "texturedbutton.hpp"
 #include "objects/house_spec.hpp"
 #include "objects/constants.hpp"
@@ -162,18 +164,16 @@ void Education::Impl::initUI( Education* parent, PlayerCityPtr city )
   Point offset( 0, 20 );
   Size labelSize( 550, 20 );
   Rect rect( startPoint, labelSize );
-  EducationInfo info;
-  info = getInfo( city, object::school );
-  auto& btnSchools = lbBlackframe->add<EducationCityInfo>( rect, object::school, info );
-  CONNECT( &btnSchools, onClickedEx(), parent, Education::showDetails )
 
-  info = getInfo( city, object::academy );
-  auto& btnAcademy = lbBlackframe->add<EducationCityInfo>( rect + offset , object::academy, info );
-  CONNECT( &btnAcademy, onClickedEx(), parent, Education::showDetails )
+  object::Types types{ object::school, object::academy, object::library };
 
-  info = getInfo( city, object::library );
-  auto& btnLibrary = lbBlackframe->add<EducationCityInfo>( rect + offset * 2, object::library, info );
-  CONNECT( &btnLibrary, onClickedEx(), parent, Education::showDetails )
+  for( auto type : types )
+  {
+    EducationInfo info = getInfo( city, type );
+    auto& btn = lbBlackframe->add<EducationCityInfo>( rect, type, info );
+    rect += offset;
+    CONNECT( &btn, onClickedEx(), parent, Education::showDetails )
+  }
 
   parent->add<HelpButton>( Point( 12, parent->height() - 39 ), "education_advisor" );
 }
@@ -229,7 +229,7 @@ public:
   EducationBuildingDetail( Widget* parent, const Rect& rectangle, EducationBuildingPtr ptr )
     : PushButton( parent, rectangle, "", -1, false, PushButton::whiteBorderUp )
   {
-    building = ptr;
+    _building = ptr;
   }
 
   virtual void _updateTexture()
@@ -237,53 +237,66 @@ public:
     PushButton::_updateTexture();
 
     Font f = font( _state() );
-    std::string text = building->name();
+    std::string text = _building->name();
     if( text.empty() )
     {
-      TilePos pos = building->pos();
-      text = fmt::format( "{} [{},{}]]", building->info().prettyName(), pos.i(), pos.j() );
+      TilePos pos = _building->pos();
+      text = fmt::format( "{} [{},{}]]", _building->info().prettyName(), pos.i(), pos.j() );
     }
 
     Rect textRect = f.getTextRect( _(text), Rect( 0, 0, width() / 2, height() ), horizontalTextAlign(), verticalTextAlign() );
     f.draw( _textPicture(), _(text), textRect.lefttop(), true );
 
-    text = fmt::format( "served {} of {}", building->currentVisitors(), building->maxVisitors() );
+    text = fmt::format( "workers {}/{}, served {}", _building->numberWorkers(), _building->maximumWorkers(), _building->currentVisitors() );
     textRect = f.getTextRect( text, Rect( width() / 2 + 24 * 2, 0, width(), height() ), horizontalTextAlign(), verticalTextAlign() );
     f.draw( _textPicture(), text, textRect.lefttop(), true );
 
     _textPicture().update();
   }
 
-  EducationBuildingPtr building;
+
+  Signal1<TilePos> onClickedA;
+
+private:
+  EducationBuildingPtr _building;
+  virtual void _btnClicked()
+  {
+    PushButton::_btnClicked();
+    emit onClickedA( _building->pos() );
+  }
 };
 
 class EducationDetailsWindow : public Window
 {
 public:
-  EducationDetailsWindow( Widget* parent, PlayerCityPtr city, int service )
+  EducationDetailsWindow( Widget* parent, PlayerCityPtr city, int objType )
     : Window( parent, Rect( 0, 0, 480, 480 ), "" )
   {
     Widget::setupUI( ":/gui/advsalaries.gui" );
-    _city = city;
 
     INIT_WIDGET_FROM_UI( Label*, grayArea )
-    Point offset( 0, 35 );
-    Rect rect( 6, 6, grayArea->width() - 6, 6+30 );
+    Point offset( 0, 26 );
+    Rect rect( 3, 3, grayArea->width() - 4, 3+24 );
 
-    auto buildings = city->statistic().education.find( (Service::Type)service );
-    int index=0;
+    auto buildings = city->statistic().objects.find<EducationBuilding>( (object::Type)objType );
     for( auto bld : buildings )
     {
-      grayArea->add<EducationBuildingDetail>( rect + offset * index, bld );
-      index++;
+      auto& btn = grayArea->add<EducationBuildingDetail>( rect, bld );
+      rect += offset;
+      CONNECT_LOCAL( &btn, onClickedA, EducationDetailsWindow::moveCamera )
     }
 
     moveTo( Widget::parentCenter );
-    WidgetClose::insertTo( this );
-    setModal();
+    WidgetClose::insertTo( this, KEY_RBUTTON );
+    setFont( Font::create( FONT_1 ) );
+    setModal();    
   }
 
-  PlayerCityPtr _city;
+  void moveCamera(TilePos pos)
+  {
+    events::dispatch<events::ShowAdvisorWindow>( false, advisor::none );
+    events::dispatch<events::MoveCamera>( pos );
+  }
 };
 
 void Education::showDetails(Widget* widget)

@@ -658,7 +658,7 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
       Window& window = game->gui()->add<Window>( Rect( 0, 0, 400, 220 ), "" );
       Label& text = window.add<Label>( Rect( 10, 10, 390, 110 ), _("##mission_failed##") );
       text.setTextAlignment( align::center, align::center );
-      text.setFont( Font::create( FONT_6 ) );
+      text.setFont( FONT_6 );
 
       auto& btnRestart = window.add<PushButton>( Rect( 20, 120, 380, 144), _("##restart_mission##") );
       btnRestart.setTooltipText( _("##restart_mission_tip##") );
@@ -718,7 +718,7 @@ void Level::Impl::resolveRemoveTool() { renderer.setMode( DestroyMode::create() 
 void Level::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerMode::create( type ) );}
 void Level::Impl::showAdvisorsWindow(){  showAdvisorsWindow( advisor::employers ); }
 void Level::Impl::showTradeAdvisorWindow(){  showAdvisorsWindow( advisor::trading ); }
-void Level::setCameraPos(TilePos pos) {  _d->renderer.camera()->setCenter( pos ); }
+void Level::setCameraPos(TilePos pos, bool force) {  _d->renderer.camera()->setCenter( pos, force ); }
 void Level::switch2layer(int layer) { _d->renderer.setLayer( layer ); }
 Camera* Level::camera() const { return _d->renderer.camera(); }
 undo::UStack&Level::undoStack() { return _d->undoStack; }

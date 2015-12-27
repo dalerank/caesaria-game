@@ -363,7 +363,7 @@ void StartMenu::Impl::showCredits()
   {
     Label& lb = frame.add<Label>( Rect( 0, h + i * 20, size.width(), h + (i + 1) * 20), strs[i] );
     lb.setTextAlignment( align::center, align::center );
-    lb.setFont( Font::create( FONT_2_WHITE ) );
+    lb.setFont( FONT_2_WHITE );
     lb.setSubElement( true );
     auto& animator = lb.add<PositionAnimator>( WidgetAnimator::removeSelf | WidgetAnimator::removeParent, Point( 0, -20), 10000 );
     animator.setSpeed( PointF( 0, -0.5 ) );
@@ -642,7 +642,7 @@ void StartMenu::initialize()
     _d->lbSteamName = &_d->ui().add<Label>( Rect( 100, 10, 400, 80 ), text );
     _d->lbSteamName->setTextAlignment( align::upperLeft, align::center );
     _d->lbSteamName->setWordwrap( true );
-    _d->lbSteamName->setFont( Font::create( FONT_3, ColorList::white ) );
+    _d->lbSteamName->setFont( FONT_3, ColorList::white );
   }
 }
 

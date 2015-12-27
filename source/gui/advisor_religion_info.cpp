@@ -73,7 +73,7 @@ ReligionDetails::ReligionDetails(Widget* parent, const Rect& rect, DivinityPtr d
   d.wrath.image = Picture( gui::rc.panel, gui::id.wrathIcon );
   Decorator::draw( d.border, Rect( 0, 0, width(), height() ), Decorator::brownBorder );
 
-  setFont( Font::create( FONT_1_WHITE ) );
+  setFont( FONT_1_WHITE );
 }
 
 void ReligionDetails::_updateTexture()

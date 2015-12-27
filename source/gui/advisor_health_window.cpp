@@ -122,7 +122,7 @@ public:
     _service = service;
     _info = info;
 
-    setFont( Font::create( FONT_1_WHITE ) );
+    setFont( FONT_1_WHITE );
     Decorator::draw( border, Rect( 0, 0, width(), height() ), Decorator::brownBorder );
   }
 
@@ -298,9 +298,9 @@ void Health::_showDetailInfo(Widget* widget)
     object::Type type = detail->service();
     const object::Info& info = object::Info::find( type );
 
-    auto& window = parent()->add<Window>( Rect( 0, 0, 640, 480 ), info.prettyName() );
+    auto& window = parent()->add<Window>( Rect( 0, 0, 480, 480 ), _(info.prettyName()) );
     window.moveTo( Widget::parentCenter );
-    WidgetClose::insertTo( &window );
+    WidgetClose::insertTo( &window, KEY_RBUTTON );
 
     auto& frame = window.add<Label>( Rect( 20, 40, window.width() - 20, window.height() - 20 ), "",
                                      false, Label::bgBlackFrame );
@@ -312,11 +312,12 @@ void Health::_showDetailInfo(Widget* widget)
     for( auto b : buildings )
     {
       std::string text = fmt::format( "{} {} at [{},{}] {} workers, {} served",
-                                      _(b->info().prettyName()), index+1,
+                                      (b->info().prettyName()), index+1,
                                       b->pos().i(), b->pos().j(),
                                       b->numberWorkers(), b->patientsCurrent() );
-      auto& btn = frame.add<PushButton>( Rect( offset, size ), text );
+      auto& btn = frame.add<PushButton>( Rect( offset, size ), text, -1, false, PushButton::whiteBorderUp );
       btn.addProperty( "pos", b->pos().hash() );
+      btn.setFont( Font::create( FONT_1 ) ) ;
       offset = btn.leftbottom() + Point( 0, 2 );
       index++;
       CONNECT_LOCAL( &btn, onClickedEx(), Health::_moveCamera )
