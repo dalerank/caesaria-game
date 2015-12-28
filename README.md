@@ -15,7 +15,7 @@ See more info at the ours [website](https://bitbucket.org/dalerank/caesaria/wiki
 
 ## Installation
 
-CaesarIA requires a some items from copy of the original game resources.
+CaesarIA requires some resources from a copy of the original game.
 When installing manually, copy the Caesar III .sg2 and .555 files to 
 CaesarIA's gfx folder: <game directory>\resources\gfx, 
 videos to <game directory>\resources\smk and sound to <game directory>\resources\audio
@@ -38,12 +38,12 @@ On Linux
 ### Resources
 
 1. It's recommended you copy the resources to the "gfx" folder.
-The installer not automatically detect a Caesar III installation.
+The installer does not automatically detect a Caesar III installation.
 
-2. You may to run updater.[exe/linux/macos], which will download
-all assets neccessary for play game: configs, textures, sounds etc.
+2. You may need to run the updater.[exe/linux/macos], which will download
+all assets necessary for playing the game: configs, textures, sounds etc.
 
-3. You may download new graphic's set, which we use in steam version
+3. You may download the new set of graphics, which we use in steam version
 
 ## Configuration
 
@@ -55,10 +55,8 @@ For more details please check the [wiki](https://bitbucket.org/dalerank/caesaria
 
 ## Development
 
-CaesarIA no requires any specific frameworks and all frameworks we need 
-placed in game repository. Game engine used patched SDL2, whic now it is
-part of game. May be you need to install gcc or any compiler for build game.
-We use "cmake" for create configs and build game.
+CaesarIA does not require any specific frameworks - all the frameworks we need are placed in the game repository. The game engine used is a patched version of SDL2, which is also packaged as part of game. You may need to install gcc or any compiler to be able to build game.
+We use "cmake" for creating configs and building the game.
 
 It's also been tested on a variety of other tools on
 Windows/Mac/Linux. More detailed compiling instructions
