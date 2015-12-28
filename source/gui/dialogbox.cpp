@@ -198,6 +198,16 @@ Dialog* Confirmation(Ui* ui, const std::string &title, const std::string &text, 
   return dialog;
 }
 
+Dialog* Confirmation(Ui* ui, const std::string &title, const std::string &text,
+                     Callback callbackOk, Callback callbackCancel, bool pauseGame)
+{
+  auto* dialog = Confirmation( ui, title, text, pauseGame );
+  dialog->onOk().connect( callbackOk );
+  dialog->onCancel().connect( callbackCancel );
+
+  return dialog;
+}
+
 Dialog* Confirmation(Ui* ui, const std::string &title, const std::string &text, bool pauseGame)
 {
   Dialog* ret = &ui->add<Dialog>( Rect(), title, text, Dialog::btnOkCancel, pauseGame );

@@ -110,13 +110,10 @@ bool WorkersHire::Impl::haveRecruter( WorkingBuildingPtr building )
 
 void WorkersHire::Impl::hireWorkers(PlayerCityPtr city, WorkingBuildingPtr bld)
 {
-  if( excludeTypes.count( bld->type() ) > 0 )
-    return;
-
-  if( bld->numberWorkers() == bld->maximumWorkers() )
-    return;
-
-  if( haveRecruter( bld ) )
+  if( excludeTypes.count( bld->type() ) > 0
+      || !bld->isActive()
+      || bld->numberWorkers() == bld->maximumWorkers()
+      || haveRecruter( bld ) )
     return;
 
   if( bld->roadside().size() > 0 )
