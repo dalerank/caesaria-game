@@ -183,6 +183,8 @@ struct _Button {
   INT_ALIAS(waymark, 216)
   INT_ALIAS(commerce, 155)
   INT_ALIAS(attacks, 225)
+  INT_ALIAS(messages,115)
+  INT_ALIAS(disaster,119)
   INT_ALIAS(undo, 171)
 };
 

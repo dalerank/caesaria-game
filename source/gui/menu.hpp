@@ -52,6 +52,9 @@ signals public:
   Signal1<int>& onCreateConstruction();
   Signal1<int>& onCreateObject();
   Signal0<>& onRemoveTool();
+  Signal0<>& onUndo();
+  Signal0<>& onSwitchAlarm();
+  Signal0<>& onMessagesShow();
   Signal0<>& onHide();
 
 protected:
@@ -96,11 +99,8 @@ signals public:
   Signal1<int>& onSelectOverlayType();
   Signal0<>& onEmpireMapShow();
   Signal0<>& onAdvisorsWindowShow();
-  Signal0<>& onSwitchAlarm();
-  Signal0<>& onMessagesShow();
   Signal0<>& onRotateRight();
   Signal0<>& onRotateLeft();
-  Signal0<>& onUndo();
   Signal0<>& onMissionTargetsWindowShow();
 
 protected:
