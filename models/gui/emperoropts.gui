@@ -17,6 +17,12 @@
   bgRequests#Label : {
     geometry : [ 32, 91, 602, 310 ]
     bgtype : "blackFrame"
+
+    btnRqHistory#PushButton : {
+      geometry : [ "pw-84", "ph-28", "pw-4", "ph-4" ]
+      text : "##rqs_history##"
+      bgtype : "blackBorderUp"
+    }
   }
 
   bgActions#Label : {

@@ -195,6 +195,46 @@ void Emperor::_updateRequests()
   _d.isRequestsUpdated = false;
 }
 
+class RqHistoryDetails : public Window
+{
+public:
+  RqHistoryDetails( Widget* parent, const Size& size,
+                    const std::string& title, const world::RelationAbilities& history )
+   : Window( parent, Rect( Point(), size), title )
+  {
+    add<ExitButton>( Point( width() - 37, 12 ) );
+
+    ListBox& listbox = add<ListBox>( Rect( 15, 45, width()-15, height() - 15 ), -1, true, true );
+    listbox.setItemFont( Font::create( FONT_1 ) );
+    listbox.setItemHeight( 16 );
+
+    for( auto it=history.rbegin(); it != history.rend(); ++it )
+    {
+       const world::RelationAbility& ability = *it;
+       if( ability.type == world::RelationAbility::request )
+       {
+         std::string text = fmt::format( "{} {} {}", utils::date2str( ability.finished, true ),
+                                                     ability.successed ? "comply" : "failed",
+                                                     ability.message );
+         auto& item = listbox.addItem( text );
+         item.setTooltip( ability.message );
+       }
+     }
+
+    moveTo( Widget::parentCenter );
+    setModal();
+  }
+};
+
+void Emperor::_showRequestsHistory()
+{
+  world::Emperor& emp = _city->empire()->emperor();
+  const auto& relation = emp.relation( _city->name() );
+  world::RelationAbilities rqhistory = relation.abilities();
+
+  ui()->add<RqHistoryDetails>( Size( 480, 480 ), "Request's history", rqhistory );
+}
+
 PlayerPtr Emperor::_mayor() {  return _city->mayor(); }
 world::Emperor& Emperor::_emperor() { return _city->empire()->emperor(); }
 
@@ -209,7 +249,7 @@ Emperor::Emperor( PlayerCityPtr city, Widget* parent, int id )
 
   INIT_WIDGET_FROM_UI( Label*, lbTitle )
   INIT_WIDGET_FROM_UI( Label*, lbEmperorFavour )
-  INIT_WIDGET_FROM_UI( Label*, lbEmperorFavourDesc  )
+  INIT_WIDGET_FROM_UI( Label*, lbEmperorFavourDesc )
 
   if( lbEmperorFavour )
     lbEmperorFavour->setText( fmt::format( "{} {}", _("##advemp_emperor_favour##"), _city->favour() ) );
@@ -230,6 +270,7 @@ Emperor::Emperor( PlayerCityPtr city, Widget* parent, int id )
   LINK_WIDGET_LOCAL_ACTION( PushButton*, btnSend2City,    onClicked(), Emperor::_showSend2CityWindow )
   LINK_WIDGET_LOCAL_ACTION( PushButton*, btnSendGift,     onClicked(), Emperor::_showGiftWindow )
   LINK_WIDGET_LOCAL_ACTION( PushButton*, btnGiftHistory,  onClicked(), Emperor::_showGiftHistory )
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnRqHistory,    onClicked(), Emperor::_showRequestsHistory )
 }
 
 void Emperor::draw(gfx::Engine& painter )

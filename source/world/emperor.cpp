@@ -76,6 +76,12 @@ void Emperor::updateRelation(const std::string& cityname, int value)
   relation.change( value );
 }
 
+void Emperor::updateRelation(const std::string& cityname, const RelationAbility& ability)
+{
+  Relation& relation = _dfunc()->relations[ cityname ];
+  relation.update( ability );
+}
+
 void Emperor::sendGift(const Gift& gift)
 {
   Relation& relation = _dfunc()->relations[ gift.sender() ];
@@ -105,7 +111,7 @@ void Emperor::Impl::updateRelation( CityPtr cityp )
 
   Relation& relation = relations[ cityp->name() ];
 
-  relation.soldiersSent = 0;     //clear chasteners count
+  relation.soldiers.sent = 0;     //clear chasteners count
   relation.change( -config::emperor::yearlyFavorDecrease );
 
   int monthWithoutTax = relation.lastTaxDate.monthsTo( game::Date::current() );
@@ -151,7 +157,7 @@ CityList Emperor::Impl::findTroubleCities()
     if( emperorAngry  )
     {
       relation.wrathPoint += math::clamp( maxWrathPointValue - relation.value(), 0, maxWrathPointValue );
-      if( relation.soldiersSent == 0 )
+      if( relation.soldiers.sent == 0 )
         ret.push_back( city );
     }
     else
@@ -196,9 +202,9 @@ void Emperor::Impl::resolveTroubleCities( const CityList& cities )
 
     relation.wrathPoint = 0;
     relation.tryCount = 0;
-    relation.soldiersSent = relation.lastSoldiersSent * 2;
+    relation.soldiers.sent = relation.soldiers.last * 2;
 
-    unsigned int sldrNumber = std::max( legionSoldiersCount, relation.soldiersSent );
+    unsigned int sldrNumber = std::max( legionSoldiersCount, relation.soldiers.sent );
 
     auto army = RomeChastenerArmy::create( empire );
     army->setCheckFavor( true );
@@ -208,7 +214,7 @@ void Emperor::Impl::resolveTroubleCities( const CityList& cities )
 
     if( !army->isDeleted() )
     {
-      relation.lastSoldiersSent = sldrNumber;
+      relation.soldiers.last = sldrNumber;
     }
     else
     {
@@ -230,7 +236,7 @@ void Emperor::addSoldiers(const std::string& name, int value)
 {
   __D_REF(d,Emperor)
   Relation& relation = d.relations[ name ];
-  relation.soldiersSent += value;
+  relation.soldiers.sent += value;
 }
 
 std::string Emperor::name() const { return _dfunc()->name; }

@@ -160,9 +160,9 @@ void Window::_createSystemButton( ButtonName btnName, const std::string& tooltip
 
 void Window::_init()
 {
-  _createSystemButton( buttonClose, "Close", true );
-  _createSystemButton( buttonMin,"Min", false );
-  _createSystemButton( buttonMax, "Restore", false );
+  _createSystemButton( buttonClose, "Close",   false );
+  _createSystemButton( buttonMin,   "Min",     false );
+  _createSystemButton( buttonMax,   "Restore", false );
 
 	if( !_d->title )
 	{
