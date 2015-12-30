@@ -63,6 +63,8 @@ public:
   struct {
     bool buildings = true;
     bool trees = true;
+    bool rocks = true;
+    bool hideAny = false;
   } draw;
 
   struct {
@@ -413,22 +415,34 @@ void Layer::drawProminentTile( const RenderInfo& rinfo, Tile& tile, const int de
 
 void Layer::drawTile(const RenderInfo& rinfo, Tile& tile)
 {
-  __D_IMPL(_d,Layer)
+  __D_REF(_d,Layer)
   if( !tile.rendered() )
   {
     if( tile.rov().isValid() )
     {
       registerTileForRendering( tile );
 
-      bool breakBuilding = is_kind_of<Building>( tile.rov() ) && !_d->draw.buildings;
-      bool breakTree = is_kind_of<Tree>( tile.rov() ) && !_d->draw.trees;
+      if( _d.draw.hideAny )
+      {
+        bool breakBuilding = is_kind_of<Building>( tile.rov() ) && !_d.draw.buildings; ;
+        bool breakTree = is_kind_of<Tree>( tile.rov() ) && !_d.draw.trees;
 
-      if( !(breakBuilding || breakTree) )
+        if( !(breakBuilding || breakTree) )
+          drawOverlayedTile( rinfo, tile );
+      }
+      else
         drawOverlayedTile( rinfo, tile );
     }
     else
     {
-      drawLandTile( rinfo, tile );
+      if( _d.draw.hideAny )
+      {
+        bool breakRocks = tile.terrain().rock && !_d.draw.rocks;
+        if( !breakRocks )
+          drawLandTile( rinfo, tile );
+      }
+      else
+        drawLandTile( rinfo, tile );
     }
 
     tile.setRendered();
@@ -508,6 +522,8 @@ void Layer::beforeRender(Engine&)
   __D_REF(d,Layer)
   d.draw.buildings = DrawOptions::instance().isFlag( DrawOptions::showBuildings );
   d.draw.trees = DrawOptions::instance().isFlag( DrawOptions::showTrees );
+  d.draw.rocks = DrawOptions::instance().isFlag( DrawOptions::showRocks );
+  d.draw.hideAny = !(d.draw.buildings && d.draw.rocks && d.draw.trees);
   d.pictures.clear();
 }
 
@@ -801,6 +817,7 @@ DrawOptions::DrawOptions() : _helper(0)
   _O(showTrees)
   _O(overdrawOnBuild)
   _O(rotateEnabled)
+  _O(showRocks)
 #undef _O
 }
 

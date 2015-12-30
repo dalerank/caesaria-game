@@ -174,6 +174,7 @@ enum {
   reload_buildings_config,
   toggle_show_buildings,
   toggle_show_trees,
+  toggle_show_rocks,
   forest_fire,
   forest_grow,
   increase_max_level,
@@ -333,6 +334,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( draw, toggle_show_walkable_tiles )
   ADD_DEBUG_EVENT( draw, toggle_show_locked_tiles )
   ADD_DEBUG_EVENT( draw, toggle_show_flat_tiles )
+  ADD_DEBUG_EVENT( draw, toggle_show_rocks )
 #undef ADD_DEBUG_EVENT
 
 #ifdef DEBUG
@@ -776,6 +778,7 @@ void DebugHandler::Impl::handleEvent(int event)
   case toggle_show_flat_tiles: DrawOptions::instance().toggle( DrawOptions::showFlatTiles );  break;
   case toggle_show_buildings : DrawOptions::instance().toggle( DrawOptions::showBuildings ); break;
   case toggle_show_trees : DrawOptions::instance().toggle( DrawOptions::showTrees ); break;
+  case toggle_show_rocks : DrawOptions::instance().toggle( DrawOptions::showRocks ); break;
 
   case add_soldiers_in_fort:
   {
