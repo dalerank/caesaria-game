@@ -105,7 +105,7 @@ void WindowMessageStack::beforeDraw(gfx::Engine& painter)
     {
       Point center = widget->center();
       widget->setWidth( math::clamp<unsigned int>( wd+speed, 0, myWidth ) );
-      widget->setCenter( center );
+      widget->move( center );
     }
   }
 

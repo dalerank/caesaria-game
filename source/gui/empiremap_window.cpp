@@ -56,6 +56,7 @@
 #include "core/metric.hpp"
 #include "game/resourcegroup.hpp"
 #include "city/states.hpp"
+#include "gfx/maskstate.hpp"
 
 using namespace gfx;
 using namespace metric;
@@ -179,20 +180,16 @@ void EmpireMapWindow::Impl::drawCities(Engine& painter)
 
   for( auto pcity : cities )
   {
-    if( pcity == city.current )
-    {
-      int value = highlight.value();
-      painter.setColorMask( value << 16, value << 8, value, 0xff000000 );
-    }
-
+    MaskState mask( painter, pcity == city.current
+                                ? highlight.value()
+                                : ColorList::clear );
     location = pcity->location();
     pic = pcity->picture();
     painter.draw( pcity->pictures(), offset + location - Point( pic.width() / 2, pic.height() / 2 ) );
+
 #ifdef DEBUG
     drawCell( painter, offset + location - Point( 10, 10 ), 20, ColorList::red );
 #endif
-
-    painter.resetColorMask();
   }
 }
 
@@ -225,12 +222,10 @@ void EmpireMapWindow::Impl::drawTradeRoutes(Engine& painter)
     }
 #endif
 
-    if( route->endCity() == city.current ||
-        route->beginCity() == city.current )
-    {
-      int value = highlight.value();
-      painter.setColorMask( value << 16, value << 8, value, 0xff000000 );
-    }
+    bool needMasking = route->endCity() == city.current ||
+                       route->beginCity() == city.current;
+
+    MaskState mask( painter, highlight.value() );
 
     for( unsigned int index=0; index < pictures.size(); index++ )
     {
@@ -243,8 +238,6 @@ void EmpireMapWindow::Impl::drawTradeRoutes(Engine& painter)
     {
       painter.draw( merchant->picture(), offset + merchant->location() );
     }
-
-    painter.resetColorMask();
   }
 }
 

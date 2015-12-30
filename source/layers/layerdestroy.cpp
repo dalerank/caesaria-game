@@ -38,6 +38,7 @@
 #include "objects/tree.hpp"
 #include "game/settings.hpp"
 #include "core/format.hpp"
+#include "gfx/maskstate.hpp"
 #include "gfx/tile_config.hpp"
 
 using namespace gfx;
@@ -160,11 +161,11 @@ void Destroy::render( Engine& engine )
 
   for( auto tile : groundTiles )
   {
-    if( hashDestroyArea.inArea( tile ) )
-      engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
+    MaskState mask( engine, hashDestroyArea.inArea( tile )
+                              ? ColorList::red
+                              : ColorList::clear );
 
     drawLandTile( renderInfo, *tile );
-    engine.resetColorMask();
   }
 
   // FIRST PART: draw all flat land (walkable/boatable)  
@@ -174,11 +175,11 @@ void Destroy::render( Engine& engine )
 
     if( !ftile->rendered() )
     {
-      if( hashDestroyArea.inArea( ftile ) )
-        engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
+      MaskState mask( engine, hashDestroyArea.inArea( ftile )
+                              ? ColorList::red
+                              : ColorList::clear );
 
       drawTile( renderInfo, *ftile );
-      engine.resetColorMask();
     }
   }
 
@@ -187,12 +188,12 @@ void Destroy::render( Engine& engine )
   {
     int z = vtile->epos().z();
 
-    if( hashDestroyArea.inArea( vtile ) )
-      engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
+    MaskState mask( engine, hashDestroyArea.inArea( vtile )
+                              ? ColorList::red
+                              : ColorList::clear );
 
     drawProminentTile( renderInfo, *vtile, z, false );
     drawWalkers( renderInfo, *vtile );
-    engine.resetColorMask();
   }
 }
 
