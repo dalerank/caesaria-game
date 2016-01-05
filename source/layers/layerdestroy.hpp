@@ -38,13 +38,12 @@ public:
   virtual void afterRender(gfx::Engine &engine);
   LayerPtr drawLayer() const;
 
-  static LayerPtr create( gfx::Renderer& renderer, PlayerCityPtr city );
+  Destroy( gfx::Camera& camera, PlayerCityPtr city, gfx::Renderer* renderer );
 
 public signals:
   Signal3<object::Type,TilePos,int>& onDestroy();
 
 private:
-  Destroy(gfx::Renderer &renderer, PlayerCityPtr city );
 
   void _clearAll();
   void _executeClear();
