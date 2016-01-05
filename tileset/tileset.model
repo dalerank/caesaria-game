@@ -418,6 +418,13 @@
           files : [ "commerce_*" ]
         }
 
+        ground :
+        {
+          type : "atlas"
+          folder : "/resources/ground"
+          files : [ "*" ]
+        }
+
         engineering :
         {
           type : "atlas"
