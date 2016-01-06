@@ -92,6 +92,7 @@ public:
 
   virtual void drawLands(const gfx::RenderInfo& rinfo, gfx::Camera* camera );
   virtual void drawLandTile( const gfx::RenderInfo& rinfo, gfx::Tile &tile );
+  virtual void drawSubtrateTile( const gfx::RenderInfo& rinfo, gfx::Tile &tile );
   virtual void drawFlatTile( const gfx::RenderInfo& rinfo, gfx::Tile& tile );
   virtual void drawWalkers( const gfx::RenderInfo& rinfo, const gfx::Tile& tile);
   virtual void init( Point cursor );

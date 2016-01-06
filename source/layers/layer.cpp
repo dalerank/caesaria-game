@@ -488,10 +488,14 @@ void Layer::drawLands( const RenderInfo& rinfo, Camera* camera )
 {
   const TilesArray& flatTiles = camera->flatTiles();
   const TilesArray& groundTiles = camera->groundTiles();
+  const TilesArray& subtrateTiles = camera->subtrateTiles();
 
   // FIRST PART: draw all flat land (walkable/boatable)
   for( auto tile : groundTiles )
     drawLandTile( rinfo, *tile );
+
+  for( auto tile : subtrateTiles )
+    drawSubtrateTile( rinfo, *tile );
 
   for( auto tile : flatTiles )
     drawFlatTile( rinfo, *tile );
@@ -501,6 +505,11 @@ void Layer::drawLandTile(const RenderInfo& rinfo, Tile &tile)
 {
   drawPass( rinfo, tile, Renderer::ground );
   drawPass( rinfo, tile, Renderer::groundAnimation );
+}
+
+void Layer::drawSubtrateTile(const RenderInfo& rinfo, Tile& tile)
+{
+  rinfo.engine.draw( _dfunc()->terraintPic, tile.mappos() + rinfo.offset );
 }
 
 void Layer::drawFlatTile(const RenderInfo& rinfo, Tile& tile)

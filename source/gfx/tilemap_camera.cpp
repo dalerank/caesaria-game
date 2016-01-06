@@ -71,6 +71,7 @@ public:
     TilesArray visible;   // cached list of visible tiles
     TilesArray flat;
     TilesArray ground;
+    TilesArray substrate;
   } tiles;
 
   MovableOrders mayMove( PointF point );
@@ -331,6 +332,7 @@ const TilesArray& TilemapCamera::tiles() const
 
 const TilesArray& TilemapCamera::flatTiles() const { return _d->tiles.flat; }
 const TilesArray& TilemapCamera::groundTiles() const { return _d->tiles.ground; }
+const TilesArray& TilemapCamera::subtrateTiles() const{ return _d->tiles.substrate; }
 
 MovableOrders TilemapCamera::Impl::mayMove(PointF )
 {
@@ -364,6 +366,7 @@ void TilemapCamera::Impl::updateFlatTiles()
   unsigned int reserve = tiles.flat.size();
   tiles.flat.clear();
   tiles.ground.clear();
+  tiles.substrate.clear();
   tiles.flat.reserve( reserve );
 
   resetDrawn();
@@ -372,7 +375,10 @@ void TilemapCamera::Impl::updateFlatTiles()
     if( tile->getFlag( Tile::tlElevation ) )
       continue;
 
-    tiles.ground.push_back( tile );
+    if( tile->terrain().rock )
+      tiles.substrate.push_back( tile );
+    else
+      tiles.ground.push_back( tile );
   }
 
   for( auto t : tiles.visible )

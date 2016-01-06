@@ -66,6 +66,7 @@
 #include "objects/factory.hpp"
 #include "events/warningmessage.hpp"
 #include "sound/themeplayer.hpp"
+#include "city/build_options.hpp"
 #include "objects/house_spec.hpp"
 
 using namespace gfx;
@@ -81,6 +82,7 @@ enum {
   goods,
   factories,
   other,
+  buildings,
   disaster,
   level,
   in_city,
@@ -187,6 +189,7 @@ enum {
   show_attacks,
   reset_fire_risk,
   reset_collapse_risk,
+  toggle_shipyard_enable,
   next_theme
 };
 
@@ -202,6 +205,7 @@ public:
   void addGoods2Wh( good::Product type );
   void reloadConfigs();
   void runScript(std::string filename);
+  void toggleBuildOptions(object::Type type);
   gui::ContextMenu* debugMenu;
 
 #ifdef DEBUG
@@ -282,6 +286,8 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( other, enable_constructor_mode )
   ADD_DEBUG_EVENT( other, next_theme )
 
+  ADD_DEBUG_EVENT( buildings, toggle_shipyard_enable )
+
   ADD_DEBUG_EVENT( disaster, random_fire )
   ADD_DEBUG_EVENT( disaster, random_collapse )
   ADD_DEBUG_EVENT( disaster, random_plague )
@@ -347,6 +353,14 @@ void DebugHandler::setVisible(bool visible)
 {
   if( _d->debugMenu != 0)
     _d->debugMenu->setVisible( visible );
+}
+
+void DebugHandler::Impl::toggleBuildOptions( object::Type type )
+{
+  city::development::Options options;
+  options = game->city()->buildOptions();
+  options.setBuildingAvailable( type, !options.isBuildingAvailable( type ) );
+  game->city()->setBuildOptions( options );
 }
 
 DebugHandler::~DebugHandler() {}
@@ -446,6 +460,8 @@ void DebugHandler::Impl::handleEvent(int event)
     caravan->sendTo( game->empire()->capital() );
   }
   break;
+
+  case toggle_shipyard_enable:   break;
 
   case next_theme:
   {
