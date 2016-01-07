@@ -638,7 +638,7 @@ void PushButton::setFont( const Font& font )
 
 void PushButton::setFont(FontType type, NColor color) { Widget::setFont(type,color); }
 Picture& PushButton::_textPicture() { return _dfunc()->text.picture; }
-Font PushButton::font( ElementState state ) {  return _dfunc()->buttonStates[ state ].font;}
+Font PushButton::font( ElementState state ) {  return _dfunc()->buttonStates[ state ].font; }
 
 void PushButton::_finalizeResize()
 {
