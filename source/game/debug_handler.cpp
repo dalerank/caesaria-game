@@ -190,6 +190,7 @@ enum {
   reset_fire_risk,
   reset_collapse_risk,
   toggle_shipyard_enable,
+  toggle_reservoir_enable,
   next_theme
 };
 
@@ -287,6 +288,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( other, next_theme )
 
   ADD_DEBUG_EVENT( buildings, toggle_shipyard_enable )
+  ADD_DEBUG_EVENT( buildings, toggle_reservoir_enable )
 
   ADD_DEBUG_EVENT( disaster, random_fire )
   ADD_DEBUG_EVENT( disaster, random_collapse )
@@ -462,6 +464,7 @@ void DebugHandler::Impl::handleEvent(int event)
   break;
 
   case toggle_shipyard_enable: toggleBuildOptions( object::shipyard );  break;
+  case toggle_reservoir_enable: toggleBuildOptions( object::reservoir );  break;
 
   case next_theme:
   {

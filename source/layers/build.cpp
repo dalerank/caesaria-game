@@ -52,7 +52,7 @@ using namespace events;
 
 namespace citylayer
 {
-static const int frameCountLimiter=25;
+static const int frameCountLimiter=12;
 
 class Build::Impl
 {
@@ -589,9 +589,8 @@ void Build::render( Engine& engine)
   if( ++d.frameCount >= frameCountLimiter)
   {
     _updatePreviewTiles( true );
+    d.frameCount -= frameCountLimiter;
   }
-
-  d.frameCount %= frameCountLimiter;
 
   RenderInfo rinfo = { engine, _camera()->offset() };
   if( d.overdrawBuilding || !d.mayBuildInCity)
@@ -617,6 +616,7 @@ void Build::init(Point cursor)
   _d.lastTilePos = TilePos::invalid();
   _d.startTilePos = TilePos::invalid();
   _d.readyForExit = false;
+  _d.frameCount = 0;
   _d.kbShift = false;
   _d.kbCtrl = false;
 
