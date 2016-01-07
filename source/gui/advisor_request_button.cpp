@@ -20,6 +20,7 @@
 #include "dialogbox.hpp"
 #include "good/helper.hpp"
 #include "gfx/engine.hpp"
+#include "city/city.hpp"
 #include "core/utils.hpp"
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
@@ -89,8 +90,8 @@ void RequestButton::_acceptRequest()  { emit _dfunc()->onExecRequestSignal( _dfu
 
 void RequestButton::_executeRequest()
 {
-  dialog::Dialog* dialog = dialog::Confirmation( ui(),  "", "##dispatch_emperor_request_question##" );
-  CONNECT_LOCAL( dialog, onOk(), RequestButton::_acceptRequest );
+ dialog::Confirmation( ui(),  "", "##dispatch_emperor_request_question##",
+                       makeDelegate( this, &RequestButton::_acceptRequest ) );
 }
 
 void RequestButton::draw(Engine& painter)

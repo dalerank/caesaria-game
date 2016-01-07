@@ -33,6 +33,12 @@
   else if( (a==0) ) { Logger::warning( "Cannot connect null::{0} to {1}::{2} at {3}:{4}", TEXT(signal), TEXT(b), TEXT(slot), __LINE__, __FILE__); }\
 }
 
+#define CONNECT_LAMBDA( a, signal, slot ) \
+{ \
+  if( (a!=0) ) { (a)->signal.connect( &slot ); } \
+  else if( (a==0) ) { Logger::warning( "Cannot connect null::{0} to {1}::{2} at {3}:{4}", TEXT(signal), TEXT(b), TEXT(slot), __LINE__, __FILE__); }\
+}
+
 #define CONNECT_LOCAL( a, signal, slot ) \
 { \
   if( (a!=0) ) { (a)->signal.connect( this, &slot ); } \
@@ -56,6 +62,11 @@ public:
   {
     delegateList.push_back( delegate );
     return *this;
+  }
+
+  void connect( void (*func)() )
+  {
+    delegateList.push_back( makeDelegate( func ) );
   }
 
   template< class X, class Y >

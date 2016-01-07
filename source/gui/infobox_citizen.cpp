@@ -143,9 +143,8 @@ void AboutPeople::_setWalker( WalkerPtr wlk )
   _d->object = wlk;
   _d->lbName->setText( wlk->name() );
 
-  std::string walkerType = WalkerHelper::getPrettyTypename( wlk->type() );
-  _d->lbType->setText( _(walkerType) );
-  _d->lbCitizenPic->setBackgroundPicture( WalkerHelper::bigPicture( wlk->type() ) );
+  _d->lbType->setText( _(wlk->info().prettyName()) );
+  _d->lbCitizenPic->setBackgroundPicture( wlk->info().bigPicture() );
 
   std::string thinks = wlk->thoughts( Walker::thCurrent );
   _d->lbThinks->setText( _( thinks ) );
@@ -201,10 +200,10 @@ void AboutPeople::_init( PlayerCityPtr city, const TilePos& pos, const std::stri
   Widget::setupUI( model );
 
   _d->lbName = &add<Label>( Rect( 90, 108, width() - 30, 108 + 20) );
-  _d->lbName->setFont( Font::create( FONT_2 ));
+  _d->lbName->setFont( FONT_2 );
 
   _d->lbType = &add<Label>( Rect( 90, 128, width() - 30, 128 + 20) );
-  _d->lbType->setFont( Font::create( FONT_1 ));
+  _d->lbType->setFont( FONT_1 );
 
   _d->lbThinks = &add<Label>( Rect( 90, 148, width() - 30, height() - 140),
                               "##citizen_thoughts_will_be_placed_here##" );

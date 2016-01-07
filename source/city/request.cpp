@@ -23,12 +23,14 @@
 #include "objects/construction.hpp"
 #include "events/fundissue.hpp"
 #include "game/funds.hpp"
+#include "world/relations.hpp"
 #include "core/utils.hpp"
 #include "core/gettext.hpp"
 #include "events/showinfobox.hpp"
 #include "events/updatefavour.hpp"
 #include "game/gamedate.hpp"
 #include "world/empire.hpp"
+#include "world/emperor.hpp"
 #include "events/showrequestwindow.hpp"
 #include "world/goodcaravan.hpp"
 #include "good/store.hpp"
@@ -216,7 +218,7 @@ void RqGood::load(const VariantMap& stream)
 void RqGood::success( PlayerCityPtr city )
 {
   RqBase::success( city );
-  _d->complyRequest.apply( city );
+  _d->complyRequest.apply( city );  
 }
 
 void RqGood::fail( PlayerCityPtr city )
@@ -286,7 +288,26 @@ void RqBase::load(const VariantMap& stream)
   _startDate = vStart.isNull() ? game::Date::current() : vStart.toDateTime();
 }
 
-RqBase::RqBase(DateTime finish) : _isDeleted( false ), _isAnnounced( false ), _finishDate( finish )
+void RqBase::_saveState(PlayerCityPtr city, int relation, const std::string& message)
+{
+  world::Emperor& emp = city->empire()->emperor();
+  world::RelationAbility ability;
+
+  ability.start = startDate();
+  ability.finished = finishedDate();
+  ability.successed = isSuccessed();
+  ability.relation = relation;
+  ability.message = message;
+  ability.type = world::RelationAbility::request;
+  ability.influenceMonth = 0;
+
+  emp.updateRelation( city->name(), ability );
+}
+
+RqBase::RqBase(DateTime finish) :
+  _isDeleted( false ), _isAnnounced( false ),
+  _isSuccessed( false ),
+  _finishDate( finish )
 {
 
 }

@@ -53,7 +53,7 @@ public:
 
   virtual ContextMenu* subMenu() const;
 
-  virtual void setIsSeparator( bool isSepar );
+  virtual void setIsSeparator(bool separator );
 
   virtual void toggleCheck();
 
@@ -92,6 +92,8 @@ public:
   virtual void setSubMenuAlignment( SubMenuAlign align );
 
   virtual SubMenuAlign subMenuAlignment() const;
+
+  void setSubMenuIconVisible( bool visible );
 
 signals public:
   Signal1<bool>& onChecked();

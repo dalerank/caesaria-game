@@ -55,7 +55,7 @@ DictionaryWindow::DictionaryWindow( Widget* p, const std::string& helpId )
 
   GET_DWIDGET_FROM_UI( _d, lbTitle )
   _d->lbText = &add<DictionaryText>( Rect( 20, 40, width() - 20, height() - 40 ) );
-  _d->lbText->setFont( Font::create( FONT_1 ) );
+  _d->lbText->setFont( FONT_1 );
 
   CONNECT( _d->lbText, onWordClick(), this, DictionaryWindow::_handleUriChange )
 
@@ -63,7 +63,7 @@ DictionaryWindow::DictionaryWindow( Widget* p, const std::string& helpId )
     load( helpId );
 
   moveTo( Widget::parentCenter );
-  WidgetEscapeCloser::insertTo( this );
+  WidgetClose::insertTo( this, KEY_RBUTTON );
   setModal();
 }
 
@@ -101,12 +101,7 @@ bool DictionaryWindow::onEvent(const NEvent& event)
   switch( event.EventType )
   {
   case sEventMouse:
-    if( event.mouse.type == mouseRbtnRelease )
-    {
-      deleteLater();
-      return true;
-    }
-    else if( event.mouse.type == mouseLbtnRelease )
+    if( event.mouse.type == mouseLbtnRelease )
     {
       return true;
     }

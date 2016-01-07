@@ -35,6 +35,7 @@
 #include "gfx/decorator.hpp"
 #include "listbox.hpp"
 #include "core/metric.hpp"
+#include "gfx/drawstate.hpp"
 #include "city/config.hpp"
 #include "core/osystem.hpp"
 
@@ -100,10 +101,9 @@ void TopMenu::draw(gfx::Engine& engine)
 
   _d->updateDate();
 
-  if( _d->bg.batch.valid() )
-    engine.draw( _d->bg.batch, &absoluteClippingRectRef() );
-  else
-    engine.draw( _d->bg.pics, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+  DrawState pipe( engine, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+  pipe.draw( _d->bg.batch )
+      .fallback( _d->bg.pics );
 
   MainMenu::draw( engine );
 }
@@ -149,7 +149,7 @@ void TopMenu::Impl::showShortKeyInfo()
   shortKeyInfo.add<ExitButton>( Point( shortKeyInfo.width() - 34, shortKeyInfo.height() - 34 ) );
 
   shortKeyInfo.moveTo( Widget::parentCenter );
-  WidgetEscapeCloser::insertTo( shortKeyInfo );
+  WidgetClose::insertTo( &shortKeyInfo, KEY_RBUTTON );
 }
 
 void TopMenu::Impl::resolveExtentInfo(Widget *sender)
@@ -191,7 +191,7 @@ void TopMenu::Impl::showAboutInfo()
   window.add<ExitButton>( Point( window.width() - 34, window.height() - 34 ) );
 
   window.moveTo( Widget::parentCenter );
-  WidgetEscapeCloser::insertTo( window );
+  WidgetClose::insertTo( &window, KEY_RBUTTON );
 }
 
 TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)

@@ -177,7 +177,7 @@ world::ObjectList Military::enemies() const
   return ret;
 }
 
-unsigned int Military::threatValue() const{ return _d->threatValue; }
+int Military::value() const{ return _d->threatValue; }
 std::string Military::defaultName(){  return TEXT(Military); }
 
 }//end namespace city

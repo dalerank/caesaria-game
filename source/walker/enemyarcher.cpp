@@ -94,16 +94,15 @@ void EnemyArcher::timeStep(const unsigned long time)
 
   case Soldier::destroyBuilding:
   {
-    ConstructionList constructions = _findContructionsInRange( attackDistance() );
+    ConstructionPtr building = _findContructionsInRange( attackDistance() ).firstOrEmpty();
 
-    if( !constructions.empty() )
+    if( building.isValid() )
     {
-      ConstructionPtr b = constructions.front();
-      turn( b->pos() );
+      turn( building->pos() );
 
       if( _animation().atEnd() )
       {
-        _fire( b->pos() );
+        _fire( building->pos() );
         _updateAnimation( time+1 );
       }
     }

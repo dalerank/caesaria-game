@@ -66,6 +66,7 @@
 #include "objects/factory.hpp"
 #include "events/warningmessage.hpp"
 #include "sound/themeplayer.hpp"
+#include "city/build_options.hpp"
 #include "objects/house_spec.hpp"
 
 using namespace gfx;
@@ -81,14 +82,14 @@ enum {
   goods,
   factories,
   other,
+  buildings,
   disaster,
   level,
   in_city,
   options,
   house,
   draw,
-  empire,
-  mission
+  empire
 };
 
 enum {
@@ -175,6 +176,7 @@ enum {
   reload_buildings_config,
   toggle_show_buildings,
   toggle_show_trees,
+  toggle_show_rocks,
   forest_fire,
   forest_grow,
   increase_max_level,
@@ -187,6 +189,8 @@ enum {
   show_attacks,
   reset_fire_risk,
   reset_collapse_risk,
+  toggle_shipyard_enable,
+  toggle_reservoir_enable,
   next_theme
 };
 
@@ -202,6 +206,7 @@ public:
   void addGoods2Wh( good::Product type );
   void reloadConfigs();
   void runScript(std::string filename);
+  void toggleBuildOptions(object::Type type);
   gui::ContextMenu* debugMenu;
 
 #ifdef DEBUG
@@ -282,6 +287,9 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( other, enable_constructor_mode )
   ADD_DEBUG_EVENT( other, next_theme )
 
+  ADD_DEBUG_EVENT( buildings, toggle_shipyard_enable )
+  ADD_DEBUG_EVENT( buildings, toggle_reservoir_enable )
+
   ADD_DEBUG_EVENT( disaster, random_fire )
   ADD_DEBUG_EVENT( disaster, random_collapse )
   ADD_DEBUG_EVENT( disaster, random_plague )
@@ -292,6 +300,8 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( level, fail_mission )
   ADD_DEBUG_EVENT( level, change_emperor )
   ADD_DEBUG_EVENT( level, property_browser )
+  ADD_DEBUG_EVENT( level, show_requests )
+  ADD_DEBUG_EVENT( level, show_attacks )
 
   ADD_DEBUG_EVENT( empire, send_merchants )
 
@@ -315,8 +325,6 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( house, decrease_house_level )
   ADD_DEBUG_EVENT( house, lock_house_level )
 
-  ADD_DEBUG_EVENT( mission, show_requests )
-  ADD_DEBUG_EVENT( mission, show_attacks )
 
   ADD_DEBUG_EVENT( options, run_script )
   ADD_DEBUG_EVENT( options, all_sound_off )
@@ -334,6 +342,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( draw, toggle_show_walkable_tiles )
   ADD_DEBUG_EVENT( draw, toggle_show_locked_tiles )
   ADD_DEBUG_EVENT( draw, toggle_show_flat_tiles )
+  ADD_DEBUG_EVENT( draw, toggle_show_rocks )
 #undef ADD_DEBUG_EVENT
 
 #ifdef DEBUG
@@ -346,6 +355,14 @@ void DebugHandler::setVisible(bool visible)
 {
   if( _d->debugMenu != 0)
     _d->debugMenu->setVisible( visible );
+}
+
+void DebugHandler::Impl::toggleBuildOptions( object::Type type )
+{
+  city::development::Options options;
+  options = game->city()->buildOptions();
+  options.setBuildingAvailable( type, !options.isBuildingAvailable( type ) );
+  game->city()->setBuildOptions( options );
 }
 
 DebugHandler::~DebugHandler() {}
@@ -445,6 +462,9 @@ void DebugHandler::Impl::handleEvent(int event)
     caravan->sendTo( game->empire()->capital() );
   }
   break;
+
+  case toggle_shipyard_enable: toggleBuildOptions( object::shipyard );  break;
+  case toggle_reservoir_enable: toggleBuildOptions( object::reservoir );  break;
 
   case next_theme:
   {
@@ -777,6 +797,7 @@ void DebugHandler::Impl::handleEvent(int event)
   case toggle_show_flat_tiles: DrawOptions::instance().toggle( DrawOptions::showFlatTiles );  break;
   case toggle_show_buildings : DrawOptions::instance().toggle( DrawOptions::showBuildings ); break;
   case toggle_show_trees : DrawOptions::instance().toggle( DrawOptions::showTrees ); break;
+  case toggle_show_rocks : DrawOptions::instance().toggle( DrawOptions::showRocks ); break;
 
   case add_soldiers_in_fort:
   {

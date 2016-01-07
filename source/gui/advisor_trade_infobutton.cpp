@@ -67,7 +67,7 @@ TradeGoodInfo::TradeGoodInfo(Widget *parent, const Rect &rect, good::Product goo
   _d->good.name = good::Helper::name( _d->good.type );
   Decorator::draw( _d->border, Rect( 50, 0, width() - 50, height() ), Decorator::brownBorder );
 
-  setFont( Font::create( FONT_2_WHITE ) );
+  setFont( FONT_2_WHITE );
 }
 
 void TradeGoodInfo::draw(Engine &painter)

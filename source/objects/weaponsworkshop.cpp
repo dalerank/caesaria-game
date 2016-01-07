@@ -31,7 +31,7 @@ REGISTER_CLASS_IN_OVERLAYFACTORY( object::weapons_workshop, WeaponsWorkshop)
 WeaponsWorkshop::WeaponsWorkshop()
   : Factory(good::iron, good::weapon, object::weapons_workshop, Size(2) )
 {
-  _picture().load( ResourceGroup::commerce, 108);
+  setPicture( info().randomPicture( size() ) );
 
   //_animationRef().load( ResourceGroup::commerce, 109, 6);
   _fgPictures().resize(2);
@@ -46,7 +46,7 @@ bool WeaponsWorkshop::build( const city::AreaInfo& info )
 {
   Factory::build( info );
 
-  bool haveIronMine = !info.city->statistic().objects.find<Building>( object::iron_mine ).empty();
+  bool haveIronMine = info.city->statistic().objects.count( object::iron_mine ) > 0;
 
   _setError( haveIronMine ? "" : "##need_iron_for_work##" );
 

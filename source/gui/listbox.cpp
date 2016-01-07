@@ -26,6 +26,7 @@
 #include "gfx/engine.hpp"
 #include "gfx/decorator.hpp"
 #include "core/foreach.hpp"
+#include "gfx/drawstate.hpp"
 #include "core/logger.hpp"
 #include "core/gettext.hpp"
 #include "widget_factory.hpp"
@@ -655,13 +656,14 @@ void ListBox::beforeDraw(gfx::Engine& painter)
       int mxY = frameRect.top() - _d->scrollBar->value();
       if( !refItem.text().empty() && mnY >= 0 && mxY <= (int)height() )
       {
+        bool underMouse = ( static_cast<int>(i) == _d->index.selected && hl);
         refItem.setState( _getCurrentItemState( i, hl ) );
 
         itemTextHorizontalAlign = refItem.isAlignEnabled() ? refItem.horizontalAlign() : horizontalTextAlign();
         itemTextVerticalAlign = refItem.isAlignEnabled() ? refItem.verticalAlign() : verticalTextAlign();
 
-        currentFont = _getCurrentItemFont( refItem, i == _d->index.selected && hl );
-        currentFont.setColor( _getCurrentItemColor( refItem, i==_d->index.selected && hl ) );
+        currentFont = _getCurrentItemFont( refItem, underMouse );
+        currentFont.setColor( _getCurrentItemColor( refItem, underMouse ) );
 
         Rect textRect = currentFont.getTextRect( refItem.text(), Rect( Point(0, 0), frameRect.size() ),
                                                  itemTextHorizontalAlign, itemTextVerticalAlign );
@@ -690,10 +692,9 @@ void ListBox::draw( gfx::Engine& painter )
 
   if( isFlag( drawBackground ) )
   {
-    if( _d->background.valid() )
-      painter.draw( _d->background, &absoluteClippingRectRef() );
-    else
-      painter.draw( _d->backgroundNb, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+    DrawState pipe( painter, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+    pipe.draw( _d->bg.batch )
+        .fallback( _d->bg.fallback );
   }
 
   Point scrollBarOffset( 0, -_d->scrollBar->value() );
@@ -763,19 +764,19 @@ void ListBox::_recalculateScrollPos()
 
 void ListBox::_updateBackground( int scrollbarWidth)
 {
-  _d->background.destroy();
+  _d->bg.batch.destroy();
 
   Pictures pics;
 
   Decorator::draw( pics, Rect( 0, 0, width() - scrollbarWidth, height() ), Decorator::blackFrame );
   Decorator::draw( pics, Rect( width() - scrollbarWidth, 0, width(), height() ), Decorator::whiteArea, nullptr, Decorator::normalY  );
 
-  bool batchOk = _d->background.load( pics, absoluteRect().lefttop() );
+  bool batchOk = _d->bg.batch.load( pics, absoluteRect().lefttop() );
   if( !batchOk )
   {
-    _d->background.destroy();
+    _d->bg.batch.destroy();
     Decorator::reverseYoffset( pics );
-    _d->backgroundNb = pics;
+    _d->bg.fallback = pics;
   }
 }
 

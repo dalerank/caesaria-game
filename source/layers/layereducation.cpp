@@ -153,7 +153,7 @@ void Education::afterRender(Engine& engine)
 void Education::_updatePaths()
 {
   auto eduBuilding = _d->overlay.selected.as<EducationBuilding>();
-  if( eduBuilding.isValid() && _d->flags.count( eduBuilding->type() ) )
+  if( _d->flags.count( object::typeOrDefault( eduBuilding ) ) )
   {
     _d->ways.clear();
     const WalkerList& walkers = eduBuilding->walkers();

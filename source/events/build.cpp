@@ -56,12 +56,12 @@ void BuildAny::_exec( Game& game, unsigned int )
   if( _overlay.isNull() )
     return;
 
-  OverlayPtr ctOv = game.city()->getOverlay( _pos );
+  OverlayPtr overlay2build = game.city()->getOverlay( _pos );
 
   bool mayBuild = true;
-  if( ctOv.isValid() )
+  if( overlay2build.isValid() )
   {
-    mayBuild = ctOv->isDestructible();
+    mayBuild = overlay2build->isDestructible();
   }
 
   TilePos offset(10, 10);

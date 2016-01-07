@@ -89,7 +89,7 @@ LoadFile::LoadFile( Widget* parent, const Rect& rect,
   _fillFiles();
 
   setMayDelete( false );
-  WidgetEscapeCloser::insertTo( this );
+  WidgetClose::insertTo( this, KEY_RBUTTON );
   GameAutoPause::insertTo( this );
   moveTo( Widget::parentCenter );
   setModal();
@@ -154,11 +154,6 @@ bool LoadFile::isPointInside( const Point& point ) const
 {
   //resolve all screen for self using
   return parent()->absoluteRect().isPointInside( point );
-}
-
-bool LoadFile::onEvent( const NEvent& event)
-{
-  return Widget::onEvent( event );
 }
 
 void LoadFile::setMayDelete(bool mayDelete)

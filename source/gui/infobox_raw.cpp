@@ -28,6 +28,7 @@
 #include "widget_helper.hpp"
 #include "game/infoboxmanager.hpp"
 #include "dialogbox.hpp"
+#include "core/common.hpp"
 #include "texturedbutton.hpp"
 
 using namespace gfx;
@@ -101,15 +102,11 @@ AboutRawMaterial::AboutRawMaterial(Widget* parent, PlayerCityPtr city, const Til
 
 void AboutRawMaterial::_showAdvInfo()
 {
-  auto miningBuilding = base().as<Factory>();
-  if( miningBuilding.isValid() )
-  {
-    std::string workerState = fmt::format( "Damage={}\nFire={}\n",
-                                           (int)miningBuilding->state( pr::damage ),
-                                           (int)miningBuilding->state( pr::fire ) );
+  std::string workerState = fmt::format( "Damage={}\nFire={}\n",
+                                         utils::objectState( base(), pr::damage ),
+                                         utils::objectState( base(), pr::fire ) );
 
-    dialog::Information( ui(), "Information", workerState );
-  }
+  dialog::Information( ui(), "Information", workerState );
 }
 
 AboutRawMaterial::~AboutRawMaterial() {}

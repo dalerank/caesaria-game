@@ -216,7 +216,7 @@ CityOptions::CityOptions( Widget* parent, PlayerCityPtr city )
 
   _d->update();
 
-  WidgetEscapeCloser::insertTo( this );
+  WidgetClose::insertTo( this, KEY_RBUTTON );
   moveTo( Widget::parentCenter );
   setModal();
 }
@@ -230,8 +230,7 @@ void CityOptions::setupUI(const VariantMap& ui)
 
 void CityOptions::Impl::setCityOption( PlayerCity::OptionType option, int value )
 {
-  int optValue = city->getOption( option );
-  city->setOption( option, optValue  );
+  city->setOption( option, value  );
   update();
 }
 

@@ -164,6 +164,8 @@ std::string Info::description() const
 }
 
 object::Type Info::type() const {  return _d->tileovType;}
+
+std::string Info::typeName() const { return object::toString( type() ); }
 const Desirability& Info::desirability() const{  return _d->desirability;}
 
 Picture Info::randomPicture(const Size& size) const
@@ -176,7 +178,7 @@ Picture Info::randomPicture(int size) const
   return _d->pictures[ size ].random();
 }
 
-bool Info::isMyPicture(const std::string& name) const
+bool Info::havePicture(const std::string& name) const
 {
   for( auto& pics : _d->pictures )
   {

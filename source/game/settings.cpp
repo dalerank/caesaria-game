@@ -108,6 +108,7 @@ __REG_PROPERTY(celebratesConfig)
 __REG_PROPERTY(ambientsounds)
 __REG_PROPERTY(cntrGroupsModel)
 __REG_PROPERTY(logfile)
+__REG_PROPERTY(rightMenu)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -174,6 +175,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ cntrGroupsModel     ] = std::string( "construction_groups.model" );
   _d->options[ screenshotDir       ] = vfs::Directory::userDir().toString();
   _d->options[ batchTextures       ] = true;
+  _d->options[ rightMenu           ] = true;
   _d->options[ experimental        ] = false;
   _d->options[ needAcceptBuild     ] = false;
   _d->options[ borderMoving        ] = false;
@@ -280,32 +282,33 @@ void Settings::checkwdir(char* argv[], int argc)
 
 void Settings::checkCmdOptions(char* argv[], int argc)
 {
-  for (int i = 0; i < (argc - 1); i++)
-  {
+  for (int i = 0; i < argc; i++)
+  {    
     if( !strcmp( argv[i], "-Lc" ) )
     {
       std::string opts = argv[i+1];
       _d->options[ language ] = Variant( opts ).toString();
       i++;
     }
-    else if( !strcmp( argv[i], "-c3gfx" ) )
+    else if( !strncmp( argv[i], "-", 1 ) )
     {
-      std::string opts = argv[i+1];
-      _d->options[ c3gfx ] = Variant( opts ).toString();
-      i++;
-    }
-    else if( !strcmp( argv[i], "-oldgfx" ) )
-    {
-      const char* opts = argv[i+1];
-      _d->options[ oldgfx ] = utils::toInt( opts );
-      i++;
-    }
-    else if( !strcmp( argv[i], "-cellw" ) )
-    {
-      const char* opts = argv[i+1];
-      int cellWidth = utils::toInt( opts );
-      _d->options[ cellw ] = cellWidth;
-      i++;
+      std::string name = std::string( argv[i] ).substr( 1 );
+      std::string nextName = (i+1 >= argc ? "" : std::string( argv[i+1] ));
+      if( nextName[0] == '-' || (i+1 == argc)  )
+      {
+        bool value = true;
+        if( name[0] == '!' )
+        {
+          name = name.substr( 1 );
+          value = false;
+        }
+        _d->options[ name ] = Variant( value );
+      }
+      else
+      {
+        _d->options[ name ] = Variant( nextName );
+        i++;
+      }
     }
   }
 }

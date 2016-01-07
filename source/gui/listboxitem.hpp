@@ -57,6 +57,10 @@ public:
 
   void setText( const std::string& text );
   const std::string& text() const;
+
+  void setTooltip( const std::string& text );
+  const std::string& tooltip() const;
+
   void setTag(const Variant& tag );
   const Variant& tag() const;
 	gfx::Picture icon();

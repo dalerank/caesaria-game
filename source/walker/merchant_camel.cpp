@@ -39,15 +39,16 @@ void MerchantCamel::timeStep(const unsigned long time)
 {
   if( !_d->inCaravan )
   {
-    LandMerchantPtr head = _city()->statistic().walkers.find<LandMerchant>( walker::merchant, _d->headId );
-    if( !head.isValid() )
+    auto caravanHead = _city()->statistic().walkers
+                                           .find<LandMerchant>( walker::merchant, _d->headId );
+    if( !caravanHead.isValid() )
     {
       die();
-      Logger::warning( "!!!Warning: MerchantCamel havenot headID caravan {0}", _d->headId );
+      Logger::warning( "!!!Warning: MerchantCamel havenot headID caravan {}", _d->headId );
     }
     else
     {
-      head->addCamel( this );
+      caravanHead->addCamel( this );
       _d->inCaravan = true;
     }
   }
@@ -94,7 +95,8 @@ void MerchantCamel::_centerTile()
 
   if( pos().distanceFrom( _d->headLocation ) > 1 )
   {
-    MerchantPtr merchant = _city()->statistic().walkers.find<Merchant>( walker::merchant, _d->headId );
+    auto merchant = _city()->statistic().walkers
+                                        .find<Merchant>( walker::merchant, _d->headId );
     if( merchant.isValid() )
     {
       setSpeed( merchant->speed() );

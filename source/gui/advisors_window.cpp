@@ -102,7 +102,7 @@ Parlor::Parlor( Widget* parent, int id )
   setupUI( ":/gui/advisors.gui" );
 
   GameAutoPause::insertTo( this );
-  WidgetEscapeCloser::insertTo( this );
+  WidgetClose::insertTo( this );
 
   INIT_WIDGET_FROM_UI( Image*, imgBgButtons )
   if( imgBgButtons )
@@ -235,7 +235,7 @@ void ParlorModel::switchAdvisor(Advisor type)
     d.advisorPanel = new advisorwnd::Legion( d.parent, advisor::military, d.city, forts );
   }
   else if( type == advisor::population ) { d.advisorPanel = new advisorwnd::Population( d.city, d.parent, advisor::population ); }
-  else if( type ==  advisor::empire )     d.advisorPanel = new advisorwnd::Emperor( d.city, d.parent, advisor::empire );
+  else if( type == advisor::empire )     d.advisorPanel = new advisorwnd::Emperor( d.city, d.parent, advisor::empire );
   else if( type == advisor::ratings )     d.advisorPanel = new advisorwnd::Ratings( d.parent, advisor::ratings, d.city );
   else if( type == advisor::trading )     d.advisorPanel = &d.parent->add<advisorwnd::Trade>( d.city, advisor::trading );
   else if( type == advisor::education )    d.advisorPanel = new advisorwnd::Education( d.city, d.parent, -1 );

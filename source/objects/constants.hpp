@@ -219,16 +219,13 @@ public:
 };
 
 Type toType( const std::string& name);
-
-class Helper : public EnumsHelper<Type>
-{
-public:
-  static Helper& instance();
-private:
-  Helper();
-};
-
 Type findType( const std::string& name );
+
+template<class ObjectPtr>
+inline Type typeOrDefault( ObjectPtr obj, Type defaultValue=unknown )
+{
+  return obj.isValid() ? obj->type() : defaultValue;
+}
 
 } //end namespace object
 

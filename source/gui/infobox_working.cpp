@@ -25,6 +25,7 @@
 #include "game/datetimehelper.hpp"
 #include "texturedbutton.hpp"
 #include "core/logger.hpp"
+#include "core/common.hpp"
 #include "dialogbox.hpp"
 
 namespace gui
@@ -101,9 +102,9 @@ void AboutWorkingBuilding::_showAdvInfo()
   }
 
   std::string workerState = fmt::format( "Damage={}\nFire={}\nService={}\n",
-                                         (int)_working->state( pr::damage ),
-                                         (int)_working->state( pr::fire ),
-                                         timeText.c_str() );
+                                         utils::objectState( _working, pr::damage ),
+                                         utils::objectState( _working, pr::fire ),
+                                         timeText );
 
   dialog::Information( ui(), "Information", workerState );
 }

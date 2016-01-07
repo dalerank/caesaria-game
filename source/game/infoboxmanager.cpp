@@ -27,6 +27,7 @@
 #include "gfx/tilemap.hpp"
 #include "gui/infobox_citizen_mgr.hpp"
 #include "gui/infobox_working.hpp"
+#include "core/common.hpp"
 #include <map>
 
 using namespace gui;
@@ -104,7 +105,7 @@ void Manager::showHelp( PlayerCityPtr city, Ui* gui, TilePos pos )
     Logger::warning( "Tile debug info: dsrbl={}", tile.param( Tile::pDesirability ) );
   }
 
-  type = overlay.isNull() ? object::unknown : overlay->type();
+  type = object::typeOrDefault( overlay );
 
   Impl::InfoboxCreators::iterator findConstructor = _d->constructors.find( type );
 

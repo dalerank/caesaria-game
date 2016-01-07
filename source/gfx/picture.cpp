@@ -87,14 +87,24 @@ void Picture::save(const std::string& filename)
 }
 
 #ifndef GAME_DISABLE_PICTUREBANK
-void Picture::load( const std::string& group, const int id )
+Picture& Picture::load( const std::string& group, const int id )
 {
   *this = PictureBank::instance().getPicture( group, id );
+  return *this;
 }
 
-void Picture::load( const std::string& filename )
+Picture& Picture::withFallback(const std::string& group, const int id)
+{
+  if( !isValid() )
+    load( group, id );
+
+  return *this;
+}
+
+Picture& Picture::load( const std::string& filename )
 {
   *this = PictureBank::instance().getPicture( filename );
+  return *this;
 }
 #endif
 

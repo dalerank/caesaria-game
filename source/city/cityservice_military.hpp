@@ -51,7 +51,7 @@ public:
   world::ObjectList enemies() const;
 
   void updateThreat( int value );
-  unsigned int threatValue() const;
+  int value() const;
 
   static std::string defaultName();
 

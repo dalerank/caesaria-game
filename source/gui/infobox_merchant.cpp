@@ -91,7 +91,7 @@ void AboutMerchant::_drawGood( const good::Product& goodType, int qty, int index
   Point pos( index * offset + startOffset, paintY );
 
   auto& label = add<Label>( Rect( pos, pos + Point( 100, 24 )) );
-  label.setFont( Font::create( FONT_2 ) );
+  label.setFont( FONT_2 );
   label.setIcon( pic );
   label.setText( outText );
   label.setTextOffset( Point( 30, 0 ) );

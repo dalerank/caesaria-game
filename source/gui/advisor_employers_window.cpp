@@ -114,7 +114,7 @@ public:
     grayArea->add<SalaryButton>( rect+offset*3, walker::romeSpearman, 30 );
 
     moveTo( Widget::parentCenter );
-    WidgetEscapeCloser::insertTo( this );
+    WidgetClose::insertTo( this, KEY_RBUTTON );
     setModal();
   }
 
@@ -163,10 +163,10 @@ protected:
     canvasDraw( _title, Point( ofBranchName, 2), font );
     canvasDraw( utils::i2str( _needWorkers ), Point( ofNeedWorkers, 2), font );
     canvasDraw( utils::i2str( _haveWorkers ), Point( ofHaveWorkers, 2 ),
-                _haveWorkers < _needWorkers ? font.clone(  ColorList::caesarRed ) : font );
+                _haveWorkers < _needWorkers ? font.withColor(  ColorList::caesarRed ) : font );
 
     if( _priority > 0 )
-      canvasDraw( utils::i2str( _priority ), Point( ofPriority, 3 ), font.clone( ColorList::black ) );
+      canvasDraw( utils::i2str( _priority ), Point( ofPriority, 3 ), font.withColor( ColorList::black ) );
   }
 
   virtual void draw(Engine &painter)
@@ -407,10 +407,7 @@ bool Employer::onEvent(const NEvent& event)
   return Widget::onEvent( event );
 }
 
-void Employer::_showAdvSalaries()
-{
-  ui()->add<SalariesWindow>( _d->city );
-}
+void Employer::_showAdvSalaries() { ui()->add<SalariesWindow>( _d->city ); }
 
 }//end namespace advisorwnd
 

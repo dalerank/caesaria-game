@@ -43,6 +43,7 @@
 #include "events/fishplace.hpp"
 #include "city/config.hpp"
 #include "climatemanager.hpp"
+#include "freeplay_finalizer.hpp"
 
 using namespace religion;
 using namespace events;
@@ -56,7 +57,6 @@ namespace loader
 static const int currentVesion = 1;
 
 GAME_LITERALCONST(climate)
-GAME_LITERALCONST(version)
 GAME_LITERALCONST(map)
 GAME_LITERALCONST(random)
 
@@ -78,7 +78,7 @@ bool Mission::load( const std::string& filename, Game& game )
   VariantMap vm = config::load( filename );
   _d->restartFile = filename;
   
-  if( currentVesion == vm[ literals::version ].toInt() )
+  if( currentVesion == vm[ TEXT(version) ].toInt() )
   {
     std::string mapToLoad = vm[ literals::map ].toString();
     Variant vClimate = vm.get( literals::climate );
@@ -126,7 +126,18 @@ bool Mission::load( const std::string& filename, Game& game )
     city->setOption( PlayerCity::adviserEnabled, vm.get( TEXT(adviserEnabled), 1 ) );
     city->setOption( PlayerCity::fishPlaceEnabled, vm.get( TEXT(fishPlaceEnabled), 1 ) );
     city->setOption( PlayerCity::collapseKoeff, vm.get( TEXT(collapseKoeff), 100 ) );
-    city->setOption( PlayerCity::fireKoeff, vm.get( TEXT(fireKoeff), 100 ) );
+    city->setOption( PlayerCity::fireKoeff, vm.get( TEXT(fireKoeff), 100 ) );        
+    city->setOption( PlayerCity::warfNeedTimber, vm.get( TEXT(warfNeedTimber), 1 ) );
+    city->setOption( PlayerCity::claypitMayCollapse, vm.get( TEXT(claypitMayCollapse), 1 ) );
+    city->setOption( PlayerCity::minesMayCollapse, vm.get( TEXT(minesMayCollapse), 1 ) );
+    city->setOption( PlayerCity::riversideAsWell, vm.get( TEXT(riversideAsWell), 1 ) );
+    city->setOption( PlayerCity::soldiersHaveSalary, vm.get( TEXT(soldiersHaveSalary), 1 ) );
+    city->setOption( PlayerCity::housePersonalTaxes, vm.get( TEXT(housePersonalTaxes), 1 ) );
+    city->setOption( PlayerCity::cutForest2timber, vm.get( TEXT(cutForest2timber), 1 ) );
+    city->setOption( PlayerCity::forestGrow, vm.get( TEXT(forestGrow), 1 ) );
+    city->setOption( PlayerCity::forestFire, vm.get( TEXT(forestFire), 1 ) );
+    city->setOption( PlayerCity::destroyEpidemicHouses, vm.get( TEXT(destroyEpidemicHouses), 1 ) );
+    city->setOption( PlayerCity::ironInRocks, vm.get( TEXT(ironInRocks), 1 ) );
 
     game::Date::instance().init( vm[ "date" ].toDateTime() );
 
@@ -166,8 +177,13 @@ bool Mission::load( const std::string& filename, Game& game )
     //reseting divinities festival date
     DivinityList gods = rome::Pantheon::instance().all();
     for( const auto it : gods )
-    {
       rome::Pantheon::doFestival( it->name(), 0 );
+
+    freeplay::Finalizer finalizer( city );
+    if( city->getOption( PlayerCity::ironInRocks ) > 0 )
+    {
+      int ironQty = vm.get( TEXT(ironInRocks.qty), 10000 );
+      finalizer.resetIronCovery( ironQty );
     }
 
     return true;

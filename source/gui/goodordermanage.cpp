@@ -31,6 +31,7 @@
 #include "widgetescapecloser.hpp"
 #include "stretch_layout.hpp"
 #include "multilinebutton.hpp"
+#include "dialogbox.hpp"
 
 using namespace gfx;
 using namespace city;
@@ -138,7 +139,7 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
   _d->gmode = gmode;
 
   setupUI( ":/gui/goodorder.gui" );
-  WidgetEscapeCloser::insertTo( this );
+  WidgetClose::insertTo( this, KEY_RBUTTON );
 
   _d->icon = good::Helper::picture( type );
 
@@ -182,18 +183,7 @@ void GoodOrderManageWindow::draw(Engine &painter)
   painter.draw( _d->icon, absoluteRect().lefttop() + Point( 10, 10 ) );
 }
 
-bool GoodOrderManageWindow::onEvent(const NEvent& event)
-{
-  if( event.EventType == sEventMouse && event.mouse.isRightPressed() )
-  {
-    deleteLater();
-    return true;
-  }
-
-  return Window::onEvent( event );
-}
-
-void GoodOrderManageWindow::increaseQty() { _changeTradeLimit( +1 ); }
+ void GoodOrderManageWindow::increaseQty() { _changeTradeLimit( +1 ); }
 
 void GoodOrderManageWindow::decreaseQty() { _changeTradeLimit( -1 ); }
 
@@ -274,6 +264,12 @@ void GoodOrderManageWindow::toggleIndustryEnable()
   for( auto factory : factories )
     factory->setActive( !industryEnabled );
 
+  if( !industryEnabled )
+  {
+    auto* dialog = dialog::Confirmation( ui(), "Note", "Do you want fire workers from industry?",
+                                         makeDelegate( this, &GoodOrderManageWindow::_fireWorkers ) );
+  }
+
   updateIndustryState();
   emit _d->onOrderChangedSignal();
 }
@@ -322,6 +318,13 @@ void GoodOrderManageWindow::_changeTradeLimit(int value)
   }
   updateTradeState();
   emit _d->onOrderChangedSignal();
+}
+
+void GoodOrderManageWindow::_fireWorkers()
+{
+  FactoryList factories = _d->city->statistic().objects.producers<Factory>( _d->type );
+  for( auto factory : factories )
+    factory->removeWorkers( factory->numberWorkers() );
 }
 
 }//end namespace advisorwnd

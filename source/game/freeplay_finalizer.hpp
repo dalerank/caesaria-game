@@ -34,6 +34,7 @@ public:
   void addPopulationMilestones();
   void initBuildOptions();
   void addEvents();
+  void resetIronCovery(int qty);
   void resetFavour();
 
 private:

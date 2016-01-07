@@ -20,6 +20,7 @@
 
 #include <vector>
 #include <string>
+#include "core/color_list.hpp"
 #include "core/math.hpp"
 #include "core/foreach.hpp"
 
@@ -40,6 +41,14 @@ public:
   StringArray& push_front( const std::string& str )
   {
     insert( this->begin(), str );
+    return *this;
+  }
+
+  StringArray& addIfValid( const std::string& str )
+  {
+    if( !str.empty() )
+      this->push_back( str );
+
     return *this;
   }
 
@@ -76,10 +85,40 @@ public:
 
   inline StringArray& operator << ( const StringArray& a )
   {
-    for( auto& item : a )
+    for( const auto& item : a )
       push_back( item );
 
     return *this;
+  }
+};
+
+class ColoredString : public std::string
+{
+public:
+  NColor color = ColorList::black;
+
+  ColoredString( const std::string& r, NColor c)
+    : std::string( r )
+  { color = c; }
+};
+
+class ColoredStrings : public std::vector<ColoredString>
+{
+public:
+  ColoredStrings& addIfValid( const ColoredString& text )
+  {
+    if( !text.empty() )
+      this->push_back( text );
+
+    return *this;
+  }
+
+  ColoredString random() const
+  {
+    if( this->empty() )
+      return ColoredString( "no_reason", ColorList::red );
+
+    return this->at( math::random( this->size() - 1 ) );
   }
 };
 

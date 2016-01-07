@@ -34,6 +34,7 @@ namespace tile
   void decode( Tile& tile, const int bitset);
   const Tile& getInvalid();
   Tile& getInvalidSafe();
+  Tile* master( Tile* tile );
   void fixPlateauFlags( Tile& tile );
 }//end namespace tile
 

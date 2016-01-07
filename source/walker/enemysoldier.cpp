@@ -65,21 +65,21 @@ object::GroupSet& EnemySoldier::_excludeAttack() {  return _atExclude; }
 
 bool EnemySoldier::_tryAttack()
 {
-  WalkerList enemies = _findEnemiesInRange( attackDistance() );
+  WalkerPtr enemy = _findEnemiesInRange( attackDistance() ).firstOrEmpty();
 
-  if( !enemies.empty() )
+  if( enemy.isValid() )
   {
     _setSubAction( Soldier::fightEnemy );
-    setTarget( enemies.front()->pos() );
+    setTarget( enemy->pos() );
     fight();
   }
   else
   {
-    ConstructionList constructions = _findContructionsInRange( attackDistance() );
-    if( !constructions.empty() )
+    auto building = _findContructionsInRange( attackDistance() ).firstOrEmpty();
+    if( building.isValid() )
     {
       _setSubAction( Soldier::destroyBuilding );
-      setTarget( constructions.front()->pos() );
+      setTarget( building->pos() );
       fight();
     }
   }

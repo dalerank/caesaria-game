@@ -64,8 +64,8 @@ struct EmigrantWayCondition
 {
   void tryWalk( const Tile* tile, bool& ret )
   {
-    HousePtr f = tile->overlay<House>();
-    ret = ( tile->isWalkable( true ) || f.isValid() );
+    bool isHouse = tile->overlay().is<House>();
+    ret = ( tile->isWalkable( true ) || isHouse );
   }
 
   TilePossibleCondition mayWalk() { return makeDelegate( this, &EmigrantWayCondition::tryWalk ); }
@@ -105,9 +105,7 @@ void Emigrant::_lockHouse( HousePtr house )
 HousePtr Emigrant::_findBlankHouse()
 {
   HousePtr blankHouse;
-
-  TilePos offset( 5, 5 );
-  HouseList houses = _city()->statistic().objects.find<House>( object::house, pos() - offset, pos() + offset );
+  HouseList houses = _city()->statistic().objects.find<House>( object::house, pos(), 5 );
 
   _checkHouses( houses );
 
@@ -133,7 +131,7 @@ Pathway Emigrant::_findSomeWay( TilePos startPoint )
   Pathway pathway;
   if( house.isValid() )
   {    
-    pathway = PathwayHelper::create( startPoint, house->pos(), PathwayHelper::roadFirst  );
+    pathway = PathwayHelper::create( startPoint, house->pos(), PathwayHelper::roadFirst );
 
     if( !pathway.isValid() )
     {
@@ -223,8 +221,7 @@ bool Emigrant::_checkNearestHouse()
   EmigrantWayCondition condition;
   for( int k=1; k < 3; k++ )
   {
-    TilePos offset( k, k );
-    HouseList houses = _city()->statistic().objects.find<House>( object::house, pos()-offset, pos() + offset );
+    HouseList houses = _city()->statistic().objects.find<House>( object::house, pos(), k );
 
     std::map< int, HousePtr > vacantRoomPriority;
     for( auto house : houses )

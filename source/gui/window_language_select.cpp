@@ -49,11 +49,12 @@ LanguageSelect::LanguageSelect(Widget* parent, vfs::Path model, const std::strin
   listbox.setSelectedWithData( literals::ext, Variant( current ) );
 
   CONNECT_LOCAL( &listbox,   onItemSelected(), LanguageSelect::_changeLanguage )
-  CONNECT_LOCAL( &btnSelect, onClicked(),      LanguageSelect::_apply          )
+  CONNECT_LOCAL( &btnSelect, onClicked(),      LanguageSelect::deleteLater     )
+  CONNECT      ( &btnSelect, onClicked(),      &onContinue, Signal0<>::_emit   )
 
   listbox.setFocus();
   moveTo( Widget::parentCenter );
-  WidgetEscapeCloser::insertTo( this );
+  WidgetClose::insertTo( this, KEY_RBUTTON );
 }
 
 LanguageSelect::~LanguageSelect() {}
@@ -84,12 +85,6 @@ void LanguageSelect::_changeLanguage(const ListBoxItem& item)
     newFont = _defaultFont;
 
   emit onChange( lang, newFont, talksArchive );
-}
-
-void LanguageSelect::_apply()
-{
-  deleteLater();
-  emit onContinue();
 }
 
 }//end namespace dialog

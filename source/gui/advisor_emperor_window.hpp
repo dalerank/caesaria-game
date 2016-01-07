@@ -40,6 +40,7 @@ protected:
   void _showGiftWindow();
   void _showGiftHistory();
   void _updateRequests();
+  void _showRequestsHistory();
   void _sendMoney( int money );
   void _sendGift( int money );
   void _changeSalary(int money );

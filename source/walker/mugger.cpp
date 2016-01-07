@@ -86,9 +86,8 @@ void Mugger::timeStep(const unsigned long time)
   {
   case Impl::searchHouse:
   {
-    TilePos offset(10, 10);
-
-    HouseList houses = _city()->statistic().objects.find<House>( object::house, pos() - offset, pos() + offset );
+    HouseList houses = _city()->statistic().objects
+                                           .find<House>( object::house, pos(), 10 );
 
     std::map< int, HouseList > houseEpxens;
     for( auto house : houses )
@@ -148,9 +147,8 @@ void Mugger::timeStep(const unsigned long time)
   {
     if( game::Date::isDayChanged() )
     {
-      HouseList houses = _city()->statistic().objects.find<House>( object::house,
-                                                                   pos() - TilePos( 1, 1),
-                                                                   pos() + TilePos( 1, 1) );
+      HouseList houses = _city()->statistic().objects
+                                             .find<House>( object::house, pos(), 1 );
 
       for( auto house : houses )
       {

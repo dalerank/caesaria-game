@@ -37,6 +37,13 @@ void Ceres::updateRelation(float income, PlayerCityPtr city)
   RomeDivinity::updateRelation( income, city );
 }
 
+object::Type Ceres::templeType(Divinity::TempleSize size) const
+{
+  return size == bigTemple
+                    ? BIG_TEMPLE_TYPE(ceres)
+                    : SML_TEMPLE_TYPE(ceres);
+}
+
 Ceres::Ceres()
   : RomeDivinity( RomeDivinity::Ceres )
 {

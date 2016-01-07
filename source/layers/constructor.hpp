@@ -41,7 +41,7 @@ public:
   virtual void renderUi(gfx::Engine &engine);
   virtual void changeLayer(int type);
 
-  static LayerPtr create(gfx::Renderer &renderer, PlayerCityPtr city );
+  Constructor( gfx::Camera& camera, PlayerCityPtr city, gfx::Renderer* renderer );
 
   virtual ~Constructor();
 
@@ -57,8 +57,6 @@ private:
   void _drawBuildTile( const gfx::RenderInfo& renderInfo, gfx::Tile* tile);
   void _tryDrawBuildTile( const gfx::RenderInfo& renderInfo, gfx::Tile& tile);
   void _exitBuildMode();
-
-  Constructor( gfx::Renderer& renderer, PlayerCityPtr city );
 
   __DECLARE_IMPL(Constructor)
 };

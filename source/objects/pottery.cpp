@@ -42,7 +42,7 @@ bool Pottery::canBuild( const city::AreaInfo& areaInfo ) const
 bool Pottery::build( const city::AreaInfo& info )
 {
   Factory::build( info );
-  bool haveClaypit = !info.city->statistic().objects.count( object::clay_pit );
+  bool haveClaypit = info.city->statistic().objects.count( object::clay_pit ) > 0;
 
   _setError( haveClaypit ? "" : "##need_clay_pit##" );
 

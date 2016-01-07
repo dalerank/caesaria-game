@@ -24,6 +24,7 @@
 #include "world/nation.hpp"
 #include "typeset.hpp"
 #include "walker.hpp"
+#include "info.hpp"
 
 class WalkerHelper
 {
@@ -35,11 +36,12 @@ public:
   static std::string getPrettyTypename( walker::Type type );
   static std::string getNationName( world::Nation type );
   static world::Nation getNation( const std::string& name );
-  static gfx::Picture bigPicture( walker::Type type );
   static VariantMap getOptions( const std::string& name );
   static VariantMap getOptions( const walker::Type type );
   static bool isHuman( WalkerPtr wlk );
   static bool isAnimal( WalkerPtr wlk );
+
+  static const walker::Info& find( walker::Type type );
 
   void load( const vfs::Path& filename );
 

@@ -69,6 +69,13 @@ Dialog* Confirmation( Ui* ui,
                       Callback callback,
                       bool pauseGame = false);
 
+Dialog* Confirmation( Ui* ui,
+                      const std::string& title,
+                      const std::string& text ,
+                      Callback callbackOk,
+                      Callback callbackCancel,
+                      bool pauseGame = false);
+
 
 }//end namespace dialog
 

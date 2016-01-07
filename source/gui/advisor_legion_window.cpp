@@ -78,9 +78,9 @@ public:
     empireService.setIconOffset( Point( 4, 4 ) );
     empireService.setTooltipText( "##empire_service_tip##");
 
-    CONNECT_LOCAL( &gotoLegion,    onClicked(), LegionButton::_resolveMove2Legion       );
-    CONNECT_LOCAL( &return2fort,   onClicked(), LegionButton::_resolveReturnLegion2Fort );
-    CONNECT_LOCAL( &empireService, onClicked(), LegionButton::_resolveEmpireService     );
+    CONNECT_LOCAL( &gotoLegion,    onClicked(), LegionButton::_showLegion );
+    CONNECT_LOCAL( &return2fort,   onClicked(), LegionButton::_return2Fort );
+    CONNECT_LOCAL( &empireService, onClicked(), LegionButton::_empireService     );
   }
 
   virtual void _updateTexture()
@@ -116,9 +116,9 @@ public:
   } signal;
 
 private slots:
-  void _resolveMove2Legion() { emit signal.onShowLegion( _fort ); }
-  void _resolveReturnLegion2Fort() { emit signal.onLegionRetreat( _fort ); }
-  void _resolveEmpireService() { emit signal.onEmpireService( _fort ); }
+  void _showLegion() { emit signal.onShowLegion( _fort ); }
+  void _return2Fort() { emit signal.onLegionRetreat( _fort ); }
+  void _empireService() { emit signal.onEmpireService( _fort ); }
 
 private:
   FortPtr _fort;

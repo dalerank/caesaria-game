@@ -63,6 +63,8 @@ public:
   struct {
     bool buildings = true;
     bool trees = true;
+    bool rocks = true;
+    bool hideAny = false;
   } draw;
 
   struct {
@@ -82,6 +84,8 @@ public:
   };
 
   typedef std::vector<PictureInfo> Pictures;
+  typedef std::vector<LayerDrawPassPtr> Passes;
+  typedef std::map<int,Passes> PassesMap;
 
   Pictures pictures;
   Picture terraintPic;
@@ -92,6 +96,7 @@ public:
   Picture outline;
   Camera* camera;
   Font debugFont;
+  PassesMap passes;
 
   int posMode;
 };
@@ -100,12 +105,21 @@ void Layer::registerTileForRendering(Tile& tile)
 {
 }
 
-void Layer::renderUi(Engine& engine)
+void Layer::renderUi( Engine& engine )
 {
   __D_REF(d,Layer)
   if( !d.tooltip.text.empty() )
   {
     engine.draw( d.tooltip.image, d.cursor.last );
+  }
+
+  const auto& passes = d.passes[ LayerDrawPass::gui ];
+  Tile* tile = _currentTile();
+  if( !passes.empty() && tile != nullptr  )
+  {
+    RenderInfo rinfo = { engine, d.camera->offset() };
+    for( auto pass : passes )
+      pass->draw( rinfo, *tile );
   }
 }
 
@@ -401,22 +415,34 @@ void Layer::drawProminentTile( const RenderInfo& rinfo, Tile& tile, const int de
 
 void Layer::drawTile(const RenderInfo& rinfo, Tile& tile)
 {
-  __D_IMPL(_d,Layer)
+  __D_REF(_d,Layer)
   if( !tile.rendered() )
   {
     if( tile.rov().isValid() )
     {
       registerTileForRendering( tile );
 
-      bool breakBuilding = is_kind_of<Building>( tile.rov() ) && !_d->draw.buildings;
-      bool breakTree = is_kind_of<Tree>( tile.rov() ) && !_d->draw.trees;
+      if( _d.draw.hideAny )
+      {
+        bool breakBuilding = is_kind_of<Building>( tile.rov() ) && !_d.draw.buildings; ;
+        bool breakTree = is_kind_of<Tree>( tile.rov() ) && !_d.draw.trees;
 
-      if( !(breakBuilding || breakTree) )
+        if( !(breakBuilding || breakTree) )
+          drawOverlayedTile( rinfo, tile );
+      }
+      else
         drawOverlayedTile( rinfo, tile );
     }
     else
     {
-      drawLandTile( rinfo, tile );
+      if( _d.draw.hideAny )
+      {
+        bool breakRocks = tile.terrain().rock && !_d.draw.rocks;
+        if( !breakRocks )
+          drawLandTile( rinfo, tile );
+      }
+      else
+        drawLandTile( rinfo, tile );
     }
 
     tile.setRendered();
@@ -462,10 +488,14 @@ void Layer::drawLands( const RenderInfo& rinfo, Camera* camera )
 {
   const TilesArray& flatTiles = camera->flatTiles();
   const TilesArray& groundTiles = camera->groundTiles();
+  const TilesArray& subtrateTiles = camera->subtrateTiles();
 
   // FIRST PART: draw all flat land (walkable/boatable)
   for( auto tile : groundTiles )
     drawLandTile( rinfo, *tile );
+
+  for( auto tile : subtrateTiles )
+    drawSubtrateTile( rinfo, *tile );
 
   for( auto tile : flatTiles )
     drawFlatTile( rinfo, *tile );
@@ -475,6 +505,11 @@ void Layer::drawLandTile(const RenderInfo& rinfo, Tile &tile)
 {
   drawPass( rinfo, tile, Renderer::ground );
   drawPass( rinfo, tile, Renderer::groundAnimation );
+}
+
+void Layer::drawSubtrateTile(const RenderInfo& rinfo, Tile& tile)
+{
+  rinfo.engine.draw( _dfunc()->terraintPic, tile.mappos() + rinfo.offset );
 }
 
 void Layer::drawFlatTile(const RenderInfo& rinfo, Tile& tile)
@@ -496,6 +531,8 @@ void Layer::beforeRender(Engine&)
   __D_REF(d,Layer)
   d.draw.buildings = DrawOptions::instance().isFlag( DrawOptions::showBuildings );
   d.draw.trees = DrawOptions::instance().isFlag( DrawOptions::showTrees );
+  d.draw.rocks = DrawOptions::instance().isFlag( DrawOptions::showRocks );
+  d.draw.hideAny = !(d.draw.buildings && d.draw.rocks && d.draw.trees);
   d.pictures.clear();
 }
 
@@ -728,6 +765,8 @@ bool Layer::_isVisibleObject(object::Type ovType)
 Layer::WalkerTypes& Layer::_visibleWalkers() { return _dfunc()->visible.walkers; }
 int Layer::nextLayer() const{ return _dfunc()->nextLayer; }
 void Layer::destroy() {}
+
+void Layer::addDrawPass(int type, LayerDrawPassPtr pass) { _dfunc()->passes[ type ].push_back(pass); }
 Camera* Layer::_camera(){ return _dfunc()->camera; }
 PlayerCityPtr Layer::_city(){ return _dfunc()->city; }
 void Layer::changeLayer(int type) {}
@@ -787,6 +826,7 @@ DrawOptions::DrawOptions() : _helper(0)
   _O(showTrees)
   _O(overdrawOnBuild)
   _O(rotateEnabled)
+  _O(showRocks)
 #undef _O
 }
 

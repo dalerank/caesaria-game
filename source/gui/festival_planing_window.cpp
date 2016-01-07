@@ -81,7 +81,7 @@ public:
   {
     DivinityPtr divinity = rome::Pantheon::get( currentDivinity );
 
-    std::string text = fmt::format( "##hold_%s_festival##", divinity.isValid()
+    std::string text = fmt::format( "##hold_{}_festival##", divinity.isValid()
                                                                ? divinity->debugName()
                                                                : "unknown" );
     lbTitle->setText( _(text) );

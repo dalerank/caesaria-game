@@ -517,9 +517,8 @@ void EmpireMapWindow::Impl::showOpenRouteRequestWindow()
 {
   Dialog* dialog = Confirmation( gbox->ui(),
                                  _("##emp_open_trade_route##"),
-                                 _("##emp_pay_open_this_route_question##") );
-
-  CONNECT( dialog, onOk(), this, Impl::createTradeRoute );
+                                 _("##emp_pay_open_this_route_question##"),
+                                 makeDelegate( this, &Impl::createTradeRoute ) );
 }
 
 EmpireMapWindow::EmpireMapWindow(Widget* parent, int id, PlayerCityPtr city )
@@ -537,7 +536,7 @@ EmpireMapWindow::EmpireMapWindow(Widget* parent, int id, PlayerCityPtr city )
 
   _d->offset = game::Settings::get( empMapOffset ).toPoint();
 
-  WidgetEscapeCloser::insertTo( this );
+  WidgetClose::insertTo( this );
   GameAutoPause::insertTo( this );
 
   _d->initBorder( this );
@@ -666,7 +665,7 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
 
 void EmpireMapWindow::_changePosition()
 {
-  Point cursorPos = const_cast<EmpireMapWindow*>( this )->ui()->cursorPos() ;
+  Point cursorPos = ui()->cursorPos() ;
   world::ObjectPtr obj = _d->findObject( cursorPos );
 
   std::string text;

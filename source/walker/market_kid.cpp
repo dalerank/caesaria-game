@@ -105,7 +105,7 @@ void MarketKid::_reachedPathway()
 
   deleteLater();
 
-  auto market = _map().overlay( _d->marketPos ).as<Market>();
+  auto market = _map().overlay<Market>( _d->marketPos );
   if( market.isValid() )
   {
     market->goodStore().store( _d->basket, _d->basket.qty() );

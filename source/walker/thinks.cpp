@@ -61,12 +61,12 @@ std::string WalkerThinks::check(WalkerPtr walker, PlayerCityPtr city, const Stri
 
   if( walker.is<Animal>() )
   {
-    std::string text = fmt::format( "##animal_{0}_say##", WalkerHelper::getTypename( walker->type() ) );
+    std::string text = fmt::format( "##animal_{}_say##", walker->info().typeName() );
     return text;
   }
 
   Info::Parameters params = info->lastParams();
-  ThinksConstructor ret( WalkerHelper::getTypename( walker->type() ) );
+  ThinksConstructor ret( walker->info().typeName() );
   ret << own;
 
   ret.addIf( params[ Info::monthWithFood ] < 3,     "_so_hungry" )

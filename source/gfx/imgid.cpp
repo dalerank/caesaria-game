@@ -84,7 +84,10 @@ int fromResource( const std::string& pic_name )
   std::stringstream ss(pic_name.substr(pos+1));
   ss >> res_id;
 
-  if (res_pfx == ResourceGroup::plateau ){  res_id += 200; }
+  if (res_pfx == ResourceGroup::plateau )
+  {
+    res_id += 200;
+  }
   else if (res_pfx == config::rc.land1a) { res_id += 244; }
   else if (res_pfx == config::rc.land2a) { res_id += 547; }
   else if (res_pfx == config::rc.land3a) { res_id += 778; }

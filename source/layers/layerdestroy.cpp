@@ -38,6 +38,7 @@
 #include "objects/tree.hpp"
 #include "game/settings.hpp"
 #include "core/format.hpp"
+#include "gfx/tile_config.hpp"
 
 using namespace gfx;
 using namespace events;
@@ -88,7 +89,7 @@ void Destroy::_clearAll()
   std::set<Tile*> alsoDestroyed;
   for( auto tile : tiles4clear )
   {
-    Tile* master = tile->master() ? tile->master() : tile;
+    Tile* master = tile::master( tile );
     if( alsoDestroyed.count( master ) == 0 )
     {
       alsoDestroyed.insert( master );
@@ -374,18 +375,10 @@ void Destroy::drawTile(const RenderInfo& rinfo, Tile& tile)
   }
 }
 
-LayerPtr Destroy::create(Renderer &renderer, PlayerCityPtr city)
+Destroy::Destroy(Camera& camera, PlayerCityPtr city, gfx::Renderer* renderer)
+  : Layer( &camera, city ), _d( new Impl )
 {
-  LayerPtr ret( new Destroy( renderer, city ) );
-  ret->drop();
-
-  return ret;
-}
-
-Destroy::Destroy( Renderer& renderer, PlayerCityPtr city)
-  : Layer( renderer.camera(), city ), _d( new Impl )
-{
-  _d->renderer = &renderer;
+  _d->renderer = renderer;
   _d->shovelPic.load( "shovel", 1 );
   std::string rcLand = SETTINGS_STR( forbidenTile );
   _d->clearPic.load( rcLand, 2 );

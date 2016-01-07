@@ -175,7 +175,7 @@ void Font::setColor( NColor color )
 #endif
 }
 
-Font Font::clone(NColor color)
+Font Font::withColor(NColor color)
 {
   Font ret( *this );
   ret.setColor( color );

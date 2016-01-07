@@ -195,6 +195,11 @@ TilePos hash2pos(unsigned int hash)
   return TilePos( (hash >> 16 ) & 0xff, hash & 0xff );
 }
 
+Tile* master(Tile* tile)
+{
+  return tile->master() ? tile->master() : tile;
+}
+
 }//end namespace tile
 
 }//end namespace gfx
