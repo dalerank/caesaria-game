@@ -1,6 +1,6 @@
 ![CaesarIA](https://bitbucket-assetroot.s3.amazonaws.com/c/photos/2013/Nov/12/caesaria-logo-3368332030-11_avatar.png)
 
-Master: ![Build Status](https://travis-ci.org/dalerank/caesaria-game.svg?branch=stable) Linux: ![Build Status](https://travis-ci.org/dalerank/caesaria-game.svg?branch=stable) Windows: ![Master:Windows](https://travis-ci.org/dalerank/caesaria-game.svg?branch=windows-build) Android: ![Build Status](https://travis-ci.org/dalerank/caesaria-game.svg?branch=android-build) Macos: ![Build Status](https://travis-ci.org/dalerank/caesaria-game.svg?branch=macos-build)
+Master: ![Build Status](https://travis-ci.org/dalerank/caesaria-game.svg?branch=master) Linux: ![Build Status](https://travis-ci.org/dalerank/caesaria-game.svg?branch=stable) Windows: ![Master:Windows](https://travis-ci.org/dalerank/caesaria-game.svg?branch=windows-build) Android: ![Build Status](https://travis-ci.org/dalerank/caesaria-game.svg?branch=android-build) Macos: ![Build Status](https://travis-ci.org/dalerank/caesaria-game.svg?branch=macos-build)
 
 ![IndieDb Rating](http://button.indiedb.com/popularity/medium/games/27823.png)
 
