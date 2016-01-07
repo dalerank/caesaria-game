@@ -79,6 +79,7 @@ public:
              bool reverse = false, const int step = 1);
   void load( const std::string& alias );
   void load( const VariantMap& stream );
+  void simple( const VariantMap& stream );
 
   VariantMap save() const;
 

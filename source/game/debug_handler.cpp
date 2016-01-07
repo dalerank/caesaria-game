@@ -66,6 +66,7 @@
 #include "objects/factory.hpp"
 #include "events/warningmessage.hpp"
 #include "sound/themeplayer.hpp"
+#include "city/build_options.hpp"
 #include "objects/house_spec.hpp"
 
 using namespace gfx;
@@ -81,6 +82,7 @@ enum {
   goods,
   factories,
   other,
+  buildings,
   disaster,
   level,
   in_city,
@@ -174,11 +176,21 @@ enum {
   reload_buildings_config,
   toggle_show_buildings,
   toggle_show_trees,
+  toggle_show_rocks,
   forest_fire,
   forest_grow,
   increase_max_level,
   decrease_max_level,
+  increase_house_level,
+  decrease_house_level,
+  lock_house_level,
   enable_constructor_mode,
+  show_requests,
+  show_attacks,
+  reset_fire_risk,
+  reset_collapse_risk,
+  toggle_shipyard_enable,
+  toggle_reservoir_enable,
   next_theme
 };
 
@@ -194,6 +206,7 @@ public:
   void addGoods2Wh( good::Product type );
   void reloadConfigs();
   void runScript(std::string filename);
+  void toggleBuildOptions(object::Type type);
   gui::ContextMenu* debugMenu;
 
 #ifdef DEBUG
@@ -274,6 +287,9 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( other, enable_constructor_mode )
   ADD_DEBUG_EVENT( other, next_theme )
 
+  ADD_DEBUG_EVENT( buildings, toggle_shipyard_enable )
+  ADD_DEBUG_EVENT( buildings, toggle_reservoir_enable )
+
   ADD_DEBUG_EVENT( disaster, random_fire )
   ADD_DEBUG_EVENT( disaster, random_collapse )
   ADD_DEBUG_EVENT( disaster, random_plague )
@@ -284,6 +300,8 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( level, fail_mission )
   ADD_DEBUG_EVENT( level, change_emperor )
   ADD_DEBUG_EVENT( level, property_browser )
+  ADD_DEBUG_EVENT( level, show_requests )
+  ADD_DEBUG_EVENT( level, show_attacks )
 
   ADD_DEBUG_EVENT( empire, send_merchants )
 
@@ -298,9 +316,15 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( in_city, decrease_sentiment )
   ADD_DEBUG_EVENT( in_city, increase_sentiment )
   ADD_DEBUG_EVENT( in_city, forest_grow )
+  ADD_DEBUG_EVENT( in_city, reset_fire_risk )
+  ADD_DEBUG_EVENT( in_city, reset_collapse_risk )
 
   ADD_DEBUG_EVENT( house, increase_max_level )
   ADD_DEBUG_EVENT( house, decrease_max_level )
+  ADD_DEBUG_EVENT( house, increase_house_level )
+  ADD_DEBUG_EVENT( house, decrease_house_level )
+  ADD_DEBUG_EVENT( house, lock_house_level )
+
 
   ADD_DEBUG_EVENT( options, run_script )
   ADD_DEBUG_EVENT( options, all_sound_off )
@@ -318,6 +342,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( draw, toggle_show_walkable_tiles )
   ADD_DEBUG_EVENT( draw, toggle_show_locked_tiles )
   ADD_DEBUG_EVENT( draw, toggle_show_flat_tiles )
+  ADD_DEBUG_EVENT( draw, toggle_show_rocks )
 #undef ADD_DEBUG_EVENT
 
 #ifdef DEBUG
@@ -330,6 +355,14 @@ void DebugHandler::setVisible(bool visible)
 {
   if( _d->debugMenu != 0)
     _d->debugMenu->setVisible( visible );
+}
+
+void DebugHandler::Impl::toggleBuildOptions( object::Type type )
+{
+  city::development::Options options;
+  options = game->city()->buildOptions();
+  options.setBuildingAvailable( type, !options.isBuildingAvailable( type ) );
+  game->city()->setBuildOptions( options );
 }
 
 DebugHandler::~DebugHandler() {}
@@ -430,6 +463,9 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
 
+  case toggle_shipyard_enable: toggleBuildOptions( object::shipyard );  break;
+  case toggle_reservoir_enable: toggleBuildOptions( object::reservoir );  break;
+
   case next_theme:
   {
     auto player = game->city()->statistic().services.find<audio::ThemePlayer>();
@@ -452,7 +488,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case property_browser:
   {
-    int hash = Hash( CAESARIA_STR_A(PropertyWorkspace) );
+    int hash = Hash( TEXT(PropertyWorkspace) );
     PropertyWorkspace* browser = safety_cast<PropertyWorkspace*>( game->gui()->findWidget( hash ) );
     if( !browser )
     {
@@ -471,6 +507,22 @@ void DebugHandler::Impl::handleEvent(int event)
     forest = forest.random( 2 );
     for( auto tree : forest )
       tree->burn();
+  }
+  break;
+
+  case reset_fire_risk:
+  {
+    BuildingList buildings = game->city()->overlays().select<Building>();
+    for( auto building : buildings )
+      building->setState( pr::fire, 0 );
+  }
+  break;
+
+  case reset_collapse_risk:
+  {
+    BuildingList buildings = game->city()->overlays().select<Building>();
+    for( auto building : buildings )
+      building->setState( pr::damage, 0 );
   }
   break;
 
@@ -502,6 +554,15 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
 
+  case increase_house_level:
+  case decrease_house_level:
+  {
+    HouseList houses = game->city()->overlays().select<House>();
+    for( auto house : houses )
+      house->__debugChangeLevel( event == increase_house_level ? 1 : -1 );
+  }
+  break;
+
   case add_player_money:    game->player()->appendMoney( 1000 );  break;
 
   case add_favor:
@@ -514,9 +575,9 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case show_fest:
   {
-    city::FestivalPtr fest = game->city()->statistic().services.find<city::Festival>();
-    if( fest.isValid() )
-      fest->now();
+    city::FestivalPtr festivals = game->city()->statistic().services.find<city::Festival>();
+    if( festivals.isValid() )
+      festivals->doFestivalNow();
   }
   break;
 
@@ -606,7 +667,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case kill_all_enemies:
   {
-     EnemySoldierList enemies = game->city()->statistic().walkers.find<EnemySoldier>( walker::any, gfx::tilemap::invalidLocation() );
+     EnemySoldierList enemies = game->city()->statistic().walkers.find<EnemySoldier>( walker::any, TilePos::invalid() );
 
      for( auto enemy : enemies )
        enemy->die();
@@ -720,8 +781,6 @@ void DebugHandler::Impl::handleEvent(int event)
     auto& dialog = game->gui()->add<dialog::LoadFile>( Rect(),
                                                        vfs::Path( ":/scripts/" ), ".model",
                                                        -1 );
-    dialog.moveTo( Widget::parentCenter );
-
     CONNECT( &dialog, onSelectFile(), this, Impl::runScript );
     dialog.setTitle( "Select file" );
     dialog.setText( "open" );
@@ -738,6 +797,7 @@ void DebugHandler::Impl::handleEvent(int event)
   case toggle_show_flat_tiles: DrawOptions::instance().toggle( DrawOptions::showFlatTiles );  break;
   case toggle_show_buildings : DrawOptions::instance().toggle( DrawOptions::showBuildings ); break;
   case toggle_show_trees : DrawOptions::instance().toggle( DrawOptions::showTrees ); break;
+  case toggle_show_rocks : DrawOptions::instance().toggle( DrawOptions::showRocks ); break;
 
   case add_soldiers_in_fort:
   {

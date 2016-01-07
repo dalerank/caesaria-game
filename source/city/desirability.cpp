@@ -35,7 +35,7 @@ void Desirability::update( PlayerCityPtr r, OverlayPtr overlay, bool onBuild )
 
   //change desirability in selfarea
   TilesArea area( tilemap, overlay->pos(), overlay->size() );
-  for( auto& tile : area )
+  for( auto tile : area )
   {
     tile->changeParam( Tile::pDesirability, mul * dsrbl.base );
   }
@@ -53,5 +53,11 @@ void Desirability::update( PlayerCityPtr r, OverlayPtr overlay, bool onBuild )
 
     current += mul * dsrbl.step;
   }
+}
+
+const Desirability&Desirability::invalid()
+{
+  static Desirability inv;
+  return inv;
 }
 

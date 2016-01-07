@@ -26,14 +26,12 @@ namespace citylayer
 class Troubles : public Layer
 {
 public:
+  Troubles( gfx::Camera& camera, PlayerCityPtr city, int type );
   virtual int type() const;
   virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
-
-  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city, int type );
   virtual void handleEvent(NEvent& event);
 
 private:
-  Troubles( gfx::Camera& camera, PlayerCityPtr city, int type );
   int _type;
 };
 

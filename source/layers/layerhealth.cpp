@@ -19,9 +19,11 @@
 #include "objects/house.hpp"
 #include "objects/house_spec.hpp"
 #include "constants.hpp"
+#include "objects/health.hpp"
 #include "gfx/tilemap_camera.hpp"
 #include "city/statistic.hpp"
 #include "core/priorities.hpp"
+#include "gfx/textured_path.hpp"
 #include "core/gettext.hpp"
 #include "core/event.hpp"
 
@@ -30,17 +32,33 @@ using namespace gfx;
 namespace citylayer
 {
 
-int Health::type() const {  return _type; }
+class Health::Impl
+{
+public:
+  struct
+  {
+    OverlayPtr selected;
+    OverlayPtr underMouse;
+  } overlay;
+
+  DateTime lastUpdate;
+  std::vector<TilesArray> ways;
+
+  object::TypeSet flags;
+  int type;
+};
+
+int Health::type() const { return _d->type; }
 
 int Health::_getLevelValue( HousePtr house )
 {
-  switch(_type)
+  switch(_d->type)
   {
-  case citylayer::health: return (int) house->state( pr::health );
-  case citylayer::doctor: return (int) house->getServiceValue( Service::doctor );
+  case citylayer::health:   return (int) house->state( pr::health );
+  case citylayer::doctor:   return (int) house->getServiceValue( Service::doctor );
   case citylayer::hospital: return (int) house->getServiceValue( Service::hospital );
-  case citylayer::barber: return (int) house->getServiceValue( Service::barber );
-  case citylayer::baths: return (int) house->getServiceValue( Service::baths );
+  case citylayer::barber:   return (int) house->getServiceValue( Service::barber );
+  case citylayer::baths:    return (int) house->getServiceValue( Service::baths );
   }
 
   return 0;
@@ -50,8 +68,7 @@ void Health::drawTile( const RenderInfo& rinfo, Tile& tile)
 {
   if( tile.overlay().isNull() )
   {
-    drawPass( rinfo, tile, Renderer::ground );
-    drawPass( rinfo, tile, Renderer::groundAnimation );
+    drawLandTile( rinfo, tile );
   }
   else
   {
@@ -64,7 +81,7 @@ void Health::drawTile( const RenderInfo& rinfo, Tile& tile)
       // Base set of visible objects
       needDrawAnimations = true;
     }
-    else if( _flags.count( overlay->type() ) )
+    else if( _d->flags.count( overlay->type() ) )
     {
       needDrawAnimations = true;
     }
@@ -77,12 +94,12 @@ void Health::drawTile( const RenderInfo& rinfo, Tile& tile)
 
       if( !needDrawAnimations )
       {
-        drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
+        drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.house );
       }
     }
     else  //other buildings
     {
-      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base );
+      drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.constr );
     }
 
     if( needDrawAnimations )
@@ -100,12 +117,16 @@ void Health::drawTile( const RenderInfo& rinfo, Tile& tile)
   tile.setRendered();
 }
 
-LayerPtr Health::create(TilemapCamera& camera, PlayerCityPtr city, int type )
+void Health::_updatePaths()
 {
-  LayerPtr ret( new Health( camera, city, type ) );
-  ret->drop();
-
-  return ret;
+  auto wbuilding = _d->overlay.selected.as<HealthBuilding>();
+  if( wbuilding.isValid() )
+  {
+    _d->ways.clear();
+    const WalkerList& walkers = wbuilding->walkers();
+    for( auto walker : walkers )
+      _d->ways.push_back( walker->pathway().allTiles() );
+  }
 }
 
 void Health::handleEvent(NEvent& event)
@@ -124,7 +145,7 @@ void Health::handleEvent(NEvent& event)
         if( house != 0 )
         {
           std::string typeName;
-          switch( _type )
+          switch( _d->type )
           {
           case citylayer::health: typeName = "health"; break;
           case citylayer::doctor: typeName = "doctor"; break;
@@ -146,9 +167,24 @@ void Health::handleEvent(NEvent& event)
             text = levelName + typeName + "_access##";
           }
         }
+
+        _d->overlay.underMouse = tile->overlay();
       }
 
       _setTooltipText( _(text) );
+    }
+    break;
+
+    case mouseLbtnPressed:
+    {
+      if( _d->overlay.underMouse.is<HealthBuilding>() )
+      {
+        if( _d->flags.count( object::typeOrDefault( _d->overlay.underMouse ) ) )
+        {
+          _d->overlay.selected = _d->overlay.underMouse;
+          _updatePaths();
+        }
+      }
     }
     break;
 
@@ -159,37 +195,46 @@ void Health::handleEvent(NEvent& event)
   Layer::handleEvent( event );
 }
 
-Health::Health(Camera& camera, PlayerCityPtr city, int type)
-  : Info( camera, city, 9 )
+void Health::render(Engine& engine)
 {
-  _type = type;
+  Info::render( engine );
+
+  RenderInfo rinfo{ engine, _camera()->offset() };
+  for( auto& tiles : _d->ways )
+    TexturedPath::draw( tiles, rinfo );
+}
+
+Health::Health(Camera& camera, PlayerCityPtr city, int type)
+  : Info( camera, city, 9 ), _d( new Impl )
+{
+  _d->type = type;
 
   switch( type )
   {
   case citylayer::health:
-    _flags << object::clinic << object::hospital
-           << object::barber << object::baths;
+    _d->flags << object::clinic << object::hospital
+              << object::barber << object::baths;
     _visibleWalkers() << walker::doctor << walker::surgeon
                       << walker::barber << walker::bathlady;
   break;
 
   case citylayer::doctor:
-    _flags << object::clinic;
+    _d->flags << object::clinic;
     _visibleWalkers() << walker::doctor;
   break;
 
   case citylayer::hospital:
-    _flags << object::hospital;
+    _d->flags << object::hospital;
     _visibleWalkers() << walker::surgeon;
   break;
 
   case citylayer::barber:
-    _flags << object::barber;
+    _d->flags << object::barber;
     _visibleWalkers() << walker::barber;
   break;
 
   case citylayer::baths:
-    _flags << object::baths;
+    _d->flags << object::baths;
     _visibleWalkers() << walker::bathlady;
   break;
   }

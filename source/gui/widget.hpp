@@ -195,6 +195,8 @@ public:
   //! Draws the element and its children.
   virtual void draw( gfx::Engine& painter );
 
+  virtual void debugDraw( gfx::Engine& painter );
+
   virtual void animate( unsigned int timeMs );
 
   //! Destructor

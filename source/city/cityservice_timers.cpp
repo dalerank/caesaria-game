@@ -57,7 +57,7 @@ void Timers::reset() { _d->timers.clear(); }
 
 TimerPtr Timers::find(int id) const
 {
-  for( auto&& timer : _d->timers )
+  for( auto& timer : _d->timers )
     if( timer->id() == id )
       return timer;
 

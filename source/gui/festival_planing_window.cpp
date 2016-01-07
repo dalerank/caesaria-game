@@ -69,8 +69,8 @@ public:
   {
     Size imgSize( 81, 91 );
     auto& btn = parent->add<TexturedButton>( Point( column * 100 + 60, 48),
-                                             imgSize, divId + type, ResourceGroup::festivalimg,
-                                             startPic, startPic, startPic+5, startPic+5 );
+                                             imgSize, divId + type, gui::miniature.rc,
+                                             TexturedButton::States( startPic, startPic, startPic+5, startPic+5 ) );
     btn.setIsPushButton( true );
     btn.setTooltipText( _("##arrange_festiable_for_this_god##") );
     godBtns.push_back( &btn );
@@ -81,9 +81,9 @@ public:
   {
     DivinityPtr divinity = rome::Pantheon::get( currentDivinity );
 
-    std::string text = utils::format( 0xff, "##hold_%s_festival##", divinity.isValid()
-                                                                    ? divinity->debugName().c_str()
-                                                                    : "unknown" );
+    std::string text = fmt::format( "##hold_{}_festival##", divinity.isValid()
+                                                               ? divinity->debugName()
+                                                               : "unknown" );
     lbTitle->setText( _(text) );
   }
 };
@@ -139,18 +139,17 @@ FestivalPlanning::FestivalPlanning( Widget* parent, int id, const Rect& rectangl
     _d->btnGreatFestival->setText( fmt::format( "{} {}", _("##great_festival##"), _d->cost ));
   }
 
-  add<TexturedButton>( Point( 52, height() - 52 ), Size( 24 ), -1, config::id.menu.helpInf );
-  auto& btnYes = add<TexturedButton>( Point( 350, height() - 50 ), Size( 39, 26), -1, config::id.menu.ok );
-  auto& btnNo = add<TexturedButton>( Point( 350 + 43, height() - 50 ), Size( 39, 26), -1, config::id.menu.cancel );
-  auto& btnExit = add<TexturedButton>( Point( width() - 74, height() - 52 ), Size( 24 ), -1, config::id.menu.exitInf );
+  add<HelpButton>( Point( 52, height() - 52 ), "festival_adv" );
+  auto& btnYes = add<TexturedButton>( Point( 350, height() - 50 ), Size( 39, 26), -1, gui::button.ok );
+  auto& btnNo = add<TexturedButton>( Point( 350 + 43, height() - 50 ), Size( 39, 26), -1, gui::button.cancel );
+  add<ExitButton>( Point( width() - 74, height() - 52 ), Widget::noId );
 
   btnYes.setTooltipText( _("##new_festival##") );
   btnNo.setTooltipText( _("##donot_organize_festival##") );
 
-  CONNECT( &btnExit,onClicked(), this, FestivalPlanning::deleteLater );
-  CONNECT( &btnNo,  onClicked(), this, FestivalPlanning::deleteLater );
-  CONNECT( &btnYes, onClicked(), this, FestivalPlanning::_assignFestival );
-  CONNECT( &btnYes, onClicked(), this, FestivalPlanning::deleteLater );
+  CONNECT_LOCAL( &btnNo,  onClicked(), FestivalPlanning::deleteLater );
+  CONNECT_LOCAL( &btnYes, onClicked(), FestivalPlanning::_assignFestival );
+  CONNECT_LOCAL( &btnYes, onClicked(), FestivalPlanning::deleteLater );
 }
 
 void FestivalPlanning::draw( gfx::Engine& painter )

@@ -53,7 +53,7 @@ Updater::Updater(const UpdaterOptions& options, vfs::Path executable) :
 
   MirrorDownload::InitRandomizer();
 
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
   if( !_executable.haveExtension() )
   {
     Logger::warning( "Adding EXE extension to executable: " + _executable.toString() );
@@ -70,14 +70,14 @@ Updater::~Updater()
 void Updater::setBinaryAsExecutable()
 {
   std::vector<vfs::Path> executableNames;
-#ifdef CAESARIA_PLATFORM_WIN
+#ifdef GAME_PLATFORM_WIN
   executableNames.push_back( "caesaria.exe" );
-#elif defined(CAESARIA_PLATFORM_LINUX)
+#elif defined(GAME_PLATFORM_LINUX)
   executableNames.push_back( "caesaria.linux" );
   executableNames.push_back( "caesaria.linux64" );
-#elif defined(CAESARIA_PLATFORM_MACOSX)
+#elif defined(GAME_PLATFORM_MACOSX)
   executableNames.push_back( "caesaria.macos" );
-#elif defined(CAESARIA_PLATFORM_HAIKU)
+#elif defined(GAME_PLATFORM_HAIKU)
   executableNames.push_back( "caesaria.haiku" );
 #endif
 
@@ -806,7 +806,7 @@ void Updater::cancelDownloads()
 
 void SteamHelper::checkDepsAndStart()
 {
-#ifdef CAESARIA_PLATFORM_MACOSX
+#ifdef GAME_PLATFORM_MACOSX
   vfs::Path sdl2relpath = "Library/Frameworks/SDL2.framework";
   vfs::Path sdl2abspath = vfs::Directory::userDir()/sdl2relpath;
 
@@ -850,7 +850,7 @@ void SteamHelper::checkDepsAndStart()
 
   system( "./caesaria.macos &" );
   exit(EXIT_SUCCESS);
-#elif defined(CAESARIA_PLATFORM_WIN)
+#elif defined(GAME_PLATFORM_WIN)
   STARTUPINFOA siStartupInfo;
   PROCESS_INFORMATION piProcessInfo;
 
@@ -866,7 +866,7 @@ void SteamHelper::checkDepsAndStart()
   BOOL success = CreateProcessA( NULL, "caesaria.exe", NULL, NULL,  false, 0, NULL,
                                  parentPath.toCString(), &siStartupInfo, &piProcessInfo);
 
-#elif defined(CAESARIA_PLATFORM_LINUX)
+#elif defined(GAME_PLATFORM_LINUX)
   system( "./caesaria.linux &" );
   exit(EXIT_SUCCESS);
 #endif

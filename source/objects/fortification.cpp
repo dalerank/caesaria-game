@@ -148,7 +148,7 @@ const Picture& Fortification::picture(const city::AreaInfo& areaInfo) const
   if (!tmap.isInside(tile_pos))
   {
     static Picture ret;
-    ret.load( ResourceGroup::aqueduct, 121 );
+    ret.load( config::rc.aqueduct, 121 );
     return ret;
   }
 
@@ -214,7 +214,7 @@ const Picture& Fortification::picture(const city::AreaInfo& areaInfo) const
   for (int i = 0; i < direction::count; ++i)
   {
     if (!is_border[i] &&
-        ( (overlay_d[i].isValid() && overlay_d[i]->type() == object::fortification) || is_busy[i]))
+        ( ( object::typeOrDefault( overlay_d[i] ) == object::fortification) || is_busy[i]))
     {
       switch (i)
       {

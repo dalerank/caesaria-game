@@ -131,7 +131,7 @@ VariantMap Dispatcher::save() const
 void Dispatcher::load(const VariantMap& stream)
 {
   VariantMap vm_items = stream.get( "items" ).toMap();
-  for( auto& item : vm_items )
+  for( const auto& item : vm_items )
     add( item.second.toMap(), false );
 
   VARIANT_LOAD_TIME_D( _d, lastRequestCancelDate, stream )

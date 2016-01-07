@@ -29,8 +29,9 @@
 #include "objects/house_spec.hpp"
 #include "city/statistic.hpp"
 #include "objects/house.hpp"
-#include "texturedbutton.hpp"
 #include "dictionary.hpp"
+#include "environment.hpp"
+#include "texturedbutton.hpp"
 #include "religion/pantheon.hpp"
 #include "game/gamedate.hpp"
 #include "objects/constants.hpp"
@@ -51,20 +52,27 @@ class Religion::Impl
 {
 public:
   Label* lbReligionAdvice;
-  TexturedButton* btnHelp;
   Size labelSize = Size( 550, 20 );
 
-  ReligionInfoLabel* addInfo( Widget* parent, PlayerCityPtr city,
-                              const object::Type small, const object::Type big,
-                              DivinityPtr divinity,
-                              const Point& offset )
+  ReligionDetails* addInfo( Widget* parent, PlayerCityPtr city,
+                            DivinityPtr divinity,
+                            const Point& offset )
   {
-    int small_n = city->statistic().objects.find<ServiceBuilding>( small ).size();
-    int big_n = city->statistic().objects.find<ServiceBuilding>( big ).size();
+    object::Type smallType = object::oracle;
+    object::Type bigType = object::oracle;
 
-    return new ReligionInfoLabel( parent, Rect( offset, labelSize ),
-                                  divinity,
-                                  small_n, big_n );
+    if( divinity.isValid() )
+    {
+      smallType = divinity->templeType( Divinity::smallTemple );
+      bigType = divinity->templeType( Divinity::bigTemple );
+    }
+
+    int small_n = city->statistic().objects.count( smallType );
+    int big_n = city->statistic().objects.count( bigType );
+
+    return &parent->add<ReligionDetails>( Rect( offset, labelSize ),
+                                          divinity,
+                                          small_n, big_n );
   }
 
   void updateReligionAdvice( PlayerCityPtr city );
@@ -80,18 +88,25 @@ Religion::Religion(PlayerCityPtr city, Widget* parent, int id )
 
   Point startPoint( 42, 65 );
 
-  d.addInfo( this, city, object::small_ceres_temple, object::big_ceres_temple, rome::Pantheon::ceres(), startPoint );
-  d.addInfo( this, city, object::small_neptune_temple, object::big_neptune_temple, rome::Pantheon::neptune(), startPoint + Point( 0, 20) );
-  d.addInfo( this, city, object::small_mercury_temple, object::big_mercury_temple, rome::Pantheon::mercury(), startPoint + Point( 0, 40) );
-  d.addInfo( this, city, object::small_mars_temple, object::big_mars_temple, rome::Pantheon::mars(), startPoint + Point( 0, 60) );
-  d.addInfo( this, city, object::small_venus_temple, object::big_venus_temple, rome::Pantheon::venus(), startPoint + Point( 0, 80) );
-  d.addInfo( this, city, object::oracle, object::oracle, DivinityPtr(), startPoint + Point( 0, 100) );
+  std::vector<DivinityPtr> divinities = { rome::Pantheon::ceres(),
+                                          rome::Pantheon::neptune(),
+                                          rome::Pantheon::mercury(),
+                                          rome::Pantheon::mars(),
+                                          rome::Pantheon::venus(),
+                                          DivinityPtr() };
+
+  int index = 0;
+  for (auto divn : divinities)
+  {
+	  d.addInfo(this, city, divn, startPoint + Point(0, 20) * index);
+	  index++;
+  }
 
   GET_DWIDGET_FROM_UI( &d, lbReligionAdvice )
-  GET_DWIDGET_FROM_UI( &d, btnHelp )
 
   d.updateReligionAdvice( city );
-  CONNECT( d.btnHelp, onClicked(), this, Religion::_showHelp );
+
+  LINK_WIDGET_LOCAL_ACTION( TexturedButton*, btnHelp, onClicked(), Religion::_showHelp );
 }
 
 void Religion::draw(gfx::Engine& painter )
@@ -102,10 +117,7 @@ void Religion::draw(gfx::Engine& painter )
   Window::draw( painter );
 }
 
-void Religion::_showHelp()
-{
-  DictionaryWindow::show( this, "religion_advisor" );
-}
+void Religion::_showHelp() { ui()->add<DictionaryWindow>( "religion_advisor" ); }
 
 void Religion::Impl::updateReligionAdvice(PlayerCityPtr city)
 {

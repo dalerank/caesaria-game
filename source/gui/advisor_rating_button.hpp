@@ -39,7 +39,7 @@ public:
   virtual void setupUI(const VariantMap &ui);
 
 protected:
-  virtual void _updateTextPic();
+  virtual void _updateTexture();
 
 private:
   int _value;

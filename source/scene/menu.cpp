@@ -34,7 +34,7 @@
 #include "core/logger.hpp"
 #include "core/foreach.hpp"
 #include "vfs/directory.hpp"
-#include "gui/label.hpp"
+#include "gui/fade.hpp"
 #include "gui/listbox.hpp"
 #include "core/locale.hpp"
 #include "core/saveadapter.hpp"
@@ -97,8 +97,8 @@ public:
   void quitGame();
   void selectFile( std::string fileName );
   void setPlayerName( std::string name );
-  void openSteamPage() { OSystem::openUrl( "http://store.steampowered.com/app/327640" ); }
-  void openHomePage() { OSystem::openUrl( "www.caesaria.net" ); }
+  void openSteamPage();
+  void openHomePage();
   void showMapSelectDialog();
   void showSaveSelectDialog();
   void changePlayerName();
@@ -114,8 +114,9 @@ public:
   void changePlayerNameIfNeed(bool force=false);
   void reload();
   void restart();
-  gui::Ui& ui();
   void openDlcDirectory(Widget* sender);
+  void showLogFile();
+  gui::Ui& ui();
 };
 
 void StartMenu::Impl::showSaveSelectDialog()
@@ -135,6 +136,13 @@ void StartMenu::Impl::showSaveSelectDialog()
 }
 
 void StartMenu::Impl::changePlayerName() { changePlayerNameIfNeed(true); }
+
+void StartMenu::Impl::showLogFile()
+{
+  vfs::Directory logfile = SETTINGS_STR( workDir );
+  logfile = logfile/SETTINGS_STR( logfile );
+  OSystem::openUrl( logfile.toString(), steamapi::ld_prefix() );
+}
 
 void StartMenu::Impl::changePlayerNameIfNeed(bool force)
 {
@@ -235,14 +243,13 @@ void StartMenu::Impl::showLanguageOptions()
                                                               SETTINGS_STR( language ) );
   languageSelectDlg.setDefaultFont( SETTINGS_STR( defaultFont ) );
 
-  CONNECT( &languageSelectDlg, onChange,   this, Impl::changeLanguage )
-  CONNECT( &languageSelectDlg, onContinue, this, Impl::reload         )
+  CONNECT_LOCAL( &languageSelectDlg, onChange,   Impl::changeLanguage )
+  CONNECT_LOCAL( &languageSelectDlg, onContinue, Impl::reload         )
 }
 
 void StartMenu::Impl::showPackageOptions()
 {
-  auto& packageOptionsDlg = ui().add<dialog::PackageOptions>( Rect() );
-  packageOptionsDlg.setModal();
+  ui().add<dialog::PackageOptions>( Rect() );
 }
 
 void StartMenu::Impl::changeLanguage(std::string lang, std::string newFont, std::string sounds)
@@ -274,9 +281,9 @@ void StartMenu::Impl::startCareer()
   auto& selectPlayerNameDlg = ui().add<dialog::ChangePlayerName>();
   selectPlayerNameDlg.setName( playerName );
 
-  CONNECT( &selectPlayerNameDlg, onNameChange(), this, Impl::setPlayerName );
-  CONNECT( &selectPlayerNameDlg, onContinue(),   this, Impl::handleNewGame );
-  CONNECT( &selectPlayerNameDlg, onClose(),      this, Impl::showMainMenu  );
+  CONNECT_LOCAL( &selectPlayerNameDlg, onNameChange(), Impl::setPlayerName );
+  CONNECT_LOCAL( &selectPlayerNameDlg, onContinue(),   Impl::handleNewGame );
+  CONNECT_LOCAL( &selectPlayerNameDlg, onClose(),      Impl::showMainMenu  );
 }
 
 void StartMenu::Impl::handleNewGame()
@@ -328,7 +335,8 @@ void StartMenu::Impl::showCredits()
                          " ",
                          _("##localization##"),
                          " ",
-                         "Alexander Klimenko, Manuel Alvarez, Artem Tolmachev, Peter Willington",
+                         "Alexander Klimenko, Manuel Alvarez, Artem Tolmachev, Peter Willington, Leszek Bochenek",
+                         "Michele Ribechini",
                          " ",
                          _("##thanks_to##"),
                          " ",
@@ -348,15 +356,14 @@ void StartMenu::Impl::showCredits()
                          "" };
 
   Size size = ui().vsize();
-  Label& frame = ui().add<Label>( Rect( Point( 0, 0), size ), "", false, gui::Label::bgSimpleBlack );
-  WidgetEscapeCloser::insertTo( &frame );
-  frame.setAlpha( 0xa0 );
+  Fade& frame = ui().add<Fade>( 0xA0 );
+  WidgetClose::insertTo( &frame, KEY_RBUTTON );
   int h = size.height();
   for( int i=0; !strs[i].empty(); i++ )
   {
     Label& lb = frame.add<Label>( Rect( 0, h + i * 20, size.width(), h + (i + 1) * 20), strs[i] );
     lb.setTextAlignment( align::center, align::center );
-    lb.setFont( Font::create( FONT_2_WHITE ) );
+    lb.setFont( FONT_2_WHITE );
     lb.setSubElement( true );
     auto& animator = lb.add<PositionAnimator>( WidgetAnimator::removeSelf | WidgetAnimator::removeParent, Point( 0, -20), 10000 );
     animator.setSpeed( PointF( 0, -0.5 ) );
@@ -414,6 +421,7 @@ void StartMenu::Impl::showOptionsMenu()
   ADD_MENU_BUTTON( "##mainmenu_sound##",    Impl::showSoundOptions )
   ADD_MENU_BUTTON( "##mainmenu_package##",  Impl::showPackageOptions )
   ADD_MENU_BUTTON( "##mainmenu_plname##",   Impl::changePlayerName )
+  ADD_MENU_BUTTON( "##mainmenu_showlog##",  Impl::showLogFile )
   ADD_MENU_BUTTON( "##cancel##",            Impl::showMainMenu )
 }
 
@@ -512,6 +520,8 @@ void StartMenu::Impl::selectFile(std::string fileName)
 }
 
 void StartMenu::Impl::setPlayerName(std::string name) { SETTINGS_SET_VALUE( playerName, Variant( name ) ); }
+void StartMenu::Impl::openSteamPage() { OSystem::openUrl( "http://store.steampowered.com/app/327640", steamapi::ld_prefix() ); }
+void StartMenu::Impl::openHomePage() { OSystem::openUrl( "http://www.caesaria.net", steamapi::ld_prefix() ); }
 
 void StartMenu::Impl::showMapSelectDialog()
 {
@@ -578,10 +588,10 @@ void StartMenu::initialize()
 
   Size scrSize = _d->ui().vsize();
   auto& btnHomePage = _d->ui().add<TexturedButton>( Point( scrSize.width() - 128, scrSize.height() - 100 ), Size( 128 ), -1,
-                                                    "logo_rdt", 1, 2, 2, 2 );
+                                                    "logo_rdt", TexturedButton::States( 1, 2, 2, 2 ) );
 
   auto& btnSteamPage = _d->ui().add<TexturedButton>( Point( btnHomePage.left() - 128, scrSize.height() - 100 ),  Size( 128 ), -1,
-                                                     "steam_icon", 1, 2, 2, 2 );
+                                                     "steam_icon", TexturedButton::States( 1, 2, 2, 2 ) );
 
   CONNECT( &btnSteamPage, onClicked(), _d.data(), Impl::openSteamPage );
   CONNECT( &btnHomePage, onClicked(), _d.data(), Impl::openHomePage );
@@ -628,11 +638,11 @@ void StartMenu::initialize()
       return;
     }
 
-    std::string text = fmt::format( "Build {0}\n{1}", CAESARIA_BUILD_NUMBER, steamName );
+    std::string text = fmt::format( "Build {0}\n{1}", GAME_BUILD_NUMBER, steamName );
     _d->lbSteamName = &_d->ui().add<Label>( Rect( 100, 10, 400, 80 ), text );
     _d->lbSteamName->setTextAlignment( align::upperLeft, align::center );
     _d->lbSteamName->setWordwrap( true );
-    _d->lbSteamName->setFont( Font::create( FONT_3, ColorList::white ) );
+    _d->lbSteamName->setFont( FONT_3, ColorList::white );
   }
 }
 

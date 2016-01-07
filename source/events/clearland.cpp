@@ -42,6 +42,11 @@ GameEventPtr ClearTile::create(const TilePos& pos)
   return ret;
 }
 
+GameEventPtr ClearTile::create(const Tile& tile )
+{
+  return create( tile.epos() );
+}
+
 bool ClearTile::_mayExec(Game& game, unsigned int) const{ return true; }
 
 void ClearTile::_exec( Game& game, unsigned int )
@@ -107,8 +112,7 @@ void ClearTile::_exec( Game& game, unsigned int )
         int startOffset  = ( (math::random( 10 ) > 6) ? 62 : 232 );
         int imgId = math::random( 58-1 );
 
-        Picture pic;
-        pic.load( ResourceGroup::land1a, startOffset + imgId );
+        Picture pic( config::rc.land1a, startOffset + imgId );
         tile->setPicture( pic );
         tile->setImgId( imgid::fromResource( pic.name() ) );
       }

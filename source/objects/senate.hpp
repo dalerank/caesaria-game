@@ -30,7 +30,7 @@ public:
   unsigned int funds() const;
   unsigned int thisYearTax() const;
 
-  float collectTaxes();
+  float takeMoney();
 
   int status( Status status ) const;
 

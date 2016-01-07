@@ -38,7 +38,7 @@ class MissionButton : public TexturedButton
 {
 public:
   MissionButton( Widget* parent, Point pos, std::string title, std::string mission )
-   : TexturedButton( parent, pos, Size( 46 ), -1, "europe02", 5, 6, 4, 4 )
+   : TexturedButton( parent, pos, Size( 46 ), -1, "europe02", TexturedButton::States( 5, 6, 4, 4 ) )
   {
     setIsPushButton( true );
     _mission = mission;
@@ -127,27 +127,25 @@ void Briefing::initialize()
 
   if( Impl::currentVesion == vm[ "version" ].toInt() )
   {
-    Picture pic( "mapback", 1 );
+    Picture mapBackImage( "mapback", 1 );
     std::string briefingCaption = vm[ "title" ].toString();
     if( briefingCaption.empty() )
       briefingCaption = "##briefing_select_next_mission##";
-    gui::Image& mapback = _d->game->gui()->add<gui::Image>( Point(), pic );
-    if( !pic.isValid() )
+    gui::Image& mapback = _d->game->gui()->add<gui::Image>( Point(), mapBackImage );
+    if( !mapBackImage.isValid() )
     {
       mapback.setGeometry( Rect( 0, 0, 640, 480 ) );
     }
     mapback.setCenter( _d->game->gui()->rootWidget()->center() );
 
     std::string mapToLoad = vm[ "image" ].toString();
-    pic.load( mapToLoad );
-    if( !pic.isValid() )
-    {
-      pic.load( "europe01", 2 );
-    }
+
+    mapBackImage.load( mapToLoad )
+                .withFallback( "europe01", 2 );
 
     Point startImgPos( 192, 144 );
     const unsigned int textYOffset = 400;
-    mapback.add<gui::Image>( startImgPos, pic );
+    mapback.add<gui::Image>( startImgPos, mapBackImage );
 
     VariantMap items = vm[ "items" ].toMap();
     for( const auto& it : items )
@@ -165,7 +163,7 @@ void Briefing::initialize()
     auto& missionTitle = mapback.add<gui::Label>( Rect( 200, 550, 200 + textYOffset, 600 ), missionTt );
     missionTitle.setFont( Font::create( FONT_5 ));
     _d->cityCaption = &mapback.add<gui::Label>( Rect( 200, 600, 200 + textYOffset, 630 ) );
-    _d->cityCaption->setFont( Font::create( FONT_2 ) );
+    _d->cityCaption->setFont( FONT_2 );
     _d->cityCaption->setText( _(briefingCaption) );
 
     _d->btnContinue = &mapback.add<gui::TexturedButton>( Point( 780, 560 ), Size( 27 ), -1, 179 );

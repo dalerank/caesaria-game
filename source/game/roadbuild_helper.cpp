@@ -104,9 +104,9 @@ TilesArray RoadPropagator::createPath(Tilemap& tileMap, const TilePos& startPos,
     Pathfinder& finder = Pathfinder::instance();
     finder.setCondition( makeDelegate( &RoadPropagator::instance(), &RoadPropagator::canBuildRoad ) );
 
-    int flags = Pathfinder::fourDirection | Pathfinder::terrainOnly | Pathfinder::customCondition;
+    int flags = Pathway::fourDirection | Pathway::terrainOnly | Pathway::customCondition;
 
-    flags |= (roadAssignment ? 0 : Pathfinder::ignoreRoad );
+    flags |= (roadAssignment ? 0 : Pathway::ignoreRoad );
     const Tile& stile = tileMap.at( startPos );
     const Tile& ftile = tileMap.at( stopPos );
     Pathway way = finder.getPath( stile.pos(), ftile.pos(), flags );

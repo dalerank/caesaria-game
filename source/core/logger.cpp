@@ -34,7 +34,7 @@
 #include "format.hpp"
 #include "vfs/directory.hpp"
 
-#ifdef CAESARIA_PLATFORM_ANDROID
+#ifdef GAME_PLATFORM_ANDROID
 #include <android/log.h>
 #include <SDL_system.h>
 #endif
@@ -102,10 +102,10 @@ class ConsoleLogWriter : public LogWriter
 public:
   virtual void write( const std::string& str, bool newline )
   {
-#ifdef CAESARIA_PLATFORM_ANDROID    
-    __android_log_print(ANDROID_LOG_DEBUG, CAESARIA_PLATFORM_NAME, "%s", str.c_str() );
+#ifdef GAME_PLATFORM_ANDROID
+    __android_log_print(ANDROID_LOG_DEBUG, GAME_PLATFORM_NAME, "%s", str.c_str() );
     if( newline )
-      __android_log_print(ANDROID_LOG_DEBUG, CAESARIA_PLATFORM_NAME, "\n" );
+      __android_log_print(ANDROID_LOG_DEBUG, GAME_PLATFORM_NAME, "\n" );
 #else
     std::cout << str;
     if( newline ) std::cout << std::endl;
@@ -140,7 +140,7 @@ public:
     }
     if (!pass) return;
 
-    for( auto&& item : writers )
+    for( auto& item : writers )
     {
       if( item.second.isValid() )
       {
@@ -190,9 +190,8 @@ void Logger::registerWriter(Logger::Type type, const std::string& param )
   {
   case consolelog:
   {
-    LogWriterPtr wr( new ConsoleLogWriter() );
-    wr->drop();
-    registerWriter( "__console", wr );
+    auto wr = ptr_make<ConsoleLogWriter>();
+    registerWriter( "__console", wr.as<LogWriter>() );
   }
   break;
 
@@ -200,9 +199,8 @@ void Logger::registerWriter(Logger::Type type, const std::string& param )
   {
     vfs::Directory workdir( param );
     vfs::Path fullname = workdir/"stdout.txt";
-    LogWriterPtr wr( new FileLogWriter( fullname.toString() ) );
-    wr->drop();
-    registerWriter( "__log", wr );
+    auto wr = ptr_make<FileLogWriter>( fullname.toString() );
+    registerWriter( "__log", wr.as<LogWriter>() );
   }
   break;
 

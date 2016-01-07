@@ -37,7 +37,20 @@ REGISTER_CLASS_IN_WIDGETFACTORY(SpinBox)
 class SpinBox::Impl
 {
 public:
-  int minv, maxv, value, step;
+  struct
+  {
+    int minimum = 0;
+    int maximum = 100;
+    int current = 0;
+    int step = 10;
+  } value;
+
+  struct
+  {
+    Point decBtn;
+    Point incBtn;
+  } position;
+
   std::string postfix;
   TexturedButton* btnDecrease;
   TexturedButton* btnIncrease;
@@ -47,7 +60,7 @@ public:
     Signal2<SpinBox*,int> onChangeA;
   } signal;
 
-  Impl() : minv( 0 ), maxv( 100 ), value( 0 ), step( 10 ), btnDecrease( 0 ), btnIncrease( 0 ) {}
+  Impl() : btnDecrease( 0 ), btnIncrease( 0 ) {}
 };
 
 //! constructor
@@ -59,18 +72,29 @@ SpinBox::SpinBox( Widget* parent )
 
 void SpinBox::_initButtons()
 {
-  _d->btnDecrease = &add<TexturedButton>( Point( width() * 0.6, 2 ), Size( 24, 24), -1, 601 );
-  _d->btnIncrease = &add<TexturedButton>( Point( width() * 0.6 + 26, 2), Size( 24, 24 ), -1, 605 );
+  _d->btnDecrease = &add<TexturedButton>( Point( width() * 0.5, 1 ), Size( 24, 24), -1, 601 );
+  _d->btnIncrease = &add<TexturedButton>( Point( width() * 0.5 + 25, 1), Size( 24, 24 ), -1, 605 );
 
-  CONNECT( _d->btnDecrease, onClicked(), this, SpinBox::_decrease );
-  CONNECT( _d->btnIncrease, onClicked(), this, SpinBox::_increase );
+  CONNECT_LOCAL( _d->btnDecrease, onClicked(), SpinBox::_decrease )
+  CONNECT_LOCAL( _d->btnIncrease, onClicked(), SpinBox::_increase )
 }
 
 void SpinBox::_finalizeResize()
 {
   Label::_finalizeResize();
-  if( _d->btnDecrease ) _d->btnDecrease->setPosition( Point( width() * 0.6, 2 ) );
-  if( _d->btnIncrease ) _d->btnIncrease->setPosition( Point( width() * 0.6 + 26, 2 ) );
+  if( _d->btnDecrease )
+  {
+    _d->btnDecrease->setPosition( Point( width() * 0.5, 1 ) );
+    if( _d->position.decBtn.x() > 0 )
+      _d->btnDecrease->setPosition( _d->position.decBtn );
+  }
+
+  if( _d->btnIncrease )
+  {
+    _d->btnIncrease->setPosition( Point( width() * 0.5 + 25, 1 ) );
+    if( _d->position.incBtn.x() > 0 )
+      _d->btnIncrease->setPosition( _d->position.incBtn );
+  }
   _update();
 }
 
@@ -81,7 +105,7 @@ SpinBox::SpinBox(Widget* parent, const Rect& rectangle, const std::string& text,
   _d->postfix = postfix;
   _initButtons();
 #ifdef _DEBUG
-   setDebugName( CAESARIA_STR_A(SpinBox) );
+   setDebugName( TEXT(SpinBox) );
 #endif
 }
 
@@ -99,7 +123,7 @@ void SpinBox::draw(gfx::Engine& painter )
 
 void SpinBox::setValue(int value)
 {
-  _d->value = math::clamp( value, _d->minv, _d->maxv );
+  _d->value.current = math::clamp( value, _d->value.minimum, _d->value.maximum );
   _update();
 }
 
@@ -114,40 +138,28 @@ void gui::SpinBox::_updateTexture(Engine& painter)
 
 void SpinBox::_increase()
 {
-  setValue( _d->value + _d->step );
-  emit _d->signal.onChange( _d->value );
-  emit _d->signal.onChangeA( this, _d->value );
+  setValue( _d->value.current + _d->value.step );
+  emit _d->signal.onChange( _d->value.current );
+  emit _d->signal.onChangeA( this, _d->value.current );
 }
 
 void SpinBox::_decrease()
 {
-  setValue( _d->value - _d->step );
-  emit _d->signal.onChange( _d->value );
-  emit _d->signal.onChangeA( this, _d->value );
+  setValue( _d->value.current - _d->value.step );
+  emit _d->signal.onChange( _d->value.current );
+  emit _d->signal.onChangeA( this, _d->value.current );
 }
 
 void SpinBox::_update()
 {
-  Font f = font();
-  if( f.isValid() && _textPicture().isValid() )
+  if( font().isValid() && _textPicture().isValid() )
   {
-    Rect frameRect( Point( 0, 0 ), _d->btnDecrease->leftbottom()  );
     _textPicture().fill( ColorList::clear, Rect() );
-    if( !text().empty() )
-    {
-      Rect textRect = f.getTextRect( text(), frameRect, horizontalTextAlign(), verticalTextAlign() );
-      f.draw( _textPicture(), text(), textRect.lefttop(), true, false );
-    }
+    canvasDraw( text(),
+                Rect( Point( 0, 0 ), _d->btnDecrease->leftbottom()  ) );
 
-    frameRect = Rect( _d->btnIncrease->right() + 5, 0, width(), height() );
-    string valueText = fmt::format( "{0} {1}", _d->value, _d->postfix );
-    _textPicture().fill( ColorList::clear, frameRect );
-
-    if( !valueText.empty() )
-    {
-      Rect textRect = f.getTextRect( valueText, frameRect, horizontalTextAlign(), verticalTextAlign() );
-      f.draw( _textPicture(), valueText, textRect.lefttop(), true, true );
-    }
+    canvasDraw( fmt::format( "{} {}", _d->value.current, _d->postfix ),
+                Rect( _d->btnIncrease->right() + 5, 0, width(), height() ) );
   }
 }
 
@@ -155,22 +167,12 @@ void SpinBox::setupUI(const VariantMap& ui)
 {
   Label::setupUI( ui );
 
-  _d->maxv = ui.get( "max", _d->maxv );
-  _d->minv = ui.get( "min", _d->minv );
-  _d->value = ui.get( "value", _d->value );
+  _d->value.maximum = ui.get( "max", _d->value.maximum );
+  _d->value.minimum = ui.get( "min", _d->value.minimum );
+  _d->value.current = ui.get( "value", _d->value.current );
   _d->postfix = ui.get( "postfix", _d->postfix ).toString();
-
-  if( _d->btnDecrease )
-  {
-    Point decBtnPos = ui.get( "decpos", _d->btnDecrease->lefttop() );
-    _d->btnDecrease->move( decBtnPos );
-  }
-
-  if( _d->btnIncrease )
-  {
-    Point incBtnPos = ui.get( "incpos", _d->btnIncrease->lefttop() );
-    _d->btnIncrease->move( incBtnPos );
-  }
+  _d->position.decBtn = ui.get( "decpos" );
+  _d->position.incBtn = ui.get( "incpos" );
 }
 
 }//end namespace gui

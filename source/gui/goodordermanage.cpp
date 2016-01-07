@@ -31,6 +31,7 @@
 #include "widgetescapecloser.hpp"
 #include "stretch_layout.hpp"
 #include "multilinebutton.hpp"
+#include "dialogbox.hpp"
 
 using namespace gfx;
 using namespace city;
@@ -56,9 +57,9 @@ public:
     btnIncrease->setTooltipText( _("##export_btn_tooltip##") );
   }
 
-  virtual void _updateTextPic()
+  virtual void _updateTexture()
   {
-    PushButton::_updateTextPic();
+    PushButton::_updateTexture();
 
     switch( order )
     {
@@ -138,13 +139,12 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
   _d->gmode = gmode;
 
   setupUI( ":/gui/goodorder.gui" );
-  WidgetEscapeCloser::insertTo( this );
+  WidgetClose::insertTo( this, KEY_RBUTTON );
 
   _d->icon = good::Helper::picture( type );
 
   INIT_WIDGET_FROM_UI( Label*, lbTitle )
   INIT_WIDGET_FROM_UI( Label*, lbStackedQty )
-  INIT_WIDGET_FROM_UI( TexturedButton*, btnExit )
   GET_DWIDGET_FROM_UI( _d, lbIndustryInfo )
   GET_DWIDGET_FROM_UI( _d, btnIndustryState )
   GET_DWIDGET_FROM_UI( _d, btnStackingState )
@@ -157,23 +157,19 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
   }
 
   _d->btnTradeState = &add<TradeStateButton>( Rect( 50, 90, width() - 60, 90 + 30), -1 );
-  /*if( gmode == gmUnknown )
-  {
-    _d->btnTradeState->setTradeState( trade::noTrade, 0 );
-    _d->btnTradeState->setEnabled( false );
-  }*/
 
   updateTradeState();
   updateIndustryState();
   updateStackingState();
 
-  CONNECT( btnExit, onClicked(), this, GoodOrderManageWindow::deleteLater );
-  CONNECT( _d->btnTradeState, onClicked(), this, GoodOrderManageWindow::changeTradeState );
-  CONNECT( _d->btnTradeState->btnIncrease, onClicked(), this, GoodOrderManageWindow::increaseQty );
-  CONNECT( _d->btnTradeState->btnDecrease, onClicked(), this, GoodOrderManageWindow::decreaseQty );
-  CONNECT( _d->btnIndustryState, onClicked(), this, GoodOrderManageWindow::toggleIndustryEnable );
-  CONNECT( _d->btnStackingState, onClicked(), this, GoodOrderManageWindow::toggleStackingGoods );
+  LINK_WIDGET_LOCAL_ACTION( TexturedButton*, btnExit, onClicked(), GoodOrderManageWindow::deleteLater );
+  CONNECT_LOCAL( _d->btnTradeState, onClicked(),              GoodOrderManageWindow::changeTradeState );
+  CONNECT_LOCAL( _d->btnTradeState->btnIncrease, onClicked(), GoodOrderManageWindow::increaseQty );
+  CONNECT_LOCAL( _d->btnTradeState->btnDecrease, onClicked(), GoodOrderManageWindow::decreaseQty );
+  CONNECT_LOCAL( _d->btnIndustryState, onClicked(),           GoodOrderManageWindow::toggleIndustryEnable );
+  CONNECT_LOCAL( _d->btnStackingState, onClicked(),           GoodOrderManageWindow::toggleStackingGoods );
 
+  moveTo( Widget::parentCenter );
   setModal();
 }
 
@@ -187,18 +183,7 @@ void GoodOrderManageWindow::draw(Engine &painter)
   painter.draw( _d->icon, absoluteRect().lefttop() + Point( 10, 10 ) );
 }
 
-bool GoodOrderManageWindow::onEvent(const NEvent& event)
-{
-  if( event.EventType == sEventMouse && event.mouse.isRightPressed() )
-  {
-    deleteLater();
-    return true;
-  }
-
-  return Window::onEvent( event );
-}
-
-void GoodOrderManageWindow::increaseQty() { _changeTradeLimit( +1 ); }
+ void GoodOrderManageWindow::increaseQty() { _changeTradeLimit( +1 ); }
 
 void GoodOrderManageWindow::decreaseQty() { _changeTradeLimit( -1 ); }
 
@@ -279,6 +264,12 @@ void GoodOrderManageWindow::toggleIndustryEnable()
   for( auto factory : factories )
     factory->setActive( !industryEnabled );
 
+  if( !industryEnabled )
+  {
+    auto* dialog = dialog::Confirmation( ui(), "Note", "Do you want fire workers from industry?",
+                                         makeDelegate( this, &GoodOrderManageWindow::_fireWorkers ) );
+  }
+
   updateIndustryState();
   emit _d->onOrderChangedSignal();
 }
@@ -327,6 +318,13 @@ void GoodOrderManageWindow::_changeTradeLimit(int value)
   }
   updateTradeState();
   emit _d->onOrderChangedSignal();
+}
+
+void GoodOrderManageWindow::_fireWorkers()
+{
+  FactoryList factories = _d->city->statistic().objects.producers<Factory>( _d->type );
+  for( auto factory : factories )
+    factory->removeWorkers( factory->numberWorkers() );
 }
 
 }//end namespace advisorwnd

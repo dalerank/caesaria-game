@@ -32,7 +32,6 @@ AboutEvent::AboutEvent( Widget* parent, const std::string& title,
 {
   setTitle( title );
   setAutoPosition( false );
-  setModal();
   setWindowFlag( fdraggable, false );
 
   setCenter( parent->center() );
@@ -45,7 +44,7 @@ AboutEvent::AboutEvent( Widget* parent, const std::string& title,
   rect._bottomright = Point( rect.width() / 2, rect.top() + 30 );
 
   Label& lbTime = add<Label>( rect, utils::date2str( time, true ) );
-  lbTime.setFont( Font::create( FONT_2_WHITE ) );
+  lbTime.setFont( FONT_2_WHITE );
 
   if( !additional.empty() )
   {
@@ -69,6 +68,8 @@ AboutEvent::AboutEvent( Widget* parent, const std::string& title,
     goodLabel.setTextOffset( Point( 30, 0 ) );
     goodLabel.setIcon( good::Helper::picture( gtype ), Point( 0, 7 ) );
   }
+
+  setModal();
 }
 
 

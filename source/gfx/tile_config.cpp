@@ -142,7 +142,7 @@ void decode(Tile& tile, const int bitset)
 
 const Tile& getInvalid()
 {
-  static Tile invalidTile( tilemap::invalidLocation() );
+  static Tile invalidTile( TilePos::invalid() );
   return invalidTile;
 }
 
@@ -162,10 +162,10 @@ void fixPlateauFlags(Tile& tile)
 
 Tile& getInvalidSafe()
 {
-  static Tile invalidTileSafe( tilemap::invalidLocation() );
-  if( tilemap::isValidLocation( invalidTileSafe.pos() ) )
+  static Tile invalidTileSafe( TilePos::invalid() );
+  if( config::tilemap.isValidLocation( invalidTileSafe.pos() ) )
   {
-    invalidTileSafe = Tile( tilemap::invalidLocation() );
+    invalidTileSafe = Tile( TilePos::invalid() );
     Logger::warning( "!!! WARNING function getInvalidSafe call" );
   }
 
@@ -174,25 +174,30 @@ Tile& getInvalidSafe()
 
 Tile::Type findType(const std::string& name)
 {
-  if( name == CAESARIA_STR_EXT(tlTree) )    return Tile::tlTree;
-  if( name == CAESARIA_STR_EXT(tlRock) )    return Tile::tlRock;
-  if( name == CAESARIA_STR_EXT(tlWater) )   return Tile::tlWater;
-  if( name == CAESARIA_STR_EXT(tlGarden) )  return Tile::tlGarden;
-  if( name == CAESARIA_STR_EXT(tlRoad) )    return Tile::tlRoad;
-  if( name == CAESARIA_STR_EXT(tlCoast) )   return Tile::tlCoast;
-  if( name == CAESARIA_STR_EXT(tlElevation))return Tile::tlElevation;
-  if( name == CAESARIA_STR_EXT(tlMeadow) )  return Tile::tlMeadow;
-  if( name == CAESARIA_STR_EXT(tlRubble) )  return Tile::tlRubble;
-  if( name == CAESARIA_STR_EXT(tlWall) )    return Tile::tlWall;
-  if( name == CAESARIA_STR_EXT(tlDeepWater))return Tile::tlDeepWater;
-  if( name == CAESARIA_STR_EXT(tlRift) )    return Tile::tlRift;
-  if( name == CAESARIA_STR_EXT(tlGrass) )   return Tile::tlGrass;
+  if( name == TEXT(tlTree) )    return Tile::tlTree;
+  if( name == TEXT(tlRock) )    return Tile::tlRock;
+  if( name == TEXT(tlWater) )   return Tile::tlWater;
+  if( name == TEXT(tlGarden) )  return Tile::tlGarden;
+  if( name == TEXT(tlRoad) )    return Tile::tlRoad;
+  if( name == TEXT(tlCoast) )   return Tile::tlCoast;
+  if( name == TEXT(tlElevation))return Tile::tlElevation;
+  if( name == TEXT(tlMeadow) )  return Tile::tlMeadow;
+  if( name == TEXT(tlRubble) )  return Tile::tlRubble;
+  if( name == TEXT(tlWall) )    return Tile::tlWall;
+  if( name == TEXT(tlDeepWater))return Tile::tlDeepWater;
+  if( name == TEXT(tlRift) )    return Tile::tlRift;
+  if( name == TEXT(tlGrass) )   return Tile::tlGrass;
   return Tile::tlUnknown;
 }
 
 TilePos hash2pos(unsigned int hash)
 {
   return TilePos( (hash >> 16 ) & 0xff, hash & 0xff );
+}
+
+Tile* master(Tile* tile)
+{
+  return tile->master() ? tile->master() : tile;
 }
 
 }//end namespace tile

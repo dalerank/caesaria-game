@@ -59,7 +59,7 @@ public:
 RomeSoldier::RomeSoldier( PlayerCityPtr city, walker::Type type )
     : Soldier( city, type ), _d( new Impl )
 {
-  _d->patrolPosition = gfx::tilemap::invalidLocation();
+  _d->patrolPosition = TilePos::invalid();
   _setSubAction( doNothing );
   _d->stuckTime = 0;
   _d->lastStuckInterval = 0;
@@ -100,7 +100,7 @@ void RomeSoldier::timeStep(const unsigned long time)
   {
   case fightEnemy:
   {
-    WalkerPtr enemy = _findEnemiesInRange( attackDistance() ).valueOrEmpty(0);
+    WalkerPtr enemy = _findEnemiesInRange( attackDistance() ).firstOrEmpty();
 
     if( !enemy.isValid() )
     {
@@ -161,7 +161,7 @@ void RomeSoldier::save(VariantMap& stream) const
   VARIANT_SAVE_ANY_D( stream, _d, strikeForce );
   VARIANT_SAVE_ANY_D( stream, _d, resistance );
   VARIANT_SAVE_ANY_D( stream, _d, patrolPosition );
-  stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(RomeSoldier) ) );
+  stream[ "__debug_typeName" ] = Variant( std::string( TEXT(RomeSoldier) ) );
 }
 
 Walker::Gender RomeSoldier::gender() const { return male; }
@@ -183,7 +183,7 @@ void RomeSoldier::load(const VariantMap& stream)
   }
   else
   {
-    Logger::warning( "!!! WARNING: RomeSoldier cant find base for himself at [{0},{1}]", _d->basePos.i(), _d->basePos.j() );
+    Logger::warning( "!!! WARNING: RomeSoldier cant find base for himself at [{},{}]", _d->basePos.i(), _d->basePos.j() );
     die();
   }
 }
@@ -192,15 +192,14 @@ std::string RomeSoldier::thoughts(Thought th) const
 {
   if( th == thCurrent )
   {
-    TilePos offset( 10, 10 );
-    EnemySoldierList enemies = _city()->statistic().walkers.find<EnemySoldier>( walker::any, pos() - offset, pos() + offset );
+    EnemySoldierList enemies = _city()->statistic().walkers.find<EnemySoldier>( walker::any, 10, pos() );
     if( enemies.empty() )
     {
       return Soldier::thoughts( th );
     }
     else
     {
-      RomeSoldierList ourSoldiers = _city()->statistic().walkers.find<RomeSoldier>( walker::any, pos() - offset, pos() + offset );
+      RomeSoldierList ourSoldiers = _city()->statistic().walkers.find<RomeSoldier>( walker::any, 10, pos() );
       int enemyStrength = 0;
       int ourStrength = 0;
 
@@ -425,7 +424,7 @@ void RomeSoldier::_brokePathway(TilePos p)
 {
   Soldier::_brokePathway( p );
 
-  if( gfx::tilemap::isValidLocation( _d->patrolPosition ) )
+  if( config::tilemap.isValidLocation( _d->patrolPosition ) )
   {
     Pathway way = PathwayHelper::create( pos(), _d->patrolPosition,
                                          PathwayHelper::allTerrain );

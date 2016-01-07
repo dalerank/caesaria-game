@@ -310,14 +310,14 @@
       }
     }
 
-    water_anim:
+    animations:
     {
       size : [ 2048, 2048 ]
       margin : 1
       ignorePath : true
       floatCoordinates : false
-      name : "wateranim"
-      archive : "resources/gfx/pics_wateranim"
+      name : "anim"
+      archive : "resources/gfx/pics_anim"
 
       items :
       {
@@ -326,6 +326,13 @@
           type : "atlas"
           folder : "/resources/reservoir"
           files : [ "*" ]
+        }
+
+        fireanim :
+        {
+          type : "atlas"
+          folder : "/resources/fire"
+          files : [ "fire_*" ]
         }
 
         baths_anim :
@@ -359,7 +366,7 @@
         {
           type : "atlas"
           folder : "/resources/quarry"
-          files : [ "quarry*" ]
+          files : [ "*" ]
         }
 
         plateau :
@@ -383,6 +390,13 @@
           files : [ "entertainment_*" ]
         }
 
+        shipyard :
+        {
+          type : "atlas"
+          folder : "/resources/shipyard"
+          files : [ "*" ]
+        }
+
         actorshool_anim :
         {
           type : "atlas"
@@ -404,18 +418,18 @@
           files : [ "commerce_*" ]
         }
 
+        ground :
+        {
+          type : "atlas"
+          folder : "/resources/ground"
+          files : [ "*" ]
+        }
+
         engineering :
         {
           type : "atlas"
           folder : "/resources/engineering"
-          files : [ "engineering_*" ]
-        }
-
-        engineering_anim :
-        {
-          type : "atlas"
-          folder : "/resources/engineering"
-          files : [ "engineeringa_*" ]
+          files : [ "*" ]
         }
 
         ironmine_anim :
@@ -436,70 +450,21 @@
         {
           type : "atlas"
           folder : "/resources/lubmill"
-          files : [ "lumbermill_*" ]
-        }
-
-        lubmill_anim :
-        {
-          type : "atlas"
-          folder : "/resources/lubmill"
-          files : [ "lubmill_anim_*" ]
+          files : [ "*" ]
         }
 
         warehouse :
         {
           type : "atlas"
           folder : "/resources/warehouse"
-          files : [ "warehouse_*" ]
-        }
+          files : [ "*" ]
+        }        
 
-        tradecenter :
-        {
-          type : "atlas"
-          folder : "/resources/warehouse"
-          files : [ "tradecenter_*" ]
-        }
-
-        smlceres :
+        religion :
         {
           type : "atlas"
           folder : "/resources/religion"
-          files : [ "smlceres_*" ]
-        }
-
-        smlmars :
-        {
-          type : "atlas"
-          folder : "/resources/religion"
-          files : [ "smlmars_*" ]
-        }
-
-        smlmercury :
-        {
-          type : "atlas"
-          folder : "/resources/religion"
-          files : [ "smlmercury_*" ]
-        }
-
-        smlneptune :
-        {
-          type : "atlas"
-          folder : "/resources/religion"
-          files : [ "smlneptune_*" ]
-        }
-
-        smlvenus :
-        {
-          type : "atlas"
-          folder : "/resources/religion"
-          files : [ "smlvenus_*" ]
-        }
-
-        fireanim :
-        {
-          type : "atlas"
-          folder : "/resources/religion"
-          files : [ "fireanim_*" ]
+          files : [ "*" ]
         }
 
         fortlegioner :
@@ -519,7 +484,7 @@
         fortspear :
         {
           type : "atlas"
-          folder : "/resources/religion"
+          folder : "/resources/fort"
           files : [ "fortspear_*" ]
         }
 
@@ -527,14 +492,7 @@
         {
           type : "atlas"
           folder : "/resources/senate"
-          files : [ "govt_*" ]
-        }
-
-        senate :
-        {
-          type : "atlas"
-          folder : "/resources/senate"
-          files : [ "forum_*" ]
+          files : [ "*" ]
         }
 
         entertainment :
@@ -549,7 +507,14 @@
           type : "atlas"
           folder : "/resources/farm"
           files : [ "*" ]
-        }        
+        }
+
+        academy :
+        {
+          type : "atlas"
+          folder : "/resources/academy"
+          files : [ "*" ]
+        }
 
         security :
         {

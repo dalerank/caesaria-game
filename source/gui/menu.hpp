@@ -31,13 +31,15 @@ class PushButton;
 
 class Menu : public Widget
 {
-public:  
+public:
+  typedef enum { leftSide, rightSide } Side;
   static Menu* create(Widget* parent, int id, PlayerCityPtr city, bool fitToScreen=false );
 
   // draw on screen
   virtual void minimize();
   virtual void maximize();
   virtual void cancel();
+  virtual void setSide(Side side, const Point& offset);
 
   virtual void draw( gfx::Engine& engine );
   virtual void setPosition(const Point& relativePosition);
@@ -50,6 +52,9 @@ signals public:
   Signal1<int>& onCreateConstruction();
   Signal1<int>& onCreateObject();
   Signal0<>& onRemoveTool();
+  Signal0<>& onUndo();
+  Signal0<>& onSwitchAlarm();
+  Signal0<>& onMessagesShow();
   Signal0<>& onHide();
 
 protected:
@@ -94,11 +99,8 @@ signals public:
   Signal1<int>& onSelectOverlayType();
   Signal0<>& onEmpireMapShow();
   Signal0<>& onAdvisorsWindowShow();
-  Signal0<>& onSwitchAlarm();
-  Signal0<>& onMessagesShow();
   Signal0<>& onRotateRight();
   Signal0<>& onRotateLeft();
-  Signal0<>& onUndo();
   Signal0<>& onMissionTargetsWindowShow();
 
 protected:

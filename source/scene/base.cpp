@@ -39,13 +39,15 @@ Base::Base()
 
 Base::~Base() {}
 
-void Base::drawFrame(gfx::Engine& engine )
+void Base::drawFrame(gfx::Engine& engine)
 {
-   engine.startRenderFrame();
+   engine.frame().start();
    
    draw();
+   if( engine.getFlag( gfx::Engine::showMetrics ) )
+     engine.frame().drawMetrics();
    
-   engine.endRenderFrame();
+   engine.frame().finish();;
 }
 
 gfx::Camera* Base::camera() const { return 0; }

@@ -145,7 +145,7 @@ std::string ServiceBuilding::workersStateDesc() const
               ? "ready_for_work"
               : "prepare_for_work";
   }
-  std::string currentState = fmt::format( "##{0}_{1}##", srvcType, state );
+  std::string currentState = fmt::format( "##{}_{}##", srvcType, state );
   return currentState;
 }
 

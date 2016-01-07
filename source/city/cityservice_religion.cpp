@@ -63,8 +63,10 @@ class TemplesCoverity : public std::map< std::string, CoverageInfo >
 public:
   void update( TemplePtr temple )
   {
-    if( temple->divinity().isValid() )
-    {
+    if( temple->divinity().isValid()
+        && temple->isActive()
+        && temple->mayWork() )
+    {      
       CoverageInfo& info = (*this)[ temple->divinity()->internalName() ];
 
       if( temple.is<BigTemple>() ) { info.temples.big_n++; }
@@ -79,7 +81,7 @@ public:
     std::map< std::string, CoverageInfo >::clear();
     for( auto divinity : divinities)
     {
-      CoverageInfo &cvInfo = (*this)[divinity->internalName()];
+      CoverageInfo& cvInfo = (*this)[divinity->internalName()];
       cvInfo.temples.small_n = 0;
       cvInfo.temples.big_n = 0;
     }
@@ -88,9 +90,7 @@ public:
   void setOraclesParishioner( int parishioners )
   {
     for( auto& it : *this)
-    {
       it.second.parishionerNumber += parishioners;
-    }
   }
 };
 
@@ -102,7 +102,7 @@ public:
   StringArray reasons;
 };
 
-std::string Religion::defaultName() { return CAESARIA_STR_EXT(Religion); }
+std::string Religion::defaultName() { return TEXT(Religion); }
 
 Religion::Religion( PlayerCityPtr city )
   : Srvc( city, Religion::defaultName() ), _d( new Impl )

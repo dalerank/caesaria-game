@@ -398,7 +398,7 @@ static void __finalizeMap(Game& game, int pass )
         {
         case 0:
         {
-          Picture pic( ResourceGroup::land1a, 62 + math::random( 56 ) );
+          Picture pic( config::rc.land1a, 62 + math::random( 56 ) );
           wtile.setPicture( pic );
           //wtile.setOriginalImgId( TileHelper::convPicName2Id( pic.name() ) );
           wtile.setImgId( direction );
@@ -419,7 +419,7 @@ static void __finalizeMap(Game& game, int pass )
 
         wtile.setFlag( Tile::tlWater, true );
         wtile.setFlag( Tile::tlCoast, true );
-        Picture pic( ResourceGroup::land1a, start + rnd );
+        Picture pic( config::rc.land1a, start + rnd );
         wtile.setPicture( pic );
         wtile.setImgId( imgid::fromResource( pic.name() ) );
       }
@@ -467,7 +467,7 @@ public:
     Pathfinder& pathfinder = Pathfinder::instance();
     pathfinder.setCondition( makeDelegate( this, &TerrainGeneratorHelper::needBuildRoad ) );
 
-    return pathfinder.getPath( startPos, endPos, Pathfinder::customCondition | Pathfinder::fourDirection );
+    return pathfinder.getPath( startPos, endPos, Pathway::customCondition | Pathway::fourDirection );
   }
 
   Pathway findWay(Tilemap& oTilemap, int startSide, int endSide )
@@ -506,7 +506,7 @@ public:
       {
         Tile* endTile = arrivedTiles[ arvTileIndex ];
 
-        Pathway way = pathfinder.getPath( *rtile, *endTile, Pathfinder::customCondition | Pathfinder::fourDirection );
+        Pathway way = pathfinder.getPath( *rtile, *endTile, Pathway::customCondition | Pathway::fourDirection );
 
         if( way.isValid() )
           return way;
@@ -558,16 +558,14 @@ static void __createRivers(Game& game )
     Pathway way;
     for( int range=0; range < 99; range++ )
     {
-      TilesArray perimeter = oTilemap.rect( range, centertile->pos() );
-      for( auto currentTile : perimeter )
+      TilesArray waters = oTilemap.rect( range, centertile->pos() )
+                                  .select( Tile::tlWater );
+      for( auto currentTile : waters )
       {
-        if( currentTile->getFlag( Tile::tlWater ) )
+        way = pathfinder.getPath( *centertile, *currentTile, Pathway::customCondition | Pathway::fourDirection );
+        if( way.isValid() )
         {
-          way = pathfinder.getPath( *centertile, *currentTile, Pathfinder::customCondition | Pathfinder::fourDirection );
-          if( way.isValid() )
-          {
-            break;
-          }
+          break;
         }
       }
 
@@ -666,7 +664,7 @@ static void __createRoad(Game& game )
     {
       OverlayPtr overlay = Overlay::create( object::road );
 
-      Picture pic( ResourceGroup::land1a, config::id.empire.grassPic + math::random( config::id.empire.grassPicsNumber-1 ) );
+      Picture pic( config::rc.land1a, config::id.empire.grassPic + math::random( config::id.empire.grassPicsNumber-1 ) );
       tile->setPicture( pic );
       tile->setImgId( imgid::fromResource( pic.name() ) );
 
@@ -694,7 +692,7 @@ static void __createRoad(Game& game )
 TilesArray& addTileIfValid( TilesArray& tiles, int i, int j, Tilemap& tmap )
 {
   Tile& t = tmap.at( i, j );
-  if( tilemap::isValidLocation( t.epos() ) )
+  if( config::tilemap.isValidLocation( t.epos() ) )
     tiles.push_back( &t );
 
   return tiles;
@@ -806,7 +804,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
       {
         color = NColor( 255, 255, 0, 255);
         tile.setFlag( Tile::tlDeepWater, true );
-        Picture pic( ResourceGroup::land1a, 120 );
+        Picture pic( config::rc.land1a, 120 );
         tile.setPicture( pic );
         tile.setImgId( imgid::fromResource( pic.name() ) );
       }
@@ -816,7 +814,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
       {
         color = NColor( 255, 7, 93, 192);
         tile.setFlag( Tile::tlDeepWater, true );
-        Picture pic( ResourceGroup::land1a, 120 );
+        Picture pic( config::rc.land1a, 120 );
         tile.setPicture( pic );
         tile.setImgId( imgid::fromResource( pic.name() ) );
       }
@@ -826,7 +824,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
       {
         color = NColor( 255, 74, 157, 251);
         tile.setFlag( Tile::tlWater, true );
-        Picture pic( ResourceGroup::land1a, 120 );
+        Picture pic( config::rc.land1a, 120 );
         tile.setPicture( pic );
         tile.setImgId( imgid::fromResource( pic.name() ) );
       }
@@ -840,7 +838,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
       case MidpointDisplacement::grass:
       {
         color = NColor( 255, 7, 192, 53);
-        Picture pic( ResourceGroup::land1a, 62 + math::random( 56 ) );
+        Picture pic( config::rc.land1a, 62 + math::random( 56 ) );
         tile.setPicture( pic );
         tile.setImgId( imgid::fromResource( pic.name() ) );
       }
@@ -870,7 +868,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
         Picture land = object::Info::find( object::terrain ).randomPicture( Size(1) );
         tile.setPicture( land );
 
-        Picture tree( ResourceGroup::land1a, start + math::random( rnd ) );
+        Picture tree( config::rc.land1a, start + math::random( rnd ) );
         tile.setImgId( imgid::fromResource( tree.name() ) );
 
         OverlayPtr overlay = Overlay::create( object::tree );
@@ -886,7 +884,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
       case MidpointDisplacement::ground:
       {
         color = NColor( 255, 129, 141, 132);
-        Picture pic( ResourceGroup::land1a, 62 + math::random( 56 ) );
+        Picture pic( config::rc.land1a, 62 + math::random( 56 ) );
         //Picture::load( ResourceGroup::land1a, 230 + math::random( 59 ) );
         //tile.setFlag( Tile::tlRock, true );
         tile.setPicture( pic );
@@ -898,7 +896,7 @@ void Generator::create(Game& game, int n2size, float smooth, float terrainSq)
       case MidpointDisplacement::shallowMountain:
       {
         color = NColor( 255, 147, 188, 157 );
-        Picture pic( ResourceGroup::land1a, 290 + math::random( 6 ) );
+        Picture pic( config::rc.land1a, 290 + math::random( 6 ) );
         tile.setFlag( Tile::tlRock, true );
         tile.setPicture( pic );
         tile.setImgId( imgid::fromResource( pic.name() ) );

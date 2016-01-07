@@ -53,8 +53,8 @@ REGISTER_CLASS_IN_OVERLAYFACTORY(object::warehouse, Warehouse)
 
 namespace
 {
-CAESARIA_LITERALCONST(tiles)
-CAESARIA_LITERALCONST(goodStore)
+GAME_LITERALCONST(tiles)
+GAME_LITERALCONST(goodStore)
 }
 
 namespace config
@@ -222,7 +222,7 @@ void Warehouse::save( VariantMap& stream ) const
 {
   WorkingBuilding::save( stream );
 
-  stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(Warehouse) ) );
+  stream[ "__debug_typeName" ] = Variant( std::string( TEXT(Warehouse) ) );
   stream[ literals::goodStore ] = _d->goodStore.save();
 
   VARIANT_SAVE_ANY_D( stream, _d, isTradeCenter)

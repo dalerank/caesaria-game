@@ -20,6 +20,7 @@
 #include "dialogbox.hpp"
 #include "good/helper.hpp"
 #include "gfx/engine.hpp"
+#include "city/city.hpp"
 #include "core/utils.hpp"
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
@@ -62,12 +63,12 @@ RequestButton::RequestButton(Widget* parent, const Point& pos, int index, Reques
 
   _finalizeResize();
 
-  CONNECT( this, onClicked(), this, RequestButton::_executeRequest );
+  CONNECT_LOCAL( this, onClicked(), RequestButton::_executeRequest );
 }
 
-void RequestButton::_updateTextPic()
+void RequestButton::_updateTexture()
 {
-  PushButton::_updateTextPic();
+  PushButton::_updateTexture();
 
   Font font = Font::create( FONT_1_WHITE );
 
@@ -89,8 +90,8 @@ void RequestButton::_acceptRequest()  { emit _dfunc()->onExecRequestSignal( _dfu
 
 void RequestButton::_executeRequest()
 {
-  dialog::Dialog* dialog = dialog::Confirmation( ui(),  "", "##dispatch_emperor_request_question##" );
-  CONNECT( dialog, onOk(), this, RequestButton::_acceptRequest );
+ dialog::Confirmation( ui(),  "", "##dispatch_emperor_request_question##",
+                       makeDelegate( this, &RequestButton::_acceptRequest ) );
 }
 
 void RequestButton::draw(Engine& painter)

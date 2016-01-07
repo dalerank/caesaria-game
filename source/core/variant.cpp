@@ -152,7 +152,7 @@ static void constructNewVariant( Variant2Impl *x, const void *copy)
     case Variant::UserType:break;
 
     default:
-        _CAESARIA_DEBUG_BREAK_IF( true && "can't create variant" );
+        _GAME_DEBUG_BREAK_IF( true && "can't create variant" );
     break;
   }
   x->is_null = !copy;
@@ -204,7 +204,7 @@ static void clearVariant(Variant2Impl *d)
     case Variant::Bool:
       break;
     default:
-      _CAESARIA_DEBUG_BREAK_IF( true && "Can't clean variant" );
+      _GAME_DEBUG_BREAK_IF( true && "Can't clean variant" );
       break;
     }
 
@@ -310,7 +310,7 @@ static long long Variant2Number(const Variant2Impl *d)
     case Variant::Float:  return (long long)floorf( d->data.f );
     case Variant::Double: return (long long)floor( d->data.d );
     }
-    _CAESARIA_DEBUG_BREAK_IF( true );
+    _GAME_DEBUG_BREAK_IF( true );
     return 0;
 }
 
@@ -324,7 +324,7 @@ static unsigned long long Variant2UNumber(const Variant2Impl *d)
     case Variant::Ushort:      return (unsigned long long)( d->data.i );
     case Variant::Ulong:       return (unsigned long long)( d->data.ll );
     }
-    _CAESARIA_DEBUG_BREAK_IF( true );
+    _GAME_DEBUG_BREAK_IF( true );
     return 0;
 }
 
@@ -402,8 +402,8 @@ inline bool convertToBool(const Variant2Impl *const d)
  */
 static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void *result, bool *ok)
 {
-    _CAESARIA_DEBUG_BREAK_IF ( d->type == (unsigned int)( t ) );
-    _CAESARIA_DEBUG_BREAK_IF( !result );
+    _GAME_DEBUG_BREAK_IF ( d->type == (unsigned int)( t ) );
+    _GAME_DEBUG_BREAK_IF( !result );
 
     bool dummy;
     if (!ok)
@@ -654,11 +654,10 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
     case Variant::NStringArray:
         if (d->type == Variant::List) 
         {
-            StringArray *slst = static_cast<StringArray*>(result);
-            const VariantList *list = v_cast< VariantList >(d);
-            VariantList::const_iterator it = list->begin(); 
-            for( ; it != list->end(); ++it)
-                slst->push_back( it->toString() );
+            StringArray* slst = static_cast<StringArray*>(result);
+            const VariantList* list = v_cast< VariantList >(d);
+            for( const auto& it : *list )
+                slst->push_back( it.toString() );
         } 
         else if( d->type == Variant::String ) 
         {
@@ -703,7 +702,7 @@ static bool convertVariantType2Type(const Variant2Impl *d, Variant::Type t, void
         {
         case Variant::String:
           *dt = DateTime( v_cast<std::string>(d)->c_str() );
-            break;
+        break;
 //         case Variant::Date:
 //             *dt = DateTime(*v_cast<Date>(d));
 //             break;

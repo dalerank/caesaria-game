@@ -19,6 +19,7 @@
 #define __CAESARIA_TILEPOS_H_INCLUDED__
 
 #include "core/position.hpp"
+#include "core/direction.hpp"
 
 class TilePos : Vector2<int>
 {
@@ -54,7 +55,8 @@ public:
   inline void set(int nx, int ny) { _x = nx; _y = ny; }
 
   float distanceFrom( const TilePos& other ) const;
-  int getDistanceFromSQ(const TilePos& other) const;
+  int distanceSqFrom(const TilePos& other) const;
+  Direction directionTo(const TilePos& e) const;
 
   TilePos& operator=(const TilePos& other) { set( other._x, other._y ); return *this; }
   TilePos& operator+=(const TilePos& other) { set( _x + other._x, _y + other._y ); return *this; }
@@ -79,6 +81,8 @@ public:
   TilePos nextStep( const TilePos& dst ) const;
 
   unsigned int hash() const;
+
+  static const TilePos& invalid();
 };
 
 #endif //__CAESARIA_TILEPOS_H_INCLUDED__

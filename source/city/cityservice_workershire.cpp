@@ -45,8 +45,8 @@ namespace city
 REGISTER_SERVICE_IN_FACTORY(WorkersHire,workers_hire)
 
 namespace {
-CAESARIA_LITERALCONST(priorities)
-CAESARIA_LITERALCONST(employers)
+GAME_LITERALCONST(priorities)
+GAME_LITERALCONST(employers)
 }
 
 class WorkersHire::Impl
@@ -67,7 +67,7 @@ public:
   void hireWorkers( PlayerCityPtr city, WorkingBuildingPtr bld );
 };
 
-std::string WorkersHire::defaultName(){ return CAESARIA_STR_EXT(WorkersHire); }
+std::string WorkersHire::defaultName(){ return TEXT(WorkersHire); }
 
 WorkersHire::WorkersHire(PlayerCityPtr city)
   : Srvc( city, WorkersHire::defaultName() ), _d( new Impl )
@@ -86,7 +86,7 @@ void WorkersHire::Impl::fillIndustryMap()
 
   industryBuildings.clear();
 
-  for( auto& type : types)
+  for( auto type : types)
   {
     auto info = object::Info::find( type );
     int workersNeed = info.getOption( literals::employers );
@@ -110,13 +110,10 @@ bool WorkersHire::Impl::haveRecruter( WorkingBuildingPtr building )
 
 void WorkersHire::Impl::hireWorkers(PlayerCityPtr city, WorkingBuildingPtr bld)
 {
-  if( excludeTypes.count( bld->type() ) > 0 )
-    return;
-
-  if( bld->numberWorkers() == bld->maximumWorkers() )
-    return;
-
-  if( haveRecruter( bld ) )
+  if( excludeTypes.count( bld->type() ) > 0
+      || !bld->isActive()
+      || bld->numberWorkers() == bld->maximumWorkers()
+      || haveRecruter( bld ) )
     return;
 
   if( bld->roadside().size() > 0 )
@@ -152,7 +149,7 @@ void WorkersHire::timeStep( const unsigned int time )
 
       for( auto group : groups )
       {
-        for( WorkingBuildingList::iterator it=workingBuildings.begin(); it != workingBuildings.end(); )
+        for( auto it=workingBuildings.begin(); it != workingBuildings.end(); )
         {
           if( (*it)->group() == group )
           {

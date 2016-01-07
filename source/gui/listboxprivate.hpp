@@ -30,8 +30,10 @@ namespace gui
 class ListBox::Impl
 {
 public:
-  gfx::Batch background;
-  gfx::Pictures backgroundNb;
+  struct {
+    gfx::Batch batch;
+    gfx::Pictures fallback;
+  } bg;
 
   std::vector< ListBoxItem > items;
 

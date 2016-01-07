@@ -36,9 +36,7 @@ public:
   Point startPos;
   Point ratingStartPos;
   Point offset;
-  gui::Widget* extentMenu;
   Font font;
-  gfx::Renderer* cityRenderer;
   Picture background;
   int lastUpdateTime;
 
@@ -63,7 +61,6 @@ SenatePopupInfo::SenatePopupInfo() : _d( new Impl )
   _d->ratingStartPos = Point( 186, 6 );
   _d->offset = Point( 0, 14 );
   _d->lastUpdateTime = 0;
-  _d->extentMenu = 0;
   _d->background = Picture( Size( 240, 80 ), 0, true );
 
   _d->background.fill( 0xff000000, Rect( Point( 0, 0 ), _d->background.size() ) );
@@ -80,25 +77,23 @@ SenatePopupInfo::SenatePopupInfo() : _d( new Impl )
   _d->background.update();
 }
 
-void SenatePopupInfo::draw( const Point& cursorPos, gfx::Engine& painter, SenatePtr senate )
+void SenatePopupInfo::draw(const RenderInfo& rinfo, Tile& tile)
 {
-  if( senate.isValid() )
-  {
-    if( DateTime::elapsedTime() - _d->lastUpdateTime > 2000 )
-    {
-      _d->updateRatings( senate );
-    }
+  auto senate = tile.overlay<Senate>();
+  if( !senate.isValid() )
+    return;
 
-    Rect screen( Point(0, 0), painter.screenSize() );
-    Rect rect( cursorPos, _d->background.size() );
+  if( DateTime::elapsedTime() - _d->lastUpdateTime > 2000 )
+  {
+    _d->updateRatings( senate );
+
+    Rect screen( Point(0, 0), rinfo.engine.screenSize() );
+    Rect rect( rinfo.engine.cursorPos(), _d->background.size() );
 
     rect.constrainTo( screen );
 
-    painter.draw( _d->background, rect.lefttop() );
+    rinfo.engine.draw( _d->background, rect.lefttop() );
   }
 }
 
-SenatePopupInfo::~SenatePopupInfo()
-{
-
-}
+SenatePopupInfo::~SenatePopupInfo(){}

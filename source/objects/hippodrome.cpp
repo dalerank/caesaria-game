@@ -104,7 +104,7 @@ void HippodromeSection::destroy()
   if( hippodrome.isValid() )
   {
     events::dispatch<ClearTile>( _basepos );
-    _basepos = gfx::tilemap::invalidLocation();
+    _basepos = TilePos::invalid();
   }
 }
 

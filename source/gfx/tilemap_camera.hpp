@@ -56,6 +56,7 @@ public:
   virtual const TilesArray& tiles() const;
   virtual const TilesArray& flatTiles() const;
   virtual const TilesArray& groundTiles() const;
+  virtual const TilesArray& subtrateTiles() const;
 
   int centerX() const;
   int centerZ() const;

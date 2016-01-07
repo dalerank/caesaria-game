@@ -20,13 +20,8 @@
 #include <cstdio>
 #include <stdint.h>
 #include "requirements.hpp"
-#include "core/math.hpp"
-
-#if defined(CAESARIA_PLATFORM_WIN)
-    #include "windows.h"
-#elif defined(CAESARIA_PLATFORM_UNIX)
-    #include <sys/time.h>
-#endif //CAESARIA_PLATFORM_UNIX
+#include "math.hpp"
+#include "platform_specific.hpp"
 
 using namespace std;
 
@@ -98,16 +93,16 @@ DateTime& DateTime::appendDay( int dayNumber/*=1 */ )
 
 tm _getOsLocalTime( time_t date )
 {
-#if defined(CAESARIA_PLATFORM_WIN)
+#if defined(GAME_PLATFORM_WIN)
   time_t t;
   tm timeinfo;
   time(&t);
   memcpy( &timeinfo, localtime(&t), sizeof(tm) );
   return timeinfo;
-#elif defined(CAESARIA_PLATFORM_UNIX)
+#elif defined(GAME_PLATFORM_UNIX)
   //time(&date);
   return *localtime( &date );
-#endif //CAESARIA_PLATFORM_UNIX
+#endif //GAME_PLATFORM_UNIX
 
   return tm();
 }
@@ -181,14 +176,14 @@ DateTime DateTime::currenTime()
 {
 	tm d;
 
-#if defined(CAESARIA_PLATFORM_WIN)
+#if defined(GAME_PLATFORM_WIN)
     _getsystime( &d );
-#elif defined(CAESARIA_PLATFORM_UNIX) || defined(CAESARIA_PLATFORM_HAIKU)
+#elif defined(GAME_PLATFORM_UNIX) || defined(GAME_PLATFORM_HAIKU)
     time_t rawtime;
     ::time( &rawtime );
 
     d = *localtime( &rawtime );
-#endif //CAESARIA_PLATFORM_UNIX
+#endif //GAME_PLATFORM_UNIX
 
   return DateTime( d.tm_year+1900, d.tm_mon, d.tm_mday, d.tm_hour, d.tm_min, d.tm_sec );
 }
@@ -235,13 +230,13 @@ DateTime DateTime::fromhash(unsigned int hash)
 
 unsigned int DateTime::elapsedTime()
 {
-#if defined(CAESARIA_PLATFORM_WIN)
+#if defined(GAME_PLATFORM_WIN)
   return ::GetTickCount();
-#elif defined(CAESARIA_PLATFORM_UNIX)
+#elif defined(GAME_PLATFORM_UNIX)
   timeval tv;
   gettimeofday(&tv, 0);
   return (uint32_t)(tv.tv_sec * 1000) + (tv.tv_usec / 1000);
-#endif //CAESARIA_PLATFORM_UNIX
+#endif //GAME_PLATFORM_UNIX
 
   return 0;
 }

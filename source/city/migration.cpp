@@ -315,7 +315,7 @@ std::string Migration::leaveCityReason() const
   return "";
 }
 
-std::string Migration::defaultName() { return CAESARIA_STR_EXT(Migration); }
+std::string Migration::defaultName() { return TEXT(Migration); }
 
 bool Migration::haveTroubles() const{ return _d->haveTroubles; }
 int Migration::lastMonthMigration() const { return _d->lastMonth.migration; }
@@ -391,15 +391,15 @@ Info::Parameters Migration::Impl::lastMonthParams( PlayerCityPtr city )
 
 void Migration::Impl::createMigrationToCity( PlayerCityPtr city )
 {
-  unsigned int vh = calcVacantHouse( city );
-  if( vh == 0 )
+  unsigned int freeRooms = calcVacantHouse( city );
+  if( freeRooms == 0 )
   {
     return;
   }
 
-  auto migrants = city->walkers().select<Emigrant>();
+  int migrants_n = city->walkers().count<Emigrant>();
 
-  if( vh <= migrants.size() * 5 )
+  if( freeRooms <= migrants_n * 5 )
   {
     return;
   }

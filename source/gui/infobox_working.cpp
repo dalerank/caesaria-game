@@ -25,6 +25,7 @@
 #include "game/datetimehelper.hpp"
 #include "texturedbutton.hpp"
 #include "core/logger.hpp"
+#include "core/common.hpp"
 #include "dialogbox.hpp"
 
 namespace gui
@@ -65,7 +66,7 @@ AboutWorkingBuilding::AboutWorkingBuilding( Widget* parent, WorkingBuildingPtr b
     rect += Point( btnHelp->width() + 5, 0 );
     rect.rright() += 60;
     PushButton& btn = add<PushButton>( rect, "Adv.Info", -1, false, PushButton::whiteBorderUp );
-    CONNECT( &btn, onClicked(), this, AboutWorkingBuilding::_showAdvInfo )
+    CONNECT_LOCAL( &btn, onClicked(), AboutWorkingBuilding::_showAdvInfo )
   }
 }
 
@@ -86,10 +87,7 @@ void AboutWorkingBuilding::setText(const std::string& text)
   }
 }
 
-void AboutWorkingBuilding::_showHelp()
-{
-  DictionaryWindow::show( this, _working->type() );
-}
+void AboutWorkingBuilding::_showHelp() { ui()->add<DictionaryWindow>( _working->type() ); }
 
 WorkingBuildingPtr AboutWorkingBuilding::_getBuilding() { return _working; }
 
@@ -104,12 +102,11 @@ void AboutWorkingBuilding::_showAdvInfo()
   }
 
   std::string workerState = fmt::format( "Damage={}\nFire={}\nService={}\n",
-                                         (int)_working->state( pr::damage ),
-                                         (int)_working->state( pr::fire ),
-                                         timeText.c_str() );
+                                         utils::objectState( _working, pr::damage ),
+                                         utils::objectState( _working, pr::fire ),
+                                         timeText );
 
-  auto dialog = dialog::Information( ui(), "Information", workerState );
-  dialog->moveTo( Widget::parentCenter );
+  dialog::Information( ui(), "Information", workerState );
 }
 
 }//end namespace infobox

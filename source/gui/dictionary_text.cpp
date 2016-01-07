@@ -674,6 +674,11 @@ void DictionaryText::setFont( const Font& font )
   _d->flags.invalidate = true;
 }
 
+void DictionaryText::setFont(FontType type, NColor color)
+{
+  Widget::setFont( type, color );
+}
+
 void DictionaryText::setAlpha(unsigned int value)
 {
   _d->opaque = value;

@@ -113,10 +113,11 @@ Dialog::Dialog(Ui *ui, const Rect& rectangle, const std::string& title,
 
   }
 
-  setModal();
-
   if( lockGame )
     _d->locker.activate();
+
+  moveTo( Widget::parentCenter );
+  setModal();
 }
 
 Signal1<int>& Dialog::onResult()
@@ -187,6 +188,24 @@ Dialog* Information(Ui* ui, const std::string &title, const std::string &text)
   CONNECT( ret, onCancel(), ret, Dialog::deleteLater )
 
   return ret;
+}
+
+Dialog* Confirmation(Ui* ui, const std::string &title, const std::string &text, Callback callback, bool pauseGame)
+{
+  auto* dialog = Confirmation( ui, title, text, pauseGame );
+  dialog->onOk().connect( callback );
+
+  return dialog;
+}
+
+Dialog* Confirmation(Ui* ui, const std::string &title, const std::string &text,
+                     Callback callbackOk, Callback callbackCancel, bool pauseGame)
+{
+  auto* dialog = Confirmation( ui, title, text, pauseGame );
+  dialog->onOk().connect( callbackOk );
+  dialog->onCancel().connect( callbackCancel );
+
+  return dialog;
 }
 
 Dialog* Confirmation(Ui* ui, const std::string &title, const std::string &text, bool pauseGame)

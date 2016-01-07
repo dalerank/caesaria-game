@@ -49,7 +49,7 @@ public:
     TilePos source;
     Point destination2world() const
     {
-      int yMultiplier = tilemap::cellSize().height();
+      int yMultiplier = config::tilemap.cell.size().height();
       Point xOffset( 0, yMultiplier );
       return Point( destination.i(), destination.j() ) * yMultiplier + xOffset;
     }
@@ -58,7 +58,7 @@ public:
 
     Point source2world() const
     {
-      int yMultiplier = tilemap::cellSize().height();
+      int yMultiplier = config::tilemap.cell.size().height();
       Point xOffset( 0, yMultiplier );
       return Point( source.i(), source.j() ) * yMultiplier + xOffset;
     }
@@ -79,14 +79,14 @@ void DustCloud::create(PlayerCityPtr city, const TilePos& start, unsigned int ra
     TilePos offset;
     switch( direction )
     {
-    case direction::north: offset = TilePos( 0, 1 ); break;
-    case direction::northEast: offset = TilePos( 1, 1 ); break;
-    case direction::east: offset = TilePos( 1, 0 ); break;
-    case direction::southEast: offset = TilePos( 1, -1 ); break;
-    case direction::south: offset = TilePos( 0, -1 ); break;
-    case direction::southWest: offset = TilePos( -1, -1 ); break;
-    case direction::west: offset = TilePos( -1, 0 ); break;
-    case direction::northWest: offset = TilePos( -1, 1 ); break;
+    case direction::north:      offset.nb().north();     break;
+    case direction::northEast:  offset.nb().northeast(); break;
+    case direction::east:       offset.nb().east();      break;
+    case direction::southEast:  offset.nb().southeast(); break;
+    case direction::south:      offset.nb().south();     break;
+    case direction::southWest:  offset.nb().southwest(); break;
+    case direction::west:       offset.nb().west();      break;
+    case direction::northWest:  offset.nb().northwest(); break;
     }
 
     dustcloud->send2City( start, start + offset * range);
@@ -98,7 +98,6 @@ DustCloud::DustCloud(PlayerCityPtr city )
 {
   _d->animation.load( ResourceGroup::sprites, 1, 8 );
   _d->animation.setDelay( Animation::hugeSlow );
-  //_d->animation.setOffset( Point( 5, 7 ) );
 
   setName( _("##dust##") );
 
@@ -140,7 +139,7 @@ void DustCloud::timeStep(const unsigned long time)
     PointF saveCurrent = _d->worldway.current;
     _d->worldway.current += _d->worldway.speed;
 
-    int yMultiplier = tilemap::cellSize().height();
+    int yMultiplier = config::tilemap.cell.size().height();
     Point xOffset( 0, yMultiplier );
     TilePos rpos = TilePos( (_d->worldway.current.x() - xOffset.x()) / yMultiplier,
                             (_d->worldway.current.y() - xOffset.y()) / yMultiplier );
@@ -185,9 +184,6 @@ void DustCloud::initialize(const VariantMap &options)
   if( !anim.empty() )
   {
     _d->animation.clear();
-    _d->animation.load( anim.get( "rc" ).toString(),
-                        anim.get( "start" ),
-                        anim.get( "frames" ) );
-    _d->animation.setDelay( anim.get( "delay" ) );
+    _d->animation.simple( options );
   }
 }

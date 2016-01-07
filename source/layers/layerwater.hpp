@@ -32,9 +32,12 @@ public:
   virtual void drawTile( const gfx::RenderInfo& rinfo, gfx::Tile& tile);
   virtual void drawPass( const gfx::RenderInfo& rinfo, gfx::Tile& tile, gfx::Renderer::Pass pass);
   virtual void drawWalkerOverlap(const gfx::RenderInfo& rinfo, gfx::Tile &tile, const int depth);
-
   virtual void handleEvent(NEvent& event);
+  virtual void render(gfx::Engine& engine);
+  virtual void afterRender(gfx::Engine& engine);
+
 private:
+  void _updatePaths();
   void _drawLandTile( const gfx::RenderInfo& rinfo, gfx::Tile &tile, const Size &areaSize);
 
   class Impl;

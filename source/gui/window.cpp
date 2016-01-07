@@ -24,6 +24,7 @@
 #include "modal_widget.hpp"
 #include "core/variant_map.hpp"
 #include "gfx/decorator.hpp"
+#include "gfx/drawstate.hpp"
 #include "gfx/picturesarray.hpp"
 
 using namespace gfx;
@@ -45,25 +46,25 @@ public:
 class BatchState
 {
 public:
-  Batch state;
-  Pictures images;
+  Batch body;
+  Pictures fallback;
 
-  void reset() { images.clear(); }
+  void reset() { fallback.clear(); }
 
   void fill( const Rect& area, const Point& lefttop, Decorator::Mode style, bool negativeY )
   {
     bool errorsOnBatch = false;
-    state.destroy();
-    Decorator::draw( images, area, style, nullptr, negativeY  );
-    errorsOnBatch = !state.load( images, lefttop );
+    body.destroy();
+    Decorator::draw( fallback, area, style, nullptr, negativeY  );
+    errorsOnBatch = !body.load( fallback, lefttop );
 
     if( errorsOnBatch )
     {
-      Decorator::reverseYoffset( images );
-      state.destroy();
+      Decorator::reverseYoffset( fallback );
+      body.destroy();
     }
     else
-      images.clear();
+      fallback.clear();
   }
 };
 
@@ -122,7 +123,7 @@ Window::Window( Widget* parent, const Rect& rectangle, const std::string& title,
 
   _init();
 
-    // this element is a tab group
+  // this element is a tab group
   setBackground( type );
   setTabgroup( true );
   setTabstop( true );
@@ -135,6 +136,12 @@ void Window::setText(const std::string& text )
 	Widget::setText( text );
   if( _d->title )
     _d->title->setText( text );
+}
+
+void Window::setTitleRect(const Rect& rect)
+{
+  if( _d->title )
+    _d->title->setGeometry( rect );
 }
 
 void Window::_createSystemButton( ButtonName btnName, const std::string& tooltip, bool visible )
@@ -153,13 +160,15 @@ void Window::_createSystemButton( ButtonName btnName, const std::string& tooltip
 
 void Window::_init()
 {
-  _createSystemButton( buttonClose, "Close", true );
-  _createSystemButton( buttonMin,"Min", false );
-  _createSystemButton( buttonMax, "Restore", false );
+  _createSystemButton( buttonClose, "Close",   false );
+  _createSystemButton( buttonMin,   "Min",     false );
+  _createSystemButton( buttonMax,   "Restore", false );
 
 	if( !_d->title )
 	{
-    _d->title = &add<Label>( Rect( 0, 0, width(), 20 ), text(), false );
+    _d->title = &add<Label>( Rect( 15, 15, width()-15, 15+20 ), text(), false );
+    _d->title->setTextAlignment( align::center, align::center );
+    _d->title->setFont( FONT_4 );
 		_d->title->setSubElement( true );
 	}
 
@@ -239,9 +248,14 @@ bool Window::onEvent(const NEvent& event)
 
       case mouseRbtnRelease:
 			case mouseLbtnRelease:
-        _d->drag.active = false;
-
-      return true;
+      {
+        if( _d->drag.active )
+        {
+          _d->drag.active = false;
+          return true;
+        }
+      }
+      break;
 
       case mouseMoved:
 				if ( !event.mouse.isLeftPressed() )
@@ -299,17 +313,10 @@ void Window::draw( Engine& painter )
 	{
 		if( _d->flags.isFlag( fbackgroundVisible ) )
 		{
-      if( _d->background.image.isValid() )
-			{
-        painter.draw( _d->background.image, absoluteRect().lefttop(), &absoluteClippingRectRef() );
-			}
-			else
-			{
-        if( _d->background.batch.state.valid() )
-          painter.draw( _d->background.batch.state, &absoluteClippingRectRef() );
-        else
-          painter.draw( _d->background.batch.images, absoluteRect().lefttop(), &absoluteClippingRectRef() );
-			}
+      DrawState pipe( painter, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+      pipe.draw( _d->background.image )
+          .fallback( _d->background.batch.body )
+          .fallback( _d->background.batch.fallback );
 		}
 	}
 
@@ -332,21 +339,21 @@ void Window::setBackgroundVisible(bool draw) {	_d->flags.setFlag( fbackgroundVis
 bool Window::backgroundVisible() const {	return _d->flags.isFlag( fbackgroundVisible ); }
 
 //! Set if the window titlebar will be drawn
-void Window::setHeaderVisible(bool draw)
+void Window::setTitleVisible(bool draw)
 {
 	_d->flags.setFlag( ftitleVisible, draw );
 	_d->title->setVisible( draw );
 }
 
 //! Get if the window titlebar will be drawn
-bool Window::headerVisible() const {	return _d->flags.isFlag( ftitleVisible );}
+bool Window::titleVisible() const {	return _d->flags.isFlag( ftitleVisible );}
 Rect Window::clientRect() const{	return Rect(0, 0, 0, 0);}
 
 void Window::setBackground( Picture texture )
 {
   _d->background.image = texture;
   _d->background.type = bgNone;
-  _d->background.batch.state.destroy();
+  _d->background.batch.body.destroy();
 }
 
 void Window::setBackground(Window::BackgroundType type)

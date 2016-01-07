@@ -326,7 +326,8 @@ void House::_checkPatricianDeals()
 }
 
 void House::_updateTax()
-{
+{  
+  bool newEconomyModel = _city()->getOption( PlayerCity::housePersonalTaxes );
   int difficulty = _city()->getOption( PlayerCity::difficulty );
   float multiply = 1.0f;
   switch (difficulty)
@@ -341,9 +342,19 @@ void House::_updateTax()
   }
 
   float cityTax = _city()->treasury().taxRate() / 100.f;
-  cityTax = (multiply * _d->habitants.mature_n() / _d->spec.taxRate()) * cityTax;
 
-  _d->economy.money -= cityTax;
+  if( newEconomyModel )
+  {
+    float oneManTaxInMonth = spec().taxRate() / (float)spec().tileCapacity();
+    cityTax = multiply * habitants().count() * oneManTaxInMonth * cityTax;
+    _d->economy.money -= cityTax;
+  }
+  else
+  {
+    cityTax = multiply * spec().taxRate() * cityTax * size().area();
+    _d->economy.money = 10;
+  }
+
   _d->economy.tax += cityTax;
 }
 
@@ -523,11 +534,11 @@ void House::timeStep(const unsigned long time)
   if( game::Date::isMonthChanged() )
   {
     setState( pr::settleLock, 0 );
-    _updateTax(); 
+
+    _updateTax();
 
     if( _d->economy.money > 0 ) { _d->poverity--; }
     else { _d->poverity += 2; }
-
     _d->poverity = math::clamp( _d->poverity, 0, 100 );
   }
 
@@ -1133,7 +1144,7 @@ void House::_update( bool needChangeTexture )
   {
     if( !pic.isValid() )
     {
-      Logger::warning( "WARNING!!! House: failed change texture for size {0}", size().width() );
+      Logger::warning( "WARNING!!! House: failed change texture for size {}", size().width() );
       pic = Picture::getInvalid();
     }
 

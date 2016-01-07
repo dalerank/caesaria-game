@@ -65,14 +65,12 @@ EmperorGift::EmperorGift(Widget* p, int money , const DateTime &lastgift)
 
   INIT_WIDGET_FROM_UI( Label*, lbLastGiftDate )
   INIT_WIDGET_FROM_UI( ListBox*, lbxGifts )
-  INIT_WIDGET_FROM_UI( PushButton*, btnCancel )
-  INIT_WIDGET_FROM_UI( PushButton*, btnSend )
   INIT_WIDGET_FROM_UI( Label*, lbPlayerMoney )
 
   CONNECT( lbxGifts, onItemSelected(), &d, Impl::selectGift );
-  CONNECT( btnSend, onClicked(), &d, Impl::sendGift );
-  CONNECT( btnSend, onClicked(), this, EmperorGift::deleteLater );
-  CONNECT( btnCancel, onClicked(), this, EmperorGift::deleteLater );
+  LINK_WIDGET_ACTION( PushButton*, btnSend, onClicked(), &d, Impl::sendGift );
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnSend, onClicked(), EmperorGift::deleteLater );
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnCancel, onClicked(), EmperorGift::deleteLater );
 
   d.fillGifts( lbxGifts );
 
@@ -81,7 +79,7 @@ EmperorGift::EmperorGift(Widget* p, int money , const DateTime &lastgift)
     int monthsLastGift = lastgift.monthsTo( game::Date::current() );
     std::string text = monthsLastGift > 100
                               ? _( "##too_old_sent_gift##")
-                              : utils::format( 0xff, "%s  %d  %s",
+                              : fmt::format( "{}  {}  {}",
                                              _("##time_since_last_gift##"),
                                              monthsLastGift,
                                              _("##mo##") );
@@ -90,26 +88,15 @@ EmperorGift::EmperorGift(Widget* p, int money , const DateTime &lastgift)
 
   if( lbPlayerMoney )
   {
-    std::string text = utils::format( 0xff, "%s %d Dn", _( "##you_have_money##"), money );
+    std::string text = fmt::format( "{} {} Dn", _( "##you_have_money##"), money );
     lbPlayerMoney->setText( text );
   }
 
-  WidgetEscapeCloser::insertTo( this );
+  WidgetClose::insertTo( this, KEY_RBUTTON );
   setModal();
 }
 
 EmperorGift::~EmperorGift() {}
-
-bool EmperorGift::onEvent(const NEvent& event)
-{
-  if( event.EventType == sEventMouse && event.mouse.isRightPressed() )
-  {
-    deleteLater();
-    return true;
-  }
-
-  return Window::onEvent( event );
-}
 
 Signal1<int>& EmperorGift::onSendGift() { return _dfunc()->sendGiftSignal; }
 

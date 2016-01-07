@@ -43,6 +43,13 @@ void Mars::updateRelation(float income, PlayerCityPtr city)
   RomeDivinity::updateRelation( income, city );
 }
 
+object::Type Mars::templeType(Divinity::TempleSize size) const
+{
+  return size == bigTemple
+                    ? BIG_TEMPLE_TYPE(mars)
+                    : SML_TEMPLE_TYPE(mars);
+}
+
 Mars::Mars()
   : RomeDivinity( RomeDivinity::Mars )
 {

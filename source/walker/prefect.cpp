@@ -82,9 +82,8 @@ bool Prefect::_looks4Fire( ReachedBuildings& buildings, TilePos& p )
 
 WalkerPtr Prefect::_looks4Enemy( const int range )
 {
-  TilePos offset( range, range );
-  WalkerList walkers = _city()->statistic().walkers.find<Walker>( walker::any,
-                                                                  pos() - offset, pos() + offset );
+  WalkerList walkers = _city()->statistic().walkers.find<Walker>( walker::any, range,
+                                                                  pos() );
 
   walkers = utils::selectAgressive( walkers );
   return utils::findNearest( pos(), walkers );
@@ -275,7 +274,7 @@ void Prefect::_brokePathway(TilePos p)
 {
   OverlayPtr overlay = _map().overlay( p );
 
-  if( overlay.isValid() && overlay->type() == object::burning_ruins )
+  if( object::typeOrDefault( overlay ) == object::burning_ruins )
   {
     setSpeed( 0.f );
     _setAction( acFightFire );
@@ -441,7 +440,7 @@ void Prefect::_noWay()
 static BuildingPtr isBurningRuins( const Tile& tile, bool& inFire )
 {
   BuildingPtr building = tile.overlay<Building>();
-  inFire = (building.isValid() && building->type() == object::burning_ruins );
+  inFire = (object::typeOrDefault( building ) == object::burning_ruins);
 
   return inFire ? building : BuildingPtr();
 }

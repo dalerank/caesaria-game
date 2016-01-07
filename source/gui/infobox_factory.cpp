@@ -79,11 +79,11 @@ AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
   std::string text = utils::format( 0xff, "%s %d%%", _("##rawm_production_complete_m##"), factory->progress() );
   Size lbSize( (width() - 20) / 2, 25 );
   _lbProduction = &add<Label>( Rect( _lbTitle()->leftbottom() + Point( 10, 0 ), lbSize ), text );
-  _lbProduction->setFont( Font::create( FONT_2 ) );
+  _lbProduction->setFont( FONT_2 );
 
   std::string effciencyText = utils::format( 0xff, "%s %d%%", _("##effciency##"), factory->effciency() );
   _lbEffciency = &add<Label>( _lbProduction->relativeRect() + Point( lbSize.width(), 0 ), effciencyText );
-  _lbEffciency->setFont( Font::create( FONT_2 ) );
+  _lbEffciency->setFont( FONT_2 );
 
 
   if( factory->produceGoodType() != good::none )
@@ -110,7 +110,7 @@ AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
 
     _lbText()->setGeometry( Rect( lbStockInfo.leftbottom() + Point( 0, 5 ),
                                   _lbBlackFrame()->righttop() - Point( 0, 5 ) ) );
-    _lbText()->setFont( Font::create( FONT_1 ) );
+    _lbText()->setFont( FONT_1 );
   }
 
   std::string workInfo = factory->workersProblemDesc();
@@ -120,10 +120,7 @@ AboutFactory::AboutFactory(Widget* parent, PlayerCityPtr city, const Tile& tile)
   _updateWorkersLabel( Point( 32, 157 ), 542, factory->maximumWorkers(), factory->numberWorkers() );
 }
 
-void AboutFactory::_showHelp()
-{
-  DictionaryWindow::show( ui()->rootWidget(), _type );
-}
+void AboutFactory::_showHelp() {  ui()->add<DictionaryWindow>( _type ); }
 
 AboutShipyard::AboutShipyard(Widget* parent, PlayerCityPtr city, const Tile& tile)
   : AboutFactory( parent, city, tile )

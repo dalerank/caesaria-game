@@ -36,6 +36,7 @@
 #include "city/states.hpp"
 #include "gfx/tilearea.hpp"
 #include "walkers_factory.hpp"
+#include "core/common.hpp"
 
 using namespace gfx;
 
@@ -74,7 +75,7 @@ ServiceWalker::ServiceWalker(PlayerCityPtr city, const Service::Type service)
   _d->service = service;
   _d->reachDistance = 2;
   _d->wayFailedCounter = 0;
-  _d->lastHousePos = gfx::tilemap::invalidLocation();
+  _d->lastHousePos = TilePos::invalid();
 
   _init(service);
 }
@@ -547,7 +548,7 @@ BuildingPtr ServiceWalker::base() const
 }
 
 ServiceWalker::~ServiceWalker() {}
-void ServiceWalker::setBase( BuildingPtr base ) { _d->basePos = (base.isValid() ? base->pos() : gfx::tilemap::invalidLocation()); }
+void ServiceWalker::setBase( BuildingPtr base ) { _d->basePos = utils::objPosOrDefault( base ); }
 
 bool ReachedBuildings::contain(object::Type type) const
 {

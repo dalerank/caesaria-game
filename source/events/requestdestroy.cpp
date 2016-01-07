@@ -54,9 +54,9 @@ void RequestDestroy::_exec(Game& game, unsigned int)
     std::string questionStr = constrQuestion.empty()
                                   ? "##destroy_this_building##"
                                   : constrQuestion;
-    Dialog* dialog = Confirmation( game.gui(), _("##warning##"), _(questionStr) );
-    CONNECT(dialog, onOk(), this, RequestDestroy::_applyDestroy );
-    CONNECT(dialog, onCancel(), this, RequestDestroy::_declineDestroy );
+    Dialog* dialog = Confirmation( game.gui(), _("##warning##"), _(questionStr),
+                                   makeDelegate( this, &RequestDestroy::_applyDestroy ),
+                                   makeDelegate( this, &RequestDestroy::_declineDestroy ));
   }
 }
 

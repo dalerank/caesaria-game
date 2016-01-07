@@ -41,6 +41,7 @@
 #include "gfx/city_renderer.hpp"
 #include "gfx/tilemap_config.hpp"
 #include "gfx/tile_config.hpp"
+#include "events/undo_action.hpp"
 #include "gfx/tilemap.hpp"
 #include "city/statistic.hpp"
 #include "core/osystem.hpp"
@@ -51,7 +52,7 @@ using namespace events;
 
 namespace citylayer
 {
-static const int frameCountLimiter=25;
+static const int frameCountLimiter=12;
 
 class Build::Impl
 {
@@ -88,15 +89,14 @@ public:
   TilesArray buildTiles;  // these tiles have draw over "normal" tilemap tiles!
   CachedTiles cachedTiles;
 
-  Signal3<object::Type,TilePos,int> onBuildSignal;
 public:
   void sortBuildTiles();
 };
 
 void Build::_discardPreview()
 {
-  __D_IMPL(d,Build)
-  for( auto tile : d->buildTiles )
+  __D_REF(d,Build)
+  for( auto tile : d.buildTiles )
   {
     if( tile->overlay().isValid() )
       tile->overlay()->deleteLater();
@@ -104,8 +104,8 @@ void Build::_discardPreview()
     delete tile;
   }
 
-  d->buildTiles.clear();
-  d->cachedTiles.clear();
+  d.buildTiles.clear();
+  d.cachedTiles.clear();
 }
 
 void Build::_checkPreviewBuild(const TilePos& pos)
@@ -212,7 +212,7 @@ void Build::_checkBuildArea()
     _setStartCursorPos( _lastCursorPos() );
 
     Tile* tile = _camera()->at( _lastCursorPos(), true );
-    d.startTilePos = tile ? tile->epos() : tilemap::invalidLocation();
+    d.startTilePos = tile ? tile->epos() : TilePos::invalid();
   }
 }
 
@@ -295,7 +295,7 @@ void Build::_updatePreviewTiles( bool force )
 
   d.text.image.fill( 0x0, Rect() );
   d.text.font.setColor( 0xffff0000 );
-  d.text.font.draw( d.text.image, utils::i2str( d.money4Construction ) + " Dn", Point() );
+  d.text.font.draw( d.text.image, fmt::format( "{} Dn", d.money4Construction ), Point() );
 }
 
 void Build::_buildAll()
@@ -332,7 +332,8 @@ void Build::_buildAll()
       events::dispatch<BuildAny>( tile->epos(), construction->type() );
       buildOk = true;
 
-      emit d.onBuildSignal( construction->type(), tile->epos(), construction->info().cost() );
+      events::dispatch<UndoAction>( UndoAction::built, construction->type(),
+                                    tile->epos(), construction->info().cost() );
     }
   }
 
@@ -427,8 +428,8 @@ void Build::handleEvent(NEvent& event)
           if( !d.readyForExit )
           {
             _setStartCursorPos( Point( -1, -1 ) );
-            d.startTilePos = tilemap::invalidLocation();
-            d.lastTilePos = tilemap::invalidLocation();
+            d.startTilePos = TilePos::invalid();
+            d.lastTilePos = TilePos::invalid();
             d.needUpdateTiles = true;
             d.lmbPressed = false;
             d.readyForExit = true;
@@ -461,10 +462,13 @@ void Build::handleEvent(NEvent& event)
 
 void Build::_finishBuild()
 {
+  __D_REF(_d,Build);
+
   _buildAll();
   _setStartCursorPos( _lastCursorPos() );
   _updatePreviewTiles( true );
-  _dfunc()->lmbPressed = false;
+  _d.lmbPressed = false;
+  events::dispatch<UndoAction>( UndoAction::finished );
 }
 
 int Build::type() const {  return citylayer::build; }
@@ -585,9 +589,8 @@ void Build::render( Engine& engine)
   if( ++d.frameCount >= frameCountLimiter)
   {
     _updatePreviewTiles( true );
+    d.frameCount -= frameCountLimiter;
   }
-
-  d.frameCount %= frameCountLimiter;
 
   RenderInfo rinfo = { engine, _camera()->offset() };
   if( d.overdrawBuilding || !d.mayBuildInCity)
@@ -610,9 +613,10 @@ void Build::init(Point cursor)
   __D_REF(_d,Build);
   Layer::init( cursor );
 
-  _d.lastTilePos = tilemap::invalidLocation();
-  _d.startTilePos = tilemap::invalidLocation();
+  _d.lastTilePos = TilePos::invalid();
+  _d.startTilePos = TilePos::invalid();
   _d.readyForExit = false;
+  _d.frameCount = 0;
   _d.kbShift = false;
   _d.kbCtrl = false;
 
@@ -667,9 +671,9 @@ void Build::afterRender(Engine& engine)
 
 const Layer::WalkerTypes& Build::visibleTypes() const
 {
-  __D_IMPL_CONST(_d,Build);
-  if( _d->lastLayer.isValid() )
-    return _d->lastLayer->visibleTypes();
+  __D_REF(_d,Build);
+  if( _d.lastLayer.isValid() )
+    return _d.lastLayer->visibleTypes();
 
   return Layer::visibleTypes();
 }
@@ -704,15 +708,14 @@ LayerPtr Build::drawLayer() const { return _dfunc()->lastLayer; }
 Build::~Build() {}
 
 Build::Build(Camera& camera, PlayerCityPtr city, Renderer* renderer )
-  : Layer( &camera, city ),
-    __INIT_IMPL(Build)
+  : Layer( &camera, city ), __INIT_IMPL(Build)
 {
   __D_REF(d,Build);
   d.renderer = renderer;
   d.frameCount = 0;
   d.needUpdateTiles = false;
   d.resForbiden = SETTINGS_STR( forbidenTile );
-  d.startTilePos = gfx::tilemap::invalidLocation();
+  d.startTilePos = TilePos::invalid();
   d.text.font = Font::create( FONT_5 );
   d.readyForExit = false;
   d.text.image = Picture( Size( 100, 30 ), 0, true );
@@ -720,11 +723,6 @@ Build::Build(Camera& camera, PlayerCityPtr city, Renderer* renderer )
   d.btile.red.load( d.resForbiden, 2 );
 
   _addWalkerType( walker::all );
-}
-
-Signal3<object::Type,TilePos,int>& Build::onBuild()
-{
-  return _dfunc()->onBuildSignal;
 }
 
 void Build::Impl::sortBuildTiles()

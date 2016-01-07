@@ -84,7 +84,7 @@ Tilemap::Tilemap() : _d( new Impl )
 {
   _d->size = 0;
   _d->direction = direction::north;
-  _d->virtWidth = tilemap::cellSize().width() * 2;
+  _d->virtWidth = config::tilemap.cell.size().width() * 2;
 }
 
 void Tilemap::resize( const unsigned int size )
@@ -512,7 +512,7 @@ void Tilemap::turnLeft()
   {
     const Impl::TurnInfo& ti = it.second;
 
-    Picture pic = ti.overlay.isValid() ? ti.overlay->picture() : ti.pic;
+    const Picture& pic = ti.overlay.isValid() ? ti.overlay->picture() : ti.pic;
     int pSize = (pic.width() + 2) / _d->virtWidth;
 
     pSize = math::clamp<int>( pSize, 1, 10);

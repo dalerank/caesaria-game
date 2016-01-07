@@ -37,10 +37,6 @@ public:
   Picture bgPicture;
   Image::Mode mode;
 
-  ~Impl()
-  {
-  }
-
 public signals:
 	Signal0<> onClickedSignal;
 };
@@ -148,15 +144,20 @@ void Image::draw(gfx::Engine& painter )
 
 Signal0<>& Image::onClicked(){  return _d->onClickedSignal;}
 
-void Image::setPicture( const Picture& picture )
+void Image::setPicture(const Picture& picture)
 {
   _d->bgPicture = picture;
 
 	if( _d->mode == image )
 	{
-		setWidth( picture.width() );
-		setHeight( picture.height() );
-	}
+    setWidth( picture.width() );
+    setHeight( picture.height() );
+    }
+}
+
+void Image::setPicture(const string& rc, int id)
+{
+  setPicture( Picture( rc, id ) );
 }
 
 void Image::setupUI(const VariantMap& ui)

@@ -72,8 +72,9 @@ public:
   unsigned int textureID() const;
 
 #ifndef CAESARIA_DISABLE_PICTUREBANK
-  void load( const std::string& group, const int id );
-  void load( const std::string& filename );
+  Picture& load( const std::string& group, const int id );
+  Picture& withFallback( const std::string& group, const int id );
+  Picture& load( const std::string& filename );
 #endif
 
   int width() const;

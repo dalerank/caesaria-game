@@ -140,7 +140,7 @@ void Peace::addCriminal( WalkerPtr wlk )
   else if( wlk .is<Mugger>() ) { _d->threats.mugger = true; }
   else
   {
-    Logger::warning( "Peace: addCriminal unknown walker {0}", wlk->type() );
+    Logger::warning( "Peace: addCriminal unknown walker {}", wlk->type() );
     _d->threats.criminal = true;
   }
 }
@@ -199,7 +199,7 @@ void Peace::buildingDestroyed(OverlayPtr overlay, int why)
 }
 
 int Peace::value() const { return _d->value; }
-std::string Peace::defaultName() { return CAESARIA_STR_EXT(Peace); }
+std::string Peace::defaultName() { return TEXT(Peace); }
 
 std::string Peace::reason() const
 {

@@ -33,6 +33,7 @@ public:
 
   virtual ~DlcFolderViewer();
   virtual void draw(gfx::Engine &painter);
+  virtual bool onEvent(const NEvent &event);
   virtual void setupUI(const VariantMap &ui);
 
 private:

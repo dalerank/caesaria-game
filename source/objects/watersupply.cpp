@@ -104,7 +104,7 @@ Reservoir::Reservoir()
     : WaterSource( object::reservoir, Size( 3 ) )
 {  
   _isWaterSource = false;
-  _picture().load( ResourceGroup::utilitya, 34 );
+  setPicture( info().randomPicture( size() ) );
   
   // utilitya 34      - empty reservoir
   // utilitya 35 ~ 42 - full reservoir animation
@@ -131,15 +131,10 @@ bool Reservoir::build( const city::AreaInfo& info )
 
 bool Reservoir::_isNearWater(PlayerCityPtr city, const TilePos& pos ) const
 {
-  bool near_water = false;  // tells if the factory is next to a mountain
-
   Tilemap& tilemap = city->tilemap();
   TilesArray perimetr = tilemap.rect( pos + TilePos( -1, -1 ), size() + Size( 2 ), !Tilemap::checkCorners );
 
-  for( auto& tile : perimetr)
-    near_water |= tile->getFlag( Tile::tlWater );
-
-  return near_water;
+  return perimetr.waters().size() > 0;  // tells if the factory is next to a mountain
 }
 
 void Reservoir::initTerrain(Tile &terrain) {}
@@ -164,7 +159,7 @@ void Reservoir::timeStep(const unsigned long time)
   //filled area, that reservoir present
   if( game::Date::isWeekChanged() )
   {
-    TilesArea reachedTiles( _map(), pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
+    TilesArray reachedTiles = aquifer();
 
     for( auto& tile : reachedTiles )
     {
@@ -183,6 +178,11 @@ void Reservoir::timeStep(const unsigned long time)
   
   // takes current animation frame and put it into foreground
   _fgPicture( 0 ) = _animation().currentFrame();
+}
+
+TilesArray Reservoir::aquifer() const
+{
+  return TilesArea( _map(), pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
 }
 
 bool Reservoir::canBuild( const city::AreaInfo& areaInfo ) const
@@ -314,6 +314,6 @@ TilePos Reservoir::entry(Direction direction)
   case direction::east: return pos() + TilePos( 2, 1 );
   case direction::south: return pos() + TilePos( 1, 0 );
   case direction::west: return pos() + TilePos( 0, 1 );
-  default: return gfx::tilemap::invalidLocation();
+  default: return TilePos::invalid();
   }
 }

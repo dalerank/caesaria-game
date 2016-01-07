@@ -70,6 +70,10 @@ public:
   virtual void canvasDraw(const std::string& text, const Point& point=Point(), Font font=Font(), NColor color=0);
 
   //!
+  virtual void canvasDraw(const std::string& text, const Rect& rect, Font font=Font(), NColor color=0,
+                          Alignment halign=align::automatic, Alignment valign=align::automatic );
+
+  //!
   virtual void canvasDraw(const gfx::Picture& picture, const Point& point);
 
   //! Sets whether to draw the border
@@ -86,7 +90,7 @@ public:
   virtual void setWordwrap(bool enable);
 
   //! Checks if word wrap is enabled
-  virtual bool isWordWrapEnabled() const;
+  virtual bool isWordwrapEnabled() const;
 
   //! Sets the new caption of this element.
   virtual void setText(const std::string& text);
@@ -113,8 +117,12 @@ public:
   virtual void setBackgroundPicture( const gfx::Picture& picture, Point offset=Point() );
 
   virtual void setIcon( const gfx::Picture& icon, Point offset=Point() );
+  virtual void setIcon( const std::string& rc, int index );
+
+  virtual void setIconOffset( const Point& offset );
 
   virtual void setFont( const Font& font );
+  virtual void setFont( FontType type, NColor color=0 );
 
   virtual void setAlpha( unsigned int value );
 

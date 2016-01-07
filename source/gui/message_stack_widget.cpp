@@ -28,7 +28,7 @@ using namespace gfx;
 namespace gui
 {
 
-const int WindowMessageStack::defaultID = Hash( CAESARIA_STR_EXT(WindowMessageStack) );
+const int WindowMessageStack::defaultID = Hash( TEXT(WindowMessageStack) );
 
 class LabelA : public Label
 {
@@ -53,7 +53,7 @@ protected:
     Pictures pics;
     Decorator::draw( pics, Rect( Point(), size() ), style );
 
-    Picture emlbPic( ResourceGroup::panelBackground, config::id.empire.stamp );
+    Picture emlbPic( gui::rc.panel, config::id.empire.stamp );
     pics.append( emlbPic, Point( 4, 2 ) );
     pics.append( emlbPic, Point( width() - emlbPic.width()-4, 2 ) );
 

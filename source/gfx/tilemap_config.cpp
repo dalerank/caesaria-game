@@ -24,23 +24,19 @@
 
 using namespace direction;
 
-namespace gfx
+namespace config
 {
 
-static Tilemap invalidTmap;
+static gfx::Tilemap invalidTmap;
 
-namespace tilemap
-{
-
-static int x_tileBase = caCellWidth;
+static int x_tileBase = tilemap.cell.width.neww;
 static int y_tileBase = x_tileBase / 2;
 static Size tilePicSize( x_tileBase * 2 - 2, x_tileBase );
 static Size tileCellSize( x_tileBase, y_tileBase );
 static Point centerOffset( y_tileBase / 2, y_tileBase / 2 );
-static TilePos tileInvalidLocation( -1, -1 );
 static TilePos tilePosLocation( 1, 1 );
 
-void initTileBase(int width)
+void config::_Tilemap::_Cell::setWidth(int width)
 {
   x_tileBase = width;
   y_tileBase = x_tileBase / 2;
@@ -49,33 +45,18 @@ void initTileBase(int width)
   centerOffset = Point( y_tileBase / 2, y_tileBase / 2 );
 }
 
-const Point& cellCenter() { return centerOffset;}
-const Size& cellPicSize() { return tilePicSize; }
-const Size& cellSize() { return tileCellSize; }
+const Point& _Tilemap::_Cell::center() { return centerOffset;}
+const Size& _Tilemap::_Cell::picSize() { return tilePicSize; }
+const Size& _Tilemap::_Cell::size() { return tileCellSize; }
+bool _Tilemap::isValidLocation(const TilePos &pos) { return pos.i() >= 0 && pos.j() >=0; }
+const TilePos& _Tilemap::unitLocation(){ return tilePosLocation; }
+gfx::Tilemap& _Tilemap::invalid() { return invalidTmap; }
 
-Direction getDirection(const TilePos& b, const TilePos& e)
-{
-  float t = (e - b).getAngleICW();
-  int angle = (int)ceil( t / 45.f);
-
-  Direction directions[] = { east, southEast, south, southWest,
-                             west, northWest, north, northEast, northEast };
-
-  return directions[ angle ];
-}
-
-const TilePos& invalidLocation() { return tileInvalidLocation; }
-bool isValidLocation(const TilePos &pos) { return pos.i() >= 0 && pos.j() >=0; }
-const TilePos& unitLocation(){ return tilePosLocation; }
-Tilemap& getInvalid() { return invalidTmap; }
-
-unsigned int picWidth2CellSize(int width)
+unsigned int _Tilemap::picWidth2CellSize(int width)
 {
   return width > 0
-            ? (width+2) / tilemap::tilePicSize.width()
+            ? (width+2) / tilePicSize.width()
             : 0;
 }
 
-}//end namespace tilemap
-
-}//end namespace gfx
+}//end namespace config

@@ -118,8 +118,6 @@ protected:
 
   unsigned int _lastStateNameHash;
 
-  int _overrideBgColor;
-  int _value;
   int _sliderPos, _lastSliderPos;
 	int _drawLenght;
   int _minValue;

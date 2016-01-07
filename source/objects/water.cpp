@@ -100,7 +100,7 @@ Picture Water::randomPicture()
   int startOffset  = 120;
   int imgId = math::random( 7 );
 
-  return Picture( ResourceGroup::land1a, startOffset + imgId );
+  return Picture( config::rc.land1a, startOffset + imgId );
 }
 
 void Water::updatePicture()

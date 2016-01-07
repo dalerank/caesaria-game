@@ -86,7 +86,6 @@ public:
   TilesArray buildTiles;  // these tiles have draw over "normal" tilemap tiles!
   CachedTiles cachedTiles;
 
-  Signal3<object::Type,TilePos,int> onBuildSignal;
 public:
   void sortBuildTiles();
   bool canBuildOn( OverlayPtr overlay, const city::AreaInfo& areaInfo) const;
@@ -195,7 +194,7 @@ void Constructor::_checkBuildArea()
     _setStartCursorPos( _lastCursorPos() );
 
     Tile* tile = _camera()->at( _lastCursorPos(), true );
-    _d->startTilePos = tile ? tile->epos() : tilemap::invalidLocation();
+    _d->startTilePos = tile ? tile->epos() : TilePos::invalid();
   }
 }
 
@@ -284,7 +283,7 @@ void Constructor::_updatePreviewTiles( bool force )
       }
       else
       {
-         size = Size( gfx::tilemap::picWidth2CellSize( tile->picture().width() ) );
+         size = Size( config::tilemap.picWidth2CellSize( tile->picture().width() ) );
       }
 
       if( size.area() > 1 )
@@ -402,8 +401,8 @@ void Constructor::handleEvent(NEvent& event)
           if( !_d->readyForExit )
           {
             _setStartCursorPos( Point(-1, -1) );
-            _d->startTilePos = tilemap::invalidLocation();
-            _d->lastTilePos = tilemap::invalidLocation();
+            _d->startTilePos = TilePos::invalid();
+            _d->lastTilePos = TilePos::invalid();
             _d->needUpdateTiles = true;
             _d->lmbPressed = false;
             _d->readyForExit = true;
@@ -587,8 +586,8 @@ void Constructor::init(Point cursor)
   __D_IMPL(_d,Constructor);
   Layer::init( cursor );
 
-  _d->lastTilePos = tilemap::invalidLocation();
-  _d->startTilePos = tilemap::invalidLocation();
+  _d->lastTilePos = TilePos::invalid();
+  _d->startTilePos = TilePos::invalid();
   _d->readyForExit = false;
   _d->kbShift = false;
   _d->kbCtrl = false;
@@ -655,7 +654,7 @@ const Layer::WalkerTypes& Constructor::visibleTypes() const
 void Constructor::renderUi(Engine &engine)
 {
   Layer::renderUi( engine );
-  engine.draw( _dfunc()->text.image, engine.cursorPos() + Point( 10, 10 ));
+  //engine.draw( _dfunc()->text.image, engine.cursorPos() + Point( 10, 10 ));
 }
 
 void Constructor::changeLayer(int layer)
@@ -671,40 +670,27 @@ void Constructor::changeLayer(int layer)
   _initBuildMode();
 }
 
-LayerPtr Constructor::create(Renderer& renderer, PlayerCityPtr city)
-{
-  LayerPtr ret( new Constructor( renderer, city ) );
-  ret->drop();
-
-  return ret;
-}
-
 Constructor::~Constructor() {}
 
-Constructor::Constructor( Renderer& renderer, PlayerCityPtr city)
-  : Layer( renderer.camera(), city ),
+Constructor::Constructor(Camera& camera, PlayerCityPtr city, Renderer* renderer)
+  : Layer( &camera, city ),
     __INIT_IMPL(Constructor)
 {
-  __D_IMPL(d,Constructor);
-  d->renderer = &renderer;
-  d->frameCount = 0;
-  d->needUpdateTiles = false;
-  d->resForbiden = SETTINGS_STR( forbidenTile );
-  d->startTilePos = gfx::tilemap::invalidLocation();
-  d->text.font = Font::create( FONT_5 );
-  d->readyForExit = false;
-  d->drawRadius = 1;
-  d->splineEnabled = false;
-  d->text.image = Picture( Size( 100, 30 ), 0, true );
+  __D_REF(d,Constructor);
+  d.renderer = renderer;
+  d.frameCount = 0;
+  d.needUpdateTiles = false;
+  d.resForbiden = SETTINGS_STR( forbidenTile );
+  d.startTilePos = TilePos::invalid();
+  d.text.font = Font::create( FONT_5 );
+  d.readyForExit = false;
+  d.drawRadius = 1;
+  d.splineEnabled = false;
+  d.text.image = Picture( Size( 100, 30 ), 0, true );
   _addWalkerType( walker::all );
 
-  d->grnPicture.load( d->resForbiden, 1 );
-  d->redPicture.load( d->resForbiden, 2 );
-}
-
-Signal3<object::Type,TilePos,int>& Constructor::onBuild()
-{
-  return _dfunc()->onBuildSignal;
+  d.grnPicture.load( d.resForbiden, 1 );
+  d.redPicture.load( d.resForbiden, 2 );
 }
 
 void Constructor::Impl::sortBuildTiles()
@@ -718,18 +704,27 @@ void Constructor::Impl::sortBuildTiles()
 
 bool Constructor::Impl::canBuildOn(OverlayPtr overlay, const city::AreaInfo& areaInfo) const
 {
-  if( overlay->type() == object::terrain
-      || overlay->type() == object::water )
+  object::Type type = object::typeOrDefault( overlay );
+  if( type == object::terrain
+      || type == object::water )
   {
     return true;
   }
-  else if( overlay->type() == object::tree )
+  else if( type == object::tree
+           || type == object::meadow )
   {
     bool walkable = areaInfo.tile().isWalkable( true );
     bool isTree = is_kind_of<Tree>(areaInfo.tile().overlay());
     return (walkable || isTree );
   }
-  else if( overlay->type() == object::rock )
+  else if( type == object::river )
+  {
+    bool walkable = areaInfo.tile().isWalkable( true );
+    bool coast = areaInfo.tile().terrain().coast;
+    return (walkable || coast);
+  }
+  else if( type == object::rock
+           || type == object::plateau )
   {
     bool walkable = areaInfo.tile().isWalkable( true );
     bool isRock = areaInfo.tile().terrain().rock;

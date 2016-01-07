@@ -38,13 +38,6 @@ class WarehouseSpecialOrdersWindow::Impl
 {
 public:
   WarehousePtr warehouse;
-  PushButton* btnToggleDevastation;
-  PushButton* btnTradeCenter;
-
-public:
-  void update();
-  void toggleTradeCenter();
-  void toggleDevastation();
 };
 
 WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, const Point& pos, WarehousePtr warehouse )
@@ -78,38 +71,42 @@ WarehouseSpecialOrdersWindow::WarehouseSpecialOrdersWindow( Widget* parent, cons
     }
   }
 
-  GET_DWIDGET_FROM_UI( &d, btnToggleDevastation )
-  GET_DWIDGET_FROM_UI( &d, btnTradeCenter )
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnToggleDevastation, onClicked(), WarehouseSpecialOrdersWindow::_toggleDevastation )
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnTradeCenter,       onClicked(), WarehouseSpecialOrdersWindow::_toggleTradeCenter )
 
-  CONNECT( d.btnToggleDevastation, onClicked(), &d, Impl::toggleDevastation );
-  CONNECT( d.btnTradeCenter,       onClicked(), &d, Impl::toggleTradeCenter );
-
-  d.update();
+  _update();
 }
 
 WarehouseSpecialOrdersWindow::~WarehouseSpecialOrdersWindow() {}
 
-void WarehouseSpecialOrdersWindow::Impl::toggleTradeCenter()
+void WarehouseSpecialOrdersWindow::_toggleTradeCenter()
 {
-  warehouse->setTradeCenter( !warehouse->isTradeCenter() );
-  update();
+  __D_REF(d, WarehouseSpecialOrdersWindow)
+  d.warehouse->setTradeCenter( !d.warehouse->isTradeCenter() );
+  _update();
 }
 
-void WarehouseSpecialOrdersWindow::Impl::toggleDevastation()
+void WarehouseSpecialOrdersWindow::_toggleDevastation()
 {
-  warehouse->store().setDevastation( !warehouse->store().isDevastation() );
-  update();
+  __D_REF(d, WarehouseSpecialOrdersWindow)
+  d.warehouse->store().setDevastation( !d.warehouse->store().isDevastation() );
+  _update();
 }
 
-void WarehouseSpecialOrdersWindow::Impl::update()
+void WarehouseSpecialOrdersWindow::_update()
 {
+  __D_REF(d, WarehouseSpecialOrdersWindow)
+
+  INIT_WIDGET_FROM_UI( PushButton*, btnToggleDevastation )
+  INIT_WIDGET_FROM_UI( PushButton*, btnTradeCenter )
+
   if( btnToggleDevastation )
-    btnToggleDevastation->setText( warehouse->store().isDevastation()
+    btnToggleDevastation->setText( d.warehouse->store().isDevastation()
                                    ? _("##stop_warehouse_devastation##")
                                    : _("##devastate_warehouse##") );
 
   if( btnTradeCenter )
-    btnTradeCenter->setText( warehouse->isTradeCenter()
+    btnTradeCenter->setText( d.warehouse->isTradeCenter()
                              ? _("##become_warehouse##")
                              : _("##become_trade_center##") );
 }

@@ -107,6 +107,8 @@ public:
   __GS_PROPERTY(ambientsounds)
   __GS_PROPERTY(debugMenu)
   __GS_PROPERTY(cntrGroupsModel)
+  __GS_PROPERTY(logfile)
+  __GS_PROPERTY(rightMenu)
 #undef __GS_PROPERTY
 
   static Settings& instance();

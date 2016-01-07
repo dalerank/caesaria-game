@@ -17,9 +17,13 @@
 
 #include "tilepos.hpp"
 
-#ifndef CAESARIA_DISABLED_TILEMAPCONFIG
+#ifndef GAME_DISABLED_TILEMAPCONFIG
 #include "tilemap_config.hpp"
 #endif
+
+namespace{
+  static TilePos invalidLocation( -1, -1 );
+}
 
 TilePos::TilePos(const int i, const int j) : Vector2<int>( i, j ) {}
 
@@ -29,14 +33,26 @@ TilePos::TilePos() : Vector2<int>( 0, 0 ) {}
 
 float TilePos::distanceFrom(const TilePos& other) const { return getDistanceFrom( other );}
 
-int TilePos::getDistanceFromSQ(const TilePos& other) const { return Vector2<int>::getDistanceFromSQ(other);}
+int TilePos::distanceSqFrom(const TilePos& other) const { return Vector2<int>::getDistanceFromSQ(other);}
+
+Direction TilePos::directionTo(const TilePos& e) const
+{
+  static Direction directions[] = { direction::east, direction::southEast, direction::south, direction::southWest,
+                                    direction::west, direction::northWest, direction::north, direction::northEast,
+                                    direction::northEast };
+
+  float t = (e - *this).getAngleICW();
+  int angle = (int)ceil( t / 45.f);
+
+  return directions[ angle ];
+}
 
 
-#ifndef CAESARIA_DISABLED_TILEMAPCONFIG
+#ifndef GAME_DISABLED_TILEMAPCONFIG
 Point TilePos::toScreenCoordinates() const
 {
-  return Point( gfx::tilemap::cellSize().width() * (_y+_x),
-                gfx::tilemap::cellSize().height()* (_y-_x) );
+  return Point( config::tilemap.cell.size().width() * (_y+_x),
+                config::tilemap.cell.size().height()* (_y-_x) );
 }
 #endif
 
@@ -58,3 +74,5 @@ TilePos TilePos::nextStep(const TilePos& dst) const
 }
 
 unsigned int TilePos::hash() const { return (_x << 16) + _y; }
+
+const TilePos& TilePos::invalid() { return invalidLocation; }

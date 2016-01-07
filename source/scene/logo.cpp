@@ -87,9 +87,8 @@ void SplashScreen::draw()
 void SplashScreen::setImage(const std::string &image, int index)
 {
   Engine& engine = Engine::instance();
-  _d->background.load( image, index );
-  if( !_d->background.isValid() )
-    _d->background.load( "logo", 1 );
+  _d->background.load( image, index )
+                .withFallback( "logo", 1 );
 
   // center the background on the screen
   Size s = (engine.screenSize() - _d->background.size()) / 2;
@@ -107,12 +106,12 @@ void SplashScreen::Impl::fade( Engine& engine, Picture& pic, bool out, int offse
 
   for( int k=start; out ? k < stop : k > stop ; k+=offset )
   {
-    engine.startRenderFrame();
+    engine.frame().start();
     fadetx.setAlpha( k );
     fadetx.update();
     engine.draw( pic, 0, 0);
     engine.draw( fadetx, 0, 0);
-    engine.endRenderFrame();
+    engine.frame().finish();
   }
 }
 

@@ -32,10 +32,17 @@ public:
   virtual void destroy();
   virtual void setPicture(gfx::Picture picture);
 
-  bool update();
+  virtual bool update();
   SmartList<Rock> neighbors() const;
 private:
   bool _flat;
+};
+
+class Plateau : public Rock
+{
+public:
+  Plateau();
+  virtual bool update();
 };
 
 #endif //__CAESARIA_ROCK_H_INCLUDE__

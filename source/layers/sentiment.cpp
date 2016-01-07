@@ -67,12 +67,12 @@ void Sentiment::drawTile( const RenderInfo& rinfo, Tile& tile)
 
       if( !needDrawAnimations )
       {
-        drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.inHouseBase );
+        drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.house );
       }
     }
     else
     {
-      drawArea( rinfo, overlay->area(), ResourceGroup::foodOverlay, config::id.overlay.base );
+      drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.constr );
     }
 
     if( needDrawAnimations )
@@ -88,14 +88,6 @@ void Sentiment::drawTile( const RenderInfo& rinfo, Tile& tile)
   }
 
   tile.setRendered();
-}
-
-LayerPtr Sentiment::create( Camera& camera, PlayerCityPtr city)
-{
-  LayerPtr ret( new Sentiment( camera, city ) );
-  ret->drop();
-
-  return ret;
 }
 
 void Sentiment::handleEvent(NEvent& event)

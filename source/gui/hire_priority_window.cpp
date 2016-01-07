@@ -50,15 +50,15 @@ HirePriority::HirePriority(Widget* p, city::industry::Type type, int priority)
   _d->type = type;
   _d->priority = priority;
 
-  WidgetEscapeCloser::insertTo( this );
+  WidgetClose::insertTo( this, KEY_RBUTTON );
   GameAutoPause::insertTo( this );
 
   Label& lbTitle = add<Label>( Rect( 10, 10, width()-10, 10+35), _("##priority_level##") );
-  lbTitle.setFont( Font::create( FONT_5 ) );
+  lbTitle.setFont( FONT_5 );
   lbTitle.setTextAlignment( align::center, align::center );
 
   Label& lbExit = add<Label>( Rect( 0, height() - 30, width(), height() - 10), _("##right_click_to_exit##") );
-  lbExit.setFont( Font::create( FONT_1 ) );
+  lbExit.setFont( FONT_1 );
   lbExit.setTextAlignment( align::center, align::center );
 
   Point start( 65, 44 );
@@ -100,12 +100,6 @@ bool HirePriority::onEvent(const NEvent& event)
 
       return true;
     }
-  }
-
-  if( event.EventType == sEventMouse && event.mouse.type == mouseRbtnRelease )
-  {
-    deleteLater();
-    return true;
   }
 
   return Widget::onEvent( event );

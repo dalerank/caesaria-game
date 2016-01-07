@@ -43,19 +43,10 @@ void Waymark::initTerrain(Tile&) {}
 
 bool Waymark::build( const city::AreaInfo& info )
 {  
-  bool isEntryMark = false;
-
   Tilemap& tmap = info.city->tilemap();
   TilesArray around = tmap.getNeighbors( info.pos );
   TilePos entryPos = info.city->getBorderInfo( PlayerCity::roadEntry ).epos();
-  for( auto tile : around )
-  {
-    if( tile->pos() == entryPos )
-    {
-      isEntryMark = true;
-      break;
-    }
-  }
+  bool isEntryMark = around.contain( entryPos );
 
   unsigned int picIndex = isEntryMark ? 89 : 85;
   const TilePos& pos = info.pos;
@@ -76,8 +67,8 @@ bool Waymark::build( const city::AreaInfo& info )
     deleteLater();
   }
 
-  _picture().load( ResourceGroup::land3a, picIndex );
-  _isFlat = picture().height() <= tilemap::cellPicSize().height();
+  _picture().load( config::rc.land3a, picIndex );
+  _isFlat = picture().height() <= config::tilemap.cell.picSize().height();
 
   return Overlay::build( info );
 }

@@ -36,7 +36,7 @@ namespace gui
 {
 
 static const Variant invalidVariant;
-CAESARIA_LITERALCONST(vars)
+GAME_LITERALCONST(vars)
 
 void Widget::beforeDraw(gfx::Engine& painter )
 {
@@ -45,7 +45,8 @@ void Widget::beforeDraw(gfx::Engine& painter )
     return;
   //"Parent must be exists";
 
-  for( auto child : d->children ) { child->beforeDraw( painter ); }
+  for( auto child : d->children )
+    child->beforeDraw( painter );
 }
 
 Ui* Widget::ui() const { return _dfunc()->environment; }
@@ -318,6 +319,15 @@ void Widget::draw(gfx::Engine& painter )
   {
     for( auto child : _dfunc()->children )
       child->draw( painter );
+  }
+}
+
+void Widget::debugDraw(gfx::Engine& painter)
+{
+  if ( visible() )
+  {
+    for( auto child : _dfunc()->children )
+      child->debugDraw( painter );
   }
 }
 
@@ -845,10 +855,10 @@ bool Widget::isNotClipped() const{  return _dfunc()->noClip;}
 void Widget::setVisible( bool visible ){  _dfunc()->flag.visible = visible;}
 bool Widget::isTabStop() const{  return _dfunc()->flag.tabStop;}
 bool Widget::hasTabgroup() const{  return _dfunc()->isTabGroup;}
-void Widget::setText( const std::string& text ){  _dfunc()->text = text;}
-void Widget::setTooltipText( const std::string& text ) {  _dfunc()->toolTipText = text;}
-std::string Widget::text() const{  return _dfunc()->text;}
-std::string Widget::tooltipText() const{  return _dfunc()->toolTipText;}
+void Widget::setText( const std::string& text ){  _dfunc()->text.value = text;}
+void Widget::setTooltipText( const std::string& text ) {  _dfunc()->text.tooltip = text;}
+std::string Widget::text() const{  return _dfunc()->text.value;}
+std::string Widget::tooltipText() const{  return _dfunc()->text.tooltip;}
 int Widget::ID() const{  return _dfunc()->id;}
 void Widget::setID( int id ) {  _dfunc()->id = id; }
 const Widget::Widgets& Widget::children() const{  return _dfunc()->children;}

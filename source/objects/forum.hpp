@@ -26,7 +26,7 @@ class Forum : public ServiceBuilding
 public:
   Forum();
 
-  float collectTaxes();
+  float takeMoney();
   
   virtual void deliverService();
   virtual unsigned int walkerDistance() const;

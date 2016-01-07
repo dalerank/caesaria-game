@@ -74,8 +74,8 @@ void Indigene::_updateState()
   {
     _d->tryCount++;
 
-    TilePos offset( 1, 1 );
-    NativeFieldList fields = _city()->statistic().objects.find<NativeField>( object::native_field, pos() - offset, pos() + offset );
+    NativeFieldList fields = _city()->statistic().objects
+                                                 .find<NativeField>( object::native_field, pos(), 1 );
     for( auto i : fields )
     {
       _d->wheatQty += i->catchCrops();
@@ -107,9 +107,8 @@ void Indigene::_updateState()
 
   case Impl::go2center:
   {
-    TilePos offset( 1, 1 );
-    NativeCenterList centerList = _city()->statistic().objects.find<NativeCenter>( object::native_center,
-                                                                                   pos() - offset, pos() + offset );
+    NativeCenterList centerList = _city()->statistic().objects
+                                                      .find<NativeCenter>( object::native_center, pos(), 1 );
     if( !centerList.empty() )
     {
       centerList.front()->store( _d->wheatQty );
@@ -148,8 +147,8 @@ void Indigene::_updateState()
 
   case Impl::back2base:
   {
-    TilePos offset( 1, 1 );
-    BuildingList huts = _city()->statistic().objects.find<Building>( object::native_hut, pos() - offset, pos() + offset );
+    BuildingList huts = _city()->statistic().objects
+                                            .find<Building>( object::native_hut, pos(), 1 );
 
     Pathway way;
     if( huts.empty() )
@@ -185,9 +184,8 @@ Indigene::Indigene(PlayerCityPtr city)
 
 Pathway Indigene::Impl::findWay2bestField(PlayerCityPtr city, TilePos pos)
 {
-  TilePos offset( 5, 5 );
-  NativeFieldList fields = city->statistic().objects.find<NativeField>( object::native_field,
-                                                                        pos - offset, pos + offset );
+  NativeFieldList fields = city->statistic().objects
+                                            .find<NativeField>( object::native_field, pos, 5 );
 
   Pathway way;
   if( !fields.empty() )

@@ -58,8 +58,7 @@ AboutWarehouse::AboutWarehouse(Widget* parent, PlayerCityPtr city, const Tile& t
     lb->setTextAlignment( alignCenter, alignCenter );
   }*/
 
-  INIT_WIDGET_FROM_UI( PushButton*, btnOrders );
-  CONNECT( btnOrders, onClicked(), this, AboutWarehouse::showSpecialOrdersWindow );
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnOrders, onClicked(), AboutWarehouse::showSpecialOrdersWindow );
 
   std::string title = _warehouse->info().prettyName();
   if( _warehouse->isTradeCenter() )
@@ -119,7 +118,7 @@ void AboutWarehouse::drawGood(const good::Product& goodType, int col, int paintY
   std::string outText = fmt::format( "{} {}", qty / 100, _(goodName) );
 
   Label& lb = add<Label>( Rect( Point( col * 150 + 15, paintY), Size( 150, 24 ) ) );
-  lb.setFont( Font::create( FONT_2 ) );
+  lb.setFont( FONT_2 );
   lb.setIcon( pic, Point( 0, 4 ) );
   lb.setText( outText );
   lb.setTextOffset( Point( 24, 0 ) );

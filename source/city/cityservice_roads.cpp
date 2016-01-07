@@ -45,21 +45,23 @@ public:
   typedef std::vector< UpdateBuilding > BuildingInfo;
 
   BuildingInfo btypes;
-  int defaultIncreasePaved;
-  int defaultDecreasePaved;
+  struct {
+    int increase;
+    int decrease;
+  } paved;
 
   DateTime lastTimeUpdate;
 
   void updateRoadsAround(Propagator& propagator, UpdateInfo info );
 };
 
-std::string Roads::defaultName(){  return CAESARIA_STR_A(Roads);}
+std::string Roads::defaultName(){  return TEXT(Roads);}
 
 Roads::Roads( PlayerCityPtr city )
   : Srvc( city, Roads::defaultName() ), _d( new Impl )
 {
-  _d->defaultIncreasePaved = 4;
-  _d->defaultDecreasePaved = -1;
+  _d->paved.increase = 4;
+  _d->paved.decrease = -1;
   _d->lastTimeUpdate = game::Date::current();
 
   _d->btypes.push_back( Impl::UpdateBuilding(object::senate, desirability::senateInfluence) );
@@ -78,7 +80,7 @@ void Roads::timeStep( const unsigned int time )
   _d->lastTimeUpdate = game::Date::current();  
 
   Impl::Updates positions;
-  for( auto& type : _d->btypes )
+  for( auto type : _d->btypes )
   {
     BuildingList tmp = _city()->statistic().objects.find<Building>( type.first );
 
@@ -108,7 +110,7 @@ void Roads::timeStep( const unsigned int time )
     RoadList roads = _city()->statistic().objects.find<Road>( object::road );
     for( auto road : roads )
     {
-      road->appendPaved( _d->defaultDecreasePaved );
+      road->appendPaved( _d->paved.decrease );
     }
   }
 }
@@ -122,15 +124,9 @@ void Roads::Impl::updateRoadsAround( Propagator& propagator, UpdateInfo info )
 
   for( auto& path : pathWayList )
   {
-    const TilesArray& tiles = path->allTiles();
-    for( auto tile : tiles )
-    {
-      RoadPtr road = tile->overlay<Road>();
-      if( road.isValid() )
-      {
-        road->appendPaved( defaultIncreasePaved );
-      }
-    }
+    RoadList roads = path->allTiles().overlays<Road>();
+    for( auto road : roads )
+      road->appendPaved( paved.increase );
   }
 }
 

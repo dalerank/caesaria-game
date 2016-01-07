@@ -57,10 +57,15 @@ public:
 
   void setText( const std::string& text );
   const std::string& text() const;
+
+  void setTooltip( const std::string& text );
+  const std::string& tooltip() const;
+
   void setTag(const Variant& tag );
   const Variant& tag() const;
 	gfx::Picture icon();
 	void setIcon( gfx::Picture pic );
+  void setIcon( const std::string& rc, int index );
 
   bool isEnabled() const;
   void setEnabled( bool en );
@@ -90,6 +95,7 @@ public:
 
   Variant data( const std::string& name ) const;
   void setData( const std::string& name, const Variant& value );
+  void setData( const VariantMap& map );
 
   void setTextColor( ColorType type, NColor color);
 

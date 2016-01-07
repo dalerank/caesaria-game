@@ -38,8 +38,7 @@ namespace gui
 
 class EmperrorRequestWindow::Impl
 {
-public:
-  void openEmperrorAdvisor();
+public:  
   std::string video;
 };
 
@@ -66,8 +65,6 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::RequestPtr r
   std::string uiFile = _d->video.empty() ? ":/gui/request.gui" : ":/gui/request_video.gui";
 
   setupUI( uiFile );
-  setModal();
-  moveTo( Widget::parentCenter );
 
   city::request::RqGoodPtr gr = ptr_cast<city::GoodRequest>(request);
   if( gr.isValid() )
@@ -96,7 +93,11 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::RequestPtr r
       video = "urgent_message2";
     }
 
-    if( lbText ) { lbText->setText( _( text ) ); }
+    if( lbText )
+    {
+      lbText->setWordwrap( true );
+      lbText->setText( _( text ) );
+    }
     if( lbTitle ) { lbTitle->setText( _( title ) ); }
 
     int month2Comply = game::Date::current().monthsTo( gr->finishedDate() );
@@ -106,12 +107,12 @@ EmperrorRequestWindow::EmperrorRequestWindow( Widget* parent, city::RequestPtr r
     if( smkViewer ) { smkViewer->setFilename( video ); }
   }
 
-  INIT_WIDGET_FROM_UI( TexturedButton*, btnExit )
-  INIT_WIDGET_FROM_UI( TexturedButton*, btnAdvisor )
+  LINK_WIDGET_LOCAL_ACTION( TexturedButton*, btnExit,    onClicked(), EmperrorRequestWindow::deleteLater )
+  LINK_WIDGET_LOCAL_ACTION( TexturedButton*, btnAdvisor, onClicked(), EmperrorRequestWindow::deleteLater )
+  LINK_WIDGET_LOCAL_ACTION( TexturedButton*, btnAdvisor, onClicked(), EmperrorRequestWindow::_openEmperrorAdvisor )
 
-  CONNECT( btnExit, onClicked(), this, EmperrorRequestWindow::deleteLater );
-  CONNECT( btnAdvisor, onClicked(), _d.data(), Impl::openEmperrorAdvisor );
-  CONNECT( btnAdvisor, onClicked(), this, EmperrorRequestWindow::deleteLater );
+  moveTo( Widget::parentCenter );
+  setModal();
 }
 
 void EmperrorRequestWindow::draw(gfx::Engine& painter )
@@ -144,7 +145,7 @@ void EmperrorRequestWindow::setVideo(const std::string& video)
   _d->video = video;
 }
 
-void EmperrorRequestWindow::Impl::openEmperrorAdvisor()
+void EmperrorRequestWindow::_openEmperrorAdvisor()
 {
   events::dispatch<ShowAdvisorWindow>( true, advisor::empire );
 }

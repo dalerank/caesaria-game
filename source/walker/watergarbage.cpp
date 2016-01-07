@@ -42,7 +42,9 @@ WaterGarbage::WaterGarbage(PlayerCityPtr city )
 
 void WaterGarbage::send2City(const TilePos &start )
 {
-  Pathway path = PathwayHelper::create( start, _city()->getBorderInfo( PlayerCity::boatExit ).epos(), PathwayHelper::deepWater );
+  Pathway path = PathwayHelper::create( start,
+                                        _city()->getBorderInfo( PlayerCity::boatExit ).epos(),
+                                        PathwayHelper::deepWater );
   if( !path.isValid() )
   {
     path = PathwayHelper::create( start, _city()->getBorderInfo( PlayerCity::boatExit ).epos(), PathwayHelper::water );

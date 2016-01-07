@@ -23,6 +23,7 @@
 #include "gfx/decorator.hpp"
 #include "gfx/engine.hpp"
 #include "core/color_list.hpp"
+#include "gfx/drawstate.hpp"
 #include "core/logger.hpp"
 #include "core/variant_list.hpp"
 #include "gfx/picturesarray.hpp"
@@ -53,28 +54,33 @@ public:
 
 struct ButtonState
 {
-  Picture background;
-  Pictures styleNb;
-  Batch style;
-  Picture icon;
-  Point iconOffset;
+  struct {
+    Pictures fallback;
+    Batch    body;
+  } batch;
+
+  struct {
+    Picture picture;
+    Point offset;
+  } icon;
+
   Font font;
   Rect rectangle;
+  Picture background;
 };
 
 class PushButton::Impl
 {
 public:
   struct {
-    bool pressed;
-    bool pushButton;
-    bool drawBody;
-    bool drawText;
+    bool pressed = false;
+    bool pushButton = false;
   } is;
 
   struct {
-    bool needUpdateTextPic;
-    bool needUpdateBackground;
+    bool textChanged;
+    bool dirty;
+    bool visible = true;
     PushButton::BackgroundStyle style;
   } bg;
 
@@ -85,9 +91,14 @@ public:
     Rect rect;
     Picture picture;
     Point offset;
+    bool visible = true;
   } text;
 
-  ElementState currentButtonState, lastButtonState;
+  struct {
+    ElementState current = stNormal;
+    ElementState last = StateCount;
+  } state;
+
   ButtonState buttonStates[ StateCount ];
 
   struct {
@@ -99,15 +110,13 @@ public:
 
   Impl() : clickTime(0)
   {
-    is.pressed = false;
-    is.pushButton = false;
-    is.drawBody = true;
     for( int i=0; i < StateCount; i++)
     {
-      buttonStates[ ElementState(i) ].style.destroy();
-      buttonStates[ ElementState(i) ].icon = Picture::getInvalid();
-      buttonStates[ ElementState(i) ].background = Picture::getInvalid();
-      buttonStates[ ElementState(i) ].font = Font::create( FONT_2 );
+      auto& state = buttonStates[ ElementState(i) ];
+      state.batch.body.destroy();
+      state.icon.picture = Picture::getInvalid();
+      state.background = Picture::getInvalid();
+      state.font = Font::create( FONT_2 );
     }
   }
 };
@@ -117,16 +126,13 @@ PushButton::PushButton(Widget* parent)
   : Widget( parent, -1, Rect( 0, 0, 1, 1 ) ), __INIT_IMPL(PushButton)
 {
   __D_REF(d,PushButton)
-  d.currentButtonState = stNormal;
-  d.lastButtonState = StateCount;
-  d.is.pressed = false;
-  d.is.drawText = true;
   d.bg.style = greyBorderLine;
-  d.bg.needUpdateBackground = true;
+  d.bg.dirty = true;
   setTextAlignment( align::center, align::center );
 }
 
-PushButton::PushButton(Widget* parent, const RectF& rectangle, const std::string& caption, int id, bool noclip, const gui::PushButton::BackgroundStyle bgstyle)
+PushButton::PushButton(Widget* parent, const RectF& rectangle, const std::string& caption, int id,
+                       bool noclip, const gui::PushButton::BackgroundStyle bgstyle)
   : PushButton( parent, Rect( 0, 0, 1, 1), caption, id, noclip, bgstyle )
 {
   setGeometry( rectangle );
@@ -140,13 +146,8 @@ PushButton::PushButton( Widget* parent,
                         const BackgroundStyle bgStyle )
 : Widget( parent, id, rectangle ), __INIT_IMPL(PushButton)
 {
-  __D_REF(d,PushButton)
-  setDebugName( CAESARIA_STR_EXT(PushButton) );
+  setDebugName( TEXT(PushButton) );
 
-  d.is.pressed = false;
-  d.currentButtonState = stNormal;
-  d.lastButtonState = StateCount;
-  d.is.drawText = true;
   setBackgroundStyle( bgStyle );
   setTextAlignment( align::center, align::center );
 
@@ -154,11 +155,11 @@ PushButton::PushButton( Widget* parent,
   setNotClipped(noclip);
 }
 
-void PushButton::_updateTextPic()
+void PushButton::_updateTexture()
 {
-  __D_IMPL(_d,PushButton)
+  __D_REF(_d,PushButton)
   ElementState state = _state();
-  Picture& textTxs = _d->text.picture;
+  Picture& textTxs = _d.text.picture;
 
   if( textTxs.isValid() )
   {
@@ -170,16 +171,16 @@ void PushButton::_updateTextPic()
     textTxs = Picture( size(), 0, true );
   }
 
-  Font stFont = _d->buttonStates[ state ].font;
+  Font stFont = _d.buttonStates[ state ].font;
   if( textTxs.isValid() && stFont.isValid() )
   {
     Rect textRect = stFont.getTextRect( text(), Rect( 0, 0, width(), height() ),
                                               horizontalTextAlign(), verticalTextAlign() );
     textTxs.fill( 0x00ffffff, Rect( 0, 0, 0, 0 ) );
-    stFont.draw( textTxs, text(), textRect.lefttop() + _d->text.offset, true, false );
+    stFont.draw( textTxs, text(), textRect.lefttop() + _d.text.offset, true, false );
   }
 
-  if( _d->bg.style == flatBorderLine )
+  if( _d.bg.style == flatBorderLine )
   {
     Decorator::drawLine( textTxs, Point( 0, 0), Point( width(), 0), ColorList::black );
     Decorator::drawLine( textTxs, Point( width()-1, 0), Point( width()-1, height() ), ColorList::black );
@@ -192,15 +193,16 @@ void PushButton::_updateTextPic()
 
 void PushButton::_updateBackground( ElementState state )
 {
-  __D_IMPL(_d,PushButton)     
+  __D_REF(d,PushButton)
 
   // draw button background
   Decorator::Mode mode = Decorator::pure;
   Pictures pics;
   bool fit = false;
-  if( !_d->buttonStates[ state ].background.isValid() )
+  auto& buttonState = d.buttonStates[ state ];
+  if( !buttonState.background.isValid() )
   {    
-    switch( _d->bg.style )
+    switch( d.bg.style )
     {
     case greyBorderLineSmall:
     {
@@ -224,7 +226,7 @@ void PushButton::_updateBackground( ElementState state )
       mode = (state == stNormal || state == stDisabled)
                                         ? Decorator::lightgreyPanel
                                         : Decorator::greyPanel;
-      fit = (_d->bg.style == greyBorderLineFit);
+      fit = (d.bg.style == greyBorderLineFit);
     }
     break;
 
@@ -256,24 +258,24 @@ void PushButton::_updateBackground( ElementState state )
   }
 
   bool batchOk;
-  _d->buttonStates[ state ].style.destroy();
+  buttonState.batch.body.destroy();
   if( fit )
   {
     Rects rects;
     Decorator::draw( pics, absoluteRect(), mode, &rects, Decorator::normalY );
-    batchOk = _d->buttonStates[ state ].style.load( pics, rects );
+    batchOk = buttonState.batch.body.load( pics, rects );
   }
   else
   {
     Decorator::draw( pics, Rect( Point( 0, 0 ), size() ), mode, nullptr, Decorator::normalY );
-    batchOk = _d->buttonStates[ state ].style.load( pics, absoluteRect().lefttop() );
+    batchOk = buttonState.batch.body.load( pics, absoluteRect().lefttop() );
   }
 
   if( !batchOk )
   {
-    _d->buttonStates[ state ].style.destroy();
+    buttonState.batch.body.destroy();
     Decorator::reverseYoffset( pics );
-    _d->buttonStates[ state ].styleNb = pics;
+    buttonState.batch.fallback = pics;
   }
 }
 
@@ -293,7 +295,7 @@ void PushButton::setupUI(const VariantMap &ui)
 {
   Widget::setupUI( ui );
 
-  __D_IMPL(_d,PushButton)
+  __D_REF(_d,PushButton)
 
   Variant tmp;
   tmp = ui.get( "bgtype" );
@@ -304,8 +306,8 @@ void PushButton::setupUI(const VariantMap &ui)
   }
 
   setIsPushButton( (bool)ui.get( "pushbutton" ) );
-  _d->text.offset = ui.get( "textOffset" );
-  _d->text.offset = ui.get( "text.offset", _d->text.offset );
+  _d.text.offset = ui.get( "textOffset" );
+  _d.text.offset = ui.get( "text.offset", _d.text.offset );
   setEnabled( (bool)ui.get( "enabled", true ) );
 
   Variant vFont = ui.get( "font" );
@@ -341,11 +343,11 @@ void PushButton::canvasDraw(const std::string& text, const Point& point, Font rf
 
 void PushButton::setPicture(Picture picture, ElementState state )
 {
-  __D_IMPL(_d,PushButton);
+  __D_REF(_d,PushButton);
   Rect rectangle( Point(0,0), picture.size() );
 
-  _d->buttonStates[ state ].background = picture;
-  _d->buttonStates[ state ].rectangle = rectangle;
+  _d.buttonStates[ state ].background = picture;
+  _d.buttonStates[ state ].rectangle = rectangle;
 
   _updateBackground( state );
 }
@@ -357,22 +359,20 @@ void PushButton::setPicture(const std::string& rcname, int index, ElementState s
 
 void PushButton::setIcon( const std::string& rcname, int index, ElementState state)
 {
-  _dfunc()->buttonStates[ state ].icon.load( rcname, index );
+  _dfunc()->buttonStates[ state ].icon.picture.load( rcname, index );
 }
 
 void PushButton::setIconOffset(Point offset)
 {
-  __D_IMPL(_d,PushButton);
-  for( auto& state : _d->buttonStates )
-    state.iconOffset = offset;
+  for( auto& state : _dfunc()->buttonStates )
+    state.icon.offset = offset;
 }
 
 void PushButton::setIcon(const std::string& rcname, int index)
 {
-  __D_IMPL(_d,PushButton);
   Picture pic( rcname, index );
-  for( auto& state : _d->buttonStates )
-    state.icon = pic;
+  for( auto& state : _dfunc()->buttonStates )
+    state.icon.picture = pic;
 }
 
 void PushButton::setPicture( const std::string& rcname, int index )
@@ -386,11 +386,11 @@ void PushButton::setPicture( const std::string& rcname, int index )
 
 void PushButton::setPressed( bool pressed )
 {
-  __D_IMPL(_d,PushButton);
-  if( _d->is.pressed != pressed)
+  __D_REF(_d,PushButton);
+  if( _d.is.pressed != pressed)
   {
-    _d->clickTime = DateTime::elapsedTime();
-    _d->is.pressed = pressed;
+    _d.clickTime = DateTime::elapsedTime();
+    _d.is.pressed = pressed;
   }
 }
 
@@ -473,10 +473,11 @@ bool PushButton::onEvent(const NEvent& event)
 
 void PushButton::_btnClicked()
 {
+  __D_REF(d,PushButton)
   parent()->onEvent( NEvent::Gui( this, 0, guiButtonClicked ) );
 
-  emit _dfunc()->signal.onClicked();
-  emit _dfunc()->signal.onClickedEx( this );
+  emit d.signal.onClicked();
+  emit d.signal.onClickedEx( this );
 }
 
 Signal0<>& PushButton::onClicked() { return _dfunc()->signal.onClicked; }
@@ -493,15 +494,10 @@ bool PushButton::_btnMouseUp( const NEvent& event )
 		return true;
 	}
 
-	if (!isPushButton())
-		setPressed(false);
-	else
-	{
-		setPressed(!isPressed());
-	}
+  setPressed(!isPushButton() ? false : !isPressed());
 
-    if((!isPushButton() && wasPressed ) ||
-		(isPushButton() && wasPressed != isPressed()))
+  if( (!isPushButton() && wasPressed ) ||
+      (isPushButton() && wasPressed != isPressed()) )
 		_btnClicked();
 
 	return true;
@@ -509,7 +505,7 @@ bool PushButton::_btnMouseUp( const NEvent& event )
 
 bool PushButton::_leftMouseBtnPressed( const NEvent& event )
 {
-  if( ui()->hasFocus(this) &&
+  if( isFocused() &&
       !absoluteClippingRect().isPointInside( event.mouse.pos() ) )
   {
     removeFocus();
@@ -540,27 +536,27 @@ void PushButton::beforeDraw( gfx::Engine& painter )
   // todo:	move sprite up and text down if the pressed state has a sprite
   // draw sprites for focused and mouse-over
   // Point spritePos = AbsoluteRect.getCenter();
-  __D_IMPL(_d,PushButton);
+  __D_REF(_d,PushButton);
 
-	_d->currentButtonState = _state();
-  if( _d->bg.needUpdateBackground )
+  _d.state.current = _state();
+  if( _d.bg.dirty )
   {
     _updateStyle();
-    _d->bg.needUpdateBackground = false;
+    _d.bg.dirty = false;
   }
 
-  if( _d->bg.needUpdateTextPic )
+  if( _d.bg.textChanged )
 	{    
-		_updateTextPic();
-    _d->bg.needUpdateTextPic = false;
+		_updateTexture();
+    _d.bg.textChanged = false;
 	}
 
 	Widget::beforeDraw( painter  );
 }
 
-bool PushButton::isBodyVisible() const { return _dfunc()->is.drawBody; }
-bool gui::PushButton::isTextVisible() const { return _dfunc()->is.drawText; }
-void gui::PushButton::setTextVisible(bool value) { _dfunc()->is.drawText = value; }
+bool PushButton::isBodyVisible() const { return _dfunc()->bg.visible; }
+bool gui::PushButton::isTextVisible() const { return _dfunc()->text.visible; }
+void gui::PushButton::setTextVisible(bool value) { _dfunc()->text.visible = value; }
 
 //! draws the element and its children
 void PushButton::draw( gfx::Engine& painter )
@@ -568,99 +564,93 @@ void PushButton::draw( gfx::Engine& painter )
   if( !visible() )
     return;
 
-	__D_IMPL(_d,PushButton);
+  __D_REF(_d,PushButton);
 	// todo:	move sprite up and text down if the pressed state has a sprite
 	//			  draw sprites for focused and mouse-over
-  const ButtonState& state = _d->buttonStates[ _d->currentButtonState ];
+  const ButtonState& state = _d.buttonStates[ _d.state.current ];
 
   if( isBodyVisible() )
   {
-    if( state.background.isValid() )
-      painter.draw( state.background, absoluteRect(), &absoluteClippingRectRef() );
-    else
-    {
-      if( state.style.valid() )
-        painter.draw( state.style, &absoluteClippingRectRef() );
-      else
-        painter.draw( state.styleNb, absoluteRect().lefttop(), &absoluteClippingRectRef() );
-    }
+    DrawState pipe( painter, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+    pipe.draw( state.background )
+        .fallback( state.batch.body )
+        .fallback( state.batch.fallback );
 	}
 
-  if( _d->is.drawText && _d->text.picture.isValid() )
+  if( _d.text.visible && _d.text.picture.isValid() )
   {
-    painter.draw( _d->text.picture, screenLeft(), screenTop(), &absoluteClippingRectRef() );
+    painter.draw( _d.text.picture, screenLeft(), screenTop(), &absoluteClippingRectRef() );
   }
-
-#ifdef DEBUG
-  if( ui()->hasFlag( Ui::buttonShowDebugArea ) )
-  {
-    painter.drawLine( ColorList::red, absoluteRect().lefttop(), absoluteRect().righttop() );
-    painter.drawLine( ColorList::red, absoluteRect().righttop(), absoluteRect().rightbottom() );
-    painter.drawLine( ColorList::red, absoluteRect().rightbottom(), absoluteRect().leftbottom() );
-    painter.drawLine( ColorList::red, absoluteRect().leftbottom(), absoluteRect().lefttop() );
-
-    if( _d->currentButtonState == stPressed )
-    {
-      painter.drawLine( ColorList::red, absoluteRect().lefttop(), absoluteRect().rightbottom() );
-      painter.drawLine( ColorList::red, absoluteRect().leftbottom(), absoluteRect().righttop() );
-    }
-  }
-#endif
 
   drawIcon( painter );
 
   Widget::draw( painter );
 }
 
+void PushButton::debugDraw(Engine& painter)
+{
+  __D_REF(_d,PushButton);
+  painter.drawLine( ColorList::red, absoluteRect().lefttop(), absoluteRect().righttop() );
+  painter.drawLine( ColorList::red, absoluteRect().righttop(), absoluteRect().rightbottom() );
+  painter.drawLine( ColorList::red, absoluteRect().rightbottom(), absoluteRect().leftbottom() );
+  painter.drawLine( ColorList::red, absoluteRect().leftbottom(), absoluteRect().lefttop() );
+
+  if( _d.state.current == stPressed )
+  {
+    painter.drawLine( ColorList::red, absoluteRect().lefttop(), absoluteRect().rightbottom() );
+    painter.drawLine( ColorList::red, absoluteRect().leftbottom(), absoluteRect().righttop() );
+  }
+}
+
 void PushButton::drawIcon( gfx::Engine& painter )
 {
-  __D_IMPL(_d,PushButton);
-  const ButtonState& bstate = _d->buttonStates[ _d->currentButtonState ];
+  __D_REF(_d,PushButton);
+  const ButtonState& bstate = _d.buttonStates[ _d.state.current ];
 
-  const Picture& iconTexture = bstate.icon;
-
-  if( !iconTexture.isValid() )
+  if( !bstate.icon.picture.isValid() )
       return;
 
-  Point pos = localToScreen( _d->iconRect ).lefttop();
-  painter.draw( iconTexture, pos + bstate.iconOffset );
+  Point pos = localToScreen( _d.iconRect ).lefttop();
+  painter.draw( bstate.icon.picture, pos + bstate.icon.offset );
 }
 
 void PushButton::setText( const std::string& text )
 {
   Widget::setText( text );
-  _dfunc()->bg.needUpdateTextPic = true;
+  _dfunc()->bg.textChanged = true;
 }
 
 void PushButton::setFont( const Font& font, ElementState state )
 {
-  _dfunc()->buttonStates[ state ].font = font;
-  _dfunc()->bg.needUpdateTextPic = true;
+  __D_REF(d,PushButton)
+  d.buttonStates[ state ].font = font;
+  d.bg.textChanged = true;
 }
 
 void PushButton::setFont( const Font& font )
 {
+  __D_REF(d,PushButton)
   for( int i=0; i != StateCount; i++ )
-  {
-    _dfunc()->buttonStates[ ElementState(i) ].font = font;
-  }
+    d.buttonStates[ ElementState(i) ].font = font;
 
-  _dfunc()->bg.needUpdateTextPic = true;
+  d.bg.dirty = true;
 }
 
+void PushButton::setFont(FontType type, NColor color) { Widget::setFont(type,color); }
 Picture& PushButton::_textPicture() { return _dfunc()->text.picture; }
-Font PushButton::font( ElementState state ) {  return _dfunc()->buttonStates[ state ].font;}
+Font PushButton::font( ElementState state ) {  return _dfunc()->buttonStates[ state ].font; }
 
 void PushButton::_finalizeResize()
 {
   _updateStyle();
-  _dfunc()->bg.needUpdateTextPic = true;
+  _dfunc()->bg.textChanged = true;
 }
 
 void PushButton::setBackgroundStyle( const BackgroundStyle style )
 {
-  _dfunc()->bg.style = style;
-  _dfunc()->bg.needUpdateBackground = true;
+  __D_REF(d,PushButton)
+  d.bg.style = style;
+  d.bg.dirty = true;
 }
 
 void PushButton::setBackgroundStyle(const std::string &strStyle)

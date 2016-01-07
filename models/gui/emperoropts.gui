@@ -17,6 +17,12 @@
   bgRequests#Label : {
     geometry : [ 32, 91, 602, 310 ]
     bgtype : "blackFrame"
+
+    btnRqHistory#PushButton : {
+      geometry : [ "pw-84", "ph-28", "pw-4", "ph-4" ]
+      text : "##rqs_history##"
+      bgtype : "blackBorderUp"
+    }
   }
 
   bgActions#Label : {
@@ -36,21 +42,27 @@
   }
 
   lbPost#Label : {
-    geometry : [ 70, 336, 310, 362 ]
+    geometry : [ 70, 336, 290, 362 ]
     text : "Post"
     font : "FONT_2"
+  }
+
+  btnGiftHistory#PushButton : {
+    geometry : [ 290, 343, 382, 363 ]
+    text : "##history_gift##"
+    bgtype : "blackBorderUp"
+  }
+
+  btnSendGift#PushButton : {
+    geometry : [ 382, 343, 572, 363 ]
+    text : "##dispatch_gift##"
+    bgtype : "blackBorderUp"
   }
 
   lbPrimaryFunds#Label : {
     geometry : [ 70, 370, 310, 390 ]
     text : "Primary funds 0"
     font : "FONT_2"
-  }
-
-  btnSendGift#PushButton : {
-    geometry : [ 322, 343, 572, 363 ]
-    text : "##dispatch_gift##"
-    bgtype : "blackBorderUp"
   }
 
   btnSend2City#PushButton : {

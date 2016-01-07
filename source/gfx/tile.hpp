@@ -32,7 +32,7 @@ namespace gfx
 class Tile
 {
 public:
-  typedef enum { pWellWater=0, pFountainWater, pReservoirWater, pDesirability, pDirt, pBasicCount } Param;
+  typedef enum { pWellWater=0, pFountainWater, pReservoirWater, pDesirability, pDirt, pIron, pBasicCount } Param;
   typedef enum { tlRoad=0, tlWater, tlTree, tlMeadow, tlRock, tlOverlay,
                  tlGarden, tlElevation, tlWall, tlDeepWater, tlRubble,
                  isConstructible, isDestructible, tlRift, tlCoast, tlGrass, clearAll,
@@ -78,8 +78,8 @@ public:
 
   // displayed picture
   void setPicture( const Picture& picture );
-  void setPicture( const char* rc, const int index );
   void setPicture( const std::string& name );
+  void setPicture( const std::string& group, const int index );
   inline const Picture& picture() const { return _picture; }
 
   // used for multi-tile graphics: current displayed picture

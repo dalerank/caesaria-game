@@ -59,7 +59,7 @@ static std::string sanitizeString( const std::string& str)
 static std::string join(const StringArray& rlist, const std::string& sep)
 {
   std::string res;
-  for( auto& it : rlist )
+  for( const auto& it : rlist )
   {
     if(!res.empty())
     {
@@ -638,7 +638,7 @@ Variant Json::parseString(const std::string &json, int &index, bool &success)
 //                                 {
 //                                         break;
 //                                 }
-              _CAESARIA_DEBUG_BREAK_IF( true && "yet not work")
+              _GAME_DEBUG_BREAK_IF( true && "yet not work")
             }
           }
           else

@@ -167,12 +167,13 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   oCity->resize(map_size);
 
   // need to rewrite better
-  ScopedArrayPtr<short> pGraphicGrid( new short[tilemap::c3mapSizeSq] );
-  ScopedArrayPtr<unsigned char> pEdgeGrid( new unsigned char[tilemap::c3mapSizeSq] );
-  ScopedArrayPtr<short> pTerrainGrid( new short[tilemap::c3mapSizeSq] );
-  ScopedArrayPtr<unsigned char> pRndmTerGrid( new unsigned char[tilemap::c3mapSizeSq] );
-  ScopedArrayPtr<unsigned char> pRandomGrid( new unsigned char[tilemap::c3mapSizeSq] );
-  ScopedArrayPtr<unsigned char> pElevationGrid( new unsigned char[tilemap::c3mapSizeSq] );
+  const int mapArea = config::tilemap.maxArea;
+  ScopedArrayPtr<short> pGraphicGrid( new short[mapArea] );
+  ScopedArrayPtr<unsigned char> pEdgeGrid( new unsigned char[mapArea] );
+  ScopedArrayPtr<short> pTerrainGrid( new short[mapArea] );
+  ScopedArrayPtr<unsigned char> pRndmTerGrid( new unsigned char[mapArea] );
+  ScopedArrayPtr<unsigned char> pRandomGrid( new unsigned char[mapArea] );
+  ScopedArrayPtr<unsigned char> pElevationGrid( new unsigned char[mapArea] );
 
   if( pGraphicGrid.isNull() || pEdgeGrid.isNull() || pTerrainGrid.isNull() ||
       pRndmTerGrid.isNull() || pRandomGrid.isNull() || pElevationGrid.isNull() )
@@ -183,22 +184,22 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
   // here also make copy of original arrays in memory
 
   f.seekg(kGraphicGrid, std::ios::beg);
-  f.read((char*)pGraphicGrid.data(), tilemap::c3mapSizeSq*2);
+  f.read((char*)pGraphicGrid.data(), mapArea*2);
   f.seekg(kEdgeGrid, std::ios::beg);
-  f.read((char*)pEdgeGrid.data(), tilemap::c3mapSizeSq);
+  f.read((char*)pEdgeGrid.data(), mapArea);
   f.seekg(kTerrainGrid, std::ios::beg);
-  f.read((char*)pTerrainGrid.data(), tilemap::c3mapSizeSq*2);
+  f.read((char*)pTerrainGrid.data(), mapArea*2);
   f.seekg(kRndmTerGrid, std::ios::beg);
-  f.read((char*)pRndmTerGrid.data(), tilemap::c3mapSizeSq);
+  f.read((char*)pRndmTerGrid.data(),mapArea);
   f.seekg(kRandomGrid, std::ios::beg);
-  f.read((char*)pRandomGrid.data(), tilemap::c3mapSizeSq);
+  f.read((char*)pRandomGrid.data(), mapArea);
   f.seekg(kElevationGrid, std::ios::beg);
-  f.read((char*)pElevationGrid.data(), tilemap::c3mapSizeSq);
+  f.read((char*)pElevationGrid.data(), mapArea);
 
   std::map< int, std::map< int, unsigned char > > edgeData;
 
   // loads the graphics map
-  int border_size = (gfx::tilemap::c3mapSize - map_size) / 2;
+  int border_size = (config::tilemap.maxSide - map_size) / 2;
 
   for (int itA = 0; itA < map_size; ++itA)
   {
@@ -207,7 +208,7 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
       int i = itB;
       int j = map_size - itA - 1;
 
-      int index = gfx::tilemap::c3mapSize * (border_size + itA) + border_size + itB;
+      int index = config::tilemap.maxSide * (border_size + itA) + border_size + itB;
 
       Tile& tile = oTilemap.at(i, j);
       tile.setPicture( imgid::toResource( pGraphicGrid.data()[index] ) );
@@ -234,7 +235,7 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
           try
           {
             // find size, 5 is maximal size for building
-            for (dj = 0; dj < gfx::tilemap::c3bldSize; ++dj)
+            for (dj = 0; dj < config::tilemap.maxBuildingSide; ++dj)
             {
               int edd = edgeData[ i ][ j - dj ];
               // find bottom left corner

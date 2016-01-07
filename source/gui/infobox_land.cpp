@@ -19,6 +19,7 @@
 #include "label.hpp"
 #include "core/gettext.hpp"
 #include "city/city.hpp"
+#include "environment.hpp"
 #include "objects/road.hpp"
 #include "core/utils.hpp"
 #include "objects/constants.hpp"
@@ -41,7 +42,7 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
 { 
   int id = lbTextId;
   Label& lbText = add<Label>( Rect( 38, 60, 470, 60+180 ), "", true, Label::bgNone, id );
-  lbText.setFont( Font::create( FONT_2 ) );
+  lbText.setFont( FONT_2 );
   lbText.setTextAlignment( align::upperLeft, align::center );
   lbText.setWordwrap( true );
 
@@ -88,7 +89,7 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
   }
   else if( tile.getFlag( Tile::tlRoad ) )
   {
-    object::Type ovType = tile.overlay().isValid() ? tile.overlay()->type() : object::unknown;
+    object::Type ovType = object::typeOrDefault( tile.overlay() );
     if(ovType == object::plaza )
     {
       title = "##plaza_caption##";
@@ -142,10 +143,8 @@ void AboutLand::setText( const std::string& text )
     lb->setText( text );
 }
 
-void AboutLand::_showHelp()
-{
-  DictionaryWindow::show( this, _helpUri );
-}
+void AboutLand::_showHelp() { ui()->add<DictionaryWindow>( _helpUri ); }
+void AboutFreeHouse::_showHelp() { ui()->add<DictionaryWindow>( "vacant_lot" ); }
 
 AboutFreeHouse::AboutFreeHouse( Widget* parent, PlayerCityPtr city, const Tile& tile )
     : AboutLand( parent, city, tile )
@@ -161,10 +160,6 @@ AboutFreeHouse::AboutFreeHouse( Widget* parent, PlayerCityPtr city, const Tile& 
   }
 }
 
-void AboutFreeHouse::_showHelp()
-{
-  DictionaryWindow::show( this, "vacant_lot" );
-}
 
 }//end namespace infobox
 

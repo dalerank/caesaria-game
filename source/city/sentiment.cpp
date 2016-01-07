@@ -101,7 +101,7 @@ public:
   Buffs buffs;
 };
 
-std::string Sentiment ::defaultName() { return CAESARIA_STR_EXT(Sentiment);}
+std::string Sentiment ::defaultName() { return TEXT(Sentiment);}
 
 Sentiment::Sentiment( PlayerCityPtr city )
   : Srvc( city, defaultName() ), _d( new Impl )
@@ -140,23 +140,17 @@ void Sentiment::timeStep(const unsigned int time )
       }
     }
 
-    HouseList houses = _city()->statistic().houses.find();
+    HouseList houses = _city()->statistic().houses.habitable();
 
-    unsigned int houseNumber = 0;
     _d->value.finish = 0;
     for( auto house : houses )
     {
       house->setState( pr::happinessBuff, _d->buffValue );
+      _d->value.finish += house->state( pr::happiness );
+   }
 
-      if( house->habitants().count() > 0 )
-      {
-        _d->value.finish += house->state( pr::happiness );
-        houseNumber++;
-      }
-    }
-
-    if( houseNumber > 0 )
-      _d->value.finish /= houseNumber;
+    if( houses.size() > 0 )
+      _d->value.finish /= houses.size();
     else
       _d->value.finish = defaultValue;
   }

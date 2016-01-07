@@ -106,7 +106,7 @@ bool Senate::canBuild( const city::AreaInfo& areaInfo ) const
 
   if( mayBuild )
   {
-    bool isSenatePresent = !areaInfo.city->statistic().objects.find<Building>( object::senate).empty();
+    bool isSenatePresent = areaInfo.city->statistic().objects.count( object::senate) > 0;
     _d->errorStr = isSenatePresent ? _("##can_build_only_one_of_building##") : "";
     mayBuild &= !isSenatePresent;
   }
@@ -180,10 +180,10 @@ void Senate::initialize(const object::Info& mdata)
   ServiceBuilding::initialize( mdata );
 
   VariantMap ratings = mdata.getOption( "ratings" ).toMap();
-  _d->flags.set( culture,    ratings.get( CAESARIA_STR_A(culture   ) ).toMap() );
-  _d->flags.set( prosperity, ratings.get( CAESARIA_STR_A(prosperity) ).toMap() );
-  _d->flags.set( peace,      ratings.get( CAESARIA_STR_A(peace     ) ).toMap() );
-  _d->flags.set( favour,     ratings.get( CAESARIA_STR_A(favour    ) ).toMap() );
+  _d->flags.set( culture,    ratings.get( TEXT(culture   ) ).toMap() );
+  _d->flags.set( prosperity, ratings.get( TEXT(prosperity) ).toMap() );
+  _d->flags.set( peace,      ratings.get( TEXT(peace     ) ).toMap() );
+  _d->flags.set( favour,     ratings.get( TEXT(favour    ) ).toMap() );
 }
 
 void Senate::save(VariantMap& stream) const
@@ -221,7 +221,7 @@ void Senate::_updateUnemployers()
   }
 }
 
-float Senate::collectTaxes()
+float Senate::takeMoney()
 {
   int save = 0;
 

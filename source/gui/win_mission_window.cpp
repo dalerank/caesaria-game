@@ -53,9 +53,6 @@ WinMission::WinMission( Widget* parent, const std::string& newTitle,
   setupUI( ":/gui/winmission.gui" );
 
   Logger::warning( "dialog::WinMission show" );
-  GameAutoPause::insertTo( this );
-
-  moveTo( Widget::parentCenter );
 
   INIT_WIDGET_FROM_UI(Label*, lbNewTitle )
   INIT_WIDGET_FROM_UI(PushButton*, btnContinue2years )
@@ -72,6 +69,9 @@ WinMission::WinMission( Widget* parent, const std::string& newTitle,
     _d->speechDel.assign( speech );
     audio::Engine::instance().play( speech, 100, audio::speech );
   }
+
+  GameAutoPause::insertTo( this );
+  moveTo( Widget::parentCenter );
 }
 
 WinMission::~WinMission(){}

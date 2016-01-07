@@ -52,8 +52,7 @@ Tree::Tree()
   _d->lastTimeGrow = game::Date::current();
   _d->spreadFire = false;
 
-  auto& md = object::Info::find( object::tree );
-  setPicture( md.randomPicture(1) );
+  setPicture( info().randomPicture(1) );
 }
 
 void Tree::timeStep( const unsigned long time )
@@ -94,21 +93,17 @@ void Tree::initTerrain(Tile& terrain)
   terrain.setFlag( Tile::tlTree, true );
 }
 
-bool Tree::build( const city::AreaInfo& info )
+bool Tree::build( const city::AreaInfo& rinfo )
 {
-  std::string picname = imgid::toResource( info.city->tilemap().at( info.pos ).imgId() );
-  auto& md = object::Info::find( object::tree );
-  if( md.isMyPicture( picname ) )
-  {
-    _picture().load( picname );
-  }
-  else
-  {
-    if( !picture().isValid() )
-      setPicture( md.randomPicture(1) );
-  }
-  _d->flat = (picture().height() <= tilemap::cellPicSize().height());
-  return Overlay::build( info );
+  std::string txName = imgid::toResource( rinfo.city->tilemap().at( rinfo.pos ).imgId() );
+  if( info().havePicture( txName ) )
+    _picture().load( txName );
+
+  if( !picture().isValid() )
+      setPicture( info().randomPicture(1) );
+
+  _d->flat = (picture().height() <= config::tilemap.cell.picSize().height());
+  return Overlay::build( rinfo );
 }
 
 void Tree::save(VariantMap& stream) const

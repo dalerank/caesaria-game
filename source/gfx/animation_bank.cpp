@@ -37,9 +37,9 @@ namespace gfx
 
 namespace
 {
-  CAESARIA_LITERALCONST( small )
-  CAESARIA_LITERALCONST( big )
-  CAESARIA_LITERALCONST( mega )
+GAME_LITERALCONST( small )
+GAME_LITERALCONST( big )
+GAME_LITERALCONST( mega )
 
 struct CartInfo
 {
@@ -129,21 +129,21 @@ void AnimationBank::Impl::loadCarts(vfs::Path model)
   //bool frontCart = false;
 
   VariantMap config = config::load( model );
-  foreach( it, config )
+  for( const auto& it : config )
   {
-    good::Product gtype = good::Helper::getType( it->first );
+    good::Product gtype = good::Helper::getType( it.first );
 
     if( gtype != good::none )
     {
-      VariantMap cartInfo = it->second.toMap();      
+      VariantMap cartInfo = it.second.toMap();
       Variant smallInfo = cartInfo.get( literals::small );
-      if( smallInfo.isValid() ) loadStage( gtype, it->first + literals::small, smallInfo.toMap(), stgCarts );
+      if( smallInfo.isValid() ) loadStage( gtype, it.first + literals::small, smallInfo.toMap(), stgCarts );
 
       Variant bigInfo = cartInfo.get( literals::big );
-      if( bigInfo.isValid() ) loadStage( gtype + animBigCart, it->first + literals::big, bigInfo.toMap(), stgCarts );
+      if( bigInfo.isValid() ) loadStage( gtype + animBigCart, it.first + literals::big, bigInfo.toMap(), stgCarts );
 
       Variant megaInfo = cartInfo.get( literals::mega );
-      if( megaInfo.isValid() ) loadStage( gtype + animMegaCart, it->first + literals::mega, megaInfo.toMap(), stgCarts );
+      if( megaInfo.isValid() ) loadStage( gtype + animMegaCart, it.first + literals::mega, megaInfo.toMap(), stgCarts );
     }
   }
 

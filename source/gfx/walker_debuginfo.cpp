@@ -50,7 +50,7 @@ void WalkerDebugInfo::showPath( WalkerPtr walker, const RenderInfo& rinfo, NColo
   }
 
   Point pos = walker->mappos();
-  Point xOffset( tilemap::cellSize().width(), 0 );
+  Point xOffset( config::tilemap.cell.size().width(), 0 );
   PointsArray points;
   if( pathway.isReverse() )
   {
