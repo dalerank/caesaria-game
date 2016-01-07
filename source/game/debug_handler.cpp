@@ -461,7 +461,7 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
 
-  case toggle_shipyard_enable:   break;
+  case toggle_shipyard_enable: toggleBuildOptions( object::shipyard );  break;
 
   case next_theme:
   {
