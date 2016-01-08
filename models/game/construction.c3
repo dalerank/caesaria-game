@@ -614,6 +614,9 @@
     employers : 0
     mayBurn : false
     class : "water"
+    image.ext : {
+      t1 : { size:3, rc : "utilitya", start : 34, count : 1 }
+    }
     fullOffset : [ 47, -10 ]
     sound : [ "reservoir", 1 ]
   }, 
