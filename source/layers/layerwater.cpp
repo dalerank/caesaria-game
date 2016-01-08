@@ -87,7 +87,7 @@ void Water::drawTile( const RenderInfo& rinfo, Tile& tile)
         auto house = overlay.as<House>();
         needDrawAnimations = (house->level() <= HouseLevel::hovel) && house->habitants().empty();
 
-        tileNumber = config::tile.house;
+        tileNumber = config::tile.house-1;
         haveWater = haveWater || house->hasServiceAccess(Service::fountain) || house->hasServiceAccess(Service::well);
       }
 

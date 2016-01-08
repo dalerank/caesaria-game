@@ -131,6 +131,7 @@ void Destroy::render( Engine& engine )
 
   const TilesArray& visibleTiles = _camera()->tiles();
   const TilesArray& flatTiles = _camera()->flatTiles();
+  const TilesArray& subtrateTiles = _camera()->subtrateTiles();
   const TilesArray& groundTiles = _camera()->groundTiles();
 
   _camera()->startFrame();
@@ -166,6 +167,9 @@ void Destroy::render( Engine& engine )
     drawLandTile( renderInfo, *tile );
     engine.resetColorMask();
   }
+
+  for( auto tile : subtrateTiles )
+    drawSubtrateTile( renderInfo, *tile );
 
   // FIRST PART: draw all flat land (walkable/boatable)  
   for( auto ftile : flatTiles )
