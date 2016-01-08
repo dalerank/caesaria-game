@@ -290,38 +290,38 @@ void MarketBuyer::_reachedPathway()
             }
           }
         }
-      }
+      }      
+   }
 
-      unsigned long delay = 0;
-      Pathway way = PathwayHelper::create( pos(), _d->market, PathwayHelper::roadFirst );
-      if( way.isValid() )
-      {
-        setPathway( way );
-        go();
+   unsigned long delay = 0;
+   Pathway way = PathwayHelper::create( pos(), _d->market, PathwayHelper::roadFirst );
+   if( way.isValid() )
+   {
+     setPathway( way );
+     go();
 
-        while( _d->basket.qty() > MarketKid::defaultCapacity )
-        {
-          for( auto& gtype : good::all() )
-          {
-            good::Stock& currentStock = _d->basket.getStock( gtype );
-            if( currentStock.qty() > 0 )
-            {
-              auto marketBoy = Walker::create<MarketKid>( _city() );
+     while( _d->basket.qty() > MarketKid::defaultCapacity )
+     {
+       for( auto& gtype : good::all() )
+       {
+         good::Stock& currentStock = _d->basket.getStock( gtype );
+         if( currentStock.qty() > 0 )
+         {
+           auto marketBoy = Walker::create<MarketKid>( _city() );
 
-              good::Stock& boyBasket = marketBoy->getBasket();
-              boyBasket.setType( gtype );
-              boyBasket.setCapacity( MarketKid::defaultCapacity );
-              _d->basket.retrieve( boyBasket, math::clamp<int>( currentStock.qty(), 0, MarketKid::defaultCapacity ) );
+           good::Stock& boyBasket = marketBoy->getBasket();
+           boyBasket.setType( gtype );
+           boyBasket.setCapacity( MarketKid::defaultCapacity );
+           _d->basket.retrieve( boyBasket, math::clamp<int>( currentStock.qty(), 0, MarketKid::defaultCapacity ) );
 
-              marketBoy->setPos( pos() );
-              marketBoy->setDelay( delay += 20 );
-              marketBoy->send2City( _d->market );
-              marketBoy->setPathway( way );
-              marketBoy->go();
-            }
-          }
-        }
-      }
+           marketBoy->setPos( pos() );
+           marketBoy->setDelay( delay += 20 );
+           marketBoy->send2City( _d->market );
+           marketBoy->setPathway( way );
+           marketBoy->go();
+         }
+       }
+     }
    }
 }
 
