@@ -403,7 +403,9 @@ void CartPusher::send2city(BuildingPtr building, good::Stock& carry )
 
 void CartPusher::timeStep( const unsigned long time )
 {
-  _d->anim.update( time );
+  if( !waitInterval() )
+    _d->anim.update( time );
+
   if( game::Date::isWeekChanged() && !_pathway().isValid() )
   {
     _computeWalkerDestination();

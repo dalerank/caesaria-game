@@ -73,13 +73,12 @@ static Signal0<> invalidAction;
 class MessageAnnotation : public Widget
 {
 public:
-  MessageAnnotation( Widget* parent, const Rect& rect, Scribes& messages )
+  MessageAnnotation( Widget* parent, const Rect& rect )
     : Widget( parent, -1, rect )
   {
     active = false;
     pic = Picture( gui::rc.panel, 114 );
-    setSubElement( true );
-    CONNECT( &messages, onChangeMessageNumber(), this, MessageAnnotation::messagesChanged )
+    setSubElement( true );    
   }
 
   void messagesChanged(int number)
@@ -432,9 +431,10 @@ void Menu::_updateButtons()
   if( !_d->city->getOption( PlayerCity::c3gameplay ) )
     rect = Rect( Point(0,0), messagesButton->size() );
 
-  messagesButton->add<MessageAnnotation>( rect, _d->city->scribes() );
+  auto& notification = messagesButton->add<MessageAnnotation>( rect );
 
-  CONNECT( _d->button.minimize, onClicked(), this, Menu::minimize );
+  CONNECT( &_d->city->scribes(), onChangeMessageNumber(), &notification, MessageAnnotation::messagesChanged )
+  CONNECT( _d->button.minimize, onClicked(), this, Menu::minimize )
 
   _d->model->actions[ Link::undoAction ].setEnabled( false );
   _d->model->actions[ Link::disaster ].setEnabled( false );

@@ -386,10 +386,7 @@ bool Factory::standIdle() const{  return !mayWork(); }
 
 Creamery::Creamery() : Factory(good::olive, good::oil, object::oil_workshop, Size(2) )
 {
-  _picture().load( ResourceGroup::commerce, 99 );
-
-  _animation().load(ResourceGroup::commerce, 100, 8);
-  _animation().setDelay( 4 );
+  setPicture( info().randomPicture( size() ) );
   _fgPictures().resize( 3 );
 }
 
@@ -416,7 +413,6 @@ void Creamery::_storeChanged()
   _fgPicture(1) = inStock().empty() ? Picture() : Picture( ResourceGroup::commerce, 154 );
   _fgPicture(1).setOffset( 40, -5 );
 }
-
 
 void Factory::_productReady()
 {
