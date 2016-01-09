@@ -247,7 +247,7 @@ void MarketBuyer::_reachedPathway()
         foods.exclude( _city()->tradeOptions().locked() );
 
         // take other goods if possible
-        for( auto& goodType : foods )
+        for( const auto& goodType : foods )
         {
           // for all types of good (except G_NONE)
           int qty = _d->market->getGoodDemand(goodType) - _d->basket.qty(goodType);

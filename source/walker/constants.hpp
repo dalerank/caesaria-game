@@ -58,7 +58,7 @@ BEGIN_NAMEDTYPE(Type,unknown),
   romeGuard,
   lion,
   spear,  //34
-  fishPlace,
+  fishPlace, //35
   seaMerchant,
   scholar,
   librarian,

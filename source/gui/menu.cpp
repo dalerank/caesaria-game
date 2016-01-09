@@ -427,8 +427,12 @@ void Menu::_updateButtons()
   _createLink( _d->model->actions[ Link::messages ] );
   _createLink( _d->model->actions[ Link::disaster ] );
 
-  new MessageAnnotation( _d->model->actions[ Link::messages ].button,
-                         Rect( 2, 2, 23, 20 ), _d->city->scribes() );
+  Rect rect( 2, 2, 23, 20 );
+  auto messagesButton = _d->model->actions[ Link::messages ].button;
+  if( !_d->city->getOption( PlayerCity::c3gameplay ) )
+    rect = Rect( Point(0,0), messagesButton->size() );
+
+  messagesButton->add<MessageAnnotation>( rect, _d->city->scribes() );
 
   CONNECT( _d->button.minimize, onClicked(), this, Menu::minimize );
 

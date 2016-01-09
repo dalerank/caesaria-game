@@ -191,6 +191,8 @@ enum {
   reset_collapse_risk,
   toggle_shipyard_enable,
   toggle_reservoir_enable,
+  toggle_wineshop_enable,
+  toggle_vinard_enable,
   next_theme
 };
 
@@ -289,6 +291,8 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
 
   ADD_DEBUG_EVENT( buildings, toggle_shipyard_enable )
   ADD_DEBUG_EVENT( buildings, toggle_reservoir_enable )
+  ADD_DEBUG_EVENT( buildings, toggle_wineshop_enable )
+  ADD_DEBUG_EVENT( buildings, toggle_vinard_enable )
 
   ADD_DEBUG_EVENT( disaster, random_fire )
   ADD_DEBUG_EVENT( disaster, random_collapse )
@@ -324,7 +328,6 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( house, increase_house_level )
   ADD_DEBUG_EVENT( house, decrease_house_level )
   ADD_DEBUG_EVENT( house, lock_house_level )
-
 
   ADD_DEBUG_EVENT( options, run_script )
   ADD_DEBUG_EVENT( options, all_sound_off )
@@ -465,6 +468,8 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case toggle_shipyard_enable: toggleBuildOptions( object::shipyard );  break;
   case toggle_reservoir_enable: toggleBuildOptions( object::reservoir );  break;
+  case toggle_wineshop_enable: toggleBuildOptions( object::wine_workshop );  break;
+  case toggle_vinard_enable: toggleBuildOptions( object::vinard );  break;
 
   case next_theme:
   {
@@ -492,7 +497,7 @@ void DebugHandler::Impl::handleEvent(int event)
     PropertyWorkspace* browser = safety_cast<PropertyWorkspace*>( game->gui()->findWidget( hash ) );
     if( !browser )
     {
-      browser = new PropertyWorkspace( game->gui()->rootWidget(), game->scene(), Rect( 0, 0, 500, 700 ) );
+      browser = &game->gui()->add<PropertyWorkspace>( game->scene(), Rect( 0, 0, 500, 700 ) );
       browser->setCity( game->city() );
       game->scene()->installEventHandler( browser->handler() );
     }
