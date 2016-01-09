@@ -845,6 +845,8 @@
     class : "industry"
     productRate : 4.8
     sound : [ "creamery", 1 ]
+    image : [ "commerce", 99 ]
+    animation : { rc : "commerce", start : 100, count : 8, offset : [ 0, 0 ], delay : 4 }
   },
   
   weapons_workshop :
