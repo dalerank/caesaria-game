@@ -31,6 +31,7 @@ class Neptune : public RomeDivinity
   DIVINITY_MUST_INITIALIZE_FROM_PANTHEON
 public:
   virtual void updateRelation(float income, PlayerCityPtr city);
+  virtual object::Type templeType( TempleSize size ) const;
 
 protected:
   Neptune();

@@ -178,9 +178,8 @@ void Rioter::timeStep(const unsigned long time)
   {
     if( game::Date::isDayChanged() )
     {
-      ConstructionList constructions = _city()->statistic().objects.find<Construction>( object::any,
-                                                                                        pos() - TilePos( 1, 1),
-                                                                                        pos() + TilePos( 1, 1) );
+      ConstructionList constructions = _city()->statistic().objects
+                                                           .find<Construction>( object::any, pos(), 1 );
 
       for( auto it=constructions.begin(); it != constructions.end(); )
       {

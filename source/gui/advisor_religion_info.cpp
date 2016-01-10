@@ -25,7 +25,10 @@
 #include "gfx/engine.hpp"
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
+#include "city/city.hpp"
 #include "religion/pantheon.hpp"
+#include "gfx/drawstate.hpp"
+#include "gfx/decorator.hpp"
 
 using namespace religion;
 using namespace gfx;
@@ -36,7 +39,7 @@ namespace gui
 namespace advisorwnd
 {
 
-class ReligionInfoLabel::Impl
+class ReligionDetails::Impl
 {
 public:
   DivinityPtr divinity;
@@ -52,12 +55,15 @@ public:
     int xOffset;
     Picture image;
   } wrath;
+
+  gfx::Pictures border;
 };
 
-ReligionInfoLabel::ReligionInfoLabel(Widget* parent, const Rect& rect, DivinityPtr divinity, int smallTempleCount, int bigTempleCount)
-  : Label( parent, rect ), __INIT_IMPL(ReligionInfoLabel)
+ReligionDetails::ReligionDetails(Widget* parent, const Rect& rect, DivinityPtr divinity, int smallTempleCount, int bigTempleCount)
+  : PushButton( parent, rect, "", -1, false, PushButton::noBackground ),
+    __INIT_IMPL(ReligionDetails)
 {
-  __D_REF(d,ReligionInfoLabel)
+  __D_REF(d,ReligionDetails)
   d.divinity = divinity;
   d.temples.small_n = smallTempleCount;
   d.temples.big_n = bigTempleCount;
@@ -65,13 +71,15 @@ ReligionInfoLabel::ReligionInfoLabel(Widget* parent, const Rect& rect, DivinityP
   d.wrath.xOffset = 400;
 
   d.wrath.image = Picture( gui::rc.panel, gui::id.wrathIcon );
-  setFont( Font::create( FONT_1_WHITE ) );
+  Decorator::draw( d.border, Rect( 0, 0, width(), height() ), Decorator::brownBorder );
+
+  setFont( FONT_1_WHITE );
 }
 
-void ReligionInfoLabel::_updateTexture(Engine& painter)
+void ReligionDetails::_updateTexture()
 {
-  __D_REF(d,ReligionInfoLabel)
-  Label::_updateTexture( painter );
+  __D_REF(d,ReligionDetails)
+  PushButton::_updateTexture();
 
   if( d.divinity.isValid() )
   {
@@ -98,18 +106,20 @@ void ReligionInfoLabel::_updateTexture(Engine& painter)
   }
 }
 
-void ReligionInfoLabel::draw(Engine& painter)
+void ReligionDetails::draw(Engine& painter)
 {
-  __D_REF(d,ReligionInfoLabel)
-  Label::draw( painter );
+  __D_REF(d,ReligionDetails)
+  PushButton::draw( painter );
 
+  DrawState pipe( painter, absoluteRect().lefttop(), &absoluteClippingRectRef() );
   if( d.divinity.isValid() )
   {
     for( int k=0; k < d.divinity->wrathPoints() / 15; k++ )
-    {
-      painter.draw( d.wrath.image, absoluteRect().lefttop() + Point( d.wrath.xOffset + k * 15, 0), &absoluteClippingRectRef() );
-    }
+      pipe.draw( d.wrath.image, Point( d.wrath.xOffset + k * 15, 0) );
   }
+
+  if( _state() == stHovered )
+    pipe.draw( d.border );
 }
 
 }//end namespace advisorwnd

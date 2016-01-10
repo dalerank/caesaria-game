@@ -18,7 +18,7 @@
 #ifndef __CAESARIA_ADVISOR_RELIGION_INFO_H_INCLUDED__
 #define __CAESARIA_ADVISOR_RELIGION_INFO_H_INCLUDED__
 
-#include "label.hpp"
+#include "pushbutton.hpp"
 #include "gfx/predefinitions.hpp"
 #include "religion/romedivinity.hpp"
 #include "game/predefinitions.hpp"
@@ -29,19 +29,20 @@ namespace gui
 namespace advisorwnd
 {
 
-class ReligionInfoLabel : public Label
+class ReligionDetails : public PushButton
 {
 public:
-  ReligionInfoLabel( Widget* parent, const Rect& rect, religion::DivinityPtr divinity,
+  ReligionDetails( Widget* parent, const Rect& rect,
+                     religion::DivinityPtr divinity,
                      int smallTempleCount, int bigTempleCount  );
 
   virtual void draw( gfx::Engine &painter);
 
 protected:
-  virtual void _updateTexture( gfx::Engine& painter );
+  virtual void _updateTexture();
 
 private:
-  __DECLARE_IMPL(ReligionInfoLabel)
+  __DECLARE_IMPL(ReligionDetails)
 };
 
 }

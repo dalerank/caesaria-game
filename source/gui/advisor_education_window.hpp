@@ -32,6 +32,7 @@ class Education : public Base
 public:
   Education( PlayerCityPtr city, Widget* parent, int id );
   virtual void draw( gfx::Engine& painter );
+  virtual void showDetails(Widget* widget);
 };
 
 }

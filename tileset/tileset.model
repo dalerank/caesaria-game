@@ -235,7 +235,7 @@
         {
           type : "atlas"
           folder : "/resources/gui"
-          files : [ "empirebits_*" ]
+          files : [ "empire_bits_*" ]
         }
 
         empirepanels :
@@ -366,7 +366,7 @@
         {
           type : "atlas"
           folder : "/resources/quarry"
-          files : [ "quarry*" ]
+          files : [ "*" ]
         }
 
         plateau :
@@ -390,6 +390,13 @@
           files : [ "entertainment_*" ]
         }
 
+        shipyard :
+        {
+          type : "atlas"
+          folder : "/resources/shipyard"
+          files : [ "*" ]
+        }
+
         actorshool_anim :
         {
           type : "atlas"
@@ -411,18 +418,18 @@
           files : [ "commerce_*" ]
         }
 
+        ground :
+        {
+          type : "atlas"
+          folder : "/resources/ground"
+          files : [ "*" ]
+        }
+
         engineering :
         {
           type : "atlas"
           folder : "/resources/engineering"
-          files : [ "engineering_*" ]
-        }
-
-        engineering_anim :
-        {
-          type : "atlas"
-          folder : "/resources/engineering"
-          files : [ "engineeringa_*" ]
+          files : [ "*" ]
         }
 
         ironmine_anim :
@@ -443,70 +450,21 @@
         {
           type : "atlas"
           folder : "/resources/lubmill"
-          files : [ "lumbermill_*" ]
-        }
-
-        lubmill_anim :
-        {
-          type : "atlas"
-          folder : "/resources/lubmill"
-          files : [ "lubmill_anim_*" ]
+          files : [ "*" ]
         }
 
         warehouse :
         {
           type : "atlas"
           folder : "/resources/warehouse"
-          files : [ "warehouse_*" ]
-        }
+          files : [ "*" ]
+        }        
 
-        tradecenter :
-        {
-          type : "atlas"
-          folder : "/resources/warehouse"
-          files : [ "tradecenter_*" ]
-        }
-
-        smlceres :
+        religion :
         {
           type : "atlas"
           folder : "/resources/religion"
-          files : [ "smlceres_*" ]
-        }
-
-        smlmars :
-        {
-          type : "atlas"
-          folder : "/resources/religion"
-          files : [ "smlmars_*" ]
-        }
-
-        smlmercury :
-        {
-          type : "atlas"
-          folder : "/resources/religion"
-          files : [ "smlmercury_*" ]
-        }
-
-        smlneptune :
-        {
-          type : "atlas"
-          folder : "/resources/religion"
-          files : [ "smlneptune_*" ]
-        }
-
-        smlvenus :
-        {
-          type : "atlas"
-          folder : "/resources/religion"
-          files : [ "smlvenus_*" ]
-        }
-
-        temple_anim :
-        {
-          type : "atlas"
-          folder : "/resources/religion"
-          files : [ "fireanim_*" ]
+          files : [ "*" ]
         }
 
         fortlegioner :
@@ -526,7 +484,7 @@
         fortspear :
         {
           type : "atlas"
-          folder : "/resources/religion"
+          folder : "/resources/fort"
           files : [ "fortspear_*" ]
         }
 
@@ -534,6 +492,13 @@
         {
           type : "atlas"
           folder : "/resources/senate"
+          files : [ "*" ]
+        }
+
+        creamery :
+        {
+          type : "atlas"
+          folder : "/resources/oilworkshop"
           files : [ "*" ]
         }
 

@@ -30,6 +30,7 @@ namespace world
 {
 
 class Relation;
+class RelationAbility;
 
 class Emperor
 {
@@ -38,6 +39,7 @@ public:
   virtual ~Emperor();
 
   void updateRelation( const std::string& cityname, int value );
+  void updateRelation( const std::string& cityname, const RelationAbility& ability );
 
   void sendGift( const Gift& money );
   const Gift& lastGift( const std::string& cityname ) const;

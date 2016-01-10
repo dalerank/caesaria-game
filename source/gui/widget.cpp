@@ -45,7 +45,8 @@ void Widget::beforeDraw(gfx::Engine& painter )
     return;
   //"Parent must be exists";
 
-  for( auto child : d->children ) { child->beforeDraw( painter ); }
+  for( auto child : d->children )
+    child->beforeDraw( painter );
 }
 
 Ui* Widget::ui() const { return _dfunc()->environment; }

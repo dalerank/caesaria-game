@@ -31,6 +31,7 @@
 #include "widgetescapecloser.hpp"
 #include "stretch_layout.hpp"
 #include "multilinebutton.hpp"
+#include "dialogbox.hpp"
 
 using namespace gfx;
 using namespace city;
@@ -263,6 +264,12 @@ void GoodOrderManageWindow::toggleIndustryEnable()
   for( auto factory : factories )
     factory->setActive( !industryEnabled );
 
+  if( !industryEnabled )
+  {
+    auto* dialog = dialog::Confirmation( ui(), "Note", "Do you want fire workers from industry?",
+                                         makeDelegate( this, &GoodOrderManageWindow::_fireWorkers ) );
+  }
+
   updateIndustryState();
   emit _d->onOrderChangedSignal();
 }
@@ -311,6 +318,13 @@ void GoodOrderManageWindow::_changeTradeLimit(int value)
   }
   updateTradeState();
   emit _d->onOrderChangedSignal();
+}
+
+void GoodOrderManageWindow::_fireWorkers()
+{
+  FactoryList factories = _d->city->statistic().objects.producers<Factory>( _d->type );
+  for( auto factory : factories )
+    factory->removeWorkers( factory->numberWorkers() );
 }
 
 }//end namespace advisorwnd

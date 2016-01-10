@@ -131,6 +131,7 @@ void Destroy::render( Engine& engine )
 
   const TilesArray& visibleTiles = _camera()->tiles();
   const TilesArray& flatTiles = _camera()->flatTiles();
+  const TilesArray& subtrateTiles = _camera()->subtrateTiles();
   const TilesArray& groundTiles = _camera()->groundTiles();
 
   _camera()->startFrame();
@@ -166,6 +167,9 @@ void Destroy::render( Engine& engine )
     drawLandTile( renderInfo, *tile );
     engine.resetColorMask();
   }
+
+  for( auto tile : subtrateTiles )
+    drawSubtrateTile( renderInfo, *tile );
 
   // FIRST PART: draw all flat land (walkable/boatable)  
   for( auto ftile : flatTiles )
@@ -375,18 +379,10 @@ void Destroy::drawTile(const RenderInfo& rinfo, Tile& tile)
   }
 }
 
-LayerPtr Destroy::create(Renderer &renderer, PlayerCityPtr city)
+Destroy::Destroy(Camera& camera, PlayerCityPtr city, gfx::Renderer* renderer)
+  : Layer( &camera, city ), _d( new Impl )
 {
-  LayerPtr ret( new Destroy( renderer, city ) );
-  ret->drop();
-
-  return ret;
-}
-
-Destroy::Destroy( Renderer& renderer, PlayerCityPtr city)
-  : Layer( renderer.camera(), city ), _d( new Impl )
-{
-  _d->renderer = &renderer;
+  _d->renderer = renderer;
   _d->shovelPic.load( "shovel", 1 );
   std::string rcLand = SETTINGS_STR( forbidenTile );
   _d->clearPic.load( rcLand, 2 );

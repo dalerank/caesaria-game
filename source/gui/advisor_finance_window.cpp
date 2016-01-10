@@ -113,7 +113,7 @@ public:
     lastyear = city->treasury().getIssueValue( (econ::Issue::Type)type, econ::Treasury::lastYear );
     thisyear = city->treasury().getIssueValue( (econ::Issue::Type)type, econ::Treasury::thisYear );
 
-    setFont( Font::create( FONT_1 ) );
+    setFont( FONT_1 );
     Decorator::draw( border, Rect( 0, 0, width(), height() ), Decorator::brownBorder );
   }
 
@@ -125,7 +125,6 @@ public:
     canvasDraw( utils::i2str( lastyear ), Point( 215, 0) );
     canvasDraw( utils::i2str( thisyear ), Point( 355, 0) );
   }
-
 
   void draw(Engine &painter)
   {

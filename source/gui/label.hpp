@@ -90,7 +90,7 @@ public:
   virtual void setWordwrap(bool enable);
 
   //! Checks if word wrap is enabled
-  virtual bool isWordWrapEnabled() const;
+  virtual bool isWordwrapEnabled() const;
 
   //! Sets the new caption of this element.
   virtual void setText(const std::string& text);
@@ -122,6 +122,7 @@ public:
   virtual void setIconOffset( const Point& offset );
 
   virtual void setFont( const Font& font );
+  virtual void setFont( FontType type, NColor color=0 );
 
   virtual void setAlpha( unsigned int value );
 

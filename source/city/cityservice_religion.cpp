@@ -63,8 +63,10 @@ class TemplesCoverity : public std::map< std::string, CoverageInfo >
 public:
   void update( TemplePtr temple )
   {
-    if( temple->divinity().isValid() )
-    {
+    if( temple->divinity().isValid()
+        && temple->isActive()
+        && temple->mayWork() )
+    {      
       CoverageInfo& info = (*this)[ temple->divinity()->internalName() ];
 
       if( temple.is<BigTemple>() ) { info.temples.big_n++; }
@@ -88,9 +90,7 @@ public:
   void setOraclesParishioner( int parishioners )
   {
     for( auto& it : *this)
-    {
       it.second.parishionerNumber += parishioners;
-    }
   }
 };
 

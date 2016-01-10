@@ -73,7 +73,7 @@ void AboutConstruction::_setWorkingVisible(bool show)
   {
      Rect btnRect( Point( _lbBlackFrame()->width() - 110, (_lbBlackFrame()->height() - 25)/2 ), Size( 100, 25 ) );
      _btnToggleWorking = &_lbBlackFrame()->add<PushButton>( btnRect, "", -1, false, PushButton::blackBorderUp  );
-     _btnToggleWorking->setFont( Font::create( FONT_1 ) );
+     _btnToggleWorking->setFont( FONT_1 );
      _updateWorkingText();
 
      CONNECT( _btnToggleWorking, onClicked(), this, AboutConstruction::_resolveToggleWorking );

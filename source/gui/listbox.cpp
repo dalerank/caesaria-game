@@ -656,13 +656,14 @@ void ListBox::beforeDraw(gfx::Engine& painter)
       int mxY = frameRect.top() - _d->scrollBar->value();
       if( !refItem.text().empty() && mnY >= 0 && mxY <= (int)height() )
       {
+        bool underMouse = ( static_cast<int>(i) == _d->index.selected && hl);
         refItem.setState( _getCurrentItemState( i, hl ) );
 
         itemTextHorizontalAlign = refItem.isAlignEnabled() ? refItem.horizontalAlign() : horizontalTextAlign();
         itemTextVerticalAlign = refItem.isAlignEnabled() ? refItem.verticalAlign() : verticalTextAlign();
 
-        currentFont = _getCurrentItemFont( refItem, i == _d->index.selected && hl );
-        currentFont.setColor( _getCurrentItemColor( refItem, i==_d->index.selected && hl ) );
+        currentFont = _getCurrentItemFont( refItem, underMouse );
+        currentFont.setColor( _getCurrentItemColor( refItem, underMouse ) );
 
         Rect textRect = currentFont.getTextRect( refItem.text(), Rect( Point(0, 0), frameRect.size() ),
                                                  itemTextHorizontalAlign, itemTextVerticalAlign );

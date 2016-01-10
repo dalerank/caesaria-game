@@ -42,7 +42,7 @@ AboutLand::AboutLand(Widget* parent, PlayerCityPtr city, const Tile& tile )
 { 
   int id = lbTextId;
   Label& lbText = add<Label>( Rect( 38, 60, 470, 60+180 ), "", true, Label::bgNone, id );
-  lbText.setFont( Font::create( FONT_2 ) );
+  lbText.setFont( FONT_2 );
   lbText.setTextAlignment( align::upperLeft, align::center );
   lbText.setWordwrap( true );
 

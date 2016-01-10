@@ -34,6 +34,7 @@ public:
   DrawState(Engine& painter, const Point& lefttop, Rect* clip );
 
   DrawState& draw( const Picture& picture );
+  DrawState& draw( const Pictures& pics );
   DrawState& draw( const Picture& picture, const Point& offset );
   DrawState& draw( const Batch& batch );
   DrawState& fallback( const Batch& batch );

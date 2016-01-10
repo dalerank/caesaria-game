@@ -28,6 +28,7 @@ class ListBoxItem::Impl
 public:
   Picture textPic;
   std::string text;
+  std::string tooltip;
   VariantMap data;
   Variant tag;
   float currentHovered;
@@ -44,6 +45,8 @@ public:
 };
 
 void ListBoxItem::setText(const std::string& text){ _d->text = text;}
+void ListBoxItem::setTooltip(const std::string& text) { _d->tooltip = text; }
+const std::string&ListBoxItem::tooltip() const{ return _d->tooltip; }
 void ListBoxItem::setIcon( Picture icon ){    _d->icon = icon; }
 void ListBoxItem::setIcon( const std::string& rc, int index ) { _d->icon.load( rc, index ); }
 const std::string& ListBoxItem::text() const{    return _d->text;}

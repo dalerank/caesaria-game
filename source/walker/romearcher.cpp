@@ -47,7 +47,7 @@ void RomeArcher::timeStep(const unsigned long time)
   {
   case Soldier::fightEnemy:
   {
-    WalkerPtr enemy = _findEnemiesInRange( attackDistance() ).valueOrEmpty(0);
+    WalkerPtr enemy = _findEnemiesInRange( attackDistance() ).firstOrEmpty();
 
     if( !enemy.isValid() )
     {
@@ -69,7 +69,7 @@ void RomeArcher::timeStep(const unsigned long time)
 
   case Soldier::destroyBuilding:
   {
-    ConstructionPtr construction = _findContructionsInRange( attackDistance() ).valueOrEmpty(0);
+    ConstructionPtr construction = _findContructionsInRange( attackDistance() ).firstOrEmpty();
 
     if( !construction.isValid() )
     {

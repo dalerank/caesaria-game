@@ -41,11 +41,12 @@ private:
    * @brief Calls when player press help button
    */
   void _showHelp();
-  void _updateAdvice( PlayerCityPtr city );
-  void _initUI(PlayerCityPtr c);
+  void _updateAdvice();
+  void _initUI();
+  void _showDetailInfo(Widget* widget);
+  void _moveCamera(Widget* widget);
 
-  class Impl;
-  ScopedPtr< Impl > _d;
+  PlayerCityPtr _city;
 };
 
 }

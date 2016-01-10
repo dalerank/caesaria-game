@@ -62,6 +62,7 @@ public:
   virtual float monthDecrease() const;
   virtual void setEffectPoint( int value );
   virtual int wrathPoints() const;
+  virtual object::Type templeType( TempleSize size ) const;
   virtual DateTime lastFestivalDate() const;
   virtual void setInternalName(const std::string &newName);
   virtual void updateRelation( float income, PlayerCityPtr city );

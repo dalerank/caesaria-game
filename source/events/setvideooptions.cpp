@@ -48,7 +48,6 @@ void SetVideoSettings::_exec(Game& game, unsigned int)
 }
 
 bool SetVideoSettings::_mayExec(Game&, unsigned int) const { return true; }
-
 void SetVideoSettings::_setResolution(Size newSize)
 {
   SETTINGS_SET_VALUE( resolution, newSize );

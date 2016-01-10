@@ -19,9 +19,12 @@
 #include "gfx/decorator.hpp"
 #include "core/gettext.hpp"
 #include "pushbutton.hpp"
+#include "events/showadvisorwindow.hpp"
+#include "events/movecamera.hpp"
 #include "label.hpp"
 #include "game/resourcegroup.hpp"
 #include "core/utils.hpp"
+#include "widgetescapecloser.hpp"
 #include "gfx/engine.hpp"
 #include "environment.hpp"
 #include "core/gettext.hpp"
@@ -36,6 +39,7 @@
 #include "core/logger.hpp"
 #include "city/states.hpp"
 #include "widget_helper.hpp"
+#include "gfx/drawstate.hpp"
 
 using namespace gfx;
 using namespace city;
@@ -44,10 +48,10 @@ struct HealthcareInfo
 {
   std::string building;
   std::string people;
-  int buildingCount;
-  int buildingWork;
-  int peoplesServed;
-  int needService;
+  int buildingCount = 0;
+  int buildingWork  = 0;
+  int peoplesServed = 0;
+  int needService   = 0;
 
   static const std::map<object::Type, HealthcareInfo> defaults;
   static const HealthcareInfo& find( const object::Type service )
@@ -56,8 +60,38 @@ struct HealthcareInfo
     if( it != defaults.end() )
       return it->second;
 
-    static const HealthcareInfo invalid{ "", "" };
+    static const HealthcareInfo invalid;
     return invalid;
+  }
+
+  HealthcareInfo() {}
+
+  HealthcareInfo( const std::string& b, const std::string& p )
+    : building(b), people(p)
+  {}
+
+  HealthcareInfo(PlayerCityPtr city, const object::Type objectType)
+  {
+    buildingWork = 0;
+    peoplesServed = 0;
+    buildingCount = 0;
+    needService = 0;
+
+    HealthBuildingList srvBuildings = city->statistic().objects.find<HealthBuilding>( objectType );
+    for( auto b : srvBuildings )
+    {
+      buildingWork += b->numberWorkers() > 0 ? 1 : 0;
+      peoplesServed += b->patientsCurrent();
+      buildingCount++;
+    }
+
+    HouseList houses = city->statistic().houses.find();
+    Service::Type serviceType = ServiceHelper::fromObject( objectType );
+    for( auto h : houses )
+    {
+      if( h->isHealthNeed( serviceType ) )
+        needService += h->habitants().count();
+    }
   }
 };
 
@@ -69,7 +103,7 @@ struct HealthcareInfo
   };
 
 
-enum { idxBarber=1, idxDoctor=2, idxHospital=3, rowOffset=20, smallCityNormalhealthValue=85,
+enum { rowOffset=20, smallCityNormalhealthValue=85,
        minPopullation4healthCalc=100, smallCityPopulation=300 };
 
 namespace gui
@@ -78,40 +112,35 @@ namespace gui
 namespace advisorwnd
 {
 
-class HealthInfoLabel : public Label
+class HealthBldDetail : public PushButton
 {
 public:
-  HealthInfoLabel( Widget* parent, const Rect& rect, const object::Type service,
+  HealthBldDetail( Widget* parent, const Rect& rect, const object::Type service,
                    const HealthcareInfo& info  )
-    : Label( parent, rect )
+    : PushButton( parent, rect, "", -1, false, PushButton::noBackground )
   {
     _service = service;
     _info = info;
 
-    setFont( Font::create( FONT_1 ) );
+    setFont( FONT_1_WHITE );
+    Decorator::draw( border, Rect( 0, 0, width(), height() ), Decorator::brownBorder );
   }
 
-  virtual void _updateTexture( gfx::Engine& painter )
+  virtual void _updateTexture()
   {
-    Label::_updateTexture( painter );
+    PushButton::_updateTexture();
 
     HealthcareInfo info = HealthcareInfo::find( _service );
 
     std::string peoplesStrT = _("##health_no_info##");
-    if( _info.buildingCount > 0 )
-    {
-      peoplesStrT = fmt::format( "{} ({}) {}", _info.peoplesServed, _info.needService, _(info.people) );
-    }
+    peoplesStrT = fmt::format( "{} ({}) {}", _info.peoplesServed, _info.needService, _(info.people) );
 
     std::string coverageStrT;
-    if( _info.buildingCount > 0 )
-    {
-      int coveragePrcnt = _info.needService > 0
-                            ? math::percentage( _info.peoplesServed, _info.needService )
-                            : 100;
-      math::clamp_to( coveragePrcnt, 0, 100 );
-      coverageStrT = fmt::format( "{}%", coveragePrcnt );
-    }
+    int coveragePrcnt = _info.needService > 0
+                          ? math::percentage( _info.peoplesServed, _info.needService )
+                          : 100;
+    math::clamp_to( coveragePrcnt, 0, 100 );
+    coverageStrT = fmt::format( "{}%", coveragePrcnt );
 
     canvasDraw( fmt::format( "{} {}", _info.buildingCount, _(info.building )), Point() );
     canvasDraw( utils::i2str( _info.buildingWork ), Point( 165, 0 ) );
@@ -119,25 +148,33 @@ public:
     canvasDraw( coverageStrT, Point( 455, 0 ) );
   }
 
+  virtual void draw(Engine &painter)
+  {
+    PushButton::draw( painter );
+
+    DrawState pipe( painter, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+    if( _state() == stHovered )
+     pipe.draw( border );
+  }
+
+  object::Type service() const { return _service; }
+
 private:
   object::Type _service;
   HealthcareInfo _info;
-};
-
-class Health::Impl
-{
-public:
-  HealthcareInfo getInfo(PlayerCityPtr city, const object::Type objectType );
+  Pictures border;
 };
 
 Health::Health(PlayerCityPtr city, Widget* parent, int id )
-  : Window( parent, Rect( 0, 0, 640, 290 ), "", id ), _d( new Impl )
+  : Window( parent, Rect( 0, 0, 640, 290 ), "", id )
 {
   setupUI( ":/gui/healthadv.gui" );
   setPosition( Point( (parent->width() - 640 )/2, parent->height() / 2 - 242 ) );
 
-  _initUI( city );
-  _updateAdvice( city );
+  _city = city;
+
+  _initUI();
+  _updateAdvice();
 
   LINK_WIDGET_LOCAL_ACTION( PushButton*, btnHelp, onClicked(), Health::_showHelp );
 }
@@ -150,43 +187,15 @@ void Health::draw( gfx::Engine& painter )
   Window::draw( painter );
 }
 
-HealthcareInfo Health::Impl::getInfo(PlayerCityPtr city, const object::Type objectType)
-{
-  HealthcareInfo ret;
-
-  ret.buildingWork = 0;
-  ret.peoplesServed = 0;
-  ret.buildingCount = 0;
-  ret.needService = 0;
-
-  HealthBuildingList srvBuildings = city->statistic().objects.find<HealthBuilding>( objectType );
-  for( auto b : srvBuildings )
-  {
-    ret.buildingWork += b->numberWorkers() > 0 ? 1 : 0;
-    ret.peoplesServed += b->patientsCurrent();
-    ret.buildingCount++;
-  }
-
-  HouseList houses = city->statistic().houses.find();
-  Service::Type serviceType = ServiceHelper::fromObject( objectType );
-  for( auto h : houses )
-  {
-    if( h->isHealthNeed( serviceType ) )
-    ret.needService += h->habitants().count();
-  }
-
-  return ret;
-}
-
 void Health::_showHelp() { ui()->add<DictionaryWindow>( "health_advisor" ); }
 
-void Health::_updateAdvice(PlayerCityPtr c)
+void Health::_updateAdvice()
 {
   INIT_WIDGET_FROM_UI( Label*, lbAdvice )
   if( !lbAdvice )
     return;
 
-  HealthCarePtr hc = c->statistic().services.find<HealthCare>();
+  HealthCarePtr hc = _city->statistic().services.find<HealthCare>();
   if( !hc.isValid() )
   {
     Logger::warning( "WARNING !!! HealthCare service not exist" );
@@ -195,13 +204,13 @@ void Health::_updateAdvice(PlayerCityPtr c)
 
   StringArray outText;
 
-  if( c->states().population < minPopullation4healthCalc )
+  if( _city->states().population < minPopullation4healthCalc )
   {
     outText << "##healthadv_not_need_health_service_now##";
   }
   else
   {
-    if( c->states().population < smallCityPopulation )
+    if( _city->states().population < smallCityPopulation )
     {
       if( hc->value() > smallCityNormalhealthValue )
       {
@@ -210,7 +219,7 @@ void Health::_updateAdvice(PlayerCityPtr c)
     }
     else
     {
-      HouseList houses = c->statistic().houses.find();
+      HouseList houses = _city->statistic().houses.find();
 
       unsigned int needBath = 0;
       unsigned int needBarbers = 0;
@@ -257,29 +266,71 @@ void Health::_updateAdvice(PlayerCityPtr c)
   lbAdvice->setText( _(text) );
 }
 
-void Health::_initUI(PlayerCityPtr c)
+void Health::_initUI()
 {
   INIT_WIDGET_FROM_UI( Label*, lbBlackframe )
   if( !lbBlackframe )
   {
-    Logger::warning( "WARNING !!! Cant initialize Health adwisor window" );
+    Logger::warning( "WARNING !!! Can't initialize Health adwisor window" );
     return;
   }
 
-  Point startPoint = lbBlackframe->lefttop() + Point( 3, 3 );
+  Point startPoint = Point( 3, 3 );
+  Point offset( 0, rowOffset );
   Size labelSize( lbBlackframe->width() - 6, 20 );
 
-  HealthcareInfo info = _d->getInfo( c, object::baths );
-  lbBlackframe->add<HealthInfoLabel>( Rect( startPoint, labelSize ), object::baths, info );
+  object::Types types{ object::baths, object::barber, object::clinic, object::hospital };
 
-  info = _d->getInfo( c, object::barber );
-  lbBlackframe->add<HealthInfoLabel>( Rect( startPoint + Point( 0, rowOffset * idxBarber ), labelSize), object::barber, info );
+  for( auto type : types )
+  {
+    auto& btn = lbBlackframe->add<HealthBldDetail>( Rect( startPoint, labelSize ), type,
+                                                    HealthcareInfo( _city, type ) );
+    startPoint += offset;
+    CONNECT_LOCAL( &btn, onClickedEx(), Health::_showDetailInfo )
+  }
+}
 
-  info = _d->getInfo( c, object::clinic );
-  lbBlackframe->add<HealthInfoLabel>( Rect( startPoint + Point( 0, rowOffset * idxDoctor ), labelSize), object::clinic, info );
+void Health::_showDetailInfo(Widget* widget)
+{
+  HealthBldDetail* detail = safety_cast<HealthBldDetail*>( widget );
+  if( detail )
+  {
+    object::Type type = detail->service();
+    const object::Info& info = object::Info::find( type );
 
-  info = _d->getInfo( c, object::hospital );
-  lbBlackframe->add<HealthInfoLabel>( Rect( startPoint + Point( 0, rowOffset * idxHospital), labelSize), object::hospital, info );
+    auto& window = parent()->add<Window>( Rect( 0, 0, 480, 480 ), _(info.prettyName()) );
+    window.moveTo( Widget::parentCenter );
+    WidgetClose::insertTo( &window, KEY_RBUTTON );
+
+    auto& frame = window.add<Label>( Rect( 20, 40, window.width() - 20, window.height() - 20 ), "",
+                                     false, Label::bgBlackFrame );
+
+    auto buildings = _city->statistic().objects.find<HealthBuilding>( type );
+    int index = 0;
+    Point offset( 2, 2 );
+    Size size( frame.width()-6, 24 );
+    for( auto b : buildings )
+    {
+      std::string text = fmt::format( "{} {} at [{},{}] {} workers, {} served",
+                                      (b->info().prettyName()), index+1,
+                                      b->pos().i(), b->pos().j(),
+                                      b->numberWorkers(), b->patientsCurrent() );
+      auto& btn = frame.add<PushButton>( Rect( offset, size ), text, -1, false, PushButton::whiteBorderUp );
+      btn.addProperty( "pos", b->pos().hash() );
+      btn.setFont( Font::create( FONT_1 ) ) ;
+      offset = btn.leftbottom() + Point( 0, 2 );
+      index++;
+      CONNECT_LOCAL( &btn, onClickedEx(), Health::_moveCamera )
+    }
+  }
+}
+
+void Health::_moveCamera(Widget* widget)
+{
+  int hash = widget->getProperty( "pos" );
+  TilePos pos( (hash >> 16)&0xff, hash&0xff );
+  events::dispatch<events::MoveCamera>( pos );
+  events::dispatch<events::ShowAdvisorWindow>( false, advisor::none );
 }
 
 }//end namespace advisor

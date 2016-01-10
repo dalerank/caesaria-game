@@ -40,10 +40,12 @@ public:
   unsigned int maxMonthVisitors;
 };
 
-School::School() : EducationBuilding(Service::school, object::school, Size(2))
+School::School()
+  : EducationBuilding(Service::school, object::school, Size(2))
 {
   setPicture( info().randomPicture( Size(2) ) );
   _d->maxMonthVisitors = config::educationbld::maxSchoolVisitors;
+  _d->currentPeopleServed = 0;
 }
 
 void School::deliverService()

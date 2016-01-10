@@ -97,6 +97,13 @@ public:
     return SmartPtr<T>();
   }
 
+  SmartPtr<T> firstOrEmpty() const
+  {
+    return this->empty()
+              ? SmartPtr<T>()
+              : this->front();
+  }
+
   template<class U>
   SmartPtr<U> firstOrEmpty() const
   {

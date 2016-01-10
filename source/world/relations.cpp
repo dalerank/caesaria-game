@@ -31,8 +31,7 @@ namespace world
 const Relation Relation::invalid;
 
 Relation::Relation()
-  : soldiersSent( 0 ), lastSoldiersSent( 0 ),
-    wrathPoint(0), tryCount( 0 ),
+  : wrathPoint(0), tryCount( 0 ),
     debtMessageSent(false)
 {
   _value = 0;
@@ -47,7 +46,17 @@ void Relation::update(const Gift &gift)
   change( favourUpdate );
 }
 
+void Relation::update(const RelationAbility& ability)
+{
+  _abilities.push_back( ability );
+  if( _abilities.back().influenceMonth < 0 )
+  {
+    _abilities.back().influenceMonth = 5 * DateTime::monthsInYear;
+  }
+}
+
 const GiftHistory& Relation::gifts() const { return _gifts; }
+const RelationAbilities& Relation::abilities() const { return _abilities; }
 
 void Relation::change(float delta) { _value += delta; }
 
@@ -59,8 +68,8 @@ void Relation::reset()
 
 void Relation::removeSoldier()
 {
-  if( soldiersSent > 0)
-    --soldiersSent;
+  if( soldiers.sent > 0)
+    --soldiers.sent;
 }
 
 VariantMap Relation::save() const
@@ -69,26 +78,28 @@ VariantMap Relation::save() const
   VARIANT_SAVE_CLASS(ret, _gifts )
   VARIANT_SAVE_ANY  (ret, lastTaxDate )
   VARIANT_SAVE_ANY  (ret, _value)
-  VARIANT_SAVE_ANY  (ret, soldiersSent )
-  VARIANT_SAVE_ANY  (ret, lastSoldiersSent)
+  VARIANT_SAVE_ANY  (ret, soldiers.sent )
+  VARIANT_SAVE_ANY  (ret, soldiers.last)
   VARIANT_SAVE_ANY  (ret, debtMessageSent )
   VARIANT_SAVE_ANY  (ret, chastenerFailed )
   VARIANT_SAVE_ANY  (ret, wrathPoint)
   VARIANT_SAVE_ANY  (ret, tryCount)
+  VARIANT_SAVE_CLASS(ret, _abilities)
 
   return ret;
 }
 
 void Relation::load(const VariantMap &stream)
 {
-  VARIANT_LOAD_CLASS(_gifts,          stream)
+  VARIANT_LOAD_CLASS(_gifts,           stream)
   VARIANT_LOAD_ANY  (_value,           stream)
-  VARIANT_LOAD_ANY  (lastSoldiersSent, stream)
-  VARIANT_LOAD_ANY  (soldiersSent,     stream)
+  VARIANT_LOAD_ANY  (soldiers.last,    stream)
+  VARIANT_LOAD_ANY  (soldiers.sent,    stream)
   VARIANT_LOAD_ANY  (debtMessageSent,  stream)
   VARIANT_LOAD_ANY  (chastenerFailed,  stream)
   VARIANT_LOAD_ANY  (wrathPoint,       stream)
   VARIANT_LOAD_ANY  (tryCount,         stream)
+  VARIANT_LOAD_CLASS_LIST(_abilities,  stream)
 }
 
 VariantMap Relations::save() const
@@ -170,6 +181,47 @@ VariantMap GiftHistory::save() const
 
   ret[ "gifts" ] = gifts;
   return ret;
+}
+
+VariantList RelationAbilities::save() const
+{
+  VariantList ret;
+  for( const auto& item : *this )
+    ret << item.save();
+
+  return ret;
+}
+
+void RelationAbilities::load(const VariantList& stream)
+{
+  for( const auto& item : stream )
+  {
+    RelationAbility state;
+    state.load( item.toList() );
+    push_back( state );
+  }
+}
+
+VariantList RelationAbility::save() const
+{
+  VariantList ret;
+  ret << start << finished
+      << successed << relation
+      << message << (int)type
+      << influenceMonth;
+  return ret;
+}
+
+void RelationAbility::load(const VariantList& stream)
+{
+  VariantListReader reader( stream );
+  start = reader.next().toDateTime();
+  finished = reader.next().toDateTime();
+  successed = reader.next();
+  relation = reader.next();
+  message = reader.next().toString();
+  type = reader.next().toEnum<Type>();
+  influenceMonth = reader.next();
 }
 
 }//end namespace world

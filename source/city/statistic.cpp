@@ -38,6 +38,7 @@
 #include "core/time.hpp"
 #include "objects/fort.hpp"
 #include "objects/farm.hpp"
+#include "objects/education.hpp"
 #include "cityservice_health.hpp"
 #include "world/traderoute.hpp"
 #include "core/logger.hpp"
@@ -163,6 +164,7 @@ Statistic::Statistic(PlayerCity& c)
       INIT_SUBSTAT(houses),
       INIT_SUBSTAT(religion),
       INIT_SUBSTAT(entertainment),
+      INIT_SUBSTAT(education),
       INIT_SUBSTAT(balance),
       rcity( c )
 {
@@ -642,6 +644,19 @@ TempleList Statistic::_Religion::temples() const
 TempleOracleList Statistic::_Religion::oracles() const
 {
   return _parent.objects.find<TempleOracle>( object::oracle );
+}
+
+EducationBuildingList Statistic::_Education::find(Service::Type service) const
+{
+  EducationBuildingList ret = _parent.objects.find<EducationBuilding>();
+
+  for( auto it=ret.begin(); it != ret.end(); )
+  {
+    if( (*it)->serviceType() == service ) { ++it; }
+    else { it = ret.erase( it ); }
+  }
+
+  return ret;
 }
 
 }//end namespace city

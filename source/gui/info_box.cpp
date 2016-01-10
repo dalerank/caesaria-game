@@ -154,7 +154,7 @@ void Infobox::setTitle( const std::string& title )
   {
     Size s = _d->lbTitle->font().getTextSize( title );
     if( s.width() > (int)_d->lbTitle->width() )
-      _d->lbTitle->setFont( Font::create( FONT_2 ) );
+      _d->lbTitle->setFont( FONT_2 );
 
     _d->lbTitle->setText( title );
   }

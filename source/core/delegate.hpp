@@ -834,19 +834,14 @@ public:
 
 	// Construction and comparison functions
 	Delegate0() { clear(); }
-	Delegate0(const Delegate0 &x) {
-		m_Closure.CopyFrom(this, x.m_Closure); }
-	void operator = (const Delegate0 &x)  {
-		m_Closure.CopyFrom(this, x.m_Closure); }
-	bool operator ==(const Delegate0 &x) const {
-		return m_Closure.IsEqual(x.m_Closure);	}
-	bool operator !=(const Delegate0 &x) const {
-		return !m_Closure.IsEqual(x.m_Closure); }
-	bool operator <(const Delegate0 &x) const {
-		return m_Closure.IsLess(x.m_Closure);	}
-	bool operator >(const Delegate0 &x) const {
-		return x.m_Closure.IsLess(m_Closure);	}
-	// Binding to non-const member functions
+  Delegate0(const Delegate0 &x) { m_Closure.CopyFrom(this, x.m_Closure); }
+  void operator = (const Delegate0 &x)  {	m_Closure.CopyFrom(this, x.m_Closure); }
+  bool operator ==(const Delegate0 &x) const { return m_Closure.IsEqual(x.m_Closure);	}
+  bool operator !=(const Delegate0 &x) const { return !m_Closure.IsEqual(x.m_Closure); }
+  bool operator <(const Delegate0 &x) const  { return m_Closure.IsLess(x.m_Closure);	}
+  bool operator >(const Delegate0 &x) const  { return x.m_Closure.IsLess(m_Closure);	}
+
+  // Binding to non-const member functions
 	template < class X, class Y >
 	Delegate0(Y *pthis, DesiredRetType (X::* function_to_bind)() ) {
 		m_Closure.bindmemfunc(detail::implicit_cast<X*>(pthis), function_to_bind); }
@@ -860,14 +855,15 @@ public:
 	template < class X, class Y >
 	inline void Bind(const Y *pthis, DesiredRetType (X::* function_to_bind)() const) {
 		m_Closure.bindconstmemfunc(detail::implicit_cast<const X *>(pthis), function_to_bind);	}
-	// Static functions. We convert them into a member function call.
+
+  // Static functions. We convert them into a member function call.
 	// This constructor also provides implicit conversion
-	Delegate0(DesiredRetType (*function_to_bind)() ) {
-		Bind(function_to_bind); }
-	// for efficiency, prevent creation of a temporary
-	void operator = (DesiredRetType (*function_to_bind)() ) {
-		Bind(function_to_bind); }
-	inline void Bind(DesiredRetType (*function_to_bind)()) {
+  Delegate0(DesiredRetType (*function_to_bind)() ) { Bind(function_to_bind); }
+
+  // for efficiency, prevent creation of a temporary
+  void operator = (DesiredRetType (*function_to_bind)() ) {	Bind(function_to_bind); }
+
+  inline void Bind(DesiredRetType (*function_to_bind)()) {
 		m_Closure.bindstaticfunc(this, &Delegate0::InvokeStaticFunction,
 			function_to_bind); }
 	// Invoke the delegate
@@ -1970,6 +1966,11 @@ public:
 // So, I have to use a macro.
 
 //N=0
+template <class RetType>
+Delegate0<RetType> makeDelegate(RetType (*func)() ) {
+  return Delegate0<RetType>(func);
+}
+
 template <class X, class Y, class RetType>
 Delegate0<RetType> makeDelegate(Y* x, RetType (X::*func)()) {
   return Delegate0<RetType>(x, func);
