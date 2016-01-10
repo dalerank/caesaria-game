@@ -121,7 +121,7 @@ Reservoir::~Reservoir(){}
 
 bool Reservoir::build( const city::AreaInfo& info )
 {
-  Construction::build( info );
+  WaterSource::build( info );
 
   _isWaterSource = _isNearWater( info.city, info.pos );
   _setError( _isWaterSource ? "" : "##need_connect_to_other_reservoir##");

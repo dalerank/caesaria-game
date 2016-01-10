@@ -235,7 +235,7 @@
         {
           type : "atlas"
           folder : "/resources/gui"
-          files : [ "empirebits_*" ]
+          files : [ "empire_bits_*" ]
         }
 
         empirepanels :
@@ -492,6 +492,13 @@
         {
           type : "atlas"
           folder : "/resources/senate"
+          files : [ "*" ]
+        }
+
+        creamery :
+        {
+          type : "atlas"
+          folder : "/resources/oilworkshop"
           files : [ "*" ]
         }
 

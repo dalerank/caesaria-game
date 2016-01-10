@@ -557,7 +557,7 @@ void Build::drawTile( const RenderInfo& rinfo, Tile& tile )
   if( picOver && picBasic != picOver )
   {
     Point screenPos = tile.mappos() + rinfo.offset;
-    drawPass( rinfo, tile, Renderer::ground );
+    drawLandTile( rinfo, tile );
     rinfo.engine.draw( *picOver, screenPos );
     drawPass( rinfo, tile, Renderer::overlayAnimation );
   }
@@ -656,11 +656,11 @@ void Build::afterRender(Engine& engine)
   {
     if( !OSystem::isAndroid() )
     {
-       _setLastCursorPos( engine.cursorPos() );
+      _setLastCursorPos( engine.cursorPos() );
     }
 
-     _checkBuildArea();
-     _updatePreviewTiles( false );
+    _checkBuildArea();
+    _updatePreviewTiles( false );
   }
 
   if( _d.lastLayer.isValid() )

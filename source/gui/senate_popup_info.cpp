@@ -86,14 +86,14 @@ void SenatePopupInfo::draw(const RenderInfo& rinfo, Tile& tile)
   if( DateTime::elapsedTime() - _d->lastUpdateTime > 2000 )
   {
     _d->updateRatings( senate );
-
-    Rect screen( Point(0, 0), rinfo.engine.screenSize() );
-    Rect rect( rinfo.engine.cursorPos(), _d->background.size() );
-
-    rect.constrainTo( screen );
-
-    rinfo.engine.draw( _d->background, rect.lefttop() );
   }
+
+  Rect screen( Point(0, 0), rinfo.engine.screenSize() );
+  Rect rect( rinfo.engine.cursorPos(), _d->background.size() );
+
+  rect.constrainTo( screen );
+
+  rinfo.engine.draw( _d->background, rect.lefttop() );
 }
 
 SenatePopupInfo::~SenatePopupInfo(){}
