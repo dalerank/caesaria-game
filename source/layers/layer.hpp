@@ -44,7 +44,8 @@ public:
   typedef enum { drawGrid=0x1, shadowOverlay=0x2, showPath=0x4, windowActive=0x8, showRoads=0x10,
                  showObjectArea=0x20, showWalkableTiles=0x40, showLockedTiles=0x80, showFlatTiles=0x100,
                  borderMoving=0x200, mayChangeLayer=0x400, oldGraphics=0x800, mmbMoving=0x1000,
-                 showBuildings=0x2000, showTrees=0x4000, overdrawOnBuild=0x8000, rotateEnabled=0x10000
+                 showBuildings=0x2000, showTrees=0x4000, overdrawOnBuild=0x8000, rotateEnabled=0x10000,
+                 showRocks=0x20000
                } Flag;
   static DrawOptions& instance();
   static bool getFlag( Flag flag );
@@ -91,6 +92,7 @@ public:
 
   virtual void drawLands(const gfx::RenderInfo& rinfo, gfx::Camera* camera );
   virtual void drawLandTile( const gfx::RenderInfo& rinfo, gfx::Tile &tile );
+  virtual void drawSubtrateTile( const gfx::RenderInfo& rinfo, gfx::Tile &tile );
   virtual void drawFlatTile( const gfx::RenderInfo& rinfo, gfx::Tile& tile );
   virtual void drawWalkers( const gfx::RenderInfo& rinfo, const gfx::Tile& tile);
   virtual void init( Point cursor );

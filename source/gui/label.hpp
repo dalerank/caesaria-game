@@ -90,7 +90,7 @@ public:
   virtual void setWordwrap(bool enable);
 
   //! Checks if word wrap is enabled
-  virtual bool isWordWrapEnabled() const;
+  virtual bool isWordwrapEnabled() const;
 
   //! Sets the new caption of this element.
   virtual void setText(const std::string& text);
