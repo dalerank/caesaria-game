@@ -811,8 +811,8 @@ void ComputerCity::save( VariantMap& options ) const
   VARIANT_SAVE_CLASS_D( options, _d, buildings )
   VARIANT_SAVE_CLASS_D( options, _d, targets )
 
-  options[ "sea" ] = (_d->terrain & EmpireMap::sea ? true : false);
-  options[ "land" ] = (_d->terrain & EmpireMap::land ? true : false);
+  options[ "sea" ] = (_d->terrain & EmpireMap::trSea ? true : false);
+  options[ "land" ] = (_d->terrain & EmpireMap::trLand ? true : false);
 
   VARIANT_SAVE_ENUM_D( options, _d, modeAI )
   VARIANT_SAVE_ANY_D( options, _d, trade.merchantSent )
@@ -874,8 +874,8 @@ void ComputerCity::load( const VariantMap& options )
       _d->initPeoples();
   }
 
-  _d->terrain = (options.get( "sea" ).toBool() ? EmpireMap::sea : EmpireMap::unknown)
-                  + (options.get( "land" ).toBool() ? EmpireMap::land : EmpireMap::unknown);
+  _d->terrain = (options.get( "sea" ).toBool() ? EmpireMap::trSea : EmpireMap::trUnknown)
+                  + (options.get( "land" ).toBool() ? EmpireMap::trLand : EmpireMap::trUnknown);
 
   _initTextures();
 }

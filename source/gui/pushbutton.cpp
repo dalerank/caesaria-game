@@ -371,6 +371,11 @@ void PushButton::setIconOffset(Point offset)
 void PushButton::setIcon(const std::string& rcname, int index)
 {
   Picture pic( rcname, index );
+  setIcon( pic );
+}
+
+void PushButton::setIcon(Picture pic)
+{
   for( auto& state : _dfunc()->buttonStates )
     state.icon.picture = pic;
 }

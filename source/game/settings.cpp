@@ -109,6 +109,7 @@ __REG_PROPERTY(ambientsounds)
 __REG_PROPERTY(cntrGroupsModel)
 __REG_PROPERTY(logfile)
 __REG_PROPERTY(rightMenu)
+__REG_PROPERTY(showEmpireMapTiles)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -179,6 +180,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ experimental        ] = false;
   _d->options[ needAcceptBuild     ] = false;
   _d->options[ borderMoving        ] = false;
+  _d->options[ showEmpireMapTiles  ] = false;
   _d->options[ render              ] = std::string( "sdl" );
   _d->options[ scrollSpeed         ] = 30;
   _d->options[ mmb_moving          ] = false;

@@ -125,7 +125,7 @@ bool MovableObject::_findWay( Point p1, Point p2 )
   d->start = p1;
   d->stop = p2;
 
-  d->way = empire()->map().findRoute( d->start, d->stop, EmpireMap::land );
+  d->way = empire()->map().findRoute( d->start, d->stop, EmpireMap::trLand );
   setLocation( d->start );
   d->way.step = 0;
 
