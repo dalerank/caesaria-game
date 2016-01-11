@@ -225,8 +225,7 @@ void EmpireMapWindow::Impl::drawTradeRoutes(Engine& painter)
     }
 #endif
 
-    if( route->endCity() == city.current ||
-        route->beginCity() == city.current )
+    if( route->isMyCity( city.current ) )
     {
       int value = highlight.value();
       painter.setColorMask( value << 16, value << 8, value, 0xff000000 );

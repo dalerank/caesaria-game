@@ -113,6 +113,11 @@ CityPtr Traderoute::beginCity() const {  return _d->empire->findCity( _d->begin 
 CityPtr Traderoute::endCity() const{  return _d->empire->findCity( _d->end );}
 std::string Traderoute::name() const{  return _d->begin + "<->" + _d->end;}
 
+bool Traderoute::isMyCity(CityPtr city) const
+{
+  return beginCity() == city || endCity() == city;
+}
+
 CityPtr Traderoute::partner(const std::string& name) const
 {
   return _d->empire->findCity( _d->begin == name ? _d->end : _d->begin );
