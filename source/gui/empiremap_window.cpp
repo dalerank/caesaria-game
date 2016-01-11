@@ -29,6 +29,7 @@
 #include "core/line.hpp"
 #include "label.hpp"
 #include "core/utils.hpp"
+#include "world/empiremap.hpp"
 #include "core/gettext.hpp"
 #include "dialogbox.hpp"
 #include "good/store.hpp"
@@ -93,7 +94,6 @@ public:
   Picture empireMap;
   Point offset;
   Label* tooltipLabel;
-  Label* lbTitle;
   Lines lines;
   Widget* gbox;
   math::SpringI highlight;
@@ -114,8 +114,11 @@ public:
   void showTradeAdvisorWindow();
   void initBorder(Widget* p);
   void drawLines( Engine& painter );
+  void drawDebugTiles( Engine& painter );
   void drawCell(Engine& e, Point start, int side , NColor color);
   world::ObjectPtr findObject( Point pos );
+
+  Signal1<const std::string&> setTitleText;
 };
 
 void EmpireMapWindow::Impl::checkCityOnMap( const Point& pos )
@@ -132,9 +135,9 @@ void EmpireMapWindow::Impl::checkCityOnMap( const Point& pos )
 void EmpireMapWindow::Impl::updateCityInfo()
 {
   resetInfoPanel();
-  if( city.current != 0 && lbTitle )
+  if( city.current != 0 )
   {
-    lbTitle->setText( city.current->name() );
+    setTitleText( city.current->name() );
 
     if( is_kind_of<PlayerCity>( city.current ) )
     {
@@ -166,7 +169,7 @@ void EmpireMapWindow::Impl::updateCityInfo()
   }
   else
   {
-    lbTitle->setText( "" );
+    setTitleText( "" );
   }
 }
 
@@ -355,6 +358,36 @@ void EmpireMapWindow::Impl::drawLines(Engine &painter)
     painter.drawLine( line.color, line.begin, line.end );
 }
 
+void EmpireMapWindow::Impl::drawDebugTiles(Engine& painter)
+{
+  if( !KILLSWITCH( showEmpireMapTiles ) )
+    return;
+
+  const world::EmpireMap& map = city.base->empire()->map();
+  Size mapSize = map.size();
+  Rect screenRect( Point( 0, 0), painter.screenSize() );
+
+  NColor terrainColor[] = { ColorList::black,
+                            ColorList::blue,
+                            ColorList::brown,
+                            ColorList::red,
+                            ColorList::white };
+
+  for( auto& color : terrainColor )
+    color.setAlpha( 0x80 );
+
+  for( auto i=0; i < mapSize.width(); i++ )
+    for( auto j=0; j < mapSize.height(); j++ )
+    {
+      TilePos tpos( i, j );
+      world::EmpireMap::TerrainType type = map.at( tpos );
+      Rect area = map.area( tpos );
+
+      if( screenRect.isRectCollided( area + offset ) )
+        painter.fillRect( terrainColor[type], area + offset );
+    }
+}
+
 void EmpireMapWindow::Impl::drawCell(Engine& e, Point start, int side, NColor color)
 {
 #ifdef DEBUG
@@ -525,7 +558,6 @@ EmpireMapWindow::EmpireMapWindow(Widget* parent, int id, PlayerCityPtr city )
   _d->highlight.setCondition( 100, 254, 4 );
   _d->empireMap.load( "the_empire", 1 );
   _d->drag.active = false;
-  GET_DWIDGET_FROM_UI( _d, lbTitle )
 
   _d->offset = game::Settings::get( empMapOffset ).toPoint();
 
@@ -541,6 +573,10 @@ EmpireMapWindow::EmpireMapWindow(Widget* parent, int id, PlayerCityPtr city )
   LINK_WIDGET_ACTION( PushButton*, btnTrade, onClicked(), _d.data(), Impl::showTradeAdvisorWindow )
   LINK_WIDGET_LOCAL_ACTION( PushButton*, btnAi, onClicked(), EmpireMapWindow::_toggleAi )
 
+  INIT_WIDGET_FROM_UI( Label*, lbTitle )
+  if( lbTitle )
+    _d->setTitleText.connect( lbTitle, &Label::setText );
+
   setFlag( showCityInfo, true );
 }
 
@@ -549,7 +585,7 @@ void EmpireMapWindow::draw(gfx::Engine& engine )
   if( !visible() )
     return;
 
-  engine.draw( _d->empireMap, _d->offset );  
+  engine.draw( _d->empireMap, _d->offset );
 
   //draw static objects
   _d->drawStatic( engine );
@@ -563,6 +599,8 @@ void EmpireMapWindow::draw(gfx::Engine& engine )
   _d->border.batch.valid()
     ? engine.draw( _d->border.batch, &absoluteClippingRectRef() )
     : engine.draw( _d->border.nobatch, Point(), &absoluteClippingRectRef() );
+
+  _d->drawDebugTiles( engine );
 
   Widget::draw( engine );
 }
@@ -598,7 +636,7 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
                             ? _d->city.current->name()
                             : "";
       Point rpoint = -_d->offset + _d->drag.start;
-      _d->lbTitle->setText( text + fmt::format( " [{},{}]", rpoint.x(), rpoint.y() ) );
+      _d->setTitleText( text + fmt::format( " [{},{}]", rpoint.x(), rpoint.y() ) );
     }
 #endif
     break;

@@ -80,6 +80,7 @@ enum {
   divinity,
   money,
   goods,
+  empiremap,
   factories,
   other,
   buildings,
@@ -176,6 +177,7 @@ enum {
   reload_buildings_config,
   toggle_show_buildings,
   toggle_show_trees,
+  toggle_show_empireMapTiles,
   toggle_show_rocks,
   forest_fire,
   forest_grow,
@@ -346,6 +348,8 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( draw, toggle_show_locked_tiles )
   ADD_DEBUG_EVENT( draw, toggle_show_flat_tiles )
   ADD_DEBUG_EVENT( draw, toggle_show_rocks )
+
+  ADD_DEBUG_EVENT( empiremap, toggle_show_empireMapTiles )
 #undef ADD_DEBUG_EVENT
 
 #ifdef DEBUG
@@ -685,6 +689,13 @@ void DebugHandler::Impl::handleEvent(int event)
   {
     bool enable = KILLSWITCH( experimental );
     SETTINGS_SET_VALUE( experimental, !enable );
+  }
+  break;
+
+  case toggle_show_empireMapTiles:
+  {
+    bool enable = KILLSWITCH( showEmpireMapTiles );
+    SETTINGS_SET_VALUE( showEmpireMapTiles, !enable );
   }
   break;
 

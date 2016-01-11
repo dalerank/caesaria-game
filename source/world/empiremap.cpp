@@ -92,6 +92,12 @@ EmpireMap::TerrainType EmpireMap::at( const TilePos& ij ) const
   return _d->at( ij ).info;
 }
 
+Rect EmpireMap::area(const TilePos& ij) const
+{
+  return Rect( Point( ij.i() * _d->tilesize.width(),ij.j() * _d->tilesize.height() ),
+               _d->tilesize );
+}
+
 Route EmpireMap::findRoute(const Point& start, const Point& stop, int flags ) const
 {
   Route way;
@@ -135,7 +141,7 @@ void EmpireMap::initialize(const VariantMap& stream)
   _d->routefinder.createInstance( *this );
 }
 
-void EmpireMap::setCity(Point rpos)
+void EmpireMap::setCity(const Point& rpos)
 {
   TilePos pos = _d->pnt2tp( rpos );
 
@@ -147,6 +153,6 @@ void EmpireMap::setCity(Point rpos)
   }
 }
 
-Size EmpireMap::getSize() const {  return _d->size; }
+Size EmpireMap::size() const {  return _d->size; }
 
 }

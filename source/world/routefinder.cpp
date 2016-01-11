@@ -157,10 +157,10 @@ TraderouteFinder::~TraderouteFinder(){}
 
 void TraderouteFinder::Impl::update( const EmpireMap& emap )
 {
-  grid.resize( emap.getSize() );
-  for( int k=0; k < emap.getSize().height(); k++)
+  grid.resize( emap.size() );
+  for( int k=0; k < emap.size().height(); k++)
   {
-    for( int i=0; i < emap.getSize().width(); i++ )
+    for( int i=0; i < emap.size().width(); i++ )
     {
       TilePos p(i,k);
 

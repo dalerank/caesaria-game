@@ -36,11 +36,12 @@ public:
   ~EmpireMap();
 
   void initialize( const VariantMap& stream );
-  void setCity( Point pos );
+  void setCity( const Point& pos );
 
-  Size getSize() const;
+  Size size() const;
 
   TerrainType at(const TilePos& ij) const;
+  Rect area( const TilePos& ij ) const;
 
   Route findRoute( const Point& start, const Point& stop, int flags ) const;
 private:
@@ -48,6 +49,6 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-}
+}//end namespace world
 
 #endif //__CAESARIA_EMPIREMAP_H_INCLUDED__
