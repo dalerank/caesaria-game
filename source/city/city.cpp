@@ -530,7 +530,7 @@ void PlayerCity::delayTrade(unsigned int month)             {  }
 const good::Store& PlayerCity::sells() const                { return _d->tradeOptions.sells(); }
 const good::Store& PlayerCity::buys() const                 { return _d->tradeOptions.buys(); }
 ClimateType PlayerCity::climate() const                     { return (ClimateType)getOption( PlayerCity::climateType ); }
-unsigned int PlayerCity::tradeType() const                  { return world::EmpireMap::sea | world::EmpireMap::land; }
+unsigned int PlayerCity::tradeType() const                  { return world::EmpireMap::trSea | world::EmpireMap::trLand; }
 Signal1<int>& PlayerCity::onPopulationChanged()             { return _d->signal.onPopulationChanged; }
 Signal1<int>& PlayerCity::onFundsChanged()                  { return _d->funds.onChange(); }
 void PlayerCity::setCameraPos(const TilePos pos)            { _d->cameraStart = pos; }

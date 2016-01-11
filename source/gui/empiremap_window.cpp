@@ -55,6 +55,7 @@
 #include "dictionary.hpp"
 #include "core/spring.hpp"
 #include "core/metric.hpp"
+#include "core/saveadapter.hpp"
 #include "game/resourcegroup.hpp"
 #include "city/states.hpp"
 #include "gfx/maskstate.hpp"
@@ -90,6 +91,7 @@ public:
     PlayerCityPtr  base;
   } city;
 
+  bool editorMode;
   Dragging drag;
   Picture empireMap;
   Point offset;
@@ -380,7 +382,7 @@ void EmpireMapWindow::Impl::drawDebugTiles(Engine& painter)
     for( auto j=0; j < mapSize.height(); j++ )
     {
       TilePos tpos( i, j );
-      world::EmpireMap::TerrainType type = map.at( tpos );
+      world::EmpireMap::TerrainType type = map.getTerrainType( tpos );
       Rect area = map.area( tpos );
 
       if( screenRect.isRectCollided( area + offset ) )
@@ -554,6 +556,7 @@ EmpireMapWindow::EmpireMapWindow(Widget* parent, int id, PlayerCityPtr city )
   setupUI( ":/gui/empirewnd.gui" );
 
   _d->city.base = city;
+  _d->editorMode = false;
   _d->tooltipLabel = 0;
   _d->highlight.setCondition( 100, 254, 4 );
   _d->empireMap.load( "the_empire", 1 );
@@ -631,14 +634,14 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
         _d->checkCityOnMap( _d->drag.start );
 
 #ifdef DEBUG
-    {
-      std::string text = _d->city.current.isValid()
-                            ? _d->city.current->name()
-                            : "";
-      Point rpoint = -_d->offset + _d->drag.start;
-      _d->setTitleText( text + fmt::format( " [{},{}]", rpoint.x(), rpoint.y() ) );
-    }
-#endif
+      {
+        std::string text = _d->city.current.isValid()
+                              ? _d->city.current->name()
+                              : "";
+        Point rpoint = -_d->offset + _d->drag.start;
+        _d->setTitleText( text + fmt::format( " [{},{}]", rpoint.x(), rpoint.y() ) );
+      }
+#endif      
     break;
 
     case mouseRbtnRelease:
@@ -648,6 +651,16 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
 
     case mouseLbtnRelease:
       _d->drag.active = false;
+
+      if( _d->editorMode )
+      {
+        world::EmpireMap& empmap = const_cast<world::EmpireMap&>( _d->city.base->empire()->map() );
+        TilePos tpos = empmap.point2location( -_d->offset + event.mouse.pos() );
+        world::EmpireMap::TerrainType type = empmap.getTerrainType( tpos );
+
+        type = (type == world::EmpireMap::trLand ? world::EmpireMap::trSea : world::EmpireMap::trLand);
+        empmap.setTerrainType( tpos, type );
+      }
     break;
 
     case mouseMoved:
@@ -689,6 +702,31 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
     }
 
     return true;
+  }
+  else if( event.EventType == sEventKeyboard )
+  {
+    if( KILLSWITCH(showEmpireMapTiles) )
+    {
+      if( event.keyboard.control && !event.keyboard.pressed )
+      {
+        switch( event.keyboard.key )
+        {
+        case KEY_KEY_E:
+          _d->editorMode = !_d->editorMode;
+        break;
+
+        case KEY_KEY_S:
+          if( _d->editorMode )
+          {
+            VariantMap data = _d->city.base->empire()->map().save();
+            vfs::Path path4save = SETTINGS_RC_PATH( worldModel );
+            config::save( data, path4save );
+          }
+        break;
+        }
+      }
+
+    }
   }
 
   return Widget::onEvent( event );

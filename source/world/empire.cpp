@@ -278,7 +278,7 @@ void Empire::_initializeCapital()
 void Empire::initialize(vfs::Path citiesPath, vfs::Path objectsPath, vfs::Path filemap)
 {
   VariantMap emap = config::load( filemap.toString() );
-  _d->emap.initialize( emap );
+  _d->emap.load( emap );
 
   _initializeCities( citiesPath );
   _initializeObjects( objectsPath );
@@ -409,18 +409,18 @@ TraderoutePtr Empire::createTradeRoute(std::string start, std::string stop )
 
     EmpireMap::TerrainType startType = (EmpireMap::TerrainType)startCity->tradeType();
     EmpireMap::TerrainType stopType = (EmpireMap::TerrainType)stopCity->tradeType();
-    bool land = (startType & EmpireMap::land) && (stopType & EmpireMap::land);
-    bool sea = (startType & EmpireMap::sea) && (stopType & EmpireMap::sea);
+    bool land = (startType & EmpireMap::trLand) && (stopType & EmpireMap::trLand);
+    bool sea = (startType & EmpireMap::trSea) && (stopType & EmpireMap::trSea);
 
     PointsArray lpnts, spnts;
     if( land )
     {
-      lpnts = _d->emap.findRoute( startCity->location(), stopCity->location(), EmpireMap::land );
+      lpnts = _d->emap.findRoute( startCity->location(), stopCity->location(), EmpireMap::trLand );
     }
 
     if( sea )
     {
-      spnts = _d->emap.findRoute( startCity->location(), stopCity->location(), EmpireMap::sea );
+      spnts = _d->emap.findRoute( startCity->location(), stopCity->location(), EmpireMap::trSea );
     }
 
     bool haveLandOrSeaRoute = (!lpnts.empty() || !spnts.empty());

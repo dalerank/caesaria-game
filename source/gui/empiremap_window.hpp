@@ -52,7 +52,6 @@ protected:
 
   class Impl;
   ScopedPtr< Impl > _d;
-
 };
 
 }//end namespace gui

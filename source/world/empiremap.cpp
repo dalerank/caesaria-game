@@ -29,10 +29,10 @@ namespace world
 struct EmTile
 {  
   TilePos pos;
-  EmpireMap::TerrainType info;
+  EmpireMap::TerrainType terrain = EmpireMap::trUnknown;
 
   EmTile() {}
-  EmTile( TilePos p ) : pos( p ), info( EmpireMap::unknown ) {}
+  EmTile( const TilePos& p ) : pos (p) {}
 };
 
 static EmTile invalidTile = EmTile( TilePos( -1, -1 ) );
@@ -87,9 +87,19 @@ public:
   ScopedPtr< TraderouteFinder > routefinder;
 };
 
-EmpireMap::TerrainType EmpireMap::at( const TilePos& ij ) const
+EmpireMap::TerrainType EmpireMap::getTerrainType( const TilePos& ij ) const
 {
-  return _d->at( ij ).info;
+  return _d->at( ij ).terrain;
+}
+
+TilePos EmpireMap::point2location(const Point& point) const
+{
+   return _d->pnt2tp( point );
+}
+
+void EmpireMap::setTerrainType(const TilePos& ij, EmpireMap::TerrainType type)
+{
+  _d->at( ij ).terrain = type;
 }
 
 Rect EmpireMap::area(const TilePos& ij) const
@@ -118,7 +128,7 @@ EmpireMap::EmpireMap() : _d( new Impl )
 
 EmpireMap::~EmpireMap() {}
 
-void EmpireMap::initialize(const VariantMap& stream)
+void EmpireMap::load(const VariantMap& stream)
 {
   if( stream.empty() )
   {
@@ -134,11 +144,30 @@ void EmpireMap::initialize(const VariantMap& stream)
   for( const auto& v : tiles )
   {
     EmTile& tile = _d->at( TilePos( index % _d->size.width(), index / _d->size.width() ) );
-    tile.info = (v.toInt() == 0 ? EmpireMap::land : EmpireMap::sea);
+    tile.terrain = (v.toInt() == 0 ? EmpireMap::trLand : EmpireMap::trSea);
     index++;
   }
 
   _d->routefinder.createInstance( *this );
+}
+
+VariantMap EmpireMap::save() const
+{
+  VariantMap ret;
+
+  VariantList vTiles;
+  for( int i=0; i < _d->size.width(); i++ )
+    for( int j=0; j < _d->size.height(); j++ )
+    {
+      EmTile& tile = _d->at( TilePos( i, j ) );
+      vTiles.push_back( tile.terrain == EmpireMap::trLand ? 1 : 0 );
+    }
+
+  ret[ "tiles" ] = vTiles;
+  ret[ "size"  ] = _d->size;
+  ret[ "tilesize" ] = _d->tilesize;
+
+  return ret;
 }
 
 void EmpireMap::setCity(const Point& rpos)
@@ -148,11 +177,11 @@ void EmpireMap::setCity(const Point& rpos)
   if( _d->isInside( pos ) )
   {
     EmTile& tile = _d->at( pos );
-    tile.info = EmpireMap::city;
-    _d->routefinder->setTerrainType( pos, EmpireMap::city );
+    tile.terrain = EmpireMap::trCity;
+    _d->routefinder->setTerrainType( pos, EmpireMap::trCity );
   }
 }
 
-Size EmpireMap::size() const {  return _d->size; }
+Size EmpireMap::size() const { return _d->size; }
 
 }
