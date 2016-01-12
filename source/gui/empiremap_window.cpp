@@ -192,7 +192,7 @@ void EmpireMapWindow::Impl::drawCities(Engine& painter)
                                 : ColorList::clear );
     location = pcity->location();
     pic = pcity->picture();
-    painter.draw( pcity->pictures(), offset + location - Point( pic.width() / 2, pic.height() / 2 ) );
+    painter.draw( pcity->pictures(), offset + location - Point( pic.width(), pic.height() ) / 2 );
 
 #ifdef DEBUG
     drawCell( painter, offset + location - Point( 10, 10 ), 20, ColorList::red );
@@ -214,7 +214,7 @@ void EmpireMapWindow::Impl::drawStatic(Engine& painter)
 void EmpireMapWindow::Impl::drawTradeRoutes(Engine& painter)
 {
   world::TraderouteList routes = city.base->empire()->troutes().all();
-  NColor hlColor = NColor::shade( 0xff, highlight.value() );
+  NColor hlColor = NColor::ashade( 0xff, highlight.value() );
   for( auto route : routes )
   {
     const PointsArray& points = route->points();
@@ -226,7 +226,7 @@ void EmpireMapWindow::Impl::drawTradeRoutes(Engine& painter)
       Point pos1 = offset + points[ index-1 ];
       Point pos2 = offset + points[ index ];
       lines.add( ColorList::blue, pos1, pos2 );
-      drawCell( painter, pos1 - Point( 10, 10 ), 20, ColorList::green );
+      drawCell( painter, pos1, 20, ColorList::green );
     }
 #endif
 
@@ -234,7 +234,7 @@ void EmpireMapWindow::Impl::drawTradeRoutes(Engine& painter)
 
     for( unsigned int index=0; index < pictures.size(); index++ )
     {
-      Point pos = offset + points[ index ];
+      Point pos = offset + points[ index ] + Point( 0, 10 );
       painter.draw( pictures[ index ], pos );
     }
 
@@ -263,14 +263,13 @@ void EmpireMapWindow::Impl::drawMovable(Engine& painter)
       painter.draw( movableObject->pictures(), offset + movableObject->location() );
 
 #ifdef DEBUG
-      int distance = movableObject->viewDistance();
+      int distance = movableObject->searchRange();
       if( distance > 0 )
       {
-        Point lastPos( distance * sin( 0 ), distance * cos( 0 ) );
+        Point lastPos = Point::polar( distance, 0 );
         for( int i=1; i <= 16; i++ )
         {
-          Point curPos( distance * sin( math::DEGTORAD * (math::DEGREE360 * i / 16)),
-                        distance * cos( math::DEGTORAD * (math::DEGREE360 * i / 16)) );
+          Point curPos = Point::polar( distance, math::DEGTORAD * (math::DEGREE360 * i / 16) );
 
           lines.add( ColorList::blue, offset + mappos + lastPos, offset + mappos + curPos );
           lastPos = curPos;

@@ -397,15 +397,7 @@ TraderoutePtr Empire::createTradeRoute(std::string start, std::string stop )
 
   bool startAndDstCorrect = startCity.isValid() && stopCity.isValid();
   if( startAndDstCorrect )
-  {
-    TraderoutePtr route = _d->troutes.create( start, stop );
-    if( !route.isValid() )
-    {
-      Logger::warning( "WARNING!!! Trading::load cant create route from {0} to {1}",
-                       start, stop );
-      return route;
-    }
-
+  {    
     EmpireMap::TerrainType startType = (EmpireMap::TerrainType)startCity->tradeType();
     EmpireMap::TerrainType stopType = (EmpireMap::TerrainType)stopCity->tradeType();
     bool land = (startType & EmpireMap::trLand) && (stopType & EmpireMap::trLand);
@@ -423,6 +415,21 @@ TraderoutePtr Empire::createTradeRoute(std::string start, std::string stop )
     }
 
     bool haveLandOrSeaRoute = (!lpnts.empty() || !spnts.empty());
+    if( !haveLandOrSeaRoute )
+    {
+      Logger::warning( "WARNING!!! Trading::load cant create route from {0} to {1}, because it inaccessible",
+                       start, stop );
+      return TraderoutePtr();
+    }
+
+    TraderoutePtr route = _d->troutes.create( start, stop );
+    if( !route.isValid() )
+    {
+      Logger::warning( "WARNING!!! Trading::load cant create route from {0} to {1}",
+                       start, stop );
+      return TraderoutePtr();
+    }
+
     if( haveLandOrSeaRoute )
     {
       if( lpnts.empty() )
