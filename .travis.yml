@@ -5,7 +5,7 @@ before_install:
 # Get build dependencies
 - sudo add-apt-repository --yes ppa:ubuntu-toolchain-r/test
 - sudo apt-get -qq update
-- sudo apt-get -qq install cmake p7zip-full build-essential sshpass wget libasound2-dev
+- sudo apt-get -qq install cmake p7zip-full build-essential sshpass wget libasound2-dev libxxf86vm-dev
 - sudo apt-get -qq install g++-4.8
 - if [ "$CXX" == "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 install:
