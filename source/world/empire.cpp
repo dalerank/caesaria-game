@@ -64,14 +64,14 @@ public:
 
   void setAvailable( bool value )
   {
-    for( auto& city : *this )
+    for( auto city : *this )
       city->setAvailable( value );
   }
 
   void update( unsigned int time )
   {
-    for( auto& it : *this )
-      it->timeStep( time );
+    for( auto city : *this )
+      city->timeStep( time );
   }
 
   CityPtr find( const std::string& name ) const
@@ -82,9 +82,8 @@ public:
   VariantMap save() const
   {
     VariantMap ret;
-    foreach( it, *this )
+    for( auto city : this )
     {
-      auto city = *it;
       //not need save city player
       if( city->name() == playerCity )
         continue;
@@ -136,7 +135,7 @@ public:
 
   void update( unsigned int time )
   {
-    for( auto& obj : *this )
+    for( auto obj : *this )
       obj->timeStep( time );
 
     utils::eraseIfDeleted( *this );
@@ -146,7 +145,7 @@ public:
   VariantMap save() const
   {
     VariantMap ret;
-    for( auto& obj : *this)
+    for( auto obj : *this)
     {
       VariantMap objSave;
       obj->save( objSave );
@@ -158,7 +157,7 @@ public:
 
   void load( const VariantMap& stream, EmpirePtr empire )
   {
-    for( auto& item : stream )
+    for( const auto& item : stream )
     {
       const VariantMap& vm = item.second.toMap();
       std::string objectType = vm.get( "type" ).toString();
@@ -243,16 +242,16 @@ void Empire::_initializeObjects( vfs::Path filename )
 
 void Empire::_initializeCities( vfs::Path filename )
 {
-  VariantMap cities = config::load( filename.toString() );
+  VariantMap citiesData = config::load( filename.toString() );
 
   _d->cities.clear();
-  if( cities.empty() )
+  if( citiesData.empty() )
   {
     Logger::warning( "Empire: can't load cities model from " + filename.toString() );
     return;
   }
 
-  for( const auto& item : cities )
+  for( const auto& item : citiesData )
   {
     CityPtr city = ComputerCity::create( this, item.first );
     addCity( city );

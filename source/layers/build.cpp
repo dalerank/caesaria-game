@@ -145,7 +145,8 @@ void Build::_checkPreviewBuild(const TilePos& pos)
   }
 
   city::AreaInfo areaInfo( _city(), pos, &d.buildTiles );
-  if( !walkersOnTile && construction->canBuild( areaInfo ) )
+  bool canBuild = construction->canBuild( areaInfo );
+  if( !walkersOnTile && canBuild )
   {
     d.mayBuildInCity = true;
     Tilemap& tmap = _city()->tilemap();

@@ -30,9 +30,16 @@
 class Construction : public Overlay
 {
 public:
+  struct DetailedTileInfo{
+    TilePos pos;
+    bool canBuild;
+  };
+  typedef std::vector<DetailedTileInfo> BuildArea;
+
   virtual ~Construction();
 
   virtual bool canBuild( const city::AreaInfo& areaInfo ) const;  // returns true if it can be built there
+  virtual BuildArea buildArea( const city::AreaInfo& areaInfo ) const;
   virtual std::string troubleDesc() const;
   virtual bool build( const city::AreaInfo& info );
   virtual void burn();

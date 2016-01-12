@@ -142,6 +142,32 @@ bool Dock::canBuild( const city::AreaInfo& areaInfo ) const
   return (is_constructible && direction != direction::none );
 }
 
+Construction::BuildArea Dock::buildArea(const city::AreaInfo& areaInfo) const
+{
+  Construction::BuildArea ret;
+  Direction direction = _d->getDirection( areaInfo.city, areaInfo.pos, size() );
+
+  switch( direction )
+  {
+  case direction::north:
+  {
+    TilesArea area( areaInfo.city->tilemap(), areaInfo.pos, Size(3) );
+  }
+  break;
+
+  case direction::none:
+  {
+    TilesArea area( areaInfo.city->tilemap(), areaInfo.pos, Size(3) );
+    for( auto tile : area )
+      ret.push_back( { tile->pos(), false } );
+  }
+  break;
+  default: break;
+  }
+
+  return ret;
+}
+
 bool Dock::build( const city::AreaInfo& info )
 {
   _setDirection( _d->getDirection( info.city, info.pos, size() ) );

@@ -229,7 +229,7 @@ TilesArray Layer::_getSelectedArea( TilePos startPos )
   TilePos outStartPos, outStopPos;
 
   Tile* startTile = startPos.i() < 0
-                      ? _d.camera->at( _d->cursor.start, true ) // tile under the cursor (or NULL)
+                      ? _d.camera->at( _d.cursor.start, true ) // tile under the cursor (or NULL)
                       : _d.camera->at( startPos );
   Tile* stopTile  = _d.camera->at( _d.cursor.last, true );
 

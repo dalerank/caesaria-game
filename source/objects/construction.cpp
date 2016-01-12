@@ -101,7 +101,7 @@ void Construction::_checkDestroyState()
   }
 }
 
-bool Construction::canBuild(const city::AreaInfo& areaInfo) const
+bool Construction::canBuild(const city::AreaInfo& areaInfo, ) const
 {
   Tilemap& tilemap = areaInfo.city->tilemap();
 
@@ -114,6 +114,11 @@ bool Construction::canBuild(const city::AreaInfo& areaInfo) const
     return false;  
 
   return true;
+}
+
+Construction::BuildArea Construction::buildArea(const city::AreaInfo& areaInfo) const
+{
+  return BuildArea();
 }
 
 std::string Construction::troubleDesc() const
