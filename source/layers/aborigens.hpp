@@ -29,7 +29,7 @@ public:
   Aborigens( gfx::Camera& camera, PlayerCityPtr city );
   virtual int type() const;
   virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
-  virtual void handleEvent(NEvent& event);
+  virtual void onEvent( const NEvent& event);
 };
 
 }//end namespace citylayer

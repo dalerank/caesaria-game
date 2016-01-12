@@ -28,6 +28,7 @@
 #include "gfx/render_info.hpp"
 #include "core/font.hpp"
 #include "core/signals.hpp"
+#include "core/event.hpp"
 #include "walker/constants.hpp"
 #include "core/flagholder.hpp"
 
@@ -85,7 +86,6 @@ public:
   //draw gfx after walkers
   virtual void drawWalkerOverlap( const gfx::RenderInfo& rinfo, gfx::Tile& tile, const int depth );
 
-  virtual void handleEvent( NEvent& event );
   virtual void drawPass(const gfx::RenderInfo& rinfo, gfx::Tile& tile, gfx::Renderer::Pass pass );
   virtual void drawArea(const gfx::RenderInfo& rinfo, const gfx::TilesArray& area,
                         const std::string& resourceGroup, int tileId );
@@ -106,8 +106,10 @@ public:
   virtual void destroy();
   virtual void addDrawPass( int type, LayerDrawPassPtr pass );
 
-  virtual ~Layer();
+  virtual void onEvent( const NEvent& event );
+  virtual bool onMouseMoved( const NEvent::Mouse& event );
 
+  virtual ~Layer();
 protected:
   virtual void _initialize();
 
@@ -117,13 +119,13 @@ protected:
   Point _lastCursorPos() const;
   void _setStartCursorPos( Point pos );
   Point _startCursorPos() const;
-  bool _isMovingButtonPressed( NEvent& event ) const;
+  bool _isMovingButtonPressed( const NEvent::Mouse& event ) const;
   void _setTooltipText( const std::string& text );
   void _addWalkerType( walker::Type wtype );
   WalkerTypes& _visibleWalkers();
   bool _isVisibleObject( object::Type ovType );
   gfx::Tile* _currentTile() const;
-  bool _moveCamera( NEvent& event );
+  bool _moveCamera( const NEvent& event );
   gfx::Tilemap& _map() const;
 
   gfx::TilesArray _getSelectedArea( TilePos startPos=TilePos(-1,-1) );

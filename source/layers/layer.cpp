@@ -123,7 +123,7 @@ void Layer::renderUi( Engine& engine )
   }
 }
 
-void Layer::handleEvent(NEvent& event)
+void Layer::onEvent( const NEvent& event)
 {
   __D_IMPL(_d,Layer)
   if( event.EventType == sEventMouse )
@@ -132,36 +132,16 @@ void Layer::handleEvent(NEvent& event)
 
     switch( event.mouse.type  )
     {
-    case mouseMoved:
-    {
-      Point savePos = _d->cursor.last;
-      bool movingPressed = _isMovingButtonPressed( event );
-      _d->cursor.last = pos;
+    case NEvent::Mouse::moved: onMouseMoved( event.mouse ); break;
 
-      if( !movingPressed || _d->cursor.start.x() < 0 )
-      {
-        _d->cursor.start = _d->cursor.last;
-      }
-
-      if( movingPressed )
-      {
-        Point delta = _d->cursor.last - savePos;
-        _d->camera->move( PointF( -delta.x() * 0.1, delta.y() * 0.1 ) );
-      }
-
-      Tile* selectedTile = _d->camera->at( _d->cursor.last, true );
-      _d->currentTile = selectedTile;
-    }
-    break;
-
-    case mouseLbtnPressed:
+    case NEvent::Mouse::btnLeftPressed:
     {
       _d->cursor.start = _d->cursor.last;
     }
     break;
 
-    case mouseLbtnRelease:            // left button
-    case mouseMbtnRelease:
+    case NEvent::Mouse::mouseLbtnRelease:            // left button
+    case NEvent::Mouse::mouseMbtnRelease:
     {
       Tile* tile = _d->camera->at( pos, false );  // tile under the cursor (or NULL)
       if( tile == 0 )
@@ -179,7 +159,7 @@ void Layer::handleEvent(NEvent& event)
     }
     break;
 
-    case mouseRbtnRelease:
+    case NEvent::Mouse::mouseRbtnRelease:
     {
       Tile* tile = _d->camera->at( pos, false );  // tile under the cursor (or NULL)
       if( tile )
@@ -219,15 +199,39 @@ void Layer::handleEvent(NEvent& event)
   }
 }
 
+bool Layer::onMouseMoved( const NEvent::Mouse& event)
+{
+  __D_REF(_d,Layer)
+  Point savePos = _d.cursor.last;
+  bool movingPressed = _isMovingButtonPressed( event );
+  _d.cursor.last = event.pos();
+
+  if( !movingPressed || _d.cursor.start.x() < 0 )
+  {
+    _d.cursor.start = _d.cursor.last;
+  }
+
+  if( movingPressed )
+  {
+    Point delta = _d.cursor.last - savePos;
+    _d.camera->move( delta.toPointF().mul( -0.1, 0.1 ) );
+  }
+
+  Tile* selectedTile = _d.camera->at( _d.cursor.last, true );
+  _d.currentTile = selectedTile;
+
+  return true;
+}
+
 TilesArray Layer::_getSelectedArea( TilePos startPos )
 {
-  __D_IMPL(_d,Layer)
+  __D_REF(_d,Layer)
   TilePos outStartPos, outStopPos;
 
   Tile* startTile = startPos.i() < 0
-                      ? _d->camera->at( _d->cursor.start, true ) // tile under the cursor (or NULL)
-                      : _d->camera->at( startPos );
-  Tile* stopTile  = _d->camera->at( _d->cursor.last, true );
+                      ? _d.camera->at( _d->cursor.start, true ) // tile under the cursor (or NULL)
+                      : _d.camera->at( startPos );
+  Tile* stopTile  = _d.camera->at( _d.cursor.last, true );
 
   TilePos startPosTmp = startTile->epos();
   TilePos stopPosTmp  = stopTile->epos();
@@ -722,7 +726,7 @@ void Layer::_initialize()
   }
 }
 
-bool Layer::_moveCamera(NEvent &event)
+bool Layer::_moveCamera( const NEvent &event)
 {
   __D_REF(_d,Layer)
   bool pressed = event.keyboard.pressed;
@@ -778,11 +782,11 @@ Point Layer::_startCursorPos() const{ return _dfunc()->cursor.start; }
 Tile* Layer::_currentTile() const{ return _dfunc()->currentTile; }
 Point Layer::_lastCursorPos() const { return _dfunc()->cursor.last; }
 
-bool Layer::_isMovingButtonPressed(NEvent &event) const
+bool Layer::_isMovingButtonPressed( const NEvent::Mouse &event) const
 {
   return DrawOptions::instance().isFlag( DrawOptions::mmbMoving )
-            ? event.mouse.isMiddlePressed()
-            : event.mouse.isLeftPressed();
+            ? event.isMiddlePressed()
+            : event.isLeftPressed();
 }
 
 DrawOptions& DrawOptions::instance()

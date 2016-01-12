@@ -290,7 +290,7 @@ void CityRenderer::handleEvent( NEvent& event )
   {
     _d->currentCursorPos = event.mouse.pos();
 
-    if( event.mouse.type == mouseWheel )
+    if( event.mouse.type == NEvent::Mouse::mouseWheel )
     {
       if( _d->city->getOption( PlayerCity::zoomEnabled ) )
       {
@@ -302,7 +302,7 @@ void CityRenderer::handleEvent( NEvent& event )
   }
 
   if( _d->layers.current.isValid() )
-    _d->layers.current->handleEvent( event );
+    _d->layers.current->onEvent( event );
 }
 
 int CityRenderer::layerType() const
@@ -325,7 +325,7 @@ void CityRenderer::animate(unsigned int time)
 {
   const TilesArray& visibleTiles = _d->camera.tiles();
 
-  for( auto&& tile : visibleTiles )
+  for( auto& tile : visibleTiles )
     tile->animate( time );
 }
 

@@ -280,13 +280,13 @@ void Destroy::_exitDestroyTool()
   DrawOptions::instance().setFlag( DrawOptions::mayChangeLayer, true );
 }
 
-void Destroy::handleEvent(NEvent& event)
+void Destroy::onEvent( const NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       _setLastCursorPos( event.mouse.pos() );
       if( !event.mouse.isLeftPressed() || _startCursorPos().x() < 0 )
@@ -299,22 +299,21 @@ void Destroy::handleEvent(NEvent& event)
     }
     break;
 
-    case mouseLbtnRelease:            // left button
+    case NEvent::Mouse::mouseLbtnRelease:            // left button
     {
       if( !OSystem::isAndroid() )
         _executeClear();
     }
     break;
 
-    case mouseLbtnPressed: { _setStartCursorPos( _lastCursorPos() ); } break;
-    case mouseRbtnRelease: { _exitDestroyTool(); } break;
+    case NEvent::Mouse::btnLeftPressed: { _setStartCursorPos( _lastCursorPos() ); } break;
+    case NEvent::Mouse::mouseRbtnRelease: { _exitDestroyTool(); } break;
 
     default:
     break;
     }
   }
-
-  if( event.EventType == sEventKeyboard )
+  else if( event.EventType == sEventKeyboard )
   {
     bool handled = _moveCamera( event );
 

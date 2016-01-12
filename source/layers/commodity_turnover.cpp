@@ -167,13 +167,13 @@ void CommodityTurnover::_renderPaths(const RenderInfo& rinfo)
     gfx::TexturedPath::draw( tiles, rinfo );
 }
 
-void CommodityTurnover::handleEvent(NEvent& event)
+void CommodityTurnover::onEvent( const NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {    
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       if( tile != 0 )
@@ -184,7 +184,7 @@ void CommodityTurnover::handleEvent(NEvent& event)
     }
     break;
 
-    case mouseLbtnPressed:
+    case NEvent::Mouse::btnLeftPressed:
     {
       if( _d->overlay.current.isValid() )
       {
@@ -203,7 +203,7 @@ void CommodityTurnover::handleEvent(NEvent& event)
     }
   }
 
-  Layer::handleEvent( event );
+  Layer::onEvent( event );
 }
 
 CommodityTurnover::CommodityTurnover( Camera& camera, PlayerCityPtr city)

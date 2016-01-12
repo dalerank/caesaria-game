@@ -129,13 +129,13 @@ void Health::_updatePaths()
   }
 }
 
-void Health::handleEvent(NEvent& event)
+void Health::onEvent( const NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
@@ -175,7 +175,7 @@ void Health::handleEvent(NEvent& event)
     }
     break;
 
-    case mouseLbtnPressed:
+    case NEvent::Mouse::btnLeftPressed:
     {
       if( _d->overlay.underMouse.is<HealthBuilding>() )
       {
@@ -192,7 +192,7 @@ void Health::handleEvent(NEvent& event)
     }
   }
 
-  Layer::handleEvent( event );
+  Layer::onEvent( event );
 }
 
 void Health::render(Engine& engine)

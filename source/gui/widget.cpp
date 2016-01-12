@@ -791,6 +791,7 @@ void Widget::remove()
 
 bool Widget::onEvent( const NEvent& event )
 {
+  bool resolved = false;
   for( auto child : _dfunc()->eventHandlers )
   {
     bool handled = child->onEvent( event );
@@ -799,11 +800,22 @@ bool Widget::onEvent( const NEvent& event )
   }
 
   if (event.EventType == sEventMouse)
+  {
     if (parent() && (parent()->parent() == NULL))
       return true;
 
-  bool resolved = false;
-  if( event.EventType == sEventGui )
+    switch( event.mouse.type )
+    {
+    case NEvent::Mouse::btnLeftPressed:
+    case NEvent::Mouse::btnMiddlePressed:
+    case NEvent::Mouse::btnRightPressed:
+       resolved = _onMousePressed( event.mouse );
+    break;
+
+    default: break;
+    }
+  }
+  else if( event.EventType == sEventGui )
   {
     switch( event.gui.type )
     {

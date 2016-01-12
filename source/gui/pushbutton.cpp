@@ -461,9 +461,9 @@ bool PushButton::onEvent(const NEvent& event)
   case sEventMouse:
     switch( event.mouse.type  )
     {
-    case mouseMoved:     break;
-    case mouseLbtnPressed:        return _leftMouseBtnPressed( event );
-    case mouseLbtnRelease:        return _btnMouseUp( event );
+    case NEvent::Mouse::moved:       break;
+    case NEvent::Mouse::btnLeftPressed:   return _leftMouseBtnPressed( event );
+    case NEvent::Mouse::mouseLbtnRelease: return _btnMouseUp( event );
     default:
     break;
     }

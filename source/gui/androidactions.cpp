@@ -61,7 +61,7 @@ public:
 
     if( event.EventType == sEventMouse  )
     {
-      if( event.mouse.type == mouseLbtnRelease )
+      if( event.mouse.type == NEvent::Mouse::mouseLbtnRelease )
       {
         if( forbidenArea.isPointInside( event.mouse.pos() ) )
           return;
@@ -132,7 +132,7 @@ bool ActionsBar::onEvent(const NEvent &event)
       return true;
     }
   }
-  else if( event.EventType == sEventMouse && event.mouse.type == mouseMoved )
+  else if( event.EventType == sEventMouse && event.mouse.type == NEvent::Mouse::moved )
   {
     return true;
   }

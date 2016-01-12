@@ -55,6 +55,7 @@ public:
 
   void setX( const float nx ) { _x = nx; }
   void setY( const float ny ) { _y = ny; }
+  PointF mul( float xm, float ym ) { return PointF( _x * xm, _y * ym ); }
 
   Point toPoint() const { return Point( (int)_x, (int)_y ); }
 };

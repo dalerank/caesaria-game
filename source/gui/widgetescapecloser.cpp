@@ -48,9 +48,9 @@ bool WidgetClose::onEvent(const NEvent& event)
   break;
 
   case sEventMouse:
-    if(    (event.mouse.type == mouseLbtnRelease && _codes.count( KEY_LBUTTON ))
-        || (event.mouse.type == mouseMbtnRelease && _codes.count( KEY_MBUTTON ))
-        || (event.mouse.type == mouseRbtnRelease && _codes.count( KEY_RBUTTON ))  )
+    if(    (event.mouse.type == NEvent::Mouse::mouseLbtnRelease && _codes.count( KEY_LBUTTON ))
+        || (event.mouse.type == NEvent::Mouse::mouseMbtnRelease && _codes.count( KEY_MBUTTON ))
+        || (event.mouse.type == NEvent::Mouse::mouseRbtnRelease && _codes.count( KEY_RBUTTON ))  )
     {
       parent()->deleteLater();
       return true;

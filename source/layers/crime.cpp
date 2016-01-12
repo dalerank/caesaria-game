@@ -94,13 +94,13 @@ void Crime::drawTile( const RenderInfo& rinfo, Tile& tile)
   tile.setRendered();
 }
 
-void Crime::handleEvent(NEvent& event)
+void Crime::onEvent( const NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
@@ -124,7 +124,7 @@ void Crime::handleEvent(NEvent& event)
     }
   }
 
-  Layer::handleEvent( event );
+  Layer::onEvent( event );
 }
 
 Crime::Crime( Camera& camera, PlayerCityPtr city)

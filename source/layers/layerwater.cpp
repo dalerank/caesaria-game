@@ -173,7 +173,7 @@ void Water::drawWalkerOverlap( const RenderInfo& rinfo, Tile& tile, const int de
 
 }
 
-void Water::handleEvent(NEvent& event)
+void Water::onEvent( const NEvent& event)
 {
   if( event.EventType == sEventKeyboard )
   {
@@ -187,7 +187,7 @@ void Water::handleEvent(NEvent& event)
   {
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
@@ -218,7 +218,7 @@ void Water::handleEvent(NEvent& event)
     }
     break;
 
-    case mouseLbtnPressed:
+    case NEvent::Mouse::btnLeftPressed:
     {
       _d->overlay.selected = _d->overlay.underMouse;
       _updatePaths();
@@ -229,7 +229,7 @@ void Water::handleEvent(NEvent& event)
     }
   }
 
-  Layer::handleEvent( event );
+  Layer::onEvent( event );
 }
 
 void Water::_updatePaths()

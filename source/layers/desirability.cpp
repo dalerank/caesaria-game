@@ -113,13 +113,13 @@ void Desirability::beforeRender( Engine& engine )
   Info::beforeRender( engine );
 }
 
-void Desirability::handleEvent(NEvent& event)
+void Desirability::onEvent( const NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
@@ -140,7 +140,7 @@ void Desirability::handleEvent(NEvent& event)
     }
   }
 
-  Layer::handleEvent( event );
+  Layer::onEvent( event );
 }
 
 Desirability::Desirability( Camera& camera, PlayerCityPtr city)

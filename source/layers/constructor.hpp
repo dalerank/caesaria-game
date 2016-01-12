@@ -28,7 +28,7 @@ namespace citylayer
 class Constructor : public Layer
 {
 public:
-  virtual void handleEvent(NEvent &event);
+  virtual void onEvent( const NEvent &event);
   virtual int type() const;
   virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
   virtual void render( gfx::Engine &engine);

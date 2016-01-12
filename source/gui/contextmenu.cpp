@@ -258,7 +258,7 @@ bool ContextMenu::onEvent(const NEvent& event)
 		case sEventMouse:
 			switch(event.mouse.type)
 			{
-			case mouseLbtnRelease:
+      case NEvent::Mouse::mouseLbtnRelease:
 				{
 					// menu might be removed if it loses focus in sendClick, so grab a reference
 					grab();
@@ -268,9 +268,9 @@ bool ContextMenu::onEvent(const NEvent& event)
 					drop();
 				}
 				return true;
-			case mouseLbtnPressed:
+      case NEvent::Mouse::btnLeftPressed:
 				return true;
-			case mouseMoved:
+      case NEvent::Mouse::moved:
 				if( isHovered() )
 					_isHighlighted( event.mouse.pos(), true);
 				return true;

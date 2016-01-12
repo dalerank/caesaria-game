@@ -607,13 +607,13 @@ bool Menu::onEvent(const NEvent& event)
   {
     switch( event.mouse.type )
     {
-    case mouseRbtnRelease:
+    case NEvent::Mouse::mouseRbtnRelease:
       _createBuildMenu( -1, this );
       cancel();
     return true;
 
-    case mouseLbtnPressed:
-    case mouseLbtnRelease:
+    case NEvent::Mouse::btnLeftPressed:
+    case NEvent::Mouse::mouseLbtnRelease:
     {
       //lock movement for tilemap
       if( findChildren<BuildMenu*>().size() > 0 )

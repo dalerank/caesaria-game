@@ -370,7 +370,10 @@ void EmpireMapWindow::Impl::drawDebugTiles(Engine& painter)
                             ColorList::blue,
                             ColorList::brown,
                             ColorList::red,
-                            ColorList::white };
+                            ColorList::white,
+                            ColorList::black,
+                            ColorList::black,
+                            ColorList::black };
 
   for( auto& color : terrainColor )
     color.setAlpha( 0x80 );
@@ -622,45 +625,32 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
   {
     switch(event.mouse.type)
     {
-    case mouseLbtnPressed:
-      _d->drag.start = event.mouse.pos();
-      _d->drag.active = true;
-      bringToFront();
-
-      if( _d->flags.isFlag( showCityInfo ) )
-        _d->checkCityOnMap( _d->drag.start );
-
-#ifdef DEBUG
-      {
-        std::string text = _d->city.current.isValid()
-                              ? _d->city.current->name()
-                              : "";
-        Point rpoint = -_d->offset + _d->drag.start;
-        _d->setTitleText( text + fmt::format( " [{},{}]", rpoint.x(), rpoint.y() ) );
-      }
-#endif      
-    break;
-
-    case mouseRbtnRelease:
+    case NEvent::Mouse::mouseRbtnRelease:
       deleteLater();
       _d->drag.active = false;
     break;
 
-    case mouseLbtnRelease:
+    case NEvent::Mouse::mouseLbtnRelease:
       _d->drag.active = false;
 
       if( _d->editorMode )
       {
         world::EmpireMap& empmap = const_cast<world::EmpireMap&>( _d->city.base->empire()->map() );
         TilePos tpos = empmap.point2location( -_d->offset + event.mouse.pos() );
-        world::EmpireMap::TerrainType type = empmap.getTerrainType( tpos );
+        int type = empmap.getTerrainType( tpos );
 
-        type = (type == world::EmpireMap::trLand ? world::EmpireMap::trSea : world::EmpireMap::trLand);
-        empmap.setTerrainType( tpos, type );
+        if( type == 0 )
+          type = world::EmpireMap::trSea;
+
+        type <<= 1;
+        if( type > world::EmpireMap::trAny )
+          type = world::EmpireMap::trSea;
+
+        empmap.setTerrainType( tpos, (world::EmpireMap::TerrainType)type );
       }
     break;
 
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       if ( !event.mouse.isLeftPressed() )
       {
@@ -785,7 +775,29 @@ void EmpireMapWindow::_changePosition()
     elm.setGeometry( rect );
 
     _d->tooltipLabel = &elm;
+    }
+}
+
+bool EmpireMapWindow::_onMousePressed( const NEvent::Mouse& event)
+{
+  _d->drag.start = event.pos();
+  _d->drag.active = true;
+  bringToFront();
+
+  if( _d->flags.isFlag( showCityInfo ) )
+    _d->checkCityOnMap( _d->drag.start );
+
+#ifdef DEBUG
+  {
+    std::string text = _d->city.current.isValid()
+                          ? _d->city.current->name()
+                          : "";
+    Point rpoint = -_d->offset + _d->drag.start;
+    _d->setTitleText( text + fmt::format( " [{},{}]", rpoint.x(), rpoint.y() ) );
   }
+#endif
+
+  return true;
 }
 
 const Point& EmpireMapWindow::_offset() const { return _d->offset; }

@@ -101,13 +101,13 @@ void Tax::drawTile(const RenderInfo& rinfo, Tile& tile)
   tile.setRendered();
 }
 
-void Tax::handleEvent(NEvent& event)
+void Tax::onEvent( const NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
@@ -137,7 +137,7 @@ void Tax::handleEvent(NEvent& event)
     }
     break;
 
-    case mouseLbtnPressed:
+    case NEvent::Mouse::btnLeftPressed:
     {
       OverlayPtr overlay = _d->overlay.underMouse;
       if( overlay.is<Senate>() || overlay.is<Forum>() )
@@ -152,7 +152,7 @@ void Tax::handleEvent(NEvent& event)
     }
   }
 
-  Layer::handleEvent( event );
+  Layer::onEvent( event );
 }
 
 void Tax::afterRender(Engine& engine)

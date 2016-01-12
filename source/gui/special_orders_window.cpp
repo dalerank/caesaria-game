@@ -91,12 +91,12 @@ bool BaseSpecialOrdersWindow::onEvent( const NEvent& event)
   switch( event.EventType )
   {
   case sEventMouse:
-    if( event.mouse.type == mouseRbtnRelease )
+    if( event.mouse.type == NEvent::Mouse::mouseRbtnRelease )
     {
       deleteLater();
       return true;
     }
-    else if( event.mouse.type == mouseLbtnRelease )
+    else if( event.mouse.type == NEvent::Mouse::mouseLbtnRelease )
     {
       return true;
     }

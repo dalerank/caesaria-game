@@ -123,13 +123,13 @@ void Entertainment::drawTile(const RenderInfo& rinfo, Tile& tile)
   tile.setRendered();
 }
 
-void Entertainment::handleEvent(NEvent& event)
+void Entertainment::onEvent( const NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)     
 
@@ -168,7 +168,7 @@ void Entertainment::handleEvent(NEvent& event)
     }
     break;
 
-    case mouseLbtnPressed:
+    case NEvent::Mouse::btnLeftPressed:
     {
       if( _d->overlay.underMouse.is<EntertainmentBuilding>() )
       {
@@ -182,7 +182,7 @@ void Entertainment::handleEvent(NEvent& event)
     }
   }
 
-  Layer::handleEvent( event );
+  Layer::onEvent( event );
 }
 
 std::string Entertainment::_getAccessLevel( int lvlValue ) const
