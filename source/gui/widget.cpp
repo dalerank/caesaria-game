@@ -801,9 +801,6 @@ bool Widget::onEvent( const NEvent& event )
 
   if (event.EventType == sEventMouse)
   {
-    if (parent() && (parent()->parent() == NULL))
-      return true;
-
     switch( event.mouse.type )
     {
     case NEvent::Mouse::btnLeftPressed:
@@ -814,6 +811,9 @@ bool Widget::onEvent( const NEvent& event )
 
     default: break;
     }
+
+    if (parent() && (parent()->parent() == NULL))
+      return true;
   }
   else if( event.EventType == sEventGui )
   {

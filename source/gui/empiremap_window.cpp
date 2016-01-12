@@ -182,11 +182,13 @@ void EmpireMapWindow::Impl::drawCities(Engine& painter)
   Picture pic;
 
   highlight.update();
+  NColor hlColor = NColor::ashade( 0xff, highlight.value() );
+  painter.resetColorMask();
 
   for( auto pcity : cities )
   {
     MaskState mask( painter, pcity == city.current
-                                ? highlight.value()
+                                ? hlColor
                                 : ColorList::clear );
     location = pcity->location();
     pic = pcity->picture();
@@ -212,6 +214,7 @@ void EmpireMapWindow::Impl::drawStatic(Engine& painter)
 void EmpireMapWindow::Impl::drawTradeRoutes(Engine& painter)
 {
   world::TraderouteList routes = city.base->empire()->troutes().all();
+  NColor hlColor = NColor::shade( 0xff, highlight.value() );
   for( auto route : routes )
   {
     const PointsArray& points = route->points();
@@ -227,7 +230,7 @@ void EmpireMapWindow::Impl::drawTradeRoutes(Engine& painter)
     }
 #endif
 
-    MaskState mask( painter, route->isMyCity( city.current ) ? highlight.value() : 0 );
+    MaskState mask( painter, route->isMyCity( city.current ) ? hlColor : 0 );
 
     for( unsigned int index=0; index < pictures.size(); index++ )
     {
@@ -687,8 +690,6 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
     default:
     break;
     }
-
-    return true;
   }
   else if( event.EventType == sEventKeyboard )
   {
@@ -714,7 +715,6 @@ bool EmpireMapWindow::onEvent( const NEvent& event )
         default: break;
         }
       }
-
     }
   }
 
@@ -775,7 +775,7 @@ void EmpireMapWindow::_changePosition()
     elm.setGeometry( rect );
 
     _d->tooltipLabel = &elm;
-    }
+  }
 }
 
 bool EmpireMapWindow::_onMousePressed( const NEvent::Mouse& event)

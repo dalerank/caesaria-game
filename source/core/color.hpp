@@ -218,6 +218,9 @@ public:
 	NColor( unsigned int clr)
 		: color(clr) {}
 
+  static NColor ashade( unsigned char a, unsigned char v )
+  { return NColor( a, v, v, v); }
+
 	//! Returns the alpha component of the color.
 	/** The alpha component defines how opaque a color is.
 	\return The alpha value of the color. 0 is fully transparent, 255 is fully opaque. */
