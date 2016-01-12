@@ -101,7 +101,7 @@ void Construction::_checkDestroyState()
   }
 }
 
-bool Construction::canBuild(const city::AreaInfo& areaInfo, ) const
+bool Construction::canBuild(const city::AreaInfo& areaInfo) const
 {
   Tilemap& tilemap = areaInfo.city->tilemap();
 

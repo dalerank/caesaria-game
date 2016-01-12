@@ -176,6 +176,7 @@ void Build::_checkPreviewBuild(const TilePos& pos)
   {
     d.mayBuildInCity = false;
     Tilemap& tmap = _city()->tilemap();
+    Construction::BuildArea buildArea = construction->buildArea( areaInfo );
     for (int dj = 0; dj < size.height(); ++dj)
     {
       for (int di = 0; di < size.width(); ++di)
@@ -185,7 +186,12 @@ void Build::_checkPreviewBuild(const TilePos& pos)
           continue;
 
         const Tile& basicTile = tmap.at( rPos );
+
+        const auto it = buildArea.find( rPos );
+
         const bool isConstructible = basicTile.getFlag( Tile::isConstructible );
+        const bool inBuildArea  = it != buildArea.end() ? it->second : true;
+
         Tile* tile = new Tile( basicTile.pos() );  // make a copy of tile
         tile->setEPos( basicTile.epos() );
 
@@ -195,7 +201,7 @@ void Build::_checkPreviewBuild(const TilePos& pos)
           walkersOnTile = !_city()->walkers( rPos ).empty();
         }
 
-        tile->setPicture( (!walkersOnTile && isConstructible) ? d.btile.green : d.btile.red );
+        tile->setPicture( (!walkersOnTile && isConstructible && inBuildArea) ? d.btile.green : d.btile.red );
         tile->setMaster( 0 );
         tile->setFlag( Tile::clearAll, true );
         tile->setOverlay( 0 );

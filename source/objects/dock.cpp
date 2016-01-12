@@ -159,7 +159,7 @@ Construction::BuildArea Dock::buildArea(const city::AreaInfo& areaInfo) const
   {
     TilesArea area( areaInfo.city->tilemap(), areaInfo.pos, Size(3) );
     for( auto tile : area )
-      ret.push_back( { tile->pos(), false } );
+      ret[ tile->pos() ] = false;
   }
   break;
   default: break;

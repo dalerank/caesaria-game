@@ -82,7 +82,7 @@ public:
   VariantMap save() const
   {
     VariantMap ret;
-    for( auto city : this )
+    for( auto city : *this )
     {
       //not need save city player
       if( city->name() == playerCity )

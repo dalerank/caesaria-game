@@ -30,11 +30,7 @@
 class Construction : public Overlay
 {
 public:
-  struct DetailedTileInfo{
-    TilePos pos;
-    bool canBuild;
-  };
-  typedef std::vector<DetailedTileInfo> BuildArea;
+  typedef std::map<TilePos, bool> BuildArea;
 
   virtual ~Construction();
 
