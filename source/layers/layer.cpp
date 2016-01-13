@@ -128,12 +128,9 @@ void Layer::onEvent( const NEvent& event)
   __D_IMPL(_d,Layer)
   if( event.EventType == sEventMouse )
   {
-    Point pos = event.mouse.pos();
-
     switch( event.mouse.type  )
     {
     case NEvent::Mouse::moved: onMouseMoved( event.mouse ); break;
-
     case NEvent::Mouse::btnLeftPressed:
     {
       _d->cursor.start = _d->cursor.last;
@@ -142,31 +139,8 @@ void Layer::onEvent( const NEvent& event)
 
     case NEvent::Mouse::mouseLbtnRelease:            // left button
     case NEvent::Mouse::mouseMbtnRelease:
-    {
-      Tile* tile = _d->camera->at( pos, false );  // tile under the cursor (or NULL)
-      if( tile == 0 )
-      {
-        break;
-      }
-
-      if( event.mouse.control )
-      {
-        _d->camera->setCenter( tile->pos() );
-        _d->city->setCameraPos( tile->pos() );
-      }
-
-      _d->cursor.start = _d->cursor.last;
-    }
-    break;
-
     case NEvent::Mouse::mouseRbtnRelease:
-    {
-      Tile* tile = _d->camera->at( pos, false );  // tile under the cursor (or NULL)
-      if( tile )
-      {
-        events::dispatch<events::ShowTileInfo>( tile->epos() );
-      }
-    }
+      onMouseBtnRelease( event.mouse );
     break;
 
     default:
@@ -219,6 +193,35 @@ bool Layer::onMouseMoved( const NEvent::Mouse& event)
 
   Tile* selectedTile = _d.camera->at( _d.cursor.last, true );
   _d.currentTile = selectedTile;
+
+  return true;
+}
+
+bool Layer::onMouseBtnRelease(const NEvent::Mouse& event)
+{
+  __D_REF(_d,Layer)
+  if( event.type == NEvent::Mouse::mouseRbtnRelease )
+  {
+    Tile* tile = _d.camera->at( event.pos(), false );  // tile under the cursor (or NULL)
+    if( tile )
+    {
+      events::dispatch<events::ShowTileInfo>( tile->epos() );
+    }
+  }
+  else
+  {
+    Tile* tile = _d.camera->at( event.pos(), false );  // tile under the cursor (or NULL)
+    if( tile == 0 )
+      return false;
+
+    if( event.control )
+    {
+      _d.camera->setCenter( tile->pos() );
+      _d.city->setCameraPos( tile->pos() );
+    }
+
+    _d.cursor.start = _d.cursor.last;
+  }
 
   return true;
 }

@@ -64,7 +64,7 @@ public:
   typedef enum { gui=0 } Type;
   virtual void draw( const gfx::RenderInfo& rinfo, gfx::Tile& tile ) {}
   virtual std::string name() { return ""; }
-  virtual void handleEvent( NEvent& event ) {}
+  virtual void onEvent( NEvent& event ) {}
 };
 typedef SmartPtr<LayerDrawPass> LayerDrawPassPtr;
 
@@ -108,6 +108,7 @@ public:
 
   virtual void onEvent( const NEvent& event );
   virtual bool onMouseMoved( const NEvent::Mouse& event );
+  virtual bool onMouseBtnRelease( const NEvent::Mouse& event );
 
   virtual ~Layer();
 protected:

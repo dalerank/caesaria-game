@@ -123,7 +123,7 @@ Dock::Dock(): WorkingBuilding( object::dock, Size(3) ), _d( new Impl )
   // transport 17       animation = 18~28
   // transport 29       animation = 30~40
   // transport 41       animation = 42~51
-  setPicture( Picture( ResourceGroup::transport, 5 ) );
+  setPicture( ResourceGroup::transport, 5 );
 
   _d->initStores();
   _fgPictures().resize(1);
@@ -145,24 +145,16 @@ bool Dock::canBuild( const city::AreaInfo& areaInfo ) const
 Construction::BuildArea Dock::buildArea(const city::AreaInfo& areaInfo) const
 {
   Construction::BuildArea ret;
-  Direction direction = _d->getDirection( areaInfo.city, areaInfo.pos, size() );
 
-  switch( direction )
-  {
-  case direction::north:
-  {
-    TilesArea area( areaInfo.city->tilemap(), areaInfo.pos, Size(3) );
-  }
-  break;
+  TilesArea area( areaInfo.city->tilemap(), areaInfo.pos, size() );
+  for( auto tile : area )
+    ret[ tile->pos() ] = tile->getFlag( Tile::isConstructible );
 
-  case direction::none:
+  TilesArray border = areaInfo.city->tilemap().rect( areaInfo.pos, size() );
+  for( auto tile : border )
   {
-    TilesArea area( areaInfo.city->tilemap(), areaInfo.pos, Size(3) );
-    for( auto tile : area )
-      ret[ tile->pos() ] = false;
-  }
-  break;
-  default: break;
+    bool isCoast = tile->terrain().coast && _d->isFlatCoast( *tile );
+    ret[ tile->pos() ] = isCoast;
   }
 
   return ret;
@@ -172,7 +164,7 @@ bool Dock::build( const city::AreaInfo& info )
 {
   _setDirection( _d->getDirection( info.city, info.pos, size() ) );
 
-  TilesArea area(  info.city->tilemap(), info.pos, size() );
+  TilesArea area( info.city->tilemap(), info.pos, size() );
 
   for( auto tile : area )
      _d->saved_tile.push_back( tile::encode( *tile ) );
