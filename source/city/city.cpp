@@ -194,7 +194,6 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
 
 void PlayerCity::_initAnimation()
 {
-  _animation().clear();
   _animation().load( "world_ourcity" );
 }
 

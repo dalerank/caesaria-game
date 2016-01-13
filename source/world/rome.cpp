@@ -60,7 +60,6 @@ Rome::Rome(EmpirePtr empire)
   _d->states.nation = nation::rome;
   _d->states.population = defaultPopulation;
 
-  _animation().clear();
   _animation().load( "world_roma" );
 }
 

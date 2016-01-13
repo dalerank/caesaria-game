@@ -344,7 +344,6 @@ PlayerArmy::PlayerArmy( EmpirePtr empire )
   pic.setOffset( Point( -size.width() / 2, size.height() / 2 ) );
   setPicture( pic );
 
-  _animation().clear();
   _animation().load( "world_playerarmy" );
 }
 

@@ -236,7 +236,6 @@ Barbarian::Barbarian( EmpirePtr empire )
   _d->minPop4attack = 1000;
   setSpeed( 4.f );
 
-  _animation().clear();
   _animation().load( "world_barbarian" );
 }
 

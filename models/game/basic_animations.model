@@ -16,6 +16,9 @@
   world_playerarmy :{             rc : "empire_bits", start : 72,  frames : 6,  delay : 1,  step : 1, offset : "center",  loop : true }
   world_ourcity :   {             rc : "empire_bits", start : 2,   frames : 6,  delay : 2,  step : 1,                     loop : true }
   world_roma :      {             rc : "empire_bits", start : 2,   frames : 6,  delay : 2,  step : 1, offset : [ 7, -7 ], loop : true }
+  world_distantcity:{             rc : "empire_bits", start : 22,  frames : 6,  delay : 2,  step : 1,                     loop : true }
+  world_romecity :  {             rc : "empire_bits", start : 8,   frames : 6,  delay : 2,  step : 1,                     loop : true }
+  world_othercity:  {             rc : "empire_bits", start : 15,  frames : 6,  delay : 2,  step : 1,                     loop : true }
   temple_fire :     {             rc : "fireanim",    start : 1,   frames : 12, delay : 2,  step : 1,                     loop : true }
 }
 

@@ -1023,14 +1023,15 @@ int ComputerCity::strength() const { return _d->strength; }
 void ComputerCity::_initTextures()
 {
   int index = config::id.empire.otherCity;
+  std::map<int,std::string> config = { {config::id.empire.otherCity, "world_othercity" },
+                                       {config::id.empire.distantCity, "world_distantcity" },
+                                       {config::id.empire.romeCity, "wolrd_romecity"} };
 
   if( _d->distantCity ) { index = config::id.empire.distantCity; }
   else if( _d->states.romeCity ) { index = config::id.empire.romeCity; }
 
   setPicture( Picture( ResourceGroup::empirebits, index ) );
-  _animation().load( ResourceGroup::empirebits, index+1, 6 );
-  _animation().setLoop( true );
-  _animation().setDelay( 2 );
+  _animation().load( config[ index ] );
 }
 
 void ComputerCity::_resetGoodState(good::Product pr)
