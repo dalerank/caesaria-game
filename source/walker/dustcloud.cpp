@@ -79,14 +79,14 @@ void DustCloud::create(PlayerCityPtr city, const TilePos& start, unsigned int ra
     TilePos offset;
     switch( direction )
     {
-    case direction::north:      offset.nb().north();     break;
-    case direction::northEast:  offset.nb().northeast(); break;
-    case direction::east:       offset.nb().east();      break;
-    case direction::southEast:  offset.nb().southeast(); break;
-    case direction::south:      offset.nb().south();     break;
-    case direction::southWest:  offset.nb().southwest(); break;
-    case direction::west:       offset.nb().west();      break;
-    case direction::northWest:  offset.nb().northwest(); break;
+    case direction::north:      offset = offset.nb().north();     break;
+    case direction::northEast:  offset = offset.nb().northeast(); break;
+    case direction::east:       offset = offset.nb().east();      break;
+    case direction::southEast:  offset = offset.nb().southeast(); break;
+    case direction::south:      offset = offset.nb().south();     break;
+    case direction::southWest:  offset = offset.nb().southwest(); break;
+    case direction::west:       offset = offset.nb().west();      break;
+    case direction::northWest:  offset = offset.nb().northwest(); break;
     }
 
     dustcloud->send2City( start, start + offset * range);
@@ -184,6 +184,6 @@ void DustCloud::initialize(const VariantMap &options)
   if( !anim.empty() )
   {
     _d->animation.clear();
-    _d->animation.simple( options );
+    _d->animation.simple( anim );
   }
 }
