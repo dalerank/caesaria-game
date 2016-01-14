@@ -31,7 +31,7 @@ public:
   virtual void beforeRender( gfx::Engine& engine );
 
   Desirability( gfx::Camera& camera, PlayerCityPtr city );
-  virtual void handleEvent(NEvent& event);
+  virtual void onEvent( const NEvent& event);
 private:
 
   class Impl;

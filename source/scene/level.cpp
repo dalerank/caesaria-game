@@ -126,7 +126,7 @@ public:
   void handleEvent(NEvent &event)
   {
     bool rmbReleased = event.EventType == sEventMouse
-                       && event.mouse.type == mouseRbtnRelease;
+                       && event.mouse.type == NEvent::Mouse::mouseRbtnRelease;
 
     bool escapePressed = event.EventType == sEventKeyboard
                          && event.keyboard.key == KEY_ESCAPE;

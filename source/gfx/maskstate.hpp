@@ -12,29 +12,31 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
+//
+// Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
 
-#ifndef __CAESARIA_INFOBOX_MARKET_H_INCLUDE_
-#define __CAESARIA_INFOBOX_MARKET_H_INCLUDE_
+#ifndef __CAESARIA_MASK_STATE_H_INCLUDED__
+#define __CAESARIA_MASK_STATE_H_INCLUDED__
 
-#include "infobox_construction.hpp"
+#include "picture.hpp"
+#include "core/color_list.hpp"
 
-namespace gui
+namespace gfx
 {
 
-namespace infobox
-{
+class Engine;
 
-// info box about a market
-class AboutMarket : public AboutConstruction
+class MaskState
 {
 public:
-  AboutMarket( Widget* parent, PlayerCityPtr city, const gfx::Tile& tile );
-  virtual ~AboutMarket();
-   
-  void drawGood( MarketPtr market, const good::Product& goodType, int, int );
+  MaskState(Engine& painter, NColor color);
+  ~MaskState();
+
+private:
+  NColor _color;
+  Engine& _painter;
 };
 
-}//end namespace infobox
+}//end namespace gfx
 
-}//end namespace gui
-#endif //__CAESARIA_INFOBOX_MARKET_H_INCLUDE_
+#endif //__CAESARIA_MASK_STATE_H_INCLUDED__

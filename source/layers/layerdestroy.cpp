@@ -38,6 +38,7 @@
 #include "objects/tree.hpp"
 #include "game/settings.hpp"
 #include "core/format.hpp"
+#include "gfx/maskstate.hpp"
 #include "gfx/tile_config.hpp"
 
 using namespace gfx;
@@ -161,11 +162,11 @@ void Destroy::render( Engine& engine )
 
   for( auto tile : groundTiles )
   {
-    if( hashDestroyArea.inArea( tile ) )
-      engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
+    MaskState mask( engine, hashDestroyArea.inArea( tile )
+                              ? ColorList::red
+                              : ColorList::clear );
 
     drawLandTile( renderInfo, *tile );
-    engine.resetColorMask();
   }
 
   for( auto tile : subtrateTiles )
@@ -178,11 +179,11 @@ void Destroy::render( Engine& engine )
 
     if( !ftile->rendered() )
     {
-      if( hashDestroyArea.inArea( ftile ) )
-        engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
+      MaskState mask( engine, hashDestroyArea.inArea( ftile )
+                              ? ColorList::red
+                              : ColorList::clear );
 
       drawTile( renderInfo, *ftile );
-      engine.resetColorMask();
     }
   }
 
@@ -191,12 +192,12 @@ void Destroy::render( Engine& engine )
   {
     int z = vtile->epos().z();
 
-    if( hashDestroyArea.inArea( vtile ) )
-      engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
+    MaskState mask( engine, hashDestroyArea.inArea( vtile )
+                              ? ColorList::red
+                              : ColorList::clear );
 
     drawProminentTile( renderInfo, *vtile, z, false );
     drawWalkers( renderInfo, *vtile );
-    engine.resetColorMask();
   }
 }
 
@@ -279,13 +280,13 @@ void Destroy::_exitDestroyTool()
   DrawOptions::instance().setFlag( DrawOptions::mayChangeLayer, true );
 }
 
-void Destroy::handleEvent(NEvent& event)
+void Destroy::onEvent( const NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       _setLastCursorPos( event.mouse.pos() );
       if( !event.mouse.isLeftPressed() || _startCursorPos().x() < 0 )
@@ -298,22 +299,21 @@ void Destroy::handleEvent(NEvent& event)
     }
     break;
 
-    case mouseLbtnRelease:            // left button
+    case NEvent::Mouse::mouseLbtnRelease:            // left button
     {
       if( !OSystem::isAndroid() )
         _executeClear();
     }
     break;
 
-    case mouseLbtnPressed: { _setStartCursorPos( _lastCursorPos() ); } break;
-    case mouseRbtnRelease: { _exitDestroyTool(); } break;
+    case NEvent::Mouse::btnLeftPressed: { _setStartCursorPos( _lastCursorPos() ); } break;
+    case NEvent::Mouse::mouseRbtnRelease: { _exitDestroyTool(); } break;
 
     default:
     break;
     }
   }
-
-  if( event.EventType == sEventKeyboard )
+  else if( event.EventType == sEventKeyboard )
   {
     bool handled = _moveCamera( event );
 

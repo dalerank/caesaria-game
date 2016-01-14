@@ -273,7 +273,7 @@ Store::~Store() {}
 ProductMap Store::details() const
 {
   ProductMap ret;
-  for( auto& goodType : good::all() )
+  for( const auto& goodType : good::all() )
   {
     int q = qty( goodType );
     if( q > 0 )
@@ -286,7 +286,7 @@ ProductMap Store::details() const
 ProductMap Store::amounts() const
 {
   ProductMap ret;
-  for( auto& goodType : good::all() )
+  for( const auto& goodType : good::all() )
   {
     int cap = capacity( goodType );
     if( cap > 0 )
@@ -297,7 +297,7 @@ ProductMap Store::amounts() const
 }
 
 void Store::setOrder( const good::Product type, const Orders::Order order ){  _dfunc()->goodOrders.set( type, order );}
-Orders::Order Store::getOrder(const good::Product type ) const{  return _dfunc()->goodOrders.get( type );}
+Orders::Order Store::getOrder(const good::Product type) const{  return _dfunc()->goodOrders.get( type );}
 
 void Store::removeExpired(DateTime date)
 {
@@ -315,7 +315,7 @@ Reservations::Reservations(){  _idCounter = 1; }
 
 const ReserveInfo& Reservations::get(unsigned int id) const
 {
-  for( auto& info : *this )
+  for( const auto& info : *this )
   {
     if( info.id == id )
       return info;
@@ -368,7 +368,7 @@ VariantMap Reservations::save() const
 
   stream[ "idCounter" ] = static_cast<int>(_idCounter);
   VariantList vm_reservations;
-  for( auto& item : *this )
+  for( const auto& item : *this )
   {
     vm_reservations.push_back( (int)item.id );
     vm_reservations.push_back( item.stock.save() );

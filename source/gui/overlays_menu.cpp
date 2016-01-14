@@ -190,7 +190,7 @@ bool OverlaysMenu::onEvent( const NEvent& event )
     }
   } 
 
-  if( event.EventType == sEventMouse && event.mouse.type == mouseRbtnRelease )
+  if( event.EventType == sEventMouse && event.mouse.type == NEvent::Mouse::mouseRbtnRelease )
   {
     hide();
     return true;

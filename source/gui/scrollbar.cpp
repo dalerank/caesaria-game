@@ -134,7 +134,7 @@ bool ScrollBar::onEvent(const NEvent& event)
 				bool isInside = isPointInside ( _d->cursorPos );
 				switch(event.mouse.type)
 				{
-				case mouseWheel:
+        case NEvent::Mouse::mouseWheel:
 					if( isFocused() )
 					{
             setValue(	value() +
@@ -145,7 +145,7 @@ bool ScrollBar::onEvent(const NEvent& event)
 					}
         break;
 
-        case mouseLbtnPressed:
+        case NEvent::Mouse::btnLeftPressed:
 					{
 						if (isInside)
 						{
@@ -159,8 +159,8 @@ bool ScrollBar::onEvent(const NEvent& event)
 					}
 				break;
 
-				case mouseLbtnRelease:
-				case mouseMoved:
+        case NEvent::Mouse::mouseLbtnRelease:
+        case NEvent::Mouse::moved:
 					{
 						if ( !event.mouse.isLeftPressed () )
 						{
@@ -190,7 +190,7 @@ bool ScrollBar::onEvent(const NEvent& event)
 							else
 							{
                 _trayClick = false;
-                if (event.mouse.type == mouseMoved)
+                if (event.mouse.type == NEvent::Mouse::moved)
                 {
 									return isInside;
                 }

@@ -635,7 +635,15 @@ void SdlEngine::drawLine(const NColor &color, const Point &p1, const Point &p2)
 
 void SdlEngine::fillRect(const NColor& color, const Rect& rect)
 {
+  static SDL_Rect r;
+  r.x = rect.left();
+  r.y = rect.top();
+  r.h = rect.height();
+  r.w = rect.width();
 
+  SDL_SetRenderDrawColor( _d->renderer, color.red(), color.green(), color.blue(), color.alpha() );
+  SDL_RenderFillRect( _d->renderer, &r );
+  SDL_SetRenderDrawColor( _d->renderer, 0, 0, 0, 0 );
 }
 
 void SdlEngine::drawLines(const NColor &color, const PointsArray& points)

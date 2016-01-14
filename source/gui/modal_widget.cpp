@@ -139,7 +139,7 @@ bool ModalScreen::onEvent(const NEvent& event)
     }
     break;
   case sEventMouse:
-    if( event.mouse.type == mouseLbtnPressed )
+    if( event.mouse.type == NEvent::Mouse::btnLeftPressed )
     {
       _mouseDownTime = DateTime::elapsedTime();
     }

@@ -371,6 +371,11 @@ void PushButton::setIconOffset(Point offset)
 void PushButton::setIcon(const std::string& rcname, int index)
 {
   Picture pic( rcname, index );
+  setIcon( pic );
+}
+
+void PushButton::setIcon(Picture pic)
+{
   for( auto& state : _dfunc()->buttonStates )
     state.icon.picture = pic;
 }
@@ -456,9 +461,9 @@ bool PushButton::onEvent(const NEvent& event)
   case sEventMouse:
     switch( event.mouse.type  )
     {
-    case mouseMoved:     break;
-    case mouseLbtnPressed:        return _leftMouseBtnPressed( event );
-    case mouseLbtnRelease:        return _btnMouseUp( event );
+    case NEvent::Mouse::moved:       break;
+    case NEvent::Mouse::btnLeftPressed:   return _leftMouseBtnPressed( event );
+    case NEvent::Mouse::mouseLbtnRelease: return _btnMouseUp( event );
     default:
     break;
     }

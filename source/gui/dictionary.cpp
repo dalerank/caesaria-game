@@ -101,7 +101,7 @@ bool DictionaryWindow::onEvent(const NEvent& event)
   switch( event.EventType )
   {
   case sEventMouse:
-    if( event.mouse.type == mouseLbtnRelease )
+    if( event.mouse.type == NEvent::Mouse::mouseLbtnRelease )
     {
       return true;
     }

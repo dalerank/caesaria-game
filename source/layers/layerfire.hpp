@@ -30,7 +30,7 @@ public:
   virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
   virtual void afterRender(gfx::Engine& engine);
   virtual void render(gfx::Engine &engine);
-  virtual void handleEvent( NEvent& event );
+  virtual void onEvent( const NEvent& event );
 
   Fire( gfx::Camera& camera, PlayerCityPtr city );
 private:

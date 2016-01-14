@@ -128,7 +128,7 @@ void Parlor::draw(gfx::Engine& engine )
 
 bool Parlor::onEvent( const NEvent& event )
 {
-  if( event.EventType == sEventMouse && event.mouse.type == mouseRbtnRelease )
+  if( event.EventType == sEventMouse && event.mouse.type == NEvent::Mouse::mouseRbtnRelease )
   {
     deleteLater();
     return true;

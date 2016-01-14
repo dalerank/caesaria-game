@@ -641,16 +641,16 @@ bool Label::onEvent(const NEvent& event)
   {
     switch( event.mouse.type )
     {
-    case mouseLbtnPressed: _d->is.lmbPressed = true;
+    case NEvent::Mouse::btnLeftPressed: _d->is.lmbPressed = true;
     break;
 
-    case mouseLbtDblClick:
+    case NEvent::Mouse::mouseLbtDblClick:
     {
       _handleClick();
     }
     break;
 
-    case mouseLbtnRelease:
+    case NEvent::Mouse::mouseLbtnRelease:
     {
       if( _d->is.lmbPressed )
       {

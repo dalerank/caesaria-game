@@ -35,6 +35,7 @@ public:
   Point operator-() const { return Point( -_x, -_y); }
   Point operator*(float mul) const{ return Point( _x*mul, _y*mul ); }
   Point operator/(float div) const{ return Point( _x/div, _y/div ); }
+  static Point polar( int rad, float radian ) { return Point( rad * sin( radian ), rad * cos( radian ) ); }
 
   void setX( const int nx ) { _x = nx; }
   void setY( const int ny ) { _y = ny; }
@@ -55,6 +56,7 @@ public:
 
   void setX( const float nx ) { _x = nx; }
   void setY( const float ny ) { _y = ny; }
+  PointF mul( float xm, float ym ) { return PointF( _x * xm, _y * ym ); }
 
   Point toPoint() const { return Point( (int)_x, (int)_y ); }
 };

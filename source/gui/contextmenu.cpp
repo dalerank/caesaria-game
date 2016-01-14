@@ -229,7 +229,7 @@ bool ContextMenu::onEvent(const NEvent& event)
 					event.gui.caller = this;
 					event.gui.element = 0;
 					event.gui.type = guiElementClosed;
-					if ( !p->onEvent(event) )
+          if ( !p->onEvent(event) )
 					{
 						if( (_d->closeHandling & cmHide) > 0 )
 						{
@@ -258,7 +258,7 @@ bool ContextMenu::onEvent(const NEvent& event)
 		case sEventMouse:
 			switch(event.mouse.type)
 			{
-			case mouseLbtnRelease:
+      case NEvent::Mouse::mouseLbtnRelease:
 				{
 					// menu might be removed if it loses focus in sendClick, so grab a reference
 					grab();
@@ -268,9 +268,9 @@ bool ContextMenu::onEvent(const NEvent& event)
 					drop();
 				}
 				return true;
-			case mouseLbtnPressed:
+      case NEvent::Mouse::btnLeftPressed:
 				return true;
-			case mouseMoved:
+      case NEvent::Mouse::moved:
 				if( isHovered() )
 					_isHighlighted( event.mouse.pos(), true);
 				return true;
@@ -283,7 +283,7 @@ bool ContextMenu::onEvent(const NEvent& event)
 		}
 	}
 
-	return Widget::onEvent(event);
+  return Widget::onEvent(event);
 }
 
 //! Sets the visible state of this element.
@@ -347,9 +347,9 @@ unsigned int ContextMenu::_sendClick(const Point& p)
 		event.gui.element = 0;
 		event.gui.type = guiMenuItemSelected;
 		if( _d->eventParent )
- 			_d->eventParent->onEvent(event);
+      _d->eventParent->onEvent(event);
 		else 
-			parent()->onEvent(event);
+      parent()->onEvent(event);
 
 		ContextMenuItem* tItem = selectedItem();
 		if( tItem )

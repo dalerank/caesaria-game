@@ -27,14 +27,11 @@
 #include "core/font.hpp"
 #include "core/smartptr.hpp"
 #include "core/variant.hpp"
-#include "vfs/path.hpp"
+#include "core/event.hpp"
 #include "element_state.hpp"
 
-namespace gfx
-{
- class Engine;
-}
-struct NEvent;
+namespace gfx { class Engine; }
+namespace vfs { class Path; }
 
 namespace gui
 {
@@ -443,6 +440,7 @@ protected:
    */
   virtual void _finalizeResize();
   virtual bool _onButtonClicked( Widget* sender ) { return false; }
+  virtual bool _onMousePressed( const NEvent::Mouse& event ) { return false; }
   virtual bool _onListboxChanged( Widget* sender ) { return false; }
   virtual void _finalizeMove();
 

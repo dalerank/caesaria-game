@@ -811,8 +811,8 @@ void ComputerCity::save( VariantMap& options ) const
   VARIANT_SAVE_CLASS_D( options, _d, buildings )
   VARIANT_SAVE_CLASS_D( options, _d, targets )
 
-  options[ "sea" ] = (_d->terrain & EmpireMap::sea ? true : false);
-  options[ "land" ] = (_d->terrain & EmpireMap::land ? true : false);
+  options[ "sea" ] = (_d->terrain & EmpireMap::trSea ? true : false);
+  options[ "land" ] = (_d->terrain & EmpireMap::trLand ? true : false);
 
   VARIANT_SAVE_ENUM_D( options, _d, modeAI )
   VARIANT_SAVE_ANY_D( options, _d, trade.merchantSent )
@@ -874,8 +874,8 @@ void ComputerCity::load( const VariantMap& options )
       _d->initPeoples();
   }
 
-  _d->terrain = (options.get( "sea" ).toBool() ? EmpireMap::sea : EmpireMap::unknown)
-                  + (options.get( "land" ).toBool() ? EmpireMap::land : EmpireMap::unknown);
+  _d->terrain = (options.get( "sea" ).toBool() ? EmpireMap::trSea : EmpireMap::trUnknown)
+                  + (options.get( "land" ).toBool() ? EmpireMap::trLand : EmpireMap::trUnknown);
 
   _initTextures();
 }
@@ -1023,14 +1023,15 @@ int ComputerCity::strength() const { return _d->strength; }
 void ComputerCity::_initTextures()
 {
   int index = config::id.empire.otherCity;
+  std::map<int,std::string> config = { {config::id.empire.otherCity, "world_othercity" },
+                                       {config::id.empire.distantCity, "world_distantcity" },
+                                       {config::id.empire.romeCity, "wolrd_romecity"} };
 
   if( _d->distantCity ) { index = config::id.empire.distantCity; }
   else if( _d->states.romeCity ) { index = config::id.empire.romeCity; }
 
   setPicture( Picture( ResourceGroup::empirebits, index ) );
-  _animation().load( ResourceGroup::empirebits, index+1, 6 );
-  _animation().setLoop( true );
-  _animation().setDelay( 2 );
+  _animation().load( config[ index ] );
 }
 
 void ComputerCity::_resetGoodState(good::Product pr)

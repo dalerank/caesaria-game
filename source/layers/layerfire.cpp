@@ -123,14 +123,14 @@ void Fire::render(Engine& engine)
     TexturedPath::draw( tiles, rinfo );
 }
 
-void Fire::handleEvent(NEvent& event)
+void Fire::onEvent( const NEvent& event)
 {
   __D_REF(d,Fire)
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
@@ -150,7 +150,7 @@ void Fire::handleEvent(NEvent& event)
     }
     break;
 
-    case mouseLbtnPressed:
+    case NEvent::Mouse::btnLeftPressed:
     {      
       if( d.overlay.underMouse.is<Prefecture>() )
       {
@@ -164,7 +164,7 @@ void Fire::handleEvent(NEvent& event)
     }
   }
 
-  Layer::handleEvent( event );
+  Layer::onEvent( event );
 }
 
 Fire::Fire( Camera& camera, PlayerCityPtr city)

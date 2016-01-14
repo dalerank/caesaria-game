@@ -121,13 +121,13 @@ void Religion::_updatePaths()
   }
 }
 
-void Religion::handleEvent(NEvent& event)
+void Religion::onEvent( const NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
@@ -151,7 +151,7 @@ void Religion::handleEvent(NEvent& event)
     }
     break;
 
-    case mouseLbtnPressed:
+    case NEvent::Mouse::btnLeftPressed:
     {
       if( _d->overlay.underMouse.is<Temple>() )
       {
@@ -165,7 +165,7 @@ void Religion::handleEvent(NEvent& event)
     }
   }
 
-  Layer::handleEvent( event );
+  Layer::onEvent( event );
 }
 
 Religion::Religion( Camera& camera, PlayerCityPtr city)

@@ -464,7 +464,7 @@ bool ListBox::onEvent(const NEvent& event)
 
 				switch(event.mouse.type)
 				{
-				case mouseWheel:
+        case NEvent::Mouse::mouseWheel:
 				{
           _d->scrollBar->setValue(_d->scrollBar->value() + (event.mouse.wheel < 0 ? -1 : 1) * (-_d->height.item/2));
 					_d->needItemsRepackTextures = true;
@@ -472,7 +472,7 @@ bool ListBox::onEvent(const NEvent& event)
 				}
 				break;
 
-				case mouseLbtnPressed:
+        case NEvent::Mouse::btnLeftPressed:
 				{
 					_d->dragEventSended = false;
 					_d->selecting = true;
@@ -486,7 +486,7 @@ bool ListBox::onEvent(const NEvent& event)
 				}
 				break;
 
-				case mouseLbtnRelease:
+        case NEvent::Mouse::mouseLbtnRelease:
 				{
 					_d->selecting = false;
 
@@ -499,7 +499,7 @@ bool ListBox::onEvent(const NEvent& event)
 				}
 				break;
 
-        case mouseMoved:
+        case NEvent::Mouse::moved:
         {
           if( _d->selecting && isFlag( selectOnMove ) )
           {

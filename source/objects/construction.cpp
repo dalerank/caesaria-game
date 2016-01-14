@@ -116,6 +116,11 @@ bool Construction::canBuild(const city::AreaInfo& areaInfo) const
   return true;
 }
 
+Construction::BuildArea Construction::buildArea(const city::AreaInfo& areaInfo) const
+{
+  return BuildArea();
+}
+
 std::string Construction::troubleDesc() const
 {
   if( isNeedRoad() && roadside().empty() )

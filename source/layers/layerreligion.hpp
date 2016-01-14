@@ -27,7 +27,7 @@ public:
   Religion( gfx::Camera& camera, PlayerCityPtr city );
   virtual int type() const;
   virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
-  virtual void handleEvent(NEvent& event);
+  virtual void onEvent( const NEvent& event);
   virtual void render(gfx::Engine& engine);
 
 private:

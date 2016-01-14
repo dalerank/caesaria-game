@@ -32,7 +32,7 @@ public:
 
   virtual int type() const;
   virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
-  virtual void handleEvent(NEvent& event);
+  virtual void onEvent( const NEvent& event);
   virtual void afterRender(gfx::Engine& engine);
   virtual void render(gfx::Engine& engine);
 private:

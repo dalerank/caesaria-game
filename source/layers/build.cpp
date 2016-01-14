@@ -145,7 +145,8 @@ void Build::_checkPreviewBuild(const TilePos& pos)
   }
 
   city::AreaInfo areaInfo( _city(), pos, &d.buildTiles );
-  if( !walkersOnTile && construction->canBuild( areaInfo ) )
+  bool canBuild = construction->canBuild( areaInfo );
+  if( !walkersOnTile && canBuild )
   {
     d.mayBuildInCity = true;
     Tilemap& tmap = _city()->tilemap();
@@ -175,6 +176,7 @@ void Build::_checkPreviewBuild(const TilePos& pos)
   {
     d.mayBuildInCity = false;
     Tilemap& tmap = _city()->tilemap();
+    Construction::BuildArea buildArea = construction->buildArea( areaInfo );
     for (int dj = 0; dj < size.height(); ++dj)
     {
       for (int di = 0; di < size.width(); ++di)
@@ -184,7 +186,12 @@ void Build::_checkPreviewBuild(const TilePos& pos)
           continue;
 
         const Tile& basicTile = tmap.at( rPos );
+
+        const auto it = buildArea.find( rPos );
+
         const bool isConstructible = basicTile.getFlag( Tile::isConstructible );
+        const bool inBuildArea  = it != buildArea.end() ? it->second : true;
+
         Tile* tile = new Tile( basicTile.pos() );  // make a copy of tile
         tile->setEPos( basicTile.epos() );
 
@@ -194,7 +201,7 @@ void Build::_checkPreviewBuild(const TilePos& pos)
           walkersOnTile = !_city()->walkers( rPos ).empty();
         }
 
-        tile->setPicture( (!walkersOnTile && isConstructible) ? d.btile.green : d.btile.red );
+        tile->setPicture( (!walkersOnTile && isConstructible && inBuildArea) ? d.btile.green : d.btile.red );
         tile->setMaster( 0 );
         tile->setFlag( Tile::clearAll, true );
         tile->setOverlay( 0 );
@@ -361,7 +368,7 @@ void Build::_exitBuildMode()
   _discardPreview();
 }
 
-void Build::handleEvent(NEvent& event)
+void Build::onEvent( const NEvent& event)
 {
   __D_REF(d,Build);
 
@@ -378,7 +385,7 @@ void Build::handleEvent(NEvent& event)
 
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       _setLastCursorPos( cursorPos );
       _checkBuildArea();
@@ -386,14 +393,14 @@ void Build::handleEvent(NEvent& event)
     }
     break;
 
-    case mouseLbtnPressed:
+    case NEvent::Mouse::btnLeftPressed:
     {
       _updatePreviewTiles( false );
       d.lmbPressed = true;
     }
     break;
 
-    case mouseLbtnRelease:            // left button
+    case NEvent::Mouse::mouseLbtnRelease:            // left button
     {
       Tile* tile = _camera()->at( cursorPos, false );  // tile under the cursor (or NULL)
       if( tile == 0 )
@@ -406,7 +413,7 @@ void Build::handleEvent(NEvent& event)
     }
     break;
 
-    case mouseRbtnRelease: { _exitBuildMode(); } break;
+    case NEvent::Mouse::mouseRbtnRelease: { _exitBuildMode(); } break;
     default:    break;
     }
   }

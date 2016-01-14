@@ -194,7 +194,7 @@ void PlayerArmy::killSoldiers(int percent)
 
 PlayerArmy::Mode PlayerArmy::mode() const { return _d->mode; }
 
-int PlayerArmy::viewDistance() const { return 30; }
+int PlayerArmy::searchRange() const { return 30; }
 
 void PlayerArmy::addSoldiers(RomeSoldierList soldiers)
 {
@@ -227,7 +227,7 @@ void PlayerArmy::_check4attack()
       _attackObject( it.second.as<Object>() );
       break;
     }
-    else if( it.first < viewDistance() )
+    else if( it.first < searchRange() )
     {
       bool validWay = _findWay( location(), it.second->location() );
       if( validWay )
@@ -344,7 +344,6 @@ PlayerArmy::PlayerArmy( EmpirePtr empire )
   pic.setOffset( Point( -size.width() / 2, size.height() / 2 ) );
   setPicture( pic );
 
-  _animation().clear();
   _animation().load( "world_playerarmy" );
 }
 

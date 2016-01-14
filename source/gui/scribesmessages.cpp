@@ -113,11 +113,11 @@ protected:
     {
       switch(event.mouse.type)
       {
-      case mouseLbtnRelease: emit onShowMessage( selected() ); break;
-      case mouseRbtnRelease: emit onRemoveMessage( selected() ); break;
+      case NEvent::Mouse::mouseLbtnRelease: emit onShowMessage( selected() ); break;
+      case NEvent::Mouse::mouseRbtnRelease: emit onRemoveMessage( selected() ); break;
       default: break;
 
-      case mouseMoved:
+      case NEvent::Mouse::moved:
       {
         int index = itemAt( event.mouse.pos() );
         if( index >= 0 )

@@ -1089,7 +1089,7 @@ bool EditBox::_processMouse(const NEvent& event)
 {
 	switch(event.mouse.type)
 	{
-	case mouseLbtnRelease:
+  case NEvent::Mouse::mouseLbtnRelease:
     if (ui()->hasFocus(this))
 		{
 			Point rpos = event.mouse.pos() - _d->textOffset;
@@ -1103,7 +1103,7 @@ bool EditBox::_processMouse(const NEvent& event)
 			return true;
 		}
 		break;
-	case mouseMoved:
+  case NEvent::Mouse::moved:
 		{
 			if (_d->mouseMarking)
 			{
@@ -1114,7 +1114,7 @@ bool EditBox::_processMouse(const NEvent& event)
 			}
 		}
 		break;
-	case mouseLbtnPressed:
+  case NEvent::Mouse::btnLeftPressed:
     if (!ui()->hasFocus(this))
 		{
 			_d->mouseMarking = true;

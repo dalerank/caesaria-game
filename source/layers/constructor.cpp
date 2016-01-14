@@ -337,7 +337,7 @@ void Constructor::_exitBuildMode()
   _discardPreview();
 }
 
-void Constructor::handleEvent(NEvent& event)
+void Constructor::onEvent( const NEvent& event)
 {
   __D_IMPL(_d,Constructor);
   if( event.EventType == sEventMouse )
@@ -351,7 +351,7 @@ void Constructor::handleEvent(NEvent& event)
 
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       _setLastCursorPos( event.mouse.pos() );
       _checkBuildArea();
@@ -359,14 +359,14 @@ void Constructor::handleEvent(NEvent& event)
     }
     break;
 
-    case mouseLbtnPressed:
+    case NEvent::Mouse::btnLeftPressed:
     {
       _updatePreviewTiles( false );
       _d->lmbPressed = true;
     }
     break;
 
-    case mouseLbtnRelease:            // left button
+    case NEvent::Mouse::mouseLbtnRelease:            // left button
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       if( tile == 0 )
@@ -379,7 +379,7 @@ void Constructor::handleEvent(NEvent& event)
     }
     break;
 
-    case mouseRbtnRelease: { _exitBuildMode(); } break;
+    case NEvent::Mouse::mouseRbtnRelease: { _exitBuildMode(); } break;
     default:    break;
     }
   }

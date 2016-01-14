@@ -30,17 +30,21 @@ namespace world
 class EmpireMap
 {
 public:
-  typedef enum { unknown=0, sea=0x1, land=0x2, city=sea|land, any=0x4 } TerrainType;
+  typedef enum { trUnknown=0, trSea=0x1, trLand=0x2, trCity=trSea|trLand, trRock=0x4, trAny=0x7 } TerrainType;
 
   EmpireMap();
   ~EmpireMap();
 
-  void initialize( const VariantMap& stream );
-  void setCity( Point pos );
+  void load( const VariantMap& stream );
+  VariantMap save() const;
+  void setCity( const Point& pos );
 
-  Size getSize() const;
+  Size size() const;
 
-  TerrainType at(const TilePos& ij) const;
+  TerrainType getTerrainType(const TilePos& ij) const;
+  TilePos point2location( const Point& point ) const;
+  void setTerrainType(const TilePos& ij, TerrainType type);
+  Rect area( const TilePos& ij ) const;
 
   Route findRoute( const Point& start, const Point& stop, int flags ) const;
 private:
@@ -48,6 +52,6 @@ private:
   ScopedPtr< Impl > _d;
 };
 
-}
+}//end namespace world
 
 #endif //__CAESARIA_EMPIREMAP_H_INCLUDED__

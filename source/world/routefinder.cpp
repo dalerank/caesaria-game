@@ -46,7 +46,7 @@ public:
     parent = NULL;
     closed = false;
     opened = false;
-    info = EmpireMap::unknown;
+    info = EmpireMap::trUnknown;
 
     f = g = h = 0;
   }
@@ -126,8 +126,8 @@ public:
 
   bool aStar(TilePos startPos, TilePos stopPos, Locations& way, int flags);
   void update( const EmpireMap& emap );
-  void isTerrain( const EmPoint* p, bool& ret ) { ret = p ? (p->info & EmpireMap::land) : false; }
-  void isWater( const EmPoint* p, bool& ret ) { ret = p ? (p->info & EmpireMap::sea) : false; }
+  void isTerrain( const EmPoint* p, bool& ret ) { ret = p ? (p->info & EmpireMap::trLand) : false; }
+  void isWater( const EmPoint* p, bool& ret ) { ret = p ? (p->info & EmpireMap::trSea) : false; }
   bool isWalkable( const TilePos& pos )
   {
     bool ret;
@@ -157,17 +157,17 @@ TraderouteFinder::~TraderouteFinder(){}
 
 void TraderouteFinder::Impl::update( const EmpireMap& emap )
 {
-  grid.resize( emap.getSize() );
-  for( int k=0; k < emap.getSize().height(); k++)
+  grid.resize( emap.size() );
+  for( int k=0; k < emap.size().height(); k++)
   {
-    for( int i=0; i < emap.getSize().width(); i++ )
+    for( int i=0; i < emap.size().width(); i++ )
     {
       TilePos p(i,k);
 
       EmPoint* et = grid[ p ];
 
       et->pos = p;
-      et->info = emap.at( p );
+      et->info = emap.getTerrainType( p );
     }
   }
 }

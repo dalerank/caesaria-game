@@ -239,15 +239,15 @@ bool Window::onEvent(const NEvent& event)
 		case sEventMouse:
 			switch(event.mouse.type)
 			{
-			case mouseLbtnPressed:
+      case NEvent::Mouse::btnLeftPressed:
         _d->drag.startPosition = event.mouse.pos();
         _d->drag.active = _d->flags.isFlag( fdraggable );
 				bringToFront();
 
       return true;
 
-      case mouseRbtnRelease:
-			case mouseLbtnRelease:
+      case NEvent::Mouse::mouseRbtnRelease:
+      case NEvent::Mouse::mouseLbtnRelease:
       {
         if( _d->drag.active )
         {
@@ -257,7 +257,7 @@ bool Window::onEvent(const NEvent& event)
       }
       break;
 
-      case mouseMoved:
+      case NEvent::Mouse::moved:
 				if ( !event.mouse.isLeftPressed() )
           _d->drag.active = false;
 
