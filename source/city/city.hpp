@@ -162,7 +162,6 @@ signals public:
 
 private:
   PlayerCity( world::EmpirePtr empire );
-  void _initAnimation();
 
   class Impl;
   ScopedPtr< Impl > _d;

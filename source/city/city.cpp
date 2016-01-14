@@ -163,7 +163,6 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->services.initialize( this, ":/services.model" );
 
   setPicture( Picture( ResourceGroup::empirebits, 1 ) );
-  _initAnimation();
 
   setOption( updateRoadsOnNextFrame, 0 );
   setOption( godEnabled, 1 );
@@ -190,11 +189,6 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( ironInRocks, 1 );
 
   _d->states.nation = world::nation::rome;
-}
-
-void PlayerCity::_initAnimation()
-{
-  _animation().load( "world_ourcity" );
 }
 
 std::string PlayerCity::about(Object::AboutType type)
@@ -482,7 +476,7 @@ void PlayerCity::load( const VariantMap& stream )
   VARIANT_LOAD_ANY_D( _d, states.age, stream )
   VARIANT_LOAD_CLASS_D_LIST( _d, activePoints, stream )
 
-  _initAnimation();
+  _animation().clear();
 }
 
 void PlayerCity::addOverlay( OverlayPtr overlay ) { _d->overlays.postpone( overlay ); }

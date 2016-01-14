@@ -122,10 +122,7 @@ void Animation::load( const std::string &prefix, const int start, const int numb
 {
   int revMul = reverse ? -1 : 1;
   for( int i = 0; i < number; ++i)
-  {
-    Picture pic(prefix, start + revMul*i*step);
-    _pictures.push_back( pic );
-  }
+    _pictures.append( prefix, start + revMul*i*step );
 }
 
 void Animation::load(const std::string& alias)
@@ -174,7 +171,8 @@ void Animation::simple(const VariantMap& stream)
   VARIANT_INIT_ANY( int, start, stream )
   VARIANT_INIT_ANY( int, frames, stream )
   VARIANT_LOAD_ANY_D( d, delay, stream )
-  load( rc, start, frames );
+  VARIANT_INIT_ANY( bool, reverse, stream )
+  load( rc, start, frames, reverse );
 }
 
 void Animation::clear() { _pictures.clear();}
@@ -185,8 +183,7 @@ void Animation::stop(){ _dfunc()->index = -1; }
 Animation& Animation::operator=( const Animation& other )
 {
   __D_IMPL(_d,Animation)
-  _pictures.clear();
-  _pictures.append( other._pictures );
+  _pictures = other._pictures;
   _dfunc()->index = other._dfunc()->index;  // index of the current frame
   _d->delay = other.delay();
   _d->lastTimeUpdate = other._dfunc()->lastTimeUpdate;
