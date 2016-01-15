@@ -118,6 +118,7 @@ public:
     setText( utils::i2str( metric::Measure::convQty( qty ) ) );
     setIcon( good::Helper::picture( goodType ) );
     setFont( FONT_2 );
+    setTextAlignment( align::upperLeft, align::center );
     setTextOffset( { 30, 0 } );
 
     _order = order;
@@ -126,12 +127,9 @@ public:
 
   virtual void drawIcon(Engine &painter)
   {
-    if( _order == good::Orders::reject )
-    {
-      MaskState lock( painter, ColorList::red );
-      PushButton::drawIcon( painter );
-    }
-
+    MaskState lock( painter, _order == good::Orders::reject
+                                ? NColor::ashade( 0xff, 0x60 )
+                                : ColorList::clear );
     PushButton::drawIcon( painter );
   }
 

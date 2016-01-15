@@ -126,15 +126,14 @@ void Layer::renderUi( Engine& engine )
 void Layer::onEvent( const NEvent& event)
 {
   __D_IMPL(_d,Layer)
-  if( event.EventType == sEventMouse )
+  switch( event.EventType )
   {
+  case sEventMouse:
     switch( event.mouse.type  )
     {
     case NEvent::Mouse::moved: onMouseMoved( event.mouse ); break;
     case NEvent::Mouse::btnLeftPressed:
-    {
       _d->cursor.start = _d->cursor.last;
-    }
     break;
 
     case NEvent::Mouse::mouseLbtnRelease:            // left button
@@ -146,8 +145,8 @@ void Layer::onEvent( const NEvent& event)
     default:
     break;
     }
-  }
-  else if( event.EventType == sEvenApplication )
+  break;
+  case sEvenApplication:
   {
     switch( event.app.type )
     {
@@ -159,7 +158,8 @@ void Layer::onEvent( const NEvent& event)
     default: break;
     }
   }
-  else if( event.EventType == sEventKeyboard )
+  break;
+  case sEventKeyboard:
   {
     bool handled = _moveCamera( event );
     if( !handled )
@@ -170,6 +170,10 @@ void Layer::onEvent( const NEvent& event)
       default: break;
       }
     }
+  }
+  break;
+
+  default: break;
   }
 }
 

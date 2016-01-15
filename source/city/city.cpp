@@ -546,6 +546,7 @@ void PlayerCity::setOption(PlayerCity::OptionType opt, int value)
     _d->options[ soldiersHaveSalary ] = !value;
     _d->options[ housePersonalTaxes ] = !value;
     _d->options[ cutForest2timber ] = !value;
+    _d->options[ ironInRocks      ] = !value;
   }
 }
 
