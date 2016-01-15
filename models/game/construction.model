@@ -917,6 +917,7 @@
     output : "weapon"
     class : "industry"
     sound : [ "weapons_workshop", 1 ]
+    image : [ "commerce", 108 ]
     inflammability : 2
     animation : { rc : "commerce", start : 109, count : 8, offset : [ 60, 127 ], delay : 4 }
   },
