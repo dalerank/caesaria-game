@@ -59,7 +59,7 @@ void PatrolPointEventHandler::handleEvent( NEvent& event )
   case sEventMouse:
     switch( event.mouse.type )
     {
-    case mouseLbtnRelease:
+    case NEvent::Mouse::mouseLbtnRelease:
     {
       Tile* tile = _d->renderer->camera()->at( event.mouse.pos(), true );
       if( tile )
@@ -84,7 +84,7 @@ void PatrolPointEventHandler::handleEvent( NEvent& event )
     }
     break;
 
-    case mouseRbtnRelease:
+    case NEvent::Mouse::mouseRbtnRelease:
       if( _d->patrolPoint.isValid() )
       {
         _d->patrolPoint->setPos( _d->savePatrolPos );
@@ -92,7 +92,7 @@ void PatrolPointEventHandler::handleEvent( NEvent& event )
       }
     break;
 
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       if( _d->patrolPoint.isValid() )
       {

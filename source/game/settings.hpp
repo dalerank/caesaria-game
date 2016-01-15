@@ -108,6 +108,8 @@ public:
   __GS_PROPERTY(debugMenu)
   __GS_PROPERTY(cntrGroupsModel)
   __GS_PROPERTY(logfile)
+  __GS_PROPERTY(rightMenu)
+  __GS_PROPERTY(showEmpireMapTiles)
 #undef __GS_PROPERTY
 
   static Settings& instance();

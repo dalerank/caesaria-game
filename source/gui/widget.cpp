@@ -45,7 +45,8 @@ void Widget::beforeDraw(gfx::Engine& painter )
     return;
   //"Parent must be exists";
 
-  for( auto child : d->children ) { child->beforeDraw( painter ); }
+  for( auto child : d->children )
+    child->beforeDraw( painter );
 }
 
 Ui* Widget::ui() const { return _dfunc()->environment; }
@@ -790,6 +791,7 @@ void Widget::remove()
 
 bool Widget::onEvent( const NEvent& event )
 {
+  bool resolved = false;
   for( auto child : _dfunc()->eventHandlers )
   {
     bool handled = child->onEvent( event );
@@ -798,11 +800,22 @@ bool Widget::onEvent( const NEvent& event )
   }
 
   if (event.EventType == sEventMouse)
+  {
+    switch( event.mouse.type )
+    {
+    case NEvent::Mouse::btnLeftPressed:
+    case NEvent::Mouse::btnMiddlePressed:
+    case NEvent::Mouse::btnRightPressed:
+       resolved = _onMousePressed( event.mouse );
+    break;
+
+    default: break;
+    }
+
     if (parent() && (parent()->parent() == NULL))
       return true;
-
-  bool resolved = false;
-  if( event.EventType == sEventGui )
+  }
+  else if( event.EventType == sEventGui )
   {
     switch( event.gui.type )
     {

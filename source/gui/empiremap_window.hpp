@@ -45,6 +45,7 @@ public:
 
 protected:
   void _changePosition();
+  virtual bool _onMousePressed( const NEvent::Mouse& event);
   const Point& _offset() const;
 
   Widget* _resetInfoPanel();
@@ -52,7 +53,6 @@ protected:
 
   class Impl;
   ScopedPtr< Impl > _d;
-
 };
 
 }//end namespace gui

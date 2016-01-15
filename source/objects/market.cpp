@@ -41,10 +41,8 @@ public:
   bool isAnyGoodStored()
   {
     bool anyGoodStored = false;
-    foreach( i, good::all() )
-    {
-      anyGoodStored |= ( goodStore.qty( *i ) >= 100 );
-    }
+    for( const auto& i : good::all() )
+      anyGoodStored |= ( goodStore.qty( i ) >= 100 );
 
     return anyGoodStored;
   }

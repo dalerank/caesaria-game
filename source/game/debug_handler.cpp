@@ -22,6 +22,7 @@
 #include "city/statistic.hpp"
 #include "game/funds.hpp"
 #include "objects/tree.hpp"
+#include "objects/clay_pit.hpp"
 #include "game/player.hpp"
 #include "events/random_animals.hpp"
 #include "walker/enemysoldier.hpp"
@@ -66,6 +67,7 @@
 #include "objects/factory.hpp"
 #include "events/warningmessage.hpp"
 #include "sound/themeplayer.hpp"
+#include "city/build_options.hpp"
 #include "objects/house_spec.hpp"
 
 using namespace gfx;
@@ -79,16 +81,17 @@ enum {
   divinity,
   money,
   goods,
+  empiremap,
   factories,
   other,
+  buildings,
   disaster,
   level,
   in_city,
   options,
   house,
   draw,
-  empire,
-  mission
+  empire
 };
 
 enum {
@@ -175,6 +178,8 @@ enum {
   reload_buildings_config,
   toggle_show_buildings,
   toggle_show_trees,
+  toggle_show_empireMapTiles,
+  toggle_show_rocks,
   forest_fire,
   forest_grow,
   increase_max_level,
@@ -187,6 +192,11 @@ enum {
   show_attacks,
   reset_fire_risk,
   reset_collapse_risk,
+  toggle_shipyard_enable,
+  toggle_reservoir_enable,
+  toggle_wineshop_enable,
+  toggle_vinard_enable,
+  fill_random_claypit,
   next_theme
 };
 
@@ -202,6 +212,7 @@ public:
   void addGoods2Wh( good::Product type );
   void reloadConfigs();
   void runScript(std::string filename);
+  void toggleBuildOptions(object::Type type);
   gui::ContextMenu* debugMenu;
 
 #ifdef DEBUG
@@ -282,16 +293,24 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( other, enable_constructor_mode )
   ADD_DEBUG_EVENT( other, next_theme )
 
+  ADD_DEBUG_EVENT( buildings, toggle_shipyard_enable )
+  ADD_DEBUG_EVENT( buildings, toggle_reservoir_enable )
+  ADD_DEBUG_EVENT( buildings, toggle_wineshop_enable )
+  ADD_DEBUG_EVENT( buildings, toggle_vinard_enable )
+
   ADD_DEBUG_EVENT( disaster, random_fire )
   ADD_DEBUG_EVENT( disaster, random_collapse )
   ADD_DEBUG_EVENT( disaster, random_plague )
   ADD_DEBUG_EVENT( disaster, earthquake )
+  ADD_DEBUG_EVENT( disaster, fill_random_claypit )
   ADD_DEBUG_EVENT( disaster, forest_fire )
 
   ADD_DEBUG_EVENT( level, win_mission )
   ADD_DEBUG_EVENT( level, fail_mission )
   ADD_DEBUG_EVENT( level, change_emperor )
   ADD_DEBUG_EVENT( level, property_browser )
+  ADD_DEBUG_EVENT( level, show_requests )
+  ADD_DEBUG_EVENT( level, show_attacks )
 
   ADD_DEBUG_EVENT( empire, send_merchants )
 
@@ -315,9 +334,6 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( house, decrease_house_level )
   ADD_DEBUG_EVENT( house, lock_house_level )
 
-  ADD_DEBUG_EVENT( mission, show_requests )
-  ADD_DEBUG_EVENT( mission, show_attacks )
-
   ADD_DEBUG_EVENT( options, run_script )
   ADD_DEBUG_EVENT( options, all_sound_off )
   ADD_DEBUG_EVENT( options, reload_aqueducts )
@@ -334,6 +350,9 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( draw, toggle_show_walkable_tiles )
   ADD_DEBUG_EVENT( draw, toggle_show_locked_tiles )
   ADD_DEBUG_EVENT( draw, toggle_show_flat_tiles )
+  ADD_DEBUG_EVENT( draw, toggle_show_rocks )
+
+  ADD_DEBUG_EVENT( empiremap, toggle_show_empireMapTiles )
 #undef ADD_DEBUG_EVENT
 
 #ifdef DEBUG
@@ -346,6 +365,14 @@ void DebugHandler::setVisible(bool visible)
 {
   if( _d->debugMenu != 0)
     _d->debugMenu->setVisible( visible );
+}
+
+void DebugHandler::Impl::toggleBuildOptions( object::Type type )
+{
+  city::development::Options options;
+  options = game->city()->buildOptions();
+  options.setBuildingAvailable( type, !options.isBuildingAvailable( type ) );
+  game->city()->setBuildOptions( options );
 }
 
 DebugHandler::~DebugHandler() {}
@@ -446,6 +473,11 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
 
+  case toggle_shipyard_enable: toggleBuildOptions( object::shipyard );  break;
+  case toggle_reservoir_enable: toggleBuildOptions( object::reservoir );  break;
+  case toggle_wineshop_enable: toggleBuildOptions( object::wine_workshop );  break;
+  case toggle_vinard_enable: toggleBuildOptions( object::vinard );  break;
+
   case next_theme:
   {
     auto player = game->city()->statistic().services.find<audio::ThemePlayer>();
@@ -453,6 +485,14 @@ void DebugHandler::Impl::handleEvent(int event)
     {
       player->next();
     }
+  }
+  break;
+
+  case fill_random_claypit:
+  {
+    auto pit = game->city()->overlays().select<ClayPit>().random();
+    if( pit.isValid() )
+      pit->flood();
   }
   break;
 
@@ -472,7 +512,7 @@ void DebugHandler::Impl::handleEvent(int event)
     PropertyWorkspace* browser = safety_cast<PropertyWorkspace*>( game->gui()->findWidget( hash ) );
     if( !browser )
     {
-      browser = new PropertyWorkspace( game->gui()->rootWidget(), game->scene(), Rect( 0, 0, 500, 700 ) );
+      browser = &game->gui()->add<PropertyWorkspace>( game->scene(), Rect( 0, 0, 500, 700 ) );
       browser->setCity( game->city() );
       game->scene()->installEventHandler( browser->handler() );
     }
@@ -663,6 +703,13 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
 
+  case toggle_show_empireMapTiles:
+  {
+    bool enable = KILLSWITCH( showEmpireMapTiles );
+    SETTINGS_SET_VALUE( showEmpireMapTiles, !enable );
+  }
+  break;
+
   case add_scribe_messages:
   {
     events::dispatch<ScribeMessage>( "test_message", "this is test message from yout scribes" );
@@ -777,6 +824,7 @@ void DebugHandler::Impl::handleEvent(int event)
   case toggle_show_flat_tiles: DrawOptions::instance().toggle( DrawOptions::showFlatTiles );  break;
   case toggle_show_buildings : DrawOptions::instance().toggle( DrawOptions::showBuildings ); break;
   case toggle_show_trees : DrawOptions::instance().toggle( DrawOptions::showTrees ); break;
+  case toggle_show_rocks : DrawOptions::instance().toggle( DrawOptions::showRocks ); break;
 
   case add_soldiers_in_fort:
   {

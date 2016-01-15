@@ -95,6 +95,7 @@ void Options::load(const VariantList& stream)
   resetIfNot( PlayerCity::soldiersHaveSalary, 1);
   resetIfNot( PlayerCity::housePersonalTaxes, 1);
   resetIfNot( PlayerCity::cutForest2timber, 1 );
+  resetIfNot( PlayerCity::ironInRocks, 1 );
   resetIfNot( PlayerCity::difficulty, game::difficulty::usual );
 }
 

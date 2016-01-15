@@ -337,7 +337,7 @@ void Constructor::_exitBuildMode()
   _discardPreview();
 }
 
-void Constructor::handleEvent(NEvent& event)
+void Constructor::onEvent( const NEvent& event)
 {
   __D_IMPL(_d,Constructor);
   if( event.EventType == sEventMouse )
@@ -351,7 +351,7 @@ void Constructor::handleEvent(NEvent& event)
 
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       _setLastCursorPos( event.mouse.pos() );
       _checkBuildArea();
@@ -359,14 +359,14 @@ void Constructor::handleEvent(NEvent& event)
     }
     break;
 
-    case mouseLbtnPressed:
+    case NEvent::Mouse::btnLeftPressed:
     {
       _updatePreviewTiles( false );
       _d->lmbPressed = true;
     }
     break;
 
-    case mouseLbtnRelease:            // left button
+    case NEvent::Mouse::mouseLbtnRelease:            // left button
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       if( tile == 0 )
@@ -379,7 +379,7 @@ void Constructor::handleEvent(NEvent& event)
     }
     break;
 
-    case mouseRbtnRelease: { _exitBuildMode(); } break;
+    case NEvent::Mouse::mouseRbtnRelease: { _exitBuildMode(); } break;
     default:    break;
     }
   }
@@ -670,35 +670,27 @@ void Constructor::changeLayer(int layer)
   _initBuildMode();
 }
 
-LayerPtr Constructor::create(Renderer& renderer, PlayerCityPtr city)
-{
-  LayerPtr ret( new Constructor( renderer, city ) );
-  ret->drop();
-
-  return ret;
-}
-
 Constructor::~Constructor() {}
 
-Constructor::Constructor( Renderer& renderer, PlayerCityPtr city)
-  : Layer( renderer.camera(), city ),
+Constructor::Constructor(Camera& camera, PlayerCityPtr city, Renderer* renderer)
+  : Layer( &camera, city ),
     __INIT_IMPL(Constructor)
 {
-  __D_IMPL(d,Constructor);
-  d->renderer = &renderer;
-  d->frameCount = 0;
-  d->needUpdateTiles = false;
-  d->resForbiden = SETTINGS_STR( forbidenTile );
-  d->startTilePos = TilePos::invalid();
-  d->text.font = Font::create( FONT_5 );
-  d->readyForExit = false;
-  d->drawRadius = 1;
-  d->splineEnabled = false;
-  d->text.image = Picture( Size( 100, 30 ), 0, true );
+  __D_REF(d,Constructor);
+  d.renderer = renderer;
+  d.frameCount = 0;
+  d.needUpdateTiles = false;
+  d.resForbiden = SETTINGS_STR( forbidenTile );
+  d.startTilePos = TilePos::invalid();
+  d.text.font = Font::create( FONT_5 );
+  d.readyForExit = false;
+  d.drawRadius = 1;
+  d.splineEnabled = false;
+  d.text.image = Picture( Size( 100, 30 ), 0, true );
   _addWalkerType( walker::all );
 
-  d->grnPicture.load( d->resForbiden, 1 );
-  d->redPicture.load( d->resForbiden, 2 );
+  d.grnPicture.load( d.resForbiden, 1 );
+  d.redPicture.load( d.resForbiden, 2 );
 }
 
 void Constructor::Impl::sortBuildTiles()
@@ -712,7 +704,7 @@ void Constructor::Impl::sortBuildTiles()
 
 bool Constructor::Impl::canBuildOn(OverlayPtr overlay, const city::AreaInfo& areaInfo) const
 {
-  object::Type type = overlay.isValid() ? overlay->type() : object::unknown;
+  object::Type type = object::typeOrDefault( overlay );
   if( type == object::terrain
       || type == object::water )
   {

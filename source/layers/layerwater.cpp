@@ -87,7 +87,7 @@ void Water::drawTile( const RenderInfo& rinfo, Tile& tile)
         auto house = overlay.as<House>();
         needDrawAnimations = (house->level() <= HouseLevel::hovel) && house->habitants().empty();
 
-        tileNumber = config::tile.house;
+        tileNumber = config::tile.house-1;
         haveWater = haveWater || house->hasServiceAccess(Service::fountain) || house->hasServiceAccess(Service::well);
       }
 
@@ -112,8 +112,7 @@ void Water::drawTile( const RenderInfo& rinfo, Tile& tile)
         auto aqueduct = tile.overlay<Aqueduct>();
         if( aqueduct.isValid() )
         {
-          Font f = Font::create( FONT_2 );
-          f.setColor( 0xffff0000 );
+          Font f = Font::create( FONT_2 ).withColor( 0xffff0000 );
           int df = aqueduct->water();
           f.draw( rinfo.engine.screen(), utils::format( 0xff, "%x", df), screenPos + Point( 20, -80 ), false );
         }
@@ -125,8 +124,7 @@ void Water::drawTile( const RenderInfo& rinfo, Tile& tile)
         if( wellValue > 0 || fountainValue > 0 || reservoirWater > 0 )
         {
           std::string text = utils::format( 0xff, "%d/%d/%d", wellValue, fountainValue, reservoirWater );
-          Font f = Font::create( FONT_2 );
-          f.setColor( 0xffff0000 );
+          Font f = Font::create( FONT_2 ).withColor( 0xffff0000 );
           f.draw( rinfo.engine.screen(), text, screenPos + Point( 20, -80 ), false );
         }
       }
@@ -175,7 +173,7 @@ void Water::drawWalkerOverlap( const RenderInfo& rinfo, Tile& tile, const int de
 
 }
 
-void Water::handleEvent(NEvent& event)
+void Water::onEvent( const NEvent& event)
 {
   if( event.EventType == sEventKeyboard )
   {
@@ -189,7 +187,7 @@ void Water::handleEvent(NEvent& event)
   {
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
@@ -220,7 +218,7 @@ void Water::handleEvent(NEvent& event)
     }
     break;
 
-    case mouseLbtnPressed:
+    case NEvent::Mouse::btnLeftPressed:
     {
       _d->overlay.selected = _d->overlay.underMouse;
       _updatePaths();
@@ -231,7 +229,7 @@ void Water::handleEvent(NEvent& event)
     }
   }
 
-  Layer::handleEvent( event );
+  Layer::onEvent( event );
 }
 
 void Water::_updatePaths()

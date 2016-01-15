@@ -24,12 +24,16 @@ namespace gfx
 
 TilesArea::TilesArea(const Tilemap &tmap, const TilePos& leftup, const TilePos& rightdown)
 {
+  _size = Size( abs( rightdown.i() - leftup.i() ),
+                abs( rightdown.j() - leftup.j() ) );
   append( tmap.area( leftup, rightdown ) );
 }
 
 TilesArea::TilesArea(const Tilemap &tmap, int distance, const TilePos& center)
 {
-  add( tmap, center, distance );
+  TilePos offset( distance, distance );
+  _size = Size( distance ) * 2;
+  append( tmap.area( center - offset, center + offset ) );
 }
 
 TilesArea::TilesArea(const Tilemap& tmap, int distance, OverlayPtr overlay)
@@ -40,18 +44,23 @@ TilesArea::TilesArea(const Tilemap& tmap, int distance, OverlayPtr overlay)
   TilePos offset( distance, distance  );
   TilePos size( overlay->size().width(), overlay->size().height() );
   TilePos start = overlay->tile().epos();
+  _size = overlay->size();
   append( tmap.area( start - offset, start + size + offset ) );
 }
 
 TilesArea::TilesArea(const Tilemap &tmap, const TilePos& leftup, const Size& size)
 {
+  _size = size;
   append( tmap.area( leftup, size ) );
 }
 
-void TilesArea::add(const Tilemap& tmap, const TilePos& center, int distance)
+TilesArray TilesArea::northSide() const
 {
-  TilePos offset( distance, distance );
-  append( tmap.area( center - offset, center + offset ) );
+  TilesArray ret;
+  for( int i=0; i < _size.width(); i++ )
+    ret.push_back( (*this)[i] );
+
+  return ret;
 }
 
 TilesArea& TilesArea::operator=(const TilesArray& other)

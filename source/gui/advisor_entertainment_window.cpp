@@ -95,7 +95,7 @@ public:
       _service( service ),
       _info( info )
   {    
-    setFont( Font::create( FONT_1_WHITE ) );
+    setFont( FONT_1_WHITE );
   }
 
   virtual void _updateTexture( gfx::Engine& painter )

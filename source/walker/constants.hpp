@@ -58,7 +58,7 @@ BEGIN_NAMEDTYPE(Type,unknown),
   romeGuard,
   lion,
   spear,  //34
-  fishPlace,
+  fishPlace, //35
   seaMerchant,
   scholar,
   librarian,
@@ -94,7 +94,9 @@ BEGIN_NAMEDTYPE(Type,unknown),
   trigger,
   all = 0xff,
   any = all
-END_NAMEDTYPE(Type)                       
+END_NAMEDTYPE(Type)
+
+class Info;
 
 } //end namespace walker
 

@@ -245,10 +245,7 @@ PathwayList Tower::getWays(TilePos start, FortificationList dest)
   {
     Pathway tmp = PathwayHelper::create( start, wall->pos(), condition.byWalls() );
     if( tmp.isValid() )
-    {    
-      ret.push_back( PathwayPtr( new Pathway( tmp ) ) );
-      ret.back()->drop();
-    }
+      ret.push_back( ptr_make<Pathway>( tmp ) );
   }
 
   return ret;

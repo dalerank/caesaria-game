@@ -254,11 +254,10 @@ unsigned int HouseSpecification::consumptionInterval(HouseSpecification::Interva
 int HouseSpecification::findUnwishedBuildingNearby(HousePtr house, object::Type& rType, TilePos& refPos ) const
 {
   int aresOffset = math::clamp<int>( house->level() / 5, 1, 10 );
-  TilePos offset( aresOffset, aresOffset );
   TilePos housePos = house->pos();
   int houseDesrbl = house->desirability().base;
   BuildingList buildings = house->_city()->statistic().objects.find<Building>( object::any,
-                                                                               housePos - offset, housePos + offset );
+                                                                               housePos, aresOffset );
 
   int ret = 0;
   for( auto bld : buildings )

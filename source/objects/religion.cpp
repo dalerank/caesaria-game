@@ -50,10 +50,17 @@ class Temple::Impl
 {
 public:
   DivinityPtr divinity;
-  DateTime lastBuff;
-  gfx::Animation fireAnimation;
-  float buffValue;
-  PointsArray fires;
+  gfx::Pictures ground;
+
+  struct {
+    float value;
+    DateTime date;
+  } buff;
+
+  struct {
+    gfx::Animation animation;
+    PointsArray positions;
+  } fires;
 };
 
 Temple::Temple( DivinityPtr divinity, object::Type type, int imgId, const Size& size )
@@ -62,13 +69,13 @@ Temple::Temple( DivinityPtr divinity, object::Type type, int imgId, const Size& 
                     : Service::srvCount, type, size ), _td( new Impl )
 {
   _td->divinity = divinity;
-  _td->buffValue = 0;
+  _td->buff.value = 0;
   _picture().load( ResourceGroup::security, imgId );
   _fgPictures().resize( 3 );
-  _td->fireAnimation = gfx::AnimationBank::instance().simple( "temple_fire" );
+  _td->fires.animation = gfx::AnimationBank::instance().simple( "temple_fire" );
 }
 
-void Temple::_updateBuffs() {  _td->lastBuff = game::Date::current(); }
+void Temple::_updateBuffs() {  _td->buff.date = game::Date::current(); }
 
 void Temple::_changeAnimationState(bool value)
 {
@@ -76,7 +83,7 @@ void Temple::_changeAnimationState(bool value)
 
   if( !value )
   {
-    for( int index=0; index < (int)_td->fires.size(); index++ )
+    for( int index=0; index < (int)_td->fires.positions.size(); index++ )
       _fgPicture( 1 + index++ ) = gfx::Picture();
   }
 }
@@ -95,9 +102,11 @@ int Temple::_relationMultiplier() const
   return multiplier;
 }
 
-void Temple::_setBuffValue(float value) { _td->buffValue = value; }
-float Temple::_buffValue() const { return _td->buffValue; }
-DateTime Temple::_lastBuffDate() const { return _td->lastBuff; }
+void Temple::_setBuffValue(float value) { _td->buff.value = value; }
+float Temple::_buffValue() const { return _td->buff.value; }
+DateTime Temple::_lastBuffDate() const { return _td->buff.date; }
+gfx::Pictures& Temple::_ground() { return _td->ground; }
+const gfx::Pictures& Temple::_ground() const { return _td->ground; }
 
 void Temple::_updateAnimation(const unsigned long time)
 {
@@ -105,13 +114,24 @@ void Temple::_updateAnimation(const unsigned long time)
 
   if( _animation().isRunning() )
   {
-    _td->fireAnimation.update( time );
-    for( int index=0; index < (int)_td->fires.size(); index++ )
+    _td->fires.animation.update( time );
+    for( int index=0; index < (int)_td->fires.positions.size(); index++ )
     {
-      _fgPicture( 1 + index ) = _td->fireAnimation.currentFrame();
-      _fgPicture( 1 + index ).setOffset( _td->fires[index] );
+      _fgPicture( 1 + index ) = _td->fires.animation.currentFrame();
+      _fgPicture( 1 + index ).setOffset( _td->fires.positions[index] );
     }
   }
+}
+
+const gfx::Pictures& Temple::pictures(gfx::Renderer::Pass pass) const
+{
+  switch( pass )
+  {
+  case gfx::Renderer::overlayGround: return _ground();
+  default: break;
+  }
+
+  return ServiceBuilding::pictures( pass );
 }
 
 DivinityPtr Temple::divinity() const {  return _td->divinity; }
@@ -128,8 +148,7 @@ void Temple::deliverService()
   {
     ServiceBuilding::deliverService();
 
-    if( _city()->getOption( PlayerCity::godEnabled ) &&
-        !_city()->getOption( PlayerCity::c3gameplay ) )
+    if( _city()->getOption( PlayerCity::godEnabled ) )
     {
       _updateBuffs();
     }
@@ -142,8 +161,16 @@ void Temple::initialize(const object::Info& mdata)
 {
   ServiceBuilding::initialize( mdata );
 
-  _td->fires.load( mdata.getOption( "fires" ).toList() );
-  _td->buffValue = mdata.getOption( "buffValue", _td->buffValue );
+  _td->fires.positions.load( mdata.getOption( "fires" ).toList() );
+  _td->buff.value = mdata.getOption( "buffValue", _td->buff.value );
+}
+
+bool Temple::build(const city::AreaInfo& info)
+{
+  if( info.city->getOption( PlayerCity::c3gameplay ) )
+    _ground().clear();
+
+  return ServiceBuilding::build( info );
 }
 
 Temple::~Temple(){}
@@ -264,7 +291,8 @@ bool TempleOracle::build( const city::AreaInfo& info )
 SmallTemple::SmallTemple( DivinityPtr divinity, object::Type type, int imgId )
   : Temple( divinity, type, imgId, Size(2) )
 {
-  setMaximumWorkers( 2 );
+  setMaximumWorkers( 2 );  
+  _ground().append( "ground", 2 );
 }
 
 unsigned int SmallTemple::currentVisitors() const { return 750; }
@@ -273,6 +301,7 @@ BigTemple::BigTemple( DivinityPtr divinity, object::Type type, int imgId )
   : Temple( divinity, type, imgId, Size(3) )
 {
   setMaximumWorkers( 8 );
+  _ground().append( "ground", 3 );
 }
 
 unsigned int BigTemple::currentVisitors() const { return 1500; }

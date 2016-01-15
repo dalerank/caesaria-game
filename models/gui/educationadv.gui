@@ -14,6 +14,11 @@
     text : "##work##"
   }
 
+  lbIcon#Label : {
+    geometry : [ 10, 10, 50, 50 ]
+    image : "paneling_00262"
+  }
+
   lbMaxAvailableText#Label : {
     font : "FONT_1"
     geometry : [ 290, 80, 450, 105 ]

@@ -104,7 +104,7 @@ Reservoir::Reservoir()
     : WaterSource( object::reservoir, Size( 3 ) )
 {  
   _isWaterSource = false;
-  _picture().load( ResourceGroup::utilitya, 34 );
+  setPicture( info().randomPicture( size() ) );
   
   // utilitya 34      - empty reservoir
   // utilitya 35 ~ 42 - full reservoir animation
@@ -121,7 +121,7 @@ Reservoir::~Reservoir(){}
 
 bool Reservoir::build( const city::AreaInfo& info )
 {
-  Construction::build( info );
+  WaterSource::build( info );
 
   _isWaterSource = _isNearWater( info.city, info.pos );
   _setError( _isWaterSource ? "" : "##need_connect_to_other_reservoir##");
@@ -131,15 +131,10 @@ bool Reservoir::build( const city::AreaInfo& info )
 
 bool Reservoir::_isNearWater(PlayerCityPtr city, const TilePos& pos ) const
 {
-  bool near_water = false;  // tells if the factory is next to a mountain
-
   Tilemap& tilemap = city->tilemap();
   TilesArray perimetr = tilemap.rect( pos + TilePos( -1, -1 ), size() + Size( 2 ), !Tilemap::checkCorners );
 
-  for( auto& tile : perimetr)
-    near_water |= tile->getFlag( Tile::tlWater );
-
-  return near_water;
+  return perimetr.waters().size() > 0;  // tells if the factory is next to a mountain
 }
 
 void Reservoir::initTerrain(Tile &terrain) {}

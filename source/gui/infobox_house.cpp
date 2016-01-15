@@ -148,7 +148,7 @@ AboutHouse::AboutHouse(Widget* parent, PlayerCityPtr city, const Tile& tile )
           housePrettyType = overlay.isValid() ? overlay->info().prettyName() : "";
         }
 
-        housePrettyType = utils::format( 0xff, "(%s)", _(housePrettyType) );
+        housePrettyType = fmt::format( "({})", _(housePrettyType) );
         text = utils::replace( text, "{0}", housePrettyType );
       }
     }
@@ -254,7 +254,7 @@ void AboutHouse::drawHabitants( HousePtr house )
   {
     // too many habitants!
     freeRoomText = fmt::format( "{} {} {}", current, _("##no_room_for_citizens##"),-freeRoom);
-    lbHabitants.setFont( Font::create( FONT_2_RED ) );
+    lbHabitants.setFont( FONT_2_RED );
   }
 
   lbHabitants.setText( freeRoomText );
@@ -268,7 +268,7 @@ void AboutHouse::drawGood(HousePtr house, const good::Product& goodType, const i
   // pictures of goods
   const Picture& pic = good::Helper::picture( goodType );
   Label& lb = add<Label>( Rect( Point( 30 + 100 * col, startY + 2 + 30 * row), Size( 80, 50) ) );
-  lb.setFont( Font::create( FONT_2 ) );
+  lb.setFont( FONT_2 );
   lb.setIcon( pic );
   lb.setText( text );
   lb.setTextOffset( Point( 30, 0 ));

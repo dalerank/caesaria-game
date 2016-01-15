@@ -113,11 +113,11 @@ protected:
     {
       switch(event.mouse.type)
       {
-      case mouseLbtnRelease: emit onShowMessage( selected() ); break;
-      case mouseRbtnRelease: emit onRemoveMessage( selected() ); break;
+      case NEvent::Mouse::mouseLbtnRelease: emit onShowMessage( selected() ); break;
+      case NEvent::Mouse::mouseRbtnRelease: emit onRemoveMessage( selected() ); break;
       default: break;
 
-      case mouseMoved:
+      case NEvent::Mouse::moved:
       {
         int index = itemAt( event.mouse.pos() );
         if( index >= 0 )
@@ -158,7 +158,7 @@ ScribesMessages::ScribesMessages( Widget* p, PlayerCityPtr city )
   setupUI( ":/gui/scribesmessages.gui" );
   setCenter( p->center() );
 
-  WidgetEscapeCloser::insertTo( this );
+  WidgetClose::insertTo( this, KEY_RBUTTON );
   GameAutoPause::insertTo( this );
 
   _d->lbxMessages = &add<ScribesListBox>( Rect( 16, 60, width() - 16, height() - 50 ) );

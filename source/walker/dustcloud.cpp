@@ -79,14 +79,14 @@ void DustCloud::create(PlayerCityPtr city, const TilePos& start, unsigned int ra
     TilePos offset;
     switch( direction )
     {
-    case direction::north: offset = TilePos( 0, 1 ); break;
-    case direction::northEast: offset = TilePos( 1, 1 ); break;
-    case direction::east: offset = TilePos( 1, 0 ); break;
-    case direction::southEast: offset = TilePos( 1, -1 ); break;
-    case direction::south: offset = TilePos( 0, -1 ); break;
-    case direction::southWest: offset = TilePos( -1, -1 ); break;
-    case direction::west: offset = TilePos( -1, 0 ); break;
-    case direction::northWest: offset = TilePos( -1, 1 ); break;
+    case direction::north:      offset = offset.nb().north();     break;
+    case direction::northEast:  offset = offset.nb().northeast(); break;
+    case direction::east:       offset = offset.nb().east();      break;
+    case direction::southEast:  offset = offset.nb().southeast(); break;
+    case direction::south:      offset = offset.nb().south();     break;
+    case direction::southWest:  offset = offset.nb().southwest(); break;
+    case direction::west:       offset = offset.nb().west();      break;
+    case direction::northWest:  offset = offset.nb().northwest(); break;
     }
 
     dustcloud->send2City( start, start + offset * range);
@@ -98,7 +98,6 @@ DustCloud::DustCloud(PlayerCityPtr city )
 {
   _d->animation.load( ResourceGroup::sprites, 1, 8 );
   _d->animation.setDelay( Animation::hugeSlow );
-  //_d->animation.setOffset( Point( 5, 7 ) );
 
   setName( _("##dust##") );
 
@@ -185,9 +184,6 @@ void DustCloud::initialize(const VariantMap &options)
   if( !anim.empty() )
   {
     _d->animation.clear();
-    _d->animation.load( anim.get( "rc" ).toString(),
-                        anim.get( "start" ),
-                        anim.get( "frames" ) );
-    _d->animation.setDelay( anim.get( "delay" ) );
+    _d->animation.simple( anim );
   }
 }

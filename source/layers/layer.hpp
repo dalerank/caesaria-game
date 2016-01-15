@@ -28,6 +28,7 @@
 #include "gfx/render_info.hpp"
 #include "core/font.hpp"
 #include "core/signals.hpp"
+#include "core/event.hpp"
 #include "walker/constants.hpp"
 #include "core/flagholder.hpp"
 
@@ -44,7 +45,8 @@ public:
   typedef enum { drawGrid=0x1, shadowOverlay=0x2, showPath=0x4, windowActive=0x8, showRoads=0x10,
                  showObjectArea=0x20, showWalkableTiles=0x40, showLockedTiles=0x80, showFlatTiles=0x100,
                  borderMoving=0x200, mayChangeLayer=0x400, oldGraphics=0x800, mmbMoving=0x1000,
-                 showBuildings=0x2000, showTrees=0x4000, overdrawOnBuild=0x8000, rotateEnabled=0x10000
+                 showBuildings=0x2000, showTrees=0x4000, overdrawOnBuild=0x8000, rotateEnabled=0x10000,
+                 showRocks=0x20000
                } Flag;
   static DrawOptions& instance();
   static bool getFlag( Flag flag );
@@ -55,6 +57,16 @@ private:
   DrawOptions();
   EnumsHelper<int> _helper;
 };
+
+class LayerDrawPass : public ReferenceCounted
+{
+public:
+  typedef enum { gui=0 } Type;
+  virtual void draw( const gfx::RenderInfo& rinfo, gfx::Tile& tile ) {}
+  virtual std::string name() { return ""; }
+  virtual void onEvent( NEvent& event ) {}
+};
+typedef SmartPtr<LayerDrawPass> LayerDrawPassPtr;
 
 class Layer : public ReferenceCounted
 {
@@ -74,15 +86,15 @@ public:
   //draw gfx after walkers
   virtual void drawWalkerOverlap( const gfx::RenderInfo& rinfo, gfx::Tile& tile, const int depth );
 
-  virtual void handleEvent( NEvent& event );
   virtual void drawPass(const gfx::RenderInfo& rinfo, gfx::Tile& tile, gfx::Renderer::Pass pass );
   virtual void drawArea(const gfx::RenderInfo& rinfo, const gfx::TilesArray& area,
                         const std::string& resourceGroup, int tileId );
 
   virtual void drawLands(const gfx::RenderInfo& rinfo, gfx::Camera* camera );
   virtual void drawLandTile( const gfx::RenderInfo& rinfo, gfx::Tile &tile );
+  virtual void drawSubtrateTile( const gfx::RenderInfo& rinfo, gfx::Tile &tile );
   virtual void drawFlatTile( const gfx::RenderInfo& rinfo, gfx::Tile& tile );
-  virtual void drawWalkers(const gfx::RenderInfo& rinfo, const gfx::Tile& tile);
+  virtual void drawWalkers( const gfx::RenderInfo& rinfo, const gfx::Tile& tile);
   virtual void init( Point cursor );
   virtual void beforeRender( gfx::Engine& engine);
   virtual void afterRender( gfx::Engine& engine);
@@ -90,11 +102,15 @@ public:
   virtual void renderUi( gfx::Engine& engine );
   virtual void registerTileForRendering(gfx::Tile&);
   virtual void changeLayer( int type );
-  virtual int nextLayer() const;
+  virtual int  nextLayer() const;
   virtual void destroy();
+  virtual void addDrawPass( int type, LayerDrawPassPtr pass );
+
+  virtual void onEvent( const NEvent& event );
+  virtual bool onMouseMoved( const NEvent::Mouse& event );
+  virtual bool onMouseBtnRelease( const NEvent::Mouse& event );
 
   virtual ~Layer();
-
 protected:
   virtual void _initialize();
 
@@ -104,13 +120,13 @@ protected:
   Point _lastCursorPos() const;
   void _setStartCursorPos( Point pos );
   Point _startCursorPos() const;
-  gfx::Tile* _currentTile() const;
-  bool _isMovingButtonPressed( NEvent& event ) const;
+  bool _isMovingButtonPressed( const NEvent::Mouse& event ) const;
   void _setTooltipText( const std::string& text );
   void _addWalkerType( walker::Type wtype );
   WalkerTypes& _visibleWalkers();
   bool _isVisibleObject( object::Type ovType );
-  bool _moveCamera( NEvent& event );
+  gfx::Tile* _currentTile() const;
+  bool _moveCamera( const NEvent& event );
   gfx::Tilemap& _map() const;
 
   gfx::TilesArray _getSelectedArea( TilePos startPos=TilePos(-1,-1) );

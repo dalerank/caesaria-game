@@ -23,6 +23,7 @@
 #include "gfx/decorator.hpp"
 #include "gfx/engine.hpp"
 #include "core/color_list.hpp"
+#include "gfx/drawstate.hpp"
 #include "core/logger.hpp"
 #include "core/variant_list.hpp"
 #include "gfx/picturesarray.hpp"
@@ -73,14 +74,13 @@ class PushButton::Impl
 public:
   struct {
     bool pressed = false;
-    bool pushButton;
-    bool drawBody;
-    bool drawText = true;
+    bool pushButton = false;
   } is;
 
   struct {
     bool textChanged;
     bool dirty;
+    bool visible = true;
     PushButton::BackgroundStyle style;
   } bg;
 
@@ -91,6 +91,7 @@ public:
     Rect rect;
     Picture picture;
     Point offset;
+    bool visible = true;
   } text;
 
   struct {
@@ -109,9 +110,6 @@ public:
 
   Impl() : clickTime(0)
   {
-    is.pressed = false;
-    is.pushButton = false;
-    is.drawBody = true;
     for( int i=0; i < StateCount; i++)
     {
       auto& state = buttonStates[ ElementState(i) ];
@@ -373,6 +371,11 @@ void PushButton::setIconOffset(Point offset)
 void PushButton::setIcon(const std::string& rcname, int index)
 {
   Picture pic( rcname, index );
+  setIcon( pic );
+}
+
+void PushButton::setIcon(Picture pic)
+{
   for( auto& state : _dfunc()->buttonStates )
     state.icon.picture = pic;
 }
@@ -458,9 +461,9 @@ bool PushButton::onEvent(const NEvent& event)
   case sEventMouse:
     switch( event.mouse.type  )
     {
-    case mouseMoved:     break;
-    case mouseLbtnPressed:        return _leftMouseBtnPressed( event );
-    case mouseLbtnRelease:        return _btnMouseUp( event );
+    case NEvent::Mouse::moved:       break;
+    case NEvent::Mouse::btnLeftPressed:   return _leftMouseBtnPressed( event );
+    case NEvent::Mouse::mouseLbtnRelease: return _btnMouseUp( event );
     default:
     break;
     }
@@ -556,9 +559,9 @@ void PushButton::beforeDraw( gfx::Engine& painter )
 	Widget::beforeDraw( painter  );
 }
 
-bool PushButton::isBodyVisible() const { return _dfunc()->is.drawBody; }
-bool gui::PushButton::isTextVisible() const { return _dfunc()->is.drawText; }
-void gui::PushButton::setTextVisible(bool value) { _dfunc()->is.drawText = value; }
+bool PushButton::isBodyVisible() const { return _dfunc()->bg.visible; }
+bool gui::PushButton::isTextVisible() const { return _dfunc()->text.visible; }
+void gui::PushButton::setTextVisible(bool value) { _dfunc()->text.visible = value; }
 
 //! draws the element and its children
 void PushButton::draw( gfx::Engine& painter )
@@ -573,18 +576,13 @@ void PushButton::draw( gfx::Engine& painter )
 
   if( isBodyVisible() )
   {
-    if( state.background.isValid() )
-      painter.draw( state.background, absoluteRect(), &absoluteClippingRectRef() );
-    else
-    {
-      if( state.batch.body.valid() )
-        painter.draw( state.batch.body, &absoluteClippingRectRef() );
-      else
-        painter.draw( state.batch.fallback, absoluteRect().lefttop(), &absoluteClippingRectRef() );
-    }
+    DrawState pipe( painter, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+    pipe.draw( state.background )
+        .fallback( state.batch.body )
+        .fallback( state.batch.fallback );
 	}
 
-  if( _d.is.drawText && _d.text.picture.isValid() )
+  if( _d.text.visible && _d.text.picture.isValid() )
   {
     painter.draw( _d.text.picture, screenLeft(), screenTop(), &absoluteClippingRectRef() );
   }
@@ -643,8 +641,9 @@ void PushButton::setFont( const Font& font )
   d.bg.dirty = true;
 }
 
+void PushButton::setFont(FontType type, NColor color) { Widget::setFont(type,color); }
 Picture& PushButton::_textPicture() { return _dfunc()->text.picture; }
-Font PushButton::font( ElementState state ) {  return _dfunc()->buttonStates[ state ].font;}
+Font PushButton::font( ElementState state ) {  return _dfunc()->buttonStates[ state ].font; }
 
 void PushButton::_finalizeResize()
 {

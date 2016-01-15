@@ -260,10 +260,8 @@ void Road::destroy()
 
   TilesArray tiles = area();
 
-  foreach( it, tiles )
-  {
-    (*it)->setFlag( Tile::tlRoad, false );
-  }
+  for( auto it : tiles )
+    it->setFlag( Tile::tlRoad, false );
 }
 
 void Road::burn() {}
@@ -335,9 +333,7 @@ bool Plaza::canBuild(const city::AreaInfo& areaInfo) const
   TilesArea area( tilemap, areaInfo.pos, size() ); // something very complex ???
   for( auto tile : area )
   {
-    object::Type type = tile->overlay().isValid()
-                          ? tile->overlay()->type()
-                          : object::unknown;
+    object::Type type = object::typeOrDefault( tile->overlay() );
     is_constructible &= (type == object::road);
   }
 

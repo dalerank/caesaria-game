@@ -43,8 +43,6 @@ public:
 
   virtual void draw( gfx::Engine& engine );  // draw on screen
 
-  virtual bool onEvent( const NEvent& event);
-
   virtual bool isPointInside(const Point& point) const;
 
   void setTitle( const std::string& title );

@@ -39,6 +39,13 @@ void Neptune::updateRelation(float income, PlayerCityPtr city)
   RomeDivinity::updateRelation( income, city );
 }
 
+object::Type Neptune::templeType(Divinity::TempleSize size) const
+{
+    return size == bigTemple
+                    ? BIG_TEMPLE_TYPE(neptune)
+                    : SML_TEMPLE_TYPE(neptune);
+}
+
 Neptune::Neptune()
   : RomeDivinity( RomeDivinity::Neptune )
 {

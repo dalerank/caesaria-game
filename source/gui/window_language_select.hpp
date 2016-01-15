@@ -46,7 +46,6 @@ public signals:
 private:
   void _changeLanguage(const ListBoxItem& item);
   void _loadLanguages(ListBox& lbx, const vfs::Path& filename);
-  void _apply();
 
   std::string _defaultFont;
 };

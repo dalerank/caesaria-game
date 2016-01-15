@@ -200,6 +200,7 @@ APPEND_NAMEDTYPE_ID(coast,                99)
 APPEND_NAMEDTYPE_ID(rock,                100)
 APPEND_NAMEDTYPE_ID(plateau,             101)
 APPEND_NAMEDTYPE_ID(attackTrigger,       102)
+APPEND_NAMEDTYPE_ID(flooded_clay_pit,    103)
 
 APPEND_NAMEDTYPE(userType)
 
@@ -219,16 +220,13 @@ public:
 };
 
 Type toType( const std::string& name);
-
-class Helper : public EnumsHelper<Type>
-{
-public:
-  static Helper& instance();
-private:
-  Helper();
-};
-
 Type findType( const std::string& name );
+
+template<class ObjectPtr>
+inline Type typeOrDefault( ObjectPtr obj, Type defaultValue=unknown )
+{
+  return obj.isValid() ? obj->type() : defaultValue;
+}
 
 } //end namespace object
 

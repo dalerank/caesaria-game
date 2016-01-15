@@ -47,7 +47,7 @@ void HealthUpdater::timeStep( const unsigned int time)
     _d->isDeleted = (_d->endTime < game::Date::current());
 
     Logger::warning( "HealthUpdater: execute service" );
-    auto houses = _city()->statistic().houses.all();
+    auto houses = _city()->statistic().houses.habitable();
 
     for( auto house : houses )
       house->updateState( pr::health, _d->value );

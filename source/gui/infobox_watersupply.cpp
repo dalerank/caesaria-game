@@ -150,13 +150,9 @@ AboutWell::AboutWell(Widget* parent, PlayerCityPtr city, const Tile& tile)
       else
       {
         auto houses = well->coverageArea().overlays<House>();
-        bool haveLowHealthHouse = false;
-        for( auto& house : houses )
-        {
-          haveLowHealthHouse |= house->state( pr::health ) < 10;
-        }
+        int haveLowHealthHouse = houses.count( [] (HousePtr h) { return h->state( pr::health ) < 10; });
 
-        text = haveLowHealthHouse
+        text = haveLowHealthHouse > 0
                 ? "##well_infected_info##"
                 : "##well_info##";
       }

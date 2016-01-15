@@ -82,6 +82,7 @@ public:
 
   virtual void setIcon( const std::string& rcname, int index, ElementState state );
   virtual void setIcon( const std::string& rcname, int index );
+  virtual void setIcon( gfx::Picture pic );
   virtual void setIconOffset( Point offset );
 
   virtual void setBackgroundStyle( const BackgroundStyle style );
@@ -89,6 +90,7 @@ public:
 
   virtual void setFont( const Font& font, ElementState state );
   virtual void setFont( const Font& font );
+  virtual void setFont( FontType type, NColor color=0 );
 
   virtual Font font( ElementState state );
 

@@ -29,7 +29,7 @@ public:
   virtual int type() const;
   virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
   virtual void render(gfx::Engine& engine);
-  virtual void handleEvent(NEvent& event);
+  virtual void onEvent( const NEvent& event);
 private:
   void _updatePaths();
   int _getLevelValue(HousePtr house);

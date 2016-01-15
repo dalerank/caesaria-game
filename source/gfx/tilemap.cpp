@@ -512,7 +512,7 @@ void Tilemap::turnLeft()
   {
     const Impl::TurnInfo& ti = it.second;
 
-    Picture pic = ti.overlay.isValid() ? ti.overlay->picture() : ti.pic;
+    const Picture& pic = ti.overlay.isValid() ? ti.overlay->picture() : ti.pic;
     int pSize = (pic.width() + 2) / _d->virtWidth;
 
     pSize = math::clamp<int>( pSize, 1, 10);

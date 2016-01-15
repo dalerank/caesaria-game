@@ -77,13 +77,13 @@ void Troubles::drawTile( const RenderInfo& rinfo, Tile& tile)
   tile.setRendered();
 }
 
-void Troubles::handleEvent(NEvent& event)
+void Troubles::onEvent( const NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
@@ -127,7 +127,7 @@ void Troubles::handleEvent(NEvent& event)
     }
   }
 
-  Layer::handleEvent( event );
+  Layer::onEvent( event );
 }
 
 Troubles::Troubles( Camera& camera, PlayerCityPtr city, int type )

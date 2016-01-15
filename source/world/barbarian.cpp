@@ -93,7 +93,7 @@ void Barbarian::updateStrength(int value)
   setStrength( strength() + value );
 }
 
-int Barbarian::viewDistance() const { return config::barbarian::viewRange; }
+int Barbarian::searchRange() const { return config::barbarian::viewRange; }
 void Barbarian::setMinpop4attack(int value) { _d->minPop4attack = value; }
 
 bool Barbarian::_isAgressiveArmy(ArmyPtr other) const
@@ -121,7 +121,7 @@ void Barbarian::_check4attack()
       _attackObject( item.second.as<Object>() );
       break;
     }
-    else if( item.first < viewDistance() )
+    else if( item.first < searchRange() )
     {
       bool validWay = _findWay( location(), item.second->location() );
       if( validWay )
@@ -236,7 +236,6 @@ Barbarian::Barbarian( EmpirePtr empire )
   _d->minPop4attack = 1000;
   setSpeed( 4.f );
 
-  _animation().clear();
   _animation().load( "world_barbarian" );
 }
 

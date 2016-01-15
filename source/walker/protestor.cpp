@@ -161,8 +161,7 @@ void Protestor::timeStep(const unsigned long time)
   {
     if( game::Date::isDayChanged() )
     {
-      HouseList constructions = _city()->statistic().objects.find<House>( object::house,
-                                                                    pos() - TilePos( 1, 1), pos() + TilePos( 1, 1) );
+      HouseList constructions = _city()->statistic().objects.find<House>( object::house, pos(), 1 );
 
       if( constructions.empty() )
       {
@@ -172,15 +171,10 @@ void Protestor::timeStep(const unsigned long time)
       }
       else
       {
-        HouseList houses = constructions.select<House>();
+        HouseList houses = constructions.select<House>()
+                                        .where( [] (HousePtr h) { return h->state( pr::happiness ) > 20; } );
         for( auto house : houses )
-        {
-          if( house->state( pr::happiness ) > 20 )
-          {
-            house->updateState( pr::happiness, -0.5 );
-          }
-          break;
-        }
+          house->updateState( pr::happiness, -0.5 );
       }
     }
   }

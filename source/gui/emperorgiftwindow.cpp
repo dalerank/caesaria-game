@@ -79,7 +79,7 @@ EmperorGift::EmperorGift(Widget* p, int money , const DateTime &lastgift)
     int monthsLastGift = lastgift.monthsTo( game::Date::current() );
     std::string text = monthsLastGift > 100
                               ? _( "##too_old_sent_gift##")
-                              : utils::format( 0xff, "%s  %d  %s",
+                              : fmt::format( "{}  {}  {}",
                                              _("##time_since_last_gift##"),
                                              monthsLastGift,
                                              _("##mo##") );
@@ -88,26 +88,15 @@ EmperorGift::EmperorGift(Widget* p, int money , const DateTime &lastgift)
 
   if( lbPlayerMoney )
   {
-    std::string text = utils::format( 0xff, "%s %d Dn", _( "##you_have_money##"), money );
+    std::string text = fmt::format( "{} {} Dn", _( "##you_have_money##"), money );
     lbPlayerMoney->setText( text );
   }
 
-  WidgetEscapeCloser::insertTo( this );
+  WidgetClose::insertTo( this, KEY_RBUTTON );
   setModal();
 }
 
 EmperorGift::~EmperorGift() {}
-
-bool EmperorGift::onEvent(const NEvent& event)
-{
-  if( event.EventType == sEventMouse && event.mouse.isRightPressed() )
-  {
-    deleteLater();
-    return true;
-  }
-
-  return Window::onEvent( event );
-}
 
 Signal1<int>& EmperorGift::onSendGift() { return _dfunc()->sendGiftSignal; }
 

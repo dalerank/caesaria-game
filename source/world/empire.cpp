@@ -64,14 +64,14 @@ public:
 
   void setAvailable( bool value )
   {
-    for( auto& city : *this )
+    for( auto city : *this )
       city->setAvailable( value );
   }
 
   void update( unsigned int time )
   {
-    for( auto& it : *this )
-      it->timeStep( time );
+    for( auto city : *this )
+      city->timeStep( time );
   }
 
   CityPtr find( const std::string& name ) const
@@ -82,9 +82,8 @@ public:
   VariantMap save() const
   {
     VariantMap ret;
-    foreach( it, *this )
+    for( auto city : *this )
     {
-      auto city = *it;
       //not need save city player
       if( city->name() == playerCity )
         continue;
@@ -136,7 +135,7 @@ public:
 
   void update( unsigned int time )
   {
-    for( auto& obj : *this )
+    for( auto obj : *this )
       obj->timeStep( time );
 
     utils::eraseIfDeleted( *this );
@@ -146,7 +145,7 @@ public:
   VariantMap save() const
   {
     VariantMap ret;
-    for( auto& obj : *this)
+    for( auto obj : *this)
     {
       VariantMap objSave;
       obj->save( objSave );
@@ -158,7 +157,7 @@ public:
 
   void load( const VariantMap& stream, EmpirePtr empire )
   {
-    for( auto& item : stream )
+    for( const auto& item : stream )
     {
       const VariantMap& vm = item.second.toMap();
       std::string objectType = vm.get( "type" ).toString();
@@ -243,16 +242,16 @@ void Empire::_initializeObjects( vfs::Path filename )
 
 void Empire::_initializeCities( vfs::Path filename )
 {
-  VariantMap cities = config::load( filename.toString() );
+  VariantMap citiesData = config::load( filename.toString() );
 
   _d->cities.clear();
-  if( cities.empty() )
+  if( citiesData.empty() )
   {
     Logger::warning( "Empire: can't load cities model from " + filename.toString() );
     return;
   }
 
-  for( const auto& item : cities )
+  for( const auto& item : citiesData )
   {
     CityPtr city = ComputerCity::create( this, item.first );
     addCity( city );
@@ -278,7 +277,7 @@ void Empire::_initializeCapital()
 void Empire::initialize(vfs::Path citiesPath, vfs::Path objectsPath, vfs::Path filemap)
 {
   VariantMap emap = config::load( filemap.toString() );
-  _d->emap.initialize( emap );
+  _d->emap.load( emap );
 
   _initializeCities( citiesPath );
   _initializeObjects( objectsPath );
@@ -398,32 +397,39 @@ TraderoutePtr Empire::createTradeRoute(std::string start, std::string stop )
 
   bool startAndDstCorrect = startCity.isValid() && stopCity.isValid();
   if( startAndDstCorrect )
-  {
+  {    
+    EmpireMap::TerrainType startType = (EmpireMap::TerrainType)startCity->tradeType();
+    EmpireMap::TerrainType stopType = (EmpireMap::TerrainType)stopCity->tradeType();
+    bool land = (startType & EmpireMap::trLand) && (stopType & EmpireMap::trLand);
+    bool sea = (startType & EmpireMap::trSea) && (stopType & EmpireMap::trSea);
+
+    PointsArray lpnts, spnts;
+    if( land )
+    {
+      lpnts = _d->emap.findRoute( startCity->location(), stopCity->location(), EmpireMap::trLand );
+    }
+
+    if( sea )
+    {
+      spnts = _d->emap.findRoute( startCity->location(), stopCity->location(), EmpireMap::trSea );
+    }
+
+    bool haveLandOrSeaRoute = (!lpnts.empty() || !spnts.empty());
+    if( !haveLandOrSeaRoute )
+    {
+      Logger::warning( "WARNING!!! Trading::load cant create route from {0} to {1}, because it inaccessible",
+                       start, stop );
+      return TraderoutePtr();
+    }
+
     TraderoutePtr route = _d->troutes.create( start, stop );
     if( !route.isValid() )
     {
       Logger::warning( "WARNING!!! Trading::load cant create route from {0} to {1}",
                        start, stop );
-      return route;
+      return TraderoutePtr();
     }
 
-    EmpireMap::TerrainType startType = (EmpireMap::TerrainType)startCity->tradeType();
-    EmpireMap::TerrainType stopType = (EmpireMap::TerrainType)stopCity->tradeType();
-    bool land = (startType & EmpireMap::land) && (stopType & EmpireMap::land);
-    bool sea = (startType & EmpireMap::sea) && (stopType & EmpireMap::sea);
-
-    PointsArray lpnts, spnts;
-    if( land )
-    {
-      lpnts = _d->emap.findRoute( startCity->location(), stopCity->location(), EmpireMap::land );
-    }
-
-    if( sea )
-    {
-      spnts = _d->emap.findRoute( startCity->location(), stopCity->location(), EmpireMap::sea );
-    }
-
-    bool haveLandOrSeaRoute = (!lpnts.empty() || !spnts.empty());
     if( haveLandOrSeaRoute )
     {
       if( lpnts.empty() )

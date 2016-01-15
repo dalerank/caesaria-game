@@ -49,7 +49,7 @@ public:
 
     _icon.load( "whblock", 1 );
     setBackgroundStyle( PushButton::blackBorderUp );
-    setFont( Font::create( FONT_2_WHITE ) );
+    setFont( FONT_2_WHITE );
     _updateText();
   }
 
@@ -94,13 +94,13 @@ OrderGoodWidget::OrderGoodWidget(Widget* parent, int index, good::Product good, 
     _storage( storage )
 {
   _type = good;
-  setFont( Font::create( FONT_1_WHITE ) );
+  setFont( FONT_1_WHITE );
 
   _btnChangeRule = &add<PushButton>( Rect( 140, 0, 140 + 240, height() ), "", -1, false, PushButton::blackBorderUp );
   _btnVolume = &add<VolumeButton>( Rect( _btnChangeRule->righttop(), Size( 40, height() ) ),
                                    _storage.capacity( good ), _storage.capacity() );
 
-  _btnChangeRule->setFont( Font::create( FONT_1_WHITE ) );
+  _btnChangeRule->setFont( FONT_1_WHITE );
   updateBtnText();
 
   CONNECT_LOCAL( _btnChangeRule, onClicked(), OrderGoodWidget::changeRule );
@@ -113,11 +113,7 @@ void OrderGoodWidget::_updateTexture(Engine& painter)
 
   std::string goodName = _( "##" + good::Helper::getTypeName( _type ) + "##" );
 
-  if( _textPicture().isValid() )
-  {
-    Font rfont = font();
-    rfont.draw( _textPicture(), goodName, 55, 0 );
-  }
+  canvasDraw( goodName, Point( 55, 0 ) );
 }
 
 void OrderGoodWidget::draw(Engine& painter)
@@ -145,7 +141,7 @@ void OrderGoodWidget::updateBtnText()
   }
 
   const char* ruleName[] = { "##accept##", "##reject##", "##deliver##", "##none##" };
-  _btnChangeRule->setFont( Font::create( rule == good::Orders::reject ? FONT_1_RED : FONT_1_WHITE ) );
+  _btnChangeRule->setFont( rule == good::Orders::reject ? FONT_1_RED : FONT_1_WHITE );
   _btnChangeRule->setText( _(ruleName[ rule ]) );
 }
 

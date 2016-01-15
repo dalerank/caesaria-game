@@ -111,14 +111,14 @@ void Damage::drawTile( const RenderInfo& rinfo, Tile& tile )
   tile.setRendered();
 }
 
-void Damage::handleEvent(NEvent& event)
+void Damage::onEvent( const NEvent& event)
 {
   __D_REF(d,Damage)
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
@@ -138,7 +138,7 @@ void Damage::handleEvent(NEvent& event)
     }
     break;
 
-    case mouseLbtnPressed:
+    case NEvent::Mouse::btnLeftPressed:
     {
       if( d.overlay.underMouse.is<EngineerPost>() )
       {
@@ -152,7 +152,7 @@ void Damage::handleEvent(NEvent& event)
     }
   }
 
-  Layer::handleEvent( event );
+  Layer::onEvent( event );
 }
 
 void Damage::afterRender(Engine& engine)

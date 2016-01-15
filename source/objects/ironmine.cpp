@@ -57,14 +57,12 @@ bool IronMine::build(const city::AreaInfo& info)
 bool IronMine::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool is_constructible = Factory::canBuild( areaInfo );
-  bool near_mountain = false;  // tells if the factory is next to a mountain
 
   Tilemap& tilemap = areaInfo.city->tilemap();
   TilesArray perimetr = tilemap.rect( areaInfo.pos + TilePos( -1, -1 ),
-                                              areaInfo.pos + TilePos(3, 3), Tilemap::checkCorners );
+                                      areaInfo.pos + TilePos( 3, 3 ), Tilemap::checkCorners );
 
-  for( auto tile : perimetr )
-    near_mountain |= tile->getFlag( Tile::tlRock );
+  bool near_mountain = !perimetr.select( Tile::tlRock ).empty();  // tells if the factory is next to a mountain
 
   const_cast< IronMine* >( this )->_setError( near_mountain ? "" : "##iron_mine_need_mountain_near##" );
 

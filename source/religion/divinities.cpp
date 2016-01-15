@@ -163,6 +163,7 @@ float RomeDivinity::relation() const { return _relation.current; }
 float RomeDivinity::monthDecrease() const { return 0.5f; }
 void RomeDivinity::setEffectPoint(int value) { _effectPoints = value; }
 int RomeDivinity::wrathPoints() const { return _wrathPoints; }
+object::Type RomeDivinity::templeType(Divinity::TempleSize size) const { return object::unknown; }
 DateTime RomeDivinity::lastFestivalDate() const { return _lastFestival; }
 
 void RomeDivinity::updateRelation(float income, PlayerCityPtr city)

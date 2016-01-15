@@ -43,6 +43,7 @@ ContextMenuItem* MainMenu::addItem(const std::string& text, int commandId, bool 
   {
     ret->setFlag( ContextMenuItem::drawSubmenuSprite, false );
     ret->setBackgroundMode( Label::bgNone );
+    ret->setSubMenuIconVisible( false );
   }
 
   return ret;
@@ -78,7 +79,7 @@ bool MainMenu::onEvent(const NEvent& event)
     case sEventMouse:
       switch(event.mouse.type)
       {
-      case mouseLbtnPressed:
+      case NEvent::Mouse::btnLeftPressed:
       {
         if (!isFocused())
           setFocus();
@@ -100,7 +101,7 @@ bool MainMenu::onEvent(const NEvent& event)
          return true;
       }
 
-      case mouseLbtnRelease:
+      case NEvent::Mouse::mouseLbtnRelease:
       {
         Point p(event.mouse.pos() );
         if (!absoluteClippingRect().isPointInside(p))
@@ -113,7 +114,7 @@ bool MainMenu::onEvent(const NEvent& event)
         return true;
       }
 
-      case mouseMoved:
+      case NEvent::Mouse::moved:
       {
         if (isFocused() && hovered() >= 0)
         {

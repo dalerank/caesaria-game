@@ -29,7 +29,7 @@ public:
   Troubles( gfx::Camera& camera, PlayerCityPtr city, int type );
   virtual int type() const;
   virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
-  virtual void handleEvent(NEvent& event);
+  virtual void onEvent( const NEvent& event);
 
 private:
   int _type;

@@ -52,7 +52,7 @@ using namespace events;
 
 namespace citylayer
 {
-static const int frameCountLimiter=25;
+static const int frameCountLimiter=12;
 
 class Build::Impl
 {
@@ -145,7 +145,8 @@ void Build::_checkPreviewBuild(const TilePos& pos)
   }
 
   city::AreaInfo areaInfo( _city(), pos, &d.buildTiles );
-  if( !walkersOnTile && construction->canBuild( areaInfo ) )
+  bool canBuild = construction->canBuild( areaInfo );
+  if( !walkersOnTile && canBuild )
   {
     d.mayBuildInCity = true;
     Tilemap& tmap = _city()->tilemap();
@@ -175,6 +176,7 @@ void Build::_checkPreviewBuild(const TilePos& pos)
   {
     d.mayBuildInCity = false;
     Tilemap& tmap = _city()->tilemap();
+    Construction::BuildArea buildArea = construction->buildArea( areaInfo );
     for (int dj = 0; dj < size.height(); ++dj)
     {
       for (int di = 0; di < size.width(); ++di)
@@ -184,7 +186,12 @@ void Build::_checkPreviewBuild(const TilePos& pos)
           continue;
 
         const Tile& basicTile = tmap.at( rPos );
+
+        const auto it = buildArea.find( rPos );
+
         const bool isConstructible = basicTile.getFlag( Tile::isConstructible );
+        const bool inBuildArea  = it != buildArea.end() ? it->second : true;
+
         Tile* tile = new Tile( basicTile.pos() );  // make a copy of tile
         tile->setEPos( basicTile.epos() );
 
@@ -194,7 +201,7 @@ void Build::_checkPreviewBuild(const TilePos& pos)
           walkersOnTile = !_city()->walkers( rPos ).empty();
         }
 
-        tile->setPicture( (!walkersOnTile && isConstructible) ? d.btile.green : d.btile.red );
+        tile->setPicture( (!walkersOnTile && isConstructible && inBuildArea) ? d.btile.green : d.btile.red );
         tile->setMaster( 0 );
         tile->setFlag( Tile::clearAll, true );
         tile->setOverlay( 0 );
@@ -295,7 +302,7 @@ void Build::_updatePreviewTiles( bool force )
 
   d.text.image.fill( 0x0, Rect() );
   d.text.font.setColor( 0xffff0000 );
-  d.text.font.draw( d.text.image, utils::i2str( d.money4Construction ) + " Dn", Point() );
+  d.text.font.draw( d.text.image, fmt::format( "{} Dn", d.money4Construction ), Point() );
 }
 
 void Build::_buildAll()
@@ -361,7 +368,7 @@ void Build::_exitBuildMode()
   _discardPreview();
 }
 
-void Build::handleEvent(NEvent& event)
+void Build::onEvent( const NEvent& event)
 {
   __D_REF(d,Build);
 
@@ -378,7 +385,7 @@ void Build::handleEvent(NEvent& event)
 
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       _setLastCursorPos( cursorPos );
       _checkBuildArea();
@@ -386,14 +393,14 @@ void Build::handleEvent(NEvent& event)
     }
     break;
 
-    case mouseLbtnPressed:
+    case NEvent::Mouse::btnLeftPressed:
     {
       _updatePreviewTiles( false );
       d.lmbPressed = true;
     }
     break;
 
-    case mouseLbtnRelease:            // left button
+    case NEvent::Mouse::mouseLbtnRelease:            // left button
     {
       Tile* tile = _camera()->at( cursorPos, false );  // tile under the cursor (or NULL)
       if( tile == 0 )
@@ -406,7 +413,7 @@ void Build::handleEvent(NEvent& event)
     }
     break;
 
-    case mouseRbtnRelease: { _exitBuildMode(); } break;
+    case NEvent::Mouse::mouseRbtnRelease: { _exitBuildMode(); } break;
     default:    break;
     }
   }
@@ -557,7 +564,7 @@ void Build::drawTile( const RenderInfo& rinfo, Tile& tile )
   if( picOver && picBasic != picOver )
   {
     Point screenPos = tile.mappos() + rinfo.offset;
-    drawPass( rinfo, tile, Renderer::ground );
+    drawLandTile( rinfo, tile );
     rinfo.engine.draw( *picOver, screenPos );
     drawPass( rinfo, tile, Renderer::overlayAnimation );
   }
@@ -589,9 +596,8 @@ void Build::render( Engine& engine)
   if( ++d.frameCount >= frameCountLimiter)
   {
     _updatePreviewTiles( true );
+    d.frameCount -= frameCountLimiter;
   }
-
-  d.frameCount %= frameCountLimiter;
 
   RenderInfo rinfo = { engine, _camera()->offset() };
   if( d.overdrawBuilding || !d.mayBuildInCity)
@@ -617,6 +623,7 @@ void Build::init(Point cursor)
   _d.lastTilePos = TilePos::invalid();
   _d.startTilePos = TilePos::invalid();
   _d.readyForExit = false;
+  _d.frameCount = 0;
   _d.kbShift = false;
   _d.kbCtrl = false;
 
@@ -656,11 +663,11 @@ void Build::afterRender(Engine& engine)
   {
     if( !OSystem::isAndroid() )
     {
-       _setLastCursorPos( engine.cursorPos() );
+      _setLastCursorPos( engine.cursorPos() );
     }
 
-     _checkBuildArea();
-     _updatePreviewTiles( false );
+    _checkBuildArea();
+    _updatePreviewTiles( false );
   }
 
   if( _d.lastLayer.isValid() )

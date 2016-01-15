@@ -54,7 +54,7 @@ public:
 
   bool contain( SmartPtr<T> a ) const
   {
-    for( auto& it : *this )
+    for( const auto& it : *this )
       if( it == a ) return true;
 
     return false;
@@ -64,33 +64,50 @@ public:
   SmartList<Dst> select() const
   {
     SmartList<Dst> ret;
-    for( auto& it : *this )
+    for( const auto& it : *this )
       ret.addIfValid( ptr_cast<Dst>( it ) );
 
     return ret;
   }
 
-  SmartList& for_each( std::function<void (SmartPtr<T>)> func_pointer )
+  SmartList& for_each( std::function<void (SmartPtr<T>)> function )
   {
-    for( auto& item : *this )
-      func_pointer( item );
+    for( const auto& item : *this )
+       function( item );
 
     return *this;
   }
 
-  SmartPtr<T> find( std::function<bool (SmartPtr<T>)> func_compare ) const
+  SmartList<T> where( std::function<bool (SmartPtr<T>)> comparer ) const
   {
-    for( auto& item : *this )
-      if( func_compare( item ) )
+    SmartList<T> ret;
+    for( const auto& item : *this )
+      if( comparer( item ) )
+        ret.push_back( item );
+
+    return ret;
+  }
+
+  SmartPtr<T> select( std::function<bool (SmartPtr<T>)> comparer ) const
+  {
+    for( const auto& item : *this )
+      if( comparer( item ) )
         return item;
 
     return SmartPtr<T>();
   }
 
+  SmartPtr<T> firstOrEmpty() const
+  {
+    return this->empty()
+              ? SmartPtr<T>()
+              : this->front();
+  }
+
   template<class U>
   SmartPtr<U> firstOrEmpty() const
   {
-    for( auto& it : *this )
+    for( const auto& it : *this )
     {
       SmartPtr<U> ptr = ptr_cast<U>( it );
       if( ptr.isValid() )
@@ -104,7 +121,7 @@ public:
   Q summ( const Q& initial, std::function<Q (SmartPtr<T>)> func_summ ) const
   {
     Q ret = initial;
-    for( auto& item : *this )
+    for( const auto& item : *this )
       ret += func_summ( item );
 
     return ret;
@@ -123,7 +140,7 @@ public:
     if( this->empty() )
       return SmartPtr<T>();
 
-    typename SmartList<T>::const_iterator it = this->begin();
+    auto it = this->begin();
     std::advance( it, math::random( this->size()-1 ) );
     return *it;
   }
@@ -145,7 +162,7 @@ public:
 
     for (size_t i = 0; i < count; ++i)
     {
-      typename SmartList<T>::const_iterator it = this->begin();
+      auto it = this->begin();
       std::advance(it, rands[i]);
       SmartPtr<T> value = *it;
       ret << value;
@@ -186,7 +203,7 @@ public:
   int indexOf( SmartPtr<T> who ) const
   {
     int index=0;
-    for( auto& it : *this )
+    for( const auto& it : *this )
       if( it == who ) return index;
       else index++;
 
@@ -197,8 +214,17 @@ public:
   int count() const
   {
     int ret = 0;
-    for( auto& it : *this )
+    for( const auto& it : *this )
       ret += (is_kind_of<W>( it ) ? 1 : 0);
+
+    return ret;
+  }
+
+  int count( std::function<bool (SmartPtr<T>)> comparer ) const
+  {
+    int ret = 0;
+    for( const auto& item : *this )
+      ret += comparer( item ) ? 1 : 0;
 
     return ret;
   }
@@ -207,7 +233,7 @@ public:
   SmartList<T> exclude() const
   {
     SmartList<T> ret;
-    for( auto& it : *this )
+    for( const auto& it : *this )
       if( !is_kind_of<W>( it ) )
         ret.push_back( it );
 

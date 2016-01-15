@@ -133,10 +133,6 @@ void BurningRuins::destroy()
   events::dispatch<BuildAny>( pos(), p.object() );
 }
 
-void BurningRuins::collapse() {}
-
-void BurningRuins::burn(){}
-
 bool BurningRuins::build( const city::AreaInfo& info)
 {
   bool built = Ruins::build( info );
@@ -219,8 +215,6 @@ CollapsedRuins::CollapsedRuins() : Ruins(object::collapsed_ruins)
   _fgPictures().resize(1);
 }
 
-void CollapsedRuins::burn() {}
-
 bool CollapsedRuins::build( const city::AreaInfo& info )
 {  
   bool built = Ruins::build( info );
@@ -239,7 +233,6 @@ bool CollapsedRuins::build( const city::AreaInfo& info )
   return true;
 }
 
-void CollapsedRuins::collapse() {}
 bool CollapsedRuins::isWalkable() const{  return true;}
 bool CollapsedRuins::isFlat() const {return true;}
 bool CollapsedRuins::isNeedRoad() const{  return false;}
@@ -299,7 +292,6 @@ void PlagueRuins::destroy()
 }
 
 void PlagueRuins::applyService(ServiceWalkerPtr walker){}
-void PlagueRuins::burn(){}
 bool PlagueRuins::isDestructible() const { return isWalkable(); }
 
 bool PlagueRuins::build( const city::AreaInfo& info )

@@ -65,7 +65,7 @@ public:
   int color() const;
   void setColor(NColor color );
 
-  Font clone( NColor color );
+  Font withColor( NColor color );
 
   bool isValid() const;
 

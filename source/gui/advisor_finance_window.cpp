@@ -33,6 +33,7 @@
 #include "game/datetimehelper.hpp"
 #include "listbox.hpp"
 #include "objects/house_level.hpp"
+#include "core/event.hpp"
 #include "environment.hpp"
 #include "objects/constants.hpp"
 #include "core/logger.hpp"
@@ -112,7 +113,7 @@ public:
     lastyear = city->treasury().getIssueValue( (econ::Issue::Type)type, econ::Treasury::lastYear );
     thisyear = city->treasury().getIssueValue( (econ::Issue::Type)type, econ::Treasury::thisYear );
 
-    setFont( Font::create( FONT_1 ) );
+    setFont( FONT_1 );
     Decorator::draw( border, Rect( 0, 0, width(), height() ), Decorator::brownBorder );
   }
 
@@ -124,7 +125,6 @@ public:
     canvasDraw( utils::i2str( lastyear ), Point( 215, 0) );
     canvasDraw( utils::i2str( thisyear ), Point( 355, 0) );
   }
-
 
   void draw(Engine &painter)
   {
@@ -156,6 +156,18 @@ void Finance::draw(gfx::Engine& painter )
     return;
 
   Window::draw( painter );
+}
+
+bool Finance::onEvent(const NEvent& event)
+{
+  if( event.EventType == sEventGui
+      && event.gui.type == guiButtonClicked )
+  {
+    if( safety_cast<FinanceRow*>( event.gui.caller ) != 0 )
+      return true;
+  }
+
+  return Base::onEvent(event);
 }
 
 void Finance::_updateTaxRateNowLabel()

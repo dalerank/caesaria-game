@@ -126,7 +126,7 @@ public:
   void handleEvent(NEvent &event)
   {
     bool rmbReleased = event.EventType == sEventMouse
-                       && event.mouse.type == mouseRbtnRelease;
+                       && event.mouse.type == NEvent::Mouse::mouseRbtnRelease;
 
     bool escapePressed = event.EventType == sEventKeyboard
                          && event.keyboard.key == KEY_ESCAPE;
@@ -230,11 +230,7 @@ void Level::Impl::initMainUI()
   ui.clear();
 
   Picture rPanelPic( gui::rc.panel, config::id.empire.rightPanelTx );
-
-  Rect rPanelRect( ui.vsize().width() - rPanelPic.width(), topMenuHeight,
-                   ui.vsize().width(), ui.vsize().height() );
-
-  rightPanel = MenuRigthPanel::create( ui.rootWidget(), rPanelRect, rPanelPic);
+  rightPanel = MenuRigthPanel::create( ui.rootWidget(), rPanelPic, topMenuHeight );
 
   topMenu = &ui.add<TopMenu>( topMenuHeight, !city->getOption( PlayerCity::c3gameplay ) );
   topMenu->setPopulation( game->city()->states().population );
@@ -242,18 +238,29 @@ void Level::Impl::initMainUI()
 
   bool fitToHeidht = OSystem::isAndroid();
   menu = Menu::create( ui.rootWidget(), -1, city, fitToHeidht );
-  menu->setPosition( Point( ui.vsize().width() - rightPanel->width(),
-                            topMenu->height() ) );
+  menu->hide();
 
   extMenu = ExtentMenu::create( ui.rootWidget(), -1, city, fitToHeidht );
-  extMenu->setPosition( Point( ui.vsize().width() - extMenu->width() - rightPanel->width(),
-                               topMenu->height() ) );
+  extMenu->show();
   Rect minimapRect = extMenu->getMinimapRect();
 
   mmap = &extMenu->add<Minimap>( minimapRect, city, *renderer.camera() );
 
   WindowMessageStack::create( ui.rootWidget() );
   rightPanel->bringToFront();
+
+  if( KILLSWITCH( rightMenu ) )
+  {
+    rightPanel->setSide( MenuRigthPanel::rightSide );
+    menu->setSide( Menu::rightSide, rightPanel->lefttop() );
+    extMenu->setSide( Menu::rightSide, rightPanel->lefttop() );
+  }
+  else
+  {
+    rightPanel->setSide( MenuRigthPanel::leftSide );
+    menu->setSide( Menu::leftSide, rightPanel->righttop() );
+    extMenu->setSide( Menu::leftSide, rightPanel->righttop() );
+  }
 }
 
 void Level::Impl::installHandlers( Base* scene )
@@ -642,7 +649,7 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
   {
     const city::Info::MaxParameters& params = info->maxParams();
 
-    bool failedByDestroy = mil->threatValue() > 0 && params[ Info::population ].value > 0 && !pcity->states().population;
+    bool failedByDestroy = mil->value() > 0 && params[ Info::population ].value > 0 && !pcity->states().population;
     bool failedByTime = ( !vc.isSuccess() && game::Date::current() > vc.finishDate() );
 
     if( failedByDestroy || failedByTime || forceFailed )
@@ -651,7 +658,7 @@ void Level::Impl::checkFailedMission( Level* lvl, bool forceFailed )
       Window& window = game->gui()->add<Window>( Rect( 0, 0, 400, 220 ), "" );
       Label& text = window.add<Label>( Rect( 10, 10, 390, 110 ), _("##mission_failed##") );
       text.setTextAlignment( align::center, align::center );
-      text.setFont( Font::create( FONT_6 ) );
+      text.setFont( FONT_6 );
 
       auto& btnRestart = window.add<PushButton>( Rect( 20, 120, 380, 144), _("##restart_mission##") );
       btnRestart.setTooltipText( _("##restart_mission_tip##") );
@@ -711,7 +718,7 @@ void Level::Impl::resolveRemoveTool() { renderer.setMode( DestroyMode::create() 
 void Level::Impl::resolveSelectLayer( int type ){  renderer.setMode( LayerMode::create( type ) );}
 void Level::Impl::showAdvisorsWindow(){  showAdvisorsWindow( advisor::employers ); }
 void Level::Impl::showTradeAdvisorWindow(){  showAdvisorsWindow( advisor::trading ); }
-void Level::setCameraPos(TilePos pos) {  _d->renderer.camera()->setCenter( pos ); }
+void Level::setCameraPos(TilePos pos, bool force) {  _d->renderer.camera()->setCenter( pos, force ); }
 void Level::switch2layer(int layer) { _d->renderer.setLayer( layer ); }
 Camera* Level::camera() const { return _d->renderer.camera(); }
 undo::UStack&Level::undoStack() { return _d->undoStack; }

@@ -56,7 +56,7 @@ AboutDock::AboutDock(Widget* parent, PlayerCityPtr city, const Tile& tile )
 
   Label& lbAbout = add<Label>( Rect( 15, 30, width() - 15, 50) );
   lbAbout.setWordwrap( true );
-  lbAbout.setFont( Font::create( FONT_1 ) );
+  lbAbout.setFont( FONT_1 );
   lbAbout.setTextAlignment( align::upperLeft, align::upperLeft );
 
   setTitle( _( dock->info().prettyName() ) );
@@ -83,7 +83,7 @@ void AboutDock::drawGood( DockPtr dock, const good::Product &goodType, int index
   Point pos( index * offset + startOffset, paintY );
 
   Label& lb = add<Label>( Rect( pos, pos + Point( 100, 24 )) );
-  lb.setFont( Font::create( FONT_2 ) );
+  lb.setFont( FONT_2 );
   lb.setIcon( pic );
   lb.setText( outText );
   lb.setTextOffset( Point( 30, 0 ) );

@@ -27,6 +27,7 @@
 #include "core/foreach.hpp"
 #include "gfx/decorator.hpp"
 #include "widget_factory.hpp"
+#include "gfx/drawstate.hpp"
 
 using namespace gfx;
 
@@ -49,7 +50,6 @@ public:
   Font lastBreakFont;
 	bool mouseMarking;
 	bool border;
-	bool drawBackground;
 	bool overrideColorEnabled;
 	int markBegin;
 	int markEnd;
@@ -60,9 +60,14 @@ public:
 	int horizScrollPos, vertScrollPos; // scroll position in characters
 	unsigned int max;
 	std::string holderText;
-  Picture bgPicture;
-  Batch background;
-  Pictures backgroundNb;
+
+  struct {
+    bool visible;
+    Picture image;
+    Batch batch;
+    Pictures fallback;
+  } background;
+
   Picture textPicture;
 
 	bool wordWrapEnabled, multiLine, autoScrollEnabled, isPasswordBox;
@@ -76,7 +81,7 @@ public:
 		markBegin = 0;
 		markEnd = 0;
 		border = false;
-		drawBackground = true;
+    background.visible = true;
 		overrideColor = NColor(101,255,255,255);
 		cursorPos = 0;
 		horizScrollPos = 0;
@@ -761,12 +766,8 @@ void EditBox::_drawHolderText( Font font, Rect* clip )
   if( isFocused() )
   {
     _d->setTextRect( this, 0, _d->holderText );
-    Font holderFont = font;
-
-    if( holderFont.isValid() )
-    {
-        holderFont.draw( _d->textPicture, _d->holderText, 0, 0 );
-    }
+    if( font.isValid() )
+      font.draw( _d->textPicture, _d->holderText, 0, 0 );
   }
 }
 
@@ -785,18 +786,18 @@ void EditBox::beforeDraw(Engine& painter)
       _d->textPicture.fill( 0x00000000, Rect( 0, 0, 0, 0) );
     }
 
-    if( !_d->bgPicture.isValid() )
+    if( !_d->background.image.isValid() )
     {
-      _d->background.destroy();
+      _d->background.batch.destroy();
 
       Pictures pics;
       Decorator::draw( pics, Rect( 0, 0, width(), height() ), Decorator::blackFrame, nullptr, Decorator::normalY );
-      bool batchOk = _d->background.load( pics, absoluteRect().lefttop() );
+      bool batchOk = _d->background.batch.load( pics, absoluteRect().lefttop() );
       if( !batchOk )
       {
-        _d->background.destroy();
+        _d->background.batch.destroy();
         Decorator::reverseYoffset( pics );
-        _d->backgroundNb = pics;
+        _d->background.fallback = pics;
       }
     }
 
@@ -981,19 +982,13 @@ void EditBox::draw( Engine& painter )
   }
 
   // draw the background
-  if( _d->drawBackground )
+  if( _d->background.visible )
   {
-    if( _d->bgPicture.isValid() )
-    {
-      painter.draw( _d->bgPicture, absoluteRect().lefttop(), &absoluteClippingRectRef() );
-    }
-    else
-    {
-      if( _d->background.valid() )
-        painter.draw( _d->background, &absoluteClippingRectRef() );
-      else
-        painter.draw( _d->backgroundNb, absoluteRect().lefttop(), &absoluteClippingRectRef() );
-    }
+    DrawState pipe( painter, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+
+    pipe.draw( _d->background.image )
+        .fallback( _d->background.batch )
+        .fallback( _d->background.fallback );
   }
 
   // draw the text
@@ -1094,7 +1089,7 @@ bool EditBox::_processMouse(const NEvent& event)
 {
 	switch(event.mouse.type)
 	{
-	case mouseLbtnRelease:
+  case NEvent::Mouse::mouseLbtnRelease:
     if (ui()->hasFocus(this))
 		{
 			Point rpos = event.mouse.pos() - _d->textOffset;
@@ -1108,7 +1103,7 @@ bool EditBox::_processMouse(const NEvent& event)
 			return true;
 		}
 		break;
-	case mouseMoved:
+  case NEvent::Mouse::moved:
 		{
 			if (_d->mouseMarking)
 			{
@@ -1119,7 +1114,7 @@ bool EditBox::_processMouse(const NEvent& event)
 			}
 		}
 		break;
-	case mouseLbtnPressed:
+  case NEvent::Mouse::btnLeftPressed:
     if (!ui()->hasFocus(this))
 		{
 			_d->mouseMarking = true;
@@ -1515,9 +1510,6 @@ NColor EditBox::overrideColor() const
     return _d->overrideColor;
 }
 
-void EditBox::setDrawBackground( bool enabled )
-{
-    _d->drawBackground = enabled;
-}
+void EditBox::setDrawBackground( bool enabled ) { _d->background.visible = enabled; }
 
 }//end namespace gui

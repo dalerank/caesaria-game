@@ -63,6 +63,8 @@ public:
   struct {
     bool buildings = true;
     bool trees = true;
+    bool rocks = true;
+    bool hideAny = false;
   } draw;
 
   struct {
@@ -82,6 +84,8 @@ public:
   };
 
   typedef std::vector<PictureInfo> Pictures;
+  typedef std::vector<LayerDrawPassPtr> Passes;
+  typedef std::map<int,Passes> PassesMap;
 
   Pictures pictures;
   Picture terraintPic;
@@ -92,6 +96,7 @@ public:
   Picture outline;
   Camera* camera;
   Font debugFont;
+  PassesMap passes;
 
   int posMode;
 };
@@ -100,86 +105,48 @@ void Layer::registerTileForRendering(Tile& tile)
 {
 }
 
-void Layer::renderUi(Engine& engine)
+void Layer::renderUi( Engine& engine )
 {
   __D_REF(d,Layer)
   if( !d.tooltip.text.empty() )
   {
     engine.draw( d.tooltip.image, d.cursor.last );
   }
+
+  const auto& passes = d.passes[ LayerDrawPass::gui ];
+  Tile* tile = _currentTile();
+  if( !passes.empty() && tile != nullptr  )
+  {
+    RenderInfo rinfo = { engine, d.camera->offset() };
+    for( auto pass : passes )
+      pass->draw( rinfo, *tile );
+  }
 }
 
-void Layer::handleEvent(NEvent& event)
+void Layer::onEvent( const NEvent& event)
 {
   __D_IMPL(_d,Layer)
-  if( event.EventType == sEventMouse )
+  switch( event.EventType )
   {
-    Point pos = event.mouse.pos();
-
+  case sEventMouse:
     switch( event.mouse.type  )
     {
-    case mouseMoved:
-    {
-      Point savePos = _d->cursor.last;
-      bool movingPressed = _isMovingButtonPressed( event );
-      _d->cursor.last = pos;
-
-      if( !movingPressed || _d->cursor.start.x() < 0 )
-      {
-        _d->cursor.start = _d->cursor.last;
-      }
-
-      if( movingPressed )
-      {
-        Point delta = _d->cursor.last - savePos;
-        _d->camera->move( PointF( -delta.x() * 0.1, delta.y() * 0.1 ) );
-      }
-
-      Tile* selectedTile = _d->camera->at( _d->cursor.last, true );
-      _d->currentTile = selectedTile;
-    }
-    break;
-
-    case mouseLbtnPressed:
-    {
+    case NEvent::Mouse::moved: onMouseMoved( event.mouse ); break;
+    case NEvent::Mouse::btnLeftPressed:
       _d->cursor.start = _d->cursor.last;
-    }
     break;
 
-    case mouseLbtnRelease:            // left button
-    case mouseMbtnRelease:
-    {
-      Tile* tile = _d->camera->at( pos, false );  // tile under the cursor (or NULL)
-      if( tile == 0 )
-      {
-        break;
-      }
-
-      if( event.mouse.control )
-      {
-        _d->camera->setCenter( tile->pos() );
-        _d->city->setCameraPos( tile->pos() );
-      }
-
-      _d->cursor.start = _d->cursor.last;
-    }
-    break;
-
-    case mouseRbtnRelease:
-    {
-      Tile* tile = _d->camera->at( pos, false );  // tile under the cursor (or NULL)
-      if( tile )
-      {
-        events::dispatch<events::ShowTileInfo>( tile->epos() );
-      }
-    }
+    case NEvent::Mouse::mouseLbtnRelease:            // left button
+    case NEvent::Mouse::mouseMbtnRelease:
+    case NEvent::Mouse::mouseRbtnRelease:
+      onMouseBtnRelease( event.mouse );
     break;
 
     default:
     break;
     }
-  }
-  else if( event.EventType == sEvenApplication )
+  break;
+  case sEvenApplication:
   {
     switch( event.app.type )
     {
@@ -191,7 +158,8 @@ void Layer::handleEvent(NEvent& event)
     default: break;
     }
   }
-  else if( event.EventType == sEventKeyboard )
+  break;
+  case sEventKeyboard:
   {
     bool handled = _moveCamera( event );
     if( !handled )
@@ -203,17 +171,74 @@ void Layer::handleEvent(NEvent& event)
       }
     }
   }
+  break;
+
+  default: break;
+  }
+}
+
+bool Layer::onMouseMoved( const NEvent::Mouse& event)
+{
+  __D_REF(_d,Layer)
+  Point savePos = _d.cursor.last;
+  bool movingPressed = _isMovingButtonPressed( event );
+  _d.cursor.last = event.pos();
+
+  if( !movingPressed || _d.cursor.start.x() < 0 )
+  {
+    _d.cursor.start = _d.cursor.last;
+  }
+
+  if( movingPressed )
+  {
+    Point delta = _d.cursor.last - savePos;
+    _d.camera->move( delta.toPointF().mul( -0.1, 0.1 ) );
+  }
+
+  Tile* selectedTile = _d.camera->at( _d.cursor.last, true );
+  _d.currentTile = selectedTile;
+
+  return true;
+}
+
+bool Layer::onMouseBtnRelease(const NEvent::Mouse& event)
+{
+  __D_REF(_d,Layer)
+  if( event.type == NEvent::Mouse::mouseRbtnRelease )
+  {
+    Tile* tile = _d.camera->at( event.pos(), false );  // tile under the cursor (or NULL)
+    if( tile )
+    {
+      events::dispatch<events::ShowTileInfo>( tile->epos() );
+    }
+  }
+  else
+  {
+    Tile* tile = _d.camera->at( event.pos(), false );  // tile under the cursor (or NULL)
+    if( tile == 0 )
+      return false;
+
+    if( event.control )
+    {
+      _d.camera->setCenter( tile->pos() );
+      _d.city->setCameraPos( tile->pos() );
+    }
+
+    _d.cursor.start = _d.cursor.last;
+  }
+
+  return true;
 }
 
 TilesArray Layer::_getSelectedArea( TilePos startPos )
 {
-  __D_IMPL(_d,Layer)
+  __D_REF(_d,Layer)
   TilePos outStartPos, outStopPos;
 
   Tile* startTile = startPos.i() < 0
-                      ? _d->camera->at( _d->cursor.start, true ) // tile under the cursor (or NULL)
-                      : _d->camera->at( startPos );
-  Tile* stopTile  = _d->camera->at( _d->cursor.last, true );
+                      ? _d.camera->at( _d.cursor.start, true ) // tile under the cursor (or NULL)
+                      : _d.camera->at( startPos );
+  Tile* stopTile  = _d.camera->at( _d.cursor.last, true );
 
   TilePos startPosTmp = startTile->epos();
   TilePos stopPosTmp  = stopTile->epos();
@@ -401,22 +426,34 @@ void Layer::drawProminentTile( const RenderInfo& rinfo, Tile& tile, const int de
 
 void Layer::drawTile(const RenderInfo& rinfo, Tile& tile)
 {
-  __D_IMPL(_d,Layer)
+  __D_REF(_d,Layer)
   if( !tile.rendered() )
   {
     if( tile.rov().isValid() )
     {
       registerTileForRendering( tile );
 
-      bool breakBuilding = is_kind_of<Building>( tile.rov() ) && !_d->draw.buildings;
-      bool breakTree = is_kind_of<Tree>( tile.rov() ) && !_d->draw.trees;
+      if( _d.draw.hideAny )
+      {
+        bool breakBuilding = is_kind_of<Building>( tile.rov() ) && !_d.draw.buildings; ;
+        bool breakTree = is_kind_of<Tree>( tile.rov() ) && !_d.draw.trees;
 
-      if( !(breakBuilding || breakTree) )
+        if( !(breakBuilding || breakTree) )
+          drawOverlayedTile( rinfo, tile );
+      }
+      else
         drawOverlayedTile( rinfo, tile );
     }
     else
     {
-      drawLandTile( rinfo, tile );
+      if( _d.draw.hideAny )
+      {
+        bool breakRocks = tile.terrain().rock && !_d.draw.rocks;
+        if( !breakRocks )
+          drawLandTile( rinfo, tile );
+      }
+      else
+        drawLandTile( rinfo, tile );
     }
 
     tile.setRendered();
@@ -462,10 +499,14 @@ void Layer::drawLands( const RenderInfo& rinfo, Camera* camera )
 {
   const TilesArray& flatTiles = camera->flatTiles();
   const TilesArray& groundTiles = camera->groundTiles();
+  const TilesArray& subtrateTiles = camera->subtrateTiles();
 
   // FIRST PART: draw all flat land (walkable/boatable)
   for( auto tile : groundTiles )
     drawLandTile( rinfo, *tile );
+
+  for( auto tile : subtrateTiles )
+    drawSubtrateTile( rinfo, *tile );
 
   for( auto tile : flatTiles )
     drawFlatTile( rinfo, *tile );
@@ -475,6 +516,11 @@ void Layer::drawLandTile(const RenderInfo& rinfo, Tile &tile)
 {
   drawPass( rinfo, tile, Renderer::ground );
   drawPass( rinfo, tile, Renderer::groundAnimation );
+}
+
+void Layer::drawSubtrateTile(const RenderInfo& rinfo, Tile& tile)
+{
+  rinfo.engine.draw( _dfunc()->terraintPic, tile.mappos() + rinfo.offset );
 }
 
 void Layer::drawFlatTile(const RenderInfo& rinfo, Tile& tile)
@@ -496,6 +542,8 @@ void Layer::beforeRender(Engine&)
   __D_REF(d,Layer)
   d.draw.buildings = DrawOptions::instance().isFlag( DrawOptions::showBuildings );
   d.draw.trees = DrawOptions::instance().isFlag( DrawOptions::showTrees );
+  d.draw.rocks = DrawOptions::instance().isFlag( DrawOptions::showRocks );
+  d.draw.hideAny = !(d.draw.buildings && d.draw.rocks && d.draw.trees);
   d.pictures.clear();
 }
 
@@ -685,7 +733,7 @@ void Layer::_initialize()
   }
 }
 
-bool Layer::_moveCamera(NEvent &event)
+bool Layer::_moveCamera( const NEvent &event)
 {
   __D_REF(_d,Layer)
   bool pressed = event.keyboard.pressed;
@@ -728,6 +776,8 @@ bool Layer::_isVisibleObject(object::Type ovType)
 Layer::WalkerTypes& Layer::_visibleWalkers() { return _dfunc()->visible.walkers; }
 int Layer::nextLayer() const{ return _dfunc()->nextLayer; }
 void Layer::destroy() {}
+
+void Layer::addDrawPass(int type, LayerDrawPassPtr pass) { _dfunc()->passes[ type ].push_back(pass); }
 Camera* Layer::_camera(){ return _dfunc()->camera; }
 PlayerCityPtr Layer::_city(){ return _dfunc()->city; }
 void Layer::changeLayer(int type) {}
@@ -739,11 +789,11 @@ Point Layer::_startCursorPos() const{ return _dfunc()->cursor.start; }
 Tile* Layer::_currentTile() const{ return _dfunc()->currentTile; }
 Point Layer::_lastCursorPos() const { return _dfunc()->cursor.last; }
 
-bool Layer::_isMovingButtonPressed(NEvent &event) const
+bool Layer::_isMovingButtonPressed( const NEvent::Mouse &event) const
 {
   return DrawOptions::instance().isFlag( DrawOptions::mmbMoving )
-            ? event.mouse.isMiddlePressed()
-            : event.mouse.isLeftPressed();
+            ? event.isMiddlePressed()
+            : event.isLeftPressed();
 }
 
 DrawOptions& DrawOptions::instance()
@@ -787,6 +837,7 @@ DrawOptions::DrawOptions() : _helper(0)
   _O(showTrees)
   _O(overdrawOnBuild)
   _O(rotateEnabled)
+  _O(showRocks)
 #undef _O
 }
 

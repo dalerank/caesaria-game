@@ -42,7 +42,7 @@ public:
   virtual std::string about(Object::AboutType type);
 
   Mode mode() const;
-  virtual int viewDistance() const;
+  virtual int searchRange() const;
 
   virtual void addSoldiers(RomeSoldierList soldiers);
 

@@ -397,15 +397,15 @@ void Minimap::Impl::drawWalkersMmap( Picture& canvas, bool clear )
 
   unsigned int* pixelsObjects = canvas.lock();
 
-  foreach( i, walkers )
+  for( auto wlk : walkers )
   {
-    const TilePos& pos = (*i)->pos();
+    const TilePos& pos = wlk->pos();
 
     NColor cl;
-    if ((*i)->agressive() != 0)
+    if (wlk->agressive() != 0)
     {
 
-      if ((*i)->agressive() > 0)
+      if (wlk->agressive() > 0)
       {
         cl = ColorList::red;
       }
@@ -414,7 +414,7 @@ void Minimap::Impl::drawWalkersMmap( Picture& canvas, bool clear )
         cl = ColorList::blue;
       }
     }
-    else if( (*i)->type() == walker::immigrant )
+    else if( wlk->type() == walker::immigrant )
     {
       cl = ColorList::green;
     }
@@ -560,25 +560,7 @@ void Minimap::setCenter( Point pos) {  _d->center = pos; }
 
 bool Minimap::onEvent(const NEvent& event)
 {
-  if( sEventMouse == event.EventType
-      && mouseLbtnRelease == event.mouse.type )
-  {
-    Point clickPosition = screenToLocal( event.mouse.pos() );
-
-    int mapsize = _d->city->tilemap().size();
-    Size minimapSize = _d->bg.image.size();
-
-    Point offset( minimapSize.width()/2 - _d->center.x(), minimapSize.height()/2 + _d->center.y() - mapsize*2 );
-    clickPosition -= offset;
-    TilePos tpos;
-    tpos.setI( (clickPosition.x() + clickPosition.y() - mapsize + 1) / 2 );
-    tpos.setJ( -clickPosition.y() + tpos.i() + mapsize - 1 );
-
-    emit _d->signal.onCenterChange( tpos );
-    return true;
-  }
-  else if( sEventGui == event.EventType
-           && guiButtonClicked == event.gui.type )
+  if( sEventGui == event.EventType && guiButtonClicked == event.gui.type )
   {
     if( event.gui.caller == _d->btnZoomIn )
       emit _d->signal.onZoomChange( +10 );
@@ -626,5 +608,27 @@ void Minimap::update()
 
 Signal1<TilePos>& Minimap::onCenterChange() { return _d->signal.onCenterChange; }
 Signal1<int>& Minimap::onZoomChange() { return _d->signal.onZoomChange; }
+
+bool Minimap::_onMousePressed( const NEvent::Mouse& event)
+{
+  if( NEvent::Mouse::mouseLbtnRelease == event.type )
+  {
+    Point clickPosition = screenToLocal( event.pos() );
+
+    int mapsize = _d->city->tilemap().size();
+    Size minimapSize = _d->bg.image.size();
+
+    Point offset( minimapSize.width()/2 - _d->center.x(), minimapSize.height()/2 + _d->center.y() - mapsize*2 );
+    clickPosition -= offset;
+    TilePos tpos;
+    tpos.setI( (clickPosition.x() + clickPosition.y() - mapsize + 1) / 2 );
+    tpos.setJ( -clickPosition.y() + tpos.i() + mapsize - 1 );
+
+    emit _d->signal.onCenterChange( tpos );
+    return true;
+  }
+
+  return false;
+}
 
 }//end namespace gui

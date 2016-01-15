@@ -410,8 +410,8 @@ bool Ui::handleEvent( const NEvent& event )
 //!!! end android fix
         switch( event.mouse.type )
         {
-        case mouseLbtnPressed:
-        case mouseRbtnPressed:
+        case NEvent::Mouse::btnLeftPressed:
+        case NEvent::Mouse::btnRightPressed:
         {
             if ( (_d->hovered.current.isValid() && _d->hovered.current != getFocus()) || !getFocus() )
             {
@@ -438,7 +438,7 @@ bool Ui::handleEvent( const NEvent& event )
         }
         break;
 
-        case mouseLbtnRelease:
+        case NEvent::Mouse::mouseLbtnRelease:
           if( getFocus() )
           {
             return getFocus()->onEvent( event );

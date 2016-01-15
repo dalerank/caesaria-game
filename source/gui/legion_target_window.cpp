@@ -69,11 +69,11 @@ bool LegionTargetWindow::onEvent( const NEvent& event )
   {
     switch(event.mouse.type)
     {
-    case mouseLbtnPressed:
+    case NEvent::Mouse::btnLeftPressed:
       _d->lastCursor = event.mouse.pos();
     break;
 
-    case mouseLbtnRelease:
+    case NEvent::Mouse::mouseLbtnRelease:
       if( _d->lastCursor.distanceTo(event.mouse.pos() ) < 2 )
       {
         _d->lastCursor = event.mouse.pos();

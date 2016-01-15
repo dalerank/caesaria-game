@@ -201,8 +201,7 @@ void AmbientSound::timeStep( const unsigned int time )
   audio::Engine& ae = audio::Engine::instance();
 
   //add new emitters
-  _d->emmitersArea.clear();
-  _d->emmitersArea.add( _city()->tilemap(), _d->cameraPos, ambientsnd::maxDistance );
+  _d->emmitersArea = TilesArea( _city()->tilemap(), ambientsnd::maxDistance, _d->cameraPos );
 
   for( auto tile : _d->emmitersArea )
     _d->emitters.insert( SoundEmitter( tile, _d->cameraPos ) );

@@ -19,29 +19,45 @@
 namespace gui
 {
 
-WidgetEscapeCloser::WidgetEscapeCloser(Widget* parent)
+WidgetClose::WidgetClose(Widget* parent)
   : Widget( parent, -1, Rect() )
 {
   parent->installEventHandler( this );
 }
 
-void WidgetEscapeCloser::insertTo(Widget* parent)
+void WidgetClose::insertTo(Widget* parent, KeyCode code1, KeyCode code2)
 {
   if( parent )
-    parent->add<WidgetEscapeCloser>();
-}
-
-void WidgetEscapeCloser::insertTo(Widget& parent)
-{
-  insertTo( &parent );
-}
-
-bool WidgetEscapeCloser::onEvent(const NEvent& event)
-{
-  if( event.EventType == sEventKeyboard && !event.keyboard.pressed && event.keyboard.key == KEY_ESCAPE )
   {
-    parent()->deleteLater();
-    return true;
+    auto& widget = parent->add<WidgetClose>();
+    widget._codes.insert( code1 );
+    widget._codes.insert( code2 );
+  }
+}
+
+bool WidgetClose::onEvent(const NEvent& event)
+{
+  switch(event.EventType)
+  {
+  case sEventKeyboard:
+    if( !event.keyboard.pressed && _codes.count( event.keyboard.key ) )
+    {
+      parent()->deleteLater();
+      return true;
+    }
+  break;
+
+  case sEventMouse:
+    if(    (event.mouse.type == NEvent::Mouse::mouseLbtnRelease && _codes.count( KEY_LBUTTON ))
+        || (event.mouse.type == NEvent::Mouse::mouseMbtnRelease && _codes.count( KEY_MBUTTON ))
+        || (event.mouse.type == NEvent::Mouse::mouseRbtnRelease && _codes.count( KEY_RBUTTON ))  )
+    {
+      parent()->deleteLater();
+      return true;
+    }
+  break;
+
+  default: break;
   }
 
   return false;

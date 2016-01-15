@@ -24,6 +24,7 @@
 #include "modal_widget.hpp"
 #include "core/variant_map.hpp"
 #include "gfx/decorator.hpp"
+#include "gfx/drawstate.hpp"
 #include "gfx/picturesarray.hpp"
 
 using namespace gfx;
@@ -122,7 +123,7 @@ Window::Window( Widget* parent, const Rect& rectangle, const std::string& title,
 
   _init();
 
-    // this element is a tab group
+  // this element is a tab group
   setBackground( type );
   setTabgroup( true );
   setTabstop( true );
@@ -159,13 +160,15 @@ void Window::_createSystemButton( ButtonName btnName, const std::string& tooltip
 
 void Window::_init()
 {
-  _createSystemButton( buttonClose, "Close", true );
-  _createSystemButton( buttonMin,"Min", false );
-  _createSystemButton( buttonMax, "Restore", false );
+  _createSystemButton( buttonClose, "Close",   false );
+  _createSystemButton( buttonMin,   "Min",     false );
+  _createSystemButton( buttonMax,   "Restore", false );
 
 	if( !_d->title )
 	{
-    _d->title = &add<Label>( Rect( 0, 0, width(), 20 ), text(), false );
+    _d->title = &add<Label>( Rect( 15, 15, width()-15, 15+20 ), text(), false );
+    _d->title->setTextAlignment( align::center, align::center );
+    _d->title->setFont( FONT_4 );
 		_d->title->setSubElement( true );
 	}
 
@@ -236,20 +239,25 @@ bool Window::onEvent(const NEvent& event)
 		case sEventMouse:
 			switch(event.mouse.type)
 			{
-			case mouseLbtnPressed:
+      case NEvent::Mouse::btnLeftPressed:
         _d->drag.startPosition = event.mouse.pos();
         _d->drag.active = _d->flags.isFlag( fdraggable );
 				bringToFront();
 
       return true;
 
-      case mouseRbtnRelease:
-			case mouseLbtnRelease:
-        _d->drag.active = false;
+      case NEvent::Mouse::mouseRbtnRelease:
+      case NEvent::Mouse::mouseLbtnRelease:
+      {
+        if( _d->drag.active )
+        {
+          _d->drag.active = false;
+          return true;
+        }
+      }
+      break;
 
-      return true;
-
-      case mouseMoved:
+      case NEvent::Mouse::moved:
 				if ( !event.mouse.isLeftPressed() )
           _d->drag.active = false;
 
@@ -305,16 +313,10 @@ void Window::draw( Engine& painter )
 	{
 		if( _d->flags.isFlag( fbackgroundVisible ) )
 		{
-      if( _d->background.image.isValid() )
-			{
-        painter.draw( _d->background.image, absoluteRect().lefttop(), &absoluteClippingRectRef() );
-			}
-			else
-			{
-        drawBatchWithFallback( painter, _d->background.batch.body,
-                               _d->background.batch.fallback, absoluteRect().lefttop(),
-                               &absoluteClippingRectRef() );
-			}
+      DrawState pipe( painter, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+      pipe.draw( _d->background.image )
+          .fallback( _d->background.batch.body )
+          .fallback( _d->background.batch.fallback );
 		}
 	}
 

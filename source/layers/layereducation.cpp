@@ -153,7 +153,7 @@ void Education::afterRender(Engine& engine)
 void Education::_updatePaths()
 {
   auto eduBuilding = _d->overlay.selected.as<EducationBuilding>();
-  if( eduBuilding.isValid() && _d->flags.count( eduBuilding->type() ) )
+  if( _d->flags.count( object::typeOrDefault( eduBuilding ) ) )
   {
     _d->ways.clear();
     const WalkerList& walkers = eduBuilding->walkers();
@@ -171,13 +171,13 @@ void Education::render(Engine& engine)
     TexturedPath::draw( item.tiles, rinfo, item.color, item.offset );
 }
 
-void Education::handleEvent(NEvent& event)
+void Education::onEvent( const NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
@@ -229,7 +229,7 @@ void Education::handleEvent(NEvent& event)
     }
     break;
 
-    case mouseLbtnPressed:
+    case NEvent::Mouse::btnLeftPressed:
     {
       if( _d->overlay.underMouse.is<EducationBuilding>() )
       {
@@ -243,7 +243,7 @@ void Education::handleEvent(NEvent& event)
     }
   }
 
-  Layer::handleEvent( event );
+  Layer::onEvent( event );
 }
 
 Education::Education( Camera& camera, PlayerCityPtr city, int type)

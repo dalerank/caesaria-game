@@ -38,6 +38,8 @@
 #include "objects/tree.hpp"
 #include "game/settings.hpp"
 #include "core/format.hpp"
+#include "gfx/maskstate.hpp"
+#include "gfx/tile_config.hpp"
 
 using namespace gfx;
 using namespace events;
@@ -88,7 +90,7 @@ void Destroy::_clearAll()
   std::set<Tile*> alsoDestroyed;
   for( auto tile : tiles4clear )
   {
-    Tile* master = tile->master() ? tile->master() : tile;
+    Tile* master = tile::master( tile );
     if( alsoDestroyed.count( master ) == 0 )
     {
       alsoDestroyed.insert( master );
@@ -130,6 +132,7 @@ void Destroy::render( Engine& engine )
 
   const TilesArray& visibleTiles = _camera()->tiles();
   const TilesArray& flatTiles = _camera()->flatTiles();
+  const TilesArray& subtrateTiles = _camera()->subtrateTiles();
   const TilesArray& groundTiles = _camera()->groundTiles();
 
   _camera()->startFrame();
@@ -159,12 +162,15 @@ void Destroy::render( Engine& engine )
 
   for( auto tile : groundTiles )
   {
-    if( hashDestroyArea.inArea( tile ) )
-      engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
+    MaskState mask( engine, hashDestroyArea.inArea( tile )
+                              ? ColorList::red
+                              : ColorList::clear );
 
     drawLandTile( renderInfo, *tile );
-    engine.resetColorMask();
   }
+
+  for( auto tile : subtrateTiles )
+    drawSubtrateTile( renderInfo, *tile );
 
   // FIRST PART: draw all flat land (walkable/boatable)  
   for( auto ftile : flatTiles )
@@ -173,11 +179,11 @@ void Destroy::render( Engine& engine )
 
     if( !ftile->rendered() )
     {
-      if( hashDestroyArea.inArea( ftile ) )
-        engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
+      MaskState mask( engine, hashDestroyArea.inArea( ftile )
+                              ? ColorList::red
+                              : ColorList::clear );
 
       drawTile( renderInfo, *ftile );
-      engine.resetColorMask();
     }
   }
 
@@ -186,12 +192,12 @@ void Destroy::render( Engine& engine )
   {
     int z = vtile->epos().z();
 
-    if( hashDestroyArea.inArea( vtile ) )
-      engine.setColorMask( 0x00ff0000, 0, 0, 0xff000000 );
+    MaskState mask( engine, hashDestroyArea.inArea( vtile )
+                              ? ColorList::red
+                              : ColorList::clear );
 
     drawProminentTile( renderInfo, *vtile, z, false );
     drawWalkers( renderInfo, *vtile );
-    engine.resetColorMask();
   }
 }
 
@@ -274,13 +280,13 @@ void Destroy::_exitDestroyTool()
   DrawOptions::instance().setFlag( DrawOptions::mayChangeLayer, true );
 }
 
-void Destroy::handleEvent(NEvent& event)
+void Destroy::onEvent( const NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       _setLastCursorPos( event.mouse.pos() );
       if( !event.mouse.isLeftPressed() || _startCursorPos().x() < 0 )
@@ -293,22 +299,21 @@ void Destroy::handleEvent(NEvent& event)
     }
     break;
 
-    case mouseLbtnRelease:            // left button
+    case NEvent::Mouse::mouseLbtnRelease:            // left button
     {
       if( !OSystem::isAndroid() )
         _executeClear();
     }
     break;
 
-    case mouseLbtnPressed: { _setStartCursorPos( _lastCursorPos() ); } break;
-    case mouseRbtnRelease: { _exitDestroyTool(); } break;
+    case NEvent::Mouse::btnLeftPressed: { _setStartCursorPos( _lastCursorPos() ); } break;
+    case NEvent::Mouse::mouseRbtnRelease: { _exitDestroyTool(); } break;
 
     default:
     break;
     }
   }
-
-  if( event.EventType == sEventKeyboard )
+  else if( event.EventType == sEventKeyboard )
   {
     bool handled = _moveCamera( event );
 
@@ -374,18 +379,10 @@ void Destroy::drawTile(const RenderInfo& rinfo, Tile& tile)
   }
 }
 
-LayerPtr Destroy::create(Renderer &renderer, PlayerCityPtr city)
+Destroy::Destroy(Camera& camera, PlayerCityPtr city, gfx::Renderer* renderer)
+  : Layer( &camera, city ), _d( new Impl )
 {
-  LayerPtr ret( new Destroy( renderer, city ) );
-  ret->drop();
-
-  return ret;
-}
-
-Destroy::Destroy( Renderer& renderer, PlayerCityPtr city)
-  : Layer( renderer.camera(), city ), _d( new Impl )
-{
-  _d->renderer = &renderer;
+  _d->renderer = renderer;
   _d->shovelPic.load( "shovel", 1 );
   std::string rcLand = SETTINGS_STR( forbidenTile );
   _d->clearPic.load( rcLand, 2 );

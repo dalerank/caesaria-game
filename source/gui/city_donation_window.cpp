@@ -116,12 +116,9 @@ void CityDonation::_updateDonationText()
 
 void CityDonation::_linkButtons2Actions()
 {
-  INIT_WIDGET_FROM_UI( PushButton*, btnCancel )
-  INIT_WIDGET_FROM_UI( PushButton*, btnSend )
-
-  CONNECT( btnSend, onClicked(), this, CityDonation::_sendMoney );
-  CONNECT( btnSend, onClicked(), this, CityDonation::deleteLater );
-  CONNECT( btnCancel, onClicked(), this, CityDonation::deleteLater );
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnSend, onClicked(),   CityDonation::_sendMoney )
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnSend, onClicked(),   CityDonation::deleteLater )
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnCancel, onClicked(), CityDonation::deleteLater )
 }
 
 void CityDonation::_sendMoney()

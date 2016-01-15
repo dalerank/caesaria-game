@@ -149,6 +149,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setBorderInfo( roadExit, TilePos( 0, 0 ) );
   setBorderInfo( boatEntry, TilePos( 0, 0 ) );
   setBorderInfo( boatExit, TilePos( 0, 0 ) );
+
   _d->funds.resolveIssue( econ::Issue( econ::Issue::donation, 1000 ) );
   _d->states.population = 0;
   _d->states.birth = game::Date::current();
@@ -162,7 +163,6 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   _d->services.initialize( this, ":/services.model" );
 
   setPicture( Picture( ResourceGroup::empirebits, 1 ) );
-  _initAnimation();
 
   setOption( updateRoadsOnNextFrame, 0 );
   setOption( godEnabled, 1 );
@@ -186,14 +186,9 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( riversideAsWell, 1 );
   setOption( soldiersHaveSalary, 1 );
   setOption( housePersonalTaxes, 1 );
+  setOption( ironInRocks, 1 );
 
   _d->states.nation = world::nation::rome;
-}
-
-void PlayerCity::_initAnimation()
-{
-  _animation().clear();
-  _animation().load( "world_ourcity" );
 }
 
 std::string PlayerCity::about(Object::AboutType type)
@@ -330,14 +325,13 @@ void PlayerCity::save( VariantMap& stream) const
   for( auto overlay : _d->overlays )
   {
     VariantMap vm_overlay;
-    object::Type otype = object::unknown;
+    object::Type otype = object::typeOrDefault( overlay );
 
     try
     {
-      otype = overlay->type();
       overlay->save( vm_overlay );
       auto pos = overlay->pos();
-      vm_overlays[ utils::format( 0xff, "%d,%d", pos.i(), pos.j() ) ] = vm_overlay;
+      vm_overlays[ fmt::format( "{},{}", pos.i(), pos.j() ) ] = vm_overlay;
     }
     catch(...)
     {
@@ -482,7 +476,7 @@ void PlayerCity::load( const VariantMap& stream )
   VARIANT_LOAD_ANY_D( _d, states.age, stream )
   VARIANT_LOAD_CLASS_D_LIST( _d, activePoints, stream )
 
-  _initAnimation();
+  _animation().clear();
 }
 
 void PlayerCity::addOverlay( OverlayPtr overlay ) { _d->overlays.postpone( overlay ); }
@@ -529,7 +523,7 @@ void PlayerCity::delayTrade(unsigned int month)             {  }
 const good::Store& PlayerCity::sells() const                { return _d->tradeOptions.sells(); }
 const good::Store& PlayerCity::buys() const                 { return _d->tradeOptions.buys(); }
 ClimateType PlayerCity::climate() const                     { return (ClimateType)getOption( PlayerCity::climateType ); }
-unsigned int PlayerCity::tradeType() const                  { return world::EmpireMap::sea | world::EmpireMap::land; }
+unsigned int PlayerCity::tradeType() const                  { return world::EmpireMap::trSea | world::EmpireMap::trLand; }
 Signal1<int>& PlayerCity::onPopulationChanged()             { return _d->signal.onPopulationChanged; }
 Signal1<int>& PlayerCity::onFundsChanged()                  { return _d->funds.onChange(); }
 void PlayerCity::setCameraPos(const TilePos pos)            { _d->cameraStart = pos; }
@@ -552,13 +546,13 @@ void PlayerCity::setOption(PlayerCity::OptionType opt, int value)
     _d->options[ soldiersHaveSalary ] = !value;
     _d->options[ housePersonalTaxes ] = !value;
     _d->options[ cutForest2timber ] = !value;
+    _d->options[ ironInRocks      ] = !value;
   }
 }
 
 int PlayerCity::prosperity() const
 {
-  city::ProsperityRatingPtr csPrsp = statistic().services.find<city::ProsperityRating>();
-  return csPrsp.isValid() ? csPrsp->value() : 0;
+  return statistic().services.value<city::ProsperityRating>();
 }
 
 int PlayerCity::getOption(PlayerCity::OptionType opt) const
@@ -594,17 +588,8 @@ PlayerCityPtr PlayerCity::create( world::EmpirePtr empire, PlayerPtr player )
   return ret;
 }
 
-int PlayerCity::culture() const
-{
-  city::CultureRatingPtr culture = statistic().services.find<city::CultureRating>();
-  return culture.isValid() ? culture->value() : 0;
-}
-
-int PlayerCity::peace() const
-{
-  city::PeacePtr peace = statistic().services.find<city::Peace>();
-  return peace.isValid() ? peace->value() : 0;
-}
+int PlayerCity::culture() const { return statistic().services.value<city::CultureRating>(); }
+int PlayerCity::peace() const { return statistic().services.value<city::Peace>(); }
 
 int PlayerCity::sentiment() const {  return _d->sentiment; }
 int PlayerCity::favour() const { return empire()->emperor().relation( name() ).value(); }

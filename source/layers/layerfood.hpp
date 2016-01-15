@@ -28,7 +28,7 @@ public:
   virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
   virtual void drawWalkers( const gfx::RenderInfo& rinfo, const gfx::Tile &tile);
 
-  virtual void handleEvent(NEvent& event);
+  virtual void onEvent( const NEvent& event);
 
   Food( gfx::Camera& camera, PlayerCityPtr city );
 };

@@ -141,13 +141,13 @@ bool TreeView::onEvent( const NEvent &event )
 
         switch( event.mouse.type )
 				{
-        case mouseWheel:
+        case NEvent::Mouse::mouseWheel:
 					if ( ScrollBarV )
             ScrollBarV->setValue( ScrollBarV->value() + (event.mouse.wheel < 0 ? -1 : 1) * -10 );
 					return true;
         break;
 
-        case mouseLbtnPressed:
+        case NEvent::Mouse::btnLeftPressed:
 
           if ( isFocused() && !absoluteClippingRect().isPointInside(p) )
 					{
@@ -170,7 +170,7 @@ bool TreeView::onEvent( const NEvent &event )
 					return true;
         break;
 
-        case mouseLbtnRelease:
+        case NEvent::Mouse::mouseLbtnRelease:
 					if( isFocused() &&
             (	( ScrollBarV && ScrollBarV->absoluteRect().isPointInside( p ) && ScrollBarV->onEvent( event ) ) ||
             ( ScrollBarH && ScrollBarH->absoluteRect().isPointInside( p ) &&	ScrollBarH->onEvent( event ) )
@@ -186,7 +186,7 @@ bool TreeView::onEvent( const NEvent &event )
 					return true;
         break;
 
-        case mouseMoved:
+        case NEvent::Mouse::moved:
           if( _selecting )
 					{
             if( absoluteRect().isPointInside( p ) )

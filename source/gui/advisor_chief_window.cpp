@@ -95,44 +95,63 @@ const std::map<Advice::Type,std::string> Advice::row = {
                                             {sentiment,     "##advchief_sentiment##"        }
                                           };
 
-class InfomationRow : public Label
+class InfomationRow : public PushButton
 {
 public:
   InfomationRow( Widget* parent, const std::string& title, const Rect& rectangle )
-    : Label( parent, rectangle )
+    : PushButton( parent, rectangle, "", -1, false, PushButton::noBackground )
   {
     _title = title;
     _dfont = Font::create( FONT_2_WHITE );
 
     setIcon( gui::rc.panel, gui::id.chiefIcon );
-    setIconOffset( Point( 5, 5 ) );
-    setFont( Font::create( FONT_2 ) );
+    setIconOffset( { 6, 8 } );
+    setFont( FONT_2 );
 
     setTextOffset( Point( 255, 0) );
+    Decorator::draw( _border, Rect( 0, 0, width(), height() ), Decorator::brownBorder );
   }
 
-  virtual void _updateTexture( gfx::Engine& painter )
+  virtual void draw(Engine &painter)
   {
-    Label::_updateTexture( painter );
+    PushButton::draw( painter );
+
+    if( _state() == stHovered )
+      painter.draw( _border, absoluteRect().lefttop(), &absoluteClippingRectRef() );
+  }
+
+  void setReasons( const ColoredStrings& reasons )
+  {
+    _reasons = reasons;
+    auto r = _reasons.random();
+    setFont( FONT_2, r.color );
+    setText( _( r ) );
+  }
+
+protected:
+  virtual void _updateTexture()
+  {
+    PushButton::_updateTexture();
 
     canvasDraw( _(_title), Point( 20, 0), _dfont );
   }
 
   Font _dfont;
   std::string _title;
+  ColoredStrings _reasons;
+  Pictures _border;
 };
 
 class Chief::Impl
 {
 public:  
-  typedef std::map<Advice::Type,InfomationRow*> InformationTable;
+  typedef std::map<Advice::Type,InfomationRow*> InformationRows;
 
   PlayerCityPtr city;
-  InformationTable rows;
-  TexturedButton* btnHelp;
+  InformationRows rows;
 
 public:
-  void drawReportRow( Advice::Type, std::string text, NColor color=ColorList::black );
+  void drawReportRow(Advice::Type, const ColoredStrings& strings);
   void drawEmploymentState();
   void drawProfitState();
   void drawMigrationState();
@@ -155,7 +174,7 @@ Chief::Chief(PlayerCityPtr city, Widget* parent, int id )
   __D_REF(_d, Chief )
   setupUI( ":/gui/chiefadv.gui" );
 
-  WidgetEscapeCloser::insertTo( this );  
+  WidgetClose::insertTo( this );  
 
   _d.city = city;
   _d.initRows( this, width() );
@@ -196,79 +215,82 @@ void Chief::draw( gfx::Engine& painter )
   Window::draw( painter );
 }
 
-void Chief::Impl::drawReportRow(Advice::Type type, std::string text, NColor color )
+void Chief::Impl::drawReportRow(Advice::Type type, const ColoredStrings& strings )
 {
   auto it = rows.find( type );
   if( it != rows.end() )
-  {
-    it->second->setColor( color );
-    it->second->setText( text );
-  }
+    it->second->setReasons( strings );
 }
 
 void Chief::Impl::drawEmploymentState()
 {
   Statistic::WorkersInfo wInfo = city->statistic().workers.details();
   int workless = city->statistic().workers.worklessPercent();
-  std::string text;
-  NColor color = ColorList::black;
+  ColoredStrings reasons;
 
   if( city->states().population == 0 )
   {
-    text = _("##no_people_in_city##");
-    color =  ColorList::brown;
+    reasons.addIfValid( {"##no_people_in_city##", ColorList::brown} );
   }
   else
   {
     int needWorkersNumber = wInfo.need - wInfo.current;
     if( needWorkersNumber > 10 )
     {
-      text = fmt::format( "{} {}", _("##advchief_needworkers##"), needWorkersNumber );
-      color = ColorList::brown;
+      reasons.addIfValid( { fmt::format( "{} {}", _("##advchief_needworkers##"), needWorkersNumber ),
+                            ColorList::brown } );
     }
     else if( workless > bigWorklessPercent )
     {
-      text = fmt::format( "{} {}%", _("##advchief_workless##"), workless );
-      color = ColorList::brown;
+      reasons.addIfValid( { fmt::format( "{} {}%", _("##advchief_workless##"), workless ),
+                            ColorList::brown } );
     }
-    else { text = _("##advchief_employers_ok##");  }
+    else
+      reasons.addIfValid( { "##advchief_employers_ok##", ColorList::black } );
   }
 
-  drawReportRow( Advice::employers, text, color );
+  drawReportRow( Advice::employers, reasons );
 }
 
 void Chief::Impl::drawProfitState()
 {
-  std::string text;
+  ColoredStrings reasons;
   int profit = city->treasury().profit();
   std::string prefix = (profit >= 0 ? "##advchief_haveprofit##" : "##advchief_havedeficit##");
-  text = _(prefix) + std::string(" ") + utils::i2str( profit );
   NColor textColor = profit > 0 ? ColorList::black : ColorList::brown;
 
-  drawReportRow( Advice::profit, text, textColor );
+  reasons.addIfValid( { _(prefix) + std::string(" ") + utils::i2str( profit ),
+                        textColor } );
+
+  drawReportRow( Advice::profit, reasons);
 }
 
 void Chief::Impl::drawMigrationState()
 {
+  ColoredStrings reasons;
   MigrationPtr migration = city->statistic().services.find<Migration>();
 
-  std::string text = _("##migration_unknown_reason##");
   if( migration.isValid() )
   {
-    text = migration->reason();
+    reasons.addIfValid( { migration->reason(), ColorList::black } );
+  }
+  else
+  {
+    reasons.addIfValid( { "##migration_unknown_reason##", ColorList::red } );
   }
 
-  drawReportRow( Advice::migration, _( text ) );
+  drawReportRow( Advice::migration, reasons );
 }
 
 void Chief::Impl::drawFoodStockState()
 {   
   bool romeSendWheat = city->statistic().goods.isRomeSend( good::wheat );
 
-  std::string text = _("##food_stock_unknown_reason##");
+  ColoredStrings reasons;
   if( romeSendWheat )
   {
-    text = "##rome_send_wheat_to_city##";
+    reasons.addIfValid( { "##rome_send_wheat_to_city##",
+                          ColorList::green } );
   }
   else
   {
@@ -276,6 +298,7 @@ void Chief::Impl::drawFoodStockState()
 
     if( info.isValid() )
     {
+      std::string text;
       Info::Parameters lastMonth = info->lastParams();
       Info::Parameters prevMonth = info->params( Info::lastMonth );
 
@@ -297,15 +320,23 @@ void Chief::Impl::drawFoodStockState()
             text = fmt::format( "{} {} {}", _("##have_food_for##"), monthWithFood, _("##months##") );
         }
       }
+
+      reasons.addIfValid( { text, ColorList::black } );
     }
   }
 
-  drawReportRow( Advice::foodStock, _(text) );
+  if( reasons.empty() )
+  {
+    reasons.addIfValid( { "##food_stock_unknown_reason##", ColorList::red } );
+  }
+
+  drawReportRow( Advice::foodStock, reasons );
 }
 
 void Chief::Impl::drawFoodConsumption()
 {
   std::string text;
+  NColor color = ColorList::black;
   city::InfoPtr info = city->statistic().services.find<Info>();
 
   int fk = info->lastParams()[ Info::foodKoeff ];
@@ -331,24 +362,26 @@ void Chief::Impl::drawFoodConsumption()
     }
   }
 
-  drawReportRow( Advice::foodConsumption, _(text) );
+  ColoredStrings reasons;
+  reasons.addIfValid( { text, color } );
+  drawReportRow( Advice::foodConsumption, reasons );
 }
 
 void Chief::Impl::drawMilitary()
 {
-  StringArray reasons;
-  MilitaryPtr mil = city->statistic().services.find<Military>();
+  ColoredStrings reasons;
+  MilitaryPtr military = city->statistic().services.find<Military>();
   bool isBesieged = false;
 
-  if( mil.isValid() )
+  if( military.isValid() )
   {
-    isBesieged = mil->threatValue() > bigThreatValue;
+    isBesieged = military->value() > bigThreatValue;
 
     if( !isBesieged )
     {
-      Notification n = mil->priorityNotification();
-      reasons << n.desc.message;
-    }    
+      Notification n = military->priorityNotification();
+      reasons.addIfValid( { n.desc.message, ColorList::black } );
+    }
   }
 
   if( reasons.empty() )
@@ -377,16 +410,16 @@ void Chief::Impl::drawMilitary()
       {
         if( minDistance <= enemyNearCityGatesDistance )
         {
-          std::string threatText = fmt::format( "##{0}_troops_at_our_gates##", maxThreat->type() );
-          reasons << threatText;
+          std::string threatText = fmt::format( "##{}_troops_at_our_gates##", maxThreat->type() );
+          reasons.addIfValid( { threatText, ColorList::red } );
         }
         else if( minDistance <= enemyNearCityDistance )
         {
-          reasons << "##our_enemies_near_city##";
+          reasons.addIfValid( { "##our_enemies_near_city##", ColorList::red } );
         }
         else
         {
-          reasons << "##getting_reports_about_enemies##";
+          reasons.addIfValid( { "##getting_reports_about_enemies##", ColorList::yellow } );
         }
       }
     }
@@ -408,53 +441,58 @@ void Chief::Impl::drawMilitary()
 
     if( needWeapons )
     {
-      reasons << "##some_soldiers_need_weapon##";
+      reasons.addIfValid( { "##some_soldiers_need_weapon##", ColorList::yellow } );
     }
   }
 
   if( reasons.empty() )
   {
-    reasons << "##no_warning_for_us##";
+    reasons.addIfValid( { "##no_warning_for_us##", ColorList::green } );
   }
 
-  drawReportRow( Advice::military, _(reasons.random()) );
+  drawReportRow( Advice::military, reasons );
 }
 
 void Chief::Impl::drawCrime()
 {
-  std::string text;
+  ColoredStrings reasons;
 
   auto disorders = city->statistic().services.find<Disorder>();
   if( disorders.isValid() )
   {
-    text = disorders->reason();
+    reasons.addIfValid( { disorders->reason(), ColorList::red } );
   }
 
-  text = text.empty() ? "##advchief_no_crime##" : text;
+  if( reasons.empty() )
+  {
+    reasons.addIfValid( { "##advchief_no_crime##", ColorList::green } );
+  }
 
-  drawReportRow( Advice::crime, _(text) );
+  drawReportRow( Advice::crime, reasons );
 }
 
 void Chief::Impl::drawHealth()
 {
-  std::string text;
+  ColoredStrings reasons;
 
   auto cityHealth = city->statistic().services.find<HealthCare>();
   if( cityHealth.isValid() )
   {
-    text = cityHealth->reason();
+    reasons.addIfValid( { cityHealth->reason(), ColorList::red } );
   }
 
-  text = text.empty() ? "##advchief_health_good##" : text;
+  if( reasons.empty() )
+  {
+    reasons.addIfValid( { "##advchief_health_good##", ColorList::green } );
+  }
 
-  drawReportRow( Advice::health, _(text));
+  drawReportRow( Advice::health, reasons );
 }
 
 void Chief::Impl::drawEducation()
 {
-  std::string text;
+  ColoredStrings reasons;
 
-  StringArray reasons;
   std::map<object::Type, std::string> avTypes = { {object::school,  "##advchief_some_need_education##"},
                                                   {object::library, "##advchief_some_need_library##"  },
                                                   {object::academy, "##advchief_some_need_academy##"  } };
@@ -462,31 +500,33 @@ void Chief::Impl::drawEducation()
   {
     HouseList houses = city->statistic().houses.ready4evolve( item.first );
     if( houses.size() > 0 )
-      reasons << item.second;
+      reasons.addIfValid( { item.second, ColorList::yellow } );
   }
 
-  text = reasons.random();
+  if( reasons.empty() )
+    reasons.addIfValid( { "##advchief_education_ok##", ColorList::black } );
 
-  if( text.empty() )
-    text = "##advchief_education_ok##";
-
-  drawReportRow( Advice::education, _( text ) );
+  drawReportRow( Advice::education, reasons );
 }
 
 void Chief::Impl::drawReligion()
 {
-  std::string text = "##advchief_religion_unknown##";
+  ColoredStrings reasons;
   ReligionPtr srvc = city->statistic().services.find<Religion>();
   if( srvc.isValid() )
   {
-
+    reasons.addIfValid( { srvc->reason(), ColorList::black } );
   }
-  drawReportRow( Advice::religion, text );
+
+  if( reasons.empty() )
+    reasons.addIfValid( { "##advchief_religion_unknown##", ColorList::red } );
+
+  drawReportRow( Advice::religion, reasons );
 }
 
 void Chief::Impl::drawEntertainment()
 {
-  StringArray reasons;
+  ColoredStrings reasons;
 
   auto festivals = city->statistic().services.find<Festival>();
   if( festivals.isValid() )
@@ -494,7 +534,7 @@ void Chief::Impl::drawEntertainment()
     int monthFromLastFestival = festivals->last().monthsTo( game::Date::current() );
     if( monthFromLastFestival > DateTime::monthsInYear / 2 )
     {
-      reasons << "##citizens_grumble_lack_festivals_held##";
+      reasons.addIfValid( { "##citizens_grumble_lack_festivals_held##", ColorList::yellow } );
     }
   }
 
@@ -504,28 +544,35 @@ void Chief::Impl::drawEntertainment()
     int theaterCoverage = cultures->coverage( CultureRating::covTheatres );
     if( theaterCoverage >= serviceAwesomeCoverage )
     {
-      reasons << "##current_play_runs_for_another##";
+      reasons.addIfValid( { "##current_play_runs_for_another##", ColorList::yellow } );
     }
   }
 
   int hippodromeCoverage = city->statistic().entertainment.coverage( Service::hippodrome );
   if( hippodromeCoverage >= serviceAwesomeCoverage )
   {
-    reasons << "##current_races_runs_for_another##";
+    reasons.addIfValid( { "##current_races_runs_for_another##", ColorList::yellow } );
   }
 
-  drawReportRow( Advice::entertainment, _( reasons.random() ) );
+  drawReportRow( Advice::entertainment, reasons );
 }
 
 void Chief::Impl::drawSentiment()
 {
   SentimentPtr sentiment = city->statistic().services.find<Sentiment>();
 
-  std::string text = sentiment.isValid()
-                     ? sentiment->reason()
-                     : "##unknown_sentiment_reason##";
+  ColoredStrings reasons;
 
-  drawReportRow( Advice::sentiment, text );
+  if( sentiment.isValid() )
+  {
+    reasons.addIfValid( { sentiment->reason(), ColorList::black } );
+  }
+  else
+  {
+    reasons.addIfValid( { "##unknown_sentiment_reason##", ColorList::red } );
+  }
+
+  drawReportRow( Advice::sentiment, reasons );
 }
 
 }//end namespace advisorwnd

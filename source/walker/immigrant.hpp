@@ -24,7 +24,7 @@
 class Immigrant;
 typedef SmartPtr< Immigrant > ImmigrantPtr;
 
-/** This is an immigrant coming with his stuff */
+/** This is an immigrant coming with his stuff **/
 class Immigrant : public Emigrant
 {
   WALKER_MUST_INITIALIZE_FROM_FACTORY

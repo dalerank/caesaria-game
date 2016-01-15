@@ -38,6 +38,7 @@
 #include "core/time.hpp"
 #include "objects/fort.hpp"
 #include "objects/farm.hpp"
+#include "objects/education.hpp"
 #include "cityservice_health.hpp"
 #include "world/traderoute.hpp"
 #include "core/logger.hpp"
@@ -128,6 +129,19 @@ HouseList Statistic::_Houses::patricians( bool habitabl ) const
   return houses;
 }
 
+HouseList Statistic::_Houses::plebs(bool habitabl) const
+{
+  HouseList houses = habitabl ? habitable() : all();
+
+  for( auto it=houses.begin(); it != houses.end(); )
+  {
+    if( (*it)->spec().isPatrician() ) it = houses.erase( it );
+    else ++it;
+  }
+
+  return houses;
+}
+
 #if _MSC_VER >= 1300
 #define INIT_SUBSTAT(a) a({*this})
 #else
@@ -150,22 +164,15 @@ Statistic::Statistic(PlayerCity& c)
       INIT_SUBSTAT(houses),
       INIT_SUBSTAT(religion),
       INIT_SUBSTAT(entertainment),
+      INIT_SUBSTAT(education),
       INIT_SUBSTAT(balance),
       rcity( c )
 {
 
 }
 
-void Statistic::update(const unsigned long time)
-{
-   walkers.cached.clear();
-}
-
-unsigned int Statistic::_Crime::level() const
-{
-  DisorderPtr ds = _parent.services.find<Disorder>();
-  return ds.isValid() ? ds->value() : 0;
-}
+void Statistic::update(const unsigned long time) { walkers.cached.clear(); }
+unsigned int Statistic::_Crime::level() const { return _parent.services.value<Disorder>(); }
 
 const WalkerList& Statistic::_Walkers::find(walker::Type type) const
 {
@@ -353,7 +360,7 @@ size_t Statistic::_Objects::count(object::Type type) const
   const OverlayList& buildings = _parent.rcity.overlays();
   for( auto bld : buildings )
   {
-    if( bld.isValid() && bld->type() == type )
+    if( object::typeOrDefault( bld ) == type )
       ret++;
   }
 
@@ -540,8 +547,7 @@ int Statistic::_Objects::laborAccess(WorkingBuildingPtr wb) const
 
 unsigned int Statistic::_Health::value() const
 {
-  HealthCarePtr h = _parent.services.find<HealthCare>();
-  return h.isValid() ? h->value() : 100;
+  return _parent.services.value<HealthCare>( 100 );
 }
 
 int Statistic::_Military::months2lastAttack() const
@@ -638,6 +644,19 @@ TempleList Statistic::_Religion::temples() const
 TempleOracleList Statistic::_Religion::oracles() const
 {
   return _parent.objects.find<TempleOracle>( object::oracle );
+}
+
+EducationBuildingList Statistic::_Education::find(Service::Type service) const
+{
+  EducationBuildingList ret = _parent.objects.find<EducationBuilding>();
+
+  for( auto it=ret.begin(); it != ret.end(); )
+  {
+    if( (*it)->serviceType() == service ) { ++it; }
+    else { it = ret.erase( it ); }
+  }
+
+  return ret;
 }
 
 }//end namespace city
