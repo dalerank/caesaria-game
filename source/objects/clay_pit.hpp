@@ -19,6 +19,7 @@
 #define __CAESARIA_CLAY_PIT_H_INCLUDED__
 
 #include "factory.hpp"
+#include "ruins.hpp"
 
 class ClayPit : public Factory
 {
@@ -29,8 +30,16 @@ public:
   virtual bool canBuild(const city::AreaInfo& areaInfo) const;  // returns true if it can be built there
   virtual void timeStep( const unsigned long time );
 
+  virtual void flood();
+
 protected:
   virtual void _reachUnworkingTreshold();
+};
+
+class FloodedClayPit : public Ruins
+{
+public:
+  FloodedClayPit();
 };
 
 #endif //__CAESARIA_CLAY_PIT_H_INCLUDED__

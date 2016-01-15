@@ -135,6 +135,7 @@ public:
       __REG_TYPE( rock )
       __REG_TYPE( plateau )
       __REG_TYPE( attackTrigger )
+      __REG_TYPE( flooded_clay_pit )
 
       append( object::unknown,        "" );
   #undef __REG_TYPE

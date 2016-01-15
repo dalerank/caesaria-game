@@ -22,6 +22,7 @@
 #include "city/statistic.hpp"
 #include "game/funds.hpp"
 #include "objects/tree.hpp"
+#include "objects/clay_pit.hpp"
 #include "game/player.hpp"
 #include "events/random_animals.hpp"
 #include "walker/enemysoldier.hpp"
@@ -195,6 +196,7 @@ enum {
   toggle_reservoir_enable,
   toggle_wineshop_enable,
   toggle_vinard_enable,
+  fill_random_claypit,
   next_theme
 };
 
@@ -300,6 +302,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( disaster, random_collapse )
   ADD_DEBUG_EVENT( disaster, random_plague )
   ADD_DEBUG_EVENT( disaster, earthquake )
+  ADD_DEBUG_EVENT( disaster, fill_random_claypit )
   ADD_DEBUG_EVENT( disaster, forest_fire )
 
   ADD_DEBUG_EVENT( level, win_mission )
@@ -482,6 +485,14 @@ void DebugHandler::Impl::handleEvent(int event)
     {
       player->next();
     }
+  }
+  break;
+
+  case fill_random_claypit:
+  {
+    auto pit = game->city()->overlays().select<ClayPit>().random();
+    if( pit.isValid() )
+      pit->flood();
   }
   break;
 
