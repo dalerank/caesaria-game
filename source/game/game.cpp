@@ -292,6 +292,7 @@ void Game::Impl::mountArchives(ResourceLoader &loader)
     if( !testPics.exist() )
     {
       SETTINGS_SET_VALUE( resourcePath, Variant("") );
+      game::Settings::save();
       errorStr = "Not found graphics package. Use precompiled CaesarIA archive or use\n"
                  "-c3gfx flag to set absolute path to Caesar III(r) installation folder,\n"
                  "forexample, \"-c3gfx c:/games/caesar3/\"";
@@ -330,6 +331,8 @@ void Game::Impl::showSplashScreen(bool& isOk, std::string& result)
   {
     splash.createInstance();
     splash->initialize();
+    splash->setImage( SETTINGS_STR( logoImageRc ),
+                      SETTINGS_VALUE( logoImageIndex ) );
     splash->update( *engine );
   }
 }

@@ -50,6 +50,11 @@ bool Batch::load(const Pictures &pics, const Rects& dstrects)
     return true;
   }
 
+  if( Engine::instance().getFlag( Engine::batching ) == 0 )
+  {
+    return false;
+  }
+
   if( dstrects.size() != pics.size() )
   {
     Logger::warning( "!!! WARNING: Cant create batch from pictures because length not equale dstrects" );

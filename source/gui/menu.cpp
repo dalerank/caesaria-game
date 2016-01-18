@@ -518,7 +518,7 @@ void Menu::draw(gfx::Engine& painter)
 
   DrawState pipe( painter, absoluteRect().lefttop(), &absoluteClippingRectRef() );
   pipe.draw( _d->bg.batch )
-      .fallback( _d->bg.fallback );
+      .fallback( _d->bg.fallback, _d->bg.rects );
     
   Widget::draw( painter );
 }

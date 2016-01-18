@@ -19,6 +19,7 @@
 #define __CAESARIA_DRAW_STATE_H_INCLUDED__
 
 #include "picture.hpp"
+#include "core/rect_array.hpp"
 
 namespace gfx
 {
@@ -33,12 +34,15 @@ public:
   DrawState(Engine& painter);
   DrawState(Engine& painter, const Point& lefttop, Rect* clip );
 
+  inline bool isOk() const { return _ok; }
+
   DrawState& draw( const Picture& picture );
   DrawState& draw( const Pictures& pics );
   DrawState& draw( const Picture& picture, const Point& offset );
   DrawState& draw( const Batch& batch );
   DrawState& fallback( const Batch& batch );
   DrawState& fallback( const Pictures& pics );
+  DrawState& fallback( const Pictures& pics, const Rects& dstRects );
 
 private:
   Engine& _painter;

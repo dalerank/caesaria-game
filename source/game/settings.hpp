@@ -110,6 +110,8 @@ public:
   __GS_PROPERTY(logfile)
   __GS_PROPERTY(rightMenu)
   __GS_PROPERTY(showEmpireMapTiles)
+  __GS_PROPERTY(logoImageRc)
+  __GS_PROPERTY(logoImageIndex)
 #undef __GS_PROPERTY
 
   static Settings& instance();

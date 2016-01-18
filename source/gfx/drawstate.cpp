@@ -43,7 +43,7 @@ DrawState& DrawState::draw(const Picture& picture)
   return *this;
 }
 
-DrawState&DrawState::draw(const Pictures& pics)
+DrawState& DrawState::draw(const Pictures& pics)
 {
  _ok = !pics.empty();
   if( _ok )
@@ -52,7 +52,7 @@ DrawState&DrawState::draw(const Pictures& pics)
   return *this;
 }
 
-DrawState&DrawState::draw(const Picture& picture, const Point& offset)
+DrawState& DrawState::draw(const Picture& picture, const Point& offset)
 {
   _ok = picture.isValid();
   if( _ok )
@@ -82,6 +82,23 @@ DrawState& DrawState::fallback(const Batch& batch)
   return *this;
 }
 
+DrawState& DrawState::fallback(const Pictures& pics, const Rects& dstRects)
+{
+  if( !_ok )
+  {
+    _ok = !pics.empty();
+    if( _ok )
+    {
+      //Very slow, becase we need to unpack all picture options
+      int length = math::min( pics.size(), dstRects.size() );
+      for( int i=0; i < length; ++i )
+        _painter.draw( pics[ i ], pics[ i ].originRect(), dstRects[i], _clip );
+    }
+  }
+
+  return *this;
+}
+
 DrawState& DrawState::fallback(const Pictures& pics)
 {
   if( !_ok )
@@ -93,6 +110,5 @@ DrawState& DrawState::fallback(const Pictures& pics)
 
   return *this;
 }
-
 
 }//end namespace gfx

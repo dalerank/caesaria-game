@@ -64,7 +64,7 @@ public:
 
   struct {
     Batch batch;
-    Pictures pics;
+    Pictures fallback;
     Rects rects;
   } bg;
 
@@ -103,7 +103,7 @@ void TopMenu::draw(gfx::Engine& engine)
 
   DrawState pipe( engine, absoluteRect().lefttop(), &absoluteClippingRectRef() );
   pipe.draw( _d->bg.batch )
-      .fallback( _d->bg.pics );
+      .fallback( _d->bg.fallback, _d->bg.rects );
 
   MainMenu::draw( engine );
 }
@@ -173,13 +173,13 @@ void TopMenu::Impl::initBackground( const Size& size )
   while( x < size.width() )
   {
     const Picture& pic = p_marble[i%12];
-    bg.pics.push_back( pic );
+    bg.fallback.push_back( pic );
     bg.rects.push_back( Rect( Point( x, 0), pic.size() * ykoef ) );
     x += pic.width() * ykoef;
     i++;
   }
 
-  bool batchOk = bg.batch.load( bg.pics, bg.rects );
+  bool batchOk = bg.batch.load( bg.fallback, bg.rects );
   if( !batchOk )
     bg.batch.destroy();
 }
