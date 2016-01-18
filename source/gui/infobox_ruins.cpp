@@ -24,6 +24,7 @@
 #include "core/logger.hpp"
 #include "core/gettext.hpp"
 #include "objects/constants.hpp"
+#include "environment.hpp"
 #include "game/settings.hpp"
 #include "game/infoboxmanager.hpp"
 #include "objects/ruins.hpp"
@@ -46,33 +47,26 @@ AboutRuins::AboutRuins( Widget* parent, PlayerCityPtr city, const Tile& tile )
   RuinsPtr ruin = tile.overlay<Ruins>();
   if( ruin.isNull() )
   {
-    Logger::warning( "AbourRuins: tile overlay at [%d,%d] not ruin", tile.i(), tile.j() );
+    Logger::warning( "AbourRuins: tile overlay at [{},{}] not ruin", tile.i(), tile.j() );
     return;
   }
 
-  setTitle( MetaDataHolder::findPrettyName( ruin->type() ) );
+  setTitle( _( ruin->info().prettyName() ) );
   std::string text = _("##ruins_0000_text##");
   _ruinType = ruin->type();
 
-  if( ruin.isValid() )
+  if( ruin.isValid() && !ruin->pinfo().empty() )
   {
-    if( !ruin->info().empty() )
-    {
-      text = _( ruin->info().c_str() );
-    }
+    text = _( ruin->pinfo() );
   }
 
-  Label* lb = new Label( this, Rect( 20, 20, width() - 20, height() - 50), text );
-  lb->setTextAlignment( align::center, align::center );
-  lb->setWordwrap( true );
+  Label& lb = add<Label>( Rect( 20, 20, width() - 20, height() - 50), text );
+  lb.setTextAlignment( align::center, align::center );
+  lb.setWordwrap( true );
 }
 
 AboutRuins::~AboutRuins() {}
-
-void AboutRuins::_showHelp()
-{
-  DictionaryWindow::show( this, object::toString( _ruinType ) );
-}
+void AboutRuins::_showHelp() { ui()->add<DictionaryWindow>( _ruinType ); }
 
 }
 

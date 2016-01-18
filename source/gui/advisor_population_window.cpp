@@ -137,8 +137,8 @@ Population::Population(PlayerCityPtr city, Widget* parent, int id )
   _d->city = city;
   _d->chartCurrent = 0;
 
-  CityChartLegend* legendY = new CityChartLegend( this, Rect( 8, 60, 56, 280 ), false, 2 );
-  CityChartLegend* legendX = new CityChartLegend( this, Rect( 54, 270, 480, 290 ), true, 10 );
+  auto& legendY = add<CityChartLegend>( Rect( 8, 60, 56, 280 ), false, 2 );
+  auto& legendX = add<CityChartLegend>( Rect( 54, 270, 480, 290 ), true, 10 );
 
   GET_DWIDGET_FROM_UI( _d, lbNextChart  )
   GET_DWIDGET_FROM_UI( _d, lbPrevChart )
@@ -154,7 +154,7 @@ Population::Population(PlayerCityPtr city, Widget* parent, int id )
 
   if( lbNextChartArea )
   {
-    _d->chartNext = new CityChart( lbNextChartArea, Rect( 0, 0, 100, 50 ) );
+    _d->chartNext = &lbNextChartArea->add<CityChart>( Rect( 0, 0, 100, 50 ) );
     _d->chartNext->setIsSmall( true );
     _d->chartNext->setTooltipText( _("##select_this_graph##") );
     CONNECT( lbNextChartArea, onClicked(), _d.data(), Impl::showNextChart );
@@ -162,7 +162,7 @@ Population::Population(PlayerCityPtr city, Widget* parent, int id )
 
   if( lbPrevChartArea )
   {
-    _d->chartPrev = new CityChart( lbPrevChartArea, Rect( 0, 0, 100, 50 ) );
+    _d->chartPrev = &lbPrevChartArea->add<CityChart>( Rect( 0, 0, 100, 50 ) );
     _d->chartPrev->setIsSmall( true );
     _d->chartPrev->setTooltipText( _("##select_this_graph##") );
     CONNECT( lbPrevChartArea, onClicked(), _d.data(), Impl::showPrevChart );
@@ -170,18 +170,17 @@ Population::Population(PlayerCityPtr city, Widget* parent, int id )
 
   if( lbChart )
   {
-    _d->chartCurrent = new CityChart( lbChart, Rect( 10, 7, 405, 202 ) );
+    _d->chartCurrent = &lbChart->add<CityChart>( Rect( 10, 7, 405, 202 ) );
 
-    CONNECT( _d->chartCurrent, onMaxYChange, legendY, CityChartLegend::setMaxValue );
-    CONNECT( _d->chartCurrent, onMaxXChange, legendX, CityChartLegend::setMaxValue );
+    CONNECT( _d->chartCurrent, onMaxYChange, &legendY, CityChartLegend::setMaxValue );
+    CONNECT( _d->chartCurrent, onMaxXChange, &legendX, CityChartLegend::setMaxValue );
 
     _d->switch2nextChart( 0 );
   }
 
   _d->updateStates();
 
-  TexturedButton* btnHelp = new TexturedButton( this, Point( 12, height() - 39), Size( 24 ), -1, ResourceMenu::helpInfBtnPicId );
-  CONNECT( btnHelp, onClicked(), this, Population::_showHelp );
+  add<HelpButton>( Point( 12, height() - 39), "population_advisor" );
   CONNECT( _d->lbNextChart, onClicked(), _d.data(), Impl::showNextChart );
   CONNECT( _d->lbPrevChart, onClicked(), _d.data(), Impl::showPrevChart );
 }
@@ -194,11 +193,6 @@ void Population::draw( gfx::Engine& painter )
   Window::draw( painter );
 }
 
-void Population::_showHelp()
-{
-  DictionaryWindow::show( this, "population_advisor" );
-}
-
 void Population::Impl::switch2nextChart( int change )
 {
   if( chartCurrent )
@@ -208,18 +202,18 @@ void Population::Impl::switch2nextChart( int change )
     chartCurrent->update( city, (CityChart::DrawMode)(chartCurrent->mode()+change) );
     int mode = chartCurrent->mode();
     std::string modeName = cmHelper.findName( (CityChart::DrawMode)mode );
-    std::string text = utils::format( 0xff, "##citychart_%s##", modeName.c_str() );
+    std::string text = fmt::format( "##citychart_{0}##", modeName );
     lbTitle->setText( _( text ) );
 
     mode = chartCurrent->fit( (CityChart::DrawMode)(chartCurrent->mode() + 1) );
     modeName = cmHelper.findName( (CityChart::DrawMode)mode );
-    text = utils::format( 0xff, "##citychart_%s##", modeName.c_str() );
+    text = fmt::format( "##citychart_{0}##", modeName );
     lbNextChart->setText(  _( text ) );
     chartNext->update( city, (CityChart::DrawMode)mode );
 
     mode = chartCurrent->fit( (CityChart::DrawMode)(chartCurrent->mode() - 1) );
     modeName = cmHelper.findName( (CityChart::DrawMode)mode );
-    text = utils::format( 0xff, "##citychart_%s##", modeName.c_str() );
+    text = fmt::format( "##citychart_{0}##", modeName );
     lbPrevChart->setText( _( text ) );
     chartPrev->update( city, (CityChart::DrawMode)mode );
   }
@@ -327,7 +321,7 @@ void Population::Impl::updateStates()
 CityChartLegend::CityChartLegend(Widget *parent, const Rect &rectangle, bool horizontal, int stepCount)
   : Label( parent, rectangle )
 {
-  setFont( Font::create( FONT_1 ) );
+  setFont( FONT_1 );
   _stepCount = stepCount;
   _horizontal = horizontal;
 }
@@ -345,9 +339,7 @@ void CityChartLegend::_updateTexture(Engine &painter)
   if( !_textPicture().isValid() )
     return;
 
-  Picture& pic = _textPicture();
-
-  pic.fill( 0, Rect() );
+  _textPicture().fill( 0, Rect() );
   for( int k=0; k < _stepCount+1; k++ )
   {
     std::string text = utils::i2str( k * _maxValue / _stepCount );
@@ -355,7 +347,7 @@ void CityChartLegend::_updateTexture(Engine &painter)
         ? Point( k * width() / _stepCount - (k == 0 ? 0 : 20), 3 )
         : Point( 8, height() - k * height() / _stepCount - (k == _stepCount ? 0 : 23) );
 
-    font().draw( pic, text, offset );
+    canvasDraw( text, offset );
   }
 }
 
@@ -404,7 +396,7 @@ void CityChart::update(PlayerCityPtr city, CityChart::DrawMode mode)
       history.push_back( params );
 
       _values.clear();
-      for( const Info::Parameters& step : history )
+      for( const auto& step : history )
       {
         _values.push_back( step[ Info::population ] );
         _maxValue = std::max<unsigned int>( _maxValue, step[ Info::population ] );
@@ -477,7 +469,7 @@ void CityChart::draw(Engine &painter)
     return;
 
   Picture& pic = _textPicture();
-  Picture rpic( ResourceGroup::panelBackground, _picIndex );
+  Picture rpic( gui::rc.panel, _picIndex );
 
   pic.fill( 0, Rect() );
   int index=0;

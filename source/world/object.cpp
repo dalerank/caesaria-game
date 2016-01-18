@@ -53,7 +53,7 @@ ObjectPtr Object::create( EmpirePtr empire)
 }
 
 bool Object::isDeleted() const { return _d->isDeleted; }
-std::string Object::type() const { return CAESARIA_STR_EXT(Object); }
+std::string Object::type() const { return TEXT(Object); }
 void Object::timeStep(const unsigned int time) {}
 EmpirePtr Object::empire() const { return _d->empire; }
 std::string Object::name() const { return _d->name; }
@@ -62,7 +62,7 @@ Point Object::location() const { return _d->location;}
 
 void Object::addObject(ObjectPtr obj)
 {
-  Logger::warning( "WorldObjects: %s added to %s", obj->name().c_str(), name().c_str() );
+  Logger::warning( "WorldObjects: {} added to {}", obj->name(), name() );
 }
 
 void Object::setLocation(const Point& location){  _d->location = location; }
@@ -121,7 +121,7 @@ void Object::attach()
 
 Object::~Object() {}
 
-Object::Object( EmpirePtr empire) : _d( new Impl )
+Object::Object(EmpirePtr empire) : _d( new Impl )
 {
   _d->time = 0;
   _d->empire = empire;

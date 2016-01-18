@@ -22,6 +22,7 @@
 #include "city/statistic.hpp"
 #include "game/funds.hpp"
 #include "objects/tree.hpp"
+#include "objects/clay_pit.hpp"
 #include "game/player.hpp"
 #include "events/random_animals.hpp"
 #include "walker/enemysoldier.hpp"
@@ -66,10 +67,12 @@
 #include "objects/factory.hpp"
 #include "events/warningmessage.hpp"
 #include "sound/themeplayer.hpp"
+#include "city/build_options.hpp"
 #include "objects/house_spec.hpp"
 
 using namespace gfx;
 using namespace citylayer;
+using namespace events;
 using namespace gui;
 
 enum {
@@ -78,8 +81,10 @@ enum {
   divinity,
   money,
   goods,
+  empiremap,
   factories,
   other,
+  buildings,
   disaster,
   level,
   in_city,
@@ -173,10 +178,25 @@ enum {
   reload_buildings_config,
   toggle_show_buildings,
   toggle_show_trees,
+  toggle_show_empireMapTiles,
+  toggle_show_rocks,
   forest_fire,
   forest_grow,
   increase_max_level,
   decrease_max_level,
+  increase_house_level,
+  decrease_house_level,
+  lock_house_level,
+  enable_constructor_mode,
+  show_requests,
+  show_attacks,
+  reset_fire_risk,
+  reset_collapse_risk,
+  toggle_shipyard_enable,
+  toggle_reservoir_enable,
+  toggle_wineshop_enable,
+  toggle_vinard_enable,
+  fill_random_claypit,
   next_theme
 };
 
@@ -192,6 +212,7 @@ public:
   void addGoods2Wh( good::Product type );
   void reloadConfigs();
   void runScript(std::string filename);
+  void toggleBuildOptions(object::Type type);
   gui::ContextMenu* debugMenu;
 
 #ifdef DEBUG
@@ -269,18 +290,27 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
 
   ADD_DEBUG_EVENT( other, send_player_army )
   ADD_DEBUG_EVENT( other, screenshot )
+  ADD_DEBUG_EVENT( other, enable_constructor_mode )
   ADD_DEBUG_EVENT( other, next_theme )
+
+  ADD_DEBUG_EVENT( buildings, toggle_shipyard_enable )
+  ADD_DEBUG_EVENT( buildings, toggle_reservoir_enable )
+  ADD_DEBUG_EVENT( buildings, toggle_wineshop_enable )
+  ADD_DEBUG_EVENT( buildings, toggle_vinard_enable )
 
   ADD_DEBUG_EVENT( disaster, random_fire )
   ADD_DEBUG_EVENT( disaster, random_collapse )
   ADD_DEBUG_EVENT( disaster, random_plague )
   ADD_DEBUG_EVENT( disaster, earthquake )
+  ADD_DEBUG_EVENT( disaster, fill_random_claypit )
   ADD_DEBUG_EVENT( disaster, forest_fire )
 
   ADD_DEBUG_EVENT( level, win_mission )
   ADD_DEBUG_EVENT( level, fail_mission )
   ADD_DEBUG_EVENT( level, change_emperor )
   ADD_DEBUG_EVENT( level, property_browser )
+  ADD_DEBUG_EVENT( level, show_requests )
+  ADD_DEBUG_EVENT( level, show_attacks )
 
   ADD_DEBUG_EVENT( empire, send_merchants )
 
@@ -295,9 +325,14 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( in_city, decrease_sentiment )
   ADD_DEBUG_EVENT( in_city, increase_sentiment )
   ADD_DEBUG_EVENT( in_city, forest_grow )
+  ADD_DEBUG_EVENT( in_city, reset_fire_risk )
+  ADD_DEBUG_EVENT( in_city, reset_collapse_risk )
 
   ADD_DEBUG_EVENT( house, increase_max_level )
   ADD_DEBUG_EVENT( house, decrease_max_level )
+  ADD_DEBUG_EVENT( house, increase_house_level )
+  ADD_DEBUG_EVENT( house, decrease_house_level )
+  ADD_DEBUG_EVENT( house, lock_house_level )
 
   ADD_DEBUG_EVENT( options, run_script )
   ADD_DEBUG_EVENT( options, all_sound_off )
@@ -315,6 +350,9 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( draw, toggle_show_walkable_tiles )
   ADD_DEBUG_EVENT( draw, toggle_show_locked_tiles )
   ADD_DEBUG_EVENT( draw, toggle_show_flat_tiles )
+  ADD_DEBUG_EVENT( draw, toggle_show_rocks )
+
+  ADD_DEBUG_EVENT( empiremap, toggle_show_empireMapTiles )
 #undef ADD_DEBUG_EVENT
 
 #ifdef DEBUG
@@ -329,14 +367,22 @@ void DebugHandler::setVisible(bool visible)
     _d->debugMenu->setVisible( visible );
 }
 
+void DebugHandler::Impl::toggleBuildOptions( object::Type type )
+{
+  city::development::Options options;
+  options = game->city()->buildOptions();
+  options.setBuildingAvailable( type, !options.isBuildingAvailable( type ) );
+  game->city()->setBuildOptions( options );
+}
+
 DebugHandler::~DebugHandler() {}
 
 EnemySoldierPtr DebugHandler::Impl::makeEnemy( walker::Type type )
 {
-  EnemySoldierPtr enemy = WalkerManager::instance().create<EnemySoldier>( type, game->city() );
+  EnemySoldierPtr enemy = Walker::create<EnemySoldier>( type, game->city() );
   if( enemy.isValid() )
   {
-    enemy->send2City( game->city()->borderInfo().roadEntry );
+    enemy->send2City( game->city()->getBorderInfo( PlayerCity::roadEntry ).epos() );
   }
 
   return enemy;
@@ -354,8 +400,8 @@ void DebugHandler::Impl::addGoods2Wh(good::Product type)
 
 void DebugHandler::Impl::reloadConfigs()
 {
-  OverlayList ovs = game->city()->overlays();
-  for( auto overlay : ovs )
+  auto overlays = game->city()->overlays();
+  for( auto overlay : overlays )
     overlay->reinit();
 }
 
@@ -374,7 +420,7 @@ DebugHandler::DebugHandler() : _d(new Impl)
 
 void DebugHandler::Impl::setFactoryReady( object::Type type )
 {
-  FactoryList factories = game->city()->statistic().objects.find<Factory>( type );
+  auto factories = game->city()->statistic().objects.find<Factory>( type );
   for( auto factory : factories )
   {
     if( factory->numberWorkers() > 0 )
@@ -387,7 +433,7 @@ void DebugHandler::Impl::setFactoryReady( object::Type type )
 
 void DebugHandler::Impl::updateSentiment(int delta)
 {
-  HouseList houses = game->city()->statistic().houses.find();
+  auto houses = game->city()->statistic().houses.find();
   for( auto house : houses )
     house->updateState( pr::happiness, delta );
 }
@@ -410,8 +456,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case add_wolves:
   {
-    events::GameEventPtr e = events::RandomAnimals::create( walker::wolf, 10 );
-    e->dispatch();
+    events::dispatch<RandomAnimals>( walker::wolf, 10 );
   }
   break;
 
@@ -421,12 +466,17 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case comply_rome_request:
   {
-    world::GoodCaravanPtr caravan = world::GoodCaravan::create( ptr_cast<world::City>( game->city() ) );
+    auto caravan = world::GoodCaravan::create( ptr_cast<world::City>( game->city() ) );
     good::Stock stock( good::Helper::random(), 1000, 1000 );
     caravan->store().store( stock, stock.qty() );
-    caravan->sendTo( game->empire()->rome() );
+    caravan->sendTo( game->empire()->capital() );
   }
   break;
+
+  case toggle_shipyard_enable: toggleBuildOptions( object::shipyard );  break;
+  case toggle_reservoir_enable: toggleBuildOptions( object::reservoir );  break;
+  case toggle_wineshop_enable: toggleBuildOptions( object::wine_workshop );  break;
+  case toggle_vinard_enable: toggleBuildOptions( object::vinard );  break;
 
   case next_theme:
   {
@@ -438,13 +488,31 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
 
+  case fill_random_claypit:
+  {
+    auto pit = game->city()->overlays().select<ClayPit>().random();
+    if( pit.isValid() )
+      pit->flood();
+  }
+  break;
+
+  case enable_constructor_mode:
+  {
+    auto level = safety_cast<scene::Level*>( game->scene() );
+    if( level )
+    {
+      level->setConstructorMode( true );
+    }
+  }
+  break;
+
   case property_browser:
   {
-    int hash = Hash( CAESARIA_STR_A(PropertyWorkspace) );
+    int hash = Hash( TEXT(PropertyWorkspace) );
     PropertyWorkspace* browser = safety_cast<PropertyWorkspace*>( game->gui()->findWidget( hash ) );
     if( !browser )
     {
-      browser = new PropertyWorkspace( game->gui()->rootWidget(), game->scene(), Rect( 0, 0, 500, 700 ) );
+      browser = &game->gui()->add<PropertyWorkspace>( game->scene(), Rect( 0, 0, 500, 700 ) );
       browser->setCity( game->city() );
       game->scene()->installEventHandler( browser->handler() );
     }
@@ -459,6 +527,22 @@ void DebugHandler::Impl::handleEvent(int event)
     forest = forest.random( 2 );
     for( auto tree : forest )
       tree->burn();
+  }
+  break;
+
+  case reset_fire_risk:
+  {
+    BuildingList buildings = game->city()->overlays().select<Building>();
+    for( auto building : buildings )
+      building->setState( pr::fire, 0 );
+  }
+  break;
+
+  case reset_collapse_risk:
+  {
+    BuildingList buildings = game->city()->overlays().select<Building>();
+    for( auto building : buildings )
+      building->setState( pr::damage, 0 );
   }
   break;
 
@@ -485,9 +569,17 @@ void DebugHandler::Impl::handleEvent(int event)
     game->city()->setVictoryConditions( conditions );
 
     std::string levelName = HouseSpecHelper::instance().getSpec( conditions.maxHouseLevel() ).internalName();
-    events::GameEventPtr e = events::WarningMessage::create( "DEBUG: House max level is " + levelName,
-                                                             events::WarningMessage::neitral );
-    e->dispatch();
+    events::dispatch<WarningMessage>( "DEBUG: House max level is " + levelName,
+                                      events::WarningMessage::neitral );
+  }
+  break;
+
+  case increase_house_level:
+  case decrease_house_level:
+  {
+    HouseList houses = game->city()->overlays().select<House>();
+    for( auto house : houses )
+      house->__debugChangeLevel( event == increase_house_level ? 1 : -1 );
   }
   break;
 
@@ -503,9 +595,9 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case show_fest:
   {
-    city::FestivalPtr fest = game->city()->statistic().services.find<city::Festival>();
-    if( fest.isValid() )
-      fest->now();
+    city::FestivalPtr festivals = game->city()->statistic().services.find<city::Festival>();
+    if( festivals.isValid() )
+      festivals->doFestivalNow();
   }
   break;
 
@@ -575,7 +667,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case send_chastener:
   {
-    world::CityPtr rome = game->empire()->rome();
+    world::CityPtr rome = game->empire()->capital();
     PlayerCityPtr plCity = game->city();
 
     world::RomeChastenerArmyPtr army = world::RomeChastenerArmy::create( game->empire() );
@@ -586,7 +678,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case change_emperor:
   {
-    events::GameEventPtr e = events::ChangeEmperor::create();
+    GameEventPtr e = ChangeEmperor::create();
     VariantMap vm = config::load( ":/test_emperor.model" );
     e->load( vm );
     e->dispatch();
@@ -595,7 +687,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case kill_all_enemies:
   {
-     EnemySoldierList enemies = game->city()->statistic().walkers.find<EnemySoldier>( walker::any, gfx::tilemap::invalidLocation() );
+     EnemySoldierList enemies = game->city()->statistic().walkers.find<EnemySoldier>( walker::any, TilePos::invalid() );
 
      for( auto enemy : enemies )
        enemy->die();
@@ -611,10 +703,16 @@ void DebugHandler::Impl::handleEvent(int event)
   }
   break;
 
+  case toggle_show_empireMapTiles:
+  {
+    bool enable = KILLSWITCH( showEmpireMapTiles );
+    SETTINGS_SET_VALUE( showEmpireMapTiles, !enable );
+  }
+  break;
+
   case add_scribe_messages:
   {
-    events::GameEventPtr e = events::ScribeMessage::create( "test_message", "this is test message from yout scribes" );
-    e->dispatch();
+    events::dispatch<ScribeMessage>( "test_message", "this is test message from yout scribes" );
   }
   break;
 
@@ -640,22 +738,19 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case random_fire:
   {
-    events::GameEventPtr e = events::RandomFire::create();
-    e->dispatch();
+    events::dispatch<RandomFire>();
   }
   break;
 
   case random_plague:
   {
-    events::GameEventPtr e = events::RandomPlague::create();
-    e->dispatch();
+    events::dispatch<RandomPlague>();
   }
   break;
 
   case random_collapse:
   {
-    events::GameEventPtr e = events::RandomDamage::create();
-    e->dispatch();
+    events::dispatch<RandomDamage>();
   }
   break;
 
@@ -664,8 +759,7 @@ void DebugHandler::Impl::handleEvent(int event)
     int mapsize = game->city()->tilemap().size()-1;
     TilePos start( math::random(mapsize), math::random(mapsize) );
     TilePos stop( math::random(mapsize), math::random(mapsize) );
-    events::GameEventPtr e = events::EarthQuake::create( start, stop );
-    e->dispatch();
+    events::dispatch<EarthQuake>( start, stop );
   }
   break;
 
@@ -687,8 +781,7 @@ void DebugHandler::Impl::handleEvent(int event)
   case test_request:
   {
     VariantMap rqvm = config::load( ":/test_request.model" );
-    events::GameEventPtr e = events::PostponeEvent::create( "", rqvm );
-    e->dispatch();
+    events::dispatch<PostponeEvent>( "", rqvm );
   }
   break;
 
@@ -712,16 +805,12 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case run_script:
   {
-    Widget* parent = game->gui()->rootWidget();
-    dialog::LoadFile* wnd = dialog::LoadFile::create( parent,
-                                                      Rect(),
-                                                      vfs::Path( ":/scripts/" ), ".model",
-                                                      -1 );
-    wnd->setCenter( parent->center() );
-
-    CONNECT( wnd, onSelectFile(), this, Impl::runScript );
-    wnd->setTitle( "Select file" );
-    wnd->setText( "open" );
+    auto& dialog = game->gui()->add<dialog::LoadFile>( Rect(),
+                                                       vfs::Path( ":/scripts/" ), ".model",
+                                                       -1 );
+    CONNECT( &dialog, onSelectFile(), this, Impl::runScript );
+    dialog.setTitle( "Select file" );
+    dialog.setText( "open" );
   }
   break;
 
@@ -735,6 +824,7 @@ void DebugHandler::Impl::handleEvent(int event)
   case toggle_show_flat_tiles: DrawOptions::instance().toggle( DrawOptions::showFlatTiles );  break;
   case toggle_show_buildings : DrawOptions::instance().toggle( DrawOptions::showBuildings ); break;
   case toggle_show_trees : DrawOptions::instance().toggle( DrawOptions::showTrees ); break;
+  case toggle_show_rocks : DrawOptions::instance().toggle( DrawOptions::showRocks ); break;
 
   case add_soldiers_in_fort:
   {
@@ -746,9 +836,9 @@ void DebugHandler::Impl::handleEvent(int event)
       TilesArray tiles = fort->enterArea();
       for( int i=0; i < howMuchAdd; i++ )
       {
-        RomeSoldierPtr soldier = RomeSoldier::create( game->city(), walker::legionary );
-        soldier->send2city( fort, tiles.front()->pos() );
+        RomeSoldierPtr soldier = Walker::create<RomeSoldier>( game->city(), walker::legionary );
         fort->addWalker( soldier.object() );
+        soldier->send2city( fort, tiles.front()->pos());
       }
     }
   }

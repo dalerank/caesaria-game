@@ -27,7 +27,6 @@
 #include "gui/environment.hpp"
 #include "gui/label.hpp"
 #include "core/variant_map.hpp"
-#include "gfx/helper.hpp"
 #include "requestdestroy.hpp"
 
 using namespace gfx;
@@ -35,8 +34,8 @@ using namespace gfx;
 namespace events
 {
 
-CAESARIA_LITERALCONST(type)
-CAESARIA_LITERALCONST(name)
+GAME_LITERALCONST(type)
+GAME_LITERALCONST(name)
 
 bool GameEvent::tryExec(Game& game, unsigned int time)
 {

@@ -33,6 +33,7 @@
 #include "game/infoboxmanager.hpp"
 
 using namespace gfx;
+using namespace events;
 
 namespace gui
 {
@@ -57,29 +58,28 @@ AboutSenate::AboutSenate(Widget* parent, PlayerCityPtr city, const Tile& tile )
   if( senate.isNull() )
     return;
 
-  events::GameEventPtr e = events::PlaySound::create( "bmsel_senate", 1, 100, audio::infobox, true );
-  e->dispatch();
+  events::dispatch<PlaySound>( "bmsel_senate", 1, 100, audio::infobox, true );
 
-  std::string title = MetaDataHolder::instance().find( object::senate ).prettyName();
-  setTitle( _(title) );
+  setTitle( _( senate->info().prettyName() ) );
 
   // number of workers
   _updateWorkersLabel( Point( 32, 136), 542, senate->maximumWorkers(), senate->numberWorkers() );
 
-  std::string denariesStr = utils::format( 0xff, "%s %d", _("##senate_save##"), senate->funds() );
+  std::string denariesStr = fmt::format( "{} {}", _("##senate_save##"), senate->funds() );
 
   Size lbSize( width() - 32, 30 );
-  Label* lb = new Label( this, Rect( lbStartPos, lbSize ), denariesStr );
-  lb->setIcon( good::Helper::picture( good::denaries ) );
-  lb->setTextOffset( Point( 30, 0 ));
+  Label& lb = add<Label>( Rect( lbStartPos, lbSize ), denariesStr );
+  lb.setIcon( good::Helper::picture( good::denaries ) );
+  lb.setTextOffset( Point( 30, 0 ));
 
-  std::string taxThisYearStr = utils::format( 0xff, "%s %d", _("##senate_thisyear_tax##"), senate->thisYearTax() );
-  lb = new Label( this, Rect( lb->leftbottom(), lbSize ), taxThisYearStr );
+  std::string taxThisYearStr = fmt::format( "{} {}", _("##senate_thisyear_tax##"), senate->thisYearTax() );
+  add<Label>( Rect( lb.leftbottom(), lbSize ), taxThisYearStr );
 
-  new Label( this, Rect( 60, 215, 60 + 300, 215 + 24 ), _("##visit_rating_advisor##") );
-  TexturedButton* btnAdvisor = new TexturedButton( this, Point( 350, 215 ), Size(28), advisorBtnId, 289 );
-  CONNECT( btnAdvisor, onClicked(), this, AboutSenate::_showRatingAdvisor );
-  CONNECT( btnAdvisor, onClicked(), this, AboutSenate::deleteLater );
+  add<Label>( Rect( 60, 215, 60 + 300, 215 + 24 ), _("##visit_rating_advisor##") );
+
+  TexturedButton& btnAdvisor = add<TexturedButton>( Point( 350, 215 ), Size(28), advisorBtnId, 289 );
+  CONNECT_LOCAL( &btnAdvisor, onClicked(), AboutSenate::_showRatingAdvisor );
+  CONNECT_LOCAL( &btnAdvisor, onClicked(), AboutSenate::deleteLater );
 }
 
 AboutSenate::~AboutSenate() {}
@@ -92,10 +92,9 @@ Signal0<>& AboutSenate::onButtonAdvisorClicked()
 
 void AboutSenate::_showRatingAdvisor()
 {
-  events::GameEventPtr e = events::ShowAdvisorWindow::create( true, advisor::ratings );
-  e->dispatch();
+  events::dispatch<ShowAdvisorWindow>( true, advisor::ratings );
 }
 
-}
+}//end namespace infobox
 
 }//end namespace gui

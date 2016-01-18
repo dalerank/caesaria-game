@@ -55,7 +55,7 @@ public:
   static Font create( FontType type );
   static Font create( FontType type, NColor color );
   static Font create( const std::string& type );  
-  
+
   ~Font();
 
   Font( const Font& other );
@@ -64,6 +64,8 @@ public:
 
   int color() const;
   void setColor(NColor color );
+
+  Font withColor( NColor color );
 
   bool isValid() const;
 

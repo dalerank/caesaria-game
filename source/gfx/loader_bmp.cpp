@@ -60,7 +60,7 @@ Picture PictureLoaderBmp::load(vfs::NFile file, bool streaming) const
   //Were we able to load the bitmap?
   if (temp == NULL)
   {
-    Logger::warning( "Unable to load bitmap: %s", SDL_GetError());
+    Logger::warning( "Unable to load bitmap: {0}", SDL_GetError());
     return Picture::getInvalid();
   }
 

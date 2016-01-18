@@ -35,8 +35,6 @@ namespace dialog
 class SpeedOptions::Impl
 {
 public:
-  GameAutoPause locker;
-
   struct
   {
     int game;
@@ -61,49 +59,46 @@ SpeedOptions::SpeedOptions( Widget* parent,
   _d->speed.game = gameSpeed;
   _d->speed.scroll = scrollSpeed;
   _d->autosaveInterval = autosaveInterval;
-  _d->locker.activate();
 
   setupUI( ":/gui/speedoptions.gui" );
 
-  setCenter( parent->center() );
-
   _update();
+
+  moveTo( Widget::parentCenter );
+  GameAutoPause::insertTo( this );
 }
 
 SpeedOptions::~SpeedOptions( void ) {}
 
-bool SpeedOptions::onEvent(const NEvent& event)
+Signal1<int>& SpeedOptions::onGameSpeedChange() {  return _d->signal.onGameSpeedChange; }
+Signal1<int>& SpeedOptions::onScrollSpeedChange(){  return _d->signal.onScrollSpeedChange; }
+Signal1<int>& SpeedOptions::onAutosaveIntervalChange(){ return _d->signal.onAutosaveIntervalShange; }
+
+bool SpeedOptions::_onButtonClicked(Widget* sender)
 {
-  if( event.EventType == sEventGui && guiButtonClicked == event.gui.type )
+  int id = sender->ID();
+  switch( id )
   {
-    int id = event.gui.caller->ID();
-    switch( id )
-    {
-    case 1: case 2: _d->speed.game += (id == 1 ? -10 : +10 ); _update(); break;
-    case 11: case 12: _d->speed.scroll += (id == 11 ? -10 : +10 ); _update(); break;
-    case 21: case 22: _d->autosaveInterval += (id == 21 ? -1 : +1 ); _update(); break;
+  case 1: case 2: _d->speed.game += (id == 1 ? -10 : +10 ); _update(); break;
+  case 11: case 12: _d->speed.scroll += (id == 11 ? -10 : +10 ); _update(); break;
+  case 21: case 22: _d->autosaveInterval += (id == 21 ? -1 : +1 ); _update(); break;
 
-    case 1001:
-    {
-      emit _d->signal.onGameSpeedChange( _d->speed.game );
-      emit _d->signal.onScrollSpeedChange( _d->speed.scroll );
-      emit _d->signal.onAutosaveIntervalShange( _d->autosaveInterval );
-      deleteLater();
-    }
-    break;
+  case 1001:
+  {
+    emit _d->signal.onGameSpeedChange( _d->speed.game );
+    emit _d->signal.onScrollSpeedChange( _d->speed.scroll );
+    emit _d->signal.onAutosaveIntervalShange( _d->autosaveInterval );
+    deleteLater();
+  }
+  break;
 
-    case 1002:
-      deleteLater();
-    break;
-    }
+  case 1002:
+    deleteLater();
+  break;
   }
 
-  return Widget::onEvent( event );
+  return true;
 }
-
-Signal1<int>& SpeedOptions::onGameSpeedChange() {  return _d->signal.onGameSpeedChange;}
-Signal1<int>& SpeedOptions::onScrollSpeedChange(){  return _d->signal.onScrollSpeedChange;}
-Signal1<int>& SpeedOptions::onAutosaveIntervalChange(){ return _d->signal.onAutosaveIntervalShange; }
 
 void SpeedOptions::_update()
 {

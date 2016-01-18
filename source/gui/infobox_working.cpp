@@ -25,6 +25,7 @@
 #include "game/datetimehelper.hpp"
 #include "texturedbutton.hpp"
 #include "core/logger.hpp"
+#include "core/common.hpp"
 #include "dialogbox.hpp"
 
 namespace gui
@@ -36,19 +37,25 @@ namespace infobox
 AboutWorkingBuilding::AboutWorkingBuilding( Widget* parent, WorkingBuildingPtr building)
   : AboutConstruction( parent, Rect( 0, 0, 510, 256 ), Rect( 16, 136, 510 - 16, 136 + 62 ) )
 {
+  if( building.isNull() )
+  {
+    deleteLater();
+    return;
+  }
+
   _working = building;
 
   setBase( _working  );
   _setWorkingVisible( true );
 
-  std::string title = MetaDataHolder::findPrettyName( _working->type() );
-  setTitle( _(title) );
+  setTitle( _( _working->info().prettyName() ) );
 
   _updateWorkersLabel( Point( 32, 150 ), 542, _working->maximumWorkers(), _working->numberWorkers() );
 
-  Label* lb = new Label( this, Rect( 16, 50, width() - 16, 130 ), "", false, Label::bgNone, lbHelpId );
-  lb->setFont( Font::create( FONT_2 ) );
-  lb->setWordwrap( true );
+  const int id = lbHelpId;
+  auto& lb = add<Label>( Rect( 16, 50, width() - 16, 130 ), "", false, Label::bgNone, id );
+  lb.setFont( Font::create( FONT_2 ) );
+  lb.setWordwrap( true );
 
   setText( "" );
 
@@ -58,8 +65,8 @@ AboutWorkingBuilding::AboutWorkingBuilding( Widget* parent, WorkingBuildingPtr b
     Rect rect = btnHelp->relativeRect();
     rect += Point( btnHelp->width() + 5, 0 );
     rect.rright() += 60;
-    PushButton* btn = new PushButton( this, rect, "Adv.Info", -1, false, PushButton::whiteBorderUp );
-    CONNECT( btn, onClicked(), this, AboutWorkingBuilding::_showAdvInfo )
+    PushButton& btn = add<PushButton>( rect, "Adv.Info", -1, false, PushButton::whiteBorderUp );
+    CONNECT_LOCAL( &btn, onClicked(), AboutWorkingBuilding::_showAdvInfo )
   }
 }
 
@@ -80,10 +87,7 @@ void AboutWorkingBuilding::setText(const std::string& text)
   }
 }
 
-void AboutWorkingBuilding::_showHelp()
-{
-  DictionaryWindow::show( this, _working->type() );
-}
+void AboutWorkingBuilding::_showHelp() { ui()->add<DictionaryWindow>( _working->type() ); }
 
 WorkingBuildingPtr AboutWorkingBuilding::_getBuilding() { return _working; }
 
@@ -97,13 +101,12 @@ void AboutWorkingBuilding::_showAdvInfo()
     timeText = utils::date2str( time, true );
   }
 
-  std::string workerState = utils::format( 0xff, "Damage=%d\nFire=%d\nService=%s\n",
-                                                  (int)_working->state( pr::damage ),
-                                                  (int)_working->state( pr::fire ),
-                                                  timeText.c_str() );
+  std::string workerState = fmt::format( "Damage={}\nFire={}\nService={}\n",
+                                         utils::objectState( _working, pr::damage ),
+                                         utils::objectState( _working, pr::fire ),
+                                         timeText );
 
-  auto dialog = dialog::Information( ui(), "Information", workerState );
-  dialog->setCenter( ui()->rootWidget()->center() );
+  dialog::Information( ui(), "Information", workerState );
 }
 
 }//end namespace infobox

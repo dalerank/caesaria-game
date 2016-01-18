@@ -99,14 +99,6 @@ public:
   int prosperityExtend;
 };
 
-SrvcPtr ProsperityRating::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new ProsperityRating( city ) );
-  ret->drop();
-
-  return ret;
-}
-
 ProsperityRating::ProsperityRating(PlayerCityPtr city)
   : Srvc( city, defaultName() ), _d( new Impl )
 {
@@ -116,19 +108,21 @@ ProsperityRating::ProsperityRating(PlayerCityPtr city)
 
 void ProsperityRating::_checkStats()
 {
-  HouseList houses = _city()->statistic().houses.find();
+  HouseList habitable = _city()->statistic().houses.habitable();
 
   int prosperityCap = 0;
-  for( auto house : houses)
+  for( auto house : habitable)
   {
     prosperityCap += house->spec().prosperity();
-    _d->now.patricianCount += house->spec().isPatrician() ? house->habitants().count() : 0;
-    _d->now.plebsCount += house->level() < HouseLevel::plebsLevel ? house->habitants().count() : 0;
+    if( house->spec().isPatrician() )
+      _d->now.patricianCount += house->habitants().count();
+    else
+      _d->now.plebsCount += house->habitants().count();
   }
 
-  if( houses.size() > 0 )
+  if( habitable.size() > 0 )
   {
-    prosperityCap /= houses.size();
+    prosperityCap /= habitable.size();
   }
 
   _d->now.prosperity = math::clamp<int>( prosperityCap, 0, _d->now.prosperity + 2 );
@@ -212,7 +206,7 @@ int ProsperityRating::getMark(ProsperityRating::Mark type) const
   return 0;
 }
 
-std::string ProsperityRating::defaultName() { return CAESARIA_STR_EXT(ProsperityRating); }
+std::string ProsperityRating::defaultName() { return TEXT(ProsperityRating); }
 
 VariantMap ProsperityRating::save() const
 {

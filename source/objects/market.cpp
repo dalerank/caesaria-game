@@ -41,10 +41,8 @@ public:
   bool isAnyGoodStored()
   {
     bool anyGoodStored = false;
-    foreach( i, good::all() )
-    {
-      anyGoodStored |= ( goodStore.qty( *i ) >= 100 );
-    }
+    for( const auto& i : good::all() )
+      anyGoodStored |= ( goodStore.qty( i ) >= 100 );
 
     return anyGoodStored;
   }
@@ -63,7 +61,7 @@ public:
     goodStore.setCapacity(good::wine, 250);
   }
 
-  bool checkStorageInWorkRange( PlayerCityPtr city, const TilePosArray& enter, object::Type objTypr )
+  bool checkStorageInWorkRange( PlayerCityPtr city, const Locations& enter, object::Type objTypr )
   {
     auto route = PathwayHelper::shortWay( city, enter, objTypr, PathwayHelper::roadOnly );
     bool invalidRoute = !route.isValid();
@@ -85,12 +83,12 @@ void Market::deliverService()
   if( numberWorkers() > 0 && walkers().size() == 0 )
   {
     // the marketBuyer is ready to buy something!
-    MarketBuyerPtr buyer = MarketBuyer::create( _city() );
-    buyer->send2City( this );
+    auto marketBuyer = Walker::create<MarketBuyer>( _city() );
+    marketBuyer->send2City( this );
 
-    if( !buyer->isDeleted() )
+    if( !marketBuyer->isDeleted() )
     {
-      addWalker( buyer.object() );
+      addWalker( marketBuyer.object() );
     }
     else if( _d->isAnyGoodStored() )
     {
@@ -149,15 +147,16 @@ void Market::load( const VariantMap& stream)
 
   VARIANT_LOAD_CLASS_D( _d, goodStore, stream )
 
-      _d->initStore();
+  _d->initStore();
 }
 
 bool Market::build(const city::AreaInfo& info)
 {
   bool isOk = ServiceBuilding::build( info );
-  if( isOk )
+  bool isLoadingMode = info.city->getOption( PlayerCity::forceBuild ) > 0;
+  if( isOk && !isLoadingMode )
   {
-    TilePosArray locations = roadside().locations();
+    Locations locations = roadside().locations();
     bool accessGranary = _d->checkStorageInWorkRange( info.city, locations, object::granery );
     bool accessWarehouse = _d->checkStorageInWorkRange( info.city, locations, object::warehouse );
 

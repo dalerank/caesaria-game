@@ -23,10 +23,8 @@
 
 class PatrolPoint : public Walker
 {
+  WALKER_MUST_INITIALIZE_FROM_FACTORY
 public:
-  static PatrolPointPtr create( PlayerCityPtr city, FortPtr base,
-                                std::string prefix, int startPos, int stepNumber, TilePos position );
-
   virtual void getPictures( gfx::Pictures& oPics);
   virtual void timeStep(const unsigned long time);
   virtual FortPtr base() const;
@@ -36,7 +34,9 @@ public:
   void updateMorale( int value );
 
 protected:
-  PatrolPoint( PlayerCityPtr city );
+  PatrolPoint( PlayerCityPtr city, FortPtr base,
+               std::string prefix, int startPos,
+               int stepNumber, TilePos position );
 
   class Impl;
   ScopedPtr< Impl > _d;

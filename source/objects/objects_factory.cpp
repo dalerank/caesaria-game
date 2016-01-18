@@ -69,7 +69,7 @@ void TileOverlayFactory::addCreator( const object::Type type, const std::string&
   }
   else
   {
-    Logger::warning( "TileOverlayFactory already have constructor for %s", typeName.c_str() );
+    Logger::warning( "TileOverlayFactory already have constructor for {0}", typeName );
   }
 }
 

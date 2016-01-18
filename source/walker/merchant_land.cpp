@@ -40,7 +40,6 @@
 #include "merchant_camel.hpp"
 #include "events/fundissue.hpp"
 #include "game/gamedate.hpp"
-#include "gfx/helper.hpp"
 #include "walkers_factory.hpp"
 
 using namespace gfx;
@@ -164,17 +163,25 @@ public:
   void setCamelsGo(int delay );
 };
 
-LandMerchant::LandMerchant(PlayerCityPtr city )
-  : Merchant( city ), _d( new Impl )
+LandMerchant::LandMerchant(PlayerCityPtr city, world::MerchantPtr merchant)
+  : Merchant( city, walker::merchant ), _d( new Impl )
 {
-  _setType( walker::merchant );
   _d->maxDistance = 60;
   _d->waitInterval = 0;
   _d->attemptCount = 0;
   _d->money.buys = 0;
   _d->money.sell = 0;
 
-  setName( NameGenerator::rand( NameGenerator::male ) );
+  if( merchant.isValid() )
+  {
+    _d->sell.resize( merchant->sellGoods() );
+    _d->sell.storeAll( merchant->sellGoods() );
+    _d->buy.resize( merchant->buyGoods() );
+    _d->buy.storeAll( merchant->buyGoods() );
+    _d->baseCityName = merchant->baseCity();
+  }
+
+  setName( NameGenerator::rand( NameGenerator::plebMale ) );
 }
 
 LandMerchant::~LandMerchant(){}
@@ -185,7 +192,7 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
   {
   case stFindWarehouseForSelling:
     {
-      destination = gfx::tilemap::invalidLocation();  // no destination yet
+      destination = TilePos::invalid();  // no destination yet
 
       // get the list of buildings within reach
       Propagator pathPropagator( city );
@@ -228,7 +235,7 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
 
   case stFindWarehouseForBuying:
     {
-      destination = gfx::tilemap::invalidLocation();  // no destination yet
+      destination = TilePos::invalid();  // no destination yet
 
       // get the list of buildings within reach
       Propagator pathPropagator( city );
@@ -305,7 +312,7 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
 
       if( buy.qty() == 0 )
       {
-        Logger::warning( "LandMerchant: [%d,%d] wait while store buying goods on my animals", position.i(), position.j() );
+        Logger::warning( "LandMerchant: [{0},{1}] wait while store buying goods on my animals", position.i(), position.j() );
         wlk->setThinks( "##landmerchant_say_about_store_goods##" );
         waitInterval = game::Date::days2ticks( 7 );
         setCamelsGo( waitInterval );
@@ -331,7 +338,7 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
       }
 
       // we have nothing to buy/sell with city, or cannot find available warehouse -> go out
-      Pathway pathWay = PathwayHelper::create( position, city->borderInfo().roadExit, PathwayHelper::allTerrain );
+      Pathway pathWay = PathwayHelper::create( position, city->getBorderInfo( PlayerCity::roadExit ).epos(), PathwayHelper::allTerrain );
       if( pathWay.isValid() )
       {
         wlk->setPos( pathWay.startPos() );
@@ -410,7 +417,7 @@ void LandMerchant::Impl::resolveState(PlayerCityPtr city, WalkerPtr wlk, const T
     wlk->deleteLater();
     world::EmpirePtr empire = city->empire();
     const std::string& ourCityName = city->name();
-    world::TraderoutePtr route = empire->findRoute( ourCityName, baseCityName );
+    world::TraderoutePtr route = empire->troutes().find( ourCityName, baseCityName );
     if( route.isValid() )
     {
       route->addMerchant( ourCityName, sell, buy );
@@ -447,7 +454,7 @@ void LandMerchant::_reachedPathway()
 void LandMerchant::send2city()
 {
   _d->nextState = Impl::stFindWarehouseForSelling;
-  setPos( _city()->borderInfo().roadEntry );
+  setPos( _city()->getBorderInfo( PlayerCity::roadEntry ).epos() );
   _d->resolveState( _city(), this, pos() );
 
   if( !isDeleted() )
@@ -456,7 +463,7 @@ void LandMerchant::send2city()
 
     for( int i=0; i < 2; i++ )
     {
-      MerchantCamelPtr camel = MerchantCamel::create( _city(), this, 15 * (i+1) );
+      auto camel = Walker::create<MerchantCamel>( _city(), this, 15 * (i+1) );
       camel->attach();
     }
   }
@@ -593,23 +600,4 @@ void LandMerchant::_centerTile()
 
   for( auto camel : _d->camels )
     camel->updateHeadLocation( pos() );
-}
-
-WalkerPtr LandMerchant::create(PlayerCityPtr city) {  return create( city, world::MerchantPtr() ).object(); }
-
-LandMerchantPtr LandMerchant::create(PlayerCityPtr city, world::MerchantPtr merchant )
-{
-  LandMerchantPtr cityMerchant( new LandMerchant( city ) );
-  cityMerchant->drop();
-
-  if( merchant.isValid() )
-  {
-    cityMerchant->_d->sell.resize( merchant->sellGoods() );
-    cityMerchant->_d->sell.storeAll( merchant->sellGoods() );
-    cityMerchant->_d->buy.resize( merchant->buyGoods() );
-    cityMerchant->_d->buy.storeAll( merchant->buyGoods() );
-    cityMerchant->_d->baseCityName = merchant->baseCity();
-  }
-
-  return cityMerchant;
 }

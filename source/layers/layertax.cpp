@@ -23,8 +23,11 @@
 #include "constants.hpp"
 #include "core/event.hpp"
 #include "gfx/camera.hpp"
+#include "objects/senate.hpp"
+#include "objects/forum.hpp"
 #include "core/gettext.hpp"
 #include "game/gamedate.hpp"
+#include "gfx/textured_path.hpp"
 #include "city/statistic.hpp"
 
 using namespace gfx;
@@ -32,19 +35,27 @@ using namespace gfx;
 namespace citylayer
 {
 
+class Tax::Impl
+{
+public:
+  struct
+  {
+    OverlayPtr selected;
+    OverlayPtr underMouse;
+  } overlay;
+
+  DateTime lastUpdate;
+  std::vector<TilesArray> ways;
+};
+
 int Tax::type() const {  return citylayer::tax; }
 
-void Tax::drawTile(Engine& engine, Tile& tile, const Point& offset)
+void Tax::drawTile(const RenderInfo& rinfo, Tile& tile)
 {
-  Point screenPos = tile.mappos() + offset;
 
   if( tile.overlay().isNull() )
   {
-    //draw background
-    //engine.draw( tile.picture(), screenPos );
-
-    drawPass( engine, tile, offset, Renderer::ground );
-    drawPass( engine, tile, offset, Renderer::groundAnimation );
+    drawLandTile( rinfo, tile );
   }
   else
   {
@@ -67,43 +78,36 @@ void Tax::drawTile(Engine& engine, Tile& tile, const Point& offset)
 
       if( !needDrawAnimations )
       {
-        drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::inHouseBase );
+        drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.house );
       }
     }
     else
     {
-      drawArea( engine, overlay->area(), offset, ResourceGroup::foodOverlay, OverlayPic::base );
+      drawArea( rinfo, overlay->area(), config::layer.ground, config::tile.constr );
     }
 
     if( needDrawAnimations )
     {
-      Layer::drawTile( engine, tile, offset );
+      Layer::drawTile( rinfo, tile );
       registerTileForRendering( tile );
     }
     else if( taxLevel > 0 )
     {
-      drawColumn( engine, screenPos, taxLevel );
+      Point screenPos = tile.mappos() + rinfo.offset;
+      drawColumn( rinfo, screenPos, taxLevel );
     }
   }
 
   tile.setRendered();
 }
 
-LayerPtr Tax::create( Camera& camera, PlayerCityPtr city )
-{
-  LayerPtr ret( new Tax( camera, city ) );
-  ret->drop();
-
-  return ret;
-}
-
-void Tax::handleEvent(NEvent& event)
+void Tax::onEvent( const NEvent& event)
 {
   if( event.EventType == sEventMouse )
   {
     switch( event.mouse.type  )
     {
-    case mouseMoved:
+    case NEvent::Mouse::moved:
     {
       Tile* tile = _camera()->at( event.mouse.pos(), false );  // tile under the cursor (or NULL)
       std::string text = "";
@@ -125,9 +129,22 @@ void Tax::handleEvent(NEvent& event)
               text = "##house_not_registered_for_taxes##";
           }
         }
+
+        _d->overlay.underMouse = tile->overlay();
       }
 
       _setTooltipText( _(text) );
+    }
+    break;
+
+    case NEvent::Mouse::btnLeftPressed:
+    {
+      OverlayPtr overlay = _d->overlay.underMouse;
+      if( overlay.is<Senate>() || overlay.is<Forum>() )
+      {
+        _d->overlay.selected = overlay;
+        _updatePaths();
+      }
     }
     break;
 
@@ -135,11 +152,40 @@ void Tax::handleEvent(NEvent& event)
     }
   }
 
-  Layer::handleEvent( event );
+  Layer::onEvent( event );
+}
+
+void Tax::afterRender(Engine& engine)
+{
+  Info::afterRender(engine);
+
+  if( game::Date::isDayChanged() )
+    _updatePaths();
+}
+
+void Tax::render(Engine& engine)
+{
+  Info::render( engine );
+
+  RenderInfo rinfo{ engine, _camera()->offset() };
+  for( auto& tiles : _d->ways )
+    TexturedPath::draw( tiles, rinfo );
+}
+
+void Tax::_updatePaths()
+{
+  auto wbuilding = _d->overlay.selected.as<WorkingBuilding>();
+  if( wbuilding.isValid() )
+  {
+    _d->ways.clear();
+    const WalkerList& walkers = wbuilding->walkers();
+    for( auto walker : walkers )
+      _d->ways.push_back( walker->pathway().allTiles() );
+  }
 }
 
 Tax::Tax( Camera& camera, PlayerCityPtr city)
-  : Info( camera, city, 9 )
+  : Info( camera, city, 9 ), _d( new Impl )
 {
   if( !city->getOption( PlayerCity::c3gameplay ) )
     _loadColumnPicture( ResourceGroup::sprites, 124 );

@@ -32,6 +32,9 @@ public:
   inline int width() const { return _x; }
   inline int height() const { return _y; }
 
+  inline int& rw() { return _x; }
+  inline int& rh() { return _y; }
+
   void setWidth( int w ) { _x = w; }
   void setHeight( int h ) { _y = h; }
 

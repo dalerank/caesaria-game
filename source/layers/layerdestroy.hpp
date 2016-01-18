@@ -27,9 +27,9 @@ namespace citylayer
 class Destroy : public Layer
 {
 public:
-  virtual void handleEvent( NEvent& event );
+  virtual void onEvent( const NEvent& event );
   virtual int type() const;
-  virtual void drawTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
+  virtual void drawTile( const gfx::RenderInfo& rinfo, gfx::Tile& tile );
   virtual void render( gfx::Engine& engine);
   virtual void renderUi(gfx::Engine &engine);
   virtual void init( Point cursor );
@@ -38,13 +38,12 @@ public:
   virtual void afterRender(gfx::Engine &engine);
   LayerPtr drawLayer() const;
 
-  static LayerPtr create( gfx::Renderer& renderer, PlayerCityPtr city );
+  Destroy( gfx::Camera& camera, PlayerCityPtr city, gfx::Renderer* renderer );
 
 public signals:
   Signal3<object::Type,TilePos,int>& onDestroy();
 
 private:
-  Destroy(gfx::Renderer &renderer, PlayerCityPtr city );
 
   void _clearAll();
   void _executeClear();

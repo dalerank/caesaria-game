@@ -17,10 +17,9 @@
 
 #include "loaderhelper.hpp"
 #include "city/city.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/imgid.hpp"
 #include "objects/objects_factory.hpp"
 #include "resourcegroup.hpp"
-#include "objects/metadata.hpp"
 #include "core/logger.hpp"
 #include "gfx/tilesarray.hpp"
 #include "game/settings.hpp"
@@ -154,32 +153,24 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   if( oTile.getFlag( Tile::tlRoad ) )   // road
   {
     ovType = object::road;
-    Picture pic = MetaDataHolder::randomPicture( object::terrain, Size(1) );
+    Picture pic = object::Info::find( object::terrain ).randomPicture( Size(1) );
     oTile.setPicture( pic );
     changeId = imgid::fromResource( pic.name() );
   }
   else if( oTile.getFlag( Tile::tlTree ) )
   {
     ovType = object::tree;
-    Picture pic = MetaDataHolder::randomPicture( object::terrain, Size(1) );
+    Picture pic = object::Info::find( object::terrain ).randomPicture( Size(1) );
     oTile.setPicture( pic );
     changeId = imgid::fromResource( pic.name() );
   }
   else if( oTile.getFlag( Tile::tlMeadow ) )
   {
-    /*bool oldgfx = !SETTINGS_VALUE( c3gfx ).toString().empty();
-    oldgfx |= SETTINGS_VALUE( oldgfx ).toBool();
-    if( !oldgfx )
-    {
-      Picture pic = MetaDataHolder::randomPicture( objects::meadow, Size(1) );
-      oTile.setPicture( pic );
-      changeId = imgid::fromResource( pic.name() );
-    }*/
   } 
   else if( imgId >= 0x29c && imgId <= 0x2a1 ) //aqueduct
   {
     ovType = object::aqueduct;
-    Picture pic = MetaDataHolder::randomPicture( object::terrain, Size(1) );
+    Picture pic = object::Info::find( object::terrain ).randomPicture( Size(1) );
     oTile.setPicture( pic );
     oTile.setFlag( Tile::clearAll, true );
     changeId = imgid::fromResource( pic.name() );
@@ -192,7 +183,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   }
   else if( imgId >= 863 && imgId <= 870 )
   {
-    Picture pic = MetaDataHolder::randomPicture( object::terrain, Size(1) );
+    Picture pic = object::Info::find( object::terrain ).randomPicture( Size(1) );
     oTile.setPicture( pic );
     oTile.setFlag( Tile::clearAll, true );    
     changeId = imgid::fromResource( pic.name() );
@@ -207,8 +198,7 @@ void LoaderHelper::decodeTerrain( Tile &oTile, PlayerCityPtr city, unsigned int 
   if( ovType == object::unknown )
     return;
 
-  OverlayPtr overlay; // This is the overlay object, if any
-  overlay = TileOverlayFactory::instance().create( ovType );
+  OverlayPtr overlay = Overlay::create( ovType );
   if( ovType == object::elevation )
   {
     std::string elevationPicName = imgid::toResource( oTile.imgId() );

@@ -16,7 +16,8 @@
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
 #include "gift.hpp"
-#include "gamedate.hpp"
+
+const Gift Gift::invalid = Gift( "", "", 0, DateTime( -350, 1, 1 ) );
 
 class Gift::Impl
 {
@@ -62,11 +63,11 @@ Gift& Gift::operator=(const Gift &a)
   return *this;
 }
 
-Gift::Gift(const std::string& sender, const std::string& name, int money, int data )
+Gift::Gift(const std::string& sender, const std::string& name, int money, const DateTime& date, int data )
   : _d( new Impl )
 {
   _d->sender = sender;
-  _d->time = game::Date::current();
+  _d->time = date;
   _d->name = name;
   _d->value = money;
 }

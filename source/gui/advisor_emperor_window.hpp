@@ -19,6 +19,7 @@
 #define __CAESARIA_ADVISOR_EMPEROR_WINDOW_H_INCLUDED__
 
 #include "advisor_base_window.hpp"
+#include "city/request.hpp"
 
 namespace gui
 {
@@ -37,12 +38,19 @@ protected:
   void _showChangeSalaryWindow();
   void _showSend2CityWindow();
   void _showGiftWindow();
+  void _showGiftHistory();
   void _updateRequests();
-  void _showHelp();
+  void _showRequestsHistory();
+  void _sendMoney( int money );
+  void _sendGift( int money );
+  void _changeSalary(int money );
+  std::string _getEmperorFavourStr();
+  void _resolveRequest( city::RequestPtr request );
+  PlayerPtr _mayor();
+  world::Emperor& _emperor();
 
 private:
-  class Impl;
-  ScopedPtr< Impl > _d;
+  __DECLARE_IMPL(Emperor)
 };
 
 }

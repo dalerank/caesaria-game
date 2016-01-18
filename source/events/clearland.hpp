@@ -19,7 +19,8 @@
 #define _CAESARIA_CLEAR_LAND_EVENT_H_INCLUDE_
 
 #include "event.hpp"
-#include "core/position.hpp"
+#include "gfx/tilepos.hpp"
+#include "gfx/predefinitions.hpp"
 
 class Game;
 
@@ -30,6 +31,7 @@ class ClearTile : public GameEvent
 {
 public:
   static GameEventPtr create( const TilePos& );
+  static GameEventPtr create( const gfx::Tile& );
 
 protected:
   virtual void _exec( Game& game, unsigned int );

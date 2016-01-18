@@ -10,10 +10,12 @@
     textAlign : [ "center", "center" ]
   }
 
-  columns#HLayout : {
+  columns#HLayout :
+  {
     geometry : [ 16, 50, "pw-16", "ph-30" ]
 
-    columnA#VLayout : {
+    columnA#VLayout :
+    {
       btnCityGods#OptionButton : { base : "city_opts_god", states : { off:0, on:1 }, link : [ "city", "godEnabled" ] }
       btnWarnings#OptionButton : { base : "city_warnings", states : { off:0, on:1 }, link : [ "city", "warningsEnabled" ] }
       btnZoom#OptionButton     : { base : "city_zoom",     states : { off:0, on:1 }, link : [ "city", "zoomEnabled" ] }
@@ -22,50 +24,36 @@
       btnBarbarian#OptionButton : {base : "city_barbarian",states : { off:0, on:1 }, link : [ "city", "barbarianAttack" ] }      
       btnShowTooltips#OptionButton:{base: "city_tooltips", states : { off:0, on:1 }, link : [ "game", "tooltipEnabled" ] }
       btnBuildOverDraw#OptionButton:{base:"city_buildoverdraw",states:{off:0,on:1 }, link : [ "draw", "overdrawOnBuild" ] }
-      btnWarfNeedTimber#OptionButton:{base:"city_warf_timber",states:{off:0,on:1 }, link : [ "city", "warfNeedTimber" ] }
+      btnShowGodsUnhappyWarn#OptionButton:{base:"city_buildoverdraw",states:{off:0,on:1 }, link : [ "city", "showGodsUnhappyWarn" ] }
+      btnWarfNeedTimber#OptionButton:{base:"city_warf_timber",states:{off:0,on:1  }, link : [ "city", "warfNeedTimber" ] }
+      btnRiverSideAsWell#OptionButton:{base:"river_side_well",states:{off:0,on:1  }, link : [ "city", "riversideAsWell" ] }
+      btnSoldiersHaveSalary#OptionButton:{base:"sldr_wages",states:{off:0,on:1  }, link : [ "city", "soldiersHaveSalary" ] }
+      btnHousePersonalTaxes#OptionButton:{base:"personal_tax",states:{off:0,on:1  }, link : [ "city", "housePersonalTaxes" ] }
+      btnCutForest2timber#OptionButton:{base:"cut_forest",states:{off:0,on:1  }, link : [ "city", "cutForest2timber" ] }
+      btnRightMenu#OptionButton:{base:"rightMenu",states:{off:0,on:1  }, link : [ "game", "rightMenu" ] }
 
-      btnC3Gameplay#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_c3rules_mode##" }
       btnDifficulty#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_barbarian_mode##" }
       btnRoadBlocks#PushButton : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_roadblock_mode##" }
 
-      firerisk#HLayout : {
+      sbFireRisk#SpinBox :
+      {
         maximumSize : [ 0, 24 ]
-        lbFireRisk#Label : { font : "FONT_2" }
-        btnIncreaseFireRisk#TexturedButton : {
-          maximumSize : [ 24, 24 ]
-          normal : [ "paneling", 605 ]
-          hovered : [ "paneling", 606 ]
-          pressed : [ "paneling", 607 ]
-          disabled : [ "paneling", 305 ]
-        }
-
-        btnDecreaseFireRisk#TexturedButton : {
-          maximumSize : [ 24, 24 ]
-          normal : [ "paneling", 601 ]
-          hovered : [ "paneling", 602 ]
-          pressed : [ "paneling", 603 ]
-          disabled : [ "paneling", 304 ]
-        }
+        font : "FONT_2"
+        postfix : "%"
+        text : "Fire risk"
+        min : 10
+        max : 150
+        step : 10
       }
 
-      collapserisk#HLayout : {
+      sbCollapseRisk#SpinBox : {
         maximumSize : [ 0, 24 ]
-        lbCollapseRisk#Label : { font : "FONT_2" }
-        btnIncreaseCollapseRisk#TexturedButton : {
-          maximumSize : [ 24, 24 ]
-          normal : [ "paneling", 605 ]
-          hovered : [ "paneling", 606 ]
-          pressed : [ "paneling", 607 ]
-          disabled : [ "paneling", 305 ]
-        }
-
-        btnDecreaseCollapseRisk#TexturedButton : {
-          maximumSize : [ 24, 24 ]
-          normal : [ "paneling", 601 ]
-          hovered : [ "paneling", 602 ]
-          pressed : [ "paneling", 603 ]
-          disabled : [ "paneling", 304 ]
-        }
+        font : "FONT_2"
+        postfix : "%"
+        text : "Collapse risk"
+        min : 10
+        max : 150
+        step : 10
       }
     }
 
@@ -81,18 +69,16 @@
       btnBorderMoving#OptionButton    : { base : "city_border",    states : { off:0, on:1 },  link : [ "draw", "borderMoving" ] }
       btnForestFire#OptionButton      : { base : "city_forest_fire",states: { off:0, on:1 },  link : [ "city", "forestFire" ] }
       btnForestGrow#OptionButton      : { base : "city_forest_grow",states: { off:0, on:1 },  link : [ "city", "forestGrow" ] }
+      btnClaypitCollapse#OptionButton:{base:"city_claypit_collapse",states:{off:0,on:1 }, link : [ "city", "claypitMayCollapse" ] }
+      btnMinesCollapse#OptionButton:{base:"city_mines_collapse",states:{off:0,on:1 }, link : [ "city", "minesMayCollapse" ] }
 
       btnToggleBatching#PushButton  : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_batching_mode##"    }
       btnMetrics#PushButton         : { maximumSize : [ 0, 24 ], bgtype : "smallGrayBorderLine", text : "##city_metrics_mode##"     }
     }
   }
 
-  btnClose#TexturedButton :
+  btnClose#ExitButton :
   {
     geometry : [ "pw-34", "ph-34", "pw-10", "ph-10" ]
-    normal : [ "paneling", 532 ]
-    hovered : [ "paneling", 533 ]
-    pressed : [ "paneling", 534 ]
-    disabled : [ "paneling", 535 ]
   }
 }

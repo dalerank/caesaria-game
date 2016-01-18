@@ -25,7 +25,9 @@
 #include "game/resourcegroup.hpp"
 #include "pushbutton.hpp"
 #include "label.hpp"
+#include "core/osystem.hpp"
 #include "core/variant_map.hpp"
+#include "core/format.hpp"
 #include "core/foreach.hpp"
 #include "core/saveadapter.hpp"
 
@@ -42,11 +44,7 @@ StartMenu::StartMenu( Widget* parent )
   : Widget( parent, -1, parent->relativeRect() ), _d( new Impl )
 {
   std::string path2options;
-#ifdef CAESARIA_PLATFORM_ANDROID
-  path2options = ":/gui/startmenu_android.gui";
-#else
-  path2options = ":/gui/startmenu.gui";
-#endif
+  path2options = fmt::format( ":/gui/startmenu{}.gui", OSystem::isAndroid() ? "_android" : "" );
 
   _d->options = config::load( path2options );
 }
@@ -58,23 +56,23 @@ void StartMenu::draw(gfx::Engine &painter)
   Widget::draw( painter );
 }
 
-PushButton* StartMenu::addButton( const std::string& caption, int id )
+PushButton& StartMenu::addButton( const std::string& caption, int id )
 {
   Size buttonSize = _d->options.get( "buttonSize", Size( 200, 25 ) ).toSize();
   Font btnFont = Font::create( _d->options.get( "buttonFont", Variant( "FONT_2" ) ).toString() );
   std::string style = _d->options.get( "buttonStyle" ).toString();
   int offsetY = _d->options.get( "buttonOffset", 40 );
 
-  PushButton* newButton = new PushButton( this, Rect( Point( 0, 0 ), buttonSize ), caption, id, false );
-  newButton->setBackgroundStyle( style );
-  newButton->setFont( btnFont );
+  PushButton& newButton = add<PushButton>( Rect( Point( 0, 0 ), buttonSize ), caption, id, false );
+  newButton.setBackgroundStyle( style );
+  newButton.setFont( btnFont );
 
-  List< PushButton* > buttons = findChildren< PushButton* >();
+  auto buttons = findChildren< PushButton* >();
   Point offsetBtn( ( width() - buttonSize.width() ) / 2, ( height() - offsetY * buttons.size() ) / 2 );
 
-  foreach( btn, buttons )
+  for( auto btn : buttons )
   {
-    (*btn)->setPosition( offsetBtn );
+    btn->setPosition( offsetBtn );
     offsetBtn += Point( 0, offsetY );
   }
 
@@ -84,8 +82,8 @@ PushButton* StartMenu::addButton( const std::string& caption, int id )
 void StartMenu::clear()
 {
   Widgets rchildren = children();
-  foreach( it, rchildren )
-    (*it)->remove();
+  for( auto& it : rchildren )
+    it->remove();
 }
 
 }//end namespace gui

@@ -35,7 +35,7 @@ namespace city
 {
 
 namespace {
-CAESARIA_LITERALCONST(good)
+GAME_LITERALCONST(good)
 }
 
 REGISTER_SERVICE_IN_FACTORY(GoodsUpdater,goodsUpdater)
@@ -50,14 +50,6 @@ public:
 
   int value;
 };
-
-SrvcPtr GoodsUpdater::create( PlayerCityPtr city )
-{
-  SrvcPtr ret( new GoodsUpdater( city ) );
-  ret->drop();
-
-  return ret;
-}
 
 void GoodsUpdater::timeStep(const unsigned int time)
 {

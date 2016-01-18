@@ -28,41 +28,36 @@ namespace citylayer
 class Build : public Layer
 {
 public:
-  virtual void handleEvent(NEvent &event);
+  Build( gfx::Camera& camera, PlayerCityPtr city, gfx::Renderer* renderer );
+  virtual void onEvent( const NEvent &event);
   virtual int type() const;
-  virtual void drawTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
+  virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
   virtual void render( gfx::Engine &engine);
   virtual void init(Point cursor);
-  virtual void drawProminentTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset, const int depth, bool force);
+  virtual void drawProminentTile( const gfx::RenderInfo& renderInfo, gfx::Tile& tile, const int depth, bool force);
   virtual void beforeRender(gfx::Engine &engine);
-  virtual void drawPass(gfx::Engine &engine, gfx::Tile &tile, const Point &offset, gfx::Renderer::Pass pass);
+  virtual void drawPass( const gfx::RenderInfo& rinfo, gfx::Tile &tile, gfx::Renderer::Pass pass);
   virtual void afterRender(gfx::Engine &engine);
   virtual const WalkerTypes& visibleTypes() const;
   virtual void renderUi(gfx::Engine &engine);
   virtual void changeLayer(int type);
   LayerPtr drawLayer() const;
 
-  static LayerPtr create(gfx::Renderer &renderer, PlayerCityPtr city );
-
   virtual ~Build();
-public signals:
-  Signal3<object::Type,TilePos,int>& onBuild();
 
 private:
   void _updatePreviewTiles(bool force);
-  void _checkPreviewBuild(TilePos pos);
+  void _checkPreviewBuild(const TilePos& pos);
   void _checkBuildArea();
   void _discardPreview();
   void _buildAll();
   void _finishBuild();
   void _initBuildMode();
-  void _drawBuildTiles( gfx::Engine& engine );
-  void _drawBuildTile( gfx::Engine& engine, gfx::Tile* tile, const Point& offset );
-  void _tryDrawBuildTile(gfx::Engine& engine, gfx::Tile& tile, const Point &camOffset);
+  void _drawBuildTiles(const gfx::RenderInfo& rinfo );
+  void _drawBuildTile(const gfx::RenderInfo& rinfo, gfx::Tile* tile);
+  bool _tryDrawBuildTile( const gfx::RenderInfo& rinfo, gfx::Tile& tile);
   void _exitBuildMode();
-  int  _getCost(ConstructionPtr overlay );
 
-  Build( gfx::Renderer& renderer, PlayerCityPtr city );
 
   __DECLARE_IMPL(Build)
 };

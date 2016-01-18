@@ -43,6 +43,7 @@
 #include "events/fishplace.hpp"
 #include "city/config.hpp"
 #include "climatemanager.hpp"
+#include "freeplay_finalizer.hpp"
 
 using namespace religion;
 using namespace events;
@@ -55,10 +56,9 @@ namespace loader
 
 static const int currentVesion = 1;
 
-CAESARIA_LITERALCONST(climate)
-CAESARIA_LITERALCONST(version)
-CAESARIA_LITERALCONST(map)
-CAESARIA_LITERALCONST(random)
+GAME_LITERALCONST(climate)
+GAME_LITERALCONST(map)
+GAME_LITERALCONST(random)
 
 class Mission::Impl
 {
@@ -78,7 +78,7 @@ bool Mission::load( const std::string& filename, Game& game )
   VariantMap vm = config::load( filename );
   _d->restartFile = filename;
   
-  if( currentVesion == vm[ literals::version ].toInt() )
+  if( currentVesion == vm[ TEXT(version) ].toInt() )
   {
     std::string mapToLoad = vm[ literals::map ].toString();
     Variant vClimate = vm.get( literals::climate );
@@ -101,7 +101,7 @@ bool Mission::load( const std::string& filename, Game& game )
       params.load( vm[ literals::random ].toMap() );
       targar.create( game, params );
 
-      game.city()->setCameraPos( game.city()->borderInfo().roadEntry );
+      game.city()->setCameraPos( game.city()->getBorderInfo( PlayerCity::roadEntry ).epos() );
       _d->needFinalizeMap = true;
     }
     else
@@ -123,18 +123,28 @@ bool Mission::load( const std::string& filename, Game& game )
     city->treasury().resolveIssue( econ::Issue( econ::Issue::donation, vm.get( "funds" ).toInt() ) );
 
     Logger::warning( "GameLoaderMission: load city options ");
-    city->setOption( PlayerCity::adviserEnabled, vm.get( CAESARIA_STR_A(adviserEnabled), 1 ) );
-    city->setOption( PlayerCity::fishPlaceEnabled, vm.get( CAESARIA_STR_A(fishPlaceEnabled), 1 ) );
-    city->setOption( PlayerCity::collapseKoeff, vm.get( CAESARIA_STR_A(collapseKoeff), 100 ) );
-    city->setOption( PlayerCity::fireKoeff, vm.get( CAESARIA_STR_A(fireKoeff), 100 ) );
+    city->setOption( PlayerCity::adviserEnabled, vm.get( TEXT(adviserEnabled), 1 ) );
+    city->setOption( PlayerCity::fishPlaceEnabled, vm.get( TEXT(fishPlaceEnabled), 1 ) );
+    city->setOption( PlayerCity::collapseKoeff, vm.get( TEXT(collapseKoeff), 100 ) );
+    city->setOption( PlayerCity::fireKoeff, vm.get( TEXT(fireKoeff), 100 ) );        
+    city->setOption( PlayerCity::warfNeedTimber, vm.get( TEXT(warfNeedTimber), 1 ) );
+    city->setOption( PlayerCity::claypitMayCollapse, vm.get( TEXT(claypitMayCollapse), 1 ) );
+    city->setOption( PlayerCity::minesMayCollapse, vm.get( TEXT(minesMayCollapse), 1 ) );
+    city->setOption( PlayerCity::riversideAsWell, vm.get( TEXT(riversideAsWell), 1 ) );
+    city->setOption( PlayerCity::soldiersHaveSalary, vm.get( TEXT(soldiersHaveSalary), 1 ) );
+    city->setOption( PlayerCity::housePersonalTaxes, vm.get( TEXT(housePersonalTaxes), 1 ) );
+    city->setOption( PlayerCity::cutForest2timber, vm.get( TEXT(cutForest2timber), 1 ) );
+    city->setOption( PlayerCity::forestGrow, vm.get( TEXT(forestGrow), 1 ) );
+    city->setOption( PlayerCity::forestFire, vm.get( TEXT(forestFire), 1 ) );
+    city->setOption( PlayerCity::destroyEpidemicHouses, vm.get( TEXT(destroyEpidemicHouses), 1 ) );
+    city->setOption( PlayerCity::ironInRocks, vm.get( TEXT(ironInRocks), 1 ) );
 
     game::Date::instance().init( vm[ "date" ].toDateTime() );
 
     VariantMap vm_events = vm.get( "events" ).toMap();
     for( auto& item : vm_events )
     {
-      GameEventPtr e = PostponeEvent::create( item.first, item.second.toMap() );
-      e->dispatch();
+      events::dispatch<PostponeEvent>( item.first, item.second.toMap() );
     }
 
     game.empire()->setCitiesAvailable( false );
@@ -155,21 +165,25 @@ bool Mission::load( const std::string& filename, Game& game )
     game.empire()->emperor().updateRelation( city->name(), 50 );
 
     VariantMap fishpointsVm = vm.get( "fishpoints" ).toMap();
-    for( auto& item : fishpointsVm )
+    for( const auto& item : fishpointsVm )
     {
-      GameEventPtr e = ChangeFishery::create( item.second.toTilePos(), ChangeFishery::add );
-      e->dispatch();
+      events::dispatch<ChangeFishery>( item.second.toTilePos(), ChangeFishery::add );
     }
 
-    std::string missionName = vfs::Path( filename ).baseName( false ).toString();
+    std::string missionName = vfs::Path( filename ).baseName().removeExtension();
     Locale::addTranslation( missionName );
     SETTINGS_SET_VALUE( lastTranslation, Variant( missionName ) );
 
     //reseting divinities festival date
     DivinityList gods = rome::Pantheon::instance().all();
-    for( auto it : gods )
-    {
+    for( const auto it : gods )
       rome::Pantheon::doFestival( it->name(), 0 );
+
+    freeplay::Finalizer finalizer( city );
+    if( city->getOption( PlayerCity::ironInRocks ) > 0 )
+    {
+      int ironQty = vm.get( TEXT(ironInRocks.qty), 10000 );
+      finalizer.resetIronCovery( ironQty );
     }
 
     return true;

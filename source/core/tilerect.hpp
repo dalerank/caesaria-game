@@ -16,7 +16,7 @@
 #ifndef _CAESARIA_TILESAREA_INCLUDE_H_
 #define _CAESARIA_TILESAREA_INCLUDE_H_
 
-#include "position.hpp"
+#include "gfx/tilepos.hpp"
 
 class TileRect
 {

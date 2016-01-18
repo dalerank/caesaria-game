@@ -22,7 +22,7 @@
 #include "core/variant_map.hpp"
 #include "core/event.hpp"
 #include "gfx/pictureconverter.hpp"
-#include "core/color.hpp"
+#include "core/color_list.hpp"
 #include "core/logger.hpp"
 #include "core/json.hpp"
 #include "core/utils.hpp"
@@ -150,7 +150,7 @@ DictionaryText::DictionaryText(Widget* parent, const Rect& rectangle, const stri
   _init();
 
   #ifdef _DEBUG
-    setDebugName( "label");
+    setDebugName( "DText");
   #endif
 
   setTextAlignment( align::automatic, align::automatic );
@@ -376,7 +376,7 @@ void DictionaryText::Impl::breakText( const std::string& rtext, const Size& wdgS
 			richText.offset = linewidth;
       richText.font = font.current;
 			richText.uri = true;
-      NColor color = DefaultColors::blue;
+      NColor color = ColorList::blue;
 
       if(rText[i+1] == '#')
       {
@@ -634,17 +634,17 @@ bool DictionaryText::onEvent(const NEvent& event)
   {
     switch( event.mouse.type )
     {
-    case mouseLbtnPressed: _d->lmbPressed = true;
+    case NEvent::Mouse::btnLeftPressed: _d->lmbPressed = true;
     break;
 
-    case mouseLbtnRelease:
+    case NEvent::Mouse::mouseLbtnRelease:
     {
       _d->lmbPressed = false;
       _handleClick( event.mouse.pos() );
     }
     break;
 
-    case mouseWheel:
+    case NEvent::Mouse::mouseWheel:
     {
       _d->scrollbar->setValue( _d->scrollbar->value() +
                                (int)event.mouse.wheel * _d->scrollbar->smallStep() * -1 );
@@ -672,6 +672,11 @@ void DictionaryText::setFont( const Font& font )
 {
   _d->font.current = font;
   _d->flags.invalidate = true;
+}
+
+void DictionaryText::setFont(FontType type, NColor color)
+{
+  Widget::setFont( type, color );
 }
 
 void DictionaryText::setAlpha(unsigned int value)

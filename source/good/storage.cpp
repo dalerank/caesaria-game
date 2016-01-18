@@ -37,6 +37,8 @@ public:
 
     return ret;
   }
+private:
+  SmStock() {}
 };
 
 typedef std::vector<SmStock::Ptr> StockList;
@@ -69,7 +71,7 @@ int Storage::capacity() const {  return _gsd->capacity; }
 int Storage::qty() const
 {
   int qty = 0;
-  for( auto& stock : _gsd->stocks )
+  for( const auto& stock : _gsd->stocks )
     qty += stock->qty();
 
   return qty;
@@ -80,7 +82,7 @@ good::Stock& Storage::getStock(const Product& goodType){  return *(_gsd->stocks[
 ProductMap Storage::details() const
 {
   ProductMap ret;
-  for( auto& cstock : _gsd->stocks )
+  for( const auto& cstock : _gsd->stocks )
     ret[ cstock->type() ] += cstock->qty();
 
   return ret;
@@ -131,47 +133,54 @@ int Storage::getMaxStore(const good::Product goodType)
   return freeRoom;
 }
 
-void Storage::applyStorageReservation(good::Stock &stock, const int reservationID)
+bool Storage::applyStorageReservation(good::Stock &stock, const int reservationID)
 {
   good::Stock reservedStock = getStorageReservation(reservationID, true);
 
   if (stock.type() != reservedStock.type())
   {
     Logger::warning( "SimpleGoodStore:GoodType does not match reservation");
-    return;
+    return false;
   }
 
   if (stock.qty() < reservedStock.qty())
   {
     Logger::warning( "SimpleGoodStore:Quantity does not match reservation");
-    return;
+    return false;
   }
 
   int amount = reservedStock.qty();
   _gsd->stocks[ reservedStock.type() ]->push( amount );
   stock.pop( amount );
+  return true;
 }
 
-void Storage::applyRetrieveReservation(good::Stock& stock, const int reservationID)
+bool Storage::applyRetrieveReservation(good::Stock& stock, const int reservationID)
 {
   good::Stock reservedStock = getRetrieveReservation(reservationID, true);
 
   if (stock.type() != reservedStock.type())
   {
     Logger::warning( "SimpleGoodStore:GoodType does not match reservation");
-    return;
+    return false;
   }
 
   if( stock.capacity() < stock.qty() + reservedStock.qty())
   {
     Logger::warning( "SimpleGoodStore:Quantity does not match reservation");
-    return;
+    return false;
   }
 
   int amount = reservedStock.qty();
   good::Stock& currentStock = getStock(reservedStock.type());
   currentStock.pop( amount );
   stock.push( amount );
+  return true;
+}
+
+void Storage::confirmDeliver(Product type, int qty, unsigned int tag, const DateTime& time)
+{
+  _consumers().append( type, qty, tag, time );
 }
 
 VariantMap Storage::save() const

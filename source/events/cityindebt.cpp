@@ -114,9 +114,6 @@ CityIndebt::CityIndebt() : _d( new Impl )
 
 void CityIndebt::_exec(Game& game, unsigned int)
 {
-  gui::Ui* env = game.gui();
-  //_d->isDeleted = _d->state > 3;
-
   switch( _d->state )
   {
   case noDebts:
@@ -128,16 +125,15 @@ void CityIndebt::_exec(Game& game, unsigned int)
     std::string title = _d->state < _d->title.size() ? _d->title[ _d->state ] : "##city_in_debt_text##";
 
     unsigned int money = _d->state < _d->emperorMoney.size() ? _d->emperorMoney[ _d->state ] : 0;
-    gui::FilmWidget* dlg = new gui::FilmWidget( env->rootWidget(), video );
-    dlg->setText( _( text ) );
-    dlg->setTitle( _( title ) );
-    dlg->setTime( game::Date::current() );
-    dlg->show();
+    gui::FilmWidget& dlg = game.gui()->add<gui::FilmWidget>( video );
+    dlg.setText( _( text ) );
+    dlg.setTitle( _( title ) );
+    dlg.setTime( game::Date::current() );
+    dlg.show();
 
     _d->state++;
 
-    GameEventPtr e = Payment::create( econ::Issue::caesarsHelp, money );
-    e->dispatch();
+    events::dispatch<Payment>( econ::Issue::caesarsHelp, money );
     _d->lastMessageSent = game::Date::current();
   }
   break;
@@ -146,10 +142,9 @@ void CityIndebt::_exec(Game& game, unsigned int)
   {
     if( _d->lastMessageSent.monthsTo( game::Date::current() ) > 11 )
     {
-      GameEventPtr e = ShowInfobox::create( "##message_from_centurion##", "##centurion_send_army_to_player##", true, "emp_send_army" );
-      e->dispatch();
+      events::dispatch<ShowInfobox>( "##message_from_centurion##", "##centurion_send_army_to_player##", true, "emp_send_army" );
 
-      world::CityPtr rome = game.empire()->rome();
+      world::CityPtr rome = game.empire()->capital();
       PlayerCityPtr plCity = game.city();
 
       world::RomeChastenerArmyPtr army = world::RomeChastenerArmy::create( game.empire() );

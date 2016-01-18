@@ -19,6 +19,7 @@
 #include "city/statistic.hpp"
 #include "name_generator.hpp"
 #include "corpse.hpp"
+#include "core/common.hpp"
 #include "core/variant_map.hpp"
 #include "game/resourcegroup.hpp"
 #include "objects/military.hpp"
@@ -33,7 +34,6 @@
 #include "game/gamedate.hpp"
 #include "core/logger.hpp"
 #include "walker/helper.hpp"
-#include "gfx/helper.hpp"
 
 using namespace gfx;
 
@@ -48,21 +48,11 @@ public:
 WallGuard::WallGuard( PlayerCityPtr city, walker::Type type )
   : RomeSoldier( city, type ), _d( new Impl )
 {
-  setName( NameGenerator::rand( NameGenerator::male ) );
-
   setAttackDistance( 5 );
-  _d->patrolPosition = gfx::tilemap::invalidLocation();
+  _d->patrolPosition = TilePos::invalid();
 }
 
 WallGuard::~WallGuard(){}
-
-WallGuardPtr WallGuard::create(PlayerCityPtr city, walker::Type type)
-{
-  WallGuardPtr ret( new WallGuard( city, type ) );
-  ret->drop();
-
-  return ret;
-}
 
 bool WallGuard::die()
 {
@@ -78,7 +68,7 @@ bool WallGuard::die()
     break;
 
     default:
-      Logger::warning( "Wallguard::die() not work yet for this type " + WalkerHelper::getTypename( type() ) );
+      Logger::warning( "WARNING !!! Wallguard::die() not work yet for this type " + WalkerHelper::getTypename( type() ) );
     }
   }
 
@@ -153,15 +143,17 @@ void WallGuard::fight()
   _setSubAction( Soldier::fightEnemy );
 }
 
+Walker::Gender WallGuard::gender() const { return male; }
+
 void WallGuard::save(VariantMap& stream) const
 {
   Soldier::save( stream );
 
-  stream[ "base" ] = _d->base.isValid() ? _d->base->pos() : gfx::tilemap::invalidLocation();
+  stream[ "base" ] = utils::objPosOrDefault( _d->base );
   VARIANT_SAVE_ANY_D( stream, _d, strikeForce )
   VARIANT_SAVE_ANY_D( stream, _d, resistance )
   VARIANT_SAVE_ANY_D( stream, _d, patrolPosition )
-  stream[ "__debug_typeName" ] = Variant( std::string( CAESARIA_STR_EXT(WallGuard) ) );
+  stream[ "__debug_typeName" ] = Variant( std::string( TEXT(WallGuard) ) );
 }
 
 void WallGuard::load(const VariantMap& stream)
@@ -173,7 +165,7 @@ void WallGuard::load(const VariantMap& stream)
   VARIANT_LOAD_ANY_D( _d, patrolPosition, stream )
 
   TilePos basePosition = stream.get( "base" );
-  auto tower = _city()->getOverlay( basePosition ).as<Tower>();
+  auto tower = _map().overlay<Tower>( basePosition );
 
   if( tower.isValid() )
   {
@@ -215,7 +207,7 @@ TilePos WallGuard::places(Walker::Place type) const
 {
   switch( type )
   {
-  case plOrigin: return _d->base.isValid() ? _d->base->pos() : gfx::tilemap::invalidLocation();
+  case plOrigin: return _d->base.isValid() ? _d->base->pos() : TilePos::invalid();
   case plDestination: return _d->patrolPosition;
   default: break;
   }
@@ -233,7 +225,7 @@ FortificationList WallGuard::_findNearestWalls( EnemySoldierPtr enemy )
 {
   FortificationList ret;
 
-  Tilemap& tmap = _city()->tilemap();
+  Tilemap& tmap = _map();
   for( int range=1; range < 8; range++ )
   {
     TilePos offset( range, range );
@@ -387,7 +379,7 @@ void WallGuard::_waitFinished()
 
 void WallGuard::_fire( TilePos target )
 {
-  SpearPtr spear = Spear::create( _city() );
+  SpearPtr spear = Walker::create<Spear>( _city() );
   spear->toThrow( pos(), target );
   wait( game::Date::days2ticks( 1 ) / 2 );
 }

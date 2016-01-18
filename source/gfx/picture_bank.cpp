@@ -37,7 +37,7 @@
 #include "loader.hpp"
 #include "core/saveadapter.hpp"
 #include "vfs/file.hpp"
-#include "gfx/helper.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "core/color.hpp"
 #include "core/variant_list.hpp"
 
@@ -115,8 +115,8 @@ void PictureBank::Impl::setPicture( const std::string &name, const Picture& pic 
   if( pic_info == PictureInfoBank::instance().getDefaultOffset( PictureInfoBank::tileOffset ) )
   {
     // this is a tiled picture=> automatic offset correction
-    int cw = gfx::tilemap::cellSize().width() * 2;
-    int ch = gfx::tilemap::cellSize().width() / 2;
+    int cw = config::tilemap.cell.size().width() * 2;
+    int ch = config::tilemap.cell.size().width() / 2;
     offset.setY( pic.height()-ch*( (pic.width()+2)/cw ) );   // (w+2)/60 is the size of the tile: (1x1, 2x2, 3x3, ...)
   }
   else if( pic_info == PictureInfoBank::instance().getDefaultOffset( PictureInfoBank::walkerOffset ) )
@@ -140,19 +140,13 @@ void PictureBank::Impl::destroyUnusableTextures()
     if( it->second <= 0 )
     {
       SDL_DestroyTexture( it->first );
-      txCounters.erase( it++ );
+      it = txCounters.erase( it );
     }
-    else
-    {
-      ++it;
-    }
+    else { ++it; }
   }
 }
 
-void PictureBank::reset()
-{
-
-}
+void PictureBank::reset() {}
 
 void PictureBank::setPicture( const std::string &name, const Picture& pic )
 {
@@ -273,7 +267,7 @@ Picture PictureBank::Impl::tryLoadPicture(const std::string& name)
     return it->second;
   }
 
-  Logger::warning( "PictureBank: Unknown resource %s", name.c_str() );
+  Logger::warning( "PictureBank: Unknown resource {}", name );
   return Picture::getInvalid();
 }
 
@@ -281,7 +275,7 @@ void PictureBank::Impl::loadAtlas(const vfs::Path& filePath)
 {
   if( !filePath.exist() )
   {
-    Logger::warning( "PictureBank: cant find atlas " + filePath.toString() );
+    Logger::warning( "PictureBank: cant find atlas " + filePath );
     return;
   }
 
@@ -298,7 +292,7 @@ void PictureBank::Impl::loadAtlas(const vfs::Path& filePath)
   }
   else
   {
-    Logger::warning( "PictureBank: load atlas failed for texture" + texturePath.toString() );
+    Logger::warning( "PictureBank: load atlas failed for texture" + texturePath );
     mainTexture = Picture::getInvalid();
   }
 

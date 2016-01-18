@@ -120,7 +120,7 @@ public:
   virtual void printHelp()
 	{
     for( auto i : _desc )
-      Logger::warning( "%s\t%s", i.first.c_str(), i.second.c_str() );
+      Logger::warning( "{}\t{}", i.first.c_str(), i.second.c_str() );
 	}
 
 protected:

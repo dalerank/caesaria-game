@@ -36,22 +36,26 @@ public:
 
   virtual bool isReady( PlayerCityPtr ) const { return false; }
   virtual void exec( PlayerCityPtr ) {}
-  virtual void success( PlayerCityPtr ) { _isDeleted = true; }
-  virtual void fail( PlayerCityPtr ) { _isDeleted = true; }
+  virtual void success( PlayerCityPtr ) { _isDeleted = true; _isSuccessed = true; }
+  virtual void fail( PlayerCityPtr ) { _isDeleted = true; _isSuccessed = false; }
   virtual bool isDeleted() const { return _isDeleted; }
   virtual DateTime startDate() const { return _startDate; }
   virtual DateTime finishedDate() const { return _finishDate; }
   virtual bool isAnnounced() const { return _isAnnounced; }
   virtual void update() {}
-  virtual void setAnnounced( bool value ) { _isAnnounced = value; }
+  virtual void setAnnounced( bool value ) { _isAnnounced = value; }  
 
   virtual VariantMap save() const;
   virtual void load( const VariantMap& stream );
   virtual std::string description() const{  return ""; }
 
+  bool isSuccessed() const { return _isSuccessed; }
+
 protected:
-  bool _isDeleted, _isAnnounced;
+  bool _isDeleted, _isAnnounced, _isSuccessed;
   DateTime _finishDate, _startDate;
+
+  void _saveState(PlayerCityPtr city, int relation, const std::string& message);
 
   RqBase( DateTime finish );
 };

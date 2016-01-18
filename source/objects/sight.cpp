@@ -83,9 +83,9 @@ bool BigStatue::isNeedRoad() const {  return false;}
 // second arch pictures is land3a 45 + 46	
 TriumphalArch::TriumphalArch() : Building( object::triumphal_arch, Size(3) )
 {
-  _picture().load( ResourceGroup::land3a, 43 );
-  _animationRef().load("land3a", 44, 1);
-  _animationRef().setOffset( Point( 63, 97 ) );
+  _picture().load( config::rc.land3a, 43 );
+  _animation().load("land3a", 44, 1);
+  _animation().setOffset( Point( 63, 97 ) );
   _fgPictures().resize(1);
-  _fgPicture(0) = _animationRef().currentFrame();
+  _fgPicture(0) = _animation().currentFrame();
 }

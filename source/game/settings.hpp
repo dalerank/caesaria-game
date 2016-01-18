@@ -107,6 +107,11 @@ public:
   __GS_PROPERTY(ambientsounds)
   __GS_PROPERTY(debugMenu)
   __GS_PROPERTY(cntrGroupsModel)
+  __GS_PROPERTY(logfile)
+  __GS_PROPERTY(rightMenu)
+  __GS_PROPERTY(showEmpireMapTiles)
+  __GS_PROPERTY(logoImageRc)
+  __GS_PROPERTY(logoImageIndex)
 #undef __GS_PROPERTY
 
   static Settings& instance();
@@ -125,6 +130,7 @@ public:
   void checkCmdOptions( char* argv[], int argc );
   void checkC3present();
   void changeSystemLang( const std::string& newLang );
+  void resetIfNeed(char* argv[], int argc);
 private:
   Settings();
 

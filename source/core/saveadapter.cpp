@@ -30,7 +30,7 @@ namespace config
 
 VariantMap load( const vfs::Path& filename )
 {
-  Logger::warning( "SaveAdapter: try load model from " + filename.toString() );
+  Logger::warning( "SaveAdapter: try load model from {}", filename.toString() );
   NFile f = NFile::open( filename );
 
   return load( f );
@@ -50,13 +50,13 @@ VariantMap load( vfs::NFile f )
     }
     else
     {
-     Logger::warning( "Can't parse file " + f.path().toString() + " error: " + ret.toString() );
-     Logger::warning( "Last parsed object is " + Json::lastParsedObject() );
+     Logger::warning( "Can't parse file {} error: {}", f.path().toString(), ret.toString() );
+     Logger::warning( "Last parsed object is {}", Json::lastParsedObject() );
     }
   }
   else
   {
-    Logger::warning( "Can't find file " + f.path().toString() );
+    Logger::warning( "Can't find file {}", f.path().toString() );
   }
 
   return VariantMap();

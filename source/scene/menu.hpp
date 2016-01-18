@@ -37,6 +37,7 @@ public:
   {
     startNewGame=0,
     loadMap,
+    loadConstructor,
     loadMission,
     loadSavedGame,
     closeApplication,

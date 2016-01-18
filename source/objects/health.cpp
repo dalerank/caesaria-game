@@ -57,7 +57,11 @@ public:
 class HealthBuilding::Impl
 {
 public:
-  unsigned int patientsNumber;
+  struct {
+    unsigned int current=0;
+    unsigned int served=0;
+    unsigned int max=0;
+  } patients;
   ServedHouses servedHouses;
   DateTime lastDateResults;
 };
@@ -69,36 +73,43 @@ HealthBuilding::HealthBuilding(const Service::Type service, const object::Type t
 }
 
 void HealthBuilding::buildingsServed(const std::set<BuildingPtr>& buildings, ServiceWalkerPtr walker)
-{
-  foreach( it, buildings )
+{  
+  for( auto building : buildings )
   {
-    if( (*it)->type() == object::house )
+    if( building->type() == object::house )
     {
-      HousePtr house = it->as<House>();
-      TilePos pos = house->pos();
-      int hash = (pos.i() << 8) | pos.i();
+      HousePtr house = building.as<House>();
+      int hash = house->pos().hash();
       _d->servedHouses[ hash ] = house->habitants().count();
     }
   }
 
+  _d->patients.served = 0;
+  for( auto item : _d->servedHouses )
+    _d->patients.served += item.second;
+
   ServiceBuilding::buildingsServed( buildings, walker );
 }
 
-unsigned int HealthBuilding::walkerDistance() const{ return 26; }
+unsigned int HealthBuilding::walkerDistance() const { return 26; }
 
 void HealthBuilding::deliverService()
 {
   if( _d->lastDateResults.monthsTo( game::Date::current() ) > 0 )
   {
     _d->lastDateResults = game::Date::current();
-    _d->patientsNumber = 0;
-    foreach( it, _d->servedHouses )
-      _d->patientsNumber += it->second;
-
+    _d->patients.current = _d->patients.served;
+    _d->patients.served = 0;
     _d->servedHouses.clear();
   }
 
-  if( numberWorkers() > 0 && walkers().size() == 0 )
+  bool haveWorkers = numberWorkers() > 0;
+  bool inPatrol = !walkers().empty();
+  bool servedMaxPeople = _d->patients.max == 0
+                          ? false
+                          : _d->patients.served >= _d->patients.max;
+
+  if( haveWorkers && !inPatrol && !servedMaxPeople )
   {
     ServiceBuilding::deliverService();
   }
@@ -107,7 +118,9 @@ void HealthBuilding::deliverService()
 void HealthBuilding::save(VariantMap& stream) const
 {
   ServiceBuilding::save( stream );
-  VARIANT_SAVE_ANY_D( stream, _d, patientsNumber )
+  VARIANT_SAVE_ANY_D( stream, _d, patients.current )
+  VARIANT_SAVE_ANY_D( stream, _d, patients.max )
+  VARIANT_SAVE_ANY_D( stream, _d, patients.served )
   VARIANT_SAVE_ANY_D( stream, _d, lastDateResults )
   VARIANT_SAVE_CLASS_D( stream, _d, servedHouses )
 }
@@ -115,14 +128,20 @@ void HealthBuilding::save(VariantMap& stream) const
 void HealthBuilding::load(const VariantMap &stream)
 {
   ServiceBuilding::load( stream );
-  VARIANT_LOAD_ANY_D( _d, patientsNumber, stream )
+  VARIANT_LOAD_ANY_D( _d, patients.current, stream )
+  VARIANT_LOAD_ANY_D( _d, patients.max, stream )
+  VARIANT_LOAD_ANY_D( _d, patients.served, stream )
   VARIANT_LOAD_TIME_D( _d, lastDateResults, stream )
   VARIANT_LOAD_CLASS_D_LIST( _d, servedHouses, stream )
 }
 
+void HealthBuilding::initialize(const object::Info& mdata)
+{
+  ServiceBuilding::initialize( mdata );
+  _d->patients.max = mdata.getOption( "patients.max" );
+}
+
 HealthBuilding::~HealthBuilding() {}
 
-unsigned int HealthBuilding::patientsNumber() const
-{
-  return _d->patientsNumber;
-}
+unsigned int HealthBuilding::patientsMax() const { return _d->patients.max; }
+unsigned int HealthBuilding::patientsCurrent() const { return _d->patients.current; }

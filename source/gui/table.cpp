@@ -131,7 +131,7 @@ Table::Table( Widget* parent,
 
   _d->cellLastTimeClick = 0;
   _d->itemHeight = 0;
-  _d->spring.setColor( DefaultColors::red );
+  _d->spring.setColor( ColorList::red );
   _d->spring.setDelta( 8 );
   _d->header = new HidingElement( this, Rect( 0, 0, width(), DEFAULT_SCROLLBAR_SIZE ) );
   _d->header->setAlignment( align::upperLeft, align::lowerRight, align::upperLeft, align::upperLeft );
@@ -460,8 +460,8 @@ void Table::clearRows()
   _selectedRow = -1;
 
 	const Widgets& tableAreaChilds = _d->itemsArea->children();
-  foreach( wit, tableAreaChilds )
-		(*wit)->deleteLater();
+  for( auto wit : tableAreaChilds )
+    wit->deleteLater();
 
 	_d->rows.clear();
 
@@ -673,11 +673,11 @@ bool Table::onEvent(const NEvent &event)
 
 				switch(event.mouse.type)
 				{
-				case mouseWheel:
+        case NEvent::Mouse::mouseWheel:
 					_d->verticalScrollBar->setValue( _d->verticalScrollBar->value() + (event.mouse.wheel < 0 ? -1 : 1)*-10);
 					return true;
 
-				case mouseLbtnPressed:
+        case NEvent::Mouse::btnLeftPressed:
 					if ( isFocused() &&
 						_d->verticalScrollBar->visible() &&
 						_d->verticalScrollBar->absoluteRect().isPointInside(p) &&
@@ -705,7 +705,7 @@ bool Table::onEvent(const NEvent &event)
 					return true;
         break;
 
-				case mouseLbtnRelease:
+        case NEvent::Mouse::mouseLbtnRelease:
           _currentResizedColumn = -1;
           _selecting = false;          
 					if (!absoluteRect().isPointInside(p))
@@ -735,7 +735,7 @@ bool Table::onEvent(const NEvent &event)
 					return true;
         break;
 
-				case mouseMoved:
+        case NEvent::Mouse::moved:
           if ( _currentResizedColumn >= 0 && _dragColumnUpdate(event.mouse.x) )
 					{
             return true;

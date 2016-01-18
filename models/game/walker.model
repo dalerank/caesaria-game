@@ -34,6 +34,17 @@
     obsoleteOverlays : [ "gatehouse", "roadBlock" ]
   }
 
+  fishPlace : {
+  }
+
+  riverWave : {
+  }
+
+  cartPusher : {
+    nation : "rome"
+    obsoleteOverlays : [ "gatehouse" ]
+  }
+
   marketLady : {
     nation : "rome"
     obsoleteOverlays : [ "gatehouse", "roadBlock" ]

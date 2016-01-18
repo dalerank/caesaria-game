@@ -60,14 +60,24 @@ public:
   static Renderer::ModePtr create( object::Type type );
 
   ConstructionPtr contruction() const;
-public:
-  BuildMode();
+  OverlayPtr overlay() const;
+
+protected:
+  BuildMode( int layer );
 
   class Impl;
   ScopedPtr< Impl > _d;
 };
 
-typedef SmartPtr< BuildMode > BuildModePtr;
+class EditorMode : public BuildMode
+{
+public:
+  static Renderer::ModePtr create( object::Type type );
+
+public:
+  EditorMode();
+};
+
 typedef SmartPtr< LayerMode > LayerModePtr;
 
 }//end namespace gfx

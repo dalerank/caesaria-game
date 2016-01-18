@@ -40,18 +40,11 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
   _locker.activate();
 
   setupUI( ":/gui/tutorial_window.gui" );
-  Size pSize = parent()->size() - size();
-  setPosition( Point( pSize.width() / 2, pSize.height() / 2 ) );
 
-  Label* lbTitle;
-  TexturedButton* btnExit;
-  ListBox* lbxHelp;
+  INIT_WIDGET_FROM_UI(Label*, lbTitle )
+  INIT_WIDGET_FROM_UI(ListBox*, lbxHelp )
 
-  GET_WIDGET_FROM_UI( lbTitle )
-  GET_WIDGET_FROM_UI( btnExit )
-  GET_WIDGET_FROM_UI( lbxHelp )
-
-  CONNECT( btnExit, onClicked(), this, TutorialWindow::deleteLater );
+  LINK_WIDGET_LOCAL_ACTION( TexturedButton*, btnExit, onClicked(), TutorialWindow::deleteLater );
 
   if( !lbxHelp )
     return;
@@ -67,22 +60,19 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
   if( lbTitle ) lbTitle->setText( _( title ) );
   if( !sound.empty() )
   {
-    GameEventPtr e = PlaySound::create( sound, 100 );
-    e->dispatch();
+    events::dispatch<PlaySound>( sound, 100 );
   }
 
   if( !speech.empty() )
   {
     _muter.activate( 5 );
     _speechDel.assign( speech );
-    GameEventPtr e = PlaySound::create( speech, 100, audio::speech );
-    e->dispatch();
+    events::dispatch<PlaySound>( speech, 100, audio::speech );
   }
 
   const std::string imgSeparator = "@img=";
-  foreach( it, items )
+  for( const auto& text : items )
   {
-    std::string text = *it;
     if( text.substr( 0, imgSeparator.length() ) == imgSeparator )
     {
       Picture pic( text.substr( imgSeparator.length() ) );
@@ -99,6 +89,7 @@ TutorialWindow::TutorialWindow( Widget* p, vfs::Path tutorial )
     }
   }
 
+  moveTo( Widget::parentCenter );
   setModal();
 }
 

@@ -58,11 +58,9 @@ AboutWarehouse::AboutWarehouse(Widget* parent, PlayerCityPtr city, const Tile& t
     lb->setTextAlignment( alignCenter, alignCenter );
   }*/
 
-  PushButton* btnOrders;
-  GET_WIDGET_FROM_UI( btnOrders );
-  CONNECT( btnOrders, onClicked(), this, AboutWarehouse::showSpecialOrdersWindow );
+  LINK_WIDGET_LOCAL_ACTION( PushButton*, btnOrders, onClicked(), AboutWarehouse::showSpecialOrdersWindow );
 
-  std::string title = MetaDataHolder::findPrettyName( _warehouse->type() );
+  std::string title = _warehouse->info().prettyName();
   if( _warehouse->isTradeCenter() )
     title = "##trade_center##";
 
@@ -107,7 +105,7 @@ void AboutWarehouse::showSpecialOrdersWindow()
     pos = absoluteRect().lefttop();
   }
 
-  new WarehouseSpecialOrdersWindow( parent(), pos, _warehouse );
+   parent()->add<WarehouseSpecialOrdersWindow>( pos, _warehouse );
 }
 
 void AboutWarehouse::drawGood(const good::Product& goodType, int col, int paintY )
@@ -117,13 +115,13 @@ void AboutWarehouse::drawGood(const good::Product& goodType, int col, int paintY
 
   // pictures of goods
   const Picture& pic = good::Helper::picture( goodType );
-  Label* lb = new Label( this, Rect( Point( col * 150 + 15, paintY), Size( 150, 24 ) ) );
-  lb->setFont( Font::create( FONT_2 ) );
-  lb->setIcon( pic, Point( 0, 4 ) );
+  std::string outText = fmt::format( "{} {}", qty / 100, _(goodName) );
 
-  std::string outText = utils::format( 0xff, "%d %s", qty / 100, _(goodName) );
-  lb->setText( outText );
-  lb->setTextOffset( Point( 24, 0 ) );
+  Label& lb = add<Label>( Rect( Point( col * 150 + 15, paintY), Size( 150, 24 ) ) );
+  lb.setFont( FONT_2 );
+  lb.setIcon( pic, Point( 0, 4 ) );
+  lb.setText( outText );
+  lb.setTextOffset( Point( 24, 0 ) );
 }
 
 }

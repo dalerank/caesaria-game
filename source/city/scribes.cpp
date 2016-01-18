@@ -41,7 +41,12 @@ namespace city
 class Scribes::Impl
 {
 public:
+  bool unreadMessage_n;
   Scribes::Messages messages;
+
+  Signal1<int> onChangeMessageNumberSignal;
+
+  void checkUnreadMessages();
 };
 
 Scribes::Scribes() : _d( new Impl )
@@ -71,12 +76,20 @@ const Scribes::Message& Scribes::getMessage(unsigned int index) const
   return _d->messages.at( index );
 }
 
+Signal1<int>& Scribes::onChangeMessageNumber()
+{
+  return _d->onChangeMessageNumberSignal;
+}
+
 const Scribes::Message& Scribes::readMessage(unsigned int index)
 {
   Message& m = _d->messages.at( index );
   m.opened = true;
+  _d->checkUnreadMessages();
   return m;
 }
+
+bool Scribes::haveUnreadMessage() const { return _d->unreadMessage_n > 0; }
 
 void Scribes::changeMessage(int index, Message& message)
 {
@@ -92,16 +105,19 @@ void Scribes::removeMessage(int index)
   std::advance( it, index );
   if( it != _d->messages.end() )
     _d->messages.erase( it );
+
+  _d->checkUnreadMessages();
 }
 
 void Scribes::addMessage(const Message& message)
 {
   _d->messages.push_front( message );
+  _d->checkUnreadMessages();
 }
 
 namespace {
-CAESARIA_LITERALCONST(gtype)
-CAESARIA_LITERALCONST(ext)
+GAME_LITERALCONST(gtype)
+GAME_LITERALCONST(ext)
 }
 
 VariantMap Scribes::Message::save() const
@@ -137,7 +153,7 @@ VariantMap Scribes::Messages::save() const
   int step=0;
   std::string stepName;
   stepName.reserve( 256 );
-  for( auto& i : *this )
+  for( const auto& i : *this )
   {
     stepName = utils::format( 0xff, "%04d", step++ );
     ret[ stepName ] = i.save();
@@ -148,9 +164,9 @@ VariantMap Scribes::Messages::save() const
 
 void Scribes::Messages::load(const VariantMap &vm)
 {
-  for( auto& i : vm )
+  for( const auto& i : vm )
   {
-    push_back( Message() );
+    push_front( Message() );
     back().load( i.second.toMap() );
   }
 }
@@ -164,6 +180,15 @@ Scribes::Message& Scribes::Messages::at(unsigned int index)
     return *it;
 
   return invalidMessage;
+}
+
+void Scribes::Impl::checkUnreadMessages()
+{
+  unreadMessage_n = 0;
+  for( const auto& i : messages )
+    unreadMessage_n += i.opened ? 0 : 1;
+
+  emit onChangeMessageNumberSignal( unreadMessage_n );
 }
 
 }//end namespace city

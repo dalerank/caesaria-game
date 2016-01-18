@@ -26,14 +26,17 @@ namespace citylayer
 class MarketAccess : public Info
 {
 public:
+  MarketAccess( gfx::Camera& camera, PlayerCityPtr city );
   virtual int type() const;
-  virtual void drawTile( gfx::Engine& engine, gfx::Tile& tile, const Point& offset );
-  virtual void handleEvent(NEvent& event);
-
-  static LayerPtr create( gfx::Camera& camera, PlayerCityPtr city );
+  virtual void drawTile(const gfx::RenderInfo& rinfo, gfx::Tile& tile);
+  virtual void onEvent( const NEvent& event);
+  virtual void render(gfx::Engine& engine);
+  virtual void afterRender(gfx::Engine& engine);
 
 private:
-  MarketAccess( gfx::Camera& camera, PlayerCityPtr city );
+  void _updatePaths();
+
+  __DECLARE_IMPL(MarketAccess)
 };
 
 }//end namespace city

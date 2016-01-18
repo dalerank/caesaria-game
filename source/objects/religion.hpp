@@ -31,7 +31,9 @@ public:
   virtual unsigned int currentVisitors() const;
   virtual void deliverService();
   virtual unsigned int walkerDistance() const;
-  virtual void initialize(const MetaData& mdata);
+  virtual void initialize(const object::Info& mdata);
+  virtual bool build(const city::AreaInfo &info);
+  virtual const gfx::Pictures& pictures( gfx::Renderer::Pass pass ) const;
 
 protected:
   Temple( religion::DivinityPtr divinity, object::Type type, int imgId, const Size& size );
@@ -44,6 +46,8 @@ protected:
   void _setBuffValue( float value );
   float _buffValue() const;
   DateTime _lastBuffDate() const;
+  gfx::Pictures& _ground();
+  const gfx::Pictures& _ground() const;
 
 private:
   class Impl;
@@ -73,7 +77,7 @@ public:
 
 protected:
   virtual void _updateBuffs();
-  virtual void initialize(const MetaData &mdata);
+  virtual void initialize(const object::Info& mdata);
 };
 
 class TempleNeptune : public SmallTemple

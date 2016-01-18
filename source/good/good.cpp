@@ -70,4 +70,37 @@ Product getMaterial(const Product &pr)
   return none;
 }
 
+Products& Products::operator<<(const Product& a)
+{
+  insert( a );
+  return *this;
+}
+
+Products&Products::operator<<(const Products& other)
+{
+  for( auto& goodType : other )
+    insert( goodType );
+
+  return *this;
+}
+
+bool Products::contain(const Product& type) const
+{
+  return this->count( type ) > 0;
+}
+
+Products&Products::exclude(const Product& type)
+{
+  erase( type );
+  return *this;
+}
+
+Products&Products::exclude(const Products& types)
+{
+  for( auto& goodType : types )
+    erase( goodType );
+
+  return *this;
+}
+
 }

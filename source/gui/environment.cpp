@@ -20,6 +20,7 @@
 #include "core/rectangle.hpp"
 #include "gfx/engine.hpp"
 #include "core/event.hpp"
+#include "widgetprivate.hpp"
 #include "label.hpp"
 #include "core/time.hpp"
 #include "core/foreach.hpp"
@@ -27,6 +28,8 @@
 #include "console.hpp"
 #include "core/logger.hpp"
 #include "core/hash.hpp"
+#include "core/osystem.hpp"
+#include "widgetprivate.hpp"
 
 using namespace gfx;
 
@@ -75,28 +78,30 @@ public:
   void threatDeletionQueue();
 };
 
-Ui::Ui(Engine& painter , const Size& size)
+Ui::Ui(Engine& painter )
   : Widget( 0, -1, Rect() ), _d( new Impl )
 {
   setDebugName( "Ui" );
 
   _d->preRenderFunctionCalled = false;
   _d->focusedElement = 0;
-  _d->size = size;
+  _d->size = painter.screenSize();
   _d->engine = &painter;
-  _environment = this;
+  _dfunc()->environment = this;
   _d->tooltip.element;
   _d->tooltip.lastTime = 0;
   _d->tooltip.enterTime = 0;
   _d->tooltip.launchTime = 1000;
   _d->tooltip.relaunchTime = 500;
 
+  Widget::_dfunc()->environment = this;
+
   setGeometry( Rect( Point(), _d->size ) );
 
-  _d->consoleId = Hash( CAESARIA_STR_EXT(Console) );
-  _d->console = 0;//new Console( this, _d->consoleId, Rect() );
+  _d->consoleId = Hash( TEXT(Console) );
+  _d->console = 0;
 
-  setFlag( buttonShowDebugArea, 0 );
+  setFlag( drawDebugArea, 0 );
 }
 
 //! Returns if the element has focus
@@ -149,6 +154,9 @@ void Ui::draw()
   }
 
   Widget::draw( *_d->engine );  
+
+  if( hasFlag( drawDebugArea ) )
+    Widget::debugDraw( *_d->engine );
 
   _d->tooltip.update( DateTime::elapsedTime(), *this, _d->flags[ showTooltips ],
                       _d->hovered.noSubelement, _d->cursorPos );
@@ -395,14 +403,15 @@ bool Ui::handleEvent( const NEvent& event )
 
 //!!! android fix. update hovered element on every mouse event,
 //!   that beforeDraw() function cannot do it correctly
-#ifdef CAESARIA_PLATFORM_ANDROID
-        _updateHovered( _d->cursorPos );
-#endif
+        if( OSystem::isAndroid() )
+        {
+          _updateHovered( _d->cursorPos );
+        }
 //!!! end android fix
         switch( event.mouse.type )
         {
-        case mouseLbtnPressed:
-        case mouseRbtnPressed:
+        case NEvent::Mouse::btnLeftPressed:
+        case NEvent::Mouse::btnRightPressed:
         {
             if ( (_d->hovered.current.isValid() && _d->hovered.current != getFocus()) || !getFocus() )
             {
@@ -429,7 +438,7 @@ bool Ui::handleEvent( const NEvent& event )
         }
         break;
 
-        case mouseLbtnRelease:
+        case NEvent::Mouse::mouseLbtnRelease:
           if( getFocus() )
           {
             return getFocus()->onEvent( event );
@@ -445,7 +454,7 @@ bool Ui::handleEvent( const NEvent& event )
         }
     break;
 
-    case sTextInput:
+    case sEventTextInput:
     case sEventKeyboard:
         {
           if( _d->console )
@@ -543,30 +552,30 @@ void Ui::animate( unsigned int time )
   Widget::animate( time );
 }
 
-const Size& Ui::vsize() const {  return _d->size; }
+Size Ui::vsize() const {  return size(); }
 Point Ui::cursorPos() const {  return _d->cursorPos; }
 
 Widget* UiTooltipWorker::standart(Widget& parent, Widget* hovered, Point cursor)
 {
-  Label* elm = new Label( &parent, Rect( 0, 0, 2, 2 ), hovered->tooltipText(), true, Label::bgSimpleWhite );
-  elm->setSubElement(true);
-  elm->setTextAlignment( align::upperLeft, align::upperLeft );
-  elm->setTextOffset( Point( 5, 5 ) );
+  Label& elm = parent.add<Label>( Rect( 0, 0, 2, 2 ), hovered->tooltipText(), true, Label::bgSimpleWhite );
+  elm.setSubElement(true);
+  elm.setTextAlignment( align::upperLeft, align::upperLeft );
+  elm.setTextOffset( Point( 5, 5 ) );
 
-  Size tooltipSize( elm->textWidth() + 20, elm->textHeight() + 2 );
+  Size tooltipSize( elm.textWidth() + 20, elm.textHeight() + 2 );
   if( tooltipSize.width() > parent.width() * 0.75 )
   {
     tooltipSize.setWidth( parent.width() * 0.5 );
-    tooltipSize.setHeight( elm->textHeight() * 2 + 10 );
-    elm->setWordwrap( true );
+    tooltipSize.setHeight( elm.textHeight() * 2 + 10 );
+    elm.setWordwrap( true );
   }
 
   Rect rect( cursor, tooltipSize );
 
   rect -= Point( tooltipSize.width() + 20, -20 );
-  elm->setGeometry( rect );
+  elm.setGeometry( rect );
 
-  return elm;
+  return &elm;
 }
 
 void UiTooltipWorker::update( unsigned int time, Widget& rootWidget, bool showTooltips,

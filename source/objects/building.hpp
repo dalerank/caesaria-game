@@ -38,6 +38,7 @@ public:
 
   virtual void timeStep(const unsigned long time);
   virtual void storeGoods(good::Stock& stock, const int amount = -1);
+  virtual good::Store& store();
 
   // evaluate the given service
   virtual bool build(const city::AreaInfo& info);
@@ -57,7 +58,7 @@ public:
 
   virtual void updateTrainee( TraineeWalkerPtr walker ); // trainee arrives
   virtual void setTraineeValue( walker::Type type, int value ); // trainee arrives
-  virtual void initialize(const MetaData& mdata);
+  virtual void initialize(const object::Info& mdata);
 
   virtual void save(VariantMap &stream) const;
   virtual void load(const VariantMap &stream);
@@ -66,7 +67,6 @@ public:
 
 protected:
   void _updateBalanceKoeffs();
-
 
   class Impl;
   ScopedPtr< Impl > _d;

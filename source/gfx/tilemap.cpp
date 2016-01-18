@@ -18,7 +18,9 @@
 
 #include "tilemap.hpp"
 
-#include "gfx/helper.hpp"
+#include "imgid.hpp"
+#include "gfx/tile_config.hpp"
+#include "gfx/tilemap_config.hpp"
 #include "objects/building.hpp"
 #include "core/exception.hpp"
 #include "core/position.hpp"
@@ -82,7 +84,7 @@ Tilemap::Tilemap() : _d( new Impl )
 {
   _d->size = 0;
   _d->direction = direction::north;
-  _d->virtWidth = tilemap::cellSize().width() * 2;
+  _d->virtWidth = config::tilemap.cell.size().width() * 2;
 }
 
 void Tilemap::resize( const unsigned int size )
@@ -203,7 +205,7 @@ TilesArray Tilemap::getNeighbors( const TilePos& pos, TileNeighbors type)
     return rect(pos - offset, pos + offset, !checkCorners);
   }
 
-  Logger::warning( "CRITICAL: Unexpected type %d in Tilemap::getNeighbors", type );
+  Logger::warning( "CRITICAL: Unexpected type {} in Tilemap::getNeighbors", type );
   return TilesArray();
 }
 
@@ -368,7 +370,7 @@ void Tilemap::load( const VariantMap& stream )
 
   if( baBitset.empty() || baImgId.empty() || baDes.empty() )
   {
-    Logger::warning( "!!! Tilemap::load data's array is null %d/%d/%d", baBitset.size(), baImgId.size(), baDes.size() );
+    Logger::warning( "!!! Tilemap::load data's array is null {0}/{1}/{2}", baBitset.size(), baImgId.size(), baDes.size() );
     return;
   }
 
@@ -419,7 +421,7 @@ void Tilemap::turnRight()
   case east: _d->direction = north; break;
 
   default:
-    Logger::warning( "Tilemap::turnRight wrong direction %d", _d->direction );
+    Logger::warning( "Tilemap::turnRight wrong direction {0}", _d->direction );
   }
 
   Impl::MasterTiles masterTiles;
@@ -485,7 +487,7 @@ void Tilemap::turnLeft()
   case west: _d->direction = north; break;
 
   default:
-    Logger::warning( "Tilemap::turnLeft wrong direction %d", _d->direction );
+    Logger::warning( "Tilemap::turnLeft wrong direction {0}", _d->direction );
   }
 
   Impl::MasterTiles masterTiles;
@@ -510,7 +512,7 @@ void Tilemap::turnLeft()
   {
     const Impl::TurnInfo& ti = it.second;
 
-    Picture pic = ti.overlay.isValid() ? ti.overlay->picture() : ti.pic;
+    const Picture& pic = ti.overlay.isValid() ? ti.overlay->picture() : ti.pic;
     int pSize = (pic.width() + 2) / _d->virtWidth;
 
     pSize = math::clamp<int>( pSize, 1, 10);
@@ -558,8 +560,6 @@ Tile& Tilemap::Impl::at(const int i, const int j)
   {
     return *(*this)[i][j];
   }
-
-  //Logger::warning( "Need inside point current=[%d, %d]", i, j );
   return gfx::tile::getInvalidSafe();
 }
 

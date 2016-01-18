@@ -8,6 +8,9 @@
   climate : 0
   adviserEnabled : false
   fishPlaceEnabled : false
+  preview.text : "##tutorial2_preview_mission##"
+  preview.title : "##tutorial2_preview_title##"
+  preview.image : ""
 	
   win :
   {
@@ -22,7 +25,6 @@
     title : "##engineer##"
     may_continue : false
     short : "##tt2_short##"
-    maxHouseLevel : "hut"
     win.text : "##tt2_win_text##"
     sound.overview : "tutorial2_speech"
     sound.win      : "tutorial2_win_speech"

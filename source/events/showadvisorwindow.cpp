@@ -71,16 +71,14 @@ void ShowAdvisorWindow::_exec(Game& game, unsigned int)
   bool advEnabled = game.city()->getOption( PlayerCity::adviserEnabled ) > 0;
   if( !advEnabled )
   {
-    GameEventPtr e = WarningMessage::create( "##not_available##", 1 );
-    e->dispatch();
+    events::dispatch<WarningMessage>( "##not_available##", 1 );
     return;
   }
 
   bool haveSenate = game.city()->statistic().objects.count( object::senate ) > 0;
   if( !haveSenate )
   {
-    GameEventPtr e = WarningMessage::create( "##build_senate_for_advisors##", 1 );
-    e->dispatch();
+    events::dispatch<WarningMessage>( "##build_senate_for_advisors##", 1 );
     return;
   }
 
@@ -95,7 +93,8 @@ void ShowAdvisorWindow::_exec(Game& game, unsigned int)
     }
     else
     {
-      Parlor::create( game.gui()->rootWidget(), -1, _advisor, game.city() );
+      auto model = new ParlorModel( game.city() );
+      Parlor::create( game.gui()->rootWidget(), -1, _advisor, model );
     }
   }
   else

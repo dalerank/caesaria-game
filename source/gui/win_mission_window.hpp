@@ -36,11 +36,13 @@ public:
               bool mayContinue);
 
   virtual ~WinMission();
-  virtual bool onEvent(const NEvent &event);
 
 public signals:
   Signal0<>& onAcceptAssign();
   Signal1<int>& onContinueRules();
+
+protected:
+  virtual bool _onButtonClicked(Widget *sender);
 
 private:
   class Impl;
