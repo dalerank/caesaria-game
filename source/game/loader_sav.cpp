@@ -344,7 +344,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
           object::Type ovType = LoaderHelper::convImgId2ovrType( imgId );
           if( ovType == object::unknown )
           {
-            Logger::warning( "!!! GameLoaderC3Sav: Unknown building %x at [{},{}]", imgId, i, j );
+            Logger::warning( "!!! GameLoaderC3Sav: Unknown building {} at [{},{}]", imgId, i, j );
           }
           else
           {

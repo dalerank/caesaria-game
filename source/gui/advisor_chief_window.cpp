@@ -107,6 +107,7 @@ public:
     setIcon( gui::rc.panel, gui::id.chiefIcon );
     setIconOffset( { 6, 8 } );
     setFont( FONT_2 );
+	setTextAlignment(align::upperLeft, align::center);
 
     setTextOffset( Point( 255, 0) );
     Decorator::draw( _border, Rect( 0, 0, width(), height() ), Decorator::brownBorder );
@@ -145,7 +146,13 @@ protected:
 class Chief::Impl
 {
 public:  
-  typedef std::map<Advice::Type,InfomationRow*> InformationRows;
+  class InformationRows
+     : public std::map<Advice::Type,InfomationRow*>
+  {
+  public:
+    Point startPoint = { 22, 60 };
+    int relHeight = 27;
+  };
 
   PlayerCityPtr city;
   InformationRows rows;
@@ -172,7 +179,7 @@ Chief::Chief(PlayerCityPtr city, Widget* parent, int id )
   : Base( parent, city ), __INIT_IMPL( Chief )
 {
   __D_REF(_d, Chief )
-  setupUI( ":/gui/chiefadv.gui" );
+  Base::setupUI( ":/gui/chiefadv.gui" );
 
   WidgetClose::insertTo( this );  
 
@@ -194,16 +201,18 @@ Chief::Chief(PlayerCityPtr city, Widget* parent, int id )
   add<HelpButton>( Point( 12, height() - 39 ), "advisor_chief" );
 }
 
+void Chief::setupUI(const VariantMap& ui)
+{
+  Base::setupUI( ui );
+}
+
 void Chief::Impl::initRows( Widget* parent, int width )
 {
-  Point startPoint( 20, 60 );
-  Point offset( 0, 27 );
-
-  Rect rowRect( startPoint, Size( width, offset.y() ) );
+  Rect rowRect( rows.startPoint, Size( width-rows.startPoint.x()*2, rows.relHeight ) );
   for(const auto& row : Advice::row )
   {
     rows[ row.first ] = &parent->add<InfomationRow>( row.second, rowRect );
-    rowRect += offset;
+    rowRect += Point( 0, rows.relHeight );
   }
 }
 

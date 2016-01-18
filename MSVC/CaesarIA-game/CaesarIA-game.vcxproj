@@ -168,7 +168,7 @@
       <Optimization>Disabled</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PreprocessorDefinitions>NOMINMAX;_DEBUG;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;_DEBUG;USE_STEAM;CAESARIA_USE_FRAMEBUFFER;CAESARIA_USE_SHADERS;CAESARIA_USE_DEBUGTIMERS;DEBUG;CAESARIA_COMPILER_NAME="msvc";CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)/$(Platform)/$(Configuration)/%(RelativeDir)/</ObjectFileName>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>

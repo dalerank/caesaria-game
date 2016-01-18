@@ -589,6 +589,12 @@
           files : [ "land1a1.atlas"
                     "land1a1.png" ]
         }
+
+        plaza : {
+          type : "atlas"
+          folder : "/resources/plaza"
+          files : [ "*" ]
+        }
       }
     }
 
