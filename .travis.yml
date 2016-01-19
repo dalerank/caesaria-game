@@ -13,7 +13,30 @@ before_install:
 #- sudo apt-get install -qq gcc-multilib g++-multilib
 install:
 # Create unix makefiles
-- cmake -DCMAKE_BUILD_TYPE=Release .
+- mkdir build
+- cd build
+- cmake -DCMAKE_BUILD_TYPE=Release ../
+after_success:
+- cd ../
+- git remote add github $GITHUB_REMOTE
+- git checkout stable
+- git merge master
+- git push github stable
+- git checkout steam-mac
+- get merge master 
+- git push github steam-mac
+- git checkout steam-win
+- git merge master
+- git push github steam-win
+- git checkout steam-stable
+- git merge master
+- git push github steam-stable
+- git checkout windows-build
+- git merge master
+- git push github windows-build
+- git chekout windows-build-old
+- get merge master
+- git push github windows-build-old
 script:
 # Build CaesarIA
 - make -j4
