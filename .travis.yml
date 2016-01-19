@@ -19,6 +19,7 @@ install:
 after_success:
 - cd ../
 - git remote add github $GITHUB_REMOTE
+- git getch github
 - git checkout stable
 - git merge master
 - git push github stable
