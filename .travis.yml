@@ -18,6 +18,8 @@ install:
 after_success:
 - cd ../
 - git remote add github $GITHUB_REMOTE
+- git config --global user.email "caesaria@build.bot"
+- git config --global user.name "caesaria-build-bot"
 - git fetch github
 - git checkout stable
 - git merge master
