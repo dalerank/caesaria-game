@@ -91,6 +91,12 @@ private:
   ScopedPtr<Impl> _d;
 };
 
+class SimpleWindow : public Window
+{
+public:
+  SimpleWindow(Widget* parent, const Rect& rect, const std::string& title="", const std::string& ui="");
+};
+
 }//end namespace gui
 
 #endif //_CAESARIA_WINDOW_H_INCLUDE_

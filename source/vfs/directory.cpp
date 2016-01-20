@@ -1,3 +1,4 @@
+#include "directory.hpp"
 // This file is part of CaesarIA.
 //
 // CaesarIA is free software: you can redistribute it and/or modify
@@ -160,6 +161,11 @@ Directory::Directory( const std::string& nPath ) : Path( nPath )
 }
 
 Directory::Directory( const Directory& nPath ) : Path( nPath.toString()  )
+{
+}
+
+vfs::Directory::Directory(const char * nPath)
+  : Path( std::string(nPath) )
 {
 }
 

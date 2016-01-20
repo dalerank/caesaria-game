@@ -30,9 +30,10 @@ class Directory : public Path
 {
 public:
   Directory();
-  Directory( const Path& pathTo );
+  Directory( const Path& nPath );
   Directory( const std::string& nPath );
   Directory( const Directory& nPath );
+  explicit Directory(const char* nPath);
 
   virtual ~Directory();
 

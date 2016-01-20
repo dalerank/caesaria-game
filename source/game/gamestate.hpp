@@ -26,7 +26,7 @@
 namespace scene
 {
   class Briefing;
-  class StartMenu;
+  class Lobby;
   class Level;
 }
 
@@ -72,7 +72,7 @@ public:
 
   ~InMainMenu();
 private:
-  scene::StartMenu* startMenu;
+  scene::Lobby* startMenu;
 };
 
 } //end namespace gamestate

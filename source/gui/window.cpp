@@ -22,6 +22,8 @@
 #include "core/logger.hpp"
 #include "gfx/engine.hpp"
 #include "modal_widget.hpp"
+#include "texturedbutton.hpp"
+#include "widgetescapecloser.hpp"
 #include "core/variant_map.hpp"
 #include "gfx/decorator.hpp"
 #include "gfx/drawstate.hpp"
@@ -406,6 +408,17 @@ void Window::setTextAlignment( Alignment horizontal, Alignment vertical )
 	Widget::setTextAlignment( horizontal, vertical );
   if( _d->title )
     _d->title->setTextAlignment( horizontal, vertical );
+}
+
+inline SimpleWindow::SimpleWindow(Widget * parent, const Rect & rect, const std::string & title, const std::string & ui)
+  : Window( parent, rect, title, -1 )
+{
+  if( !ui.empty() )
+    setupUI(ui);
+  add<ExitButton>(Point(width() - 34, height() - 34));
+
+  moveTo(Widget::parentCenter);
+  WidgetClose::insertTo(this, KEY_RBUTTON);
 }
 
 }//end namespace gui

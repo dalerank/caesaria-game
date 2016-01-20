@@ -16,7 +16,7 @@
 // Copyright 2012-2013 Gregoire Athanase, gathanase@gmail.com
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
 
-#include "menu.hpp"
+#include "lobby.hpp"
 
 #include "core/gettext.hpp"
 #include "gui/loadgamedialog.hpp"
@@ -59,6 +59,7 @@
 #include "vfs/directory.hpp"
 #include "gui/dlc_folder_viewer.hpp"
 #include "steam.hpp"
+#include "gui/changes_window.hpp"
 #include "gui/window_language_select.hpp"
 
 using namespace gfx;
@@ -67,13 +68,17 @@ using namespace gui;
 namespace scene
 {
 
+namespace internal
+{
+	static bool wasChangesShow = false;
+}
+
 class Lobby::Impl
 {
 public:
-  static bool wasChangesShow = false;
   Picture bgPicture;
   Point bgOffset;
-  gui::StartMenu* menu;         // menu to display
+  gui::Lobby* menu;         // menu to display
   bool isStopped;
   Game* game;
   Engine* engine;
@@ -148,7 +153,10 @@ void Lobby::Impl::showLogFile()
 
 void Lobby::Impl::showChanges()
 {
-
+	internal::wasChangesShow = true;
+  int lastChanges = game::Settings::findLastChanges();
+  SETTINGS_SET_VALUE(lastChangesNumber, lastChanges );
+  game->gui()->add<ChangesWindow>( Rect(0, 0, 500, 500), _("##window_changes_title##"), lastChanges );
 }
 
 void Lobby::Impl::changePlayerNameIfNeed(bool force)
@@ -302,66 +310,11 @@ void Lobby::Impl::showCredits()
 {
   audio::Engine::instance().play( "combat_long", 50, audio::theme );
 
-  std::string strs[] = { _("##original_game##"),
-                         "Caesar III (c)",
-                         "Thank you, Impressions Games, for amazing game",
-                         " ",
-                         _("##developers##"),
-                         " ",
-                         "dalerank (dalerankn8@gmail.com)",
-                         "gathanase (gathanase@gmail.com) render, game mechanics ",
-                         "gecube (gb12335@gmail.com), Softer (softer@lin.in.ua)",
-                         "pecunia (pecunia@heavengames.com) game mechanics",
-                         "amdmi3 (amdmi3@amdmi3.ru) bsd fixes",
-                         "greg kennedy(kennedy.greg@gmail.com) smk decoder",
-                         "akuskis (?) aqueduct system",
-                         "VladRassokhin, hellium, andreibranescu",
-                         " ",
-                         _("##operations_manager##"),
-                         " ",
-                         "Max Mironchik (?) ",
-                         " ",
-                         _("##testers##"),
-                         " ",
-                         "radek liška, dimitrius (caesar-iii.ru)",
-                         "shibanirm, Pavel Aleksandrov (krabanek@gmail.com)",
-                         " ",
-                         _("##graphics##"),
-                         " ",
-                         "Dmitry Plotnikov (main artist)",
-                         "Jennifer Kin (empire map, icons)",
-                         "Andre Lisket (school, theater, baths and others)",
-                         "Il'ya Korchagin (grape farm tiles)",
-                         "Pietro Chiovaro (Hospital)",
-                         " ",
-                         _("##music##"),
-                         " ",
-                         "Aliaksandr BeatCheat (sounds)",
-                         "Omri Lahav (main theme)",
-                         "Kevin MacLeod (ambient, game themes)",
-                         " ",
-                         _("##localization##"),
-                         " ",
-                         "Alexander Klimenko, Manuel Alvarez, Artem Tolmachev, Peter Willington, Leszek Bochenek",
-                         "Michele Ribechini",
-                         " ",
-                         _("##thanks_to##"),
-                         " ",
-                         "vk.com/caesaria-game, dimitrius (caesar-iii.ru), aneurysm (4pda.ru)",
-                         "Aleksandr Egorov, Juan Font Alonso, Mephistopheles",
-                         "ed19837, vladimir.rurukin, Safronov Alexey, Alexander Skidanov",
-                         "Kostyantyn Moroz, Andrew, Nikita Gradovich, bogdhnu",
-                         "deniskravtsov, Vhall, Dmitry Vorobiev, yevg.mord",
-                         "mmagir,Yury Vidineev, Pavel Aleynikov, brickbtv",
-                         "dovg1, Konstantin Kitmanov, Serge Savostin, Memfis",
-                         "MennyCalavera, Anastasia Smolskaya, niosus, SkidanovAlex",
-                         "Zatolokinandrey, yuri_abzyanov, dmitrii.dukhonchenko, twilight.temple",
-                         "holubmarek,butjer1010, Agmenor Ultime, m0nochr0mex, Alexeyco",
-                         "rad.n,j simek.cz, saintech, phdarcy, Casey Knauss, meikit2000",
-                         "victor sosa, ImperatorPrime, nickers, veprbl, ramMASTER",
-                         "tracertong, pufik6666, rovanion",
-                         "" };
-
+  StringArray strs;
+#define _X(a) strs << a;
+#include "core/credits.in"
+#undef _X
+ 
   Size size = ui().vsize();
   Fade& frame = ui().add<Fade>( 0xA0 );
   WidgetClose::insertTo( &frame, KEY_RBUTTON );
@@ -460,7 +413,7 @@ void Lobby::Impl::showMainMenu()
 
   ADD_MENU_BUTTON( "##mainmenu_quit##",           Impl::quitGame )
 
-  if( !wasChangesShow && KILLSWITCH(showLastChanges) )
+  if( !internal::wasChangesShow && KILLSWITCH(showLastChanges) )
     showChanges();
 }
 
@@ -468,7 +421,7 @@ void Lobby::Impl::showAdvancedMaterials()
 {
   menu->clear();
 
-  vfs::Directory dir( std::string( ":/dlc" ) );
+  vfs::Directory dir( ":/dlc" );
   if( !dir.exist() )
   {
     auto infoDialog = dialog::Information( menu->ui(), _("##no_dlc_found_title##"), _("##no_dlc_found_text##"));
@@ -592,7 +545,7 @@ void Lobby::initialize()
 
   _d->ui().clear();
 
-  _d->menu = &_d->ui().add<gui::StartMenu>();
+  _d->menu = &_d->ui().add<gui::Lobby>();
 
   Size scrSize = _d->ui().vsize();
   auto& btnHomePage = _d->ui().add<TexturedButton>( Point( scrSize.width() - 128, scrSize.height() - 100 ), Size( 128 ), -1,

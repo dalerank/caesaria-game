@@ -400,6 +400,19 @@ vfs::Path Settings::rpath( const std::string& option )
   return __concatPath( wd, option );
 }
 
+int Settings::findLastChanges()
+{
+  vfs::Directory changesFolder( std::string(":/changes") );
+  vfs::Entries::Items entries = changesFolder.entries().items();
+  int maxFoundChanges = 0;
+  for ( const auto& item : entries)
+  {
+    VariantMap vm = config::load(item.name);
+    maxFoundChanges = math::max(maxFoundChanges, vm.get("revision", 0).toInt() );
+  }
+  return maxFoundChanges;
+}
+
 void Settings::load()
 {
   VariantMap settings = config::load( rcpath( Settings::settingsPath ) );

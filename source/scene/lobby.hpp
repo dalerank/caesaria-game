@@ -30,7 +30,7 @@ namespace scene
 {
 
 // displays the newGame/loadGame/quitGame menu
-class StartMenu : public Base
+class Lobby : public Base
 {
 public:
   typedef enum
@@ -45,8 +45,8 @@ public:
     unlknowState=0xff
   } Result;
 
-  StartMenu( Game& game, gfx::Engine& engine );
-  virtual ~StartMenu();
+  Lobby( Game& game, gfx::Engine& engine );
+  virtual ~Lobby();
 
   virtual void handleEvent( NEvent& event);
 

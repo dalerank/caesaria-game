@@ -34,13 +34,13 @@
 namespace gui
 {
 
-class StartMenu::Impl
+class Lobby::Impl
 {
 public:
   VariantMap options;
 };
 
-StartMenu::StartMenu( Widget* parent ) 
+Lobby::Lobby( Widget* parent ) 
   : Widget( parent, -1, parent->relativeRect() ), _d( new Impl )
 {
   std::string path2options;
@@ -49,14 +49,14 @@ StartMenu::StartMenu( Widget* parent )
   _d->options = config::load( path2options );
 }
 
-StartMenu::~StartMenu() {}
+Lobby::~Lobby() {}
 
-void StartMenu::draw(gfx::Engine &painter)
+void Lobby::draw(gfx::Engine &painter)
 {
   Widget::draw( painter );
 }
 
-PushButton& StartMenu::addButton( const std::string& caption, int id )
+PushButton& Lobby::addButton( const std::string& caption, int id )
 {
   Size buttonSize = _d->options.get( "buttonSize", Size( 200, 25 ) ).toSize();
   Font btnFont = Font::create( _d->options.get( "buttonFont", Variant( "FONT_2" ) ).toString() );
@@ -79,7 +79,7 @@ PushButton& StartMenu::addButton( const std::string& caption, int id )
   return newButton;
 }
 
-void StartMenu::clear()
+void Lobby::clear()
 {
   Widgets rchildren = children();
   for( auto& it : rchildren )

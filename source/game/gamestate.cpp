@@ -19,7 +19,7 @@
 #include "gamestate.hpp"
 #include "scene/briefing.hpp"
 #include "core/logger.hpp"
-#include "scene/menu.hpp"
+#include "scene/lobby.hpp"
 #include "scene/level.hpp"
 #include "gamedate.hpp"
 #include "gfx/tilemap.hpp"
@@ -97,7 +97,7 @@ InBriefing::~InBriefing()
 
 InMainMenu::InMainMenu(Game* game, gfx::Engine* engine):
   State(game),
-  startMenu(new StartMenu( *game, *engine ))
+  startMenu(new Lobby( *game, *engine ))
 {
   _initialize(startMenu, SCREEN_MENU);
 }
@@ -108,7 +108,7 @@ InMainMenu::~InMainMenu()
 
   switch( _screen->result() )
   {
-  case StartMenu::startNewGame:
+  case Lobby::startNewGame:
   {
     std::srand( DateTime::elapsedTime() );
     std::string startMission = ":/missions/tutorial.mission";
@@ -122,12 +122,12 @@ InMainMenu::~InMainMenu()
   }
   break;
 
-  case StartMenu::reloadScreen:
+  case Lobby::reloadScreen:
     _game->setNextScreen( SCREEN_MENU );
   break;
 
-  case StartMenu::loadSavedGame:
-  case StartMenu::loadMission:
+  case Lobby::loadSavedGame:
+  case Lobby::loadMission:
   {
     bool loadOk = _game->load( startMenu->mapName() );
     Logger::warning( (loadOk ? "ScreenMenu: end loading mission/sav" : "ScreenMenu: cant load file") + startMenu->mapName()  );
@@ -136,8 +136,8 @@ InMainMenu::~InMainMenu()
   }
   break;
 
-  case StartMenu::loadMap:
-  case StartMenu::loadConstructor:
+  case Lobby::loadMap:
+  case Lobby::loadConstructor:
   {
     bool loadOk = _game->load( startMenu->mapName() );
     Logger::warning( (loadOk ? "ScreenMenu: end loading map" : "ScreenMenu: cant load map") + startMenu->mapName() );
@@ -148,14 +148,14 @@ InMainMenu::~InMainMenu()
     finalizer.addEvents();
     finalizer.resetFavour();
 
-    if( _screen->result() == StartMenu::loadConstructor )
+    if( _screen->result() == Lobby::loadConstructor )
       _game->city()->setOption( PlayerCity::constructorMode, 1 );
 
     _game->setNextScreen( loadOk ? SCREEN_GAME : SCREEN_MENU );
   }
   break;
 
-  case StartMenu::closeApplication:
+  case Lobby::closeApplication:
   {
     _game->setNextScreen( SCREEN_QUIT );
   }

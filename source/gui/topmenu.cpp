@@ -29,6 +29,7 @@
 #include "environment.hpp"
 #include "widget_helper.hpp"
 #include "core/logger.hpp"
+#include "window.hpp"
 #include "texturedbutton.hpp"
 #include "game/advisor.hpp"
 #include "widgetescapecloser.hpp"
@@ -186,12 +187,7 @@ void TopMenu::Impl::initBackground( const Size& size )
 
 void TopMenu::Impl::showAboutInfo()
 {
-  Widget& window = lbDate->ui()->add<Label>( Rect( 0, 0, 500, 300 ), "", false, Label::bgWhiteFrame );
-  window.setupUI( ":/gui/about.gui" );
-  window.add<ExitButton>( Point( window.width() - 34, window.height() - 34 ) );
-
-  window.moveTo( Widget::parentCenter );
-  WidgetClose::insertTo( &window, KEY_RBUTTON );
+  lbDate->ui()->add<SimpleWindow>( Rect( 0, 0, 500, 300 ), "", ":/gui/about.gui" );
 }
 
 TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
@@ -212,14 +208,14 @@ TopMenu::TopMenu(Widget* parent, const int height , bool useIcon)
   if( _d->lbPopulation )
   {
     _d->lbPopulation->setPosition( Point( width() - populationLabelOffset, 0 ) );
-    _d->lbPopulation->setIcon( useIcon ? Picture( "population", 1 ) : Picture() );
+    _d->lbPopulation->setIcon( useIcon ? "population" : "none", 1 );
     _d->lbPopulation->addProperty( TEXT(ExtentInfo), extentinfo::population );
   }
 
   if( _d->lbFunds )
   {
     _d->lbFunds->setPosition(  Point( width() - fundLabelOffset, 0) );
-    _d->lbFunds->setIcon( useIcon ? Picture( "paneling", 332 ) : Picture() );
+    _d->lbFunds->setIcon( useIcon ? "paneling" : "", 332 );
     _d->lbFunds->addProperty( TEXT(ExtentInfo), extentinfo::economy);
   }
 

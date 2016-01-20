@@ -27,7 +27,7 @@
 #include "sound/engine.hpp"
 #include "core/variant_map.hpp"
 #include "gfx/picture_bank.hpp"
-#include "scene/menu.hpp"
+#include "scene/lobby.hpp"
 #include "scene/level.hpp"
 #include "gui/environment.hpp"
 #include "settings.hpp"

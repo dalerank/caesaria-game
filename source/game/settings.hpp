@@ -124,6 +124,8 @@ public:
   static vfs::Path rcpath( const std::string& option="" );
   static vfs::Path rpath( const std::string& option="" );
 
+  static int findLastChanges();
+
   static void load();
   static void save();
 
