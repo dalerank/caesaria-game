@@ -31,6 +31,7 @@
 #include "gui/environment.hpp"
 #include "city/victoryconditions.hpp"
 #include "world/empire.hpp"
+#include "core/common.hpp"
 #include "city/cityservice_festival.hpp"
 #include "world/romechastenerarmy.hpp"
 #include "world/barbarian.hpp"
@@ -523,7 +524,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case forest_fire:
   {
-    SmartList<Tree> forest = game->city()->overlays().select<Tree>();
+    auto forest = utils::selectByType( game->city()->overlays(), object::tree );
     forest = forest.random( 2 );
     for( auto tree : forest )
       tree->burn();
@@ -637,11 +638,15 @@ void DebugHandler::Impl::handleEvent(int event)
   case increase_sentiment: updateSentiment( +10 ); break;
   case forest_grow:
   {
-    TreeList forest = game->city()->statistic().objects.find<Tree>();
-    forest = forest.random( 10 );
+    auto ovs = utils::selectByType( game->city()->overlays(), object::tree );
+    ovs = ovs.random( 10 );
 
-    for( auto tree : forest )
-      tree->grow();
+    for( auto ov : ovs )
+		{
+		  auto tree = ov.as<Tree>();
+			if( tree.isValid() )
+				tree->grow();
+		}
   }
   break;
 
@@ -829,13 +834,13 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case add_soldiers_in_fort:
   {
-	OverlayList ovs = game->city()->overlays();
+    OverlayList ovs = game->city()->overlays();
     
     for( auto ov : ovs )
     {
-	  FortPtr fort = ov.as<Fort>();
-	  if (fort.isNull())
-		continue;
+      FortPtr fort = ov.as<Fort>();
+      if( fort.isNull() )
+        continue;
       int howMuchAdd = 16 - fort->walkers().size();
       TilesArray tiles = fort->enterArea();
       for( int i=0; i < howMuchAdd; i++ )
