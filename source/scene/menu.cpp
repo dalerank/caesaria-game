@@ -70,6 +70,7 @@ namespace scene
 class StartMenu::Impl
 {
 public:
+  static bool wasChangesShow = false;
   Picture bgPicture;
   Point bgOffset;
   gui::StartMenu* menu;         // menu to display
@@ -88,6 +89,7 @@ public:
   void showLoadMenu();
   void showNewGame();
   void showOptionsMenu();
+  void showChanges();
   void playRandomap();
   void constructorMode();
   void showMainMenu();
@@ -142,6 +144,11 @@ void StartMenu::Impl::showLogFile()
   vfs::Directory logfile = SETTINGS_STR( workDir );
   logfile = logfile/SETTINGS_STR( logfile );
   OSystem::openUrl( logfile.toString(), steamapi::ld_prefix() );
+}
+
+void StartMenu::Impl::showChanges()
+{
+
 }
 
 void StartMenu::Impl::changePlayerNameIfNeed(bool force)
@@ -449,11 +456,12 @@ void StartMenu::Impl::showMainMenu()
   ADD_MENU_BUTTON( "##mainmenu_credits##",        Impl::showCredits )
 
   if( vfs::Path( ":/dlc" ).exist() )
-  {
     ADD_MENU_BUTTON( "##mainmenu_mcmxcviii##",    Impl::showAdvancedMaterials )
-  }
 
   ADD_MENU_BUTTON( "##mainmenu_quit##",           Impl::quitGame )
+
+  if( !wasChangesShow && KILLSWITCH(showLastChanges) )
+    showChanges();
 }
 
 void StartMenu::Impl::showAdvancedMaterials()

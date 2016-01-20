@@ -49,7 +49,7 @@
       }
     }
 
-		animals :
+    animals :
     {
       size : [ 2048, 2048 ]
       margin : 1
@@ -188,29 +188,30 @@
           files : [ "europe02_*" ]
         }       
 
-				sprites :
+		sprites :
         {
           type : "atlas"
           folder : "/resources/sprites"
           files : [ "sprites_*" ]
         }     
 
-				sprites_stub :
+		sprites_stub :
         {
           type : "file"
           folder : "/resources/sprites_stub"
           files : [ "*" ]
         }   
 
-				gui_stub :
+		gui_stub :
         {
           type : "file"
           folder : "/resources/gui_stub"
           files : [ "remake_pack1.atlas"
-										"remake_pack1.png" ]
+					"remake_pack1.png"
+					"mapback_00001.png" ]
         }   
 
-				taxcolumn :
+		taxcolumn :
         {
           type : "atlas"
           folder : "/resources/sprites"

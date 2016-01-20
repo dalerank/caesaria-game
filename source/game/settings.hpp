@@ -112,6 +112,8 @@ public:
   __GS_PROPERTY(showEmpireMapTiles)
   __GS_PROPERTY(logoImageRc)
   __GS_PROPERTY(logoImageIndex)
+  __GS_PROPERTY(showLastChanges)
+  __GS_PROPERTY(lastChangesNumber)
 #undef __GS_PROPERTY
 
   static Settings& instance();

@@ -687,10 +687,11 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case kill_all_enemies:
   {
-     EnemySoldierList enemies = game->city()->statistic().walkers.find<EnemySoldier>( walker::any, TilePos::invalid() );
+    auto& walkers = game->city()->walkers();
 
-     for( auto enemy : enemies )
-       enemy->die();
+    for( auto wlk : walkers )
+	  if( is_kind_of<EnemySoldier>( wlk ) )
+		wlk->die();
   }
   break;
 
@@ -828,10 +829,13 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case add_soldiers_in_fort:
   {
-    FortList forts = game->city()->statistic().objects.find<Fort>();
-
-    for( auto fort : forts )
+	OverlayList ovs = game->city()->overlays();
+    
+    for( auto ov : ovs )
     {
+	  FortPtr fort = ov.as<Fort>();
+	  if (fort.isNull())
+		continue;
       int howMuchAdd = 16 - fort->walkers().size();
       TilesArray tiles = fort->enterArea();
       for( int i=0; i < howMuchAdd; i++ )

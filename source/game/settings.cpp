@@ -112,6 +112,8 @@ __REG_PROPERTY(rightMenu)
 __REG_PROPERTY(showEmpireMapTiles)
 __REG_PROPERTY(logoImageRc)
 __REG_PROPERTY(logoImageIndex)
+__REG_PROPERTY(showLastChanges)
+__REG_PROPERTY(lastChangesNumber)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -210,6 +212,8 @@ Settings::Settings() : _d( new Impl )
   _d->options[ logoImageIndex      ] = 1;
   _d->options[ showTabletMenu      ] = false;
   _d->options[ debugMenu           ] = false;
+  _d->options[ showLastChanges     ] = true;
+  _d->options[ lastChangesNumber   ] = 0;
 
 #ifdef DEBUG
   _d->options[ debugMenu           ] = true;
