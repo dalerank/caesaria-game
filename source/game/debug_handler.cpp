@@ -234,7 +234,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   _d->debugMenu = tmp->addSubMenu();
 
 #define ADD_DEBUG_EVENT(section, ev) { gui::ContextMenuItem* item = _d->debugMenu->addItem( #section, #ev, ev ); \
-                                       CONNECT( item, onAction(), _d.data(), Impl::handleEvent ); }
+                                       item->onAction().connect( _d.data(), &Impl::handleEvent ); }
 
   ADD_DEBUG_EVENT( enemies, add_enemy_archers )
   ADD_DEBUG_EVENT( enemies, add_enemy_soldiers )
@@ -524,8 +524,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case forest_fire:
   {
-    auto forest = utils::selectByType( game->city()->overlays(), object::tree );
-    forest = forest.random( 2 );
+    auto forest = game->city()->overlays().select<Tree>().random( 2 );
     for( auto tree : forest )
       tree->burn();
   }
@@ -638,15 +637,10 @@ void DebugHandler::Impl::handleEvent(int event)
   case increase_sentiment: updateSentiment( +10 ); break;
   case forest_grow:
   {
-    auto ovs = utils::selectByType( game->city()->overlays(), object::tree );
-    ovs = ovs.random( 10 );
+    auto ovs = game->city()->overlays().select<Tree>().random( 10 );
 
-    for( auto ov : ovs )
-		{
-		  auto tree = ov.as<Tree>();
-			if( tree.isValid() )
-				tree->grow();
-		}
+    for( auto tree : ovs )
+	tree->grow();
   }
   break;
 
@@ -692,11 +686,10 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case kill_all_enemies:
   {
-    auto& walkers = game->city()->walkers();
+    auto walkers = game->city()->walkers().select<EnemySoldier>();
 
     for( auto wlk : walkers )
-	  if( is_kind_of<EnemySoldier>( wlk ) )
-		wlk->die();
+	wlk->die();
   }
   break;
 
@@ -834,13 +827,10 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case add_soldiers_in_fort:
   {
-    OverlayList ovs = game->city()->overlays();
+    FortList ovs = game->city()->overlays().select<Fort>();
     
-    for( auto ov : ovs )
+    for( auto fort : ovs )
     {
-      FortPtr fort = ov.as<Fort>();
-      if( fort.isNull() )
-        continue;
       int howMuchAdd = 16 - fort->walkers().size();
       TilesArray tiles = fort->enterArea();
       for( int i=0; i < howMuchAdd; i++ )
