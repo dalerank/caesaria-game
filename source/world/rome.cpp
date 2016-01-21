@@ -59,6 +59,8 @@ Rome::Rome(EmpirePtr empire)
   _d->states.age = 500;
   _d->states.nation = nation::rome;
   _d->states.population = defaultPopulation;
+
+  _animation().load( "world_roma" );
 }
 
 CityPtr Rome::create(EmpirePtr empire)
