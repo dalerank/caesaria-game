@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2014 Dalerank, dalerankn8@gmail.com
-
+ 
 #include "core/utils.hpp"
 #include "core/exception.hpp"
 #include "vfs/directory.hpp"

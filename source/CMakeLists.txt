@@ -95,6 +95,10 @@ if(UNIX)
   endif()  
 endif(UNIX)
 
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set(X64_BUILD 1)
+endif()
+
 if(USE_STEAM)
   if(WIN32)
     target_link_libraries(${PROJECT_NAME} "${STEAM_API_DIR}/bin/win/steam_api.lib")
