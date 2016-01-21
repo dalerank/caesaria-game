@@ -31,10 +31,12 @@
 #include "gui/environment.hpp"
 #include "city/victoryconditions.hpp"
 #include "world/empire.hpp"
+#include "core/common.hpp"
 #include "city/cityservice_festival.hpp"
 #include "world/romechastenerarmy.hpp"
 #include "world/barbarian.hpp"
 #include "core/saveadapter.hpp"
+#include "objects/granary.hpp"
 #include "game/settings.hpp"
 #include "walker/romesoldier.hpp"
 #include "events/postpone.hpp"
@@ -140,8 +142,14 @@ enum {
   run_script,
   show_fest,
   add_favor,
+  add_wheat_to_granary,
+  add_fish_to_granary,
+  add_meat_to_granary,
+  add_fruit_to_granary,
+  add_vegetable_to_granary,
   add_wheat_to_warehouse,
   add_fish_to_warehouse,
+  add_meat_to_warehouse,
   add_olives_to_warehouse,
   add_fruit_to_warehouse,
   add_grape_to_warehouse,
@@ -210,6 +218,7 @@ public:
   void setFactoryReady(object::Type type);
   void updateSentiment( int delta );
   void addGoods2Wh( good::Product type );
+  void addGoods2Gr( good::Product type );
   void reloadConfigs();
   void runScript(std::string filename);
   void toggleBuildOptions(object::Type type);
@@ -233,7 +242,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   _d->debugMenu = tmp->addSubMenu();
 
 #define ADD_DEBUG_EVENT(section, ev) { gui::ContextMenuItem* item = _d->debugMenu->addItem( #section, #ev, ev ); \
-                                       CONNECT( item, onAction(), _d.data(), Impl::handleEvent ); }
+                                       item->onAction().connect( _d.data(), &Impl::handleEvent ); }
 
   ADD_DEBUG_EVENT( enemies, add_enemy_archers )
   ADD_DEBUG_EVENT( enemies, add_enemy_soldiers )
@@ -258,6 +267,7 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
 
   ADD_DEBUG_EVENT( goods, add_wheat_to_warehouse )
   ADD_DEBUG_EVENT( goods, add_fish_to_warehouse )
+  ADD_DEBUG_EVENT( goods, add_meat_to_warehouse )
   ADD_DEBUG_EVENT( goods, add_olives_to_warehouse )
   ADD_DEBUG_EVENT( goods, add_fruit_to_warehouse )
   ADD_DEBUG_EVENT( goods, add_grape_to_warehouse )
@@ -271,6 +281,12 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( goods, add_weapons_to_warehouse )
   ADD_DEBUG_EVENT( goods, add_wine_to_warehouse )
   ADD_DEBUG_EVENT( goods, add_oil_to_warehouse )
+
+  ADD_DEBUG_EVENT( goods, add_wheat_to_granary )
+  ADD_DEBUG_EVENT( goods, add_fish_to_granary )
+  ADD_DEBUG_EVENT( goods, add_meat_to_granary )
+  ADD_DEBUG_EVENT( goods, add_fruit_to_granary )
+  ADD_DEBUG_EVENT( goods, add_vegetable_to_granary )
 
   ADD_DEBUG_EVENT( factories, all_wheatfarms_ready )
   ADD_DEBUG_EVENT( factories, all_wahrf_ready )
@@ -398,6 +414,17 @@ void DebugHandler::Impl::addGoods2Wh(good::Product type)
   }
 }
 
+void DebugHandler::Impl::addGoods2Gr(good::Product type)
+{
+  auto grList = game->city()->statistic().objects.find<Granary>();
+  for( auto granary : grList)
+  {
+    good::Stock stock(type, 400, 400 );
+    granary->store().store( stock, 400 );
+  }
+}
+
+
 void DebugHandler::Impl::reloadConfigs()
 {
   auto overlays = game->city()->overlays();
@@ -523,8 +550,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case forest_fire:
   {
-    SmartList<Tree> forest = game->city()->overlays().select<Tree>();
-    forest = forest.random( 2 );
+    auto forest = game->city()->overlays().select<Tree>().random( 2 );
     for( auto tree : forest )
       tree->burn();
   }
@@ -603,6 +629,7 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case add_wheat_to_warehouse: addGoods2Wh( good::wheat ); break;
   case add_fish_to_warehouse:  addGoods2Wh( good::fish  ); break;
+  case add_meat_to_warehouse:  addGoods2Wh( good::meat  ); break;
   case add_olives_to_warehouse: addGoods2Wh( good::olive); break;
   case add_fruit_to_warehouse: addGoods2Wh( good::fruit ); break;
   case add_grape_to_warehouse: addGoods2Wh( good::grape ); break;
@@ -616,6 +643,12 @@ void DebugHandler::Impl::handleEvent(int event)
   case add_weapons_to_warehouse:addGoods2Wh( good::weapon ); break;
   case add_wine_to_warehouse: addGoods2Wh( good::wine ); break;
   case add_oil_to_warehouse: addGoods2Wh( good::oil ); break;
+
+  case add_wheat_to_granary: addGoods2Gr( good::wheat ); break;
+  case add_fish_to_granary: addGoods2Gr( good::fish ); break;
+  case add_meat_to_granary: addGoods2Gr( good::meat ); break;
+  case add_fruit_to_granary: addGoods2Gr( good::fruit ); break;
+  case add_vegetable_to_granary: addGoods2Gr( good::vegetable ); break;
 
   case all_wheatfarms_ready: setFactoryReady( object::wheat_farm ); break;
   case all_wahrf_ready: setFactoryReady( object::wharf ); break;
@@ -637,11 +670,10 @@ void DebugHandler::Impl::handleEvent(int event)
   case increase_sentiment: updateSentiment( +10 ); break;
   case forest_grow:
   {
-    TreeList forest = game->city()->statistic().objects.find<Tree>();
-    forest = forest.random( 10 );
+    auto ovs = game->city()->overlays().select<Tree>().random( 10 );
 
-    for( auto tree : forest )
-      tree->grow();
+    for( auto tree : ovs )
+	tree->grow();
   }
   break;
 
@@ -687,11 +719,10 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case kill_all_enemies:
   {
-    auto& walkers = game->city()->walkers();
+    auto walkers = game->city()->walkers().select<EnemySoldier>();
 
     for( auto wlk : walkers )
-	  if( is_kind_of<EnemySoldier>( wlk ) )
-		wlk->die();
+	wlk->die();
   }
   break;
 
@@ -829,13 +860,10 @@ void DebugHandler::Impl::handleEvent(int event)
 
   case add_soldiers_in_fort:
   {
-	OverlayList ovs = game->city()->overlays();
+    FortList ovs = game->city()->overlays().select<Fort>();
     
-    for( auto ov : ovs )
+    for( auto fort : ovs )
     {
-	  FortPtr fort = ov.as<Fort>();
-	  if (fort.isNull())
-		continue;
       int howMuchAdd = 16 - fort->walkers().size();
       TilesArray tiles = fort->enterArea();
       for( int i=0; i < howMuchAdd; i++ )
