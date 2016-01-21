@@ -410,7 +410,7 @@ void Window::setTextAlignment( Alignment horizontal, Alignment vertical )
     _d->title->setTextAlignment( horizontal, vertical );
 }
 
-inline SimpleWindow::SimpleWindow(Widget * parent, const Rect & rect, const std::string & title, const std::string & ui)
+SimpleWindow::SimpleWindow(Widget * parent, const Rect & rect, const std::string & title, const std::string & ui)
   : Window( parent, rect, title, -1 )
 {
   if( !ui.empty() )

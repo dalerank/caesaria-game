@@ -530,11 +530,11 @@ bool Widget::next( int startOrder, bool reverse, bool group, Widget*& first, Wid
 
 void Widget::setParent(Widget* p) {  _dfunc()->parent = p; }
 
-static int __convStr2RelPos( Widget* w, const VariantMap& vars, std::string s )
+static int __convStr2RelPos( Widget* w, const VariantMap& vars, std::string s, int rwidth )
 {
   s = utils::replace( s, " ", "" );
 
-  WidgetCalc wcalc( *w, vars );
+  WidgetCalc wcalc( *w, vars, rwidth );
   return wcalc.eval( s );
 }
 
@@ -573,10 +573,10 @@ void Widget::setupUI( const VariantMap& options )
   if( !aRectList.empty() )
   {
     Rect cRect(
-       __convStr2RelPos( this, vars, aRectList.get( 0 ).toString() ),
-       __convStr2RelPos( this, vars, aRectList.get( 1 ).toString() ),
-       __convStr2RelPos( this, vars, aRectList.get( 2 ).toString() ),
-       __convStr2RelPos( this, vars, aRectList.get( 3 ).toString() ) );
+       __convStr2RelPos( this, vars, aRectList.get( 0 ).toString(), parent()->width() ),
+       __convStr2RelPos( this, vars, aRectList.get( 1 ).toString(), parent()->height() ),
+       __convStr2RelPos( this, vars, aRectList.get( 2 ).toString(), parent()->width() ),
+       __convStr2RelPos( this, vars, aRectList.get( 3 ).toString(), parent()->height() ) );
 
     setGeometry( cRect );
   }
@@ -588,7 +588,7 @@ void Widget::setupUI( const VariantMap& options )
     if( r.width() > 1 && r.height() > 1)
     {
       r = RectF( 0, 0, 1, 1 );
-      Logger::warning( "Incorrect geometryf values [{0}, {1}, {2}, {3}]",
+      Logger::warning( "Incorrect geometryf values [{}, {}, {}, {}]",
                        r.left(), r.top(), r.right(), r.bottom() );
     }
 
