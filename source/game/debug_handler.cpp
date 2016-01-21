@@ -14,7 +14,7 @@
 // along with CaesarIA.  If not, see <http://www.gnu.org/licenses/>.
 //
 // Copyright 2012-2015 Dalerank, dalerankn8@gmail.com
-
+ 
 #include "debug_handler.hpp"
 #include "gui/contextmenuitem.hpp"
 #include "core/logger.hpp"
