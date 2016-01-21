@@ -204,7 +204,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
   
   f.read( (char*)&tmp, 4); // read dummy
 
-  std::string cityName = LoaderHelper::getDefaultCityName( tmp );
+  std::string cityName = LoaderHelper::getDefaultCityNameSav( tmp );
   game.city()->setName( cityName );
   
   f.read((char*)&tmp, 4); // read scenario flag
