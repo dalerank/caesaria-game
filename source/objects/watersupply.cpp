@@ -185,6 +185,13 @@ TilesArray Reservoir::aquifer() const
   return TilesArea( _map(), pos() - TilePos( 10, 10 ), Size( 10 + 10 ) + size() );
 }
 
+bool Reservoir::getMinimapColor(int& color1, int& color2) const
+{
+  color1 = 0x39497B;
+  color2 = 0x313873;
+  return true;
+}
+
 bool Reservoir::canBuild( const city::AreaInfo& areaInfo ) const
 {
   bool ret = Construction::canBuild( areaInfo );
@@ -194,7 +201,7 @@ bool Reservoir::canBuild( const city::AreaInfo& areaInfo ) const
   thisp->_fgPictures().clear();
   if( nearWater )
   {
-    thisp->_fgPictures().push_back( Picture( ResourceGroup::utilitya, 35 )  );
+    thisp->_fgPictures().append( ResourceGroup::utilitya, 35 );
     thisp->_fgPictures().back().setOffset( _d->fullOffset + Point( 0, picture().offset().y() ) );
   }
   return ret;
@@ -293,15 +300,15 @@ void WaterSource::broke()
 void WaterSource::save(VariantMap &stream) const
 {
   Construction::save( stream );
-  stream[ "water" ] = _d->water;
-  stream[ "isRoad" ] = _d->isRoad;
+  VARIANT_SAVE_ANY_D( stream, _d, water )
+  VARIANT_SAVE_ANY_D( stream, _d, isRoad )
 }
 
 void WaterSource::load(const VariantMap &stream)
 {
   Construction::load( stream );
-  _d->water = stream.get( "water" );
-  _d->isRoad = stream.get( "isRoad" );
+  VARIANT_LOAD_ANY_D( _d, water, water )
+  VARIANT_LOAD_ANY_D( _d, isRoad, isRoad )
   _d->daysWithoutWater = 0;
 }
 

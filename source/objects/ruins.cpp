@@ -159,6 +159,13 @@ bool BurningRuins::isWalkable() const{  return (state( pr::fire ) == 0);}
 bool BurningRuins::isDestructible() const{  return isWalkable();}
 bool BurningRuins::canDestroy() const { return (state( pr::fire ) == 0); }
 
+bool BurningRuins::getMinimapColor(int& color1, int& color2) const
+{
+  color1 = ColorList::red.color;
+  color2 = ColorList::red.color;
+  return true;
+}
+
 float BurningRuins::evaluateService( ServiceWalkerPtr walker )
 {
   if ( Service::prefect == walker->serviceType() )
@@ -339,4 +346,11 @@ bool Ruins::build(const city::AreaInfo& info)
   }
 
   return Building::build( info );
+}
+
+bool Ruins::getMinimapColor(int& color1, int color2) const
+{
+  color1 = ColorList::darkSlateGray.color;
+  color2 = ColorList::grey.color;
+  return true;
 }

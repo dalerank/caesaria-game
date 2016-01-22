@@ -32,6 +32,7 @@ public:
   virtual void save(VariantMap& stream) const;
   virtual bool canDestroy() const;
   virtual void load(const VariantMap& stream);
+  virtual void getMinimapColor(int &color1, int &color2) const;
   virtual void destroy();
   virtual void burn();
   virtual void grow();
