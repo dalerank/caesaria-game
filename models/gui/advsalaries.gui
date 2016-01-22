@@ -3,14 +3,14 @@
   bgtype : "whiteFrame"
 
   lbTitle#Label : {
-    geometry : [ 10, 10, "pw-10", 40 ]
+    geometry : [ 10, 10, "100%-10", 40 ]
     text : "##adv_salaries_title##"
     text.align : [ "center", "center" ]
     font : "FONT_5"
   }
 
   grayArea#Label : {
-    geometry : [ 15, 40, "pw-15", "ph-15" ]
+    geometry : [ 15, 40, "100%-15", "100%-15" ]
     bgtype : "blackFrame"
   }
 }

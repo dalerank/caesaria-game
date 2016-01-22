@@ -114,6 +114,7 @@ __REG_PROPERTY(logoImageRc)
 __REG_PROPERTY(logoImageIndex)
 __REG_PROPERTY(showLastChanges)
 __REG_PROPERTY(lastChangesNumber)
+__REG_PROPERTY(citiesIdModel)
 #undef __REG_PROPERTY
 
 const vfs::Path defaultSaveDir = "saves";
@@ -204,6 +205,7 @@ Settings::Settings() : _d( new Impl )
   _d->options[ resolution          ] = Size( 1024, 768 );
   _d->options[ fullscreen          ] = false;
   _d->options[ worldModel          ] = std::string( "/worldmap.model" );
+  _d->options[ citiesIdModel       ] = std::string( "/cities_id.model" );
   _d->options[ minMonthWithFood    ] = 3;
   _d->options[ worklessCitizenAway ] = 30;
   _d->options[ emigrantSalaryKoeff ] = 5.f;

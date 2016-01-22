@@ -12,6 +12,10 @@ public:
   //
   ChangesWindow( Widget *parent, const Rect& rect, const std::string& title, int number);
 
+  void update();
+
+  void hideAlways();
+
   virtual ~ChangesWindow();
 
   virtual bool onEvent(const NEvent& e);
