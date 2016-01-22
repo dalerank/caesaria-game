@@ -22,7 +22,7 @@ namespace gfx
 {
 
 MaskState::MaskState(Engine& painter, NColor color)
-  : _painter( painter ), _color( color )
+  : _color( color ), _painter( painter )
 {
   if( _color.color != 0 )
     _painter.setColorMask( _color.red() << 16, _color.green() << 8,

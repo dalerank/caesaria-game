@@ -48,7 +48,7 @@ public:
     for( auto& it : *this )
     {
       VariantList tmp( it.second.buy, it.second.sell );
-      ret[ good::Helper::getTypeName( it.first ) ] = tmp;
+      ret[ good::Helper::name( it.first ) ] = tmp;
     }
 
     return ret;
@@ -58,7 +58,7 @@ public:
   {
     for( auto& it : stream )
     {
-      good::Product gtype = good::Helper::getType( it.first );
+      good::Product gtype = good::Helper::type( it.first );
       if( gtype != good::none )
       {
         VariantList vl = it.second.toList();

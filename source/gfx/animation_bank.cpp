@@ -131,7 +131,7 @@ void AnimationBank::Impl::loadCarts(vfs::Path model)
   VariantMap config = config::load( model );
   for( const auto& it : config )
   {
-    good::Product gtype = good::Helper::getType( it.first );
+    good::Product gtype = good::Helper::type( it.first );
 
     if( gtype != good::none )
     {

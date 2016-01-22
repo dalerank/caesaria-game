@@ -307,8 +307,8 @@ void WaterSource::save(VariantMap &stream) const
 void WaterSource::load(const VariantMap &stream)
 {
   Construction::load( stream );
-  VARIANT_LOAD_ANY_D( _d, water, water )
-  VARIANT_LOAD_ANY_D( _d, isRoad, isRoad )
+  VARIANT_LOAD_ANY_D( _d, water, stream )
+  VARIANT_LOAD_ANY_D( _d, isRoad, stream )
   _d->daysWithoutWater = 0;
 }
 

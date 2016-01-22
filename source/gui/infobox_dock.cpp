@@ -79,12 +79,11 @@ void AboutDock::drawGood( DockPtr dock, const good::Product &goodType, int index
   std::string outText = utils::i2str( metric::Measure::convQty( qty ) );
 
   // pictures of goods
-  Picture pic = good::Helper::picture( goodType );
   Point pos( index * offset + startOffset, paintY );
 
   Label& lb = add<Label>( Rect( pos, pos + Point( 100, 24 )) );
   lb.setFont( FONT_2 );
-  lb.setIcon( pic );
+  lb.setIcon( good::Info( goodType ).picture() );
   lb.setText( outText );
   lb.setTextOffset( Point( 30, 0 ) );
 }

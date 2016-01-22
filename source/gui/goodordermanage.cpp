@@ -141,7 +141,7 @@ GoodOrderManageWindow::GoodOrderManageWindow(Widget *parent, const Rect &rectang
   setupUI( ":/gui/goodorder.gui" );
   WidgetClose::insertTo( this, KEY_RBUTTON );
 
-  _d->icon = good::Helper::picture( type );
+  _d->icon = good::Info( type ).picture();
 
   INIT_WIDGET_FROM_UI( Label*, lbTitle )
   INIT_WIDGET_FROM_UI( Label*, lbStackedQty )

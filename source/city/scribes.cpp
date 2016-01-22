@@ -125,7 +125,7 @@ VariantMap Scribes::Message::save() const
   VariantMap ret;
   VARIANT_SAVE_ANY( ret, text )
   VARIANT_SAVE_ANY( ret, title )
-  ret[ literals::gtype ] = good::Helper::getTypeName( gtype );
+  ret[ literals::gtype ] = good::Helper::name( gtype );
   VARIANT_SAVE_ANY( ret, position )
   VARIANT_SAVE_ANY( ret, type )
   VARIANT_SAVE_ANY( ret, date )
@@ -139,7 +139,7 @@ void Scribes::Message::load(const VariantMap& stream)
 {
   VARIANT_LOAD_STR( text, stream )
   VARIANT_LOAD_STR( title, stream )
-  gtype = good::Helper::getType( stream.get( literals::gtype ).toString() );
+  gtype = good::Helper::type( stream.get( literals::gtype ).toString() );
   VARIANT_LOAD_ANY( position, stream )
   VARIANT_LOAD_ANY( type, stream )
   VARIANT_LOAD_TIME( date, stream )

@@ -20,6 +20,7 @@
 
 #include "label.hpp"
 #include "good/store.hpp"
+#include "good/helper.hpp"
 
 namespace gui
 {
@@ -41,7 +42,8 @@ protected:
   virtual void _updateTexture( gfx::Engine& painter );
 
 private:
-  good::Product _type;
+  good::Info _info;
+  gfx::Picture _goodIcon;
   good::Store& _storage;
   PushButton* _btnChangeRule;
   VolumeButton* _btnVolume;
