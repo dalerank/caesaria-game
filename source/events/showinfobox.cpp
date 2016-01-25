@@ -92,7 +92,7 @@ void ShowInfobox::load(const VariantMap& stream)
   VARIANT_LOAD_ANY_D( _d, hidden, stream )
   VARIANT_LOAD_STR_D( _d, tip, stream )
 
-  _d->gtype = good::Helper::getType( stream.get( "good" ).toString() );
+  _d->gtype = good::Helper::type( stream.get( "good" ).toString() );
 }
 
 VariantMap ShowInfobox::save() const

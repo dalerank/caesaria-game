@@ -21,7 +21,7 @@
 #include "core/time.hpp"
 #include "predefinitions.hpp"
 #include "core/variant.hpp"
-#include "good/good.hpp"
+#include "good/helper.hpp"
 
 namespace city
 {
@@ -78,7 +78,7 @@ public:
   virtual void update();
 
   int qty() const;
-  good::Product goodType() const;
+  good::Info info() const;
   virtual std::string description() const;
 
   static std::string typeName();

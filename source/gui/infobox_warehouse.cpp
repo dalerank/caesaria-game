@@ -114,12 +114,11 @@ void AboutWarehouse::drawGood(const good::Product& goodType, int col, int paintY
   int qty = _warehouse->store().qty(goodType);
 
   // pictures of goods
-  const Picture& pic = good::Helper::picture( goodType );
   std::string outText = fmt::format( "{} {}", qty / 100, _(goodName) );
 
   Label& lb = add<Label>( Rect( Point( col * 150 + 15, paintY), Size( 150, 24 ) ) );
   lb.setFont( FONT_2 );
-  lb.setIcon( pic, Point( 0, 4 ) );
+  lb.setIcon( good::Info( goodType ).picture(), Point( 0, 4 ) );
   lb.setText( outText );
   lb.setTextOffset( Point( 24, 0 ) );
 }

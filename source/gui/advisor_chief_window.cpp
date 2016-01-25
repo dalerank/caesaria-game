@@ -107,7 +107,7 @@ public:
     setIcon( gui::rc.panel, gui::id.chiefIcon );
     setIconOffset( { 6, 8 } );
     setFont( FONT_2 );
-	setTextAlignment(align::upperLeft, align::center);
+    setTextAlignment(align::upperLeft, align::center);
 
     setTextOffset( Point( 255, 0) );
     Decorator::draw( _border, Rect( 0, 0, width(), height() ), Decorator::brownBorder );

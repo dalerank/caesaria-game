@@ -116,7 +116,7 @@ public:
     : PushButton( parent, rect, "", -1, false, PushButton::noBackground )
   {
     setText( utils::i2str( metric::Measure::convQty( qty ) ) );
-    setIcon( good::Helper::picture( goodType ) );
+    setIcon( good::Info( goodType ).picture() );
     setFont( FONT_2 );
     setTextAlignment( align::upperLeft, align::center );
     setTextOffset( { 30, 0 } );

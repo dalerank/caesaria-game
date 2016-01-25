@@ -93,7 +93,8 @@ OrderGoodWidget::OrderGoodWidget(Widget* parent, int index, good::Product good, 
   : Label( parent, Rect( Point( 0, 25 ) * index, Size( parent->width(), 25 ) ), "" ),
     _storage( storage )
 {
-  _type = good;
+  _info = good::Info( good );
+  _goodIcon = _info.picture();
   setFont( FONT_1_WHITE );
 
   _btnChangeRule = &add<PushButton>( Rect( 140, 0, 140 + 240, height() ), "", -1, false, PushButton::blackBorderUp );
@@ -111,7 +112,7 @@ void OrderGoodWidget::_updateTexture(Engine& painter)
 {
   Label::_updateTexture( painter );
 
-  std::string goodName = _( "##" + good::Helper::getTypeName( _type ) + "##" );
+  std::string goodName = _( "##" + _info.name() + "##" );
 
   canvasDraw( goodName, Point( 55, 0 ) );
 }
@@ -120,20 +121,19 @@ void OrderGoodWidget::draw(Engine& painter)
 {
   Label::draw( painter );
 
-  Picture goodIcon = good::Helper::picture( _type );
-  painter.draw( goodIcon, absoluteRect().lefttop() + Point( 15, 0 ), &absoluteClippingRectRef() );
-  painter.draw( goodIcon, absoluteRect().righttop() - Point( 35, 0 ), &absoluteClippingRectRef() );
+  painter.draw( _goodIcon, absoluteRect().lefttop() + Point( 15, 0 ), &absoluteClippingRectRef() );
+  painter.draw( _goodIcon, absoluteRect().righttop() - Point( 35, 0 ), &absoluteClippingRectRef() );
 }
 
 void OrderGoodWidget::changeCapacity(float fillingPercentage)
 {
   int storeCap = _storage.capacity();
-  _storage.setCapacity( _type, storeCap * fillingPercentage );
+  _storage.setCapacity( _info.type(), storeCap * fillingPercentage );
 }
 
 void OrderGoodWidget::updateBtnText()
 {
-  good::Orders::Order rule = _storage.getOrder( _type );
+  good::Orders::Order rule = _storage.getOrder( _info.type() );
   if( rule > good::Orders::none )
   {
     Logger::warning( "OrderGoodWidget: unknown rule {0}", (int)rule );
@@ -147,8 +147,8 @@ void OrderGoodWidget::updateBtnText()
 
 void OrderGoodWidget::changeRule()
 {
-  good::Orders::Order rule = _storage.getOrder( _type );
-  _storage.setOrder( _type, good::Orders::Order( (rule+1) % (good::Orders::none)) );
+  good::Orders::Order rule = _storage.getOrder( _info.type() );
+  _storage.setOrder( _info.type(), good::Orders::Order( (rule+1) % (good::Orders::none)) );
   updateBtnText();
 }
 

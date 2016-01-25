@@ -268,6 +268,8 @@ TilesArray Overlay::area() const
   return _map().area( pos(), size() );
 }
 
+bool Overlay::getMinimapColor(int& color1, int& color2) const { return false; }
+
 Overlay::~Overlay()
 {
 #ifdef DEBUG
@@ -292,3 +294,4 @@ void OverlayDebugQueue::print()
   }
 }
 #endif
+

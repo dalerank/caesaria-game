@@ -195,7 +195,7 @@ void RqGood::load(const VariantMap& stream)
     VariantMap vm_good = vm_goodt.toMap();
     if( !vm_good.empty() )
     {
-      _d->stock.setType( good::Helper::getType( vm_good.begin()->first ) );
+      _d->stock.setType( good::Helper::type( vm_good.begin()->first ) );
       _d->stock.setCapacity( vm_good.begin()->second.toInt() );
     }
   }
@@ -258,7 +258,7 @@ void RqGood::update()
 
 std::string RqGood::description() const {  return _d->description; }
 int RqGood::qty() const { return _d->stock.capacity(); }
-good::Product RqGood::goodType() const { return _d->stock.type(); }
+good::Info RqGood::info() const { return good::Info( _d->stock.type() ); }
 
 RqGood::RqGood() : RqBase( DateTime() ), _d( new Impl )
 {

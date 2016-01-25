@@ -272,13 +272,13 @@ std::string Factory::troubleDesc() const
 
   if( !isActive() )
   {
-    std::string goodname = good::Helper::getTypeName( consumeGoodType() );
+    std::string goodname = good::Helper::name( consumeGoodType() );
     ret = fmt::format( "##trade_advisor_blocked_{}_production##", goodname );
   }
 
   if( ret.empty() && !haveMaterial() && consumeGoodType() != good::none )
   {
-    std::string goodname = good::Helper::getTypeName( consumeGoodType() );
+    std::string goodname = good::Helper::name( consumeGoodType() );
     ret = fmt::format( "##trouble_need_{}##", goodname );
   }
 
@@ -346,7 +346,7 @@ void Factory::initialize(const object::Info& mdata)
   Variant outputProduct = mdata.getOption( "output" );
   if( outputProduct.isValid() )
   {
-    good::Product pr = good::Helper::getType( outputProduct.toString() );
+    good::Product pr = good::Helper::type( outputProduct.toString() );
     if( pr != good::none )
       _d->goods.out = pr;
     }

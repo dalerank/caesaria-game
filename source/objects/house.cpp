@@ -1119,6 +1119,13 @@ bool House::build( const city::AreaInfo& info )
   return ret;
 }
 
+bool House::getMinimapColor(int& color1, int& color2) const
+{
+  if( size().width() == 1 ) { color1 = 0xFFA273; color2 = 0xEF824A; }
+  else { color1 = 0xFFB28C; color2 = 0xD65110; }
+  return true;
+}
+
 const Pictures& House::pictures(Renderer::Pass pass) const
 {
   switch( pass )

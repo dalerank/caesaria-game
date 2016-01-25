@@ -18,6 +18,7 @@
 
 #include "good.hpp"
 #include "core/priorities.hpp"
+#include "helper.hpp"
 
 namespace good
 {
@@ -28,6 +29,7 @@ struct Stage
   Products materials;
   Products all;
   Products merchandise;
+  Products tradable;
   Product any;
 
   Stage()
@@ -43,6 +45,11 @@ struct Stage
     foods << wheat << fish << meat << fruit << vegetable;
     materials << olive << grape << timber << clay << iron << marble;
     merchandise << wine << furniture << pottery << weapon << marble << prettyWine;
+
+    tradable = all;
+    tradable.exclude( fish )
+            .exclude( denaries );
+
     any = Product( all.size() );
   }
 };
@@ -53,6 +60,7 @@ const Product& any() { return stage.any; }
 const Products& all() { return stage.all; }
 const Products& materials() { return stage.materials; }
 const Products& foods() { return stage.foods; }
+const Products& tradable() { return stage.tradable; }
 
 Product getMaterial(const Product &pr)
 {
@@ -95,12 +103,19 @@ Products&Products::exclude(const Product& type)
   return *this;
 }
 
-Products&Products::exclude(const Products& types)
+Products& Products::exclude(const Products& types)
 {
   for( auto& goodType : types )
     erase( goodType );
 
   return *this;
 }
+
+Product toType(const std::string& typeName)
+{
+  return Helper::type( typeName );
+}
+
+
 
 }

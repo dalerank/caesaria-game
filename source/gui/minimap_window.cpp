@@ -191,68 +191,7 @@ void Minimap::Impl::getObjectColours(const Tile& tile, int &c1, int &c2)
     return;
 
   object::Type type = overlay->type();  
-
-  bool colorFound = false;
-  switch(type)
-  {
-  case object::house:
-  {
-    switch (overlay->size().width())
-    {
-      case 1:
-      {
-        c1 = colors->colour(minimap::Colors::MAP_HOUSE, 0);
-        c2 = colors->colour(minimap::Colors::MAP_HOUSE, 1);
-      }
-      break;
-
-      default:
-      {
-        c1 = colors->colour(minimap::Colors::MAP_HOUSE, 2);
-        c2 = colors->colour(minimap::Colors::MAP_HOUSE, 0);
-      }
-      break;
-    }
-    colorFound = true;
-  }
-  break;
-
-  case object::burning_ruins:
-  {
-    c1 = ColorList::red.color;
-    c2 = ColorList::red.color;
-    colorFound = true;
-  }
-  break;
-
-  case object::burned_ruins:
-  case object::collapsed_ruins:
-  {
-    c1 = ColorList::grey.color;
-    c2 = ColorList::grey.color;
-    colorFound = true;
-  }
-  break;
-
-  case object::reservoir:
-  case object::aqueduct:
-  {
-    c1 = colors->colour(minimap::Colors::MAP_AQUA, tile.imgId() & 0x3);
-    c2 = colors->colour(minimap::Colors::MAP_AQUA, tile.imgId() & 0x7);
-    colorFound = true;
-  }
-  break;
-
-  case object::tree:
-  {
-    c1 = colors->colour(minimap::Colors::MAP_TREE1, 1);
-    c2 = colors->colour(minimap::Colors::MAP_TREE2, 0);
-    colorFound = true;
-  }
-  break;
-
-  default: break;
-  }
+  bool colorFound = overlay->getMinimapColor( c1, c2 );
 
   if( !colorFound )
   {
@@ -301,11 +240,6 @@ void Minimap::Impl::getObjectColours(const Tile& tile, int &c1, int &c2)
 
       default: break;
     }
-  }
-
-  if( !colorFound )
-  {
-
   }
 
   if( !colorFound )

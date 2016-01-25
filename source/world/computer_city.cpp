@@ -84,7 +84,7 @@ public:
     VariantMap ret;
     for( auto& gtype : good::all() )
     {
-      std::string tname = good::Helper::getTypeName( gtype );
+      std::string tname = good::Helper::name( gtype );
       int ncapacity = capacity( gtype );
       if( ncapacity > 0 )
       {
@@ -108,7 +108,7 @@ public:
   {
     for( auto& item : stream )
     {
-      good::Product gtype = good::Helper::getType( item.first );
+      good::Product gtype = good::Helper::type( item.first );
       Variant value = item.second;
       switch( value.type() )
       {
@@ -339,7 +339,7 @@ void ComputerCity::Impl::placeNewBuilding(object::Type type)
 
   info.type = type;
   auto md = object::Info::find( info.type );
-  good::Product output = good::Helper::getType( md.getOption( "output" ).toString() );
+  good::Product output = good::Helper::type( md.getOption( "output" ).toString() );
   info.outgoods.setType( output );
   info.ingoods.setType( good::getMaterial( output ) );
   info.maxWorkersNumber = md.employers();
@@ -933,7 +933,7 @@ void ComputerCity::changeTradeOptions(const VariantMap& stream)
   VariantMap sells_vm = stream.get( "sells" ).toMap();
   for( auto& it : sells_vm )
   {
-    good::Product gtype = good::Helper::getType( it.first );
+    good::Product gtype = good::Helper::type( it.first );
     _d->sells.setCapacity( gtype, Unit::fromValue( it.second ).toQty() );
     _d->realSells.setCapacity( gtype, Unit::fromValue( it.second ).toQty() );
   }
@@ -941,7 +941,7 @@ void ComputerCity::changeTradeOptions(const VariantMap& stream)
   VariantMap buys_vm = stream.get( "buys" ).toMap();
   for( auto& it : buys_vm )
   {
-    good::Product gtype = good::Helper::getType( it.first );
+    good::Product gtype = good::Helper::type( it.first );
     _d->buys.setCapacity( gtype, Unit::fromValue( it.second ).toQty() );
   }
 }

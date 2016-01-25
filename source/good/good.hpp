@@ -62,8 +62,10 @@ const Products& foods();
 inline bool isFood( const Product& p ) { return foods().count( p ) > 0; }
 const Products& materials();
 const Products& all();
+const Products& tradable();
 
 Product getMaterial( const Product& pr );
+Product toType( const std::string& typeName );
 
 class Stock;
 class ProductMap;

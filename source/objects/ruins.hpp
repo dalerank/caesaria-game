@@ -33,6 +33,7 @@ public:
   virtual bool build(const city::AreaInfo &info);
   virtual void collapse() {}
   virtual void burn() {}
+  virtual bool getMinimapColor(int &color1, int color2) const;
 
   void afterBuild() { _alsoBuilt=false; }
 protected:
@@ -54,6 +55,7 @@ public:
   virtual void destroy();
   virtual bool isFlat() const { return false; }
   virtual bool canDestroy() const;
+  virtual bool getMinimapColor(int& color1, int& color2) const;
 
   virtual float evaluateService( ServiceWalkerPtr walker);
   virtual void applyService( ServiceWalkerPtr walker);

@@ -87,6 +87,7 @@ public:
   virtual Point offset(const gfx::Tile &tile, const Point& subpos ) const;
   virtual void timeStep(const unsigned long time);  // perform one simulation step
   virtual void changeDirection( gfx::Tile *masterTile, Direction direction);
+  virtual bool getMinimapColor( int& color1, int& color2 ) const;
 
   // graphic
   virtual void setPicture(gfx::Picture picture);

@@ -265,14 +265,11 @@ void AboutHouse::drawGood(HousePtr house, const good::Product& goodType, const i
   int qty = house->store().qty( goodType );
   std::string text = utils::i2str(qty);
 
-  // pictures of goods
-  const Picture& pic = good::Helper::picture( goodType );
   Label& lb = add<Label>( Rect( Point( 30 + 100 * col, startY + 2 + 30 * row), Size( 80, 50) ) );
   lb.setFont( FONT_2 );
-  lb.setIcon( pic );
+  lb.setIcon( good::Info( goodType ).picture() );
   lb.setText( text );
   lb.setTextOffset( Point( 30, 0 ));
-  //font.draw( *_d->bgPicture, text, 61 + 100 * col, startY + 30 * row, false );
 }
 
 bool AboutHouse::onEvent(const NEvent& event)
