@@ -250,7 +250,7 @@ void AboutPeople::_checkEnemy(WalkerPtr walker, bool& found)
   if( !walker.is<EnemySoldier>() )
     return;
 
-  std::string title = WalkerHelper::getNationName( walker->nation() );
+  std::string title = world::toString( walker->nation() );
   title.insert( title.size()-2, "_soldier" );
   setTitle( _(title) );
   found = true;

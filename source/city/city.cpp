@@ -188,7 +188,7 @@ PlayerCity::PlayerCity(world::EmpirePtr empire)
   setOption( housePersonalTaxes, 1 );
   setOption( ironInRocks, 1 );
 
-  _d->states.nation = world::nation::rome;
+  _setNation( world::nation::roman );
 }
 
 std::string PlayerCity::about(Object::AboutType type)

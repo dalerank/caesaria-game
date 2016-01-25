@@ -771,7 +771,6 @@ ComputerCity::ComputerCity( EmpirePtr empire, const std::string& name )
   _d->realSells.setCapacity( 99999 );
   _d->states.age = 0;
   _d->states.birth = game::Date::current();
-  _d->states.romeCity = false;
 
   _initTextures();
 }
@@ -781,7 +780,6 @@ econ::Treasury& ComputerCity::treasury() { return _d->funds; }
 bool ComputerCity::isPaysTaxes() const { return true; }
 bool ComputerCity::haveOverduePayment() const { return false; }
 City::AiMode ComputerCity::modeAI() const { return _d->modeAI; }
-bool ComputerCity::isDistantCity() const{  return _d->distantCity;}
 bool ComputerCity::isAvailable() const{  return _d->available;}
 void ComputerCity::setAvailable(bool value){  _d->available = value;}
 SmartPtr<Player> ComputerCity::mayor() const { return 0; }
@@ -820,8 +818,6 @@ void ComputerCity::save( VariantMap& options ) const
   VARIANT_SAVE_ANY_D( options, _d, states.age )
   VARIANT_SAVE_ANY_D( options, _d, available )
   VARIANT_SAVE_ANY_D( options, _d, trade.merchants_n )
-  VARIANT_SAVE_ANY_D( options, _d, distantCity )
-  VARIANT_SAVE_ANY_D( options, _d, states.romeCity )
   VARIANT_SAVE_ANY_D( options, _d, trade.delay )
   VARIANT_SAVE_ANY_D( options, _d, lasttime.attacked )
   VARIANT_SAVE_ANY_D( options, _d, states.population )
@@ -838,9 +834,7 @@ void ComputerCity::load( const VariantMap& options )
   VARIANT_LOAD_TIME_D  ( _d, trade.merchantSent,    options )
   VARIANT_LOAD_ANY_D   ( _d, available,             options )
   VARIANT_LOAD_ANY_D   ( _d, trade.merchants_n,     options )
-  VARIANT_LOAD_ANY_D   ( _d, distantCity,           options )
   VARIANT_LOAD_ANY_D   ( _d, available,             options )
-  VARIANT_LOAD_ANY_D   ( _d, states.romeCity,       options )
   VARIANT_LOAD_ANY_D   ( _d, states.age,            options )
   VARIANT_LOAD_TIME_D  ( _d, states.birth,          options )
   VARIANT_LOAD_ANY_D   ( _d, trade.delay,           options )
@@ -859,7 +853,6 @@ void ComputerCity::load( const VariantMap& options )
   VARIANT_LOAD_CLASS_D( _d, realSells, options )
   VARIANT_LOAD_CLASS_D_LIST( _d, peoples, options )
   VARIANT_LOAD_CLASS_D( _d, buildings, options )
-
 
   if( _d->realSells.empty() )
   {
@@ -1023,7 +1016,7 @@ int ComputerCity::strength() const { return _d->strength; }
 void ComputerCity::_initTextures()
 {
   int index = config::id.empire.otherCity;
-  std::map<int,std::string> config = { {config::id.empire.otherCity, "world_othercity" },
+  std::map<int,std::string> rconfig = { {config::id.empire.otherCity, "world_othercity" },
                                        {config::id.empire.distantCity, "world_distantcity" },
                                        {config::id.empire.romeCity, "wolrd_romecity"} };
 
@@ -1031,7 +1024,7 @@ void ComputerCity::_initTextures()
   else if( _d->states.romeCity ) { index = config::id.empire.romeCity; }
 
   setPicture( Picture( ResourceGroup::empirebits, index ) );
-  _animation().load( config[ index ] );
+  _animation().load( rconfig[ index ] );
 }
 
 void ComputerCity::_resetGoodState(good::Product pr)

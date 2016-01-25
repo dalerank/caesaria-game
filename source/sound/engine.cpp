@@ -230,7 +230,7 @@ void Engine::init()
 void Engine::exit()
 {
   _d->running = false;
-  _d->thread->join();
+  //_d->thread->join();
   Mix_CloseAudio();
 }
 

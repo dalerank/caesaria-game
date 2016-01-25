@@ -38,24 +38,12 @@ public:
   }
 };
 
-class NationEnums : public EnumsHelper<world::Nation>
-{
-public:
-  NationEnums() : EnumsHelper<world::Nation>( world::nation::unknown )
-  {
-
-  }
-};
-
 class WalkerHelper::Impl
 {
 public:    
   typedef std::map< world::Nation, std::string > PrettyNations;
 
   WalkersDB infodb;
-
-  NationEnums hnation;
-  PrettyNations nationnames;
 
   VariantMap options;
 
@@ -64,37 +52,9 @@ public:
     infodb.append( type, name  );
   }
 
-  void appendNation( world::Nation nation, const std::string& name )
-  {
-    hnation.append( nation, name );
-    nationnames[ nation ] = "##wn_" + name + "##";
-  }
-
   Impl()
   {
-#define __REG_WNATION(a) appendNation( world::nation::a, TEXT(a));
-    __REG_WNATION( unknown )
-    __REG_WNATION( rome )
-    __REG_WNATION( etruscan )
-    __REG_WNATION( barbarian )
-    __REG_WNATION( numidian )
-    __REG_WNATION( pict )
-    __REG_WNATION( samnite )
-    __REG_WNATION( selecid )
-    __REG_WNATION( carthaginian )
-    __REG_WNATION( celt )
-    __REG_WNATION( eygptian )
-    __REG_WNATION( goth )
-    __REG_WNATION( graeci )
-    __REG_WNATION( judaean )
-    __REG_WNATION( native )
-    __REG_WNATION( visigoth )
-    __REG_WNATION( gaul )
-    __REG_WNATION( iberian )
-    __REG_WNATION( helveti )
-#undef __REG_WNATION
-
-      appendType( walker::all,        "unknown" );
+    appendType( walker::all,        "unknown" );
 
 #define __REG_WTYPE(a) appendType( walker::a, TEXT(a));
     __REG_WTYPE( unknown    )
@@ -226,25 +186,6 @@ walker::Type WalkerHelper::getType(const std::string& name)
   }
 
   return typeIt->second;
-}
-
-
-std::string WalkerHelper::getNationName(world::Nation type)
-{
-  Impl::PrettyNations::iterator it = instance()._d->nationnames.find( type );
-  return it != instance()._d->nationnames.end() ? it->second : "";
-}
-
-world::Nation WalkerHelper::getNation(const std::string &name)
-{
-  world::Nation nation = instance()._d->hnation.findType( name );
-
-  if( nation == instance()._d->hnation.getInvalid() )
-  {
-    Logger::warning( "Can't find nation type for " + name );
-  }
-
-  return nation;
 }
 
 WalkerHelper::~WalkerHelper(){}

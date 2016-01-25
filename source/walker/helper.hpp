@@ -34,7 +34,6 @@ public:
   static std::string getTypename( walker::Type type );
   static walker::Type getType( const std::string& name );
   static std::string getPrettyTypename( walker::Type type );
-  static std::string getNationName( world::Nation type );
   static world::Nation getNation( const std::string& name );
   static VariantMap getOptions( const std::string& name );
   static VariantMap getOptions( const walker::Type type );

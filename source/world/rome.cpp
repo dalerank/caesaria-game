@@ -57,7 +57,7 @@ Rome::Rome(EmpirePtr empire)
   setLocation( defaultLocation );
   _d->strength = maxSoldiers;
   _d->states.age = 500;
-  _d->states.nation = nation::rome;
+  _setNation( nation::roman );
   _d->states.population = defaultPopulation;
 
   _animation().load( "world_roma" );

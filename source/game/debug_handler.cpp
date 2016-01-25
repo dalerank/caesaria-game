@@ -21,6 +21,7 @@
 #include "religion/pantheon.hpp"
 #include "city/statistic.hpp"
 #include "game/funds.hpp"
+#include "city/city.hpp"
 #include "objects/tree.hpp"
 #include "objects/clay_pit.hpp"
 #include "game/player.hpp"
@@ -32,6 +33,7 @@
 #include "city/victoryconditions.hpp"
 #include "world/empire.hpp"
 #include "core/common.hpp"
+#include "world/empire.hpp"
 #include "city/cityservice_festival.hpp"
 #include "world/romechastenerarmy.hpp"
 #include "world/barbarian.hpp"
@@ -188,6 +190,7 @@ enum {
   toggle_show_trees,
   toggle_show_empireMapTiles,
   toggle_show_rocks,
+  toggle_lock_empiremap,
   forest_fire,
   forest_grow,
   increase_max_level,
@@ -205,6 +208,8 @@ enum {
   toggle_wineshop_enable,
   toggle_vinard_enable,
   fill_random_claypit,
+  empire_toggle_capua,
+  empire_toggle_londinium,
   next_theme
 };
 
@@ -222,6 +227,7 @@ public:
   void reloadConfigs();
   void runScript(std::string filename);
   void toggleBuildOptions(object::Type type);
+  void toggleEmpireCityEnable(const std::string &name);
   gui::ContextMenu* debugMenu;
 
 #ifdef DEBUG
@@ -329,6 +335,9 @@ void DebugHandler::insertTo( Game* game, gui::MainMenu* menu)
   ADD_DEBUG_EVENT( level, show_attacks )
 
   ADD_DEBUG_EVENT( empire, send_merchants )
+  ADD_DEBUG_EVENT( empire, toggle_lock_empiremap )
+  ADD_DEBUG_EVENT( empire, empire_toggle_capua )
+  ADD_DEBUG_EVENT( empire, empire_toggle_londinium )
 
   ADD_DEBUG_EVENT( in_city, add_soldiers_in_fort )
   ADD_DEBUG_EVENT( in_city, add_city_border )
@@ -381,6 +390,24 @@ void DebugHandler::setVisible(bool visible)
 {
   if( _d->debugMenu != 0)
     _d->debugMenu->setVisible( visible );
+}
+
+void DebugHandler::Impl::toggleEmpireCityEnable( const std::string& name )
+{
+  world::CityPtr city = game->empire()->findCity( name );
+  std::string text ;
+
+  if( city.isValid() )
+  {
+    bool enabled = city->isAvailable();
+    city->setAvailable( !enabled );
+    text = fmt::format( "Empire city {} is now {}", name, !enabled ? "enabled" : "disabled" );
+  }
+  else
+  {
+    text = fmt::format( "Empire city {} is not exit", name );
+  }
+  events::dispatch<WarningMessage>( text, WarningMessage::negative );
 }
 
 void DebugHandler::Impl::toggleBuildOptions( object::Type type )
@@ -504,6 +531,9 @@ void DebugHandler::Impl::handleEvent(int event)
   case toggle_reservoir_enable: toggleBuildOptions( object::reservoir );  break;
   case toggle_wineshop_enable: toggleBuildOptions( object::wine_workshop );  break;
   case toggle_vinard_enable: toggleBuildOptions( object::vinard );  break;
+
+  case empire_toggle_capua: toggleEmpireCityEnable( "Capua" ); break;
+  case empire_toggle_londinium: toggleEmpireCityEnable( "Londinium" ); break;
 
   case next_theme:
   {
@@ -664,7 +694,7 @@ void DebugHandler::Impl::handleEvent(int event)
   case all_furnitureworksop_ready: setFactoryReady( object::furniture_workshop ); break;
   case all_weaponworkshop_ready: setFactoryReady( object::weapons_workshop ); break;
   case all_wineworkshop_ready: setFactoryReady( object::wine_workshop ); break;
-  case all_oilworkshop_ready: setFactoryReady( object::oil_workshop ); break;
+  case all_oilworkshop_ready: setFactoryReady( object::oil_workshop ); break;    
 
   case decrease_sentiment: updateSentiment( -10 ); break;
   case increase_sentiment: updateSentiment( +10 ); break;
@@ -739,6 +769,13 @@ void DebugHandler::Impl::handleEvent(int event)
   {
     bool enable = KILLSWITCH( showEmpireMapTiles );
     SETTINGS_SET_VALUE( showEmpireMapTiles, !enable );
+  }
+  break;
+
+  case toggle_lock_empiremap:
+  {
+    bool enabled = game->empire()->isAvailable();
+    game->empire()->setAvailable( !enabled );
   }
   break;
 

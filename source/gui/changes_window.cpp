@@ -11,7 +11,7 @@ ChangesWindow::ChangesWindow(Widget * parent, const Rect & rect, const std::stri
 {
   setupUI(fmt::format(":/changes/{}.changes", number));
 
-  auto& btn = add<PushButton>(Rect(13, width() - 36, 13 + 100, width() - 12), "Hide always", 0xff, false, PushButton::whiteBorderUp);
+  auto& btn = add<PushButton>(Rect(13, width() - 36, 13 + 300, width() - 12), "Don't show this message", 0xff, false, PushButton::whiteBorderUp);
   CONNECT(&btn, onClicked(), this, ChangesWindow::hideAlways)
   update();
 }

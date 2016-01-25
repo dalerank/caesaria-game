@@ -31,6 +31,7 @@
 #include "game/funds.hpp"
 #include "world/empire.hpp"
 #include "city/city.hpp"
+#include "vfs/path.hpp"
 #include "settings.hpp"
 #include "core/variant_map.hpp"
 #include "events/postpone.hpp"
@@ -108,6 +109,11 @@ bool Mission::load( const std::string& filename, Game& game )
     {
       _d->needFinalizeMap = false;
       game::Loader mapLoader;
+      if( !vfs::Path( mapToLoad ).exist() )
+      {
+        Logger::warning( "WARNING !!! Cant find map {} for mission {}", mapToLoad );
+        return false;
+      }
       mapLoader.load( mapToLoad, game );
     }
 

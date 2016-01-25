@@ -32,10 +32,11 @@
 #include "loaderhelper.hpp"
 #include "settings.hpp"
 #include "world/empire.hpp"
+#include "core/predefinitions.hpp"
 
 #include <fstream>
-#include <climits>
 #include <stdint.h>
+#include <climits>
 #include <map>
 
 using namespace gfx;
@@ -76,8 +77,8 @@ void C3Sav::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
   const unsigned int savePos = f.tellg();
 
   // init road entry/exit point
-  unsigned short int i = 0;
-  unsigned short int j = 0;
+  uint16_t i = 0;
+  uint16_t j = 0;
   f.seekg(1236, std::ios::cur);
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);
@@ -189,9 +190,9 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
 
   // need to rewrite better
   const int mapArea = config::tilemap.maxArea;
-  std::vector<short int> graphicGrid; graphicGrid.resize( mapArea, 0 );
+  std::vector<uint16_t> graphicGrid; graphicGrid.resize( mapArea, 0 );
   std::vector<unsigned char> edgeGrid; edgeGrid.resize( mapArea, 0 );
-  std::vector<short int> terrainGrid; terrainGrid.resize( mapArea, 0 );
+  std::vector<uint32_t> terrainGrid; terrainGrid.resize( mapArea, 0 );
   std::vector<unsigned char> rndmTerGrid; rndmTerGrid.resize( mapArea, 0);
   std::vector<unsigned char> randomGrid; randomGrid.resize( mapArea, 0 );
   std::vector<unsigned char> zeroGrid; zeroGrid.resize( mapArea, 0 );
@@ -401,7 +402,7 @@ bool C3Sav::Impl::loadCity( std::fstream& f, Game& game )
             }
             catch(...)
             {
-                    size = dj + 1;
+              size = dj + 1;
             }
           }
 

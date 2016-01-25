@@ -29,7 +29,6 @@ struct States
   unsigned int age = 0;
   world::Nation nation = world::nation::unknown;
   unsigned int population = 0;
-  bool romeCity = false;
   DateTime birth;
 };
 

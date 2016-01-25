@@ -1,6 +1,6 @@
 {
   version : 1
-  map : ":/maps/Brundisium.sav"
+  map : ":/maps/Tutorial2.sav"
   funds : 8000
   city.name : "Brundisium"
   player.rank : 1
@@ -92,14 +92,19 @@
        enabled : true
        cities : {
           Capua : {
-            location : [ 820, 560 ]
-
             land : true
             sea : true
             available : true
 
+            mode : "empirean"
+
             sells : { iron : 25 }
             buys : { wheat: 25, weapon: 15, pottery : 15 }
+          }
+
+          Londinium : {
+            available : true
+            mode : "distant"
           }
         }
       }

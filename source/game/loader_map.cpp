@@ -34,6 +34,7 @@
 using namespace gfx;
 
 #include <fstream>
+#include <stdint.h>
 #include <map>
 
 namespace game
@@ -119,7 +120,7 @@ int C3Map::climateType(const std::string& filename)
 {
   std::fstream f(filename.c_str(), std::ios::in | std::ios::binary);
 
-  unsigned int i = 0;
+  uint32_t i = 0;
   f.seekg(Impl::kClimate, std::ios::beg);
   f.read((char*)&i, 1);
 
@@ -153,8 +154,8 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
 
   f.seekg(kSize, std::ios::beg);
 
-  int map_size;  // 32bits
-  int size_2;
+  uint32_t map_size;  // 32bits
+  uint32_t size_2;
   f.read((char*)&map_size,   4);
   f.read((char*)&size_2, 4);
   Logger::warning( "C3MapLoader: map size is {}", map_size );
@@ -168,9 +169,9 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
 
   // need to rewrite better
   const int mapArea = config::tilemap.maxArea;
-  ScopedArrayPtr<short> pGraphicGrid( new short[mapArea] );
+  ScopedArrayPtr<uint16_t> pGraphicGrid( new uint16_t[mapArea] );
   ScopedArrayPtr<unsigned char> pEdgeGrid( new unsigned char[mapArea] );
-  ScopedArrayPtr<short> pTerrainGrid( new short[mapArea] );
+  ScopedArrayPtr<uint16_t> pTerrainGrid( new uint16_t[mapArea] );
   ScopedArrayPtr<unsigned char> pRndmTerGrid( new unsigned char[mapArea] );
   ScopedArrayPtr<unsigned char> pRandomGrid( new unsigned char[mapArea] );
   ScopedArrayPtr<unsigned char> pElevationGrid( new unsigned char[mapArea] );
@@ -272,7 +273,7 @@ void C3Map::Impl::loadCity(std::fstream& f, PlayerCityPtr oCity)
 void C3Map::Impl::initClimate(std::fstream &f, PlayerCityPtr ioCity )
 {
   // read climate
-  unsigned int i = 0;
+  uint32_t i = 0;
   f.seekg(kClimate, std::ios::beg);
   f.read((char*)&i, 1);
 
@@ -286,8 +287,8 @@ void C3Map::Impl::initEntryExit(std::fstream &f, PlayerCityPtr ioCity)
   unsigned int size = ioCity->tilemap().size();
 
   // init road entry/exit point
-  unsigned short int i = 0;
-  unsigned short int j = 0;
+  uint16_t i = 0;
+  uint16_t j = 0;
   f.seekg(kRoadEntry, std::ios::beg);
   f.read((char*)&i, 2);
   f.read((char*)&j, 2);

@@ -151,7 +151,7 @@ void EmpireMapWindow::Impl::updateCityInfo()
       if( ccity.isNull() )
         return;
 
-      if( ccity->isDistantCity() || ccity->states().romeCity )
+      if( ccity->nation() != world::nation::roman )
       {
 
       }
